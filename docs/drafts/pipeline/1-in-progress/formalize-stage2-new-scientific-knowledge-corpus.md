@@ -85,9 +85,14 @@ coordinated four-slot pool.
   two-copy denominator clearing and Ritt's normalized coefficient-ratio theorem.
 - bounded/ADE/torsion lane: the bounded-relation and polynomial torsion-language cards are
   leaf-complete.  The active exclusive leaf is `GaussianTorsionLanguageTailLock`; its finite
-  Fourier approximation compiler and Gaussian tail domination are checked, while the lane is
-  constructing the varying least-source face and common nonzero leading-atom extraction from an
-  arbitrary integer ADE.
+  Fourier approximation compiler and Gaussian tail domination are checked.  The current source
+  batch now constructs intrinsic signed-offset faces, proves exact key/full-weight-polynomial
+  invariance under expanding centered windows, extracts a fixed nonzero atom on the anchor's exact
+  least-source face, maximizes the genuinely attained grouped-weight degree, and bounds every
+  polynomial on that complete face by the same degree.  One batched direct check exposed only
+  local casts/decidability/let-unfolding errors; all were repaired source-only without an immediate
+  rerun.  The active mathematical step is the cancellation-safe Lagrange-interpolation bound after
+  normalization by the attained degree, followed by the arbitrary-ADE Gaussian exterior split.
 - projective fixed-field lane: `ProjectiveHorizonCurrentFixedField` connects the actual rational
   current action to the free-coordinate fixed-field theorem.  The depth-two follow-on has checked
   the literal `E`--`F` and `H`--`E` current relations, unequal-depth scalar meets, and the sharp
@@ -107,7 +112,12 @@ coordinated four-slot pool.
   the literal terminal-linear output formula with sign `(-1)^(n+1)` and terminal power
   `X_terminal^(n+1)`.  Their exact builds and standard-axiom/forbidden-token/diff audits are green,
   and all five cascade-foundation imports are wired.  The next root step is connecting iterates of
-  a polynomial derivation to this terminal-linear Bell output family.
+  a polynomial derivation to this terminal-linear Bell output family.  Source for
+  `DerivationBellChain` and `DerivationTerminalLinearJacobian` now supplies that connection through
+  the actual signed determinant and field-level nonvanishing theorem.  Its first batched build was
+  cancelled when an unrelated external Lean process appeared; the resulting single chain-rule
+  diagnostic was repaired from the already-green project proof pattern, and the two-module source
+  remains intentionally unrerun until the next coherent compiler gate.
 
 ## Completed compiler queue
 

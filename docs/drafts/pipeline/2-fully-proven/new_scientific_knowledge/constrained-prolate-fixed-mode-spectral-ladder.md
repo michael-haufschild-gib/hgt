@@ -409,8 +409,33 @@ Q_1^2/(Q_0 Q_2)=242/211.
 ```
 
 Thus equations `(4)`, `(5)`, and the exact algebraic content of `(10)`--`(13)` are now in Lean.
+
+The **adjacent-level law `(9)` and its first excited constant `(13)` are now formalized** for the
+two-mode Fuchs model in `GaloisForLFunctions/RHTower/LadderAdjacentScaleSeparation.lean`.  Writing
+`ladderTwoModeRoot A k lam` for the depth-`k` rung, `RHTower.ladder_adjacent_ratio_tendsto` proves
+that the adjacent rung ratio, corrected by the ratio of the two dominant leakages, converges to
+`theta_(k+1)/theta_k`, and `RHTower.constrainedProlateHermiteTheta_adjacent_ratio` evaluates that
+quotient as the pure partial-sum constant `Q_(k+1)^2/(Q_k Q_(k+2))`.
+
+Because one radial rung advances the Fuchs index by exactly `4`, the common exponential clock
+cancels and the corrected ratio is an exact power of the aperture.
+`RHTower.ladder_adjacent_ratio_scaled_tendsto` therefore proves the card's `lambda^8` law in the
+sharp rescaled form
+
+```text
+(mu_(k+1)/mu_k)/lambda^8
+  -> [Q_(k+1)^2/(Q_k Q_(k+2))] * (A_(k+2)/A_(k+1)),
+```
+
+which is `(9)` with its constant `C_k` made explicit.  Its `k = 0` specialization
+`RHTower.ladder_firstExcited_ratio_scaled_tendsto` gives the exact rational coefficient
+`242/211`, i.e. `(13)`.  With `c = lambda^2` this is the card's `c^4` adjacent-gap fingerprint.
+These theorems are unconditional statements about the Fuchs-rate model and are axiom-clean.
+
 The remaining gate is specifically the concrete analytic convergence from the actual prolate
-operator to this ladder; it is not replaced by an asymptotic hypothesis.
+operator to this ladder — Fuchs fixed-index asymptotics for the true leakages, normalized
+prolate-to-Hermite convergence `ell_j -> a_j`, and the uniform infinite-tail secular estimate.  It
+is not replaced by an asymptotic hypothesis.
 
 ## Gates
 
@@ -422,6 +447,10 @@ operator to this ladder; it is not replaced by an asymptotic hypothesis.
 - [x] provisional significance gate
 - [x] all-depth aggregated two-mode Fuchs limits `theta_k` and `1-theta_k` formalized in Lean
 - [x] quantified eventual lower bound for every constant below the all-depth Fuchs gap limit
+- [x] adjacent-level law `(9)` formalized in Lean with explicit constant
+  `[Q_(k+1)^2/(Q_k Q_(k+2))]·(A_(k+2)/A_(k+1))`
+- [x] `lambda^8` (equivalently `c^4`) adjacent scale separation formalized in Lean
+- [x] first excited coefficient `242/211` of `(13)` formalized in Lean
 - [ ] transfer the all-depth Fuchs model to the exact infinite-dimensional constrained ladder
 - [ ] independent proof review
 - [ ] independent literature review

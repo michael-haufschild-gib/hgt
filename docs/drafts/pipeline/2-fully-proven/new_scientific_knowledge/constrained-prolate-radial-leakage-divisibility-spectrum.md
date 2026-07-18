@@ -399,9 +399,35 @@ The algebraic core is already formalized (axiom-clean) by existing modules:
   The same module proves convergence and strict negativity of the resulting prime coefficient via
   `summable_constrainedProlatePrimeSeriesTerm` and `constrainedProlatePrimeConstant_neg`.
 
-What is not formalized is the **weak convergence** `(4)` of the radial measures `nu_lambda` and the
-Gram-matrix diagonalization: the formal tree has no radial PSWF, Bessel-envelope asymptotics, or
-oscillatory-measure interface (that is the Fuchs/Dunster analytic layer).
+The **limiting measure `nu_infinity` and all of its tail slices are now formalized** in
+`GaloisForLFunctions/RHTower/RadialLeakageArcsineMeasure.lean`.  The density
+`radialLeakageDensity x = 1/(x sqrt(x^2-1))` has the elementary antiderivative `-arcsin(1/x)` on
+`(1,infinity)` (`RHTower.hasDerivAt_neg_arcsin_one_div`), which is continuous at the endpoint and
+tends to `0` at infinity, so `RHTower.integral_Ioi_radialLeakageDensity` proves
+
+```text
+integral_(Ioi a) dx/(x sqrt(x^2-1)) = arcsin(1/a)   for every a >= 1.
+```
+
+A single statement therefore covers both `(21)` for every dilation `k >= 1` and `(18)` at `a = 1`
+(`RHTower.integral_Ioi_one_radialLeakageDensity`, total mass `pi/2`).  Integrability at the inverse
+square-root endpoint singularity is obtained from the monotone antiderivative, so the improper
+integral is genuine, not a principal value.
+
+Three consequences are formalized on top of it.  `RHTower.radialLeakageMeasure_total_mass` proves
+`nu_infinity([1,infinity)) = 4/11` exactly, upgrading the previous inequality
+`constrainedProlateArchConstant_ge_four_div_eleven` to the identity `(6)`.
+`RHTower.radialGramDiagonal_eq_measure_slice` proves that the diagonal spectrum `(22)`
+`8 arcsin(1/k)/(11 pi k)` is the `1/k`-scaled `k`-tail of the density, i.e. exactly `(20)`--`(21)`.
+`RHTower.constrainedProlateArchSeriesTerm_eq_measure_slice` identifies every summand of the already
+formalized archimedean coefficient with such a tail, so the arcsine spectrum is now a family of tail
+integrals of one density rather than a formal series.  All are axiom-clean.
+
+What is still not formalized is the **weak convergence** `(4)` of the finite-aperture measures
+`nu_lambda` to this limit, and the off-diagonal vanishing `(23)`: the formal tree has no radial
+PSWF, Bessel-envelope asymptotics, or oscillatory-measure interface (that is the Fuchs/Dunster
+analytic layer).  The present work fixes the target of that convergence exactly; it does not prove
+the convergence.
 
 ## Gates
 
@@ -411,6 +437,11 @@ oscillatory-measure interface (that is the Fuchs/Dunster analytic layer).
 - [x] every fixed off-diagonal Gram entry eliminated
 - [x] finite radial divisibility correlation law proved
 - [x] full diagonal von Mangoldt charge computed
+- [x] arcsine tail law `(21)` and total mass `(18)` formalized in Lean for every `a >= 1`
+- [x] exact total mass `nu_infinity([1,infinity)) = 4/11` formalized in Lean
+- [x] diagonal spectrum `(22)` identified in Lean with the `1/k`-scaled measure tail
+- [ ] weak convergence `nu_lambda -> nu_infinity` `(4)` in Lean
+- [ ] fixed off-diagonal vanishing `(23)` in Lean
 - [ ] simultaneous weighted off-diagonal limit
 - [ ] exact central graph-domain cancellation
 - [ ] true Weil Rayleigh-excess and parity transfer

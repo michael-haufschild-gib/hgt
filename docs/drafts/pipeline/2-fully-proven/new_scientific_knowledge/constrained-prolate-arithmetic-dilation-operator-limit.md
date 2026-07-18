@@ -234,9 +234,35 @@ and that the sequence is summable.  The exact total-mass identities
 negative radial prime constant in `(21)`.  This is the complete scalar diagonal/trace-class core of
 the limiting operator.
 
-The finite-aperture convergence `(3)`, hence the operator convergence `(8)` and Fredholm determinant
-convergence `(16)`, still depend on PSWF weighted projective convergence not present in Lean.  The
-card therefore remains at stage 2.
+The **matrix argument of `(9)`--`(13)` and `(20)`--`(21)` is now formalized unconditionally** in
+`GaloisForLFunctions/RHTower/ArithmeticDilationProjectiveLimit.lean`, as the implication the card's
+proof actually establishes.  `RHTower.arithmeticDilation_projective_tendsto` takes the weighted
+projective hypothesis `(3)` (with an abstract weight `Ω ≥ L`, absolute summability included), the
+divisor-weight trap `0 ≤ a ≤ L` of `(4)`, pointwise stabilization `a_λ(k) → L k` at every fixed `k`,
+and summability of `L·w`, and concludes the plain projective convergence
+
+```text
+sum_(j,k) |A_lambda(j,k)/d_lambda - delta_(j,k) kappa_k| -> 0,
+kappa_k = 2 L k w k.
+```
+
+The proof is the card's own two-term split: `RHTower.arithmeticDilation_abs_le` is the pointwise
+bound `|D| ≤ (Ω_j+Ω_k)|E| + 2(L k − a k) w k` of `(11)`--`(12)`, and
+`RHTower.tendsto_tsum_of_eventually_pointwise_zero` discharges the diagonal defect `(13)` by a
+tail-truncation argument (cut the dominating series `2 L k w k` at `N`, then the finitely many
+indices below `N` vanish eventually) rather than by an appeal to dominated convergence.
+
+`RHTower.arithmeticDilation_total_tendsto` is the pairing with the all-ones matrix, i.e. exactly
+`(20)`--`(21)`: the total mass converges to the trace `∑_k κ_k`, so the raw prime charge converges
+to its negative.  `RHTower.constrainedProlateArithmeticEigenvalue_eq_two_mul_log_mul` identifies
+`κ_k = 2 log(k) w_k` with the already-formalized `constrainedProlateArithmeticEigenvalue`.  All of
+these are axiom-clean (`propext`, `Classical.choice`, `Quot.sound` only).
+
+What remains genuinely open in Lean is the *hypothesis* `(3)` itself: the PSWF weighted projective
+convergence of the radial Gram matrix.  It is supplied as an explicit hypothesis, not asserted, so
+nothing here claims the unconditional operator convergence `(8)` or the Fredholm determinant limit
+`(16)` for the actual prolate source.  The trace-norm and determinant statements also still need a
+trace-class/Fredholm interface absent from the tree.  The card therefore remains at stage 2.
 
 ## Gates
 
@@ -248,6 +274,12 @@ card therefore remains at stage 2.
 - [x] full scalar prime response recovered as negative trace
 - [x] limiting positive arithmetic eigenvalue sequence, summability, and exact total mass formalized
   unconditionally in Lean
+- [x] arithmetic projective convergence `(9)` formalized in Lean as an unconditional implication
+  from the weighted hypothesis `(3)` and the divisor trap `(4)`
+- [x] total-charge-as-trace recovery `(20)`--`(21)` formalized in Lean
+- [x] `kappa_k = 2 log(k) w_k` identified with the formalized arithmetic eigenvalue
+- [ ] discharge the weighted projective hypothesis `(3)` from PSWF asymptotics in Lean
+- [ ] trace-class and Fredholm determinant interface in Lean
 - [ ] independent PSWF normalization audit
 - [ ] polar--prime critical Mellin graph-domain assembly
 - [ ] complete Weil-form lower bound

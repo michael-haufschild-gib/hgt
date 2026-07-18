@@ -178,7 +178,15 @@ The exact arithmetic part is formalized unconditionally.  In
 `16 log(k) arcsin(1/k)/(11*pi*k)` are strictly positive and summable, and their total mass is exactly
 the negative of `constrainedProlatePrimeConstant`.
 
-The leakage-normalized PSWF diagonal limit `(4)` and off-diagonal estimates `(7)`--`(8a)` are not in
+The *value* appearing in the diagonal limit `(4)` is now formalized in
+`GaloisForLFunctions/RHTower/RadialLeakageArcsineMeasure.lean`:
+`RHTower.integral_Ioi_radialLeakageDensity` proves
+`integral_(Ioi k) dx/(x sqrt(x^2-1)) = arcsin(1/k)` for every `k >= 1`, and
+`RHTower.radialGramDiagonal_eq_measure_slice` identifies `8 arcsin(1/k)/(11 pi k)` with the
+`1/k`-scaled `k`-tail of the limiting radial leakage density.  So the right-hand side of `(4)` is
+pinned to an exact measure tail rather than a quoted constant.
+
+The *convergence* in `(4)` itself, and the off-diagonal estimates `(7)`--`(8a)`, are still not in
 Lean, so the cofinal limit `(9)` is not yet formalized.  The card remains at stage 2.
 
 ## Gates
@@ -192,6 +200,8 @@ Lean, so the cofinal limit `(9)` is not yet formalized.  The card remains at sta
 - [x] divisor collapse, positive summable diagonal spectrum, and exact scalar mass formalized
   unconditionally in Lean
 - [x] primary formula search found no parent statement
+- [x] the arcsine value in the diagonal limit `(4)` formalized in Lean as an exact measure tail
+- [ ] the diagonal convergence `(4)` itself in Lean
 - [ ] independent normalization and sign audit
 - [ ] combine with central correction and archimedean form
 - [ ] true restricted-Weil Rayleigh comparison

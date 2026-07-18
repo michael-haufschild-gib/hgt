@@ -94,6 +94,22 @@ def differentialPolynomialTwoBlockCoefficient
     DifferentialPolynomial Unit F :=
   (differentialPolynomialTwoBlockEquiv F C).coeff m
 
+/-- Reconstruct a two-block differential polynomial from its finite family of right-block
+monomials and left-block coefficients. -/
+theorem differentialPolynomialTwoBlock_reconstruct
+    {F : Type*} [CommRing F]
+    (C : DifferentialPolynomial (Unit ⊕ Unit) F) :
+    C = ∑ m ∈ (differentialPolynomialTwoBlockEquiv F C).support,
+      differentialPolynomialLeft (κ := Unit)
+          (differentialPolynomialTwoBlockCoefficient m C) *
+        differentialPolynomialRight (ι := Unit)
+          (MvPolynomial.monomial m 1) := by
+  apply (differentialPolynomialTwoBlockEquiv F).injective
+  simp only [map_sum, map_mul, differentialPolynomialTwoBlockEquiv_left,
+    differentialPolynomialTwoBlockEquiv_right,
+    differentialPolynomialTwoBlockCoefficient, MvPolynomial.map_monomial, map_one]
+  simpa using (MvPolynomial.as_sum (differentialPolynomialTwoBlockEquiv F C)).symm
+
 /-- A multivariable polynomial is primitive over its coefficient ring when every coefficient-ring
 constant dividing it is a unit.  This is the exact notion needed for the two-block Gauss step. -/
 def MvPolynomialPrimitive
@@ -280,6 +296,36 @@ theorem differentialIntermediateToJetFraction_injective
     (hy : DifferentialIndependent F (fun _ : Unit ↦ y)) :
     Function.Injective (differentialIntermediateToJetFraction G hG hy) :=
   (differentialIntermediateToJetFraction G hG hy).injective
+
+/-- The free-jet parametrization sends a formal scalar differential polynomial to its evaluation
+at the chosen free element. -/
+theorem differentialIndependentAdjoinParametrization_algebraMap_val
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {y : E} (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (U : DifferentialPolynomial Unit F) :
+    (((differentialIndependentAdjoinParametrization (fun _ : Unit ↦ y) hy)
+        (algebraMap (DifferentialPolynomial Unit F)
+          (FractionRing (DifferentialPolynomial Unit F)) U) :
+      differentialAdjoin F (Set.range fun _ : Unit ↦ y)) : E) =
+      differentialPolynomialEval (C := F) (fun _ : Unit ↦ y) U := by
+  let A := differentialAdjoin F (Set.range fun _ : Unit ↦ y)
+  let e := differentialIndependentAdjoinParametrization (fun _ : Unit ↦ y) hy
+  have hring :
+      (IntermediateField.val A).toRingHom.comp
+          (e.toRingEquiv.toRingHom.comp
+            (algebraMap (DifferentialPolynomial Unit F)
+              (FractionRing (DifferentialPolynomial Unit F)))) =
+        (differentialPolynomialEval (C := F) (fun _ : Unit ↦ y)).toRingHom := by
+    apply MvPolynomial.ringHom_ext
+    · intro c
+      simp [A, e, differentialPolynomialEval]
+    · rintro ⟨u, n⟩
+      obtain rfl : u = () := Subsingleton.elim _ _
+      have hx := congrArg Subtype.val
+        (differentialIndependentAdjoinParametrization_X
+          (fun _ : Unit ↦ y) hy () n)
+      simpa [A, e, differentialPolynomialEval_X] using hx
+  exact RingHom.congr_fun hring U
 
 /-- A relation over the intermediate field remains a relation after replacing the free element by
 the formal scalar jet palette and transporting every coefficient to its rational jet expression. -/
@@ -474,6 +520,37 @@ theorem exists_primitiveTwoBlockDifferentialCharacteristic
       clearing := by simpa [C, R, K, φ] using hQclear
       diagonal := hdiag }⟩
 
+/-- Every left-block coefficient of the primitive representative specializes to the corresponding
+characteristic coefficient times the single clearing scalar. -/
+theorem PrimitiveTwoBlockDifferentialCharacteristic.coefficient_specialization
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (P : DifferentialPolynomial Unit G)
+    (C : PrimitiveTwoBlockDifferentialCharacteristic G hG hy P)
+    (m : (Unit × ℕ) →₀ ℕ) :
+    differentialPolynomialEval (C := F) (fun _ : Unit ↦ y)
+        (differentialPolynomialTwoBlockCoefficient m C.polynomial) =
+      (((differentialIndependentAdjoinParametrization (fun _ : Unit ↦ y) hy)
+          (C.scalar : FractionRing (DifferentialPolynomial Unit F)) :
+        differentialAdjoin F (Set.range fun _ : Unit ↦ y)) : E) *
+        (P.coeff m : E) := by
+  let R := DifferentialPolynomial Unit F
+  let K := FractionRing R
+  let A := differentialAdjoin F (Set.range fun _ : Unit ↦ y)
+  let e : K ≃ₐ[F] A :=
+    differentialIndependentAdjoinParametrization (fun _ : Unit ↦ y) hy
+  let φ : G →ₐ[F] K := differentialIntermediateToJetFraction G hG hy
+  have hcoeff := congrArg (MvPolynomial.coeff m) C.clearing
+  simp only [MvPolynomial.coeff_map, MvPolynomial.coeff_C_mul] at hcoeff
+  have hφ (g : G) : ((e (φ g) : A) : E) = (g : E) := by
+    simp [e, φ, A, differentialIntermediateToJetFraction]
+  have hval := congrArg (fun z : K ↦ ((e z : A) : E)) hcoeff
+  rw [map_mul, hφ] at hval
+  rw [← differentialIndependentAdjoinParametrization_algebraMap_val hy]
+  exact hval
+
 /-- A bounded-order relation is ordinarily divisible by the minimal characteristic polynomial.
 The proof performs pseudo-division only at the characteristic leader, so no iterate of the
 characteristic polynomial enters.  Minimality kills the remainder and primeness removes the
@@ -554,6 +631,135 @@ theorem IsMinimalScalarDifferentialPolynomialRank.dvd_of_relation_order_le
     exact Ideal.mul_mem_right T I hP.1
   · exact hdiv
 
+/-- Multivariable Gauss contraction for the support-gcd notion of primitive polynomial.  If a
+primitive polynomial divides another after extending the coefficient UFD to its fraction field,
+then the divisibility already holds over the coefficient ring. -/
+theorem MvPolynomialPrimitive.dvd_of_fraction_map_dvd
+    {R K σ : Type*} [CommRing R] [IsDomain R] [UniqueFactorizationMonoid R]
+    [Field K] [Algebra R K] [IsFractionRing R K]
+    {P Q : MvPolynomial σ R} (hPprimitive : MvPolynomialPrimitive P)
+    (hP0 : P ≠ 0)
+    (hdiv : MvPolynomial.map (algebraMap R K) P ∣
+      MvPolynomial.map (algebraMap R K) Q) :
+    P ∣ Q := by
+  classical
+  obtain ⟨T, hT⟩ := hdiv
+  obtain ⟨d, A, hAclear⟩ :=
+    exists_mvPolynomial_fraction_clear (R := R) (K := K) (σ := σ) T
+  have hmapEq :
+      MvPolynomial.map (algebraMap R K) (P * A) =
+        MvPolynomial.map (algebraMap R K) (MvPolynomial.C (d : R) * Q) := by
+    simp only [map_mul, MvPolynomial.map_C]
+    rw [hAclear, hT]
+    ring
+  have hEq : P * A = MvPolynomial.C (d : R) * Q := by
+    exact MvPolynomial.map_injective (algebraMap R K)
+      (IsFractionRing.injective R K) hmapEq
+  have hProduct : P ∣ MvPolynomial.C (d : R) * Q := by
+    rw [← hEq]
+    exact dvd_mul_right P A
+  apply UniqueFactorizationMonoid.dvd_of_dvd_mul_right_of_no_prime_factors
+    hP0 ?_ hProduct
+  intro p hpP hpCd hpprime
+  obtain ⟨r, _hrd, hpr⟩ :=
+    (MvPolynomial.dvd_C_iff_exists (nonZeroDivisors.ne_zero d.2)).mp hpCd
+  have hCrP : MvPolynomial.C r ∣ P := by
+    simpa [hpr] using hpP
+  have hrunit : IsUnit r := hPprimitive r hCrP
+  have hCunit : IsUnit (MvPolynomial.C r : MvPolynomial σ R) :=
+    IsUnit.map MvPolynomial.C hrunit
+  exact hpprime.not_unit (by simpa [hpr] using hCunit)
+
+/-- Mutual divisibility of two nonzero two-block differential polynomials over a field gives an
+exact quotient in the base-field unit group, not merely an arbitrary polynomial-ring unit. -/
+theorem twoBlock_eq_baseUnit_mul_of_dvd_dvd
+    {F : Type*} [Field F]
+    {C D : DifferentialPolynomial (Unit ⊕ Unit) F}
+    (hCD : C ∣ D) (hDC : D ∣ C) :
+    ∃ c : Fˣ, D = MvPolynomial.C (c : F) * C := by
+  obtain ⟨u, hu⟩ := associated_of_dvd_dvd hCD hDC
+  obtain ⟨r, hr, hur⟩ :=
+    MvPolynomial.isUnit_iff_eq_C_of_isReduced.mp u.isUnit
+  let c : Fˣ := hr.unit
+  refine ⟨c, ?_⟩
+  calc
+    D = C * (u : DifferentialPolynomial (Unit ⊕ Unit) F) := hu.symm
+    _ = C * MvPolynomial.C r := by rw [hur]
+    _ = MvPolynomial.C r * C := mul_comm _ _
+    _ = MvPolynomial.C (c : F) * C := by rw [IsUnit.unit_spec hr]
+
+/-- A nonzero scalar differential relation over an intermediate field of a free scalar
+differential field has two coefficients with a genuinely non-base ratio.  Otherwise all
+coefficients are one common intermediate-field scalar times a base polynomial, contradicting
+differential independence. -/
+theorem exists_differentialRelation_coefficientRatio_not_mem_bot
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) {y : E}
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    {P : DifferentialPolynomial Unit G} (hP0 : P ≠ 0)
+    (hP : P ∈ differentialIntermediateRelationIdeal G y) :
+    ∃ m n : (Unit × ℕ) →₀ ℕ, P.coeff n ≠ 0 ∧
+      ((P.coeff m / P.coeff n : G) : E) ∉
+        (⊥ : IntermediateField F E) := by
+  classical
+  by_contra hnone
+  push_neg at hnone
+  obtain ⟨n, hn⟩ := Finsupp.ne_iff.mp hP0
+  have hnSupport : n ∈ P.support := by
+    simpa [MvPolynomial.mem_support_iff] using hn
+  have hratioBot (m : (Unit × ℕ) →₀ ℕ) :
+      ((P.coeff m / P.coeff n : G) : E) ∈
+        (⊥ : IntermediateField F E) :=
+    hnone m n hn
+  have hratioRange (m : (Unit × ℕ) →₀ ℕ) :
+      ((P.coeff m / P.coeff n : G) : E) ∈
+        Set.range (algebraMap F E) :=
+    (IntermediateField.mem_bot.mp (hratioBot m))
+  let c : ((Unit × ℕ) →₀ ℕ) → F :=
+    fun m ↦ Classical.choose (hratioRange m)
+  have hc (m : (Unit × ℕ) →₀ ℕ) :
+      algebraMap F E (c m) = ((P.coeff m / P.coeff n : G) : E) :=
+    Classical.choose_spec (hratioRange m)
+  have hratioG (m : (Unit × ℕ) →₀ ℕ) :
+      P.coeff m / P.coeff n = algebraMap F G (c m) := by
+    apply Subtype.val_injective
+    exact (hc m).symm
+  have hcoeff (m : (Unit × ℕ) →₀ ℕ) :
+      P.coeff m = P.coeff n * algebraMap F G (c m) := by
+    simpa [mul_comm] using (div_eq_iff hn).mp (hratioG m)
+  let B : DifferentialPolynomial Unit F :=
+    ∑ m ∈ P.support, MvPolynomial.monomial m (c m)
+  have hfactor :
+      P = MvPolynomial.C (P.coeff n) *
+        MvPolynomial.map (algebraMap F G) B := by
+    apply MvPolynomial.ext
+    intro m
+    rw [MvPolynomial.coeff_C_mul, MvPolynomial.coeff_map]
+    by_cases hm : m ∈ P.support
+    · rw [hcoeff m]
+      simp [B, MvPolynomial.coeff_sum, hm]
+    · have hm0 : P.coeff m = 0 := by
+        simpa [MvPolynomial.mem_support_iff] using hm
+      rw [hm0]
+      simp [B, MvPolynomial.coeff_sum, hm]
+  have hB0 : B ≠ 0 := by
+    intro hzero
+    apply hP0
+    rw [hfactor, hzero, map_zero, mul_zero]
+  have hEvalP :
+      differentialPolynomialEvalOver (K := G) (fun _ : Unit ↦ y) P = 0 := hP
+  rw [hfactor, map_mul, differentialPolynomialEvalOver_C,
+    differentialPolynomialEvalOver_map_intermediate] at hEvalP
+  have hnE : ((P.coeff n : G) : E) ≠ 0 := by
+    exact Subtype.coe_ne_coe.mpr hn
+  have hEvalB :
+      differentialPolynomialEvalOver (K := F) (fun _ : Unit ↦ y) B = 0 :=
+    (mul_eq_zero.mp hEvalP).resolve_left hnE
+  have hBzero : B = 0 := by
+    apply hy.eq_zero_of_aeval_eq_zero
+    simpa [differentialPolynomialEvalOver, differentialPolynomialEval] using hEvalB
+  exact hB0 hBzero
+
 /-- The projective cross-difference of two scalar differential polynomials on two independent
 blocks. -/
 def differentialPolynomialCrossDifference
@@ -564,6 +770,30 @@ def differentialPolynomialCrossDifference
       differentialPolynomialRight (ι := Unit) P -
     differentialPolynomialLeft (κ := Unit) P *
       differentialPolynomialRight (ι := Unit) Q
+
+@[simp]
+theorem differentialPolynomialTwoBlockEquiv_crossDifference
+    {F : Type*} [CommRing F]
+    (P Q : DifferentialPolynomial Unit F) :
+    differentialPolynomialTwoBlockEquiv F
+        (differentialPolynomialCrossDifference P Q) =
+      MvPolynomial.C Q * MvPolynomial.map MvPolynomial.C P -
+        MvPolynomial.C P * MvPolynomial.map MvPolynomial.C Q := by
+  simp [differentialPolynomialCrossDifference]
+
+/-- Coefficient comparison for a two-block projective cross-difference. -/
+theorem differentialPolynomialTwoBlockCoefficient_crossDifference
+    {F : Type*} [CommRing F]
+    (m : (Unit × ℕ) →₀ ℕ)
+    (P Q : DifferentialPolynomial Unit F) :
+    differentialPolynomialTwoBlockCoefficient m
+        (differentialPolynomialCrossDifference P Q) =
+      Q * MvPolynomial.C (P.coeff m) -
+        P * MvPolynomial.C (Q.coeff m) := by
+  simp [differentialPolynomialTwoBlockCoefficient,
+    differentialPolynomialTwoBlockEquiv_crossDifference,
+    MvPolynomial.coeff_sub, MvPolynomial.coeff_C_mul,
+    MvPolynomial.coeff_map]
 
 @[simp]
 theorem differentialPolynomialEval_left

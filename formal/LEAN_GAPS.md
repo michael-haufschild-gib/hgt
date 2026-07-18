@@ -26,6 +26,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
 | 2478 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
+| 2282 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
 | 2202 | `formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean` |
 | 2198 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
@@ -35,7 +36,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
 | 1825 | `formal/GaloisForLFunctions/HTGeometry/PolynomialPowerADEResonance.lean` |
 | 1750 | `formal/GaloisForLFunctions/HTGeometry/BottcherParameterVelocityIdentification.lean` |
-| 1711 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 
 ## Gap Markers
 

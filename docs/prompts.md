@@ -1,8 +1,8 @@
 ## formalize
 /goal
 
-work through all cards directly in docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge and formalize in lean any proven theorem in there.
-
+work through all cards directly in docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge that start with "constraint-prolate" and formalize in lean any proven theorem in there.
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/hedenmalm-pair-weil-polarization-law.md
 rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
 2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
@@ -14,6 +14,9 @@ rules:
 folders:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+
+before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.
+do not constantly build and fix and build and fix, be efficient with lean and this laptop's resources.
 
 skip cards that are not relevant for hypertranscendental functions nor for the riemann zeta function
 before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.

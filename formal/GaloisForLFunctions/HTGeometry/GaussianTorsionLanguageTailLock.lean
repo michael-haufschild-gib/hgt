@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.PolynomialTorsionLanguageDefectLimit
 import GaloisForLFunctions.HTGeometry.FinitePiProductSummability
 import GaloisForLFunctions.HTGeometry.MagnitudeWeightMassPolynomial
+import GaloisForLFunctions.HTGeometry.PolynomialPhaseLockAssembly
+import Mathlib.LinearAlgebra.Lagrange
 
 /-!
 # Gaussian torsion-language tail lock
@@ -275,6 +277,288 @@ theorem gaussianOffsetPatternWindow_count
       exact Finsupp.sum_of_support_subset a hsupp (fun _ k => k) (by simp)
     _ = D := hcount
 
+/-- Reindexing a global offset pattern through its centered finite window preserves every
+finitely-supported additive statistic.  This is the common exact constructor behind the count,
+signed-source, and Gaussian-energy identities. -/
+theorem sum_gaussianOffsetPatternWindow_eq_finsuppSum
+    {D : ℕ} {S : ℤ} {R : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R)
+    {α : Type*} [AddCommMonoid α]
+    (f : ℤ → ℕ → α) (hzero : ∀ z, f z 0 = 0) :
+    (∑ j : Fin (2 * R + 1),
+      f ((centeredIndexEquiv R j).1)
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R j : ℕ)) =
+      a.sum f := by
+  have hsupp := (mem_gaussianOffsetFace.mp ha).2.1
+  change (∑ j : Fin (2 * R + 1),
+    f ((centeredIndexEquiv R j).1) (a ((centeredIndexEquiv R j).1))) = a.sum f
+  calc
+    (∑ j : Fin (2 * R + 1),
+        f ((centeredIndexEquiv R j).1) (a ((centeredIndexEquiv R j).1))) =
+        ∑ z : ↥(gaussianOffsetInterval R), f z.1 (a z.1) :=
+      Equiv.sum_comp (centeredIndexEquiv R) (fun z => f z.1 (a z.1))
+    _ = ∑ z ∈ gaussianOffsetInterval R, f z (a z) := by
+      simp
+    _ = a.sum f := by
+      symm
+      exact Finsupp.sum_of_support_subset a hsupp f (fun z _hz => hzero z)
+
+/-- The ordinary nonnegative source sum in a centered window is the global signed source plus
+the deterministic translation contribution `R * D`. -/
+theorem gaussianOffsetPatternWindow_source
+    {D : ℕ} {S : ℤ} {R : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) :
+    ((polynomialPatternSourceSum
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R) : ℕ) : ℤ) -
+        (R : ℤ) * (D : ℤ) = S := by
+  have hcountInt :
+      (∑ j : Fin (2 * R + 1),
+        ((gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R j : ℕ) : ℤ)) =
+        (D : ℤ) := by
+    exact_mod_cast gaussianOffsetPatternWindow_count ha
+  have hcenter :
+      (∑ j : Fin (2 * R + 1),
+        (((j : ℕ) : ℤ) - (R : ℤ)) *
+          ((gaussianOffsetPatternWindow a
+            (gaussianOffsetFace_totalCount ha) R j : ℕ) : ℤ)) =
+        gaussianOffsetSource a := by
+    simpa only [centeredIndexEquiv, gaussianOffsetSource] using
+      (sum_gaussianOffsetPatternWindow_eq_finsuppSum
+        (ha := ha) (f := fun z k => z * (k : ℤ)) (by simp))
+  have hsource := (mem_gaussianOffsetFace.mp ha).2.2
+  rw [polynomialPatternSourceSum]
+  push_cast
+  calc
+    (∑ j : Fin (2 * R + 1),
+        (j : ℤ) *
+          ((gaussianOffsetPatternWindow a
+            (gaussianOffsetFace_totalCount ha) R j : ℕ) : ℤ)) -
+        (R : ℤ) * (D : ℤ) =
+        ∑ j : Fin (2 * R + 1),
+          (((j : ℕ) : ℤ) - (R : ℤ)) *
+            ((gaussianOffsetPatternWindow a
+              (gaussianOffsetFace_totalCount ha) R j : ℕ) : ℤ) := by
+      rw [← hcountInt, Finset.mul_sum, ← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro j _hj
+      ring
+    _ = gaussianOffsetSource a := hcenter
+    _ = S := hsource
+
+/-- The centered quadratic moment of every window representative is the intrinsic energy of its
+global offset pattern.  In particular, it is unchanged under later enlargements of the window. -/
+theorem gaussianOffsetPatternWindow_energy
+    {D : ℕ} {S : ℤ} {R : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) :
+    (∑ j : Fin (2 * R + 1),
+      (((j : ℕ) : ℤ) - (R : ℤ)) ^ 2 *
+        ((gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount ha) R j : ℕ) : ℤ)) =
+      gaussianOffsetPatternEnergy a := by
+  simpa only [centeredIndexEquiv, gaussianOffsetPatternEnergy] using
+    (sum_gaussianOffsetPatternWindow_eq_finsuppSum
+      (ha := ha) (f := fun z k => z ^ 2 * (k : ℤ)) (by simp))
+
+/-- Signed offset corresponding to a nonnegative coordinate in a window centered at `K`. -/
+def centeredNatOffset (K r : ℕ) : ℤ :=
+  (r : ℤ) - (K : ℤ)
+
+theorem centeredNatOffset_injective (K : ℕ) :
+    Function.Injective (centeredNatOffset K) := by
+  intro r s hrs
+  simp only [centeredNatOffset] at hrs
+  omega
+
+/-- Intrinsic signed-offset pattern represented by an arbitrary bounded window pattern. -/
+def gaussianOffsetPatternOfWindow
+    {M D : ℕ} (K : ℕ) (p : Fin M → Fin (D + 1)) : ℤ →₀ ℕ :=
+  Finsupp.mapDomain (centeredNatOffset K) (atomPatternKey p)
+
+theorem gaussianOffsetPatternOfWindow_totalCount
+    {M D K : ℕ} (p : Fin M → Fin (D + 1)) :
+    (gaussianOffsetPatternOfWindow K p).sum (fun _ k => k) =
+      ∑ r, (p r : ℕ) := by
+  rw [gaussianOffsetPatternOfWindow,
+    Finsupp.sum_mapDomain_index (fun _ => rfl) (fun _ _ _ => rfl)]
+  exact atomPatternKey_count p
+
+theorem gaussianOffsetPatternOfWindow_support_subset
+    {M D K : ℕ} (p : Fin M → Fin (D + 1)) :
+    (gaussianOffsetPatternOfWindow K p).support ⊆
+      gaussianOffsetInterval (K + M) := by
+  classical
+  rw [gaussianOffsetPatternOfWindow,
+    Finsupp.mapDomain_support_of_injective (centeredNatOffset_injective K)]
+  intro z hz
+  obtain ⟨r, hrSupport, rfl⟩ := Finset.mem_image.mp hz
+  have hrne : atomPatternKey p r ≠ 0 := Finsupp.mem_support_iff.mp hrSupport
+  have hrlt : r < M := by
+    by_contra hnot
+    rw [atomPatternKey_apply, dif_neg hnot] at hrne
+    exact hrne rfl
+  simp only [gaussianOffsetInterval, Finset.mem_Icc, centeredNatOffset]
+  constructor <;> omega
+
+/-- Every degree-`D` bounded pattern defines a member of one centered global Gaussian face. -/
+theorem gaussianOffsetPatternOfWindow_mem_face
+    {M D K : ℕ} (p : Fin M → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D) :
+    gaussianOffsetPatternOfWindow K p ∈
+      gaussianOffsetFace D
+        (gaussianOffsetSource (gaussianOffsetPatternOfWindow K p)) (K + M) := by
+  have hsupp := gaussianOffsetPatternOfWindow_support_subset (K := K) p
+  apply mem_gaussianOffsetFace.mpr
+  refine ⟨?_, hsupp, rfl⟩
+  calc
+    (∑ z ∈ gaussianOffsetInterval (K + M),
+        gaussianOffsetPatternOfWindow K p z) =
+        (gaussianOffsetPatternOfWindow K p).sum (fun _ k => k) := by
+      symm
+      exact Finsupp.sum_of_support_subset
+        (gaussianOffsetPatternOfWindow K p) hsupp (fun _ k => k) (fun _ _ => rfl)
+    _ = ∑ r, (p r : ℕ) := gaussianOffsetPatternOfWindow_totalCount p
+    _ = D := hcount
+
+/-- The signed source of a window pattern is its ordinary source sum with the deterministic
+`D*K` translation removed. -/
+theorem gaussianOffsetSource_patternOfWindow
+    {M D K : ℕ} (p : Fin M → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D) :
+    gaussianOffsetSource (gaussianOffsetPatternOfWindow K p) =
+      (polynomialPatternSourceSum p : ℤ) - (K : ℤ) * (D : ℤ) := by
+  have hweightedInt :
+      (atomPatternKey p).sum (fun r k => (r : ℤ) * (k : ℤ)) =
+        (polynomialPatternSourceSum p : ℤ) := by
+    rw [polynomialPatternSourceSum]
+    exact_mod_cast atomPatternKey_weightedSum p
+  have hcountInt :
+      (atomPatternKey p).sum (fun _ k => (k : ℤ)) = (D : ℤ) := by
+    have hcountKey : (atomPatternKey p).sum (fun _ k => k) = D := by
+      rw [atomPatternKey_count, hcount]
+    exact_mod_cast hcountKey
+  rw [gaussianOffsetSource, gaussianOffsetPatternOfWindow,
+    Finsupp.sum_mapDomain_index (fun _ => by simp)
+      (fun _ x y => by push_cast; ring)]
+  calc
+    (atomPatternKey p).sum
+        (fun r k => centeredNatOffset K r * (k : ℤ)) =
+        (atomPatternKey p).sum (fun r k => (r : ℤ) * (k : ℤ)) -
+          (K : ℤ) * (atomPatternKey p).sum (fun _ k => (k : ℤ)) := by
+      simp only [Finsupp.sum, centeredNatOffset]
+      rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro r _hr
+      ring
+    _ = (polynomialPatternSourceSum p : ℤ) - (K : ℤ) * (D : ℤ) := by
+      rw [hweightedInt, hcountInt]
+
+/-- Translation of a signed global offset pattern to nonnegative coefficient indices.  The
+definition is independent of any finite window used to display the pattern. -/
+def gaussianOffsetShiftedKey (q : ℕ) (a : ℤ →₀ ℕ) : ℕ →₀ ℕ :=
+  a.support.sum fun z =>
+    Finsupp.single (Int.toNat ((q : ℤ) + z)) (a z)
+
+theorem gaussianOffsetShiftedKey_eq_mapDomain (q : ℕ) (a : ℤ →₀ ℕ) :
+    gaussianOffsetShiftedKey q a =
+      Finsupp.mapDomain (fun z : ℤ => Int.toNat ((q : ℤ) + z)) a := by
+  rfl
+
+/-- Translating a bounded pattern through its original window or through its intrinsic signed
+offset pattern gives exactly the same coefficient multiplicity key. -/
+theorem shiftedAtomPatternKey_gaussianOffsetPatternOfWindow_eq
+    {M D q K : ℕ} (p : Fin M → Fin (D + 1)) (hKq : K ≤ q) :
+    shiftedAtomPatternKey q K p =
+      gaussianOffsetShiftedKey q (gaussianOffsetPatternOfWindow K p) := by
+  rw [shiftedAtomPatternKey, gaussianOffsetShiftedKey_eq_mapDomain,
+    gaussianOffsetPatternOfWindow, ← Finsupp.mapDomain_comp]
+  apply congrArg (fun f : ℕ → ℕ => Finsupp.mapDomain f (atomPatternKey p))
+  funext r
+  change windowShift q K r =
+    Int.toNat ((q : ℤ) + ((r : ℤ) - (K : ℤ)))
+  have hnonneg : 0 ≤ (q : ℤ) + ((r : ℤ) - (K : ℤ)) := by
+    omega
+  apply Int.ofNat_injective
+  rw [Int.ofNat_toNat hnonneg]
+  dsimp [windowShift]
+  omega
+
+theorem windowShift_eq_toNat_add_centeredIndex
+    {R q : ℕ} (hRq : R ≤ q) (j : Fin (2 * R + 1)) :
+    windowShift q R (j : ℕ) =
+      Int.toNat ((q : ℤ) + (centeredIndexEquiv R j).1) := by
+  change windowShift q R (j : ℕ) =
+    Int.toNat ((q : ℤ) + (((j : ℕ) : ℤ) - (R : ℤ)))
+  have hnonneg :
+      0 ≤ (q : ℤ) + (((j : ℕ) : ℤ) - (R : ℤ)) := by
+    omega
+  apply Int.ofNat_injective
+  rw [Int.ofNat_toNat hnonneg]
+  dsimp [windowShift]
+  omega
+
+/-- Every sufficiently translated centered-window key is exactly the canonical translated key
+of the underlying global pattern.  This is the finite-window independence required to keep one
+leading ADE atom fixed while the Gaussian face expands. -/
+theorem shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq
+    {D : ℕ} {S : ℤ} {R q : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) (hRq : R ≤ q) :
+    shiftedAtomPatternKey q R
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R) =
+      gaussianOffsetShiftedKey q a := by
+  classical
+  have hsupp := (mem_gaussianOffsetFace.mp ha).2.1
+  rw [shiftedAtomPatternKey_eq_sum]
+  change (∑ j : Fin (2 * R + 1),
+    Finsupp.single (windowShift q R (j : ℕ))
+      (a ((centeredIndexEquiv R j).1))) = gaussianOffsetShiftedKey q a
+  calc
+    (∑ j : Fin (2 * R + 1),
+        Finsupp.single (windowShift q R (j : ℕ))
+          (a ((centeredIndexEquiv R j).1))) =
+        ∑ j : Fin (2 * R + 1),
+          Finsupp.single
+            (Int.toNat ((q : ℤ) + (centeredIndexEquiv R j).1))
+            (a ((centeredIndexEquiv R j).1)) := by
+      apply Finset.sum_congr rfl
+      intro j _hj
+      rw [windowShift_eq_toNat_add_centeredIndex hRq j]
+    _ = ∑ z : ↥(gaussianOffsetInterval R),
+          Finsupp.single (Int.toNat ((q : ℤ) + z.1)) (a z.1) :=
+      Equiv.sum_comp (centeredIndexEquiv R)
+        (fun z => Finsupp.single (Int.toNat ((q : ℤ) + z.1)) (a z.1))
+    _ = (gaussianOffsetInterval R).sum (fun z =>
+          Finsupp.single (Int.toNat ((q : ℤ) + z)) (a z)) := by
+      simpa using
+        (Finset.sum_attach (gaussianOffsetInterval R) (fun z =>
+          Finsupp.single (Int.toNat ((q : ℤ) + z)) (a z)))
+    _ = gaussianOffsetShiftedKey q a := by
+      rw [gaussianOffsetShiftedKey]
+      symm
+      apply Finset.sum_subset hsupp
+      intro z _hzInterval hzSupport
+      rw [Finsupp.notMem_support_iff.mp hzSupport]
+      simp
+
+/-- Enlarging the centered display window leaves the translated multiplicity key unchanged. -/
+theorem shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq_of_le
+    {D : ℕ} {S : ℤ} {R R' q : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) (hRR' : R ≤ R') (hR'q : R' ≤ q) :
+    shiftedAtomPatternKey q R
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R) =
+      shiftedAtomPatternKey q R'
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount (gaussianOffsetFace_mono hRR' ha)) R') := by
+  calc
+    shiftedAtomPatternKey q R
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R) =
+        gaussianOffsetShiftedKey q a :=
+      shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq ha (hRR'.trans hR'q)
+    _ = shiftedAtomPatternKey q R'
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount (gaussianOffsetFace_mono hRR' ha)) R') :=
+      (shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq
+        (gaussianOffsetFace_mono hRR' ha) hR'q).symm
+
 /-! ## Uniform grouped-weight bounds -/
 
 /-- The translation polynomial of one labelled assignment has degree at most the total jet order
@@ -363,6 +647,81 @@ theorem natDegree_polynomialPatternWeightPolyInt_le_maxJetOrder
     Polynomial.natDegree_map_eq_of_injective Int.cast_injective] at hdeg
   exact hdeg
 
+/-- Two complex polynomials which agree at all sufficiently large natural arguments are equal. -/
+theorem complexPolynomial_eq_of_eventually_eval_nat_eq
+    (P Q : Polynomial ℂ)
+    (h : ∀ᶠ q : ℕ in atTop, P.eval (q : ℂ) = Q.eval (q : ℂ)) :
+    P = Q := by
+  obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp h
+  let orbit : ℕ → ℂ := fun k => ((N + k : ℕ) : ℂ)
+  have horbit : Function.Injective orbit := by
+    intro i j hij
+    change ((N + i : ℕ) : ℂ) = ((N + j : ℕ) : ℂ) at hij
+    have hijNat : N + i = N + j := by
+      exact_mod_cast hij
+    omega
+  apply Polynomial.eq_of_infinite_eval_eq P Q
+  apply (Set.infinite_range_of_injective horbit).mono
+  rintro z ⟨k, rfl⟩
+  simpa only [orbit] using hN (N + k) (by omega)
+
+/-- The grouped ADE weight of one global offset pattern has the same value in every larger
+centered display window, once the translation is large enough for both polynomial presentations.
+The equality is exact, because both sides evaluate `aevalWeight` on the same canonical key. -/
+theorem eval_polynomialPatternWeightPoly_gaussianOffsetPatternWindow_eq_of_le
+    {n D τ : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    {S : ℤ} {R R' q : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) (hRR' : R ≤ R')
+    (hlarge : R' + n ≤ q) :
+    (polynomialPatternWeightPoly n D R τ Q
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R)).eval
+          (q : ℂ) =
+      (polynomialPatternWeightPoly n D R' τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount (gaussianOffsetFace_mono hRR' ha)) R')).eval
+            (q : ℂ) := by
+  calc
+    (polynomialPatternWeightPoly n D R τ Q
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R)).eval
+          (q : ℂ) =
+        aevalWeight n (D * q + τ) Q
+          (shiftedAtomPatternKey q R
+            (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R)) :=
+      (aevalWeight_shiftedAtomPatternKey_eq_eval_poly n D R τ Q
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R)
+        (gaussianOffsetPatternWindow_count ha) (by omega)).symm
+    _ = aevalWeight n (D * q + τ) Q
+          (shiftedAtomPatternKey q R'
+            (gaussianOffsetPatternWindow a
+              (gaussianOffsetFace_totalCount (gaussianOffsetFace_mono hRR' ha)) R')) := by
+      rw [shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq_of_le
+        ha hRR' (by omega)]
+    _ = (polynomialPatternWeightPoly n D R' τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount (gaussianOffsetFace_mono hRR' ha)) R')).eval
+            (q : ℂ) :=
+      aevalWeight_shiftedAtomPatternKey_eq_eval_poly n D R' τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount (gaussianOffsetFace_mono hRR' ha)) R')
+        (gaussianOffsetPatternWindow_count (gaussianOffsetFace_mono hRR' ha)) hlarge
+
+/-- The complete grouped weight polynomial of a global offset pattern is independent of the
+centered window used to display it.  Eventual exact evaluation equality upgrades to polynomial
+equality, so every coefficient—not merely a preselected maximal-order coefficient—is stable. -/
+theorem polynomialPatternWeightPoly_gaussianOffsetPatternWindow_eq_of_le
+    {n D τ : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    {S : ℤ} {R R' : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) (hRR' : R ≤ R') :
+    polynomialPatternWeightPoly n D R τ Q
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R) =
+      polynomialPatternWeightPoly n D R' τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount (gaussianOffsetFace_mono hRR' ha)) R') := by
+  apply complexPolynomial_eq_of_eventually_eval_nat_eq
+  filter_upwards [eventually_ge_atTop (R' + n)] with q hq
+  exact eval_polynomialPatternWeightPoly_gaussianOffsetPatternWindow_eq_of_le
+    Q ha hRR' hq
+
 /-- Any common active-order bound supplies coefficientwise convergence after normalization by
 that order. -/
 theorem tendsto_polynomialPatternWeightPoly_eval_div_pow_of_order_le
@@ -414,6 +773,449 @@ theorem tendsto_polynomialPatternWeightPoly_eval_div_pow_maxJetOrder
   exact jetOrder_le_magnitudeMaxJetOrder Q
     (Finset.mem_filter.mp m.2).1
 
+/-- Every coefficient is independent of the centered window used to display a fixed global
+offset pattern. -/
+theorem coeff_polynomialPatternWeightPoly_gaussianOffsetPatternWindow_eq_of_le
+    {n D τ H : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    {S : ℤ} {R R' : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) (hRR' : R ≤ R') :
+    (polynomialPatternWeightPoly n D R τ Q
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R)).coeff H =
+      (polynomialPatternWeightPoly n D R' τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount (gaussianOffsetFace_mono hRR' ha)) R')).coeff H := by
+  exact congrArg (fun P : Polynomial ℂ => P.coeff H)
+    (polynomialPatternWeightPoly_gaussianOffsetPatternWindow_eq_of_le Q ha hRR')
+
+/-- In particular, the maximal-order coefficient of a fixed global offset atom is stable under
+every enlargement of its centered window. -/
+theorem coeff_maxJetOrder_polynomialPatternWeightPoly_gaussianOffsetPatternWindow_eq_of_le
+    {n D τ : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    {S : ℤ} {R R' : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) (hRR' : R ≤ R') :
+    (polynomialPatternWeightPoly n D R τ Q
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R)).coeff
+          (magnitudeMaxJetOrder n Q) =
+      (polynomialPatternWeightPoly n D R' τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount (gaussianOffsetFace_mono hRR' ha)) R')).coeff
+            (magnitudeMaxJetOrder n Q) := by
+  exact coeff_polynomialPatternWeightPoly_gaussianOffsetPatternWindow_eq_of_le
+    Q ha hRR'
+
+/-- Strengthened bounded balanced survivor retaining the exact anchor grading invariant.  This
+is the datum which identifies the resulting intrinsic signed-offset pattern with the least
+top-degree source face, rather than merely with some nonzero face. -/
+theorem exists_eventually_boundedPattern_nonzero_aevalWeight_residue_with_invariant
+    {n : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ}
+    (ha : anchor ∈ Q.support) (hD : 0 < jetMonomialDegree n anchor)
+    (τ : ℕ) (hτ : τ < jetMonomialDegree n anchor) :
+    ∃ (K M : ℕ)
+        (p : Fin M → Fin (jetMonomialDegree n anchor + 1)) (Q₀ : ℕ),
+      (∑ r, (p r : ℕ)) = jetMonomialDegree n anchor ∧
+        ∀ q ≥ Q₀,
+          shiftedAtomPatternKey q K p ∈
+              (sigmaIdx n (jetMonomialDegree n anchor * q + τ) Q).image (atomKeyOf n) ∧
+            aevalWeight n (jetMonomialDegree n anchor * q + τ) Q
+                (shiftedAtomPatternKey q K p) ≠ 0 ∧
+            (shiftedAtomPatternKey q K p).sum (fun i k => i * k) +
+                magnitudeShiftCode n Q anchor =
+              jetMonomialDegree n anchor * q + τ + magnitudeMaxJetOrder n Q := by
+  classical
+  let D := jetMonomialDegree n anchor
+  obtain ⟨K, δ, Q₀, hres⟩ :=
+    exists_eventually_balancedKey_nonzero_exact_residue ha hD τ hτ
+  let M := magnitudeOffsetMax δ + 1
+  have hδM : ∀ i, δ i < M := by
+    intro i
+    exact (offset_le_magnitudeOffsetMax δ i).trans_lt (by dsimp [M]; omega)
+  have hkeyCount : (key δ).sum (fun _ k => k) = D := key_total_count δ
+  have hkeySupport : ∀ r, key δ r ≠ 0 → r < M := by
+    intro r hr
+    rw [key_count_map] at hr
+    have hrmem : r ∈ Multiset.map δ (Finset.univ : Finset (Fin D)).val :=
+      Multiset.count_ne_zero.mp hr
+    rw [Multiset.mem_map] at hrmem
+    obtain ⟨i, _hi, hir⟩ := hrmem
+    simpa [← hir] using hδM i
+  let p : Fin M → Fin (D + 1) :=
+    boundedPatternOfFinsupp (key δ) D M hkeyCount
+  have hpcount : (∑ r, (p r : ℕ)) = D :=
+    boundedPatternOfFinsupp_count (key δ) D M hkeyCount hkeySupport
+  let g : Fin D → Fin M := fun i => ⟨δ i, hδM i⟩
+  have hg : g ∈ atomPatternAssignments p := by
+    rw [mem_atomPatternAssignments]
+    change key δ = atomPatternKey p
+    exact (atomPatternKey_boundedPatternOfFinsupp
+      (key δ) D M hkeyCount hkeySupport).symm
+  refine ⟨K, M, p, Q₀, by simpa only [D] using hpcount, ?_⟩
+  intro q hq
+  have hdata := hres q hq
+  dsimp only at hdata
+  let s : Fin D → ℕ := fun i => q - K + δ i
+  have hkeyEq : shiftedAtomPatternKey q K p = key s := by
+    calc
+      shiftedAtomPatternKey q K p =
+          key (fun i => windowShift q K (g i : ℕ)) :=
+        (key_windowShift_eq_shiftedAtomPatternKey p g hg).symm
+      _ = key s := by
+        apply congrArg key
+        funext i
+        rfl
+  have hmem : key s ∈
+      (sigmaIdx n (D * q + τ) Q).image (atomKeyOf n) := by
+    simpa only [D, s] using hdata.1
+  have hweight : aevalWeight n (D * q + τ) Q (key s) ≠ 0 := by
+    simpa only [D, s] using hdata.2.1
+  have hinvariant :
+      (key s).sum (fun i k => i * k) + magnitudeShiftCode n Q anchor =
+        D * q + τ + magnitudeMaxJetOrder n Q := by
+    simpa only [D, s] using hdata.2.2
+  refine ⟨?_, ?_, ?_⟩
+  · rw [hkeyEq]
+    simpa only [D] using hmem
+  · rw [hkeyEq]
+    simpa only [D] using hweight
+  · rw [hkeyEq]
+    simpa only [D] using hinvariant
+
+/-- Balanced survival produces one intrinsic Gaussian-face atom whose grouped weight has a fixed
+nonzero leading coefficient.  Its degree is bounded by the ADE's maximal jet order, and the
+preceding window-independence theorem keeps this exact coefficient unchanged on every larger
+Gaussian face. -/
+theorem exists_gaussianOffsetFace_fixed_nonzero_leadingCoefficient
+    {n : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ}
+    (ha : anchor ∈ Q.support) (hD : 0 < jetMonomialDegree n anchor)
+    (τ : ℕ) (hτ : τ < jetMonomialDegree n anchor) :
+    ∃ (S : ℤ) (R H : ℕ) (a : ℤ →₀ ℕ)
+        (haFace : a ∈ gaussianOffsetFace (jetMonomialDegree n anchor) S R),
+      S + (magnitudeShiftCode n Q anchor : ℤ) =
+          ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ) ∧
+        H ≤ magnitudeMaxJetOrder n Q ∧
+        (polynomialPatternWeightPoly n (jetMonomialDegree n anchor) R τ Q
+          (gaussianOffsetPatternWindow a
+            (gaussianOffsetFace_totalCount haFace) R)).coeff H ≠ 0 := by
+  classical
+  let D := jetMonomialDegree n anchor
+  change ∃ (S : ℤ) (R H : ℕ) (a : ℤ →₀ ℕ)
+      (haFace : a ∈ gaussianOffsetFace D S R),
+    S + (magnitudeShiftCode n Q anchor : ℤ) =
+        ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ) ∧
+      H ≤ magnitudeMaxJetOrder n Q ∧
+      (polynomialPatternWeightPoly n D R τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount haFace) R)).coeff H ≠ 0
+  obtain ⟨K, M, p, Q₀, hpcount, hp⟩ :=
+    exists_eventually_boundedPattern_nonzero_aevalWeight_residue_with_invariant
+      ha hD τ hτ
+  let a : ℤ →₀ ℕ := gaussianOffsetPatternOfWindow K p
+  let R : ℕ := K + M
+  let S : ℤ := gaussianOffsetSource a
+  have haFace : a ∈ gaussianOffsetFace D S R := by
+    dsimp only [a, S, R]
+    exact gaussianOffsetPatternOfWindow_mem_face p (by simpa [D] using hpcount)
+  let pR := gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount haFace) R
+  let W := polynomialPatternWeightPoly n D R τ Q pR
+  let q := max Q₀ (max (K + n) (R + n))
+  have hq₀ : Q₀ ≤ q := by
+    dsimp [q]
+    omega
+  have hKq : K ≤ q := by
+    dsimp [q]
+    omega
+  have hRq : R ≤ q := by
+    dsimp [q]
+    omega
+  have hRlarge : R + n ≤ q := by
+    dsimp [q]
+    omega
+  have hsurvivor := hp q hq₀
+  have hsourceFloorNat :
+      polynomialPatternSourceSum p + magnitudeShiftCode n Q anchor =
+        D * K + τ + magnitudeMaxJetOrder n Q := by
+    exact polynomialPattern_source_floor_eq_of_anchor_invariant
+      p (by simpa only [D] using hpcount) hKq (by
+        simpa only [D] using hsurvivor.2.2)
+  have hsourceFloorInt :
+      (polynomialPatternSourceSum p : ℤ) +
+          (magnitudeShiftCode n Q anchor : ℤ) =
+        (D : ℤ) * (K : ℤ) + (τ : ℤ) +
+          (magnitudeMaxJetOrder n Q : ℤ) := by
+    exact_mod_cast hsourceFloorNat
+  have hglobalSource :
+      S + (magnitudeShiftCode n Q anchor : ℤ) =
+        ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ) := by
+    dsimp only [S, a]
+    rw [gaussianOffsetSource_patternOfWindow p (by simpa only [D] using hpcount)]
+    calc
+      (polynomialPatternSourceSum p : ℤ) - (K : ℤ) * (D : ℤ) +
+          (magnitudeShiftCode n Q anchor : ℤ) =
+          ((polynomialPatternSourceSum p : ℤ) +
+            (magnitudeShiftCode n Q anchor : ℤ)) -
+              (K : ℤ) * (D : ℤ) := by ring
+      _ = ((D : ℤ) * (K : ℤ) + (τ : ℤ) +
+            (magnitudeMaxJetOrder n Q : ℤ)) -
+              (K : ℤ) * (D : ℤ) := by rw [hsourceFloorInt]
+      _ = ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ) := by
+        push_cast
+        ring
+  have hkeyOriginal :
+      shiftedAtomPatternKey q K p = gaussianOffsetShiftedKey q a := by
+    simpa only [a] using
+      shiftedAtomPatternKey_gaussianOffsetPatternOfWindow_eq p hKq
+  have hkeyCentered :
+      shiftedAtomPatternKey q R pR = gaussianOffsetShiftedKey q a := by
+    simpa only [pR] using
+      shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq haFace hRq
+  have hweight :
+      aevalWeight n (D * q + τ) Q (shiftedAtomPatternKey q R pR) ≠ 0 := by
+    rw [hkeyCentered, ← hkeyOriginal]
+    simpa only [D] using hsurvivor.2.1
+  have heval : W.eval (q : ℂ) ≠ 0 := by
+    change (polynomialPatternWeightPoly n D R τ Q pR).eval (q : ℂ) ≠ 0
+    rw [← aevalWeight_shiftedAtomPatternKey_eq_eval_poly n D R τ Q pR
+      (gaussianOffsetPatternWindow_count haFace) hRlarge]
+    exact hweight
+  have hW : W ≠ 0 := by
+    intro hzero
+    apply heval
+    rw [hzero, Polynomial.eval_zero]
+  have hdegree : W.natDegree ≤ magnitudeMaxJetOrder n Q := by
+    change (polynomialPatternWeightPoly n D R τ Q pR).natDegree ≤
+      magnitudeMaxJetOrder n Q
+    exact natDegree_polynomialPatternWeightPoly_le_maxJetOrder Q pR
+  have hlead : W.coeff W.natDegree ≠ 0 := by
+    rw [Polynomial.coeff_natDegree]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hW
+  refine ⟨S, R, W.natDegree, a, haFace, hglobalSource, hdegree, ?_⟩
+  change W.coeff W.natDegree ≠ 0
+  exact hlead
+
+/-- Packaged fixed-atom form: one nonzero leading coefficient survives identically through every
+larger centered Gaussian face. -/
+theorem exists_gaussianOffsetFace_stable_nonzero_leadingCoefficient
+    {n : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ}
+    (ha : anchor ∈ Q.support) (hD : 0 < jetMonomialDegree n anchor)
+    (τ : ℕ) (hτ : τ < jetMonomialDegree n anchor) :
+    ∃ (S : ℤ) (R H : ℕ) (a : ℤ →₀ ℕ)
+        (haFace : a ∈ gaussianOffsetFace (jetMonomialDegree n anchor) S R)
+        (ell : ℂ),
+      S + (magnitudeShiftCode n Q anchor : ℤ) =
+          ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ) ∧
+        H ≤ magnitudeMaxJetOrder n Q ∧ ell ≠ 0 ∧
+          ∀ (R' : ℕ) (hRR' : R ≤ R'),
+            (polynomialPatternWeightPoly n (jetMonomialDegree n anchor) R' τ Q
+              (gaussianOffsetPatternWindow a
+                (gaussianOffsetFace_totalCount
+                  (gaussianOffsetFace_mono hRR' haFace)) R')).coeff H = ell := by
+  obtain ⟨S, R, H, a, haFace, hsource, hH, hcoeff⟩ :=
+    exists_gaussianOffsetFace_fixed_nonzero_leadingCoefficient ha hD τ hτ
+  let ell :=
+    (polynomialPatternWeightPoly n (jetMonomialDegree n anchor) R τ Q
+      (gaussianOffsetPatternWindow a
+        (gaussianOffsetFace_totalCount haFace) R)).coeff H
+  refine ⟨S, R, H, a, haFace, ell, hsource, hH, ?_, ?_⟩
+  · simpa only [ell] using hcoeff
+  · intro R' hRR'
+    simpa only [ell] using
+      (coeff_polynomialPatternWeightPoly_gaussianOffsetPatternWindow_eq_of_le
+        (H := H) Q haFace hRR').symm
+
+/-- Every nonzero top-degree grouped weight lies on or above the anchor source floor.  This is the
+global signed-offset form of `polynomialPattern_source_floor_of_survivor`. -/
+theorem gaussianOffsetSource_floor_of_weightPoly_ne_zero
+    {n D τ : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ}
+    (haD : jetMonomialDegree n anchor = D)
+    (haMax : ∀ m ∈ Q.support,
+      jetMonomialDegree n m = D →
+        magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
+    {T : ℤ} {R : ℕ} {a : ℤ →₀ ℕ}
+    (haFace : a ∈ gaussianOffsetFace D T R)
+    (hpoly : polynomialPatternWeightPoly n D R τ Q
+      (gaussianOffsetPatternWindow a
+        (gaussianOffsetFace_totalCount haFace) R) ≠ 0) :
+    (((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ) -
+        (magnitudeShiftCode n Q anchor : ℤ)) ≤ T := by
+  let p := gaussianOffsetPatternWindow a
+    (gaussianOffsetFace_totalCount haFace) R
+  have hpcount : (∑ r, (p r : ℕ)) = D := by
+    simpa only [p] using gaussianOffsetPatternWindow_count haFace
+  have hpSurvivor : p ∈ polynomialPatternSurvivors n D R τ Q (2 * R + 1) := by
+    rw [polynomialPatternSurvivors, degreeDPolynomialPatterns,
+      Finset.mem_filter, Finset.mem_filter]
+    exact ⟨⟨Finset.mem_univ p, hpcount⟩, by simpa only [p] using hpoly⟩
+  have hfloor := polynomialPattern_source_floor_of_survivor
+    haD haMax hpSurvivor
+  have hfloorInt :
+      (D : ℤ) * (R : ℤ) + (τ : ℤ) +
+          (magnitudeMaxJetOrder n Q : ℤ) ≤
+        (polynomialPatternSourceSum p : ℤ) +
+          (magnitudeShiftCode n Q anchor : ℤ) := by
+    exact_mod_cast hfloor
+  have hsource :
+      (polynomialPatternSourceSum p : ℤ) - (R : ℤ) * (D : ℤ) = T := by
+    simpa only [p] using gaussianOffsetPatternWindow_source haFace
+  push_cast
+  rw [← hsource]
+  nlinarith [hfloorInt]
+
+/-- Consequently, the source returned by the stable balanced atom is the least signed source of
+every nonzero top-degree global pattern. -/
+theorem gaussianOffsetSource_le_of_anchor_floor_eq
+    {n D τ : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ}
+    (haD : jetMonomialDegree n anchor = D)
+    (haMax : ∀ m ∈ Q.support,
+      jetMonomialDegree n m = D →
+        magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
+    {S T : ℤ}
+    (hS : S + (magnitudeShiftCode n Q anchor : ℤ) =
+      ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ))
+    {R : ℕ} {a : ℤ →₀ ℕ}
+    (haFace : a ∈ gaussianOffsetFace D T R)
+    (hpoly : polynomialPatternWeightPoly n D R τ Q
+      (gaussianOffsetPatternWindow a
+        (gaussianOffsetFace_totalCount haFace) R) ≠ 0) :
+    S ≤ T := by
+  have hfloor := gaussianOffsetSource_floor_of_weightPoly_ne_zero
+    haD haMax haFace hpoly
+  nlinarith
+
+/-- The finite set of polynomial degrees actually attained by nonzero global patterns on one
+signed-source face.  Finiteness comes from the universal maximal jet-order bound, not from
+finiteness of the Gaussian face itself. -/
+noncomputable def gaussianOffsetActiveWeightDegrees
+    (n D τ : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ) (S : ℤ) : Finset ℕ := by
+  classical
+  exact (Finset.range (magnitudeMaxJetOrder n Q + 1)).filter fun H =>
+    ∃ (R : ℕ) (a : ℤ →₀ ℕ)
+      (haFace : a ∈ gaussianOffsetFace D S R),
+        polynomialPatternWeightPoly n D R τ Q
+            (gaussianOffsetPatternWindow a
+              (gaussianOffsetFace_totalCount haFace) R) ≠ 0 ∧
+          (polynomialPatternWeightPoly n D R τ Q
+            (gaussianOffsetPatternWindow a
+              (gaussianOffsetFace_totalCount haFace) R)).natDegree = H
+
+/-- The least Gaussian face has one maximal-degree atom with a fixed nonzero leading coefficient,
+and that degree simultaneously bounds every other grouped weight on the complete infinite face. -/
+theorem exists_gaussianOffsetFace_maximal_stable_nonzero_leadingCoefficient
+    {n : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ}
+    (ha : anchor ∈ Q.support) (hD : 0 < jetMonomialDegree n anchor)
+    (τ : ℕ) (hτ : τ < jetMonomialDegree n anchor) :
+    ∃ (S : ℤ) (H R : ℕ) (a : ℤ →₀ ℕ)
+        (haFace : a ∈ gaussianOffsetFace (jetMonomialDegree n anchor) S R)
+        (ell : ℂ),
+      S + (magnitudeShiftCode n Q anchor : ℤ) =
+          ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ) ∧
+        H ≤ magnitudeMaxJetOrder n Q ∧ ell ≠ 0 ∧
+        (∀ (R' : ℕ) (hRR' : R ≤ R'),
+          (polynomialPatternWeightPoly n (jetMonomialDegree n anchor) R' τ Q
+            (gaussianOffsetPatternWindow a
+              (gaussianOffsetFace_totalCount
+                (gaussianOffsetFace_mono hRR' haFace)) R')).coeff H = ell) ∧
+        ∀ (R' : ℕ) (b : ℤ →₀ ℕ)
+            (hbFace : b ∈
+              gaussianOffsetFace (jetMonomialDegree n anchor) S R'),
+          (polynomialPatternWeightPoly n (jetMonomialDegree n anchor) R' τ Q
+            (gaussianOffsetPatternWindow b
+              (gaussianOffsetFace_totalCount hbFace) R')).natDegree ≤ H := by
+  classical
+  let D := jetMonomialDegree n anchor
+  change ∃ (S : ℤ) (H R : ℕ) (a : ℤ →₀ ℕ)
+      (haFace : a ∈ gaussianOffsetFace D S R) (ell : ℂ),
+    S + (magnitudeShiftCode n Q anchor : ℤ) =
+        ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ) ∧
+      H ≤ magnitudeMaxJetOrder n Q ∧ ell ≠ 0 ∧
+      (∀ (R' : ℕ) (hRR' : R ≤ R'),
+        (polynomialPatternWeightPoly n D R' τ Q
+          (gaussianOffsetPatternWindow a
+            (gaussianOffsetFace_totalCount
+              (gaussianOffsetFace_mono hRR' haFace)) R')).coeff H = ell) ∧
+      ∀ (R' : ℕ) (b : ℤ →₀ ℕ)
+          (hbFace : b ∈ gaussianOffsetFace D S R'),
+        (polynomialPatternWeightPoly n D R' τ Q
+          (gaussianOffsetPatternWindow b
+            (gaussianOffsetFace_totalCount hbFace) R')).natDegree ≤ H
+  obtain ⟨S, R₀, H₀, a₀, ha₀, hsource, _hH₀, hcoeff₀⟩ :=
+    exists_gaussianOffsetFace_fixed_nonzero_leadingCoefficient ha hD τ hτ
+  let P₀ := polynomialPatternWeightPoly n D R₀ τ Q
+    (gaussianOffsetPatternWindow a₀ (gaussianOffsetFace_totalCount ha₀) R₀)
+  have hP₀ : P₀ ≠ 0 := by
+    intro hzero
+    apply hcoeff₀
+    change P₀.coeff H₀ = 0
+    rw [hzero, Polynomial.coeff_zero]
+  have hP₀degree : P₀.natDegree ≤ magnitudeMaxJetOrder n Q := by
+    change (polynomialPatternWeightPoly n D R₀ τ Q
+      (gaussianOffsetPatternWindow a₀
+        (gaussianOffsetFace_totalCount ha₀) R₀)).natDegree ≤
+        magnitudeMaxJetOrder n Q
+    exact natDegree_polynomialPatternWeightPoly_le_maxJetOrder Q _
+  let degrees := gaussianOffsetActiveWeightDegrees n D τ Q S
+  have hP₀mem : P₀.natDegree ∈ degrees := by
+    change P₀.natDegree ∈ gaussianOffsetActiveWeightDegrees n D τ Q S
+    rw [gaussianOffsetActiveWeightDegrees, Finset.mem_filter]
+    refine ⟨Finset.mem_range.mpr (Nat.lt_succ_of_le hP₀degree),
+      R₀, a₀, ha₀, ?_, rfl⟩
+    simpa only [P₀] using hP₀
+  have hdegrees : degrees.Nonempty := ⟨P₀.natDegree, hP₀mem⟩
+  let H := degrees.max' hdegrees
+  have hHmem : H ∈ degrees := Finset.max'_mem degrees hdegrees
+  have hHdata := hHmem
+  change H ∈ gaussianOffsetActiveWeightDegrees n D τ Q S at hHdata
+  rw [gaussianOffsetActiveWeightDegrees, Finset.mem_filter] at hHdata
+  obtain ⟨hHrange, R, a, haFace, hP, hdegree⟩ := hHdata
+  let P := polynomialPatternWeightPoly n D R τ Q
+    (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount haFace) R)
+  let ell := P.coeff H
+  have hHle : H ≤ magnitudeMaxJetOrder n Q := by
+    exact Nat.lt_succ_iff.mp (Finset.mem_range.mp hHrange)
+  have hell : ell ≠ 0 := by
+    dsimp only [ell]
+    rw [← hdegree, Polynomial.coeff_natDegree]
+    exact Polynomial.leadingCoeff_ne_zero.mpr (by simpa only [P] using hP)
+  have hstable : ∀ (R' : ℕ) (hRR' : R ≤ R'),
+      (polynomialPatternWeightPoly n D R' τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount
+            (gaussianOffsetFace_mono hRR' haFace)) R')).coeff H = ell := by
+    intro R' hRR'
+    simpa only [ell, P] using
+      (coeff_polynomialPatternWeightPoly_gaussianOffsetPatternWindow_eq_of_le
+        (H := H) Q haFace hRR').symm
+  have huniform : ∀ (R' : ℕ) (b : ℤ →₀ ℕ)
+      (hbFace : b ∈ gaussianOffsetFace D S R'),
+      (polynomialPatternWeightPoly n D R' τ Q
+        (gaussianOffsetPatternWindow b
+          (gaussianOffsetFace_totalCount hbFace) R')).natDegree ≤ H := by
+    intro R' b hbFace
+    let Pb := polynomialPatternWeightPoly n D R' τ Q
+      (gaussianOffsetPatternWindow b
+        (gaussianOffsetFace_totalCount hbFace) R')
+    by_cases hPb : Pb = 0
+    · simp only [Pb, hPb, Polynomial.natDegree_zero, Nat.zero_le]
+    · have hPbDegree : Pb.natDegree ≤ magnitudeMaxJetOrder n Q := by
+        change (polynomialPatternWeightPoly n D R' τ Q
+          (gaussianOffsetPatternWindow b
+            (gaussianOffsetFace_totalCount hbFace) R')).natDegree ≤
+              magnitudeMaxJetOrder n Q
+        exact natDegree_polynomialPatternWeightPoly_le_maxJetOrder Q _
+      have hPbmem : Pb.natDegree ∈ degrees := by
+        change Pb.natDegree ∈ gaussianOffsetActiveWeightDegrees n D τ Q S
+        rw [gaussianOffsetActiveWeightDegrees, Finset.mem_filter]
+        refine ⟨Finset.mem_range.mpr (Nat.lt_succ_of_le hPbDegree),
+          R', b, hbFace, ?_, rfl⟩
+        simpa only [Pb] using hPb
+      change Pb.natDegree ≤ H
+      exact Finset.le_max' degrees Pb.natDegree hPbmem
+  exact ⟨S, H, R, a, haFace, ell, hsource, hHle, hell, hstable, huniform⟩
+
 /-- Coordinates actually used by a bounded multiplicity pattern. -/
 def polynomialPatternSupport {M D : ℕ} (p : Fin M → Fin (D + 1)) : Finset (Fin M) :=
   Finset.univ.filter fun r => p r ≠ 0
@@ -423,6 +1225,41 @@ def centeredPolynomialPatternRadius {M D : ℕ}
     (K : ℕ) (p : Fin M → Fin (D + 1)) : ℕ :=
   (polynomialPatternSupport p).sup fun r =>
     (((r : ℕ) : ℤ) - (K : ℤ)).natAbs
+
+/-- A window representative of a global pattern supported in `[-R,R]` has centered support
+radius at most `R`.  Thus the sharp grouped-weight bound is uniform over the whole radius-`R`
+global face, despite the ambient window having length `2R+1`. -/
+theorem centeredPolynomialPatternRadius_gaussianOffsetPatternWindow_le
+    {D : ℕ} {S : ℤ} {R : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) :
+    centeredPolynomialPatternRadius R
+        (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R) ≤ R := by
+  classical
+  rw [centeredPolynomialPatternRadius]
+  apply Finset.sup_le
+  intro j hj
+  have hjne :
+      gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R j ≠ 0 :=
+    (Finset.mem_filter.mp hj).2
+  have hane : a ((centeredIndexEquiv R j).1) ≠ 0 := by
+    intro hzero
+    apply hjne
+    apply Fin.ext
+    exact hzero
+  have hzsupport : (centeredIndexEquiv R j).1 ∈ a.support := by
+    exact Finsupp.mem_support_iff.mpr hane
+  have hzinterval := (mem_gaussianOffsetFace.mp ha).2.1 hzsupport
+  simp only [gaussianOffsetInterval, Finset.mem_Icc] at hzinterval
+  have habsInt :
+      |((centeredIndexEquiv R j).1)| ≤ (R : ℤ) :=
+    (abs_le).2 hzinterval
+  have hnatCast :
+      (((centeredIndexEquiv R j).1.natAbs : ℕ) : ℤ) ≤ (R : ℤ) := by
+    rw [Int.natCast_natAbs]
+    exact habsInt
+  have hnat : (centeredIndexEquiv R j).1.natAbs ≤ R := by
+    exact_mod_cast hnatCast
+  simpa only [centeredIndexEquiv] using hnat
 
 theorem atomPatternAssignment_mem_polynomialPatternSupport
     {M D : ℕ} {p : Fin M → Fin (D + 1)}
@@ -872,6 +1709,61 @@ theorem norm_eval_polynomialPatternWeightPoly_div_pow_le_of_order_le
           rw [pow_add]
           ring
 
+/-- After maximal-order normalization, a degree-`D` pattern has a bound depending only on its
+centered support radius.  In particular, enlarging the ambient centered window does not enlarge
+the bound for a fixed global offset pattern. -/
+theorem norm_eval_polynomialPatternWeightPoly_div_pow_le_centeredRadius_of_order_le
+    {n D K τ M q H : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (p : Fin M → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D)
+    (hKq : K ≤ q) (hq : 1 ≤ q)
+    (horder : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
+      jetMonomialOrder n m.1 ≤ H) :
+    ‖(polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ) /
+        (q : ℂ) ^ H‖ ≤
+      magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
+        (((centeredPolynomialPatternRadius K p + 1) ^ H : ℕ) : ℝ) := by
+  let C : ℝ := magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ))
+  let R : ℕ := centeredPolynomialPatternRadius K p
+  let qH : ℝ := (((q ^ H : ℕ) : ℝ))
+  let RH : ℝ := ((((R + 1) ^ H : ℕ) : ℝ))
+  have hraw : ‖(polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ)‖ ≤
+      C * (((q + R) ^ H : ℕ) : ℝ) := by
+    simpa only [C, R, mul_assoc] using
+      norm_eval_polynomialPatternWeightPoly_le_centeredRadius
+        Q p hcount hKq hq horder
+  have hbase : q + R ≤ q * (R + 1) := by
+    nlinarith [Nat.zero_le R]
+  have hpow : (q + R) ^ H ≤ q ^ H * (R + 1) ^ H := by
+    calc
+      (q + R) ^ H ≤ (q * (R + 1)) ^ H := Nat.pow_le_pow_left hbase _
+      _ = q ^ H * (R + 1) ^ H := by rw [mul_pow]
+  have hqHpos : 0 < qH := by
+    dsimp [qH]
+    positivity
+  have hratio : ((((q + R) ^ H : ℕ) : ℝ)) / qH ≤ RH := by
+    apply (div_le_iff₀ hqHpos).2
+    dsimp [qH, RH]
+    exact_mod_cast (by simpa [mul_comm] using hpow)
+  have hC : 0 ≤ C := by
+    dsimp [C, magnitudeCoefficientMass]
+    positivity
+  rw [norm_div, norm_pow, Complex.norm_natCast]
+  rw [show (q : ℝ) ^ H = qH by
+    dsimp [qH]
+    push_cast
+    rfl]
+  change _ / qH ≤ _
+  calc
+    ‖(polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ)‖ / qH
+        ≤ (C * (((q + R) ^ H : ℕ) : ℝ)) / qH :=
+      div_le_div_of_nonneg_right hraw hqHpos.le
+    _ = C * (((((q + R) ^ H : ℕ) : ℝ)) / qH) := by ring
+    _ ≤ C * RH := mul_le_mul_of_nonneg_left hratio hC
+    _ = magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
+        (((centeredPolynomialPatternRadius K p + 1) ^ H : ℕ) : ℝ) := by
+      dsimp [C, R, RH]
+
 /-- After division by the common maximal-order power, every grouped weight is bounded by one
 fixed polynomial in the window size.  This is the uniform estimate required before the Gaussian
 lattice tail is summed. -/
@@ -886,6 +1778,310 @@ theorem norm_eval_polynomialPatternWeightPoly_div_pow_le
   intro m
   exact jetOrder_le_magnitudeMaxJetOrder Q
     (Finset.mem_filter.mp m.2).1
+
+/-! ## Cancellation-safe interpolation bounds -/
+
+/-- The fixed interpolation nodes used to recover all coefficients of a polynomial whose degree
+is at most `J`.  They do not depend on the Gaussian window radius. -/
+def gaussianLagrangeNodes (J : ℕ) : Fin (J + 1) → ℂ :=
+  fun i => ((i : ℕ) : ℂ)
+
+theorem gaussianLagrangeNodes_injective (J : ℕ) :
+    Function.Injective (gaussianLagrangeNodes J) := by
+  intro i j hij
+  apply Fin.ext
+  change (((i : ℕ) : ℂ)) = (((j : ℕ) : ℂ)) at hij
+  exact_mod_cast hij
+
+/-- A symbolic, finite coefficient mass for interpolation in degree at most `J`.  Keeping this
+constant unevaluated is important: the Gaussian argument needs only finiteness and nonnegativity,
+not a numerical estimate. -/
+noncomputable def gaussianLagrangeCoefficientMass (J : ℕ) : ℝ :=
+  ∑ h ∈ Finset.range (J + 1),
+    ∑ i : Fin (J + 1),
+      ‖(Lagrange.basis Finset.univ (gaussianLagrangeNodes J) i).coeff h‖
+
+theorem gaussianLagrangeCoefficientMass_nonneg (J : ℕ) :
+    0 ≤ gaussianLagrangeCoefficientMass J := by
+  unfold gaussianLagrangeCoefficientMass
+  positivity
+
+/-- Coefficient form of interpolation at the fixed nodes `0, ..., J`. -/
+theorem coeff_eq_sum_gaussianLagrange
+    (J : ℕ) (P : ℂ[X]) (hP : P.natDegree ≤ J) (h : ℕ) :
+    P.coeff h = ∑ i : Fin (J + 1),
+      P.eval (gaussianLagrangeNodes J i) *
+        (Lagrange.basis Finset.univ (gaussianLagrangeNodes J) i).coeff h := by
+  have hdegree : P.degree <
+      ((Finset.univ : Finset (Fin (J + 1))).card : WithBot ℕ) := by
+    rw [Finset.card_univ, Fintype.card_fin]
+    calc
+      P.degree ≤ (P.natDegree : WithBot ℕ) := Polynomial.degree_le_natDegree
+      _ ≤ (J : WithBot ℕ) := WithBot.coe_le_coe.mpr hP
+      _ < ((J + 1 : ℕ) : WithBot ℕ) := by norm_cast; omega
+  have hinterp := Lagrange.eq_interpolate
+    (s := (Finset.univ : Finset (Fin (J + 1))))
+    (v := gaussianLagrangeNodes J)
+    (gaussianLagrangeNodes_injective J).injOn hdegree
+  have hc := congrArg (fun Q : ℂ[X] => Q.coeff h) hinterp
+  rw [Lagrange.interpolate_apply] at hc
+  change P.coeff h = (Polynomial.lcoeff ℂ h)
+    (∑ i, Polynomial.C (P.eval (gaussianLagrangeNodes J i)) *
+      Lagrange.basis Finset.univ (gaussianLagrangeNodes J) i) at hc
+  rw [map_sum] at hc
+  change P.coeff h = ∑ i,
+    (Polynomial.C (P.eval (gaussianLagrangeNodes J i)) *
+      Lagrange.basis Finset.univ (gaussianLagrangeNodes J) i).coeff h at hc
+  simp only [Polynomial.coeff_C_mul] at hc
+  simpa [mul_comm] using hc
+
+/-- Every coefficient of a degree-at-most-`J` polynomial is controlled by the common bound on
+its `J+1` fixed samples. -/
+theorem norm_coeff_le_gaussianLagrangeCoefficientMass_mul
+    (J : ℕ) (P : ℂ[X]) (hP : P.natDegree ≤ J)
+    (B : ℝ) (hB : 0 ≤ B)
+    (hsample : ∀ i : Fin (J + 1),
+      ‖P.eval (gaussianLagrangeNodes J i)‖ ≤ B)
+    {h : ℕ} (hh : h ≤ J) :
+    ‖P.coeff h‖ ≤ gaussianLagrangeCoefficientMass J * B := by
+  have hsingle :
+      (∑ i : Fin (J + 1),
+          ‖(Lagrange.basis Finset.univ
+            (gaussianLagrangeNodes J) i).coeff h‖) ≤
+        gaussianLagrangeCoefficientMass J := by
+    rw [gaussianLagrangeCoefficientMass]
+    apply Finset.single_le_sum
+    · intro k _hk
+      exact Finset.sum_nonneg fun _i _hi => norm_nonneg _
+    · exact Finset.mem_range.mpr (Nat.lt_succ_of_le hh)
+  calc
+    ‖P.coeff h‖ = ‖∑ i : Fin (J + 1),
+        P.eval (gaussianLagrangeNodes J i) *
+          (Lagrange.basis Finset.univ
+            (gaussianLagrangeNodes J) i).coeff h‖ :=
+      congrArg norm (coeff_eq_sum_gaussianLagrange J P hP h)
+    _ ≤ ∑ i : Fin (J + 1),
+        ‖P.eval (gaussianLagrangeNodes J i) *
+          (Lagrange.basis Finset.univ
+            (gaussianLagrangeNodes J) i).coeff h‖ := norm_sum_le _ _
+    _ ≤ ∑ i : Fin (J + 1),
+        ‖(Lagrange.basis Finset.univ
+          (gaussianLagrangeNodes J) i).coeff h‖ * B := by
+      apply Finset.sum_le_sum
+      intro i _hi
+      rw [norm_mul]
+      calc
+        ‖P.eval (gaussianLagrangeNodes J i)‖ *
+            ‖(Lagrange.basis Finset.univ
+              (gaussianLagrangeNodes J) i).coeff h‖ =
+          ‖(Lagrange.basis Finset.univ
+              (gaussianLagrangeNodes J) i).coeff h‖ *
+            ‖P.eval (gaussianLagrangeNodes J i)‖ := by ring
+        _ ≤ ‖(Lagrange.basis Finset.univ
+              (gaussianLagrangeNodes J) i).coeff h‖ * B :=
+          mul_le_mul_of_nonneg_left (hsample i) (norm_nonneg _)
+    _ = (∑ i : Fin (J + 1),
+          ‖(Lagrange.basis Finset.univ
+            (gaussianLagrangeNodes J) i).coeff h‖) * B := by
+      rw [Finset.sum_mul]
+    _ ≤ gaussianLagrangeCoefficientMass J * B :=
+      mul_le_mul_of_nonneg_right hsingle hB
+
+/-- Translate the argument of a polynomial by the nonnegative integer `K`. -/
+def gaussianPolynomialTranslate (K : ℕ) (P : ℂ[X]) : ℂ[X] :=
+  P.comp (Polynomial.X + Polynomial.C (K : ℂ))
+
+theorem eval_gaussianPolynomialTranslate
+    (K : ℕ) (P : ℂ[X]) (x : ℂ) :
+    (gaussianPolynomialTranslate K P).eval x = P.eval (x + (K : ℂ)) := by
+  simp [gaussianPolynomialTranslate, Polynomial.eval_comp]
+
+theorem natDegree_gaussianPolynomialTranslate_le
+    (K : ℕ) (P : ℂ[X]) :
+    (gaussianPolynomialTranslate K P).natDegree ≤ P.natDegree := by
+  rw [gaussianPolynomialTranslate]
+  calc
+    (P.comp (Polynomial.X + Polynomial.C (K : ℂ))).natDegree ≤
+        P.natDegree *
+          (Polynomial.X + Polynomial.C (K : ℂ)).natDegree :=
+      Polynomial.natDegree_comp_le
+    _ = P.natDegree := by
+      rw [Polynomial.natDegree_X_add_C, mul_one]
+
+/-- Fixed-node interpolation after translating the sampling interval to start at `K`. -/
+theorem norm_coeff_gaussianPolynomialTranslate_le
+    (J K : ℕ) (P : ℂ[X]) (hP : P.natDegree ≤ J)
+    (B : ℝ) (hB : 0 ≤ B)
+    (hsample : ∀ i : Fin (J + 1),
+      ‖P.eval ((K + (i : ℕ) : ℕ) : ℂ)‖ ≤ B)
+    {h : ℕ} (hh : h ≤ J) :
+    ‖(gaussianPolynomialTranslate K P).coeff h‖ ≤
+      gaussianLagrangeCoefficientMass J * B := by
+  apply norm_coeff_le_gaussianLagrangeCoefficientMass_mul J
+    (gaussianPolynomialTranslate K P)
+    ((natDegree_gaussianPolynomialTranslate_le K P).trans hP)
+    B hB
+  · intro i
+    rw [eval_gaussianPolynomialTranslate]
+    simpa [gaussianLagrangeNodes, Nat.cast_add, add_comm] using hsample i
+  · exact hh
+
+/-- If every coefficient of the translated polynomial through degree `H` has norm at most `C`,
+then division by the attained degree `q^H` is uniformly bounded.  This lemma is deliberately
+coefficient-based: it remains valid when higher-order jet monomials cancel from the grouped
+weight polynomial. -/
+theorem norm_eval_div_pow_le_of_translate_coeff_bound
+    (P : ℂ[X]) {K q H : ℕ} (hP : P.natDegree ≤ H)
+    (hKq : K ≤ q) (hq : 1 ≤ q)
+    (C : ℝ) (hC : 0 ≤ C)
+    (hcoeff : ∀ h ≤ H,
+      ‖(gaussianPolynomialTranslate K P).coeff h‖ ≤ C) :
+    ‖P.eval (q : ℂ) / (q : ℂ) ^ H‖ ≤ ((H + 1 : ℕ) : ℝ) * C := by
+  let T := gaussianPolynomialTranslate K P
+  let s := q - K
+  let qH : ℝ := ((q ^ H : ℕ) : ℝ)
+  have hT : T.natDegree ≤ H := by
+    exact (natDegree_gaussianPolynomialTranslate_le K P).trans hP
+  have heval : T.eval (s : ℂ) = P.eval (q : ℂ) := by
+    dsimp only [T]
+    rw [eval_gaussianPolynomialTranslate]
+    congr 1
+    dsimp only [s]
+    exact_mod_cast Nat.sub_add_cancel hKq
+  have hpow : ∀ h ≤ H, ((s ^ h : ℕ) : ℝ) ≤ qH := by
+    intro h hh
+    dsimp only [s, qH]
+    exact_mod_cast calc
+      (q - K) ^ h ≤ q ^ h := Nat.pow_le_pow_left (Nat.sub_le q K) _
+      _ ≤ q ^ H := Nat.pow_le_pow_right hq hh
+  have hevalBound : ‖T.eval (s : ℂ)‖ ≤
+      ((H + 1 : ℕ) : ℝ) * C * qH := by
+    rw [Polynomial.eval_eq_sum_range'
+      (n := H + 1) (Nat.lt_succ_of_le hT)]
+    calc
+      ‖∑ h ∈ Finset.range (H + 1), T.coeff h * (s : ℂ) ^ h‖ ≤
+          ∑ h ∈ Finset.range (H + 1),
+            ‖T.coeff h * (s : ℂ) ^ h‖ := norm_sum_le _ _
+      _ ≤ ∑ _h ∈ Finset.range (H + 1), C * qH := by
+        apply Finset.sum_le_sum
+        intro h hh
+        have hhH : h ≤ H := Nat.le_of_lt_succ (Finset.mem_range.mp hh)
+        rw [norm_mul, norm_pow, Complex.norm_natCast]
+        exact mul_le_mul (hcoeff h hhH) (hpow h hhH)
+          (by positivity) hC
+      _ = ((H + 1 : ℕ) : ℝ) * C * qH := by
+        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+        push_cast
+        ring
+  have hqHpos : 0 < qH := by
+    dsimp only [qH]
+    positivity
+  rw [norm_div, norm_pow, Complex.norm_natCast, ← heval]
+  change ‖T.eval (s : ℂ)‖ / qH ≤ ((H + 1 : ℕ) : ℝ) * C
+  exact (div_le_iff₀ hqHpos).2 (by
+    simpa [mul_assoc] using hevalBound)
+
+/-- The fixed ADE-dependent constant in the cancellation-safe Gaussian grouped-weight bound. -/
+noncomputable def gaussianPatternWeightNormalizationConstant
+    (n D : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ) : ℝ :=
+  let J := magnitudeMaxJetOrder n Q
+  ((J + 1 : ℕ) : ℝ) * gaussianLagrangeCoefficientMass J *
+    magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
+      ((((J + 2) ^ J : ℕ) : ℝ))
+
+theorem gaussianPatternWeightNormalizationConstant_nonneg
+    (n D : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ) :
+    0 ≤ gaussianPatternWeightNormalizationConstant n D Q := by
+  unfold gaussianPatternWeightNormalizationConstant
+  positivity
+
+/-- Cancellation-safe uniform bound for every global pattern on a centered Gaussian face.  The
+normalizing exponent `H` need only bound the *attained polynomial degree*; active jet monomials
+may have larger order and cancel. -/
+theorem norm_eval_gaussianOffsetPatternWeight_div_pow_le
+    {n D τ : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    {S : ℤ} {R H q : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R)
+    (hdegree :
+      (polynomialPatternWeightPoly n D R τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount ha) R)).natDegree ≤ H)
+    (hHJ : H ≤ magnitudeMaxJetOrder n Q)
+    (hRq : R + 1 ≤ q) :
+    ‖(polynomialPatternWeightPoly n D R τ Q
+        (gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount ha) R)).eval (q : ℂ) /
+          (q : ℂ) ^ H‖ ≤
+      gaussianPatternWeightNormalizationConstant n D Q *
+        ((((R + 1) ^ magnitudeMaxJetOrder n Q : ℕ) : ℝ)) := by
+  classical
+  let J := magnitudeMaxJetOrder n Q
+  let p := gaussianOffsetPatternWindow a
+    (gaussianOffsetFace_totalCount ha) R
+  let P := polynomialPatternWeightPoly n D R τ Q p
+  let B : ℝ := magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
+    (((((J + 2) * (R + 1)) ^ J : ℕ) : ℝ))
+  have hPJ : P.natDegree ≤ J := by
+    exact hdegree.trans hHJ
+  have hB : 0 ≤ B := by
+    dsimp only [B, magnitudeCoefficientMass]
+    positivity
+  have hpcount : (∑ r, (p r : ℕ)) = D := by
+    simpa only [p] using gaussianOffsetPatternWindow_count ha
+  have hpradius : centeredPolynomialPatternRadius R p ≤ R := by
+    simpa only [p] using centeredPolynomialPatternRadius_gaussianOffsetPatternWindow_le ha
+  have hsample : ∀ i : Fin (J + 1),
+      ‖P.eval ((R + 1 + (i : ℕ) : ℕ) : ℂ)‖ ≤ B := by
+    intro i
+    let qi := R + 1 + (i : ℕ)
+    have hRqi : R ≤ qi := by dsimp only [qi]; omega
+    have hqi : 1 ≤ qi := by dsimp only [qi]; omega
+    have hiJ : (i : ℕ) ≤ J := Nat.le_of_lt_succ i.isLt
+    have hbase : qi + centeredPolynomialPatternRadius R p ≤
+        (J + 2) * (R + 1) := by
+      dsimp only [qi]
+      nlinarith [Nat.zero_le (J * R)]
+    have hraw := norm_eval_polynomialPatternWeightPoly_le_centeredRadius
+      Q p hpcount hRqi hqi
+      (fun m => jetOrder_le_magnitudeMaxJetOrder Q
+        (Finset.mem_filter.mp m.2).1)
+    change ‖P.eval (qi : ℂ)‖ ≤ B
+    calc
+      ‖P.eval (qi : ℂ)‖ ≤
+          magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
+            ((((qi + centeredPolynomialPatternRadius R p) ^ J : ℕ) : ℝ)) :=
+        hraw
+      _ ≤ magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
+            (((((J + 2) * (R + 1)) ^ J : ℕ) : ℝ)) := by
+        gcongr
+        exact_mod_cast Nat.pow_le_pow_left hbase J
+      _ = B := by rfl
+  have htranslated : ∀ h ≤ H,
+      ‖(gaussianPolynomialTranslate (R + 1) P).coeff h‖ ≤
+        gaussianLagrangeCoefficientMass J * B := by
+    intro h hh
+    exact norm_coeff_gaussianPolynomialTranslate_le J (R + 1) P hPJ B hB
+      (by simpa only [add_assoc] using hsample) (hh.trans hHJ)
+  have hnormalized := norm_eval_div_pow_le_of_translate_coeff_bound
+    P hdegree hRq (by omega)
+      (gaussianLagrangeCoefficientMass J * B)
+      (mul_nonneg (gaussianLagrangeCoefficientMass_nonneg J) hB)
+      htranslated
+  change ‖P.eval (q : ℂ) / (q : ℂ) ^ H‖ ≤ _
+  calc
+    ‖P.eval (q : ℂ) / (q : ℂ) ^ H‖ ≤
+        ((H + 1 : ℕ) : ℝ) *
+          (gaussianLagrangeCoefficientMass J * B) := hnormalized
+    _ ≤ ((J + 1 : ℕ) : ℝ) *
+          (gaussianLagrangeCoefficientMass J * B) := by
+      gcongr
+      exact_mod_cast Nat.add_le_add_right hHJ 1
+    _ = gaussianPatternWeightNormalizationConstant n D Q *
+          ((((R + 1) ^ magnitudeMaxJetOrder n Q : ℕ) : ℝ)) := by
+      dsimp only [B, J, gaussianPatternWeightNormalizationConstant]
+      push_cast
+      rw [mul_pow]
+      ring
 
 /-! ## Ambient Gaussian majorant -/
 
@@ -1009,6 +2205,63 @@ theorem tendsto_maxPolynomial_gaussian_tsum_outside_box_zero
       Real.exp (-B * (gaussianOffsetEnergy z - Q₀))
   have hsum : Summable f := summable_maxPolynomial_gaussian ι J hB Q₀
   exact (tendsto_tsum_compl_atTop_zero f).comp (integerLatticeBox_tendsto_atTop ι)
+
+/-! ## Exact normalized face/remainder splitting -/
+
+/-- Abstract exact-identity splitter.  A selected finite subface of a finite zero sum is bounded
+by the norm mass of its complementary remainder. -/
+theorem norm_subface_sum_le_remainder_of_sum_eq_zero
+    {α : Type*} [DecidableEq α] (T C : Finset α) (hCT : C ⊆ T)
+    (f : α → ℂ) (hzero : ∑ x ∈ T, f x = 0) :
+    ‖∑ x ∈ C, f x‖ ≤ ∑ x ∈ T \ C, ‖f x‖ := by
+  have hbalance : ∑ x ∈ C, f x = -∑ x ∈ T \ C, f x :=
+    normalized_cluster_balance_of_identity T C hCT f hzero
+  rw [hbalance, norm_neg]
+  exact norm_sum_le _ _
+
+/-- Concrete normalized-ADE splitter.  It applies the exact coefficient identity, divides by one
+common polynomial normalization, and uses the unit norm of every normalized atom phase. -/
+theorem norm_normalized_active_aeval_subface_le_remainder
+    {n N : ℕ} (F : PowerSeries ℂ)
+    (Q : MvPolynomial (Fin (n + 2)) ℂ) (b : ℕ → ℝ)
+    (hb : ∀ i, ‖PowerSeries.coeff i F‖ = Real.exp (-b i))
+    (hrel : aeval (formalJets n F) Q = 0)
+    (C : Finset (ℕ →₀ ℕ))
+    (hC : C ⊆ activeAevalAtoms n N Q) (m : ℝ) (den : ℂ) :
+    ‖∑ ν ∈ C,
+        (aevalWeight n N Q ν / den) *
+          (Real.exp (-(atomValuation b ν - m)) : ℂ) *
+            normalizedAtomPhase F b ν‖ ≤
+      ∑ ν ∈ activeAevalAtoms n N Q \ C,
+        ‖aevalWeight n N Q ν / den‖ *
+          Real.exp (-(atomValuation b ν - m)) := by
+  classical
+  let T := activeAevalAtoms n N Q
+  let fraw : (ℕ →₀ ℕ) → ℂ := fun ν =>
+    aevalWeight n N Q ν *
+      (Real.exp (-(atomValuation b ν - m)) : ℂ) *
+        normalizedAtomPhase F b ν
+  let fscaled : (ℕ →₀ ℕ) → ℂ := fun ν =>
+    (aevalWeight n N Q ν / den) *
+      (Real.exp (-(atomValuation b ν - m)) : ℂ) *
+        normalizedAtomPhase F b ν
+  have hzeroRaw : ∑ ν ∈ T, fraw ν = 0 := by
+    simpa only [T, fraw] using
+      normalized_active_aeval_coefficient_identity n N F Q b hrel m
+  have hzero : ∑ ν ∈ T, fscaled ν = 0 := by
+    calc
+      ∑ ν ∈ T, fscaled ν = (∑ ν ∈ T, fraw ν) / den := by
+        rw [Finset.sum_div]
+        apply Finset.sum_congr rfl
+        intro ν _hν
+        dsimp only [fscaled, fraw]
+        ring
+      _ = 0 := by rw [hzeroRaw, zero_div]
+  have hsplit := norm_subface_sum_le_remainder_of_sum_eq_zero
+    T C hC fscaled hzero
+  simpa only [T, fscaled, norm_mul, norm_div, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
+    norm_normalizedAtomPhase F b hb, mul_one] using hsplit
 
 /-! ## Approximate finite Fourier inversion -/
 
