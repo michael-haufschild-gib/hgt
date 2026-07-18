@@ -119,7 +119,12 @@ theorem tendsto_boundedRelationShiftedPolynomialProfile_div_natCast_atTop
   have hpow : (n : ℝ) ^ β ≤ ((n : ℝ) + 1) ^ β :=
     Real.rpow_le_rpow (Nat.cast_nonneg n) hbase (by linarith)
   rw [boundedRelationShiftedPolynomialProfile, Real.rpow_sub_one hnpos.ne' β]
-  gcongr
+  calc
+    B * ((n : ℝ) ^ β / (n : ℝ)) =
+        (B * (n : ℝ) ^ β) / (n : ℝ) := by ring
+    _ ≤ (B * ((n : ℝ) + 1) ^ β) / (n : ℝ) :=
+      (div_le_div_iff_of_pos_right hnpos).2
+        (mul_le_mul_of_nonneg_left hpow hB.le)
 
 /-- Positive shifted polynomial profiles admit exponentially close private-prime rational
 realizations whose algebraic unit-phase series are entire, full-support, and hypertranscendental. -/

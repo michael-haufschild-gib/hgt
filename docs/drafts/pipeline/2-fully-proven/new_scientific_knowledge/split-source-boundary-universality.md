@@ -1,9 +1,8 @@
 # Split source-boundary universality
 
 - **ID:** `split-source-boundary-universality`
-- **Stage:** 2-fully-proven / exact raw mixed dependence boundary and finite-resolution algebraic
-  matroid Lean-complete / localized quotient rank representation open
-- **Type:** THEOREM (paper) / formalization open
+- **Stage:** 2-fully-proven / complete theorem surface Lean-proved / final integration gate pending
+- **Type:** THEOREM (paper) / Lean formalization complete
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For observables valued in any split commutative group
   `G_a^r x G_m^s` and governed by an arbitrary, possibly noncommuting family of compatible
@@ -225,7 +224,7 @@ object together with the Tannakian tensor relations of its adjoint local system.
 - [x] Lean raw/logarithmic finite-family rank preservation
 - [x] Lean exact dependence/coboundary equivalence for the raw mixed family
 - [x] Lean exact arbitrary-family algebraic matroid criterion
-- [ ] Lean mixed-family matroid representation
+- [x] Lean mixed-family matroid representation
 
 ## Lean formalization boundary
 
@@ -265,9 +264,22 @@ constant-coefficient simultaneous coboundary.  Both the logarithmic-jet boundary
 complete differential Ostrowski equivalence are specializations of this one theorem, rather than
 duplicated fixed-field arguments.
 
-Lean does not yet construct the quotient `Q_Sigma(K)`, its `C(D)` localization, or the rank
-function equality `(5)` inside that localized quotient.  That representation layer is the sole
-remaining formal boundary, so the card remains in step 2 and must not be moved to step 3 yet.
+`formal/GaloisForLFunctions/HTGeometry/LocalizedQuotientMatroid.lean` constructs a generic
+localized quotient configuration and proves that its represented matroid has finite-packet rank
+equal to the fraction-field dimension of the localized quotient-class span.
+`SourceBoundaryQuotientMatroid.lean` instantiates this construction for the simultaneous
+coboundary map over `C[D]`.  Its theorem `sourceBoundaryQuotientMatroid_indep_iff` is the exact
+operator-character form of `(6)`, while `sourceBoundaryQuotientMatroid_eRk_finset` is the generic
+finite-packet rank formula.
+
+Finally, `SplitSourceBoundaryMatroid.lean` identifies the complete raw mixed differential matroid
+with that source-boundary quotient through
+`automorphismFamily_mixedRaw_differentialFamilyMatroid_eq_sourceBoundaryQuotientMatroid`.  The
+capstone `automorphismFamily_mixedRaw_differentialFamilyMatroid_eRk_finset` is exactly `(5)` for
+every finite mixed packet.  The owning target and a scratch `#print axioms` audit pass using only
+`propext`, `Classical.choice`, and `Quot.sound`.  No theorem assumes the quotient representation or
+rank equality as input.  The only remaining Stage-3 gate is serialized umbrella reachability,
+generated-index refresh, and formal lint.
 
 ## References checked
 

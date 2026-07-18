@@ -62,7 +62,7 @@ theorem scalarDifferentialPolynomialLeader_mem_vars
     have hu : u = () := Subsingleton.elim _ _
     subst u
     simp only [scalarDifferentialPolynomialLeader,
-      scalarDifferentialPolynomialOrder, Prod.snd] at hsup ⊢
+      scalarDifferentialPolynomialOrder] at hsup ⊢
     exact congrArg (fun m : ℕ ↦ ((), m)) hsup
   exact hj_eq.symm ▸ hj
 
@@ -206,7 +206,8 @@ theorem Ideal.exists_minimal_scalarDifferentialPolynomialRank_ne_zero
     ∃ P : DifferentialPolynomial Unit K,
       IsMinimalScalarDifferentialPolynomialRank (I : Set _) P :=
   exists_minimalScalarDifferentialPolynomialRank
-    (I.exists_nonzero_nonconstant_scalarDifferentialPolynomial hI0 hItop)
+    (Ideal.exists_nonzero_nonconstant_scalarDifferentialPolynomial
+      (I := I) hI0 hItop)
 
 end
 

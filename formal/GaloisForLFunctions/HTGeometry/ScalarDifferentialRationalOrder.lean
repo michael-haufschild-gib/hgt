@@ -94,6 +94,19 @@ theorem existsUnique_hasScalarDifferentialOrder
     · exfalso
       exact hm.2 (jetObservableField_mono y (Nat.succ_le_iff.mpr hnm) hmemSucc)
 
+/-- Exact scalar differential order is unique whenever it is defined. -/
+theorem HasScalarDifferentialOrder.order_eq
+    {C E : Type*} [Field C] [Field E] [Algebra C E] [Differential E]
+    {y z : E} {m n : ℕ}
+    (hm : HasScalarDifferentialOrder C y z m)
+    (hn : HasScalarDifferentialOrder C y z n) : m = n := by
+  rcases lt_trichotomy m n with hmn | hmn | hnm
+  · exfalso
+    exact hn.2 (jetObservableField_mono y (Nat.succ_le_iff.mpr hmn) hm.1)
+  · exact hmn
+  · exfalso
+    exact hm.2 (jetObservableField_mono y (Nat.succ_le_iff.mpr hnm) hn.1)
+
 /-- Exact order zero means a nonconstant ordinary rational function of the source value. -/
 theorem hasScalarDifferentialOrder_zero_iff
     {C E : Type*} [Field C] [Field E] [Algebra C E] [Differential E]
@@ -280,7 +293,6 @@ theorem HasScalarDifferentialOrder.algHom
     HasScalarDifferentialOrder C y (e z) (m + r) :=
   HasScalarDifferentialOrder.comp hy hey (hz.map e hderiv)
 
-/-
 /-- Every nonconstant finite-order observable of a free scalar differential field remains
 hypertranscendental over the coefficient field. -/
 theorem HasScalarDifferentialOrder.hypertranscendentalOver
@@ -317,7 +329,6 @@ theorem differentialRational_noDAShadow
     HypertranscendentalOver C z := by
   obtain ⟨n, hn, -⟩ := existsUnique_hasScalarDifferentialOrder hz hzC
   exact hn.hypertranscendentalOver hy
--/
 
 /-- Exact order grows arithmetically under iterated differential substitution. -/
 theorem HasScalarDifferentialOrder.algHom_pow
@@ -330,11 +341,86 @@ theorem HasScalarDifferentialOrder.algHom_pow
     (hz : HasScalarDifferentialOrder C y z m) (q : ℕ) :
     HasScalarDifferentialOrder C y ((e ^ q) z) (m + q * r) := by
   induction q with
-  | zero => simpa using hz
+  | zero => simpa only [pow_zero, AlgHom.one_apply, Nat.zero_mul, Nat.add_zero] using hz
   | succ q ih =>
       have hnext := HasScalarDifferentialOrder.algHom e hderiv hy ih hey
-      simpa [AlgHom.coe_pow, Function.iterate_succ_apply', Nat.succ_mul,
-        Nat.add_assoc] using hnext
+      have hvalue : (e ^ (q + 1)) z = e ((e ^ q) z) := by
+        simp only [AlgHom.coe_pow, Function.iterate_succ_apply']
+      have horder : m + (q + 1) * r = (m + q * r) + r := by
+        simp [Nat.add_mul, Nat.add_assoc]
+      rw [hvalue, horder]
+      exact hnext
+
+/-- A differential automorphism of a scalar free differential field sends its generator, and the
+inverse sends the generator, by exact order-zero differential rational functions. -/
+theorem differentialAlgEquiv_generator_order_zero
+    {C E : Type*} [Field C] [Field E] [CharZero E]
+    [Differential C] [Differential E] [Algebra C E] [DifferentialAlgebra C E]
+    (σ : E ≃ₐ[C] E) {y : E} (hy : HypertranscendentalOver C y)
+    (hytop : differentialAdjoin C ({y} : Set E) = ⊤)
+    (hderiv : ∀ w : E, σ w′ = (σ w)′) :
+    HasScalarDifferentialOrder C y (σ y) 0 ∧
+      HasScalarDifferentialOrder C y (σ.symm y) 0 := by
+  have hty : Transcendental C y := by
+    simpa using hypertranscendentalOver_jet_transcendental hy 0
+  have hyC : y ∉ (⊥ : IntermediateField C E) := by
+    intro hybot
+    obtain ⟨c, hc⟩ := IntermediateField.mem_bot.mp hybot
+    exact hty (hc ▸ isAlgebraic_algebraMap c)
+  have hσC : σ y ∉ (⊥ : IntermediateField C E) := by
+    intro hσbot
+    apply hyC
+    rw [IntermediateField.mem_bot]
+    obtain ⟨c, hc⟩ := IntermediateField.mem_bot.mp hσbot
+    refine ⟨c, ?_⟩
+    calc
+      algebraMap C E c = σ.symm (algebraMap C E c) := (σ.symm.commutes c).symm
+      _ = σ.symm (σ y) := congrArg σ.symm hc
+      _ = y := σ.symm_apply_apply y
+  have hσinvC : σ.symm y ∉ (⊥ : IntermediateField C E) := by
+    intro hσinvbot
+    apply hyC
+    rw [IntermediateField.mem_bot]
+    obtain ⟨c, hc⟩ := IntermediateField.mem_bot.mp hσinvbot
+    refine ⟨c, ?_⟩
+    calc
+      algebraMap C E c = σ (algebraMap C E c) := (σ.commutes c).symm
+      _ = σ (σ.symm y) := congrArg σ hc
+      _ = y := σ.apply_symm_apply y
+  have hσmem : σ y ∈ differentialAdjoin C ({y} : Set E) := by
+    rw [hytop]
+    trivial
+  have hσinvmem : σ.symm y ∈ differentialAdjoin C ({y} : Set E) := by
+    rw [hytop]
+    trivial
+  obtain ⟨r, hr, -⟩ := existsUnique_hasScalarDifferentialOrder hσmem hσC
+  obtain ⟨m, hm, -⟩ := existsUnique_hasScalarDifferentialOrder hσinvmem hσinvC
+  have hmapped : HasScalarDifferentialOrder C (σ y) y m := by
+    simpa using hm.map σ.toAlgHom hderiv
+  have hsum : HasScalarDifferentialOrder C y y (m + r) :=
+    HasScalarDifferentialOrder.comp hy hr hmapped
+  have hyzero : HasScalarDifferentialOrder C y y 0 := by
+    rw [hasScalarDifferentialOrder_zero_iff]
+    exact ⟨IntermediateField.subset_adjoin C ({y} : Set E) (Set.mem_singleton y), hyC⟩
+  have hmr : m + r = 0 := hsum.order_eq hyzero
+  have hm0 : m = 0 := by omega
+  have hr0 : r = 0 := by omega
+  exact ⟨hr0 ▸ hr, hm0 ▸ hm⟩
+
+/-- Membership form of `differentialAlgEquiv_generator_order_zero`: every differential
+automorphism of a scalar free differential field preserves its ordinary generator field in both
+directions. -/
+theorem differentialAlgEquiv_generator_mem_adjoin_singleton
+    {C E : Type*} [Field C] [Field E] [CharZero E]
+    [Differential C] [Differential E] [Algebra C E] [DifferentialAlgebra C E]
+    (σ : E ≃ₐ[C] E) {y : E} (hy : HypertranscendentalOver C y)
+    (hytop : differentialAdjoin C ({y} : Set E) = ⊤)
+    (hderiv : ∀ w : E, σ w′ = (σ w)′) :
+    σ y ∈ IntermediateField.adjoin C ({y} : Set E) ∧
+      σ.symm y ∈ IntermediateField.adjoin C ({y} : Set E) := by
+  have hzero := differentialAlgEquiv_generator_order_zero σ hy hytop hderiv
+  exact ⟨(hasScalarDifferentialOrder_zero_iff.mp hzero.1).1,
+    (hasScalarDifferentialOrder_zero_iff.mp hzero.2).1⟩
 
 end
 
