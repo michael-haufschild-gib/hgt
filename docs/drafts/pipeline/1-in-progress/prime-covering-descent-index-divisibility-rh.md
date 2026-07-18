@@ -1098,3 +1098,38 @@ per-box positivity, now with the certificate-form constraints established here.
 **[PROCESS LESSON]** Five-day-old corpus results can be rediscovered when the master map lacks
 their row. Before any future Gate-2 statement in this lane: grep the FULL 1-in-progress lane
 for the mechanism's mathematical objects (not just the master table).
+
+## 2026-07-18 session 2 (cont. 24) — UNIFIED OPEN CORE stated; quantifier reduced to rank-2;
+## three exact-identity attacks; level-S collision designated
+
+**[UNIFIED OPEN CORE — this lane + the 07-13 Hermite-contour card (dormant 5 days, merged)]**
+Prove `XiCountableSymmetricPrimeArchTraceHankelNonnegative`
+(XiGuinandWeilFiniteHermiteCriterion.lean:579; consumer :729): for every admissible rational
+symmetric rectangle and every P in Z[X],
+`Re[(2 pi i)^{-1} ∮_∂B (R+1+z) P(R+1+z)^2 * (-i)(-zeta'/zeta - (log archFactor)')(1/2+iz) dz] >= 0`,
+from the prime + archimedean decomposition ONLY, where (cont. 22) the certificate must be an
+EXACT SOS/PSD identity (no uniform sign margin at collision walls — estimates cannot certify).
+
+**[QUANTIFIER REDUCTION — separation theorem applied]** Only innermost-isolating boxes (one
+distinct off-line mirror pair + on-line zeros) are needed for the RH contradiction: the
+threatened Hankel direction has rank <= 2, so per-box PSD-ness reduces to ONE 2x2
+Schur-complement determinant identity, with determinant ∝ disc(W~_B). Caveat (kill-condition
+compliant): the certificate may ASSUME the single-pair structure inside the contradiction
+scheme but never SELECT boxes by divisor data.
+
+**[THREE ATTACKS, exact-identity-respecting]** (1) Prime-term SOS: completed-square
+rearrangement of `sum_n Lambda(n) M_n(P,B)` with an FE-symmetric telescoping remainder that
+vanishes IDENTICALLY; (2) archimedean PSD integral identity: Binet/Gauss representation of the
+digamma block as an integral of rank-1 PSD kernels with exact 2x2 completion absorbing
+`s(s-1)/2`; (3) rank-2 bordered-PSD completion: express the single Schur determinant
+(∝ disc(W~_B)) as a Gram determinant of source boundary data.
+
+**[NEXT GENERATIVE MOVE]** Collide attack (1) with the Meyer/L3 `H_+ ∩ H_-` Euler-level-S
+ideal filtration (cont. 21): the level-S truncation of the prime block is FINITE, so the SOS
+remainder at level S is a symbolically computable object; compute it for the first box family
+and one quadratic P (symbolic only — no numerics). MASTER-TABLE REPAIR: the dependency-closure
+card lacks a box/Guinand-Weil row; row content: "Symmetric-rectangle Hermite contour | exact
+per-box trace-Hankel value relation + RH consumer formalized | prove countable per-box
+positivity from prime+arch source (exact-identity certificates only; rank-2 reduction
+available) | riemannHypothesis_of_countableSymmetricPrimeArchTraceHankelNonnegative | Live
+unified chain (Fable lane + 07-13 card)."

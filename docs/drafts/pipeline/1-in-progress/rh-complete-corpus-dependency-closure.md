@@ -1110,3 +1110,17 @@ the complementary coefficient family.
   balances.  See
   `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-continuous-half-density-residual-tail-chart.md`
   and `theta-cusp-one-seam-turan-window-balance.md`.
+
+## 2026-07-18 — missing chain row added (Fable lane audit)
+
+The two-ended table above omits the box/Guinand--Weil chain (root cause of a five-day
+convergent rediscovery; see `prime-covering-descent-index-divisibility-rh.md` cont. 23). Row:
+
+| Symmetric-rectangle Hermite contour | exact per-box trace--Hankel value relation and RH
+consumer are formalized (`riemannHypothesis_of_countableSymmetricPrimeArchTraceHankelNonnegative`,
+`XiGuinandWeilFiniteHermiteCriterion.lean`) | prove countable per-box positivity of the
+prime+archimedean contour form for integer Hermite tests — exact-identity certificates only
+(no uniform sign margin at collision walls); rank-2 Schur reduction via the separation theorem |
+enclosed zeros real per box, exhaustion gives RH | **Live unified chain** (07-13 card + Fable
+covering-descent lane; certificate-form constraints and squarefree/wall analysis in the
+latter's cont. 20-24) |
