@@ -1281,3 +1281,38 @@ hypothesis `S^{1/2+c} > S^{1/2+d}` from containment — structure the global fra
 **[NEXT MOVE]** Construct the measure: write `h_00, h_01, h_11` on one edge as Binet/Gauss
 (arch) + sinh-weighted prime integrals and hunt the 2x2 PSD completion absorbing the
 `disc(W~)` sign — attack 2's shape extended to the full trace, on the localized target.
+
+## 2026-07-18 session 2 (cont. 29) — attack 2 closed with two salvage theorems; d is a SHAPE;
+## the two-height Prony defect designated
+
+**[SALVAGE THEOREM 1 — paired-edge positivity (unconditional; referee queued)]** On every
+admissible innermost box, the FE-folded in-box edge density is strictly positive:
+`x*B_in(x) > 0` with `B(x) = sum_rho (1/2 + c - beta_rho)/|s - rho|^2` (Hadamard/Poisson form;
+the Binet/Gauss archimedean representation is exactly what converts the sign-indefinite prime
+cosine series into this zero-Poisson sum — the arch block repairs the prime block at edge
+level), masses `m(c -+ d) > 0` by containment `c > |d|`; hence `T_B(P) = (1/pi) int |P|^2 x
+B(x) dx` is positive definite. The FIRST unconditional sign produced by the containment lever.
+
+**[SALVAGE THEOREM 2 — blindness]** Precisely because containment makes the density positive
+REGARDLESS of d, no single-height boundary-sign functional detects d. Exact moment form:
+`H_2 = H~ + Delta`, `H~` = collision shadow (rank 1, PSD, mass 2m at x0), `Delta = -2m d^2 *
+[[0,1],[1,3x0]]` exactly; on `ker H~` (P0 = X - x0): `p^T H_2 p = -2m x0 d^2`. The defect IS
+the certified quantity — attack 2 as a det-certificate is NOT viable (type-transparency in
+measure costume). d lives in the bump-width SPLIT `{c-d, c+d}` — a SHAPE parameter, not a sign.
+
+**[OPENED — the TWO-HEIGHT PRONY DEFECT]** The width split is visible across heights: the
+folded densities `B_c, B_c'` of ONE box at two admissible heights are Poisson mixtures with
+width sets `{c -+ d}` and `{c' -+ d}` at common centers. Exact Prony/Pade recovery of `d^2`
+from two-height moment data = the c-scan realized as a FINITE EXACT RATIONAL IDENTITY —
+algebra, not estimates. **[PRE-REGISTERED GUARDS before any investment]** (i) TRANSPARENCY
+TEST FIRST: the Prony expression is rational in continuous two-height data — adjudicate its
+behavior through the collision (off-line width-split at one center vs on-line two-center
+configuration: does the two-height data distinguish them discontinuously, or is the recovered
+d^2 continuous and the interpretation-jump another costume?); (ii) computability is NOT the
+question (Newton sums already determine the divisor) — the question is what LAW forces the
+recovered d^2 to vanish; state exactly what kind of law the Prony frame could support that
+single-height frames cannot (candidate: a POSITIVITY of the two-height JOINT moment matrix —
+a Hamburger-type condition on the (c, c')-mixture — whose failure is the width split; this
+would be a two-height Hankel/Stieltjes condition — check against the corpus's existing
+two-parameter positivity surfaces before conjecturing); (iii) referee the cont.-29 derivations
+(scripts: paired_edge_fast_checks.py, paired_edge_fold_probe.py, atan_branch_certify.py).
