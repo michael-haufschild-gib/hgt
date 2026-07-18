@@ -1,9 +1,10 @@
 # Fixed-Window Weyl Rigidity and Abelian Descent Collapse
 
 - **ID:** fixed-window-weyl-rigidity-abelian-descent-collapse
-- **Stage:** 1-in-progress (complete paper proofs below; hostile re-read pending before 2-move)
-- **Type:** THEOREM (two support theorems; elementary, unconditional)
-- **Label:** [PROVED HERE pending re-read] [BRIDGE / search-space theorem] [NOT AN RH RESULT]
+- **Stage:** 2-fully-proven (promoted 2026-07-18 after independent hostile referee pass; see
+  audit checklist)
+- **Type:** THEOREM (three support theorems; elementary, unconditional)
+- **Label:** [PROVED HERE] [BRIDGE / search-space theorem] [NOT AN RH RESULT]
 - **Parent:** `prime-covering-descent-index-divisibility-rh.md` (OPEN CORE 1);
   strengthens kill-condition 4 of `height-adaptive-cancelled-source-socle-weyl-rh.md`.
 
@@ -25,23 +26,33 @@ there exists an invertible `W : Q -> Q` with `W M_u W^{-1} = zeta * M_u`, where 
 - (a) `C`-linear, or
 - (c) semilinear over an algebra automorphism `sigma` of `Q` (`W(f*v) = sigma(f)*W(v)`),
 
-**iff** the annulus image of the window divisor, i.e. the multiset
-`R := {(p^{-rho_i}, m_i)}` in `C^*`, is invariant under multiplication by `zeta`; equivalently
-the divisor `{(rho_i, m_i)}` is invariant under the vertical translation
-`s ↦ s - 2*pi*i*a/(2^k * log p)  (mod (2*pi*i/log p)*Z)`.
+**iff** the annulus image of the window divisor, i.e. the multiset of PAIRS
+`R := {(p^{-rho_i}, m_i)}` in `C^* × N`, is invariant under `(mu, m) ↦ (zeta*mu, m)`.
+Equivalently: FOR EACH multiplicity value `m` separately, the set of window zeros of
+multiplicity exactly `m`, pushed to the cylinder `C mod (2*pi*i/log p)*Z`, is invariant under
+the vertical translation `s ↦ s - 2*pi*i*a/(2^k*log p)`. (Referee counterexample fixed
+2026-07-18: zeros `(rho,1), (rho + 2*pi*i/log p, 1), (rho + pi*i/log p, 2)` make the TOTAL
+pushforward divisor translation-invariant for `k = 1` while the pairs multiset is not and no
+`W` exists — the per-multiplicity-class reading is the correct equivalence; total-divisor
+invariance is strictly weaker.)
 
 For (b) `W` conjugate-linear, the same holds with `R` replaced by `conj(R)` on one side:
-existence iff `conj(R) = zeta * R`, i.e. divisor invariance under the reflection
-`rho ↦ conj(rho)` composed with the same vertical translation.
+existence iff `conj(R) = zeta * R` as pairs multisets, i.e. per-multiplicity-class divisor
+invariance under the reflection `rho ↦ conj(rho)` composed with the same vertical translation.
 
-**Corollary (divisibility is the hypothesis, not the output).** If the window divisor is
-nonempty, existence of such a `W` forces the annulus image to be a nonempty finite multiset
-invariant under the free `Z/2^k` rotation action on `C^*` (free: `zeta^j * z = z` with `z ≠ 0`
-forces `2^k | j`). The multiset therefore partitions into free orbits of size exactly `2^k`,
-each carrying a constant per-point total multiplicity, so `2^k | d` outright. Constructing `W`
-on a fixed window is therefore never a producer of divisibility: it presupposes a vertical
-arithmetic-progression symmetry of the divisor that no source theorem supplies for hypothetical
-Xi zeros.
+**Corollary (divisibility is the hypothesis, not the output — categories (a) and (c)).** In
+categories (a) linear and (c) semilinear: if the window divisor is nonempty, existence of such
+a `W` forces the pairs multiset to be invariant under the free `Z/2^k` rotation
+`(mu, m) ↦ (zeta*mu, m)` on `C^* × N`; each per-blocksize counting function is orbit-constant,
+the value-orbits are free of size exactly `2^k`, and hence `2^k | d` outright.
+**Scope restriction (referee fix 2026-07-18):** the corollary FAILS in category (b): the
+condition `conj(R) = zeta*R` is reflection-type, `mu ↦ zeta^{-1}*conj(mu)` is an involution
+with fixed line `arg(mu) = -arg(zeta)/2`, and a single simple zero with `p^{-rho}` on that line
+admits `W = conj` with `d = 1`. For (b) the correct conclusion is only the reflection symmetry
+itself — still a divisor constraint no source supplies generically, but not divisibility.
+Constructing `W` on a fixed window is therefore never a producer of divisibility: in (a)/(c) it
+presupposes a vertical arithmetic-progression symmetry, and in (b) a reflection symmetry, of
+the divisor — neither suppliable by a source theorem for hypothetical Xi zeros.
 
 ### Proof
 
@@ -146,8 +157,12 @@ since `exp(2^k*log(p)*(rho-s)) = 1` iff `s ∈ rho + i*theta*Z`), so `div_S(P) =
 *Neighborhood care:* `P` also vanishes at the AP-translates `rho + i*j*theta` with `j` outside
 `0..2^k-1`, which lie OUTSIDE `closure(S)` at distance `>= theta - h > 0` (where `h < theta` is
 the band height of `Omega_0`): a translate one step beyond the stack has imaginary part
-displaced by at least `theta` from the corresponding window band. Hence on the open
-`(theta - h)/2`-neighborhood of `closure(S)`, `R := F/P` is holomorphic and zero-free.
+displaced by at least `theta` from the corresponding window band. Hence on the intersection of
+the open `(theta - h)/2`-neighborhood of `closure(S)` with the domain of `F`, the quotient
+`R := F/P` is holomorphic; it is zero-free ON `closure(S)` (referee fix 2026-07-18: `F` may
+have further zeros in the neighborhood off `closure(S)`, so zero-freeness is claimed only on
+the closed stack, which is all statements (i)-(ii) use). Standing assumption for all winding
+statements: `∂Omega_0` rectifiable (e.g. piecewise `C^1`), so the argument principle applies.
 
 (iii) `det(P*R) = det(Ptilde ∘ cover) * det R` and `det(Ptilde ∘ cover) = (det Ptilde) ∘ cover`
 is again a periodic scalar factor; apply (i)-(ii) to determinants. ∎
@@ -177,7 +192,15 @@ of the commutative/finite part of the mechanism.
       (1) corollary understated — free-orbit partition gives `2^k | d` outright;
       (2) Theorem 2(ii) converse — periodized factor's zeros beyond the stack threatened
       holomorphy of `R` near `closure(S)`; fixed via band-height margin `theta - h`.
-- [ ] Fresh-eyes re-read next session before moving to `2-fully-proven/not_new_scientific_knowledge/`.
+- [x] Independent fresh-context hostile referee pass (2026-07-18, separate agent context):
+      T1 body CONFIRMED, T2 CONFIRMED, T3 CONFIRMED; four statement-level fixes demanded and
+      APPLIED: (1) T1 equivalence restated per multiplicity class (pairs multiset — referee
+      counterexample recorded in-text); (2) T1 corollary scope-restricted to categories (a)/(c)
+      with the category-(b) reflection counterexample recorded; (3) T2 remainder zero-freeness
+      restricted to `closure(S)` + rectifiability made explicit; (4) T3 per-step covariance
+      domains and all-steps requirement made explicit + exact Gohberg--Sigal citation added.
+- [x] Promotion criteria met: complete dependency-closed paper proofs surviving independent
+      hostile review.
 
 ## Lean plan (Gate 5, batched; after re-read)
 
@@ -222,16 +245,22 @@ of the commutative/finite part of the mechanism.
 complex Banach space and `A` a holomorphic family on a neighborhood of `closure(S)` with values
 in Fredholm operators on `H`, invertible on every window boundary `∂(Omega_0 + i*j*theta)`.
 Write `M(A, Omega)` for the Gohberg--Sigal multiplicity (the operator argument principle:
-total multiplicity of characteristic values of `A` in `Omega`; Gohberg--Sigal 1971,
-`[LITERATURE]`, generalized Rouche/argument principle; also GGK, Classes of Linear Operators).
+total multiplicity of characteristic values of `A` in `Omega`; `[LITERATURE]`:
+I. C. Gohberg, E. I. Sigal, Mat. Sb. 84(126) (1971), transl. Math. USSR-Sb. 13 (1971) 603-625
+— Banach space, holomorphic Fredholm-valued, invertible on the contour; equivalence invariance
+via the local Smith form; also GGK, Classes of Linear Operators I, Ch. XI. Discreteness and
+well-definedness from boundary invertibility + the analytic Fredholm theorem.)
 
 **Statement.** Suppose there are holomorphic families `E(s), F(s)` of INVERTIBLE operators on a
 neighborhood of `closure(Omega_0 + i*j*theta)` for the relevant steps, with the deck covariance
 
-> `A(s + i*theta) = E(s) * A(s) * F(s)`.
+> `A(s + i*theta) = E(s) * A(s) * F(s)`,
 
-(Constant invertible `E = U`, `F = V` — in particular unitary adelic twists — are the special
-case.) Then `M(A, Omega_j) = M(A, Omega_0)` for every `j`, hence
+where (referee precision 2026-07-18) the covariance with holomorphic invertible `E, F` is
+assumed on a neighborhood of `closure(Omega_0 + i*j*theta)` for EVERY step `j = 0, ..., 2^k-2`;
+a single step yields only `M(A, Omega_1) = M(A, Omega_0)`. (Constant invertible `E = U`,
+`F = V` — in particular unitary adelic twists — are the special case.) Then
+`M(A, Omega_j) = M(A, Omega_0)` for every `j`, hence
 `sum_j M(A, Omega_j) = 2^k * M(A, Omega_0)`. Consequently no such family can satisfy the divisor
 identification `M(A, Omega_j) = N_xi(Omega_j)` for all `j` unless all Xi window counts in the
 stack coincide — which fails for variable window counts. Exactly covariant (even
