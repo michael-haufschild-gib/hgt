@@ -276,3 +276,67 @@ WindowLadder, `BVPrimeWindowDilationOrientation.lean`, both decimation cards) + 
      matching Xi self-similarity (Xi has none; T2/T3 forbid importing one); (iii) mod-2
      periodicity of graded ranks must come from an exact source identity, not from an assumed
      regularity of the filtration.
+
+## 2026-07-18 session 1 (cont. 3) — support card refereed and PROMOTED
+
+Independent fresh-context hostile referee confirmed T1/T2/T3 bodies; four statement fixes
+applied (T1 pairs-multiset equivalence + category-(b) corollary scope restriction with
+reflection counterexample; T2 zero-freeness scope + rectifiability; T3 step domains + exact
+Gohberg--Sigal citation). Support card moved to
+`2-fully-proven/not_new_scientific_knowledge/fixed-window-weyl-rigidity-abelian-descent-collapse.md`.
+Scope note for this card's kill-conditions: category (b) (conjugate-linear) forces a REFLECTION
+symmetry rather than divisibility — still unsuppliable by a source theorem, so kill-condition 1
+stands in all categories, with (b) via reflection rather than AP rotation.
+
+## 2026-07-18 session 1 (cont. 4) — Gate-3 verdict on the dyadic-subresultant conjecture
+
+**Verdict: SURVIVES PRELIMINARY ATTACK, with the analytic-Sylvester existence core DISCHARGED BY
+LITERATURE IMPORT and one sharp new instantiation core.**
+
+1. `[LITERATURE — verified, PDF in session scratchpad gl1978b.pdf]` Gohberg--Lerer, Proc. AMS 72
+   (1978) 65-73: resultant operators for analytic pairs. Annulus Theorem 2 and strip Theorem 3:
+   `dim Ker W(A,B) = sum over common zeros of min(ord_A, ord_B)` (their "common multiplicity" is
+   forced to be min by Ker W(A,B) = Ker W(A) ∩ Ker W(B) with Jordan-chain bases
+   `t^p exp(-i z_j t)`), with the operator built from Laurent coefficients / L1 densities plus
+   boundary winding numbers ONLY — no zero enumeration. Shifted family `W_l = W(A, z^{-l}B)` has
+   descending stabilizing kernels (their Prop. 1) — a ready-made filtration. Also:
+   Krein (unpublished, via Sakhnovich arXiv:0905.1351, Thm 4.2: operator Bezoutiant with
+   `dim ker = #common zeros`, coefficient-data only) and Gohberg--Heinig (Acta Math. Hungar. 28
+   (1976); OT 206 translation), matrix case clarified in Gohberg--Kaashoek--Lerer 2005-2010
+   under quasi-commutativity. "Analytic subresultant chains" (graded gcd filtration for analytic
+   pairs): literature EMPTY — the shifted-kernel filtration as a subresultant chain is unclaimed
+   territory.
+2. `[COLLISION RISK RESOLVED]` The census card's epsilon no-go kills only invariants factoring
+   through the boundary-pair homotopy class; `dim ker` is upper-semicontinuous and its collision
+   jump (P: 0->1, D: 2->1, M stable) is the classical gcd-onset rank drop with index preserved
+   (coker jumps in lockstep). Recorded corpus no-gos (verified-height "collision degeneracy",
+   completed-source-window-index-amplifier, sem-collision) all kill CONTINUOUS scalar readers and
+   deformation-stable functionals; quantized semicontinuous integer readers are the recorded
+   survivor class, and the Sylvester kernel dimension is one. Design constraints: never claim
+   homotopy invariance; never route the census comparison through a functional continuous along
+   the slaved collision family `(A_t, C(A_t))`; the height-adaptive `∃k` absorbs T-growth only —
+   collision robustness must come from the semicontinuous rank object itself.
+3. `[CORPUS REUSE INVENTORY]` `xiHedenmalmBezoutian z v = dslope (fun w => deriv XiC z * XiC w -
+   XiC z * deriv XiC w) z v` (XiHedenmalmDeBrangesSeam.lean) with off-diagonal orthogonality at
+   distinct zeros, `diagonal = (deriv XiC)^2` at zeros, and the simplicity gate
+   `xiHedenmalmBezoutian_self_ne_zero_iff_simple`; `resultant_specialize_analytic`
+   (U0PhiCard.lean:312) for analytic Sylvester-determinant families;
+   `sigNeg_le_of_add_sum_sq_nonneg` (KreinLangerInertia.lean). Constraint from
+   5-failed/joint-source-represented-matroid-transport-rh.md: common-zero mass must NOT be
+   encoded as finite-packet Gram rank-drop (free-matroid stabilization no-go); the kernel must
+   be carried by divisor-multiplicity fibers, as GL's Jordan-chain bases do.
+4. `[NEW OPEN CORE — the instantiation gap]` GL's classes require the symbol to tend to a
+   nonzero constant at strip infinity (Riemann--Lebesgue confines common zeros to a compact
+   set, making `dim ker` finite). But: (i) Xi DECAYS on vertical lines (`xi(1/2+h+iz) =
+   integral Phi(u) e^{hu} e^{izu} du`, `Phi` double-exponentially decaying, so Xi is in the
+   strip class EXCEPT for the "1 +" normalization and has infinitely many strip zeros); (ii)
+   the dyadic cancelled source is an almost-periodic Dirichlet symbol (atoms at `log n`
+   frequencies — AP Wiener--Hopf territory, Bottcher--Karlovich--Spitkovsky). The required new
+   theorem: a kernel-dimension = common-mass law for pairs (Xi-decay class) x (AP-Dirichlet
+   class) on finite-height boxes or normalized substrips. Candidate normalizations to attack
+   first: (alpha) divide by the archimedean factor (A = zeta; boundary-line lower bounds fail at
+   infinity — quantify exactly where); (beta) finite-height boxes = truncated/finite-section WH
+   operators (no clean kernel theorem — the finite-section kernel-dim behavior IS the new
+   mathematics); (gamma) horizontal-shift ratio normalizations `xi(s)/xi(s+delta)` with
+   polynomial decay compensators (branch bookkeeping on boxes). This gap is where the lane's
+   next Gate-2/Gate-4 cycle lives.
