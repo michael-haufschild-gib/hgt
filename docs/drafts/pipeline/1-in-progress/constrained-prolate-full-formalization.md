@@ -908,3 +908,28 @@ REMAINING SPANS OF THE BRIDGE (the concrete next targets, in order):
    Sturm–Liouville theory on `[−1,1]`; this is the first genuine mountain of the route.
 4. Dunster/WKB asymptotics for `χ_n(c)` and `ψ_n` (L8), then Fuchs for `μ_n`.
 Only 3–4 are mountains; 1–2 are bookkeeping and are what a next session should take.
+
+### Bridge span 1a — the model normalization (DONE, 2026-07-18)
+
+Added to `RHTower/SlepianKernelFourier.lean` (axiom-clean):
+
+* `integral_symm_cexp_width` — the symmetric exponential integral at arbitrary half-width.
+* **`integral_symm_fourierChar (a s) : ∫_{−a}^{a} e^{−2πits} dt = sincSmooth (2πa) s`** — the
+  band indicator's Fourier transform IS the Slepian sinc profile, in the project's `e^{−2πixy}`
+  normalization.  So the aperture `[−a,a]` carries profile parameter **`c = 2πa`**.  Valid at
+  `s = 0`, where both sides are `2a`.
+* **`integral_symm_fourierChar_gram (a x y) : ∫_{−a}^{a} e^{−2πixt}·conj(e^{−2πiyt}) dt
+  = sincKernelSmooth (2πa) x y`** — the Gram form.
+* `setIntegral_Icc_fourierChar`, `setIntegral_Icc_fourierChar_gram` — the same over
+  `Set.Icc (−a) a`, which is the form the `L²` model presents (`fullTimeBandFourier_coeFn_sonin`
+  produces exactly `∫ y in Set.Icc c d, exp((−(2πxy) : ℝ)·I) · f y`).
+
+So the two normalizations are now reconciled and the interface matches on both sides.
+
+REMAINING FOR SPAN 1 (the Fubini step): `evenProlateConcentration a = (evenTimeBandFourier a)²`
+and `fullTimeBandFourier_eq_cutoffFourierCutoff` already give the composed operator as a double
+set integral.  Swapping the order by Fubini and applying `setIntegral_Icc_fourierChar_gram`
+yields the kernel form.  NOTE the composition `T∘T` produces the kernel argument `x + y`, not
+`x − y`; the two agree **on the even carrier** after `y ↦ −y`, which is precisely why the cards
+work in `evenSubspace`.  That observation is the one piece of real content in the remaining step
+— the rest is Fubini bookkeeping on a product of finite-measure sets.

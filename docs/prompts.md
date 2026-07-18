@@ -5,7 +5,7 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from docs/drafts/pipeline/2-fully-proven/needs-audit
+else: pick a card from docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge
 
 
 do: formalize in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
@@ -32,6 +32,9 @@ folders:
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 
 You are not allowed to change the cron timing.
+
+**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
+make sure you don't leave stale lean processes running - clean up after yourself
 
 ## research and formalize
 /goal

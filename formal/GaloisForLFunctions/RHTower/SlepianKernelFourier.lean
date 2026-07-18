@@ -215,6 +215,24 @@ theorem integral_symm_fourierChar_gram (a x y : ℝ) :
   rw [intervalIntegral.integral_congr (fun t _ => hrw t), integral_symm_fourierChar,
     sincKernelSmooth]
 
+/-- The set-integral form over the aperture, which is how the `L²` model presents the inner
+Fourier transform. -/
+theorem setIntegral_Icc_fourierChar (a s : ℝ) (ha : 0 ≤ a) :
+    ∫ t in Set.Icc (-a) a, Complex.exp ((-(2 * π * t * s) : ℝ) * Complex.I)
+      = ((sincSmooth (2 * π * a) s : ℝ) : ℂ) := by
+  have hle : (-a : ℝ) ≤ a := by linarith
+  rw [← integral_symm_fourierChar a s, intervalIntegral.integral_of_le hle]
+  exact (setIntegral_congr_set Ioc_ae_eq_Icc).symm
+
+/-- The set-integral Gram form over the aperture. -/
+theorem setIntegral_Icc_fourierChar_gram (a x y : ℝ) (ha : 0 ≤ a) :
+    ∫ t in Set.Icc (-a) a, Complex.exp ((-(2 * π * x * t) : ℝ) * Complex.I)
+        * (starRingEnd ℂ) (Complex.exp ((-(2 * π * y * t) : ℝ) * Complex.I))
+      = ((sincKernelSmooth (2 * π * a) x y : ℝ) : ℂ) := by
+  have hle : (-a : ℝ) ≤ a := by linarith
+  rw [← integral_symm_fourierChar_gram a x y, intervalIntegral.integral_of_le hle]
+  exact (setIntegral_congr_set Ioc_ae_eq_Icc).symm
+
 end RHTower
 
 end

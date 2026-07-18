@@ -323,6 +323,52 @@ formerly packaged finite-dimensional avoidance value, and
 `ProjectiveIncidenceHausdorffDimension` constructs the formerly packaged projective-incidence
 stratification value unconditionally.
 
+### Exact shape of the remaining blocker
+
+The single packaged input is `ClassicalNevanlinnaExtremalFamily s` in
+`formal/GaloisForLFunctions/HTGeometry/NevanlinnaClassicalInterface.lean`.  Everything downstream
+of it is proved.  Discharging it means *constructing*, from an arbitrary indeterminate Hamburger
+sequence `s`: the four Nevanlinna functions `A,B,C,D` with `AD - BC = 1`, continuity of the
+denominator row, and the weakly continuous N-extremal leaf family carried by the denominator zero
+sets with the exact moments of `s`.  That is the classical Nevanlinna parametrization
+(Akhiezer/Berg--Valent), and the base is *entirely absent from mathlib*: a check of the mathlib
+tree finds no Hamburger moment problem, no orthogonal polynomials on the real line, and no Hankel
+form theory.  The construction chain is
+
+```text
+positive definite moment form -> orthonormal polynomials P_n, Q_n
+  -> three-term recurrence / Jacobi matrix
+  -> indeterminacy <=> sum |P_n(z)|^2 converges
+  -> A,B,C,D as entire functions of minimal exponential type
+  -> AD - BC = 1  -> Nevanlinna parametrization -> N-extremal leaves.
+```
+
+This is a multi-module development, not a missing lemma.
+
+### Layer built here
+
+`formal/GaloisForLFunctions/HTGeometry/MomentInnerProduct.lean` supplies the first link of that
+chain, unconditionally and axiom-clean (build clean with zero warnings; `#print axioms` on all
+endpoints reports only `propext`, `Classical.choice`, `Quot.sound`; no `sorry`/`axiom`):
+
+- `momentInner s p q = L_s (p * q)` with symmetry, full bilinearity, and finite-sum linearity.
+- `momentInner_X_mul` : multiplication by `X` is symmetric for the form.  This is the Jacobi/Hankel
+  symmetry that the three-term recurrence rests on.
+- `PositiveMomentForm s` bundles positive definiteness `p ≠ 0 → 0 < ⟪p,p⟫_s`, the exact hypothesis
+  Gram--Schmidt consumes, with `nonneg`, `self_eq_zero_iff`, `self_ne_zero`.
+- `positiveMomentForm_of_infiniteSupport` constructs it from any representing measure charging the
+  complement of every finite set, reusing the corpus lemmas behind
+  `momentHankelMatrix_posDef_of_infiniteSupport`.
+- `momentInner_sq_le` is Cauchy--Schwarz; `eq_zero_of_forall_momentOrthogonal` proves that an
+  orthogonal family of nonzero polynomials is linearly independent — the fact that makes
+  Gram--Schmidt terminate with nonzero output at every degree.
+
+**This does not clear the gate.**  It is one layer of the chain above; the card stays at Stage 2.
+The next layer is the orthonormal polynomials themselves: construct `P : ℕ → Polynomial ℝ` by
+Gram--Schmidt on the monomials with `degree (P n) = n` and `⟪P m, P n⟫ = δ` (the degree bookkeeping
+and the recursion-under-`Finset.sum` are the two known difficulties), then the three-term
+recurrence from `momentInner_X_mul`.
+
 ## Gates
 
 - [x] arbitrary finite Cauchy-jet level defined
@@ -338,6 +384,18 @@ stratification value unconditionally.
 - [ ] independent specialist proof audit
 - [ ] full primary-source priority audit
 - [ ] unconditional Lean formalization of the entire exact theorem
+  - [x] moment inner product and positive-definite moment form (`MomentInnerProduct.lean`)
+  - [x] monic orthogonal polynomials by Gram--Schmidt, exact degree `n`, mutual orthogonality
+        (`OrthogonalMomentPolynomials.lean`)
+  - [x] orthogonality to *every* polynomial of lower degree, and tridiagonality of the Jacobi form
+        (`monicOrtho_inner_eq_zero_of_degree_lt`, `monicOrtho_X_mul_inner_eq_zero`)
+  - [ ] normalization to an orthonormal family `P n = monicOrtho n / sqrt ⟪·,·⟫` (a rescale)
+  - [ ] explicit three-term recurrence coefficients `X * Q n = Q (n+1) + a n * Q n + b n * Q (n-1)`
+        (needs the span lemma: degree `≤ m` polynomials are spanned by `Q 0 … Q m`)
+  - [ ] indeterminacy criterion `sum |P_n(z)|^2 < infinity`
+  - [ ] `A,B,C,D` as entire functions and the determinant identity `AD - BC = 1`
+  - [ ] N-extremal leaf family, denominator-carried, with the moments of `s`
+  - [ ] discharge `ClassicalNevanlinnaExtremalFamily`
 
 ## Log
 
@@ -345,3 +403,24 @@ stratification value unconditionally.
   density chart. Proved that the constrained tangent remains infinite-dimensional and controls
   every disjoint jet packet, yielding residual maximal full-translation HT at fixed spectral type.
   Proved that the complete Taylor germ at one regular point uniquely determines the boundary law.
+- 2026-07-18 -- Remaining Lean blocker pinned to the single packaged input
+  `ClassicalNevanlinnaExtremalFamily s`, and its construction chain written out. Confirmed mathlib
+  carries no moment-problem, orthogonal-polynomial, or Hankel-form base, so the chain must be built
+  from scratch. First link built unconditionally as
+  `HTGeometry/MomentInnerProduct.lean` (moment inner product, `momentInner_X_mul` symmetry,
+  `PositiveMomentForm`, construction from an infinite-support representing measure,
+  Cauchy--Schwarz, orthogonal-implies-independent). Card remains Stage 2: the gate is a
+  multi-module development and one link of it is done.
+- 2026-07-18 -- Second link built: `HTGeometry/OrthogonalMomentPolynomials.lean`. Gram--Schmidt on
+  the monomials gives `monicOrtho s n`, proved monic of exact degree `n` *unconditionally* (the
+  correction is a lower-degree combination whatever the coefficients are), with mutual
+  orthogonality and linear independence under `PositiveMomentForm`. Verified by single-file
+  elaboration (`lake env lean`), zero errors and zero warnings; all eight endpoints axiom-clean
+  (`propext`, `Classical.choice`, `Quot.sound`); no placeholders. Card remains Stage 2.
+- 2026-07-18 -- Third link: `monicOrtho_inner_eq_zero_of_degree_lt` proves `monicOrtho s n` is
+  orthogonal to *every* polynomial of degree `< n` (induction rebuilding an arbitrary `p` from its
+  leading monomial via `X^d = monicOrtho d + correction`), and `monicOrtho_X_mul_inner_eq_zero`
+  derives tridiagonality of the Jacobi form from it together with `momentInner_X_mul`. Both
+  axiom-clean, file elaborates with zero errors and zero warnings. The remaining recurrence gate is
+  now only the *explicit coefficients*, which need the span lemma; the banded structure itself is
+  proved. Card remains Stage 2.

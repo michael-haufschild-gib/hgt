@@ -21,14 +21,13 @@
 \newcommand{\C}{\mathbb C}
 \newcommand{\R}{\mathbb R}
 \newcommand{\N}{\mathbb N}
-\newcommand{\RH}{\mathrm{RH}}
 \newcommand{\Rea}{\operatorname{Re}}
 \newcommand{\Ima}{\operatorname{Im}}
 \newcommand{\supp}{\operatorname{supp}}
 \newcommand{\cof}{\operatorname{cof}}
+\newcommand{\RH}{\mathrm{RH}}
 
-\title{Scale-Covariant Bernstein--Abel Tomography:\
-Global Source Coordinates, Real-$p$ Spectra, and Confocal Boundary Recession}
+\title{Scale-Resolved Positive Tomography of Complex Moment Sources}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -36,795 +35,836 @@ Global Source Coordinates, Real-$p$ Spectra, and Confocal Boundary Recession}
 \maketitle
 
 \begin{abstract}
-Let $m=(m_n)_{n\ge0}$ be a pointed real moment sequence represented by a bounded absolutely
-summable complex atomic source.  For each degree $N$ we form the squared Euclidean norm
-$P_{N,m}(x)$ of the Bernstein coefficient vector of the dilated moments $(x^nm_n)_n$, and retain
-the full scale field
+We introduce one positive, scale-dependent observation field for a pointed real moment sequence
+$m=(m_n)_{n\geq0}$,
 \[
   \mathcal P_m(N,R)=P_{N,m}(R^{-1}),\qquad
-  \chi_m(R,t)=\sum_{N\ge0}\mathcal P_m(N,R)t^N.
+  \chi_m(R,t)=\sum_{N\geq0}\mathcal P_m(N,R)t^N,
 \]
-We prove one scale-covariant observation theorem.  First, the first $N+1$ coefficients of the
-single polynomial $P_{N,m}$ give global coordinates on the pointed prefix
-$(m_0,\ldots,m_N)$; the inverse is recursive and the Jacobian determinant is explicit and
-nowhere zero.  Second, $\mathcal P_m(N,R)$ is exactly the square energy of the original atomic
-source after inverse radial scaling.  If the source contains a transverse atom and $R$ exceeds
-twice the source radius, a finite source-attained packet selects the confocal amplitude $B(R)>1$
-and, for every real $p\ge1$, the corresponding Bernstein $p$-energy satisfies
+where $P_{N,m}$ is the squared Euclidean norm of the Bernstein coefficient vector of the dilated
+moments.  Our main theorem establishes a conjunction not supplied by moment inversion, phase
+retrieval, or Abelian asymptotics separately.  The scale coefficients of $P_{N,m}$ are global
+triangular coordinates on every pointed moment prefix, with an explicit nowhere-vanishing
+Jacobian.  For every bounded absolutely summable complex atomic presentation whose transverse
+defect $|z|-\Rea z$ vanishes cofinally, the same field is exactly the quadratic energy of the
+inverse-scaled atomic Bernstein packet.  At the optimal uniform threshold $R>M$, every
+transverse source selects a finite maximal packet and, for every real $p>0$,
 \[
-  E_{p,N}(R)^{1/N}\longrightarrow B(R)^p.
+ E_{p,N}(R)^{1/N}\longrightarrow B(R)^p.
 \]
-For $p=2$ we obtain the sharper law
+The quadratic packet has the sharper asymptotic
 \[
-  \mathcal P_m(N,R)\sim L(R)\frac{B(R)^{2N}}{\sqrt N},\qquad L(R)>0,
+ \mathcal P_m(N,R)\sim L(R)\frac{B(R)^{2N}}{\sqrt N},\qquad L(R)>0,
 \]
-and the exact square-root Abel boundary
+and hence an exact square-root Abel singularity.  Most importantly, these selected quantities are
+not artifacts of a chosen atomic representation: any two admissible transverse presentations of
+the same pointed moments have the same $B(R)$ at every common scale, the same half-order
+coefficient $L(R)$, and the same transverse-defect envelope
+\(
+ \Delta=\sup(|z|-\Rea z).
+\)
+Quantitatively,
 \[
- \sqrt{1-B(R)^2t}\,\chi_m(R,t)\longrightarrow\sqrt\pi\,L(R).
+ 0\le R(B(R)^2-1)-2\Delta
+ \le \frac{M^2}{R-M}+\frac{4M^2}{R},
 \]
-Finally, varying $R$ removes normalization dependence.  If
-\[
-  \Delta=\sup_{z\in S}(|z|-\Rea z),\qquad A(R)=B(R)^{-2},
-\]
-then
-\[
- R(B(R)^2-1)\longrightarrow2\Delta,
- \qquad R(1-A(R))\longrightarrow2\Delta.
-\]
-Thus one field is simultaneously faithful to the complete pointed moment source,
-phase-selective within its atomic realization, and normalization-free to first order.  As a short
-thermodynamic corollary, the free energy
-$F(R)=-\log A(R)$ has radical exactly the nonnegative real source cone and satisfies
-$RF(R)\to2\Delta$.  The reciprocal-square Riemann--Xi source is an application, not an estimate
-toward the Riemann hypothesis.
+and both the amplitude and Abel-radius recessions converge to $2\Delta$.  Thus a single positive
+field simultaneously recovers oriented source coordinates, selects all positive-power spectral
+rates, and rigidifies latent complex geometry across admissible presentations.
 \end{abstract}
+
+\noindent\textbf{Keywords.} Bernstein polynomials; complex moments; positive tomography;
+Abel singularities; phase retrieval; presentation rigidity; confocal geometry.
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.} 44A60, 41A10, 30E05, 42A38.
 
 \section{Introduction}
 
-Many positivity and spectral approaches to the Riemann hypothesis pass through finite or
-semilocal objects.  Their most delicate step is not producing a finite positive matrix or a
-self-adjoint finite operator, but retaining enough source data through the limiting procedure.
-This issue is particularly visible in Connes' absorption-spectrum interpretation of the explicit
-formula \cite{Connes1999}, the scaling Hamiltonian of Connes and Consani
-\cite{ConnesConsani2020}, and the semilocal spectral-triple programme
-\cite{ConnesConsani2023}.  The 2025 construction of Connes, Consani and Moscovici uses finite Euler
-products to define rank-one perturbations of scaling spectral triples; numerical spectra closely
-track low Riemann zeros, while convergence of suitably normalized determinants toward $\Xi$
-remains the proposed decisive analytic step \cite{ConnesConsaniMoscovici2025}.  These works
-motivate the question addressed here:
+A positive observation normally forgets orientation.  Squared norms are invariant under phase,
+moment data can admit inequivalent representing objects, and an Abel singularity generally
+records only the dominant growth of a chosen expansion.  This paper exhibits a structured
+exception.  By retaining a dilation variable before taking a squared Bernstein norm, one obtains
+a positive scalar field whose low scale coefficients recover an oriented real moment sequence
+and whose high-degree asymptotics select geometric data of any admissible complex atomic
+presentation.
 
-\begin{quote}
-Can one positive scale-dependent observation retain a complete moment source, select the finite
-packet controlling an Abel boundary, and still possess an intrinsic limit after the arbitrary
-normalization scale is removed?
-\end{quote}
+The strongest conclusion is a rigidity theorem.  Suppose two bounded absolutely summable
+complex atomic sources have the same pointed real moments.  We do not assume that their nodes or
+weights agree.  After canonical aggregation of repeated nodes, assume only that real occupied
+nodes are nonnegative and that the transverse defects $|z|-\Rea z$ vanish cofinally.  If both
+sources contain a nonreal occupied node, then their selected confocal amplitudes agree at every
+common exterior scale.  Their sharp square-root coefficients and their limiting transverse
+defect envelopes agree as well.  The invariant is extracted from the common moment sequence by a
+positive observation, rather than imposed through a determinacy hypothesis.
 
-The answer is affirmative for the Bernstein observation field introduced below.  The point is
-not a new equivalent formulation of RH.  It is a source theorem for a general class of complex
-atomic functionals.  Three structures, usually treated separately, are shown to belong to one
-observable:
+This conclusion depends on four mechanisms which must be kept together.
 \begin{enumerate}
-  \item a global triangular chart on every finite pointed moment prefix;
-  \item an exact finite-packet law, including all real-$p$ nth-root spectra and a sharp
-        $N^{-1/2}$ law for the quadratic packet;
-  \item a confocal scale flow whose first recession is the normalization-free transverse defect.
+\item The first $N+1$ coefficients of one positive polynomial $P_{N,m}$ form a global triangular
+      chart on $(m_0,\ldots,m_N)$ once the sign $m_0>0$ is fixed.
+\item Evaluation at inverse scale is exactly the square energy of the original atomic Bernstein
+      packet, not merely an asymptotic model.
+\item Cofinal transverse neutrality, rather than convergence of all nodes to one point, produces
+      a finite source-attained maximal packet at every scale $R>M$.
+\item The quadratic half-order law forces the exponential rate of every positive real-power
+      energy.  Uniqueness of the limit then makes the selected amplitude and coefficient
+      independent of the admissible presentation.
 \end{enumerate}
 
-This recovers and strengthens the useful core of a fixed-normalization Bernstein susceptibility
-while avoiding an important artifact.  For a fixed normalization, the Abel boundary can always
-be moved arbitrarily close to one by dilating the source.  The distance of that boundary from one
-is therefore not intrinsic.  Retaining the complete scale variable changes the conclusion: the
-renormalized gap has the exact invariant limit $2\Delta$.
+The individual parent mechanisms are classical.  Bernstein coordinates and their asymptotics
+are standard \cite{LorentzBernstein}; Hausdorff moment criteria use finite differences to encode
+support positivity, including in Riemann-type applications \cite{Zhang2023}; algebraic phase
+retrieval studies recovery from intensity data \cite{ConcaEdidinHeringVinzant2015}; and the final
+boundary passage is Abelian \cite{HardyDivergentSeries}.  The contribution here is the exact
+scale-resolved conjunction and, in particular, the presentation-rigidity consequence.  Generic
+intensity measurements do not provide the triangular moment chart below, while moment inversion
+alone does not identify the confocal spectral rate of a complex presentation.
 
-There are two nearby literatures.  Hausdorff moment criteria already convert positivity of a
-sequence into sign conditions on all finite differences, and Zhang applied this principle to
-Riemann-type entire functions \cite{Zhang2023}.  Our observable instead squares the complete
-Bernstein packet and uses its dependence on the dilation variable.  The low scale coefficients
-then recover the signed moment sequence, not merely its positivity class.  In finite-dimensional phase
-retrieval, generic intensity measurements recover vectors only modulo a global phase and require
-a suitable frame \cite{ConcaEdidinHeringVinzant2015}.  Here a single scalar polynomial of degree
-$2N$ recovers an oriented prefix of length $N+1$ because its first $N+1$ coefficients form a
-triangular system.
+The construction was motivated in part by finite and semilocal spectral approaches to the
+Riemann hypothesis.  In Connes' absorption-spectrum interpretation \cite{Connes1999}, the scaling
+Hamiltonian \cite{ConnesConsani2020}, spectral triples and zeta-cycles
+\cite{ConnesConsani2023}, and the 2025 zeta spectral-triple proposal of Connes, Consani and
+Moscovici \cite{ConnesConsaniMoscovici2025}, the central difficulty is carrying global divisor
+information through a cofinal spectral limit.  Our theorem supplies a general positive carrier
+with an exact source chart and an intrinsic scale recession.  It does not prove the missing
+arithmetic estimate and is not presented as an equivalent reformulation of that estimate.
 
-The paper contains one main theorem, stated in Section~\ref{sec:main}.  Sections
-\ref{sec:chart}--\ref{sec:confocal} prove its clauses in order.  Section~\ref{sec:gibbs} records a
-short Gibbs free-energy corollary.  Section~\ref{sec:xi} explains the Riemann--Xi application and
-the exact limitation: the theorem identifies the quantity which must vanish, but supplies no
-arithmetic estimate forcing that vanishing.
+Section~\ref{sec:setup} states the single main theorem.  Sections~\ref{sec:aggregation}--
+\ref{sec:abel} prove its finite and asymptotic clauses.  Section~\ref{sec:rigidity} proves the
+confocal recession and presentation rigidity.  Section~\ref{sec:gibbs} records a short
+free-energy corollary.  Section~\ref{sec:xi} gives the precise Riemann--Xi specialization and its
+limitation.
 
-\section{The observation field and the main theorem}
-\label{sec:main}
+\section{The observation and the master theorem}
+\label{sec:setup}
 
-Let $I$ be a nonempty index set.  We consider functions $c,z:I\to\C$ and assume
+Let $I$ be an arbitrary index set and let $c,z:I\to\C$.  We assume
 \begin{equation}
-  \sum_{i\in I}|c_i|<\infty,
-  \qquad |z_i|\le M,
-  \qquad z_i\longrightarrow0\quad(i\to\cof),
-  \tag{2.1}
+ \sum_{i\in I}|c_i|<\infty,\qquad |z_i|\le M,
+ \qquad |z_i|-\Rea z_i\longrightarrow0\quad(i\to\cof),
+ \tag{2.1}
 \end{equation}
-where cofinite convergence means that for every neighbourhood $U$ of $0$, all but finitely many
-$z_i$ lie in $U$.  Equal nodes are aggregated in advance, so we also assume
+where cofinite convergence means that every neighbourhood of zero contains all but finitely many
+values of the displayed defect.  We also assume
 \begin{equation}
-  z_i=z_j\Longrightarrow i=j,
-  \qquad c_i\ne0.
-  \tag{2.2}
+ \Ima z_i=0\Longrightarrow \Rea z_i\ge0,
+ \qquad
+ m_n=\sum_i c_i z_i^n\in\R,
+ \qquad m_0>0.
+ \tag{2.2}
 \end{equation}
-The power moments
+Repeated nodes and cancelling fibres are allowed.  Define the aggregate weight and intrinsic
+occupied support by
 \begin{equation}
-  m_n=\sum_{i\in I}c_i z_i^n
-  \tag{2.3}
+ \widehat c(u)=\sum_{i:z_i=u}c_i,
+ \qquad S=\{u\in\C:\widehat c(u)\ne0\}.
+ \tag{2.3}
 \end{equation}
-are assumed real, with $m_0>0$.  Finally, the only occupied real nodes are required to have the
-positive orientation
-\begin{equation}
-  \Ima z_i=0\Longrightarrow \Rea z_i\ge0.
-  \tag{2.4}
-\end{equation}
+The sums are absolutely convergent.  The source in all geometric conclusions is the intrinsic
+source $(\widehat c(u),u)_{u\in S}$.
 
-For a real sequence $m$, let $\mathcal L_m$ be the polynomial functional defined by
-$\mathcal L_m(X^r)=m_r$.  Write
+For a real sequence $m$, let $\mathcal L_m(X^r)=m_r$ and let
 \[
- b_{N,k}(X)=\binom Nk X^k(1-X)^{N-k},\qquad0\le k\le N.
+ b_{N,k}(X)=\binom NkX^k(1-X)^{N-k}.
 \]
-The $k$th Bernstein coordinate of the dilated sequence $(x^rm_r)_r$ is
-\begin{align}
- a_{N,k}^{m}(x)
- &=\mathcal L_{(x^rm_r)_r}(b_{N,k})  \\
- &=\binom Nk\sum_{j=0}^{N-k}(-1)^j\binom{N-k}{j}
-      x^{k+j}m_{k+j}.
- \tag{2.5}
-\end{align}
-Define the scale-purity polynomial, its inverse-scale observation, and its Abel field by
+The Bernstein coordinate of the dilated sequence $(x^rm_r)_r$ is
 \begin{equation}
- P_{N,m}(x)=\sum_{k=0}^{N}a_{N,k}^{m}(x)^2,
- \qquad
+ a^m_{N,k}(x)
+ =\binom Nk\sum_{j=0}^{N-k}(-1)^j\binom{N-k}{j}x^{k+j}m_{k+j}.
+ \tag{2.4}
+\end{equation}
+Define
+\begin{equation}
+ P_{N,m}(x)=\sum_{k=0}^N a^m_{N,k}(x)^2,
+ \quad
  \mathcal P_m(N,R)=P_{N,m}(R^{-1}),
- \qquad
+ \quad
  \chi_m(R,t)=\sum_{N\ge0}\mathcal P_m(N,R)t^N.
+ \tag{2.5}
+\end{equation}
+For $u\in S$ put $u_R=u/R$ and
+\begin{equation}
+ A_{N,k}(R)=\sum_{u\in S}\widehat c(u)\binom Nk
+      u_R^k(1-u_R)^{N-k},\qquad
+ E_{p,N}(R)=\sum_{k=0}^N|A_{N,k}(R)|^p
  \tag{2.6}
 \end{equation}
+for every real $p>0$.
 
-For the atomic realization put
-\begin{equation}
- u_i(R)=\frac{z_i}{R},\qquad
- A_{N,k}(R)=\sum_{i\in I}c_i\binom Nk u_i(R)^k(1-u_i(R))^{N-k},
- \tag{2.7}
-\end{equation}
-and, for $p\ge1$,
-\begin{equation}
- E_{p,N}(R)=\sum_{k=0}^{N}|A_{N,k}(R)|^p.
- \tag{2.8}
-\end{equation}
-Let $S=z(I)$ and define
+The scale geometry is described by
 \begin{align}
- \delta_R(z)&=|z|+|R-z|-R, &
- D(R)&=\sup_{z\in S}\delta_R(z), \\
- \delta_\infty(z)&=|z|-\Rea z, &
- \Delta&=\sup_{z\in S}\delta_\infty(z), \\
- B(R)&=1+\frac{D(R)}R, &
- A(R)&=B(R)^{-2}.
- \tag{2.9}
+ \delta_R(u)&=|u|+|R-u|-R,&
+ D_S(R)&=\sup_{u\in S}\delta_R(u),\notag\\
+ \delta_\infty(u)&=|u|-\Rea u,&
+ \Delta_S&=\sup_{u\in S}\delta_\infty(u),\tag{2.7}\\
+ B_S(R)&=1+\frac{D_S(R)}R,&
+ A_S(R)&=B_S(R)^{-2}.\notag
 \end{align}
 
-\begin{theorem}[Scale-covariant Bernstein--Abel tomography]
+\begin{theorem}[Scale-resolved positive tomography and presentation rigidity]
 \label{thm:master}
-Under \emph{(2.1)--(2.4)}, the single observation field \emph{(2.6)} has the following properties.
+Under \emph{(2.1)--(2.2)}, the field \emph{(2.5)} satisfies the following.
 
 \begin{enumerate}
 \item For every $N$, the coefficient map
 \[
  J_N:(m_0,\ldots,m_N)\longmapsto
-       \bigl([x^r]P_{N,m}(x)\bigr)_{r=0}^{N}
+ \bigl([x^r]P_{N,m}(x)\bigr)_{r=0}^N
 \]
-is a bijection from $(0,\infty)\times\R^N$ onto itself.  Its inverse is triangular and its
-Jacobian determinant is
+is a global bijection of $(0,\infty)\times\R^N$.  It is triangular, and
 \begin{equation}
  \det DJ_N(m)=(-1)^{N(N+1)/2}(2m_0)^{N+1}
-      \prod_{r=0}^{N}\binom Nr\ne0.
- \tag{2.10}
+       \prod_{r=0}^N\binom Nr\ne0.
+ \tag{2.8}
 \end{equation}
-Consequently, the full polynomial family determines the complete pointed moment sequence.
+Consequently the cofinal polynomial family $(P_{N,m})_N$ determines the complete pointed moment
+sequence.
 
 \item For every $R>0$ and $N\ge0$,
 \begin{equation}
  \mathcal P_m(N,R)=E_{2,N}(R).
- \tag{2.11}
+ \tag{2.9}
 \end{equation}
 
-\item Suppose $R>2M$ and at least one $z_i$ is nonreal.  Then the supremum
+\item Suppose $S$ contains a nonreal point.  For every $R>M$, the number
 \begin{equation}
- B(R)=\sup_{i\in I}\bigl(|u_i(R)|+|1-u_i(R)|\bigr)>1
+ B_S(R)=\max_{u\in S}\bigl(|u/R|+|1-u/R|\bigr)>1
+ \tag{2.10}
+\end{equation}
+is attained on a nonempty finite set $D_R\subset S$, and all complementary amplitudes are
+bounded by one common $\beta(R)<B_S(R)$.  There is an explicit $L_S(R)>0$ such that
+\begin{equation}
+ \sqrt N\,\frac{\mathcal P_m(N,R)}{B_S(R)^{2N}}
+ \longrightarrow L_S(R),
+ \tag{2.11}
+\end{equation}
+and, for every real $p>0$,
+\begin{equation}
+ E_{p,N}(R)^{1/N}\longrightarrow B_S(R)^p.
  \tag{2.12}
 \end{equation}
-is attained on a nonempty finite packet $D_R\subset I$.  There is a number
-$1<\beta(R)<B(R)$ which bounds every complementary amplitude.  For every real $p\ge1$,
+Moreover,
 \begin{equation}
- E_{p,N}(R)^{1/N}\longrightarrow B(R)^p.
+ \sqrt{1-B_S(R)^2t}\,\chi_m(R,t)
+ \longrightarrow\sqrt\pi\,L_S(R)
+ \quad\text{as }t\uparrow A_S(R).
  \tag{2.13}
 \end{equation}
 
-\item In the quadratic case there is an explicit $L(R)>0$ such that
-\begin{equation}
- \sqrt N\,\frac{\mathcal P_m(N,R)}{B(R)^{2N}}\longrightarrow L(R),
- \tag{2.14}
-\end{equation}
-and
-\begin{equation}
- \sqrt{1-B(R)^2t}\,\chi_m(R,t)
- \longrightarrow\sqrt\pi\,L(R)
- \quad\text{as }t\uparrow B(R)^{-2}.
- \tag{2.15}
-\end{equation}
-
 \item For every $R>M$,
+\begin{align}
+ \Delta_S&\le D_S(R)\le
+ \Delta_S+\frac{M^2}{2(R-M)},\tag{2.14}\\
+ R(B_S(R)^2-1)&=2D_S(R)+\frac{D_S(R)^2}{R},\tag{2.15}\\
+ 0&\le R(B_S(R)^2-1)-2\Delta_S
+ \le\frac{M^2}{R-M}+\frac{4M^2}{R},\tag{2.16}\\
+ R(1-A_S(R))&=
+ \frac{2D_S(R)+D_S(R)^2/R}{(1+D_S(R)/R)^2}.\tag{2.17}
+\end{align}
+The radical and the two first recessions are
 \begin{equation}
- A(R)=1
- \quad\Longleftrightarrow\quad
- \Delta=0
- \quad\Longleftrightarrow\quad
- S\subset[0,\infty).
- \tag{2.16}
+ A_S(R)=1\Longleftrightarrow\Delta_S=0
+ \Longleftrightarrow S\subset[0,\infty),
+ \tag{2.18}
 \end{equation}
+\begin{equation}
+ R(B_S(R)^2-1)\longrightarrow2\Delta_S,
+ \qquad R(1-A_S(R))\longrightarrow2\Delta_S.
+ \tag{2.19}
+\end{equation}
+The uniform exterior threshold is optimal: if $0<R<M$, the allowed node $u=M$ has
+$\delta_\infty(u)=0$ but $|u/R|+|1-u/R|>1$.
 
-\item The scale flow has the two matching first recessions
+\item Let a second raw source $(d_j,w_j)$ satisfy the same hypotheses with bound $M'$ and the
+same moments $m_n$.  Let $S'$ be its nonzero aggregate support, and suppose both $S$ and $S'$
+contain a nonreal point.  Then for every $R>\max(M,M')$,
 \begin{equation}
- R\bigl(B(R)^2-1\bigr)\longrightarrow2\Delta,
- \qquad
- R\bigl(1-A(R)\bigr)\longrightarrow2\Delta
- \qquad(R\to\infty).
- \tag{2.17}
+ B_S(R)=B_{S'}(R),\qquad L_S(R)=L_{S'}(R),
+ \tag{2.20}
 \end{equation}
+and globally
+\begin{equation}
+ \Delta_S=\Delta_{S'}.
+ \tag{2.21}
+\end{equation}
+Thus the selected confocal field, its square-root coefficient, and its recession invariant depend
+only on the common pointed moments within the admissible transverse class.
 \end{enumerate}
 \end{theorem}
 
-The value of the theorem lies in the conjunction.  Clause~1 says that no moment information was
-lost by taking a positive quadratic observation.  Clauses~2--4 identify its exact atomic content
-and boundary packet.  Clauses~5--6 show that the result is not tied to a preferred finite
-normalization.
+Clause~5 is the central strengthening.  The theorem does not assert uniqueness of the complete
+atomic representation.  It proves that three geometric quantities survive any admissible change
+of presentation because they are selected by one common positive observation.
 
-Here and throughout, ``source-faithful'' means faithful to the complete pointed moment sequence.
-The chosen atomic realization then yields the literal energy identity and the selected confocal
-packet.  We do not assert a separate uniqueness theorem for all complex atomic representations
-having the same holomorphic moments.
+\section{Canonical aggregation and the global source chart}
+\label{sec:aggregation}
 
-\section{The global pointed source chart}
-\label{sec:chart}
+We first remove a possible source of artificial uniqueness.
 
-We begin with a finite algebraic statement requiring no atomic representation.
+\begin{lemma}[Canonical aggregate descent]
+\label{lem:aggregate}
+The intrinsic source \emph{(2.3)} satisfies
+\[
+ \sum_{u\in S}|\widehat c(u)|\le\sum_{i\in I}|c_i|,
+ \qquad
+ m_n=\sum_{u\in S}\widehat c(u)u^n.
+\]
+Its nodes are injectively indexed, its weights are nonzero, its real nodes are nonnegative, and
+$\delta_\infty(u)\to0$ cofinally on $S$.  Moreover $S$ is nonempty.
+\end{lemma}
 
-\begin{lemma}[Antidiagonal coefficient formula]
+\begin{proof}
+Absolute summability permits fibrewise regrouping.  The triangle inequality on every fibre and
+then summation over the fibres gives the first inequality; regrouping the absolutely convergent
+power-moment sum gives the second identity.  Injectivity and nonvanishing hold by construction.
+Every occupied aggregate fibre contains a raw representative, so the real orientation descends.
+If $S$ were empty, the regrouped zeroth moment would be zero, contrary to $m_0>0$.
+
+For cofinite neutrality, fix $\varepsilon>0$.  Only finitely many raw indices satisfy
+$\delta_\infty(z_i)\ge\varepsilon$.  If an aggregate node $u$ satisfies the same inequality,
+choose one raw representative in its nonzero fibre.  Distinct aggregate nodes have distinct
+representatives.  Hence the set of such aggregate nodes injects into a finite raw exceptional
+set and is finite.  This is precisely cofinite convergence on $S$.
+\end{proof}
+
+The chart requires no atomic representation.  Write
+\[
+ y_r=[x^r]P_{N,m}(x),\qquad0\le r\le N.
+\]
+
+\begin{lemma}[Antidiagonal coefficient law]
 \label{lem:antidiagonal}
 For $0\le r\le N$,
 \begin{equation}
- [x^r]P_{N,m}(x)
- =\sum_{k=0}^{N}\ \sum_{a+b=r}
- [X^a]b_{N,k}(X)\,[X^b]b_{N,k}(X)\,m_am_b.
+ y_r=\sum_{k=0}^N\ \sum_{a+b=r}
+ [X^a]b_{N,k}(X)[X^b]b_{N,k}(X)m_am_b.
  \tag{3.1}
 \end{equation}
-In particular, this coefficient depends only on $m_0,\ldots,m_r$.
+In particular, $y_r$ depends only on $m_0,\ldots,m_r$.
 \end{lemma}
 
 \begin{proof}
-Write
+By definition,
 \[
- a_{N,k}^{m}(x)=\sum_{a\ge0}[X^a]b_{N,k}(X)m_ax^a.
+ a^m_{N,k}(x)=\sum_{a\ge0}[X^a]b_{N,k}(X)m_ax^a.
 \]
-Squaring and extracting the coefficient of $x^r$ restricts the two indices to the antidiagonal
-$a+b=r$.  Summing over $k$ gives (3.1).  Since $a,b\le r$ on that antidiagonal, no higher moment
-occurs.
+After squaring, the coefficient of $x^r$ is the sum over the antidiagonal $a+b=r$.  Summation in
+$k$ gives (3.1), and both antidiagonal indices are at most $r$.
 \end{proof}
 
-For $r\ge1$, let $m^{\langle r\rangle}$ be obtained from $m$ by replacing $m_r$ by zero, and put
-\[
- Q_{N,r}(m_0,\ldots,m_{r-1})
-   =[x^r]P_{N,m^{\langle r\rangle}}(x).
-\]
+Let $Q_{N,r}(m_0,\ldots,m_{r-1})$ denote the expression in (3.1) with $m_r$ set to zero.
 
-\begin{proposition}[Exact triangular law]
-\label{prop:triangular}
+\begin{proposition}[Triangular inversion]
+\label{prop:chart}
 For $1\le r\le N$,
 \begin{equation}
- [x^0]P_{N,m}=m_0^2,
- \qquad
- [x^r]P_{N,m}
- =2(-1)^r\binom Nr m_0m_r+Q_{N,r}(m_0,\ldots,m_{r-1}).
+ y_0=m_0^2,qquad
+ y_r=2(-1)^r\binom Nr m_0m_r+Q_{N,r}(m_0,\ldots,m_{r-1}).
  \tag{3.2}
 \end{equation}
-\end{proposition}
-
-\begin{proof}
-At $r=0$, the only antidiagonal pair is $(0,0)$.  Among the Bernstein basis polynomials only
-$b_{N,0}=(1-X)^N$ has nonzero constant coefficient, equal to one, so (3.1) gives $m_0^2$.
-
-Now let $r\ge1$.  A term in (3.1) contains $m_r$ only if $a=r$ or $b=r$.  Since $a+b=r$, the
-other index must be zero.  Again the constant coefficient forces $k=0$, and
-\[
- [X^r]b_{N,0}(X)=[X^r](1-X)^N=(-1)^r\binom Nr.
-\]
-The two ordered antidiagonal pairs $(0,r)$ and $(r,0)$ therefore contribute
-$2(-1)^r\binom Nr m_0m_r$.  Erasing $m_r$ leaves precisely $Q_{N,r}$.
-\end{proof}
-
-\begin{proposition}[Global inversion and noncriticality]
-\label{prop:chart}
-Let $y=(y_0,\ldots,y_N)$ with $y_0>0$.  There is a unique pointed prefix
-$m=(m_0,\ldots,m_N)$ satisfying $J_N(m)=y$.  It is given recursively by
+Consequently
 \begin{equation}
  m_0=\sqrt{y_0},\qquad
  m_r=\frac{y_r-Q_{N,r}(m_0,\ldots,m_{r-1})}
- {2(-1)^r\binom Nr m_0}\quad(1\le r\le N).
+ {2(-1)^r\binom Nr m_0}.
  \tag{3.3}
 \end{equation}
-Its Jacobian is lower triangular and satisfies (2.10).
+This proves Theorem~\ref{thm:master}(1), including the determinant formula.
 \end{proposition}
 
 \begin{proof}
-The first identity in (3.2) and the pointed orientation $m_0>0$ force
-$m_0=\sqrt{y_0}$.  Once $m_0,\ldots,m_{r-1}$ are known, the second identity in (3.2) is a linear
-equation in $m_r$ with nonzero coefficient
-$2(-1)^r\binom Nr m_0$.  This proves existence by recursion and uniqueness by induction.
+At $r=0$, only $(a,b)=(0,0)$ occurs.  Among the Bernstein polynomials, only
+$b_{N,0}=(1-X)^N$ has nonzero constant coefficient, equal to one.  Thus $y_0=m_0^2$.
 
-For the Jacobian, Lemma~\ref{lem:antidiagonal} shows that row $r$ depends only on columns
-$0,\ldots,r$; hence the matrix is lower triangular.  Differentiating (3.2) in the $m_r$
-coordinate gives the diagonal entry
+For $r\ge1$, a term in (3.1) contains $m_r$ only for the ordered pairs $(0,r)$ and $(r,0)$.
+Again $k=0$ is forced, and
 \[
-  2(-1)^r\binom Nr m_0,
+ [X^r]b_{N,0}(X)=(-1)^r\binom Nr.
 \]
-including $r=0$, where the entry is $2m_0$.  Multiplying the diagonal entries yields
-\[
- (2m_0)^{N+1}(-1)^{\sum_{r=0}^{N}r}
- \prod_{r=0}^{N}\binom Nr,
-\]
-and $\sum_{r=0}^{N}r=N(N+1)/2$.  Every factor is nonzero on the pointed half-space.
+Their sum is the displayed linear term in (3.2); everything else is $Q_{N,r}$.  Since $m_0>0$,
+(3.3) recursively gives existence and uniqueness for every target with $y_0>0$.
+
+The Jacobian is lower triangular.  Its $r$th diagonal entry is
+$2(-1)^r\binom Nr m_0$, including $2m_0$ at $r=0$.  Their product is (2.8), because
+$\sum_{r=0}^Nr=N(N+1)/2$.  It is nowhere zero on the pointed half-space.  Taking $N=r$ for each
+$r$ proves cofinal source faithfulness.
 \end{proof}
 
-\begin{corollary}[Cofinal source faithfulness]
-If $m_0,m'_0>0$ and $P_{N,m}=P_{N,m'}$ for every $N$, then $m=m'$.
-\end{corollary}
+The role of pointing is exact: the positive polynomial determines $m_0^2$, and $m_0>0$ chooses
+one of the two orientations.  Once that orientation is fixed, every later coordinate occurs
+linearly with a nonzero coefficient.
 
-\begin{proof}
-Fix $r$ and apply Proposition~\ref{prop:chart} at degree $N=r$.  Equality of the degree-$r$
-polynomials gives equality of the first $r+1$ chart coordinates, hence $m_r=m'_r$.
-\end{proof}
-
-\section{Exact atomic realization}
-\label{sec:atomic}
-
-Absolute summability and boundedness justify termwise evaluation against every polynomial.  More
-precisely, if $p\in\R[X]$, then
-\[
- \sum_i |c_i p(z_i)|<\infty,
- \qquad
- \mathcal L_m(p)=\sum_i c_ip(z_i).
- \tag{4.1}
-\]
-Indeed, $|p(z)|$ is bounded on the closed disk $|z|\le M$, and (4.1) follows first for monomials
-from (2.3), then for polynomials by linearity.
-
-\begin{proposition}[Atomic packet identity]
-For every $R>0$, $N\ge0$ and $0\le k\le N$,
-\begin{equation}
- a_{N,k}^{m}(R^{-1})=A_{N,k}(R).
- \tag{4.2}
-\end{equation}
-Consequently $\mathcal P_m(N,R)=E_{2,N}(R)$ and
-\begin{equation}
- \chi_m(R,t)=\sum_{N\ge0}E_{2,N}(R)t^N.
- \tag{4.3}
-\end{equation}
-\end{proposition}
-
-\begin{proof}
-Inverse scaling sends the moments to
-\[
- R^{-n}m_n=\sum_i c_i(z_i/R)^n=\sum_i c_i u_i(R)^n.
-\]
-Applying (4.1) to the Bernstein polynomial $b_{N,k}$ gives
-\[
- a_{N,k}^{m}(R^{-1})
- =\sum_i c_i b_{N,k}(u_i(R))
- =\sum_i c_i\binom Nk u_i(R)^k(1-u_i(R))^{N-k},
-\]
-which is (4.2).  The left side is real by construction.  Squaring it therefore equals the
-squared complex norm of the right side.  Summation over $k$ proves (2.11), and summation over $N$
-proves (4.3).
-\end{proof}
-
-This identity is the bridge between the finite source chart and the boundary analysis: both are
-descriptions of the same observation, not independent invariants attached afterward.
-
-\section{Finite selection and the real-$p$ spectrum}
+\section{Exact atomic realization and finite selection}
 \label{sec:selection}
 
-Fix $R>2M$ and write $u_i=u_i(R)$.  Then $|u_i|<1/2$.  Define the affine amplitude
-\[
- \beta_i=|u_i|+|1-u_i|.
-\]
-Since $u_i\to0$ cofinally, $\beta_i\to1$ cofinally.  A nonreal $u_i$ satisfies
-$\beta_i>1$ by strictness in the triangle inequality.  A real, nonnegative $u_i$ with
-$|u_i|<1/2$ satisfies $\beta_i=u_i+(1-u_i)=1$.  Thus every superunit amplitude is transverse.
-
-\begin{lemma}[Finite maximal packet]
-If some $u_i$ is nonreal, there exist $B>\beta>1$ and a finite nonempty set $D\subset I$ such
-that
+Absolute summability and bounded support imply that for every polynomial $q$,
 \begin{equation}
- \beta_i=B\quad(i\in D),\qquad \beta_i\le\beta\quad(i\notin D).
- \tag{5.1}
+ \mathcal L_m(q)=\sum_{u\in S}\widehat c(u)q(u).
+ \tag{4.1}
 \end{equation}
-Moreover $B=B(R)$ from (2.9).
+Indeed $q$ is bounded on $|u|\le M$, and the claim follows by linearity from the moment identities.
+
+\begin{proposition}[Atomic observation identity]
+\label{prop:atomic}
+For every $R>0$, $N\ge0$, and $0\le k\le N$,
+\[
+ a^m_{N,k}(R^{-1})=A_{N,k}(R).
+\]
+Consequently $\mathcal P_m(N,R)=E_{2,N}(R)$.
+\end{proposition}
+
+\begin{proof}
+Inverse scaling sends $m_n$ to
+\[
+ R^{-n}m_n=\sum_{u\in S}\widehat c(u)(u/R)^n.
+\]
+Apply (4.1) to $b_{N,k}$ to obtain the coefficient identity.  Its left side is real, so its
+square equals the squared complex modulus of the right side.  Summation over $k$ proves (2.9).
+\end{proof}
+
+The new source hypothesis is transverse neutrality, not convergence of the nodes to zero.  The
+following comparison is the required compactness input.
+
+\begin{lemma}[Transverse-to-confocal comparison]
+\label{lem:neutrality}
+If $|u|\le M<R$, then
+\begin{equation}
+ 0\le\delta_R(u)\le\frac{R}{R-M}\delta_\infty(u).
+ \tag{4.2}
+\end{equation}
+Hence $\delta_\infty(u)\to0$ cofinally implies $\delta_R(u)\to0$ cofinally for every fixed
+$R>M$.
 \end{lemma}
 
 \begin{proof}
-Choose one superunit amplitude $\beta_{i_0}>1$ and a threshold $q$ strictly between $1$ and
-$\beta_{i_0}$.  Cofinite convergence to one implies that the set
-$F=\{i:\beta_i\ge q\}$ is finite.  Its maximum $B$ exists and exceeds one.  The maximizing set
-$D=\{i\in F:\beta_i=B\}$ is finite and nonempty.  The remaining finitely many elements of $F$
-and the cofinite complement admit a common upper bound $\beta<B$, after increasing the cofinite
-threshold if necessary.  No amplitude outside $F$ exceeds $q$, so $B$ is the global supremum.
-
-Finally,
+Write $u=x+iy$, $r=|u|$, $a=R-x$, and $s=|R-u|$.  Since $x\le r\le M<R$, $a>0$ and
 \[
- \beta_i=\frac{|z_i|+|R-z_i|}{R}
- =1+\frac{\delta_R(z_i)}R.
+ \delta_R(u)=(r-x)+(s-a).
 \]
-Taking suprema proves $B=1+D(R)/R=B(R)$.
+Rationalization and $y^2=(r-x)(r+x)$ give
+\[
+ s-a=\frac{y^2}{s+a}
+ \le\frac{2M(r-x)}{2(R-M)}
+ =\frac{M}{R-M}\delta_\infty(u).
+\]
+Adding $\delta_\infty(u)$ proves (4.2).  Both sides are nonnegative.  Multiplication by the fixed
+constant $R/(R-M)$ transports the cofinite limit.
 \end{proof}
 
-For a nonreal coordinate define its unique maximizing unit phase
+Since
 \begin{equation}
- \omega(u)=\frac{\overline u}{|u|}\frac{1-u}{|1-u|}.
- \tag{5.2}
+ |u/R|+|1-u/R|=1+\frac{\delta_R(u)}R,
+ \tag{4.3}
 \end{equation}
-Then $|\omega(u)|=1$ and
-\begin{equation}
- |1-u+u\omega(u)|=|u|+|1-u|.
- \tag{5.3}
-\end{equation}
+Lemma~\ref{lem:neutrality} says that the amplitudes tend cofinally to one.  A nonreal node has
+strictly superunit amplitude.  A real occupied node is nonnegative and, because $R>M$, lies in
+$[0,R)$, so its amplitude is exactly one.
 
-\begin{lemma}[Phase separation in the half disk]
-Let $u\ne v$ be nonreal, $|u|,|v|<1/2$, and suppose their affine amplitudes are equal.  Then
-$\omega(u)\ne\omega(v)$.
+\begin{proposition}[Finite maximal packet]
+\label{prop:maxpacket}
+If $S$ contains a nonreal point and $R>M$, then (2.10) is attained on a finite nonempty set
+$D_R$.  There is $1<\beta(R)<B_S(R)$ bounding every complementary amplitude.
+\end{proposition}
+
+\begin{proof}
+Choose one superunit amplitude and a number $q$ strictly between it and one.  Cofinite convergence
+to one makes the set of nodes with amplitude at least $q$ finite.  The maximum on that finite set
+is the global maximum $B_S(R)>1$.  Its maximizing fibre is finite and nonempty.  The remaining
+finitely many large amplitudes together with the cofinite amplitudes admit a common upper bound
+strictly below $B_S(R)$ and strictly above one.
+\end{proof}
+
+The old half-disk restriction $R>2M$ is unnecessary.  The only possible obstruction is an
+equal-amplitude, equal-phase pair.  It has a complete reflected classification.
+
+\begin{lemma}[Reflected-fibre gap]
+\label{lem:reflected}
+Let $u\ne v$ be nonreal and
+$|u|+|1-u|=|v|+|1-v|=B$.  The mixed quadratic Bernstein moment has an exponential bound
+$O(\gamma^N)$ for some $\gamma<B^2$.
 \end{lemma}
 
 \begin{proof}
-Equality in (5.3) fixes the alignment of the two nonzero summands, so equality of the maximizing
-phases and equality of the two focal-distance sums imply one of two algebraic possibilities:
+The maximizing unit phase of a nonreal node is
 \[
- u=v,
- \qquad\text{or}\qquad
- v=1-\overline u.
+ \omega(u)=\frac{\overline u}{|u|}\frac{1-u}{|1-u|},
+ \qquad |1-u+u\omega(u)|=|u|+|1-u|.
 \]
-The first is excluded.  In the second case,
-$1=|v+\overline u|\le|v|+|u|<1$, a contradiction.
+If $\omega(u)\ne\omega(v)$, compactness on the unit circle gives a strict product gap and hence
+the required exponential bound.  If the phases agree, elementary elimination using the common
+focal-distance sum gives exactly two possibilities:
+\[
+ v=u\quad\text{or}\quad v=1-\overline u.
+\]
+The first is excluded.  In the reflected case the mixed moment is exactly
+\begin{equation}
+ \binom{2N}{N}\bigl(u(1-u)\bigr)^N.
+ \tag{4.4}
+\end{equation}
+Since $u\ne1-\overline u$, one has $|u|\ne|1-u|$, and therefore
+\[
+ 4|u||1-u|<( |u|+|1-u|)^2=B^2.
+\]
+The elementary estimate $\binom{2N}{N}\le4^N$ applied to (4.4) supplies the strict exponential
+gap.
 \end{proof}
 
-The preceding lemma prevents cancellation between distinct maximal coordinates.  For a concise
-formula for the quadratic constant, let $U_R=\{u_i:i\in D\}$ and aggregate
-\[
- C_R(u)=\sum_{\substack{i\in D\\u_i=u}}c_i.
-\]
-Under our injectivity assumption this is simply the unique $c_i$ in the fibre.  Put
+This classification is what lowers the uniform scale threshold from $2M$ to $M$.
+
+\section{Half-order asymptotics, all positive powers, and the Abel boundary}
+\label{sec:abel}
+
+For $u\ne0,1$ define
 \begin{equation}
  \kappa(u)=\frac1{\sqrt\pi}
- \left(1-\frac{(|u|-|1-u|)^2}{(|u|+|1-u|)^2}\right)^{-1/2},
- \qquad
- L(R)=\sum_{u\in U_R}|C_R(u)|^2\kappa(u).
- \tag{5.4}
+ \left(1-\frac{(|u|-|1-u|)^2}{(|u|+|1-u|)^2}\right)^{-1/2}>0.
+ \tag{5.1}
 \end{equation}
-Because $u\ne0,1$ on the maximal transverse packet, every $\kappa(u)$ is finite and positive;
-hence $L(R)>0$.
+For the finite maximal packet set
+\begin{equation}
+ L_S(R)=\sum_{u\in D_R}|\widehat c(u)|^2\kappa(u).
+ \tag{5.2}
+\end{equation}
+Every node in $D_R$ is nonreal, hence differs from $0$ and $1$, so (5.1) is finite and positive.
 
-\begin{proposition}[Sharp quadratic packet]
-Under the hypotheses of Theorem~\ref{thm:master}(3),
+\begin{proposition}[Sharp quadratic half-order]
+\label{prop:halforder}
+Under the transverse hypothesis,
 \[
- \sqrt N\,B(R)^{-2N}E_{2,N}(R)\longrightarrow L(R).
+ \sqrt N\,B_S(R)^{-2N}E_{2,N}(R)\longrightarrow L_S(R)>0.
 \]
 \end{proposition}
 
 \begin{proof}
-Expand the square energy into diagonal and mixed coordinate terms.  For one coordinate $u$, the
-diagonal row energy is
+Expand the square energy into diagonal and mixed source terms.  For one maximal coordinate $u$,
+the diagonal row is
+\begin{equation}
+ \sum_{k=0}^N\binom Nk^2|u|^{2k}|1-u|^{2(N-k)}.
+ \tag{5.3}
+\end{equation}
+The central-binomial local limit gives
 \[
- \sum_{k=0}^{N}\binom Nk^2|u|^{2k}|1-u|^{2(N-k)}.
- \tag{5.5}
+ \sqrt N\,B_S(R)^{-2N}(5.3)\longrightarrow\kappa(u)
 \]
-The classical central-binomial local limit, applied with the two positive weights $|u|$ and
-$|1-u|$, gives \cite{LorentzBernstein}
-\[
- \sqrt N\,B^{-2N}(5.5)\longrightarrow\kappa(u)
- \qquad(|u|+|1-u|=B).
- \tag{5.6}
-\]
+\cite{LorentzBernstein}.  Lemma~\ref{lem:reflected} makes every mixed term between distinct
+maximal nodes exponentially smaller than $B_S(R)^{2N}/\sqrt N$.
 
-For distinct $u,v\in U_R$, the reflected mixed row is an exponential moment whose maximal
-modulus can equal $B^2$ only if the maximizing phases agree.  Phase separation therefore gives a
-number $\gamma_{u,v}<B^2$ bounding that mixed row by $\gamma_{u,v}^N$.  Finiteness of $U_R$
-gives one common strict mixed gap.  The complement of $D$ has amplitude at most $\beta<B$;
-absolute summability of $c$ bounds its complete coefficient $\ell^1$ norm by
-$O(\beta^N)$.  Cauchy--Schwarz then makes every mixed maximal--complement and
-complement--complement contribution exponentially smaller than $B^{2N}/\sqrt N$.
-
-Only the diagonal limits (5.6) survive.  Multiplication by the squared aggregate weights and
-summation over the finite packet gives (5.4).
+The complementary packet has amplitude at most $\beta(R)<B_S(R)$.  The atomic binomial theorem
+and absolute summability give its coefficient $\ell^1$ norm as $O(\beta(R)^N)$.  Cauchy--Schwarz
+then makes maximal--complement and complement--complement terms exponentially negligible at the
+half-order scale.  The positive diagonal limits are the only survivors; summing them gives
+(5.2), which is strictly positive because $D_R$ is nonempty and its aggregate weights are
+nonzero.
 \end{proof}
 
-\begin{proposition}[All real-$p$ nth-root spectra]
-For every real $p\ge1$,
+\begin{proposition}[Universal positive-power spectrum]
+\label{prop:allp}
+For every real $p>0$,
 \[
- E_{p,N}(R)^{1/N}\longrightarrow B(R)^p.
+ E_{p,N}(R)^{1/N}\longrightarrow B_S(R)^p.
 \]
 \end{proposition}
 
 \begin{proof}
-The atomic binomial theorem gives the complete packet $\ell^1$ bound
+Let $d_N=N+1$, $Q_N=E_{2,N}(R)$, and
+$L_{1,N}=\sum_k|A_{N,k}(R)|$.  The atomic binomial theorem gives
 \begin{equation}
- \sum_{k=0}^{N}|A_{N,k}(R)|
- \le\left(\sum_i|c_i|\right)B(R)^N.
- \tag{5.7}
+ L_{1,N}\le C B_S(R)^N,qquad C=\sum_{u\in S}|\widehat c(u)|.
+ \tag{5.4}
 \end{equation}
-For the lower bound, choose one $i_*\in D$ and evaluate the coefficient transform at
-$w=\omega(u_{i_*})$.  By (5.3), the $i_*$ mode has modulus $B(R)$.  Every other coordinate has
-strictly smaller modulus: outside $D$ this follows from (5.1), and inside $D$ from phase
-separation.  Injectivity and $c_{i_*}\ne0$ therefore give, for all sufficiently large $N$,
+Since every coefficient is bounded by $L_{1,N}$,
 \begin{equation}
- \left|\sum_{k=0}^{N}A_{N,k}(R)w^k\right|
- \ge c_*B(R)^N
- \tag{5.8}
+ E_{p,N}(R)\le d_N L_{1,N}^p.
+ \tag{5.5}
 \end{equation}
-with $c_*>0$.  The finite-dimensional inequalities between the coefficient transform, the
-$\ell^1$ norm, and the real-$p$ energy, applied to (5.7)--(5.8), squeeze the $N$th root of
-$E_{p,N}(R)$ to $B(R)^p$.  Polynomial factors in $N$ disappear under the $N$th root.
+This gives the upper exponential rate $B_S(R)^p$.
+
+Put $q=p/2$.  Finite concavity for $0<q\le1$ and the power-mean inequality for $q\ge1$ give the
+uniform comparison
+\begin{equation}
+ Q_N^q\le d_N^q E_{p,N}(R).
+ \tag{5.6}
+\end{equation}
+Proposition~\ref{prop:halforder} implies, eventually,
+\[
+ Q_N\ge \frac{L_S(R)}2\frac{B_S(R)^{2N}}{N+1}.
+\]
+Combining this with (5.6) bounds $E_{p,N}(R)$ below by a positive multiple of
+$B_S(R)^{pN}$ divided by a fixed real power of $N+1$.  Together with (5.4)--(5.5), the $N$th
+roots are squeezed to $B_S(R)^p$.  This argument works uniformly for the entire range $p>0$;
+no norm-specific phase isolation is required beyond the quadratic half-order theorem.
 \end{proof}
 
 \begin{proposition}[Square-root Abel transfer]
-As $t\uparrow B(R)^{-2}$,
+\label{prop:abel}
+As $t\uparrow A_S(R)=B_S(R)^{-2}$,
 \[
- \sqrt{1-B(R)^2t}\,\chi_m(R,t)\longrightarrow\sqrt\pi L(R).
+ \sqrt{1-B_S(R)^2t}\,\chi_m(R,t)
+ \longrightarrow\sqrt\pi L_S(R).
 \]
 \end{proposition}
 
 \begin{proof}
-Write $q=B(R)^2t$.  The preceding quadratic proposition gives
+Set $q=B_S(R)^2t$.  Proposition~\ref{prop:halforder} says
 \[
- E_{2,N}(R)B(R)^{-2N}=\frac{L(R)+o(1)}{\sqrt N}.
+ B_S(R)^{-2N}\mathcal P_m(N,R)=\frac{L_S(R)+o(1)}{\sqrt N}.
 \]
-The Abelian transfer
+The classical Abelian limit
 \[
- \sqrt{1-q}\sum_{N\ge0}\frac{q^N}{\sqrt N}\longrightarrow\sqrt\pi
+ \sqrt{1-q}\sum_{N\ge1}\frac{q^N}{\sqrt N}\longrightarrow\sqrt\pi
  \qquad(q\uparrow1)
 \]
-then gives the conclusion \cite[Chapter XIII]{HardyDivergentSeries}; a finite initial segment vanishes after multiplication by
-$\sqrt{1-q}$, and the $o(N^{-1/2})$ tail is controlled by the defining convergence.
+then proves the assertion \cite{HardyDivergentSeries}.  For completeness, split the error at a
+large fixed index.  The finite initial segment vanishes after multiplication by $\sqrt{1-q}$;
+on the tail, the defining $o(N^{-1/2})$ bound is dominated by an arbitrary multiple of the
+displayed model series.  Let the error multiple tend to zero.
 \end{proof}
 
-\section{Confocal flow and normalization-free recession}
-\label{sec:confocal}
+\section{Confocal recession and presentation rigidity}
+\label{sec:rigidity}
 
-The identity
+The selected amplitude can be analyzed without the coefficient packet.  The following exact
+collar also yields the finite-scale stability estimate in the main theorem.
+
+\begin{lemma}[Confocal collar]
+\label{lem:collar}
+If $|u|\le M<R$, then
 \begin{equation}
- |z/R|+|1-z/R|=1+\frac{|z|+|R-z|-R}{R}
+ 0\le\delta_R(u)-\delta_\infty(u)
+ \le\frac{M^2}{2(R-M)}.
  \tag{6.1}
 \end{equation}
-explains the appearance of the confocal distance.  We now quantify its large-scale limit.
-
-\begin{lemma}[Pointwise confocal collar]
-If $|z|\le M<R$, then
-\begin{equation}
- 0\le \delta_R(z)-\delta_\infty(z)
- \le\frac{M^2}{2(R-M)}.
- \tag{6.2}
-\end{equation}
-Moreover $R\mapsto\delta_R(z)$ is nonincreasing.
+Moreover $R\mapsto\delta_R(u)$ is nonincreasing.
 \end{lemma}
 
 \begin{proof}
-The lower bound follows from
-$R-\Rea z\le|R-z|$.  For the upper bound write $z=x+iy$ and $a=R-x>0$.  Then
+With $u=x+iy$ and $a=R-x>0$,
 \[
- \delta_R(z)-\delta_\infty(z)=\sqrt{a^2+y^2}-a
- =\frac{y^2}{\sqrt{a^2+y^2}+a}
- \le\frac{y^2}{2a}.
+ \delta_R(u)-\delta_\infty(u)
+ =\sqrt{a^2+y^2}-a
+ =\frac{y^2}{\sqrt{a^2+y^2}+a}.
 \]
-Since $|y|\le|z|\le M$ and $a=R-x\ge R-M$, (6.2) follows.  If $R_2\ge R_1$, the triangle
-inequality gives
-\[
- |R_2-z|\le(R_2-R_1)+|R_1-z|,
-\]
-which is exactly $\delta_{R_2}(z)\le\delta_{R_1}(z)$.
+The expression is nonnegative, while $|y|\le M$ and $a\ge R-M$ give (6.1).  If $R_2\ge R_1$,
+then
+$|R_2-u|\le R_2-R_1+|R_1-u|$, which is exactly
+$\delta_{R_2}(u)\le\delta_{R_1}(u)$.
 \end{proof}
 
-\begin{proposition}[Envelope collar and exact radical]
-\label{prop:envelope}
-For $R>M$,
-\begin{equation}
- \Delta\le D(R)\le\Delta+\frac{M^2}{2(R-M)}.
- \tag{6.3}
-\end{equation}
-The envelope $D(R)$ is nonnegative and nonincreasing, and
-\begin{equation}
- D(R)=0\Longleftrightarrow\Delta=0
- \Longleftrightarrow S\subset[0,\infty).
- \tag{6.4}
-\end{equation}
-\end{proposition}
+\begin{proof}[Proof of Theorem~\ref{thm:master}(4)]
+Take suprema in Lemma~\ref{lem:collar} to obtain (2.14).  The suprema are finite because $S$ is
+nonempty and bounded.  Formula (4.3) gives
+$B_S(R)=1+D_S(R)/R$, hence the exact identity (2.15).
 
-\begin{proof}
-Take suprema in the pointwise estimates.  Boundedness of $S$ justifies the suprema, and
-nonemptiness supplies nonnegativity.  Equation (6.3) implies $D(R)=0\Rightarrow\Delta=0$; the
-reverse implication is also direct because if $z\ge0$ and $z<R$, then
-$|z|+|R-z|-R=0$.  Finally $|z|-\Rea z=0$ holds exactly when $z$ is a nonnegative real number.
-Taking the supremum over a nonempty set proves (6.4).
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:master}(5)--(6)]
-By (6.1), $B(R)=1+D(R)/R$.  Since $B(R)\ge1$, $A(R)=B(R)^{-2}$ equals one exactly when $D(R)=0$.
-Proposition~\ref{prop:envelope}, more precisely (6.4), proves (2.16).
-
-The collar (6.3) gives $D(R)\to\Delta$.  Therefore
-\begin{align*}
- R(B(R)^2-1)
- &=R\left[\left(1+\frac{D(R)}R\right)^2-1\right] \\
- &=2D(R)+\frac{D(R)^2}{R}
- \longrightarrow2\Delta.
-\end{align*}
-Also
+The lower bound in (2.16) follows from $D_S(R)\ge\Delta_S$ and $D_S(R)^2\ge0$.  For the upper
+bound, (2.14) gives
 \[
- 1-A(R)=\frac{B(R)^2-1}{B(R)^2},
+ 2(D_S(R)-\Delta_S)\le\frac{M^2}{R-M},
 \]
-and $B(R)\to1$.  Multiplying the first limit by $B(R)^{-2}$ proves the second.
+while the elementary bound $D_S(R)\le2M$ gives
+$D_S(R)^2/R\le4M^2/R$.  This proves (2.16).  Since
+$A_S(R)=(1+D_S(R)/R)^{-2}$, direct algebra proves (2.17).
+
+Now $\delta_\infty(u)=0$ holds exactly for $u\in[0,\infty)$.  Thus
+$\Delta_S=0$ is equivalent to $S\subset[0,\infty)$.  For $R>M$, such a source has
+$\delta_R(u)=0$ pointwise, and the converse follows from $D_S(R)\ge\Delta_S$.  This proves
+(2.18).  Finally (2.14) implies $D_S(R)\to\Delta_S$; (2.15) and (2.17) yield (2.19).
+
+To see optimality below the source radius, take the allowed positive node $u=M$ with $0<R<M$.
+Its transverse defect is zero, whereas
+\[
+ |M/R|+|1-M/R|=2M/R-1>1.
+\]
+Thus transverse neutrality alone cannot prevent a spurious superunit amplitude at any uniformly
+smaller scale.
 \end{proof}
 
-This is the step that removes the fixed-scale artifact.  For every source, $A(R)\to1$ as
-$R\to\infty$, so proximity to one has no invariant content.  The first recession does: it
-recovers exactly $2\Delta$.
+We now prove the new rigidity clause.  Its argument is short because the earlier work has made
+the observation sequence common and the asymptotic base positive.
 
-\section{Gibbs free energy as a corollary}
+\begin{proof}[Proof of Theorem~\ref{thm:master}(5)]
+Apply Lemma~\ref{lem:aggregate} to both raw sources.  Their intrinsic sources satisfy the
+injectivity, nonvanishing, boundedness, orientation, and cofinite-neutrality assumptions used in
+Propositions~\ref{prop:atomic}--\ref{prop:halforder}.
+
+Fix $R>\max(M,M')$.  The common moment sequence produces one common positive observation
+\[
+ Q_N(R)=\mathcal P_m(N,R).
+\]
+For the first presentation, Proposition~\ref{prop:halforder} gives
+\[
+ Q_N(R)^{1/N}\longrightarrow B_S(R)^2;
+\]
+for the second, the same sequence satisfies
+\[
+ Q_N(R)^{1/N}\longrightarrow B_{S'}(R)^2.
+\]
+Uniqueness of limits gives equality of the two squares.  Both bases are strictly larger than one,
+so
+\[
+ B_S(R)=B_{S'}(R).
+\]
+This proves the first equality in (2.20) for every common exterior scale.
+
+Normalize the same common sequence by this common base.  Each presentation gives a half-order
+limit:
+\[
+ \sqrt N\,\frac{Q_N(R)}{B_S(R)^{2N}}\longrightarrow L_S(R),
+ \qquad
+ \sqrt N\,\frac{Q_N(R)}{B_S(R)^{2N}}\longrightarrow L_{S'}(R).
+\]
+Uniqueness again gives $L_S(R)=L_{S'}(R)$.
+
+Finally the first equality holds for every sufficiently large $R$.  Therefore the functions
+\[
+ R(B_S(R)^2-1),\qquad R(B_{S'}(R)^2-1)
+\]
+are eventually identical.  Their limits are respectively $2\Delta_S$ and $2\Delta_{S'}$ by
+(2.19).  Uniqueness of the limit yields (2.21).
+\end{proof}
+
+\begin{remark}
+The proof deliberately avoids a determinacy assertion for arbitrary complex atomic measures.
+It establishes a quotient statement: within the stated admissible class, every presentation
+lies over the same selected confocal field and the same first recession.  This is stronger than
+saying that each presentation separately admits an asymptotic formula.
+\end{remark}
+
+\section{A Gibbs radical/free-energy corollary}
 \label{sec:gibbs}
 
-Define the scale free energy
-\begin{equation}
- F(R)=-\log A(R).
- \tag{7.1}
-\end{equation}
+Define
+\[
+ F_S(R)=-\log A_S(R).
+\]
 
 \begin{corollary}[Radical/free-energy split]
 For every $R>M$,
-\begin{equation}
- F(R)=2\log B(R),
- \qquad
- F(R)=0\Longleftrightarrow S\subset[0,\infty),
- \tag{7.2}
-\end{equation}
+\[
+ F_S(R)=2\log B_S(R),\qquad
+ F_S(R)=0\Longleftrightarrow S\subset[0,\infty),
+\]
 and
-\begin{equation}
- RF(R)\longrightarrow2\Delta.
- \tag{7.3}
-\end{equation}
+\[
+ RF_S(R)\longrightarrow2\Delta_S.
+\]
 \end{corollary}
 
 \begin{proof}
-The first identity is immediate from $A=B^{-2}$.  Since $B>0$, its logarithm vanishes exactly at
-$B=1$, and (2.16) identifies the radical.  Finally
+The first identity follows from $A_S=B_S^{-2}$.  Since $B_S(R)>0$, its logarithm vanishes exactly
+when $B_S(R)=1$, and (2.18) identifies the radical.  Finally
 \[
- F(R)=2\log\left(1+\frac{D(R)}R\right).
+ F_S(R)=2\log\left(1+\frac{D_S(R)}R\right),
 \]
-Since $D(R)\to\Delta$, the elementary limit
-$R\log(1+D(R)/R)\to\Delta$ proves (7.3).
+where $D_S(R)\to\Delta_S$.  The elementary limit
+$R\log(1+D_S(R)/R)\to\Delta_S$ proves the recession formula.
 \end{proof}
 
-The terminology is deliberately modest.  This corollary does not introduce an independent
-thermal model; it packages the exact same boundary coordinate logarithmically.  Its radical and
-its tropical first recession are already fixed by Theorem~\ref{thm:master}.
+This is a conceptual repackaging of the master theorem, not a second independent result.  The
+``free energy'' has no additional thermodynamic hypothesis: its radical and first recession are
+exactly those already selected by the positive scale field.
 
-\section{Xi application and the Connes programme}
+\section{The Xi source and the Connes programme}
 \label{sec:xi}
 
 Let $\rho=\tfrac12+\delta+i\gamma$ run over the nontrivial zeros of the Riemann zeta function,
-with analytic multiplicity, and put
+with analytic multiplicity, and set
 \begin{equation}
- \lambda_\rho=-\frac{1}{(\rho-\tfrac12)^2}
+ \lambda_\rho=-\frac1{(\rho-\tfrac12)^2}
  =\frac{\gamma^2-\delta^2+2i\delta\gamma}
-        {(\delta^2+\gamma^2)^2}.
+ {\left(\delta^2+\gamma^2\right)^2}.
  \tag{8.1}
 \end{equation}
-The zero-counting estimate implies $\sum_\rho|\lambda_\rho|<\infty$ and
-$\lambda_\rho\to0$ cofinally.  If an aggregated value $\lambda$ occurs with multiplicity
-$\nu(\lambda)$, use the node $z_\lambda=\lambda$ and the explicit weight
+Aggregate repeated values and give an aggregate value $\lambda$ the weight
 $c_\lambda=\nu(\lambda)\lambda$.  Then
 \[
- m_n=\sum_\lambda c_\lambda z_\lambda^n
-    =\sum_\rho\lambda_\rho^{n+1}.
+ m_n=\sum_\rho\lambda_\rho^{n+1}.
 \]
-Functional-equation and Schwarz symmetries make these moments real.  To identify the zeroth
-pointing correctly, write $\Xi_c(w)=\xi(\tfrac12+w)$.  Pairing the zeros $a$ and $-a$ in the
-centered Hadamard product gives, locally at the origin,
+The reciprocal-square sum is absolutely convergent, the nodes are bounded and tend cofinally to
+zero, and the functional equation together with Schwarz symmetry makes every $m_n$ real.
+
+To identify the pointing, write $\Xi_c(w)=\xi(\tfrac12+w)$.  Pairing the centered zeros $a,-a$
+in the Hadamard product gives
 \[
- \frac{\Xi_c(w)}{\Xi_c(0)}
-   =\prod_{\{a,-a\}}\left(1-\frac{w^2}{a^2}\right).
+ \frac{\Xi_c(w)}{\Xi_c(0)}=
+ \prod_{\{a,-a\}}\left(1-\frac{w^2}{a^2}\right).
 \]
-The absolute convergence of the reciprocal squares permits two logarithmic differentiations at
-$w=0$, and hence
+Absolute convergence of the reciprocal squares permits two logarithmic derivatives at zero and
+yields
 \begin{equation}
- m_0=-\sum_\rho\frac{1}{(\rho-\tfrac12)^2}
-     =\frac{\Xi_c''(0)}{\Xi_c(0)}=:\kappa_\Xi.
+ m_0=-\sum_\rho\frac1{(\rho-\tfrac12)^2}
+ =\frac{\Xi_c''(0)}{\Xi_c(0)}>0.
  \tag{8.2}
 \end{equation}
-This is not the more familiar endpoint reciprocal moment
-$2+\gamma_{\!E}-\log(4\pi)$.  Riemann's theta representation \cite{TitchmarshZeta} may be
-normalized as
+The last inequality follows directly from Riemann's theta-kernel representation
 \[
- \Xi_c(w)=\int_0^\infty \Phi(u)\cosh(wu)\,du,
- \qquad \Phi(u)>0.
+ \Xi_c(w)=\int_0^\infty\Phi(u)\cosh(wu)\,du,
+ \qquad \Phi(u)>0,
 \]
-Differentiation at the origin therefore gives the source-side certificate
-\[
- \kappa_\Xi=
- \frac{\int_0^\infty u^2\Phi(u)\,du}
-      {\int_0^\infty \Phi(u)\,du}>0.
-\]
+because the quotient in (8.2) is
+$\int u^2\Phi(u)\,du/\int\Phi(u)\,du$.
 
-If a node in (8.1) is real, then $\delta\gamma=0$.  Nontrivial zeros have $\gamma\ne0$, so
-$\delta=0$ and $\lambda_\rho=\gamma^{-2}>0$.  Consequently
+The transverse defect of one reciprocal-square node is exact:
 \begin{equation}
- \RH\quad\Longleftrightarrow\quad
- \{\lambda_\rho\}\subset[0,\infty)
- \quad\Longleftrightarrow\quad
- \Delta_\Xi=0.
+ \delta_\infty(\lambda_\rho)
+ =\frac{2\delta^2}{(\delta^2+\gamma^2)^2}.
  \tag{8.3}
 \end{equation}
-Theorem~\ref{thm:master} therefore supplies, for every sufficiently large scale,
+Indeed $|\lambda_\rho|=(\delta^2+\gamma^2)^{-1}$ and its real part is displayed in (8.1).
+In particular, a real reciprocal-square node is positive exactly when $\delta=0$; nontrivial
+zeros have $\gamma\ne0$.  Therefore
 \begin{equation}
- \RH\quad\Longleftrightarrow\quad A_\Xi(R)=1
- \quad\Longleftrightarrow\quad F_\Xi(R)=0.
+ \RH\Longleftrightarrow S_\Xi\subset[0,\infty)
+ \Longleftrightarrow\Delta_\Xi=0
+ \Longleftrightarrow A_\Xi(R)=1\quad(R>M_\Xi).
  \tag{8.4}
 \end{equation}
 
-Equation (8.4) is not advertised as progress on the missing RH estimate.  The mathematical
-advance is the general carrier theorem preceding it: the observation retains the complete
-pointed source, identifies its finite active packet in the transverse phase, and removes the
-normalization by an exact recession.  Proving $\Delta_\Xi=0$ remains precisely the arithmetic
-problem.
+Equation (8.4) locates, but does not solve, the arithmetic problem.  The theorem proves that the
+positive field carrying this condition is source-faithful, has a finite selected packet at every
+transverse scale, and has a presentation-rigid recession.  It does not prove
+$\Delta_\Xi=0$.
 
-The relation to the Connes programme is similarly limited and concrete.  The theorem provides a
-candidate scalar observable that a finite-Euler-product or semilocal construction may choose to
-realize.  If it does realize the full family $P_{N,m}(x)$, source faithfulness guarantees that the
-complete pointed moment source is present, while (2.14)--(2.17) identify the required boundary
-and scale limits.  We do \emph{not} claim that every Connes-type proof must realize this particular
-observable.  Nor do finite self-adjointness or finite spectral agreement imply its cofinal
-convergence.  In the 2025 zeta spectral-triple proposal, rigorous convergence of normalized
-determinants toward $\Xi$ remains a separate global problem \cite{ConnesConsaniMoscovici2025}.
+The relationship to Connes' programme is consequently precise.  A finite or semilocal spectral
+construction may realize the observation field (2.5), in which case Theorem~\ref{thm:master}
+guarantees that the complete pointed source and the intrinsic boundary scale are retained.  The
+theorem does not assert that every Connes-type construction must use this observable, and finite
+self-adjointness or finite spectral agreement does not imply the required cofinal divisor
+transport.  In the 2025 zeta spectral-triple construction, numerical spectra reproduce low zeros,
+while convergence of normalized determinants toward the completed zeta function remains a
+separate proposed analytic step \cite{ConnesConsaniMoscovici2025}.
 
-\section{Comparison, scope, and open problems}
+\section{Scientific scope and further questions}
 
-The source chart differs from a Hausdorff positivity criterion.  Positivity of all Bernstein
-coordinates can characterize support on $[0,1]$, but it discards signed phase information unless
-the entire signed packet is retained.  Here the positive scalar $P_{N,m}$ remains source-faithful
-because its \emph{scale coefficients} expose the moment prefix triangularly.  This is also why
-the theorem is not a routine instance of generic phase retrieval: recovery is global on the
-pointed half-space and uses one structured polynomial, not a generic family of frame
-intensities.
+The main theorem establishes more than a list of compatible estimates.  It gives a three-level
+identification driven by one field:
+\[
+ \boxed{\begin{gathered}
+ \text{positive scale coefficients}
+ \Longrightarrow\text{oriented moment source}\\
+ \Longrightarrow\text{all-}p\text{ confocal spectrum}
+ \Longrightarrow\text{presentation-rigid recession}
+ \end{gathered}}
+\]
+The first arrow is an exact global chart, the second is an exact atomic identity plus a sharp
+finite selector, and the third follows from uniqueness of asymptotic limits.  Removing any one
+level breaks the conclusion: a fixed-scale intensity need not recover orientation; a moment chart
+alone does not select complex geometry; and an asymptotic attached separately to each
+presentation is not yet an invariant.
 
-The exact real-$p$ spectrum and the sharp $p=2$ law have different roles.  Equation (2.13) says
-that the selected confocal amplitude is independent of the choice of finite packet norm.  The
-quadratic norm is distinguished because diagonal/mixed decomposition supplies the explicit
-$N^{-1/2}$ coefficient and hence the square-root Abel transfer.  Thus the $p$-family is a genuine
-strengthening, not a list of unrelated observables.
+The result differs from Hausdorff positivity because no support criterion is inferred merely from
+signs of finite differences.  It differs from generic phase retrieval because one structured
+scalar polynomial recovers the entire pointed prefix globally, rather than a generic vector up to
+global phase.  It differs from a routine Abelian theorem because the singular radius, coefficient,
+and first recession are all tied back to one source-faithful observation and are invariant across
+the admissible presentation fibre.
 
-Three limitations are structural.
-\begin{enumerate}
-  \item The half-disk hypothesis $R>2M$ excludes reflected phase collisions by a simple sharp
-        argument.  Replacing it by a complete classification of reflected fibres could extend
-        the theorem to smaller scales.
-  \item The source is assumed pre-aggregated and injectively indexed.  A quotient formulation in
-        terms of nonzero aggregate fibres should remove this bookkeeping condition.
-  \item For the Xi source, no estimate toward $\Delta_\Xi=0$ is proved.  The theorem constructs
-        and analyzes the carrier; it does not solve its arithmetic radical condition.
-\end{enumerate}
-
-The most natural next analytic problem is stability.  Formula (3.3) gives exact finite inversion,
-and (2.10) excludes critical points, but quantitative condition numbers can deteriorate as
-$m_0\downarrow0$ or $N\to\infty$.  A useful cofinal theory would seek weighted norms in which the
-inverse chart, the Abel boundary, and the recession limit are jointly stable.
+Two open questions remain natural.  First, exact inversion is not the same as uniformly stable
+inversion: the condition number of the triangular chart can deteriorate with $N$ or as
+$m_0\downarrow0$.  Weighted norms adapted simultaneously to the chart and the Abel boundary may
+produce a useful quantitative cofinal stability theory.  Second, the admissible class is defined
+by cofinite transverse neutrality.  It would be valuable to characterize the largest class of
+complex moment presentations for which the positive scale field still rigidifies the confocal
+geometry.  Neither question changes the unconditional theorem proved here.
 
 \begin{thebibliography}{99}
 
@@ -867,12 +907,6 @@ G.~H.~Hardy,
 G.~G.~Lorentz,
 \newblock \emph{Bernstein Polynomials}, second edition,
 \newblock Chelsea Publishing, New York, 1986.
-
-\bibitem{TitchmarshZeta}
-E.~C.~Titchmarsh,
-\newblock \emph{The Theory of the Riemann Zeta-Function}, second edition, revised by
-D.~R.~Heath-Brown,
-\newblock Clarendon Press, Oxford, 1986.
 
 \bibitem{Zhang2023}
 R.~Zhang,
