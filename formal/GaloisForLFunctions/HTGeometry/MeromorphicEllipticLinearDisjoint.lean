@@ -126,7 +126,7 @@ theorem ellipticMeroFields_linearDisjoint
   apply IntermediateField.LinearDisjoint.of_basis_left (A := A) (L := B) b
   rw [linearIndependent_iff_ker]
   by_contra hrelation
-  let coefficientTranslation : Unit → B ≃+∗ B :=
+  let coefficientTranslation : Unit → B ≃+* B :=
     fun _ => (ellipticMeroFieldTranslationAlgEquiv tau sigma).toRingEquiv
   let ambientTranslation : Unit →
       meroField (Set.univ : Set ℂ) ≃+ meroField (Set.univ : Set ℂ) :=

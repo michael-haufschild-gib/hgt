@@ -78,7 +78,7 @@ theorem tensorRightSubalgebraMap_injective
   have hcomm := congrArg (Algebra.TensorProduct.comm C A B) hxy
   rw [comm_tensorRightSubalgebraMap, comm_tensorRightSubalgebraMap] at hcomm
   exact Module.Flat.rTensor_preserves_injective_linearMap
-    (M := A) R.val.toLinearMap R.val.injective hcomm
+    (M := A) R.val.toLinearMap (fun _ _ h => Subtype.ext h) hcomm
 
 /-- The right-subalgebra inclusion intertwines every automorphism acting on the left tensor
 factor. -/
@@ -144,7 +144,7 @@ theorem exists_fg_right_subalgebra_lifts_pair
 
 /-- A finitely generated subalgebra carries the finite-type instance required by algebraic
 specialization. -/
-def finiteTypeOfSubalgebraFG
+@[reducible] def finiteTypeOfSubalgebraFG
     {C B : Type*} [CommSemiring C] [CommSemiring B] [Algebra C B]
     (R : Subalgebra C B) (hR : R.FG) : Algebra.FiniteType C R :=
   ⟨(Subalgebra.fg_top R).mpr hR⟩

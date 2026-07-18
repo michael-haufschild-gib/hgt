@@ -83,9 +83,10 @@ theorem meromorphicEllipticCompositumTranslation_deriv
     meromorphicEllipticCompositumTranslationAlgEquiv sigma tau q x′ =
       (meromorphicEllipticCompositumTranslationAlgEquiv sigma tau q x)′ := by
   apply Subtype.ext
-  change addTranslationMeroEquiv q ((x : meroField Set.univ)′) =
-    (addTranslationMeroEquiv q (x : meroField Set.univ))′
-  exact addTranslationMeroEquiv_deriv q x
+  change addTranslationMeroEquiv q
+      (Differential.deriv (x : meroField Set.univ)) =
+    Differential.deriv (addTranslationMeroEquiv q (x : meroField Set.univ))
+  exact addTranslationMeroEquiv_deriv q (x : meroField Set.univ)
 
 /-! ## The finite source action -/
 

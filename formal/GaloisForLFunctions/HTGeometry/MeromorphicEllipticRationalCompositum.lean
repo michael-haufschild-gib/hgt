@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicEllipticCompositum
+import GaloisForLFunctions.HTGeometry.MeromorphicGammaOrbit
 import GaloisForLFunctions.HTGeometry.MeromorphicRatFuncTranslation
 import GaloisForLFunctions.HTGeometry.MeromorphicThetaDefect
 
@@ -49,9 +50,7 @@ local instance meromorphicEllipticRationalCompositumRatFuncAlgebra :
     Set.univ_nonempty Set.infinite_univ).toAlgebra
 
 local instance meromorphicEllipticRationalCompositumRatFuncDifferential :
-    Differential (RatFunc ℂ) where
-  deriv := Derivation.restrictScalars ℤ
-    (HTGeometry.ratFuncCoordinateDerivation ℂ)
+    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
 
 local instance meromorphicEllipticRationalCompositumDifferentialAlgebra :
     DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
@@ -163,30 +162,18 @@ noncomputable def addTranslationMeroAlgEquiv (q : ℂ) :
   { addTranslationMeroEquiv q with
     commutes' := addTranslationMeroEquiv_algebraMap_complex q }
 
+/-- The rational-coordinate embedding, bundled over the chosen complex constants without asking
+for a scalar-tower instance between the two independently constructed algebra structures. -/
+def meromorphicRatFuncAlgHom :
+    RatFunc ℂ →ₐ[ℂ] meroField (Set.univ : Set ℂ) :=
+  { algebraMap (RatFunc ℂ) (meroField Set.univ) with
+    commutes' := meromorphicRatFunc_algebraMap_complex }
+
 /-- The genuine image of `ℂ(X)` in the global meromorphic field, regarded as an intermediate
 field over `ℂ`. -/
 def meromorphicRationalCoordinateField :
-    IntermediateField ℂ (meroField (Set.univ : Set ℂ)) where
-  carrier := Set.range (algebraMap (RatFunc ℂ) (meroField Set.univ))
-  zero_mem' :=
-    ⟨0, map_zero (algebraMap (RatFunc ℂ) (meroField Set.univ))⟩
-  one_mem' :=
-    ⟨1, map_one (algebraMap (RatFunc ℂ) (meroField Set.univ))⟩
-  add_mem' := by
-    rintro _ _ ⟨x, rfl⟩ ⟨y, rfl⟩
-    exact ⟨x + y,
-      map_add (algebraMap (RatFunc ℂ) (meroField Set.univ)) x y⟩
-  mul_mem' := by
-    rintro _ _ ⟨x, rfl⟩ ⟨y, rfl⟩
-    exact ⟨x * y,
-      map_mul (algebraMap (RatFunc ℂ) (meroField Set.univ)) x y⟩
-  algebraMap_mem' c :=
-    ⟨algebraMap ℂ (RatFunc ℂ) c,
-      meromorphicRatFunc_algebraMap_complex c⟩
-  inv_mem' := by
-    rintro _ ⟨x, rfl⟩
-    exact ⟨x⁻¹,
-      map_inv₀ (algebraMap (RatFunc ℂ) (meroField Set.univ)) x⟩
+    IntermediateField ℂ (meroField (Set.univ : Set ℂ)) :=
+  meromorphicRatFuncAlgHom.fieldRange
 
 theorem mem_meromorphicRationalCoordinateField_iff
     (x : meroField (Set.univ : Set ℂ)) :
@@ -299,13 +286,16 @@ theorem addTranslationMeroAlgEquiv_mem_ellipticCompositum
     rw [(addTranslationMeroAlgEquiv q).commutes c]
     exact (meromorphicEllipticCompositum σ τ).algebraMap_mem c
   · intro a b ha hb hfa hfb
-    rw [map_add (addTranslationMeroAlgEquiv q) a b]
+    change addTranslationMeroEquiv q (a + b) ∈ _
+    rw [(addTranslationMeroEquiv q).map_add]
     exact (meromorphicEllipticCompositum σ τ).add_mem hfa hfb
   · intro a ha hfa
-    rw [map_inv₀ (addTranslationMeroAlgEquiv q) a]
+    change addTranslationMeroEquiv q a⁻¹ ∈ _
+    rw [map_inv₀ (addTranslationMeroEquiv q) a]
     exact (meromorphicEllipticCompositum σ τ).inv_mem hfa
   · intro a b ha hb hfa hfb
-    rw [map_mul (addTranslationMeroAlgEquiv q) a b]
+    change addTranslationMeroEquiv q (a * b) ∈ _
+    rw [(addTranslationMeroEquiv q).map_mul]
     exact (meromorphicEllipticCompositum σ τ).mul_mem hfa hfb
   exact hx
 
@@ -357,13 +347,16 @@ theorem addTranslationMeroAlgEquiv_mem_ellipticRationalCompositum
     rw [(addTranslationMeroAlgEquiv q).commutes c]
     exact (meromorphicEllipticRationalCompositum σ τ).algebraMap_mem c
   · intro a b ha hb hfa hfb
-    rw [map_add (addTranslationMeroAlgEquiv q) a b]
+    change addTranslationMeroEquiv q (a + b) ∈ _
+    rw [(addTranslationMeroEquiv q).map_add]
     exact (meromorphicEllipticRationalCompositum σ τ).add_mem hfa hfb
   · intro a ha hfa
-    rw [map_inv₀ (addTranslationMeroAlgEquiv q) a]
+    change addTranslationMeroEquiv q a⁻¹ ∈ _
+    rw [map_inv₀ (addTranslationMeroEquiv q) a]
     exact (meromorphicEllipticRationalCompositum σ τ).inv_mem hfa
   · intro a b ha hb hfa hfb
-    rw [map_mul (addTranslationMeroAlgEquiv q) a b]
+    change addTranslationMeroEquiv q (a * b) ∈ _
+    rw [(addTranslationMeroEquiv q).map_mul]
     exact (meromorphicEllipticRationalCompositum σ τ).mul_mem hfa hfb
   exact hx
 
@@ -428,8 +421,9 @@ theorem meromorphicEllipticRationalCompositumTranslation_deriv
       (meromorphicEllipticRationalCompositumTranslationAlgEquiv σ τ q x)′ := by
   dsimp only [meromorphicEllipticRationalCompositumTranslationAlgEquiv]
   apply Subtype.ext
-  change addTranslationMeroEquiv q ((x : meroField Set.univ)′) =
-    (addTranslationMeroEquiv q (x : meroField Set.univ))′
+  change addTranslationMeroEquiv q
+      (Differential.deriv (x : meroField Set.univ)) =
+    Differential.deriv (addTranslationMeroEquiv q (x : meroField Set.univ))
   exact addTranslationMeroEquiv_deriv q (x : meroField Set.univ)
 
 end

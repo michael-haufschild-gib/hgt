@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MultivariateEntireFrechetJet
+import GaloisForLFunctions.HTGeometry.SymmetricMultilinearPolarization
+import Mathlib.Analysis.Analytic.IteratedFDeriv
 
 /-!
 # Polarized mixed jets of compact-open multivariate entire sources
@@ -41,6 +43,25 @@ theorem polarizedJetEvalCLM_apply {d n : ℕ} (x : Fin d → ℂ)
   simp only [polarizedJetEvalCLM, ContinuousLinearMap.sum_apply,
     ContinuousLinearMap.smul_apply, directionalJetEvalCLM_apply]
 
+/-- For a genuinely Frechet-holomorphic source, the polarized continuous observation is exactly
+the ordinary ordered mixed Frechet jet. -/
+theorem polarizedJetEvalCLM_eq_iteratedFDeriv {d n : ℕ}
+    (x : Fin d → ℂ) (dirs : Fin n → (Fin d → ℂ))
+    (f : MultivariateEntire d) (hf : ContDiff ℂ (⊤ : ℕ∞) f.1) :
+    polarizedJetEvalCLM x dirs f =
+      iteratedFDeriv ℂ n f.1 x dirs := by
+  have hsymm : ∀ σ : Equiv.Perm (Fin n),
+      iteratedFDeriv ℂ n f.1 x (fun i ↦ dirs (σ i)) =
+        iteratedFDeriv ℂ n f.1 x dirs := by
+    intro σ
+    simpa [Function.comp_def] using
+      (hf.contDiffAt.iteratedFDeriv_comp_perm dirs σ)
+  rw [polarizedJetEvalCLM_apply]
+  simp_rw [directionalJetEval_eq_iteratedFDeriv _ _ f hf]
+  simpa [jetPolarizationCoeff, jetSubsetDirection] using
+    continuousMultilinearMap_symmetric_polarization
+      (iteratedFDeriv ℂ n f.1 x) dirs hsymm
+
 theorem continuousLinearMap_jetSubsetDirection {d n : ℕ}
     (L : (Fin d → ℂ) →L[ℂ] (Fin d → ℂ))
     (dirs : Fin n → (Fin d → ℂ)) (s : Finset (Fin n)) :
@@ -76,6 +97,17 @@ theorem orderedPartialJetEvalCLM_apply {d n : ℕ} (x : Fin d → ℂ)
     orderedPartialJetEvalCLM x word f =
       polarizedJetEvalCLM x (fun j ↦ coordinateJetDirection (word j)) f :=
   rfl
+
+/-- Ordered coordinate observations are the ordinary ordered coordinate values of the iterated
+Frechet derivative on every Frechet-holomorphic source. -/
+theorem orderedPartialJetEvalCLM_eq_iteratedFDeriv {d n : ℕ}
+    (x : Fin d → ℂ) (word : Fin n → Fin d)
+    (f : MultivariateEntire d) (hf : ContDiff ℂ (⊤ : ℕ∞) f.1) :
+    orderedPartialJetEvalCLM x word f =
+      iteratedFDeriv ℂ n f.1 x
+        (fun j ↦ coordinateJetDirection (word j)) := by
+  exact polarizedJetEvalCLM_eq_iteratedFDeriv x
+    (fun j ↦ coordinateJetDirection (word j)) f hf
 
 end
 

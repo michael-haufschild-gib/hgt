@@ -57,15 +57,21 @@ theorem exists_tensor_fraction_of_mem_sup
     (p := fun y _ => ∃ N D : A ⊗[C] B, D ≠ 0 ∧ mu N / mu D = y)
   · rintro y (hy | hy)
     · refine ⟨(⟨y, hy⟩ : A) ⊗ₜ[C] (1 : B), 1, one_ne_zero, ?_⟩
-      rw [show mu 1 = 1 from map_one mu, div_one]
-      simp only [mu, intermediateFieldTensorMulMap_tmul,
-        Subtype.coe_mk, Subtype.coe_one, mul_one]
+      have hmuOne : mu (1 : A ⊗[C] B) = 1 :=
+        (intermediateFieldTensorMulMap C E A B).map_one
+      rw [hmuOne, div_one]
+      simp only [mu, intermediateFieldTensorMulMap_tmul]
+      change y * 1 = y
+      exact mul_one y
     · refine ⟨(1 : A) ⊗ₜ[C] (⟨y, hy⟩ : B), 1, one_ne_zero, ?_⟩
-      rw [show mu 1 = 1 from map_one mu, div_one]
-      simp only [mu, intermediateFieldTensorMulMap_tmul,
-        Subtype.coe_mk, Subtype.coe_one, one_mul]
+      have hmuOne : mu (1 : A ⊗[C] B) = 1 :=
+        (intermediateFieldTensorMulMap C E A B).map_one
+      rw [hmuOne, div_one]
+      simp only [mu, intermediateFieldTensorMulMap_tmul]
+      change 1 * y = y
+      exact one_mul y
   · intro c
-    refine ⟨algebraMap C (A ⊗[C] B) c, 1, one_ne_zero, ?_⟩
+    refine ⟨(algebraMap C A c) ⊗ₜ[C] (1 : B), 1, one_ne_zero, ?_⟩
     simp [mu]
   · intro y z hy hz hyRep hzRep
     obtain ⟨Ny, Dy, hDy, hyEq⟩ := hyRep

@@ -164,9 +164,7 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
     exact hvim v hv (by rw [hvzero]; rfl)
   have hv1 : ∀ v ∈ U, v ≠ 1 := by
     intro v hv hvone
-    have := hvhalf v hv
-    rw [hvone] at this
-    norm_num at this
+    exact hvim v hv (by rw [hvone]; rfl)
   have hmixed : ∀ v ∈ U, ∀ w ∈ U, v ≠ w →
       ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
         ∀ n : ℕ, ‖reflectedBernsteinCrossMoment v w n‖ ≤ gamma ^ n := by

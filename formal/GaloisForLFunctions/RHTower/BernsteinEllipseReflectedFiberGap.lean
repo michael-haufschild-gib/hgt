@@ -27,9 +27,11 @@ theorem eq_one_sub_conj_of_norm_eq_norm_one_sub
     u = 1 - conj u := by
   apply Complex.ext
   · have hsq := congrArg (fun x : ℝ => x ^ 2) h
+    change ‖u‖ ^ 2 = ‖1 - u‖ ^ 2 at hsq
     rw [Complex.sq_norm, Complex.sq_norm] at hsq
     simp only [Complex.normSq_apply, Complex.sub_re, Complex.one_re,
-      Complex.sub_im, Complex.one_im, map_sub, map_one, Complex.conj_re] at hsq ⊢
+      Complex.sub_im, Complex.one_im] at hsq
+    simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
     nlinarith
   · simp
 
@@ -39,8 +41,8 @@ lemma conj_bernsteinAffineRowCoefficient_one_sub_conj
     conj (bernsteinAffineRowCoefficient (1 - conj u) n k) =
       (n.choose k : ℂ) * (1 - u) ^ k * u ^ (n - k) := by
   simp only [bernsteinAffineRowCoefficient, map_mul, map_pow, map_sub, map_one,
-    map_natCast, map_star, star_star]
-  ring
+    map_natCast]
+  simp
 
 /-- Exact central-binomial formula for the sole nontrivial equal-phase fibre. -/
 theorem reflectedBernsteinCrossMoment_one_sub_conj
@@ -67,14 +69,14 @@ theorem reflectedBernsteinCrossMoment_one_sub_conj
               (u ^ k * u ^ (n - k)) *
               ((1 - u) ^ (n - k) * (1 - u) ^ k) := by ring
         _ = (n.choose k : ℂ) ^ 2 * (u ^ n * (1 - u) ^ n) := by
-          rw [← pow_add, ← pow_add]
-          congr 2 <;> omega
+          rw [← pow_add, Nat.add_sub_of_le hkn, ← pow_add,
+            Nat.sub_add_cancel hkn]
+          ring
     _ = (∑ k ∈ Finset.range (n + 1), (n.choose k : ℂ) ^ 2) *
           (u * (1 - u)) ^ n := by rw [Finset.sum_mul]
     _ = (Nat.centralBinom n : ℂ) * (u * (1 - u)) ^ n := by
       congr 1
-      rw [← Nat.cast_pow, ← Nat.cast_sum, Nat.sum_range_choose_sq,
-        Nat.centralBinom_eq_two_mul_choose]
+      exact_mod_cast Nat.sum_range_choose_sq n
 
 /-- The central binomial coefficient has the elementary exponential envelope `4^n`. -/
 theorem centralBinom_le_four_pow (n : ℕ) :
@@ -83,8 +85,7 @@ theorem centralBinom_le_four_pow (n : ℕ) :
   calc
     (2 * n).choose n ≤ 2 ^ (2 * n) := Nat.choose_le_two_pow _ _
     _ = 4 ^ n := by
-      rw [show 2 * n = n * 2 by omega, pow_mul]
-      norm_num
+      rw [show (4 : ℕ) = 2 ^ 2 by norm_num, ← pow_mul]
 
 /-- The exact reflected-fibre moment is controlled by the geometric base
 `4 * |u| * |1-u|`. -/
@@ -131,7 +132,7 @@ theorem exists_reflectedBernsteinCrossMoment_gap_of_distinct_equalAmplitude
       refine ⟨gamma, by positivity, ?_, ?_⟩
       · rw [← huB]
         exact four_mul_norm_mul_norm_one_sub_lt_amplitude_sq_of_ne_reflection
-          (fun h => huv h.symm)
+          huv
       · intro n
         exact norm_reflectedBernsteinCrossMoment_one_sub_conj_le u n
   · obtain ⟨gamma, hgamma0, hgamma, hpoint⟩ :=

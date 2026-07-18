@@ -116,23 +116,57 @@
   `‖evenCentralIndicator a‖² = 2a` should be in/near `ConstrainedProlateOperator`
   (`evenCentralIndicator` section).  Deliverable: `Σ' j, ℓ_j(a)² ≤ 2a`, matching L1's
   `hbessel` with `lam := a`.
-- [ ] **L6 — Fuchs fixed-index asymptotics** for the true prolate eigenvalues
+- [x] **L6c — the minimal leakage contract** (`ConstrainedProlateLeakageStructure.lean`,
+  16 theorems, axiom-clean).  Isolates exactly what the transfer theorems need, as the
+  `FuchsEnvelope D e` structure: step-four ladder `e(j+1) = e j + 4` (covers `4j` AND `4j+2`),
+  `D ≥ 0`, `D` monotone in the index, and a two-sided fixed-index envelope
+  `fuchsRate c_j (e j) λ ≤ D λ j ≤ fuchsRate C_j (e j) λ` eventually, with `0 < c_j, C_j`
+  UNRELATED across indices.  KEY SIMPLIFICATION: monotonicity supplies the ordered head and the
+  floor outright (the greedy singular values are antitone, so `1−χ²` is monotone), so the sharp
+  asymptotic is never needed — only a two-sided envelope at each fixed index.  Derived:
+  `lt_succ`, `ratio_tendsto_zero` (λ⁻⁸), `tail_tendsto_zero` (λ⁻⁷), `first_struct`,
+  `depth_struct k`; then EVERY constrained law as a `FuchsEnvelope` method — `ccm_ground_ratio`
+  (8/11), `ccm_gap_ratio` (3/11), `ccm_spectralGap_eventually`, `ccm_negativeSector_ratio`
+  (8/13), `ccm_negativeSector_gap_ratio` (5/13), `ccm_depth_ratio` (θ_k at every depth).
+  `fuchsEnvelope_fuchsRate` checks the model family is enveloped.
+  **L6 is now reduced to a single concrete obligation**: exhibit a `FuchsEnvelope` for the true
+  leakage `D λ j = 1 − χ_{e j}(λ)²`, i.e. prove two-sided fixed-index bounds (L6a upper via
+  Hermite trial functions, L6b lower via min–max) plus antitonicity of the concentration values
+  (already available as `evenProlateConcentrationValue_antitone`).
+- [x] **L6c' — clock generalization** (`ConstrainedProlateClockEnvelope.lean`, 16 theorems,
+  axiom-clean).  The Gaussian factor is inert: every ratio the transfer forms cancels the factor
+  common to all indices.  `clockRate E A n λ = A·λ^(2n+1)·E λ` and `ClockEnvelope D e E` assume
+  NOTHING about the clock `E` beyond eventual positivity; all five structural facts and all
+  seven CCM capstones are reproved over it, and `FuchsEnvelope.toClockEnvelope` exhibits the
+  Gaussian as the special case.  WHY THIS MATTERS: the exponential produced by this project's
+  Fourier normalization has not been verified to be `e^(−4πλ²)`, so hard-coding it could have
+  made the L6 contract unsatisfiable for the true operator.  The contract now depends only on
+  the polynomial ladder, which is normalization-independent.
+- [ ] **L6a/L6b — the two-sided fixed-index envelope** for the true prolate eigenvalues
   `1−χ_n(λ)² ~ A_n λ^{2n+1} e^{−4πλ²}` (card 1 eq (8)).  Mountain: needs PSWF spectral theory +
   Bessel/WKB asymptotics; nothing in mathlib.
-  ATTACK DECOMPOSITION (minimal sufficient form): the exact transfer theorems consume only the
-  STRUCTURE of the leakage family `d_j(λ) := 1 − χ_{4j}(λ)²`, not the full Fuchs constants:
-  (i) eventual ordered head + floor, (ii) `d_k/d_{k+1} → 0`, (iii)
-  `λ·d_{k+1}/(d_{k+2}−d_{k+1}) → 0`.  These follow from two-sided fixed-index bounds
-  `c_n λ^{2n+1}e^{−4πλ²} ≤ 1−χ_n(λ)² ≤ C_n λ^{2n+1}e^{−4πλ²}` — weaker than the sharp
-  asymptotic.  Sub-layers:
+  TARGET (now fully precise, thanks to L6c/L6c'): construct a term of type
+  `ClockEnvelope (fun lam j => 1 − evenProlateSignedValue lam (ν j) ^ 2) ν E`
+  for the radial index maps `ν j = 4j` and `ν j = 4j+2` and SOME eventually positive clock `E`.
+  Its five fields: `step` (arithmetic), `nonneg` (χ² ≤ 1, from `norm_evenTimeBandFourier_le`),
+  `mono` — the modes are SIGNED greedy values, so route through `|sgVal|`: the signed spectrum
+  file proves `ContinuousLinearMap.abs_sgVal n : |sgVal S n| = sgOrthSup S _ n`, and
+  `CompactSelfAdjointEigenvalue.orthSup_antitone` gives antitonicity of the orth-sup; hence
+  `sgVal²` is antitone and `1−sgVal²` is monotone (verify the exact `sgOrthSup` antitone name
+  first) — and `lower`/`upper` = the two-sided envelope.
+  So only `lower`/`upper` remain.  Sub-layers:
   L6a (upper bound): variational — Hermite trial functions against the leakage form
   `⟨(I−T²)f, f⟩ = ‖f‖² − ‖Tf‖²`; needs Hermite functions as Fourier eigenfunctions
   (mathlib: `Polynomial.hermite` exists; Gaussian Fourier transform exists —
   `fourierIntegral_gaussian`; the Hermite-function eigenrelation must be built, seed
   `HermiteOscillatorEigen`) plus Gaussian tail integrals.
-  L6b (lower bound): min–max against the top-(n+1) spectral projection; uses the greedy
-  singular-value layer (`GreedySingularValues`, `sgVal`) + trial-space dimension counting.
-  L6c: extract (i)–(iii) for the `4j` subfamily + tempered growth `hgrow`.
+  L6b (lower bound on the leakage = upper bound on χ_n): needs Courant–Fischer for the greedy
+  values.  Reusable HTGeometry lemma to build first:
+  `svVal S n ≤ M` whenever there is an `(n+1)`-dimensional `V` with `‖S x‖ ≤ M‖x‖` on `V`… —
+  more precisely the standard direction available from `norm_apply_le_of_orth` plus a dimension
+  count showing any `(n+1)`-dim `V` meets `(span of the first n svVecs)^⊥` nontrivially.
+  `GreedySingularValues` already has `norm_apply_le_of_orth`, `svVal_antitone`,
+  `inner_svVec_svVec_of_ne`, `isGreedyStep_svVec`.
   Prerequisite shared with L7: the mode-numbering identification (positive signed subsequence
   ↔ `4j` prolate modes) — the open problem named in `ConstrainedProlateSignedSpectrum`.
 - [ ] **L7 — prolate-to-Hermite limits** `ℓ_j(λ) → a_j` (card 1 eq (10), card 2 eq (17), card 3
