@@ -424,3 +424,18 @@ proof nowhere uses properties of Xi or the dyadic source beyond holomorphy near 
 and boundary nonvanishing; the instantiated identities `dim O/(A) = M(T)`,
 `dim O/(A,C) = P(T)` then follow from the formalized order law `ord_C = ord_A - 1` on the Xi
 box divisor (census card input) plus T4.
+
+### T4 referee pass (2026-07-18, independent fresh context) — CONFIRMED, one fix applied
+
+All six attack items CONFIRMED (accumulation impossible once U is chosen connected with compact
+closure and finitely many A*C-zeros — stated explicitly now; "rectifiable" vestigial for T4
+itself; off-by-one in Hermite order checked under both jet conventions; Bezout restriction and
+removability fine for arbitrary bounded domains). One exposition gap fixed here:
+
+**Fix (dim O/(A) = M(T)).** Apply T4 with the pair `(A, A)`: hypotheses hold, `(A, A) = (A)` as
+ideals, and `sum min(ord_A, ord_A) = sum ord_A`. Hence `dim O(Omega)/(A) = boxOrderSum = M(T)`
+— no separate jet argument for nonpolynomial `A` is needed; both instantiated identities now
+follow from T4 alone plus the formalized order law `ord_C = ord_A - 1`.
+
+Label upgraded: **T4 `[PROVED HERE]` — refereed.** Ready for the Lean batch (T4 algebra shares
+T1's jet machinery; the `(A, A)` trick keeps the formalization surface minimal).
