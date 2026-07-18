@@ -587,7 +587,8 @@ New irreducible formal core:
 2. prove the separated ray packet iff linear independence in that quotient;
 3. upgrade the current one-way profile packet modules to the exact static and relative iff laws;
 4. formalize the `C[X]` clock-module map, torsion criterion, field recovery, and complete relation
-   ideal;
+   ideal; the representative-level polynomial saturation/torsion theorem is now isolated in
+   `PrimeClockPolynomialSaturation.lean`, while the quotient and field-recovery interfaces remain;
 5. prove the recurrent declocking injection by the highest-clock argument;
 6. construct the analytic finite-prime local base and its faithful rational-coordinate embedding;
 7. instantiate scalar profiles `e_m` and `lambda_r=1/r`, identify `P(ms)` and `log zeta`, and prove
@@ -597,9 +598,13 @@ The existing draft files
 
 - `PrimeProfileJetPacket.lean`,
 - `PrimeProfileJetCommonKernel.lean`, and
-- `PrimeProfileDynamicCoefficientField.lean`
+- `PrimeProfileDynamicCoefficientField.lean`,
+- `PrimeClockPolynomialSaturation.lean`, and
+- `PrimeClockProfileOrbit.lean`, and
+- `PrimeProfileTailMatroid.lean`
 
-cover part of items 2--3 but remain unverified and are not theorem evidence.
+cover the packet/Jacobian direction of items 2--3 and the torsion core of item 4.  Their leaf
+checks and final axiom audit remain part of the stage-3 gate.
 
 ## External priority frontier
 
@@ -655,3 +660,12 @@ cofinal coupling.
   intersections, nonlinear relations, arbitrary cardinality, and the countable completion leave
   no paper-proof hypothesis open.  Promoted the result to pipeline 2 pending formalization and a
   specialist priority audit.
+- 2026-07-18 — isolated the positive polynomial clock-saturation law for every simple-spectrum
+  ray clock and specialized it to the prime-power spectrum `(p,r) |-> r log p`.  This is the
+  quotient-level torsion-free core: every nonzero clock polynomial preserves nonlocality.  Linked
+  the abstract clock action exactly to the arbitrary arithmetic profile jets already used by the
+  dynamic prime-ray Jacobian.
+- 2026-07-18 — added the arbitrary-profile order-zero converse: every finite-prime-ray profile is
+  in the intrinsic coefficient field, hence algebraic independence forces linear independence in
+  the finite-ray quotient.  The remaining exactness step is the separated packet construction
+  from quotient independence, followed by the relative clock-module upgrade.

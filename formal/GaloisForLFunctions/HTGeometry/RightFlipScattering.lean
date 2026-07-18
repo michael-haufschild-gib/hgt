@@ -136,8 +136,12 @@ theorem rightFlip_adjacentBraid_iff_quantumYangBaxter
           (leg23 By * F23) =
         (leg12 Bx * leg23 Bxy * leg12 By) * (F12 * F23 * F12)
     calc
+      _ = leg12 Bx * (F12 * F12) * leg23 Bxy *
+          ((F23 * F12) * leg23 By) * F23 := by
+        simp only [mul_assoc]
       _ = leg12 Bx * leg23 Bxy * ((F23 * F12) * leg23 By) * F23 := by
-        simp only [mul_assoc, hF12sq, one_mul]
+        rw [hF12sq]
+        simp only [mul_one]
       _ = leg12 Bx * leg23 Bxy *
           (leg12 By * (F23 * F12)) * F23 := by
         rw [hmove23]
@@ -181,14 +185,34 @@ theorem rightFlip_adjacentBraid_iff_quantumYangBaxter
       (F12 * F23 * F12) * (F12 * F23 * F12) =
           F12 * F23 * (F12 * F12) * F23 * F12 := by
         simp only [mul_assoc]
-      _ = 1 := by rw [hF12sq, hF23sq]; simp
+      _ = F12 * (F23 * F23) * F12 := by
+        rw [hF12sq]
+        simp only [mul_one, mul_assoc]
+      _ = F12 * F12 := by rw [hF23sq]; simp
+      _ = 1 := hF12sq
   rw [hleft, hright]
   constructor
   · intro h
     rw [h]
   · intro h
-    have hcancel := congrArg (fun A : T ↦ A * (F12 * F23 * F12)) h
-    simpa only [mul_assoc, hlongestSq, mul_one] using hcancel
+    calc
+      leg12 Bx * leg23 Bxy * leg12 By =
+          (leg12 Bx * leg23 Bxy * leg12 By) * 1 := by rw [mul_one]
+      _ = (leg12 Bx * leg23 Bxy * leg12 By) *
+          ((F12 * F23 * F12) * (F12 * F23 * F12)) := by
+        rw [hlongestSq]
+      _ = ((leg12 Bx * leg23 Bxy * leg12 By) * (F12 * F23 * F12)) *
+            (F12 * F23 * F12) :=
+        (mul_assoc (leg12 Bx * leg23 Bxy * leg12 By)
+          (F12 * F23 * F12) (F12 * F23 * F12)).symm
+      _ = ((leg23 By * leg12 Bxy * leg23 Bx) * (F12 * F23 * F12)) *
+            (F12 * F23 * F12) := congrArg (fun A : T ↦ A * (F12 * F23 * F12)) h
+      _ = (leg23 By * leg12 Bxy * leg23 Bx) *
+          ((F12 * F23 * F12) * (F12 * F23 * F12)) :=
+        mul_assoc (leg23 By * leg12 Bxy * leg23 Bx)
+          (F12 * F23 * F12) (F12 * F23 * F12)
+      _ = (leg23 By * leg12 Bxy * leg23 Bx) * 1 := by rw [hlongestSq]
+      _ = leg23 By * leg12 Bxy * leg23 Bx := by rw [mul_one]
 
 end AbstractBraidTransport
 
@@ -298,6 +322,7 @@ theorem threeParticleLeg12_twoParticleFlipMatrix :
   ext ⟨i₁, i₂, i₃⟩ ⟨j₁, j₂, j₃⟩
   simp [threeParticleLeg12, twoParticleFlipMatrix, threeParticleFlip12Matrix,
     tripleFlip12Permutation, Matrix.one_apply, PEquiv.toMatrix_apply]
+  split_ifs <;> simp_all
 
 /-- Embedding the two-particle flip in leg `23` gives the literal three-particle `23` flip. -/
 @[simp]
@@ -307,6 +332,7 @@ theorem threeParticleLeg23_twoParticleFlipMatrix :
   ext ⟨i₁, i₂, i₃⟩ ⟨j₁, j₂, j₃⟩
   simp [threeParticleLeg23, twoParticleFlipMatrix, threeParticleFlip23Matrix,
     tripleFlip23Permutation, Matrix.one_apply, PEquiv.toMatrix_apply]
+  split_ifs <;> simp_all
 
 /-- The two adjacent three-particle flips obey the braid relation. -/
 theorem threeParticleFlip_braid :
@@ -341,6 +367,11 @@ theorem threeParticleFlip_move23
         (threeParticleFlip23Matrix κ * threeParticleFlip12Matrix κ) := by
   let σ₁₂ := tripleFlip12Permutation κ
   let σ₂₃ := tripleFlip23Permutation κ
+  have hsymm : (σ₁₂ * σ₂₃).symm = σ₂₃ * σ₁₂ := by
+    apply Equiv.ext
+    intro i
+    rcases i with ⟨i₁, i₂, i₃⟩
+    rfl
   change (σ₂₃.permMatrix ℂ * σ₁₂.permMatrix ℂ) *
       threeParticleLeg23 κ A =
     threeParticleLeg12 κ A *
@@ -354,8 +385,9 @@ theorem threeParticleFlip_move23
       rw [PEquiv.toMatrix_toPEquiv_mul]
     _ = (threeParticleLeg12 κ A).submatrix id (σ₁₂ * σ₂₃).symm := by
       ext ⟨i₁, i₂, i₃⟩ ⟨j₁, j₂, j₃⟩
+      rw [hsymm]
       simp [σ₁₂, σ₂₃, tripleFlip12Permutation, tripleFlip23Permutation,
-        Equiv.Perm.mul_apply, Matrix.one_apply]
+        Matrix.one_apply]
     _ = threeParticleLeg12 κ A * (σ₁₂ * σ₂₃).permMatrix ℂ := by
       rw [PEquiv.mul_toMatrix_toPEquiv]
     _ = threeParticleLeg12 κ A *
@@ -371,6 +403,11 @@ theorem threeParticleFlip_move12
         (threeParticleFlip12Matrix κ * threeParticleFlip23Matrix κ) := by
   let σ₁₂ := tripleFlip12Permutation κ
   let σ₂₃ := tripleFlip23Permutation κ
+  have hsymm : (σ₂₃ * σ₁₂).symm = σ₁₂ * σ₂₃ := by
+    apply Equiv.ext
+    intro i
+    rcases i with ⟨i₁, i₂, i₃⟩
+    rfl
   change (σ₁₂.permMatrix ℂ * σ₂₃.permMatrix ℂ) *
       threeParticleLeg12 κ A =
     threeParticleLeg23 κ A *
@@ -384,8 +421,9 @@ theorem threeParticleFlip_move12
       rw [PEquiv.toMatrix_toPEquiv_mul]
     _ = (threeParticleLeg23 κ A).submatrix id (σ₂₃ * σ₁₂).symm := by
       ext ⟨i₁, i₂, i₃⟩ ⟨j₁, j₂, j₃⟩
+      rw [hsymm]
       simp [σ₁₂, σ₂₃, tripleFlip12Permutation, tripleFlip23Permutation,
-        Equiv.Perm.mul_apply, Matrix.one_apply]
+        Matrix.one_apply]
     _ = threeParticleLeg23 κ A * (σ₂₃ * σ₁₂).permMatrix ℂ := by
       rw [PEquiv.mul_toMatrix_toPEquiv]
     _ = threeParticleLeg23 κ A *

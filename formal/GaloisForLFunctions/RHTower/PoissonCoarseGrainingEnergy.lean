@@ -197,6 +197,66 @@ theorem eq_zero_of_const_of_mirror (s : Finset ι) (d : ι → ℝ) (σ : ι →
   have h2 : d (σ j) = - d j := hd j hj
   linarith
 
+/-! ### The exact detection gap of a mirror pair
+
+A configuration of two equal masses `m` at `±d` is compared with the single mass `2 m` at the
+origin obtained by merging them.  The coarse-grained energies differ by an explicit amount which
+decays in the resolution: at resolution `a` the merged configuration is indistinguishable from the
+split one to within `8 m² d² / (a² + 4 d²)`, and half the total signal is visible exactly when
+`a ≤ 2 d`.  Detecting a splitting of size `d` therefore requires resolution comparable to `d`. -/
+
+lemma lorentz_neg {a : ℝ} (x : ℝ) : lorentz a (-x) = lorentz a x := by
+  unfold lorentz
+  ring_nf
+
+/-- The energy of two equal masses `m` at `±d`. -/
+theorem poissonEnergy_mirror_pair (m d : ℝ) {a : ℝ} (ha : a ≠ 0) :
+    poissonEnergy (Finset.univ : Finset (Fin 2)) (fun _ => m) (![d, -d]) a
+      = 2 * m ^ 2 * (1 + lorentz a (2 * d)) := by
+  simp only [poissonEnergy, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Matrix.head_cons]
+  rw [show d - d = 0 by ring, show -d - -d = 0 by ring, show d - -d = 2 * d by ring,
+    show -d - d = -(2 * d) by ring, lorentz_self ha, lorentz_neg]
+  ring
+
+/-- The energy of the merged configuration: a single mass `2 m`. -/
+theorem poissonEnergy_merged (m : ℝ) {a : ℝ} (ha : a ≠ 0) :
+    poissonEnergy (Finset.univ : Finset (Fin 1)) (fun _ => 2 * m) (fun _ => 0) a
+      = (2 * m) ^ 2 := by
+  simp only [poissonEnergy, Fin.sum_univ_one]
+  rw [show (0:ℝ) - 0 = 0 by ring, lorentz_self ha]
+  ring
+
+/-- **The exact detection gap.**  Merging a mirror pair at `±d` raises the coarse-grained energy by
+exactly `8 m² d² / (a² + 4 d²)`. -/
+theorem poissonEnergy_mirror_pair_gap (m d : ℝ) {a : ℝ} (ha : a ≠ 0) :
+    (2 * m) ^ 2 - 2 * m ^ 2 * (1 + lorentz a (2 * d))
+      = 8 * m ^ 2 * d ^ 2 / (a ^ 2 + 4 * d ^ 2) := by
+  have hd : (0:ℝ) < a ^ 2 + (2 * d) ^ 2 := lorentz_denom_pos ha (2 * d)
+  have hd' : a ^ 2 + 4 * d ^ 2 ≠ 0 := by
+    intro h
+    rw [show a ^ 2 + (2 * d) ^ 2 = a ^ 2 + 4 * d ^ 2 by ring] at hd
+    exact absurd h (ne_of_gt hd)
+  unfold lorentz
+  field_simp
+  ring
+
+/-- **The resolution threshold.**  At least half the merged energy of the pair is visible at
+resolution `a` exactly when `a ≤ 2 d`: a splitting of size `d` cannot be detected at any coarser
+resolution. -/
+theorem poissonEnergy_gap_ge_iff (m d : ℝ) {a : ℝ} (ha : a ≠ 0) (hm : m ≠ 0) (hd : d ≠ 0) :
+    m ^ 2 ≤ 8 * m ^ 2 * d ^ 2 / (a ^ 2 + 4 * d ^ 2) ↔ a ^ 2 ≤ 4 * d ^ 2 := by
+  have hpos : (0:ℝ) < a ^ 2 + 4 * d ^ 2 := by
+    have h1 : 0 < a ^ 2 := by positivity
+    nlinarith [sq_nonneg d]
+  have hm2 : 0 < m ^ 2 := by positivity
+  rw [le_div_iff₀ hpos]
+  constructor
+  · intro h
+    nlinarith
+  · intro h
+    nlinarith
+
 end PoissonCoarseGrainingEnergy
 end RHTower
 end GaloisForLFunctions

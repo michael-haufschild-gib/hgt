@@ -20,6 +20,7 @@ noncomputable section
 
 namespace RHTower
 
+set_option maxHeartbeats 2000000 in
 theorem exists_fin_ccmPrimePole_projection_common_weaklyNull_sequence
     {d : ℕ} {Lref : ℝ} (href : 0 < Lref)
     (L : Fin d → ℝ) (hL : ∀ i, 0 < L i) :
@@ -71,6 +72,7 @@ theorem exists_fin_ccmPrimePole_projection_common_weaklyNull_sequence
   have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
   simpa [Function.comp_def, Real.sqrt_sq (norm_nonneg _)] using hsqrt
 
+set_option maxHeartbeats 2000000 in
 /-- The common weakly-null boundary sequence survives every local pole-subspace measurement with
 probability tending to one.  This is the Born-probability form of the simultaneous projection
 defect convergence above. -/
@@ -94,18 +96,29 @@ theorem exists_fin_ccmPrimePole_projection_common_weaklyNull_born_survival_seque
   refine ⟨φ, hφ, hnorm, hweak, fun i => ?_⟩
   let f : ℕ → CCMPrimePoleHilbert := fun m =>
     ccmNormalizedPrimePoleVector Lref href (φ m : ℤ)
-  have hsq : Tendsto (fun m =>
+  have hnorm_f : ∀ m, ‖f m‖ = 1 := hnorm
+  have hproj_i : Tendsto (fun m =>
+      ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖)
+      atTop (𝓝 0) := hproj i
+  have hsq := hproj_i.pow 2
+  norm_num at hsq
+  have hsq' : Tendsto (fun m =>
       ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ 2)
-      atTop (𝓝 0) := by
-    simpa using (hproj i).pow 2
-  have hsub : Tendsto (fun m =>
+      atTop (𝓝 0) := hsq
+  have hone : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (𝓝 1) := tendsto_const_nhds
+  have hsub' : Tendsto (fun m =>
       (1 : ℝ) -
         ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ 2)
-      atTop (𝓝 1) := by
-    simpa using tendsto_const_nhds.sub hsq
-  refine hsub.congr' (Eventually.of_forall fun m => ?_)
+      atTop (𝓝 (1 - 0)) := hone.sub hsq'
+  norm_num at hsub'
+  refine hsub'.congr' (Eventually.of_forall fun m => ?_)
+  change (1 -
+      ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ 2) =
+    Complex.re (inner ℂ (f m)
+      ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m)))
   exact (HTGeometry.bornSurvivalProbability_eq_one_sub_projectionDefectSq
-    (ccmPrimePoleClosedSubspace (L i) (hL i)) (f m) (hnorm m)).symm
+    (k := ℂ) (E := CCMPrimePoleHilbert)
+    (ccmPrimePoleClosedSubspace (L i) (hL i)) (f m) (hnorm_f m)).symm
 
 def ccmPrimePoleProjectionAverage
     {d : ℕ} (L : Fin d → ℝ) (hL : ∀ i, 0 < L i) :

@@ -1,12 +1,12 @@
 # Physical-Cutoff Connected Coarea Affine Defect
 
 - **ID:** physical-cutoff-connected-coarea-affine-defect
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** `critical-multiplicative-compensated-cancellation-rh.md` · `(AC25)`, `(35m60)`--`(35m65)`, `(SP10)`--`(SP16)`
 - **Statement:** The low root-density packet and complete high-cutoff response obey one exact prime-adjunction trace recursion whose sole inhomogeneous term is the connected incidence/coarea forcing; its unique affine drift is the negative complete survival product, hence it is centered exactly in the parity-annihilated sector.
 
-`[PAPER-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+`[FORMALIZED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 `[POSITIVE SURVIVOR OF COERCIVE-TRACE NO-GO] [TERMINAL SIGNED TRACE OPEN]`
 
 ## Goal
@@ -20,7 +20,7 @@ future prime dressing, and physical zero-mode switch from one identity.  It is n
 
 - [x] 0 → 1 in-progress: exact finite statement, source-pure definitions, hostile tests fixed
 - [x] 1 → 2 fully-proven: dependency-closed finite proof below
-- [ ] 2 → 3 formalized: exact Lean declarations, direct build, and axiom audit
+- [x] 2 → 3 formalized: exact Lean declarations, direct build, and axiom audit
 - [ ] 3 → 4 publication-ready: not proposed; this is bridge infrastructure
 
 ## Statement
@@ -145,12 +145,31 @@ ramp `(CJ5)`, supported on even gaps once parity is present.
 This materially narrows the representation of `(AC25)`, but it does not narrow its quantitative
 strength: the terminal signed trace remains RH-equivalent.
 
-## Lean plan
+## Lean formalization
 
-Reuse `truncatedAliasSum`, `truncatedAliasHighSum`, and the quadratic survival-product parity theorem
-from `PhysicalCutoffAliasResponseJoining.lean` and
-`ReducedFrequencyMobiusAliasCollapse.lean`.  Formalize `(CJ2)`--`(CJ6)` in one narrow RHTower
-module.  Do not add analytic integration-by-parts infrastructure for the optional Abel form.
+The narrow module
+`formal/GaloisForLFunctions/RHTower/PhysicalCutoffConnectedCoarea.lean` reuses
+`truncatedAliasSum`, `truncatedAliasHighSum`, and the quadratic survival-product parity theorem.
+It formalizes `(CJ2)`--`(CJ6)` as:
+
+- `truncatedAliasHighSum_insert`;
+- `physicalCutoffCoareaField` and `physicalCutoffCoareaField_insert`;
+- `physicalCutoffCoareaAffineDefect` and `physicalCutoffCoareaAffineDefect_insert`;
+- `physicalCutoffCoareaTrace`, `physicalCutoffCoareaTrace_insert`, and
+  `physicalCutoffCoareaTrace_empty`;
+- `physicalCutoffCoareaAffineDrift` and
+  `physicalCutoffCoareaAffineDrift_eq_neg_survival`;
+- `quadraticCongruencePhysicalCutoffAffineDrift_eq_zero_iff`.
+
+Validation on 2026-07-18:
+
+- `lake env lean GaloisForLFunctions/RHTower/PhysicalCutoffConnectedCoarea.lean` passed directly;
+- `lake build +GaloisForLFunctions.RHTower.PhysicalCutoffConnectedCoarea` built the exact target
+  (`3215/3215`, 3.4 seconds in the warm cache);
+- `#print axioms` on the seven principal theorems reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+
+No analytic integration-by-parts infrastructure was added for the optional Abel form.
 
 ## Log
 
@@ -158,3 +177,5 @@ module.  Do not add analytic integration-by-parts infrastructure for the optiona
   classification extracted as the positive survivor.
 - 2026-07-18 — dependency-closed paper proof and hostile audit completed; terminal signed trace kept
   open.
+- 2026-07-18 — `(CJ2)`--`(CJ6)` formalized in the narrow RHTower module; exact target build and
+  seven-theorem axiom audit passed.

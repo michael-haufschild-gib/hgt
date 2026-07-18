@@ -92,11 +92,19 @@ the root `0`, hence one copy of the ambient modulus. -/
 theorem sum_quadraticCongruenceZModRootResponse
     (n : ℕ) [NeZero n] (h : ℤ) :
     ∑ a : ZMod n, quadraticCongruenceZModRootResponse n h a = (n : ℂ) := by
+  classical
   unfold quadraticCongruenceZModRootResponse
-  rw [Fintype.sum_comm]
+  rw [Finset.sum_comm]
   rw [Fintype.sum_eq_add_sum_subtype_ne _ (quadraticCongruenceZeroRoot n h)]
   simp only [sum_stdAddChar_mul_zmod]
-  simp [quadraticCongruenceZeroRoot, Subtype.ext_iff]
+  simp only [quadraticCongruenceZeroRoot, if_pos, add_eq_left]
+  apply Finset.sum_eq_zero
+  intro r _hr
+  rw [if_neg]
+  intro hz
+  apply r.2
+  apply Subtype.ext
+  exact hz
 
 /-- **Branch-conjugacy law.** The `h`-twisted root response is pointwise the complex conjugate of
 the untwisted response.  It is the Fourier form of the involution `r ↦ -h-r`. -/
@@ -115,9 +123,10 @@ theorem quadraticCongruenceZModRootResponse_twist_eq_conj
           ZMod.stdAddChar (-(a * (e r).1)) := by
             apply Fintype.sum_congr
             intro r
-            rw [← map_add]
+            rw [← AddChar.map_add_eq_mul]
             congr 1
-            simp only [e, quadraticCongruenceRootInvolution]
+            change a * (h : ZMod n) + a * r.1 =
+              -(a * (-(h : ZMod n) - r.1))
             ring
     _ = ∑ r : quadraticCongruenceRoots n h,
           ZMod.stdAddChar (-(a * r.1)) := by
@@ -141,7 +150,7 @@ theorem star_stdAddChar_halfGap_mul_quadraticCongruenceZModRootResponse
       ZMod.stdAddChar (a * c) * quadraticCongruenceZModRootResponse n h a := by
   rw [map_mul, ← AddChar.map_neg_eq_conj,
     ← quadraticCongruenceZModRootResponse_twist_eq_conj]
-  rw [← mul_assoc, ← map_add]
+  rw [← mul_assoc, ← AddChar.map_add_eq_mul]
   congr 2
   rw [← hc]
   ring
@@ -183,7 +192,8 @@ theorem sum_ne_zero_quadraticCongruenceZModRootResponse
     (fun a : ZMod n => quadraticCongruenceZModRootResponse n h a) 0
   rw [sum_quadraticCongruenceZModRootResponse n h,
     quadraticCongruenceZModRootResponse_zero] at hsplit
-  linear_combination hsplit
+  rw [eq_sub_iff_add_eq]
+  simpa [add_comm] using hsplit.symm
 
 /-- **Exact ridge-density identity.** The normalized root density is one minus the
 ambient-normalized real mass of all nonzero root responses.  In particular those responses do not
@@ -193,9 +203,13 @@ theorem quadraticCongruenceRootDensity_eq_one_sub_average_re_ne_zero
     (quadraticCongruenceRootCount n h : ℝ) / (n : ℝ) =
       1 - (∑ a : {a : ZMod n // a ≠ 0},
         (quadraticCongruenceZModRootResponse n h a.1).re) / (n : ℝ) := by
-  have hsum := congrArg Complex.re
-    (sum_ne_zero_quadraticCongruenceZModRootResponse n h)
-  simp only [map_sum, Complex.sub_re, Complex.natCast_re] at hsum
+  have hsumC := sum_ne_zero_quadraticCongruenceZModRootResponse n h
+  have hsumRe := congrArg Complex.re hsumC
+  have hsum :
+      (∑ a : {a : ZMod n // a ≠ 0},
+        (quadraticCongruenceZModRootResponse n h a.1).re) =
+        (n : ℝ) - quadraticCongruenceRootCount n h := by
+    simpa only [Complex.re_sum, Complex.sub_re, Complex.natCast_re] using hsumRe
   have hnR : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (NeZero.ne n)
   field_simp [hnR]
   linear_combination hsum

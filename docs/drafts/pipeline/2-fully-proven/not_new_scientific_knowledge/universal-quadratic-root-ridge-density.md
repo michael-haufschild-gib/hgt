@@ -88,9 +88,9 @@ conj(exp(2 pi i a c/n)S(a))
  =exp(2 pi i a c/n)S(a).
 ```
 
-It is therefore real, proving `(UR3a)`.  In particular every odd modulus admits such a center,
-although the theorem only needs the exact equation `2c=h` and is also valid in any even-modulus
-sector where that equation is solvable.
+It is therefore real, proving `(UR3a)`.  In particular every odd modulus admits a unique such
+center because multiplication by `2` is then invertible.  The theorem only needs the exact
+equation `2c=h` and is also valid in any even-modulus sector where that equation is solvable.
 
 At frequency `a=0`, every character value is one, hence
 `S_(n,h)(0)=nu_h(n)`.  Removing that term from `(UR1)` yields

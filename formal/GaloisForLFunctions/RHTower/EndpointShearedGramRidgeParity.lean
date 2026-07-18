@@ -20,7 +20,7 @@ These are finite `[BRIDGE]` theorems.  They make no asymptotic or RH claim.
 
 noncomputable section
 
-open scoped BigOperators ComplexConjugate
+open scoped BigOperators ComplexConjugate ComplexOrder
 
 namespace RHTower
 
@@ -82,8 +82,8 @@ theorem endpointShearedDoubleTransform_eq_inner_frequencyPacket
         AddChar.map_add_eq_mul χ _ _
       _ = star (χ ((b - a) * residue m)) * χ (b * residue n) := by
         rw [hχstar]
-  rw [hphase]
-  ring
+  rw [hphase, starRingEnd_apply]
+  ac_rfl
 
 /-- The zero-shear diagonal is exactly the squared norm of one frequency packet. -/
 theorem endpointShearedDoubleTransform_zero_eq_norm_sq
@@ -94,6 +94,7 @@ theorem endpointShearedDoubleTransform_zero_eq_norm_sq
   rw [endpointShearedDoubleTransform_eq_inner_frequencyPacket χ residue x hχstar]
   simp only [sub_zero]
   rw [inner_self_eq_norm_sq_to_K]
+  norm_cast
 
 /-- Cauchy--Schwarz in the original sheared coordinates. -/
 theorem norm_endpointShearedDoubleTransform_le
@@ -161,7 +162,8 @@ theorem endpointShearedGramMatrix_quadratic_eq_inner
   intro j _hj
   apply Finset.sum_congr rfl
   intro k _hk
-  ring
+  rw [starRingEnd_apply]
+  ac_rfl
 
 /-- The Gram quadratic form is exactly the squared norm of the packet combination. -/
 theorem endpointShearedGramMatrix_quadratic_eq_norm_sq
@@ -172,6 +174,7 @@ theorem endpointShearedGramMatrix_quadratic_eq_norm_sq
         ((‖endpointFrequencyPacketCombination χ residue x c‖ ^ 2 : ℝ) : ℂ) := by
   rw [endpointShearedGramMatrix_quadratic_eq_inner χ residue x hχstar]
   rw [inner_self_eq_norm_sq_to_K]
+  norm_cast
 
 /-- Endpoint swap `b -> a - b` as an involutive permutation of the finite frequency ring. -/
 def endpointSwapEquiv (a : R) : R ≃ R where

@@ -1,8 +1,9 @@
 # Right-flip quantum--braid scattering reconstruction
 
 - **ID:** HT-QFT-RIGHT-FLIP-RECONSTRUCTION
-- **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized / needs-audit
+- **Type:** THEOREM (paper + Lean 4)
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
 - **Source:** independent convention audit of Lechner--Schuetzenhofer and twisted Araki--Woods reconstruction
 - **Statement:** The adjacent-braid input `B` reconstructs the physical quantum two-particle matrix `R = B F` on the ordered rapidity chamber; all load-bearing axioms, including the fermionic zero and crossing, transport exactly through this right flip.
 
@@ -144,7 +145,7 @@ wedge-locality axiom is needed: `(5)` and `(6)` are the same condition under the
 The remaining construction problem is the all-particle identity-zero intertwiner with uniform
 `exp(O(n))` Hardy norm and central inverse-norm bounds.  Ordinary fixed-particle holomorphic
 frames exist by
-`../not_new_scientific_knowledge/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`;
+`../../2-fully-proven/not_new_scientific_knowledge/fixed-particle-holomorphic-acyclicity-identity-zero-yang-baxter.md`;
 the unresolved gate is quantitative, not a convention problem.
 
 ## Anti-theatre attacks
@@ -179,7 +180,6 @@ the resulting correction of the later `O(N)` convention have already been stated
 3. Combine that intertwiner with the proved componentwise-Pauli trace theorem.
 4. Construct a positive-unitary, crossing-symmetric, intrinsically mixing projective-HT
    solution of `(3)`.
-5. Formalize the finite-dimensional algebraic content of items 1--4 in `HTGeometry`.
 
 ## Primary literature
 
@@ -197,7 +197,7 @@ the resulting correction of the later `O(N)` convention have already been stated
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
 - [ ] literature novelty audit
-- [ ] 2 → 3 formalized: unconditional Lean theorem in `HTGeometry`
+- [x] 2 → 3 formalized: unconditional Lean theorem in `HTGeometry`
 - [ ] 3 → 4 publication-ready
 
 ## Log
@@ -212,3 +212,10 @@ the resulting correction of the later `O(N)` convention have already been stated
   remains Stage 2: the exact adjacent/quantum Yang--Baxter leg equivalence `(1) <-> (3)` is still the
   first missing Lean theorem, and the umbrella/axiom checks are queued behind other active agents'
   Lean processes.
+- 2026-07-18 — Lean completion: proved the exact adjacent-braid/quantum Yang--Baxter equivalence
+  abstractly and for literal finite matrix tensor legs in
+  `GaloisForLFunctions.HTGeometry.RightFlipScattering`.  The same unconditional module proves the
+  right-flip anchor, unitarity, hermitian-analyticity, crossing-pairing, pure-tensor flip, and
+  lower-index reconstruction identities.  The leaf target, `HTGeometry` umbrella, and axiom audit
+  are green; every audited theorem uses only Lean's standard `propext`, `Classical.choice`, and
+  `Quot.sound` axioms.  Card promoted to Stage 3; the literature novelty gate remains open.
