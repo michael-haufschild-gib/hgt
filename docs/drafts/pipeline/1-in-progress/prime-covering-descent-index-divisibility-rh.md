@@ -477,3 +477,39 @@ iterations give the census congruence `M ≡ P (mod 2^k)` at height-adapted dept
 - Guardrail compliance: finite-section kernels are semicontinuous integers (collision-safe);
   no symmetry transport (the shift is a filtration degree map, not a group action); kernel
   data indexed by divisor fibers via GL Jordan-chain bases (free-matroid-safe).
+
+## 2026-07-18 session 1 (cont. 7) — torsion verdict: free cutoff direction, A-side cocycle
+## fracture, bigraded Koszul replacement, and the multiplicative/archimedean split
+
+Torsion analysis (independent agent, derivation-level):
+1. `[PROVED (model level)]` The cutoff Rees module over `C[t^2]` is FREE: torsion = 0; the
+   off-multiple layer is exactly its minimal-generator/socle layer, with dimension density
+   `1 - r^{-2}`; the paper-proved Stein identity is the quadratic-form shadow of this freeness.
+   The naive torsion prediction is refuted in the precise sense that torsion vanishes — the
+   2-adic content sits in generators, not relations.
+2. `[EXACT FRACTURE]` On Sylvester kernels the `t^2`-structure map fails to exist; the exact
+   obstruction cocycle is `Obst(F,G) = D_q(A * (1-P_q)F + ((1-P_q)C_{j-2}) * G)` from the
+   commutator identity `[D_q, M_A] = D_q ∘ M_A ∘ (1-P_q)`. The `C`-side term is the paper-proved
+   layer; the `A`-side term reads ONLY the even-indexed coefficients `a(2k)` of the `A`-symbol
+   (input factors through the off-multiple layer — prediction half-confirmed — but output
+   spreads through the 2-adic even slice of `A`).
+3. `[REPLACEMENT — bigraded Koszul census]` Bigraded Rees over `C[t, u]`: `t` = cutoff
+   inflation (exact and free via `D_q(c * S_q g) = c * g`), `u` = 2-adic slicing
+   `A^{(alpha)}(m) = a(2^alpha m)`; `Obst` is the `u`-degree-1 connecting map of a Koszul pair,
+   and each decimation step drops one 2-adic level of `A`.
+4. `[NEW OPEN CORE]` Show the even slice `A^{(1)}` lies in the pair ideal `(A, C)` modulo units
+   (approximate 2-adic self-similarity mod the ideal); then the connecting map is inner and the
+   census congruence `M ≡ P (mod 2^k)` closes stepwise.
+5. `[SHARPENING — multiplicative/archimedean split, this session]` For a COMPLETELY
+   MULTIPLICATIVE coefficient core, `a(2m) = a(2) * a(m)` exactly: the even slice is inner
+   trivially (`A^{(1)} = a(2) * A` on odd support plus 2-power bookkeeping). The zeta-side core
+   of the census symbol is completely multiplicative; the non-multiplicative content is exactly
+   the archimedean/Gamma channel and the polynomial/pole factors of shifted Xi. Hence the open
+   core REDUCES to: the archimedean correction to the even slice lies in `(A, C)` mod units —
+   a Gamma-channel statement, where the corpus's archimedean machinery (Meixner root scales,
+   Gamma connections, digamma resolvents) applies. Next hostile question: make "even slice of
+   the archimedean transform" exact (the Gamma factor is an integral kernel, not a Dirichlet
+   series — define the slice through the decimation algebra's completion and check whether the
+   corpus's formalized shift-two exposure `xi_logDeriv_shift_two_exposes_prime_source` /
+   `XiShiftPrimeExposure.lean` already computes it: the shift s -> s+2 IS the square-index
+   decimation in the s-domain).
