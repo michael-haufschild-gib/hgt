@@ -1133,3 +1133,36 @@ per-box trace-Hankel value relation + RH consumer formalized | prove countable p
 positivity from prime+arch source (exact-identity certificates only; rank-2 reduction
 available) | riemannHypothesis_of_countableSymmetricPrimeArchTraceHankelNonnegative | Live
 unified chain (Fable lane + 07-13 card)."
+
+## 2026-07-18 session 2 (cont. 25) — attack 1's closed-contour form KILLED exactly; the
+## certificate lives in edge/corner cohomology with the n^{±c} weight imbalance as carrier
+
+**[PROVED (symbolic, referee queued)]** On the box contour (`Re s ∈ (1/2-c, 1/2+c)`, all
+edges): (i) the continued objects are confirmed as the valid decomposition
+(`infinitePrimeFlux = -logDeriv riemannZeta` continued; trace valid needing only `0 < Re s`,
+`s ≠ 1`, `zeta(s) ≠ 0`); the von Mangoldt series diverges on EVERY edge. (ii) For every prime
+power n and every polynomial test, the closed-contour moment `M_n(P, B) = 0` IDENTICALLY
+(entire integrand, elementary global antiderivative — corner telescoping); the ARCH block's
+closed moment is also identically zero (singularities at distance >= 1/2 - c from the box
+image). The entire contour value is carried by the poles of continued `-zeta'/zeta` — the zero
+packet — matching the Lean value relation. Level-S truncation is a GAUGE MOVE (value
+independent of S).
+
+**[EXACT KILL of additive closed-contour SOS]** No per-n completed-square decomposition on the
+closed contour can certify anything: every square integrates to zero (0 = 0). Attack 1 as
+stated is dead — mechanism recorded.
+
+**[SUCCESSOR — edge/corner cohomology certificate]** The surviving level-S object is
+EDGE-RESOLVED: per n, four edge integrals = corner differences of the elementary antiderivative
+at `u ∈ {2R+1±ic, 1±ic}` with phases `n^{∓c} n^{∓iR}`; FE pairing (`z -> -z`, `s -> 1-s`)
+matches bottom to top corners WITH MISMATCHED WEIGHTS `n^{-c}` vs `n^{+c}` — the `s <-> 1-s`
+defect that the arch factor normally repairs, and the arch is closed-contour-invisible, so the
+repair must itself be edge-resolved. Per-edge n-series diverge; divergences cancel only across
+the full boundary. [CONJECTURE — next construction] The certificate lives on the quotient
+"boundary/corner data mod exact (telescoping) data" — a relative/edge cohomology of the box —
+where the level-S object is finite and the `n^{-c}/n^{+c}` weight imbalance is the positivity
+carrier. This is exactly the designed collision with Meyer's `H_+ ∩ H_-` zero-order ideal
+filtration (cont. 21): both demand the same quotient-of-boundary-data structure. Next exact
+step: define the edge-cohomology pairing precisely (corner data mod telescoping at level S),
+verify it reproduces the zero-packet value, and locate where positivity can enter through the
+weight imbalance — then hostile-test for type-transparency per the cont.-14 pattern.
