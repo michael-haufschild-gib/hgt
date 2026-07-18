@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ScaleCovariantBernsteinPurityJacobian
 import GaloisForLFunctions.RHTower.ScaleCovariantBernsteinRpowSpectrum
+import GaloisForLFunctions.HTGeometry.ConfocalAbelQuantitativeStability
 
 /-!
 # Scale-covariant Bernstein--Abel tomography
@@ -84,6 +85,15 @@ structure ScaleCovariantBernsteinAbelTomographyLaw
         (HTGeometry.confocalAmplitudeEnvelope (Set.range z) R ^ 2 - 1))
       atTop
       (nhds (2 * HTGeometry.transverseDefectEnvelope (Set.range z)))
+  /-- The amplitude recession has an explicit finite-scale error collar. -/
+  amplitude_recession_error :
+    ∀ {R : ℝ}, M < R →
+      0 ≤
+          R * (HTGeometry.confocalAmplitudeEnvelope (Set.range z) R ^ 2 - 1) -
+            2 * HTGeometry.transverseDefectEnvelope (Set.range z) ∧
+        R * (HTGeometry.confocalAmplitudeEnvelope (Set.range z) R ^ 2 - 1) -
+            2 * HTGeometry.transverseDefectEnvelope (Set.range z) ≤
+          M ^ 2 / (R - M) + 4 * M ^ 2 / R
   /-- The Abel-radius recession extracts the same intrinsic transverse defect. -/
   abel_radius_recession :
     Tendsto
@@ -91,6 +101,14 @@ structure ScaleCovariantBernsteinAbelTomographyLaw
         (1 - HTGeometry.confocalAbelRadius (Set.range z) R))
       atTop
       (nhds (2 * HTGeometry.transverseDefectEnvelope (Set.range z)))
+  /-- At finite scale the Abel-radius recession is an exact rational transport of the same
+  confocal defect envelope. -/
+  abel_radius_exact_transport :
+    ∀ {R : ℝ}, M < R →
+      R * (1 - HTGeometry.confocalAbelRadius (Set.range z) R) =
+        (2 * HTGeometry.confocalDefectEnvelope (Set.range z) R +
+            HTGeometry.confocalDefectEnvelope (Set.range z) R ^ 2 / R) /
+          (1 + HTGeometry.confocalDefectEnvelope (Set.range z) R / R) ^ 2
 
 /-- **Scale-covariant Bernstein--Abel tomography theorem.**  A bounded summable atomic source with
 pointed real moments, injective occupied coordinates, cofinally vanishing support, and no negative
@@ -122,7 +140,9 @@ theorem scaleCovariantBernsteinAbel_tomography
     rpow_spectrum := ?_
     exact_radical := ?_
     amplitude_recession := ?_
-    abel_radius_recession := ?_ }
+    amplitude_recession_error := ?_
+    abel_radius_recession := ?_
+    abel_radius_exact_transport := ?_ }
   · intro m' hm' hpoly
     funext r
     exact bernsteinScalePurityPolynomial_injectiveOn_pointed hm' hm0
@@ -159,8 +179,13 @@ theorem scaleCovariantBernsteinAbel_tomography
     simp only [S, Set.forall_mem_range]
   · exact HTGeometry.tendsto_mul_confocalAmplitudeEnvelope_sq_sub_one
       hSne hM hSbound
+  · intro R hRM
+    exact HTGeometry.mul_confocalAmplitudeEnvelope_sq_sub_one_error_bounds
+      hSne hM hRM hSbound
   · exact HTGeometry.tendsto_mul_one_sub_confocalAbelRadius
       hSne hM hSbound
+  · intro R hRM
+    exact HTGeometry.mul_one_sub_confocalAbelRadius_eq hSne hM hRM hSbound
 
 end
 

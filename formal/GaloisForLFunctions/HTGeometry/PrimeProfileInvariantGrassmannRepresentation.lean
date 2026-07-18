@@ -339,13 +339,13 @@ theorem primeProfileGrassmannField_inf
     aCarrier bCarrier cCarrier hAIcarrier
   have hspanAB : primeProfileStaticSubmodule (Sum.elim cA cB) = U := by
     unfold primeProfileStaticSubmodule
-    rw [show Set.range (fun i => primeProfileClockClass (Sum.elim cA cB i)) =
-        Set.range (fun i => primeProfileClockClass (cA i)) ∪
-          Set.range (fun i => primeProfileClockClass (cB i)) by
-      simpa only using Set.Sum.elim_range
-      (fun i => primeProfileClockClass (cA i))
-      (fun i => primeProfileClockClass (cB i)),
-      Submodule.span_union]
+    have hfamily :
+        (fun i => primeProfileClockClass (Sum.elim cA cB i)) =
+          Sum.elim (fun i => primeProfileClockClass (cA i))
+            (fun i => primeProfileClockClass (cB i)) := by
+      funext i
+      rcases i with i | i <;> rfl
+    rw [hfamily, Set.Sum.elim_range, Submodule.span_union]
     rw [show Submodule.span ℂ (Set.range (fun i => primeProfileClockClass (cA i))) = A by
       simpa only [primeProfileStaticSubmodule] using hspanA,
       show Submodule.span ℂ (Set.range (fun i => primeProfileClockClass (cB i))) = B by
@@ -353,13 +353,13 @@ theorem primeProfileGrassmannField_inf
       hABsup]
   have hspanAC : primeProfileStaticSubmodule (Sum.elim cA cC) = W := by
     unfold primeProfileStaticSubmodule
-    rw [show Set.range (fun i => primeProfileClockClass (Sum.elim cA cC i)) =
-        Set.range (fun i => primeProfileClockClass (cA i)) ∪
-          Set.range (fun i => primeProfileClockClass (cC i)) by
-      simpa only using Set.Sum.elim_range
-      (fun i => primeProfileClockClass (cA i))
-      (fun i => primeProfileClockClass (cC i)),
-      Submodule.span_union]
+    have hfamily :
+        (fun i => primeProfileClockClass (Sum.elim cA cC i)) =
+          Sum.elim (fun i => primeProfileClockClass (cA i))
+            (fun i => primeProfileClockClass (cC i)) := by
+      funext i
+      rcases i with i | i <;> rfl
+    rw [hfamily, Set.Sum.elim_range, Submodule.span_union]
     rw [show Submodule.span ℂ (Set.range (fun i => primeProfileClockClass (cA i))) = A by
       simpa only [primeProfileStaticSubmodule] using hspanA,
       show Submodule.span ℂ (Set.range (fun i => primeProfileClockClass (cC i))) = C by
@@ -385,12 +385,19 @@ theorem primeProfileGrassmannField_inf
       primeProfileStaticField (Sum.elim cA cB) ⊓
           primeProfileStaticField (Sum.elim cA cC) =
         primeProfileStaticField cA := by
-    change IntermediateField.adjoin finitePrimeCoefficientField
-        (Set.range (Sum.elim aCarrier bCarrier)) ⊓
-      IntermediateField.adjoin finitePrimeCoefficientField
-        (Set.range (Sum.elim aCarrier cCarrier)) =
-      IntermediateField.adjoin finitePrimeCoefficientField (Set.range aCarrier)
-    exact hmeet
+    have hABcarrier :
+        (fun i => algebraMap (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField (Sum.elim cA cB i)) =
+          Sum.elim aCarrier bCarrier := by
+      funext i
+      rcases i with i | i <;> rfl
+    have hACcarrier :
+        (fun i => algebraMap (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField (Sum.elim cA cC i)) =
+          Sum.elim aCarrier cCarrier := by
+      funext i
+      rcases i with i | i <;> rfl
+    simpa only [primeProfileStaticField, hABcarrier, hACcarrier, aCarrier] using hmeet
   rw [hfieldAB, hfieldAC, hfieldA] at hmeetStatic
   simpa only [A] using hmeetStatic
 
@@ -404,13 +411,13 @@ theorem primeProfileGrassmannField_sup
   let cW := primeProfileGrassmannSource W
   have hspan : primeProfileStaticSubmodule (Sum.elim cU cW) = U ⊔ W := by
     unfold primeProfileStaticSubmodule
-    rw [show Set.range (fun i => primeProfileClockClass (Sum.elim cU cW i)) =
-        Set.range (fun i => primeProfileClockClass (cU i)) ∪
-          Set.range (fun i => primeProfileClockClass (cW i)) by
-      simpa only using Set.Sum.elim_range
-      (fun i => primeProfileClockClass (cU i))
-      (fun i => primeProfileClockClass (cW i)),
-      Submodule.span_union]
+    have hfamily :
+        (fun i => primeProfileClockClass (Sum.elim cU cW i)) =
+          Sum.elim (fun i => primeProfileClockClass (cU i))
+            (fun i => primeProfileClockClass (cW i)) := by
+      funext i
+      rcases i with i | i <;> rfl
+    rw [hfamily, Set.Sum.elim_range, Submodule.span_union]
     rw [show Submodule.span ℂ (Set.range (fun i => primeProfileClockClass (cU i))) = U by
       simpa only [cU, primeProfileStaticSubmodule] using
         primeProfileStaticSubmodule_grassmannSource U,
@@ -428,20 +435,19 @@ theorem primeProfileGrassmannField_sup
       primeProfileStaticField (Sum.elim cU cW) =
         primeProfileStaticField cU ⊔ primeProfileStaticField cW := by
     unfold primeProfileStaticField
-    rw [show Set.range (fun i => algebraMap (ArithmeticFunction ℂ)
-        arithmeticFunctionFractionField (Sum.elim cU cW i)) =
-        Set.range (fun i => algebraMap (ArithmeticFunction ℂ)
-          arithmeticFunctionFractionField (cU i)) ∪
-        Set.range (fun i => algebraMap (ArithmeticFunction ℂ)
-          arithmeticFunctionFractionField (cW i)) by
-      simpa only using Set.Sum.elim_range
-      (fun i => algebraMap (ArithmeticFunction ℂ)
-        arithmeticFunctionFractionField (cU i))
-      (fun i => algebraMap (ArithmeticFunction ℂ)
-        arithmeticFunctionFractionField (cW i)),
-      IntermediateField.adjoin_union]
+    have hfamily :
+        (fun i => algebraMap (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField (Sum.elim cU cW i)) =
+          Sum.elim
+            (fun i => algebraMap (ArithmeticFunction ℂ)
+              arithmeticFunctionFractionField (cU i))
+            (fun i => algebraMap (ArithmeticFunction ℂ)
+              arithmeticFunctionFractionField (cW i)) := by
+      funext i
+      rcases i with i | i <;> rfl
+    rw [hfamily, Set.Sum.elim_range, IntermediateField.adjoin_union]
   rw [hsum] at hfield
-  simpa only [cU, cW, primeProfileGrassmannField] using hfield.symm
+  simpa only [cU, cW, primeProfileGrassmannField] using hfield
 
 /-! ## The clock-invariant locus -/
 
@@ -524,7 +530,9 @@ theorem PrimeProfileClockInvariant.sup
   intro q hq
   obtain ⟨u, hu, w, hw, rfl⟩ := Submodule.mem_sup.mp hq
   rw [map_add]
-  exact Submodule.add_mem _ (hU u hu) (hW w hw)
+  exact Submodule.add_mem _
+    ((show U ≤ U ⊔ W from le_sup_left) (hU u hu))
+    ((show W ≤ U ⊔ W from le_sup_right) (hW w hw))
 
 /-- Clock invariance propagates from a source class to every logarithmic jet class. -/
 theorem PrimeProfileClockInvariant.jet_mem
@@ -554,7 +562,7 @@ theorem primeProfileClockSubmodule_invariant
       primeProfileRotatedLogJet_one_comp]
     apply Submodule.subset_span
     exact ⟨(i, n + 1), rfl⟩
-  · rw [map_zero]
+  · rw [primeProfileQuotientClock.map_zero]
     exact Submodule.zero_mem _
   · intro x y _ _ hx hy
     rw [map_add]
@@ -575,13 +583,15 @@ theorem primeProfileClockSubmodule_grassmannSource
     apply hW.jet_mem
     rw [primeProfileClockClass_grassmannSource]
     exact (Module.Basis.ofVectorSpace ℂ W i).2
-  · rw [← primeProfileStaticSubmodule_grassmannSource W]
-    unfold primeProfileStaticSubmodule primeProfileClockSubmodule
-    apply Submodule.span_mono
-    rintro _ ⟨i, rfl⟩
-    apply Submodule.subset_span
-    refine ⟨(i, 0), ?_⟩
-    simp [primeProfileClockJetFamily, primeProfileRotatedLogJet]
+  · calc
+      W = primeProfileStaticSubmodule (primeProfileGrassmannSource W) :=
+        (primeProfileStaticSubmodule_grassmannSource W).symm
+      _ ≤ primeProfileClockSubmodule (primeProfileGrassmannSource W) := by
+        unfold primeProfileStaticSubmodule primeProfileClockSubmodule
+        apply Submodule.span_mono
+        rintro _ ⟨i, rfl⟩
+        refine ⟨(i, 0), ?_⟩
+        simp [primeProfileClockJetFamily]
 
 /-- The represented basis field of an invariant subspace is already the differential field
 generated by that basis. -/
@@ -616,12 +626,12 @@ source presentation produces an invariant subspace. -/
 theorem primeProfileClockInvariant_realization
     (W : Submodule ℂ PrimeProfileClockQuotient) :
     PrimeProfileClockInvariant W ↔
-      ∃ (I : Type*) (c : I → ArithmeticFunction ℂ),
+      ∃ (I : Type) (c : I → ArithmeticFunction ℂ),
         (∀ i, PrimeProfileSupportedOnPositivePrimePowers (c i)) ∧
         primeProfileClockSubmodule c = W := by
   constructor
   · intro hW
-    exact ⟨PrimeProfileGrassmannIndex W, primeProfileGrassmannSource W,
+    exact ⟨↥(PrimeProfileGrassmannIndex W), primeProfileGrassmannSource W,
       primeProfileGrassmannSource_supportedOnPositivePrimePowers W,
       primeProfileClockSubmodule_grassmannSource W hW⟩
   · rintro ⟨I, c, hc, rfl⟩
@@ -679,7 +689,8 @@ theorem differentialAlgebraic_fractionPrimeProfile_over_grassmannField_iff
     (primeProfileGrassmannSource_supportedOnPositivePrimePowers W)
     f hfsupport
   rw [differentialAdjoin_grassmannSource_eq_grassmannField W hW] at h
-  unfold PrimeProfileIntrinsicClockSaturatedOver PrimeProfileClockSaturatedIn at h ⊢
+  unfold PrimeProfileIntrinsicClockSaturatedOver at h
+  unfold PrimeProfileClockSaturatedIn
   rw [primeProfileClockSubmodule_grassmannSource W hW] at h
   exact h
 

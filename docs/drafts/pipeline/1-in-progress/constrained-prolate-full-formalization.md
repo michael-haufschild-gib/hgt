@@ -173,7 +173,61 @@
   family (`evenProlateLeakageValue_nonneg`, `evenProlateLeakageValue_monotone` in
   `ConstrainedProlateOperator`).  So of the five contract fields, only the two-sided ENVELOPE
   remains, and its upper half is now purely the analytic estimate below.
-  L6a REMAINING (purely analytic): exhibit, for each fixed `n`, an `(n+1)`-dimensional subspace
+  L6a AGGREGATION DONE (`HTGeometry/OrthonormalTrialSpan.lean`, 2 theorems, axiom-clean):
+  `finrank_span_orthonormal` (an orthonormal `Fin m`-family spans dimension exactly `m`, so it is
+  an admissible Courant–Fischer trial space) and `norm_sq_apply_le_of_orthonormal_span`
+  (`‖R (g k)‖ ≤ η` for each `k` ⟹ `‖R f‖² ≤ m·η²·‖f‖²` on the whole span, via Bessel +
+  Chebyshev's sum inequality).  So an explicit family with small INDIVIDUAL defect now suffices;
+  no uniformity over the span has to be proved by hand.
+
+  ### L6a GAUSSIAN/HERMITE SUB-PLAN (findings verified 2026-07-18, start here)
+
+  The project's `fourierUnitary` is *definitionally* `MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ`
+  (`SoninL2Model.lean:85`).  Mathlib therefore already supplies the bridge:
+
+  * `SchwartzMap.toLp_fourier_eq (f : 𝓢(E,F)) : 𝓕 (f.toLp 2) = (𝓕 f).toLp 2`
+    (`Mathlib/Analysis/Fourier/LpSpace.lean:98`) — transports a pointwise Fourier identity for a
+    Schwartz function to the `L²` class, i.e. to `fourierUnitary`.
+  * `fourier_gaussian_pi (hb : 0 < b.re) : 𝓕 (fun x ↦ cexp (-π*b*x^2))
+       = fun t ↦ 1/b^(1/2) * cexp (-π/b*t^2)`
+    (`Mathlib/Analysis/SpecialFunctions/Gaussian/FourierTransform.lean:230`).  At `b = 1` this is
+    exactly `𝓕 (exp (-π x²)) = exp (-π x²)`: the Gaussian is a Fourier fixed point.
+    (Note `𝓕` is the `e^{-2πixξ}` convention; the Gaussian is even so the project's sign
+    convention is immaterial — but check evenness is used, not assumed.)
+
+  ROUTE IS FORCED (searched 2026-07-18): `Mathlib/Analysis/Fourier/LpSpace.lean` contains **no**
+  `MemLp`/`Integrable` bridge — there is no lemma saying the `L²` Fourier transform agrees a.e.
+  with `Real.fourierIntegral` on `L¹ ∩ L²`.  The ONLY available passage from a pointwise Fourier
+  identity to `fourierUnitary` is `SchwartzMap.toLp_fourier_eq`.  So constructing the Gaussian as
+  a `SchwartzMap` is unavoidable, not merely convenient.
+
+  The concrete obligation is the `decay'` field:
+```text
+  decay' : ∀ k n : ℕ, ∃ C, ∀ x, ‖x‖^k * ‖iteratedFDeriv ℝ n (fun x => cexp (-π*x^2)) x‖ ≤ C
+```
+  (`SchwartzSpace/Basic.lean:84`).  The `iteratedFDeriv` of the Gaussian is
+  (Hermite polynomial)·(Gaussian), so the induction that produces those derivatives is the same
+  induction that produces the Hermite functions — build them together, not separately.
+  Useful precedents for the `decay'` pattern: `SchwartzSpace/Basic.lean:566` and `:600`.
+
+  GAP CONFIRMED BY SEARCH: mathlib has **no** Gaussian as a `SchwartzMap` (no `gaussianSchwartz`,
+  nothing Schwartz-shaped in `SpecialFunctions/Gaussian/`).  So the one construction to build is
+
+```text
+  gaussianSchwartz : 𝓢(ℝ, ℂ),  gaussianSchwartz x = cexp (-π * x^2)
+```
+
+  i.e. the Schwartz seminorm bounds `‖x‖^k * ‖iteratedDeriv n f x‖` bounded — the derivatives are
+  (Hermite polynomial)·(Gaussian), so this is where `Polynomial.hermite` and
+  `HermiteOscillatorEigen.hermiteFun` enter.  Once `gaussianSchwartz` exists:
+  `fourierUnitary (gaussianSchwartz.toLp 2) = gaussianSchwartz.toLp 2`, giving the `n = 0` trial
+  function; higher `n` needs the Hermite-function eigenrelation `𝓕 h_n = (-i)^n h_n`, provable by
+  induction using the creation operator `(x - d/dx)` — also not in mathlib.
+  Then: truncate to `[-a,a]`, bound the Gaussian tail (`∫_{|x|>a} e^{-2πx²}`) to get the
+  individual defect `η`, feed `norm_sq_apply_le_of_orthonormal_span`, then
+  `evenProlateLeakageValue_le_of_form_trial`.
+
+  Superseded note: exhibit, for each fixed `n`, an `(n+1)`-dimensional subspace
   of aperture-supported even functions with concentration deficit `ε_n(a)` of the right size —
   variational, Hermite trial functions against the leakage form
   `⟨(I−T²)f, f⟩ = ‖f‖² − ‖Tf‖²`; needs Hermite functions as Fourier eigenfunctions

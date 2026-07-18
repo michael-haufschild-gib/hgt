@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.DifferentialFamilyMatroid
+import GaloisForLFunctions.HTGeometry.DifferentialAutomorphismDefectEscape
 import GaloisForLFunctions.HTGeometry.EllipticGammaExternalDefectOstrowski
 import GaloisForLFunctions.HTGeometry.MeromorphicRationalCoordinateDifferentialAdjoin
+import GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary
 
 /-!
 # Irrational elliptic-gamma defects over the natural rational base
@@ -76,6 +78,32 @@ local instance ellipticGammaRationalBaseCoordinateDifferentialAlgebra :
     meromorphicRationalCoordinateField
     meromorphicRationalCoordinateField_derivationClosed x⟩
 
+/-- Additive translation of global meromorphic functions, bundled as a differential
+automorphism over the complex constants. -/
+noncomputable def addTranslationMeroDifferentialAlgEquiv (q : ℂ) :
+    HTGeometry.DifferentialAlgEquiv ℂ (meroField Set.univ) where
+  toAlgEquiv := addTranslationMeroAlgEquiv q
+  map_deriv' x := by
+    simpa using addTranslationMeroEquiv_deriv q x
+
+/-- The enlarged rank-three period lattice is countable, so it always admits an external shift. -/
+theorem exists_thetaTranslationNonresonant (tau sigma : ℂ) :
+    ∃ h : ℂ, ThetaTranslationNonresonant tau sigma h := by
+  let lattice : Set ℂ := Set.range fun p : ℤ × (ℤ × ℤ) ↦
+    (p.1 : ℂ) + (p.2.1 : ℂ) * tau + (p.2.2 : ℂ) * sigma
+  have hcountable : lattice.Countable := Set.countable_range _
+  have hproper : lattice ≠ Set.univ := by
+    intro hall
+    apply Set.not_countable_univ (α := ℂ)
+    rw [← hall]
+    exact hcountable
+  obtain ⟨h, hh⟩ := (Set.ne_univ_iff_exists_notMem lattice).mp hproper
+  refine ⟨h, ?_⟩
+  rintro ⟨a, b, n, hab⟩
+  apply hh
+  refine ⟨(a, (b, n)), ?_⟩
+  simpa [lattice] using hab
+
 /-- **Actual elliptic-gamma defect matroid over `ℂ(z)`.**  External defects in pairwise distinct
 nonzero rank-three period cosets are differentially algebraically independent over the genuine
 embedded rational-coordinate field. -/
@@ -132,6 +160,49 @@ theorem hypertranscendentalOver_ellipticGammaExternalLogDerivDefectMero
     ellipticGammaExternalDefectFamily_differentialIndependent_rationalBase
       (fun _ : Unit ↦ h) sigma tau hsigma htau hindependent
       (fun _ ↦ hnonres) (by simp)
+
+/-- The actual elliptic-gamma logarithmic derivative is hypertranscendental over `ℂ(z)` when
+`1`, `sigma`, and `tau` are rationally independent.  An external translated defect supplies the
+infinite differential source; translation cannot create it from a DA primitive. -/
+theorem hypertranscendentalOver_ellipticGammaLogDerivMero_rationalBase
+    (sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
+    (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau)) :
+    HypertranscendentalOver meromorphicRationalCoordinateField
+      (ellipticGammaLogDerivMero sigma tau hsigma htau) := by
+  obtain ⟨h, hnonres⟩ := exists_thetaTranslationNonresonant tau sigma
+  have hdefectRational :=
+    hypertranscendentalOver_ellipticGammaExternalLogDerivDefectMero
+      h sigma tau hsigma htau hindependent hnonres
+  have hdefectConstants : HypertranscendentalOver ℂ
+      (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) := by
+    rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at
+      hdefectRational ⊢
+    exact HTGeometry.DifferentialIndependent.restrictScalarsTower hdefectRational
+  have hlogConstants : HypertranscendentalOver ℂ
+      (ellipticGammaLogDerivMero sigma tau hsigma htau) := by
+    apply (addTranslationMeroDifferentialAlgEquiv h).hypertranscendentalOver_of_sub_self
+    simpa [addTranslationMeroDifferentialAlgEquiv,
+      ellipticGammaExternalLogDerivDefectMero] using hdefectConstants
+  rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at
+    hlogConstants ⊢
+  have hbaseChanged :=
+    hlogConstants.extendScalarsDifferentialAdjoinSingleton
+      differentialAlgebraicOver_meromorphicRationalCoordinate
+  rw [differentialAdjoin_meromorphicRationalCoordinate_eq] at hbaseChanged
+  exact hbaseChanged
+
+/-- **Natural-base elliptic-gamma hypertranscendence.**  For rationally independent rank-three
+periods, the genuine meromorphic elliptic-gamma product is hypertranscendental over the embedded
+rational function field `ℂ(z)`. -/
+theorem hypertranscendentalOver_ellipticGammaMero_rationalBase
+    (sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
+    (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau)) :
+    HypertranscendentalOver meromorphicRationalCoordinateField
+      (ellipticGammaMero sigma tau hsigma htau) := by
+  rw [← hypertranscendentalOver_deriv_div_self_iff]
+  simpa [ellipticGammaLogDerivMero] using
+    hypertranscendentalOver_ellipticGammaLogDerivMero_rationalBase
+      sigma tau hsigma htau hindependent
 
 end
 

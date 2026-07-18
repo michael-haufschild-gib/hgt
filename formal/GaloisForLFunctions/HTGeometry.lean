@@ -423,6 +423,7 @@ import GaloisForLFunctions.HTGeometry.GenericJetInjectivity
 import GaloisForLFunctions.HTGeometry.GradedSpectrumCancellation
 import GaloisForLFunctions.HTGeometry.GreedySingularValues
 import GaloisForLFunctions.HTGeometry.GreedyCourantFischer
+import GaloisForLFunctions.HTGeometry.OrthonormalTrialSpan
 import GaloisForLFunctions.HTGeometry.HilbertSchmidt
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtAlgebra
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact
