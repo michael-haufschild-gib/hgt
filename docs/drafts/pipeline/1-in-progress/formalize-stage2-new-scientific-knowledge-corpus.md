@@ -203,12 +203,13 @@ DAGs without repeating the audits.
   exponential separation, but still lacks the arbitrary distinct-algebraic-exponent /
   algebraic-coefficient Lindemann--Weierstrass result, constant-field descent and transitivity,
   the final confinement-to-HT assembly, and the card's full rational approximation theorem
-- [ ] `charged-scalar-core-fixed-current-torsor` — all five theorem clauses inventoried; the live
-  `StableCoreFunctoriality`, `ScalarLogCurrentReconstruction`, `RatFuncScaleFixedField`, and
-  `ScalarDifferentialTorsor` surfaces now cover fixed logarithmic current, its nonconstancy and
-  hypertranscendence, exact `T=L(q)`, the rational torsor coordinate, full derivation-preserving
-  automorphism group `Fˣ`, and both finite- and infinite-order fixed fields; exact leaf build and
-  axiom verification remain before crediting this card complete
+- [ ] `charged-scalar-core-fixed-current-torsor` — all five theorem clauses are Lean-proved:
+  `StableCoreFunctoriality`, `ScalarLogCurrentReconstruction`, `RatFuncScaleFixedField`,
+  `ScalarDifferentialTorsor`, and `ScalarFiniteDifferentialTorsor` cover the fixed
+  hypertranscendental current, exact `T=L(q)`, rank-one equation, rational torsor coordinate, full
+  derivation-preserving group `Fˣ`, exact finite/infinite holonomy fixed fields, and the finite
+  cover group `mu_N(F)`; the exact owning build and combined axiom audit are green, leaving only
+  the serialized umbrella/index/lint gate before Stage 3
 - [ ] `commutative-d-group-source-boundary-universality` — Theorems A/B and the sharp-kernel
   corollary inventoried; depends on the localized source quotient plus genuine algebraic D-group
   and logarithmic-derivative foundations

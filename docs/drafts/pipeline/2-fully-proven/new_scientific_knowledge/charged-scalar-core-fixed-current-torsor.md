@@ -1,8 +1,8 @@
 # A charged scalar HT core is a multiplicative torsor over a fixed current field
 
 - **ID:** `charged-scalar-core-fixed-current-torsor`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 2-fully-proven / complete theorem surface Lean-proved / final integration gate pending
+- **Type:** THEOREM (paper) / Lean formalization complete
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Every positive-clock-character scalar persistent core is a rank-one
   `G_m` Picard--Vessiot torsor over a nonconstant fixed hypertranscendental current field; its full
@@ -283,12 +283,38 @@ Fix(<u>) = K        when orderOf(u)=infinity.
 ```
 
 The leaf passed its one exact build, direct file check, and axiom audit with only `propext`,
-`Classical.choice`, and `Quot.sound`.  The remaining stage-3 work is the differential torsor
-transport: prove that `q` is algebraically transcendental over `L=C<J>`, construct the resulting
-`L(X) ~= T` equivalence compatibly with the derivation and constraint, and identify the full
-Picard--Vessiot automorphism group.  Once that transport exists, the two fixed-field equalities are
-provided by the new rational-coordinate theorem rather than being reproved.  No placeholder axiom
-is used.
+`Classical.choice`, and `Quot.sound`.
+
+`formal/GaloisForLFunctions/HTGeometry/ScalarDifferentialTorsor.lean` now supplies the formerly
+missing differential torsor transport.  It proves the amplitude transcendental over `L=C<J>`,
+constructs the exact coordinate equivalence `L(X) ~= T`, proves that it intertwines scalar action,
+and identifies every derivation-preserving `L`-automorphism uniquely with one element of `C^*`:
+
+```text
+scalar_amplitude_transcendental_over_currentField
+scalarTorsorRatFuncEquiv
+scalarTorsorRatFuncEquiv_scale
+deriv_eq_logDeriv_mul
+scalarDifferentialGaloisGroupEquiv
+```
+
+The same module transports the ordinary rational-coordinate invariant theory back to the
+differential torsor and proves the exact finite- and infinite-holonomy fixed fields for an
+arbitrary derivation-preserving automorphism satisfying `Phi(q)=a*q`:
+
+```text
+fixedField_zpowers_derivationPreservingAut_of_finite_order
+fixedField_zpowers_derivationPreservingAut_of_infinite_order
+scalarLogCurrentField_adjoin_power_restrictScalars
+```
+
+Finally, `ScalarFiniteDifferentialTorsor.lean` identifies the differential Galois group over the
+finite cover `C<q^N>` with `mu_N(C)` through
+`scalarFiniteDifferentialGaloisGroupEquiv`.  An exact owning-target build and a combined scratch
+axiom audit of all five theorem clauses pass; every audited capstone depends only on `propext`,
+`Classical.choice`, and `Quot.sound`.  No placeholder axiom or conditional theorem wrapper is
+used.  The remaining Stage-3 gate is serialized umbrella reachability, generated-index refresh,
+and formal lint.
 
 ## Gates
 
@@ -296,7 +322,8 @@ is used.
 - [x] 1 -> 2 fully-proven: complete algebraic and fixed-field proof
 - [x] logarithmic-current hypertranscendence, `T=L(q)`, and `C<q^N>=L(q^N)` formalized
 - [x] exact finite- and infinite-order scalar fixed fields on the ordinary rational coordinate
-- [ ] 2 -> 3 formalized: construct the exact differential `G_m` torsor transport over `L`
+- [x] exact differential `G_m` torsor transport, automorphism group, and holonomy fixed fields
+- [ ] 2 -> 3 formalized: serialized umbrella reachability, generated indexes, and formal lint
 - [ ] 3 -> 4 publication-ready: specialist external novelty review and integration with scalar
   orbifold classification
 
@@ -316,3 +343,6 @@ is used.
   reconstruction, and the positive-power finite-cover reconstruction law.
 - 2026-07-17 -- formalized the faithful rational-coordinate scalar action and its exact finite- and
   infinite-order fixed fields; differential PV transport from `L(X)` to `T` remains.
+- 2026-07-18 -- formalized the exact differential torsor transport, full `G_m(C)` automorphism
+  group, arbitrary finite/infinite holonomy fixed fields, and the finite-cover `mu_N(C)` Galois
+  group; exact leaf build and combined axiom audit pass, with only the batch integration gate left.
