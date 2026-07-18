@@ -1452,3 +1452,38 @@ reciprocity-side A PRIORI modulus bound unconditionally — THE Gate-3 target: t
 bound derives from finite-level arithmetic (reciprocity closes the phase; what closes the
 modulus?) or secretly needs zero locations. NEXT: bound the comparison norm on the level-S
 ideal presentation (Meyer Lemma 5.10 generators).
+
+## 2026-07-18 session 2 (cont. 34) — Gate-3 bridge verdict: forcing leg hits the
+## zero-repulsion wall (exact 3-part map); Carleson/interpolation springboard
+
+**[VERDICT (ii) — with the wall mapped exactly]** (Meyer pp. 40-47 verified; sympy-checked)
+(1) ACTION derived: the comparison = multiplication by `c * p^s` (c in mu_8) on the strip
+algebra — an entire UNIT of Meyer's multiplier algebra; descends; fiber modulus `p^beta`,
+mirror anisotropy `p^{2d}` — cont. 33 bookkeeping CONFIRMED. (2) SOUND LEG KEPT: fiber <=
+quotient unconditionally (Thm 5.11's homogeneous functionals ARE the jet evaluations), so
+**level-uniform quotient-norm bound => RH** stands as a consumer. (3) FORCING LEG FAILS
+finite-level derivation, structurally: (b1) ideal membership is DEFINED by interior-line
+division (`f / L-hat_S` Schwartz on every interior line) — needs LOWER bounds on |L-hat| =
+the classical zero-repulsion wall; no boundary-only presentation of N exists (Gamma-decay
+makes `1/L-hat` exit the Schwartz class left of the strip); (b2) the small-representative
+escape is REFUTED by duality: the minimal remainder with prescribed jets IS the
+evaluation-functional norm (Hahn-Banach); interpolants reintroduce zero positions as nodes
+with `1/|L-hat'(rho)|` weights; (b3) convexity/upper bounds enter with the WRONG SIGN
+(quotient co-metric monotone DECREASING in |L-hat|: upper bounds certify quotient-norm lower
+bounds only). Finite-level reciprocity closes the PHASE block only; the MODULUS bound
+secretly requires zero locations. **[NEW SEPARATION — CONJECTURE]** The quotient-norm form is
+possibly STRICTLY stronger than RH: even with all `beta = 1/2`, equicontinuity of the
+evaluation family is a zero-SPACING statement — the per-fiber bridge and the quotient
+packaging separate.
+
+**[SPRINGBOARD — the Carleson/interpolation face]** The co-metric of the ideal N is exactly a
+DE BRANGES MODEL-SPACE norm (structure function from xi; Hermite-Biehler ⟺ RH), and
+"evaluations uniformly bounded" = **the xi-divisor is an INTERPOLATING SEQUENCE** — a
+Carleson-type positivity condition on boundary data. This collides head-on with the
+Hermite-Hankel PSD lane (cont. 22): both are boundary-data positivity conditions with
+divisor-geometric content. NEXT OBJECT: the box-local Carleson dual of H(B) — formulate the
+per-box interpolation/Carleson condition, its exact relation to det H_2 >= 0, and run the
+transparency + novelty gates (Carleson conditions are NON-analytic cone-type data — check
+against the surviving-class catalogue; audit the de Branges/model-space interpolation
+literature for priors: Seip, Ortega-Cerda, Baranov on interpolating sequences in de Branges
+spaces).
