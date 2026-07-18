@@ -83,7 +83,16 @@
   `ℓ^⊥` on `lp 2`; its eigenvalues in `(d_0,d_1)` are exactly the secular roots with coordinates
   (14)/(13); min–max interlacing `d_k ≤ μ_k ≤ d_{k+1}` at operator level.  Closes the cards'
   operator-form phrasing.
-- [ ] **L5 — true-operator scalar inputs**: from the existing concrete operator layer
+- [x] **L5 — true-operator Bessel side** (`ConstrainedProlateBesselBound.lean`, 9 theorems,
+  axiom-clean): `‖evenCentralIndicator a‖² = 2a` exactly; the true constraint coordinate
+  `evenProlateConstraintCoord a n = ⟨1_[-a,a], e_n⟩` with its integral identity
+  `= ∫_{-a}^a e_n` (card 1 eq (1)'s pairing form); the nonzero signed modes are orthonormal;
+  Bessel `Σ_n ‖ℓ_n(a)‖² ≤ 2a` (card 1 eq (2)) + summability, in the eventual-aperture forms
+  matching the exact transfer theorems' `hsum`/`hbessel`; and the injective-subfamily version
+  for the parity/`4j` renumberings L9 will use.  Still open from the original L5 scope: the
+  eigenvalue-evaluation identity `ℓ_j = χ_j e_j(0)` (needs pointwise mode evaluation — part of
+  the L6/L7 analytic layer).
+  Original scope: from the existing concrete operator layer
   (`ConstrainedProlateOperator`/`SignedSpectrum`): the evaluation identity `ℓ_j = χ_j e_j(0)`
   (card 1 eq (1)) and the Bessel bound `Σ_j ℓ_j² ≤ 2λ` (card 1 eq (2)).  Discharges hypothesis
   (S5) of L1 for the true operator.
@@ -119,7 +128,9 @@
   `ConstrainedProlateFuchsModelTransfer`); L2a banked (`ConstrainedProlateSecularVector`);
   L3 banked (`ConstrainedProlateParityExactTransfer` — card 2 Fuchs-model complete);
   L3b complete (`ConstrainedProlateDepthSecular` + `ConstrainedProlateLadderExactTransfer` —
-  card 3 eqs (8),(9) for exact roots, Fuchs-model complete).  All modules umbrella-wired and
+  card 3 eqs (8),(9) for exact roots, Fuchs-model complete); L5 banked
+  (`ConstrainedProlateBesselBound` — true-operator Bessel bound `Σ‖ℓ_n(a)‖² ≤ 2a`,
+  discharging the `hsum`/`hbessel` hypotheses of every exact transfer theorem).  All modules umbrella-wired and
   axiom-clean.  Next: L2b (eigenvector normalized distance, card 1 eq (4)); L4 (lp2 operator
   identification); L5 (true-operator Bessel bound + evaluation identity from
   `ConstrainedProlateOperator`/`SignedSpectrum`); then L6/L7 mountains.

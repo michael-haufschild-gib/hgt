@@ -145,3 +145,27 @@ theorem evenProlate_summable_eventually :
   Filter.Eventually.of_forall fun lam => summable_evenProlateConstraintCoord_sq lam
 
 end RHTower
+
+namespace RHTower
+
+/-- The Bessel bound survives any injective renumbering of the modes: every subfamily of
+constraint coordinates — in particular any parity subsequence — carries squared mass at most
+`2a`. -/
+theorem tsum_evenProlateConstraintCoord_comp_sq_le {a : ℝ} (ha : 0 ≤ a)
+    {σ : ℕ → ℕ} (hσ : Function.Injective σ) :
+    (∑' j : ℕ, ‖evenProlateConstraintCoord a (σ j)‖ ^ 2) ≤ 2 * a := by
+  have hg := summable_evenProlateConstraintCoord_sq a
+  have hf : Summable fun j : ℕ => ‖evenProlateConstraintCoord a (σ j)‖ ^ 2 :=
+    hg.comp_injective hσ
+  exact le_trans
+    (hf.tsum_le_tsum_of_inj σ hσ (fun c _ => by positivity) (fun j => le_refl _) hg)
+    (tsum_evenProlateConstraintCoord_sq_le ha)
+
+/-- The eventual aperture form of the subfamily Bessel bound. -/
+theorem evenProlate_bessel_comp_eventually {σ : ℕ → ℕ} (hσ : Function.Injective σ) :
+    ∀ᶠ lam : ℝ in Filter.atTop,
+      (∑' j : ℕ, ‖evenProlateConstraintCoord lam (σ j)‖ ^ 2) ≤ 2 * lam := by
+  filter_upwards [Filter.eventually_ge_atTop (0 : ℝ)] with lam hlam
+  exact tsum_evenProlateConstraintCoord_comp_sq_le hlam hσ
+
+end RHTower

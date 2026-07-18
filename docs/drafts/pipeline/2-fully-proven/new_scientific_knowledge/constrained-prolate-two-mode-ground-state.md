@@ -518,9 +518,12 @@ the Bessel bound `(2)` from the concrete operator layer.
   competing-root interlacing, formalized in Lean (`ConstrainedProlateInfiniteSecular`)
 - [x] exact-optimizer `8/11`, `3/11`, and quantified `c<3/11` gap under Bessel + coordinate-limit
   hypotheses formalized in Lean; leakage side discharged for the concrete Fuchs family
+- [x] true-operator Bessel bound `(2)` formalized in Lean unconditionally:
+  `Σ_n ‖⟨1_[-λ,λ], e_n⟩‖² ≤ 2λ` for the actual signed prolate modes, with the integral pairing
+  identity and the injective-subfamily form (`ConstrainedProlateBesselBound`)
 - [ ] eigenvector convergence `(4)` in Lean
-- [ ] true-operator inputs in Lean: mode identification, Fuchs asymptotics, prolate-to-Hermite,
-  Bessel bound `(2)`
+- [ ] remaining true-operator inputs in Lean: mode identification, Fuchs asymptotics,
+  prolate-to-Hermite limits, evaluation identity `(1)`
 - [ ] independent proof review
 - [ ] independent literature review
 - [ ] true Weil residual and spectral-gap transfer

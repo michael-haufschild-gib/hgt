@@ -230,6 +230,7 @@ theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
           (differentialOperatorLinearCombination
             omega operatorCoefficients (1 : Fin 3)) =
         thetaSum := by
+    dsimp only [thetaSum]
     rw [differentialOperatorLinearCombination, map_finsuppSum]
     unfold Finsupp.sum
     apply Finset.sum_congr rfl

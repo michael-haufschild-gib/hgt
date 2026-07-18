@@ -55,6 +55,7 @@ theorem boundedScalarReplicatedFiniteAbscissa_val
 theorem scalarReplicatedPrimeProfile_eulerLogValuationProfile :
     scalarReplicatedPrimeProfile eulerLogValuationProfile =
       RHTower.eulerLogDirichletCoeff := by
+  classical
   ext n
   by_cases hpow : IsPrimePow n
   · let x : PrimePowerClockIndex :=
@@ -72,6 +73,7 @@ theorem scalarReplicatedPrimeProfile_eulerLogValuationProfile :
     rw [hcoord, eulerLogValuationProfile,
       RHTower.eulerLogDirichletCoeff_prime_pow_succ
         (x.1 : Nat) x.2 x.1.2]
+    norm_num [Nat.cast_add, Nat.cast_one]
   · rw [RHTower.eulerLogDirichletCoeff_eq_zero_of_not_primePower hpow]
     simp [scalarReplicatedPrimeProfile, hpow]
 
@@ -192,6 +194,7 @@ theorem scalarReplicatedPrimeProfile_scalarValuationBasisProfile
     (e : Nat) :
     scalarReplicatedPrimeProfile (scalarValuationBasisProfile e) =
       arithmeticOfPrimePowerColumn e (fun _ : Nat.Primes ↦ (1 : ℂ)) := by
+  classical
   ext n
   by_cases hpow : IsPrimePow n
   · let x : PrimePowerClockIndex :=
@@ -389,10 +392,8 @@ theorem analyticEulerLogReplicatedCarrier_differentialIndependent_over_all_valua
       · apply congrArg finiteAbscissaLSeriesToUpperEndMero
         apply Subtype.ext
         rfl
-      · rw [← hidxCarrier z]
-        apply congrArg finiteAbscissaLSeriesToUpperEndMero
-        apply Subtype.ext
-        rfl
+      · simpa only [profiles, oldProfile, analyticScalarValuationLayerCarrier] using
+          hidxCarrier z
     rw [hfamily] at hcombined
     have hrelative :=
       (GaloisForLFunctions.differentialIndependent_sumElim_right_iff

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.ScaleCovariantBernsteinGibbsCorollary
 import GaloisForLFunctions.RHTower.PrimeArchCentralMomentGerm
 import GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
+import GaloisForLFunctions.RHTower.XiZerosInfinite
 
 /-!
 # Scale-covariant Xi Bernstein--Abel corollary
@@ -36,7 +37,14 @@ def xiScaleCovariantGibbsFreeEnergy (R : ℝ) : ℝ :=
 
 theorem xiScaleCovariantReciprocalSquareSupport_nonempty :
     xiScaleCovariantReciprocalSquareSupport.Nonempty := by
-  exact Set.range_nonempty xiZeroCopyReciprocalSquare
+  obtain ⟨z, hz⟩ := xiDivisorSupport_infinite.nonempty
+  let ρ : XiDivisorSupport := ⟨z, hz⟩
+  have hpos : 0 < (MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) :=
+    xi_divisor_pos_on_support ρ
+  have hn : 0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)) := by
+    omega
+  let q : XiZeroCopy := ⟨ρ, ⟨0, hn⟩⟩
+  exact ⟨xiZeroCopyReciprocalSquare q, ⟨q, rfl⟩⟩
 
 /-- RH is exactly positivity of every occupied centered reciprocal-square Xi coordinate. -/
 theorem riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative :
@@ -52,7 +60,7 @@ theorem riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative :
     apply riemannHypothesis_of_xiSpectralPoint_real
     intro q
     have him : (xiZeroCopyReciprocalSquare q).im = 0 :=
-      (Complex.nonneg_iff.mp (hpositive q)).2
+      (Complex.nonneg_iff.mp (hpositive q)).2.symm
     rw [xiZeroCopyReciprocalSquare_eq] at him
     have hre : (q.1 : ℂ).re = 1 / 2 :=
       (xiCentralReciprocalSquare_im_eq_zero_iff q.1).mp him
@@ -65,13 +73,14 @@ theorem riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative :
 theorem xiScaleCovariantTransverseDefect_eq_zero_iff_riemannHypothesis
     {M : ℝ} (hbound : ∀ q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ≤ M) :
     xiScaleCovariantTransverseDefect = 0 ↔ RiemannHypothesis := by
+  have hsourceBound : ∀ z ∈ xiScaleCovariantReciprocalSquareSupport, ‖z‖ ≤ M := by
+    rintro z ⟨q, rfl⟩
+    exact hbound q
   rw [xiScaleCovariantTransverseDefect,
     HTGeometry.transverseDefectEnvelope_eq_zero_iff
-      xiScaleCovariantReciprocalSquareSupport_nonempty]
-  · simpa only [xiScaleCovariantReciprocalSquareSupport, Set.forall_mem_range] using
-      riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative.symm
-  · rintro z ⟨q, rfl⟩
-    exact hbound q
+      xiScaleCovariantReciprocalSquareSupport_nonempty hsourceBound]
+  simpa only [xiScaleCovariantReciprocalSquareSupport, Set.forall_mem_range] using
+    riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative.symm
 
 /-- At every scale beyond a common source bound, unit Xi Abel radius is exactly RH. -/
 theorem xiScaleCovariantAbelRadius_eq_one_iff_riemannHypothesis
@@ -79,13 +88,14 @@ theorem xiScaleCovariantAbelRadius_eq_one_iff_riemannHypothesis
     (hbound : ∀ q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ≤ M)
     (hRM : M < R) :
     xiScaleCovariantAbelRadius R = 1 ↔ RiemannHypothesis := by
+  have hsourceBound : ∀ z ∈ xiScaleCovariantReciprocalSquareSupport, ‖z‖ ≤ M := by
+    rintro z ⟨q, rfl⟩
+    exact hbound q
   rw [xiScaleCovariantAbelRadius,
     HTGeometry.confocalAbelRadius_eq_one_iff
-      xiScaleCovariantReciprocalSquareSupport_nonempty hM hRM]
-  · simpa only [xiScaleCovariantReciprocalSquareSupport, Set.forall_mem_range] using
-      riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative.symm
-  · rintro z ⟨q, rfl⟩
-    exact hbound q
+      xiScaleCovariantReciprocalSquareSupport_nonempty hM hRM hsourceBound]
+  change xiScaleCovariantTransverseDefect = 0 ↔ RiemannHypothesis
+  exact xiScaleCovariantTransverseDefect_eq_zero_iff_riemannHypothesis hbound
 
 /-- At every scale beyond a common source bound, vanishing Xi Gibbs free energy is exactly RH. -/
 theorem xiScaleCovariantGibbsFreeEnergy_eq_zero_iff_riemannHypothesis
@@ -93,13 +103,14 @@ theorem xiScaleCovariantGibbsFreeEnergy_eq_zero_iff_riemannHypothesis
     (hbound : ∀ q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ≤ M)
     (hRM : M < R) :
     xiScaleCovariantGibbsFreeEnergy R = 0 ↔ RiemannHypothesis := by
+  have hsourceBound : ∀ z ∈ xiScaleCovariantReciprocalSquareSupport, ‖z‖ ≤ M := by
+    rintro z ⟨q, rfl⟩
+    exact hbound q
   rw [xiScaleCovariantGibbsFreeEnergy,
     confocalGibbsFreeEnergy_eq_zero_iff_source_positive
-      xiScaleCovariantReciprocalSquareSupport_nonempty hM hRM]
-  · simpa only [xiScaleCovariantReciprocalSquareSupport, Set.forall_mem_range] using
-      riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative.symm
-  · rintro z ⟨q, rfl⟩
-    exact hbound q
+      xiScaleCovariantReciprocalSquareSupport_nonempty hM hRM hsourceBound]
+  simpa only [xiScaleCovariantReciprocalSquareSupport, Set.forall_mem_range] using
+    riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative.symm
 
 /-- The Xi Gibbs free energy has first recession twice the intrinsic transverse defect. -/
 theorem tendsto_mul_xiScaleCovariantGibbsFreeEnergy
@@ -107,10 +118,12 @@ theorem tendsto_mul_xiScaleCovariantGibbsFreeEnergy
     (hbound : ∀ q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ≤ M) :
     Tendsto (fun R : ℝ => R * xiScaleCovariantGibbsFreeEnergy R) atTop
       (nhds (2 * xiScaleCovariantTransverseDefect)) := by
-  apply tendsto_mul_confocalGibbsFreeEnergy
-    xiScaleCovariantReciprocalSquareSupport_nonempty hM
-  rintro z ⟨q, rfl⟩
-  exact hbound q
+  have hsourceBound : ∀ z ∈ xiScaleCovariantReciprocalSquareSupport, ‖z‖ ≤ M := by
+    rintro z ⟨q, rfl⟩
+    exact hbound q
+  simpa only [xiScaleCovariantGibbsFreeEnergy, xiScaleCovariantTransverseDefect] using
+    tendsto_mul_confocalGibbsFreeEnergy
+      xiScaleCovariantReciprocalSquareSupport_nonempty hM hsourceBound
 
 /-- One unconditional source bound controls the complete Xi radical chain at every larger scale. -/
 theorem exists_xiScaleCovariantRadical_scale :
