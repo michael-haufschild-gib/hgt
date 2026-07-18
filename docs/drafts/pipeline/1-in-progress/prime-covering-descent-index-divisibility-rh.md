@@ -1063,3 +1063,38 @@ jet action by log-derivatives of local epsilon-factors. The mod-8 datum is an et
 DEFECT/BOUNDARY TERM of the Euler filtration whose S -> infinity trivialization IS reciprocity
 — exactly where MQ2's local Weil indices act. Next: compute the level-S comparison at a simple
 critical fiber (epsilon_S(omega)-type discrepancy on the generator L-hat_S).
+
+## 2026-07-18 session 2 (cont. 23) — NOVELTY VERDICT: (b) REDISCOVERED — and the honest merge
+
+**[VERDICT]** The Hermite–Hankel box-local equivalence (cont. 22) is a routine reformulation:
+- INTERNALLY REDISCOVERED: `symmetric-prime-gamma-contour-hermite-rh.md` (2026-07-13) +
+  `XiGuinandWeilFiniteHermiteCriterion.lean` already hold the box-localized finite-rank
+  trace-Hankel criterion, with the RH-consumer
+  `riemannHypothesis_of_countableSymmetricPrimeArchTraceHankelNonnegative` (l.729) FORMALIZED.
+  The production target I named is exactly that card's open core (source-side per-box
+  positivity). Convergent evolution root cause: the master dependency table has NO
+  box/Guinand–Weil row (grep "rectangle|Guinand" = 0 hits there) — the map gap hid the card.
+- EXTERNALLY (b): composes from Hermite 1856 / Hermite–Sylvester + argument-principle contour
+  moments (Delves–Lyness 1967; Kravanja–Van Barel) + FE symmetry = "Grommer box-localized".
+  Li/Jensen/GORZ/Bickel–Pascoe–Sargent all adjudicated distinct (global, coefficient-based, or
+  relaxation-only). No per-window PSD criterion in print — but composable, hence not novel.
+
+**[TRUE RESIDUE — the lane's genuine contributions, merged into the prior card's route]**
+1. The SEPARATION/INNERMOST-ISOLATION theorem (cont. 20-21, refereed) — absent from the 07-13
+   card; it upgrades that card's per-box quantifier logic (which boxes suffice and why one
+   odd-pair box must exist).
+2. The SQUAREFREE/WALL-ABSORPTION certificate layer (disc(W~), gcd-stratification absorption,
+   the no-uniform-margin analysis forcing exact-identity certificates) — absent from both
+   corpus and literature; it tells the 07-13 card's open core WHAT KIND of certificate can
+   work (exact SOS/PSD identity, not estimates) and that the collision no-go does not bar it.
+3. The Lean modules (PairIdealCensusAlgebra.lean; FixedWindowWeylRigidity.lean) — substrate
+   for the squarefree layer; compose with XiGuinandWeilFiniteHermiteCriterion.lean.
+4. The T1-T3 + seven-representation no-go survey — design constraints for any producer.
+ACTION: master-table gap noted (box/Guinand-Weil row missing — to be added on the master card);
+this lane's census/tower chain and the 07-13 Hermite-contour chain are ONE route with two
+formalized consumers; production effort concentrates on the SHARED open core: source-side
+per-box positivity, now with the certificate-form constraints established here.
+
+**[PROCESS LESSON]** Five-day-old corpus results can be rediscovered when the master map lacks
+their row. Before any future Gate-2 statement in this lane: grep the FULL 1-in-progress lane
+for the mechanism's mathematical objects (not just the master table).
