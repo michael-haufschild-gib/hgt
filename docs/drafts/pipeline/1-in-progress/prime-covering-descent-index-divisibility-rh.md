@@ -872,3 +872,33 @@ side with local Weil indices; (L4) the reciprocity/product-formula constraint as
 sign law; (L5) extract the on-line-count mod-8 law and splice into the census/tower chain.
 Referee queue: cont. 11-17 derivations. Then Lean strategy after paper closure (Gate 5
 discipline; the corpus seeds: OscillatorAlgebra.lean, Meyer-model formalization would be new).
+
+## 2026-07-18 session 1 (cont. 18) — LEMMA L2 DERIVED (referee-ready): AI-class Real structure,
+## no Kramers; the per-zero sign datum identified; L3 = KR-signature/eta identity
+
+**[L2 — derived, referee-ready]** (1) sigma alone fixes only `chi^2 = 1, s = 1/2` exactly (a
+linear-sigma Lefschetz sees essentially nothing); the correct structure is the ANTIUNITARY
+`sigma-bar = sigma ∘ C`, fixing the critical line pointwise and swapping off-line horizontal
+mirror pairs; `C ∘ i_+ = i_+ ∘ C` exactly, so `sigma-bar|_{H_+} = F ∘ C` — a Real (KR)
+structure. (2) THE SQUARE: with `gamma(psi) = e^{i*pi/4}`, `rho(w~) = e^{-i*pi/4} F`,
+`rho(w~^2) = -i/+i` on even/odd (Weil §16 / Lion–Vergne, order-4 center of Mp_2), the
+antiunitary `T = rho(w~) ∘ C` satisfies `T^2 = |gamma(psi)|^{-2} = +1` — phase-robust (any
+unimodular lift), because conjugation INVERTS the Weil index and mu_8-unimodularity kills the
+twist. Hence `epsilon(even) = epsilon(odd) = +1`; adelic version identical (prod gamma_v
+unimodular). (3) Consistency anchor (independent): epsilon(even) = -1 would force even
+multiplicity of every ON-line zero — contradicting the known simple first zero. Derivation and
+anchor agree. (4) Constraint landscape (honest): no Kramers multiplicity forcing; sigma-bar is
+commuting-type (AI), fixing on-line and swapping off-line — orthogonal to ladder rung 1,
+matching the ladder card's own proved catalogue. L2's yield: each critical-line fiber `V_rho`
+acquires a CANONICAL REAL FORM `Fix(T)`; a simple zero yields a canonical real line = a sign in
+{±1} once the arithmetic normalization is fixed — THE per-zero bit for the Thomae/sqrt-disc
+chain; off-line mirror fibers get only the classical equal-multiplicity pairing.
+
+**[L3 — exact target shape]** A KR/antiunitary fixed-point identity (antiunitaries have no
+eigenvalues; antilinear traces are basis-dependent — the invariant is the REAL-FORM comparison):
+compare the metaplectic real form `V_rho^R` against the arithmetic-side normalization, with the
+mu_8 Maslov/eta data entering the arithmetic side; the per-zero discrepancy lives in
+`H^1(Z/2, U(1)) = Z/2`. Hostile guards for L3: (i) the arithmetic normalization must be
+divisor-free; (ii) the comparison must not be basis/gauge-trivial (the H^1 class must be
+provably nontrivial exactly on one type — test on the toy rank-1 case first); (iii) check
+against the seven-representation transparency pattern before proof investment.
