@@ -97,9 +97,16 @@ theorem pderiv_zero_freeJetSquareCoefficient
       change freeJetShiftPolynomialDerivation C
         (MvPolynomial.pderiv 0 (freeJetSquareCoefficient C n)) = _
       rw [ih]
-      rw [Derivation.leibniz,
-        (freeJetShiftPolynomialDerivation C).map_natCast,
-        freeJetShiftPolynomialDerivation_X]
+      rw [Derivation.leibniz]
+      change (2 : FreeScalarJetPolynomial C) *
+          freeJetShiftPolynomialDerivation C (MvPolynomial.X n) +
+        MvPolynomial.X n * freeJetShiftPolynomialDerivation C
+          (2 : FreeScalarJetPolynomial C) = _
+      rw [freeJetShiftPolynomialDerivation_X]
+      have htwo : freeJetShiftPolynomialDerivation C
+          (2 : FreeScalarJetPolynomial C) = 0 :=
+        (freeJetShiftPolynomialDerivation C).map_natCast 2
+      rw [htwo]
       simp
 
 /-- The normalized raw translation mode `t^k partial_x`.  Its value on `x_k` is `k!`. -/
@@ -118,7 +125,7 @@ theorem freeJetEPolynomialDerivation_X
   classical
   by_cases hkn : k = n <;>
     simp [freeJetEPolynomialDerivation, MvPolynomial.pderiv_X,
-      Pi.single_apply, hkn]
+      hkn]
 
 /-- The first reciprocal-translation current.  On the formal arc it is
 `F_1(x_n) = -n D^(n-1)(x^2)`, i.e. the infinitesimal law `delta x(t) = -t x(t)^2`. -/
@@ -189,8 +196,7 @@ theorem freeJetPolynomial_lie_H_one_E
           Nat.factorial_succ, Algebra.smul_def]
         ring
       · have hkn : k ≠ n := Ne.symm hnk
-        have hsucc : k + 1 ≠ n + 1 := by omega
-        simp [freeJetEPolynomialDerivation_X, hkn, hsucc,
+        simp [freeJetEPolynomialDerivation_X, hkn,
           Algebra.smul_def]
 
 /-- Extend a polynomial free-jet derivation to the rational free-jet field by the quotient rule. -/

@@ -1,4 +1,5 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.Normed.Group.InfiniteSum
 
 /-!
 # Balanced Hilbert defect polarization
@@ -29,7 +30,7 @@ Hermitian product in the orientation used by value-reflection formulas. -/
 theorem re_inner_complex_eq_mul_conj_re (z w : ℂ) :
     RCLike.re (inner ℂ z w) = (z * (starRingEnd ℂ) w).re := by
   rw [RCLike.inner_apply]
-  simp [RCLike.star_def, Complex.mul_re, Complex.conj_re, Complex.conj_im]
+  simp [Complex.mul_re, Complex.conj_re, Complex.conj_im]
   ring
 
 /-- Square summability of two Hilbert-valued channels implies summability of the product of
@@ -39,9 +40,10 @@ theorem summable_norm_mul_norm_of_summable_norm_sq
     (hf : Summable (fun i => ‖f i‖ ^ 2))
     (hg : Summable (fun i => ‖g i‖ ^ 2)) :
     Summable (fun i => ‖f i‖ * ‖g i‖) := by
-  refine Summable.of_nonneg_of_le
-    (fun i => mul_nonneg (norm_nonneg _) (norm_nonneg _)) (fun i => ?_)
-    ((hf.mul_left (2 : ℝ)⁻¹).add (hg.mul_left (2 : ℝ)⁻¹))
+  refine ((hf.mul_left (2 : ℝ)⁻¹).add
+    (hg.mul_left (2 : ℝ)⁻¹)).of_norm_bounded (fun i => ?_)
+  rw [Real.norm_eq_abs, abs_of_nonneg
+    (mul_nonneg (norm_nonneg _) (norm_nonneg _))]
   nlinarith [sq_nonneg (‖f i‖ - ‖g i‖)]
 
 /-- The real part of the pointwise Hilbert pairing is summable for two square-summable
@@ -62,8 +64,8 @@ theorem summable_norm_sub_sq_of_summable_norm_sq
     (hf : Summable (fun i => ‖f i‖ ^ 2))
     (hg : Summable (fun i => ‖g i‖ ^ 2)) :
     Summable (fun i => ‖f i - g i‖ ^ 2) := by
-  refine Summable.of_nonneg_of_le (fun i => sq_nonneg _) (fun i => ?_)
-    ((hf.mul_left 2).add (hg.mul_left 2))
+  refine ((hf.mul_left 2).add (hg.mul_left 2)).of_norm_bounded (fun i => ?_)
+  rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
   have hnorm : ‖f i - g i‖ ≤ ‖f i‖ + ‖g i‖ := norm_sub_le _ _
   calc
     ‖f i - g i‖ ^ 2 ≤ (‖f i‖ + ‖g i‖) ^ 2 :=
@@ -81,14 +83,15 @@ theorem tsum_norm_sub_sq_eq_mass_sub_two_re_inner_add_mass
       (∑' i, ‖f i‖ ^ 2) -
         2 * ∑' i, RCLike.re (inner 𝕜 (f i) (g i)) +
       ∑' i, ‖g i‖ ^ 2 := by
-  have hinner := summable_re_inner_of_summable_norm_sq hf hg
+  have hinner : Summable (fun i => RCLike.re (inner 𝕜 (f i) (g i))) :=
+    summable_re_inner_of_summable_norm_sq (𝕜 := 𝕜) hf hg
   calc
     (∑' i, ‖f i - g i‖ ^ 2) =
         ∑' i, (‖f i‖ ^ 2 -
           2 * RCLike.re (inner 𝕜 (f i) (g i)) + ‖g i‖ ^ 2) := by
       apply tsum_congr
       intro i
-      exact norm_sub_sq (f i) (g i)
+      exact norm_sub_sq (𝕜 := 𝕜) (f i) (g i)
     _ = (∑' i, ‖f i‖ ^ 2) -
           2 * ∑' i, RCLike.re (inner 𝕜 (f i) (g i)) +
         ∑' i, ‖g i‖ ^ 2 := by
@@ -105,7 +108,8 @@ theorem tsum_norm_sub_sq_eq_two_mul_mass_sub_re_inner_of_balanced
     (∑' i, ‖f i - g i‖ ^ 2) =
       2 * ((∑' i, ‖f i‖ ^ 2) -
         ∑' i, RCLike.re (inner 𝕜 (f i) (g i))) := by
-  rw [tsum_norm_sub_sq_eq_mass_sub_two_re_inner_add_mass hf hg, hbalance]
+  rw [tsum_norm_sub_sq_eq_mass_sub_two_re_inner_add_mass (𝕜 := 𝕜) hf hg,
+    hbalance]
   ring
 
 /-- Pointwise norm preservation discharges the equal-total-mass interface in the balanced
@@ -118,7 +122,8 @@ theorem tsum_norm_sub_sq_eq_two_mul_mass_sub_re_inner_of_norm_eq
     (∑' i, ‖f i - g i‖ ^ 2) =
       2 * ((∑' i, ‖f i‖ ^ 2) -
         ∑' i, RCLike.re (inner 𝕜 (f i) (g i))) := by
-  apply tsum_norm_sub_sq_eq_two_mul_mass_sub_re_inner_of_balanced hf hg
+  apply tsum_norm_sub_sq_eq_two_mul_mass_sub_re_inner_of_balanced
+    (𝕜 := 𝕜) hf hg
   apply tsum_congr
   intro i
   rw [hnorm i]
@@ -133,7 +138,8 @@ theorem tsum_norm_sub_equiv_sq_eq_two_mul_mass_sub_re_inner
         ∑' i, RCLike.re (inner 𝕜 (f i) (f (e i)))) := by
   have hg : Summable (fun i => ‖f (e i)‖ ^ 2) :=
     hf.comp_injective e.injective
-  apply tsum_norm_sub_sq_eq_two_mul_mass_sub_re_inner_of_balanced hf hg
+  apply tsum_norm_sub_sq_eq_two_mul_mass_sub_re_inner_of_balanced
+    (𝕜 := 𝕜) hf hg
   exact e.tsum_eq (fun i => ‖f i‖ ^ 2)
 
 /-- A square-summable Hilbert defect has zero total mass exactly when the two channels agree
@@ -155,8 +161,7 @@ theorem tsum_norm_sub_sq_eq_zero_iff
   · intro h
     have hfun : (fun i => ‖f i - g i‖ ^ 2) = 0 := by
       funext i
-      rw [h i, sub_self, norm_zero, zero_pow]
-      norm_num
+      simp [h i]
     rw [hfun]
     exact tsum_zero
 

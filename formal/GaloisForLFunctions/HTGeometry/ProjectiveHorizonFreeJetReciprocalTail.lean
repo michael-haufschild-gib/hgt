@@ -51,12 +51,14 @@ theorem freeJetShift_freeCoordinate
       freeCoordinate C ℕ (n + 1) := by
   rw [freeCoordinate, freeJetShift_algebraMap,
     freeJetShiftPolynomialDerivation_X]
+  rfl
 
 /-- The rational free-jet shift, regarded as the integer-linear derivation of a differential
 field. -/
 noncomputable instance freeScalarJetFieldDifferential
-    (C : Type*) [Field C] : Differential (FreeScalarJetField C) where
-  deriv := (freeJetShift C).restrictScalars ℤ
+    (C : Type*) [Field C] : Differential (FreeScalarJetField C) := by
+  letI : Algebra ℤ (FreeScalarJetField C) := Ring.toIntAlgebra _
+  exact ⟨(freeJetShift C).restrictScalars ℤ⟩
 
 @[simp]
 theorem freeScalarJetField_deriv_apply
@@ -72,7 +74,7 @@ theorem differentialJet_freeCoordinate_zero
   induction n with
   | zero => simp
   | succ n ih =>
-      rw [show n.succ = n + 1 by omega, differentialJet_succ, ih,
+      rw [differentialJet_succ, ih,
         freeScalarJetField_deriv_apply, freeJetShift_freeCoordinate]
 
 /-- Every raw free coordinate is nonzero in the rational free-jet field. -/
@@ -174,7 +176,10 @@ theorem extendFreeJetPolynomialDerivation_neg
     (D : Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C)) :
     extendFreeJetPolynomialDerivation (-D) =
       -extendFreeJetPolynomialDerivation D := by
-  simpa using extendFreeJetPolynomialDerivation_smul (-1 : C) D
+  apply GaloisForLFunctions.fractionRing_derivation_ext
+    (A := FreeScalarJetPolynomial C)
+  intro P
+  simp
 
 /-- Rational-field form of `[D,F_0]=0`. -/
 theorem freeJet_lie_shift_F_zero
@@ -248,6 +253,8 @@ theorem freeJetFZero_freeCoordinate_zero_inv
   rw [(freeJetFZero C).leibniz_inv,
     freeJetFZero_freeCoordinate, hsq]
   simp only [smul_eq_mul]
+  change -(x⁻¹) ^ 2 * -(x * x) = 1
+  rw [neg_mul_neg]
   field_simp [hx]
 
 /-- The first shifted opposite current fixes the reciprocal zeroth coordinate. -/
@@ -354,10 +361,12 @@ theorem freeJetRawTailField_eq_jetTailField
   apply le_antisymm
   · rw [freeJetRawTailField, IntermediateField.adjoin_le_iff]
     rintro _ ⟨k, hk, rfl⟩
-    rw [← differentialJet_freeCoordinate_zero]
-    exact differentialJet_mem_jetTailField C _ hk
+    simpa only [differentialJet_freeCoordinate_zero] using
+      differentialJet_mem_jetTailField C
+        (freeCoordinate C ℕ 0) (n := n) (m := k) hk
   · rw [jetTailField, IntermediateField.adjoin_le_iff]
     rintro _ ⟨k, hk, rfl⟩
+    change differentialJet k (freeCoordinate C ℕ 0) ∈ freeJetRawTailField C n
     rw [differentialJet_freeCoordinate_zero]
     exact freeCoordinate_mem_freeJetRawTailField hk
 
@@ -369,10 +378,15 @@ theorem freeJetReciprocalTailField_eq_jetTailField_inv
   apply le_antisymm
   · rw [freeJetReciprocalTailField, IntermediateField.adjoin_le_iff]
     rintro _ ⟨k, hk, rfl⟩
+    change freeJetReciprocalJet C k ∈
+      jetTailField C (freeCoordinate C ℕ 0)⁻¹ n
     rw [freeJetReciprocalJet_eq_differentialJet]
-    exact differentialJet_mem_jetTailField C _ hk
+    exact differentialJet_mem_jetTailField C
+      (freeCoordinate C ℕ 0)⁻¹ (n := n) (m := k) hk
   · rw [jetTailField, IntermediateField.adjoin_le_iff]
     rintro _ ⟨k, hk, rfl⟩
+    change differentialJet k (freeCoordinate C ℕ 0)⁻¹ ∈
+      freeJetReciprocalTailField C n
     rw [← freeJetReciprocalJet_eq_differentialJet]
     exact freeJetReciprocalJet_mem_freeJetReciprocalTailField hk
 

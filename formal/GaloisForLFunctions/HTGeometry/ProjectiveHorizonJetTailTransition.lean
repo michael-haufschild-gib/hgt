@@ -72,7 +72,7 @@ theorem differentialJet_inv_mem_differentialAdjoin_singleton
       induction k with
       | zero => simp
       | succ k ih =>
-          rw [show k.succ = k + 1 by omega, differentialJet_succ, ih, map_zero]
+          rw [differentialJet_succ, ih, map_zero]
     rw [inv_zero, hzeroJet n]
     exact (differentialAdjoin C ({0} : Set E)).zero_mem
   · let L := differentialAdjoin C ({x} : Set E)
@@ -82,8 +82,7 @@ theorem differentialJet_inv_mem_differentialAdjoin_singleton
     | h n ih =>
         rcases n with _ | n
         · simpa only [differentialJet_zero] using L.inv_mem hxmem
-        · rw [show n.succ = n + 1 by omega,
-            differentialJet_inv_succ_recurrence x hx n]
+        · rw [differentialJet_inv_succ_recurrence x hx n]
           apply L.mul_mem
           · exact L.neg_mem (L.inv_mem hxmem)
           · apply IntermediateField.sum_mem
@@ -151,7 +150,10 @@ theorem projectiveHorizonJetParametrization_freeCoordinate
   change (((IntermediateField.equivOfEq htop).trans IntermediateField.topEquiv)
     (hj.aevalEquivField
       (algebraMap (MvPolynomial ℕ C) (FreeScalarJetField C) (MvPolynomial.X n)))) = _
-  rw [hj.aevalEquivField_algebraMap_apply_coe, MvPolynomial.aeval_X] <;> rfl
+  change ((hj.aevalEquivField
+      (algebraMap (MvPolynomial ℕ C) (FreeScalarJetField C) (MvPolynomial.X n)) :
+        IntermediateField.adjoin C (Set.range j)) : E) = _
+  rw [hj.aevalEquivField_algebraMap_apply_coe, MvPolynomial.aeval_X]
 
 /-- The universal free reciprocal jet evaluates to the actual differential jet of `x⁻¹`. -/
 @[simp]
@@ -172,7 +174,7 @@ theorem projectiveHorizonJetParametrization_freeJetReciprocalJet
       (fun k => freeCoordinate C ℕ k) n) = differentialJet n x⁻¹
   rw [← hrec]
   unfold finiteReciprocalJetValue
-  rw [MvPolynomial.comp_aeval_apply]
+  rw [← AlgHom.coe_coe e, MvPolynomial.comp_aeval_apply]
   apply congrArg (fun g : ℕ → E =>
     MvPolynomial.aeval g (universalReciprocalJetPolynomialOver C n))
   funext k

@@ -5,6 +5,7 @@ import Mathlib.RingTheory.Polynomial.UniqueFactorization
 import Mathlib.RingTheory.Polynomial.Content
 import Mathlib.RingTheory.Localization.FractionRing
 import Mathlib.RingTheory.MvPolynomial.Localization
+import Mathlib.Algebra.MvPolynomial.Nilpotent
 
 /-!
 # The primitive two-copy coefficient step in differential Lüroth theory
@@ -108,7 +109,18 @@ theorem differentialPolynomialTwoBlock_reconstruct
   simp only [map_sum, map_mul, differentialPolynomialTwoBlockEquiv_left,
     differentialPolynomialTwoBlockEquiv_right,
     differentialPolynomialTwoBlockCoefficient, MvPolynomial.map_monomial, map_one]
-  simpa using (MvPolynomial.as_sum (differentialPolynomialTwoBlockEquiv F C)).symm
+  calc
+    differentialPolynomialTwoBlockEquiv F C =
+        ∑ m ∈ (differentialPolynomialTwoBlockEquiv F C).support,
+          MvPolynomial.monomial m
+            ((differentialPolynomialTwoBlockEquiv F C).coeff m) :=
+      MvPolynomial.as_sum (differentialPolynomialTwoBlockEquiv F C)
+    _ = ∑ m ∈ (differentialPolynomialTwoBlockEquiv F C).support,
+        MvPolynomial.C ((differentialPolynomialTwoBlockEquiv F C).coeff m) *
+          MvPolynomial.monomial m 1 := by
+      apply Finset.sum_congr rfl
+      intro m _
+      rw [MvPolynomial.C_mul_monomial, mul_one]
 
 /-- A multivariable polynomial is primitive over its coefficient ring when every coefficient-ring
 constant dividing it is a unit.  This is the exact notion needed for the two-block Gauss step. -/
@@ -318,7 +330,32 @@ theorem differentialIndependentAdjoinParametrization_algebraMap_val
         (differentialPolynomialEval (C := F) (fun _ : Unit ↦ y)).toRingHom := by
     apply MvPolynomial.ringHom_ext
     · intro c
-      simp [A, e, differentialPolynomialEval]
+      simp only [RingHom.comp_apply]
+      have hbase : algebraMap (DifferentialPolynomial Unit F)
+          (FractionRing (DifferentialPolynomial Unit F)) (MvPolynomial.C c) =
+          algebraMap F (FractionRing (DifferentialPolynomial Unit F)) c := by
+        calc
+          algebraMap (DifferentialPolynomial Unit F)
+              (FractionRing (DifferentialPolynomial Unit F)) (MvPolynomial.C c) =
+              algebraMap (DifferentialPolynomial Unit F)
+                (FractionRing (DifferentialPolynomial Unit F))
+                (algebraMap F (DifferentialPolynomial Unit F) c) := by rfl
+          _ = algebraMap F (FractionRing (DifferentialPolynomial Unit F)) c :=
+            (IsScalarTower.algebraMap_apply F (DifferentialPolynomial Unit F)
+              (FractionRing (DifferentialPolynomial Unit F)) c).symm
+      rw [hbase]
+      calc
+        (IntermediateField.val A).toRingHom
+            (e.toRingEquiv.toRingHom
+              (algebraMap F (FractionRing (DifferentialPolynomial Unit F)) c)) =
+            ((e (algebraMap F (FractionRing (DifferentialPolynomial Unit F)) c) : A) : E) :=
+          rfl
+        _ = ((algebraMap F A c : A) : E) :=
+          congrArg Subtype.val (e.commutes c)
+        _ = algebraMap F E c := rfl
+        _ = (differentialPolynomialEval (C := F) (fun _ : Unit ↦ y)).toRingHom
+            (MvPolynomial.C c) := by
+          simp [differentialPolynomialEval]
     · rintro ⟨u, n⟩
       obtain rfl : u = () := Subsingleton.elim _ _
       have hx := congrArg Subtype.val
@@ -535,7 +572,7 @@ theorem PrimitiveTwoBlockDifferentialCharacteristic.coefficient_specialization
       (((differentialIndependentAdjoinParametrization (fun _ : Unit ↦ y) hy)
           (C.scalar : FractionRing (DifferentialPolynomial Unit F)) :
         differentialAdjoin F (Set.range fun _ : Unit ↦ y)) : E) *
-        (P.coeff m : E) := by
+        ((P.coeff m : G) : E) := by
   let R := DifferentialPolynomial Unit F
   let K := FractionRing R
   let A := differentialAdjoin F (Set.range fun _ : Unit ↦ y)
@@ -546,8 +583,21 @@ theorem PrimitiveTwoBlockDifferentialCharacteristic.coefficient_specialization
   simp only [MvPolynomial.coeff_map, MvPolynomial.coeff_C_mul] at hcoeff
   have hφ (g : G) : ((e (φ g) : A) : E) = (g : E) := by
     simp [e, φ, A, differentialIntermediateToJetFraction]
-  have hval := congrArg (fun z : K ↦ ((e z : A) : E)) hcoeff
-  rw [map_mul, hφ] at hval
+  have hval :
+      ((e (algebraMap R K
+          (differentialPolynomialTwoBlockCoefficient m C.polynomial)) : A) : E) =
+        ((e (C.scalar : K) : A) : E) * ((P.coeff m : G) : E) := by
+    calc
+      ((e (algebraMap R K
+          (differentialPolynomialTwoBlockCoefficient m C.polynomial)) : A) : E) =
+          ((e ((C.scalar : K) * φ (P.coeff m)) : A) : E) :=
+        congrArg (fun z : K ↦ ((e z : A) : E)) hcoeff
+      _ = ((e (C.scalar : K) : A) : E) *
+          ((e (φ (P.coeff m)) : A) : E) := by
+        rw [map_mul]
+        rfl
+      _ = ((e (C.scalar : K) : A) : E) * ((P.coeff m : G) : E) := by
+        rw [hφ]
   rw [← differentialIndependentAdjoinParametrization_algebraMap_val hy]
   exact hval
 
@@ -587,11 +637,18 @@ theorem IsMinimalScalarDifferentialPolynomialRank.dvd_of_relation_order_le
   have hrightI : P * d.quotient ∈ I :=
     Ideal.mul_mem_right d.quotient I hP.1
   have hRI : d.remainder ∈ I := by
-    rw [show d.remainder =
+    have hrem : d.remainder =
         scalarDifferentialPolynomialInitial P ^ d.exponent * Q -
-          P * d.quotient by
-      rw [d.eq_mul_add]
-      ring]
+          P * d.quotient := by
+      calc
+        d.remainder = (P * d.quotient + d.remainder) -
+            P * d.quotient := by ring
+        _ = scalarDifferentialPolynomialInitial P ^ d.exponent * Q -
+            P * d.quotient := by
+          rw [show scalarDifferentialPolynomialInitial P =
+            mvPolynomialInitialAt leader P by rfl]
+          rw [d.eq_mul_add]
+    rw [hrem]
     exact I.sub_mem hleftI hrightI
   have hRzero : d.remainder = 0 := by
     by_contra hR0
@@ -726,7 +783,7 @@ theorem exists_differentialRelation_coefficientRatio_not_mem_bot
     exact (hc m).symm
   have hcoeff (m : (Unit × ℕ) →₀ ℕ) :
       P.coeff m = P.coeff n * algebraMap F G (c m) := by
-    simpa [mul_comm] using (div_eq_iff hn).mp (hratioG m)
+    exact ((div_eq_iff hn).mp (hratioG m)).trans (mul_comm _ _)
   let B : DifferentialPolynomial Unit F :=
     ∑ m ∈ P.support, MvPolynomial.monomial m (c m)
   have hfactor :
@@ -899,7 +956,7 @@ used in Ritt's component argument.
 /-- Evaluation after changing one variable is affine when the polynomial has degree at most one
 in that variable. -/
 theorem MvPolynomial.eval_update_of_degreeOf_le_one
-    {R σ : Type*} [CommRing R]
+    {R σ : Type*} [CommRing R] [DecidableEq σ]
     (x : σ → R) (i : σ) (t : R) (P : MvPolynomial σ R)
     (hdegree : MvPolynomial.degreeOf i P ≤ 1) :
     MvPolynomial.eval (Function.update x i t) P =
@@ -920,17 +977,17 @@ theorem MvPolynomial.eval_update_of_degreeOf_le_one
     by_cases hji : j = i
     · subst j
       simp
-    · simp [Function.comp_apply, Equiv.optionSubtypeNe_symm_of_ne hji]
+    · simp [Function.comp_apply, hji]
   have hother :
       (fun j : {j : σ // j ≠ i} ↦ Function.update x i t j.1) =
         (fun j : {j : σ // j ≠ i} ↦ x j.1) := by
     funext j
-    exact Function.update_noteq j.2
+    exact Function.update_of_ne j.2 t x
   have hnatDegree : (mvPolynomialAsPolynomialAt i P).natDegree ≤ 1 := by
     rw [← mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt]
     exact hdegree
   rw [heval (Function.update x i t) P, heval x P,
-    heval x (MvPolynomial.pderiv i P), Function.update_same, hother,
+    heval x (MvPolynomial.pderiv i P), Function.update_self, hother,
     mvPolynomialAsPolynomialAt_pderiv]
   rw [Polynomial.eq_X_add_C_of_natDegree_le_one hnatDegree]
   simp
@@ -938,7 +995,7 @@ theorem MvPolynomial.eval_update_of_degreeOf_le_one
 
 /-- The affine update identity with a separate coefficient homomorphism. -/
 theorem MvPolynomial.eval₂_update_of_degreeOf_le_one
-    {R S σ : Type*} [CommRing R] [CommRing S]
+    {R S σ : Type*} [CommRing R] [CommRing S] [DecidableEq σ]
     (f : R →+* S) (x : σ → S) (i : σ) (t : S)
     (P : MvPolynomial σ R) (hdegree : MvPolynomial.degreeOf i P ≤ 1) :
     MvPolynomial.eval₂ f (Function.update x i t) P =
@@ -948,13 +1005,13 @@ theorem MvPolynomial.eval₂_update_of_degreeOf_le_one
     rw [MvPolynomial.degreeOf_le_iff] at hdegree ⊢
     intro m hm
     exact hdegree m (MvPolynomial.support_map_subset f P hm)
-  simpa [MvPolynomial.eval₂_eq_eval_map, MvPolynomial.pderiv_map] using
+  simpa only [MvPolynomial.eval₂_eq_eval_map, MvPolynomial.pderiv_map] using
     MvPolynomial.eval_update_of_degreeOf_le_one
       x i t (MvPolynomial.map f P) hdegreeMap
 
 /-- Updating a variable absent from a polynomial does not change its evaluation. -/
 theorem MvPolynomial.eval₂_update_of_not_mem_vars
-    {R S σ : Type*} [CommRing R] [CommRing S]
+    {R S σ : Type*} [CommRing R] [CommRing S] [DecidableEq σ]
     (f : R →+* S) (x : σ → S) (i : σ) (t : S)
     {P : MvPolynomial σ R} (hi : i ∉ P.vars) :
     MvPolynomial.eval₂ f (Function.update x i t) P =
@@ -965,7 +1022,11 @@ theorem MvPolynomial.eval₂_update_of_not_mem_vars
     rw [MvPolynomial.mem_vars_iff_mem_support]
     refine ⟨m, ?_, hjm⟩
     simpa [MvPolynomial.mem_support_iff] using hm
-  exact Function.update_noteq fun hji ↦ hi (hji ▸ hjvars)
+  have hji : j ≠ i := by
+    intro h
+    subst j
+    exact hi hjvars
+  exact Function.update_of_ne hji t x
 
 /-- The ordinary ideal generated by the first `N + 1` total derivatives of `P`. -/
 def differentialPolynomialIterateIdealUpTo
@@ -1113,7 +1174,8 @@ theorem differentialPolynomialGeneralComponentJets_eval_iterate_succ_eq_zero
   have hSeval : MvPolynomial.eval₂ f x S ≠ 0 := by
     have hstable := differentialPolynomialGeneralComponentJets_eval_of_order_le
       f A x₀ n (Q := S) (scalarDifferentialPolynomialSeparant_order_le A)
-    simpa [hstable] using hSeparant
+    rw [hstable]
+    exact hSeparant
   have hdegree : MvPolynomial.degreeOf top D = 1 := by
     simpa [top, D, Nat.add_assoc] using
       (differentialPolynomialIterateOver_initial_top hAvars n).2
@@ -1142,7 +1204,7 @@ theorem differentialPolynomialGeneralComponentJets_eval_iterate_eq_zero
         (differentialPolynomialIterateOver k A) = 0 := by
   induction N generalizing k with
   | zero =>
-      have hk : k = 0 := Nat.eq_zero_of_le hkN
+      have hk : k = 0 := Nat.eq_zero_of_le_zero hkN
       subst k
       simpa using hA
   | succ N ih =>
@@ -1205,6 +1267,9 @@ theorem irreducible_not_dvd_scalarDifferentialPolynomialSeparant
     rw [← MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
     exact scalarDifferentialPolynomialLeader_mem_vars hAvars
   have hdegree := mvPolynomial_degreeOf_pderiv_lt hleaderDegree
+  change MvPolynomial.degreeOf (scalarDifferentialPolynomialLeader A)
+      (scalarDifferentialPolynomialSeparant A) <
+    MvPolynomial.degreeOf (scalarDifferentialPolynomialLeader A) A at hdegree
   rw [hT, MvPolynomial.degreeOf_mul_eq hAirreducible.ne_zero hT0] at hdegree
   omega
 
@@ -1267,8 +1332,7 @@ theorem irreducible_dvd_of_order_le_of_separant_pow_mul_mem_iterateIdeal
     change ι (q (scalarDifferentialPolynomialSeparant A)) ≠ 0
     intro hzero
     apply hqSeparant
-    apply IsFractionRing.injective B L
-    simpa using hzero
+    exact (IsFractionRing.injective B L) (by simpa [ι] using hzero)
   have hproductEval :=
     differentialPolynomialGeneralComponentJets_eval_mem_iterateIdealUpTo
       f hAvars x₀ hbaseA hbaseSeparant hmemN

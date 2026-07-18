@@ -368,8 +368,10 @@ theorem differentialJet_algebraMap_of_differentialAlgebra
 structure map. -/
 theorem differentialOperatorApply_algebraMap_of_differentialAlgebra
     {C K L : Type*} [Field C] [Field K] [Field L]
-    [Algebra C K] [Algebra C L] [Algebra K L] [IsScalarTower C K L]
+    [Algebra C K] [Algebra C L] [Algebra K L]
     [Differential K] [Differential L] [DifferentialAlgebra K L]
+    (hscalar : ∀ c : C,
+      algebraMap K L (algebraMap C K c) = algebraMap C L c)
     (P : Polynomial C) (x : K) :
     algebraMap K L (differentialOperatorApply P x) =
       differentialOperatorApply P (algebraMap K L x) := by
@@ -388,7 +390,7 @@ theorem differentialOperatorApply_algebraMap_of_differentialAlgebra
       algebraMap K L (differentialJet n x) = _
   exact congrArg
     (fun c : L => c * algebraMap K L (differentialJet n x))
-    (IsScalarTower.algebraMap_apply C K L (P.coeff n)).symm
+    (hscalar (P.coeff n))
 
 /-- Every differential jet is additive. -/
 theorem differentialJet_additive

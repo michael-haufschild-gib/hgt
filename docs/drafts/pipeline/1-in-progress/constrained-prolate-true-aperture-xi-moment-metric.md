@@ -370,8 +370,8 @@ This is the canonical `O(lambda^(-4))` Toeplitz/Schur direction in the **true-ap
 generalized pencil for the regular two-rung numerator**.  The aperture metric has condition number
 at most `O(lambda^3)` on the fixed span, whereas adjacent leakage scales separate by `lambda^8`;
 the metric is asymptotically subordinate.  More generally, a leakage ratio `O(lambda^(-beta))`
-survives these frame bounds whenever `beta>6`; the CCM exponent `8` clears the sharp threshold of
-this argument by two powers.  This is not yet a statement about the full restricted-Weil operator.
+survives these frame bounds whenever `beta>6`; the CCM exponent `8` clears the sufficient threshold
+of this argument by two powers.  This is not yet a statement about the full restricted-Weil operator.
 
 If `(AM17)` is later proved, the eigenvalue constant becomes
 
@@ -418,7 +418,8 @@ complement.
 
 ## Lean status
 
-The source-specific finite algebra is being formalized in
+The source-specific finite algebra is formalized and its exact leaf build is green in
+`GaloisForLFunctions.RHTower.ConstrainedProlateTrueApertureMetric` and
 `GaloisForLFunctions.RHTower.ConstrainedProlateApertureXiMetric`:
 
 - finite ray summation and its exact Möbius reconstruction, the algebraic engine of `(AM5a)`;
@@ -431,6 +432,11 @@ The source-specific finite algebra is being formalized in
 - a strict symbolic Hankel-variance hypothesis makes the two-by-two determinant positive;
 - the fixed-Hermite-target-normalized regular Schur coefficient reduces to `(AM22)` and retains
   the strict lower bound `3/(4M_0)`.
+
+The Lean result stops at the actual finite aperture map, exact finite Möbius reconstruction,
+finite-ray coercivity, and the symbolic Xi-moment endpoint.  The analytic `L²` lift of
+`(AM5b)`--`(AM5d)`, local normalized-prolate convergence, and finite-Gram convergence `(AM17)`
+remain paper-level gates.
 
 No Lean declaration assumes `(AM17)`, `(WT17)`, a true Weil spectral floor, or RH.
 

@@ -113,12 +113,9 @@ theorem algebraMap_meromorphicEllipticCompositum_differentialOperatorApply
       differentialOperatorApply L
         (algebraMap (meromorphicEllipticCompositum sigma tau)
           (meroField Set.univ) x) := by
-  letI : IsScalarTower ℂ (meromorphicEllipticCompositum sigma tau)
-      (meroField Set.univ) :=
-    IsScalarTower.of_algebraMap_eq
-      (R := ℂ) (S := meromorphicEllipticCompositum sigma tau)
-      (A := meroField Set.univ) fun _ ↦ rfl
-  exact differentialOperatorApply_algebraMap_of_differentialAlgebra L x
+  exact differentialOperatorApply_algebraMap_of_differentialAlgebra
+    (C := ℂ) (K := meromorphicEllipticCompositum sigma tau)
+    (L := meroField Set.univ) (fun _ ↦ rfl) L x
 
 /-! ## Rational independence gives nontorsion of the transverse source -/
 

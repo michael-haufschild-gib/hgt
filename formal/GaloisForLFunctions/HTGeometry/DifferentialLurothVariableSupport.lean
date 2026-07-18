@@ -79,12 +79,17 @@ theorem mvPolynomialPolynomialEquivAt_map
   | C r =>
       simp [mvPolynomialPolynomialEquivAt]
   | add P Q hP hQ =>
-      simp [hP, hQ]
+      simpa only [map_add] using congrArg₂ (fun U V ↦ U + V) hP hQ
   | mul_X P j hP =>
       by_cases hji : j = i
       · subst j
-        simp [hP]
-      · simp [hP, hji]
+        simpa only [map_mul, MvPolynomial.map_X,
+          mvPolynomialPolynomialEquivAt_X_self, Polynomial.map_X] using
+          congrArg (fun U ↦ U * Polynomial.X) hP
+      · simpa only [map_mul, MvPolynomial.map_X,
+          mvPolynomialPolynomialEquivAt_X_ne hji, Polynomial.map_C] using
+          congrArg
+            (fun U ↦ U * Polynomial.C (MvPolynomial.X ⟨j, hji⟩)) hP
 
 /-! ## Localization and primitive Gauss contraction -/
 
@@ -110,7 +115,8 @@ theorem exists_polynomial_fraction_clear
     _ = algebraMap (Polynomial R) (Polynomial K) (Polynomial.C d) * P := by
       rw [Algebra.smul_def, hdb]
     _ = Polynomial.C (algebraMap R K d) * P := by
-      rw [Polynomial.algebraMap_def, Polynomial.map_C]
+      change Polynomial.map (algebraMap R K) (Polynomial.C d) * P = _
+      rw [Polynomial.map_C]
 
 /-- Denominator clearing preserves nonzeroness. -/
 theorem exists_polynomial_fraction_clear_ne_zero
@@ -122,8 +128,9 @@ theorem exists_polynomial_fraction_clear_ne_zero
   obtain ⟨d, Q, hQ⟩ := exists_polynomial_fraction_clear (R := R) (K := K) P
   refine ⟨d, Q, ?_, hQ⟩
   intro hQ0
-  rw [hQ0, map_zero, zero_eq_mul] at hQ
-  rcases hQ with hd | hP0
+  have hmul : Polynomial.C (algebraMap R K (d : R)) * P = 0 := by
+    simpa [hQ0] using hQ.symm
+  rcases mul_eq_zero.mp hmul with hd | hP0
   · have hd' : algebraMap R K (d : R) = 0 := by
       simpa using congrArg (Polynomial.coeff 0) hd
     exact (nonZeroDivisors.ne_zero d.2)
@@ -147,9 +154,10 @@ theorem exists_primitive_polynomial_fraction_clear
     intro hc
     exact hA0 (Polynomial.content_eq_zero_iff.mp hc)
   have hdK : algebraMap R K (d : R) ≠ 0 := by
-    exact (IsFractionRing.injective R K).ne (nonZeroDivisors.ne_zero d.2)
+    simpa using
+      (IsFractionRing.injective R K).ne (nonZeroDivisors.ne_zero d.2)
   have hcK : algebraMap R K A.content ≠ 0 := by
-    exact (IsFractionRing.injective R K).ne hc0
+    simpa using (IsFractionRing.injective R K).ne hc0
   let a : Kˣ := Units.mk0
     (algebraMap R K (d : R) / algebraMap R K A.content)
     (div_ne_zero hdK hcK)
@@ -178,7 +186,8 @@ theorem Polynomial.natDegree_eq_zero_of_dvd_C
     {P : Polynomial R} {c : R} (hP : P ∣ Polynomial.C c) (hc : c ≠ 0) :
     P.natDegree = 0 := by
   exact Nat.eq_zero_of_le_zero
-    (Polynomial.natDegree_le_of_dvd hP (Polynomial.C_ne_zero.mpr hc))
+    (by simpa using
+      Polynomial.natDegree_le_of_dvd hP (Polynomial.C_ne_zero.mpr hc))
 
 /-- Gauss contraction with no primitivity assumption on the dividend.  Mathlib's standard
 fraction-map divisibility theorem asks for both polynomials to be primitive; equation (78) needs
@@ -246,7 +255,8 @@ theorem exists_polynomial_family_fraction_clear
     _ = algebraMap (Polynomial R) (Polynomial K) (Polynomial.C d) * P i := by
       rw [Algebra.smul_def, hdb]
     _ = Polynomial.C (algebraMap R K d) * P i := by
-      rw [Polynomial.algebraMap_def, Polynomial.map_C]
+      change Polynomial.map (algebraMap R K) (Polynomial.C d) * P i = _
+      rw [Polynomial.map_C]
 
 /-! ## Equation (78) -/
 
@@ -264,6 +274,8 @@ theorem exists_distinguishedVariable_bezout_clear
     ∃ M : ι → Polynomial R, ∃ N : R, N ≠ 0 ∧
       ∑ i, M i * H i = Polynomial.C N := by
   classical
+  letI : NormalizedGCDMonoid R :=
+    UniqueFactorizationMonoid.toNormalizedGCDMonoid R
   let HK : ι → Polynomial K :=
     fun i ↦ Polynomial.map (algebraMap R K) (H i)
   let g : Polynomial K := Finset.univ.gcd HK
@@ -277,7 +289,7 @@ theorem exists_distinguishedVariable_bezout_clear
       hcommon 0 (fun i ↦ by simp [hall i])
     exact hzeroUnit.ne_zero rfl
   have hg0 : g ≠ 0 := by
-    rw [g, Finset.gcd_ne_zero_iff]
+    rw [show g = Finset.univ.gcd HK by rfl, Finset.gcd_ne_zero_iff]
     obtain ⟨i, hi⟩ := hsome
     refine ⟨i, Finset.mem_univ i, ?_⟩
     exact (Polynomial.map_ne_zero_iff (IsFractionRing.injective R K)).mpr hi
@@ -302,7 +314,7 @@ theorem exists_distinguishedVariable_bezout_clear
     IsUnit.map (Polynomial.mapRingHom (algebraMap R K)) hqUnit
   have hgUnit : IsUnit g := by
     rw [hqmap] at hmapqUnit
-    exact isUnit_of_mul_isUnit_left hmapqUnit
+    exact isUnit_of_mul_isUnit_right hmapqUnit
   obtain ⟨b, hb⟩ := Finset.gcd_eq_sum_mul (Finset.univ : Finset ι) HK
   rcases hgUnit with ⟨u, hu⟩
   let B : ι → Polynomial K := fun i ↦ b i * (u⁻¹ : Polynomial K)
@@ -390,7 +402,8 @@ theorem mvPolynomial_vars_subset_of_dvd
   rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero] at hi ⊢
   rw [MvPolynomial.degreeOf_mul_eq hP0 hT0]
   intro hzero
-  exact hi (Nat.eq_zero_of_add_eq_zero_left hzero)
+  have hleft : MvPolynomial.degreeOf i P = 0 := by omega
+  exact hi hleft
 
 /-! ## Scalar-extension factors retain every original variable -/
 
@@ -493,7 +506,8 @@ theorem irreducible_map_factor_vars_subset
     have hn := (Polynomial.C_dvd_iff_dvd_coeff A₀ _).mp hdiv₁ n
     simpa using hn
 
-  obtain ⟨M, N, hN0, hbezout⟩ := hP₂primitive.exists_coeff_bezout_clear
+  obtain ⟨M, N, hN0, hbezout⟩ :=
+    Polynomial.IsPrimitive.exists_coeff_bezout_clear hP₂primitive
   have hBcoeff (n : ℕ) :
       B ∣ Polynomial.map (MvPolynomial.map (algebraMap F K)) (P₂.coeff n) := by
     have hn := map_dvd eKy (hcoeff n)
@@ -560,7 +574,7 @@ theorem irreducible_map_factor_vars_eq
         (FaithfulSMul.algebraMap_injective F K)).ne hP.ne_zero)
     have hsubset := mvPolynomial_vars_subset_of_dvd hdiv hmapP0
     simpa [MvPolynomial.vars_map_of_injective
-      (FaithfulSMul.algebraMap_injective F K)] using hsubset
+      P (FaithfulSMul.algebraMap_injective F K)] using hsubset
   · exact irreducible_map_factor_vars_subset hP hA hdiv
 
 end

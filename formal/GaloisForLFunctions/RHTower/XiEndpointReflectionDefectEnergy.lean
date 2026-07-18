@@ -187,7 +187,7 @@ theorem xiEndpointReflectionDefectEnergy_eq_mass_sub_source :
   have hC := summable_xiEndpointCrossTerm
   have hpolar :=
     GaloisForLFunctions.HTGeometry.tsum_norm_sub_equiv_sq_eq_two_mul_mass_sub_re_inner
-      xiZeroCopyLineConjEquiv xiRawReciprocalCoordinate hA
+      (𝕜 := ℂ) xiZeroCopyLineConjEquiv xiRawReciprocalCoordinate hA
   calc
     xiEndpointReflectionDefectEnergy =
         2 * ((∑' q : XiZeroCopy, ‖xiRawReciprocalCoordinate q‖ ^ 2) -

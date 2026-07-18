@@ -187,6 +187,113 @@ theorem gaussianSchwartz_eq_cexp (x : ℝ) :
 
 
 
+/-! ## Polynomial multiples of the Gaussian are Schwartz -/
+
+/-- Every iterated derivative of a polynomial multiple of the Gaussian is again one. -/
+theorem exists_poly_iteratedDeriv_polyGauss (p : Polynomial ℝ) (n : ℕ) :
+    ∃ q : Polynomial ℝ, ∀ x : ℝ,
+      iteratedDeriv n (fun y => p.eval y * gaussReal y) x = q.eval x * gaussReal x := by
+  induction n with
+  | zero => exact ⟨p, fun x => by simp [iteratedDeriv_zero]⟩
+  | succ n ih =>
+    obtain ⟨q, hq⟩ := ih
+    refine ⟨q.derivative - Polynomial.C (2 * π) * Polynomial.X * q, fun x => ?_⟩
+    have hfun : iteratedDeriv n (fun y => p.eval y * gaussReal y)
+        = fun y => q.eval y * gaussReal y := funext hq
+    rw [iteratedDeriv_succ, hfun]
+    exact (hasDerivAt_poly_mul_gaussReal q x).deriv
+
+theorem contDiff_polyEval (p : Polynomial ℝ) {n : WithTop ℕ∞} :
+    ContDiff ℝ n (fun y : ℝ => p.eval y) := by
+  induction p using Polynomial.induction_on' with
+  | add q r hq hr => simpa [Polynomial.eval_add] using hq.add hr
+  | monomial m c => simpa [Polynomial.eval_monomial] using (contDiff_id.pow m).const_smul c
+
+theorem contDiff_polyGauss (p : Polynomial ℝ) {n : WithTop ℕ∞} :
+    ContDiff ℝ n (fun y => p.eval y * gaussReal y) :=
+  (contDiff_polyEval p).mul contDiff_gaussReal
+
+/-- **Any polynomial multiple of the Gaussian is a Schwartz function.**  In particular every
+Hermite function, being such a multiple, is Schwartz — so the Fourier machinery available for
+`gaussianSchwartz` applies to the whole Hermite family. -/
+def polyGaussSchwartzReal (p : Polynomial ℝ) : SchwartzMap ℝ ℝ where
+  toFun := fun y => p.eval y * gaussReal y
+  smooth' := contDiff_polyGauss p
+  decay' k n := by
+    obtain ⟨q, hq⟩ := exists_poly_iteratedDeriv_polyGauss p n
+    obtain ⟨C, hC⟩ := exists_bound_poly_mul_gaussReal q k
+    refine ⟨C, fun x => ?_⟩
+    rw [norm_iteratedFDeriv_eq_norm_iteratedDeriv, hq x, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_mul, abs_of_pos (gaussReal_pos x)]
+    exact hC x
+
+@[simp] theorem polyGaussSchwartzReal_apply (p : Polynomial ℝ) (x : ℝ) :
+    polyGaussSchwartzReal p x = p.eval x * gaussReal x := rfl
+
+/-- The complex-valued polynomial-Gaussian Schwartz function. -/
+def polyGaussSchwartz (p : Polynomial ℝ) : SchwartzMap ℝ ℂ where
+  toFun := fun x => ((p.eval x * gaussReal x : ℝ) : ℂ)
+  smooth' := Complex.ofRealCLM.contDiff.comp (contDiff_polyGauss p)
+  decay' k n := by
+    obtain ⟨C, hC⟩ := (polyGaussSchwartzReal p).decay' k n
+    refine ⟨C, fun x => ?_⟩
+    have hcomp : (fun x : ℝ => ((p.eval x * gaussReal x : ℝ) : ℂ))
+        = Complex.ofRealLI ∘ (fun y => p.eval y * gaussReal y) := rfl
+    rw [hcomp, Complex.ofRealLI.norm_iteratedFDeriv_comp_left
+      ((contDiff_polyGauss p (n := (n : WithTop ℕ∞))).contDiffAt) le_rfl]
+    exact hC x
+
+@[simp] theorem polyGaussSchwartz_apply (p : Polynomial ℝ) (x : ℝ) :
+    polyGaussSchwartz p x = ((p.eval x * gaussReal x : ℝ) : ℂ) := rfl
+
+/-- The Gaussian is the constant-polynomial case. -/
+theorem polyGaussSchwartz_one : polyGaussSchwartz 1 = gaussianSchwartz := by
+  apply SchwartzMap.ext
+  intro x
+  simp [polyGaussSchwartz, gaussianSchwartz]
+
+/-! ## The Hermite family in the self-dual normalization -/
+
+/-- The creation operator `A = x − (1/2π)·d/dx` acts on `p·e^{−πx²}` by a polynomial map.
+Differentiating gives `(p′ − 2πXp)·e^{−πx²}`, so
+`A(p·gauss) = (2Xp − (1/2π)p′)·gauss`. -/
+def hermiteStep (p : Polynomial ℝ) : Polynomial ℝ :=
+  2 * Polynomial.X * p - Polynomial.C (1 / (2 * π)) * p.derivative
+
+/-- The Hermite polynomials adapted to the self-dual Gaussian `e^{−πx²}`. -/
+def hermitePoly : ℕ → Polynomial ℝ
+  | 0 => 1
+  | n + 1 => hermiteStep (hermitePoly n)
+
+@[simp] theorem hermitePoly_zero : hermitePoly 0 = 1 := rfl
+
+@[simp] theorem hermitePoly_succ (n : ℕ) :
+    hermitePoly (n + 1) = hermiteStep (hermitePoly n) := rfl
+
+/-- The `n`-th Hermite function in the self-dual normalization, as a Schwartz map. -/
+def hermiteSchwartz (n : ℕ) : SchwartzMap ℝ ℂ := polyGaussSchwartz (hermitePoly n)
+
+@[simp] theorem hermiteSchwartz_apply (n : ℕ) (x : ℝ) :
+    hermiteSchwartz n x = (((hermitePoly n).eval x * gaussReal x : ℝ) : ℂ) := rfl
+
+theorem hermiteSchwartz_zero : hermiteSchwartz 0 = gaussianSchwartz := by
+  unfold hermiteSchwartz
+  rw [hermitePoly_zero, polyGaussSchwartz_one]
+
+/-- **The creation operator acts on the profile as `hermiteStep` acts on the polynomial.**
+This is the identity that turns the analytic recursion `h_{n+1} = (x − (1/2π)D) h_n` into the
+polynomial recursion defining `hermitePoly`. -/
+theorem hermiteStep_apply (p : Polynomial ℝ) (x : ℝ) :
+    x * (p.eval x * gaussReal x) - (1 / (2 * π)) * deriv (fun y => p.eval y * gaussReal y) x
+      = (hermiteStep p).eval x * gaussReal x := by
+  have hpi : (2 : ℝ) * π ≠ 0 := by positivity
+  rw [(hasDerivAt_poly_mul_gaussReal p x).deriv]
+  unfold hermiteStep
+  simp only [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X,
+    Polynomial.eval_ofNat]
+  field_simp
+  ring
+
 /-! ## The Gaussian is a Fourier eigenfunction, pointwise and in `L²` -/
 
 /-- **The Gaussian is a fixed point of the Fourier transform**, in mathlib's `𝓕`

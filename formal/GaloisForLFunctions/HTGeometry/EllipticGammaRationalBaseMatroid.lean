@@ -189,8 +189,7 @@ theorem hypertranscendentalOver_ellipticGammaLogDerivMero_rationalBase
       h sigma tau hsigma htau hindependent hnonres
   have hdefectConstants : HypertranscendentalOver ℂ
       (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) := by
-    rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at
-      hdefectRational
+    rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at hdefectRational
     rw [hypertranscendentalOver_iff_differentialIndependent_singleton]
     exact HTGeometry.DifferentialIndependent.restrictScalarsTower hdefectRational
   have hlogConstants : HypertranscendentalOver ℂ
@@ -198,8 +197,8 @@ theorem hypertranscendentalOver_ellipticGammaLogDerivMero_rationalBase
     apply (addTranslationMeroDifferentialAlgEquiv h).hypertranscendentalOver_of_sub_self
     simpa [addTranslationMeroDifferentialAlgEquiv,
       ellipticGammaExternalLogDerivDefectMero] using hdefectConstants
-  rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at
-    hlogConstants ⊢
+  rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at hlogConstants
+  rw [hypertranscendentalOver_iff_differentialIndependent_singleton]
   have hbaseChanged :=
     HTGeometry.DifferentialIndependent.extendScalarsDifferentialAdjoinSingleton
       hlogConstants

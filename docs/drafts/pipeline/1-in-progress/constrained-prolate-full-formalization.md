@@ -191,6 +191,80 @@
   `exists_bound_poly_mul_gaussReal` (polynomial induction).  Complex version via
   `Complex.ofRealLI.norm_iteratedFDeriv_comp_left` (isometry preserves derivative norms).
 
+  **GENERALISED TO THE WHOLE HERMITE FAMILY** (same file, axiom-clean):
+  `polyGaussSchwartzReal p : 𝓢(ℝ,ℝ)` and `polyGaussSchwartz p : 𝓢(ℝ,ℂ)` for `x ↦ p(x)e^{−πx²}`,
+  any real polynomial `p`.  Since every Hermite function is such a multiple, EVERY Hermite
+  function is now available as a Schwartz map — so the whole `SchwartzMap.toLp_fourier_eq`
+  machinery applies to the family, not just to `n = 0`.  Supporting:
+  `exists_poly_iteratedDeriv_polyGauss` (iterated derivatives of `p·gauss` are again `q·gauss`,
+  reusing `hasDerivAt_poly_mul_gaussReal`), `contDiff_polyEval` (polynomial smoothness, by
+  `Polynomial.induction_on'` — mathlib has no `Polynomial.contDiff`), and
+  `polyGaussSchwartz_one` identifying the `p = 1` case with `gaussianSchwartz`.
+  **HERMITE FAMILY BUILT** (same file, axiom-clean).  The creation operator
+  `A = x − (1/2π)·d/dx` acts on `p·e^{−πx²}` purely polynomially: differentiating gives
+  `(p′ − 2πXp)·gauss`, hence `A(p·gauss) = (2Xp − (1/2π)p′)·gauss`.  So
+  `hermiteStep p = 2Xp − C(1/2π)·p′`, `hermitePoly 0 = 1`,
+  `hermitePoly (n+1) = hermiteStep (hermitePoly n)`, and
+  `hermiteSchwartz n = polyGaussSchwartz (hermitePoly n) : 𝓢(ℝ,ℂ)`.
+  `hermiteStep_apply` bridges the analytic recursion to the polynomial one;
+  `hermiteSchwartz_zero` identifies `n = 0` with the Gaussian.
+
+  WHAT REMAINS FOR L7 is exactly two Fourier–derivative identities in this normalization:
+  `𝓕(f′) = 2πiξ·𝓕f` and `𝓕(x f) = (i/2π)(𝓕f)′`.  Together they give `𝓕(Af) = −i·A(𝓕f)`, and
+  the induction `𝓕 h_{n+1} = 𝓕(A h_n) = −i A((−i)^n h_n) = (−i)^{n+1} h_{n+1}` yields
+  `𝓕 h_n = (−i)^n h_n` from the already-proved `𝓕 h_0 = h_0`.
+
+  **FOUND, ALREADY PACKAGED FOR SCHWARTZ MAPS** — use these, NOT the `VectorFourier` ones.
+  In `Mathlib/Analysis/Distribution/SchwartzSpace/Fourier.lean`:
+
+```text
+  fourier_lineDerivOp_eq (f : 𝓢(V,E)) (m : V) :
+      𝓕 (∂_{m} f) = (2π·I) • smulLeftCLM E (inner ℝ · m) (𝓕 f)
+  lineDerivOp_fourier_eq (f : 𝓢(V,E)) (m : V) :
+      ∂_{m} (𝓕 f) = 𝓕 (-(2π·I) • smulLeftCLM E (inner ℝ · m) f)
+```
+
+  At `V = ℝ`, `m = 1` we have `inner ℝ x 1 = x` and `∂_{1} f = f′`, so these ARE exactly
+  `𝓕(f′)(ξ) = 2πiξ·𝓕f(ξ)` and `(𝓕f)′ = −2πi·𝓕(x f)`, i.e. `𝓕(x f) = (i/2π)(𝓕f)′`.
+  No integrability side conditions to discharge — they are stated for Schwartz maps.
+
+  **THE `∂_{1}` COLLAPSE IS BUILT** (`HTGeometry/SchwartzLineDerivOne.lean`, axiom-clean):
+  `schwartz_lineDerivOp_one_apply (f : 𝓢(ℝ,ℂ)) (x) : (∂_{(1:ℝ)} f) x = deriv (f : ℝ → ℂ) x`
+  — and it is `fderiv_apply_one_eq_deriv`, i.e. TRUE BY `rfl` up to that lemma, since
+  `∂_{m} f = evalCLM m (fderivCLM f)` and `fderiv ℝ f x 1 = deriv f x`.  Also
+  `inner_one_eq_self : inner ℝ x 1 = x`, which collapses the `smulLeftCLM (inner ℝ · m)`
+  multiplier to plain multiplication by `x`.  These two are exactly the vector→scalar bridge,
+  and both were far cheaper than expected.
+
+  ONE API QUESTION TO SETTLE FIRST (cost me the last attempt): in
+  `smulLeftCLM E (inner ℝ · m)`, the multiplier `inner ℝ · m` is ℝ-valued while `smulLeftCLM`
+  is declared `(g : E → 𝕜)` with `𝕜 = ℂ` here.  Check whether mathlib inserts an `ℝ → ℂ`
+  coercion or whether the `𝕜` in those Fourier lemmas is instantiated at ℝ with a separate
+  scalar action.  Resolve that BEFORE writing `A`, and use `smulLeftCLM_apply` (which needs a
+  `HasTemperateGrowth` hypothesis — for `fun x : ℝ => (x:ℂ)` get it from
+  `Complex.ofRealCLM.hasTemperateGrowth` or the analogous `ContinuousLinearMap` lemma).
+
+  SO THE WHOLE OF L7 IS NOW: define `A f = smulLeftCLM ℂ (fun x : ℝ => x) f − (1/2π)·∂_{1} f`
+  on `𝓢(ℝ,ℂ)`, combine the two displayed lemmas to get `𝓕(A f) = −i·A(𝓕 f)`, then induct using
+  `hermiteStep_apply` (already proved) to connect `A` to `hermitePoly`, with base case
+  `fourier_gaussianSchwartz` (already proved).  Expect ~40–60 lines; the only friction will be
+  `smulLeftCLM` type-class plumbing and the `V = ℝ` instantiation.
+
+  Superseded: mathlib HAS both, but only in vector-valued form in
+  `Mathlib/Analysis/Fourier/FourierTransformDeriv.lean`, namespace `Real` (from line 671):
+  * `Real.fderiv_fourier (hf_int) (hvf_int) : fderiv ℝ (𝓕 f) = …` — this is `𝓕(x f)` up to the
+    `fourierSMulRight` packaging (the `x·` factor appears as `fourierSMulRight (innerSL ℝ) f`);
+  * `Real.fourier_fderiv (hf) (h'f) (hf')` — this is `𝓕(f′) = …`, with the multiplier appearing
+    as `fourierSMulRight (-L.flip)`.
+  Also `Real.differentiable_fourier`, `Real.contDiff_fourier`, `Real.iteratedFDeriv_fourier`.
+
+  CONCRETE REMAINING TASK: specialise these from `V = ℝ` vector form to 1-D SCALAR form, i.e.
+  unfold `fourierSMulRight`/`innerSL` at `V = ℝ` to get the plain statements
+  `𝓕(f′)(ξ) = 2πiξ·𝓕f(ξ)` and `deriv (𝓕 f) ξ = 𝓕(fun x ↦ (-2πi x)·f x) ξ`, then feed them the
+  integrability side conditions (automatic for Schwartz maps).  Everything after that — the
+  `𝓕(Af) = −i A(𝓕f)` identity and the induction — is short.  This is packaging work, not new
+  mathematics.
+
   Then the payoff chain, all proved:
   * `fourierIntegral_gaussianSchwartz` — `𝓕 (e^{−πx²}) = e^{−πx²}` pointwise (`b = 1` case of
     `fourier_gaussian_pi`).
@@ -340,7 +414,41 @@
   g_a(x) = exp(−2πa²·(1 − √(1 − x²/a²)))   on [−a, a],   0 outside.
 ```
 
-  It equals `e^{−πx²}` in the bulk (so it keeps the Gaussian's frequency concentration) and
+  **BUILT** (`HTGeometry/WkbEdgeProfile.lean`, axiom-clean): `wkbExponent u = 1 − √(1−u²)`,
+  `wkbEdgeProfile a x = exp(−2πa²·φ(x/a))`, with
+  `sq_div_two_le_wkbExponent` (`u²/2 ≤ φ(u)` on `|u| ≤ 1`, from `√(1−u²) ≤ 1 − u²/2`),
+  `wkbEdgeProfile_le_gauss` (dominated pointwise by `e^{−πx²}` on the aperture — so it inherits
+  the Gaussian's frequency concentration), `wkbEdgeProfile_edge`
+  (`wkbEdgeProfile a a = e^{−2πa²}` — the squared-small edge value), plus centre value and the
+  `≤ 1` bound.
+
+  **SECOND CORRECTION — the profile is explicit but its leakage bound is NOT elementary.**
+  Worked through (2026-07-18), three routes and why each fails:
+
+  1. *Plancherel / derivative bound.*  For `f` supported in `[−a,a]`, `|y| > a` gives `1 ≤ y²/a²`,
+     so `∫_{|y|>a}|Ff|² ≤ a^{-2}∫|y Ff|² = ‖f'‖²/(4π²a²)`.  TRUE and easy, but only
+     POLYNOMIALLY small: `‖f'‖² = O(1)` because `f'` is large in the BULK (`f' ≈ −2πx f` there),
+     so this yields `O(a^{-2})`, not `e^{−2c}`.  Iterating to `‖f^{(k)}‖²/(2πa)^{2k}` gives any
+     polynomial order but the constants grow — at best sub-exponential (Gevrey), never `e^{−2c}`.
+  2. *A narrower Gaussian.*  `ψ(u) = u²` gives `g = e^{−2πx²}` with the right edge value `e^{−c}`,
+     but its frequency tail degrades to `e^{−c/2}`.  Checked at `s² = 1/2, 1, 2`: the Gaussian
+     family is optimised at `s = 1`, balancing both contributions at `e^{−c}`.  No Gaussian
+     achieves `e^{−2c}`; the WKB profile beats them precisely by being Gaussian in the bulk yet
+     faster-decaying at the edge, which no single Gaussian can do.
+  3. *The exact WKB profile's derivative.*  `φ'(u) = u/√(1−u²)` blows up at the edge, so
+     `‖g_a'‖² = ∞` (logarithmically divergent) — route 1 does not even apply without
+     regularisation, and regularising reintroduces the bulk-dominated `O(1)` numerator.
+
+  CONCLUSION: obtaining `e^{−2c}` from ANY explicit compactly supported trial function requires
+  estimating an oscillatory integral to exponential accuracy — which is what the classical
+  Fuchs/Slepian proofs do via the prolate ODE and WKB connection formulae, NOT via a trial
+  function.  The trial-function route caps out at the `e^{−c}` already proved.
+  THEREFORE the sharp `upper` field should be attacked through the ODE layer the project already
+  has (`prolateSLAction`, `prolate_eigen_hermite_defect`, `FuchsProlateScale`), not by further
+  trial-function engineering.  `wkbEdgeProfile` remains banked and correct, and is the right
+  object if that ODE route needs a comparison profile.
+
+  Legacy (over-optimistic): it equals `e^{−πx²}` in the bulk (so it keeps the Gaussian's frequency concentration) and
   decays to `e^{−2πa²}` at the edge (so its endpoint jump is squared-small).  It is elementary,
   exactly supported in `[−a,a]`, and needs no PSWF theory.  The remaining Lean work is its
   out-of-band Fourier bound — an endpoint/stationary-phase estimate, not a spectral one.
@@ -536,3 +644,84 @@
   (or `HTGeometry.lean` for reusable analysis), `formal_tools.py index`, lint check,
   card Lean-decision + gates update, tick the layer here.
 - Dead routes and design decisions land in this card, not in memory.
+
+## L6a — Hermite Fourier eigenrelation (DONE, 2026-07-18)
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteFourierEigen.lean`, axiom-clean, umbrella-wired.
+
+Supplies the object the higher-`n` trial spaces were blocked on and which **mathlib does not
+have**: the Hermite functions as Fourier eigenfunctions.
+
+Route taken (purely operator-algebraic — no integral asymptotics, no oscillator spectral theory):
+
+* `mulXCLM`, `derivSCLM`, `fourierSCLM` — coordinate multiplication, differentiation, and the
+  Fourier transform as continuous linear operators on `𝓢(ℝ, ℂ)` (mathlib's `smulLeftCLM`,
+  `derivCLM`, `fourierTransformCLM`).
+* `fourierSCLM_derivSCLM : 𝓕 D = 2πi · M 𝓕` and `derivSCLM_fourierSCLM : D 𝓕 = −2πi · 𝓕 M`,
+  from `Real.fourier_deriv` / `Real.deriv_fourier` with the Schwartz integrability side
+  conditions discharged (`integrable_deriv_schwartz`, `integrable_smul_id_schwartz`).
+* `creationCLM := 2π·M − D`, and the **single identity that carries everything**:
+  `fourierSCLM_creationCLM : 𝓕 A = (−i) · A 𝓕`.
+* `hermiteSchwartz_succ_eq : h_{n+1} = (2π)⁻¹ • A h_n` — reconciles the pre-existing self-dual
+  normalization `hermiteStep = x − (1/2π)d/dx` of `GaussianSchwartz.hermitePoly` with `A`; the
+  two differ by a scalar, so the eigenvalue is untouched.  (Reuse, not a second Hermite family.)
+* `fourierSCLM_hermiteSchwartz (n) : 𝓕 h_n = (−i)ⁿ • h_n` — induction from the Gaussian fixed
+  point through the intertwining relation.
+* `fourier_hermiteSchwartz_apply` (pointwise) and
+  `fourier_hermiteSchwartz_toLp : 𝓕 (h_n.toLp 2) = (−i)ⁿ • h_n.toLp 2` — the `L²` form the
+  prolate estimates consume, since `fourierUnitary` IS `Lp.fourierTransformₗᵢ`.
+* Parity: `hermiteSchwartz_neg : h_n(−x) = (−1)ⁿ h_n(x)` and `hermiteSchwartz_even` — so the
+  even-index Hermite functions land in `evenSubspace`, where the constrained problem is posed.
+
+CONSEQUENCE for the campaign: the `n = 0` trial-space chain of `GaussianEvenCarrier` now has its
+higher-`n` inputs.  The remaining pieces of the L6a upper envelope are (i) `L²` orthogonality of
+the Hermite family (integration by parts on the creation/annihilation pair), (ii) the dilation
+`h_n(·/√a)` to the aperture scale, (iii) the `n+1` near-orthonormal assembly through
+`OrthonormalTrialSpan.norm_sq_apply_le_of_orthonormal_span`, then
+`evenProlateLeakageValue_le_of_form_trial`.  The rate deficit recorded above still applies to
+the *Gaussian* profile; whether the Hermite profiles close the `e^{−2c}` gap is the next question
+to settle, and it is now askable in Lean.
+
+ROUTE FOUND for the next piece (Hermite `L²` orthogonality): mathlib has whole-line integration
+by parts for Schwartz functions —
+`SchwartzMap.integral_mul_deriv_eq_neg_deriv_mul (f g : 𝓢(ℝ, 𝕜)) : ∫ f·g' = −∫ f'·g`
+(`Mathlib/Analysis/Distribution/SchwartzSpace/Deriv.lean:263`).  That discharges the boundary
+terms, so the plan is: annihilation operator `B := 2π·M + D`; adjointness `⟪A f, g⟫ = ⟪f, B g⟫`;
+the commutator `B A − A B = 4π` (from `[D, M] = I`); `B h₀ = 0`; hence the lowering relation
+`B h_n = 2n·h_{n−1}` by induction; hence `⟪h_m, h_n⟫ = 0` for `m ≠ n` by descending induction.
+No new analytic input is required beyond what is already built.
+
+## L6a — Hermite `L²` orthonormal system (DONE, 2026-07-18)
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteOrthogonality.lean`, axiom-clean, umbrella-wired.
+
+The oscillator argument, no Gaussian moment integrals beyond the one Gauss integral:
+
+* `mulS`, `schwartzPair f g = ∫ f·g` — the bilinear (unconjugated) pairing, built through
+  `smulLeftCLM` and `integralCLM` so integrability is structural rather than proved by hand.
+* `annihilationCLM := 2π·M + D`.
+* `derivSCLM_mulXCLM : D M = 1 + M D` — the canonical commutator.
+* `annihilationCLM_creationCLM_sub : B A − A B = 4π` (proved by `module` after expanding).
+* `annihilationCLM_gaussianSchwartz : B h₀ = 0` — the vacuum.
+* `annihilationCLM_hermiteSchwartz : B h_{n+1} = 2(n+1)·h_n` — the lowering relation, by
+  induction from the commutator and the vacuum.
+* `schwartzPair_creationCLM : ⟨A f, g⟩ = ⟨f, B g⟩` — integration by parts, boundary terms
+  discharged by `SchwartzMap.integral_mul_deriv_eq_neg_deriv_mul`.
+* `schwartzPair_hermiteSchwartz_eq_zero : m ≠ n → ⟨h_m, h_n⟩ = 0`.
+* `schwartzPair_hermiteSchwartz_self_succ : ⟨h_{n+1}, h_{n+1}⟩ = ((n+1)/π)·⟨h_n, h_n⟩` and
+  `⟨h₀, h₀⟩ = √(π/2π)` (`integral_gaussian`), hence
+  `schwartzPair_hermiteSchwartz_self_ne_zero` and `hermiteSchwartz_toLp_ne_zero`.
+* `inner_hermiteSchwartz_toLp` — on this family the `L²` inner product *is* the bilinear pairing,
+  because the Hermite functions are real-valued.
+* **`orthonormal_hermiteSchwartz_toLp : Orthonormal ℂ (fun n => ‖h_n‖⁻¹ • h_n.toLp 2)`.**
+
+Together with `fourier_hermiteSchwartz_toLp` this is an **orthonormal family of eigenvectors of
+the `L²` Fourier transform** — exactly the object `OrthonormalTrialSpan` and
+`GreedyCourantFischer.le_orthSup_of_trial` consume.
+
+REMAINING for the L6a upper envelope: dilation of the family to the aperture scale, the
+truncation error of each `h_n` on `[−a,a]`, and the `n+1`-dimensional assembly through
+`OrthonormalTrialSpan.norm_sq_apply_le_of_orthonormal_span` →
+`evenProlateLeakageValue_le_of_form_trial`.  The rate question recorded above is unchanged: the
+truncated-Gaussian profile is provably `≍ τ²`, so whether the *Hermite* profiles reach the Fuchs
+`e^{−2c}` is the open point, and it is now a statement one can write down in Lean.

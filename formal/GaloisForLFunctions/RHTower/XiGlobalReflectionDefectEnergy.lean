@@ -59,7 +59,7 @@ theorem summable_xiGlobalReflectionDefectEnergy :
     simpa [xiReciprocalCoordinate] using summable_norm_xiSpectralPoint_inv_sq
   have hstar : Summable (fun q : XiZeroCopy =>
       ‖(starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2) := by
-    simpa only [norm_star] using hH
+    simpa only [Complex.norm_conj] using hH
   exact
     GaloisForLFunctions.HTGeometry.summable_norm_sub_sq_of_summable_norm_sq hH hstar
 
@@ -77,7 +77,7 @@ theorem xiGlobalReflectionDefectEnergy_eq_mass_sub_moment :
     simpa [xiReciprocalCoordinate] using summable_norm_xiSpectralPoint_inv_sq
   have hstar : Summable (fun q : XiZeroCopy =>
       ‖(starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2) := by
-    simpa only [norm_star] using hH
+    simpa only [Complex.norm_conj] using hH
   have hC : Summable (fun q : XiZeroCopy =>
       xiZeroCopyReciprocalSquare q) := summable_xiZeroCopyReciprocalSquare
   have hsum :
@@ -86,7 +86,7 @@ theorem xiGlobalReflectionDefectEnergy_eq_mass_sub_moment :
     simpa using tsum_xiZeroCopyReciprocalSquare_pow 0
   have hpolar :=
     GaloisForLFunctions.HTGeometry.tsum_norm_sub_sq_eq_two_mul_mass_sub_re_inner_of_norm_eq
-      hH hstar (fun q => norm_star (xiReciprocalCoordinate q))
+      (𝕜 := ℂ) hH hstar (fun q => norm_star (xiReciprocalCoordinate q))
   have hcross :
       (∑' q : XiZeroCopy,
         RCLike.re (inner ℂ (xiReciprocalCoordinate q)
@@ -139,7 +139,7 @@ theorem xiGlobalReflectionDefectEnergy_eq_zero_iff_rh :
     simpa [xiReciprocalCoordinate] using summable_norm_xiSpectralPoint_inv_sq
   have hstar : Summable (fun q : XiZeroCopy =>
       ‖(starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2) := by
-    simpa only [norm_star] using hH
+    simpa only [Complex.norm_conj] using hH
   have hfixed :=
     GaloisForLFunctions.HTGeometry.tsum_norm_sub_sq_eq_zero_iff hH hstar
   rw [xiGlobalReflectionDefectEnergy, hfixed]

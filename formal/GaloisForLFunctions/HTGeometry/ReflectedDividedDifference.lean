@@ -62,7 +62,7 @@ theorem diagonalDslopeKernel_neg_neg_of_antiInvariant
     funext w
     simpa using hreflect z (-w)
   rw [diagonalDslopeKernel, diagonalDslopeKernel, hfun]
-  exact dslope_neg_comp_neg (K z) z (-v)
+  simpa using dslope_neg_comp_neg (K z) z (-v)
 
 end
 
