@@ -1715,3 +1715,40 @@ isolation is UNCONDITIONAL (pure discreteness — then RH-per-box literally redu
 mu_1 >= 0 per isolated box, i.e. the innermost-box mu_1 is the program's FINAL OBJECT) or
 carries a hidden density/repulsion demand. (2) Referee the perimeter theorem. (3) Queue:
 analytic-T4; ST1; promotion batch (Hamiltonian/termination, separation, T4 chain).
+
+## 2026-07-18 session 2 (cont. 41) — SEPARATION-RADIUS ADJUDICATED: unconditional, and
+## stronger — the CO-HIGH REINFORCEMENT LEMMA turns the certificate into an EQUALITY
+
+**[CO-HIGH REINFORCEMENT LEMMA — derived this lane, referee queued]** After HEIGHT-isolation
+alone (shrink h below the minimal height gap — pure discreteness, unconditional; no
+displacement bookkeeping needed), every surviving packet member is co-high with the target,
+and ALL pair differences within a co-high packet are PURELY IMAGINARY in the u-frame:
+(i) a co-high ON-LINE point has the same u-position as the packet center (on-line + co-high
+=> coincident position; distinct co-high on-line points are impossible — multiplicity only);
+(ii) a co-high second pair at displacement d' contributes differences `(i(d ± d'))^2 <= 0`.
+Hence the masking case (cont. 40's `4 m m_s (s^2 - d^2)` with `s != 0`) NEVER occurs after
+height isolation — it required an on-line point at a DIFFERENT height, which h-shrinking
+excludes. Therefore: **`mu_1(height-isolated box) <= -8 d^2 m^2 < 0` if any off-line point
+exists at that height; `mu_1 = 0` iff the packet is a single on-line point.**
+
+**[THE EQUALITY-FORM CERTIFICATE — the program's final compressed object]**
+> RH ⟺ for every height-isolated admissible box: `p_0 p_2 = p_1^2` — the CAUCHY-SCHWARZ
+> EQUALITY case on three source-computable boundary integrals (equivalently: the box packet
+> is a single point).
+The certificate is an EQUALITY — exact-identity class, exactly what the cont.-22 law demands
+(no margins, no estimates); its violation is quantized (`<= -8 d^2 m^2`). The production
+question in final form: what source identity/symmetry forces the Cauchy-Schwarz equality on
+height-isolated boxes? (It cannot be unconditional — it IS RH; it must flow from the source's
+global structure: FE + EF + the corpus's identity stock. Equalities come from identities and
+symmetries — the terrain where the source machinery is richest, and where estimates were
+never going to work: the 26-cycle arc's conclusion in one sentence.)
+
+**[NEXT]** (1) Referee this lemma + the equality form (elementary; the height-isolation
+hypotheses need the same (h, w)-order care as cont. 21). (2) The production hunt for the
+equality: inventory the corpus's exact-identity stock for statements of the form "boundary
+quadratic = boundary square" (Parseval/Plancherel identities; the reflection-positivity
+equalities; the Wronskian identities of the Hedenmalm surface) — the target
+`p_0 p_2 - p_1^2 = 0` is a Gram-determinant vanishing = LINEAR DEPENDENCE of two
+source-computable functionals — restate as: the functionals `f -> p_1` and `f -> p_2/p_1`...
+better: the packet measure's first two moments are proportional to its zeroth — a RIGIDITY of
+the boundary data. (3) Perimeter-theorem referee; analytic-T4; ST1; promotion batch.
