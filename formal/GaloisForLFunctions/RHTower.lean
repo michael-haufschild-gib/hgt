@@ -462,6 +462,7 @@ import GaloisForLFunctions.RHTower.FourthMomentDiagonal
 import GaloisForLFunctions.RHTower.OffDiagonalBound
 import GaloisForLFunctions.RHTower.DetectionSecondMoment
 import GaloisForLFunctions.RHTower.VanDerCorput
+import GaloisForLFunctions.RHTower.DigammaSeries
 import GaloisForLFunctions.RHTower.LargeValues
 import GaloisForLFunctions.RHTower.LargeValuesDpoly
 import GaloisForLFunctions.RHTower.MeanValueBridge
@@ -1620,3 +1621,4 @@ import GaloisForLFunctions.RHTower.ZetaGammaPhaseIntensityObservability
 import GaloisForLFunctions.RHTower.ZetaHorizonGammaIntensitySeparation
 import GaloisForLFunctions.RHTower.FixedWindowWeylRigidity
 import GaloisForLFunctions.RHTower.PairIdealCensusAlgebra
+import GaloisForLFunctions.RHTower.RankTwoPacketMomentIdentities
