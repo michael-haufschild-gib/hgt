@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PrimeClockCompletionCorrespondence
 import GaloisForLFunctions.HTGeometry.FiniteAbscissaRationalCoordinateIndependence
+import GaloisForLFunctions.RHTower.CanonicalEulerLog
 
 /-!
 # Analytic Euler completion from the prime-clock module
@@ -12,7 +13,7 @@ independent over that single countably generated field.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open ArithmeticFunction Set
+open ArithmeticFunction Filter Set
 open scoped Differential LSeries.notation
 
 noncomputable section
@@ -48,6 +49,31 @@ theorem boundedScalarReplicatedFiniteAbscissa_val
     (boundedScalarReplicatedFiniteAbscissa u M hu).1 =
       scalarReplicatedPrimeProfile u :=
   rfl
+
+/-- The replicated Euler valuation profile is exactly the classical coefficient stream
+`Lambda(n) / log n` of the canonical Euler logarithm. -/
+theorem scalarReplicatedPrimeProfile_eulerLogValuationProfile :
+    scalarReplicatedPrimeProfile eulerLogValuationProfile =
+      RHTower.eulerLogDirichletCoeff := by
+  ext n
+  by_cases hpow : IsPrimePow n
+  · let x : PrimePowerClockIndex :=
+      Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩
+    have hx := congrArg Subtype.val
+      (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
+    have hn : (x.1 : Nat) ^ (x.2 + 1) = n := by
+      simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx
+    rw [← hn]
+    have hcoord :=
+      primePowerCoordinateProfile_scalarReplicatedPrimeProfile
+        eulerLogValuationProfile x
+    change scalarReplicatedPrimeProfile eulerLogValuationProfile
+        ((x.1 : Nat) ^ (x.2 + 1)) = eulerLogValuationProfile x.2 at hcoord
+    rw [hcoord, eulerLogValuationProfile,
+      RHTower.eulerLogDirichletCoeff_prime_pow_succ
+        (x.1 : Nat) x.2 x.1.2]
+  · rw [RHTower.eulerLogDirichletCoeff_eq_zero_of_not_primePower hpow]
+    simp [scalarReplicatedPrimeProfile, hpow]
 
 /-- Actual upper-end meromorphic carrier of one bounded replicated valuation profile. -/
 def analyticScalarReplicatedCarrier
@@ -139,10 +165,112 @@ theorem scalarValuationBasisProfile_norm_le_one (n e : Nat) :
     ‖scalarValuationBasisProfile n e‖ ≤ 1 := by
   by_cases h : e = n <;> simp [scalarValuationBasisProfile, h]
 
+/-- The standard prime-zeta coefficient stream, as a finite-abscissa arithmetic source. -/
+def primeZetaFiniteAbscissaSource : finiteAbscissaArithmeticSubalgebra :=
+  boundedPrimeFiniteAbscissa (fun _ : Nat.Primes ↦ (1 : ℂ)) (by simp)
+
+/-- The prime zeta function in its absolutely convergent half-plane, written as the ordinary
+L-series of the prime indicator. -/
+def canonicalPrimeZeta (s : ℂ) : ℂ :=
+  LSeries (fun n ↦ (primeZetaFiniteAbscissaSource.1 n)) s
+
+/-- The upper-end germ represented by the prime zeta function after the fixed rotation
+`s = -I z`. -/
+def analyticPrimeZetaUpperEndGerm : Germ upperEndFilter ℂ :=
+  finiteAbscissaLSeriesToUpperEndGerm primeZetaFiniteAbscissaSource
+
+@[simp]
+theorem analyticPrimeZetaUpperEndGerm_eq :
+    analyticPrimeZetaUpperEndGerm =
+      ((fun z : ℂ ↦ canonicalPrimeZeta (-Complex.I * z)) :
+        Germ upperEndFilter ℂ) := by
+  rfl
+
+/-- Replicating the valuation basis vector at depth `e + 1` is exactly the
+`(e + 1)`-st prime-power dilation of the prime indicator. -/
+theorem scalarReplicatedPrimeProfile_scalarValuationBasisProfile
+    (e : Nat) :
+    scalarReplicatedPrimeProfile (scalarValuationBasisProfile e) =
+      arithmeticOfPrimePowerColumn e (fun _ : Nat.Primes ↦ (1 : ℂ)) := by
+  ext n
+  by_cases hpow : IsPrimePow n
+  · let x : PrimePowerClockIndex :=
+      Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩
+    have hx := congrArg Subtype.val
+      (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
+    have hn : (x.1 : Nat) ^ (x.2 + 1) = n := by
+      simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx
+    rw [← hn]
+    have hcoord :=
+      primePowerCoordinateProfile_scalarReplicatedPrimeProfile
+        (scalarValuationBasisProfile e) x
+    change scalarReplicatedPrimeProfile (scalarValuationBasisProfile e)
+        ((x.1 : Nat) ^ (x.2 + 1)) = scalarValuationBasisProfile e x.2 at hcoord
+    rw [hcoord]
+    by_cases hxe : x.2 = e
+    · subst e
+      simp [scalarValuationBasisProfile, arithmeticOfPrimePowerColumn_apply]
+    · have hnone : ¬ ∃ q : Nat.Primes,
+          (x.1 : Nat) ^ (x.2 + 1) = (q : Nat) ^ (e + 1) := by
+        rintro ⟨q, hq⟩
+        have heq : Nat.Primes.prodNatEquiv x =
+            Nat.Primes.prodNatEquiv (q, e) := by
+          apply Subtype.ext
+          simpa only [Nat.Primes.coe_prodNatEquiv_apply] using hq
+        exact hxe (congrArg Prod.snd (Nat.Primes.prodNatEquiv.injective heq))
+      change scalarValuationBasisProfile e x.2 =
+        (if h : ∃ q : Nat.Primes,
+            (x.1 : Nat) ^ (x.2 + 1) = (q : Nat) ^ (e + 1) then
+          (1 : ℂ) else 0)
+      rw [dif_neg hnone]
+      simp [scalarValuationBasisProfile, hxe]
+  · have hnone : ¬ ∃ p : Nat.Primes, n = (p : Nat) ^ (e + 1) := by
+      rintro ⟨p, rfl⟩
+      exact hpow (Nat.Primes.prodNatEquiv (p, e)).property
+    simp [scalarReplicatedPrimeProfile, hpow,
+      arithmeticOfPrimePowerColumn, hnone]
+
+/-- The finite-abscissa valuation layer is literally the corresponding dilation of the
+prime-zeta source. -/
+theorem boundedScalarReplicatedFiniteAbscissa_basis_eq_primeZetaDilation
+    (e : Nat) :
+    boundedScalarReplicatedFiniteAbscissa
+        (scalarValuationBasisProfile e) 1
+        (scalarValuationBasisProfile_norm_le_one e) =
+      finiteAbscissaPrimePowerDilation e primeZetaFiniteAbscissaSource := by
+  apply Subtype.ext
+  rw [boundedScalarReplicatedFiniteAbscissa_val,
+    scalarReplicatedPrimeProfile_scalarValuationBasisProfile]
+  exact (finiteAbscissaPrimePowerDilation_eq_arithmeticOfPrimePowerColumn
+    e primeZetaFiniteAbscissaSource (fun _ : Nat.Primes ↦ (1 : ℂ)) rfl).symm
+
+/-- The analytic valuation layer is the actual prime-zeta germ at the dilated argument
+`(e + 1)s`. -/
+theorem analyticScalarValuationLayer_germ_eq_primeZetaDilation (e : Nat) :
+    (finiteAbscissaLSeriesToUpperEndAnalytic
+        (boundedScalarReplicatedFiniteAbscissa
+          (scalarValuationBasisProfile e) 1
+          (scalarValuationBasisProfile_norm_le_one e)) :
+      Germ upperEndFilter ℂ) =
+      upperEndPrimePowerScaleGerm e analyticPrimeZetaUpperEndGerm := by
+  rw [finiteAbscissaLSeriesToUpperEndAnalytic_coe,
+    boundedScalarReplicatedFiniteAbscissa_basis_eq_primeZetaDilation,
+    finiteAbscissaLSeriesToUpperEndGerm_primePowerDilation]
+  rfl
+
 /-- Actual meromorphic carrier of the valuation layer concentrated at exponent `n + 1`. -/
 def analyticScalarValuationLayerCarrier (n : Nat) : upperEndMeroField :=
   analyticScalarReplicatedCarrier (scalarValuationBasisProfile n) 1
     (scalarValuationBasisProfile_norm_le_one n)
+
+/-- In the meromorphic field, the named valuation-layer generator is exactly the faithful
+realization of the corresponding prime-zeta dilation. -/
+theorem analyticScalarValuationLayerCarrier_eq_primeZetaDilation (e : Nat) :
+    analyticScalarValuationLayerCarrier e =
+      finiteAbscissaLSeriesToUpperEndMero
+        (finiteAbscissaPrimePowerDilation e primeZetaFiniteAbscissaSource) := by
+  unfold analyticScalarValuationLayerCarrier analyticScalarReplicatedCarrier
+  rw [boundedScalarReplicatedFiniteAbscissa_basis_eq_primeZetaDilation]
 
 /-- The actual coordinate-field differential field generated by every prime-zeta valuation
 layer simultaneously. -/
@@ -161,6 +289,23 @@ theorem eulerLogValuationProfile_norm_le_one (e : Nat) :
 def analyticEulerLogReplicatedCarrier : upperEndMeroField :=
   analyticScalarReplicatedCarrier eulerLogValuationProfile 1
     eulerLogValuationProfile_norm_le_one
+
+/-- The analytic representative of the named Euler carrier is exactly the canonical Euler
+logarithm of zeta after the fixed upper-end rotation `s = -I z`. -/
+theorem analyticEulerLogReplicated_germ_eq_canonicalEulerLogZeta :
+    (finiteAbscissaLSeriesToUpperEndAnalytic
+        (boundedScalarReplicatedFiniteAbscissa
+          eulerLogValuationProfile 1 eulerLogValuationProfile_norm_le_one) :
+      Germ upperEndFilter ℂ) =
+      ((fun z : ℂ ↦ RHTower.canonicalEulerLogZeta (-Complex.I * z)) :
+        Germ upperEndFilter ℂ) := by
+  rw [finiteAbscissaLSeriesToUpperEndAnalytic_coe]
+  change ((fun z : ℂ ↦
+      LSeries (fun n ↦
+        scalarReplicatedPrimeProfile eulerLogValuationProfile n)
+          (-Complex.I * z)) : Germ upperEndFilter ℂ) = _
+  rw [scalarReplicatedPrimeProfile_eulerLogValuationProfile]
+  rfl
 
 /-- **Analytic Euler completion barrier.**  The actual finite-abscissa Euler-profile Dirichlet
 germ is differentially independent over the one field generated by the genuine coordinate and

@@ -432,10 +432,34 @@ which is `(9)` with its constant `C_k` made explicit.  Its `k = 0` specializatio
 `242/211`, i.e. `(13)`.  With `c = lambda^2` this is the card's `c^4` adjacent-gap fingerprint.
 These theorems are unconditional statements about the Fuchs-rate model and are axiom-clean.
 
-The remaining gate is specifically the concrete analytic convergence from the actual prolate
-operator to this ladder — Fuchs fixed-index asymptotics for the true leakages, normalized
-prolate-to-Hermite convergence `ell_j -> a_j`, and the uniform infinite-tail secular estimate.  It
-is not replaced by an asymptotic hypothesis.
+**The exact all-depth ladder law `(8)` is now formalized** in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateDepthSecular.lean`, for the true
+infinite-dimensional constrained secular problem at every fixed depth `k`, by a flattening
+sandwich.  On the `k`-th gap `(d_k, d_(k+1))` the full secular function (Finset head of `k+1`
+poles + shoulder + `tsum` tail) is squeezed pointwise between two aggregated two-pole models —
+head poles flattened down to `0` and up to `d_k`, head mass `Σ_(j≤k) ℓ_j²` — because
+`1/(d_k−μ) ≤ 1/(d_j−μ) ≤ 1/(0−μ)` for `0 ≤ d_j ≤ d_k < μ`.  Both flattened models are literal
+first-gap instances of the infinite secular theory, so their roots obey the two-mode limit; the
+exact depth-`k` root exists (IVT between the flattened roots once the lower one clears `d_k`,
+which happens eventually), is unique (strict monotonicity on the gap:
+`depthSecular_strictMonoOn`), is trapped between them (`depthSecularRoot_bracket`), and inherits
+the limit by squeeze.  The family theorem `depthSecularRoot_ratio_tendsto` proves
+
+```text
+mu_k(lambda)/d_(k+1)(lambda) -> S_k/(S_k + a_(k+1)^2)
+```
+
+under the depth-`k` transfer hypotheses (ordered head, Bessel bound `Σℓ² ≤ 2λ`,
+`d_k/d_(k+1) → 0`, `λ·d_(k+1)/(d_(k+2)−d_(k+1)) → 0`, coordinate limits `ℓ_j → a_j` for
+`j ≤ k+1`), and `ccm_depthSecularRoot_ratio_tendsto` evaluates the limit at the Hermite
+coordinates as exactly `theta_k = Q_k/Q_(k+1)` — equation `(8)` for the exact constrained
+spectrum, with no truncation.  All axiom-clean.
+
+The remaining gate for the true prolate operator is the concrete analytic inputs — Fuchs
+fixed-index asymptotics for the true leakages and normalized prolate-to-Hermite convergence
+`ell_j -> a_j` — plus the Fuchs-model depth-`k` discharge and the exact-root `lambda^8`
+adjacent law `(9)` (its two-mode and leakage-side forms are already formalized in
+`LadderAdjacentScaleSeparation.lean`).  None of this is replaced by an asymptotic hypothesis.
 
 ## Gates
 
@@ -451,7 +475,16 @@ is not replaced by an asymptotic hypothesis.
   `[Q_(k+1)^2/(Q_k Q_(k+2))]·(A_(k+2)/A_(k+1))`
 - [x] `lambda^8` (equivalently `c^4`) adjacent scale separation formalized in Lean
 - [x] first excited coefficient `242/211` of `(13)` formalized in Lean
-- [ ] transfer the all-depth Fuchs model to the exact infinite-dimensional constrained ladder
+- [x] exact infinite-dimensional constrained root in EVERY spectral gap: existence, uniqueness,
+  bracket, and the all-depth law `mu_k/d_(k+1) -> theta_k` `(8)` formalized in Lean via the
+  flattening sandwich (`ConstrainedProlateDepthSecular`)
+- [x] Fuchs-model depth-`k` discharge (`fuchsRate_radial_depth_struct`,
+  `ccm_fuchsModel_depthSecularRoot_ratio_tendsto`) and the exact-root `lambda^8` adjacent law
+  `(9)` (`ccm_fuchsModel_ladder_adjacent_scaled_ratio_tendsto`, coefficient
+  `(theta_(k+1)/theta_k)·A_(k+2)/A_(k+1)`) formalized in Lean
+- [ ] eigenvector ladder limits `(10)`--`(11)` for the exact roots in Lean
+- [ ] true-operator ℓ-side inputs (Bessel bound, prolate-to-Hermite limits) and Fuchs
+  identification in Lean
 - [ ] independent proof review
 - [ ] independent literature review
 - [ ] true finite-prime Weil spectral-ladder transfer

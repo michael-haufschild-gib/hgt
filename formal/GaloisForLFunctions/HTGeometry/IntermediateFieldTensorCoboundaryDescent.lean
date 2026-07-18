@@ -80,7 +80,8 @@ theorem exists_left_coboundary_of_mem_intermediateField_sup
       (a ⊗ₜ[C] (1 : B)) * tensorLeftAction C A B sigma D * D := by
     apply hmu
     simpa only [map_sub, map_mul,
-      intermediateFieldTensorMulMap_tensorLeftAction,
+      intermediateFieldTensorMulMap_tensorLeftAction
+        C E A B T sigma hleft hright,
       intermediateFieldTensorMulMap_tmul, Subtype.coe_one, mul_one] using hcross
   exact exists_left_coboundary_of_arbitrary_right_tensor_fraction_identity
     C A B sigma a N D hD htensor

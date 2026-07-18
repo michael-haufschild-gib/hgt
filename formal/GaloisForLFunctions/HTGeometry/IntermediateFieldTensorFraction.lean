@@ -86,9 +86,7 @@ theorem exists_tensor_fraction_of_mem_sup
     by_cases hy0 : y = 0
     · refine ⟨0, 1, one_ne_zero, ?_⟩
       simp [hy0]
-    · obtain ⟨N, D, hD, hEq⟩ := hyRep
-      have hmuD : mu D ≠ 0 := by
-        simpa only [map_zero] using hmul.ne hD
+    · obtain ⟨N, D, _hD, hEq⟩ := hyRep
       have hmuN : mu N ≠ 0 := by
         intro hzero
         apply hy0

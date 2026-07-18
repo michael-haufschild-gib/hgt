@@ -1,3 +1,4 @@
+import Mathlib.Algebra.BigOperators.Field
 import GaloisForLFunctions.RHTower.ConstrainedProlateInfiniteSecular
 import GaloisForLFunctions.RHTower.ConstrainedProlateHermiteContrast
 
@@ -172,6 +173,10 @@ def flattenedCoords (ℓ : ℕ → ℝ) (k : ℕ) : ℕ → ℝ
   | 1 => ℓ (k + 1)
   | j + 2 => ℓ (j + (k + 2))
 
+theorem flattenedScales_one {t : ℝ} : flattenedScales d k t 1 = d (k + 1) := rfl
+
+theorem flattenedCoords_one : flattenedCoords ℓ k 1 = ℓ (k + 1) := rfl
+
 theorem flattenedScales_two {t : ℝ} : flattenedScales d k t 2 = d (k + 2) := by
   show d (0 + (k + 2)) = d (k + 2)
   rw [Nat.zero_add]
@@ -194,9 +199,10 @@ theorem infiniteSecular_flattened (t μ : ℝ) :
 
 theorem summable_flattenedCoords_sq (hsum : Summable fun j => ℓ j ^ 2) :
     Summable fun j => flattenedCoords ℓ k j ^ 2 := by
-  have htail : Summable fun j : ℕ => flattenedCoords ℓ k (j + 2) ^ 2 :=
-    (summable_nat_add_iff (k + 2)).mpr hsum
-  exact (summable_nat_add_iff 2).mp htail
+  have htail : Summable fun j : ℕ => flattenedCoords ℓ k (j + 2) ^ 2 := by
+    have h := (summable_nat_add_iff (f := fun j => ℓ j ^ 2) (k + 2)).mpr hsum
+    exact h.congr fun j => rfl
+  exact (summable_nat_add_iff (f := fun j => flattenedCoords ℓ k j ^ 2) 2).mp htail
 
 /-- Aggregation is mass-preserving: the flattened coordinate family carries exactly the total
 squared mass of the original one. -/
@@ -207,7 +213,8 @@ theorem tsum_flattenedCoords_sq (hsum : Summable fun j => ℓ j ^ 2) :
   have h2 := hsum.sum_add_tsum_nat_add (k + 2)
   have hr2 : (∑ i ∈ Finset.range 2, flattenedCoords ℓ k i ^ 2)
       = (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2) + ℓ (k + 1) ^ 2 := by
-    rw [Finset.sum_range_succ, Finset.sum_range_one, flattenedCoords_zero_sq]
+    rw [Finset.sum_range_succ, Finset.sum_range_one, flattenedCoords_zero_sq,
+      flattenedCoords_one]
   have hrk : (∑ i ∈ Finset.range (k + 2), ℓ i ^ 2)
       = (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2) + ℓ (k + 1) ^ 2 := Finset.sum_range_succ _ _
   have htaileq : (∑' i : ℕ, flattenedCoords ℓ k (i + 2) ^ 2)
@@ -288,43 +295,43 @@ theorem depthSecularRoot_bracket
     lt_of_le_of_lt hd0k hk01
   have h01t : flattenedScales d k (d k) 0 < flattenedScales d k (d k) 1 := hk01
   -- the two flattened roots
-  obtain ⟨hřmem, hř0, _⟩ := infiniteSecularRoot_spec (d := flattenedScales d k 0)
+  obtain ⟨hrLowMem, hrLow0, _⟩ := infiniteSecularRoot_spec (d := flattenedScales d k 0)
     (ℓ := flattenedCoords ℓ k) h01z h12z hd2z hsumflat hS hℓk1
-  obtain ⟨hr̂mem, hr̂0, _⟩ := infiniteSecularRoot_spec (d := flattenedScales d k (d k))
+  obtain ⟨hrHighMem, hrHigh0, _⟩ := infiniteSecularRoot_spec (d := flattenedScales d k (d k))
     (ℓ := flattenedCoords ℓ k) h01t h12t hd2t hsumflat hS hℓk1
-  set ř := infiniteSecularRoot (flattenedScales d k 0) (flattenedCoords ℓ k) with hřdef
-  set r̂ := infiniteSecularRoot (flattenedScales d k (d k)) (flattenedCoords ℓ k) with hr̂def
-  have hřgap : ř ∈ Set.Ioo (d k) (d (k + 1)) := ⟨hbr, hřmem.2⟩
-  have hr̂gap : r̂ ∈ Set.Ioo (d k) (d (k + 1)) := ⟨hr̂mem.1, hr̂mem.2⟩
+  set rLow := infiniteSecularRoot (flattenedScales d k 0) (flattenedCoords ℓ k) with hrLowDef
+  set rHigh := infiniteSecularRoot (flattenedScales d k (d k)) (flattenedCoords ℓ k) with hrHighDef
+  have hrLowGap : rLow ∈ Set.Ioo (d k) (d (k + 1)) := ⟨hbr, hrLowMem.2⟩
+  have hrHighGap : rHigh ∈ Set.Ioo (d k) (d (k + 1)) := ⟨hrHighMem.1, hrHighMem.2⟩
   -- sandwich values at the two flattened roots
-  have hFř : depthSecular d ℓ k ř ≤ 0 := by
+  have hFrLow : depthSecular d ℓ k rLow ≤ 0 := by
     have h := depthSecular_le_flattened_zero (ℓ := ℓ) hhead hbr
-    rw [hř0] at h
+    rw [hrLow0] at h
     exact h
-  have hFr̂ : 0 ≤ depthSecular d ℓ k r̂ := by
-    have h := flattened_top_le_depthSecular (ℓ := ℓ) hheadle hr̂mem.1
-    rw [hr̂0] at h
+  have hFrHigh : 0 ≤ depthSecular d ℓ k rHigh := by
+    have h := flattened_top_le_depthSecular (ℓ := ℓ) hheadle hrHighMem.1
+    rw [hrHigh0] at h
     exact h
   -- ordering of the flattened roots
   have hmonot : StrictMonoOn
       (infiniteSecular (flattenedScales d k (d k)) (flattenedCoords ℓ k))
       (Set.Ioo (d k) (d (k + 1))) :=
     infiniteSecular_strictMonoOn h12t hd2t hsumflat hS
-  have hřr̂ : ř ≤ r̂ := by
-    have h1 : infiniteSecular (flattenedScales d k (d k)) (flattenedCoords ℓ k) ř
-        ≤ depthSecular d ℓ k ř := flattened_top_le_depthSecular hheadle hbr
-    have h2 : infiniteSecular (flattenedScales d k (d k)) (flattenedCoords ℓ k) ř
-        ≤ infiniteSecular (flattenedScales d k (d k)) (flattenedCoords ℓ k) r̂ := by
-      rw [hr̂0]
+  have hrLowHigh : rLow ≤ rHigh := by
+    have h1 : infiniteSecular (flattenedScales d k (d k)) (flattenedCoords ℓ k) rLow
+        ≤ depthSecular d ℓ k rLow := flattened_top_le_depthSecular hheadle hbr
+    have h2 : infiniteSecular (flattenedScales d k (d k)) (flattenedCoords ℓ k) rLow
+        ≤ infiniteSecular (flattenedScales d k (d k)) (flattenedCoords ℓ k) rHigh := by
+      rw [hrHigh0]
       linarith
-    exact (hmonot.le_iff_le hřgap hr̂gap).mp h2
+    exact (hmonot.le_iff_le hrLowGap hrHighGap).mp h2
   -- the exact root by the intermediate value theorem
-  have hcont : ContinuousOn (depthSecular d ℓ k) (Set.Icc ř r̂) :=
-    depthSecular_continuousOn hk12 hkfloor hheadle hsum hbr hr̂mem.2
-  have hivt := intermediate_value_Icc hřr̂ hcont
-  obtain ⟨r, hrmem, hr0⟩ := hivt ⟨hFř, hFr̂⟩
+  have hcont : ContinuousOn (depthSecular d ℓ k) (Set.Icc rLow rHigh) :=
+    depthSecular_continuousOn hk12 hkfloor hheadle hsum hbr hrHighMem.2
+  have hivt := intermediate_value_Icc hrLowHigh hcont
+  obtain ⟨r, hrmem, hr0⟩ := hivt ⟨hFrLow, hFrHigh⟩
   have hrgap : r ∈ Set.Ioo (d k) (d (k + 1)) :=
-    ⟨lt_of_lt_of_le hbr hrmem.1, lt_of_le_of_lt hrmem.2 hr̂mem.2⟩
+    ⟨lt_of_lt_of_le hbr hrmem.1, lt_of_le_of_lt hrmem.2 hrHighMem.2⟩
   have hex : ∃ μ ∈ Set.Ioo (d k) (d (k + 1)), depthSecular d ℓ k μ = 0 := ⟨r, hrgap, hr0⟩
   rw [depthSecularRoot, dif_pos hex]
   obtain ⟨hcmem, hc0⟩ := hex.choose_spec
@@ -413,12 +420,12 @@ theorem depthSecularRoot_ratio_tendsto
   have htailZ : Tendsto (fun lam => lam * flattenedScales (d lam) k 0 1 /
       (flattenedScales (d lam) k 0 2 - flattenedScales (d lam) k 0 1)) atTop (nhds 0) := by
     refine htail.congr fun lam => ?_
-    rw [flattenedScales_two]
+    rw [flattenedScales_one, flattenedScales_two]
   have htailT : Tendsto (fun lam => lam * flattenedScales (d lam) k (d lam k) 1 /
       (flattenedScales (d lam) k (d lam k) 2
         - flattenedScales (d lam) k (d lam k) 1)) atTop (nhds 0) := by
     refine htail.congr fun lam => ?_
-    rw [flattenedScales_two]
+    rw [flattenedScales_one, flattenedScales_two]
   -- the two flattened root limits
   have hcheck := infiniteSecularRoot_ratio_tendsto
     (d := fun lam => flattenedScales (d lam) k 0)
