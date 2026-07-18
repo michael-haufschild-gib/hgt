@@ -32,6 +32,10 @@ For each completed card:
   keeping each command foreground in its owning lane.
 - Keep broad umbrella/index/lint checks serialized; parallelism is for independent scratch and
   leaf elaboration, not repeated builds of the same dependency cone.
+- Run broad umbrella builds only after latency-sensitive scratch lanes are idle.  Their default
+  worker pool can occupy the whole machine and turn a seconds-long compiler iteration into minutes;
+  if a broad gate must overlap, cap its workers to the CPU capacity left after reserving one core
+  per active leaf lane.
 - Use the active `formal/.lake` cache and build only the smallest changed leaf or umbrella.
 - Do not run a broad build when a leaf check decides the issue.
 - Do not use numerical pre-certification or any other computation as evidence.
