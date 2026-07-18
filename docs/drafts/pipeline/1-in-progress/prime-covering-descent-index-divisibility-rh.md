@@ -577,3 +577,46 @@ Agent-derived, first pass (needs my referee before any promotion):
    files are divisor/principal-part only); duplication side has `sharpNeutralGammaRatio`,
    polygamma multiplication (n=2), Sauter-Bogoliubov Gauss-duplication carrier; order law
    `analyticOrderAt_dyadicSharpPrimeCancelledSource_eq_pred` formalized.
+
+## 2026-07-18 session 1 (cont. 10) — all-simple audit CLOSES the bigraded Koszul route;
+## derivative-pair/discriminant census replaces it
+
+**[AUDIT RESULT — hidden cost located; bigraded Koszul census DOWNGRADED]** In the all-simple
+configuration `ord_C = 0` at every box zero, so `C` is a unit modulo `A`: `(A, C) = O(Omega)`,
+`P = 0`, and the census demand degenerates to `2^k | M` with the pair-ideal carrier BLIND (the
+arch-slice membership is vacuous precisely because the carrier has lost the divisor). The
+per-step congruence composition would have to produce raw count-divisibility unaided — full
+RH-strength content in one glue lemma. Verdict per the hidden-restatement test: the bigraded
+Koszul census with carrier `(A, C)` cannot be closed by the arch-slice conjecture; the cont.-9
+survival was real but feeds a carrier that is empty exactly where the danger is. The arch-slice
+identity chain (cont. 9) is retained as proved-first-pass support material for multiple-zero
+configurations only.
+
+**[CONJECTURE — derivative-pair (discriminant) census; failure-driven replacement]** Replace
+`C` by `A'`: the order law `ord_{A'} = m - 1` holds at EVERY zero with no degeneration, and T4
+applies verbatim: `dim O/(A, A') = sum(m-1) = P(T)` — the same census quantity, now carried by
+the intrinsic pair `(A, A')`. The census congruence `dim O/(A) ≡ dim O/(A, A') (mod 2^k)` is
+the SQUAREFREE/DISCRIMINANT census: `M - P` = distinct count = the classical
+`deg A - deg gcd(A, A')`. The mod-`2^k` mechanism to construct: discriminant/resultant PARITY
+of the box configuration — the box divisor is invariant under conjugation `rho -> conj(rho)`
+(line-symmetric boxes) and pairs under FE `rho -> 1 - conj(rho)` at fixed height (mirror
+pairs), and squareness/sign structure of discriminants under such symmetries is a classical
+source of 2-divisibility (real-form discriminant sign laws; Galois parity), while resultants
+and discriminants of the window restriction are SOURCE-COMPUTABLE from boundary data (resultant
+integrals; corpus: `resultant_specialize_analytic`, `xiHedenmalmBezoutian` on exactly
+`(XiC, XiC')` with formalized simplicity gate `xiHedenmalmBezoutian_self_ne_zero_iff_simple`).
+- First exact sub-questions: (Q1) for a conjugation-symmetric finite divisor with mirror-pair
+  structure, what 2-divisibility of the distinct count is forced by discriminant squareness of
+  the associated monic "window polynomial" (the Weierstrass polynomial of `A` on the box —
+  source-computable via boundary integrals of `A'/A` times powers... careful: those integrals
+  ARE Newton sums = divisor-selected? No: `(1/2pi i) ∮ s^j A'/A ds` is a BOUNDARY integral of
+  source data — Newton sums of the zeros obtained WITHOUT enumerating them — the classical
+  bridge from boundary data to the characteristic polynomial of the divisor; check against the
+  census card's kill conditions: this is boundary data of the pair `(A, A')`, not a raw-pair
+  homotopy invariant, and it is exact, not an estimate);
+  (Q2) does the depth-2 divisibility (by 4) follow for FE+conjugation double-symmetric stacked
+  boxes — the first non-free rung anywhere in this cluster;
+  (Q3) hostile: Newton-sum/Weierstrass-polynomial data determines the divisor COMPLETELY — is
+  the census congruence then just "compute both sides" (hidden tautology)? The answer must be
+  that the mechanism supplies STRUCTURAL divisibility (symmetry/parity of the polynomial's
+  Galois/real-form data) without computing the count — pin this before proof investment.
