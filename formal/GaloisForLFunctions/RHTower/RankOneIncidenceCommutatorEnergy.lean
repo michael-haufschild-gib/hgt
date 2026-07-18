@@ -24,21 +24,8 @@ theorem hsNormSq_rankOne
     {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     [CompleteSpace E] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
     [CompleteSpace F] (x : E) (y : F) :
-    hsNormSq (rankOne ℂ x y) = ‖x‖ ^ 2 * ‖y‖ ^ 2 := by
-  let b := hsBasis ℂ F
-  have hHS := isHilbertSchmidt_rankOne x y
-  rw [hsNormSq_eq hHS b]
-  simp_rw [rankOne_apply, norm_smul, mul_pow]
-  rw [tsum_mul_right]
-  have hsum : (∑' i, ‖inner ℂ y (b i)‖ ^ 2) = ‖y‖ ^ 2 := by
-    calc
-      _ = ∑' i, ‖inner ℂ (b i) y‖ ^ 2 := by
-        apply tsum_congr
-        intro i
-        rw [norm_inner_symm]
-      _ = _ := b.tsum_norm_inner_sq y
-  rw [hsum]
-  ring
+    hsNormSq (rankOne ℂ x y) = ‖x‖ ^ 2 * ‖y‖ ^ 2 :=
+  GaloisForLFunctions.HTGeometry.hsNormSq_rankOne x y
 
 private theorem crossBoundary_rankOne_eq
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]

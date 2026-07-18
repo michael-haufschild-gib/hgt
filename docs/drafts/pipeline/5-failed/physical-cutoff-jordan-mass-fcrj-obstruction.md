@@ -97,3 +97,51 @@ After joining, do not ask for an unoriented “correlation cancellation”: corr
 domination is automatic.  The genuine open target is the one-sided saturation inequality
 `R_M>=D_M-O(polylog(M)/M)`, equivalently the small upper bound for the ordinary-prime aperture
 energy.
+
+## 2026-07-19 positive response-correlation survivor
+
+The representation lesson has a second, source-specific positive consequence.  It does **not**
+rescue total variation of either physical-cutoff half.  Instead it identifies the exact detector
+order through which the completed Xi response cancels the signed orbit decomposition.
+
+For the infinitesimal real Euler kernel
+
+```text
+Q(x)=d/dx log xi(1/2+x),
+J(x,y)=(Q(x)+Q(y))/(x+y),
+```
+
+every actual squared-zero orbit has radial atom
+
+```text
+H_(t,c)(u)=(t+u)/((t+u)^2+c),
+```
+
+with the unconditional chamber `t>0`, `0<=c<t^2`.  Exact denominator clearing shows that
+`H_(t,c)` is strictly decreasing while `u*H_(t,c)(u)` is strictly increasing.  After summing the
+completed response this becomes strict decrease of `Q(x)/x` and strict increase of `x*Q(x)`.
+The two-node determinant then factors as
+
+```text
+J(x,x)J(y,y)-J(x,y)^2
+ =((y Q(x)-x Q(y))*(y Q(y)-x Q(x)))
+   /(x*y*(x+y)^2)>0,                     0<x<y.
+```
+
+Therefore the response correlation cancels every possible one-node and two-node negative Jordan
+direction unconditionally.  Combined with the exact Euler-ray negative-index law, any RH-failing
+negative response detector must use at least three nodes.  The bound is atomically sharp: after a
+positive diagonal denominator congruence, the three-node determinant of one transverse orbit is
+`c*Vandermonde^2*Phi`, where the Xi chamber forces `Phi<0`.  Hence every off-line orbit has
+minimal detector cardinality exactly three.  This is the sharp positive survivor of the
+signed-Jordan route found here: the open charge is a genuinely three-node cross-orbit
+selection/cancellation problem, not a norm bound on either signed cutoff piece.
+
+The dependency-closed paper proof and novelty boundary are recorded in
+`2-fully-proven/needs-audit/xi-euler-ray-two-node-response-barrier.md`.  The unconditional orbit
+algebra and nonempty finite actual-Xi packet theorem are formalized in
+`GaloisForLFunctions/RHTower/XiSquaredEulerRayTwoPointPositivity.lean`, including the exact
+single-orbit three-node factorization and strict negativity theorem; full infinite-response Lean
+assembly remains a separate promotion gate.  Scientific status:
+`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [INTERNAL NOVELTY AUDITED]`
+`[EXTERNAL NOVELTY UNVERIFIED] [NOT AN RH PROOF]`.

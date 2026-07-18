@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SoninSemilocalGradingBounds
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtRankOne
 import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
 
 noncomputable section
@@ -14,13 +15,8 @@ theorem isHilbertSchmidt_rankOne
     [CompleteSpace E] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
     [CompleteSpace F] (x : E) (y : F) :
     ContinuousLinearMap.IsHilbertSchmidt
-      (InnerProductSpace.rankOne ℂ x y) := by
-  unfold ContinuousLinearMap.IsHilbertSchmidt
-  have hs := (ContinuousLinearMap.hsBasis ℂ F).summable_norm_inner_sq y
-  apply (hs.mul_right (‖x‖ ^ 2)).congr
-  intro i
-  rw [InnerProductSpace.rankOne_apply, norm_smul, mul_pow]
-  rw [norm_inner_symm]
+      (InnerProductSpace.rankOne ℂ x y) :=
+  GaloisForLFunctions.HTGeometry.isHilbertSchmidt_rankOne x y
 
 theorem isTraceClass_rankOne_lp (x y : lp (fun _ : ℕ => ℂ) 2) :
     ContinuousLinearMap.IsTraceClass

@@ -70,7 +70,8 @@ Then
 
 ```text
 ||[P,X]||_HS^2
- =(C-b)a+(1-a)b-2|c|^2.                                 (7)
+ =(C-b)a+(1-a)b-2 Re(c^2)                               (7)
+ =(C-b)a+(1-a)b-2|c|^2+4(Im c)^2.
 ```
 
 Indeed,
@@ -80,9 +81,16 @@ QXP=2^(-1/2)(|Qchi><Ppsi|+|Qpsi><Pchi|).                (8)
 ```
 
 The two diagonal rank-one energies in `(8)` are `(C-b)a/2` and `(1-a)b/2`.
-Since `<Qpsi,Qchi>=-<Ppsi,Pchi>`, their real cross pairing is `-|c|^2`.  Thus the
-energy of `(8)` is half the right side of `(7)`.  Self-adjointness makes the opposite corner its
-adjoint, so the commutator has twice that energy.  This proves `(7)`.
+Since `<Qpsi,Qchi>=-<Ppsi,Pchi>`, the Hilbert--Schmidt cross pairing of the two
+rank-one terms is `-conj(c)^2`, whose real part is `-Re(c^2)`.  Thus the energy of
+`(8)` is half the first line of `(7)`.  Self-adjointness makes the opposite corner its adjoint, so
+the commutator has twice that energy.  Finally
+`Re(c^2)=|c|^2-2(Im c)^2`, proving the second line.
+
+The previously claimed phase-blind correction `-2|c|^2` is therefore valid exactly when
+`Im c=0`.  It is false for a general complex source line.  The squarefree-Mobius specialization
+below has real coordinate functions and a diagonal real cutoff, so its truncated overlap `c` is
+real and the original real formula is recovered without an added hypothesis.
 
 Equation `(7)` is the source Ward law: the complete cutoff curvature of a pointed Fisher
 connection is determined by the `2 x 2` truncated Gram matrix of its state and tangent.
@@ -117,7 +125,8 @@ b_sigma(u)->b(u)=integral_0^u 4(1-y)^2exp(-y)dy
                          =4[1-(1+u^2)exp(-u)].             (10)
 ```
 
-Combining `(2)`, `(7)`, and `(10)` proves the exact critical commutator energy
+The squarefree overlap `c_sigma(u)` is real.  Combining `(2)`, the real specialization of `(7)`,
+and `(10)` proves the exact critical commutator energy
 
 ```text
 E_W(u)
@@ -189,20 +198,26 @@ prime--Gamma/Sonin graph incidence `(14)` together with the nonexpansive source 
 3. Gamma's rank-one resolution curvature cannot supply the transverse term: its boundary
    direction is source-independent.  Gamma/Sonin completion must transport the source connection
    `(3)`, not replace it by a universal factorial boundary vector.
+4. The complex rank-two Ward law is phase-sensitive.  Replacing `Re(c^2)` by `|c|^2` erases the
+   nonnegative orientation defect `4(Im c)^2` and is false unless the observed state--tangent
+   overlap is real.  The positive survivor is the exact phase decomposition `(7)`, while the
+   arithmetic source discharges the real-overlap interface through its concrete real form.
 
 ## General HT consequence
 
 A normalized constrained HT source line has a canonical finite-rank connection even when its
 full clock has no finite differential handle.  For every observation projection, the boundary
 Ward curvature of that connection depends only on the truncated state--tangent Gram matrix
-`(a,b,c)`.  Thus infinite HT complexity and finite boundary energy separate cleanly: the former
-enters through whether the completed observation preserves the pointed graph, while the latter is
-already fixed by the source line's Fisher geometry.
+`(a,b,c)`, including the orientation term `4(Im c)^2`.  Complex phase is therefore a genuine
+boundary value invariant, not removable decoration.  Infinite HT complexity and finite boundary
+energy still separate cleanly: the former enters through whether the completed observation
+preserves the pointed graph, while the latter is already fixed by the source line's Fisher
+geometry.
 
 ## Gates
 
 - [x] source-defined pointed Fisher connection constructed
-- [x] exact rank-two cutoff Ward identity proved
+- [x] exact complex rank-two cutoff Ward identity and phase-defect classification proved
 - [x] all three critical local Gram entries computed
 - [x] exact critical commutator profile computed
 - [x] sharp four-unit boundary density recovered with the native factor two
@@ -212,3 +227,24 @@ already fixed by the source line's Fisher geometry.
 - [ ] prove direct graph-core convergence `(14)`
 - [ ] prove the completed source comparison `(15)`
 - [ ] RH
+
+## Lean bridge certificate (2026-07-19)
+
+The finite-`sigma` operator theorem and its hypothesis interfaces are now formalized:
+
+- `HTGeometry/HilbertSchmidtRankOne.lean` centralizes the generic rank-one Hilbert--Schmidt norm
+  and cross-polarization laws formerly duplicated in `RHTower`.
+- `HTGeometry/RankTwoFisherCutoffWard.lean` proves the phase-correct complex law `(7)`, its
+  `4(Im c)^2` decomposition, and the exact real-overlap classification.
+- `HTGeometry/LpCoordinateProjection.lean` constructs arbitrary coordinate cutoffs as
+  self-adjoint idempotents and proves exact cutoff-mass and cutoff-overlap value relations.
+- `RHTower/MobiusCriticalFisherCutoffWard.lean` constructs `P_(sigma,u)` on the completed
+  squarefree carrier, proves `a_sigma(u)` is exactly the existing critical-clock CDF, realizes
+  `b_sigma(u)` and `c_sigma(u)` as the tangent norm and state--tangent overlap, proves
+  `Im c_sigma(u)=0`, and derives the phase-free finite-`sigma` Ward law without caller-supplied
+  projection, adjoint, orthogonality, or phase hypotheses.
+
+Targeted compilation and the ordinary-axioms audit pass.  The exact remaining Lean-local bridge is
+not the finite-rank Ward algebra: it is the critical convergence of the hard-cutoff first and
+second centered moments `c_sigma(u)` and `b_sigma(u)` to `(10)`.  Beyond that remains the already
+identified prime--Gamma/Sonin completed graph incidence and nonexpansive comparison `(14)`--`(15)`.

@@ -650,10 +650,14 @@ including the actual prime-log specialization.  For that discrete source,
 polynomial avoidance inside arbitrarily small bounded-gauge balls, including nonzero specialization
 of polynomial-coefficient relations at distinct upper-half-plane nodes.  `DiscreteCauchyJetPacket`,
 `DiscreteCauchyJetDerivatives`, and `JetFactorialScale` identify those coordinates exactly with the
-actual iterated derivatives and transfer avoidance across the factorial diagonal.  The tree does not yet
-contain the corresponding `L^infinity(mu)` measure-level theorem for arbitrary nondiscrete support,
-infinite **signed** Cauchy-kernel index, algebraic rank-defect codimension, regularized
-infinite-measure reweighting, or full parametric transversality.  Those missing layers carry the
+actual iterated derivatives and transfer avoidance across the factorial diagonal.  `HTGeometry.RegularizedHerglotzTransform` now closes the
+regularized infinite-measure reweighting layer: the (H0) transform is an invertible rational gauge
+of the Cauchy transform of a probability measure, and `HTGeometry.MeasureCauchyJetDetection`
+replaces the discrete separated-point detector by almost-everywhere vanishing against any measure
+of infinite support.  The tree does not yet
+contain the corresponding `L^infinity(mu)` measure-level surjectivity theorem for arbitrary
+nondiscrete support, infinite **signed** Cauchy-kernel index, algebraic rank-defect codimension,
+or full parametric transversality.  Those missing layers carry the
 complete measure-universal claim, so no partial theorem is promoted to stage 3.
 
 ## Gates
@@ -738,3 +742,252 @@ complete measure-universal claim, so no partial theorem is promoted to stage 3.
   (`upperEndTranslationMeroDifferentialAlgEquiv`) and the affine gauge lemma.
   Remaining: assemble translated carriers and apply `differentialIndependent_affineBase_iff`;
   then the comeagerness upgrade in `L^infinity(mu;R)` — still untouched, still the hard step.
+- 2026-07-19 — step (1) closed: the gauge transfer is now available at the upper end, axiom-clean.
+  `formal/GaloisForLFunctions/HTGeometry/UpperEndAffineGauge.lean` discharges the instance
+  bookkeeping once (the coordinate field is derivation closed, so it carries the restricted
+  derivation and is a differential subalgebra of the meromorphic field), giving
+  `differentialIndependent_upperEnd_affineGauge_iff` and its rank-one form.
+  `formal/GaloisForLFunctions/HTGeometry/HerglotzGaugeTransfer.lean` then instantiates it at the
+  Herglotz normalization: the gauge coefficients `c(1+z^2)` and `cz` are genuine rational
+  coordinates and the multiplier is invertible (`1+z^2` is the image of a nonzero coordinate
+  polynomial, so it is nonzero by injectivity of `upperEndPolyToMero`), yielding
+  `hypertranscendentalOver_herglotzGauge_iff`: the normalized Herglotz presentation
+  `c (z + (1+z^2) C)` is hypertranscendental over `C(z)` exactly when the Cauchy carrier `C` is.
+  The whole reduction from the card's `m_u` down to a probability Cauchy carrier is now
+  unconditional. What remains is exactly one thing, and it is the whole theorem: the comeagerness
+  of the free reweightings in `L^infinity(mu;R)`. Untouched.
+- 2026-07-19 — began the comeagerness layer. Two findings changed the plan. First, the Baire engine
+  already exists (`affineJetPacketCollision_denseResidual_exactMatroid`: countably many closed
+  empty-interior defects in a Baire space give a dense residual avoider set), and the Nevanlinna
+  pullback `normalizedPositiveChart_actualCarrier_relationFree_dense_residual` *assumes* residuality
+  rather than proving it — so the open work is nowhere-density of each degenerate locus, not the
+  category argument. Second, the discrete detector
+  `CauchyJetControllability.cauchyJet_coeff_eq_zero_of_infinite` needs only infinitely many
+  separated points, so it generalizes to measures cheaply: a full-measure set is infinite whenever
+  the support is infinite (else the support sits in a finite closed set), giving
+  `MeasureCauchyJetDetection.cauchyJet_coeff_eq_zero_of_ae` — coefficient detection from
+  almost-everywhere vanishing, for an arbitrary measure of infinite support, no regularity needed.
+  Next: measure-level controllability (surjectivity of the bounded-reweighting jet map), which is
+  the dual of this detector, then nowhere-density of the degenerate loci.
+- 2026-07-19 — measure-level controllability (dual form) Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/MeasureCauchyJetControllability.lean`. The jet form
+  `Q t = sum_i sum_j c i j (t - x i)^{-(j+1)}` is uniformly bounded on the real axis whenever the
+  nodes avoid it (`norm_cauchyJetForm_le`), hence integrable against any finite measure
+  (`integrable_cauchyJetForm`) — no decay or regularity hypothesis is needed. Vanishing of every
+  set integral then forces `Q = 0` a.e., and the detector of the previous module kills every
+  coefficient: `cauchyJet_coeff_eq_zero_of_forall_setIntegral_eq_zero`. This says no nonzero finite
+  Cauchy-jet functional annihilates all bounded reweightings of a finite measure of infinite
+  support, which is the transversality input the degenerate loci need.
+  Next: nowhere-density of each degenerate locus (closed with empty interior) in the reweighting
+  space, then the existing Baire engine `affineJetPacketCollision_denseResidual_exactMatroid`
+  closes comeagerness.
+- 2026-07-19 — the nowhere-density link is Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/ControlPullbackNowhereDense.lean`. The abstract halves
+  already existed on both sides: `PolynomialJetEscape.mvPolynomial_zero_set_isNowhereDense` gives
+  nowhere density of a nonzero polynomial's zero set in the finite jet space, and
+  `BaireGenericAvoidance` gives countable avoidance. Missing was the transfer between them, since
+  the Baire argument must run in the control space, not the jet space. Supplied by openness of a
+  surjective continuous control map (`interior_preimage_eq_empty_of_surjective`): a ball of
+  controls cannot be squeezed into a set with empty interior. Capstones
+  `isNowhereDense_degenerateControls` and `dense_residual_nondegenerateControls` — the latter needs
+  only per-pattern controllability plus nonvanishing of the pattern polynomial, no further side
+  conditions.
+  The comeagerness skeleton is now complete and abstract. What remains for this card is the
+  instantiation: exhibiting the Herglotz reweighting control map as a surjective continuous linear
+  map into the jet space (the analytic content of measure-level surjectivity, for which
+  `MeasureCauchyJetControllability` supplies the dual injectivity), and identifying the pattern
+  polynomials. Also still open: signed Cauchy-kernel index and rank-defect codimension.
+- 2026-07-19 — signed Cauchy-kernel index closed, one of the card's named missing layers. Two
+  steps. First, the positivity hypothesis in the measure-level detector and its dual was
+  gratuitous: the underlying discrete detector
+  `CauchyJetControllability.cauchyJet_coeff_eq_zero_of_infinite` needs only separation of the
+  sampling points from the nodes, so both were generalized to nodes off the real axis in either
+  half-plane. Second, and this is what the surjectivity argument actually forces: a real-linear
+  functional on a complex jet space sees only `Re` of the pairing, and on the real axis `Re Q` is
+  itself a jet form carried by the conjugate-doubled node family, since
+  `conj ((t - x)^{-1}) = (t - conj x)^{-1}` for real `t` and conjugation maps the upper half-plane
+  to the lower one, so the two halves never collide. New module
+  `formal/GaloisForLFunctions/HTGeometry/SignedCauchyJetDetection.lean` proves
+  `cauchyJetForm_doubled_eq_re` and the capstone `cauchyJet_coeff_eq_zero_of_ae_re`: real-part
+  vanishing almost everywhere kills every coefficient. All axiom-clean.
+  Next: assemble the control map `L^infinity(mu;R) -> C^N` as a continuous linear map, whose
+  surjectivity now follows from `cauchyJet_coeff_eq_zero_of_ae_re` by the real-functional argument;
+  feeding it to `ControlPullbackNowhereDense` then discharges comeagerness. Still open after that:
+  rank-defect codimension.
+- 2026-07-19 — the real/complex dictionary for the surjectivity argument is Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/RealFunctionalJetCoefficients.lean`. Annihilation produces
+  a real-linear functional while the Cauchy-jet detectors consume a complex coefficient packet;
+  the bridge is that every real-linear functional on a finite complex jet space is the real part of
+  a complex pairing, `phi v = Re (sum_s c s * v s)` with
+  `c s = phi (single s 1) - I * phi (single s I)` (`re_sum_realFunctionalCoefficients`). Hence a
+  real functional vanishes exactly when its packet does, and
+  `surjective_of_forall_coefficients_eq_zero` reduces surjectivity of any real-linear map into a
+  finite complex jet space to coefficient rigidity — which is exactly what
+  `SignedCauchyJetDetection.cauchyJet_coeff_eq_zero_of_ae_re` supplies. All axiom-clean, and the
+  argument is finite-dimensional linear algebra only, independent of the control space.
+  Next and last for comeagerness: the `L^infinity(mu;R)` packaging — realize the reweighting map as
+  a continuous linear map into the jet space (essential-sup bound, a.e. classes), instantiate
+  surjectivity, and feed `ControlPullbackNowhereDense`. Still open after that: rank-defect
+  codimension.
+- 2026-07-19 — the two halves of the surjectivity argument now meet.
+  `SignedCauchyJetDetection.cauchyJet_coeff_eq_zero_of_forall_setIntegral_re_eq_zero`: if every set
+  integral of the jet form has vanishing real part, every coefficient vanishes. Real part commutes
+  with the integral (`Complex.reCLM.integral_comp_comm`), the real part of the jet form is
+  integrable against a finite measure, so it vanishes a.e. and the conjugate-doubling detector
+  applies. This is exactly the hypothesis a real-linear functional annihilating the range of a
+  reweighting control map produces, and it composes with
+  `RealFunctionalJetCoefficients.surjective_of_forall_coefficients_eq_zero` to give surjectivity of
+  any such control map, once the map itself is built.
+  Remaining for comeagerness is now purely the `L^infinity(mu;R)` packaging: define the map
+  `u |-> (int u(t) (t - x_s)^{-(j+1)} dmu)_s`, prove it continuous linear (essential-sup bound
+  against a bounded kernel and finite measure), flatten the index `Sigma i, Fin (n i)` against the
+  detector's dependent form, instantiate surjectivity, then feed `ControlPullbackNowhereDense`.
+  Still open after that: rank-defect codimension.
+- 2026-07-19 — index flattening closed in
+  `formal/GaloisForLFunctions/HTGeometry/FlattenedCauchyJetRigidity.lean`. The detectors carry a
+  dependent packet `(i : ι) -> Fin (n i) -> C` while a control map lands in a plain function space
+  on `Sigma i, Fin (n i)`; `Fintype.sum_sigma` reconciles the two definitionally
+  (`sum_cauchyJetKernel_eq_cauchyJetForm`), so rigidity transfers verbatim. Capstones:
+  `flattened_coeff_eq_zero_of_forall_setIntegral_re_eq_zero`, and
+  `surjective_of_setIntegral_pairing` — a real-linear map into the flattened jet space whose
+  pairings are kernel set-integrals against a measure of infinite support is surjective. This is
+  the exact input `ControlPullbackNowhereDense` consumes, so the abstract chain from measure to
+  comeagerness is now closed end to end.
+  Remaining is only the concrete `L^infinity(mu;R)` instance: define
+  `u |-> (int u(t) K_s(t) dmu)_s`, prove it continuous linear (the essential-sup bound
+  `enorm_ae_le_eLpNormEssSup` against the uniform kernel bound over a finite measure), and check
+  the pairing hypothesis of `surjective_of_setIntegral_pairing` by Fubini on a finite sum.
+  Still open after that: rank-defect codimension.
+- 2026-07-19 — the `L^infinity` analytic core is Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/BoundedReweightingControl.lean`. Mathlib carries only the
+  converse direction (`Lp.norm_le_of_ae_bound`: an a.e. bound gives an `L^infinity` norm bound), so
+  `ae_norm_le_norm_Lp_top` had to be built — an `L^infinity` element is a.e. bounded by its norm,
+  via `enorm_ae_le_eLpNormEssSup` plus finiteness of the essential supremum to cross
+  `ENNReal.toReal`. On that: `integrable_Lp_top_mul` (bounded reweighting times uniformly bounded
+  kernel is integrable against a finite measure) and `norm_integral_Lp_top_mul_le`, whose bound
+  `(B * mu univ) * ||f||` is linear in the reweighting norm — the operator-norm estimate a
+  continuous control map needs. The norm bound needs no measurability hypothesis.
+  Remaining: assemble these into `L : Lp R top mu ->L[R] (jetIndex n -> C)` (linearity uses
+  `Lp.coeFn_add`/`coeFn_smul`, continuity is the bound above via `LinearMap.mkContinuous`), discharge
+  the pairing hypothesis of `surjective_of_setIntegral_pairing` by exchanging the finite jet sum
+  with the integral, then feed `ControlPullbackNowhereDense`.
+  Still open after that: rank-defect codimension.
+- 2026-07-19 — the control map itself is built and Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/HerglotzControlMap.lean`:
+  `herglotzControl : Lp R top mu ->L[R] (jetIndex n -> C)`, sending a bounded reweighting to its
+  vector of Cauchy jets at the prescribed nodes. Linearity uses `Lp.coeFn_add`/`coeFn_smul` on the
+  a.e. classes; boundedness is componentwise via the uniform kernel bound, assembled with
+  `pi_norm_le_iff_of_nonneg` and a sum-dominates-each-term estimate, so the operator bound
+  `(sum_s B_s) * mu univ` needs no nonemptiness of the jet index.
+  Remaining: discharge the pairing hypothesis of `surjective_of_setIntegral_pairing` for this map
+  (exchange the finite jet sum with the integral), obtaining surjectivity, then feed
+  `ControlPullbackNowhereDense` for comeagerness. Still open after that: rank-defect codimension.
+- 2026-07-19 — the genericity chain is closed, unconditionally, in
+  `formal/GaloisForLFunctions/HTGeometry/HerglotzControlSurjective.lean`.
+  `surjective_herglotzControl`: for a finite measure of infinite support and distinct
+  upper-half-plane nodes, every finite Cauchy-jet vector is realized by a bounded reweighting.
+  Proof route: indicators are bounded reweightings and the control map sends the indicator of `S`
+  to the Cauchy kernels integrated over `S` (`herglotzControl_indicatorConstLp`); exchanging the
+  finite jet sum with the integral (`sum_mul_setIntegral_cauchyJetKernel`, which needs no
+  measurability of `S`) turns annihilation by a real functional into exactly the real-part
+  hypothesis of the signed detector, which then kills the coefficient packet.
+  Capstone `dense_nondegenerate_reweightings`: for a finite measure of infinite support, the
+  bounded reweightings on which a countable family of nonzero polynomial jet relations all fail to
+  degenerate are dense in `L^infinity(mu;R)`. This is the genericity statement the card's Baire
+  step needs, now unconditional and axiom-clean.
+  Not yet done: this is stated for a finite measure. The card's `m_u` uses the (H0) reweighting
+  `e^u dmu`, so the remaining link is to compose this with the regularized-transform reduction
+  (`RegularizedHerglotzTransform`), i.e. carry genericity across the `u |-> e^u` chart onto the
+  weighted measure. Also still open: rank-defect codimension.
+- 2026-07-19 — support preservation under positive reweighting, Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/PositiveReweightingSupport.lean`. Needed because the
+  control map is linear in the *density*, not in `u`: the tangent direction at a base reweighting
+  `u_0` is the Cauchy-jet map of the measure `e^{u_0} w dmu`, so surjectivity there requires that
+  measure to still have infinite support. An a.e. nonzero density moves no null set
+  (`measure_withDensity_eq_zero_iff`), and `Measure.support` is defined by positivity on
+  neighbourhoods, so `support_withDensity_eq` gives equality of supports outright. Specializing,
+  `support_nevanlinnaWeightedMeasure_infinite`: the Nevanlinna-weighted measure of a base measure
+  with infinite support again has infinite support, since its density is a strictly positive weight
+  times an exponential. So `surjective_herglotzControl` and `dense_nondegenerate_reweightings` now
+  apply at *every* base reweighting, not just at the unweighted measure.
+  Remaining for the card's comeagerness: the nonlinear chart step itself. `u |-> e^u` is not
+  linear, so density in `u`-space does not follow from the linear pullback; the paper argument is
+  parametric transversality — along a finite-dimensional slice `u_0 + sum theta_k a_k` the jet map
+  is analytic in `theta` with surjective derivative at `0` (that derivative is exactly the control
+  map above), hence open, so a nonzero polynomial cannot vanish on its image. That inverse-function
+  step is not yet formalized. Also still open: rank-defect codimension.
+- 2026-07-19 — the transversality step is done, and it does not need transversality. Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/AffineReachabilityGenericity.lean`:
+  `dense_nondegenerate_of_affine_reachability`. The card's paper argument linearizes the chart
+  `u |-> e^u` and asks the derivative to be surjective. That derivative is unnecessary. It suffices
+  that the reachable jets from a small parameter ball contain an *affine* image `F u_0 + L h` of a
+  small ball for some surjective continuous linear `L`; then `L` is open, so the reachable set
+  contains a neighbourhood of `F u_0`, and a nonzero polynomial cannot vanish on a neighbourhood.
+  No differentiability of the parameter map is used anywhere.
+  For the Herglotz chart the hypothesis holds *exactly*, with no linearization error, by perturbing
+  the density multiplicatively: replacing `exp u_0` by `exp u_0 (1 + h)` moves the parameter to
+  `u_0 + log (1 + h)` and moves the jets by exactly `L_{nu_0} h`, where `nu_0 = exp u_0 * w * dmu`
+  and `L_{nu_0}` is `herglotzControl`, surjective by `surjective_herglotzControl` (applicable at
+  every base point by `support_nevanlinnaWeightedMeasure_infinite`).
+  Remaining: discharge that reachability hypothesis concretely — the `log (1 + h)` bookkeeping in
+  `L^infinity` (that `u_0 + log(1+h)` is bounded and within `O(||h||)` of `u_0`, and that the
+  weighted measure factors as claimed). Then comeagerness for the card follows. Also still open:
+  rank-defect codimension.
+- 2026-07-19 — the multiplicative gauge chart is Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/MultiplicativeGaugePerturbation.lean`, supplying the
+  pointwise content of the reachability hypothesis. `abs_log_one_add_le_two_mul`:
+  `|log (1+x)| <= 2|x|` for `|x| <= 1/2`, so a uniformly small multiplicative gauge is a uniformly
+  small additive change of the exponential parameter. Upper half from `log y <= y - 1`; lower half
+  from `exp (2x) <= 1/(1-2x) <= 1+x`, which holds exactly on that range (the second inequality is
+  `x(1+2x) <= 0`). With `exp_add_log_one_add` (`exp (u + log (1+x)) = exp u * (1+x)`) this is the
+  reparameterization that makes the jet map affine with no linearization error.
+  Remaining to close comeagerness: lift these pointwise facts to `L^infinity` classes — from
+  `||h||_infty <= 1/2` conclude `log (1+h)` is in `L^infinity` with `||log(1+h)||_infty <= 2||h||`,
+  and that the weighted measure factors as `(1+h) * exp(u_0) * w * dmu` — then feed
+  `dense_nondegenerate_of_affine_reachability`. Also still open: rank-defect codimension.
+- 2026-07-19 — the gauge lift to `L^infinity` is Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/LogGaugeLift.lean`. `logOneAddLp` turns a bounded
+  multiplicative gauge `h` with `||h|| <= 1/2` into an honest `L^infinity` parameter change
+  `log (1 + h)`, and `norm_logOneAddLp_le` bounds it by `2||h||`. Supporting this,
+  `norm_toLp_le_of_ae_bound`: at exponent infinity an a.e. bound *is* a norm bound, with no
+  finiteness of the base measure — which matters here, since the card's parameter space is
+  `L^infinity(mu;R)` over the possibly infinite base Herglotz measure, so
+  `Lp.norm_le_of_ae_bound` (which assumes finiteness) is unusable.
+  So the parameter-side half of the reachability hypothesis is done: small multiplicative gauge
+  gives small additive parameter change. Remaining for reachability: the measure-side half — that
+  the weighted measure of `u_0 + log(1+h)` factors as `(1+h) * exp(u_0) * w * dmu`, so the jets move
+  by exactly `L_{nu_0} h`. Note one type mismatch to handle there: `h` lives in `L^infinity(mu)`
+  while `herglotzControl` is stated over the finite measure `nu_0`; the two have the same null sets
+  (`support_withDensity_eq`'s null-set lemma), so the classes correspond, but the identification
+  must be made explicit. Also still open: rank-defect codimension.
+- 2026-07-19 — the measure-side half of reachability is Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/GaugeWeightedFactorization.lean`.
+  `nevanlinnaWeightedMeasure_gauge`: the weighted measure of the gauged parameter
+  `u_0 + log(1+h)` is the weighted measure of `u_0` reweighted by `1+h` — a `withDensity`
+  factorization, since the density multiplies by exactly `1+h`. `integral_withDensity_one_add`:
+  integrating any integrand against the gauged measure adds precisely the pairing of the gauge with
+  that integrand, with no linearization error. Applied to the Cauchy kernel coordinates this says
+  the jets move by exactly `L_{nu_0} h`, which is the affine hypothesis of
+  `dense_nondegenerate_of_affine_reachability`.
+  Both halves of reachability now exist: parameter side (`LogGaugeLift`) and measure side (this
+  module). Remaining to assemble comeagerness: bridge the two `L^infinity` spaces — the gauge `h`
+  is naturally an `L^infinity(nu_0)` class while the parameter lives in `L^infinity(mu)`; the
+  measures share null sets, so the classes correspond, but the identification is not yet written.
+  Then instantiate `dense_nondegenerate_of_affine_reachability` with `F = jets` and
+  `L = herglotzControl`. Also still open: rank-defect codimension.
+- 2026-07-19 — design correction, with its analytic core Lean-checked in
+  `formal/GaloisForLFunctions/HTGeometry/WeightedJetControl.lean`. The `L^infinity(mu)` versus
+  `L^infinity(nu_0)` mismatch flagged earlier should not be bridged by identifying the two spaces:
+  the reachability hypothesis requires the control map to be defined on the *parameter* space
+  `L^infinity(mu)`, so the right object is the *weighted* control map over `mu`,
+  `L f = fun s => int f(t) w(t) K_s(t) dmu(t)`, with `w` the Radon-Nikodym density written
+  explicitly. Both parameter and gauge then live over `mu` throughout and no identification is
+  needed. Boundedness now comes from integrability of `w` (which is exactly (H0)) rather than
+  finiteness of `mu`, so the infinite-mass base measure is handled directly:
+  `integrable_Lp_top_mul_weight` and `norm_integral_Lp_top_mul_weight_le`, the latter with operator
+  bound `(B * int |w|) * ||f||`.
+  Remaining: bundle these into a continuous linear map (mirrors `HerglotzControlMap`), redo
+  surjectivity for the weighted map (the dual argument is unchanged — a functional annihilating it
+  gives `Re(int_S w Q dmu) = 0`, and `w > 0` reduces this to `Q = 0` a.e. against `mu`, whose
+  support is infinite by hypothesis), then instantiate
+  `dense_nondegenerate_of_affine_reachability`. Also still open: rank-defect codimension.

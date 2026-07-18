@@ -415,12 +415,48 @@ recurrence from `momentInner_X_mul`.
   - [x] complex Duhamel comparison `monicOrthoC_duhamel`
   - [x] weighted Cauchy--Schwarz `weightedSum_sq_le` bounding the Duhamel sums by the kernel sums
   - [x] `kernelRoot` and `norm_weightedSum_le`: the Duhamel sums bounded by products of kernel roots
-  - [ ] transfer of convergence from one nonreal point to all of `C` (absorption + covering)
+  - [x] pointwise Duhamel estimate `norm_monicOrthoC_duhamel_le`
+  - [x] kernel-root infrastructure: `kernelRoot_sq`, `kernelRoot_mono`,
+        `kernelRoot_sq_eq_normSq_sum`, and `summable_of_kernelRoot_le` (a uniform kernel-root bound
+        gives `Summable`, connecting the estimate layer to the criterion)
+  - [x] frozen-level and squared pointwise estimates (`norm_monicOrthoC_duhamel_le_of_le`,
+        `normSq_monicOrthoC_duhamel_le`)
+  - [x] the absorption inequality `kernelRoot_sq_le_absorption`:
+        `K_N^2 <= 2 S_N^2 + 8 D^2 K_N^2 S_N^2 P_N^2`
+  - [x] absorption: `summable_kernel_transfer` -- bounded kernel roots at `z` plus `|w-z|` small
+        gives `Summable` at `w`
+  - [x] explicit transfer radius `transferRadius s S P = 1/(4 h_0 S P)`, positive, with
+        `summable_kernel_transfer_of_dist` transferring convergence to the whole disc
+  - [x] third bilinear identity at complex points: `secondKindChristoffelDarbouxC` (R/R over `C`)
+  - [x] `R`-side Duhamel comparison `secondKindC_duhamel`
+  - [x] `R`-side pointwise estimate `norm_secondKindC_duhamel_le`
+  - [x] `R`-side frozen/squared/absorption steps (`norm_secondKindC_duhamel_le_of_le`,
+        `normSq_secondKindC_duhamel_le`, `kernelRootR_sq_le_absorption`)
+  - [x] both bounds propagate: `kernelRoot_bounds_propagate` gives `2S`, `2P` at the new centre
+  - [x] the good set is open: `BoundedKernel`, `isOpen_boundedKernel`
+  - [x] clopen/connectedness implication packaged: `boundedKernel_of_isClosed`,
+        `summable_kernel_everywhere_of_isClosed` (`ComplexKernelTransfer.lean`)
+  - [ ] the good set is closed -- the one genuinely analytic input still missing
+  - [ ] iterate over a chain of discs to reach all of `C`
   - [x] finite/polynomial-level determinant condition: the transfer matrix `momentTransfer` has
         determinant the nonzero constant `-h_n/h_0`, hence is a unit over `R[X]`
   - [x] `n`-independent normalized Wronskian `a_n (p_{n+1} r_n - p_n r_{n+1}) = -1/h_0`, equal to
         `-1` for a normalized sequence (`OrthonormalWronskian.lean`)
-  - [ ] `A,B,C,D` as entire functions and the determinant identity `AD - BC = 1`
+  - [x] the Pluecker relation and the determinant precursor
+        `h_0 z^2 (alpha delta - beta gamma) = z (beta - gamma)` (`NevanlinnaPluecker.lean`)
+  - [x] truncated `A_n,B_n,C_n,D_n` and the **exact determinant identity `A_n D_n - B_n C_n = 1`**
+        at every level `n` (`NevanlinnaPluecker.lean`)
+  - [x] absolute summability of the four bilinear series from kernel bounds
+        (`summable_weighted_of_bounds`)
+  - [x] limiting matrix `nevAinf..nevDinf` with `AD - BC = 1` in the limit, given `BoundedKernel`
+        at `0` and at `z`
+  - [x] Cauchy--Schwarz over an arbitrary index set (`weightedSum_sq_le_finset`,
+        `norm_sum_weighted_le_finset`) -- the uniform Cauchy tail estimate
+  - [x] **full uniform Cauchy criterion**: `norm_sum_Ico_weighted_le_tail` bounds every tail by a
+        quantity depending only on `N`, and `tendsto_uniformCauchyBound_zero` shows it vanishes
+  - [x] `uniformCauchy_weighted`: one threshold works for every `M` and every family meeting the
+        kernel bound -- uniform convergence over a transfer disc
+  - [ ] convert to `TendstoUniformlyOn` and conclude analyticity; then exponential-type growth
   - [ ] N-extremal leaf family, denominator-carried, with the moments of `s`
   - [ ] discharge `ClassicalNevanlinnaExtremalFamily`
 
@@ -663,3 +699,328 @@ recurrence from `momentInner_X_mul`.
   whenever `8 |w-z|^2 h_0^2 S^2 P^2 <= 1/2` the last term absorbs and `sigma_N(w)^2 <= 4 S^2`
   uniformly in `N`, giving summability at `w`. Note the hypothesis needs *both* series at `z`.
   Card remains Stage 2.
+- 2026-07-19 -- Twenty-third link: `norm_monicOrthoC_duhamel_le`, the pointwise Duhamel estimate
+
+  `|Q_n(w)| <= |Q_n(z)| + |w-z| h_0 * kappa_w(n) * (|Q_n(z)| rho_z(n) + |R_n(z)| sigma_z(n))`
+
+  where the three `kernelRoot`s are those of `Q(.,w)`, `R(.,z)`, `Q(.,z)`. This is the first line of
+  the paper derivation recorded last turn, now formalized: `monicOrthoC_duhamel` supplies the
+  identity, `norm_weightedSum_le` bounds both Duhamel sums, and `gcongr` does the monotone
+  bookkeeping through the `calc`. Exit code 0, zero warnings, axiom-clean, zero placeholders, file
+  347 lines.
+
+  One recurring pitfall worth noting: `simp` rewrites `monicOrtho s 0` to `1` via the `@[simp]`
+  lemma `monicOrtho_zero`, which silently breaks any hypothesis phrased in terms of
+  `momentInner s (monicOrtho s 0) (monicOrtho s 0)`. The fix used here is to prove the auxiliary
+  fact for an abstract scalar (`forall c, 0 < c -> ||(c : C)|| = c`) so `simp` cannot reach inside.
+  Card remains Stage 2.
+- 2026-07-19 -- Twenty-fourth link: kernel-root infrastructure. `kernelRoot_mono` (monotone in `n`,
+  needed repeatedly by the absorption argument), `kernelRoot_sq`, and crucially
+  `kernelRoot_sq_eq_normSq_sum` bridging `||.||^2` to `Complex.normSq`, so
+  `summable_of_kernelRoot_le` converts a uniform kernel-root bound -- exactly what absorption
+  produces -- into the `Summable` statement of the criterion. Exit code 0, zero warnings, all four
+  endpoints axiom-clean, zero placeholders, file 397 lines.
+
+  Two toolchain notes worth keeping. `Complex.sq_abs` does **not** exist here; the lemma
+  `||z||^2 = normSq z` is `Complex.sq_norm`, found by grepping the mathlib source rather than by
+  guessing (unknown names inside a `first | ...` alternation are hard elaboration errors, not failed
+  branches, so guessing is doubly expensive). And `Finset.range_subset.mpr` did not elaborate against
+  `Finset.sum_le_sum_of_subset_of_nonneg` here; an explicit `intro x hx` subset proof is reliable.
+  Card remains Stage 2.
+- 2026-07-19 -- Twenty-fifth link: the two estimates that precede summation.
+  `norm_monicOrthoC_duhamel_le_of_le` freezes all three kernel roots at the top level `N` (legitimate
+  by `kernelRoot_mono`), and `normSq_monicOrthoC_duhamel_le` squares it into
+
+  `|Q_n(w)|^2 <= 2|Q_n(z)|^2 + 4 D^2 K_N^2 (|Q_n(z)|^2 P_N^2 + |R_n(z)|^2 S_N^2)`,
+
+  with `D = |w-z| h_0`. Squaring goes through `(a+b)^2 <= 2a^2+2b^2` applied twice, each step a
+  small `nlinarith` with an explicit `sq_nonneg` hint rather than one large opaque call. This is the
+  exact termwise bound that survives division by `h_n` and summation over `n <= N`. Exit code 0,
+  zero warnings, both endpoints axiom-clean, zero placeholders, file 461 lines.
+
+  Toolchain note: `positivity` cannot see through the `kernelRoot` definition (a `noncomputable def`
+  wrapping `Real.sqrt`), so `gcongr`'s nonnegativity side goals must be discharged with explicit
+  `kernelRoot_nonneg` branches. Card remains Stage 2.
+- 2026-07-19 -- Twenty-sixth link: `kernelRoot_sq_le_absorption`. Dividing the squared pointwise
+  estimate by `h_n` and summing over `n <= N` yields the self-referential bound
+
+  `K_N^2 <= 2 S_N^2 + 8 D^2 K_N^2 S_N^2 P_N^2`,   `D = |w-z| h_0`,
+
+  with `K, S, P` the kernel roots of `Q(.,w)`, `Q(.,z)`, `R(.,z)`. This is exactly the inequality the
+  paper derivation predicted three turns ago. Structured as a determinate `calc` (an earlier
+  `le_trans ?_ (le_of_eq ?_)` left an undetermined metavariable), with the termwise division by
+  `gcongr` and the three sums recombined by `Finset.mul_sum` and `kernelRoot_sq`. Exit code 0, zero
+  warnings, axiom-clean, zero placeholders, file 531 lines.
+
+  Small note: the two `Q(.,z)` sums are syntactically identical, so `rw [<- kernelRoot_sq h]`
+  rewrites both at once -- two rewrites suffice for three sums, and a third fails with "did not find
+  an occurrence". Card remains Stage 2.
+- 2026-07-19 -- Twenty-seventh link: `summable_kernel_transfer`, the absorption step and the local
+  form of the convergence transfer. Given uniform bounds `S` and `P` on the kernel roots of
+  `Q(.,z)` and `R(.,z)`, and `w` close enough that
+  `8 (|w-z| h_0)^2 S^2 P^2 <= 1/2`, the self-referential term in `kernelRoot_sq_le_absorption`
+  absorbs into the left-hand side, giving `K_N <= 2S` uniformly in `N` and hence, via
+  `summable_of_kernelRoot_le`, genuine `Summable` at `w`. Compiled first try. Exit code 0, zero
+  warnings, axiom-clean, zero placeholders, file 578 lines.
+
+  This is the local transfer. Two things still separate it from the classical statement
+  "indeterminate at one point implies convergence everywhere":
+  (i) a covering/iteration argument, since one application only reaches a disc around `z` whose
+      radius depends on `S` and `P`;
+  (ii) the `R`-side hypothesis `hP`. The bound on the second-kind kernel root is genuinely needed --
+      `P_N` appears in the absorption inequality and cannot be dropped. Classically the two series
+      converge together, but that equivalence is a separate theorem not yet built here.
+  Card remains Stage 2.
+- 2026-07-19 -- Twenty-eighth link: `transferRadius s S P = 1/(4 h_0 S P)` with
+  `transferRadius_pos`, and `summable_kernel_transfer_of_dist` which discharges the smallness
+  hypothesis of the previous link from a plain distance bound. The arithmetic is exactly
+  `8 (r h_0)^2 S^2 P^2 = 8/16 = 1/2` at `r = 1/(4 h_0 S P)`, so the disc is the largest the
+  absorption argument allows. Exit code 0, zero warnings, both endpoints axiom-clean, zero
+  placeholders, file 618 lines.
+
+  The transfer is now in the shape a covering argument consumes: a *positive* radius depending only
+  on the two kernel-root bounds at the centre. The remaining obstruction to iterating is that the
+  radius depends on `S` and `P` at the new centre, so a naive chain can shrink to zero; the
+  classical fix is local uniform boundedness on compacts. Together with the still-open `R`-side
+  bound these are the two items between here and the unconditional statement. Card remains Stage 2.
+- 2026-07-19 -- Twenty-ninth link: `secondKindChristoffelDarbouxC`, the R/R identity over `C`,
+  mirroring the real `secondKindChristoffelDarboux`. As over `R` the `n = 0` boundary term vanishes
+  (`R_0 = 0`), so unlike the mixed identity no constant survives. Compiled first try. Exit code 0,
+  zero warnings, axiom-clean, zero placeholders, file 643 lines.
+
+  All three bilinear identities now exist at complex points (`christoffelDarbouxC`,
+  `mixedChristoffelDarbouxC`, `secondKindChristoffelDarbouxC`), which is what an `R`-side Duhamel
+  comparison needs: the derivation that produced `monicOrthoC_duhamel` used the Q/Q and Q/R
+  identities plus the Wronskian, and its `R`-side analogue will use the R/Q and R/R ones. Closing
+  that gap would turn the `hP` hypothesis of `summable_kernel_transfer` from an input into a
+  consequence. Card remains Stage 2.
+- 2026-07-19 -- Thirtieth link: `secondKindC_duhamel`, the second-kind Duhamel comparison. Derived
+  on paper first and it came out with the *same* shape as the first-kind formula:
+
+  `R_n(w) = R_n(z) - (w-z) h_0 [ Q_n(z) T'_n - R_n(z) S'_n ]`,
+  `T'_n = sum R_j(w) R_j(z)/h_j`,  `S'_n = sum Q_j(z) R_j(w)/h_j`.
+
+  The Q/Q and Q/R identities are replaced by the R/R (`secondKindChristoffelDarbouxC`) and R/Q
+  (`mixedChristoffelDarbouxC` with arguments swapped) ones; expanding, the two `Q_n(z) R_n(z)
+  R_{n+1}(w)` cross terms cancel identically and the constant Wronskian collapses the remainder to
+  `-R_n(w)`. Verified by hand expansion before formalizing, which is why it compiled first try.
+  Exit code 0, zero warnings, axiom-clean, zero placeholders, file 742 lines.
+
+  Note the sign asymmetry: because the R/Q identity is used with arguments swapped, the second term
+  enters with `(z-w)` rather than `(w-z)`, so the numerator identity is a *sum* rather than a
+  difference. Card remains Stage 2.
+- 2026-07-19 -- Thirty-first link: `norm_secondKindC_duhamel_le`, the pointwise Duhamel estimate for
+  the second-kind family. Direct mirror of `norm_monicOrthoC_duhamel_le`: `norm_weightedSum_le`
+  applied to the pairs (R(.,w), R(.,z)) and (Q(.,z), R(.,w)) bounds the two Duhamel sums, and the
+  second-kind kernel root `kappa_R(w)` factors out of both -- the same structural feature that made
+  the first-kind estimate absorbable. Compiled first try. Exit code 0, zero warnings, axiom-clean,
+  zero placeholders, file 820 lines.
+
+  The remaining `R`-side steps (freeze at level `N`, square, divide by `h_n`, sum, absorb) are
+  literal mirrors of links twenty-five to twenty-seven, since that machinery
+  (`kernelRoot_mono`, `kernelRoot_sq`, `summable_of_kernelRoot_le`) is generic in the families
+  involved. Card remains Stage 2.
+- 2026-07-19 -- Thirty-second link: the second-kind absorption chain, three lemmas, all first try.
+  `norm_secondKindC_duhamel_le_of_le` freezes the kernel roots at level `N`,
+  `normSq_secondKindC_duhamel_le` squares, and `kernelRootR_sq_le_absorption` divides by `h_n` and
+  sums to give
+
+  `kappa_R(w)_N^2 <= 2 kappa_R(z)_N^2 + 8 D^2 kappa_R(w)_N^2 kappa_Q(z)_N^2 kappa_R(z)_N^2`.
+
+  The key structural observation, verified on paper first: the bracket in the second-kind pointwise
+  estimate is *identical* to the first-kind one (`|Q_n(z)| kappa_R(z) + |R_n(z)| kappa_Q(z)`), so
+  the summed inequality carries the same coefficient `8 D^2 S^2 P^2` and therefore the *same*
+  smallness threshold. Both families transfer on the same disc. Exit code 0, zero warnings, all
+  three endpoints axiom-clean, zero placeholders, file 950 lines.
+
+  Three first-try compiles in one turn because the `gcongr` discharge pattern
+  (explicit `kernelRoot_nonneg` branches, `positivity` cannot see through the definition) was
+  applied pre-emptively from the note recorded at link twenty-five. Card remains Stage 2.
+- 2026-07-19 -- Thirty-third link: `kernelRootQ_le_of_small`, `kernelRootR_le_of_small`, and their
+  packaging `kernelRoot_bounds_propagate`. On the transfer disc *both* kernel roots at the new
+  centre are bounded by twice the old bounds, under the same smallness condition. So the hypotheses
+  of the transfer regenerate at `w`: the `hP` input is no longer a dead end but is reproduced along
+  with `hS`. Compiled first try. Exit code 0, zero warnings, all three endpoints axiom-clean, zero
+  placeholders, file 1036 lines.
+
+  This closes the structural half of the `hP` gap flagged at link twenty-seven. What remains is the
+  iteration itself, and the geometry is now explicit: each step doubles `S` and `P`, so the radius
+  `1/(4 h_0 S P)` shrinks by a factor of `4` per step. A naive chain therefore has geometrically
+  shrinking steps and covers only a bounded region -- the classical fix is to bound `S` and `P`
+  locally uniformly rather than to iterate the crude doubling. That is the honest remaining
+  obstacle, and it is an analytic argument rather than bookkeeping.
+
+  Note also that `HTGeometry/ComplexSecondKind.lean` is now 1036 lines, above the project's
+  1500-line guidance but approaching it; a split by proof phase (identities / estimates /
+  transfer) is worth doing before it grows further. Card remains Stage 2.
+- 2026-07-19 -- Thirty-fourth link: `BoundedKernel s z` (both kernel roots bounded at `z`, with
+  positive bounds), `summable_of_boundedKernel` connecting it to the criterion, and
+  `isOpen_boundedKernel` -- **the good set is open**. Proof: the transfer disc has positive radius
+  (`transferRadius_pos`) and both bounds regenerate on it (`kernelRoot_bounds_propagate`), merely
+  doubled. `transferSmall_of_dist` was factored out of the earlier disc lemma to be reusable.
+  Compiled first try. Exit code 0, zero warnings, all three endpoints axiom-clean, zero
+  placeholders, file 1093 lines.
+
+  This is the correct honest formulation of what the transfer machinery yields globally, and it
+  replaces the disc-chaining plan, which was a dead end: doubling the bounds shrinks the radius by
+  `4` per step, so a chain covers only a bounded region. Openness is the real content of the local
+  argument.
+
+  The remaining half is that the good set is also **closed** -- then, being nonempty (at any point
+  where the moment problem is indeterminate) and clopen in the connected space `C`, it is all of
+  `C`. Closedness is the genuinely analytic step and is not a consequence of anything built so far;
+  classically it comes from local uniform convergence and a normal-families/Vitali argument. Card
+  remains Stage 2.
+- 2026-07-19 -- Thirty-fifth link: new module `HTGeometry/ComplexKernelTransfer.lean` (started
+  fresh rather than growing `ComplexSecondKind.lean` past its 1093 lines).
+  `boundedKernel_of_isClosed` runs the clopen argument -- open (proved) plus closed (hypothesis)
+  plus nonempty, in the connected space `C`, gives every point -- and
+  `summable_kernel_everywhere_of_isClosed` draws the summability conclusion. Compiled first try;
+  both endpoints axiom-clean, zero placeholders.
+
+  The point of stating this separately is to make the remaining dependency *explicit and named*:
+  closedness of `{z | BoundedKernel s z}` appears as a hypothesis of a theorem, not as an
+  assumption hidden inside a definition. Everything in the module is unconditional Lean.
+
+  Why the local machinery cannot supply closedness, recorded so it is not re-attempted: the
+  propagated bounds double at each application while the transfer radius `1/(4 h_0 S P)` shrinks by
+  a factor of four, so iterating the local statement never reaches a limit point with control.
+  Classically closedness comes from local uniform convergence plus a normal-families/Vitali
+  argument -- a genuinely different technique from anything in the thirty-four preceding links.
+  Card remains Stage 2.
+- 2026-07-19 -- Thirty-sixth link: `HTGeometry/NevanlinnaPluecker.lean`. Returning to the
+  `AD - BC = 1` gate abandoned at link thirteen, and this time the algebra was carried through by
+  hand before formalizing. Writing `P,P',S,S'` for `Q_n(0), Q_{n+1}(0), R_n(0), R_{n+1}(0)` and
+  `p,p',r,r'` for the same at `z`, the four bilinear Christoffel--Darboux sums composing `A,B,C,D`
+  combine into
+
+  `(S'r - Sr')(P'p - Pp') + (p'S - pS')(P'r - Pr') = 1`
+
+  whenever both pairs have common Wronskian `-1`. `wronskian_bilinear_factor` proves the mechanism:
+  the left side is identically `(p'r - pr')(SP' - S'P)`, a *product of the two Wronskians*, with all
+  eight mixed terms cancelling in pairs -- verified by full expansion on paper (terms 1+7 and 4+6
+  cancel; 2+8 and 3+5 regroup). `wronskian_pluecker` and `wronskian_pluecker_sq` then substitute.
+  Stated over an arbitrary `CommRing`, so the combinatorics is isolated from the analysis; the
+  endpoints need only `propext` and `Quot.sound`, not even `Classical.choice`.
+
+  This settles why link thirteen failed: the identity is genuine, but it needs the *orthonormal*
+  normalisation where both Wronskians equal `-1`. In the monic normalisation the weights `1/h_k`
+  break the cancellation, which is exactly the mismatch observed then. Card remains Stage 2.
+- 2026-07-19 -- Thirty-seventh link: `nevanlinna_determinant_precursor`. Substituting the four
+  Christoffel--Darboux identities at `(0, z)` into the Pluecker relation gives
+
+  `h_0 z^2 (alpha delta - beta gamma) = z (beta - gamma)`
+
+  for the four bilinear sums `alpha, beta, gamma, delta`. Both Wronskian hypotheses come from
+  `monicOrthoC_wronskian` at `0` and at `z` with the *same* value `-(h_n/h_0)`, so
+  `wronskian_pluecker_sq` applies directly in monic variables -- no orthonormal rescaling needed
+  after all. This is precisely the relation that turns `A D - B C` into `1`, since
+  `A D - B C = 1 + z(gamma - beta) + z^2(alpha delta - beta gamma)`.
+  Exit code 0, zero warnings, axiom-clean, zero placeholders, file 145 lines.
+
+  Process note: this took four checks, three of them spent guessing `linear_combination`
+  coefficients. Two diagnoses worth keeping. First, `field_simp at ... ⊢` mangled the goal by trying
+  to clear the `1/h_k` *inside* the Finset sums; restricting it to the hypothesis fixed that.
+  Second, the reliable pattern is to make every coefficient `1` by construction: use
+  `refine mul_left_cancel₀ hne ?_` to multiply the goal by the exact factor that the hypothesis
+  carries, rather than trying to divide the hypothesis down to the goal. Card remains Stage 2.
+- 2026-07-19 -- Thirty-eighth link: `nevA`, `nevB`, `nevC`, `nevD` and
+  `nevA_mul_nevD_sub_nevB_mul_nevC` -- **the determinant identity `A_n D_n - B_n C_n = 1`**, exact
+  at every truncation level, every complex `z`, and for an arbitrary positive definite moment
+  sequence. Compiled first try.
+
+  The scaling was solved analytically rather than guessed. Writing the entries as
+  `A = a z alpha, B = -b + c z beta, C = d + e z gamma, D = f z delta` and imposing
+  `AD - BC = 1` against the precursor forces `bd = 1`, `af = ce = k`, `cd = be = k/h_0`, hence
+  `k = h_0^2`; taking `b = d = 1` gives `a = c = e = f = h_0`. With that scaling the identity holds
+  for *any* `h_0`, not only a normalised sequence, and the `linear_combination` coefficient is
+  exactly `h_0`. Exit code 0, zero warnings, axiom-clean, zero placeholders, file 182 lines.
+
+  This discharges the finite half of the card's `AD - BC = 1` gate. What remains on that gate is the
+  passage to the limit `n -> infinity`, which needs the convergence supplied by the transfer -- so
+  the two open threads (this limit, and closedness of the good set) are the same dependency viewed
+  from two directions. Card remains Stage 2.
+- 2026-07-19 -- Thirty-ninth link: `sum_range_norm_weighted_le` and
+  `summable_weighted_of_bounds`. Bounded kernel roots make each of the four bilinear series
+  *absolutely* summable: Cauchy--Schwarz bounds every partial sum of norms by
+  `kernelRoot f n * kernelRoot g n <= Kf * Kg`, and `Summable.of_norm` with
+  `summable_of_sum_range_le` converts that into `Summable`. Compiled first try. Exit code 0, zero
+  warnings, both endpoints axiom-clean, zero placeholders, file 235 lines.
+
+  This is the convergence input the limit passage needs: given `BoundedKernel` at `0` and at `z`,
+  all four series defining `A_n, B_n, C_n, D_n` converge, so the truncated matrix has a limit and
+  the exact identity `A_n D_n - B_n C_n = 1` can be transported to it. Card remains Stage 2.
+- 2026-07-19 -- Fortieth link: `nevAinf, nevBinf, nevCinf, nevDinf` and
+  `nevAinf_mul_nevDinf_sub_nevBinf_mul_nevCinf` -- **`A D - B C = 1` for the limiting Nevanlinna
+  matrix**, given `BoundedKernel` at `0` and at `z`. The four series converge by
+  `summable_weighted_of_bounds`; the truncations converge to the tsums
+  (`tendsto_partial_succ`, a shift of `HasSum.tendsto_sum_nat`); the identity holds at every `n`; so
+  uniqueness of limits transports it. Exit code 0, zero warnings, axiom-clean, zero placeholders,
+  file 302 lines.
+
+  The determinant gate is now discharged at the level of *functions*: `AD - BC = 1` holds for the
+  limiting entries wherever the kernel is bounded. What is still missing from that gate is the
+  qualitative statement that `A,B,C,D` are **entire of minimal exponential type** -- analyticity in
+  `z` and a growth bound, neither of which follows from the algebra. Analyticity would come from
+  local uniform convergence (the same input as closedness); the growth order is a further classical
+  estimate. Card remains Stage 2.
+- 2026-07-19 -- Forty-first link: `weightedSum_sq_le_finset` and `norm_sum_weighted_le_finset`,
+  Cauchy--Schwarz for the moment weights over an *arbitrary* `Finset` rather than only
+  `Finset.range (n+1)`. Compiled first try. Exit code 0, zero warnings, both endpoints axiom-clean,
+  zero placeholders, file 372 lines.
+
+  These are the tail estimates behind local uniform convergence, and there is now a concrete route
+  to it. On a transfer disc `kernelRoot_bounds_propagate` bounds the partial sums *uniformly in both
+  the point `w` and the level `N`* (by `2S` and `2P`). Applying the new bound with
+  `t = Finset.Ico N M` gives
+
+  `|sum_{k=N}^{M} Q_k(0) Q_k(z) / h_k| <= sqrt(tail_N at 0) * 2S`
+
+  with the second factor independent of `z` on the disc and the first tending to `0` because the
+  series at `0` converges. That is a uniform Cauchy criterion, hence uniform convergence on the
+  disc, hence analyticity of the limiting `A,B,C,D` there as uniform limits of polynomials.
+
+  So analyticity is reachable with the machinery now in place; the exponential-type growth bound is
+  a separate classical estimate and remains open, as does closedness. Card remains Stage 2.
+- 2026-07-19 -- Forty-second link: `sqrt_sum_Ico_le` and `norm_sum_Ico_weighted_le`. A tail of a
+  bilinear moment series over `Finset.Ico N M` is bounded by
+
+  `sqrt( sum_{Ico N M} |f_k|^2 / h_k ) * K_g`
+
+  where `K_g` is any bound on the second kernel root. `sqrt_sum_Ico_le` is the step that makes the
+  second factor uniform: `Ico N M` sits inside `range M`, so the partial sum is at most
+  `kernelRoot g (M-1)^2 <= K_g^2`. Compiled first try. Exit code 0, zero warnings, both endpoints
+  axiom-clean, zero placeholders, file 418 lines.
+
+  This is the *uniform in the point* half of the Cauchy criterion: on a transfer disc
+  `kernelRoot_bounds_propagate` supplies a single `K_g = 2S` valid at every point of the disc, so
+  the only varying factor is the tail of the series at the fixed centre. The remaining half is the
+  standard fact that that tail tends to zero, which is `Summable` machinery rather than
+  moment-problem content. Card remains Stage 2.
+- 2026-07-19 -- Forty-third link: the uniform Cauchy criterion completed.
+  `sum_Ico_le_tsum_sub_range` bounds an `Ico N M` block by the tail `tsum - sum_{range N}` (splitting
+  via `Finset.sum_Ico_consecutive`, with the degenerate `M < N` case handled separately);
+  `norm_sum_Ico_weighted_le_tail` combines it with the previous link to bound every bilinear tail by
+  `sqrt(tail_N) * K_g`; and `tendsto_uniformCauchyBound_zero` shows that bound tends to `0`.
+
+  The bound depends on **neither** the upper index `M` **nor** the point at which the second family
+  is taken, beyond the single constant `K_g` -- which on a transfer disc is `2S`, the same for every
+  point. That is exactly uniform Cauchy convergence of the four Nevanlinna series on the disc, hence
+  uniform convergence, hence analyticity of the limits as uniform limits of polynomials.
+
+  Exit code 0, zero warnings, all three endpoints axiom-clean, zero placeholders, file 493 lines.
+  Toolchain note: `le_or_lt` does not exist here; `Nat.lt_or_ge` is the replacement. Card remains
+  Stage 2.
+- 2026-07-19 -- Forty-fourth link: `uniformCauchy_weighted`. For every `eps > 0` there is a single
+  threshold `N_0` such that for all `N >= N_0`, **all** upper indices `M`, and **all** families `g`
+  obeying `kernelRoot s g n <= Kg`, the tail satisfies
+  `|sum_{Ico N M} f_k g_k / h_k| < eps`. Quantifying over `g` inside the statement is what makes the
+  uniformity explicit: on a transfer disc `kernelRoot_bounds_propagate` supplies one `Kg = 2S` valid
+  at every point, so a single `N_0` serves the whole disc. Compiled first try. Exit code 0, zero
+  warnings, axiom-clean, zero placeholders, file 513 lines.
+
+  Local uniform convergence of the four Nevanlinna series is now assembled entirely from proved
+  pieces. What remains for analyticity is to transcribe this into mathlib's `TendstoUniformlyOn`
+  and apply its holomorphic-limit theorem -- API plumbing over settled estimates rather than new
+  mathematics. The exponential-type growth bound and closedness of the good set remain the two
+  genuinely open classical inputs. Card remains Stage 2.

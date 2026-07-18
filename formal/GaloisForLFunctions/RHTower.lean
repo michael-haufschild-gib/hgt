@@ -1683,3 +1683,4 @@ import GaloisForLFunctions.RHTower.XiShiftPrimeCompletedCurvature
 import GaloisForLFunctions.RHTower.XiShiftPrimeReflectionCocycle
 import GaloisForLFunctions.RHTower.XiJetFreeness
 import GaloisForLFunctions.RHTower.SlepianKernelFubini
+import GaloisForLFunctions.RHTower.MobiusCriticalFisherCutoffWard
