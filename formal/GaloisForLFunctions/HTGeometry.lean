@@ -1328,3 +1328,4 @@ import GaloisForLFunctions.HTGeometry.ReciprocalSquareTransverseDefectLaw
 import GaloisForLFunctions.HTGeometry.TerminalScaledJacobian
 import GaloisForLFunctions.HTGeometry.MomentInnerProduct
 import GaloisForLFunctions.HTGeometry.OrthogonalMomentPolynomials
+import GaloisForLFunctions.HTGeometry.OrthonormalMomentPolynomials

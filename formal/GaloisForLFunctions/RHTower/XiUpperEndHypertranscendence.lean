@@ -62,6 +62,10 @@ local instance xiUpperEndCoordinateDifferentialAlgebra :
     change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
     rfl
 
+local instance xiUpperEndCoordinateScalarTower :
+    IsScalarTower ℂ upperEndRationalCoordinateField upperEndMeroField :=
+  .of_algebraMap_eq fun _ ↦ rfl
+
 private theorem rotated_re (z : ℂ) : (-I * z).re = z.im := by
   simp [mul_re]
 
@@ -96,13 +100,14 @@ private noncomputable def xiShiftLinearUpperEndAnalytic (c : ℝ) :
 private noncomputable def xiShiftReciprocalUpperEndAnalytic (c : ℝ) :
     upperEndAnalyticSubring := by
   refine ⟨((fun z : ℂ ↦ 1 / (-I * z + (c : ℂ))) : Germ upperEndFilter ℂ), ?_⟩
-  refine ⟨_, 1, ?_, rfl⟩
+  refine ⟨_, -c + 1, ?_, rfl⟩
   intro z hz
   apply analyticAt_const.div
   · exact analyticAt_const.mul analyticAt_id |>.add analyticAt_const
   · intro h
     have hre := congrArg Complex.re h
     simp [mul_re] at hre
+    change -c + 1 < z.im at hz
     linarith
 
 private theorem xiShiftReciprocal_mul_linear (c : ℝ) :
@@ -114,13 +119,14 @@ private theorem xiShiftReciprocal_mul_linear (c : ℝ) :
   change ∀ᶠ z in upperEndFilter,
     (1 / (-I * z + (c : ℂ))) * (-I * z + (c : ℂ)) = 1
   rw [upperEndFilter_basis.eventually_iff]
-  refine ⟨1, trivial, fun z hz ↦ ?_⟩
+  refine ⟨-c + 1, trivial, fun z hz ↦ ?_⟩
   have hne : -I * z + (c : ℂ) ≠ 0 := by
     intro h
     have hre := congrArg Complex.re h
     simp [mul_re] at hre
+    change -c + 1 < z.im at hz
     linarith
-  field_simp
+  simpa [one_div] using inv_mul_cancel₀ hne
 
 private theorem xiShiftReciprocalUpperEndMero (c : ℝ) :
     algebraMap upperEndAnalyticSubring upperEndMeroField
@@ -153,47 +159,24 @@ private theorem xiShiftReciprocalUpperEndMero (c : ℝ) :
   rw [map_mul, map_one, hlinear] at hprod
   exact (mul_eq_one_iff_eq_inv₀ (right_ne_zero_of_mul_eq_one hprod)).mp hprod
 
+private theorem xiShiftReciprocalUpperEndCarrier_differentialAlgebraic (c : ℝ) :
+    DifferentialAlgebraicOver ℂ
+      (algebraMap upperEndAnalyticSubring upperEndMeroField
+        (xiShiftReciprocalUpperEndAnalytic c)) := by
+  rw [xiShiftReciprocalUpperEndMero]
+  apply differentialAlgebraicOver_inv
+  exact differentialAlgebraicOver_add
+    (differentialAlgebraicOver_mul
+      (differentialAlgebraicOver_neg
+        (differentialAlgebraicOver_algebraMap I))
+      differentialAlgebraicOver_upperEndCoordinateMero)
+    (differentialAlgebraicOver_algebraMap (c : ℂ))
+
 private noncomputable def xiShiftTwoRationalCorrectionUpperEndAnalytic :
     upperEndAnalyticSubring :=
   xiShiftReciprocalUpperEndAnalytic 2 +
     xiShiftReciprocalUpperEndAnalytic 1 -
       xiShiftReciprocalUpperEndAnalytic (-1)
-
-private noncomputable def upperEndCoordinateInRationalField :
-    upperEndRationalCoordinateField :=
-  ⟨upperEndCoordinateMero,
-    IntermediateField.subset_adjoin ℂ ({upperEndCoordinateMero} : Set _) rfl⟩
-
-private noncomputable def xiShiftTwoRationalCorrectionBase :
-    upperEndRationalCoordinateField :=
-  (-algebraMap ℂ upperEndRationalCoordinateField I * upperEndCoordinateInRationalField +
-      algebraMap ℂ upperEndRationalCoordinateField 2)⁻¹ +
-    (-algebraMap ℂ upperEndRationalCoordinateField I * upperEndCoordinateInRationalField +
-      algebraMap ℂ upperEndRationalCoordinateField 1)⁻¹ -
-    (-algebraMap ℂ upperEndRationalCoordinateField I * upperEndCoordinateInRationalField +
-      algebraMap ℂ upperEndRationalCoordinateField (-1))⁻¹
-
-private theorem xiShiftTwoRationalCorrectionBase_coe :
-    (xiShiftTwoRationalCorrectionBase : upperEndMeroField) =
-      algebraMap upperEndAnalyticSubring upperEndMeroField
-        xiShiftTwoRationalCorrectionUpperEndAnalytic := by
-  rw [show xiShiftTwoRationalCorrectionUpperEndAnalytic =
-      xiShiftReciprocalUpperEndAnalytic 2 + xiShiftReciprocalUpperEndAnalytic 1 -
-        xiShiftReciprocalUpperEndAnalytic (-1) by rfl,
-    map_sub, map_add, xiShiftReciprocalUpperEndMero,
-    xiShiftReciprocalUpperEndMero, xiShiftReciprocalUpperEndMero]
-  change algebraMap upperEndRationalCoordinateField upperEndMeroField
-      xiShiftTwoRationalCorrectionBase = _
-  rw [show xiShiftTwoRationalCorrectionBase =
-      (-algebraMap ℂ upperEndRationalCoordinateField I * upperEndCoordinateInRationalField +
-          algebraMap ℂ upperEndRationalCoordinateField 2)⁻¹ +
-        (-algebraMap ℂ upperEndRationalCoordinateField I * upperEndCoordinateInRationalField +
-          algebraMap ℂ upperEndRationalCoordinateField 1)⁻¹ -
-        (-algebraMap ℂ upperEndRationalCoordinateField I * upperEndCoordinateInRationalField +
-          algebraMap ℂ upperEndRationalCoordinateField (-1))⁻¹ by rfl]
-  simp only [map_sub, map_add, map_inv₀, map_mul, map_neg,
-    IsScalarTower.algebraMap_apply]
-  rfl
 
 /-- Actual upper-end carrier of `z ↦ logDeriv xi (-I*z)`. -/
 noncomputable def xiLogDerivRotatedUpperEndCarrier : upperEndMeroField :=
@@ -232,15 +215,19 @@ theorem xiLogDerivRotatedUpperEnd_translation_defect :
       ((fun z : ℂ ↦ 1 / (-I * z + 2) + 1 / (-I * z + 1) -
         1 / (-I * z - 1)) : Germ upperEndFilter ℂ) by
     apply Germ.coe_eq.mpr
-    change ∀ᶠ z in upperEndFilter,
-      1 / (-I * z + 2) + 1 / (-I * z + 1) - 1 / (-I * z + (-1 : ℂ)) =
-        1 / (-I * z + 2) + 1 / (-I * z + 1) - 1 / (-I * z - 1)
-    exact Filter.Eventually.of_forall fun z ↦ by ring]
+    filter_upwards [] with z
+    norm_num
+    ring]
   rw [upperEndTranslateGerm_coe]
   rw [filteredVonMangoldtUpperEndGerm_eq_xiLogDerivShiftTwoPrimeDefect]
   apply Germ.coe_eq.mpr
-  exact Filter.Eventually.of_forall fun z ↦ by
-    congr 4 <;> simp [I_sq] <;> ring
+  filter_upwards [] with z
+  rw [show -I * (z + 2 * I) = -I * z + 2 by
+    rw [mul_add]
+    congr 1
+    calc
+      -I * (2 * I) = -2 * (I * I) := by ring
+      _ = 2 := by rw [I_mul_I]; ring]
 
 /-- The actual rotated logarithmic derivative is hypertranscendental over the constants. -/
 theorem xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver_complex :
@@ -255,9 +242,16 @@ theorem xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver_complex :
     change DifferentialAlgebraicOver ℂ
       (algebraMap upperEndAnalyticSubring upperEndMeroField
         xiShiftTwoRationalCorrectionUpperEndAnalytic)
-    rw [← xiShiftTwoRationalCorrectionBase_coe]
-    exact differentialAlgebraicOver_upperEndRationalCoordinate
-      xiShiftTwoRationalCorrectionBase
+    rw [show xiShiftTwoRationalCorrectionUpperEndAnalytic =
+      xiShiftReciprocalUpperEndAnalytic 2 +
+        xiShiftReciprocalUpperEndAnalytic 1 -
+          xiShiftReciprocalUpperEndAnalytic (-1) by rfl,
+      map_sub, map_add]
+    exact differentialAlgebraicOver_sub
+      (differentialAlgebraicOver_add
+        (xiShiftReciprocalUpperEndCarrier_differentialAlgebraic 2)
+        (xiShiftReciprocalUpperEndCarrier_differentialAlgebraic 1))
+      (xiShiftReciprocalUpperEndCarrier_differentialAlgebraic (-1))
   have hsum : HypertranscendentalOver ℂ
       (filteredVonMangoldtUpperEndCarrier +
         xiShiftTwoRationalCorrectionUpperEndCarrier) :=
@@ -307,7 +301,7 @@ private theorem xiRotatedReciprocal_mul_xiRotated :
   refine ⟨1, trivial, fun z hz ↦ ?_⟩
   have hne : xi (-I * z) ≠ 0 := xi_ne_zero_of_one_lt_re (by
     simpa [rotated_re] using hz)
-  field_simp
+  simpa [one_div] using inv_mul_cancel₀ hne
 
 /-- Actual upper-end carrier of the rotated completed function `z ↦ xi(-I*z)`. -/
 noncomputable def xiRotatedUpperEndCarrier : upperEndMeroField :=
@@ -338,17 +332,15 @@ private theorem xiRotatedAnalytic_logRelation :
         ((fun z : ℂ ↦ logDeriv xi (-I * z)) : Germ upperEndFilter ℂ)
   rw [upperEndGermDeriv_coe]
   apply Germ.coe_eq.mpr
-  change ∀ᶠ z in upperEndFilter,
+  filter_upwards [] with z
+  simp only [Function.comp_apply, Polynomial.eval_C]
+  change
     deriv (fun w : ℂ ↦ xi (-I * w)) z * (1 / xi (-I * z)) =
       -I * logDeriv xi (-I * z)
-  rw [upperEndFilter_basis.eventually_iff]
-  refine ⟨1, trivial, fun z hz ↦ ?_⟩
-  have hne : xi (-I * z) ≠ 0 := xi_ne_zero_of_one_lt_re (by
-    simpa [rotated_re] using hz)
   have hchain := iteratedDeriv_comp_mul_left_uncond xi (-I) 1 z
   simp only [iteratedDeriv_one, pow_one] at hchain
   rw [hchain, logDeriv_apply]
-  field_simp
+  ring
 
 /-- Exact logarithmic value relation between the actual rotated xi carrier and its completed
 logarithmic-derivative carrier. -/
@@ -370,6 +362,9 @@ theorem xiRotatedUpperEndCarrier_logDeriv :
 hypertranscendental over the genuine upper-end rational coordinate field. -/
 theorem xiRotatedUpperEndCarrier_hypertranscendentalOver :
     HypertranscendentalOver upperEndRationalCoordinateField xiRotatedUpperEndCarrier := by
+  intro hxi
+  have hscaledDA := differentialAlgebraicOver_deriv_div_self hxi
+  rw [xiRotatedUpperEndCarrier_logDeriv] at hscaledDA
   let d : upperEndRationalCoordinateField :=
     algebraMap ℂ upperEndRationalCoordinateField (-I)
   have hd : DifferentialAlgebraicOver upperEndRationalCoordinateField
@@ -379,17 +374,18 @@ theorem xiRotatedUpperEndCarrier_hypertranscendentalOver :
     apply (map_ne_zero (algebraMap upperEndRationalCoordinateField upperEndMeroField)).2
     apply (map_ne_zero (algebraMap ℂ upperEndRationalCoordinateField)).2
     exact neg_ne_zero.mpr I_ne_zero
-  have hscaled : HypertranscendentalOver upperEndRationalCoordinateField
-      (algebraMap upperEndRationalCoordinateField upperEndMeroField d *
-        xiLogDerivRotatedUpperEndCarrier) :=
-    (hypertranscendentalOver_mul_differentialAlgebraic_iff hd hd0).2
-      xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver
   have hscale : algebraMap upperEndRationalCoordinateField upperEndMeroField d =
       -algebraMap ℂ upperEndMeroField I := by
-    rw [show d = algebraMap ℂ upperEndRationalCoordinateField (-I) by rfl,
-      IsScalarTower.algebraMap_apply, map_neg]
-  rw [hscale, ← xiRotatedUpperEndCarrier_logDeriv] at hscaled
-  exact (hypertranscendentalOver_deriv_div_self_iff xiRotatedUpperEndCarrier).mp hscaled
+    change algebraMap upperEndRationalCoordinateField upperEndMeroField
+      (algebraMap ℂ upperEndRationalCoordinateField (-I)) = _
+    simp only [map_neg]
+    rfl
+  rw [← hscale] at hscaledDA
+  have hrecover := differentialAlgebraicOver_mul
+    (differentialAlgebraicOver_inv hd) hscaledDA
+  rw [← mul_assoc, inv_mul_cancel₀ hd0, one_mul] at hrecover
+  exact xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver
+    hrecover
 
 /-- The concrete intermediate-field statement restricts to the canonically embedded abstract
 rational-function coefficient field. -/
@@ -405,7 +401,11 @@ theorem xiRotatedUpperEndCarrier_hypertranscendentalOver_ratFunc :
     .of_algebraMap_eq fun _ ↦ rfl
   have h := xiRotatedUpperEndCarrier_hypertranscendentalOver
   rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at h ⊢
-  exact h.restrictScalars
+  exact DifferentialIndependent.restrictScalars
+    (F := RatFunc ℂ)
+    (K := upperEndRationalCoordinateField)
+    (E := upperEndMeroField)
+    h
 
 end
 

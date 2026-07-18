@@ -389,9 +389,12 @@ recurrence from `momentInner_X_mul`.
         (`OrthogonalMomentPolynomials.lean`)
   - [x] orthogonality to *every* polynomial of lower degree, and tridiagonality of the Jacobi form
         (`monicOrtho_inner_eq_zero_of_degree_lt`, `monicOrtho_X_mul_inner_eq_zero`)
-  - [ ] normalization to an orthonormal family `P n = monicOrtho n / sqrt ⟪·,·⟫` (a rescale)
-  - [ ] explicit three-term recurrence coefficients `X * Q n = Q (n+1) + a n * Q n + b n * Q (n-1)`
-        (needs the span lemma: degree `≤ m` polynomials are spanned by `Q 0 … Q m`)
+  - [x] normalization to the orthonormal family (`OrthonormalMomentPolynomials.lean`:
+        `orthonormalPoly`, `orthonormalPoly_inner` giving the exact Kronecker relation, exact
+        degree, positive leading coefficient)
+  - [x] span lemma and Fourier expansion (`mem_span_monicOrtho`, `monicOrtho_expansion`)
+  - [x] explicit three-term recurrence `monicOrtho_three_term`, with lower coefficient the ratio of
+        consecutive moment norms (hence positive by `monicOrtho_inner_self_pos`)
   - [ ] indeterminacy criterion `sum |P_n(z)|^2 < infinity`
   - [ ] `A,B,C,D` as entire functions and the determinant identity `AD - BC = 1`
   - [ ] N-extremal leaf family, denominator-carried, with the moments of `s`
@@ -424,3 +427,29 @@ recurrence from `momentInner_X_mul`.
   axiom-clean, file elaborates with zero errors and zero warnings. The remaining recurrence gate is
   now only the *explicit coefficients*, which need the span lemma; the banded structure itself is
   proved. Card remains Stage 2.
+- 2026-07-18 -- Fourth link: `mem_span_monicOrtho` (polynomials of degree `< m` lie in the span of
+  the first `m` members), `momentInner_eq_zero_of_mem_span`, and `monicOrtho_expansion` (a
+  polynomial of degree `< m` equals the sum of its moment projections). The expansion is proved by
+  showing the residual is orthogonal to every generator *and* lies in their span, hence has zero
+  moment norm, hence vanishes by positive definiteness. All axiom-clean; file elaborates with zero
+  errors and zero warnings. The explicit three-term coefficients now follow by applying the
+  expansion to `X * Q n - Q (n+1)`. Card remains Stage 2.
+- 2026-07-19 -- Fifth link: `monicOrtho_three_term`, the explicit three-term recurrence
+  `X * Q (n+1) = Q (n+2) + a * Q (n+1) + b * Q n` with `a` the diagonal matrix element and
+  `b = <Q (n+1), Q (n+1)> / <Q n, Q n>` the ratio of consecutive moment norms, positive by
+  `monicOrtho_inner_self_pos`. Obtained by applying `monicOrtho_expansion` to `X * Q (n+1) - Q (n+2)`
+  (degree `< n+2` since both are monic of degree `n+2`), with `monicOrtho_X_mul_inner_eq_zero`
+  killing every index below `n`; the upward matrix element is identified by
+  `momentInner_monicOrtho_succ_X_mul`. Supporting lemmas `momentInner_sub_right`,
+  `degree_X_mul_monicOrtho`, `monic_X_mul_monicOrtho`, `degree_X_mul_monicOrtho_sub_succ_lt`.
+  Exit code 0, zero errors, zero warnings; all endpoints axiom-clean. This closes the Jacobi-matrix
+  half of the chain: the moment sequence now has a formal tridiagonal Jacobi form with positive
+  off-diagonal. Card remains Stage 2.
+- 2026-07-19 -- Sixth link: `HTGeometry/OrthonormalMomentPolynomials.lean` normalizes the monic
+  family by its moment norm. `orthonormalPoly_inner` is the exact Kronecker orthonormality relation
+  `<P m, P n> = if m = n then 1 else 0`; exact degree, positive leading coefficient (the classical
+  sign normalization), and inherited orthogonality to all lower degrees are also proved.
+  `orthonormalPoly_leadingCoeff` needs no positivity hypothesis and is stated without one. Exit code
+  0, all endpoints axiom-clean, zero placeholders. This is the family whose complex evaluations
+  control indeterminacy via convergence of `sum |P n z|^2`, which is the next link. Card remains
+  Stage 2.

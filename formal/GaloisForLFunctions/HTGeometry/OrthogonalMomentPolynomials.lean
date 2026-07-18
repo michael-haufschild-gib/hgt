@@ -231,7 +231,7 @@ theorem degree_monicOrthoCorrection_lt (s : ℕ → ℝ) (n : ℕ) :
 `monicOrtho s 0, …, monicOrtho s (m-1)`. -/
 theorem mem_span_monicOrtho {s : ℕ → ℝ} (m : ℕ) :
     ∀ p : Polynomial ℝ, p.degree < (m : WithBot ℕ) →
-      p ∈ Submodule.span ℝ ((fun k => monicOrtho s k) ''' {k : ℕ | k < m}) := by
+      p ∈ Submodule.span ℝ ((fun k => monicOrtho s k) '' {k : ℕ | k < m}) := by
   induction m with
   | zero =>
       intro p hp
@@ -240,9 +240,9 @@ theorem mem_span_monicOrtho {s : ℕ → ℝ} (m : ℕ) :
       exact Submodule.zero_mem _
   | succ m ih =>
       intro p hp
-      have hmono : ((fun k => monicOrtho s k) ''' {k : ℕ | k < m})
-          ⊆ ((fun k => monicOrtho s k) ''' {k : ℕ | k < m + 1}) :=
-        Set.image_subset _ fun k hk => Nat.lt_succ_of_lt hk
+      have hmono : ((fun k => monicOrtho s k) '' {k : ℕ | k < m})
+          ⊆ ((fun k => monicOrtho s k) '' {k : ℕ | k < m + 1}) :=
+        Set.image_mono fun k hk => Nat.lt_succ_of_lt hk
       rcases eq_or_ne p 0 with rfl | hp0
       · exact Submodule.zero_mem _
       · have hdlt : p.natDegree < m + 1 := (Polynomial.natDegree_lt_iff_degree_lt hp0).mpr hp
@@ -261,14 +261,14 @@ theorem mem_span_monicOrtho {s : ℕ → ℝ} (m : ℕ) :
         have hcast : ((p.natDegree : ℕ) : WithBot ℕ) ≤ ((m : ℕ) : WithBot ℕ) := by
           exact_mod_cast hdm
         have hmem1 : (p - Polynomial.C p.leadingCoeff * Polynomial.X ^ p.natDegree)
-            ∈ Submodule.span ℝ ((fun k => monicOrtho s k) ''' {k : ℕ | k < m + 1}) :=
+            ∈ Submodule.span ℝ ((fun k => monicOrtho s k) '' {k : ℕ | k < m + 1}) :=
           Submodule.span_mono hmono (ih _ (lt_of_lt_of_le hsub hcast))
         have hmem2 : monicOrthoCorrection s p.natDegree
-            ∈ Submodule.span ℝ ((fun k => monicOrtho s k) ''' {k : ℕ | k < m + 1}) :=
+            ∈ Submodule.span ℝ ((fun k => monicOrtho s k) '' {k : ℕ | k < m + 1}) :=
           Submodule.span_mono hmono
             (ih _ (lt_of_lt_of_le (degree_monicOrthoCorrection_lt s p.natDegree) hcast))
         have hmem3 : monicOrtho s p.natDegree
-            ∈ Submodule.span ℝ ((fun k => monicOrtho s k) ''' {k : ℕ | k < m + 1}) :=
+            ∈ Submodule.span ℝ ((fun k => monicOrtho s k) '' {k : ℕ | k < m + 1}) :=
           Submodule.subset_span ⟨p.natDegree, hdlt, rfl⟩
         have hpeq : p = (p - Polynomial.C p.leadingCoeff * Polynomial.X ^ p.natDegree)
             + p.leadingCoeff •
@@ -283,7 +283,7 @@ theorem mem_span_monicOrtho {s : ℕ → ℝ} (m : ℕ) :
 theorem momentInner_eq_zero_of_mem_span {s : ℕ → ℝ} {r : Polynomial ℝ} {m : ℕ}
     (hr : ∀ k < m, momentInner s r (monicOrtho s k) = 0)
     {p : Polynomial ℝ}
-    (hp : p ∈ Submodule.span ℝ ((fun k => monicOrtho s k) ''' {k : ℕ | k < m})) :
+    (hp : p ∈ Submodule.span ℝ ((fun k => monicOrtho s k) '' {k : ℕ | k < m})) :
     momentInner s r p = 0 := by
   induction hp using Submodule.span_induction with
   | mem x hx =>
@@ -330,5 +330,88 @@ theorem monicOrtho_expansion {s : ℕ → ℝ} (h : PositiveMomentForm s) (m : �
     momentInner_eq_zero_of_mem_span hrortho hrmem
   have : p - q = 0 := h.eq_zero_of_self_eq_zero hrr
   linear_combination (norm := ring_nf) this
+
+/-! ## The three-term recurrence -/
+
+/-- Subtraction in the right slot of the moment form. -/
+theorem momentInner_sub_right (s : ℕ → ℝ) (p q r : Polynomial ℝ) :
+    momentInner s p (q - r) = momentInner s p q - momentInner s p r := by
+  rw [momentInner_comm, momentInner_sub_left, momentInner_comm s q p, momentInner_comm s r p]
+
+theorem degree_X_mul_monicOrtho (s : ℕ → ℝ) (n : ℕ) :
+    (Polynomial.X * monicOrtho s n).degree = ((n + 1 : ℕ) : WithBot ℕ) := by
+  rw [Polynomial.degree_mul, Polynomial.degree_X, monicOrtho_degree s n]
+  push_cast
+  ring
+
+theorem monic_X_mul_monicOrtho (s : ℕ → ℝ) (n : ℕ) :
+    (Polynomial.X * monicOrtho s n).Monic :=
+  Polynomial.monic_X.mul (monicOrtho_monic s n)
+
+/-- `X * Qₙ` and `Qₙ₊₁` are both monic of degree `n+1`, so they differ in lower degree only. -/
+theorem degree_X_mul_monicOrtho_sub_succ_lt (s : ℕ → ℝ) (n : ℕ) :
+    (Polynomial.X * monicOrtho s n - monicOrtho s (n + 1)).degree
+      < ((n + 1 : ℕ) : WithBot ℕ) := by
+  have hdeg : (Polynomial.X * monicOrtho s n).degree = (monicOrtho s (n + 1)).degree := by
+    rw [degree_X_mul_monicOrtho, monicOrtho_degree]
+  have hne : Polynomial.X * monicOrtho s n ≠ 0 := (monic_X_mul_monicOrtho s n).ne_zero
+  have hlc : (Polynomial.X * monicOrtho s n).leadingCoeff
+      = (monicOrtho s (n + 1)).leadingCoeff := by
+    rw [(monic_X_mul_monicOrtho s n).leadingCoeff, (monicOrtho_monic s (n + 1)).leadingCoeff]
+  have hlt := Polynomial.degree_sub_lt hdeg hne hlc
+  rwa [degree_X_mul_monicOrtho] at hlt
+
+/-- The upward matrix element of multiplication by `X` is the moment norm: this is what makes the
+lower recurrence coefficient a positive ratio of consecutive norms. -/
+theorem momentInner_monicOrtho_succ_X_mul {s : ℕ → ℝ} (h : PositiveMomentForm s) (n : ℕ) :
+    momentInner s (monicOrtho s (n + 1)) (Polynomial.X * monicOrtho s n)
+      = momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)) := by
+  have hzero : momentInner s (monicOrtho s (n + 1))
+      (Polynomial.X * monicOrtho s n - monicOrtho s (n + 1)) = 0 :=
+    monicOrtho_inner_eq_zero_of_degree_lt h (n + 1) (n + 1) le_rfl _
+      (degree_X_mul_monicOrtho_sub_succ_lt s n)
+  rw [momentInner_sub_right] at hzero
+  linarith [hzero]
+
+/-- **The three-term recurrence.**  Multiplication by `X` moves `Qₙ₊₁` to `Qₙ₊₂` plus a diagonal
+term and a positive multiple of `Qₙ`; the lower coefficient is the ratio of consecutive moment
+norms.  Everything at distance at least two vanishes by `monicOrtho_X_mul_inner_eq_zero`. -/
+theorem monicOrtho_three_term {s : ℕ → ℝ} (h : PositiveMomentForm s) (n : ℕ) :
+    Polynomial.X * monicOrtho s (n + 1) =
+      monicOrtho s (n + 2)
+        + (momentInner s (Polynomial.X * monicOrtho s (n + 1)) (monicOrtho s (n + 1)) /
+            momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1))) • monicOrtho s (n + 1)
+        + (momentInner s (monicOrtho s (n + 1)) (monicOrtho s (n + 1)) /
+            momentInner s (monicOrtho s n) (monicOrtho s n)) • monicOrtho s n := by
+  classical
+  set p : Polynomial ℝ := Polynomial.X * monicOrtho s (n + 1) - monicOrtho s (n + 2) with hpdef
+  have hpdeg : p.degree < ((n + 2 : ℕ) : WithBot ℕ) := degree_X_mul_monicOrtho_sub_succ_lt s (n + 1)
+  have hexp := monicOrtho_expansion h (n + 2) p hpdeg
+  have hpk : ∀ k, k < n + 2 → momentInner s p (monicOrtho s k)
+      = momentInner s (Polynomial.X * monicOrtho s (n + 1)) (monicOrtho s k) := by
+    intro k hk
+    rw [hpdef, momentInner_sub_left, monicOrtho_inner_eq_zero h (by omega : n + 2 ≠ k)]
+    ring
+  have hsub : ({n, n + 1} : Finset ℕ) ⊆ Finset.range (n + 2) := by
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+    simp only [Finset.mem_range]
+    omega
+  have hvanish : ∀ k ∈ Finset.range (n + 2), k ∉ ({n, n + 1} : Finset ℕ) →
+      (momentInner s p (monicOrtho s k) / momentInner s (monicOrtho s k) (monicOrtho s k))
+        • monicOrtho s k = 0 := by
+    intro k hk hkn
+    have hklt : k < n + 2 := Finset.mem_range.mp hk
+    have hkne : k ≠ n ∧ k ≠ n + 1 := by
+      simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hkn
+      exact hkn
+    rw [hpk k hklt,
+      monicOrtho_X_mul_inner_eq_zero h (by omega : k + 1 < n + 1)]
+    simp
+  rw [← Finset.sum_subset hsub hvanish, Finset.sum_pair (by omega : n ≠ n + 1)] at hexp
+  rw [hpk n (by omega), hpk (n + 1) (by omega), momentInner_X_mul,
+    momentInner_monicOrtho_succ_X_mul h n] at hexp
+  rw [hpdef] at hexp
+  linear_combination (norm := ring_nf) hexp
 
 end HTGeometry
