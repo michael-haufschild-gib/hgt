@@ -1562,3 +1562,37 @@ with `H(c)`.
 Corvallis 3.2.3 / Bushnell-Henniart 23.4; modulus law; self-dual normalization; HB iff
 `c > |d|`; kernel d-freeness EXACT; bridge identity with opposite signs verified; separation
 monotonicity; termination-marker coincidence.
+
+## 2026-07-18 session 2 (cont. 37) — the weighted EF computes canonical time; the Krein law
+## reads TYPE where positivity reads sign; THE PROGRAM FUSES INTO ONE OBJECT
+
+**[WEIGHTED EF — DERIVED+VERIFIED]** (i) Unweighted divisor sums over squared tests = the
+classical Guinand-Weil pairing (rank-2 confirms). (ii) The weights `1/K(rho,rho)` are Weyl
+m-function residues: the weighted sum IS integration against the canonical system's CLARK
+MEASURE; MRS/Totik Christoffel asymptotics are an exact IDENTITY in dB spaces
+(`lambda(x) = pi/(phi'(x)|E(x)|^2)`). (iii) **RANK-2 VERIFIED: Clark mass = (pi/2c) * t(c)**
+in BOTH configurations — the weighted explicit formula on the phase net computes the
+CANONICAL TIME exactly; termination `c* = |d|` = Clark-mass blowup. (iv) FINAL WALL FORM:
+RH-per-box ⟺ L1-comparability of two boundary measures per box — the Clark measure mu_c
+(phase net, carries t(c)) vs the swept divisor measure nu — with the comparability constant
+finite as depth -> 0. Transparency confirmed (continuous boundary data; sole quantifier =
+sup over boxes/levels).
+
+**[KREIN COLLISION — THE LAW SURVIVES, mechanism sharp]** (i) The naked string is blind
+(`H ≡ e_2 e_2^T` all boxes); the anchored cross-height pairing `K(c,c') = F(c+c')` is a
+HANKEL/WIDDER kernel: **depth-0 continuation ⟺ F completely monotone ⟺ the Bernstein measure
+nu has EXPONENTIAL TYPE 0**, with `nu = (4m^2/pi) cos^2(delta*lambda)` on-line vs
+`cosh^2(d*lambda)` off-line (exact). Off-line violation explicit: `F < 0` on
+`(sqrt(2)*d, 2d)`; violating minor = a 1x1 diagonal. (ii) WHY IT SURVIVES cont.-30: positivity
+cannot see support — but the Krein extension reads GROWTH TYPE, not sign, **and type is
+exactly where support hides**. No analytic-reader contradiction (type-0 is a sup-over-depths
+cone condition = the semialgebraic sign of e). (iii) Does not zero-shot RH: certifying type-0
+from finite source data is the exhaustion demand in string costume — honestly carried.
+
+**[THE FUSION]** nu's type `2d` IS the `p^{2d}` modulus asymmetry of the epsilon_S lane
+(cont. 33): the averaged consumer (AB), the Krein string extension, and the metaplectic
+comparison are THREE READINGS OF ONE OBJECT — a source-representable measure on the
+boundary-Fourier (prime) axis whose EXPONENTIAL TYPE is the off-line displacement. THE
+PROGRAM'S QUESTION IN FINAL FORM: **what unconditional arithmetic (Hilbert-reciprocity level
+closure) bounds the TYPE of nu?** Next: compute the finite-source-level lambda-representation
+of nu via the weighted EF; referee queue: cont. 36-37.
