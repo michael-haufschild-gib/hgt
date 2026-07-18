@@ -380,7 +380,7 @@ theorem primeProfileGrassmannField_inf
       · exact primeProfileGrassmannSource_supportedOnPositivePrimePowers C i)
     W hspanAC
   have hfieldA : primeProfileStaticField cA = primeProfileGrassmannField A := by
-    simpa only [cA, primeProfileGrassmannField]
+    simp [cA, primeProfileGrassmannField]
   have hmeetStatic :
       primeProfileStaticField (Sum.elim cA cB) ⊓
           primeProfileStaticField (Sum.elim cA cC) =
@@ -505,7 +505,7 @@ theorem primeProfileRotatedLogJet_one_comp
     primeProfileRotatedLogJet 1 (primeProfileRotatedLogJet n f) =
       primeProfileRotatedLogJet (n + 1) f := by
   ext m
-  simp only [primeProfileRotatedLogJet_apply, pow_one, pow_succ]
+  simp only [primeProfileRotatedLogJet_apply, pow_succ]
   ring
 
 /-- A quotient subspace is clock-invariant when it is stable under the descended logarithmic

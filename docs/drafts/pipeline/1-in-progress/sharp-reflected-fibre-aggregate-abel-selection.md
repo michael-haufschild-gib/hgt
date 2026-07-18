@@ -1,59 +1,61 @@
 # Sharp reflected-fibre and aggregate Abel selection
 
 - **ID:** `sharp-reflected-fibre-aggregate-abel-selection`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized result, retained here only as the completed strengthening log
 - **Type:** MASTER THEOREM STRENGTHENING / COLLISION CLASSIFICATION / SOURCE QUOTIENT
-- **Statement:** The scale-covariant Bernstein--Abel selector descends to nonzero aggregate source fibres and its quadratic half-order and Abel laws hold at the sharp uniform scale threshold `R > M`.
-- **Scientific status:** `[CONJECTURE] [PAPER PROOF IN PROGRESS] [LEAN IN PROGRESS] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Scientific status:** `[LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Consolidated card:**
+  [scale-covariant-bernstein-abel-tomography.md](../3-formalized/scale-covariant-bernstein-abel-tomography.md)
 
-## Goal
+## Completed positive theorem
 
-Remove two artificial hypotheses from the current tomography theorem:
-
-1. replace the half-disk condition `R > 2M` by the sharp radial condition `R > M`;
-2. replace injective, pointwise-nonzero indexing by the intrinsic quotient of the source by its
-   nonzero aggregate fibres.
-
-The survivor is positive: a successful scale-covariant selector is forced to live on the
-aggregate support, and the complete reflected fibre geometry still supplies a strict quadratic
-mixed-mode gap.
-
-## Exact reflected-fibre claim
-
-For nonreal equal-amplitude nodes with the same Bernstein ellipse phase, the existing rigidity
-theorem gives
+The scale-covariant Bernstein--Abel selector is intrinsic to the nonzero aggregate support of an
+arbitrarily indexed absolutely summable atomic source. Its quadratic half-order law and
+square-root Abel boundary hold at the sharp uniform scale threshold
 
 ```text
-v = u  or  v = 1 - conj(u).
+R > M,
 ```
 
-In the second case the normalized reflected cross moment is exactly
+where `M` bounds the raw source radius. No raw injectivity or pointwise nonvanishing assumption
+is required.
+
+## Complete reflected-fibre law
+
+For distinct nonreal equal-amplitude nodes `u,v`, equal Bernstein ellipse phase forces
+
+```text
+v = 1 - conj(u).
+```
+
+On this sole nontrivial fibre the Hermitian cross row is exactly
 
 ```text
 cross_n(u, 1-conj(u)) = choose(2n,n) * (u(1-u))^n.
 ```
 
-Therefore
+Consequently
 
 ```text
 |cross_n| <= (4|u||1-u|)^n,
 
 (|u|+|1-u|)^2 - 4|u||1-u|
-  = (|u|-|1-u|)^2.
+  = (|u|-|1-u|)^2 > 0.
 ```
 
-If `u != 1-conj(u)`, then `|u| != |1-u|`, so the reflected cross base is strictly below the
-diagonal base.  Distinct equal-amplitude nodes thus always possess a strict quadratic mixed gap:
-different ellipse phases by compactness, and equal phases by the exact reflected formula.
+The last inequality is strict because equality of the two focal distances would fix `u` under
+reflected complementation. Different phase fibres have the pre-existing compact mixed-mode gap.
+Thus every pair of distinct maximal nodes has one uniform exponential quadratic cross gap.
 
-For a source in `|z| <= M`, the condition `R > M` puts every real nonnegative normalized node
-`z/R` in `[0,1)`.  Hence any superunit maximal-amplitude node is nonreal, and the complete collision
-classification applies.  The threshold is sharp uniformly over the class: when `R <= M`, the
-allowed positive real node `z=M` can itself have amplitude `2M/R-1 > 1`.
+The scale threshold is sharp for the stated source class. If `R>M`, every normalized node lies in
+the open unit disk, so a superunit maximal-amplitude node is nonreal and the classification
+applies. If `R<M`, the allowed positive real node `z=M` has amplitude `2M/R-1>1`, so transverse
+selection cannot be inferred uniformly from amplitude alone. Equality `R=M` is the boundary at
+which the normalized endpoint `u=1` enters.
 
-## Aggregate quotient claim
+## Intrinsic aggregate source
 
-For an arbitrary absolutely summable indexed source `(c_i,z_i)`, define
+For a raw source `(c_i,z_i)`, define
 
 ```text
 cHat(u) = sum_{i : z_i=u} c_i,
@@ -64,35 +66,85 @@ Fibrewise absolute convergence gives
 
 ```text
 sum_u |cHat(u)| <= sum_i |c_i|,
-sum_i c_i F(z_i) = sum_u cHat(u) F(u)
+sum_i c_i z_i^n = sum_{u in J} cHat(u) u^n.
 ```
 
-for every bounded multiplier `F` occurring in a fixed moment or Bernstein row.  The subtype map
-`J -> C` is injective, every weight is nonzero by definition, all support bounds and real
-orientation statements descend, and cofinite convergence to zero descends because every occupied
-aggregate fibre contains an original node.  Thus moments, finite scale polynomials, Bernstein
-packets, confocal envelopes, and the transverse defect depend only on the nonzero aggregate
-support.
+Every occupied aggregate fibre contains a raw representative. Hence boundedness, cofinite
+convergence to zero, and the nonnegative orientation of real nodes descend to `J`. The node map
+`J -> C` is injective and every aggregate coefficient is nonzero by construction. A positive
+zeroth moment forces `J` to be nonempty. Applying the master theorem to this canonical source
+removes all raw indexing conditions.
 
-## Gates
+## Additional completed laws
 
-- [x] exact reflected-fibre formula identified
-- [x] sharp strict-gap identity identified
-- [x] sharp uniform threshold `R > M` identified
-- [ ] dependency-closed paper proof of the complete collision theorem
-- [ ] unconditional Lean theorem for the complete collision theorem
-- [ ] dependency-closed aggregate quotient proof
-- [ ] unconditional Lean aggregate quotient API and selector
-- [ ] quantitative joint stability layer
-- [ ] external novelty audit
+The same theorem batch supplies:
 
-## Open core
+1. the exact finite-scale identity
+   ```text
+   R (B(R)^2 - 1) = 2 D(R) + D(R)^2 / R;
+   ```
+2. the quantitative collar
+   ```text
+   0 <= R(B(R)^2-1)-2 Delta
+      <= M^2/(R-M) + 4M^2/R;
+   ```
+3. the exact Abel transport
+   ```text
+   R(1-A(R))
+     = (2D(R)+D(R)^2/R)/(1+D(R)/R)^2;
+   ```
+4. the universal reciprocal-square transverse-charge law
+   ```text
+   defect(-w^(-2)) = 2(Re w)^2 / |w|^4;
+   ```
+5. the unconditional Xi envelope bound
+   ```text
+   0 <= Delta_Xi <= 2/1681,
+   0 <= 2 Delta_Xi <= 4/1681.
+   ```
 
-The Xi arithmetic radical remains separate.  No endpoint equivalence is to be presented as an
-estimate toward `Delta_Xi = 0`; only a genuinely unconditional transverse-defect bound may alter
-that status.
+The Xi interval uses only the open critical strip and the independently established
+source-derived height inequality `(Im rho)^2 > 41/2`. It is an estimate on the selected
+transverse invariant, but it does not force its vanishing.
+
+## Formal theorem ledger
+
+- `RHTower/BernsteinEllipseReflectedFiberGap.lean`
+  - `reflectedBernsteinCrossMoment_one_sub_conj`
+  - `exists_reflectedBernsteinCrossMoment_gap_of_distinct_equalAmplitude`
+- `RHTower/ScaleCovariantBernsteinAggregateSource.lean`
+  - `atomicPowerMoment_eq_atomicAggregatePowerMoment`
+  - `scaleCovariantBernsteinAbel_tomography_of_aggregate`
+- `HTGeometry/ConfocalAbelQuantitativeStability.lean`
+  - `mul_confocalAmplitudeEnvelope_sq_sub_one_error_bounds`
+  - `mul_one_sub_confocalAbelRadius_eq`
+- `HTGeometry/ReciprocalSquareTransverseDefectLaw.lean`
+  - `transverseDefect_reflectedReciprocalSquare`
+  - `transverseDefectEnvelope_reflectedReciprocalSquare_le`
+- `RHTower/ScaleCovariantXiTransverseDefectBound.lean`
+  - `xiScaleCovariantTransverseDefect_mem_explicitInterval`
+  - `two_mul_xiScaleCovariantTransverseDefect_mem_explicitInterval`
+- `RHTower/ScaleCovariantBernsteinAbelTomography.lean`
+  - `scaleCovariantBernsteinAbel_tomography`
+
+All new theorem leaves named above were checked directly. The master source was also checked
+directly after its quantitative fields were added. A later broad cache build was deliberately
+abandoned because an unrelated concurrently edited module failed; it is not evidence against
+these leaf checks and will not be repeated as part of this paper pass.
+
+## Remaining open core
+
+```text
+Delta_Xi = 0.
+```
+
+The theorem now controls the carrier quantitatively and identifies its exact radical. It does not
+produce the arithmetic vanishing required for RH.
 
 ## Log
 
-- 2026-07-18 — Exact reflected collision formula and the sharp `R > M` scale threshold isolated;
-  aggregate quotient formulation fixed as the intrinsic replacement for injective indexing.
+- 2026-07-18 — Complete reflected collision theorem proved and formalized.
+- 2026-07-18 — Canonical nonzero aggregate source and raw-source wrapper proved and formalized.
+- 2026-07-18 — Quantitative confocal/Abel stability identities proved and formalized.
+- 2026-07-18 — Universal reciprocal-square charge law and unconditional Xi envelope bound proved
+  and formalized.

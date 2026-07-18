@@ -167,6 +167,120 @@ theorem map_mem_differentialPolynomialIterateIdeal_of_commutes
       (differentialPolynomialIterateIdeal (MvPolynomial.map f P)).mul_mem_left
         (MvPolynomial.map f a) hA
 
+/-! ## Bounded multiplier cancellation on the general component -/
+
+/-- A bounded-order multiplier which is nonzero on the ordinary hypersurface can be cancelled
+from a finite differential-ideal membership certificate.  This is the form of general-component
+contraction needed in Ritt's factor peeling: after all factors of larger order have been removed,
+both the residual quotient and the multiplier seen by the current factor have order at most that
+of the factor.
+
+The proof uses the finite generic point already constructed in
+`DifferentialLurothCoefficient`.  Passing first to the fraction field of the ordinary prime
+quotient `(A)` makes the multiplier nonzero; the recursive higher-jet construction leaves every
+bounded-order polynomial unchanged, so it may be cancelled in that field. -/
+theorem irreducible_dvd_of_order_le_of_mul_mem_iterateIdeal
+    {K : Type*} [Field K] [Differential K] [CharZero K]
+    {A M Q : DifferentialPolynomial Unit K}
+    (hAvars : A.vars.Nonempty) (hAirreducible : Irreducible A)
+    (hMorder : scalarDifferentialPolynomialOrder M ≤
+      scalarDifferentialPolynomialOrder A)
+    (hMnot : ¬A ∣ M)
+    (hQorder : scalarDifferentialPolynomialOrder Q ≤
+      scalarDifferentialPolynomialOrder A)
+    (hmem : M * Q ∈ differentialPolynomialIterateIdeal A) :
+    A ∣ Q := by
+  classical
+  obtain ⟨N, hmemN⟩ :=
+    mem_differentialPolynomialIterateIdeal_exists_upTo A _ hmem
+  let R := DifferentialPolynomial Unit K
+  let I : Ideal R := Ideal.span ({A} : Set R)
+  have hIprime : I.IsPrime := by
+    dsimp [I]
+    exact (Ideal.span_singleton_prime hAirreducible.ne_zero).mpr hAirreducible.prime
+  let B := R ⧸ I
+  letI : IsDomain B := (Ideal.Quotient.isDomain_iff_prime I).mpr hIprime
+  let L := FractionRing B
+  let q : R →+* B := Ideal.Quotient.mk I
+  let ι : B →+* L := algebraMap B L
+  let Φ : R →+* L := ι.comp q
+  let f : K →+* L := Φ.comp MvPolynomial.C
+  let x₀ : Unit × ℕ → L := fun j ↦ Φ (MvPolynomial.X j)
+  have hcanonical : MvPolynomial.eval₂Hom f x₀ = Φ := by
+    apply MvPolynomial.ringHom_ext
+    · intro c
+      simp [f]
+    · intro j
+      simp [x₀]
+  have hcanonical_apply (T : R) : MvPolynomial.eval₂ f x₀ T = Φ T :=
+    RingHom.congr_fun hcanonical T
+  have hqA : q A = 0 := by
+    apply Ideal.Quotient.eq_zero_iff_mem.mpr
+    exact Ideal.mem_span_singleton_self A
+  have hbaseA : MvPolynomial.eval₂ f x₀ A = 0 := by
+    rw [hcanonical_apply]
+    change ι (q A) = 0
+    rw [hqA, map_zero]
+  have hqSeparant : q (scalarDifferentialPolynomialSeparant A) ≠ 0 := by
+    intro hzero
+    have hmemI : scalarDifferentialPolynomialSeparant A ∈ I :=
+      Ideal.Quotient.eq_zero_iff_mem.mp hzero
+    have hdiv : A ∣ scalarDifferentialPolynomialSeparant A := by
+      rw [← Ideal.mem_span_singleton]
+      simpa [I] using hmemI
+    exact (irreducible_not_dvd_scalarDifferentialPolynomialSeparant
+      hAvars hAirreducible) hdiv
+  have hbaseSeparant : MvPolynomial.eval₂ f x₀
+      (scalarDifferentialPolynomialSeparant A) ≠ 0 := by
+    rw [hcanonical_apply]
+    change ι (q (scalarDifferentialPolynomialSeparant A)) ≠ 0
+    intro hzero
+    apply hqSeparant
+    apply IsFractionRing.injective B L
+    simpa using hzero
+  have hqM : q M ≠ 0 := by
+    intro hzero
+    apply hMnot
+    rw [← Ideal.mem_span_singleton]
+    simpa [I] using (Ideal.Quotient.eq_zero_iff_mem.mp hzero)
+  have hbaseM : MvPolynomial.eval₂ f x₀ M ≠ 0 := by
+    rw [hcanonical_apply]
+    change ι (q M) ≠ 0
+    intro hzero
+    apply hqM
+    apply IsFractionRing.injective B L
+    simpa using hzero
+  have hproductEval :=
+    differentialPolynomialGeneralComponentJets_eval_mem_iterateIdealUpTo
+      f hAvars x₀ hbaseA hbaseSeparant hmemN
+  change (MvPolynomial.eval₂Hom f
+      (differentialPolynomialGeneralComponentJets f A x₀ N)) (M * Q) = 0 at
+    hproductEval
+  rw [map_mul] at hproductEval
+  have hMStable := differentialPolynomialGeneralComponentJets_eval_of_order_le
+    f A x₀ N hMorder
+  have hMne : MvPolynomial.eval₂ f
+      (differentialPolynomialGeneralComponentJets f A x₀ N) M ≠ 0 := by
+    rw [hMStable]
+    exact hbaseM
+  have hQEval : MvPolynomial.eval₂ f
+      (differentialPolynomialGeneralComponentJets f A x₀ N) Q = 0 :=
+    (mul_eq_zero.mp hproductEval).resolve_left hMne
+  have hQStable := differentialPolynomialGeneralComponentJets_eval_of_order_le
+    f A x₀ N hQorder
+  have hQbase : MvPolynomial.eval₂ f x₀ Q = 0 := by
+    rw [← hQStable]
+    exact hQEval
+  have hΦQ : Φ Q = 0 := by
+    rw [← hcanonical_apply]
+    exact hQbase
+  have hqQ : q Q = 0 := by
+    apply IsFractionRing.injective B L
+    change ι (q Q) = ι 0
+    simpa [Φ] using hΦQ
+  rw [← Ideal.mem_span_singleton]
+  simpa [I] using (Ideal.Quotient.eq_zero_iff_mem.mp hqQ)
+
 /-! ## The coefficient cross-relation and characteristic saturation -/
 
 /-- The relation over the intermediate coefficient field obtained from two cleared coefficients.
@@ -352,6 +466,122 @@ theorem PrimitiveTwoBlockDifferentialCharacteristic.mappedPolynomial_squarefree
       (MvPolynomial.C (C.scalar : K) : MvPolynomial (Unit × ℕ) K) :=
     IsUnit.map MvPolynomial.C C.scalar.isUnit
   exact (associated_unit_mul_left _ _ hunit).squarefree_iff.mpr hmap
+
+/-- **Equation (78) for factors of the cleared two-block characteristic.**  Every irreducible
+factor over the original two-block polynomial ring still contains every right-block jet variable
+of the irreducible characteristic relation.
+
+The point requiring primitivity is that a full-ring factor might otherwise become a coefficient
+constant after the left jets are inverted.  Primitivity excludes this.  We may therefore choose an
+irreducible factor after localization, where `irreducible_map_factor_vars_subset` applies directly
+to the original characteristic polynomial. -/
+theorem PrimitiveTwoBlockDifferentialCharacteristic.irreducible_factor_right_vars
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (P : DifferentialPolynomial Unit G) (hPirreducible : Irreducible P)
+    (C : PrimitiveTwoBlockDifferentialCharacteristic G hG hy P)
+    {A : DifferentialPolynomial (Unit ⊕ Unit) F}
+    (hAirreducible : Irreducible A) (hAdiv : A ∣ C.polynomial) :
+    P.vars ⊆ (differentialPolynomialTwoBlockEquiv F A).vars := by
+  classical
+  let R := DifferentialPolynomial Unit F
+  let K := FractionRing R
+  let φ : G →ₐ[F] K := differentialIntermediateToJetFraction G hG hy
+  let A₀ := differentialPolynomialTwoBlockEquiv F A
+  let C₀ := differentialPolynomialTwoBlockEquiv F C.polynomial
+  have hA₀irreducible : Irreducible A₀ :=
+    hAirreducible.map (differentialPolynomialTwoBlockEquiv F)
+  have hA₀div : A₀ ∣ C₀ :=
+    map_dvd (differentialPolynomialTwoBlockEquiv F) hAdiv
+  have hA₀vars : A₀.vars.Nonempty := by
+    by_contra hnone
+    have hempty : A₀.vars = ∅ := Finset.not_nonempty_iff_eq_empty.mp hnone
+    have hconstant : A₀ = MvPolynomial.C (A₀.coeff 0) :=
+      MvPolynomial.vars_eq_empty_iff_eq_C.mp hempty
+    have hconstantDiv : MvPolynomial.C (A₀.coeff 0) ∣ C₀ := by
+      simpa [hconstant] using hA₀div
+    have hcoefficientUnit : IsUnit (A₀.coeff 0) :=
+      C.primitive (A₀.coeff 0) hconstantDiv
+    have hA₀unit : IsUnit A₀ := by
+      rw [hconstant]
+      exact IsUnit.map MvPolynomial.C hcoefficientUnit
+    exact hA₀irreducible.not_isUnit hA₀unit
+  let A₁ : MvPolynomial (Unit × ℕ) K :=
+    MvPolynomial.map (algebraMap R K) A₀
+  have hA₁vars : A₁.vars = A₀.vars := by
+    exact MvPolynomial.vars_map_of_injective (IsFractionRing.injective R K)
+  have hA₁ne : A₁ ≠ 0 := by
+    exact MvPolynomial.map_injective (algebraMap R K)
+      (IsFractionRing.injective R K) hA₀irreducible.ne_zero
+  have hA₁notUnit : ¬IsUnit A₁ := by
+    intro hunit
+    obtain ⟨r, _hr, hA₁constant⟩ :=
+      MvPolynomial.isUnit_iff_eq_C_of_isReduced.mp hunit
+    have hvarsEmpty : A₁.vars = ∅ := by
+      rw [hA₁constant]
+      simp
+    exact hA₀vars.ne_empty (hA₁vars ▸ hvarsEmpty)
+  obtain ⟨B, hBirreducible, hBdivA₁⟩ :=
+    WfDvdMonoid.exists_irreducible_factor hA₁notUnit hA₁ne
+  have hBdivC : B ∣ MvPolynomial.map (algebraMap R K) C₀ := by
+    exact hBdivA₁.trans (map_dvd (MvPolynomial.mapRingHom (algebraMap R K)) hA₀div)
+  have hBdivMapP : B ∣ MvPolynomial.map φ.toRingHom P := by
+    rw [C.clearing] at hBdivC
+    rcases hBirreducible.prime.dvd_mul.mp hBdivC with hBscalar | hBP
+    · have hscalarUnit : IsUnit
+          (MvPolynomial.C (C.scalar : K) : MvPolynomial (Unit × ℕ) K) :=
+        IsUnit.map MvPolynomial.C C.scalar.isUnit
+      exact (hBirreducible.not_isUnit
+        (isUnit_of_dvd_unit hBscalar hscalarUnit)).elim
+    · exact hBP
+  letI : Algebra G K := φ.toRingHom.toAlgebra
+  have hBdivAlgebraMap : B ∣ MvPolynomial.map (algebraMap G K) P := by
+    simpa [φ] using hBdivMapP
+  have hright : P.vars ⊆ B.vars :=
+    irreducible_map_factor_vars_subset hPirreducible hBirreducible hBdivAlgebraMap
+  have hBvars : B.vars ⊆ A₁.vars :=
+    mvPolynomial_vars_subset_of_dvd hBdivA₁ hA₁ne
+  intro j hj
+  have hjA₁ : j ∈ A₁.vars := hBvars (hright hj)
+  rwa [hA₁vars] at hjA₁
+
+/-- Exact right-variable support form of equation (78) for a full-ring irreducible factor of the
+cleared characteristic. -/
+theorem PrimitiveTwoBlockDifferentialCharacteristic.irreducible_factor_right_vars_eq
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (P : DifferentialPolynomial Unit G) (hPirreducible : Irreducible P)
+    (C : PrimitiveTwoBlockDifferentialCharacteristic G hG hy P)
+    {A : DifferentialPolynomial (Unit ⊕ Unit) F}
+    (hAirreducible : Irreducible A) (hAdiv : A ∣ C.polynomial) :
+    (differentialPolynomialTwoBlockEquiv F A).vars = P.vars := by
+  classical
+  apply Finset.Subset.antisymm
+  · let R := DifferentialPolynomial Unit F
+    let K := FractionRing R
+    let φ : G →ₐ[F] K := differentialIntermediateToJetFraction G hG hy
+    let A₀ := differentialPolynomialTwoBlockEquiv F A
+    let C₀ := differentialPolynomialTwoBlockEquiv F C.polynomial
+    have hA₀div : A₀ ∣ C₀ :=
+      map_dvd (differentialPolynomialTwoBlockEquiv F) hAdiv
+    have hC₀ne : C₀ ≠ 0 :=
+      (differentialPolynomialTwoBlockEquiv F).injective.ne C.ne_zero
+    have hfactorVars : A₀.vars ⊆ C₀.vars :=
+      mvPolynomial_vars_subset_of_dvd hA₀div hC₀ne
+    have hcharacteristicVars : C₀.vars = P.vars := by
+      have hvars := congrArg MvPolynomial.vars C.clearing
+      rw [MvPolynomial.vars_map_of_injective (IsFractionRing.injective R K),
+        MvPolynomial.vars_C_mul (C.scalar : K) C.scalar.ne_zero,
+        MvPolynomial.vars_map_of_injective φ.injective] at hvars
+      exact hvars
+    rw [hcharacteristicVars] at hfactorVars
+    simpa [A₀] using hfactorVars
+  · exact C.irreducible_factor_right_vars G hG hy P hPirreducible
+      hAirreducible hAdiv
 
 /-! ## Primitive products needed by the terminal reciprocity step -/
 

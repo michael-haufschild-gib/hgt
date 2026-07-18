@@ -180,7 +180,42 @@
   Chebyshev's sum inequality).  So an explicit family with small INDIVIDUAL defect now suffices;
   no uniformity over the span has to be proved by hand.
 
-  ### L6a GAUSSIAN/HERMITE SUB-PLAN (findings verified 2026-07-18, start here)
+  ### L6a GAUSSIAN: **BUILT** (`HTGeometry/GaussianSchwartz.lean`, axiom-clean)
+
+  The blocking object now exists.  `gaussianSchwartzReal : 𝓢(ℝ, ℝ)` and
+  `gaussianSchwartz : 𝓢(ℝ, ℂ)` for `x ↦ exp(−πx²)`.  The `decay'` field is discharged by:
+  `exists_poly_iteratedDeriv_gaussReal` (every iterated derivative is a polynomial multiple of
+  the Gaussian — induction via `hasDerivAt_poly_mul_gaussReal`, `p ↦ p' − C(2π)·X·p`),
+  `abs_pow_two_mul_gaussReal_le` (`|x|^{2j} e^{−πx²} ≤ j!/π^j`, from a SINGLE term of the
+  exponential series via `Real.pow_div_factorial_le_exp` — no limits needed), and
+  `exists_bound_poly_mul_gaussReal` (polynomial induction).  Complex version via
+  `Complex.ofRealLI.norm_iteratedFDeriv_comp_left` (isometry preserves derivative norms).
+
+  Then the payoff chain, all proved:
+  * `fourierIntegral_gaussianSchwartz` — `𝓕 (e^{−πx²}) = e^{−πx²}` pointwise (`b = 1` case of
+    `fourier_gaussian_pi`).
+  * `fourier_gaussianSchwartz` — the same as Schwartz maps.
+  * **`fourier_gaussianSchwartz_toLp : 𝓕 (gaussianSchwartz.toLp 2) = gaussianSchwartz.toLp 2`**
+    — the Gaussian's `L²` class is Fourier-invariant, via `SchwartzMap.toLp_fourier_eq`.
+    Since the project's `fourierUnitary` IS `Lp.fourierTransformₗᵢ`, this is directly usable.
+
+  ### L6a TAIL: **BUILT** (`HTGeometry/GaussianTailBound.lean`, axiom-clean)
+
+  `integral_Ioi_gauss_sq_le (ha : 0 < a) : ∫_{Ioi a} e^{−2πx²} ≤ e^{−2πa²}/(4πa)` — an EXPLICIT
+  exponentially-small tail, proved by `1 ≤ x/a` on `x ≥ a` plus the exact first moment
+  `integral_Ioi_id_mul_gauss : ∫_{Ioi a} x e^{−2πx²} = e^{−2πa²}/(4π)` (antiderivative
+  `−e^{−2πx²}/(4π)`, via `integral_Ioi_of_hasDerivAt_of_tendsto`).  Also
+  `tendsto_integral_Ioi_gauss_sq` (tail → 0).  NOTE the exponent: the L² mass of the Gaussian
+  `e^{−πx²}` involves `e^{−2πx²}`, so the tail is `e^{−2πa²}` — this is the clock, and is exactly
+  why `ClockEnvelope` was generalized off the hard-coded `e^{−4πλ²}`.
+
+  REMAINING for the L6a envelope: dilate/translate to the aperture scale, truncate to `[−a,a]`,
+  assemble `n+1` near-orthonormal such functions,
+  feed `OrthonormalTrialSpan.norm_sq_apply_le_of_orthonormal_span`, then
+  `evenProlateLeakageValue_le_of_form_trial`.  Higher `n` needs `𝓕 h_n = (−i)^n h_n`, provable
+  by induction with the creation operator `(x − d/dx)` reusing the polynomial induction above.
+
+  ### Original sub-plan (findings verified 2026-07-18)
 
   The project's `fourierUnitary` is *definitionally* `MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ`
   (`SoninL2Model.lean:85`).  Mathlib therefore already supplies the bridge:
@@ -210,7 +245,22 @@
   induction that produces the Hermite functions — build them together, not separately.
   Useful precedents for the `decay'` pattern: `SchwartzSpace/Basic.lean:566` and `:600`.
 
-  GAP CONFIRMED BY SEARCH: mathlib has **no** Gaussian as a `SchwartzMap` (no `gaussianSchwartz`,
+  GAP CONFIRMED EXHAUSTIVELY (searched from both sides 2026-07-18): no Gaussian `SchwartzMap`
+  anywhere in mathlib (searched `Mathlib` for `Schwartz.*[Gg]aussian`, for files mentioning both
+  a Gaussian expression and `SchwartzMap`, and `NumberTheory/` for `SchwartzMap` — all empty);
+  and NO Fourier relation in this project's own Hermite files
+  (`HermiteOscillatorEigen`, `SpurHermite`, `HermiteTwoTerm`, `ScaledHermiteContradiction`,
+  `XiGuinandWeilFiniteHermiteCriterion` contain no `fourier`), nor any Gaussian in
+  `SoninL2Model`.  Nothing to reuse from either direction: the object must be built.
+
+  USEFUL PATTERN FOUND: `HasCompactSupport.toSchwartzMap` (`SchwartzSpace/Basic.lean:559`) shows
+  the idiom for discharging `decay'` — but it does NOT apply here, because the trial estimate
+  needs the *untruncated* Gaussian's Fourier identity (the truncated one is not even smooth).
+  The `decay'` proof therefore needs a genuine bound on `iteratedFDeriv ℝ n` of the Gaussian;
+  in one real dimension, route it through `iteratedDeriv` (Hermite polynomial × Gaussian) and the
+  `norm_iteratedFDeriv`/`iteratedDeriv` comparison, then `‖x‖^k · poly · e^{−πx²}` bounded.
+
+  Legacy note: mathlib has **no** Gaussian as a `SchwartzMap` (no `gaussianSchwartz`,
   nothing Schwartz-shaped in `SpecialFunctions/Gaussian/`).  So the one construction to build is
 
 ```text

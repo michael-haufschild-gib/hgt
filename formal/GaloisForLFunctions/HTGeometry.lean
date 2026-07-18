@@ -424,6 +424,8 @@ import GaloisForLFunctions.HTGeometry.GradedSpectrumCancellation
 import GaloisForLFunctions.HTGeometry.GreedySingularValues
 import GaloisForLFunctions.HTGeometry.GreedyCourantFischer
 import GaloisForLFunctions.HTGeometry.OrthonormalTrialSpan
+import GaloisForLFunctions.HTGeometry.GaussianSchwartz
+import GaloisForLFunctions.HTGeometry.GaussianTailBound
 import GaloisForLFunctions.HTGeometry.HilbertSchmidt
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtAlgebra
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact

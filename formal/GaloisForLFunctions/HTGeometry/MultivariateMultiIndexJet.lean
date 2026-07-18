@@ -1,0 +1,73 @@
+import GaloisForLFunctions.HTGeometry.MultivariatePolynomialJetCoefficient
+
+/-!
+# Canonical multivariate jets indexed by multi-indices
+
+Mixed partials are intrinsically indexed by finitely supported coordinate multiplicities, whereas
+the Frechet-jet API evaluates an ordered finite word of directions.  This file chooses one
+canonical word for each multi-index and proves that its multiplicity is exactly the prescribed
+index.  It then packages the corresponding continuous jet observation and the finite polynomial
+packet-surjectivity theorem without introducing duplicate variables for permutations of a word.
+-/
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-- Slots of a coordinate multi-index: coordinate `i` contributes exactly `a i` slots. -/
+abbrev MultiIndexSlot {d : ℕ} (a : Fin d →₀ ℕ) := Σ i, Fin (a i)
+
+/-- A canonical ordered coordinate word representing a multi-index. -/
+def multiIndexWord {d : ℕ} (a : Fin d →₀ ℕ) :
+    Fin (Fintype.card (MultiIndexSlot a)) → Fin d :=
+  fun j ↦ ((Fintype.equivFin (MultiIndexSlot a)).symm j).1
+
+/-- The canonical word contains every coordinate with exactly its prescribed multiplicity. -/
+theorem wordMultiplicity_multiIndexWord {d : ℕ} (a : Fin d →₀ ℕ) :
+    wordMultiplicity (multiIndexWord a) = a := by
+  classical
+  ext i
+  simp only [wordMultiplicity, Finset.sum_apply, multiIndexWord]
+  rw [(Fintype.equivFin (MultiIndexSlot a)).symm.sum_comp]
+  simp [MultiIndexSlot]
+
+/-- The continuous mixed-partial observation indexed by a coordinate multi-index. -/
+def multiIndexJetEvalCLM {d : ℕ} (x : Fin d → ℂ) (a : Fin d →₀ ℕ) :
+    MultivariateEntire d →L[ℂ] ℂ :=
+  orderedPartialJetEvalCLM x (multiIndexWord a)
+
+@[simp]
+theorem multiIndexJetEvalCLM_apply {d : ℕ}
+    (x : Fin d → ℂ) (a : Fin d →₀ ℕ) (f : MultivariateEntire d) :
+    multiIndexJetEvalCLM x a f =
+      orderedPartialJetEvalCLM x (multiIndexWord a) f :=
+  rfl
+
+/-- A polynomial mixed partial is its centered coefficient times the exact multi-index
+factorial. -/
+theorem multiIndexJetEvalCLM_mvPolynomial_eq_centered_coeff {d : ℕ}
+    (P : MvPolynomial (Fin d) ℂ) (x : Fin d → ℂ) (a : Fin d →₀ ℕ) :
+    multiIndexJetEvalCLM x a (mvPolynomialMultivariateEntire P) =
+      MvPolynomial.coeff a (mvPolynomialBaseTranslation x P) * multiIndexFactorial a := by
+  rw [multiIndexJetEvalCLM, orderedPartialJetEvalCLM_mvPolynomial_eq_centered_coeff,
+    wordMultiplicity_multiIndexWord]
+
+/-- **Arbitrary finite multi-index jet packet surjectivity.** At finitely many distinct points,
+every mixed partial below a prescribed total order is realized by one multivariable polynomial. -/
+theorem exists_mvPolynomial_multiIndexJetEvalCLM_eq_arbitrary
+    {d : ℕ} {I : Type*} [Finite I]
+    (w : I → Fin d → ℂ) (hw : Function.Injective w)
+    (m : I → ℕ) (jet : I → (Fin d →₀ ℕ) → ℂ) :
+    ∃ P : MvPolynomial (Fin d) ℂ,
+      ∀ i (a : Fin d →₀ ℕ),
+        Finsupp.degree a < m i →
+          multiIndexJetEvalCLM (w i) a (mvPolynomialMultivariateEntire P) = jet i a := by
+  obtain ⟨P, hP⟩ := exists_mvPolynomial_orderedPartialJetEvalCLM_eq_arbitrary w hw m jet
+  refine ⟨P, fun i a ha ↦ ?_⟩
+  simpa [multiIndexJetEvalCLM, wordMultiplicity_multiIndexWord] using
+    hP i (Fintype.card (MultiIndexSlot a)) (multiIndexWord a)
+      (by simpa [wordMultiplicity_multiIndexWord] using ha)
+
+end
+
+end GaloisForLFunctions.HTGeometry
