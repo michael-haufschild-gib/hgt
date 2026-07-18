@@ -1596,3 +1596,36 @@ boundary-Fourier (prime) axis whose EXPONENTIAL TYPE is the off-line displacemen
 PROGRAM'S QUESTION IN FINAL FORM: **what unconditional arithmetic (Hilbert-reciprocity level
 closure) bounds the TYPE of nu?** Next: compute the finite-source-level lambda-representation
 of nu via the weighted EF; referee queue: cont. 36-37.
+
+## 2026-07-18 session 2 (cont. 38) — nu identified and verified; equivalence honestly
+## downgraded (Montgomery cousin); three bridges kept; the lambda = 0 diagonal is the target
+
+**[DERIVED+VERIFIED]** `nu(lambda) = (1/2pi)[|dN-hat(lambda)|^2 + |dN-hat(-lambda)|^2]` — the
+POWER SPECTRUM of the zero measure (Poisson-extension/Plancherel derivation; rank-2 exact
+match with the Krein formulas). Source side (Weil EF): nu = the von-Mangoldt
+pair-autocorrelation (sites `log(m/n)`, weights `Lambda(m)Lambda(n)/sqrt(mn)`, pole/arch
+crosses). **UNIQUE-REPRESENTATION LEMMA** (unique factorization): each off-diagonal site
+weight is FINITE and stabilizes EXACTLY once both prime powers <= S — ALL level-dependence
+sits at the `lambda = 0` diagonal (`sum_{n<=S} Lambda(n)^2/n`, arch-regularized). Final
+arithmetic form: RH ⟺ the arch-corrected von-Mangoldt pair-autocorrelation has exponential
+type 0 (after pole subtraction; per-box: type = 2 max|Im gamma|).
+
+**[NOVELTY GATE FIRED — equivalence reduces-to-known]** nu >= 0 is Montgomery's F-positivity;
+EF-squared LambdaLambda sums = Montgomery 1973 / Goldston-Montgomery 1987 (F(alpha,T) is the
+height-AVERAGED, T-normalized cousin); "off-line zero => exponential spectral mode" is the
+classical psi(x)-error criterion squared. The equivalence is DERIVABLE — downgraded. **KEPT
+(bridges, genuinely absent from literature):** (a) the single-box UNAVERAGED Krein reading —
+type-0 as complete-monotone depth-0 continuation of the cross-height Hankel kernel; (b) exact
+finite-level site stabilization — the precise object a reciprocity-level-closure bound must
+control; (c) the fusion `type = 2d = p^{2d}` epsilon_S asymmetry.
+
+**[REFEREE cont. 36-37 — NO GAPS]** All formulas re-derived independently (Hamiltonian ODE,
+gauge, clock; Clark mass both configurations; F(sigma) by residues; Bernstein densities by
+inverse Laplace; violation window solved exactly). Hygiene absorbed: add `c_max > |d|`
+hypothesis at promotion; the verification record is weighted_ef_fix.py (the 4 False lines in
+weighted_ef.py were sympy conjugate artifacts, cleared).
+
+**[NEXT — the lambda = 0 diagonal]** The diagonal is the ONLY level-moving site: collide it
+with the Clark mass t(c) (both are the "mass at the origin" of their frames); and restate
+type-0 as PSD of SHIFTED HANKEL matrices in the stabilized site weights (the exact-identity
+certificate class, on the arithmetic side at last).
