@@ -1245,3 +1245,39 @@ Hostile guards: (i) transparency test on the bifiltration (does the (c,k)-data d
 collision configurations, or is the c-scan again continuous?); (ii) the k-threshold is
 divisor-dependent — the certificate may assume, not select (kill-condition discipline);
 (iii) referee the cont.-27 derivations (scripts: rank2_sfiltration_check.py V1-V8).
+
+## 2026-07-18 session 2 (cont. 28) — bifiltration constructed+verified; recovery theorem exact;
+## referee confirms cont. 26-27 with sharpened circularity and pinned coordinates
+
+**[CONSTRUCTED+VERIFIED]** (c,k)-bifiltration defined (H_k(B_c) = leading k x k of
+`h_jl = (2 pi i)^{-1} ∮ u^{j+l+1} g_B du`); H_2 = the threatened block exactly; finite data has
+ZERO c-dependence on the isolation range; k lives on finite packet data, c only on divergent
+edge structure; sole coupling = admissibility `c > |d|`. **RECOVERY THEOREM (exact, verified
+at S = 2 for two c-values, pole loops branch-certified, no numerics-as-evidence):** packet
+value = `sum_E rho_S(E)` with gauge loop zero — the ENTIRE finite Hankel data is
+source-computable via one remainder integral per (P,B) at ANY single S including S = 0.
+HONEST: recovery adds computability, ZERO sign leverage (it IS the Lean value relation's
+residue identity). Transparency: nothing new lost (fixed finite families fall to the collision
+no-go; survivor = the closed cone over all (P,B), unchanged).
+
+**[REFEREE cont. 26-27 — ALL CONFIRMED, with repairs]** (i) Two flaky sympy checks (V8,
+CHECK3-pole) were log-branch collapse failures, NOT math errors — independently proved
+(polynomial-part telescoping + winding 2*pi*i; 40-digit agreement; referee_pole_recheck.py).
+(ii) Circularity mechanism SHARPENED: Landau pins the RAW von Mangoldt Abel abscissa at 1 via
+the s = 1 pole (zero-independent); the arch-combined trace has s = 1 REMOVABLE (cont. 26), and
+the pole-subtracted series' Abel/Riesz obstruction is exactly `sum_rho m_rho Gamma(rho - s)
+y^{s - rho}` with abscissa `sup Re rho` — the circularity verdict STANDS, pole-subtraction
+caveat added. (iii) `c > |d|` CONFIRMED with coordinate pinning: `c` is the s-frame strip
+half-WIDTH (= the separation lemma's `w`, admissible window already forcing `w > |d|`); the
+s-frame half-HEIGHT is d-unconstrained. Rate dominance `S^{c-d} -> infinity` follows.
+
+**[PRODUCTION CORE — FINAL RESTATED FORM]** Prove `det H_2(B) >= 0` on innermost boxes
+(assume-not-select), where `h_jl` are explicit continued-integral values — equivalently
+produce a Gram/Bezoutian representation of `m^2 * W~(0) * disc(W~)` from source boundary data.
+Same as the classical Weil wall in ONE respect (the sign sits in continued `-zeta'/zeta` edge
+values with no closed form); DIFFERENT in two earned respects: (i) localization — one 2x2
+determinant per innermost box, not a global functional; (ii) the strict rate-domination
+hypothesis `S^{1/2+c} > S^{1/2+d}` from containment — structure the global frame never had.
+**[NEXT MOVE]** Construct the measure: write `h_00, h_01, h_11` on one edge as Binet/Gauss
+(arch) + sinh-weighted prime integrals and hunt the 2x2 PSD completion absorbing the
+`disc(W~)` sign — attack 2's shape extended to the full trace, on the localized target.
