@@ -984,3 +984,39 @@ is line-real; register as the (c)-repair and referee it) — with the (c)-repair
 Consequence: line-real sqrt-disc family for all admissible boxes AND the multiple-off-line
 chain together imply RH; the tower-splice equivalence is complete modulo referee of this proof
 and closure of the (long-standing) multiple-zero chain.
+
+## 2026-07-18 session 2 (cont. 21) — separation SIMPLIFIED to single-case squarefree form;
+## L3-descent formulated; T-bar = Meyer's *-operation (phase-blind) — the mu_8 injection point
+## located
+
+**[SEPARATION LEMMA — REFEREED, CORRECTED, SIMPLIFIED]** (1) (h, w) order fixed: FIRST
+`0 < h < min height gap` (isolates the height among all occupied heights), THEN
+`w ∈ (b_min - 1/2, min(d_next-at-this-height, 1/2))`. (2) Generic edges confirmed; definition
+pin: "admissible" imposes NO size floor. (3) The (c)-repair as sketched was DIVISOR-SELECTED
+(kill-condition breach, confirmed); the squarefree restatement WORKS and is stronger:
+`W~ = W_B / gcd(W_B, W_B')` is source-computable (subresultants on Newton-sum coefficients),
+`disc(W~) ≠ 0` automatically, `sign disc(W~) = (-1)^{r~_2}` with `r~_2` = DISTINCT off-line
+pairs; in the isolated innermost box `r~_2 = 1` ALWAYS — simple or multiple, with or without
+co-high multiple on-line zeros. Cases (b) and (c) are ABSORBED; the multiple-off-line
+delegation is RELEASED. **Single-case lemma [PROVED, refereed]: an off-line zero exists =>
+some admissible line-symmetric box has `disc(W~_B) < 0`.** Contrapositive: nonnegativity of
+the squarefree box discriminants (one source-computable real number per box) implies RH via
+the (completed) tower splice. Next hostile target: coherence of the `W~` family across
+multiplicity walls (the subresultant case split as box parameters vary).
+
+**[L3-DESCENT LEMMA — FORMULATED, partially verified]** Correction: the zero part is
+`H^0_- = (H_+ + H_-)/H_+` (pole part is the other quotient). Lemma (a)-(c) at formal level:
+`T = sigma ∘ conj` is bounded antilinear, `T^2 = 1`, `T lam_g T = |g| lam_{g^{-1}}`;
+`T(H_±) = H_±` (all steps verified against Meyer §5.4-5.6); T descends to `T-bar` on the zero
+part, induced by `J ∘ conj` on `H_-` — **which is exactly Meyer's *-operation (§5.6), where
+"GRH ⟺ *-reality" is already Meyer's equivalence**: the naive L3 signature identity would be a
+[BRIDGE]/rediscovery. Fiber structure: `T-bar` fixes exactly critical-line fibers (canonical
+real form `V_omega^R`, `dim_R = mult`), mirror-pairs off-line fibers. Checklist: V1 projector
+identity (mechanical, Meyer's ell^1-homomorphism); V2 bornology (citation); V4 consistent.
+**[V3 — THE OBSTACLE AND THE INJECTION POINT]** `T-bar` is PHASE-BLIND: `H_+` maps to zero in
+`H^0_-`, so the metaplectic phase `rho(w~) = e^{-i pi/4} F` never reaches the zero fibers
+through the descended involution. The mu_8/Weil-index data must enter through the IDEAL
+PRESENTATION of `H_+ ∩ H_-` (Meyer Lemma 5.10 / Thm 5.11 proof) — the zero-order ideal
+filtration. NEXT EXACT TARGET: construct the mu_8-graded comparison on `V_omega` via that
+filtration — the datum Meyer's framework provably lacks, and the precise place where the
+arithmetic phases (reciprocity law, MQ2 local indices) can act on zero fibers.
