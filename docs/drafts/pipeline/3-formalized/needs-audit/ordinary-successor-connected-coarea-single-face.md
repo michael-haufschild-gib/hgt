@@ -1,7 +1,7 @@
 # Ordinary-successor shells expose one connected Boolean face and preserve the survival ramp
 
 - **ID:** `ordinary-successor-connected-coarea-single-face`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized` / needs-audit
 - **Type:** THEOREM (paper)
 - **Source:** `physical-cutoff-connected-coarea-affine-defect.md` · `(CJ1)`--`(CJ6)`;
   `critical-multiplicative-compensated-cancellation-rh.md` · `(35m55)`, `(35m63)`--`(35m66)`,
@@ -30,7 +30,8 @@ shells, not an exponential number of faces at one successor and not a local succ
 
 - [x] 0 -> 1 in-progress: exact source-pure statement and hostile models fixed
 - [x] 1 -> 2 fully-proven: dependency-closed finite proof below
-- [ ] 2 -> 3 formalized: exact Lean declarations, narrow build, and axiom audit
+- [x] 2 -> 3 formalized: exact Lean declarations, narrow build, and axiom audit — see
+      `formal/GaloisForLFunctions/RHTower/PhysicalCutoffConnectedCoareaSuccessor.lean`
 - [ ] 3 -> 4 publication-ready: not proposed; parent theory and significance audit remain
 
 ## Definitions
@@ -231,8 +232,78 @@ and quadratic survival-product classification.  Prove, in order:
 The exact module must receive a direct foreground build and `/tmp` `#print axioms` audit before
 Stage 3.  No analytic estimate or conditional AC25 hypothesis belongs in the file.
 
+## Lean status
+
+`[FORMALIZED]` `formal/GaloisForLFunctions/RHTower/PhysicalCutoffConnectedCoareaSuccessor.lean`,
+namespace `RHTower`, imports only `RHTower.PhysicalCutoffConnectedCoarea`.  Direct foreground build
+clean with zero warnings; `/tmp` `#print axioms` audit of all 19 declarations reports only
+`propext`, `Classical.choice`, `Quot.sound` (`primitive_growth_of_constant_step` needs only
+`propext`, `Quot.sound`).  No `sorry`, `axiom`, `opaque`, `unsafe`, and no conditional AC25 or
+analytic hypothesis anywhere in the file.
+
+Shell definition: `aliasEqualityShell q s ν H` is `Sigma_(S,H)` of `(OS2)` — the signed Boolean sum
+over subsets with `q product(T) = H+1`.
+
+- `(OS3)` `truncatedAliasSum_succ_sub` (low sum increases by the shell),
+  `truncatedAliasHighSum_succ_sub` (high tail decreases by it),
+  `physicalCutoffCoareaField_succ_sub` (oriented field), and
+  `physicalCutoffCoareaTrace_succ_sub` (joined trace, `J Sigma^theta - beta(Sigma^chi)`).
+- `(OS4)` `connectedCoareaForcing` defines `F_(p,S)^H(q)` as the exact source term of the existing
+  `physicalCutoffCoareaTrace_insert`; `physicalCutoffCoareaTrace_insert_eq_forcing` records that
+  identification and `connectedCoareaForcing_succ_sub` is the mixed prime/successor Stokes law.
+- `(OS5)` `aliasEqualityShell_eq_zero`, `aliasEqualityShell_eq_single`, and the dichotomy
+  `aliasEqualityShell_single_face` under an explicit subset-product injectivity hypothesis;
+  `prod_injOn_of_prime` supplies that hypothesis from unique factorization for distinct ordinary
+  primes, giving `aliasEqualityShell_single_face_of_prime`.  `moebius_prod_eq_neg_one_pow` proves
+  the face sign identification `(-1)^|T| = mu(product(T))` by Moebius multiplicativity.
+- `(OS6)`--`(OS8)` reuse the existing `physicalCutoffCoareaAffineDrift_eq_neg_survival`;
+  `physicalCutoffCoareaAffineDrift_succ_sub` is the stationarity `(OS7)`,
+  `affineCutoffCombination_succ_sub` is `(OS8)`, `aliasEqualityShell_base` proves the base shell
+  at `H = q-1` equals `1` (the empty face), and `affineCutoffCombination_stationary_iff` proves
+  the uniqueness claim: the combination is cutoff-stationary for *every* `H` exactly on `beta = -alpha`.
+- `(OS9)` `quadraticSurvivalRamp_stationary_and_ne_zero` combines successor-stationarity with
+  nonvanishing of the drift for even gaps, via the existing
+  `quadraticCongruencePhysicalCutoffAffineDrift_eq_zero_iff`.
+- `(OS10)` `primitive_growth_of_constant_step` is the exact finite telescoping;
+  `no_bounded_primitive_of_ne_zero` upgrades it to the no-go — over `ℂ`, a uniformly bounded
+  successor primitive of a nonzero constant ramp on a cofinal aperture is contradictory.
+
+Two deviations from the "Exact Lean plan" above, both recorded rather than silently taken:
+
+1. The plan's names `physicalCutoffLow_succ_sub`, `physicalCutoffHighSigned_succ_sub`, and
+   `referenceConnectedAffineDefect_eq_neg_survival` were not introduced.  The corresponding objects
+   already exist in the corpus as `truncatedAliasSum`, `truncatedAliasHighSum`, and
+   `physicalCutoffCoareaAffineDrift(_eq_neg_survival)`, so the successor laws are stated directly on
+   those rather than duplicated under new names.
+2. `(OS9)` is formalized as *nonvanishing* of the survival drift for even gaps, not as strict
+   positivity `V_S(h) > 0`.  The corpus carries this classification with `ℂ`-valued densities, where
+   `> 0` is not the available statement; `≠ 0` is the faithful transfer and is exactly what the
+   `(OS10)` no-go consumes.  A real-valued restatement of the density chain would be needed for
+   literal strict positivity.
+
+The terminal long-range coherence `(AC25)` is untouched and remains open; nothing in this module
+bears on it.
+
+## Next generative move
+
+The formalized object now available is `connectedCoareaForcing` together with its Stokes law: the
+whole cutoff dependence of the connected forcing is a sum of *single* centered faces
+`mu(d) beta((chi_p - theta_p) chi_d)` indexed by divisors `d | Q_S`.  `[CONJECTURE]` Because the
+face index runs over divisors with Moebius signs and the shells are disjoint in `H`, the map
+`H |-> ` (shell face) is a *bijective* relabelling of `divisors(Q_S)` by conductor, so the long-range
+sum in `(AC25)` is a Moebius-weighted sum over an interval of conductors rather than over subsets.
+The object to construct next is that conductor-indexed reindexing as a Lean equivalence
+`{H : shell nonempty} ≃ divisors Q_S`, which converts the terminal coherence question from a
+Boolean-cube sum into a one-dimensional signed divisor sum — a strictly smaller combinatorial
+target than the current statement, and the natural place to test whether the Fourier ridges of the
+hostile audit survive reindexing.
+
 ## Log
 
 - 2026-07-18 -- Order-averaged/Bianchi cancellation and positive coarea norms rejected as
   producers; ordinary-successor shell localization and the stationary survival classification
   extracted and paper-proved.
+- 2026-07-18 -- `(OS3)`--`(OS10)` formalized unconditionally in
+  `RHTower/PhysicalCutoffConnectedCoareaSuccessor.lean`; foreground build clean, 19-declaration
+  axiom audit clean; card moved to `3-formalized/needs-audit`.  Parent-theory and priority audit
+  still open, and `(AC25)` untouched.

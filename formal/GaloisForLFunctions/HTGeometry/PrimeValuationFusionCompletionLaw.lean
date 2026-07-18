@@ -22,6 +22,25 @@ noncomputable section
 
 universe u
 
+local instance fusionCompletionUpperEndAnalyticDomain : IsDomain upperEndAnalyticSubring :=
+  isDomain_upperEndAnalyticSubring
+
+local instance fusionCompletionUpperEndMeroComplexAlgebra : Algebra ℂ upperEndMeroField :=
+  upperEndComplexToMero.toAlgebra
+
+local instance fusionCompletionUpperEndMeroDifferential : Differential upperEndMeroField :=
+  upperEndMeroFieldDifferential
+
+local instance fusionCompletionComplexDifferential : Differential ℂ where
+  deriv := 0
+
+local instance fusionCompletionUpperEndDifferentialAlgebra :
+    DifferentialAlgebra ℂ upperEndMeroField :=
+  ⟨fun c => by
+    rw [upperEndMero_deriv_complexConstant c]
+    change (0 : upperEndMeroField) = algebraMap ℂ upperEndMeroField 0
+    rw [map_zero]⟩
+
 @[simp]
 theorem pointedSupport_one
     {ι : Type u} [Fintype ι]
@@ -37,7 +56,9 @@ theorem pointedUnion_one_right
     (z : ∀ i, A i) :
     pointedUnion A z (fun _ => 1) = z := by
   funext i
-  simp [pointedUnion]
+  by_cases hi : z i = 1
+  · simp [pointedUnion, hi]
+  · simp [pointedUnion, hi]
 
 /-- **Neutral-source creation, formal carrier version.**  The complete next layer is relatively
 HT over the complete earlier prefix and has exact residue-state rank.  The prefix tower is strict.
@@ -239,14 +260,24 @@ theorem primeResidueValuationUpperEndFusionCompletionField_derivationClosed
       (primeResidueValuationUpperEndFusionCompletionField A y) := by
   exact GaloisForLFunctions.derivationClosed_differentialAdjoin ℂ _
 
+/-- The constant-fiber valuation grid is canonically a product. -/
+def primeResidueValuationInteractionGridIndexEquiv
+    (d : ℕ) {ι : Type u} (A : ι → Type u) :
+    PrimeResidueValuationInteractionGridIndex d A ≃ Fin d × (∀ i, A i) where
+  toFun x := (x.1, x.2)
+  invFun x := ⟨x.1, x.2⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
 /-- Exact cardinality of a finite valuation-depth by residue-state rectangle. -/
 theorem primeResidueValuationInteractionGridIndex_card
     (d : ℕ) {ι : Type u} [Fintype ι]
     (A : ι → Type u) [∀ i, Fintype (A i)] :
     Nat.card (PrimeResidueValuationInteractionGridIndex d A) =
       d * ∏ i, Fintype.card (A i) := by
-  rw [Nat.card_eq_fintype_card, Fintype.card_sigma]
-  simp [Fintype.card_pi, nsmul_eq_mul]
+  rw [Nat.card_congr (primeResidueValuationInteractionGridIndexEquiv d A),
+    Nat.card_prod, Nat.card_fin, Nat.card_pi]
+  simp only [Nat.card_eq_fintype_card]
 
 /-- **Fusion-completion lower bound.**  Every carrier-fusion complete field containing the
 complete depth-zero layer contains, for every `d`, a jointly differentially independent analytic

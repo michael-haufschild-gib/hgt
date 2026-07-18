@@ -109,6 +109,28 @@ theorem tendsto_confocalDefect_cofinite_zero_of_transverseDefect
       confocalDefect_le_scale_mul_transverseDefect hM hRM (hbound i))
     hscale
 
+/-- The threshold `R>M` is optimal uniformly over the positively oriented source class.  Below
+the source radius, the positive real endpoint has zero transverse defect but superunit normalized
+affine amplitude. -/
+theorem below_radius_positive_node_has_zero_defect_and_superunit_amplitude
+    {M R : ℝ} (hR : 0 < R) (hRM : R < M) :
+    transverseDefect (M : ℂ) = 0 ∧
+      1 < ‖(M : ℂ) / (R : ℂ)‖ + ‖1 - (M : ℂ) / (R : ℂ)‖ := by
+  have hM : 0 < M := hR.trans hRM
+  constructor
+  · rw [transverseDefect, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos hM, Complex.ofReal_re]
+    ring
+  · rw [affineAmplitude_eq_one_add_confocalDefect_div hR]
+    have hdefect : confocalDefect R (M : ℂ) = 2 * (M - R) := by
+      rw [confocalDefect, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hM]
+      have hsub : (R : ℂ) - (M : ℂ) = ((R - M : ℝ) : ℂ) := by push_cast; ring
+      rw [hsub, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_neg (sub_neg.mpr hRM)]
+      ring
+    rw [hdefect]
+    exact lt_add_of_pos_right 1 (div_pos (by positivity) hR)
+
 end
 
 end HTGeometry

@@ -127,8 +127,9 @@ theorem filteredVonMangoldtUpperEndCarrier_hypertranscendentalOver :
     HypertranscendentalOver upperEndRationalCoordinateField
       filteredVonMangoldtUpperEndCarrier := by
   rw [hypertranscendentalOver_iff_differentialIndependent_singleton]
-  simpa [filteredVonMangoldtUpperEndCarrier] using
-    filteredVonMangoldtUpperEndCarrier_differentialIndependent
+  have hunit := filteredVonMangoldtUpperEndCarrier_differentialIndependent.comp
+    (fun _ : Unit ↦ (0 : Fin 1)) (fun _ _ _ ↦ Subsingleton.elim _ _)
+  simpa [Function.comp_def, filteredVonMangoldtUpperEndCarrier] using hunit
 
 /-- Underlying upper-end germ of the filtered von Mangoldt L-series. -/
 def filteredVonMangoldtUpperEndGerm : Germ upperEndFilter ℂ :=

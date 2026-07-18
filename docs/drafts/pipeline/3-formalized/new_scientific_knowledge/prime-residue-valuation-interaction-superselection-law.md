@@ -501,4 +501,16 @@ only `propext`, `Classical.choice`, and `Quot.sound`.
 - [x] preliminary external parent-theory audit
 - [ ] independent specialist priority review
 - [ ] strengthen the analytic coefficient field from `C` to `C(s)`
-- [ ] Stage 4 paper centered on the external-fusion law
+- [x] Stage 4 paper centered on the stronger universal fusion-completion law
+
+## Publication realization
+
+The external-fusion theorem is used as the sharp frontier clause of the stronger universal
+fusion-completion law.  The standalone paper is:
+
+- `docs/drafts/pipeline/4-publication-ready/finite-fusion-infinite-hypertranscendence/main.tex`
+- `docs/drafts/pipeline/4-publication-ready/finite-fusion-infinite-hypertranscendence/main.pdf`
+
+Its main theorem quantifies over every carrier-fusion complete intermediate field, proves forced
+packets of exact rank `d * product_i |A_i|` at every finite depth, and identifies the canonical
+minimal derivation-closed completion.

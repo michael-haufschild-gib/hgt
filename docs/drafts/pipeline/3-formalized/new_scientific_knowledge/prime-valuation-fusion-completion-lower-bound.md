@@ -1,9 +1,9 @@
 # Prime-valuation fusion-completion lower bound
 
 - **ID:** `prime-valuation-fusion-completion-lower-bound`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** GENERAL HT MASTER THEOREM / UNIVERSAL COMPLETION LAW
-- **Scientific status:** `[PAPER PROOF COMPLETE] [NOVELTY PROVISIONAL: HIGH]`
+- **Scientific status:** `[UNCONDITIONALLY FORMALIZED] [NOVELTY PROVISIONAL: HIGH]`
 - **Parents:**
   `../../3-formalized/new_scientific_knowledge/prime-residue-valuation-interaction-superselection-law.md`,
   `../../3-formalized/new_scientific_knowledge/prime-residue-analytic-source-creation-tower.md`
@@ -232,16 +232,32 @@ Create one connector module proving:
 - the universal unbounded-rank completion theorem;
 - the actual-prime totient specialization.
 
-No new foundational theorem is required.  All analytic independence, fusion, tail-completeness,
-and actual-prime ingredients already exist in the formal corpus.
+The connector is implemented in
+`formal/GaloisForLFunctions/HTGeometry/PrimeValuationFusionCompletionLaw.lean` and imported by the
+HTGeometry umbrella.  No new foundational theorem was required; the analytic independence,
+fusion, tail-completeness, and actual-prime ingredients were reused from the formal corpus.
 
 ## Gates
 
 - [x] dependency-closed paper proof
 - [x] internal corpus collision audit
 - [x] known-Hadamard-nonclosure boundary separated
-- [ ] exact connector formalization
-- [ ] one targeted cached verification
-- [ ] axiom audit
-- [ ] standalone Stage 4 paper
+- [x] exact connector formalization
+- [x] one targeted cached verification
+- [x] axiom audit
+- [x] standalone Stage 4 paper
 
+## Verification record
+
+- Exact connector target:
+  `lake build GaloisForLFunctions.HTGeometry.PrimeValuationFusionCompletionLaw` — passed.
+- Direct touched-file check:
+  `lake env lean GaloisForLFunctions/HTGeometry/PrimeValuationFusionCompletionLaw.lean` — passed.
+- Axiom audit of the vacuum-creation, all-layer containment, canonical-minimality,
+  universal-rank, and actual-prime capstones reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- No full or umbrella build was run.  The exact analytic parent target was built only to restore
+  missing cached dependency objects required by the new leaf.
+- Publication artifact:
+  `docs/drafts/pipeline/4-publication-ready/finite-fusion-infinite-hypertranscendence/main.tex`
+  and `main.pdf`.

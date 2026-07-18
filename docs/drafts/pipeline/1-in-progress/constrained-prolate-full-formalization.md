@@ -799,3 +799,112 @@ explicit `e^{−πa²}` rate; the polynomial absorption costs the factor `e^{−
 Gaussian's `e^{−2πa²}`, so a sharper polynomial×Gaussian tail (integration by parts on
 `∫_{Ioi a} x^{2k} e^{−2πx²}`) is what would recover the full exponent.  NOTE the two-sided
 envelope still needs the LOWER bound, which no variational argument supplies.
+
+## L6a — the explicit exponential rate at every index (DONE, 2026-07-18)
+
+`formal/GaloisForLFunctions/HTGeometry/ExpSquareRayTail.lean` (axiom-clean): tail bounds for
+`e^{−bx²}` at an **arbitrary** rate `b`, which mathlib does not have and which the existing
+`GaussianTailBound` only supplied at `b = 2π`.
+
+* `integral_Ioi_id_mul_expNegSq : ∫_a^∞ x e^{−bx²} = e^{−ba²}/(2b)` (exact).
+* `integral_Ioi_expNegSq_le : ∫_a^∞ e^{−bx²} ≤ e^{−ba²}/(2ba)`.
+* `integral_compl_Icc_expNegSq_le` — two-sided, by reflecting the left ray.
+* `setIntegral_compl_Icc_le_of_le_expNegSq` — anything dominated by `C e^{−bx²}` inherits it.
+
+Additions to `RHTower/HermiteEvenCarrier.lean` (axiom-clean):
+
+* `exists_bound_norm_sq_hermiteSchwartz : ‖h_n(x)‖² ≤ C_n e^{−πx²}` — of the two Gaussian
+  factors in `|p_n(x)e^{−πx²}|²`, one absorbs the polynomial (via
+  `exists_bound_poly_mul_gaussReal` applied to `p_n²`) and the other survives.
+* `exists_norm_sq_hermiteEven_sub_cut_le` — the aperture tail of `h_{4j}`, explicitly.
+* `norm_sq_hermiteEvenUnit_sub_cut` — normalization divides the tail by `‖h‖²`.
+* **`exists_evenProlateLeakageValue_le_exp (n) : ∃ C ≥ 0, ∀ a > 0, d_n(a) ≤ C·e^{−πa²}/a`.**
+
+So every fixed leakage of the TRUE compressed Fourier block is now known to decay exponentially
+in `a²`, with an explicit constant, at every index — the quantitative form of the vanishing
+theorem.
+
+WHERE THIS SITS RELATIVE TO THE ENVELOPE.  Fuchs is `e^{−4πa²}` (= `e^{−2c}`, `c = 2πa²`).  The
+variational route caps out at `e^{−2πa²}` for a structural reason already recorded above: the
+concentration deficit of a truncated Fourier-fixed trial vector is `≍ τ²`, and `τ² ≍ e^{−2πa²}`;
+only the true PSWF supplies the cancellation that turns `τ²` into `τ⁴`.  The extra factor of two
+lost here (`e^{−πa²}` rather than `e^{−2πa²}`) is the polynomial absorption, and is recoverable
+by integrating `∫_{Ioi a} x^{2k}e^{−2πx²}` by parts instead — but doing so would NOT reach the
+envelope, because the `τ²` ceiling binds first.  **The conclusion is that no trial-space argument
+can produce the `upper` field of the ClockEnvelope**; a non-variational route is required, and
+the same is a fortiori true of `lower`.  That is the sharpened statement of the open core.
+
+## L6a — moved onto the CONTRACT'S OWN OBJECT: the signed spectrum (DONE, 2026-07-18)
+
+The estimates above were about `evenProlateLeakageValue` (the greedy value of the *concentration*
+operator).  The constrained transfer contract is stated for the **signed** spectrum of `Tₐ`
+itself, through `D lam j = 1 − σ_{ν j}(lam)²`.  This step moves everything onto that object.
+
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateSignedTrial.lean` (axiom-clean):
+
+* `abs_evenProlateSignedValue_le_one` — `|σₙ(a)| ≤ 1`, `Tₐ` being a contraction.
+* **`one_sub_evenProlateSignedValue_sq_le_of_form_trial`** — the signed Courant–Fischer bound: a
+  trial subspace of dimension `> n` retaining a fraction `1 − ε` caps `1 − σₙ(a)²` by `ε`.
+  KEY OBSERVATION: **the sign never has to be determined.**  `|σₙ| = orthSup Tₐ (sgVec Tₐ) n`
+  (`abs_sgVal`), so `GreedyCourantFischer.le_orthSup_of_trial` bounds `|σₙ|` from below directly,
+  and squaring erases the sign — which is all the contract needs.  This sidesteps the
+  "identification of the positive signed subsequence" noted as a separate analytic theorem in
+  `ConstrainedProlateSignedSpectrum`: that identification is NOT required for the transfer.
+* `one_sub_evenProlateSignedValue_sq_le_hermite : 1 − σₙ(a)² ≤ hermiteTrialDefect a n`.
+* `exists_one_sub_evenProlateSignedValue_sq_le_exp` — explicit `C·e^{−πa²}/a` at every index.
+* `one_sub_evenProlateSignedValue_sq_tendsto_zero` and `evenProlateSignedValue_sq_tendsto_one`.
+
+Refactor in `HermiteEvenCarrier`: the trial space and its defect are now named objects
+(`hermiteTrialSpace`, `hermiteTrialDefect`, `finrank_hermiteTrialSpace`,
+`hermiteTrialSpace_concentration`, `tendsto_hermiteTrialDefect`,
+`exists_hermiteTrialDefect_le_exp`), so the leakage and signed routes share one construction.
+
+STATUS OF THE CONTRACT.  For `D lam j = 1 − σ_{ν j}(lam)²` the fields `nonneg`, `mono`, `step`,
+`clock_pos` are available and `upper` now holds in the qualitative-plus-explicit-exponential form
+— but NOT at the envelope's rate `λ^{2e_j+1}E(λ)`, and by the ceiling recorded above no
+variational argument will reach it.  `lower` is untouched by any of this work.  Both remaining
+fields need the non-variational route (commuting prolate differential operator, or a
+trace/determinant identity).
+
+## The non-variational route: what already exists, and the missing joint (2026-07-18)
+
+CORRECTION to the assessment above.  The Slepian commuting-operator machinery is **already in
+the tree** and was not accounted for in this card:
+
+* `RHTower/SlepianSincCommutation.lean`, `SlepianExteriorTransfer.lean`,
+  `SlepianSmoothKernel.lean` — the entire sinc profile `sincSmooth c = dslope (sin(cu)/π) 0`,
+  its off-diagonal commutation `P_x K̃ = P_y K̃`, and the integrated transfer `slepian_transfer`.
+* `RHTower/SlepianBandCommutation.lean` — **`slepian_commutation : P_c (T̃ f) = T̃ (P_c f)`** and
+  `slepian_commutation_eigen`.
+* `RHTower/ProlateBandSymmetric.lean` — self-adjointness of the prolate action on the band, with
+  the boundary terms killed by the vanishing weight.
+* `RHTower/ProlateWronskian.lean`, `ProlateDiagonalization.lean` —
+  `bandTransform_eigen_smul_on`: a prolate ODE eigenfunction spans an invariant line of the band
+  transform.
+
+So the ODE side is built.  The gap is that its kernel `K̃_c` is *defined as a profile*, with
+nothing connecting it to the Fourier-cutoff operator whose spectrum the transfer measures.
+
+`formal/GaloisForLFunctions/RHTower/SlepianKernelFourier.lean` (axiom-clean) builds the first
+span of that bridge:
+
+* `integral_symm_cexp`, `integral_symm_cexp_I : ∫_{−1}^{1} e^{iθt} dt = 2 sin θ / θ`.
+* `sincSmooth_zero : sincSmooth c 0 = c/π` (the `dslope` value, not previously recorded).
+* **`sincSmooth_eq_integral : sincSmooth c u = (c/2π)∫_{−1}^{1} e^{i c u t} dt`** — valid at the
+  origin too.  The removable singularity of `sin(cu)/(πu)` is an artefact of evaluating the
+  integral, not a property of the kernel; this reproves entirety without power-series
+  bookkeeping.
+* **`sincKernelSmooth_eq_integral : K̃_c(x,y) = (c/2π)∫_{−1}^{1} e^{icxt}·conj(e^{icyt}) dt`** —
+  the Slepian kernel is the **Gram kernel of the band-limited Fourier characters**.  This is
+  precisely the statement that composing a Fourier cutoff with its adjoint produces `K̃_c`, i.e.
+  the reason the prolate ODE governs a time–band concentration operator at all.
+
+REMAINING SPANS OF THE BRIDGE (the concrete next targets, in order):
+1. Fubini: `evenProlateConcentration a f = ∫_{[-a,a]} K̃_{2πa}(x−y) f(y) dy` in the `L²` model,
+   using `SoninL2Model.l1Fourier_indicatorCutoff_Icc_eq_setIntegral` for the inner transform.
+2. The dilation `x ↦ x/a` carrying the model band `[−a,a]` to the ODE band `[−1,1]` with
+   `c = 2πa²` (the project's `dilationUnitary`/`evenDilationUnitary` should serve).
+3. Existence of the prolate ODE eigenfunctions and their eigenvalues `χ_n(c)` — singular
+   Sturm–Liouville theory on `[−1,1]`; this is the first genuine mountain of the route.
+4. Dunster/WKB asymptotics for `χ_n(c)` and `ψ_n` (L8), then Fuchs for `μ_n`.
+Only 3–4 are mountains; 1–2 are bookkeeping and are what a next session should take.

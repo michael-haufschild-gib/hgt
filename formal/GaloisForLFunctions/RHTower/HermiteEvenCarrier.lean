@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.GaussianEvenCarrier
 import GaloisForLFunctions.HTGeometry.HermiteOrthogonality
 import GaloisForLFunctions.HTGeometry.TrialSpanConcentration
 import GaloisForLFunctions.HTGeometry.PositiveFormTrialSpan
+import GaloisForLFunctions.HTGeometry.ExpSquareRayTail
 
 /-!
 # The Hermite family inside the even prolate carrier
@@ -292,35 +293,53 @@ theorem re_inner_evenProlateLeakage_le (a : ℝ) {g : evenSubspace}
   rw [re_inner_evenProlateLeakage, evenTimeBandFourier_apply_eq]
   linarith
 
-/-- **The leakage of the true compressed Fourier block is bounded by the squared Hermite tails.**
-For each fixed index this is the sharp shape: quadratic in the truncation error, with only a
-linear-in-index number of terms. -/
-theorem evenProlateLeakageValue_le_hermite_tail_sq (a : ℝ) (n : ℕ) :
-    evenProlateLeakageValue a n
-      ≤ ∑ k : Fin (n + 1),
-          5 * ‖hermiteEvenUnit (k : ℕ) - evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ 2 := by
+/-- The step-four Hermite trial space of dimension `n + 1`. -/
+def hermiteTrialSpace (n : ℕ) : Submodule ℂ evenSubspace :=
+  Submodule.span ℂ (Set.range (fun j : Fin (n + 1) => hermiteEvenUnit (j : ℕ)))
+
+/-- The aggregate squared truncation error of the trial family. -/
+noncomputable def hermiteTrialDefect (a : ℝ) (n : ℕ) : ℝ :=
+  ∑ k : Fin (n + 1),
+    5 * ‖hermiteEvenUnit (k : ℕ) - evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ 2
+
+theorem hermiteTrialDefect_nonneg (a : ℝ) (n : ℕ) : 0 ≤ hermiteTrialDefect a n :=
+  Finset.sum_nonneg fun k _ => by positivity
+
+theorem finrank_hermiteTrialSpace (n : ℕ) :
+    Module.finrank ℂ (hermiteTrialSpace n) = n + 1 :=
+  ContinuousLinearMap.finrank_span_orthonormal (orthonormal_hermiteEvenUnit (n + 1))
+
+/-- **The trial space concentrates.**  On the span of the step-four Hermite family the compressed
+block retains all but the aggregate squared truncation error. -/
+theorem hermiteTrialSpace_concentration (a : ℝ) (n : ℕ) {f : evenSubspace}
+    (hf : f ∈ hermiteTrialSpace n) :
+    (1 - hermiteTrialDefect a n) * ‖f‖ ^ 2 ≤ ‖evenTimeBandFourier a f‖ ^ 2 := by
   set g : Fin (n + 1) → evenSubspace := fun j => hermiteEvenUnit (j : ℕ) with hgdef
   have hg : Orthonormal ℂ g := orthonormal_hermiteEvenUnit (n + 1)
-  have hdim : n < Module.finrank ℂ (Submodule.span ℂ (Set.range g)) := by
-    rw [ContinuousLinearMap.finrank_span_orthonormal hg]
-    omega
-  refine evenProlateLeakageValue_le_of_form_trial a n (Submodule.span ℂ (Set.range g)) hdim ?_
-  intro f hf
   have htrace := ContinuousLinearMap.re_inner_apply_self_le_of_orthonormal_span hg
     (evenProlateLeakage a) (evenProlateLeakage_symmetric a)
     (re_inner_evenProlateLeakage_nonneg a) hf
   have hdiag : ∀ k : Fin (n + 1),
       RCLike.re (inner ℂ (evenProlateLeakage a (g k)) (g k))
-        ≤ 5 * ‖g k - evenIndicatorCutoff a (g k)‖ ^ 2 := by
-    intro k
-    exact re_inner_evenProlateLeakage_le a (evenFourierTransform_hermiteEvenUnit (k : ℕ))
+        ≤ 5 * ‖g k - evenIndicatorCutoff a (g k)‖ ^ 2 := fun k =>
+    re_inner_evenProlateLeakage_le a (evenFourierTransform_hermiteEvenUnit (k : ℕ))
   have hsum : ∑ k : Fin (n + 1), RCLike.re (inner ℂ (evenProlateLeakage a (g k)) (g k))
-      ≤ ∑ k : Fin (n + 1), 5 * ‖g k - evenIndicatorCutoff a (g k)‖ ^ 2 :=
+      ≤ hermiteTrialDefect a n :=
     Finset.sum_le_sum fun k _ => hdiag k
   have hform : RCLike.re (inner ℂ (evenProlateLeakage a f) f)
       = ‖f‖ ^ 2 - ‖evenTimeBandFourier a f‖ ^ 2 := re_inner_evenProlateLeakage a f
   rw [hform] at htrace
   nlinarith [htrace, hsum, sq_nonneg ‖f‖, norm_nonneg f]
+
+/-- **The leakage of the true compressed Fourier block is bounded by the squared Hermite tails.**
+For each fixed index this is the sharp shape: quadratic in the truncation error, with only a
+linear-in-index number of terms. -/
+theorem evenProlateLeakageValue_le_hermite_tail_sq (a : ℝ) (n : ℕ) :
+    evenProlateLeakageValue a n ≤ hermiteTrialDefect a n := by
+  refine evenProlateLeakageValue_le_of_form_trial a n (hermiteTrialSpace n) ?_ ?_
+  · rw [finrank_hermiteTrialSpace]
+    omega
+  · exact fun f hf => hermiteTrialSpace_concentration a n hf
 
 /-! ## Every fixed leakage vanishes -/
 
@@ -381,6 +400,139 @@ theorem evenProlateConcentrationValue_tendsto_one (n : ℕ) :
       (nhds ((1 : ℝ) - 0)) := tendsto_const_nhds.sub h
   rw [sub_zero] at hsub
   exact Tendsto.congr (fun a => (hrw a).symm) hsub
+
+/-! ## The explicit exponential rate -/
+
+/-- **A Hermite function's squared modulus is dominated by a multiple of `e^{−πx²}`.**  One of
+its two Gaussian factors absorbs the polynomial; the other survives. -/
+theorem exists_bound_norm_sq_hermiteSchwartz (n : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ,
+      ‖GaloisForLFunctions.hermiteSchwartz n x‖ ^ 2 ≤ C * Real.exp (-(π * x ^ 2)) := by
+  obtain ⟨C, hC⟩ := GaloisForLFunctions.exists_bound_poly_mul_gaussReal
+    (GaloisForLFunctions.hermitePoly n * GaloisForLFunctions.hermitePoly n) 0
+  refine ⟨max C 0, le_max_right _ _, fun x => ?_⟩
+  have hval : ‖GaloisForLFunctions.hermiteSchwartz n x‖ ^ 2
+      = (GaloisForLFunctions.hermitePoly n).eval x ^ 2
+        * GaloisForLFunctions.gaussReal x ^ 2 := by
+    rw [GaloisForLFunctions.hermiteSchwartz_apply, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+    ring
+  have hgnn : 0 ≤ GaloisForLFunctions.gaussReal x := (GaloisForLFunctions.gaussReal_pos x).le
+  have hdiag : (GaloisForLFunctions.hermitePoly n).eval x ^ 2
+      * GaloisForLFunctions.gaussReal x ≤ max C 0 := by
+    have h := hC x
+    simp only [pow_zero, one_mul, Polynomial.eval_mul] at h
+    rw [abs_of_nonneg (mul_self_nonneg _)] at h
+    have hsq : (GaloisForLFunctions.hermitePoly n).eval x ^ 2
+        = (GaloisForLFunctions.hermitePoly n).eval x
+          * (GaloisForLFunctions.hermitePoly n).eval x := sq _
+    rw [hsq]
+    exact le_trans h (le_max_left _ _)
+  rw [hval]
+  have hstep := mul_le_mul_of_nonneg_right hdiag hgnn
+  calc (GaloisForLFunctions.hermitePoly n).eval x ^ 2 * GaloisForLFunctions.gaussReal x ^ 2
+      = (GaloisForLFunctions.hermitePoly n).eval x ^ 2 * GaloisForLFunctions.gaussReal x
+          * GaloisForLFunctions.gaussReal x := by ring
+    _ ≤ max C 0 * GaloisForLFunctions.gaussReal x := hstep
+
+/-- **The aperture tail of a step-four Hermite vector is explicitly exponentially small.** -/
+theorem exists_norm_sq_hermiteEven_sub_cut_le (j : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ a : ℝ, 0 < a →
+      ‖hermiteEven j - evenIndicatorCutoff a (hermiteEven j)‖ ^ 2
+        ≤ C * (Real.exp (-(π * a ^ 2)) / (π * a)) := by
+  obtain ⟨C, hC0, hC⟩ := exists_bound_norm_sq_hermiteSchwartz (4 * j)
+  have hpi : (0 : ℝ) < π := Real.pi_pos
+  have hint : Integrable
+      (fun x : ℝ => ‖GaloisForLFunctions.hermiteSchwartz (4 * j) x‖ ^ 2) volume := by
+    refine Integrable.mono' ((GaloisForLFunctions.integrable_expNegSq hpi).const_mul C) ?_ ?_
+    · exact ((GaloisForLFunctions.hermiteSchwartz (4 * j)).continuous.norm.pow 2).aestronglyMeasurable
+    · filter_upwards with x
+      rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+      exact hC x
+  refine ⟨C, hC0, fun a ha => ?_⟩
+  rw [norm_sq_sub_cut_eq a (hermiteEven j)]
+  have hae : ∫ x in (centralInterval a)ᶜ, ‖((hermiteEven j : SoninL2) : ℝ → ℂ) x‖ ^ 2
+      = ∫ x in (centralInterval a)ᶜ,
+          ‖GaloisForLFunctions.hermiteSchwartz (4 * j) x‖ ^ 2 := by
+    refine integral_congr_ae ?_
+    filter_upwards [ae_restrict_of_ae (hermiteL2_coeFn (4 * j))] with x hx
+    rw [coe_hermiteEven, hx]
+  rw [hae]
+  exact GaloisForLFunctions.setIntegral_compl_Icc_le_of_le_expNegSq hpi ha hC0
+    hint.integrableOn hC
+
+/-- The normalized truncation error is the unnormalized one divided by the squared norm. -/
+theorem norm_sq_hermiteEvenUnit_sub_cut (j : ℕ) (a : ℝ) :
+    ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ ^ 2
+      = ‖hermiteEven j - evenIndicatorCutoff a (hermiteEven j)‖ ^ 2 / ‖hermiteEven j‖ ^ 2 := by
+  have hne : ‖hermiteEven j‖ ≠ 0 := norm_ne_zero_iff.mpr (hermiteEven_ne_zero j)
+  have hsplit : hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)
+      = ((‖hermiteEven j‖ : ℂ))⁻¹ • (hermiteEven j - evenIndicatorCutoff a (hermiteEven j)) := by
+    rw [hermiteEvenUnit, map_smul, smul_sub]
+  rw [hsplit, norm_smul, mul_pow, norm_inv, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (norm_nonneg _)]
+  field_simp
+
+/-- **Every fixed leakage of the true compressed Fourier block decays exponentially in the
+squared aperture.**  This is the quantitative form of the vanishing statement: the variational
+route through the step-four Hermite trial space yields the rate `e^{−πa²}/a` at every index. -/
+theorem exists_hermiteTrialDefect_le_exp (n : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ a : ℝ, 0 < a →
+      hermiteTrialDefect a n ≤ C * (Real.exp (-(π * a ^ 2)) / a) := by
+  have hpi : (0 : ℝ) < π := Real.pi_pos
+  choose C hC0 hCle using fun k : Fin (n + 1) => exists_norm_sq_hermiteEven_sub_cut_le (k : ℕ)
+  have hnormpos : ∀ k : Fin (n + 1), (0 : ℝ) < ‖hermiteEven (k : ℕ)‖ ^ 2 := by
+    intro k
+    have := norm_ne_zero_iff.mpr (hermiteEven_ne_zero (k : ℕ))
+    positivity
+  refine ⟨∑ k : Fin (n + 1), 5 * C k / (π * ‖hermiteEven (k : ℕ)‖ ^ 2), ?_, fun a ha => ?_⟩
+  · refine Finset.sum_nonneg fun k _ => ?_
+    have := hC0 k
+    have := hnormpos k
+    positivity
+  · rw [hermiteTrialDefect]
+    have hterm : ∀ k : Fin (n + 1),
+        5 * ‖hermiteEvenUnit (k : ℕ) - evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ 2
+          ≤ (5 * C k / (π * ‖hermiteEven (k : ℕ)‖ ^ 2)) * (Real.exp (-(π * a ^ 2)) / a) := by
+      intro k
+      rw [norm_sq_hermiteEvenUnit_sub_cut]
+      have hnk := hnormpos k
+      have hbase := hCle k a ha
+      have hpine : (π : ℝ) ≠ 0 := ne_of_gt hpi
+      have hane : a ≠ 0 := ne_of_gt ha
+      have hnne : ‖hermiteEven (k : ℕ)‖ ^ 2 ≠ 0 := ne_of_gt hnk
+      have hrw : (5 * C k / (π * ‖hermiteEven (k : ℕ)‖ ^ 2)) * (Real.exp (-(π * a ^ 2)) / a)
+          = 5 * ((C k * (Real.exp (-(π * a ^ 2)) / (π * a))) / ‖hermiteEven (k : ℕ)‖ ^ 2) := by
+        field_simp
+      rw [hrw]
+      gcongr
+    calc ∑ k : Fin (n + 1),
+          5 * ‖hermiteEvenUnit (k : ℕ) - evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ 2
+        ≤ ∑ k : Fin (n + 1),
+            (5 * C k / (π * ‖hermiteEven (k : ℕ)‖ ^ 2)) * (Real.exp (-(π * a ^ 2)) / a) :=
+          Finset.sum_le_sum fun k _ => hterm k
+      _ = (∑ k : Fin (n + 1), 5 * C k / (π * ‖hermiteEven (k : ℕ)‖ ^ 2))
+            * (Real.exp (-(π * a ^ 2)) / a) := by rw [Finset.sum_mul]
+
+/-- **Every fixed leakage of the true compressed Fourier block decays exponentially in the
+squared aperture.** -/
+theorem exists_evenProlateLeakageValue_le_exp (n : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ a : ℝ, 0 < a →
+      evenProlateLeakageValue a n ≤ C * (Real.exp (-(π * a ^ 2)) / a) := by
+  obtain ⟨C, hC0, hC⟩ := exists_hermiteTrialDefect_le_exp n
+  exact ⟨C, hC0, fun a ha =>
+    le_trans (evenProlateLeakageValue_le_hermite_tail_sq a n) (hC a ha)⟩
+
+/-- The aggregate trial defect vanishes as the aperture grows. -/
+theorem tendsto_hermiteTrialDefect (n : ℕ) :
+    Tendsto (fun a : ℝ => hermiteTrialDefect a n) atTop (nhds 0) := by
+  have h : Tendsto (fun a : ℝ => ∑ k : Fin (n + 1),
+      5 * ‖hermiteEvenUnit (k : ℕ) - evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ 2)
+      atTop (nhds (∑ _k : Fin (n + 1), (0 : ℝ))) := by
+    refine tendsto_finsetSum _ fun k _ => ?_
+    have hk := tendsto_norm_sub_cut (hermiteEvenUnit (k : ℕ))
+    have := ((hk.pow 2).const_mul (5 : ℝ))
+    simpa using this
+  simpa [hermiteTrialDefect] using h
 
 end RHTower
 
