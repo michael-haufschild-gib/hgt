@@ -80,7 +80,8 @@ theorem pderiv_zero_freeJetShift
     cases n <;>
       simp [Derivation.commutator_apply, freeJetShiftPolynomialDerivation]
   have h := Derivation.congr_fun hcomm P
-  simpa [Derivation.commutator_apply] using sub_eq_zero.mp h
+  rw [Derivation.commutator_apply] at h
+  simpa using sub_eq_zero.mp h
 
 /-- Differentiating the universal square coefficient with respect to `x_0` gives `2 x_n`. -/
 theorem pderiv_zero_freeJetSquareCoefficient
@@ -105,7 +106,9 @@ def freeJetEPolynomialDerivation
 theorem freeJetEPolynomialDerivation_X
     {C : Type*} [Field C] (k n : ℕ) :
     freeJetEPolynomialDerivation C k (MvPolynomial.X n) =
-      if k = n then (Nat.factorial k : C) else 0 := by
+      if k = n then
+        (Nat.factorial k : C) • (1 : FreeScalarJetPolynomial C)
+      else 0 := by
   simp [freeJetEPolynomialDerivation, MvPolynomial.pderiv_X]
 
 /-- The first reciprocal-translation current.  On the formal arc it is
@@ -114,13 +117,13 @@ def freeJetFOnePolynomialDerivation
     (C : Type*) [Field C] :
     Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C) :=
   MvPolynomial.mkDerivation C fun n =>
-    if 0 < n then -(n : C) * freeJetSquareCoefficient C (n - 1) else 0
+    if 0 < n then -(n : C) • freeJetSquareCoefficient C (n - 1) else 0
 
 @[simp]
 theorem freeJetFOnePolynomialDerivation_X
     {C : Type*} [Field C] (n : ℕ) :
     freeJetFOnePolynomialDerivation C (MvPolynomial.X n) =
-      if 0 < n then -(n : C) * freeJetSquareCoefficient C (n - 1) else 0 := by
+      if 0 < n then -(n : C) • freeJetSquareCoefficient C (n - 1) else 0 := by
   simp [freeJetFOnePolynomialDerivation]
 
 /-- The linear diagonal current `-2 t x partial_x`. -/
@@ -128,13 +131,13 @@ def freeJetHOnePolynomialDerivation
     (C : Type*) [Field C] :
     Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C) :=
   MvPolynomial.mkDerivation C fun n =>
-    if 0 < n then -2 * (n : C) * MvPolynomial.X (n - 1) else 0
+    if 0 < n then (-2 * (n : C)) • MvPolynomial.X (n - 1) else 0
 
 @[simp]
 theorem freeJetHOnePolynomialDerivation_X
     {C : Type*} [Field C] (n : ℕ) :
     freeJetHOnePolynomialDerivation C (MvPolynomial.X n) =
-      if 0 < n then -2 * (n : C) * MvPolynomial.X (n - 1) else 0 := by
+      if 0 < n then (-2 * (n : C)) • MvPolynomial.X (n - 1) else 0 := by
   simp [freeJetHOnePolynomialDerivation]
 
 /-- The raw position current and opposite velocity current generate the first diagonal mode. -/
@@ -148,7 +151,8 @@ theorem freeJetPolynomial_lie_E_zero_F_one
   cases n with
   | zero => simp
   | succ n =>
-      simp [pderiv_zero_freeJetSquareCoefficient]
+      simp [freeJetEPolynomialDerivation,
+        pderiv_zero_freeJetSquareCoefficient, Algebra.smul_def]
       ring
 
 /-- The first diagonal mode propagates every raw translation mode to the next order. -/
@@ -161,16 +165,17 @@ theorem freeJetPolynomial_lie_H_one_E
   rw [Derivation.commutator_apply]
   cases n with
   | zero =>
-      simp [freeJetEPolynomialDerivation, freeJetHOnePolynomialDerivation]
+      simp [freeJetEPolynomialDerivation, freeJetHOnePolynomialDerivation,
+        Algebra.smul_def]
   | succ n =>
       by_cases hnk : n = k
       · subst n
         simp [freeJetEPolynomialDerivation, freeJetHOnePolynomialDerivation,
-          Nat.factorial_succ]
+          Nat.factorial_succ, Algebra.smul_def]
         ring
       · have hsucc : k + 1 ≠ n + 1 := by omega
         simp [freeJetEPolynomialDerivation, freeJetHOnePolynomialDerivation,
-          hnk, hsucc]
+          hnk, hsucc, Algebra.smul_def]
 
 /-- Extend a polynomial free-jet derivation to the rational free-jet field by the quotient rule. -/
 def extendFreeJetPolynomialDerivation
@@ -199,8 +204,23 @@ theorem extendFreeJetPolynomialDerivation_lie
     ⁅extendFreeJetPolynomialDerivation D, extendFreeJetPolynomialDerivation E⁆ =
       extendFreeJetPolynomialDerivation ⁅D, E⁆ := by
   apply GaloisForLFunctions.fractionRing_derivation_ext
+    (A := FreeScalarJetPolynomial C)
   intro P
   simp [Derivation.commutator_apply]
+
+/-- Fraction-field extension preserves scalar multiplication of polynomial derivations. -/
+theorem extendFreeJetPolynomialDerivation_smul
+    {C : Type*} [Field C] (c : C)
+    (D : Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C)) :
+    extendFreeJetPolynomialDerivation (c • D) =
+      c • extendFreeJetPolynomialDerivation D := by
+  apply GaloisForLFunctions.fractionRing_derivation_ext
+    (A := FreeScalarJetPolynomial C)
+  intro P
+  simp only [extendFreeJetPolynomialDerivation_algebraMap,
+    Derivation.smul_apply]
+  simp [Algebra.smul_def,
+    IsScalarTower.algebraMap_apply C (FreeScalarJetPolynomial C)]
 
 /-- Raw translation current on the rational free-jet field. -/
 def freeJetE
@@ -233,25 +253,19 @@ theorem freeJet_lie_H_one_E
     {C : Type*} [Field C] (k : ℕ) :
     ⁅freeJetHOne C, freeJetE C k⁆ = (2 : C) • freeJetE C (k + 1) := by
   rw [freeJetHOne, freeJetE, extendFreeJetPolynomialDerivation_lie,
-    freeJetPolynomial_lie_H_one_E]
-  apply GaloisForLFunctions.fractionRing_derivation_ext
-  intro P
-  simp [extendFreeJetPolynomialDerivation]
+    freeJetPolynomial_lie_H_one_E,
+    extendFreeJetPolynomialDerivation_smul]
 
 /-- The normalized `E_k` current is the nonzero factorial multiple of the coordinate partial. -/
 theorem freeJetE_apply
     {C : Type*} [Field C] (k : ℕ) (f : FreeScalarJetField C) :
     freeJetE C k f =
       (Nat.factorial k : C) • freeCoordinateDerivation C ℕ k f := by
-  have heq :
-      freeJetE C k =
-        (Nat.factorial k : C) • freeCoordinateDerivation C ℕ k := by
-    apply GaloisForLFunctions.fractionRing_derivation_ext
-    intro P
-    simp [freeJetE, freeJetEPolynomialDerivation,
-      extendFreeJetPolynomialDerivation, freeCoordinateDerivation,
-      freeCoordinatePolynomialDerivation]
-  exact Derivation.congr_fun heq f
+  change
+    extendFreeJetPolynomialDerivation
+        ((Nat.factorial k : C) • MvPolynomial.pderiv k) f = _
+  rw [extendFreeJetPolynomialDerivation_smul, Derivation.smul_apply]
+  rfl
 
 /-- The intermediate field killed simultaneously by the direct position current and the opposite
 velocity current. -/
@@ -300,7 +314,7 @@ theorem exists_eq_algebraMap_of_freeJet_E_zero_F_one
     | succ k ih =>
         have hbracket : ⁅freeJetHOne C, freeJetE C k⁆ f = 0 := by
           simp [Derivation.commutator_apply, hH, ih]
-        rw [freeJet_lie_H_one_E] at hbracket
+        rw [freeJet_lie_H_one_E, Derivation.smul_apply] at hbracket
         have htwo : (2 : C) ≠ 0 := by norm_num
         exact (smul_eq_zero.mp hbracket).resolve_left htwo
   apply (all_freeCoordinateDerivations_eq_zero_iff f).1
@@ -308,7 +322,7 @@ theorem exists_eq_algebraMap_of_freeJet_E_zero_F_one
   have hk := hEk k
   rw [freeJetE_apply] at hk
   have hfac : (Nat.factorial k : C) ≠ 0 := by
-    exact_mod_cast Nat.factorial_ne_zero k
+    exact Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero k)
   exact (smul_eq_zero.mp hk).resolve_left hfac
 
 /-- The common kernel field of `E_0` and `F_1` is exactly the scalar coefficient field. -/

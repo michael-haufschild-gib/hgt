@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.EllipticGammaPairedIncrement
 import GaloisForLFunctions.HTGeometry.MeromorphicEllipticPuncturedPeriod
 import GaloisForLFunctions.HTGeometry.ElementaryOstrowski
 import GaloisForLFunctions.HTGeometry.SourceBoundaryQuotientMatroid
+import GaloisForLFunctions.HTGeometry.MeromorphicThetaDefectPunctured
+import GaloisForLFunctions.HTGeometry.MeromorphicPuncturedTranslationEquality
 
 /-!
 # Differential independence of actual elliptic-gamma external defects
@@ -14,7 +16,7 @@ obstruction excludes it.
 -/
 
 open Filter Topology Set Function Complex
-open scoped Differential BigOperators
+open scoped Differential BigOperators nonZeroDivisors
 
 namespace GaloisForLFunctions
 
@@ -52,6 +54,23 @@ local instance ellipticGammaOstrowskiDifferentialAlgebra
     (meromorphicEllipticCompositum sigma tau)
     (meromorphicEllipticCompositum_derivationClosed sigma tau) x⟩
 
+theorem meromorphicEllipticCompositum_deriv_algebraMap_complex
+    (sigma tau c : ℂ) :
+    (algebraMap ℂ (meromorphicEllipticCompositum sigma tau) c)′ = 0 := by
+  apply Subtype.ext
+  change (algebraMap ℂ (meroField Set.univ) c)′ = 0
+  change
+    (algebraMap (analyticSubring Set.univ) (meroField Set.univ)
+      (constToAnalytic Set.univ c))′ = 0
+  rw [meroFieldDifferential_algebraMap]
+  have hconst : analyticSubringDeriv isOpen_univ
+      (constToAnalytic Set.univ c) = 0 := by
+    apply Subtype.ext
+    rw [analyticSubringDeriv_coe]
+    change (deriv (fun _ : ℂ ↦ c) : Germ (𝒱 Set.univ) ℂ) = 0
+    simp
+  rw [hconst, map_zero]
+
 /-! ## Differential-operator closure and coercion -/
 
 theorem DerivationClosed.differentialJet_mem
@@ -73,7 +92,7 @@ theorem DerivationClosed.differentialOperatorApply_mem
     differentialOperatorApply L x ∈ E := by
   classical
   rw [differentialOperatorApply, Polynomial.sum_def]
-  apply Finset.sum_mem
+  apply IntermediateField.sum_mem
   intro n hn
   exact E.mul_mem (hconstants (L.coeff n))
     (hE.differentialJet_mem hx n)
@@ -189,9 +208,8 @@ theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
             (map_zero (algebraMap ℂ
               (meromorphicEllipticCompositum sigma tau))) c) := by
     have h := differentialOperator_linearCombination_eq_jetLinearCombination
-      (hconst := fun z : ℂ ↦ by
-        change (0 : meromorphicEllipticCompositum sigma tau) = 0
-        exact rfl)
+      (hconst := meromorphicEllipticCompositum_deriv_algebraMap_complex
+        sigma tau)
       omega operatorCoefficients (1 : Fin 3)
     simpa [omega, operatorCoefficients] using h
   let thetaSum : meroField Set.univ :=
@@ -200,7 +218,7 @@ theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
         (thetaLogDerivDefectMero (h j) tau htau)
   have hthetaElliptic : thetaSum ∈ ellipticMeroField tau := by
     dsimp only [thetaSum]
-    apply Finset.sum_mem
+    apply IntermediateField.sum_mem
     intro j hj
     apply (ellipticMeroField_derivationClosed tau).differentialOperatorApply_mem
       (fun z ↦ (ellipticMeroField tau).algebraMap_mem z)
@@ -212,7 +230,8 @@ theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
           (differentialOperatorLinearCombination
             omega operatorCoefficients (1 : Fin 3)) =
         thetaSum := by
-    rw [differentialOperatorLinearCombination, Finsupp.sum, map_sum]
+    rw [differentialOperatorLinearCombination, map_finsuppSum]
+    unfold Finsupp.sum
     apply Finset.sum_congr rfl
     intro j hj
     rw [algebraMap_meromorphicEllipticCompositum_differentialOperatorApply]
@@ -318,23 +337,47 @@ theorem ellipticGammaExternalDefectFamily_differentialIndependent
     (ellipticGammaSourcePeriods sigma tau)
   let x := ellipticGammaExternalDefectFamily h sigma tau hsigma htau
   let b := ellipticGammaExternalDefectIncrementFamily h sigma tau hsigma htau
-  apply differentialIndependent_of_no_constant_simultaneous_jet_telescoping
-    SK SL
-  · intro i k
+  have hcomp : ∀ i k, SL.aut i
+      (algebraMap (meromorphicEllipticCompositum sigma tau)
+        (meroField Set.univ) k) =
+      algebraMap (meromorphicEllipticCompositum sigma tau)
+        (meroField Set.univ) (SK.aut i k) := by
+    intro i k
     exact ellipticGammaCompositum_aut_algebraMap sigma tau i k
-  · intro z hz
+  have hfixed : ∀ z : meroField Set.univ, JointFixed SL z →
+      ∃ c : ℂ, algebraMap ℂ (meroField Set.univ) c = z := by
+    intro z hz
+    have hz' : JointFixed
+        (rankThreeGeneratorMeromorphicDifferenceDifferentialField
+          (ellipticGammaSourcePeriods sigma tau)) z := by
+      simpa only [SL] using hz
     obtain ⟨c, hc⟩ :=
       (rankThree_generator_jointFixed_iff_constant
-        (ellipticGammaSourcePeriods sigma tau) hindependent z).mp hz
+        (ellipticGammaSourcePeriods sigma tau) hindependent z).mp hz'
     exact ⟨c, by simpa [meromorphicConstantEmbedding] using hc⟩
-  · exact x
-  · exact b
-  · intro i j
-    exact ellipticGammaExternalDefect_shift
-      (h j) sigma tau hsigma htau i
-  · intro c hc k
-    exact ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
-      h sigma tau hsigma htau hindependent hnonres hsep c hc k
+  have hshift : ∀ i j, SL.aut i (x j) =
+      x j + algebraMap (meromorphicEllipticCompositum sigma tau)
+        (meroField Set.univ) (b i j) := by
+    intro i j
+    simpa only [SL, x, b, ellipticGammaExternalDefectFamily,
+      ellipticGammaExternalDefectIncrementFamily] using
+      ellipticGammaExternalDefect_shift
+        (h j) sigma tau hsigma htau i
+  have hnot : ∀ c : (kappa × ℕ) →₀ ℂ, c ≠ 0 →
+      ∀ k : meromorphicEllipticCompositum sigma tau, ∃ i,
+        SK.defect i k ≠
+          Finsupp.linearCombination (meromorphicEllipticCompositum sigma tau)
+            (fun p ↦ differentialJet p.2 (b i p.1))
+            (Finsupp.mapRange
+              (algebraMap ℂ (meromorphicEllipticCompositum sigma tau))
+              (map_zero (algebraMap ℂ
+                (meromorphicEllipticCompositum sigma tau))) c) := by
+    intro c hc k
+    simpa only [SK, b, ellipticGammaExternalDefectIncrementFamily] using
+      ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
+        h sigma tau hsigma htau hindependent hnonres hsep c hc k
+  exact differentialIndependent_of_no_constant_simultaneous_jet_telescoping
+    SK SL hcomp hfixed x b hshift hnot
 
 end
 

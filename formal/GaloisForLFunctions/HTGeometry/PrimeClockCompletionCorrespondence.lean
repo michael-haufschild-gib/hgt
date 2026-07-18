@@ -22,6 +22,8 @@ open scoped Differential
 
 noncomputable section
 
+set_option maxHeartbeats 800000
+
 /-- The ordinary complex span of the order-zero clock classes of a source family. -/
 def primeProfileStaticSubmodule
     {I : Type*} (c : I -> ArithmeticFunction ℂ) :
@@ -122,11 +124,16 @@ theorem carrier_mem_primeProfileStaticField_of_clockClass_mem
       ((a i) • c i) ∈ K
     rw [Algebra.smul_def, map_mul]
     apply IntermediateField.mul_mem
-    · simpa only [map_algebraMap] using
-        (IntermediateField.algebraMap_mem K
-          (algebraMap ℂ finitePrimeCoefficientField (a i)))
+    · have hscalar := IntermediateField.algebraMap_mem K
+        (algebraMap ℂ finitePrimeCoefficientField (a i))
+      rw [← IsScalarTower.algebraMap_apply ℂ finitePrimeCoefficientField
+        arithmeticFunctionFractionField] at hscalar
+      rw [← IsScalarTower.algebraMap_apply ℂ (ArithmeticFunction ℂ)
+        arithmeticFunctionFractionField]
+      exact hscalar
     · unfold K primeProfileStaticField
-      exact IntermediateField.subset_adjoin (Set.mem_range_self i)
+      exact IntermediateField.subset_adjoin finitePrimeCoefficientField _
+        (Set.mem_range_self i)
   let r : finitePrimeCoefficientField :=
     ⟨algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField residual,
       hresidualBase⟩
@@ -189,10 +196,21 @@ theorem clockClass_mem_of_carrier_mem_primeProfileStaticField
     algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField (c i)
   let newCarrier : Unit -> arithmeticFunctionFractionField := fun _ =>
     algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f
+  have hswap := hAI.comp (Equiv.sumComm Unit I)
+    (Equiv.sumComm Unit I).injective
+  have hswapFamily :
+      ((fun z => algebraMap (ArithmeticFunction ℂ)
+        arithmeticFunctionFractionField (profile z)) ∘ (Equiv.sumComm Unit I)) =
+        Sum.elim newCarrier oldCarrier := by
+    funext z
+    rcases z with u | i <;> rfl
+  have hAIswap : AlgebraicIndependent finitePrimeCoefficientField
+      (Sum.elim newCarrier oldCarrier) := by
+    rw [hswapFamily] at hswap
+    exact hswap
   have hAIoverAlg : AlgebraicIndependent
-      (Algebra.adjoin finitePrimeCoefficientField (Set.range oldCarrier)) newCarrier := by
-    have hsplit := (AlgebraicIndependent.sumElim_iff.mp hAI).2
-    simpa only [profile, oldCarrier, newCarrier] using hsplit
+      (Algebra.adjoin finitePrimeCoefficientField (Set.range oldCarrier)) newCarrier :=
+    (AlgebraicIndependent.sumElim_iff.mp hAIswap).2
   have hAIoverField : AlgebraicIndependent (primeProfileStaticField c) newCarrier := by
     apply IntermediateField.algebraicIndependent_adjoin_iff.mpr
     simpa only [primeProfileStaticField, oldCarrier] using hAIoverAlg
@@ -554,7 +572,14 @@ theorem differentialIndependent_fractionPrimeProfiles_relative_iff_clockQuotient
       unfold Finsupp.sum
       apply Finset.sum_congr rfl
       intro hn hhn
-      rw [Algebra.smul_def, map_mul, map_algebraMap]
+      change algebraMap ℂ arithmeticFunctionFractionField (e hn) *
+          algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+            (jetSource hn) =
+        algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          ((e hn) • jetSource hn)
+      rw [Algebra.smul_def, map_mul,
+        IsScalarTower.algebraMap_apply ℂ (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField]
     have hPzero : MvPolynomial.aeval jetCarrier P = 0 := by
       simp only [P, Finsupp.sum, map_sub, map_sum, map_mul,
         MvPolynomial.aeval_C, MvPolynomial.aeval_X]
@@ -616,10 +641,22 @@ theorem differentialIndependent_fractionPrimeProfiles_relative_iff_clockQuotient
         profile hprofileSupport).mpr
       rw [hprofileClass]
       exact hcombinedClass
+    have hswap := hAIcombined.comp (Equiv.sumComm (H × Nat) B)
+      (Equiv.sumComm (H × Nat) B).injective
+    have hswapFamily :
+        ((fun z => algebraMap (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField (profile z)) ∘
+            (Equiv.sumComm (H × Nat) B)) =
+          Sum.elim jetCarrier oldCarrier := by
+      funext z
+      rcases z with hn | i <;> rfl
+    have hAIswap : AlgebraicIndependent finitePrimeCoefficientField
+        (Sum.elim jetCarrier oldCarrier) := by
+      rw [hswapFamily] at hswap
+      exact hswap
     have hAIoverAlg : AlgebraicIndependent
-        (Algebra.adjoin finitePrimeCoefficientField (Set.range oldCarrier)) jetCarrier := by
-      have hsplit := (AlgebraicIndependent.sumElim_iff.mp hAIcombined).2
-      simpa only [profile, oldCarrier, basisSource, jetCarrier, jetSource] using hsplit
+        (Algebra.adjoin finitePrimeCoefficientField (Set.range oldCarrier)) jetCarrier :=
+      (AlgebraicIndependent.sumElim_iff.mp hAIswap).2
     have hAIoverField : AlgebraicIndependent
         (primeProfileStaticField basisSource) jetCarrier := by
       apply IntermediateField.algebraicIndependent_adjoin_iff.mpr

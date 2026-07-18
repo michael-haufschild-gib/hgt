@@ -119,7 +119,7 @@ theorem ellipticGammaAdditiveLogKernel_mixed_defect_tau
         thetaLogDeriv (z + (tau - sigma) / 2) sigma := by
   rw [ellipticGammaAdditiveLogKernel_add_tau_sub hsigma htau,
     ellipticGammaAdditiveLogKernel_add_tau_sub hsigma htau]
-  simpa only [add_assoc] using
+  simpa [add_assoc, add_comm, add_left_comm] using
     ellipticThetaAdditiveLogKernel_defect_eq_thetaLogDerivDefect
       hsigma hz hzh
 
@@ -367,17 +367,22 @@ theorem ellipticGammaExternalDefect_shift
     rw [addTranslationMeroEquiv_ellipticGammaExternalDefect_one]
     simp
   · change addTranslationMeroEquiv sigma
-        (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) = _
+        (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) =
+      ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau +
+        thetaLogDerivDefectMero h tau htau
     have hface := ellipticGammaLogDerivMero_mixed_face_sigma
       (h := h) hsigma htau
     change addTranslationMeroEquiv sigma
         (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) -
       ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau =
         thetaLogDerivDefectMero h tau htau at hface
-    simpa only [ellipticGammaExternalDefectIncrement_one_coe] using
+    simpa only [add_comm] using
       sub_eq_iff_eq_add.mp hface
   · change addTranslationMeroEquiv tau
-        (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) = _
+        (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) =
+      ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau +
+        addTranslationMeroEquiv ((tau - sigma) / 2)
+          (thetaLogDerivDefectMero h sigma hsigma)
     have hface := ellipticGammaLogDerivMero_mixed_face_tau
       (h := h) hsigma htau
     change addTranslationMeroEquiv tau
@@ -385,7 +390,7 @@ theorem ellipticGammaExternalDefect_shift
       ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau =
         addTranslationMeroEquiv ((tau - sigma) / 2)
           (thetaLogDerivDefectMero h sigma hsigma) at hface
-    simpa only [ellipticGammaExternalDefectIncrement_two_coe] using
+    simpa only [add_comm] using
       sub_eq_iff_eq_add.mp hface
 
 end

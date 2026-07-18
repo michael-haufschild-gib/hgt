@@ -36,9 +36,10 @@ theorem polarizedJetEvalCLM_apply {d n : ℕ} (x : Fin d → ℂ)
     (dirs : Fin n → (Fin d → ℂ)) (f : MultivariateEntire d) :
     polarizedJetEvalCLM x dirs f =
       ∑ s ∈ (Finset.univ : Finset (Fin n)).powerset,
-        jetPolarizationCoeff n s *
-          directionalJetEval n x (jetSubsetDirection dirs s) := by
-  simp [polarizedJetEvalCLM, smul_eq_mul]
+        jetPolarizationCoeff n s •
+          directionalJetEval n x (jetSubsetDirection dirs s) f := by
+  simp only [polarizedJetEvalCLM, ContinuousLinearMap.sum_apply,
+    ContinuousLinearMap.smul_apply, directionalJetEvalCLM_apply]
 
 theorem continuousLinearMap_jetSubsetDirection {d n : ℕ}
     (L : (Fin d → ℂ) →L[ℂ] (Fin d → ℂ))
@@ -56,10 +57,8 @@ theorem polarizedJetEvalCLM_affinePullback {d n : ℕ}
     polarizedJetEvalCLM x dirs (multivariateEntireAffinePullback e f) =
       polarizedJetEvalCLM (e x)
         (fun j ↦ e.toContinuousAffineMap.contLinear (dirs j)) f := by
-  simp only [polarizedJetEvalCLM_apply, directionalJetEval_affinePullback]
-  apply Finset.sum_congr rfl
-  intro s hs
-  rw [continuousLinearMap_jetSubsetDirection]
+  simp [polarizedJetEvalCLM_apply, directionalJetEval_affinePullback,
+    continuousLinearMap_jetSubsetDirection]
 
 /-- The coordinate direction corresponding to one partial-derivative slot. -/
 def coordinateJetDirection {d : ℕ} (i : Fin d) : Fin d → ℂ :=
