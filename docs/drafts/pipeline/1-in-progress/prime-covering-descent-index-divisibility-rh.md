@@ -1206,3 +1206,42 @@ whether the sinh-positivity dominates the defect rate S-uniformly exactly when t
 real. Hostile guard: this is a rate comparison — the exact-identity constraint (cont. 22)
 applies to the PER-S identities (which exist, verified); the S-uniformity is where the new
 mathematics lives.
+
+## 2026-07-18 session 2 (cont. 27) — S-direction CLOSED exactly (idle index); rank-2 Schur
+## identity PROVED; the c > |d| containment lever and the (c,k)-bifiltration successor
+
+**[GATE VERDICT — S-uniform comparison is NOT a certificate class]** (a) Exact kill:
+`∂_d(tau_S) = 0` identically (truncated prime corner data is d-free), so every per-S
+inequality's d-content is the S-free packet form; the fixed-S wall margin is
+`lambda_min = -2m*x0*d^2/(1+x0^2) + O(d^4)` — S-INDEPENDENT and -> 0 at the wall: the
+cont.-22 wall problem recurs verbatim at every S; the S-index is idle. (b) The regularized
+limit is CIRCULAR: Abel/Cesaro summation of the edge prime series past its abscissa is
+governed by sup Re rho — zero-location strength. Certificate class remains the finite exact
+SOS/PSD identity.
+
+**[PROVED (sympy-verified) — rank-2 model]** Exact Schur identity
+`det N = m^2 * W~(0) * disc(W~)` for the threatened packet block (P = p1*X + p0);
+1-parameter tests witness indefiniteness (`V(X - x0) = -2m*x0*d^2` exactly) but cannot
+characterize equality; the 2-parameter family `(p1*X + p0) * prod_j (X - x_j)` realizes the
+full block with evaluation-Jacobian surjectivity exactly off the walls.
+
+**[REFUTED — the cosh(d log n) rate conjecture]** The S-filtration map
+(zero data) -> (rate structure) is CONSTANT; all rates are universal classes
+`S^{1/2 ± c} * osc` quantizing the BOX (c), not the zero (d); the cosh weight survives only as
+a frequency-dual VALUE (`2 e^{-i alpha x0} cosh(alpha d)`, truncated by polynomial tests to a
+polynomial in d^2).
+
+**[OPENED — the containment lever and the (c,k)-bifiltration]** `d` IS a rate, but on the
+Mellin-dual side (`psi(S) - S` carries `S^{1/2+d}` oscillation), which the box frame provably
+cannot see. NEW STRUCTURAL FACT: admissibility of a pair-holding box FORCES `c > |d|`, so the
+box probe rate `S^{1/2+c}` STRICTLY DOMINATES the dual defect rate `S^{1/2+d}` — the box
+height is a tunable probe sitting provably above the defect it hunts; the parametrized
+statement lives in the c-SCAN (boxes of varying height), not the S-scan. Second dual: the
+Hankel index k carries d as the rotation number `theta = arctan(d/x0)` with detection
+threshold `k* ~ x0/d`. **[NEXT OBJECT]** The (c,k)-BIFILTRATION: collate the c-scan and
+k-scan frames against the `c > |d|` containment constraint — the first frame in this lane
+where the probe parameter is FORCED above the hidden parameter by admissibility itself.
+Hostile guards: (i) transparency test on the bifiltration (does the (c,k)-data distinguish
+collision configurations, or is the c-scan again continuous?); (ii) the k-threshold is
+divisor-dependent — the certificate may assume, not select (kill-condition discipline);
+(iii) referee the cont.-27 derivations (scripts: rank2_sfiltration_check.py V1-V8).
