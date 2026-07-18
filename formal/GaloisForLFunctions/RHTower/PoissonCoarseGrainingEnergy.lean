@@ -260,3 +260,4 @@ theorem poissonEnergy_gap_ge_iff (m d : ℝ) {a : ℝ} (ha : a ≠ 0) (hm : m �
 end PoissonCoarseGrainingEnergy
 end RHTower
 end GaloisForLFunctions
+

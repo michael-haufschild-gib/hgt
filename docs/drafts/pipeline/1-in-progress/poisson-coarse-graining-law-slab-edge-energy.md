@@ -102,3 +102,46 @@ certificate's algebra), and the mirror-symmetry step to `d_j = 0`.
 
 - 2026-07-18 (Fable): derived, proved, audited, graded `[BRIDGE]`. Companion to
   `detector-order-classification-rh-readers.md` in the kill-list positive-inversion sweep.
+
+## THE RESOLUTION THRESHOLD (added 2026-07-18) — the wall made quantitative
+
+Combining the two results of this sweep gives an exact rate where the corpus previously had a
+qualitative verdict.
+
+**Input 1 (Detector Order Classification).** Within a height-localized family the certificate is
+forced to be the centered second moment of the fiber.
+
+**Input 2 (Theorem A above).** A reader with prime support bounded by `L` resolves the fiber only
+at scale `a ≈ 1/L`: what it computes is the coarse-grained energy `E_a`, never the fiber's own
+second moment, because `E_a` is exactly the fiber convolved with a Poisson kernel of width `a`.
+
+**Theorem D (exact detection gap).** For two equal masses `m` at `±d` versus the merged mass `2m`
+at the origin,
+
+> `E_a(merged) - E_a(pair) = 2 m^2 (1 - lorentz a (2d)) = 8 m^2 d^2 / (a^2 + 4 d^2)`,
+
+and this gap is at least `m^2` **iff** `a^2 <= 4 d^2`.
+
+*Proof.* `E_a(pair) = 2m^2(1 + lorentz a (2d))` and `E_a(merged) = 4m^2` by direct evaluation
+(`lorentz a 0 = 1`, kernel even); the gap is `2m^2(1 - lorentz a (2d))` which is
+`2m^2 (2d)^2/(a^2 + (2d)^2)`. The threshold is `8 d^2 >= a^2 + 4 d^2`. ∎
+(Formalized: `poissonEnergy_mirror_pair`, `poissonEnergy_merged`, `poissonEnergy_mirror_pair_gap`,
+`poissonEnergy_gap_ge_iff`.)
+
+**The consequence.** Relative to the total energy `4 m^2`, the signal from a splitting of size `d`
+is `2 d^2/(a^2 + 4 d^2)`, which is `O(d^2/a^2)` for `d << a`. **Detecting displacement `d`
+requires resolution `a <~ d`, hence prime support `L >~ 1/d`.** Since RH violations may be
+arbitrarily mild (no uniform margin — NG14), no finite prime support suffices, and the required
+support diverges like `1/d`.
+
+**What this replaces.** Cont. 51 concluded "`Q` is not source-computable; extracting it needs `h`
+below the fiber isolation scale, which is divisor data." That is now a rate rather than a verdict:
+the obstruction is a *resolution deficit* with the exact exchange law `a <~ d`, and the deficit is
+quadratic in `d/a`. It is the same phenomenon as the `alpha >= 1` barrier of the pair-correlation
+literature, here in a form localized to a single height and with an explicit constant.
+
+**Honest scope.** The identification `a ≈ 1/L` between resolution and prime support is the standard
+uncertainty heuristic and is *not* proved here; Theorem D and the threshold are exact and formal,
+the translation to prime support is the classical dictionary. Stated separately so the proved part
+and the heuristic part are not confused. Grade of Theorem D: `[BRIDGE]` as mathematics (two-line
+kernel algebra), `[useful]` as a statement, because it converts a wall into a rate.
