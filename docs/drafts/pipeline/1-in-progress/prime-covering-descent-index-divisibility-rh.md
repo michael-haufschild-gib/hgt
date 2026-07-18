@@ -620,3 +620,38 @@ integrals; corpus: `resultant_specialize_analytic`, `xiHedenmalmBezoutian` on ex
   the census congruence then just "compute both sides" (hidden tautology)? The answer must be
   that the mechanism supplies STRUCTURAL divisibility (symmetry/parity of the polynomial's
   Galois/real-form data) without computing the count — pin this before proof investment.
+
+## 2026-07-18 session 1 (cont. 11) — Q3/Q2 verdict: the cluster's distilled core is √disc
+
+**[Q3 ANSWERED — not a tautology; mechanism structural at depth 2]** On line-symmetric boxes
+the divisor is invariant under `sigma(rho) = 1 - conj(rho)`, so the box Weierstrass polynomial
+`W` is LINE-REAL (real form centered on the critical line). The real-form discriminant sign law
+is structural (resultant identities, not root computation): `sign(disc W)` determines the
+parity of the off-line mirror-pair count. Depth 2 of the census is therefore source-producible
+— but coincides with the free mirror-pair rung (no new content beyond the symmetry).
+
+**[Q2 ANSWERED — the depth-4 wall named exactly]** Divisibility by 4 (the first non-free rung
+anywhere in this cluster) requires `disc W` to be a SQUARE in the source structure — a
+Galois/monodromy-type datum. This is the same wall as the session-opening sqrt-Xi-tower
+analysis, the Kummer-cover chain, and the parity ladder, now in its sharpest algebraic form.
+
+**[DISTILLED OPEN CORE OF THE PARITY CLUSTER]** After five independent open-core iterations
+(subresultant census -> pair-ideal congruence -> Rees finite-section -> bigraded Koszul ->
+derivative-pair discriminant), all faces reduce to ONE object:
+
+> Construct, from the theta--prime--Gamma source and for height-adapted line-symmetric boxes, a
+> square root of the line-real discriminant of the box Weierstrass polynomial of Xi — before
+> reading the divisor.
+
+Convergence of independent routes onto this object is evidence it is the true irreducible core.
+Three generative continuations (springboards, in priority order):
+1. **Tower splice:** the formalized `rh_iff_tower` (coherent square-root tower of xi on the
+   right half-plane) — a compatible family of box-√disc's is the finite-window shadow of that
+   tower; investigate whether the tower equivalence supplies EXACT finite-box consequences that
+   constrain what √disc must be (a uniqueness/rigidity theorem for candidate square roots).
+2. **Modular face:** discriminants of division/torsion values classically acquire square roots
+   through THETA CONSTANTS (Jacobi derivative formula, disc products = theta-constant products);
+   the corpus lacks formalized theta doubling/Landen (gap recorded at cont. 9) — the theta-
+   constant square-root structure is the modular candidate for the source-supplied √disc.
+3. **Arithmetic face:** half-integral weight / Waldspurger (literature audit: unexploited raw
+   material) — value-level square roots of central L-data as the arithmetic candidate.
