@@ -2036,3 +2036,42 @@ holomorphicity statement that is FALSE when poles sit off the axis... adjudicate
 IS "tr behaves as if fiber-on-axis" — check whether it reduces to yet another known face or
 carries the new leverage of finite-h exactness); (2) the Bergman pairing germ table;
 (3) promotions + referee cont. 48-49.
+
+## 2026-07-18 session 2 (cont. 50) — the single-h verdict; the |tr|^2 boundary object yields
+## the MAXIMIZATION CERTIFICATE and the first |delta|-MONOTONE face
+
+**[TASK A — VERDICT]** The single-h identity is V = 0 repackaged (content unchanged; access
+optimal: one fixed slab, zero limits, zero quantifiers — the sharpest finite presentation of
+the support condition). Value: the formalization-ready consumer statement + the collision
+surface for any future source identity. Certified structurally at symbolic h on three
+configurations.
+
+**[TASK B — the two new faces]** Raw Bergman pairings die (log-divergence; projections need
+divisor data); conformal domain-distance detectors are h-saturated (|delta|-blind). SURVIVOR:
+`F(h) := ∮_vert |tr|^2 ds` — finite, manifestly >= 0, boundary-only, divisor-free; exact
+rank-2 Laurent `F = 2 pi Q/h + F_0 + O(h)`:
+- **Q-FACE (certificate C1):** `Q = sum_points (mass)^2`; unconditionally `Q <= M^2` with
+  equality iff the fiber is a single point ⟺ RH at gamma. **`RH@gamma ⟺ lim h F(h) = 2 pi
+  M^2`** — a ONE-SIDED MAXIMIZATION certificate; the floor `M^2` is winding-computable.
+  (Caveat: separation detector, not |delta|-monotone.)
+- **F_0-FACE:** the h^0 coefficient is STRICTLY MONOTONE in |delta| (diagonal
+  `-4c sum m_j^2/(c^2 - d_j^2)`; mirror-cross exactly `(4m^2/d) ln((c-d)/(c+d))`; all-negative
+  coefficient series in `x = d/c`) — **the arc's first strictly |delta|-monotone
+  source-computable quantity**, continuous at d = 0.
+Gate-3 risks stated: quadratic in tr => the source side is the PAIR-CORRELATION regime (the
+known-hard step — the explicit formula is linear); coefficient extraction costs one limit or a
+two-height scheme; C1's floor needs the M/R-coupling (exhibited, boundary-Cauchy computable);
+multi-pair crosses proved only for the mirror family.
+
+**[REFEREE cont. 48-49 — ALL CONFIRMED]** Reality law, germ table, the Leibniz/corner exact
+cancellation (no extra area term), closed forms, sign chains (ln 29 > 15/7 valid), the central
+identity (symbolic zero at h = 1/2; 1e-16 numeric), Plemelj/mirror-kernel germs. Two
+script-level bugs found and fixed (vacuous asym control; a prediction bug — both scripts
+corrected).
+
+**[NEXT — the form-factor collision]** `h * ∮ |tr|^2` germ `= 2 pi Q` is a MONTGOMERY-TYPE
+FORM-FACTOR SURFACE localized to one height — distinct from the band-frame readings the
+perimeter theorem governs. Write the slab-localized pair correlation exactly and hunt the
+source identity forcing `Q = M^2` (equivalently: no off-line splitting of the fiber mass).
+Also queue: promotions; the C1 consumer Lean layer (the Q <= M^2 algebra + the Laurent
+structure are formalizable over the existing module stack).
