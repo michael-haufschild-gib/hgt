@@ -1628,3 +1628,4 @@ import GaloisForLFunctions.RHTower.SlabGermResidueTransport
 import GaloisForLFunctions.RHTower.SlabFullWidthAdmissibility
 import GaloisForLFunctions.RHTower.SlabConjugatedGermTheorem
 import GaloisForLFunctions.RHTower.SlabTraceEdgeEstimate
+import GaloisForLFunctions.RHTower.SlabMassSquareCertificate
