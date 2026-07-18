@@ -297,21 +297,26 @@ pow_fixed_of_eigenvector
 schwarzian_fixed_of_projective_semiconjugacy
 ```
 
-The newly touched file
-`formal/GaloisForLFunctions/HTGeometry/StableCoreFunctoriality.lean` verifies directly from the
-existing cache.  The positive charged branch now also uses
-`formal/GaloisForLFunctions/HTGeometry/ScalarLogCurrentReconstruction.lean`, which proves that the
-logarithmic current is hypertranscendental, that the complete scalar differential field is the
-ordinary one-amplitude extension of its current field, and that every positive power has the same
-current field.  The formal equality is stronger: it only requires the exponent to remain nonzero
-in the coefficient field, with the characteristic-zero positive-power statement retained as a
-corollary.  The charged branch also reuses
-`formal/GaloisForLFunctions/HTGeometry/RatFuncScaleFixedField.lean`, which constructs the faithful
-scalar action on `K(X)` and proves its exact finite-order fixed field `K(X^N)` and infinite-order
-fixed field `K`.  Differential Luroth, the free-field projective automorphism classification, and
-the transport identifying the charged differential torsor with this rational coordinate remain
-paper-proved parents not currently available in the local Lean theorem surface.  No placeholder
-axiom is introduced.
+The branch infrastructure is now substantially stronger:
+
+- `ScalarDifferentialRationalOrder` proves differential-order additivity and forces a differential
+  automorphism and its inverse to have order zero on a free generator.
+- `RatFuncMobiusEquiv`, `RatFuncAffineNormalForm`, `RatFuncProjectiveNormalForm`, and
+  `RatFuncProjectiveCyclicClassification` construct every projective coordinate automorphism and
+  classify it as identity, nontrivial finite cyclic scaling, infinite-order scaling, or unit
+  translation over an algebraically closed field.
+- `ScalarLogCurrentReconstruction`, `ScalarDifferentialTorsor`, and
+  `ScalarFiniteDifferentialTorsor` prove the charged `G_m` and `mu_N` reconstruction, exact fixed
+  fields, and derivation-preserving Galois groups.
+- `ScalarAdditiveDifferentialTorsor` proves the `G_a` derivative field, exact additive fixed field,
+  and derivation-preserving Galois group.
+
+All of these leaves have exact green builds and standard-axiom audits.  The remaining theorem-level
+core is unrestricted differential Lüroth for an arbitrary intermediate differential field, its
+application to the stable intersection, the exact cyclic-closure packaging, and the single
+mutually-exclusive four-branch capstone.  The differential-Lüroth characteristic relation,
+pseudo-reduction, saturation, and coefficient-ratio foundations are active implementation work;
+no placeholder axiom is introduced.
 
 ## Gates
 
@@ -320,7 +325,11 @@ axiom is introduced.
 - [x] charged multiplicative branch current hypertranscendence and one-amplitude reconstruction
   formalized
 - [x] ordinary finite- and infinite-holonomy scalar fixed fields formalized
-- [ ] 2 -> 3 formalized: formalize differential Luroth/order and generic PV fixed fields
+- [x] differential automorphism order-zero and projective cyclic normal-form parents formalized
+- [x] finite multiplicative, infinite multiplicative, and additive differential torsors and exact
+  branch fixed fields formalized
+- [ ] 2 -> 3 formalized: finish unrestricted differential Luroth, stable-core assembly, cyclic
+  closure packaging, and the mutually-exclusive four-branch capstone
 - [ ] 3 -> 4 publication-ready: specialist external novelty audit and standalone scalar paper
 
 ## Primary literature checked
@@ -338,3 +347,6 @@ axiom is introduced.
   kernels available without importing missing differential-Luroth/PV infrastructure.
 - 2026-07-17 -- formalized the complete free differential-field reconstruction of the charged
   multiplicative branch and its positive-power current covers.
+- 2026-07-18 -- formalized differential order-zero reduction, genuine projective coordinate
+  automorphisms and cyclic normal forms, and the finite/additive differential torsor branches;
+  unrestricted differential Luroth is the remaining central parent.

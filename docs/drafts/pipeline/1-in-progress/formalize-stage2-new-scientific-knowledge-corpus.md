@@ -77,18 +77,30 @@ coordinated four-slot pool.
   work is the serialized umbrella/index/lint gate and card promotion.
 - scalar/Lüroth lane: `DifferentialKernelCharacteristic` now constructs a genuine minimal-rank
   irreducible characteristic relation with initial and separant outside the evaluation kernel;
-  `DifferentialCharacteristicPseudoReduction` is the active exclusive leaf implementing
-  nonmonic pseudo-division and differential high-jet reduction.
-- bounded/ADE/torsion lane: the bounded-relation profile card is leaf-complete, and
-  `PolynomialTorsionLanguageDefectLimit` is the active exclusive leaf closing the polynomial
-  torsion-language TLU limit and unconditional integer-ADE contradiction.
-- projective fixed-field lane: `FreeJetTranslationFixedField` proves the depth-`n` tail fixed-field
-  theorem; the active exclusive follow-on is connecting the actual projective current action to
-  that free-coordinate theorem.
+  `DifferentialCharacteristicPseudoReduction` now proves nonmonic pseudo-division, differential
+  high-jet and leader reduction, derivation-stable saturation, and the characteristic-package
+  capstone.  The active exclusive leaf is `DifferentialLurothCoefficient`, implementing primitive
+  two-copy denominator clearing and Ritt's normalized coefficient-ratio theorem.
+- bounded/ADE/torsion lane: the bounded-relation and polynomial torsion-language cards are
+  leaf-complete.  The active exclusive leaf is `GaussianTorsionLanguageTailLock`; its finite
+  Fourier approximation compiler and Gaussian tail domination are checked, while the lane is
+  constructing the varying least-source face and common nonzero leading-atom extraction from an
+  arbitrary integer ADE.
+- projective fixed-field lane: `ProjectiveHorizonCurrentFixedField` connects the actual rational
+  current action to the free-coordinate fixed-field theorem.  The depth-two follow-on has checked
+  the literal `E`--`F` and `H`--`E` current relations, unequal-depth scalar meets, and the sharp
+  depth-one/nontrivial transition; its final literal `H`--`F` relation and audit are in progress.
 - root lane: `RatFuncProjectiveNormalForm` now proves that every nonidentity coefficient-fixing
   automorphism of `K(X)` over an algebraically closed field is conjugate to a pure scaling or unit
-  translation.  Its exact leaf build, axiom audit, forbidden-token scan, and diff check are green;
-  the next root work is theorem-surface integration and the serialized batch gate.
+  translation, and `RatFuncProjectiveCyclicClassification` refines this to identity, nontrivial
+  finite cyclic scaling, infinite-order scaling, or unit translation.  The root has additionally
+  completed `ExactDifferentialOrderAffine`: fixed-order ADE existence and exact minimal order are
+  invariant under every invertible affine precomposition, unconditionally.  Its direct check,
+  exact module build, standard-axiom audit, forbidden-token scan, and diff check are green and its
+  umbrella import is wired.  `BellCoordinateJacobian` now additionally proves that the universal
+  finite Bell-coordinate Jacobian is triangular with diagonal one and determinant exactly one;
+  its exact module build and the same audits are green and its umbrella import is wired.  The next
+  cascade foundation is the terminal-linear output-Jacobian row-reduction identity.
 
 ## Completed compiler queue
 
@@ -372,5 +384,9 @@ DAGs without repeating the audits.
   exists; the analytic meromorphic/triptic realization and exact DA-kernel identification remain
 - [ ] `triptic-orbit-residue-reciprocity` — exact residue/DA/annihilator surfaces inventoried;
   the analytic triptic orbit and residue-reciprocity foundations remain to be implemented
-- [ ] `universal-first-order-entire-cascade-unit-cost` — theorem/corollary surface inventory pending
+- [ ] `universal-first-order-entire-cascade-unit-cost` — exact differential order and its
+  unconditional invariance under invertible affine precomposition are Lean-complete in
+  `ExactDifferentialOrderAffine`, and the universal Bell coordinate change has unit Jacobian in
+  `BellCoordinateJacobian`; the Wiman-place, compatible valuation flag, terminal-linear
+  observability reduction, Clunie state-independence, and Poincare-recession surfaces remain
 - [ ] `weighted-euler-tangent-global-graph-decoupling` — theorem/corollary surface inventory pending

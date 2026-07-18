@@ -119,6 +119,41 @@ theorem projectiveJetCurrentEPolynomial_lie_FPolynomial
     rw [if_neg hjn, if_neg hijn]
     simp
 
+/-- The polynomial projective jet action satisfies the full relation
+`[Hᵢ,Eⱼ]=2E_(i+j)`. -/
+theorem projectiveJetCurrentHPolynomial_lie_EPolynomial
+    {C : Type*} [Field C] (i j : ℕ) :
+    ⁅projectiveJetCurrentHPolynomial C i, projectiveJetCurrentEPolynomial C j⁆ =
+      (2 : C) • projectiveJetCurrentEPolynomial C (i + j) := by
+  apply MvPolynomial.derivation_ext
+  intro n
+  rw [Derivation.commutator_apply, Derivation.smul_apply]
+  change projectiveJetCurrentHPolynomial C i
+        (MvPolynomial.pderiv j (MvPolynomial.X n)) -
+      MvPolynomial.pderiv j
+        (projectiveJetCurrentHPolynomial C i (MvPolynomial.X n)) =
+    (2 : C) • MvPolynomial.pderiv (i + j) (MvPolynomial.X n)
+  have hfirst :
+      projectiveJetCurrentHPolynomial C i
+          (MvPolynomial.pderiv j (MvPolynomial.X n)) = 0 := by
+    rw [MvPolynomial.pderiv_X]
+    simp only [Pi.single_apply]
+    split_ifs <;> simp
+  rw [hfirst, projectiveJetCurrentHPolynomial, MvPolynomial.mkDerivation_X]
+  by_cases hin : i ≤ n
+  · rw [if_pos hin, (MvPolynomial.pderiv j).map_smul,
+      MvPolynomial.pderiv_X, MvPolynomial.pderiv_X]
+    by_cases hijn : i + j = n
+    · subst n
+      have hsub : i + j - i = j := by omega
+      rw [hsub]
+      simp
+    · have hj : j ≠ n - i := by omega
+      simp [hijn, hj]
+  · have hijn : i + j ≠ n := by omega
+    rw [if_neg hin]
+    simp [hijn]
+
 /-- The quotient-rule action on the free rational jet field preserves the full relation
 `[Eᵢ,Fⱼ]=H_(i+j)`. -/
 theorem projectiveJetCurrentE_lie_F
@@ -138,6 +173,29 @@ theorem projectiveJetCurrentE_lie_F
       congrArg liftProjectiveJetPolynomialCurrent
         (projectiveJetCurrentEPolynomial_lie_FPolynomial i j)
     _ = projectiveJetCurrentH C (i + j) := rfl
+
+/-- The quotient-rule action on the free rational jet field preserves
+`[Hᵢ,Eⱼ]=2E_(i+j)`. -/
+theorem projectiveJetCurrentH_lie_E
+    {C : Type*} [Field C] (i j : ℕ) :
+    ⁅projectiveJetCurrentH C i, projectiveJetCurrentE C j⁆ =
+      (2 : C) • projectiveJetCurrentE C (i + j) := by
+  calc
+    ⁅projectiveJetCurrentH C i, projectiveJetCurrentE C j⁆ =
+        liftProjectiveJetPolynomialCurrent
+          ⁅projectiveJetCurrentHPolynomial C i,
+            projectiveJetCurrentEPolynomial C j⁆ :=
+      liftProjectiveJetPolynomialCurrent_lie
+        (projectiveJetCurrentHPolynomial C i)
+        (projectiveJetCurrentEPolynomial C j)
+    _ = liftProjectiveJetPolynomialCurrent
+        ((2 : C) • projectiveJetCurrentEPolynomial C (i + j)) :=
+      congrArg liftProjectiveJetPolynomialCurrent
+        (projectiveJetCurrentHPolynomial_lie_EPolynomial i j)
+    _ = (2 : C) • liftProjectiveJetPolynomialCurrent
+        (projectiveJetCurrentEPolynomial C (i + j)) :=
+      liftProjectiveJetPolynomialCurrent_smul 2 _
+    _ = (2 : C) • projectiveJetCurrentE C (i + j) := rfl
 
 /-! ## Direct translations and direct/inverse current fields -/
 
@@ -376,6 +434,119 @@ theorem projectiveJetDepthTwoTranslationInverseCurrent_inf_eq_bot
         projectiveJetInverseLowCurrentKernelField C 2 = ⊥ := by
   rw [projectiveJetLowTranslationFixedField_eq_directCurrentKernel]
   exact projectiveJetEqualDepthCurrentKernel_inf_eq_bot le_rfl
+
+/-! ## The nontrivial depth-one side -/
+
+/-- The action of an inverse current mode on one free jet coordinate. -/
+@[simp]
+theorem projectiveJetCurrentF_freeCoordinate
+    {C : Type*} [Field C] (k n : ℕ) :
+    projectiveJetCurrentF C k (freeCoordinate C ℕ n) =
+      if k ≤ n then
+        -algebraMap (MvPolynomial ℕ C) (FreeCoordinateRationalField C ℕ)
+          (projectiveJetSquareCoeff C (n - k))
+      else 0 := by
+  simp [projectiveJetCurrentF, projectiveJetCurrentFPolynomial, freeCoordinate]
+  split_ifs <;> simp
+
+/-- Every free rational jet coordinate is nonzero. -/
+theorem freeCoordinate_ne_zero
+    {C σ : Type*} [Field C] (i : σ) :
+    freeCoordinate C σ i ≠ 0 := by
+  intro h
+  have hd := congrArg (freeCoordinateDerivation C σ i) h
+  simp at hd
+
+/-- The normalized Schwarzian in ordinary power-series jet coordinates.  If `xₙ` denotes
+`x⁽ⁿ⁾/n!`, this is one sixth of the usual Schwarzian. -/
+def projectiveJetSchwarzian
+    (C : Type*) [Field C] : FreeCoordinateRationalField C ℕ :=
+  freeCoordinate C ℕ 3 / freeCoordinate C ℕ 1 -
+    (freeCoordinate C ℕ 2 / freeCoordinate C ℕ 1) ^ 2
+
+/-- The constant translation mode fixes the normalized Schwarzian. -/
+theorem projectiveJetCurrentE_zero_schwarzian
+    {C : Type*} [Field C] :
+    projectiveJetCurrentE C 0 (projectiveJetSchwarzian C) = 0 := by
+  rw [projectiveJetCurrentE_eq_freeCoordinateDerivation]
+  simp [projectiveJetSchwarzian,
+    (freeCoordinateDerivation C ℕ 0).leibniz_div,
+    freeCoordinateDerivation_freeCoordinate_of_ne]
+
+/-- The constant inversion-conjugate mode also fixes the normalized Schwarzian. -/
+theorem projectiveJetCurrentF_zero_schwarzian
+    {C : Type*} [Field C] :
+    projectiveJetCurrentF C 0 (projectiveJetSchwarzian C) = 0 := by
+  simp only [projectiveJetSchwarzian, map_sub,
+    (projectiveJetCurrentF C 0).leibniz_div,
+    Derivation.leibniz_pow, smul_eq_mul,
+    projectiveJetCurrentF_freeCoordinate]
+  simp [projectiveJetSquareCoeff, Finset.sum_range_succ, freeCoordinate]
+  field_simp [freeCoordinate_ne_zero (C := C) (σ := ℕ) 1]
+  ring
+
+/-- The third translation current detects the normalized Schwarzian, so it is nonconstant. -/
+theorem projectiveJetCurrentE_three_schwarzian
+    {C : Type*} [Field C] :
+    projectiveJetCurrentE C 3 (projectiveJetSchwarzian C) =
+      (freeCoordinate C ℕ 1)⁻¹ := by
+  rw [projectiveJetCurrentE_eq_freeCoordinateDerivation]
+  simp [projectiveJetSchwarzian,
+    (freeCoordinateDerivation C ℕ 3).leibniz_div,
+    Derivation.leibniz_pow,
+    freeCoordinateDerivation_freeCoordinate_of_ne]
+  field_simp [freeCoordinate_ne_zero (C := C) (σ := ℕ) 1]
+
+/-- The normalized Schwarzian belongs to both depth-one current fields. -/
+theorem projectiveJetSchwarzian_mem_depthOneCurrentKernel_inf
+    {C : Type*} [Field C] :
+    projectiveJetSchwarzian C ∈
+      projectiveJetDirectLowCurrentKernelField C 1 ⊓
+        projectiveJetInverseLowCurrentKernelField C 1 := by
+  rw [IntermediateField.mem_inf,
+    mem_projectiveJetDirectLowCurrentKernelField_iff,
+    mem_projectiveJetInverseLowCurrentKernelField_iff]
+  constructor
+  · intro k hk
+    have hk0 : k = 0 := by omega
+    subst k
+    exact projectiveJetCurrentE_zero_schwarzian
+  · intro k hk
+    have hk0 : k = 0 := by omega
+    subst k
+    exact projectiveJetCurrentF_zero_schwarzian
+
+/-- At depth one the direct/inverse current meet is genuinely larger than the scalar field. -/
+theorem projectiveJetDepthOneCurrentKernel_inf_ne_bot
+    {C : Type*} [Field C] :
+    projectiveJetDirectLowCurrentKernelField C 1 ⊓
+        projectiveJetInverseLowCurrentKernelField C 1 ≠ ⊥ := by
+  intro heq
+  have hmem := projectiveJetSchwarzian_mem_depthOneCurrentKernel_inf (C := C)
+  rw [heq, IntermediateField.mem_bot] at hmem
+  rcases hmem with ⟨a, ha⟩
+  have hdetected :
+      (freeCoordinate C ℕ 1)⁻¹ = 0 := by
+    calc
+      (freeCoordinate C ℕ 1)⁻¹ =
+          projectiveJetCurrentE C 3 (projectiveJetSchwarzian C) :=
+        projectiveJetCurrentE_three_schwarzian.symm
+      _ = projectiveJetCurrentE C 3
+          (algebraMap C (FreeCoordinateRationalField C ℕ) a) := congrArg _ ha.symm
+      _ = 0 := (projectiveJetCurrentE C 3).map_algebraMap a
+  exact (inv_ne_zero (freeCoordinate_ne_zero (C := C) (σ := ℕ) 1)) hdetected
+
+/-- **Sharp free-current phase transition.**  The depth-one meet contains a nonconstant
+Schwarzian invariant, whereas every equal depth at least two has scalar meet. -/
+theorem projectiveJetCurrent_depthTransition
+    {C : Type*} [Field C] [CharZero C] :
+    (projectiveJetDirectLowCurrentKernelField C 1 ⊓
+        projectiveJetInverseLowCurrentKernelField C 1 ≠ ⊥) ∧
+      ∀ n, 2 ≤ n →
+        projectiveJetDirectLowCurrentKernelField C n ⊓
+          projectiveJetInverseLowCurrentKernelField C n = ⊥ :=
+  ⟨projectiveJetDepthOneCurrentKernel_inf_ne_bot,
+    fun _ hn ↦ projectiveJetEqualDepthCurrentKernel_inf_eq_bot hn⟩
 
 end
 

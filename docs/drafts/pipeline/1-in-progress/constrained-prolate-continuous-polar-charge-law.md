@@ -211,15 +211,18 @@ The formal theorem permits the support endpoint to fall between lattice points a
 last partial cell. Thus `(19c)` is not an asymptotic Euler--Maclaurin statement and does not
 interchange the radial series with a limit.
 
-For the fixed `m=0,4` constrained source, the remaining concrete source-side estimate is
+For the fixed `m=0,4` constrained source, the strongest convenient source-side estimate is
 
 ```text
 Var(g_lambda^+)=O(1).                                          (19e)
 ```
 
-It follows from fixed-mode prolate-to-Hermite convergence in `W^(1,1)`; the weaker
-`Var(g_lambda^+)=o(lambda*log lambda)` already suffices for the leading law below. This replaces
-the former leakage-normalized `z^(-2)` far-field gate by a compact-source regularity theorem.
+It follows from fixed-mode prolate-to-Hermite convergence in `W^(1,1)`. The exact resource
+threshold is weaker but must be stated with the correct logarithm: `(27)=o(d_lambda)` follows from
+`Var(g_lambda^+)=o(lambda/log lambda)`, while preservation of the positive
+`d_lambda*log lambda` leading term alone follows from `Var(g_lambda^+)=o(lambda)`. The formerly
+stated condition `o(lambda*log lambda)` was insufficient. This replaces the former
+leakage-normalized `z^(-2)` far-field gate by a compact-source regularity theorem.
 
 ## Poisson center: the critical Mellin coupling cannot be discarded
 
@@ -302,9 +305,17 @@ The final `+1` in `(26a)` is the frozen tail
 ```
 
 At the matching height `H=2*log lambda`, `g_lambda(0)=O(d_lambda)` and the fixed-mode variation
-law `(19e)` make `(27)` `O(d_lambda*log(lambda)/lambda)=o(d_lambda)`. Even the weaker variation
-target stated after `(19e)` is enough to preserve the positive leading coefficient after its rate
-is paired with `(H+1)/lambda`.
+law `(19e)` make `(27)` `O(d_lambda*log(lambda)/lambda)=o(d_lambda)`. More generally, the
+sufficient rate budget delivered by the absolute estimate `(27)` is
+
+```text
+Var(g_lambda^+)=o(lambda/log lambda)  -> center error=o(d_lambda),
+Var(g_lambda^+)=o(lambda)             -> center error=o(d_lambda*log lambda).
+```
+
+The second line is sufficient to preserve the positive leading coefficient; the first preserves
+the stronger `O(d_lambda)` remainder asserted in `(32)`. These are not claimed to be necessary if
+additional cancellation is found in the center pairing.
 
 Equations `(22)`--`(27)` yield the genuine global statement
 
@@ -387,12 +398,15 @@ The required new infrastructure is:
    mass bound `(26a)`;
 4. `[FORMALIZED]` the actual complex clipped center pairing and its linear-in-aperture norm bound
    under the half-density radial envelope;
-5. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
+5. `[FORMALIZED]` the exact normalized-budget transfer: sublinear variation preserves the
+   `d_lambda*log(lambda)` leading scale, while the sharper logarithmically weighted budget makes
+   the center error `o(d_lambda)`;
+6. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
    the all-radial primitive `(11)`;
-6. `[GENERIC COMPACT-SOURCE ONE-SIDED SPECIALIZATION FORMALIZED; PROLATE INSTANCE OPEN]` construct
+7. `[GENERIC COMPACT-SOURCE ONE-SIDED SPECIALIZATION FORMALIZED; PROLATE INSTANCE OPEN]` construct
    the concrete pointwise constrained source, prove its symmetric-Lebesgue input, identify its
    Fourier transform with `q_lambda`, and prove the fixed-mode source variation bound `(19e)`;
-7. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
+8. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
 
 No abstract hypothesis wrapper is sufficient: the concrete prolate primitive, one-sided Poisson
 specialization, and fixed-mode variation estimate must be theorems before `(32)` can be promoted
@@ -446,6 +460,8 @@ pairing. This separates the representative/regularity problem from the completed
   source, with exact value `a * Fourier(f)(a*m)`
 - [x] combine evenness, zero mean, compact support, and the Abel boundary theorem into the exact
   generic one-sided Poisson--Muntz specialization, including a finite physical-lattice cutoff
+- [x] formalize the normalized center-budget transfer and the sublinear-variation sufficient law
+  at the `d_lambda*log(lambda)` leading scale
 - [ ] construct the canonical pointwise representative of the constrained prolate mode and
   instantiate the generic theorem as the source-specific identity `(19a)`
 - [ ] prove the fixed-mode source variation bound `(19e)`

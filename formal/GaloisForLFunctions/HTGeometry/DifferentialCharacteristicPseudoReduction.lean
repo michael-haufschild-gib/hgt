@@ -784,6 +784,17 @@ theorem scalarDifferentialPolynomialOrder_le_of_orderBound
   by_contra hle
   exact hQ j.2 (Nat.lt_of_not_ge hle) hj
 
+/-- A declared scalar-order inequality supplies the corresponding variablewise order bound. -/
+theorem scalarJetOrderBound_of_order_le
+    {K : Type*} [CommSemiring K] {N : ℕ}
+    {Q : DifferentialPolynomial Unit K}
+    (hQ : scalarDifferentialPolynomialOrder Q ≤ N) :
+    ScalarJetOrderBound N Q := by
+  intro m hm hmem
+  have hmle : m ≤ scalarDifferentialPolynomialOrder Q :=
+    Finset.le_sup (f := fun j : Unit × ℕ ↦ j.2) hmem
+  omega
+
 /-- If all variables have order at most `N` but the order-`N` scalar jet is absent, the declared
 order is strictly below `N` (provided `N` is positive). -/
 theorem scalarDifferentialPolynomialOrder_lt_of_orderBound_notMem_top
@@ -825,14 +836,13 @@ noncomputable def higherJetPseudoReduction
     ∀ Q : DifferentialPolynomial Unit K, HigherJetPseudoReduction P Q
   | Q => by
       classical
+      change HigherJetPseudoReduction P Q
       by_cases hle : scalarDifferentialPolynomialOrder Q ≤
           scalarDifferentialPolynomialOrder P
       · exact
           { separantExponent := 0
             remainder := Q
-            congruence := by
-              change Q - Q ∈ differentialPolynomialIterateIdeal P
-              simp
+            congruence := by simp
             remainder_order_le := hle }
       · have hlt : scalarDifferentialPolynomialOrder P <
             scalarDifferentialPolynomialOrder Q := Nat.lt_of_not_ge hle
@@ -926,6 +936,255 @@ noncomputable def higherJetPseudoReduction
               exact (differentialPolynomialIterateIdeal P).add_mem hmul hnext
             remainder_order_le := next.remainder_order_le }
   termination_by Q => scalarDifferentialPolynomialOrder Q
+
+/-- Full characteristic pseudo-reduction certificate.  First the separant clears all jets above
+the characteristic order; then the initial clears the remaining leader degree. -/
+structure CharacteristicPseudoReduction
+    {K : Type*} [Field K] [Differential K]
+    (P Q : DifferentialPolynomial Unit K) where
+  initialExponent : ℕ
+  separantExponent : ℕ
+  remainder : DifferentialPolynomial Unit K
+  congruence :
+    scalarDifferentialPolynomialInitial P ^ initialExponent *
+          scalarDifferentialPolynomialSeparant P ^ separantExponent * Q - remainder ∈
+      differentialPolynomialIterateIdeal P
+  remainder_rank_lt :
+    scalarDifferentialPolynomialOrder remainder < scalarDifferentialPolynomialOrder P ∨
+      (scalarDifferentialPolynomialOrder remainder = scalarDifferentialPolynomialOrder P ∧
+        scalarDifferentialPolynomialLeaderDegree remainder <
+          scalarDifferentialPolynomialLeaderDegree P)
+
+/-- Reduce an arbitrary scalar differential polynomial by a nonconstant characteristic
+polynomial.  Both saturation exponents are explicit, and the result has strictly lower Ritt rank
+than the divisor. -/
+noncomputable def characteristicPseudoReduction
+    {K : Type*} [Field K] [Differential K] [CharZero K]
+    (P : DifferentialPolynomial Unit K) (hPvars : P.vars.Nonempty)
+    (Q : DifferentialPolynomial Unit K) : CharacteristicPseudoReduction P Q := by
+  classical
+  let high := higherJetPseudoReduction P hPvars Q
+  let leader := scalarDifferentialPolynomialLeader P
+  have hPdegree : MvPolynomial.degreeOf leader P ≠ 0 := by
+    rw [← MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
+    exact scalarDifferentialPolynomialLeader_mem_vars hPvars
+  let d := supportedMvPolynomialPseudoReductionAt leader high.remainder P hPdegree
+  have hHighBound : ScalarJetOrderBound
+      (scalarDifferentialPolynomialOrder P) high.remainder :=
+    scalarJetOrderBound_of_order_le high.remainder_order_le
+  have hPBound : ScalarJetOrderBound (scalarDifferentialPolynomialOrder P) P :=
+    scalarJetOrderBound_order P
+  have hRBound : ScalarJetOrderBound
+      (scalarDifferentialPolynomialOrder P) d.remainder := by
+    intro m hm hmem
+    rcases Finset.mem_union.mp (d.remainder_vars_subset hmem) with hmemHigh | hmemP
+    · exact hHighBound m hm hmemHigh
+    · exact hPBound m hm hmemP
+  have hRorderLe : scalarDifferentialPolynomialOrder d.remainder ≤
+      scalarDifferentialPolynomialOrder P :=
+    scalarDifferentialPolynomialOrder_le_of_orderBound hRBound
+  have hfinal :
+      scalarDifferentialPolynomialInitial P ^ d.exponent * high.remainder - d.remainder ∈
+        differentialPolynomialIterateIdeal P := by
+    have hPmem := differentialPolynomialIterateOver_mem_iterateIdeal P 0
+    have heq :
+        scalarDifferentialPolynomialInitial P ^ d.exponent * high.remainder - d.remainder =
+          P * d.quotient := by
+      calc
+        scalarDifferentialPolynomialInitial P ^ d.exponent * high.remainder - d.remainder =
+            mvPolynomialInitialAt leader P ^ d.exponent * high.remainder - d.remainder := by
+              rfl
+        _ = P * d.quotient := by rw [d.eq_mul_add]; ring
+    rw [heq]
+    exact Ideal.mul_mem_right d.quotient (differentialPolynomialIterateIdeal P)
+      (by simpa using hPmem)
+  refine
+    { initialExponent := d.exponent
+      separantExponent := high.separantExponent
+      remainder := d.remainder
+      congruence := ?_
+      remainder_rank_lt := ?_ }
+  · have hmul := (differentialPolynomialIterateIdeal P).mul_mem_left
+        (scalarDifferentialPolynomialInitial P ^ d.exponent) high.congruence
+    rw [show
+      scalarDifferentialPolynomialInitial P ^ d.exponent *
+            scalarDifferentialPolynomialSeparant P ^ high.separantExponent * Q - d.remainder =
+          scalarDifferentialPolynomialInitial P ^ d.exponent *
+              (scalarDifferentialPolynomialSeparant P ^ high.separantExponent * Q -
+                high.remainder) +
+            (scalarDifferentialPolynomialInitial P ^ d.exponent * high.remainder -
+              d.remainder) by ring]
+    exact (differentialPolynomialIterateIdeal P).add_mem hmul hfinal
+  · rcases Nat.lt_or_eq_of_le hRorderLe with hlt | heq
+    · exact Or.inl hlt
+    · right
+      refine ⟨heq, ?_⟩
+      have hleader : scalarDifferentialPolynomialLeader d.remainder = leader := by
+        unfold scalarDifferentialPolynomialLeader leader
+        exact Prod.ext (Subsingleton.elim _ _) heq
+      unfold scalarDifferentialPolynomialLeaderDegree
+      rw [hleader]
+      exact d.remainder_degree_lt
+
+/-- The differential principal ideal generated by `P` lies in every ideal which contains `P` and
+is stable under the total differential-polynomial derivation. -/
+theorem differentialPolynomialIterateIdeal_le_of_derivation_stable
+    {K : Type*} [Field K] [Differential K]
+    {I : Ideal (DifferentialPolynomial Unit K)}
+    {P : DifferentialPolynomial Unit K} (hPI : P ∈ I)
+    (hstable : ∀ Q : DifferentialPolynomial Unit K, Q ∈ I →
+      differentialPolynomialOverDerivation Unit K Q ∈ I) :
+    differentialPolynomialIterateIdeal P ≤ I := by
+  rw [differentialPolynomialIterateIdeal, Ideal.span_le]
+  rintro Q ⟨n, rfl⟩
+  induction n with
+  | zero => simpa using hPI
+  | succ n ih =>
+      change differentialPolynomialIterateOver (n + 1) P ∈ I
+      rw [differentialPolynomialIterateOver_succ]
+      exact hstable _ ih
+
+/-- The characteristic pseudo-remainder of a relation is zero.  Minimality is applied only after
+the constructive pseudo-reduction; no characteristic-set reduction theorem is assumed. -/
+theorem characteristicPseudoReduction_remainder_eq_zero
+    {K : Type*} [Field K] [Differential K] [CharZero K]
+    {I : Ideal (DifferentialPolynomial Unit K)} (hItop : I ≠ ⊤)
+    {P : DifferentialPolynomial Unit K}
+    (hP : IsMinimalScalarDifferentialPolynomialRank (I : Set _) P)
+    (hstable : ∀ Q : DifferentialPolynomial Unit K, Q ∈ I →
+      differentialPolynomialOverDerivation Unit K Q ∈ I)
+    {Q : DifferentialPolynomial Unit K} (hQI : Q ∈ I) :
+    (characteristicPseudoReduction P hP.2.2.1 Q).remainder = 0 := by
+  classical
+  let red := characteristicPseudoReduction P hP.2.2.1 Q
+  have hJle : differentialPolynomialIterateIdeal P ≤ I :=
+    differentialPolynomialIterateIdeal_le_of_derivation_stable hP.1 hstable
+  have hcongI :
+      scalarDifferentialPolynomialInitial P ^ red.initialExponent *
+            scalarDifferentialPolynomialSeparant P ^ red.separantExponent * Q -
+          red.remainder ∈ I :=
+    hJle red.congruence
+  have hproduct :
+      scalarDifferentialPolynomialInitial P ^ red.initialExponent *
+          scalarDifferentialPolynomialSeparant P ^ red.separantExponent * Q ∈ I :=
+    I.mul_mem_left
+      (scalarDifferentialPolynomialInitial P ^ red.initialExponent *
+        scalarDifferentialPolynomialSeparant P ^ red.separantExponent) hQI
+  have hRI : red.remainder ∈ I := by
+    rw [show red.remainder =
+        scalarDifferentialPolynomialInitial P ^ red.initialExponent *
+            scalarDifferentialPolynomialSeparant P ^ red.separantExponent * Q -
+          (scalarDifferentialPolynomialInitial P ^ red.initialExponent *
+              scalarDifferentialPolynomialSeparant P ^ red.separantExponent * Q -
+            red.remainder) by ring]
+    exact I.sub_mem hproduct hcongI
+  by_contra hR0
+  by_cases hRvars : red.remainder.vars.Nonempty
+  · have hmin := hP.2.2.2 hRI hR0 hRvars
+    rcases red.remainder_rank_lt with horder | ⟨horder, hdegree⟩
+    · exact (Nat.not_le_of_lt horder) hmin.1
+    · exact (Nat.not_le_of_lt hdegree) (hmin.2.1 horder.symm)
+  · have hempty : red.remainder.vars = ∅ :=
+      Finset.not_nonempty_iff_eq_empty.mp hRvars
+    have hC := MvPolynomial.vars_eq_empty_iff_eq_C.mp hempty
+    have hc : red.remainder.coeff 0 ≠ 0 := by
+      intro hc
+      apply hR0
+      rw [hC, hc]
+      simp
+    have hunit : IsUnit red.remainder := by
+      rw [hC]
+      exact IsUnit.map MvPolynomial.C hc.isUnit
+    exact hItop (I.eq_top_of_isUnit_mem hRI hunit)
+
+/-- Explicit initial/separant saturation for every element of a derivation-stable relation ideal.
+The exponents are produced by the two recursive pseudo-division phases. -/
+theorem exists_initial_separant_powers_mem_differentialPolynomialIterateIdeal
+    {K : Type*} [Field K] [Differential K] [CharZero K]
+    {I : Ideal (DifferentialPolynomial Unit K)} (hItop : I ≠ ⊤)
+    {P : DifferentialPolynomial Unit K}
+    (hP : IsMinimalScalarDifferentialPolynomialRank (I : Set _) P)
+    (hstable : ∀ Q : DifferentialPolynomial Unit K, Q ∈ I →
+      differentialPolynomialOverDerivation Unit K Q ∈ I)
+    {Q : DifferentialPolynomial Unit K} (hQI : Q ∈ I) :
+    ∃ a b : ℕ,
+      scalarDifferentialPolynomialInitial P ^ a *
+          scalarDifferentialPolynomialSeparant P ^ b * Q ∈
+        differentialPolynomialIterateIdeal P := by
+  let red := characteristicPseudoReduction P hP.2.2.1 Q
+  refine ⟨red.initialExponent, red.separantExponent, ?_⟩
+  have hzero := characteristicPseudoReduction_remainder_eq_zero
+    hItop hP hstable hQI
+  have hcong := red.congruence
+  simpa [red, hzero] using hcong
+
+/-- The differential principal ideal over a derivation-closed intermediate coefficient field,
+formed using the differential structure induced from the ambient field. -/
+noncomputable def differentialIntermediatePolynomialIterateIdeal
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) (hG : DerivationClosed G)
+    (P : DifferentialPolynomial Unit G) :
+    Ideal (DifferentialPolynomial Unit G) := by
+  letI : Differential G := derivationClosedDifferential G hG
+  exact differentialPolynomialIterateIdeal P
+
+/-- Kernel-specialized characteristic saturation.  Every scalar differential relation over a
+derivation-closed intermediate field becomes a member of the differential principal ideal after
+multiplication by explicit powers of the characteristic initial and separant. -/
+theorem exists_initial_separant_powers_mem_differentialIntermediatePolynomialIterateIdeal
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E] [CharZero E]
+    (G : IntermediateField F E) (hG : DerivationClosed G) (y : E)
+    {P : DifferentialPolynomial Unit G}
+    (hP : IsMinimalScalarDifferentialPolynomialRank
+      (differentialIntermediateRelationIdeal G y : Set _) P)
+    {Q : DifferentialPolynomial Unit G}
+    (hQ : Q ∈ differentialIntermediateRelationIdeal G y) :
+    ∃ a b : ℕ,
+      scalarDifferentialPolynomialInitial P ^ a *
+          scalarDifferentialPolynomialSeparant P ^ b * Q ∈
+        differentialIntermediatePolynomialIterateIdeal G hG P := by
+  letI : Differential G := derivationClosedDifferential G hG
+  change ∃ a b : ℕ,
+    scalarDifferentialPolynomialInitial P ^ a *
+        scalarDifferentialPolynomialSeparant P ^ b * Q ∈
+      differentialPolynomialIterateIdeal P
+  apply exists_initial_separant_powers_mem_differentialPolynomialIterateIdeal
+    (differentialIntermediateRelationIdeal_ne_top G y) hP
+  · intro R hR
+    simpa [differentialIntermediatePolynomialDerivation] using
+      differentialIntermediatePolynomialDerivation_mem_relationIdeal G hG y hR
+  · exact hQ
+
+/-- Full kernel package: an irreducible minimal characteristic relation with nonvanishing,
+non-kernel initial and separant, together with unconditional initial/separant saturation of every
+relation by the differential principal ideal it generates. -/
+theorem exists_differentialKernelCharacteristic_with_pseudoReduction
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E] [CharZero E]
+    (G : IntermediateField F E) (hGclosed : DerivationClosed G) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (u : G) (huF : (u : E) ∉ (⊥ : IntermediateField F E)) :
+    ∃ P : DifferentialPolynomial Unit G,
+      IsMinimalScalarDifferentialPolynomialRank
+          (differentialIntermediateRelationIdeal G y : Set _) P ∧
+        Irreducible P ∧
+        scalarDifferentialPolynomialInitial P ≠ 0 ∧
+        scalarDifferentialPolynomialInitial P ∉
+          differentialIntermediateRelationIdeal G y ∧
+        scalarDifferentialPolynomialSeparant P ≠ 0 ∧
+        scalarDifferentialPolynomialSeparant P ∉
+          differentialIntermediateRelationIdeal G y ∧
+        ∀ Q : DifferentialPolynomial Unit G,
+          Q ∈ differentialIntermediateRelationIdeal G y →
+            ∃ a b : ℕ,
+              scalarDifferentialPolynomialInitial P ^ a *
+                  scalarDifferentialPolynomialSeparant P ^ b * Q ∈
+                differentialIntermediatePolynomialIterateIdeal G hGclosed P := by
+  obtain ⟨P, hP, hIrreducible, hI0, hInot, hS0, hSnot⟩ :=
+    exists_differentialKernelCharacteristic_with_initial_separant G hG u huF
+  refine ⟨P, hP, hIrreducible, hI0, hInot, hS0, hSnot, ?_⟩
+  intro Q hQ
+  exact exists_initial_separant_powers_mem_differentialIntermediatePolynomialIterateIdeal
+    G hGclosed y hP hQ
 
 end
 

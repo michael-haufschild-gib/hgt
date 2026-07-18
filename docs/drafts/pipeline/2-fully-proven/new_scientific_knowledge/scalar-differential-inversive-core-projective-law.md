@@ -190,16 +190,22 @@ derivationClosed_stableRangeCore
 The targeted leaf build and formal lint pass.  The axiom reports contain only Lean's standard
 `propext`, `Classical.choice`, and `Quot.sound` axioms.
 
-The card remains at stage 2 because the Ritt--Kolchin differential Luroth theorem and the
-differential-order classification of automorphisms of `C<u>` are not yet formalized in this
-toolchain.  No axiom or opaque placeholder is used for either missing parent.
+`ScalarDifferentialRationalOrder` now formalizes differential-order additivity and proves that a
+differential automorphism and its inverse have order zero on a free generator.
+`RatFuncProjectiveAutomorphism`, `RatFuncMobiusEquiv`, and `RatFuncProjectiveNormalForm` then prove
+the genuine projective automorphism classification on `C(u)`, including explicit Möbius
+automorphisms and their conjugacy normal forms.  Their exact leaf builds and axiom audits are green.
+
+The card remains at stage 2 only because the unrestricted Ritt--Kolchin differential Lüroth theorem
+for an arbitrary intermediate differential field, and its final assembly with the stable core,
+remain under active formalization.  No axiom or opaque placeholder is used for that missing parent.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: exact theorem and proof architecture identified
 - [x] 1 -> 2 fully-proven: complete paper proof with classical parent isolated
-- [ ] 2 -> 3 formalized: stable-core automorphism is Lean-certified; differential Luroth and
-  projective classification remain
+- [ ] 2 -> 3 formalized: stable-core automorphism, differential order, and projective
+  classification are Lean-certified; unrestricted differential Luroth and final assembly remain
 - [ ] 3 -> 4 publication-ready: external novelty audit and standalone exposition
 
 ## Primary references checked
