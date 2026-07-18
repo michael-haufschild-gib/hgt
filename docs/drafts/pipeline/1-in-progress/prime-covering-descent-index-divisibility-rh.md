@@ -773,3 +773,71 @@ space; the mechanism classes it excludes are exactly the analytic-transport tool
    concurrent lanes; coordinate before entering.
 Next session: Gate-1 audit of the moonshot-spinor card + external metaplectic/spin literature;
 plus the T4 Lean batch (plan at cont. 6+) and referee passes for cont. 11-14 derivations.
+
+## 2026-07-18 session 1 (cont. 15) — spin-face Gate-1 complete; metaplectic explicit formula
+## designated as the Gate-2 target
+
+**[GATE-1 RESULTS]** Internal: moonshot-spinor card untouched (moved 0-backlog ->
+1-in-progress, owned by this lane); corpus holds ZERO proven metaplectic/spin theorems (only
+the sl_2 oscillator algebra, and a conjectural "metaplectic half-turn" label on the pi/8
+offset). External (verified citations): Weil Acta Math. 111 (1964) — the Weil index
+gamma ∈ mu_8 is well-defined, Witt-additive, and Mp is the canonical square root of the Fourier
+transform fixing Gauss-sum signs; Rao Pacific J. Math. 157 (1993) — explicit computable
+cocycle; Candelori 1512.04415 — theta multiplier bundle ≅ dual determinant bundle (algebraic
+w_2 source); Atiyah/Mumford 1971 — theta characteristics = spin structures, Arf parity
+deformation-invariant; Meyer Duke 127 (2005) — zeros as Euler characteristic of a graded
+complex (theorem, no positivity); Holland 2604.25288 — Hilbert reciprocity = adelic product
+formula for Weil-index defects. **A metaplectic/spin refinement of Weil's explicit formula
+does not exist in the literature (EMPTY — verified).**
+
+**[BRIDGE CONJECTURE — exact statement]** The w_2 class of the metaplectic sqrt-Frobenius
+cover induces on each box curve `y^2 = W_B(x)` a distinguished REAL EVEN theta characteristic
+(spin structure) whose Thomae theta-null sign assigns the reality bit of each per-pair disc
+factor; source-computability of this characteristic yields the coherent line-real sqrt(disc)
+family on all height-adapted boxes, which is equivalent (cont. 12, tower splice) to RH.
+
+**[GATE-2 TARGET — metaplectic explicit formula]** Construct the lift of the
+Riemann–Weil explicit formula to the metaplectic cover: each local/prime term acquires a
+canonical Weil-index phase in mu_8; the adelic product formula for Weil indices (= Hilbert/
+quadratic reciprocity, Holland's formulation) is then a GLOBAL SIGN LAW constraining the
+lifted formula. Why this passes the seven-representation filter (cont. 14): the supplied datum
+is a canonical mu_8/mu_2-valued phase of ARITHMETIC origin (reciprocity), not a continuous
+analytic reader, not a homotopy invariant, not symmetry transport — it is the first candidate
+producer in this lane whose bit-law is an arithmetic theorem. First exact sub-questions:
+(MQ1) what is the metaplectic lift of the test-function side (Mp acts on the oscillator/
+Schwartz model — the corpus's OscillatorAlgebra.lean is the formal seed); (MQ2) what do the
+prime terms' Weil indices compute at the finite places (local gamma of the quadratic form
+attached to each prime-power term); (MQ3) does the global mu_8 balance impose a constraint on
+the zero side that sees the per-pair bit (the hostile question — test for type-transparency
+IMMEDIATELY against the cont.-14 pattern before proof investment).
+
+## 2026-07-18 session 1 (cont. 16) — MQ3 first-pass verdict: NOT type-transparent under a
+## Lefschetz structure; metaplectic Lefschetz formula designated
+
+**[MQ3 — first-pass adjudication, this lane's reasoning; referee pending]** The metaplectic
+explicit formula evades the cont.-14 type-transparency pattern IF AND ONLY IF the zero side
+enters through a metaplectic LEFSCHETZ FIXED-POINT structure for the line-reflection involution
+`sigma(s) = 1 - conj(s)`:
+- off-line mirror pairs are sigma-SWAPPED: their contributions pair into REAL mu_8 data;
+- on-line zeros are sigma-FIXED: individual `e^{±i*pi/4}`-type (NON-real) contributions;
+- a Lefschetz identity EQUATES the type-weighted phase sum to an arithmetic side constrained by
+  the Weil-index product formula (reciprocity). Real terms cannot balance an odd number of
+  eighth-root phases: the mu_8 balance is a LAW on the on-line count (mod 8 structure), not a
+  record of types. This is the structural difference from the entry-bookkeeping transparency:
+  bookkeeping records; a fixed-point formula equates.
+- Transparency failure mode to guard: if the lift multiplies both sides by one divisor-
+  independent overall phase, nothing is constrained — the design requirement is therefore that
+  per-zero half-density signs (the spin datum) appear in the fixed-point contributions, i.e.
+  the zero complex itself must be metaplectically graded, not just the scaling flow.
+
+**[SUB-TARGET — metaplectic Lefschetz formula]** Construct the sigma-equivariant metaplectic
+refinement of Meyer's graded-complex realization (Duke 127 (2005): explicit formula as Euler
+characteristic — the theorem-level seed): lift the complex to half-densities, compute the
+sigma-fixed-point contributions with their Maslov/eta-type mu_8 phases, and identify the
+global balance with the adelic Weil-index product (Holland's reciprocity formulation). MQ1
+(oscillator-model lift; corpus seed OscillatorAlgebra.lean) and MQ2 (local prime-term Weil
+indices) become components of this construction. Hostile checks queued: (i) does Meyer's
+complex admit a sigma-action at all on the nose (his space is idele-class; sigma is s -> 1-s
+on the spectral side = inversion + twist on the group side — identify the exact involution);
+(ii) eta/Maslov corrections at fixed points must be computed, not assumed; (iii) the
+"arithmetic side" must be genuinely divisor-free (only prime/archimedean data).
