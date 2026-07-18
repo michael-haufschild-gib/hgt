@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GammaBellSubstitution
+import GaloisForLFunctions.HTGeometry.ArithmeticFunctionJacobianCriterion
 
 /-!
 # The Bell chain for an abstract derivation
@@ -20,39 +21,12 @@ theorem derivation_aeval_eq_sum_pderiv
     [Fintype ι] [DecidableEq ι]
     (δ : Derivation K R R) (g : ι → R) (P : MvPolynomial ι K) :
     δ (aeval g P) = ∑ j, aeval g (pderiv j P) * δ (g j) := by
-  induction P using MvPolynomial.induction_on with
-  | C c => simp
-  | add P Q hP hQ =>
-      rw [map_add, δ.map_add, hP, hQ, ← Finset.sum_add_distrib]
-      apply Finset.sum_congr rfl
-      intro j _
-      rw [map_add, map_add, add_mul]
-  | mul_X P k hP =>
-      rw [map_mul, aeval_X, Derivation.leibniz, hP, Finset.mul_sum]
-      simp only [smul_eq_mul]
-      symm
-      rw [show
-          (∑ j, aeval g (pderiv j (P * X k)) * δ (g j)) =
-            ∑ j, (aeval g (pderiv j P) * δ (g j) * g k +
-              (if j = k then aeval g P * δ (g j) else 0)) from by
-        apply Finset.sum_congr rfl
-        intro j _
-        by_cases h : j = k
-        · subst h
-          rw [pderiv_mul, map_add, pderiv_X, Pi.single_eq_same,
-            map_mul, aeval_X, mul_one, add_mul, if_pos rfl]
-          ring
-        · rw [pderiv_mul, map_add, pderiv_X,
-            Pi.single_eq_of_ne (Ne.symm h), mul_zero, _root_.map_zero, add_zero,
-            map_mul, aeval_X, if_neg h, add_zero]
-          ring]
-      rw [Finset.sum_add_distrib, Finset.sum_ite_eq' Finset.univ k
-        (fun j => aeval g P * δ (g j)), if_pos (Finset.mem_univ k)]
-      rw [add_comm]
-      congr 1
-      apply Finset.sum_congr rfl
-      intro j _
-      ring
+  exact HTGeometry.jacobian_aeval_eq_sum_pderiv
+    (δ : R → R)
+    (fun a b => δ.map_add a b)
+    (fun a b => by simpa only [smul_eq_mul] using δ.leibniz a b)
+    (fun c => δ.map_algebraMap c)
+    g P
 
 /-- One derivation step advances an iterated jet. -/
 theorem derivation_iterate_succ

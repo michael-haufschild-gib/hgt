@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.PolynomialTorsionLanguageDefectLimit
 import GaloisForLFunctions.HTGeometry.FinitePiProductSummability
 import GaloisForLFunctions.HTGeometry.MagnitudeWeightMassPolynomial
 import GaloisForLFunctions.HTGeometry.PolynomialPhaseLockAssembly
+import GaloisForLFunctions.HTGeometry.PolynomialPowerExplicitConfinement
+import GaloisForLFunctions.HTGeometry.PolynomialTaylorProuhetPhaseLock
 import Mathlib.LinearAlgebra.Lagrange
 
 /-!
@@ -179,6 +181,11 @@ def gaussianOffsetSource (a : ℤ →₀ ℕ) : ℤ :=
 /-- Quadratic energy of a finite multiplicity pattern on integer offsets. -/
 def gaussianOffsetPatternEnergy (a : ℤ →₀ ℕ) : ℤ :=
   a.sum fun r k => r ^ 2 * (k : ℤ)
+
+theorem gaussianOffsetPatternEnergy_nonneg (a : ℤ →₀ ℕ) :
+    0 ≤ gaussianOffsetPatternEnergy a := by
+  rw [gaussianOffsetPatternEnergy, Finsupp.sum]
+  exact Finset.sum_nonneg fun r _hr => mul_nonneg (sq_nonneg r) (by positivity)
 
 /-- Degree-`D`, signed-source-`S` Gaussian patterns supported in `[-R,R]`. -/
 def gaussianOffsetFace (D : ℕ) (S : ℤ) (R : ℕ) : Finset (ℤ →₀ ℕ) :=
@@ -452,6 +459,253 @@ theorem gaussianOffsetSource_patternOfWindow
     _ = (polynomialPatternSourceSum p : ℤ) - (K : ℤ) * (D : ℤ) := by
       rw [hweightedInt, hcountInt]
 
+/-- Intrinsic signed-offset pattern obtained directly from an ADE atom key at translation `q`. -/
+def gaussianOffsetPatternOfKey (q : ℕ) (ν : ℕ →₀ ℕ) : ℤ →₀ ℕ :=
+  Finsupp.mapDomain (centeredNatOffset q) ν
+
+theorem gaussianOffsetPatternOfKey_totalCount (q : ℕ) (ν : ℕ →₀ ℕ) :
+    (gaussianOffsetPatternOfKey q ν).sum (fun _ k => k) =
+      ν.sum (fun _ k => k) := by
+  rw [gaussianOffsetPatternOfKey,
+    Finsupp.sum_mapDomain_index (fun _ => rfl) (fun _ _ _ => rfl)]
+
+theorem gaussianOffsetSource_patternOfKey_eq_sum (q : ℕ) (ν : ℕ →₀ ℕ) :
+    gaussianOffsetSource (gaussianOffsetPatternOfKey q ν) =
+      ν.sum fun i k => ((i : ℤ) - (q : ℤ)) * (k : ℤ) := by
+  rw [gaussianOffsetSource, gaussianOffsetPatternOfKey,
+    Finsupp.sum_mapDomain_index (fun _ => by simp)
+      (fun _ x y => by push_cast; ring)]
+  rfl
+
+theorem gaussianOffsetSource_patternOfKey (q : ℕ) (ν : ℕ →₀ ℕ) :
+    gaussianOffsetSource (gaussianOffsetPatternOfKey q ν) =
+      (ν.sum (fun i k => i * k) : ℤ) -
+        (q : ℤ) * (ν.sum (fun _ k => k) : ℤ) := by
+  rw [gaussianOffsetSource_patternOfKey_eq_sum]
+  have hweighted :
+      ν.sum (fun i k => (i : ℤ) * (k : ℤ)) =
+        (ν.sum (fun i k => i * k) : ℤ) := by
+    exact_mod_cast rfl
+  have hcount :
+      ν.sum (fun _ k => (k : ℤ)) =
+        (ν.sum (fun _ k => k) : ℤ) := by
+    exact_mod_cast rfl
+  simp only [Finsupp.sum]
+  rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+  calc
+    ∑ x ∈ ν.support, ((x : ℤ) - (q : ℤ)) * (ν x : ℤ) =
+        ∑ x ∈ ν.support,
+          ((x : ℤ) * (ν x : ℤ) - (q : ℤ) * (ν x : ℤ)) := by
+      apply Finset.sum_congr rfl
+      intro x _hx
+      ring
+    _ = (ν.sum (fun i k => (i : ℤ) * (k : ℤ))) -
+        (q : ℤ) * ν.sum (fun _ k => (k : ℤ)) := by
+      simp only [Finsupp.sum]
+    _ = (ν.sum (fun i k => i * k) : ℤ) -
+        (q : ℤ) * (ν.sum (fun _ k => k) : ℤ) := by
+      rw [hweighted, hcount]
+
+theorem gaussianOffsetPatternEnergy_patternOfKey (q : ℕ) (ν : ℕ →₀ ℕ) :
+    gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) =
+      ν.sum fun i k => ((i : ℤ) - (q : ℤ)) ^ 2 * (k : ℤ) := by
+  rw [gaussianOffsetPatternEnergy, gaussianOffsetPatternOfKey,
+    Finsupp.sum_mapDomain_index (fun _ => by simp)
+      (fun _ x y => by push_cast; ring)]
+  rfl
+
+/-- Support-window predicate for an atom key translated about `q`. -/
+def gaussianAtomInWindow (q R : ℕ) (ν : ℕ →₀ ℕ) : Prop :=
+  ∀ i, ν i ≠ 0 → q - R ≤ i ∧ i ≤ q + R
+
+theorem gaussianOffsetPatternOfKey_support_subset
+    {q R : ℕ} {ν : ℕ →₀ ℕ} (hRq : R ≤ q)
+    (hwindow : gaussianAtomInWindow q R ν) :
+    (gaussianOffsetPatternOfKey q ν).support ⊆ gaussianOffsetInterval R := by
+  classical
+  rw [gaussianOffsetPatternOfKey,
+    Finsupp.mapDomain_support_of_injective (centeredNatOffset_injective q)]
+  intro z hz
+  obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hz
+  have hi0 : ν i ≠ 0 := Finsupp.mem_support_iff.mp hi
+  have hiWindow := hwindow i hi0
+  simp only [gaussianOffsetInterval, Finset.mem_Icc, centeredNatOffset]
+  constructor <;> omega
+
+theorem gaussianOffsetPatternOfKey_mem_face
+    {D q R : ℕ} {S : ℤ} {ν : ℕ →₀ ℕ}
+    (hcount : ν.sum (fun _ k => k) = D)
+    (hsource : gaussianOffsetSource (gaussianOffsetPatternOfKey q ν) = S)
+    (hRq : R ≤ q) (hwindow : gaussianAtomInWindow q R ν) :
+    gaussianOffsetPatternOfKey q ν ∈ gaussianOffsetFace D S R := by
+  have hsupp := gaussianOffsetPatternOfKey_support_subset hRq hwindow
+  apply mem_gaussianOffsetFace.mpr
+  refine ⟨?_, hsupp, hsource⟩
+  calc
+    (∑ z ∈ gaussianOffsetInterval R, gaussianOffsetPatternOfKey q ν z) =
+        (gaussianOffsetPatternOfKey q ν).sum (fun _ k => k) := by
+      symm
+      exact Finsupp.sum_of_support_subset
+        (gaussianOffsetPatternOfKey q ν) hsupp (fun _ k => k) (fun _ _ => rfl)
+    _ = ν.sum (fun _ k => k) := gaussianOffsetPatternOfKey_totalCount q ν
+    _ = D := hcount
+
+/-- Exact quadratic valuation expansion for an atom key written in intrinsic signed offsets. -/
+theorem atomValuation_gaussianOffsetPatternOfKey
+    (B : ℝ) {D q : ℕ} {S : ℤ} {ν : ℕ →₀ ℕ}
+    (hcount : ν.sum (fun _ k => k) = D)
+    (hsource : gaussianOffsetSource (gaussianOffsetPatternOfKey q ν) = S) :
+    atomValuation (fun i => B * (i : ℝ) ^ 2) ν =
+      B * ((D : ℝ) * (q : ℝ) ^ 2 + 2 * (q : ℝ) * (S : ℝ) +
+        (gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) : ℝ)) := by
+  have hcountR : ν.sum (fun _ k => (k : ℝ)) = (D : ℝ) := by
+    exact_mod_cast hcount
+  have hsourceInt :
+      ν.sum (fun i k => ((i : ℤ) - (q : ℤ)) * (k : ℤ)) = S := by
+    rw [← gaussianOffsetSource_patternOfKey_eq_sum]
+    exact hsource
+  have hsourceR :
+      ν.sum (fun i k => ((i : ℝ) - (q : ℝ)) * (k : ℝ)) = (S : ℝ) := by
+    exact_mod_cast hsourceInt
+  have henergyInt :
+      ν.sum (fun i k => ((i : ℤ) - (q : ℤ)) ^ 2 * (k : ℤ)) =
+        gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) := by
+    exact (gaussianOffsetPatternEnergy_patternOfKey q ν).symm
+  have henergyR :
+      ν.sum (fun i k => ((i : ℝ) - (q : ℝ)) ^ 2 * (k : ℝ)) =
+        (gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) : ℝ) := by
+    exact_mod_cast henergyInt
+  have hquad :
+      ν.sum (fun i k => (k : ℝ) * (i : ℝ) ^ 2) =
+        (D : ℝ) * (q : ℝ) ^ 2 + 2 * (q : ℝ) * (S : ℝ) +
+          (gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) : ℝ) := by
+    rw [Finsupp.sum, Finsupp.sum, Finsupp.sum, Finsupp.sum] at
+      hcountR hsourceR henergyR ⊢
+    calc
+      ∑ i ∈ ν.support, (ν i : ℝ) * (i : ℝ) ^ 2 =
+          ∑ i ∈ ν.support,
+            ((q : ℝ) ^ 2 * (ν i : ℝ) +
+              2 * (q : ℝ) * (((i : ℝ) - (q : ℝ)) * (ν i : ℝ)) +
+              (((i : ℝ) - (q : ℝ)) ^ 2 * (ν i : ℝ))) := by
+        apply Finset.sum_congr rfl
+        intro i _hi
+        ring
+      _ = (q : ℝ) ^ 2 * (∑ i ∈ ν.support, (ν i : ℝ)) +
+          2 * (q : ℝ) *
+            (∑ i ∈ ν.support, ((i : ℝ) - (q : ℝ)) * (ν i : ℝ)) +
+          ∑ i ∈ ν.support,
+            ((i : ℝ) - (q : ℝ)) ^ 2 * (ν i : ℝ) := by
+        rw [Finset.sum_add_distrib, Finset.sum_add_distrib,
+          Finset.mul_sum, Finset.mul_sum]
+        ring
+      _ = (D : ℝ) * (q : ℝ) ^ 2 + 2 * (q : ℝ) * (S : ℝ) +
+          (gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) : ℝ) := by
+        rw [hcountR, hsourceR, henergyR]
+        ring
+  rw [atomValuation]
+  calc
+    ν.sum (fun i k => (k : ℝ) * (B * (i : ℝ) ^ 2)) =
+        B * ν.sum (fun i k => (k : ℝ) * (i : ℝ) ^ 2) := by
+      rw [Finsupp.sum, Finsupp.sum, Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro i _hi
+      ring
+    _ = B * ((D : ℝ) * (q : ℝ) ^ 2 + 2 * (q : ℝ) * (S : ℝ) +
+        (gaussianOffsetPatternEnergy (gaussianOffsetPatternOfKey q ν) : ℝ)) := by
+      rw [hquad]
+
+/-- Finite centered pattern face corresponding to the intrinsic signed-source face. -/
+def gaussianPolynomialPatternFace (D : ℕ) (S : ℤ) (R : ℕ) :
+    Finset (Fin (2 * R + 1) → Fin (D + 1)) :=
+  (degreeDPolynomialPatterns (2 * R + 1) D).filter fun p =>
+    (polynomialPatternSourceSum p : ℤ) - (R : ℤ) * (D : ℤ) = S
+
+@[simp] theorem mem_gaussianPolynomialPatternFace
+    {D : ℕ} {S : ℤ} {R : ℕ}
+    {p : Fin (2 * R + 1) → Fin (D + 1)} :
+    p ∈ gaussianPolynomialPatternFace D S R ↔
+      (∑ r, (p r : ℕ)) = D ∧
+        (polynomialPatternSourceSum p : ℤ) - (R : ℤ) * (D : ℤ) = S := by
+  simp [gaussianPolynomialPatternFace, degreeDPolynomialPatterns]
+
+theorem gaussianOffsetPatternOfWindow_support_subset_centered
+    {D R : ℕ} (p : Fin (2 * R + 1) → Fin (D + 1)) :
+    (gaussianOffsetPatternOfWindow R p).support ⊆ gaussianOffsetInterval R := by
+  classical
+  rw [gaussianOffsetPatternOfWindow,
+    Finsupp.mapDomain_support_of_injective (centeredNatOffset_injective R)]
+  intro z hz
+  obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hz
+  have hr0 : atomPatternKey p r ≠ 0 := Finsupp.mem_support_iff.mp hr
+  have hrlt : r < 2 * R + 1 := by
+    by_contra hnot
+    rw [atomPatternKey_apply, dif_neg hnot] at hr0
+    exact hr0 rfl
+  simp only [gaussianOffsetInterval, Finset.mem_Icc, centeredNatOffset]
+  constructor <;> omega
+
+theorem gaussianOffsetPatternOfWindow_mem_face_centered
+    {D R : ℕ} {S : ℤ} (p : Fin (2 * R + 1) → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D)
+    (hsource : (polynomialPatternSourceSum p : ℤ) -
+      (R : ℤ) * (D : ℤ) = S) :
+    gaussianOffsetPatternOfWindow R p ∈ gaussianOffsetFace D S R := by
+  have hsupp := gaussianOffsetPatternOfWindow_support_subset_centered p
+  apply mem_gaussianOffsetFace.mpr
+  refine ⟨?_, hsupp, ?_⟩
+  · calc
+      (∑ z ∈ gaussianOffsetInterval R, gaussianOffsetPatternOfWindow R p z) =
+          (gaussianOffsetPatternOfWindow R p).sum (fun _ k => k) := by
+        symm
+        exact Finsupp.sum_of_support_subset
+          (gaussianOffsetPatternOfWindow R p) hsupp (fun _ k => k) (fun _ _ => rfl)
+      _ = ∑ r, (p r : ℕ) := gaussianOffsetPatternOfWindow_totalCount p
+      _ = D := hcount
+  · rw [gaussianOffsetSource_patternOfWindow p hcount]
+    exact hsource
+
+theorem gaussianOffsetPatternWindow_patternOfWindow_eq
+    {D R : ℕ} {S : ℤ} (p : Fin (2 * R + 1) → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D)
+    (hsource : (polynomialPatternSourceSum p : ℤ) -
+      (R : ℤ) * (D : ℤ) = S) :
+    gaussianOffsetPatternWindow (gaussianOffsetPatternOfWindow R p)
+      (gaussianOffsetFace_totalCount
+        (gaussianOffsetPatternOfWindow_mem_face_centered p hcount hsource)) R = p := by
+  funext j
+  apply Fin.ext
+  change gaussianOffsetPatternOfWindow R p ((centeredIndexEquiv R j).1) = (p j : ℕ)
+  rw [gaussianOffsetPatternOfWindow,
+    Finsupp.mapDomain_apply (centeredNatOffset_injective R)]
+  change atomPatternKey p (j : ℕ) = (p j : ℕ)
+  rw [atomPatternKey_apply, dif_pos j.isLt]
+
+/-- Centered quadratic energy of a finite window pattern. -/
+def gaussianWindowPatternEnergy {D R : ℕ}
+    (p : Fin (2 * R + 1) → Fin (D + 1)) : ℤ :=
+  ∑ j, (((j : ℕ) : ℤ) - (R : ℤ)) ^ 2 * ((p j : ℕ) : ℤ)
+
+theorem gaussianWindowPatternEnergy_eq_patternOfWindow
+    {D R : ℕ} {S : ℤ} (p : Fin (2 * R + 1) → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D)
+    (hsource : (polynomialPatternSourceSum p : ℤ) -
+      (R : ℤ) * (D : ℤ) = S) :
+    gaussianWindowPatternEnergy p =
+      gaussianOffsetPatternEnergy (gaussianOffsetPatternOfWindow R p) := by
+  let ha := gaussianOffsetPatternOfWindow_mem_face_centered p hcount hsource
+  have henergy := gaussianOffsetPatternWindow_energy ha
+  rw [gaussianOffsetPatternWindow_patternOfWindow_eq p hcount hsource] at henergy
+  exact henergy
+
+theorem gaussianOffsetPatternWindow_mem_gaussianPolynomialPatternFace
+    {D R : ℕ} {S : ℤ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) :
+    gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R ∈
+      gaussianPolynomialPatternFace D S R := by
+  rw [mem_gaussianPolynomialPatternFace]
+  exact ⟨gaussianOffsetPatternWindow_count ha,
+    gaussianOffsetPatternWindow_source ha⟩
+
 /-- Translation of a signed global offset pattern to nonnegative coefficient indices.  The
 definition is independent of any finite window used to display the pattern. -/
 def gaussianOffsetShiftedKey (q : ℕ) (a : ℤ →₀ ℕ) : ℕ →₀ ℕ :=
@@ -462,6 +716,16 @@ theorem gaussianOffsetShiftedKey_eq_mapDomain (q : ℕ) (a : ℤ →₀ ℕ) :
     gaussianOffsetShiftedKey q a =
       Finsupp.mapDomain (fun z : ℤ => Int.toNat ((q : ℤ) + z)) a := by
   rfl
+
+/-- Translating an atom key to signed offsets and back recovers the key exactly. -/
+theorem gaussianOffsetShiftedKey_patternOfKey (q : ℕ) (ν : ℕ →₀ ℕ) :
+    gaussianOffsetShiftedKey q (gaussianOffsetPatternOfKey q ν) = ν := by
+  rw [gaussianOffsetShiftedKey_eq_mapDomain, gaussianOffsetPatternOfKey,
+    ← Finsupp.mapDomain_comp]
+  apply congrArg (fun f : ℕ → ℕ => Finsupp.mapDomain f ν)
+  funext i
+  change Int.toNat ((q : ℤ) + ((i : ℤ) - (q : ℤ))) = i
+  simp
 
 /-- Translating a bounded pattern through its original window or through its intrinsic signed
 offset pattern gives exactly the same coefficient multiplicity key. -/
@@ -538,6 +802,69 @@ theorem shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq
       intro z _hzInterval hzSupport
       rw [Finsupp.notMem_support_iff.mp hzSupport]
       simp
+
+/-- Exact Gaussian valuation of a translated intrinsic offset pattern. -/
+theorem atomValuation_gaussianOffsetShiftedKey
+    (B : ℝ) {D : ℕ} {S : ℤ} {R q : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) (hRq : R ≤ q) :
+    atomValuation (fun i => B * (i : ℝ) ^ 2) (gaussianOffsetShiftedKey q a) =
+      B * ((D : ℝ) * (q : ℝ) ^ 2 + 2 * (q : ℝ) * (S : ℝ) +
+        (gaussianOffsetPatternEnergy a : ℝ)) := by
+  let p := gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R
+  have hpcount : (∑ j, (p j : ℕ)) = D := by
+    simpa only [p] using gaussianOffsetPatternWindow_count ha
+  have hsourceInt :
+      (polynomialPatternSourceSum p : ℤ) - (R : ℤ) * (D : ℤ) = S := by
+    simpa only [p] using gaussianOffsetPatternWindow_source ha
+  have hsourceR :
+      (polynomialPatternSourceSum p : ℝ) =
+        (S : ℝ) + (R : ℝ) * (D : ℝ) := by
+    exact_mod_cast (by linarith [hsourceInt] :
+      (polynomialPatternSourceSum p : ℤ) = S + (R : ℤ) * (D : ℤ))
+  have henergyInt :
+      (∑ j : Fin (2 * R + 1),
+        (((j : ℕ) : ℤ) - (R : ℤ)) ^ 2 * ((p j : ℕ) : ℤ)) =
+        gaussianOffsetPatternEnergy a := by
+    simpa only [p] using gaussianOffsetPatternWindow_energy ha
+  have hmoment2Int :
+      (polynomialPatternMoment p 2 : ℤ) =
+        ∑ j : Fin (2 * R + 1),
+          ((j : ℤ) ^ 2 * ((p j : ℕ) : ℤ)) := by
+    rw [polynomialPatternMoment]
+    push_cast
+    rfl
+  have hmoment1Int :
+      (polynomialPatternSourceSum p : ℤ) =
+        ∑ j : Fin (2 * R + 1),
+          ((j : ℤ) * ((p j : ℕ) : ℤ)) := by
+    rw [polynomialPatternSourceSum]
+    push_cast
+    rfl
+  have hcountInt :
+      (D : ℤ) = ∑ j : Fin (2 * R + 1), ((p j : ℕ) : ℤ) := by
+    exact_mod_cast hpcount.symm
+  have henergyExpandInt :
+      gaussianOffsetPatternEnergy a =
+        (polynomialPatternMoment p 2 : ℤ) -
+          2 * (R : ℤ) * (polynomialPatternSourceSum p : ℤ) +
+            (R : ℤ) ^ 2 * (D : ℤ) := by
+    rw [← henergyInt, hmoment2Int, hmoment1Int, hcountInt,
+      Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib,
+      ← Finset.sum_sub_distrib]
+    apply Finset.sum_congr rfl
+    intro j _hj
+    ring
+  have henergyExpandR :
+      (gaussianOffsetPatternEnergy a : ℝ) =
+        (polynomialPatternMoment p 2 : ℝ) -
+          2 * (R : ℝ) * (polynomialPatternSourceSum p : ℝ) +
+            (R : ℝ) ^ 2 * (D : ℝ) := by
+    exact_mod_cast henergyExpandInt
+  rw [← shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq ha hRq,
+    atomValuation_shiftedAtomPatternKey p hRq,
+    polynomialPatternPowerValuation_two p ((q : ℝ) - R) hpcount]
+  rw [hsourceR]
+  nlinarith [henergyExpandR]
 
 /-- Enlarging the centered display window leaves the translated multiplicity key unchanged. -/
 theorem shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq_of_le
@@ -1215,6 +1542,255 @@ theorem exists_gaussianOffsetFace_maximal_stable_nonzero_leadingCoefficient
       change Pb.natDegree ≤ H
       exact Finset.le_max' degrees Pb.natDegree hPbmem
   exact ⟨S, H, R, a, haFace, ell, hsource, hHle, hell, hstable, huniform⟩
+
+/-- Signed source of an ADE atom key relative to the degree-`D` translation center `q`. -/
+def gaussianAtomSignedSource (D q : ℕ) (ν : ℕ →₀ ℕ) : ℤ :=
+  (ν.sum (fun i k => i * k) : ℤ) - ((D * q : ℕ) : ℤ)
+
+/-- Every active atom at a Gaussian coefficient level belongs to exactly one of the four classes
+needed by the tail argument: lower degree, larger top-degree source, least-source inside the
+chosen centered window, or least-source exterior. -/
+theorem activeAevalAtom_gaussian_four_way
+    {n D τ q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ}
+    (ha : anchor ∈ Q.support)
+    (haD : jetMonomialDegree n anchor = D)
+    (haMax : ∀ m ∈ Q.support,
+      jetMonomialDegree n m = D →
+        magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
+    (hDmax : D = magnitudeMaxJetDegree n Q)
+    (hS : S + (magnitudeShiftCode n Q anchor : ℤ) =
+      ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ))
+    {ν : ℕ →₀ ℕ}
+    (hν : ν ∈ activeAevalAtoms n (D * q + τ) Q) :
+    ν.sum (fun _ k => k) < D ∨
+      (ν.sum (fun _ k => k) = D ∧ S < gaussianAtomSignedSource D q ν) ∨
+      (ν.sum (fun _ k => k) = D ∧
+        gaussianAtomSignedSource D q ν = S ∧ gaussianAtomInWindow q R ν) ∨
+      (ν.sum (fun _ k => k) = D ∧
+        gaussianAtomSignedSource D q ν = S ∧ ¬gaussianAtomInWindow q R ν) := by
+  have happearing :
+      ν ∈ (sigmaIdx n (D * q + τ) Q).image (atomKeyOf n) :=
+    (mem_activeAevalAtoms.mp hν).1
+  have hcountle : ν.sum (fun _ k => k) ≤ D := by
+    simpa only [hDmax] using appearing_atom_count_le Q happearing
+  rcases hcountle.eq_or_lt with hcount | hcountlt
+  · obtain ⟨m, hm, hmDegree, hinvariant⟩ :=
+      appearing_atom_sum_add_shiftCode Q happearing
+    have hmTop : jetMonomialDegree n m = D := by
+      rw [hmDegree, hcount]
+    have hcode := haMax m hm hmTop
+    have hsourceFloor : S ≤ gaussianAtomSignedSource D q ν := by
+      have hinvariantInt :
+          (ν.sum (fun i k => i * k) : ℤ) +
+              (magnitudeShiftCode n Q m : ℤ) =
+            ((D * q + τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ) := by
+        exact_mod_cast hinvariant
+      have hcodeInt :
+          (magnitudeShiftCode n Q m : ℤ) ≤
+            (magnitudeShiftCode n Q anchor : ℤ) := by
+        exact_mod_cast hcode
+      dsimp only [gaussianAtomSignedSource]
+      push_cast at hinvariantInt hS ⊢
+      nlinarith
+    rcases hsourceFloor.eq_or_lt with hsource | hsource
+    · by_cases hwindow : gaussianAtomInWindow q R ν
+      · exact Or.inr (Or.inr (Or.inl ⟨hcount, hsource.symm, hwindow⟩))
+      · exact Or.inr (Or.inr (Or.inr ⟨hcount, hsource.symm, hwindow⟩))
+    · exact Or.inr (Or.inl ⟨hcount, hsource⟩)
+  · exact Or.inl hcountlt
+
+/-- Active lower-degree and larger-source atoms, the two aggregate classes which vanish after
+normalization before the Gaussian exterior tail is considered. -/
+def gaussianGapActiveAtoms
+    (n D τ : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ) (S : ℤ) (q : ℕ) :
+    Finset (ℕ →₀ ℕ) :=
+  (activeAevalAtoms n (D * q + τ) Q).filter fun ν =>
+    ν.sum (fun _ k => k) < D ∨ S < gaussianAtomSignedSource D q ν
+
+/-- Active least-source atoms visible in the centered radius-`R` phase window. -/
+def gaussianInteriorActiveAtoms
+    (n D τ : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ) (S : ℤ)
+    (q R : ℕ) : Finset (ℕ →₀ ℕ) :=
+  (activeAevalAtoms n (D * q + τ) Q).filter fun ν =>
+    ν.sum (fun _ k => k) = D ∧ gaussianAtomSignedSource D q ν = S ∧
+      gaussianAtomInWindow q R ν
+
+/-- Active least-source atoms outside the centered radius-`R` phase window. -/
+def gaussianExteriorActiveAtoms
+    (n D τ : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ) (S : ℤ)
+    (q R : ℕ) : Finset (ℕ →₀ ℕ) :=
+  (activeAevalAtoms n (D * q + τ) Q).filter fun ν =>
+    ν.sum (fun _ k => k) = D ∧ gaussianAtomSignedSource D q ν = S ∧
+      ¬gaussianAtomInWindow q R ν
+
+/-- Lower degree has a quadratic gap and every larger active source has a linear Gaussian gap.
+After taking their minimum, both classes have one common positive linear gap from a fixed
+least-source witness. -/
+theorem exists_eventually_gaussianGapActiveAtom_linear
+    {B : ℝ} (hB : 0 < B)
+    {n D τ : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ} {R₀ : ℕ} {a₀ : ℤ →₀ ℕ}
+    (ha : anchor ∈ Q.support)
+    (haD : jetMonomialDegree n anchor = D)
+    (haMax : ∀ m ∈ Q.support,
+      jetMonomialDegree n m = D →
+        magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
+    (hDmax : D = magnitudeMaxJetDegree n Q) (hD : 0 < D)
+    (hS : S + (magnitudeShiftCode n Q anchor : ℤ) =
+      ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ))
+    (ha₀ : a₀ ∈ gaussianOffsetFace D S R₀) :
+    ∃ c : ℝ, 0 < c ∧ ∀ᶠ t : ℕ in atTop,
+      ∀ ν ∈ gaussianGapActiveAtoms n D τ Q S (t + R₀),
+        atomValuation (fun i => B * (i : ℝ) ^ 2)
+            (gaussianOffsetShiftedKey (t + R₀) a₀) + c * (t : ℝ) ≤
+          atomValuation (fun i => B * (i : ℝ) ^ 2) ν := by
+  classical
+  let p₀ := gaussianOffsetPatternWindow a₀
+    (gaussianOffsetFace_totalCount ha₀) R₀
+  have hp₀count : (∑ r, (p₀ r : ℕ)) = D := by
+    simpa only [p₀] using gaussianOffsetPatternWindow_count ha₀
+  have hkeyCount : (atomPatternKey p₀).sum (fun _ k => k) = D := by
+    simpa only [atomPatternKey_count] using hp₀count
+  let δ := tupleOfFinsupp (atomPatternKey p₀) D hkeyCount
+  let Z := magnitudeMaxXDegree Q
+  obtain ⟨cdeg, hcdeg, hdeg⟩ :=
+    eventually_lowerDegree_tuplePower_rpow_gap
+      (β := (2 : ℝ)) (by norm_num) hD δ Z
+  let c := min (B * cdeg) B
+  have hc : 0 < c := lt_min (mul_pos hB hcdeg) hB
+  have hkeyShift : ∀ t : ℕ,
+      key (fun i => t + δ i) = gaussianOffsetShiftedKey (t + R₀) a₀ := by
+    intro t
+    have hmap :
+        Finsupp.mapDomain (fun r : ℕ => t + r) (key δ) =
+          key (fun i => t + δ i) := by
+      rw [key, key, Finsupp.mapDomain_finsetSum]
+      apply Finset.sum_congr rfl
+      intro i _hi
+      rw [Finsupp.mapDomain_single]
+    calc
+      key (fun i => t + δ i) =
+          Finsupp.mapDomain (fun r : ℕ => t + r) (key δ) := hmap.symm
+      _ = Finsupp.mapDomain (windowShift (t + R₀) R₀)
+          (atomPatternKey p₀) := by
+        rw [key_tupleOfFinsupp (atomPatternKey p₀) D hkeyCount]
+        apply congrArg (fun f : ℕ → ℕ =>
+          Finsupp.mapDomain f (atomPatternKey p₀))
+        funext r
+        dsimp only [windowShift]
+        omega
+      _ = shiftedAtomPatternKey (t + R₀) R₀ p₀ := rfl
+      _ = gaussianOffsetShiftedKey (t + R₀) a₀ :=
+        shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq ha₀ (by omega)
+  have hE₀ : 0 ≤ gaussianOffsetPatternEnergy a₀ :=
+    gaussianOffsetPatternEnergy_nonneg a₀
+  filter_upwards [hdeg,
+    eventually_ge_atTop (max 1
+      (max (magnitudeMaxXDegree Q + 1)
+        (gaussianOffsetPatternEnergy a₀).toNat))] with t hdegT ht
+  intro ν hνGap
+  have hνActive : ν ∈ activeAevalAtoms n (D * (t + R₀) + τ) Q :=
+    (Finset.mem_filter.mp hνGap).1
+  have hνAppearing :
+      ν ∈ (sigmaIdx n (D * (t + R₀) + τ) Q).image (atomKeyOf n) :=
+    (mem_activeAevalAtoms.mp hνActive).1
+  have hgapClass := (Finset.mem_filter.mp hνGap).2
+  have ht1 : 1 ≤ t := (le_max_left 1 _).trans ht
+  by_cases hlower : ν.sum (fun _ k => k) < D
+  · let d := ν.sum (fun _ k => k)
+    have hdD : d < D := by simpa only [d] using hlower
+    have hlevel : magnitudeMaxXDegree Q < D * (t + R₀) + τ := by
+      have htZ : magnitudeMaxXDegree Q + 1 ≤ t := by
+        exact (le_trans (le_max_left _ _)
+          (le_max_right 1 _)).trans ht
+      have htD : t ≤ D * (t + R₀) + τ := by
+        have hmul : t ≤ D * t := by
+          simpa only [one_mul] using Nat.mul_le_mul_right t (show 1 ≤ D by omega)
+        nlinarith
+      omega
+    have hsupport := appearing_atom_support_nonempty_of_maxX_lt_level
+      Q hνAppearing hlevel
+    have hd : 0 < d := by
+      by_contra hd0
+      have hdEq : d = 0 := Nat.eq_zero_of_not_pos hd0
+      obtain ⟨i, hi⟩ := hsupport
+      have hiBound := finsupp_apply_le_count ν i
+      have hiNe : ν i ≠ 0 := Finsupp.mem_support_iff.mp hi
+      apply hiNe
+      apply Nat.eq_zero_of_le_zero
+      rw [← hdEq]
+      simpa only [d] using hiBound
+    let z := tupleOfFinsupp ν d (by rfl)
+    have hsumz := sum_tupleOfFinsupp ν d (by rfl)
+    have hmass : D * t ≤ (∑ i, z i) + Z := by
+      rw [show (∑ i, z i) = ν.sum (fun i k => i * k) by
+        simpa only [z] using hsumz]
+      have hlowerMass := (appearing_atom_weighted_sum_bounds Q hνAppearing).1
+      change D * (t + R₀) + τ - Z ≤ ν.sum (fun i k => i * k) at hlowerMass
+      dsimp only [Z]
+      omega
+    have hdegreeGap := hdegT d hd hdD z hmass
+    have hbaseVal :
+        (gaussianOffsetShiftedKey (t + R₀) a₀).sum
+            (fun i k => (k : ℝ) * (i : ℝ) ^ (2 : ℝ)) =
+          tuplePowerValuation (2 : ℝ) (fun i => t + δ i) := by
+      rw [← hkeyShift t]
+      exact phaseKeyPowerValuation (β := (2 : ℝ)) (fun i => t + δ i)
+    have hνVal :
+        ν.sum (fun i k => (k : ℝ) * (i : ℝ) ^ (2 : ℝ)) =
+          tuplePowerValuation (2 : ℝ) z := by
+      rw [valuation_tupleOfFinsupp ν d (by rfl)]
+      rfl
+    have hct : c * (t : ℝ) ≤ B * (cdeg * (t : ℝ) ^ (2 : ℝ)) := by
+      have hcdegLe : c ≤ B * cdeg := min_le_left _ _
+      have htR : (1 : ℝ) ≤ t := by exact_mod_cast ht1
+      have htSq : (t : ℝ) ≤ (t : ℝ) ^ (2 : ℝ) := by
+        rw [Real.rpow_two]
+        nlinarith
+      calc
+        c * (t : ℝ) ≤ (B * cdeg) * (t : ℝ) :=
+          mul_le_mul_of_nonneg_right hcdegLe (by positivity)
+        _ ≤ (B * cdeg) * (t : ℝ) ^ (2 : ℝ) :=
+          mul_le_mul_of_nonneg_left htSq (mul_nonneg hB.le hcdeg.le)
+        _ = B * (cdeg * (t : ℝ) ^ (2 : ℝ)) := by ring
+    rw [atomValuation_scaledPower, atomValuation_scaledPower,
+      hbaseVal, hνVal]
+    nlinarith [mul_le_mul_of_nonneg_left hdegreeGap hB.le]
+  · have hlarger : S < gaussianAtomSignedSource D (t + R₀) ν :=
+      hgapClass.resolve_left hlower
+    have hcountle : ν.sum (fun _ k => k) ≤ D := by
+      simpa only [hDmax] using appearing_atom_count_le Q hνAppearing
+    have hcount : ν.sum (fun _ k => k) = D :=
+      le_antisymm hcountle (Nat.le_of_not_gt hlower)
+    let T := gaussianAtomSignedSource D (t + R₀) ν
+    have hST : S < T := by simpa only [T] using hlarger
+    have hsource :
+        gaussianOffsetSource (gaussianOffsetPatternOfKey (t + R₀) ν) = T := by
+      rw [gaussianOffsetSource_patternOfKey, hcount]
+      simp only [T, gaussianAtomSignedSource]
+      ring
+    have hνFormula := atomValuation_gaussianOffsetPatternOfKey B hcount hsource
+    have hbaseFormula := atomValuation_gaussianOffsetShiftedKey B ha₀ (by omega)
+    have henergyν :
+        0 ≤ (gaussianOffsetPatternEnergy
+          (gaussianOffsetPatternOfKey (t + R₀) ν) : ℝ) := by
+      exact_mod_cast gaussianOffsetPatternEnergy_nonneg
+        (gaussianOffsetPatternOfKey (t + R₀) ν)
+    have henergy₀ :
+        (gaussianOffsetPatternEnergy a₀ : ℝ) ≤ (t : ℝ) := by
+      have htoNat : ((gaussianOffsetPatternEnergy a₀).toNat : ℤ) =
+          gaussianOffsetPatternEnergy a₀ := Int.toNat_of_nonneg hE₀
+      have htE : (gaussianOffsetPatternEnergy a₀).toNat ≤ t := by
+        exact (le_trans (le_max_right _ _)
+          (le_max_right 1 _)).trans ht
+      exact_mod_cast (by omega : gaussianOffsetPatternEnergy a₀ ≤ (t : ℤ))
+    have hsourceStep : (S : ℝ) + 1 ≤ (T : ℝ) := by
+      exact_mod_cast (Int.add_one_le_iff.mpr hST)
+    have hcB : c ≤ B := min_le_right _ _
+    rw [hbaseFormula, hνFormula]
+    nlinarith [mul_nonneg hB.le henergyν,
+      mul_le_mul_of_nonneg_right hcB (by positivity : (0 : ℝ) ≤ t)]
 
 /-- Coordinates actually used by a bounded multiplicity pattern. -/
 def polynomialPatternSupport {M D : ℕ} (p : Fin M → Fin (D + 1)) : Finset (Fin M) :=
@@ -2083,6 +2659,157 @@ theorem norm_eval_gaussianOffsetPatternWeight_div_pow_le
       rw [mul_pow]
       ring
 
+/-! ## Canonical tuple encoding of multiplicity patterns -/
+
+/-- Multiplicity pattern of an integer offset tuple. -/
+noncomputable def integerTupleKey {D : ℕ} (z : Fin D → ℤ) : ℤ →₀ ℕ :=
+  ∑ i, Finsupp.single (z i) 1
+
+theorem integerTupleKey_count_map {D : ℕ} (z : Fin D → ℤ) (r : ℤ) :
+    integerTupleKey z r =
+      Multiset.count r (Multiset.map z Finset.univ.val) := by
+  rw [integerTupleKey]
+  simp only [Finsupp.finsetSum_apply, Finsupp.single_apply]
+  rw [Multiset.count_map, ← Finset.filter_val, Finset.card_val,
+    Finset.card_filter]
+  simp only [eq_comm]
+
+/-- Canonical ordered tuple listing the entries of a finite integer multiplicity pattern. -/
+noncomputable def integerTupleOfFinsupp (a : ℤ →₀ ℕ) (D : ℕ)
+    (hcount : a.sum (fun _ k => k) = D) : Fin D → ℤ :=
+  let m := Finsupp.toMultiset a
+  let hcard : Fintype.card m = D := by
+    rw [Multiset.card_coe, Finsupp.card_toMultiset]
+    simpa [Function.id_def] using hcount
+  let e : Fin D ≃ m := (Fintype.equivFinOfCardEq hcard).symm
+  fun i => (e i : ℤ)
+
+theorem integerTupleKey_integerTupleOfFinsupp
+    (a : ℤ →₀ ℕ) (D : ℕ) (hcount : a.sum (fun _ k => k) = D) :
+    integerTupleKey (integerTupleOfFinsupp a D hcount) = a := by
+  classical
+  let m := Finsupp.toMultiset a
+  let hcard : Fintype.card m = D := by
+    rw [Multiset.card_coe, Finsupp.card_toMultiset]
+    simpa [Function.id_def] using hcount
+  let e : Fin D ≃ m := (Fintype.equivFinOfCardEq hcard).symm
+  have he : integerTupleOfFinsupp a D hcount = fun i => (e i : ℤ) := by
+    rfl
+  rw [he]
+  ext r
+  rw [integerTupleKey_count_map]
+  have hmap : Multiset.map (fun i : Fin D => ((e i : m) : ℤ))
+      (Finset.univ : Finset (Fin D)).val = m := by
+    have heuniv := congrArg Finset.val (Finset.map_univ_equiv e)
+    rw [Finset.map_val] at heuniv
+    calc
+      Multiset.map (fun i : Fin D => ((e i : m) : ℤ))
+          (Finset.univ : Finset (Fin D)).val =
+        Multiset.map (fun x : m => (x : ℤ))
+          (Multiset.map e (Finset.univ : Finset (Fin D)).val) := by
+            rw [Multiset.map_map]
+            simp only [Function.comp_apply]
+      _ = Multiset.map (fun x : m => (x : ℤ))
+          (Finset.univ : Finset m).val := congrArg _ heuniv
+      _ = m := Multiset.map_univ_coe m
+  calc
+    Multiset.count r
+        (Multiset.map (fun i : Fin D => ((e i : m) : ℤ))
+          (Finset.univ : Finset (Fin D)).val) =
+        Multiset.count r m := congrArg _ hmap
+    _ = a r := Finsupp.count_toMultiset a r
+
+/-- The canonical tuple encoding is injective on multiplicity patterns of fixed total count. -/
+theorem integerTupleOfFinsupp_injective (D : ℕ) :
+    Function.Injective (fun a : {a : ℤ →₀ ℕ // a.sum (fun _ k => k) = D} =>
+      integerTupleOfFinsupp a.1 D a.2) := by
+  intro a b hab
+  apply Subtype.ext
+  rw [← integerTupleKey_integerTupleOfFinsupp a.1 D a.2,
+    ← integerTupleKey_integerTupleOfFinsupp b.1 D b.2, hab]
+
+theorem integerTupleKey_source {D : ℕ} (z : Fin D → ℤ) :
+    gaussianOffsetSource (integerTupleKey z) = ∑ i, z i := by
+  rw [gaussianOffsetSource, integerTupleKey,
+    ← Finsupp.sum_finsetSum_index (s := Finset.univ)
+      (g := fun i : Fin D => Finsupp.single (z i) 1)
+      (h := fun r k => r * (k : ℤ))]
+  · apply Finset.sum_congr rfl
+    intro i _hi
+    simp
+  · intro r
+    simp
+  · intro r x y
+    push_cast
+    ring
+
+theorem integerTupleKey_energy {D : ℕ} (z : Fin D → ℤ) :
+    gaussianOffsetPatternEnergy (integerTupleKey z) = ∑ i, (z i) ^ 2 := by
+  rw [gaussianOffsetPatternEnergy, integerTupleKey,
+    ← Finsupp.sum_finsetSum_index (s := Finset.univ)
+      (g := fun i : Fin D => Finsupp.single (z i) 1)
+      (h := fun r k => r ^ 2 * (k : ℤ))]
+  · apply Finset.sum_congr rfl
+    intro i _hi
+    simp
+  · intro r
+    simp
+  · intro r x y
+    push_cast
+    ring
+
+theorem integerTupleKey_totalCount {D : ℕ} (z : Fin D → ℤ) :
+    (integerTupleKey z).sum (fun _ k => k) = D := by
+  rw [integerTupleKey,
+    ← Finsupp.sum_finsetSum_index (s := Finset.univ)
+      (g := fun i : Fin D => Finsupp.single (z i) 1)
+      (h := fun _ k => k)]
+  · simp
+  · intro r
+    simp
+  · intro r x y
+    simp
+
+theorem integerTupleOfFinsupp_source
+    (a : ℤ →₀ ℕ) (D : ℕ) (hcount : a.sum (fun _ k => k) = D) :
+    ∑ i, integerTupleOfFinsupp a D hcount i = gaussianOffsetSource a := by
+  rw [← integerTupleKey_source (integerTupleOfFinsupp a D hcount),
+    integerTupleKey_integerTupleOfFinsupp]
+
+theorem integerTupleOfFinsupp_energy
+    (a : ℤ →₀ ℕ) (D : ℕ) (hcount : a.sum (fun _ k => k) = D) :
+    ∑ i, (integerTupleOfFinsupp a D hcount i) ^ 2 =
+      gaussianOffsetPatternEnergy a := by
+  rw [← integerTupleKey_energy (integerTupleOfFinsupp a D hcount),
+    integerTupleKey_integerTupleOfFinsupp]
+
+theorem integerTupleOfFinsupp_support_subset_box
+    (a : ℤ →₀ ℕ) (D : ℕ) (hcount : a.sum (fun _ k => k) = D) :
+    a.support ⊆ gaussianOffsetInterval
+      (integerLatticeMaxNatAbs (integerTupleOfFinsupp a D hcount)) := by
+  classical
+  let z := integerTupleOfFinsupp a D hcount
+  have hkey : integerTupleKey z = a :=
+    integerTupleKey_integerTupleOfFinsupp a D hcount
+  intro r hr
+  have hrKey : integerTupleKey z r ≠ 0 := by
+    simpa only [hkey] using Finsupp.mem_support_iff.mp hr
+  rw [integerTupleKey_count_map] at hrKey
+  have hrmem : r ∈ Multiset.map z (Finset.univ : Finset (Fin D)).val :=
+    Multiset.count_ne_zero.mp hrKey
+  rw [Multiset.mem_map] at hrmem
+  obtain ⟨i, _hi, hir⟩ := hrmem
+  have habs : r.natAbs ≤ integerLatticeMaxNatAbs z := by
+    rw [← hir]
+    exact Finset.le_sup (f := fun i : Fin D => (z i).natAbs)
+      (Finset.mem_univ i)
+  simp only [gaussianOffsetInterval, Finset.mem_Icc, integerLatticeMaxNatAbs]
+  have hcast : |r| ≤
+      (integerLatticeMaxNatAbs z : ℤ) := by
+    rw [← Int.natCast_natAbs]
+    exact_mod_cast habs
+  exact (abs_le.mp hcast)
+
 /-! ## Ambient Gaussian majorant -/
 
 /-- The coordinatewise polynomial-Gaussian majorant supplied by
@@ -2179,6 +2906,57 @@ theorem summable_maxPolynomial_gaussian
   refine Summable.of_nonneg_of_le (fun z => by positivity) (fun z => ?_)
     ((summable_gaussianCoordinateMajorant ι J hB).mul_left (Real.exp (B * Q₀)))
   exact maxPolynomial_gaussian_le_coordinateMajorant J hB.le Q₀ z
+
+/-- Every exterior Gaussian lattice tail is strictly positive.  This lets an independently
+vanishing lower-degree/larger-source ADE residual be absorbed into the exterior tail at each fixed
+window radius. -/
+theorem gaussianExteriorTail_pos
+    (ι : Type) [Fintype ι] [Nonempty ι]
+    (J : ℕ) {B : ℝ} (hB : 0 < B) (Q₀ : ℝ) (R : ℕ) :
+    0 < ∑' z : {z : ι → ℤ // z ∉ integerLatticeBox ι R},
+      (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^ J *
+        Real.exp (-B * (gaussianOffsetEnergy z.1 - Q₀)) := by
+  classical
+  let i₀ : ι := Classical.choice (inferInstance : Nonempty ι)
+  let z₀ : ι → ℤ := fun i => if i = i₀ then (R + 1 : ℕ) else 0
+  have hz₀ : z₀ ∉ integerLatticeBox ι R := by
+    intro hz
+    have hi := (mem_integerLatticeBox_iff ι R z₀).mp hz i₀
+    dsimp only [z₀] at hi
+    simp only [ite_true] at hi
+    omega
+  let z : {z : ι → ℤ // z ∉ integerLatticeBox ι R} := ⟨z₀, hz₀⟩
+  have hsum : Summable (fun z : {z : ι → ℤ // z ∉ integerLatticeBox ι R} =>
+      (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^ J *
+        Real.exp (-B * (gaussianOffsetEnergy z.1 - Q₀))) :=
+    (summable_maxPolynomial_gaussian ι J hB Q₀).subtype _
+  apply hsum.tsum_pos
+  · intro y
+    positivity
+  · exact z
+  · positivity
+
+theorem tendsto_natAdd_pow_mul_exp_neg_mul_zero
+    (K P : ℕ) {c : ℝ} (hc : 0 < c) :
+    Tendsto (fun t : ℕ =>
+      (((t + K : ℕ) : ℝ) ^ P) * Real.exp (-(c * (t : ℝ))))
+      atTop (𝓝 0) := by
+  have hcore := tendsto_natPow_mul_exp_neg_rpow_zero P hc one_pos
+  have hmajor : Tendsto (fun t : ℕ =>
+      (((2 : ℕ) ^ P : ℕ) : ℝ) *
+        ((t : ℝ) ^ P * Real.exp (-(c * (t : ℝ))))) atTop (𝓝 0) := by
+    simpa only [mul_zero] using hcore.const_mul ((((2 : ℕ) ^ P : ℕ) : ℝ))
+  apply squeeze_zero'
+  · exact Eventually.of_forall fun t => by positivity
+  · filter_upwards [eventually_ge_atTop (max K 1)] with t ht
+    have hKt : K ≤ t := (le_max_left K 1).trans ht
+    have hbase : t + K ≤ 2 * t := by omega
+    have hpow : (t + K) ^ P ≤ (2 * t) ^ P := Nat.pow_le_pow_left hbase P
+    have hcast : (((t + K : ℕ) : ℝ) ^ P) ≤
+        (((2 : ℕ) ^ P : ℕ) : ℝ) * (t : ℝ) ^ P := by
+      exact_mod_cast (by simpa [mul_pow] using hpow)
+    exact mul_le_mul_of_nonneg_right hcast (Real.exp_nonneg _)
+  · exact hmajor
 
 /-- The ambient product majorant outside growing integer boxes tends to zero. -/
 theorem tendsto_gaussianCoordinateMajorant_tsum_outside_box_zero

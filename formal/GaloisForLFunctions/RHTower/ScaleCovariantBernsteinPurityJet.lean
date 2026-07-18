@@ -38,7 +38,9 @@ def momentScalePolynomial (m : ℕ → ℝ) (p : Polynomial ℝ) : Polynomial �
       simp [Polynomial.coeff_monomial, hbr]
     · simp [hr]
   · rw [Finset.sum_eq_zero]
-    · simp [Polynomial.not_mem_support_iff.mp hr]
+    · have hcoeff : p.coeff r = 0 := by
+        simpa only [Polynomial.mem_support_iff, not_ne_iff] using hr
+      simp [hcoeff]
     · intro b hb
       have hbr : b ≠ r := by
         intro h
@@ -156,6 +158,28 @@ private theorem antidiagonal_index_le {a b r : ℕ}
   have hab : a + b = r := Finset.mem_antidiagonal.mp h
   omega
 
+/-- The constant purity coefficient is exactly the square of the pointed mass. -/
+@[simp] theorem coeff_zero_bernsteinScalePurityPolynomial (m : ℕ → ℝ) (N : ℕ) :
+    (bernsteinScalePurityPolynomial m N).coeff 0 = m 0 ^ 2 := by
+  rw [coeff_bernsteinScalePurityPolynomial]
+  simp [bernsteinPurityCoefficientKernel]
+  ring
+
+/-- The degree-`r` purity coefficient depends only on the moment prefix through degree `r`. -/
+theorem coeff_bernsteinScalePurityPolynomial_congr_prefix
+    {m m' : ℕ → ℝ} (N r : ℕ) (h : ∀ j ≤ r, m j = m' j) :
+    (bernsteinScalePurityPolynomial m N).coeff r =
+      (bernsteinScalePurityPolynomial m' N).coeff r := by
+  classical
+  rw [coeff_bernsteinScalePurityPolynomial,
+    coeff_bernsteinScalePurityPolynomial]
+  apply Finset.sum_congr rfl
+  intro k hk
+  apply Finset.sum_congr rfl
+  intro ab hab
+  have hle := antidiagonal_index_le hab
+  rw [h ab.1 hle.1, h ab.2 hle.2]
+
 /-- Exact triangular coefficient law.  No moment above `r` occurs, and the only dependence on
 `m r` is the displayed cross term with the pointed mass `m 0`. -/
 theorem coeff_bernsteinScalePurityPolynomial_eq_leading_add_lower
@@ -196,13 +220,13 @@ theorem coeff_bernsteinScalePurityPolynomial_eq_leading_add_lower
                 (s := Finset.antidiagonal r \ {(0, r)}) (i := (r, 0))]
             · rw [Finset.sum_eq_zero]
               · simp [eraseMoment, bernsteinPurityCoefficientKernel]
-                ring
               · intro ab hab
                 have habAnti : ab ∈ Finset.antidiagonal r :=
                   (Finset.mem_sdiff.mp (Finset.mem_sdiff.mp hab).1).1
-                have hab0 : ab ≠ (0, r) :=
-                  (Finset.mem_sdiff.mp (Finset.mem_sdiff.mp hab).1).2
-                have habr : ab ≠ (r, 0) := (Finset.mem_sdiff.mp hab).2
+                have hab0 : ab ≠ (0, r) := by
+                  simpa using (Finset.mem_sdiff.mp (Finset.mem_sdiff.mp hab).1).2
+                have habr : ab ≠ (r, 0) := by
+                  simpa using (Finset.mem_sdiff.mp hab).2
                 have hle := antidiagonal_index_le habAnti
                 have ha : ab.1 ≠ r := by
                   intro h

@@ -91,12 +91,21 @@ coordinated four-slot pool.
   least-source face, maximizes the genuinely attained grouped-weight degree, and bounds every
   polynomial on that complete face by the same degree.  One batched direct check exposed only
   local casts/decidability/let-unfolding errors; all were repaired source-only without an immediate
-  rerun.  The active mathematical step is the cancellation-safe Lagrange-interpolation bound after
-  normalization by the attained degree, followed by the arbitrary-ADE Gaussian exterior split.
+  rerun.  The source batch now also contains the cancellation-safe fixed-node Lagrange
+  interpolation theorem, translated-coefficient control, and a uniform grouped-weight bound after
+  normalization by the genuinely attained degree, so cancellation among higher-order jet
+  monomials is no longer an open step.  The active mathematical step is the concrete arbitrary-ADE
+  Gaussian exterior split and unconditional contradiction capstone.
 - projective fixed-field lane: `ProjectiveHorizonCurrentFixedField` connects the actual rational
-  current action to the free-coordinate fixed-field theorem.  The depth-two follow-on has checked
-  the literal `E`--`F` and `H`--`E` current relations, unequal-depth scalar meets, and the sharp
-  depth-one/nontrivial transition; its final literal `H`--`F` relation and audit are in progress.
+  current action to the free-coordinate fixed-field theorem.  The 12-card compiler audit found that
+  `ProjectiveHorizonDepthTwoCurrentTransition` already declares the full scalar free-current
+  `E`--`F`/`H` relations, deep current-kernel transition, and depth-one Schwarzian inclusion, but is
+  unwired and unverified and therefore discharges no literal horizon-tail card yet.  The active
+  source-only leaf is the missing reciprocal-jet bridge: divided-power reciprocal recursion,
+  inversion algebra equivalence and involution, conjugation of direct to inverse currents, and
+  identification of the inverse-current kernel with the literal reciprocal-tail field.  This one
+  bridge unlocks the deep-meet portions of four projective cards before the separate exact
+  depth-one Schwarzian invariant and all-depth join reconstruction leaves.
 - root lane: `RatFuncProjectiveNormalForm` now proves that every nonidentity coefficient-fixing
   automorphism of `K(X)` over an algebraically closed field is conjugate to a pure scaling or unit
   translation, and `RatFuncProjectiveCyclicClassification` refines this to identity, nontrivial
@@ -114,9 +123,14 @@ coordinated four-slot pool.
   and all five cascade-foundation imports are wired.  The next root step is connecting iterates of
   a polynomial derivation to this terminal-linear Bell output family.  Source for
   `DerivationBellChain` and `DerivationTerminalLinearJacobian` now supplies that connection through
-  the actual signed determinant and field-level nonvanishing theorem.  Its first batched build was
-  cancelled when an unrelated external Lean process appeared; the resulting single chain-rule
-  diagnostic was repaired from the already-green project proof pattern, and the two-module source
+  the actual signed determinant, field-level nonvanishing theorem, and domain-Jacobian algebraic
+  independence endpoint.  `TerminalScaledJacobian` now adds the second exact Bell row reduction:
+  arbitrary lower derivatives of a terminal-scaled output cancel by row shear, leaving its terminal
+  derivative and the lower Bell Jacobian.  The actual derivation adapter specializes this to
+  `C * X^q`, proves the exact factor `(q : R) * C * X^(q-1)`, and exposes the corresponding
+  nonvanishing and algebraic-independence capstones.  Its first batched build was cancelled when an
+  unrelated external Lean process appeared; the resulting single chain-rule diagnostic was
+  repaired from the already-green project proof pattern.  The enlarged three-module source tranche
   remains intentionally unrerun until the next coherent compiler gate.
 
 ## Completed compiler queue
@@ -405,7 +419,10 @@ DAGs without repeating the audits.
   unconditional invariance under invertible affine precomposition are Lean-complete in
   `ExactDifferentialOrderAffine`, and the universal Bell coordinate change has unit Jacobian in
   `BellCoordinateJacobian`; the exact terminal-linear Bell determinant reduction is Lean-complete
-  through `TerminalLinearBellJacobian`.  The Wiman-place, compatible valuation flag, derivation-
-  iterate realization, nested-leading observability induction, Clunie state-independence, and
-  Poincare-recession surfaces remain
+  through `TerminalLinearBellJacobian`.  Unverified source in `DerivationBellChain`,
+  `TerminalScaledJacobian`, and `DerivationTerminalLinearJacobian` now realizes actual derivation
+  iterates, both the terminal-linear and positive-power Bell row reductions, their exact signed
+  determinants and nonvanishing forms, and the resulting algebraic independence capstones.  The
+  Wiman-place, compatible valuation flag, nested-leading observability induction, Clunie
+  state-independence, and Poincare-recession surfaces remain
 - [ ] `weighted-euler-tangent-global-graph-decoupling` — theorem/corollary surface inventory pending

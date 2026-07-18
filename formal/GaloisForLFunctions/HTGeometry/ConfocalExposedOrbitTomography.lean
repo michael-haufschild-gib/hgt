@@ -45,8 +45,7 @@ theorem hasDerivAt_confocalBranch {x y R : ℝ} (hy : y ≠ 0) :
   have hinner : HasDerivAt (fun T : ℝ => (T - x) ^ 2 + y ^ 2) (2 * (R - x)) R := by
     have hc : HasDerivAt (fun _ : ℝ => y ^ 2) 0 R := hasDerivAt_const R _
     have hadd := (hsub.pow 2).add hc
-    change HasDerivAt (fun T : ℝ => (T - x) ^ 2 + y ^ 2) ((R - x) * 2 + 0) R at hadd
-    convert hadd using 1 <;> ring
+    convert hadd using 1 <;> norm_num <;> ring
   have hsqrt := hinner.sqrt (confocalRadicand_pos hy).ne'
   have hconst : HasDerivAt (fun _ : ℝ => Real.sqrt (x ^ 2 + y ^ 2)) 0 R :=
     hasDerivAt_const R _
@@ -77,8 +76,7 @@ theorem hasDerivAt_confocalBranchSlope {x y R : ℝ} (hy : y ≠ 0) :
   have hinner : HasDerivAt (fun T : ℝ => (T - x) ^ 2 + y ^ 2) (2 * (R - x)) R := by
     have hc : HasDerivAt (fun _ : ℝ => y ^ 2) 0 R := hasDerivAt_const R _
     have hadd := (hsub.pow 2).add hc
-    change HasDerivAt (fun T : ℝ => (T - x) ^ 2 + y ^ 2) ((R - x) * 2 + 0) R at hadd
-    convert hadd using 1 <;> ring
+    convert hadd using 1 <;> norm_num <;> ring
   have hsqrt := hinner.sqrt (confocalRadicand_pos hy).ne'
   have hnum : HasDerivAt (fun T : ℝ => T - x) 1 R := (hasDerivAt_id R).sub_const x
   have hquot := hnum.div hsqrt hs.ne'

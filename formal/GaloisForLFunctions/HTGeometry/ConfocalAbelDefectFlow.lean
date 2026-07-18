@@ -14,7 +14,7 @@ This file proves pointwise monotonicity and the sharp uniform comparison with th
 -/
 
 open Complex Filter Topology
-open scoped Real
+open scoped Real ComplexOrder
 
 namespace HTGeometry
 
@@ -235,33 +235,43 @@ theorem sSup_affineAmplitude_eq_confocalAmplitudeEnvelope
       ((fun z : ℂ => ‖z / (R : ℂ)‖ + ‖1 - z / (R : ℂ)‖) '' S) := by
     refine ⟨1 + 2 * max M 0 / R, ?_⟩
     rintro y ⟨z, hz, rfl⟩
+    change ‖z / (R : ℂ)‖ + ‖1 - z / (R : ℂ)‖ ≤ 1 + 2 * max M 0 / R
     rw [affineAmplitude_eq_one_add_confocalDefect_div hR]
     have hδ := (confocalDefect_le_two_mul_norm hR.le z).trans
       (mul_le_mul_of_nonneg_left
         ((hbound z hz).trans (le_max_left M 0)) (by norm_num))
-    exact add_le_add_left (div_le_div_of_nonneg_right hδ hR.le) 1
+    simpa only [add_comm] using
+      add_le_add_left (div_le_div_of_nonneg_right hδ hR.le) 1
   apply le_antisymm
   · apply csSup_le (hne.image _)
     rintro y ⟨z, hz, rfl⟩
-    rw [affineAmplitude_eq_one_add_confocalDefect_div hR, confocalAmplitudeEnvelope]
-    exact add_le_add_left
-      (div_le_div_of_nonneg_right
-        (le_csSup hbDef ⟨z, hz, rfl⟩) hR.le) 1
+    change ‖z / (R : ℂ)‖ + ‖1 - z / (R : ℂ)‖ ≤
+      confocalAmplitudeEnvelope S R
+    rw [affineAmplitude_eq_one_add_confocalDefect_div hR, confocalAmplitudeEnvelope,
+      confocalDefectEnvelope]
+    simpa only [add_comm] using
+      add_le_add_left
+        (div_le_div_of_nonneg_right
+          (le_csSup hbDef ⟨z, hz, rfl⟩) hR.le) 1
   · have hpoint : ∀ z ∈ S,
         confocalDefect R z ≤ R * (A - 1) := by
       intro z hz
       have hamp : ‖z / (R : ℂ)‖ + ‖1 - z / (R : ℂ)‖ ≤ A :=
         le_csSup hbAmp ⟨z, hz, rfl⟩
       rw [affineAmplitude_eq_one_add_confocalDefect_div hR] at hamp
-      exact (le_div_iff₀ hR).mp (by linarith)
+      have hquot : confocalDefect R z / R ≤ A - 1 := by
+        linarith
+      have hmul := (div_le_iff₀ hR).mp hquot
+      simpa only [mul_comm] using hmul
     have hsup : confocalDefectEnvelope S R ≤ R * (A - 1) := by
       rw [confocalDefectEnvelope]
       apply csSup_le (hne.image _)
       rintro y ⟨z, hz, rfl⟩
       exact hpoint z hz
     rw [confocalAmplitudeEnvelope]
-    have := (div_le_iff₀ hR).2 hsup
-    dsimp only [A]
+    have hquot : confocalDefectEnvelope S R / R ≤ A - 1 :=
+      (div_le_iff₀ hR).2 (by simpa only [mul_comm] using hsup)
+    change 1 + confocalDefectEnvelope S R / R ≤ A
     linarith
 
 /-- Vanishing transverse defect is exactly positivity of every occupied coordinate on the real
@@ -309,11 +319,9 @@ theorem confocalDefectEnvelope_eq_zero_of_transverse_eq_zero
     constructor
     · rintro ⟨z, hz, rfl⟩
       have hzpos := hpos z hz
-      have hre : z.im = 0 := hzpos.2
+      have hre : z.im = 0 := hzpos.2.symm
       have hzre : 0 ≤ z.re := hzpos.1
-      have hzM : z.re ≤ M := by
-        rw [← Complex.re_eq_norm.mpr hzpos]
-        exact hbound z hz
+      have hzM : z.re ≤ M := (Complex.re_le_norm z).trans (hbound z hz)
       have hRz : 0 ≤ R - z.re := by linarith
       rw [confocalDefect, Complex.norm_def, Complex.norm_def]
       simp [Complex.normSq_apply, hre, hzre, hRz]
@@ -322,13 +330,10 @@ theorem confocalDefectEnvelope_eq_zero_of_transverse_eq_zero
       rcases hne with ⟨z, hz⟩
       refine ⟨z, hz, ?_⟩
       have hzpos := hpos z hz
-      have hre : z.im = 0 := hzpos.2
+      have hre : z.im = 0 := hzpos.2.symm
       have hzre : 0 ≤ z.re := hzpos.1
-      have hzM : z.re ≤ M := by
-        rw [← Complex.re_eq_norm.mpr hzpos]
-        exact hbound z hz
+      have hzM : z.re ≤ M := (Complex.re_le_norm z).trans (hbound z hz)
       have hRz : 0 ≤ R - z.re := by linarith
-      rw [Set.mem_singleton_iff] at hy
       rw [hy]
       rw [confocalDefect, Complex.norm_def, Complex.norm_def]
       simp [Complex.normSq_apply, hre, hzre, hRz]
@@ -345,7 +350,9 @@ theorem confocalAmplitudeEnvelope_eq_one_iff
   · intro hB
     have hD : confocalDefectEnvelope S R = 0 := by
       rw [confocalAmplitudeEnvelope] at hB
-      apply (div_eq_zero_iff).mp (by linarith [hB]) |>.resolve_right hR.ne'
+      have hdiv : confocalDefectEnvelope S R / R = 0 := by
+        linarith
+      exact (div_eq_zero_iff.mp hdiv).resolve_right hR.ne'
     have hcollar :=
       transverseDefectEnvelope_le_confocalDefectEnvelope_le hne hM hRM hbound
     have hnonneg : 0 ≤ transverseDefectEnvelope S := by
@@ -372,12 +379,7 @@ theorem confocalAbelRadius_eq_one_iff
   constructor
   · intro hA
     have hBsq : confocalAmplitudeEnvelope S R ^ 2 = 1 := by
-      have hneSq : confocalAmplitudeEnvelope S R ^ 2 ≠ 0 := by
-        intro hz
-        rw [hz, inv_zero] at hA
-        norm_num at hA
-      apply inv_injective.mp
-      simpa only [inv_one] using hA
+      exact inv_eq_one.mp hA
     have hB : confocalAmplitudeEnvelope S R = 1 := by nlinarith
     exact (confocalAmplitudeEnvelope_eq_one_iff hne hM hRM hbound).mp hB
   · intro hzero

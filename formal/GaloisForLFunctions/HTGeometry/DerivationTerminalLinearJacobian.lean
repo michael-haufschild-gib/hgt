@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.DerivationBellChain
 import GaloisForLFunctions.HTGeometry.BellCoordinateJacobian
 import GaloisForLFunctions.HTGeometry.JacobianDomainCriterion
 import GaloisForLFunctions.HTGeometry.TerminalLinearJacobian
+import GaloisForLFunctions.HTGeometry.TerminalScaledJacobian
 
 /-!
 # Terminal-linear Jacobians for actual derivation iterates
@@ -136,6 +137,35 @@ theorem derivationIterateOutputJacobian_eq_terminalLinear
           derivationBellValueJacobian δ n partial A r c from rfl]
       simp [terminalLinearJacobianMatrix]
 
+/-- The actual iterate Jacobian of an arbitrary terminal-scaled output has the row-shear form.
+Unlike the terminal-coordinate case, the lower coordinate derivatives of `H` may be nonzero; they
+cancel from the determinant rather than being assumed away. -/
+theorem derivationIterateOutputJacobian_eq_terminalScaled
+    {R : Type*} [CommRing R] [Algebra ℂ R]
+    (δ : Derivation ℂ R R) (n : ℕ)
+    (partial : Fin (n + 2) → Derivation ℂ R R) (H U : R)
+    (hδH : δ H = U * H)
+    (hterminalU : ∀ i : Fin (n + 1),
+      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0) :
+    derivationIterateOutputJacobian δ n partial H =
+      terminalScaledJacobianMatrix H
+        (partial (Fin.last (n + 1)) H)
+        (fun c => partial c.castSucc H)
+        (derivationBellValue δ U n)
+        (derivationBellValueJacobian δ n partial U) := by
+  funext i j
+  refine Fin.cases ?_ (fun r => ?_) i
+  · refine Fin.lastCases ?_ (fun c => ?_) j <;>
+      simp [derivationIterateOutputJacobian, terminalScaledJacobianMatrix]
+  · rw [derivationIterateOutputJacobian,
+      derivation_iterate_terminalLinear_eq_derivationBellValue δ H U hδH n r,
+      Derivation.leibniz]
+    simp only [smul_eq_mul]
+    refine Fin.lastCases ?_ (fun c => ?_) j
+    · rw [derivationBellValue_terminal_partial_eq_zero δ n partial U hterminalU r]
+      simp [terminalScaledJacobianMatrix]
+    · simp [terminalScaledJacobianMatrix, derivationBellValueJacobian]
+
 /-- **Actual terminal-linear output-Jacobian reduction.**  The first `n+2` time iterates of `x`
 have the exact determinant predicted by the lower `A`-jet, including the cofactor sign. -/
 theorem derivationIterateOutputJacobian_det
@@ -154,6 +184,47 @@ theorem derivationIterateOutputJacobian_det
       hterminalx hterminalA,
     terminalLinearJacobianMatrix_det, derivationBellValueJacobian_det]
 
+/-- **Actual positive-power Bell reduction, differential form.**  For `δH = U H`, the determinant
+is the terminal derivative of `H`, times `H^(n+1)`, times the lower `U`-jet determinant, with the
+exact cofactor sign. -/
+theorem derivationIterateOutputJacobian_det_terminalScaled
+    {R : Type*} [CommRing R] [Algebra ℂ R]
+    (δ : Derivation ℂ R R) (n : ℕ)
+    (partial : Fin (n + 2) → Derivation ℂ R R) (H U : R)
+    (hδH : δ H = U * H)
+    (hterminalU : ∀ i : Fin (n + 1),
+      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0) :
+    (derivationIterateOutputJacobian δ n partial H).det =
+      (-1 : R) ^ (n + 1) * partial (Fin.last (n + 1)) H * H ^ (n + 1) *
+        (derivationLowerJetJacobian δ n partial U).det := by
+  rw [derivationIterateOutputJacobian_eq_terminalScaled δ n partial H U hδH hterminalU,
+    terminalScaledJacobianMatrix_det, derivationBellValueJacobian_det]
+
+/-- Concrete power-coordinate form of the positive-power Bell reduction.  If the terminal
+coordinate derivation kills `C` and sends `X` to one, then the surviving terminal derivative of
+`C * X^q` is exactly `q * C * X^(q-1)`. -/
+theorem derivationIterateOutputJacobian_det_terminalPower
+    {R : Type*} [CommRing R] [Algebra ℂ R]
+    (δ : Derivation ℂ R R) (n : ℕ)
+    (partial : Fin (n + 2) → Derivation ℂ R R) (C X U : R) (q : ℕ)
+    (hδH : δ (C * X ^ q) = U * (C * X ^ q))
+    (hterminalC : partial (Fin.last (n + 1)) C = 0)
+    (hterminalX : partial (Fin.last (n + 1)) X = 1)
+    (hterminalU : ∀ i : Fin (n + 1),
+      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0) :
+    (derivationIterateOutputJacobian δ n partial (C * X ^ q)).det =
+      (-1 : R) ^ (n + 1) * ((q : R) * C * X ^ (q - 1)) *
+        (C * X ^ q) ^ (n + 1) *
+          (derivationLowerJetJacobian δ n partial U).det := by
+  have ht : partial (Fin.last (n + 1)) (C * X ^ q) =
+      (q : R) * C * X ^ (q - 1) := by
+    rw [Derivation.leibniz, Derivation.leibniz_pow, hterminalC, hterminalX]
+    simp only [smul_eq_mul, nsmul_eq_mul, mul_one, mul_zero, add_zero]
+    ring
+  rw [derivationIterateOutputJacobian_det_terminalScaled δ n partial
+      (C * X ^ q) U hδH hterminalU,
+    ht]
+
 /-- Over a field, a nonzero terminal state and nonzero lower-jet determinant give a nonzero full
 output-jet determinant. -/
 theorem derivationIterateOutputJacobian_det_ne_zero
@@ -170,6 +241,29 @@ theorem derivationIterateOutputJacobian_det_ne_zero
     (derivationIterateOutputJacobian δ n partial x).det ≠ 0 := by
   rw [derivationIterateOutputJacobian_det δ n partial x A hδx hlowerx hterminalx hterminalA]
   exact mul_ne_zero (mul_ne_zero (pow_ne_zero _ (by norm_num)) (pow_ne_zero _ hx)) hlower
+
+/-- Nonvanishing form of the concrete positive-power Bell determinant. -/
+theorem derivationIterateOutputJacobian_det_terminalPower_ne_zero
+    {R : Type*} [Field R] [Algebra ℂ R]
+    (δ : Derivation ℂ R R) (n : ℕ)
+    (partial : Fin (n + 2) → Derivation ℂ R R) (C X U : R) (q : ℕ)
+    (hδH : δ (C * X ^ q) = U * (C * X ^ q))
+    (hterminalC : partial (Fin.last (n + 1)) C = 0)
+    (hterminalX : partial (Fin.last (n + 1)) X = 1)
+    (hterminalU : ∀ i : Fin (n + 1),
+      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0)
+    (hq : 0 < q) (hC : C ≠ 0) (hX : X ≠ 0)
+    (hlower : (derivationLowerJetJacobian δ n partial U).det ≠ 0) :
+    (derivationIterateOutputJacobian δ n partial (C * X ^ q)).det ≠ 0 := by
+  rw [derivationIterateOutputJacobian_det_terminalPower δ n partial C X U q hδH
+    hterminalC hterminalX hterminalU]
+  exact mul_ne_zero
+    (mul_ne_zero
+      (mul_ne_zero (pow_ne_zero _ (by norm_num))
+        (mul_ne_zero (mul_ne_zero (Nat.cast_ne_zero.mpr hq.ne') hC)
+          (pow_ne_zero _ hX)))
+      (pow_ne_zero _ (mul_ne_zero hC (pow_ne_zero _ hX))))
+    hlower
 
 /-- A nonzero actual output-jet determinant makes the corresponding derivation iterates
 algebraically independent.  The transpose only reconciles the output-by-coordinate convention of
@@ -217,6 +311,26 @@ theorem algebraicIndependent_derivationIterates_terminalLinear
   apply algebraicIndependent_derivationIterates_of_det_ne_zero δ n partial x
   exact derivationIterateOutputJacobian_det_ne_zero δ n partial x A hδx hlowerx
     hterminalx hterminalA hx hlower
+
+/-- **Positive-power terminal observability capstone.**  Under the exact power-coordinate and
+lower-jet nondegeneracy hypotheses, the first `n+2` actual time iterates of `C * X^q` are
+algebraically independent over `ℂ`. -/
+theorem algebraicIndependent_derivationIterates_terminalPower
+    {R : Type*} [Field R] [Algebra ℂ R]
+    (δ : Derivation ℂ R R) (n : ℕ)
+    (partial : Fin (n + 2) → Derivation ℂ R R) (C X U : R) (q : ℕ)
+    (hδH : δ (C * X ^ q) = U * (C * X ^ q))
+    (hterminalC : partial (Fin.last (n + 1)) C = 0)
+    (hterminalX : partial (Fin.last (n + 1)) X = 1)
+    (hterminalU : ∀ i : Fin (n + 1),
+      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0)
+    (hq : 0 < q) (hC : C ≠ 0) (hX : X ≠ 0)
+    (hlower : (derivationLowerJetJacobian δ n partial U).det ≠ 0) :
+    AlgebraicIndependent ℂ
+      (fun i : Fin (n + 2) ⇒ ((δ : R → R)^[(i : ℕ)]) (C * X ^ q)) := by
+  apply algebraicIndependent_derivationIterates_of_det_ne_zero δ n partial (C * X ^ q)
+  exact derivationIterateOutputJacobian_det_terminalPower_ne_zero δ n partial C X U q hδH
+    hterminalC hterminalX hterminalU hq hC hX hlower
 
 end GaloisForLFunctions
 
