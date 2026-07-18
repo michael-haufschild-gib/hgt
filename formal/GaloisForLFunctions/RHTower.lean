@@ -1306,6 +1306,7 @@ import GaloisForLFunctions.RHTower.RHCharacterizations
 import GaloisForLFunctions.RHTower.RHProofLab
 import GaloisForLFunctions.RHTower.RectangularWindowAmplitudeAnalytic
 import GaloisForLFunctions.RHTower.ReducedSubsetSumPoly
+import GaloisForLFunctions.RHTower.ReducedFrequencyMobiusAliasCollapse
 import GaloisForLFunctions.RHTower.ReflectionDifferenceFaces
 import GaloisForLFunctions.RHTower.SatakeInterval
 import GaloisForLFunctions.RHTower.SatakeReality
@@ -1626,3 +1627,4 @@ import GaloisForLFunctions.RHTower.CoHighPacketGramCollapse
 import GaloisForLFunctions.RHTower.SlabGermResidueTransport
 import GaloisForLFunctions.RHTower.SlabFullWidthAdmissibility
 import GaloisForLFunctions.RHTower.SlabConjugatedGermTheorem
+import GaloisForLFunctions.RHTower.SlabTraceEdgeEstimate
