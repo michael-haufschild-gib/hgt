@@ -702,3 +702,38 @@ theta–prime–Gamma source** — e.g. a source integral representation of the 
   about the TOPOLOGICAL TYPE of the real structure, distinguishable in period data.
 - No computations (per lane rules): the genus-1 two-zero Thomae calibration must be done
   symbolically, not numerically.
+
+## 2026-07-18 session 1 (cont. 13) — M-curve period certificate KILLED beyond depth 2;
+## Picard–Fuchs wall-crossing successor
+
+**[VERDICT — RESTATEMENT beyond depth-2, with verified calibration]** Gross–Harris (Ann. ENS 14
+(1981) 157-182, read from original): M-curve ⟺ conjugation trivial on H_1 mod 2 ⟺ tau purely
+imaginary (Comessatti/Vinnikov lift) ⟺ all even theta characteristics real. Genus-1
+calibration derived exactly: rectangular lattice (q > 0) vs rhombic (Re tau = 1, q < 0)
+dichotomy ⟺ sign(lambda) ⟺ sign(disc) — and the r_2 = 2 configuration is rectangular AGAIN:
+period type sees only r_2 mod 2 = the depth-2 bit. Hostile core: the exact source formula
+`sqrt(W_B(x)) = exp((1/2)(2*pi*i)^{-1} ∮_{∂B} log(x - lambda(s)) dlog Xi)` is valid precisely
+on the divisor-blind region where every cycle is trivial or computes Newton coefficients;
+nontrivial periods need branch-separating cycles = divisor knowledge; the Comessatti basis
+presupposes the type it certifies. Period-reality re-encodes zero locations at (i) cycle
+choice, (ii) basis normalization.
+
+**[SALVAGE — quantized wall-crossing frame]** The topological type is a quantized
+locally-constant invariant on `{disc W_B ≠ 0}`, and `disc W_B` IS source-computable (consistent
+with the corpus survivor class: semicontinuous integer readers; walls = collision events).
+Surviving exact statement: the type is constant along source paths avoiding the
+source-checkable wall `disc = 0`; a certificate = path-connection to a reference
+M-configuration with controlled wall crossings.
+
+**[NEXT OBJECT — Picard–Fuchs/Gauss–Manin]** The PF connection of `y^2 = W_B(x)` is RATIONAL
+in the coefficients (Griffiths–Dwork; no cycle choices), hence source-defined. Target: read
+the real-type from PF monodromy around disc-walls plus one germ. The natural deformation is
+the height sweep T (boxes sliding/growing): type changes only at source-detectable wall events
+(zeros entering through the boundary; collisions), so the census becomes a Sturm-like
+bookkeeping of wall crossings along the sweep. `[OPEN — next hostile target]` the GERM: the
+one reference configuration and the local crossing rules are where content can hide — determine
+whether the crossing rules are source-derivable (local PF monodromy is universal per wall type
+— plausibly yes, this is classical vanishing-cycle/Picard–Lefschetz data, divisor-free!) and
+whether the reference germ can be taken in the zero-free region Re s > 1 (source-certifiable
+empty box — M-type trivially). If both hold, the remaining content is exactly the ENTRY
+bookkeeping at box boundaries — state it and interrogate.
