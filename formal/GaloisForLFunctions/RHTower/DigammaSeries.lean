@@ -155,8 +155,21 @@ theorem continuousOn_Ioi_cpow (t : ℂ) : ContinuousOn (fun u : ℝ => (u : ℂ)
     exact (DifferentiableAt.ofReal_cpow_const differentiableAt_id (ne_of_gt hu)
       ht0).continuousAt.continuousWithinAt
 
-/-- Strong measurability of a set-indicator from continuity on the set. -/
+/-- Strong measurability of a set-indicator from continuity on the set (complex). -/
 theorem aestronglyMeasurable_indicator_of_continuousOn {f : ℝ → ℂ} {s : Set ℝ}
+    (hs : MeasurableSet s) (hf : ContinuousOn f s) :
+    AEStronglyMeasurable (s.indicator f) volume := by
+  have h1 : AEStronglyMeasurable f (volume.restrict s) := hf.aestronglyMeasurable hs
+  have h2 : AEStronglyMeasurable (s.indicator (h1.mk f)) volume :=
+    (h1.stronglyMeasurable_mk.indicator hs).aestronglyMeasurable
+  apply h2.congr
+  apply ae_of_ae_restrict_of_ae_restrict_compl s
+  · exact Filter.EventuallyEq.indicator h1.ae_eq_mk.symm
+  · exact ae_restrict_of_forall_mem hs.compl (fun x hx => by
+      simp [Set.indicator_of_notMem hx])
+
+/-- Strong measurability of a set-indicator from continuity on the set (real). -/
+theorem aestronglyMeasurable_indicator_of_continuousOn_real {f : ℝ → ℝ} {s : Set ℝ}
     (hs : MeasurableSet s) (hf : ContinuousOn f s) :
     AEStronglyMeasurable (s.indicator f) volume := by
   have h1 : AEStronglyMeasurable f (volume.restrict s) := hf.aestronglyMeasurable hs

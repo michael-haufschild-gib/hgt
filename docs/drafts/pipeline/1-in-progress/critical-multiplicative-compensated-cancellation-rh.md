@@ -10,8 +10,18 @@
   `[POSITIVE CLARK PRODUCER REFUTED] [SIGNED SOURCE DIFFERENTIAL OPEN]`
   `[FINITE DOOB SEWING PAPER-PROVED] [DOOB/WALSH COFINAL COMPLETIONS REFUTED]`
   `[MULTISCALE BUCHSTAB PROVIDER REFUTED] [TYPE-II APERTURE PROVIDER REFUTED]`
-  `[HARMONIC-FLOOR STOKES REDISCOVERED] [FATHER-CHANNEL COUPLING OPEN]`
-  `[ORIENTED COFINAL CARLESON CONTROL OPEN] [NOT RH YET]`
+  `[HARMONIC-FLOOR STOKES REDISCOVERED] [NULL GAUGE PAPER-PROVED]`
+  `[RANK-ONE FATHER EXTENSIONS REFUTED] [MOVING-FRONT SCALAR DIAGNOSTIC COARSER THAN LCM CORE]`
+  `[CLASSICAL ENDPOINT DISPERSION REFUTED] [SQUARE-CARRIER PROVIDER REFUTED]`
+  `[POSITIVE RATIO AVERAGING RH-EQUIVALENT]`
+  `[INTEGRATED CAUSAL--LCM SPLICE PAPER-PROVED] [FULL COAREA DEFECT PAIRING OPEN]`
+  `[WEIGHTED COAREA FIBRE PAPER-PROVED] [WEIGHTED TRACE PROVIDER REFUTED]`
+  `[BERNOULLI DENSITY VACUUM REFUTED AS JOINING]`
+  `[ROOT-FOURIER BRIDGE PAPER-PROVED] [CLASSICAL ROOT LARGE SIEVE REFUTED]`
+  `[STOPPED ANOVA COMPENSATOR REFUTED]`
+  `[MODERN MULTIPLICATIVE-CORRELATION SAVINGS INSUFFICIENT]`
+  `[SPECTRAL/KLOOSTERMAN DISPERSION PROVIDER REFUTED]`
+  `[FCRJ RH-EQUIVALENT CHECKPOINT OPEN] [SIGNED INTERVAL-LOCAL CAUSAL TRACE OPEN] [NOT RH YET]`
 - **General HT inputs:**
   - `../3-formalized/new_scientific_knowledge/hypertranscendental-constraint-spectrum-universality.md`;
   - `../3-formalized/new_scientific_knowledge/hypertranscendental-clock-capacity-innovation-theorem.md`;
@@ -4002,7 +4012,7 @@ coboundary before branchwise positivity and meet `(CO1)`--`(CO2)`.  This is a mo
 for the remaining signed product-fibre theorem; ordinary Buchstab or fundamental-lemma input does
 not imply it.
 
-## 2026-07-18 harmonic-floor aperture mapping cone and the father obstruction
+## 2026-07-18 harmonic-floor aperture mapping cone, null gauge, and moving front
 
 ### The all-face Euler--Koszul Stokes law is exact `[PAPER-PROVED] [REDISCOVERED BRIDGE]`
 
@@ -4095,7 +4105,7 @@ therefore give the exact signed mapping-cone defect
 The second equality is the source-defined polar centering; it uses only `<u,V_N>=0`, not the value
 or sign of the completed error.
 
-### The reduced aperture complex contracts, but its constant class does not
+### The constant tail has a null gauge; the moving front does not
 
 The centered vector in `(AB6)` has coordinate
 
@@ -4119,39 +4129,63 @@ Then `(AB6)` is exactly
 M_1(N)=sum_(d<=N)mu(d)/d.                                (AB8)
 ```
 
+The displayed Mertens term is a valid decomposition, but it is not gauge-invariant.  Möbius
+inversion and `(AB5)` also give
+
+```text
+sum_(d<=N)mu(d)d^(-1)z_L(N/d)=kappa_L(N)=0
+                                                    (N>exp(2L)). (AB8a)
+```
+
+Consequently one may subtract the source-null vector `gamma V_N` in `(AB6)` and obtain the
+strictly stronger representative
+
+```text
+1-T_L(N)/c_N=sum_(d<=N)mu(d)d^(-1)q_L(N/d),
+q_L(x)=Harmonic(floor x)-(log x+gamma)z_L(x),
+|q_L(x)|<<_L(1+log x)/x.                                (AB8b)
+```
+
+This correction is essential: `gamma M_1(N)` is not by itself a canonical obstruction on the
+distinguished Möbius line.  The null gauge moves its constant tail into the transition region where
+`z_L` turns on.
+
 For a fixed prime let
 
 ```text
 (mathcalH_pf)(x)=sum_(k>=1)f(p^kx).
 ```
 
-On the decay class containing `r_L`, the series converges and telescopes to
+On the decay class containing `r_L` and `q_L`, the series converges and telescopes to
 
 ```text
 (R_p-I)mathcalH_pf=f,
 mathcalH_p(R_p-I)f=f.                                   (AB9)
 ```
 
-Thus every reduced horizontal aperture difference is contractible on the decaying lattice current.
-It annihilates the constant `gamma`, leaving one-dimensional reduced cohomology.  Pairing that
-father class with the distinguished source is precisely `gamma M_1(N)`.  Quotienting it makes the
-pointed trace undefined; adjoining it restores the classical Mertens boundary.  A square-root
-two-sided estimate for that boundary is RH strength, not an available input.
+Thus every fixed-prime reduced horizontal aperture difference is contractible on the decaying
+lattice current.  The apparent constant cohomology class in `(AB8)` can be gauged away on the
+distinguished line by `(AB8a)`.  What the homotopy does not contract uniformly is the moving finite
+divisor front `d asymp N`: there `x=N/d` remains in a fixed compact interval and `q_L(x)` is of fixed
+size.  Moreover, subtracting `gamma V_N` is null only under the distinguished Möbius functional;
+on the larger source module required by `(C4)` it creates the rank-one row `<source,V_N>`.  Declaring
+that row null would again define the source quotient from the distinguished section.
 
-The norm trade is equally rigid.  In unweighted `ell2(d)`, the source vectors `u` and `a` have
-uniformly bounded norm, while
+The norm trade localizes the same front.  For
+`Q_N(d)=q_L(N/d)`, the source vectors `u` and `a` have uniformly bounded unweighted norm, while
 
 ```text
-||G_N||_2^2 asymp_L N.                                  (AB10)
+||Q_N||_2^2 asymp_L N.                                  (AB10)
 ```
 
-Indeed `G_N(d)` stays bounded away from zero on a positive proportion of `d` near `N`.  In the
-reciprocal norm `sum_d|x_d|^2/d`, its norm square is `asymp_L log N`, while the dual norm squares
-of `u` and `a` grow respectively like `log N` and `(log N)^3`.  Even this rebalance pays
+Indeed `Q_N(d)` stays bounded away from zero on a positive proportion of `d` near `N`, despite its
+decay for `d=o(N)`.  In the reciprocal norm `sum_d|x_d|^2/d`, its norm square is `asymp_L 1`, while
+the dual norm squares of `u` and `a` grow respectively like `log N` and `(log N)^3`.  Even this
+improved null-gauge rebalance pays
 
 ```text
-sum_(N asymp exp(J))(c_N/N)||G_N||_(1/d)^2
- asymp_L J exp(J/2).                                    (AB11)
+sum_(N asymp exp(J))(c_N/N)||Q_N||_(1/d)^2
+ asymp_L exp(J/2).                                      (AB11)
 ```
 
 Fixed-prime and balanced-face tests show both sides of the classification:
@@ -4164,8 +4198,139 @@ p^(-1)(R_p-I)z_L(p)=-p^(-1)+O_L(p^(-2)),
 
 The reduced complex genuinely kills persistent fixed-prime modes.  The moving singleton front and
 balanced Type-II face remain boundary atoms and cancel only in the signed all-face sum.  Norming
-the faces separately pays `(BU7)`; collapsing them first gives `(AB2)`, whose polar subtraction is
-the father problem `(AB8)`.
+the faces separately pays `(BU7)`; collapsing them first gives `(AB2)`.  The null gauge `(AB8b)`
+shows that the remaining scalar difficulty is a high-divisor moving-front convolution, not a bare
+constant `M_1` term.
+
+### Exact half-density localization to the moving Möbius front
+
+The null-gauged scalar has a canonical half-density form.  For `0<t<=1` define, without reusing the
+tent kernel `kappa_L`,
+
+```text
+vartheta_L(t)=t^(-1)q_L(t^(-1)).
+```
+
+Equation `(AB8b)` becomes
+
+```text
+mathcalM_L(N):=sqrt(N)(1-f_L(N))
+ =N^(-1/2)sum_(d<=N)mu(d)vartheta_L(d/N),
+vartheta_L(t)=O_L(1+|log t|).                            (MF1)
+```
+
+Since `E_L(N)=c_N(f_L(N)-1)`, this fixes every sign and normalization:
+
+```text
+E_L(N)^+=C_L mathcalM_L(N)^-,
+sum_(N asymp X)E_L(N)^+/N
+ =C_Lsum_(N asymp X)mathcalM_L(N)^-/N.                  (MF2)
+```
+
+Thus the invariant scalar father is a one-sided logarithmic mean of a normalized, smoothly
+weighted moving-front Möbius sum.
+
+There is also an exact renewal classification.  On functions extended by zero to `x<1`, put
+
+```text
+(mathsfA f)(x)=sum_(d<=x)mu(d)d^(-1)f(x/d),
+(mathsfB f)(x)=sum_(m<=x)m^(-1)f(x/m).
+```
+
+Finite regrouping and `sum_(d|n)mu(d)=1_(n=1)` give
+
+```text
+mathsfA mathsfB=mathsfB mathsfA=I.                       (MF3)
+```
+
+If `Delta_L=mathsfAq_L`, then for every real `x>=1`, including the small-aperture correction,
+
+```text
+Delta_L(x)=1-(log x+gamma)kappa_L(x)-f_L(x),
+mathsfB Delta_L=q_L,
+Delta_L(x)=q_L(x)-sum_(2<=m<=x)m^(-1)Delta_L(x/m).       (MF4)
+```
+
+For `x>exp(2L)`, `Delta_L(x)=1-f_L(x)`.  The recurrence is not a contraction:
+`sum_(2<=m<=x)1/m` grows, and separating its two signs only couples the two unknown Jordan parts.
+Iteration recreates Möbius inversion.
+
+The decay in `(AB8b)` nevertheless removes the low-divisor bulk deterministically.  For
+`1<=Y<=N` define
+
+```text
+F_(L,Y)(N)=sum_(N/Y<d<=N)mu(d)d^(-1)q_L(N/d).
+```
+
+Then
+
+```text
+|Delta_L(N)-F_(L,Y)(N)|<<_L log(eY)/Y.                  (MF5)
+```
+
+Indeed each omitted term is at most
+`C_L log(eN/d)/N`, and summing over `d<=N/Y` gives `(MF5)`.  With `Y=sqrt(N)`, put
+
+```text
+F_L^front(N)=sum_(sqrt(N)<d<=N)mu(d)d^(-1)q_L(N/d).
+```
+
+The Lipschitz property of the negative part yields the block identity up to a harmless error:
+
+```text
+|sum_(X<=N<exp(1)X)E_L(N)^+/N
+ -C_Lsum_(X<=N<exp(1)X)F_L^front(N)^-/sqrt(N)|
+ <<_L log X.                                             (MF6)
+```
+
+Thus `d<=sqrt(N)` is rigorously below the `(C5)` budget.  The unresolved front is exactly
+`sqrt(N)<d<=N`; partitioning it by `k=floor(N/d)` produces the coherent moving intervals
+
+```text
+N/(k+1)<d<=N/k,                    1<=k<sqrt(N).          (MF7)
+```
+
+This is more precise than the phrase `d asymp N`: a fixed-ratio strip is insufficient, while the
+whole front remains shorter than the original all-divisor carrier.
+
+The scalar estimate
+
+```text
+sum_(X<=N<exp(1)X)F_L^front(N)^-/sqrt(N)
+ <<_L(1+log X)^A                                        (MF8)
+```
+
+is equivalent to `(C5)` up to `(MF6)`, hence is itself RH strength.  It is an exact diagnostic for
+a source theorem, not an independently available scalar lemma.
+
+Its Mellin transform makes the strength test explicit.  If
+
+```text
+K_L(s)=(1-exp(-L(s+1/2)))^2/[C_L(s+1/2)^2],
+```
+
+then in the initial half-plane, followed only afterwards by meromorphic continuation,
+
+```text
+widehat(Delta_L)(s)
+ =1/s+K_L'(s)+[zeta'(s+1)/zeta(s+1)-gamma]K_L(s).        (MF9)
+```
+
+The tent multiplier has nonremovable zeros only on `Re(s)=-1/2`; it cannot censor an off-critical
+zeta zero, and its lattice of critical-line zeros cannot censor all zeta zeros.  Thus eventual-sign
+or better-than-half-density scalar shortcuts fail standard Mellin/Landau hostile tests.  The
+allowable half-density polylogarithmic scale is exactly the open RH-strength boundary.
+
+Primary arithmetic-renewal results do not cross it.  Balazard and Daval give exact Möbius
+transforms and PNT/logarithmic-scale inequalities
+([Balazard](https://arxiv.org/abs/1209.3577),
+[Daval](https://arxiv.org/abs/2006.01295)); the Erdos--Ingham arithmetic Tauberian theorem requires
+slow decrease or monotonicity and supplies no critical rate
+([paper](https://www.renyi.hu/~p_erdos/1964-05.pdf)).  Ng's weak-Mertens distribution theory is
+conditional on RH plus an additional negative-moment hypothesis
+([paper](https://arxiv.org/abs/math/0310381)), while Matomaki--Radziwill's almost-all short-interval
+cancellation does not control every coherent exceptional front
+([paper](https://annals.math.princeton.edu/2016/183-3/p06)).
 
 ### Classical Type-II mean squares require exactly the missing power
 
@@ -4196,8 +4361,9 @@ widehat(kappa_L)(0)=1.                                  (TI2)
 
 A fixed log aperture therefore supplies only a frequency window `|t|=O_L(1)`.  Products near `X`
 have log spacing `asymp X^(-1)`, so Montgomery--Vaughan dephasing needs length `gtrsim X`; equal
-products never dephase.  An adjacent aperture difference gains `N^(-1)` but its right inverse
-loses `N`, with the constant father in the kernel.
+products never dephase.  An adjacent aperture difference gains `N^(-1)` but its cofinal right
+inverse loses `N`; after `(AB8b)` the same loss sits at the moving front rather than an invariant
+constant tail.
 
 Writing `E_L(N)=T_L(N)-c_N` and `f_L(N)=T_L(N)/c_N`, the conventional two-sided estimate sufficient
 for `(C5)` would be
@@ -4258,22 +4424,204 @@ sum_(N asymp X)(c_N/N)|f_L(N+1)-f_L(N)|^2<<_L X^(-3/2). (SV1)
 But the sharp discrete Poincare inequality costs `X^2`; it controls only mean-zero/Haar curvature
 and leaves the block father `bar(f)_(L,X)-1` unchanged.
 
+### Generic Hardy/Calderon and finite-gauge completions fail hostile tests
+
+The loss cannot be repaired by reorganizing the adjacent differences into a wavelet tower.  Put
+
+```text
+g_N=f_L(N)-1,                 w_N=c_N/N,
+W_X=sum_(N asymp X)w_N asymp_L sqrt(X),
+m_X=W_X^(-1)sum_(N asymp X)w_Ng_N.
+```
+
+The elementary one-sided father/detail inequality is
+
+```text
+sum w_Ng_N^+
+ <=W_Xm_X^+ +(1/2)W_X^(1/2)
+        [sum w_N|g_N-m_X|^2]^(1/2).                     (HW1)
+```
+
+Weighted path Poincare and `(SV1)` give only
+
+```text
+sum w_N|g_N-m_X|^2
+ <<X^2sum w_N|g_(N+1)-g_N|^2
+ <<_L X^(1/2).                                          (HW2)
+```
+
+Both losses are sharp at the level of a generic aperture theorem.  A positive constant has zero
+details and target `asymp sqrt(X)`.  A centered ramp with step `X^(-1)` has zero father and adjacent
+energy `asymp X^(-3/2)`, yet its positive weighted mass is again `asymp sqrt(X)`.  A full wavelet
+tower only redistributes these coarse modes.  This is consistent with inhomogeneous Calderon theory,
+where the low-frequency projection is independent data rather than a consequence of the
+cancellation pieces
+([He--Liu--Yang--Yuan](https://arxiv.org/abs/1803.09924),
+[Goldberg](https://doi.org/10.1215/S0012-7094-79-04603-9)).
+
+The source-null gauge itself has a useful exhaustion and a matching limit.  For compactly supported
+`phi`, define
+
+```text
+z_phi(x)=sum_(m>=1)m^(-1)phi(x/m).
+```
+
+Then the same finite Möbius regrouping gives
+
+```text
+mathsfA z_phi=phi.                                       (HW3)
+```
+
+Consequently `q_L-z_phi` is cofinally null on the distinguished section.  Suitable `phi` can
+remove any prescribed finite collection of Mellin moments.  But for every remaining nonzero gauge
+`q^circ`, put
+
+```text
+widehat(q^circ)(tau)=integral_1^infinity
+                     q^circ(x)x^(-1-itau)dx.
+```
+
+On any phase-stable source completion, the uniformly square-summable coherent section
+`a_d=d^(-1+itau)` satisfies
+
+```text
+sum_(d<=N)a_dq^circ(N/d)
+ =N^(itau)[widehat(q^circ)(tau)+o(1)].                   (HW4)
+```
+
+Finite moment cancellation leaves some fixed frequency with nonzero multiplier, whose real part
+has fixed positive amplitude on infinitely many logarithmic blocks and costs `asymp sqrt(X)`.
+Eliminating a whole frequency interval forces `q^circ=0` by Mellin uniqueness; `(HW3)` then requires
+
+```text
+phi=mathsfAq_L=Delta_L,
+```
+
+which constructs the gauge from the evaluated completed defect.  This refutes generic
+phase-stable Hardy completions.  It does **not** refute a genuinely arithmetic source space which
+excludes the phase sections by exact real Möbius/Type-II orientation; that exclusion and its stable
+norm would themselves be part of the missing theorem.
+
+### Honest rank-one boundary extensions retain the same mass `[PAPER-PROVED NO-GO]`
+
+Compact gauges in `(HW3)` are genuinely null on more than one line.  If `b` is any fixed finitely
+supported Dirichlet-convolution coefficient, then pairing `z_phi` with `b*u` gives `(b*phi)(N)`,
+which vanishes cofinally.  The boundary value must nevertheless be retained on the full source
+mapping cone.
+
+For an unweighted finite aperture put
+
+```text
+Q_N(d)=q_L(N/d),
+b_(phi,N)=((q_L(N/d)-z_phi(N/d))_(d<=N),
+           (phi(N/d))_(d<=N)),
+
+mathscrD_(phi,N)=[0              b_(phi,N)^*;
+                  b_(phi,N)     0].                     (BE1)
+```
+
+This is a source-defined self-adjoint, non-Jordan boundary extension.  Its only nonzero eigenvalues
+are `+-||b_(phi,N)||`, and
+
+```text
+||b_(phi,N)||^2
+ =sum_(d<=N)|q_L(N/d)-z_phi(N/d)|^2
+  +sum_(d<=N)|phi(N/d)|^2.                              (BE2)
+```
+
+The obstruction can be minimized exactly.  Under
+
+```text
+(Uf)(y)=exp(-y/2)f(exp y),
+```
+
+the harmonic lift `phi -> z_phi` has Fourier multiplier `zeta(3/2+it)`.  Therefore, for every
+honest fixed boundary weight `lambda>0`,
+
+```text
+integral_1^infinity[|q_L-z_phi|^2+lambda|phi|^2]dx/x^2
+ =integral_R[|qhat_L-zeta(3/2+it)phihat|^2
+             +lambda|phihat|^2]dt.                      (BE3)
+```
+
+The unique geometric minimizer and its residual are
+
+```text
+phihat_geom
+ =conj(zeta(3/2+it))qhat_L/(|zeta(3/2+it)|^2+lambda),
+
+min=integral_R lambda|qhat_L|^2/
+                    (|zeta(3/2+it)|^2+lambda) dt>0.      (BE4)
+```
+
+The minimum is strict because `q_L(1)=1`.  Riemann-sum scaling then gives, uniformly over every
+profile and every such honest port,
+
+```text
+inf_phi||b_(phi,N)||^2 asymp_L N,
+sum_(N asymp X)(c_N/N)inf_phi||b_(phi,N)||^2
+ asymp_L X^(3/2).                                       (BE5)
+```
+
+The favorable reciprocal divisor norm reduces the fibre cost to order `1`, but its block cost is
+still `asymp_L sqrt(X)`.  Cayley or dissipative realization preserves this controllability singular
+value.
+
+If the boundary weight is set to zero, the only zero-bulk choice is
+
+```text
+phi=mathsfAq_L=Delta_L,
+phi(N)=1-T_L(N)/c_N=-E_L(N)/c_N.                         (BE6)
+```
+
+The perfect gauge has merely transferred the evaluated target into its boundary port.  Likewise,
+for a local positive graph `||t b_(phi,N)+y_N||^2`, the unique minimizing scalar is
+
+```text
+t_opt=-<b_(phi,N),y_N>/||b_(phi,N)||^2,                 (BE7)
+```
+
+whose numerator on the distinguished Stokes state is `-E_L(N)/c_N`.  A block-shared minimizer
+reads the corresponding weighted block defect.  These are forbidden line-tailored choices.
+
+A cross-aperture compression which merges the scalar coordinates before positivity controls at
+most
+
+```text
+[sum_(N asymp X)E_L(N)/N]^+,
+```
+
+which does not dominate `sum E_L(N)^+/N`; retaining the coordinates restores `(BE5)`.  Thus every
+honestly normed rank-one self-adjoint, Cayley, or dissipative father extension is refuted.  The
+survivor must be higher-rank, arithmetic, and signed across the moving intervals `(MF7)` before any
+positive port is formed.
+
 ### Hostile verdict and corrected open core
 
 `[PAPER-PROVED] [REDISCOVERED BRIDGE]` The Euler--Koszul derivative `(AB2)`, harmonic-floor mapping
 cone `(AB4)`--`(AB6)`, and reduced contracting homotopy `(AB9)` are exact.  The first three
 arithmetic identities are already Lean-proved in `Mollifier.lean`.
 
-`[FALSIFIED]` Positive Type-II branch completion, reduced-difference-only completion, raw or
-reciprocal harmonic-floor norm, and a conventional two-sided Type-II/Selberg mean square.  They
-respectively pay `(BU7)`, forget the father trace, pay `(AB10)`--`(AB11)`, or assume the
-RH-equivalent estimate `(TI3)`.
+`[PAPER-PROVED CORRECTION]` The `gamma M_1` split `(AB8)` is not invariant.  The source-null identity
+`(AB8a)` produces the decaying representative `(AB8b)`.  It removes the constant tail on the
+distinguished line but not the moving-front row on a genuine source module.
 
-`[POSITIVE SALVAGE]` The reduced aperture current is contractible and its transverse adjacent-cutoff
-energy satisfies `(SV1)`.  The obstruction is not an unspecified Type-II identity: it is the unique
-constant cohomology class in `(AB8)`.
+`[FALSIFIED]` Positive Type-II branch completion, raw or reciprocal harmonic-floor completion,
+a reduced-difference completion whose homotopy is required to be cofinally bounded, and a
+conventional two-sided Type-II/Selberg mean square.  They respectively pay `(BU7)`,
+`(AB10)`--`(AB11)`, lose the moving-front power, or assume the RH-equivalent estimate `(TI3)`.
+Generic Hardy/wavelet completion and every finite-moment null gauge additionally fail
+`(HW1)`--`(HW4)`.  Every honestly weighted rank-one self-adjoint, Cayley, or dissipative boundary
+extension pays `(BE5)`; its zero-cost limit is the evaluated-defect gauge `(BE6)`.
 
-`[OPEN CORE]` Construct a source-defined, genuinely **one-sided father--curvature coupling** which
+`[POSITIVE SALVAGE]` The reduced aperture current is contractible, the scalar trace has the decaying
+kernel `(AB8b)`, its transverse adjacent-cutoff energy satisfies `(SV1)`, and `(MF5)`--`(MF7)`
+discard the entire low-divisor half at only logarithmic block cost.  The obstruction is not an
+unspecified Type-II identity or an unavoidable `gamma M_1` summand: it is the one-sided cofinal
+moving-front/source-extension estimate `(MF8)`.
+
+`[SUPERSEDED PROVISIONAL OPEN CORE]` Construct a source-defined, genuinely **one-sided
+father--curvature coupling** which
 uses the shrinking transverse current `(SV1)` but controls
 
 ```text
@@ -4281,6 +4629,1396 @@ sum_(N asymp exp(J)) E_L(N)^+/N
 ```
 
 polynomially before positive norm separation.  Its source and norm must be fixed independently of
-`E_L`, its sign, zero data, and the evaluated Mertens sum.  It must retain the constant class rather
-than quotient it, and it must not replace the target by `(TI3)` or a square-root two-sided estimate
-for `M_1`.  This is the exact remaining content of `(CO1)`--`(CO2)`.
+`E_L`, its sign, zero data, and the evaluated Mertens sum.  It must extend the null gauge `(AB8b)`
+beyond the distinguished line, control the full moving `sqrt(N)<d<=N` front without norming its
+interval atoms, and
+must not replace the target by `(TI3)` or a square-root two-sided estimate for `M_1`.  This was the
+provisional source-space formulation before the support-canonical corpus correction below.
+
+Its provisional theorem form asked, for `X=exp(J)`, for `Z_J`, coherent restrictions `rho_N`, a
+uniformly bounded Möbius section `xi_J`, and source-defined non-spectral maps satisfying
+
+```text
+tau_(N,F)(z,z)=||Gamma_(N,+)rho_Nz||^2-||Gamma_(N,-)rho_Nz||^2,
+tau_(N,F)(xi_J,xi_J)=-F_L^front(N),
+
+sum_(X<=N<exp(1)X)(c_N/N)||Gamma_(N,+)rho_Nz||^2
+ <=C_L(1+J)^A||z||_(Z_J)^2.                             (MF10)
+```
+
+The maps must be built from the signed moving-interval/floor incidence before evaluation.  The
+scalar Jordan decomposition of `F_L^front`, the naive front-row norm, and `(BE6)` are excluded.
+
+## 2026-07-18 corpus correction: the scalar moving front is coarser than the canonical lcm core
+
+`[CORPUS CORRECTION] [MF10 RETIRED AS THE FRONTIER] [EXACT LCM/COAREA CORE OPEN]`
+
+The conclusion immediately above was too coarse.  The identities `(MF1)`--`(MF9)` and the
+low-divisor truncation remain valid, but the assertion that `(MF10)` is the exact remaining content
+does not survive the live corpus.  The canonical report `docs/reports/rh-proof-shape-1707.md`
+already retains the two endpoint cells, active divisor support, and Boolean grades far enough to
+give a strictly smaller noncircular core.  In contrast, an abstract source space `Z_J` and maps
+`Gamma_(N,+-)` constrained only by their value on `xi_J` can be reverse-engineered from
+`F_L^front`; excluding that circularity requires the support-canonical endpoint structure below.
+
+For the fixed-ratio endpoint covariance, write `n=m+h`, let `I_h` be the actual overlap interval,
+let `W_h` be its clipped weight, and group divisor pairs by `l=lcm(d,e)`.  The exact active-support
+collapse is
+
+```text
+sum_(d|Q_z,d|m; e|Q_z,e|m+h; lcm(d,e)=l) mu(d)mu(e)
+ =mu(l) 1_(l|m(m+h)).                                  (LC1)
+```
+
+For squarefree `l`, the active roots are
+
+```text
+R_(l,h)={r mod l:l|r(r+h)},
+nu_h(l)=#R_(l,h)=2^omega(l/(l,h)).                     (LC2)
+```
+
+The bounded-variation progression estimate in `(35m51)`--`(35m52)` of the canonical report removes
+every centered lcm mode `l<=D` at cost `O(log(M)^3/M)` when `D=z asymp sqrt(M)`.  Consequently the
+ordinary-prime covariance has the exact reduction
+
+```text
+C_M
+ =c_M^2 A^3 a_D/12
+  +sum_h sum_(m in I_h) W_h(m)
+     sum_(l|Q_z,l>D,l|m(m+h)) mu(l)
+  +O_(A,rho)(log(M)^3/M),
+
+a_D=sum_(l|Q_z,l<=D) mu(l)/l product_(p|l)(2-1/p).     (LC3)
+```
+
+Thus the unresolved cancellation is not merely a high-divisor scalar front.  It is the signed
+joining of the explicit low-lcm density with the **active** high-lcm tail.  The middle range
+`D<l<=H_h`, where each residue class still has complete periods, and the incomplete range
+`l>H_h` are both essential.  A shell localized only at `p asymp sqrt(M)` misses the former and the
+unbalanced higher-grade crossings.
+
+The matching preterminal coordinate is the signed divisor coarea.  With
+
+```text
+lambda_(S,v)(n)=-sum_(d|n,d|Q_S) mu(d) 1_(0<=v<log d),
+Xco+_S(u,v,t)=1_(v>=0) P_0
+  sum_(exp(u-t)<n<=exp(u+c-t)) lambda_(S,v)(n)/n,
+H_S^0(u,t)=P_0 sum_(exp(u-t)<m<=exp(u+c-t)) a_S(m)/m,
+```
+
+prime adjunction has the causal inhomogeneous law
+
+```text
+Xco+_(S union {p})(u,v,t)
+ =Xco+_S(u,v,t)-p^(-1)Xco+_S(u-log p,v-log p,t)
+  +p^(-1)1_(0<=v<log p) H_S^0(u-log p,t).              (LC4)
+```
+
+The last term is a canonical harmonic boundary injection fixed before evaluation.  Its integral
+recovers the physical von Mangoldt current only at the full terminal divisor set, whereas `(LC3)`
+is expressed at the square-root sieve set.  The high-lcm tail is the same coarea current before
+integration:
+
+```text
+btail_(S,V)(R)=sum_(l|Q_S,l|R,log l>V) mu(l)
+             =-lambda_(S,V)(R),                        (LC5)
+```
+
+and its prime-adjunction threshold packet is exactly `(35m64)`--`(35m65)` of the canonical report.
+Taking an absolute value, positive part, or raw square before the Boolean grades join is forbidden:
+the exact zero tangent can have exponentially large separated square mass, as `(35m66)` shows.
+
+`[CORRECTED OPEN CORE]` Derive an exact **future-dressed endpoint pairing**, fixed independently of
+the terminal covariance, between the full causal endpoint in `(LC4)` and the square-root-sieve
+high-lcm reduction `(LC3)`--`(LC5)`.  It must retain the future Boolean dressing of `(35m59)`, the
+complete-period middle `D<l<=H_h`, the incomplete boundary `l>H_h`, and the staircase endpoint
+cells.  Then prove a signed interval-local coarea/trace estimate for those paired defects.  A
+lower-cone energy, a raw positive square function, a residual defined from `C_M`, or maps chosen to
+realize `F_L^front` do not meet the statement.
+
+The first quantitative checkpoint is still the fixed-ratio block-current estimate `(35m20)`, which
+is paper-level equivalent to RH.  The exact harmonic rational-grid frame `(35o)`--`(35q)` passes a
+generic floor test, while the phase source `(35r)` refutes every coefficient-universal version.
+Therefore the missing estimate, if true, must use the exact real all-grade Möbius orientation.
+Only after the endpoint pairing and signed trace are proved would it be honest to package their
+consequence as a source Carleson theorem of the form suggested by `(MF10)`.
+
+## 2026-07-18 scalar-front dispersion, scale-halving, and square-carrier audit
+
+`[PAPER-PROVED NO-GO] [CLASSICAL LARGE SIEVE/BDH REFUTED AS PROVIDERS]`
+`[SCALE-HALVING IS AN ALMOST IDENTITY] [SQUARE CARRIER LEAVES LIOUVILLE FRONT]`
+
+This audit concerns only the coarser scalar front.  It does not supersede `(LC1)`--`(LC5)`.  Put
+
+```text
+B_X={N:X<=N<exp(1)X},
+F_L^front(N)=sum_(sqrt(N)<d<=N) mu(d)q_L(N/d)/d,
+S_X=sum_(N in B_X) (F_L^front(N))^-/sqrt(N).
+```
+
+Coordinatewise duality gives the exact one-sided normalization
+
+```text
+S_X=sup_(0<=epsilon_N<=1)
+ -sum_d mu(d)/d
+   sum_(N in B_X, d<=N<d^2) epsilon_N q_L(N/d)/sqrt(N). (FD1)
+```
+
+Writing `N=kd+r`, `0<=r<d`, permits an exact discrete Fourier expansion in `r mod d`, but
+`epsilon_N` remains arbitrary endpoint data rather than a residue-class average.  On `d asymp D`,
+the fixed frequencies `1/d` are spaced by `asymp D^(-2)`.  The classical large sieve therefore
+gives, for `b_N=epsilon_N/sqrt(N)`,
+
+```text
+sum_(d asymp D) |sum_(N in B_X)b_N exp(2 pi i N/d)|^2
+ <<(X+D^2)sum_N|b_N|^2,
+
+classical port cost asymp sqrt(X/D+D).                 (FD2)
+```
+
+If `N/d asymp K`, then `D asymp X/K` and
+`q_L(N/d)<<_L(1+log K)/K`, so the resulting cell bound is
+
+```text
+sqrt(X)(1+log K)/K^(3/2),       1<=K<=sqrt(X).          (FD3)
+```
+
+The cofinal cell `K=O(1)`, `d asymp X`, costs `sqrt(X)`, not a logarithmic power.  The zero Fourier
+mode is the unremoved father channel; centering it leaves a fixed nonzero mode with the same
+`D^2` spacing wall.  Removing that term specifically for the Möbius coefficients would itself be
+the missing arithmetic theorem.  This is the exact classical large-sieve mechanism of
+[Montgomery--Vaughan](https://doi.org/10.1112/S0025579300004708), not a defect of a chosen
+inequality.  Linnik dispersion obtains power savings only after genuine congruence and character
+separation, often with a Kloosterman input; the endpoint selector in `(FD1)` provides neither
+([Pascadi](https://doi.org/10.1112/S0010437X2500747X)).  BDH averages progression discrepancies
+over both moduli and residue classes; treating the moving endpoint in `(FD1)` as that average is a
+category error ([Hooley](https://doi.org/10.1515/crll.1975.274-275.206)).
+
+The raw power count makes the loss independent of Fourier language.  If
+
+```text
+G_X(d,e)=sum_(N in B_X, max(d,e)<=N<min(d^2,e^2))
+             q_L(N/d)q_L(N/e),
+```
+
+then
+
+```text
+sum_(N in B_X)|F_L^front(N)|^2
+ =sum_(d,e)mu(d)mu(e)G_X(d,e)/(de).                    (FD4)
+```
+
+The signed diagonal is `asymp_L 1`, while the termwise absolute off-diagonal is `asymp_L X`.
+Equivalently,
+
+```text
+sum_(N in B_X) 1/sqrt(N)
+ sum_(sqrt(N)<d<=N) |mu(d)q_L(N/d)|/d
+ asymp_L sqrt(X).                                      (FD5)
+```
+
+The two-port absolute statement uses only squarefree density and `q_L(1)=1`; a prescribed
+Möbius-sign port uses PNT.  Cauchy before sign collapse replaces the one-sided target by
+`sum_N|F_L^front(N)|^2<<poly(log X)`, which is the RH-equivalent two-sided estimate `(TI3)`.
+
+The tempting scale-halving hyperbola transfer is exact but is not a contraction.  Since
+`q_L=mathsfB Delta_L`, finite regrouping gives
+
+```text
+F_L^front(N)
+ =sum_(sqrt(N)<n<=N) c_N(n)Delta_L(N/n)/n,
+c_N(n)=sum_(d|n,d>sqrt(N))mu(d)
+      =-sum_(d|n,d<=sqrt(N))mu(d).                     (SH1)
+```
+
+Every displayed input aperture is below `sqrt(N)`.  Nevertheless splitting the original Möbius
+inverse at `sqrt(N)` gives the stronger classification
+
+```text
+F_L^front(N)=Delta_L(N)-R_L(N),
+R_L(N)=sum_(d<=sqrt(N))mu(d)q_L(N/d)/d,
+|R_L(N)|<<_L log(N)/sqrt(N).                           (SH2)
+```
+
+Thus the scale-halving formula reconstructs the current value with coefficient `1+o(1)`.  Taking
+positive norms after `(SH1)` costs at least a square-root diagonal; correlating the lower-scale
+inputs strongly enough to remove it is just the original renewal problem.
+
+Finally, the existing square carrier does not create a new safe source.  With
+`lambda(n)=(-1)^Omega(n)`, Dirichlet convolution gives exactly
+
+```text
+mu=(sqrtPart mu)*lambda,
+mu(d)=sum_(a^2 b=d)mu(a)lambda(b),
+
+F_L^front(N)
+ =sum_a mu(a)/a^2
+   sum_(sqrt(N)/a^2<b<=N/a^2) lambda(b)q_L(N/(a^2b))/b. (SQ1)
+```
+
+The `a` carrier is absolutely summable, but its unit fibre `a=1` is the complete Liouville front,
+whose Dirichlet series is `zeta(2s)/zeta(s)` and therefore retains the zeta denominator.  Before
+signed `a`-collapse its absolute block mass is again `asymp_L sqrt(X)`; after collapse `(SQ1)`
+returns the original Möbius front.  Cauchy across `a` cannot help because the `a=1` diagonal
+remains.  The safe square factor and mean-value faces already occur in
+`SquarefreeMoebiusNormalization.lean`, `MFreeLadder.lean`, and
+`MobiusSquarefreeReciprocalTransfer.lean`; they do not control this Liouville quotient.
+
+`[FALSIFIED METHODS]` Classical endpoint DFT plus large sieve/BDH, conventional quadratic
+Type-II dispersion, positive scale-halving polarization, and square-carrier separation before
+sign collapse.  All lose `sqrt(X)` or assume `(TI3)`.
+
+`[POSITIVE SALVAGE]` The exact endpoint dual `(FD1)`, almost-identity `(SH1)`--`(SH2)`, and square
+factorization `(SQ1)` precisely locate why these methods fail.  They also confirm that the scalar
+front has already forgotten the support roots, future Boolean dressing, complete-period middle,
+incomplete boundary, and causal injection retained by `(LC1)`--`(LC5)`.  The canonical signed
+lcm/coarea trace problem remains untouched.
+
+## 2026-07-18 square-root causal--lcm splice and its unintegrated remainder
+
+`[PAPER-PROVED BRIDGE] [INTEGRATED ENDPOINT PAIRING CLOSED]`
+`[DIVISOR-RESOLVED CAUSAL DEFECT JOINING OPEN] [NOT AN ESTIMATE]`
+
+The square-root sieve supplies a canonical algebraic splice between the causal boundary source and
+the support-lcm reduction.  It closes the **integrated** endpoint wiring requested after `(LC5)`,
+but not the signed interval-local estimate and not yet the full unintegrated coarea pairing.
+
+Let
+
+```text
+A_(M,K)={n in N:M exp(-A)<n<=K},
+z=sqrt(K),       M exp(-A)>z,
+S_0={p:p<=z},    F={p:z<p<=K}.
+```
+
+For a prime set `S`, retain `a_S(n)=product_(q in S)(1-1_(q|n))`.  The coefficient-level causal
+boundary source in `(LC4)` is
+
+```text
+j_(p,S)(n,v)=1_(p|n)a_S(n)1_(0<=v<log p).              (SP1)
+```
+
+Order the primes of `F`, let `S_(j-1)` contain `S_0` and the preceding ones, and future-dress each
+`j_(p_j,S_(j-1))` by the remaining homogeneous transports from `(LC4)`.  If `(SP1)` is nonzero on
+`A_(M,K)`, write `n=p_j r`.  When `r>1`, a prime divisor of `r` is below `z` and already kills
+`a_S(n)`; when `r=1`, `n=p_j`.  Two factors above `z` cannot occur because their product exceeds
+`K`.  Later transports do not alter the surviving singleton.  Hence the dressed injection sum is
+exactly
+
+```text
+J_v(n)=sum_j T_(>j)j_(p_j,S_(j-1))(n,v)
+      =1_(n is prime)1_(0<=v<log n),
+
+J(n)=integral_0^infinity J_v(n)dv
+    =log(n)1_(n is prime)
+    =log(n)a_(S_0)(n),              n in A_(M,K).       (SP2)
+```
+
+This source is fixed by the aperture and prime filtration before the endpoint covariance is
+evaluated.  If `P_K` contains every prime through `K`, the full causal endpoint has the exact
+coefficientwise decomposition
+
+```text
+lambda+_(P_K,v)(n)=J_v(n)+Rpp_v(n)+C_v(n),
+
+Rpp_v(n)=1_(n=p^k,k>=2)1_(0<=v<log p),
+C_v(n)=1_(omega(n)>=2)lambda+_(P_K,v)(n),
+
+integral C_v(n)dv=0,
+Lambda(n)=J(n)+integral Rpp_v(n)dv.                    (SP3)
+```
+
+Thus the integrated remainder is exactly the already-harmless proper-prime-power row.  The field
+`C_v` must nevertheless not be discarded before integration: for a composite with at least two
+distinct prime factors it is generally nonzero, and `(35m66)` shows that its raw square can be
+exponentially larger than its zero integral.
+
+The canonical way to retain this field is to delay the log-threshold pushforward.  On the Boolean
+lcm semilattice define
+
+```text
+Omega_(S,n)=sum_(d|n,d|Q_S)mu(d)e_d,
+e_d star e_e=e_(lcm(d,e)).                             (SP4)
+```
+
+The local factor `e_1-e_p` is idempotent for `star`, so bilinearity gives the exact identity
+
+```text
+Omega_(S,m) star Omega_(S,n)=Omega_(S,mn).             (SP5)
+```
+
+Let `epsilon(e_d)=1`, `ell(e_d)=log d`, and
+`theta_V(e_d)=1_(log d>V)`.  Then
+
+```text
+epsilon(Omega_(S,n))=a_S(n),
+-ell(Omega_(S,n))=Lambda_S(n),
+theta_V(Omega_(S,n))=btail_(S,V)(n)=-lambda_(S,V)(n). (SP6)
+```
+
+Equation `(SP5)` is the divisor-resolved form of `(LC1)` and retains every zero-integral composite
+packet in `(SP3)`.  In particular
+
+```text
+J(m)J(n)/(log(m)log(n))
+ =epsilon(Omega_(S_0,m) star Omega_(S_0,n)).            (SP7)
+```
+
+Here the quotient is the prime indicator; the existing weight `W_h` already contains the external
+`log(m)log(n)/(mn)` labels and the exact clipped endpoint kernel.  Multiplying the normalized
+identity `(SP7)` by that weight, summing over `n=m+h`, and writing
+
+```text
+beta_M(e_l)=B_l
+ =sum_h sum_(m in I_h,l|m(m+h))W_h(m),
+v_z=sum_(l|Q_z)mu(l)e_l,
+```
+
+gives, without a terminally defined residual,
+
+```text
+C_M=beta_M(v_z),
+
+C_M=c_M^2 A^3 a_D/12+R_(M,D)+beta_M(Q_D v_z),
+|R_(M,D)|<<_(A,rho)log(M)^3/M,        D asymp sqrt(M). (SP8)
+```
+
+The final term is the exact high-lcm tail.  For ordered small primes, `(35m59)` gives
+
+```text
+beta_M(Q_Dv_z)
+ =-sum_j beta_M(
+    product_(k>j)(I-Lscr_(p_k))
+    Q_D Lscr_(p_j)P_Dv_(j-1)).                         (SP9)
+```
+
+Thus `(SP2)`--`(SP9)` give a genuine target-independent pairing between the integrated causal
+boundary injection and the support-canonical high-lcm reduction.  The exact weight `beta_M`
+retains the complete-period middle, incomplete boundary, and clipped endpoint cells; `(SP9)`
+retains every future small-prime Boolean grade.
+
+`[LIMIT OF THE BRIDGE]` The scalar injection `J` in `(SP2)` has already integrated away `C_v`.
+Although `(SP4)`--`(SP6)` retain the divisor-resolved composite profiles algebraically, no
+coercive signed pairing has been proved which joins their causal future transport to the crossing
+packets in `(SP9)` at an interval-local trace.  Declaring `C_v=0`, norming it separately, or using
+only `(SP8)` returns respectively a false deletion, the explosion `(35m66)`, or the
+RH-equivalent endpoint covariance.
+
+The precise grade-wise mismatch can be exposed without defining a covariance residual.  Every
+active `m` has a unique factorization
+
+```text
+m=p r,
+p=1 if m is z-smooth, otherwise p>z is its unique large prime factor,
+r is z-smooth.
+```
+
+For squarefree `d|r`, put
+
+```text
+K_v(d,1)=-1_(0<=v<log d),
+K_v(d,p)=1_(0<=v<log(pd))-1_(0<=v<log d),     p>z.     (SP10)
+```
+
+Direct expansion of the full divisor set gives
+
+```text
+lambda+_(P_K,v)(m)=sum_(d|r,d|Q_z)mu(d)K_v(d,p).       (SP11)
+```
+
+The `d=1` term for `p>z` is exactly the future prime injection; `d>1` are its transported
+composite packets.  Moreover
+
+```text
+integral K_v(d,p)dv=log p,       p>z,
+integral K_v(d,1)dv=-log d.                            (SP12)
+```
+
+The lcm reduction instead assigns the external endpoint label `log m` to **every** small-divisor
+grade.  Define
+
+```text
+S_v(m;d)=1_(0<=v<log m),
+G_v(m;d)=S_v(m;d)-K_v(d,p).                            (SP13)
+```
+
+Then, before integration,
+
+```text
+a_(S_0)(m)1_(0<=v<log m)
+ =lambda+_(P_K,v)(m)+sum_(d|r)mu(d)G_v(m;d).           (SP14)
+```
+
+For two endpoints the exact colored identity is
+
+```text
+S_v(m;d)S_w(n;e)
+ =K_v(d,p)K_w(e,q)+K_v(d,p)G_w(n;e)
+  +G_v(m;d)K_w(e,q)+G_v(m;d)G_w(n;e).                 (SP15)
+```
+
+After multiplying by `mu(d)mu(e)`, the projection `lcm(d,e)>D` and the future product in `(SP9)`
+retain all four ports and every endpoint cell.  To interface with the existing `W_h`, which already
+contains `log(m)log(n)`, divide the `m`-profiles in `(SP15)` by `log m` and the `n`-profiles by
+`log n`; their integrals then recover the prime indicators without double-counting the labels.
+
+`[EXACT BUT INSUFFICIENT]` Equations `(SP10)`--`(SP15)` are a pre-integration change of profile,
+not a quantitative theorem.  The `G` row is defined by comparison with the already selected
+endpoint profile and is gradewise nonunique under source-null modifications.  More decisively,
+applying `Q_D` to `(SP15)` pairs only the raw high-lcm term in `(SP8)`.  It supplies no causal mate
+for the deterministic low-density contribution
+
+```text
+c_M^2 A^3 a_D/12,                                     (SP16)
+```
+
+which is exactly what must cancel that high tail.  Adding `(SP16)` by hand and calling the sum a
+defect merely restates `(SP8)`.
+
+`[CORRECTED OPEN CORE]` Derive, from the causal prime-adjunction law itself, a normalized
+divisor-resolved defect whose **same identity** produces both the density term `(SP16)` and the
+four future-dressed high-tail ports `(SP15)`, including the complete-period middle, incomplete
+boundary, and endpoint cells.  Only then prove its signed interval-local trace estimate before any
+positive/absolute operation.  The integrated splice and the grade-wise mismatch are now explicit;
+the density--tail causal joining and its quantitative trace remain the RH-bearing steps.
+
+## 2026-07-18 exponentially weighted coarea fibre and trace no-go
+
+`[PAPER-PROVED POSITIVE FIBRE THEOREM] [INTERVAL-LOCAL TRACE REFUTED]`
+`[ANCHORED COAREA FATHER GAUGES TO SCALAR TRANSFER]`
+
+The raw unweighted square in `(35m66)` is not the only available coarea geometry.  For a full prime
+set and `n>1`, put `R=rad(n)` and write
+
+```text
+lambda_n(v)=lambda+_(P_n,v)(n)
+ =sum_(d|R,d<=exp(v))mu(d),            v>=0.           (WE1)
+```
+
+For `Re(s)>0`, finite integration gives the exact Laplace transform
+
+```text
+integral_0^infinity exp(-s v)lambda_n(v)dv
+ =s^(-1)product_(p|n)(1-p^(-s)).                       (WE2)
+```
+
+Consequently Plancherel gives, for `sigma>0`,
+
+```text
+E_sigma(n)=integral_0^infinity exp(-sigma v)|lambda_n(v)|^2dv
+
+ =1/(2 pi) integral_R
+   |product_(p|n)(1-p^(-sigma/2-it))|^2/
+   ((sigma/2)^2+t^2) dt
+
+ =sigma^(-1)sum_(d,e|R)mu(d)mu(e)max(d,e)^(-sigma).    (WE3)
+```
+
+At the critical reciprocal-square weight this yields the unconditional ordinary-integer bound
+
+```text
+E_2(n)
+ <=(1/2)product_(p|n)(1+1/p)^2
+ <=(1/2)(R/phi(R))^2
+ <<(loglog(3n))^2.                                     (WE4)
+```
+
+Thus exponential coarea weighting genuinely suppresses the Boolean grade explosion for ordinary
+integers.  It is not universal over generalized primes.  If `r` distinct atoms all have the same
+norm `P`, then on `j log(P)<=v<(j+1)log(P)` one has
+
+```text
+lambda(v)=(-1)^j binomial(r-1,j),
+
+E_2
+ =(1-P^(-2))/2 sum_(j=0)^(r-1)binomial(r-1,j)^2P^(-2j)
+ >=(1-P^(-2))/(2r)(1+P^(-1))^(2r-2).                  (WE5)
+```
+
+Repeated-norm bursts remain exponential, so `(WE4)` uses the ordinary-prime norm distribution and
+is a real arithmetic fibre theorem rather than a phase-blind coarea principle.
+
+The endpoint trace nevertheless fails at exactly the required power.  A prime or prime-power
+profile is `1_(0<=v<log p)`: its `E_2` norm stays between fixed constants while its integral is
+`log p`.  More decisively, for primes `p<q` with fixed ratio and `p,q asymp M`, put
+
+```text
+F_(p,q)(v)=[lambda_p(v)-lambda_q(v)]/p
+          =-1_(log p<=v<log q)/p.
+```
+
+Then
+
+```text
+||F_(p,q)||_(L2(exp(-2v)dv))^2
+ =(p^(-2)-q^(-2))/(2p^2) asymp M^(-4),
+
+|integral F_(p,q)(v)dv|^2
+ =|log(q/p)|^2/p^2 asymp M^(-2).                       (WE6)
+```
+
+Any uniform interval-local trace from this weighted fibre therefore needs operator norm
+`asymp M`, or `M^2` in squared form, rather than a logarithmic power.  The general Cauchy estimate
+on `v<=log M` has the same sharp loss.  Centered aperture differences create precisely the profile
+in `(WE6)`, so the obstruction is not removed by `P_0`.
+
+Equivalently, the endpoint is the singular boundary evaluation
+
+```text
+Lambda(n)=lim_(s->0) s^(-1)product_(p|n)(1-p^(-s)),    (WE6a)
+```
+
+whereas `(WE4)` controls the same finite Euler product only on `Re(s)=1`.  The two-prime witness
+`(WE6)` proves that coefficient-universal continuation from that line to `(WE6a)` costs the full
+aperture.  Any surviving trace must therefore use the exact joined arithmetic source.
+
+There is a canonical father gauge, but it only moves the source.  Let
+
+```text
+B(u,v)=1_(0<=v<u),
+(R_pF)(u,v)=F(u-log p,v-log p).
+```
+
+The identity
+
+```text
+B(u,v)-B(u-log p,v-log p)=1_(0<=v<log p)               (WE7)
+```
+
+and `(LC4)` imply, with
+
+```text
+Y_S=Xco+_S+B H_S^0,
+
+Y_(S union {p})=Y_S-p^(-1)R_pY_S.                     (WE8)
+```
+
+At the full active prime set `H_S^0=0`, so `Y_terminal=Xco+_terminal`; at the empty set the whole
+causal injection is the initial father `B H_empty^0`.  Thus anchoring diagonalizes the coarea
+forcing into the same commuting scalar transfers as `(35m43)`--`(35m45)`.  Terminal polarization
+remembers only the complete lcm packet and still requires the low-lcm correction and future
+dressing in `(35m58)`--`(35m59)`.
+
+The diagonal-invariant weight `exp(2(v-u))` also fails.  In `du dv` it makes `R_p` unitary, but the
+physical counting measure is `exp(u)du`; there `||R_p||=sqrt(p)`, so `p^(-1)R_p` again has size
+`p^(-1/2)`, exactly the wall `(35m47)`--`(35m48)`.  At the essential crossing
+`v=log D asymp u/2`, its weight is `asymp M^(-1)`: a unit crossing has norm `M^(-1/2)` but order-one
+trace, losing `sqrt(M)`.  The weight controls only a top strip `v=u+O(1)` and suppresses the
+complete-period middle that `(LC3)` requires.  For `r` equal-log generalized atoms the top-weight
+energy equals `(WE5)` by the symmetry `j <-> r-1-j`, so the exponential hostile test also remains.
+
+`[POSITIVE SALVAGE]` Equations `(WE2)`--`(WE4)` provide a canonical polylogarithmic norm for each
+ordinary divisor-coarea fibre and may be useful after a signed joining is already known.
+
+`[FALSIFIED METHODS]` Deriving the endpoint from that norm by Cauchy/trace, anchored father
+subtraction, or the diagonal-invariant top weight.  They lose respectively `M`, move the causal
+source to the empty boundary, or recreate the square-root transfer wall.  None supplies the
+density--tail joining or its interval-local trace.
+
+## 2026-07-18 stopped Bernoulli density vacuum and inactive-channel no-go
+
+`[PAPER-PROVED NO-GO] [CONTINUUM VACUUM IS EULER COMPLETION OR DIRECT SPLICE]`
+`[PHYSICAL SUPPORT DOES NOT RESTORE MULTIPLICATIVITY]`
+
+The density coefficient in `(SP16)` has a unique natural continuum interpretation.  On the
+Boolean lcm module let
+
+```text
+v_z=product_(p<=z)(I-Lscr_p)e_1=sum_(l|Q_z)mu(l)e_l,
+P_D e_l=1_(l<=D)e_l,       Q_D=I-P_D.
+```
+
+Two independent endpoint residue colors force
+
+```text
+rho(p)=Prob(p|mn)=2/p-1/p^2,
+omega(e_l)=rho(l)=product_(p|l)rho(p).                 (DV1)
+```
+
+Thus, with `V_z=product_(p<=z)(1-1/p)`,
+
+```text
+omega(P_Dv_z)=a_D,
+omega(v_z)=product_(p<=z)(1-rho(p))=V_z^2.            (DV2)
+```
+
+The local colored identity is `-1/p-1/p+1/p^2=-rho(p)`, so this state is not chosen to fit the
+terminal covariance.  Let `beta_M(e_l)=B_l` be the exact active functional and
+`T_M=c_M^2 A^3/12`.  The only stopped low-vacuum/high-active splice is
+
+```text
+Phi_D=T_M omega P_D+beta_M Q_D,
+Phi_D(v_z)=T_M a_D+beta_M(Q_Dv_z).                    (DV3)
+```
+
+Up to the already-proved low progression and `h`-quadrature error, `(DV3)` is exactly `(SP8)`, not
+a new pairing.  If
+
+```text
+F_j=product_(k>j)(I-Lscr_(p_k))
+      Q_D Lscr_(p_j)P_Dv_(j-1),
+```
+
+then `(SP9)` gives the alternative exact rewrite
+
+```text
+T_M a_D+beta_M(Q_Dv_z)
+ =T_M V_z^2-sum_j (beta_M-T_M omega)(F_j).            (DV4)
+```
+
+Equation `(DV4)` is the unique total vacuum correction to the future-dressed crossings.  It has no
+canonical allocation among the four `K/G` ports in `(SP15)`; only their joined total is invariant.
+
+The fixed-gap form exposes the failure.  Put
+
+```text
+J_h=integral_R W_h(x)dx,
+beta_h(e_l)=sum_(m in I_h,l|m(m+h))W_h(m),
+omega_h(e_l)=nu_h(l)/l,
+delta_h=beta_h-J_h omega_h.
+```
+
+Then `omega_h(v_z)=S_z(h)` and
+
+```text
+J_h omega_h(P_Dv_z)+beta_h(Q_Dv_z)
+ =J_h S_z(h)-sum_j delta_h(F_j).                      (DV5)
+```
+
+This is precisely the Euler-completed singular-series split `(35m34)`--`(35m39)`.  For an inactive
+channel, and in particular `l>K^2`, `beta_h(e_l)=0` while `omega_h(e_l)>0`; extending the vacuum
+through `Q_D` therefore manufactures the virtual mass `-J_h omega_h(e_l)`.  Refusing that extension
+returns the direct projection splice `(DV3)`.
+
+Stopping at the physical interval length `H_h=#I_h` creates no third option.  When `H_h>=D`,
+
+```text
+J_h omega_h(P_Dv_z)+beta_h(Q_Dv_z)
+ =J_h omega_h(P_(H_h)v_z)+beta_h(Q_(H_h)v_z)
+  +delta_h((P_(H_h)-P_D)v_z).                         (DV6)
+```
+
+The last term is exactly the complete-period middle `D<l<=H_h`; the `Q_(H_h)` term is the
+incomplete boundary with its endpoint cells.  An active-root-truncated vacuum is not
+multiplicative or lcm-closed: for example, on `h=2`, `I_h={2,3}`, the channels `2` and `3` are
+active while `6` is inactive.  Its prime-adjunction commutator is the empirical endpoint-floor
+defect one was trying to estimate.
+
+`[FALSIFIED METHOD]` A homogeneous Bernoulli vacuum as the density--tail causal joining.  Extended
+cofinally it is the inactive-channel Euler completion and has the rough terminal mismatch
+`(35m55)`; stopped at `D` or `H_h` it merely restates the projection split and relocates the open
+middle/boundary terms.  The algebra also passes generalized-prime burst fakes.
+
+`[POSITIVE SALVAGE]` Equations `(DV5)`--`(DV6)` give an exact classification of the missing term:
+the future-dressed signed discrepancy `delta_h` across the complete-period middle, physical
+incomplete boundary, and endpoint cells.  A source-specific interval-local estimate for that
+joined discrepancy remains open.
+
+## 2026-07-18 positive ratio averaging and adaptive-telescoping no-go
+
+`[PAPER-PROVED EQUIVALENCE] [NONNEGATIVE RATIO AVERAGING IS RH-EQUIVALENT]`
+`[COMPLETE-COLUMN TILING DOES NOT ESTIMATE THE AVERAGE]`
+
+Ratio averaging does not lower the strength of `(35m20)`.  Fix
+`0<c_-<c_+<A`, put
+
+```text
+K_-=ceil(exp(c_-)M),       K_+=floor(exp(c_+)M),
+omega_K=log((K+1)/K),      W_M=sum_(K_-<=K<=K_+)omega_K,
+
+mathcalA_I(M)=W_M^(-1)sum_(K_-<=K<=K_+)omega_K
+                ||q_K-q_M||_2^2.                       (RA1)
+```
+
+Here `W_M=c_+-c_-+O(1/M)`.  Suppose, uniformly for all sufficiently large `M`, that
+
+```text
+mathcalA_I(M)<<_A log(2M)^b/M.                          (RA2)
+```
+
+Positivity selects an integer `M_1` in the ratio interval for which the same bound holds.  Repeat
+at `M_1`, obtaining `M_0=M,M_1,M_2,...` with geometric growth bounded above and below by constants
+strictly larger than one and
+
+```text
+||q_(M_(j+1))-q_(M_j)||_2
+ <<_A log(2M_j)^(b/2)/sqrt(M_j).                        (RA3)
+```
+
+The unconditional PNT boundary `q_N->0` and geometric summability then give
+
+```text
+q_M=sum_(j>=0)(q_(M_j)-q_(M_(j+1))),
+||q_M||_2<<_A log(2M)^(b/2)/sqrt(M).                    (RA4)
+```
+
+Thus `(RA2)` implies the block profile bound `(35c)` and RH.  Conversely RH gives the pointwise
+bound in `(RA4)` with a logarithmic power, uniformly on compact ratio intervals, hence gives
+`(RA2)`.  It also recovers `(35m20)` for every prescribed fixed ratio by the triangle inequality.
+So a critical positive ratio average merely permits an adaptive geometric chain before returning
+the fixed-ratio endpoint; it is paper-level RH-equivalent.
+
+The exact Green form explains why ordinary column tiling does not prove `(RA2)`.  From
+`q_K-q_M=sum_(M<=N<K)kappa_N`, one obtains
+
+```text
+W_M mathcalA_I(M)
+ =sum_(M<=N,N'<K_+) G_I(N,N')<kappa_N,kappa_(N')>,      (RA5)
+
+G_I(N,N')
+ =sum_(K_-<=K<=K_+,K>max(N,N'))omega_K
+ =[log((K_++1)/max(K_-,N+1,N'+1))]_+.                  (RA6)
+```
+
+The diagonal is admissible by `(35g)`--`(35h)`.  The open part is the signed cross-column Green
+correlation.  The zero-mass law `(35m14)` uses a complete column with constant weight, whereas
+`G_I` depends on `max(N,N')` and the endpoint interval cuts partial columns.  Double summation by
+parts therefore recreates the cumulative Brownian-bridge kernel `(35m24)`; deleting the cross
+terms or applying Cauchy loses the same factor `M` as `(35m29)`.
+
+Positive mixing also preserves the lowest obstructing spatial mode.  On a common unclipped
+interior, uniform continuous averaging in `c` gives, with `a=|u-v|`,
+
+```text
+bar(K)_I(u,v)
+ =((c_+-a)_+^2-(c_--a)_+^2)/(2(c_+-c_-))
+  -(c_+^3-c_-^3)/(3A(c_+-c_-)),                        (RA7)
+
+bar(K)_I(u,v)=sum_(k!=0)bar(lambda)_k exp(2 pi i k(u-v)/A),
+bar(lambda)_k=(c_+-c_-)^(-1)integral_(c_-)^(c_+)
+                   |hat(1_(0,c))(k)|^2 dc>0.           (RA8)
+```
+
+In particular `bar(lambda)_1` is bounded below by a positive constant depending only on the ratio
+interval.  The Riemann-grid witness in `(35m28)`--`(35m29)` still gives operator norm `>>M`.
+Arbitrary positive ratio weights only replace `(RA8)` by another positive average of squared
+multipliers and cannot cancel this mode.
+
+Via `(35m20e)`, `(RA2)` is exactly a critical bound for a ratio-averaged centered multiplicative
+Selberg integral.  Saffari--Vaughan's unconditional estimate
+
+```text
+J_psi(X,H)<<H^2X exp[-c(log X/loglog X)^(1/3)]
+```
+
+in its zero-density range gives only an `M^(-o(1))` normalized saving when `H asymp X`; `(RA2)`
+requires `M^(-1)` up to logarithms.  Their RH estimate has exactly the missing power
+([paper](https://aif.centre-mersenne.org/item/10.5802/aif.649.pdf), Lemmas 5--6).  Averaging the
+principal translated endpoint does not create the character/modulus separation of BDH.
+
+`[FALSIFIED METHOD]` Nonnegative ratio mixing plus complete-column tiling as a provider for the
+endpoint.  Its critical estimate is already RH-equivalent, and its averaged kernel retains the
+factor-`M` first-mode obstruction.
+
+`[POSITIVE SALVAGE]` The adaptive-ratio telescoping principle classifies a whole family of exact
+equivalent checkpoints: a pointwise-in-`M` critical ratio average on any compact subinterval of
+`(1,exp(A))` is equivalent to RH.  Any genuinely new provider must instead join the arithmetic
+source before the positive square; the future-dressed signed `delta_h` trace remains the open core.
+
+## 2026-07-18 future-dressed root Fourier audit and the reducible-branch wall
+
+`[EXACT POISSON/CRT BRIDGE] [SUPPORT-DEPENDENT ZERO MODE PAPER-PROVED]`
+`[UNIFORM ROOT-SUM CANCELLATION REFUTED] [CLASSICAL LARGE-SIEVE CLOSURE REFUTED]`
+
+The fixed-gap defect has an exact Fourier resolution.  Write
+
+```text
+e(x)=exp(2 pi i x),
+hat(W)_h(xi)=integral_R W_h(x)e(-xi x)dx,
+
+S_(l,h)(k)=sum_(r mod l,l|r(r+h))e(k r/l).
+```
+
+Poisson summation on each residue progression gives, with no remainder,
+
+```text
+delta_h(e_l)=l^(-1)sum_(k!=0)hat(W)_h(k/l)S_(l,h)(k).  (PF1)
+```
+
+For squarefree `l`, put `g=(l,h)`, `q=l/g`, and `h_0=h/g`.  The primes in `g` force the root to
+zero and the other primes choose one of the two branches.  If `q_p=q/p` and
+`bar(q_p)q_p=1 mod p`, CRT gives
+
+```text
+S_(l,h)(k)=S_(q,h_0)(k)
+ =product_(p|q)[1+e_p(-k h_0 bar(q_p))],               (PF2)
+
+|S_(l,h)(k)|<=2^omega(q)=nu_h(l),
+|S_(l,h)(k)|=nu_h(l)                    when q|k,
+
+sum_(k mod q)|S_(l,h)(k)|^2=q 2^omega(q).              (PF3)
+```
+
+There is average square-root cancellation in the frequency residue, but no uniform Weil-type
+bound.  Averaging the square over the moving gap is also exact:
+
+```text
+sum_(h mod l)|S_(l,h)(k)|^2
+ =product_(p|l,p does not divide k)(2p-3)
+  product_(p|l,p divides k)(4p-3).                     (PF4)
+```
+
+The reason is structural, not a weakness of `(PF2)`.  On `(Z/lZ)^2` define
+
+```text
+G_l(m,h)=1_(l|m(m+h))-nu_h(l)/l,
+
+mathcalF_l G_l(a,b)
+ =sum_(m,h mod l)G_l(m,h)e(-(a m+b h)/l).
+```
+
+Changing variables to `n=m+h` and factoring by CRT gives
+
+```text
+mathcalF_l G_l(0,b)=0,
+
+mathcalF_l G_l(a,b)
+ =product_(p|l)[p 1_(p|b)+p 1_(p|b-a)-1]
+                                                   (a!=0 mod l). (PF5)
+```
+
+Thus density centering removes the entire `a=0` line, not the two branch ridges `b=0` and `b=a`.
+For `(a,l)=1`,
+
+```text
+mathcalF_l G_l(a,0)=mathcalF_l G_l(a,a)=phi(l).         (PF6)
+```
+
+After multiplication by the external lcm coefficient `mu(l)`, the local symbol is
+
+```text
+mu(l)mathcalF_l G_l(a,b)
+ =product_(p|l)[1-p 1_(p|b)-p 1_(p|b-a)].              (PF7)
+```
+
+In the fully generic sector `p does not divide b(b-a)` for every `p|l`, the Möbius sign disappears
+and the normalized Fourier coefficient is `+1/l^2`.  On either global ridge its magnitude is
+`phi(l)/l^2`, essentially `1/l`.  Positive separation of the ridge and generic sectors therefore
+destroys the cancellation one needs; a source-independent square-root root-sum theorem is false.
+
+There is one narrower harmless term which the finite transform isolates.  Extend `W_h` by zero,
+put
+
+```text
+mathcalW_l(a,b)=sum_(m,h in Z)W_h(m)e((a m+b h)/l),
+Delta_l=sum_h delta_h(e_l).
+```
+
+Then normalized finite Fourier inversion gives
+
+```text
+Delta_l=l^(-2)sum_(a!=0 mod l,b mod l)
+                    mathcalF_l G_l(a,b)mathcalW_l(a,b)+Q_l,
+
+Q_l=sum_h nu_h(l)/l [sum_m W_h(m)-integral_R W_h].     (PF8)
+```
+
+Since the bracket is bounded by `Var(W_h)` and
+`sum_(l|Q_z)2^omega(l)/l<<log(z)^2`, the complete future packet of `Q_l` is
+`O(log(M)^O(1)/M)`.  Hence ordinary lattice-versus-integral quadrature is discharged.  The open
+content is the main spectral term, whose two ridges are the one-dimensional endpoint marginals
+
+```text
+mathcalW_l(a,0)=sum_m [sum_h W_h(m)]e(a m/l),
+mathcalW_l(a,a)=sum_n [sum_m W_(n-m)(m)]e(a n/l).       (PF9)
+```
+
+The root transform must also retain the prime order and physical support.  For the future-dressed
+first crossing
+
+```text
+F_p=product_(q>p)(I-Lscr_q) Q_D Lscr_p P_D v_(<p),
+```
+
+expansion of the earlier and future Boolean factors yields exactly
+
+```text
+delta_h(F_p)
+ =sum_(a|P_<p,D/p<a<=D)mu(a)
+   sum_(b|P_>p)mu(b)/(p a b)
+     sum_(k!=0)hat(W)_h(k/(p a b))S_(pab,h)(k),         (PF10)
+
+-sum_p delta_h(F_p)
+ =sum_(l|Q_z,l>D)mu(l)delta_h(e_l).                    (PF11)
+```
+
+Every `l>D` has a unique first crossing.  Formula `(PF10)` is an invertible triangular Duhamel
+change of basis, not an estimate.  More sharply, for the physical length `H=H_h`, `(35m59)` gives
+
+```text
+delta_h((P_H-P_D)v_z)+beta_h(Q_Hv_z)
+ =-sum_p[delta_h(P_HF_p)+beta_h(Q_HF_p)].              (PF12)
+```
+
+Each term `l=pab` in `(PF12)` uses two different Fourier laws:
+
+```text
+D<l<=H:  delta_h(e_l)=l^(-1)sum_(k!=0)hat(W)_h(k/l)S_(l,h)(k),
+
+l>H:     beta_h(e_l)=l^(-1)sum_(k in Z)hat(W)_h(k/l)S_(l,h)(k). (PF13)
+```
+
+This zero-mode switch is forced by active support.  Extending the `k!=0` formula through `l>H`
+subtracts `J_h nu_h(l)/l` from inactive channels and recreates the Bernoulli/Euler vacuum rejected
+in `(DV5)`--`(DV6)`.  Keeping `k=0` makes an empty channel cancel exactly, but the switch at `H_h`
+is endpoint-dependent and not multiplicative.
+
+The quantitative wall is now visible without analogy.  The regularity `(35m51)` implies
+
+```text
+|hat(W)_h(xi)|
+ <<min(||W_h||_1,Var(W_h)/|xi|,Var(W_h')/|xi|^2).       (PF14)
+```
+
+For a complete-period dyadic range `l asymp L<=H_h`, `(PF1)` and the last bound give
+
+```text
+|delta_h(e_l)|<<nu_h(l)l Var(W_h'),
+
+sum_h sum_(l asymp L)|delta_h(e_l)|
+ <<L^2 log(M)^O(1)/M^2.                                (PF15)
+```
+
+This reaches the admissible `log(M)^O(1)/M` scale precisely for `L<=sqrt(M)`, reproducing the
+already-proved cutoff `(35m51)`--`(35m52)`.  For `l asymp L`, the branch frequencies `k/l` have
+Farey spacing `asymp L^(-2)`, so the optimal classical large-sieve constant on an `M`-long window
+is
+
+```text
+M+L^2.                                                  (PF16)
+```
+
+Above `sqrt(M)` it loses the energy factor `1+L^2/M`, reaching a full factor `M` at `L asymp M`.
+For `l>H_h`, there are `asymp l/H_h` modes with `|k|/l<=1/H_h` on which `(PF14)` gives no decay;
+together with the zero mode they reconstruct the exact zero-or-one endpoint hits.
+
+This boundary agrees with the primary literature rather than improving it.  The optimal spacing
+scale is the Montgomery--Vaughan large sieve
+([paper](https://doi.org/10.1112/S0025579300004708)); sparse-moduli variants require distribution
+absent from the dense squarefree-smooth packet
+([Baier](https://arxiv.org/abs/math/0508417)).  Hooley-type and CRT equidistribution theorems,
+including Martin--Sitar's treatment of reducible quadratics
+([paper](https://arxiv.org/abs/0903.1834)) and Kowalski--Soundararajan's typical-modulus theorem
+([paper](https://arxiv.org/abs/2003.12965)), do not give a uniform two-variable, future-dressed
+signed estimate at the `M^(-1)` scale.  Nondegenerate quadratic/cubic root estimates likewise do
+not remove the explicit reducible ridges `(PF6)`
+([Ngo](https://arxiv.org/abs/2107.13301), [Welsh](https://arxiv.org/abs/1809.05211)).
+
+Two exact sums prove that centering the ridges cannot be the missing repair.  With
+
+```text
+P_z(n)=sum_(d|Q_z,d|n)mu(d),
+```
+
+the complete Möbius sum of the fixed-gap centered symbol is
+
+```text
+sum_(l|Q_z)mu(l)G_l(m,h)
+ =P_z(m)P_z(m+h)-S_z(h).                               (PF17)
+```
+
+Thus `(PF5)` is literally the spectral rewrite of the Euler-completed singular-series discrepancy
+`(35m34)`--`(35m39)` and `(DV5)`, not a smaller source.  In product variables `x=m`, `y=m+h`, a
+two-sided ANOVA centering looks stronger.  Put
+
+```text
+f_l(x,y)=1_(l|x y),
+A_l(x)=l^(-1)sum_(y mod l)f_l(x,y)=gcd(x,l)/l,
+c_l=l^(-2)sum_(x,y mod l)f_l(x,y)=b(l)/l,
+h_l(x,y)=f_l(x,y)-A_l(x)-A_l(y)+c_l.                   (PF18)
+```
+
+It kills both global CRT axes.  But multiplicativity gives exactly
+
+```text
+sum_(l|Q_z)mu(l)A_l(x)=V_z P_z(x),
+sum_(l|Q_z)mu(l)c_l=V_z^2,
+
+sum_(l|Q_z)mu(l)h_l(x,y)
+ =(P_z(x)-V_z)(P_z(y)-V_z).                            (PF19)
+```
+
+On the active range `P_z` is the exact Eratosthenes prime detector.  Hence deleting both ridges
+manufactures the homogeneous Euler centering whose macroscopic terminal mismatch is `(35m55)`;
+the removed one-variable axes are precisely its indispensable inhomogeneous correction.
+
+`[FALSIFIED METHODS]` Uniform local square-root cancellation for `S_(l,h)`, classical or sparse
+root large-sieve closure above `sqrt(M)`, and positive separation of the two branch ridges from the
+generic CRT sector.  A two-sided ANOVA centering can delete the ridges only by reinserting the two
+marginal currents `(PF9)`; `(PF19)` shows exactly that this relocates the rough endpoint rather than
+estimating it.
+
+`[POSITIVE SALVAGE]` Equations `(PF8)` discharges the scalar lattice quadrature.  More importantly,
+`(PF5)`--`(PF13)` provide a sharp discriminator for the remaining theorem: it must cancel the
+`b=0` and `b=a` resonance ridges against the generic and mixed CRT sectors only after future
+Boolean dressing, the causal endpoint source, the complete-period middle, and the physical
+zero-mode switch have joined.  This is a more explicit Fourier face of the same signed
+interval-local causal/coarea core, not a narrower proof or a new RH theorem.
+
+### Named open core: future-dressed causal ridge joining `(FCRJ)`
+
+For later hostile tests, the exact remaining scalar can now be named without an arbitrary
+residual.  Let `H_h=#I_h` and retain the canonical first-crossing packets `F_p`.  Define
+
+```text
+FCRJ_M
+ =sum_h {J_h omega_h(P_(H_h)v_z)
+          -sum_p[delta_h(P_(H_h)F_p)+beta_h(Q_(H_h)F_p)]}. (PF20)
+```
+
+Equations `(DV6)` and `(PF12)` give identically
+
+```text
+FCRJ_M
+ =sum_h[J_h omega_h(P_Dv_z)+beta_h(Q_Dv_z)]
+ =C_M+O_(A,rho)(log(M)^O(1)/M).                        (PF21)
+```
+
+The second equality is the already-proved low-lcm progression and `h`-quadrature reduction
+`(35m52)`--`(35m53)`.  Consequently
+
+```text
+|FCRJ_M|<<_(A,rho)log(M)^b/M                           (FCRJ)
+```
+
+is an exact paper-level RH-equivalent checkpoint, not an input to assume.  A genuine provider for
+`(FCRJ)` must be fixed before reading `C_M` and must derive the cancellation in `(PF20)` from the
+causal prime filtration itself.  It must fail the log-phase and generalized-prime burst sources,
+retain the two CRT ridges and their mixed sectors until signed joining, and respect the `k=0`
+switch at every moving `H_h`.
+
+## 2026-07-18 stopped ANOVA compensator and support-commutator no-go
+
+`[PAPER-PROVED NO-GO] [PHYSICAL LCM CUTOFF IS NOT A STOPPING TIME]`
+`[PREDICTABLE QUADRATIC VARIATION HAS MACROSCOPIC EULER SCALE]`
+
+The moving physical cutoff cannot be inserted into the prime filtration by optional stopping.  On
+the Boolean lcm module put
+
+```text
+T_p=I-Lscr_p,                 v_z=product_(p<=z)T_p e_1,
+P_H e_l=1_(l<=H)e_l,         Q_H=I-P_H.
+```
+
+The range of `P_H` is not an lcm subalgebra.  Its exact commutator with prime adjunction is
+
+```text
+C_(p,H):=[P_H,T_p]=Lscr_pP_H-P_HLscr_p,
+C_(p,H)e_l=1_(l<=H<p l)e_(p l).                         (ST1)
+```
+
+For ordered primes and `v_(<p)=product_(q<p)T_qe_1`, define
+
+```text
+F_(p,H)=product_(q>p)T_q C_(p,H)v_(<p).
+```
+
+Then telescoping gives exactly
+
+```text
+Q_Hv_z=-sum_p F_(p,H),
+P_Hv_z=v_z+sum_p F_(p,H).                              (ST2)
+```
+
+Thus the boundary commutator forced by a putative stopping theorem is already the future-dressed
+first-crossing packet `(35m59)` and `(PF12)`.
+
+The same classification holds for the two CRT ridges.  In product variables use `f_l,A_l,c_l,h_l`
+from `(PF18)` and put
+
+```text
+mathcalE(e_l)=f_l,
+mathcalR(e_l)=A_l(x)+A_l(y)-c_l.
+```
+
+The unique field which applies two-sided ANOVA centering for `l<=H` but retains the raw physical
+zero mode for `l>H` is
+
+```text
+mathcalK_H
+ =sum_(l|Q_z)mu(l)[1_(l<=H)h_l+1_(l>H)f_l]
+ =mathcalE(v_z)-mathcalR(P_Hv_z)
+
+ =(P_z(x)-V_z)(P_z(y)-V_z)-sum_p mathcalR(F_(p,H)).    (ST3)
+```
+
+Waiting until after future dressing therefore changes only the allocation.  The invariant total
+is the homogeneous Euler centering `(PF19)` plus the exact first-crossing marginal/endpoint
+correction.  Deleting the correction is the rough mismatch `(35m55)`; evaluating it is the open
+one-dimensional ridge current `(PF9)`.
+
+There is a universal version of this identity.  For any linear compensator `mathcalR`, any
+`D<=H`, and the `D`-first-crossing packets `F_p`,
+
+```text
+mathcalR(P_Hv_z)
+ -sum_p[(beta_h-mathcalR)(P_HF_p)+beta_h(Q_HF_p)]
+ =mathcalR(P_Dv_z)+beta_h(Q_Dv_z).                     (ST4)
+```
+
+Taking `mathcalR=J_h omega_h` gives `(DV3)`--`(DV6)` and `(PF20)`--`(PF21)`; taking the ANOVA ridge
+functional gives `(ST3)`; choosing an empirical `W_h`-dependent functional reads the endpoint
+floor counts.  Future dressing cannot improve the direct low/high splice by choosing a fourth
+compensator.
+
+Positive martingale energy also lands at the wrong scale.  Under the complete two-dimensional CRT
+product law, let for `p_j`
+
+```text
+r_j=1/p_j,       X_j=1_(p_j|x),       Y_j=1_(p_j|y),
+eta_j^x=X_j-r_j, eta_j^y=Y_j-r_j,
+V=product_j(1-r_j),
+
+c_j^x=V_(>j)P_(j-1)(x),
+U_(j-1)^x=V_(>=j)P_(j-1)(x)-V,
+```
+
+and similarly in `y`.  The Doob martingale of
+`N=(P_z(x)-V)(P_z(y)-V)` has exact difference
+
+```text
+dN_j=-U_(j-1)^x c_j^y eta_j^y
+      -U_(j-1)^y c_j^x eta_j^x
+      +c_j^x c_j^y eta_j^x eta_j^y,                   (ST5)
+```
+
+with predictable quadratic variation
+
+```text
+d<N>_j
+ =r_j(1-r_j)[(U^x c^y)^2+(U^y c^x)^2]
+  +r_j^2(1-r_j)^2(c^x c^y)^2,
+
+E<N>_terminal=V^2(1-V)^2.                              (ST6)
+```
+
+The first two history terms are the mixed-prime sectors.  Removing them changes `(PF19)`, while
+retaining and squaring them gives the macroscopic `V_z^2 asymp1/log(M)^2` Euler scale rather than
+`log(M)^O(1)/M`.
+
+Under the fixed-gap CRT law, the prime coordinates
+
+```text
+Z_j=1_(p_j does not divide x(x+h)),
+s_(j,h)=1-nu_h(p_j)/p_j
+```
+
+are independent.  With `S_(>j,h)=product_(k>j)s_(k,h)` and
+`R_(j-1)=product_(i<j)Z_i`, the canonical Doob martingale has
+
+```text
+dM_j=S_(>j,h)R_(j-1)(Z_j-s_(j,h)),
+d<M>_j=S_(>j,h)^2R_(j-1)s_(j,h)(1-s_(j,h)).            (ST7)
+```
+
+Its centered terminal is exactly
+`P_z(x)P_z(x+h)-S_z(h)`, the Bernoulli completion `(PF17)` with both ridges intact.  On the graph
+`y=x+h` there is no independent two-variable ANOVA filtration; conditioning with the empirical
+weight `W_h` instead makes the initial mean `beta_h` itself and reads the endpoint.
+
+`[FALSIFIED METHODS]` Optional stopping at `H_h`, stopped two-sided ANOVA, and positive predictable
+quadratic variation as providers.  The first is the forced commutator `(ST1)`, the second is
+`(ST3)`--`(ST4)`, and the third either gives the rough Euler scale or squares the boundary crossing
+before future signs join, which also fails the equal-log burst test `(35m66)` and fixed log phases.
+
+`[POSITIVE SALVAGE]` Equations `(ST1)`--`(ST4)` classify every natural stopped compensator in these
+coordinates.  Any surviving prime-filtration theorem must estimate the signed boundary commutator
+after future dressing; it cannot invoke optional stopping or a positive quadratic variation to
+create the missing `FCRJ` trace.
+
+## 2026-07-18 modern multiplicative-correlation scale audit
+
+`[PRIMARY-LITERATURE NO-GO] [LOGARITHMIC OR QUALITATIVE SAVINGS MISS M^(-1)]`
+`[MINOR-ARC SUBPACKET CONTROLLED ONLY AT A WEAK SCALE]`
+
+Modern averaged-correlation results do not reach the normalization of `FCRJ`.  In the physical
+notation the joined packet is
+
+```text
+mathcalT_M
+ =sum_h[J_h omega_h(P_(H_h)v_z)+beta_h(Q_(H_h)v_z)
+         +delta_h((P_(H_h)-P_D)v_z)],                  (MC1)
+```
+
+equivalently `(PF20)` after future-dressed expansion.  The weight bounds give
+
+```text
+||W_h||_infinity<<log(M)^2/M^2,
+#{(m,h) in the active support}=O(M^2).                 (MC2)
+```
+
+Thus the unstructured full scale is order one, while the endpoint requires
+
+```text
+mathcalT_M<<_(A,rho)log(M)^B/M.                        (MC3)
+```
+
+There are two incompatible ways to compare `(MC1)` with the literature.  Summing the Boolean
+coefficients first gives exactly
+
+```text
+beta_h(v_z)=sum_m W_h(m)P_z(m)P_z(m+h),                (MC4)
+```
+
+and `P_z` is the ordinary-prime detector on the active range.  This is a `Lambda Lambda`-type
+correlation after restoring the logarithmic weights, not a `mu(m)mu(m+h)` correlation: the Möbius
+coefficient in `(MC1)` lives on the divisor variable `l`.  Keeping `l` instead exposes every
+squarefree `z`-smooth modulus through `K^2`, ordered future dressing, two CRT ridges, and the moving
+`H_h` zero-mode switch.  Those are growing-complexity data outside fixed-complexity
+Chowla/Elliott, nilsequence, and Gowers-uniformity theorems.
+
+The closest direct prime-correlation input is Matomaki--Radziwill--Tao's averaged-shift theorem.
+In the range
+
+```text
+X^(8/33+epsilon)<=H<=X^(1-epsilon),
+```
+
+it saves every fixed power of `log X` in the averaged `Lambda(n)Lambda(n+h)` error
+([paper](https://arxiv.org/abs/1707.01315)).  Even granting the most favorable partial summation
+against `W_h` and covering needed gap blocks, this normalizes only to
+
+```text
+O_A(log(M)^(-A)).                                      (MC5)
+```
+
+For every fixed `A,B`,
+
+```text
+log(M)^(-A)/(M^(-1)log(M)^B)=M/log(M)^(A+B)->infinity. (MC6)
+```
+
+The availability of every fixed `A` does not permit `A=A(M)`, and macroscopic gaps at the edge of
+the fixed-ratio support are not a stronger range of that theorem.
+
+The other primary results stop at the same or a weaker boundary:
+
+- averaged Chowla for Liouville gives a quantitative `o(1)` saving, roughly of
+  `loglog(H)/log(H)` type in its natural normalization, not `M^(-1)`
+  ([Matomaki--Radziwill--Tao](https://arxiv.org/abs/1503.05121));
+- Tao's logarithmically averaged two-point Elliott theorem requires a dilation
+  `omega(X)->infinity`, whereas the present aperture ratio is fixed, and in any event yields only
+  normalized `o(1)` ([paper](https://arxiv.org/abs/1509.05422));
+- fixed-shift generalized logarithmic limits are qualitative and have no uniform critical rate
+  ([Tao--Teravainen](https://arxiv.org/abs/1708.02610));
+- higher uniformity of bounded multiplicative functions gives averaged `o(1)` Gowers norms
+  ([MRTTZ](https://arxiv.org/abs/2007.15644));
+- quantitative finite-complexity prime Gowers theory has double-logarithmic rather than
+  `M^(-1)` error ([Tao--Teravainen](https://arxiv.org/abs/2107.02158));
+- Möbius--nilsequence orthogonality gives arbitrary fixed logarithmic savings only at fixed
+  nilsequence complexity, unlike the growing rational denominator and future-prime data here
+  ([Green--Tao](https://arxiv.org/abs/0807.1736)).
+
+The sharp short-interval nilsequence decomposition likewise separates the wrong object.
+Matomaki--Shao--Tao--Teravainen control `Lambda-Lambda^sharp` against nilsequences with fixed
+logarithmic savings for every interval of length `H>=X^(5/8+epsilon)`; the almost-all sequel reaches
+`H>=X^(1/3+epsilon)`
+([all intervals](https://arxiv.org/abs/2204.03754),
+[almost all](https://arxiv.org/abs/2411.05770)).  But `Lambda^sharp` retains the structured
+major-arc/singular-series component, exactly where the CRT ridges and causal endpoint source live.
+Generalized von Neumann estimation of the residual separately deletes the ridge--generic cross
+cancellation required by `(PF5)`--`(PF13)`.
+
+There are two honest positive residues.  First, after collapsing the Boolean filtration, all terms
+with at least one `Lambda-Lambda^sharp` factor are controllable at the weak scale
+`O_A(log(M)^(-A))`; this is a real minor-arc theorem, but not an admissible endpoint estimate and
+not a causal provider.  Second, the crude bound for one fixed gap is `O(log(M)^2/M)`, so any
+preassigned set of at most `log(M)^C` gaps is already within the endpoint budget.  The unresolved
+packet is necessarily a macroscopic family of gaps, not finitely or polylogarithmically many
+exceptional shifts.
+
+`[FALSIFIED METHODS]` Direct Chowla/Elliott substitution, fixed-complexity Gowers transference,
+and estimating the structured and uniform prime pieces separately as proofs of `(MC3)`.  They
+either act on the wrong Möbius variable, erase future/physical support, or miss a full power of
+`M`.
+
+`[POSITIVE SALVAGE]` The minor-arc and polylogarithmic-gap packets above are unconditional, but the
+surviving theorem must be an **oriented major-plus-minor correlation law**: it must retain the
+structured ridges, generic and mixed sectors, future prime order, complete-period middle,
+support-dependent zero mode, and endpoint cells inside one signed estimate.
+
+## 2026-07-18 spectral dispersion and Kloosterman-fraction budget audit
+
+`[PRIMARY-LITERATURE NO-GO] [OPTIMISTIC BETTIN--CHANDEE MODEL MISSES BY M^(15/16)]`
+`[WELL-FACTORABLE MODULUS RESULTS DO NOT REACH THE PHYSICAL PACKET]`
+
+The CRT root phase has a genuine Kloosterman-fraction expansion, but current spectral dispersion
+does not approach the `FCRJ` scale.  In the coprime case `(h,l)=1`, split the two root branches as
+
+```text
+S_(l,h)(k)=sum_(d e=l,(d,e)=1)e_e(-k h bar(d)).         (SD1)
+```
+
+On a dyadic factor box `d asymp R`, `e asymp S`, `RS=L`, the most favorable mapping to
+Bettin--Chandee's trilinear Kloosterman-fraction theorem is
+
+```text
+(M_BC,N_BC,A_BC)=(R,S,M),
+alpha_d=mu(d)/d,       beta_e=mu(e)/e,
+nu_h=hat(W)_h(k/(d e)).                                (SD2)
+```
+
+For `L<=H_h asymp M`, `(PF14)` gives
+
+```text
+||nu||_2<<L^2/(k^2 M^(5/2)),
+||alpha||_2||beta||_2<<L^(-1/2).                       (SD3)
+```
+
+In the best balanced case `R=S=sqrt(L)`, Theorem 1 of Bettin--Chandee
+([paper](https://arxiv.org/abs/1502.00769)) yields, after the optimistic identification `(SD2)`,
+
+```text
+T_(L,k)<<_epsilon k^(-3/2)M^epsilon
+ [M^(-33/20)L^(59/40)+M^(-3/2)L^(23/16)].             (SD4)
+```
+
+At the two decisive scales,
+
+```text
+L=sqrt(M):  T_(L,k)<<k^(-3/2)M^(-25/32+epsilon),
+L=M:        T_(L,k)<<k^(-3/2)M^(-1/16+epsilon).        (SD5)
+```
+
+The first is worse than the already-proved bounded-variation `M^(-1)` bound at the square-root
+cutoff.  The second misses the endpoint by `M^(15/16)`.  Unbalanced boxes add losses such as
+`R^(1/4)` or `R^(1/8)`.  The `k^(-3/2)` sum is harmless only in the complete-period range; for
+`l>H_h`, the zero mode and `asymp l/H_h` low aliases in `(PF13)` must remain.  Moreover `(SD2)` has
+already discarded first-crossing order and future-support dependence, so `(SD4)` is an optimistic
+upper limit, not a hidden application to `FCRJ`.
+
+Kuznetsov and arithmetic-progression technology have a structural mismatch in addition to this
+power loss:
+
+- the Deshouillers--Iwaniec spectral large sieve estimates Kloosterman forms after diagonal and
+  zero modes are separated; here those modes are the `b=0`, `b=a`, and physical `k=0` pieces which
+  must cancel against the generic sector and density source
+  ([paper](https://eudml.org/doc/142975));
+- Bombieri--Friedlander--Iwaniec reach the well-factorable level `x^(4/7-epsilon)`
+  ([Theorem 10](https://archive.ymsc.tsinghua.edu.cn/pacm_download/117/6385-11511_2006_Article_BF02399204.pdf)),
+  Maynard reaches `x^(3/5-epsilon)` for suitably well-factorable weights
+  ([paper](https://arxiv.org/abs/2006.07088)), and Pascadi reaches `x^(5/8-o(1))` for
+  triply-well-factorable weights ([paper](https://arxiv.org/abs/2505.00653));
+- smooth squarefree CRT-compatible modulus families reach `x^(1/2+7/300)` in Polymath
+  ([paper](https://arxiv.org/abs/1402.0811)) and `x^(1/2+1/40)` in Stadlmann
+  ([paper](https://doi.org/10.1016/j.aim.2025.110190)).
+
+Even granting all theorem hypotheses, these exponents cover at most a strip above `sqrt(M)`, not
+the complete `L asymp M` packet and still less the incomplete packet extending through `M^2`.
+More decisively, those theorems require fixed or CRT-compatible coprime residue data and
+well-factorable modulus weights.  Formula `(PF10)` contains both non-coprime axes, all
+`2^omega(l)` branch colorings, moving `h`, the exact coefficient
+`mu(l)1_(l|Q_z,l>D)`, future-prime order, endpoint `W_h`, and the `H_h` switch.  This high-tail
+weight is not uniformly well-factorable with those clauses retained.  Removing them to fit a
+theorem produces the homogeneous Euler completion `(PF19)` and its mismatch `(35m55)`.
+
+`[FALSIFIED METHODS]` Generic Kuznetsov/Deshouillers--Iwaniec closure, trilinear
+Kloosterman-fraction closure, and importing modern beyond-square-root distribution exponents as a
+proof of `FCRJ`.  They either miss a polynomial power or isolate as main terms the very ridge and
+zero-mode packets whose signed joining is the endpoint.
+
+`[POSITIVE SALVAGE]` Equation `(SD4)` is a valid power-saving bridge for a smoothed,
+complete-period, coprime, independently factorable off-axis dyadic subpacket.  It cannot be removed
+by triangle inequality inside `FCRJ`: doing so leaves the endpoint marginals and physical zero
+mode, and their cancellation with that subpacket is RH-bearing.  The next candidate must be a
+source-specific causal ridge-joining theorem, not a stronger generic Kloosterman estimate.

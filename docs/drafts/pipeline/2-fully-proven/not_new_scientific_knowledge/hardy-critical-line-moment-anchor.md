@@ -306,3 +306,20 @@ S1, S2 entirely. Historical notes retained:
   elementary S3/S4/S5. Moved to 2-fully-proven/not_new_scientific_knowledge
   (known theorem; value = first unconditional divisor theorem in the corpus +
   moment-method substrate). Gate 5 (Lean) begins next session.
+
+## Gate 5 progress log (Lean formalization)
+
+- 2026-07-18 (session 3): `RHTower/VanDerCorput.lean` COMPLETE (S3: firstDerivTest,
+  secondDerivTest + helpers; clean, no warnings, in umbrella).
+- 2026-07-18 (session 3): `RHTower/DigammaSeries.lean` COMPLETE (truncated
+  exponential limits; beta integral `B_n(s) = n!/∏_{k≤n}(s+k)` via the
+  `of_tendsto` improper FTC; **Euler limit `Γ(s) = lim n!·n^s/∏_{k≤n}(s+k)`** for
+  `0 < Re s` via DCT). In umbrella, indexes regenerated.
+- Remaining Gate-5 queue (in dependency order): locally-uniform P_n → Γ on
+  compact rectangles (for the logDeriv interchange; dominator split at x=1 with
+  x^{c−1}/x^{C−1}); ψ-series `ψ = −γ + Σ(1/(k+1) − 1/(s+k))` via
+  TendstoLocallyUniformlyOn.deriv + ratio convergence; ψ/ψ' asymptotics from
+  limit forms; HardyZ.lean (Z def, reality from FE, zeros ↔ line zeros);
+  SmoothAFE.lean (keystone: Mellin V from G(u)=e^{u²}, contour shift, S5
+  Stirling ratio); moment files C/F (corpus MV reuse); ZMeanLemma (E);
+  HardyTheorem assembly.
