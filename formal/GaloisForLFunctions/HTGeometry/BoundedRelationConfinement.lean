@@ -24,7 +24,7 @@ def BoundedRelationConfinement {A : Type*} [AddCommGroup A] (b : ℕ → A) : Pr
     ∀ n ∈ d.support, n < M
 
 /-- The additive valuation of a finite multiplicity vector. -/
-def atomValuation {A : Type*} [AddCommMonoid A] (b : ℕ → A) (ν : ℕ →₀ ℕ) : A :=
+def boundedAtomValuation {A : Type*} [AddCommMonoid A] (b : ℕ → A) (ν : ℕ →₀ ℕ) : A :=
   ν.sum (fun n k => k • b n)
 
 private def atomRelation (μ ν : ℕ →₀ ℕ) : ℕ →₀ ℤ :=
@@ -57,17 +57,17 @@ private theorem atomRelation_bound {D : ℕ} {μ ν : ℕ →₀ ℕ}
 private theorem atomRelation_sum {A : Type*} [AddCommGroup A]
     (b : ℕ → A) (μ ν : ℕ →₀ ℕ) :
     (atomRelation μ ν).sum (fun n z => z • b n) =
-      atomValuation b μ - atomValuation b ν := by
+      boundedAtomValuation b μ - boundedAtomValuation b ν := by
   classical
   have hcast : Function.Injective (fun k : ℕ => (k : ℤ)) := by
     exact_mod_cast Nat.cast_injective
   have hmap : ∀ κ : ℕ →₀ ℕ,
       (Finsupp.mapRange (fun k : ℕ => (k : ℤ)) (by simp) κ).sum
-          (fun n z => z • b n) = atomValuation b κ := by
+          (fun n z => z • b n) = boundedAtomValuation b κ := by
     intro κ
     rw [Finsupp.sum,
       Finsupp.support_mapRange_of_injective (by simp) κ hcast,
-      atomValuation, Finsupp.sum]
+      boundedAtomValuation, Finsupp.sum]
     apply Finset.sum_congr rfl
     intro i _
     simp
@@ -86,7 +86,7 @@ theorem atom_eq_of_valuation_eq_of_full_tail
     (hνcount : ν.sum (fun _ k => k) = D)
     (hμcount : μ.sum (fun _ k => k) ≤ D)
     (hνtail : ∀ i, ν i ≠ 0 → M ≤ i)
-    (hval : atomValuation b μ = atomValuation b ν) :
+    (hval : boundedAtomValuation b μ = boundedAtomValuation b ν) :
     μ = ν := by
   have hνcount_le : ν.sum (fun _ k => k) ≤ D := hνcount.le
   have hrel : (atomRelation μ ν).sum (fun n z => z • b n) = 0 := by

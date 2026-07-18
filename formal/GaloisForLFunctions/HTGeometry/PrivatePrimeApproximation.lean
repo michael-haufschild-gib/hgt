@@ -95,7 +95,7 @@ private theorem approximationPrime_not_dvd_numerator (g ε : ℕ → ℝ) (n : �
     intro hsucc
     exact (approximationPrime_prime g ε n).not_dvd_one
       ((Nat.dvd_add_iff_right hdiv).2 hsucc)
-  · simpa [approximationNumerator, p, q₀, hdiv] using hdiv
+  · simp [approximationNumerator, p, q₀, hdiv]
 
 private theorem approximationNumerator_pos
     {g ε : ℕ → ℝ} (hg : ∀ n, 0 < g n) (n : ℕ) :
@@ -149,8 +149,15 @@ private theorem privatePrimeApproximation_sub_lt
       (privatePrimeApproximation g ε n : ℝ) - g n = ((q : ℝ) - x) / p := by
     rw [privatePrimeApproximation]
     push_cast
-    dsimp [p, q, x]
-    field_simp
+    have hp0 : (approximationPrime g ε n : ℝ) ≠ 0 := hp.ne'
+    calc
+      (approximationNumerator g ε n : ℝ) / approximationPrime g ε n - g n =
+          (approximationNumerator g ε n : ℝ) / approximationPrime g ε n -
+            ((approximationPrime g ε n : ℝ) * g n) / approximationPrime g ε n := by
+              rw [mul_div_cancel_left₀ (g n) hp0]
+      _ = ((approximationNumerator g ε n : ℝ) -
+          (approximationPrime g ε n : ℝ) * g n) / approximationPrime g ε n :=
+            (sub_div _ _ _).symm
   rw [hrewrite, abs_div, abs_of_pos hp]
   exact ((div_le_div_iff_of_pos_right hp).2 hdist).trans_lt
     (approximationPrime_inv_lt_cappedTolerance hε n)
@@ -214,6 +221,38 @@ theorem exists_privatePrime_rational_approximation
     exact privatePrimeApproximation_sub_lt hg hε n
   · intro n m hmn
     exact privatePrimeApproximation_padic_other g ε hmn
+
+/-- Uniform error below one preserves superlinear growth after division by the index. -/
+theorem tendsto_div_natCast_atTop_of_abs_sub_lt_one
+    {g b : ℕ → ℝ}
+    (hg : Tendsto (fun n => g n / (n : ℝ)) atTop atTop)
+    (hclose : ∀ n, |b n - g n| < 1) :
+    Tendsto (fun n => b n / (n : ℝ)) atTop atTop := by
+  have hminor : Tendsto (fun n => g n / (n : ℝ) - 1) atTop atTop := by
+    simpa [sub_eq_add_neg] using tendsto_atTop_add_const_right atTop (-1) hg
+  refine tendsto_atTop_mono' atTop ?_ hminor
+  filter_upwards [eventually_ge_atTop 1] with n hn
+  have hnpos : 0 < (n : ℝ) := by exact_mod_cast (show 0 < n by omega)
+  have hb : g n - 1 < b n := by
+    have := (abs_lt.mp (hclose n)).1
+    linarith
+  have hgn : g n - (n : ℝ) ≤ b n := by
+    have hn' : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    linarith
+  calc
+    g n / (n : ℝ) - 1 = (g n - (n : ℝ)) / n := by
+      field_simp
+    _ ≤ b n / n := (div_le_div_iff_of_pos_right hnpos).2 hgn
+
+/-- The internally capped private-prime approximant preserves every superlinear input profile. -/
+theorem tendsto_privatePrimeApproximation_div_natCast_atTop
+    {g ε : ℕ → ℝ} (hgpos : ∀ n, 0 < g n) (hε : ∀ n, 0 < ε n)
+    (hg : Tendsto (fun n => g n / (n : ℝ)) atTop atTop) :
+    Tendsto (fun n => (privatePrimeApproximation g ε n : ℝ) / (n : ℝ))
+      atTop atTop := by
+  apply tendsto_div_natCast_atTop_of_abs_sub_lt_one hg
+  intro n
+  exact (privatePrimeApproximation_sub_lt hgpos hε n).trans_le (min_le_right _ _)
 
 end
 

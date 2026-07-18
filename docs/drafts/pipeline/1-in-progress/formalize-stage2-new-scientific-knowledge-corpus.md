@@ -62,6 +62,12 @@ obvious rewrite structure.  It must not hand off a large speculative proof: unre
 are compiler debt, not parallel progress.  Parallelize by shared foundations rather than by card;
 one foundation leaf should discharge every dependent card capstone.
 
+When the four in-task slots are full, additional background tasks may be used only as read-only
+card compilers.  They do not build Lean or edit the shared checkout; their completed packets enter
+the same dependency-prioritized implementation queue.  Extra same-tree implementation tasks would
+reintroduce file ownership and compiler-contention failures, so implementation remains in the
+coordinated four-slot pool.
+
 ## Current lane
 
 The first implementation target is `split-source-boundary-universality`. The existing source
