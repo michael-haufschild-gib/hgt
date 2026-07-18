@@ -1639,6 +1639,165 @@ def gaussianExteriorActiveAtoms
     ν.sum (fun _ k => k) = D ∧ gaussianAtomSignedSource D q ν = S ∧
       ¬gaussianAtomInWindow q R ν
 
+/-- The active part of a finite centered Gaussian face is exactly the active least-source
+interior class.  The reverse inclusion is constructive: an active atom is pulled back to its
+intrinsic signed-offset pattern and then re-windowed. -/
+theorem gaussianInteriorActiveAtoms_eq_filter_image_face
+    {n D τ q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ} {S : ℤ}
+    (hRq : R ≤ q) :
+    gaussianInteriorActiveAtoms n D τ Q S q R =
+      ((gaussianPolynomialPatternFace D S R).image
+        (shiftedAtomPatternKey q R)).filter fun ν =>
+          ν ∈ activeAevalAtoms n (D * q + τ) Q := by
+  classical
+  ext ν
+  constructor
+  · intro hν
+    have hνData := Finset.mem_filter.mp hν
+    have hactive : ν ∈ activeAevalAtoms n (D * q + τ) Q := hνData.1
+    have hcount : ν.sum (fun _ k => k) = D := hνData.2.1
+    have hsourceKey : gaussianAtomSignedSource D q ν = S := hνData.2.2.1
+    have hwindow : gaussianAtomInWindow q R ν := hνData.2.2.2
+    let a := gaussianOffsetPatternOfKey q ν
+    have hsource : gaussianOffsetSource a = S := by
+      dsimp only [a]
+      rw [gaussianOffsetSource_patternOfKey, hcount]
+      simpa only [gaussianAtomSignedSource, mul_comm] using hsourceKey
+    have ha : a ∈ gaussianOffsetFace D S R :=
+      gaussianOffsetPatternOfKey_mem_face hcount hsource hRq hwindow
+    let p := gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R
+    have hp : p ∈ gaussianPolynomialPatternFace D S R := by
+      simpa only [p] using
+        gaussianOffsetPatternWindow_mem_gaussianPolynomialPatternFace ha
+    have hkey : shiftedAtomPatternKey q R p = ν := by
+      calc
+        shiftedAtomPatternKey q R p = gaussianOffsetShiftedKey q a := by
+          simpa only [p] using shiftedAtomPatternKey_gaussianOffsetPatternWindow_eq ha hRq
+        _ = ν := gaussianOffsetShiftedKey_patternOfKey q ν
+    exact Finset.mem_filter.mpr
+      ⟨Finset.mem_image.mpr ⟨p, hp, hkey⟩, hactive⟩
+  · intro hν
+    have hνData := Finset.mem_filter.mp hν
+    obtain ⟨p, hp, hkey⟩ := Finset.mem_image.mp hνData.1
+    have hpData := mem_gaussianPolynomialPatternFace.mp hp
+    have hcount : ν.sum (fun _ k => k) = D := by
+      rw [← hkey, shiftedAtomPatternKey_count, hpData.1]
+    have hsource : gaussianAtomSignedSource D q ν = S := by
+      rw [← hkey, gaussianAtomSignedSource,
+        shiftedAtomPatternKey_weightedSum_eq p hpData.1]
+      change
+        ((D * (q - R) + polynomialPatternSourceSum p : ℕ) : ℤ) -
+            ((D * q : ℕ) : ℤ) = S
+      push_cast
+      rw [Nat.cast_sub hRq]
+      nlinarith [hpData.2]
+    have hwindow : gaussianAtomInWindow q R ν := by
+      rw [← hkey]
+      intro i hi
+      have hiSupport : i ∈ (shiftedAtomPatternKey q R p).support :=
+        Finsupp.mem_support_iff.mpr hi
+      rw [shiftedAtomPatternKey,
+        Finsupp.mapDomain_support_of_injective windowShift_injective] at hiSupport
+      obtain ⟨r, hrSupport, rfl⟩ := Finset.mem_image.mp hiSupport
+      have hrne : atomPatternKey p r ≠ 0 := Finsupp.mem_support_iff.mp hrSupport
+      have hrlt : r < 2 * R + 1 := by
+        by_contra hnot
+        rw [atomPatternKey_apply, dif_neg hnot] at hrne
+        exact hrne rfl
+      simp only [windowShift]
+      constructor <;> omega
+    exact Finset.mem_filter.mpr
+      ⟨hνData.2, hcount, hsource, hwindow⟩
+
+/-- Enlarging the centered window can only move atoms from the exterior to the interior. -/
+theorem gaussianExteriorActiveAtoms_subset_of_radius_le
+    {n D τ q R K : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ} {S : ℤ}
+    (hRK : R ≤ K) :
+    gaussianExteriorActiveAtoms n D τ Q S q K ⊆
+      gaussianExteriorActiveAtoms n D τ Q S q R := by
+  intro ν hν
+  have hνData := Finset.mem_filter.mp hν
+  apply Finset.mem_filter.mpr
+  refine ⟨hνData.1, hνData.2.1, hνData.2.2.1, ?_⟩
+  intro hsmall
+  apply hνData.2.2.2
+  intro i hi
+  have hiBounds := hsmall i hi
+  constructor <;> omega
+
+theorem aevalWeight_eq_zero_of_not_mem_activeAevalAtoms
+    {n N : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ} {ν : ℕ →₀ ℕ}
+    (hν : ν ∉ activeAevalAtoms n N Q) :
+    aevalWeight n N Q ν = 0 := by
+  by_contra hw
+  exact hν (mem_activeAevalAtoms.mpr
+    ⟨mem_appearingAtoms_of_aevalWeight_ne_zero hw, hw⟩)
+
+/-- Exact three-class partition after selecting the least-source interior face.  The two gap
+classes are kept in one finset so that their cancellations survive the later limit. -/
+theorem activeAevalAtoms_sdiff_gaussianInterior_eq_gap_union_exterior
+    {n D τ q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ}
+    (ha : anchor ∈ Q.support)
+    (haD : jetMonomialDegree n anchor = D)
+    (haMax : ∀ m ∈ Q.support,
+      jetMonomialDegree n m = D →
+        magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
+    (hDmax : D = magnitudeMaxJetDegree n Q)
+    (hS : S + (magnitudeShiftCode n Q anchor : ℤ) =
+      ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ)) :
+    activeAevalAtoms n (D * q + τ) Q \
+        gaussianInteriorActiveAtoms n D τ Q S q R =
+      gaussianGapActiveAtoms n D τ Q S q ∪
+        gaussianExteriorActiveAtoms n D τ Q S q R := by
+  classical
+  ext ν
+  constructor
+  · intro hν
+    have hactive := (Finset.mem_sdiff.mp hν).1
+    have hnotInterior := (Finset.mem_sdiff.mp hν).2
+    rcases activeAevalAtom_gaussian_four_way
+        ha haD haMax hDmax hS hactive with
+      hlower | hlarger | hinterior | hexterior
+    · exact Finset.mem_union_left _
+        (Finset.mem_filter.mpr ⟨hactive, Or.inl hlower⟩)
+    · exact Finset.mem_union_left _
+        (Finset.mem_filter.mpr ⟨hactive, Or.inr hlarger.2⟩)
+    · exact (hnotInterior
+        (Finset.mem_filter.mpr ⟨hactive, hinterior⟩)).elim
+    · exact Finset.mem_union_right _
+        (Finset.mem_filter.mpr ⟨hactive, hexterior⟩)
+  · intro hν
+    rcases Finset.mem_union.mp hν with hgap | hexterior
+    · have hgapData := Finset.mem_filter.mp hgap
+      apply Finset.mem_sdiff.mpr
+      refine ⟨hgapData.1, ?_⟩
+      intro hinterior
+      have hiData := (Finset.mem_filter.mp hinterior).2
+      rcases hgapData.2 with hlower | hlarger
+      · omega
+      · omega
+    · have heData := Finset.mem_filter.mp hexterior
+      apply Finset.mem_sdiff.mpr
+      refine ⟨heData.1, ?_⟩
+      intro hinterior
+      have hiData := (Finset.mem_filter.mp hinterior).2
+      exact heData.2.2.2 hiData.2.2
+
+/-- The gap and exterior classes are disjoint: exterior atoms have full degree and exactly the
+least signed source. -/
+theorem gaussianGapActiveAtoms_disjoint_gaussianExteriorActiveAtoms
+    {n D τ q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ} {S : ℤ} :
+    Disjoint (gaussianGapActiveAtoms n D τ Q S q)
+      (gaussianExteriorActiveAtoms n D τ Q S q R) := by
+  rw [Finset.disjoint_left]
+  intro ν hgap hexterior
+  have hgapData := (Finset.mem_filter.mp hgap).2
+  have heData := (Finset.mem_filter.mp hexterior).2
+  rcases hgapData with hlower | hlarger
+  · omega
+  · omega
+
 /-- Lower degree has a quadratic gap and every larger active source has a linear Gaussian gap.
 After taking their minimum, both classes have one common positive linear gap from a fixed
 least-source witness. -/
@@ -2148,6 +2307,7 @@ theorem sum_norm_normalized_gaussianExteriorActiveAtoms_le_tail
     {B : ℝ} (hB : 0 < B)
     {n D τ H P q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
     {S : ℤ} {Q₀ : ℝ}
+    (hD : 0 < D)
     (hmass :
       (∑ μ ∈ activeAevalAtoms n (D * q + τ) Q,
         ‖aevalWeight n (D * q + τ) Q μ‖) ≤ (q : ℝ) ^ P)
@@ -2167,6 +2327,7 @@ theorem sum_norm_normalized_gaussianExteriorActiveAtoms_le_tail
               (magnitudeMaxJetOrder n Q + P) *
             Real.exp (-(B / 2) * (gaussianOffsetEnergy z.1 - Q₀)) := by
   classical
+  letI : Nonempty (Fin D) := Fin.pos_iff_nonempty.mp hD
   let E := gaussianExteriorActiveAtoms n D τ Q S q R
   let encode : ↥E →
       {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R} := fun ν =>
@@ -2339,6 +2500,63 @@ theorem gaussianFaceWeight_mul_phase_eq_normalizedADETerm
   rw [← Complex.ofReal_exp]
   congr 1
   ring
+
+/-- Summing the complete finite Gaussian pattern face is the same as summing its active
+least-source interior atoms.  Inactive image keys disappear because their grouped ADE weight is
+zero; no survivor or noncancellation hypothesis is imposed on the individual patterns. -/
+theorem sum_gaussianFaceWeight_mul_phase_eq_interior
+    {B : ℝ} {n D τ H K q : ℕ}
+    {Q : MvPolynomial (Fin (n + 2)) ℂ} {S : ℤ} {Q₀ : ℝ}
+    (F : PowerSeries ℂ) (u : ℕ → ℂ)
+    (hcoeff : ∀ i, PowerSeries.coeff i F =
+      ((Real.exp (-(B * (i : ℝ) ^ 2)) : ℝ) : ℂ) * u i)
+    (hKq : K ≤ q) (hlarge : K + n ≤ q) :
+    (∑ p ∈ gaussianPolynomialPatternFace D S K,
+      gaussianFaceWeight n D τ Q B Q₀ H K q p *
+        ∏ r : Fin (2 * K + 1),
+          u (windowShift q K (r : ℕ)) ^ (p r : ℕ)) =
+      ∑ ν ∈ gaussianInteriorActiveAtoms n D τ Q S q K,
+        gaussianNormalizedADETerm F n (D * q + τ) H Q B
+          (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+            2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν := by
+  classical
+  let Face := gaussianPolynomialPatternFace D S K
+  let Ckey := Face.image (shiftedAtomPatternKey q K)
+  let f : (ℕ →₀ ℕ) → ℂ := fun ν =>
+    gaussianNormalizedADETerm F n (D * q + τ) H Q B
+      (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+        2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν
+  calc
+    (∑ p ∈ gaussianPolynomialPatternFace D S K,
+        gaussianFaceWeight n D τ Q B Q₀ H K q p *
+          ∏ r : Fin (2 * K + 1),
+            u (windowShift q K (r : ℕ)) ^ (p r : ℕ)) =
+        ∑ p ∈ Face, f (shiftedAtomPatternKey q K p) := by
+      apply Finset.sum_congr rfl
+      intro p hp
+      exact gaussianFaceWeight_mul_phase_eq_normalizedADETerm
+        F u hcoeff (by simpa only [Face] using hp) hlarge
+    _ = ∑ ν ∈ Ckey, f ν := by
+      simpa only [Ckey] using (sum_image_shiftedAtomPatternKey Face f).symm
+    _ = ∑ ν ∈ Ckey.filter
+          (fun ν => ν ∈ activeAevalAtoms n (D * q + τ) Q), f ν := by
+      symm
+      apply Finset.sum_subset (Finset.filter_subset _ _)
+      intro ν hνC hνNot
+      have hnotActive : ν ∉ activeAevalAtoms n (D * q + τ) Q := by
+        intro hactive
+        exact hνNot (Finset.mem_filter.mpr ⟨hνC, hactive⟩)
+      have hwzero := aevalWeight_eq_zero_of_not_mem_activeAevalAtoms hnotActive
+      dsimp only [f, gaussianNormalizedADETerm]
+      rw [hwzero, zero_div, zero_mul]
+    _ = ∑ ν ∈ gaussianInteriorActiveAtoms n D τ Q S q K, f ν := by
+      rw [gaussianInteriorActiveAtoms_eq_filter_image_face hKq]
+      rfl
+    _ = ∑ ν ∈ gaussianInteriorActiveAtoms n D τ Q S q K,
+        gaussianNormalizedADETerm F n (D * q + τ) H Q B
+          (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+            2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν := by
+      rfl
 
 /-- Coordinates actually used by a bounded multiplicity pattern. -/
 def polynomialPatternSupport {M D : ℕ} (p : Fin M → Fin (D + 1)) : Finset (Fin M) :=
@@ -3554,6 +3772,35 @@ theorem tendsto_maxPolynomial_gaussian_tsum_outside_box_zero
   exact (tendsto_tsum_compl_atTop_zero f).comp (integerLatticeBox_tendsto_atTop ι)
 
 /-! ## Exact normalized face/remainder splitting -/
+
+/-- On a degree-`D`, signed-source-`S` atom, the normalized ADE term has exactly the intrinsic
+Gaussian offset energy. -/
+theorem norm_gaussianNormalizedADETerm_of_leastSource
+    {B : ℝ} {n D τ H q : ℕ}
+    {Q : MvPolynomial (Fin (n + 2)) ℂ} {S : ℤ} {Q₀ : ℝ}
+    (F : PowerSeries ℂ)
+    (hb : ∀ i, ‖PowerSeries.coeff i F‖ =
+      Real.exp (-(B * (i : ℝ) ^ 2)))
+    {ν : ℕ →₀ ℕ} (hcount : ν.sum (fun _ k => k) = D)
+    (hsource : gaussianAtomSignedSource D q ν = S) :
+    ‖gaussianNormalizedADETerm F n (D * q + τ) H Q B
+        (B * ((D : ℝ) * (q : ℝ) ^ 2 +
+          2 * (q : ℝ) * (S : ℝ) + Q₀)) q ν‖ =
+      ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
+        Real.exp (-B *
+          ((gaussianOffsetPatternEnergy
+            (gaussianOffsetPatternOfKey q ν) : ℝ) - Q₀)) := by
+  have hsourcePattern :
+      gaussianOffsetSource (gaussianOffsetPatternOfKey q ν) = S := by
+    rw [gaussianOffsetSource_patternOfKey, hcount]
+    simpa only [gaussianAtomSignedSource, mul_comm] using hsource
+  have hvaluation := atomValuation_gaussianOffsetPatternOfKey B hcount hsourcePattern
+  rw [gaussianNormalizedADETerm, norm_mul, norm_mul, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
+    norm_normalizedAtomPhase F (fun i => B * (i : ℝ) ^ 2) hb, mul_one,
+    hvaluation]
+  congr 2
+  ring
 
 /-- Abstract exact-identity splitter.  A selected finite subface of a finite zero sum is bounded
 by the norm mass of its complementary remainder. -/

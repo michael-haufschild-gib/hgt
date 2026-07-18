@@ -477,11 +477,30 @@ inequality form: every `c<3/11` is, for all sufficiently large apertures, a lowe
 two-mode gap after multiplication by the dominant Fuchs leakage.  These are genuine limit theorems,
 not just arithmetic identities for the limiting weights.
 
-The scientifically new asymptotic theorem `(4)`--`(7)` is not yet fully formalized. Its remaining
-inputs are the classical identification and simplicity theorem matching the positive signed modes
-with the `4j` numbering, Fuchs fixed-index asymptotics with normalization, prolate-to-Hermite
-convergence, and the uniform infinite-tail secular estimate transferring the now-formalized
-two-mode `8/11`/`3/11` limits to the exact constrained optimizer.
+The **uniform infinite-tail secular estimate is now formalized**, for the full infinite index
+set, in `formal/GaloisForLFunctions/RHTower/ConstrainedProlateInfiniteSecular.lean`.  The exact
+secular function `F(μ) = Σ_{j≥0} ℓ_j²/(d_j − μ)` (genuinely infinite: head plus `tsum` tail) is
+proved summable, continuous, and strictly increasing on `(d_0, d_1)`; `infiniteSecular_exists_root`
+and `infiniteSecular_root_unique` give the exact constrained ground root `μ_0` (existence by IVT
+below the two-mode value, uniqueness by strict monotonicity — the card's §2 for the true infinite
+problem, not a finite shadow); `infiniteSecularRoot_twoMode_gap` is exactly the card's tail
+estimate `(18)` with the explicit constant `μ_2mode − μ_0 ≤ T·d_1²/(ℓ_0²(d_2 − d_1))`, `T = Σ_{j≥2}ℓ_j²`;
+`infiniteSecular_other_root_ge` proves every competing secular zero is ≥ `d_1` (the interlacing
+`(23)` at secular level).  The family theorem `infiniteSecularRoot_ratio_tendsto` then proves
+`μ_0(λ)/d_1(λ) → a_0²/(a_0²+a_1²)` from the Bessel bound `(2)`, the scale separations, and the
+coordinate limits `(10)` — i.e. the card's §3 in full — and its CCM instances
+`ccm_infiniteSecularRoot_ratio_tendsto` / `_gap_ratio_tendsto` / `_spectralGap_eventually` give
+`8/11`, `3/11`, and the quantified gap `(7)` for the exact optimizer.
+`ConstrainedProlateFuchsModelTransfer.lean` discharges the entire leakage side for the concrete
+Fuchs family `d_j = A_j λ^{8j+1}e^{−4πλ²}` (`fuchsRate_radial_struct`,
+`fuchsRate_radial_tail_ratio_tendsto_zero`, `ccm_fuchsModel_infiniteSecularRoot_*`), assuming only
+`A_j > 0` and the tempered growth `A_2 ≤ C^j A_{j+2}`.  All of this is axiom-clean.
+
+What remains unformalized of `(4)`--`(7)`: the eigenvector convergence `(4)` (coordinates
+`(13)`/`(20)`--`(22)`), and — for the *true prolate operator* rather than the Fuchs model — the
+classical inputs: the identification of the positive signed modes with the `4j` numbering, Fuchs
+fixed-index asymptotics for the actual `χ_n(λ)`, prolate-to-Hermite convergence `ℓ_j → a_j`, and
+the Bessel bound `(2)` from the concrete operator layer.
 
 ## Gates
 
@@ -495,6 +514,13 @@ two-mode `8/11`/`3/11` limits to the exact constrained optimizer.
 - [x] provisional significance gate
 - [x] two-mode Fuchs-rate `8/11` ground and `3/11` gap limits formalized in Lean
 - [x] eventual `c<3/11` two-mode gap lower bound formalized in Lean
+- [x] exact infinite-dimensional secular root: existence, uniqueness, tail estimate `(18)`,
+  competing-root interlacing, formalized in Lean (`ConstrainedProlateInfiniteSecular`)
+- [x] exact-optimizer `8/11`, `3/11`, and quantified `c<3/11` gap under Bessel + coordinate-limit
+  hypotheses formalized in Lean; leakage side discharged for the concrete Fuchs family
+- [ ] eigenvector convergence `(4)` in Lean
+- [ ] true-operator inputs in Lean: mode identification, Fuchs asymptotics, prolate-to-Hermite,
+  Bessel bound `(2)`
 - [ ] independent proof review
 - [ ] independent literature review
 - [ ] true Weil residual and spectral-gap transfer

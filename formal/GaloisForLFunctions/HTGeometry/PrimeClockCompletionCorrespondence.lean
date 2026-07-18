@@ -139,6 +139,89 @@ theorem carrier_mem_primeProfileStaticField_of_clockClass_mem
   rw [hdecomp, map_add]
   exact IntermediateField.add_mem K hcomboMem hresidualMem
 
+/-- Static field membership cannot create a source direction outside the source span. -/
+theorem clockClass_mem_of_carrier_mem_primeProfileStaticField
+    {I : Type*} (c : I -> ArithmeticFunction ℂ)
+    (hcsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (c i))
+    (hc : LinearIndependent ℂ (fun i => primeProfileClockClass (c i)))
+    (f : ArithmeticFunction ℂ)
+    (hfsupport : PrimeProfileSupportedOnPositivePrimePowers f)
+    (hfmem : algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f ∈
+      primeProfileStaticField c) :
+    primeProfileClockClass f ∈ primeProfileStaticSubmodule c := by
+  classical
+  by_contra hnot
+  have hnewQuotient : LinearIndependent ℂ
+      ((primeProfileStaticSubmodule c).mkQ ∘
+        (fun _ : Unit => primeProfileClockClass f)) := by
+    rw [linearIndependent_unique_iff]
+    change (primeProfileStaticSubmodule c).mkQ (primeProfileClockClass f) ≠ 0
+    rw [Submodule.mkQ_apply]
+    exact mt (Submodule.Quotient.mk_eq_zero (primeProfileStaticSubmodule c)).mp hnot
+  have hclassCombined : LinearIndependent ℂ
+      (Sum.elim (fun i => primeProfileClockClass (c i))
+        (fun _ : Unit => primeProfileClockClass f)) :=
+    (linearIndependent_sumElim_iff_quotient
+      (fun i => primeProfileClockClass (c i))
+      (fun _ : Unit => primeProfileClockClass f)).mpr ⟨hc, hnewQuotient⟩
+  let profile : I ⊕ Unit -> ArithmeticFunction ℂ :=
+    Sum.elim c (fun _ : Unit => f)
+  have hprofileSupport : ∀ z,
+      PrimeProfileSupportedOnPositivePrimePowers (profile z) := by
+    intro z
+    rcases z with i | u
+    · exact hcsupport i
+    · exact hfsupport
+  have hprofileClass :
+      (fun z => primeProfileClockClass (profile z)) =
+        Sum.elim (fun i => primeProfileClockClass (c i))
+          (fun _ : Unit => primeProfileClockClass f) := by
+    funext z
+    rcases z with i | u <;> rfl
+  have hAI : AlgebraicIndependent finitePrimeCoefficientField
+      (fun z => algebraMap (ArithmeticFunction ℂ)
+        arithmeticFunctionFractionField (profile z)) := by
+    apply (algebraicIndependent_fractionPrimeProfiles_iff_clockClassIndependent_arbitrary
+      profile hprofileSupport).mpr
+    rw [hprofileClass]
+    exact hclassCombined
+  let oldCarrier : I -> arithmeticFunctionFractionField := fun i =>
+    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField (c i)
+  let newCarrier : Unit -> arithmeticFunctionFractionField := fun _ =>
+    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f
+  have hAIoverAlg : AlgebraicIndependent
+      (Algebra.adjoin finitePrimeCoefficientField (Set.range oldCarrier)) newCarrier := by
+    have hsplit := (AlgebraicIndependent.sumElim_iff.mp hAI).2
+    simpa only [profile, oldCarrier, newCarrier] using hsplit
+  have hAIoverField : AlgebraicIndependent (primeProfileStaticField c) newCarrier := by
+    apply IntermediateField.algebraicIndependent_adjoin_iff.mpr
+    simpa only [primeProfileStaticField, oldCarrier] using hAIoverAlg
+  have htrans : Transcendental (primeProfileStaticField c)
+      (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f) := by
+    simpa only [newCarrier] using hAIoverField.transcendental ()
+  exact htrans (by
+    simpa using isAlgebraic_algebraMap
+      (R := primeProfileStaticField c)
+      (A := arithmeticFunctionFractionField)
+      (⟨algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f, hfmem⟩ :
+        primeProfileStaticField c))
+
+/-- Exact order-zero recovery for a static independent presentation. -/
+theorem carrier_mem_primeProfileStaticField_iff_clockClass_mem
+    {I : Type*} (c : I -> ArithmeticFunction ℂ)
+    (hcsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (c i))
+    (hc : LinearIndependent ℂ (fun i => primeProfileClockClass (c i)))
+    (f : ArithmeticFunction ℂ)
+    (hfsupport : PrimeProfileSupportedOnPositivePrimePowers f) :
+    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f ∈
+        primeProfileStaticField c ↔
+      primeProfileClockClass f ∈ primeProfileStaticSubmodule c := by
+  constructor
+  · exact clockClass_mem_of_carrier_mem_primeProfileStaticField
+      c hcsupport hc f hfsupport
+  · exact carrier_mem_primeProfileStaticField_of_clockClass_mem
+      c hcsupport f hfsupport
+
 /-- Index of a Hamel basis of the complete old prime-clock submodule. -/
 abbrev PrimeProfileClockBasisIndex
     {I : Type*} (c : I -> ArithmeticFunction ℂ) :=
@@ -232,6 +315,112 @@ theorem differentialAdjoin_eq_primeProfileClockBasisStaticField
       (primeProfileClockBasisSource_supportedOnPositivePrimePowers c i)
     rw [primeProfileClockClass_basisSource]
     exact (Module.Basis.ofVectorSpace ℂ (primeProfileClockSubmodule c) i).2
+
+/-- **Intrinsic source recovery.**  For an arbitrary old presentation, actual field membership
+is exactly membership in the complete old clock submodule. -/
+theorem primeProfileCarrier_mem_differentialAdjoin_iff_intrinsicClockClass_mem
+    {I : Type*} (c : I -> ArithmeticFunction ℂ)
+    (hcsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (c i))
+    (f : ArithmeticFunction ℂ)
+    (hfsupport : PrimeProfileSupportedOnPositivePrimePowers f) :
+    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f ∈
+        GaloisForLFunctions.differentialAdjoin finitePrimeCoefficientField
+          (Set.range (fun i => algebraMap (ArithmeticFunction ℂ)
+            arithmeticFunctionFractionField (c i))) ↔
+      primeProfileClockClass f ∈ primeProfileClockSubmodule c := by
+  let basisSource := primeProfileClockBasisSource c
+  have hbasisSupport : ∀ i,
+      PrimeProfileSupportedOnPositivePrimePowers (basisSource i) :=
+    primeProfileClockBasisSource_supportedOnPositivePrimePowers c
+  have hbasisIndependent : LinearIndependent ℂ
+      (fun i => primeProfileClockClass (basisSource i)) := by
+    simpa only [basisSource] using
+      linearIndependent_primeProfileClockClass_basisSource c
+  have hfield := differentialAdjoin_eq_primeProfileClockBasisStaticField c hcsupport
+  rw [hfield,
+    carrier_mem_primeProfileStaticField_iff_clockClass_mem
+      basisSource hbasisSupport hbasisIndependent f hfsupport,
+    primeProfileStaticSubmodule,
+    show Submodule.span ℂ
+        (Set.range (fun i => primeProfileClockClass (basisSource i))) =
+          primeProfileClockSubmodule c by
+      simpa only [basisSource] using span_primeProfileClockClass_basisSource c]
+
+/-- Embedded differential-field inclusion is exactly inclusion of intrinsic clock submodules,
+with no pivot or cardinality hypothesis on either presentation. -/
+theorem primeProfile_differentialAdjoin_le_iff_intrinsicClockSubmodule_le
+    {I J : Type*}
+    (c : I -> ArithmeticFunction ℂ) (d : J -> ArithmeticFunction ℂ)
+    (hcsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (c i))
+    (hdsupport : ∀ j, PrimeProfileSupportedOnPositivePrimePowers (d j)) :
+    GaloisForLFunctions.differentialAdjoin finitePrimeCoefficientField
+        (Set.range (fun i => algebraMap (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField (c i))) ≤
+      GaloisForLFunctions.differentialAdjoin finitePrimeCoefficientField
+        (Set.range (fun j => algebraMap (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField (d j))) ↔
+      primeProfileClockSubmodule c ≤ primeProfileClockSubmodule d := by
+  constructor
+  · intro hfield
+    rw [primeProfileClockSubmodule, Submodule.span_le]
+    intro q hq
+    obtain ⟨ik, rfl⟩ := hq
+    apply (primeProfileCarrier_mem_differentialAdjoin_iff_intrinsicClockClass_mem
+      d hdsupport
+      (primeProfileRotatedLogJet ik.2 (c ik.1))
+      (primeProfileRotatedLogJet_supportedOnPositivePrimePowers
+        (c ik.1) (hcsupport ik.1) ik.2)).mp
+    apply hfield
+    have hjet :
+        GaloisForLFunctions.differentialJet ik.2
+            (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+              (c ik.1)) ∈
+          GaloisForLFunctions.differentialAdjoin finitePrimeCoefficientField
+            (Set.range (fun i => algebraMap (ArithmeticFunction ℂ)
+              arithmeticFunctionFractionField (c i))) :=
+      GaloisForLFunctions.differentialJet_mem_differentialAdjoin
+        finitePrimeCoefficientField (Set.mem_range_self ik.1) ik.2
+    simpa only [differentialJet_algebraMap_primeProfileRotatedLogJet] using hjet
+  · intro hmodule
+    unfold GaloisForLFunctions.differentialAdjoin
+    apply IntermediateField.adjoin_le_iff.mpr
+    rintro z ⟨x, ⟨i, rfl⟩, n, rfl⟩
+    rw [differentialJet_algebraMap_primeProfileRotatedLogJet]
+    apply (primeProfileCarrier_mem_differentialAdjoin_iff_intrinsicClockClass_mem
+      d hdsupport (primeProfileRotatedLogJet n (c i))
+      (primeProfileRotatedLogJet_supportedOnPositivePrimePowers
+        (c i) (hcsupport i) n)).mpr
+    apply hmodule
+    apply Submodule.subset_span
+    exact ⟨(i, n), rfl⟩
+
+/-- Two arbitrary prime-profile presentations generate the same embedded differential field if
+and only if they generate the same intrinsic clock submodule. -/
+theorem primeProfile_differentialAdjoin_eq_iff_intrinsicClockSubmodule_eq
+    {I J : Type*}
+    (c : I -> ArithmeticFunction ℂ) (d : J -> ArithmeticFunction ℂ)
+    (hcsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (c i))
+    (hdsupport : ∀ j, PrimeProfileSupportedOnPositivePrimePowers (d j)) :
+    GaloisForLFunctions.differentialAdjoin finitePrimeCoefficientField
+        (Set.range (fun i => algebraMap (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField (c i))) =
+      GaloisForLFunctions.differentialAdjoin finitePrimeCoefficientField
+        (Set.range (fun j => algebraMap (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField (d j))) ↔
+      primeProfileClockSubmodule c = primeProfileClockSubmodule d := by
+  constructor
+  · intro hfield
+    apply le_antisymm
+    · exact (primeProfile_differentialAdjoin_le_iff_intrinsicClockSubmodule_le
+        c d hcsupport hdsupport).mp hfield.le
+    · exact (primeProfile_differentialAdjoin_le_iff_intrinsicClockSubmodule_le
+        d c hdsupport hcsupport).mp hfield.ge
+  · intro hmodule
+    apply le_antisymm
+    · exact (primeProfile_differentialAdjoin_le_iff_intrinsicClockSubmodule_le
+        c d hcsupport hdsupport).mpr hmodule.le
+    · exact (primeProfile_differentialAdjoin_le_iff_intrinsicClockSubmodule_le
+        d c hdsupport hcsupport).mpr hmodule.ge
 
 /-- A nonzero affine linear polynomial cannot disappear through its constant term. -/
 theorem primeClock_finsuppLinearPolynomial_sub_C_ne_zero

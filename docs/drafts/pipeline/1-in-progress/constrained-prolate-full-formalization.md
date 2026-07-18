@@ -23,7 +23,8 @@
   (`ConstrainedProlateOperator`, `ConstrainedProlateSignedSpectrum`,
   `ConstrainedProlateConstrainedSpectrum`), scalar arithmetic spectrum
   (`ArcsineZetaDerivativeSpectrum`, `ConstrainedProlateExteriorWeil`).
-- [ ] **L1 — infinite secular transfer** (`ConstrainedProlateInfiniteSecular.lean`, current phase):
+- [x] **L1 — infinite secular transfer** (`ConstrainedProlateInfiniteSecular.lean` +
+  `ConstrainedProlateFuchsModelTransfer.lean`; 18 theorems, axiom-clean):
   the exact secular function `F(μ) = Σ_{j≥0} ℓ_j²/(d_j−μ)` on the full index set; summability,
   continuity, strict monotonicity on `(d_0,d_1)`; existence + uniqueness of the exact root `μ_0`;
   the quantitative two-mode comparison `0 ≤ μ_2mode − μ_0 ≤ T·d_1²/(ℓ_0²(d_2−d_1))` (card 1 eq (18));
@@ -31,6 +32,19 @@
   (d_0/d_1 → 0, λ·d_1/(d_2−d_1) → 0, ℓ_0→a_0, ℓ_1→a_1, Bessel Σℓ²≤2λ); every other secular root
   ≥ d_1; gap corollary; CCM 8/11 + 3/11 instances; Fuchs-model instance.  This is the named
   "uniform infinite-tail secular estimate" gate of cards 1–3.
+  Delivered: `infiniteSecular`/`infiniteSecularTail`/`infiniteSecularRoot`; summability, tail
+  bound `T/(d_2−μ)`, monotonicity, `continuous_tsum` continuity; strict monotonicity on the gap;
+  IVT existence below `μ_2mode` (`infiniteSecular_exists_root`), uniqueness, spec; the
+  quantitative estimate `μ_2mode − μ_0 ≤ T·d_1²/(ℓ_0²(d_2−d_1))`
+  (`infiniteSecularRoot_twoMode_gap`); positivity below `d_0` and `infiniteSecular_other_root_ge`
+  (all other roots ≥ d_1); the family master theorem `infiniteSecularRoot_ratio_tendsto`
+  (hypotheses: eventual ordered triple + floor, Σℓ² summable, Bessel ≤ 2λ, d_0/d_1 → 0,
+  λ·d_1/(d_2−d_1) → 0, ℓ_0→a_0, ℓ_1→a_1); gap ratio `a_1²/(a_0²+a_1²)`; quantified spectral gap;
+  CCM instances 8/11, 3/11, `c < 3/11` (`ccm_infiniteSecularRoot_*`); Fuchs-model discharge of
+  the whole `d`-side (`fuchsRate_radial_struct`, `fuchsRate_radial_tail_ratio_tendsto_zero`,
+  `ccm_fuchsModel_infiniteSecularRoot_*` — under `A_2 ≤ C^j A_{j+2}`, `C ≥ 1`).
+  Remaining inputs feeding L1's CCM Fuchs-model theorems are exactly the ℓ-side facts of
+  L5/L7: Σℓ(λ)² summable, Bessel bound, ℓ_0 → 2^{1/4}, ℓ_1 → √3·2^{−5/4}.
 - [ ] **L2 — eigenvector transfer**: coordinates `v_j = ℓ_j/(d_j−μ_0)`; tail/head ℓ² ratio bound
   (card 1 eqs (20)–(22)); normalized-direction convergence to the two-mode seed and to the `w_k`
   contrast ladder (card 1 eq (4), card 2 vector claim, card 3 eqs (10),(22)–(23)).

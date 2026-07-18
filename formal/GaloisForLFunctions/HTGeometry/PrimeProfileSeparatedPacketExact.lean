@@ -994,13 +994,14 @@ theorem primeProfileClockPolynomialSaturatedOver_iff_not_relativeClockIndependen
   constructor
   · rintro ⟨a, ha, hmem⟩
     refine ⟨a, ?_, ha⟩
-    rw [← map_finsuppSum]
+    rw [← Finsupp.linearCombination_apply]
+    rw [← Finsupp.apply_linearCombination]
     exact (Submodule.Quotient.mk_eq_zero (primeProfileClockSubmodule c)).2 hmem
   · rintro ⟨a, hzero, ha⟩
     refine ⟨a, ha, ?_⟩
     apply (Submodule.Quotient.mk_eq_zero (primeProfileClockSubmodule c)).1
-    rw [map_finsuppSum]
-    exact hzero
+    rw [Finsupp.linearCombination_apply, map_finsuppSum]
+    simpa only [Function.comp_apply, map_smul] using hzero
 
 /-- **Prime-clock saturation correspondence, pivot form.**  A new positive-prime-power carrier
 is differentially algebraic over the differential field of a clock-free old family exactly when
@@ -1101,7 +1102,9 @@ theorem primeProfileClockClass_surjective :
   obtain ⟨u, rfl⟩ :=
     (rayLocalSubmodule primePowerClockRay).mkQ_surjective q
   refine ⟨arithmeticFunctionOfPrimePowerProfile u, ?_⟩
-  unfold primeProfileClockClass
+  change (rayLocalSubmodule primePowerClockRay).mkQ
+      (primePowerCoordinateProfile (arithmeticFunctionOfPrimePowerProfile u)) =
+    (rayLocalSubmodule primePowerClockRay).mkQ u
   congr 1
   funext x
   exact primePowerCoordinateProfile_arithmeticFunctionOfPrimePowerProfile u x
@@ -1110,17 +1113,20 @@ theorem primeProfileClockClass_surjective :
 noncomputable def primeProfileClockRepresentative
     (q : PrimeProfileClockQuotient) : ArithmeticFunction ℂ :=
   arithmeticFunctionOfPrimePowerProfile
-    (Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ q)
+    (Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ_surjective q)
 
 @[simp]
 theorem primeProfileClockClass_representative
     (q : PrimeProfileClockQuotient) :
     primeProfileClockClass (primeProfileClockRepresentative q) = q := by
-  unfold primeProfileClockRepresentative primeProfileClockClass
+  change (rayLocalSubmodule primePowerClockRay).mkQ
+      (primePowerCoordinateProfile
+        (arithmeticFunctionOfPrimePowerProfile
+          (Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ_surjective q))) = q
   rw [show primePowerCoordinateProfile
       (arithmeticFunctionOfPrimePowerProfile
-        (Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ q)) =
-      Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ q by
+        (Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ_surjective q)) =
+      Function.surjInv (rayLocalSubmodule primePowerClockRay).mkQ_surjective q by
     funext x
     exact primePowerCoordinateProfile_arithmeticFunctionOfPrimePowerProfile _ x]
   exact Function.rightInverse_surjInv
@@ -1130,7 +1136,9 @@ theorem primeProfileClockRepresentative_supportedOnPositivePrimePowers
     (q : PrimeProfileClockQuotient) :
     PrimeProfileSupportedOnPositivePrimePowers
       (primeProfileClockRepresentative q) :=
-  arithmeticFunctionOfPrimePowerProfile_supportedOnPositivePrimePowers _
+  by
+    unfold primeProfileClockRepresentative
+    exact arithmeticFunctionOfPrimePowerProfile_supportedOnPositivePrimePowers _
 
 /-! ## Scalar replication and Euler-profile completion -/
 
@@ -1545,7 +1553,7 @@ theorem scalarReplicatedPrimeProfile_mem_all_valuationLayers_of_support_finite
   have hout : ∀ e : Nat, e ∉ S -> u e = 0 := by
     intro e he
     by_contra heu
-    exact he (Set.Finite.mem_toFinset hfinite heu)
+    exact he ((Set.Finite.mem_toFinset hfinite).2 heu)
   have hprofile :
       u = ∑ e ∈ S, u e • scalarValuationBasisProfile e := by
     funext n
@@ -1564,9 +1572,17 @@ theorem scalarReplicatedPrimeProfile_mem_all_valuationLayers_of_support_finite
         ∑ e ∈ S,
           algebraMap ℂ arithmeticFunctionFractionField (u e) *
             scalarValuationLayerCarrier e := by
-    rw [hprofile]
-    simp only [map_sum, map_smul, Algebra.smul_def, map_mul,
-      scalarValuationLayerCarrier]
+    have hreplicated :
+        scalarReplicatedPrimeProfile u =
+          ∑ e ∈ S, u e •
+            scalarReplicatedPrimeProfile (scalarValuationBasisProfile e) := by
+      simpa only [map_sum, map_smul] using
+        congrArg scalarReplicatedPrimeProfile hprofile
+    rw [hreplicated, map_sum]
+    apply Finset.sum_congr rfl
+    intro e he
+    rw [Algebra.smul_def, map_mul]
+    rfl
   rw [hcarrier]
   apply IntermediateField.sum_mem
   intro e he
