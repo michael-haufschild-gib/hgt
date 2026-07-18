@@ -902,3 +902,38 @@ mu_8 Maslov/eta data entering the arithmetic side; the per-zero discrepancy live
 divisor-free; (ii) the comparison must not be basis/gauge-trivial (the H^1 class must be
 provably nontrivial exactly on one type — test on the toy rank-1 case first); (iii) check
 against the seven-representation transparency pattern before proof investment.
+
+## 2026-07-18 session 2 (cont. 19) — BATCH REFEREE VERDICTS APPLIED (four independent referees
+## over cont. 9-18)
+
+1. **[disc-sign law: CONFIRMED + OVERCLAIM FIXED]** Sign bookkeeping verified (4-root symbolic
+   expansion; cross factors provably positive: pair-pair cross groups as
+   (|z_k - z_l|^2 |z_k - conj z_l|^2)^2). CORRECTION to cont. 12: "sqrt(disc) real ⟺ no
+   off-line pair" is FALSE per box — counterexample roots 1±i, -1±2i: r_2 = 2, disc = 270400,
+   sqrt = 520 real. Correct statement: sqrt(disc) real ⟺ r_2(B) EVEN. Requires disc ≠ 0
+   (simple zeros); multiple-zero boxes degenerate the bit — handled by the complementary
+   arch-slice/jet chain (cont. 9), a genuine division of labor to preserve.
+2. **[NEW NAMED LEMMA — SEPARATION]** The tower-splice ⇒ direction (family ⇒ RH) has a gap:
+   all-boxes r_2-evenness forces r_2 = 0 only given: *for every hypothetical off-line pair
+   there exists an admissible height-adapted line-symmetric box containing exactly that pair
+   and no other zeros.* Plausible from divisor discreteness + boundary zero-freeness
+   genericity; MUST be proved and integrated before the equivalence is used. Elementary-
+   looking; Lean-friendly; queue for the next paper/Lean batch.
+3. **[parity-split: CONFIRMED + CONVENTION PIN]** Identity exact; under the shifted-coefficient
+   convention (z(2) = 1/4, XiShiftPrimeExposure.lean:79) the identity gains the unit
+   (2^s - 1/4) in place of (2^s - 1); all mod-units conclusions survive. Convention now pinned:
+   coefficients read in the shifted variable (all-ones core, z(2) = 1).
+4. **[sigma-Meyer: CONFIRMED, all three identities, against the fetched paper]** Stronger than
+   claimed: S(-1)^* = S holds on the nose (a -> -a bijects K^x), no coinvariant quotient
+   needed. No gaps.
+5. **[L2: T^2 = +1 CONFIRMED; central character CONFIRMED (convention-independent); Kramers
+   logic CONFIRMED as pure algebra; IDENTIFICATION GAP routed to L3]** The unproven link: T
+   lives on the half-density lift of H_+; zeros live in H^1 of the complex; T must be shown to
+   descend through the weld/boundary map and act as sigma-bar on each generalized-eigenspace
+   fiber. Also state: C ∘ i_+ = i_+ ∘ C holds only after S (via S(-1)^* = S). L3's first
+   obligation is now exactly this **fiber-invariance/descent lemma**, ahead of the signature
+   identity itself.
+
+**Chain status after refereeing:** cont. 9-18 all either CONFIRMED or corrected in place; open
+named obligations: SEPARATION lemma (elementary), L3 = descent lemma + KR-signature identity
+(with the three cont.-18 guards), MQ2 local Weil indices, T4 Lean batch.
