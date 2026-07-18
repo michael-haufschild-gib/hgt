@@ -1166,3 +1166,43 @@ filtration (cont. 21): both demand the same quotient-of-boundary-data structure.
 step: define the edge-cohomology pairing precisely (corner data mod telescoping at level S),
 verify it reproduces the zero-packet value, and locate where positivity can enter through the
 weight imbalance — then hostile-test for type-transparency per the cont.-14 pattern.
+
+## 2026-07-18 session 2 (cont. 26) — edge-cohomology pairing CONSTRUCTED and verified; fixed-S
+## transparency verdict honest; the S-FILTRATION DEFECT is the surviving carrier (three-fold
+## convergence)
+
+**[CONSTRUCTED + SYMBOLICALLY VERIFIED]** (notation fix from referee: horizontal edges sit AT
+`Re s = 1/2 ± c` — closed interval; divergence needs only `c < 1/2`, Lean-enforced; explicit
+antiderivative for P = X: `G(u) = i u^3/L + 3u^2/L^2 - 6iu/L^3 - 6/L^4`, `L = log n`; bonus:
+the `s = 1` pole is REMOVABLE in the combined trace — residue cancellation with the arch
+factor.) The pairing: C^0 = corner data, C^1 = edge data, T = im(coboundary), `Sigma ∘ d = 0`,
+`dim C^1/T = 1` (H^1 of the loop); level-S split `g = D~_S + r_S` gives `phi(E) = tau_S(E) +
+rho_S(E)` with **`tau_S ∈ T` exactly for every S** — the level-S corner data IS the telescoping
+subspace (pure gauge); the class is carried entirely by the remainder at every S; per-edge
+limits do not exist; the S-dependence is the filtration. FE pairing: the antisymmetrized
+corner data carries the exact structure `sinh(c*alpha_n)(X+Y) + cosh(c*alpha_n)(X-Y)`, and the
+level-S sinh sum is `Theta_S = sum_{n<=S} 2 Lambda(n) n^{-1/2} sinh(c log n) q_n(P)` with
+POSITIVE weights and `q_n` homogeneous quadratic in coeff(P) (not sign-definite per n —
+positivity only aggregate). Zero-packet reproduction verified exactly (P = X, on-line and
+off-line cases; value = m * Q(u_rho) at every S).
+
+**[HOSTILE VERDICT — honest]** At every FIXED S the frame falls to the catalogue: corner +
+remainder data are finitely many continuous boundary readers; the packet value is itself
+continuous through collision; `C^1/T ≅ C` means no new invariant per (P,B). The quantized
+content (integer multiplicities, the per-pair Z/2 bit) lives ONLY in: (a) cone membership over
+ALL (P, B) — the closed-cone survivor, a repackaging of the Hankel-PSD class; and (b) **the
+S-FILTRATION DEFECT: the divergence-rate structure of the exact decomposition family
+{(tau_S, rho_S)}_S** — not a continuous functional of one box's boundary data.
+
+**[THREE-FOLD CONVERGENCE — the lane's object]** (i) mu_8 two-structure defect = level-S
+boundary term of the Euler filtration, trivialized in the limit BY reciprocity (cont. 22);
+(ii) edge-cohomology quantized content = S-filtration divergence-rate defect (this section);
+(iii) sinh-weighted positive structure = the per-level positivity carrier. Two independent
+lanes demand the same object class: FILTRATION DEFECT RATES. **[NEXT EXACT TARGET]** The
+S-uniform certificate on the innermost rank-2 box: compare the growth of the sinh-weighted
+quadratic `Theta_S` against the remainder defect rate as S -> infinity — a comparison of two
+divergence rates whose difference is the (finite) packet value; the RH-bearing question is
+whether the sinh-positivity dominates the defect rate S-uniformly exactly when the packet is
+real. Hostile guard: this is a rate comparison — the exact-identity constraint (cont. 22)
+applies to the PER-S identities (which exist, verified); the S-uniformity is where the new
+mathematics lives.
