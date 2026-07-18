@@ -71,8 +71,9 @@ then
  R(B(R)^2-1)\longrightarrow2\Delta,
  \qquad R(1-A(R))\longrightarrow2\Delta.
 \]
-Thus one field is simultaneously source-faithful, phase-selective, and normalization-free to
-first order.  As a short thermodynamic corollary, the free energy
+Thus one field is simultaneously faithful to the complete pointed moment source,
+phase-selective within its atomic realization, and normalization-free to first order.  As a short
+thermodynamic corollary, the free energy
 $F(R)=-\log A(R)$ has radical exactly the nonnegative real source cone and satisfies
 $RF(R)\to2\Delta$.  The reciprocal-square Riemann--Xi source is an application, not an estimate
 toward the Riemann hypothesis.
@@ -119,7 +120,7 @@ There are two nearby literatures.  Hausdorff moment criteria already convert pos
 sequence into sign conditions on all finite differences, and Zhang applied this principle to
 Riemann-type entire functions \cite{Zhang2023}.  Our observable instead squares the complete
 Bernstein packet and uses its dependence on the dilation variable.  The low scale coefficients
-then recover the signed source, not merely its positivity class.  In finite-dimensional phase
+then recover the signed moment sequence, not merely its positivity class.  In finite-dimensional phase
 retrieval, generic intensity measurements recover vectors only modulo a global phase and require
 a suitable frame \cite{ConcaEdidinHeringVinzant2015}.  Here a single scalar polynomial of degree
 $2N$ recovers an oriented prefix of length $N+1$ because its first $N+1$ coefficients form a
@@ -280,6 +281,11 @@ The value of the theorem lies in the conjunction.  Clause~1 says that no moment 
 lost by taking a positive quadratic observation.  Clauses~2--4 identify its exact atomic content
 and boundary packet.  Clauses~5--6 show that the result is not tied to a preferred finite
 normalization.
+
+Here and throughout, ``source-faithful'' means faithful to the complete pointed moment sequence.
+The chosen atomic realization then yields the literal energy identity and the selected confocal
+packet.  We do not assert a separate uniqueness theorem for all complex atomic representations
+having the same holomorphic moments.
 
 \section{The global pointed source chart}
 \label{sec:chart}
@@ -730,14 +736,22 @@ $c_\lambda=\nu(\lambda)\lambda$.  Then
     =\sum_\rho\lambda_\rho^{n+1}.
 \]
 Functional-equation and Schwarz symmetries make these moments real.  To identify the zeroth
-pointing correctly, write $\Xi_c(w)=\xi(\tfrac12+w)$.  The centered Hadamard product gives
+pointing correctly, write $\Xi_c(w)=\xi(\tfrac12+w)$.  Pairing the zeros $a$ and $-a$ in the
+centered Hadamard product gives, locally at the origin,
+\[
+ \frac{\Xi_c(w)}{\Xi_c(0)}
+   =\prod_{\{a,-a\}}\left(1-\frac{w^2}{a^2}\right).
+\]
+The absolute convergence of the reciprocal squares permits two logarithmic differentiations at
+$w=0$, and hence
 \begin{equation}
  m_0=-\sum_\rho\frac{1}{(\rho-\tfrac12)^2}
      =\frac{\Xi_c''(0)}{\Xi_c(0)}=:\kappa_\Xi.
  \tag{8.2}
 \end{equation}
 This is not the more familiar endpoint reciprocal moment
-$2+\gamma_{\!E}-\log(4\pi)$.  Riemann's theta representation may be normalized as
+$2+\gamma_{\!E}-\log(4\pi)$.  Riemann's theta representation \cite{TitchmarshZeta} may be
+normalized as
 \[
  \Xi_c(w)=\int_0^\infty \Phi(u)\cosh(wu)\,du,
  \qquad \Phi(u)>0.
@@ -853,6 +867,12 @@ G.~H.~Hardy,
 G.~G.~Lorentz,
 \newblock \emph{Bernstein Polynomials}, second edition,
 \newblock Chelsea Publishing, New York, 1986.
+
+\bibitem{TitchmarshZeta}
+E.~C.~Titchmarsh,
+\newblock \emph{The Theory of the Riemann Zeta-Function}, second edition, revised by
+D.~R.~Heath-Brown,
+\newblock Clarendon Press, Oxford, 1986.
 
 \bibitem{Zhang2023}
 R.~Zhang,

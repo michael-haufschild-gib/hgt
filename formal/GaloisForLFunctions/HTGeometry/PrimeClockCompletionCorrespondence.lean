@@ -364,6 +364,41 @@ theorem primeProfileCarrier_mem_differentialAdjoin_iff_intrinsicClockClass_mem
           primeProfileClockSubmodule c by
       simpa only [basisSource] using span_primeProfileClockClass_basisSource c]
 
+/-- Choice-free pullback of an embedded field to the complete prime-clock quotient. -/
+def primeProfileCarrierPullback
+    (K : IntermediateField finitePrimeCoefficientField
+      arithmeticFunctionFractionField) : Set PrimeProfileClockQuotient :=
+  {q | ∃ f : ArithmeticFunction ℂ,
+    PrimeProfileSupportedOnPositivePrimePowers f ∧
+    primeProfileClockClass f = q ∧
+    algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f ∈ K}
+
+/-- **Canonical inverse law.**  Pulling a source-generated embedded differential field back along
+the carrier relation recovers its intrinsic clock submodule exactly, without choosing a section. -/
+theorem primeProfileCarrierPullback_differentialAdjoin_eq_clockSubmodule
+    {I : Type*} (c : I -> ArithmeticFunction ℂ)
+    (hcsupport : ∀ i, PrimeProfileSupportedOnPositivePrimePowers (c i)) :
+    primeProfileCarrierPullback
+        (GaloisForLFunctions.differentialAdjoin finitePrimeCoefficientField
+          (Set.range (fun i => algebraMap (ArithmeticFunction ℂ)
+            arithmeticFunctionFractionField (c i)))) =
+      (primeProfileClockSubmodule c : Set PrimeProfileClockQuotient) := by
+  ext q
+  unfold primeProfileCarrierPullback
+  constructor
+  · rintro ⟨f, hfsupport, hclass, hfield⟩
+    rw [← hclass]
+    exact (primeProfileCarrier_mem_differentialAdjoin_iff_intrinsicClockClass_mem
+      c hcsupport f hfsupport).mp hfield
+  · intro hq
+    refine ⟨primeProfileClockRepresentative q,
+      primeProfileClockRepresentative_supportedOnPositivePrimePowers q,
+      primeProfileClockClass_representative q, ?_⟩
+    apply (primeProfileCarrier_mem_differentialAdjoin_iff_intrinsicClockClass_mem
+      c hcsupport (primeProfileClockRepresentative q)
+      (primeProfileClockRepresentative_supportedOnPositivePrimePowers q)).mpr
+    simpa only [primeProfileClockClass_representative] using hq
+
 /-- Embedded differential-field inclusion is exactly inclusion of intrinsic clock submodules,
 with no pivot or cardinality hypothesis on either presentation. -/
 theorem primeProfile_differentialAdjoin_le_iff_intrinsicClockSubmodule_le

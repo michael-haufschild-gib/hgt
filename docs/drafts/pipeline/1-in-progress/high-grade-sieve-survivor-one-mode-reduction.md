@@ -2,14 +2,16 @@
 
 - **ID:** `high-grade-sieve-survivor-one-mode-reduction`
 - **Stage:** `1-in-progress`
-- **Type:** CANDIDATE THEOREM + SOURCE CONJECTURE
+- **Type:** EXACT OPERATOR CLASSIFICATION + RETIRED SOURCE CONJECTURE
 - **Source:** `critical-multiplicative-compensated-cancellation-rh.md` `(AC24)`--`(AC25)`,
   `common-profile-boolean-anchor-curvature.md` `(CG1)`--`(CG7)`, and
   `squarefree-shear-kernel-signed-tensor.md` `(SG1)`--`(SG10)`
-- **Statement:** Above the squarefree cutoff, the globally joined Boolean response has exactly
-  one positive sieve-survivor direction and a power-small negative background; the live question
-  is whether the physical interval source has a genuinely smaller coefficient in that one
-  direction.
+- **Statement:** Above the squarefree cutoff, every dependence of the globally joined Boolean
+  response on the high ANOVA space factors through one Hilbert vector.  The low/high vectors add
+  back to the original prime-endpoint carrier, so the cutoff is an exact allocation gauge rather
+  than an RH provider.  Scalar whole-grade recentering has a sharp positive survivor: whenever
+  its secular positive line exists, that line has a universal nonzero flat trace on every CRT
+  unit.
 
 ## Goal
 
@@ -18,7 +20,7 @@ without taking sectorwise absolute values or assuming an RH-equivalent estimate.
 spectral reduction is useful only if the physical interval source supplies an independent law for
 that coefficient.
 
-The bold source conjecture under attack is:
+The original bold source conjecture was:
 
 ```text
 [CONJECTURE HGS-SOURCE]
@@ -28,8 +30,9 @@ the high-grade sieve-survivor amplitude Y_>(M,D) defined below has
   ||Y_>(M,D)||^2 <<_(A,rho) log(M)^b/M.
 ```
 
-This must be derived from the interval/logarithmic source.  Merely naming the left side, or proving
-its equivalence to `(AC25)`, is not a provider.
+This conjecture is now **retired as the wrong target**.  The exact source join below shows that
+`(AC25)` depends on `X+Y`, not on `Y` alone.  A small-`Y` theorem would be strictly stronger than
+the required alignment and is not supplied by the source algebra.
 
 ## Finite spectral candidate
 
@@ -140,22 +143,25 @@ all-grade covariance.
 ## Gates
 
 - [x] 0 -> 1: source-pure finite definitions and a falsifiable physical-source conjecture
-- [ ] Independently verify `(HGS1)`--`(HGS8)` and all normalizations
-- [ ] Identify the exact `(AC25)` scalar/Hilbert coupling, including the separate Euler vacuum
-- [ ] Hostile test: show whether clipping creates full-size higher-grade endpoint terms
-- [ ] External novelty audit against biased Boolean Fourier analysis, Kubilius models, and sieve
+- [x] Independently verify `(HGS1)`--`(HGS8)` and all normalizations
+- [x] Identify the exact `(AC25)` scalar/Hilbert coupling, including the separate Euler vacuum
+- [x] Hostile test: show whether clipping creates full-size higher-grade endpoint terms
+- [x] External novelty audit against biased Boolean Fourier analysis, Kubilius models, and sieve
   remainder decompositions
-- [ ] 1 -> 2: dependency-closed paper theorem with no RH-equivalent estimate assumed
+- [x] 1 -> 2 mathematical gate for the scalar whole-grade plateau rigidity
 - [ ] 2 -> 3: one batched Lean formalization and one targeted serialized verification
 
 ## No-go closure (mandatory when falsified)
 
-- **Exact killing theorem/mechanism:** pending source-coupling audit.
-- **Strongest positive survivor:** at minimum `(HGS1)`--`(HGS4)` plus the exact logarithmic
-  grade-selection law `(HGS8)`, subject to independent verification and novelty classification.
-- **New insight:** potentially, all power-scale failure is confined to one explicit roughness
-  innovation whose completed logarithmic jet is purely two-prime.
-- **Status:** paper audit in progress; no Lean process started; no novelty claim made.
+- **Exact killing theorem/mechanism:** `(HGS23)`--`(HGS29)` prove that the cutoff reallocates one
+  invariant endpoint carrier: the high vector is not an independently small RH source.
+- **Strongest positive survivor:** the universal coprime plateau rigidity `(HGS30)`--`(HGS33)`,
+  with its sharp scalar-whole-grade hypotheses and explicit failure boundary.
+- **New insight:** every scalar whole-grade spectral recentering that retains a positive secular
+  line retains the same canonical unit trace; a viable replacement must break grade scalarity,
+  mix unit and nonunit residues, or supply the original low--high endpoint alignment.
+- **Status:** dependency-closed paper theorem; external priority unverified and parent ingredients
+  standard; one batched Lean formalisation pending.
 
 ## Log
 
@@ -377,22 +383,208 @@ The verdict is unambiguous:
   are classified `POSITIVE SALVAGE / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE`, not an external
   scientific discovery.
 
-### Consequence for AC25
+### Exact AC25 operator join and terminal source verdict
 
-There is currently no proved identity identifying the globally joined scalar/Hilbert source in
-`(AC25)` with `Y_>(g)`.  Therefore even `(HGS11)` is, at present, a finite-model decomposition and
-not an AC25 reduction.  To obtain a genuine two-prime reduction of `(AC25)`, two independent gates
-remain:
+`[PAPER-PROVED] [SOURCE JOIN CLOSED] [HGS-SOURCE RETIRED] [FCRJ STILL RH-EQUIVALENT]`
+
+Let `G_x` be the Hilbert-valued physical packet collected in the residue class `x mod Q`.  The
+joined cutoff operator has the exact physical kernel
 
 ```text
-(1) prove the exact AC25-to-Y_> source and Euler-vacuum join;
-(2) prove R_(>=3)(g)<<_(A,rho)log(M)^b/M
-    for the actual physical packet, after that same global join.
+J_D(x,y)=Q^(-1)[
+  sum_(q|Q,q<=D)mu(q)theta_(y-x)(q)
+  +sum_(q|Q,q>D)mu(q)1_(q|xy)].                         (HGS23)
 ```
 
-Only after both gates would `(HGS13)` be the sole surviving two-prime correlation.  The completed
-jet `(HGS15)` cannot replace gate `(2)`, because `(HGS16)` proves that clipping destroys its
-higher-grade annihilation.
+Equivalently, under the unitary CRT Fourier transform,
+
+```text
+J_D=B-C_(<=D),
+B=|w><w|,
+C_(<=D)=sum_(q_S<=D)(-1)^|S|(R_S-E_S).                 (HGS24)
+```
+
+Every summand of `C_(<=D)` is supported on the low grade space `H_(<=D)`.  Thus the exact blocks
+are
+
+```text
+(J_D)_(>>)=|w_>><w_>|,
+(J_D)_(<>)=|w_<><w_>|,
+(J_D)_(<<)=|w_<><w_<|-C_(<=D).                         (HGS25)
+```
+
+Define the physical low and high amplitudes
+
+```text
+X=sqrt(Q)(<w_<| tensor I)G_<,
+Y=sqrt(Q)(<w_>| tensor I)G_>.                           (HGS26)
+```
+
+Then all high-grade dependence, including the cross block, factors through the single Hilbert
+vector `Y`, but it rejoins the low vector before any estimate:
+
+```text
+Q<G,J_DG>=||X+Y||^2-E_prog,                            (HGS27)
+
+E_prog=sum_(q<=D)mu(q)[
+  beta(e_q)-sum_h theta_h(q)sum_m W_h(m)].
+```
+
+The remaining low lattice quadrature is
+
+```text
+E_quad=sum_(h,q<=D)mu(q)theta_h(q)[sum_m W_h(m)-J_h],  (HGS28)
+
+FCRJ_M=||X+Y||^2-E_prog-E_quad.                        (HGS29)
+```
+
+Both errors in `(HGS29)` are already at the allowed `M^(-1)` polylogarithmic scale.  Since
+`X+Y=sqrt(Q)(<w| tensor I)G`, the main square is the original prime-endpoint carrier.  The cutoff
+has removed all transverse high dimensions but has not created a smaller quantity.  The
+RH-bearing assertion is the source alignment `Y approximately -X`, not `||Y||` small.  Therefore
+`HGS-SOURCE` and the semiprime-only physical route are retired as providers.
+
+### Universal coprime plateau rigidity
+
+`[PAPER-PROVED] [EXACT POSITIVE SURVIVOR] [SHARP HYPOTHESES] [NOVELTY UNVERIFIED]`
+
+Let `F` be any nonempty family of **whole** ANOVA grades, put
+
+```text
+w_F=sum_(U in F)P_Uw,
+m_U=||P_Uw||^2=V^2/phi(q_U),
+D_F=directSum_(U in F)d_U I_(H_U),  d_U>0.              (HGS30)
+```
+
+For the scalar whole-grade recentering
+
+```text
+M_F=|w_F><w_F|-D_F,
+```
+
+a positive eigenvalue exists exactly when
+
+```text
+sum_(U in F)m_U/d_U>1.                                 (HGS31)
+```
+
+It is then unique, satisfies
+
+```text
+1=sum_(U in F)m_U/(lambda+d_U),
+```
+
+and its canonically secular-normalized eigenvector is
+
+```text
+x_+=(lambda+D_F)^(-1)w_F,   <w_F,x_+>=1.               (HGS32)
+```
+
+On every CRT unit `n`, the inverse Fourier transform is the universal plateau
+
+```text
+check(x_+)(n)=sigma/(V sqrt(Q)),                        (HGS33)
+```
+
+where `sigma` is the fixed Fourier sign.  Indeed
+
+```text
+check(P_Uw)(n)=sigma V/(sqrt(Q)phi(q_U))
+              =sigma m_U/(V sqrt(Q)),
+```
+
+so `(HGS33)` is exactly the secular equation.  The value is independent of `F`, `lambda`, and
+every scalar grade weight `d_U`.
+
+The hypotheses are sharp.  A non-scalar positive operator inside one grade can rotate the carrier
+and make different units take different values; selecting only part of a grade has the same
+failure.  A sufficiently large scalar diagonal removes the positive line altogether, and even
+when it exists its spectral coefficient has no universal lower bound.  Thus `(HGS33)` is a
+rigidity of the surviving line, not a quantitative no-suppression estimate.  Identifying its unit
+plateau with the ordinary-prime source also requires the physical support range in which units
+are primes rather than rough composites.
+
+### Prime/nonunit counterflow normal form
+
+`[PAPER-PROVED] [EXACT POSITIVE CLASSIFICATION] [SOURCE-SPECIFIC NO-GO]`
+
+There is a stronger source decomposition before diagonal recentering.  Let `L_D(x)` and `H_D(x)`
+be the physical low- and high-grade weights, normalized so that
+
+```text
+L_D(x)+H_D(x)=1_((x,Q)=1).                              (HGS35)
+```
+
+On every unit they are constant.  With
+
+```text
+a_D=V sum_(q|Q,q<=D)1/phi(q)
+   =Prob(product_(p:X_p=1)p<=D),
+```
+
+one has
+
+```text
+L_D(x)=a_D,
+H_D(x)=1-a_D                      when (x,Q)=1,         (HGS36)
+
+H_D(x)=-L_D(x)                    when (x,Q)>1.
+```
+
+For any Hilbert-valued residue packet `G`, let `P(G)` be its unit-residue carrier and let
+
+```text
+C_D(G)=sum_((x,Q)>1)L_D(x)G(x).
+```
+
+Then the low and high amplitudes have the canonical counterflow normal form
+
+```text
+X=a_D P(G)+C_D(G),
+Y=(1-a_D)P(G)-C_D(G),                                (HGS37)
+
+X+Y=P(G).                                             (HGS38)
+```
+
+Thus the two channels reinforce on ordinary primes and oppose only on nonunits.  The entire
+composite contribution is an exact internal counterflow which disappears when the channels join;
+it cannot be an RH provider.  In the square-root physical support range `P(G)` is exactly the
+ordinary-prime endpoint.  Consequently every cutoff-dependent low/high cancellation narrative
+reduces to one invariant statement about that endpoint.
+
+This is stronger than merely observing `X+Y` algebraically: `(HGS37)` classifies where the
+apparent cancellation lives.  It also gives the asymptotic source split
+
+```text
+a_D -> exp(-gamma),
+1-a_D -> 1-exp(-gamma),                               (HGS39)
+```
+
+so a fixed positive fraction of the ordinary-prime carrier lies in each channel.  The constants
+are classical Dickman/Mertens data; the exact counterflow normal form is a project-local synthesis
+and is not claimed as established external novelty.
+
+For the physical choice `P={p:p<=D}` and `d_U=V^2/phi(q_U)^2`, the high mass and positive root have
+the exact classical asymptotic
+
+```text
+log(D)m_D -> exp(-gamma)(1-exp(-gamma)),
+log(D)lambda_D -> exp(-gamma)(1-exp(-gamma)),           (HGS34)
+```
+
+while the negative spectral radius is `O(1/(D log(D)^2))`.  Here
+
+```text
+m_D=V Prob(sum_(p<=D)X_p log(p)>log(D)),  X_p~Ber(1/p),
+```
+
+and the limiting probability is the Dickman-subordinator tail `1-exp(-gamma)`.
+
+The novelty verdict is deliberately conservative.  The Dickman limit, the `mu^2/phi` partial-sum
+asymptotic, and diagonal-plus-rank-one secular theory are classical.  No checked source states the
+exact operator-specific plateau `(HGS33)`, but it is an elementary synthesis of those structures.
+It is therefore recorded as a sharp project-local rigidity/no-go and not claimed as established
+new external scientific knowledge.
 
 ## Audit log continuation
 
@@ -402,7 +594,12 @@ higher-grade annihilation.
   `(HGS9)`--`(HGS13)`.
 - 2026-07-18 — proved the completed semiprime first-jet law `(HGS14)`--`(HGS15)` and the complete
   physical grade-three fixed-ratio obstruction `(HGS16)`.
-- 2026-07-18 — `HGS-SOURCE` remains open; no Lean process was started in this audit.
+- 2026-07-18 — proved the exact AC25 operator join `(HGS23)`--`(HGS29)`; `HGS-SOURCE` is retired
+  because the invariant RH-bearing quantity is `X+Y`, not `Y`.
+- 2026-07-18 — extracted the scalar whole-grade coprime plateau rigidity `(HGS30)`--`(HGS33)`,
+  including its non-scalar and zero-positive-line failure boundary, and audited `(HGS34)`.
+- 2026-07-18 — no Lean process was started before the dependency-closed theorem and sharp
+  hypotheses were fixed on paper.
 
 ## All-order positive survivor: completed-jet Boolean bandwidth
 

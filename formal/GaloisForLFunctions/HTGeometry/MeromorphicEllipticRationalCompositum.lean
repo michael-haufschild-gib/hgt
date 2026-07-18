@@ -9,12 +9,12 @@ The paired elliptic carrier used in the elliptic-gamma Ostrowski argument must c
 rational coordinate field, not only the two periodic meromorphic fields.  This module constructs
 that base inside the genuine global meromorphic field.
 
-The rational coordinate image is viewed as the bottom intermediate field over `RatFunc ℂ`, then
-restricted to `ℂ`.  This presentation makes its derivation closure immediate from the existing
-compatibility of the rational and meromorphic coordinate derivations.  Adjoining it to the paired
-elliptic compositum gives a field which is closed under differentiation and invariant in both
-directions under every additive translation.  Each ambient translation therefore restricts to a
-genuine differential algebra automorphism of the augmented carrier.
+The rational coordinate image is realized directly as a field range over `ℂ`, using the proved
+compatibility of the complex and rational algebra maps.  Its derivation closure is immediate from
+the existing compatibility of the rational and meromorphic coordinate derivations.  Adjoining it
+to the paired elliptic compositum gives a field which is closed under differentiation and invariant
+in both directions under every additive translation.  Each ambient translation therefore
+restricts to a genuine differential algebra automorphism of the augmented carrier.
 -/
 
 open Filter Topology Set Function
@@ -49,7 +49,9 @@ local instance meromorphicEllipticRationalCompositumRatFuncAlgebra :
     Set.univ_nonempty Set.infinite_univ).toAlgebra
 
 local instance meromorphicEllipticRationalCompositumRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
+    Differential (RatFunc ℂ) where
+  deriv := Derivation.restrictScalars ℤ
+    (HTGeometry.ratFuncCoordinateDerivation ℂ)
 
 local instance meromorphicEllipticRationalCompositumDifferentialAlgebra :
     DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
@@ -79,11 +81,6 @@ theorem meromorphicRatFunc_algebraMap_complex (c : ℂ) :
     Germ.ofFun (l := Filter.principal Set.univ) (fun _ : ℂ => c)
   rw [Germ.coe_eq]
   exact eventually_principal.mpr fun z _ => by simp
-
-local instance meromorphicEllipticRationalCompositumScalarTower :
-    IsScalarTower ℂ (RatFunc ℂ) (meroField Set.univ) :=
-  IsScalarTower.of_algebraMap_eq fun c =>
-    (meromorphicRatFunc_algebraMap_complex c).symm
 
 /-! ## Arbitrary rational-coordinate translations -/
 
@@ -169,16 +166,28 @@ noncomputable def addTranslationMeroAlgEquiv (q : ℂ) :
 /-- The genuine image of `ℂ(X)` in the global meromorphic field, regarded as an intermediate
 field over `ℂ`. -/
 def meromorphicRationalCoordinateField :
-    IntermediateField ℂ (meroField (Set.univ : Set ℂ)) :=
-  (⊥ : IntermediateField (RatFunc ℂ) (meroField Set.univ)).restrictScalars ℂ
+    IntermediateField ℂ (meroField (Set.univ : Set ℂ)) where
+  carrier := Set.range (algebraMap (RatFunc ℂ) (meroField Set.univ))
+  zero_mem' := ⟨0, map_zero _⟩
+  one_mem' := ⟨1, map_one _⟩
+  add_mem' := by
+    rintro _ _ ⟨x, rfl⟩ ⟨y, rfl⟩
+    exact ⟨x + y, map_add _ x y⟩
+  mul_mem' := by
+    rintro _ _ ⟨x, rfl⟩ ⟨y, rfl⟩
+    exact ⟨x * y, map_mul _ x y⟩
+  algebraMap_mem' c :=
+    ⟨algebraMap ℂ (RatFunc ℂ) c,
+      meromorphicRatFunc_algebraMap_complex c⟩
+  inv_mem' := by
+    rintro _ ⟨x, rfl⟩
+    exact ⟨x⁻¹, map_inv₀ _ x⟩
 
 theorem mem_meromorphicRationalCoordinateField_iff
     (x : meroField (Set.univ : Set ℂ)) :
     x ∈ meromorphicRationalCoordinateField ↔
       ∃ r : RatFunc ℂ,
         algebraMap (RatFunc ℂ) (meroField Set.univ) r = x := by
-  rw [meromorphicRationalCoordinateField,
-    IntermediateField.mem_restrictScalars, IntermediateField.mem_bot]
   rfl
 
 /-- The rational coordinate image is closed under the genuine meromorphic derivation. -/
@@ -282,15 +291,16 @@ theorem addTranslationMeroAlgEquiv_mem_ellipticCompositum
             exact le_sup_right)
         (addTranslationMeroAlgEquiv_mem_ellipticMeroField τ q hy)
   · intro c
+    rw [(addTranslationMeroAlgEquiv q).commutes c]
     exact (meromorphicEllipticCompositum σ τ).algebraMap_mem c
   · intro a b ha hb hfa hfb
-    rw [map_add]
+    rw [map_add (addTranslationMeroAlgEquiv q) a b]
     exact (meromorphicEllipticCompositum σ τ).add_mem hfa hfb
   · intro a ha hfa
-    rw [map_inv₀]
+    rw [map_inv₀ (addTranslationMeroAlgEquiv q) a]
     exact (meromorphicEllipticCompositum σ τ).inv_mem hfa
   · intro a b ha hb hfa hfb
-    rw [map_mul]
+    rw [map_mul (addTranslationMeroAlgEquiv q) a b]
     exact (meromorphicEllipticCompositum σ τ).mul_mem hfa hfb
   exact hx
 
@@ -339,15 +349,16 @@ theorem addTranslationMeroAlgEquiv_mem_ellipticRationalCompositum
     · exact meromorphicRationalCoordinateField_le_ellipticRationalCompositum σ τ
         (addTranslationMeroAlgEquiv_mem_rationalCoordinateField q hy)
   · intro c
+    rw [(addTranslationMeroAlgEquiv q).commutes c]
     exact (meromorphicEllipticRationalCompositum σ τ).algebraMap_mem c
   · intro a b ha hb hfa hfb
-    rw [map_add]
+    rw [map_add (addTranslationMeroAlgEquiv q) a b]
     exact (meromorphicEllipticRationalCompositum σ τ).add_mem hfa hfb
   · intro a ha hfa
-    rw [map_inv₀]
+    rw [map_inv₀ (addTranslationMeroAlgEquiv q) a]
     exact (meromorphicEllipticRationalCompositum σ τ).inv_mem hfa
   · intro a b ha hb hfa hfb
-    rw [map_mul]
+    rw [map_mul (addTranslationMeroAlgEquiv q) a b]
     exact (meromorphicEllipticRationalCompositum σ τ).mul_mem hfa hfb
   exact hx
 
@@ -414,7 +425,7 @@ theorem meromorphicEllipticRationalCompositumTranslation_deriv
   apply Subtype.ext
   change addTranslationMeroEquiv q ((x : meroField Set.univ)′) =
     (addTranslationMeroEquiv q (x : meroField Set.univ))′
-  exact addTranslationMeroEquiv_deriv q x
+  exact addTranslationMeroEquiv_deriv q (x : meroField Set.univ)
 
 end
 

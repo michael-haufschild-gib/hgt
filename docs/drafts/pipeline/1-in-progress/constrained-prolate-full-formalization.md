@@ -45,12 +45,16 @@
   `ccm_fuchsModel_infiniteSecularRoot_*` — under `A_2 ≤ C^j A_{j+2}`, `C ≥ 1`).
   Remaining inputs feeding L1's CCM Fuchs-model theorems are exactly the ℓ-side facts of
   L5/L7: Σℓ(λ)² summable, Bessel bound, ℓ_0 → 2^{1/4}, ℓ_1 → √3·2^{−5/4}.
-- [~] **L2 — eigenvector transfer** (`ConstrainedProlateSecularVector.lean`, 6 theorems banked):
+- [x] **L2 — eigenvector transfer** (`ConstrainedProlateSecularVector.lean` +
+  `ConstrainedProlateEigenvectorAngle.lean`, 9 theorems banked):
   coordinate eigen-equation, constraint membership `Σℓ_jv_j = 0` at the exact root, squared tail
   bound `T/(d_2−μ)²` (card 1 eq (20)), head floor `ℓ_0²/d_1²`, two-mode head orthogonality at
-  `μ_2mode`, and the family collapse `Σ_{j≥2}v_j²/v_0² → 0` at rate `(λd_1/(d_2−d_1))²`
-  (eq (21)).  Remaining L2b: head-direction Lipschitz (22) and the normalized ℓ²-distance form
-  of eq (4).
+  `μ_2mode`, the family collapse `Σ_{j≥2}v_j²/v_0² → 0` at rate `(λd_1/(d_2−d_1))²` (eq (21)),
+  the exact head–constraint pairing `ℓ_0v_0+ℓ_1v_1 = −tail(μ_0)` with bound `T/(d_2−d_1)`
+  (eq (22)'s content), and the normalized head-defect collapse
+  `(ℓ_0v_0+ℓ_1v_1)²/((v_0²+v_1²)(ℓ_0²+ℓ_1²)) → 0` at rate `(λd_1/(d_2−d_1))²`.  Together these
+  are eq (4) in projective form (direction convergence to the two-mode seed).  Cosmetic residue:
+  the literal normalized-ℓ²-distance/sign-choice phrasing.
 - [~] **L3 — negative sector + parity** (`ConstrainedProlateParityExactTransfer.lean`,
   9 theorems banked): negative Hermite weight 8/13 + complement 5/13; offset radial family
   (indices 4j+2) struct + step-4 tail rate at every base index; exact negative floor `8/13`,
@@ -79,10 +83,16 @@
   gap; then squeeze.  Needs offset-general tail lemmas (abstract floor `B ≤ d_{j+m}`), a
   `depthSecular` def (Finset head + shoulder + tail), and negative-denominator div monotonicity.
   Then Fuchs-model discharge at depth k and the exact-root `λ⁸` adjacent law.
-- [ ] **L4 — operator identification (lp 2)**: the compression of the diagonal leakage operator to
-  `ℓ^⊥` on `lp 2`; its eigenvalues in `(d_0,d_1)` are exactly the secular roots with coordinates
-  (14)/(13); min–max interlacing `d_k ≤ μ_k ≤ d_{k+1}` at operator level.  Closes the cards'
-  operator-form phrasing.
+- [x] **L4 — operator identification** (`ConstrainedProlateOperatorIdentification.lean`,
+  6 theorems, axiom-clean): square-summability ⇒ `Memℓp _ 2`; the real `lp 2` inner product as
+  coordinate series; no secular pole meets the gap; the exact eigenvector is a genuine `ℓ²`
+  vector, orthogonal to the constraint vector in `lp 2`, and satisfies the weak compressed
+  eigen-equation `Σ d_jv_jw_j = μ_0·Σ v_jw_j` against every `ℓ²` test vector annihilated by the
+  constraint (forward direction, coordinates (13)/(14)); conversely any nonzero square-summable
+  span-form eigen-system solution in the gap with the constraint forces `F(μ) = 0`
+  (`infiniteSecular_eq_zero_of_constrained_eigen`) — the constrained spectrum in `(d_0,d_1)` is
+  exactly the secular root set.  (Interlacing `d_k ≤ μ_k ≤ d_{k+1}` at every depth is already
+  the bracket theorem of L3b.)
 - [x] **L5 — true-operator Bessel side** (`ConstrainedProlateBesselBound.lean`, 9 theorems,
   axiom-clean): `‖evenCentralIndicator a‖² = 2a` exactly; the true constraint coordinate
   `evenProlateConstraintCoord a n = ⟨1_[-a,a], e_n⟩` with its integral identity
@@ -108,10 +118,33 @@
   `hbessel` with `lam := a`.
 - [ ] **L6 — Fuchs fixed-index asymptotics** for the true prolate eigenvalues
   `1−χ_n(λ)² ~ A_n λ^{2n+1} e^{−4πλ²}` (card 1 eq (8)).  Mountain: needs PSWF spectral theory +
-  Bessel/WKB asymptotics; nothing in mathlib.  Sub-plan to be written when L1–L5 are banked
-  (`prolate_eigen_hermite_defect` in `FuchsProlateScale` is the seed).
+  Bessel/WKB asymptotics; nothing in mathlib.
+  ATTACK DECOMPOSITION (minimal sufficient form): the exact transfer theorems consume only the
+  STRUCTURE of the leakage family `d_j(λ) := 1 − χ_{4j}(λ)²`, not the full Fuchs constants:
+  (i) eventual ordered head + floor, (ii) `d_k/d_{k+1} → 0`, (iii)
+  `λ·d_{k+1}/(d_{k+2}−d_{k+1}) → 0`.  These follow from two-sided fixed-index bounds
+  `c_n λ^{2n+1}e^{−4πλ²} ≤ 1−χ_n(λ)² ≤ C_n λ^{2n+1}e^{−4πλ²}` — weaker than the sharp
+  asymptotic.  Sub-layers:
+  L6a (upper bound): variational — Hermite trial functions against the leakage form
+  `⟨(I−T²)f, f⟩ = ‖f‖² − ‖Tf‖²`; needs Hermite functions as Fourier eigenfunctions
+  (mathlib: `Polynomial.hermite` exists; Gaussian Fourier transform exists —
+  `fourierIntegral_gaussian`; the Hermite-function eigenrelation must be built, seed
+  `HermiteOscillatorEigen`) plus Gaussian tail integrals.
+  L6b (lower bound): min–max against the top-(n+1) spectral projection; uses the greedy
+  singular-value layer (`GreedySingularValues`, `sgVal`) + trial-space dimension counting.
+  L6c: extract (i)–(iii) for the `4j` subfamily + tempered growth `hgrow`.
+  Prerequisite shared with L7: the mode-numbering identification (positive signed subsequence
+  ↔ `4j` prolate modes) — the open problem named in `ConstrainedProlateSignedSpectrum`.
 - [ ] **L7 — prolate-to-Hermite limits** `ℓ_j(λ) → a_j` (card 1 eq (10), card 2 eq (17), card 3
   eq (3)).  Mountain: Hermite eigenfunction theory (`HermiteOscillatorEigen` is the seed).
+  ATTACK: route through the L5 integral identity
+  `ℓ_j(λ) = ∫_{-λ}^{λ} e_j = ⟨1_{[-λ,λ]}, e_j⟩` (`evenProlateConstraintCoord_eq_integral`);
+  the evaluation identity `ℓ_j = χ_j e_j(0)` (card 1 eq (1)) follows from the eigen-equation
+  evaluated at 0 once modes have continuous representatives.  The limit needs: mode convergence
+  `e_j(λ·) → h_j` in `L²` (operator-norm convergence of `T_λ` to the Hermite oscillator
+  resolvent after scaling — seed `prolateSLAction_sqrtScale_tendsto` in `FuchsProlateScale`,
+  which already proves the pointwise Sturm–Liouville action convergence) + the Hermite values
+  `h_{4j}(0)` (algebra already in `ConstrainedProlateHermiteContrast`).
 - [ ] **L8 — radial/Dunster layer** (cards 4–6): uniform Bessel-envelope expansion, weak
   convergence `ν_λ → ν_∞` (card 5 eq (4)), off-diagonal vanishing (card 5 eq (23)), weighted
   projective convergence (card 6 eq (3)), high-radial BV bound (card 4 eq (8a)).  Mountain.
@@ -130,7 +163,10 @@
   L3b complete (`ConstrainedProlateDepthSecular` + `ConstrainedProlateLadderExactTransfer` —
   card 3 eqs (8),(9) for exact roots, Fuchs-model complete); L5 banked
   (`ConstrainedProlateBesselBound` — true-operator Bessel bound `Σ‖ℓ_n(a)‖² ≤ 2a`,
-  discharging the `hsum`/`hbessel` hypotheses of every exact transfer theorem).  All modules umbrella-wired and
+  discharging the `hsum`/`hbessel` hypotheses of every exact transfer theorem); L2 completed
+  (`ConstrainedProlateEigenvectorAngle` — head-defect collapse, eq (4) projective); L4 banked
+  (`ConstrainedProlateOperatorIdentification` — both directions of the operator/secular
+  equivalence on `lp 2`).  All modules umbrella-wired and
   axiom-clean.  Next: L2b (eigenvector normalized distance, card 1 eq (4)); L4 (lp2 operator
   identification); L5 (true-operator Bessel bound + evaluation identity from
   `ConstrainedProlateOperator`/`SignedSpectrum`); then L6/L7 mountains.

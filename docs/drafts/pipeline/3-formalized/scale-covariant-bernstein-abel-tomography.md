@@ -230,9 +230,9 @@ The rewrite also incorporates the earlier referee's strongest abstract requests:
 
 ## Formal theorem ledger
 
-All listed theorem leaves pass the project toolchain directly. The master theorem and Gibbs
-corollaries depend only on the ordinary logical axioms `propext`, `Classical.choice`, and
-`Quot.sound`.
+All listed theorem leaves pass the project toolchain directly. The master theorem, Gibbs
+corollaries, and dedicated Xi radical capstone depend only on the ordinary logical axioms
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 | Mathematical component | Module | Principal theorem |
 |---|---|---|
@@ -246,6 +246,7 @@ corollaries depend only on the ordinary logical axioms `propext`, `Classical.cho
 | confocal recession | `HTGeometry/ConfocalAbelDefectFlow.lean` | `tendsto_mul_one_sub_confocalAbelRadius` |
 | single bundled master theorem | `RHTower/ScaleCovariantBernsteinAbelTomography.lean` | `scaleCovariantBernsteinAbel_tomography` |
 | Gibbs corollary | `RHTower/ScaleCovariantBernsteinGibbsCorollary.lean` | `tendsto_mul_confocalGibbsFreeEnergy` |
+| exact Xi radical chain and recession | `RHTower/ScaleCovariantXiBernsteinAbelCorollary.lean` | `exists_xiScaleCovariantRadical_scale`, `tendsto_mul_xiScaleCovariantGibbsFreeEnergy` |
 
 ## Literature boundary
 
@@ -283,6 +284,16 @@ RH iff Delta_Xi=0 iff A_Xi(R)=1 iff F_Xi(R)=0
 ```
 
 for every sufficiently large scale.
+
+Its pointed zeroth moment is the centered curvature
+
+```text
+kappa_Xi = Xi_c''(0)/Xi_c(0) > 0,
+```
+
+not the distinct endpoint reciprocal moment `2 + gamma_E - log(4pi)`. The positivity is supplied
+by the positive theta-kernel representation, and the divisor/source equality is already part of
+the formal central-moment bridge.
 
 This does not estimate `Delta_Xi` and is not an RH proof. The scientific theorem is the complete
 carrier and recession law, not the final Xi vanishing condition.

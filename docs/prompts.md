@@ -221,3 +221,29 @@ openai gpt: logs/rhproof-gpt.md
 moonshot ai kimi k3: logs/rhproof-kimi.md
 
 Non-negotiable: This is a multi-month research task with unclear outcome. Never use effort estimation to decide against doing something. Nothing here can be done in one session. Keep going. Never stop.
+
+
+## Lean work
+Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research this topic:
+
+lean folders:
+- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
+- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+
+Our lean corpus in the rhtower and htgeometry folders contains thousands of theorems and nogos. Your task is to "connect the dots". Find and formalize opportunities to:
+1. Create a general law that subsumes several theorems into a more general law.
+2. Advances the lean body using value relations and value reflections.
+3. Closes gaps between theorems.
+4. Discharges hypothesis and prop interfaces.
+
+All these must be significant and ideally novel science.
+
+lean rules:
+1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
+2. Be efficient, do not constantly do minor edits and build, but batch changes and builds.
+3. Optimize lean code.
+4. lean proofs must be unconditional
+5. always check first what the project lean code already offers
+6. no computations.
+
+Goal is met when there is after full review truly nothing you can add or change anymore.

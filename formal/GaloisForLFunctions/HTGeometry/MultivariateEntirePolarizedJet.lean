@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.MultivariateEntireAffinePullback
+import GaloisForLFunctions.HTGeometry.MultivariateEntireFrechetJet
 
 /-!
 # Polarized mixed jets of compact-open multivariate entire sources

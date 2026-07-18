@@ -521,7 +521,12 @@ the Bessel bound `(2)` from the concrete operator layer.
 - [x] true-operator Bessel bound `(2)` formalized in Lean unconditionally:
   `Σ_n ‖⟨1_[-λ,λ], e_n⟩‖² ≤ 2λ` for the actual signed prolate modes, with the integral pairing
   identity and the injective-subfamily form (`ConstrainedProlateBesselBound`)
-- [ ] eigenvector convergence `(4)` in Lean
+- [x] eigenvector convergence `(4)` in projective form: the exact eigenvector's tail fraction
+  `Σ_{j≥2}v_j²/v_0² → 0` (`ConstrainedProlateSecularVector`) and its normalized head defect
+  against the constraint direction `(ℓ_0,ℓ_1)` → 0 at rate `(λd_1/(d_2−d_1))²`
+  (`ConstrainedProlateEigenvectorAngle`: `ℓ_0v_0+ℓ_1v_1 = −tail` exactly, `(22)`'s content) —
+  together: the exact constrained ground direction converges to the two-mode seed direction
+- [ ] the normalized ℓ²-distance/sign-choice cosmetic form of `(4)` in Lean
 - [ ] remaining true-operator inputs in Lean: mode identification, Fuchs asymptotics,
   prolate-to-Hermite limits, evaluation identity `(1)`
 - [ ] independent proof review

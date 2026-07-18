@@ -57,9 +57,13 @@ theorem exists_tensor_fraction_of_mem_sup
     (p := fun y _ => ∃ N D : A ⊗[C] B, D ≠ 0 ∧ mu N / mu D = y)
   · rintro y (hy | hy)
     · refine ⟨(⟨y, hy⟩ : A) ⊗ₜ[C] (1 : B), 1, one_ne_zero, ?_⟩
-      simp [mu]
+      rw [show mu 1 = 1 from map_one mu, div_one]
+      simp only [mu, intermediateFieldTensorMulMap_tmul,
+        Subtype.coe_mk, Subtype.coe_one, mul_one]
     · refine ⟨(1 : A) ⊗ₜ[C] (⟨y, hy⟩ : B), 1, one_ne_zero, ?_⟩
-      simp [mu]
+      rw [show mu 1 = 1 from map_one mu, div_one]
+      simp only [mu, intermediateFieldTensorMulMap_tmul,
+        Subtype.coe_mk, Subtype.coe_one, one_mul]
   · intro c
     refine ⟨algebraMap C (A ⊗[C] B) c, 1, one_ne_zero, ?_⟩
     simp [mu]
@@ -80,7 +84,6 @@ theorem exists_tensor_fraction_of_mem_sup
       (mu Ny * mu Dz + mu Nz * mu Dy) / (mu Dy * mu Dz) =
           mu Ny / mu Dy + mu Nz / mu Dz := by
         field_simp [hmuDy, hmuDz]
-        ring
       _ = y + z := by rw [hyEq, hzEq]
   · intro y hy hyRep
     by_cases hy0 : y = 0

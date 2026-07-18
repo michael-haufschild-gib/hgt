@@ -154,7 +154,7 @@ theorem poleIndexSet_finite_of_ellipticField_fraction
       have hdecomp := ellipticReduce_lattice_decomposition
         (z := additiveOrbitPoint p q n) htau.ne'
       have hdecomp' : additiveOrbitPoint p q n = r n + period := by
-        simpa [r, period, A, B] using hdecomp
+        simpa only [r, period, A, B, zsmul_eq_mul, mul_one, add_assoc] using hdecomp
       change meromorphicOrderAt phi (r n) < 0
       rw [← hord]
       convert hn using 2

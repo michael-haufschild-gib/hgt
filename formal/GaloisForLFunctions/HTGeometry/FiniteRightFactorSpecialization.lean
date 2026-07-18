@@ -78,7 +78,7 @@ theorem tensorRightSubalgebraMap_injective
   have hcomm := congrArg (Algebra.TensorProduct.comm C A B) hxy
   rw [comm_tensorRightSubalgebraMap, comm_tensorRightSubalgebraMap] at hcomm
   exact Module.Flat.rTensor_preserves_injective_linearMap
-    R.val.toLinearMap R.val.injective hcomm
+    (M := A) R.val.toLinearMap R.val.injective hcomm
 
 /-- The right-subalgebra inclusion intertwines every automorphism acting on the left tensor
 factor. -/
