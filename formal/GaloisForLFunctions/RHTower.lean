@@ -1624,3 +1624,4 @@ import GaloisForLFunctions.RHTower.PairIdealCensusAlgebra
 import GaloisForLFunctions.RHTower.RankTwoPacketMomentIdentities
 import GaloisForLFunctions.RHTower.CoHighPacketGramCollapse
 import GaloisForLFunctions.RHTower.SlabGermResidueTransport
+import GaloisForLFunctions.RHTower.SlabFullWidthAdmissibility
