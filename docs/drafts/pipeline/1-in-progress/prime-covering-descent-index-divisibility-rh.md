@@ -1925,3 +1925,42 @@ HYPOTHESIS-FREE capstones: `exists_germResidueTransport_unconditional`,
 (boundary Gram germ = 0 iff the full height fiber is a single point),
 `tendsto_slabContourGram_unconditional`. **The certificate's divisor half is UNCONDITIONALLY
 formalized end to end; the chain is open ONLY at the production identity.**
+
+## 2026-07-18 session 2 (cont. 47) — Pompeiu proved; area germ vanishes; the demand in its
+## purest form: the displacement-weighted boundary germ; referee fixes applied
+
+**[POMPEIU LEMMA — PROVED, certified all h > 0, four configurations]**
+`∮_{∂S} g f du = 2 pi i sum r_j g(u_j) + 2i ∫∫_S (∂_ubar g) f dA` (g smooth, f meromorphic,
+simple interior poles); with `g = ubar u`: cont. 46's constants EXACT in the du-reading.
+**[AREA GERM VANISHES]** `lim_{h->0} A(h) = 0` with the exact O(h) expansion (rectangle-PV:
+xi-symmetry kills Re, eta-odd cancellation leaves O(h); log-blowup only as delta -> c,
+EXCLUDED by the band-dodge/dlVP). **[GENERAL GERM THEOREM]** for holomorphic f, g:
+`lim (2 pi i)^{-1} ∮ conj(f) g tr du = sum m_j conj(f(u_j)) g(u_j)` — the germ of the
+conjugated boundary pairing IS the fiber Hermitian Gram: divisor-free boundary evaluation of
+Hermitian fiber data established (at finite h the pairing is not even Hermitian — only the
+germ is).
+
+**[THE DEMAND — FINAL FORM]** On the imaginary fiber `u_j^2 = -|u_j|^2`, so the unconditional
+germ identity `∮ (u^2 + |u|^2) tr du -> 0` holds: the Hermitian route REPRODUCES `q_2 >= 0`,
+it does not bypass it; `det G_herm >= 0` is free and the demand is the reverse saturation.
+Purest statement:
+
+> **RH at gamma ⟺ `lim_{h->0} ∮_{∂S(gamma,h)} (Im u) * u * tr du = 0`** — the
+> DISPLACEMENT-WEIGHTED boundary germ vanishes, where `Im u = 1/2 - Re s` IS the off-line
+> displacement coordinate. The trace's germ must be blind to the displacement weight.
+
+**[REFEREE cont. 44-46 — verdicts applied]** (i) cont. 44 CONFIRMED (fiber d -> -d symmetry
+with multiplicity transport verified via the series substitution under
+`xi(1 - conj s) = conj(xi(s))`). (ii) cont. 45 notational fix: the q_k are the CENTERED germ
+moments (`u -> u - gamma`; Bez translation-invariant); centering kills Re q_1, mean-kill
+kills Im q_1; centered `q_2 <= 0` always — the demand-vs-proved logic forces equality as
+stated. (iii) cont. 46 identity CONFIRMED with the naming collision RESOLVED: the object in
+the defect identity is the FIBER VARIANCE `V_Xi(gamma) := sum m_j d_j^2` — equi-vanishing
+with cont. 44's Hurwitz-term energy `E_Xi(gamma)` on `|d| < 1/2` (numerically distinct;
+disambiguated throughout).
+
+**[NEXT MOVE — the 2D Pompeiu iteration]** The weight `(Im u) u = (u - ubar) u / 2i` is the
+∂_ubar-potential of `u/2i`: iterate Pompeiu on the SECOND variable of the Bezoutian double
+integral — rewrite `∮∮ (u - v)^2 tr tr` with the mixed weight `(Im u)(Im v)` and hunt the PSD
+kernel there, where the double area term carries a genuine 2D germ (the first genuinely
+two-variable object of the production hunt).
