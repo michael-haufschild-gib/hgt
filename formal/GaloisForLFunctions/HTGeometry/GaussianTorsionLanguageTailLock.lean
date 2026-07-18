@@ -164,6 +164,117 @@ theorem eventually_uniform_polynomialPatternPower_two_source_gap
   intro p hp
   exact ht ⟨p, hp⟩
 
+/-! ## Global Gaussian offset faces -/
+
+/-- Integer offsets represented by the centered finite window `[-R,R]`. -/
+def gaussianOffsetInterval (R : ℕ) : Finset ℤ :=
+  Finset.Icc (-(R : ℤ)) (R : ℤ)
+
+/-- Signed source sum of a finite multiplicity pattern on integer offsets. -/
+def gaussianOffsetSource (a : ℤ →₀ ℕ) : ℤ :=
+  a.sum fun r k => r * (k : ℤ)
+
+/-- Quadratic energy of a finite multiplicity pattern on integer offsets. -/
+def gaussianOffsetPatternEnergy (a : ℤ →₀ ℕ) : ℤ :=
+  a.sum fun r k => r ^ 2 * (k : ℤ)
+
+/-- Degree-`D`, signed-source-`S` Gaussian patterns supported in `[-R,R]`. -/
+def gaussianOffsetFace (D : ℕ) (S : ℤ) (R : ℕ) : Finset (ℤ →₀ ℕ) :=
+  ((gaussianOffsetInterval R).finsuppAntidiag D).filter fun a =>
+    gaussianOffsetSource a = S
+
+@[simp] theorem mem_gaussianOffsetFace
+    {D : ℕ} {S : ℤ} {R : ℕ} {a : ℤ →₀ ℕ} :
+    a ∈ gaussianOffsetFace D S R ↔
+      (∑ r ∈ gaussianOffsetInterval R, a r) = D ∧
+      a.support ⊆ gaussianOffsetInterval R ∧ gaussianOffsetSource a = S := by
+  simp [gaussianOffsetFace, Finset.mem_finsuppAntidiag, and_assoc]
+
+theorem gaussianOffsetFace_totalCount
+    {D : ℕ} {S : ℤ} {R : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) :
+    a.sum (fun _ k => k) = D := by
+  obtain ⟨hcount, hsupp, _hsource⟩ := mem_gaussianOffsetFace.mp ha
+  rw [Finsupp.sum_of_support_subset a hsupp (fun _ k => k) (by simp)]
+  exact hcount
+
+theorem gaussianOffsetFace_mono
+    {D : ℕ} {S : ℤ} {R R' : ℕ} (hRR' : R ≤ R') :
+    gaussianOffsetFace D S R ⊆ gaussianOffsetFace D S R' := by
+  intro a ha
+  obtain ⟨_hcount, hsupp, hsource⟩ := mem_gaussianOffsetFace.mp ha
+  have hinterval : gaussianOffsetInterval R ⊆ gaussianOffsetInterval R' := by
+    intro z hz
+    simp only [gaussianOffsetInterval, Finset.mem_Icc] at hz ⊢
+    constructor <;> omega
+  have hsupp' : a.support ⊆ gaussianOffsetInterval R' := hsupp.trans hinterval
+  have hcount' : (∑ r ∈ gaussianOffsetInterval R', a r) = D := by
+    rw [← gaussianOffsetFace_totalCount ha,
+      Finsupp.sum_of_support_subset a hsupp' (fun _ k => k) (by simp)]
+  exact mem_gaussianOffsetFace.mpr ⟨hcount', hsupp', hsource⟩
+
+/-- Canonical equivalence between a centered window index and its signed integer offset. -/
+noncomputable def centeredIndexEquiv (R : ℕ) :
+    Fin (2 * R + 1) ≃ ↥(gaussianOffsetInterval R) where
+  toFun j := ⟨(j : ℤ) - (R : ℤ), by
+    simp only [gaussianOffsetInterval, Finset.mem_Icc]
+    have hj := j.isLt
+    constructor <;> omega⟩
+  invFun z := ⟨Int.toNat (z.1 + (R : ℤ)), by
+    have hz := z.2
+    simp only [gaussianOffsetInterval, Finset.mem_Icc] at hz
+    have hnonneg : 0 ≤ z.1 + (R : ℤ) := by omega
+    apply (Int.toNat_lt hnonneg).2
+    omega⟩
+  left_inv j := by
+    apply Fin.ext
+    simp only
+    have heq : (j : ℤ) - (R : ℤ) + (R : ℤ) = (j : ℤ) := by ring
+    rw [heq]
+    simp
+  right_inv z := by
+    apply Subtype.ext
+    simp only
+    have hz := z.2
+    simp only [gaussianOffsetInterval, Finset.mem_Icc] at hz
+    have hnonneg : 0 ≤ z.1 + (R : ℤ) := by omega
+    rw [Int.toNat_of_nonneg hnonneg]
+    omega
+
+/-- Window multiplicities of a global degree-`D` offset pattern. -/
+noncomputable def gaussianOffsetPatternWindow
+    {D : ℕ} (a : ℤ →₀ ℕ) (hcount : a.sum (fun _ k => k) = D) (R : ℕ) :
+    Fin (2 * R + 1) → Fin (D + 1) := fun j =>
+  ⟨a ((centeredIndexEquiv R j).1), by
+    have hle : a ((centeredIndexEquiv R j).1) ≤ a.sum (fun _ k => k) := by
+      classical
+      rw [Finsupp.sum]
+      by_cases hj : (centeredIndexEquiv R j).1 ∈ a.support
+      · exact Finset.single_le_sum (fun _ _ => Nat.zero_le _) hj
+      · have hz : a ((centeredIndexEquiv R j).1) = 0 := by
+          simpa [Finsupp.mem_support_iff] using hj
+        simp [hz]
+    rw [hcount] at hle
+    omega⟩
+
+theorem gaussianOffsetPatternWindow_count
+    {D : ℕ} {S : ℤ} {R : ℕ} {a : ℤ →₀ ℕ}
+    (ha : a ∈ gaussianOffsetFace D S R) :
+    (∑ j, (gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R j : ℕ)) = D := by
+  let hcount := gaussianOffsetFace_totalCount ha
+  have hsupp := (mem_gaussianOffsetFace.mp ha).2.1
+  change (∑ j : Fin (2 * R + 1), a ((centeredIndexEquiv R j).1)) = D
+  calc
+    (∑ j : Fin (2 * R + 1), a ((centeredIndexEquiv R j).1)) =
+        ∑ z : ↥(gaussianOffsetInterval R), a z.1 :=
+      Equiv.sum_comp (centeredIndexEquiv R) (fun z => a z.1)
+    _ = ∑ z ∈ gaussianOffsetInterval R, a z := by
+      simpa using (Finset.sum_attach (gaussianOffsetInterval R) (fun z => a z))
+    _ = a.sum (fun _ k => k) := by
+      symm
+      exact Finsupp.sum_of_support_subset a hsupp (fun _ k => k) (by simp)
+    _ = D := hcount
+
 /-! ## Uniform grouped-weight bounds -/
 
 /-- The translation polynomial of one labelled assignment has degree at most the total jet order
@@ -303,6 +414,108 @@ theorem tendsto_polynomialPatternWeightPoly_eval_div_pow_maxJetOrder
   exact jetOrder_le_magnitudeMaxJetOrder Q
     (Finset.mem_filter.mp m.2).1
 
+/-- Coordinates actually used by a bounded multiplicity pattern. -/
+def polynomialPatternSupport {M D : ℕ} (p : Fin M → Fin (D + 1)) : Finset (Fin M) :=
+  Finset.univ.filter fun r => p r ≠ 0
+
+/-- Largest absolute offset of an active pattern coordinate from the chosen center `K`. -/
+def centeredPolynomialPatternRadius {M D : ℕ}
+    (K : ℕ) (p : Fin M → Fin (D + 1)) : ℕ :=
+  (polynomialPatternSupport p).sup fun r =>
+    (((r : ℕ) : ℤ) - (K : ℤ)).natAbs
+
+theorem atomPatternAssignment_mem_polynomialPatternSupport
+    {M D : ℕ} {p : Fin M → Fin (D + 1)}
+    {g : Fin D → Fin M} (hg : g ∈ atomPatternAssignments p) (t : Fin D) :
+    g t ∈ polynomialPatternSupport p := by
+  classical
+  rw [polynomialPatternSupport, Finset.mem_filter]
+  refine ⟨Finset.mem_univ _, ?_⟩
+  intro hzero
+  have hkey := mem_atomPatternAssignments.mp hg
+  have hpos : key (fun j => (g j : ℕ)) (g t : ℕ) ≠ 0 := by
+    rw [key_count_map]
+    exact Multiset.count_ne_zero.mpr (by simp)
+  apply hpos
+  rw [hkey, atomPatternKey_apply]
+  simp [hzero, (g t).isLt]
+
+theorem polynomialPatternSupport_card_le_count
+    {M D : ℕ} (p : Fin M → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D) :
+    (polynomialPatternSupport p).card ≤ D := by
+  classical
+  calc
+    (polynomialPatternSupport p).card =
+        ∑ _r ∈ polynomialPatternSupport p, 1 := by simp
+    _ ≤ ∑ r ∈ polynomialPatternSupport p, (p r : ℕ) := by
+      apply Finset.sum_le_sum
+      intro r hr
+      have hrne : p r ≠ 0 := (Finset.mem_filter.mp hr).2
+      have hrneNat : (p r : ℕ) ≠ 0 := by
+        intro h
+        apply hrne
+        apply Fin.ext
+        exact h
+      omega
+    _ ≤ ∑ r : Fin M, (p r : ℕ) := by
+      apply Finset.sum_le_sum_of_subset_of_nonneg
+      · exact Finset.filter_subset _ _
+      · intro r _hr _hnot
+        exact Nat.zero_le _
+    _ = D := hcount
+
+/-- The number of labelled assignments of a degree-`D` multiplicity pattern is bounded solely by
+`D^D`, independently of the ambient window size. -/
+theorem atomPatternAssignments_card_le_pow_count
+    {M D : ℕ} (p : Fin M → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D) :
+    (atomPatternAssignments p).card ≤ D ^ D := by
+  classical
+  let A := atomPatternAssignments p
+  let S := polynomialPatternSupport p
+  let encode : ↥A → (Fin D → ↥S) := fun g t =>
+    ⟨g.1 t, atomPatternAssignment_mem_polynomialPatternSupport g.2 t⟩
+  have hencode : Function.Injective encode := by
+    intro g h hgh
+    apply Subtype.ext
+    funext t
+    exact congrArg (fun e : Fin D → ↥S => (e t).1) hgh
+  calc
+    (atomPatternAssignments p).card = Fintype.card ↥A := by simp [A]
+    _ ≤ Fintype.card (Fin D → ↥S) := Fintype.card_le_of_injective encode hencode
+    _ = (polynomialPatternSupport p).card ^ D := by simp [S]
+    _ ≤ D ^ D := Nat.pow_le_pow_left
+      (polynomialPatternSupport_card_le_count p hcount) _
+
+theorem assignment_centered_offset_le_radius
+    {M D K : ℕ} {p : Fin M → Fin (D + 1)}
+    {g : Fin D → Fin M} (hg : g ∈ atomPatternAssignments p) (t : Fin D) :
+    ((((g t : Fin M) : ℕ) : ℤ) - (K : ℤ)).natAbs ≤
+      centeredPolynomialPatternRadius K p := by
+  exact Finset.le_sup (f := fun r : Fin M =>
+    (((r : ℕ) : ℤ) - (K : ℤ)).natAbs)
+      (atomPatternAssignment_mem_polynomialPatternSupport hg t)
+
+theorem windowShift_assignment_le_center_add_radius
+    {M D q K : ℕ} {p : Fin M → Fin (D + 1)}
+    {g : Fin D → Fin M} (hg : g ∈ atomPatternAssignments p)
+    (hKq : K ≤ q) (t : Fin D) :
+    windowShift q K (g t : ℕ) ≤ q + centeredPolynomialPatternRadius K p := by
+  have hoffNat := assignment_centered_offset_le_radius (K := K) hg t
+  have hoffInt :
+      |((((g t : Fin M) : ℕ) : ℤ) - (K : ℤ))| ≤
+        (centeredPolynomialPatternRadius K p : ℤ) := by
+    have hcast :
+        ((((((g t : Fin M) : ℕ) : ℤ) - (K : ℤ)).natAbs : ℕ) : ℤ) ≤
+          (centeredPolynomialPatternRadius K p : ℤ) := by
+      exact_mod_cast hoffNat
+    rw [Int.natCast_natAbs] at hcast
+    exact hcast
+  have hupper := (abs_le.mp hoffInt).2
+  dsimp [windowShift]
+  omega
+
 /-- A labelled assignment whose contributing jet monomial has order at most `H` is bounded by
 one common `H`-th power.  The estimate is uniform in the multiplicity pattern and in the window
 offsets. -/
@@ -344,6 +557,55 @@ theorem norm_windowShift_descFactorial_prod_le
       push_cast
       rw [← Finset.prod_pow_eq_pow_sum]
     _ ≤ (((q + M) ^ H : ℕ) : ℝ) := by
+      exact_mod_cast Nat.pow_le_pow_right (by omega) (by
+        rw [flatOrder_sum]
+        exact horder)
+
+/-- Once an assignment is restricted to the support of a multiplicity pattern, its factorial
+weight is controlled by the centered support radius rather than by the ambient window length.
+This is the estimate which remains useful when the window itself grows with the translation
+parameter. -/
+theorem norm_windowShift_descFactorial_prod_le_centeredRadius
+    {n D K τ M q H : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
+    {p : Fin M → Fin (D + 1)}
+    (m : ↥(polynomialPatternJetGroup n D K τ Q p))
+    (g : Fin D → Fin M) (hg : g ∈ atomPatternAssignments p)
+    (hKq : K ≤ q) (hq : 1 ≤ q)
+    (horder : jetMonomialOrder n m.1 ≤ H) :
+    ‖∏ t : Fin (jetMonomialDegree n m.1),
+        ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+          (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖ ≤
+      (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ) := by
+  rw [norm_prod]
+  have hfactor : ∀ t : Fin (jetMonomialDegree n m.1),
+      ‖((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+          (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖ ≤
+        ((((q + centeredPolynomialPatternRadius K p) ^
+          (flatOrder (fun j => m.1 j.succ) t)) : ℕ) : ℝ) := by
+    intro t
+    rw [Complex.norm_natCast]
+    exact_mod_cast calc
+      (windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+          (flatOrder (fun j => m.1 j.succ) t)
+          ≤ (windowShift q K (g (polynomialPatternJetCast m t) : ℕ)) ^
+              (flatOrder (fun j => m.1 j.succ) t) :=
+            Nat.descFactorial_le_pow _ _
+      _ ≤ (q + centeredPolynomialPatternRadius K p) ^
+          (flatOrder (fun j => m.1 j.succ) t) := by
+            apply Nat.pow_le_pow_left
+            exact windowShift_assignment_le_center_add_radius
+              hg hKq (polynomialPatternJetCast m t)
+  calc
+    ∏ t, ‖((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+          (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖
+        ≤ ∏ t, ((((q + centeredPolynomialPatternRadius K p) ^
+            (flatOrder (fun j => m.1 j.succ) t)) : ℕ) : ℝ) :=
+      Finset.prod_le_prod (fun _ _ => norm_nonneg _) (fun t _ => hfactor t)
+    _ = ((((q + centeredPolynomialPatternRadius K p) ^
+          (∑ t, flatOrder (fun j => m.1 j.succ) t)) : ℕ) : ℝ) := by
+      push_cast
+      rw [← Finset.prod_pow_eq_pow_sum]
+    _ ≤ (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ) := by
       exact_mod_cast Nat.pow_le_pow_right (by omega) (by
         rw [flatOrder_sum]
         exact horder)
@@ -436,6 +698,97 @@ theorem norm_eval_polynomialPatternWeightPoly_le
       mul_le_mul_of_nonneg_right hcoeff (by dsimp [A, X]; positivity)
     _ = magnitudeCoefficientMass Q * (((M ^ D : ℕ) : ℝ)) *
           (((q + M) ^ H : ℕ) : ℝ) := by
+      dsimp [A, X]
+      ring
+
+/-- The grouped weight of a degree-`D` pattern is bounded using only its centered support radius.
+The ambient window cardinality has disappeared: the assignment count is at most `D^D`, because
+every labelled atom must land in the at-most-`D` active support positions. -/
+theorem norm_eval_polynomialPatternWeightPoly_le_centeredRadius
+    {n D K τ M q H : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (p : Fin M → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D)
+    (hKq : K ≤ q) (hq : 1 ≤ q)
+    (horder : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
+      jetMonomialOrder n m.1 ≤ H) :
+    ‖(polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ)‖ ≤
+      magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
+        (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ) := by
+  classical
+  rw [eval_polynomialPatternWeightPoly n D K τ Q p hKq]
+  let A : ℝ := (((D ^ D : ℕ) : ℝ))
+  let X : ℝ := (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ)
+  have hcard : (atomPatternAssignments p).card ≤ D ^ D :=
+    atomPatternAssignments_card_le_pow_count p hcount
+  have hinner : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
+      ‖∑ g ∈ atomPatternAssignments p,
+          ∏ t : Fin (jetMonomialDegree n m.1),
+            ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+              (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖ ≤ A * X := by
+    intro m
+    calc
+      ‖∑ g ∈ atomPatternAssignments p,
+          ∏ t : Fin (jetMonomialDegree n m.1),
+            ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+              (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖
+          ≤ ∑ g ∈ atomPatternAssignments p,
+              ‖∏ t : Fin (jetMonomialDegree n m.1),
+                ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+                  (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖ := norm_sum_le _ _
+      _ ≤ ∑ _g ∈ atomPatternAssignments p, X := by
+        apply Finset.sum_le_sum
+        intro g hg
+        exact norm_windowShift_descFactorial_prod_le_centeredRadius
+          m g hg hKq hq (horder m)
+      _ = ((atomPatternAssignments p).card : ℝ) * X := by simp
+      _ ≤ A * X := by
+        apply mul_le_mul_of_nonneg_right _ (by dsimp [X]; positivity)
+        dsimp [A]
+        exact_mod_cast hcard
+  have hcoeff :
+      (∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
+        ‖MvPolynomial.coeff m.1 Q‖) ≤ magnitudeCoefficientMass Q := by
+    calc
+      (∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
+          ‖MvPolynomial.coeff m.1 Q‖) =
+          ∑ m ∈ polynomialPatternJetGroup n D K τ Q p,
+            ‖MvPolynomial.coeff m Q‖ :=
+        by simpa using
+          (Finset.sum_attach (polynomialPatternJetGroup n D K τ Q p)
+            (fun m => ‖MvPolynomial.coeff m Q‖))
+      _ ≤ ∑ m ∈ Q.support, ‖MvPolynomial.coeff m Q‖ := by
+        apply Finset.sum_le_sum_of_subset_of_nonneg
+        · exact Finset.filter_subset _ _
+        · intro m _hm _hnot
+          positivity
+      _ = magnitudeCoefficientMass Q := by rfl
+  calc
+    ‖∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
+        MvPolynomial.coeff m.1 Q *
+          ∑ g ∈ atomPatternAssignments p,
+            ∏ t : Fin (jetMonomialDegree n m.1),
+              ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+                (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖
+        ≤ ∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
+            ‖MvPolynomial.coeff m.1 Q *
+              ∑ g ∈ atomPatternAssignments p,
+                ∏ t : Fin (jetMonomialDegree n m.1),
+                  ((windowShift q K
+                    (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+                    (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖ := norm_sum_le _ _
+    _ ≤ ∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
+          ‖MvPolynomial.coeff m.1 Q‖ * (A * X) := by
+      apply Finset.sum_le_sum
+      intro m _hm
+      rw [norm_mul]
+      exact mul_le_mul_of_nonneg_left (hinner m) (norm_nonneg _)
+    _ = (∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
+          ‖MvPolynomial.coeff m.1 Q‖) * (A * X) := by
+      rw [Finset.sum_mul]
+    _ ≤ magnitudeCoefficientMass Q * (A * X) :=
+      mul_le_mul_of_nonneg_right hcoeff (by dsimp [A, X]; positivity)
+    _ = magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
+          (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ) := by
       dsimp [A, X]
       ring
 

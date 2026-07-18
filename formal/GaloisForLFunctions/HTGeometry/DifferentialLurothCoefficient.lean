@@ -259,6 +259,301 @@ theorem exists_primitive_mvPolynomial_fraction_clear
             (algebraMap R K (d : R) / algebraMap R K pp.content)) * P
       rw [mul_comm (algebraMap R K pp.content), div_mul_cancel₀ _ hgK]
 
+/-- Coordinate map from an intermediate field of a free scalar differential field into the
+rational field of the formal scalar jet palette. -/
+def differentialIntermediateToJetFraction
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y)) :
+    G →ₐ[F] FractionRing (DifferentialPolynomial Unit F) := by
+  let hG' : G ≤ differentialAdjoin F (Set.range fun _ : Unit ↦ y) := by
+    simpa [Set.range_const] using hG
+  exact
+    (differentialIndependentAdjoinParametrization (fun _ : Unit ↦ y) hy).symm.toAlgHom.comp
+      (IntermediateField.inclusion hG')
+
+theorem differentialIntermediateToJetFraction_injective
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y)) :
+    Function.Injective (differentialIntermediateToJetFraction G hG hy) :=
+  (differentialIntermediateToJetFraction G hG hy).injective
+
+/-- A relation over the intermediate field remains a relation after replacing the free element by
+the formal scalar jet palette and transporting every coefficient to its rational jet expression. -/
+theorem mapped_differentialRelation_eval_freeJet_eq_zero
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    {P : DifferentialPolynomial Unit G}
+    (hP : P ∈ differentialIntermediateRelationIdeal G y) :
+    let R := DifferentialPolynomial Unit F
+    let K := FractionRing R
+    MvPolynomial.aeval
+        (fun j : Unit × ℕ ↦ algebraMap R K (MvPolynomial.X j))
+        (MvPolynomial.map (differentialIntermediateToJetFraction G hG hy).toRingHom P) = 0 := by
+  let R := DifferentialPolynomial Unit F
+  let K := FractionRing R
+  let x : Unit × ℕ → K :=
+    fun j ↦ algebraMap R K (MvPolynomial.X j)
+  let A := differentialAdjoin F (Set.range fun _ : Unit ↦ y)
+  let e : K ≃ₐ[F] A :=
+    differentialIndependentAdjoinParametrization (fun _ : Unit ↦ y) hy
+  let hG' : G ≤ A := by
+    simpa [A, Set.range_const] using hG
+  let inc : G →ₐ[F] A := IntermediateField.inclusion hG'
+  let jetA : Unit × ℕ → A := fun j ↦
+    ⟨differentialJet j.2 y,
+      differentialJet_mem_differentialAdjoin F (Set.mem_range_self ()) j.2⟩
+  have hcoeff (g : G) :
+      e (differentialIntermediateToJetFraction G hG hy g) = inc g := by
+    simp [e, inc, differentialIntermediateToJetFraction, hG']
+  have hjet (j : Unit × ℕ) : e (x j) = jetA j := by
+    rcases j with ⟨u, n⟩
+    obtain rfl : u = () := Subsingleton.elim _ _
+    change differentialIndependentAdjoinParametrization (fun _ : Unit ↦ y) hy
+        (algebraMap (DifferentialPolynomial Unit F)
+          (FractionRing (DifferentialPolynomial Unit F))
+          (MvPolynomial.X ((), n))) =
+      ⟨differentialJet n y,
+        differentialJet_mem_differentialAdjoin F (Set.mem_range_self ()) n⟩
+    exact differentialIndependentAdjoinParametrization_X
+      (fun _ : Unit ↦ y) hy () n
+  have hring :
+      e.toRingEquiv.toRingHom.comp
+          ((MvPolynomial.aeval x).toRingHom.comp
+            (MvPolynomial.map
+              (differentialIntermediateToJetFraction G hG hy).toRingHom)) =
+        MvPolynomial.eval₂Hom inc.toRingHom jetA := by
+    apply MvPolynomial.ringHom_ext
+    · intro g
+      simpa using hcoeff g
+    · intro j
+      simpa using hjet j
+  have hright : (MvPolynomial.eval₂Hom inc.toRingHom jetA) P = 0 := by
+    have hval :
+        (IntermediateField.val A).toRingHom.comp
+            (MvPolynomial.eval₂Hom inc.toRingHom jetA) =
+          (differentialPolynomialEvalOver (K := G)
+            (fun _ : Unit ↦ y)).toRingHom := by
+      apply MvPolynomial.ringHom_ext
+      · intro g
+        simp [A, inc, differentialPolynomialEvalOver]
+      · rintro ⟨u, n⟩
+        obtain rfl : u = () := Subsingleton.elim _ _
+        simp [A, jetA, differentialPolynomialEvalOver]
+    apply Subtype.val_injective
+    exact (RingHom.congr_fun hval P).trans hP
+  apply e.injective
+  rw [map_zero]
+  exact (RingHom.congr_fun hring P).trans hright
+
+/-- Base change commutes with substitution of the formal variables by themselves. -/
+theorem mvPolynomial_aeval_map_algebraMap_self
+    {B K σ : Type*} [CommRing B] [CommRing K]
+    [Algebra (MvPolynomial σ B) K]
+    (P : MvPolynomial σ (MvPolynomial σ B)) :
+    MvPolynomial.aeval
+        (fun j : σ ↦ algebraMap (MvPolynomial σ B) K
+          (MvPolynomial.X j))
+        (MvPolynomial.map (algebraMap (MvPolynomial σ B) K) P) =
+      algebraMap (MvPolynomial σ B) K
+        (MvPolynomial.aeval
+          (fun j : σ ↦ (MvPolynomial.X j : MvPolynomial σ B)) P) := by
+  have hring :
+      (MvPolynomial.aeval
+          (fun j : σ ↦ algebraMap (MvPolynomial σ B) K
+            (MvPolynomial.X j))).toRingHom.comp
+          (MvPolynomial.map (algebraMap (MvPolynomial σ B) K)) =
+        (algebraMap (MvPolynomial σ B) K).comp
+          (MvPolynomial.aeval
+            (fun j : σ ↦ (MvPolynomial.X j : MvPolynomial σ B))).toRingHom := by
+    apply MvPolynomial.ringHom_ext
+    · intro r
+      simp
+    · intro j
+      simp
+  exact RingHom.congr_fun hring P
+
+/-- Put the two formal scalar differential blocks on the diagonal while keeping the common left
+jet palette formal. -/
+def differentialPolynomialTwoBlockDiagonal
+    {F : Type*} [CommRing F]
+    (C : DifferentialPolynomial (Unit ⊕ Unit) F) :
+    DifferentialPolynomial Unit F :=
+  MvPolynomial.aeval (fun j : Unit × ℕ ↦ MvPolynomial.X j)
+    (differentialPolynomialTwoBlockEquiv F C)
+
+/-- The normalized two-block representative attached to one nonzero relation over the
+intermediate field.  Its coefficient family is primitive in the left jet ring, it is nonzero,
+and its two blocks agree on the diagonal. -/
+structure PrimitiveTwoBlockDifferentialCharacteristic
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (P : DifferentialPolynomial Unit G) where
+  polynomial : DifferentialPolynomial (Unit ⊕ Unit) F
+  ne_zero : polynomial ≠ 0
+  primitive : MvPolynomialPrimitive
+    (differentialPolynomialTwoBlockEquiv F polynomial)
+  scalar : (FractionRing (DifferentialPolynomial Unit F))ˣ
+  clearing :
+    MvPolynomial.map
+        (algebraMap (DifferentialPolynomial Unit F)
+          (FractionRing (DifferentialPolynomial Unit F)))
+        (differentialPolynomialTwoBlockEquiv F polynomial) =
+      MvPolynomial.C (scalar : FractionRing (DifferentialPolynomial Unit F)) *
+        MvPolynomial.map (differentialIntermediateToJetFraction G hG hy).toRingHom P
+  diagonal : differentialPolynomialTwoBlockDiagonal polynomial = 0
+
+/-- Common-denominator clearing and primitive normalization of a nonzero relation over an
+intermediate field of the free scalar differential field. -/
+theorem exists_primitiveTwoBlockDifferentialCharacteristic
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    (G : IntermediateField F E) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    {P : DifferentialPolynomial Unit G} (hP0 : P ≠ 0)
+    (hP : P ∈ differentialIntermediateRelationIdeal G y) :
+    Nonempty (PrimitiveTwoBlockDifferentialCharacteristic G hG hy P) := by
+  classical
+  let R := DifferentialPolynomial Unit F
+  let K := FractionRing R
+  let φ : G →ₐ[F] K := differentialIntermediateToJetFraction G hG hy
+  have hmapP0 : MvPolynomial.map φ.toRingHom P ≠ 0 := by
+    intro hzero
+    apply hP0
+    apply MvPolynomial.map_injective φ.toRingHom φ.injective
+    simpa using hzero
+  letI : NormalizationMonoid R :=
+    UniqueFactorizationMonoid.normalizationMonoid
+  letI : NormalizedGCDMonoid R :=
+    UniqueFactorizationMonoid.toNormalizedGCDMonoid R
+  obtain ⟨Q, hQ0, hQprimitive, a, hQclear⟩ :=
+    exists_primitive_mvPolynomial_fraction_clear
+      (R := R) (K := K) (σ := Unit × ℕ) hmapP0
+  let C : DifferentialPolynomial (Unit ⊕ Unit) F :=
+    (differentialPolynomialTwoBlockEquiv F).symm Q
+  have hC0 : C ≠ 0 := by
+    intro hzero
+    apply hQ0
+    simpa [C] using congrArg (differentialPolynomialTwoBlockEquiv F) hzero
+  have hdiagK :
+      algebraMap R K
+          (MvPolynomial.aeval (fun j : Unit × ℕ ↦ MvPolynomial.X j) Q) = 0 := by
+    calc
+      algebraMap R K
+          (MvPolynomial.aeval (fun j : Unit × ℕ ↦ MvPolynomial.X j) Q) =
+          MvPolynomial.aeval
+            (fun j : Unit × ℕ ↦ algebraMap R K (MvPolynomial.X j))
+            (MvPolynomial.map (algebraMap R K) Q) :=
+              (mvPolynomial_aeval_map_algebraMap_self Q).symm
+      _ = MvPolynomial.aeval
+            (fun j : Unit × ℕ ↦ algebraMap R K (MvPolynomial.X j))
+            (MvPolynomial.C (a : K) * MvPolynomial.map φ.toRingHom P) := by
+              rw [hQclear]
+      _ = 0 := by
+        rw [map_mul, MvPolynomial.aeval_C,
+          mapped_differentialRelation_eval_freeJet_eq_zero G hG hy hP, mul_zero]
+  have hdiag : differentialPolynomialTwoBlockDiagonal C = 0 := by
+    have hQdiag :
+        MvPolynomial.aeval
+          (fun j : Unit × ℕ ↦ (MvPolynomial.X j : R)) Q = 0 := by
+      apply IsFractionRing.injective R K
+      simpa using hdiagK
+    simpa [differentialPolynomialTwoBlockDiagonal, C] using hQdiag
+  exact ⟨
+    { polynomial := C
+      ne_zero := hC0
+      primitive := by simpa [C] using hQprimitive
+      scalar := a
+      clearing := by simpa [C, R, K, φ] using hQclear
+      diagonal := hdiag }⟩
+
+/-- A bounded-order relation is ordinarily divisible by the minimal characteristic polynomial.
+The proof performs pseudo-division only at the characteristic leader, so no iterate of the
+characteristic polynomial enters.  Minimality kills the remainder and primeness removes the
+explicit initial power. -/
+theorem IsMinimalScalarDifferentialPolynomialRank.dvd_of_relation_order_le
+    {K : Type*} [Field K]
+    {I : Ideal (DifferentialPolynomial Unit K)} (hItop : I ≠ ⊤)
+    {P : DifferentialPolynomial Unit K}
+    (hP : IsMinimalScalarDifferentialPolynomialRank (I : Set _) P)
+    (hPirreducible : Irreducible P)
+    (hInitialNot : scalarDifferentialPolynomialInitial P ∉ I)
+    {Q : DifferentialPolynomial Unit K} (hQI : Q ∈ I)
+    (hQorder : scalarDifferentialPolynomialOrder Q ≤
+      scalarDifferentialPolynomialOrder P) :
+    P ∣ Q := by
+  classical
+  let leader := scalarDifferentialPolynomialLeader P
+  have hPdegree : MvPolynomial.degreeOf leader P ≠ 0 := by
+    rw [← MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
+    exact scalarDifferentialPolynomialLeader_mem_vars hP.2.2.1
+  let d := supportedMvPolynomialPseudoReductionAt leader Q P hPdegree
+  have hRbound : ScalarJetOrderBound
+      (scalarDifferentialPolynomialOrder P) d.remainder := by
+    intro m hm hmem
+    rcases Finset.mem_union.mp (d.remainder_vars_subset hmem) with hmemQ | hmemP
+    · exact scalarJetOrderBound_of_order_le hQorder m hm hmemQ
+    · exact scalarJetOrderBound_order P m hm hmemP
+  have hRorder : scalarDifferentialPolynomialOrder d.remainder ≤
+      scalarDifferentialPolynomialOrder P :=
+    scalarDifferentialPolynomialOrder_le_of_orderBound hRbound
+  have hleftI :
+      scalarDifferentialPolynomialInitial P ^ d.exponent * Q ∈ I :=
+    I.mul_mem_left _ hQI
+  have hrightI : P * d.quotient ∈ I :=
+    Ideal.mul_mem_right d.quotient I hP.1
+  have hRI : d.remainder ∈ I := by
+    rw [show d.remainder =
+        scalarDifferentialPolynomialInitial P ^ d.exponent * Q -
+          P * d.quotient by
+      rw [d.eq_mul_add]
+      ring]
+    exact I.sub_mem hleftI hrightI
+  have hRzero : d.remainder = 0 := by
+    by_contra hR0
+    by_cases hRvars : d.remainder.vars.Nonempty
+    · have hmin := hP.2.2.2 hRI hR0 hRvars
+      have horderEq : scalarDifferentialPolynomialOrder P =
+          scalarDifferentialPolynomialOrder d.remainder :=
+        Nat.le_antisymm hmin.1 hRorder
+      have hleaderEq : scalarDifferentialPolynomialLeader d.remainder = leader := by
+        unfold scalarDifferentialPolynomialLeader leader
+        exact Prod.ext (Subsingleton.elim _ _) horderEq.symm
+      have hdegreeMin := hmin.2.1 horderEq
+      unfold scalarDifferentialPolynomialLeaderDegree at hdegreeMin
+      rw [hleaderEq] at hdegreeMin
+      exact (Nat.not_le_of_lt d.remainder_degree_lt) hdegreeMin
+    · have hempty : d.remainder.vars = ∅ :=
+        Finset.not_nonempty_iff_eq_empty.mp hRvars
+      have hC := MvPolynomial.vars_eq_empty_iff_eq_C.mp hempty
+      have hc : d.remainder.coeff 0 ≠ 0 := by
+        intro hc
+        apply hR0
+        rw [hC, hc]
+        simp
+      have hunit : IsUnit d.remainder := by
+        rw [hC]
+        exact IsUnit.map MvPolynomial.C hc.isUnit
+      exact hItop (I.eq_top_of_isUnit_mem hRI hunit)
+  have hdivProduct :
+      P ∣ scalarDifferentialPolynomialInitial P ^ d.exponent * Q := by
+    refine ⟨d.quotient, ?_⟩
+    simpa [hRzero] using d.eq_mul_add
+  rcases hPirreducible.prime.dvd_mul.mp hdivProduct with hpow | hdiv
+  · have hdivInitial := hPirreducible.prime.dvd_of_dvd_pow hpow
+    apply (hInitialNot ?_).elim
+    rcases hdivInitial with ⟨T, hT⟩
+    rw [hT]
+    exact Ideal.mul_mem_right T I hP.1
+  · exact hdiv
+
 /-- The projective cross-difference of two scalar differential polynomials on two independent
 blocks. -/
 def differentialPolynomialCrossDifference

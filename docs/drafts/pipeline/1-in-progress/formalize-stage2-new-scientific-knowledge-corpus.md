@@ -27,15 +27,16 @@ For each completed card:
 
 ## Build discipline
 
-- The earlier single-process restriction was retired by the user on 2026-07-18 after all other
-  workspace agents stopped.  Use up to four independent Lean lanes on distinct leaf modules,
-  keeping each command foreground in its owning lane.
-- Keep broad umbrella/index/lint checks serialized; parallelism is for independent scratch and
-  leaf elaboration, not repeated builds of the same dependency cone.
-- Run broad umbrella builds only after latency-sensitive scratch lanes are idle.  Their default
-  worker pool can occupy the whole machine and turn a seconds-long compiler iteration into minutes;
-  if a broad gate must overlap, cap its workers to the CPU capacity left after reserving one core
-  per active leaf lane.
+- Although the earlier hard single-process restriction was retired, the 2026-07-18 efficiency
+  correction restores a single root-issued **compiler lease**: agents parallelize mathematical
+  reasoning, API search, and disjoint source preparation, but at most one Lean process runs at a
+  time.  An agent asks root before taking the lease and releases it immediately after the check.
+- A compiler check is justified only after a coherent theorem layer or obstruction-closing proof
+  increment is prepared.  Do not elaborate after tiny edits and do not run `lake build` merely to
+  repeat a successful direct source check.
+- Defer exact module builds, scratch axiom audits, umbrella builds, generated indexes, and lint to
+  one serialized tranche gate after several leaves are ready.  Never overlap that gate with leaf
+  elaboration.
 - Use the active `formal/.lake` cache and build only the smallest changed leaf or umbrella.
 - Do not run a broad build when a leaf check decides the issue.
 - Do not use numerical pre-certification or any other computation as evidence.
@@ -50,9 +51,10 @@ Use four live roles, reassigned at batch boundaries rather than one agent per ca
    theorem/corollary inventory, existing declaration map, missing-lemma DAG, candidate Lean
    signatures, proof plan, ownership/import boundary, and the decisive completion test.  Resolve
    mathematical ambiguity before handing the packet to an implementation lane.
-2. **Implementation lanes.** Two agents own disjoint scratch and leaf files and take prepared
-   declarations through actual elaboration.  Compiler failures feed back into the packet whenever
-   they expose a mathematical or representation error.
+2. **Implementation lanes.** Two agents own disjoint scratch and leaf files and accumulate
+   substantial prepared declaration layers.  They share the single compiler lease at meaningful
+   checkpoints; compiler failures feed back into the packet whenever they expose a mathematical
+   or representation error.
 3. **Root implementation/integration.** Root remains a third implementation lane except at batch
    gates, when it builds all newly green targets together, audits their axioms together, wires
    umbrellas once, and runs generated-index/lint checks once.
@@ -99,8 +101,13 @@ coordinated four-slot pool.
   exact module build, standard-axiom audit, forbidden-token scan, and diff check are green and its
   umbrella import is wired.  `BellCoordinateJacobian` now additionally proves that the universal
   finite Bell-coordinate Jacobian is triangular with diagonal one and determinant exactly one;
-  its exact module build and the same audits are green and its umbrella import is wired.  The next
-  cascade foundation is the terminal-linear output-Jacobian row-reduction identity.
+  its exact module build and the same audits are green.  `TerminalLinearJacobian`,
+  `BellSubstitutionJacobian`, and `TerminalLinearBellJacobian` then prove the exact bordered
+  determinant formula, preservation of a lower polynomial Jacobian under Bell substitution, and
+  the literal terminal-linear output formula with sign `(-1)^(n+1)` and terminal power
+  `X_terminal^(n+1)`.  Their exact builds and standard-axiom/forbidden-token/diff audits are green,
+  and all five cascade-foundation imports are wired.  The next root step is connecting iterates of
+  a polynomial derivation to this terminal-linear Bell output family.
 
 ## Completed compiler queue
 
@@ -387,6 +394,8 @@ DAGs without repeating the audits.
 - [ ] `universal-first-order-entire-cascade-unit-cost` — exact differential order and its
   unconditional invariance under invertible affine precomposition are Lean-complete in
   `ExactDifferentialOrderAffine`, and the universal Bell coordinate change has unit Jacobian in
-  `BellCoordinateJacobian`; the Wiman-place, compatible valuation flag, terminal-linear
-  observability reduction, Clunie state-independence, and Poincare-recession surfaces remain
+  `BellCoordinateJacobian`; the exact terminal-linear Bell determinant reduction is Lean-complete
+  through `TerminalLinearBellJacobian`.  The Wiman-place, compatible valuation flag, derivation-
+  iterate realization, nested-leading observability induction, Clunie state-independence, and
+  Poincare-recession surfaces remain
 - [ ] `weighted-euler-tangent-global-graph-decoupling` — theorem/corollary surface inventory pending

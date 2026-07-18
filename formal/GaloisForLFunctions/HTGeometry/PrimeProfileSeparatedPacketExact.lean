@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.SeparatedRayTailPacket
 import GaloisForLFunctions.HTGeometry.PrimeProfileJetPacket
 import GaloisForLFunctions.HTGeometry.PrimeProfileTailMatroid
 import GaloisForLFunctions.HTGeometry.DifferentialMatroidClosure
+import GaloisForLFunctions.HTGeometry.CompactTailDensePrimeShiftJet
 import Mathlib.LinearAlgebra.Dimension.Constructions
 
 /-!
@@ -967,6 +968,241 @@ theorem differentialIndependent_fractionPrimeProfiles_relative_iff_clockQuotient
     rw [hfamily] at hswap
     exact (GaloisForLFunctions.differentialIndependent_sumElim_right_iff y x).mp
       hswap |>.2
+
+/-! ## Scalar replication and Euler-profile completion -/
+
+/-- Replicate one scalar valuation profile on every prime ray.  The value at `p^(e+1)` is
+`u e`, and the profile vanishes away from positive prime powers.  The construction is linear in
+the complete (not necessarily finitely supported) valuation profile. -/
+def scalarReplicatedPrimeProfile :
+    (Nat -> ℂ) →ₗ[ℂ] ArithmeticFunction ℂ where
+  toFun u :=
+    { toFun := fun n =>
+        if hn : IsPrimePow n then
+          u (Nat.Primes.prodNatEquiv.symm ⟨n, hn⟩).2
+        else 0
+      map_zero' := by simp [not_isPrimePow_zero] }
+  map_add' u v := by
+    ext n
+    by_cases hn : IsPrimePow n <;> simp [hn]
+  map_smul' a u := by
+    ext n
+    by_cases hn : IsPrimePow n <;> simp [hn, ArithmeticFunction.smul_map]
+
+@[simp]
+theorem primePowerCoordinateProfile_scalarReplicatedPrimeProfile
+    (u : Nat -> ℂ) (x : PrimePowerClockIndex) :
+    primePowerCoordinateProfile (scalarReplicatedPrimeProfile u) x = u x.2 := by
+  rcases x with ⟨p, e⟩
+  simp [primePowerCoordinateProfile, scalarReplicatedPrimeProfile]
+
+/-- Scalar replication is supported on positive prime powers, with no valuation-depth or
+summability restriction. -/
+theorem scalarReplicatedPrimeProfile_supportedOnPositivePrimePowers
+    (u : Nat -> ℂ) :
+    PrimeProfileSupportedOnPositivePrimePowers (scalarReplicatedPrimeProfile u) := by
+  intro n hn
+  by_cases hpow : IsPrimePow n
+  · let x : PrimePowerClockIndex := Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩
+    refine ⟨x.1, x.2, ?_⟩
+    have hx := congrArg Subtype.val
+      (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
+    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx.symm
+  · exact (hn (by simp [scalarReplicatedPrimeProfile, hpow])).elim
+
+@[simp]
+theorem primeProfileRotatedLogJet_zero (f : ArithmeticFunction ℂ) :
+    primeProfileRotatedLogJet 0 f = f := by
+  ext n
+  simp [primeProfileRotatedLogJet_apply]
+
+/-- On one prime-power coordinate, the simple prime clock factors into valuation and prime-log
+clocks. -/
+theorem rotatedPrimePowerClockWeight_eq_valuation_mul_primeLog
+    (p : Nat.Primes) (e : Nat) :
+    rotatedPrimePowerClockWeight (p, e) =
+      (((e + 1 : Nat) : ℂ) * rotatedPrimeLogClock p) := by
+  unfold rotatedPrimePowerClockWeight primePowerClockWeight
+    rotatedPrimeLogClock primeLogClock
+  simp only [Nat.Primes.coe_prodNatEquiv_apply]
+  rw [Nat.cast_pow, Real.log_pow]
+  push_cast
+  ring
+
+@[simp]
+theorem primePowerCoordinateProfile_scalarReplicatedPrimeProfile_jet
+    (k : Nat) (u : Nat -> ℂ) (x : PrimePowerClockIndex) :
+    primePowerCoordinateProfile
+        (primeProfileRotatedLogJet k (scalarReplicatedPrimeProfile u)) x =
+      rotatedPrimePowerClockWeight x ^ k * u x.2 := by
+  rw [primePowerCoordinateProfile_primeProfileRotatedLogJet,
+    primePowerCoordinateProfile_scalarReplicatedPrimeProfile]
+
+/-- The constant sampler on the one-point constraint space is cofinally tail-dense. -/
+theorem constantUnitPrimeSampler_cofiniteTailDenseOn :
+    CofiniteTailDenseOn (fun _ : Nat.Primes => ()) Set.univ := by
+  constructor
+  · simp
+  · intro v hv
+    have hv' : v = () := Subsingleton.elim _ _
+    subst v
+    exact (tendsto_const_nhds :
+      Filter.Tendsto (fun _ : Nat.Primes => ()) Filter.cofinite (𝓝 ())).mapClusterPt
+
+/-- At every fixed valuation coordinate, the finite rotated prime-log powers are independent
+modulo finite prime support.  This is the one-point specialization of the corpus-wide
+tail-dense asymptotic-scale theorem. -/
+theorem primePowerRotatedLogPowers_tailCoefficientIndependent
+    (e m : Nat) :
+    TailCoefficientIndependent (fun k : Fin (m + 1) => fun p : Nat.Primes =>
+      ((((e + 1 : Nat) : ℂ) * rotatedPrimeLogClock p) ^ (k : Nat))) := by
+  classical
+  let f : Unit -> Unit -> ℂ := fun _ _ => 1
+  have hf : ∀ j, Continuous (f j) := by
+    intro j
+    exact continuous_const
+  have hlinear : LinearIndependent ℂ
+      (fun j : Unit => fun v : (Set.univ : Set Unit) => f j v.1) := by
+    rw [linearIndependent_unique_iff]
+    intro hzero
+    have hz := congrFun hzero (⟨(), Set.mem_univ ()⟩ : (Set.univ : Set Unit))
+    simpa [f] using hz
+  have hfull :=
+    cofiniteTailDenseOn_primePowerShiftedRotatedJet_tailIndependent
+      (V := Unit) (J := Unit) (A := Unit) e
+      (fun _ : Nat.Primes => ()) Set.univ
+      constantUnitPrimeSampler_cofiniteTailDenseOn
+      f hf hlinear (fun _ : Unit => 0)
+      (fun a b _ => Subsingleton.elim a b) m
+  intro c hsupp
+  let C : Unit × (Unit × Fin (m + 1)) -> ℂ := fun z => c z.2.2
+  have hCsupp :
+      {p : Nat.Primes |
+        ∑ z, C z *
+          (f z.1 () * primeShiftFactor 0 p *
+            ((((e + 1 : Nat) : ℂ) * rotatedPrimeLogClock p) ^
+              (z.2.2 : Nat))) ≠ 0}.Finite := by
+    simpa [C, f, primeShiftFactor] using hsupp
+  have hCzero := hfull C hCsupp
+  funext k
+  have hk := congrFun hCzero ((), ((), k))
+  simpa [C] using hk
+
+/-- **Recurrent declocking for scalar valuation profiles.**  Replicating scalar valuation
+profiles on every prime ray converts ordinary linear independence of the complete profiles into
+freeness of their entire polynomial prime-clock orbits, and conversely.  In particular, no
+infinite valuation profile can be manufactured by finite differential algebra from a proper
+linear subspace of profiles. -/
+theorem scalarReplicatedPrimeProfile_clockIndependent_iff
+    {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
+    (u : I -> Nat -> ℂ) :
+    PrimeProfileClockIndependent
+        (fun i => scalarReplicatedPrimeProfile (u i)) ↔
+      LinearIndependent ℂ u := by
+  classical
+  constructor
+  · intro hclock
+    have hzeroClock : LinearIndependent ℂ
+        (fun i => primeProfileClockJetFamily
+          (fun j => scalarReplicatedPrimeProfile (u j)) (i, 0)) :=
+      hclock.comp (fun i => (i, 0)) (by
+        intro i j hij
+        exact congrArg Prod.fst hij)
+    rw [Fintype.linearIndependent_iff]
+    intro c hsum
+    apply Fintype.linearIndependent_iff.mp hzeroClock c
+    have hprofileSum :
+        (∑ i, c i • scalarReplicatedPrimeProfile (u i)) = 0 := by
+      calc
+        (∑ i, c i • scalarReplicatedPrimeProfile (u i)) =
+            scalarReplicatedPrimeProfile (∑ i, c i • u i) := by
+          symm
+          simp only [map_sum, map_smul]
+        _ = 0 := by rw [hsum, map_zero]
+    have hclassSum := congrArg primeProfileClockClass hprofileSum
+    simpa only [map_sum, map_smul, map_zero, primeProfileClockJetFamily,
+      primeProfileRotatedLogJet_zero] using hclassSum
+  · intro hu
+    rw [primeProfileClockIndependent_iff_finiteTailIndependent]
+    intro m c hlocal
+    change (rayActivity primePowerClockRay
+      (primePowerCoordinateProfile
+        (∑ col, c col • primeProfileJetSource
+          (fun i => scalarReplicatedPrimeProfile (u i)) m col))).Finite at hlocal
+    have hdegree : ∀ e : Nat, ∀ k : Fin (m + 1),
+        ∑ i, c (i, k) * u i e = 0 := by
+      intro e
+      let d : Fin (m + 1) -> ℂ := fun k => ∑ i, c (i, k) * u i e
+      have hfixed :
+          {p : Nat.Primes |
+            ∑ col, c col *
+              (rotatedPrimePowerClockWeight (p, e) ^ (col.2 : Nat) *
+                u col.1 e) ≠ 0}.Finite := by
+        apply hlocal.subset
+        intro p hp
+        refine ⟨(p, e), rfl, ?_⟩
+        let ev : ArithmeticFunction ℂ →+ ℂ :=
+          { toFun := fun f => primePowerCoordinateProfile f (p, e)
+            map_zero' := rfl
+            map_add' := fun _ _ => rfl }
+        rw [show primePowerCoordinateProfile
+            (∑ col, c col • primeProfileJetSource
+              (fun i => scalarReplicatedPrimeProfile (u i)) m col) (p, e) =
+            ∑ col, primePowerCoordinateProfile
+              (c col • primeProfileJetSource
+                (fun i => scalarReplicatedPrimeProfile (u i)) m col) (p, e) by
+          exact map_sum ev _ Finset.univ]
+        simpa only [primeProfileJetSource, primePowerCoordinateProfile,
+          ArithmeticFunction.smul_map, smul_eq_mul,
+          primePowerCoordinateProfile_scalarReplicatedPrimeProfile_jet] using hp
+      have hset :
+          {p : Nat.Primes |
+            ∑ k, d k *
+              ((((e + 1 : Nat) : ℂ) * rotatedPrimeLogClock p) ^ (k : Nat)) ≠ 0} =
+          {p : Nat.Primes |
+            ∑ col, c col *
+              (rotatedPrimePowerClockWeight (p, e) ^ (col.2 : Nat) *
+                u col.1 e) ≠ 0} := by
+        ext p
+        simp only [Set.mem_setOf_eq, rotatedPrimePowerClockWeight_eq_valuation_mul_primeLog]
+        congr 1
+        rw [Fintype.sum_prod_type, Finset.sum_comm]
+        apply Finset.sum_congr rfl
+        intro k hk
+        rw [Finset.sum_mul]
+        apply Finset.sum_congr rfl
+        intro i hi
+        dsimp only [d]
+        ring
+      have hdsupp :
+          {p : Nat.Primes |
+            ∑ k, d k *
+              ((((e + 1 : Nat) : ℂ) * rotatedPrimeLogClock p) ^ (k : Nat)) ≠ 0}.Finite := by
+        rw [hset]
+        exact hfixed
+      have hdzero := primePowerRotatedLogPowers_tailCoefficientIndependent e m d hdsupp
+      intro k
+      exact congrFun hdzero k
+    funext col
+    have hcoeff : (fun i => c (i, col.2)) = 0 := by
+      apply Fintype.linearIndependent_iff.mp hu
+      funext e
+      simpa [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using hdegree e col.2
+    exact congrFun hcoeff col.1
+
+/-- Differential independence of arbitrary scalar-replicated valuation profiles is exactly
+ordinary linear independence of those profiles.  This is the differential-algebraic completion
+law consumed by the Euler ghost specialization. -/
+theorem differentialIndependent_scalarReplicatedPrimeProfiles_iff
+    {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
+    (u : I -> Nat -> ℂ) :
+    GaloisForLFunctions.DifferentialIndependent finitePrimeCoefficientField
+        (fun i => algebraMap (ArithmeticFunction ℂ)
+          arithmeticFunctionFractionField (scalarReplicatedPrimeProfile (u i))) ↔
+      LinearIndependent ℂ u := by
+  rw [differentialIndependent_fractionPrimeProfiles_iff_clockIndependent,
+    scalarReplicatedPrimeProfile_clockIndependent_iff]
+  exact fun i => scalarReplicatedPrimeProfile_supportedOnPositivePrimePowers (u i)
 
 end
 
