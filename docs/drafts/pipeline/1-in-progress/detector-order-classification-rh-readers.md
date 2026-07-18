@@ -177,3 +177,51 @@ New leaf `RHTower/DetectorOrderClassification.lean`:
 - 2026-07-18 (Fable): stated, proved on paper, hostile-audited, card created as the first
   deliverable of the kill-list positive-inversion sweep. Next: Lean batch; then the remaining
   no-gos (NG01-NG31, NG33, NG35) each get their own positive statement.
+
+## SCOPE CORRECTION (self-caught, 2026-07-18) — and the theorem's real consequence
+
+**The error.** The consequences section above reads the classification as if it applied to every
+reader appearing in this corpus. It does not, and testing it against the corpus's own certificate
+exposes the gap immediately: the height-fiber variance is
+
+> `V(gamma) = sum_j m_j d_j^2 = - sum_j m_j (u_j - gamma)^2 = -(p_2 - 2 gamma p_1 + gamma^2 p_0)`,
+
+the **centered second Newton sum** — a reader with the *holomorphic* kernel
+`f_gamma(u) = -(u - gamma)^2`, i.e. an ORDER-ZERO reader. Under the loose reading, part (0) would
+declare it impossible. It is not impossible; it is the certificate this lane actually built.
+
+**The resolution — and it sharpens the theorem.** Part (0)'s hypothesis is vanishing on *every*
+divisor supported on the whole real axis. `f_gamma` does not satisfy it: it vanishes at the single
+real point `gamma` only. The distinction is exactly the distinction between
+
+- **global readers** — one kernel `F`, required to certify at every height simultaneously. On-line
+  divisors then range over the whole real axis, part (0) applies, and **no order-zero global
+  reader exists**; the order-one obstruction and the order-two forcing apply as stated.
+- **height-localized families** — a kernel `F_gamma` per height. On-line fibers are supported at
+  the single point `gamma`, the identity-theorem step is unavailable, and order-zero readers DO
+  exist: the minimal one is `f_gamma(u) = -(u - gamma)^2`, whose reader is precisely `V(gamma)`.
+
+**The consequence, which is the theorem's real content.** Height-localization is not a technical
+convenience of the slab construction — it is **logically necessary**: a single global holomorphic
+kernel is provably blind (part (0)), so every certificate in this class must be a family localized
+at each height. And within a localized family the forcing survives verbatim in the centered
+variable `u - gamma`: the first centered moment `sum_j m_j (u_j - gamma) = i sum_j m_j d_j` is
+annihilated by the functional-equation mirror symmetry (`mirror_mean_kill`), so the minimal
+surviving reader is the **centered second moment**, which is `V(gamma)`.
+
+This is exactly the structure the lane arrived at empirically over cont. 41-49 (`q_1` killed by
+the circuit, `q_2` the entire demand). The classification says that outcome was forced:
+localize per height, lose the first moment to the functional equation, land on the second.
+
+**Effect on the Lean module.** None. `order_zero_reader_eq_zero` is the identity theorem and is
+stated with the correct (global) hypothesis; `mirror_mean_kill` and the order-two results are
+stated for an arbitrary finite configuration and apply verbatim in the centered variable. The
+error was in the prose reading, not in a formal statement — recorded here rather than repaired
+silently.
+
+**Grade adjustment.** Consequence 3 (NG16, closed-contour SOS) and consequence 5 (NG36, single-h)
+are retained: both concern readers required to work uniformly, where part (0) does apply.
+Consequences 1, 2, 4, 6 are retained unchanged. The novelty claim is narrowed and made honest:
+what the theorem contributes is (i) the impossibility of global order-zero detection, (ii) the
+forced necessity of height-localization, and (iii) the order-two forcing inside a localized
+family. Grade remains `[NOVELTY UNVERIFIED]`.
