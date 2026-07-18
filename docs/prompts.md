@@ -1,35 +1,37 @@
 ## formalize
 /goal
 
-work through all cards directly in docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge that start with "ccm" and formalize in lean any proven theorem in there.
+/loop 1m (use the croncreate tool)
+
+your task:
+if you are already working on a card, keep going.
+else: pick a card from docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge
+
+
+do: formalize in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
 lean rules:
 1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
-2. Be efficient with lean, do not constantly do minor edits and build, but batch changes and builds.
+2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
 3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
 4. lean proofs must be unconditional
-5. always check first what the project lean code already offers
+5. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
 6. no computations.
 
 Non-negotiable working mode rules:
 1. If it cannot be done in a single session -> Does not matter. Do it!
 2. If it cannot be done in a single context window -> Does not matter. Do it!
 3. If it takes months -> Does not matter. Do it!
-4. Missing in mathlib -> Build it no matter the effort.
-5. Always check what our extensive lean corpus can provide you! Reuse as much as possible.
+4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
+5. Missing in mathlib -> Build it no matter the effort.
+6. Always check what our extensive lean corpus can provide you! Reuse as much as possible.
+7. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
 
 folders:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 
-before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.
-do not constantly build and fix and build and fix, be efficient with lean and this laptop's resources.
-
-skip cards that are not relevant for hypertranscendental functions nor for the riemann zeta function
-before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.
-for any nogo always try to find an interesting significant positive statement
-- you can use subagents for read-only research into literature and our own research corpus
-
+You are not allowed to change the cron timing.
 
 ## research and formalize
 /goal

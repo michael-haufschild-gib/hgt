@@ -364,6 +364,32 @@ theorem differentialJet_algebraMap_of_differentialAlgebra
       rw [differentialJet_succ, differentialJet_succ, ih,
         DifferentialAlgebra.deriv_algebraMap]
 
+/-- Constant-coefficient differential operators commute with every differential-algebra
+structure map. -/
+theorem differentialOperatorApply_algebraMap_of_differentialAlgebra
+    {C K L : Type*} [Field C] [Field K] [Field L]
+    [Algebra C K] [Algebra C L] [Algebra K L] [IsScalarTower C K L]
+    [Differential K] [Differential L] [DifferentialAlgebra K L]
+    (P : Polynomial C) (x : K) :
+    algebraMap K L (differentialOperatorApply P x) =
+      differentialOperatorApply P (algebraMap K L x) := by
+  classical
+  let phi : K →+* L := algebraMap K L
+  unfold differentialOperatorApply
+  rw [Polynomial.sum_def, Polynomial.sum_def]
+  change phi (∑ n ∈ P.support,
+    algebraMap C K (P.coeff n) * differentialJet n x) = _
+  rw [map_sum phi]
+  apply Finset.sum_congr rfl
+  intro n hn
+  change phi (algebraMap C K (P.coeff n) * differentialJet n x) = _
+  rw [map_mul phi, differentialJet_algebraMap_of_differentialAlgebra]
+  change algebraMap K L (algebraMap C K (P.coeff n)) *
+      algebraMap K L (differentialJet n x) = _
+  exact congrArg
+    (fun c : L => c * algebraMap K L (differentialJet n x))
+    (IsScalarTower.algebraMap_apply C K L (P.coeff n)).symm
+
 /-- Every differential jet is additive. -/
 theorem differentialJet_additive
     {L : Type*} [Field L] [Differential L] (n : ℕ) (x y : L) :

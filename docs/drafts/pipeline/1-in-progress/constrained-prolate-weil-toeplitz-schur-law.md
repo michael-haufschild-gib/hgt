@@ -223,16 +223,20 @@ R_0=4/sqrt(33),
 R_1=sqrt(2/731115)(401-44u).                              (WT16a)
 ```
 
-The actual convergence `G^E_lambda->Gamma` remains open at one zeta-graph/PSWF rate.  Conditional on
-the still-open global fixed-mode `W^(1,1)` convergence and uniform-variation input, one gets at
-every fixed depth
+The actual convergence `G^E_lambda->Gamma` remains open at one zeta-graph/PSWF rate.  It is not
+needed for polynomial control: exact finite Möbius recovery of the source from its aperture
+summation vector, together with classical local `L2` fixed-mode prolate-to-Hermite convergence,
+gives at every fixed depth
 
 ```text
-m_N I<=G^E_(lambda,N)<=C_N lambda I.                         (WT16b)
+c_N lambda^(-1) I<=G^E_(lambda,N)<=lambda^2 I.               (WT16b)
 ```
 
-This polynomial metric distortion is subordinate to `d_1/d_2=O(lambda^(-8))`.  Solving the second
-row of the true regular generalized pencil therefore preserves the canonical direction
+The arithmetic frame bounds themselves require no global `W^(1,1)`, variation, or graph
+convergence.  This `O(lambda^3)` metric conditioning is subordinate to
+`d_1/d_2=O(lambda^(-8))`.  Solving the second row of the true regular generalized pencil therefore
+preserves the canonical direction; the relative metric errors are `O(lambda^(-1))` and
+`O(lambda^(-5))`:
 
 ```text
 y/x
@@ -241,9 +245,9 @@ y/x
 ```
 
 Thus the `O(lambda^(-4))` Schur direction is true-aperture-metric rigid in the regular two-rung
-generalized pencil under that input.  This is not yet a theorem about the full restricted-Weil
-operator.  What the missing Gram convergence controls is its normalization and the limiting
-generalized eigenvalue constant.  If it is proved, then
+generalized pencil.  This is not yet a theorem about the full restricted-Weil operator.  What the
+missing Gram convergence controls is its normalization and the limiting generalized eigenvalue
+constant.  If it is proved, then
 
 ```text
 epsilon_-/(d_1 log c)
@@ -289,8 +293,8 @@ prove a cofinal Weil floor or RH.
 - [x] prove Toeplitz positivity and identify the `1/2` floor mechanism
 - [x] formalize the concrete adjacent coefficient and Schur survivor in Lean
 - [x] construct the exact finite aperture Hilbert metric and its Xi-square target
-- [x] derive true-metric rigidity of the regular two-rung Schur direction from polynomial Gram
-      conditioning, conditional on the open global fixed-mode regularity input
+- [x] derive true-metric rigidity of the regular two-rung Schur direction from the exact Möbius
+      frame bounds and classical local fixed-mode convergence
 - [ ] externally audit novelty and priority
 - [ ] prove the PSWF zeta-graph rate and hence the aperture-Gram limit in `(WT16a)`
 - [ ] prove the intact bilinear graph-defect estimate `(WT17)`
@@ -307,6 +311,7 @@ prove a cofinal Weil floor or RH.
   eigenvector requires the additional Gram gate `(WT16)`.
 - 2026-07-18 -- Built the actual finite aperture metric and killed the unsupported inference from
   source convergence to metric convergence.  Its Hermite target is an explicit Xi-square moment
-  Gram.  Full Gram convergence remains open; conditional on the open global fixed-mode regularity
-  input, the polynomial conditioning bound is subordinate to the `lambda^8` prolate hierarchy and
-  promotes the `O(lambda^(-4))` Schur direction to the true regular two-rung generalized pencil.
+  Gram.  Full Gram convergence remains open, but the exact Möbius frame law gives polynomial
+  conditioning subordinate to the `lambda^8` prolate hierarchy and promotes the
+  `O(lambda^(-4))` Schur direction to the true regular two-rung generalized pencil without that
+  convergence.

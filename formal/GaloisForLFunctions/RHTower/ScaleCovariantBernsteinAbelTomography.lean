@@ -63,7 +63,7 @@ structure ScaleCovariantBernsteinAbelTomographyLaw
   /-- The same selected amplitude controls the exact nth-root spectrum of every real-p packet
   energy. -/
   rpow_spectrum :
-    ∀ {R p : ℝ}, 2 * M < R → 1 ≤ p → ∀ {i0 : I}, (z i0).im ≠ 0 →
+    ∀ {R p : ℝ}, M < R → 0 < p → ∀ {i0 : I}, (z i0).im ≠ 0 →
       ∃ B : ℝ,
         B = HTGeometry.confocalAmplitudeEnvelope (Set.range z) R ∧
         1 < B ∧
@@ -110,16 +110,18 @@ structure ScaleCovariantBernsteinAbelTomographyLaw
             HTGeometry.confocalDefectEnvelope (Set.range z) R ^ 2 / R) /
           (1 + HTGeometry.confocalDefectEnvelope (Set.range z) R / R) ^ 2
 
-/-- **Scale-covariant Bernstein--Abel tomography theorem.**  A bounded summable atomic source with
-pointed real moments, injective occupied coordinates, cofinally vanishing support, and no negative
-real atom is completely recovered by one scale-covariant purity field.  The same field has an exact
-atomic square-energy realization, selects every transverse phase through a finite positive
-square-root packet, and has a confocal boundary flow whose first recession is twice the intrinsic
-transverse defect. -/
-theorem scaleCovariantBernsteinAbel_tomography
+/-- **Defect-neutral scale-covariant Bernstein--Abel tomography theorem.**  A bounded summable
+atomic source with pointed real moments, injective occupied coordinates, cofinally vanishing
+transverse defect, and no negative real atom is completely recovered by one scale-covariant purity
+field.  The same field has an exact atomic square-energy realization, selects every transverse
+phase through a finite positive square-root packet, gives the powered confocal base for every
+positive real-power energy at the sharp threshold `M<R`, and has a confocal boundary flow whose
+first recession is twice the intrinsic transverse defect. -/
+theorem scaleCovariantBernsteinAbel_tomography_of_transverse_neutral
     {I : Type*} [Nonempty I] (c z : I → ℂ) (m : ℕ → ℝ)
     (hc : Summable c)
-    (hz0 : Tendsto z cofinite (nhds 0))
+    (htrans : Tendsto (fun i => HTGeometry.transverseDefect (z i))
+      cofinite (nhds 0))
     (hzinj : Function.Injective z)
     (hcne : ∀ i, c i ≠ 0)
     {M : ℝ} (hM : 0 ≤ M) (hbound : ∀ i, ‖z i‖ ≤ M)
@@ -156,8 +158,8 @@ theorem scaleCovariantBernsteinAbel_tomography
     have hRpos : 0 < R := by linarith
     obtain ⟨D, B, beta, L, hBconf, hB, hbeta1, hbeta, hDne, hD, hDsub,
         hL, hLpos, hhalf⟩ :=
-      exists_positive_halfOrder_inverseScaleAtomicPacket
-        c z hc hz0 hzinj hcne hM hbound hR hreal hi0
+      exists_positive_halfOrder_inverseScaleAtomicPacket_of_transverse_neutral
+        c z hc htrans hzinj hcne hM hbound hR hreal hi0
     have hobs : Tendsto
         (fun N : ℕ => Real.sqrt N *
           scaleCovariantBernsteinObservation m N R / (B ^ 2) ^ N)
@@ -171,8 +173,8 @@ theorem scaleCovariantBernsteinAbel_tomography
     exact ⟨D, B, beta, L, hBconf, hB, hbeta1, hbeta, hDne, hD, hDsub,
       hL, hLpos, hobs, habel⟩
   · intro R p hR hp i0 hi0
-    exact exists_tendsto_inverseScaleAtomicBernsteinRpowEnergy
-      c z hc hz0 hzinj hcne hM hbound hR hp hreal hi0
+    exact exists_tendsto_inverseScaleAtomicBernsteinRpowEnergy_of_transverse_neutral
+      c z hc htrans hzinj hcne hM hbound hR hp hreal hi0
   · intro R hRM
     rw [HTGeometry.confocalAbelRadius_eq_one_iff hSne hM hRM hSbound,
       HTGeometry.transverseDefectEnvelope_eq_zero_iff hSne hSbound]
@@ -186,6 +188,28 @@ theorem scaleCovariantBernsteinAbel_tomography
       hSne hM hSbound
   · intro R hRM
     exact HTGeometry.mul_one_sub_confocalAbelRadius_eq hSne hM hRM hSbound
+
+/-- Cofinite convergence of the support to the origin is a sufficient special case of the
+intrinsic transverse-neutrality theorem. -/
+theorem scaleCovariantBernsteinAbel_tomography
+    {I : Type*} [Nonempty I] (c z : I → ℂ) (m : ℕ → ℝ)
+    (hc : Summable c)
+    (hz0 : Tendsto z cofinite (nhds 0))
+    (hzinj : Function.Injective z)
+    (hcne : ∀ i, c i ≠ 0)
+    {M : ℝ} (hM : 0 ≤ M) (hbound : ∀ i, ‖z i‖ ≤ M)
+    (hreal : ∀ i, (z i).im = 0 → 0 ≤ (z i).re)
+    (hmoment : ∀ n, (m n : ℂ) = atomicPowerMoment c z n)
+    (hm0 : 0 < m 0) :
+    ScaleCovariantBernsteinAbelTomographyLaw c z m M := by
+  have htrans : Tendsto (fun i => HTGeometry.transverseDefect (z i))
+      cofinite (nhds 0) := by
+    have hnorm := hz0.norm
+    have hre := Complex.continuous_re.continuousAt.tendsto.comp hz0
+    simpa only [HTGeometry.transverseDefect, norm_zero, Complex.zero_re, sub_zero]
+      using hnorm.sub hre
+  exact scaleCovariantBernsteinAbel_tomography_of_transverse_neutral
+    c z m hc htrans hzinj hcne hM hbound hreal hmoment hm0
 
 end
 

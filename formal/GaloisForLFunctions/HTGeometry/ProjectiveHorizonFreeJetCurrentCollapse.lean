@@ -90,11 +90,17 @@ theorem pderiv_zero_freeJetSquareCoefficient
       2 * MvPolynomial.X n := by
   induction n with
   | zero =>
-      simp [freeJetSquareCoefficient, MvPolynomial.pderiv_mul]
+      simp [freeJetSquareCoefficient, two_mul]
   | succ n ih =>
       rw [freeJetSquareCoefficient, Function.iterate_succ_apply']
-      rw [pderiv_zero_freeJetShift, ih]
-      simp [freeJetShiftPolynomialDerivation, map_mul]
+      rw [pderiv_zero_freeJetShift]
+      change freeJetShiftPolynomialDerivation C
+        (MvPolynomial.pderiv 0 (freeJetSquareCoefficient C n)) = _
+      rw [ih]
+      rw [Derivation.leibniz,
+        (freeJetShiftPolynomialDerivation C).map_natCast,
+        freeJetShiftPolynomialDerivation_X]
+      simp
 
 /-- The normalized raw translation mode `t^k partial_x`.  Its value on `x_k` is `k!`. -/
 def freeJetEPolynomialDerivation
@@ -109,7 +115,10 @@ theorem freeJetEPolynomialDerivation_X
       if k = n then
         (Nat.factorial k : C) • (1 : FreeScalarJetPolynomial C)
       else 0 := by
-  simp [freeJetEPolynomialDerivation, MvPolynomial.pderiv_X]
+  classical
+  by_cases hkn : k = n <;>
+    simp [freeJetEPolynomialDerivation, MvPolynomial.pderiv_X,
+      Pi.single_apply, hkn]
 
 /-- The first reciprocal-translation current.  On the formal arc it is
 `F_1(x_n) = -n D^(n-1)(x^2)`, i.e. the infinitesimal law `delta x(t) = -t x(t)^2`. -/
@@ -153,6 +162,9 @@ theorem freeJetPolynomial_lie_E_zero_F_one
   | succ n =>
       simp [freeJetEPolynomialDerivation,
         pderiv_zero_freeJetSquareCoefficient, Algebra.smul_def]
+      rw [show MvPolynomial.C (2 : C) =
+          (2 : FreeScalarJetPolynomial C) by
+        exact map_ofNat (MvPolynomial.C : C →+* FreeScalarJetPolynomial C) 2]
       ring
 
 /-- The first diagonal mode propagates every raw translation mode to the next order. -/
@@ -162,20 +174,24 @@ theorem freeJetPolynomial_lie_H_one_E
       (2 : C) • freeJetEPolynomialDerivation C (k + 1) := by
   apply MvPolynomial.derivation_ext
   intro n
-  rw [Derivation.commutator_apply]
+  rw [Derivation.commutator_apply, Derivation.smul_apply]
+  have hfirst : freeJetHOnePolynomialDerivation C
+      (freeJetEPolynomialDerivation C k (MvPolynomial.X n)) = 0 := by
+    rw [freeJetEPolynomialDerivation_X]
+    split_ifs <;> simp
+  rw [hfirst, freeJetHOnePolynomialDerivation_X]
   cases n with
-  | zero =>
-      simp [freeJetEPolynomialDerivation, freeJetHOnePolynomialDerivation,
-        Algebra.smul_def]
+  | zero => simp
   | succ n =>
       by_cases hnk : n = k
       · subst n
-        simp [freeJetEPolynomialDerivation, freeJetHOnePolynomialDerivation,
+        simp [freeJetEPolynomialDerivation_X,
           Nat.factorial_succ, Algebra.smul_def]
         ring
-      · have hsucc : k + 1 ≠ n + 1 := by omega
-        simp [freeJetEPolynomialDerivation, freeJetHOnePolynomialDerivation,
-          hnk, hsucc, Algebra.smul_def]
+      · have hkn : k ≠ n := Ne.symm hnk
+        have hsucc : k + 1 ≠ n + 1 := by omega
+        simp [freeJetEPolynomialDerivation_X, hkn, hsucc,
+          Algebra.smul_def]
 
 /-- Extend a polynomial free-jet derivation to the rational free-jet field by the quotient rule. -/
 def extendFreeJetPolynomialDerivation
@@ -255,6 +271,7 @@ theorem freeJet_lie_H_one_E
   rw [freeJetHOne, freeJetE, extendFreeJetPolynomialDerivation_lie,
     freeJetPolynomial_lie_H_one_E,
     extendFreeJetPolynomialDerivation_smul]
+  rfl
 
 /-- The normalized `E_k` current is the nonzero factorial multiple of the coordinate partial. -/
 theorem freeJetE_apply

@@ -45,7 +45,8 @@ theorem confocalDefect_le_scale_mul_transverseDefect
   have hsSq : s ^ 2 = a ^ 2 + y ^ 2 := by
     dsimp only [s, a, x, y]
     rw [Complex.sq_norm, Complex.normSq_apply]
-    simp only [map_sub, Complex.ofReal_re, Complex.ofReal_im, sub_zero]
+    simp only [Complex.sub_re, Complex.ofReal_re, Complex.sub_im,
+      Complex.ofReal_im]
     ring
   have htrans0 : 0 ≤ r - x := sub_nonneg.mpr hxle
   have hsum : r + x ≤ 2 * M := by
@@ -87,7 +88,7 @@ theorem confocalDefect_le_scale_mul_transverseDefect
     ring
   calc
     (r - x) + (s - a) ≤ (r - x) + M / (R - M) * (r - x) :=
-      add_le_add_left hgap_le _
+      add_le_add le_rfl hgap_le
     _ = (1 + M / (R - M)) * (r - x) := by ring
     _ = R / (R - M) * (r - x) := by rw [hfactor]
 

@@ -36,8 +36,7 @@ local instance ellipticGammaRationalBaseComplexAlgebraAnalytic :
 
 local instance ellipticGammaRationalBaseComplexAlgebraMero :
     Algebra ℂ (meroField Set.univ) :=
-  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
-    (constToAnalytic Set.univ)).toAlgebra
+  meromorphicEllipticCompositumComplexAlgebraMero
 
 local instance ellipticGammaRationalBaseComplexDifferential : Differential ℂ where
   deriv := 0
@@ -46,25 +45,38 @@ local instance ellipticGammaRationalBaseMeroDifferential :
     Differential (meroField (Set.univ : Set ℂ)) :=
   meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
 
+local instance ellipticGammaRationalBaseMeroCharZero :
+    CharZero (meroField Set.univ) :=
+  charZero_of_injective_algebraMap
+    (algebraMap ℂ (meroField Set.univ)).injective
+
 private theorem meroField_deriv_algebraMap_complex_rationalBase (c : ℂ) :
     (algebraMap ℂ (meroField Set.univ) c)′ = 0 := by
   change
     (algebraMap (analyticSubring Set.univ) (meroField Set.univ)
       (constToAnalytic Set.univ c))′ = 0
-  rw [meroFieldDifferential_algebraMap]
+  rw [meroFieldDifferential_algebraMap isOpen_univ isPreconnected_univ
+    Set.univ_nonempty]
   have hconst : analyticSubringDeriv isOpen_univ
       (constToAnalytic Set.univ c) = 0 := by
     apply Subtype.ext
     rw [analyticSubringDeriv_coe]
-    change (deriv (fun _ : ℂ ↦ c) : Germ (𝒱 Set.univ) ℂ) = 0
-    simp
+    let f : ℂ → ℂ := fun _ ↦ c
+    calc
+      Germ.coeRingHom (Filter.principal Set.univ) (deriv f) =
+          Germ.coeRingHom (Filter.principal Set.univ) (0 : ℂ → ℂ) := by
+        congr 1
+        funext z
+        simp [f]
+      _ = 0 := (Germ.coeRingHom (Filter.principal Set.univ)).map_zero
   rw [hconst, map_zero]
 
 local instance ellipticGammaRationalBaseComplexDifferentialAlgebra :
     DifferentialAlgebra ℂ (meroField Set.univ) :=
   ⟨fun c ↦ by
     rw [meroField_deriv_algebraMap_complex_rationalBase]
-    rfl⟩
+    change (0 : meroField Set.univ) = algebraMap ℂ (meroField Set.univ) 0
+    rw [map_zero]⟩
 
 local instance ellipticGammaRationalBaseCoordinateDifferential :
     Differential meromorphicRationalCoordinateField :=
@@ -89,6 +101,7 @@ noncomputable def addTranslationMeroDifferentialAlgEquiv (q : ℂ) :
 /-- The enlarged rank-three period lattice is countable, so it always admits an external shift. -/
 theorem exists_thetaTranslationNonresonant (tau sigma : ℂ) :
     ∃ h : ℂ, ThetaTranslationNonresonant tau sigma h := by
+  letI : Uncountable ℂ := Complex.ofReal_injective.uncountable
   let lattice : Set ℂ := Set.range fun p : ℤ × (ℤ × ℤ) ↦
     (p.1 : ℂ) + (p.2.1 : ℂ) * tau + (p.2.2 : ℂ) * sigma
   have hcountable : lattice.Countable := Set.countable_range _
@@ -102,7 +115,7 @@ theorem exists_thetaTranslationNonresonant (tau sigma : ℂ) :
   rintro ⟨a, b, n, hab⟩
   apply hh
   refine ⟨(a, (b, n)), ?_⟩
-  simpa [lattice] using hab
+  simpa [lattice] using hab.symm
 
 /-- **Actual elliptic-gamma defect matroid over `ℂ(z)`.**  External defects in pairwise distinct
 nonzero rank-three period cosets are differentially algebraically independent over the genuine
@@ -125,7 +138,8 @@ theorem ellipticGammaExternalDefectFamily_differentialIndependent_rationalBase
   have hConstants : DifferentialIndependent ℂ x :=
     HTGeometry.DifferentialIndependent.restrictScalarsTower hElliptic
   have hCoordinate :=
-    hConstants.extendScalarsDifferentialAdjoinSingleton
+    HTGeometry.DifferentialIndependent.extendScalarsDifferentialAdjoinSingleton
+      hConstants
       differentialAlgebraicOver_meromorphicRationalCoordinate
   rw [differentialAdjoin_meromorphicRationalCoordinate_eq] at hCoordinate
   exact hCoordinate
@@ -176,7 +190,8 @@ theorem hypertranscendentalOver_ellipticGammaLogDerivMero_rationalBase
   have hdefectConstants : HypertranscendentalOver ℂ
       (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) := by
     rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at
-      hdefectRational ⊢
+      hdefectRational
+    rw [hypertranscendentalOver_iff_differentialIndependent_singleton]
     exact HTGeometry.DifferentialIndependent.restrictScalarsTower hdefectRational
   have hlogConstants : HypertranscendentalOver ℂ
       (ellipticGammaLogDerivMero sigma tau hsigma htau) := by
@@ -186,7 +201,8 @@ theorem hypertranscendentalOver_ellipticGammaLogDerivMero_rationalBase
   rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at
     hlogConstants ⊢
   have hbaseChanged :=
-    hlogConstants.extendScalarsDifferentialAdjoinSingleton
+    HTGeometry.DifferentialIndependent.extendScalarsDifferentialAdjoinSingleton
+      hlogConstants
       differentialAlgebraicOver_meromorphicRationalCoordinate
   rw [differentialAdjoin_meromorphicRationalCoordinate_eq] at hbaseChanged
   exact hbaseChanged

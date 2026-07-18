@@ -63,7 +63,9 @@ theorem constrainedProlateWeilToeplitzAdjacentTerm_nonneg (n : ℕ) :
   · simp [constrainedProlateWeilToeplitzAdjacentTerm]
   · let x : ℝ := 1 / (((n + 1 : ℕ) : ℝ) + 1)
     have hk : (2 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) + 1 := by
-      norm_num
+      have hn0 : (0 : ℝ) ≤ (n : ℝ) := by positivity
+      push_cast
+      linarith
     have hx0 : 0 ≤ x := by positivity
     have hxhalf : x ≤ 1 / 2 := by
       dsimp [x]
@@ -80,10 +82,13 @@ theorem constrainedProlateWeilToeplitzAdjacentTerm_le_zeroTerm (n : ℕ) :
       constrainedProlateWeilToeplitzZeroTerm n := by
   rcases n with _ | n
   · simp [constrainedProlateWeilToeplitzAdjacentTerm,
-      constrainedProlateWeilToeplitzZeroTerm, Real.arcsin_one, Real.pi_pos.le]
+      constrainedProlateWeilToeplitzZeroTerm, Real.arcsin_one]
+    positivity
   · let x : ℝ := 1 / (((n + 1 : ℕ) : ℝ) + 1)
     have hk : (2 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) + 1 := by
-      norm_num
+      have hn0 : (0 : ℝ) ≤ (n : ℝ) := by positivity
+      push_cast
+      linarith
     have hx0 : 0 ≤ x := by positivity
     have hxhalf : x ≤ 1 / 2 := by
       dsimp [x]
@@ -97,7 +102,7 @@ theorem constrainedProlateWeilToeplitzAdjacentTerm_le_zeroTerm (n : ℕ) :
     have hb0 : 0 ≤ Real.sqrt (1 - x ^ 2) := Real.sqrt_nonneg _
     have hb1 : Real.sqrt (1 - x ^ 2) ≤ 1 := by
       rw [Real.sqrt_le_one]
-      exact hinside0
+      nlinarith [sq_nonneg x]
     have hab : (1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2) ≤ 1 := by
       calc
         (1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2)
@@ -171,9 +176,11 @@ theorem half_le_constrainedProlateWeilToeplitzD0_sub_D1 :
       summable_constrainedProlateWeilToeplitzAdjacentTerm).sum_le_tsum {0}
       (fun n _ => sub_nonneg.mpr
         (constrainedProlateWeilToeplitzAdjacentTerm_le_zeroTerm n))
+  have hhalf : Real.pi / 2 / Real.pi = (1 : ℝ) / 2 := by
+    field_simp [Real.pi_ne_zero]
   simpa [constrainedProlateWeilToeplitzZeroTerm,
     constrainedProlateWeilToeplitzAdjacentTerm, Real.arcsin_one,
-    Real.pi_ne_zero] using hsum
+    Real.pi_ne_zero, hhalf] using hsum
 
 theorem constrainedProlateWeilToeplitzD1_lt_D0 :
     constrainedProlateWeilToeplitzD1 < constrainedProlateWeilToeplitzD0 := by

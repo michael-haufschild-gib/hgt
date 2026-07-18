@@ -20,7 +20,7 @@ open scoped Classical Differential nonZeroDivisors
 
 noncomputable section
 
-universe u
+universe u v
 
 /-- The unit differential operator acts as the identity. -/
 @[simp]
@@ -224,14 +224,14 @@ theorem simultaneousCoboundaryLinearMap_apply
 /-- Apply a finite family of constant-coefficient operators to a source packet
 and add the outputs in one source direction. -/
 def differentialOperatorLinearCombination
-    {J : Type u} (omega : J → I → K) (c : J →₀ Polynomial C) (i : I) : K :=
+    {J : Type v} (omega : J → I → K) (c : J →₀ Polynomial C) (i : I) : K :=
   c.sum fun j P ↦ differentialOperatorApply P (omega j i)
 
 /-- Evaluation of a `C[D]`-linear combination of source packets agrees with direct operator
 application after returning to the original field. -/
 @[simp]
 theorem differentialOperatorSpace_linearCombination_apply
-    {J : Type u} (omega : J → I → K) (c : J →₀ Polynomial C) (i : I) :
+    {J : Type v} (omega : J → I → K) (c : J →₀ Polynomial C) (i : I) :
     (differentialOperatorSpaceAddEquiv hconst).symm
       ((Finsupp.linearCombination (Polynomial C)
         (fun j i ↦ differentialOperatorSpaceAddEquiv hconst (omega j i)) c) i) =
@@ -244,7 +244,7 @@ theorem differentialOperatorSpace_linearCombination_apply
 /-- Polynomial differential-operator coefficients and flattened finite jet coefficients give the
 same source linear combination. -/
 theorem differentialOperator_linearCombination_eq_jetLinearCombination
-    {J : Type u} (omega : J → I → K) (c : J →₀ Polynomial C) (i : I) :
+    {J : Type v} (omega : J → I → K) (c : J →₀ Polynomial C) (i : I) :
     differentialOperatorLinearCombination omega c i =
       Finsupp.linearCombination K
         (fun p : J × ℕ ↦ differentialJet p.2 (omega p.1 i))

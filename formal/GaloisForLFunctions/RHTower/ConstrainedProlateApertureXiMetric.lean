@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ConstrainedProlateWeilToeplitzSchur
+import GaloisForLFunctions.RHTower.ConstrainedProlateTrueApertureMetric
 import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
 
 /-!
@@ -9,15 +10,16 @@ additive source Gram.  At the fixed-Hermite endpoint, the ground constrained con
 scalar multiple of the existing theta-cusp seed, hence its logarithmic integer sum has Fourier
 transform equal to the same scalar multiple of `XiC`.
 
-This file formalizes that source-specific identification and the exact first two rows of the
-resulting Xi-square polynomial moment metric.  In particular, its two-by-two determinant is
+This file formalizes that source-specific identification and the algebraic first two rows of the
+fixed-Hermite Xi-square polynomial moment target.  For normalized formal moment parameters, its
+two-by-two determinant reduces to
 
 ```text
 512 / 199395 * (M₀ M₂ - M₁²).
 ```
 
-It also inserts the true ground metric normalization into the already formalized regular
-Weil--Toeplitz Schur coefficient.
+It also inserts the candidate fixed-Hermite ground normalization into the already formalized
+regular Weil--Toeplitz Schur coefficient.
 
 No declaration asserts convergence of finite prolate aperture Grams to this metric.  That passage
 requires the separate zeta-graph/PSWF rate isolated on the paper card.  No closed-Weil defect,
@@ -98,8 +100,8 @@ def constrainedProlateGroundHermiteSchwartz : 𝓢(ℝ, ℂ) :=
 theorem fourier_constrainedProlateGroundHermiteSchwartz_scaled (t : ℝ) :
     (𝓕 constrainedProlateGroundHermiteSchwartz) (t / (2 * Real.pi)) =
       (constrainedProlateGroundHermiteXiScale : ℂ) * XiC (t : ℂ) := by
-  rw [constrainedProlateGroundHermiteSchwartz, map_smul,
-    fourier_thetaCuspSchwartz_scaled]
+  rw [constrainedProlateGroundHermiteSchwartz, FourierTransform.fourier_smul,
+    SchwartzMap.smul_apply, fourier_thetaCuspSchwartz_scaled]
   rfl
 
 /-! ## The first two Xi-square moment metric rows -/
@@ -118,7 +120,8 @@ def constrainedProlateXiApertureFirstPolynomialSqMoment
     (M0 M1 M2 : ℝ) : ℝ :=
   160801 * M0 - 35288 * M1 + 1936 * M2
 
-/-- Ground entry of the candidate true aperture metric. -/
+/-- Ground entry of the fixed-Hermite Xi-moment target, with `M0` already normalized as on the
+paper card. -/
 def constrainedProlateXiApertureMetric00 (M0 : ℝ) : ℝ :=
   constrainedProlateXiApertureR0Sq * M0
 
@@ -158,7 +161,8 @@ theorem constrainedProlateXiApertureMetricDet_eq (M0 M1 M2 : ℝ) :
   unfold constrainedProlateXiApertureR0Sq constrainedProlateXiApertureR1Sq
   ring
 
-/-- Strict Xi-square moment variance makes the first two true-aperture channels nondegenerate. -/
+/-- A strict moment-variance hypothesis makes the symbolic first two target channels
+nondegenerate. -/
 theorem constrainedProlateXiApertureMetricDet_pos
     {M0 M1 M2 : ℝ} (hvariance : M1 ^ 2 < M0 * M2) :
     0 < constrainedProlateXiApertureMetricDet M0 M1 M2 := by
@@ -173,8 +177,8 @@ theorem constrainedProlateXiApertureMetric00_pos
 
 /-! ## The true-metric regular Weil Schur coefficient -/
 
-/-- The regular Weil--Toeplitz ground Schur coefficient after division by the candidate true
-ground aperture metric `Gamma₀₀=(16/33)M₀`. -/
+/-- The regular Weil--Toeplitz ground Schur coefficient after division by the candidate
+fixed-Hermite target normalization `Gamma₀₀=(16/33)M₀`. -/
 def constrainedProlateTrueApertureRegularSchurCoefficient (M0 : ℝ) : ℝ :=
   ((8 : ℝ) / 11) *
       (constrainedProlateWeilToeplitzD0 -
@@ -209,17 +213,20 @@ theorem constrainedProlateTrueApertureRegularSchurCoefficient_gt
       mul_lt_mul_of_pos_left
         constrainedProlateWeilToeplitzSchurCoefficient_gt_half (by positivity)
 
-/-- Source-specific formal capstone: exact theta/Xi normalization, strict two-channel metric, and
-the positive true-aperture-normalized Schur coefficient. -/
+/-- Source-specific formal capstone: exact theta/Xi normalization, the symbolic two-channel
+determinant under strict variance, and the positive target-normalized Schur coefficient. -/
 theorem constrainedProlateApertureXiMetric_capstone
     {M0 M1 M2 : ℝ} (hM0 : 0 < M0) (hvariance : M1 ^ 2 < M0 * M2) :
     (∀ x : ℝ, constrainedProlateGroundHermiteSeed x =
       constrainedProlateGroundHermiteXiScale * thetaCuspSeed x) ∧
+    (∀ t : ℝ, (𝓕 constrainedProlateGroundHermiteSchwartz) (t / (2 * Real.pi)) =
+      (constrainedProlateGroundHermiteXiScale : ℂ) * XiC (t : ℂ)) ∧
     constrainedProlateXiApertureMetricDet M0 M1 M2 =
       (512 / 199395 : ℝ) * (M0 * M2 - M1 ^ 2) ∧
     0 < constrainedProlateXiApertureMetricDet M0 M1 M2 ∧
     3 / (4 * M0) < constrainedProlateTrueApertureRegularSchurCoefficient M0 := by
   exact ⟨constrainedProlateGroundHermiteSeed_eq_thetaCuspSeed,
+    fourier_constrainedProlateGroundHermiteSchwartz_scaled,
     constrainedProlateXiApertureMetricDet_eq M0 M1 M2,
     constrainedProlateXiApertureMetricDet_pos hvariance,
     constrainedProlateTrueApertureRegularSchurCoefficient_gt hM0⟩

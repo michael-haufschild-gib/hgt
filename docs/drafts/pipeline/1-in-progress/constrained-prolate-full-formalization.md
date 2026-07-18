@@ -247,7 +247,158 @@
   and `gaussEven_ne_zero`.  So `U := evenFourierTransform`, `h := gaussEven` discharge the
   hypotheses of `norm_sq_proj_unitary_proj_ge_of_rel` except those about `P`.
 
-  REMAINING for the L6a envelope: take `P := evenIndicatorCutoff a` (idempotent is
+  ### L6a CHAIN CLOSED END-TO-END AT n = 0 (`GaussianEvenCarrier.lean`, axiom-clean)
+
+  `evenIndicatorCutoff_symmetric` (from `indicatorCutoff_symmetric`) and
+  `evenIndicatorCutoff_apply_apply` discharge the `P`-side hypotheses, so:
+  * `gaussEven_concentration` — the abstract truncation lemma instantiated at the REAL operators.
+  * `gaussEven_timeBand_concentration` — restated for `evenTimeBandFourier` (cutoff idempotency).
+  * `gaussEven_span_concentration` — homogeneous, hence valid on the whole spanned line.
+  * **`evenProlateLeakageValue_zero_le : d_0(a) ≤ 4θ²`** whenever
+    `‖g − P g‖ ≤ θ‖P g‖` and `P g ≠ 0` — a bound on the TRUE operator's ground leakage,
+    obtained through Courant–Fischer on the one-dimensional truncated-Gaussian trial space.
+
+  The abstract chain is therefore validated end-to-end against the concrete operator.
+
+  ### L6a TAIL IDENTIFICATION: **BUILT**
+
+  `norm_sq_eq_integral (f : SoninL2) : ‖f‖² = ∫ x, ‖f x‖²` (via `L2.inner_def` +
+  `integral_complex_ofReal`), and
+  `norm_sq_gaussEven_sub_cut : ‖gaussEven − P_a gaussEven‖² = ∫_{(centralInterval a)ᶜ} e^{−2πx²}`
+  — the truncation error IS the Gaussian tail, with the `e^{−2πx²}` arising as `|e^{−πx²}|²`.
+  Combined with `integral_Ioi_gauss_sq_le` (after splitting the complement into two rays by
+  evenness), this makes `θ` explicit.
+
+  ### L6a EXPLICIT TRUNCATION ERROR: **BUILT**
+
+  `norm_sq_gaussEven_sub_cut_le (ha : 0 < a) :`
+  `‖gaussEven − P_a gaussEven‖² ≤ 2·e^{−2πa²}/(4πa)` — the complement split as
+  `Iio(−a) ∪ Ioi a`, the left ray reflected onto the right via `integral_comp_neg_Ioi`
+  (with `Iio_ae_eq_Iic` bridging the endpoint), then the ray bound applied.
+
+  So the n = 0 truncation error is now EXPLICITLY exponentially small, and combined with
+  `evenProlateLeakageValue_zero_le` the only missing input for a fully explicit `d_0(a)` bound is
+  a positive lower bound on `‖P_a gaussEven‖²` (= `∫_{−a}^{a} e^{−2πx²}`, which increases to
+  `1/√2`; e.g. bound below by its value at `a = 1`, or by monotonicity of the integrand).
+
+  ### L6a n = 0 COMPLETE: **`evenProlateLeakageValue_zero_tendsto_zero`**
+
+  `Tendsto (fun a => evenProlateLeakageValue a 0) atTop (nhds 0)` — the TRUE compressed Fourier
+  block's ground leakage vanishes as the aperture grows.  Unconditional, axiom-clean.
+  Route: `norm_sq_cut_gaussEven` (Pythagoras ⟹ `‖P_a g‖² = ‖g‖² − τ`, so no head integral is
+  needed — the lower bound on `‖P_a g‖²` comes free once `τ < ‖g‖²/2`),
+  `norm_sq_gaussEven_sub_cut_tendsto_zero` (τ → 0 from the explicit ray bound), then
+  `evenProlateLeakageValue_zero_le` with `θ² = τ/‖P_a g‖²`.
+
+  This validates the ENTIRE architecture end-to-end against the real operator: Gaussian Schwartz
+  map → L² Fourier fixedness → even carrier → tail bound → truncation → Courant–Fischer →
+  leakage.  What the envelope still needs is the RATE (`d_0(a) = O(λ^{e_0}·clock)`), which needs
+  the two-sided version, plus higher `n`.
+
+  ### L6a n = 0 EXPLICIT RATE: **`evenProlateLeakageValue_zero_le_exp`**
+
+  Eventually `d_0(a) ≤ (16/‖g‖²)·e^{−2πa²}/(4πa)` — an explicit exponentially-small bound on the
+  TRUE ground leakage.  Axiom-clean.
+
+  **CORRECTION (supersedes the stronger claim below).**  What is PROVED is only
+  `d_0(a) ≤ C·e^{−2πa²}/a`.  Whether that is off the Fuchs rate is NOT established, and the
+  earlier claim that the truncated Gaussian "cannot reach" it was overstated.  Two facts pull in
+  opposite directions and must be resolved before any trial-function redesign:
+
+  (i) For large `c` the true PSWF `ψ_0` is asymptotically the Gaussian `e^{−πx²}` itself, so
+  `ψ_0(±a) ≈ e^{−πa²}` — the SAME boundary size as the truncated Gaussian.  A naive
+  "endpoint-jump ⇒ leakage ≍ (boundary value)²" heuristic would then give `ψ_0` the same
+  `e^{−2πa²}`, contradicting the classical `e^{−2c}`.  So that heuristic must be missing a
+  cancellation forced by the eigenfunction relation `F ψ_0 |_{[-a,a]} = χ_0 ψ_0`.
+
+  (ii) The identification of the card's aperture `λ` with the project's operator aperture `a`,
+  and of `c` with `2πλ²`, has NEVER been verified in this project.  The card asserts
+  `1−χ_n² ~ A_n λ^{2n+1} e^{−4πλ²}`; if `c = 2πλ²` then that is `e^{−2c}`, but the `λ ↔ a`
+  dictionary is exactly the "normalization audit" the cards themselves still list as an open
+  gate.
+
+  **(ii) IS NOW SETTLED — there IS a gap, and (i) RESOLVES, giving the fix.**
+
+  Normalization: the project's `fourierUnitary` is mathlib's `𝓕` (kernel `e^{−2πixξ}`), the
+  window is `centralInterval a = Icc (−a) a` in BOTH time and frequency, so the Slepian
+  time–bandwidth parameter is `c = 2πTW = 2πa²`.  The classical rate
+  `1 − λ_0(c) ~ 4√π·√c·e^{−2c}` then reads `∝ a·e^{−4πa²}`, matching the card's
+  `A_0 λ e^{−4πλ²}` with `λ = a`.  So the target exponent IS `e^{−4πa²}` and the proved
+  `e^{−2πa²}/a` is weak by a factor 2 in the exponent.
+
+  Resolution of the apparent paradox in (i): the Gaussian approximation `ψ_0 ≈ e^{−πx²}` is valid
+  only in the BULK.  Writing the WKB profile `ψ_0(x) ≈ exp(−c·φ(x/a))` with
+  `φ(u) = 1 − √(1−u²)`, one has `φ(u) ≈ u²/2` near `0`, so `exp(−c u²/2) = exp(−πx²)` — the
+  Gaussian, as expected — but `φ(1) = 1`, so at the EDGE `ψ_0(±a) ≈ e^{−c} = e^{−2πa²}`, not the
+  Gaussian's `e^{−πa²}`.  The endpoint-jump heuristic `leakage ≍ (boundary value)²` then gives
+  `e^{−4πa²}` for the PSWF and `e^{−2πa²}` for the truncated Gaussian — both correct, and the
+  factor 2 is exactly the edge-decay discrepancy.
+
+  **CONSEQUENCE — the trial profile to use next is explicit:**
+
+```text
+  g_a(x) = exp(−2πa²·(1 − √(1 − x²/a²)))   on [−a, a],   0 outside.
+```
+
+  It equals `e^{−πx²}` in the bulk (so it keeps the Gaussian's frequency concentration) and
+  decays to `e^{−2πa²}` at the edge (so its endpoint jump is squared-small).  It is elementary,
+  exactly supported in `[−a,a]`, and needs no PSWF theory.  The remaining Lean work is its
+  out-of-band Fourier bound — an endpoint/stationary-phase estimate, not a spectral one.
+
+  Superseded action: settle (ii) first — it is cheap (a convention check
+  against `evenTimeBandFourier`'s definition) and it determines whether there is a gap at all.
+  Do not redesign the trial function until the target exponent is known.
+
+  Legacy (OVERSTATED, kept for the argument it contains) — the truncated Gaussian and the Fuchs
+  rate:
+
+  Write `f = Ph`, `τ = ‖h − Ph‖`.  Since `Uh = h`,
+
+```text
+  (I−P)Uf = (I−P)h − (I−P)U((I−P)h),
+```
+
+  and the deficit is exactly `‖(I−P)Uf‖²`.  The FIRST term `(I−P)h` has norm exactly `τ`, and
+  the second has norm at most `τ`.  So the deficit is `≈ τ²` unless the two terms CANCEL to
+  leading order.  For the plain truncated Gaussian there is no such cancellation, so
+
+```text
+  deficit ≍ τ² ≍ e^{−2πa²}/(4πa).
+```
+
+  The crude `4τ²` triangle bound is therefore of the CORRECT ORDER for this trial function —
+  the loss is not in the inequality.  But the true `1 − χ_0²` decays like `e^{−2c}` (two powers
+  of the tail, i.e. `≍ τ⁴`), because the genuine PSWF arranges exactly the cancellation the
+  Gaussian lacks.  The Rayleigh-quotient route gives the same order: `⟨Uf,f⟩ ≥ ‖h‖² − 3τ²` because `⟨h,r⟩ = τ²`
+  is a genuine first-order loss, so `d_0 ≲ τ²` there too.  What this DOES establish is that the
+  `4τ²` triangle bound is not the bottleneck — both routes land on `τ²`.  Whether `τ²` is the
+  right answer depends on (ii) above.
+
+  Legacy note — the exponent is not yet sharp.  This gives `d_0(a) = O(e^{−2πa²}/a)`.
+  Writing `c` for the time–bandwidth product, the classical Fuchs rate is `~ e^{−2c}` whereas the
+  plain truncated Gaussian yields only `e^{−c}`-type decay, and the polynomial factor comes out
+  as `a^{−1}` rather than the `a^{+1}` of `fuchsRate _ 0`.  Two causes, both real:
+  (i) the estimate `‖PUPh‖² ≥ ‖Ph‖² − 4τ²` is crude — it loses a square relative to the true
+  second-order behaviour; (ii) a plain Gaussian is not the true 0th prolate function.
+  CONSEQUENCE for the campaign: the current L6a machinery proves the leakage is exponentially
+  small (enough for qualitative statements like `d_0 → 0`) but does NOT supply the matching
+  two-sided `ClockEnvelope` rate, and cannot be made to by tightening the estimate.
+
+  REMAINING: sharpen the exponent as above; supply the `lower` field; then dilation for higher
+  `n`, the `n+1`
+  near-orthonormal assembly, and `𝓕 h_n = (−i)^n h_n`.
+
+  Superseded: split `(centralInterval a)ᶜ = Iio (−a) ∪ Ioi a` and apply the ray bound; bound
+  `‖P_a gaussEven‖²` below by a constant; then dilation for higher `n`, the `n+1` assembly, and
+  `𝓕 h_n = (−i)^n h_n`.
+
+  Superseded: supply `θ` explicitly, i.e. identify `‖gaussEven − P gaussEven‖²` with
+  `∫_{|x|>a} e^{−2πx²}` (bounded by `integral_Ioi_gauss_sq_le`) and `‖P gaussEven‖²` with
+  `∫_{-a}^{a} e^{−2πx²}` (bounded below by a fixed constant), giving `θ² = O(e^{−2πa²}/a)`.
+  Then dilate for higher `n`, assemble `n+1` near-orthonormal copies, and prove
+  `𝓕 h_n = (−i)^n h_n`.
+
+  Superseded: take `P := evenIndicatorCutoff a` (idempotent is
   `evenIndicatorCutoff_idempotent`; symmetry from its star-projection structure), identify
   `‖gaussEven − P gaussEven‖²` with the tail `∫_{|x|>a} e^{−2πx²}` bounded by
   `integral_Ioi_gauss_sq_le`, then

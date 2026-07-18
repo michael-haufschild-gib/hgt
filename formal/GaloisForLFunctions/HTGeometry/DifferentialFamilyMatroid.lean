@@ -18,18 +18,18 @@ open Set
 
 noncomputable section
 
-universe u
+universe u v w
 
 /-- The differential matroid on the indices of a family. -/
 def differentialFamilyMatroid
-    {F E ι : Type u} [Field F] [Field E] [Algebra F E]
+    {F E : Type u} {ι : Type v} [Field F] [Field E] [Algebra F E]
     [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
     (x : ι → E) : Matroid ι :=
   (differentialMatroid F E).comap x
 
 /-- Independence in the family matroid is differential independence of the indexed subfamily. -/
 theorem differentialFamilyMatroid_indep_iff
-    {F E ι : Type u} [Field F] [Field E] [Algebra F E]
+    {F E : Type u} {ι : Type v} [Field F] [Field E] [Algebra F E]
     [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
     (x : ι → E) (I : Set ι) :
     (differentialFamilyMatroid (F := F) x).Indep I ↔
@@ -54,7 +54,7 @@ theorem differentialFamilyMatroid_indep_iff
 
 /-- A fully differentially independent family represents the free matroid on its index set. -/
 theorem differentialFamilyMatroid_eq_freeOn_of_differentialIndependent
-    {F E ι : Type u} [Field F] [Field E] [Algebra F E]
+    {F E : Type u} {ι : Type v} [Field F] [Field E] [Algebra F E]
     [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
     {x : ι → E} (hx : DifferentialIndependent F x) :
     differentialFamilyMatroid (F := F) x = Matroid.freeOn Set.univ := by
@@ -70,7 +70,8 @@ theorem differentialFamilyMatroid_eq_freeOn_of_differentialIndependent
 the collision matroid of `frame` precisely when differential independence of every subfamily is
 equivalent to injectivity of its frame labels. -/
 theorem differentialFamilyMatroid_eq_affineCollisionMatroid_iff
-    {F E ι Frame : Type u} [Field F] [Field E] [Algebra F E]
+    {F E : Type u} {ι : Type v} {Frame : Type w}
+    [Field F] [Field E] [Algebra F E]
     [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
     (x : ι → E) (frame : ι → Frame) :
     differentialFamilyMatroid (F := F) x =
@@ -92,7 +93,7 @@ theorem differentialFamilyMatroid_eq_affineCollisionMatroid_iff
 /-- A family represents the free matroid exactly when the whole family is differentially
 independent. -/
 theorem differentialFamilyMatroid_eq_freeOn_iff
-    {F E ι : Type u} [Field F] [Field E] [Algebra F E]
+    {F E : Type u} {ι : Type v} [Field F] [Field E] [Algebra F E]
     [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
     {x : ι → E} :
     differentialFamilyMatroid (F := F) x = Matroid.freeOn Set.univ ↔

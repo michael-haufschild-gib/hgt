@@ -156,7 +156,8 @@ theorem atomicPowerMoment_eq_atomicAggregatePowerMoment
           ∑' i : z ⁻¹' {u}, c i.1 * u ^ n := by
         apply tsum_congr
         intro i
-        have hi : z i.1 = u := by simpa using i.property
+        have hi : z i.1 = u := by
+          exact Set.mem_singleton_iff.mp i.property
         dsimp only [F]
         rw [hi]
       _ = (∑' i : z ⁻¹' {u}, c i.1) * u ^ n := tsum_mul_right
@@ -197,13 +198,15 @@ theorem nonempty_atomicAggregateSupport_of_positive_real_moment
       hzero]
   exact (Complex.ofReal_ne_zero.mpr hm0.ne') hcast
 
-/-- **Aggregate-source tomography.**  Arbitrary repeated and zero raw fibres are quotiented out
-before selection.  The resulting nonzero aggregate source satisfies the complete tomography law,
-so injectivity and pointwise nonvanishing are intrinsic conclusions rather than raw hypotheses. -/
-theorem scaleCovariantBernsteinAbel_tomography_of_aggregate
+/-- **Defect-neutral aggregate-source tomography.**  Arbitrary repeated and zero raw fibres are
+quotiented out before selection.  Cofinite transverse neutrality descends to the nonzero aggregate
+support, which satisfies the strengthened complete tomography law.  Thus injectivity and
+pointwise nonvanishing are intrinsic conclusions rather than raw hypotheses. -/
+theorem scaleCovariantBernsteinAbel_tomography_of_aggregate_transverse_neutral
     {I : Type*} (c z : I → ℂ) (m : ℕ → ℝ)
     (hc : Summable c)
-    (hz0 : Tendsto z cofinite (nhds 0))
+    (htrans : Tendsto (fun i => HTGeometry.transverseDefect (z i))
+      cofinite (nhds 0))
     {M : ℝ} (hM : 0 ≤ M) (hbound : ∀ i, ‖z i‖ ≤ M)
     (hreal : ∀ i, (z i).im = 0 → 0 ≤ (z i).re)
     (hmoment : ∀ n, (m n : ℂ) = atomicPowerMoment c z n)
@@ -214,9 +217,9 @@ theorem scaleCovariantBernsteinAbel_tomography_of_aggregate
   letI : Nonempty (AtomicAggregateSupport c z) :=
     nonempty_atomicAggregateSupport_of_positive_real_moment
       hc hbound hmoment hm0
-  apply scaleCovariantBernsteinAbel_tomography
+  apply scaleCovariantBernsteinAbel_tomography_of_transverse_neutral
   · exact summable_atomicAggregateCoefficient hc
-  · exact tendsto_atomicAggregateNode_cofinite_zero hz0
+  · exact tendsto_atomicAggregateNode_transverseDefect_cofinite_zero htrans
   · exact atomicAggregateNode_injective c z
   · exact atomicAggregateCoefficient_ne_zero c z
   · exact hM
@@ -226,6 +229,27 @@ theorem scaleCovariantBernsteinAbel_tomography_of_aggregate
     exact (hmoment n).trans
       (atomicPowerMoment_eq_atomicAggregatePowerMoment hc hbound n)
   · exact hm0
+
+/-- Cofinite convergence of the raw support to the origin is a sufficient special case of
+defect-neutral aggregate tomography. -/
+theorem scaleCovariantBernsteinAbel_tomography_of_aggregate
+    {I : Type*} (c z : I → ℂ) (m : ℕ → ℝ)
+    (hc : Summable c)
+    (hz0 : Tendsto z cofinite (nhds 0))
+    {M : ℝ} (hM : 0 ≤ M) (hbound : ∀ i, ‖z i‖ ≤ M)
+    (hreal : ∀ i, (z i).im = 0 → 0 ≤ (z i).re)
+    (hmoment : ∀ n, (m n : ℂ) = atomicPowerMoment c z n)
+    (hm0 : 0 < m 0) :
+    ScaleCovariantBernsteinAbelTomographyLaw
+      (atomicAggregateCoefficient c z) (atomicAggregateNode c z) m M := by
+  have htrans : Tendsto (fun i => HTGeometry.transverseDefect (z i))
+      cofinite (nhds 0) := by
+    have hnorm := hz0.norm
+    have hre := Complex.continuous_re.continuousAt.tendsto.comp hz0
+    simpa only [HTGeometry.transverseDefect, norm_zero, Complex.zero_re, sub_zero]
+      using hnorm.sub hre
+  exact scaleCovariantBernsteinAbel_tomography_of_aggregate_transverse_neutral
+    c z m hc htrans hM hbound hreal hmoment hm0
 
 end
 

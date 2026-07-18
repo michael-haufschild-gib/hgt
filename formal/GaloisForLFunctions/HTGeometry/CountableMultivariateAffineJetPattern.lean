@@ -111,27 +111,6 @@ theorem multivariateAffinePatternDefect_isClosed {d : ℕ} {Λ : Type*}
     (multivariateAffinePatternObservationCLM frame p base)
     (multivariateCoefficientPatternDeterminant base p.coordinateExponent p.jetExponent)
 
-set_option maxHeartbeats 1000000 in
-/-- One escaping source makes the fixed pattern defect nowhere dense. -/
-theorem multivariateAffinePatternDefect_isNowhereDense_of_witness
-    {d : ℕ} {Λ : Type*}
-    (frame : Λ → (Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))
-    (p : FiniteMultivariateAffineJetPattern Λ d)
-    (base : MultivariateAffinePatternRow p → Fin d → ℂ)
-    (f₀ : MultivariateEntire d)
-    (hf₀ : MvPolynomial.eval (multivariateAffinePatternObservationCLM frame p base f₀)
-      (multivariateCoefficientPatternDeterminant
-        base p.coordinateExponent p.jetExponent) ≠ 0) :
-    IsNowhereDense (multivariateAffinePatternDefect frame p base) := by
-  let L := multivariateAffinePatternObservationCLM frame p base
-  let P := multivariateCoefficientPatternDeterminant
-    base p.coordinateExponent p.jetExponent
-  change IsNowhereDense {f | MvPolynomial.eval (L f) P = 0}
-  change MvPolynomial.eval (L f₀) P ≠ 0 at hf₀
-  have hclosed := isClosed_continuousLinearMap_mvPolynomial_zero L P
-  rw [hclosed.isNowhereDense_iff]
-  exact interior_continuousLinearMap_mvPolynomial_zero_eq_empty_of_witness L P f₀ hf₀
-
 /-- Chosen finite witness data for a decorated pattern. -/
 structure MultivariateAffinePatternWitness {d : ℕ} {Λ : Type*}
     (frame : Λ → (Fin d → ℂ) ≃ᴬ[ℂ] (Fin d → ℂ))
@@ -142,6 +121,8 @@ structure MultivariateAffinePatternWitness {d : ℕ} {Λ : Type*}
     (multivariateAffinePatternObservationCLM frame p base source)
     (multivariateCoefficientPatternDeterminant
       base p.coordinateExponent p.jetExponent) ≠ 0
+  defect_interior_empty :
+    interior (multivariateAffinePatternDefect frame p base) = ∅
 
 /-- Avoid every chosen finite decorated-monomial determinant defect. -/
 def multivariateAffinePatternResidualSet {d : ℕ} {Λ : Type*}
@@ -161,11 +142,11 @@ theorem multivariateAffinePatternResidualSet_dense_residual
       multivariateAffinePatternResidualSet frame witness ∈ residual (MultivariateEntire d) := by
   let D : FiniteMultivariateAffineJetPattern Λ d → Set (MultivariateEntire d) :=
     fun p ↦ multivariateAffinePatternDefect frame p (witness p).base
-  have hnowhere : ∀ p, IsNowhereDense (D p) := fun p ↦
-    multivariateAffinePatternDefect_isNowhereDense_of_witness
-      frame p (witness p).base (witness p).source (witness p).escapes
   have hclosed : ∀ p, IsClosed (D p) := fun p ↦
     multivariateAffinePatternDefect_isClosed frame p (witness p).base
+  have hnowhere : ∀ p, IsNowhereDense (D p) := fun p ↦
+    GaloisForLFunctions.isNowhereDense_of_isClosed_of_interior_eq_empty
+      (hclosed p) (witness p).defect_interior_empty
   have hopen : ∀ p, IsOpen (D p)ᶜ := fun p ↦ (hclosed p).isOpen_compl
   have hdense : ∀ p, Dense (D p)ᶜ := fun p ↦
     interior_eq_empty_iff_dense_compl.mp

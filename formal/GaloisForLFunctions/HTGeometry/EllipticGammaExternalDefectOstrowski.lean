@@ -20,7 +20,7 @@ open scoped Differential BigOperators nonZeroDivisors
 
 namespace GaloisForLFunctions
 
-open Bottcher
+open Bottcher HTGeometry
 
 noncomputable section
 
@@ -34,8 +34,7 @@ local instance ellipticGammaOstrowskiComplexAlgebraAnalytic :
 
 local instance ellipticGammaOstrowskiComplexAlgebraMero :
     Algebra ℂ (meroField Set.univ) :=
-  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
-    (constToAnalytic Set.univ)).toAlgebra
+  meromorphicEllipticCompositumComplexAlgebraMero
 
 local instance ellipticGammaOstrowskiAmbientDifferential :
     Differential (meroField (Set.univ : Set ℂ)) :=
@@ -62,13 +61,20 @@ theorem meromorphicEllipticCompositum_deriv_algebraMap_complex
   change
     (algebraMap (analyticSubring Set.univ) (meroField Set.univ)
       (constToAnalytic Set.univ c))′ = 0
-  rw [meroFieldDifferential_algebraMap]
+  rw [meroFieldDifferential_algebraMap isOpen_univ isPreconnected_univ
+    Set.univ_nonempty]
   have hconst : analyticSubringDeriv isOpen_univ
       (constToAnalytic Set.univ c) = 0 := by
     apply Subtype.ext
     rw [analyticSubringDeriv_coe]
-    change (deriv (fun _ : ℂ ↦ c) : Germ (𝒱 Set.univ) ℂ) = 0
-    simp
+    let f : ℂ → ℂ := fun _ ↦ c
+    calc
+      Germ.coeRingHom (Filter.principal Set.univ) (deriv f) =
+          Germ.coeRingHom (Filter.principal Set.univ) (0 : ℂ → ℂ) := by
+        congr 1
+        funext z
+        simp [f]
+      _ = 0 := (Germ.coeRingHom (Filter.principal Set.univ)).map_zero
   rw [hconst, map_zero]
 
 /-! ## Differential-operator closure and coercion -/
@@ -107,20 +113,12 @@ theorem algebraMap_meromorphicEllipticCompositum_differentialOperatorApply
       differentialOperatorApply L
         (algebraMap (meromorphicEllipticCompositum sigma tau)
           (meroField Set.univ) x) := by
-  classical
-  unfold differentialOperatorApply
-  rw [Polynomial.sum_def, Polynomial.sum_def, map_sum]
-  apply Finset.sum_congr rfl
-  intro n hn
-  rw [map_mul, differentialJet_algebraMap_of_differentialAlgebra]
-  exact congrArg
-    (fun c : meroField Set.univ ↦
-      c * differentialJet n
-        (algebraMap (meromorphicEllipticCompositum sigma tau)
-          (meroField Set.univ) x))
-    (IsScalarTower.algebraMap_apply ℂ
-      (meromorphicEllipticCompositum sigma tau)
-      (meroField Set.univ) (L.coeff n))
+  letI : IsScalarTower ℂ (meromorphicEllipticCompositum sigma tau)
+      (meroField Set.univ) :=
+    IsScalarTower.of_algebraMap_eq
+      (R := ℂ) (S := meromorphicEllipticCompositum sigma tau)
+      (A := meroField Set.univ) fun _ ↦ rfl
+  exact differentialOperatorApply_algebraMap_of_differentialAlgebra L x
 
 /-! ## Rational independence gives nontorsion of the transverse source -/
 
@@ -159,9 +157,9 @@ def ellipticGammaExternalDefectIncrementFamily
 
 /-! ## Excluding every finite simultaneous jet telescoper -/
 
-/-- No nonzero finite jet character of a pairwise separated actual defect family can be the
-simultaneous coboundary of one element of `E_sigma E_tau`. -/
-theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
+/-- A nonzero polynomial differential-operator character of a pairwise separated actual defect
+family cannot be the `sigma`-coboundary of an element of `E_sigma E_tau`. -/
+theorem ellipticGammaExternalDefectFamily_no_operator_telescoping
     {kappa : Type*} [DecidableEq kappa]
     (h : kappa → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
@@ -169,49 +167,19 @@ theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
     (hnonres : ∀ j, ThetaTranslationNonresonant tau sigma (h j))
     (hsep : ∀ i j, j ≠ i →
       ThetaTranslationNonresonant tau sigma (h j - h i))
-    (c : (kappa × ℕ) →₀ ℂ) (hc : c ≠ 0)
+    (operatorCoefficients : kappa →₀ Polynomial ℂ)
+    (i0 : kappa) (hi0 : i0 ∈ operatorCoefficients.support)
+    (hLi0 : operatorCoefficients i0 ≠ 0)
     (k : meromorphicEllipticCompositum sigma tau) :
-    ∃ i,
-      (ellipticGammaCompositumDifferenceDifferentialField sigma tau).defect i k ≠
-        Finsupp.linearCombination (meromorphicEllipticCompositum sigma tau)
-          (fun p ↦ differentialJet p.2
-            (ellipticGammaExternalDefectIncrementFamily
-              h sigma tau hsigma htau i p.1))
-          (Finsupp.mapRange
-            (algebraMap ℂ (meromorphicEllipticCompositum sigma tau))
-            (map_zero (algebraMap ℂ
-              (meromorphicEllipticCompositum sigma tau))) c) := by
+    (ellipticGammaCompositumDifferenceDifferentialField sigma tau).defect 1 k ≠
+      differentialOperatorLinearCombination
+        (fun j i ↦ ellipticGammaExternalDefectIncrementFamily
+          h sigma tau hsigma htau i j) operatorCoefficients 1 := by
   classical
-  let operatorCoefficients : kappa →₀ Polynomial ℂ :=
-    differentialOperatorCoefficientEquiv c
-  have hoperators : operatorCoefficients ≠ 0 := by
-    intro hzero
-    apply hc
-    apply (differentialOperatorCoefficientEquiv
-      (J := kappa) (C := ℂ)).injective
-    simpa [operatorCoefficients] using hzero
-  obtain ⟨i0, hLi0⟩ := Finsupp.ne_iff.mp hoperators
-  have hi0 : i0 ∈ operatorCoefficients.support :=
-    Finsupp.mem_support_iff.mpr hLi0
   let omega : kappa → Fin 3 →
       meromorphicEllipticCompositum sigma tau := fun j i ↦
     ellipticGammaExternalDefectIncrementFamily
       h sigma tau hsigma htau i j
-  have hflat :
-      differentialOperatorLinearCombination omega operatorCoefficients (1 : Fin 3) =
-        Finsupp.linearCombination (meromorphicEllipticCompositum sigma tau)
-          (fun p ↦ differentialJet p.2
-            (ellipticGammaExternalDefectIncrementFamily
-              h sigma tau hsigma htau 1 p.1))
-          (Finsupp.mapRange
-            (algebraMap ℂ (meromorphicEllipticCompositum sigma tau))
-            (map_zero (algebraMap ℂ
-              (meromorphicEllipticCompositum sigma tau))) c) := by
-    have h := differentialOperator_linearCombination_eq_jetLinearCombination
-      (hconst := meromorphicEllipticCompositum_deriv_algebraMap_complex
-        sigma tau)
-      omega operatorCoefficients (1 : Fin 3)
-    simpa [omega, operatorCoefficients] using h
   let thetaSum : meroField Set.univ :=
     ∑ j ∈ operatorCoefficients.support,
       differentialOperatorApply (operatorCoefficients j)
@@ -231,31 +199,36 @@ theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
             omega operatorCoefficients (1 : Fin 3)) =
         thetaSum := by
     dsimp only [thetaSum]
-    rw [differentialOperatorLinearCombination, map_finsuppSum]
+    rw [differentialOperatorLinearCombination,
+      map_finsuppSum
+        (algebraMap (meromorphicEllipticCompositum sigma tau)
+          (meroField Set.univ))]
     unfold Finsupp.sum
     apply Finset.sum_congr rfl
     intro j hj
+    change algebraMap (meromorphicEllipticCompositum sigma tau)
+        (meroField Set.univ)
+          (differentialOperatorApply (operatorCoefficients j) (omega j 1)) = _
     rw [algebraMap_meromorphicEllipticCompositum_differentialOperatorApply]
-    change differentialOperatorApply (operatorCoefficients j)
-        (thetaLogDerivDefectMero (h j) tau htau) = _
-    rfl
-  refine ⟨(1 : Fin 3), ?_⟩
+    exact congrArg (differentialOperatorApply (operatorCoefficients j)) (by
+      simp [omega, ellipticGammaExternalDefectIncrementFamily,
+        ellipticGammaExternalDefectIncrement_one_coe])
   intro htel
-  have htel' :
-      (ellipticGammaCompositumDifferenceDifferentialField sigma tau).defect 1 k =
-        differentialOperatorLinearCombination omega operatorCoefficients 1 :=
-    htel.trans hflat.symm
   have htelAmbient := congrArg
     (algebraMap (meromorphicEllipticCompositum sigma tau)
-      (meroField Set.univ)) htel'
+      (meroField Set.univ)) htel
+  rw [CommutingDifferenceDifferentialField.defect] at htelAmbient
+  rw [(algebraMap (meromorphicEllipticCompositum sigma tau)
+    (meroField Set.univ)).map_sub] at htelAmbient
+  rw [← ellipticGammaCompositum_aut_algebraMap sigma tau
+    (1 : Fin 3) k] at htelAmbient
   have hcoboundary : addTranslationMeroAlgEquiv sigma
         (k : meroField Set.univ) - (k : meroField Set.univ) =
       (aTau : meroField Set.univ) := by
     change addTranslationMeroEquiv sigma (k : meroField Set.univ) -
         (k : meroField Set.univ) = thetaSum
     rw [← homegaCoe]
-    simpa only [CommutingDifferenceDifferentialField.defect,
-      ellipticGammaCompositum_aut_algebraMap, map_sub] using htelAmbient
+    exact htelAmbient
   obtain ⟨u, hu⟩ := exists_ellipticTau_coboundary_of_compositum_sigma
     sigma tau hindependent aTau k.2 hcoboundary
   obtain ⟨a, b, hbmem, hab⟩ :=
@@ -317,6 +290,64 @@ theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
     hb hf hg hfa hgb hellipticFraction
     (fun n ↦ hlocal (additiveOrbitPoint
       (thetaHalfPeriod tau - h i0) sigma n))
+
+/-- No nonzero finite jet character of a pairwise separated actual defect family can be the
+simultaneous coboundary of one element of `E_sigma E_tau`. -/
+theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
+    {kappa : Type*} [DecidableEq kappa]
+    (h : kappa → ℂ) (sigma tau : ℂ)
+    (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
+    (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
+    (hnonres : ∀ j, ThetaTranslationNonresonant tau sigma (h j))
+    (hsep : ∀ i j, j ≠ i →
+      ThetaTranslationNonresonant tau sigma (h j - h i))
+    (c : (kappa × ℕ) →₀ ℂ) (hc : c ≠ 0)
+    (k : meromorphicEllipticCompositum sigma tau) :
+    ∃ i,
+      (ellipticGammaCompositumDifferenceDifferentialField sigma tau).defect i k ≠
+        Finsupp.linearCombination (meromorphicEllipticCompositum sigma tau)
+          (fun p ↦ differentialJet p.2
+            (ellipticGammaExternalDefectIncrementFamily
+              h sigma tau hsigma htau i p.1))
+          (Finsupp.mapRange
+            (algebraMap ℂ (meromorphicEllipticCompositum sigma tau))
+            (map_zero (algebraMap ℂ
+              (meromorphicEllipticCompositum sigma tau))) c) := by
+  classical
+  let operatorCoefficients : kappa →₀ Polynomial ℂ :=
+    differentialOperatorCoefficientEquiv c
+  have hoperators : operatorCoefficients ≠ 0 := by
+    intro hzero
+    apply hc
+    apply (differentialOperatorCoefficientEquiv
+      (J := kappa) (C := ℂ)).injective
+    simpa [operatorCoefficients] using hzero
+  obtain ⟨i0, hLi0⟩ := Finsupp.ne_iff.mp hoperators
+  have hi0 : i0 ∈ operatorCoefficients.support :=
+    Finsupp.mem_support_iff.mpr hLi0
+  let omega : kappa → Fin 3 →
+      meromorphicEllipticCompositum sigma tau := fun j i ↦
+    ellipticGammaExternalDefectIncrementFamily
+      h sigma tau hsigma htau i j
+  have hflat :
+      differentialOperatorLinearCombination omega operatorCoefficients (1 : Fin 3) =
+        Finsupp.linearCombination (meromorphicEllipticCompositum sigma tau)
+          (fun p ↦ differentialJet p.2
+            (ellipticGammaExternalDefectIncrementFamily
+              h sigma tau hsigma htau 1 p.1))
+          (Finsupp.mapRange
+            (algebraMap ℂ (meromorphicEllipticCompositum sigma tau))
+            (map_zero (algebraMap ℂ
+              (meromorphicEllipticCompositum sigma tau))) c) := by
+    have hflatten := differentialOperator_linearCombination_eq_jetLinearCombination
+      omega operatorCoefficients (1 : Fin 3)
+    simpa [omega, operatorCoefficients] using hflatten
+  refine ⟨(1 : Fin 3), ?_⟩
+  intro htel
+  apply ellipticGammaExternalDefectFamily_no_operator_telescoping
+    h sigma tau hsigma htau hindependent hnonres hsep
+    operatorCoefficients i0 hi0 hLi0 k
+  exact htel.trans hflat.symm
 
 /-! ## Differential independence -/
 
