@@ -1792,3 +1792,70 @@ domain); corrected: `A_S(L) = 2(1 - e^{-1/2}) S e^{-L/2} - 2(e^{1/2} - 1) e^{L/2
 independent). One exponent calibration (d vs 2d frames) queued before promotion. Scope
 corrected: the perimeter governs GROWTH-CLASS functionals only (band sequences encode
 ordinates). Citations: von Koch 1901; Ingham Thm 30; Landau 1909 converse.
+
+## 2026-07-18 session 2 (cont. 43) — d-vs-2d EXPONENT CALIBRATION RESOLVED (perimeter
+## referee flag); convention note; cont. 33-40 exponent audit clean
+
+**[CONVENTION NOTE — sympy-certified, band_major_gate3.py appendix (A)-(D)]** `nu_sub` AS
+DEFINED (cont. 38: `|dN-hat(lambda)|^2` of the per-box FINITE packet) has band mass
+`~ e^{2dL}` DEFINITIVELY: for atoms at `u = ±id` the power spectrum is exactly
+`4m^2 cosh^2(d lambda)` with no window and no normalization freedom (band/e^{2dL} ->
+`(e^{2d}-1)/(8d)`, finite nonzero); box-frame TYPE = `2d`, matching the Krein pole at
+`sigma = 2d` and the `p^{2d} = e^{2d log p}` epsilon_S asymmetry. The referee's `e^{dL}`
+reading came from the LAG band of the autocorrelation of the GROWING psi-error `~ e^{dw}`
+without stating the w-normalization — and there the lag exponent is pure window-anchoring
+convention: un-normalized low-anchored window gives `e^{+d lambda} * e^{2dW}` (divergence
+books the other d), per-w normalized gives pure `e^{+d lambda}`, cutoff anchored on the
+larger site (`m = n e^lambda <= S`) FLIPS it to `e^{-d lambda} * S^{2d}`. The invariant
+rate is `2d` in every anchoring; only the box frame books it entirely in the spectral
+variable. RULE: box-frame statements carry `2d`; any GLOBAL height-density statement must
+state its w-normalization explicitly. (The 4th print label of band_major_gate3.py line 16
+claimed `e^{2dL}` for a per-w-normalized integrand whose value is `e^{dL}` — label error,
+not a card error; appendix supersedes it.)
+
+**[EXPONENT AUDIT cont. 33-40 — ALL CORRECT, frames adjudicated]** (i) `p^{2d}` (cont. 33,
+34, 36, 37, 38): mirror/two-leg squared frame (`|Xi(s)|/|Xi(1-s-bar)| = p^{2 sigma - 1}`) —
+box-frame, correct. (ii) `p_{x+1}^d` per-level defect and `p^beta` fiber modulus (cont.
+33/34): single-leg AMPLITUDE frame, correctly distinguished from the mirror ratio. (iii)
+`type = 2d` / `2 sup|beta - 1/2|` / `2 max|Im gamma|` (cont. 37-39): box spectral frame,
+correct; the `sigma_0/2` strip-width clause (cont. 39) is exactly consistent with type
+`= 2d`. (iv) perimeter `band growth EXACTLY e^{2dL}` (cont. 40): correct in the box
+convention; the residue-frame derivation now carries the normalization clause above. (v)
+`S^{c-d}` (cont. 28-32): amplitude-frame ratio `S^{1/2+c}/S^{1/2+d}` — internally
+consistent, and the dichotomy (`-> 1` vs `-> infinity`) is invariant under squaring to the
+box frame `S^{2(c-d)}`; flag it amplitude-convention, no repair needed. No statement in
+cont. 33-40 uses a wrong exponent; the calibration queued in cont. 42 is CLEARED for the
+perimeter promotion.
+
+## 2026-07-18 session 2 (cont. 44) — THE SPLICE SUCCEEDS: the certificate is the fiber
+## decomposition of the canonical orientation energy; algebra core formalized (module 4)
+
+**[SPLICE — VERIFIED]** Dictionary exact (slab-germ Gram-det = the XiPrimeSeamPairVariance
+pluckerGramDet algebra with holomorphic squares in place of Hermitian norms). The FE∘Schwarz
+composition fixes heights and KILLS THE FIBER MEAN (`sum m_j d_j = 0`, verified), giving
+`mu_1(gamma) = -2 M(gamma) * sum_j m_j d_j^2` — the corpus weightedVariance identity with the
+rank-one term annihilated by circuit symmetry. Define the LOCALIZED ORIENTATION ENERGY
+`E_Xi(gamma) := sum_{rho in XiDivisorSupport, Im rho = gamma} xiHurwitzOrientationEnergyTerm
+rho` (nonnegative regrouping of the master ~459 tsum). Then:
+
+> **RH ⟺ E_Xi = 0 ⟺ (∀ gamma) E_Xi(gamma) = 0 ⟺ (∀ gamma) mu_1(gamma) = 0** — the
+> slab-germ certificate IS the height-fiber decomposition of the corpus's canonical
+> orientation energy, with each fiber's vanishing boundary-computable on an unconditionally
+> admissible slab (equi-vanishing, NOT proportionality — the literal identity is false and
+> degenerates at d -> 1/2, excluded by the de la Vallee Poussin edge input).
+
+**[NAMED OPEN CORE — the germ-residue transport]** `lim_{h->0} p_k(S(gamma,h)) =
+sum_{Im rho = gamma} m_rho u_rho^k` (argument-principle reading + eventual constancy):
+card-refereed (cont. 42), NOT yet in Lean — the next formalization target. The RH-hard core is
+unchanged in identity but RELOCATED: the row-415 source equality now needs to force only
+`E_Xi(gamma) = 0` ONE HEIGHT AT A TIME against the slab boundary integral. Next Gate-2: state
+the fiberwise row-415 demand exactly.
+
+**[LEAN MODULE 4 — SHIPPED, commit 2e7a1390]** `RHTower/CoHighPacketGramCollapse.lean`
+(371 lines, 10 mains, axioms = [propext, Classical.choice, Quot.sound]): the complex Lagrange
+identity (proved from scratch, no conjugation), co-high collapse to real nonpositive
+pair-energy, quantized violation, single-point characterization, isolated-pair value. The
+slab-germ certificate's COMPLETE ALGEBRA CORE is now formal; the analytic layer (slab
+contours + germ-residue transport) is the remaining Lean surface. (Calibration: cont. 43
+appended by the calibration agent — box-frame type 2d definitive, downstream audit clean,
+perimeter promotion unblocked.)
