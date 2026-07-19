@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialPointedCollisionIncidenceMatroid
+import GaloisForLFunctions.HTGeometry.DifferentialPairwiseCommonMode
 import GaloisForLFunctions.RHTower.XiTransverseShiftPairwiseValue
 
 /-!
@@ -41,6 +42,49 @@ local instance xiCollisionIncidenceCoordinateDifferentialAlgebra :
     change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
     rfl
 
+/-- The corrected Xi values at the occupied nonzero shift labels are jointly differentially
+independent over the rational coordinate field. Repeated original vertices have already been
+collapsed by the pointed collision support. -/
+theorem xiTransverseShiftUpperEndCarrier_pointedCollisionSupport_differentialIndependent
+    {V : Type} [Fintype V] (shift : V → ℕ) :
+    DifferentialIndependent upperEndRationalCoordinateField
+      (fun q : pointedCollisionIncidenceSupport shift 0 ↦
+        xiTransverseShiftUpperEndCarrier q) := by
+  apply xiTransverseShiftUpperEndCarrier_differentialIndependent_of_injective_ne_zero
+    (fun q : pointedCollisionIncidenceSupport shift 0 ↦ (q : ℕ))
+  · exact Subtype.val_injective
+  · intro q
+    exact (Finset.mem_erase.mp q.property).1
+
+/-- **Exact Xi common-mode classifier.** For every finite inhabited integral shift family,
+including repetitions, the complete ordered pairwise corrected-Xi reporter recovers the vertex
+differential field over the rational coordinate base exactly when the zero shift occurs. When zero
+is absent, the unrecovered common mode is hypertranscendental over the pairwise field. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices_iff_zero_mem_range
+    {V : Type} [Fintype V] (anchor : V) (shift : V → ℕ) :
+    differentialAdjoin upperEndRationalCoordinateField
+        (Set.range
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift Prod.snd Prod.fst)) =
+      differentialAdjoin upperEndRationalCoordinateField
+        (Set.range fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) ↔
+      0 ∈ Set.range shift := by
+  have hx0 : xiTransverseShiftUpperEndCarrier 0 = 0 :=
+    xiTransverseShiftUpperEndCarrier_zero
+  have hx :=
+    xiTransverseShiftUpperEndCarrier_pointedCollisionSupport_differentialIndependent shift
+  change
+    differentialAdjoin upperEndRationalCoordinateField
+        (Set.range fun p : V × V ↦
+          xiTransverseShiftUpperEndCarrier (shift p.1) -
+            xiTransverseShiftUpperEndCarrier (shift p.2)) =
+      differentialAdjoin upperEndRationalCoordinateField
+        (Set.range fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) ↔
+      0 ∈ Set.range shift
+  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range
+    (F := upperEndRationalCoordinateField) (K := upperEndMeroField)
+    (V := V) (L := ℕ) anchor shift 0
+    xiTransverseShiftUpperEndCarrier hx0 hx
+
 /-- **Arbitrary-label Xi incidence law.** For every finite integral shift family, including
 repeated and zero shifts, the pairwise corrected completed-Xi reporters represent exactly the
 incidence matroid after equal shift labels are collapsed and the zero label is deleted. -/
@@ -54,14 +98,8 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_eq_po
         (C := upperEndRationalCoordinateField) shift 0 tail head := by
   have hx0 : xiTransverseShiftUpperEndCarrier 0 = 0 :=
     xiTransverseShiftUpperEndCarrier_zero
-  have hx : DifferentialIndependent upperEndRationalCoordinateField
-      (fun q : pointedCollisionIncidenceSupport shift 0 ↦
-        xiTransverseShiftUpperEndCarrier q) := by
-    apply xiTransverseShiftUpperEndCarrier_differentialIndependent_of_injective_ne_zero
-      (fun q : pointedCollisionIncidenceSupport shift 0 ↦ (q : ℕ))
-    · exact Subtype.val_injective
-    · intro q
-      exact (Finset.mem_erase.mp q.property).1
+  have hx :=
+    xiTransverseShiftUpperEndCarrier_pointedCollisionSupport_differentialIndependent shift
   simpa [xiTransverseShiftPairDifferenceUpperEndCarrier] using
     (differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid
       (C := upperEndRationalCoordinateField) shift 0 tail head

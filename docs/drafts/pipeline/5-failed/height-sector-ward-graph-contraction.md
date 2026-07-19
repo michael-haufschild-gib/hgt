@@ -43,22 +43,23 @@ B_(1+epsilon)(delta+i eta)
   -> 1/(1+delta+i eta).
 ```
 
-Thus the overlap has two inequivalent critical charts.  It stays nondegenerate on the contact
-scale `gamma=epsilon eta`, but collapses linearly at every fixed nonzero physical height.  The
-forced `epsilon^(-1)` macroscopic normalization is singular at height zero.  A single uniformly
-nondegenerate widening-strip Hilbert trivialization, as demanded by `HSW-2`, is therefore the wrong
-object.
+Thus this specific overlap has two inequivalent critical charts.  It stays nondegenerate on the
+contact scale `gamma=epsilon eta`, but collapses linearly at every fixed nonzero physical height.
+The forced `epsilon^(-1)` macroscopic normalization is singular at height zero.  This refutes the
+single uniformly nondegenerate widening-strip trivialization demanded by `HSW-2`; it does not rule
+out every other source gauge or prove that every RH route needs two-chart gluing.
 
 The positive survivor is the **squarefree height Rees blow-up**: a microscopic Cauchy chart and a
 renormalized fixed-height chart with their source transition.  The dependency-closed Lean source
 is `formal/GaloisForLFunctions/RHTower/SquarefreeHeightReesBlowup.lean`; its direct check is pending
 because another shared Lean build owns the only allowed foreground slot.
 
-The replacement research target is not another abstract graph quotient.  It is the concrete
-Gamma--Möbius characteristic colligation on the globally summable valuation-difference source,
-followed by a two-chart inter-fibre completion.  Its first finite coefficients must equal the
-already-formalized Euler--Gamma anomaly, and its source annihilator must be nonzero before graph
-closure.  Failure of either finite identity kills the replacement immediately.
+The direct declaration-backed target is now the positive-frequency sign of the explicit continued
+prime--archimedean source response.  A concrete Gamma--Möbius characteristic colligation on the
+globally summable valuation-difference source is only a candidate producer for that sign, not the
+theorem-forced replacement.  Its first finite coefficients must equal the already-formalized
+Euler--Gamma anomaly before any two-chart completion or graph closure is attempted.  A mismatch
+kills the candidate immediately.
 
 ## The conjectural object
 

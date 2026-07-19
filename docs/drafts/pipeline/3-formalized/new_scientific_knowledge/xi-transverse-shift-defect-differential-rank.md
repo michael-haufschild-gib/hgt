@@ -169,6 +169,27 @@ discharged: coefficient flows must be conserved at every occupied nonzero shift 
 single collapsed zero-shift vertex. The zero-vertex equation is forced by total incidence, so it
 is a conclusion of the quotient law rather than an additional hypothesis.
 
+The complete pairwise generated-field law is now exact for the same arbitrary-label families. For
+every finite inhabited integral shift family, including repetitions, the complete ordered pairwise
+corrected-Xi reporter generates the full vertex differential field if and only if zero belongs to
+the shift range. If zero is absent, collapse to the occupied labels: those nonzero Xi values are
+jointly differentially independent, so any retained anchor value is hypertranscendental over the
+pairwise field and the inclusion is strict. If zero is present, its carrier is literally zero and
+the common mode is recovered. This iff classification holds over both the rational coordinate and
+complete scalar valuation-layer bases; the earlier chosen-zero-root equalities are precisely its
+forward specializations.
+
+The uncorrected even-shift value reflection satisfies the same stronger classification directly.
+For arbitrary finite grade families, literal pairwise differences of the actual completed-Xi
+logarithmic translates represent the collision-quotient incidence matroid of the occupied grades,
+over both bases. Repeated grades are collapsed, grade zero is the deleted column, and every packet
+relation is exactly a quotient Kirchhoff circulation. The complete raw pairwise reporter recovers
+the raw vertex field if and only if grade zero occurs; otherwise the absolute common mode remains
+hypertranscendental. This removes the chosen-zero-root and distinct-grade hypotheses from the raw
+pairwise matroid, Prop, Kirchhoff, rank, and generated-field theory, rather than routing the result
+through an archimedean correction identity. Combining the raw/corrected vertex-field identity with
+this iff also gives the exact threshold for recovery of the corrected prime-source field itself.
+
 At the value level this incidence structure extends beyond even integral shifts. For arbitrary
 complex shifts `a,b,c`, the raw pairwise differences form an additive cocycle, reverse orientation
 negates the value, and the diagonal vanishes. Completed-Xi reciprocity fixes the `(a,b)` difference
@@ -330,6 +351,15 @@ RH-strength assertion must be proved.
   `GaloisForLFunctions.HTGeometry.differentialAdjoin_range_pairwiseDifferences_eq_iff_root_mem`,
   and
   `GaloisForLFunctions.HTGeometry.differentialAdjoin_range_pairwiseDifferences_eq_of_root_zero`
+- **General strict common-mode and occupied-label classifier module:**
+  `formal/GaloisForLFunctions/HTGeometry/DifferentialPairwiseCommonMode.lean`
+- **General occupied-label reduction, strict loss, and exact pointed iff laws:**
+  `GaloisForLFunctions.HTGeometry.range_comp_eq_occupiedLabels`,
+  `GaloisForLFunctions.HTGeometry.range_pairwiseComp_eq_occupiedLabels`,
+  `GaloisForLFunctions.HTGeometry.anchor_not_mem_differentialAdjoin_pairwiseDifferences`,
+  `GaloisForLFunctions.HTGeometry.differentialAdjoin_range_pairwiseDifferences_ne_of_differentialIndependent`,
+  and
+  `GaloisForLFunctions.HTGeometry.differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range`
 - **Raw even completed-Xi rank module:**
   `formal/GaloisForLFunctions/RHTower/XiEvenShiftRawDefectDifferentialRank.lean`
 - **Raw completed-Xi value reflection:**
@@ -360,6 +390,28 @@ RH-strength assertion must be proved.
   `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eRk`
 - **Pairwise all-valuation Kirchhoff interface:**
   `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_finset_iff_vertexConservation`
+- **Raw occupied-grade independence interfaces over both bases:**
+  `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedCollisionSupport_differentialIndependent`
+  and
+  `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent`
+- **Exact arbitrary-label raw pairwise field classifiers over both bases:**
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices_iff_zero_mem_range`
+  and
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_vertices_iff_zero_mem_range`
+- **Exact arbitrary-label raw pairwise corrected-source recovery over both bases:**
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_corrected_iff_zero_mem_range`
+  and
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_corrected_iff_zero_mem_range`
+- **Arbitrary-label raw pairwise collision matroid, Prop, Kirchhoff, and rank over both bases:**
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialMatroid_eq_pointedCollisionIncidenceMatroid`,
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialIndependent_iff_pointedCollisionIncidence`,
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialIndependent_finset_iff_pointedCollisionVertexConservation`,
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_pointedCollisionIncidence_eRk`,
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollisionIncidenceMatroid`,
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_iff_pointedCollisionIncidence`,
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_finset_iff_pointedCollisionVertexConservation`,
+  and
+  `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_pointedCollisionIncidence_eRk`
 - **Complete pairwise/vertex generated-field identities:**
   `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices`
   and
@@ -425,6 +477,14 @@ RH-strength assertion must be proved.
   `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_differentialIndependent_finset_iff_pointedCollisionVertexConservation`
   and
   `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_finset_iff_pointedCollisionVertexConservation`
+- **Occupied nonzero-label independence interfaces over both bases:**
+  `RHTower.xiTransverseShiftUpperEndCarrier_pointedCollisionSupport_differentialIndependent`
+  and
+  `RHTower.xiTransverseShiftUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent`
+- **Exact arbitrary-label pairwise field-recovery classifiers over both bases:**
+  `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices_iff_zero_mem_range`
+  and
+  `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_vertices_iff_zero_mem_range`
 - **All-valuation module:**
   `formal/GaloisForLFunctions/RHTower/XiTransverseShiftAllValuationLayerRank.lean`
 - **All-valuation capstone:**
@@ -441,7 +501,8 @@ RH-strength assertion must be proved.
   `RHTower.exists_xiTransversePrimeJetApertureGram_det_pos`
 - **Verification:** the new general-law leaf, refactored elliptic consumer, Xi source-rank leaf, and
   completed-Xi telescope leaf checked successfully with the repository toolchain; exact targeted
-  module builds emitted all new `.olean` files.
+  module builds emitted all new `.olean` files. The strict common-mode leaf and both arbitrary-label
+  Xi collision-incidence leaves also pass direct source checks and exact targeted module builds.
 - **Axiom audit:** the general finitary interface, general pointed-collision law, Xi exact matroid,
   Xi Prop interface, and Xi rank capstone report only `propext`, `Classical.choice`, and
   `Quot.sound`. The earlier absolute, all-valuation, and Hilbert-metric audits have the same
@@ -466,7 +527,12 @@ RH-strength assertion must be proved.
   baseline. The collision-quotient support, incidence matrix/matroid, ordinary Prop/rank
   interfaces, exact nonlinear matroid law, full quotient circulation/conservation equivalence,
   collapsed-zero equation discharge, and arbitrary-label Xi matroid/Prop/Kirchhoff/rank laws over
-  both bases likewise report only this baseline. The actual corrected
+  both bases likewise report only this baseline. The occupied-label range reductions, strict
+  common-mode loss, pointed field-recovery iff classifier, and its Xi occupied-support and exact
+  field-recovery specializations over both bases also report only this baseline. The raw occupied-
+  grade independence interfaces, exact zero-range field classifiers, arbitrary-label collision
+  matroids, abstract Props, full quotient-Kirchhoff laws, and ranks over both bases have the same
+  audit result. The actual corrected
   all-integral pairwise germ, complete generated fields, incidence matroids, Prop interfaces,
   Kirchhoff criteria, and ranks over both bases likewise report only this baseline. The corrected
   pairwise additive cocycle, archimedean reflection cocycle, centered invariant, and tail-zero
@@ -496,6 +562,7 @@ RH-strength assertion must be proved.
 - [x] classify arbitrary all-valuation packets by the same exact pointed collision matroid
 - [x] construct the deletion-robust positive Hilbert Gram for every finite aperture-jet packet
 - [x] telescope the even-shift Xi correction and expose the actual completed-Xi family
+- [x] remove root and distinct-grade hypotheses from the raw pairwise field and incidence theory
 - [ ] external novelty audit
 
 ## Log

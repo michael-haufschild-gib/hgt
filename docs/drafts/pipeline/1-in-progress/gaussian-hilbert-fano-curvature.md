@@ -189,6 +189,89 @@ Finally \(\operatorname{tr}Q_t=\mathbb E_tD\), proving (AD).
   \(t\mapsto\det(A^{\circ t})\) for all infinitely divisible correlation matrices, or
   the defect inequality (AD) for finite coherent-kernel spans, makes C2/C3 rediscovered.
 
+## Failed commutator-square shortcut and positive survivor
+
+`[FALSIFIED]`.  Pairwise commutativity does **not** turn (AD) into one half of a
+sum of squared mixed commutators.  Put
+
+\[
+ R_t=\sum_r A_rA_r^*,\qquad
+ \mathcal C_t=\sum_{r,s}\lVert[A_r,A_s^*]\rVert_{\mathrm{HS}}^2.
+\]
+
+Direct trace expansion, using only (A_rA_s=A_sA_r), gives the exact identity
+
+\[
+ \operatorname{tr}(Q_t^2)-
+   \sum_{r,s}\lVert A_rA_s\rVert_{\mathrm{HS}}^2
+ =\frac12\mathcal C_t+
+   \frac12\bigl(\operatorname{tr}(Q_t^2)-\operatorname{tr}(R_t^2)\bigr). \tag{RC}
+\]
+
+The omitted row--column asymmetry term need not vanish.  On 
+\(\mathbb R^3\), the commuting pair
+
+\[
+ A_1=E_{12},\qquad A_2=E_{13}
+\]
+
+has every product (A_rA_s=0), while
+
+\[
+ Q=E_{22}+E_{33},\qquad R=2E_{11},\qquad
+ \operatorname{tr}(Q^2)=2,\quad \operatorname{tr}(R^2)=4,
+ \quad \mathcal C=6.
+\]
+
+Thus the left side of (RC) is (2), whereas 
+\(\mathcal C/2=3\).  This is an exact symbolic counterexample, not a numerical
+test.  It kills the arbitrary-commuting-tuple square law and shows that
+commutativity alone is the wrong representation.
+
+`[PAPER-PROVED]` positive survivor: (RC) is the exact decomposition exposed by
+the failure.  Its mathematical content is that the Fano defect consists of a
+manifest mixed-commutator energy plus a signed imbalance between the column
+energy (Q) and row energy (R).  The identity is parent matrix algebra and is
+not a novelty claim; it will be formalised only if it is needed by the final
+coherent-state theorem.
+
+### C4 -- coherent row--column compensation law
+
+`[CONJECTURE]`.  For annihilation compressions of a finite span of distinct
+coherent states, the negative row--column imbalance can never consume the full
+mixed-commutator energy:
+
+\[
+ \operatorname{tr}(R_t^2)-\operatorname{tr}(Q_t^2)
+ < \mathcal C_t                                                     \tag{CC}
+\]
+
+whenever (N>1).  By (RC), (CC) is equivalent to strict sub-Poissonity, but its
+representation is stronger scientifically: it identifies the exact compensation
+mechanism that arbitrary commuting tuples lack.  The (E_{12},E_{13}) obstruction
+does not apply because coherent restrictions are jointly diagonalizable with a
+strictly positive coherent Gram matrix and arise from a common CCR dilation; the
+nilpotent counterexample has neither property.
+
+## Proven frontier base case
+
+`[PAPER-PROVED]`.  If the affine span of the configuration has dimension one, there is
+only one compressed annihilator `A_t`.  Then `Q_t=A_t^*A_t` and `R_t=A_tA_t^*` have
+the same squared trace, so the row--column anomaly in (RC) vanishes.  Consequently
+
+\[
+ -t^2(\log\det K_X)''(t)
+   =\frac12\lVert[A_t,A_t^*]\rVert_{\mathrm{HS}}^2>0
+\]
+
+for every distinct configuration with `N > 1`.  Strictness follows because the coherent
+eigenvectors have distinct real eigenvalues but nonzero pairwise inner products, whereas
+distinct eigenspaces of a normal operator are orthogonal.  The dependency-closed proof is
+recorded in `2-fully-proven/gaussian-hilbert-line-commutator-curvature.md`.
+
+This is a genuine failure-driven boundary theorem, not a proof of C2: affine dimension
+two is the first place where the signed row--column term can survive.
+
 ## `[OPEN CORE]`
 
 Prove or refute
@@ -199,8 +282,9 @@ Prove or refute
 \]
 
 for the jointly diagonalizable commuting tuple obtained by compressing the annihilation
-operators to a finite span of distinct coherent states.  The claim is not made for an
-arbitrary commuting tuple unless that stronger statement is separately proved.
+operators to a finite span of distinct coherent states.  Equivalently, prove (CC) by
+using the coherent Gram geometry and the common CCR dilation.  Pairwise commutativity
+alone is now known to be too coarse.
 
 No Lean formalization of C2/C3 is permitted before (OC) is closed on paper and the
 equivalence-level literature audit is repeated.
@@ -223,3 +307,6 @@ equivalence-level literature audit is repeated.
 - 2026-07-19 -- C1 killed exactly by the equilateral three-point family.
 - 2026-07-19 -- extracted (FC), reduced C2 to the coherent-span operator defect (OC),
   and made C3 the active failure-driven conjecture.
+- 2026-07-19 -- falsified the tempting half-commutator-square shortcut, extracted the
+  exact row--column decomposition (RC), and replaced the arbitrary commuting-tuple
+  representation by the coherent compensation conjecture (CC).

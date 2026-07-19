@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HilbertMetric.GradedPartition
 import GaloisForLFunctions.HilbertMetric.GaussianFock
 import GaloisForLFunctions.HilbertMetric.CentroidGauge
+import GaloisForLFunctions.HilbertMetric.FanoCommutator
 
 /-!
 # Hilbert-metric theorem area

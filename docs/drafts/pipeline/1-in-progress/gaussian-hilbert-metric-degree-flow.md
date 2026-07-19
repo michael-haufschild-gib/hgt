@@ -155,15 +155,15 @@ forced by the parent machinery.
 
 - [x] Parent layer: finite nonnegative graded partition, multiplicative midpoint law, and
   degree-variance inequality (`HilbertMetric/GradedPartition.lean`).
-- [ ] SOTA connector: finite rectangular Gram/Cauchy--Binet expansion into squared minors.
-  The exterior-power proof and weighted Pluecker connector are implemented; clean targeted
-  verification remains the gate.
-- [ ] Hilbert layer: ordered-tensor Fock truncations, finite-span reduction, and universal
-  multiplicative convexity are implemented in `HilbertMetric/GaussianFock.lean`; targeted
-  verification remains the gate.
-- [ ] Gaussian layer: centroid diagonal gauge is implemented and previously checked in
-  `HilbertMetric/CentroidGauge.lean`.  The connector from the universal Fock law to the
-  centroid-corrected metric determinant and raw three-scale inequality remains to be checked.
+- [x] SOTA connector: finite rectangular Gram/Cauchy--Binet expansion into squared minors,
+  exterior-power proof, and weighted Pluecker connector pass a clean targeted check in
+  `HilbertMetric/GradedPartition.lean`.
+- [x] Hilbert layer: ordered-tensor Fock truncations, finite-span reduction, determinant limit,
+  and universal multiplicative convexity pass a clean targeted check in
+  `HilbertMetric/GaussianFock.lean`.
+- [x] Gaussian layer: centroid diagonal gauge, the connector from the universal Fock law to the
+  centroid-corrected metric determinant, and the raw three-scale inequality pass a clean
+  targeted check in `HilbertMetric/CentroidGauge.lean`.
 - [ ] Algebraic endpoint: filtered evaluation ranks and cumulative-deficit identity.
 
 ## Literature audit log
@@ -192,3 +192,6 @@ forced by the parent machinery.
   weighted Pluecker partition, proves entrywise Taylor convergence and determinant convergence,
   and reduces arbitrary finite Hilbert families to their finite spans.  Verification is pending;
   no promotion claim is made before the exact source and final module gates pass.
+- 2026-07-19 — all three implemented SOTA leaves passed separate `lake env lean` checks.  The
+  algebraic flat-endpoint layer remains open, so the foundation card stays in progress and no
+  final module build or Stage-3 claim has been made.

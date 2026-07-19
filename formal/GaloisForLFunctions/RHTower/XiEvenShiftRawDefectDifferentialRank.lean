@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DifferentialFamilyMatroidBaseGauge
 import GaloisForLFunctions.HTGeometry.DifferentialConstantLinearFamilyMatroid
+import GaloisForLFunctions.HTGeometry.DifferentialPointedCollisionIncidenceMatroid
+import GaloisForLFunctions.HTGeometry.DifferentialPairwiseCommonMode
 import GaloisForLFunctions.RHTower.XiEvenShiftPrimeDefectTelescope
 import GaloisForLFunctions.RHTower.XiShiftAllValuationLayerBarrier
 import GaloisForLFunctions.RHTower.XiTransverseShiftAllValuationLayerRank
@@ -506,6 +508,271 @@ theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialMat
       ((grade '' I) ∩ {m | m ≠ 0}).encard := by
   rw [xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision,
     affinePointedCollisionMatroid_eRk]
+
+/-! ## Arbitrary-label pairwise collision quotient -/
+
+/-- Raw even completed-Xi values at the occupied nonzero grades are jointly differentially
+independent over the rational coordinate field. -/
+theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedCollisionSupport_differentialIndependent
+    {V : Type} [Fintype V] (grade : V → ℕ) :
+    DifferentialIndependent upperEndRationalCoordinateField
+      (fun q : pointedCollisionIncidenceSupport grade 0 ↦
+        xiEvenShiftRawLogDerivDefectUpperEndCarrier q) := by
+  let support := pointedCollisionIncidenceSupport grade 0
+  have hfull : DifferentialIndependent upperEndRationalCoordinateField
+      (fun i : ↑(Set.univ : Set ↑support) ↦
+        xiEvenShiftRawLogDerivDefectUpperEndCarrier (i : ↑support)) := by
+    apply (xiEvenShiftRawLogDerivDefectUpperEndCarrier_differentialIndependent_iff
+      (fun q : ↑support ↦ (q : ℕ)) Set.univ).2
+    constructor
+    · intro i _ j _ hij
+      exact Subtype.ext hij
+    · intro q _
+      exact (Finset.mem_erase.mp q.property).1
+  let embed : ↑support → ↑(Set.univ : Set ↑support) := fun q ↦ ⟨q, Set.mem_univ q⟩
+  have hembed : Function.Injective embed := by
+    intro i j hij
+    exact congrArg Subtype.val hij
+  simpa only [support, embed] using hfull.comp embed hembed
+
+/-- Raw even completed-Xi values at the occupied nonzero grades remain jointly differentially
+independent over the complete scalar valuation-layer field. -/
+theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
+    {V : Type} [Fintype V] (grade : V → ℕ) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+      (fun q : pointedCollisionIncidenceSupport grade 0 ↦
+        xiEvenShiftRawLogDerivDefectUpperEndCarrier q) := by
+  let support := pointedCollisionIncidenceSupport grade 0
+  have hfull : DifferentialIndependent analyticScalarValuationLayerDifferentialField
+      (fun i : ↑(Set.univ : Set ↑support) ↦
+        xiEvenShiftRawLogDerivDefectUpperEndCarrier (i : ↑support)) := by
+    apply
+      (xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialIndependent_iff
+        (fun q : ↑support ↦ (q : ℕ)) Set.univ).2
+    constructor
+    · intro i _ j _ hij
+      exact Subtype.ext hij
+    · intro q _
+      exact (Finset.mem_erase.mp q.property).1
+  let embed : ↑support → ↑(Set.univ : Set ↑support) := fun q ↦ ⟨q, Set.mem_univ q⟩
+  have hembed : Function.Injective embed := by
+    intro i j hij
+    exact congrArg Subtype.val hij
+  simpa only [support, embed] using hfull.comp embed hembed
+
+/-- **Exact raw-Xi common-mode classifier.** For every finite inhabited grade family, including
+repetitions, all ordered pairwise raw completed-Xi differences recover the vertex field over the
+rational coordinate base exactly when grade zero occurs. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices_iff_zero_mem_range
+    {V : Type} [Fintype V] (anchor : V) (grade : V → ℕ) :
+    differentialAdjoin upperEndRationalCoordinateField
+        (Set.range
+          (xiEvenShiftRawPairDifferenceUpperEndCarrier grade Prod.snd Prod.fst)) =
+      differentialAdjoin upperEndRationalCoordinateField
+        (Set.range fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) ↔
+      0 ∈ Set.range grade := by
+  have hx :=
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedCollisionSupport_differentialIndependent
+      grade
+  change
+    differentialAdjoin upperEndRationalCoordinateField
+        (Set.range fun p : V × V ↦
+          xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade p.1) -
+            xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade p.2)) =
+      differentialAdjoin upperEndRationalCoordinateField
+        (Set.range fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) ↔
+      0 ∈ Set.range grade
+  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range
+    (F := upperEndRationalCoordinateField) (K := upperEndMeroField)
+    (V := V) (L := ℕ) anchor grade 0
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier_zero hx
+
+/-- The exact raw-Xi common-mode classifier remains true after adjoining every scalar valuation
+layer to the differential base. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_vertices_iff_zero_mem_range
+    {V : Type} [Fintype V] (anchor : V) (grade : V → ℕ) :
+    differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range
+          (xiEvenShiftRawPairDifferenceUpperEndCarrier grade Prod.snd Prod.fst)) =
+      differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) ↔
+      0 ∈ Set.range grade := by
+  have hx :=
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
+      grade
+  change
+    differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range fun p : V × V ↦
+          xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade p.1) -
+            xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade p.2)) =
+      differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) ↔
+      0 ∈ Set.range grade
+  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range
+    (F := analyticScalarValuationLayerDifferentialField) (K := upperEndMeroField)
+    (V := V) (L := ℕ) anchor grade 0
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier_zero hx
+
+/-- **Exact raw pairwise source-recovery threshold.** The complete raw pairwise reporter recovers
+the full corrected even-shift prime-source field over the rational coordinate base exactly when
+grade zero occurs. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_corrected_iff_zero_mem_range
+    {V : Type} [Fintype V] (anchor : V) (grade : V → ℕ) :
+    differentialAdjoin upperEndRationalCoordinateField
+        (Set.range
+          (xiEvenShiftRawPairDifferenceUpperEndCarrier grade Prod.snd Prod.fst)) =
+      differentialAdjoin upperEndRationalCoordinateField
+        (Set.range fun v ↦ xiEvenShiftPrimeDefectUpperEndCarrier (grade v)) ↔
+      0 ∈ Set.range grade := by
+  rw [← xiEvenShiftRawLogDerivDefectUpperEndCarrier_differentialAdjoin_eq_corrected grade]
+  exact
+    xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices_iff_zero_mem_range
+      anchor grade
+
+/-- The exact raw pairwise source-recovery threshold remains true over the full scalar
+valuation-layer base. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_corrected_iff_zero_mem_range
+    {V : Type} [Fintype V] (anchor : V) (grade : V → ℕ) :
+    differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range
+          (xiEvenShiftRawPairDifferenceUpperEndCarrier grade Prod.snd Prod.fst)) =
+      differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range fun v ↦ xiEvenShiftPrimeDefectUpperEndCarrier (grade v)) ↔
+      0 ∈ Set.range grade := by
+  rw [←
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialAdjoin_eq_corrected
+      grade]
+  exact
+    xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_vertices_iff_zero_mem_range
+      anchor grade
+
+/-- **Arbitrary-label raw-Xi incidence law.** Pairwise raw even completed-Xi differences represent
+the occupied-grade collision-quotient incidence matroid over the rational coordinate field, with
+no root, injectivity, or positivity hypothesis. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialMatroid_eq_pointedCollisionIncidenceMatroid
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (grade : V → ℕ) (tail head : E → V) :
+    differentialFamilyMatroid
+        (F := upperEndRationalCoordinateField)
+        (xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head) =
+      pointedCollisionIncidenceMatroid
+        (C := upperEndRationalCoordinateField) grade 0 tail head := by
+  have hx :=
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedCollisionSupport_differentialIndependent
+      grade
+  simpa [xiEvenShiftRawPairDifferenceUpperEndCarrier] using
+    (differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid
+      (C := upperEndRationalCoordinateField) grade 0 tail head
+      xiEvenShiftRawLogDerivDefectUpperEndCarrier
+      xiEvenShiftRawLogDerivDefectUpperEndCarrier_zero hx)
+
+/-- Abstract Prop interface for every packet of an arbitrary-label raw-Xi edge family. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialIndependent_iff_pointedCollisionIncidence
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (grade : V → ℕ) (tail head : E → V) (I : Set E) :
+    DifferentialIndependent upperEndRationalCoordinateField
+        (fun e : I ↦ xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head e) ↔
+      (pointedCollisionIncidenceMatroid
+        (C := upperEndRationalCoordinateField) grade 0 tail head).Indep I := by
+  let y := xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head
+  rw [← differentialFamilyMatroid_indep_iff y I,
+    xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
+
+/-- Full occupied-grade quotient Kirchhoff interface for raw Xi over the rational coordinate
+field. The collapsed zero-grade equation is included and discharged by total incidence. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialIndependent_finset_iff_pointedCollisionVertexConservation
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (grade : V → ℕ) (tail head : E → V) (I : Finset E) :
+    DifferentialIndependent upperEndRationalCoordinateField
+        (fun e : ↑(↑I : Set E) ↦
+          xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head e) ↔
+      ∀ weight : ↑(↑I : Set E) → upperEndRationalCoordinateField,
+        (∀ q : pointedCollisionIncidenceVertex grade 0,
+          (∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf grade 0
+                (head (e : E)) = q then weight e else 0) =
+            ∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf grade 0
+                (tail (e : E)) = q then weight e else 0) →
+          ∀ e, weight e = 0 := by
+  rw [xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialIndependent_iff_pointedCollisionIncidence
+      grade tail head (↑I : Set E),
+    pointedCollisionIncidenceMatroid_indep_iff_vertex_conservation]
+
+/-- Exact rational-base differential rank after collapsing repeated raw even-shift grades. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_pointedCollisionIncidence_eRk
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (grade : V → ℕ) (tail head : E → V) (I : Set E) :
+    (differentialFamilyMatroid
+        (F := upperEndRationalCoordinateField)
+        (xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head)).eRk I =
+      (pointedCollisionIncidenceMatroid
+        (C := upperEndRationalCoordinateField) grade 0 tail head).eRk I := by
+  rw [xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
+
+/-- The arbitrary-label raw-Xi incidence law remains exact over the complete scalar valuation-layer
+base. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollisionIncidenceMatroid
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (grade : V → ℕ) (tail head : E → V) :
+    differentialFamilyMatroid
+        (F := analyticScalarValuationLayerDifferentialField)
+        (xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head) =
+      pointedCollisionIncidenceMatroid
+        (C := analyticScalarValuationLayerDifferentialField) grade 0 tail head := by
+  have hx :=
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
+      grade
+  simpa [xiEvenShiftRawPairDifferenceUpperEndCarrier] using
+    (differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid
+      (C := analyticScalarValuationLayerDifferentialField) grade 0 tail head
+      xiEvenShiftRawLogDerivDefectUpperEndCarrier
+      xiEvenShiftRawLogDerivDefectUpperEndCarrier_zero hx)
+
+/-- All-valuation abstract Prop interface for arbitrary-label raw-Xi edge packets. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_iff_pointedCollisionIncidence
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (grade : V → ℕ) (tail head : E → V) (I : Set E) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+        (fun e : I ↦ xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head e) ↔
+      (pointedCollisionIncidenceMatroid
+        (C := analyticScalarValuationLayerDifferentialField) grade 0 tail head).Indep I := by
+  let y := xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head
+  rw [← differentialFamilyMatroid_indep_iff y I,
+    xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
+
+/-- Full occupied-grade quotient Kirchhoff interface for raw Xi over the all-valuation base. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_finset_iff_pointedCollisionVertexConservation
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (grade : V → ℕ) (tail head : E → V) (I : Finset E) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+        (fun e : ↑(↑I : Set E) ↦
+          xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head e) ↔
+      ∀ weight : ↑(↑I : Set E) → analyticScalarValuationLayerDifferentialField,
+        (∀ q : pointedCollisionIncidenceVertex grade 0,
+          (∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf grade 0
+                (head (e : E)) = q then weight e else 0) =
+            ∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf grade 0
+                (tail (e : E)) = q then weight e else 0) →
+          ∀ e, weight e = 0 := by
+  rw [xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_iff_pointedCollisionIncidence
+      grade tail head (↑I : Set E),
+    pointedCollisionIncidenceMatroid_indep_iff_vertex_conservation]
+
+/-- Exact all-valuation differential rank after collapsing repeated raw even-shift grades. -/
+theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_pointedCollisionIncidence_eRk
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (grade : V → ℕ) (tail head : E → V) (I : Set E) :
+    (differentialFamilyMatroid
+        (F := analyticScalarValuationLayerDifferentialField)
+        (xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head)).eRk I =
+      (pointedCollisionIncidenceMatroid
+        (C := analyticScalarValuationLayerDifferentialField) grade 0 tail head).eRk I := by
+  rw [xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
 
 /-! ## Incidence matroid of pairwise even translates -/
 

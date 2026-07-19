@@ -136,6 +136,44 @@ theorem riemannHypothesis_of_xiRectangularWeilTailHolomorphicContinuation
       (xiRightMultiplicity q : ℕ∞) := by exact_mod_cast hltNat
   exact (not_lt_of_ge hprodLower) hlt
 
+/-- RH makes the canonical observable-tail continuation holomorphic on `Re s > 1`.  With no
+right Xi divisor, the far-right Dirichlet-series identity therefore supplies the independent
+holomorphic lift required by the criterion. -/
+theorem xiRectangularWeilTailHolomorphicContinuation_of_riemannHypothesis
+    {L : ℝ} (hL : 0 < L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ L ≤ Real.log n / 2)
+    (hRH : RiemannHypothesis) :
+    XiRectangularWeilTailHolomorphicContinuation L N := by
+  have hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ 0 := by
+    intro q
+    have hzero : xi (q.1.1 : ℂ) = 0 :=
+      xi_eq_zero_of_mem_divisor_support q.1.1
+    have hright : (q.1.1 : ℂ) ∈ rightHalf := by
+      rw [mem_rightHalf]
+      have hq := q.2
+      rw [I_mul_xiSpectralPoint] at hq
+      simp only [Complex.sub_re] at hq
+      norm_num at hq ⊢
+      linarith
+    exact False.elim ((rh_iff_xi_ne_zero_right.mp hRH)
+      (q.1.1 : ℂ) hright hzero)
+  refine ⟨xiRectangularWeilTailContinuation L N, ?_, 2, by norm_num, ?_⟩
+  · intro s hs
+    exact (riemannHypothesis_iff_observableTailContinuation_analytic_rightOne hL hN).mp
+      hRH s hs
+  · intro s hs
+    exact (LSeries_xiRectangularWeilTailCoefficient_eq_continuation
+      hN (delta := 0) (by norm_num) hupper (by linarith)).symm
+
+/-- **Exact observable-holomorphic RH law.**  For every admissible fixed-width tail, the named
+holomorphic-continuation interface is precisely equivalent to RH. -/
+theorem xiRectangularWeilTailHolomorphicContinuation_iff_riemannHypothesis
+    {L : ℝ} (hL : 0 < L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ L ≤ Real.log n / 2) :
+    XiRectangularWeilTailHolomorphicContinuation L N ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_xiRectangularWeilTailHolomorphicContinuation hL hN,
+    xiRectangularWeilTailHolomorphicContinuation_of_riemannHypothesis hL hN⟩
+
 end
 
 end RHTower

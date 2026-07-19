@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialPointedCollisionIncidenceMatroid
+import GaloisForLFunctions.HTGeometry.DifferentialPairwiseCommonMode
 import GaloisForLFunctions.RHTower.XiTransverseShiftPairwiseValue
 import GaloisForLFunctions.RHTower.XiTransverseShiftAllValuationLayerRank
 
@@ -54,6 +55,49 @@ local instance xiCollisionIncidenceLayerAllValuationDifferentialAlgebra :
       ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
     rfl
 
+/-- The corrected Xi values at the occupied nonzero shift labels remain jointly differentially
+independent after adjoining every scalar prime-valuation layer. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
+    {V : Type} [Fintype V] (shift : V → ℕ) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+      (fun q : pointedCollisionIncidenceSupport shift 0 ↦
+        xiTransverseShiftUpperEndCarrier q) := by
+  apply
+    xiTransverseShiftUpperEndCarrier_differentialIndependent_over_all_valuationLayers_of_injective_ne_zero
+      (fun q : pointedCollisionIncidenceSupport shift 0 ↦ (q : ℕ))
+  · exact Subtype.val_injective
+  · intro q
+    exact (Finset.mem_erase.mp q.property).1
+
+/-- **All-valuation exact Xi common-mode classifier.** The complete ordered pairwise corrected-Xi
+reporter recovers the vertex differential field over the full scalar valuation-layer base exactly
+when the finite shift family contains zero; repetitions are allowed. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_vertices_iff_zero_mem_range
+    {V : Type} [Fintype V] (anchor : V) (shift : V → ℕ) :
+    differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift Prod.snd Prod.fst)) =
+      differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) ↔
+      0 ∈ Set.range shift := by
+  have hx0 : xiTransverseShiftUpperEndCarrier 0 = 0 :=
+    xiTransverseShiftUpperEndCarrier_zero
+  have hx :=
+    xiTransverseShiftUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
+      shift
+  change
+    differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range fun p : V × V ↦
+          xiTransverseShiftUpperEndCarrier (shift p.1) -
+            xiTransverseShiftUpperEndCarrier (shift p.2)) =
+      differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) ↔
+      0 ∈ Set.range shift
+  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range
+    (F := analyticScalarValuationLayerDifferentialField) (K := upperEndMeroField)
+    (V := V) (L := ℕ) anchor shift 0
+    xiTransverseShiftUpperEndCarrier hx0 hx
+
 /-- **All-valuation arbitrary-label Xi incidence law.** Repeated and zero integral shifts are
 classified by the same occupied-label quotient incidence matroid over the enlarged base. -/
 theorem xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollisionIncidenceMatroid
@@ -66,15 +110,9 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differential
         (C := analyticScalarValuationLayerDifferentialField) shift 0 tail head := by
   have hx0 : xiTransverseShiftUpperEndCarrier 0 = 0 :=
     xiTransverseShiftUpperEndCarrier_zero
-  have hx : DifferentialIndependent analyticScalarValuationLayerDifferentialField
-      (fun q : pointedCollisionIncidenceSupport shift 0 ↦
-        xiTransverseShiftUpperEndCarrier q) := by
-    apply
-      xiTransverseShiftUpperEndCarrier_differentialIndependent_over_all_valuationLayers_of_injective_ne_zero
-        (fun q : pointedCollisionIncidenceSupport shift 0 ↦ (q : ℕ))
-    · exact Subtype.val_injective
-    · intro q
-      exact (Finset.mem_erase.mp q.property).1
+  have hx :=
+    xiTransverseShiftUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
+      shift
   simpa [xiTransverseShiftPairDifferenceUpperEndCarrier] using
     (differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid
       (C := analyticScalarValuationLayerDifferentialField) shift 0 tail head
