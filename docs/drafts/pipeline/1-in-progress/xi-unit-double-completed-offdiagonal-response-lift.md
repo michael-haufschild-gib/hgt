@@ -3,8 +3,9 @@
 - **ID:** `xi-unit-double-completed-offdiagonal-response-lift`
 - **Stage:** `1-in-progress`
 - **Type:** conjecture / new completed response object / RH-facing source lift
-- **Scientific status:** `[NEW OBJECT] [PAPER CORE PROVED] [LEAN TARGET OPEN]`
-  `[AC25 IDENTIFICATION OPEN] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[ORIENTATION FALSIFIED] [OLD UD8 RETIRED]`
+  `[CORRECTED OBJECT PAPER-PROVED] [AC25 IDENTIFICATION OPEN]`
+  `[NOVELTY UNVERIFIED] [NOT RH]`
 - **Sources:** `XiAperturePoissonEulerLogDerivCompletion.lean`,
   `XiCompletedApertureReflectionKernel.lean`,
   `XiAperturePhysicalEndpointResponseRenormalization.lean`, and
@@ -12,6 +13,14 @@
 - **Open consumer:** corrected response saturation `(AC28)`
 
 ## Discovery: do not diagonalize the completed current
+
+> **2026-07-19 correction.** The kernel below has the coarse-minus-fine orientation.  The actual
+> unit-to-double refinement is `-K_12`, and the physical endpoint requires the unique
+> valuation-resolved correction proved on paper in
+> `xi-physical-endpoint-valuation-correction-odd-shuttle.md`.  Thus the old identification and
+> `(UD8)` with `K_12` are retired.  The Hermitian and balanced-coupling theorems remain valid for
+> the object they state, but that object must be negated and corrected before comparison with
+> the physical response.
 
 Write
 
@@ -234,22 +243,28 @@ complex arithmetic.  No RH assumption or response estimate enters.
   series.  Formula `(UD6)` is a source interpretation, not permission to split the completed
   kernel into separately divergent sums at the boundary.
 
-## Exact conjecture
+## Retired conjecture and corrected frontier
 
-Let `kappa_p` be the true centered physical aperture vector and let `R_M^sharp` be the corrected
-joined response in `(AC28)`.  There should be a canonical signed bilinear pairing `Q_12`, formed
-from the off-diagonal packet `(K_12(log p,log q))` and the aperture differences
-`kappa_p-kappa_q`, such that
+The old assertion
 
 ```text
-R_M^sharp = Q_12(P_M) + O(polylog(M)/M),                (UD8)
+R_M^sharp = Q_12(P_M) + O(polylog(M)/M)                 (UD8)
 ```
 
-with the diagonal part of `Q_12` cancelling by `(UD1)` and the remaining prime-pair part joining
-exactly to the `h,p,a,r` response rather than being estimated sectorwise.
+with `Q_12` built from `K_12` is **retired by coefficient orientation**.  At `p=2`, the correct
+phase-preserving endpoint correction begins with coefficients `+1/2,-1/8`; the uncorrected
+coarsening kernel fails this two-term test.
 
-The next research gate is not to assume `(UD8)`.  Derive the only pairing compatible with
-Hermitian symmetry, the unit--double diagonal, and the existing dispersion identity; then compare
-its finite coefficient expansion term by term with `(PI8)`/`(HGS29)`.  A mismatch retires the
-object and must yield the exact missing source correction.  A match creates the real analytic
-estimate to attack.
+The corrected refinement-oriented pairing is now forced and formalized in
+`XiCompletedBalancedResponseDirichletDecomposition.lean`:
+
+```text
+Q_P^ref
+ =sum_p [log(p)/(p+1)] ||kappa_p||^2
+  -(1/2) sum_(p,q) C_P^ref(p,q)||kappa_p-kappa_q||^2.  (UD9)
+```
+
+The first remaining gate is a coefficient-by-coefficient identification of `(UD9)`, with the
+valuation correction retained, against `(PI8)`/`(HGS29)`.  If it matches, the actual new analytic
+conjecture is the cofinal upper bound on the indefinite signed Dirichlet term recorded as
+`(PVC12)`; another unspecified `Q_12` is no longer admissible.

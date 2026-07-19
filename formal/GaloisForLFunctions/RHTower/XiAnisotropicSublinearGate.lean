@@ -63,6 +63,57 @@ theorem riemannHypothesis_of_xiAnisotropicLogDerivSublinearUpper
         ((n + 1 : ℕ) : ℝ) at hnLower
   linarith
 
+/-- Under RH, reflection makes every point of the open left critical strip Xi-regular.  Continuity
+of the logarithmic derivative along the anisotropic mesh then makes its values bounded, hence
+sublinear after division by the mesh resolution. -/
+theorem xiAnisotropicLogDerivSublinearUpper_of_riemannHypothesis
+    (hRH : RiemannHypothesis) : XiAnisotropicLogDerivSublinearUpper := by
+  intro sigma _hsigmaPos hsigmaHalf epsilon hepsilon
+  have hreflectRight : 1 - sigma ∈ rightHalf := by
+    rw [mem_rightHalf]
+    simp only [sub_re, one_re]
+    linarith
+  have hreflectNe : xi (1 - sigma) ≠ 0 :=
+    (rh_iff_xi_ne_zero_right.mp hRH) (1 - sigma) hreflectRight
+  have hxi : xi sigma ≠ 0 := by
+    rw [xi_one_sub] at hreflectNe
+    exact hreflectNe
+  have hmesh : Tendsto
+      (fun n : ℕ => xiTaylorAnisotropicRightApprox sigma (n + 1)) atTop
+      (nhds sigma) :=
+    (tendsto_xiTaylorAnisotropicRightApprox_succ sigma).mono_right
+      nhdsWithin_le_nhds
+  have hlogAnalytic : AnalyticAt ℂ (logDeriv xi) sigma := by
+    change AnalyticAt ℂ (fun z => deriv xi z / xi z) sigma
+    exact (xi_analyticOnNhd_univ sigma (Set.mem_univ sigma)).deriv.div
+      (xi_analyticOnNhd_univ sigma (Set.mem_univ sigma)) hxi
+  have hlog : Tendsto
+      (fun n : ℕ => logDeriv xi (xiTaylorAnisotropicRightApprox sigma (n + 1)))
+      atTop (nhds (logDeriv xi sigma)) :=
+    hlogAnalytic.continuousAt.tendsto.comp hmesh
+  have hre : Tendsto
+      (fun n : ℕ =>
+        (logDeriv xi (xiTaylorAnisotropicRightApprox sigma (n + 1))).re)
+      atTop (nhds (logDeriv xi sigma).re) :=
+    Complex.continuous_re.continuousAt.tendsto.comp hlog
+  have hinv : Tendsto
+      (fun n : ℕ => (((n + 1 : ℕ) : ℝ))⁻¹) atTop (nhds 0) :=
+    tendsto_natCast_atTop_atTop.inv_tendsto_atTop.comp
+      (Filter.tendsto_add_atTop_nat 1)
+  have hratio : Tendsto
+      (fun n : ℕ =>
+        (logDeriv xi (xiTaylorAnisotropicRightApprox sigma (n + 1))).re /
+          ((n + 1 : ℕ) : ℝ))
+      atTop (nhds 0) := by
+    simpa [div_eq_mul_inv] using hre.mul hinv
+  exact hratio.eventually (eventually_lt_nhds hepsilon)
+
+/-- **Exact anisotropic sublinear-growth criterion for RH.** -/
+theorem xiAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis :
+    XiAnisotropicLogDerivSublinearUpper ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_xiAnisotropicLogDerivSublinearUpper,
+    xiAnisotropicLogDerivSublinearUpper_of_riemannHypothesis⟩
+
 end
 
 end RHTower

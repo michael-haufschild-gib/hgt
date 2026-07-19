@@ -511,6 +511,55 @@ theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialMat
 
 /-! ## Arbitrary-label pairwise collision quotient -/
 
+/-- Raw even completed-Xi values at every occupied nonzero grade of an arbitrary family are
+jointly differentially independent over the rational coordinate field. -/
+theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedOccupiedLabelSupport_differentialIndependent
+    {V : Type} (grade : V → ℕ) :
+    DifferentialIndependent upperEndRationalCoordinateField
+      (fun q : pointedOccupiedLabelSupport grade 0 ↦
+        xiEvenShiftRawLogDerivDefectUpperEndCarrier q) := by
+  let support := pointedOccupiedLabelSupport grade 0
+  have hfull : DifferentialIndependent upperEndRationalCoordinateField
+      (fun i : ↑(Set.univ : Set support) ↦
+        xiEvenShiftRawLogDerivDefectUpperEndCarrier (i : support)) := by
+    apply (xiEvenShiftRawLogDerivDefectUpperEndCarrier_differentialIndependent_iff
+      (fun q : support ↦ (q : ℕ)) Set.univ).2
+    constructor
+    · intro i _ j _ hij
+      exact Subtype.ext hij
+    · intro q _
+      exact q.property.2
+  let embed : support → ↑(Set.univ : Set support) := fun q ↦ ⟨q, Set.mem_univ q⟩
+  have hembed : Function.Injective embed := by
+    intro i j hij
+    exact congrArg Subtype.val hij
+  simpa only [support, embed] using hfull.comp embed hembed
+
+/-- The arbitrary occupied nonzero raw even-shift family remains jointly differentially
+independent over the complete scalar valuation-layer field. -/
+theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedOccupiedLabelSupport_differentialIndependent
+    {V : Type} (grade : V → ℕ) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+      (fun q : pointedOccupiedLabelSupport grade 0 ↦
+        xiEvenShiftRawLogDerivDefectUpperEndCarrier q) := by
+  let support := pointedOccupiedLabelSupport grade 0
+  have hfull : DifferentialIndependent analyticScalarValuationLayerDifferentialField
+      (fun i : ↑(Set.univ : Set support) ↦
+        xiEvenShiftRawLogDerivDefectUpperEndCarrier (i : support)) := by
+    apply
+      (xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialIndependent_iff
+        (fun q : support ↦ (q : ℕ)) Set.univ).2
+    constructor
+    · intro i _ j _ hij
+      exact Subtype.ext hij
+    · intro q _
+      exact q.property.2
+  let embed : support → ↑(Set.univ : Set support) := fun q ↦ ⟨q, Set.mem_univ q⟩
+  have hembed : Function.Injective embed := by
+    intro i j hij
+    exact congrArg Subtype.val hij
+  simpa only [support, embed] using hfull.comp embed hembed
+
 /-- Raw even completed-Xi values at the occupied nonzero grades are jointly differentially
 independent over the rational coordinate field. -/
 theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedCollisionSupport_differentialIndependent
@@ -564,7 +613,7 @@ theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedCollisio
 repetitions, all ordered pairwise raw completed-Xi differences recover the vertex field over the
 rational coordinate base exactly when grade zero occurs. -/
 theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices_iff_zero_mem_range
-    {V : Type} [Fintype V] (anchor : V) (grade : V → ℕ) :
+    {V : Type} (anchor : V) (grade : V → ℕ) :
     differentialAdjoin upperEndRationalCoordinateField
         (Set.range
           (xiEvenShiftRawPairDifferenceUpperEndCarrier grade Prod.snd Prod.fst)) =
@@ -572,7 +621,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_
         (Set.range fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) ↔
       0 ∈ Set.range grade := by
   have hx :=
-    xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedCollisionSupport_differentialIndependent
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedOccupiedLabelSupport_differentialIndependent
       grade
   change
     differentialAdjoin upperEndRationalCoordinateField
@@ -582,7 +631,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_
       differentialAdjoin upperEndRationalCoordinateField
         (Set.range fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) ↔
       0 ∈ Set.range grade
-  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range
+  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range_arbitrary
     (F := upperEndRationalCoordinateField) (K := upperEndMeroField)
     (V := V) (L := ℕ) anchor grade 0
     xiEvenShiftRawLogDerivDefectUpperEndCarrier
@@ -591,7 +640,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_
 /-- The exact raw-Xi common-mode classifier remains true after adjoining every scalar valuation
 layer to the differential base. -/
 theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_vertices_iff_zero_mem_range
-    {V : Type} [Fintype V] (anchor : V) (grade : V → ℕ) :
+    {V : Type} (anchor : V) (grade : V → ℕ) :
     differentialAdjoin analyticScalarValuationLayerDifferentialField
         (Set.range
           (xiEvenShiftRawPairDifferenceUpperEndCarrier grade Prod.snd Prod.fst)) =
@@ -599,7 +648,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differ
         (Set.range fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) ↔
       0 ∈ Set.range grade := by
   have hx :=
-    xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
+    xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedOccupiedLabelSupport_differentialIndependent
       grade
   change
     differentialAdjoin analyticScalarValuationLayerDifferentialField
@@ -609,7 +658,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differ
       differentialAdjoin analyticScalarValuationLayerDifferentialField
         (Set.range fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) ↔
       0 ∈ Set.range grade
-  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range
+  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range_arbitrary
     (F := analyticScalarValuationLayerDifferentialField) (K := upperEndMeroField)
     (V := V) (L := ℕ) anchor grade 0
     xiEvenShiftRawLogDerivDefectUpperEndCarrier
@@ -619,7 +668,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differ
 the full corrected even-shift prime-source field over the rational coordinate base exactly when
 grade zero occurs. -/
 theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_corrected_iff_zero_mem_range
-    {V : Type} [Fintype V] (anchor : V) (grade : V → ℕ) :
+    {V : Type} (anchor : V) (grade : V → ℕ) :
     differentialAdjoin upperEndRationalCoordinateField
         (Set.range
           (xiEvenShiftRawPairDifferenceUpperEndCarrier grade Prod.snd Prod.fst)) =
@@ -634,7 +683,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_
 /-- The exact raw pairwise source-recovery threshold remains true over the full scalar
 valuation-layer base. -/
 theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_corrected_iff_zero_mem_range
-    {V : Type} [Fintype V] (anchor : V) (grade : V → ℕ) :
+    {V : Type} (anchor : V) (grade : V → ℕ) :
     differentialAdjoin analyticScalarValuationLayerDifferentialField
         (Set.range
           (xiEvenShiftRawPairDifferenceUpperEndCarrier grade Prod.snd Prod.fst)) =

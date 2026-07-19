@@ -139,6 +139,93 @@ theorem riemannHypothesis_of_canonicalOrientation_analyticOnNhd_upperHalfPlane
     exact lt_of_not_ge hba
   exact hsingular (hanalytic b hbmem)
 
+/-- Under RH and at positive aperture, both Xi arguments in the canonical orientation multiplier
+are regular at every frequency strictly above the aperture line. -/
+theorem canonicalOrientation_analyticAt_of_riemannHypothesis
+    {a : ℝ} (ha : 0 < a) (hRH : RiemannHypothesis) {b : ℂ} (hb : a < b.im) :
+    AnalyticAt ℂ (xiCanonicalHorizontalOrientationMultiplier a) b := by
+  let s : ℂ := (1 : ℂ) / 2 + (a : ℂ) + b * I
+  let t : ℂ := (1 : ℂ) / 2 + (a : ℂ) - b * I
+  have hsre : s.re < 1 / 2 := by
+    dsimp only [s]
+    norm_num [Complex.div_re, Complex.mul_re]
+    linarith
+  have htRe : 1 / 2 < t.re := by
+    dsimp only [t]
+    norm_num [Complex.div_re, Complex.mul_re]
+    linarith
+  have hsReflectRight : 1 - s ∈ rightHalf := by
+    rw [mem_rightHalf]
+    simp only [sub_re, one_re]
+    linarith
+  have hsReflectNe : xi (1 - s) ≠ 0 :=
+    (rh_iff_xi_ne_zero_right.mp hRH) (1 - s) hsReflectRight
+  have hsNe : xi s ≠ 0 := by
+    rw [xi_one_sub] at hsReflectNe
+    exact hsReflectNe
+  have htNe : xi t ≠ 0 :=
+    (rh_iff_xi_ne_zero_right.mp hRH) t (mem_rightHalf.mpr htRe)
+  have hlogS : AnalyticAt ℂ (logDeriv xi) s := by
+    change AnalyticAt ℂ (fun z => deriv xi z / xi z) s
+    exact (xi_analyticOnNhd_univ s (Set.mem_univ s)).deriv.div
+      (xi_analyticOnNhd_univ s (Set.mem_univ s)) hsNe
+  have hlogT : AnalyticAt ℂ (logDeriv xi) t := by
+    change AnalyticAt ℂ (fun z => deriv xi z / xi z) t
+    exact (xi_analyticOnNhd_univ t (Set.mem_univ t)).deriv.div
+      (xi_analyticOnNhd_univ t (Set.mem_univ t)) htNe
+  have hinnerS : AnalyticAt ℂ
+      (fun z : ℂ => (1 : ℂ) / 2 + (a : ℂ) + z * I) b := by
+    fun_prop
+  have hinnerT : AnalyticAt ℂ
+      (fun z : ℂ => (1 : ℂ) / 2 + (a : ℂ) - z * I) b := by
+    fun_prop
+  have hfirst : AnalyticAt ℂ
+      (fun z : ℂ => logDeriv xi ((1 : ℂ) / 2 + (a : ℂ) + z * I)) b := by
+    exact hlogS.comp (f := fun z : ℂ =>
+      (1 : ℂ) / 2 + (a : ℂ) + z * I) hinnerS
+  have hsecond : AnalyticAt ℂ
+      (fun z : ℂ => logDeriv xi ((1 : ℂ) / 2 + (a : ℂ) - z * I)) b := by
+    exact hlogT.comp (f := fun z : ℂ =>
+      (1 : ℂ) / 2 + (a : ℂ) - z * I) hinnerT
+  change AnalyticAt ℂ (fun z : ℂ =>
+    logDeriv xi ((1 : ℂ) / 2 + (a : ℂ) + z * I) +
+      logDeriv xi ((1 : ℂ) / 2 + (a : ℂ) - z * I)) b
+  exact hfirst.add hsecond
+
+/-- RH discharges the one-aperture upper-singularity ceiling at every positive aperture. -/
+theorem orientationUpperSingularityCeiling_of_riemannHypothesis
+    {a : ℝ} (ha : 0 < a) (hRH : RiemannHypothesis) :
+    XiCanonicalOrientationUpperSingularityCeiling a := by
+  intro b hsingular
+  by_contra hnot
+  exact hsingular
+    (canonicalOrientation_analyticAt_of_riemannHypothesis ha hRH
+      (lt_of_not_ge hnot))
+
+/-- **Exact canonical-orientation singularity-ceiling criterion for RH.** -/
+theorem orientationUpperSingularityCeiling_iff_riemannHypothesis
+    {a : ℝ} (ha : 0 < a) :
+    XiCanonicalOrientationUpperSingularityCeiling a ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_orientationUpperSingularityCeiling ha,
+    orientationUpperSingularityCeiling_of_riemannHypothesis ha⟩
+
+/-- Under RH the canonical orientation multiplier is analytic throughout the strict upper
+frequency half-plane. -/
+theorem canonicalOrientation_analyticOnNhd_upperHalfPlane_of_riemannHypothesis
+    {a : ℝ} (ha : 0 < a) (hRH : RiemannHypothesis) :
+    AnalyticOnNhd ℂ (xiCanonicalHorizontalOrientationMultiplier a)
+      {b : ℂ | a < b.im} := by
+  intro b hb
+  exact canonicalOrientation_analyticAt_of_riemannHypothesis ha hRH hb
+
+/-- **Exact upper-half-plane analyticity criterion for RH.** -/
+theorem canonicalOrientation_analyticOnNhd_upperHalfPlane_iff_riemannHypothesis
+    {a : ℝ} (ha : 0 < a) :
+    AnalyticOnNhd ℂ (xiCanonicalHorizontalOrientationMultiplier a)
+        {b : ℂ | a < b.im} ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_canonicalOrientation_analyticOnNhd_upperHalfPlane ha,
+    canonicalOrientation_analyticOnNhd_upperHalfPlane_of_riemannHypothesis ha⟩
+
 end
 
 end RHTower

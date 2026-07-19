@@ -56,7 +56,11 @@ theorem exists_finiteDimensional_source_of_mem_primeProfileGrassmannField
     apply IntermediateField.adjoin_le_iff.mpr
     intro y hy
     let t : {z // z ∈ T} := ⟨y, hy⟩
-    rw [← hindex t]
+    have hindex' :
+        algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+          (primeProfileGrassmannSource W (index t)) = y := by
+      simpa [t] using hindex t
+    rw [← hindex']
     apply (primeProfileCarrier_mem_grassmannField_iff U
       (primeProfileGrassmannSource W (index t))
       (primeProfileGrassmannSource_supportedOnPositivePrimePowers W (index t))).mpr
@@ -177,7 +181,9 @@ theorem differentialAlgebraic_over_primeProfileGrassmannField_iInf_iff_uniformCe
     (f : ArithmeticFunction ℂ)
     (hfsupport : PrimeProfileSupportedOnPositivePrimePowers f) :
     GaloisForLFunctions.DifferentialAlgebraicOver
-        (⨅ i, primeProfileGrassmannField (W i))
+        ↥((⨅ i, primeProfileGrassmannField (W i)) :
+          IntermediateField finitePrimeCoefficientField
+            arithmeticFunctionFractionField)
         (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f) ↔
       ∃ a : Unit × Nat →₀ ℂ, a ≠ 0 ∧
         ∀ i, a ∈ primeProfileClockCertificateSpace (W i) f := by
@@ -206,6 +212,112 @@ theorem differentialAlgebraic_over_every_primeProfileGrassmannField_iff_pointwis
     (W i) (hW i) f hfsupport,
     primeProfileClockSaturatedIn_iff_certificate]
 
+/-! ## The bounded-order compactness law -/
+
+/-- Finite clock packets whose derivative order is at most `r`. -/
+def primeProfileClockCertificateBound (r : Nat) :
+    Submodule ℂ (Unit × Nat →₀ ℂ) :=
+  Submodule.span ℂ (Set.range fun n : Fin (r + 1) =>
+    Finsupp.single ((), (n : Nat)) 1)
+
+/-- Every fixed clock-order sector is finite-dimensional. -/
+theorem primeProfileClockCertificateBound_finiteDimensional (r : Nat) :
+    FiniteDimensional ℂ (primeProfileClockCertificateBound r) := by
+  exact FiniteDimensional.span_of_finite ℂ (Set.finite_range _)
+
+/-- Enlarging a source subspace can only enlarge its clock-certificate space. -/
+theorem primeProfileClockCertificateSpace_mono
+    {U W : Submodule ℂ PrimeProfileClockQuotient}
+    (hUW : U ≤ W) (f : ArithmeticFunction ℂ) :
+    primeProfileClockCertificateSpace U f ≤
+      primeProfileClockCertificateSpace W f :=
+  Submodule.comap_mono hUW
+
+/-- On a descending source chain, stagewise nonzero certificates in one fixed finite clock-order
+sector force one nonzero certificate valid at every stage. -/
+theorem exists_uniformCertificate_of_descending_boundedCertificates
+    (W : Nat → Submodule ℂ PrimeProfileClockQuotient)
+    (hdesc : ∀ n, W (n + 1) ≤ W n)
+    (f : ArithmeticFunction ℂ) (r : Nat)
+    (hbounded : ∀ n, ∃ a : Unit × Nat →₀ ℂ,
+      a ≠ 0 ∧ a ∈ primeProfileClockCertificateSpace (W n) f ∧
+        a ∈ primeProfileClockCertificateBound r) :
+    ∃ a : Unit × Nat →₀ ℂ, a ≠ 0 ∧
+      ∀ n, a ∈ primeProfileClockCertificateSpace (W n) f := by
+  let B := primeProfileClockCertificateBound r
+  let C : Nat → Submodule ℂ (Unit × Nat →₀ ℂ) := fun n =>
+    primeProfileClockCertificateSpace (W n) f
+  letI : FiniteDimensional ℂ B :=
+    primeProfileClockCertificateBound_finiteDimensional r
+  obtain ⟨S, hS⟩ :=
+    exists_finset_inf_eq_iInf_inside_finiteDimensional B C
+  let N := S.sup id
+  obtain ⟨a, ha0, haCN, haB⟩ := hbounded N
+  have hantiW : Antitone W := antitone_nat_of_succ_le hdesc
+  have hantiC : Antitone C := by
+    intro m n hmn
+    exact primeProfileClockCertificateSpace_mono (hantiW hmn) f
+  have haFinite : a ∈ B ⊓ (⨅ n ∈ S, C n) := by
+    refine ⟨haB, ?_⟩
+    apply (Submodule.mem_iInf _).2
+    intro n
+    apply (Submodule.mem_iInf _).2
+    intro hn
+    exact hantiC (Finset.le_sup (f := id) hn) haCN
+  rw [← hS] at haFinite
+  exact ⟨a, ha0, fun n => (Submodule.mem_iInf _).1 haFinite.2 n⟩
+
+/-- **Bounded-order compactness.** On a descending invariant prime-profile field chain,
+differential algebraicity witnessed at every stage inside one fixed clock-order sector survives
+the exact inverse limit. -/
+theorem differentialAlgebraic_over_descendingPrimeProfileFields_of_boundedCertificates
+    (W : Nat → Submodule ℂ PrimeProfileClockQuotient)
+    (hW : ∀ n, PrimeProfileClockInvariant (W n))
+    (hdesc : ∀ n, W (n + 1) ≤ W n)
+    (f : ArithmeticFunction ℂ)
+    (hfsupport : PrimeProfileSupportedOnPositivePrimePowers f)
+    (r : Nat)
+    (hbounded : ∀ n, ∃ a : Unit × Nat →₀ ℂ,
+      a ≠ 0 ∧ a ∈ primeProfileClockCertificateSpace (W n) f ∧
+        a ∈ primeProfileClockCertificateBound r) :
+    GaloisForLFunctions.DifferentialAlgebraicOver
+        ↥((⨅ n, primeProfileGrassmannField (W n)) :
+          IntermediateField finitePrimeCoefficientField
+            arithmeticFunctionFractionField)
+        (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f) := by
+  apply (differentialAlgebraic_over_primeProfileGrassmannField_iInf_iff_uniformCertificate
+    W hW f hfsupport).2
+  exact exists_uniformCertificate_of_descending_boundedCertificates W hdesc f r hbounded
+
+/-- **Clock-order escape law.** If a source is differentially algebraic at every stage of a
+descending invariant chain but hypertranscendental over the exact inverse limit, then every fixed
+finite clock-order sector fails at some stage. -/
+theorem clockOrderEscapes_of_stagewiseDA_not_inverseLimitDA
+    (W : Nat → Submodule ℂ PrimeProfileClockQuotient)
+    (hW : ∀ n, PrimeProfileClockInvariant (W n))
+    (hdesc : ∀ n, W (n + 1) ≤ W n)
+    (f : ArithmeticFunction ℂ)
+    (hfsupport : PrimeProfileSupportedOnPositivePrimePowers f)
+    (hstage : ∀ n, GaloisForLFunctions.DifferentialAlgebraicOver
+      (primeProfileGrassmannField (W n))
+      (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f))
+    (hlimit : ¬ GaloisForLFunctions.DifferentialAlgebraicOver
+      ↥((⨅ n, primeProfileGrassmannField (W n)) :
+        IntermediateField finitePrimeCoefficientField
+          arithmeticFunctionFractionField)
+      (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f)) :
+    (∀ n, GaloisForLFunctions.DifferentialAlgebraicOver
+      (primeProfileGrassmannField (W n))
+      (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField f)) ∧
+      ∀ r, ¬ ∀ n, ∃ a : Unit × Nat →₀ ℂ,
+        a ≠ 0 ∧ a ∈ primeProfileClockCertificateSpace (W n) f ∧
+          a ∈ primeProfileClockCertificateBound r := by
+  refine ⟨hstage, ?_⟩
+  intro r hbounded
+  exact hlimit
+    (differentialAlgebraic_over_descendingPrimeProfileFields_of_boundedCertificates
+      W hW hdesc f hfsupport r hbounded)
+
 /-! ## The sharp free-tail fracture -/
 
 /-- Tail span of a sequence, beginning at clock depth `n`. -/
@@ -218,7 +330,7 @@ def linearIndependentTailSpan
 theorem linearIndependentTailSpan_iInf_eq_bot
     {K M : Type*} [Field K] [AddCommGroup M] [Module K M]
     (x : Nat → M) (hx : LinearIndependent K x) :
-    (⨅ n, linearIndependentTailSpan x n) = ⊥ := by
+    (⨅ n, linearIndependentTailSpan (K := K) x n) = ⊥ := by
   apply le_antisymm
   · intro q hq
     have hqSpan : q ∈ Submodule.span K (Set.range x) := by
@@ -228,7 +340,7 @@ theorem linearIndependentTailSpan_iInf_eq_bot
     have hcoords : ∀ k, hx.repr qSpan k = 0 := by
       intro k
       let coordSpan : Submodule.span K (Set.range x) →ₗ[K] K :=
-        (Finsupp.lapply k K).comp hx.repr
+        (Finsupp.lapply k : (Nat →₀ K) →ₗ[K] K).comp hx.repr
       let coord : M →ₗ[K] K :=
         Classical.choose (LinearMap.exists_extend coordSpan)
       have hcoord_ext : ∀ y : Submodule.span K (Set.range x),
@@ -245,25 +357,28 @@ theorem linearIndependentTailSpan_iInf_eq_bot
         rw [show coord (x (k + 1 + j)) = coordSpan y by
           simpa [y] using hcoord_ext y]
         have hrepr := hx.repr_eq_single (k + 1 + j) y rfl
-        simp [coordSpan, hrepr]
+        have hne : k + 1 + j ≠ k := by omega
+        simp [coordSpan, hrepr, hne]
       have htail := (Submodule.mem_iInf _).1 hq (k + 1)
       have hzero : coord q = 0 := by
-        refine Submodule.span_induction htail ?_ ?_ ?_ ?_
+        change q ∈ Submodule.span K (Set.range fun j => x (k + 1 + j)) at htail
+        refine Submodule.span_induction
+          (p := fun y _ => coord y = 0) ?_ ?_ ?_ ?_ (hx := htail)
         · rintro y ⟨j, rfl⟩
           exact hgenerator j
         · exact map_zero coord
-        · intro y z hy hz
-          rw [map_add, hy, hz, add_zero]
-        · intro c y hy
-          rw [map_smul, hy, smul_zero]
+        · intro y z hy hz hy0 hz0
+          rw [map_add, hy0, hz0, add_zero]
+        · intro c y hy hy0
+          rw [map_smul, hy0, smul_zero]
       have hqcoord := hcoord_ext qSpan
       change coord q = hx.repr qSpan k at hqcoord
-      exact hqcoord ▸ hzero
+      exact hqcoord.symm.trans hzero
     have hrepr : hx.repr qSpan = 0 := by
       ext k
       exact hcoords k
     have hcomb := hx.linearCombination_repr qSpan
-    rw [hrepr, map_zero] at hcomb
+    rw [hrepr, (Finsupp.linearCombination K x).map_zero] at hcomb
     simpa [qSpan] using hcomb.symm
   · exact bot_le
 
@@ -310,20 +425,36 @@ theorem primeClockUnitTailSubspace_invariant (n : Nat) :
     PrimeProfileClockInvariant (primeClockUnitTailSubspace n) := by
   intro q hq
   unfold primeClockUnitTailSubspace linearIndependentTailSpan at hq ⊢
-  refine Submodule.span_induction hq ?_ ?_ ?_ ?_
+  refine Submodule.span_induction
+    (p := fun q _ => primeProfileQuotientClock q ∈
+      Submodule.span ℂ (Set.range fun k =>
+        primeProfileClockClass
+          (primeProfileRotatedLogJet (n + k) primeClockUnitSource)))
+    (hx := hq) ?_ ?_ ?_ ?_
   · rintro y ⟨k, rfl⟩
     rw [primeProfileQuotientClock_clockClass,
       primeProfileRotatedLogJet_one_comp]
     apply Submodule.subset_span
     exact ⟨k + 1, by simp [Nat.add_assoc]⟩
-  · rw [map_zero]
+  · change primeProfileQuotientClock 0 ∈ _
+    rw [primeProfileQuotientClock.map_zero]
     exact Submodule.zero_mem _
   · intro x y _ _ hx hy
+    change primeProfileQuotientClock (x + y) ∈ _
     rw [map_add]
     exact Submodule.add_mem _ hx hy
   · intro c x _ hx
+    change primeProfileQuotientClock (c • x) ∈ _
     rw [map_smul]
     exact Submodule.smul_mem _ c hx
+
+/-- Successive unit-source clock tails form a descending source chain. -/
+theorem primeClockUnitTailSubspace_succ_le (n : Nat) :
+    primeClockUnitTailSubspace (n + 1) ≤ primeClockUnitTailSubspace n := by
+  unfold primeClockUnitTailSubspace linearIndependentTailSpan
+  apply Submodule.span_mono
+  rintro q ⟨k, rfl⟩
+  exact ⟨k + 1, by simp [Nat.add_assoc]⟩
 
 /-- The successive invariant clock tails have zero common source sector. -/
 theorem primeClockUnitTailSubspace_iInf_eq_bot :
@@ -353,8 +484,7 @@ theorem primeClockUnitSource_differentialAlgebraic_over_tailField (n : Nat) :
   have hjet : primeProfileClockJetFamily (fun _ : Unit => primeClockUnitSource) ((), n) ∈
       primeClockUnitTailSubspace n := by
     apply Submodule.subset_span
-    exact ⟨0, by simp [primeClockUnitTailSubspace, linearIndependentTailSpan,
-      primeProfileClockJetFamily]⟩
+    exact ⟨0, by simp [primeProfileClockJetFamily]⟩
   simpa [a] using hjet
 
 /-- The unit source is hypertranscendental over the represented zero source field. -/
@@ -369,7 +499,9 @@ theorem primeClockUnitSource_not_differentialAlgebraic_over_bottomGrassmannField
       (⊥ : Submodule ℂ PrimeProfileClockQuotient)
       (by
         intro q hq
-        simpa using hq)
+        have hq0 : q = 0 := by simpa using hq
+        subst q
+        exact primeProfileQuotientClock.map_zero)
       primeClockUnitSource primeClockUnitSource_supportedOnPositivePrimePowers).1 hDA
   rcases hsat with ⟨a, ha, hzero⟩
   have hcomb : Finsupp.linearCombination ℂ
@@ -394,7 +526,9 @@ theorem primeClockUnitSource_inverseLimit_Kolchin_fracture :
         (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
           primeClockUnitSource)) ∧
       ¬ GaloisForLFunctions.DifferentialAlgebraicOver
-        (⨅ n, primeProfileGrassmannField (primeClockUnitTailSubspace n))
+        ↥((⨅ n, primeProfileGrassmannField (primeClockUnitTailSubspace n)) :
+          IntermediateField finitePrimeCoefficientField
+            arithmeticFunctionFractionField)
         (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
           primeClockUnitSource) := by
   constructor
@@ -402,7 +536,25 @@ theorem primeClockUnitSource_inverseLimit_Kolchin_fracture :
   · rw [primeClockUnitTailField_iInf]
     exact primeClockUnitSource_not_differentialAlgebraic_over_bottomGrassmannField
 
+/-- The strict unit-source fracture realizes the clock-order escape law: no finite certificate
+order works throughout its descending tail tower. -/
+theorem primeClockUnitSource_tail_clockOrderEscapes :
+    (∀ n, GaloisForLFunctions.DifferentialAlgebraicOver
+      (primeProfileGrassmannField (primeClockUnitTailSubspace n))
+      (algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+        primeClockUnitSource)) ∧
+      ∀ r, ¬ ∀ n, ∃ a : Unit × Nat →₀ ℂ,
+        a ≠ 0 ∧
+          a ∈ primeProfileClockCertificateSpace (primeClockUnitTailSubspace n)
+            primeClockUnitSource ∧
+          a ∈ primeProfileClockCertificateBound r := by
+  exact clockOrderEscapes_of_stagewiseDA_not_inverseLimitDA
+    primeClockUnitTailSubspace primeClockUnitTailSubspace_invariant
+    primeClockUnitTailSubspace_succ_le primeClockUnitSource
+    primeClockUnitSource_supportedOnPositivePrimePowers
+    primeClockUnitSource_inverseLimit_Kolchin_fracture.1
+    primeClockUnitSource_inverseLimit_Kolchin_fracture.2
+
 end
 
 end GaloisForLFunctions.HTGeometry
-

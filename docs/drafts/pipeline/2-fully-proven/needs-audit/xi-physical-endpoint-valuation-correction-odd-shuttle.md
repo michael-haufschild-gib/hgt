@@ -4,7 +4,7 @@
 - **Stage:** `2-fully-proven`
 - **Type:** source-derived object / exact no-go / positive survivor / frontier bridge
 - **Scientific status:** `[PAPER-PROVED] [INTERNAL-NONCOLLISION] [NOVELTY UNVERIFIED]`
-  `[LEAN TARGET] [NOT RH]`
+  `[LEAN-PROVED SOURCE CORE] [NOT RH]`
 - **Sources:** `XiAperturePoissonValuationClockShuttle.lean`,
   `XiAperturePhysicalEndpointResponseRenormalization.lean`,
   `XiCompletedApertureReflectionKernel.lean`, and
@@ -232,6 +232,10 @@ the target matrix after the fact.
 
 ## Lean plan
 
-Formalize `(PVC1)`--`(PVC3)`, the coefficientwise reconstruction, and `(PVC9)`--`(PVC10)` in one
-leaf.  Then prove `(PVC4)`--`(PVC6)` without introducing a conditional certificate.  The two
-conjectures remain paper-level until their finite source coefficient comparison closes.
+`XiPhysicalEndpointValuationCorrectionOddShuttle.lean` proves `(PVC1)`--`(PVC6)`, the
+coefficientwise reconstruction, the clocked fused remainder, absolute convergence on the full
+prime-by-valuation diagram, the corrected completed endpoint kernel, and `(PVC9)`--`(PVC10)`.
+`XiCompletedBalancedResponseDirichletDecomposition.lean` proves the generic pointed identity and
+its source-specific specialization `(PVC11)`.  Both direct leaves pass `lake env lean`.
+
+The two conjectures remain paper-level until their finite source coefficient comparison closes.

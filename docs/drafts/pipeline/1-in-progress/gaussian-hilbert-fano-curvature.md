@@ -253,6 +253,84 @@ does not apply because coherent restrictions are jointly diagonalizable with a
 strictly positive coherent Gram matrix and arise from a common CCR dilation; the
 nilpotent counterexample has neither property.
 
+### C5 -- finite annihilation-invariant subspace law
+
+`[STRONGER FRONTIER CONJECTURE]`.  Let `S` be any finite-dimensional subspace of a
+symmetric Fock space that is invariant under every annihilation operator, let `P` be its
+orthogonal projection, and let `N` be the number operator.  Then
+
+\[
+ \operatorname{tr}\bigl((P\mathcal NP)^2\bigr)
+ \ge \operatorname{tr}\bigl(P(\mathcal N^2-\mathcal N)P\bigr).       \tag{AI}
+\]
+
+For a coherent span, the two sides of (AI) are respectively
+`tr(Q_t^2)` and `sum_{r,s} ||A_r A_s||_HS^2`, so (AI) implies C2--C4.
+Unlike C4, it is closed under collisions of coherent points: the limiting spaces contain
+exponential jets and, at a total collision, derivative-invariant polynomial spaces.
+
+This is not a cosmetic generalization.  It proposes that the sign is owned by finite
+annihilation invariance itself, not by diagonalizability of the coherent compression.  The
+graded polynomial case has zero number variance and the one-mode case is the proved
+self-commutator square.  Neither boundary proves the multivariable statement.
+
+**Exact falsifier:** a finite-dimensional joint-annihilation-invariant subspace for which
+
+\[
+ \operatorname{tr}\bigl(P\mathcal N(1-P)\mathcal NP\bigr)
+   >\operatorname{tr}(P\mathcal NP).
+\]
+
+The likely proof or failure mechanism is a finite Koszul/CCR curvature identity on the
+annihilation complex.  Merely citing negative dependence of Slater determinants is insufficient:
+the number observable has unbounded integer weights, and generic projection determinantal
+processes can be super-Poisson for such weighted statistics.
+
+#### Hostile two-branch inverse-system test
+
+Let `M,L >= 1` and, in the two-mode polynomial Fock space, take the derivative-invariant
+subspace
+
+\[
+ S_{M,L,\lambda}=\operatorname{span}
+ \{1,x,\ldots,x^{M-1},y,\ldots,y^{L-1},x^M+\lambda y^L\}.
+\]
+
+Its determinant-line vector has exactly two orthogonal homogeneous components.  If
+
+\[
+ B=\frac{M(M-1)+L(L-1)}2,
+\]
+
+their degrees are `B+M` and `B+L`.  Thus this family deliberately creates a degree gap
+`|M-L|`, the simplest mechanism that could make a graded law super-Poisson.  At the scale
+where the two components have equal probability,
+
+\[
+ \mathbb ED=\frac{M^2+L^2}{2},\qquad
+ \operatorname{Var}(D)=\frac{(M-L)^2}{4},
+\]
+
+and hence
+
+\[
+ \mathbb ED-\operatorname{Var}(D)=\frac{(M+L)^2}{4}>0.
+\]
+
+At arbitrary component probability `p`, the variance is
+`p(1-p)(M-L)^2`; the forced lowering-chain base degree keeps it below the mean.
+This exact family therefore does not prove (AI), but it eliminates sparse two-degree support
+as an easy counterexample and identifies a candidate mechanism: annihilation invariance charges
+every large degree gap by the full lowering chains beneath it.
+
+Trying to correlate several such gaps exposes the second constraint.  If a `k`-dimensional
+top space is the graph of a coupling between low- and high-degree channels, its determinant-line
+wedge contains the intermediate exterior powers of that coupling.  An invertible coupling cannot
+have all intermediate exterior powers vanish.  Thus decomposability forces mixed Pluecker terms
+and prevents `k` separate degree jumps from masquerading as one two-atom jump with quadratic
+variance.  The emerging proof target is therefore a joint **lowering-chain/Pluecker variance
+bound**, not an abstract DPP inequality and not pairwise matrix commutativity.
+
 ## Proven frontier base case
 
 `[PAPER-PROVED]`.  If the affine span of the configuration has dimension one, there is
@@ -274,7 +352,8 @@ two is the first place where the signed row--column term can survive.
 
 ## `[OPEN CORE]`
 
-Prove or refute
+Prove or refute the stronger invariant-subspace law (AI).  At minimum, prove or refute its
+simple-spectrum coherent specialization
 
 \[
  \operatorname{tr}\!\left(\sum_r A_r^*A_r\right)^2
@@ -284,7 +363,8 @@ Prove or refute
 for the jointly diagonalizable commuting tuple obtained by compressing the annihilation
 operators to a finite span of distinct coherent states.  Equivalently, prove (CC) by
 using the coherent Gram geometry and the common CCR dilation.  Pairwise commutativity
-alone is now known to be too coarse.
+alone is now known to be too coarse.  A counterexample to (AI) that is not a coherent span
+must be tested under simple-spectrum perturbation before it kills C2.
 
 No Lean formalization of C2/C3 is permitted before (OC) is closed on paper and the
 equivalence-level literature audit is repeated.
@@ -310,3 +390,7 @@ equivalence-level literature audit is repeated.
 - 2026-07-19 -- falsified the tempting half-commutator-square shortcut, extracted the
   exact row--column decomposition (RC), and replaced the arbitrary commuting-tuple
   representation by the coherent compensation conjecture (CC).
+- 2026-07-19 -- strengthened the frontier to finite annihilation-invariant subspaces and
+  attacked it with a two-branch inverse system.  The intended sparse-degree counterexample
+  instead produced the exact positive margin `(M+L)^2/4`, exposing lowering-chain cost as a
+  possible sign mechanism.

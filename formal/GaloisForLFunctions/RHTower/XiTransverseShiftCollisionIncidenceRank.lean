@@ -42,6 +42,19 @@ local instance xiCollisionIncidenceCoordinateDifferentialAlgebra :
     change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
     rfl
 
+/-- The corrected Xi values at every occupied nonzero shift label of an arbitrary family are
+jointly differentially independent over the rational coordinate field. -/
+theorem xiTransverseShiftUpperEndCarrier_pointedOccupiedLabelSupport_differentialIndependent
+    {V : Type} (shift : V → ℕ) :
+    DifferentialIndependent upperEndRationalCoordinateField
+      (fun q : pointedOccupiedLabelSupport shift 0 ↦
+        xiTransverseShiftUpperEndCarrier q) := by
+  apply xiTransverseShiftUpperEndCarrier_differentialIndependent_of_injective_ne_zero
+    (fun q : pointedOccupiedLabelSupport shift 0 ↦ (q : ℕ))
+  · exact Subtype.val_injective
+  · intro q
+    exact q.property.2
+
 /-- The corrected Xi values at the occupied nonzero shift labels are jointly differentially
 independent over the rational coordinate field. Repeated original vertices have already been
 collapsed by the pointed collision support. -/
@@ -61,7 +74,7 @@ including repetitions, the complete ordered pairwise corrected-Xi reporter recov
 differential field over the rational coordinate base exactly when the zero shift occurs. When zero
 is absent, the unrecovered common mode is hypertranscendental over the pairwise field. -/
 theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices_iff_zero_mem_range
-    {V : Type} [Fintype V] (anchor : V) (shift : V → ℕ) :
+    {V : Type} (anchor : V) (shift : V → ℕ) :
     differentialAdjoin upperEndRationalCoordinateField
         (Set.range
           (xiTransverseShiftPairDifferenceUpperEndCarrier shift Prod.snd Prod.fst)) =
@@ -71,7 +84,7 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_differentialAdjo
   have hx0 : xiTransverseShiftUpperEndCarrier 0 = 0 :=
     xiTransverseShiftUpperEndCarrier_zero
   have hx :=
-    xiTransverseShiftUpperEndCarrier_pointedCollisionSupport_differentialIndependent shift
+    xiTransverseShiftUpperEndCarrier_pointedOccupiedLabelSupport_differentialIndependent shift
   change
     differentialAdjoin upperEndRationalCoordinateField
         (Set.range fun p : V × V ↦
@@ -80,7 +93,7 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_differentialAdjo
       differentialAdjoin upperEndRationalCoordinateField
         (Set.range fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) ↔
       0 ∈ Set.range shift
-  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range
+  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range_arbitrary
     (F := upperEndRationalCoordinateField) (K := upperEndMeroField)
     (V := V) (L := ℕ) anchor shift 0
     xiTransverseShiftUpperEndCarrier hx0 hx

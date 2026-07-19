@@ -169,6 +169,46 @@ theorem riemannHypothesis_of_orientationUpperVerticalMeshLocallyBoundedBelow
   exact xiLeftShiftBoundary_re_ge_half_of_orientationUpperVerticalMeshLocallyBoundedBelow
     hmesh hρ
 
+/-- Under RH, the canonical orientation multiplier is analytic at every mesh center strictly above
+the aperture line.  Its values on the reciprocal vertical mesh therefore converge and are
+eventually bounded below. -/
+theorem orientationUpperVerticalMeshLocallyBoundedBelow_of_riemannHypothesis
+    {a : ℝ} (ha : 0 < a) (hRH : RiemannHypothesis) :
+    XiCanonicalOrientationUpperVerticalMeshLocallyBoundedBelow a := by
+  intro b hb
+  have hanalytic : AnalyticAt ℂ (xiCanonicalHorizontalOrientationMultiplier a) b :=
+    canonicalOrientation_analyticAt_of_riemannHypothesis ha hRH hb
+  have hepsilonCast : Tendsto
+      (fun n : ℕ => (orientationVerticalMeshEpsilon n : ℂ)) atTop (nhds 0) :=
+    (Complex.continuous_ofReal.tendsto 0).comp
+      orientationVerticalMeshEpsilon_tendsto_zero
+  have hmesh : Tendsto
+      (fun n : ℕ => b + (orientationVerticalMeshEpsilon n : ℂ) * I)
+      atTop (nhds b) := by
+    simpa using tendsto_const_nhds.add (hepsilonCast.mul_const I)
+  have hvalues : Tendsto
+      (fun n : ℕ => xiCanonicalHorizontalOrientationMultiplier a
+        (b + (orientationVerticalMeshEpsilon n : ℂ) * I))
+      atTop (nhds (xiCanonicalHorizontalOrientationMultiplier a b)) :=
+    hanalytic.continuousAt.tendsto.comp hmesh
+  have hre : Tendsto
+      (fun n : ℕ => (xiCanonicalHorizontalOrientationMultiplier a
+        (b + (orientationVerticalMeshEpsilon n : ℂ) * I)).re)
+      atTop (nhds (xiCanonicalHorizontalOrientationMultiplier a b).re) :=
+    Complex.continuous_re.continuousAt.tendsto.comp hvalues
+  refine ⟨(xiCanonicalHorizontalOrientationMultiplier a b).re - 1, ?_⟩
+  have hlt : (xiCanonicalHorizontalOrientationMultiplier a b).re - 1 <
+      (xiCanonicalHorizontalOrientationMultiplier a b).re := by linarith
+  filter_upwards [hre.eventually (eventually_gt_nhds hlt)] with n hn
+  exact hn.le
+
+/-- **Exact reciprocal-vertical-mesh criterion for RH.** -/
+theorem orientationUpperVerticalMeshLocallyBoundedBelow_iff_riemannHypothesis
+    {a : ℝ} (ha : 0 < a) :
+    XiCanonicalOrientationUpperVerticalMeshLocallyBoundedBelow a ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_orientationUpperVerticalMeshLocallyBoundedBelow ha,
+    orientationUpperVerticalMeshLocallyBoundedBelow_of_riemannHypothesis ha⟩
+
 end
 
 end RHTower

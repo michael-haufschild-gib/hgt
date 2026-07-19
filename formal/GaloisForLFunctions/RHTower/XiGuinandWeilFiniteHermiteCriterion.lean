@@ -785,6 +785,84 @@ theorem riemannHypothesis_of_countableSymmetricPrimeArchTraceHankelNonnegative
   · simp
   · simpa using himzero
 
+/-- Under RH every enclosed centered Xi zero is real.  The translated Hermite coordinate is then
+positive on the whole symmetric rectangle, so the exact contour/value identity makes every real
+polynomial test nonnegative. -/
+theorem symmetricPrimeArchTraceHankelNonnegative_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    XiSymmetricPrimeArchTraceHankelNonnegative := by
+  intro R c hR hc _hchalf hadm p
+  rw [normalized_symmetricPrimeArchHermiteContour_eq_closedRectangleTraceHankel
+    hR hc hadm p]
+  rw [Complex.re_sum]
+  apply Finset.sum_nonneg
+  intro z hz
+  have hz0 : XiC z = 0 := (mem_xiCClosedRectangleZeros.mp hz).2
+  let rho : XiDivisorSupport :=
+    ⟨1 / 2 + z * I, mem_xi_divisor_support_of_eq_zero (by simpa [XiC] using hz0)⟩
+  have hrho := xi_divisor_support_re_eq_half_of_rh hRH rho
+  have hzim : z.im = 0 := by
+    dsimp only [rho] at hrho
+    norm_num [Complex.div_re, Complex.mul_re] at hrho
+    linarith
+  have hzreal : z = (z.re : ℂ) := by
+    apply Complex.ext
+    · simp
+    · simpa using hzim
+  have hzmem := (mem_xiCClosedRectangleZeros.mp hz).1
+  have hzre : -R ≤ z.re := by
+    obtain ⟨hzre, _hzim⟩ := Complex.mem_reProdIm.mp hzmem
+    have hbounds : z.re ∈ Set.uIcc (-R) R := by
+      simpa [symmetricRectangleLower, symmetricRectangleUpper] using hzre
+    rw [Set.uIcc_of_le (by linarith)] at hbounds
+    exact hbounds.1
+  have hshiftpos : 0 < R + 1 + z.re := by linarith
+  rw [hzreal]
+  have hshift : (((R + 1 : ℝ) : ℂ) + (z.re : ℂ)) =
+      ((R + 1 + z.re : ℝ) : ℂ) := by
+    push_cast
+    ring
+  rw [hshift, evalRealPolynomial_ofReal]
+  have hterm :
+      ((analyticOrderAt XiC (z.re : ℂ)).toNat : ℂ) *
+          ((R + 1 + z.re : ℝ) : ℂ) *
+          (((Polynomial.eval (R + 1 + z.re) p : ℝ) : ℂ)) ^ 2 =
+        (((analyticOrderAt XiC (z.re : ℂ)).toNat : ℝ) *
+          (R + 1 + z.re) * (Polynomial.eval (R + 1 + z.re) p) ^ 2 : ℝ) := by
+    push_cast
+    ring
+  rw [hterm]
+  simp only [Complex.ofReal_re]
+  exact mul_nonneg (mul_nonneg (Nat.cast_nonneg _) hshiftpos.le) (sq_nonneg _)
+
+/-- The rational-rectangle, integer-polynomial interface is a literal specialization of the full
+finite Hermite source-sign condition. -/
+theorem countableSymmetricPrimeArchTraceHankelNonnegative_of_full
+    (hfull : XiSymmetricPrimeArchTraceHankelNonnegative) :
+    XiCountableSymmetricPrimeArchTraceHankelNonnegative := by
+  intro R c hR hc hchalf hadm p
+  exact hfull (R : ℝ) (c : ℝ) hR hc hchalf hadm
+    (p.map (Int.castRingHom ℝ))
+
+/-- RH discharges the countable symmetric source-contour interface. -/
+theorem countableSymmetricPrimeArchTraceHankelNonnegative_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    XiCountableSymmetricPrimeArchTraceHankelNonnegative :=
+  countableSymmetricPrimeArchTraceHankelNonnegative_of_full
+    (symmetricPrimeArchTraceHankelNonnegative_of_riemannHypothesis hRH)
+
+/-- **Exact finite-Hermite RH law.** -/
+theorem symmetricPrimeArchTraceHankelNonnegative_iff_riemannHypothesis :
+    XiSymmetricPrimeArchTraceHankelNonnegative ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_symmetricPrimeArchTraceHankelNonnegative,
+    symmetricPrimeArchTraceHankelNonnegative_of_riemannHypothesis⟩
+
+/-- **Exact countable finite-Hermite RH law.** -/
+theorem countableSymmetricPrimeArchTraceHankelNonnegative_iff_riemannHypothesis :
+    XiCountableSymmetricPrimeArchTraceHankelNonnegative ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_countableSymmetricPrimeArchTraceHankelNonnegative,
+    countableSymmetricPrimeArchTraceHankelNonnegative_of_riemannHypothesis⟩
+
 end
 
 end RHTower

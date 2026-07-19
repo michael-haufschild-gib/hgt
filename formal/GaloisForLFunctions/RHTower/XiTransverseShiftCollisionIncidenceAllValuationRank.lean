@@ -55,6 +55,20 @@ local instance xiCollisionIncidenceLayerAllValuationDifferentialAlgebra :
       ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
     rfl
 
+/-- The corrected Xi values at every occupied nonzero shift label of an arbitrary family remain
+jointly differentially independent over the full scalar valuation-layer field. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_pointedOccupiedLabelSupport_differentialIndependent
+    {V : Type} (shift : V → ℕ) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+      (fun q : pointedOccupiedLabelSupport shift 0 ↦
+        xiTransverseShiftUpperEndCarrier q) := by
+  apply
+    xiTransverseShiftUpperEndCarrier_differentialIndependent_over_all_valuationLayers_of_injective_ne_zero
+      (fun q : pointedOccupiedLabelSupport shift 0 ↦ (q : ℕ))
+  · exact Subtype.val_injective
+  · intro q
+    exact q.property.2
+
 /-- The corrected Xi values at the occupied nonzero shift labels remain jointly differentially
 independent after adjoining every scalar prime-valuation layer. -/
 theorem xiTransverseShiftUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
@@ -73,7 +87,7 @@ theorem xiTransverseShiftUpperEndCarrier_allValuation_pointedCollisionSupport_di
 reporter recovers the vertex differential field over the full scalar valuation-layer base exactly
 when the finite shift family contains zero; repetitions are allowed. -/
 theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_vertices_iff_zero_mem_range
-    {V : Type} [Fintype V] (anchor : V) (shift : V → ℕ) :
+    {V : Type} (anchor : V) (shift : V → ℕ) :
     differentialAdjoin analyticScalarValuationLayerDifferentialField
         (Set.range
           (xiTransverseShiftPairDifferenceUpperEndCarrier shift Prod.snd Prod.fst)) =
@@ -83,7 +97,7 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_allValuation_dif
   have hx0 : xiTransverseShiftUpperEndCarrier 0 = 0 :=
     xiTransverseShiftUpperEndCarrier_zero
   have hx :=
-    xiTransverseShiftUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
+    xiTransverseShiftUpperEndCarrier_allValuation_pointedOccupiedLabelSupport_differentialIndependent
       shift
   change
     differentialAdjoin analyticScalarValuationLayerDifferentialField
@@ -93,7 +107,7 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_allValuation_dif
       differentialAdjoin analyticScalarValuationLayerDifferentialField
         (Set.range fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) ↔
       0 ∈ Set.range shift
-  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range
+  exact differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range_arbitrary
     (F := analyticScalarValuationLayerDifferentialField) (K := upperEndMeroField)
     (V := V) (L := ℕ) anchor shift 0
     xiTransverseShiftUpperEndCarrier hx0 hx
