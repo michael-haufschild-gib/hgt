@@ -7,6 +7,9 @@ The absolute transverse-rank theorem shows that distinct positive integral filte
 shift defects are jointly differentially independent over the true rational coordinate field.
 This module proves the stronger completion-boundary statement: the whole finite family remains
 jointly differentially independent after adjoining every prime-zeta valuation layer at once.
+Finitarity and the pointed collision law then identify the represented matroid of every arbitrary
+indexed shift family over that complete layer field: zero shifts are loops, repetitions are
+parallel, and the rank of any packet is the number of distinct nonzero shifts.
 
 The decisive step is transverse rather than diagonal. A proposed relation uses only finitely many
 valuation layers, so it leaves one exponent coordinate unused. On that coordinate all old scalar
@@ -18,9 +21,9 @@ Prime exp/log fibre rigidity kills every aperture column simultaneously. The old
 then separate on their private exponent coordinates. Thus the result is not obtained by applying
 the one-source completion theorem shift by shift.
 
-No declaration here constrains Xi zeros or proves RH. The capstone rules out every finite
-differential compression of the transverse source family even over the completed scalar
-valuation field.
+No declaration here constrains Xi zeros or proves RH. The capstone rules out every differential
+compression of the transverse source family beyond literal zero/repetition collisions, even over
+the completed scalar valuation field.
 -/
 
 namespace RHTower
@@ -39,8 +42,34 @@ local instance xiTransverseLayerUpperEndDomain : IsDomain upperEndAnalyticSubrin
 local instance xiTransverseLayerUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
   upperEndComplexToMero.toAlgebra
 
+local instance xiTransverseLayerUpperEndCharZero : CharZero upperEndMeroField :=
+  charZero_of_injective_ringHom upperEndComplexToMero.injective
+
 local instance xiTransverseLayerUpperEndDifferential : Differential upperEndMeroField :=
   upperEndMeroFieldDifferential
+
+local instance xiTransverseLayerCoordinateDifferential :
+    Differential upperEndRationalCoordinateField :=
+  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
+
+local instance xiTransverseLayerCoordinateDifferentialAlgebra :
+    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
+  deriv_algebraMap c := by
+    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
+    rfl
+
+local instance xiTransverseAllValuationFieldDifferential :
+    Differential analyticScalarValuationLayerDifferentialField :=
+  derivationClosedDifferential _
+    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
+      (Set.range analyticScalarValuationLayerCarrier))
+
+local instance xiTransverseAllValuationFieldDifferentialAlgebra :
+    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
+  deriv_algebraMap c := by
+    change (c.1)′ =
+      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
+    rfl
 
 theorem xiTransversePrimePowerCoordinateProfile_apply
     (f : ArithmeticFunction ℂ) (p : Nat.Primes) (e : ℕ) :
@@ -451,6 +480,87 @@ theorem xiTransverseShiftUpperEndCarrier_differentialIndependent_over_all_valuat
   unfold DiffIndepOn at hset
   have h := hset.comp equivRange equivRange.injective
   simpa [analyticScalarValuationLayerDifferentialField, G, y, equivRange] using h
+
+/-! ## Exact arbitrary-family completion law -/
+
+/-- Injective nonzero transverse shift families remain differentially independent over the
+complete scalar valuation-layer field, without a finiteness assumption on the index type. -/
+theorem xiTransverseShiftUpperEndCarrier_differentialIndependent_over_all_valuationLayers_of_injective_ne_zero
+    {A : Type*} (shift : A → ℕ) (hinj : Function.Injective shift)
+    (hne : ∀ a, shift a ≠ 0) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+      (fun a => xiTransverseShiftUpperEndCarrier (shift a)) := by
+  classical
+  apply differentialIndependent_of_forall_finite_subfamily
+  intro I hIfinite
+  by_cases hIempty : I = ∅
+  · subst I
+    exact algebraicIndependent_empty_type
+  letI : Fintype I := hIfinite.fintype
+  letI : Nonempty I :=
+    Set.nonempty_coe_sort.mpr (Set.nonempty_iff_ne_empty.mpr hIempty)
+  simpa [xiTransverseShiftUpperEndCarrier] using
+    xiTransverseShiftUpperEndCarrier_differentialIndependent_over_all_valuationLayers
+      (fun i : I => shift i)
+      (fun i => Nat.pos_of_ne_zero (hne i))
+      (fun i j hij => Subtype.ext (hinj hij))
+
+/-- **All-valuation pointed collision law.** Even after adjoining every scalar prime-valuation
+layer, zero shifts are loops, repetitions are parallel, and distinct positive shifts are the only
+differential directions in an arbitrary indexed family. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision
+    {A : Type*} (shift : A → ℕ) :
+    differentialFamilyMatroid
+        (F := analyticScalarValuationLayerDifferentialField)
+        (fun a => xiTransverseShiftUpperEndCarrier (shift a)) =
+      affinePointedCollisionMatroid shift 0 := by
+  apply differentialFamilyMatroid_eq_affinePointedCollisionMatroid_of_parallel
+  · intro I hIinj hInonzero
+    apply
+      xiTransverseShiftUpperEndCarrier_differentialIndependent_over_all_valuationLayers_of_injective_ne_zero
+        (fun i : I => shift i)
+    · intro i j hij
+      exact Subtype.ext (hIinj i.2 j.2 hij)
+    · intro i
+      exact hInonzero i i.2
+  · intro i hi
+    rw [hi, xiTransverseShiftUpperEndCarrier_zero]
+    exact differentialAlgebraicOver_algebraMap 0
+  · intro i j _ hij
+    rw [hij, sub_self]
+    exact differentialAlgebraicOver_algebraMap 0
+
+/-- Exact Prop interface over the complete scalar valuation-layer field. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_differentialIndependent_iff
+    {A : Type*} (shift : A → ℕ) (I : Set A) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+        (fun i : I => xiTransverseShiftUpperEndCarrier (shift i)) ↔
+      Set.InjOn shift I ∧ ∀ i ∈ I, shift i ≠ 0 := by
+  let x := fun a => xiTransverseShiftUpperEndCarrier (shift a)
+  constructor
+  · intro hI
+    have hmatroid : (differentialFamilyMatroid
+        (F := analyticScalarValuationLayerDifferentialField) x).Indep I :=
+      (differentialFamilyMatroid_indep_iff x I).mpr hI
+    rw [xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision,
+      affinePointedCollisionMatroid_indep_iff] at hmatroid
+    exact hmatroid
+  · intro hI
+    apply (differentialFamilyMatroid_indep_iff x I).mp
+    rw [xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision,
+      affinePointedCollisionMatroid_indep_iff]
+    exact hI
+
+/-- Exact relative differential rank of every transverse shift packet over the complete scalar
+valuation-layer field. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eRk
+    {A : Type*} (shift : A → ℕ) (I : Set A) :
+    (differentialFamilyMatroid
+        (F := analyticScalarValuationLayerDifferentialField)
+        (fun a => xiTransverseShiftUpperEndCarrier (shift a))).eRk I =
+      ((shift '' I) ∩ {a | a ≠ 0}).encard := by
+  rw [xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision,
+    affinePointedCollisionMatroid_eRk]
 
 end
 

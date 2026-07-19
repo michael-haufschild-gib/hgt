@@ -9,14 +9,15 @@
 
 ## Headline theorem
 
-One scale-covariant positive observation field is simultaneously:
+One locally observed scale-covariant positive field is simultaneously:
 
-1. globally source-faithful on pointed moment sequences;
+1. source-faithful on every nonempty open scale-coordinate interval;
 2. exactly equal to the square energy of its atomic Bernstein packet;
-3. spectrally complete for every real packet exponent `p >= 1`;
+3. spectrally complete for every real packet exponent `p > 0`;
 4. sharply square-root singular in the quadratic case;
-5. exactly selective for the nonnegative-real source radical;
-6. normalization-free at first recession order.
+5. exactly selective for an intrinsic radical/transverse moment-fibre stratum;
+6. presentation-rigid at the full confocal field and first recession;
+7. reconstructive on every stably exposed conjugation orbit.
 
 Let
 
@@ -37,8 +38,9 @@ Assume an atomic representation
 m_n = sum_i c_i z_i^n in R,
 ```
 
-with `sum_i |c_i| < infinity`, bounded injective nodes `z_i -> 0` cofinally, `c_i != 0`,
-`m_0 > 0`, and every occupied real node nonnegative.
+with `sum_i |c_i| < infinity`, bounded nodes, cofinally vanishing transverse defect
+`|z_i|-Re z_i`, `m_0 > 0`, and every occupied real node nonnegative. Repeated nodes, zero fibres,
+and fibrewise cancellations are removed by canonical aggregation.
 
 Put
 
@@ -52,7 +54,7 @@ Delta = sup_i (|z_i| - Re z_i).
 Then the formal master theorem `scaleCovariantBernsteinAbel_tomography` proves all of the
 following.
 
-### 1. Global pointed source chart
+### 1. Local scale-germ and global pointed source chart
 
 For every `N`, the map
 
@@ -91,7 +93,9 @@ det D J_N(m)
       prod_(r=0)^N binom(N,r) != 0.
 ```
 
-Therefore the cofinal family `(P_(N,m))_N` recovers the complete pointed moment sequence.
+Therefore the cofinal family `(P_(N,m))_N` recovers the complete pointed moment sequence. More
+strongly, equality of all `P_(N,m)` and `P_(N,m')` on any one nonempty open interval already
+forces `m=m'`.
 
 ### 2. Literal atomic realization
 
@@ -108,10 +112,10 @@ Thus the finite source chart and the infinite atomic packet are the same observa
 
 ### 3. All real-p spectra
 
-If `R > 2M` and some node is nonreal, the maximal amplitude `B(R)>1` is attained on a nonempty
+If `R > M` and some node is nonreal, the maximal amplitude `B(R)>1` is attained on a nonempty
 finite packet. Every complementary amplitude is bounded by one common `beta(R)<B(R)`.
 
-For every real `p >= 1`, if
+For every real `p > 0`, if
 
 ```text
 E_(p,N)(R) = sum_(k=0)^N |A_(N,k)(R)|^p,
@@ -189,7 +193,29 @@ R(B(R)^2-1) -> 2Delta,
 R(1-A(R))   -> 2Delta.
 ```
 
-### 6. Gibbs corollary
+### 6. Complete admissible-fibre classification
+
+For two arbitrary raw presentations of the same pointed moments, canonical aggregation produces
+intrinsic supports `S,S'` satisfying
+
+```text
+S has a nonreal node iff S' has a nonreal node,
+B_S(R)=B_S'(R) for every common exterior scale,
+Delta_S=Delta_S'.
+```
+
+In the transverse stratum their positive half-order coefficient is common. If nodes `u in S` and
+`u' in S'` expose the common confocal field on a nonempty radius interval, then
+
+```text
+Re u = Re u',
+|Im u| = |Im u'|.
+```
+
+Thus the common positive field reconstructs every stably exposed atom up to the unavoidable
+conjugation symmetry.
+
+### 7. Gibbs corollary
 
 For
 
@@ -224,7 +250,10 @@ The rewrite also incorporates the earlier referee's strongest abstract requests:
 - the theorem is stated for general absolutely summable atomic sources;
 - the false-phase coefficient law is sharp `B^(2N)/sqrt(N)`;
 - the Abel boundary has the explicit square-root coefficient;
-- every real `p>=1` has exact nth-root spectrum `B^p`;
+- every real `p>0` has exact nth-root spectrum `B^p`;
+- any nonempty open scale-coordinate interval is source-faithful;
+- the radical/transverse stratum and full confocal field are presentation-invariant;
+- stable exposed confocal branches reconstruct conjugation orbits;
 - the source-side object and atomic weights are displayed explicitly;
 - no Connes architecture is claimed to be forced to realize this particular observable.
 
@@ -237,6 +266,7 @@ corollaries, and dedicated Xi radical capstone depend only on the ordinary logic
 | Mathematical component | Module | Principal theorem |
 |---|---|---|
 | triangular coefficient law | `RHTower/ScaleCovariantBernsteinPurityJet.lean` | `coeff_bernsteinScalePurityPolynomial_eq_leading_add_lower` |
+| local interval source faithfulness | `RHTower/ScaleCovariantBernsteinPresentationRigidity.lean` | `bernsteinScalePurityPolynomial_interval_source_faithful` |
 | explicit global inverse | `RHTower/ScaleCovariantBernsteinPurityChart.lean` | `bernsteinPurityJet_global_pointed_chart` |
 | Jacobian and determinant | `RHTower/ScaleCovariantBernsteinPurityJacobian.lean` | `det_bernsteinPurityJetJacobian_ne_zero` |
 | atomic observation bridge | `RHTower/ScaleCovariantBernsteinAtomicObservation.lean` | `scaleCovariantBernsteinObservation_eq_atomicPacketSquareEnergy` |
@@ -245,6 +275,8 @@ corollaries, and dedicated Xi radical capstone depend only on the ordinary logic
 | all real-p spectra | `RHTower/ScaleCovariantBernsteinRpowSpectrum.lean` | `exists_tendsto_inverseScaleAtomicBernsteinRpowEnergy` |
 | confocal recession | `HTGeometry/ConfocalAbelDefectFlow.lean` | `tendsto_mul_one_sub_confocalAbelRadius` |
 | single bundled master theorem | `RHTower/ScaleCovariantBernsteinAbelTomography.lean` | `scaleCovariantBernsteinAbel_tomography` |
+| radical/transverse moment-fibre classification | `RHTower/ScaleCovariantBernsteinPresentationRigidity.lean` | `aggregatePresentationFullRigidity_of_common_pointed_moments` |
+| exposed branch inverse | `RHTower/ScaleCovariantBernsteinPresentationRigidity.lean` | `exposed_confocal_orbit_eq_of_common_pointed_moments` |
 | Gibbs corollary | `RHTower/ScaleCovariantBernsteinGibbsCorollary.lean` | `tendsto_mul_confocalGibbsFreeEnergy` |
 | exact Xi radical chain and recession | `RHTower/ScaleCovariantXiBernsteinAbelCorollary.lean` | `exists_xiScaleCovariantRadical_scale`, `tendsto_mul_xiScaleCovariantGibbsFreeEnergy` |
 
@@ -264,10 +296,12 @@ Known parent mechanisms include:
 The exact combination
 
 ```text
-one positive scale polynomial
+one positive field on any open scale interval
   + global pointed inverse
   + all-p atomic spectrum
   + positive quadratic half-order constant
+  + intrinsic radical/transverse presentation stratum
+  + exposed-orbit inverse
   + confocal first recession
 ```
 

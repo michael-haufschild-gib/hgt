@@ -27,7 +27,7 @@
 \newcommand{\cof}{\operatorname{cof}}
 \newcommand{\RH}{\mathrm{RH}}
 
-\title{Scale-Resolved Positive Tomography of Complex Moment Sources}
+\title{Local Positive Scale Tomography and Presentation-Rigid Confocal Spectra}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -42,13 +42,15 @@ $m=(m_n)_{n\geq0}$,
   \chi_m(R,t)=\sum_{N\geq0}\mathcal P_m(N,R)t^N,
 \]
 where $P_{N,m}$ is the squared Euclidean norm of the Bernstein coefficient vector of the dilated
-moments.  Our main theorem establishes a conjunction not supplied by moment inversion, phase
-retrieval, or Abelian asymptotics separately.  The scale coefficients of $P_{N,m}$ are global
-triangular coordinates on every pointed moment prefix, with an explicit nowhere-vanishing
-Jacobian.  For every bounded absolutely summable complex atomic presentation whose transverse
-defect $|z|-\Rea z$ vanishes cofinally, the same field is exactly the quadratic energy of the
-inverse-scaled atomic Bernstein packet.  At the optimal uniform threshold $R>M$, every
-transverse source selects a finite maximal packet and, for every real $p>0$,
+moments.  Our main theorem establishes a local-to-global conjunction not supplied by moment
+inversion, phase retrieval, or Abelian asymptotics separately.  Restriction of this positive
+field to any nonempty open scale-coordinate interval determines the complete pointed moment
+sequence: its scale coefficients are global triangular coordinates on every finite prefix, with
+an explicit nowhere-vanishing Jacobian.  For every bounded absolutely summable complex atomic
+presentation whose transverse defect $|z|-\Rea z$ vanishes cofinally, the same field is exactly
+the quadratic energy of the inverse-scaled atomic Bernstein packet.  At the optimal uniform
+threshold $R>M$, every transverse source selects a finite maximal packet and, for every real
+$p>0$,
 \[
  E_{p,N}(R)^{1/N}\longrightarrow B(R)^p.
 \]
@@ -56,21 +58,26 @@ The quadratic packet has the sharper asymptotic
 \[
  \mathcal P_m(N,R)\sim L(R)\frac{B(R)^{2N}}{\sqrt N},\qquad L(R)>0,
 \]
-and hence an exact square-root Abel singularity.  Most importantly, these selected quantities are
-not artifacts of a chosen atomic representation: any two admissible transverse presentations of
-the same pointed moments have the same $B(R)$ at every common scale, the same half-order
-coefficient $L(R)$, and the same transverse-defect envelope
+and hence an exact square-root Abel singularity.  Most importantly, the common moments split the
+entire admissible presentation fibre into an intrinsic alternative: either every presentation is
+supported on the nonnegative-real radical, or every presentation contains a transverse atom.
+Across the whole fibre the confocal amplitude $B(R)$ and transverse-defect envelope
 \(
- \Delta=\sup(|z|-\Rea z).
+ \Delta=\sup(|z|-\Rea z)
 \)
+are invariant; in the transverse stratum the half-order coefficient $L(R)$ is invariant as well.
+Whenever one atom exposes the confocal envelope on an open radius interval, that local branch
+reconstructs its full conjugation orbit $(\Rea z,|\Ima z|)$, which is consequently
+presentation-rigid.
 Quantitatively,
 \[
  0\le R(B(R)^2-1)-2\Delta
  \le \frac{M^2}{R-M}+\frac{4M^2}{R},
 \]
-and both the amplitude and Abel-radius recessions converge to $2\Delta$.  Thus a single positive
-field simultaneously recovers oriented source coordinates, selects all positive-power spectral
-rates, and rigidifies latent complex geometry across admissible presentations.
+and both the amplitude and Abel-radius recessions converge to $2\Delta$.  Thus one locally
+observed positive field recovers the oriented source, classifies its admissible presentation
+fibre, selects every positive-power spectral rate, and reconstructs every stably exposed complex
+orbit up to the unavoidable conjugation symmetry.
 \end{abstract}
 
 \noindent\textbf{Keywords.} Bernstein polynomials; complex moments; positive tomography;
@@ -89,26 +96,30 @@ a positive scalar field whose low scale coefficients recover an oriented real mo
 and whose high-degree asymptotics select geometric data of any admissible complex atomic
 presentation.
 
-The strongest conclusion is a rigidity theorem.  Suppose two bounded absolutely summable
-complex atomic sources have the same pointed real moments.  We do not assume that their nodes or
-weights agree.  After canonical aggregation of repeated nodes, assume only that real occupied
-nodes are nonnegative and that the transverse defects $|z|-\Rea z$ vanish cofinally.  If both
-sources contain a nonreal occupied node, then their selected confocal amplitudes agree at every
-common exterior scale.  Their sharp square-root coefficients and their limiting transverse
-defect envelopes agree as well.  The invariant is extracted from the common moment sequence by a
-positive observation, rather than imposed through a determinacy hypothesis.
+The strongest conclusion is a moment-fibre classification theorem.  Suppose two bounded
+absolutely summable complex atomic sources have the same pointed real moments.  We do not assume
+that their nodes or weights agree.  After canonical aggregation of repeated nodes, assume only
+that real occupied nodes are nonnegative and that the transverse defects $|z|-\Rea z$ vanish
+cofinally.  Then one source contains a nonreal occupied node if and only if the other does.  At
+every common exterior scale their selected confocal amplitudes agree, and their transverse-defect
+envelopes agree globally.  In the transverse stratum their sharp square-root coefficients agree.
+If an atom remains exposed while the radius varies through an interval, the common field even
+recovers that atom's conjugation orbit.  These invariants are extracted from the common moment
+sequence by a positive observation, rather than imposed through a determinacy hypothesis.
 
 This conclusion depends on four mechanisms which must be kept together.
 \begin{enumerate}
-\item The first $N+1$ coefficients of one positive polynomial $P_{N,m}$ form a global triangular
-      chart on $(m_0,\ldots,m_N)$ once the sign $m_0>0$ is fixed.
+\item The restriction of $P_{N,m}$ to any nonempty open scale-coordinate interval determines the
+      polynomial, and its first $N+1$ coefficients form a global triangular chart on
+      $(m_0,\ldots,m_N)$ once the sign $m_0>0$ is fixed.
 \item Evaluation at inverse scale is exactly the square energy of the original atomic Bernstein
       packet, not merely an asymptotic model.
 \item Cofinal transverse neutrality, rather than convergence of all nodes to one point, produces
       a finite source-attained maximal packet at every scale $R>M$.
 \item The quadratic half-order law forces the exponential rate of every positive real-power
-      energy.  Uniqueness of the limit then makes the selected amplitude and coefficient
-      independent of the admissible presentation.
+      energy.  Uniqueness of the limit then makes the radical/transverse stratum, the selected
+      amplitude, the exposed conjugation orbits, and the recession independent of the admissible
+      presentation.
 \end{enumerate}
 
 The individual parent mechanisms are classical.  Bernstein coordinates and their asymptotics
@@ -116,9 +127,10 @@ are standard \cite{LorentzBernstein}; Hausdorff moment criteria use finite diffe
 support positivity, including in Riemann-type applications \cite{Zhang2023}; algebraic phase
 retrieval studies recovery from intensity data \cite{ConcaEdidinHeringVinzant2015}; and the final
 boundary passage is Abelian \cite{HardyDivergentSeries}.  The contribution here is the exact
-scale-resolved conjunction and, in particular, the presentation-rigidity consequence.  Generic
-intensity measurements do not provide the triangular moment chart below, while moment inversion
-alone does not identify the confocal spectral rate of a complex presentation.
+local scale-resolved conjunction and, in particular, the presentation-fibre classification and
+exposed-orbit consequences.  Generic intensity measurements do not provide the triangular moment
+chart below, while moment inversion alone does not identify the confocal spectral rate or any
+exposed complex orbit of a presentation.
 
 The construction was motivated in part by finite and semilocal spectral approaches to the
 Riemann hypothesis.  In Connes' absorption-spectrum interpretation \cite{Connes1999}, the scaling
@@ -130,8 +142,9 @@ with an exact source chart and an intrinsic scale recession.  It does not prove 
 arithmetic estimate and is not presented as an equivalent reformulation of that estimate.
 
 Section~\ref{sec:setup} states the single main theorem.  Sections~\ref{sec:aggregation}--
-\ref{sec:abel} prove its finite and asymptotic clauses.  Section~\ref{sec:rigidity} proves the
-confocal recession and presentation rigidity.  Section~\ref{sec:gibbs} records a short
+\ref{sec:abel} prove its local source and asymptotic clauses.  Section~\ref{sec:rigidity} proves the
+confocal recession, moment-fibre classification, and exposed-orbit rigidity.
+Section~\ref{sec:gibbs} records a short
 free-energy corollary.  Section~\ref{sec:xi} gives the precise Riemann--Xi specialization and its
 limitation.
 
@@ -201,7 +214,7 @@ The scale geometry is described by
  A_S(R)&=B_S(R)^{-2}.\notag
 \end{align}
 
-\begin{theorem}[Scale-resolved positive tomography and presentation rigidity]
+\begin{theorem}[Local positive scale tomography and admissible-fibre rigidity]
 \label{thm:master}
 Under \emph{(2.1)--(2.2)}, the field \emph{(2.5)} satisfies the following.
 
@@ -218,7 +231,11 @@ is a global bijection of $(0,\infty)\times\R^N$.  It is triangular, and
  \tag{2.8}
 \end{equation}
 Consequently the cofinal polynomial family $(P_{N,m})_N$ determines the complete pointed moment
-sequence.
+sequence.  More locally, if $m'_0>0$ and, on one nonempty open interval $J\subset\R$,
+\[
+ P_{N,m}(x)=P_{N,m'}(x)\qquad(x\in J,\ N\ge0),
+\]
+then $m=m'$.  Thus an arbitrarily small open scale-coordinate window is source-faithful.
 
 \item For every $R>0$ and $N\ge0$,
 \begin{equation}
@@ -276,27 +293,40 @@ The uniform exterior threshold is optimal: if $0<R<M$, the allowed node $u=M$ ha
 $\delta_\infty(u)=0$ but $|u/R|+|1-u/R|>1$.
 
 \item Let a second raw source $(d_j,w_j)$ satisfy the same hypotheses with bound $M'$ and the
-same moments $m_n$.  Let $S'$ be its nonzero aggregate support, and suppose both $S$ and $S'$
-contain a nonreal point.  Then for every $R>\max(M,M')$,
+same moments $m_n$, and let $S'$ be its nonzero aggregate support.  Then the stratum is intrinsic:
 \begin{equation}
- B_S(R)=B_{S'}(R),\qquad L_S(R)=L_{S'}(R),
+ S\setminus\R\ne\varnothing
+ \quad\Longleftrightarrow\quad
+ S'\setminus\R\ne\varnothing.
  \tag{2.20}
 \end{equation}
-and globally
+For every $R>\max(M,M')$ the amplitudes agree, and the global defect envelopes agree:
 \begin{equation}
- \Delta_S=\Delta_{S'}.
+ B_S(R)=B_{S'}(R),\qquad \Delta_S=\Delta_{S'}.
  \tag{2.21}
 \end{equation}
-Thus the selected confocal field, its square-root coefficient, and its recession invariant depend
-only on the common pointed moments within the admissible transverse class.
+In the transverse stratum one also has $L_S(R)=L_{S'}(R)$ at every common exterior scale.
+
+More strongly, let $u\in S$ and $u'\in S'$ be nonreal.  Suppose
+$\max(M,M')<a<b$ and that for every $R\in(a,b)$ they expose the two envelopes:
+\[
+ RB_S(R)=|u|+|R-u|,
+ \qquad RB_{S'}(R)=|u'|+|R-u'|.
+\]
+Then the exposed conjugation orbit is intrinsic:
+\begin{equation}
+ \Rea u=\Rea u',\qquad |\Ima u|=|\Ima u'|.
+ \tag{2.22}
+\end{equation}
 \end{enumerate}
 \end{theorem}
 
 Clause~5 is the central strengthening.  The theorem does not assert uniqueness of the complete
-atomic representation.  It proves that three geometric quantities survive any admissible change
-of presentation because they are selected by one common positive observation.
+atomic representation.  It proves instead that the radical/transverse stratum, the complete
+confocal rate field, its first recession, and every stably exposed conjugation orbit survive any
+admissible change of presentation because they are selected by one common positive observation.
 
-\section{Canonical aggregation and the global source chart}
+\section{Canonical aggregation and local source tomography}
 \label{sec:aggregation}
 
 We first remove a possible source of artificial uniqueness.
@@ -358,7 +388,7 @@ Let $Q_{N,r}(m_0,\ldots,m_{r-1})$ denote the expression in (3.1) with $m_r$ set 
 \label{prop:chart}
 For $1\le r\le N$,
 \begin{equation}
- y_0=m_0^2,qquad
+ y_0=m_0^2,\qquad
  y_r=2(-1)^r\binom Nr m_0m_r+Q_{N,r}(m_0,\ldots,m_{r-1}).
  \tag{3.2}
 \end{equation}
@@ -388,6 +418,13 @@ The Jacobian is lower triangular.  Its $r$th diagonal entry is
 $2(-1)^r\binom Nr m_0$, including $2m_0$ at $r=0$.  Their product is (2.8), because
 $\sum_{r=0}^Nr=N(N+1)/2$.  It is nowhere zero on the pointed half-space.  Taking $N=r$ for each
 $r$ proves cofinal source faithfulness.
+
+For the local statement, suppose $P_{N,m}=P_{N,m'}$ on a nonempty open interval $J$.  Two real
+polynomials agreeing on the infinite set $J$ are identical.  Their first $N+1$ coefficients are
+therefore equal, and triangular inversion gives
+$(m_0,\ldots,m_N)=(m'_0,\ldots,m'_N)$.  Taking $N=r$ for each coordinate proves $m=m'$.  No
+analytic continuation or atomic determinacy assumption is used: an arbitrarily small open scale
+window suffices because the observation is polynomial before the high-degree limit is taken.
 \end{proof}
 
 The role of pointing is exact: the positive polynomial determines $m_0^2$, and $m_0>0$ chooses
@@ -569,7 +606,7 @@ For every real $p>0$,
 Let $d_N=N+1$, $Q_N=E_{2,N}(R)$, and
 $L_{1,N}=\sum_k|A_{N,k}(R)|$.  The atomic binomial theorem gives
 \begin{equation}
- L_{1,N}\le C B_S(R)^N,qquad C=\sum_{u\in S}|\widehat c(u)|.
+ L_{1,N}\le C B_S(R)^N,\qquad C=\sum_{u\in S}|\widehat c(u)|.
  \tag{5.4}
 \end{equation}
 Since every coefficient is bounded by $L_{1,N}$,
@@ -678,15 +715,34 @@ Thus transverse neutrality alone cannot prevent a spurious superunit amplitude a
 smaller scale.
 \end{proof}
 
-We now prove the new rigidity clause.  Its argument is short because the earlier work has made
-the observation sequence common and the asymptotic base positive.
+We now prove the classification clause.  Its key point is that the common positive observation
+separates the radical and transverse growth regimes before any finer invariant is compared.
 
 \begin{proof}[Proof of Theorem~\ref{thm:master}(5)]
 Apply Lemma~\ref{lem:aggregate} to both raw sources.  Their intrinsic sources satisfy the
 injectivity, nonvanishing, boundedness, orientation, and cofinite-neutrality assumptions used in
 Propositions~\ref{prop:atomic}--\ref{prop:halforder}.
 
-Fix $R>\max(M,M')$.  The common moment sequence produces one common positive observation
+We first prove that the radical/transverse alternative cannot depend on the presentation.  If
+$S\subset[0,\infty)$, every inverse-scaled atomic amplitude is one, so the packet $\ell^1$ bound
+is uniform in $N$:
+\[
+ \sum_{k=0}^N|A_{N,k}(R)|\le C,
+ \qquad C=\sum_{u\in S}|\widehat c(u)|.
+\]
+Consequently
+\[
+ 0\le \mathcal P_m(N,R)\le (N+1)C^2,
+ \qquad \frac{\mathcal P_m(N,R)}{r^N}\longrightarrow0
+ \quad(r>1).
+\]
+If $S'$ contains a transverse node, Proposition~\ref{prop:halforder} gives a base
+$B_{S'}(R)^2>1$.  Choosing $1<r<B_{S'}(R)^2$ instead forces
+$\mathcal P_m(N,R)/r^N\to\infty$.  The same positive sequence cannot have both limits.  Exchanging
+the two sources proves (2.20).
+
+Fix $R>\max(M,M')$.  In the transverse stratum the common moment sequence produces one common
+positive observation
 \[
  Q_N(R)=\mathcal P_m(N,R).
 \]
@@ -699,34 +755,53 @@ for the second, the same sequence satisfies
  Q_N(R)^{1/N}\longrightarrow B_{S'}(R)^2.
 \]
 Uniqueness of limits gives equality of the two squares.  Both bases are strictly larger than one,
-so
-\[
- B_S(R)=B_{S'}(R).
-\]
-This proves the first equality in (2.20) for every common exterior scale.
-
-Normalize the same common sequence by this common base.  Each presentation gives a half-order
-limit:
+so $B_S(R)=B_{S'}(R)$.  Normalizing the same common sequence by this common base gives
 \[
  \sqrt N\,\frac{Q_N(R)}{B_S(R)^{2N}}\longrightarrow L_S(R),
  \qquad
- \sqrt N\,\frac{Q_N(R)}{B_S(R)^{2N}}\longrightarrow L_{S'}(R).
+ \sqrt N\,\frac{Q_N(R)}{B_S(R)^{2N}}\longrightarrow L_{S'}(R),
 \]
-Uniqueness again gives $L_S(R)=L_{S'}(R)$.
+and hence $L_S(R)=L_{S'}(R)$.
 
-Finally the first equality holds for every sufficiently large $R$.  Therefore the functions
+The amplitude equality holds for every sufficiently large $R$.  Therefore
 \[
- R(B_S(R)^2-1),\qquad R(B_{S'}(R)^2-1)
+ R(B_S(R)^2-1)=R(B_{S'}(R)^2-1)
 \]
-are eventually identical.  Their limits are respectively $2\Delta_S$ and $2\Delta_{S'}$ by
-(2.19).  Uniqueness of the limit yields (2.21).
+eventually.  Their limits are respectively $2\Delta_S$ and $2\Delta_{S'}$ by (2.19), so
+$\Delta_S=\Delta_{S'}$.  In the radical stratum, (2.18) gives directly
+$B_S(R)=B_{S'}(R)=1$ and $\Delta_S=\Delta_{S'}=0$.  This proves (2.21) without a transverse
+premise.
+
+It remains to prove exposed-orbit rigidity.  Write $u=x+iy$ with $y\ne0$ and define its moving
+confocal branch
+\[
+ f_{x,y}(R)=\sqrt{x^2+y^2}+\sqrt{(R-x)^2+y^2}.
+\]
+On an exposed interval this is exactly $RB_S(R)$.  Its first two derivatives are
+\[
+ p=f'_{x,y}(R)=\frac{R-x}{s},\qquad
+ q=f''_{x,y}(R)=\frac{y^2}{s^3}>0,
+ \qquad s=\sqrt{(R-x)^2+y^2}.
+\]
+Direct elimination gives
+\begin{equation}
+ s=\frac{1-p^2}{q},\qquad
+ x=R-sp,\qquad
+ |y|=s\sqrt{1-p^2}.
+ \tag{6.2}
+\end{equation}
+By (2.21), two exposed branches belonging to presentations of the same moments agree throughout
+their common interval.  Their first two derivatives agree there, and (6.2) gives
+$\Rea u=\Rea u'$ and $|\Ima u|=|\Ima u'|$.  This proves (2.22).  The absolute value is optimal:
+the confocal branch, like the real moment data, is invariant under complex conjugation.
 \end{proof}
 
 \begin{remark}
 The proof deliberately avoids a determinacy assertion for arbitrary complex atomic measures.
-It establishes a quotient statement: within the stated admissible class, every presentation
-lies over the same selected confocal field and the same first recession.  This is stronger than
-saying that each presentation separately admits an asymptotic formula.
+It establishes a quotient statement: within the stated admissible class, every presentation lies
+in one common radical/transverse stratum and over the same confocal field and first recession.
+Stable exposed atoms descend further to conjugation orbits.  This is stronger than saying that
+each presentation separately admits an asymptotic formula.
 \end{remark}
 
 \section{A Gibbs radical/free-energy corollary}
@@ -835,28 +910,31 @@ separate proposed analytic step \cite{ConnesConsaniMoscovici2025}.
 
 \section{Scientific scope and further questions}
 
-The main theorem establishes more than a list of compatible estimates.  It gives a three-level
+The main theorem establishes more than a list of compatible estimates.  It gives a local-to-global
 identification driven by one field:
 \[
  \boxed{\begin{gathered}
- \text{positive scale coefficients}
+ \text{positive data on any open scale window}
  \Longrightarrow\text{oriented moment source}\\
- \Longrightarrow\text{all-}p\text{ confocal spectrum}
- \Longrightarrow\text{presentation-rigid recession}
+ \Longrightarrow\text{intrinsic radical/transverse stratum}\\
+ \Longrightarrow\text{all-}p\text{ confocal spectrum}\\
+ \Longrightarrow\text{exposed conjugation orbits and first recession}
  \end{gathered}}
 \]
-The first arrow is an exact global chart, the second is an exact atomic identity plus a sharp
-finite selector, and the third follows from uniqueness of asymptotic limits.  Removing any one
-level breaks the conclusion: a fixed-scale intensity need not recover orientation; a moment chart
-alone does not select complex geometry; and an asymptotic attached separately to each
-presentation is not yet an invariant.
+The first arrow is polynomial interval rigidity plus an exact global chart.  The second is the
+subexponential/superunit growth alternative.  The third is an exact atomic identity plus a sharp
+finite selector, while the last combines uniqueness of asymptotic limits with the differential
+inverse of an exposed confocal branch.  Removing any one level breaks the conclusion: a single
+fixed-scale intensity need not recover orientation; a moment chart alone does not select complex
+geometry; and an asymptotic attached separately to each presentation is not yet an invariant.
 
 The result differs from Hausdorff positivity because no support criterion is inferred merely from
 signs of finite differences.  It differs from generic phase retrieval because one structured
-scalar polynomial recovers the entire pointed prefix globally, rather than a generic vector up to
-global phase.  It differs from a routine Abelian theorem because the singular radius, coefficient,
-and first recession are all tied back to one source-faithful observation and are invariant across
-the admissible presentation fibre.
+scalar polynomial restricted to any open scale interval recovers the entire pointed prefix,
+rather than a generic vector up to global phase.  It differs from a routine Abelian theorem
+because the stratum, singular radius, coefficient, exposed orbit, and first recession are all tied
+back to one locally source-faithful observation and are invariant across the admissible
+presentation fibre.
 
 Two open questions remain natural.  First, exact inversion is not the same as uniformly stable
 inversion: the condition number of the triangular chart can deteriorate with $N$ or as
@@ -864,7 +942,9 @@ $m_0\downarrow0$.  Weighted norms adapted simultaneously to the chart and the Ab
 produce a useful quantitative cofinal stability theory.  Second, the admissible class is defined
 by cofinite transverse neutrality.  It would be valuable to characterize the largest class of
 complex moment presentations for which the positive scale field still rigidifies the confocal
-geometry.  Neither question changes the unconditional theorem proved here.
+geometry.  A sharper geometric question is whether the full upper envelope determines all
+exposed branches beyond those stable on an open interval.  Neither question changes the
+unconditional theorem proved here.
 
 \begin{thebibliography}{99}
 
