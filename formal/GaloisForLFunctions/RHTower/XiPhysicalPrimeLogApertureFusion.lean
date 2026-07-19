@@ -391,6 +391,308 @@ theorem xiPhysicalPrimeLogApertureDiagonalEnergy_nonneg
     mul_nonneg (sq_nonneg _)
       (xiPhysicalPrimeLogApertureFusionKernel_diagonal_nonneg hA m k p)
 
+/-! ## The renormalized distinct-prime pair excess -/
+
+/-- Literal weighted overlap mass of distinct prime aperture intervals. -/
+def xiPhysicalPrimeLogApertureOverlapCrossMass
+    (P : Finset Nat.Primes) (A m k : ℝ) : ℝ :=
+  ∑ p ∈ P, ∑ q ∈ P.erase p,
+    physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
+      xiPhysicalPrimeLogApertureOverlap A m k p q
+
+/-- Weighted total length of the physical prime aperture intervals. -/
+def xiPhysicalPrimeLogApertureWeightedLengthMass
+    (P : Finset Nat.Primes) (A m k : ℝ) : ℝ :=
+  ∑ p ∈ P, physicalPrimeEndpointWeight p *
+    xiPhysicalPrimeLogApertureLength A m k p
+
+/-- Self-pair contribution to the square of the weighted length mass. -/
+def xiPhysicalPrimeLogApertureLengthDiagonalMass
+    (P : Finset Nat.Primes) (A m k : ℝ) : ℝ :=
+  ∑ p ∈ P, (physicalPrimeEndpointWeight p *
+    xiPhysicalPrimeLogApertureLength A m k p) ^ 2
+
+private theorem sum_sq_eq_diagonal_add_offDiagonal
+    {ι : Type*} [DecidableEq ι] (P : Finset ι) (a : ι → ℝ) :
+    (∑ i ∈ P, a i) ^ 2 =
+      (∑ i ∈ P, (a i) ^ 2) +
+        ∑ i ∈ P, ∑ j ∈ P.erase i, a i * a j := by
+  rw [pow_two, Finset.sum_mul_sum, ← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hsplit := Finset.sum_erase_add P (fun j => a i * a j) hi
+  calc
+    (∑ j ∈ P, a i * a j) =
+        (∑ j ∈ P.erase i, a i * a j) + a i * a i := hsplit.symm
+    _ = a i ^ 2 + ∑ j ∈ P.erase i, a i * a j := by ring
+
+/-- The signed cross defect is exactly the local distinct-prime overlap mass minus the
+continuum mean-field pair mass, with the self-pair mass removed. -/
+theorem xiPhysicalPrimeLogApertureCrossDefect_eq_pairExcess
+    (P : Finset Nat.Primes) (A m k : ℝ) :
+    xiPhysicalPrimeLogApertureCrossDefect P A m k =
+      xiPhysicalPrimeLogApertureOverlapCrossMass P A m k -
+        (xiPhysicalPrimeLogApertureWeightedLengthMass P A m k ^ 2 -
+          xiPhysicalPrimeLogApertureLengthDiagonalMass P A m k) / A := by
+  let a : Nat.Primes → ℝ := fun p =>
+    physicalPrimeEndpointWeight p *
+      xiPhysicalPrimeLogApertureLength A m k p
+  have hsq := sum_sq_eq_diagonal_add_offDiagonal P a
+  have hoff :
+      (∑ p ∈ P, ∑ q ∈ P.erase p, a p * a q) =
+        (∑ p ∈ P, a p) ^ 2 - ∑ p ∈ P, (a p) ^ 2 := by
+    linarith
+  calc
+    xiPhysicalPrimeLogApertureCrossDefect P A m k =
+        xiPhysicalPrimeLogApertureOverlapCrossMass P A m k -
+          (∑ p ∈ P, ∑ q ∈ P.erase p, a p * a q) / A := by
+      rw [xiPhysicalPrimeLogApertureCrossDefect,
+        xiPhysicalPrimeLogApertureOverlapCrossMass]
+      rw [Finset.sum_div]
+      simp_rw [Finset.sum_div]
+      rw [← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro p hp
+      rw [← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro q hq
+      simp only [xiPhysicalPrimeLogApertureFusionKernel, a]
+      ring
+    _ = xiPhysicalPrimeLogApertureOverlapCrossMass P A m k -
+          ((∑ p ∈ P, a p) ^ 2 - ∑ p ∈ P, (a p) ^ 2) / A := by
+      rw [hoff]
+    _ = xiPhysicalPrimeLogApertureOverlapCrossMass P A m k -
+        (xiPhysicalPrimeLogApertureWeightedLengthMass P A m k ^ 2 -
+          xiPhysicalPrimeLogApertureLengthDiagonalMass P A m k) / A := by
+      rfl
+
+/-! ## Aperture-width curvature tomography -/
+
+private theorem relu_secondDifference_eq_tent
+    {x h : ℝ} (hh : 0 ≤ h) :
+    max 0 (x + h) + max 0 (x - h) - 2 * max 0 x =
+      max 0 (h - |x|) := by
+  by_cases hx0 : x ≤ -h
+  · have h1 : x + h ≤ 0 := by linarith
+    have h2 : x - h ≤ 0 := by linarith
+    have h3 : x ≤ 0 := hx0.trans (neg_nonpos.mpr hh)
+    have hrhs : h - |x| ≤ 0 := by
+      rw [abs_of_nonpos h3]
+      linarith
+    rw [max_eq_left h1, max_eq_left h2, max_eq_left h3,
+      max_eq_left hrhs]
+    norm_num
+  · have hx0' : -h < x := lt_of_not_ge hx0
+    by_cases hx : x ≤ 0
+    · have h1 : 0 ≤ x + h := by linarith
+      have h2 : x - h ≤ 0 := by linarith
+      have hrhs : 0 ≤ h - |x| := by
+        rw [abs_of_nonpos hx]
+        linarith
+      rw [max_eq_right h1, max_eq_left h2, max_eq_left hx,
+        max_eq_right hrhs, abs_of_nonpos hx]
+      ring
+    · have hx' : 0 < x := lt_of_not_ge hx
+      by_cases hx1 : x ≤ h
+      · have h1 : 0 ≤ x + h := by linarith
+        have h2 : x - h ≤ 0 := by linarith
+        have h3 : 0 ≤ x := hx'.le
+        have hrhs : 0 ≤ h - |x| := by
+          rw [abs_of_nonneg h3]
+          linarith
+        rw [max_eq_right h1, max_eq_left h2, max_eq_right h3,
+          max_eq_right hrhs, abs_of_nonneg h3]
+        ring
+      · have hx1' : h < x := lt_of_not_ge hx1
+        have h1 : 0 ≤ x + h := by linarith
+        have h2 : 0 ≤ x - h := by linarith
+        have h3 : 0 ≤ x := hx'.le
+        have hrhs : h - |x| ≤ 0 := by
+          rw [abs_of_nonneg h3]
+          linarith
+        rw [max_eq_right h1, max_eq_right h2, max_eq_right h3,
+          max_eq_left hrhs]
+        ring
+
+/-- Logarithmic distance between two prime locations. -/
+def xiPhysicalPrimeLogBulkPairDistance (p q : Nat.Primes) : ℝ :=
+  |Real.log (p : ℝ) - Real.log (q : ℝ)|
+
+/-- Centered fusion kernel for two untruncated prime intervals of common width `c`. -/
+def xiPhysicalPrimeLogBulkFusionKernel
+    (A c : ℝ) (p q : Nat.Primes) : ℝ :=
+  max 0 (c - xiPhysicalPrimeLogBulkPairDistance p q) - c ^ 2 / A
+
+/-- The clipped physical kernel agrees with the width-only bulk kernel whenever neither prime
+interval meets the aperture boundary. -/
+theorem xiPhysicalPrimeLogApertureFusionKernel_eq_bulkKernel
+    {A m k : ℝ} (p q : Nat.Primes)
+    (hstartp : 0 ≤ m - Real.log (p : ℝ))
+    (hendp : k - Real.log (p : ℝ) ≤ A)
+    (hstartq : 0 ≤ m - Real.log (q : ℝ))
+    (hendq : k - Real.log (q : ℝ) ≤ A)
+    (hmk : m ≤ k) :
+    xiPhysicalPrimeLogApertureFusionKernel A m k p q =
+      xiPhysicalPrimeLogBulkFusionKernel A (k - m) p q := by
+  rw [xiPhysicalPrimeLogApertureFusionKernel_eq_bulk_tent p q
+    hstartp hendp hstartq hendq hmk]
+  rfl
+
+/-- Triangular ratio shell selected by a width second difference. -/
+def xiPhysicalPrimeLogPairBandTent
+    (c h : ℝ) (p q : Nat.Primes) : ℝ :=
+  max 0 (h - |xiPhysicalPrimeLogBulkPairDistance p q - c|)
+
+theorem xiPhysicalPrimeLogPairBandTent_pos_iff
+    (c h : ℝ) (p q : Nat.Primes) :
+    0 < xiPhysicalPrimeLogPairBandTent c h p q ↔
+      |xiPhysicalPrimeLogBulkPairDistance p q - c| < h := by
+  simp [xiPhysicalPrimeLogPairBandTent]
+
+/-- Exact width curvature of one centered bulk prime-pair kernel.  Its singular positive part is
+the triangular shell around the pair's logarithmic ratio; the continuum term contributes only a
+constant negative background. -/
+theorem xiPhysicalPrimeLogBulkFusionKernel_width_secondDifference
+    (A c : ℝ) {h : ℝ} (hh : 0 ≤ h) (p q : Nat.Primes) :
+    xiPhysicalPrimeLogBulkFusionKernel A (c + h) p q +
+        xiPhysicalPrimeLogBulkFusionKernel A (c - h) p q -
+        2 * xiPhysicalPrimeLogBulkFusionKernel A c p q =
+      xiPhysicalPrimeLogPairBandTent c h p q - 2 * h ^ 2 / A := by
+  rw [xiPhysicalPrimeLogBulkFusionKernel,
+    xiPhysicalPrimeLogBulkFusionKernel,
+    xiPhysicalPrimeLogBulkFusionKernel]
+  have hre := relu_secondDifference_eq_tent
+    (x := c - xiPhysicalPrimeLogBulkPairDistance p q) hh
+  rw [show c + h - xiPhysicalPrimeLogBulkPairDistance p q =
+      (c - xiPhysicalPrimeLogBulkPairDistance p q) + h by ring,
+    show c - h - xiPhysicalPrimeLogBulkPairDistance p q =
+      (c - xiPhysicalPrimeLogBulkPairDistance p q) - h by ring]
+  calc
+    max 0 (c - xiPhysicalPrimeLogBulkPairDistance p q + h) - (c + h) ^ 2 / A +
+          (max 0 (c - xiPhysicalPrimeLogBulkPairDistance p q - h) -
+            (c - h) ^ 2 / A) -
+          2 * (max 0 (c - xiPhysicalPrimeLogBulkPairDistance p q) - c ^ 2 / A) =
+        (max 0 (c - xiPhysicalPrimeLogBulkPairDistance p q + h) +
+          max 0 (c - xiPhysicalPrimeLogBulkPairDistance p q - h) -
+          2 * max 0 (c - xiPhysicalPrimeLogBulkPairDistance p q)) -
+          2 * h ^ 2 / A := by ring
+    _ = xiPhysicalPrimeLogPairBandTent c h p q - 2 * h ^ 2 / A := by
+      rw [hre, xiPhysicalPrimeLogPairBandTent, abs_sub_comm]
+
+private theorem sum_secondDifference
+    {ι : Type*} (P : Finset ι) (f g r : ι → ℝ) :
+    (∑ i ∈ P, f i) + (∑ i ∈ P, g i) - 2 * (∑ i ∈ P, r i) =
+      ∑ i ∈ P, (f i + g i - 2 * r i) := by
+  rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+  simp only [← Finset.mul_sum]
+
+/-- Off-diagonal bulk fusion defect as a function of the physical log-window width. -/
+def xiPhysicalPrimeLogBulkCrossDefect
+    (P : Finset Nat.Primes) (A c : ℝ) : ℝ :=
+  ∑ p ∈ P, ∑ q ∈ P.erase p,
+    physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
+      xiPhysicalPrimeLogBulkFusionKernel A c p q
+
+/-- Positive triangular mass of prime ratios in the width shell centered at `c`. -/
+def xiPhysicalPrimeLogPairBandCurvatureMass
+    (P : Finset Nat.Primes) (c h : ℝ) : ℝ :=
+  ∑ p ∈ P, ∑ q ∈ P.erase p,
+    physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
+      xiPhysicalPrimeLogPairBandTent c h p q
+
+/-- Total ordered distinct-prime pair weight. -/
+def xiPhysicalPrimeLogCrossWeightMass (P : Finset Nat.Primes) : ℝ :=
+  ∑ p ∈ P, ∑ q ∈ P.erase p,
+    physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q
+
+/-- Exact aperture-width tomography: the second width difference of the bulk cross defect is the
+positive prime-ratio shell mass minus the explicit uniform continuum background. -/
+theorem xiPhysicalPrimeLogBulkCrossDefect_width_secondDifference
+    (P : Finset Nat.Primes) (A c : ℝ) {h : ℝ} (hh : 0 ≤ h) :
+    xiPhysicalPrimeLogBulkCrossDefect P A (c + h) +
+        xiPhysicalPrimeLogBulkCrossDefect P A (c - h) -
+        2 * xiPhysicalPrimeLogBulkCrossDefect P A c =
+      xiPhysicalPrimeLogPairBandCurvatureMass P c h -
+        2 * h ^ 2 / A * xiPhysicalPrimeLogCrossWeightMass P := by
+  calc
+    xiPhysicalPrimeLogBulkCrossDefect P A (c + h) +
+          xiPhysicalPrimeLogBulkCrossDefect P A (c - h) -
+          2 * xiPhysicalPrimeLogBulkCrossDefect P A c =
+        ∑ p ∈ P, ∑ q ∈ P.erase p,
+          physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
+            (xiPhysicalPrimeLogBulkFusionKernel A (c + h) p q +
+              xiPhysicalPrimeLogBulkFusionKernel A (c - h) p q -
+              2 * xiPhysicalPrimeLogBulkFusionKernel A c p q) := by
+      rw [xiPhysicalPrimeLogBulkCrossDefect,
+        xiPhysicalPrimeLogBulkCrossDefect,
+        xiPhysicalPrimeLogBulkCrossDefect,
+        sum_secondDifference]
+      apply Finset.sum_congr rfl
+      intro p hp
+      rw [sum_secondDifference]
+      apply Finset.sum_congr rfl
+      intro q hq
+      ring
+    _ = ∑ p ∈ P, ∑ q ∈ P.erase p,
+          physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
+            (xiPhysicalPrimeLogPairBandTent c h p q - 2 * h ^ 2 / A) := by
+      apply Finset.sum_congr rfl
+      intro p hp
+      apply Finset.sum_congr rfl
+      intro q hq
+      rw [xiPhysicalPrimeLogBulkFusionKernel_width_secondDifference A c hh p q]
+    _ = xiPhysicalPrimeLogPairBandCurvatureMass P c h -
+          2 * h ^ 2 / A * xiPhysicalPrimeLogCrossWeightMass P := by
+      rw [xiPhysicalPrimeLogPairBandCurvatureMass,
+        xiPhysicalPrimeLogCrossWeightMass]
+      rw [Finset.mul_sum]
+      simp_rw [Finset.mul_sum]
+      rw [← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro p hp
+      rw [← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro q hq
+      ring
+
+theorem physicalPrimeEndpointWeight_pos (p : Nat.Primes) :
+    0 < physicalPrimeEndpointWeight p := by
+  rw [physicalPrimeEndpointWeight]
+  exact div_pos (Real.log_pos (by exact_mod_cast p.prop.one_lt))
+    (by exact_mod_cast p.prop.pos)
+
+theorem xiPhysicalPrimeLogPairBandCurvatureMass_nonneg
+    (P : Finset Nat.Primes) (c h : ℝ) :
+    0 ≤ xiPhysicalPrimeLogPairBandCurvatureMass P c h := by
+  rw [xiPhysicalPrimeLogPairBandCurvatureMass]
+  exact Finset.sum_nonneg fun p hp =>
+    Finset.sum_nonneg fun q hq =>
+      mul_nonneg
+        (mul_nonneg (physicalPrimeEndpointWeight_pos p).le
+          (physicalPrimeEndpointWeight_pos q).le)
+        (le_max_left _ _)
+
+theorem xiPhysicalPrimeLogCrossWeightMass_nonneg
+    (P : Finset Nat.Primes) :
+    0 ≤ xiPhysicalPrimeLogCrossWeightMass P := by
+  rw [xiPhysicalPrimeLogCrossWeightMass]
+  exact Finset.sum_nonneg fun p hp =>
+    Finset.sum_nonneg fun q hq =>
+      mul_nonneg (physicalPrimeEndpointWeight_pos p).le
+        (physicalPrimeEndpointWeight_pos q).le
+
+/-- Positive-survivor semiconvexity law.  After continuum compensation, the bulk cross defect can
+have no negative width curvature beyond its explicit rank-one background. -/
+theorem xiPhysicalPrimeLogBulkCrossDefect_width_semiconvex
+    (P : Finset Nat.Primes) (A c : ℝ)
+    {h : ℝ} (hh : 0 ≤ h) :
+    -(2 * h ^ 2 / A * xiPhysicalPrimeLogCrossWeightMass P) ≤
+      xiPhysicalPrimeLogBulkCrossDefect P A (c + h) +
+        xiPhysicalPrimeLogBulkCrossDefect P A (c - h) -
+        2 * xiPhysicalPrimeLogBulkCrossDefect P A c := by
+  rw [xiPhysicalPrimeLogBulkCrossDefect_width_secondDifference P A c hh]
+  linarith [xiPhysicalPrimeLogPairBandCurvatureMass_nonneg P c h]
+
 end
 
 end RHTower

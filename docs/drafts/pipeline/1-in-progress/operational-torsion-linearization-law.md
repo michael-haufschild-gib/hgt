@@ -3,10 +3,39 @@
 - **ID:** `operational-torsion-linearization-law`
 - **Stage:** 1-in-progress
 - **Type:** UNIVERSAL HT LAW / OPERATOR-MODULE LINEARIZATION
-- **Scientific status:** `[CONJECTURE: SHARP ABSTRACT FORM] [PRIME-CLOCK INSTANCE PROVED] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[UNIVERSAL COMMUTATIVITY PHASE LAW PROVED IN SOURCE] [PRIME-CLOCK TORSION INSTANCE PROVED] [NOVELTY PROVISIONAL]`
 - **Paper target:** `analytic-grassmann-lattice-dirichlet-fields`
 
-## Conjecture UL-1: algebraically faithful carrier systems
+## Master law UL-0: commutativity linearizes hypertranscendence geometry
+
+The stronger corpus-wide law is a sharp phase boundary, not merely a prime-clock closure formula.
+
+Let a commutative `K`-algebra `A` act linearly on an arbitrary state space `M`, choose one root
+state `m`, and let a law vector `v` select an element `L(v)` of `A`.  On the symmetric observable
+algebra, the complete directional jet of the root is algebraically dependent exactly when the
+class of `L(v)` in the root-annihilator quotient is algebraic over `K`.  Therefore
+
+```text
+every autonomous one-root commutative complete dependence horizon is a vector subspace.
+```
+
+This is sharp.  Every finite homogeneous projective zero locus is the exact complete dependence
+horizon of a free-word realization, and the realization may be chosen with injective exterior
+commutator symbol.  Hence
+
+```text
+nonlinear HT horizon topology is an intrinsic witness of escape from autonomous commutativity.
+```
+
+This is the universal law around which the paper should be written.  The invariant Grassmannian
+and operator-torsion theorem below is its field-level positive classification in a source-faithful
+one-clock sector; projective universality is the sharp noncommutative converse.
+
+Exact capstone source:
+
+`formal/GaloisForLFunctions/HTGeometry/HypertranscendenceCommutativityPhaseLaw.lean`
+
+## Law UL-1: algebraically faithful carrier systems
 
 Let `C <= F <= L` be fields, with `L` differential over `F`. Let `V` be a complex source space,
 `T : V -> V` a linear clock, and `q : V -> L` a linear carrier map satisfying
@@ -70,6 +99,13 @@ This extension is not yet proved by the current prime-clock leaf.
 
 ## Existing evidence
 
+- **Arbitrary autonomous commutative representations:** the full one-root dependence horizon is
+  the carrier of a vector subspace, with no cyclicity, finite-dimensionality, grading,
+  reducedness, or finite-generation assumption on the represented commutative algebra.
+- **Free-word converse:** every finite projective zero locus is realized as an exact complete
+  horizon; the same construction has injective exterior commutator symbol.  A nonlinear cone is
+  therefore impossible in the commutative phase and realized in a maximally detected
+  noncommutative phase.
 - **Prime-power profiles:** UL-1 clauses 1--5 are proved by the prime-clock completion,
   invariant-Grassmann, and clock-saturation modules.
 - **Tail-dense analytic carriers:** the static decoder, all joins, all nonempty meets, and quotient
@@ -85,12 +121,15 @@ This extension is not yet proved by the current prime-clock leaf.
 ## Anti-theatre gate
 
 The abstract proof from static algebraic faithfulness is expected to be elementary pure
-transcendental field theory. It is not by itself a major novelty claim. The publishable content
-requires both:
+transcendental field theory. It is not by itself a major novelty claim. The publishable content is
+the sharp commutative/noncommutative phase theorem together with the source-faithful field
+classification.  It requires:
 
-1. a minimal, reusable theorem proving the exact field/relative/Kolchin conclusions from static
+1. the general commuting horizon theorem, not merely the cyclic polynomial quotient;
+2. the all-projective free realization with a noncommutativity certificate;
+3. a minimal field theorem proving the exact field/relative/Kolchin conclusions from static
    faithfulness and clock intertwining; and
-2. at least two nontrivial HT realizations, not merely a renaming of the prime-profile theorem.
+4. at least two nontrivial field realizations, not merely a renaming of the prime-profile theorem.
 
 If only the prime-clock realization closes, the paper must call this the **prime-clock torsion
 law**, not a universal law.
@@ -122,6 +161,10 @@ represented by the field, such as positivity, reflection, completion, or boundar
 ## Gates
 
 - [x] exact universal candidate stated
+- [x] arbitrary autonomous commutative horizon proved linear
+- [x] every finite projective zero locus realized in the free phase
+- [x] maximal exterior commutator certificate proved for the free realization
+- [x] combined commutative/free capstone written in source
 - [x] prime-clock instance proved
 - [x] anti-theatre boundary recorded
 - [ ] abstract single-operator theorem formalized

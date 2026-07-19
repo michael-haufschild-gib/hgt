@@ -81,6 +81,18 @@ on the Euler half-plane and therefore as an upper-end germ. Thus the arbitrary-f
 an actual corrected completed-Xi family theorem for all integral shifts. For even `a`, the
 archimedean difference in `(T0)` is the rational correction `(T2)`.
 
+The same general shift carries an exact reflection law. Write
+
+```text
+r_a(s) = 1-a-s.
+```
+
+The raw completed-Xi shift defect is fixed by `r_a`. Subtracting the archimedean correction
+therefore produces an exact reflection cocycle, and that cocycle is anti-invariant under `r_a`.
+Adding one half of the cocycle to the corrected prime defect gives a centered defect fixed by
+`r_a`. This is unconditional for every natural shift; no rationality or differential-algebraicity
+of the odd-shift archimedean correction is asserted.
+
 For every `m`, `(T1)` and `(T2)` are now formalized as an equality of upper-end germs: the
 finite-abscissa source carrier at shift `2m` is exactly the directly corrected shift-`2m` defect of
 the actual completed logarithmic derivative. Hence every arbitrarily indexed family of actual
@@ -198,6 +210,12 @@ RH-strength assertion must be proved.
   `RHTower.xiTransverseShiftPrimeDefect_eq_lSeries`
 - **General source-to-completed-Xi germ reflection:**
   `RHTower.xiTransverseShiftUpperEndGerm_eq_xiTransverseShiftPrimeDefect`
+- **General raw completed-Xi reflection:**
+  `RHTower.xiTransverseShiftRawLogDerivDefect_reflection`
+- **General corrected-defect reflection cocycle:**
+  `RHTower.xiTransverseShiftPrimeDefect_reflection_cocycle`
+- **General centered reflection law:**
+  `RHTower.xiTransverseCenteredShiftPrimeDefect_reflection`
 - **Completed-Xi telescope module:**
   `formal/GaloisForLFunctions/RHTower/XiEvenShiftPrimeDefectTelescope.lean`
 - **Source cocycle:**
@@ -234,7 +252,8 @@ RH-strength assertion must be proved.
   even-family matroid/Prop/rank capstones also report exactly this baseline. The arbitrary-family
   all-valuation independence, matroid, Prop, and rank capstones have the same audit result. The
   general L-series relation, integral-shift completed-Xi exposure, and general germ reflection also
-  report exactly this baseline.
+  report exactly this baseline. The raw completed-Xi reflection, corrected-defect reflection
+  cocycle, and centered fixed-point law likewise report only this baseline.
 
 ## Falsifiers
 
@@ -300,4 +319,7 @@ RH-strength assertion must be proved.
   logarithmic Xi shift defect minus the corresponding archimedean logarithmic shift defect; this
   equality is then promoted to the upper-end germ. Consequently the arbitrary collision-matroid
   theorem is an actual corrected completed-Xi family law for all integral shifts. The exact leaf
-  build, dependent even-leaf source check, and three-capstone axiom audit pass.
+  build, dependent even-leaf source check, and three-capstone axiom audit pass. The same module now
+  proves the structural reflection law about `(1-a)/2`: the raw defect is fixed, the correction
+  induces an anti-invariant cocycle, and half-cocycle centering restores exact invariance. The
+  augmented exact build and four-capstone reflection audit pass.
