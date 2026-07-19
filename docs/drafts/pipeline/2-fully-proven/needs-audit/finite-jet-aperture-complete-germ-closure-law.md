@@ -4764,3 +4764,611 @@ to be `1` and its carrier is *known* to be `F_t`, so the two sums are pinned aga
 2. *Direct.* `∑_{ξ ∈ F_t} λ(ξ) δ_ξ` is `fiberMeasure (christoffelLimit s) F_t` (link 150). Its total
    mass is the sum in question, and `lintegral_fiberMeasure` computes its moments. Showing its mass
    is at most `1` is showing that this explicitly defined measure is sub-probability.
+
+### Link 161 — the open core, at finite level
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiNodeWeightSum.lean`
+
+- `quasiWeight_eq_momentInner_basis` — the interpolatory weight at a node **is** the moment norm of
+  its Lagrange basis polynomial, `wξ = ⟪bξ, bξ⟫`. (The content was inside `quasiWeight_pos`; stated
+  on its own it is the usable form.)
+- `christoffelLimit_le_quasiWeight` — hence `λ(ξ) ≤ wξ` at every node, because `bξ(ξ) = 1` and
+  `christoffelLimit_le_momentInner_self` — the variational property, **already in the corpus**, with
+  no degree restriction at all.
+- **`sum_christoffelLimit_quasiNodes_le`** — `∑_{ξ ∈ quasiNodes s n t} λ(ξ) ≤ s₀`, for every level and
+  every parameter. With `quasiNodes_zero_param` (the Gauss nodes are the quasi nodes of parameter
+  zero) the same holds over Gauss node sets.
+
+Axiom-clean, zero placeholders, registered, first-try compile.
+
+**This is the open core at finite level.** The target is `∑_{ξ ∈ F_t} λ(ξ) ≤ 1`; what is proved is the
+identical statement with `F_t` replaced by a level-`n` node set.
+
+**A correction to link 160's attack 1.** That link proposed proving `∑ᵢ λ(ξᵢ) ≤ 1` for an *arbitrary*
+finite subset of `F_t` and passing to the supremum. The proof above does **not** generalise that way,
+and the reason is structural rather than technical: the step `λ(ξ) ≤ wξ` needs the rule to be exact on
+`bξ²`, which is degree `2n`, and exactness to `2n` is exactly what makes a node set a node set. For
+an arbitrary set of `m` points the interpolatory rule is exact only to degree `m−1`, and `bξ²` is out
+of reach. What *does* survive for arbitrary points is `∑ᵢ wᵢ = s₀` (the Lagrange bases sum to `1`), but
+without exactness there is no comparison between `wᵢ` and `λ(ξᵢ)`.
+
+So the naive truncation route is closed. The remaining gap is precisely the passage from node sets to
+the fiber, which is the same node-convergence question that Hurwitz would have answered — and which
+link 155's uniform-convergence estimate approaches from the other side. Concretely:
+
+> **[OPEN CORE]** `∑_{ξ ∈ F_t} λ(ξ) ≤ 1`. Proved for every level-`n` node set; needed for the limit
+> fiber. The missing link is that each finite subset of `F_t` is, for large `n`, "close enough" to a
+> subset of the level-`n` nodes for the bound to survive — a lower-semicontinuity statement about `λ`
+> along converging nodes, not a new estimate on the weights.
+
+That reformulation is the next thing to attack: `λ` is an infimum of continuous functions, hence upper
+semicontinuous, and the inequality wanted is in the direction that semicontinuity supplies.
+
+### Link 162 — the leaf is an explicit weighted Dirac family, and the core is located exactly
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/CarriedAtomic.lean`
+- `measure_eq_fiberMeasure_of_carried` — **a finite measure giving a countable `F` full mass *is* the
+  weighted Dirac family of its own atoms**, `μ = ∑_{ξ∈F} μ{ξ}·δ_ξ`. Proved by `Measure.ext`, splitting
+  `μ A = μ (A ∩ F)` and rewriting both sides as `tsum`s of indicators over `ℝ` (`tsum_subtype` twice,
+  with its arguments supplied explicitly — higher-order unification cannot guess them).
+- `exists_leaf_eq_fiberMeasure`, `exists_leaf_infinity_eq_fiberMeasure` — hence **each constructed
+  leaf equals `fiberMeasure (fun x => (μ{x}).toReal) F_t`**. The leaf is no longer a weak limit: it is
+  determined by the numbers `μ{ξ}`, `ξ ∈ F_t`, and its integrals are sums over the fiber.
+
+Axiom-clean, zero placeholders, registered.
+
+**Where the core actually sits — a negative result about the available routes.** Three attacks were
+worked through this session and two are now closed:
+
+1. *Finite truncation over arbitrary subsets* — closed in link 161. The comparison `λ(ξ) ≤ wξ` needs
+   exactness to degree `2n`, which is what distinguishes a node set.
+2. *Semicontinuity along converging nodes* — needs `λ` continuous. `λ` is an infimum of continuous
+   functions, hence upper semicontinuous; the direction wanted is the other one. Continuity would
+   follow from locally uniform convergence of the kernel *diagonal*, but the bilinear machinery of
+   this development gives uniformity only with **one argument held fixed** (the summable side is the
+   fixed one), and the diagonal has both varying. The classical fix is Vitali/Montel, and mathlib has
+   no normal-families theorem for holomorphic functions (checked `Analysis/Complex/`: only
+   `LocallyUniformLimit` machinery that *consumes* local uniformity, never produces it from local
+   boundedness). So this route requires building Vitali first.
+3. *Test-polynomial* — with the leaf now known to be atomic on `F_t`, for any polynomial `p` with
+   `p(ξ) = 1`, the variational property plus atomicity give
+   `λ(ξ) ≤ ⟪p,p⟫ = ∑_{η∈F_t} μ{η}·p(η)²`. Taking `p` concentrated at `ξ` would give `λ(ξ) ≤ μ{ξ}` and
+   finish the card. This is exactly **density of polynomials in `L²(μ)`** — M. Riesz's theorem — and is
+   the genuine remaining content.
+
+So the open core is no longer "identify the weights"; it is one classical theorem, and route 3 states
+it in the form this development can consume:
+
+> **[OPEN CORE]** For the constructed leaf `μ` of parameter `t` and each `ξ ∈ F_t`, there are
+> polynomials `pₘ` with `pₘ(ξ) = 1` and `∑_{η ∈ F_t \ {ξ}} μ{η}·pₘ(η)² → 0`.
+
+Everything else on the card is proved. Two routes into that statement are worth weighing next: build
+Vitali (which also unlocks route 2 and gives continuity of `λ` as a by-product), or attack the
+approximation directly using the entire function `(B(x)t − D(x))/(x − ξ)`, which vanishes on
+`F_t \ {ξ}` exactly — the obstruction there being that it is entire rather than polynomial, so it
+needs to be reached in the moment norm by its Taylor sections.
+
+### Link 163 — the core is now one named `Prop`, and everything around it is discharged
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/AtomApproximation.lean`
+- `lintegral_eq_tsum_atoms` — integration against a measure carried by a countable set is a sum over
+  that set, straight from link 162's `measure_eq_fiberMeasure_of_carried`.
+- **`christoffelLimit_le_tsum_atoms`** — for a representing measure carried by a countable `F`, every
+  polynomial `p` with `p(ξ) = 1` gives
+  `λ(ξ) ≤ ∑_{η ∈ F} μ{η}·p(η)²`.
+  Chain: the variational property (corpus), `momentFunctional_pow_two_eq_integral_sq` (corpus) to turn
+  `⟪p,p⟫` into `∫p²dμ`, `ofReal_integral_eq_lintegral_ofReal` to reach the lower integral, then the
+  atomic sum.
+- `AtomApproximable μ F ξ` — the named remaining hypothesis: normalised polynomials whose weighted
+  square sum over `F` approaches `μ{ξ}`.
+- `ofReal_christoffelLimit_le_measure_singleton` and
+  **`measure_singleton_eq_ofReal_christoffelLimit`** — under `AtomApproximable`, `μ{ξ} = λ(ξ)`,
+  combining with link 160's general bound in the other direction.
+
+Axiom-clean, zero placeholders, registered.
+
+**State of the card.** Every field of `ClassicalNevanlinnaExtremalFamily` except the weight
+identification is constructed unconditionally, and the weight identification is now
+
+> **[OPEN CORE]** `AtomApproximable μ F_t ξ` for the constructed leaf `μ` of each parameter `t` and each
+> `ξ ∈ F_t` — i.e. density of polynomials in `L²(μ)` at the point `ξ`, M. Riesz's theorem.
+
+Nothing else is open. The reduction is unconditional: given that one `Prop`, `measure_singleton_eq_ofReal_christoffelLimit`
+delivers the atoms, and via link 160's `measure_singleton_eq_of_tsum_le` the equality
+`∑_{ξ∈F_t} λ(ξ) = 1` follows as well.
+
+**Assessment of the two ways in** (recorded so the next session does not re-derive it):
+- *Build Vitali/Montel.* Mathlib has no normal-families theorem (link 162). Building it also yields
+  continuity of `λ`, hence the semicontinuity route, hence node-convergence arguments generally. It is
+  the larger investment but unlocks the most.
+- *Taylor sections of `(B(x)t − D(x))/(x − ξ)`.* That entire function vanishes on `F_t \ {ξ}` exactly
+  and is nonzero at `ξ`, so it is the `p` wanted — except that it is entire, not polynomial. What has
+  to be shown is that its Taylor sections converge to it in the moment norm `⟪·,·⟫`. The kernel bounds
+  of links 146–149 control exactly that norm, so this route stays inside the machinery already built,
+  and is the one to try first.
+
+### Link 164 — the tunable estimate survives to the full series
+
+Link 163 named two routes. Before committing to either, one thing had to be settled: whether the
+kernel *diagonal* can be shown continuous inside this development, since link 162 had closed the
+obvious approach (the bilinear machinery gives uniformity only with one argument fixed, and mathlib
+has no Vitali). It can — and the tool is the tunable absorption estimate built back in links 132–139
+for a purpose that was itself refuted.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/KernelTunableSum.lean`
+- `summable_normSq_eq_norm` — the kernel series in `‖·‖²` rather than `normSq` (`Complex.sq_norm`;
+  `Complex.normSq_eq_abs` does not exist in this toolchain).
+- **`tsum_kernel_le_tunable`** — for bounded kernels,
+  `K(w) ≤ (1+ε)·K(z) + 4(1+ε⁻¹)·(‖w−z‖h₀)²·S_w²S²P²`
+  for the *whole* series, every `ε > 0`. Each partial sum at `w` is handled by
+  `kernelRoot_sq_le_absorption_tunable`, the centre roots are replaced by their global bounds
+  (links 146–148), and `Summable.tsum_le_of_sum_le` passes to the series — via
+  `Finset.exists_nat_subset_range`, since arbitrary finite subsets have to be reduced to ranges.
+
+**Why this matters.** Letting `w → z` gives `limsup_{w→z} K(w) ≤ (1+ε)·K(z)` for every `ε > 0`, hence
+`limsup ≤ K(z)`: the kernel sum is **upper semicontinuous**. Lower semicontinuity is free — it is a
+supremum of continuous partial sums. So the kernel sum is continuous, and therefore so is
+`λ = 1/K` (`christoffelLimit_eq_inv_tsum`, link with `ChristoffelLimitFormula`). That was the
+prerequisite link 162 recorded as blocked on Vitali; it is not blocked, because the factor `2` in the
+naive estimate — the only obstruction — is exactly what the tunable version removes.
+
+Note the reuse: the tunable absorption chain was built in links 132–139 to make a chaining argument
+work, and link 139 *refuted* that argument. The estimate itself was never wrong, only the use it was
+put to; it is now doing the work it was actually good for. Worth remembering before deleting
+machinery whose motivating application dies.
+
+Axiom-clean, zero placeholders, registered.
+
+**Opens next:** the topology, which is now routine — `limsup` over `𝓝 z`, then `ε → 0`, then
+`continuousAt` from USC plus LSC; then `Continuous (christoffelLimit s)` on `ℝ` by composing with
+`Complex.ofReal` and inverting away from zero. After that the semicontinuity route of link 162 is
+open, and what remains for it is node convergence — for which the elementary real-variable
+substitute is a sign change of `B·t − D` at each fiber point, an intermediate-value argument rather
+than an argument-principle one.
+
+### Link 165 — the Christoffel limit is continuous
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/KernelContinuity.lean`
+- `kernelSum s w` — the kernel series as a function of the point; `kernelSum_le_of_bound`,
+  `kernelSum_nonneg`, `kernelSum_pos` (bounded below by its `k = 0` term `1/h₀`).
+- **`continuousAt_kernelSum`** — the kernel sum is continuous on `ℂ`. Link 164's estimate is applied
+  with the two points *in both orders*, giving
+  `|K(w) − K(z₀)| ≤ ε·Sb² + C(ε)·‖w − z₀‖²` on a ball; choose `ε` from `δ` first and the displacement
+  second. No semicontinuity API is involved — the two-sided bound gives the `ε`-`δ` statement outright.
+- `continuous_kernelSum`, `kernelSum_ofReal` (the real trace is the real Christoffel series).
+- **`continuous_christoffelLimit`** — `λ` is continuous on `ℝ`, by `christoffelLimit_eq_inv_tsum`
+  (link with `ChristoffelLimitFormula`) and `Continuous.inv₀`, the denominator being nonvanishing by
+  `kernelSum_pos`.
+
+Axiom-clean, zero placeholders, registered.
+
+This retires the blocker recorded in link 162, which read: *"Continuity would follow from locally
+uniform convergence of the kernel diagonal … the classical fix is Vitali/Montel, and mathlib has no
+normal-families theorem … so this route requires building Vitali first."* It did not. The diagonal
+never needed a normal-families argument, only an estimate with a leading constant that can be tuned
+below `2` — which had been sitting in the tree since link 139 refuted the argument it was built for.
+
+**Opens next.** The semicontinuity route of link 162 is now unblocked on its analytic side, and what
+it still needs is purely real-variable:
+
+> For `ξ ∈ F_t`, nodes `ξ_n` of the level-`n` denominator with `ξ_n → ξ`.
+
+With that, `λ(ξ_n) → λ(ξ)` by continuity, and link 161's `∑_{ξ ∈ nodes} λ ≤ s₀` passes to any finite
+subset of `F_t`, giving `∑_{F_t} λ ≤ 1` and closing the card via link 160.
+
+The elementary substitute for Hurwitz here: `Bₙ·t − Dₙ → B·t − D` uniformly on compacts (link 156),
+all real and continuous, so a **sign change** of the limit at `ξ` forces a nearby zero of the
+truncation by the intermediate value theorem. So the remaining question is whether `B·t − D` changes
+sign at each of its zeros — i.e. that its zeros have odd order. Its zeros are already known to be
+isolated (link 147); simplicity is the missing piece, and it is a statement about one entire function
+rather than about the family.
+
+### Link 166 — the `B, D` Wronskian is the reproducing kernel
+
+Link 165 reduced the remaining gap to a sign change of `B·t − D` at each fiber point. Working out what
+would produce one turned up an identity that had not been noticed, and it is elementary.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevBDWronskian.lean`
+
+> **`nevBD_wronskian`** — `Bₙ(x)·Dₙ(y) − Dₙ(x)·Bₙ(y) = h₀·(x − y)·Kₙ(x,y)`.
+
+Both entries are two-term combinations of `Q_{n+1}, Qₙ` (link 152), so in the antisymmetric
+combination the `Q_{n+1}(x)Q_{n+1}(y)` and `Qₙ(x)Qₙ(y)` terms cancel and what is left factors as
+`(P₀R₁ − P₁R₀)·(Q_{n+1}(x)Qₙ(y) − Qₙ(x)Q_{n+1}(y))`. The first factor is the Wronskian at the origin,
+`hₙ/h₀` (link 152 again); the second is `hₙ·(x−y)·Kₙ(x,y)` by Christoffel--Darboux. The constants
+collapse to `h₀`.
+
+Axiom-clean, zero placeholders, registered. The proof has to `set` all eight polynomial evaluations
+before any `field_simp`/`ring`, since `ring_nf` normalises `n+1` to `1+n` inside indices and would
+otherwise split one atom into two — the trap recorded at link 159.
+
+**Why this closes the sign-change question.** Let `ξ ∈ F_t`, so `D(ξ) = B(ξ)·t`. Substituting `y = ξ`
+in the limit form of the identity,
+
+`(B(x)t − D(x))·B(ξ) = B(x)D(ξ) − D(x)B(ξ) = h₀·(x − ξ)·K(x,ξ)`.
+
+- `B(ξ) ≠ 0`, since `B(ξ) = 0` would force `D(ξ) = B(ξ)t = 0` and contradict
+  `nevBinf_ne_zero_or_nevDinf_ne_zero` (link 147).
+- `K(ξ,ξ) > 0` (`kernelSum_pos`, link 165) and `x ↦ K(x,ξ)` is continuous — this is the bilinear
+  series with **one argument fixed**, exactly the case the machinery of links 155/164 covers.
+
+So near `ξ`, `B(x)t − D(x)` is `(x − ξ)` times a continuous function of constant sign: it **changes
+sign at `ξ`**, and `ξ` is a simple zero. No derivative and no argument principle.
+
+**Opens next**, and the chain is now short:
+1. Pass `nevBD_wronskian` to the limit (`Bₙ → B`, `Dₙ → D` by link 156; `Kₙ(x,ξ) → K(x,ξ)` is the
+   fixed-argument bilinear series).
+2. Sign change at `ξ` ⇒ by the intermediate value theorem and uniform convergence (link 156), the
+   level-`n` denominator has a zero near `ξ` for large `n` — node convergence, elementarily.
+3. `λ` continuous (link 165) carries `∑_{nodes} λ ≤ s₀` (link 161) to finite subsets of `F_t`.
+4. `∑_{F_t} λ ≤ 1`, and link 160 closes the card.
+
+### Link 167 — the Wronskian identity in the limit, and the denominator factored at a fiber point
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevBDWronskianLimit.lean`
+- `summable_diag_real`, `summable_bilinear_real` — the real kernel series converges at every point,
+  and the bilinear series converges absolutely by `|ab| ≤ (a²+b²)/2` against the two diagonals.
+- `tendsto_cdKernel_eval`, `tendsto_nevBreal`, `tendsto_nevDreal` — the three convergences, the last
+  two extracted from link 156's uniform estimate by taking `r = |x| + 1`.
+- **`nevBD_wronskian_limit`** — `B(x)·D(y) − D(x)·B(y) = h₀·(x − y)·K(x,y)`, by `tendsto_nhds_unique`
+  on link 166's finite-level identity.
+- `nevBrealInf_ne_zero_or_nevDrealInf_ne_zero` — the real form of link 147's no-common-zero result.
+- `nevBrealInf_ne_zero_of_mem_fiber` — hence `B(ξ) ≠ 0` for every `ξ ∈ F_t`.
+- **`nevDenominator_factor_at_fiber`** —
+  `(B(x)t − D(x))·B(ξ) = h₀·(x − ξ)·K(x,ξ)` for `ξ ∈ F_t`.
+
+Axiom-clean, zero placeholders, registered, first-try compile for the main file.
+
+**The denominator is now factored.** Near a fiber point, `B(x)t − D(x)` equals `(x − ξ)` times
+`h₀·K(x,ξ)/B(ξ)`, whose value at `x = ξ` is `h₀·K(ξ,ξ)/B(ξ) ≠ 0` since `K(ξ,ξ) > 0` (link 165). So the
+denominator changes sign at each fiber point, and every zero is simple — proved without a derivative,
+without the argument principle, and without Hurwitz.
+
+**Opens next**, three steps to close the card:
+1. *Sign change.* From the factorisation plus continuity of `x ↦ K(x,ξ)` (the fixed-argument bilinear
+   series), `B·t − D` takes opposite signs at `ξ ± η` for small `η`.
+2. *Node convergence.* Uniform convergence of `Bₙt − Dₙ` on `[ξ−η, ξ+η]` (link 156) makes the
+   truncation take opposite signs at the endpoints for large `n`, so the intermediate value theorem
+   puts a level-`n` node inside — and by link 152 the nodes are exactly the quasi-orthogonal nodes.
+3. *Transfer of the weight bound.* Continuity of `λ` (link 165) plus `∑_{ξ ∈ nodes} λ(ξ) ≤ s₀`
+   (link 161) gives `∑_{ξ ∈ S} λ(ξ) ≤ s₀` for every finite `S ⊆ F_t`; the supremum over finite
+   subsets is `∑_{F_t} λ`, and link 160 then closes the weight identification.
+
+Step 1 needs one lemma not yet present — continuity of `x ↦ kernelInf s x ξ` — which is the
+fixed-argument case of the bilinear machinery and so is the same shape as `tendstoUniformlyOn_nevD_series`
+(link 155) rather than the harder diagonal case settled in link 165.
+
+### Link 168 — the denominator provably changes sign at every fiber point
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/KernelOffDiag.lean`
+- `kernelInf_comm`, `ofReal_kernelInf` — symmetry, and the real kernel as the trace of the complex
+  bilinear series.
+- `continuousOn_kernelC`, **`continuousAt_kernelInf`** — the kernel with one argument fixed is
+  continuous. This is the *easy* case: `tendstoUniformlyOn_bilinearLimit` (link 155) applies
+  directly, the partial sums are polynomials, and `TendstoUniformlyOn.continuousOn` finishes. (That
+  lemma wants `∃ᶠ`, not `∀ᶠ`, for the continuity hypothesis.)
+- `eventually_kernelInf_pos` — `K(x,ξ) > 0` for `x` near `ξ`, from continuity and `K(ξ,ξ) > 0`
+  (link 165).
+- **`nevDenominator_opposite_signs`** — for every `ξ ∈ F_t` there is `η > 0` with
+  `(B(ξ−δ)t − D(ξ−δ))·(B(ξ+δ)t − D(ξ+δ)) < 0` for all `0 < δ < η`.
+
+Axiom-clean, zero placeholders, registered.
+
+**Step 1 of link 167 is done.** The proof is exactly the factorisation of link 167 read twice:
+multiplying `G(ξ+δ)·B(ξ) > 0` by `G(ξ−δ)·B(ξ) < 0` gives `G(ξ+δ)G(ξ−δ)·B(ξ)² < 0`, and `B(ξ)² > 0`.
+
+The whole sign-change question — which link 156 first raised, link 162 filed under "needs Vitali",
+and link 165 reduced to simplicity of zeros — came down to an algebraic identity (link 166), its limit
+(link 167), and continuity in the *easy* variable. The diagonal continuity of link 165 is used only
+at the single point `K(ξ,ξ) > 0`.
+
+**Opens next**, two steps:
+2. *Node convergence.* `Bₙt − Dₙ → Bt − D` uniformly on `[ξ−δ, ξ+δ]` (link 156), so for large `n` the
+   truncation inherits the opposite signs at the endpoints; `intermediate_value_Icc` then puts a zero
+   of `Bₙt − Dₙ` inside, and by `nevDenominator_zero_iff` (link 152) that zero is a quasi-orthogonal
+   node. Choosing `δ = 1/m` gives nodes converging to `ξ`.
+3. *Transfer.* Continuity of `λ` (link 165) plus `∑_{ξ ∈ nodes} λ(ξ) ≤ s₀` (link 161) gives
+   `∑_{ξ ∈ S} λ(ξ) ≤ s₀` for finite `S ⊆ F_t`: pick for each `ξ ∈ S` a node within `1/m`, note the
+   chosen nodes are distinct for `m` large (the points of `S` are separated), sum, and pass to the
+   limit. Then `∑_{F_t} λ ≤ 1` and link 160 closes the weight identification, and with it the card.
+
+### Link 169 — nodes accumulate at every fiber point
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NodeConvergence.lean`
+- **`eventually_exists_denominator_zero_near`** — for every `ξ ∈ F_t` there is `η > 0` such that for
+  every `δ ∈ (0, η)` and every large `n`, the truncated denominator `Bₙ·t − Dₙ` has a zero within `δ`
+  of `ξ`.
+- **`eventually_exists_quasiNode_near`** — and at every level where the leading coefficient survives,
+  that zero is a quasi-orthogonal node (`nevDenominator_zero_iff`, link 152).
+
+The proof is exactly the two ingredients and nothing else: the sign change of link 168 at `ξ ± δ`,
+and uniform convergence on that interval (link 156) with `ε = min(|G(ξ−δ)|,|G(ξ+δ)|)/2`, which makes
+the truncation inherit both signs; then `intermediate_value_Icc` (and `intermediate_value_Icc'` for
+the reversed order). **No complex analysis** — this is the elementary substitute for Hurwitz that
+link 154 first proposed and links 166–168 made available.
+
+Axiom-clean, zero placeholders, registered. Traps: `abs_add` does not exist under that name (use
+`neg_abs_le`/`le_abs_self` and `linarith`), and `neg_lt_of_abs_lt` does not have the shape its name
+suggests — `abs_lt.mp` giving both bounds at once is the reliable form.
+
+**Step 2 of link 167 is done. One step remains:**
+
+> **Transfer.** For finite `S ⊆ F_t`: choose for each `ξ ∈ S` a node within `1/m`; for `m` large the
+> chosen nodes are distinct, since the points of `S` are finitely many and hence separated. Then
+> `∑_{ξ ∈ S} λ(node_ξ) ≤ ∑_{nodes} λ ≤ s₀` (link 161, the sum over a subset of a node set being at
+> most the sum over all of it, all terms nonnegative). Let `m → ∞`: `λ(node_ξ) → λ(ξ)` by continuity
+> of `λ` (link 165), so `∑_{ξ ∈ S} λ(ξ) ≤ s₀`.
+>
+> The supremum over finite `S` is `∑_{ξ ∈ F_t} λ(ξ)`, giving `≤ 1` for a normalised sequence — and
+> link 160's `measure_singleton_eq_of_tsum_le` then identifies every atom of the leaf as `λ(ξ)`,
+> closing the weight identification and the card.
+
+Every ingredient of that step is now proved; what remains is the bookkeeping of the finite selection
+and the limit.
+
+### Link 170 — the measure-side route, and its two lemmas
+
+Link 169's remaining step was stated as finite-subset bookkeeping: pick a node near each point of a
+finite `S ⊆ F_t`, argue the picks are distinct, sum, take limits. Before writing that, a cheaper route
+turned up, and it removes the bookkeeping entirely.
+
+**The measure-side argument.** For `ξ ∈ F_t` and small `δ`, the approximating measure `μₙ` has a node
+in `Icc (ξ−δ) (ξ+δ)` (link 169) and therefore mass at least `λ(that node)` there. Continuity of `λ`
+(link 165) makes that at least `λ(ξ) − ε`. Portmanteau for **closed** sets gives
+`limsup μₙ(Icc) ≤ μ(Icc)`, so `μ(Icc (ξ−δ) (ξ+δ)) ≥ λ(ξ) − ε`; shrinking `δ` gives
+`μ{ξ} ≥ λ(ξ) − ε`, and `ε → 0` gives `μ{ξ} ≥ λ(ξ)` — the reverse atom bound, directly, with no finite
+subsets, no distinctness, and no supremum over `S`.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiMeasureLowerBound.lean`
+- `quasiMeasure_ge_of_node_mem` — a measurable set containing a node has at least that node's weight
+  (`Finset.single_le_sum` against `finsetWeightedDirac_apply`). Needs no positive-definiteness, so `h`
+  was dropped after the linter flagged it.
+- **`quasiMeasure_ge_ofReal_christoffelLimit`** — hence at least `λ` at any node it contains, via
+  `christoffelLimit_le_quasiWeight` (link 161).
+- `quasiProb_eq_quasiMeasure`, `quasiProb_ge_ofReal_christoffelLimit` — the normalised forms.
+- **`le_measure_singleton_of_forall_Icc`** — a bound holding on every small symmetric interval about
+  `ξ` bounds `μ{ξ}`: the intervals `Icc (ξ ± η/(m+2))` are antitone with intersection `{ξ}`, and
+  `tendsto_measure_iInter_atTop` passes the bound to the limit.
+
+Axiom-clean, zero placeholders, registered.
+
+**What remains is one assembly.** Both ends are now proved and only need to be joined at the
+approximating sequence:
+- lower end: `quasiProb_ge_ofReal_christoffelLimit` + `eventually_exists_quasiNode_near` (link 169)
+  + continuity of `λ`;
+- upper end: `ProbabilityMeasure.limsup_measure_closed_le_of_tendsto` against `Icc`;
+- closing: `le_measure_singleton_of_forall_Icc`, then `measure_singleton_eq_of_tsum_le` (link 160).
+
+The one structural change needed is that `exists_leaf` (link 158) currently discards the approximating
+sequence `φ, ν, τ'` after taking the limit. A variant retaining it — the proof is unchanged, only the
+statement grows — is what the assembly consumes.
+
+### Link 171 — the open core is closed: the weights are the Christoffel limits
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/LeafAtoms.lean`
+
+- `exists_leaf_approx` — link 158's leaf, retaining the approximating sequence `φ` and the weak
+  convergence rather than discarding them.
+- **`ofReal_christoffelLimit_le_leaf_singleton`** — `λ(ξ) ≤ μ{ξ}` for every `ξ ∈ F_t`. The
+  measure-side argument of link 170, assembled: for `ε > 0`, continuity of `λ` (link 165) fixes an
+  interval on which `λ > λ(ξ) − ε`; link 169 puts a node of every large good level inside it;
+  `quasiProb_ge_ofReal_christoffelLimit` (link 170) gives the approximants mass `≥ λ(ξ) − ε` there;
+  `limsup_measure_closed_le_of_tendsto` carries it to `μ`; `le_measure_singleton_of_forall_Icc`
+  shrinks the interval to the atom; `ε → 0` finishes.
+- **`exists_leaf_atoms`** — for a normalised sequence and any finite parameter, a probability measure
+  that represents `s`, is carried by `F_t`, and satisfies
+
+  > **`μ{ξ} = λ(ξ)` for every `ξ ∈ F_t`.**
+
+Axiom-clean, zero placeholders, registered.
+
+**This is the open core of the card, closed.** It had stood as `wₙ = λ(ξₙ)` since the card was
+written, was reduced to `∑_{F_t} λ ≤ 1` at link 160, restated as `AtomApproximable` (M. Riesz's
+density theorem) at link 163 — and was then reached *without* proving density, by the route links
+164–170 opened: the tunable estimate gives continuity of `λ`, the `B,D` Wronskian gives a sign change,
+the sign change gives node convergence by the intermediate value theorem, and node convergence plus
+portmanteau gives the atom from below.
+
+Note what was avoided: no Vitali/Montel, no argument principle, no Hurwitz, and no density of
+polynomials in `L²(μ)`. The one classical ingredient that looked unavoidable at link 162 turned out to
+be reachable only because the construction supplies an approximating sequence whose atoms are already
+known to dominate `λ` — information a bare N-extremal measure does not carry.
+
+With links 149, 150 and 159 the remaining fields of `ClassicalNevanlinnaExtremalFamily` are
+constructed, and the weights are now identified. What is left is packaging, not mathematics:
+`leaf` as a function of `t : OnePoint ℝ` (choice over the per-parameter existence) and
+`continuous_leaf` (weak continuity in the parameter).
+
+### Link 172 — the weight identification holds at every parameter, `∞` included
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/InfinitySignChange.lean`
+- `nevBrealInf_factor_at_zero` — at a zero of `B` the limit Wronskian identity (link 167) reads
+  `B(x)·D(ξ) = h₀·(x − ξ)·K(x,ξ)`: the same factorisation with `B` and `D` exchanged, since
+  `D(ξ) ≠ 0` whenever `B(ξ) = 0`.
+- `nevBrealInf_opposite_signs`, `eventually_exists_nevBreal_zero_near`,
+  `eventually_exists_quasiNode_near_inf` — sign change, intermediate-value node convergence, and the
+  node form, exactly as links 168–169 for a finite parameter.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/InfinityLeafAtoms.lean`
+- `exists_leaf_infinity_approx`, `ofReal_christoffelLimit_le_leaf_infinity_singleton`, and
+  **`exists_leaf_infinity_atoms`** — the leaf at infinity represents `s`, is carried by
+  `infinityDenominatorFiber`, and satisfies `μ{ξ} = λ(ξ)` at each of its points.
+
+Both modules compiled first try; axiom-clean, zero placeholders, registered.
+
+**Status: the mathematics of the card is complete.** For a positive definite, normalised moment
+sequence with bounded kernel — i.e. an indeterminate Hamburger moment problem — every parameter
+`t ∈ ℝ ∪ {∞}` has a probability measure that
+
+1. represents `s` (`HasHamburgerMoments`),
+2. is carried by the denominator fiber `F_t` of the constructed Nevanlinna matrix, and
+3. has atoms exactly `λ(ξ) = christoffelLimit s ξ` at every point of that fiber,
+
+with the matrix itself constructed (`nevMatrixDataInf`) and its denominator row continuous. Nothing in
+that list is hypothesised.
+
+**Remaining, and it is packaging:** `leaf : OnePoint ℝ → ProbabilityMeasure ℝ` as a *function* — the
+per-parameter existence statements are in hand, so this is a choice — and `continuous_leaf`, weak
+continuity in the parameter, which is the one genuinely remaining analytic statement. The fiber
+description now available (`leaf t` is the countable weighted Dirac family with weights `λ` on `F_t`,
+by link 162 plus links 171–172) reduces it to continuity in `t` of the fiber and its weights, since
+the weights are a *fixed* function `λ` evaluated on a varying set.
+
+### Link 173 — the leaf as a function; seven of eight fields discharged
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevLeafFunction.lean`
+- **`nevLeaf`** — `OnePoint ℝ → ProbabilityMeasure ℝ`, by `OnePoint.elim` over the two per-parameter
+  existence theorems (links 171, 172). Simp lemmas `nevLeaf_infty`, `nevLeaf_coe` reduce it.
+- **`nevLeaf_hasHamburgerMoments`** — the `leaf_moments` field, by `OnePoint.rec`.
+- **`nevLeaf_finite_carried`**, **`nevLeaf_infinity_carried`** — the two carriedness fields.
+- `nevLeaf_atoms`, `nevLeaf_infinity_atoms` — the weights are the Christoffel limits.
+- **`nevLeaf_eq_fiberMeasure`** — combining with link 162, the leaf is *literally*
+  `fiberMeasure (christoffelLimit s) F_t`: no longer a choice-produced object with known properties
+  but an explicit weighted Dirac family, with a fixed weight function evaluated on the fiber.
+
+Axiom-clean, zero placeholders, registered.
+
+**Field status of `ClassicalNevanlinnaExtremalFamily`, complete except one.**
+
+| field | status |
+|---|---|
+| `matrix` | `nevMatrixDataInf` (link 149) |
+| `continuous_B` | `continuous_nevMatrixDataInf_B` (link 149) |
+| `continuous_D` | `continuous_nevMatrixDataInf_D` (link 149) |
+| `leaf` | `nevLeaf` (here) |
+| `finite_carried` | `nevLeaf_finite_carried` (here) |
+| `infinity_carried` | `nevLeaf_infinity_carried` (here) |
+| `leaf_moments` | `nevLeaf_hasHamburgerMoments` (here) |
+| `continuous_leaf` | **open** |
+
+**Opens next: `continuous_leaf`.** With `nevLeaf_eq_fiberMeasure` the leaf is an explicit sum
+`∑_{ξ ∈ F_t} λ(ξ)·δ_ξ` whose weight function `λ` does not depend on `t` — so weak continuity in `t`
+is continuity of the *fiber* in `t`, and the fibers are the level sets of the projective label
+`x ↦ [B(x) : D(x)]` (link 149's `projectiveLabel`). Concretely, for a bounded continuous `f`,
+`∫f d(leaf t) = ∑_{ξ ∈ F_t} λ(ξ)f(ξ)`, and what has to be shown is that this is continuous in `t` —
+which the factorisation `(B(x)t − D(x))·B(ξ) = h₀(x−ξ)K(x,ξ)` (link 167) makes a statement about how
+the zeros of a one-parameter family of entire functions move, with the sign-change/IVT machinery of
+links 168–169 available in the parameter direction as well.
+
+### Link 174 — the fiber moves continuously with the parameter
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/ParameterMotion.lean`
+- **`exists_param_radius_no_zero`** — on a compact set where the denominator of `t₀` does not vanish,
+  it still does not vanish for all `t` within an explicit radius. **No fiber point appears from
+  nowhere.**
+- **`exists_param_radius_zero_near`** — at a fiber point `ξ` of `t₀` the sign change (link 168)
+  persists for nearby `t`, so each nearby parameter has a fiber point within `δ` of `ξ`. **No fiber
+  point disappears.**
+
+Both are the arguments of links 168–169 re-run in the parameter direction, and they are cheaper
+there: the denominator depends on `t` *affinely*, `B(x)t − D(x)`, so a change of parameter perturbs it
+by `B(x)(t − t₀)` — bounded on a compact set by `max|B|·|t − t₀|` with no series convergence anywhere.
+The perturbation bound replaces link 156's uniform-convergence estimate, and the rest (opposite signs
+at `ξ ± δ`, `intermediate_value_Icc`) is unchanged.
+
+Axiom-clean, zero placeholders, registered.
+
+**Toward `continuous_leaf`.** With link 173's `nevLeaf_eq_fiberMeasure` the leaf is
+`∑_{ξ ∈ F_t} λ(ξ)·δ_ξ` with `λ` independent of `t`, so for `f` continuous with compact support `K`,
+
+`∫f d(leaf t) = ∑_{ξ ∈ F_t ∩ K} λ(ξ)·f(ξ)`,
+
+a **finite** sum (the fiber is discrete and closed, link 150). The two theorems above say exactly that
+for `t` near `t₀` this finite index set is in bijection with `F_{t₀} ∩ K` by a map moving each point by
+at most `δ`. What remains is that bookkeeping — building the bijection and passing `λ·f` through it
+using continuity of `λ` (link 165) and of `f` — plus the reduction from bounded continuous test
+functions to compactly supported ones, which is where tightness of the family enters.
+
+### Link 175 — the fiber meets a compact set finitely
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/FiberFinite.lean`
+- `isDiscrete_of_eventually_notMem`, `isDiscrete_inter_of_eventually_notMem` — a set of reals with no
+  accumulation point in itself is discrete, and so is any subset of it. (`IsDiscrete` is the mathlib
+  predicate `IsCompact.finite` consumes; `isDiscrete_iff_nhdsNE` states it in exactly the
+  punctured-neighbourhood form links 156/159 produce, so no reformulation was needed.)
+- **`finite_finiteDenominatorFiber_inter`**, **`finite_infinityDenominatorFiber_inter`** — each fiber
+  meets every compact set in a **finite** set: the intersection is compact (closed ∩ compact) and
+  discrete.
+
+Axiom-clean, zero placeholders, registered, first-try compile.
+
+**Where this sits.** For `f` continuous with compact support `K`,
+
+`∫f d(leaf t) = ∑_{ξ ∈ F_t ∩ K} λ(ξ)·f(ξ)` — a genuinely finite sum, now established.
+
+Link 174 says this index set is, for `t` near `t₀`, in bijection with `F_{t₀} ∩ K` by a map displacing
+each point by at most `δ`. So the three inputs to weak continuity are in place:
+1. the sum is finite (here);
+2. the index sets correspond, with small displacement (link 174);
+3. the summand `λ·f` is continuous (link 165 for `λ`, hypothesis for `f`).
+
+**Remaining for `continuous_leaf`:** assemble (1)–(3) into `∫f d(leaf t) → ∫f d(leaf t₀)`, then reduce
+general bounded continuous test functions to compactly supported ones. The reduction is where the
+tightness already proved for the approximating family (link 154) should be re-derived for the leaves
+themselves — the leaves inherit the uniform second-moment bound, since they all represent the same
+`s`, so `leaf t (Icc (-R) R)ᶜ ≤ s₂/R²` uniformly in `t` by Chebyshev, which is exactly the estimate
+`measure_compl_Icc_le_of_lintegral_sq_le` (link in `GaussMomentLimit`) already provides.
+
+### Link 176 — the leaf family is tight
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/LeafTightness.lean`
+- `lintegral_sq_nevLeaf` — every leaf has second moment `s₂`, as a lower integral. Immediate from
+  `nevLeaf_hasHamburgerMoments` (link 173) and `ofReal_integral_eq_lintegral_ofReal`.
+- **`nevLeaf_tail_le`** — `leaf t ((Icc (-R) R)ᶜ) ≤ s₂/R²` for **every** parameter, by Chebyshev
+  (`measure_compl_Icc_le_of_lintegral_sq_le`, already in `GaussMomentLimit`).
+- **`isTightMeasureSet_nevLeaf`** — the whole family `{leaf t : t ∈ OnePoint ℝ}` is tight.
+
+Axiom-clean, zero placeholders, registered, first-try compile.
+
+The bound has nothing to do with the construction: the leaves are tight *because they all represent
+the same sequence*. That is why the proof is four lines of Chebyshev rather than a repeat of link
+154's work on the approximating family.
+
+**Inventory for `continuous_leaf`.** All the analytic inputs now exist:
+
+| input | source |
+|---|---|
+| `leaf t = ∑_{ξ ∈ F_t} λ(ξ)·δ_ξ`, `λ` independent of `t` | link 173 |
+| `F_t ∩ K` finite for compact `K` | link 175 |
+| fiber points persist and no new ones appear, for `t` near `t₀` | link 174 |
+| `λ` continuous | link 165 |
+| uniform tails, so compactly supported test functions suffice | here |
+
+What is left is assembly: build the near-bijection `F_{t₀} ∩ K → F_t ∩ K` from link 174, transport
+the finite sum along it, and conclude `∫f d(leaf t) → ∫f d(leaf t₀)` first for compactly supported `f`
+and then, via the tail bound, for bounded continuous `f`. That is Finset bookkeeping over statements
+all of which are proved; no further analytic content is required.
+
+### Link 177 — the leaf of a parameter is unique, and that replaces the bookkeeping
+
+Link 176 ended by saying the remaining step was Finset bookkeeping and that a shortcut should be
+looked for first. There is one, and it is a theorem worth having on its own.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/LeafUniqueness.lean`
+- **`tsum_ofReal_christoffelLimit_fiber`** — `∑_{ξ ∈ F_τ} λ(ξ) = 1` **exactly**. Link 160 proved `≥`
+  from the construction; the reverse now comes free, because the leaf *is* carried by `F_τ` with
+  atoms exactly `λ` (links 171, 173) and has mass `1`.
+- `fiberMeasure_congr` — a weighted Dirac family only sees its weights on its own carrier.
+- **`nevLeaf_unique`**, **`nevLeaf_infinity_unique`** — **a probability measure that represents `s`
+  and is carried by the fiber of `τ` *is* the leaf of `τ`.** Its atoms are at most `λ` (link 160), the
+  `λ`'s already sum to `1`, so `measure_singleton_eq_of_tsum_le` forces equality termwise, and
+  `measure_eq_fiberMeasure_of_carried` (link 162) turns equal atoms into equal measures.
+
+Axiom-clean, zero placeholders, registered.
+
+**Why this is the shortcut.** Weak continuity no longer needs a bijection between fibers. Tightness
+(link 176) makes the leaf family relatively compact, so along any `tₙ → t₀` some subsequence converges
+weakly to some `ν`; `ν` represents `s` because every leaf does and the moments pass to a weak limit by
+the machinery of link 154; and `ν` is carried by `F_{t₀}` because link 174 forbids fiber points on
+compacta away from `F_{t₀}` for nearby parameters, which the interior-plus-portmanteau argument of
+link 158 transfers to the limit. Uniqueness then says `ν = leaf t₀`. Every subsequential limit being
+the same point, the whole family converges.
+
+This is the classical statement that the Nevanlinna parametrization is injective on N-extremal
+measures — and here it is a five-line consequence of the atom identification rather than an input to
+it.
+
+**Remaining for `continuous_leaf`:** the subsequence argument just described. Its two inputs — moments
+pass to weak limits, and carriedness passes to weak limits — are both already proved in the forms used
+by links 154 and 158; what is new is only running them with the parameter, rather than the level, as
+the moving index.

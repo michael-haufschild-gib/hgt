@@ -164,6 +164,57 @@ theorem integral_semilocalFinitePrimeEulerDensity_mul_polynomial_eq_poissonSerie
         ring]
       rw [integral_const_mul]
 
+/-- **Real Poisson-series value interface.** If the polynomial Fourier transform is represented
+pointwise by a real kernel, then the actual Euler-density integral is the corresponding real
+Poisson series. -/
+theorem integral_semilocalFinitePrimeEulerDensity_mul_polynomial_eq_realPoissonSeries
+    {n : ℕ} (p : Fin n → ℕ) (hprime : ∀ i, (p i).Prime) (q : ℝ[X]) (K : ℝ → ℝ)
+    (hK : ∀ t, semilocalArchimedeanPolynomialFourier q t = (K t : ℂ)) :
+    (∫ s : ℝ, q.eval s * semilocalFinitePrimeEulerDensity p s
+        ∂semilocalArchimedeanGammaMeasure) =
+      semilocalFinitePrimePoissonPrefactor p *
+        ∑' m : Fin n → ℤ,
+          semilocalFinitePrimePoissonWeight p m *
+            K (semilocalFinitePrimeLogFrequency p m) := by
+  have hseries :=
+    integral_semilocalFinitePrimeEulerDensity_mul_polynomial_eq_poissonSeries p hprime q
+  apply Complex.ofReal_injective
+  calc
+    (((∫ s : ℝ, q.eval s * semilocalFinitePrimeEulerDensity p s
+        ∂semilocalArchimedeanGammaMeasure) : ℝ) : ℂ) =
+        ∫ s : ℝ, ((q.eval s * semilocalFinitePrimeEulerDensity p s : ℝ) : ℂ)
+          ∂semilocalArchimedeanGammaMeasure := by
+      rw [integral_complex_ofReal]
+    _ =
+        ∫ s : ℝ, ((q.eval s : ℝ) : ℂ) *
+          (semilocalFinitePrimeEulerDensity p s : ℂ)
+            ∂semilocalArchimedeanGammaMeasure := by
+      apply integral_congr_ae
+      filter_upwards with s
+      push_cast
+      rfl
+    _ = (semilocalFinitePrimePoissonPrefactor p : ℂ) *
+        ∑' m : Fin n → ℤ,
+          (semilocalFinitePrimePoissonWeight p m : ℂ) *
+            semilocalArchimedeanPolynomialFourier q
+              (semilocalFinitePrimeLogFrequency p m) := hseries
+    _ = (semilocalFinitePrimePoissonPrefactor p : ℂ) *
+        ∑' m : Fin n → ℤ,
+          ((semilocalFinitePrimePoissonWeight p m *
+            K (semilocalFinitePrimeLogFrequency p m) : ℝ) : ℂ) := by
+      congr 1
+      apply tsum_congr
+      intro m
+      rw [hK]
+      push_cast
+      rfl
+    _ = ((semilocalFinitePrimePoissonPrefactor p *
+        ∑' m : Fin n → ℤ,
+          semilocalFinitePrimePoissonWeight p m *
+            K (semilocalFinitePrimeLogFrequency p m) : ℝ) : ℂ) := by
+      push_cast
+      rfl
+
 theorem semilocalArchimedeanPolynomialFourier_one (t : ℝ) :
     semilocalArchimedeanPolynomialFourier (1 : ℝ[X]) t =
       (semilocalArchimedeanCharacteristic t : ℂ) := by
@@ -187,45 +238,10 @@ theorem integral_semilocalFinitePrimeEulerDensity_eq_prefactor_mul_mass
         ∂semilocalArchimedeanGammaMeasure) =
       semilocalFinitePrimePoissonPrefactor p *
         semilocalFinitePrimePoissonMass p := by
-  have hseries :=
-    integral_semilocalFinitePrimeEulerDensity_mul_polynomial_eq_poissonSeries
-      p hprime (1 : ℝ[X])
-  have hcast :
-      ((∫ s : ℝ, semilocalFinitePrimeEulerDensity p s
-          ∂semilocalArchimedeanGammaMeasure : ℝ) : ℂ) =
-        ((semilocalFinitePrimePoissonPrefactor p *
-          semilocalFinitePrimePoissonMass p : ℝ) : ℂ) := by
-    calc
-      ((∫ s : ℝ, semilocalFinitePrimeEulerDensity p s
-          ∂semilocalArchimedeanGammaMeasure : ℝ) : ℂ) =
-          ∫ s : ℝ, (semilocalFinitePrimeEulerDensity p s : ℂ)
-            ∂semilocalArchimedeanGammaMeasure := by
-        rw [integral_complex_ofReal]
-      _ = ∫ s : ℝ, (((1 : ℝ[X]).eval s : ℝ) : ℂ) *
-          (semilocalFinitePrimeEulerDensity p s : ℂ)
-            ∂semilocalArchimedeanGammaMeasure := by simp
-      _ = (semilocalFinitePrimePoissonPrefactor p : ℂ) *
-          ∑' m : Fin (n + 1) → ℤ,
-            (semilocalFinitePrimePoissonWeight p m : ℂ) *
-              semilocalArchimedeanPolynomialFourier (1 : ℝ[X])
-                (semilocalFinitePrimeLogFrequency p m) := hseries
-      _ = (semilocalFinitePrimePoissonPrefactor p : ℂ) *
-          ∑' m : Fin (n + 1) → ℤ,
-            ((semilocalFinitePrimePoissonWeight p m *
-              semilocalArchimedeanCharacteristic
-                (semilocalFinitePrimeLogFrequency p m) : ℝ) : ℂ) := by
-        congr 1
-        apply tsum_congr
-        intro m
-        rw [semilocalArchimedeanPolynomialFourier_one]
-        push_cast
-        rfl
-      _ = ((semilocalFinitePrimePoissonPrefactor p *
-          semilocalFinitePrimePoissonMass p : ℝ) : ℂ) := by
-        unfold semilocalFinitePrimePoissonMass
-        push_cast
-        rfl
-  exact Complex.ofReal_injective hcast
+  simpa only [eval_one, one_mul, semilocalFinitePrimePoissonMass] using
+    integral_semilocalFinitePrimeEulerDensity_mul_polynomial_eq_realPoissonSeries
+      p hprime (1 : ℝ[X]) semilocalArchimedeanCharacteristic
+        semilocalArchimedeanPolynomialFourier_one
 
 theorem integral_semilocalFinitePrimeEulerDensity_pos
     {n : ℕ} (p : Fin (n + 1) → ℕ) (hprime : ∀ i, (p i).Prime) :
@@ -322,63 +338,11 @@ theorem integral_semilocalFinitePrimeEulerDensity_mul_evenJacobi_eq_numerator
             ∂semilocalArchimedeanGammaMeasure) =
       semilocalFinitePrimePoissonPrefactor p *
         semilocalFinitePrimeEvenJacobiNumerator k p := by
-  have hseries :=
-    integral_semilocalFinitePrimeEulerDensity_mul_polynomial_eq_poissonSeries
-      p hprime (semilocalArchimedeanJacobiPolynomial (2 * k))
-  have hcast :
-      (((∫ s : ℝ,
-          (semilocalArchimedeanJacobiPolynomial (2 * k)).eval s *
-            semilocalFinitePrimeEulerDensity p s
-              ∂semilocalArchimedeanGammaMeasure) : ℝ) : ℂ) =
-        ((semilocalFinitePrimePoissonPrefactor p *
-          semilocalFinitePrimeEvenJacobiNumerator k p : ℝ) : ℂ) := by
-    calc
-      (((∫ s : ℝ,
-          (semilocalArchimedeanJacobiPolynomial (2 * k)).eval s *
-            semilocalFinitePrimeEulerDensity p s
-              ∂semilocalArchimedeanGammaMeasure) : ℝ) : ℂ) =
-          ∫ s : ℝ,
-            (((semilocalArchimedeanJacobiPolynomial (2 * k)).eval s *
-              semilocalFinitePrimeEulerDensity p s : ℝ) : ℂ)
-                ∂semilocalArchimedeanGammaMeasure := by
-        rw [integral_complex_ofReal]
-      _ =
-          ∫ s : ℝ,
-            (((semilocalArchimedeanJacobiPolynomial (2 * k)).eval s : ℝ) : ℂ) *
-              (semilocalFinitePrimeEulerDensity p s : ℂ)
-                ∂semilocalArchimedeanGammaMeasure := by
-        apply integral_congr_ae
-        filter_upwards with s
-        push_cast
-        rfl
-      _ = (semilocalFinitePrimePoissonPrefactor p : ℂ) *
-          ∑' m : Fin (n + 1) → ℤ,
-            (semilocalFinitePrimePoissonWeight p m : ℂ) *
-              semilocalArchimedeanPolynomialFourier
-                (semilocalArchimedeanJacobiPolynomial (2 * k))
-                (semilocalFinitePrimeLogFrequency p m) := hseries
-      _ = (semilocalFinitePrimePoissonPrefactor p : ℂ) *
-          ∑' m : Fin (n + 1) → ℤ,
-            ((semilocalFinitePrimePoissonWeight p m *
-              semilocalArchimedeanEvenJacobiKernel k
-                (semilocalFinitePrimeLogFrequency p m) : ℝ) : ℂ) := by
-        congr 1
-        apply tsum_congr
-        intro m
-        rw [semilocalArchimedeanPolynomialFourier_evenJacobi]
-        push_cast
-        rfl
-      _ = ((semilocalFinitePrimePoissonPrefactor p *
-          (∑' m : Fin (n + 1) → ℤ,
-            semilocalFinitePrimePoissonWeight p m *
-              semilocalArchimedeanEvenJacobiKernel k
-                (semilocalFinitePrimeLogFrequency p m)) : ℝ) : ℂ) := by
-        push_cast
-        rfl
-      _ = ((semilocalFinitePrimePoissonPrefactor p *
-          semilocalFinitePrimeEvenJacobiNumerator k p : ℝ) : ℂ) := by
-        rw [tsum_semilocalFinitePrimeEvenJacobiFullTerm_eq_numerator hk p hprime]
-  exact Complex.ofReal_injective hcast
+  rw [integral_semilocalFinitePrimeEulerDensity_mul_polynomial_eq_realPoissonSeries
+    p hprime (semilocalArchimedeanJacobiPolynomial (2 * k))
+      (semilocalArchimedeanEvenJacobiKernel k)
+      (semilocalArchimedeanPolynomialFourier_evenJacobi k)]
+  rw [tsum_semilocalFinitePrimeEvenJacobiFullTerm_eq_numerator hk p hprime]
 
 def semilocalFinitePrimeActualEvenJacobiMoment
     {n : ℕ} (k : ℕ) (p : Fin (n + 1) → ℕ) : ℝ :=

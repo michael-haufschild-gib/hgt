@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.UpperEndPrimeLogCarrier
-import GaloisForLFunctions.HTGeometry.DifferentialIndependence
+import GaloisForLFunctions.HTGeometry.AffineBaseJetGauge
 import Mathlib.Analysis.Analytic.Polynomial
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 
@@ -91,7 +91,23 @@ theorem upperEndRatfunc_allJets_closed (r : RatFunc ℂ) (n : ℕ) :
       rw [differentialJet_succ, hs]
       exact upperEndRatfunc_deriv_closed s
 
-/-- Coordinatewise rational surgery preserves differential independence in the upper-end field. -/
+/-- Coordinatewise rational surgery preserves differential independence in both directions in the
+upper-end field. -/
+theorem differentialIndependent_addUpperEndRatfunc_iff
+    {ι : Type*} (x : ι → upperEndMeroField) (r : ι → RatFunc ℂ) :
+    letI := isDomain_upperEndAnalyticSubring
+    letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
+    letI := upperEndMeroFieldDifferential
+    DifferentialIndependent (RatFunc ℂ)
+        (fun i => x i + algebraMap (RatFunc ℂ) upperEndMeroField (r i)) ↔
+      DifferentialIndependent (RatFunc ℂ) x := by
+  letI := isDomain_upperEndAnalyticSubring
+  letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
+  letI := upperEndMeroFieldDifferential
+  apply differentialIndependent_addOfJetsInBase_iff
+  exact fun i n => upperEndRatfunc_allJets_closed (r i) n
+
+/-- Forward method form of two-way upper-end rational surgery invariance. -/
 theorem DifferentialIndependent.addUpperEndRatfunc
     {ι : Type*} {x : ι → upperEndMeroField}
     (hx : letI := isDomain_upperEndAnalyticSubring
@@ -103,13 +119,8 @@ theorem DifferentialIndependent.addUpperEndRatfunc
     letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
     letI := upperEndMeroFieldDifferential
     DifferentialIndependent (RatFunc ℂ)
-      (fun i => x i + algebraMap (RatFunc ℂ) upperEndMeroField (r i)) := by
-  letI := isDomain_upperEndAnalyticSubring
-  letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
-  letI := upperEndMeroFieldDifferential
-  apply DifferentialIndependent.addOfJetsInBase
-    (c := fun i => algebraMap (RatFunc ℂ) upperEndMeroField (r i)) hx
-  exact fun i n => upperEndRatfunc_allJets_closed (r i) n
+      (fun i => x i + algebraMap (RatFunc ℂ) upperEndMeroField (r i)) :=
+  (differentialIndependent_addUpperEndRatfunc_iff x r).2 hx
 
 end
 

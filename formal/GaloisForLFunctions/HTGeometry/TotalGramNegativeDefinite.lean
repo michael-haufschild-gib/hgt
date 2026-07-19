@@ -18,19 +18,17 @@ open Filter Topology MeasureTheory Matrix
 
 noncomputable section
 
-/-- **The total scaled Gram is eventually negative definite.**  Entrywise convergence to a negative
-coefficient diagonal makes the Gram negative definite at all small heights. -/
-theorem eventually_negDef_totalGram {d : ℕ} (ν : Measure ℝ) (a c : Fin d → ℝ)
-    {δ : ℝ} (hδ : 0 < δ) (hc : ∀ j, c j ≤ -δ)
+/-- **The entrywise deviation of the scaled Gram from the coefficient diagonal is eventually
+uniformly small.**  The diagonal and off-diagonal limits are repackaged as one entrywise threshold
+statement, splitting on whether the two indices agree. -/
+theorem entrywise_totalGram_sub_diagonal {d : ℕ} (ν : Measure ℝ) (a c : Fin d → ℝ)
     (hdiag : ∀ l : Fin d,
       Tendsto (fun y : ℝ => totalGram ν a c y l l - ((c l : ℝ) : ℂ)) (𝓝[≠] 0) (𝓝 0))
     (hoff : ∀ l m : Fin d, l ≠ m →
       Tendsto (fun y : ℝ => totalGram ν a c y l m) (𝓝[≠] 0) (𝓝 0)) :
-    ∀ᶠ y : ℝ in 𝓝[≠] 0, ∀ x : Fin d → ℂ, x ≠ 0 →
-      (star x ⬝ᵥ (totalGram ν a c y).mulVec x).re < 0 := by
+    ∀ ε : ℝ, 0 < ε → ∀ᶠ y : ℝ in 𝓝[≠] 0, ∀ j k,
+      ‖totalGram ν a c y j k - (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)) j k‖ ≤ ε := by
   classical
-  refine eventually_negDef_of_entrywise_tendsto_diagonal
-    (fun y => totalGram ν a c y) c hδ hc ?_
   intro ε hε
   rw [Filter.eventually_all]
   intro j
@@ -46,6 +44,19 @@ theorem eventually_negDef_totalGram {d : ℕ} (ν : Measure ℝ) (a c : Fin d �
     filter_upwards [h] with y hy
     rw [Matrix.diagonal_apply_ne _ hjk, sub_zero]
     exact hy.le
+
+/-- **The total scaled Gram is eventually negative definite.**  Entrywise convergence to a negative
+coefficient diagonal makes the Gram negative definite at all small heights. -/
+theorem eventually_negDef_totalGram {d : ℕ} (ν : Measure ℝ) (a c : Fin d → ℝ)
+    {δ : ℝ} (hδ : 0 < δ) (hc : ∀ j, c j ≤ -δ)
+    (hdiag : ∀ l : Fin d,
+      Tendsto (fun y : ℝ => totalGram ν a c y l l - ((c l : ℝ) : ℂ)) (𝓝[≠] 0) (𝓝 0))
+    (hoff : ∀ l m : Fin d, l ≠ m →
+      Tendsto (fun y : ℝ => totalGram ν a c y l m) (𝓝[≠] 0) (𝓝 0)) :
+    ∀ᶠ y : ℝ in 𝓝[≠] 0, ∀ x : Fin d → ℂ, x ≠ 0 →
+      (star x ⬝ᵥ (totalGram ν a c y).mulVec x).re < 0 :=
+  eventually_negDef_of_entrywise_tendsto_diagonal (fun y => totalGram ν a c y) c hδ hc
+    (entrywise_totalGram_sub_diagonal ν a c hdiag hoff)
 
 end
 

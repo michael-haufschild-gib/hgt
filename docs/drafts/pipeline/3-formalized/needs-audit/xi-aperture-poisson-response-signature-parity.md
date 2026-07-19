@@ -301,3 +301,9 @@ No umbrella or full project build was used.
   first positive survivor.  Lean then exposed the orientation pivot: fine-minus-coarse reverses
   the cubic, exactly matches the off-line orbit's `(2+,1-)` signature, and is an eventual negative
   amplifier.  The open core narrowed to the source-pure signature-converting map.
+- 2026-07-19 — the completed source-to-response target was narrowed by
+  `XiCompletedApertureReflectionKernel.lean`.  The critical seam and the entire reflection-even
+  aperture sector annihilate every odd determinant, not only the three-node cubic.  The unique
+  surviving completed sector is the nonzero transverse aperture-odd kernel
+  `2 Re[-xi'/xi(1/2+u+i(x-y))]`; its three-node sign and identification with the Poisson refinement
+  are now the exact open source gates.

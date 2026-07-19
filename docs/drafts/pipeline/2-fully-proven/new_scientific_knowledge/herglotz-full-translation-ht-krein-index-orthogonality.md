@@ -4378,3 +4378,302 @@ complete measure-universal claim, so no partial theorem is promoted to stage 3.
   put an unverified theorem into a tree other agents build against — that is the same discipline
   that kept the drafted multiplicative-gauge module in the scratchpad. It is the first thing to
   write when the slot frees.
+- 2026-07-19 — the missing chamber equality is DRAFTED (scratchpad, pending build slot):
+  `scratchpad/ChamberLawEquality_draft.lean`.
+  FORM CHOICE, decided by reading the corpus rather than by preference: there is no single
+  `kappa_-` definition for a Hermitian matrix in this tree — `KreinLangerInertia` expresses the index
+  as a subspace-dimension bound, and mathlib's `sigNeg` is used elsewhere only for quadratic forms.
+  So "the negative index equals the chamber grading" is stated TWO-SIDED, which is what makes it
+  citable without inventing a `kappa_-`:
+    every negative definite subspace has dimension at most `negCount c`, AND
+    `negSupported c` is negative definite with dimension exactly `negCount c`.
+  Those two together ARE the assertion that the maximum is `negCount c`; the pair is the honest
+  formulation, not a weakening.
+  `chamberLaw_negIndex_eq_grading` combines `neg_inertia_le_negCount` with `finrank_negSupported`;
+  `chamberLaw_negIndex_eq_hammingDist` reads it through `negCount_eq_hammingDist`, giving the card's
+  own phrasing — the exact Krein index is the graph distance of the sign chamber from the positive
+  chamber.
+  Both are assembled entirely from theorems already proved and audited this session; nothing new is
+  assumed. They stay in the scratchpad until the umbrella build releases the single build slot,
+  after which they are the first thing to verify and install.
+- 2026-07-19 — DESK-CHECK of the chamber-equality draft, done statically while the build slot is
+  held. Three things verified without compiling:
+  (1) SIGNATURE MATCH. `neg_inertia_le_negCount` is
+      `(H : Matrix (Fin n) (Fin n) C) (c : Fin d → R) (v : Fin (negCount c) → (Fin n → C)) ...`
+      with `n` and `d` INDEPENDENT. The draft instantiates `n := d`, which is exactly the card's
+      situation (one evaluation node per inserted atom), and the types then line up: `v` lands in
+      `Fin d → C` and `W` is a submodule of `Fin d → C`.
+  (2) REACHABILITY. Traced the transitive `HTGeometry` imports of `NegSupportedDimension`: 37
+      modules, and `ChamberNegInertiaBound`, `SignChamberHammingGrading`, `MixedChamberMargin` are
+      all reachable. So the draft's single import suffices for every name it uses — `negCount`,
+      `negSupported`, `signPattern`, `positiveChamber`, `finrank_negSupported`,
+      `neg_inertia_le_negCount`, `negCount_eq_hammingDist`.
+  (3) REWRITE DIRECTION. `negCount_eq_hammingDist : negCount c = hammingDist (signPattern c)
+      (positiveChamber d)`, so `rw [← negCount_eq_hammingDist]` turns the goal's `hammingDist`
+      occurrences into `negCount`, matching the hypotheses in hand. The direction is the one the
+      draft uses.
+  Desk-checking costs nothing while the slot is unavailable and removes the three failure modes that
+  have actually bitten this session — wrong argument shape, a missing transitive import, and a
+  rewrite pointing the wrong way. It does not replace compiling, and the draft stays in the
+  scratchpad until it does compile.
+- 2026-07-19 — DESK-CHECK of the `mulJetImage` index arithmetic in the multiplicative-gauge draft.
+  Slot convention: slot 0 holds `z`, slot `k+1` holds the jet of ORDER `k`. So a slot `s` carries
+  order `s.1 - 1`.
+  Leibniz for order `k` reads `(a f)^(k) = sum_(i=0)^(k) binom(k,i) a^(i) f^(k-i)`, and `f^(k-i)`
+  lives in slot `(k-i)+1`. With `s.1 = k+1` that slot is `s.1 - i`, which is what the draft writes.
+  The summation range `range (s.1 - 1 + 1)` is `range (k+1)`, i.e. `i` from `0` to `k`. The binomial
+  `binom(s.1 - 1, i)` is `binom(k,i)`. All three line up.
+  TWO LIKELY SMALL FAILURES flagged in advance rather than discovered at compile time:
+  (a) the `Fin` bound `⟨s.1 - i, by omega⟩` needs `s.1 < n + 2` in scope for `omega`; that fact is
+      `s.isLt` and may have to be supplied explicitly rather than found automatically, since `s` is
+      only bound as a `Fin` argument. Natural subtraction makes the inequality `s.1 - i <= s.1` true
+      without side conditions, so the only gap is having `s.isLt` available.
+  (b) the coefficient is written `(Nat.choose ... : C) • ...`; on `MvPolynomial ... C` this smul is
+      defeq to multiplication by `C (...)`, but the simp set may not see through it. Writing it as
+      `MvPolynomial.C (...) * ...` is the safer form if the `•` version resists rewriting.
+  Neither is mathematical content; both are the kind of detail that costs a compile cycle when met
+  cold. Recording them now means the first verification attempt can include the fixes rather than
+  discover them.
+- 2026-07-19 — read the card's "Attacks and boundaries" section, previously unopened. It confirms the
+  formalisation targets and, more usefully, marks where the card deliberately STOPS — which is
+  information an auditor needs and which I could not have inferred from the theorem statements.
+  Confirmations relevant to what was built this session:
+    item 1 — the index is the EXACT global negative-square index, with `k = 0` exactly Herglotz
+      positivity. That matches the two-sided formulation chosen for the chamber equality draft:
+      an exact index is precisely "no larger subspace, and one of that size exists".
+    item 3 — infinite support is what supplies complete jet controllability, and a FINITE support
+      would give a merely rational transform. This is the hypothesis `nu.support.Infinite` carried
+      throughout the chamber work, and the card explains why it cannot be dropped rather than
+      weakened.
+    item 4 — (H0) covers finite OR infinite total mass and assumes no atomicity, which is exactly
+      the generality the atom law was proved in (finite case, then the dominant for the infinite
+      case).
+    item 5 — the general measure carrier gets finite-atomic ORTHANT chambers graded by exact index,
+      while the DISCRETE case has a stronger fixed-support direct-limit cube. The chamber work this
+      session is the former; the latter is a separate, stronger statement and is NOT what was
+      formalised.
+  DELIBERATE BOUNDARIES, recorded so no later reader mistakes them for gaps:
+    item 9 — a zeta application must retain the Euler realization; the theorem does NOT modify the
+      zeta carrier, and rational zero replacement would change the distinguished carrier.
+    item 10 — the exact zeta-generated Nyman-Beurling closure is explicitly OUTSIDE the theorem's
+      scope.
+  So the card is not claiming a zeta consequence, and the absence of one is by design. Reading this
+  section earlier would not have changed any proof, but it would have kept me from wondering whether
+  the RHTower side was meant to connect.
+
+### (M3) discharged: the chamber law at a general chamber
+
+`GaloisForLFunctions.HTGeometry.ChamberLawEquality`
+- `chamberLaw_negIndex_eq_grading` — the two-sided abstract statement: for a Hermitian form that a
+  rank-one correction per negative coefficient makes PSD, and that is negative definite on the
+  negative coordinate subspace, no negative definite subspace exceeds `negCount c` and the negative
+  coordinate subspace attains it.
+- `chamberLaw_negIndex_eq_hammingDist` — the same read as the Hamming distance from the positive
+  chamber, which is the card's phrasing of the grading.
+
+`GaloisForLFunctions.HTGeometry.GeneralChamberLaw`
+- `eventually_negDef_on_negSupported_of_entrywise` — entrywise convergence to the coefficient
+  diagonal gives eventual negative definiteness on the negative coordinates, needing the margin only
+  at the negative coefficients.
+- `eventually_negDef_totalGram_negSupported` — the same for the scaled Pick Gram of a measure, at all
+  small heights.
+- `chamberLaw_totalGram_general` — the chamber law at an *arbitrary* chamber, at measure level.
+
+This closes the gap between `ChamberLawExtremes` (which pinned only the all-positive and all-negative
+chambers) and the general mixed chamber. Both new modules build; all declarations depend only on
+`propext`, `Classical.choice`, `Quot.sound`.
+
+Two proof steps that were inline are now separate reusable lemmas, so the general chamber shares one
+proof with the extremes rather than duplicating it:
+`eventually_quadForm_sub_diagonal_le` (in `EventualNegDefFromEntrywise`, the entrywise-to-quadratic
+perturbation bound — it does not use the sign of the coefficients) and
+`entrywise_totalGram_sub_diagonal` (in `TotalGramNegativeDefinite`, the limits-to-threshold
+repackaging). `eventually_negDef_totalGram` was rewritten on top of them and still depends on only
+the three standard axioms.
+
+Correction to an earlier entry: the umbrella build recorded as "exit 0" had in fact failed. lake
+printed `error: build failed` and the shell's exit status came from a pipe. The three failing modules
+are `DerivationTerminalLinearJacobian`, `GaussianTorsionLanguageTailLock`, and
+`PrimeValuationCoordinateFusionCompletion` — none belong to this card and none import anything from
+it; their import chains are disjoint.
+
+Correction to a plan: the negative block of `totalGram` is *not* the Gram of the negative subfamily.
+`atomicGram a c y l m` sums over all atoms, so a positive atom contributes `y² c_j |S_j|² ≥ 0` to the
+form even on vectors supported in the negative coordinates. Restricting the index set is therefore
+invalid; the route that works is entrywise convergence plus the subspace margin, as above.
+
+Next: the PSD witness in `chamberLaw_totalGram_general` is carried as an explicit hypothesis
+(`hPSD`), matching how `chamberLaw_all_positive` states it. Supplying it from the Pick kernel's own
+structure at measure level is the remaining connector on the chamber half.
+
+### The chamber law now carries its own PSD witness
+
+The previous entry left `hPSD` as an explicit hypothesis. It is now discharged from the Pick
+kernel's own structure, so no matrix structure is assumed.
+
+`GaloisForLFunctions.HTGeometry.ComplexIntegralGram` — new infrastructure. The corpus had only the
+*real* `integralFeatureGram`; the measure Gram is a complex conjugate Gram, so the complex analogue
+was missing.
+- `complexFeatureGram`, `complexFeatureCombination`, `complexFeatureCombination_mul_conj`
+- `complexFeatureGram_isHermitian`, `complexFeatureGram_quadratic` — the quadratic form is the
+  integral of the squared modulus of the feature combination.
+- `complexFeatureGram_posSemidef`
+- `measureGram_posSemidef` — the measure part of the scaled Pick kernel, as an instance.
+
+`GaloisForLFunctions.HTGeometry.AtomicGramPosSemidef`
+- `atomFeature`, `atomicGram_eq_sum_atomFeature` — the atomic Gram is the coefficient-weighted sum
+  of the atom rank-one terms, `atomicGram a c y l m = Σ_j c_j · u_j(l) · conj(u_j(m))` with
+  `u_j(l) = y/(a_j − w_l)`.
+- `negIndex`, `c_negIndex_neg`, `negAtomWitness`, `negAtomWitness_mul_star` — the correction
+  attached to the `i`-th negative coefficient, of modulus `|c_j|`.
+- `atomicGram_add_negAtomWitness` — correcting exactly the negative coefficients replaces every
+  coefficient by its positive part.
+- `posPartAtomFactor`, `posPartAtomicGram_posSemidef` — the positive-part Gram is `B Bᴴ`.
+- `totalGram_add_negAtomWitness_posSemidef` — the two halves combine.
+
+`GaloisForLFunctions.HTGeometry.ChamberLawPickWitness`
+- `chamberLaw_totalGram_pick` — the chamber law at an arbitrary chamber whose only inputs are node
+  injectivity, the margin at the negative coefficients, and integrability of the scaled Cauchy
+  kernels. The rank-one correction is no longer assumed; it is the one built from the negative
+  atoms, and its count is the chamber grading by construction.
+
+All modules build; every declaration depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
+A note on why the correction count comes out exactly right: the weight `max (c j) 0` lets the
+corrected matrix be a single full-index weighted Gram, since `c_j + (if c_j < 0 then −c_j else 0)`
+is `max (c j) 0` pointwise. That avoids splitting the index set on the positive-semidefinite side,
+where the split would have been the whole difficulty.
+
+### The chamber law now rests on the Herglotz dominant alone
+
+`GaloisForLFunctions.HTGeometry.ScaledCauchyProductIntegrable`
+- `continuous_scaledCauchy` — at a nonzero height the node is off the real line, so the kernel is
+  continuous and no measurability hypothesis is needed.
+- `integrable_scaledCauchy_product` — the modulus of a product of two scaled Cauchy kernels is
+  bounded by the average of the two atom kernels (arithmetic-geometric mean), so the product is
+  integrable as soon as both atom kernels are. Reuses `integrable_normSq_scaled_cauchy_iff` and
+  `sub_upperNode_ne_zero`, both already in the tree.
+
+`GaloisForLFunctions.HTGeometry.ChamberLawPickWitness`
+- `eventually_totalGram_add_negAtomWitness_posSemidef` — the dominant makes every atom kernel
+  integrable at small heights, hence every kernel product integrable, hence the measure Gram
+  positive semidefinite.
+- `chamberLaw_totalGram_pick` — restated with no `hprod` and no `hPSD`. Its hypotheses are now
+  exactly those of `chamberLaw_all_negative`: injective nodes, a margin, the dominant, and no mass
+  at any node — with `hc` weakened from `∀ j, c j ≤ -δ` to `∀ j, c j < 0 → c j ≤ -δ`. So the
+  general chamber is reached on the same inputs that previously bought only the all-negative
+  extreme.
+
+`hPSD` in `chamberLaw_totalGram_general` was weakened from `∀ y` to `∀ᶠ y in 𝓝[≠] 0`, matching its
+eventual conclusion; that is what makes `y ≠ 0` available to discharge continuity.
+
+All modules build; every declaration depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
+Scope of what (M3) now means here. The chain is stated throughout for `totalGram`, which the tree
+defines directly as the scaled Pick Gram of a chamber member. There is no formal link anywhere in
+the corpus between `totalGram` and `regularizedHerglotzTransform` — grep confirms `totalGram` is
+referenced only within this chamber chain. So (M3) is discharged at the level of the scaled Pick
+Gram, not yet transported to the Pick kernel of the actual transform `m_{u,c}`. That gap is not new
+work introduced here: `ChamberLawExtremes` already had it.
+
+Next: close that gap by proving `totalGram ν a c y l m = y² · (m(w_l) − conj(m(w_m)))/(w_l −
+conj(w_m))` for the atoms-plus-measure Herglotz function, with nodes `w_l = a_l + i y`. The finite
+real-spectrum case of exactly this identity is already proved as
+`GaloisForLFunctions.pick_gram_eq_kernel` in `CarrierPickKernel`, which is the model to follow.
+
+### (M3) transported to the actual transform
+
+The gap flagged in the previous entry is closed. The chamber law is no longer a statement about an
+ad hoc matrix; it is a statement about the Pick kernel of a Herglotz function.
+
+`GaloisForLFunctions.HTGeometry.PickKernelChamberIdentity`
+- `integrable_conj` — conjugation preserves integrability (absent from mathlib under any name tried:
+  `Integrable.conj`, `Integrable.star`, and `exact?` all fail; proved via `Integrable.mono'` against
+  `hf.norm`).
+- `regularizedHerglotzKernel_sub_conj` — **the identity the regularization exists for.** Since
+  `t / (1 + t ^ 2)` is real it cancels in `m z - conj (m w)`, leaving
+  `regK t z - conj (regK t w) = (z - conj w) · (t - z)⁻¹ (t - conj w)⁻¹`.
+- `atomPart`, `chamberHerglotz` — the chamber member's regularized transform.
+- `atomPart_sub_conj`, `measureGram_eq_scaled_integral`.
+- `totalGram_mul_sub_eq_pick` — `totalGram · (w_l − conj w_m) = y² · (m(w_l) − conj m(w_m))`.
+
+`GaloisForLFunctions.HTGeometry.ChamberLawPickKernel`
+- `sub_conj_upperNode_ne_zero` — the Pick denominator has imaginary part `2y`.
+- `chamberPickKernel`, `totalGram_eq_smul_chamberPickKernel` — the scaled Gram is the Pick kernel
+  scaled by `y²`.
+- `re_quadForm_smul_neg_iff` — a positive real scaling moves no negative directions.
+- `chamberLaw_chamberPickKernel` — **(M3) as the card states it**: at all small heights the negative
+  index of the Pick kernel of the chamber member's regularized Herglotz transform is exactly the
+  Hamming distance of its coefficient sign pattern from the positive chamber.
+
+All build; every declaration depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
+Why the regularization is load-bearing, recorded because the wrong route is tempting. One cannot
+write `∫ dν/((t−z)(t−conj w)) = (∫1/(t−z) − ∫1/(t−conj w))/(z−conj w)`: under (H0) neither Cauchy
+integral need converge for an infinite measure. This is the same error as the retracted
+constant-shift bridge earlier in this card. The proof never splits an integral — it uses
+`integral_sub` on the *combined* integrand, whose decay is `t^(-2)`, and the regularizing term
+cancels before any integration is done.
+
+The `(H0)` input enters as `hreg`, integrability of the regularized kernel at the nodes — i.e. the
+condition for the transform to be defined at all — rather than as an assumption about the matrix.
+
+### HT half: the polynomial gauge, and its localisation
+
+`MulPolynomialInvariance` already existed in the tree (untracked, built on this card's
+`bindPointMap` / `exists_triangular_solution` / `eval_aeval_X` infrastructure). Verified here rather
+than rewritten: it builds, and `hypertranscendental_polynomialGauge`,
+`hypertranscendental_mul_polynomial`, `differentiallyAlgebraic_of_mul_polynomial` all depend only on
+the three standard axioms. It subsumes `hypertranscendental_gauge_iff_mul`, which hard-codes the
+multiplier `1 + z²`, by allowing any nonzero polynomial multiplier.
+
+The obstruction that made it unusable, and why it had no callers anywhere in the tree: it requires
+`ContDiff ℂ ⊤ C` **globally**. The object it is meant for is a Cauchy transform, which is analytic
+only off the real axis (`analyticOnNhd_cauchyTransform`). So the global gauge cannot reach the
+regularized Herglotz transform at all.
+
+`GaloisForLFunctions.HTGeometry.LocalPolynomialGauge` — the gauge redone on a domain.
+- `iteratedDeriv_mul_polynomial_at`, `iteratedDeriv_add_polynomial_at` — the two jet identities at a
+  single point of smoothness, from mathlib's `iteratedDeriv_fun_mul` / `iteratedDeriv_add`, both of
+  which already carry `ContDiffAt` hypotheses.
+- `differentiallyAlgebraicOn_of_mul_polynomial`, `differentiallyAlgebraicOn_add_polynomial`.
+- `not_differentiallyAlgebraicOn_polynomialGauge` — the affine gauge on an open `U`.
+
+Nothing algebraic changed: the jet substitution, its point map, and the nonvanishing argument are
+the same declarations, since nonvanishing is a statement about polynomials alone. Only the jet
+identities moved from global smoothness to smoothness at the point, which is all they ever used.
+
+One subtlety the localisation forces. A gauge identity holding only *on* `U` does not by itself
+transfer to jets, because `iteratedDeriv m z` depends on `m` near `z`, not on its values on `U`.
+Hence `U` must be open, and the transfer goes through `Filter.EventuallyEq.iteratedDeriv_eq`.
+
+Next: instantiate at `U = {z | z.im ≠ 0}` (or either half-plane) with `a = 1 + X²` and
+`b = C M * X`, taking smoothness of `cauchyTransform` from `analyticOnNhd_cauchyTransform`, to get
+that the regularized Herglotz transform has no differential relation off the real axis whenever its
+Cauchy transform has none. That is the HT half's reduction (M1)/(M2) in citable form.
+
+### The HT reduction, instantiated at the actual transform
+
+`GaloisForLFunctions.HTGeometry.RegularizedTransformGauge`
+- `offRealAxis`, `isOpen_offRealAxis`, `one_add_X_sq_ne_zero`
+- `contDiffAt_cauchyTransform` — the Cauchy transform of a finite measure is smooth off the real
+  axis, from `analyticOnNhd_cauchyTransform` via `AnalyticAt.contDiffAt`.
+- `not_differentiallyAlgebraicOn_regularizedHerglotzTransform` — **the HT half's reduction**: off
+  the real axis, if the Cauchy transform of the Nevanlinna-weighted measure satisfies no algebraic
+  differential equation, neither does the regularized Herglotz transform
+  `∫ regularizedHerglotzKernel t z · exp (u t) dμ`.
+
+This is the local gauge of the previous entry instantiated with `a = 1 + X²` and
+`b = C M · X`, where `M` is the weighted mass, using `regularizedHerglotzTransform_eq` for the gauge
+identity. Unconditional; depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
+The question for the transform is therefore now entirely a question about a *Cauchy transform of a
+finite measure*, with the regularization and the mass term both discharged. That is the form the
+existing genericity layer (`HerglotzGenericity`, `NevanlinnaNoncriticalProjectiveCompactPatch`) is
+stated in.
+
+Tree hygiene note: the umbrella build replays warnings from `ArithmeticFunctionDomain`,
+`FinitePrimeCoefficientField`, `FiniteRangePrimeDirichletModuli`, `DifferentialPivotRelationIdeal`
+and an info suggestion from `DigammaGammaFactorialBlowUp`. These are pre-existing and belong to
+other cards; none of this card's modules emit any diagnostic. They matter only because the full
+lint gate fails on warnings.

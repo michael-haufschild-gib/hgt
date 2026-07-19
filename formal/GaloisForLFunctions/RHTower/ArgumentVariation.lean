@@ -166,10 +166,10 @@ theorem im_eq_int_mul_two_pi_of_exp_pos {w : ℂ} {r : ℝ} (hr : 0 < r)
   rw [him]
   ring
 
-/-- A continuous function with values in `2πℤ` on an interval is constant. -/
-theorem continuousOn_int_mul_two_pi_const {F : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
+private theorem continuousOn_int_mul_const_of_pos {F : ℝ → ℝ} {a b δ : ℝ}
+    (hab : a ≤ b) (hδ : 0 < δ)
     (hF : ContinuousOn F (Set.Icc a b))
-    (hint : ∀ τ ∈ Set.Icc a b, ∃ n : ℤ, F τ = n * (2 * Real.pi)) :
+    (hint : ∀ τ ∈ Set.Icc a b, ∃ n : ℤ, F τ = n * δ) :
     ∀ τ ∈ Set.Icc a b, F τ = F a := by
   intro τ hτ
   by_contra hne
@@ -179,8 +179,7 @@ theorem continuousOn_int_mul_two_pi_const {F : ℝ → ℝ} {a b : ℝ} (hab : a
   have hFsub : ContinuousOn F (Set.Icc a τ) :=
     hF.mono (Set.Icc_subset_Icc le_rfl hτ.2)
   have hsub : Set.Icc a τ ⊆ Set.Icc a b := Set.Icc_subset_Icc le_rfl hτ.2
-  have hπ : 0 < Real.pi := Real.pi_pos
-  have hgap : 2 * Real.pi ≤ |F τ - F a| := by
+  have hgap : δ ≤ |F τ - F a| := by
     rw [hna, hnτ]
     have hne' : nτ ≠ na := by
       intro h
@@ -188,43 +187,63 @@ theorem continuousOn_int_mul_two_pi_const {F : ℝ → ℝ} {a b : ℝ} (hab : a
     have : (1 : ℝ) ≤ |(nτ : ℝ) - na| := by
       rw [← Int.cast_sub, ← Int.cast_abs]
       exact_mod_cast Int.one_le_abs (sub_ne_zero.mpr hne')
-    calc 2 * Real.pi = 1 * (2 * Real.pi) := by ring
-      _ ≤ |(nτ : ℝ) - na| * (2 * Real.pi) := by nlinarith
-      _ = |(nτ : ℝ) * (2 * Real.pi) - na * (2 * Real.pi)| := by
-          rw [← sub_mul, abs_mul, abs_of_pos (by positivity : (0:ℝ) < 2 * Real.pi)]
+    calc δ = 1 * δ := by ring
+      _ ≤ |(nτ : ℝ) - na| * δ := mul_le_mul_of_nonneg_right this hδ.le
+      _ = |(nτ : ℝ) * δ - na * δ| := by
+          rw [← sub_mul, abs_mul, abs_of_pos hδ]
   rcases abs_cases (F τ - F a) with ⟨heq, _⟩ | ⟨heq, _⟩
-  · -- F a < F τ, target y := F a + π
-    have hlt : F a + Real.pi ≤ F τ := by
+  · have hlt : F a + δ / 2 ≤ F τ := by
       rw [heq] at hgap
       linarith
     obtain ⟨σ, hσ, hFσ⟩ := intermediate_value_Icc hτ.1 hFsub
       (Set.mem_Icc.mpr ⟨by linarith, by linarith⟩ :
-        F a + Real.pi ∈ Set.Icc (F a) (F τ))
+        F a + δ / 2 ∈ Set.Icc (F a) (F τ))
     obtain ⟨m, hm⟩ := hint σ (hsub hσ)
     rw [hna] at hFσ
     rw [hFσ] at hm
-    have hcast : (1 : ℝ) = 2 * ((m : ℝ) - na) := by
-      have hπne : Real.pi ≠ 0 := hπ.ne'
-      field_simp at hm ⊢
-      nlinarith [hm]
-    have : (1 : ℤ) = 2 * (m - na) := by exact_mod_cast hcast
+    have h2 : ((m : ℝ) - (na : ℝ)) * δ = (1 / 2) * δ := by linarith
+    have h3 := mul_right_cancel₀ hδ.ne' h2
+    have h4 : ((2 * m - 2 * na : ℤ) : ℝ) = 1 := by push_cast; linarith
+    have h5 : (2 * m - 2 * na : ℤ) = 1 := by exact_mod_cast h4
     omega
-  · -- F τ < F a, target y := F τ + π, IVT on decreasing direction
-    have hlt : F τ + Real.pi ≤ F a := by
+  · have hlt : F τ + δ / 2 ≤ F a := by
       rw [heq] at hgap
       linarith
     obtain ⟨σ, hσ, hFσ⟩ := intermediate_value_Icc' hτ.1 hFsub
       (Set.mem_Icc.mpr ⟨by linarith, by linarith⟩ :
-        F τ + Real.pi ∈ Set.Icc (F τ) (F a))
+        F τ + δ / 2 ∈ Set.Icc (F τ) (F a))
     obtain ⟨m, hm⟩ := hint σ (hsub hσ)
     rw [hnτ] at hFσ
     rw [hFσ] at hm
-    have hcast : (1 : ℝ) = 2 * ((m : ℝ) - nτ) := by
-      have hπne : Real.pi ≠ 0 := hπ.ne'
-      field_simp at hm ⊢
-      nlinarith [hm]
-    have : (1 : ℤ) = 2 * (m - nτ) := by exact_mod_cast hcast
+    have h2 : ((m : ℝ) - (nτ : ℝ)) * δ = (1 / 2) * δ := by linarith
+    have h3 := mul_right_cancel₀ hδ.ne' h2
+    have h4 : ((2 * m - 2 * nτ : ℤ) : ℝ) = 1 := by push_cast; linarith
+    have h5 : (2 * m - 2 * nτ : ℤ) = 1 := by exact_mod_cast h4
     omega
+
+/-- **Continuous lattice rigidity on an interval.** A continuous real-valued function whose
+values all lie in one nontrivial integral lattice `δℤ` is constant. The lattice generator need
+not be positively oriented. -/
+theorem continuousOn_int_mul_const {F : ℝ → ℝ} {a b δ : ℝ} (hab : a ≤ b) (hδ : δ ≠ 0)
+    (hF : ContinuousOn F (Set.Icc a b))
+    (hint : ∀ τ ∈ Set.Icc a b, ∃ n : ℤ, F τ = n * δ) :
+    ∀ τ ∈ Set.Icc a b, F τ = F a := by
+  rcases lt_or_gt_of_ne hδ with hδneg | hδpos
+  · apply continuousOn_int_mul_const_of_pos hab (neg_pos.mpr hδneg) hF
+    intro τ hτ
+    obtain ⟨n, hn⟩ := hint τ hτ
+    refine ⟨-n, ?_⟩
+    rw [hn]
+    push_cast
+    ring
+  · exact continuousOn_int_mul_const_of_pos hab hδpos hF hint
+
+/-- A continuous function with values in `2πℤ` on an interval is constant. -/
+theorem continuousOn_int_mul_two_pi_const {F : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
+    (hF : ContinuousOn F (Set.Icc a b))
+    (hint : ∀ τ ∈ Set.Icc a b, ∃ n : ℤ, F τ = n * (2 * Real.pi)) :
+    ∀ τ ∈ Set.Icc a b, F τ = F a :=
+  continuousOn_int_mul_const hab (mul_ne_zero (by norm_num) Real.pi_ne_zero) hF hint
 
 /-- A complex number whose exponential is a nonzero real has imaginary part in `πℤ`. -/
 theorem im_eq_int_mul_pi_of_exp_real {w : ℂ} {r : ℝ} (hr : r ≠ 0)
@@ -252,57 +271,8 @@ theorem im_eq_int_mul_pi_of_exp_real {w : ℂ} {r : ℝ} (hr : r ≠ 0)
 theorem continuousOn_int_mul_pi_const {F : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
     (hF : ContinuousOn F (Set.Icc a b))
     (hint : ∀ τ ∈ Set.Icc a b, ∃ n : ℤ, F τ = n * Real.pi) :
-    ∀ τ ∈ Set.Icc a b, F τ = F a := by
-  intro τ hτ
-  by_contra hne
-  have haI : a ∈ Set.Icc a b := Set.left_mem_Icc.mpr hab
-  obtain ⟨na, hna⟩ := hint a haI
-  obtain ⟨nτ, hnτ⟩ := hint τ hτ
-  have hFsub : ContinuousOn F (Set.Icc a τ) :=
-    hF.mono (Set.Icc_subset_Icc le_rfl hτ.2)
-  have hsub : Set.Icc a τ ⊆ Set.Icc a b := Set.Icc_subset_Icc le_rfl hτ.2
-  have hπ : 0 < Real.pi := Real.pi_pos
-  have hgap : Real.pi ≤ |F τ - F a| := by
-    rw [hna, hnτ]
-    have hne' : nτ ≠ na := by
-      intro h
-      exact hne (by rw [hna, hnτ, h])
-    have : (1 : ℝ) ≤ |(nτ : ℝ) - na| := by
-      rw [← Int.cast_sub, ← Int.cast_abs]
-      exact_mod_cast Int.one_le_abs (sub_ne_zero.mpr hne')
-    calc Real.pi = 1 * Real.pi := by ring
-      _ ≤ |(nτ : ℝ) - na| * Real.pi := by nlinarith
-      _ = |(nτ : ℝ) * Real.pi - na * Real.pi| := by
-          rw [← sub_mul, abs_mul, abs_of_pos hπ]
-  rcases abs_cases (F τ - F a) with ⟨heq, _⟩ | ⟨heq, _⟩
-  · have hlt : F a + Real.pi / 2 ≤ F τ := by
-      rw [heq] at hgap
-      linarith
-    obtain ⟨σ, hσ, hFσ⟩ := intermediate_value_Icc hτ.1 hFsub
-      (Set.mem_Icc.mpr ⟨by linarith, by linarith⟩ :
-        F a + Real.pi / 2 ∈ Set.Icc (F a) (F τ))
-    obtain ⟨m, hm⟩ := hint σ (hsub hσ)
-    rw [hna] at hFσ
-    rw [hFσ] at hm
-    have h2 : ((m : ℝ) - (na : ℝ)) * Real.pi = (1 / 2) * Real.pi := by linarith
-    have h3 := mul_right_cancel₀ Real.pi_ne_zero h2
-    have h4 : ((2 * m - 2 * na : ℤ) : ℝ) = 1 := by push_cast; linarith
-    have h5 : (2 * m - 2 * na : ℤ) = 1 := by exact_mod_cast h4
-    omega
-  · have hlt : F τ + Real.pi / 2 ≤ F a := by
-      rw [heq] at hgap
-      linarith
-    obtain ⟨σ, hσ, hFσ⟩ := intermediate_value_Icc' hτ.1 hFsub
-      (Set.mem_Icc.mpr ⟨by linarith, by linarith⟩ :
-        F τ + Real.pi / 2 ∈ Set.Icc (F τ) (F a))
-    obtain ⟨m, hm⟩ := hint σ (hsub hσ)
-    rw [hnτ] at hFσ
-    rw [hFσ] at hm
-    have h2 : ((m : ℝ) - (nτ : ℝ)) * Real.pi = (1 / 2) * Real.pi := by linarith
-    have h3 := mul_right_cancel₀ Real.pi_ne_zero h2
-    have h4 : ((2 * m - 2 * nτ : ℤ) : ℝ) = 1 := by push_cast; linarith
-    have h5 : (2 * m - 2 * nτ : ℤ) = 1 := by exact_mod_cast h4
-    omega
+    ∀ τ ∈ Set.Icc a b, F τ = F a :=
+  continuousOn_int_mul_const hab Real.pi_ne_zero hF hint
 
 end RHTower
 

@@ -1039,7 +1039,7 @@ theorem aeval_unitConstantSeries_X
     · simp [unitConstantSeries, hk]
     · simp [unitConstantSeries, hk]
 
-theorem positiveHorizonAmplitudePolynomial_ne_zero
+private theorem positiveHorizonAmplitudePolynomial_ne_zero_of_pos
     (F : Type*) [Field F] (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
     positiveHorizonAmplitudePolynomial F m n ≠ 0 := by
   let δ : Fin (m + n) → F := fun i =>
@@ -1094,6 +1094,22 @@ theorem positiveHorizonAmplitudePolynomial_ne_zero
   rw [hev] at hz
   exact one_ne_zero hz
 
+/-- The positive-coordinate horizon amplitude polynomial is nonzero in every rank and depth,
+including the empty-rank and zero-depth boundary faces. -/
+theorem positiveHorizonAmplitudePolynomial_ne_zero
+    (F : Type*) [Field F] (m n : ℕ) :
+    positiveHorizonAmplitudePolynomial F m n ≠ 0 := by
+  by_cases hm : m = 0
+  · subst m
+    simp [positiveHorizonAmplitudePolynomial, positiveHorizonAmplitude,
+      horizonAmplitude_zero_rank]
+  by_cases hn : n = 0
+  · subst n
+    simp [positiveHorizonAmplitudePolynomial, positiveHorizonAmplitude,
+      horizonAmplitude_zero_depth]
+  exact positiveHorizonAmplitudePolynomial_ne_zero_of_pos F m n
+    (Nat.pos_of_ne_zero hm) (Nat.pos_of_ne_zero hn)
+
 theorem aeval_positiveHorizonAmplitudePolynomial
     {F E : Type*} [Field F] [Field E] [Algebra F E]
     (m n : ℕ) (u : Fin (m + n) → E) :
@@ -1117,8 +1133,7 @@ theorem aeval_positiveHorizonAmplitudePolynomial
 
 theorem positiveHorizonAmplitude_ne_zero_of_algebraicIndependent
     {F E : Type*} [Field F] [Field E] [Algebra F E]
-    (m n : ℕ) (u : Fin (m + n) → E) (hu : AlgebraicIndependent F u)
-    (hm : 0 < m) (hn : 0 < n) :
+    (m n : ℕ) (u : Fin (m + n) → E) (hu : AlgebraicIndependent F u) :
     positiveHorizonAmplitude u m n ≠ 0 := by
   intro hz
   have hinj : Function.Injective
@@ -1128,7 +1143,7 @@ theorem positiveHorizonAmplitude_ne_zero_of_algebraicIndependent
       MvPolynomial.aeval u (positiveHorizonAmplitudePolynomial F m n) =
         MvPolynomial.aeval u (0 : MvPolynomial (Fin (m + n)) F) := by
     rw [aeval_positiveHorizonAmplitudePolynomial m n, hz, map_zero]
-  exact positiveHorizonAmplitudePolynomial_ne_zero F m n hm hn (hinj heval)
+  exact positiveHorizonAmplitudePolynomial_ne_zero F m n (hinj heval)
 
 /-- The first `L` positive coefficients of a power series. -/
 noncomputable def powerSeriesPositiveJet
@@ -1351,8 +1366,7 @@ noncomputable def hypertranscendentalHorizonAmplitude
 
 theorem hypertranscendentalHorizonAmplitude_ne_zero
     {F E : Type*} [Field F] [Field E] [Algebra F E] [CharZero E] [Differential E]
-    {x : E} (hx : HypertranscendentalOver F x) (m n : ℕ)
-    (hm : 0 < m) (hn : 0 < n) :
+    {x : E} (hx : HypertranscendentalOver F x) (m n : ℕ) :
     hypertranscendentalHorizonAmplitude x m n ≠ 0 := by
   have hx0 : x ≠ 0 := by
     intro hz
@@ -1362,7 +1376,7 @@ theorem hypertranscendentalHorizonAmplitude_ne_zero
     horizonAmplitude_eq_positiveHorizonAmplitude _
       (hypertranscendentalHorizonCoefficient_zero x hx0)]
   exact positiveHorizonAmplitude_ne_zero_of_algebraicIndependent m n _
-    (hypertranscendentalHorizonPositive_algebraicIndependent hx (m + n)) hm hn
+    (hypertranscendentalHorizonPositive_algebraicIndependent hx (m + n))
 
 @[simp]
 theorem hypertranscendentalHorizonAmplitude_zero_rank
@@ -1387,11 +1401,7 @@ theorem hypertranscendentalHorizonAmplitude_qSystem
         hypertranscendentalHorizonAmplitude x c n *
           hypertranscendentalHorizonAmplitude x (c + 2) n := by
   have hcenter : hypertranscendentalHorizonAmplitude x c n ≠ 0 := by
-    by_cases hc : c = 0
-    · subst c
-      simp
-    · exact hypertranscendentalHorizonAmplitude_ne_zero hx c n
-        (Nat.pos_of_ne_zero hc) hn
+    exact hypertranscendentalHorizonAmplitude_ne_zero hx c n
   exact horizonAmplitude_qSystem_of_center_ne_zero
     (hypertranscendentalHorizonCoefficient x) c n hn hcenter
 
@@ -1447,4 +1457,3 @@ theorem criticalReciprocalJacobian_det_eq_normalizedHorizonAmplitude
   ring
 
 end GaloisForLFunctions.HTGeometry
-

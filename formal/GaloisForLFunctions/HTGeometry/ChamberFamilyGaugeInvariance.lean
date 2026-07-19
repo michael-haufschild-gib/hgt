@@ -51,7 +51,7 @@ theorem hypertranscendentalOver_upperEnd_addRational_iff
 /-- **Adding rational functions preserves differential independence.**  The family form: a whole
 tuple may be shifted by rational functions without changing its differential independence. -/
 theorem differentialIndependent_upperEnd_addRational_iff
-    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {ι : Type*}
     (x : ι → upperEndMeroField) (b : ι → upperEndRationalCoordinateField) :
     DifferentialIndependent upperEndRationalCoordinateField
         (fun i => x i + (b i : upperEndMeroField)) ↔

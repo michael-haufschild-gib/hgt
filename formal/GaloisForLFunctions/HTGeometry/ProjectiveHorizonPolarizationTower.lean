@@ -106,9 +106,9 @@ theorem amplitude_eq_horizonAmplitude
 
 theorem noncaustic
     {F E : Type*} [Field F] [Field E] [Algebra F E] [CharZero E] [Differential E]
-    (T : HypertranscendentalPolarizationTower F E) (m n : ℕ)
-    (hm : 0 < m) (hn : 0 < n) : T.amplitude m n ≠ 0 :=
-  hypertranscendentalHorizonAmplitude_ne_zero T.sourceHT m n hm hn
+    (T : HypertranscendentalPolarizationTower F E) (m n : ℕ) :
+    T.amplitude m n ≠ 0 :=
+  hypertranscendentalHorizonAmplitude_ne_zero T.sourceHT m n
 
 @[simp]
 theorem zero_rank
@@ -140,4 +140,3 @@ theorem zeroPropagation
 end HypertranscendentalPolarizationTower
 
 end GaloisForLFunctions.HTGeometry
-

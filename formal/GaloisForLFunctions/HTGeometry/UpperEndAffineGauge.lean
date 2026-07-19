@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.BaseGaugeDifferentialIndependence
+import GaloisForLFunctions.HTGeometry.AffineBaseJetGauge
 import GaloisForLFunctions.HTGeometry.UpperEndRationalCoordinateDifferentialAdjoin
 
 /-!
@@ -52,13 +52,13 @@ local instance upperEndCoordinateFieldDifferentialAlgebra :
 invertible affine gauge with rational-coordinate coefficients does not change differential
 independence over the embedded `ℂ(z)`. -/
 theorem differentialIndependent_upperEnd_affineGauge_iff
-    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {ι : Type*}
     (x : ι → upperEndMeroField)
     (a b : ι → upperEndRationalCoordinateField) (ha : ∀ i, a i ≠ 0) :
     DifferentialIndependent upperEndRationalCoordinateField
         (fun i ↦ (a i : upperEndMeroField) * x i + (b i : upperEndMeroField)) ↔
       DifferentialIndependent upperEndRationalCoordinateField x :=
-  differentialIndependent_affineBase_iff x a b ha
+  GaloisForLFunctions.differentialIndependent_affineBase_iff x a b ha
 
 /-- Rank-one form: hypertranscendence over the embedded coordinate field is invariant under an
 invertible affine rational gauge. -/

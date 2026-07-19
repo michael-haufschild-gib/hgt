@@ -17,13 +17,19 @@ open Matrix Filter
 
 noncomputable section
 
-/-- **Entrywise convergence to a negative diagonal gives eventual negative definiteness.** -/
-theorem eventually_negDef_of_entrywise_tendsto_diagonal
+/-- **Entrywise smallness gives a quadratic-form perturbation bound.**  The deviation of the form
+from the coefficient diagonal is controlled by the entrywise deviation summed over the `n²`
+positions, so choosing the entrywise threshold below `δ/(2n²)` keeps the form within half the
+margin.  The sign of the coefficients plays no role here. -/
+theorem eventually_quadForm_sub_diagonal_le
     {n : ℕ} {ι : Type*} {l : Filter ι} (G : ι → Matrix (Fin n) (Fin n) ℂ)
-    (c : Fin n → ℝ) {δ : ℝ} (hδ : 0 < δ) (hc : ∀ j, c j ≤ -δ)
+    (c : Fin n → ℝ) {δ : ℝ} (hδ : 0 < δ)
     (hconv : ∀ ε : ℝ, 0 < ε → ∀ᶠ i in l, ∀ j k,
       ‖G i j k - (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)) j k‖ ≤ ε) :
-    ∀ᶠ i in l, ∀ x : Fin n → ℂ, x ≠ 0 → (star x ⬝ᵥ (G i).mulVec x).re < 0 := by
+    ∀ᶠ i in l, ∀ x : Fin n → ℂ,
+      |(star x ⬝ᵥ (G i).mulVec x).re
+          - (star x ⬝ᵥ (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)).mulVec x).re|
+        ≤ (δ / 2) * ‖x‖ ^ 2 := by
   classical
   set D : Matrix (Fin n) (Fin n) ℂ := Matrix.diagonal fun j => ((c j : ℝ) : ℂ) with hD
   set ε : ℝ := δ / (2 * ((n : ℝ) ^ 2 + 1)) with hε
@@ -33,10 +39,6 @@ theorem eventually_negDef_of_entrywise_tendsto_diagonal
   have hεn : ε * (n : ℝ) ^ 2 ≤ δ / 2 := by
     rw [hε, div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [sq_nonneg ((n : ℝ)), hδ.le]
-  refine eventually_neg_of_tendsto_negDef
-    (fun i x => (star x ⬝ᵥ (G i).mulVec x).re)
-    (fun x => (star x ⬝ᵥ D.mulVec x).re)
-    (fun x => re_quadForm_diagonal_le_margin c hδ.le hc x) ?_ hδ
   filter_upwards [hconv ε hεpos] with i hi
   intro x
   -- The difference of the forms is the form of the difference.
@@ -56,6 +58,19 @@ theorem eventually_negDef_of_entrywise_tendsto_diagonal
     _ ≤ ε * (n : ℝ) ^ 2 * ‖x‖ ^ 2 := hquad
     _ ≤ δ / 2 * ‖x‖ ^ 2 := by
         exact mul_le_mul_of_nonneg_right hεn hnn
+
+/-- **Entrywise convergence to a negative diagonal gives eventual negative definiteness.** -/
+theorem eventually_negDef_of_entrywise_tendsto_diagonal
+    {n : ℕ} {ι : Type*} {l : Filter ι} (G : ι → Matrix (Fin n) (Fin n) ℂ)
+    (c : Fin n → ℝ) {δ : ℝ} (hδ : 0 < δ) (hc : ∀ j, c j ≤ -δ)
+    (hconv : ∀ ε : ℝ, 0 < ε → ∀ᶠ i in l, ∀ j k,
+      ‖G i j k - (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)) j k‖ ≤ ε) :
+    ∀ᶠ i in l, ∀ x : Fin n → ℂ, x ≠ 0 → (star x ⬝ᵥ (G i).mulVec x).re < 0 :=
+  eventually_neg_of_tendsto_negDef
+    (fun i x => (star x ⬝ᵥ (G i).mulVec x).re)
+    (fun x => (star x ⬝ᵥ (Matrix.diagonal fun j => ((c j : ℝ) : ℂ)).mulVec x).re)
+    (fun x => re_quadForm_diagonal_le_margin c hδ.le hc x)
+    (eventually_quadForm_sub_diagonal_le G c hδ hconv) hδ
 
 end
 
