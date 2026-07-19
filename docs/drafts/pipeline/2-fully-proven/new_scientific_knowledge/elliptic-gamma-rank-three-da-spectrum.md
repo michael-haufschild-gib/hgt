@@ -357,10 +357,19 @@ the exact one-defect spectrum, and same-coset rank neutrality.  The new leaf com
 its complete public surface has the project axiom baseline
 `[propext, Classical.choice, Quot.sound]`.
 
-The remaining headline gap is now narrower and explicit: transport this exact pointed partition
-matroid from `K` to `C(z)` by formalizing that every element of the concrete elliptic compositum is
-differentially algebraic over the rational coordinate field, then transfer the resulting exact
-rank law to the multiplicative quotient family.  The card therefore remains in Stage 2.
+`EllipticGammaQuotientPeriodCosetMatroid.lean` also closes the multiplicative side over `K`.  It
+proves directly in the meromorphic field that the algebraic logarithmic derivative of
+`Gamma(z+h)/Gamma(z)` is the external additive defect, then applies the arbitrary-family
+coordinatewise logarithmic-derivative matroid law.  Hence every quotient packet has the same
+pointed period-coset matroid and the same exact nonzero-coset rank formula as its defect packet.
+The supporting coordinatewise theorem was generalized to arbitrary index universes, discharging
+an unnecessary interface restriction rather than weakening the quotient statement.
+
+The remaining headline gap is now singular and explicit: transport the exact additive and
+multiplicative pointed partition matroids from `K` to `C(z)` by formalizing that every element of
+the concrete elliptic compositum is differentially algebraic over the rational coordinate field.
+That requires a genuine formal elliptic-function-field/Weierstrass DA foundation not presently
+offered by the corpus.  The card therefore remains in Stage 2.
 
 ## Gates
 

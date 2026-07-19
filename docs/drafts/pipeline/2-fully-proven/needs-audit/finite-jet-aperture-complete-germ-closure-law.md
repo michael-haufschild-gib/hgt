@@ -5877,3 +5877,26 @@ convergence, link 190), then divide by `B(z)τ − D(z)`, non-zero at non-real `
 discrete subset of `ℝ` (links 147, 150). Translating the closed forms of link 159 to complex arguments
 — they are currently stated for real `x` — is the one piece of plumbing that step needs, and it is the
 same `ofReal`-bridge pattern as links 149 and 189.
+
+### Link 195 — the closed forms transfer to complex arguments
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean`
+
+The bridge flagged at link 194, done for `D` as the template:
+- `nevDpoly`, `nevDpoly_eval` — the truncated `D` entry as a polynomial, evaluating to `nevDreal`.
+- **`nevDpoly_eq`** — link 152's closed form as an identity of *polynomials*, by `Polynomial.funext`:
+  the real closed form holds at every real point with no exceptions, and `ℝ` is infinite.
+- `nevDtruncC_eq_aeval` — the complex truncation is `aeval` of that polynomial.
+- **`nevDtruncC_closed`** — hence
+  `Dₙ(z) = (h₀/hₙ)·(Qₙ(0)·Q_{n+1}(z) − Q_{n+1}(0)·Qₙ(z))` at every **complex** `z`.
+
+Axiom-clean, zero placeholders, registered.
+
+The other three entries follow the identical three steps against their own closed forms — `B` from
+`nevBreal_closed` (link 152), `A` and `C` from the `secondKindChristoffelDarboux` and
+`mixedChristoffelDarboux` forms used in link 159. Nothing in the pattern is entry-specific: define the
+polynomial, transfer the real closed form by `Polynomial.funext`, apply `aeval`.
+
+With those, the level-`n` identity of link 194 becomes
+`(Bₙ(z)τ − Dₙ(z))·mₙ(z) = −s₀·(Aₙ(z)τ − Cₙ(z))` at every non-real `z` in the entries' own notation,
+and the limit is the assembly described at link 194.

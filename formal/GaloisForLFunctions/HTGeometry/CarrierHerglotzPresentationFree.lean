@@ -92,6 +92,7 @@ theorem countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_re
   dsimp only
   obtain ⟨hdense, hres, _⟩ :=
     F.allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
+      (Γ := Unit)
       projectiveGeometry hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta heta
   refine ⟨hdense.mono ?_, Filter.mem_of_superset hres ?_⟩ <;>
     exact fun w hw =>

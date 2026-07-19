@@ -5257,3 +5257,52 @@ in-flight edit (first a type mismatch, then a `whnf` heartbeat timeout, and its 
 It contains no reference to any declaration changed here. It sits in the import closure of
 `CarrierHerglotzPresentationFree`, so that module could not be rebuilt this turn; the relaxation
 itself is verified independently.
+
+### Fallout from the palette relaxation, found and fixed
+
+Relaxing the freeness chain to `{Γ : Type} [Countable Γ]` made `Γ` un-inferable at one call site:
+in `CarrierHerglotzPresentationFree`, the palette is determined only by the conclusion, which sits
+under a `let`, so instance resolution got stuck ("typeclass instance problem is stuck"). Fixed by
+pinning it explicitly, `(Γ := Unit)`, at that call.
+
+Enumerated every caller of the four relaxed theorems across `GaloisForLFunctions`; there are exactly
+two, and both now build:
+- `NevanlinnaBoundaryFaceMaximalTranslation` — unaffected, its call site determines `Γ`.
+- `CarrierHerglotzPresentationFree` — fixed as above.
+
+Verified green after the change: `AnalyticNevanlinnaCarrierRelationFree`,
+`BoundaryCarrierTranslationFreeness`, `NevanlinnaBoundaryFaceMaximalTranslation`,
+`CarrierHerglotzPresentationFree`, `FamilyPatternBridge`, `PacketValueFamilyJet`.
+
+The earlier `DirichletLSeriesUpperEnd` breakage was another agent's and has since been resolved by
+them; its olean is present again.
+
+State of the HT half. The freeness layer now admits arbitrarily many distinct translates, and the
+gauge, the bridge in both directions, and both identifications are built and verified. The one piece
+not yet written is the `hrelation` calc chain at `m > 1`: assembling
+`weightedBoundaryCarrierExpandedPacketValue_eq_familyJetVec` and `familyPatternExpansion_eq_eval`
+with the `carrierPatternExponent` / `expandedDifferentialEvaluationMatrix_apply` bookkeeping into
+`weightedBoundaryCarrierExpandedPatternRelationHolds`, mirroring lines 618-686 of
+`AnalyticNevanlinnaCarrierRelationFree` but with the shift configuration being the translates rather
+than zero.
+
+### The family pattern has exactly the shape the bridge expects
+
+`GaloisForLFunctions.HTGeometry.FamilyPatternShape` — four compatibility facts, each `rfl`:
+- `familyPatternOfRelation_shiftCount` — the pattern carries exactly `m` shift slots;
+- `carrierPatternShift_familyPatternOfRelation` — its shift index is `Fin m`, so an
+  `InjectiveShiftConfiguration` on it is a tuple of `m` distinct complex translates;
+- `familyPatternOfRelation_orders` — its jet depths are uniformly `n + 1`;
+- `familyPatternOfRelation_sigma` — hence its dependent jet type
+  `Σ i, Fin (orders i)` is *definitionally* the bridge's `Σ _ : Fin m, Fin (n + 1)`.
+
+That last one matters for the remaining assembly: the pattern side and the family side share a type
+on the nose, so the `hrelation` calc chain needs no transport, no `Equiv` juggling and no `cast` —
+`weightedBoundaryCarrierExpandedPacketValue_eq_familyJetVec` and `familyPatternExpansion_eq_eval`
+can be composed directly against the pattern's own indices.
+
+Remaining: that calc chain itself, mirroring lines 618-686 of `AnalyticNevanlinnaCarrierRelationFree`
+with the shift configuration being the translates rather than zero. Its three steps are `hy` (packet
+values are jets — supplied), `hprod`/`hsum` (the `carrierPatternExponent` and
+`expandedDifferentialEvaluationMatrix_apply` bookkeeping, generic), and the expansion-to-evaluation
+step (supplied). No further infrastructure is missing.

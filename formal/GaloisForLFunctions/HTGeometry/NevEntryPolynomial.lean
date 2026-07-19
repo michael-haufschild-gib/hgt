@@ -30,9 +30,12 @@ theorem nevDpoly_eval (s : ℕ → ℝ) (n : ℕ) (x : ℝ) :
   rw [nevDpoly, nevDreal]
   simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X,
     Polynomial.eval_finsetSum]
-  rw [Finset.mul_sum]
-  refine congrArg _ (Finset.sum_congr rfl fun k _ => ?_)
-  ring
+  have hterm : ∀ k : ℕ,
+      ((monicOrtho s k).eval 0 / momentInner s (monicOrtho s k) (monicOrtho s k)) *
+          (monicOrtho s k).eval x
+        = (monicOrtho s k).eval 0 * (monicOrtho s k).eval x /
+          momentInner s (monicOrtho s k) (monicOrtho s k) := fun k => by ring
+  rw [Finset.sum_congr rfl fun k _ => hterm k]
 
 /-- **The closed form as a polynomial identity.** -/
 theorem nevDpoly_eq (h : PositiveMomentForm s) (n : ℕ) :
@@ -61,10 +64,18 @@ theorem nevDtruncC_eq_aeval (s : ℕ → ℝ) (n : ℕ) (z : ℂ) :
   rw [nevDtruncC, nevDpoly, bilinearPartialSum]
   simp only [map_mul, map_sum, Polynomial.aeval_C, Polynomial.aeval_X, Complex.coe_algebraMap,
     monicOrthoC]
-  rw [Finset.mul_sum]
-  refine congrArg _ (Finset.sum_congr rfl fun k _ => ?_)
-  push_cast
-  ring
+  have hterm : ∀ k : ℕ,
+      (((monicOrtho s k).eval 0 / momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ) *
+          Polynomial.aeval z (monicOrtho s k)
+        = Polynomial.aeval (0 : ℂ) (monicOrtho s k) * Polynomial.aeval z (monicOrtho s k) /
+          ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ) := by
+    intro k
+    rw [show Polynomial.aeval (0 : ℂ) (monicOrtho s k)
+        = (((monicOrtho s k).eval 0 : ℝ) : ℂ) from by
+      simpa using (monicOrthoC_at_zero s k)]
+    push_cast
+    ring
+  rw [Finset.sum_congr rfl fun k _ => hterm k]
 
 /-- **The complex closed form for the truncated `D` entry.** -/
 theorem nevDtruncC_closed (h : PositiveMomentForm s) (n : ℕ) (z : ℂ) :

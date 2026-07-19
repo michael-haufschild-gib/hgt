@@ -8,7 +8,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
 | `rh_tower` | `GaloisForLFunctions.RHTower` | 22310 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
-| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 18827 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 18831 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 889 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 5359 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
@@ -26932,6 +26932,10 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | def | `familyPatternOfRelation` | `GaloisForLFunctions.HTGeometry.FamilyPatternBridge` | `formal/GaloisForLFunctions/HTGeometry/FamilyPatternBridge.lean:33` | The finite pattern attached to a family jet relation. |
 | theorem | `familyJetRelation_eq_zero_of_patternCoefficients_zero` | `GaloisForLFunctions.HTGeometry.FamilyPatternBridge` | `formal/GaloisForLFunctions/HTGeometry/FamilyPatternBridge.lean:42` | The back half of the multi-shift bridge.** If every pattern coefficient of the reshaped relation vanishes, the original family jet relation was zero. This is the step that turns pa |
 | theorem | `familyPatternExpansion_eq_eval` | `GaloisForLFunctions.HTGeometry.FamilyPatternBridge` | `formal/GaloisForLFunctions/HTGeometry/FamilyPatternBridge.lean:60` | The forward step of the multi-shift bridge.** The pattern coefficient expansion of a family jet relation, evaluated at jet values `x` and spectral value `z`, is the original relati |
+| theorem | `familyPatternOfRelation_shiftCount` | `GaloisForLFunctions.HTGeometry.FamilyPatternShape` | `formal/GaloisForLFunctions/HTGeometry/FamilyPatternShape.lean:21` |  |
+| theorem | `familyPatternOfRelation_orders` | `GaloisForLFunctions.HTGeometry.FamilyPatternShape` | `formal/GaloisForLFunctions/HTGeometry/FamilyPatternShape.lean:25` |  |
+| theorem | `carrierPatternShift_familyPatternOfRelation` | `GaloisForLFunctions.HTGeometry.FamilyPatternShape` | `formal/GaloisForLFunctions/HTGeometry/FamilyPatternShape.lean:28` |  |
+| theorem | `familyPatternOfRelation_sigma` | `GaloisForLFunctions.HTGeometry.FamilyPatternShape` | `formal/GaloisForLFunctions/HTGeometry/FamilyPatternShape.lean:32` | The pattern's dependent jet type is the family bridge's sigma type, definitionally. |
 | abbrev | `FamilyJetIndex` | `GaloisForLFunctions.HTGeometry.FamilyPolynomialGauge` | `formal/GaloisForLFunctions/HTGeometry/FamilyPolynomialGauge.lean:22` | Jet coordinates of a finite family: one spectral variable, then one jet block per component. |
 | def | `familyJetVec` | `GaloisForLFunctions.HTGeometry.FamilyPolynomialGauge` | `formal/GaloisForLFunctions/HTGeometry/FamilyPolynomialGauge.lean:25` | The jet vector of a family at a point. |
 | def | `FamilyDifferentiallyAlgebraicOn` | `GaloisForLFunctions.HTGeometry.FamilyPolynomialGauge` | `formal/GaloisForLFunctions/HTGeometry/FamilyPolynomialGauge.lean:29` | A finite family satisfies a nonzero differential relation on `U`. |
@@ -33679,10 +33683,10 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `nevDenominator_zero_iff` | `GaloisForLFunctions.HTGeometry.NevDenominatorFactor` | `formal/GaloisForLFunctions/HTGeometry/NevDenominatorFactor.lean:117` | The zeros of the level-`n` denominator are exactly the quasi-orthogonal nodes.** |
 | theorem | `nevDenominator_zeroSet` | `GaloisForLFunctions.HTGeometry.NevDenominatorFactor` | `formal/GaloisForLFunctions/HTGeometry/NevDenominatorFactor.lean:134` | The zero set of the level-`n` denominator is a quasi-orthogonal node set**, hence has exactly `n+1` elements by `quasiNodes_card`. |
 | theorem | `nevDpoly_eval` | `GaloisForLFunctions.HTGeometry.NevEntryPolynomial` | `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean:28` |  |
-| theorem | `nevDpoly_eq` | `GaloisForLFunctions.HTGeometry.NevEntryPolynomial` | `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean:38` | The closed form as a polynomial identity.** |
-| theorem | `nevDpoly_aeval` | `GaloisForLFunctions.HTGeometry.NevEntryPolynomial` | `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean:49` | The closed form at a complex argument.** |
-| theorem | `nevDtruncC_eq_aeval` | `GaloisForLFunctions.HTGeometry.NevEntryPolynomial` | `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean:59` | The polynomial and the complex truncation agree. |
-| theorem | `nevDtruncC_closed` | `GaloisForLFunctions.HTGeometry.NevEntryPolynomial` | `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean:70` | The complex closed form for the truncated `D` entry.** |
+| theorem | `nevDpoly_eq` | `GaloisForLFunctions.HTGeometry.NevEntryPolynomial` | `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean:41` | The closed form as a polynomial identity.** |
+| theorem | `nevDpoly_aeval` | `GaloisForLFunctions.HTGeometry.NevEntryPolynomial` | `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean:52` | The closed form at a complex argument.** |
+| theorem | `nevDtruncC_eq_aeval` | `GaloisForLFunctions.HTGeometry.NevEntryPolynomial` | `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean:62` | The polynomial and the complex truncation agree. |
+| theorem | `nevDtruncC_closed` | `GaloisForLFunctions.HTGeometry.NevEntryPolynomial` | `formal/GaloisForLFunctions/HTGeometry/NevEntryPolynomial.lean:81` | The complex closed form for the truncated `D` entry.** |
 | theorem | `exists_classicalNevanlinnaExtremalFamily` | `GaloisForLFunctions.HTGeometry.NevExtremalFamily` | `formal/GaloisForLFunctions/HTGeometry/NevExtremalFamily.lean:44` | Existence of the classical family.** A positive definite normalised moment sequence whose kernel is bounded at a point carries a classical N-extremal Nevanlinna family. |
 | theorem | `nevExtremalFamily_atoms` | `GaloisForLFunctions.HTGeometry.NevExtremalFamily` | `formal/GaloisForLFunctions/HTGeometry/NevExtremalFamily.lean:51` | The weights of every leaf are the Christoffel limits.** The geometric content the family does not itself record. |
 | theorem | `nevLeaf_map_projectiveLabel` | `GaloisForLFunctions.HTGeometry.NevFamilyConsequences` | `formal/GaloisForLFunctions/HTGeometry/NevFamilyConsequences.lean:23` | Exact label recovery.** Pushing a leaf forward along the projective label of the constructed matrix returns the point mass at its own parameter. |
