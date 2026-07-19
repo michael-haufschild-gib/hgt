@@ -16,45 +16,46 @@ namespace RHTower
 
 noncomputable section
 
-private lemma star_natPrime_cpow (p : Nat.Primes) (w : ℂ) :
-    (starRingEnd ℂ) (((p : ℕ) : ℂ) ^ w) =
-      (((p : ℕ) : ℂ) ^ ((starRingEnd ℂ) w)) := by
-  have hp : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
-  have harg : ((p : ℂ).arg ≠ Real.pi) := by
-    rw [show (p : ℂ) = ((p : ℝ) : ℂ) by norm_num,
-      Complex.arg_ofReal_of_nonneg hp.le]
+private lemma star_nat_cpow (n : ℕ) (hn : 0 < n) (w : ℂ) :
+    (starRingEnd ℂ) (((n : ℕ) : ℂ) ^ w) =
+      (((n : ℕ) : ℂ) ^ ((starRingEnd ℂ) w)) := by
+  have hnR : 0 < (n : ℝ) := by exact_mod_cast hn
+  have harg : ((n : ℂ).arg ≠ Real.pi) := by
+    rw [show (n : ℂ) = ((n : ℝ) : ℂ) by norm_num,
+      Complex.arg_ofReal_of_nonneg hnR.le]
     exact Real.pi_ne_zero.symm
-  have h := Complex.cpow_conj (p : ℂ) w harg
+  have h := Complex.cpow_conj (n : ℂ) w harg
   simpa using h.symm
 
-/-- Exact per-prime horizontal reflection defect. -/
-theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_reflectionSecondDifference
-    (rho : ℂ) (p : Nat.Primes) :
-    ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho‖ ^ 2 / (p : ℝ) =
-      (Real.log (p : ℝ)) ^ 2 *
-        ((p : ℝ) ^ (-(1 + 2 * rho.re)) +
-          (p : ℝ) ^ (-(3 - 2 * rho.re)) -
-          2 * (p : ℝ) ^ (-2 : ℝ)) := by
-  have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.pos
-  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
-  let u : ℂ := (p : ℂ) ^ (-(starRingEnd ℂ) rho)
-  let v : ℂ := (p : ℂ) ^ (-(1 - rho))
-  have huNorm : ‖u‖ = (p : ℝ) ^ (-rho.re) := by
+/-- Exact horizontal reflection defect at every nontrivial integer scale. -/
+theorem orbitwiseNatSeamCharge_weighted_norm_sq_eq_reflectionSecondDifference
+    (rho : ℂ) (n : ℕ) (hn : 1 < n) :
+    ‖orbitwiseNatPrimeSeamCharge n rho‖ ^ 2 / (n : ℝ) =
+      (Real.log (n : ℝ)) ^ 2 *
+        ((n : ℝ) ^ (-(1 + 2 * rho.re)) +
+          (n : ℝ) ^ (-(3 - 2 * rho.re)) -
+          2 * (n : ℝ) ^ (-2 : ℝ)) := by
+  have hn0 : 0 < n := Nat.zero_lt_of_lt hn
+  have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn0
+  have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  let u : ℂ := (n : ℂ) ^ (-(starRingEnd ℂ) rho)
+  let v : ℂ := (n : ℂ) ^ (-(1 - rho))
+  have huNorm : ‖u‖ = (n : ℝ) ^ (-rho.re) := by
     dsimp [u]
-    change ‖(((p : ℕ) : ℝ) : ℂ) ^ (-(starRingEnd ℂ) rho)‖ = _
-    rw [Complex.norm_cpow_eq_rpow_re_of_pos hp]
+    change ‖(((n : ℕ) : ℝ) : ℂ) ^ (-(starRingEnd ℂ) rho)‖ = _
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hnR]
     simp
-  have hvNorm : ‖v‖ = (p : ℝ) ^ (-(1 - rho.re)) := by
+  have hvNorm : ‖v‖ = (n : ℝ) ^ (-(1 - rho.re)) := by
     dsimp [v]
-    change ‖(((p : ℕ) : ℝ) : ℂ) ^ (-(1 - rho))‖ = _
-    rw [Complex.norm_cpow_eq_rpow_re_of_pos hp]
+    change ‖(((n : ℕ) : ℝ) : ℂ) ^ (-(1 - rho))‖ = _
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hnR]
     simp
-  have hcross : u * (starRingEnd ℂ) v = (((p : ℝ)⁻¹ : ℝ) : ℂ) := by
+  have hcross : u * (starRingEnd ℂ) v = (((n : ℝ)⁻¹ : ℝ) : ℂ) := by
     dsimp [u, v]
-    change (((p : ℕ) : ℂ) ^ (-(starRingEnd ℂ) rho)) *
-      (starRingEnd ℂ) ((((p : ℕ) : ℂ) ^ (-(1 - rho)))) = _
-    rw [star_natPrime_cpow p]
-    rw [← Complex.cpow_add _ _ (by exact_mod_cast p.prop.ne_zero)]
+    change (((n : ℕ) : ℂ) ^ (-(starRingEnd ℂ) rho)) *
+      (starRingEnd ℂ) ((((n : ℕ) : ℂ) ^ (-(1 - rho)))) = _
+    rw [star_nat_cpow n hn0]
+    rw [← Complex.cpow_add _ _ (by exact_mod_cast Nat.ne_of_gt hn0)]
     have hexp : -(starRingEnd ℂ) rho +
         (starRingEnd ℂ) (-(1 - rho)) = (-1 : ℂ) := by
       apply Complex.ext
@@ -63,56 +64,67 @@ theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_reflectionSecondDifferen
       · simp
     rw [hexp, Complex.cpow_neg_one]
     norm_num
-  have huSq : Complex.normSq u = (p : ℝ) ^ (-2 * rho.re) := by
+  have huSq : Complex.normSq u = (n : ℝ) ^ (-2 * rho.re) := by
     rw [Complex.normSq_eq_norm_sq, huNorm]
     rw [← Real.rpow_natCast]
-    rw [← Real.rpow_mul hp.le]
+    rw [← Real.rpow_mul hnR.le]
     congr 1
     ring
-  have hvSq : Complex.normSq v = (p : ℝ) ^ (-2 * (1 - rho.re)) := by
+  have hvSq : Complex.normSq v = (n : ℝ) ^ (-2 * (1 - rho.re)) := by
     rw [Complex.normSq_eq_norm_sq, hvNorm]
     rw [← Real.rpow_natCast]
-    rw [← Real.rpow_mul hp.le]
+    rw [← Real.rpow_mul hnR.le]
     congr 1
     ring
   have hdiff : ‖u - v‖ ^ 2 =
-      (p : ℝ) ^ (-2 * rho.re) +
-        (p : ℝ) ^ (-2 * (1 - rho.re)) - 2 * (p : ℝ)⁻¹ := by
+      (n : ℝ) ^ (-2 * rho.re) +
+        (n : ℝ) ^ (-2 * (1 - rho.re)) - 2 * (n : ℝ)⁻¹ := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_sub, huSq, hvSq, hcross]
     norm_num
-  have hcharge : ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho‖ ^ 2 =
-      (Real.log (p : ℝ)) ^ 2 * ‖u - v‖ ^ 2 := by
+  have hcharge : ‖orbitwiseNatPrimeSeamCharge n rho‖ ^ 2 =
+      (Real.log (n : ℝ)) ^ 2 * ‖u - v‖ ^ 2 := by
     dsimp [orbitwiseNatPrimeSeamCharge, orbitwiseScaleSeamCharge, u, v]
-    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (Real.log_nonneg hp1.le)]
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (Real.log_nonneg hn1.le)]
     ring
   rw [hcharge, hdiff]
   rw [div_eq_mul_inv, ← Real.rpow_neg_one]
   have hmulLeft :
-      (p : ℝ) ^ (-2 * rho.re) * (p : ℝ) ^ (-1 : ℝ) =
-        (p : ℝ) ^ (-(1 + 2 * rho.re)) := by
-    rw [← Real.rpow_add hp]
+      (n : ℝ) ^ (-2 * rho.re) * (n : ℝ) ^ (-1 : ℝ) =
+        (n : ℝ) ^ (-(1 + 2 * rho.re)) := by
+    rw [← Real.rpow_add hnR]
     congr 1
     ring
   have hmulRight :
-      (p : ℝ) ^ (-2 * (1 - rho.re)) * (p : ℝ) ^ (-1 : ℝ) =
-        (p : ℝ) ^ (-(3 - 2 * rho.re)) := by
-    rw [← Real.rpow_add hp]
+      (n : ℝ) ^ (-2 * (1 - rho.re)) * (n : ℝ) ^ (-1 : ℝ) =
+        (n : ℝ) ^ (-(3 - 2 * rho.re)) := by
+    rw [← Real.rpow_add hnR]
     congr 1
     ring
   have hmulCross :
-      (p : ℝ) ^ (-1 : ℝ) * (p : ℝ) ^ (-1 : ℝ) = (p : ℝ) ^ (-2 : ℝ) := by
-    rw [← Real.rpow_add hp]
+      (n : ℝ) ^ (-1 : ℝ) * (n : ℝ) ^ (-1 : ℝ) = (n : ℝ) ^ (-2 : ℝ) := by
+    rw [← Real.rpow_add hnR]
     norm_num
   calc
-    (Real.log (p : ℝ)) ^ 2 *
-          ((p : ℝ) ^ (-2 * rho.re) +
-            (p : ℝ) ^ (-2 * (1 - rho.re)) - 2 * (p : ℝ) ^ (-1 : ℝ)) *
-        (p : ℝ) ^ (-1 : ℝ) =
-      (Real.log (p : ℝ)) ^ 2 *
-        (((p : ℝ) ^ (-2 * rho.re) * (p : ℝ) ^ (-1 : ℝ)) +
-          ((p : ℝ) ^ (-2 * (1 - rho.re)) * (p : ℝ) ^ (-1 : ℝ)) -
-          2 * ((p : ℝ) ^ (-1 : ℝ) * (p : ℝ) ^ (-1 : ℝ))) := by ring
+    (Real.log (n : ℝ)) ^ 2 *
+          ((n : ℝ) ^ (-2 * rho.re) +
+            (n : ℝ) ^ (-2 * (1 - rho.re)) - 2 * (n : ℝ) ^ (-1 : ℝ)) *
+        (n : ℝ) ^ (-1 : ℝ) =
+      (Real.log (n : ℝ)) ^ 2 *
+        (((n : ℝ) ^ (-2 * rho.re) * (n : ℝ) ^ (-1 : ℝ)) +
+          ((n : ℝ) ^ (-2 * (1 - rho.re)) * (n : ℝ) ^ (-1 : ℝ)) -
+          2 * ((n : ℝ) ^ (-1 : ℝ) * (n : ℝ) ^ (-1 : ℝ))) := by ring
     _ = _ := by rw [hmulLeft, hmulRight, hmulCross]
+
+/-- Prime-indexed specialization of the general integer-scale reflection defect. -/
+theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_reflectionSecondDifference
+    (rho : ℂ) (p : Nat.Primes) :
+    ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho‖ ^ 2 / (p : ℝ) =
+      (Real.log (p : ℝ)) ^ 2 *
+        ((p : ℝ) ^ (-(1 + 2 * rho.re)) +
+          (p : ℝ) ^ (-(3 - 2 * rho.re)) -
+          2 * (p : ℝ) ^ (-2 : ℝ)) := by
+  exact orbitwiseNatSeamCharge_weighted_norm_sq_eq_reflectionSecondDifference
+    rho (p : ℕ) p.prop.one_lt
 
 /-- The reciprocal-prime seam square density depends only on the horizontal coordinate. -/
 theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_of_re_eq
@@ -259,41 +271,50 @@ private lemma exp_neg_two_add_exp_two_sub_two_eq_four_sinh_sq (x : ℝ) :
     simp
   nlinarith
 
-/-- Hyperbolic form of the per-prime reflection defect.  It makes both positivity and quadratic
-coercivity in the horizontal displacement explicit. -/
-theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_sinh
-    (rho : ℂ) (p : Nat.Primes) :
-    ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho‖ ^ 2 / (p : ℝ) =
-      4 * (Real.log (p : ℝ)) ^ 2 * (p : ℝ) ^ (-2 : ℝ) *
-        Real.sinh ((rho.re - 1 / 2) * Real.log (p : ℝ)) ^ 2 := by
-  rw [orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_reflectionSecondDifference]
-  have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.pos
-  rw [Real.rpow_def_of_pos hp, Real.rpow_def_of_pos hp,
-    Real.rpow_def_of_pos hp]
-  let x := (rho.re - 1 / 2) * Real.log (p : ℝ)
-  have hleft : Real.exp (Real.log (p : ℝ) * (-(1 + 2 * rho.re))) =
-      Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) * Real.exp (-2 * x) := by
+/-- Hyperbolic form of the reflection defect at every nontrivial integer scale.  It makes both
+positivity and quadratic coercivity in the horizontal displacement explicit. -/
+theorem orbitwiseNatSeamCharge_weighted_norm_sq_eq_sinh
+    (rho : ℂ) (n : ℕ) (hn : 1 < n) :
+    ‖orbitwiseNatPrimeSeamCharge n rho‖ ^ 2 / (n : ℝ) =
+      4 * (Real.log (n : ℝ)) ^ 2 * (n : ℝ) ^ (-2 : ℝ) *
+        Real.sinh ((rho.re - 1 / 2) * Real.log (n : ℝ)) ^ 2 := by
+  rw [orbitwiseNatSeamCharge_weighted_norm_sq_eq_reflectionSecondDifference rho n hn]
+  have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast Nat.zero_lt_of_lt hn
+  rw [Real.rpow_def_of_pos hnR, Real.rpow_def_of_pos hnR,
+    Real.rpow_def_of_pos hnR]
+  let x := (rho.re - 1 / 2) * Real.log (n : ℝ)
+  have hleft : Real.exp (Real.log (n : ℝ) * (-(1 + 2 * rho.re))) =
+      Real.exp (Real.log (n : ℝ) * (-2 : ℝ)) * Real.exp (-2 * x) := by
     rw [← Real.exp_add]
     congr 1
     dsimp [x]
     ring
-  have hright : Real.exp (Real.log (p : ℝ) * (-(3 - 2 * rho.re))) =
-      Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) * Real.exp (2 * x) := by
+  have hright : Real.exp (Real.log (n : ℝ) * (-(3 - 2 * rho.re))) =
+      Real.exp (Real.log (n : ℝ) * (-2 : ℝ)) * Real.exp (2 * x) := by
     rw [← Real.exp_add]
     congr 1
     dsimp [x]
     ring
   rw [hleft, hright]
   calc
-    (Real.log (p : ℝ)) ^ 2 *
-        (Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) * Real.exp (-2 * x) +
-          Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) * Real.exp (2 * x) -
-          2 * Real.exp (Real.log (p : ℝ) * (-2 : ℝ))) =
-      (Real.log (p : ℝ)) ^ 2 * Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) *
+    (Real.log (n : ℝ)) ^ 2 *
+        (Real.exp (Real.log (n : ℝ) * (-2 : ℝ)) * Real.exp (-2 * x) +
+          Real.exp (Real.log (n : ℝ) * (-2 : ℝ)) * Real.exp (2 * x) -
+          2 * Real.exp (Real.log (n : ℝ) * (-2 : ℝ))) =
+      (Real.log (n : ℝ)) ^ 2 * Real.exp (Real.log (n : ℝ) * (-2 : ℝ)) *
         (Real.exp (-2 * x) + Real.exp (2 * x) - 2) := by ring
-    _ = 4 * (Real.log (p : ℝ)) ^ 2 * Real.exp (Real.log (p : ℝ) * (-2 : ℝ)) *
+    _ = 4 * (Real.log (n : ℝ)) ^ 2 * Real.exp (Real.log (n : ℝ) * (-2 : ℝ)) *
         Real.sinh x ^ 2 := by rw [exp_neg_two_add_exp_two_sub_two_eq_four_sinh_sq]; ring
     _ = _ := by rfl
+
+/-- Prime-indexed specialization of the general integer-scale hyperbolic defect law. -/
+theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_sinh
+    (rho : ℂ) (p : Nat.Primes) :
+    ‖orbitwiseNatPrimeSeamCharge (p : ℕ) rho‖ ^ 2 / (p : ℝ) =
+      4 * (Real.log (p : ℝ)) ^ 2 * (p : ℝ) ^ (-2 : ℝ) *
+        Real.sinh ((rho.re - 1 / 2) * Real.log (p : ℝ)) ^ 2 := by
+  exact orbitwiseNatSeamCharge_weighted_norm_sq_eq_sinh
+    rho (p : ℕ) p.prop.one_lt
 
 /-- Quantitative horizontal coercivity from the single prime `2`: the full seam energy dominates
 the squared distance to the critical line with an explicit unconditional constant. -/

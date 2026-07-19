@@ -39,6 +39,28 @@ coefficients.  The live conjecture is now
 specific four-unit incidence curvature,
 through the already-proved floor/Mobius incidence and Gamma/Sonin rigging, to the Xi seam.
 
+**2026-07-19 positive-survivor refinement.**  The source-fixed incoming Hilbert metric is no
+longer wholly open.  The forward depth differences of the actual local Möbius Schur factors form
+the canonical all-prime RKHS
+
+```text
+Delta B_p(e)=q_p^(e+1)(1-q_p)/(1+q_p),
+K_M(p,p)=q_p^2(1-q_p)/(1+q_p)^3,
+sum_p K_M(p,p)<infinity.
+```
+
+Its damping square is exactly the local squarefree-parity Fisher variance, its normalized metric
+is the reciprocal-prime pseudohyperbolic metric, and every finite prime packet is marked by a
+nondegenerate weighted Vandermonde frame.  This is formalized in
+`../3-formalized/needs-audit/xi-mobius-schur-valuation-marking.md` and
+`RHTower.XiMobiusSchurValuationIntertwiner`.
+
+The exact inverse dressing to the Gamma--valuation frame has square at least `p` and is unbounded.
+Therefore the positive survivor does not revive the generic colligation route: clause `(2)` now
+has a canonical answer, but clauses `(3)` and `(6)` must be proved directly in the damped Möbius
+metric.  Any construction that first whitens each prime channel is retired by theorem, not merely
+by an anti-theatre warning.
+
 **General HT statement.**  The failure separates three structures which a constrained HT source
 need not package in one Hilbert object: finite-clock conservation, a tangential Fisher metric, and
 a singular normal boundary functional.  Algebraic conservativity does not choose the analytic

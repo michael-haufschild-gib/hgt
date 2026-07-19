@@ -37,6 +37,39 @@ noncomputable def cutoffCommutator
     (e X : H →L[ℂ] H) : H →L[ℂ] H :=
   X ∘L e - e ∘L X
 
+/-- Complementing the cutoff exchanges its lower and upper boundary corners. -/
+theorem cutoffLowerBoundary_one_sub
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (e X : H →L[ℂ] H) :
+    cutoffLowerBoundary (1 - e) X = cutoffUpperBoundary e X := by
+  dsimp only [cutoffLowerBoundary, cutoffUpperBoundary]
+  noncomm_ring
+
+/-- Complementing the cutoff exchanges its upper and lower boundary corners. -/
+theorem cutoffUpperBoundary_one_sub
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (e X : H →L[ℂ] H) :
+    cutoffUpperBoundary (1 - e) X = cutoffLowerBoundary e X := by
+  dsimp only [cutoffLowerBoundary, cutoffUpperBoundary]
+  noncomm_ring
+
+/-- Cutoff complementation reverses the orientation of the boundary commutator. -/
+theorem cutoffCommutator_one_sub
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (e X : H →L[ℂ] H) :
+    cutoffCommutator (1 - e) X = -cutoffCommutator e X := by
+  ext z
+  simp [cutoffCommutator]
+
+/-- **Cutoff-reflection law.** Boundary Hilbert--Schmidt energy is exactly invariant under
+exchanging the observed window with its complement. -/
+theorem hsNormSq_cutoffCommutator_one_sub
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (e X : H →L[ℂ] H) :
+    hsNormSq (cutoffCommutator (1 - e) X) =
+      hsNormSq (cutoffCommutator e X) := by
+  rw [cutoffCommutator_one_sub, hsNormSq_neg_eq_self]
+
 /-- A self-adjoint Hilbert--Schmidt observable has exactly twice the energy of either cutoff
 corner. -/
 theorem hsNormSq_cutoffCommutator_eq_two_mul_lowerBoundary
@@ -120,6 +153,38 @@ theorem pointedFisherConnection_isHilbertSchmidt
     IsHilbertSchmidt (pointedFisherConnection psi chi) := by
   exact ((isHilbertSchmidt_rankOne chi psi).add
     (isHilbertSchmidt_rankOne psi chi)).smul _
+
+/-- Total pointed-connection energy, including the complex state--tangent phase term. -/
+theorem hsNormSq_pointedFisherConnection
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (psi chi : H) :
+    hsNormSq (pointedFisherConnection psi chi) =
+      ‖chi‖ ^ 2 * ‖psi‖ ^ 2 + Complex.re ((inner ℂ chi psi) ^ 2) := by
+  rw [pointedFisherConnection,
+    hsNormSq_smul
+      ((isHilbertSchmidt_rankOne chi psi).add
+        (isHilbertSchmidt_rankOne psi chi)),
+    invSqrtTwo_norm_sq, hsNormSq_rankOne_add_rankOne]
+  ring_nf
+
+/-- Orthogonality removes the phase term from the total pointed-connection energy. -/
+theorem hsNormSq_pointedFisherConnection_of_orthogonal
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (psi chi : H) (horth : inner ℂ psi chi = 0) :
+    hsNormSq (pointedFisherConnection psi chi) =
+      ‖chi‖ ^ 2 * ‖psi‖ ^ 2 := by
+  have horth' : inner ℂ chi psi = 0 := by
+    rw [← inner_conj_symm, horth, map_zero]
+  rw [hsNormSq_pointedFisherConnection, horth']
+  norm_num
+
+/-- A unit pointed source identifies total connection energy with tangent energy exactly. -/
+theorem hsNormSq_pointedFisherConnection_of_unit_of_orthogonal
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (psi chi : H) (hunit : ‖psi‖ = 1) (horth : inner ℂ psi chi = 0) :
+    hsNormSq (pointedFisherConnection psi chi) = ‖chi‖ ^ 2 := by
+  rw [hsNormSq_pointedFisherConnection_of_orthogonal psi chi horth, hunit]
+  ring_nf
 
 /-- Exact lower-corner value relation for the pointed Fisher connection. -/
 theorem pointedFisherConnection_lowerBoundary

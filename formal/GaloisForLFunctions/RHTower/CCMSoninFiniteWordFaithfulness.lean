@@ -169,30 +169,6 @@ namespace RHTower
 open ContinuousLinearMap Metric
 open scoped InnerProduct
 
-/-- The Hilbert-space adjoint of a compact operator is compact. -/
-theorem isCompactOperator_adjoint
-    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-    (T : H →L[ℂ] H) (hT : IsCompactOperator T) : IsCompactOperator (T†) := by
-  have hmem : T† ∈ closure {W : H →L[ℂ] H | IsCompactOperator W} := by
-    rw [Metric.mem_closure_iff]
-    intro δ hδ
-    obtain ⟨s, hs⟩ := exists_finset_forall_norm_cut_mul_le hT (half_pos hδ)
-    let V := Submodule.span ℂ ((s : Finset H) : Set H)
-    let P := V.starProjection
-    have hcut : ‖(1 - P) * T‖ ≤ δ / 2 := hs s (Finset.Subset.refl s)
-    have hPadj : P† = P := (isSelfAdjoint_starProjection V).star_eq
-    have hstarP : star P = P := hPadj
-    refine ⟨T† * P,
-      (isCompactOperator_starProjection_of_finiteDimensional V).clm_comp (T†), ?_⟩
-    rw [dist_eq_norm]
-    have heq : T† - T† * P = ((1 - P) * T)† := by
-      change star T - star T * P = star ((1 - P) * T)
-      rw [star_mul, star_sub, star_one, hstarP]
-      noncomm_ring
-    rw [heq]
-    simpa using hcut.trans_lt (half_lt_self hδ)
-  exact isClosed_setOf_isCompactOperator.closure_subset hmem
-
 /-- Taking adjoints preserves compact congruence. -/
 theorem CompactOperatorEq.adjoint
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]

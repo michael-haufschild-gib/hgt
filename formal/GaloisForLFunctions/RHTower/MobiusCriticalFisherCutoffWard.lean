@@ -156,6 +156,13 @@ theorem norm_squarefreeMobiusCriticalClockCutoff_fisherTangent_sq
     exact norm_infiniteMobiusCriticalFisherTangentWeight_sq' hsigma n
   · rw [indicator_of_notMem hn, indicator_of_notMem hn]
 
+/-- Hard-cut Fisher tangent energy is nonnegative with no scalar side conditions. -/
+theorem squarefreeMobiusCriticalFisherCutEnergy_nonneg
+    {sigma u : ℝ} (hsigma : 1 < sigma) :
+    0 ≤ squarefreeMobiusCriticalFisherCutEnergy sigma u := by
+  rw [← norm_squarefreeMobiusCriticalClockCutoff_fisherTangent_sq hsigma]
+  positivity
+
 /-- Exact state--tangent overlap value relation for the hard clock cutoff. -/
 theorem inner_squarefreeMobiusCriticalClockCutoff_fisherTangent_signed
     {sigma u : ℝ} (hsigma : 1 < sigma) :
@@ -203,6 +210,36 @@ theorem inner_squarefreeMobiusCriticalClockCutoff_fisherTangent_signed_im_eq_zer
         (infiniteMobiusSignedWeightLp sigma hsigma))).im = 0 := by
   rw [inner_squarefreeMobiusCriticalClockCutoff_fisherTangent_signed hsigma]
   exact Complex.ofReal_im _
+
+/-- The completed squarefree pointed connection has exactly the projective Fisher energy. -/
+theorem hsNormSq_squarefreeMobiusCriticalPointedFisherConnection
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    hsNormSq
+      (pointedFisherConnection
+        (infiniteMobiusSignedWeightLp sigma hsigma)
+        (infiniteMobiusCriticalFisherTangentLp sigma hsigma)) =
+      squarefreeMobiusCriticalProjectiveFisherEnergy sigma := by
+  rw [hsNormSq_pointedFisherConnection_of_orthogonal
+      (infiniteMobiusSignedWeightLp sigma hsigma)
+      (infiniteMobiusCriticalFisherTangentLp sigma hsigma)
+      (inner_infiniteMobiusSignedWeightLp_fisherTangent_eq_zero hsigma),
+    norm_infiniteMobiusCriticalFisherTangentLp_sq hsigma,
+    norm_infiniteMobiusSignedWeightLp_sq hsigma, mul_one]
+
+/-- Complementary hard clock windows have exactly the same Fisher boundary energy. -/
+theorem hsNormSq_squarefreeMobiusCriticalFisherCutoffCommutator_one_sub
+    {sigma u : ℝ} (hsigma : 1 < sigma) :
+    hsNormSq
+      (cutoffCommutator (1 - squarefreeMobiusCriticalClockCutoff sigma u)
+        (pointedFisherConnection
+          (infiniteMobiusSignedWeightLp sigma hsigma)
+          (infiniteMobiusCriticalFisherTangentLp sigma hsigma))) =
+    hsNormSq
+      (cutoffCommutator (squarefreeMobiusCriticalClockCutoff sigma u)
+        (pointedFisherConnection
+          (infiniteMobiusSignedWeightLp sigma hsigma)
+          (infiniteMobiusCriticalFisherTangentLp sigma hsigma))) :=
+  hsNormSq_cutoffCommutator_one_sub _ _
 
 /-- Exact phase-free rank-two Ward law for the squarefree critical Fisher carrier. -/
 theorem hsNormSq_squarefreeMobiusCriticalFisherCutoffCommutator

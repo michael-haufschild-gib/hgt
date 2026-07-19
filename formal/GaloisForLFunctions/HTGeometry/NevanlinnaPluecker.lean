@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ComplexSecondKind
+import GaloisForLFunctions.HTGeometry.NevanlinnaClassicalInterface
 
 /-!
 # The Plücker relation behind `A D - B C = 1`
@@ -543,5 +544,421 @@ theorem uniformCauchySeqOn_bilinearPartialSum (h : PositiveMomentForm s) (f : �
     exact hN₀ n hn m (G z) (hG z hz)
   · rw [Complex.dist_eq, ← neg_sub, norm_neg, hsub m n hmn]
     exact hN₀ m hm n (G z) (hG z hz)
+
+/-! ## Analyticity of the limit
+
+A uniform limit of holomorphic functions is holomorphic.  The partial sums are polynomials in the
+point whenever the family `G` is, so the limiting bilinear series is differentiable on any open set
+carrying a common kernel-root bound. -/
+
+theorem summable_normSq_of_kernelRoot_le (h : PositiveMomentForm s) (f : ℕ → ℂ) {Kf : ℝ}
+    (hf : ∀ n, kernelRoot s f n ≤ Kf) :
+    Summable (fun k => ‖f k‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)) := by
+  have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
+    fun j => monicOrtho_inner_self_pos h j
+  have hKf : 0 ≤ Kf := le_trans (kernelRoot_nonneg s f 0) (hf 0)
+  refine summable_of_sum_range_le (c := Kf ^ 2)
+    (fun k => div_nonneg (sq_nonneg _) (hpos k).le) ?_
+  intro n
+  match n with
+  | 0 => simpa using sq_nonneg Kf
+  | (m + 1) =>
+      rw [← kernelRoot_sq h]
+      have hnn := kernelRoot_nonneg s f m
+      nlinarith [hf m, hnn, hKf]
+
+/-- **Holomorphy of the limiting bilinear series.** -/
+theorem differentiableOn_bilinearLimit (h : PositiveMomentForm s) (f : ℕ → ℂ) {Kf Kg : ℝ}
+    (hf : ∀ n, kernelRoot s f n ≤ Kf)
+    (G : ℂ → ℕ → ℂ) (U : Set ℂ) (hU : IsOpen U)
+    (hG : ∀ z ∈ U, ∀ n, kernelRoot s (G z) n ≤ Kg)
+    (hdiff : ∀ N, DifferentiableOn ℂ (bilinearPartialSum s f G N) U) :
+    DifferentiableOn ℂ (fun z => ∑' k, f k * G z k /
+      ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) U := by
+  have hfs := summable_normSq_of_kernelRoot_le h f hf
+  have hcauchy := uniformCauchySeqOn_bilinearPartialSum h f hfs Kg G U hG
+  have hptw : ∀ z ∈ U, Tendsto (fun N => bilinearPartialSum s f G N z) atTop
+      (nhds (∑' k, f k * G z k /
+        ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ))) := by
+    intro z hz
+    exact (summable_weighted_of_bounds h f (G z) hf (hG z hz)).hasSum.tendsto_sum_nat
+  have huniform := hcauchy.tendstoUniformlyOn_of_tendsto hptw
+  have hloc : TendstoLocallyUniformlyOn (bilinearPartialSum s f G)
+      (fun z => ∑' k, f k * G z k /
+        ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) atTop U :=
+    huniform.tendstoLocallyUniformlyOn
+  exact hloc.differentiableOn (Filter.Eventually.of_forall hdiff) hU
+
+/-! ## Applying holomorphy to the Nevanlinna entries
+
+The families are polynomial in the point, so the partial sums are differentiable and the previous
+theorem applies. -/
+
+theorem differentiable_monicOrthoC (s : ℕ → ℝ) (k : ℕ) :
+    Differentiable ℂ (fun z : ℂ => monicOrthoC s k z) := by
+  have hrw : (fun z : ℂ => monicOrthoC s k z)
+      = fun z : ℂ => Polynomial.eval z ((monicOrtho s k).map (algebraMap ℝ ℂ)) := by
+    funext z
+    rw [monicOrthoC, Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map]
+  rw [hrw]
+  exact Polynomial.differentiable _
+
+theorem differentiable_secondKindC (s : ℕ → ℝ) (k : ℕ) :
+    Differentiable ℂ (fun z : ℂ => secondKindC s k z) := by
+  have hrw : (fun z : ℂ => secondKindC s k z)
+      = fun z : ℂ => Polynomial.eval z ((secondKind s k).map (algebraMap ℝ ℂ)) := by
+    funext z
+    rw [secondKindC, Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map]
+  rw [hrw]
+  exact Polynomial.differentiable _
+
+theorem differentiableOn_bilinearPartialSum (s : ℕ → ℝ) (f : ℕ → ℂ) (G : ℂ → ℕ → ℂ)
+    (hG : ∀ k, Differentiable ℂ (fun z => G z k)) (N : ℕ) (U : Set ℂ) :
+    DifferentiableOn ℂ (bilinearPartialSum s f G N) U := by
+  refine Differentiable.differentiableOn ?_
+  have hterm : ∀ k ∈ Finset.range N,
+      Differentiable ℂ (fun z : ℂ => f k * G z k /
+        ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) := by
+    intro k _
+    exact ((hG k).const_mul (f k)).div_const _
+  unfold bilinearPartialSum
+  have hEq : (fun z : ℂ => ∑ k ∈ Finset.range N, f k * G z k /
+      ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ))
+      = ∑ k ∈ Finset.range N, (fun z : ℂ => f k * G z k /
+        ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) := by
+    funext z
+    simp
+  rw [hEq]
+  exact Differentiable.sum hterm
+
+/-- **The `D` entry's series is holomorphic** on any open set with a uniform kernel bound. -/
+theorem differentiableOn_nevD_series (h : PositiveMomentForm s) (U : Set ℂ) (hU : IsOpen U)
+    {S0 Sz : ℝ}
+    (hS0 : ∀ n, kernelRoot s (fun j => monicOrthoC s j 0) n ≤ S0)
+    (hUz : ∀ z ∈ U, ∀ n, kernelRoot s (fun j => monicOrthoC s j z) n ≤ Sz) :
+    DifferentiableOn ℂ (fun z => ∑' k, monicOrthoC s k 0 * monicOrthoC s k z /
+      ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) U :=
+  differentiableOn_bilinearLimit h (fun k => monicOrthoC s k 0) hS0
+    (fun z k => monicOrthoC s k z) U hU hUz
+    (fun N => differentiableOn_bilinearPartialSum s _ _
+      (fun k => differentiable_monicOrthoC s k) N U)
+
+/-- **The `C` entry's series is holomorphic** on any open set with a uniform second-kind bound. -/
+theorem differentiableOn_nevC_series (h : PositiveMomentForm s) (U : Set ℂ) (hU : IsOpen U)
+    {S0 Pz : ℝ}
+    (hS0 : ∀ n, kernelRoot s (fun j => monicOrthoC s j 0) n ≤ S0)
+    (hUz : ∀ z ∈ U, ∀ n, kernelRoot s (fun j => secondKindC s j z) n ≤ Pz) :
+    DifferentiableOn ℂ (fun z => ∑' k, monicOrthoC s k 0 * secondKindC s k z /
+      ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) U :=
+  differentiableOn_bilinearLimit h (fun k => monicOrthoC s k 0) hS0
+    (fun z k => secondKindC s k z) U hU hUz
+    (fun N => differentiableOn_bilinearPartialSum s _ _
+      (fun k => differentiable_secondKindC s k) N U)
+
+/-- **The `A` entry's series is holomorphic.** -/
+theorem differentiableOn_nevA_series (h : PositiveMomentForm s) (U : Set ℂ) (hU : IsOpen U)
+    {P0 Pz : ℝ}
+    (hP0 : ∀ n, kernelRoot s (fun j => secondKindC s j 0) n ≤ P0)
+    (hUz : ∀ z ∈ U, ∀ n, kernelRoot s (fun j => secondKindC s j z) n ≤ Pz) :
+    DifferentiableOn ℂ (fun z => ∑' k, secondKindC s k 0 * secondKindC s k z /
+      ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) U :=
+  differentiableOn_bilinearLimit h (fun k => secondKindC s k 0) hP0
+    (fun z k => secondKindC s k z) U hU hUz
+    (fun N => differentiableOn_bilinearPartialSum s _ _
+      (fun k => differentiable_secondKindC s k) N U)
+
+/-- **The `B` entry's series is holomorphic.**  Its summand has the point-dependent factor first, so
+the product is commuted before applying the general theorem. -/
+theorem differentiableOn_nevB_series (h : PositiveMomentForm s) (U : Set ℂ) (hU : IsOpen U)
+    {P0 Sz : ℝ}
+    (hP0 : ∀ n, kernelRoot s (fun j => secondKindC s j 0) n ≤ P0)
+    (hUz : ∀ z ∈ U, ∀ n, kernelRoot s (fun j => monicOrthoC s j z) n ≤ Sz) :
+    DifferentiableOn ℂ (fun z => ∑' k, monicOrthoC s k z * secondKindC s k 0 /
+      ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)) U := by
+  have hEq : (fun z : ℂ => ∑' k, monicOrthoC s k z * secondKindC s k 0 /
+        ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ))
+      = fun z : ℂ => ∑' k, secondKindC s k 0 * monicOrthoC s k z /
+        ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ) := by
+    funext z
+    exact tsum_congr fun k => by ring
+  rw [hEq]
+  exact differentiableOn_bilinearLimit h (fun k => secondKindC s k 0) hP0
+    (fun z k => monicOrthoC s k z) U hU hUz
+    (fun N => differentiableOn_bilinearPartialSum s _ _
+      (fun k => differentiable_monicOrthoC s k) N U)
+
+/-! ## Capstone: the limiting Nevanlinna matrix is holomorphic and unimodular -/
+
+/-- **The four limiting entries are holomorphic on any open set with uniform kernel bounds, and
+satisfy `A D - B C = 1` there.**  This is the analytic content of the Nevanlinna matrix, modulo the
+growth statement. -/
+theorem nevanlinna_holomorphic_unimodular (h : PositiveMomentForm s) (U : Set ℂ) (hU : IsOpen U)
+    {S0 P0 Sz Pz : ℝ}
+    (hS0 : ∀ n, kernelRoot s (fun j => monicOrthoC s j 0) n ≤ S0)
+    (hP0 : ∀ n, kernelRoot s (fun j => secondKindC s j 0) n ≤ P0)
+    (hUS : ∀ z ∈ U, ∀ n, kernelRoot s (fun j => monicOrthoC s j z) n ≤ Sz)
+    (hUP : ∀ z ∈ U, ∀ n, kernelRoot s (fun j => secondKindC s j z) n ≤ Pz)
+    (h0b : BoundedKernel s 0) (hUb : ∀ z ∈ U, BoundedKernel s z) :
+    DifferentiableOn ℂ (nevAinf s) U ∧ DifferentiableOn ℂ (nevBinf s) U ∧
+      DifferentiableOn ℂ (nevCinf s) U ∧ DifferentiableOn ℂ (nevDinf s) U ∧
+      ∀ z ∈ U, nevAinf s z * nevDinf s z - nevBinf s z * nevCinf s z = 1 := by
+  have hlin : Differentiable ℂ (fun z : ℂ =>
+      ((momentInner s (monicOrtho s 0) (monicOrtho s 0) : ℝ) : ℂ) * z) :=
+    differentiable_id.const_mul _
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · unfold nevAinf
+    exact hlin.differentiableOn.mul (differentiableOn_nevA_series h U hU hP0 hUP)
+  · unfold nevBinf
+    exact (hlin.differentiableOn.mul (differentiableOn_nevB_series h U hU hP0 hUS)).const_add _
+  · unfold nevCinf
+    exact (hlin.differentiableOn.mul (differentiableOn_nevC_series h U hU hS0 hUP)).const_add _
+  · unfold nevDinf
+    exact hlin.differentiableOn.mul (differentiableOn_nevD_series h U hU hS0 hUS)
+  · intro z hz
+    exact nevAinf_mul_nevDinf_sub_nevBinf_mul_nevCinf h z h0b (hUb z hz)
+
+/-! ## Size bounds for the entries
+
+The first step toward a growth statement: each entry is bounded by `h₀ |z|` times a product of
+kernel roots.  Any exponential-type claim must control the kernel roots themselves, and this
+isolates that as the only remaining unknown. -/
+
+theorem norm_tsum_weighted_le (h : PositiveMomentForm s) (f g : ℕ → ℂ) {Kf Kg : ℝ}
+    (hf : ∀ n, kernelRoot s f n ≤ Kf) (hg : ∀ n, kernelRoot s g n ≤ Kg) :
+    ‖∑' k, f k * g k /
+        ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)‖ ≤ Kf * Kg := by
+  have hpos : ∀ j, 0 < momentInner s (monicOrtho s j) (monicOrtho s j) :=
+    fun j => monicOrtho_inner_self_pos h j
+  have hKf : 0 ≤ Kf := le_trans (kernelRoot_nonneg s f 0) (hf 0)
+  have hKg : 0 ≤ Kg := le_trans (kernelRoot_nonneg s g 0) (hg 0)
+  have hsum := summable_weighted_of_bounds h f g hf hg
+  have hterm : ∀ k, ‖f k * g k /
+      ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)‖
+      = ‖f k‖ * ‖g k‖ / momentInner s (monicOrtho s k) (monicOrtho s k) := by
+    intro k
+    rw [norm_div, norm_mul]
+    congr 1
+    simp [abs_of_pos (hpos k)]
+  refine le_trans (norm_tsum_le_tsum_norm (by simpa [hterm] using hsum.norm)) ?_
+  have hrw : ∑' k, ‖f k * g k /
+      ((momentInner s (monicOrtho s k) (monicOrtho s k) : ℝ) : ℂ)‖
+      = ∑' k, ‖f k‖ * ‖g k‖ / momentInner s (monicOrtho s k) (monicOrtho s k) :=
+    tsum_congr hterm
+  rw [hrw]
+  have hs : Summable (fun k => ‖f k‖ * ‖g k‖ /
+      momentInner s (monicOrtho s k) (monicOrtho s k)) := hsum.norm.congr hterm
+  refine le_of_tendsto hs.hasSum.tendsto_sum_nat (Filter.Eventually.of_forall fun n => ?_)
+  match n with
+  | 0 => simpa using mul_nonneg hKf hKg
+  | (m + 1) =>
+      refine le_trans (sum_range_norm_weighted_le h m f g) ?_
+      exact mul_le_mul (hf m) (hg m) (kernelRoot_nonneg s g m) hKf
+
+/-- **Size bound for the `A` entry.** -/
+theorem norm_nevAinf_le (h : PositiveMomentForm s) (z : ℂ) {P0 Pz : ℝ}
+    (hP0 : ∀ n, kernelRoot s (fun j => secondKindC s j 0) n ≤ P0)
+    (hPz : ∀ n, kernelRoot s (fun j => secondKindC s j z) n ≤ Pz) :
+    ‖nevAinf s z‖
+      ≤ momentInner s (monicOrtho s 0) (monicOrtho s 0) * ‖z‖ * (P0 * Pz) := by
+  have h0pos : 0 < momentInner s (monicOrtho s 0) (monicOrtho s 0) :=
+    monicOrtho_inner_self_pos h 0
+  have hnormAux : ∀ c : ℝ, 0 < c → ‖(c : ℂ)‖ = c := by
+    intro c hc
+    simp [abs_of_pos hc]
+  unfold nevAinf
+  rw [norm_mul, norm_mul, hnormAux _ h0pos]
+  refine mul_le_mul_of_nonneg_left (norm_tsum_weighted_le h _ _ hP0 hPz) ?_
+  exact mul_nonneg h0pos.le (norm_nonneg _)
+
+/-- **Size bound for the `D` entry.** -/
+theorem norm_nevDinf_le (h : PositiveMomentForm s) (z : ℂ) {S0 Sz : ℝ}
+    (hS0 : ∀ n, kernelRoot s (fun j => monicOrthoC s j 0) n ≤ S0)
+    (hSz : ∀ n, kernelRoot s (fun j => monicOrthoC s j z) n ≤ Sz) :
+    ‖nevDinf s z‖
+      ≤ momentInner s (monicOrtho s 0) (monicOrtho s 0) * ‖z‖ * (S0 * Sz) := by
+  have h0pos : 0 < momentInner s (monicOrtho s 0) (monicOrtho s 0) :=
+    monicOrtho_inner_self_pos h 0
+  have hnormAux : ∀ c : ℝ, 0 < c → ‖(c : ℂ)‖ = c := by
+    intro c hc
+    simp [abs_of_pos hc]
+  unfold nevDinf
+  rw [norm_mul, norm_mul, hnormAux _ h0pos]
+  refine mul_le_mul_of_nonneg_left (norm_tsum_weighted_le h _ _ hS0 hSz) ?_
+  exact mul_nonneg h0pos.le (norm_nonneg _)
+
+/-! ## The real-variable Nevanlinna matrix
+
+The packaged interface `ClassicalNevanlinnaMatrixData ℝ` wants four *real* functions on the carrier
+line with determinant one.  All three Christoffel--Darboux identities exist over `ℝ`, and
+`wronskian_pluecker_sq` is stated for an arbitrary commutative ring, so the whole derivation
+transfers verbatim. -/
+
+theorem nevanlinna_determinant_precursor_real (h : PositiveMomentForm s) (n : ℕ) (x : ℝ) :
+    momentInner s (monicOrtho s 0) (monicOrtho s 0) * x ^ 2 *
+      ((∑ k ∈ Finset.range (n + 1), (secondKind s k).eval 0 * (secondKind s k).eval x /
+          momentInner s (monicOrtho s k) (monicOrtho s k)) *
+        (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 * (monicOrtho s k).eval x /
+          momentInner s (monicOrtho s k) (monicOrtho s k))
+      - (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval x * (secondKind s k).eval 0 /
+          momentInner s (monicOrtho s k) (monicOrtho s k)) *
+        (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 * (secondKind s k).eval x /
+          momentInner s (monicOrtho s k) (monicOrtho s k)))
+      = x * ((∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval x * (secondKind s k).eval 0 /
+          momentInner s (monicOrtho s k) (monicOrtho s k))
+        - (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 * (secondKind s k).eval x /
+          momentInner s (monicOrtho s k) (monicOrtho s k))) := by
+  have h0 : momentInner s (monicOrtho s 0) (monicOrtho s 0) ≠ 0 :=
+    h.self_ne_zero (monicOrtho_ne_zero s 0)
+  have hn : momentInner s (monicOrtho s n) (monicOrtho s n) ≠ 0 :=
+    h.self_ne_zero (monicOrtho_ne_zero s n)
+  have hW : ∀ y : ℝ, (monicOrtho s (n + 1)).eval y * (secondKind s n).eval y
+      - (monicOrtho s n).eval y * (secondKind s (n + 1)).eval y
+      = -(momentInner s (monicOrtho s n) (monicOrtho s n) /
+          momentInner s (monicOrtho s 0) (monicOrtho s 0)) := by
+    intro y
+    have hev := congrArg (Polynomial.eval y) (momentWronskian_eq h n)
+    simpa [momentWronskian] using hev
+  have hpl := wronskian_pluecker_sq
+    ((monicOrtho s n).eval 0) ((monicOrtho s (n + 1)).eval 0)
+    ((secondKind s n).eval 0) ((secondKind s (n + 1)).eval 0)
+    ((monicOrtho s n).eval x) ((monicOrtho s (n + 1)).eval x)
+    ((secondKind s n).eval x) ((secondKind s (n + 1)).eval x)
+    (-(momentInner s (monicOrtho s n) (monicOrtho s n) /
+      momentInner s (monicOrtho s 0) (monicOrtho s 0))) (hW 0) (hW x)
+  have F1 : (secondKind s (n + 1)).eval 0 * (secondKind s n).eval x -
+      (secondKind s n).eval 0 * (secondKind s (n + 1)).eval x
+      = momentInner s (monicOrtho s n) (monicOrtho s n) *
+        ((0 - x) * ∑ k ∈ Finset.range (n + 1), (secondKind s k).eval 0 * (secondKind s k).eval x /
+          momentInner s (monicOrtho s k) (monicOrtho s k)) := by
+    rw [secondKindChristoffelDarboux h n 0 x]
+    field_simp
+  have F2 : (monicOrtho s (n + 1)).eval 0 * (monicOrtho s n).eval x -
+      (monicOrtho s n).eval 0 * (monicOrtho s (n + 1)).eval x
+      = momentInner s (monicOrtho s n) (monicOrtho s n) *
+        ((0 - x) * ∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 * (monicOrtho s k).eval x /
+          momentInner s (monicOrtho s k) (monicOrtho s k)) := by
+    rw [christoffelDarboux h n 0 x]
+    field_simp
+  have F3 : (monicOrtho s (n + 1)).eval x * (secondKind s n).eval 0 -
+      (monicOrtho s n).eval x * (secondKind s (n + 1)).eval 0
+      = momentInner s (monicOrtho s n) (monicOrtho s n) *
+        ((x - 0) * (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval x * (secondKind s k).eval 0 /
+            momentInner s (monicOrtho s k) (monicOrtho s k))
+          - 1 / momentInner s (monicOrtho s 0) (monicOrtho s 0)) := by
+    rw [mixedChristoffelDarboux h n x 0]
+    field_simp [h0, hn]
+    try ring
+  have F4 : (monicOrtho s (n + 1)).eval 0 * (secondKind s n).eval x -
+      (monicOrtho s n).eval 0 * (secondKind s (n + 1)).eval x
+      = momentInner s (monicOrtho s n) (monicOrtho s n) *
+        ((0 - x) * (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 * (secondKind s k).eval x /
+            momentInner s (monicOrtho s k) (monicOrtho s k))
+          - 1 / momentInner s (monicOrtho s 0) (monicOrtho s 0)) := by
+    rw [mixedChristoffelDarboux h n 0 x]
+    field_simp [h0, hn]
+    try ring
+  rw [F1, F2, F3, F4] at hpl
+  have hX : (0 - x) * (∑ k ∈ Finset.range (n + 1), (secondKind s k).eval 0 *
+        (secondKind s k).eval x / momentInner s (monicOrtho s k) (monicOrtho s k)) *
+      ((0 - x) * ∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 * (monicOrtho s k).eval x /
+        momentInner s (monicOrtho s k) (monicOrtho s k))
+      + ((x - 0) * (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval x *
+            (secondKind s k).eval 0 / momentInner s (monicOrtho s k) (monicOrtho s k))
+          - 1 / momentInner s (monicOrtho s 0) (monicOrtho s 0)) *
+        ((0 - x) * (∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 *
+            (secondKind s k).eval x / momentInner s (monicOrtho s k) (monicOrtho s k))
+          - 1 / momentInner s (monicOrtho s 0) (monicOrtho s 0))
+      = (1 / momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 := by
+    refine mul_left_cancel₀ (pow_ne_zero 2 hn) ?_
+    linear_combination hpl
+  field_simp at hX
+  refine mul_left_cancel₀ h0 ?_
+  linear_combination hX
+
+/-- Real-variable `A` entry at truncation level `n`. -/
+noncomputable def nevAreal (s : ℕ → ℝ) (n : ℕ) (x : ℝ) : ℝ :=
+  momentInner s (monicOrtho s 0) (monicOrtho s 0) * x *
+    ∑ k ∈ Finset.range (n + 1), (secondKind s k).eval 0 * (secondKind s k).eval x /
+      momentInner s (monicOrtho s k) (monicOrtho s k)
+
+/-- Real-variable `B` entry at truncation level `n`. -/
+noncomputable def nevBreal (s : ℕ → ℝ) (n : ℕ) (x : ℝ) : ℝ :=
+  -1 + momentInner s (monicOrtho s 0) (monicOrtho s 0) * x *
+    ∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval x * (secondKind s k).eval 0 /
+      momentInner s (monicOrtho s k) (monicOrtho s k)
+
+/-- Real-variable `C` entry at truncation level `n`. -/
+noncomputable def nevCreal (s : ℕ → ℝ) (n : ℕ) (x : ℝ) : ℝ :=
+  1 + momentInner s (monicOrtho s 0) (monicOrtho s 0) * x *
+    ∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 * (secondKind s k).eval x /
+      momentInner s (monicOrtho s k) (monicOrtho s k)
+
+/-- Real-variable `D` entry at truncation level `n`. -/
+noncomputable def nevDreal (s : ℕ → ℝ) (n : ℕ) (x : ℝ) : ℝ :=
+  momentInner s (monicOrtho s 0) (monicOrtho s 0) * x *
+    ∑ k ∈ Finset.range (n + 1), (monicOrtho s k).eval 0 * (monicOrtho s k).eval x /
+      momentInner s (monicOrtho s k) (monicOrtho s k)
+
+/-- **The real determinant identity.**  Exactly the `det_one` field required by
+`ClassicalNevanlinnaMatrixData ℝ`. -/
+theorem nevAreal_mul_nevDreal_sub_nevBreal_mul_nevCreal (h : PositiveMomentForm s) (n : ℕ)
+    (x : ℝ) :
+    nevAreal s n x * nevDreal s n x - nevBreal s n x * nevCreal s n x = 1 := by
+  have hprec := nevanlinna_determinant_precursor_real h n x
+  simp only [nevAreal, nevBreal, nevCreal, nevDreal]
+  linear_combination momentInner s (monicOrtho s 0) (monicOrtho s 0) * hprec
+
+/-- **The truncated real Nevanlinna matrix data.**  A genuine inhabitant of the packaged interface
+`ClassicalNevanlinnaMatrixData ℝ`, built from the moment sequence with no assumptions beyond
+positive definiteness. -/
+noncomputable def nevMatrixData (h : PositiveMomentForm s) (n : ℕ) :
+    GaloisForLFunctions.HTGeometry.ClassicalNevanlinnaMatrixData ℝ where
+  A := nevAreal s n
+  B := nevBreal s n
+  C := nevCreal s n
+  D := nevDreal s n
+  det_one := fun x => nevAreal_mul_nevDreal_sub_nevBreal_mul_nevCreal h n x
+
+/-! ## Continuity of the real entries
+
+The next fields of `ClassicalNevanlinnaExtremalFamily` after the matrix itself: continuity of the
+denominator row `B`, `D`.  Each entry is a finite sum of polynomial evaluations against constants,
+so all four are continuous. -/
+
+theorem continuous_nevAreal (s : ℕ → ℝ) (n : ℕ) : Continuous (nevAreal s n) := by
+  unfold nevAreal
+  refine (continuous_const.mul continuous_id).mul ?_
+  refine continuous_finsetSum _ fun k _ => ?_
+  exact ((Polynomial.continuous _).const_mul _).div_const _
+
+theorem continuous_nevBreal (s : ℕ → ℝ) (n : ℕ) : Continuous (nevBreal s n) := by
+  unfold nevBreal
+  refine Continuous.const_add ?_ _
+  refine (continuous_const.mul continuous_id).mul ?_
+  refine continuous_finsetSum _ fun k _ => ?_
+  exact ((Polynomial.continuous _).mul_const _).div_const _
+
+theorem continuous_nevCreal (s : ℕ → ℝ) (n : ℕ) : Continuous (nevCreal s n) := by
+  unfold nevCreal
+  refine Continuous.const_add ?_ _
+  refine (continuous_const.mul continuous_id).mul ?_
+  refine continuous_finsetSum _ fun k _ => ?_
+  exact ((Polynomial.continuous _).const_mul _).div_const _
+
+theorem continuous_nevDreal (s : ℕ → ℝ) (n : ℕ) : Continuous (nevDreal s n) := by
+  unfold nevDreal
+  refine (continuous_const.mul continuous_id).mul ?_
+  refine continuous_finsetSum _ fun k _ => ?_
+  exact ((Polynomial.continuous _).const_mul _).div_const _
+
+/-- The denominator row of `nevMatrixData` is continuous: the two continuity fields of
+`ClassicalNevanlinnaExtremalFamily` are discharged for the truncated matrix. -/
+theorem continuous_nevMatrixData_B (h : PositiveMomentForm s) (n : ℕ) :
+    Continuous (nevMatrixData h n).B :=
+  continuous_nevBreal s n
+
+theorem continuous_nevMatrixData_D (h : PositiveMomentForm s) (n : ℕ) :
+    Continuous (nevMatrixData h n).D :=
+  continuous_nevDreal s n
 
 end HTGeometry

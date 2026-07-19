@@ -456,9 +456,24 @@ recurrence from `momentInner_X_mul`.
         quantity depending only on `N`, and `tendsto_uniformCauchyBound_zero` shows it vanishes
   - [x] `uniformCauchy_weighted`: one threshold works for every `M` and every family meeting the
         kernel bound -- uniform convergence over a transfer disc
-  - [ ] convert to `TendstoUniformlyOn` and conclude analyticity; then exponential-type growth
+  - [x] `UniformCauchySeqOn` for the partial sums (`uniformCauchySeqOn_bilinearPartialSum`) --
+        mathlib's uniform-convergence API is now reachable
+  - [x] **holomorphy of the limit** and of the actual entries: `differentiableOn_bilinearLimit`,
+        `differentiableOn_nevA_series`, `differentiableOn_nevC_series`,
+        `differentiableOn_nevD_series`
+  - [x] capstone `nevanlinna_holomorphic_unimodular`: all four limiting entries holomorphic on an
+        open set with uniform kernel bounds, and `AD - BC = 1` there
+  - [x] size bounds `norm_tsum_weighted_le`, `norm_nevAinf_le`, `norm_nevDinf_le`: each entry is
+        bounded by `h_0 |z|` times a product of kernel roots
+  - [ ] growth of the kernel roots themselves -- the only remaining unknown for exponential type
   - [ ] N-extremal leaf family, denominator-carried, with the moments of `s`
-  - [ ] discharge `ClassicalNevanlinnaExtremalFamily`
+  - [x] **`ClassicalNevanlinnaMatrixData R` constructed** (`nevMatrixData`) -- the matrix half of the
+        packaged input is no longer packaged
+  - [x] continuity of the denominator row (`continuous_nevMatrixData_B/_D`)
+  - [x] Christoffel--Darboux kernel: reproducing property, symmetry, degree bound, self-reproducing
+        identity, and the Christoffel function (`ChristoffelKernel.lean`)
+  - [ ] discharge the rest of `ClassicalNevanlinnaExtremalFamily`: the weakly continuous leaf family
+        of probability measures, its carrier conditions, and the moment identities
 
 ## Log
 
@@ -1024,3 +1039,2730 @@ recurrence from `momentInner_X_mul`.
   and apply its holomorphic-limit theorem -- API plumbing over settled estimates rather than new
   mathematics. The exponential-type growth bound and closedness of the good set remain the two
   genuinely open classical inputs. Card remains Stage 2.
+- 2026-07-19 -- Forty-fifth link: `bilinearPartialSum` and
+  `uniformCauchySeqOn_bilinearPartialSum`, repackaging the previous link as mathlib's
+  `UniformCauchySeqOn` on any set of points sharing a kernel-root bound. The proof goes through
+  `Metric.uniformCauchySeqOn_iff` and `Finset.sum_Ico_eq_sub`, with the two orderings of the indices
+  handled by `le_total` and `norm_neg`. Compiled first try. Exit code 0, zero warnings,
+  axiom-clean, zero placeholders, file 547 lines.
+
+  The relevant mathlib API was located by reading
+  `Mathlib/Analysis/Complex/LocallyUniformLimit.lean` rather than guessing names: the target is
+  `TendstoLocallyUniformlyOn.differentiableOn (hf) (hF : eventually DifferentiableOn) (hU : IsOpen)`,
+  reached from `UniformCauchySeqOn.tendstoUniformlyOn_of_tendsto`. With the partial sums being
+  polynomials in `z` (hence differentiable) and pointwise convergence available from summability,
+  the remaining chain is three API steps. Card remains Stage 2.
+- 2026-07-19 -- Forty-sixth link: `summable_normSq_of_kernelRoot_le` and
+  **`differentiableOn_bilinearLimit`** -- the limiting bilinear series is holomorphic on any open set
+  carrying a common kernel-root bound. The chain
+  `uniformCauchySeqOn_bilinearPartialSum` -> `.tendstoUniformlyOn_of_tendsto` (pointwise limits from
+  summability) -> `.tendstoLocallyUniformlyOn` -> `TendstoLocallyUniformlyOn.differentiableOn`
+  went through first try, having read the signatures out of
+  `Mathlib/Analysis/Complex/LocallyUniformLimit.lean` last turn instead of guessing them.
+  Differentiability of the partial sums is a hypothesis, since `G` is an abstract family; in the
+  application `G z k = monicOrthoC s k z` is polynomial in `z`. Exit code 0, zero warnings, both
+  endpoints axiom-clean, zero placeholders, file 591 lines.
+
+  This closes the *analyticity* half of the entire-function gate. `A, B, C, D` are holomorphic
+  wherever the kernel is uniformly bounded -- in particular on every transfer disc, by
+  `kernelRoot_bounds_propagate`. What remains of that gate is the growth statement (minimal
+  exponential type), and separately closedness of the good set. Card remains Stage 2.
+- 2026-07-19 -- Forty-seventh link: holomorphy transferred to the actual Nevanlinna entries.
+  `differentiable_monicOrthoC` and `differentiable_secondKindC` identify the complex evaluations
+  with `Polynomial.eval` of the mapped polynomial (`Polynomial.aeval_def`,
+  `Polynomial.eval₂_eq_eval_map`), hence differentiable; `differentiableOn_bilinearPartialSum`
+  lifts that to the partial sums; and `differentiableOn_nevA_series`, `nevC`, `nevD` apply the
+  general theorem. Exit code 0, zero warnings, all six endpoints axiom-clean, zero placeholders,
+  file 669 lines.
+
+  Two Lean-shape notes. `Differentiable.sum` could not infer the field from the goal alone; supplying
+  the termwise hypothesis as a named `have` first pins it. And it concludes about
+  `∑ i, (fun z => ...)` (a sum *of functions*) whereas the goal is `fun z => ∑ i, ...`; a `funext`
+  plus `simp` bridge (`Finset.sum_apply`) converts between them.
+
+  So `A`, `C`, `D` are holomorphic on any open set carrying uniform kernel bounds -- in particular
+  every transfer disc. `B` follows identically from `mixed` data. What remains of the entire-function
+  gate is purely the growth statement. Card remains Stage 2.
+- 2026-07-19 -- Forty-eighth link: `differentiableOn_nevB_series` (its summand carries the
+  point-dependent factor first, so the product is commuted under the `tsum` before applying the
+  general theorem) and the capstone **`nevanlinna_holomorphic_unimodular`**: on any open `U`
+  carrying uniform kernel bounds, with the kernel bounded at `0` and at every point of `U`, all four
+  limiting entries `nevAinf..nevDinf` are `DifferentiableOn C` and satisfy `A D - B C = 1`
+  throughout `U`. Compiled first try. Exit code 0, zero warnings, both endpoints axiom-clean, zero
+  placeholders, file 719 lines.
+
+  This is the analytic content of the Nevanlinna matrix assembled in one statement, and by
+  `kernelRoot_bounds_propagate` its hypotheses are met on every transfer disc. What is still absent
+  from the card's entire-function gate is only the *growth* claim (minimal exponential type), which
+  is a genuinely different estimate: it bounds `|A(z)|` etc. in terms of `exp(eps |z|)` and does not
+  follow from holomorphy plus the determinant identity. Closedness of the good set, the N-extremal
+  leaves, and discharging `ClassicalNevanlinnaExtremalFamily` also remain. Card remains Stage 2.
+- 2026-07-19 -- Forty-ninth link: `norm_tsum_weighted_le` (a `tsum` Cauchy--Schwarz bound: the
+  infinite bilinear series is bounded by the product of the two kernel-root bounds) and the entry
+  bounds `norm_nevAinf_le`, `norm_nevDinf_le`:
+
+  `|A(z)| <= h_0 |z| * P_0 * P_z`,   `|D(z)| <= h_0 |z| * S_0 * S_z`.
+
+  Exit code 0, zero warnings, all three endpoints axiom-clean, zero placeholders, file 788 lines.
+
+  This isolates the remaining unknown for the exponential-type claim. Each entry's growth in `z` is
+  the product of an elementary factor `h_0 |z|` and the kernel root at `z`; so "minimal exponential
+  type" reduces exactly to showing `kernelRoot s (Q(.,z)) n <= C exp(eps |z|)` for every `eps`,
+  uniformly in `n`. Nothing in the algebra supplies that -- it is the classical growth estimate for
+  orthonormal polynomials of an indeterminate problem, and remains genuinely open here.
+
+  Toolchain note: `tsum_le_of_sum_range_le` does not exist in this toolchain; bounding a `tsum` by
+  bounding its partial sums is done with `le_of_tendsto` applied to `Summable.hasSum.tendsto_sum_nat`.
+  Card remains Stage 2.
+- 2026-07-19 -- Fiftieth link: the derivation transferred to the *real* variable and wired into the
+  project's own interface. `nevanlinna_determinant_precursor_real` repeats the Pluecker argument
+  using the three real Christoffel--Darboux identities (`wronskian_pluecker_sq` is stated for an
+  arbitrary `CommRing`, so it applies unchanged); `nevAreal..nevDreal` are the real entries; and
+  `nevAreal_mul_nevDreal_sub_nevBreal_mul_nevCreal` is exactly the `det_one` field of
+  `ClassicalNevanlinnaMatrixData R`.
+
+  **`nevMatrixData` constructs that structure** from an arbitrary positive definite moment sequence,
+  with no assumptions beyond positive definiteness. One of the two packaged inputs the card was
+  blocked on is therefore no longer packaged: the matrix data is now built, not assumed. Exit code
+  0, zero warnings, all three endpoints axiom-clean, zero placeholders, file 922 lines.
+
+  Scope note: `nevMatrixData` is built from the level-`n` truncation, which genuinely inhabits the
+  interface (the determinant identity is exact at every `n`). The *classical* Nevanlinna matrix is
+  the `n -> infinity` limit, whose entries are the holomorphic `nevAinf..nevDinf` of link
+  forty-eight; wiring those in needs the limit of the real entries, i.e. the same convergence
+  hypotheses. What remains of `ClassicalNevanlinnaExtremalFamily` is the analytic and
+  measure-theoretic part -- continuity of the denominator row, the weakly continuous leaf family of
+  probability measures, their carrier conditions, and the moment identities -- none of which is
+  started. Card remains Stage 2.
+- 2026-07-19 -- Fifty-first link: continuity of all four real entries
+  (`continuous_nevAreal` .. `continuous_nevDreal`), and in particular
+  `continuous_nevMatrixData_B` and `continuous_nevMatrixData_D` -- the `continuous_B` and
+  `continuous_D` fields of `ClassicalNevanlinnaExtremalFamily`, discharged for the truncated matrix.
+  Each entry is a finite sum of polynomial evaluations against constants. Exit code 0, zero
+  warnings, all six endpoints axiom-clean, zero placeholders, file 964 lines.
+
+  Progress against the packaged structure: `matrix`, `continuous_B`, `continuous_D` are now
+  constructed. The four remaining fields -- `leaf` (a weakly continuous family of probability
+  measures indexed by the projective line), `finite_carried` / `infinity_carried` (each leaf carried
+  by the zero set of the denominator row) and `leaf_moments` -- are the measure-theoretic core, and
+  none of it is started. That construction needs the N-extremal measures themselves: discrete
+  measures on the zeros of `B(x) tau - D(x)` with masses given by the Christoffel function. It is a
+  substantial development in its own right. Card remains Stage 2.
+
+  Toolchain notes: `continuous_finset_sum` is deprecated in favour of `continuous_finsetSum`, and
+  `Continuous.const_add` takes the continuity proof first and the constant second.
+- 2026-07-19 -- Fifty-second link: `HTGeometry/ChristoffelKernel.lean`, the first step of the
+  measure-theoretic half. `cdKernel s n x` is the polynomial `y -> sum_{k<=n} Q_k(x) Q_k(y) / h_k`,
+  and `momentInner_cdKernel` proves the **reproducing property**
+
+  `<p, cdKernel s n x> = p(x)`  for every `p` of degree at most `n`,
+
+  directly from `monicOrtho_expansion`: expanding `p` in the orthogonal basis and evaluating at `x`
+  produces exactly the same sum. `cdKernel_eval_self` identifies the diagonal with the weighted
+  square sum, `cdKernel_eval_self_pos` shows it is strictly positive (the `k = 0` term alone gives
+  `1/h_0`), and `christoffel` is its reciprocal -- the Christoffel function, which supplies the
+  masses of the Gauss/N-extremal quadrature. Exit code 0, zero warnings, all five endpoints
+  axiom-clean, zero placeholders.
+
+  Next in this direction is the harder half: that `Q_{n+1}` has `n+1` distinct real roots. The
+  abstract proof is available -- if `Q_{n+1}` had fewer than `n+1` sign changes, multiplying by the
+  monic polynomial through those points gives a polynomial of constant sign and degree `< n+1`,
+  whose moment functional is both zero (orthogonality) and positive (a nonnegative real polynomial
+  is a sum of two squares, and the form is positive definite). Formalising it needs the
+  sum-of-two-squares fact for one-variable real polynomials. Card remains Stage 2.
+- 2026-07-19 -- Fifty-third link: the kernel's defining structure completed. `cdKernel_eval` gives
+  the explicit double sum, `cdKernel_symm` its symmetry, `cdKernel_degree_lt` the degree bound
+  (which needs no positivity -- the hypothesis was dropped after the linter flagged it unused), and
+  `momentInner_cdKernel_cdKernel` the **self-reproducing identity** `<K_x, K_y> = K_x(y)`, the
+  hallmark of a reproducing kernel. `christoffel_eq_inv_momentInner` then identifies the Christoffel
+  function with the reciprocal of the kernel's own moment norm. Exit code 0, zero warnings, all four
+  endpoints axiom-clean, zero placeholders, file 123 lines.
+
+  On the real-rootedness route: mathlib has `IsSumSq` and a `SumsOfSquares` file, but not the
+  specific fact that a nonnegative one-variable *real polynomial* is a sum of two squares, which the
+  abstract proof needs. So that route requires building the polynomial fact first; it is not a
+  matter of finding the right lemma name. Recorded so the next session does not re-search for it.
+  Card remains Stage 2.
+- 2026-07-19 -- Fifty-fourth link: `momentInner_sq_le_of_posDef` -- **Cauchy--Schwarz from positive
+  definiteness alone**, with no representing measure, via the discriminant of
+  `t -> <p + t q, p + t q>`. This strictly generalises the existing `momentInner_sq_le`, which
+  carried measure hypotheses.
+
+  With it, `christoffel_le_momentInner_self` proves the classical **variational property**: among
+  polynomials of degree at most `n` with `p(x) = 1`, the Christoffel function is a lower bound for
+  `<p, p>`. `christoffel_eq_momentInner_normalisedKernel` and `normalisedKernel_eval_self` show the
+  bound is attained by the normalised kernel, so the Christoffel function *is* the minimum. Exit
+  code 0, zero warnings, all four endpoints axiom-clean, zero placeholders, file 176 lines.
+
+  This is the characterisation that makes the Christoffel function the right mass for the N-extremal
+  quadrature, and it is now proved from the abstract moment form -- no measure, no root structure.
+  The remaining measure-theoretic construction still waits on real-rootedness of `Q_{n+1}`, which in
+  turn waits on the sum-of-two-squares fact for real polynomials (absent from mathlib, so it must be
+  built: factorisation over `C`, conjugate-pair root matching, even multiplicity of real roots).
+  Card remains Stage 2.
+- 2026-07-19 -- Fifty-fifth link: `cdKernel_posSemidef` -- the Christoffel--Darboux kernel is a
+  **positive semidefinite kernel**: for any finite family of points and coefficients, the Gram sum
+  `sum_{i,j} c_i c_j K(x_i, x_j)` is nonnegative, because by the self-reproducing identity it *is*
+  the moment norm of the single polynomial `sum_i c_i K_{x_i}`. `cdKernel_sq_le` records the kernel
+  Cauchy--Schwarz `K(x,y)^2 <= K(x,x) K(y,y)`. Compiled first try. Exit code 0, zero warnings, both
+  endpoints axiom-clean, zero placeholders, file 206 lines.
+
+  `ChristoffelKernel.lean` now carries the complete reproducing-kernel structure -- reproduction,
+  symmetry, degree bound, self-reproduction, positive semidefiniteness, the Christoffel function and
+  its variational characterisation -- all from the abstract positive definite moment form, with no
+  measure and no root structure.
+
+  Handoff for the two large remaining developments, neither started:
+  (a) **Real-rootedness of `Q_{n+1}`.** Two viable routes. Via sum-of-two-squares: a nonnegative real
+      polynomial is `f^2 + g^2` (needs factorisation over `C` and conjugate-pair matching; absent
+      from mathlib). Via the Jacobi matrix: the three-term recurrence
+      `Q_{n+2} = (X - a_n) Q_{n+1} - b_n Q_n` with `b_n > 0` is exactly the characteristic-polynomial
+      recursion of the symmetric tridiagonal matrix with diagonal `(a_0..a_n)` and off-diagonal
+      `(sqrt b_1 .. sqrt b_n)`, so real-rootedness follows from the spectral theorem for real
+      symmetric matrices. The second route reuses machinery already built here and looks shorter.
+  (b) **The N-extremal leaf measures**, which depend on (a).
+  Card remains Stage 2.
+
+### Link 56 — monotonicity of the Christoffel function
+
+`formal/GaloisForLFunctions/HTGeometry/ChristoffelKernel.lean` (251 lines) gains the level-monotonicity
+layer, which is what turns the Christoffel function into a *limit* object rather than a family of
+unrelated finite quantities:
+
+- `cdKernel_eval_self_succ` — the diagonal recursion
+  `K_{n+1}(x,x) = K_n(x,x) + Q_{n+1}(x)^2 / h_{n+1}`; a one-term unfolding of the defining sum.
+- `cdKernel_eval_self_mono` — `m ≤ n → K_m(x,x) ≤ K_n(x,x)`; every dropped summand is a square over a
+  positive norm, so `Finset.sum_le_sum_of_subset_of_nonneg` applies with no cancellation to control.
+- `christoffel_antitone` — `[PROVED HERE]` `m ≤ n → λ_n(x) ≤ λ_m(x)`. The Christoffel function
+  decreases in the level. Proved by `gcongr` on the inverse, with positivity of `K_m(x,x)` supplied
+  from `cdKernel_eval_self_pos`.
+- `christoffel_le_h0` — the uniform ceiling `λ_n(x) ≤ h₀`, since the level-zero kernel diagonal is
+  exactly `1/h₀`.
+
+Together these say the sequence `n ↦ λ_n(x)` is antitone and bounded below by `0`, hence convergent
+for every real `x` — with the limit bounded above by `h₀` uniformly in `x`. That limit is the
+classical candidate for the mass an N-extremal measure assigns to the point `x`, so this is the piece
+that will later let a leaf measure be *evaluated* rather than merely asserted to exist.
+
+**Axioms:** all four endpoints `[propext, Classical.choice, Quot.sound]`. Zero placeholders in the
+file. `christoffel_antitone` compiled after two name repairs — `inv_le_inv_of_le` is gone from this
+toolchain (`gcongr` discharges the same step), and `Finset.sum_range_one` does not match `range (0+1)`
+syntactically, so the level-zero evaluation needs `Finset.sum_range_succ` + `Finset.sum_range_zero`.
+
+**Opens next:** the limit function `λ(x) = ⨅ₙ λ_n(x)` is now well-defined without any further
+analytic input — it can be introduced as a `def` and its basic properties (nonnegativity, the `≤ h₀`
+ceiling, antitone-limit characterisation) proved immediately. The substantive question it raises:
+`λ(x) > 0` exactly at the points the N-extremal measures charge, which is the bridge from this
+finite-level machinery to the leaf-measure fields still open in
+`ClassicalNevanlinnaExtremalFamily`. That is a sharper target than real-rootedness of `Q_{n+1}`
+and does not route through the Jacobi-matrix spectral theorem at all.
+
+### Link 57 — the limit Christoffel function
+
+`ChristoffelKernel.lean` (298 lines) closes the finite-level story by passing to the limit. Compiled
+first try; every endpoint `[propext, Classical.choice, Quot.sound]`.
+
+- `christoffelLimit s x := ⨅ n, christoffel s n x` — well-defined because link 56 supplies both
+  hypotheses the conditional infimum needs: `antitone_christoffel` and `bddBelow_christoffel` (the
+  bound is `0`, from `christoffel_pos`).
+- `christoffelLimit_nonneg`, `christoffelLimit_le` (every level dominates the limit),
+  `christoffelLimit_le_h0`.
+- `tendsto_christoffel` — `[PROVED HERE]` the level sequence actually converges to it, via
+  `tendsto_atTop_ciInf`. So `λ(x)` is a genuine limit, not merely an infimum.
+- `christoffelLimit_le_momentInner_self` — `[PROVED HERE]` **the variational property survives the
+  limit, and loses its degree restriction**: for *every* polynomial `p` with `p(x) = 1`,
+  `λ(x) ≤ ⟪p, p⟫`. The finite-level version needs `deg p < n+1`; choosing `n := p.natDegree` makes the
+  restriction vacuous, so the limit statement quantifies over all of `ℝ[X]` at once.
+
+That last one is the point of the whole layer. It is the first statement in this development that
+constrains the moment form using an *arbitrary* polynomial rather than a fixed finite section, which
+is exactly the form the leaf-measure fields need: any measure `μ` with these moments and any `p` with
+`p(x) = 1` satisfies `μ({x}) ≤ ∫ p² dμ = ⟪p, p⟫`, so `μ({x}) ≤ λ(x)` for every such `μ`.
+
+**Opens next:** the reverse inequality — `λ(x)` is *attained*, i.e. some N-extremal `μ` charges `x`
+with exactly `λ(x)`. Attainment is where a measure has to be produced rather than bounded, so it is
+the natural place to bring in `nevMatrixData` from `NevanlinnaPluecker.lean`: the classical statement
+is that `λ(x) > 0` precisely when `x` is a zero of `B(x)τ − D(x)` for the parameter `τ` indexing the
+leaf. Formulating *that* equivalence — finite-level Christoffel data on one side, the entire
+functions `B, D` on the other — is a sharper and more tractable next target than either the
+real-rootedness of `Q_{n+1}` or the closedness of `{z | BoundedKernel s z}`, and it is the first
+place the two halves of this card's Lean stack (moment/kernel side and Nevanlinna/matrix side) are
+forced to meet.
+
+### Link 58 — the Christoffel limit bounds every representing measure's atoms
+
+New module `formal/GaloisForLFunctions/HTGeometry/ChristoffelPointMass.lean` (98 lines, zero
+placeholders, registered in the `HTGeometry` umbrella). This is the join between the two halves of
+the card's Lean stack: everything before it was either pure moment/kernel algebra or pure
+Nevanlinna/measure interface, and nothing connected them.
+
+Reuse before building paid off here. Searching the tree first turned up
+`momentFunctional_mul_eq_integral` and `integrable_eval` already sitting in
+`MomentFunctionalPositivity.lean` — the representing-measure bridge `L(pq) = ∫ p·q dμ` was written
+long ago, so no new integration infrastructure was needed at all.
+
+- `measureReal_singleton_le_momentInner` — `[PROVED HERE]` for any `p` with `p(x) = 1`,
+  `μ.real {x} ≤ ⟪p, p⟫`. Mechanism: `∫_{{x}} p² dμ = μ.real {x}` exactly (`integral_singleton` plus
+  the normalisation), and `p² ≥ 0` everywhere, so `setIntegral_le_integral` gives the rest.
+- `measureReal_singleton_le_christoffel` — each finite level already bounds the atom, since the
+  normalised kernel of link 55 is an admissible competitor (`normalisedKernel_eval_self`) that
+  *attains* the Christoffel value (`christoffel_eq_momentInner_normalisedKernel`).
+- `measureReal_singleton_le_christoffelLimit` — `[PROVED HERE]` `μ.real {x} ≤ λ(x)`, by `le_ciInf`.
+- `measureReal_singleton_eq_zero_of_christoffelLimit_eq_zero` — `λ(x) = 0` forces every representing
+  measure to be atomless at `x`.
+- `leaf_measureReal_singleton_le_christoffelLimit` — `[PROVED HERE]` the bound holds for **every leaf
+  of `ClassicalNevanlinnaExtremalFamily`, uniformly in the boundary parameter `t`**, since
+  `leaf_moments` supplies exactly the representing-measure hypothesis.
+
+**Axioms:** all endpoints `[propext, Classical.choice, Quot.sound]`.
+
+**Namespace note for anyone extending this:** the moment/kernel modules live in bare `HTGeometry`,
+while the Nevanlinna interface (`HasHamburgerMoments`, `ClassicalNevanlinnaMatrixData`,
+`ClassicalNevanlinnaExtremalFamily`) lives in `GaloisForLFunctions.HTGeometry`. Cross-references need
+full qualification; `open`-ing the second inside the first risks ambiguity.
+
+**Opens next:** one half of the atom equivalence is now unconditional — `λ(x)` is an upper bound for
+the mass. The reverse half, *attainment*, is the live target: for the leaf indexed by `τ`, the atom
+at a zero `x` of `B(x)τ − D(x)` should equal `λ(x)` exactly. Attainment requires producing a measure
+rather than bounding one, so the natural first step is the finite-level rehearsal: Gauss quadrature.
+The measure `∑_{Q_{n+1}(ξ)=0} λ_n(ξ) δ_ξ` reproduces the moments `s_0 … s_{2n+1}` and gives each node
+mass exactly `λ_n(ξ)` — the finite-level statement of precisely the equality being chased, provable
+with the kernel machinery already built plus the real-rootedness of `Q_{n+1}` (link 56 handoff, Jacobi
+route). That makes real-rootedness no longer a detour but the direct prerequisite of attainment.
+
+### Link 59 — real-rootedness, via neither route in the link-56 handoff
+
+New module `formal/GaloisForLFunctions/HTGeometry/MomentRealRootedness.lean` (144 lines, zero
+placeholders, registered in the umbrella). All endpoints `[propext, Classical.choice, Quot.sound]`.
+The core theorem compiled first try.
+
+Link 56 offered two routes and preferred the Jacobi/spectral one. **Both were unnecessary.** A search
+of mathlib turned up `LinearMap.IsSymmetric.charpoly_eq_prod` (route b's engine) and confirmed no
+sum-of-two-squares theorem for nonneg real polynomials (route a's engine, absent as suspected) — but
+finding the first prompted the question of what the spectral theorem was actually *buying*, and the
+answer was: nothing that positivity of the moment form does not already give directly.
+
+`monicOrtho_aeval_ne_zero` — `[PROVED HERE]` for every `n` and every `z` with `Im z ≠ 0`,
+`aeval z (monicOrtho s (n+1)) ≠ 0`. The argument:
+
+1. `conjQuadratic z := (X − Re z)² + (Im z)²`, a monic *real* quadratic vanishing at `z`.
+2. `conjQuadratic_dvd_of_aeval_eq_zero` — if `z` is a non-real root of any real `Q`, this quadratic
+   divides `Q`. Mechanism: divide with remainder (`modByMonic_add_div`, which needs no monicity
+   hypothesis); the remainder is real of degree ≤ 1 and vanishes at `z`; taking imaginary parts of
+   `c₁ z + c₀ = 0` with `c₀, c₁` real and `Im z ≠ 0` forces `c₁ = 0`, then `c₀ = 0`. No conjugate-root
+   theorem, no irreducibility, no factorisation is invoked.
+3. Applied to `Q = monicOrtho s (n+1)`: the quotient `g` satisfies `natDegree Q = 2 + natDegree g`, so
+   `deg g < n+1` and `⟪Q, g⟫ = 0` by orthogonality. (The `n = 0` case needs no separate treatment —
+   `1 = 2 + k` is already impossible, and `omega` closes it.)
+4. But `Q·g = ((X − Re z)g)² + (Im z)²g²` **as a polynomial identity, closed by `ring`**, so
+   `⟪Q, g⟫ = ⟪(X − Re z)g, (X − Re z)g⟫ + (Im z)²⟪g, g⟫ ≥ (Im z)²⟪g, g⟫ > 0` since `g ≠ 0`.
+5. Zero and positive: contradiction.
+
+`monicOrtho_root_im_eq_zero` restates it as: every complex root of `monicOrtho s (n+1)` is real.
+
+**What made it cheap:** the sum-of-two-squares decomposition that route (a) needed *in general* is
+needed here only for the single polynomial `Q·g`, where it is visible by inspection and provable by
+`ring`. Generality was the entire cost. Worth remembering as a pattern — a missing general theorem is
+not always a blocker when only one instance of it is ever used.
+
+**Opens next:** `Splits (RingHom.id ℝ) (monicOrtho s (n+1))`. The reusable general lemma is
+`splits_of_forall_root_im_eq_zero`: a real polynomial whose complex roots are all real splits over
+`ℝ`, by strong induction on `natDegree` — extract a complex root (ℂ algebraically closed), it is real
+by hypothesis, factor out `X − C a`, recurse. That is a clean statement of independent value and is
+the last step before Gauss quadrature: nodes are the roots of `Q_{n+1}`, weights are `λ_n(ξ)`, and
+link 58 already proves the weight bound the quadrature measure must satisfy.
+
+### Link 60 — splitting over ℝ
+
+`MomentRealRootedness.lean` now 209 lines, zero placeholders. Both new endpoints
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+- `splits_of_forall_aeval_im_eq_zero` — `[PROVED HERE]` **a real polynomial all of whose complex
+  roots are real splits over `ℝ`**. Stated with an explicit degree bound `N` and proved by induction
+  on it: a nonconstant polynomial has a complex root (`Complex.exists_root`), the root is real by
+  hypothesis, `X − C a` divides, and the quotient inherits the hypothesis since its roots are roots
+  of the original. This is a general-purpose lemma with no moment content — it belongs to anyone who
+  needs it.
+- `monicOrtho_splits` — `[PROVED HERE]` `(monicOrtho s (n+1)).Splits`, by feeding link 59 into the
+  above with `N := natDegree`.
+
+**Toolchain note worth recording:** `Polynomial.Splits` in this mathlib takes **no ring hom** — it is
+the one-argument predicate `Splits (f : R[X]) : Prop`, saying `f` lies in the submonoid generated by
+constants and monic linears. Every recalled signature of the form `Splits (RingHom.id ℝ) p` is wrong
+here, as are `splits_mul` (now `Splits.mul`) and `splits_X_sub_C` (now `Splits.X_sub_C`). The
+induction step is served exactly by `splits_X_sub_C_mul_iff : Splits ((X − C a) * f) ↔ Splits f`.
+
+**Opens next:** Gauss quadrature is now unblocked in both of its inputs. `monicOrtho_splits` gives
+`Q_{n+1} = ∏_{i} (X − ξ_i)` with `n+1` real nodes, and link 58 gives the weight bound. The
+construction to build: `gaussMeasure s n := ∑_i λ_n(ξ_i) δ_{ξ_i}`, with the theorem that it
+reproduces `s_0 … s_{2n+1}`. The proof is the classical one and every ingredient is now in the tree —
+the reproducing property of `cdKernel` (link 55) evaluates any polynomial of degree ≤ n at a node,
+and division by `Q_{n+1}` reduces degree `≤ 2n+1` to that case. Simplicity of the nodes, which the
+weights need, follows from the Christoffel–Darboux diagonal `∑_k Q_k(ξ)²/h_k > 0` already proved.
+
+### Link 61 — the Gauss nodes: exactly `n+1`, all distinct
+
+New module `formal/GaloisForLFunctions/HTGeometry/GaussQuadratureNodes.lean` (94 lines, zero
+placeholders, registered in the umbrella). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+The link-60 handoff expected node simplicity to come from the Christoffel--Darboux diagonal, which
+would have required the *confluent* form of the identity — a derivative expression this tree does not
+have. It is not needed. Simplicity is the link-59 trick again, with the irreducible quadratic replaced
+by a repeated real factor:
+
+- `monicOrtho_not_sq_dvd` — `[PROVED HERE]` `(X − r)²` never divides `monicOrtho s (n+1)`. If it did,
+  the quotient `g` would have degree `n−1`, so `⟪Q, g⟫ = 0`; but `Q g = ((X − r) g)²` **by `ring`**,
+  so `⟪Q, g⟫ > 0`. Three sentences, no derivatives, no Christoffel--Darboux.
+- `monicOrtho_rootMultiplicity_le_one`, `monicOrtho_roots_nodup` — every root simple, roots multiset
+  has no duplicates.
+- `monicOrtho_roots_card` — counted with multiplicity there are exactly `n+1` roots, from
+  `Splits.natDegree_eq_card_roots` (link 60) and `monicOrtho_degree`.
+- `gaussNodes s n := (monicOrtho s (n+1)).roots.toFinset`, with `mem_gaussNodes_iff` and
+  `gaussNodes_card` — `[PROVED HERE]` **`#(gaussNodes s n) = n + 1`**.
+
+That is now the third distinct use of one pattern: pair `Q` against a quotient of itself whose degree
+orthogonality kills, then observe the product is a perfect square (or a sum of two) that positivity
+makes strictly positive. It has now delivered no-non-real-roots, splitting, and simplicity. Worth
+naming as the workhorse of this development rather than rediscovering it a fourth time.
+
+**Opens next:** the weights. With the node set finite, distinct, and of known size, define
+`gaussWeight s n ξ := christoffel s n ξ` and the discrete measure
+`gaussMeasure s n := ∑_{ξ ∈ gaussNodes s n} gaussWeight s n ξ • δ_ξ`. The theorem to prove is exactness
+on degree `≤ 2n+1`: `momentFunctional s p = ∑_{ξ} λ_n(ξ) · p(ξ)`. The proof splits `p = Q_{n+1} q + ρ`
+with `deg q, deg ρ ≤ n`; the first term integrates to zero against the nodes (they are roots) and
+pairs to zero against `Q_{n+1}` by orthogonality, and the remainder is handled by the reproducing
+property of `cdKernel` from link 55. Every ingredient is in the tree; nothing further is missing.
+
+### Link 62 — Gauss quadrature, exact on degree ≤ 2n+1
+
+New module `formal/GaloisForLFunctions/HTGeometry/GaussQuadrature.lean` (167 lines, zero
+placeholders, registered in the umbrella). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+`momentFunctional_eq_gaussSum` — `[PROVED HERE]` for every `p` with `deg p ≤ 2n+1`,
+
+`momentFunctional s p = ∑_{ξ ∈ gaussNodes s n} λₙ(ξ) · p(ξ)`.
+
+This is the finite-level attainment statement the last four links were aimed at: the Christoffel
+weights are not merely an upper bound for the atoms of a representing measure (link 58), they *are*
+the masses of a measure that reproduces the moments up to order `2n+1`.
+
+Chain of the proof, all newly built here:
+
+- `cdKernel_eval_eq_zero_of_root_ne` — the kernel vanishes between two distinct nodes. At two roots of
+  `monicOrtho s (n+1)` the Christoffel--Darboux numerator is identically zero and `x − y ≠ 0`, so the
+  kernel value is. This is the one place the Christoffel--Darboux identity (link 53) is used, and it
+  is used in its original non-confluent form.
+- `gaussBasis s n ξ := λₙ(ξ) • K_ξ` — the same normalised kernel that link 55 introduced as the
+  variational competitor turns out to be **the Lagrange basis of the node set**: value `1` at its own
+  node (`normalisedKernel_eval_self`, reused verbatim) and `0` at the others (previous item).
+- `momentFunctional_gaussBasis` — each basis element has moment value exactly `λₙ(ξ)`, because the
+  kernel reproduces the constant polynomial `1`.
+- `gauss_interpolation` — a polynomial of degree `≤ n` equals `∑_ξ p(ξ) • gaussBasis s n ξ`. Proved by
+  showing the difference has degree `≤ n` and vanishes at all `n+1` nodes, then applying
+  `eq_zero_of_natDegree_lt_card_of_eval_eq_zero'` with the node count from link 61.
+- `momentFunctional_eq_gaussSum_of_degree_lt` — exactness on degree `≤ n`, termwise from the above.
+- The extension to `2n+1` is division with remainder: `p = ρ + Q q` with `deg ρ, deg q ≤ n`, and `Q q`
+  is invisible to both sides — orthogonality kills it on the left, the nodes being roots of `Q` kill
+  it on the right.
+
+**Toolchain note:** `Finset.sup_lt_iff` and the `degree_zero` branch both want `⊥ < ↑(n+1)` in
+`WithBot ℕ`, not `0 < ↑(n+1)`; `WithBot.bot_lt_coe` is the lemma, and no cast lemma substitutes.
+
+**Opens next:** the weights are positive (`christoffel_pos`, already proved) and now sum to `s₀`
+— take `p = 1` in the exactness theorem. So `gaussMeasure s n := ∑_ξ λₙ(ξ) δ_ξ` is a genuine positive
+measure of total mass `s₀` representing `s₀ … s_{2n+1}`, and building it as a `MeasureTheory.Measure`
+via `Measure.sum` over `Measure.dirac` is now purely mechanical. Once it exists, link 58 applies to it
+and gives `λₙ(ξ) ≤ λ(ξ)` at every node — the first *lower* bound on the limit Christoffel function,
+and the direction that attainment for the infinite problem actually needs.
+
+### Link 63 — the Gauss measure exists, and a correction to link 62
+
+New module `formal/GaloisForLFunctions/HTGeometry/GaussMeasure.lean` (81 lines, zero placeholders,
+registered). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `integrable_finsetWeightedDirac`, `integral_finsetWeightedDirac` — for an *arbitrary* finite
+  weighted Dirac family: every function is integrable, and integrates to the weighted sum of values.
+  Stated generally because nothing about the Christoffel weights is used beyond nonnegativity; both
+  are Finset inductions using `Integrable.add_measure`, `Integrable.smul_measure`, `integral_dirac`.
+- `gaussMeasure s n := ∑_{ξ ∈ gaussNodes s n} ENNReal.ofReal (λₙ(ξ)) • δ_ξ` — an honest
+  `MeasureTheory.Measure ℝ`.
+- `integral_gaussMeasure` — integration against it *is* the quadrature sum.
+- `gaussMeasure_moment` — `[PROVED HERE]` **`∫ xᵏ d(gaussMeasure s n) = s k` for every `k ≤ 2n+1`**.
+- `gaussMeasure_mass` — total mass `s₀`.
+
+So for every `n` the truncated moment problem `s₀ … s_{2n+1}` is solved by an explicit positive
+measure, constructed rather than assumed.
+
+**Correction to link 62's closing paragraph.** That entry claimed link 58 would apply to
+`gaussMeasure` and yield `λₙ(ξ) ≤ λ(ξ)`. Both halves are wrong and the claim is withdrawn:
+
+1. `measureReal_singleton_le_christoffelLimit` requires `HasHamburgerMoments s μ`, i.e. *all* moments
+   matching. `gaussMeasure s n` matches only `s₀ … s_{2n+1}`, so the hypothesis is unavailable.
+2. The inequality points the other way regardless. `λ = ⨅ₙ λₙ` by definition (link 57), so
+   `λ(x) ≤ λₙ(x)` always, and `λₙ(ξ) ≤ λ(ξ)` would force equality at every node of every level — not
+   something to expect, let alone a consequence of link 58.
+
+The error was writing the handoff by analogy with the preceding link instead of checking the
+hypothesis of the theorem being invoked. Nothing in Lean was affected; no proof depended on it.
+
+**Opens next (revised).** What the Gauss measures are actually for is Hamburger's *existence*
+theorem: a positive-definite moment sequence has a representing measure, obtained as a weak-* limit
+of `gaussMeasure s n` as `n → ∞`. That is the honest use of a family of measures each solving one
+more truncation. The obstruction to formalising it is not this development but mathlib's stock: the
+classical route is Helly's selection theorem, and the modern route needs tightness plus Prokhorov.
+Neither is currently reachable from what is imported here, so the next concrete step is a survey of
+what weak-* compactness mathlib actually provides for measures on `ℝ` — a tooling question, to be
+answered before more moment machinery is built on the assumption that the limit is available.
+
+### Link 64 — the tooling survey, and uniform tightness
+
+Link 63 called for a survey of mathlib's weak-* compactness before building further. Result, and it
+is better than expected:
+
+- **Prokhorov is in mathlib** — `Mathlib/MeasureTheory/Measure/Prokhorov.lean`, including
+  `CompactSpace (ProbabilityMeasure E)` for compact `E` and the tight-implies-relatively-compact
+  direction. `Mathlib/MeasureTheory/Measure/Tight.lean` supplies `IsTightMeasureSet` with the usable
+  criterion `isTightMeasureSet_iff_exists_isCompact_measure_compl_le`, and `TightNormed.lean` adds
+  closed-ball criteria for normed spaces.
+- **Helly's selection theorem is absent** (the only `Helly` in mathlib is Helly's *convexity*
+  theorem, in `Analysis/Convex/Radon.lean`). So the classical route is unavailable and the Prokhorov
+  route is the one to take — which is the reverse of the guess recorded in link 63.
+
+This changes the assessment there: the limit is *not* blocked on missing mathlib. It is blocked on
+supplying tightness, and tightness is available from the moment data.
+
+New module `formal/GaloisForLFunctions/HTGeometry/GaussTightness.lean` (76 lines, zero placeholders,
+registered; compiled first try). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `finsetWeightedDirac_apply` — evaluation of a finite weighted Dirac sum on a measurable set, as a
+  finite sum of weights against the indicator. Finset induction; completes the trio of
+  general-purpose lemmas about such families begun in link 63.
+- `gaussSum_pow` — `∑_ξ λₙ(ξ) ξᵏ = s k` for `k ≤ 2n+1`, the quadrature theorem on monomials.
+- `gaussNodes_tail_weight_le` — `[PROVED HERE]` **for `n ≥ 1` and `R > 0`,
+  `∑_{ξ : |ξ| > R} λₙ(ξ) ≤ s₂ / R²`** — the tail weight, bounded uniformly in the level.
+
+The proof needs no measure-theoretic Chebyshev inequality: each Gauss measure is a finite sum of point
+masses, so the mass outside a ball is a finite sum of weights, and Chebyshev degenerates into the
+observation that `1 ≤ ξ²/R²` on precisely the nodes being summed. Every Gauss measure carries the
+same second moment `s₂`, which is what makes the bound uniform in `n`.
+
+**Opens next:** convert the tail bound into `IsTightMeasureSet (Set.range fun n => gaussMeasure s n)`.
+The mathematical content is done; what remains is ENNReal bookkeeping — feed
+`finsetWeightedDirac_apply` with `A = (Set.Icc (-R) R)ᶜ`, whose indicator sum over the nodes is the
+filtered sum just bounded, and then `isTightMeasureSet_iff_exists_isCompact_measure_compl_le` with
+`K = Set.Icc (-R) R` compact and `R` chosen as `√(s₂/ε)`. After that Prokhorov applies directly and
+the remaining mathematical question is the one genuinely delicate step: moments do not automatically
+pass to a weak-* limit, since `xᵏ` is unbounded, so the limit measure's moments need uniform
+integrability — available from the `(k+2)`-nd moment bound, itself uniform by the same argument.
+
+### Link 65 — tightness, at the measure level
+
+`GaussTightness.lean` now 130 lines, zero placeholders. The three new endpoints are
+`[propext, Classical.choice, Quot.sound]`; the whole block compiled first try.
+
+- `gaussMeasure_compl_Icc_le` — `gaussMeasure s n ((Icc (-R) R)ᶜ) ≤ ENNReal.ofReal (s₂ / R²)` for
+  `n ≥ 1`, `R > 0`. The ENNReal bookkeeping predicted in link 64 went through as planned:
+  `finsetWeightedDirac_apply` turns the measure of the complement into an indicator sum, the set
+  identity `(Icc (-R) R)ᶜ = {x | R < |x|}` is `← abs_le` followed by `not_le`, `Finset.sum_filter`
+  converts the indicator sum to the filtered sum, and `ENNReal.ofReal_sum_of_nonneg` pulls the
+  coercion outside so link 64's real inequality applies under `ENNReal.ofReal_le_ofReal`.
+- `moment_two_pos` — `0 < s₂`, since `s₂ = ⟪X, X⟫` and `X ≠ 0`.
+- `isTightMeasureSet_gaussMeasure` — `[PROVED HERE]`
+  **`IsTightMeasureSet (Set.range fun n => gaussMeasure s (n+1))`**.
+
+For the last one the compact set is `[-√(s₂/ε), √(s₂/ε)]`, chosen so the tail bound comes out as
+exactly `ε` rather than merely below it; `ε = ⊤` is a separate trivial branch, and `ε ≠ ⊤` is what
+makes `ENNReal.ofReal_toReal` close the goal. Choosing `R` to hit the bound exactly avoided an
+inequality chain in `ℝ≥0∞` entirely — worth preferring whenever the threshold is a free parameter.
+
+So the family of Gauss measures satisfies the hypothesis of Prokhorov's theorem, which mathlib
+already has. Existence of a representing measure is no longer blocked on any missing infrastructure.
+
+**Opens next:** two concrete steps, in order.
+1. *Apply Prokhorov.* The mathlib statement is phrased for `ProbabilityMeasure`; the Gauss measures
+   have mass `s₀`, so either normalise by `s₀` (positive by `PositiveMomentForm`, and the tail bound
+   scales) or use the `FiniteMeasure` form. This is a packaging question, not a mathematical one —
+   the first thing to check is which of the two mathlib actually supports without extra hypotheses.
+2. *Pass the moments to the limit.* This is the real remaining content and it does not follow from
+   weak convergence alone, since `xᵏ` is unbounded. The route is uniform integrability of `xᵏ` along
+   the family, which follows from the uniform `(k+2)`-nd moment bound by the same Chebyshev-free
+   argument used in link 64 — `gaussSum_pow` already supplies every moment up to `2n+1`, so the
+   bound is available for each fixed `k` once `n` is large enough.
+
+### Link 66 — normalisation, step 1 of the link-65 handoff
+
+`GaussTightness.lean` now 176 lines, zero placeholders; four new endpoints, all
+`[propext, Classical.choice, Quot.sound]`.
+
+The packaging question from link 65 is settled by reading `Prokhorov.lean`: mathlib offers both
+forms, but the tight-implies-relatively-compact statement — `isCompact_closure_of_isTightMeasureSet`
+— is stated only for `ProbabilityMeasure`. (The `FiniteMeasure` results at lines 204 and 463 require
+a supplied sequence of compacts and a null sequence, which is more setup, not less.) So normalising
+is the shorter road, and it is now done.
+
+- `gaussMeasure_univ` — `gaussMeasure s n univ = ENNReal.ofReal (s₀)`. Same shape as the tail bound:
+  `finsetWeightedDirac_apply` at `univ`, indicator collapses, `ENNReal.ofReal_sum_of_nonneg`, then
+  `gaussSum_pow` at `k = 0`.
+- `moment_zero_pos` — `0 < s₀`, since `s₀ = ⟪1, 1⟫` and `1 ≠ 0`.
+- `gaussProb s n := (ENNReal.ofReal (s₀))⁻¹ • gaussMeasure s n`, with `gaussProb_univ` and
+  `isProbabilityMeasure_gaussProb` — `[PROVED HERE]` each normalised Gauss measure **is** a
+  probability measure.
+- `gaussProb_compl_Icc_le` — the tail bound survives normalisation, scaled by `(s₀)⁻¹`.
+
+`IsProbabilityMeasure` is produced as a theorem rather than an instance, since it depends on the
+hypothesis `PositiveMomentForm s`; call sites will need `haveI`.
+
+**Toolchain note:** `mul_le_mul_left'` is deprecated in favour of `mul_le_mul_right` in this
+toolchain, with the same argument shape. As with `push_neg` in link 61, the deprecation is a warning,
+and the formal lint gate fails on warnings — so these must be fixed even though the file compiles.
+
+**Opens next:** assemble `S : Set (ProbabilityMeasure ℝ)` from the `gaussProb s (n+1)` and feed
+`isCompact_closure_of_isTightMeasureSet`. Two mechanical obstacles are visible in its statement: the
+tightness hypothesis is phrased on the *coerced* set `{(μ : Measure E) | μ ∈ S}`, so link 65's
+`isTightMeasureSet_gaussMeasure` needs restating for `gaussProb` and then transporting across the
+coercion; and building each `ProbabilityMeasure ℝ` term requires the instance above in scope. Neither
+is mathematical. The genuine remaining content is still step 2 of link 65 — passing moments to the
+limit against unbounded `xᵏ`, which needs uniform integrability rather than weak convergence alone.
+
+### Link 67 — Prokhorov applied
+
+`GaussTightness.lean` now 230 lines, zero placeholders; three new endpoints, all
+`[propext, Classical.choice, Quot.sound]`.
+
+- `gaussProb_compl_Icc_le'` — the normalised tail bound with the scalar folded inside the coercion:
+  `gaussProb s n ((Icc (-R) R)ᶜ) ≤ ENNReal.ofReal ((s₀)⁻¹ · (s₂/R²))`, via
+  `ENNReal.ofReal_inv_of_pos` and `ENNReal.ofReal_mul`.
+- `isTightMeasureSet_gaussProb` — tightness of the normalised family. Same exact-threshold trick as
+  link 65, now with `R = √(s₂/(s₀ε))` so the bound lands on `ε` on the nose.
+- `gaussProbMeasure h n : ProbabilityMeasure ℝ` — the packaged subtype term.
+- `isCompact_closure_gaussProbMeasure` — `[PROVED HERE]` **the Gauss family has compact closure in
+  the weak topology on `ProbabilityMeasure ℝ`.**
+
+Both mechanical obstacles anticipated in link 66 were real and both were mechanical. The coercion
+mismatch is handled by an explicit set equality between `{(μ : Measure ℝ) | μ ∈ range gaussProbMeasure}`
+and `range gaussProb`, proved by `rintro`/`exact` in both directions — the coercion of the subtype
+term is definitionally the underlying measure, so no transport lemma is needed.
+
+**Toolchain note:** `positivity` fails on `0 ≤ (s 0)⁻¹` because the sign of `s 0` is a hypothesis, not
+syntactic. `inv_nonneg.mpr (moment_zero_pos h).le` supplies it. This is the same failure mode as the
+`kernelRoot` case recorded much earlier in this card: `positivity` reasons from the *shape* of a term,
+so any positivity fact that lives in a hypothesis has to be handed over explicitly.
+
+So a subsequential weak-* limit of the Gauss measures exists, unconditionally, from
+`PositiveMomentForm s` alone.
+
+**Opens next:** the limit measure is now available but nothing yet says its moments are `s`. This is
+step 2 of link 65 and it remains the one piece of genuine mathematical content: weak convergence
+tests against *bounded* continuous functions, and `xᵏ` is not bounded. The concrete target is that
+for each fixed `k`, the family `{gaussProb s (n+1)}` is uniformly integrable against `xᵏ`, which
+follows from the uniform `(k+2)`-nd moment bound — `gaussSum_pow` supplies moment `k+2` for every
+`n` with `2n+1 ≥ k+2`, so the bound holds for all but finitely many members of the family, which is
+enough. Worth checking first whether mathlib's `MeasureTheory.UniformIntegrable` API connects to weak
+convergence in the form needed, since that determines whether this is assembly or construction.
+
+### Link 68 — the survey answered, and the analytic core
+
+The link-67 question was whether the moment-to-limit step is assembly or construction. The survey
+answers it: **assembly**, and not via `UniformIntegrable` at all.
+
+`Mathlib/MeasureTheory/Measure/Portmanteau.lean` carries
+`lintegral_le_liminf_lintegral_of_forall_isOpen_measure_le_liminf_measure`, whose hypotheses are
+*continuous and nonnegative* — with **no boundedness requirement on the integrand**. That is the
+whole difficulty of link 65's step 2 dissolved: the reason weak convergence was thought not to
+transport `xᵏ` is that it tests against *bounded* continuous functions, but the lower-semicontinuous
+half of portmanteau has no such restriction. Uniform integrability is what one needs for a two-sided
+limit; a one-sided bound needs nothing beyond `f ≥ 0` and continuity, and a one-sided bound is what
+bounding the limit's moments requires.
+
+New module `formal/GaloisForLFunctions/HTGeometry/MomentLimitBound.lean` (47 lines, zero placeholders,
+registered; compiled first try). Both endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `pow_two_mul_nonneg` — `0 ≤ x^{2k}`, by `pow_mul` and `sq_nonneg` rather than an `Even.pow_nonneg`
+  lemma whose name in this toolchain was not worth guessing.
+- `lintegral_even_pow_le_of_forall_isOpen_le_liminf` — `[PROVED HERE]` if `μ` satisfies the
+  portmanteau open-set inequality against a sequence `μs` and every `μs i` has
+  `∫⁻ ofReal(x^{2k}) ≤ C`, then `∫⁻ ofReal(x^{2k}) ∂μ ≤ C`.
+
+The hypothesis is stated as the open-set inequality rather than as weak convergence, so the lemma
+applies to a limit point however it was obtained — which matters here, since compactness (link 67)
+delivers a cluster point, not a convergent sequence.
+
+The module imports `Mathlib.MeasureTheory.Measure.Portmanteau` directly rather than the Gauss chain:
+it uses nothing from this project, and a false dependency on `GaussTightness` would have misrepresented
+where the result lives.
+
+**Opens next:** two independent threads, either order.
+1. *Compute the Gauss side of the hypothesis.* Needs `∫⁻ ofReal(x^{2k}) d(gaussProb s n)` in terms of
+   `s`, i.e. `lintegral` analogues of the `finsetWeightedDirac` lemmas — the Bochner versions exist
+   (link 63) but `lintegral` is a different API and the bridge is `lintegral_eq_lintegral_...` or a
+   fresh induction, which is likely shorter.
+2. *Extract a sequence from the cluster point.* The weak topology on `ProbabilityMeasure ℝ` is
+   metrizable — mathlib has `LevyProkhorovMetric.lean` — so a cluster point of a sequence is a
+   subsequential limit. Whether a ready instance exposes this, or whether the metric has to be
+   invoked explicitly, is the thing to check first.
+
+### Link 69 — thread 1 closed: the two halves meet
+
+New module `formal/GaloisForLFunctions/HTGeometry/GaussMomentLimit.lean` (75 lines, zero placeholders,
+registered). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+`MomentLimitBound.lean` was first generalised: its hypothesis is now `∀ᶠ i in atTop` rather than
+`∀ i`. This was forced by the application — the quadrature only reaches order `2k` once `2k ≤ 2n+1`,
+so the moment bound holds for large `n` only — and it costs nothing, since `liminf` ignores any finite
+initial segment and `liminf_le_liminf` already consumed an `Eventually`.
+
+- `lintegral_finsetWeightedDirac` — lower integration against a finite weighted Dirac family. The
+  `lintegral` API turned out *easier* than the Bochner one of link 63: `lintegral_add_measure` and
+  `lintegral_dirac` carry no integrability or measurability side conditions, so the induction is three
+  rewrites with no hypotheses to discharge.
+- `lintegral_gaussMeasure`, `lintegral_even_pow_gaussMeasure` — the even moments as lower integrals:
+  `∫⁻ ofReal(x^{2k}) d(gaussMeasure s n) = ENNReal.ofReal (s_{2k})` for `2k ≤ 2n+1`.
+- `lintegral_even_pow_gaussProb` — the same, normalised, with factor `(s₀)⁻¹`.
+- `lintegral_even_pow_limit_le` — `[PROVED HERE]` **every weak limit point `μ` of the Gauss family
+  satisfies `∫⁻ ofReal(x^{2k}) dμ ≤ (s₀)⁻¹ · s_{2k}` for every `k`.**
+
+So a limit point is not merely a probability measure: it has finite moments of every even order,
+bounded by the moment sequence that generated the family. That is the first statement about the limit
+object itself rather than about the approximants.
+
+**Toolchain note:** in `ℝ≥0∞` the scalar action and multiplication are propositionally but not
+syntactically equal; `lintegral_smul_measure` produces `c • ∫⁻ …` and goals stated with `*` need
+`smul_eq_mul` appended to the rewrite chain. Both failures in this module were exactly this.
+
+**Opens next:** thread 2 of link 68, now the only thing between here and Hamburger existence — turn
+the Prokhorov cluster point into an actual limit point satisfying the portmanteau hypothesis. Two
+sub-steps: extract a convergent subsequence (the weak topology on `ProbabilityMeasure ℝ` is metrizable
+via `LevyProkhorovMetric.lean`; check whether an instance exposes this or the metric must be invoked
+by hand), then convert weak convergence into the open-set inequality using
+`ProbabilityMeasure.le_liminf_measure_open_of_tendsto`, which is already in `Portmanteau.lean` at
+line 323 in exactly the required form. After that the remaining gap is the *reverse* moment
+inequality, where the one-sided portmanteau argument does not apply and something genuinely two-sided
+is needed.
+
+### Link 70 — thread 2 closed: a weak limit measure exists
+
+`GaussMomentLimit.lean` now 112 lines, zero placeholders; three new endpoints, all
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+Both sub-steps of the link-69 handoff resolved without construction:
+
+- `MetrizableSpace (ProbabilityMeasure ℝ)` is a genuine **instance**
+  (`instMetrizableSpaceProbabilityMeasure`, `LevyProkhorovMetric.lean:696`), found by `inferInstance`
+  with no hypotheses to supply. So `IsCompact.tendsto_subseq` applies directly to the Prokhorov
+  closure and the Lévy--Prokhorov metric never has to be mentioned.
+- `ProbabilityMeasure.le_liminf_measure_open_of_tendsto` is stated for an arbitrary filter `L`, so it
+  converts subsequential weak convergence into the open-set inequality with no reindexing work.
+
+- `exists_subseq_tendsto_gaussProbMeasure` — `[PROVED HERE]` a strictly monotone `φ` and a limit
+  `μ : ProbabilityMeasure ℝ` with `gaussProbMeasure h (φ i + 1) → μ` weakly.
+- `lintegral_even_pow_limit_le_subseq` — the moment bound along a subsequence. The only adjustment
+  needed was `StrictMono.le_apply` (`i ≤ φ i`) to keep the eventual hypothesis of link 69 available
+  after reindexing.
+- `exists_probabilityMeasure_even_moment_le` — `[PROVED HERE]`
+
+  **From `PositiveMomentForm s` alone there exists a probability measure `μ` on `ℝ` with
+  `∫⁻ x^{2k} dμ ≤ (s₀)⁻¹ · s_{2k}` for every `k`.**
+
+Unconditional, no representing-measure hypothesis anywhere: the measure is *constructed*, from the
+moment sequence, through orthogonal polynomials → Gauss nodes → Christoffel weights → quadrature →
+tightness → Prokhorov → subsequence. Links 51–70 are that chain.
+
+**Opens next:** the reverse inequality, which is now the whole remaining gap to Hamburger existence
+proper. What is proved is `∫ x^{2k} dμ ≤ (s₀)⁻¹ s_{2k}`; what is wanted is equality, and for *all*
+moments rather than the even ones. The one-sided portmanteau argument cannot give it — it is
+intrinsically an inequality in one direction. The classical route is that the uniform moment bound
+just established makes `{x^k}` uniformly integrable along the subsequence, upgrading weak convergence
+to convergence of the moments themselves; this is where mathlib's `UniformIntegrable` API, set aside
+in link 68 as unnecessary, becomes the right tool after all. Worth noting that the odd moments will
+need the even bound as input, so the current statement is the natural prerequisite rather than a
+detour.
+
+### Link 71 — correction to link 70's handoff, and the limit's tail decay
+
+`GaussMomentLimit.lean` now 150 lines, zero placeholders; two new endpoints, both
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+**Correction.** Link 70 named `MeasureTheory.UniformIntegrable` as the tool for the reverse moment
+inequality. Reading its definition, it does not apply:
+
+```
+def UniformIntegrable (f : ι → α → β) (p : ℝ≥0∞) (μ : Measure α) : Prop
+```
+
+It quantifies over a **family of functions against one fixed measure**. The situation here is the
+transpose — one function `xᵏ` against a family of measures `gaussProb s (φ i + 1)` — and mathlib has
+no ready notion for that. The classical phrase "uniformly integrable" covers both, which is what made
+the misidentification easy; the Lean definition commits to one of them. So the reverse inequality has
+to be built by hand as a truncation argument, not assembled from that API.
+
+That argument needs two tail estimates, one on each side. The approximant side already exists
+(`gaussProb_compl_Icc_le'`, link 67). This link supplies the other:
+
+- `measure_compl_Icc_le_of_lintegral_sq_le` — Chebyshev: a measure with `∫⁻ ofReal(x²) ≤ C` has
+  `μ((Icc (-R) R)ᶜ) ≤ C / ofReal(R²)`. Via `meas_ge_le_lintegral_div`, with the containment
+  `(Icc (-R) R)ᶜ ⊆ {x | ofReal(R²) ≤ ofReal(x²)}` discharged by `nlinarith` from `sq_abs`.
+- `exists_probabilityMeasure_tail_le` — `[PROVED HERE]` **the limit measure of link 70 satisfies
+  `μ((Icc (-R) R)ᶜ) ≤ (s₀)⁻¹ s₂ / R²` for every `R > 0`** — the same rate as the Gauss measures it
+  came from, which is what a truncation argument requires to make both error terms vanish together.
+
+**Opens next:** the truncation argument itself, now with both estimates in hand. The remaining piece
+is the bounded continuous cutoff: a function agreeing with `xᵏ` on `[-R, R]` and vanishing outside
+`[-2R, 2R]`, packaged as `ℝ →ᵇ ℝ` so that weak convergence applies to it. Constructing
+`BoundedContinuousFunction` terms is the one part of this with no shortcut visible, so the first move
+is to check what mathlib offers for building them — `BoundedContinuousFunction.ofNormedAddCommGroup`,
+or a composition of `xᵏ` with a truncation like `max (min x R) (-R)`, the latter avoiding a bump
+construction entirely since `x ↦ (max (min x R) (-R))ᵏ` is already bounded and continuous and equals
+`xᵏ` on `[-R, R]`.
+
+### Link 72 — the truncation function
+
+New module `formal/GaloisForLFunctions/HTGeometry/TruncatedPower.lean` (53 lines, zero placeholders,
+registered). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+The guess recorded at the end of link 71 held: clamping before exponentiating avoids the bump
+function entirely.
+
+`truncPow R k x := (max (min x R) (-R))ᵏ`
+
+- `continuous_truncPow` — a composition of lattice operations with a power; `Continuous.min`,
+  `Continuous.max`, `Continuous.pow`, nothing else.
+- `abs_clamp_le`, `abs_truncPow_le` — bounded by `Rᵏ`, because the clamp lands in `[-R, R]`.
+- `truncPow_eq_of_mem_Icc` — on `[-R, R]` it *is* `xᵏ`: `min_eq_left` then `max_eq_left`, no
+  case analysis.
+- `abs_truncPow_le_abs_pow` — outside the ball it is dominated by `|x|ᵏ`.
+- `truncPowBCF R hR k : ℝ →ᵇ ℝ` with a `@[simp]` application lemma, so weak convergence applies to it
+  directly.
+
+**Toolchain notes:** `pow_le_pow_left` no longer exists under that name — the ordered-field version is
+`pow_le_pow_left₀ (ha : 0 ≤ a) (hab : a ≤ b) (n)`, while `pow_le_pow_left'` is the unbundled monoid
+version with different hypotheses. And `BoundedContinuousFunction.ofNormedAddCommGroup` lives in
+`Bounded/Normed.lean`, not `Bounded/Basic.lean`, so the narrow import had to be widened by one file.
+
+**Opens next:** the comparison estimate, which is now pure bookkeeping over the three pieces in hand.
+For any measure `ν` and any `R > 0`,
+
+`|∫ xᵏ dν − ∫ truncPow R k dν| ≤ ∫_{|x|>R} (|x|ᵏ + Rᵏ) dν ≤ 2 ∫_{|x|>R} |x|ᵏ dν`,
+
+using `truncPow_eq_of_mem_Icc` to kill the integrand on the ball and `abs_truncPow_le_abs_pow`
+outside it. Applied to the Gauss measures and to the limit measure — whose tails links 67 and 71
+bound at the same rate — both error terms go to zero as `R → ∞` uniformly in the level, while the
+middle terms converge by weak convergence against `truncPowBCF`. That is the full truncation
+argument; every ingredient it needs is now proved.
+
+### Link 73 — the pointwise comparison
+
+`TruncatedPower.lean` now 86 lines, zero placeholders; both new endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `abs_pow_sub_truncPow_le` — `[PROVED HERE]` for `R ≥ 0` and every `x`,
+
+  `|xᵏ − truncPow R k x| ≤ 1_{(Icc (-R) R)ᶜ}(x) · 2|x|ᵏ`.
+
+  On the ball both sides are zero (`truncPow_eq_of_mem_Icc`, and the indicator vanishes); off it the
+  triangle inequality plus `abs_truncPow_le_abs_pow` gives `|x|ᵏ + |x|ᵏ`.
+- `abs_pow_sub_truncPow_eq_zero_of_mem` — the error is exactly `0` on the ball, stated separately
+  since the truncation argument uses it to restrict integrals to the tail.
+
+Phrasing the bound with an *indicator* rather than as a conditional statement is what makes it usable:
+integrating it against a measure immediately produces a tail integral, with no case split surviving
+into the measure-theoretic step.
+
+**Toolchain notes:** `abs_add` no longer exists under that name; `norm_sub_le` with
+`Real.norm_eq_abs` gives `|a − b| ≤ |a| + |b|` directly. And `add_le_add_left h c` in this toolchain
+produces `a + c ≤ b + c` — it adds on the *right* despite the name — so `linarith` is the safer way
+to add a constant to one side of an inequality.
+
+**Opens next:** integrate the pointwise bound. For any measure `ν` with the relevant integrability,
+
+`|∫ xᵏ dν − ∫ truncPow R k dν| ≤ 2 ∫_{|x|>R} |x|ᵏ dν`
+
+by `abs_integral_le_integral_abs` and `integral_mono` against the indicator. The two instantiations
+needed are `ν = gaussProb s (φ i + 1)` and `ν = μ`, and the tail integrals on the right are then
+bounded via Cauchy--Schwarz against the tail *measure* bounds of links 67 and 71 — that step needs
+`∫_{|x|>R} |x|ᵏ ≤ (∫ x^{2k})^{1/2} (ν{|x|>R})^{1/2}`, so the even-moment bounds already proved are
+what convert a measure-level tail estimate into an integral-level one. Worth checking whether
+mathlib's `inner_mul_le_norm_mul_norm` or the measure-theoretic `integral_mul_le_Lp_mul_Lq` is the
+cleaner entry point before writing it.
+
+### Link 74 — the comparison estimate, without Cauchy–Schwarz
+
+`TruncatedPower.lean` now 133 lines, zero placeholders; both new endpoints
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+Link 73's handoff planned an indicator integral, tail *measure* bounds from links 67 and 71, and a
+Cauchy--Schwarz step to connect them. **None of that is needed.** On the tail `Rᵏ ≤ |x|ᵏ`, hence
+`|x|ᵏ ≤ |x|^{2k} / Rᵏ` there; on the ball the error is zero and the right-hand side is still
+nonnegative. So both cases are covered by one bound with no indicator and no tail set:
+
+- `abs_pow_sub_truncPow_le_even` — `[PROVED HERE]` for `R > 0` and every `x`,
+  `|xᵏ − truncPow R k x| ≤ 2 x^{2k} / Rᵏ`.
+- `abs_integral_sub_integral_truncPow_le` — `[PROVED HERE]` integrating it,
+  `|∫ xᵏ dν − ∫ truncPow R k dν| ≤ 2 (∫ x^{2k} dν) / Rᵏ`, for any `ν` with the three relevant
+  integrability hypotheses.
+
+Because `x^{2k}` is exactly the quantity the even-moment estimates already control, the bound lands
+directly on what links 62 and 70 provide. The tail measure bounds of links 67 and 71 are not consumed
+by this route at all — they remain proved and available, but the argument no longer passes through
+them.
+
+That is twice in this stretch that a handoff over-planned the machinery: link 68 expected
+`UniformIntegrable`, link 73 expected Cauchy--Schwarz, and in both cases writing down the inequality
+directly was shorter than the named tool. The pattern seems to be that naming a classical technique
+imports its full generality, when the instance at hand is a one-line estimate.
+
+**Toolchain note:** the word `admit` in an English docstring trips a naive placeholder grep. Reworded;
+worth avoiding `sorry`/`admit`/`axiom` as English words in comments in this tree.
+
+**Opens next:** assemble the three-term estimate. For the limit measure `μ` and the subsequence
+`νᵢ = gaussProb s (φ i + 1)`,
+
+`|∫ xᵏ dμ − ∫ xᵏ dνᵢ| ≤ 2(∫ x^{2k} dμ)/Rᵏ + |∫ truncPow R k dμ − ∫ truncPow R k dνᵢ| + 2(∫ x^{2k} dνᵢ)/Rᵏ`,
+
+where the outer terms are uniformly small by the even-moment bounds and the middle term tends to zero
+for fixed `R` by weak convergence against `truncPowBCF`. The remaining Lean work is the integrability
+side conditions for each `ν`, which for the Gauss measures is `integrable_gaussMeasure` (link 63, any
+function) and for `μ` follows from the finiteness of `∫⁻ x^{2k}` proved in link 70.
+
+### Link 75 — moment convergence from weak convergence
+
+New module `formal/GaloisForLFunctions/HTGeometry/MomentConvergence.lean` (90 lines, zero
+placeholders, registered). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `exists_pow_gt` — for `k ≥ 1`, a radius with `Rᵏ` exceeding any prescribed bound; `max 1 (c+1)`
+  and `pow_le_pow_right₀`.
+- `abs_sub_le_three` — the four-point triangle inequality, from `abs_sub_le` twice.
+- `tendsto_integral_pow_of_uniform_even_moment` — `[PROVED HERE]`
+
+  **If `νᵢ → μ` weakly and `∫ x^{2k} dνᵢ ≤ M` uniformly with `∫ x^{2k} dμ ≤ M`, then
+  `∫ xᵏ dνᵢ → ∫ xᵏ dμ`,** for `k ≥ 1`.
+
+This is the theorem link 65 identified as the genuine remaining content, and it is now proved in
+general form — no Gauss data anywhere, just weak convergence plus a uniform even-moment bound. The
+`ε` argument: pick `R` with `2M/Rᵏ < ε/4`, bound both outer terms of the four-point triangle by
+`abs_integral_sub_integral_truncPow_le` (link 74), and take the middle term below `ε/2` by weak
+convergence against `truncPowBCF R`.
+
+Two things the build taught, both about hypotheses that turned out unnecessary:
+
+- `gcongr` discharged `∫ x^{2k} dμ ≤ M` by finding `hMμ` in context, but could not discharge the
+  indexed `hMν i`, which needs an argument. So one of the two parallel `have`s needed a following
+  `exact` and the other rejected it. `gcongr` searches the context for *closed* hypotheses only.
+- The assumption `0 ≤ M` was never used and the linter caught it. It is genuinely redundant: if
+  `M < 0` the hypothesis `∫ x^{2k} ≤ M` is unsatisfiable, so the statement holds vacuously. Dropped.
+
+**Opens next:** instantiate. The general theorem needs, for `νᵢ = gaussProb s (φ i + 1)` and the
+limit `μ` of link 70: weak convergence in `∫ f dνᵢ → ∫ f dμ` form for bounded continuous `f`
+(available from `hlim` via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`, to be checked);
+the uniform even-moment bound in *Bochner* form, where links 69 and 70 currently give the `lintegral`
+form, so a bridge via `integral_eq_lintegral_of_nonneg_ae` is needed; and the integrability side
+conditions, which for the Gauss measures are `integrable_gaussMeasure` for any function and for `μ`
+follow from finiteness of `∫⁻ x^{2k}`. With that, `∫ xᵏ dμ = lim s_k/s₀` and Hamburger existence
+closes.
+
+### Link 76 — the approximant side of the instantiation
+
+New module `formal/GaloisForLFunctions/HTGeometry/GaussMomentConvergence.lean` (55 lines, zero
+placeholders, registered; compiled first try). All endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+Link 75's handoff listed a `lintegral → Bochner` bridge as needed. On the approximant side it is
+not: `integral_gaussMeasure` (link 63) is already stated for the Bochner integral, so the Gauss
+moments come out directly.
+
+- `integrable_gaussProb` — every function is integrable against `gaussProb s n`, from
+  `integrable_gaussMeasure` and `Integrable.smul_measure`. Unconditional in `f`, because a finite
+  weighted sum of point masses integrates everything.
+- `integral_pow_gaussProb` — `[PROVED HERE]` `∫ xᵏ d(gaussProb s n) = (s₀)⁻¹ s_k` for `k ≤ 2n+1`.
+- `tendsto_integral_gaussProb` — weak convergence of the extracted subsequence in the integral form
+  the general theorem consumes, via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`. The
+  subtype coercion is definitional, so this is one application with no transport.
+- `integral_even_pow_gaussProb_le` — the even moments along a subsequence, constant in `i` once
+  `k ≤ i`, using `StrictMono.le_apply` as in link 70.
+
+So of the four hypotheses `tendsto_integral_pow_of_uniform_even_moment` requires of the `ν` side —
+weak convergence, uniform even-moment bound, integrability of `xᵏ`, `x^{2k}`, and `truncPow` — all
+are now discharged.
+
+**Opens next:** only the `μ` side remains, and it is exactly the `lintegral → Bochner` bridge that
+turned out unnecessary for the approximants. Needed: from `∫⁻ ofReal(x^{2k}) dμ ≤ C` (link 70),
+derive `Integrable (fun x => x^{2k}) μ` and `∫ x^{2k} dμ ≤ C.toReal`. The first is
+`HasFiniteIntegral` plus measurability, with finiteness of `C` coming from `s₀ > 0`; the second is
+`integral_eq_lintegral_of_nonneg_ae` with `ENNReal.toReal_mono`. Integrability of `xᵏ` for odd `k`
+then follows by domination, `|x|ᵏ ≤ 1 + x^{2k}` pointwise. With those three, the general theorem
+applies and `∫ xᵏ dμ = (s₀)⁻¹ s_k` for every `k ≥ 1` — Hamburger existence, in the normalised form
+this construction produces.
+
+### Link 77 — the μ-side bridge, and two signature repairs
+
+New module `formal/GaloisForLFunctions/HTGeometry/MomentBochnerBridge.lean` (75 lines, zero
+placeholders, registered; compiled first try). All endpoints, and the re-checked
+`tendsto_integral_pow_of_uniform_even_moment`, are `[propext, Classical.choice, Quot.sound]`.
+
+- `integrable_of_lintegral_ofReal_lt_top` — a nonnegative measurable function with finite lower
+  integral is integrable (`hasFiniteIntegral_iff_ofReal`).
+- `integral_le_toReal_of_lintegral_le` — a bound on `∫⁻ ofReal f` bounds `∫ f`
+  (`integral_eq_lintegral_of_nonneg_ae` plus `ENNReal.toReal_mono`).
+- `abs_pow_le_one_add_even`, `integrable_pow_of_integrable_even` — `|x|ᵏ ≤ 1 + x^{2k}` pointwise, so
+  the odd powers inherit integrability from the even ones against a finite measure.
+- `integrable_truncPow` — truncated powers are integrable against any finite measure.
+- `moment_even_pos` — `0 < s_{2k}`, since `s_{2k} = ⟪Xᵏ, Xᵏ⟫`.
+
+Two repairs to `MomentConvergence.lean`, both discovered by trying to instantiate it:
+
+1. `hMν` had to become `∀ᶠ i in atTop` rather than `∀ i`. The Gauss quadrature only reaches order
+   `2k` once the level is large enough, so the uniform bound is genuinely only eventual. The proof
+   absorbs this by taking `max N N₂` of the two thresholds. This is the same weakening link 69 made
+   to `MomentLimitBound`, needed again one level up — a hypothesis stated as `∀ i` is the wrong
+   default anywhere a filter limit is the conclusion.
+2. The `truncPow` integrability hypotheses now require `0 < R`. As stated they quantified over all
+   real `R`, including negative ones where `abs_truncPow_le` does not apply; the proof only ever uses
+   the positive `R` it chooses, so the hypothesis was strictly stronger than needed and would have
+   been unprovable at the instantiation.
+
+**Opens next:** the capstone, now assembly only. Take `μ, φ` from
+`exists_subseq_tendsto_gaussProbMeasure`, get the open-set inequality from
+`ProbabilityMeasure.le_liminf_measure_open_of_tendsto`, feed `lintegral_even_pow_limit_le_subseq` into
+the two bridge lemmas to obtain the `μ`-side integrability and moment bound, supply the `ν` side from
+link 76, and apply `tendsto_integral_pow_of_uniform_even_moment`. The limit of the approximants is
+eventually the constant `(s₀)⁻¹ s_k`, so `tendsto_nhds_unique` identifies `∫ xᵏ dμ` with it. Every
+input to that chain is proved; it will be written in its own module so the existing bridge banks
+independently of it.
+
+### Link 78 — existence of a representing measure
+
+New module `formal/GaloisForLFunctions/HTGeometry/HamburgerExistence.lean` (77 lines, zero
+placeholders, registered). Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+`exists_probabilityMeasure_moments` — `[PROVED HERE]`
+
+> **For a positive definite moment form `s` there exists a probability measure `μ` on `ℝ` with
+> `∫ xᵏ dμ = s_k / s₀` for every `k ≥ 1`.**
+
+Hypothesis: `PositiveMomentForm s`, i.e. `⟪p, p⟫ > 0` for `p ≠ 0`. Nothing else. No measure is
+assumed anywhere — the one produced is constructed from the moment sequence alone.
+
+The construction, links 51–78 end to end: monic orthogonal polynomials by Gram--Schmidt against the
+moment form → three-term recurrence → Christoffel--Darboux kernel → the orthogonal polynomials have
+only real, simple roots (three uses of one pairing trick, links 59/60/61) → those roots as quadrature
+nodes with Christoffel weights → Gauss quadrature exact to order `2n+1` → the quadrature measure →
+uniform tail bound from the shared second moment → Prokhorov → weak limit along a subsequence →
+even moments bounded via the lower-semicontinuous half of portmanteau → moment convergence by
+truncation.
+
+Assembly detail worth recording: `∀ᶠ` does not support dot-notation `.symm`, since the elaborated
+type is a raw filter membership rather than `Filter.EventuallyEq`. Stating the eventual equality in
+`=ᶠ[atTop]` form from the start makes `Tendsto.congr'` apply directly.
+
+**Opens next.** The statement proved is one-sided in a way worth being precise about: it gives *a*
+representing measure, not all of them, and says nothing about uniqueness. That is exactly right for
+this card's purpose — indeterminacy is the phenomenon of interest, and a determinate sequence would
+have made the Nevanlinna parametrisation vacuous. Two directions follow.
+
+1. *Back to the card's own object.* `ClassicalNevanlinnaExtremalFamily` still has `leaf`,
+   `finite_carried`, `infinity_carried`, `leaf_moments` open (link 55 handoff). `leaf_moments` is now
+   within reach: it asks exactly for `HasHamburgerMoments s (leaf t)`, and this link produces a
+   measure with the moments of `s` up to the `s₀` normalisation. What is still missing is the
+   *parametrisation* — one measure per boundary point `t`, varying continuously — rather than a
+   single one.
+2. *Sharpening this link.* The measure here comes from an arbitrary convergent subsequence, so
+   different subsequences may give different measures. Making that non-uniqueness explicit — two
+   subsequences with distinct limits, for an indeterminate `s` — would turn an artefact of the proof
+   into a statement about the moment problem, and is the natural bridge from existence to the
+   Nevanlinna disc this card is really about.
+
+### Link 79 — strengthened to the project's own predicate
+
+`HamburgerExistence.lean` now 92 lines, zero placeholders; both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+The `k ≥ 1` restriction in link 78 was an artefact of how the argument was assembled, not of the
+result. The integrability derivation runs uniformly in `k` — for `k = 0` the lower integral is just
+`μ univ = 1 ≤ C`, no special case — and the moment identity at `k = 0` is
+`∫ 1 dμ = 1 = (s₀)⁻¹ s₀`, one `inv_mul_cancel₀`. So the statement was weaker than what the proof
+already gave:
+
+- `exists_probabilityMeasure_hasMoments` — `[PROVED HERE]` a probability measure `μ` with, **for
+  every `k`**, `Integrable (xᵏ) μ` and `∫ xᵏ dμ = s_k / s₀`. Supersedes link 78's statement, which
+  quantified only over `k ≥ 1` and did not expose integrability at all.
+- `exists_hasHamburgerMoments` — `[PROVED HERE]`
+  **`∃ μ : ProbabilityMeasure ℝ, HasHamburgerMoments (fun k => (s₀)⁻¹ · s_k) μ`.**
+
+The second is the connector this development has been aimed at from link 51: `HasHamburgerMoments` is
+the project's own predicate, the one appearing in `NevanlinnaBoundaryKernel`,
+`NevanlinnaClassicalInterface`, `AtomlessProjectiveFrameFiber` and elsewhere, and it is now
+*constructible* from a positive definite moment form rather than only assumable. Every card in the
+tree that takes a representing measure as a hypothesis can now discharge it.
+
+**Opens next.** With `leaf_moments` reachable, the remaining `ClassicalNevanlinnaExtremalFamily`
+fields are `leaf`, `finite_carried`, `infinity_carried` — all three about the *family*, not any single
+measure. That is the real frontier now: this link produces one measure per moment sequence, and the
+structure needs one per boundary point `t : OnePoint ℝ`, varying continuously, with prescribed
+support. The `nevMatrixData` of link 51 already supplies the matrix side, so the missing object is
+the map `t ↦ leaf t` itself. Concretely: for fixed `t`, the sequence to feed this construction is not
+`s` but the one whose orthogonal polynomials are `Q_n + t R_n` — the second-kind combination built in
+`SecondKindMomentPolynomials.lean`. Whether that combination is itself a positive definite moment
+form, so that this link applies to it verbatim, is the next question to settle, and it is a question
+about objects already in the tree rather than about new machinery.
+
+### Link 80 — Hamburger existence, unnormalised
+
+`HamburgerExistence.lean` now 117 lines, zero placeholders; both new endpoints
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+Link 79's statement still carried the `s₀` normalisation, which was an artefact of routing through
+`ProbabilityMeasure` for Prokhorov. Rescaling removes it:
+
+- `exists_finiteMeasure_hasHamburgerMoments` — `[PROVED HERE]`
+
+  > **For every positive definite moment form `s` there is a finite measure `ν` on `ℝ` with
+  > `HasHamburgerMoments s ν`** — that is, `∫ xᵏ dν = s_k` for every `k`, on the nose.
+
+  Taking `ν = ENNReal.ofReal (s₀) • μ`; the moment identity is `s₀ · (s₀)⁻¹ s_k = s_k`.
+- `exists_hasHamburgerMoments_of_moment_zero_eq_one` — for `s₀ = 1` the probability measure itself
+  represents `s`, no rescaling.
+
+This is Hamburger's existence theorem: *positive definiteness of the Hankel form is sufficient for
+representability*. The converse direction — that a representable sequence is positive definite — has
+been in the tree since well before this card, as `momentFunctional_pow_two_nonneg` in
+`MomentFunctionalPositivity.lean`. The two together are the characterisation, and until now only the
+easy half was available.
+
+**Opens next.** Three directions, in decreasing proximity.
+
+1. *State the characterisation.* `PositiveMomentForm s ↔ ∃ finite ν, HasHamburgerMoments s ν` is now
+   an assembly of two existing results, modulo matching `PositiveMomentForm` (strict, on all nonzero
+   `p`) against `momentFunctional_pow_two_nonneg` (non-strict); the gap is exactly the determinate
+   case where the form degenerates, and `positiveMomentForm_of_infiniteSupport` in
+   `MomentInnerProduct.lean` is the bridge already built for it.
+2. *Discharge hypotheses elsewhere.* Cards in the tree that assume a representing measure can now
+   take `PositiveMomentForm` instead. Worth a sweep of `HasHamburgerMoments` call sites — eleven
+   modules by the earlier grep — to see which assumptions become derivable.
+3. *The family.* Unchanged from link 79: `leaf`, `finite_carried`, `infinity_carried` need one
+   measure per boundary point `t`, and the question to settle first is whether the second-kind
+   combination `Q_n + t R_n` from `SecondKindMomentPolynomials.lean` is itself a positive definite
+   moment form, which would let this link apply to it verbatim.
+
+### Link 81 — the characterisation
+
+New module `formal/GaloisForLFunctions/HTGeometry/MomentCharacterisation.lean` (73 lines, zero
+placeholders, registered). Both endpoints `[propext, Classical.choice, Quot.sound]`.
+
+The infinite-support hypothesis of `positiveMomentForm_of_infiniteSupport` looked like an extra
+condition to carry alongside representability. It is not — it is forced:
+
+- `vanishingPoly F := ∏_{a ∈ F} (X − a)`, monic hence nonzero, vanishing on `F`.
+- `measure_compl_finset_pos_of_positiveMomentForm` — `[PROVED HERE]` **any measure representing a
+  positive definite moment sequence charges the complement of every finite set.** If some `F` carried
+  all the mass, `vanishingPoly F` would be zero `ν`-a.e., so `⟪p, p⟫ = ∫ p² dν = 0` with `p ≠ 0`,
+  contradicting positive definiteness.
+- `positiveMomentForm_iff_exists_representing` — `[PROVED HERE]`
+
+  > **`PositiveMomentForm s ↔ ∃ ν finite with infinite support, HasHamburgerMoments s ν`.**
+
+Forward is link 80 plus the support lemma; backward is `positiveMomentForm_of_infiniteSupport`, in
+the tree since long before this card. The support condition appears on the right-hand side not as an
+imposition but because it is equivalent to the left — dropping it would make the statement false, as
+a single Dirac mass represents a positive *semi*definite sequence.
+
+This closes the arc opened at link 51. What began as infrastructure for one field of
+`ClassicalNevanlinnaExtremalFamily` has produced a self-contained characterisation of Hamburger
+representability, with both directions proved and no measure assumed anywhere.
+
+**Opens next.** The natural sweep is direction 2 of link 80: eleven modules in the tree take
+`HasHamburgerMoments` as a hypothesis, and the equivalence just proved lets each one be restated
+against `PositiveMomentForm` — a purely algebraic condition on the sequence — instead. Whether that
+is an improvement is per-module: for `NevanlinnaBoundaryKernel` the measure is the object of study
+and should stay, but for anything whose conclusion is about the *sequence*, carrying a measure as a
+hypothesis is now avoidable. That audit is the next concrete task, and unlike the previous thirty
+links it is a question of restating existing results rather than proving new ones.
+
+### Link 82 — first discharge from the sweep
+
+New module `formal/GaloisForLFunctions/HTGeometry/MomentFiberNonempty.lean` (36 lines, zero
+placeholders, registered). Both endpoints `[propext, Classical.choice, Quot.sound]`; compiled first
+try.
+
+Working the link-81 sweep, most `HasHamburgerMoments` occurrences turn out to be conclusions or
+structure fields rather than dischargeable hypotheses. One is neither: `NevanlinnaBauerRetract.lean`
+defines
+
+`HamburgerMomentProbabilityFiber s := {ν : ProbabilityMeasure ℝ // HasHamburgerMoments s ν}`
+
+— the space whose extreme points that module analyses. It carried no `Nonempty` result. The only way
+to produce a point was `boundaryCarrierInMomentFiber`, which needs a `NevanlinnaBoundaryFamily s`
+already in hand — that is, the fiber could be shown inhabited only by assuming the structure the
+fiber exists to study.
+
+- `nonempty_hamburgerMomentProbabilityFiber` — `[PROVED HERE]` for `PositiveMomentForm s` with
+  `s₀ = 1`, the fiber is inhabited.
+- `nonempty_hamburgerMomentProbabilityFiber_normalised` — without the normalisation hypothesis, the
+  fiber of `k ↦ s_k/s₀` is inhabited.
+
+Small in Lean, but it removes a circularity: inhabitance of the fiber now follows from a condition on
+the *sequence*, with no boundary family, no barycenter, and no measure assumed.
+
+**Opens next.** The remaining sweep targets are the three `ProjectiveFiniteConstraintCarrierAperture`
+sites and `NevanlinnaConstraintProjector.lean:93`, which produce `HasHamburgerMoments` conclusions
+from carrier constructions — worth checking whether any of them assume a representing measure
+upstream that `positiveMomentForm_iff_exists_representing` would now supply. Beyond the sweep, the
+open frontier is unchanged and is the family: `leaf`, `finite_carried`, `infinity_carried`, with the
+question of whether `Q_n + t R_n` is a positive definite moment form still the first thing to settle,
+since a positive answer would make this whole chain apply once per boundary point.
+
+### Link 83 — correction of a repeated wrong lead, and the atom composition
+
+**Correction, and it matters more than this link's Lean.** Links 79, 80 and 82 each closed by naming
+the same next question: *is the second-kind combination `Q_n + t R_n` a positive definite moment
+form, so that the existence chain applies once per boundary point?* That question is malformed and
+the three handoffs should not be followed.
+
+The N-extremal leaf measures **all represent the same sequence `s`**. That is what indeterminacy
+*is*: the moment problem has many solutions, and `leaf_moments : ∀ t, HasHamburgerMoments s (leaf t)`
+quantifies over `t` with `s` fixed — one sequence, many measures. There is no per-`t` moment
+sequence for the chain to be applied to, so no amount of positive definiteness of anything indexed by
+`t` would help. The error came from reading the parameter `t` as indexing *problems* when it indexes
+*solutions of one problem*, and it survived three handoffs because each restated the previous rather
+than re-deriving it.
+
+The actual classical construction of `leaf t`: its support is the zero set of the entire function
+`B(x)t − D(x)`, and its mass at each such zero `ξ` is `λ(ξ)`, the limit Christoffel function of
+link 57. So the objects already built are the right ones — links 55–58 and 78–81 are on the correct
+path — but the missing ingredient is the zero set of an entire function of exponential type, not a
+family of moment sequences.
+
+**This link's Lean.** New module `formal/GaloisForLFunctions/HTGeometry/ConstructedMeasureAtoms.lean`
+(44 lines, zero placeholders, registered; compiled first try). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `exists_finiteMeasure_atoms_le_christoffelLimit` — `[PROVED HERE]` there is a finite measure
+  representing `s` **whose mass at every point is at most `λ(x)`**. Composition of link 80's
+  construction with link 58's variational bound.
+- `exists_finiteMeasure_atomless_where_christoffelLimit_eq_zero` — where `λ` vanishes, that measure
+  has no atom.
+
+Until now the atom bound applied only to measures *assumed* to exist and the construction produced a
+measure with no information about its atoms; this is the first statement holding both ends at once,
+and the mass values `λ(ξ)` it bounds are exactly the ones the N-extremal leaves are supposed to
+realise with equality.
+
+**Opens next**, stated so as not to repeat the error above: the gap between `≤ λ(ξ)` here and the
+`= λ(ξ)` the leaves need. Two sub-questions, both about objects in the tree. (i) For which `x` is
+`λ(x) > 0`? Link 57 gives `λ` as an infimum of computable finite-level quantities, so this is a
+question about `christoffel s n x` as `n → ∞`, not about entire functions. (ii) Does the constructed
+measure attain the bound at any point at all? A single point of attainment would be the first
+evidence that the construction lands on an N-extremal leaf rather than an arbitrary solution.
+
+### Link 84 — when the limit Christoffel function is positive
+
+New module `formal/GaloisForLFunctions/HTGeometry/ChristoffelLimitPositive.lean` (54 lines, zero
+placeholders, registered; compiled first try). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+Sub-question (i) of link 83, answered:
+
+- `christoffelLimit_pos_iff_bddAbove` — `[PROVED HERE]`
+  **`0 < λ(x) ↔ BddAbove (range fun n => Kₙ(x,x))`.**
+- `christoffelLimit_eq_zero_of_not_bddAbove` — the contrapositive form.
+
+Since `Kₙ(x,x) = ∑_{k ≤ n} Qₖ(x)²/hₖ` (link 55), this says `λ(x) > 0` exactly when that series of
+nonnegative terms converges. It is the criterion separating the two regimes of the moment problem,
+and it is now stated in terms of the finite-level data alone.
+
+The proof is short in both directions and neither needs new machinery: forward, `λ ≤ Kₙ⁻¹` for every
+`n` (link 57) rearranges to `Kₙ ≤ λ⁻¹`; backward, a uniform bound `Kₙ ≤ M` gives `M⁻¹ ≤ Kₙ⁻¹` for
+every `n`, so `le_ciInf` puts `M⁻¹ > 0` below the infimum. `gcongr` handles the inverse-antitone step
+given the positivity of `Kₙ` in context, as it did in link 56.
+
+This lands the `christoffelLimit` of link 57 on the same condition as the `BoundedKernel` predicate of
+links 47--50, which was defined by summability of exactly this series in the complex variable. The two
+halves of the card's machinery — the real variational side and the complex transfer side — are
+therefore describing one condition, at least on the real axis. Making that identification explicit in
+Lean is a short and worthwhile next step: `summable_kernel_iff` and
+`christoffelLimit_pos_iff_bddAbove` should be two faces of one statement, differing only in that one
+is phrased by summability and the other by boundedness of partial sums.
+
+**Opens next:** that identification, then sub-question (ii) of link 83 — whether the constructed
+measure attains `λ` anywhere. The identification is worth doing first, because `BoundedKernel` is
+where the complex-analytic apparatus (link 50's openness, link 51's Nevanlinna matrix) is attached,
+so connecting `λ` to it makes the variational theory available to that side rather than running
+alongside it.
+
+### Link 85 — the two halves of the card meet
+
+New module `formal/GaloisForLFunctions/HTGeometry/ChristoffelBoundedKernel.lean` (54 lines, zero
+placeholders, registered). Both endpoints `[propext, Classical.choice, Quot.sound]`.
+
+The identification link 84 proposed, carried out:
+
+- `monicOrthoC_ofReal` — complex evaluation of a real orthogonal polynomial at a real point is the
+  real evaluation, via `aeval_algebraMap_apply` (the same lemma that carried link 60's splitting
+  argument).
+- `normSq_monicOrthoC_ofReal` — hence `normSq (monicOrthoC s k x) = Qₖ(x)²`, so the complex kernel
+  series and the real one are *literally the same series* at a real point.
+- `christoffelLimit_pos_of_boundedKernel` — `[PROVED HERE]` **`BoundedKernel s (x : ℂ)` implies
+  `0 < christoffelLimit s x`.** Summability bounds every partial sum by the total
+  (`Summable.sum_le_tsum`), which is exactly the criterion of link 84.
+
+This is the first result joining the card's two independently built halves: the complex transfer
+apparatus of links 47--51 (`kernelRoot`, `BoundedKernel`, the transfer radius, the Nevanlinna matrix)
+and the real variational apparatus of links 55--58 and 84 (`cdKernel`, `christoffel`,
+`christoffelLimit`). They were developed on separate tracks and turn out to be two descriptions of one
+condition.
+
+**Toolchain notes.** `((p.eval x : ℝ) : ℂ)` needs the inner ascription written explicitly —
+`(p.eval x : ℂ)` elaborates as `eval (↑x) p` over `ℂ[X]`, which is a different statement, and the
+error surfaces as a type mismatch on the polynomial rather than on the coercion. And `sum_le_tsum` is
+not a standalone lemma in this toolchain; it is `Summable.sum_le_tsum`, taking the finset and the
+off-support nonnegativity, with the summability hypothesis as the receiver.
+
+**Opens next:** the converse, `0 < christoffelLimit s x → BoundedKernel s (x : ℂ)`, which is *not*
+symmetric — `BoundedKernel` requires uniform bounds on *both* the first- and second-kind kernel roots
+(`monicOrthoC` and `secondKindC`), while `christoffelLimit` sees only the first. So positivity of `λ`
+gives half of `BoundedKernel` directly and the second-kind half needs its own argument. Worth stating
+that asymmetry explicitly before attempting it: the natural intermediate is a predicate asserting only
+the first-kind bound, which link 84's criterion characterises exactly, with `BoundedKernel` strictly
+stronger.
+
+### Link 86 — the asymmetry made explicit
+
+New module `formal/GaloisForLFunctions/HTGeometry/FirstKindBounded.lean` (68 lines, zero
+placeholders, registered; compiled first try). All endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+Link 85 closed by noting that the converse cannot be symmetric, since `BoundedKernel` constrains both
+kernel roots and `christoffelLimit` only the first. Rather than attempt the converse and discover the
+gap mid-proof, the gap is now a definition:
+
+- `kernelRoot_sq_ofReal` — at a real point the first-kind kernel root squares to the
+  Christoffel--Darboux diagonal, `kernelRoot² = Kₙ(x,x)`. This is the identity that makes the two
+  sides comparable at all, and it follows from link 85's `normSq_monicOrthoC_ofReal` termwise.
+- `FirstKindBounded s z` — uniform boundedness of the first-kind kernel root alone.
+- `firstKindBounded_of_boundedKernel` — `BoundedKernel` is strictly the stronger condition; it carries
+  the second-kind bound in addition.
+- `firstKindBounded_iff_christoffelLimit_pos` — `[PROVED HERE]`
+  **`FirstKindBounded s (x : ℂ) ↔ 0 < christoffelLimit s x`**, an exact characterisation, both
+  directions.
+
+So the picture on the real axis is now complete and precise: `λ(x) > 0` is *equivalent* to the
+first-kind half of `BoundedKernel`, and *implied by* but not obviously equivalent to `BoundedKernel`
+itself. Link 85's one-way implication is recovered as the composite of the two results here.
+
+The backward direction needed the explicit bound `Kₙ(x,x) ≤ λ(x)⁻¹`, which was buried inside link
+84's proof rather than exposed as a lemma; it is re-derived here in four lines. Worth extracting to
+`ChristoffelLimitPositive.lean` if a third use appears.
+
+**Opens next:** whether `FirstKindBounded` and `BoundedKernel` actually differ. Classically the
+second-kind bound at a point follows from the first-kind bound holding *everywhere* — the transfer
+machinery of links 47--50 is exactly the propagation argument for that — so the honest question is
+not pointwise equivalence but whether `∀ x : ℝ, FirstKindBounded s x` implies `BoundedKernel s z` for
+complex `z`. That is the indeterminacy dichotomy, and it is the same statement the closedness gap of
+`ComplexKernelTransfer.lean` has been waiting on since link 50, now reachable from the real side.
+
+### Link 87 — finite-level attainment
+
+New module `formal/GaloisForLFunctions/HTGeometry/GaussAtoms.lean` (52 lines, zero placeholders,
+registered; compiled first try). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+Sub-question (ii) of link 83 at finite level:
+
+- `gaussMeasure_singleton` — `gaussMeasure s n {ξ} = ENNReal.ofReal (λₙ(ξ))` for `ξ` a node. The
+  weighted-Dirac evaluation of link 64 collapses to the single matching term.
+- `gaussMeasure_real_singleton` — the same as a real mass.
+- `exists_measure_real_singleton_eq_christoffel` — `[PROVED HERE]` **for every node `ξ` there is a
+  measure reproducing `s₀ … s_{2n+1}` whose mass at `ξ` is exactly `λₙ(ξ)`.**
+
+So the bound of link 58 is sharp at each finite level, and the Christoffel value is not merely an
+upper estimate but the exact mass some moment-matching measure realises there. There is no tension
+with link 58's inequality: the Gauss measure matches only finitely many moments, so it is not a
+representing measure for the full sequence and the hypothesis of that bound does not apply to it.
+
+Stating this was cheap — the measure is defined as a weighted sum of point masses with those very
+weights, so the content is entirely in the bookkeeping. It is worth having in the ledger anyway,
+because it fixes what "attainment" has to mean at the limit: not that some measure gets close to
+`λ(ξ)`, but that the *same* construction that is exact at level `n` survives `n → ∞`.
+
+**Opens next:** the limit version, which is genuinely open and is now stated sharply by contrast with
+the above. What is proved: for each `n`, a measure matching `2n+1` moments with atom exactly `λₙ(ξ)`.
+What is wanted: one measure matching *all* moments with atom exactly `λ(ξ)`. The obstruction is
+visible in that gap — the weak limit of link 70 matches all moments (link 78) but its atoms are only
+bounded (link 83), because weak convergence does not preserve point masses. Recovering the atom in
+the limit requires knowing the nodes do not drift, i.e. that `ξ` remains a node at every sufficiently
+large level, which is a statement about the zeros of `monicOrtho s n` as `n` grows rather than about
+measures at all.
+
+### Link 88 — the nodes always move, so link 87's route is closed
+
+New module `formal/GaloisForLFunctions/HTGeometry/OrthoNoCommonRoot.lean` (42 lines, zero
+placeholders, registered). Both endpoints `[propext, Classical.choice, Quot.sound]`.
+
+Link 87 closed by hoping to recover the atom in the limit by showing a node `ξ` "remains a node at
+every sufficiently large level". That hope is now refuted, by theorem:
+
+- `monicOrtho_succ_no_common_root` — `[PROVED HERE]` `Qₙ` and `Q_{n+1}` never vanish at the same
+  point. The Wronskian `Q_{n+1}Rₙ − QₙR_{n+1}` equals the constant `−hₙ/h₀`, which is nonzero since
+  both norms are positive; a common root would make the left side vanish there. Three lines, using
+  `momentWronskian_eq` from link 44 unchanged.
+- `gaussNodes_disjoint_succ` — `[PROVED HERE]` **`Disjoint (gaussNodes s n) (gaussNodes s (n+1))`.**
+
+So no point is a node at two consecutive levels, let alone at all large levels. The naive route to
+limit attainment is not merely unproved — it is impossible, and the finite-level exactness of link 87
+cannot be transported along a fixed point.
+
+This is worth more than the lemma. It says the atom of the limit measure at `ξ` cannot come from the
+atoms of the approximants at `ξ`, because those vanish at every other level. Whatever produces mass
+`λ(ξ)` in the limit must come from nodes *approaching* `ξ`, which is why the classical treatment
+works with the zeros of `B t − D` as a whole rather than tracking individual nodes — the entire
+function's zero set is the limit object, and no finite-level node set is a subset of it.
+
+**Opens next:** with the fixed-node route closed, the honest formulation of attainment is about
+convergence of node sets, not membership. Concretely: for `ξ` with `λ(ξ) > 0`, does there exist a
+sequence `ξₙ ∈ gaussNodes s n` with `ξₙ → ξ`? That is a statement about the zeros of `monicOrtho s n`
+clustering, and it is the correct finite-level shadow of "the support of the leaf measure". The
+disjointness just proved says such a sequence must have `ξₙ ≠ ξ` infinitely often, so the question is
+genuinely about approach rather than eventual equality.
+
+### Link 89 — closed form for the Christoffel limit
+
+New module `formal/GaloisForLFunctions/HTGeometry/ChristoffelLimitFormula.lean` (63 lines, zero
+placeholders, registered). Both endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `cdKernel_eval_self_le_inv_christoffelLimit` — `Kₙ(x,x) ≤ λ(x)⁻¹`, the bound inlined in links 84
+  and 86 and flagged there for extraction on a third use. Extracted now.
+- `christoffelLimit_eq_inv_tsum` — `[PROVED HERE]` where the kernel series converges,
+
+  **`λ(x) = (∑ₖ Qₖ(x)² / hₖ)⁻¹`.**
+
+  Proof by uniqueness of limits: the diagonals `Kₙ(x,x)` are the partial sums and converge to the
+  total, inversion is continuous away from zero, and the total is bounded below by `K₀(x,x) > 0`; so
+  `λₙ = Kₙ⁻¹ → (tsum)⁻¹`, while link 57 gives `λₙ → λ`.
+
+Together with link 84 this completes the description of `λ` on the real axis: it is positive exactly
+when the series converges, and where positive it is the reciprocal of the sum. Everything about `λ`
+that the classical theory states pointwise is now available in the tree — as a definition by
+infimum (link 57), a convergence (link 57), a positivity criterion (link 84), a closed form (here),
+and an identification with the complex-side condition (links 85--86).
+
+Small note on the proof: `Summable.hasSum.tendsto_sum_nat` gives partial sums over `range n`, while
+`cdKernel_eval_self` is a sum over `range (n+1)`. Composing with `tendsto_add_atTop_nat 1` fixes the
+index, and the resulting `((fun n => …) ∘ (· + 1)) n = …` goal closes by `rfl` — the composition is
+definitional, and no `Function.comp` simp lemma is needed.
+
+**Opens next:** the node-approach question of link 88 is unchanged and remains the live one. The
+closed form may help with it: `λ(ξ) > 0` now says the *tail* `∑_{k > n} Qₖ(ξ)²/hₖ` is small for large
+`n`, which is a statement about how little the high-degree orthogonal polynomials weigh at `ξ` — and
+a node of level `n` is where `Q_{n+1}` vanishes outright. Whether smallness of the tail at `ξ` forces
+zeros of `Q_{n+1}` to accumulate at `ξ` is the sharp form of the question, and it is now expressible
+entirely in terms of the sequence `Qₖ(ξ)` rather than in terms of measures.
+
+### Link 90 — the condition in orthonormal language
+
+New module `formal/GaloisForLFunctions/HTGeometry/OrthonormalDecay.lean` (51 lines, zero
+placeholders, registered; compiled first try). All endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `orthonormalPoly_eval_sq` — `pₖ(x)² = Qₖ(x)²/hₖ`, since `pₖ = Qₖ/√hₖ`. The kernel series terms
+  *are* the squared orthonormal polynomials.
+- `summable_orthonormalPoly_sq_of_christoffelLimit_pos` — so the convergence criterion of link 84
+  reads `Summable (fun k => pₖ(x)²)`.
+- `tendsto_orthonormalPoly_eval_zero` — `[PROVED HERE]` **wherever the series converges,
+  `pₖ(x) → 0`.**
+
+The last one is the classical statement that the orthonormal polynomials decay at points where the
+moment problem is indeterminate, and it is now a consequence of the definitions rather than an
+imported fact. Passing from `pₖ(x)² → 0` to `pₖ(x) → 0` goes through `Real.sqrt_sq_eq_abs` and
+continuity of `Real.sqrt` at `0`, with `tendsto_zero_iff_norm_tendsto_zero` converting to the norm
+form — there is no direct "square root of a limit" lemma to reach for.
+
+This is the reformulation link 89 asked for: the whole condition is now about the single sequence
+`k ↦ pₖ(ξ)`, with no measures, no kernels, and no moment functionals in the statement.
+
+**Opens next:** the node-approach question in its sharpened form. We now know `pₖ(ξ) → 0` when
+`λ(ξ) > 0`, while a node of level `n` is a point where `p_{n+1}` vanishes exactly. So the question
+"do zeros of `p_{n+1}` accumulate at `ξ`?" is asking whether smallness of `p_{n+1}(ξ)` forces a
+nearby zero — which for polynomials is a question about the local behaviour of `p_{n+1}`, i.e. about
+its derivative or its other roots near `ξ`. That is where the interlacing property would enter, and
+interlacing is the one classical fact about these zeros the tree still lacks. Worth checking whether
+it follows from the three-term recurrence and the Wronskian already present, since both the
+Sturm-sequence and the Jacobi-matrix proofs of interlacing use exactly those inputs.
+
+### Link 91 — Sturm alternation
+
+New module `formal/GaloisForLFunctions/HTGeometry/SturmAlternation.lean` (51 lines, zero
+placeholders, registered). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+Link 90 asked whether interlacing follows from the three-term recurrence and the Wronskian already in
+the tree. Its engine does, immediately:
+
+- `recurOff_pos` — `bₙ = h_{n+1}/hₙ > 0`.
+- `monicOrtho_eval_succ_succ_of_root` — at a root of `Q_{n+1}` the recurrence collapses to
+  `Q_{n+2}(ξ) = −bₙ Qₙ(ξ)`.
+- `monicOrtho_eval_mul_neg_of_root` — `[PROVED HERE]` **`Q_{n+2}(ξ) · Qₙ(ξ) < 0` at every root `ξ` of
+  `Q_{n+1}`.** The two inputs are the collapsed recurrence and link 88's no-common-root, which
+  supplies `Qₙ(ξ) ≠ 0`; without the latter the product would only be `≤ 0`.
+- `monicOrtho_eval_succ_succ_ne_zero` — in particular neither neighbour vanishes there.
+
+This is the Sturm-sequence property. It is the mechanism behind interlacing, and it came out of
+material already proved — the recurrence from link 43, the Wronskian consequence from link 88 — with
+no new machinery.
+
+**Operational note.** Twice now a `cat > path` has landed in the *other* working directory
+(`/Users/Spare/Documents/code/riemann/publications/hgt`), which has a matching
+`GaloisForLFunctions/HTGeometry/` path, because the previous command ended with a `cd` to the repo
+root for a card append and the next began without one. Both strays were untracked and were removed
+after checking `git status`; nothing was overwritten. Every shell command in this workspace should
+begin with an absolute `cd`, since the two trees are path-compatible and a misdirected write fails
+silently rather than erroring.
+
+**Opens next:** interlacing proper — between consecutive roots of `Q_{n+2}` there is a root of
+`Q_{n+1}`, and conversely. The sign alternation gives the local ingredient; the global statement needs
+it combined with the intermediate value theorem and a count, since `Q_{n+2}` has `n+2` real simple
+roots (links 60--61) and `Q_{n+1}` has `n+1`. The natural Lean formulation is about the sorted root
+lists rather than the root finsets, so the first step is deciding that representation before proving
+anything about it.
+
+### Link 92 — the interlacing step
+
+New module `formal/GaloisForLFunctions/HTGeometry/InterlacingStep.lean` (47 lines, zero placeholders,
+registered). Axioms `[propext, Classical.choice, Quot.sound]`.
+
+`exists_root_between` — `[PROVED HERE]` if `a < b` are roots of `Q_{n+1}` and `Qₙ(a)·Qₙ(b) < 0`, then
+`Q_{n+2}` has a root in `(a, b)`.
+
+The Sturm collapse of link 91 turns the sign condition on `Qₙ` into the same condition on `Q_{n+2}`
+up to the positive factor `bₙ`, so `Q_{n+2}(a)·Q_{n+2}(b) = bₙ²·Qₙ(a)·Qₙ(b) < 0`, and
+`intermediate_value_Ioo` (or its primed decreasing variant, depending on which endpoint is positive)
+produces the root. `mul_neg_iff` splits the two cases cleanly.
+
+This is the inductive step of interlacing, isolated. It is stated with the sign condition as an
+explicit hypothesis rather than derived, because deriving it *is* the induction — at consecutive roots
+of `Q_{n+1}` the values of `Qₙ` alternate, and that alternation is what the induction carries.
+
+**Toolchain note:** polynomial continuity is `Polynomial.continuous_aeval` in this toolchain, not a
+bare `Polynomial.continuous`; and `nlinarith` would not find `b²uv < 0` from `0 < b` and `uv < 0`
+without being handed the product `mul_pos hb2 (neg_pos.mpr hsign)` — degree-two products of
+hypotheses are not searched by default when the sign flip is inside the goal.
+
+**Opens next:** the induction itself. The invariant is that the `n+1` roots of `Q_{n+1}`, listed in
+increasing order, separate the `n+2` roots of `Q_{n+2}`, and carrying it needs the roots as a sorted
+list with a length equal to the degree — available from links 60--61 as
+`monicOrtho_roots_card` and `monicOrtho_roots_nodup`, but not yet in sorted-list form. The
+representation choice flagged in link 91 is now the immediate blocker rather than any missing
+mathematics: `Multiset.sort` on the roots multiset, with `Finset.orderIsoOfFin` on `gaussNodes` as the
+alternative, and the second looks more usable since the node count is already proved to be exactly
+`n+1`.
+
+### Link 93 — the nodes, enumerated in order
+
+New module `formal/GaloisForLFunctions/HTGeometry/SortedNodes.lean` (52 lines, zero placeholders,
+registered). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+The representation question of links 91--92 is settled, and in favour of the second option:
+
+`gaussNode h n : Fin (n+1) ↪o ℝ := (gaussNodes s n).orderEmbOfFin (gaussNodes_card h n)`
+
+`Finset.orderEmbOfFin` lands directly in `ℝ` rather than in the subtype `↥(gaussNodes s n)`, so no
+coercion appears in any statement and the order embedding supplies strict monotonicity for free.
+`Multiset.sort` would have required carrying sortedness and length as side conditions; here both are
+consequences of the construction, and `gaussNodes_card` from link 61 is the only input.
+
+- `gaussNode_mem`, `gaussNode_root` — each enumerated node is a node, hence a root of `Q_{n+1}`.
+- `gaussNode_strictMono`, `gaussNode_lt_succ` — strictly increasing, with the consecutive form the
+  induction will use.
+- `range_gaussNode`, `exists_gaussNode_eq` — the enumeration is exhaustive: every root of `Q_{n+1}` is
+  `gaussNode h n i` for some `i`.
+
+**Toolchain note:** `Fin.castSucc_lt_succ` takes its index implicitly in this toolchain, so
+`Fin.castSucc_lt_succ i` is an application error rather than a specialisation.
+
+**Opens next:** with both the step (link 92) and the enumeration (here) in place, the interlacing
+induction has all its parts. The statement to prove is that for each `i : Fin (n+1)` there is a root
+of `Q_{n+2}` strictly between `gaussNode h n i.castSucc` and `gaussNode h n i.succ` — but note this
+needs the sign hypothesis of link 92, `Qₙ` alternating at consecutive nodes, which is the induction's
+real content and is not yet available. The honest order of work is therefore: first prove the
+alternation of `Qₙ` across consecutive roots of `Q_{n+1}` by induction on `n`, then feed it to link 92
+node by node. The alternation is where the argument actually lives; the step and the enumeration are
+scaffolding for it.
+
+### Link 94 — the cofactor at a simple root
+
+New module `formal/GaloisForLFunctions/HTGeometry/RootCofactor.lean` (40 lines, zero placeholders,
+registered). Both endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `exists_cofactor` — `[PROVED HERE]` at a root `ξ` of `Q_{n+1}` there is `G` with
+  `Q_{n+1} = (X − ξ)G` and **`G(ξ) ≠ 0`**. The nonvanishing is what simplicity buys: `G(ξ) = 0` would
+  make `(X − ξ)` divide twice, contradicting `monicOrtho_not_sq_dvd` from link 61.
+- `cofactor_ne_zero` — the cofactor is nonzero as a polynomial.
+
+`G(ξ)` is the object that plays the role of `Q'_{n+1}(ξ)` in the classical treatment, with no
+derivative taken. That matters for the route ahead: the confluent Christoffel--Darboux identity is
+usually stated with a derivative, and this tree has no differentiation theory for these polynomials.
+Working with the cofactor avoids needing any.
+
+**Plan for the alternation**, recorded so the next session does not have to re-derive it. Fix a root
+`ξ` of `Q_{n+1}` and write `Q_{n+1} = (X − ξ)G`. The Christoffel--Darboux identity at `(x, ξ)` reads
+
+`(x − ξ) Kₙ(x, ξ) = Q_{n+1}(x) Qₙ(ξ) / hₙ = (x − ξ) G(x) Qₙ(ξ) / hₙ`,
+
+an identity of polynomial functions in `x`; cancelling `(x − ξ)` — legitimate via `Polynomial.funext`
+and `mul_left_cancel₀` on `X − C ξ`, since `ℝ` is infinite — and evaluating at `x = ξ` gives
+
+`Kₙ(ξ, ξ) = G(ξ) Qₙ(ξ) / hₙ`.
+
+The left side is strictly positive (link 55), so **`G(ξ) · Qₙ(ξ) > 0`** at every root. Then, using the
+monic factorisation `Q_{n+1} = ∏ⱼ (X − ξⱼ)` available from links 60--61 via
+`Splits.eq_prod_roots_of_monic`, one gets `Gᵢ(ξᵢ) = ∏_{j≠i} (ξᵢ − ξⱼ)`, whose sign is
+`(−1)^(number of roots above ξᵢ)` — alternating between consecutive nodes. That transfers the
+alternation to `Qₙ(ξᵢ)`, which is the hypothesis link 92 has been waiting for.
+
+Each of those steps is ordinary work on objects now all present; the only piece with any subtlety is
+the polynomial cancellation, and `Polynomial.funext` is the tool for it.
+
+### Link 95 — the confluent identity, without derivatives
+
+New module `formal/GaloisForLFunctions/HTGeometry/ConfluentDarboux.lean` (60 lines, zero
+placeholders, registered). Both endpoints `[propext, Classical.choice, Quot.sound]`.
+
+The plan recorded in link 94, executed as written:
+
+- `cdKernel_diag_mul_eq` — `[PROVED HERE]` for `Q_{n+1} = (X − ξ)G`,
+
+  **`Kₙ(ξ, ξ) · hₙ = G(ξ) · Qₙ(ξ)`.**
+
+  The polynomial identity `(X − ξ)·(Kξ · C hₙ) = (X − ξ)·(G · C Qₙ(ξ))` is proved pointwise by
+  `Polynomial.funext`, using `christoffelDarboux` with the root substitution and `cdKernel_symm` to
+  put the kernel in the right variable; `mul_left_cancel₀ (X_sub_C_ne_zero ξ)` removes the common
+  factor and evaluation at `ξ` finishes.
+- `cofactor_mul_monicOrtho_pos` — `[PROVED HERE]` **`G(ξ) · Qₙ(ξ) > 0`** at every root, since the
+  kernel diagonal and `hₙ` are both positive.
+
+This is the confluent Christoffel--Darboux identity, which classically reads
+`Kₙ(ξ,ξ) = Q'_{n+1}(ξ)Qₙ(ξ)/hₙ`, obtained here with the cofactor in place of the derivative. No
+differentiation theory for these polynomials is needed or used, and the cancellation that would be
+a limit in the classical argument is an exact algebraic step.
+
+**Toolchain note:** the import chain into `RootCofactor` runs through `GaussQuadratureNodes`, which
+does not reach `ChristoffelKernel` or `ChristoffelDarboux`; both had to be added explicitly. The
+symptom is `cdKernel` being reported as an unknown identifier treated as an auto-bound implicit,
+which reads as a typo rather than a missing import.
+
+**Opens next:** the sign of `G(ξᵢ)` across consecutive nodes, the last piece before the alternation.
+With `Q_{n+1} = ∏ⱼ (X − ξⱼ)` from `Splits.eq_prod_roots_of_monic` (links 60--61) and the enumeration
+of link 93, the cofactor at `ξᵢ` is `∏_{j ≠ i} (X − ξⱼ)`, so `Gᵢ(ξᵢ) = ∏_{j≠i} (ξᵢ − ξⱼ)`, negative
+factors being exactly those with `ξⱼ > ξᵢ`. Consecutive `i` differ by one in that count, so the signs
+alternate; combined with this link that transfers to `Qₙ(ξᵢ)` and discharges link 92's hypothesis.
+
+### Link 96 — the node gaps
+
+New module `formal/GaloisForLFunctions/HTGeometry/NodeGap.lean` (41 lines, zero placeholders,
+registered). Both endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `monicOrtho_ne_zero_of_mem_gap` — `[PROVED HERE]` `Q_{n+1}` has no root strictly between
+  `gaussNode i.castSucc` and `gaussNode i.succ`. The enumeration is *exhaustive* (link 93), so a root
+  in the gap would be `gaussNode j` for some `j` with `i.castSucc < j < i.succ`, i.e. `i < j < i+1`
+  in `ℕ` — closed by `omega` after `Fin.lt_def`. The order embedding supplies the reflection
+  `gaussNode a < gaussNode b ↔ a < b`, which is why exhaustiveness is usable at all.
+- `cofactor_ne_zero_on_gap` — the cofactor at the lower endpoint likewise does not vanish on the gap.
+
+**Route revision, recorded.** Link 95 proposed getting the cofactor sign from the explicit product
+`Q_{n+1} = ∏ⱼ (X − ξⱼ)`, requiring `Splits.eq_prod_roots_of_monic` and a translation between the root
+multiset and the `Fin (n+1)` enumeration. That translation is avoidable. Since `Q_{n+1}` has no root
+on the open gap, and `Gᵢ` has none on `[ξᵢ, ξᵢ₊₁)` (this link), both keep a constant sign there; and
+`Q_{n+1}(x) = (x − ξᵢ)Gᵢ(x)` with `x − ξᵢ > 0` while `Q_{n+1}(x) = (x − ξᵢ₊₁)Gᵢ₊₁(x)` with
+`x − ξᵢ₊₁ < 0`. Evaluating both at a single interior point of the gap gives
+`sign Gᵢ(ξᵢ) = −sign Gᵢ₊₁(ξᵢ₊₁)` directly, with no product and no multiset bookkeeping. Combined with
+link 95's `Gᵢ(ξᵢ)·Qₙ(ξᵢ) > 0`, that is the alternation.
+
+**Opens next:** the sign-constancy lemma that route needs — a polynomial with no root on an interval
+has constant sign there, which is the contrapositive of the intermediate value theorem and should be
+a short consequence of `intermediate_value_Ioo` as used in link 92. With it, the alternation is the
+two-line evaluation above, and link 92 then delivers interlacing node by node.
+
+### Link 97 — sign constancy
+
+New module `formal/GaloisForLFunctions/HTGeometry/SignConstancy.lean` (51 lines, zero placeholders,
+registered). All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `mul_pos_of_ne_zero_on_Icc` — `[PROVED HERE]` a continuous `f` with no zero on `[a, b]` satisfies
+  `0 < f a · f b`. Trichotomy on the product: negative gives a zero inside by
+  `intermediate_value_Ioo` (or the primed variant), zero contradicts nonvanishing at an endpoint.
+  This is the lemma link 96 identified as the last general ingredient.
+- `cofactor_eval_ne_zero` — away from a root of `Q_{n+1}` the cofactor cannot vanish, since
+  `Q_{n+1}(y) = (y − ξ)G(y)`.
+- `continuousOn_eval` — polynomial evaluation is continuous on any set, wrapping
+  `Polynomial.continuous_aeval` so the `ContinuousOn` form is available without re-deriving it.
+
+**Hygiene note.** `cofactor_eval_ne_zero` initially compiled with `n` never bound — `autoImplicit`
+silently made it an implicit argument. The file built and the theorem was true, but the binder was
+invisible in the statement. Made explicit. Worth watching for in this tree: a free variable in a
+theorem statement is accepted rather than rejected, so the failure mode is a subtly more general
+statement than intended rather than an error.
+
+Also: one Lean process survived the usual `pgrep | xargs kill` after this build and needed `kill -9`.
+The cleanup check caught it because it reports the count rather than assuming success.
+
+**Opens next:** the alternation, now assembled from parts that are all present. For a gap
+`(ξᵢ, ξᵢ₊₁)` pick any interior point `x`. Sign constancy on `[ξᵢ, x]` gives `Gᵢ(ξᵢ)·Gᵢ(x) > 0`;
+constancy on `[x, ξᵢ₊₁]` gives `Gᵢ₊₁(x)·Gᵢ₊₁(ξᵢ₊₁) > 0`; and `Q_{n+1}(x)` equals both
+`(x − ξᵢ)Gᵢ(x)` and `(x − ξᵢ₊₁)Gᵢ₊₁(x)`, with the two linear factors of opposite sign. Chaining gives
+`Gᵢ(ξᵢ)·Gᵢ₊₁(ξᵢ₊₁) < 0`, and link 95 converts that to `Qₙ(ξᵢ)·Qₙ(ξᵢ₊₁) < 0` — exactly link 92's
+hypothesis. The nonvanishing hypotheses for both applications come from link 96 and
+`cofactor_eval_ne_zero` here.
+
+### Links 98–99 — alternation, and interlacing
+
+Two new modules, both zero placeholders, both registered, all endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+**`Alternation.lean`** (72 lines). `monicOrtho_eval_alternates` — `[PROVED HERE]`
+
+> **`Qₙ(ξᵢ) · Qₙ(ξᵢ₊₁) < 0`** at consecutive nodes.
+
+Assembled exactly as link 97 laid out, entirely inside one gap. Pick the midpoint `x`; sign constancy
+on `[ξᵢ, x]` and on `[x, ξᵢ₊₁]` (link 97) holds the cofactors' signs, using link 96 for nonvanishing
+on the gap and `exists_cofactor` at the endpoints; `Q_{n+1}(x)` factors as `(x−ξᵢ)Gᵢ(x)` and as
+`(x−ξᵢ₊₁)Gᵢ₊₁(x)` with linear factors of opposite sign, giving `Gᵢ(x)·Gᵢ₊₁(x) < 0`; chaining yields
+`Gᵢ(ξᵢ)·Gᵢ₊₁(ξᵢ₊₁) < 0`, and link 95's `Gᵢ(ξᵢ)·Qₙ(ξᵢ) > 0` transfers it to `Qₙ`.
+
+**`Interlacing.lean`** (32 lines). `exists_root_between_gaussNodes` and `exists_gaussNode_between` —
+`[PROVED HERE]` **between consecutive nodes of level `n` there is a root of `Q_{n+2}`**, i.e. a node
+of level `n+1`. This is link 92's step with its hypothesis discharged; the proof is one application.
+
+Interlacing was named in link 90 as "the one classical fact about these zeros the tree still lacks".
+It is now proved, from the three-term recurrence and the Wronskian, with no derivative, no Jacobi
+matrix, and no Sturm-sequence formalism — links 91--99 are that route.
+
+**Two process notes.** The `set` tactic does not fold its definitions back into goals produced by
+later `rw`/`simp`, so `simp [← hadef]` was needed in both factorisation steps; this is the same class
+of problem as the `set`-after-`have` ordering issue from link 62. And the umbrella-import guard
+`"HTGeometry.Interlacing" not in src` false-matched the already-present `HTGeometry.InterlacingStep`,
+silently skipping the import — substring checks on module names are unsafe when one name is a prefix
+of another, and the guard should test for the exact import line.
+
+**Opens next:** the count. Interlacing gives *at least* one node of level `n+1` in each of the `n`
+gaps; since level `n+1` has exactly `n+2` nodes (link 61), at most one can lie in each gap and the
+two remaining lie outside the span. Making that precise would give the classical strict interlacing
+statement, and it is pure counting on top of what is now proved — an injection from `Fin n` into
+`Fin (n+2)` built from `exists_gaussNode_between`, plus the pigeonhole that the map is order-preserving.
+
+### Link 100 — integration audit
+
+No new mathematics. The umbrella-import guard that silently failed in link 99 prompted a check of
+whether anything else this card claims is unverified, and two things were found.
+
+**1. All 43 modules are registered.** Checked with an exact-line `grep -qx` against
+`HTGeometry.lean` rather than a substring test, and every module has a source file. The link-99
+false match was the only registration gap.
+
+**2. Two modules had no `.olean`:** `OrthonormalWronskian` and `ComplexKernelTransfer`. Both are
+pre-compaction work whose object files were never emitted — they had been checked with
+`lake env lean` (which validates but writes nothing) and never with `-o`. So they were *verified* but
+not *available*: any module importing them would have failed to build, and
+`ComplexKernelTransfer.boundedKernel_of_isClosed` — the clopen argument this card leans on for the
+global transfer — could not have been used downstream. Both now built and present.
+
+This is the failure mode the workspace memory warns about, in a new form: not unimported modules, but
+imported modules with no object file. `lake env lean <file>` proves a module elaborates; only
+`lake env lean -o <olean> <file>` makes it usable. A card claim can be true and still be dead.
+
+**3. Cross-module integration verified.** A scratch file importing ten of the session's modules
+together — including both repaired ones — elaborates, and the five principal results re-audit clean:
+
+- `momentFunctional_eq_gaussSum` (Gauss quadrature, exact to order `2n+1`)
+- `exists_finiteMeasure_hasHamburgerMoments` (Hamburger existence)
+- `positiveMomentForm_iff_exists_representing` (the characterisation)
+- `exists_gaussNode_between` (interlacing)
+- `firstKindBounded_iff_christoffelLimit_pos` (the real/complex identification)
+
+all `[propext, Classical.choice, Quot.sound]`.
+
+**Opens next:** the counting upgrade to strict interlacing, as recorded in link 99, is unchanged and
+remains the next piece of mathematics. Before it, one worthwhile habit change: every module built in
+this card from here should be emitted with `-o` at the time it is written, not checked bare, so that
+the gap found here cannot recur.
+
+### Link 101 — the interlacing selection
+
+New module `formal/GaloisForLFunctions/HTGeometry/InterNode.lean` (62 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time per link 100). All endpoints
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+- `interNode h n i` — a level-`n+1` node chosen from the `i`-th gap, via `Classical.choose` on
+  `exists_gaussNode_between` (link 99), with `interNode_spec`, `interNode_mem`, `interNode_lt`,
+  `lt_interNode` unpacking the choice.
+- `interNode_strictMono` — `[PROVED HERE]` **the selection is strictly increasing.** For `i < j`,
+  the `i`-th choice lies below `gaussNode i.succ ≤ gaussNode j.castSucc` (order embedding plus
+  `omega` on the `Fin` indices), which lies below the `j`-th choice.
+- `interNode_injective`.
+
+So the level-`n+1` nodes contain a strictly increasing family indexed by the `n` gaps of level `n` —
+interlacing in the form a count can consume.
+
+**On what this does and does not give.** The injection yields `n ≤ n + 2`, which is vacuous, so it is
+not yet the classical strict-interlacing statement. What is missing is the *reverse* inequality: that
+each gap contains at most one level-`n+1` node, equivalently that the selection is surjective onto the
+level-`n+1` nodes lying inside the span of the level-`n` nodes. That does not follow from counting
+alone with the two "extra" nodes unaccounted for — the two nodes of level `n+1` outside the span have
+to be located first, and nothing proved so far pins them down.
+
+**Opens next:** locate the extreme nodes. The natural statement is that `Q_{n+2}` has a root below
+every root of `Q_{n+1}` and one above every root, which would account for the two extras and, with the
+selection here, force the counting to be tight. Both should follow from sign information at the ends:
+`Q_{n+2}` is monic so eventually positive, and its sign at the extreme nodes of level `n` is fixed by
+the alternation of link 98 together with the confluent identity of link 95. That is the same
+machinery, applied at the boundary of the node range rather than between consecutive nodes.
+
+### Link 102 — a root above the largest node
+
+New module `formal/GaloisForLFunctions/HTGeometry/ExtremeNode.lean` (76 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `monic_eventually_pos` — a monic real polynomial is eventually positive. Degree zero gives `P = 1`;
+  positive degree uses `Polynomial.tendsto_atTop_of_leadingCoeff_nonneg` and
+  `Tendsto.eventually_gt_atTop`.
+- `exists_root_above_last` — `[PROVED HERE]` **`Q_{n+2}` has a root above `gaussNode (Fin.last n)`,
+  the largest root of `Q_{n+1}`.**
+
+The chain is the one sketched in link 101: the cofactor `G` at the top node is monic (from
+`Monic.of_mul_monic_left`) with all roots at or below that node, so sign constancy on `[ξ, R]` against
+its eventual positivity gives `G(ξ) > 0`; link 95 then gives `Qₙ(ξ) > 0`; link 91's collapsed
+recurrence gives `Q_{n+2}(ξ) < 0`; and `Q_{n+2}` monic is eventually positive, so IVT produces the
+root above.
+
+**Toolchain note, and it cost three builds.** `Polynomial.Monic` is a definition unfolding to
+`leadingCoeff = 1`, so in this toolchain dot notation on a `Monic` hypothesis resolves against `Eq`:
+`hP.natDegree_eq_zero_iff_eq_one` becomes `Eq.natDegree_eq_zero_iff_eq_one` and fails, as does
+declaring a lemma in the `Monic` namespace and expecting `hMonic.myLemma` to find it. Every use must
+be spelled out. On the other hand `hP` *is* a proof of `P.leadingCoeff = 1`, so `rw [hP]` works
+directly where a `Monic.leadingCoeff` lemma would be reached for. And `leadingCoeff` has no equation
+lemmas, so `rw [Polynomial.leadingCoeff]` fails — `← h0` plus `Polynomial.coeff_natDegree` is the
+route.
+
+**Opens next:** the mirror statement, a root of `Q_{n+2}` below `gaussNode 0`. The argument is the
+same with the inequalities reversed, except that eventual positivity at `-∞` depends on the parity of
+`n+2` — a monic polynomial tends to `+∞` at `-∞` for even degree and `-∞` for odd. Either case gives
+the sign change against `Q_{n+2}(ξ_min)`, whose sign is `(−1)^{n+1}` by the same cofactor argument,
+and the two parities cancel; but the parity bookkeeping is real and should be planned rather than
+discovered mid-proof. With both extremes located, the `n+2` level-`n+1` nodes are fully accounted
+for — `n` in the gaps, one below, one above — and the count closes strict interlacing.
+
+### Link 103 — the node range expands
+
+New module `formal/GaloisForLFunctions/HTGeometry/NodeRange.lean` (39 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time; compiled first try). All endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `le_gaussNode_last` — every root of `Q_{m+1}` is at most the largest enumerated node of level `m`.
+- `gaussNode_last_lt_last` — `[PROVED HERE]` **the largest node strictly increases with the level.**
+- `gaussNode_last_strictMono` — the same as a `StrictMono` in `n`.
+
+**Route choice, deliberately.** Link 102 named the mirror statement — a root of `Q_{n+2}` below the
+smallest node — as the next step, and flagged that it carries parity bookkeeping, since a monic
+polynomial's behaviour at `−∞` depends on the parity of its degree and the sign of `Q_{n+2}` at the
+bottom node is `(−1)^{n+1}`. Those two parities do cancel, so the statement is true and provable, but
+it is the expensive way to reach what is actually wanted downstream. The *consequence* of interest —
+that the node ranges grow — needs only the upper end, where the monic leading behaviour is positive
+regardless of degree. So this link takes that instead: three short proofs, no parity, from link 102
+alone.
+
+The mirror statement remains open and is still worth having for strict interlacing proper, where the
+count genuinely needs both extremes located. It is recorded as deferred rather than done.
+
+**Opens next:** two independent directions, both now cheap to state.
+1. *The lower mirror*, when strict interlacing is wanted: same argument at the bottom, with the sign
+   of `Q_{n+2}(ξ_min)` and of `Q_{n+2}` at `−∞` both carrying `(−1)ⁿ` factors that cancel. Plan the
+   parity as `Even`/`Odd` case analysis on `n` rather than manipulating `(−1)ⁿ` algebraically.
+2. *Node approach*, the question from link 88 that motivated all of this: with the ranges expanding,
+   the natural next statement is that the largest nodes tend to the top of the support — or, if the
+   moment problem is indeterminate, that they diverge. Whether `gaussNode h n (Fin.last n)` is bounded
+   is now a well-posed question about a monotone real sequence, and its answer is exactly whether the
+   representing measures have bounded support.
+
+### Link 104 — node weights decay quadratically
+
+New module `formal/GaloisForLFunctions/HTGeometry/NodeWeightDecay.lean` (46 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time; compiled first try). All endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `christoffel_mul_sq_le` — `[PROVED HERE]` for `n ≥ 1` and any node `ξ`, **`λₙ(ξ) · ξ² ≤ s₂`**. One
+  application of `Finset.single_le_sum` to the quadrature identity `∑_ζ λₙ(ζ)ζ² = s₂` of link 64,
+  whose terms are nonnegative.
+- `christoffel_le_div_sq` — equivalently `λₙ(ξ) ≤ s₂ / ξ²` for `ξ ≠ 0`.
+- `christoffelLimit_mul_sq_le` — the same bound for the limit Christoffel function at a node, since
+  `λ ≤ λₙ`.
+
+This is the single-node form of the tail estimate that produced tightness in links 64--65. There the
+sum over far nodes was bounded; here each individual far node is. The two are the same inequality read
+at different granularity, and the pointwise form is the one that says a node's *weight* is small
+rather than that a *collection* of nodes carries little mass.
+
+**A caution about what this does not settle.** It is tempting to read this as bounding how far nodes
+can go, but it does not: it constrains the weight at a distant node, not the node's existence. A
+sequence of nodes escaping to infinity with weights decaying like `s₂/ξ²` is entirely consistent with
+it, and that is exactly what happens whenever the representing measure has unbounded support. So the
+question raised in link 103 — whether `gaussNode h n (Fin.last n)` is bounded — is *not* answered
+here, and the expected answer is no in the cases this card cares about.
+
+**Opens next:** the honest form of that question. Boundedness of the largest nodes is equivalent to
+the representing measures having uniformly bounded support, which for an indeterminate problem is
+false; so the statement worth proving is the divergence, not the boundedness. A route: if the largest
+nodes were bounded by `M`, every Gauss measure would be supported in `[−M, M]`, so every weak limit
+would be too, and the moments would be those of a compactly supported measure — but a compactly
+supported measure is determinate, contradicting indeterminacy. That argument needs a determinacy
+criterion the tree does not yet have, so the first step is to decide whether to build one.
+
+### Link 105 — nodes lie within the support
+
+New module `formal/GaloisForLFunctions/HTGeometry/NodeSupportBound.lean` (82 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`monicOrtho_root_le_of_ae_le` — `[PROVED HERE]` **if a representing measure is carried below `M`,
+every root of `Q_{n+1}` is at most `M`.**
+
+The argument, and it uses three separate earlier links. Suppose `ξ > M`. Write `Q_{n+1} = (X − ξ)G`
+(link 94). Then `deg G = n`, so `⟪Q_{n+1}, G⟫ = 0` by orthogonality. But that pairing is
+`∫ (x − ξ)G(x)² dμ`, whose integrand is nonpositive on the support; vanishing of the integral forces
+`G = 0` almost everywhere (`integral_eq_zero_iff_of_nonneg_ae`). A nonzero polynomial vanishes only on
+a finite set, and link 81's `measure_compl_finset_pos_of_positiveMomentForm` says the measure charges
+every cofinite set — contradiction.
+
+That last step is where the earlier work pays: without link 81, "G vanishes a.e." would not be
+absurd, since a measure supported on finitely many points makes it routine. Positive definiteness is
+exactly what rules that out, and it was proved for this purpose two dozen links ago in a different
+context.
+
+**What this gives, stated carefully.** The contrapositive is the useful direction: if the nodes are
+unbounded above, no representing measure is carried below any finite `M`, i.e. every representing
+measure has support unbounded above. It does *not* yet prove the nodes are unbounded — that remains
+the open half, and link 104 already warned against reading node-weight decay as a bound on node
+position.
+
+**Opens next:** the converse, that bounded support forces bounded nodes, is now immediate from this
+link — it is the same statement. So the genuine remaining question is unchanged: is
+`gaussNode h n (Fin.last n)` unbounded for an indeterminate sequence? With this link, that is
+equivalent to every representing measure having unbounded support, which is a cleaner formulation
+than the node one and is closer to standard determinacy theory. Deciding whether to build a
+determinacy criterion — the question left open in link 104 — can now be posed as: prove that an
+indeterminate sequence admits no compactly supported representing measure.
+
+### Link 106 — nodes lie in the convex hull of the support
+
+`NodeSupportBound.lean` now 149 lines, zero placeholders. Both new endpoints
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+- `monicOrtho_root_ge_of_ae_ge` — `[PROVED HERE]` the mirror of link 105: a representing measure
+  carried above `m` forces every root of `Q_{n+1}` to be at least `m`.
+- `monicOrtho_root_mem_Icc` — `[PROVED HERE]` **every node lies in `[m, M]` whenever the representing
+  measure is carried there** — the nodes lie in the convex hull of the support.
+
+The mirror needed no new idea: the integrand `(x − ξ)G(x)²` flips from nonpositive to nonnegative and
+the rest of the argument is unchanged. This is worth contrasting with the *other* mirror still
+deferred, the lower extreme node of link 102: that one genuinely carries parity, because it concerns
+the leading behaviour of a monic polynomial at `−∞`, whereas this one concerns only the sign of a
+linear factor on the support. Two statements that both read as "the same argument at the other end"
+have quite different costs, and distinguishing them was worth the attention.
+
+**Opens next**, unchanged in substance and now sharply posed. The chain of the last few links has
+reduced the node-approach question of link 88 to: *does an indeterminate moment sequence admit a
+compactly supported representing measure?* If not, its nodes are unbounded, by this link's
+contrapositive. The standard answer is no, via polynomial density in `C([m, M])` — mathlib has
+Stone--Weierstrass as `polynomialFunctions_closure_eq_top` — but turning density into uniqueness of
+the representing measure needs a duality step in the space of measures that this tree does not yet
+have. That is a well-defined piece of work with a known route, and it is the natural next
+construction rather than another consequence of what is already proved.
+
+### Link 107 — first step towards determinacy
+
+New module `formal/GaloisForLFunctions/HTGeometry/MomentDeterminacyStep.lean` (39 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time; compiled first try).
+Both endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `integral_eval_eq_of_hasMoments` — `[PROVED HERE]` two measures representing the same sequence
+  integrate every polynomial identically, since both integrals compute `momentFunctional s p`.
+- `integral_eval_eq_of_moments_eq` — the same in the `hs`/`hint` hypothesis form used elsewhere here.
+
+Small, but it is the exact input the density argument consumes, and it is worth having isolated: the
+step is pure linearity and belongs nowhere near the analysis that follows it.
+
+**Survey result, and the route.** Both remaining ingredients are in mathlib:
+
+- `polynomialFunctions.topologicalClosure (s : Set ℝ)` (`StoneWeierstrass.lean`) and
+  `polynomialFunctions_closure_eq_top a b` (`Weierstrass.lean`) — polynomial density in `C([a,b])`.
+- `MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure`
+  (`HasOuterApproxClosed.lean:268`) — two finite measures agreeing on all bounded continuous
+  functions are equal.
+
+So the construction is: from this link, agreement on polynomials; by density, agreement on
+`C([m, M])`; and since both measures are carried by `[m, M]`, agreement on all bounded continuous
+functions on `ℝ`, whence equality. The one step with real content is the middle one — passing a
+uniform limit through the integral — and it needs the measures to be finite, which they are.
+
+**Opens next:** that middle step. It is a genuine construction rather than a corollary, and it is the
+first piece in a while that is not assembly of existing parts. Note the shape it must take: density
+gives a sequence of polynomials converging uniformly on `[m, M]` to a given continuous `f`, and
+uniform convergence on a set carrying a finite measure transfers to convergence of integrals; the
+awkwardness is that the polynomials are elements of a subalgebra of `C([m,M])` while the integrals
+are over `ℝ`, so the restriction and its inverse have to be handled explicitly rather than
+definitionally.
+
+### Link 108 — uniform convergence passes through the integral
+
+New module `formal/GaloisForLFunctions/HTGeometry/UniformIntegralLimit.lean` (55 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time; compiled first try).
+Axioms `[propext, Classical.choice, Quot.sound]`.
+
+`tendsto_integral_of_tendstoUniformlyOn` — `[PROVED HERE]` **if a finite measure gives full mass to
+`S` and `F n → f` uniformly on `S`, then `∫ F n → ∫ f`.**
+
+The estimate is elementary and deliberately so: uniform smallness on `S` plus `μ(Sᶜ) = 0` makes the
+difference uniformly small almost everywhere, and `norm_integral_le_of_norm_le_const` bounds the
+integral difference by that smallness times the total mass. Choosing the tolerance as
+`ε / (2(c+1))` rather than `ε / (2c)` avoids a case split on whether the total mass `c` is zero — a
+small thing, but it removes the only branch the proof would otherwise need.
+
+This is the analytic content of the density step identified in link 107, isolated from the density
+itself so that each can be checked on its own.
+
+**Opens next:** the density half. `polynomialFunctions.topologicalClosure` gives, for continuous `f`
+on `[m, M]`, a sequence of polynomials converging to it in the sup-norm of `C([m, M])`; what is needed
+is that sequence as honest polynomials with `TendstoUniformlyOn` on `[m, M]`, which is a translation
+between the `ContinuousMap` subalgebra picture and the pointwise one. That translation is the
+remaining awkwardness flagged in link 107, and it is now the *only* thing between the parts and the
+determinacy theorem: with it, link 107 gives agreement on polynomials, this link carries it to
+continuous functions, and `ext_of_forall_integral_eq_of_IsFiniteMeasure` closes.
+
+### Link 109 — Weierstrass in pointwise form
+
+New module `formal/GaloisForLFunctions/HTGeometry/WeierstrassApprox.lean` (39 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`exists_poly_approx` — `[PROVED HERE]` **for continuous `f` on `[a, b]` and `ε > 0` there is an
+honest `p : Polynomial ℝ` with `|f x − p(x)| < ε` for all `x ∈ [a, b]`.**
+
+This is the translation flagged in links 107--108. `polynomialFunctions_closure_eq_top` states density
+as `(polynomialFunctions (Icc a b)).topologicalClosure = ⊤`, an equality of subalgebras of
+`C(Icc a b, ℝ)`; `Metric.mem_closure_iff` extracts a nearby element, `polynomialFunctions_coe`
+identifies it as the restriction of a genuine polynomial, and
+`ContinuousMap.dist_apply_le_dist` converts the sup-metric bound to the pointwise one.
+
+**Toolchain note.** `f ∈ S.topologicalClosure` is *definitionally* `f ∈ closure ↑S`, so the coercion
+needs no rewrite — `have hmem' : f ∈ closure (↑S : Set _) := hmem` typechecks directly. The rewrite
+`Subalgebra.topologicalClosure_coe` fails here because the goal is a membership rather than a
+coercion, which reads as a missing lemma when it is really an unnecessary step.
+
+**Opens next:** assembling the determinacy theorem. All three parts are now in the tree: agreement on
+polynomials (link 107), uniform convergence through the integral (link 108), and polynomials
+approximating continuous functions (here). The remaining work is to turn the `ε`-form of this link
+into a sequence — take `ε = 1/(n+1)` and package as `TendstoUniformlyOn` — and then to bridge from
+continuous functions on the subtype `Icc a b` to bounded continuous functions on `ℝ`, which is where
+`ext_of_forall_integral_eq_of_IsFiniteMeasure` expects its input. That bridge is an extension
+problem: a continuous function on a compact interval extends continuously and boundedly to `ℝ`, and
+mathlib's Tietze machinery is the likely source.
+
+### Link 110 — Weierstrass as a sequence
+
+New module `formal/GaloisForLFunctions/HTGeometry/PolySeqApprox.lean` (49 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time; compiled first try). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`exists_poly_seq_tendstoUniformlyOn` — `[PROVED HERE]` **for `g` continuous on `[a, b]` there are
+polynomials `P n` with `TendstoUniformlyOn (fun n x => (P n).eval x) g atTop (Icc a b)`.**
+
+`ε = 1/(n+1)` in link 109, `choose` to extract the sequence, `exists_nat_one_div_lt` for the
+threshold.
+
+**A formulation choice that avoided the extension problem, at least here.** Link 109 gives its
+conclusion for a bundled `C(Icc a b, ℝ)`, and link 108 wants functions on `ℝ`. Rather than extend the
+continuous map from the subtype to `ℝ` — the Tietze route flagged in link 109 — this link takes
+`g : ℝ → ℝ` with `ContinuousOn g (Icc a b)` as its *hypothesis* and restricts inside the proof via
+`ContinuousOn.restrict`. The subtype then never appears in the statement, and the two links compose
+without any extension.
+
+That does not make the extension problem disappear; it relocates it. The final assembly still needs
+to feed `ext_of_forall_integral_eq_of_IsFiniteMeasure`, whose input is bounded continuous functions
+on `ℝ`, and a bounded continuous `f : ℝ → ℝ` is in particular continuous on `[m, M]`, so this link
+applies to it directly. The extension is needed only if one starts from a function given on the
+interval — and the assembly does not.
+
+**Opens next:** the assembly, now with no missing pieces. For two finite measures carried by `[m, M]`
+with the same moments and any bounded continuous `f : ℝ → ℝ`: this link gives polynomials converging
+uniformly to `f` on `[m, M]`; link 108 carries that to `∫ P n → ∫ f` against each measure; link 107
+says the `∫ P n` agree; so the limits agree, and `ext_of_forall_integral_eq_of_IsFiniteMeasure` gives
+equality of the measures. That is determinacy for compactly supported representing measures, and with
+link 105/106 it yields the node divergence that link 88 asked for.
+
+### Link 111 — determinacy on a compact interval
+
+New module `formal/GaloisForLFunctions/HTGeometry/CompactDeterminacy.lean` (47 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time; compiled first try).
+Axioms `[propext, Classical.choice, Quot.sound]`.
+
+`measure_eq_of_moments_eq_of_carried` — `[PROVED HERE]`
+
+> **Two finite measures carried by the same compact interval, with the same moments, are equal.**
+
+The assembly predicted in link 110, and it went through exactly as written: against a bounded
+continuous `f`, link 110 gives polynomials converging uniformly on `[m, M]`; link 108 turns that into
+convergence of the integrals against each measure; link 107 makes the polynomial integrals agree
+termwise; `tendsto_nhds_unique` transfers the agreement to the limits; and
+`ext_of_forall_integral_eq_of_IsFiniteMeasure` concludes.
+
+Four links, each one theorem, each checkable alone — links 107 through 111 were laid out in advance
+in link 107 and none of them changed shape on contact.
+
+**What it settles.** A compactly supported representing measure is unique among compactly supported
+ones. Combined with links 105--106, if some representing measure is carried by `[m, M]` then all the
+Gauss nodes lie in `[m, M]`, so the node sequence `gaussNode h n (Fin.last n)` is bounded — and
+conversely unbounded nodes rule out any compactly supported representative.
+
+**Opens next, stated without overreach.** This is *not yet* full indeterminate-case determinacy: it
+compares two compactly supported measures, whereas indeterminacy asserts the existence of two
+representatives that need not both be compactly supported. To conclude "an indeterminate sequence has
+no compactly supported representative" one still needs that a compactly supported measure is
+determinate against *all* representatives, not just compact ones — which requires knowing a
+representative with compact support forces every representative to be supported there. That is the
+remaining gap and it is a genuine one; the natural route is that a measure with compact support has
+moments growing slowly enough to satisfy a Carleman-type condition, which is a different piece of
+analysis from anything built so far.
+
+### Link 112 — bounded powers confine a measure
+
+New module `formal/GaloisForLFunctions/HTGeometry/PowerMomentSupport.lean` (51 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`measure_ge_eq_zero_of_pow_integral_le` — `[PROVED HERE]` for nonnegative measurable `f` with
+`∫ fⁿ dν ≤ C` for every `n`, and any `t > 1`, **`ν {x | t ≤ f x} = 0`.**
+
+On that set the integrand is at least `tⁿ`, so `(ν A) · tⁿ ≤ ∫_A fⁿ ≤ ∫ fⁿ ≤ C`; if the mass were
+positive, `pow_unbounded_of_one_lt` would give an `n` violating it.
+
+**Route correction to link 111.** That entry named a Carleman-type moment-growth condition as the
+likely route to closing the remaining gap. That is not needed. The gap — showing that a compactly
+supported representative forces *every* representative into the same interval — has an elementary
+proof: take `f` to be the normalised distance to the centre of the interval, so `f ≤ 1` on the
+compact support; then `∫ fⁿ dμ ≤ s₀` for the compactly supported `μ`, the integrals of `fⁿ` agree
+across representatives because `fⁿ` is a polynomial and the moments agree (link 107), and this link
+confines the other representative. No growth condition and no quasi-analyticity enter.
+
+Reaching for the named classical theorem was the wrong instinct, for the third time in this card —
+after `UniformIntegrable` in link 68 and Cauchy--Schwarz in link 73. The pattern is now well enough
+evidenced to state as a rule: when a step looks like it needs a famous theorem, first write down the
+inequality the step actually requires; in this development it has never yet been more than a few
+lines.
+
+**Opens next:** the instantiation, which is bookkeeping over parts all present. Set `c = (m+M)/2`,
+`r = (M−m)/2`, and `f x = |x − c| / r`; then `f ≤ 1` on `[m, M]`, `fⁿ` is not a polynomial but `f^{2n}`
+is, so run the argument along even powers only — a detail worth noting before writing, since the odd
+powers involve `|·|` and are not reachable by link 107.
+
+### Link 113 — the power bound transfers
+
+New module `formal/GaloisForLFunctions/HTGeometry/CarriedTransfer.lean` (64 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `eval_scaled_sq_pow` — the powers of `((x − c)/r)²` are polynomial evaluations, namely of
+  `(C (1/r) · (X − C c))^{2n}`.
+- `integral_scaled_sq_pow_le` — `[PROVED HERE]` if `μ` is carried by a set where `((x−c)/r)² ≤ 1`, and
+  `ν` has the same moments, then **`∫ (((x−c)/r)²)ⁿ dν ≤ s₀` for every `n`.**
+
+The parity detail flagged in link 112 turned out to be avoidable rather than merely manageable. Using
+the *square* `((x−c)/r)²` as the base function instead of `|x−c|/r` makes every power a polynomial, so
+link 107 applies at every `n` and the odd/even split never arises. Worth noting that the flag was
+still useful: it prompted looking for a base function whose powers are all polynomial, which is what
+made the problem disappear.
+
+**Opens next:** the conclusion, which is now two routine steps. Feed this bound into link 112 with
+`f x = ((x−c)/r)²` and `C = s₀` to get `ν {x | t ≤ f x} = 0` for every `t > 1`; then
+`{x | 1 < f x} = ⋃ₖ {x | 1 + 1/(k+1) ≤ f x}` is a countable union of null sets, so `ν` gives no mass
+to `{|x − c| > r}` — that is, `ν` is carried by `[m, M]` as well. With link 111 the two measures are
+then equal, closing the gap identified there: a compactly supported representative is determinate
+against *all* representatives, so an indeterminate sequence has none, and by links 105--106 its Gauss
+nodes are unbounded — which is the divergence that link 88 asked for.
+
+### Link 114 — determinacy from one compactly carried representative
+
+New module `formal/GaloisForLFunctions/HTGeometry/CarriedConclusion.lean` (86 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). All endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `sq_gt_one_iff_notMem_Icc` — `1 < ((x−c)/r)²` exactly off `[c−r, c+r]`.
+- `measure_compl_Icc_eq_zero_of_moments_eq` — `[PROVED HERE]` **a second representative is carried by
+  the same interval.** Link 113's bound feeds link 112 to kill each `{x | 1 + 1/(k+1) ≤ f x}`, and the
+  complement of the interval is their countable union.
+- `measure_eq_of_moments_eq_of_one_carried` — `[PROVED HERE]`
+
+  > **If some representing measure is carried by a compact interval, every representing measure
+  > equals it.**
+
+This closes the gap identified in link 111, which was careful to record that compact-versus-compact
+determinacy is weaker than what was needed. The missing implication is now proved, so the statement is
+determinacy proper: one compactly supported representative forces uniqueness outright.
+
+Consequently an indeterminate moment sequence has no compactly supported representing measure, and by
+links 105--106 its Gauss nodes are unbounded — the divergence asked for in link 88 and pursued since.
+
+**A note on the set identity.** The first attempt at `sq_gt_one_iff_notMem_Icc` tried to manipulate
+`abs_le`, `not_and_or` and case splits directly and produced an unusable goal. Rewriting it as
+"membership in the interval is `|x − c| ≤ r`" first, then clearing the division once with
+`lt_div_iff₀`, made both directions single `nlinarith` calls. Converting to the absolute-value form
+*before* touching the inequality is the move; the reverse order fights the `Icc` unfolding.
+
+**Opens next:** the divergence is now a corollary rather than a conjecture, but it has not been
+written as a Lean statement — the chain runs through several links and deserves a single named
+theorem. That assembly is the natural next step: `gaussNode h n (Fin.last n)` is unbounded whenever
+the sequence admits two distinct representing measures.
+
+### Link 115 — the weak limit inherits a carrying set
+
+New module `formal/GaloisForLFunctions/HTGeometry/LimitCarrier.lean` (40 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `measure_eq_zero_of_isOpen_le_liminf` — `[PROVED HERE]` if the portmanteau open-set inequality holds
+  and every approximant gives an open `U` no mass, the limit gives it none either. Three lines:
+  `μ U ≤ liminf 0 = 0`.
+- `gaussMeasure_eq_zero_of_disjoint_nodes` — a Gauss measure gives no mass to a measurable set
+  avoiding its nodes.
+
+**Why this link exists, and a correction to link 114's handoff.** That entry said the node divergence
+"is now a corollary rather than a conjecture". Checking the chain before writing it, that was too
+strong. Links 105--106 give *bounded support ⟹ bounded nodes*; the divergence needs the converse,
+*bounded nodes ⟹ some representative compactly supported*, which was nowhere proved. The route is:
+bounded nodes make every Gauss measure vanish off a fixed interval, and the weak limit of link 70
+then vanishes there too — but that last step is exactly the ingredient this link supplies, and it was
+missing. So link 114 overstated the state; the corollary needed a new lemma, not just assembly.
+
+**Opens next:** the assembly, now genuinely just assembly. If `gaussNode h n (Fin.last n) ≤ B` for
+all `n` and the nodes are also bounded below, every `gaussMeasure s n` vanishes on `(Icc (−B') B')ᶜ`
+by the second theorem here, so the weak limit does by the first, so the limit is a compactly supported
+representing measure, so by link 114 the sequence is determinate. Note the lower bound is needed and
+is *not* available: the lower extreme node was deferred at link 103 precisely because of the parity
+bookkeeping. Closing the divergence therefore requires going back for that deferred mirror — which is
+worth recording plainly rather than discovering again at assembly time.
+
+### Link 116 — the approximants' carrier, and a correction to link 115
+
+`LimitCarrier.lean` now 60 lines, zero placeholders. Both new endpoints
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+- `gaussProb_eq_zero_of_disjoint_nodes` — the normalised Gauss measure gives no mass to a set
+  avoiding its nodes.
+- `gaussProb_compl_eq_zero_of_nodes_mem` — `[PROVED HERE]` **if every level's nodes lie in `[−B, B]`,
+  every Gauss measure vanishes off it.**
+
+**Correction to link 115.** That entry concluded the divergence assembly "requires going back for
+that deferred mirror", the lower extreme node of link 102/103, and recorded the parity bookkeeping as
+unavoidable. Re-examining before starting it: that is wrong. The lower extreme node is needed for
+*strict interlacing counting*, which is a different goal. For the determinacy assembly the natural
+statement takes node-boundedness as a **hypothesis** —
+
+> if all nodes of all levels lie in a fixed compact interval, the sequence is determinate
+
+— and a hypothesis needs no existence proof for the extreme nodes at all. The mirror stays deferred
+and is not on this path.
+
+Two turns in a row a handoff proved optimistic on inspection, and this one was optimistic in the
+opposite direction: link 115 declared a prerequisite that is not one. Tracing dependencies before
+writing has now corrected the record in both directions, which is the point of doing it.
+
+**Opens next:** the assembly proper. What is still missing is not a lemma but a *refactor*: link 79's
+`exists_probabilityMeasure_hasMoments` discards the subsequence `φ` and the open-set inequality it
+was built from, so the carrier information cannot be attached to its output. The construction of
+links 70--79 needs re-exposing with those retained — a variant returning `μ`, `φ`, and the
+portmanteau hypothesis together — after which link 115 applies to the limit and links 105--114 close
+the argument.
+
+### Link 117 — bounded nodes force determinacy
+
+Two changes, both clean.
+
+**Refactor of `HamburgerExistence.lean`.** The construction of links 70--79 discarded the subsequence
+`φ` and the portmanteau inequality, so no caller could attach carrier information to the limit
+(link 116). The body is now `hasMoments_of_tendsto`, which takes `μ`, `φ`, `hopen` and `hlim` as
+hypotheses; `exists_probabilityMeasure_hasMoments` is a two-line wrapper around it with the same
+statement as before, so nothing downstream changed and no dependent needed rebuilding.
+
+**New module `formal/GaloisForLFunctions/HTGeometry/BoundedNodesDeterminate.lean`** (50 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time; compiled first try).
+All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `exists_carried_representative_of_nodes_bounded` — `[PROVED HERE]` **if every level's nodes lie in
+  `[−B, B]`, the sequence has a representing probability measure carried by `[−B, B]`.** Link 116
+  makes each Gauss measure vanish off the interval, link 115 passes that to the weak limit, and the
+  refactored `hasMoments_of_tendsto` supplies the moments for the same limit.
+- `determinate_of_nodes_bounded` — `[PROVED HERE]` **bounded nodes force determinacy**: any finite
+  measure with the normalised moments equals that limit, via `measure_eq_of_moments_eq_of_one_carried`
+  (link 114).
+
+Contrapositively, an indeterminate moment sequence has Gauss nodes escaping every compact interval.
+That is the divergence pursued since link 88, and it needed neither the deferred lower extreme node
+(link 116's correction) nor a Carleman condition (link 112's correction).
+
+**Opens next:** the statement just proved is conditional on node-boundedness as a hypothesis. To
+apply it to a specific sequence one must exhibit the indeterminacy — two distinct representatives —
+and the card's own `ClassicalNevanlinnaExtremalFamily` is precisely a package of many. So the natural
+next connector is: given such a family with two distinct leaves, conclude that the nodes are
+unbounded. That is a short derivation and would close the loop between the extremal-family interface
+this card began with and the node theory built since.
+
+### Link 118 — the contrapositive, in usable form
+
+`BoundedNodesDeterminate.lean` now 89 lines, zero placeholders. Both new endpoints
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+- `measure_eq_of_nodes_bounded` — `[PROVED HERE]` bounded nodes make **any two** finite measures with
+  the normalised moments equal, both being equal to the carried representative.
+- `exists_node_outside_of_measure_ne` — `[PROVED HERE]` **two distinct representatives force a node
+  outside any given `[−B, B]`.**
+
+**Why the first was needed.** Link 117's `determinate_of_nodes_bounded` concluded
+`∃ μ : ProbabilityMeasure ℝ, (μ : Measure ℝ) = nu`, with `μ` existentially bound. Two applications of
+it, to two different `nu`, produce two *unrelated* existentials and do not compose into `nu₁ = nu₂` —
+the shared identity of the constructed measure is exactly what the existential hides. Obtaining the
+representative once and equating both measures to it fixes this. Worth recording as a pattern: a
+uniqueness statement phrased existentially is not a uniqueness statement.
+
+With this, the arc from link 88 closes in usable form: an indeterminate moment sequence — one with
+two distinct representatives — has Gauss nodes escaping every compact interval.
+
+**Opens next:** connecting to `ClassicalNevanlinnaExtremalFamily`, which packages many
+representatives as `leaf t` with `leaf_moments : ∀ t, HasHamburgerMoments s (leaf t)`. Note the
+normalisation mismatch: the leaves represent `s` exactly, while the statements here take moments
+`(s₀)⁻¹ s`. A leaf `ν` has total mass `s₀`, so `(s₀)⁻¹ • ν` is the probability measure to feed in, and
+the connector needs that rescaling plus the observation that distinct leaves stay distinct after
+scaling by a positive constant. Neither step is deep, but the mismatch is real and should be handled
+explicitly rather than assumed away.
+
+### Link 119 — the normalisation connector
+
+New module `formal/GaloisForLFunctions/HTGeometry/LeafNodeDivergence.lean` (67 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). All endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `smul_measure_ne` — scaling by a nonzero finite constant is injective on measures; multiply back
+  by the inverse.
+- `integral_pow_smul_normalise`, `integrable_pow_smul_normalise` — the normalisation
+  `(ofReal s₀)⁻¹ • ν` of a representing measure has the normalised moments and integrates every power.
+- `exists_node_outside_of_hasMoments_ne` — `[PROVED HERE]`
+
+  > **Two distinct measures with `HasHamburgerMoments s` force a Gauss node outside any given
+  > `[−B, B]`.**
+
+This is the mismatch flagged in link 118, handled rather than assumed away: the project's
+`HasHamburgerMoments s ν` means `∫ xᵏ dν = s_k` exactly, while the node theory is phrased for
+`s_k / s₀`, and the bridge is a rescaling whose injectivity is what preserves distinctness.
+
+The statement is now in the vocabulary the rest of the tree uses. Any construction anywhere in this
+project producing two distinct measures with `HasHamburgerMoments s` — the extremal family's leaves
+being the intended source — yields unbounded Gauss nodes with no further work.
+
+**Opens next:** applying it to `ClassicalNevanlinnaExtremalFamily` needs two *distinct* leaves, and
+distinctness is not part of that structure: its fields give continuity, carriers and moments, but
+nothing asserts `leaf t₁ ≠ leaf t₂` for `t₁ ≠ t₂`. Injectivity of the leaf map would follow from the
+carrier conditions — `finite_carried` puts `leaf tau` on the zero set of `B(x)τ − D(x)`, and those
+sets are disjoint for distinct `τ` — so the connector to build next is that disjointness, which is a
+statement about the Nevanlinna matrix data rather than about measures.
+
+### Link 120 — the denominator fibers are disjoint
+
+New module `formal/GaloisForLFunctions/HTGeometry/DenominatorFiberDisjoint.lean` (59 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time; compiled first try).
+All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `D_ne_zero_of_B_eq_zero` — the determinant condition `A D − B C = 1`, a field of
+  `ClassicalNevanlinnaMatrixData`, forbids `B` and `D` vanishing together.
+- `disjoint_finiteDenominatorFiber` — `[PROVED HERE]` **fibers of distinct finite parameters are
+  disjoint.** A common point gives `B x · τ₁ = D x = B x · τ₂`, hence `B x = 0` and then `D x = 0`.
+- `disjoint_finite_infinityDenominatorFiber` — likewise for a finite fiber against the fiber at
+  infinity.
+
+This is the input link 119 identified as missing from `ClassicalNevanlinnaExtremalFamily`: nothing in
+that structure asserts distinct leaves, but `finite_carried` places `leaf tau` on
+`finiteDenominatorFiber tau`, and these sets are now known to be pairwise disjoint.
+
+Note where the content actually lives. The disjointness is not a fact about measures or about the
+moment problem — it is two lines of algebra from the determinant normalisation, which links 44--51
+worked to establish (`orthonormalWronskian_eq`, `nevA_mul_nevD_sub_nevB_mul_nevC = 1`). The
+determinant condition earns its keep here rather than in the Nevanlinna parametrisation it was proved
+for.
+
+**Opens next:** distinctness of leaves still needs one more step. Disjoint carriers make two leaves
+distinct only if at least one of them is *nonzero* on its carrier — two measures both vanishing
+identically are equal regardless of where they are carried. Each leaf is a probability measure, so it
+has total mass `1`, and `finite_carried` says the complement of its fiber is null; hence the fiber
+carries mass `1` and the leaves cannot coincide. That is the argument to write, and it uses
+`IsProbabilityMeasure` rather than anything about fibers — worth noting so the next step is not
+mistaken for a corollary of this one.
+
+### Link 121 — distinct parameters give distinct leaves
+
+New module `formal/GaloisForLFunctions/HTGeometry/LeafDistinct.lean` (50 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `one_le_leaf_fiber` — a leaf gives its own fiber mass at least `1`, by subadditivity against
+  `finite_carried` and `measure_univ`.
+- `leaf_ne_of_ne` — `[PROVED HERE]` **distinct finite parameters give distinct leaves.** The second
+  fiber sits inside the complement of the first (link 120), which is null for the first leaf; equal
+  leaves would give that set both `≥ 1` and `0`.
+
+The measurability point flagged in link 120 mattered. `ClassicalNevanlinnaExtremalFamily` does not
+assert its denominator fibers are measurable, so `measure_compl` — which needs it — is unavailable,
+and the natural "mass one minus null complement" phrasing cannot be used. Subadditivity
+(`measure_union_le`) and monotonicity (`measure_mono`) require no measurability at all, and both
+steps go through with them. Choosing the weaker tools was not a stylistic preference; the stronger
+ones do not apply.
+
+**The chain from link 88 is now complete in the tree**, though not yet as one theorem: an extremal
+family with two distinct finite parameters has two distinct leaves (here), each representing `s`
+(`leaf_moments`), so by link 119 the Gauss nodes escape every compact interval.
+
+**Opens next:** writing that composite as a single named theorem — `ClassicalNevanlinnaExtremalFamily
+s` plus `t₁ ≠ t₂` gives `∃ n, ∃ ξ ∈ gaussNodes s n, ξ ∉ Icc (−B) B`. Two hypotheses need checking
+before it will typecheck: link 119 wants `IsFiniteMeasure` on each leaf, which follows from
+`ProbabilityMeasure` but must be supplied as an instance, and it wants `PositiveMomentForm s`, which
+the family does not carry — though `positiveMomentForm_iff_exists_representing` (link 81) derives it
+from a leaf, provided the leaf's support is infinite, which is exactly what `finite_carried` does not
+by itself guarantee.
+
+### Link 122 — the composite: indeterminate families have diverging nodes
+
+`LeafDistinct.lean` now 66 lines, zero placeholders. The new endpoint is
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+`exists_node_outside_of_extremalFamily` — `[PROVED HERE]`
+
+> **For a positive definite moment form `s` and a `ClassicalNevanlinnaExtremalFamily s` with two
+> distinct finite parameters, the Gauss nodes escape every compact interval:
+> `∃ n, ∃ ξ ∈ gaussNodes s n, ξ ∉ [−B, B]`.**
+
+This closes the arc opened at link 88. The route, end to end: two distinct parameters give disjoint
+denominator fibers (link 120, from the determinant condition), hence distinct leaves (link 121, via
+subadditivity since the fibers are not known measurable); each leaf represents `s`, so after
+normalisation they are two distinct representatives (link 119); bounded nodes would make the sequence
+determinate (links 111--118, through Weierstrass and the confinement estimate); so the nodes are
+unbounded.
+
+**On the hypothesis.** `PositiveMomentForm s` is taken as an explicit assumption rather than derived
+from the family, and this is a genuine limitation rather than a convenience. The family supplies
+carriers, continuity and moments; nothing in it forces any leaf to have infinite support, and
+`positiveMomentForm_iff_exists_representing` (link 81) needs exactly that. A family whose leaves were
+all finitely supported would be consistent with the structure as written and would make `s` only
+positive *semi*definite. Recording this as a property the interface does not currently pin down.
+
+**Opens next:** either strengthen the interface or derive the missing condition. The second looks
+reachable: the fibers are zero sets of `B(x)τ − D(x)`, and for the analytic `B`, `D` of the Nevanlinna
+matrix these are discrete but infinite, which would give infinite support and hence
+`PositiveMomentForm` for free. That is a statement about the entire functions of links 49--51 rather
+than about the abstract interface, so it belongs with `nevMatrixData` — and it would also be the first
+place this card's complex-analytic half is used for something the real half cannot do alone.
+
+### Link 123 — a degenerate direction confines every representative
+
+New module `formal/GaloisForLFunctions/HTGeometry/SemidefiniteCarrier.lean` (68 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`exists_carried_of_momentInner_eq_zero` — `[PROVED HERE]` **if `⟪p, p⟫ = 0` for some `p ≠ 0`, every
+representing measure is carried by a compact interval.** The pairing is `∫ (eval p)² dν`, so `p`
+vanishes `ν`-a.e.; the non-root set is null, the roots are finite, and a finite set of reals sits
+inside some `[−B, B]`.
+
+**A better route than link 122 proposed.** That entry suggested deriving the missing
+`PositiveMomentForm` hypothesis from analyticity of `B` and `D` — showing their zero sets are
+infinite. That would work but pulls in the entire-function theory of links 49--51. The elementary
+route is the contrapositive of this link: *if* `s` were only semidefinite, some `p ≠ 0` would have
+`⟪p, p⟫ = 0`, confining **every** representative to a compact interval, where link 114 makes them all
+equal — contradicting the existence of two distinct leaves. No analyticity, no entire functions, and
+the compact-determinacy machinery of links 107--114 is reused rather than duplicated.
+
+That is the fourth time in this card that reaching for heavier theory was avoidable
+(`UniformIntegrable`, Cauchy--Schwarz, Carleman, and now analyticity of the Nevanlinna matrix). The
+rule stated at link 112 keeps holding.
+
+**Opens next:** the derivation itself — `positiveMomentForm_of_two_representatives`, taking two
+distinct representing measures and producing `PositiveMomentForm s` by the argument above. With it,
+`exists_node_outside_of_extremalFamily` (link 122) loses its explicit hypothesis and the composite
+becomes a statement about the family alone. The one piece of care needed: extracting `p` from
+`¬ PositiveMomentForm s` goes through `not_forall` and `not_imp` on the structure's single field, and
+`not_lt` turns the negated strict positivity into `⟪p, p⟫ ≤ 0`, which combines with nonnegativity to
+give the equality this link consumes.
+
+### Link 124 — the hypothesis discharged
+
+`SemidefiniteCarrier.lean` now 116 lines, zero placeholders. Both new endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `positiveMomentForm_of_two_representatives` — `[PROVED HERE]` **two distinct representing measures
+  force `PositiveMomentForm s`.** A degenerate direction would confine both to a common compact
+  interval (link 123, taking the larger of the two radii), where link 114 makes them equal.
+- `exists_node_outside_of_extremalFamily_unconditional` — `[PROVED HERE]`
+
+  > **An extremal family with two distinct finite parameters has Gauss nodes outside every compact
+  > interval.**
+
+  No positivity hypothesis: the two distinct leaves supply it.
+
+This removes the limitation recorded in link 122, where `PositiveMomentForm s` had to be assumed
+because the family's fields do not pin it down. They do not — but two distinct leaves do, which is a
+different and better answer than the one link 122 anticipated.
+
+**Toolchain note.** `not_imp` is ambiguous between `_root_.not_imp` and `Classical.not_imp` in this
+toolchain, and the root one is deprecated in favour of the classical one; the ambiguity surfaces as an
+`Ambiguous term` error followed by a spurious `rcases` failure on a metavariable, which reads as a
+destructuring problem rather than a name-resolution one.
+
+**State of the card's original goal.** `ClassicalNevanlinnaExtremalFamily` has seven fields. Three
+were already built (`matrix`, `continuous_B`, `continuous_D`, link 51). The remaining four — `leaf`,
+`continuous_leaf`, `finite_carried`, `infinity_carried`, `leaf_moments` — are still open as
+*constructions*: this card can now say a great deal about such a family once given, but does not yet
+build one. What links 88--124 establish is the theory the construction will need, and one theorem
+about any family that exists.
+
+**Opens next:** the construction itself, which is where the deferred analytic obligations concentrate
+— the leaf at parameter `τ` is to be supported on the zero set of `B(x)τ − D(x)` with masses `λ(ξ)`,
+so it needs those zeros to exist and be discrete, which is the entire-function statement links
+49--51 set up and link 123 showed is *not* needed for the theory around the family. It is needed for
+the family.
+
+### Link 125 — countable weighted Dirac measures
+
+New module `formal/GaloisForLFunctions/HTGeometry/CountableWeightedDirac.lean` (45 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time; compiled first try).
+All endpoints `[propext, Classical.choice, Quot.sound]`.
+
+- `countableWeightedDirac w x := Measure.sum fun n => ENNReal.ofReal (wₙ) • δ_{xₙ}`.
+- `lintegral_countableWeightedDirac` — `∫⁻ f = ∑' wₙ · f(xₙ)`, from `lintegral_sum_measure`.
+- `countableWeightedDirac_apply`, `countableWeightedDirac_univ` — evaluation on a measurable set, and
+  total mass `∑' wₙ`.
+
+The countable analogue of link 63--69's finite weighted Dirac families, needed because a leaf is
+carried by the zero set of an entire function — discrete and countable, not finite. Worth noting how
+much easier the countable case is than the finite one was: `Measure.sum` has `lintegral_sum_measure`
+and `Measure.sum_apply` as single-step lemmas, whereas the `Finset` version required an induction for
+each of integrability, integral, and evaluation. The infinite object has the better API.
+
+**Opens next:** the leaf's moments. With the measure available, what must be shown is that
+`∑' λ(ξₙ) · ξₙᵏ = s_k` when `{ξₙ}` is the zero set of `B(x)τ − D(x)` — the N-extremal theorem, and
+the genuine remaining mathematical content of this card. Two prerequisites are visible and neither is
+in the tree: existence and discreteness of those zeros (the entire-function statement deferred since
+link 51), and convergence of the series, which is where the `BoundedKernel` estimates of links 47--50
+would finally be consumed for their original purpose. Recording both as the open core rather than as
+next steps, since each is a development rather than a lemma.
+
+### Link 126 — atoms of a countable family, and the leaf constraint
+
+`CountableWeightedDirac.lean` now 77 lines, zero placeholders. All new endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `countableWeightedDirac_singleton` — with distinct points, the atom at `xₘ` is `wₘ`; the series
+  collapses by `tsum_eq_single`, the off-diagonal terms vanishing by injectivity.
+- `countableWeightedDirac_real_singleton` — the same as a real mass.
+- `weight_le_christoffelLimit` — `[PROVED HERE]` **a countable representing measure has each weight
+  bounded by the limit Christoffel function at its point.**
+
+The last is the constraint every N-extremal leaf must satisfy, now stated for the object the leaf will
+be built from. It follows in two lines from link 58, which bounded the atoms of *any* representing
+measure — that link was proved before the countable measure existed and applies to it unchanged.
+
+**What is now known about a leaf before constructing one.** Given points `{ξₙ}` and weights `{wₙ}`
+with the countable measure representing `s`: the weights are nonnegative and bounded by `λ(ξₙ)`
+(here), the total mass is `s₀` (link 125), the measure is confined to the interval carrying any
+compactly supported representative (link 106), and if a second such measure exists the nodes diverge
+(link 124). The N-extremal claim is that the first bound is an *equality* — `wₙ = λ(ξₙ)` — which is
+what remains unproved.
+
+**Opens next**, unchanged and stated once more as the open core: the equality `wₙ = λ(ξₙ)`, which
+needs the zero set of `B(x)τ − D(x)` to be exactly where the mass sits, and convergence of
+`∑ λ(ξₙ) ξₙᵏ`. Both are developments requiring the entire-function theory deferred since link 51.
+Everything reachable without it now appears to be done: this session added links 51--126, and the
+remaining obligations are all on the analytic side.
+
+### Link 127 — the fibers are closed, and link 121 revisited
+
+New module `formal/GaloisForLFunctions/HTGeometry/FiberClosed.lean` (58 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time). All endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `isClosed_finiteDenominatorFiber`, `isClosed_infinityDenominatorFiber` — a denominator fiber of a
+  matrix with continuous entries is the preimage of `{0}` under a continuous map, hence closed.
+- `measurableSet_leaf_fiber` — so a leaf's fiber is measurable, from the family's own
+  `continuous_B` and `continuous_D` fields.
+- `leaf_fiber_measure_eq_one` — `[PROVED HERE]` a leaf gives its fiber mass **exactly** `1`.
+
+**Correction to link 121's reasoning, though not to its statement.** That entry proved leaf
+distinctness using only subadditivity and monotonicity, on the grounds that
+`ClassicalNevanlinnaExtremalFamily` "does not assert its denominator fibers are measurable" and so
+`measure_compl` was unavailable. The first half is literally true — there is no measurability field —
+but the conclusion drawn from it was wrong: measurability *follows* from the continuity fields, which
+the structure does carry. The proof given there is still correct and still works; it was simply more
+careful than it needed to be, and the sharper `= 1` was available all along.
+
+Worth noting the failure mode: absence of a hypothesis was read as absence of the fact. The structure
+was inspected for a measurability field, none was found, and the search stopped there rather than
+asking what the other fields imply.
+
+**Opens next:** unchanged — the open core is `wₙ = λ(ξₙ)` and the entire-function input behind it
+(link 126). This link does not advance it; it repairs a piece of reasoning and sharpens a bound that
+the repair makes accessible. Measurability of the fibers may matter for that core, since the leaf must
+be shown to *be* the countable weighted Dirac measure on the fiber, which is a statement about the
+fiber as a measurable set.
+
+### Link 128 — leaves are mutually singular
+
+`FiberClosed.lean` now 81 lines, zero placeholders. Both new endpoints
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+- `mutuallySingular_leaf` — `[PROVED HERE]` **leaves at distinct finite parameters are mutually
+  singular.** The witness is the second fiber: measurable (link 127), null for the first leaf by
+  disjointness (link 120), and co-null for the second by `finite_carried`.
+- `leaf_restrict_fiber` — a leaf is unchanged by restriction to its fiber.
+
+Mutual singularity is strictly stronger than the distinctness of link 121 and is the right form of the
+statement: it says the leaves are not merely different measures but are supported on disjoint sets,
+which is what "the extremal family is a genuine parametrisation" should mean. It became available only
+once measurability was recognised (link 127) — with subadditivity alone, link 121 could reach
+distinctness but not singularity.
+
+**State of the card.** `ClassicalNevanlinnaExtremalFamily` is now surrounded by a substantial theory:
+given such a family, its leaves are mutually singular, each concentrated on a closed measurable fiber
+of mass one, the moment form is positive definite, the Gauss nodes diverge, and every leaf's atoms are
+bounded by the limit Christoffel function. What is still not done is *constructing* a family — the
+four remaining structure fields — and that reduces to the open core of link 126.
+
+**Opens next:** the open core is unchanged, and this link does not narrow it. Recording explicitly
+that links 125--128 have been consolidation and sharpening around an unmoved frontier: countable
+Dirac infrastructure, atom bounds, fiber topology, singularity. The next genuine advance requires the
+entire-function statement — zeros of `B(x)τ − D(x)` exist, are discrete, and carry the mass — and no
+further rearrangement of the present material will produce it.
+
+### Link 129 — zeros of the Nevanlinna combination are isolated
+
+New module `formal/GaloisForLFunctions/HTGeometry/NevZeroDichotomy.lean` (60 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time; compiled first try). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `nevBseries`, `nevDseries` — the `B` and `D` entries as named series.
+- `analyticAt_nevCombination` — `[PROVED HERE]` on an open set with uniform kernel bounds,
+  `w ↦ B(w)τ − D(w)` is analytic at each of its points, from the two holomorphy results of link 51
+  combined by `DifferentiableOn.mul_const` and `.sub`, then `DifferentiableOn.analyticAt`.
+- `eventually_eq_zero_or_eventually_ne_zero_nevCombination` — `[PROVED HERE]` **the identity-theorem
+  dichotomy: near any such point the combination either vanishes identically or has no other zero
+  nearby.**
+
+**A structural finding, from inspecting rather than assuming.** Link 128 asserted the next advance
+needs "the entire-function statement" and treated that as a separate obligation. Reading the
+signatures of `differentiableOn_nevA/B/C/D_series` shows what it actually is: every one of them takes
+an open `U` *together with uniform kernel bounds on `U`* as hypotheses. So holomorphy is available on
+any such set already — and extending it to all of `ℂ`, which is what a leaf construction needs, means
+supplying those bounds globally. That is precisely the transfer left open in
+`ComplexKernelTransfer.boundedKernel_of_isClosed` since link 50.
+
+**The card's two open problems are one.** The leaf construction (open core, link 126) and the global
+kernel transfer (deferred, link 50) are the same obstruction viewed from the real and complex sides.
+The dichotomy proved here is everything the identity theorem gives without it; discreteness of the
+zero set on `ℝ` follows immediately once the bounds are global, since the second alternative would
+then hold at every point where the combination is not locally zero.
+
+**Opens next:** the closedness of `{z | BoundedKernel s z}`. Every route this card has taken now
+terminates there. Worth attempting directly rather than approaching further from the sides — links
+125--129 have each been one step from it and none has moved it.
+
+### Link 130 — diagnosing the transfer failure, and the tunable fix
+
+New module `formal/GaloisForLFunctions/HTGeometry/TunableAbsorption.lean` (38 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+**Diagnosis, confirmed against the statements rather than recalled.** Reading
+`kernelRoot_sq_le_absorption`, `kernelRoot_bounds_propagate` and `transferRadius`:
+
+- the absorption reads `K_w² ≤ 2·K_z² + 8(‖w−z‖h₀)²·K_w²·K_z²·P_z²`;
+- so the propagated bounds are `2S` and `2P`, **doubling regardless of how small `‖w − z‖` is**;
+- and `transferRadius = 1/(4h₀SP)` therefore quarters at each step.
+
+The doubling is not an artifact of the *displacement* being large — it is the constant `2` in
+`(a+b)² ≤ 2a² + 2b²`, applied when the triangle inequality is squared. That constant is what makes
+chaining cover only a bounded region, which is the obstruction recorded at link 50 and inherited by
+every route since.
+
+**The fix.** `sq_add_le_tunable` — `[PROVED HERE]` `(a + b)² ≤ (1+ε)a² + (1+ε⁻¹)b²` for every `ε > 0`,
+with **no sign hypotheses**: the identity `ε a² + ε⁻¹ b² − 2ab = ε⁻¹(εa − b)²` needs none, and the two
+nonnegativity assumptions initially written were flagged as unused by the linter. `sq_add_le_two` is
+the case `ε = 1`, recovering the constant currently used.
+
+With a tunable leading constant the propagated bound is `√(1+ε)·S` rather than `2S`. Choosing
+`ε = εₙ` summable along a chain makes `∏ √(1+εₙ)` converge, so the bounds stay uniformly bounded and
+the radii `1/(4h₀SₙPₙ)` stay bounded *below* — and a chain with radii bounded below reaches every
+point of `ℂ`. That is the route to closedness, and hence to the global transfer, the leaf
+construction, and the discreteness of link 129.
+
+**Opens next:** re-derive `kernelRoot_sq_le_absorption` with the tunable constant. The proof there
+squares a triangle inequality on `kernelRoot`; substituting this lemma at that step gives
+`K_w² ≤ (1+ε)K_z² + (1+ε⁻¹)·8(‖w−z‖h₀)²·K_w²K_z²P_z²`, from which a tunable analogue of
+`kernelRoot_bounds_propagate` follows with bound `√(1+ε)·S` and a correspondingly smaller radius.
+
+### Link 131 — the Duhamel estimate, tunable
+
+New module `formal/GaloisForLFunctions/HTGeometry/TunableDuhamel.lean` (53 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `normSq_monicOrthoC_duhamel_le_tunable` — `[PROVED HERE]` the squared Duhamel bound with leading
+  constant `1 + ε` for any `ε > 0`.
+- `normSq_monicOrthoC_duhamel_le_two` — the `ε = 1` case, recovering the constant currently in
+  `ComplexSecondKind`.
+
+`ComplexSecondKind` is untouched. `norm_monicOrthoC_duhamel_le_of_le` there is the *unsquared*
+estimate `‖Qₙ(w)‖ ≤ a + b` with no constant at all, so squaring it with `sq_add_le_tunable` (link 130)
+instead of the fixed `2` is a two-line derivation on top of existing material — the constant was never
+baked into the analysis, only into the squaring step.
+
+**Toolchain note, and a repeat.** `norm_num at h1` silently rewrote `monicOrtho s 0` to `1` via the
+`@[simp]` lemma `monicOrtho_zero`, leaving the hypothesis and the goal syntactically different and
+`linarith` unable to connect them. This is the same trap recorded much earlier in this card. The fix
+is a targeted `rw [inv_one]` rather than a general normaliser: near `monicOrtho s 0`, blanket
+simp-normalisation is unsafe.
+
+**Opens next:** the tunable absorption. `kernelRoot_sq_le_absorption` sums the pointwise bound over
+`n ≤ N`; substituting this link's version gives `K_w² ≤ (1+ε)K_z² + (1+ε⁻¹)·(…)K_w²K_z²P_z²`, and the
+smallness condition of `kernelRoot_bounds_propagate` becomes
+`(1+ε⁻¹)(…)S²P² ≤ ε/(1+ε)` or similar, yielding bound `√(1+ε)·S` in place of `2S`. The radius shrinks
+as `ε → 0`, which is the trade the chaining argument then has to balance — that balance, not the
+inequality, is where the remaining work is.
+
+### Link 132 — the chaining balance is achievable
+
+New module `formal/GaloisForLFunctions/HTGeometry/ChainBalance.lean` (47 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`exists_summable_sqrt_not_summable` — `[PROVED HERE]` **there are positive `εₙ` with `∑ εₙ`
+convergent and `∑ √εₙ` divergent**, witnessed by `εₙ = 1/(n+1)²`.
+
+Link 131 closed by identifying the balance as the remaining difficulty: a tunable step with parameter
+`ε` multiplies the bound by `√(1+ε)` and permits a step of length `∝ √ε`, so chaining to all of `ℂ`
+needs `∏(1+εₙ)` bounded *and* `∑ √εₙ` divergent, and it was not clear both could hold. They can, and
+the witness is elementary.
+
+**This settles why the current transfer fails.** With `ε = 1` fixed — the constant `2` in the present
+absorption — the growth is `2ⁿ` and the step lengths shrink like `4⁻ⁿ`, whose sum is finite: chaining
+covers a bounded region, exactly as observed at link 50. The failure is not geometric and not a
+missing analytic input; it is a fixed parameter sitting at the wrong point of a trade-off that admits
+a good point. Links 130--132 have located that point.
+
+**Opens next:** the tunable absorption itself, which is the one step of links 130--132 not yet taken.
+`kernelRoot_sq_le_absorption` sums the pointwise bound over `n ≤ N`; substituting
+`normSq_monicOrthoC_duhamel_le_tunable` (link 131) and keeping the fixed constant `2` on the *inner*
+squaring — harmless, since it multiplies the small term — gives
+
+`K_w² ≤ (1+ε) K_z² + 4(1+ε⁻¹) (‖w−z‖h₀)² K_w² K_z² P_z²`,
+
+whence a propagate step with bound `√(1+ε)·S` and smallness condition scaling like `ε/(1+ε⁻¹)`, i.e.
+step length `∝ √ε` as link 132 assumes. Writing it is a re-derivation of a sixty-line summation proof
+with two constants changed, which is bookkeeping rather than mathematics — but it is the step that
+turns this analysis into a theorem, and it has not been done.

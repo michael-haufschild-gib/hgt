@@ -248,3 +248,45 @@ Targeted compilation and the ordinary-axioms audit pass.  The exact remaining Le
 not the finite-rank Ward algebra: it is the critical convergence of the hard-cutoff first and
 second centered moments `c_sigma(u)` and `b_sigma(u)` to `(10)`.  Beyond that remains the already
 identified prime--Gamma/Sonin completed graph incidence and nonexpansive comparison `(14)`--`(15)`.
+
+## Critical-limit Lean certificate (2026-07-19)
+
+`RHTower/MobiusCriticalFisherCutoffLimits.lean` closes the remaining source-side limit bridge
+identified above.  It proves:
+
+- the all-orders cap--cut law
+  `cappedMoment(k)=cutMoment(k)+u^k(1-cutMass)` for every natural `k`;
+- generic summable first- and second-order centering laws, discharging the raw-moment interface;
+- the exact hard-cut first and second moment limits;
+- `c_sigma(u) -> 2u exp(-u)` and
+  `b_sigma(u) -> 4[1-(1+u^2)exp(-u)]`;
+- the completed finite-`sigma` commutator energy converges to the closed Ward profile `(11)`; and
+- the one-sided normalized Ward profile converges to the sharp four-unit boundary value `(12)`.
+
+All statements are unconditional and the ordinary-axioms audit passes.  Thus there is no longer a
+Lean-local gap in `(9)`--`(12)`.  The exact remaining RH core is still the prime--Gamma/Sonin graph
+incidence and nonexpansive completed-source comparison `(14)`--`(15)`; the present certificate does
+not discharge either global source-completion theorem.
+
+## Global finite-window strengthening (2026-07-19)
+
+The closed profile permits a strict strengthening of `(13)`: Lean proves
+
+```text
+0 <= E_W(u) <= 8(1-exp(-u))     for every u >= 0.
+```
+
+Thus the paper's auxiliary restriction `u<=2` is unnecessary.  The proof uses the exact limiting
+Gram entries: `a(u)>=0`, `b(u)>=0`, and
+`b(u)<=4a(u)` because `4a(u)-b(u)=4u^2 exp(-u)`.  The two negative Ward corrections then give the
+global bound.  This is a genuine strengthening of the source theorem, but it still remains
+source-side and does not construct the completed graph comparison `(14)`--`(15)`.
+
+The strengthened coefficient is sharp: Lean also proves
+
+```text
+lim_(u->0+) E_W(u)/(1-exp(-u)) = 8.
+```
+
+Hence no uniform bound `E_W(u)<=C(1-exp(-u))` can use `C<8`; the native two-orientation
+normalization is forced at the source boundary rather than being an artifact of the proof.

@@ -7,8 +7,9 @@
   `[INTERNAL NOVELTY AUDITED] [EXTERNAL NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parents:** the squared centered Xi canonical product; the open critical strip; the
   source-derived zero-height gap; the infinitesimal real Euler-ray index law
-- **Lean targets:** `RHTower/XiSquaredEulerRayTwoPointPositivity.lean` and
-  `RHTower/XiSquaredEulerRayFullResponse.lean`
+- **Lean targets:** `RHTower/XiSquaredEulerRayTwoPointPositivity.lean`,
+  `RHTower/XiSquaredEulerRayFullResponse.lean`, and
+  `RHTower/XiSquaredEulerRayCubicAmplification.lean`
 
 ## Headline theorem
 
@@ -268,7 +269,71 @@ mask one orbit under a fixed triple.  The remaining RH problem has therefore bec
 cross-orbit selection/cancellation question at exterior degree three, rather than an unspecified
 signed-mass estimate.
 
-## 6. Relation to the physical-cutoff Jordan no-go
+## 6. Exact cross-orbit masking and amplification law
+
+Fix three ordered positive nodes and let `A` be the three-by-three response matrix of one orbit.
+Let `B` be any fixed background matrix, in particular the complete Xi response with that copy
+removed.  Write `M(A;B,B)` for the mixed determinant coefficient with one row from `A` and two
+rows from `B`, summed over the three row placements.  Multilinearity gives the exact cubic
+identity
+
+```text
+det(B+lambda A)
+ = det(B) + lambda M(A;B,B) + lambda^2 M(B;A,A)
+   + lambda^3 det(A).                                      (30)
+```
+
+For an off-line orbit, `(28)` says `det(A)<0`.  Put
+
+```text
+C = |det(B)| + |M(A;B,B)| + |M(B;A,A)|.                   (31)
+```
+
+For `lambda>=1`, the three lower-degree terms in `(30)` are at most `lambda^2 C`.  Therefore
+
+```text
+C < -lambda det(A)
+  -> det(B+lambda A) <= lambda^2(C+lambda det(A)) < 0.     (32)
+```
+
+In particular the explicit threshold
+
+```text
+L = max(1, C/(-det(A)))                                   (33)
+```
+
+has the property that `det(B+lambda A)<0` for every `lambda>L`.  Applied with
+`B=K_full-A`, this proves:
+
+```text
+cross-orbit masking of an off-line self-cubic is finite-amplitude only. (34)
+```
+
+This is the strongest exact positive classification of the mixed-cubic obstruction found here.
+It does **not** authorize selecting a zero orbit.  To turn `(34)` into RH, the completed Euler
+source must produce a source-pure transverse aperture whose relative weight on every hypothetical
+entering orbit becomes unbounded while the residual mixed budget stays fixed or lower order.
+The finite differential-rank and positive Gram theorems from HTGeometry do not supply that
+zero-side amplifier: they prove that the source has enough independent finite directions, but the
+missing infinite completion is precisely the map from those directions to the Xi orbit weights.
+
+The source-side geometry of that map is now exact.  At prime-power valuation layer `r=e+1`, the
+normalized transverse coefficient satisfies
+
+```text
+Lambda(p^r)(1-p^(-ra))/(r(log p)^2)
+  = integral_0^a exp(-r(log p)t)dt.                       (35)
+```
+
+Thus all prime/valuation columns are Laplace samples of interval vectors `1_[0,a]`, whose Gram is
+the Brownian kernel `min(a,b)`.  This is also the kernel of the established Xi boundary relative
+trace.  Hence the candidate completion is no longer unspecified: it is a Brownian--Laplace
+source-to-Hardy map.  To close `(34)`, that map must still be proved source-defined and
+nonexpansive against the Euler-pole boundary density, and its action must be shown to create the
+required relative transverse orbit weight.  Equation `(35)` supplies the common Hilbert geometry;
+it does not select a divisor orbit or prove the cubic amplification.
+
+## 7. Relation to the physical-cutoff Jordan no-go
 
 The fixed-cutoff low/high Jordan split is not physical: complementary alias coefficients rejoin
 before the common response is evaluated.  The invariant corrected response instead leaves the
@@ -286,7 +351,7 @@ signed orbit packet
 
 It does not bound the RH-equivalent aperture defect and does not prove complete positivity.
 
-## 7. Novelty boundary
+## 8. Novelty boundary
 
 The internal corpus was searched for the two monotonicities in `(2)`, the determinant
 factorization with their Xi chamber discharge, and the conclusion that the first negative
@@ -320,7 +385,10 @@ The two Lean leaves formalize:
 6. absolute summability over the complete multiplicity-exact Xi divisor;
 7. the exact analytic normalization
    `xi'(1/2+x)/(x xi(1/2+x)) = sum_q Re (x^2+a_q^2)^(-1)` for `x>0`;
-8. strict radial monotonicity and strict two-node positivity for the actual infinite Xi response.
+8. strict radial monotonicity and strict two-node positivity for the actual infinite Xi response;
+9. the exact mixed-discriminant expansion `(30)` and finite-amplitude masking theorem `(32)`--`(34)`.
+10. the all-valuation Brownian--Laplace factorization `(35)`, projective collapse, and oriented
+    first contact grade in `XiTransversePrimeSourceProjectiveTangent.lean`.
 
 The first leaf is the dependency-closed finite algebraic core.  The second leaf performs the full
 analytic promotion through the already formalized Xi Hadamard/relative-resolvent connector.  It
@@ -339,6 +407,7 @@ the exact open core.
 - [x] Internal novelty search found no duplicate.
 - [ ] External parent-theory and literature novelty audit.
 - [x] Full infinite-sum Lean promotion from the finite-packet core.
+- [x] Mixed exterior-cubic masking expanded and finite-amplitude amplification formalized.
 
 ## Log
 
@@ -348,3 +417,11 @@ the exact open core.
 - 2026-07-19 -- Promoted the finite packet to the complete multiplicity-exact Xi divisor in Lean.
   The relative-resolvent identity fixes the normalization with no factor-of-two ambiguity, and
   the full analytic response inherits the strict two-node barrier unconditionally.
+- 2026-07-19 -- Expanded the first unresolved three-node charge into its two mixed discriminants
+  and negative atomic self-cubic.  Cross-orbit masking is now proved to be finite-amplitude; the
+  exact remaining RH object is a source-pure unbounded transverse amplifier, not another generic
+  Jordan-mass or finite-field estimate.
+- 2026-07-19 -- Used the full transverse HT source hierarchy to identify its canonical completion
+  geometry: normalized valuation-layer coefficients are Laplace samples of Brownian interval
+  vectors, and their `min` Gram is the same kernel as the Xi boundary relative trace.  The open
+  amplifier is now a specific source-to-Hardy contraction/weight-transfer theorem.

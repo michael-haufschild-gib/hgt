@@ -118,3 +118,19 @@ information and later quantum Fisher/covariance decompositions.
   clock CDF.
 - Targeted module checks and `#print axioms` succeeded.  The theorems use only `propext`,
   `Classical.choice`, and `Quot.sound`.
+
+## Complement-reflection and total-energy addendum (2026-07-19)
+
+The generic Lean law now also proves that cutoff complementation exchanges the two boundary
+corners, reverses the commutator, and preserves its squared Hilbert--Schmidt energy exactly.  The
+same module computes the total pointed-connection energy
+
+```text
+||X(psi,chi)||_HS^2
+ =||chi||^2 ||psi||^2+Re(<chi,psi>^2),
+```
+
+with orthogonal and unit-source specializations.  The squarefree consumer identifies this total
+energy with `squarefreeMobiusCriticalProjectiveFisherEnergy` and proves exact equality of the lower-
+and complementary-window commutator energies.  These are unconditional value-reflection laws;
+they do not supply the open prime--Gamma/Sonin completed graph transport.

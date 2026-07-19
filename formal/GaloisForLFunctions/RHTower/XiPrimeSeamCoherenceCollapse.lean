@@ -33,6 +33,66 @@ def orbitwiseScaleSeamCharge (x : ℝ) (rho : ℂ) : ℂ :=
 def orbitwiseNatPrimeSeamCharge (p : ℕ) (rho : ℂ) : ℂ :=
   orbitwiseScaleSeamCharge (p : ℝ) rho
 
+/-- Every scale seam is odd under the centered FE--Schwarz reflection.  No positivity assumption
+on the scale is needed because the reflection only exchanges the two complex powers. -/
+theorem orbitwiseScaleSeamCharge_lineReflect (x : ℝ) (rho : ℂ) :
+    orbitwiseScaleSeamCharge x (1 - (starRingEnd ℂ) rho) =
+      -orbitwiseScaleSeamCharge x rho := by
+  simp only [orbitwiseScaleSeamCharge, map_sub, map_one, Complex.conj_conj]
+  ring
+
+/-- Integer-scale specialization of centered seam oddness. -/
+theorem orbitwiseNatPrimeSeamCharge_lineReflect (p : ℕ) (rho : ℂ) :
+    orbitwiseNatPrimeSeamCharge p (1 - (starRingEnd ℂ) rho) =
+      -orbitwiseNatPrimeSeamCharge p rho := by
+  exact orbitwiseScaleSeamCharge_lineReflect (p : ℝ) rho
+
+private lemma star_real_cpow_of_pos (x : ℝ) (hx : 0 < x) (w : ℂ) :
+    (starRingEnd ℂ) ((x : ℂ) ^ w) =
+      (x : ℂ) ^ ((starRingEnd ℂ) w) := by
+  have harg : ((x : ℂ).arg ≠ Real.pi) := by
+    rw [Complex.arg_ofReal_of_nonneg hx.le]
+    exact Real.pi_ne_zero.symm
+  have h := Complex.cpow_conj (x : ℂ) w harg
+  simpa using h.symm
+
+/-- At a positive real scale, Schwarz conjugation of the spectral point conjugates the canonical
+seam value. -/
+theorem orbitwiseScaleSeamCharge_conj
+    (x : ℝ) (hx : 0 < x) (rho : ℂ) :
+    orbitwiseScaleSeamCharge x ((starRingEnd ℂ) rho) =
+      (starRingEnd ℂ) (orbitwiseScaleSeamCharge x rho) := by
+  simp only [orbitwiseScaleSeamCharge, map_mul, map_sub, Complex.conj_conj]
+  rw [star_real_cpow_of_pos x hx, star_real_cpow_of_pos x hx,
+    Complex.conj_ofReal]
+  simp only [map_neg, map_sub, map_one, Complex.conj_conj]
+
+/-- At a positive real scale, functional-equation reflection is negative value conjugation. -/
+theorem orbitwiseScaleSeamCharge_one_sub
+    (x : ℝ) (hx : 0 < x) (rho : ℂ) :
+    orbitwiseScaleSeamCharge x (1 - rho) =
+      -(starRingEnd ℂ) (orbitwiseScaleSeamCharge x rho) := by
+  calc
+    orbitwiseScaleSeamCharge x (1 - rho) =
+        -orbitwiseScaleSeamCharge x ((starRingEnd ℂ) rho) := by
+      simpa using orbitwiseScaleSeamCharge_lineReflect x
+        ((starRingEnd ℂ) rho)
+    _ = _ := by rw [orbitwiseScaleSeamCharge_conj x hx rho]
+
+/-- Positive-integer Schwarz reflection law for the canonical seam charge. -/
+theorem orbitwiseNatPrimeSeamCharge_conj
+    (p : ℕ) (hp : 0 < p) (rho : ℂ) :
+    orbitwiseNatPrimeSeamCharge p ((starRingEnd ℂ) rho) =
+      (starRingEnd ℂ) (orbitwiseNatPrimeSeamCharge p rho) := by
+  exact orbitwiseScaleSeamCharge_conj (p : ℝ) (by exact_mod_cast hp) rho
+
+/-- Positive-integer functional-equation reflection law for the canonical seam charge. -/
+theorem orbitwiseNatPrimeSeamCharge_one_sub
+    (p : ℕ) (hp : 0 < p) (rho : ℂ) :
+    orbitwiseNatPrimeSeamCharge p (1 - rho) =
+      -(starRingEnd ℂ) (orbitwiseNatPrimeSeamCharge p rho) := by
+  exact orbitwiseScaleSeamCharge_one_sub (p : ℝ) (by exact_mod_cast hp) rho
+
 private theorem tendsto_log_mul_rpow_neg_atTop
     {r : ℝ} (hr : 0 < r) :
     Tendsto (fun x : ℝ => Real.log x * x ^ (-r)) atTop (nhds 0) := by

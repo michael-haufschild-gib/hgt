@@ -128,6 +128,126 @@ Its concrete cofinite-prime Gram theorem supplies positive finite sections of th
 metric at every aperture-jet depth; the missing step is to identify their source-selected infinite
 completion with the full Hardy leakage family rather than a fixed prolate or fixed-moment metric.
 
+The completion shape is now sharper.  The normalized valuation-`e` coefficient has the exact
+Brownian--Laplace factorization
+
+```text
+Lambda(p^(e+1))(1-p^(-(e+1)a)) / ((e+1)(log p)^2)
+  = integral_0^a exp(-(e+1)(log p)t)dt.
+```
+
+Hence every prime/valuation column is a Laplace sample of the same interval vector `1_[0,a]`,
+whose Gram is `min(a,b)`.  Independently, the Xi anti-causal boundary relative trace already has
+kernel `min(t,u)`.  The two sides therefore share one Brownian Hilbert skeleton.
+
+The all-valuation filtration now supplies a stronger completion theorem.  At one fixed prime put
+`q_a=p^(-a)` and let `F_e(a)=1-q_a^(e+1)` be the normalized valuation layer.  Its successive
+valuation difference is
+
+```text
+D_e(a)=(1-q_a)q_a^e.
+```
+
+Thus the completed source Gram is the diagonally weighted Szegő kernel
+
+```text
+K_p(a,b)=sum_e D_e(a)D_e(b)
+        =(1-q_a)(1-q_b)/(1-q_a q_b),
+```
+
+and the unit-normalized Hilbert defect is the disk pseudohyperbolic distance squared.  One fixed
+prime and the first `N` valuation differences already give full rank for every `N`-aperture packet
+by a weighted Vandermonde factorization.  Hence finite rank, aperture separation, and a canonical
+Hardy completion are no longer open.
+
+Transposing this completed valuation feature from apertures to primes closes the previously open
+prime--Gamma compatibility.  Put `q_p=p^(-1)` and
+
+```text
+H_e(p)=sqrt(q_p)(1-q_p)q_p^e.
+```
+
+If `u_p` is the normalized Gamma conductor cross-coordinate, the explicit positive rational
+source gauge
+
+```text
+R_p=(1+q_p^2)^2/(1+q_p)^2
+```
+
+satisfies `R_p u_p=-(3sqrt(2)/4)H_0(p)`.  Since the scalar Gamma capacity is `9/8`, its exact Schur
+residual is
+
+```text
+K(p,r)-(R_pu_p)(R_ru_r)/(9/8)=q_p q_r K(p,r).
+```
+
+Thus Gamma elimination removes depth zero and advances the valuation filtration by one.  This is
+the Hilbert realization of the finite-fusion successor law: the residual is the next complete
+valuation tail, not a finite-rank collapse.  Every nonempty finite valuation prefix consequently
+gives an explicit positive prime--Gamma block of capacity `9/8`.
+
+The general HT carrier theory also says that an unmarked polynomial/sample graph can become
+maximally multivalued at a singular cofinal carrier; the source marking must be installed before
+closure.  The valuation source supplies that marking explicitly.  For any injective `N`-prime
+packet, the first `N` half-shifted coordinates have a weighted reciprocal-prime Vandermonde matrix
+with nonzero determinant.  Hence the correct cofinal object is the valuation-coordinate graph,
+with Gamma acting as its shift, not the raw scalar prime-sample graph.  This closes the finite
+marking/reconstruction gate but not uniform control of its divergent cofinal frame.
+
+The genuine local Möbius Schur contraction now selects a better cofinal frame.  At unit aperture
+its integer-depth sample and forward difference are
+
+```text
+B_p(e)=(1-q_p^(e+1))/(1+q_p),
+Delta B_p(e)=q_p^(e+1)(1-q_p)/(1+q_p)
+            =[sqrt(q_p)/(1+q_p)]H_e(p).
+```
+
+The damping square `q_p/(1+q_p)^2` is exactly the local squarefree-parity Fisher variance already
+present in the Möbius four-unit source.  Hence this is the Fisher-damped Gamma--valuation frame,
+and the inverse dressing below is primewise Fisher whitening.
+
+The completed Möbius-difference kernel has diagonal
+
+```text
+K_M(p,p)=q_p^2(1-q_p)/(1+q_p)^3 <= q_p^2,
+```
+
+so its all-prime diagonal mass is summable.  It retains the same normalized pseudohyperbolic
+metric and every finite prime packet remains a weighted Vandermonde frame.  This closes the
+source-selected infinite Hilbert-completion gate: the marking is a discrete derivative of the
+actual Möbius characteristic multiplier, not an imposed valuation basis.
+
+The exact inverse dressing is `A_p=(1+q_p)/sqrt(q_p)` and satisfies
+`A_p Delta B_p(e)=H_e(p)` and `p<=A_p^2`.  Hence the naive channelwise map from the summable
+Möbius frame back to the Gamma frame is unbounded.  The RH comparison must act directly on the
+damped Möbius RKHS; finite reconstruction followed by inverse dressing is now a retired route.
+
+This still does not prove RH.  The exact remaining theorem is now the source-to-Xi
+**Pick-kernel domination** alone: construct the finite Xi boundary-strip vectors from this
+completed prime--Gamma valuation block and prove that their Gram subtracted from its four-unit
+normalization is positive semidefinite on every finite packet.  Equivalently, the induced Hardy
+comparison on the marked valuation-coordinate graph must be Schur-class and strong enough to
+prove
+
+```text
+Delta_Xi(u) <= 4(1-exp(-u)) + o(u),   u -> 0+.
+```
+
+The Brownian factorization and its projective contact law are recorded in
+`../2-fully-proven/needs-audit/xi-transverse-aperture-projective-tangent-ultrametric.md` and
+`RHTower.XiTransversePrimeSourceProjectiveTangent`.  The completed valuation metric and its Pick
+reformulation are recorded in
+`../2-fully-proven/needs-audit/xi-transverse-valuation-szego-true-aperture-metric.md` and
+`RHTower.XiTransverseValuationSzegoMetric`.  Together they replace the vague phrase “canonical
+infinite completion” by one explicit Pick-positivity problem.  The Gamma Schur-translation theorem
+and its finite positive block are recorded in
+`../2-fully-proven/needs-audit/xi-transverse-gamma-valuation-schur-translation.md` and
+`RHTower.XiTransverseGammaValuationCoherence`.
+The Möbius-selected summable frame and its unbounded inverse-recovery boundary are recorded in
+`../3-formalized/needs-audit/xi-mobius-schur-valuation-marking.md` and
+`RHTower.XiMobiusSchurValuationIntertwiner`.
+
 ## Falsity and circularity guards
 
 - A determinant chosen to be `xi`, any zero-indexed operator, or any definition using
@@ -157,6 +277,11 @@ completion with the full Hardy leakage family rather than a fixed prolate or fix
       field in `RHTower.XiTransverseShiftAllValuationLayerRank`
 - [x] build deletion-robust positive Hilbert Gram sections for every finite transverse shift-jet
       packet in `RHTower.XiTransversePrimeSourceHilbertMetric`
+- [x] construct the coherent prime--Gamma valuation block and prove that its Schur complement is
+      exact one-step valuation translation
+- [x] identify a globally summable source-selected marked frame as the forward depth derivative
+      of the actual local Möbius Schur contraction
+- [x] retire channelwise recovery of the Gamma frame by the exact unbounded inverse dressing
 - [ ] construct the source-pure all-`omega` two-channel comparison map
 - [ ] prove the defect identity without divisor data
 - [ ] prove source-forced saturation
@@ -178,3 +303,20 @@ completion with the full Hardy leakage family rather than a fixed prolate or fix
 - 2026-07-18 — realized the transverse source rank as positive-definite cofinite-prime Hilbert Gram
   sections. This builds the finite metric skeleton; the RH-bearing open core remains its canonical
   infinite source-to-Hardy completion and saturation.
+- 2026-07-19 — identified the normalized all-valuation source columns as Laplace samples of
+  Brownian interval vectors and matched their `min` Gram with the Xi boundary relative-trace
+  kernel. The remaining completion theorem is now an explicit nonexpansive Brownian--Laplace
+  source-to-Hardy map, not an unspecified Hilbert limit.
+- 2026-07-19 — transposed the valuation--Szegő feature to the prime axis and found that the
+  rationally corrected normalized Gamma cross is exactly its first half-shifted coordinate.  The
+  Gamma Schur complement advances the valuation filtration by one, closing the prime--Gamma
+  compatibility with an explicit positive block and leaving only the target Pick contraction.
+- 2026-07-19 — took the successive valuation difference of the collapsing raw layers and obtained
+  the exact weighted Szegő kernel at one fixed prime, with normalized pseudohyperbolic distance and
+  arbitrary finite aperture rank.  The completion itself is closed; the RH-bearing open theorem is
+  now the positivity of the prime--Gamma-to-Xi Pick defect kernel.
+- 2026-07-19 — identified the half-shifted valuation marking as the diagonally dressed forward
+  depth difference of the actual local Möbius Schur factor.  The undressed all-prime frame has
+  summable `O(p^-2)` diagonal mass and retains the exact aperture metric, while the inverse
+  dressing costs at least `sqrt(p)` and is unbounded.  The remaining Pick comparison must therefore
+  live directly on the damped Möbius difference RKHS.
