@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SlepianKernelFourier
 import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.MeasureTheory.Measure.Lebesgue.Integral
 
 /-!
 # The composed band transform collapses to the Slepian kernel
@@ -132,13 +133,20 @@ theorem setIntegral_Icc_comp_neg (a : ℝ) (h : ℝ → ℂ) :
       exact ⟨by linarith, by linarith⟩
     · rintro ⟨h1, h2⟩
       exact ⟨by linarith, by linarith⟩
-  rw [← integral_indicator measurableSet_Icc, ← integral_indicator measurableSet_Icc,
-    ← integral_comp_neg (fun u => (Set.Icc (-a) a).indicator h u)]
-  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-  by_cases ht : t ∈ Set.Icc (-a) a
-  · rw [Set.indicator_of_mem ht, Set.indicator_of_mem ((hsym t).mp ht)]
-  · rw [Set.indicator_of_notMem ht,
-      Set.indicator_of_notMem (fun hc => ht ((hsym t).mpr hc))]
+  rw [← integral_indicator measurableSet_Icc, ← integral_indicator measurableSet_Icc]
+  calc
+    (∫ t, (Set.Icc (-a) a).indicator (fun u => h (-u)) t) =
+        ∫ t, (Set.Icc (-a) a).indicator h (-t) := by
+      refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+      change (Set.Icc (-a) a).indicator (fun u => h (-u)) t =
+        (Set.Icc (-a) a).indicator h (-t)
+      by_cases ht : t ∈ Set.Icc (-a) a
+      · rw [Set.indicator_of_mem ht, Set.indicator_of_mem ((hsym t).mp ht)]
+      · rw [Set.indicator_of_notMem ht,
+          Set.indicator_of_notMem (fun hc => ht ((hsym t).mpr hc))]
+    _ = ∫ t, (Set.Icc (-a) a).indicator h t :=
+      (Measure.measurePreserving_neg (volume : Measure ℝ)).integral_comp
+        (Homeomorph.neg ℝ).measurableEmbedding _
 
 /-- **On the even carrier the composed band transform has the Slepian kernel.**  The composition
 produces the argument `x + t`; reflecting the integration variable, which is free on an even
@@ -157,7 +165,6 @@ theorem double_integral_fourierChar_eq_sincKernel (a x : ℝ) (ha : 0 ≤ a) {g 
   intro _
   rw [ht, sincKernelSmooth]
   congr 2
-  ring
 
 end RHTower
 

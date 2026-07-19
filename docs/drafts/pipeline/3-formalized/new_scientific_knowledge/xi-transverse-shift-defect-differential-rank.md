@@ -164,7 +164,10 @@ column. The pairwise corrected completed-Xi values represent exactly this collis
 incidence matroid over both bases. Hence repeated labels, zero-shift vertices, loops created by
 label collisions, and all resulting rank loss are classified by one unconditional law rather than
 excluded by injectivity, positivity, or root hypotheses. The earlier rooted theorem is the
-distinct-label specialization of this quotient geometry.
+distinct-label specialization of this quotient geometry. Its abstract independence Prop is also
+discharged: coefficient flows must be conserved at every occupied nonzero shift label and at the
+single collapsed zero-shift vertex. The zero-vertex equation is forced by total incidence, so it
+is a conclusion of the quotient law rather than an additional hypothesis.
 
 At the value level this incidence structure extends beyond even integral shifts. For arbitrary
 complex shifts `a,b,c`, the raw pairwise differences form an additive cocycle, reverse orientation
@@ -402,6 +405,11 @@ RH-strength assertion must be proved.
   `formal/GaloisForLFunctions/HTGeometry/DifferentialPointedCollisionIncidenceMatroid.lean`
 - **General arbitrary-label incidence law:**
   `GaloisForLFunctions.HTGeometry.differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid`
+- **General quotient circulation and all-vertex Kirchhoff interface:**
+  `GaloisForLFunctions.HTGeometry.isPointedCollisionIncidenceCirculation_iff_vertex_conservation`,
+  `GaloisForLFunctions.HTGeometry.pointedCollisionIncidenceMatroid_indep_iff_no_nonzero_circulation`,
+  and
+  `GaloisForLFunctions.HTGeometry.pointedCollisionIncidenceMatroid_indep_iff_vertex_conservation`
 - **Arbitrary-label Xi incidence modules:**
   `formal/GaloisForLFunctions/RHTower/XiTransverseShiftCollisionIncidenceRank.lean` and
   `formal/GaloisForLFunctions/RHTower/XiTransverseShiftCollisionIncidenceAllValuationRank.lean`
@@ -413,6 +421,10 @@ RH-strength assertion must be proved.
   `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_iff_pointedCollisionIncidence`,
   and
   `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_pointedCollisionIncidence_eRk`
+- **Arbitrary-label Xi full quotient-Kirchhoff interfaces:**
+  `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_differentialIndependent_finset_iff_pointedCollisionVertexConservation`
+  and
+  `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_finset_iff_pointedCollisionVertexConservation`
 - **All-valuation module:**
   `formal/GaloisForLFunctions/RHTower/XiTransverseShiftAllValuationLayerRank.lean`
 - **All-valuation capstone:**
@@ -452,8 +464,9 @@ RH-strength assertion must be proved.
   decomposition, exact anchor-recovery iff, zero-anchor corollary, and their pairwise Xi
   vertex-field and corrected-source specializations over both bases report only the standard
   baseline. The collision-quotient support, incidence matrix/matroid, ordinary Prop/rank
-  interfaces, exact nonlinear matroid law, and arbitrary-label Xi matroid/Prop/rank laws over both
-  bases likewise report only this baseline. The actual corrected
+  interfaces, exact nonlinear matroid law, full quotient circulation/conservation equivalence,
+  collapsed-zero equation discharge, and arbitrary-label Xi matroid/Prop/Kirchhoff/rank laws over
+  both bases likewise report only this baseline. The actual corrected
   all-integral pairwise germ, complete generated fields, incidence matroids, Prop interfaces,
   Kirchhoff criteria, and ranks over both bases likewise report only this baseline. The corrected
   pairwise additive cocycle, archimedean reflection cocycle, centered invariant, and tail-zero
@@ -589,5 +602,7 @@ RH-strength assertion must be proved.
   that pairwise differences of a pointed collision family represent its exact incidence matroid.
   Specialized it to arbitrary finite integral Xi shift families over the rational-coordinate and
   all-valuation bases, with matroid, Prop, and rank interfaces. Repeated shifts and zero vertices
-  are now classified rather than excluded. Direct source checks, three exact leaf final builds,
-  and the twelve-declaration axiom audit pass.
+  are now classified rather than excluded. The quotient Prop was then discharged into explicit
+  Kirchhoff conservation on occupied nonzero labels plus the collapsed zero vertex, whose equation
+  follows from total incidence. Direct source checks, three exact leaf final builds, and the
+  nineteen-declaration axiom audit pass.

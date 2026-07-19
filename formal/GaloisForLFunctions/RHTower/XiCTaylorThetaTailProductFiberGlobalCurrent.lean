@@ -162,7 +162,7 @@ theorem thetaCuspTailSecondDensityFiniteAtomPhaseValue_eq_sum
     funext x
     push_cast
     simp only [Finset.sum_mul]]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · rfl
   · intro n _hn
     exact integrableOn_thetaCuspTailSecondDensityAtom_mul_phase n hz
@@ -183,7 +183,7 @@ theorem thetaCuspTailSecondDensityFiniteAtomPhaseDerivative_eq_sum
     funext x
     push_cast
     simp only [Finset.sum_mul]]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · rfl
   · intro n _hn
     exact integrableOn_thetaCuspTailSecondDensityAtom_mul_phaseDerivative n hz

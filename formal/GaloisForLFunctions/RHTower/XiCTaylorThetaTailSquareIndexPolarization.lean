@@ -1671,7 +1671,7 @@ theorem integral_thetaSquareIndexDyadicDensity_mul_finitePowerPacket
     apply Finset.sum_congr rfl
     intro i _hi
     ring]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · unfold thetaSquareIndexDyadicFiniteMomentPacket
     apply Finset.sum_congr rfl
     intro i _hi
@@ -1815,7 +1815,7 @@ theorem thetaSquareIndexDyadicCoreAtomAverage_eq_momentPacket
         apply Finset.sum_congr rfl
         intro r _hr
         ring]
-      exact MeasureTheory.integrable_finset_sum _ fun r _hr =>
+      exact MeasureTheory.integrable_finsetSum _ fun r _hr =>
         (integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower
           (2 * r + 2) k).const_mul
             (thetaCuspTailSecondSectionSourceCoefficient z r)
@@ -1885,7 +1885,7 @@ theorem integrableOn_thetaSquareIndexDyadicDensity_mul_coreAtomDerivative
     apply Finset.sum_congr rfl
     intro r _hr
     ring]
-  exact MeasureTheory.integrable_finset_sum _ fun r _hr =>
+  exact MeasureTheory.integrable_finsetSum _ fun r _hr =>
     (integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower
       (2 * r + 2) k).const_mul
         (thetaCuspTailSecondCoreAtomDerivativeSourceCoefficient z r)
@@ -1932,7 +1932,7 @@ theorem integrableOn_thetaSquareIndexDyadicDensity_mul_coreAtom
       apply Finset.sum_congr rfl
       intro r _hr
       ring]
-    exact MeasureTheory.integrable_finset_sum _ fun r _hr =>
+    exact MeasureTheory.integrable_finsetSum _ fun r _hr =>
       (integrableOn_thetaSquareIndexDyadicDensity_mul_complexPower
         (2 * r + 2) k).const_mul
           (thetaCuspTailSecondSectionSourceCoefficient z r)

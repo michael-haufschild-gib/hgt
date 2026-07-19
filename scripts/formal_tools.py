@@ -64,6 +64,14 @@ THEOREM_AREAS = {
         "path": SRC / "Bottcher",
         "capstones": ["Bottcher.q62_independence", "Bottcher.q62_mixed"],
     },
+    "hilbert_metric": {
+        "module": "GaloisForLFunctions.HilbertMetric",
+        "path": SRC / "HilbertMetric",
+        "capstones": [
+            "gaussianCorrectedDeterminant_mul_sq_le",
+            "gaussianDistanceMatrix_det_mul_sq_le",
+        ],
+    },
 }
 
 ALLOWED_ROOT_LEAN = {
@@ -71,6 +79,7 @@ ALLOWED_ROOT_LEAN = {
     "Core.lean",
     "FullyProvenNewTargets.lean",
     "HTGeometry.lean",
+    "HilbertMetric.lean",
     "Hurwitz.lean",
     "KummerRootApplications.lean",
     "MainTheorems.lean",

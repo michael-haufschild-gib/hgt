@@ -18,6 +18,7 @@ namespace RHTower
 noncomputable section
 
 open scoped BigOperators
+open Filter
 
 /-- The true continuous aperture metric after Hilbert-projecting away the ray at aperture `A`. -/
 def xiMobiusPrimeTerminalConditionedApertureMetric
@@ -266,6 +267,8 @@ theorem xiMobiusPrimeTerminalConditionedApertureMetric_self_eq_gain_sq_mul
   have hrr : 1 - r * r ≠ 0 := by
     have := mul_lt_one_of_nonneg_of_lt_one_left hr0.le hr1 hr1.le
     linarith
+  have hrrpow : 1 - r ^ 2 ≠ 0 := by
+    simpa [pow_two] using hrr
   have hru : 1 - r * u ≠ 0 := by
     have := mul_lt_one_of_nonneg_of_lt_one_left hr0.le hr1 hu1.le
     linarith
@@ -276,7 +279,7 @@ theorem xiMobiusPrimeTerminalConditionedApertureMetric_self_eq_gain_sq_mul
         ((1 - r * r) * (1 - r * u) * (1 - r * u)) =
       ((q / (1 + q)) ^ 2 * ((1 - r) / (1 + r))) *
         ((r - u) / (1 - r * u)) ^ 2
-  field_simp [hq0.ne', hqplus, hrminus, hrplus, hrr, hru]
+  field_simp [hq0.ne', hqplus, hrminus, hrplus, hrr, hrrpow, hru]
   ring
 
 /-- Quantitative aperture-power gain.  Terminal joining strictly suppresses the diagonal by more
@@ -406,7 +409,6 @@ theorem xiMobiusPrimeTerminalConditionedApertureMetric_eq_metric_mul_gains
       ((q / (1 + q)) ^ 2 * (1 - r) * (1 - s) / (1 - r * s)) *
         ((r - u) / (1 - r * u)) * ((s - u) / (1 - s * u))
   field_simp [hqplus, hrs, hru, hsu]
-  ring
 
 /-- In the joint critical tangent, the terminal gain loses every prime weight and becomes the
 scale-ratio filter `(A-a)/(A+a)`. -/

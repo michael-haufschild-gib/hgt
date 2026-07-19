@@ -2,8 +2,8 @@
 
 - **ID:** gaussian-hilbert-metric-degree-flow
 - **Stage:** 1-in-progress
-- **Type:** THEOREM CANDIDATE + LEAN PROGRAM
-- **Novelty:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Type:** SOTA FOUNDATION + CONJECTURE GENERATOR
+- **Novelty:** `[REDISCOVERED FOUNDATION]`; no scientific-novelty claim
 - **Source:** metric-first Hilbert-space research prompted by the 2026-07-19 universal-law goal
 - **Statement:** The centroid-corrected determinant of every finite Gaussian distance matrix on a real Hilbert space is a nonnegative graded partition function.  Consequently its logarithmic bandwidth elasticity is a monotone mean Fock degree, its log-scale curvature is exactly a degree variance, and its flat endpoint is the cumulative polynomial-interpolation deficit of the metric configuration.
 
@@ -96,19 +96,21 @@ scale-dependent complexity flow without asserting an HTGeometry or RHTower resul
 - Log-convexity and mean/variance identities for an abstract nonnegative graded partition
   function are established parent mathematics.  The Lean parent layer is
   `GaloisForLFunctions.HilbertMetric.GradedPartition`.
+- Schur positivity and Oppenheim's determinant inequality already imply monotonicity of
+  `det K_X(t)` under increasing Gaussian inverse bandwidth.  Ordinary determinant
+  monotonicity is therefore explicitly excluded from the novelty claim.
 
-### Candidate-new content
+### Anti-theatre verdict
 
-The novelty claim is restricted to the unified **metric degree flow**: centroid correction
-turns the whole Gaussian determinant into a positive Fock--Pluecker partition function, whose
-logarithmic bandwidth elasticity has the exact mean/variance law and whose flat endpoint is the
-full cumulative Hilbert-function deficit for arbitrary, including non-unisolvent, configurations.
-The explicit metric three-scale inequality (TS) is the derivative-free theorem surface.
+`[REDISCOVERED FOUNDATION]`.  Centroid correction, the Fock feature map, Cauchy--Binet,
+positive Pluecker weights, and the mean/variance calculus for a graded partition function are
+all classical ingredients.  Their assembly is useful SOTA infrastructure and gives a clean
+metric theorem surface, but an exact-phrase literature miss is not a mathematical delta.
 
-No located source states (TS), (DF), the cumulative-deficit endpoint (HF), or their exact
-centroid-gauge synthesis.  This remains a candidate priority claim: the classical ingredients
-alone do not establish novelty, and an equivalent statement in RBF, determinantal-process,
-exterior-Fock, or tropical-principal-minor language is a killing falsifier.
+The package remains in progress only as a dependency for genuinely stronger conjectures.  It
+must move to `not_new_scientific_knowledge` if formalized.  Neither (TS), (DF), (HF), nor (CG)
+may be promoted as a discovery without an independently meaningful consequence not already
+forced by the parent machinery.
 
 ## Proof architecture
 
@@ -154,9 +156,14 @@ exterior-Fock, or tropical-principal-minor language is a killing falsifier.
 - [x] Parent layer: finite nonnegative graded partition, multiplicative midpoint law, and
   degree-variance inequality (`HilbertMetric/GradedPartition.lean`).
 - [ ] SOTA connector: finite rectangular Gram/Cauchy--Binet expansion into squared minors.
-- [ ] Hilbert layer: orthogonal graded feature-volume law and multiplicative convexity.
-- [ ] Gaussian layer: finite truncations, convergence to the Gaussian distance determinant,
-  centroid metric correction, and exact three-scale law.
+  The exterior-power proof and weighted Pluecker connector are implemented; clean targeted
+  verification remains the gate.
+- [ ] Hilbert layer: ordered-tensor Fock truncations, finite-span reduction, and universal
+  multiplicative convexity are implemented in `HilbertMetric/GaussianFock.lean`; targeted
+  verification remains the gate.
+- [ ] Gaussian layer: centroid diagonal gauge is implemented and previously checked in
+  `HilbertMetric/CentroidGauge.lean`.  The connector from the universal Fock law to the
+  centroid-corrected metric determinant and raw three-scale inequality remains to be checked.
 - [ ] Algebraic endpoint: filtered evaluation ranks and cumulative-deficit identity.
 
 ## Literature audit log
@@ -170,9 +177,18 @@ exterior-Fock, or tropical-principal-minor language is a killing falsifier.
 - Searches for `Gaussian kernel determinant bandwidth log convex`, `multiplicatively convex`,
   `degree variance`, `Hilbert function flat limit`, and `valuated matroid Gaussian kernel`
   found the parent topics but no exact degree-flow theorem.
+- A second pass through entrywise PSD preservers and Oppenheim--Schur determinant inequalities
+  confirmed that entrywise exponential positivity and uncorrected determinant monotonicity are
+  classical; neither is claimed.  Searches for the exact positive determinant coefficients,
+  centroid correction, multiplicative defect, and degree-flow phrasing found no equivalent.
 
 ## Log
 
 - 2026-07-19 — created after retiring the poset innovation and Hilbert-cube routes, locating
   the flat-RBF determinant parents, and narrowing novelty to the centroid-corrected degree flow.
 - 2026-07-19 — SOTA Lean parent layer compiled by targeted `lake env lean`; no module build run.
+- 2026-07-19 — implemented an ordered-tensor (rather than multi-index) Fock truncation.  This
+  makes the factorial normalization canonical in Lean, identifies every truncation with a
+  weighted Pluecker partition, proves entrywise Taylor convergence and determinant convergence,
+  and reduces arbitrary finite Hilbert families to their finite spans.  Verification is pending;
+  no promotion claim is made before the exact source and final module gates pass.

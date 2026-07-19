@@ -29,9 +29,10 @@ theorem norm_xiZeroCopyReciprocalSquare_eq_horizontalVertical
   have hsq : ‖(q.1 : ℂ) - 1 / 2‖ ^ 2 =
       ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 := by
     rw [Complex.sq_norm, Complex.normSq_apply]
-    simp only [Complex.sub_re, Complex.ofReal_re, Complex.sub_im, Complex.ofReal_im,
-      sub_zero]
+    norm_num [Complex.sub_re, Complex.sub_im]
+    ring
   rw [← hsq, inv_pow]
+  norm_num [div_eq_mul_inv]
 
 /-- Exact horizontal/vertical formula for the transverse defect of one Xi reciprocal-square
 coordinate. -/

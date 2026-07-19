@@ -195,7 +195,7 @@ theorem integrableOn_criticalLogPhaseTranslatedDensityProfile
     {L : ℝ} (hL : 0 ≤ L) (N : ℕ) :
     IntegrableOn (criticalLogPhaseTranslatedDensityProfile L N) (Ioi 0) := by
   unfold criticalLogPhaseTranslatedDensityProfile
-  exact MeasureTheory.integrable_finset_sum _ fun j _hj =>
+  exact MeasureTheory.integrable_finsetSum _ fun j _hj =>
     (integrableOn_shiftedDensityAtomOne
       (mul_nonneg (Nat.cast_nonneg j) hL)).const_mul
         (Real.exp (-((j : ℝ) * L) / 2))
@@ -217,7 +217,7 @@ theorem integrableOn_mul_criticalLogPhaseTranslatedDensityProfile
     apply Finset.sum_congr rfl
     intro j _hj
     ring]
-  exact MeasureTheory.integrable_finset_sum _ fun j _hj =>
+  exact MeasureTheory.integrable_finsetSum _ fun j _hj =>
     (integrableOn_mul_shiftedDensityAtomOne
       (mul_nonneg (Nat.cast_nonneg j) hL)).const_mul
         (Real.exp (-((j : ℝ) * L) / 2))
@@ -226,7 +226,7 @@ theorem integrableOn_criticalLogPhaseTranslatedDensityProfileDerivative
     {L : ℝ} (hL : 0 ≤ L) (N : ℕ) :
     IntegrableOn (criticalLogPhaseTranslatedDensityProfileDerivative L N) (Ioi 0) := by
   unfold criticalLogPhaseTranslatedDensityProfileDerivative
-  exact MeasureTheory.integrable_finset_sum _ fun j _hj =>
+  exact MeasureTheory.integrable_finsetSum _ fun j _hj =>
     (integrableOn_shiftedDensityAtomOneDerivative
       (mul_nonneg (Nat.cast_nonneg j) hL)).const_mul
         (Real.exp (-((j : ℝ) * L) / 2))
@@ -250,7 +250,7 @@ theorem integrableOn_mul_criticalLogPhaseTranslatedDensityProfileDerivative
     apply Finset.sum_congr rfl
     intro j _hj
     ring]
-  exact MeasureTheory.integrable_finset_sum _ fun j _hj =>
+  exact MeasureTheory.integrable_finsetSum _ fun j _hj =>
     (integrableOn_mul_shiftedDensityAtomOneDerivative
       (mul_nonneg (Nat.cast_nonneg j) hL)).const_mul
         (Real.exp (-((j : ℝ) * L) / 2))

@@ -73,7 +73,7 @@ theorem orientedComplexSquareTransverseTerm_nonneg
     0 ≤ orientedComplexSquareTransverseTerm lam w := by
   have hnorm : 0 ≤ Complex.normSq lam := by
     rw [Complex.normSq_apply]
-    positivity
+    exact add_nonneg (mul_self_nonneg _) (mul_self_nonneg _)
   exact mul_nonneg (div_nonneg hnorm hlam) (sq_nonneg _)
 
 end
@@ -133,6 +133,22 @@ theorem xiSquaredEulerApertureHankelTerm_eq_hilbert_sub_transverse
     xiSquaredEulerApertureShearedEvaluation, lam, w] using
     HTGeometry.re_mul_sq_eq_orientedHilbert_sub_transverse lam w hlam
 
+/-- The positive aperture term is the squared real response amplitude divided by the positive
+oriented mass.  This is the intrinsic metric formula: the shear is forced by multiplication by
+the reciprocal-square response atom. -/
+theorem xiSquaredEulerApertureHilbertTerm_eq_responseAmplitude_sq_div
+    (p : Polynomial ℝ) (q : XiZeroCopy) :
+    xiSquaredEulerApertureHilbertTerm p q =
+      (xiZeroCopyReciprocalSquare q *
+          evalRealPolynomial p (xiZeroCopyReciprocalSquare q)).re ^ 2 /
+        (xiZeroCopyReciprocalSquare q).re := by
+  have hre : (xiZeroCopyReciprocalSquare q).re ≠ 0 :=
+    (xiZeroCopyReciprocalSquare_re_pos q).ne'
+  unfold xiSquaredEulerApertureHilbertTerm
+    xiSquaredEulerApertureShearedEvaluation
+  rw [Complex.mul_re]
+  field_simp [hre]
+
 theorem xiSquaredEulerApertureHilbertTerm_nonneg
     (p : Polynomial ℝ) (q : XiZeroCopy) :
     0 ≤ xiSquaredEulerApertureHilbertTerm p q := by
@@ -145,23 +161,23 @@ theorem xiSquaredEulerApertureTransverseTerm_nonneg
   have hre := (xiZeroCopyReciprocalSquare_re_pos q).le
   have hnorm : 0 ≤ Complex.normSq (xiZeroCopyReciprocalSquare q) := by
     rw [Complex.normSq_apply]
-    positivity
+    exact add_nonneg (mul_self_nonneg _) (mul_self_nonneg _)
   exact mul_nonneg (div_nonneg hnorm hre) (sq_nonneg _)
 
 /-- Finite positive Hilbert energy. -/
 def xiSquaredEulerFiniteApertureHilbertEnergy
     (S : Finset XiZeroCopy) (p : Polynomial ℝ) : ℝ :=
-  ∑ q in S, xiSquaredEulerApertureHilbertTerm p q
+  ∑ q ∈ S, xiSquaredEulerApertureHilbertTerm p q
 
 /-- Finite transverse boundary-charge energy. -/
 def xiSquaredEulerFiniteApertureTransverseEnergy
     (S : Finset XiZeroCopy) (p : Polynomial ℝ) : ℝ :=
-  ∑ q in S, xiSquaredEulerApertureTransverseTerm p q
+  ∑ q ∈ S, xiSquaredEulerApertureTransverseTerm p q
 
 /-- Finite multiplicity-exact trace-Hankel value. -/
 def xiSquaredEulerFiniteApertureHankelValue
     (S : Finset XiZeroCopy) (p : Polynomial ℝ) : ℝ :=
-  ∑ q in S, xiSquaredEulerApertureHankelTerm p q
+  ∑ q ∈ S, xiSquaredEulerApertureHankelTerm p q
 
 /-- Finite packet version of the all-degree Hilbert/charge decomposition. -/
 theorem xiSquaredEulerFiniteApertureHankelValue_eq_hilbert_sub_transverse
@@ -181,12 +197,14 @@ theorem xiSquaredEulerFiniteApertureHankelValue_eq_hilbert_sub_transverse
 theorem xiSquaredEulerFiniteApertureHilbertEnergy_nonneg
     (S : Finset XiZeroCopy) (p : Polynomial ℝ) :
     0 ≤ xiSquaredEulerFiniteApertureHilbertEnergy S p := by
+  unfold xiSquaredEulerFiniteApertureHilbertEnergy
   exact Finset.sum_nonneg fun q _hq =>
     xiSquaredEulerApertureHilbertTerm_nonneg p q
 
 theorem xiSquaredEulerFiniteApertureTransverseEnergy_nonneg
     (S : Finset XiZeroCopy) (p : Polynomial ℝ) :
     0 ≤ xiSquaredEulerFiniteApertureTransverseEnergy S p := by
+  unfold xiSquaredEulerFiniteApertureTransverseEnergy
   exact Finset.sum_nonneg fun q _hq =>
     xiSquaredEulerApertureTransverseTerm_nonneg p q
 
@@ -254,7 +272,7 @@ theorem xiSquaredEulerApertureOrbitChargeDensity_nonneg (q : XiZeroCopy) :
   unfold xiSquaredEulerApertureOrbitChargeDensity
   have hnorm : 0 ≤ Complex.normSq (xiZeroCopyReciprocalSquare q) := by
     rw [Complex.normSq_apply]
-    positivity
+    exact add_nonneg (mul_self_nonneg _) (mul_self_nonneg _)
   exact div_nonneg (mul_nonneg (sq_nonneg _) hnorm)
     (xiSquaredEulerApertureOrbitMass_pos q).le
 
@@ -292,15 +310,15 @@ theorem xiSquaredEulerApertureOrbitChargeDensity_eq_zero_iff
 
 /-- Finite zeroth central response coefficient. -/
 def xiSquaredEulerFiniteApertureCentralA (S : Finset XiZeroCopy) : ℝ :=
-  ∑ q in S, xiSquaredEulerApertureOrbitMass q
+  ∑ q ∈ S, xiSquaredEulerApertureOrbitMass q
 
 /-- Finite first central response coefficient. -/
 def xiSquaredEulerFiniteApertureCentralB (S : Finset XiZeroCopy) : ℝ :=
-  ∑ q in S, (xiZeroCopyReciprocalSquare q ^ 2).re
+  ∑ q ∈ S, (xiZeroCopyReciprocalSquare q ^ 2).re
 
 /-- Finite second central response coefficient. -/
 def xiSquaredEulerFiniteApertureCentralC (S : Finset XiZeroCopy) : ℝ :=
-  ∑ q in S, (xiZeroCopyReciprocalSquare q ^ 3).re
+  ∑ q ∈ S, (xiZeroCopyReciprocalSquare q ^ 3).re
 
 /-- The first nonconstant central Hankel minor of a finite Xi packet. -/
 def xiSquaredEulerFiniteApertureCentralMinor (S : Finset XiZeroCopy) : ℝ :=
@@ -311,15 +329,15 @@ def xiSquaredEulerFiniteApertureCentralMinor (S : Finset XiZeroCopy) : ℝ :=
 /-- The actual positive Hilbert Gram determinant of central orbit mass and response slope. -/
 def xiSquaredEulerFiniteApertureHilbertGram (S : Finset XiZeroCopy) : ℝ :=
   xiSquaredEulerFiniteApertureCentralA S *
-      (∑ q in S, xiSquaredEulerApertureOrbitMass q *
+      (∑ q ∈ S, xiSquaredEulerApertureOrbitMass q *
         xiSquaredEulerApertureOrbitSlope q ^ 2) -
-    (∑ q in S, xiSquaredEulerApertureOrbitMass q *
+    (∑ q ∈ S, xiSquaredEulerApertureOrbitMass q *
       xiSquaredEulerApertureOrbitSlope q) ^ 2
 
 /-- Total transverse boundary charge at the first nonconstant response level. -/
 def xiSquaredEulerFiniteApertureBoundaryCharge (S : Finset XiZeroCopy) : ℝ :=
   xiSquaredEulerFiniteApertureCentralA S *
-    ∑ q in S, xiSquaredEulerApertureOrbitChargeDensity q
+    ∑ q ∈ S, xiSquaredEulerApertureOrbitChargeDensity q
 
 /-- **Exact response-correlation cancellation law.**  The finite central minor is the positive
 Hilbert Gram minus the complete transverse boundary charge. -/
@@ -330,16 +348,16 @@ theorem xiSquaredEulerFiniteApertureCentralMinor_eq_hilbertGram_sub_boundaryChar
         xiSquaredEulerFiniteApertureBoundaryCharge S := by
   classical
   have hB : xiSquaredEulerFiniteApertureCentralB S =
-      ∑ q in S, xiSquaredEulerApertureOrbitMass q *
+      ∑ q ∈ S, xiSquaredEulerApertureOrbitMass q *
         xiSquaredEulerApertureOrbitSlope q := by
     unfold xiSquaredEulerFiniteApertureCentralB
     apply Finset.sum_congr rfl
     intro q _hq
     exact xiSquaredEulerAperture_pow_two_re_eq_mass_mul_slope q
   have hC : xiSquaredEulerFiniteApertureCentralC S =
-      (∑ q in S, xiSquaredEulerApertureOrbitMass q *
+      (∑ q ∈ S, xiSquaredEulerApertureOrbitMass q *
           xiSquaredEulerApertureOrbitSlope q ^ 2) -
-        ∑ q in S, xiSquaredEulerApertureOrbitChargeDensity q := by
+        ∑ q ∈ S, xiSquaredEulerApertureOrbitChargeDensity q := by
     unfold xiSquaredEulerFiniteApertureCentralC
     rw [← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
@@ -355,7 +373,7 @@ theorem xiSquaredEulerFiniteApertureCentralMinor_eq_hilbertGram_sub_boundaryChar
 theorem two_mul_xiSquaredEulerFiniteApertureHilbertGram_eq_pairwiseDispersion
     (S : Finset XiZeroCopy) :
     2 * xiSquaredEulerFiniteApertureHilbertGram S =
-      ∑ q in S, ∑ r in S,
+      ∑ q ∈ S, ∑ r ∈ S,
         xiSquaredEulerApertureOrbitMass q *
           xiSquaredEulerApertureOrbitMass r *
             (xiSquaredEulerApertureOrbitSlope q -
@@ -366,13 +384,14 @@ theorem two_mul_xiSquaredEulerFiniteApertureHilbertGram_eq_pairwiseDispersion
       xiSquaredEulerApertureOrbitSlope xiSquaredEulerApertureOrbitSlope
   unfold xiSquaredEulerFiniteApertureHilbertGram
     xiSquaredEulerFiniteApertureCentralA
-  nlinarith [hvariance]
+  simp only [pow_two, mul_assoc] at hvariance ⊢
+  nlinarith only [hvariance]
 
 theorem xiSquaredEulerFiniteApertureHilbertGram_nonneg
     (S : Finset XiZeroCopy) :
     0 ≤ xiSquaredEulerFiniteApertureHilbertGram S := by
   have hdisp : 0 ≤
-      ∑ q in S, ∑ r in S,
+      ∑ q ∈ S, ∑ r ∈ S,
         xiSquaredEulerApertureOrbitMass q *
           xiSquaredEulerApertureOrbitMass r *
             (xiSquaredEulerApertureOrbitSlope q -
@@ -398,6 +417,7 @@ theorem xiSquaredEulerFiniteApertureCentralA_pos
 theorem xiSquaredEulerFiniteApertureBoundaryCharge_nonneg
     (S : Finset XiZeroCopy) :
     0 ≤ xiSquaredEulerFiniteApertureBoundaryCharge S := by
+  unfold xiSquaredEulerFiniteApertureBoundaryCharge
   apply mul_nonneg
   · unfold xiSquaredEulerFiniteApertureCentralA
     exact Finset.sum_nonneg fun q _hq =>
@@ -423,8 +443,8 @@ theorem xiSquaredEulerFiniteApertureBoundaryCharge_eq_zero_iff
       ∀ q ∈ S, (q.1 : ℂ).re = 1 / 2 := by
   have hAne : xiSquaredEulerFiniteApertureCentralA S ≠ 0 :=
     (xiSquaredEulerFiniteApertureCentralA_pos hS).ne'
-  rw [xiSquaredEulerFiniteApertureBoundaryCharge, mul_eq_zero,
-    or_iff_right hAne]
+  rw [xiSquaredEulerFiniteApertureBoundaryCharge, mul_eq_zero]
+  simp only [hAne, false_or]
   constructor
   · intro hsum q hq
     have hterm := (Finset.sum_eq_zero_iff_of_nonneg
@@ -445,7 +465,6 @@ theorem xiSquaredEulerAperture_singleOrbitCentralMinor_eq
         Complex.normSq (xiZeroCopyReciprocalSquare q) := by
   classical
   let z := xiZeroCopyReciprocalSquare q
-  have hz : z.re ≠ 0 := (xiZeroCopyReciprocalSquare_re_pos q).ne'
   unfold xiSquaredEulerFiniteApertureCentralMinor
     xiSquaredEulerFiniteApertureCentralA
     xiSquaredEulerFiniteApertureCentralB

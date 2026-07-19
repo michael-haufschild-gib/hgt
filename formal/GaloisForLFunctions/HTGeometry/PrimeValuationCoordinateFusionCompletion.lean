@@ -97,8 +97,10 @@ theorem cofiniteTailDenseOn_primeResidueValuationUpperEndCarrier_jets_algebraicI
       (((q.1.1.1 + 1 : ℕ) : ℂ) ^ (q.2 : ℕ))
   have hscale : ∀ q, scale q ≠ 0 := by
     intro q
-    exact (algebraMap ℂ upperEndRationalCoordinateField).injective.ne
-      (pow_ne_zero _ (by exact_mod_cast Nat.succ_ne_zero q.1.1.1))
+    simpa [scale] using
+      (algebraMap ℂ upperEndRationalCoordinateField).injective.ne
+        (pow_ne_zero (q.2 : ℕ)
+          (Nat.cast_ne_zero.mpr (Nat.succ_ne_zero q.1.1.1)))
   have hscaled :=
     AlgebraicIndependent.const_mul_coordinates hsub scale hscale
   convert hscaled using 1

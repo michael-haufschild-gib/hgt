@@ -52,7 +52,7 @@ theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_integral
     intro k _
     push_cast
     ring]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
         (∑ k ∈ Finset.range (d + 1),
           C (thetaCuspTailEvenCoefficient k) * X ^ k) =

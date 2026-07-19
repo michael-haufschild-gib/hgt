@@ -365,7 +365,7 @@ theorem integrableOn_thetaCuspTailDerivative_mul_truncatedCosineSection
             (2 * k).factorial) by
     funext x
     rw [Finset.mul_sum]]
-  exact MeasureTheory.integrable_finset_sum _ fun k _ => by
+  exact MeasureTheory.integrable_finsetSum _ fun k _ => by
     have hbase : IntegrableOn
         (fun x : ℝ => ((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ))
         (Ioi 0) :=

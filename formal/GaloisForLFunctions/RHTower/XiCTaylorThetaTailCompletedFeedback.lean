@@ -39,7 +39,7 @@ theorem hasDerivAt_truncatedCosineSection (d : ℕ) (z : ℂ) (x : ℝ) :
         ((HasDerivAt.const_mul ((-1 : ℂ) ^ k) hpow).mul_const
           ((x : ℂ) ^ (2 * k))).div_const
           (((2 * k).factorial : ℕ) : ℂ)
-      convert hscaled using 1 <;> ring)
+      convert hscaled using 1; ring)
   convert hsum using 1
   funext w
   simp only [Finset.sum_apply]
@@ -64,7 +64,7 @@ theorem integrableOn_thetaCuspFullSource_mul_truncatedCosineSectionDerivative
     intro k _
     push_cast
     ring]
-  exact MeasureTheory.integrable_finset_sum _ fun k _ => by
+  exact MeasureTheory.integrable_finsetSum _ fun k _ => by
     have hbase := integrableOn_pow_mul_thetaCuspFullSource_complex (2 * k)
     have hdiv := hbase.mul_const (((2 * k).factorial : ℂ)⁻¹)
     have hscaled := hdiv.const_mul
@@ -119,7 +119,7 @@ theorem xiCTaylorPolynomial_oddCutoff_derivative_eval_sum (d : ℕ) (z : ℂ) :
       have hpow := hasDerivAt_pow (2 * k) z
       convert HasDerivAt.const_mul
         ((((thetaCuspRawEvenMoment k / (2 * k).factorial : ℝ) : ℂ) *
-          (-1 : ℂ) ^ k)) hpow using 1 <;> ring)
+          (-1 : ℂ) ^ k)) hpow using 1; ring)
   have hsum' : HasDerivAt (fun w : ℂ => P.eval w)
       (∑ k ∈ Finset.range (d + 1),
         (((thetaCuspRawEvenMoment k / (2 * k).factorial : ℝ) : ℂ) *
@@ -153,7 +153,7 @@ theorem xiCTaylorPolynomial_oddCutoff_derivative_eval_eq_fullSource
     intro k _
     push_cast
     ring]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro k _
@@ -187,7 +187,7 @@ theorem integrableOn_thetaCuspFullSource_mul_tailSecondSection
     intro k _
     push_cast
     ring]
-  exact MeasureTheory.integrable_finset_sum _ fun k _ => by
+  exact MeasureTheory.integrable_finsetSum _ fun k _ => by
     have hbase := integrableOn_pow_mul_thetaCuspFullSource_complex (2 * k + 2)
     have hdiv := hbase.mul_const (((2 * k + 2).factorial : ℂ)⁻¹)
     have hscaled := hdiv.const_mul (((-1 : ℂ) ^ k * z ^ (2 * k)))
@@ -213,7 +213,7 @@ theorem integrableOn_thetaCuspFullSource_mul_tailSecondSectionDerivative
     intro k _
     push_cast
     ring]
-  exact MeasureTheory.integrable_finset_sum _ fun k _ => by
+  exact MeasureTheory.integrable_finsetSum _ fun k _ => by
     have hbase := integrableOn_pow_mul_thetaCuspFullSource_complex (2 * k + 2)
     have hdiv := hbase.mul_const (((2 * k + 2).factorial : ℂ)⁻¹)
     have hscaled := hdiv.const_mul
@@ -282,9 +282,9 @@ theorem sq_mul_tailSecondCoreAtomDerivative_add
         2 * z * truncatedCosineSection (d + 1) z x) z := by
     dsimp only [g]
     have hquad : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
-      convert (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ) using 1 <;> ring
+      convert (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ) using 1; ring
     convert (hquad.mul (hasDerivAt_truncatedCosineSection (d + 1) z x)).sub_const
-      (1 / 4 : ℂ) using 1 <;> ring
+      (1 / 4 : ℂ) using 1; ring
   rw [hfun] at hf
   exact hf.unique hg
 

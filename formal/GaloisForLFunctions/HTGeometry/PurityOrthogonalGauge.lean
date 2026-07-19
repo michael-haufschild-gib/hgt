@@ -1,4 +1,5 @@
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+import Mathlib.Data.Real.Basic
 
 /-!
 # Orthogonal gauge classification from a purity Gram law
@@ -24,8 +25,12 @@ def IsOrthogonalGauge (O : Matrix n n ℝ) : Prop :=
 theorem transpose_mul_self_eq_of_orthogonal_mul
     {A B O : Matrix n n ℝ} (hO : IsOrthogonalGauge O) (hA : A = O * B) :
     A.transpose * A = B.transpose * B := by
-  rw [hA, Matrix.transpose_mul, Matrix.mul_assoc, Matrix.mul_assoc, hO]
-  simp
+  rw [hA, Matrix.transpose_mul]
+  calc
+    B.transpose * O.transpose * (O * B) =
+        B.transpose * ((O.transpose * O) * B) := by
+      simp only [Matrix.mul_assoc]
+    _ = B.transpose * B := by rw [hO, Matrix.one_mul]
 
 /-- **Purity orthogonal-gauge classification.**  Two full real square frames have the same
 column Gram matrix exactly when one is a unique orthogonal left gauge of the other. -/
@@ -41,7 +46,7 @@ theorem gram_eq_iff_existsUnique_orthogonalGauge_mul
     have hOrth : IsOrthogonalGauge O := by
       rw [IsOrthogonalGauge]
       dsimp only [O]
-      rw [Matrix.transpose_mul, Matrix.transpose_nonsing_inv, hGram]
+      rw [Matrix.transpose_mul, Matrix.transpose_nonsing_inv]
       calc
         B.transpose⁻¹ * A.transpose * (A * B⁻¹) =
             B.transpose⁻¹ * (A.transpose * A) * B⁻¹ := by
@@ -63,7 +68,7 @@ theorem gram_eq_iff_existsUnique_orthogonalGauge_mul
       _ = (P * B) * B⁻¹ := by rw [Matrix.mul_assoc]
       _ = A * B⁻¹ := by rw [← hP.2]
       _ = O := rfl
-  · rintro ⟨O, hO, hA, _huniq⟩
+  · rintro ⟨O, ⟨hO, hA⟩, _huniq⟩
     exact transpose_mul_self_eq_of_orthogonal_mul hO hA
 
 /-- The unique orthogonal gauge supplied by equal Gram matrices is explicitly `A * B⁻¹`. -/

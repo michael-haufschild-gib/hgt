@@ -1,6 +1,6 @@
 # Formal Project Guide
 
-This Lean project has five owned theorem areas:
+This Lean project has six owned theorem areas:
 
 | Area | Umbrella import | Current capstone surface |
 |---|---|---|
@@ -9,8 +9,9 @@ This Lean project has five owned theorem areas:
 | Hurwitz | `GaloisForLFunctions.Hurwitz` | `hurwitz_n2_unconditional` |
 | u0_pui | `GaloisForLFunctions.U0` | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap`, `Bottcher.q62_phiMero_linGap`, `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`, `Bottcher.q62_phiMero_mixed_far_roots`, `Bottcher.q62_phiMero_mixed_far_roots_swapped` |
+| Hilbert metrics | `GaloisForLFunctions.HilbertMetric` | finite graded Pluecker partitions, Gaussian centroid gauge, and universal corrected-determinant scale laws |
 
-`GaloisForLFunctions.MainTheorems` imports all five areas.  The root module
+`GaloisForLFunctions.MainTheorems` imports all six areas.  The root module
 `GaloisForLFunctions` imports only `MainTheorems`, so the default Lake build
 follows the same ownership map without a second hand-maintained module list.
 
@@ -24,8 +25,10 @@ Research leaf modules never live directly under `GaloisForLFunctions/`:
   value-relation, analytic, moment, and operator work belongs in `HTGeometry/`.
 - Work specific to the three toy theorem programs belongs in `U0/`,
   `Bottcher/`, or `Hurwitz/`.
+- Source-independent Hilbert-space, finite-metric, Gaussian-kernel, and feature-volume
+  laws belong in `HilbertMetric/`; they must not depend on `HTGeometry` or `RHTower`.
 
-The package root is reserved for `Core.lean`, the five area umbrellas,
+The package root is reserved for `Core.lean`, the six area umbrellas,
 `MainTheorems.lean`, `FullyProvenNewTargets.lean`, and
 `KummerRootApplications.lean`.  Every area umbrella imports its complete area
 inventory, so building or scanning an umbrella does not silently omit leaf

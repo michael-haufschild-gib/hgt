@@ -67,7 +67,8 @@ theorem exists_affineNodeDifferenceCoordinate_ne_zero
     have hpoint : ∃ z : Fin d → ℂ, frame i z ≠ frame j z := by
       by_contra h
       apply hef
-      ext z
+      apply DFunLike.ext _ _
+      intro z
       exact not_ne_iff.mp ((not_exists.mp h) z)
     obtain ⟨z, hz⟩ := hpoint
     have hcoord : ∃ k : Fin d, frame i z k ≠ frame j z k := by
@@ -143,7 +144,7 @@ theorem exists_injective_affineNodePacket
   by_contra hne
   let q : DistinctAffineOccurrences row ι := ⟨(x, y), hne⟩
   have hnot : base ∉ bad q := by
-    simpa using hbase q
+    exact Set.mem_iInter.mp hbase q
   apply hnot
   change affineOccurrenceCollisionDetector hd frame hframe q base = 0
   apply sub_eq_zero.mpr

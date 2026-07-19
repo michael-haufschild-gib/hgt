@@ -1,4 +1,6 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Algebra.BigOperators.Pi
+import Mathlib.Algebra.Module.BigOperators
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.LinearAlgebra.ExteriorPower.Basis
@@ -46,7 +48,7 @@ log-convex on multiplicative scales.  The square-parameter form avoids any auxil
 or positivity side condition on the partition function itself. -/
 theorem gradedPartition_mul_sq_le
     (weight : ι → ℝ) (degree : ι → ℕ)
-    (hweight : ∀ i, 0 ≤ weight i) (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    (hweight : ∀ i, 0 ≤ weight i) (a b : ℝ) :
     gradedPartition weight degree (a * b) ^ 2 ≤
       gradedPartition weight degree (a ^ 2) *
         gradedPartition weight degree (b ^ 2) := by
@@ -60,8 +62,7 @@ theorem gradedPartition_mul_sq_le
     (fun i _ => by
       rw [mul_pow, mul_pow, mul_pow]
       ring_nf
-      exact le_rfl) using 1 <;>
-    simp only [Finset.sum_const_zero, Finset.sum_mul, pow_mul', mul_pow]
+      exact le_rfl) using 1
 
 /-- **Degree-fluctuation law.**  The unnormalised variance numerator of a nonnegative finite
 graded partition function is nonnegative.  When the partition function is positive, division by
@@ -102,14 +103,12 @@ theorem norm_gradedHilbertSum_sq_eq_partition
       gradedPartition (fun i => ‖v i‖ ^ 2) degree (t ^ 2) := by
   rw [← real_inner_self_eq_norm_sq]
   unfold gradedHilbertSum gradedPartition
-  rw [Finset.sum_inner]
+  rw [sum_inner]
   apply Finset.sum_congr rfl
   intro i _
-  rw [Finset.inner_sum, Finset.sum_eq_single i]
+  rw [inner_sum, Finset.sum_eq_single i]
   · rw [real_inner_smul_left, real_inner_smul_right, real_inner_self_eq_norm_sq]
-    simp only [smul_eq_mul]
-    rw [← mul_pow]
-    ring
+    ring_nf
   · intro j _ hji
     rw [real_inner_smul_left, real_inner_smul_right, horth i j hji.symm]
     simp
@@ -121,7 +120,7 @@ finite orthogonal-feature form later applied to exterior Fock channels. -/
 theorem norm_gradedHilbertSum_mul_four_le
     (v : ι → E) (degree : ι → ℕ)
     (horth : ∀ i j, i ≠ j → inner ℝ (v i) (v j) = 0)
-    (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    (a b : ℝ) :
     ‖gradedHilbertSum v degree (a * b)‖ ^ 4 ≤
       ‖gradedHilbertSum v degree (a ^ 2)‖ ^ 2 *
         ‖gradedHilbertSum v degree (b ^ 2)‖ ^ 2 := by
@@ -130,9 +129,10 @@ theorem norm_gradedHilbertSum_mul_four_le
   rw [norm_gradedHilbertSum_sq_eq_partition v degree horth]
   rw [norm_gradedHilbertSum_sq_eq_partition v degree horth]
   rw [norm_gradedHilbertSum_sq_eq_partition v degree horth]
-  simpa [pow_mul] using gradedPartition_mul_sq_le
+  convert gradedPartition_mul_sq_le
     (fun i => ‖v i‖ ^ 2) degree (fun i => sq_nonneg ‖v i‖) (a ^ 2) (b ^ 2)
-      (sq_nonneg a) (sq_nonneg b)
+      using 1
+  all_goals ring_nf
 
 end HilbertApplication
 
@@ -168,7 +168,7 @@ def finiteDotDual (u : κ → ℝ) : Module.Dual ℝ (κ → ℝ) :=
     map_add' := fun x y => by
       simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib]
     map_smul' := fun c x => by
-      simp only [Pi.smul_apply, smul_eq_mul, mul_assoc, Finset.mul_sum]
+      simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro k _
       ring }
@@ -189,8 +189,6 @@ theorem standardFeatureWedge_coordinate {n : ℕ} (evaluation : Fin n → κ →
   unfold standardFeatureWedge standardFeatureMinor
   rw [exteriorPower.ιMultiDual_apply_ιMulti]
   congr 1
-  ext i j
-  simp
 
 /-- The exterior dual wedge evaluates on a standard exterior basis vector as the matching
 feature minor. -/
@@ -203,8 +201,19 @@ theorem standardFeatureWedgeDual_basis_apply
   rw [exteriorPower.pairingDual_ιMulti_ιMulti, ← Matrix.det_transpose]
   congr 1
   ext i j
-  simp [finiteDotDual]
+  simp only [finiteDotDual, LinearMap.coe_mk, AddHom.coe_mk, Matrix.transpose_apply,
+    Function.comp_apply, Pi.basisFun_apply]
+  change
+    (∑ k, evaluation i k *
+      Pi.single (M := fun _ => ℝ)
+        (Set.powersetCard.ofFinEmbEquiv.symm s j) 1 k) =
+      evaluation i (Set.powersetCard.ofFinEmbEquiv.symm s j)
+  simpa only [smul_eq_mul, one_mul, mul_one, mul_comm] using
+    (Fintype.sum_single_smul
+      (fun k => evaluation i k) (1 : ℝ)
+      (Set.powersetCard.ofFinEmbEquiv.symm s j))
 
+omit [LinearOrder κ] in
 /-- Pairing the exterior dual wedge with the feature wedge gives the Gram determinant. -/
 theorem standardFeatureWedgeDual_wedge_apply
     {n : ℕ} (evaluation : Fin n → κ → ℝ) :
@@ -229,11 +238,16 @@ theorem det_standardFeatureGram_eq_pluckerVolumeSq
     (standardFeatureGram evaluation).det = L w :=
       (standardFeatureWedgeDual_wedge_apply evaluation).symm
     _ = L (∑ s, B.repr w s • B s) := by rw [B.sum_repr]
-    _ = ∑ s, B.repr w s * L (B s) := by simp
+    _ = ∑ s, B.repr w s * L (B s) := by
+      rw [map_sum]
+      apply Finset.sum_congr rfl
+      intro s _
+      rw [map_smul]
+      rfl
     _ = standardFeaturePluckerVolumeSq evaluation := by
       unfold B w L standardFeaturePluckerVolumeSq
       simp_rw [standardFeatureWedge_coordinate, standardFeatureWedgeDual_basis_apply]
-      simp only [smul_eq_mul]
+      simp only [pow_two]
 
 /-- The nonnegative canonical Pluecker weight of one unordered feature basis. -/
 def canonicalPluckerWeight {n : ℕ} (evaluation : Fin n → κ → ℝ)
@@ -258,6 +272,7 @@ def scaledFeatureRows {n : ℕ} (evaluation : Fin n → κ → ℝ)
     Fin n → κ → ℝ :=
   fun i k => Real.sqrt (featureWeight k) * t ^ featureDegree k * evaluation i k
 
+omit [Fintype κ] in
 /-- Canonical Pluecker weights are nonnegative when the scalar feature weights are. -/
 theorem canonicalPluckerWeight_nonneg
     {n : ℕ} (evaluation : Fin n → κ → ℝ) (featureWeight : κ → ℝ)
@@ -267,6 +282,7 @@ theorem canonicalPluckerWeight_nonneg
     (Finset.prod_nonneg fun j _ =>
       hfeature (Set.powersetCard.ofFinEmbEquiv.symm s j))
 
+omit [Fintype κ] in
 /-- Scaling the feature columns scales every maximal minor by the product of its selected
 column factors. -/
 theorem scaled_standardFeatureMinor
@@ -282,8 +298,6 @@ theorem scaled_standardFeatureMinor
   unfold standardFeatureMinor scaledFeatureRows
   rw [← Matrix.det_mul_row]
   congr 1
-  ext i j
-  simp [mul_assoc, mul_comm, mul_left_comm]
 
 /-- **Weighted Gram partition identity.**  The determinant of a degree-scaled feature Gram
 matrix is exactly its nonnegative canonical Pluecker partition function. -/
@@ -298,11 +312,30 @@ theorem det_scaledFeatureGram_eq_canonicalFeatureVolume
   unfold standardFeaturePluckerVolumeSq canonicalFeatureVolume gradedPartition
   apply Finset.sum_congr rfl
   intro s _
+  have hdegree :
+      (∏ j, t ^ featureDegree (Set.powersetCard.ofFinEmbEquiv.symm s j)) ^ 2 =
+        (t ^ 2) ^ ∑ j, featureDegree (Set.powersetCard.ofFinEmbEquiv.symm s j) := by
+    calc
+      _ = ∏ j, (t ^ featureDegree
+          (Set.powersetCard.ofFinEmbEquiv.symm s j)) ^ 2 := by
+        simpa using (Finset.prod_pow Finset.univ 2
+          (fun j => t ^ featureDegree
+            (Set.powersetCard.ofFinEmbEquiv.symm s j))).symm
+      _ = ∏ j, (t ^ 2) ^
+          featureDegree (Set.powersetCard.ofFinEmbEquiv.symm s j) := by
+        apply Finset.prod_congr rfl
+        intro j _
+        rw [← pow_mul, ← pow_mul]
+        congr 1
+        omega
+      _ = _ := by
+        simpa using Finset.prod_pow_eq_pow_sum Finset.univ
+          (fun j => featureDegree (Set.powersetCard.ofFinEmbEquiv.symm s j)) (t ^ 2)
   rw [scaled_standardFeatureMinor]
   unfold canonicalPluckerWeight canonicalPluckerDegree
   rw [mul_pow, Finset.prod_mul_distrib, mul_pow, ← Finset.prod_pow]
   simp_rw [Real.sq_sqrt (hfeature _)]
-  rw [← Finset.prod_pow, Finset.prod_pow_eq_pow_sum]
+  rw [hdegree]
   ring
 
 /-- Canonical finite feature volumes obey the multiplicative midpoint law. -/
@@ -310,12 +343,12 @@ theorem canonicalFeatureVolume_mul_sq_le
     {n : ℕ} (evaluation : Fin n → κ → ℝ)
     (featureWeight : κ → ℝ) (featureDegree : κ → ℕ)
     (hfeature : ∀ k, 0 ≤ featureWeight k)
-    (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    (a b : ℝ) :
     canonicalFeatureVolume evaluation featureWeight featureDegree (a * b) ^ 2 ≤
       canonicalFeatureVolume evaluation featureWeight featureDegree (a ^ 2) *
         canonicalFeatureVolume evaluation featureWeight featureDegree (b ^ 2) := by
   exact gradedPartition_mul_sq_le _ _
-    (canonicalPluckerWeight_nonneg evaluation featureWeight hfeature) a b ha hb
+    (canonicalPluckerWeight_nonneg evaluation featureWeight hfeature) a b
 
 /-- **Finite graded Gram determinant law.**  Degree scaling of arbitrary finite orthogonal
 features makes the Gram determinant multiplicatively log-convex.  This is the exact finite
@@ -324,7 +357,7 @@ theorem det_scaledFeatureGram_mul_sq_le
     {n : ℕ} (evaluation : Fin n → κ → ℝ)
     (featureWeight : κ → ℝ) (featureDegree : κ → ℕ)
     (hfeature : ∀ k, 0 ≤ featureWeight k)
-    (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    (a b : ℝ) :
     (standardFeatureGram
         (scaledFeatureRows evaluation featureWeight featureDegree (a * b))).det ^ 2 ≤
       (standardFeatureGram
@@ -336,9 +369,9 @@ theorem det_scaledFeatureGram_mul_sq_le
   rw [det_scaledFeatureGram_eq_canonicalFeatureVolume _ _ _ hfeature]
   simpa [mul_pow, pow_mul] using canonicalFeatureVolume_mul_sq_le
     evaluation featureWeight featureDegree hfeature (a ^ 2) (b ^ 2)
-      (sq_nonneg a) (sq_nonneg b)
 
 end ExteriorGramApplication
+
 
 end
 

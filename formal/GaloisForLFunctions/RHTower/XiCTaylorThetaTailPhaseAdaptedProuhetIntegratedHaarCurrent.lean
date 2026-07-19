@@ -356,7 +356,7 @@ private theorem integrableOn_phaseAdaptedWeightedHaarResidualSource_mul_phase
         ((thetaCuspTailSecondEvenRemainder
           (x - ((N + j : ℕ) : ℝ) * Real.log 2) : ℂ) *
             spectralTranslationPhase x z)) (Ioi 0) :=
-    MeasureTheory.integrable_finset_sum P.support fun j _hj =>
+    MeasureTheory.integrable_finsetSum P.support fun j _hj =>
       (integrableOn_thetaCuspTailSecondEvenRemainder_leftTranslate_mul_phase
         (((N + j : ℕ) : ℝ) * Real.log 2) hz0 hzHalf).const_mul
           (P.coeff j : ℂ)
@@ -408,7 +408,7 @@ private theorem
         ((thetaCuspTailSecondEvenRemainder
           (x - ((N + j : ℕ) : ℝ) * Real.log 2) : ℂ) *
             ((x : ℂ) * I * spectralTranslationPhase x z))) (Ioi 0) :=
-    MeasureTheory.integrable_finset_sum P.support fun j _hj =>
+    MeasureTheory.integrable_finsetSum P.support fun j _hj =>
       (integrableOn_thetaCuspTailSecondEvenRemainder_leftTranslate_mul_phaseDerivative
         (((N + j : ℕ) : ℝ) * Real.log 2) hz0 hzHalf).const_mul
           (P.coeff j : ℂ)
@@ -533,7 +533,7 @@ theorem integral_Ioi_canonicalPhaseAdaptedWeightedHaarResidualSource_mul_phase_e
         ((thetaCuspTailSecondEvenRemainder
           (x - ((N + j : ℕ) : ℝ) * Real.log 2) : ℂ) *
             spectralTranslationPhase x z)) (Ioi 0) :=
-    MeasureTheory.integrable_finset_sum P.support fun j _hj => hrow j
+    MeasureTheory.integrable_finsetSum P.support fun j _hj => hrow j
   have hremote := hrows.const_mul (dyadicEvenRemoteAmplitude N : ℂ)
   have hdensity := integrableOn_thetaCuspTailSecondDensity_mul_phase hz0.le
   have hseam := integrableOn_thetaHalfExponential_mul_phase (z := z) (by linarith)
@@ -623,7 +623,7 @@ theorem integral_Ioi_canonicalPhaseAdaptedWeightedHaarResidualSource_mul_phase_e
         (((((2 : ℝ) ^ N * tau + 1) / 4 : ℝ) : ℂ)) *
           thetaHalfExponentialPhaseValue z := by
       rw [MeasureTheory.integral_const_mul,
-        MeasureTheory.integral_finset_sum]
+        MeasureTheory.integral_finsetSum]
       · simp_rw [MeasureTheory.integral_const_mul]
         rw [integral_Ioi_thetaHalfExponential_mul_phase (by linarith)]
       · intro j _hj
@@ -686,7 +686,7 @@ theorem
         ((thetaCuspTailSecondEvenRemainder
           (x - ((N + j : ℕ) : ℝ) * Real.log 2) : ℂ) *
             ((x : ℂ) * I * spectralTranslationPhase x z))) (Ioi 0) :=
-    MeasureTheory.integrable_finset_sum P.support fun j _hj => hrow j
+    MeasureTheory.integrable_finsetSum P.support fun j _hj => hrow j
   have hremote := hrows.const_mul (dyadicEvenRemoteAmplitude N : ℂ)
   have hdensity := integrableOn_thetaCuspTailSecondDensity_mul_phaseDerivative hz0.le
   have hseam := integrableOn_thetaHalfExponential_mul_phaseDerivative
@@ -783,7 +783,7 @@ theorem
         (((((2 : ℝ) ^ N * tau + 1) / 4 : ℝ) : ℂ)) *
           thetaHalfExponentialPhaseDerivative z := by
       rw [MeasureTheory.integral_const_mul,
-        MeasureTheory.integral_finset_sum]
+        MeasureTheory.integral_finsetSum]
       · simp_rw [MeasureTheory.integral_const_mul]
         rw [integral_Ioi_thetaHalfExponential_mul_phaseDerivative (by linarith)]
       · intro j _hj

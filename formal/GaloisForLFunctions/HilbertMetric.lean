@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HilbertMetric.GradedPartition
+import GaloisForLFunctions.HilbertMetric.GaussianFock
 import GaloisForLFunctions.HilbertMetric.CentroidGauge
 
 /-!

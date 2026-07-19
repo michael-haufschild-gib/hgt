@@ -67,7 +67,7 @@ theorem xiCTaylorApprox_oddCutoff_eq_fullSource_truncatedCosine
     intro k _
     push_cast
     ring]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
         (∑ k ∈ Finset.range (d + 1),
           C (thetaCuspRawEvenMoment k / (2 * k).factorial) * X ^ k) =
@@ -126,7 +126,7 @@ theorem integrableOn_thetaCuspFullSource_mul_truncatedCosineSection
             (2 * k).factorial) by
     funext x
     rw [Finset.mul_sum]]
-  exact MeasureTheory.integrable_finset_sum _ fun k _ => by
+  exact MeasureTheory.integrable_finsetSum _ fun k _ => by
     have hbase := integrableOn_pow_mul_thetaCuspFullSource_complex (2 * k)
     have hscaled := hbase.const_mul
       (((-1 : ℂ) ^ k * z ^ (2 * k)) /

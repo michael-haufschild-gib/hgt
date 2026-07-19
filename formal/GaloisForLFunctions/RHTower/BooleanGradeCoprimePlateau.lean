@@ -25,6 +25,8 @@ open scoped BigOperators
 
 namespace RHTower
 
+noncomputable section
+
 section FiniteSpike
 
 variable {ι : Type*} [DecidableEq ι]
@@ -142,7 +144,6 @@ theorem booleanGradeCoprimeValue_eq_scale_mass
   by_cases hphi : phi i = 0
   · simp [hphi]
   · field_simp [hvolume, hsqrtQ, hphi]
-    ring
 
 /-- **Universal coprime plateau.** For any selected family of whole Boolean grades and any scalar
 diagonal weights, a secularly normalized positive-line candidate has the same coprime trace
@@ -216,8 +217,8 @@ theorem residueLowChannel_counterflowNormalForm
   unfold residueChannelAmplitude residueUnitCarrier residueNonunitCounterflow
   calc
     (∑ x, lowWeight x • source x) =
-        ∑ x, headMass • (if isUnit x then source x else 0) +
-          (if isUnit x then 0 else lowWeight x • source x) := by
+        ∑ x, (headMass • (if isUnit x then source x else 0) +
+          (if isUnit x then 0 else lowWeight x • source x)) := by
       apply Finset.sum_congr rfl
       intro x _hx
       by_cases hx : isUnit x
@@ -241,8 +242,8 @@ theorem residueHighChannel_counterflowNormalForm
   unfold residueChannelAmplitude residueUnitCarrier residueNonunitCounterflow
   calc
     (∑ x, highWeight x • source x) =
-        ∑ x, (1 - headMass) • (if isUnit x then source x else 0) -
-          (if isUnit x then 0 else lowWeight x • source x) := by
+        ∑ x, ((1 - headMass) • (if isUnit x then source x else 0) -
+          (if isUnit x then 0 else lowWeight x • source x)) := by
       apply Finset.sum_congr rfl
       intro x _hx
       by_cases hx : isUnit x
@@ -293,22 +294,32 @@ theorem lowHighCounterflow_coordinates_inverse
   · rw [hX, hY]
     module
 
+end UnitNonunitCounterflow
+
+section RealInnerGeometry
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+
 /-- Complete geometry of the low/high cross term.  Its sign is controlled only by whether the
 nonunit counterflow lies inside the radius-`‖primeCarrier‖ / 2` ball centered at
 `(1 / 2 - headMass) • primeCarrier`; there is no source-free sign. -/
 theorem lowHighCounterflow_realInner
-    [InnerProductSpace ℝ E]
     {X Y primeCarrier counterflow : E} (headMass : ℝ)
     (hX : X = headMass • primeCarrier + counterflow)
     (hY : Y = (1 - headMass) • primeCarrier - counterflow) :
     inner ℝ X Y =
       (1 / 4 : ℝ) * ‖primeCarrier‖ ^ 2 -
         ‖counterflow - (1 / 2 - headMass) • primeCarrier‖ ^ 2 := by
-  rw [hX, hY, ← real_inner_self_eq_norm_sq]
-  simp only [inner_add_left, inner_add_right, inner_sub_left, inner_sub_right,
-    inner_smul_left, inner_smul_right, real_inner_self_eq_norm_sq, real_inner_comm]
+  rw [hX, hY,
+    ← real_inner_self_eq_norm_sq
+      (counterflow - (1 / 2 - headMass) • primeCarrier)]
+  simp only [inner_add_left, inner_sub_left, inner_sub_right,
+    real_inner_smul_left, real_inner_smul_right]
+  simp only [real_inner_self_eq_norm_sq, real_inner_comm]
   ring
 
-end UnitNonunitCounterflow
+end RealInnerGeometry
+
+end
 
 end RHTower

@@ -147,7 +147,7 @@ theorem integral_thetaCuspTailSecondDensityAtom_mul_finitePowerPacket
     apply Finset.sum_congr rfl
     intro i _hi
     ring]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · apply Finset.sum_congr rfl
     intro i _hi
     rw [MeasureTheory.integral_const_mul,
@@ -172,7 +172,7 @@ theorem integrableOn_thetaCuspTailSecondDensityAtom_mul_finitePowerPacket
     apply Finset.sum_congr rfl
     intro i _hi
     ring]
-  exact MeasureTheory.integrable_finset_sum _ fun i _hi =>
+  exact MeasureTheory.integrable_finsetSum _ fun i _hi =>
     (integrableOn_thetaCuspTailSecondDensityAtom_mul_complexPower
       n (m i)).const_mul (a i)
 
@@ -244,7 +244,7 @@ theorem integral_thetaCuspTailSecondDensityAtom_mul_coreAtom
       apply Finset.sum_congr rfl
       intro r _hr
       ring]
-    exact MeasureTheory.integrable_finset_sum _ fun r _hr =>
+    exact MeasureTheory.integrable_finsetSum _ fun r _hr =>
       (integrableOn_thetaCuspTailSecondDensityAtom_mul_complexPower
         n (2 * r + 2)).const_mul _
   rw [show (fun x : ℝ =>

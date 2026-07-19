@@ -66,7 +66,7 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_sectionDerivative
     apply Finset.sum_congr rfl
     intro k _
     ring]
-  exact MeasureTheory.integrable_finset_sum _ fun k _ => by
+  exact MeasureTheory.integrable_finsetSum _ fun k _ => by
     simpa only [one_pow, mul_one] using
       (integrableOn_thetaCuspTailSecondDensity_mul_term k (1 : ℂ)).const_mul
         (((2 * k : ℕ) : ℂ) * z ^ (2 * k - 1))
@@ -171,7 +171,7 @@ theorem thetaCuspTailSecondAverageSectionDerivative_eq_integral
             ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) by
     funext x
     rw [Finset.mul_sum]]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro k _

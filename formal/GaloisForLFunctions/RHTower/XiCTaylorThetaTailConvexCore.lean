@@ -204,7 +204,7 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_section
             ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) by
     funext x
     rw [Finset.mul_sum]]
-  exact MeasureTheory.integrable_finset_sum _ fun k _ =>
+  exact MeasureTheory.integrable_finsetSum _ fun k _ =>
     integrableOn_thetaCuspTailSecondDensity_mul_term k z
 
 theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_second_integral
@@ -225,7 +225,7 @@ theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_second_integral
             ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) by
     funext x
     rw [Finset.mul_sum]]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
         (∑ k ∈ Finset.range (d + 1),
           C (thetaCuspTailEvenCoefficient k) * X ^ k) =

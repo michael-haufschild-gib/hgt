@@ -39,32 +39,32 @@ theorem derivation_iterate_terminalLinear_eq_derivationBellValue
 def derivationLowerJetJacobian
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (A : R) :
+    (partials : Fin (n + 2) → Derivation ℂ R R) (A : R) :
     Matrix (Fin (n + 1)) (Fin (n + 1)) R :=
-  fun i j => partial j.castSucc (((δ : R → R)^[(i : ℕ)]) A)
+  fun i j => partials j.castSucc (((δ : R → R)^[(i : ℕ)]) A)
 
 /-- Jacobian of the Bell values with respect to the lower coordinate derivations. -/
 def derivationBellValueJacobian
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (A : R) :
+    (partials : Fin (n + 2) → Derivation ℂ R R) (A : R) :
     Matrix (Fin (n + 1)) (Fin (n + 1)) R :=
-  fun i j => partial j.castSucc (derivationBellValue δ A n i)
+  fun i j => partials j.castSucc (derivationBellValue δ A n i)
 
 /-- The coordinate chain rule factors the Bell-value Jacobian through the unit Bell matrix. -/
 theorem derivationBellValueJacobian_eq_mul
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (A : R) :
-    derivationBellValueJacobian δ n partial A =
+    (partials : Fin (n + 2) → Derivation ℂ R R) (A : R) :
+    derivationBellValueJacobian δ n partials A =
       ((bellCoordinateJacobian n).map
         (aeval fun j : Fin (n + 1) => ((δ : R → R)^[(j : ℕ)]) A)).transpose *
-          derivationLowerJetJacobian δ n partial A := by
+          derivationLowerJetJacobian δ n partials A := by
   funext i j
   rw [Matrix.mul_apply]
   simp only [derivationBellValueJacobian, derivationBellValue, Matrix.transpose_apply,
     Matrix.map_apply, bellCoordinateJacobian, derivationLowerJetJacobian]
-  exact derivation_aeval_eq_sum_pderiv (partial j.castSucc)
+  exact derivation_aeval_eq_sum_pderiv (partials j.castSucc)
     (fun k : Fin (n + 1) => ((δ : R → R)^[(k : ℕ)]) A)
     (bellAt n ((i : ℕ) + 1) i.isLt)
 
@@ -72,9 +72,9 @@ theorem derivationBellValueJacobian_eq_mul
 theorem derivationBellValueJacobian_det
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (A : R) :
-    (derivationBellValueJacobian δ n partial A).det =
-      (derivationLowerJetJacobian δ n partial A).det := by
+    (partials : Fin (n + 2) → Derivation ℂ R R) (A : R) :
+    (derivationBellValueJacobian δ n partials A).det =
+      (derivationLowerJetJacobian δ n partials A).det := by
   rw [derivationBellValueJacobian_eq_mul, Matrix.det_mul, Matrix.det_transpose]
   let ev : MvPolynomial (Fin (n + 1)) ℂ →ₐ[ℂ] R :=
     aeval fun j : Fin (n + 1) => ((δ : R → R)^[(j : ℕ)]) A
@@ -88,20 +88,20 @@ theorem derivationBellValueJacobian_det
 def derivationIterateOutputJacobian
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (x : R) :
+    (partials : Fin (n + 2) → Derivation ℂ R R) (x : R) :
     Matrix (Fin (n + 2)) (Fin (n + 2)) R :=
-  fun i j => partial j (((δ : R → R)^[(i : ℕ)]) x)
+  fun i j => partials j (((δ : R → R)^[(i : ℕ)]) x)
 
 /-- If the terminal coordinate kills the complete finite lower jet, it kills every corresponding
 Bell value. -/
 theorem derivationBellValue_terminal_partial_eq_zero
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (A : R)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (A : R)
     (hterminalA : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0)
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0)
     (i : Fin (n + 1)) :
-    partial (Fin.last (n + 1)) (derivationBellValue δ A n i) = 0 := by
+    partials (Fin.last (n + 1)) (derivationBellValue δ A n i) = 0 := by
   rw [derivationBellValue, derivation_aeval_eq_sum_pderiv]
   simp [hterminalA]
 
@@ -109,32 +109,33 @@ theorem derivationBellValue_terminal_partial_eq_zero
 theorem derivationIterateOutputJacobian_eq_terminalLinear
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (x A : R)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (x A : R)
     (hδx : δ x = A * x)
-    (hlowerx : ∀ j : Fin (n + 1), partial j.castSucc x = 0)
-    (hterminalx : partial (Fin.last (n + 1)) x = 1)
+    (hlowerx : ∀ j : Fin (n + 1), partials j.castSucc x = 0)
+    (hterminalx : partials (Fin.last (n + 1)) x = 1)
     (hterminalA : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0) :
-    derivationIterateOutputJacobian δ n partial x =
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0) :
+    derivationIterateOutputJacobian δ n partials x =
       terminalLinearJacobianMatrix x
         (derivationBellValue δ A n)
-        (derivationBellValueJacobian δ n partial A) := by
+        (derivationBellValueJacobian δ n partials A) := by
   funext i j
   refine Fin.cases ?_ (fun r => ?_) i
   · refine Fin.lastCases ?_ (fun c => ?_) j
     · simpa [derivationIterateOutputJacobian] using hterminalx
     · simpa [derivationIterateOutputJacobian] using hlowerx c
   · rw [derivationIterateOutputJacobian,
+      show (r.succ : ℕ) = (r : ℕ) + 1 by simp,
       derivation_iterate_terminalLinear_eq_derivationBellValue δ x A hδx n r,
       Derivation.leibniz]
     simp only [smul_eq_mul]
     refine Fin.lastCases ?_ (fun c => ?_) j
     · rw [hterminalx,
-        derivationBellValue_terminal_partial_eq_zero δ n partial A hterminalA r]
+        derivationBellValue_terminal_partial_eq_zero δ n partials A hterminalA r]
       simp [terminalLinearJacobianMatrix]
     · rw [hlowerx,
-        show partial c.castSucc (derivationBellValue δ A n r) =
-          derivationBellValueJacobian δ n partial A r c from rfl]
+        show partials c.castSucc (derivationBellValue δ A n r) =
+          derivationBellValueJacobian δ n partials A r c from rfl]
       simp [terminalLinearJacobianMatrix]
 
 /-- The actual iterate Jacobian of an arbitrary terminal-scaled output has the row-shear form.
@@ -143,26 +144,27 @@ cancel from the determinant rather than being assumed away. -/
 theorem derivationIterateOutputJacobian_eq_terminalScaled
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (H U : R)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (H U : R)
     (hδH : δ H = U * H)
     (hterminalU : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0) :
-    derivationIterateOutputJacobian δ n partial H =
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0) :
+    derivationIterateOutputJacobian δ n partials H =
       terminalScaledJacobianMatrix H
-        (partial (Fin.last (n + 1)) H)
-        (fun c => partial c.castSucc H)
+        (partials (Fin.last (n + 1)) H)
+        (fun c => partials c.castSucc H)
         (derivationBellValue δ U n)
-        (derivationBellValueJacobian δ n partial U) := by
+        (derivationBellValueJacobian δ n partials U) := by
   funext i j
   refine Fin.cases ?_ (fun r => ?_) i
   · refine Fin.lastCases ?_ (fun c => ?_) j <;>
       simp [derivationIterateOutputJacobian, terminalScaledJacobianMatrix]
   · rw [derivationIterateOutputJacobian,
+      show (r.succ : ℕ) = (r : ℕ) + 1 by simp,
       derivation_iterate_terminalLinear_eq_derivationBellValue δ H U hδH n r,
       Derivation.leibniz]
     simp only [smul_eq_mul]
     refine Fin.lastCases ?_ (fun c => ?_) j
-    · rw [derivationBellValue_terminal_partial_eq_zero δ n partial U hterminalU r]
+    · rw [derivationBellValue_terminal_partial_eq_zero δ n partials U hterminalU r]
       simp [terminalScaledJacobianMatrix]
     · simp [terminalScaledJacobianMatrix, derivationBellValueJacobian]
 
@@ -171,16 +173,16 @@ have the exact determinant predicted by the lower `A`-jet, including the cofacto
 theorem derivationIterateOutputJacobian_det
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (x A : R)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (x A : R)
     (hδx : δ x = A * x)
-    (hlowerx : ∀ j : Fin (n + 1), partial j.castSucc x = 0)
-    (hterminalx : partial (Fin.last (n + 1)) x = 1)
+    (hlowerx : ∀ j : Fin (n + 1), partials j.castSucc x = 0)
+    (hterminalx : partials (Fin.last (n + 1)) x = 1)
     (hterminalA : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0) :
-    (derivationIterateOutputJacobian δ n partial x).det =
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0) :
+    (derivationIterateOutputJacobian δ n partials x).det =
       (-1 : R) ^ (n + 1) * x ^ (n + 1) *
-        (derivationLowerJetJacobian δ n partial A).det := by
-  rw [derivationIterateOutputJacobian_eq_terminalLinear δ n partial x A hδx hlowerx
+        (derivationLowerJetJacobian δ n partials A).det := by
+  rw [derivationIterateOutputJacobian_eq_terminalLinear δ n partials x A hδx hlowerx
       hterminalx hterminalA,
     terminalLinearJacobianMatrix_det, derivationBellValueJacobian_det]
 
@@ -190,14 +192,14 @@ exact cofactor sign. -/
 theorem derivationIterateOutputJacobian_det_terminalScaled
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (H U : R)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (H U : R)
     (hδH : δ H = U * H)
     (hterminalU : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0) :
-    (derivationIterateOutputJacobian δ n partial H).det =
-      (-1 : R) ^ (n + 1) * partial (Fin.last (n + 1)) H * H ^ (n + 1) *
-        (derivationLowerJetJacobian δ n partial U).det := by
-  rw [derivationIterateOutputJacobian_eq_terminalScaled δ n partial H U hδH hterminalU,
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0) :
+    (derivationIterateOutputJacobian δ n partials H).det =
+      (-1 : R) ^ (n + 1) * partials (Fin.last (n + 1)) H * H ^ (n + 1) *
+        (derivationLowerJetJacobian δ n partials U).det := by
+  rw [derivationIterateOutputJacobian_eq_terminalScaled δ n partials H U hδH hterminalU,
     terminalScaledJacobianMatrix_det, derivationBellValueJacobian_det]
 
 /-- Concrete power-coordinate form of the positive-power Bell reduction.  If the terminal
@@ -206,22 +208,22 @@ coordinate derivation kills `C` and sends `X` to one, then the surviving termina
 theorem derivationIterateOutputJacobian_det_terminalPower
     {R : Type*} [CommRing R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (C X U : R) (q : ℕ)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (C X U : R) (q : ℕ)
     (hδH : δ (C * X ^ q) = U * (C * X ^ q))
-    (hterminalC : partial (Fin.last (n + 1)) C = 0)
-    (hterminalX : partial (Fin.last (n + 1)) X = 1)
+    (hterminalC : partials (Fin.last (n + 1)) C = 0)
+    (hterminalX : partials (Fin.last (n + 1)) X = 1)
     (hterminalU : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0) :
-    (derivationIterateOutputJacobian δ n partial (C * X ^ q)).det =
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0) :
+    (derivationIterateOutputJacobian δ n partials (C * X ^ q)).det =
       (-1 : R) ^ (n + 1) * ((q : R) * C * X ^ (q - 1)) *
         (C * X ^ q) ^ (n + 1) *
-          (derivationLowerJetJacobian δ n partial U).det := by
-  have ht : partial (Fin.last (n + 1)) (C * X ^ q) =
+          (derivationLowerJetJacobian δ n partials U).det := by
+  have ht : partials (Fin.last (n + 1)) (C * X ^ q) =
       (q : R) * C * X ^ (q - 1) := by
     rw [Derivation.leibniz, Derivation.leibniz_pow, hterminalC, hterminalX]
     simp only [smul_eq_mul, nsmul_eq_mul, mul_one, mul_zero, add_zero]
     ring
-  rw [derivationIterateOutputJacobian_det_terminalScaled δ n partial
+  rw [derivationIterateOutputJacobian_det_terminalScaled δ n partials
       (C * X ^ q) U hδH hterminalU,
     ht]
 
@@ -230,37 +232,40 @@ output-jet determinant. -/
 theorem derivationIterateOutputJacobian_det_ne_zero
     {R : Type*} [Field R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (x A : R)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (x A : R)
     (hδx : δ x = A * x)
-    (hlowerx : ∀ j : Fin (n + 1), partial j.castSucc x = 0)
-    (hterminalx : partial (Fin.last (n + 1)) x = 1)
+    (hlowerx : ∀ j : Fin (n + 1), partials j.castSucc x = 0)
+    (hterminalx : partials (Fin.last (n + 1)) x = 1)
     (hterminalA : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0)
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0)
     (hx : x ≠ 0)
-    (hlower : (derivationLowerJetJacobian δ n partial A).det ≠ 0) :
-    (derivationIterateOutputJacobian δ n partial x).det ≠ 0 := by
-  rw [derivationIterateOutputJacobian_det δ n partial x A hδx hlowerx hterminalx hterminalA]
+    (hlower : (derivationLowerJetJacobian δ n partials A).det ≠ 0) :
+    (derivationIterateOutputJacobian δ n partials x).det ≠ 0 := by
+  rw [derivationIterateOutputJacobian_det δ n partials x A hδx hlowerx hterminalx hterminalA]
   exact mul_ne_zero (mul_ne_zero (pow_ne_zero _ (by norm_num)) (pow_ne_zero _ hx)) hlower
 
 /-- Nonvanishing form of the concrete positive-power Bell determinant. -/
 theorem derivationIterateOutputJacobian_det_terminalPower_ne_zero
     {R : Type*} [Field R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (C X U : R) (q : ℕ)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (C X U : R) (q : ℕ)
     (hδH : δ (C * X ^ q) = U * (C * X ^ q))
-    (hterminalC : partial (Fin.last (n + 1)) C = 0)
-    (hterminalX : partial (Fin.last (n + 1)) X = 1)
+    (hterminalC : partials (Fin.last (n + 1)) C = 0)
+    (hterminalX : partials (Fin.last (n + 1)) X = 1)
     (hterminalU : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0)
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0)
     (hq : 0 < q) (hC : C ≠ 0) (hX : X ≠ 0)
-    (hlower : (derivationLowerJetJacobian δ n partial U).det ≠ 0) :
-    (derivationIterateOutputJacobian δ n partial (C * X ^ q)).det ≠ 0 := by
-  rw [derivationIterateOutputJacobian_det_terminalPower δ n partial C X U q hδH
+    (hlower : (derivationLowerJetJacobian δ n partials U).det ≠ 0) :
+    (derivationIterateOutputJacobian δ n partials (C * X ^ q)).det ≠ 0 := by
+  rw [derivationIterateOutputJacobian_det_terminalPower δ n partials C X U q hδH
     hterminalC hterminalX hterminalU]
+  have hqR : (q : R) ≠ 0 := by
+    simpa only [map_natCast, map_zero] using
+      (algebraMap ℂ R).injective.ne (Nat.cast_ne_zero.mpr hq.ne')
   exact mul_ne_zero
     (mul_ne_zero
       (mul_ne_zero (pow_ne_zero _ (by norm_num))
-        (mul_ne_zero (mul_ne_zero (Nat.cast_ne_zero.mpr hq.ne') hC)
+        (mul_ne_zero (mul_ne_zero hqR hC)
           (pow_ne_zero _ hX)))
       (pow_ne_zero _ (mul_ne_zero hC (pow_ne_zero _ hX))))
     hlower
@@ -272,22 +277,22 @@ domain-valued Jacobian criterion. -/
 theorem algebraicIndependent_derivationIterates_of_det_ne_zero
     {R : Type*} [CommRing R] [Algebra ℂ R] [IsDomain R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (x : R)
-    (hdet : (derivationIterateOutputJacobian δ n partial x).det ≠ 0) :
+    (partials : Fin (n + 2) → Derivation ℂ R R) (x : R)
+    (hdet : (derivationIterateOutputJacobian δ n partials x).det ≠ 0) :
     AlgebraicIndependent ℂ
-      (fun i : Fin (n + 2) ⇒ ((δ : R → R)^[(i : ℕ)]) x) := by
-  let M := (derivationIterateOutputJacobian δ n partial x).transpose
+      (fun i : Fin (n + 2) ↦ ((δ : R → R)^[(i : ℕ)]) x) := by
+  let M := (derivationIterateOutputJacobian δ n partials x).transpose
   have hM : M.det ≠ 0 := by
     rw [Matrix.det_transpose]
     exact hdet
   refine HTGeometry.algebraicIndependent_of_domain_jacobian
     (K := ℂ) (R := R)
-    (fun i : Fin (n + 2) ⇒ ((δ : R → R)^[(i : ℕ)]) x)
-    (fun j ⇒ partial j)
-    (fun j a b ⇒ map_add (partial j) a b)
-    (fun j a b ⇒ by
-      simpa only [Algebra.smul_def] using (partial j).leibniz a b)
-    (fun j c ⇒ (partial j).map_algebraMap c)
+    (fun i : Fin (n + 2) ↦ ((δ : R → R)^[(i : ℕ)]) x)
+    (fun j ↦ partials j)
+    (fun j a b ↦ map_add (partials j) a b)
+    (fun j a b ↦ by
+      simpa only [Algebra.smul_def] using (partials j).leibniz a b)
+    (fun j c ↦ (partials j).map_algebraMap c)
     M hM ?_
   intro j i
   rfl
@@ -298,18 +303,18 @@ algebraically independent over `ℂ`. -/
 theorem algebraicIndependent_derivationIterates_terminalLinear
     {R : Type*} [Field R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (x A : R)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (x A : R)
     (hδx : δ x = A * x)
-    (hlowerx : ∀ j : Fin (n + 1), partial j.castSucc x = 0)
-    (hterminalx : partial (Fin.last (n + 1)) x = 1)
+    (hlowerx : ∀ j : Fin (n + 1), partials j.castSucc x = 0)
+    (hterminalx : partials (Fin.last (n + 1)) x = 1)
     (hterminalA : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0)
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) A) = 0)
     (hx : x ≠ 0)
-    (hlower : (derivationLowerJetJacobian δ n partial A).det ≠ 0) :
+    (hlower : (derivationLowerJetJacobian δ n partials A).det ≠ 0) :
     AlgebraicIndependent ℂ
-      (fun i : Fin (n + 2) ⇒ ((δ : R → R)^[(i : ℕ)]) x) := by
-  apply algebraicIndependent_derivationIterates_of_det_ne_zero δ n partial x
-  exact derivationIterateOutputJacobian_det_ne_zero δ n partial x A hδx hlowerx
+      (fun i : Fin (n + 2) ↦ ((δ : R → R)^[(i : ℕ)]) x) := by
+  apply algebraicIndependent_derivationIterates_of_det_ne_zero δ n partials x
+  exact derivationIterateOutputJacobian_det_ne_zero δ n partials x A hδx hlowerx
     hterminalx hterminalA hx hlower
 
 /-- **Positive-power terminal observability capstone.**  Under the exact power-coordinate and
@@ -318,18 +323,18 @@ algebraically independent over `ℂ`. -/
 theorem algebraicIndependent_derivationIterates_terminalPower
     {R : Type*} [Field R] [Algebra ℂ R]
     (δ : Derivation ℂ R R) (n : ℕ)
-    (partial : Fin (n + 2) → Derivation ℂ R R) (C X U : R) (q : ℕ)
+    (partials : Fin (n + 2) → Derivation ℂ R R) (C X U : R) (q : ℕ)
     (hδH : δ (C * X ^ q) = U * (C * X ^ q))
-    (hterminalC : partial (Fin.last (n + 1)) C = 0)
-    (hterminalX : partial (Fin.last (n + 1)) X = 1)
+    (hterminalC : partials (Fin.last (n + 1)) C = 0)
+    (hterminalX : partials (Fin.last (n + 1)) X = 1)
     (hterminalU : ∀ i : Fin (n + 1),
-      partial (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0)
+      partials (Fin.last (n + 1)) (((δ : R → R)^[(i : ℕ)]) U) = 0)
     (hq : 0 < q) (hC : C ≠ 0) (hX : X ≠ 0)
-    (hlower : (derivationLowerJetJacobian δ n partial U).det ≠ 0) :
+    (hlower : (derivationLowerJetJacobian δ n partials U).det ≠ 0) :
     AlgebraicIndependent ℂ
-      (fun i : Fin (n + 2) ⇒ ((δ : R → R)^[(i : ℕ)]) (C * X ^ q)) := by
-  apply algebraicIndependent_derivationIterates_of_det_ne_zero δ n partial (C * X ^ q)
-  exact derivationIterateOutputJacobian_det_terminalPower_ne_zero δ n partial C X U q hδH
+      (fun i : Fin (n + 2) ↦ ((δ : R → R)^[(i : ℕ)]) (C * X ^ q)) := by
+  apply algebraicIndependent_derivationIterates_of_det_ne_zero δ n partials (C * X ^ q)
+  exact derivationIterateOutputJacobian_det_terminalPower_ne_zero δ n partials C X U q hδH
     hterminalC hterminalX hterminalU hq hC hX hlower
 
 end GaloisForLFunctions

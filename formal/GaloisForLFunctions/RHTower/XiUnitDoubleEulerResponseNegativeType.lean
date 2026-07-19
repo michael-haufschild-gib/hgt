@@ -36,7 +36,6 @@ theorem xiUnitDoubleEulerResponseSpectralCoefficient_eq
   have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
   rw [xiUnitDoubleEulerResponseSpectralCoefficient]
   field_simp [hn0]
-  ring
 
 /-- Every genuine Euler mode is nonpositive under the unit--double response. -/
 theorem xiUnitDoubleEulerResponseSpectralCoefficient_nonpos
@@ -46,9 +45,9 @@ theorem xiUnitDoubleEulerResponseSpectralCoefficient_nonpos
   have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
   have hnum : 2 - (n : ℝ) ≤ 0 := sub_nonpos.mpr hnR
   have hden : 0 ≤ (n : ℝ) ^ 2 := sq_nonneg _
-  exact mul_nonpos_of_nonneg_of_nonpos
-    ArithmeticFunction.vonMangoldt_nonneg
-    (div_nonpos_of_nonpos_of_nonneg hnum hden)
+  exact div_nonpos_of_nonpos_of_nonneg
+    (mul_nonpos_of_nonneg_of_nonpos
+      ArithmeticFunction.vonMangoldt_nonneg hnum) hden
 
 /-- Exact null-channel classification: on positive prime-power support only `n=2` is killed. -/
 theorem xiUnitDoubleEulerResponseSpectralCoefficient_eq_zero_iff
@@ -60,15 +59,18 @@ theorem xiUnitDoubleEulerResponseSpectralCoefficient_eq_zero_iff
   rw [div_eq_zero_iff, mul_eq_zero,
     ArithmeticFunction.vonMangoldt_eq_zero_iff]
   constructor
-  · rintro (hnot | htwo)
+  · rintro ((hnot | htwo) | hden)
     · exact Or.inr hnot
     · left
       have hcast : (n : ℝ) = 2 := by linarith
       exact_mod_cast hcast
-  · rintro (rfl | hnot)
-    · simp
+    · exact (pow_ne_zero 2 hn0 hden).elim
+  · intro h
+    left
+    rcases h with rfl | hnot
+    · right
+      norm_num
     · exact Or.inl hnot
-  · exact pow_ne_zero 2 hn0
 
 private theorem finite_cosine_translation_quadratic_eq_sq
     {ι : Type*} (I : Finset ι) (weight node : ι → ℝ) (t : ℝ) :
@@ -123,4 +125,3 @@ theorem xiUnitDoubleFiniteEulerResponseQuadratic_nonpos
 end
 
 end RHTower
-

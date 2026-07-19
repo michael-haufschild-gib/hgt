@@ -371,7 +371,7 @@ theorem integrable_rectangularEulerGaussPartialIntegrand
           gaussDigammaSeriesTerm (rectangularEulerDigammaPoint xi) n by
     funext xi
     rw [rectangularEulerGaussPartialIntegrand, Finset.mul_sum]]
-  exact MeasureTheory.integrable_finset_sum _ fun n _ => by
+  exact MeasureTheory.integrable_finsetSum _ fun n _ => by
     simpa only [rectangularEulerDigammaPoint] using
       integrable_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm L a n
 
@@ -427,7 +427,7 @@ theorem integral_rectangularEulerGaussPartialIntegrand_eq_value
           gaussDigammaSeriesTerm (rectangularEulerDigammaPoint xi) n by
     funext xi
     rw [rectangularEulerGaussPartialIntegrand, Finset.mul_sum]]
-  rw [MeasureTheory.integral_finset_sum]
+  rw [MeasureTheory.integral_finsetSum]
   · unfold rectangularEulerGaussPartialValue
     apply Finset.sum_congr rfl
     intro n _
@@ -904,7 +904,7 @@ theorem rectangularEulerGaussPartialValue_eq_integral_partialKernel
       exact rectangularEulerGaussTermValue_eq_integral_timeTerm L a n
     _ = ∫ t : ℝ in Ioi 0,
         ∑ n ∈ Finset.range N, rectangularEulerGaussTimeTerm L a n t := by
-      rw [MeasureTheory.integral_finset_sum]
+      rw [MeasureTheory.integral_finsetSum]
       intro n hn
       exact integrableOn_rectangularEulerGaussTimeTerm L a n
     _ = ∫ t : ℝ in Ioi 0,

@@ -1,9 +1,9 @@
-# Poset Hilbert innovation and incomparability Gram localization
+# Retired: poset Hilbert innovation and incomparability Gram localization
 
 - **ID:** poset-hilbert-incomparability-gram-localization
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
-- **Novelty:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Stage:** 5-failed
+- **Type:** REDISCOVERED BRIDGE + POSITIVE SURVIVOR
+- **Novelty:** `[REDISCOVERED]`
 - **Source:** Hilbert-space metric research prompted by the 2026-07-19 universal-law goal
 - **Statement:** Canonical predecessor residualization preserves the full Gram volume of every finite Hilbert frame while forcing every comparable pair to be orthogonal, so the normalized residual determinant localizes exactly all remaining coherence onto the incomparability graph and is invariant under the full incidence-gauge group.
 
@@ -80,19 +80,16 @@ claim.
   (arXiv:1907.09047), identify \(GL(n)/I^*(P)\) as a \(P\)-flag homogeneous space.
 - Hadamard's determinant inequality and its equality case are classical.
 
-### Candidate-new content
+### Novelty verdict
 
-The novelty claim is restricted to the fused Hilbert-metric theorem: canonical
-projection against the complete strict predecessor span simultaneously preserves
-every ideal span and the full Gram determinant, annihilates exactly the comparable
-support, and produces an incidence-gauge-invariant normalized determinant whose
-entire nontrivial support is the incomparability graph.  No located source states an
-equivalent predecessor-residual determinant localization or the sharp invariant and
-equality classifier.
-
-This is not yet a priority claim.  Promotion requires a second specialist search over
-poset orthogonalization, sparse Cholesky/graphical models, incidence-group invariant
-theory, covariance residualization, and generalized flag metrics.
+The fused statement is a clean Hilbert reformulation, but not new science.  Modified
+Cholesky decompositions and recursive linear structural-equation models already identify
+successive regression residuals, triangular determinant conservation, and normalized
+residual covariance.  Poset-compatible triangular changes are incidence-group actions,
+while ancestor residual covariance and sparse/ordered graphical-model language already
+encode the comparable/incomparable support distinction.  P-flag spaces supply the same
+group-theoretic quotient viewpoint.  Renaming the remaining covariance support the
+"incomparability localization" does not cross the novelty boundary.
 
 ## Approach
 
@@ -131,12 +128,25 @@ theory, covariance residualization, and generalized flag metrics.
   residuals, comparable-pair zero pattern, determinant factorization, and incidence
   gauge invariant makes this `[REDISCOVERED]` or `[BRIDGE]`.
 
-## No-go closure (mandatory when falsified)
+## No-go closure
 
-- **Exact killing theorem/mechanism:** pending
-- **Strongest positive survivor:** pending
-- **New insight:** pending
-- **Status:** active Stage-1 candidate
+- **Exact killing mechanism:** predecessor projection is the Hilbert-space form of recursive
+  least-squares residualization; after a linear extension its coordinate change is unit
+  triangular, hence the Gram determinant identity is the modified-Cholesky determinant
+  identity.  Incidence groups/P-flag spaces already own the gauge action, and recursive SEM
+  covariance owns the residual-support interpretation.
+- **Strongest positive survivor:** for every finite poset and linearly independent Hilbert
+  family, strict-predecessor residualization preserves all order-ideal spans, makes comparable
+  residuals orthogonal, and gives the exact normalized Gram determinant factorization recorded
+  above.  This remains a useful source-independent connector and exposition theorem.
+- **Paper-proof status:** proof architecture is dependency-closed modulo routine finite-poset
+  induction and standard projection/Gram determinant lemmas; no claim of a new theorem is made.
+- **Lean status:** not formalized.  It is deliberately not placed ahead of the genuinely new
+  Gaussian metric degree-flow target.
+- **New insight:** the incomparability graph is best treated as the support left after an
+  established ordered residualization, not as a new invariant-generating mechanism.
+- **Status:** retired; do not reopen without a genuinely different object or a source proving
+  that the complete fused statement has an unrecognized nonclassical consequence.
 
 ## Literature audit log
 
@@ -154,3 +164,6 @@ theory, covariance residualization, and generalized flag metrics.
 
 - 2026-07-19 — created directly in `1-in-progress` after internal corpus search,
   three retired precursor chains, and a first external parent/novelty audit.
+- 2026-07-19 — retired after the second-pass modified-Cholesky, recursive-SEM,
+  ancestor-residual covariance, incidence-group, and P-flag audit.  The exact positive
+  residualization theorem survives as a bridge; the novelty claim does not.
