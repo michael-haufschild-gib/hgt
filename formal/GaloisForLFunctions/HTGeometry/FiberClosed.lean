@@ -19,7 +19,7 @@ namespace HTGeometry
 open GaloisForLFunctions.HTGeometry
 
 /-- A denominator fiber of a matrix with continuous entries is closed. -/
-theorem isClosed_finiteDenominatorFiber (W : ClassicalNevanlinnaMatrixData ℝ)
+theorem isClosed_finiteDenominatorFiber_of_continuous (W : ClassicalNevanlinnaMatrixData ℝ)
     (hB : Continuous W.B) (hD : Continuous W.D) (tau : ℝ) :
     IsClosed (W.finiteDenominatorFiber tau) := by
   have hset : W.finiteDenominatorFiber tau = (fun x => W.B x * tau - W.D x) ⁻¹' {0} := rfl
@@ -29,10 +29,10 @@ theorem isClosed_finiteDenominatorFiber (W : ClassicalNevanlinnaMatrixData ℝ)
 theorem measurableSet_finiteDenominatorFiber (W : ClassicalNevanlinnaMatrixData ℝ)
     (hB : Continuous W.B) (hD : Continuous W.D) (tau : ℝ) :
     MeasurableSet (W.finiteDenominatorFiber tau) :=
-  (isClosed_finiteDenominatorFiber W hB hD tau).measurableSet
+  (isClosed_finiteDenominatorFiber_of_continuous W hB hD tau).measurableSet
 
 /-- The fiber at infinity is closed as well. -/
-theorem isClosed_infinityDenominatorFiber (W : ClassicalNevanlinnaMatrixData ℝ)
+theorem isClosed_infinityDenominatorFiber_of_continuous (W : ClassicalNevanlinnaMatrixData ℝ)
     (hB : Continuous W.B) : IsClosed W.infinityDenominatorFiber := by
   have hset : W.infinityDenominatorFiber = W.B ⁻¹' {0} := rfl
   rw [hset]
