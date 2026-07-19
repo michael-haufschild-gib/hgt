@@ -209,28 +209,30 @@ the goal is met when no further proof or conjecture is possible and no meaningfu
 
 ## proof
 
-Build on the extensive research corpus we have gathered in the lean code base formal/GaloisForLFunctions and "paper" research pipeline docs/drafts/pipeline and expand it into delivering a formal proof of the Riemann Hypothesis.
+Advance the research body towards finding a formal proof for RH.
 
-Use the hgt-fields-medalist skill, bold conjecturing, wide literature research, and anti-theatre tests to develop the missing new scientific knowledge to complete the task.
-
-Approach the task from the perspective of a Fields-medalist mathematician: How would they approach this task? What questions would they ask? What topics would they research? How would they proceed to develop the new mathematics needed for this proof?
-
-Avoid getting stuck on one chain or "classic" proof routes. Be open-minded to what the proof chain could look like and be open to pivot also into unconvential chains.
+Work rules:
+1. Use the extensive research we have in the lean project folders:
+- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
+- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+2. Use the $hgt-fields-medalist skill to develop novel knowledge and formalize it.
+3. Do no waste time on rediscovering known knowledge. Conjecture boldly, test, proof, formalize.
+4. Pivot whenever you hit a dead end.
+5. For every nogo find a positive statement that is significant and delivers new insights.
+6. Approach the task from the perspective of a Fields-medalist mathematician: How would they approach this task? What questions would they ask? What topics would they research? How would they proceed to develop the new mathematics needed for this proof?
+7. Avoid getting stuck on one chain or "classic" proof routes. Be open-minded to what the proof chain could look like and be open to pivot also into unconvential chains.
 
 Use subagents as you please, but be mindful of resource limitations of this laptop when it comes to lean builds - there are several other agents also working on the lean codebase (this is a competition between claude fable, openai gtp 5.6 sol and moonshot kimi k3, all having the same instructions to test who gets the farthest in discovering new scientific knowledge or even delivering the proof).
 
 lean rules:
-1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible.
-2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
-3. lean proofs must be unconditional
-4. always check first what the project lean code already offers
-5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
+1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
+2. Be efficient with lean, do not constantly do minor edits and build, but batch changes and builds.
+3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
+4. lean proofs must be unconditional
+5. always check first what the project lean code already offers
 6. no computations.
 
-keep a working log to retain important information across the automatic context window compactions:
-claude fable: logs/rhproof-fable.md
-openai gpt: logs/rhproof-gpt.md
-moonshot ai kimi k3: logs/rhproof-kimi.md
+keep a working log to retain important information across the automatic context window compactions.
 
 Non-negotiable: This is a multi-month research task with unclear outcome. Never use effort estimation to decide against doing something. Nothing here can be done in one session. Keep going. Never stop.
 
@@ -258,4 +260,4 @@ lean rules:
 5. always check first what the project lean code already offers
 6. no computations.
 
-Goal is met when there is after full review truly nothing you can add or change anymore.
+Goal is met when there is after full review truly no new law to formulate, no new hypothesis to discharge, and the lean corpus is in a shape that it could prove RH and other fundamental open questions about prime numbers and hypertranscendental funcions.
