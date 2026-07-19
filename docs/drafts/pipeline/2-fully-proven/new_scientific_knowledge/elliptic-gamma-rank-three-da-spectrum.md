@@ -357,6 +357,18 @@ the exact one-defect spectrum, and same-coset rank neutrality.  The new leaf com
 its complete public surface has the project axiom baseline
 `[propext, Classical.choice, Quot.sound]`.
 
+The value-reflection interface is now closed at family scale rather than only pointwise.
+`ellipticGammaExternalDefectFamily_reflection` packages the genuine meromorphic identity
+`D_(-h) = -T_(-h)(D_h)` for arbitrary indexed packets, while
+`ellipticGammaExternalDefectFamily_differentialMatroid_reflection` proves that simultaneous
+parameter reflection preserves the entire differential matroid, including zero-coset loops and
+parallel classes.  The bridge factors through the new general law
+`affinePointedCollisionMatroid_comp_eq_of_injOn`, which shows that a pointed collision matroid is
+invariant under any relabelling injective merely on the used labels together with the loop label;
+the global-injective form is a corollary.  This is a structural closure of the exact period-coset
+classification, not a separate novelty claim.  Both touched modules pass direct Lean checks, the
+exact consumer-module build, and axiom audit at the project baseline.
+
 `EllipticGammaQuotientPeriodCosetMatroid.lean` also closes the multiplicative side over `K`.  It
 proves directly in the meromorphic field that the algebraic logarithmic derivative of
 `Gamma(z+h)/Gamma(z)` is the external additive defect, then applies the arbitrary-family
@@ -364,6 +376,20 @@ coordinatewise logarithmic-derivative matroid law.  Hence every quotient packet 
 pointed period-coset matroid and the same exact nonzero-coset rank formula as its defect packet.
 The supporting coordinatewise theorem was generalized to arbitrary index universes, discharging
 an unnecessary interface restriction rather than weakening the quotient statement.
+`MeromorphicThetaDefect.lean` now supplies the stronger universal multiplicative cocycle
+`T_(p+q)x/x = (T_p x/x) T_p(T_q x/x)` and its inverse/reflection law for every global meromorphic
+element, without a nonvanishing hypothesis.  The quotient leaf specializes these laws to the
+genuine elliptic-gamma values, obtaining both `Q_(p+q) = Q_p T_p(Q_q)` and
+`Q_(-h) = (T_(-h) Q_h)^(-1)`, packages reflection for arbitrary indexed quotient families, and
+transfers the additive reflection theorem through the exact logarithmic-derivative matroid
+equality.  Thus simultaneous parameter reflection preserves the complete multiplicative quotient
+matroid as well as the additive defect matroid; the new declarations have the project axiom
+baseline.  The quotient is now also proved nonzero for every shift, and
+`ellipticGammaExternalQuotient_scalars_mul` instantiates the abstract translation-cocycle theorem:
+any translation-commuting meromorphic automorphism that scales the actual quotient packet by
+translation-fixed units has character-valued scalars.  The concrete nonvanishing and cocycle
+hypotheses are therefore discharged; constructing all required automorphisms remains a separate
+open Galois problem.
 
 The remaining headline gap is now singular and explicit: transport the exact additive and
 multiplicative pointed partition matroids from `K` to `C(z)` by formalizing that every element of

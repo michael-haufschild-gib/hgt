@@ -84,6 +84,34 @@ theorem addTranslationMeroEquiv_defect_add (p q : ℂ)
   rw [map_sub, addTranslationMeroEquiv_add]
   ring
 
+/-- **Multiplicative translation-quotient cocycle.** For every global meromorphic element, its
+translation ratios form a multiplicative one-cocycle. No nonvanishing hypothesis is needed. -/
+theorem addTranslationMeroEquiv_div_self_add (p q : ℂ)
+    (x : meroField (Set.univ : Set ℂ)) :
+    addTranslationMeroEquiv (p + q) x / x =
+      (addTranslationMeroEquiv p x / x) *
+        addTranslationMeroEquiv p (addTranslationMeroEquiv q x / x) := by
+  by_cases hx : x = 0
+  · subst x
+    simp
+  · have hpx : addTranslationMeroEquiv p x ≠ 0 :=
+      (addTranslationMeroEquiv p).map_ne_zero_iff.mpr hx
+    rw [map_div₀, ← addTranslationMeroEquiv_add]
+    field_simp
+
+/-- **Multiplicative translation-quotient reflection.** Reversing the shift gives the inverse of
+the original translation ratio after translating it back. -/
+theorem addTranslationMeroEquiv_div_self_neg (p : ℂ)
+    (x : meroField (Set.univ : Set ℂ)) :
+    addTranslationMeroEquiv (-p) x / x =
+      (addTranslationMeroEquiv (-p)
+        (addTranslationMeroEquiv p x / x))⁻¹ := by
+  rw [map_div₀, addTranslationMeroEquiv_add, neg_add_cancel]
+  rw [show addTranslationMeroEquiv 0 x = x by
+    apply (addTranslationMeroEquiv 0).injective
+    simpa using addTranslationMeroEquiv_add 0 0 x]
+  rw [inv_div]
+
 /-- **Translation-defect reflection.**  Reversing the translation parameter reflects the defect
 by translating the original defect back and changing its sign. -/
 theorem addTranslationMeroEquiv_defect_neg (p : ℂ)

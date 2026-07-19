@@ -583,6 +583,9 @@ RH-strength assertion must be proved.
   The coefficient-to-meromorphic relative-shift chain likewise passes its general source check,
   isolated combined proof, and exact pairwise-carrier consumer build.
   The rooted-specialization interface passes its direct source check and exact general-module build.
+  Its four corrected/raw rational/all-valuation Xi consumers now prove their rooted classifications
+  by rewriting through the arbitrary-label collision matroid rather than reconstructing differential
+  independence separately; all three exact touched-module builds pass.
 - **Axiom audit:** the general finitary interface, general pointed-collision law, Xi exact matroid,
   Xi Prop interface, and Xi rank capstone report only `propext`, `Classical.choice`, and
   `Quot.sound`. The earlier absolute, all-valuation, and Hilbert-metric audits have the same
@@ -778,4 +781,7 @@ RH-strength assertion must be proved.
   incidence theorem is a specialization of the collision quotient was made literal: injective
   labels canonically identify occupied nonloop labels with nonroot vertices, the matrices agree
   after reindexing, and the full matroids are equal. The direct check, exact module build, and
-  three-declaration axiom audit pass.
+  three-declaration axiom audit pass. The two corrected and two raw Xi rooted-incidence capstones,
+  over both the rational-coordinate and all-valuation bases, now use this general equality directly;
+  about eighty lines of duplicated independence reconstruction were removed, and their exact
+  module builds and four-capstone axiom audit pass.

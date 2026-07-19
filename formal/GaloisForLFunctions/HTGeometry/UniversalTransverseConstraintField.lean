@@ -48,8 +48,8 @@ def universalTransverseLawAction (I : Ideal A) (a : A) :
 /-- Structural law action commutes with the transverse clock. -/
 theorem universalTransverseClockShift_lawAction_commute
     (I : Ideal A) (a : A) :
-    Function.Commute (universalTransverseClockShift I)
-      (universalTransverseLawAction I a) := by
+    Function.Commute (universalTransverseClockShift (K := K) I)
+      (universalTransverseLawAction (K := K) I a) := by
   intro x
   exact Finsupp.mapDomain_mapRange Nat.succ x
     (LinearMap.mulLeft K (Ideal.Quotient.mk I a))
@@ -63,7 +63,7 @@ def universalTransverseRootState (I : Ideal A) :
 /-- Applying `a` to the cyclic root records its quotient class in layer zero. -/
 theorem universalTransverseLawAction_rootState
     (I : Ideal A) (a : A) :
-    universalTransverseLawAction I a (universalTransverseRootState I) =
+    universalTransverseLawAction (K := K) I a (universalTransverseRootState I) =
       Finsupp.single 0 (Ideal.Quotient.mk I a) := by
   simp [universalTransverseLawAction, universalTransverseRootState]
 
@@ -79,7 +79,7 @@ abbrev UniversalTransverseConstraintField (I : Ideal A) :=
 def universalTransverseLawPolynomialObservable
     (I : Ideal A) (a : A) : UniversalTransverseConstraintPolynomial (K := K) I :=
   SymmetricAlgebra.ι K (UniversalTransverseClockState I)
-    (universalTransverseLawAction I a (universalTransverseRootState I))
+    (universalTransverseLawAction (K := K) I a (universalTransverseRootState I))
 
 /-- The polynomial derivation induced by the transverse clock. -/
 def universalTransverseClockPolynomialDerivation (I : Ideal A) :
@@ -190,13 +190,13 @@ theorem universalTransverseLawState_linearIndependent_iff
 law has an algebraically independent complete jet exactly when it survives the prescribed ideal. -/
 theorem universalTransverseLawFieldJet_algebraicIndependent_iff
     (I : Ideal A) (a : A) :
-    AlgebraicIndependent K (universalTransverseLawFieldJet I a) ↔ a ∉ I := by
-  have hjet : universalTransverseLawFieldJet I a =
+    AlgebraicIndependent K (universalTransverseLawFieldJet (K := K) I a) ↔ a ∉ I := by
+  have hjet : universalTransverseLawFieldJet (K := K) I a =
       universalTransverseConstraintFieldEmbedding (K := K) I ∘
         (fun n : ℕ => SymmetricAlgebra.ι K (UniversalTransverseClockState I)
           (Finsupp.single n (Ideal.Quotient.mk I a))) := by
     funext n
-    exact universalTransverseLawFieldJet_eq_embedded_single I a n
+    exact universalTransverseLawFieldJet_eq_embedded_single (K := K) I a n
   rw [hjet]
   constructor
   · intro hAI
@@ -204,9 +204,10 @@ theorem universalTransverseLawFieldJet_algebraicIndependent_iff
       (universalTransverseConstraintFieldEmbedding (K := K) I)
     have hstate :=
       (symmetricAlgebra_ι_algebraicIndependent_iff_linearIndependent _).mp hpoly
-    exact (universalTransverseLawState_linearIndependent_iff I a).mp hstate
+    exact (universalTransverseLawState_linearIndependent_iff (K := K) I a).mp hstate
   · intro ha
-    have hstate := (universalTransverseLawState_linearIndependent_iff I a).mpr ha
+    have hstate :=
+      (universalTransverseLawState_linearIndependent_iff (K := K) I a).mpr ha
     have hpoly : AlgebraicIndependent K
         (fun n : ℕ => SymmetricAlgebra.ι K (UniversalTransverseClockState I)
           (Finsupp.single n (Ideal.Quotient.mk I a))) :=
@@ -243,15 +244,15 @@ family in the rational differential field are jointly algebraically independent 
 law classes are linearly independent in `A ⧸ I`. -/
 theorem universalTransverseLawFieldJetFamily_algebraicIndependent_iff
     {α : Type w} (I : Ideal A) (a : α → A) :
-    AlgebraicIndependent K (universalTransverseLawFieldJetFamily I a) ↔
+    AlgebraicIndependent K (universalTransverseLawFieldJetFamily (K := K) I a) ↔
       LinearIndependent K (fun j => Ideal.Quotient.mk I (a j)) := by
-  have hjet : universalTransverseLawFieldJetFamily I a =
+  have hjet : universalTransverseLawFieldJetFamily (K := K) I a =
       universalTransverseConstraintFieldEmbedding (K := K) I ∘
         (fun jn : Σ _ : ℕ, α =>
           SymmetricAlgebra.ι K (UniversalTransverseClockState I)
             (Finsupp.single jn.1 (Ideal.Quotient.mk I (a jn.2)))) := by
     funext jn
-    exact universalTransverseLawFieldJet_eq_embedded_single I (a jn.2) jn.1
+    exact universalTransverseLawFieldJet_eq_embedded_single (K := K) I (a jn.2) jn.1
   rw [hjet]
   constructor
   · intro hAI
@@ -259,10 +260,11 @@ theorem universalTransverseLawFieldJetFamily_algebraicIndependent_iff
       (universalTransverseConstraintFieldEmbedding (K := K) I)
     have hstate :=
       (symmetricAlgebra_ι_algebraicIndependent_iff_linearIndependent _).mp hpoly
-    exact (universalTransverseLawStateFamily_linearIndependent_iff I a).mp hstate
+    exact
+      (universalTransverseLawStateFamily_linearIndependent_iff (K := K) I a).mp hstate
   · intro ha
     have hstate :=
-      (universalTransverseLawStateFamily_linearIndependent_iff I a).mpr ha
+      (universalTransverseLawStateFamily_linearIndependent_iff (K := K) I a).mpr ha
     have hpoly : AlgebraicIndependent K
         (fun jn : Σ _ : ℕ, α =>
           SymmetricAlgebra.ι K (UniversalTransverseClockState I)
@@ -276,19 +278,19 @@ commutative algebra, including nonradical and nonhomogeneous ideals, the structu
 complete field jets fail algebraic independence are exactly that ideal. -/
 theorem universalTransverseConstraintScheme_exact
     (I : Ideal A) :
-    {a : A | ¬ AlgebraicIndependent K (universalTransverseLawFieldJet I a)} =
+    {a : A | ¬ AlgebraicIndependent K (universalTransverseLawFieldJet (K := K) I a)} =
       (I : Set A) := by
   ext a
   rw [Set.mem_setOf_eq,
-    universalTransverseLawFieldJet_algebraicIndependent_iff]
+    universalTransverseLawFieldJet_algebraicIndependent_iff (K := K)]
   simp
 
 /-- Every proper affine constraint scheme has one hypertranscendental cyclic root in the
 universal transverse rational differential field. -/
 theorem universalTransverseConstraintRoot_hypertranscendental
     (I : Ideal A) (hI : I ≠ ⊤) :
-    AlgebraicIndependent K (universalTransverseLawFieldJet I 1) := by
-  rw [universalTransverseLawFieldJet_algebraicIndependent_iff]
+    AlgebraicIndependent K (universalTransverseLawFieldJet (K := K) I 1) := by
+  rw [universalTransverseLawFieldJet_algebraicIndependent_iff (K := K)]
   exact (Ideal.ne_top_iff_one I).mp hI
 
 end

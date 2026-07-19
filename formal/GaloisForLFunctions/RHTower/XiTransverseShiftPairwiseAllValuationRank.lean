@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialConstantLinearFamilyMatroid
+import GaloisForLFunctions.RHTower.XiTransverseShiftCollisionIncidenceAllValuationRank
 import GaloisForLFunctions.RHTower.XiTransverseShiftPairwiseValue
 import GaloisForLFunctions.RHTower.XiTransverseShiftAllValuationLayerRank
 
@@ -83,22 +84,10 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differential
         (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head) =
       rootedIncidenceMatroid
         (C := analyticScalarValuationLayerDifferentialField) root tail head := by
-  have hx0 : xiTransverseShiftUpperEndCarrier (shift root) = 0 := by
-    rw [hroot, xiTransverseShiftUpperEndCarrier_zero]
-  have hx : DifferentialIndependent analyticScalarValuationLayerDifferentialField
-      (fun v : ↑({v | v ≠ root} : Set V) ↦
-        xiTransverseShiftUpperEndCarrier (shift v)) := by
-    apply (xiTransverseShiftUpperEndCarrier_allValuation_differentialIndependent_iff
-      shift {v | v ≠ root}).2
-    refine ⟨?_, ?_⟩
-    · intro i _ j _ hij
-      exact hinj hij
-    · intro v hv hzero
-      exact hv (hinj (hzero.trans hroot.symm))
-  simpa [xiTransverseShiftPairDifferenceUpperEndCarrier] using
-    (differentialFamilyMatroid_pairwiseDifferences_eq_rootedIncidenceMatroid
-      (C := analyticScalarValuationLayerDifferentialField) root tail head
-      (fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) hx0 hx)
+  rw [xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
+  simpa [hroot] using
+    (pointedCollisionIncidenceMatroid_eq_rootedIncidenceMatroid_of_injective
+      (C := analyticScalarValuationLayerDifferentialField) shift root hinj tail head)
 
 /-- All-valuation Prop interface for every selected all-integral pairwise packet. -/
 theorem xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_iff

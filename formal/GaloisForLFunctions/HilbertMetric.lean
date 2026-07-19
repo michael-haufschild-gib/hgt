@@ -3,6 +3,8 @@ import GaloisForLFunctions.HilbertMetric.GaussianFock
 import GaloisForLFunctions.HilbertMetric.CentroidGauge
 import GaloisForLFunctions.HilbertMetric.FanoCommutator
 import GaloisForLFunctions.HilbertMetric.QuadraticGraphCompletion
+import GaloisForLFunctions.HilbertMetric.TransverseDegreePhase
+import GaloisForLFunctions.HilbertMetric.TransverseDegreeCurvature
 
 /-!
 # Hilbert-metric theorem area

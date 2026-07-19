@@ -192,12 +192,18 @@ location-blind local multiplicity laws do not suffice.
 - [x] Physical meaning and prohibited overclaims separated.
 - [x] Abstract multiplicative-cocycle character factorization and converse character-scaling
   compatibility formalized unconditionally in Lean (`MultiplicativeTranslationCharacter`).
+- [x] Actual meromorphic elliptic-gamma quotient nonvanishing, multiplicative translation cocycle,
+  inverse/reflection law, and the concrete scalar-character implication formalized unconditionally
+  (`EllipticGammaQuotientPeriodCosetMatroid`).  Only the automorphism/scaling data remain as inputs
+  to that implication.
 - [x] Invalid smaller elliptic-field base detected by the anti-theatre gate and replaced by the
   translation-stable DA meromorphic field `B`.
 - [ ] The DA meromorphic sector `B`, its field/translation closure, and theta-quotient membership
   formalized.
 - [ ] Same-coset quotient `R_(h+u)/R_h in B^*` formalized on the actual elliptic gamma function.
-- [ ] Finite distinct-coset differential independence formalized on the actual quotient family.
+- [x] Arbitrary distinct-coset differential independence and the full pointed period-coset matroid
+  formalized on the actual quotient family over the paired elliptic compositum.  Transport to the
+  intended DA meromorphic sector `B` remains open.
 - [ ] Every quotient character extended to an automorphism of the infinite differential field.
 - [x] Character separation and quotient-annihilator equality formalized unconditionally for the
   canonical rational-circle character module (`QuotientCharacterAnnihilator`); composition into

@@ -71,6 +71,20 @@ theorem hypertranscendentalOver_deriv_div_self_iff
       one_ne_zero Polynomial.X_ne_zero (weight := (1 : ℤ)) one_ne_zero hx
     simpa [rationalTensorJetObservable, div_eq_mul_inv, mul_comm] using h
 
+/-- Differential algebraicity is exactly preserved by the algebraic logarithmic derivative. This
+is the Prop-level companion of `hypertranscendentalOver_deriv_div_self_iff`. -/
+theorem differentialAlgebraicOver_deriv_div_self_iff
+    {K L : Type*} [Field K] [Field L] [Algebra K L]
+    [Differential K] [Differential L] [DifferentialAlgebra K L]
+    [CharZero K] [CharZero L] (x : L) :
+    DifferentialAlgebraicOver K (x′ / x) ↔
+      DifferentialAlgebraicOver K x := by
+  constructor
+  · intro hlog
+    by_contra hx
+    exact ((hypertranscendentalOver_deriv_div_self_iff x).2 hx) hlog
+  · exact differentialAlgebraicOver_deriv_div_self
+
 namespace HTGeometry
 
 universe u

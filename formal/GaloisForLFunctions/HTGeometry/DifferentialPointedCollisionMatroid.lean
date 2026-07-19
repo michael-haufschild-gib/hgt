@@ -167,6 +167,53 @@ theorem affinePointedCollisionMatroid_indep_iff {Λ Frame : Type*}
     rintro q ⟨i, hi, rfl⟩
     exact hnonloop i hi
 
+/-- A pointed collision matroid is unchanged by a relabelling that is injective on exactly the
+labels used by the family together with its distinguished loop label. -/
+theorem affinePointedCollisionMatroid_comp_eq_of_injOn
+    {Λ Frame Frame' : Type*}
+    (frame : Λ → Frame) (loopFrame : Frame)
+    (g : Frame → Frame')
+    (hg : Set.InjOn g (Set.range frame ∪ {loopFrame})) :
+    affinePointedCollisionMatroid (g ∘ frame) (g loopFrame) =
+      affinePointedCollisionMatroid frame loopFrame := by
+  apply Matroid.ext_indep
+  · simp
+  · intro I _
+    rw [affinePointedCollisionMatroid_indep_iff,
+      affinePointedCollisionMatroid_indep_iff]
+    constructor
+    · rintro ⟨hcomp, hnonloop⟩
+      refine ⟨?_, ?_⟩
+      · intro i hi j hj hij
+        exact hcomp hi hj (congrArg g hij)
+      · intro i hi hloop
+        exact hnonloop i hi (congrArg g hloop)
+    · rintro ⟨hframe, hnonloop⟩
+      refine ⟨?_, ?_⟩
+      · intro i hi j hj hij
+        have hfi : frame i ∈ Set.range frame ∪ {loopFrame} :=
+          Or.inl ⟨i, rfl⟩
+        have hfj : frame j ∈ Set.range frame ∪ {loopFrame} :=
+          Or.inl ⟨j, rfl⟩
+        exact hframe hi hj (hg hfi hfj hij)
+      · intro i hi hloop
+        have hfi : frame i ∈ Set.range frame ∪ {loopFrame} :=
+          Or.inl ⟨i, rfl⟩
+        have hloopFrame : loopFrame ∈ Set.range frame ∪ {loopFrame} :=
+          Or.inr (Set.mem_singleton loopFrame)
+        exact hnonloop i hi (hg hfi hloopFrame hloop)
+
+/-- In particular, every globally injective change of label coordinates preserves the pointed
+collision matroid. -/
+theorem affinePointedCollisionMatroid_comp_eq_of_injective
+    {Λ Frame Frame' : Type*}
+    (frame : Λ → Frame) (loopFrame : Frame)
+    (g : Frame → Frame') (hg : Function.Injective g) :
+    affinePointedCollisionMatroid (g ∘ frame) (g loopFrame) =
+      affinePointedCollisionMatroid frame loopFrame :=
+  affinePointedCollisionMatroid_comp_eq_of_injOn
+    frame loopFrame g hg.injOn
+
 /-- The extended rank of a pointed collision packet is the number of distinct nonloop labels. -/
 theorem affinePointedCollisionMatroid_eRk {Λ Frame : Type*}
     (frame : Λ → Frame) (loopFrame : Frame) (I : Set Λ) :

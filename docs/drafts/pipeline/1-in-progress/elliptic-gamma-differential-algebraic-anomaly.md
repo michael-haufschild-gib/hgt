@@ -172,7 +172,10 @@ location-blind and do not qualify.
    quotient non-Hausdorff.
 3. `HolographicVisibilityGap` proves the continuous-versus-algebraic visibility mismatch.
 4. `MultiplicativeTranslationCharacter` proves the character law forced by a multiplicative
-   translation cocycle.
+   translation cocycle. `EllipticGammaQuotientPeriodCosetMatroid` now instantiates this on the
+   genuine meromorphic quotient: nonvanishing, the cocycle, inverse/reflection, and the scalar-
+   character implication are all axiom-clean. Constructing the full automorphism group remains
+   open.
 5. `QuotientCharacterAnnihilator` proves that algebraic quotient characters recover `H` exactly.
 6. The actual elliptic-gamma, theta-membership, and irrational-period
    hypertranscendence/matroid theorem are proved on paper in the cited stage-2 card.  Their Lean
@@ -186,13 +189,17 @@ location-blind and do not qualify.
 - [x] Topological-versus-algebraic visibility gap formalized unconditionally in Lean.
 - [x] Physical meaning and prohibited black-hole overclaim stated.
 - [ ] DA meromorphic sector constructed as a translation-stable differential field in Lean.
-- [x] Actual elliptic-gamma multiplier cocycle and nonvanishing proved on paper.
+- [x] Actual elliptic-gamma multiplier cocycle and nonvanishing proved on paper and formalized
+  unconditionally in Lean, together with inverse/reflection and arbitrary-family value interfaces.
 - [x] Independent-period elliptic-gamma hypertranscendence and exact defect matroid proved on paper.
 - [ ] Independent-period elliptic-gamma hypertranscendence formalized unconditionally in Lean.
 - [x] Nonzero DA cohomology class proved on paper; abstract no-internal-primitive criterion
   Lean-formalized.
 - [ ] Connecting identity `partial([G])=[a]` formalized for the multiplicative coefficient quotient.
-- [ ] Differential-Galois character reconstruction instantiated on the actual quotient family.
+- [x] Abstract scalar-character implication instantiated on the actual quotient family, with its
+  nonvanishing and cocycle hypotheses discharged.
+- [ ] Full differential-Galois automorphism extension and annihilator reconstruction completed on
+  the actual quotient family.
 - [ ] Comparison with the gamma gerbe constructed or the transgression conjecture retired.
 - [ ] Independent expert audit in elliptic-gamma cohomology and parameterized difference Galois
   theory.

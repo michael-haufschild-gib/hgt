@@ -837,26 +837,10 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialMatroid_eq_roote
         (xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head) =
       rootedIncidenceMatroid
         (C := upperEndRationalCoordinateField) root tail head := by
-  have hx0 : xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade root) = 0 := by
-    rw [hroot, xiEvenShiftRawLogDerivDefectUpperEndCarrier_zero]
-  have hx : DifferentialIndependent upperEndRationalCoordinateField
-      (fun v : ↑({v | v ≠ root} : Set V) ↦
-        xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) := by
-    have hxSet : DifferentialIndependent upperEndRationalCoordinateField
-        (fun v : ↑({v | v ≠ root} : Set V) ↦
-          xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) := by
-      apply (xiEvenShiftRawLogDerivDefectUpperEndCarrier_differentialIndependent_iff
-        grade {v | v ≠ root}).2
-      refine ⟨?_, ?_⟩
-      · intro i _ j _ hij
-        exact hinj hij
-      · intro v hv hzero
-        exact hv (hinj (hzero.trans hroot.symm))
-    exact hxSet
-  simpa [xiEvenShiftRawPairDifferenceUpperEndCarrier] using
-    (differentialFamilyMatroid_pairwiseDifferences_eq_rootedIncidenceMatroid
-      (C := upperEndRationalCoordinateField) root tail head
-      (fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) hx0 hx)
+  rw [xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
+  simpa [hroot] using
+    (pointedCollisionIncidenceMatroid_eq_rootedIncidenceMatroid_of_injective
+      (C := upperEndRationalCoordinateField) grade root hinj tail head)
 
 /-- Prop interface for every selected rational-base edge packet. -/
 theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialIndependent_iff
@@ -918,27 +902,10 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialMat
         (xiEvenShiftRawPairDifferenceUpperEndCarrier grade tail head) =
       rootedIncidenceMatroid
         (C := analyticScalarValuationLayerDifferentialField) root tail head := by
-  have hx0 : xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade root) = 0 := by
-    rw [hroot, xiEvenShiftRawLogDerivDefectUpperEndCarrier_zero]
-  have hx : DifferentialIndependent analyticScalarValuationLayerDifferentialField
-      (fun v : ↑({v | v ≠ root} : Set V) ↦
-        xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) := by
-    have hxSet : DifferentialIndependent analyticScalarValuationLayerDifferentialField
-        (fun v : ↑({v | v ≠ root} : Set V) ↦
-          xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) := by
-      apply
-        (xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialIndependent_iff
-          grade {v | v ≠ root}).2
-      refine ⟨?_, ?_⟩
-      · intro i _ j _ hij
-        exact hinj hij
-      · intro v hv hzero
-        exact hv (hinj (hzero.trans hroot.symm))
-    exact hxSet
-  simpa [xiEvenShiftRawPairDifferenceUpperEndCarrier] using
-    (differentialFamilyMatroid_pairwiseDifferences_eq_rootedIncidenceMatroid
-      (C := analyticScalarValuationLayerDifferentialField) root tail head
-      (fun v ↦ xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade v)) hx0 hx)
+  rw [xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
+  simpa [hroot] using
+    (pointedCollisionIncidenceMatroid_eq_rootedIncidenceMatroid_of_injective
+      (C := analyticScalarValuationLayerDifferentialField) grade root hinj tail head)
 
 /-- Prop interface for every selected all-valuation edge packet. -/
 theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_iff

@@ -46,6 +46,13 @@ def ellipticGammaPeriodClass (sigma tau h : ℂ) :
     ℂ ⧸ ellipticGammaPeriodSubgroup sigma tau :=
   QuotientAddGroup.mk h
 
+/-- Reflection of a shift is negation in the rank-three period quotient. -/
+@[simp]
+theorem ellipticGammaPeriodClass_neg (sigma tau h : ℂ) :
+    ellipticGammaPeriodClass sigma tau (-h) =
+      -ellipticGammaPeriodClass sigma tau h := by
+  rfl
+
 theorem ellipticGammaPeriodClass_eq_iff
     (sigma tau h k : ℂ) :
     ellipticGammaPeriodClass sigma tau h =
@@ -99,6 +106,19 @@ local instance ellipticGammaPeriodCosetDifferentialAlgebra
     (meromorphicEllipticCompositum sigma tau)
     (meromorphicEllipticCompositum_derivationClosed sigma tau) x⟩
 
+/-- **Componentwise external-defect reflection.** Reflecting every shift negates the corresponding
+genuine defect after translation by that reflected shift. -/
+theorem ellipticGammaExternalDefectFamily_reflection
+    {κ : Type*} (h : κ → ℂ) (sigma tau : ℂ)
+    (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    ellipticGammaExternalDefectFamily
+        (fun j ↦ -h j) sigma tau hsigma htau =
+      fun j ↦ -addTranslationMeroEquiv (-h j)
+        (ellipticGammaExternalDefectFamily h sigma tau hsigma htau j) := by
+  funext j
+  exact ellipticGammaExternalLogDerivDefectMero_neg
+    (h j) sigma tau hsigma htau
+
 /-- **Full period-coset partition matroid.**  For an arbitrary family of shifts, the differential
 matroid of genuine elliptic-gamma defects over the paired elliptic compositum is the pointed
 collision matroid of rank-three period classes.  The zero class consists of loops, and every
@@ -140,6 +160,39 @@ theorem ellipticGammaExternalDefectFamily_differentialMatroid_eq_periodCosetPart
     apply differentialAlgebraicOver_ellipticGammaExternalDefect_sub_of_sameCoset
     rw [← ellipticGammaPeriodClass_eq_iff sigma tau (h i) (h j)]
     simpa [Function.comp_apply] using hframe
+
+/-- **Reflection invariance of the full defect matroid.** Simultaneously replacing every shift by
+its negative preserves every differential dependence relation, including zero-coset loops and all
+parallel period-coset classes. -/
+theorem ellipticGammaExternalDefectFamily_differentialMatroid_reflection
+    {κ : Type*} [DecidableEq κ]
+    (h : κ → ℂ) (sigma tau : ℂ)
+    (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
+    (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau)) :
+    differentialFamilyMatroid (F := meromorphicEllipticCompositum sigma tau)
+        (ellipticGammaExternalDefectFamily
+          (fun j ↦ -h j) sigma tau hsigma htau) =
+      differentialFamilyMatroid (F := meromorphicEllipticCompositum sigma tau)
+        (ellipticGammaExternalDefectFamily h sigma tau hsigma htau) := by
+  rw [ellipticGammaExternalDefectFamily_differentialMatroid_eq_periodCosetPartitionMatroid
+      (fun j ↦ -h j) sigma tau hsigma htau hindependent,
+    ellipticGammaExternalDefectFamily_differentialMatroid_eq_periodCosetPartitionMatroid
+      h sigma tau hsigma htau hindependent]
+  let negClass :
+      (ℂ ⧸ ellipticGammaPeriodSubgroup sigma tau) →
+        (ℂ ⧸ ellipticGammaPeriodSubgroup sigma tau) := fun q ↦ -q
+  have hnegClass : Function.Injective negClass := by
+    intro q r hqr
+    simpa [negClass] using congrArg Neg.neg hqr
+  have hframe :
+      ellipticGammaPeriodClass sigma tau ∘ (fun j ↦ -h j) =
+        negClass ∘ (ellipticGammaPeriodClass sigma tau ∘ h) := by
+    funext j
+    exact ellipticGammaPeriodClass_neg sigma tau (h j)
+  rw [hframe]
+  simpa [negClass] using
+    affinePointedCollisionMatroid_comp_eq_of_injective
+      (ellipticGammaPeriodClass sigma tau ∘ h) 0 negClass hnegClass
 
 /-- An arbitrary external-defect subfamily is independent exactly when its period classes are
 pairwise distinct and nonzero. -/

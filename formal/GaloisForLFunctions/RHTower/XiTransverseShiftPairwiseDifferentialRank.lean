@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialConstantLinearFamilyMatroid
+import GaloisForLFunctions.RHTower.XiTransverseShiftCollisionIncidenceRank
 import GaloisForLFunctions.RHTower.XiTransverseShiftPairwiseValue
 
 /-!
@@ -79,22 +80,10 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_eq_ro
         (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head) =
       rootedIncidenceMatroid
         (C := upperEndRationalCoordinateField) root tail head := by
-  have hx0 : xiTransverseShiftUpperEndCarrier (shift root) = 0 := by
-    rw [hroot, xiTransverseShiftUpperEndCarrier_zero]
-  have hx : DifferentialIndependent upperEndRationalCoordinateField
-      (fun v : ↑({v | v ≠ root} : Set V) ↦
-        xiTransverseShiftUpperEndCarrier (shift v)) := by
-    apply (xiTransverseShiftUpperEndCarrier_differentialIndependent_iff
-      shift {v | v ≠ root}).2
-    refine ⟨?_, ?_⟩
-    · intro i _ j _ hij
-      exact hinj hij
-    · intro v hv hzero
-      exact hv (hinj (hzero.trans hroot.symm))
-  simpa [xiTransverseShiftPairDifferenceUpperEndCarrier] using
-    (differentialFamilyMatroid_pairwiseDifferences_eq_rootedIncidenceMatroid
-      (C := upperEndRationalCoordinateField) root tail head
-      (fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) hx0 hx)
+  rw [xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
+  simpa [hroot] using
+    (pointedCollisionIncidenceMatroid_eq_rootedIncidenceMatroid_of_injective
+      (C := upperEndRationalCoordinateField) shift root hinj tail head)
 
 /-- Rational-base Prop interface for every selected all-integral pairwise packet. -/
 theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialIndependent_iff

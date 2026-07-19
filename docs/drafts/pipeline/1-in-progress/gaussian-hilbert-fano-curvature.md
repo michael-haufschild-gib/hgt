@@ -70,7 +70,7 @@ is the odd-cycle term in the three-point determinant, not a numerical counterexa
 
 ### C2 -- sub-Poisson coherent-volume law
 
-`[SURVIVES PRELIMINARY ATTACK]`.  For every finite family of distinct points,
+`[FALSIFIED]`.  The conjecture was that, for every finite family of distinct points,
 
 \[
   \operatorname{Var}_t(D)\le \mathbb E_tD                 \tag{SP}
@@ -82,14 +82,14 @@ for all (t>0).  Equivalently,
   (\log\det K_X)''(t)\le0.                                \tag{LC}
 \]
 
-This says that antisymmetrizing coherent states suppresses total Fock-number noise
-below the Poisson level at every scale.  It is not a consequence of positivity of the
-coefficients of (Z_X): arbitrary positive graded partition functions can be
-super-Poisson.
+The transverse-degree phase construction below gives collision limits with strictly
+super-Poisson degree statistics and transfers them to actual distinct coherent spans.  Thus
+there are finite Hilbert configurations for which `(log det K_X)''(1)>0`.  Positivity of the
+coefficients of `Z_X` never forced the conjectured sign.
 
 ### C3 -- compressed-annihilator defect law
 
-`[ACTIVE CONJECTURE]`.  Let (H_0\) be the finite-dimensional span of the centered
+`[FALSIFIED]`.  Let (H_0\) be the finite-dimensional span of the centered
 configuration and let \(\mathcal F_s(H_0)\) be its symmetric Fock space.  At scale
 \(t\), let \(S_t\) be the span of the exponential vectors
 
@@ -115,9 +115,8 @@ Slater determinant moment formula plus the canonical commutation relations give
     -\sum_{r,s=1}^d\lVert A_r(t)A_s(t)\rVert_{\mathrm{HS}}^2.       \tag{AD}
 \]
 
-The conjecture is that the right-hand side of (AD) is nonnegative for every finite
-coherent-state span.  The stronger rigidity form asserts that it is positive whenever
-\(N>1\) and the points are distinct.
+The conjecture was that the right-hand side of (AD) is nonnegative for every finite
+coherent-state span.  The transverse-degree coherent collision makes it strictly negative.
 
 This representation absorbs the obstruction that killed C1: odd cycles may destroy
 all-order complete monotonicity, while (AD) asks for one exact second-order defect and
@@ -237,7 +236,7 @@ coherent-state theorem.
 
 ### C4 -- coherent row--column compensation law
 
-`[CONJECTURE]`.  For annihilation compressions of a finite span of distinct
+`[FALSIFIED]`.  For annihilation compressions of a finite span of distinct
 coherent states, the negative row--column imbalance can never consume the full
 mixed-commutator energy:
 
@@ -255,7 +254,7 @@ nilpotent counterexample has neither property.
 
 ### C5 -- finite annihilation-invariant subspace law
 
-`[STRONGER FRONTIER CONJECTURE]`.  Let `S` be any finite-dimensional subspace of a
+`[FALSIFIED]`.  Let `S` be any finite-dimensional subspace of a
 symmetric Fock space that is invariant under every annihilation operator, let `P` be its
 orthogonal projection, and let `N` be the number operator.  Then
 
@@ -430,6 +429,70 @@ subspace, a genuinely multivariable and arbitrarily non-graded universal stratum
 proof and its formalisation boundary are recorded in
 `2-fully-proven/gaussian-hilbert-quadratic-graph-completion.md`.
 
+#### Exact failure -- transverse high-degree completion
+
+`[PAPER-PROVED] [FALSIFIED]`.  Let `T subset Sym^M(E)` be nonzero, let `R_n(T)` be its
+degree-`n` lowering closure, put
+
+\[
+ k=\dim T,\qquad B_T=\sum_{n<M}n\dim R_n(T),
+\]
+
+and let `U:T -> W` be an isometry into new one-particle directions.  The annihilation-invariant
+space
+
+\[
+ \bigoplus_{n<M}R_n(T)\oplus\{q+\lambda Uq:q\in T\}
+\]
+
+has determinant partition
+
+\[
+ Z(t)=t^{B_T+k}(t^{M-1}+\lambda^2)^k.                   \tag{TD}
+\]
+
+Its degree variable is `B_T+k+(M-1)X` with `X` binomial, and the sharp minimum of its Fano
+margin per top direction is
+
+\[
+ \frac{B_T}{k}-\frac{M(M-4)}4.                           \tag{TP}
+\]
+
+This is the exact missing mechanism: transverse completion supplies `k` independent jumps of
+size `M-1`; the lowering skeleton pays the charge `B_T`.  For the full top space
+`T=Sym^M(R^d)`, `B_T/k=M(M-1)/(d+1)`.  At `M=5,d=16`, `lambda^2=5/3`, and `t=1`, the margin is
+`-5k/68`.
+
+`[LEAN-PROVED]` The compiled determinant connector now proves directly, for the literal balanced
+graph partition, that `(log Z)''(1)=-B_T+5k/4=5k/68>0`; this is no longer inferred only from the
+formal Fano proxy.  The remaining Lean gap is exactly the coherent-collision persistence step.
+
+The full-top space is a collision limit of spans of distinct coherent vectors.  An explicit
+unisolvent-node construction perturbs nodes `epsilon u_i` by transverse terms
+`epsilon^M w_i`; divided differences converge in the graph norms of the first two powers of
+the number operator to the displayed invariant space.  Strict negativity therefore persists
+before collision.  Hence C2--C5 are all false, including for actual finite Gaussian point
+configurations.  The dependency-closed proof and exact universal survivor (TD)--(TP) are in
+`2-fully-proven/gaussian-hilbert-transverse-degree-phase-transition.md`.
+
+### C6 -- low-ambient Gaussian curvature boundary
+
+`[CONJECTURE]`.  The high-degree falsifier spends one independent transverse Hilbert direction
+per top-symbol direction.  This suggests a real geometric boundary rather than unrestricted
+chaos:
+
+\[
+ \dim\operatorname{aff}(X)\le 3
+ \quad\Longrightarrow\quad
+ (\log\det K_X)''(t)\le0\quad(t>0).                       \tag{LD3}
+\]
+
+The conjecture is deliberately stronger than merely asking for small `N`: it claims that three
+ambient directions cannot carry enough transverse completion rank to beat the forced lowering
+charge, at any collision type or finite separation.  The exact falsifier is a distinct Gaussian
+configuration in affine dimension at most three with positive curvature.  The first open proof
+gate is a dimension-three lowering-chain/Pluecker bound that survives passage away from collision.
+
 ## Proven frontier base case
 
 `[PAPER-PROVED]`.  If the affine span of the configuration has dimension one, there is
@@ -451,22 +514,11 @@ two is the first place where the signed row--column term can survive.
 
 ## `[OPEN CORE]`
 
-Prove or refute the stronger invariant-subspace law (AI).  At minimum, prove or refute its
-simple-spectrum coherent specialization
-
-\[
- \operatorname{tr}\!\left(\sum_r A_r^*A_r\right)^2
- \ge \sum_{r,s}\lVert A_rA_s\rVert_{\mathrm{HS}}^2        \tag{OC}
-\]
-
-for the jointly diagonalizable commuting tuple obtained by compressing the annihilation
-operators to a finite span of distinct coherent states.  Equivalently, prove (CC) by
-using the coherent Gram geometry and the common CCR dilation.  Pairwise commutativity
-alone is now known to be too coarse.  A counterexample to (AI) that is not a coherent span
-must be tested under simple-spectrum perturbation before it kills C2.
-
-No Lean formalization of C2/C3 is permitted before (OC) is closed on paper and the
-equivalence-level literature audit is repeated.
+Prove or refute (LD3).  The collision boundary reduces to an extremal problem for Hilbert
+functions of smoothable inverse systems in at most three variables; the non-collision step must
+control the same curvature for finite coherent spans rather than assume it from the limit.
+Separately, formalise the already closed transverse-degree law and its Gaussian collision
+consequence without turning convergence into an assumption.
 
 ## Literature audit log
 
@@ -477,9 +529,10 @@ equivalence-level literature audit is repeated.
 - Flat Gaussian RBF determinant asymptotics own the small-scale polynomial-rank order.
 - Coherent-state Gram characterizations own the Fock realization.
 - Searches through Gaussian-process log determinants, Hadamard powers, infinitely
-  divisible correlation matrices, coherent-state Gram determinants, and sub-Poisson
-  photon statistics located these parent theories but no source for (SP), (AD), or (OC).
-  This is a preliminary search boundary, not a priority proof.
+  divisible correlation matrices, coherent-state Gram determinants, sub-Poisson photon
+  statistics, least interpolation, and collision limits located the parent theories but no
+  source for the transverse phase law or Gaussian counterexample.  This remains a search
+  boundary, not a priority proof.
 
 ## Log
 
@@ -496,3 +549,7 @@ equivalence-level literature audit is repeated.
 - 2026-07-19 -- killed the arbitrary commuting-tuple strengthening by the exact eight-mode
   radial degree-two counterexample, then restored the missing standard-Fock completion channels
   and proved the quadratic graph completion law (GC)--(GCF).
+- 2026-07-19 -- killed C2--C5 by the exact transverse degree-`5`, base-dimension-`16` graph and
+  transferred the negative Fano margin through an unisolvent coherent collision to distinct
+  Gaussian points; extracted the universal lowering-charge phase law (TD)--(TP) and opened the
+  low-ambient boundary conjecture (LD3).
