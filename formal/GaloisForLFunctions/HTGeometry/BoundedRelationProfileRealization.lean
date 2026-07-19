@@ -68,7 +68,7 @@ theorem IsPrivatePrimeSuperlinearApproximation.entire_fullSupport_hypertranscend
         (taylorPS (boundedRelationExponentialFunction (fun n => (b n : ℝ)) u)) ≠ 0) ∧
       Hypertranscendental
         (boundedRelationExponentialFunction (fun n => (b n : ℝ)) u) := by
-  rcases h with ⟨_hp, _hpmono, hbpos, _hclose, hgrowth,
+  rcases h with ⟨_hp, _hpmono, _hbpos, _hclose, hgrowth,
     _hself, _hother, hconf⟩
   have hbAlg : ∀ n, IsAlgebraic ℚ ((b n : ℚ) : ℝ) := by
     intro n
@@ -76,7 +76,7 @@ theorem IsPrivatePrimeSuperlinearApproximation.entire_fullSupport_hypertranscend
   exact ⟨contDiff_boundedRelationExponentialFunction hgrowth huNorm,
     taylorPS_boundedRelationExponentialFunction_coeff_ne_zero hgrowth huNorm,
     hypertranscendental_boundedRelationExponentialFunction
-      hbpos hgrowth hbAlg hconf huAlg huNorm⟩
+      hgrowth hbAlg hconf huAlg huNorm⟩
 
 /-- Capstone form of arbitrary-profile realization: one private-prime rational approximation works
 for every algebraic unit-modulus phase sequence. -/

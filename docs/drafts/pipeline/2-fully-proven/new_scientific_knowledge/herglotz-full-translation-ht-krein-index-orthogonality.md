@@ -4747,3 +4747,31 @@ hypotheses are `[IsProbabilityMeasure η]`, `Measurable ν`, and `∀ t, IsProba
 `fun t => (F.leaf t).prop`. What must be supplied is that `linftyDensityMeasure eta density` is a
 probability measure for the capstone's density `linftyOne mu + w.1.1`, i.e. the normalisation
 carried by the positive chart.
+
+### The two halves composed
+
+`GaloisForLFunctions.HTGeometry.CarrierHerglotzPresentationFree`
+- `not_differentiallyAlgebraicOn_cauchyTransform_weightedBoundaryCarrier` — pattern
+  relation-freeness restated for `cauchyTransform` in the form the gauge consumes. The restatement
+  is definitional: `cauchyTransform ν z` unfolds to `∫ x, ((x : ℂ) - z)⁻¹ ∂ν`, and membership in
+  `upperHalfPlane` to `0 < z.im`, so the two forms are the same proposition.
+- `not_differentiallyAlgebraicOn_herglotzPresentation_weightedBoundaryCarrier` — **the composed
+  statement**: for any mass constant, the normalized presentation `z * M + (1 + z ^ 2) * C` of a
+  carrier avoiding every canonical finite pattern satisfies no algebraic differential equation on
+  the upper half-plane.
+
+Unconditional; only `propext`, `Classical.choice`, `Quot.sound`. Compiled first try.
+
+The finiteness obligation flagged in the previous entry is not an obstruction: the singular-continuous
+capstone already carries `IsProbabilityMeasure carrier` in its own conclusion, alongside
+`LinftyStrictlyPositive`, `∫ density = 1`, `NoAtoms`, mutual singularity and the Hamburger moments.
+So it is available wherever the capstone is applied, and the composed theorem takes it as an
+instance argument.
+
+This is the HT half of the card in citable form. The remaining step is packaging rather than
+mathematics: the dense-residual capstone
+`positiveSingularContinuousCarrier_hypertranscendental_dense_residual` still states its carrier set
+with the global `Hypertranscendental`, because it was written against the pre-strengthening
+corollary. Restating that set with the half-plane predicate and rerouting its one call site to
+`not_differentiallyAlgebraicOn_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree`
+would carry the dense/residual packaging over to the composed statement verbatim.

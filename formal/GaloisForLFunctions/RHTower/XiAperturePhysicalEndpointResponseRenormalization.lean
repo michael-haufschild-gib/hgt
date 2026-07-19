@@ -28,7 +28,7 @@ private theorem xiPrimeValuationGeometricNode_one_eq_inv
     xiPrimeValuationGeometricNode 1 p = ((p : ℝ))⁻¹ := by
   have hp : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
   rw [xiPrimeValuationGeometricNode]
-  norm_num only [one_mul]
+  rw [show -(1 : ℝ) * Real.log (p : ℝ) = -Real.log (p : ℝ) by ring]
   rw [Real.exp_neg, Real.exp_log hp]
 
 private theorem xiPrimeValuationGeometricNode_two_eq_inv_sq
@@ -39,6 +39,7 @@ private theorem xiPrimeValuationGeometricNode_two_eq_inv_sq
   rw [show -(2 : ℝ) * Real.log (p : ℝ) =
       -Real.log (p : ℝ) + -Real.log (p : ℝ) by ring,
     Real.exp_add, Real.exp_neg, Real.exp_log hp]
+  ring
 
 /-- The completely valuation-fused unit-aperture density has its elementary prime form. -/
 theorem poissonPrimeValuationFusedHalfDensity_one_eq
@@ -46,7 +47,9 @@ theorem poissonPrimeValuationFusedHalfDensity_one_eq
     poissonPrimeValuationFusedHalfDensity 1 p =
       1 / ((p : ℝ) - 1) := by
   let P : ℝ := p
-  have hP1 : 1 < P := by exact_mod_cast p.prop.one_lt
+  have hP1 : 1 < P := by
+    dsimp [P]
+    exact_mod_cast p.prop.one_lt
   have hP0 : P ≠ 0 := by positivity
   have hPm1 : P - 1 ≠ 0 := by linarith
   rw [poissonPrimeValuationFusedHalfDensity_eq_geometric (by norm_num),
@@ -60,7 +63,9 @@ theorem poissonPrimeValuationFusedHalfDensity_two_eq
     poissonPrimeValuationFusedHalfDensity 2 p =
       2 / ((p : ℝ) ^ 2 - 1) := by
   let P : ℝ := p
-  have hP1 : 1 < P := by exact_mod_cast p.prop.one_lt
+  have hP1 : 1 < P := by
+    dsimp [P]
+    exact_mod_cast p.prop.one_lt
   have hP0 : P ≠ 0 := by positivity
   have hPsq : P ^ 2 - 1 ≠ 0 := by nlinarith
   rw [poissonPrimeValuationFusedHalfDensity_eq_geometric (by norm_num),
@@ -75,7 +80,9 @@ theorem poissonPrimeValuationFusedScaleShuttle_one_two_eq
     poissonPrimeValuationFusedScaleShuttle 1 2 p =
       -1 / ((p : ℝ) + 1) := by
   let P : ℝ := p
-  have hP1 : 1 < P := by exact_mod_cast p.prop.one_lt
+  have hP1 : 1 < P := by
+    dsimp [P]
+    exact_mod_cast p.prop.one_lt
   have hPm1 : P - 1 ≠ 0 := by linarith
   have hPp1 : P + 1 ≠ 0 := by linarith
   have hPsq : P ^ 2 - 1 ≠ 0 := by nlinarith
@@ -94,7 +101,9 @@ theorem poissonPrimeValuationFusedScaleShuttle_one_two_eq_neg_mobiusDamping
       -(xiTransversePrimeApertureDiskNode 1 p /
         (1 + xiTransversePrimeApertureDiskNode 1 p)) := by
   let P : ℝ := p
-  have hP0 : P ≠ 0 := by exact_mod_cast p.prop.ne_zero
+  have hP0 : P ≠ 0 := by
+    dsimp [P]
+    exact_mod_cast p.prop.ne_zero
   have hPp1 : P + 1 ≠ 0 := by positivity
   rw [poissonPrimeValuationFusedScaleShuttle_one_two_eq,
     xiTransversePrimeApertureDiskNode_one_eq_inv]
@@ -152,7 +161,9 @@ theorem physicalPrimeEndpointWeight_eq_neg_fusedResponse_add_remainder
       -xiUnitDoubleFusedPrimeResponseCurrent p +
         xiPhysicalEndpointResponseWeightRemainder p := by
   let P : ℝ := p
-  have hP0 : P ≠ 0 := by exact_mod_cast p.prop.ne_zero
+  have hP0 : P ≠ 0 := by
+    dsimp [P]
+    exact_mod_cast p.prop.ne_zero
   have hPp1 : P + 1 ≠ 0 := by positivity
   rw [physicalPrimeEndpointWeight,
     xiUnitDoubleFusedPrimeResponseCurrent_eq,
@@ -160,7 +171,6 @@ theorem physicalPrimeEndpointWeight_eq_neg_fusedResponse_add_remainder
   change Real.log P / P = -(-Real.log P / (P + 1)) +
     Real.log P / (P * (P + 1))
   field_simp [hP0, hPp1]
-  ring
 
 theorem xiPhysicalEndpointResponseWeightRemainder_pos
     (p : Nat.Primes) :
@@ -173,7 +183,9 @@ theorem xiPhysicalEndpointResponseWeightRemainder_le_log_div_sq
     xiPhysicalEndpointResponseWeightRemainder p <=
       Real.log (p : ℝ) / (p : ℝ) ^ 2 := by
   let P : ℝ := p
-  have hP1 : 1 < P := by exact_mod_cast p.prop.one_lt
+  have hP1 : 1 < P := by
+    dsimp [P]
+    exact_mod_cast p.prop.one_lt
   have hlog : 0 <= Real.log P := (Real.log_pos hP1).le
   have hleft : 0 < P * (P + 1) := by positivity
   have hright : 0 < P ^ 2 := by positivity

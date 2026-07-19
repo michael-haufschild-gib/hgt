@@ -50,6 +50,7 @@ def cyclicClockLiftLinear {ι : Type w}
     funext x k
     simp [cyclicClockLift, smul_smul, mul_comm]
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- Exact power formula for the coordinate-parametric cyclic clock lift. -/
 theorem cyclicClockLift_pow_apply {ι : Type w}
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) :

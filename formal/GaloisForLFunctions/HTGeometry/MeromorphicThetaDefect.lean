@@ -73,6 +73,7 @@ theorem addTranslationMeroEquiv_mixed_defect_comm (p q : ℂ)
   rw [map_sub, map_sub, addTranslationMeroEquiv_add,
     addTranslationMeroEquiv_add]
   rw [show p + q = q + p by ring]
+  ring
 
 /-- Translation defects form an additive one-cocycle in the translation parameter. -/
 theorem addTranslationMeroEquiv_defect_add (p q : ℂ)

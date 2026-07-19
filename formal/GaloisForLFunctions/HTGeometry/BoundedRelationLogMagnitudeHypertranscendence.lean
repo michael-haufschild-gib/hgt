@@ -164,7 +164,6 @@ theorem taylorPS_boundedRelationExponentialFunction_coeff_ne_zero
 /-- The card's entire bounded-relation log-magnitude series is hypertranscendental. -/
 theorem hypertranscendental_boundedRelationExponentialFunction
     {b : ℕ → ℝ} {u : ℕ → ℂ}
-    (_hbpos : ∀ n, 0 < b n)
     (hgrowth : Tendsto (fun n => b n / (n : ℝ)) atTop atTop)
     (hbAlg : ∀ n, IsAlgebraic ℚ (b n))
     (hconf : BoundedRelationConfinement b)

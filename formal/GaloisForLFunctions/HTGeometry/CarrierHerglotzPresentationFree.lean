@@ -65,6 +65,38 @@ theorem not_differentiallyAlgebraicOn_herglotzPresentation_weightedBoundaryCarri
   not_differentiallyAlgebraicOn_herglotzPresentation_upperHalfPlane _ M
     (F.not_differentiallyAlgebraicOn_cauchyTransform_weightedBoundaryCarrier eta density hfree)
 
+/-- **A dense residual family of carriers is relation-free on the half-plane.**  The same dense
+residual pattern-free family that the global statement uses, recorded with the half-plane predicate
+the polynomial gauge consumes, so that the gauge applies to every member. -/
+theorem countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_residual
+    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
+    {ιf : Type} [Fintype ιf] [DecidableEq ιf]
+    (hCmin : HasMinimalExponentialType F.c)
+    (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
+    {p0 : ℂ} (hCp : F.c p0 = 0) {c0 : ℂ} (hCc : F.c c0 ≠ 0)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
+    (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
+    (nf : ιf → ℕ)
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta] (heta : eta.support.Infinite) :
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => F.quotient (zf i)) nf eta hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    let positiveChart : Set S := Metric.ball 0 1
+    let notDAOnCarrier : Set positiveChart := {w |
+      ¬ DifferentiallyAlgebraicOn
+        (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily eta
+          (linftyOne eta + w.1.1))) upperHalfPlane}
+    Dense notDAOnCarrier ∧ notDAOnCarrier ∈ residual positiveChart := by
+  dsimp only
+  obtain ⟨hdense, hres, _⟩ :=
+    F.allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
+      projectiveGeometry hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta heta
+  refine ⟨hdense.mono ?_, Filter.mem_of_superset hres ?_⟩ <;>
+    exact fun w hw =>
+      F.not_differentiallyAlgebraicOn_cauchyTransform_weightedBoundaryCarrier eta _ hw
+
 end ClassicalAnalyticNevanlinnaCarrierFamily
 
 end

@@ -5429,3 +5429,42 @@ assembling the two into `Continuous (nevLeaf h h0b h0)`. Continuity at `∞` is 
 large parameter escapes any compact set — which is again `exists_param_radius_no_zero` read with the
 roles of the parameter and the point exchanged — and the limit must then be carried by the fiber of
 `∞`, where `nevLeaf_infinity_unique` (link 177) applies.
+
+### Link 180 — `ClassicalNevanlinnaExtremalFamily` is constructed
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/LeafContinuityInfty.lean`
+- `exists_param_bound_no_zero` — a fiber point of `t` in a compact set where `B` does not vanish
+  forces `|t| = |D(x)|/|B(x)|`, bounded there; so large parameters have no fiber point on such a set.
+  Elementary: a min of `|B|` and a max of `|D|` on the compact.
+- **`tendsto_nevLeaf_cocompact`**, **`continuous_nevLeaf`** — the leaf tends to the leaf at infinity
+  as the parameter escapes every compact set, and hence **the leaf map is weakly continuous on
+  `OnePoint ℝ`** (`OnePoint.continuous_iff`).
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevExtremalFamily.lean`
+
+> **`nevExtremalFamily`** — a term of `GaloisForLFunctions.HTGeometry.ClassicalNevanlinnaExtremalFamily s`,
+> for every positive definite normalised moment sequence with bounded kernel at a point.
+
+with `exists_classicalNevanlinnaExtremalFamily` the existence form and `nevExtremalFamily_atoms`
+recording the geometric content the structure does not itself carry: **each leaf's atom at a fiber
+point is `λ(ξ) = christoffelLimit s ξ`.**
+
+Axiom-clean (`[propext, Classical.choice, Quot.sound]`), zero placeholders, registered; the structure
+itself compiled first try.
+
+**The card's target is met.** Every field is constructed from the moment sequence — matrix from the
+orthogonal polynomials, continuity of its denominator row from entirety of the limiting entries,
+leaves from quasi-orthogonal quadrature, carriers from the denominator fibers, moments from quadrature
+exactness, weak continuity from tightness plus uniqueness. Nothing is hypothesised beyond
+indeterminacy itself (`PositiveMomentForm s`, `BoundedKernel s 0`, `s 0 = 1`).
+
+Build note worth keeping: `push Not` (and `push_neg`, now deprecated in its favour) sent the
+elaborator into a multi-minute non-terminating state on a two-line goal about `¬(a ≤ x ∧ x ≤ b)`. An
+explicit `rcases lt_or_ge … ` split compiles instantly. This is the first tactic on this card to fail
+by *cost* rather than by error.
+
+**Opens next:** the card can move from `needs-audit` to `3-formalized` once the umbrella build is
+green. Beyond it, the natural continuations are the two the interface already anticipates —
+`toBoundaryFamily` now has a genuine inhabitant, so the projective-label recovery
+(`map_projectiveLabel_leaf`) and the barycenter/simplex consequences in
+`NevanlinnaBoundaryKernel` apply to a *constructed* family rather than a hypothetical one.

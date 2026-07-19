@@ -90,16 +90,15 @@ theorem tendsto_nevLeaf_cocompact (h : PositiveMomentForm s) (h0b : BoundedKerne
     have hbig : ∀ᶠ k in atTop, M < |ns (ms k)| := by
       filter_upwards [hns' hIcc] with k hk
       have hk' : ns (ms k) ∉ Set.Icc (-M) M := hk
-      rw [Set.mem_Icc] at hk'
-      push Not at hk'
       rcases lt_or_ge (ns (ms k)) (-M) with hlt | hge
       · rw [lt_abs]
         right
         linarith
-      · have hgt := hk' hge
-        rw [lt_abs]
-        left
-        linarith
+      · rcases lt_or_ge M (ns (ms k)) with hgt | hle
+        · rw [lt_abs]
+          left
+          linarith
+        · exact absurd (Set.mem_Icc.mpr ⟨hge, hle⟩) hk'
     filter_upwards [hbig] with k hk
     exact hall _ hk
   have hcarν' : (ν : Measure ℝ)
