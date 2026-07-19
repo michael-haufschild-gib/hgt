@@ -1,9 +1,9 @@
 # Involutive scattering optical master constraint
 
 - **ID:** `involutive-scattering-optical-master-constraint`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** exact quantum-field-theory value relation / hypothesis discharge
-- **Scientific status:** source-derived and source-formalized; no RH claim
+- **Scientific status:** `[FORMALIZED UNCONDITIONALLY] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 - **Usefulness gate:** replaces a quadratic master-constraint operator by an explicit linear
   scattering complement in both general HTGeometry and the concrete logarithmic Sonin model
 
@@ -63,6 +63,8 @@ written directly as `C = U - 1`.  A primary modern QFT source is:
 
 ## Verification boundary
 
-[SOURCE FORMALIZED, NOT CHECKED] No Lean invocation, build, linter, axiom check, numerical script,
-or other computation was run.  Promotion to Stage 3 requires only later targeted checks of the
-two touched modules; a full build is unnecessary.
+- isolated source check of `FiniteConstraintGroupAverage.lean`: passed (three pre-existing style
+  warnings only);
+- isolated source check of `SoninLogCoordinateScattering.lean`: passed with no diagnostics;
+- targeted module builds: pending the final audit batch;
+- numerical scripts: none.

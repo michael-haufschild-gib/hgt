@@ -465,7 +465,9 @@ size `M-1`; the lowering skeleton pays the charge `B_T`.  For the full top space
 
 `[LEAN-PROVED]` The compiled determinant connector now proves directly, for the literal balanced
 graph partition, that `(log Z)''(1)=-B_T+5k/4=5k/68>0`; this is no longer inferred only from the
-formal Fano proxy.  The remaining Lean gap is exactly the coherent-collision persistence step.
+formal Fano proxy.  The scalar coherent-collision jets for the Gram entry and its first two scale
+derivatives are also Lean-proved through exact order ten.  The remaining Lean gap is exactly
+finite unisolvent recombination, determinant assembly, and strict-curvature persistence.
 
 The full-top space is a collision limit of spans of distinct coherent vectors.  An explicit
 unisolvent-node construction perturbs nodes `epsilon u_i` by transverse terms

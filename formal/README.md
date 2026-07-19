@@ -9,7 +9,7 @@ This Lean project has six owned theorem areas:
 | Hurwitz | `GaloisForLFunctions.Hurwitz` | `hurwitz_n2_unconditional` |
 | u0_pui | `GaloisForLFunctions.U0` | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap`, `Bottcher.q62_phiMero_linGap`, `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`, `Bottcher.q62_phiMero_mixed_far_roots`, `Bottcher.q62_phiMero_mixed_far_roots_swapped` |
-| Hilbert metrics | `GaloisForLFunctions.HilbertMetric` | finite graded Pluecker partitions, Gaussian centroid gauge, corrected-determinant scale laws, self-commutator Fano defects, and transverse-degree graph laws with exact symmetric-power charge and positive limiting log curvature |
+| Hilbert metrics | `GaloisForLFunctions.HilbertMetric` | finite graded Pluecker partitions, Gaussian centroid gauge, corrected-determinant scale laws, self-commutator Fano defects, and transverse-degree graph laws with exact symmetric-power charge, positive limiting log curvature, and order-ten coherent-collision jets |
 
 `GaloisForLFunctions.MainTheorems` imports all six areas.  The root module
 `GaloisForLFunctions` imports only `MainTheorems`, so the default Lake build

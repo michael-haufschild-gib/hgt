@@ -177,9 +177,10 @@ location-blind and do not qualify.
    character implication are all axiom-clean. Constructing the full automorphism group remains
    open.
 5. `QuotientCharacterAnnihilator` proves that algebraic quotient characters recover `H` exactly.
-6. The actual elliptic-gamma, theta-membership, and irrational-period
-   hypertranscendence/matroid theorem are proved on paper in the cited stage-2 card.  Their Lean
-   formalization remains open.
+6. The genuine meromorphic quotient now has its exact rank-three DA/HT spectrum and full pointed
+   period-coset matroid formalized over the paired elliptic compositum.  Theta-quotient membership
+   in the intended DA sector `B`, base transport, and hypertranscendence of the source elliptic
+   gamma function itself remain open.
 
 ## Gates
 
@@ -193,6 +194,9 @@ location-blind and do not qualify.
   unconditionally in Lean, together with inverse/reflection and arbitrary-family value interfaces.
 - [x] Independent-period elliptic-gamma hypertranscendence and exact defect matroid proved on paper.
 - [ ] Independent-period elliptic-gamma hypertranscendence formalized unconditionally in Lean.
+- [x] Exact DA/HT spectrum and full pointed period-coset matroid formalized unconditionally for the
+  genuine multiplicative quotient over the paired elliptic compositum; transport to `B` remains
+  open.
 - [x] Nonzero DA cohomology class proved on paper; abstract no-internal-primitive criterion
   Lean-formalized.
 - [ ] Connecting identity `partial([G])=[a]` formalized for the multiplicative coefficient quotient.

@@ -6,7 +6,8 @@
 - **Scientific status:** `[CORPUS-NEW PAPER THEOREM] [CONJECTURE] [EXTERNAL NOVELTY UNVERIFIED]`
 - **Lean target:**
   `formal/GaloisForLFunctions/RHTower/XiApertureCubicExteriorMatching.lean` and
-  `formal/GaloisForLFunctions/RHTower/VonMangoldtGammaConormalEulerBoundary.lean`
+  `formal/GaloisForLFunctions/RHTower/VonMangoldtGammaConormalEulerBoundary.lean` and
+  `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusValuationContraction.lean`
 - **Source inputs:**
   `XiMobiusContinuousApertureDyadicProjection.lean`,
   `XiMobiusDyadicCubicReflectionApertureNoGo.lean`,
@@ -309,6 +310,29 @@ The gap factors exactly as
 8*(1+q^4)-(1+q)^4=(1-q)^2*(7*q^2+10*q+7).             (13)
 ```
 
+Factoring `1-C^4=(1-C)(1+C)(1+C^2)` gives the stronger exact tangency law
+
+```text
+1-C_(x,p)=(1-q_(x,p))^2*G_(x,p),                       (13a)
+
+G_(x,p)=
+ (7*q^2+10*q+7)/[8*(1+q^4)*(1+C)*(1+C^2)],
+G_(0,p)=3/8.                                            (13b)
+```
+
+This is the first direct source-side explanation for the order-three obstruction found elsewhere
+in the aperture corpus.  The unsown continuous Möbius feature already has one factor `1-q`, so
+
+```text
+B_x(p,e)-xiMobiusPrimeSchurContinuousForwardDifference(x,p,e)
+ = -G_(x,p) * [p^(-1)/(1+p^(-1))] * (1-p^(-x))^3*p^(-x*e). (13c)
+```
+
+Thus Gamma sewing is invisible in the linear aperture tangent and first enters the actual source
+at exactly cubic order.  The prior cubic determinant was not an accidental truncation: it is the
+first grade at which the archimedean sewing can modify the Möbius valuation ray.  It still cannot
+replace the full Rees germ.
+
 Hence `0<C_(x,p)<1` for every `x>0`, while `C_(0,p)=1`.  The contraction is therefore genuinely
 height/aperture localized: its gap is strict on every open fibre and closes only at the physical
 boundary.  It is also bounded away from zero and tends to `2^(-3/4)` as `p->infinity`; consequently
@@ -316,8 +340,7 @@ it is noncompact and loses no prime coordinate.  At `x=1`, `R_(x,p)` is literall
 unbounded `xiMobiusPrimeSchurValuationRecovery`.  Formula `(12)` proves that Gamma sewing cancels
 that unboundedness without collapsing the source.
 
-This is the requested source-derived infinite contraction at multiplier level.  It avoids both
-previous category errors:
+The multiplier avoids both previous category errors:
 
 1. **HT graph saturation:** every multiplier is nonzero and uniformly separated from zero, while
    the existing valuation Vandermonde minors remain nonsingular.  The complete prime directions
@@ -326,10 +349,44 @@ previous category errors:
    Gamma Schur elimination is the depth shift, not with the impossible independently resolved
    diagonal/scalar-conductor block.
 
-The permanent Lean target is
-`GammaSewnMobiusValuationContraction.lean`: it defines the multiplier and infinite stream map,
-proves `(12)`, `(13)`, positivity, strict contractivity, the lossless zero-aperture boundary, and
-injectivity.
+But its uniform lower bound exposes another exact no-go.  In fact `C_(x,p)>1/2`, so for every
+nonnegative prime-energy profile `a_p`,
+
+```text
+sum_p C_(x,p)^2*a_p < infinity  iff  sum_p a_p < infinity.        (14)
+```
+
+Thus the sewn multiplier cannot repair the divergent naive continuous frame that moves the prime
+weight itself from `p^(-1)` to `p^(-x)`.  Treating it as a free Hilbertization was false.  The
+positive survivor is forced: keep the already source-valid critical Möbius damping `p^(-1)`, move
+only the valuation ray by the true aperture, and sew Gamma onto that frame.
+
+Put `q_p=p^(-1)` and `r_(x,p)=p^(-x)`.  The resulting source feature is
+
+```text
+B_x(p,e)=C_(x,p) * [q_p/(1+q_p)] * (1-r_(x,p))*r_(x,p)^e.        (15)
+```
+
+Its completed cross-prime metric is
+
+```text
+K_x(p,r)=C_(x,p)C_(x,r)
+  * [q_p/(1+q_p)] [q_r/(1+q_r)]
+  * (1-r_(x,p))(1-r_(x,r))/(1-r_(x,p)r_(x,r)).                  (16)
+```
+
+Equation `(16)` is a genuine infinite Hilbert object, not only a multiplier: it is exactly the
+Gram over all valuation depths, its diagonal is summable over all primes for every `x>0`, and its
+first `N` depth coordinates separate every injective `N`-prime packet by a nonzero weighted
+Vandermonde determinant.  It therefore retains unbounded finite prime rank while respecting the
+existing critical source domain.
+
+The permanent Lean target `GammaSewnMobiusValuationContraction.lean` defines the multiplier,
+infinite stream map, feature `(15)`, and kernel `(16)`; it proves the fourth-power and gap laws,
+the exact quadratic tangency/cubic source correction `(13a)`--`(13c)`, strict contractivity, the
+uniform lower bound and no-free-Hilbertization equivalence `(14)`, the complete Gram identity,
+all-prime diagonal summability, finite prime-rank faithfulness, the lossless zero-aperture boundary,
+and injectivity.
 
 ## `[RETIRED]` Cubic-only and one-negative-line completions
 
@@ -351,45 +408,50 @@ three-node inertia `(2+,1-)` to a one-negative-line all-rank model was invalid. 
 The positive survivor of the cubic calculation is only this: `(5)` is the first exterior tangent
 of the full source colligation and fixes its order-three normalization.  It is not the colligation.
 
-## `[CONJECTURE]` Gamma-sewn Rees--passive source convergence
+## `[CONJECTURE]` Gamma-sewn Rees--Stokes passive source convergence
 
 The bold frontier conjecture now uses an explicit object rather than an unspecified boundary
 vector.
 
-Let `T_x` be the diagonal prime--valuation operator with multiplier `C_(x,p)` from `(11)`, acting at
-every depth of prime `p`.  Let `S` be the coherent valuation shift already identified with Gamma
-Schur elimination.  Form finite prime/depth Galerkin systems from the actual inverse-tilted
-prime source, the fixed Gamma connection, and the defect operator
-
-```text
-D_x = (I-T_x^* T_x)^(1/2),                              (14)
-```
-
-with transition frequencies `(e+1)log p`.  No Xi zero, multiplicity, or target eigenvector enters
-the definition.
+Let `B_x` be the fixed-critical source embedding `(15)` with Gram `(16)`, and let `S` be the
+coherent valuation shift already identified with Gamma Schur elimination.  The independent
+research logs impose an additional hostile constraint: direct sums of positive finite-aperture
+norms retain the persistent singleton/father cost, and a sharp norm-one contraction supplies no
+aperture power.  Therefore form the signed Stokes current from aperture differences `B_y-B_x`
+before taking any Gram square.  Only after its source coefficients have been identified should one
+form finite prime/depth KMS completions, using the fixed Gamma connection, `S`, and transition
+frequencies `(e+1)log p`.  No Xi zero, multiplicity, or target eigenvector enters the definition.
 
 **Conjecture (source convergence).** There is a source-prescribed cofinal aperture schedule
 `x_N>0`, tending to the lossless boundary slowly enough that the full aperture Rees germ is
-retained, for which the canonical finite KMS/Wightman systems generated by
+retained, together with a canonical inverse-tilted Stokes functional on its aperture edges, for
+which the signed current has the exact safe-half-plane prime-power coefficients and the resulting
+finite KMS/Wightman completions generated by
 
 ```text
-(inverse-tilted prime coefficients, Gamma connection, D_(x_N), S)
+(inverse-tilted prime coefficients, Gamma connection,
+ signed aperture differences of B_(x_N), S)
 ```
 
 have passive responses converging pointwise at every regular point of the upper half-strip to
 `continuedPrimeArchSourceRelativeTrace`.
 
-This conjecture has three nonoptional strengthening clauses.
+This conjecture has four nonoptional strengthening clauses.
 
 1. **Full Rees faithfulness.** Every finite aperture jet order is retained before the prime limit.
    The order-`j` grade carries the new prime-log profile forced by differentiating the exact disk
    nodes; the resulting finite profile matrices must have unbounded exact rank.  Replacing the
-   Rees germ by `kappa_M` fails this clause.
-2. **Corona compatibility.** The cofinal limit is taken in the Gamma finite-blind/projective
+   Rees germ by `kappa_M` fails this clause.  The fixed-aperture prime-rank part is already proved
+   for `(15)`; the aperture-jet rank is the remaining clause.
+2. **Pre-Gram Stokes law.** Aperture signs are combined before positivity.  A direct sum of the
+   pointwise kernels `(16)` is explicitly disallowed by the prior aperture-cost no-go.
+3. **Corona compatibility.** The cofinal limit is taken in the Gamma finite-blind/projective
    boundary topology, not by pairing with a fixed Hilbert vector.  Its graph annihilator is the
    cyclic Gamma source constraint and its translates, so the construction neither saturates nor
    invents a one-dimensional conormal.
-3. **Value identity.** On the safe half-plane the finite responses must agree with the actual
+4. **Value identity.** On the safe half-plane the signed current, before KMS squaring, must agree
+   coefficientwise with the actual inverse-tilted prime source; after the fixed Gamma correction
+   the finite responses must agree with the actual
    inverse-tilted prime--Gamma source up to a remainder proved to vanish locally uniformly.  This
    is the producer needed by `riemannHypothesis_of_finiteKMSWightmanResponse_tendsto`; without this
    exact value convergence the construction is only source geometry.
@@ -400,8 +462,9 @@ source-defined; the open assertion is the local-uniform source-value convergence
 
 ## Cheapest decisive falsifiers
 
-1. **Safe-half-plane coefficient test.** Expand the finite response from `(14)` where both the
-   inverse-tilted source and the Euler series converge absolutely.  If its coefficient at any
+1. **Safe-half-plane coefficient test.** Expand the signed aperture Stokes current built from
+   `(15)` where both the inverse-tilted source and the Euler series converge absolutely.  If its
+   pre-Gram coefficient at any
    prime power differs from the exact filtered von Mangoldt coefficient after the displayed
    quadrature/Gamma correction, the conjecture is false.  This is the first test; no boundary or
    Xi-zero argument is allowed before it passes.
@@ -411,8 +474,9 @@ source-defined; the open assertion is the local-uniform source-value convergence
 3. **Cofinal remainder test.** The safe-half-plane remainder must admit a locally uniform majorant
    compatible with independent prime, depth, and aperture limits.  Convergence only along a fitted
    diagonal schedule without path independence is insufficient.
-4. **Noncompactness test.** `T_x` must not become compact after the Gamma sewing.  Compactness would
-   collide with the existing critical Möbius mass-escape theorem.
+4. **Domain test.** Every source vector used in the response must remain in the fixed-critical
+   Hilbert carrier.  Invoking Gamma sewing to admit the divergent moving-prime frame contradicts
+   `(14)` and kills the construction.
 5. **Quartet sensitivity.** A centered FE--Schwarz rational-quartet surgery must change the
    boundary response before the value limit.  Invariance means the construction is divisor-blind.
 
@@ -435,10 +499,15 @@ and its source-value limit.
 - [x] one-negative-line all-rank extrapolation retired
 - [x] cubic-only source collapse identified; full aperture Rees germ required
 - [x] Gamma-sewn multiplier constructed and fourth-power law proved on paper
-- [x] source multiplier shown strict, noncompact, and coordinate-faithful on paper
+- [x] exact quadratic multiplier tangency and cubic source-correction law extracted
+- [x] no-free-Hilbertization theorem `(14)` extracted from its uniform lower bound
+- [x] actual all-prime complete-valuation metric `(16)` constructed on paper
+- [x] complete Gram, prime summability, and fixed-aperture all-rank laws formalized in Lean source
 - [ ] complete the narrow Lean verification of `GammaSewnMobiusValuationContraction.lean`
 - [ ] prove finite Rees-grade prime-profile determinants have unbounded exact rank
-- [ ] derive the finite KMS intensity formula from `D_x` and the inverse-tilted coefficients
+- [ ] derive the pre-Gram aperture Stokes coefficient formula from `(15)` and the inverse-tilted
+      coefficients
+- [ ] construct the finite KMS completion only after the signed coefficient identity is known
 - [ ] pass the safe-half-plane coefficient test prime-power by prime-power
 - [ ] prove locally uniform, path-independent cofinal response convergence
 - [ ] discharge `riemannHypothesis_of_finiteKMSWightmanResponse_tendsto`

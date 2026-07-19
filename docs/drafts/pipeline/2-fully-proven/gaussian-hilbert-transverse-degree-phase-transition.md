@@ -405,10 +405,12 @@ The exact theorem should be formalised in four connected layers:
 its exact density ratio, the normalized full-top phase formula, the exact degree-five negative
 crossing, and the literal positive second derivative of the limiting log determinant compile in
 `GaloisForLFunctions.HilbertMetric.TransverseDegreePhase` and
-`GaloisForLFunctions.HilbertMetric.TransverseDegreeCurvature`; their exact declaration surface
-is recorded in `3-formalized/gaussian-hilbert-transverse-channel-square-law.md`.  Only the
-coherent-collision connector in layer 4 remains paper-only, so the full Gaussian counterexample
-card remains Stage 2.
+`GaloisForLFunctions.HilbertMetric.TransverseDegreeCurvature`.  The three scalar value/derivative
+jets below also compile in `GaloisForLFunctions.HilbertMetric.CoherentCollisionJet`; their exact
+declaration surface is recorded in
+`3-formalized/gaussian-hilbert-transverse-channel-square-law.md`.  Finite unisolvent matrix
+assembly and curvature persistence in layer 4 remain paper-only, so the full Gaussian
+counterexample card remains Stage 2.
 
 The first exact Lean lemma in layer 4 is now isolated.  For fixed real `a,b`, put
 `y_epsilon=epsilon^2 a+epsilon^10 b`.  For `q=0,1,2`, one needs the three simultaneous limits
@@ -422,10 +424,11 @@ The first exact Lean lemma in layer 4 is now isolated.  For fixed real `a,b`, pu
 \]
 
 These are respectively the value and first two scale derivatives of one coherent Gram entry.
-After finite unisolvent recombination, (CJ) gives convergence of the Gram matrix and its first
-two scale derivatives; determinant continuity then gives the required curvature persistence.
-Thus `[OPEN CORE]` is the unconditional formal proof of (CJ), followed by its finite matrix
-assembly—not an assumed collision certificate.
+`[LEAN-PROVED]` All three limits in (CJ) now compile unconditionally.  After finite unisolvent
+recombination, (CJ) gives convergence of the Gram matrix and its first two scale derivatives;
+determinant continuity then gives the required curvature persistence.  Thus `[OPEN CORE]` is now
+the finite unisolvent recombination and determinant assembly—not an assumed collision
+certificate and not the scalar asymptotics.
 
 ## Log
 
@@ -442,3 +445,6 @@ assembly—not an assumed collision certificate.
 - 2026-07-19 -- formalized the exact identity `(log Z)''(1)=-B+5k/4` for the literal balanced
   graph determinant and the full-top value `5k/68>0`; persistence under coherent collision is
   now the sole formal gap to the distinct-point Gaussian counterexample.
+- 2026-07-19 -- formalized the exact order-ten coherent-collision jets for the Gram entry and
+  its first two scale derivatives; only finite unisolvent matrix assembly and strict-curvature
+  persistence remain in the collision layer.

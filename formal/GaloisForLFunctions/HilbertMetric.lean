@@ -5,6 +5,7 @@ import GaloisForLFunctions.HilbertMetric.FanoCommutator
 import GaloisForLFunctions.HilbertMetric.QuadraticGraphCompletion
 import GaloisForLFunctions.HilbertMetric.TransverseDegreePhase
 import GaloisForLFunctions.HilbertMetric.TransverseDegreeCurvature
+import GaloisForLFunctions.HilbertMetric.CoherentCollisionJet
 
 /-!
 # Hilbert-metric theorem area

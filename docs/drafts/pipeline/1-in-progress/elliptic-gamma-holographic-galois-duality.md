@@ -202,8 +202,9 @@ location-blind local multiplicity laws do not suffice.
   formalized.
 - [ ] Same-coset quotient `R_(h+u)/R_h in B^*` formalized on the actual elliptic gamma function.
 - [x] Arbitrary distinct-coset differential independence and the full pointed period-coset matroid
-  formalized on the actual quotient family over the paired elliptic compositum.  Transport to the
-  intended DA meromorphic sector `B` remains open.
+  formalized on the actual quotient family over the paired elliptic compositum, together with the
+  exact singleton law `Q_h` DA iff `h in Z + Z*tau + Z*sigma` and its complementary
+  hypertranscendence law.  Transport to the intended DA meromorphic sector `B` remains open.
 - [ ] Every quotient character extended to an automorphism of the infinite differential field.
 - [x] Character separation and quotient-annihilator equality formalized unconditionally for the
   canonical rational-circle character module (`QuotientCharacterAnnihilator`); composition into

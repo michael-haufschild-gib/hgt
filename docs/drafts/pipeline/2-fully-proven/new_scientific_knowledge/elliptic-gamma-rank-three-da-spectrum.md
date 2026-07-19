@@ -391,6 +391,19 @@ translation-fixed units has character-valued scalars.  The concrete nonvanishing
 hypotheses are therefore discharged; constructing all required automorphisms remains a separate
 open Galois problem.
 
+The singleton multiplicative spectrum is now explicit rather than only recoverable indirectly
+from the logarithmic-derivative matroid.  `SourceLogarithmicBoundary.lean` proves the general
+equivalence
+`DifferentialAlgebraicOver K (x' / x) <-> DifferentialAlgebraicOver K x` in characteristic zero.
+Specializing it through the exact identity `(Q_h)' / Q_h = D_h` gives
+`differentialAlgebraicOver_ellipticGammaExternalQuotientMero_iff_resonant`: over the concrete
+paired elliptic compositum `K`, the genuine quotient `Gamma(z+h)/Gamma(z)` is DA exactly when
+`h = a + b*tau + n*sigma` for integers `a,b,n`.  Its negation is packaged as
+`hypertranscendentalOver_ellipticGammaExternalQuotientMero_iff_nonresonant`.  Thus the exact
+rank-three spectrum is exposed simultaneously through additive values, multiplicative values,
+and their logarithmic-derivative reflection.  The direct source check, exact consumer-module
+build, and axiom audit all pass at `[propext, Classical.choice, Quot.sound]`.
+
 The remaining headline gap is now singular and explicit: transport the exact additive and
 multiplicative pointed partition matroids from `K` to `C(z)` by formalizing that every element of
 the concrete elliptic compositum is differentially algebraic over the rational coordinate field.

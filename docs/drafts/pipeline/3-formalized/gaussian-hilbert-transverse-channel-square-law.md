@@ -5,7 +5,8 @@
 - **Status:** `[LEAN-PROVED] [NOVELTY UNVERIFIED]`
 - **Type:** UNIVERSAL HILBERT-METRIC PHASE LAW
 - **Lean:** `GaloisForLFunctions.HilbertMetric.TransverseDegreePhase`,
-  `GaloisForLFunctions.HilbertMetric.TransverseDegreeCurvature`
+  `GaloisForLFunctions.HilbertMetric.TransverseDegreeCurvature`,
+  `GaloisForLFunctions.HilbertMetric.CoherentCollisionJet`
 - **Paper parent:** `2-fully-proven/gaussian-hilbert-transverse-degree-phase-transition.md`
 
 ## Exact formal theorem
@@ -83,6 +84,23 @@ For the full degree-five top in base dimension sixteen, the formal count
 Here `Z` is definitionally tied to `transverseDegreePartition`, whose graph determinant was
 already proved in (GD); it is not a separately assumed probability model.
 
+The scalar analytic atom needed to approach this graph determinant by coherent Gram matrices is
+also formalized.  For fixed real `a,b`, put `y_epsilon=epsilon^2 a+epsilon^10 b`.  For
+`q=0,1,2`, Lean proves
+
+\[
+ y_\varepsilon^q e^{y_\varepsilon}
+ =\sum_{\ell=q}^{5}
+   \frac{\varepsilon^{2\ell}a^\ell}{(\ell-q)!}
+  +\mathbf 1_{q\le1}\varepsilon^{10}b
+  +o(\varepsilon^{10}).                                \tag{CJ}
+\]
+
+These are exactly the entrywise value, first-scale-derivative, and
+second-scale-derivative jets at the degree-five collision.  The little-oh conclusion is proved
+from the exponential Taylor remainder and exact polynomial cancellation; it is not supplied as
+a convergence hypothesis.
+
 ## Lean declarations
 
 - `higherDegreeGraphGram_eq`
@@ -103,6 +121,10 @@ already proved in (GD); it is not a separately assumed probability model.
 - `fifthDegreeBalancedPartition_log_secondDerivative_one`
 - `fullTop_fifthDegreeBalanced_logCurvature`
 - `fullTop_fifthDegreeBalanced_logCurvature_pos`
+- `coherentCollisionExponent`
+- `coherentCollision_valueJet`
+- `coherentCollision_firstJet`
+- `coherentCollision_secondJet`
 
 The direct leaf check and `#print axioms` audit pass.  Every declaration above depends only on
 Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; there is no project axiom,
@@ -117,10 +139,10 @@ Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; there is no pro
 - The paper parent proves how (CS) arises from annihilation-invariant symmetric Fock subspaces,
   derives the rank-budget law, and transfers the full-top negative crossing through a coherent
   collision to distinct Gaussian point configurations.
-- The exact limiting determinant curvature (DC)--(PC) is now `[LEAN-PROVED]`, not inferred only
-  from the Fano sign.  The coherent-collision convergence theorem is not yet Lean-formalized.
-  Therefore the counterexample for an actual family of distinct Gaussian points remains
-  `[PAPER-PROVED]`.
+- The exact limiting determinant curvature (DC)--(PC) and all three scalar coherent-collision
+  jets (CJ) are now `[LEAN-PROVED]`.  Finite unisolvent recombination, determinant assembly, and
+  strict-curvature persistence are not yet Lean-formalized.  Therefore the counterexample for
+  an actual family of distinct Gaussian points remains `[PAPER-PROVED]`.
 - Exact internal and external searches have not located (CS) under the Fock lowering-charge
   interpretation, its rank-budget consequence, or the Gaussian collision application.  This
   is not a proof of priority, so the novelty label remains unverified pending expert review.
@@ -132,3 +154,5 @@ Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; there is no pro
   declarations.
 - 2026-07-19 -- direct check passed for the literal determinant-curvature connector and its
   exact positive full-top specialization.
+- 2026-07-19 -- direct check passed for all three unconditional order-ten coherent-collision
+  jets; finite matrix assembly remains open.
