@@ -3,8 +3,8 @@
 - **ID:** `xi-physical-endpoint-valuation-correction-odd-shuttle`
 - **Stage:** `2-fully-proven`
 - **Type:** source-derived object / exact no-go / positive survivor / frontier bridge
-- **Scientific status:** `[PAPER-PROVED] [INTERNAL-NONCOLLISION] [NOVELTY UNVERIFIED]`
-  `[LEAN-PROVED SOURCE CORE] [NOT RH]`
+- **Scientific status:** `[SOURCE CORE PAPER/LEAN PROVED] [FRONTIER CONJECTURAL]`
+  `[INTERNAL-NONCOLLISION] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Sources:** `XiAperturePoissonValuationClockShuttle.lean`,
   `XiAperturePhysicalEndpointResponseRenormalization.lean`,
   `XiCompletedApertureReflectionKernel.lean`, and
@@ -157,6 +157,38 @@ a bridge, not a sign proof.
 
 ## 5. Actual frontier conjecture
 
+### `[PAPER-PROVED NECESSARY GATE] [ANTI-THEATRE FALSIFIER]` Continuum-mode obstruction
+
+For the physical active packet put `u_p=log(p/M)` and
+
+```text
+J=(-A,c),
+I_u=(-u,c-u] intersect (0,A),
+mu_M=sum_(p in P_M) [log(p)/p] delta_(u_p).
+```
+
+The prime number theorem gives `mu_M -> 1_J du` weakly.  The corrected completed kernel is
+continuous and bounded on the compact ratio interval `J-J`, and the clipped-aperture distance is
+bounded and continuous away from a null set.  Therefore `(PVC11a)` has the forced continuum limit
+
+```text
+E_(P_M)^end -> I_end(A,c),
+
+I_end(A,c)
+ =integral_(J x J) Re K_end^sym(u-v) d_A(I_u,I_v)^2 du dv.   (PVC11b)
+```
+
+Consequently `(PVC12)` is impossible unless
+
+```text
+I_end(A,c)=0                                                (PVC11c)
+```
+
+for every physical aperture pair required by the consumer.  This is now the cheapest analytic
+falsifier.  It must be proved from the completed prime--Gamma source before the finite coefficient
+comparison.  A nonzero continuum moment retires the corrected ratio-kernel route; diagonal
+balancing, HT graph closure, and a different finite norm cannot repair it.
+
 ### `[CONJECTURE] [SOURCE IDENTITY, NOT AN RH REWORDING]` Physical balanced-response identification
 
 For every finite physical prime packet `P`, sample `(PVC7)` at the actual ratio nodes
@@ -171,32 +203,48 @@ source-defined off-diagonal prime--Gamma response.
 
 ### `[CONJECTURE] [RH-PRODUCING ESTIMATE]` Cofinal signed Dirichlet upper bound
 
-Let `C_P` be the unique balanced completed coupling after the orientation and endpoint correction
-above, and let `phi_p` be the actual centered physical aperture vector.  Symmetry and the forced
-row marginals `m_p=log(p)/(p+1)` give the exact pointed decomposition
+Let `C_P^end` be the unique balanced completed coupling after the orientation and endpoint
+correction above, and let `phi_p` be the actual centered physical aperture vector.  Symmetry and
+the exact physical row marginals `m_p^end=log(p)/p` give the pointed decomposition
 
 ```text
-Q_P^ref
- =sum_p m_p ||phi_p||^2 - (1/2) E_P^ref,
+Q_P^end
+ =sum_p [log(p)/p] ||phi_p||^2 - (1/2) E_P^end,
 
-E_P^ref
- =sum_(p,q) C_P^ref(p,q) ||phi_p-phi_q||^2.             (PVC11)
+E_P^end
+ =sum_(p,q) C_P^end(p,q) ||phi_p-phi_q||^2.             (PVC11)
 ```
 
 The distance term alone is forbidden: it loses the common mode identified by HTGeometry.  The
-marginal term in `(PVC11)` is the required anchor.
+marginal term in `(PVC11)` is the required anchor.  Before endpoint correction, the parallel
+refinement identity has marginal `log(p)/(p+1)`; it is a comparison theorem, not the coupling in
+`(PVC11)`.  The trace-class difference between the two anchors is the fused correction `(PVC3)`.
+
+There is nevertheless no target-chosen diagonal hidden inside the open energy.  Since the true
+aperture distance vanishes at `p=q`, Lean forces the exact source-only reduction
+
+```text
+E_P^end
+ =sum_(p,q in P) [log(p)/p][log(q)/q]
+    Re K_end^sym(log(p/q)) d_A(I_p,I_q)^2.              (PVC11a)
+```
+
+Thus every diagonal completion with the same off-diagonal corrected kernel gives the same
+Dirichlet energy.  The conjectured estimate below is entirely an off-diagonal prime-ratio/aperture
+comparison; forcing the marginal cannot make it true.
 
 For the actual cofinal physical packets `P_M`, conjecture
 
 ```text
-E_(P_M)^ref <= C_(A,rho) log(M)^B / M.                  (PVC12)
+E_(P_M)^end <= C_(A,c) log(M)^B / M.                    (PVC12)
 ```
 
 The coupling in `(PVC12)` is indefinite, so this is not positivity or a generic Dirichlet-form
-bound.  Subject to the coefficient identification, `(PVC12)` gives the missing reverse response
-inequality in `(HGS29c)` because the anchored marginal term already agrees with the physical
-baseline up to `(PVC5)`.  This is the exact new analytic estimate to attack; unlike `(PVC10)`, it
-is not an RH-equivalent sign copied into new notation.
+bound.  By `(PVC11a)` it is an explicit source-kernel estimate which does not use the forced
+diagonal.  Subject to the coefficient identification, `(PVC12)` makes `Q_P^end` saturate its exact
+physical baseline from below and hence gives the missing reverse response inequality in
+`(HGS29c)`.  This is the exact new analytic estimate to attack; unlike `(PVC10)`, it is not merely
+the continued-source sign copied into new notation.
 
 ### `[CONJECTURE] [RH-FACING PRODUCER]` Height-fibered odd-sector conormal domination
 
@@ -227,8 +275,29 @@ the target matrix after the fact.
 - The possible new scientific content is the **distinguished source identification and estimate**:
   the actual joined response must produce the forced correction and satisfy `(PVC12)` before
   target compression.
+- `(PVC11a)` proves that the estimate cannot be manufactured by the diagonal balancing step; its
+  whole content lies in the independently defined corrected prime-ratio kernel.
+- `(PVC11b)` proves that an exact continuum-mode cancellation `(PVC11c)` is necessary.  Until that
+  source integral vanishes, the ratio-kernel architecture has not passed the anti-theatre gate.
 - Do not claim RH progress until one of those source identifications is proved and the resulting
   inequality reaches `ContinuedPrimeArchPositiveFrequencyAbove`.
+
+## External novelty audit
+
+Exact-phrase and concept searches for the physical marginal `log(p)/p`, its trace-class
+renormalization to `log(p)/(p+1)`, the corrected prime-ratio coupling, and the cofinal signed
+Dirichlet energy found only adjacent parent theory:
+Montgomery-type pair correlation, prime Dirichlet-polynomial mean values, and Selberg/short-
+interval variance.  Those generic mechanisms are established literature and are not claimed as
+new.  The searches did not locate `(PVC1)`--`(PVC12)` as a package, but search noncollision is not
+an expert priority verdict.  Scientific status therefore remains `NOVELTY UNVERIFIED`.
+
+Relevant adjacent primary sources include Bui--Keating--Smith on short-interval variance and zero
+pair correlation ([paper](https://arxiv.org/abs/1506.03741)) and
+Carneiro--Chandee--Chirre--Milinovich on the equivalence framework involving Selberg variance,
+pair correlation, and logarithmic-derivative moments
+([paper](https://arxiv.org/abs/2108.09258)).  Neither source supplies the distinguished
+valuation correction, the forced completed coupling, or `(PVC12)`.
 
 ## Lean plan
 
@@ -236,6 +305,9 @@ the target matrix after the fact.
 coefficientwise reconstruction, the clocked fused remainder, absolute convergence on the full
 prime-by-valuation diagram, the corrected completed endpoint kernel, and `(PVC9)`--`(PVC10)`.
 `XiCompletedBalancedResponseDirichletDecomposition.lean` proves the generic pointed identity and
-its source-specific specialization `(PVC11)`.  Both direct leaves pass `lake env lean`.
+its source-specific specialization `(PVC11)`, together with the diagonal-free source reduction
+`(PVC11a)`.  Both direct leaves pass `lake env lean`.
 
-The two conjectures remain paper-level until their finite source coefficient comparison closes.
+The continuum cancellation `(PVC11c)`, the finite source identity, and `(PVC12)` remain
+conjectural.  They must be attacked in that order.  The Pontryagin/conormal proposal remains only
+a candidate mechanism for `(PVC12)`.

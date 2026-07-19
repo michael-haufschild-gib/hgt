@@ -51,6 +51,16 @@ theorem finiteAbscissaLSeriesToUpperEndAnalytic_coe
       finiteAbscissaLSeriesToUpperEndGerm f :=
   rfl
 
+/-- Dirichlet translation is carried faithfully to analytic upper-end translation. -/
+theorem finiteAbscissaLSeriesToUpperEndAnalytic_dirichletShift
+    (a : ℂ) (f : finiteAbscissaArithmeticSubalgebra) :
+    finiteAbscissaLSeriesToUpperEndAnalytic
+        (finiteAbscissaDirichletShift a f) =
+      upperEndTranslationAnalyticEquiv (Complex.I * a)
+        (finiteAbscissaLSeriesToUpperEndAnalytic f) := by
+  apply Subtype.ext
+  exact finiteAbscissaLSeriesToUpperEndGerm_dirichletShift a f
+
 /-- The analytic upper-end coordinate. -/
 noncomputable def upperEndCoordinateAnalytic : upperEndAnalyticSubring :=
   upperEndPolyToAnalytic Polynomial.X
@@ -81,6 +91,20 @@ theorem finiteAbscissaLSeriesToUpperEndMero_eq_algebraMap
       algebraMap upperEndAnalyticSubring upperEndMeroField
         (finiteAbscissaLSeriesToUpperEndAnalytic f) :=
   rfl
+
+/-- **Meromorphic Dirichlet-translation intertwiner.** Faithful finite-abscissa realization
+conjugates coefficient-side Dirichlet translation to the upper-end meromorphic translation
+automorphism. -/
+theorem finiteAbscissaLSeriesToUpperEndMero_dirichletShift
+    (a : ℂ) (f : finiteAbscissaArithmeticSubalgebra) :
+    finiteAbscissaLSeriesToUpperEndMero
+        (finiteAbscissaDirichletShift a f) =
+      upperEndTranslationMeroEquiv (Complex.I * a)
+        (finiteAbscissaLSeriesToUpperEndMero f) := by
+  rw [finiteAbscissaLSeriesToUpperEndMero_eq_algebraMap,
+    finiteAbscissaLSeriesToUpperEndMero_eq_algebraMap,
+    upperEndTranslationMeroEquiv_algebraMap,
+    finiteAbscissaLSeriesToUpperEndAnalytic_dirichletShift]
 
 /-- A coefficient stream rotated so that evaluation on `z = I*x` has the ordinary polynomial
 weight `x^k`. -/

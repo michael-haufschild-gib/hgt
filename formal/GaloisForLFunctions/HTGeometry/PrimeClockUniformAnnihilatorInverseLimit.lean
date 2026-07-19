@@ -454,7 +454,10 @@ theorem primeClockUnitTailSubspace_succ_le (n : Nat) :
   unfold primeClockUnitTailSubspace linearIndependentTailSpan
   apply Submodule.span_mono
   rintro q ⟨k, rfl⟩
-  exact ⟨k + 1, by simp [Nat.add_assoc]⟩
+  refine ⟨k + 1, ?_⟩
+  exact congrArg
+    (fun m : Nat => primeProfileClockClass
+      (primeProfileRotatedLogJet m primeClockUnitSource)) (by omega)
 
 /-- The successive invariant clock tails have zero common source sector. -/
 theorem primeClockUnitTailSubspace_iInf_eq_bot :

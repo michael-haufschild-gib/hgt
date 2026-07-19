@@ -222,6 +222,56 @@ theorem riemannHypothesis_of_xiCTaylorAnisotropicLogDerivSublinearUpper
         ((n + 1 : ℕ) : ℝ) at hnLower
   linarith
 
+/-- Under RH, every open-left-strip mesh fibre converges to an Xi-regular point.  A superaccurate
+finite Taylor schedule tracks the Xi logarithmic derivative on that moving fibre, so it inherits
+the sublinear upper bound. -/
+theorem xiCTaylorAnisotropicLogDerivSublinearUpper_of_riemannHypothesis
+    {N : ℕ → ℕ} (hN : XiCTaylorSuperaccurateSchedule N)
+    (hRH : RiemannHypothesis) :
+    XiCTaylorAnisotropicLogDerivSublinearUpper N := by
+  intro sigma hsigmaPos hsigmaHalf epsilon hepsilon
+  have htrack := tendsto_norm_xiCTaylor_logDeriv_sub_XiC_at_anisotropic hN sigma
+  have htrackSmall : ∀ᶠ n : ℕ in atTop,
+      ‖logDeriv
+            (xiCTaylorApprox (N (xiCTaylorAnisotropicScheduleStage sigma n)))
+            (xiCTaylorAnisotropicCenteredPoint sigma n) -
+          logDeriv XiC (xiCTaylorAnisotropicCenteredPoint sigma n)‖ < epsilon / 2 :=
+    htrack.eventually (eventually_lt_nhds (half_pos hepsilon))
+  have hinfinite :=
+    xiAnisotropicLogDerivSublinearUpper_of_riemannHypothesis hRH
+      sigma hsigmaPos hsigmaHalf (epsilon / 2) (half_pos hepsilon)
+  filter_upwards [htrackSmall, hinfinite] with n hnTrack hnInfinite
+  let s : ℂ := xiTaylorAnisotropicRightApprox sigma (n + 1)
+  let z : ℂ := xiCTaylorAnisotropicCenteredPoint sigma n
+  let Lp : ℂ := logDeriv
+    (xiCTaylorApprox (N (xiCTaylorAnisotropicScheduleStage sigma n))) z
+  let L : ℂ := logDeriv XiC z
+  have hcoord : 1 / 2 + z * I = s := by
+    simp only [z, xiCTaylorAnisotropicCenteredPoint, s,
+      half_add_xiCTaylorCenteredPoint_mul_I]
+  have hLim : L.im = (logDeriv xi s).re := by
+    change (logDeriv XiC z).im = (logDeriv xi s).re
+    rw [RHTower.logDeriv_XiC_eq_mul_I_logDeriv_xi, hcoord]
+    simp
+  have himDiff : |(Lp - L).im| < epsilon / 2 :=
+    (Complex.abs_im_le_norm (Lp - L)).trans_lt
+      (by simpa only [Lp, L, z] using hnTrack)
+  have hqPos : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  have hqOne : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by
+    exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
+  change Lp.im / ((n + 1 : ℕ) : ℝ) < epsilon
+  change (logDeriv xi s).re / ((n + 1 : ℕ) : ℝ) < epsilon / 2 at hnInfinite
+  rw [sub_im, hLim, abs_lt] at himDiff
+  rw [div_lt_iff₀ hqPos] at hnInfinite ⊢
+  nlinarith
+
+/-- **Exact finite Xi-Taylor anisotropic criterion for every superaccurate schedule.** -/
+theorem xiCTaylorAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis
+    {N : ℕ → ℕ} (hN : XiCTaylorSuperaccurateSchedule N) :
+    XiCTaylorAnisotropicLogDerivSublinearUpper N ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_xiCTaylorAnisotropicLogDerivSublinearUpper hN,
+    xiCTaylorAnisotropicLogDerivSublinearUpper_of_riemannHypothesis hN⟩
+
 end
 
 end RHTower

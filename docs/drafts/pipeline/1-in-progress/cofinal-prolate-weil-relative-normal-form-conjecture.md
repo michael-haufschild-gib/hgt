@@ -3,8 +3,8 @@
 - **ID:** `cofinal-prolate-boundary-weil-relative-normal-form-conjecture`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / `[OPEN RH CORE]`
-- **Scientific status:** `[FRONTIER CONJECTURE] [ANTI-THEATRE PASS 2026-07-19]`
-  `[IMPLIES RH] [NOT PROVED]`
+- **Scientific status:** `[FRONTIER CONJECTURE] [PHASE-CHANNEL REVISION REQUIRED 2026-07-19]`
+  `[REDUCES THE FULL OPERATOR PROBLEM TO ONE SOURCE SIGN ONLY AFTER PHASE CONTROL] [NOT PROVED]`
 - **Parent results:** the constrained-prolate fixed-mode spectral ladder, the positive/negative
   Fourier parity separation, the radial leakage Toeplitz law, the exact true-aperture metric and
   its Möbius frame bounds, and the polar--prime critical-Mellin defect formula.
@@ -128,6 +128,9 @@ growing depth and contains the unsplit polar--prime critical-Mellin graph defect
 
 ## Part II: prolate--boundary concentration compactness
 
+Use the coupled additive/multiplicative apertures `a=log(lambda)`; then the prime cutoff in the
+restricted symbol is `exp(2a)=lambda^2`, the same scale used by the prolate construction.
+
 For every fixed smooth profile `f` supported in `(0,L)`, define the two inversion-parity edge
 packets
 
@@ -171,49 +174,73 @@ where:
 2. the nonzero boundary profiles satisfy
    ```text
    0<=tau_n^(r)<a_n,
+   a_n-tau_n^(r)->infinity,
    |tau_n^(r)-tau_n^(s)|->infinity for r!=s;                 (PN13)
    ```
 3. the profile masses are square-summable and exhaust the lost Hilbert norm;
+   each `f_r` is independent of `n` and has fixed compact support, and the unextracted boundary
+   mass satisfies the uniform tightness/vanishing alternative dictated by
+   `ccm-variable-width-two-edge-principalization-law.md`;
 4. the remainder `r_n` is profile-free and obeys a uniform bulk estimate;
-5. Hilbert norm, frame energy, and the intact Weil form admit a common asymptotic decoupling.
+5. Hilbert norm decouples profilewise, while the intact Weil form decouples only between the
+   prolate, assembled-boundary, and bulk channels.  All boundary--boundary arithmetic interactions
+   remain inside one exact boundary form.
 
-More precisely, after orienting the prolate coordinates by `S`, the Weil energy has the normal form
+Put
+
+```text
+w_n=sum_r b_(a_n-tau_n^(r),sigma,f_r).                       (PN13a)
+```
+
+After orienting the prolate coordinates by `S`, the Weil energy has the normal form
 
 ```text
 QW_(a_n)(u_n,u_n)
  =L_(lambda_n)c_n^*D_n T_(J_n)D_n c_n
-  +sum_r BoundaryQW_(a_n-tau_n^(r),sigma)(f_r)
+  +BoundaryQW_(a_n)(w_n)
   +QBulk_n(r_n)+o(E_n),                                      (PN14)
 
 QBulk_n(r_n)
  >=c_* L_(lambda_n)mu_(J_n+1,lambda_n,sigma)||r_n||^2,       (PN15)
 ```
 
-for one universal `c_*>0`.  Here `E_n` is the sum of the positive prolate reference energy, the
-boundary frame scales `m_(a_n-tau_n^(r))||f_r||^2`, and the bulk reference energy.  The boundary
-term is not an abstract remainder: it is exactly
+for one universal `c_*>0`.  Here
 
 ```text
-BoundaryQW_(A,sigma)(f)
- =Q_Gamma(b_(A,sigma,f),b_(A,sigma,f))
-  +2 Re integral_0^(2A) C_(b_(A,sigma,f))(h)dR(h).            (PN16)
+E_n
+ =1+L_(lambda_n)c_n^*D_n T_(J_n)D_n c_n
+   +|BoundaryQW_(a_n)(w_n)|
+   +L_(lambda_n)mu_(J_n+1,lambda_n,sigma)||r_n||^2.           (PN15a)
+```
+
+Thus an unbounded negative boundary energy cannot be swallowed by the decoupling error.  The
+boundary term is not a sum of independent profile energies and not an abstract remainder: for the
+assembled packet it is exactly
+
+```text
+BoundaryQW_a(w)
+ =Q_Gamma(w,w)+2 Re integral_0^(2a) C_w(h)dR(h).              (PN16)
 ```
 
 Equation `(PN16)` retains the critical-Mellin carrier and its prime-divisor poles.  It may not be
 replaced by its prime-number-theorem main term.
 
-The new universal assertion is the **exhaustion clause** in `(PN12)`--`(PN15)`: constrained
-prolate profiles and recentered two-edge profiles are the only two defects of compactness of the
-semilocal Weil frame.  There is no fourth low-energy escape geometry.
+The intended universal assertion is the **exhaustion clause** in `(PN12)`--`(PN15)`.  In its
+present form it is incomplete: the finite prime boundary source is atomic, so its Fourier
+transform has a carrier-frequency recurrence channel which compact-frequency PNT convergence does
+not control.  The conjecture may assert that constrained prolate profiles and recentered two-edge
+profiles are the only low-energy defects only after the subcritical Gamma-window consequence of
+`prime-log-kronecker-coherence-capacity-conjecture.md` has been proved.  Without that input, a
+third prime-phase escape geometry remains open.
 
-## Exact RH-bearing theorem after the normal form
+## Exact RH-bearing estimate after the normal form
 
 The profile law does not relabel the remaining sign as novelty.  Once `(PN8)` and
 `(PN12)`--`(PN15)` are proved, the full no-negative-birth problem reduces to the single
 source-orientation theorem
 
 ```text
-BoundaryQW_(A,sigma)(f)>=0
+BoundaryQW_A(b_(A,sigma,f))>=0
 for every A>0, both parities, and every smooth compact profile f. (PN17)
 ```
 
@@ -250,10 +277,17 @@ This card is killed, not promoted, if any of the following occurs.
 6. **Boundary-channel deletion.**  The infinite-dimensional translated two-edge family is placed
    in a nominally coercive remainder without proving `(PN12)` and retaining `(PN16)`.  The
    proved frame-saturation theorem forbids that shortcut.
-7. **Literature collision.**  A published theorem already gives both growing-depth
+7. **Variable-width vacuity.**  A proof calls an arbitrary aperture-dependent profile `f_n` a
+   boundary profile.  The variable-width principalization theorem shows that every parity vector
+   has this form.  Fixed profiles plus a uniform tightness/vanishing theorem are compulsory.
+8. **Literature collision.**  A published theorem already gives both growing-depth
    constrained-PSWF Toeplitz congruence and the prolate/two-edge profile exhaustion of the intact
    Weil form.  Classical Fuchs, Slepian, Dunster, generic rank-one constraints, and abstract
    concentration compactness do not meet this test.
+9. **Phase-channel omission.**  Atomic prime phases are declared harmless using only pointwise or
+   compact-frequency PNT convergence.  The required statement is uniform on the moving
+   Gamma-admissible window; it is isolated in
+   `prime-log-kronecker-coherence-capacity-conjecture.md`.
 
 ## Preliminary literature audit through 2026-07-19
 
@@ -325,7 +359,7 @@ refinement, not for the Weil-positivity implication.
 This card is a conjecture and has no Lean theorem.  Its finite-dimensional algebraic skeleton is
 already formalized: constrained secular roots, the fixed-depth Fuchs ladder, parity separation,
 Toeplitz positivity, Schur correction, exact finite aperture reconstruction, and the abstract
-relative-form transfer lemmas.  No formal declaration should package `(PN8)`, `(PN10)`, or
+relative-form transfer lemmas.  No formal declaration should package `(PN8)` or
 `(PN12)`--`(PN17)` behind a hypothesis and present the wrapper as progress.  Formalization begins only after
 one of the source-specific analytic estimates is proved on paper.
 
@@ -335,6 +369,8 @@ one of the source-specific analytic estimates is proved on paper.
 - [x] explicit full-operator normal form stated
 - [x] complement and cross-term escape included
 - [x] positive/negative parity sectors included
+- [x] variable-width vacuity removed by the exact principalization theorem
+- [ ] control the carrier-frequency channel on the moving Gamma graph window
 - [x] anti-theatre and circularity kill tests recorded
 - [x] preliminary external search found no matching theorem
 - [ ] prove the prolate--boundary profile decomposition `(PN12)`--`(PN15)`

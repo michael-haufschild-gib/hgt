@@ -63,6 +63,28 @@ def xiTransverseShiftPrimeDefect (a : ℕ) (s : ℂ) : ℂ :=
   xiTransverseShiftRawLogDerivDefect a s -
     xiTransverseShiftArchimedeanCorrection a s
 
+/-- The archimedean correction is the additive shift defect of the arch-factor logarithmic
+derivative. -/
+theorem xiTransverseShiftArchimedeanCorrection_eq_forwardDifference
+    (a : ℕ) (s : ℂ) :
+    xiTransverseShiftArchimedeanCorrection a s =
+      forwardDifference (a : ℂ) (logDeriv archFactor) s := by
+  rfl
+
+/-- **Completed-prime forward-difference interface.** Every corrected integral Xi shift defect is
+the additive shift defect of the completed logarithmic derivative with its archimedean part
+removed. -/
+theorem xiTransverseShiftPrimeDefect_eq_forwardDifference
+    (a : ℕ) (s : ℂ) :
+    xiTransverseShiftPrimeDefect a s =
+      forwardDifference (a : ℂ)
+        (fun z ↦ logDeriv xi z - logDeriv archFactor z) s := by
+  simp [xiTransverseShiftPrimeDefect,
+    xiTransverseShiftRawLogDerivDefect,
+    xiTransverseShiftArchimedeanCorrection,
+    forwardDifference]
+  ring
+
 /-- **General integral-shift prime exposure.** On the Euler half-plane, the corrected actual
 completed-Xi shift defect is exactly the complete transverse prime-source L-series. -/
 theorem xiTransverseShiftPrimeDefect_eq_lSeries

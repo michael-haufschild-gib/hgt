@@ -22,6 +22,16 @@ open Complex
 def forwardDifference (τ : ℂ) (f : ℂ → ℂ) : ℂ → ℂ :=
   fun z => f (z + τ) - f z
 
+/-- **Relative-shift normal form.** The difference of two additive shift defects based at the
+same point is the defect of their relative shift based at the second endpoint. -/
+theorem forwardDifference_sub_forwardDifference
+    (f : ℂ → ℂ) (a b s : ℂ) :
+    forwardDifference a f s - forwardDifference b f s =
+      forwardDifference (a - b) f (s + b) := by
+  simp only [forwardDifference]
+  rw [show s + b + (a - b) = s + a by ring]
+  ring
+
 /-- Iterated forward difference along a finite ordered list of directions. -/
 def iteratedForwardDifference : List ℂ → (ℂ → ℂ) → ℂ → ℂ
   | [], f => f

@@ -37,6 +37,36 @@ def xiTransverseShiftPairDifferenceUpperEndCarrier
   xiTransverseShiftUpperEndCarrier (shift (head e)) -
     xiTransverseShiftUpperEndCarrier (shift (tail e))
 
+/-- **Pairwise carrier relative-shift law.** An ordered corrected-Xi edge carrier is the
+upper-end translate of the single carrier at its relative shift. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_eq_relativeShift_of_le
+    {V E : Type*} (shift : V → ℕ) (tail head : E → V) (e : E)
+    (hshift : shift (tail e) ≤ shift (head e)) :
+    xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head e =
+      upperEndTranslationMeroEquiv
+        (Complex.I * (shift (tail e) : ℂ))
+        (xiTransverseShiftUpperEndCarrier
+          (shift (head e) - shift (tail e))) := by
+  rw [xiTransverseShiftPairDifferenceUpperEndCarrier,
+    xiTransverseShiftUpperEndCarrier_sub_eq_translation_of_le _ _ hshift]
+
+/-- Unconditional pairwise carrier classifier with the endpoint-order Prop discharged. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_eq_relativeShift
+    {V E : Type*} (shift : V → ℕ) (tail head : E → V) (e : E) :
+    xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head e =
+      if shift (tail e) ≤ shift (head e) then
+        upperEndTranslationMeroEquiv
+          (Complex.I * (shift (tail e) : ℂ))
+          (xiTransverseShiftUpperEndCarrier
+            (shift (head e) - shift (tail e)))
+      else
+        -upperEndTranslationMeroEquiv
+          (Complex.I * (shift (head e) : ℂ))
+          (xiTransverseShiftUpperEndCarrier
+            (shift (tail e) - shift (head e))) := by
+  rw [xiTransverseShiftPairDifferenceUpperEndCarrier,
+    xiTransverseShiftUpperEndCarrier_sub_eq_relativeShift]
+
 /-- Analytic representative of an arbitrary integral pairwise transverse shift difference. -/
 def xiTransverseShiftPairDifferenceUpperEndAnalytic
     {V E : Type*} (shift : V → ℕ) (tail head : E → V) (e : E) :

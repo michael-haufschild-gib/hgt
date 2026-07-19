@@ -255,16 +255,21 @@ with `Q_12` built from `K_12` is **retired by coefficient orientation**.  At `p=
 phase-preserving endpoint correction begins with coefficients `+1/2,-1/8`; the uncorrected
 coarsening kernel fails this two-term test.
 
-The corrected refinement-oriented pairing is now forced and formalized in
+The refinement-oriented pairing and the fully corrected endpoint pairing are now both forced and
+formalized in
 `XiCompletedBalancedResponseDirichletDecomposition.lean`:
 
 ```text
 Q_P^ref
  =sum_p [log(p)/(p+1)] ||kappa_p||^2
-  -(1/2) sum_(p,q) C_P^ref(p,q)||kappa_p-kappa_q||^2.  (UD9)
+  -(1/2) sum_(p,q) C_P^ref(p,q)||kappa_p-kappa_q||^2,  (UD9-ref)
+
+Q_P^end
+ =sum_p [log(p)/p] ||kappa_p||^2
+  -(1/2) sum_(p,q) C_P^end(p,q)||kappa_p-kappa_q||^2.  (UD9-end)
 ```
 
-The first remaining gate is a coefficient-by-coefficient identification of `(UD9)`, with the
-valuation correction retained, against `(PI8)`/`(HGS29)`.  If it matches, the actual new analytic
-conjecture is the cofinal upper bound on the indefinite signed Dirichlet term recorded as
-`(PVC12)`; another unspecified `Q_12` is no longer admissible.
+The first remaining gate is a coefficient-by-coefficient identification of `(UD9-end)` against
+`(PI8)`/`(HGS29)`; `(UD9-ref)` is only its trace-class comparison current.  If the corrected
+identity matches, the actual new analytic conjecture is the cofinal upper bound on its indefinite
+signed Dirichlet term recorded as `(PVC12)`; another unspecified `Q_12` is no longer admissible.

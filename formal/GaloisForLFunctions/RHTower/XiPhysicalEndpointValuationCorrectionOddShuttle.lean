@@ -440,6 +440,116 @@ theorem xiPhysicalEndpointCompletedKernel_eq_neg_unitDouble_add_correction
     xiUnitDoubleCompletedOffDiagonalResponseKernel]
   ring
 
+/-! ## The corrected finite balanced response -/
+
+/-- Real-symmetric sampling of the corrected completed endpoint kernel at actual prime-ratio
+nodes.  The explicit symmetrization makes the finite source object available before a separate
+Hermitian-continuation theorem is imposed. -/
+def xiPhysicalEndpointCompletedPrimeRatioRealKernel
+    (p q : Nat.Primes) : ℝ :=
+  ((xiPhysicalEndpointCompletedKernel
+      (Real.log (p : ℝ) - Real.log (q : ℝ)) +
+    xiPhysicalEndpointCompletedKernel
+      (Real.log (q : ℝ) - Real.log (p : ℝ))) / 2).re
+
+theorem xiPhysicalEndpointCompletedPrimeRatioRealKernel_symm
+    (p q : Nat.Primes) :
+    xiPhysicalEndpointCompletedPrimeRatioRealKernel p q =
+      xiPhysicalEndpointCompletedPrimeRatioRealKernel q p := by
+  rw [xiPhysicalEndpointCompletedPrimeRatioRealKernel,
+    xiPhysicalEndpointCompletedPrimeRatioRealKernel]
+  ring
+
+/-- Physical pair dressing of the corrected endpoint kernel. -/
+def xiPhysicalEndpointCompletedPairResponse
+    (p q : Nat.Primes) : ℝ :=
+  physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
+    xiPhysicalEndpointCompletedPrimeRatioRealKernel p q
+
+theorem xiPhysicalEndpointCompletedPairResponse_symm
+    (p q : Nat.Primes) :
+    xiPhysicalEndpointCompletedPairResponse p q =
+      xiPhysicalEndpointCompletedPairResponse q p := by
+  rw [xiPhysicalEndpointCompletedPairResponse,
+    xiPhysicalEndpointCompletedPairResponse,
+    xiPhysicalEndpointCompletedPrimeRatioRealKernel_symm]
+  ring
+
+/-- The unique finite corrected coupling with physical endpoint marginals. -/
+def xiPhysicalEndpointCompletedBalancedCoupling
+    (P : Finset Nat.Primes) (p q : Nat.Primes) : ℝ :=
+  if p = q then
+    physicalPrimeEndpointWeight p -
+      ∑ r ∈ P.erase p, xiPhysicalEndpointCompletedPairResponse p r
+  else xiPhysicalEndpointCompletedPairResponse p q
+
+theorem xiPhysicalEndpointCompletedBalancedCoupling_symm
+    (P : Finset Nat.Primes) (p q : Nat.Primes) :
+    xiPhysicalEndpointCompletedBalancedCoupling P p q =
+      xiPhysicalEndpointCompletedBalancedCoupling P q p := by
+  by_cases hpq : p = q
+  · subst q
+    rfl
+  · rw [xiPhysicalEndpointCompletedBalancedCoupling,
+      xiPhysicalEndpointCompletedBalancedCoupling,
+      if_neg hpq, if_neg (fun h => hpq h.symm),
+      xiPhysicalEndpointCompletedPairResponse_symm]
+
+/-- Every row has exactly the physical ordinary-prime marginal, including the valuation
+correction before diagonal forcing. -/
+theorem sum_xiPhysicalEndpointCompletedBalancedCoupling
+    (P : Finset Nat.Primes) (p : Nat.Primes) (hp : p ∈ P) :
+    ∑ q ∈ P, xiPhysicalEndpointCompletedBalancedCoupling P p q =
+      physicalPrimeEndpointWeight p := by
+  have hoff :
+      (∑ q ∈ P.erase p,
+        xiPhysicalEndpointCompletedBalancedCoupling P p q) =
+      ∑ q ∈ P.erase p, xiPhysicalEndpointCompletedPairResponse p q := by
+    apply Finset.sum_congr rfl
+    intro q hq
+    have hqp : q ≠ p := (Finset.mem_erase.mp hq).1
+    rw [xiPhysicalEndpointCompletedBalancedCoupling,
+      if_neg (fun h => hqp h.symm)]
+  calc
+    (∑ q ∈ P, xiPhysicalEndpointCompletedBalancedCoupling P p q) =
+        (∑ q ∈ P.erase p,
+          xiPhysicalEndpointCompletedBalancedCoupling P p q) +
+          xiPhysicalEndpointCompletedBalancedCoupling P p p :=
+      (Finset.sum_erase_add P
+        (fun q => xiPhysicalEndpointCompletedBalancedCoupling P p q) hp).symm
+    _ = (∑ q ∈ P.erase p, xiPhysicalEndpointCompletedPairResponse p q) +
+        (physicalPrimeEndpointWeight p -
+          ∑ q ∈ P.erase p, xiPhysicalEndpointCompletedPairResponse p q) := by
+      rw [hoff, xiPhysicalEndpointCompletedBalancedCoupling, if_pos rfl]
+    _ = physicalPrimeEndpointWeight p := by ring
+
+/-- Off-diagonal corrected source values and physical marginals force the finite coupling
+entrywise. -/
+theorem xiPhysicalEndpointCompletedBalancedCoupling_unique
+    (P : Finset Nat.Primes) (C : Nat.Primes → Nat.Primes → ℝ)
+    (hoff : ∀ p ∈ P, ∀ q ∈ P, p ≠ q →
+      C p q = xiPhysicalEndpointCompletedPairResponse p q)
+    (hrow : ∀ p ∈ P, ∑ q ∈ P, C p q = physicalPrimeEndpointWeight p) :
+    ∀ p ∈ P, ∀ q ∈ P,
+      C p q = xiPhysicalEndpointCompletedBalancedCoupling P p q := by
+  intro p hp q hq
+  by_cases hpq : p = q
+  · subst q
+    have hsplit := Finset.sum_erase_add P (fun r => C p r) hp
+    have hoffsum :
+        (∑ r ∈ P.erase p, C p r) =
+          ∑ r ∈ P.erase p, xiPhysicalEndpointCompletedPairResponse p r := by
+      apply Finset.sum_congr rfl
+      intro r hr
+      have hrp : r ≠ p := (Finset.mem_erase.mp hr).1
+      exact hoff p hp r (Finset.mem_of_mem_erase hr) (fun h => hrp h.symm)
+    rw [xiPhysicalEndpointCompletedBalancedCoupling, if_pos rfl]
+    have hrowp := hrow p hp
+    rw [← hsplit, hoffsum] at hrowp
+    linarith
+  · rw [xiPhysicalEndpointCompletedBalancedCoupling, if_neg hpq]
+    exact hoff p hp q hq hpq
+
 /-! ## The clock-weighted reflected shuttle and the live source gate -/
 
 /-- The functional-equation reflected shuttle with the two natural aperture clocks retained. -/

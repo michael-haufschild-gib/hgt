@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiUnitDoubleCompletedBalancedResponseCoupling
 import GaloisForLFunctions.RHTower.XiPhysicalPrimeLogApertureHilbertMetric
+import GaloisForLFunctions.RHTower.XiPhysicalEndpointValuationCorrectionOddShuttle
 
 /-!
 # Pointed Dirichlet decomposition of the balanced completed response
@@ -165,6 +166,80 @@ theorem xiUnitDoubleCompletedRefinementAperturePairing_eq_marginal_sub_half_diri
     (fun p _hp q _hq =>
       xiUnitDoubleCompletedRefinementCoupling_symm P p q)
     (sum_xiUnitDoubleCompletedRefinementCoupling P)
+
+/-! ## The fully corrected physical-endpoint pairing -/
+
+/-- Quadratic pairing of the valuation-corrected completed response with the true centered
+physical aperture carrier. -/
+def xiPhysicalEndpointCompletedBalancedAperturePairing
+    (P : Finset Nat.Primes) (A m k : ℝ) : ℝ :=
+  ∑ p ∈ P, ∑ q ∈ P,
+    xiPhysicalEndpointCompletedBalancedCoupling P p q *
+      inner ℝ (xiPhysicalPrimeLogCenteredApertureCarrier A m k p)
+        (xiPhysicalPrimeLogCenteredApertureCarrier A m k q)
+
+/-- Signed prime-ratio Dirichlet energy of the fully corrected completed response. -/
+def xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy
+    (P : Finset Nat.Primes) (A m k : ℝ) : ℝ :=
+  ∑ p ∈ P, ∑ q ∈ P,
+    xiPhysicalEndpointCompletedBalancedCoupling P p q *
+      ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p -
+        xiPhysicalPrimeLogCenteredApertureCarrier A m k q‖ ^ 2
+
+/-- The corrected Dirichlet energy does not depend on the forced diagonal completion.  It is
+already the explicit off-diagonal source response, because the aperture distance vanishes on the
+diagonal. -/
+theorem xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy_eq_pairResponse
+    (P : Finset Nat.Primes) (A m k : ℝ) :
+    xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy P A m k =
+      ∑ p ∈ P, ∑ q ∈ P,
+        xiPhysicalEndpointCompletedPairResponse p q *
+          ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p -
+            xiPhysicalPrimeLogCenteredApertureCarrier A m k q‖ ^ 2 := by
+  rw [xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy]
+  apply Finset.sum_congr rfl
+  intro p hp
+  apply Finset.sum_congr rfl
+  intro q hq
+  by_cases hpq : p = q
+  · subst q
+    simp
+  · rw [xiPhysicalEndpointCompletedBalancedCoupling, if_neg hpq]
+
+/-- Source-only form of the open energy: the corrected completed prime-ratio kernel is paired
+directly with the true oriented physical-aperture distance. -/
+theorem xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy_eq_kernel_distance
+    (P : Finset Nat.Primes) (A m k : ℝ) :
+    xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy P A m k =
+      ∑ p ∈ P, ∑ q ∈ P,
+        physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
+          xiPhysicalEndpointCompletedPrimeRatioRealKernel p q *
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2 := by
+  rw [xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy_eq_pairResponse]
+  apply Finset.sum_congr rfl
+  intro p hp
+  apply Finset.sum_congr rfl
+  intro q hq
+  rw [xiPhysicalEndpointCompletedPairResponse,
+    xiPhysicalPrimeLogApertureHilbertDistance, dist_eq_norm]
+
+/-- **Corrected pointed Dirichlet decomposition.** After the valuation correction, the anchor is
+the exact physical endpoint marginal `log p / p`; all remaining uncertainty is the indefinite
+signed prime-ratio Dirichlet energy. -/
+theorem xiPhysicalEndpointCompletedBalancedAperturePairing_eq_marginal_sub_half_dirichlet
+    (P : Finset Nat.Primes) (A m k : ℝ) :
+    xiPhysicalEndpointCompletedBalancedAperturePairing P A m k =
+      (∑ p ∈ P, physicalPrimeEndpointWeight p *
+        ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ 2) -
+      (1 / 2 : ℝ) *
+        xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy P A m k := by
+  exact finite_symmetric_coupling_inner_eq_marginal_sub_half_dirichlet
+    P (xiPhysicalEndpointCompletedBalancedCoupling P)
+    (fun p : Nat.Primes => physicalPrimeEndpointWeight p)
+    (xiPhysicalPrimeLogCenteredApertureCarrier A m k)
+    (fun p _hp q _hq =>
+      xiPhysicalEndpointCompletedBalancedCoupling_symm P p q)
+    (sum_xiPhysicalEndpointCompletedBalancedCoupling P)
 
 end
 

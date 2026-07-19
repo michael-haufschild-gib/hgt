@@ -172,7 +172,9 @@ column. The pairwise corrected completed-Xi values represent exactly this collis
 incidence matroid over both bases. Hence repeated labels, zero-shift vertices, loops created by
 label collisions, and all resulting rank loss are classified by one unconditional law rather than
 excluded by injectivity, positivity, or root hypotheses. The earlier rooted theorem is the
-distinct-label specialization of this quotient geometry. Its abstract independence Prop is also
+distinct-label specialization of this quotient geometry: an explicit equivalence identifies the
+occupied nonzero labels with the nonroot vertices, reindexes the quotient matrix to the rooted
+matrix, and identifies the two matroids. Its abstract independence Prop is also
 discharged: coefficient flows must be conserved at every occupied nonzero shift label and at the
 single collapsed zero-shift vertex. The zero-vertex equation is forced by total incidence, so it
 is a conclusion of the quotient law rather than an additional hypothesis.
@@ -206,6 +208,25 @@ negates the value, and the diagonal vanishes. Completed-Xi reciprocity fixes the
 under reflection about `(1-a-b)/2`; the earlier one-shift reflection is exactly the specialization
 `b=0`. Thus the incidence cycle laws and the reflection law are two compatible structures on the
 same pairwise translate values, with no assertion about their zero loci.
+
+The pairwise analytic layer has an exact relative-shift normal form. Simultaneously translating
+both endpoints and translating the observation coordinate back leaves every raw pair value
+unchanged, and the value at `(a,b;s)` is the zero-tail value at relative shift `a-b` and coordinate
+`s+b`. The corresponding midpoint reflections are conjugate under the same translation. For
+integral corrected values this reduction is orientation-complete: when `b <= a` the pair value,
+archimedean correction cocycle, and half-cocycle-centered value are exactly the one-shift objects
+for `a-b` at `s+b`; reversing orientation supplies the other order. An unconditional piecewise
+classifier discharges the ordering hypothesis. Thus pairwise packets introduce incidence geometry
+but no additional analytic degree of freedom beyond the one-shift completed-Xi theory.
+
+This normal form also holds before and after analytic realization. On the coefficient side, the
+difference of shift-`a` and shift-`b` finite-abscissa sources is the Dirichlet-`b` translate of the
+relative source at `a-b` whenever `b <= a`. Faithful finite-abscissa realization intertwines every
+Dirichlet translation with the corresponding upper-end analytic and meromorphic translations.
+Consequently the actual pairwise meromorphic carrier is one translated relative-shift carrier;
+unconditional source and carrier classifiers discharge endpoint order by selecting the
+nonnegative relative shift and its orientation sign. The value relation is therefore not merely
+pointwise: it is an exact identity of the arithmetic source and differential carrier objects.
 
 For integral pairs the exact archimedean correction is now incorporated into this reflection.
 Corrected pairwise prime values still form the additive pair-groupoid cocycle, but reflection about
@@ -441,15 +462,34 @@ RH-strength assertion must be proved.
   `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_corrected`
 - **Arbitrary complex pairwise value/reflection module:**
   `formal/GaloisForLFunctions/RHTower/XiPairwiseShiftValueReflection.lean`
+- **General and one-shift forward-difference interfaces:**
+  `RHTower.forwardDifference_sub_forwardDifference`,
+  `RHTower.xiTransverseShiftArchimedeanCorrection_eq_forwardDifference`, and
+  `RHTower.xiTransverseShiftPrimeDefect_eq_forwardDifference`
+- **Faithful translation intertwiners:**
+  `GaloisForLFunctions.HTGeometry.finiteAbscissaLSeriesToUpperEndAnalytic_dirichletShift`
+  and
+  `GaloisForLFunctions.HTGeometry.finiteAbscissaLSeriesToUpperEndMero_dirichletShift`
 - **Pairwise cocycle and reflection laws:**
   `RHTower.xiPairwiseShiftRawLogDerivDifference_cocycle`,
   `RHTower.xiPairwiseShiftRawLogDerivDifference_reflection`, and
   `RHTower.xiPairwiseShiftRawLogDerivDifference_nat_zero`
+- **Raw pairwise translation-gauge and relative-shift laws:**
+  `RHTower.xiPairwiseShiftRawLogDerivDifference_translationGauge`,
+  `RHTower.xiPairwiseShiftRawLogDerivDifference_eq_relativeShift`, and
+  `RHTower.xiPairwiseShiftReflection_relativeShift`
 - **Corrected integral pairwise reflection laws:**
   `RHTower.xiPairwiseShiftPrimeDifference_eq_raw_sub_correction`,
   `RHTower.xiPairwiseShiftPrimeDifference_cocycle`,
   `RHTower.xiPairwiseShiftPrimeDifference_reflection_cocycle`, and
   `RHTower.xiPairwiseCenteredShiftPrimeDifference_reflection`
+- **Corrected relative-shift normal forms:**
+  `RHTower.xiPairwiseShiftReflection_eq_transverse_relativeShift_of_le`,
+  `RHTower.xiPairwiseShiftArchimedeanCorrectionDifference_eq_relativeShift_of_le`,
+  `RHTower.xiPairwiseShiftPrimeDifference_eq_relativeShift_of_le`,
+  `RHTower.xiPairwiseShiftPrimeDifference_eq_relativeShift`,
+  `RHTower.xiPairwiseShiftReflectionCocycle_eq_relativeShift_of_le`, and
+  `RHTower.xiPairwiseCenteredShiftPrimeDifference_eq_relativeShift_of_le`
 - **Corrected-pair tail-zero interfaces:**
   `RHTower.xiPairwiseShiftPrimeDifference_nat_zero` and
   `RHTower.xiPairwiseShiftReflectionCocycle_nat_zero`
@@ -457,6 +497,13 @@ RH-strength assertion must be proved.
   `formal/GaloisForLFunctions/RHTower/XiTransverseShiftPairwiseValue.lean`,
   `formal/GaloisForLFunctions/RHTower/XiTransverseShiftPairwiseDifferentialRank.lean`, and
   `formal/GaloisForLFunctions/RHTower/XiTransverseShiftPairwiseAllValuationRank.lean`
+- **Arithmetic and meromorphic relative-shift classifiers:**
+  `RHTower.xiTransverseShiftFiniteAbscissaSource_sub_eq_dirichletShift_of_le`,
+  `RHTower.xiTransverseShiftFiniteAbscissaSource_sub_eq_relativeShift`,
+  `RHTower.xiTransverseShiftUpperEndCarrier_sub_eq_translation_of_le`,
+  `RHTower.xiTransverseShiftUpperEndCarrier_sub_eq_relativeShift`,
+  `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_eq_relativeShift_of_le`, and
+  `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_eq_relativeShift`
 - **All-integral actual germ and complete generated-field laws:**
   `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_germ_eq`,
   `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices`,
@@ -476,6 +523,11 @@ RH-strength assertion must be proved.
   `formal/GaloisForLFunctions/HTGeometry/DifferentialPointedCollisionIncidenceMatroid.lean`
 - **General arbitrary-label incidence law:**
   `GaloisForLFunctions.HTGeometry.differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid`
+- **Exact rooted-specialization interface:**
+  `GaloisForLFunctions.HTGeometry.nonrootEquivPointedCollisionIncidenceSupport`,
+  `GaloisForLFunctions.HTGeometry.pointedCollisionIncidenceMatrix_eq_rootedIncidenceMatrix_reindex`,
+  and
+  `GaloisForLFunctions.HTGeometry.pointedCollisionIncidenceMatroid_eq_rootedIncidenceMatroid_of_injective`
 - **General quotient circulation and all-vertex Kirchhoff interface:**
   `GaloisForLFunctions.HTGeometry.isPointedCollisionIncidenceCirculation_iff_vertex_conservation`,
   `GaloisForLFunctions.HTGeometry.pointedCollisionIncidenceMatroid_indep_iff_no_nonzero_circulation`,
@@ -526,7 +578,11 @@ RH-strength assertion must be proved.
   Xi collision-incidence leaves also pass direct source checks and exact targeted module builds.
   The arbitrary-index occupied-range classifier and its corrected/raw Xi specializations pass the
   same scoped source checks and exact builds; only the incidence-matroid layer remains intrinsically
-  finite.
+  finite. The relative-shift chain passes isolated scratch verification, direct checks of its two
+  parent modules, and the exact pairwise consumer build.
+  The coefficient-to-meromorphic relative-shift chain likewise passes its general source check,
+  isolated combined proof, and exact pairwise-carrier consumer build.
+  The rooted-specialization interface passes its direct source check and exact general-module build.
 - **Axiom audit:** the general finitary interface, general pointed-collision law, Xi exact matroid,
   Xi Prop interface, and Xi rank capstone report only `propext`, `Classical.choice`, and
   `Quot.sound`. The earlier absolute, all-valuation, and Hilbert-metric audits have the same
@@ -553,7 +609,9 @@ RH-strength assertion must be proved.
   baseline. The collision-quotient support, incidence matrix/matroid, ordinary Prop/rank
   interfaces, exact nonlinear matroid law, full quotient circulation/conservation equivalence,
   collapsed-zero equation discharge, and arbitrary-label Xi matroid/Prop/Kirchhoff/rank laws over
-  both bases likewise report only this baseline. The occupied-label range reductions, strict
+  both bases likewise report only this baseline. The canonical nonroot/occupied-support
+  equivalence, exact matrix reindexing, and rooted-specialization matroid identity have the same
+  audit result. The occupied-label range reductions, strict
   common-mode loss, pointed field-recovery iff classifier, and its Xi occupied-support and exact
   field-recovery specializations over both bases also report only this baseline. The raw occupied-
   grade independence interfaces, exact zero-range field classifiers, arbitrary-label collision
@@ -562,7 +620,11 @@ RH-strength assertion must be proved.
   all-integral pairwise germ, complete generated fields, incidence matroids, Prop interfaces,
   Kirchhoff criteria, and ranks over both bases likewise report only this baseline. The corrected
   pairwise additive cocycle, archimedean reflection cocycle, centered invariant, and tail-zero
-  interfaces have the same audit result.
+  interfaces have the same audit result. The general forward-difference normal form, one-shift Xi
+  interfaces, raw translation gauge, corrected relative-shift classifier, transported correction
+  cocycle, and centered reduction also report only the standard baseline. The analytic and
+  meromorphic translation intertwiners, arithmetic source normal forms, actual carrier normal
+  forms, and pairwise carrier specializations have the same axiom result.
 
 ## Falsifiers
 
@@ -702,4 +764,18 @@ RH-strength assertion must be proved.
   finite incidence geometry: arbitrary occupied ranges now satisfy the exact zero-label iff law,
   and both corrected and raw Xi specializations work for arbitrary inhabited index types over both
   bases. The strict common-mode law itself is also arbitrary-index. Narrow source checks, the three
-  exact dependent builds, and the expanded axiom audits pass.
+  exact dependent builds, and the expanded axiom audits pass. The pairwise value theory was then
+  reduced to a single translated relative shift: a general forward-difference law now subsumes the
+  corrected Xi value and archimedean correction identities, the raw complex translation gauge is
+  explicit, midpoint reflection is conjugate to the zero-tail reflection, and the corrected value,
+  reflection cocycle, and centered invariant reduce to their one-shift counterparts. The
+  orientation-complete value classifier is unconditional. The exact consumer build passes.
+  Faithful finite-abscissa realization was then connected to the same law: Dirichlet translation
+  becomes upper-end analytic and meromorphic translation, so the coefficient source difference
+  and the actual corrected-Xi meromorphic edge carrier are literally translated single-relative-
+  shift objects. Unconditional source and carrier interfaces remove the endpoint-order hypothesis.
+  The exact pairwise-carrier consumer build passes. Finally, the semantic claim that the rooted
+  incidence theorem is a specialization of the collision quotient was made literal: injective
+  labels canonically identify occupied nonloop labels with nonroot vertices, the matrices agree
+  after reindexing, and the full matroids are equal. The direct check, exact module build, and
+  three-declaration axiom audit pass.

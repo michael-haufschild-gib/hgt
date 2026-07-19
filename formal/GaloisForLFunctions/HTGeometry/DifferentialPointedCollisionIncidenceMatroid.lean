@@ -96,6 +96,114 @@ theorem pointedCollisionIncidenceMatroid_ground
       (C := C) frame loopFrame tail head).E = Set.univ := by
   simp [pointedCollisionIncidenceMatroid]
 
+/-- Under an injective labelling, occupied nonloop labels are canonically the nonroot vertices
+when the loop label is the label of the chosen root. -/
+def nonrootEquivPointedCollisionIncidenceSupport
+    {V Frame : Type u} [Fintype V] [DecidableEq V] [DecidableEq Frame]
+    (frame : V → Frame) (root : V) (hframe : Function.Injective frame) :
+    ↑({v | v ≠ root} : Set V) ≃
+      pointedCollisionIncidenceSupport frame (frame root) :=
+  Equiv.ofBijective
+    (fun v ↦ ⟨frame v, Finset.mem_erase.mpr ⟨
+      fun h ↦ v.property (hframe h),
+      Finset.mem_image.mpr ⟨(v : V), Finset.mem_univ (v : V), rfl⟩⟩⟩)
+    ⟨by
+      intro v w hvw
+      apply Subtype.ext
+      apply hframe
+      exact congrArg Subtype.val hvw,
+    by
+      intro q
+      obtain ⟨v, _, hv⟩ := Finset.mem_image.mp
+        (Finset.mem_erase.mp q.property).2
+      have hvroot : v ≠ root := by
+        intro hvr
+        subst v
+        exact (Finset.mem_erase.mp q.property).1 hv.symm
+      refine ⟨⟨v, hvroot⟩, ?_⟩
+      exact Subtype.ext hv⟩
+
+/-- With injective labels, the collision-quotient incidence matrix is the rooted incidence matrix
+under the canonical column reindexing. -/
+theorem pointedCollisionIncidenceMatrix_eq_rootedIncidenceMatrix_reindex
+    {C V E Frame : Type u} [Field C] [Fintype V]
+    [DecidableEq V] [DecidableEq Frame]
+    (frame : V → Frame) (root : V) (hframe : Function.Injective frame)
+    (tail head : E → V) (edge : E) :
+    let e := nonrootEquivPointedCollisionIncidenceSupport frame root hframe
+    LinearEquiv.piCongrLeft' C
+        (fun _ : ↑({v | v ≠ root} : Set V) ↦ C) e
+        (rootedIncidenceMatrix (C := C) root tail head edge) =
+      pointedCollisionIncidenceMatrix
+        (C := C) frame (frame root) tail head edge := by
+  dsimp only
+  let e := nonrootEquivPointedCollisionIncidenceSupport frame root hframe
+  funext q
+  rw [LinearEquiv.piCongrLeft'_apply]
+  have heq := congrArg Subtype.val (e.apply_symm_apply q)
+  change frame ((e.symm q : ↑({v | v ≠ root} : Set V)) : V) = (q : Frame) at heq
+  have hhead :
+      head edge = ((e.symm q : ↑({v | v ≠ root} : Set V)) : V) ↔
+        frame (head edge) = (q : Frame) := by
+    constructor
+    · intro h
+      rw [h, heq]
+    · intro h
+      exact hframe (h.trans heq.symm)
+  have htail :
+      tail edge = ((e.symm q : ↑({v | v ≠ root} : Set V)) : V) ↔
+        frame (tail edge) = (q : Frame) := by
+    constructor
+    · intro h
+      rw [h, heq]
+    · intro h
+      exact hframe (h.trans heq.symm)
+  simp only [rootedIncidenceMatrix, pointedCollisionIncidenceMatrix]
+  rw [if_congr hhead rfl rfl, if_congr htail rfl rfl]
+
+/-- **Rooted-specialization interface.** For an injective vertex labelling, with the root label
+used as the loop label, the collision-quotient incidence matroid is exactly the ordinary rooted
+incidence matroid. Thus the earlier rooted law is a literal specialization of the quotient law. -/
+theorem pointedCollisionIncidenceMatroid_eq_rootedIncidenceMatroid_of_injective
+    {C V E Frame : Type u} [Field C] [Fintype V] [Fintype E]
+    [DecidableEq V] [DecidableEq E] [DecidableEq Frame]
+    (frame : V → Frame) (root : V) (hframe : Function.Injective frame)
+    (tail head : E → V) :
+    pointedCollisionIncidenceMatroid
+        (C := C) frame (frame root) tail head =
+      rootedIncidenceMatroid (C := C) root tail head := by
+  apply Matroid.ext_indep
+  · simp
+  · intro I _
+    rw [pointedCollisionIncidenceMatroid, rootedIncidenceMatroid,
+      linearFamilyMatroid_indep_iff, linearFamilyMatroid_indep_iff]
+    let e := nonrootEquivPointedCollisionIncidenceSupport frame root hframe
+    let T := LinearEquiv.piCongrLeft' C
+      (fun _ : ↑({v | v ≠ root} : Set V) ↦ C) e
+    have hrow (edge : E) :
+        T (rootedIncidenceMatrix (C := C) root tail head edge) =
+          pointedCollisionIncidenceMatrix
+            (C := C) frame (frame root) tail head edge :=
+      pointedCollisionIncidenceMatrix_eq_rootedIncidenceMatrix_reindex
+        frame root hframe tail head edge
+    constructor
+    · intro hcollision
+      have hmap := hcollision.map' T.symm.toLinearMap
+        (LinearMap.ker_eq_bot.mpr T.symm.injective)
+      convert hmap using 1
+      funext i
+      change rootedIncidenceMatrix (C := C) root tail head i =
+        T.symm (pointedCollisionIncidenceMatrix
+          (C := C) frame (frame root) tail head i)
+      rw [← hrow i]
+      exact (T.symm_apply_apply _).symm
+    · intro hroot
+      have hmap := hroot.map' T.toLinearMap
+        (LinearMap.ker_eq_bot.mpr T.injective)
+      convert hmap using 1
+      funext i
+      exact (hrow i).symm
+
 /-- Independence in the collision-quotient incidence matroid is ordinary row independence. -/
 theorem pointedCollisionIncidenceMatroid_indep_iff
     {C V E Frame : Type u} [Field C] [Fintype V] [Fintype E]

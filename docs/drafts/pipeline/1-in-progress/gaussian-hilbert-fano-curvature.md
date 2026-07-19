@@ -331,6 +331,105 @@ and prevents `k` separate degree jumps from masquerading as one two-atom jump wi
 variance.  The emerging proof target is therefore a joint **lowering-chain/Pluecker variance
 bound**, not an abstract DPP inequality and not pairwise matrix commutativity.
 
+#### Failed arbitrary-commuting-tuple strengthening
+
+`[FALSE]`.  A tempting strengthening was that (AI) might hold for every finite commuting
+matrix tuple.  Write
+
+\[
+ Q=\sum_iA_i^*A_i,\qquad R=\sum_iA_iA_i^*.
+\]
+
+For a commuting tuple, cyclicity gives
+
+\[
+ \sum_{i,j}\lVert A_iA_j\rVert_{\mathrm{HS}}^2=\operatorname{tr}(QR),
+\]
+
+and direct expansion gives the useful parent identity
+
+\[
+ \sum_{i,j}\lVert[A_i,A_j^*]\rVert_{\mathrm{HS}}^2
+   =\lVert Q-R\rVert_{\mathrm{HS}}^2.                         \tag{MC}
+\]
+
+Neither identity forces the sign of
+`tr(Q^2)-tr(QR)`.  There is an exact symmetric-module counterexample.  On the
+degree-at-most-two symmetric module over a `d`-dimensional space, choose an orthonormal
+monomial basis and commuting lowering maps whose degree-one-to-vacuum weight is `a` and whose
+degree-two-to-degree-one radial weight is `b` (square channels have the canonical factor
+`sqrt 2`).  The column energy is diagonal.  Summing once over the `d` degree-one vectors and
+once over the `d(d+1)/2` quadratic vectors gives
+
+\[
+ \operatorname{tr}(Q^2)-\sum_{i,j}\lVert A_iA_j\rVert_{\mathrm{HS}}^2
+ =d a^4+d(d+1)b^2(2b^2-a^2).                              \tag{RT}
+\]
+
+Taking `d=8`, `a=2`, and `b=1` makes (RT) equal
+
+\[
+ 8\cdot16+8\cdot9(2-4)=-16.
+\]
+
+Thus commutativity, nilpotence, a symmetric grading, and the Pluecker condition still do not
+own the desired sign.  The counterexample is not a standard-Fock invariant subspace: its radial
+renormalisation omits the transverse annihilation channels that any actual Fock-space metric
+completion must carry.
+
+#### Positive survivor -- quadratic graph completion
+
+`[PAPER-PROVED]`.  Let `E,W` be finite-dimensional real Hilbert spaces, let
+`T subset Sym^2(E)` have dimension `m`, and let `L : T -> W` be arbitrary.  Inside the
+symmetric Fock space over `E direct-sum W`, consider
+
+\[
+ S_L=\mathbb R\Omega\oplus E\oplus\{q+Lq:q\in T\}.
+\]
+
+This is invariant under every annihilation operator.  Annihilation in an `E` direction lowers
+the quadratic component into `E`; annihilation in a `W` direction lowers the correction `Lq`
+directly into the vacuum.  These latter maps are precisely the completion channels absent from
+the false weighted-tuple model.
+
+Conversely, every nonzero annihilation-invariant polynomial subspace of maximal degree at most
+two has this form after taking `E` to be its linear symbol, `T` its quadratic symbol, removing
+lower terms from a section, and putting the residual linear correction in `W=E^perp`.  Thus this
+is the complete quadratic stratum, not a chosen model.
+
+Under degree dilation by `sqrt t`, the vacuum contributes `1`, the `E` block contributes
+`t^e`, and the graph block has Gram operator
+
+\[
+ t^2I+tL^*L=t(tI+L^*L).
+\]
+
+Consequently its determinant-line partition is
+
+\[
+ Z_L(t)=t^{e+m}\det(tI+L^*L)
+       =t^{e+m}\prod_{j=1}^m(t+\lambda_j),                 \tag{GC}
+\]
+
+where the nonnegative `lambda_j` are the eigenvalues of `L^*L`.  Its degree law is therefore a
+deterministic baseline `e+m` plus independent Bernoulli variables with
+
+\[
+ p_j(t)=\frac{t}{t+\lambda_j}.
+\]
+
+Hence
+
+\[
+ \mathbb E_tD-\operatorname{Var}_t(D)
+   =e+m+\sum_{j=1}^m p_j(t)^2>0                            \tag{GCF}
+\]
+
+whenever `e+m>0`.  This proves (AI) for every quadratic annihilation-invariant polynomial
+subspace, a genuinely multivariable and arbitrarily non-graded universal stratum.  The exact
+proof and its formalisation boundary are recorded in
+`2-fully-proven/gaussian-hilbert-quadratic-graph-completion.md`.
+
 ## Proven frontier base case
 
 `[PAPER-PROVED]`.  If the affine span of the configuration has dimension one, there is
@@ -394,3 +493,6 @@ equivalence-level literature audit is repeated.
   attacked it with a two-branch inverse system.  The intended sparse-degree counterexample
   instead produced the exact positive margin `(M+L)^2/4`, exposing lowering-chain cost as a
   possible sign mechanism.
+- 2026-07-19 -- killed the arbitrary commuting-tuple strengthening by the exact eight-mode
+  radial degree-two counterexample, then restored the missing standard-Fock completion channels
+  and proved the quadratic graph completion law (GC)--(GCF).

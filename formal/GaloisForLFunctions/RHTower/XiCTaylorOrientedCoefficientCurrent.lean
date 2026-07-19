@@ -255,6 +255,88 @@ theorem riemannHypothesis_of_xiCTaylorAnisotropicOrientedCoefficientSublinearUpp
   riemannHypothesis_of_xiCTaylorAnisotropicLogDerivSublinearUpper hN
     (xiCTaylorAnisotropicLogDerivSublinearUpper_of_orientedCoefficient hcoeff)
 
+/-- Under RH, a superaccurate schedule is eventually nonzero on every open-left-strip anisotropic
+fibre.  The exact denominator-cleared identity therefore transports the finite logarithmic-
+derivative bound back to the literal oriented coefficient current. -/
+theorem xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_of_riemannHypothesis
+    {N : ℕ → ℕ} (hN : XiCTaylorSuperaccurateSchedule N)
+    (hRH : RiemannHypothesis) :
+    XiCTaylorAnisotropicOrientedCoefficientSublinearUpper N := by
+  have hfinite :=
+    xiCTaylorAnisotropicLogDerivSublinearUpper_of_riemannHypothesis hN hRH
+  intro sigma hsigmaPos hsigmaHalf epsilon hepsilon
+  have hflux := hfinite sigma hsigmaPos hsigmaHalf epsilon hepsilon
+  let alpha : ℂ := xiCTaylorCenteredPoint sigma
+  have hreflectRight : 1 - sigma ∈ rightHalf := by
+    rw [mem_rightHalf]
+    simp only [sub_re, one_re]
+    linarith
+  have hreflectNe : xi (1 - sigma) ≠ 0 :=
+    (rh_iff_xi_ne_zero_right.mp hRH) (1 - sigma) hreflectRight
+  have hxi : xi sigma ≠ 0 := by
+    rw [xi_one_sub] at hreflectNe
+    exact hreflectNe
+  have hXiNe : XiC alpha ≠ 0 := by
+    simpa only [alpha, XiC_xiCTaylorCenteredPoint] using hxi
+  let c : ℝ := ‖XiC alpha‖ / 4
+  have hc : 0 < c := div_pos (norm_pos_iff.mpr hXiNe) (by norm_num)
+  have hXiTend : Tendsto
+      (fun n : ℕ => ‖XiC (xiCTaylorAnisotropicCenteredPoint sigma n)‖)
+      atTop (nhds ‖XiC alpha‖) := by
+    have hcont : ContinuousAt XiC alpha :=
+      (XiC_analytic alpha (Set.mem_univ alpha)).continuousAt
+    exact hcont.norm.tendsto.comp
+      (tendsto_xiCTaylorAnisotropicCenteredPoint sigma)
+  have hXiLower : ∀ᶠ n : ℕ in atTop,
+      2 * c < ‖XiC (xiCTaylorAnisotropicCenteredPoint sigma n)‖ := by
+    have hlt : 2 * c < ‖XiC alpha‖ := by
+      dsimp [c]
+      linarith [norm_pos_iff.mpr hXiNe]
+    exact hXiTend.eventually (eventually_gt_nhds hlt)
+  have htolTend : Tendsto (fun n : ℕ =>
+      xiCTaylorScheduleTolerance (xiCTaylorAnisotropicScheduleStage sigma n))
+      atTop (nhds 0) := by
+    simpa using tendsto_xiCTaylorScheduleTolerance_stage_mul_pow sigma 0
+  have htolSmall : ∀ᶠ n : ℕ in atTop,
+      xiCTaylorScheduleTolerance (xiCTaylorAnisotropicScheduleStage sigma n) < c :=
+    htolTend.eventually (eventually_lt_nhds hc)
+  filter_upwards [hflux, hXiLower, htolSmall] with n hnFlux hnXi hnTol
+  let k : ℕ := xiCTaylorAnisotropicScheduleStage sigma n
+  let z : ℂ := xiCTaylorAnisotropicCenteredPoint sigma n
+  let P : Polynomial ℂ := xiCTaylorPolynomial (N k)
+  let tol : ℝ := xiCTaylorScheduleTolerance k
+  have happ := xiCTaylorSuperaccurateSchedule_at_anisotropicCenteredPoint hN sigma n
+  have hvalueErr : ‖P.eval z - XiC z‖ < tol := by
+    simpa only [P, z, k, xiCTaylorPolynomial_eval, dist_eq_norm,
+      norm_sub_rev] using happ.1
+  have hPLower : c < ‖P.eval z‖ := by
+    have htri : ‖XiC z‖ ≤ ‖P.eval z‖ + ‖P.eval z - XiC z‖ := by
+      calc
+        ‖XiC z‖ = ‖P.eval z - (P.eval z - XiC z)‖ := by congr 1; ring
+        _ ≤ _ := norm_sub_le _ _
+    have htol : tol < c := by simpa only [tol, k] using hnTol
+    have hxiLower : 2 * c < ‖XiC z‖ := by simpa only [z] using hnXi
+    linarith [hvalueErr]
+  have hPNe : P.eval z ≠ 0 := norm_pos_iff.mp (hc.trans hPLower)
+  have hq : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  have hfun : (fun w : ℂ => P.eval w) = xiCTaylorApprox (N k) := by
+    funext w
+    exact xiCTaylorPolynomial_eval _ w
+  have hlog : (logDeriv (fun w : ℂ => P.eval w) z).im <
+      epsilon * ((n + 1 : ℕ) : ℝ) := by
+    rw [hfun]
+    rw [div_lt_iff₀ hq] at hnFlux
+    simpa only [z, k] using hnFlux
+  rw [polynomial_logDeriv_im_eq_orientedCurrent_div_normSq P z] at hlog
+  exact (div_lt_iff₀ (Complex.normSq_pos.mpr hPNe)).mp hlog
+
+/-- **Exact oriented finite-coefficient criterion for every superaccurate schedule.** -/
+theorem xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_iff_riemannHypothesis
+    {N : ℕ → ℕ} (hN : XiCTaylorSuperaccurateSchedule N) :
+    XiCTaylorAnisotropicOrientedCoefficientSublinearUpper N ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_xiCTaylorAnisotropicOrientedCoefficientSublinearUpper hN,
+    xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_of_riemannHypothesis hN⟩
+
 end
 
 end RHTower

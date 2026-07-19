@@ -133,6 +133,39 @@ theorem xiTransverseShiftFiniteAbscissaSource_add (a b : ℕ) :
       Complex.cpow_add _ _ hnC]
     ring
 
+/-- **Arithmetic relative-shift normal form.** For `b ≤ a`, the difference of the two transverse
+Xi sources is the Dirichlet-`b` translate of the source at the relative shift `a-b`. -/
+theorem xiTransverseShiftFiniteAbscissaSource_sub_eq_dirichletShift_of_le
+    (a b : ℕ) (hba : b ≤ a) :
+    xiTransverseShiftFiniteAbscissaSource a -
+        xiTransverseShiftFiniteAbscissaSource b =
+      finiteAbscissaDirichletShift (b : ℂ)
+        (xiTransverseShiftFiniteAbscissaSource (a - b)) := by
+  have hadd := xiTransverseShiftFiniteAbscissaSource_add b (a - b)
+  rw [Nat.add_sub_of_le hba] at hadd
+  rw [hadd]
+  ring
+
+/-- Unconditional oriented source classifier: every pairwise source is one translated
+nonnegative relative-shift source, with orientation supplying the sign. -/
+theorem xiTransverseShiftFiniteAbscissaSource_sub_eq_relativeShift
+    (a b : ℕ) :
+    xiTransverseShiftFiniteAbscissaSource a -
+        xiTransverseShiftFiniteAbscissaSource b =
+      if b ≤ a then
+        finiteAbscissaDirichletShift (b : ℂ)
+          (xiTransverseShiftFiniteAbscissaSource (a - b))
+      else
+        -finiteAbscissaDirichletShift (a : ℂ)
+          (xiTransverseShiftFiniteAbscissaSource (b - a)) := by
+  by_cases hba : b ≤ a
+  · rw [if_pos hba,
+      xiTransverseShiftFiniteAbscissaSource_sub_eq_dirichletShift_of_le a b hba]
+  · have hab : a ≤ b := Nat.le_of_lt (Nat.lt_of_not_ge hba)
+    rw [if_neg hba,
+      ← xiTransverseShiftFiniteAbscissaSource_sub_eq_dirichletShift_of_le b a hab]
+    ring
+
 /-- Actual upper-end meromorphic carrier of the shift-`a` transverse prime source. -/
 def xiTransverseShiftUpperEndCarrier (a : ℕ) : upperEndMeroField :=
   finiteAbscissaLSeriesToUpperEndMero (xiTransverseShiftFiniteAbscissaSource a)
@@ -141,6 +174,40 @@ def xiTransverseShiftUpperEndCarrier (a : ℕ) : upperEndMeroField :=
 theorem xiTransverseShiftUpperEndCarrier_zero :
     xiTransverseShiftUpperEndCarrier 0 = 0 := by
   simp [xiTransverseShiftUpperEndCarrier]
+
+/-- **Meromorphic relative-shift carrier law.** Faithful upper-end realization transports the
+arithmetic relative-source identity to literal meromorphic translation. -/
+theorem xiTransverseShiftUpperEndCarrier_sub_eq_translation_of_le
+    (a b : ℕ) (hba : b ≤ a) :
+    xiTransverseShiftUpperEndCarrier a -
+        xiTransverseShiftUpperEndCarrier b =
+      upperEndTranslationMeroEquiv (Complex.I * (b : ℂ))
+        (xiTransverseShiftUpperEndCarrier (a - b)) := by
+  rw [xiTransverseShiftUpperEndCarrier,
+    xiTransverseShiftUpperEndCarrier,
+    xiTransverseShiftUpperEndCarrier,
+    ← map_sub finiteAbscissaLSeriesToUpperEndMero,
+    xiTransverseShiftFiniteAbscissaSource_sub_eq_dirichletShift_of_le a b hba,
+    finiteAbscissaLSeriesToUpperEndMero_dirichletShift]
+
+/-- The meromorphic relative-shift law with endpoint order discharged. -/
+theorem xiTransverseShiftUpperEndCarrier_sub_eq_relativeShift
+    (a b : ℕ) :
+    xiTransverseShiftUpperEndCarrier a -
+        xiTransverseShiftUpperEndCarrier b =
+      if b ≤ a then
+        upperEndTranslationMeroEquiv (Complex.I * (b : ℂ))
+          (xiTransverseShiftUpperEndCarrier (a - b))
+      else
+        -upperEndTranslationMeroEquiv (Complex.I * (a : ℂ))
+          (xiTransverseShiftUpperEndCarrier (b - a)) := by
+  by_cases hba : b ≤ a
+  · rw [if_pos hba,
+      xiTransverseShiftUpperEndCarrier_sub_eq_translation_of_le a b hba]
+  · have hab : a ≤ b := Nat.le_of_lt (Nat.lt_of_not_ge hba)
+    rw [if_neg hba,
+      ← xiTransverseShiftUpperEndCarrier_sub_eq_translation_of_le b a hab]
+    ring
 
 theorem xiTransverseShiftArithmetic_apply_prime (a : ℕ) (p : Nat.Primes) :
     xiTransverseShiftArithmetic a p =

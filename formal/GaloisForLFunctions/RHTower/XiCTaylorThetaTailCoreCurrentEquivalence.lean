@@ -140,6 +140,22 @@ theorem xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis
   · exact riemannHypothesis_of_xiCTaylorThetaTailCoreCurrentSublinearUpper hD
   · exact xiCTaylorThetaTailCoreCurrentSublinearUpper_of_riemannHypothesis hD
 
+/-- RH also discharges the unreduced finite theta-tail envelope: the top-defect cross terms are
+already controlled unconditionally from superaccuracy. -/
+theorem xiCTaylorThetaTailCoreInterferenceSublinearUpper_of_riemannHypothesis
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    (hRH : RiemannHypothesis) :
+    XiCTaylorThetaTailCoreInterferenceSublinearUpper D :=
+  xiCTaylorThetaTailCoreInterferenceSublinearUpper_of_coreCurrent hD
+    (xiCTaylorThetaTailCoreCurrentSublinearUpper_of_riemannHypothesis hD hRH)
+
+/-- **Exact finite theta-tail envelope criterion on every source-selected schedule.** -/
+theorem xiCTaylorThetaTailCoreInterferenceSublinearUpper_iff_riemannHypothesis
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D) :
+    XiCTaylorThetaTailCoreInterferenceSublinearUpper D ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_xiCTaylorThetaTailCoreInterferenceSublinearUpper hD.1,
+    xiCTaylorThetaTailCoreInterferenceSublinearUpper_of_riemannHypothesis hD⟩
+
 end
 
 end RHTower
