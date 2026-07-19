@@ -19,6 +19,10 @@ class of `L(v)` in the root-annihilator quotient is algebraic over `K`.  Therefo
 every autonomous one-root commutative complete dependence horizon is a vector subspace.
 ```
 
+The converse is now exact: every vector subspace is realized by the regular action of the
+symmetric algebra on the quotient law space.  Thus the possible horizons in this commutative
+phase are **exactly** the vector subspaces, not merely a subclass of them.
+
 This is sharp.  Every finite homogeneous projective zero locus is the exact complete dependence
 horizon of a free-word realization, and the realization may be chosen with injective exterior
 commutator symbol.  Hence
@@ -102,6 +106,8 @@ This extension is not yet proved by the current prime-clock leaf.
 - **Arbitrary autonomous commutative representations:** the full one-root dependence horizon is
   the carrier of a vector subspace, with no cyclicity, finite-dimensionality, grading,
   reducedness, or finite-generation assumption on the represented commutative algebra.
+- **Exact commuting converse:** every vector subspace of law space is the complete horizon of an
+  explicit autonomous one-root commutative regular representation.
 - **Free-word converse:** every finite projective zero locus is realized as an exact complete
   horizon; the same construction has injective exterior commutator symbol.  A nonlinear cone is
   therefore impossible in the commutative phase and realized in a maximally detected
@@ -162,6 +168,7 @@ represented by the field, such as positivity, reflection, completion, or boundar
 
 - [x] exact universal candidate stated
 - [x] arbitrary autonomous commutative horizon proved linear
+- [x] every linear horizon explicitly realized in the commutative phase
 - [x] every finite projective zero locus realized in the free phase
 - [x] maximal exterior commutator certificate proved for the free realization
 - [x] combined commutative/free capstone written in source
@@ -172,4 +179,4 @@ represented by the field, such as positivity, reflection, completion, or boundar
 - [ ] second non-prime realization proved
 - [ ] multi-operator extension proved or explicitly excluded
 - [ ] specialist literature audit
-- [ ] paper recut around the verified scope
+- [x] paper recut around the verified scope

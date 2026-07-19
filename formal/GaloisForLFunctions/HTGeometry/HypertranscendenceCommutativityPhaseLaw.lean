@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CommutativeRepresentationHorizon
+import GaloisForLFunctions.HTGeometry.CommutativeHorizonExactClassification
 import GaloisForLFunctions.HTGeometry.FreeCommutingHorizonPhaseBoundary
 import GaloisForLFunctions.HTGeometry.FreeHorizonMaximalCommutatorRank
 import GaloisForLFunctions.HTGeometry.PrimeProfileClockSaturationLaw
@@ -10,11 +10,12 @@ This module packages the sharp structural boundary exposed by the horizon and pr
 classifications.
 
 For every autonomous one-root linear representation of a commutative law algebra, the complete
-directional algebraic-dependence horizon is a vector subspace.  Conversely, every finite
-homogeneous projective zero locus is the exact complete horizon of a free-word realization, and
-the realization can be chosen with injective exterior commutator symbol.  Thus nonlinear horizon
-topology is an intrinsic obstruction to the autonomous commutative phase, rather than an artifact
-of a particular presentation.
+directional algebraic-dependence horizon is a vector subspace, and every vector subspace is
+realized by an explicit symmetric-algebra regular representation.  Conversely, every finite
+homogeneous projective zero locus is the exact complete horizon of a free-word realization whose
+exterior commutator symbol is injective.  Thus nonlinear horizon topology is an intrinsic
+obstruction to the autonomous commutative phase, rather than an artifact of a particular
+presentation.
 
 The prime-profile corollary records the field-level form of the same linearization: differential
 field generation is operator saturation, and relative differential algebraicity is polynomial
@@ -48,13 +49,21 @@ noncommutativity. -/
 theorem commutativityHypertranscendencePhaseLaw
     (rho : A →ₐ[K] Module.End K M) (m : M) (L : (iota → K) →ₗ[K] A)
     (P : eta → MvPolynomial iota K) (degree : eta → Nat)
-    [Nonempty (CommonDegreeEquationIndex iota degree)]
+    [Nonempty iota] [Nonempty eta]
     (hP : forall j, (P j).IsHomogeneous (degree j))
     (hNonlinear : forall H : Submodule K (iota → K),
       (H : Set (iota → K)) ≠ finiteLawZeroCone P) :
     ({v : iota → K |
         ¬ AlgebraicIndependent K (commutativeRepresentationJet rho m L v)} =
         (commutativeRepresentationHorizon rho m L : Set (iota → K))) ∧
+      (∀ H : Submodule K (iota → K),
+        {v : iota → K |
+            ¬ AlgebraicIndependent K
+              (commutativeRepresentationJet
+                (subspaceCommutativeRegularRepresentation H)
+                (1 : SubspaceCommutativeLawAlgebra H)
+                (subspaceCommutativeLawMap H) v)} =
+          (H : Set (iota → K))) ∧
       {v : iota → K |
           ¬ AlgebraicIndependent K (commutativeRepresentationJet rho m L v)} ≠
         finiteLawZeroCone P ∧
@@ -71,9 +80,11 @@ theorem commutativityHypertranscendencePhaseLaw
           (derivationCommutatorMap
             (projectiveCompleteLawMap a ((∑ j, degree j) + 1))) := by
   have hlinear := commutativeRepresentation_dependenceHorizon_eq_submodule rho m L
-  refine ⟨hlinear, ?_, ?_⟩
+  refine ⟨hlinear, subspaceCommutative_dependenceHorizon_eq, ?_, ?_⟩
   · rw [hlinear]
     exact hNonlinear (commutativeRepresentationHorizon rho m L)
+  letI : Nonempty (CommonDegreeEquationIndex iota degree) :=
+    ⟨⟨Classical.choice inferInstance, fun _ ↦ Classical.choice inferInstance⟩⟩
   obtain ⟨a, hrealizes, hcommutator⟩ :=
     exists_completeJet_horizon_eq_finiteHomogeneousZeroLocus_and_commutatorMap_injective
       P degree hP

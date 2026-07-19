@@ -410,6 +410,51 @@ Q_1^2/(Q_0 Q_2)=242/211.
 
 Thus equations `(4)`, `(5)`, and the exact algebraic content of `(10)`--`(13)` are now in Lean.
 
+`formal/GaloisForLFunctions/RHTower/HermiteContrastLp.lean` upgrades that algebra to genuine
+Hilbert-space objects, unconditionally.  Each contrast vector is supported on the first `k+2`
+coordinates, hence lies in `ell^2` (`memℓp_constrainedProlateHermiteContrast`); the `ell^2` inner
+product of two contrast vectors is exactly the algebraic pairing (`inner_hermiteContrastLp`), so
+`(11)` holds as genuine orthogonality in `ell^2` (`inner_hermiteContrastLp_eq_zero`); no contrast
+vector vanishes, its top coordinate being `S_k/a_(k+1)` (`hermiteContrastLp_ne_zero`); and the
+normalized ladder is an orthonormal system (`orthonormal_hermiteContrastUnit`).  The exact squared
+norm is computed in closed form,
+
+```text
+||w_k||^2 = sqrt(2) * Q_k * Q_(k+1) / q_(k+1)                (norm_sq_hermiteContrastLp_eq)
+```
+
+so the normalization appearing in `(10)` is explicit rather than implicit.  The raw CCM contrasts
+`r_m = a_0 e_m - a_m e_0` are likewise placed in `ell^2` (they are supported on two coordinates),
+and `inner_hermiteContrastLp_rawHermiteContrastLp_eq_zero` proves `<w_k, r_m> = 0` in `ell^2` for
+every `0 < m <= k`.  Together with the mutual orthogonality of the ladder this exhibits `w_k` as
+the Gram--Schmidt orthogonalization of the raw family as an identity between genuine Hilbert-space
+vectors, which is the `[PROVED HERE; BRIDGE]` claim above.
+
+The direction is moreover PINNED, unconditionally:
+`eq_smul_constrainedProlateHermiteContrast_of_orthogonal` proves that any vector supported on the
+first `k+2` coordinates which is orthogonal to the constraint and to every preceding raw contrast
+is a scalar multiple of `w_k`.  The raw conditions force `x_m a_0 = x_0 a_m` for `m <= k`, so the
+head is proportional to `(a_0,...,a_k)`, and the constraint then determines the top coordinate as
+`-(x_0/a_0) S_k/a_(k+1)`.  This is the finite-dimensional uniqueness the eigenvector limit must
+reproduce; it removes the apparent `(k+1)`-dimensional freedom in the depth-`k` head plane.
+Transported to `ell^2` (`eq_smul_hermiteContrastLp_of_orthogonal`) and combined with
+normalization, this yields `eq_pm_hermiteContrastUnit_of_orthogonal`: a UNIT vector of `ell^2`
+supported on the first `k+2` coordinates and orthogonal to the constraint and to every preceding
+raw contrast equals `+/-` the normalized ladder vector.  That is precisely the card's phrase "the
+unique unit vector up to sign", now a theorem rather than a description.
+
+The pinning is moreover QUANTITATIVE, and exactly so.  Because the uniqueness argument is an exact
+computation it survives perturbation with no compactness step:
+`sub_smul_hermiteContrast_head_eq_raw` proves that for `0 < m <= k` the deviation of `x_m` from the
+ladder direction, multiplied by `a_0`, EQUALS the raw pairing `<x, r_m>`; and
+`sub_smul_hermiteContrast_top_mul` gives the corresponding exact identity for the top coordinate in
+terms of the constraint pairing corrected by the head defects.  A convergence proof therefore has
+only to drive the orthogonality defects to zero -- the passage from "defects small" to "close to the
+ladder" is an identity, not an estimate.
+
+This supplies the LIMIT side of `(10)`--`(11)` as `ell^2` data.  It does NOT prove that the exact eigenvectors
+converge to it, which is what the gate below still asks for.
+
 The **adjacent-level law `(9)` and its first excited constant `(13)` are now formalized** for the
 two-mode Fuchs model in `GaloisForLFunctions/RHTower/LadderAdjacentScaleSeparation.lean`.  Writing
 `ladderTwoModeRoot A k lam` for the depth-`k` rung, `RHTower.ladder_adjacent_ratio_tendsto` proves

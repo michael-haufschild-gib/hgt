@@ -139,4 +139,27 @@ theorem constrainedProlateArchSeriesTerm_eq_measure_slice (n : ℕ) :
   unfold GaloisForLFunctions.constrainedProlateArchSeriesTerm
   ring
 
+/-- **The limiting radial leakage density is integrable on every tail.**  The antiderivative
+`-arcsin(1/x)` is monotone with a finite limit at infinity, so the improper integral at the
+inverse square-root endpoint singularity is genuine. -/
+theorem integrableOn_Ioi_radialLeakageDensity {a : ℝ} (ha : 1 ≤ a) :
+    IntegrableOn radialLeakageDensity (Ioi a) volume := by
+  have ha0 : (0 : ℝ) < a := lt_of_lt_of_le one_pos ha
+  have hderiv : ∀ x ∈ Ioi a, HasDerivAt (fun y => -Real.arcsin (1 / y))
+      (radialLeakageDensity x) x := fun x hx =>
+    hasDerivAt_neg_arcsin_one_div (lt_of_le_of_lt ha hx)
+  have hcont : ContinuousWithinAt (fun y => -Real.arcsin (1 / y)) (Ici a) a :=
+    ContinuousAt.continuousWithinAt
+      ((Real.continuous_arcsin.continuousAt.comp
+        (continuousAt_const.div continuousAt_id ha0.ne')).neg)
+  have hlim : Tendsto (fun y => -Real.arcsin (1 / y)) atTop (nhds 0) := by
+    have h1 : Tendsto (fun y : ℝ => 1 / y) atTop (nhds 0) := by
+      simpa [one_div] using (tendsto_inv_atTop_zero (𝕜 := ℝ))
+    have h2 : Tendsto (fun y : ℝ => Real.arcsin (1 / y)) atTop (nhds 0) := by
+      have h := (Real.continuous_arcsin.tendsto (0 : ℝ)).comp h1
+      simpa [Function.comp_def, Real.arcsin_zero] using h
+    simpa using h2.neg
+  exact integrableOn_Ioi_deriv_of_nonneg hcont hderiv
+    (fun x hx => radialLeakageDensity_nonneg (le_of_lt (lt_trans ha0 hx))) hlim
+
 end RHTower

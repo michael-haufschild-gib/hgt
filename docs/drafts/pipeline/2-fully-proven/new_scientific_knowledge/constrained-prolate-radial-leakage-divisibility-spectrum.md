@@ -423,6 +423,23 @@ Three consequences are formalized on top of it.  `RHTower.radialLeakageMeasure_t
 formalized archimedean coefficient with such a tail, so the arcsine spectrum is now a family of tail
 integrals of one density rather than a formal series.  All are axiom-clean.
 
+The **reduction of the weak convergence to pointwise density asymptotics is now formalized**, in
+`formal/GaloisForLFunctions/HTGeometry/ScheffeLemma.lean`.  Scheffe's lemma is absent from mathlib;
+it is proved here by applying dominated convergence to the positive part `(g - f)^+`, which the
+limit density itself dominates.  With it, `(4)` follows from just two analytic inputs: pointwise
+a.e. convergence of the densities, and convergence of the total masses -- whose target value
+`4/11` is already formalized exactly.  A companion theorem converts the resulting `L^1` convergence
+into convergence of integrals against every bounded weight, which is the form weak convergence is
+used in.
+
+`formal/GaloisForLFunctions/RHTower/RadialLeakageWeakConvergence.lean` pins the limiting object
+down exactly: it names the density `nuInfinityDensity = (8/(11 pi)) radialLeakageDensity` and
+proves its integrability and its exact total mass `4/11`.  It records NO conditional form of the
+convergence: the general Scheffe reduction is available in
+`formal/GaloisForLFunctions/HTGeometry/ScheffeLemma.lean` and can be applied once the density
+asymptotics are proved, but the asymptotics do not exist in the tree, so no statement here assumes
+them.  All axiom-clean.
+
 What is still not formalized is the **weak convergence** `(4)` of the finite-aperture measures
 `nu_lambda` to this limit, and the off-diagonal vanishing `(23)`: the formal tree has no radial
 PSWF, Bessel-envelope asymptotics, or oscillatory-measure interface (that is the Fuchs/Dunster

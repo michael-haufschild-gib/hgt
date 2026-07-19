@@ -502,6 +502,23 @@ classical inputs: the identification of the positive signed modes with the `4j` 
 fixed-index asymptotics for the actual `χ_n(λ)`, prolate-to-Hermite convergence `ℓ_j → a_j`, and
 the Bessel bound `(2)` from the concrete operator layer.
 
+The sign-choice/metric form of `(4)` is now formalized.  The general geometry lives in
+`formal/GaloisForLFunctions/HTGeometry/SignChoiceNormalizedDistance.lean`: for unit vectors
+`min(‖u−w‖², ‖u+w‖²) = 2 − 2|⟪u,w⟫|`, so a vanishing angle *is* a vanishing sign-optimized
+distance, with the explicit rate `‖u − σw‖² ≤ 2ε` for an angle deficit `ε`.
+
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateHeadDistance.lean` instantiates this in the
+head plane.  Taking the seed direction to be the *explicit* orthogonal vector `(−ℓ₁, ℓ₀)` reduces
+the whole geometric step to the Lagrange identity
+`(x₀ℓ₀+x₁ℓ₁)² + (x₁ℓ₀−x₀ℓ₁)² = (x₀²+x₁²)(ℓ₀²+ℓ₁²)`, so no span or dimension reasoning is needed.
+
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateFullDistance.lean` assembles head and tail
+in `lp 2`.  Since the seed is supported on the first two coordinates it pairs only with the head,
+giving the factorization
+`⟪V,G⟫²/(‖V‖²‖G‖²) = [⟪H,G⟫²/(‖H‖²‖G‖²)]·[‖H‖²/(‖H‖²+T)]`;
+the first bracket tends to one by the head-defect collapse, the second by the tail-fraction
+collapse together with `‖H‖² ≥ v₀²`.  All of this is axiom-clean.
+
 ## Gates
 
 - [x] exact source-defined prolate operator and vanishing-integral constraint
@@ -526,7 +543,15 @@ the Bessel bound `(2)` from the concrete operator layer.
   against the constraint direction `(ℓ_0,ℓ_1)` → 0 at rate `(λd_1/(d_2−d_1))²`
   (`ConstrainedProlateEigenvectorAngle`: `ℓ_0v_0+ℓ_1v_1 = −tail` exactly, `(22)`'s content) —
   together: the exact constrained ground direction converges to the two-mode seed direction
-- [ ] the normalized ℓ²-distance/sign-choice cosmetic form of `(4)` in Lean
+- [x] the normalized ℓ²-distance/sign-choice cosmetic form of `(4)` in Lean, for the CCM Fuchs
+  family under exactly the Bessel + coordinate-limit hypotheses used by the other Fuchs-model
+  gates above: `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed`
+  (`ConstrainedProlateFullDistanceCCM`) gives `min_σ ‖v̂_λ − σ ĝ_λ‖² → 0` for the full normalized
+  `ℓ²` eigenvector against the normalized two-mode seed.  BOTH VECTORS ARE CONSTRUCTED, not
+  assumed (`secularLp` via `memℓp_secularVector`, `twoModeSeedLp` via finite support), and the
+  structural, tail-ratio, nonvanishing, membership and summability hypotheses are all DISCHARGED
+  from the family data `A`.  Only `hsum`/`hbessel` and the coordinate limits `hl0`/`hl1` remain,
+  the latter being the open prolate-to-Hermite gate below.  Axiom-clean
 - [ ] remaining true-operator inputs in Lean: mode identification, Fuchs asymptotics,
   prolate-to-Hermite limits, evaluation identity `(1)`
 - [ ] independent proof review

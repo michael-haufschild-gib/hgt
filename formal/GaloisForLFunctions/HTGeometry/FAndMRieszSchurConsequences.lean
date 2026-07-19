@@ -1,4 +1,3 @@
-import GaloisForLFunctions.HTGeometry.FAndMRieszVanishing
 import GaloisForLFunctions.HTGeometry.SingularSchurDefectCollapse
 
 /-!
@@ -22,9 +21,7 @@ theorem singularSchurDefect_doubleBoundary
     (hsing : (mu : Measure Circle) ⟂ₘ circleLebesgue) :
     HasSingularSchurDefectCollapse (mu : Measure Circle) hmu ∧
       HasBernsteinSzegoCofinalApproximation mu hmu :=
-  singularSchurDefect_doubleBoundary_of_rieszBrothers mu hmu hsing
-    (hasRieszBrothersDensityConclusion_of_fAndMRieszVanishing (mu : Measure Circle)
-      (hasFAndMRieszVanishingConclusion_circle (mu : Measure Circle)))
+  singularSchurDefect_doubleBoundary_of_mutuallySingular mu hmu hsing
 
 end
 end GaloisForLFunctions.HTGeometry

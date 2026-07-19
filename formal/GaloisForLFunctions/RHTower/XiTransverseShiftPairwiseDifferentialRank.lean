@@ -1,0 +1,147 @@
+import GaloisForLFunctions.HTGeometry.DifferentialConstantLinearFamilyMatroid
+import GaloisForLFunctions.RHTower.XiTransverseShiftPairwiseValue
+
+/-!
+# Pairwise differential rank of every integral completed-Xi shift
+
+The arbitrary integral transverse source family already has the pointed collision matroid of its
+shift labels, and every source carrier is the actual completed-Xi shift defect after its exact
+archimedean correction. Taking oriented pairwise differences converts that collision law into an
+exact rooted incidence matroid over the rational coordinate base.
+
+Consequently all differential relations among any finite pairwise packet are exactly Kirchhoff
+circulations. For the complete ordered pair family, the pairwise reporters generate the same
+differential field as the vertex family. These statements are unconditional and apply to odd as
+well as even integral shifts; no rationality claim is made for the odd-shift correction.
+-/
+
+namespace RHTower
+
+open Complex Filter Set
+open scoped Differential
+
+noncomputable section
+
+open GaloisForLFunctions
+open GaloisForLFunctions.HTGeometry
+
+local instance xiPairwiseTransverseUpperEndDomain : IsDomain upperEndAnalyticSubring :=
+  isDomain_upperEndAnalyticSubring
+
+local instance xiPairwiseTransverseUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
+  upperEndComplexToMero.toAlgebra
+
+local instance xiPairwiseTransverseUpperEndCharZero : CharZero upperEndMeroField :=
+  charZero_of_injective_ringHom upperEndComplexToMero.injective
+
+local instance xiPairwiseTransverseUpperEndDifferential : Differential upperEndMeroField :=
+  upperEndMeroFieldDifferential
+
+local instance xiPairwiseTransverseCoordinateDifferential :
+    Differential upperEndRationalCoordinateField :=
+  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
+
+local instance xiPairwiseTransverseCoordinateDifferentialAlgebra :
+    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
+  deriv_algebraMap c := by
+    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
+    rfl
+
+/-! ## Complete pairwise generated fields -/
+
+/-- All ordered pairwise corrected integral-shift reporters generate exactly the vertex field over
+the rational coordinate base as soon as the family contains a zero-shift root. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices
+    {V : Type} (root : V) (shift : V → ℕ) (hroot : shift root = 0) :
+    differentialAdjoin upperEndRationalCoordinateField
+        (Set.range
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift Prod.snd Prod.fst)) =
+      differentialAdjoin upperEndRationalCoordinateField
+        (Set.range fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) := by
+  let x := fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)
+  have hx0 : x root = 0 := by
+    simp [x, hroot]
+  have h := differentialAdjoin_range_pairwiseDifferences_eq_of_root_zero
+    (F := upperEndRationalCoordinateField) (K := upperEndMeroField) root x hx0
+  simpa only [x, xiTransverseShiftPairDifferenceUpperEndCarrier] using h
+
+/-! ## Rational-coordinate incidence matroid -/
+
+/-- **All-integral pairwise Xi incidence law.** For every finite oriented edge family on distinct
+integral shift labels with a zero root, the corrected completed-Xi pairwise differences represent
+exactly the rooted incidence matroid over the rational coordinate field. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_eq_rootedIncidenceMatroid
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq V] [DecidableEq E]
+    (root : V) (shift : V → ℕ) (hroot : shift root = 0)
+    (hinj : Function.Injective shift) (tail head : E → V) :
+    differentialFamilyMatroid
+        (F := upperEndRationalCoordinateField)
+        (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head) =
+      rootedIncidenceMatroid
+        (C := upperEndRationalCoordinateField) root tail head := by
+  have hx0 : xiTransverseShiftUpperEndCarrier (shift root) = 0 := by
+    rw [hroot, xiTransverseShiftUpperEndCarrier_zero]
+  have hx : DifferentialIndependent upperEndRationalCoordinateField
+      (fun v : ↑({v | v ≠ root} : Set V) ↦
+        xiTransverseShiftUpperEndCarrier (shift v)) := by
+    apply (xiTransverseShiftUpperEndCarrier_differentialIndependent_iff
+      shift {v | v ≠ root}).2
+    refine ⟨?_, ?_⟩
+    · intro i _ j _ hij
+      exact hinj hij
+    · intro v hv hzero
+      exact hv (hinj (hzero.trans hroot.symm))
+  simpa [xiTransverseShiftPairDifferenceUpperEndCarrier] using
+    (differentialFamilyMatroid_pairwiseDifferences_eq_rootedIncidenceMatroid
+      (C := upperEndRationalCoordinateField) root tail head
+      (fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) hx0 hx)
+
+/-- Rational-base Prop interface for every selected all-integral pairwise packet. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialIndependent_iff
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq V] [DecidableEq E]
+    (root : V) (shift : V → ℕ) (hroot : shift root = 0)
+    (hinj : Function.Injective shift) (tail head : E → V) (I : Set E) :
+    DifferentialIndependent upperEndRationalCoordinateField
+        (fun e : I ↦ xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head e) ↔
+      (rootedIncidenceMatroid
+        (C := upperEndRationalCoordinateField) root tail head).Indep I := by
+  let y := xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head
+  rw [← differentialFamilyMatroid_indep_iff y I,
+    xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_eq_rootedIncidenceMatroid
+      root shift hroot hinj tail head]
+
+/-- Explicit rational-base Kirchhoff interface for all-integral pairwise Xi packets. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialIndependent_finset_iff_vertexConservation
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq V] [DecidableEq E]
+    (root : V) (shift : V → ℕ) (hroot : shift root = 0)
+    (hinj : Function.Injective shift) (tail head : E → V) (I : Finset E) :
+    DifferentialIndependent upperEndRationalCoordinateField
+        (fun e : ↑(↑I : Set E) ↦
+          xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head e) ↔
+      ∀ weight : ↑(↑I : Set E) → upperEndRationalCoordinateField,
+        (∀ v : V,
+          (∑ e : ↑(↑I : Set E),
+              if head (e : E) = v then weight e else 0) =
+            ∑ e : ↑(↑I : Set E),
+              if tail (e : E) = v then weight e else 0) →
+          ∀ e, weight e = 0 := by
+  rw [xiTransverseShiftPairDifferenceUpperEndCarrier_differentialIndependent_iff
+      root shift hroot hinj tail head (↑I : Set E),
+    rootedIncidenceMatroid_indep_iff_vertex_conservation]
+
+/-- Exact rational-base differential rank of every all-integral pairwise edge packet. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_eRk
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq V] [DecidableEq E]
+    (root : V) (shift : V → ℕ) (hroot : shift root = 0)
+    (hinj : Function.Injective shift) (tail head : E → V) (I : Set E) :
+    (differentialFamilyMatroid
+        (F := upperEndRationalCoordinateField)
+        (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head)).eRk I =
+      (rootedIncidenceMatroid
+        (C := upperEndRationalCoordinateField) root tail head).eRk I := by
+  rw [xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_eq_rootedIncidenceMatroid
+    root shift hroot hinj tail head]
+
+end
+
+end RHTower

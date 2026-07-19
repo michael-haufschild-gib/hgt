@@ -280,6 +280,66 @@ theorem abs_im_eq_sqrt_lorentzLift (z : ℂ) :
     Real.sqrt ((confocalLorentzLift z).2 ^ 2 - (confocalLorentzLift z).1 ^ 2) = |z.im| := by
   rw [confocalLorentzLift, Complex.sq_norm_sub_sq_re, Real.sqrt_sq_eq_abs]
 
+/-- The unnormalized confocal upper field selected by a complex source. -/
+def confocalUpperField (S : Set ℂ) (R : ℝ) : ℝ :=
+  R * confocalAmplitudeEnvelope S R
+
+/-- The lifted branch is the physical scale times its affine Bernstein amplitude. -/
+theorem liftedConfocalBranch_eq_mul_affineAmplitude
+    (z : ℂ) {R : ℝ} (hR : 0 < R) :
+    liftedConfocalBranch (confocalLorentzLift z) R =
+      R * (‖z / (R : ℂ)‖ + ‖1 - z / (R : ℂ)‖) := by
+  rw [liftedConfocalBranch_confocalLorentzLift, confocalBranch,
+    affineAmplitude_eq_one_add_confocalDefect_div hR, confocalDefect]
+  have hnormSub :
+      ‖(R : ℂ) - z‖ = Real.sqrt ((R - z.re) ^ 2 + z.im ^ 2) := by
+    rw [Complex.norm_eq_sqrt_sq_add_sq]
+    simp only [sub_re, ofReal_re, sub_im, ofReal_im, zero_sub, neg_sq]
+  rw [← Complex.norm_eq_sqrt_sq_add_sq z, ← hnormSub]
+  field_simp [hR.ne']
+  ring
+
+/-- The intrinsic amplitude field is exactly the confocal upper envelope of the Lorentz-lifted
+source on every positive radius domain. -/
+theorem isConfocalEnvelopeOn_confocalLorentzLift_image
+    {S : Set ℂ} (hne : S.Nonempty) {M : ℝ}
+    (hM : 0 ≤ M) (hbound : ∀ z ∈ S, ‖z‖ ≤ M)
+    {D : Set ℝ} (hD : ∀ R ∈ D, 0 < R) :
+    IsConfocalEnvelopeOn D (confocalLorentzLift '' S) (confocalUpperField S) := by
+  intro R hRD
+  have hR : 0 < R := hD R hRD
+  let A : ℂ → ℝ := fun z => ‖z / (R : ℂ)‖ + ‖1 - z / (R : ℂ)‖
+  have hAne : (A '' S).Nonempty := hne.image A
+  have hAbdd : BddAbove (A '' S) := by
+    refine ⟨1 + 2 * max M 0 / R, ?_⟩
+    rintro y ⟨z, hz, rfl⟩
+    dsimp only [A]
+    rw [affineAmplitude_eq_one_add_confocalDefect_div hR]
+    have hdef := (confocalDefect_le_two_mul_norm hR.le z).trans
+      (mul_le_mul_of_nonneg_left
+        ((hbound z hz).trans (le_max_left M 0)) (by norm_num))
+    simpa only [add_comm] using
+      add_le_add_left (div_le_div_of_nonneg_right hdef hR.le) 1
+  have hAsup : IsLUB (A '' S) (confocalAmplitudeEnvelope S R) := by
+    rw [← sSup_affineAmplitude_eq_confocalAmplitudeEnvelope hne hM hR hbound]
+    exact isLUB_csSup hAne hAbdd
+  constructor
+  · rintro _ ⟨q, ⟨z, hz, rfl⟩, rfl⟩
+    change liftedConfocalBranch (confocalLorentzLift z) R ≤ confocalUpperField S R
+    rw [liftedConfocalBranch_eq_mul_affineAmplitude z hR, confocalUpperField]
+    exact mul_le_mul_of_nonneg_left (hAsup.1 ⟨z, hz, rfl⟩) hR.le
+  · intro b hb
+    have hupperA : ∀ y ∈ A '' S, y ≤ b / R := by
+      rintro y ⟨z, hz, rfl⟩
+      apply (le_div_iff₀ hR).2
+      apply hb
+      exact ⟨confocalLorentzLift z, ⟨z, hz, rfl⟩,
+        by simpa only [A, mul_comm] using
+          liftedConfocalBranch_eq_mul_affineAmplitude z hR⟩
+    have hleast := hAsup.2 hupperA
+    rw [confocalUpperField]
+    simpa only [mul_comm] using (le_div_iff₀ hR).mp hleast
+
 end
 
 end HTGeometry

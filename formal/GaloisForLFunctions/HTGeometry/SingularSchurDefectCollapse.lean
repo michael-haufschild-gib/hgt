@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BernsteinSzegoCaratheodoryRational
+import GaloisForLFunctions.HTGeometry.FAndMRieszConsequences
 
 /-!
 # Singular Schur-defect collapse and canonical cofinal approximation
@@ -10,7 +11,7 @@ orthogonal polynomial, hence the coordinate-free form of `1 - |alpha_N|^2` neede
 This module joins the existing pieces at their strongest proved interfaces:
 
 * infinite support makes every finite defect strictly positive;
-* the Riesz-brothers density conclusion and singularity force the defect sequence and normalized
+* F. and M. Riesz together with singularity force the defect sequence and normalized
   determinant roots to vanish only cofinally, together with least-eigenvalue and inverse-Cholesky
   escape;
 * the canonical Bernstein--Szegő probability measures reproduce each growing Toeplitz section,
@@ -53,15 +54,14 @@ theorem circleSchurDefect_eq_normSq
 
 /-- Singular analytic completeness makes the strictly positive finite defects collapse to zero
 only at the cofinal boundary. -/
-theorem circleSchurDefect_tendsto_zero_of_rieszBrothers
+theorem circleSchurDefect_tendsto_zero_of_mutuallySingular
     (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
-    (hsing : mu ⟂ₘ circleLebesgue)
-    (hriesz : HasRieszBrothersDensityConclusion mu circleLebesgue) :
+    (hsing : mu ⟂ₘ circleLebesgue) :
     Tendsto (circleSchurDefect mu) atTop (𝓝 0) := by
-  have hcomplete := pureSingular_graph_and_completeness_of_rieszBrothers mu hsing hriesz
+  have htrichotomy := pureSingularCarrier_trichotomy mu hmu hsing
   have hszego :=
     hasSzegoFirstLimitConclusion_of_analyticMonomialSpan_dense_of_mutuallySingular
-      mu hmu hsing hcomplete.2
+      mu hmu hsing htrichotomy.2.1
   exact consecutiveGramDeterminantRatio_tendsto_zero_of_szego_of_mutuallySingular
     (circleMeasureGramTower mu) mu circleLebesgue hsing hszego
 
@@ -76,23 +76,21 @@ def HasSingularSchurDefectCollapse
     Tendsto (normalizedFrameDetRoot (circleMeasureCanonicalFrameTower mu hmu)) atTop atTop ∧
     Tendsto (euclideanFrameOpNorm (circleMeasureCanonicalFrameTower mu hmu)) atTop atTop
 
-/-- Riesz-brothers density is the sole named classical circle input needed for the complete
-finite-interior/cofinal-collapse conclusion. -/
-theorem hasSingularSchurDefectCollapse_of_rieszBrothers
+/-- F. and M. Riesz discharges the one-sided density interface, so mutual singularity is the sole
+analytic premise of the complete finite-interior/cofinal-collapse conclusion. -/
+theorem hasSingularSchurDefectCollapse_of_mutuallySingular
     (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
-    (hsing : mu ⟂ₘ circleLebesgue)
-    (hriesz : HasRieszBrothersDensityConclusion mu circleLebesgue) :
+    (hsing : mu ⟂ₘ circleLebesgue) :
     HasSingularSchurDefectCollapse mu hmu := by
-  have hcomplete := pureSingular_graph_and_completeness_of_rieszBrothers mu hsing hriesz
+  have htrichotomy := pureSingularCarrier_trichotomy mu hmu hsing
   have hszego :=
     hasSzegoFirstLimitConclusion_of_analyticMonomialSpan_dense_of_mutuallySingular
-      mu hmu hsing hcomplete.2
+      mu hmu hsing htrichotomy.2.1
   have hroot :=
     hasSzegoNormalizedGramVanishingConclusion_of_classicalSzego mu hmu hsing hszego
-  have hescape := circleMeasure_frame_escape_of_szego mu hmu hsing hszego
   exact ⟨circleSchurDefect_pos mu hmu,
-    circleSchurDefect_tendsto_zero_of_rieszBrothers mu hmu hsing hriesz,
-    hroot, hescape.1, hescape.2.1, hescape.2.2⟩
+    circleSchurDefect_tendsto_zero_of_mutuallySingular mu hmu hsing,
+    hroot, htrichotomy.2.2.1, htrichotomy.2.2.2.1, htrichotomy.2.2.2.2⟩
 
 /-- The complete cofinal approximation conclusion.  It records literal probability measures,
 exact finite Gram reconstruction, finite positive analytic interiority, weak convergence, genuine
@@ -168,14 +166,13 @@ theorem hasBernsteinSzegoCofinalApproximation_of_mutuallySingular
 /-- The card's circle-side double-boundary theorem: every finite defect is strict, all metric
 defects collapse only cofinally, and the canonical positive analytic measures converge to the
 singular carrier while concentrating with divergent superlinear norms. -/
-theorem singularSchurDefect_doubleBoundary_of_rieszBrothers
+theorem singularSchurDefect_doubleBoundary_of_mutuallySingular
     (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
-    (hsing : (mu : Measure Circle) ⟂ₘ circleLebesgue)
-    (hriesz : HasRieszBrothersDensityConclusion (mu : Measure Circle) circleLebesgue) :
+    (hsing : (mu : Measure Circle) ⟂ₘ circleLebesgue) :
     HasSingularSchurDefectCollapse (mu : Measure Circle) hmu ∧
       HasBernsteinSzegoCofinalApproximation mu hmu := by
-  exact ⟨hasSingularSchurDefectCollapse_of_rieszBrothers
-      (mu : Measure Circle) hmu hsing hriesz,
+  exact ⟨hasSingularSchurDefectCollapse_of_mutuallySingular
+      (mu : Measure Circle) hmu hsing,
     hasBernsteinSzegoCofinalApproximation_of_mutuallySingular mu hmu hsing⟩
 
 end

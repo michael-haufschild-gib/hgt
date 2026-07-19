@@ -22,6 +22,14 @@ theorem hasRieszBrothersDensityConclusion_circle
   hasRieszBrothersDensityConclusion_of_fAndMRieszVanishing mu
     (hasFAndMRieszVanishingConclusion_circle mu)
 
+/-- A finite circle measure singular to circle Lebesgue measure is one-sided Fourier rigid.
+The F. and M. Riesz density conclusion is supplied internally. -/
+theorem oneSidedFourierRigid_of_mutuallySingular_circle
+    (mu : Measure Circle) [IsFiniteMeasure mu]
+    (hsing : mu ⟂ₘ circleLebesgue) : IsOneSidedFourierRigid mu :=
+  oneSidedFourierRigid_of_mutuallySingular_of_rieszBrothers
+    mu circleLebesgue hsing (hasRieszBrothersDensityConclusion_circle mu)
+
 /-- A pure singular infinite-support circle carrier has saturated polynomial graph, complete
 analytic monomials, collapsing least Gram eigenvalue, and divergent canonical inverse-Cholesky
 frame coordinates. -/

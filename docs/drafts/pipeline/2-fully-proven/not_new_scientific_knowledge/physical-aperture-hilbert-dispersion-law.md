@@ -3,7 +3,8 @@
 - **ID:** `physical-aperture-hilbert-dispersion-law`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / NO-GO CLOSURE / FCRJ FRONTIER RECUT
-- **Scientific status:** `[PROVED HERE] [SOURCE-SPECIFIC ASSEMBLY]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED PHYSICAL CORE]`
+  `[SOURCE-SPECIFIC ASSEMBLY] [UNCONDITIONAL]`
   `[PARENT HILBERT GEOMETRY STANDARD] [NOT AN RH PROOF]`
 - **Parents:** the corrected FCRJ response-saturation law, the physical prime-endpoint radical,
   and sharp mesh coercivity.
@@ -323,11 +324,34 @@ oriented vector is the strongest positive survivor.
 
 ## Lean status and gates
 
+The permanent module
+
+```text
+formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeLogApertureHilbertMetric.lean
+```
+
+constructs the actual real `L²` centered carrier of each clipped prime interval and defines its
+inherited Hilbert distance.  It proves symmetry, self-distance zero, the triangle inequality, the
+exact clipped quotient-distance formula `(AH6)`, and the Gram identification `(AH4)` with the
+existing fusion kernel.  It also proves
+
+```text
+xiPhysicalPrimeLogApertureFusionEnergy P A m k
+ = ‖xiPhysicalPrimeLogAggregateApertureCarrier P A m k‖^2,
+```
+
+so the complete kernel is positive semidefinite and the signed cross term satisfies the formal
+positive survivor `-D_diag <= C_cross`.  The exact target builds successfully.  A `#print axioms`
+audit of the Gram, distance, energy, and cross-floor theorems reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
 - [x] 0 -> 1: exact source-pure object and wrong-metric hostile tests
 - [x] 1 -> 2: dependency-closed paper proof `(AH1)`--`(AH18)`
-- [ ] 2 -> 3: formalize the centered-indicator formulas, true Hilbert distance, weighted
-      dispersion identity, and conditional-negative-type corollary
-- [ ] connect the generic metric identity to the concrete clipped-prime endpoint definitions
+- [x] formalize the centered-indicator carrier, true Hilbert distance, Gram identity, and full
+      finite fusion-energy positivity
+- [x] connect the Hilbert metric to the concrete clipped-prime endpoint definitions
+- [ ] formalize the remaining generic completeness, weighted-dispersion, and
+      conditional-negative-type statements
 - [ ] prove a genuinely new arithmetic upper bound on `Disp_M`
 
 ## Log
@@ -335,3 +359,6 @@ oriented vector is the strongest positive survivor.
 - 2026-07-18 -- Built the oriented quotient metric, proved the exact weighted dispersion law,
   retired support-subspace and projective gap metrics, and recut the FCRJ endpoint energy as the
   positive dispersion defect `(AH14)`.
+- 2026-07-19 -- Formalized the actual clipped-prime `L²` carrier and inherited Hilbert distance,
+  identified its Gram with the physical fusion kernel, and proved the full fusion energy is a
+  squared norm with cross-term floor `-D_diag <= C_cross`.

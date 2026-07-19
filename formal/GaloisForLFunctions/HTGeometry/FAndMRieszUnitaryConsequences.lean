@@ -1,4 +1,3 @@
-import GaloisForLFunctions.HTGeometry.FAndMRieszVanishing
 import GaloisForLFunctions.HTGeometry.PureSingularCarrierUnitary
 
 /-!
@@ -22,9 +21,7 @@ theorem exists_circleCanonicalCarrierUnitary
     (hsing : mu ⟂ₘ circleLebesgue) :
     ∃ U : CoefficientL2 ≃ₗᵢ[ℂ] Lp ℂ 2 mu,
       ∀ n : ℕ, U (lp.single 2 n 1) = circleCoherentFramePolynomial mu hmu n :=
-  exists_circleCanonicalCarrierUnitary_of_rieszBrothers mu hmu hsing
-    (hasRieszBrothersDensityConclusion_of_fAndMRieszVanishing mu
-      (hasFAndMRieszVanishingConclusion_circle mu))
+  exists_circleCanonicalCarrierUnitary_of_mutuallySingular mu hmu hsing
 
 end
 end GaloisForLFunctions.HTGeometry

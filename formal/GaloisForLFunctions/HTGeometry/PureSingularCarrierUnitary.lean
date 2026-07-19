@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PureSingularCarrierTrichotomy
+import GaloisForLFunctions.HTGeometry.FAndMRieszConsequences
 import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
 
 /-!
@@ -10,9 +11,9 @@ monomials are linearly independent.  If their span is dense, normalized Gram--Sc
 produces a Hilbert basis of `L²(mu)` and hence a unitary map from coefficient `ell²` onto
 `L²(mu)`.
 
-The density hypothesis is then discharged from the exact Riesz-brothers interface for a measure
-singular to circle Lebesgue measure.  Thus the literature input ends at one-sided Fourier
-rigidity; the Hilbert-basis and unitary conclusions are unconditional Lean deductions.
+The density hypothesis is discharged by the formalized F. and M. Riesz theorem for a measure
+singular to circle Lebesgue measure.  Thus the Hilbert-basis and unitary conclusions no longer
+carry a separate one-sided Fourier-density interface.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -361,32 +362,28 @@ theorem circlePolynomialCarrierUnitary_apply_single
   rw [circlePolynomialCarrierUnitary, HilbertBasis.repr_symm_single,
     circlePolynomialHilbertBasis_apply]
 
-/-- **Pure-singular unitary carrier law.**  The exact Riesz-brothers conclusion and singularity
-produce the global unitary carrier entirely inside Lean. -/
-theorem exists_circlePolynomialCarrierUnitary_of_rieszBrothers
+/-- **Pure-singular unitary carrier law.**  Singularity produces the global unitary carrier;
+F. and M. Riesz supplies the one-sided density conclusion internally. -/
+theorem exists_circlePolynomialCarrierUnitary_of_mutuallySingular
     (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
-    (hsing : mu ⟂ₘ circleLebesgue)
-    (hriesz : HasRieszBrothersDensityConclusion mu circleLebesgue) :
+    (hsing : mu ⟂ₘ circleLebesgue) :
     ∃ U : CoefficientL2 ≃ₗᵢ[ℂ] Lp ℂ 2 mu,
       ∀ n : ℕ, U (lp.single 2 n 1) = circleOrthonormalPolynomial mu n := by
   let hrigid : IsOneSidedFourierRigid mu :=
-    oneSidedFourierRigid_of_mutuallySingular_of_rieszBrothers
-      mu circleLebesgue hsing hriesz
+    oneSidedFourierRigid_of_mutuallySingular_circle mu hsing
   exact ⟨circlePolynomialCarrierUnitary mu hmu hrigid,
     circlePolynomialCarrierUnitary_apply_single mu hmu hrigid⟩
 
-/-- **Coherent pure-singular unitary carrier law.**  From the exact Riesz-brothers input onward,
-the unitary is assembled from the stable rows of the finite canonical inverse-Cholesky tower
-entirely inside Lean. -/
-theorem exists_circleCanonicalCarrierUnitary_of_rieszBrothers
+/-- **Coherent pure-singular unitary carrier law.**  The unitary is assembled from the stable rows
+of the finite canonical inverse-Cholesky tower, with F. and M. Riesz supplying one-sided density
+internally. -/
+theorem exists_circleCanonicalCarrierUnitary_of_mutuallySingular
     (mu : Measure Circle) [IsFiniteMeasure mu] (hmu : mu.support.Infinite)
-    (hsing : mu ⟂ₘ circleLebesgue)
-    (hriesz : HasRieszBrothersDensityConclusion mu circleLebesgue) :
+    (hsing : mu ⟂ₘ circleLebesgue) :
     ∃ U : CoefficientL2 ≃ₗᵢ[ℂ] Lp ℂ 2 mu,
       ∀ n : ℕ, U (lp.single 2 n 1) = circleCoherentFramePolynomial mu hmu n := by
   let hrigid : IsOneSidedFourierRigid mu :=
-    oneSidedFourierRigid_of_mutuallySingular_of_rieszBrothers
-      mu circleLebesgue hsing hriesz
+    oneSidedFourierRigid_of_mutuallySingular_circle mu hsing
   exact ⟨circleCanonicalCarrierUnitary mu hmu hrigid,
     circleCanonicalCarrierUnitary_apply_single mu hmu hrigid⟩
 

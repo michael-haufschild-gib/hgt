@@ -126,4 +126,4 @@ The exact leaf check and the headline axiom audit pass.  The audit reports only 
 - [x] exact targeted Lean check
 - [x] axiom audit
 - [ ] external specialist novelty audit
-- [ ] paper integration
+- [x] paper integration
