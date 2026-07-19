@@ -236,6 +236,20 @@ the existing unconditional CCM colligation identity.  No zero-location hypothesi
    obstruction without changing it.  Therefore a finite packetwise factorization cannot provide
    the missing RH positivity; the required source-to-Xi map must be globally aperture-coherent and
    genuinely non-invertible at the infinite completed level.
+6. **First-tangent Hilbert finiteness is not the missing control.**  Applying the normalized
+   rational-Hurwitz reflection value to the diagonal derivative in `(2)` produces the `m=1`,
+   reciprocal-prime-damped reflection energy.  It is summable exactly on the open critical strip,
+   and dominated convergence gives the actual normalized total reflected germ on every Xi fibre
+   unconditionally.  This is formalized in
+   `../not_new_scientific_knowledge/mobius-continuous-aperture-tangent-rational-hurwitz-no-go.md`.
+   Equation `(18)` can still carry RH information through a signed/contractive CCM channel, but
+   existence or finite norm of the first tangent alone cannot.
+7. **The first nonlinear dyadic curvature has the same limitation.**  A new general weighted
+   dominated-convergence theorem closes the all-prime cubic limit left open below.  With the
+   rational-Hurwitz reflection value as weight, the cubic coefficient is the third logarithmic
+   moment of the same reciprocal-prime-damped seam, so its summability and normalized all-prime
+   germ limit hold on every Xi fibre unconditionally.  See
+   `../not_new_scientific_knowledge/mobius-dyadic-cubic-reflection-aperture-no-go.md`.
 
 ## Exact depth-projection theorem and dyadic Loewner refinement
 
@@ -382,11 +396,13 @@ Primary comparisons:
 - [x] internal corpus novelty audit
 - [ ] external specialist novelty audit
 - [x] Lean formalization of `(1)`--`(6)`, `(10)`, `(13)`--`(15)`, and `(17)`--`(18)`
-- [ ] Lean formalization of the continuous `L^2` projection identities `(19)`--`(23)`
+- [ ] Lean formalization of the continuous `L^2` feature and projection identities `(19)`--`(22)`
+- [x] Lean formalization of the all-prime tangent-minus-mesh Loewner inequality `(23)`
 - [x] Lean formalization of the exact local and all-prime dyadic Loewner refinement `(24)`
 - [x] Lean formalization of the primewise cubic innovation coefficient underlying `(25)`
 - [x] finite curvature congruence no-go and rank/inertia survivor formalized
-- [ ] Lean formalization of the all-prime cubic curvature and `C_M,3` limit `(25)`
+- [x] first rational-Hurwitz reflected tangent classified and its all-prime germ limit formalized
+- [x] Lean formalization of the all-prime cubic curvature and `C_M,3` limit `(25)`
 - [ ] source-to-Xi Pick contraction
 - [ ] RH
 
@@ -405,3 +421,11 @@ Primary comparisons:
   with Xi exterior detector degree.  The leading curvature kernel is an invertible diagonal
   congruence of the Cauchy tangent on every positive finite packet, so it preserves rank and
   inertia.  Lean formalizes this no-go and its positive infinite-martingale survivor.
+- 2026-07-19 -- Connected the diagonal source derivative to the normalized rational-Hurwitz
+  reflection value.  The reflected tangent is exactly a bounded positive multiple of the first
+  unit-damped logarithmic seam moment, so it sees the whole open strip; its normalized total
+  right-germ limit and both all-Xi Prop interfaces are formalized unconditionally.
+- 2026-07-19 -- Closed the all-prime cubic-curvature gate with a stronger arbitrary nonnegative
+  weighted limit theorem.  Its unweighted specialization proves the source `C_M,3` limit; its
+  rational-Hurwitz specialization is the third unit-damped logarithmic moment and gives the
+  unconditional reflected cubic limit on every Xi fibre.

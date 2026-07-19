@@ -61,6 +61,32 @@ has a canonical answer, but clauses `(3)` and `(6)` must be proved directly in t
 metric.  Any construction that first whitens each prime channel is retired by theorem, not merely
 by an anti-theatre warning.
 
+The direct rational-Hurwitz test is now also closed in
+`../3-formalized/not_new_scientific_knowledge/mobius-schur-rational-hurwitz-lorentz-aperture.md`.
+The Möbius metric times the normalized Lorentz reflection energy is summable exactly on the open
+critical strip, and therefore on every Xi fibre without RH.  Thus finite norm in the canonical
+incoming metric cannot discharge clauses `(3)` or `(6)`; the missing statement is genuinely a
+contractive/strong-limit law or a cofinal zero-loss estimate.
+
+The apparent escape by tuning the continuous Möbius aperture is now closed as well.  The
+formalized family theorem
+`../3-formalized/not_new_scientific_knowledge/mobius-continuous-aperture-rational-hurwitz-no-go.md`
+shows that every fixed real aperture `a>0` gives the same open-strip summability classification and
+unconditional all-Xi membership.  The first normalized zero-aperture germ is now closed too:
+`../3-formalized/not_new_scientific_knowledge/mobius-continuous-aperture-tangent-rational-hurwitz-no-go.md`
+proves that it is the first logarithmic moment of the same unit-damped seam, that its all-prime
+limit exists, and that it is finite on every Xi fibre unconditionally.  Consequently the surviving
+interface is specifically source contractivity/passivity, an exponent-changing cofinal loss law,
+a non-finite-order boundary effect, or equivalent signed trace cancellation—not selection of a
+different fixed metric or mere finiteness of its first tangent.
+
+The first nonlinear dyadic refinement does not restore the route.  The general weighted law in
+`../3-formalized/not_new_scientific_knowledge/mobius-dyadic-cubic-reflection-aperture-no-go.md`
+proves the missing all-prime cubic source limit and shows that its rational-Hurwitz specialization
+is the third logarithmic moment of the same unit-damped seam.  Its cubic germ is therefore also
+finite on every Xi fibre without RH.  Linear tangent and first nonlinear curvature are now both
+positive Hilbert data; the missing information remains signed/contractive or exponent-changing.
+
 **General HT statement.**  The failure separates three structures which a constrained HT source
 need not package in one Hilbert object: finite-clock conservation, a tangential Fisher metric, and
 a singular normal boundary functional.  Algebraic conservativity does not choose the analytic

@@ -3766,3 +3766,1001 @@ whence a propagate step with bound `√(1+ε)·S` and smallness condition scalin
 step length `∝ √ε` as link 132 assumes. Writing it is a re-derivation of a sixty-line summation proof
 with two constants changed, which is bookkeeping rather than mathematics — but it is the step that
 turns this analysis into a theorem, and it has not been done.
+
+### Link 133 — the pointwise step of the tunable absorption
+
+New module `formal/GaloisForLFunctions/HTGeometry/TunableAbsorptionStep.lean` (78 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`normSq_duhamel_div_le_tunable` — `[PROVED HERE]` the summand bound
+
+`‖Qₙ(w)‖²/hₙ ≤ (1+ε)·(‖Qₙ(z)‖²/hₙ) + 2(1+ε⁻¹)·D²·K_w²·((‖Qₙ(z)‖²P_z² + ‖Rₙ(z)‖²K_z²)/hₙ)`
+
+with `D = ‖w−z‖h₀`. The leading constant is `1 + ε`; the inner squaring keeps the fixed `2`, which is
+harmless because it multiplies the displacement term.
+
+Three tactic notes from the build, all about giving the automation less to do:
+
+- `nlinarith` could not get from the Duhamel bound and the inner estimate to the combined one; the
+  step is multiplication of a hypothesis by the positive constant `1 + ε⁻¹`, and supplying it as
+  `mul_le_mul_of_nonneg_left` reduced the rest to `linarith`.
+- `rw [div_le_iff₀ hpos] at *` was the wrong shape — it rewrote the hypotheses too. Collecting the
+  right-hand side over a common denominator first, then `gcongr`, leaves exactly the numerator
+  inequality already proved.
+- `field_simp` closed the collection identity on its own; the following `ring` then failed with
+  "no goals". Worth remembering that `field_simp` often finishes rather than merely normalising.
+
+**Opens next:** the summation. Summing this over `n ≤ N` with `kernelRoot_sq` for each of the three
+sums gives
+
+`K_w² ≤ (1+ε)K_z² + 4(1+ε⁻¹)D²K_w²K_z²P_z²`,
+
+since `∑ (‖Qₙ(z)‖²P_z² + ‖Rₙ(z)‖²K_z²)/hₙ = 2K_z²P_z²`. That is the tunable analogue of
+`kernelRoot_sq_le_absorption`, and with it the propagate step gives bound `√(1+ε)·S` and step length
+`∝ √ε`, which links 130--132 have shown suffices.
+
+### Link 134 — the tunable absorption estimate
+
+New module `formal/GaloisForLFunctions/HTGeometry/TunableAbsorptionSum.lean` (67 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time; compiled first try).
+Axioms `[propext, Classical.choice, Quot.sound]`.
+
+`kernelRoot_sq_le_absorption_tunable` — `[PROVED HERE]`
+
+> **`K_w² ≤ (1+ε)·K_z² + 4(1+ε⁻¹)·(‖w−z‖h₀)²·K_w²·K_z²·P_z²`** for every `ε > 0`.
+
+This is the estimate links 130--133 were built for, and the constant `2` of
+`kernelRoot_sq_le_absorption` is now a free parameter. The proof sums link 133's pointwise bound after
+reshaping it into `α·(‖Qₙ(z)‖²/hₙ) + β·(‖Rₙ(z)‖²/hₙ)`, so the three sums are all instances of
+`kernelRoot_sq` and the final step is `Finset.sum_add_distrib`, two `Finset.mul_sum`, and `ring`.
+
+Reshaping *before* summing is what made it a first-try build: the alternative — summing the
+three-term form and then rearranging — would have required manipulating sums of sums. `field_simp`
+plus `ring` handles the reshaping pointwise, where the denominators are a single `hₙ`.
+
+**What this unblocks.** With a tunable leading constant, a transfer step at parameter `ε` gives bound
+`√(1+ε)·S` and admits a displacement `∝ √ε`; link 132 shows `εₙ = 1/(n+1)²` makes the growth factors
+have bounded product while the displacements sum to infinity. So a chain along such parameters has
+uniformly bounded kernel roots and reaches every point of `ℂ` — which is the global transfer, hence
+closedness of `{z | BoundedKernel s z}`, hence the entire-function input of link 129 and the leaf
+construction of link 126.
+
+**Opens next:** the tunable propagate step — the analogue of `kernelRoot_bounds_propagate`, reading
+off from this estimate that if `K_z ≤ S`, `P_z ≤ P` and the displacement satisfies the smallness
+condition `4(1+ε⁻¹)(‖w−z‖h₀)²S²P² ≤ ε/(1+ε)`, then `K_w ≤ √(1+ε)·S`. That is an absorption
+rearrangement of the same shape as the existing `kernelRootQ_le_of_small`, with the constants carried
+through.
+
+### Link 135 — the tunable propagate step
+
+New module `formal/GaloisForLFunctions/HTGeometry/TunablePropagate.lean` (61 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`kernelRootQ_sq_le_tunable` — `[PROVED HERE]` if `K_z ≤ S` and `P_z ≤ P` at every level and the
+displacement satisfies `4(1+ε⁻¹)(‖w−z‖h₀)²S²P² ≤ δ`, then
+
+`K_w²·(1 − δ) ≤ (1+ε)·S²`.
+
+Stated multiplied out rather than as `K_w² ≤ (1+ε)S²/(1−δ)`: no division appears, and `δ < 1` is not
+needed in the statement — a caller supplies whatever `δ` its budget allows and divides itself.
+
+**Tactic note.** The monotonicity step `C·K_z²·P_z² ≤ C·S²·P²` is degree three in the bounded
+quantities and `nlinarith` did not find it. `gcongr` does, matching the product structure and
+discharging the nonnegativity side conditions from context. Where a goal is a monotone rearrangement
+of a product, `gcongr` is the right tool and `nlinarith` is the wrong one — this is the third time in
+this card that swapping them fixed a failing step.
+
+**The transfer chain is now assembled** in all its pieces: tunable Young inequality (130), tunable
+Duhamel (131), balance witness (132), pointwise step (133), absorption (134), propagate (135). What
+remains is to run the chain — pick `εₙ = 1/(n+1)²` and `δₙ` matching, verify that the resulting
+growth factors have bounded product and the displacements diverge, and conclude that every point of
+`ℂ` lies in `{z | BoundedKernel s z}` once one does.
+
+**Opens next:** that induction. It is a construction over `ℕ` carrying two invariants — a bound
+`Sₙ` on the kernel roots and the accumulated displacement — and it is the first genuinely inductive
+argument in this stretch; links 130--135 were each single estimates. Worth noting the shape before
+starting: the bound at step `n` is `S₀·∏_{k<n} √((1+ε_k)/(1−δ_k))`, and the product converges exactly
+when `∑(ε_k + δ_k)` does, which link 132's witness arranges.
+
+### Link 136 — controlling the accumulated growth
+
+New module `formal/GaloisForLFunctions/HTGeometry/ProdOneAddBound.lean` (33 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time; compiled first try). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `prod_one_add_le_exp_sum` — `∏_{k<n} (1 + aₖ) ≤ exp (∑_{k<n} aₖ)` for nonnegative `aₖ`, from
+  `1 + x ≤ exp x` termwise and `Real.exp_sum`.
+- `prod_one_add_le_exp_tsum` — with `a` summable the bound is `exp (∑' aₖ)`, **uniform in `n`**.
+
+This is the invariant-control lemma the chain needs: link 132 supplies summable parameters, and this
+turns their summability into a single bound valid at every step.
+
+**A reframing worth recording.** Link 135 described the remaining work as running a chain to prove
+*closedness* of `{z | BoundedKernel s z}`. Examining what the tunable estimate actually gives: it does
+**not** yield closedness directly. A limit point `z` of good points has approximating `z_k` whose
+bounds `S_k, P_k` may blow up, and the smallness condition needs `‖z − z_k‖ ≲ 1/(S_k P_k)`, which the
+convergence `z_k → z` does not supply.
+
+What it gives instead is better: a chain from a *fixed* good point `z₀` reaches every `z` at finite
+distance, because the step lengths are `∝ √εₖ` with divergent sum (link 132) while the bounds stay
+below `S₀·exp(∑εₖ/2)` (here). That is the global transfer directly —
+`BoundedKernel s z₀ → ∀ z, BoundedKernel s z` — and it makes
+`ComplexKernelTransfer.boundedKernel_of_isClosed`, which assumed closedness as a hypothesis,
+unnecessary rather than dischargeable. The goal all along was the conclusion, not the hypothesis.
+
+**Opens next:** the chain construction. Finitely many steps suffice, since the target is at finite
+distance and the step lengths have divergent sum — so this is a bounded induction, not a limiting
+argument. The invariant at step `k` is a pair: the kernel bounds `Sₖ, Pₖ` and the distance covered.
+
+### Link 137 — the second-kind tunable transfer
+
+New module `formal/GaloisForLFunctions/HTGeometry/TunableSecondKind.lean` (182 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). All endpoints
+`[propext, Classical.choice, Quot.sound]`; both halves compiled first try.
+
+- `normSq_secondKindC_duhamel_le_tunable`, `normSq_secondKind_div_le_tunable` — the squared Duhamel
+  and pointwise summand bounds for `secondKindC`.
+- `kernelRootR_sq_le_absorption_tunable` — `P_w² ≤ (1+ε)P_z² + 4(1+ε⁻¹)D²P_w²K_z²P_z²`.
+- `kernelRootR_sq_le_tunable` — `P_w²(1−δ) ≤ (1+ε)P²` under the same smallness condition as the
+  first-kind step.
+
+**A gap caught before it bit.** `BoundedKernel` constrains *both* kernel roots, so a chain must carry
+both bounds — but links 131--135 built the tunable transfer only for the first kind. Checking what the
+chain would actually consume surfaced this before the chain was attempted rather than during it. The
+second-kind estimates in `ComplexSecondKind` have the same shape with `secondKindC` on the left, so
+all four lemmas are mirrors and reused the proof shapes already debugged; the only asymmetry is which
+kernel root appears in the displacement factor, `P_w` here against `K_w` there.
+
+**Both halves of the tunable transfer now exist.** Links 130--137 give: tunable Young, tunable Duhamel
+and propagate for the first kind, the balance witness, the growth-product bound, and the same for the
+second kind.
+
+**Opens next:** the chain itself, and it needs both propagate steps at once — from bounds `(S, P)` at
+`z`, a step to `w` gives `(√((1+ε)/(1−δ))·S, √((1+ε)/(1−δ))·P)`, the *same* factor on both, since the
+smallness condition and the leading constant are shared. That symmetry is what makes a single scalar
+invariant suffice for the induction rather than two independent ones.
+
+### Link 138 — one tunable transfer step
+
+New module `formal/GaloisForLFunctions/HTGeometry/TunableStep.lean` (63 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time; compiled first try). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`kernelRoot_bounds_propagate_tunable` — `[PROVED HERE]` **bounds `(S, P)` at `z` give bounds
+`(cS, cP)` at `w`, with `c = √((1+ε)/(1−δ))`**, under `ε > 0`, `δ < 1`, and the shared smallness
+condition `4(1+ε⁻¹)(‖w−z‖h₀)²S²P² ≤ δ`.
+
+This is the tunable analogue of `kernelRoot_bounds_propagate`, which gave the fixed pair `(2S, 2P)`.
+Both halves come from squaring: `K_w²(1−δ) ≤ (1+ε)S²` rearranges to `K_w² ≤ (cS)²`, and taking square
+roots of both sides via `Real.sqrt_sq` gives the bound without any division surviving into the
+statement.
+
+The factor is literally the same expression on both components — no separate constant for the
+second kind — because the two propagate steps of links 135 and 137 share both their smallness
+hypothesis and their leading constant.
+
+**Opens next:** iterating this. The chain is a finite induction: from a good `z₀` with bounds
+`(S₀, P₀)`, walk toward a target `z` in steps whose lengths are governed by the smallness condition,
+carrying `Sₙ = c₀⋯cₙ₋₁·S₀` and likewise for `P`. Link 136 bounds that product by `exp(∑aₖ)` for
+`aₖ` derived from `(εₖ, δₖ)`, and link 132 supplies parameters making the bound uniform while the step
+lengths still sum to infinity. Every ingredient is in place; what remains is the induction itself,
+carrying the pair (current point, current bound) and terminating once the accumulated displacement
+exceeds `‖z − z₀‖`.
+
+### Link 139 — the tuning route does not work, and why
+
+New module `formal/GaloisForLFunctions/HTGeometry/ChainObstruction.lean` (40 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time; compiled first try). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+**Correction to link 132, and to the programme of links 130--138.** Working the chain arithmetic
+before building it gives a conclusion opposite to the one recorded at link 132.
+
+Link 132 asserted that a step at parameter `ε` admits displacement `∝ √ε`, and concluded that
+`εₖ = 1/(k+1)²` gives summable growth with divergent reach. The first claim holds only with `δ`
+*fixed* — and a fixed `δ` makes the growth factor `√((1+ε)/(1−δ))` bounded below by a constant
+exceeding `1`, so the product diverges geometrically. Letting `δₖ → 0` as it must, the smallness
+condition `4(1+ε⁻¹)D²S²P² ≤ δ` gives
+
+`D² ≲ δ·ε`, hence `D ≲ √(δε)` — **not** `√ε`.
+
+- `sqrt_mul_le_add_div_two` — `[PROVED HERE]` `√(ab) ≤ (a+b)/2`.
+- `sum_sqrt_mul_le` — `[PROVED HERE]` `∑ √(δₖεₖ) ≤ (∑δₖ + ∑εₖ)/2`.
+
+Bounded accumulated growth requires `∑εₖ < ∞` and `∑δₖ < ∞` (link 136), and then the total
+displacement is finite by the second lemma. **So no choice of parameters lets a chain of these steps
+travel arbitrarily far with bounds under control.** The `ε = 1` case of link 50 was not a bad choice
+on a good trade-off; the trade-off has no good point.
+
+**What survives.** Links 130--138 are all correct as estimates and remain in the tree: the tunable
+Young inequality, the tunable Duhamel, absorption, propagate and one-step transfer for both kinds are
+strictly more general than what `ComplexSecondKind` had, and any future argument that needs a leading
+constant near `1` can use them. What does not survive is link 130's claim that the constant `2` was
+*the* obstruction, and link 132's claim that the balance is achievable. The obstruction is the
+multiplicative coupling of `D` to both parameters in the smallness condition, and it is immune to
+tuning.
+
+**Opens next.** The global transfer needs an argument not of Duhamel-chaining type — the classical
+proofs use normal families or an order/type bound on the entire functions, neither of which reduces to
+iterating a local estimate. Recording that the local route is closed, with the reason, so that it is
+not reopened: three separate attempts in this card (link 50, link 130, link 138) have now run into the
+same wall from different directions.
+
+### Link 140 — discrete Gronwall, and the route that is actually open
+
+New module `formal/GaloisForLFunctions/HTGeometry/DiscreteGronwall.lean` (50 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `prod_one_add_eq_one_add_sum` — the telescoping identity
+  `∏_{n<N}(1+bₙ) = 1 + ∑_{n<N} bₙ ∏_{k<n}(1+b_k)`.
+- `discrete_gronwall` — `[PROVED HERE]` a recursion `A N ≤ c + ∑_{n<N} bₙ Aₙ` with `bₙ ≥ 0` is solved
+  by `A N ≤ c ∏_{n<N}(1+bₙ)`. Strong induction; no sign hypothesis on `c` is needed and the linter
+  caught the one initially written.
+
+**Why this reopens the problem link 139 closed.** Inspecting `monicOrthoC_duhamel` (the identity, not
+the coarsened estimate): its inner sums run over `Finset.range (n+1)` — the *same* index as the
+left-hand side. The tree's `norm_monicOrthoC_duhamel_le_of_le` then coarsens `kernelRoot … w n` to
+`kernelRoot … w N` by monotonicity, which is what turns the recursion into a single absorption with
+`K_w` on both sides — and that absorption is what carries the finite radius and the obstruction of
+link 139.
+
+Kept in its `n`-indexed form the estimate is a Gronwall recursion, and its solution is
+
+`K_w(N)² ≤ 2 K_z(N)² · ∏_{n<N} (1 + 4D² bₙ) ≤ 2 K_z(N)² · exp(4D² ∑ bₙ)`,
+
+with `∑ bₙ ≤ 2K_z²P_z²` — **finite for every displacement `D`**, with no radius at all. The
+exponential growth in `D²` is exactly what a chain of local steps cannot produce and what the
+classical proofs obtain.
+
+So links 139 and 140 together say: the local *chaining* route is closed, but the local *estimate* was
+never the problem — coarsening the index was. The uncoarsened identity is already in the tree
+(`monicOrthoC_duhamel`, and `norm_monicOrthoC_duhamel_le` at index `n`).
+
+**Opens next:** assemble the Gronwall transfer — sum the `n`-indexed pointwise bound to get
+`A_N ≤ c + ∑_{n<N} bₙ Aₙ` with `A_n = K_w(n)²`, apply `discrete_gronwall`, and bound the product by
+`exp` via link 136. The one point needing care: the pointwise bound at index `n` has `K_w(n)` inside,
+so the recursion's `∑_{n<N}` must exclude `n = N`, which requires splitting the last term off the sum
+before applying the lemma.
+
+### Link 141 — the Duhamel inner sum is strictly partial
+
+New module `formal/GaloisForLFunctions/HTGeometry/DuhamelStrict.lean` (39 lines, zero placeholders,
+registered with an exact-line check, olean emitted at write time; compiled first try). Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+`monicOrthoC_duhamel_lt` — `[PROVED HERE]` **the Duhamel identity holds with its inner sums over
+`j < n` rather than `j ≤ n`.**
+
+The two `j = n` contributions are `Qₙ(z)·Qₙ(w)Rₙ(z)/hₙ` and `Rₙ(z)·Qₙ(w)Qₙ(z)/hₙ`, which enter with
+opposite signs and are equal — so they cancel identically. Splitting both sums with
+`Finset.sum_range_succ` and calling `ring` proves it in three lines.
+
+**This is the structural fact the whole transfer question turned on.** With the sums over `j ≤ n`, the
+estimate has `K_w(n)` on both sides and must be closed by absorption, which produces the finite radius
+and the obstruction of link 139. With the sums over `j < n` it is a genuine recursion: `K_w(n)`
+appears on the right only through indices strictly below `n`, so `discrete_gronwall` (link 140)
+applies with no absorption and the bound becomes `exp(4D²∑bₙ)` — finite for every displacement.
+
+Three attempts (links 50, 130, 138) failed against the absorption form. None of them examined whether
+the absorption was necessary; each took `norm_monicOrthoC_duhamel_le_of_le` as the starting point and
+tried to improve what came after. The cancellation was visible in the identity the whole time.
+
+**Opens next:** the estimate at strictly partial index — the analogue of `norm_monicOrthoC_duhamel_le`
+derived from this identity, bounding `‖Qₙ(w)‖` in terms of `kernelRoot … w (n-1)` rather than
+`kernelRoot … w n`. Then squaring, dividing by `hₙ`, and summing gives the Gronwall recursion in the
+exact form link 140 consumes. The same cancellation should hold for `secondKindC_duhamel`, which needs
+checking rather than assuming — the two identities are not quite symmetric in the tree.
+
+### Link 142 — the second-kind identity cancels too
+
+`DuhamelStrict.lean` now 57 lines, zero placeholders. Both endpoints
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+`secondKindC_duhamel_lt` — `[PROVED HERE]` the second-kind Duhamel identity also holds with inner
+sums over `j < n`. Its `j = n` terms are `Qₙ(z)·Rₙ(w)Rₙ(z)/hₙ` and `Rₙ(z)·Qₙ(z)Rₙ(w)/hₙ`, again equal
+with opposite signs.
+
+Link 141 flagged that this needed checking rather than assuming, on the grounds that the two
+identities are not quite symmetric in the tree — the second-kind one pairs `Qₙ(z)` with a sum of
+`RⱼRⱼ` and `Rₙ(z)` with a sum of `QⱼRⱼ`, a different pattern from the first-kind case. The
+cancellation nonetheless holds, for the same reason: in both, the two `j = n` terms are the same
+product of three factors.
+
+Checking was still right. The reason it works is visible only after writing the terms out, and the
+asymmetry in the sums was real — it just did not affect the diagonal.
+
+**Both strict identities are now available**, which is what the Gronwall route needs for both kernel
+roots, and hence for `BoundedKernel`.
+
+**Opens next:** the strictly-indexed norm estimates. From these identities, the analogues of
+`norm_monicOrthoC_duhamel_le` bounding `‖Qₙ(w)‖` and `‖Rₙ(w)‖` by expressions involving
+`kernelRoot … w (n−1)` — note the index shift, since `∑_{j<n}` corresponds to `kernelRoot … (n−1)`
+under the tree's convention that `kernelRoot … m` sums over `range (m+1)`. That off-by-one is the
+one place this derivation differs from the existing one and is worth handling deliberately: for
+`n = 0` the sum is empty and the estimate degenerates to `‖Q₀(w)‖ = ‖Q₀(z)‖`, which is true since both
+are `1`.
+
+### Link 143 — the strictly-indexed Duhamel estimate
+
+New module `formal/GaloisForLFunctions/HTGeometry/DuhamelStrictNorm.lean` (45 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time; compiled first try).
+Axioms `[propext, Classical.choice, Quot.sound]`.
+
+`norm_monicOrthoC_duhamel_lt_le` — `[PROVED HERE]`
+
+`‖Q_{n+1}(w)‖ ≤ ‖Q_{n+1}(z)‖ + D · K_w(n) · (‖Q_{n+1}(z)‖ P_z(n) + ‖R_{n+1}(z)‖ K_z(n))`
+
+with `D = ‖w−z‖h₀` — the kernel root on the right at index `n`, **strictly below** the `n+1` on the
+left.
+
+Stating it at `n+1` rather than `n` was the right move: the identity's sum `∑_{j<n+1}` is exactly the
+range that `kernelRoot … n` covers, so `norm_weightedSum_le` applies with no index arithmetic and the
+truncated subtraction anticipated in link 142 never arises. The `n = 0` degenerate case also
+disappears, since the statement simply starts at index `1`.
+
+**Contrast with the existing estimate.** `norm_monicOrthoC_duhamel_le` has `kernelRoot … w n` against
+`‖Qₙ(w)‖` — same index — and `norm_monicOrthoC_duhamel_le_of_le` coarsens further to `N`. This
+version breaks that circularity, which is precisely what makes the recursion solvable rather than
+absorbable.
+
+**Opens next:** square and sum. Squaring gives
+`‖Q_{n+1}(w)‖²/h_{n+1} ≤ 2(‖Q_{n+1}(z)‖²/h_{n+1}) + 4D² K_w(n)² β_{n+1}` with
+`β_{n+1} = (‖Q_{n+1}(z)‖²P_z(n)² + ‖R_{n+1}(z)‖²K_z(n)²)/h_{n+1}`, and summing over `n+1 ≤ N` gives
+`A_N ≤ 2K_z(N)² + 4D² ∑_{n<N} A_n β_{n+1}` with `A_n = K_w(n)²` — the shape `discrete_gronwall`
+consumes, since every `A` on the right has index strictly below `N`. The `n = 0` term of `A_N` must be
+handled separately, being `‖Q₀(w)‖²/h₀ = 1/h₀`, which is where the constant `c` in the Gronwall
+recursion comes from.
+
+### Link 144 — the strict estimate, squared and divided
+
+`DuhamelStrictNorm.lean` now 112 lines, zero placeholders. The new endpoint is
+`[propext, Classical.choice, Quot.sound]`; compiled first try.
+
+`normSq_duhamel_strict_div_le` — `[PROVED HERE]`
+
+`‖Q_{n+1}(w)‖²/h_{n+1} ≤ 2(‖Q_{n+1}(z)‖²/h_{n+1}) + 4D²·K_w(n)²·β_{n+1}`
+
+with `β_{n+1} = (‖Q_{n+1}(z)‖²P_z(n)² + ‖R_{n+1}(z)‖²K_z(n)²)/h_{n+1}`. The kernel root on the right
+is at index `n`; the left side is at `n+1`.
+
+The proof reuses the shape of link 133 — square, expand the inner sum with the fixed constant,
+collect over the denominator, `gcongr` — with the fixed constant `2` throughout, since the tunable
+parameter is not needed here: the Gronwall route does not require the leading constant to approach
+`1`, which was the entire purpose of links 130--138. Those remain in the tree as more general
+estimates but are not on this path.
+
+**The recursion is now in hand.** Summing over `n+1 ≤ N` gives
+
+`A_N ≤ A_0 + 2K_z(N)² + 4D² ∑_{n<N} A_n β_{n+1}`, `A_n = K_w(n)²`,
+
+every `A` on the right strictly below `N` — exactly `discrete_gronwall`'s hypothesis. The `A_0` term
+is `‖Q₀(w)‖²/h₀ = 1/h₀`, a constant independent of `w`, since `Q₀ = 1`.
+
+**Opens next:** perform that summation. Two mechanical points: the sum over `n+1 ≤ N` must be
+reindexed to `n < N` (`Finset.sum_range_succ'` splits off the `0` term in the right direction), and
+`∑_{n<N} β_{n+1} ≤ 2K_z(N)²P_z(N)²` bounds the Gronwall's growth data — giving a final bound
+`exp(8D²K_z²P_z²)` times a constant, finite for every `D`, which is the global transfer.
+
+### Link 145 — the Gronwall recursion
+
+New module `formal/GaloisForLFunctions/HTGeometry/GronwallRecursion.lean` (88 lines, zero
+placeholders, registered with an exact-line check, olean emitted at write time). Both endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+- `gronwallWeight s z D n` — the step weight `4D²·β_{n+1}` built from the centre data, with
+  `gronwallWeight_nonneg`.
+- `monicOrthoC_zero_eq_one` — `Q₀(w) = 1`, so the split-off term is `1/h₀`.
+- `kernelRoot_sq_recursion` — `[PROVED HERE]`
+
+  > **`K_w(N)² ≤ (2S² + 1/h₀) + ∑_{n<N} gronwallWeight(n)·K_w(n)²`**
+
+  whenever the centre kernel roots are bounded by `S`.
+
+This is `discrete_gronwall`'s hypothesis exactly: the constant is independent of `N`, each weight is
+independent of `N`, and every `K_w` on the right sits at an index strictly below `N`. No absorption,
+no smallness condition, and no constraint on the displacement anywhere in the statement.
+
+`Finset.sum_range_succ'` splits off the `n = 0` term at the *bottom* of the range, which is the
+direction needed here — the ordinary `Finset.sum_range_succ` peels the top and would have left the
+reindexing undone.
+
+**Opens next:** apply the lemma. `discrete_gronwall` gives
+`K_w(N)² ≤ (2S² + 1/h₀)·∏_{n<N}(1 + gronwallWeight n)`, and link 136 bounds that product by
+`exp(∑ gronwallWeight n)`. Bounding the sum needs `∑_{n<N} β_{n+1} ≤ 2S²P²`, which is the same
+computation as the `hcentre` step here run against both `S` and `P` — giving
+`K_w(N)² ≤ (2S² + 1/h₀)·exp(8D²S²P²)`, uniform in `N` and finite for **every** `w`. That is the
+global transfer.
+
+### Link 146 — the transfer goes global, and the Nevanlinna matrix becomes entire
+
+The Gronwall programme of links 140–145 closes, and it takes the holomorphy capstone with it.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/GlobalTransfer.lean`
+- `gronwallWeight_sum_le` — `∑_{n<N} gronwallWeight ≤ 8D²S²P²`, by replacing each centre kernel root
+  by its bound and recognising the two remaining sums as `K_z(N)²` and `P_z(N)²` (both via
+  `Finset.sum_range_succ'`, which peels the *bottom* term).
+- `kernelRoot_sq_global` — `K_w(N)² ≤ (2S² + 1/h₀)·exp(8D²S²P²)` with `D = ‖w−z‖·h₀`, uniform in `N`,
+  for **every** `w`. Chain: `discrete_gronwall` → `prod_one_add_le_exp_sum` → the sum bound.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/SecondKindGlobal.lean`
+- The second-kind Duhamel identity is driven by `P_w` where the first-kind one is driven by `K_w`,
+  but the bracket built from the centre data is *identical* — so `gronwallWeight` is literally the
+  same function and the second recursion needs no new weight. Since `R₀ = 0` the constant is `2P²`.
+- `secondKind_kernelRoot_sq_global`, then `boundedKernel_global`:
+  `BoundedKernel s z → ∀ w, BoundedKernel s w`. **No radius, no chaining, no smallness condition.**
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevanlinnaEntire.lean`
+- The Gronwall bound depends on the base point only through `‖z‖`, so it is *uniform on every ball*
+  (`kernelRoot_le_ballBoundQ`/`R`). That supplies both inputs `nevanlinna_holomorphic_unimodular`
+  was stated modulo — the uniform bounds `Sz, Pz` on `U` and `hUb : ∀ z ∈ U, BoundedKernel s z`.
+- `nevanlinna_entire_unimodular` — from `BoundedKernel s 0` alone: all four limiting entries
+  `nevAinf, nevBinf, nevCinf, nevDinf` are `Differentiable ℂ` on the whole plane, and
+  `A(z)D(z) − B(z)C(z) = 1` for **every** `z ∈ ℂ`.
+- `isClosed_boundedKernel` discharges the standing hypothesis of
+  `ComplexKernelTransfer.boundedKernel_of_isClosed` and `summable_kernel_everywhere_of_isClosed`.
+
+All endpoints `[propext, Classical.choice, Quot.sound]`, zero placeholders, registered in the
+umbrella.
+
+**Opens next:** the matrix is now an entire unimodular `2×2` family, so `B(x)τ − D(x)` is an entire
+function of `x` for each fixed `τ ∈ ℝ ∪ {∞}`. Link 129's dichotomy says such a function is either
+identically zero or has a discrete zero set; unimodularity rules out the first case (`B` and `D`
+cannot share a zero, else the determinant would vanish there). That gives the **discreteness of the
+N-extremal support** — the node sequence `ξₙ` — which is the last structural input before the four
+open fields `leaf`, `continuous_leaf`, `finite_carried`, `infinity_carried`, `leaf_moments` of
+`ClassicalNevanlinnaExtremalFamily`, with the open core `wₙ = λ(ξₙ)`.
+
+### Link 147 — the zeros become isolated on the whole plane
+
+`NevZeroDichotomy` (link 129) could only state the identity-theorem alternative on an open set with
+uniform kernel bounds, so the "vanishes identically nearby" branch stayed live. Entirety kills it:
+`ℂ` is connected, so one point of non-vanishing rules the branch out everywhere.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevCombinationDiscrete.lean`
+- `nevAinf_zero`, `nevBinf_zero`, `nevCinf_zero`, `nevDinf_zero` — the entry values at the origin are
+  the classical normalisation `A(0) = 0`, `B(0) = −1`, `C(0) = 1`, `D(0) = 0`. Each is one `simp`:
+  the `h₀·z·(series)` factor kills three of them and leaves the bare constant.
+- `eventually_ne_zero_of_entire` — the reusable core: an entire `f` nonzero at a single point has
+  every zero isolated. `AnalyticAt.eventually_eq_zero_or_eventually_ne_zero` for the local
+  alternative, `AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero` + `isPreconnected_univ`
+  to discharge the bad branch.
+- `nevCombination_at_zero` — `B(0)τ − D(0) = −τ`, so the required point is *free* for every `τ ≠ 0`.
+- `eventually_ne_zero_nevCombination` — **for every `τ ≠ 0`, the zeros of `B τ − D` are isolated.**
+  These zero sets are the supports of the N-extremal measures.
+- `eventually_ne_zero_nevBinf` — the same for `B` alone, i.e. the `τ = ∞` member of the family.
+- `nevBinf_ne_zero_or_nevDinf_ne_zero` — `B` and `D` have no common zero; a common zero would make
+  the determinant `0` instead of `1`.
+
+Axiom-clean, zero placeholders, registered.
+
+**The one parameter left is `τ = 0`,** where the combination is `−D` and `D(0) = 0` gives no witness.
+Ruling it out needs `D ≢ 0`, i.e. `nevDseries s 0 ≠ 0`, since `D(z) = h₀·z·nevDseries(z)` and the
+factor `z` is what hides the non-vanishing at the origin.
+
+**Opens next:** do *not* rebuild that from tsum estimates — `ChristoffelBoundedKernel.lean` already
+proves `0 < christoffelLimit s x` from `BoundedKernel s (x : ℂ)`, and `christoffelLimit` is the same
+series `Σ |Q_k(x)|²/h_k` that `nevDseries s 0` is. So the τ = 0 case should reduce to identifying
+`nevDseries s 0` with `christoffelLimit s 0` (via realness of `monicOrthoC s k 0`) and quoting the
+existing positivity. That closes the parametrization over all of `ℝ ∪ {∞}` and hands the leaf
+construction a discrete node sequence `ξₙ` for every parameter.
+
+### Link 148 — the last parameter closes; discreteness holds across the whole family
+
+Link 147 left `τ = 0` open, where the combination is `−D` and `D(0) = 0` supplies no witness. The
+witness was hiding behind the linear factor.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevDSeriesNonzero.lean`
+- `nevDinf_eq` — `D(z) = h₀·z·nevDseries(z)`, definitionally (`rfl`). The factor `z` is exactly what
+  makes `D(0) = 0` while the series behind it is nonzero.
+- `nevDseries_zero_eq` — at the origin the series is the *real* series `∑ₖ Qₖ(0)²/hₖ`, via
+  `monicOrthoC_ofReal` and `Complex.ofReal_tsum`.
+- `nevDseries_zero_ne_zero` — that series is nonzero: it is a sum of nonnegative terms whose `k = 0`
+  term is `1/h₀ > 0` (`Summable.le_tsum`). The summability is the *existing*
+  `summable_of_boundedKernel`, rewritten by `normSq_monicOrthoC_ofReal` — the same bridge
+  `ChristoffelBoundedKernel` already uses.
+- `differentiable_nevDseries`, `exists_nevDinf_ne_zero` — continuity keeps the series nonzero on a
+  neighbourhood of `0`, and any point of that neighbourhood other than `0` makes `D` itself nonzero.
+- `eventually_ne_zero_nevDinf` — the `τ = 0` member.
+- `eventually_ne_zero_nevCombination_all` — **for every `τ ∈ ℂ`, the zeros of `B τ − D` are
+  isolated**; with `eventually_ne_zero_nevBinf` (link 147) covering `τ = ∞`, the parametrization is
+  closed over all of `ℝ ∪ {∞}`.
+
+Axiom-clean, zero placeholders, registered.
+
+Note on method: the `christoffelLimit` route flagged at the end of link 147 was *not* the shortest
+one — `christoffelLimit` is an infimum of Christoffel functions, not the tsum, so identifying it with
+`nevDseries s 0` would have gone through more machinery than proving the tsum bound directly. What
+did carry over from that file was the smaller piece: the real-evaluation bridge
+`monicOrthoC_ofReal` / `normSq_monicOrthoC_ofReal`. That is the fifth time on this card that reaching
+for the big named result was longer than writing the needed inequality down.
+
+**Opens next:** every parameter now has a discrete node set. The leaf construction can start: for a
+fixed `τ`, enumerate the zeros of `B τ − D` as `ξₙ` and build the measure `∑ₙ wₙ δ_{ξₙ}`. The five
+open fields of `ClassicalNevanlinnaExtremalFamily` (`leaf`, `continuous_leaf`, `finite_carried`,
+`infinity_carried`, `leaf_moments`) all hang off that enumeration, with the open core still
+`wₙ = λ(ξₙ)` — the identification of the Nevanlinna weight with the Christoffel limit, which is
+where `christoffelLimit` *will* genuinely be the right object.
+
+### Link 149 — three of the eight family fields are now built, not assumed
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevanlinnaRealMatrix.lean`
+
+The entries have real coefficients, so along `Complex.ofReal` each is the embedding of a real kernel
+series. `secondKindC_ofReal` (new, the second-kind twin of the existing `monicOrthoC_ofReal`) plus
+`ofReal_bilinear_tsum` give the four bridges `nevAinf_ofReal … nevDinf_ofReal`, and everything
+transports along them:
+
+- `nev_realInf_det_one` — the determinant identity on `ℝ`, by `exact_mod_cast` from the complex one.
+- `nevMatrixDataInf` — **the `matrix` field of `ClassicalNevanlinnaExtremalFamily`, constructed.**
+- `continuous_of_entire_ofReal` — a real entry is `re ∘ f ∘ ofReal` of an entire `f`, hence
+  continuous. Gives `continuous_nevMatrixDataInf_B` and `_D`: **the `continuous_B`/`continuous_D`
+  fields.**
+- `nevMatrixDataInf_finiteDenominatorFiber_eq` / `_infinityDenominatorFiber_eq` — each fiber is the
+  real trace of the corresponding complex zero set.
+- `tendsto_ofReal_nhdsWithin_ne` — `ofReal` maps punctured neighbourhoods to punctured
+  neighbourhoods, which is what carries links 147–148 from `ℂ` down to `ℝ`.
+- `eventually_notMem_finiteDenominatorFiber` / `_infinityDenominatorFiber` — **every denominator
+  fiber is discrete in `ℝ`**, for every `τ ∈ ℝ ∪ {∞}`. These fibers are the N-extremal supports.
+
+Naming note: `nevAreal … nevDreal` were already taken by `NevanlinnaPluecker` for the *truncated*
+level-`n` entries (finite sums, with their own `nevMatrixData` and continuity). Those are a different
+object — their fibers are the level-`n` Gauss nodes. The new ones carry the `Inf` suffix, and the
+relation between them is the partial-sum convergence of the kernel series.
+
+Axiom-clean, zero placeholders, registered.
+
+**Opens next:** five fields remain — `leaf`, `continuous_leaf`, `finite_carried`,
+`infinity_carried`, `leaf_moments`. `finite_carried`/`infinity_carried` say the leaf measure is
+carried by the fiber, which the discreteness above now makes a statement about a countable set of
+atoms; `CountableWeightedDirac.lean` (link 133) already builds measures of exactly that shape. So the
+next construction is the enumeration of a discrete subset of `ℝ` as a sequence `ξₙ`, feeding
+`countableWeightedDirac` with weights `wₙ`. The open core is unchanged and is now the *only*
+analytic unknown left on this card: `wₙ = λ(ξₙ)` — the Nevanlinna weight is the Christoffel limit,
+which is where `christoffelLimit` becomes the right object rather than a detour.
+
+### Link 150 — the fibers are countable; the leaf measure exists and is carried
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevFiberCountable.lean`
+- `countable_of_eventually_notMem` — a set of reals with no accumulation point in itself is
+  countable. Chain: `discreteTopology_subtype_iff` (via `Filter.inf_principal_eq_bot`), then `ℝ`
+  second countable ⇒ the subspace is separable, then `separableSpace_iff_countable`.
+- `countable_finiteDenominatorFiber` / `countable_infinityDenominatorFiber` — **every N-extremal
+  support is countable**, for every parameter in `ℝ ∪ {∞}`.
+- `isClosed_finiteDenominatorFiber` / `_infinityDenominatorFiber` — and closed, being level sets of
+  continuous functions. So each support is a closed discrete countable subset of `ℝ`.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/FiberMeasure.lean`
+- `fiberMeasure w F` — the weighted sum of point masses **indexed by `F` itself**, not by an
+  enumeration of it. This was the right move: it removes the need to list the fiber, and carriedness
+  becomes structural rather than a computation.
+- `fiberMeasure_apply`, `lintegral_fiberMeasure`, `fiberMeasure_singleton`.
+- `fiberMeasure_compl_eq_zero` — **the measure is carried by `F` whatever the weights are.**
+- `nevLeafFinite` / `nevLeafInfinity` — the candidate leaves, Christoffel weights on the fiber.
+- `nevLeafFinite_carried` / `nevLeafInfinity_carried` — **the content of the `finite_carried` and
+  `infinity_carried` fields.**
+- `nevLeafFinite_singleton` — the atom at a node is `christoffelLimit` there, which is the shape
+  `weight_le_christoffelLimit` (link 133) already constrains.
+
+Correction worth recording: the module was first written with a `(hF : F.Countable)` hypothesis
+throughout. The linter flagged it unused, and checking mathlib showed `Measure.sum_apply` and
+`lintegral_sum_measure` are stated for an **arbitrary** index type in this toolchain. So the whole
+fiber-measure API is countability-free and the hypothesis was dropped — the countability results
+above are still needed, but later, where a listing is actually wanted.
+
+All eight modules of links 146–150 verified together: oleans present, zero placeholders, endpoints
+`[propext, Classical.choice, Quot.sound]`.
+
+**Status of the eight fields of `ClassicalNevanlinnaExtremalFamily`:** `matrix` ✓, `continuous_B` ✓,
+`continuous_D` ✓, `finite_carried` ✓ (content), `infinity_carried` ✓ (content). Remaining: `leaf`
+as a `ProbabilityMeasure`-valued map, `continuous_leaf`, and `leaf_moments`.
+
+**Opens next.** The last two both reduce to one statement — `∑_{ξ ∈ F_τ} λ(ξ)·ξ^k = s_k`, with `k = 0`
+giving total mass `1` and hence the `ProbabilityMeasure` upgrade. `weight_le_christoffelLimit` gives
+`≤` for a representing measure; what is missing is existence.
+
+The route that does not require it as an input: **quasi-orthogonal quadrature.** The zeros of
+`Q_{n+1} + t·Q_n` are real and simple, and the associated Christoffel-weighted discrete measure is
+exact to degree `2n` — the same structure the Gauss construction of links 1–40 already has
+(`GaussQuadratureNodes` → `GaussQuadrature` → `GaussTightness` → `HamburgerExistence`). Any weak limit
+of those therefore represents `s`, with no per-`t` moment sequence anywhere — which is what link 83's
+refutation actually forbade. Identifying the limit's support with `F_τ` is then the remaining step,
+and it is a statement about where the quasi-orthogonal zeros accumulate, not about moments.
+
+### Link 151 — quasi-orthogonal polynomials: `n+1` distinct real roots for every parameter
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiOrthogonal.lean`
+
+`quasiOrtho s n t = Q_{n+1} + t·Qₙ`, monic of degree `n+1` (`quasiOrtho_monic`, `_degree`).
+
+- `quasiOrtho_aeval_ne_zero` / `_splits` — **all roots are real.** The proof is *kernel-based, not
+  interlacing-based*: `kernelSum_mul_im` (already in `ComplexChristoffelDarboux`) says
+  `(∑_{k≤n}|Q_k(z)|²/h_k)·Im(z)·hₙ = Im(Q_{n+1}(z)·conj(Qₙ(z)))`. If `Q_{n+1}(z) = −t·Qₙ(z)` with `t`
+  real, the right side is `Im(−t|Qₙ(z)|²) = 0`, so the kernel sum vanishes — impossible, its `k = 0`
+  term is `1/h₀ > 0`. Reused `splits_of_forall_aeval_im_eq_zero` verbatim.
+- `quasiOrtho_not_sq_dvd` — **all roots are simple.** At a root `r`, `Q_{n+1}(r) = −t·Qₙ(r)` collapses
+  the two-variable identity to `(x−r)·Kₙ(x,r)·hₙ = Qₙ(r)·(Q_{n+1}(x) + t·Qₙ(x))`. A double root makes
+  the right side divisible by `(x−r)²`; cancelling one factor as polynomials (`Polynomial.funext`,
+  `mul_left_cancel₀`) and evaluating at `r` gives `Kₙ(r,r)·hₙ = 0`, contradicting
+  `cdKernel_eval_self_pos`. **No differentiation** — the same trick `ConfluentDarboux` uses for `Q_{n+1}`.
+- `quasiNodes`, `mem_quasiNodes_iff`, `quasiNodes_card` — **exactly `n+1` nodes, for every real `t`.**
+
+Axiom-clean, zero placeholders, registered. One build error: `add_le_add_right` adds on the *left*
+despite its name (same trap recorded earlier for `add_le_add_left`); `add_le_add h le_rfl` is the
+symmetric form that works.
+
+**Opens next.** Two candidate routes to `leaf_moments`, and they should be compared before building:
+
+1. *Quadrature route.* Interpolatory weights at `quasiNodes` give a rule exact to degree `2n` —
+   `quasiOrtho` is orthogonal to everything of degree `< n`, so writing `p = q·P + r` kills the
+   quotient term for `deg p ≤ n + n`. Then tightness and a weak limit, exactly as
+   `GaussTightness` → `HamburgerExistence` already do. Needs positivity of the interpolatory weights.
+2. *Algebraic route.* The transfer matrix `!![Q_{n+1}, R_{n+1}; Qₙ, Rₙ]` (already in
+   `SecondKindMomentPolynomials`) is, up to constants, the level-`n` Nevanlinna matrix. If the
+   truncated entries `nevBreal s n`, `nevDreal s n` can be written in terms of `Q_{n+1}, Qₙ, R_{n+1}, Rₙ`,
+   then "`Bₙ(x)τ − Dₙ(x)` vanishes exactly on a quasi-orthogonal node set" becomes an *identity*
+   rather than a limit theorem — and the support identification collapses to Hurwitz on the already
+   proved entrywise convergence.
+
+Route 2 would reuse far more and prove more; check the transfer-matrix identities first.
+
+### Link 152 — route 2 wins: the level-`n` denominator *is* a quasi-orthogonal polynomial
+
+Link 151 posed two routes and said to check the transfer-matrix identities first. Checked, and route 2
+is not merely shorter — it replaces a limit theorem by an identity.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevDenominatorFactor.lean`
+
+Christoffel--Darboux at `(0, x)` collapses each truncated entry to two terms. Both closed forms went
+through on the first `linear_combination`, using the three CD identities already in the corpus
+(`christoffelDarboux`, `mixedChristoffelDarboux`, and `momentWronskian_eq`):
+
+- `nevDreal_closed` — `Dₙ(x) = (h₀/hₙ)·(Qₙ(0)·Q_{n+1}(x) − Q_{n+1}(0)·Qₙ(x))`.
+- `nevBreal_closed` — `Bₙ(x) = (h₀/hₙ)·(Rₙ(0)·Q_{n+1}(x) − R_{n+1}(0)·Qₙ(x))`.
+- `nevDenominator_closed` — hence
+  `Bₙ(x)·τ − Dₙ(x) = (h₀/hₙ)·(α·Q_{n+1}(x) + β·Qₙ(x))` with
+  `α = τ·Rₙ(0) − Qₙ(0)`, `β = Q_{n+1}(0) − τ·R_{n+1}(0)`.
+- `nevAlpha_beta_ne_zero` — **`α` and `β` never vanish together.** Both zero would force the Wronskian
+  at the origin to be `0`, but `wronskian_eval_zero` computes it as `−hₙ/h₀ ≠ 0`. So the denominator
+  is never the zero polynomial — the finite-level analogue of link 148's non-degeneracy, and here it
+  is two lines instead of a continuity argument.
+- `nevDenominator_eq_quasiOrtho`, `nevDenominator_zero_iff`, `nevDenominator_zeroSet` — when `α ≠ 0`
+  the denominator is a **nonzero constant multiple of `quasiOrtho s n (β/α)`**, so its zero set is
+  exactly `quasiNodes s n (β/α)`: **`n+1` distinct real points** by link 151.
+
+Axiom-clean, zero placeholders, registered. (Two familiar traps recurred: `field_simp` closing a goal
+so the following `ring` errors, and an unused hypothesis revealing that a statement had been phrased
+about the wrong object — restating `zeros_card` as `zeroSet` both used the hypothesis and said the
+thing worth saying.)
+
+**Why this matters for the card.** The support identification no longer needs quadrature, tightness,
+or weak limits at level `n`. The chain is now: level-`n` denominator → quasi-orthogonal polynomial →
+`n+1` simple real nodes; and separately the entries converge (`NevanlinnaPluecker` differentiability
+plus links 146–149). So `F_τ`, the limit fiber, is the limit of the level-`n` node sets.
+
+**Opens next:** Hurwitz. `Bₙτ − Dₙ → Bτ − D` locally uniformly on `ℂ` (the entries are the truncations
+of the series proved entire in link 148), and `Bτ − D ≢ 0` (link 148 again). Hurwitz's theorem then
+says every zero of the limit is a limit of level-`n` zeros, and conversely no zero appears from
+nowhere. That identifies `F_τ` with `lim quasiNodes s n (βₙ/αₙ)` and hands the leaf its nodes — the
+last structural step before the weights, where the open core `wₙ = λ(ξₙ)` still sits.
+
+### Link 153 — quasi-orthogonal quadrature: exact to order `2n`, with positive weights
+
+Hurwitz turned out to be unavailable: mathlib has neither Hurwitz's theorem nor Rouché nor the
+argument principle (checked `Analysis/Complex/` — `JensenFormula` and `LocallyUniformLimit` exist, the
+zero-counting theorems do not). Building the argument principle from scratch is a larger project than
+the quadrature, and the quadrature is needed by any route, so it went first.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiQuadrature.lean`
+
+- `quasiOrtho_inner_eq_zero` — `quasiOrtho s n t ⊥` everything of degree `< n`, since *both*
+  summands are (`monicOrtho_inner_eq_zero_of_degree_lt` applied at `n+1` and at `n`).
+- `quasiWeight` — the interpolatory weight, `momentFunctional` of a `Lagrange.basis` polynomial.
+  Mathlib's `Lagrange` (interpolate / basis / `eq_interpolate`) supplied all of the interpolation.
+- `momentFunctional_eq_quasiSum_of_degree_lt` — exactness on degrees `< n+1`, straight from
+  `Lagrange.eq_interpolate` plus `momentInner_sum_left`.
+- `momentFunctional_eq_quasiSum` — **exactness to order `2n`.** Divide by the node polynomial
+  (`modByMonic_add_div`): the remainder has degree `< n+1` so the interpolatory rule handles it, and
+  the quotient has degree `< n` so it is annihilated by orthogonality — while contributing nothing to
+  the sum either, the node polynomial vanishing at every node. The degree bookkeeping needs the
+  `p /ₘ P = 0` case split (`divByMonic_eq_zero_iff`), which is what makes `n = 0` work.
+- `quasiWeight_pos` — **every weight is strictly positive.** `bₓ²` has degree `2n`, so the rule is
+  exact on it; the sum collapses to `wₓ`, and the value is `momentInner s bₓ bₓ > 0` by positive
+  definiteness. Note the order: exactness to `2n` is proved *first* and used to prove positivity, so
+  there is no circularity.
+
+One order short of the Gauss rule's `2n+1`, which costs nothing in the limit.
+
+Axiom-clean, zero placeholders, registered. Five build iterations, all mechanical: `ring` cannot see
+through `id x` vs `x` (three separate spots — `simp only [id_eq]` first), and `set` folds a definition
+in the goal so a later `rw` of that definition no longer matches.
+
+**Opens next:** the measure. `quasiMeasure s n t := ∑_{x ∈ quasiNodes} wₓ·δₓ` is now a *positive*
+finite measure whose moments agree with `s` up to order `2n` — precisely the hypothesis shape the
+existing chain consumes. `GaussTightness` → `GaussMomentLimit` → `HamburgerExistence` should port with
+`2n+1` replaced by `2n` throughout; the tightness estimate only needs the even moments to be
+eventually correct, which they are. That yields, for each parameter, a representing measure obtained
+as a weak limit of quasi-orthogonal rules — and then the remaining question is the one Hurwitz would
+have answered directly: that the limit is carried by `F_τ`.
+
+### Link 154 — the quasi family carries the whole existence chain
+
+**[PROVED HERE]** three modules, all first-try compiles except two mechanical fixes.
+
+`QuasiMeasure.lean` — `quasiMeasure s n t = ∑_{ξ} w_ξ·δ_ξ`, with `quasiMeasure_moment`: **the moments
+agree with `s` up to order `2n`**, plus finiteness and integrability. One genuine difference from the
+Gauss case had to be handled: the Gauss file's integration lemma assumes the weight function is
+nonnegative *everywhere*, which is false here — away from the nodes a Lagrange functional has no
+sign. Restated as `integral_finsetWeightedDirac_of_mem`, requiring nonnegativity on the node set only.
+
+`QuasiTightness.lean` — `quasiNodes_tail_weight_le`: a node beyond `R` contributes at least `R²`
+times its weight to `∑ w·ξ² = s₂`, so the tail is at most `s₂/R²` — **uniform in the level and in the
+parameter**. Hence `isTightMeasureSet_quasiProb` and `isCompact_closure_quasiProbMeasure` for an
+*arbitrary sequence* `τ : ℕ → ℝ` of parameters. That generality is not decoration: the parameter
+selecting a leaf varies with the level, so a fixed-parameter tightness result would have been useless
+here.
+
+`QuasiMomentLimit.lean` — the full port: `lintegral_even_pow_quasiProb`,
+`exists_subseq_tendsto_quasiProbMeasure`, `hasMoments_of_tendsto_quasi`, and
+**`exists_quasiLimit_hasMoments`**: for any sequence of parameters there is a subsequence of the
+quasi rules converging weakly to a probability measure whose every moment is `s_k/s₀`. The generic
+engine (`tendsto_integral_pow_of_uniform_even_moment`, `lintegral_even_pow_le_of_forall_isOpen_le_liminf`,
+`integrable_truncPow`, …) was reused unchanged; only the family-specific inputs are new. Exactness to
+`2n` instead of `2n+1` cost nothing — every use needs it only *eventually* in the level.
+
+Axiom-clean, zero placeholders, registered.
+
+**Opens next — and Hurwitz is not needed after all.** To show the limit `μ` is carried by
+`F_τ = {x : B(x)τ − D(x) = 0}`, take `f ≥ 0` continuous with compact support disjoint from `F_τ`. On
+`supp f`, `|Bτ − D| ≥ δ > 0`. If `Bₙτₙ − Dₙ → Bτ − D` *locally uniformly*, then for large `n` that
+function is `≥ δ/2` on `supp f`, so it has **no zeros there** — and its zeros are exactly the level-`n`
+nodes (link 152). So `∫f dμₙ = 0` for large `n`, hence `∫f dμ = 0`, hence `μ(F_τᶜ) = 0`.
+
+That argument needs only locally uniform convergence of the truncated entries, not a zero-counting
+theorem. So the missing mathlib machinery (Rouché, argument principle) is avoidable entirely. Next
+step: check whether `differentiableOn_bilinearLimit` in `NevanlinnaPluecker` already establishes
+`TendstoLocallyUniformlyOn` for the entry series — it must prove something of that kind to get
+holomorphy of the limit, in which case the carriedness argument is within reach immediately.
+
+### Link 155 — the uniform estimate was already there, only its weaker consequence had been recorded
+
+Link 154 ended by asking whether the holomorphy proof establishes locally uniform convergence. It
+establishes something stronger and had simply not stated it: `differentiableOn_bilinearLimit` builds
+`uniformCauchySeqOn_bilinearPartialSum` and pointwise convergence, calls
+`.tendstoUniformlyOn_of_tendsto`, then immediately weakens the result to
+`TendstoLocallyUniformlyOn` to feed `.differentiableOn`. The uniform statement is discarded one line
+after being proved.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/EntryUniformLimit.lean`
+- `tendstoUniformlyOn_bilinearLimit` — the extraction: **uniform** (not merely locally uniform)
+  convergence of the bilinear partial sums on any set carrying a uniform kernel bound. Four lines,
+  reusing the two ingredients the holomorphy proof already had.
+- `tendstoUniformlyOn_nevD_series`, `tendstoUniformlyOn_nevB_series` — uniform convergence of both
+  entry series on **every ball**, via `kernelRoot_le_ballBoundQ` (link 149). The implicit `Kg` has to
+  be supplied explicitly (`ballBoundQ s S P r`), since it occurs only in the deferred hypothesis.
+- `bilinearPartialSum_secondKind_comm` — the `B` summand in the order the entry uses; the bilinear
+  machinery wants the constant factor first, the entry writes it second.
+
+Axiom-clean, zero placeholders, registered.
+
+**Opens next: carriedness, now fully in reach.** With uniform convergence on balls, the argument of
+link 154 can be run:
+1. `F_τ` is closed, so for compact `K ⊆ F_τᶜ` the continuous `|B(·)τ − D(·)|` attains a positive
+   minimum `δ` on `K`.
+2. Uniform convergence gives `N` with `|Bₙ(·)τ − Dₙ(·)| ≥ δ/2 > 0` on `K` for `n ≥ N`, so the level-`n`
+   denominator has **no zero in `K`** — and by link 152 its zeros are exactly the level-`n` nodes.
+3. So `quasiMeasure` of `K` is `0` for `n ≥ N`; by portmanteau for closed sets, the weak limit `μ`
+   also gives `K` measure `0`.
+4. Inner regularity of a finite Borel measure on `ℝ` upgrades "every compact subset of `F_τᶜ` is
+   null" to `μ(F_τᶜ) = 0`.
+
+Step 4 is the only step needing machinery not yet used on this card; `ℝ` is a Polish space so the
+instance should be available rather than built. Once it lands, `leaf`, `finite_carried`,
+`infinity_carried` and `leaf_moments` all hold for the *constructed* leaf `μ`, and the card's open
+core reduces to identifying `μ`'s atoms with `λ(ξₙ)` — i.e. to the reverse of the inequality
+`weight_le_christoffelLimit` already proved in link 133.
+
+### Link 156 — the denominator converges uniformly on bounded real intervals
+
+Steps 1–2 of the link-155 plan are now Lean.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/EntryRealUniform.lean`
+- `measure_open_eq_zero_of_compacts` — a finite measure vanishing on every compact subset of an open
+  set vanishes on it. Step 4 of the plan, and it needed no construction: `ℝ` is Polish, so
+  `μ.Regular` resolves by `infer_instance` for any finite measure, and `IsOpen.measure_eq_iSup_isCompact`
+  does the rest in three lines.
+- `nevBreal_ofReal_partial`, `nevDreal_ofReal_partial` — **the truncated real entries are the complex
+  bilinear partial sums along `Complex.ofReal`**, at index `n+1`. This is the bridge that lets the
+  ball estimate reach the real line.
+- `nevBinf_comm_tsum`, `nevDinf_tsum` — the limits in the order the bilinear machinery produces them.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/DenominatorUniform.lean`
+- `eventually_nevDreal_close`, `eventually_nevBreal_close` — each truncated entry differs from its
+  limit by exactly `h₀·x·(tail)`, and on `|x| < r` the prefactor is at most `h₀·r`. So eventually
+  `|entryₙ(x) − entry(x)| < ε` **uniformly on the interval**.
+- `eventually_nevDenominator_close` — **the combination `Bₙ·τ − Dₙ` converges uniformly to `B·τ − D`
+  on every bounded interval**, splitting `ε` between the two entries with the `|τ|` factor absorbed.
+
+Axiom-clean, zero placeholders, registered. Traps hit: `zero_le` takes its argument implicitly (third
+time on this card); `push_cast` normalises the whole goal to casted evaluations, so the termwise
+`monicOrthoC_ofReal` bridges must come *after* it, not before; `div_le_div_iff` does not exist under
+that name in this toolchain — an explicit `calc` through `|τ| ≤ |τ| + 1` avoids needing it at all.
+
+**Opens next: the node-avoidance step, then carriedness.** Everything needed is now in place:
+1. On compact `K` disjoint from `F_τ`, `|B(·)τ − D(·)|` is continuous and nonvanishing, hence
+   `≥ δ > 0` (`IsCompact.exists_forall_le` on `K` nonempty; `K = ∅` is trivial).
+2. `eventually_nevDenominator_close` with `ε = δ/2` puts `|Bₙ(·)τ − Dₙ(·)| ≥ δ/2 > 0` on `K`
+   eventually — so **no level-`n` node lies in `K`** by `nevDenominator_zero_iff` (link 152).
+3. Hence `quasiMeasure ... K = 0` eventually, and `limsup_measure_closed_le_of_tendsto` (verified
+   present) carries it to the weak limit.
+4. `measure_open_eq_zero_of_compacts` finishes: `μ(F_τᶜ) = 0`.
+
+One wrinkle to handle honestly at step 2: `nevDenominator_zero_iff` needs `α_n ≠ 0`, and `α_n = 0`
+happens exactly when `τ = Qₙ(0)/Rₙ(0)`. At those levels the denominator is `βₙ·Qₙ` instead (with
+`βₙ ≠ 0` by `nevAlpha_beta_ne_zero`), whose zeros are the *Gauss* nodes of level `n−1`. So the
+construction must either restrict to `τ` avoiding that countable set, or run the argument with the
+Gauss rule at the exceptional levels. This is not a gap in the proof so far — it is the next thing to
+decide, and it is a choice about which family to feed the limit, not an obstruction.
+
+### Link 157 — node avoidance, and the `α` wrinkle dissolves
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/DenominatorAvoidance.lean`
+- `exists_radius_of_isCompact` — a compact set of reals sits inside a symmetric open interval.
+- `eventually_no_denominator_zero_on_compact` — **on a compact `K` where the limiting denominator
+  does not vanish, the truncated denominator eventually does not vanish either.** `|B(·)τ − D(·)|` is
+  continuous and nonzero on `K`, so it attains a positive minimum `δ` (`IsCompact.exists_isMinOn`);
+  `eventually_nevDenominator_close` with `ε = δ/2` then forbids a zero. Stated for the *denominator*,
+  not the nodes, so it is independent of which family describes the zeros at a given level.
+- `eventually_quasiNodes_disjoint`, `eventually_quasiMeasure_compact_eq_zero` — the node and measure
+  forms, conditional on `αₙ ≠ 0`.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevAlphaCofinal.lean` — the wrinkle flagged in
+link 156 is not a wrinkle.
+
+`βₙ = Q_{n+1}(0) − τ·R_{n+1}(0)` and `α_{n+1} = τ·R_{n+1}(0) − Q_{n+1}(0)`, so
+**`βₙ = −α_{n+1}`** (`nevBeta_eq_neg_nevAlpha_succ`, one `ring`). Therefore
+`nevAlpha_beta_ne_zero` — proved back in link 152 from the Wronskian — says precisely that **no two
+consecutive leading coefficients vanish** (`nevAlpha_succ_ne_zero_of_eq_zero`). Hence
+`exists_ge_nevAlpha_ne_zero` and `infinite_setOf_nevAlpha_ne_zero`: the good levels are **cofinal**,
+for *every* `τ`.
+
+So there is no exceptional set of parameters and no need to fall back to the Gauss rule at bad
+levels. The weak limit is taken along the good levels, which are infinite, and tightness holds along
+any subsequence (link 154 was stated for an arbitrary parameter sequence precisely to allow this).
+The Wronskian non-degeneracy that looked like a small technical lemma in link 152 turns out to be the
+statement that carries the whole construction past its only apparent obstruction.
+
+Axiom-clean, zero placeholders, registered. Traps: `autoImplicit` silently turned two missing imports
+into implicit binders, surfacing as "function expected" rather than "unknown identifier" — the hint
+named the cause; `Set.infinite_of_not_bddAbove` is an implication, not an iff, so `refine` not `rw`.
+
+**Opens next:** the assembly. Choose a strictly monotone enumeration `ψ : ℕ → ℕ` of the good levels
+(from `infinite_setOf_nevAlpha_ne_zero`), form the measures `quasiProb s (ψ i) (βψᵢ/αψᵢ)`, extract a
+weakly convergent subsequence (link 154), and combine `eventually_quasiMeasure_compact_eq_zero` with
+`limsup_measure_closed_le_of_tendsto` and `measure_open_eq_zero_of_compacts` (link 156) to conclude
+`μ(F_τᶜ) = 0`. That is `leaf` together with `finite_carried` and `leaf_moments` for a single `τ`; the
+family over all `τ` and `continuous_leaf` follow, and the card's open core narrows to the atoms.
+
+### Link 158 — the leaf is constructed
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiLevelFamily.lean`
+
+Every *per-level* statement of the construction was already stated for an arbitrary level and
+parameter; only the *family* statements pinned the level to `n+1`. Restated for a level function `ν`
+with `n + 1 ≤ ν n`: `isTightMeasureSet_quasiProb_of_level`,
+`exists_subseq_tendsto_quasiProbMeasure_of_level`, `hasMoments_of_tendsto_quasi_of_level`. Plus the
+selection: `goodLevel h tau n` is a level `≥ n+1` with `α ≠ 0` (link 157 makes it exist), and
+`leafParam` is the quasi parameter it determines.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/LeafConstruction.lean`
+
+`exists_leaf` — **for every `τ` there is a probability measure `μ` with**
+- `∫ xᵏ dμ = s_k/s₀` for every `k`, and
+- `μ {x : B(x)τ − D(x) ≠ 0} = 0`.
+
+The carriedness argument as planned, with one adjustment made while writing it: the portmanteau
+inequality available for a weak limit runs `μ G ≤ liminf μₙ G` for *open* `G`, which is the wrong
+direction on a compact set. So the compact `K` is first enlarged via `exists_compact_between` to a
+compact `L` with `K ⊆ interior L ⊆ L ⊆ F_τᶜ`; the avoidance estimate kills `L`, monotonicity passes to
+`interior L`, portmanteau applies there because it is open, and `μ K ≤ μ (interior L) = 0`. Then
+`measure_open_eq_zero_of_compacts` (link 156) spreads it to all of `F_τᶜ`.
+
+Axiom-clean, zero placeholders, registered.
+
+**Status of `ClassicalNevanlinnaExtremalFamily`.** `matrix` ✓, `continuous_B` ✓, `continuous_D` ✓
+(link 149); `finite_carried` ✓, `infinity_carried` ✓ as measure statements (link 150); and now the
+**existence** of a leaf with the correct moments *and* the correct carrier, for every parameter.
+
+**Opens next.** Two things separate this from the packaged structure:
+1. `leaf` as a *function* `OnePoint ℝ → ProbabilityMeasure ℝ` — `exists_leaf` gives one measure per
+   `τ`; choice turns it into a function, but `continuous_leaf` then needs the choice to be coherent.
+   The classical route is uniqueness: the N-extremal measure of a parameter is unique, so the choice
+   is forced and continuity comes from continuity of the Stieltjes transform in `τ`.
+2. The open core, unchanged: the atoms of the constructed `μ` are `λ(ξ)`. Link 133's
+   `weight_le_christoffelLimit` gives `≤`; the reverse is what remains, and it is now a statement
+   about a *constructed* measure rather than a hypothetical one — which is the first time on this card
+   that the open core has had a concrete object to be tested against.
+
+### Link 159 — both leaves, in the fibers the interface names
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/InfinityDenominator.lean`
+- `exists_leaf_finiteDenominatorFiber` — link 158's leaf restated against
+  `(nevMatrixDataInf h h0b).finiteDenominatorFiber tau`, with the moments packaged as
+  `HasHamburgerMoments`. The fiber complement *is* the carriedness set, so the restatement is one
+  `ext`. Plus the normalised variant for `s₀ = 1`.
+- The parameter at infinity: `nevBreal_closed` (link 152) already writes `Bₙ` as
+  `(h₀/hₙ)·(Rₙ(0)·Q_{n+1}(x) − R_{n+1}(0)·Qₙ(x))`, so it is a quasi-orthogonal combination with
+  `αₙ = Rₙ(0)`, `βₙ = −R_{n+1}(0)`. Then `βₙ = −α_{n+1}` is **`rfl`**, and
+  `nevAlphaInf_beta_ne_zero` is the same Wronskian argument: `Rₙ(0)` and `R_{n+1}(0)` cannot both
+  vanish. Hence `exists_ge_nevAlphaInf_ne_zero` — cofinal good levels — and `nevBreal_zero_iff`.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/InfinityLeaf.lean`
+- `eventually_no_nevBreal_zero_on_compact`, `eventually_quasiMeasure_compact_eq_zero_inf`,
+  `goodLevelInf`, `leafParamInf`, and **`exists_leaf_infinity`** / `exists_leaf_infinityDenominatorFiber`.
+  The whole of links 157–158 runs unchanged with `B` in place of `B·τ − D`; the uniform estimate it
+  needs, `eventually_nevBreal_close`, was already proved in link 156. Compiled first try.
+
+Axiom-clean, zero placeholders, registered.
+
+**Every parameter in `ℝ ∪ {∞}` now has a constructed leaf** with the correct moments and carried by
+the correct denominator fiber. In `ClassicalNevanlinnaExtremalFamily` terms: `matrix`,
+`continuous_B`, `continuous_D` are built; and for each `t : OnePoint ℝ` separately, a measure
+satisfying what `leaf_moments` and `finite_carried`/`infinity_carried` demand of it exists.
+
+Method note: the `τ = ∞` case cost one module rather than a redevelopment because link 152 was stated
+as a *closed form for `Bₙ`* rather than only for the combination `Bₙτ − Dₙ`. The general lesson on
+this card keeps repeating — the reusable statement is the one about the individual object, not about
+the combination currently of interest.
+
+**Opens next.**
+1. **`leaf` as a function.** `Classical.choice` on the two existence theorems gives
+   `OnePoint ℝ → ProbabilityMeasure ℝ` immediately, but `continuous_leaf` needs the choice coherent.
+   The classical route is uniqueness of the N-extremal measure for a parameter; that is a genuine
+   further theorem, and it is what would also collapse the open core, since a unique measure carried
+   by `F_τ` with the right moments must have the Christoffel weights.
+2. **The open core**, unchanged in statement but no longer hypothetical: the atoms of the constructed
+   leaf are `λ(ξ)`. `weight_le_christoffelLimit` (link 133) gives `≤`.
+
+### Link 160 — the open core becomes a single scalar inequality, and half of it is now proved
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/FiberWeightSum.lean`
+
+- `measure_eq_tsum_singleton` — a measure of a countable set is the sum of its atoms
+  (`measure_biUnion` over singletons).
+- `measure_singleton_le_ofReal_christoffelLimit` — the `ENNReal` form of link 133's atom bound,
+  applicable to *any* finite representing measure.
+- **`one_le_tsum_christoffelLimit_finiteFiber`** and **`one_le_tsum_christoffelLimit_infinityFiber`** —
+  for a normalised sequence, `1 ≤ ∑_{ξ ∈ F_t} λ(ξ)` for every parameter `t ∈ ℝ ∪ {∞}`.
+  The constructed leaf is a probability measure carried by the countable fiber, so its mass is the
+  sum of its atoms; each atom is at most `λ(ξ)`; so the `λ`'s sum to at least the mass.
+- **`measure_singleton_eq_of_tsum_le`** — the reduction: if the sum is *also* at most `1`, then
+  `ENNReal.tsum_lt_tsum` forces equality termwise, and **every atom of the leaf equals `λ(ξ)`**.
+
+Axiom-clean, zero placeholders, registered.
+
+**What this does to the card's open core.** The core was "the Nevanlinna weight is the Christoffel
+limit, `wₙ = λ(ξₙ)`". It is now exactly
+
+> **[OPEN CORE]** `∑_{ξ ∈ F_t} λ(ξ) ≤ 1` for a normalised moment sequence,
+
+a statement with no measure in it — purely about the denominator fiber and the Christoffel limit.
+The reverse inequality is proved, and the passage from the equality to the atoms is proved. This is
+the first time on this card the core has been a single scalar inequality between explicitly
+constructed objects rather than a statement about a hypothetical measure.
+
+Note what the reduction cost: nothing about N-extremality or density of polynomials was needed. The
+classical route to `wₙ = λ(ξₙ)` goes through density of polynomials in `L²(μ)`, which is a
+substantially harder theorem; the construction here bypasses it because the leaf's mass is *known*
+to be `1` and its carrier is *known* to be `F_t`, so the two sums are pinned against each other.
+
+**Opens next.** Two independent attacks on `∑_{ξ ∈ F_t} λ(ξ) ≤ 1`:
+1. *Finite truncation.* For a finite subset `{ξ₁,…,ξ_m} ⊆ F_t`, show `∑ᵢ λ(ξᵢ) ≤ 1`, then pass to the
+   supremum. At level `n` the quadrature gives `∑_{nodes} w = 1` exactly, and `λ ≤ christoffel s n`
+   pointwise since `christoffelLimit` is the infimum — so the question is whether `m` fiber points
+   can be compared against the `n+1` nodes of a single level. `quasiWeight_pos` and the exactness of
+   the rule on `bξ²` are the tools.
+2. *Direct.* `∑_{ξ ∈ F_t} λ(ξ) δ_ξ` is `fiberMeasure (christoffelLimit s) F_t` (link 150). Its total
+   mass is the sum in question, and `lintegral_fiberMeasure` computes its moments. Showing its mass
+   is at most `1` is showing that this explicitly defined measure is sub-probability.

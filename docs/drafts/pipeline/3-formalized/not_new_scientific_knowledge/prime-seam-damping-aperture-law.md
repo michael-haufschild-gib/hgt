@@ -1,8 +1,9 @@
 # The prime-seam damping aperture law
 
 - **ID:** `prime-seam-damping-aperture-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM (paper) / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
+- **Lean:** `formal/GaloisForLFunctions/RHTower/PrimeSeamDampingAperture.lean`
 - **Source:** `PrimeClockShaleDiagonal.lean`, `XiPrimeSeamCoherenceCollapse.lean`,
   `XiPrimeSeamReflectionEnergy.lean`, and `GammaDampedPrimeLogCauchyDomain.lean`
 - **Statement:** `[PROVED HERE]` The exact power damping needed to make the reflected prime seam
@@ -26,7 +27,8 @@ does not infer a source estimate from zero-divisor information.
 
 - [x] 0 -> 1 in-progress: exact weighted series and source use are explicit.
 - [x] 1 -> 2 fully-proven: complete comparison proof below; no open mathematical dependency.
-- [ ] 2 -> 3 formalized: formalize the real-power threshold and the cofinal-loss RH consumer.
+- [x] 2 -> 3 formalized: the real-power threshold, its all-log-moment strengthening, and the
+  cofinal-loss RH consumer are unconditional Lean theorems.
 - [ ] 3 -> 4 publication-ready: the theorem is a direct prime-series comparison and is classified
   as bridge infrastructure rather than new scientific knowledge.
 
@@ -120,6 +122,43 @@ For the logarithmic seam, multiply `(3)` by `(log p)^2`. If `s>1`, choose
 already divergent prime harmonic series. This proves the second equivalence. The infimum statement
 `(2)` follows immediately. QED
 
+### All logarithmic moments `[PROVED HERE]`
+
+The same comparison has no dependence on the particular logarithmic order.  For every natural
+number `m`, define
+
+```text
+E_m(theta,sigma)
+  = sum_p |log p|^m p^(-theta) |A_p(sigma)|^2.           (4a)
+```
+
+Then, without assuming `theta>=0`,
+
+```text
+E_m(theta,sigma)<infinity
+  iff sigma=1/2 or |2sigma-1|<theta.                     (4b)
+```
+
+Indeed, below the critical line put `beta=theta+2sigma`.  The summand factors exactly as
+
+```text
+|log p|^m p^(-beta) (1-p^(-(1-2sigma)))^2.              (4c)
+```
+
+The last factor lies between the fixed positive constant
+`(1-2^(-(1-2sigma)))^2` and `1`.  If `beta>1`, the standard logarithmically weighted Dirichlet
+comparison proves convergence.  If `beta<=1`, `|log p|^m >= (log 2)^m>0` and
+`p^(-beta)>=p^(-1)`, so Euler's prime-harmonic divergence proves non-summability.  Reflection
+`sigma -> 1-sigma` gives the upper half-plane case.  The case `sigma=1/2` is identically zero.
+
+Thus the amplitude theorem is `m=0`, while the rational-Hurwitz/prime-seam norm law is `m=2`.
+The moment-uniform statement is the general law; the two displayed energies in `(1)` are its
+existing interfaces.
+
+This strengthening is still classical comparison theory.  It uses only the ordinary convergence
+half-plane of the prime zeta series and its logarithmic derivatives; it is recorded as bridge
+infrastructure, not new scientific knowledge.
+
 ## Exact consequences for the RH corpus
 
 ### Fixed damping gives only a band
@@ -192,12 +231,15 @@ provided by `XiPrimeSeamPairAsymptotics.lean` and identified as a reflection sec
 `XiPrimeSeamReflectionEnergy.lean`. `GammaDampedPrimeLogCauchyDomain.lean` supplies the analytic
 meaning of that inverse-prime loss on the regular Cauchy core.
 
-A direct Lean module should expose:
+The Lean module exposes:
 
 ```text
+weightedPrimeClockReflectionLogMomentEnergy_eq_factor
+summable_weightedPrimeClockReflectionLogMomentEnergy_iff
 summable_weightedPrimeClockReflectionEnergy_iff
 summable_weightedNatPrimeSeamCharge_norm_sq_iff
-primeSeamDampingAperture_eq_abs_two_mul_sub_one
+allPositivePrimeSeamDamping_iff_re_eq_half
+xiAllPositivePrimeSeamDamping_iff_riemannHypothesis
 riemannHypothesis_of_allPositivePrimeSeamDamping
 ```
 
@@ -207,6 +249,8 @@ summability lemmas. No new zero-set axiom, density statement, or limiting measur
 ## Status
 
 - `[PROVED]` The exact damping threshold is `|2*sigma-1|`.
+- `[PROVED]` Every finite logarithmic moment has the same exact threshold; the amplitude and
+  rational-Hurwitz seam laws are `m=0` and `m=2`.
 - `[PROVED]` Reciprocal-prime damping is orientation-blind on the whole open critical strip.
 - `[PROVED]` Arbitrarily-small-loss seam summability forces the charge to vanish.
 - `[OPEN SOURCE INTERFACE]` Derive the all-positive-loss estimates from an Euler--Gamma value
@@ -218,3 +262,8 @@ summability lemmas. No new zero-set axiom, density statement, or limiting measur
 
 - 2026-07-15 — exact interpolation theorem proved on paper and connected to the prime-clock,
   Gamma-damped Cauchy, prime-coherence, and Xi--Hurwitz orientation surfaces.
+- 2026-07-19 — generalized on paper and in Lean to every natural logarithmic moment, discharged
+  the unnecessary sign hypothesis on `theta`, identified the actual complex prime seam with the
+  second moment, and formalized both the fibrewise and global all-positive-loss interfaces.  The
+  exact leaf source check and exact Lake target build pass.  Representative `#print axioms` checks
+  report only `propext`, `Classical.choice`, and `Quot.sound`.

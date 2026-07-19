@@ -157,6 +157,14 @@ This also locates the role of the Gamma--Meixner radial kernel: positive shape d
 growth of the off-diagonal Lorentz transfer, while the exact damping threshold records its maximal
 rapidity.
 
+The canonical Möbius Schur metric has now been tested explicitly in
+`../../3-formalized/not_new_scientific_knowledge/mobius-schur-rational-hurwitz-lorentz-aperture.md`.
+Its diagonal mass makes the normalized Lorentz transfer summable exactly in the open critical
+strip, hence on every Xi fibre unconditionally.  It supplies a source-fixed positive Hilbert
+metric, but not the contractivity upgrade in `(15)`.  This closes metric membership as a possible
+shortcut and sharpens the successor: prove passivity in that fixed metric or a cofinal zero-loss
+family, not merely finite norm.
+
 ## Parent-theory boundary
 
 Lorentz boosts, light-cone coordinates, spectral-radius contraction tests, and hyperbolic addition
@@ -171,4 +179,7 @@ seam is an exact bridge and is not claimed as new scientific knowledge.
 - [x] seam energy identified with off-diagonal transfer
 - [x] positive-metric rigidity proved
 - [x] self-duality/refinement no-gos given a nontrivial positive successor
-- [ ] formalize only if the completed source supplies the positive-metric upgrade
+- [x] canonical Möbius source metric tested; exact open-strip aperture and membership no-go
+  formalized
+- [ ] formalize the Lorentz colligation only if the completed source supplies contractivity or a
+  cofinal zero-loss upgrade, not merely Hilbert membership

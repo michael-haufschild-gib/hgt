@@ -3415,3 +3415,966 @@ complete measure-universal claim, so no partial theorem is promoted to stage 3.
     distinct-node atomic cross term -> 0 — OPEN, `O(y)` estimate as described.
     assembly into `kappa_- >= negCount` — OPEN, mechanical once the last estimate lands.
   Still open beyond (M3): rational-gauge invariance of the differential field across the family.
+- 2026-07-19 — the DISTINCT-NODE cross term is proved to decay. Every analytic input of the (M3)
+  lower bound is now in place.
+  `formal/GaloisForLFunctions/HTGeometry/ScaledAtomicDistinctNodes.lean`; axiom-clean; audit
+  8491/8491.
+  `sub_mul_sub_conj_upperNode_distinct` — at distinct nodes the two Cauchy factors multiply to
+  `y^2 - i y (a - b)`.
+  `im_sub_mul_sub_conj_distinct` — that product has imaginary part `-y(a-b)`.
+  `norm_sub_mul_sub_conj_distinct_ge` — hence its modulus is at least `|y| * |a-b|`, by
+  `Complex.abs_im_le_norm`. Bounding a modulus below by an imaginary part is the whole trick; no
+  case analysis on the real part is needed.
+  `norm_scaled_atomic_distinct_le` — so the scaled contribution is at most `|y| * norm(c) / |a-b|`:
+  `O(y)`, as predicted, one power weaker than the same-node cross term and still vanishing.
+  THE (M3) LOWER BOUND NOW HAS ALL ITS PIECES:
+    own-atom diagonal = `c_j` EXACTLY (no limit);
+    measure diagonal -> 0 at a non-atom, infinite measures included;
+    measure off-diagonal -> 0 by Cauchy-Schwarz against the diagonal;
+    same-node atomic cross term `O(y^2)` -> 0;
+    distinct-node atomic cross term `O(y)` -> 0.
+  So the `y^2`-scaled Gram matrix tends entrywise to `diag(c_(j_l))`; `negDiagonal_le` gives the
+  margin when every `c_(j_l) < 0`; `eventually_neg_of_tendsto_negDef` converts that into a negative
+  definite subspace of dimension `negCount c` for small heights; hence `kappa_- >= negCount c`.
+  With `neg_inertia_le_hammingDist` this is the card's (M3):
+  `kappa_-(m_(u,c)) = negCount c = HammingDist(chamber, positive chamber)`.
+  WHAT IS LEFT ON THE CHAMBER HALF is the ASSEMBLY of these into one theorem against the card's
+  concrete `m_(u,c)`: defining the Gram matrix of the family at a chosen node tuple, showing its
+  entries decompose as measure part plus atomic part, and applying the five bounds above. That is
+  bookkeeping over proved facts, but it is not nothing — the entrywise convergence has to be
+  upgraded to matrix-norm convergence to feed `eventually_neg_of_tendsto_negDef`, and the index
+  bookkeeping between the negative coordinates and the chosen nodes must match `negIndicesEquiv`.
+  Also still open: rational-gauge invariance of the differential field across the family, unchecked
+  against `HerglotzGaugeTransfer` / `UpperEndAffineGauge`.
+- 2026-07-19 — assembly obstacle (1) is removed: entrywise bounds now feed the quadratic-form
+  criterion directly.
+  `formal/GaloisForLFunctions/HTGeometry/EntrywiseQuadraticBound.lean`; compiled first try;
+  axiom-clean; audit 8492/8492.
+  `norm_quadForm_le_of_entries` — on a finite index, if every entry of `E` has modulus at most `M`
+  then `norm(star x . E.mulVec x) <= M * n^2 * norm(x)^2`, with the supremum norm on the coordinate
+  space.
+  This is exactly the shape `eventually_neg_of_tendsto_negDef` consumes: it wants a QUADRATIC
+  MODULUS `epsilon * norm(x)^2`, and the five decay estimates of the previous entries are all
+  ENTRYWISE. So the upgrade from entrywise to matrix-norm convergence — which I flagged as a real
+  step in the assembly — is this one lemma, and the constant `n^2` is harmless since the criterion
+  only needs the modulus eventually below `delta/2`.
+  Worth noting the norm choice: `Fin n -> C` carries the SUPREMUM norm in mathlib, which is what
+  makes `norm_le_pi_norm` available and the estimate a plain double sum. Had the argument been
+  phrased on `EuclideanSpace` the same bound would need Cauchy-Schwarz instead. Choosing the
+  coordinate norm keeps the step elementary.
+  ASSEMBLY STATE for the (M3) lower bound: obstacle (1) done; obstacle (2), the index bookkeeping
+  between the negative coordinates and the chosen node tuple via `negIndicesEquiv`, remains. With
+  those, the composition is: entrywise decay -> quadratic modulus (this entry) -> eventual negative
+  definiteness (`eventually_neg_of_tendsto_negDef`) on the span of the negative coordinates ->
+  `kappa_- >= negCount c`, closing (M3) against `neg_inertia_le_hammingDist`.
+  Also still open: rational-gauge invariance of the differential field across the family, still
+  unchecked against `HerglotzGaugeTransfer` / `UpperEndAffineGauge`.
+- 2026-07-19 — the limiting diagonal form is computed and shown negative definite.
+  `formal/GaloisForLFunctions/HTGeometry/DiagonalQuadraticForm.lean`; axiom-clean; audit 8493/8493.
+  `quadForm_diagonal_eq` — the Hermitian quadratic form of a REAL diagonal matrix is the
+  coefficient-weighted sum of squared coordinate moduli, `sum_j c_j * norm(x_j)^2`, as a real number.
+  `re_quadForm_diagonal` — its real part is that sum.
+  `re_quadForm_diagonal_neg` — hence if every coefficient is NEGATIVE the form is strictly negative
+  on nonzero vectors. Proof by splitting off one coordinate where `x` does not vanish
+  (`Finset.add_sum_erase`): that term is strictly negative, the rest are nonpositive.
+  PROCESS NOTE, recorded because it is a rule violation I caught myself: my first draft of the last
+  theorem contained a `sorry` in the `x j = 0` branch, written while sketching the case split. I
+  caught it on re-reading before any build and replaced the argument with the split-off-one-coordinate
+  form, which handles both branches uniformly. Nothing with a `sorry` reached a build or the tree,
+  but the draft should not have contained one — the correct habit is to write the case analysis
+  completely or not at all, not to stub a branch intending to return to it.
+  This supplies the limiting form for the (M3) lower bound in explicit shape. Combined with
+  `norm_quadForm_le_of_entries` (entrywise to quadratic modulus) and
+  `eventually_neg_of_tendsto_negDef` (perturbation), the chain from entrywise decay to eventual
+  negative definiteness is complete at the level of abstract matrices.
+  REMAINING on the chamber half:
+    - the margin form: `re_quadForm_diagonal_neg` gives strict negativity, while
+      `eventually_neg_of_tendsto_negDef` wants the uniform margin `-delta * norm(x)^2`. On the
+      supremum norm that needs `norm(x)^2 <= sum_j norm(x_j)^2`, one inequality not yet written;
+    - the index bookkeeping via `negIndicesEquiv` between negative coordinates and chosen nodes;
+    - then the composition against the card's concrete `m_(u,c)`.
+  Also still open: rational-gauge invariance of the differential field across the family.
+- 2026-07-19 — the uniform MARGIN is proved, so the abstract lower-bound chain is complete.
+  `formal/GaloisForLFunctions/HTGeometry/DiagonalNegativeMargin.lean`; axiom-clean; audit 8494/8494.
+  `sq_pi_norm_le_sum_sq` — the squared SUPREMUM norm is at most the sum of squared coordinate
+  moduli. No attainment of the supremum is needed: each coordinate is at most the square root of the
+  sum, hence so is the supremum, by `pi_norm_le_iff_of_nonneg`.
+  `re_quadForm_diagonal_le_margin` — hence a diagonal with all coefficients at most `-delta`
+  satisfies `re(quadratic form) <= -delta * norm(x)^2`, which is exactly the margin hypothesis of
+  `eventually_neg_of_tendsto_negDef`.
+  THE ABSTRACT (M3) LOWER-BOUND CHAIN IS NOW COMPLETE, every link proved and axiom-clean:
+    entrywise decay of the scaled Gram matrix (five estimates: exact own-atom diagonal, measure
+    diagonal by (M4), measure off-diagonal by Cauchy-Schwarz, same-node atomic cross term `O(y^2)`,
+    distinct-node atomic cross term `O(y)`)
+    -> quadratic modulus (`norm_quadForm_le_of_entries`)
+    -> limiting diagonal form with uniform margin (this entry)
+    -> eventual negative definiteness (`eventually_neg_of_tendsto_negDef`)
+    -> a negative definite subspace of dimension `negCount c`, i.e. `kappa_- >= negCount c`
+    -> with `neg_inertia_le_hammingDist`, the card's (M3)
+       `kappa_- = negCount c = HammingDist(chamber, positive chamber)`.
+  WHAT IS LEFT is instantiation against the card's concrete `m_(u,c)`: constructing the Gram matrix
+  of that family at a node tuple, decomposing its entries into measure part plus atomic part, and
+  matching the negative-coordinate indexing to `negIndicesEquiv`. Every ingredient it consumes is
+  proved; none of the remaining work is analysis.
+  Also still open, and untouched throughout: rational-gauge invariance of the differential field
+  across the family `m_(u,c)`, which the card justifies by the inserted term being rational and
+  which should be checked against `HerglotzGaugeTransfer` / `UpperEndAffineGauge` before anything is
+  built for it.
+- 2026-07-19 — the abstract lower bound is now ONE theorem.
+  `formal/GaloisForLFunctions/HTGeometry/EventualNegDefFromEntrywise.lean`; compiled first try;
+  axiom-clean; audit 8495/8495.
+  `eventually_negDef_of_entrywise_tendsto_diagonal` — a family of matrices converging ENTRYWISE to a
+  real diagonal with all entries at most `-delta` is EVENTUALLY NEGATIVE DEFINITE. The proof
+  composes the three previous entries: `norm_quadForm_le_of_entries` turns the entrywise bound into
+  a quadratic modulus, `re_quadForm_diagonal_le_margin` supplies the diagonal's margin, and
+  `eventually_neg_of_tendsto_negDef` concludes. The threshold is explicit,
+  `epsilon = delta / (2 (n^2 + 1))`, chosen so that `epsilon * n^2 <= delta/2`; the `+1` avoids a
+  case split at `n = 0`.
+  One structural detail worth keeping: the difference of the two quadratic forms is the form of the
+  difference of the matrices (`Matrix.sub_mulVec` and `dotProduct_sub`), so the perturbation
+  hypothesis is checked on `G i - D` directly rather than by comparing two forms term by term.
+  STATUS OF THE CHAMBER HALF. Both bounds of the card's (M3) are now available as abstract theorems
+  over proved analytic inputs:
+    UPPER: `neg_inertia_le_hammingDist` — `kappa_- <= negCount c = HammingDist(chamber, positive)`.
+    LOWER: this entry, fed by the five entrywise estimates, gives eventual negative definiteness on
+    the coordinate span, hence `kappa_- >= negCount c`.
+  What remains for (M3) is ONLY instantiation against the card's concrete `m_(u,c)`: build its Gram
+  matrix at a node tuple, decompose entries into measure plus atomic parts, verify the five decay
+  estimates apply, and match the indexing to `negIndicesEquiv`. No analysis and no new abstract
+  machinery is left in it.
+  Still open beyond (M3), and untouched all session: rational-gauge invariance of the differential
+  field across the family `m_(u,c)`. It should be checked against `HerglotzGaugeTransfer` /
+  `UpperEndAffineGauge` first — on this card, three separate constructions turned out to exist
+  already, and that check has never once been wasted.
+- 2026-07-19 — the RATIONAL-GAUGE INVARIANCE of the chamber family is proved, in the exact form the
+  card states it. `formal/GaloisForLFunctions/HTGeometry/ChamberFamilyGaugeInvariance.lean`;
+  axiom-clean; audit 8681/8681.
+  Checked first, per the rule, and the general statement WAS already there:
+  `UpperEndAffineGauge.hypertranscendentalOver_upperEnd_affineGauge_iff` — hypertranscendence over
+  the embedded coordinate field is invariant under an invertible affine rational gauge `a x + b`.
+  The card's family `m_(u,c) = m_u + sum_j c_j/(a_j - z)` is exactly the UNIT-MULTIPLIER case, since
+  the inserted term is rational in the coordinate.
+  New here, and specialised to that case:
+  `hypertranscendentalOver_upperEnd_addRational_iff` — adding a rational function preserves
+  hypertranscendence;
+  `differentialIndependent_upperEnd_addRational_iff` — the family form, a whole tuple may be shifted
+  by rational functions without changing differential independence.
+  Together these are the card's claim that "every member of this family has the same embedded
+  differential-translation field, the same full translation differential matroid, and the same
+  generator class modulo C(z), because the added term is rational".
+  A TREE CONVENTION worth recording, since it cost three build cycles: the `Differential
+  upperEndMeroField` instance and its companions are declared `local instance` in EVERY module that
+  uses them, deliberately, so they do NOT propagate through imports. Importing the module that
+  proves the theorem is not enough; the five local instances (domain, complex algebra, differential,
+  coordinate-field differential, differential algebra) must be re-declared verbatim. That is why the
+  first attempts failed with `failed to synthesize Differential upperEndMeroField` despite the
+  import being present.
+  CHAMBER HALF STATUS:
+    (M3) upper bound — DONE. (M3) chamber grading — DONE. (M3) lower bound, abstract — DONE.
+    (M4) atom limit, finite and infinite — DONE. All five entrywise decay estimates — DONE.
+    Rational-gauge invariance of the family — DONE (this entry).
+    REMAINING: instantiate the abstract lower bound against the concrete `m_(u,c)` — build its Gram
+    matrix at a node tuple, decompose entries into measure plus atomic parts, match the indexing to
+    `negIndicesEquiv`. No analysis and no abstract machinery left; it is construction and
+    bookkeeping over proved facts.
+- 2026-07-19 — the concrete atomic Gram matrix is defined and its diagonal estimated.
+  `formal/GaloisForLFunctions/HTGeometry/AtomicGramMatrix.lean`; compiled first try; axiom-clean;
+  audit 8496/8496.
+  `atomicGram a c y` — the scaled atomic part of the Pick Gram at the nodes directly above the
+  atoms, `y^2 * sum_j c_j / ((a_j - z_l)(a_j - conj z_m))` with `z_l = upperNode (a l) y`. This is
+  the card's (M2) atomic term, evaluated at the card's (M3) node choice.
+  `atomicGram_diagonal_split` — the diagonal splits as `c_l` EXACTLY plus the cross terms from the
+  other atoms, using `scaled_atomic_diagonal` for the `j = l` term and `Finset.add_sum_erase` to
+  peel it off.
+  `norm_atomicGram_diagonal_sub_le` — hence the deviation of the diagonal from `c_l` is at most
+  `sum_(j /= l) y^2 * norm(c_j) / (a_j - a_l)^2`, an explicit `O(y^2)` rate with the atom
+  separations in the denominators. Injectivity of the atom placement is exactly what makes those
+  denominators nonzero.
+  This is the first module of the instantiation phase: it moves from abstract matrices to the card's
+  actual object. The remaining instantiation work is the same treatment for the OFF-DIAGONAL atomic
+  entries (which use `norm_scaled_atomic_distinct_le`, the `O(y)` estimate) and for the MEASURE
+  part (whose diagonal is `integral atomKernel` by `integral_normSq_scaled_cauchy` and whose
+  off-diagonal is controlled by `norm_scaledPairing_sq_le_atomKernel_mul`), after which the total
+  Gram matrix satisfies the entrywise hypothesis of
+  `eventually_negDef_of_entrywise_tendsto_diagonal` and (M3) closes.
+  Every analytic ingredient of that remaining work is proved; what is left is assembling the two
+  parts into one matrix and checking the entrywise bound uniformly in the pair of indices.
+- 2026-07-19 — the MIRRORED distinct-node estimate is proved, completing the primitives for the
+  off-diagonal atomic entries.
+  `formal/GaloisForLFunctions/HTGeometry/ScaledAtomicMirrored.lean`; compiled first try;
+  axiom-clean; audit 8497/8497.
+  Why a second lemma was needed, which is a genuine asymmetry and not duplication: an off-diagonal
+  entry `atomicGram a c y l m` contains a term for EVERY atom `j`, and two of them have the atom
+  sitting at one of the two nodes — `j = l` puts it at the LEFT node, `j = m` at the RIGHT. The
+  existing `norm_scaled_atomic_distinct_le` covers the left case, where the product is
+  `y^2 - i y (a - b)`. The right case has product `y^2 + i y (b - a)` — the mirror image — and needs
+  its own computation, though the modulus bound `|y| * |b - a|` is the same.
+  `sub_mul_sub_conj_upperNode_mirrored`, `im_sub_mul_sub_conj_mirrored`,
+  `norm_sub_mul_sub_conj_mirrored_ge`, `norm_scaled_atomic_mirrored_le` — the mirrored chain, ending
+  in the same `O(y)` bound.
+  THE PRIMITIVES FOR THE ATOMIC OFF-DIAGONAL ARE NOW COMPLETE. An entry `l /= m` decomposes into:
+    `j = l` — left-node case, `O(y)` by `norm_scaled_atomic_distinct_le`;
+    `j = m` — right-node case, `O(y)` by this entry;
+    `j /= l, m` — both factors bounded away from zero, `O(y^2)`; this case still needs its own
+    elementary bound, analogous to `norm_scaled_atomic_cross_le` but with the two nodes distinct,
+    and is the last atomic primitive missing.
+  After that: assemble `atomicGram` off-diagonal bound, add the measure part (diagonal by
+  `integral_normSq_scaled_cauchy`, off-diagonal by `norm_scaledPairing_sq_le_atomKernel_mul`), and
+  feed the total into `eventually_negDef_of_entrywise_tendsto_diagonal` to close (M3).
+- 2026-07-19 — the FAR-term estimate is proved. All atomic primitives for the (M3) lower bound now
+  exist. `formal/GaloisForLFunctions/HTGeometry/ScaledAtomicFarTerms.lean`; compiled first try;
+  axiom-clean; audit 8498/8498.
+  `norm_sub_upperNode_ge` and `norm_sub_conj_upperNode_ge` — the distance from a real point to an
+  upper node, or to its conjugate, is at least the REAL separation. Both follow from
+  `Complex.abs_re_le_norm` since the real part of each factor is exactly `b - a`; the conjugate case
+  is identical because conjugation preserves the real part.
+  `norm_scaled_atomic_far_le` — hence an atom differing from BOTH nodes contributes at most
+  `y^2 * norm(c) / (|b-a| |b-a'|)`: `O(y^2)`, the fastest-decaying of the three off-diagonal kinds.
+  THE ATOMIC PRIMITIVE SET IS COMPLETE. Every term of `atomicGram a c y l m` is now covered:
+    `l = m`, `j = l` — EXACTLY `c_l`, no error (`scaled_atomic_diagonal`);
+    `l = m`, `j /= l` — `O(y^2)` (`norm_scaled_atomic_cross_le`);
+    `l /= m`, `j = l` — `O(y)` left-node (`norm_scaled_atomic_distinct_le`);
+    `l /= m`, `j = m` — `O(y)` right-node (`norm_scaled_atomic_mirrored_le`);
+    `l /= m`, `j /= l, m` — `O(y^2)` far (this entry).
+  Note the pattern: only the two terms where the atom sits AT one of the evaluation nodes lose a
+  power of `y`, and only the one where it sits at BOTH survives the limit. That is precisely why the
+  limit is the diagonal of coefficients, and it is now visible in the estimates rather than only in
+  the card's prose.
+  REMAINING for (M3): assemble the five estimates into an off-diagonal bound for `atomicGram`,
+  combine with the measure part, and feed the total into
+  `eventually_negDef_of_entrywise_tendsto_diagonal`. All inputs proved; the work is summation
+  bookkeeping over the three-way case split on `j`.
+- 2026-07-19 — the summation scaffolding for the atomic Gram entries is in.
+  `formal/GaloisForLFunctions/HTGeometry/AtomicGramEntrySum.lean`; compiled first try; axiom-clean;
+  audit 8499/8499.
+  `atomicGram_eq_sum` — each entry is the sum over atoms of individually scaled terms, so the five
+  case estimates apply TERMWISE.
+  `sq_le_abs_of_abs_le_one` — for heights at most one, `y^2 <= |y|`. This is the small observation
+  that removes a case split from the assembly: the `O(y^2)` terms (same-node cross, far) are in
+  particular `O(|y|)`, so ONE linear rate covers every off-diagonal term and the summation does not
+  need to track two rates.
+  `norm_atomicGram_le_of_termwise` — a termwise bound gives an entrywise bound, by
+  `norm_sum_le` and `Finset.sum_le_sum`.
+  With these, the off-diagonal assembly is: apply the three-way case split on `j` to choose which of
+  `norm_scaled_atomic_distinct_le`, `norm_scaled_atomic_mirrored_le`, `norm_scaled_atomic_far_le`
+  bounds the term, weaken every bound to the common linear rate via `sq_le_abs_of_abs_le_one`, and
+  sum. The diagonal assembly is already done (`norm_atomicGram_diagonal_sub_le`).
+  STATE OF THE CHAMBER HALF. Everything analytic and everything abstract is proved:
+    (M3) upper bound and chamber grading; (M4) finite and infinite; all five atomic estimates; the
+    measure diagonal and off-diagonal; the perturbation criterion, the margin, the entrywise-to-
+    quadratic bridge and their composition; the rational-gauge invariance of the family.
+  What remains is one summation lemma for the off-diagonal atomic entries, then combining atomic and
+  measure parts into the total Gram matrix and invoking
+  `eventually_negDef_of_entrywise_tendsto_diagonal`. No ingredient of that is unproved.
+- 2026-07-19 — the OFF-DIAGONAL atomic Gram bound is assembled. The atomic part of the (M3) lower
+  bound is complete. `formal/GaloisForLFunctions/HTGeometry/AtomicGramOffDiagonal.lean`;
+  axiom-clean; audit 8500/8500.
+  `offDiagWeight a l m j` — the separation weight of an atom against a pair of distinct nodes,
+  defined by the three cases: `1/|a_l - a_m|` when the atom is the left node, `1/|a_m - a_l|` when it
+  is the right, `1/(|a_j-a_l| |a_j-a_m|)` when it is neither.
+  `norm_atomicGram_offdiag_le` — for `l /= m` and height at most one,
+  `norm(atomicGram a c y l m) <= sum_j |y| * norm(c_j) * offDiagWeight a l m j`. The proof is the
+  three-way case split, each branch discharged by its own estimate
+  (`norm_scaled_atomic_distinct_le`, `norm_scaled_atomic_mirrored_le`, `norm_scaled_atomic_far_le`),
+  with the far branch weakened from `y^2` to `|y|` by `sq_le_abs_of_abs_le_one` so that a single
+  linear rate covers all three.
+  So the ATOMIC part of the scaled Gram is fully controlled:
+    diagonal — `c_l` exactly, with `O(y^2)` deviation (`norm_atomicGram_diagonal_sub_le`);
+    off-diagonal — `O(|y|)` (this entry).
+  Both vanish as the height does, leaving exactly the diagonal of coefficients.
+  REMAINING for (M3): the same assembly for the MEASURE part — its diagonal is
+  `integral atomKernel` (tending to zero at a non-atom by (M4)) and its off-diagonal is bounded by
+  the geometric mean of two diagonals (`norm_scaledPairing_sq_le_atomKernel_mul`) — and then the sum
+  of the two parts fed into `eventually_negDef_of_entrywise_tendsto_diagonal`. Every ingredient is
+  proved; what is left is defining the measure Gram matrix and combining.
+- 2026-07-19 — the MEASURE Gram part is defined and both its diagonal and off-diagonal identified.
+  `formal/GaloisForLFunctions/HTGeometry/MeasureGramMatrix.lean`; compiled first try; axiom-clean;
+  audit 8501/8501.
+  `measureGram nu a y` — the scaled measure part of the Pick Gram at the nodes above the atoms, i.e.
+  the pairing matrix of the scaled Cauchy kernels.
+  `measureGram_diagonal` — its diagonal is EXACTLY the atom kernel integral, as a real number
+  coerced to C. The pointwise step is `Complex.mul_conj` plus `normSq_scaled_cauchy_eq_atomKernel`;
+  the passage from a pointwise real value to a real integral is `Complex.ofRealCLM.integral_comp_comm`,
+  which is where the integrability hypothesis enters.
+  `norm_measureGram_sq_le` — its off-diagonal has squared modulus at most the product of the two
+  diagonal integrals, restating the Cauchy-Schwarz bound for this matrix.
+  BOTH PARTS OF THE SCALED GRAM ARE NOW CONTROLLED:
+    ATOMIC: diagonal `c_l` exactly with `O(y^2)` deviation; off-diagonal `O(|y|)`.
+    MEASURE: diagonal `integral atomKernel`, tending to zero at a non-atom by (M4), infinite measures
+      included; off-diagonal bounded by the geometric mean of two diagonals, hence tending to zero
+      with them.
+  So the total scaled Gram `atomicGram + measureGram` converges entrywise to `diag(c)`, which is
+  exactly the hypothesis of `eventually_negDef_of_entrywise_tendsto_diagonal`.
+  REMAINING for (M3): state the total Gram as the sum of the two matrices, convert the four bounds
+  above into the single entrywise convergence hypothesis, and invoke the eventual-negative-
+  definiteness theorem to conclude `kappa_- >= negCount c`. This is the final composition; every one
+  of its inputs is a proved theorem in this tree, and no analysis remains in it.
+- 2026-07-19 — the TOTAL scaled Gram is defined and its deviation from the coefficient diagonal
+  split. `formal/GaloisForLFunctions/HTGeometry/TotalGramMatrix.lean`; compiled first try;
+  axiom-clean; audit 8502/8502.
+  `totalGram nu a c y = atomicGram a c y + measureGram nu a y` — the card's (M2) Pick kernel, scaled
+  by the height squared and evaluated at the nodes above the atoms.
+  `totalGram_sub_diagonal` — the deviation from `diag(c)` splits as (atomic deviation) + (measure
+  entry), since the reference diagonal sits entirely in the atomic part.
+  `norm_totalGram_sub_diagonal_le` — hence the entrywise deviation is bounded by the sum of the two,
+  by the triangle inequality. Together with the simp lemmas for the diagonal reference on and off
+  the diagonal, this reduces the entrywise convergence hypothesis to the four bounds already proved.
+  THE (M3) INGREDIENT LIST IS NOW CLOSED. Every quantity appearing in the lower bound has an
+  explicit proved estimate:
+    `norm_atomicGram_diagonal_sub_le` — atomic diagonal deviation, `O(y^2)`;
+    `norm_atomicGram_offdiag_le` — atomic off-diagonal, `O(|y|)`;
+    `measureGram_diagonal` with `tendsto_integral_atomKernel_of_notAtom_herglotz` — measure diagonal,
+      tending to zero at a non-atom;
+    `norm_measureGram_sq_le` — measure off-diagonal, squared modulus at most the product of two
+      diagonals, hence tending to zero with them;
+    `norm_totalGram_sub_diagonal_le` — the combination.
+  WHAT REMAINS is to turn those four estimates into the `Tendsto`/`eventually` form that
+  `eventually_negDef_of_entrywise_tendsto_diagonal` consumes, i.e. to show that for each `epsilon`
+  the entrywise deviation is eventually below it. Each bound tends to zero for elementary reasons
+  (a fixed finite sum times `|y|` or `y^2`, or an integral limit already proved), so this is limit
+  bookkeeping rather than estimation. After it, `kappa_- >= negCount c` and, with
+  `neg_inertia_le_hammingDist`, the card's (M3) closes.
+- 2026-07-19 — the ATOMIC limits are proved: both atomic Gram entries converge.
+  `formal/GaloisForLFunctions/HTGeometry/AtomicGramLimits.lean`; axiom-clean; audit 8503/8503.
+  `atomicDiagConst` and `atomicOffDiagConst` — the fixed constants of the two estimates, sums of
+  coefficient moduli over atom separations. Naming them is what turns the bounds into "constant
+  times a power of the height" and makes the limits immediate.
+  `tendsto_atomicGram_diagonal_sub` — the atomic diagonal converges to the atom's COEFFICIENT, the
+  deviation being squeezed by `y^2 * atomicDiagConst`.
+  `tendsto_atomicGram_offdiag` — the atomic off-diagonal converges to ZERO, squeezed by
+  `|y| * atomicOffDiagConst`.
+  Both use `squeeze_zero_norm'`, the EVENTUAL form of the squeeze, which is required because the
+  underlying estimates need `y /= 0` (and, off-diagonal, `|y| <= 1`) — conditions that hold only
+  eventually on `nhdsWithin 0 (/= 0)`, not identically. A tooling note: in this mathlib the bounding
+  function of `squeeze_zero_norm'` is the named argument `a`, not `g`, and it must be supplied
+  explicitly since it is not determined by unification.
+  TWO OF THE FOUR LIMITS ARE DONE. Remaining:
+    measure diagonal -> 0 — from `measureGram_diagonal` and
+      `tendsto_integral_atomKernel_of_notAtom_herglotz`, both proved; the composition is a rewrite
+      plus a coercion limit;
+    measure off-diagonal -> 0 — from `norm_measureGram_sq_le` and the diagonal limit, going through
+      a square root, which is the one of the four that is not purely mechanical.
+  Then `norm_totalGram_sub_diagonal_le` combines all four into the entrywise hypothesis of
+  `eventually_negDef_of_entrywise_tendsto_diagonal`, giving `kappa_- >= negCount c` and closing the
+  card's (M3).
+- 2026-07-19 — ALL FOUR ENTRYWISE LIMITS ARE PROVED.
+  `formal/GaloisForLFunctions/HTGeometry/MeasureGramLimits.lean`; axiom-clean; audit 8504/8504.
+  `tendsto_norm_of_tendsto_sq` — a vanishing SQUARED norm gives a vanishing norm, by continuity of
+  the square root at zero and `Real.sqrt_sq`. This isolates the step I flagged as the one of the
+  four that is not mechanical; isolating it makes the off-diagonal argument a squeeze like the
+  others rather than a special case.
+  `tendsto_zero_of_tendsto_norm` — and a vanishing norm gives a vanishing family.
+  `tendsto_measureGram_diagonal` — the measure diagonal converges to the atom mass, hence to ZERO at
+  a non-atom, by rewriting through `measureGram_diagonal` and pushing the real limit through the
+  coercion.
+  `tendsto_measureGram_offdiag` — the measure off-diagonal converges to zero: its squared modulus is
+  squeezed by the product of the two diagonal integrals, both of which vanish, and the square-root
+  step finishes.
+  THE FOUR LIMITS THE (M3) LOWER BOUND NEEDS ARE NOW ALL PROVED:
+    atomic diagonal -> coefficient; atomic off-diagonal -> 0;
+    measure diagonal -> 0; measure off-diagonal -> 0.
+  With `norm_totalGram_sub_diagonal_le` these give the entrywise convergence of `totalGram` to
+  `diag(c)`, which is exactly the hypothesis of
+  `eventually_negDef_of_entrywise_tendsto_diagonal`. That theorem then yields eventual negative
+  definiteness, hence `kappa_- >= negCount c`, and with `neg_inertia_le_hammingDist` the card's (M3)
+  `kappa_- = negCount c = HammingDist(chamber, positive chamber)`.
+  WHAT REMAINS is the single final composition assembling those four limits into the `∀ epsilon`
+  entrywise form and invoking the criterion. Every input is proved; nothing analytic or structural
+  is left in the chamber half of this card.
+- 2026-07-19 — THE (M3) LOWER BOUND IS ASSEMBLED. The chamber half's analytic and structural work is
+  complete. `formal/GaloisForLFunctions/HTGeometry/TotalGramNegativeDefinite.lean`; axiom-clean;
+  audit 8505/8505.
+  `eventually_negDef_totalGram` — given that the diagonal entries of the total scaled Gram converge
+  to the atom coefficients and the off-diagonal entries to zero, and that every coefficient is at
+  most `-delta < 0`, the Gram is NEGATIVE DEFINITE for all small heights.
+  The assembly turns the four separate limits into the single `for all epsilon` entrywise hypothesis
+  using `Filter.eventually_all` twice — once per matrix index — which is available because the index
+  is finite, so finitely many `eventually`s intersect. On the diagonal the reference matrix is the
+  coefficient (`Matrix.diagonal_apply_eq`); off it the reference vanishes
+  (`Matrix.diagonal_apply_ne`) and the deviation is the entry itself.
+  So the chamber law's lower bound now reads, in this tree: negative coefficients force a negative
+  definite scaled Gram at small heights, hence a negative definite subspace of dimension equal to
+  the number of atoms, hence `kappa_- >= negCount c`. Together with `neg_inertia_le_hammingDist`
+  that is the card's (M3), `kappa_- = negCount c = HammingDist(chamber, positive chamber)`.
+  STATE OF THE CHAMBER HALF: every mathematical component is proved and axiom-clean — the chamber
+  grading, the upper bound, the atom limit for finite and infinite measures, the five atomic
+  estimates, the measure diagonal and off-diagonal, all four entrywise limits, the perturbation
+  criterion with its margin and entrywise bridge, this assembly, and the rational-gauge invariance
+  of the family.
+  WHAT IS NOT DONE, and should not be read as done: the four limit hypotheses of this theorem are
+  supplied as HYPOTHESES here, and discharging them for the card's concrete `m_(u,c)` requires
+  feeding `tendsto_atomicGram_diagonal_sub`, `tendsto_atomicGram_offdiag`,
+  `tendsto_measureGram_diagonal` and `tendsto_measureGram_offdiag` through
+  `norm_totalGram_sub_diagonal_le` — a squeeze on the sum of two vanishing bounds. That is the last
+  step, and it is mechanical, but it has not been written.
+- 2026-07-19 — THE CHAMBER LOWER BOUND IS UNCONDITIONAL IN THE ATOMIC PART.
+  `formal/GaloisForLFunctions/HTGeometry/TotalGramLimits.lean`; compiled first try; axiom-clean;
+  audit 8506/8506.
+  `tendsto_totalGram_diagonal_sub` and `tendsto_totalGram_offdiag` — the total Gram's deviation from
+  the coefficient diagonal converges, because it is the SUM of the atomic deviation and the measure
+  entry and both converge. No squeeze is involved: I had recorded the remaining step as "a squeeze
+  on the sum of two vanishing bounds", but a squeeze is unnecessary when both summands have proved
+  limits — `Tendsto.add` suffices. The estimates were needed to PROVE those limits, not to combine
+  them.
+  `eventually_negDef_totalGram_of_measure_vanishing` — the chamber lower bound with the atomic side
+  fully discharged: given only that the MEASURE part vanishes at every node pair, and that every
+  coefficient is at most `-delta < 0`, the total scaled Gram is negative definite at all small
+  heights. The atomic limits are supplied internally from
+  `tendsto_atomicGram_diagonal_sub` and `tendsto_atomicGram_offdiag`, which need nothing but
+  injectivity of the atom placement.
+  So the card's (M3) lower bound now depends on exactly one external input: that the measure part of
+  the Pick kernel vanishes in the scaled limit — which is (M4), proved for finite AND infinite
+  Herglotz measures, together with the Cauchy-Schwarz control of the off-diagonal, also proved. The
+  remaining connection is instantiating `tendsto_measureGram_diagonal` and
+  `tendsto_measureGram_offdiag` at the card's nodes, whose hypotheses are integrability of the atom
+  kernel and the non-atom condition on the insertion points — both card hypotheses.
+  With that the chamber law reads: `kappa_-(m_(u,c)) = negCount c = HammingDist(chamber, positive
+  chamber)`, upper bound by `neg_inertia_le_hammingDist`, lower bound by this chain.
+- 2026-07-19 — the MEASURE DIAGONAL is discharged from the Herglotz dominant alone.
+  `formal/GaloisForLFunctions/HTGeometry/MeasureGramVanishing.lean`; compiled first try;
+  axiom-clean; audit 8507/8507.
+  `integrable_atomKernel_of_dominant` — the dominant makes the atom kernel integrable at every SMALL
+  height, by `Integrable.mono'` against `atomKernel_le_atomDominant`.
+  `eventually_integrable_atomKernel` — hence integrability holds EVENTUALLY as the height tends to
+  zero. The eventual form is forced and not a convenience: for an infinite measure the constant
+  bound `atomKernel <= 1` is useless at large heights, so integrability genuinely fails there and
+  only the small-height statement is true.
+  `tendsto_measureGram_diagonal_of_dominant` — the measure diagonal vanishes at a NON-ATOM, from the
+  dominant and the atom law, with no integrability hypothesis left to supply: it is derived.
+  So the chamber lower bound's remaining input has shrunk to the measure OFF-diagonal, and that is
+  already available as `tendsto_measureGram_offdiag`, whose hypotheses are the Cauchy-Schwarz bound
+  (proved, `norm_measureGram_sq_le`) and the two diagonal limits (now proved, this entry). The only
+  gap between those is that `norm_measureGram_sq_le` is stated pointwise in `y` with measurability
+  and integrability hypotheses, while `tendsto_measureGram_offdiag` wants it EVENTUALLY — the same
+  eventual-form adjustment made here for the diagonal.
+  STATE: the card's (M3) is proved end to end except for that one eventual-form restatement of the
+  Cauchy-Schwarz bound. Every mathematical ingredient of the chamber half is complete and
+  axiom-clean; what remains is a hypothesis-shape adjustment of exactly the kind this entry performed
+  for the diagonal.
+- 2026-07-19 — THE CHAMBER LOWER BOUND IS COMPLETE, from card hypotheses only.
+  `formal/GaloisForLFunctions/HTGeometry/ChamberLowerBound.lean`; compiled first try; axiom-clean;
+  audit 8508/8508.
+  `sub_upperNode_ne_zero` — at a nonzero height the Cauchy factor never vanishes on the real line,
+  since its squared modulus is `(t-a)^2 + y^2 > 0`.
+  `continuous_scaledCauchyNorm` — hence the modulus of the scaled Cauchy kernel is continuous, which
+  supplies the measurability the Cauchy-Schwarz bound needs.
+  `tendsto_measureGram_offdiag_of_dominant` — the measure off-diagonal vanishes, the Cauchy-Schwarz
+  bound now being available eventually rather than only pointwise.
+  `eventually_negDef_totalGram_chamber` — THE LOWER BOUND: at pairwise distinct NON-ATOMIC insertion
+  points with a Herglotz dominant, and with every inserted coefficient at most `-delta < 0`, the
+  total scaled Pick Gram is NEGATIVE DEFINITE at all small heights.
+  Its hypotheses are exactly the card's: `a` injective (distinct insertion points), `nu {a j} = 0`
+  (not atoms of the measure), a Herglotz dominant integrable (the (H0) condition), and the
+  coefficients negative. Nothing auxiliary survives.
+  THE CARD'S (M3) IS NOW PROVED IN BOTH DIRECTIONS:
+    UPPER — `neg_inertia_le_hammingDist`: `kappa_- <= negCount c = HammingDist(chamber, positive)`.
+    LOWER — this entry: negative coefficients force a negative definite scaled Gram at small
+      heights, hence a negative definite subspace of full dimension, hence `kappa_- >= negCount c`.
+  Together: `kappa_-(m_(u,c)) = negCount c = HammingDist(chamber, positive chamber)`, which is the
+  card's measure-level finite-atomic gauge chamber law, with the chamber grading identified as the
+  graph distance in the sign hypercube.
+  With the rational-gauge invariance proved earlier, the chamber half of this card is complete:
+  every member of the family shares one differential field and one generator class modulo C(z), and
+  the exact Krein index is the Hamming distance of its sign chamber from the positive chamber.
+  REMAINING ON THE CARD AS A WHOLE: the HT half is already formalised in this tree (the capstone
+  `positiveSingularContinuousCarrier_hypertranscendental_dense_residual` and its chain), subject to
+  the four audit items recorded earlier — the discrete and absolutely continuous spectra, whether
+  the capstone applies the (H0) rational gauge internally, and joint instantiability of its
+  hypotheses.
+- 2026-07-19 — the chamber law is stated at both EXTREME chambers.
+  `formal/GaloisForLFunctions/HTGeometry/ChamberLawExtremes.lean`; axiom-clean; audit 8509/8509.
+  `negCount_eq_card_of_all_neg` and `hammingDist_eq_card_of_all_neg` — the all-negative chamber has
+  grading `d`, i.e. sits at MAXIMAL Hamming distance from the positive chamber.
+  `chamberLaw_all_negative` — with every inserted coefficient at most `-delta < 0` and the card's
+  hypotheses (distinct non-atomic insertion points, Herglotz dominant), the scaled Pick Gram is
+  negative definite on the WHOLE space at small heights, and the chamber's distance from the
+  positive chamber is `d`. So the negative index is the full dimension, matching the grading.
+  `chamberLaw_all_positive` — the opposite endpoint: in the positive chamber the grading is zero and
+  the kernel admits no negative directions at all.
+  These are the two endpoints of the distance grading, and together with the general upper bound
+  (`neg_inertia_le_hammingDist`) they pin the card's (M3) at the extremes with the intermediate
+  chambers covered by the two bounds separately.
+  A checking note: my `grep -c "sorry\|admit"` guard reported 2 hits on this file, which turned out
+  to be the word "admits" inside two docstrings. The guard needs `-w` (word boundaries); an
+  unanchored grep for `admit` false-positives on ordinary English and would eventually train me to
+  ignore it, which is worse than not having it.
+  WHAT REMAINS for the general (mixed-sign) chamber: the lower bound proved here applies to the
+  whole space when ALL coefficients are negative. For a mixed chamber the negative definite subspace
+  is the span of the negative coordinates, of dimension `negCount c`, and extracting it needs the
+  `negIndicesEquiv` bookkeeping recorded earlier — restricting the Gram to those coordinates and
+  applying the same argument there. That is the one remaining step of the chamber half, and it is
+  index bookkeeping over an already-proved estimate rather than new mathematics.
+- 2026-07-19 — the MIXED chamber margin is proved; the lower bound now covers every chamber, not
+  only the all-negative one.
+  `formal/GaloisForLFunctions/HTGeometry/MixedChamberMargin.lean`; compiled first try; axiom-clean;
+  audit 8510/8510.
+  `negSupported c` — the submodule of vectors supported in the NEGATIVE coordinates of the
+  coefficient vector.
+  `re_quadForm_diagonal_le_margin_on_negSupported` — on that subspace the coefficient diagonal
+  carries the margin: each term either sits at a negative coefficient (where the margin applies) or
+  at a nonnegative one (where the vector vanishes, so the term is zero). The two cases are handled
+  uniformly by proving the termwise inequality `c_j norm(x_j)^2 <= -delta norm(x_j)^2` for EVERY j,
+  which is what makes the sum estimate a single `Finset.sum_le_sum` rather than a split sum.
+  `negDef_on_negSupported_of_perturbed` — hence a Gram deviating from the diagonal by less than the
+  margin is negative definite ON that subspace, which is the mixed-chamber form of the lower bound.
+  So the chamber lower bound is no longer restricted to the all-negative case: in ANY chamber the
+  negative coordinate subspace is negative definite for the scaled Gram at small heights, giving a
+  negative definite subspace of dimension `negCount c` once that subspace's dimension is computed.
+  REMAINING for the general chamber law: `Module.finrank C (negSupported c) = negCount c`. The
+  subspace is a coordinate subspace cut out by vanishing conditions on the complement of
+  `negIndices c`, so its dimension is the cardinality of `negIndices c`, which is `negCount c` by
+  `card_negIndices`. This is a standard coordinate-subspace dimension computation and is the last
+  step of the chamber half; with it, `kappa_- >= negCount c` in every chamber and the card's (M3)
+  holds in full generality rather than at the extremes.
+- 2026-07-19 — THE CHAMBER HALF IS COMPLETE IN FULL GENERALITY.
+  `formal/GaloisForLFunctions/HTGeometry/NegSupportedDimension.lean`; compiled first try;
+  axiom-clean; audit 8511/8511.
+  `negSupportedEquiv` — the negative coordinate subspace is linearly isomorphic to the coordinate
+  space indexed by the negative coefficients, by restriction and extension-by-zero.
+  `finrank_negSupported` — hence `finrank C (negSupported c) = negCount c`, via
+  `Module.finrank_fintype_fun_eq_card` and `Fintype.card_subtype`, the latter identifying the
+  subtype cardinality with the filtered cardinality that DEFINES `negCount`.
+  WITH THIS THE CARD'S (M3) HOLDS IN EVERY CHAMBER:
+    UPPER — `neg_inertia_le_hammingDist`: any negative definite subspace has dimension at most
+      `negCount c = HammingDist(chamber, positive chamber)`.
+    LOWER — `negDef_on_negSupported_of_perturbed` gives a negative definite subspace, namely
+      `negSupported c`, and `finrank_negSupported` gives its dimension as exactly `negCount c`.
+  So `kappa_-(m_(u,c)) = negCount c = HammingDist(signPattern c, positiveChamber d)` — the card's
+  measure-level finite-atomic gauge chamber law, for an ARBITRARY sign pattern, not only the two
+  extremes.
+  THE CHAMBER HALF OF THIS CARD IS NOW COMPLETE: the chamber grading is the Hamming distance
+  (`negCount_eq_hammingDist`); the exact Krein index equals it in both directions; the family shares
+  one differential field and one generator class modulo C(z)
+  (`hypertranscendentalOver_upperEnd_addRational_iff`); and the analytic inputs — the atom law for
+  finite and infinite Herglotz measures, the five atomic estimates, the Cauchy-Schwarz control of
+  the measure part — are all proved and axiom-clean.
+  WHAT REMAINS ON THE CARD is the HT half, which is already formalised in this tree (the capstone
+  `positiveSingularContinuousCarrier_hypertranscendental_dense_residual` and its chain), subject to
+  the four audit items recorded earlier: whether the discrete and absolutely continuous spectra are
+  covered, whether the capstone applies the (H0) rational gauge internally, and whether its
+  hypotheses are jointly instantiable. Those are audit questions about existing code, not
+  construction.
+- 2026-07-19 — AUDIT FINDING on the HT half, plus the infrastructure it needs.
+  `formal/GaloisForLFunctions/HTGeometry/PolynomialVariableShift.lean`; axiom-clean; warning-free;
+  audit 8512/8512.
+  THE FINDING. The HT chain uses TWO DIFFERENT hypertranscendence predicates and the bridge between
+  them is not in the tree. The capstone
+  `positiveSingularContinuousCarrier_hypertranscendental_dense_residual` concludes
+  `Hypertranscendental (fun z => integral ((x:C) - z)^{-1} d(carrier))` — the PLAIN predicate on a
+  concrete function. The (H0) gauge transfer
+  `hypertranscendentalOver_herglotzGauge_cauchyTransform_iff` is stated for
+  `HypertranscendentalOver upperEndRationalCoordinateField (cauchyTransformUpperEndMero nu)` — the
+  RELATIVE predicate on an element of the upper-end meromorphic field. `cauchyTransformUpperEndMero`
+  has no theorem connecting it to the plain predicate. So the card's step from "the Cauchy transform
+  is hypertranscendental" to "the (H0) regularized transform is hypertranscendental" is NOT closed in
+  the tree, contrary to what I recorded when I first found the chain.
+  WHAT THE BRIDGE ACTUALLY NEEDS, and it is smaller than the general gauge statement: the (H0)
+  regularization subtracts `integral t/(1+t^2) exp(u) dmu`, which is a CONSTANT in `z`. So the two
+  transforms differ by an additive constant, not by a general rational function, and the required
+  invariance is `Hypertranscendental (f + const) <-> Hypertranscendental f`.
+  `DifferentiallyAlgebraicInvariance` has the three neighbouring invariances — `f (z + a)`,
+  `f (c z)`, `c * f` — but NOT the additive value shift. It is genuinely missing.
+  BUILT HERE, as the algebraic core of that missing invariance: `shiftSubst i c` shifts one
+  polynomial variable by a constant; `shiftSubst_shiftSubst` inverts it; `shiftSubst_ne_zero` shows
+  it preserves nonvanishing (it is an algebra automorphism); `eval_shiftSubst` evaluates it at the
+  shifted point. These mirror the existing `scaleSubst` of `PolynomialVariableRescale`.
+  NEXT: use these to prove `differentiallyAlgebraic_add_const_iff` and hence
+  `hypertranscendental_add_const_iff`, applying `shiftSubst` at the VALUE slot (index 1 of
+  `Fin (n+2)`, slot 0 being `z`), since adding a constant changes the value and no derivative. That
+  closes the bridge and with it the last identified gap in the HT half.
+- 2026-07-19 — THE ADDITIVE-CONSTANT INVARIANCE IS PROVED, closing the gap found last entry.
+  `formal/GaloisForLFunctions/HTGeometry/HypertranscendentalAddConst.lean`; axiom-clean;
+  warning-free; audit 8515/8515.
+  `deriv_add_const_fun`, `iteratedDeriv_add_const_succ` — adding a constant changes NO derivative of
+  positive order.
+  `differentiallyAlgebraic_add_const` — hence a differential polynomial annihilating `f + c`
+  yields one annihilating `f`, by applying `shiftSubst` at the VALUE slot (index 1 of `Fin (n+2)`,
+  slot 0 holding `z`). The jet vector of `f + c` is exactly the jet vector of `f` with slot 1
+  updated by `+ c`, which is precisely what `eval_shiftSubst` computes.
+  `differentiallyAlgebraic_add_const_iff` and `hypertranscendental_add_const_iff` — the invariance in
+  both directions, the reverse obtained by shifting the shifted function back by `-c`.
+  This fills the hole in `DifferentiallyAlgebraicInvariance`, which had `f (z + a)`, `f (c z)` and
+  `c * f` but not `f + c`. The missing case was the one the (H0) regularization needs, since the
+  regularized Herglotz transform differs from the plain Cauchy transform by the constant
+  `integral t/(1+t^2) exp(u) dmu`.
+  So the audit item recorded last entry — that the card's step from Cauchy-transform
+  hypertranscendence to (H0)-transform hypertranscendence was not closed — is now closed AT THE LEVEL
+  OF THE PLAIN PREDICATE, which is the predicate the capstone actually concludes in. Applying it
+  requires only identifying the (H0) transform as (plain Cauchy transform) + (a constant), which is
+  the definition of the regularization.
+  STATE OF THE CARD after this session: the chamber half is complete in full generality; the HT half
+  is formalised in the tree with its capstone, and the one gap I identified in it is now filled. The
+  three remaining audit questions are unchanged and are about EXISTING code rather than missing
+  work: whether the discrete and absolutely continuous spectra are covered by the capstone or need
+  their own, and whether the capstone's hypotheses (`HasMinimalExponentialType`, the no-common-zero
+  condition, the upper-half-plane map condition, the null-set pullback, and the projective geometry
+  argument) are jointly instantiable for this card's setting.
+- 2026-07-19 — the (H0) BRIDGE is applied: the regularized transform inherits hypertranscendence.
+  `formal/GaloisForLFunctions/HTGeometry/RegularizedTransformBridge.lean`; compiled first try;
+  axiom-clean; audit 8516/8516.
+  `hypertranscendental_of_eq_add_const` — a transform differing from another by a constant has the
+  same hypertranscendence status.
+  `hypertranscendental_regularized_iff` and `hypertranscendental_regularizedHerglotz_iff` — the
+  (H0) form: `m z = cauchy z - reg` is hypertranscendental exactly when the plain Cauchy transform
+  is, the regularization constant playing no role.
+  So the card's step from the capstone's conclusion — hypertranscendence of the CAUCHY transform of
+  the carrier — to its stated object, the (H0) REGULARIZED Herglotz transform, is now a theorem in
+  this tree rather than an unexamined assumption. The hypothesis it consumes is exactly the
+  regularization identity `m z = cauchy z - reg`, which is the DEFINITION of the (H0) transform once
+  the two integrals are separated; separating them requires integrability of each piece, which the
+  (H0) condition `integral (1+t^2)^{-1} dmu < infinity` supplies and which I have NOT written out.
+  SESSION SUMMARY FOR THIS CARD.
+  CHAMBER HALF — complete in full generality: chamber grading is Hamming distance; exact Krein index
+  equals it in both directions and in every chamber; family shares one differential field modulo
+  C(z); atom law proved for finite and infinite Herglotz measures; all five atomic estimates, the
+  measure diagonal and off-diagonal, all four entrywise limits, and the perturbation machinery.
+  HT HALF — the chain exists in the tree (capstone
+  `positiveSingularContinuousCarrier_hypertranscendental_dense_residual`), and the one gap I found in
+  it, the passage to the (H0) transform, is now closed by this entry and the additive-constant
+  invariance it rests on.
+  REMAINING AUDIT ITEMS, all about existing code: coverage of the discrete and absolutely continuous
+  spectra; joint instantiability of the capstone's hypotheses; and writing out the integral
+  separation that supplies the regularization identity above.
+- 2026-07-19 — RETRACTION. My previous two entries mis-identified the (H0) bridge. The
+  regularization is NOT a constant shift.
+  Reading `RegularizedHerglotzTransform.lean`, which I had cited without opening:
+  `regularizedHerglotzKernel_eq` — the kernel is `nevanlinnaWeight t * (z + (1 + z^2)/(t - z))`;
+  `regularizedHerglotzTransform_eq` — the transform is
+  `z * (total mass of the weighted measure) + (1 + z^2) * (Cauchy transform of that measure)`.
+  That is a genuine RATIONAL gauge in the spectral variable, with an `(1 + z^2)` multiplier and a
+  `z`-linear shift. It is not "Cauchy transform minus a constant".
+  WHY I GOT IT WRONG. I reasoned that the subtracted kernel term `t/(1+t^2)` does not involve `z`,
+  so integrating it gives a constant. The step is true only if the integral SPLITS, and under (H0)
+  the two pieces need not converge separately — which is the whole reason the regularization exists.
+  The corpus avoids the split entirely by reweighting the measure, which is why its identity has a
+  weighted Cauchy transform rather than a plain one.
+  CONSEQUENCE. The correct bridge is `hypertranscendentalOver_herglotzGauge_iff`, which is exactly
+  the affine rational gauge `a * C + b` with `a = 1 + z^2` and `b = z * mass` — and it was already in
+  the tree. My additive-constant work does not supply it.
+  WHAT REMAINS VALID from those entries, and it is not nothing: `shiftSubst` and
+  `differentiallyAlgebraic_add_const_iff` / `hypertranscendental_add_const_iff` are correct theorems
+  filling a real hole in `DifferentiallyAlgebraicInvariance`, which had `f (z + a)`, `f (c z)` and
+  `c * f` but no additive value shift. They are simply not the (H0) bridge. The module
+  `RegularizedTransformBridge` has been renamed in substance — its theorems are now
+  `hypertranscendental_sub_const_iff` and `hypertranscendental_sub_const_presentation_iff` — and
+  carries a WARNING docstring recording that the regularization is a rational gauge and pointing to
+  the correct lemma, so a later reader is not misled the way I was.
+  LESSON, the same one this card has taught repeatedly: I cited `RegularizedHerglotzTransform` as
+  supporting the constant-shift story without opening it. The file states the correct identity in
+  its first theorem. Reading beats reasoning here, and this is the fourth time on this card.
+- 2026-07-19 — THE HT HALF HAS A STRUCTURAL GAP, and it is not the one I have been chasing.
+  Searched the tree for any theorem relating the plain predicate `Hypertranscendental : (C -> C) ->
+  Prop` to the relative predicate `HypertranscendentalOver upperEndRationalCoordinateField` on
+  `upperEndMeroField`. THERE IS NONE. Also none embedding a concrete function into
+  `upperEndMeroField` for this purpose.
+  WHY THIS MATTERS. The two halves of the card's HT argument live in different predicates:
+    the capstone `positiveSingularContinuousCarrier_hypertranscendental_dense_residual` concludes
+    `Hypertranscendental (fun z => integral ((x:C) - z)^{-1} d(carrier))` — PLAIN, on a function;
+    the (H0) step needs `hypertranscendentalOver_herglotzGauge_iff`, which is RELATIVE, on a field
+    element, because the gauge `(1 + z^2) * C + z * mass` has RATIONAL coefficients and rational-gauge
+    invariance is a differential-field statement.
+  The plain predicate's invariance file `DifferentiallyAlgebraicInvariance` carries only
+  `f (z + a)`, `f (c z)`, `c * f` and now (this session) `f + c` — all with CONSTANT parameters. None
+  covers multiplication by a nonzero polynomial in `z`, which is what the (H0) gauge requires.
+  SO THE CARD'S HT HALF IS NOT CLOSED IN THIS TREE, contrary to what I recorded when I first found
+  the capstone chain and called it "complete except for audit items". The capstone is real and
+  axiom-clean; the (H0) gauge invariance is real and axiom-clean; but they are stated about
+  different objects and nothing connects them.
+  WHAT WOULD CLOSE IT, in order of increasing generality:
+    (a) plain-predicate invariance under an affine gauge with POLYNOMIAL coefficients,
+        `Hypertranscendental (fun z => a z * f z + b z) <-> Hypertranscendental f` for `a, b`
+        polynomials with `a` not identically zero. This is the minimal statement the (H0) step needs
+        and it is provable in the plain jet formulation, though the jets of `a f + b` involve
+        derivatives of `a` and `b` so the substitution is not the simple variable shift used for
+        constants;
+    (b) or an embedding of concrete functions into `upperEndMeroField` with a theorem that the plain
+        and relative predicates agree under it, which would connect the capstone to the whole
+        upper-end gauge library at once and is the more valuable target.
+  I am recording this rather than starting either, because both are substantial and a half-built
+  bridge is worse than a precise handoff. The chamber half of this card is complete; this is the one
+  identified structural gap remaining, and it is in the HT half.
+- 2026-07-19 — first real progress on the HT-half gap: the POLYNOMIAL axis shift is built.
+  `formal/GaloisForLFunctions/HTGeometry/AxisShiftSubstitution.lean`; axiom-clean; warning-free;
+  audit 8517/8517.
+  `axisShiftSubst i h` — shifts every variable OTHER than a distinguished one by a polynomial in
+  that distinguished variable, leaving it fixed. This is the substitution that realizes "add a
+  polynomial to a function": the jet slot of order `j` shifts by the `j`-th derivative of that
+  polynomial, and every such derivative is a polynomial in the spectral variable, which is exactly
+  the distinguished variable of the jet coordinates.
+  `axisShiftSubst_axisShiftSubst` — shifting by the negated family inverts it, so the substitution is
+  an algebra automorphism. The inner induction is over the shifting polynomial itself, since the
+  shift must be shown invariant under the substitution — it involves only the distinguished
+  variable, which the substitution fixes.
+  `axisShiftSubst_ne_zero` — hence it preserves nonvanishing, which is what transferring a
+  differential relation requires.
+  This strictly generalises `shiftSubst` (constant shift of ONE variable) built earlier this
+  session, and it is the additive half of the polynomial gauge the (H0) step needs. The remaining
+  half is multiplicative — invariance under `f |-> a * f` for a nonzero polynomial `a` — which does
+  NOT reduce to a substitution of this kind: the inverse substitution would divide by `a`, leaving
+  the polynomial ring. That half needs either clearing denominators after a rational substitution,
+  or the differential-field route (option (b) of the previous entry).
+  Recording the asymmetry explicitly because it is the crux: additive polynomial gauges are
+  substitutions and are easy; multiplicative ones are not, and that is why the corpus's gauge
+  library lives in a FIELD (`upperEndMeroField`) rather than in the plain jet formulation. My
+  instinct that the plain-predicate route would be "the minimal statement" underestimated this —
+  option (b), the embedding into the field, may well be the shorter path after all.
+- 2026-07-19 — the ADDITIVE POLYNOMIAL gauge invariance is proved for the plain predicate.
+  `formal/GaloisForLFunctions/HTGeometry/AddPolynomialInvariance.lean`; axiom-clean; audit
+  8518/8518.
+  `eval_aeval_X` — evaluating a univariate polynomial substituted at one variable.
+  `eval_axisShiftSubst` — the evaluation law of the axis shift.
+  `iteratedDeriv_polynomial_eval` — the iterated derivatives of a polynomial function are the
+  polynomial's own iterated derivatives.
+  `iteratedDeriv_add_polynomial` — the jets of `f + p` are the jets of `f` shifted by the successive
+  derivatives of `p`.
+  `differentiallyAlgebraic_add_polynomial` — hence adding a polynomial preserves differential
+  algebraicity, by `axisShiftSubst` at the spectral variable.
+  A HYPOTHESIS THAT IS GENUINELY NEEDED, and was not needed for the constant case: differentiability
+  of every iterated derivative of `f`. For a CONSTANT shift the corresponding step is
+  `deriv_add_const`, which mathlib states UNCONDITIONALLY, so no smoothness is required. For a
+  POLYNOMIAL shift the step is `deriv (f + p) = deriv f + deriv p`, which needs `f` differentiable.
+  The difference is real and not an artefact of my proof: without differentiability `iteratedDeriv`
+  is junk-valued and the jets of `f + p` need not be the shifted jets of `f`. The card's transforms
+  are analytic, so the hypothesis is harmless there, but it must be carried.
+  STATE OF THE HT-HALF GAP: the additive half of the rational gauge is now proved for the PLAIN
+  predicate. What remains is the MULTIPLICATIVE half, `Hypertranscendental (a * f) <->
+  Hypertranscendental f` for a nonzero polynomial `a`, which as recorded is not a substitution of
+  this kind — the inverse would divide by `a` and leave the polynomial ring. The two candidate
+  routes are unchanged: clear denominators after a rational substitution, or embed into
+  `upperEndMeroField` and use the existing field-level gauge library.
+- 2026-07-19 — THE HERGLOTZ GAUGE IS REDUCED TO ITS MULTIPLICATIVE PART.
+  `formal/GaloisForLFunctions/HTGeometry/GaugeReductionToMultiplicative.lean`; compiled first try;
+  axiom-clean; audit 8519/8519.
+  `differentiallyAlgebraic_add_polynomial_iff` — the additive polynomial invariance in BOTH
+  directions, the reverse by shifting back by the negated polynomial.
+  `hypertranscendental_gauge_iff_mul` — presenting the regularized transform as
+  `polynomial + (1 + z^2) * C`, exactly the shape `regularizedHerglotzTransform_eq` gives with the
+  polynomial being `z * mass`, the SHIFT DROPS OUT ENTIRELY:
+    `Hypertranscendental m <-> Hypertranscendental (fun z => (1 + z^2) * C z)`.
+  So the (H0) gauge question is now reduced to one statement and no other:
+    does multiplying by the nonzero polynomial `1 + z^2` change hypertranscendence?
+  WHAT THE REMAINING STEP LOOKS LIKE, from the analysis: in the direction `DA(a f) -> DA(f)` the
+  substitution is POLYNOMIAL and needs no division — by Leibniz, `(a f)^(k)` is a linear combination
+  of the jets of `f` with coefficients the derivatives of `a`, so the substitution
+  `X_(k+1) |-> sum_j binom(k,j) a^(j)(X_0) X_(k-j+1)` is a genuine polynomial substitution. It is
+  TRIANGULAR with diagonal `a(X_0)`, hence injective over the fraction field `C(X_0)`, which is what
+  nonvanishing of the transformed relation needs. So the remaining work is (i) the Leibniz identity
+  for iterated derivatives of a product, and (ii) injectivity of a triangular substitution with
+  nonzero diagonal. Neither is research; both are standard algebra not yet in this tree.
+  Note this is strictly better than the position two entries ago, when the multiplicative half looked
+  like it might need the differential-field embedding: the polynomial direction of the substitution
+  exists, and only its injectivity requires the fraction field, not the construction itself.
+  CARD STATUS: chamber half complete in full generality; HT half complete except for this single
+  multiplicative gauge step, with every other link — capstone, additive gauge, predicate bookkeeping
+  — proved and axiom-clean.
+- 2026-07-19 — the Leibniz half of the remaining step is ALREADY IN MATHLIB.
+  Probed for `iteratedDeriv_mul` and it exists:
+    `ContDiffAt K n f x -> ContDiffAt K n g x ->
+       iteratedDeriv n (f * g) x = sum over range (n+1) of binomial times the paired jets`.
+  So of the two pieces I identified for the multiplicative gauge —
+    (i) the Leibniz identity for iterated derivatives of a product, and
+    (ii) injectivity of a triangular substitution with nonzero diagonal —
+  piece (i) needs no construction at all. It carries a `ContDiffAt` hypothesis, which the card's
+  analytic transforms satisfy and which is anyway already implied by the differentiability
+  hypotheses the additive invariance carries.
+  For the specific gauge the identity is very short: with `a = 1 + z^2` one has `a' = 2z`,
+  `a'' = 2`, `a''' = 0`, so the Leibniz sum has only THREE nonzero terms and
+    `(a f)^(k) = a f^(k) + 2 k z f^(k-1) + k (k-1) f^(k-2)`.
+  The substitution `X_(k+1) |-> (1 + X_0^2) X_(k+1) + 2 k X_0 X_k + k (k-1) X_(k-1)` is therefore
+  explicit, triangular, with diagonal `1 + X_0^2` — a nonzero polynomial. Only its injectivity
+  remains, and that is the fraction-field argument recorded last entry.
+  HANDOFF STATE OF THIS CARD.
+  CHAMBER HALF — complete in full generality and axiom-clean: chamber grading is Hamming distance;
+  exact Krein index equals it in both directions in every chamber; the family shares one
+  differential field modulo C(z); atom law for finite and infinite Herglotz measures; all five
+  atomic estimates; measure diagonal and off-diagonal; all four entrywise limits; the perturbation
+  machinery and its assembly.
+  HT HALF — the capstone chain exists in the tree; the predicate mismatch I found is reduced, via
+  the additive polynomial gauge proved this session, to the SINGLE question whether multiplying by
+  `1 + z^2` changes hypertranscendence; the substitution realizing it is explicit and the Leibniz
+  input is in mathlib; only triangular-substitution injectivity is unbuilt.
+  Everything above is axiom-clean `[propext, Classical.choice, Quot.sound]` and the umbrella builds.
+- 2026-07-19 — the INJECTIVITY tool for the multiplicative gauge is proved, and it needs no fraction
+  field. `formal/GaloisForLFunctions/HTGeometry/SubstitutionNonvanishing.lean`; compiled first try;
+  axiom-clean; audit 8590/8590.
+  `subst_ne_zero_of_pointMap_surjective` — if a substitution acts on points by a map `T`, and `T`
+  hits every point where some fixed nonzero polynomial `g` does not vanish, then the substitution
+  cannot kill a nonzero polynomial. Proof: `P * g` is nonzero in a domain, so it has a nonvanishing
+  point `w`; there `P` and `g` are both nonzero; surjectivity pulls `w` back through `T` to a point
+  where the substituted polynomial is nonzero.
+  `subst_injective_of_pointMap_surjective` — the injective form, by applying it to a difference.
+  THIS REPLACES THE FRACTION-FIELD ARGUMENT I had planned for the triangular substitution. Rather
+  than constructing the inverse substitution over `C(X_0)` and proving it inverts, one only has to
+  observe that the triangular system `T v = w` is SOLVABLE wherever its diagonal does not vanish —
+  a finite recursion — and take `g` to be that diagonal. The tool it reuses,
+  `exists_eval_ne_zero`, is the same one built for the distinct-node argument on the chamber half
+  many entries ago; the polynomial-domain trick pays a second time.
+  STATE OF THE MULTIPLICATIVE GAUGE, the last open step of this card:
+    the substitution is explicit — `X_(k+1) |-> (1 + X_0^2) X_(k+1) + 2k X_0 X_k + k(k-1) X_(k-1)`;
+    its Leibniz justification is `iteratedDeriv_mul`, in mathlib;
+    its nonvanishing now follows from this entry once the point map is exhibited and its triangular
+    solvability off the zero set of `1 + X_0^2` is checked.
+  What remains is assembling those three: defining the substitution, proving the jet identity from
+  `iteratedDeriv_mul`, and checking the triangular solvability. No further tools are missing, and no
+  step of it is research.
+- 2026-07-19 — TRIANGULAR SOLVABILITY is proved. The last named tool for the multiplicative gauge
+  exists. `formal/GaloisForLFunctions/HTGeometry/TriangularSolvability.lean`; axiom-clean; audit
+  8591/8591.
+  `triangularSolve` — the solution of a triangular system, built by STRONG RECURSION: each unknown
+  is read off from the strictly earlier ones by dividing by the diagonal.
+  `exists_triangular_solution` — if each equation's lower part depends only on strictly earlier
+  unknowns and the diagonal is nonzero, the system is solvable. The proof needs
+  `Nat.strongRecOn_eq` to unfold the recursion, then the dependence hypothesis to replace the
+  truncated argument by the full solution.
+  A tooling note: the unfolding lemma is `Nat.strongRecOn_eq`, not the `_beta` or `_beta'` names I
+  guessed; and after unfolding, the two sides differ only by the definition of `triangularSolve`
+  itself, so a bare `rfl` closes the step. Guessing simp-lemma names cost two cycles here, and
+  `exact?` on the exact goal found it immediately — the same lesson as elsewhere in this session,
+  applied to lemma names rather than to whole theorems.
+  ALL TOOLS FOR THE MULTIPLICATIVE GAUGE NOW EXIST:
+    the jet identity — `iteratedDeriv_mul`, in mathlib;
+    the nonvanishing criterion — `subst_ne_zero_of_pointMap_surjective`, proved two entries ago;
+    the surjectivity of the point map — this entry, off the diagonal's zero set.
+  What remains is only to write the specific substitution for `a = 1 + z^2`, instantiate these three
+  against it, and conclude `DifferentiallyAlgebraic (a * f) -> DifferentiallyAlgebraic f`. With that
+  and `hypertranscendental_gauge_iff_mul` the (H0) gauge closes, and with it the HT half of this
+  card.
+- 2026-07-19 — the two nonvanishing tools are bridged: the criterion now applies directly to a
+  substitution given by its coordinate images.
+  `formal/GaloisForLFunctions/HTGeometry/BindSubstitutionNonvanishing.lean`; axiom-clean; audit
+  8592/8592.
+  `bindPointMap J` — the point map induced by a coordinatewise substitution, evaluating each
+  coordinate image.
+  `eval_bind₁_eq` — evaluating a substituted polynomial is evaluating the original at that induced
+  point. (`MvPolynomial.eval_bind₁` does not exist under that name in this toolchain; a three-case
+  induction proves it directly and is shorter than hunting for the right composition lemma.)
+  `bind₁_ne_zero_of_pointMap_surjective` and `bind₁_injective_of_pointMap_surjective` — the
+  criterion of two entries ago, instantiated at `bind₁`. So for ANY coordinatewise substitution, it
+  now suffices to exhibit a nonzero polynomial whose nonvanishing locus the induced point map
+  covers.
+  THE MULTIPLICATIVE GAUGE IS NOW ONE INSTANTIATION AWAY. Its three inputs are in place and connect
+  without further construction:
+    the jet identity for `a * f` — `iteratedDeriv_mul` (mathlib);
+    nonvanishing of the induced substitution — this entry, given a covering point map;
+    the covering — `exists_triangular_solution`, since the jet substitution is triangular with
+      diagonal `a(X_0)` and the system is solvable wherever `a` does not vanish.
+  All that is left is to WRITE the coordinate images
+  `J (k+1) = sum_j binom(k,j) * a^(j)(X_0) * X_(k-j+1)` for `a = 1 + z^2`, where the sum has three
+  terms, and feed them through. I am at the end of what this session can hold; the next iteration
+  should start there, and every lemma it needs is named above.
+  CARD STATUS AT SESSION END. Chamber half: COMPLETE in full generality, axiom-clean. HT half: the
+  capstone chain exists in the tree; the predicate gap I discovered is reduced to the single
+  multiplicative gauge step; every tool for that step is built and verified; only the instantiation
+  remains.
+- 2026-07-19 — full `GaloisForLFunctions.HTGeometry` umbrella build launched as a coherence check on
+  everything added this session (~40 modules). Running in the background; per the one-build-at-a-time
+  rule no further build was started alongside it. Each module was already individually built and
+  audited axiom-clean as it landed; the umbrella build additionally checks for duplicate declaration
+  names across modules and for import coherence, which per-module builds do not — that is exactly the
+  failure mode the deleted `LogOnePlusBound` duplicate would have caused had it not been caught.
+  Result to be recorded next iteration.
+- 2026-07-19 — exact statement of the Leibniz input recorded, with a form detail that would
+  otherwise cost a cycle. From `Mathlib/Analysis/Calculus/IteratedDeriv/Lemmas.lean:418`:
+    `iteratedDeriv_mul (hf : ContDiffAt K n f x) (hg : ContDiffAt K n g x) :
+       iteratedDeriv n (f * g) x
+         = sum over i in range (n+1) of (n.choose i) * iteratedDeriv i f x * iteratedDeriv (n-i) g x`
+  With `f := a` the polynomial and `g` the function, the `i`-th term is
+  `binom(n,i) * a^(i) * g^(n-i)`, which is the substitution's coordinate image as expected.
+  THE FORM DETAIL: this lemma is stated for `f * g` (the Pi multiplication), and it carries
+  `@[to_fun iteratedDeriv_fun_mul]`, so a LAMBDA-form variant `iteratedDeriv_fun_mul` exists for
+  `fun x => f x * g x`. The lambda form is the one to use. I lost two cycles earlier this session to
+  exactly this distinction with `deriv_add`, which is stated for `f + g` and would not rewrite
+  against `fun w => f w + Polynomial.eval w b`; the fix there was `HasDerivAt`. Here the `to_fun`
+  variant already exists and no workaround is needed — provided one reaches for it directly.
+  Also note the hypotheses are `ContDiffAt` at the point, not global smoothness, which is weaker
+  than the `∀ j, Differentiable (iteratedDeriv j f)` the additive invariance carries and so is
+  already implied by it.
+  Umbrella coherence build still running at the time of writing; result to be recorded when it
+  completes.
+- 2026-07-19 — multiplicative gauge module DRAFTED in the scratchpad, deliberately NOT placed in the
+  tree while the umbrella coherence build holds the single build slot. Unverified code must not
+  enter a tree other agents build against; the draft lives at
+  `scratchpad/MulPolynomialInvariance_draft.lean` and records the substitution together with its
+  five remaining obligations in order.
+  The substitution: `mulJetImage a s` sends the jet slot of order `k` to the Leibniz combination
+  `sum_(i <= k) binom(k,i) * a^(i)(X_0) * X_(k-i+1)`, fixing the spectral coordinate. Its diagonal
+  term is `a(X_0) * X_(k+1)`, which is why `Polynomial.aeval (X 0) a` is the polynomial whose
+  nonvanishing locus the point map must cover.
+  THE ONE PLACE NEEDING CARE, identified in advance: `exists_triangular_solution` is stated over `N`
+  while the jets are indexed by `Fin (n+2)`. Extending the finite system to `N` by zero, solving,
+  and restricting is the intended route; the lower-part dependence hypothesis survives because the
+  Leibniz sum for slot `k+1` involves only slots of index at most `k`. Recording this now because
+  index transport between `Fin` and `N` is precisely the kind of step that has twice cost a module
+  on this card when discovered late rather than planned for.
+- 2026-07-19 — PROCESS ERROR, recorded because the diagnosis was wrong and the reasoning is worth
+  not repeating. I judged the umbrella coherence build "stalled" and killed it. It was not stalled:
+  it reached 9785/9796 jobs and exited 0. Two bad inferences:
+  (i) I ran `pgrep -c lean` and read 0 as "no work happening". Wrong pattern — `lake` spawns lean
+  workers that are short-lived and not matched by that name, so a zero count says nothing about
+  progress.
+  (ii) I read the task output file with `tail` and saw only the initial `pwd` line, concluding no
+  output. The file was buffered; the progress lines appeared only at completion. Buffered output is
+  not absence of output.
+  The correct check would have been the output file's SIZE over time, or simply waiting for the
+  completion notification, which is what the harness provides. Killing a working build in a shared
+  repo also wasted several minutes of other agents' contention budget for nothing.
+  The captured log shows 0 errors, and the only warning is an unused variable in
+  `FiniteRangePrimeDirichletRelationIdeal.lean`, another agent's module. No error is attributable to
+  anything added this session. A clean re-run has been launched to confirm properly rather than rely
+  on a truncated log.
+- 2026-07-19 — NAME-HYGIENE AUDIT of this session's modules, done by static scan rather than by
+  build. 82 modules, 264 declarations. Results:
+  NO internal duplicates among them.
+  THREE names collide with declarations elsewhere in `HTGeometry`, all in DIFFERENT namespaces, so
+  none is a genuine duplicate and the umbrella build is unaffected:
+    `differentiallyAlgebraic_add_polynomial_iff` — mine in `GaloisForLFunctions.HTGeometry`,
+      also in `LogSuperlacunaryMagnitudeHypertranscendence` under `GaloisForLFunctions`;
+    `exists_eval_ne_zero` — mine in `GaloisForLFunctions.HTGeometry`, also in
+      `PolynomialEvaluationLemma` under `AffineJet`;
+    `iteratedDeriv_polynomial_eval` — mine in `GaloisForLFunctions.HTGeometry`, also in
+      `DigammaPolynomialCarrier` under `GaloisForLFunctions`.
+  WHY THIS STILL MATTERS, and why a build would not have found it: two of the three shadow names in
+  the PARENT namespace `GaloisForLFunctions`, and several of my modules `open GaloisForLFunctions`.
+  Inside those modules a bare reference to either name is ambiguous between the parent and the child
+  declaration. Nothing in my code triggers it — every use resolves — so it is latent, not an error,
+  and no build will report it. But a later edit that uses the bare name inside one of these modules
+  will get an ambiguity error whose cause is nonlocal and hard to see.
+  Recording rather than renaming: the names are apt in their own modules and renaming now would
+  churn a working chain. The right fix, if it ever bites, is to qualify at the use site.
+  This check cost one static scan and no build. It is the kind of thing that per-module builds and
+  even the umbrella cannot surface, since the ambiguity is only realised at a use site that does not
+  yet exist.
+- 2026-07-19 — REACHABILITY AND DANGLING-REFERENCE AUDIT, static, no build:
+    all 82 modules added this session exist on disk;
+    all 82 are imported by the `GaloisForLFunctions.HTGeometry` umbrella — none is orphaned;
+    the two modules DELETED this session as redundant (`LogOnePlusBound`,
+    `MultiplicativeGaugeCompositeReachability`) have no dangling references anywhere in
+    `HTGeometry` and are absent from the umbrella.
+  Orphaned modules are worth checking for specifically because an unimported module is never built
+  by the umbrella and so silently stops being verified — it can rot for a long time while every
+  local check still passes. Deletions are worth checking for the mirror reason: a stale import
+  breaks the umbrella for everyone, not just the author.
+  Together with the earlier name-hygiene scan (264 declarations, no internal duplicates, three
+  cross-namespace shadowings recorded as latent), the static audit of this session's contribution is
+  complete: everything is present, reachable, uniquely named within its namespace, and free of
+  references to deleted code.
+- 2026-07-19 — CORRECTION to a claim I have repeated for several entries. I have been writing
+  "the chamber half is COMPLETE in full generality". Checked it by enumerating the theorems, and it
+  is an OVERSTATEMENT. What actually exists:
+    UPPER BOUND — `neg_inertia_le_hammingDist` : any negative definite subspace has dimension at most
+      `negCount c = HammingDist(chamber, positive chamber)`. Proved.
+    LOWER INGREDIENTS — `negDef_on_negSupported_of_perturbed` (the negative coordinate subspace is
+      negative definite for a Gram close enough to the diagonal) and `finrank_negSupported`
+      (its dimension is `negCount c`). Both proved.
+    EXTREMES — `chamberLaw_all_negative`, `chamberLaw_all_positive`. Proved.
+    ANALYTIC INPUT — `eventually_negDef_totalGram_chamber`, from card hypotheses. Proved.
+  WHAT DOES NOT EXIST: a single theorem asserting `kappa_-(m_(u,c)) = negCount c` for a GENERAL sign
+  pattern. Every ingredient of it is proved and the combination is short, but the statement has not
+  been written, so the card's (M3) is not discharged as one citable result.
+  The distinction matters for an auditor: "all the pieces are proved" and "the theorem is proved"
+  are different claims, and I conflated them. The correct summary of the chamber half is that its
+  analysis is complete and its final assembly is one unwritten theorem.
+  Not writing it this turn: the umbrella coherence build holds the single build slot, and I will not
+  put an unverified theorem into a tree other agents build against — that is the same discipline
+  that kept the drafted multiplicative-gauge module in the scratchpad. It is the first thing to
+  write when the slot frees.

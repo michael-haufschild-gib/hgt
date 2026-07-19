@@ -23,15 +23,17 @@ theorem sub_mul_sub_conj_upperNode_distinct (a b y : ℝ) :
   rw [sub_upperNode_self, conj_upperNode]
   ring_nf
   rw [Complex.I_sq]
-  ring
+  ring_nf
 
 /-- The distinct-node denominator has imaginary part the height times the separation. -/
 theorem im_sub_mul_sub_conj_distinct (a b y : ℝ) :
     (((a : ℂ) - upperNode a y) *
       ((a : ℂ) - (starRingEnd ℂ) (upperNode b y))).im = -(y * (a - b)) := by
+  have him2 : ((y : ℂ) ^ 2).im = 0 := by
+    rw [← Complex.ofReal_pow]
+    exact Complex.ofReal_im _
   rw [sub_mul_sub_conj_upperNode_distinct]
-  simp
-  ring
+  simp [him2]
 
 /-- **The distinct-node denominator is bounded below by height times separation.** -/
 theorem norm_sub_mul_sub_conj_distinct_ge (a b y : ℝ) :
@@ -63,7 +65,6 @@ theorem norm_scaled_atomic_distinct_le {a b : ℝ} {y : ℝ} (hy : y ≠ 0) (hab
     exact div_le_div_of_nonneg_left (norm_nonneg c) hdenpos hden
   refine le_trans hnum (le_of_eq ?_)
   field_simp
-  ring
 
 end
 

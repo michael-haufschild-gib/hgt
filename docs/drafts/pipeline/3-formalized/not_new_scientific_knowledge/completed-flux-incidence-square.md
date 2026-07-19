@@ -4,6 +4,7 @@
 - **Stage:** 3-formalized / not-new
 - **Type:** THEOREM (paper + Lean), `[PROVED]`, `[SOURCE BRIDGE]`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/CompletedFluxIncidenceSquare.lean`
+- **General parent:** `completed-flux-incidence-power-hierarchy.md`
 - **Successor route:** `../../1-in-progress/quadratic-reflection-anomaly-rh.md`
 
 ## Theorem
@@ -68,6 +69,9 @@ the rank-one FE/Schwarz arrow coefficients; it must include a source-derived ari
 filtration, pairing, or nonlocal window incidence that reduces the full scalar gauge.
 
 ## Formal surface
+
+The square declarations are now optimized wrappers around the all-order parent
+`CompletedFluxIncidencePower.lean`; no order-two proof is duplicated.
 
 - `completedFluxIncidenceSquareGermAt_analyticAt_zero`
 - `completedFluxIncidenceSquareGermAt_zero`

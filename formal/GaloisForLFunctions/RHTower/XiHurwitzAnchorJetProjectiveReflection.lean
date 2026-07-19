@@ -206,6 +206,26 @@ theorem xi_re_eq_half_of_anchorJetProjectiveReflectionCompatible
   simp only [Complex.sub_re, Complex.one_re, Complex.conj_re] at hre
   linarith
 
+/-- **Exact pointwise projective reflection law.**  At an actual open-strip Xi zero, complete
+positive-order anchor-jet proportionality is equivalent to the critical-line equation. -/
+theorem xiHurwitzAnchorJetProjectiveReflectionCompatible_iff_re_eq_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) (hzero : xi rho = 0) :
+    XiHurwitzAnchorJetProjectiveReflectionCompatible rho ↔
+      rho.re = 1 / 2 := by
+  constructor
+  · exact xi_re_eq_half_of_anchorJetProjectiveReflectionCompatible hstrip hzero
+  · intro hhalf
+    refine ⟨1, ?_⟩
+    intro r hr
+    have href : 1 - rho = (starRingEnd ℂ) rho := by
+      apply Complex.ext
+      · simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
+        linarith
+      · simp only [Complex.sub_im, Complex.one_im, Complex.conj_im]
+        ring
+    rw [href, one_mul]
+    exact continuedHzeta_anchorJet_conj r hstrip.1 hr
+
 /-- Global source-value hypothesis: every Xi divisor point has projectively reflected complete
 positive-order canonical Hurwitz anchor jets. -/
 def XiHurwitzAnchorJetProjectiveReflectionLaw : Prop :=
@@ -228,19 +248,11 @@ theorem riemannHypothesis_of_xiHurwitzAnchorJetProjectiveReflectionLaw
 theorem xiHurwitzAnchorJetProjectiveReflectionLaw_of_riemannHypothesis
     (hRH : RiemannHypothesis) : XiHurwitzAnchorJetProjectiveReflectionLaw := by
   intro rho
-  refine ⟨1, ?_⟩
-  intro r hr
-  have hhalf : (rho : ℂ).re = 1 / 2 :=
-    xi_divisor_support_re_eq_half_of_rh hRH rho
-  have href : 1 - (rho : ℂ) = (starRingEnd ℂ) (rho : ℂ) := by
-    apply Complex.ext
-    · simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
-      linarith
-    · simp only [Complex.sub_im, Complex.one_im, Complex.conj_im]
-      ring
-  rw [href, one_mul]
-  exact continuedHzeta_anchorJet_conj r
-    (xi_divisor_support_re_mem_open_unit rho).1 hr
+  apply
+    (xiHurwitzAnchorJetProjectiveReflectionCompatible_iff_re_eq_half
+      (xi_divisor_support_re_mem_open_unit rho)
+      (xi_eq_zero_of_mem_divisor_support rho)).mpr
+  exact xi_divisor_support_re_eq_half_of_rh hRH rho
 
 /-- The global projective Hurwitz anchor-jet reflection law is exactly RH. -/
 theorem xiHurwitzAnchorJetProjectiveReflectionLaw_iff_riemannHypothesis :

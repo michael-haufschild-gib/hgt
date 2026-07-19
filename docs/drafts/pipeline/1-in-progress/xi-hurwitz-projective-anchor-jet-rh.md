@@ -18,6 +18,13 @@ exists c, forall r >= 1,
 
 The global all-divisor hypothesis therefore implies `RiemannHypothesis`.
 
+The reverse pointwise implication is now also formalized: at an actual open-strip Xi zero,
+`Re rho=1/2` supplies the projective relation with scalar one.  Hence the projective anchor-jet
+condition is pointwise equivalent to the critical-line equation and, directly, to dependence of
+the rank-two FE--Schwarz Hurwitz pair.  Globally the projective law and the rank-two circuit are the
+same proposition.  This closes the Prop interface but does not produce either condition from the
+completed source.
+
 ## Exact chain
 
 Write
@@ -111,6 +118,7 @@ eventuallyEq_at_one_eqOn_UHP
 XiHurwitzAnchorJetProjectiveReflectionCompatible
 xiHurwitzAnchorJet_projectiveScalar_ne_zero
 xi_re_eq_half_of_anchorJetProjectiveReflectionCompatible
+xiHurwitzAnchorJetProjectiveReflectionCompatible_iff_re_eq_half
 XiHurwitzAnchorJetProjectiveReflectionLaw
 riemannHypothesis_of_xiHurwitzAnchorJetProjectiveReflectionLaw
 ```

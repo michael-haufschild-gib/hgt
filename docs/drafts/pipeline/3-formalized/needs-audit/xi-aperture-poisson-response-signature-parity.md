@@ -12,8 +12,9 @@
 - **Statement:** A nontrivial slab Poisson coarsening increment has signature `(1+,2-)` on three
   distinct nodes, but the actual fine-minus-coarse response refinement has signature `(2+,1-)`,
   exactly matching one off-line squared-Xi orbit and giving an eventual negative cubic amplifier.
-  The refinement is nevertheless not a Hilbert Gram, so the remaining theorem is a source-pure
-  signature-converting map from the positive true-aperture innovation to this indefinite response.
+  The refinement is nevertheless not a Hilbert Gram, so the remaining theorem is a completed
+  signature-converting intertwiner from the positive true-aperture source to this indefinite
+  response.
 
 ## Goal
 
@@ -25,8 +26,9 @@ The answer is no for every fixed linear Hilbert/Gram intertwiner.  Direct positi
 by the **coarsening** increment also has the wrong cubic sign.  But orienting the same response in
 the actual refinement direction reverses its odd-dimensional inertia and produces exactly the
 negative cubic required by the Xi orbit theorem.  The positive survivor is therefore stronger
-than a no-go: the target response amplifier already exists, while the source-to-response
-signature conversion remains open.
+than a no-go: the target response amplifier already exists.  The companion valuation-clock
+shuttle theorem now supplies its exact source multiplier coefficientwise; analytic completion of
+the source-to-response signature conversion remains open.
 
 ## Exact kernels
 
@@ -210,9 +212,10 @@ congruence, so it cannot produce the middle line of `(SP14)`.  But no target-sig
 remains: the middle and last lines now have the same index and the same eventual negative cubic.
 A successful source-to-zero construction must therefore perform one genuine signature conversion,
 from the positive all-valuation aperture innovation to the index-one response refinement.  The
-functional-equation mirror already selects the relevant even physical channel; what is missing is
-the source-pure, scale-dependent or nonlinear map that transports the infinite valuation data into
-that channel.
+functional-equation mirror already selects the relevant even physical channel.  The companion
+`xi-aperture-poisson-valuation-clock-shuttle` theorem identifies the scale-dependent multiplier as
+an Euler-aperture derivative of the actual normalized Xi source.  What remains is to complete that
+coefficientwise map through the infinite Euler--Gamma assembly and quadratic response.
 
 ## Hypertranscendental source consequence
 
@@ -233,8 +236,9 @@ independent valuation layers
 The first arrow loses the relative HT information by quadratic Gram compression, and fixed
 congruence cannot change its positive inertia into the index-one response refinement.  The
 response target itself has the correct cubic parity, so the surviving proof shape is sharper: fuse
-unbounded valuation layers before the quadratic response is formed, then use a scale-dependent
-nonlinear/indefinite intertwiner into the Poisson refinement channel.  Hypertranscendence is
+unbounded valuation layers before the quadratic response is formed, then complete the exact
+Euler-aperture derivative shuttle as a nonlinear/indefinite intertwiner into the Poisson refinement
+channel.  Hypertranscendence is
 therefore relevant not as a generic complexity certificate but as the obstruction to replacing
 this infinite pre-response fusion by any finite differential prefix.
 
@@ -242,8 +246,8 @@ this infinite pre-response fusion by any finite differential prefix.
 
 1. **Not generic positivity.**  Entrywise monotonicity of `L_a` on positive masses does not imply
    Loewner monotonicity; `(SP5)` supplies a strict negative signed direction.
-2. **Not an RH proof.**  The refinement supplies the correct target cubic but constructs no
-   source-pure map from the prime/HT source into it.
+2. **Not an RH proof.**  The refinement supplies the correct target cubic, and the companion
+   shuttle supplies its coefficientwise source multiplier, but no completed analytic intertwiner.
 3. **Not a finite-coordinate amplifier.**  Positive congruence preserves inertia, and the existing
    aperture cubic curvature is already an invertible dressing of its positive Cauchy tangent.  The
    needed conversion must occur before or outside finite Hilbert Gram compression.
@@ -287,7 +291,7 @@ No umbrella or full project build was used.
 - [x] hostile internal corpus audit: no duplicate exact Xi/slab/aperture signature theorem found
 - [ ] external specialist novelty audit
 - [x] 2 -> 3: Lean algebraic signature core, targeted leaf check, and axiom audit
-- [ ] source-to-zero signature-converting map
+- [ ] completed source-to-zero signature-converting intertwiner
 
 ## Log
 
