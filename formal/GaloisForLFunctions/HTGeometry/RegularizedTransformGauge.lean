@@ -59,6 +59,45 @@ theorem not_differentiallyAlgebraicOn_regularizedHerglotzTransform
     Polynomial.eval_one, Polynomial.eval_pow]
   ring
 
+/-- A differential relation on a set restricts to any subset. -/
+theorem differentiallyAlgebraicOn_mono {f : ℂ → ℂ} {U V : Set ℂ} (hVU : V ⊆ U)
+    (h : DifferentiallyAlgebraicOn f U) : DifferentiallyAlgebraicOn f V := by
+  obtain ⟨n, P, hP, hrel⟩ := h
+  exact ⟨n, P, hP, fun z hz => hrel z (hVU hz)⟩
+
+/-- The upper half-plane, where the packet arguments place their nodes, avoids the real axis. -/
+theorem upperHalfPlane_subset_offRealAxis : upperHalfPlane ⊆ offRealAxis :=
+  fun _ hz => ne_of_gt hz
+
+/-- **The Herglotz presentation of any finite carrier inherits relation-freeness.**  For a finite
+measure and any mass constant, the normalized presentation `z * M + (1 + z ^ 2) * C` satisfies no
+algebraic differential equation on an open set off the real axis whenever its Cauchy transform `C`
+satisfies none there.  This is the gauge with no reference to how the measure was produced. -/
+theorem not_differentiallyAlgebraicOn_herglotzPresentation
+    (ν : Measure ℝ) [IsFiniteMeasure ν] (M : ℂ) {U : Set ℂ} (hU : IsOpen U)
+    (hUne : ∀ z ∈ U, z.im ≠ 0)
+    (hC : ¬ DifferentiallyAlgebraicOn (cauchyTransform ν) U) :
+    ¬ DifferentiallyAlgebraicOn
+      (fun z => z * M + (1 + z ^ 2) * cauchyTransform ν z) U := by
+  refine not_differentiallyAlgebraicOn_polynomialGauge hU
+    (1 + Polynomial.X ^ 2) (Polynomial.C M * Polynomial.X)
+    one_add_X_sq_ne_zero ?_ (fun z hz => contDiffAt_cauchyTransform ν (hUne z hz)) hC
+  intro z _
+  simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_add,
+    Polynomial.eval_one, Polynomial.eval_pow]
+  ring
+
+/-- **The half-plane form composes.**  Relation-freeness of the Cauchy transform on the upper
+half-plane — the form the packet arguments produce — already gives it for the Herglotz presentation
+there. -/
+theorem not_differentiallyAlgebraicOn_herglotzPresentation_upperHalfPlane
+    (ν : Measure ℝ) [IsFiniteMeasure ν] (M : ℂ)
+    (hC : ¬ DifferentiallyAlgebraicOn (cauchyTransform ν) upperHalfPlane) :
+    ¬ DifferentiallyAlgebraicOn
+      (fun z => z * M + (1 + z ^ 2) * cauchyTransform ν z) upperHalfPlane :=
+  not_differentiallyAlgebraicOn_herglotzPresentation ν M isOpen_upperHalfPlane
+    (fun _ hz => ne_of_gt hz) hC
+
 end
 
 end GaloisForLFunctions.HTGeometry

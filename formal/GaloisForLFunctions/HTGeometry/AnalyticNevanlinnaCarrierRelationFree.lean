@@ -582,9 +582,11 @@ theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
       intro w hw p shift coeff
       exact hw p shift coeff)
 
-/-- Avoiding every canonical finite actual-carrier pattern forces literal hypertranscendence of
-the weighted carrier's Cauchy transform. -/
-theorem hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree
+/-- Avoiding every canonical finite actual-carrier pattern forces the weighted carrier's Cauchy
+transform to satisfy no algebraic differential equation on the upper half-plane.  The relation is
+only ever evaluated at packet nodes, which lie off the real axis, so the half-plane statement is
+what the pattern argument actually gives; global hypertranscendence is the corollary below. -/
+theorem not_differentiallyAlgebraicOn_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree
     (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
     (density : Lp ℝ (⊤ : ENNReal) eta)
     (hfree : ∀ (p : FiniteDifferentialPattern Unit)
@@ -594,9 +596,12 @@ theorem hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_r
         (row := CarrierPatternRow p) eta density p.coefficientDegree p.orders
           (carrierPatternExponent p) shift coeff →
         ∀ col, coeff col = 0) :
-    Hypertranscendental
-      (fun z => ∫ x, ((x : ℂ) - z)⁻¹
-        ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta density) := by
+    ¬ ∃ (n : ℕ) (P : MvPolynomial (Fin (n + 2)) ℂ), P ≠ 0 ∧
+        ∀ z : ℂ, 0 < z.im →
+          MvPolynomial.eval
+            (Fin.cons z (fun j : Fin (n + 1) => iteratedDeriv (j : ℕ)
+              (fun w => ∫ x, ((x : ℂ) - w)⁻¹
+                ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta density) z)) P = 0 := by
   intro hDA
   obtain ⟨n, P, hPne, hPzero⟩ := hDA
   let orders : Fin 1 → ℕ := fun _ => n + 1
@@ -682,7 +687,9 @@ theorem hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_r
             iteratedDeriv (j : ℕ) carrierTransform z)) P := by
         rw [hx]
         exact eval_specialize_reshapeJet n z _ P
-      _ = 0 := hPzero z
+      _ = 0 := hPzero z (by
+        have h0 := hupper (r, (0 : Fin 1))
+        simpa [combinedProjectiveRowShiftPacket, shift0, z] using h0)
   have hcoeffZero := hfree p shift0 coeff hrelation
   have hpatternZero : ∀ b : PatternRow p, patternCoeff b = 0 := by
     intro b
@@ -698,6 +705,27 @@ theorem hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_r
     simpa [Q, orders] using hQ)
   have hP : P = 0 := reshapeJet_injective n (by simpa [Q0] using hQ0)
   exact hPne hP
+
+/-- Avoiding every canonical finite actual-carrier pattern forces literal hypertranscendence of
+the weighted carrier's Cauchy transform.  A global differential relation is in particular a
+relation on the upper half-plane. -/
+theorem hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree
+    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
+    (density : Lp ℝ (⊤ : ENNReal) eta)
+    (hfree : ∀ (p : FiniteDifferentialPattern Unit)
+      (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
+      (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
+      F.weightedBoundaryCarrierExpandedPatternRelationHolds
+        (row := CarrierPatternRow p) eta density p.coefficientDegree p.orders
+          (carrierPatternExponent p) shift coeff →
+        ∀ col, coeff col = 0) :
+    Hypertranscendental
+      (fun z => ∫ x, ((x : ℂ) - z)⁻¹
+        ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta density) := by
+  intro hDA
+  obtain ⟨n, P, hPne, hPzero⟩ := hDA
+  exact F.not_differentiallyAlgebraicOn_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree
+    eta density hfree ⟨n, P, hPne, fun z _ => hPzero z⟩
 
 /-- **Residual hypertranscendental Nevanlinna-image law.**  Under the explicit classical
 incidence/projection/stratified-avoidance inputs, the positive mass-one chart contains a dense

@@ -61,6 +61,41 @@ theorem addTranslationMeroEquiv_add (p q : ℂ)
   rw [map_div₀, map_div₀, map_div₀]
   simp only [addTranslationMeroEquiv_algebraMap, addTranslationAnalyticEquiv_add]
 
+/-- **Commuting mixed-defect law.**  For any global meromorphic element, the two iterated
+translation defects are independent of the order of the translation parameters.  This is the
+general cocycle identity behind every mixed source face. -/
+theorem addTranslationMeroEquiv_mixed_defect_comm (p q : ℂ)
+    (x : meroField (Set.univ : Set ℂ)) :
+    addTranslationMeroEquiv p (addTranslationMeroEquiv q x - x) -
+        (addTranslationMeroEquiv q x - x) =
+      addTranslationMeroEquiv q (addTranslationMeroEquiv p x - x) -
+        (addTranslationMeroEquiv p x - x) := by
+  rw [map_sub, map_sub, addTranslationMeroEquiv_add,
+    addTranslationMeroEquiv_add]
+  rw [show p + q = q + p by ring]
+
+/-- Translation defects form an additive one-cocycle in the translation parameter. -/
+theorem addTranslationMeroEquiv_defect_add (p q : ℂ)
+    (x : meroField (Set.univ : Set ℂ)) :
+    addTranslationMeroEquiv (p + q) x - x =
+      (addTranslationMeroEquiv p x - x) +
+        addTranslationMeroEquiv p (addTranslationMeroEquiv q x - x) := by
+  rw [map_sub, addTranslationMeroEquiv_add]
+  ring
+
+/-- **Translation-defect reflection.**  Reversing the translation parameter reflects the defect
+by translating the original defect back and changing its sign. -/
+theorem addTranslationMeroEquiv_defect_neg (p : ℂ)
+    (x : meroField (Set.univ : Set ℂ)) :
+    addTranslationMeroEquiv (-p) x - x =
+      -addTranslationMeroEquiv (-p) (addTranslationMeroEquiv p x - x) := by
+  have hzero : addTranslationMeroEquiv 0 x = x := by
+    apply (addTranslationMeroEquiv 0).injective
+    simpa using addTranslationMeroEquiv_add 0 0 x
+  rw [map_sub, addTranslationMeroEquiv_add]
+  rw [show -p + p = 0 by ring, hzero]
+  ring
+
 /-- Every additive translation fixes the embedded complex constants. -/
 theorem addTranslationMeroEquiv_const (q c : ℂ) :
     addTranslationMeroEquiv q

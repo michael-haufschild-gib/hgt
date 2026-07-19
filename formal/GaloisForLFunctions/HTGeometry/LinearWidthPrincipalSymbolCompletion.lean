@@ -27,41 +27,12 @@ variable {K : Type u} [Field K] [CharZero K]
 
 /-- Clocked amplitudes on the lower/membrane/upper detector boundary. -/
 abbrev LinearPrincipalCompletionState (M : Type v) (n d : ℕ) :=
-  LinearWidthDetectorIndex n → ZMod d → M
+  CyclicClockState M (LinearWidthDetectorIndex n) d
 
 /-- The completed boundary has exactly `d(2n+1)` scalar coordinate slots. -/
 theorem linearPrincipalCompletionCoordinate_card :
     Fintype.card (LinearWidthDetectorIndex n × ZMod d) = (2 * n + 1) * d := by
   rw [Fintype.card_prod, linearWidthDetectorIndex_card, ZMod.card]
-
-/-- Lift an internal operator through the cyclic phase clock. -/
-def linearCompletionClockLift
-    (q : K) (hq : q ^ d = 1) (A : Module.End K M) :
-    Module.End K (LinearPrincipalCompletionState M n d) where
-  toFun f x k := finiteQuantumCharacter d q hq k • A (f x k)
-  map_add' f g := by
-    funext x k
-    simp [smul_add]
-  map_smul' c f := by
-    funext x k
-    simp [smul_smul, mul_comm]
-
-/-- Clock lifting is linear in the internal operator. -/
-def linearCompletionClockLiftLinear
-    (q : K) (hq : q ^ d = 1) :
-    Module.End K M →ₗ[K]
-      Module.End K (LinearPrincipalCompletionState M n d) where
-  toFun := linearCompletionClockLift (n := n) q hq
-  map_add' A B := by
-    apply LinearMap.ext
-    intro f
-    funext x k
-    simp [linearCompletionClockLift, smul_add]
-  map_smul' c A := by
-    apply LinearMap.ext
-    intro f
-    funext x k
-    simp [linearCompletionClockLift, smul_smul, mul_comm]
 
 /-- A membrane generator accompanied by one cyclic clock shift. -/
 def linearCompletionDetectorGenerator (i : Fin n) :
@@ -133,34 +104,6 @@ theorem linearCompletionDetectorSymbol_pow_degree_zero
     _ = D ^ 3 * D ^ (d - 3) := pow_add D 3 (d - 3)
     _ = 0 := by rw [linearCompletionDetectorSymbol_cube_zero]; simp
 
-/-- Exact power formula for the scalar clock lift. -/
-theorem linearCompletionClockLift_pow_apply
-    (q : K) (hq : q ^ d = 1) (A : Module.End K M) :
-    ∀ r : ℕ, ∀ f : LinearPrincipalCompletionState M n d,
-      ∀ x : LinearWidthDetectorIndex n, ∀ k : ZMod d,
-      ((linearCompletionClockLift (n := n) q hq A) ^ r) f x k =
-        (finiteQuantumCharacter d q hq k) ^ r • (A ^ r) (f x k)
-  | 0, f, x, k => by simp
-  | r + 1, f, x, k => by
-      rw [pow_succ, Module.End.mul_apply,
-        linearCompletionClockLift_pow_apply q hq A r]
-      simp only [linearCompletionClockLift, LinearMap.coe_mk, AddHom.coe_mk,
-        map_smul, smul_smul, pow_succ]
-      rfl
-
-/-- The clock lift preserves a scalar `d`th-power identity. -/
-theorem linearCompletionClockLift_pow_degree
-    (q : K) (hq : q ^ d = 1) (A : Module.End K M) (F : K)
-    (hA : A ^ d = F • LinearMap.id) :
-    (linearCompletionClockLift (n := n) q hq A) ^ d =
-      F • LinearMap.id := by
-  apply LinearMap.ext
-  intro f
-  funext x k
-  rw [linearCompletionClockLift_pow_apply,
-    finiteQuantumCharacter_pow_degree, hA]
-  simp
-
 /-- Internal endomorphisms commute through the coordinate-only membrane action. -/
 theorem map_linearWidthDetectorGenerator
     (A : Module.End K M) (i : Fin n)
@@ -176,14 +119,14 @@ theorem map_linearWidthDetectorGenerator
 /-- The scalar clock `q`-commutes with every clocked membrane generator. -/
 theorem linearCompletionClockLift_mul_detectorGenerator
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (i : Fin n) :
-    linearCompletionClockLift (n := n) q hq A *
+    cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A *
         linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i =
       q • (linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i *
-        linearCompletionClockLift (n := n) q hq A) := by
+        cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A) := by
   apply LinearMap.ext
   intro f
   funext x k
-  rw [show (linearCompletionClockLift (n := n) q hq A *
+  rw [show (cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A *
       linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i) f x k =
       finiteQuantumCharacter d q hq k •
         A (linearWidthDetectorGenerator (K := K) (M := M) i
@@ -201,27 +144,27 @@ theorem linearCompletionClockLift_mul_detectorGenerator
 /-- The scalar clock `q`-commutes with the entire membrane detector pencil. -/
 theorem linearCompletionClockLift_mul_detectorSymbol
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (c : Fin n → K) :
-    linearCompletionClockLift (n := n) q hq A *
+    cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A *
         linearCompletionDetectorSymbol (K := K) (M := M) (d := d) c =
       q • (linearCompletionDetectorSymbol (K := K) (M := M) (d := d) c *
-        linearCompletionClockLift (n := n) q hq A) := by
+        cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A) := by
   classical
   rw [linearCompletionDetectorSymbol, quantumGeneratorSymbol,
     Fintype.linearCombination_apply, Finset.mul_sum, Finset.sum_mul, Finset.smul_sum]
   apply Finset.sum_congr rfl
   intro i _
   calc
-    linearCompletionClockLift (n := n) q hq A *
+    cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A *
         (c i • linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i) =
-      c i • (linearCompletionClockLift (n := n) q hq A *
+      c i • (cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A *
         linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i) := by simp
     _ = c i • (q •
         (linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i *
-          linearCompletionClockLift (n := n) q hq A)) := by
+          cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A)) := by
       rw [linearCompletionClockLift_mul_detectorGenerator]
     _ = q • ((c i •
         linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i) *
-          linearCompletionClockLift (n := n) q hq A) := by
+          cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A) := by
       simp [smul_smul]
       congr 1
       ring
@@ -232,7 +175,7 @@ def linearWidthPrincipalSymbolCompletion
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M) :
     (Fin n → K) →ₗ[K]
       Module.End K (LinearPrincipalCompletionState M n d) :=
-  (linearCompletionClockLiftLinear (n := n) q hq).comp A₀ +
+  (cyclicClockLiftLinear (ι := LinearWidthDetectorIndex n) q hq).comp A₀ +
     linearCompletionDetectorSymbol (K := K) (M := M) (d := d)
 
 /-- **Linear-width scalar preservation above degree two.** -/
@@ -242,15 +185,15 @@ theorem linearWidthPrincipalSymbolCompletion_pow
     (hA₀ : ∀ c, (A₀ c) ^ d = F c • LinearMap.id) (c : Fin n → K) :
     (linearWidthPrincipalSymbolCompletion q hq.pow_eq_one A₀ c) ^ d =
       F c • LinearMap.id := by
-  change (linearCompletionClockLift (n := n) q hq.pow_eq_one (A₀ c) +
+  change (cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq.pow_eq_one (A₀ c) +
     linearCompletionDetectorSymbol (K := K) (M := M) (d := d) c) ^ d = _
   rw [quantumBinomial_pow_primitive hq
       (lt_trans Nat.zero_lt_one Fact.out)
-      (linearCompletionClockLift (n := n) q hq.pow_eq_one (A₀ c))
+      (cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq.pow_eq_one (A₀ c))
       (linearCompletionDetectorSymbol (K := K) (M := M) (d := d) c)
       (linearCompletionClockLift_mul_detectorSymbol
         q hq.pow_eq_one (A₀ c) c),
-    linearCompletionClockLift_pow_degree q hq.pow_eq_one (A₀ c) (F c) (hA₀ c),
+    cyclicClockLift_pow_degree (ι := LinearWidthDetectorIndex n) q hq.pow_eq_one (A₀ c) (F c) (hA₀ c),
     linearCompletionDetectorSymbol_pow_degree_zero hd]
   simp
 
@@ -259,10 +202,10 @@ theorem linearWidthPrincipalSymbolCompletion_basisFun
     (q : K) (hq : q ^ d = 1)
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M) (i : Fin n) :
     linearWidthPrincipalSymbolCompletion q hq A₀ (Pi.basisFun K (Fin n) i) =
-      linearCompletionClockLift (n := n) q hq
+      cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq
           (A₀ (Pi.basisFun K (Fin n) i)) +
         linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i := by
-  change linearCompletionClockLift (n := n) q hq
+  change cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq
       (A₀ (Pi.basisFun K (Fin n) i)) +
       linearCompletionDetectorSymbol (K := K) (M := M) (d := d)
         (Pi.basisFun K (Fin n) i) = _
@@ -372,30 +315,30 @@ theorem linearPrincipalCompletionPairReadout_detectorBracket
 theorem linearPrincipalCompletionPairReadout_clock_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A B : Module.End K M) :
     linearPrincipalCompletionPairReadout (K := K) (n := n) (d := d) m
-        (linearCompletionClockLift (n := n) q hq A *
-          linearCompletionClockLift (n := n) q hq B) = 0 := by
+        (cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A *
+          cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq B) = 0 := by
   funext p k
   simp [linearPrincipalCompletionPairReadout, Module.End.mul_apply,
-    linearCompletionClockLift, linearPrincipalCompletionPairInput]
+    cyclicClockLift, linearPrincipalCompletionPairInput]
 
 theorem linearPrincipalCompletionPairReadout_clock_mul_detector
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     linearPrincipalCompletionPairReadout (K := K) (n := n) (d := d) m
-        (linearCompletionClockLift (n := n) q hq A *
+        (cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A *
           linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i) = 0 := by
   funext p k
   simp [linearPrincipalCompletionPairReadout, Module.End.mul_apply,
-    linearCompletionClockLift, linearCompletionDetectorGenerator,
+    cyclicClockLift, linearCompletionDetectorGenerator,
     linearWidthDetectorGenerator, linearPrincipalCompletionPairInput]
 
 theorem linearPrincipalCompletionPairReadout_detector_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     linearPrincipalCompletionPairReadout (K := K) (n := n) (d := d) m
         (linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i *
-          linearCompletionClockLift (n := n) q hq A) = 0 := by
+          cyclicClockLift (ι := LinearWidthDetectorIndex n) q hq A) = 0 := by
   funext p k
   simp [linearPrincipalCompletionPairReadout, Module.End.mul_apply,
-    linearCompletionClockLift, linearCompletionDetectorGenerator,
+    cyclicClockLift, linearCompletionDetectorGenerator,
     linearWidthDetectorGenerator, linearPrincipalCompletionPairInput]
 
 theorem linearPrincipalCompletionPairReadout_principalBracketPair

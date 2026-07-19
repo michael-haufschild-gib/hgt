@@ -140,146 +140,11 @@ theorem ellipticGammaLogDerivMero_mixed_face_tau
         (thetaLogDerivDefectMero h sigma hsigma) := by
   let D := ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau
   let Q := thetaLogDerivDefectDenominatorAnalytic h sigma hsigma
-  let c : ℂ := (tau - sigma) / 2
-  have hmap_ne {a : analyticSubring Set.univ} (ha : a ≠ 0) :
-      algebraMap (analyticSubring Set.univ) (meroField Set.univ) a ≠ 0 :=
-    fun hz ↦ ha ((IsFractionRing.injective (analyticSubring Set.univ)
-      (meroField Set.univ)) (by simpa using hz))
-  have hD : D ≠ 0 :=
-    ellipticGammaLogDerivDenominatorAnalytic_ne_zero sigma tau hsigma htau
-  have hTD (q : ℂ) : addTranslationAnalyticEquiv q D ≠ 0 :=
-    fun hz ↦ hD ((addTranslationAnalyticEquiv q).injective (by simpa using hz))
-  have hQ : Q ≠ 0 := thetaLogDerivDefectDenominatorAnalytic_ne_zero h sigma hsigma
-  have hTQ : addTranslationAnalyticEquiv c Q ≠ 0 :=
-    fun hz ↦ hQ ((addTranslationAnalyticEquiv c).injective (by simpa using hz))
-  dsimp [D, Q] at hD hTD hQ hTQ
-  let R : analyticSubring Set.univ :=
-    addTranslationAnalyticEquiv (tau + h)
-          (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau) *
-      addTranslationAnalyticEquiv tau
-          (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau) *
-      addTranslationAnalyticEquiv h
-          (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau) *
-      ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau *
-      addTranslationAnalyticEquiv c
-        (thetaLogDerivDefectDenominatorAnalytic h sigma hsigma)
-  have hR : R ≠ 0 := by
-    dsimp [R]
-    exact mul_ne_zero
-      (mul_ne_zero
-        (mul_ne_zero
-          (mul_ne_zero (hTD (tau + h)) (hTD tau)) (hTD h)) hD) hTQ
-  obtain ⟨z0, hz0⟩ := exists_univGermEval_ne_zero_of_ne_zero hR
-  have hreg := eventually_univGermEval_ne_zero hz0
-  rw [ellipticGammaLogDerivMero_eq_div]
-  simp only [map_sub, map_div₀, addTranslationMeroEquiv_algebraMap]
-  simp_rw [addTranslationAnalyticEquiv_add]
-  rw [thetaLogDerivDefectMero_eq_div, map_div₀,
-    addTranslationMeroEquiv_algebraMap,
-    addTranslationMeroEquiv_algebraMap]
-  have hTQ' : addTranslationAnalyticEquiv ((tau - sigma) / 2)
-      (thetaLogDerivDefectDenominatorAnalytic h sigma hsigma) ≠ 0 := by
-    simpa [c, Q] using hTQ
-  apply (eq_div_iff (hmap_ne hTQ')).mpr
-  field_simp [hmap_ne hD, hmap_ne (hTD h), hmap_ne (hTD tau),
-    hmap_ne (hTD (tau + h))]
-  simp only [← map_mul, ← map_sub]
-  rw [(IsFractionRing.injective (analyticSubring Set.univ)
-    (meroField Set.univ)).eq_iff]
-  apply analyticSubring_eq_of_eventually_eval_eq (z₀ := z0)
-  filter_upwards [hreg] with z hzR
-  have hzR' := hzR
-  simp only [R, univGermEval_analyticSubring_mul,
-    univGermEval_addTranslationAnalyticEquiv,
-    ellipticGammaLogDerivDenominatorAnalytic,
-    thetaLogDerivDefectDenominatorAnalytic,
-    univGermEval_ellipticGammaForwardAnalytic,
-    univGermEval_ellipticGammaBackwardAnalytic,
-    univGermEval_thetaAnalytic, mul_ne_zero_iff] at hzR'
-  rcases hzR' with
-    ⟨⟨⟨⟨⟨hztahF, hztahB⟩, hztF, hztB⟩, hzhF, hzhB⟩, hzF, hzB⟩,
-      hzc_h_theta, hzc_theta⟩
-  have hKtah := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
-    hsigma htau hztahF hztahB
-  have hKt := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
-    hsigma htau hztF hztB
-  have hKh := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
-    hsigma htau hzhF hzhB
-  have hK := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
-    hsigma htau hzF hzB
-  have htheta := univGermEval_thetaLogDerivDefect_div_eq
-    hsigma hzc_theta hzc_h_theta
-  have hmix := ellipticGammaAdditiveLogKernel_mixed_defect_tau
-    hsigma htau hzc_theta hzc_h_theta
-  have hratio :
-      (univGermEval (z + (tau + h))
-            (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
-              Germ (𝓟 Set.univ) ℂ) /
-          univGermEval (z + (tau + h))
-            (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-              Germ (𝓟 Set.univ) ℂ) -
-        univGermEval (z + tau)
-            (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
-              Germ (𝓟 Set.univ) ℂ) /
-          univGermEval (z + tau)
-            (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-              Germ (𝓟 Set.univ) ℂ)) -
-      (univGermEval (z + h)
-            (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
-              Germ (𝓟 Set.univ) ℂ) /
-          univGermEval (z + h)
-            (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-              Germ (𝓟 Set.univ) ℂ) -
-        univGermEval z
-            (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
-              Germ (𝓟 Set.univ) ℂ) /
-          univGermEval z
-            (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-              Germ (𝓟 Set.univ) ℂ)) =
-      univGermEval (z + c)
-          (thetaLogDerivDefectNumeratorAnalytic h sigma hsigma :
-            Germ (𝓟 Set.univ) ℂ) /
-        univGermEval (z + c)
-          (thetaLogDerivDefectDenominatorAnalytic h sigma hsigma :
-            Germ (𝓟 Set.univ) ℂ) := by
-    rw [hKtah, hKt, hKh, hK, htheta]
-    rw [show z + (tau + h) = z + h + tau by ring]
-    dsimp only [c]
-    linear_combination hmix
-  have hdtah : univGermEval (z + (tau + h))
-      (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change ellipticGammaForwardProduct sigma tau (z + (tau + h)) *
-      ellipticGammaBackwardProduct sigma tau (z + (tau + h)) ≠ 0
-    exact mul_ne_zero hztahF hztahB
-  have hdt : univGermEval (z + tau)
-      (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change ellipticGammaForwardProduct sigma tau (z + tau) *
-      ellipticGammaBackwardProduct sigma tau (z + tau) ≠ 0
-    exact mul_ne_zero hztF hztB
-  have hdh : univGermEval (z + h)
-      (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change ellipticGammaForwardProduct sigma tau (z + h) *
-      ellipticGammaBackwardProduct sigma tau (z + h) ≠ 0
-    exact mul_ne_zero hzhF hzhB
-  have hd : univGermEval z
-      (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change ellipticGammaForwardProduct sigma tau z *
-      ellipticGammaBackwardProduct sigma tau z ≠ 0
-    exact mul_ne_zero hzF hzB
-  have hq : univGermEval (z + c)
-      (thetaLogDerivDefectDenominatorAnalytic h sigma hsigma :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change jacobiTheta₂ (z + c + h) sigma * jacobiTheta₂ (z + c) sigma ≠ 0
-    exact mul_ne_zero hzc_h_theta hzc_theta
-  simp only [univGermEval_analyticSubring_mul,
-    univGermEval_analyticSubring_sub,
-    univGermEval_addTranslationAnalyticEquiv]
-  field_simp [hdtah, hdt, hdh, hd, hq] at hratio
-  linear_combination hratio
+  rw [addTranslationMeroEquiv_mixed_defect_comm]
+  rw [ellipticGammaLogDerivMero_source_face_tau hsigma htau]
+  rw [thetaLogDerivDefectMero, map_sub,
+    addTranslationMeroEquiv_add, addTranslationMeroEquiv_add]
+  rw [show h + (tau - sigma) / 2 = (tau - sigma) / 2 + h by ring]
 
 /-! ## The compatible primitive family -/
 
@@ -291,6 +156,55 @@ def ellipticGammaExternalLogDerivDefectMero
   addTranslationMeroEquiv h
       (ellipticGammaLogDerivMero sigma tau hsigma htau) -
     ellipticGammaLogDerivMero sigma tau hsigma htau
+
+@[simp]
+theorem ellipticGammaExternalLogDerivDefectMero_zero
+    (sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    ellipticGammaExternalLogDerivDefectMero 0 sigma tau hsigma htau = 0 := by
+  rw [ellipticGammaExternalLogDerivDefectMero,
+    addTranslationMeroEquiv_zero_apply, sub_self]
+
+@[simp]
+theorem ellipticGammaExternalLogDerivDefectMero_one
+    (sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    ellipticGammaExternalLogDerivDefectMero 1 sigma tau hsigma htau = 0 := by
+  rw [ellipticGammaExternalLogDerivDefectMero,
+    addTranslationMeroEquiv_ellipticGammaLogDerivMero_one, sub_self]
+
+/-- The external-defect value at the first structural generator is the first direct theta face. -/
+theorem ellipticGammaExternalLogDerivDefectMero_sigma
+    (sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    ellipticGammaExternalLogDerivDefectMero sigma sigma tau hsigma htau =
+      thetaLogDerivMero tau htau := by
+  exact ellipticGammaLogDerivMero_source_face_sigma hsigma htau
+
+/-- The external-defect value at the second structural generator is the recentered second theta
+face. -/
+theorem ellipticGammaExternalLogDerivDefectMero_tau
+    (sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    ellipticGammaExternalLogDerivDefectMero tau sigma tau hsigma htau =
+      addTranslationMeroEquiv ((tau - sigma) / 2)
+        (thetaLogDerivMero sigma hsigma) := by
+  exact ellipticGammaLogDerivMero_source_face_tau hsigma htau
+
+/-- The genuine elliptic-gamma external defects inherit the universal additive translation
+cocycle. -/
+theorem ellipticGammaExternalLogDerivDefectMero_add
+    (h k sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    ellipticGammaExternalLogDerivDefectMero (h + k) sigma tau hsigma htau =
+      ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau +
+        addTranslationMeroEquiv h
+          (ellipticGammaExternalLogDerivDefectMero k sigma tau hsigma htau) := by
+  exact addTranslationMeroEquiv_defect_add h k _
+
+/-- **External-defect value reflection.**  The defect at the reflected parameter is the negative
+back-translate of the original defect. -/
+theorem ellipticGammaExternalLogDerivDefectMero_neg
+    (h sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    ellipticGammaExternalLogDerivDefectMero (-h) sigma tau hsigma htau =
+      -addTranslationMeroEquiv (-h)
+        (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) := by
+  exact addTranslationMeroEquiv_defect_neg h _
 
 theorem addTranslationMeroEquiv_ellipticGammaExternalDefect_one
     (h sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :

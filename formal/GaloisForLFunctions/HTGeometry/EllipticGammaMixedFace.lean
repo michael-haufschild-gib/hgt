@@ -121,6 +121,196 @@ theorem univGermEval_thetaLogDerivDefect_div_eq
   rw [thetaLogDeriv, thetaLogDeriv]
   field_simp [hz, hzh]
 
+/-! ## Direct structural source faces -/
+
+/-- **First direct elliptic-gamma source face.**  The `sigma`-translation defect of the genuine
+elliptic-gamma logarithmic derivative is exactly the `tau`-theta logarithmic derivative.  This
+global meromorphic identity closes the direct value interface left implicit by the mixed-face
+law. -/
+theorem ellipticGammaLogDerivMero_source_face_sigma
+    {sigma tau : ℂ} (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    addTranslationMeroEquiv sigma
+        (ellipticGammaLogDerivMero sigma tau hsigma htau) -
+      ellipticGammaLogDerivMero sigma tau hsigma htau =
+        thetaLogDerivMero tau htau := by
+  let D := ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau
+  let Q := thetaAnalytic tau htau
+  have hmap_ne {a : analyticSubring Set.univ} (ha : a ≠ 0) :
+      algebraMap (analyticSubring Set.univ) (meroField Set.univ) a ≠ 0 :=
+    fun hz ↦ ha ((IsFractionRing.injective (analyticSubring Set.univ)
+      (meroField Set.univ)) (by simpa using hz))
+  have hD : D ≠ 0 :=
+    ellipticGammaLogDerivDenominatorAnalytic_ne_zero sigma tau hsigma htau
+  have hTD : addTranslationAnalyticEquiv sigma D ≠ 0 :=
+    fun hz ↦ hD ((addTranslationAnalyticEquiv sigma).injective (by simpa using hz))
+  have hQ : Q ≠ 0 := thetaAnalytic_ne_zero tau htau
+  dsimp [D, Q] at hD hTD hQ
+  let R : analyticSubring Set.univ :=
+    addTranslationAnalyticEquiv sigma
+          (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau) *
+      ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau *
+      thetaAnalytic tau htau
+  have hR : R ≠ 0 := by
+    dsimp [R]
+    exact mul_ne_zero (mul_ne_zero hTD hD) hQ
+  obtain ⟨z0, hz0⟩ := exists_univGermEval_ne_zero_of_ne_zero hR
+  have hreg := eventually_univGermEval_ne_zero hz0
+  rw [ellipticGammaLogDerivMero_eq_div, thetaLogDerivMero,
+    map_div₀, addTranslationMeroEquiv_algebraMap,
+    addTranslationMeroEquiv_algebraMap]
+  field_simp [hmap_ne hD, hmap_ne hTD, hmap_ne hQ]
+  simp only [← map_mul, ← map_sub]
+  rw [(IsFractionRing.injective (analyticSubring Set.univ)
+    (meroField Set.univ)).eq_iff]
+  apply analyticSubring_eq_of_eventually_eval_eq (z₀ := z0)
+  filter_upwards [hreg] with z hzR
+  have hzR' := hzR
+  simp only [R, univGermEval_analyticSubring_mul,
+    univGermEval_addTranslationAnalyticEquiv,
+    ellipticGammaLogDerivDenominatorAnalytic,
+    univGermEval_ellipticGammaForwardAnalytic,
+    univGermEval_ellipticGammaBackwardAnalytic,
+    univGermEval_thetaAnalytic, mul_ne_zero_iff] at hzR'
+  rcases hzR' with ⟨⟨⟨hzsF, hzsB⟩, hzF, hzB⟩, hztheta⟩
+  have hKs := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
+    hsigma htau hzsF hzsB
+  have hK := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
+    hsigma htau hzF hzB
+  have hratio :
+      univGermEval (z + sigma)
+            (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
+              Germ (Filter.principal Set.univ) ℂ) /
+          univGermEval (z + sigma)
+            (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
+              Germ (Filter.principal Set.univ) ℂ) -
+        univGermEval z
+            (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
+              Germ (Filter.principal Set.univ) ℂ) /
+          univGermEval z
+            (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
+              Germ (Filter.principal Set.univ) ℂ) =
+      univGermEval z
+          (thetaPrimeAnalytic tau htau : Germ (Filter.principal Set.univ) ℂ) /
+        univGermEval z
+          (thetaAnalytic tau htau : Germ (Filter.principal Set.univ) ℂ) := by
+    rw [hKs, hK]
+    simpa [thetaLogDeriv] using
+      ellipticGammaAdditiveLogKernel_add_sigma_sub hsigma htau
+  have hds : univGermEval (z + sigma)
+      (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
+        Germ (Filter.principal Set.univ) ℂ) ≠ 0 := by
+    change ellipticGammaForwardProduct sigma tau (z + sigma) *
+      ellipticGammaBackwardProduct sigma tau (z + sigma) ≠ 0
+    exact mul_ne_zero hzsF hzsB
+  have hd : univGermEval z
+      (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
+        Germ (Filter.principal Set.univ) ℂ) ≠ 0 := by
+    change ellipticGammaForwardProduct sigma tau z *
+      ellipticGammaBackwardProduct sigma tau z ≠ 0
+    exact mul_ne_zero hzF hzB
+  simp only [univGermEval_analyticSubring_mul,
+    univGermEval_analyticSubring_sub,
+    univGermEval_addTranslationAnalyticEquiv]
+  field_simp [hds, hd, hztheta] at hratio
+  linear_combination hratio
+
+/-- **Second direct elliptic-gamma source face.**  The `tau`-translation defect of the genuine
+elliptic-gamma logarithmic derivative is the recentered `sigma`-theta logarithmic derivative
+forced by the polarized additive coordinate. -/
+theorem ellipticGammaLogDerivMero_source_face_tau
+    {sigma tau : ℂ} (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    addTranslationMeroEquiv tau
+        (ellipticGammaLogDerivMero sigma tau hsigma htau) -
+      ellipticGammaLogDerivMero sigma tau hsigma htau =
+        addTranslationMeroEquiv ((tau - sigma) / 2)
+          (thetaLogDerivMero sigma hsigma) := by
+  let c : ℂ := (tau - sigma) / 2
+  let D := ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau
+  let Q := addTranslationAnalyticEquiv c (thetaAnalytic sigma hsigma)
+  have hmap_ne {a : analyticSubring Set.univ} (ha : a ≠ 0) :
+      algebraMap (analyticSubring Set.univ) (meroField Set.univ) a ≠ 0 :=
+    fun hz ↦ ha ((IsFractionRing.injective (analyticSubring Set.univ)
+      (meroField Set.univ)) (by simpa using hz))
+  have hD : D ≠ 0 :=
+    ellipticGammaLogDerivDenominatorAnalytic_ne_zero sigma tau hsigma htau
+  have hTD : addTranslationAnalyticEquiv tau D ≠ 0 :=
+    fun hz ↦ hD ((addTranslationAnalyticEquiv tau).injective (by simpa using hz))
+  have hQ : Q ≠ 0 :=
+    fun hz ↦ thetaAnalytic_ne_zero sigma hsigma
+      ((addTranslationAnalyticEquiv c).injective (by simpa [Q] using hz))
+  dsimp [D, Q] at hD hTD hQ
+  let R : analyticSubring Set.univ :=
+    addTranslationAnalyticEquiv tau
+          (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau) *
+      ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau *
+      addTranslationAnalyticEquiv c (thetaAnalytic sigma hsigma)
+  have hR : R ≠ 0 := by
+    dsimp [R]
+    exact mul_ne_zero (mul_ne_zero hTD hD) hQ
+  obtain ⟨z0, hz0⟩ := exists_univGermEval_ne_zero_of_ne_zero hR
+  have hreg := eventually_univGermEval_ne_zero hz0
+  rw [ellipticGammaLogDerivMero_eq_div, thetaLogDerivMero,
+    map_div₀, addTranslationMeroEquiv_algebraMap,
+    addTranslationMeroEquiv_algebraMap,
+    map_div₀, addTranslationMeroEquiv_algebraMap,
+    addTranslationMeroEquiv_algebraMap]
+  field_simp [hmap_ne hD, hmap_ne hTD, hmap_ne hQ]
+  simp only [← map_mul, ← map_sub]
+  rw [(IsFractionRing.injective (analyticSubring Set.univ)
+    (meroField Set.univ)).eq_iff]
+  apply analyticSubring_eq_of_eventually_eval_eq (z₀ := z0)
+  filter_upwards [hreg] with z hzR
+  have hzR' := hzR
+  simp only [R, univGermEval_analyticSubring_mul,
+    univGermEval_addTranslationAnalyticEquiv,
+    ellipticGammaLogDerivDenominatorAnalytic,
+    univGermEval_ellipticGammaForwardAnalytic,
+    univGermEval_ellipticGammaBackwardAnalytic,
+    univGermEval_thetaAnalytic, mul_ne_zero_iff] at hzR'
+  rcases hzR' with ⟨⟨⟨hztF, hztB⟩, hzF, hzB⟩, hztheta⟩
+  have hKt := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
+    hsigma htau hztF hztB
+  have hK := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
+    hsigma htau hzF hzB
+  have hratio :
+      univGermEval (z + tau)
+            (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
+              Germ (Filter.principal Set.univ) ℂ) /
+          univGermEval (z + tau)
+            (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
+              Germ (Filter.principal Set.univ) ℂ) -
+        univGermEval z
+            (ellipticGammaLogDerivNumeratorAnalytic sigma tau hsigma htau :
+              Germ (Filter.principal Set.univ) ℂ) /
+          univGermEval z
+            (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
+              Germ (Filter.principal Set.univ) ℂ) =
+      univGermEval (z + c)
+            (thetaPrimeAnalytic sigma hsigma : Germ (Filter.principal Set.univ) ℂ) /
+        univGermEval (z + c)
+          (thetaAnalytic sigma hsigma : Germ (Filter.principal Set.univ) ℂ) := by
+    rw [hKt, hK]
+    dsimp only [c]
+    simpa [thetaLogDeriv, add_assoc] using
+      ellipticGammaAdditiveLogKernel_add_tau_sub hsigma htau
+  have hdt : univGermEval (z + tau)
+      (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
+        Germ (Filter.principal Set.univ) ℂ) ≠ 0 := by
+    change ellipticGammaForwardProduct sigma tau (z + tau) *
+      ellipticGammaBackwardProduct sigma tau (z + tau) ≠ 0
+    exact mul_ne_zero hztF hztB
+  have hd : univGermEval z
+      (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
+        Germ (Filter.principal Set.univ) ℂ) ≠ 0 := by
+    change ellipticGammaForwardProduct sigma tau z *
+      ellipticGammaBackwardProduct sigma tau z ≠ 0
+    exact mul_ne_zero hzF hzB
+  simp only [univGermEval_analyticSubring_mul,
+    univGermEval_analyticSubring_sub,
+    univGermEval_addTranslationAnalyticEquiv]
+  field_simp [hdt, hd, hztheta] at hratio
+  linear_combination hratio
+
 /-- **Actual elliptic-gamma mixed pair face.** For the logarithmic derivative of the genuine
 elliptic-gamma double product, the mixed external translation `h` and structural period `σ` is
 exactly the translated Jacobi-theta logarithmic-derivative defect.  This is an unconditional
@@ -134,133 +324,9 @@ theorem ellipticGammaLogDerivMero_mixed_face_sigma
         ellipticGammaLogDerivMero σ τ hσ hτ) =
       thetaLogDerivDefectMero h τ hτ := by
   let D := ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ
-  let Q := thetaLogDerivDefectDenominatorAnalytic h τ hτ
-  have hmap_ne {a : analyticSubring Set.univ} (ha : a ≠ 0) :
-      algebraMap (analyticSubring Set.univ) (meroField Set.univ) a ≠ 0 :=
-    fun hz => ha ((IsFractionRing.injective (analyticSubring Set.univ)
-      (meroField Set.univ)) (by simpa using hz))
-  have hD : D ≠ 0 := ellipticGammaLogDerivDenominatorAnalytic_ne_zero σ τ hσ hτ
-  have hTD (q : ℂ) : addTranslationAnalyticEquiv q D ≠ 0 :=
-    fun hz => hD ((addTranslationAnalyticEquiv q).injective (by simpa using hz))
-  have hQ : Q ≠ 0 := thetaLogDerivDefectDenominatorAnalytic_ne_zero h τ hτ
-  dsimp [D, Q] at hD hTD hQ
-  let R : analyticSubring Set.univ :=
-    addTranslationAnalyticEquiv (σ + h)
-          (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ) *
-      addTranslationAnalyticEquiv σ
-          (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ) *
-      addTranslationAnalyticEquiv h
-          (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ) *
-      ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ *
-      thetaLogDerivDefectDenominatorAnalytic h τ hτ
-  have hR : R ≠ 0 := by
-    dsimp [R]
-    exact mul_ne_zero
-      (mul_ne_zero
-        (mul_ne_zero
-          (mul_ne_zero (hTD (σ + h)) (hTD σ)) (hTD h)) hD) hQ
-  obtain ⟨z₀, hz₀⟩ := exists_univGermEval_ne_zero_of_ne_zero hR
-  have hreg := eventually_univGermEval_ne_zero hz₀
-  rw [ellipticGammaLogDerivMero_eq_div]
-  simp only [map_sub, map_div₀, addTranslationMeroEquiv_algebraMap]
-  simp_rw [addTranslationAnalyticEquiv_add]
-  rw [thetaLogDerivDefectMero_eq_div]
-  field_simp [hmap_ne hD, hmap_ne (hTD h), hmap_ne (hTD σ),
-    hmap_ne (hTD (σ + h)), hmap_ne hQ]
-  simp only [← map_mul, ← map_sub]
-  rw [(IsFractionRing.injective (analyticSubring Set.univ)
-    (meroField Set.univ)).eq_iff]
-  apply analyticSubring_eq_of_eventually_eval_eq (z₀ := z₀)
-  filter_upwards [hreg] with z hzR
-  have hzR' := hzR
-  simp only [R, univGermEval_analyticSubring_mul,
-    univGermEval_addTranslationAnalyticEquiv,
-    ellipticGammaLogDerivDenominatorAnalytic,
-    thetaLogDerivDefectDenominatorAnalytic,
-    univGermEval_ellipticGammaForwardAnalytic,
-    univGermEval_ellipticGammaBackwardAnalytic,
-    univGermEval_thetaAnalytic, mul_ne_zero_iff] at hzR'
-  rcases hzR' with
-    ⟨⟨⟨⟨⟨hzshF, hzshB⟩, hzsF, hzsB⟩, hzhF, hzhB⟩, hzF, hzB⟩,
-      hzhθ, hzθ⟩
-  have hKsh := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
-    hσ hτ hzshF hzshB
-  have hKs := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
-    hσ hτ hzsF hzsB
-  have hKh := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
-    hσ hτ hzhF hzhB
-  have hK := univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
-    hσ hτ hzF hzB
-  have hθ := univGermEval_thetaLogDerivDefect_div_eq hτ hzθ hzhθ
-  have hmix := ellipticGammaAdditiveLogKernel_mixed_defect_sigma
-    hσ hτ hzθ hzhθ
-  have hratio :
-      (univGermEval (z + (σ + h))
-            (ellipticGammaLogDerivNumeratorAnalytic σ τ hσ hτ :
-              Germ (𝓟 Set.univ) ℂ) /
-          univGermEval (z + (σ + h))
-            (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ :
-              Germ (𝓟 Set.univ) ℂ) -
-        univGermEval (z + σ)
-            (ellipticGammaLogDerivNumeratorAnalytic σ τ hσ hτ :
-              Germ (𝓟 Set.univ) ℂ) /
-          univGermEval (z + σ)
-            (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ :
-              Germ (𝓟 Set.univ) ℂ)) -
-      (univGermEval (z + h)
-            (ellipticGammaLogDerivNumeratorAnalytic σ τ hσ hτ :
-              Germ (𝓟 Set.univ) ℂ) /
-          univGermEval (z + h)
-            (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ :
-              Germ (𝓟 Set.univ) ℂ) -
-        univGermEval z
-            (ellipticGammaLogDerivNumeratorAnalytic σ τ hσ hτ :
-              Germ (𝓟 Set.univ) ℂ) /
-          univGermEval z
-            (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ :
-              Germ (𝓟 Set.univ) ℂ)) =
-      univGermEval z
-          (thetaLogDerivDefectNumeratorAnalytic h τ hτ :
-            Germ (𝓟 Set.univ) ℂ) /
-        univGermEval z
-          (thetaLogDerivDefectDenominatorAnalytic h τ hτ :
-            Germ (𝓟 Set.univ) ℂ) := by
-    rw [hKsh, hKs, hKh, hK, hθ]
-    rw [show z + (σ + h) = z + h + σ by ring]
-    linear_combination hmix
-  have hdsh : univGermEval (z + (σ + h))
-      (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change ellipticGammaForwardProduct σ τ (z + (σ + h)) *
-      ellipticGammaBackwardProduct σ τ (z + (σ + h)) ≠ 0
-    exact mul_ne_zero hzshF hzshB
-  have hds : univGermEval (z + σ)
-      (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change ellipticGammaForwardProduct σ τ (z + σ) *
-      ellipticGammaBackwardProduct σ τ (z + σ) ≠ 0
-    exact mul_ne_zero hzsF hzsB
-  have hdh : univGermEval (z + h)
-      (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change ellipticGammaForwardProduct σ τ (z + h) *
-      ellipticGammaBackwardProduct σ τ (z + h) ≠ 0
-    exact mul_ne_zero hzhF hzhB
-  have hd : univGermEval z
-      (ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change ellipticGammaForwardProduct σ τ z *
-      ellipticGammaBackwardProduct σ τ z ≠ 0
-    exact mul_ne_zero hzF hzB
-  have hq : univGermEval z
-      (thetaLogDerivDefectDenominatorAnalytic h τ hτ :
-        Germ (𝓟 Set.univ) ℂ) ≠ 0 := by
-    change jacobiTheta₂ (z + h) τ * jacobiTheta₂ z τ ≠ 0
-    exact mul_ne_zero hzhθ hzθ
-  simp only [univGermEval_analyticSubring_mul,
-    univGermEval_analyticSubring_sub,
-    univGermEval_addTranslationAnalyticEquiv]
-  field_simp [hdsh, hds, hdh, hd, hq] at hratio
+  rw [addTranslationMeroEquiv_mixed_defect_comm]
+  rw [ellipticGammaLogDerivMero_source_face_sigma hσ hτ]
+  rfl
   linear_combination hratio
 
 end

@@ -4677,3 +4677,73 @@ Tree hygiene note: the umbrella build replays warnings from `ArithmeticFunctionD
 and an info suggestion from `DigammaGammaFactorialBlowUp`. These are pre-existing and belong to
 other cards; none of this card's modules emit any diagnostic. They matter only because the full
 lint gate fails on warnings.
+
+### Strengthening the carrier capstone to the half-plane form
+
+A mismatch blocked composing the HT reduction with the corpus genericity layer, and it was not a
+naming difference. The gauge consumes `¬ DifferentiallyAlgebraicOn C U`; the carrier capstone proved
+global `Hypertranscendental C`. Since `DA → DA_On`, negating the *local* form is the **stronger**
+statement, so the capstone was too weak to feed the gauge.
+
+Inspection of the proof settled it. In
+`AnalyticNevanlinnaCarrierRelationFree.lean`, the global relation hypothesis `hPzero` is used
+exactly once, and inside a scope where `hupper : ∀ x, 0 < (combinedProjectiveRowShiftPacket packet
+shift x).im` is available — the relation is only ever evaluated at packet nodes, which lie off the
+real axis. The half-plane statement is therefore what the pattern argument actually gives; global
+hypertranscendence was a weakening applied at the end.
+
+Changed accordingly:
+- `not_differentiallyAlgebraicOn_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree` —
+  the strengthened form, concluding that no nonzero `P` annihilates the jets at every `z` with
+  `0 < z.im`. The only proof change is `hPzero z` becoming `hPzero z ⟨from hupper (r, 0)⟩`, using
+  `combinedProjectiveRowShiftPacket packet shift x = packet.1 x.1 + shift.1 x.2` at the zero shift,
+  with `CarrierPatternShift p = Fin p.shiftCount = Fin 1` inhabited by `0`.
+- `hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree` — retained
+  verbatim as a one-line corollary, so every downstream user is unaffected.
+  `positiveSingularContinuousCarrier_hypertranscendental_dense_residual` still builds unchanged.
+
+The conclusion is stated inline as an explicit `¬ ∃ n P, …` rather than via
+`DifferentiallyAlgebraicOn`, because that predicate lives in `DigammaGammaLocalHypertranscendence`
+and importing it into this core module would be a heavy and unnecessary dependency. (`autoImplicit`
+silently turned the unknown identifier into an implicit binder first — the usual trap.)
+
+All three declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
+What still separates this from a composed HT theorem for the card:
+1. Domain bookkeeping — `RegularizedTransformGauge` is stated on `offRealAxis`; restating it on
+   `{z | 0 < z.im}` is mechanical, and the restriction `upper ⊆ offRealAxis` gives the implication
+   in the needed direction anyway.
+2. The measures differ and this is *not* mechanical: the capstone is about
+   `weightedBoundaryCarrier F.base.toBoundaryFamily eta density`, the gauge about
+   `nevanlinnaWeightedMeasure μ u`. Identifying the two, or restating one in terms of the other, is
+   the real remaining connector.
+
+### The gauge decoupled from the measure, and the last obligation
+
+The gauge was tied to `nevanlinnaWeightedMeasure μ u` only because it consumed
+`regularizedHerglotzTransform_eq`. Decoupled here, so it applies to any carrier:
+
+`GaloisForLFunctions.HTGeometry.RegularizedTransformGauge` (extended)
+- `differentiallyAlgebraicOn_mono` — a relation on a set restricts to any subset.
+- `upperHalfPlane_subset_offRealAxis`.
+- `not_differentiallyAlgebraicOn_herglotzPresentation` — for **any** finite measure `ν` and any mass
+  constant `M`, the presentation `z * M + (1 + z ^ 2) * cauchyTransform ν z` satisfies no algebraic
+  differential equation on an open set off the real axis whenever `cauchyTransform ν` satisfies none
+  there. No reference to how the measure was produced.
+- `not_differentiallyAlgebraicOn_herglotzPresentation_upperHalfPlane` — the same on
+  `{z | 0 < z.im}`, which is exactly the domain the strengthened packet capstone now delivers.
+
+Unconditional; only `propext`, `Classical.choice`, `Quot.sound`.
+
+`upperHalfPlane` and `isOpen_upperHalfPlane` already existed in `PrimeLogHerglotz` under the same
+namespace and are reused, not redeclared.
+
+So the two halves now meet on the same domain and the same shape of hypothesis. The single
+remaining obligation to compose them into one theorem is an instance:
+`IsFiniteMeasure (weightedBoundaryCarrier F.base.toBoundaryFamily eta density)`.
+The route is `boundaryBarycenter_isProbabilityMeasure` in `LabeledBoundarySimplex`, whose
+hypotheses are `[IsProbabilityMeasure η]`, `Measurable ν`, and `∀ t, IsProbabilityMeasure (ν t)`;
+`AtomlessProjectiveFrameFiber` already discharges the last two as `F.measurable_leaf` and
+`fun t => (F.leaf t).prop`. What must be supplied is that `linftyDensityMeasure eta density` is a
+probability measure for the capstone's density `linftyOne mu + w.1.1`, i.e. the normalisation
+carried by the positive chart.

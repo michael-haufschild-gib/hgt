@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FiniteQuantumGrassmannRepresentation
 import GaloisForLFunctions.HTGeometry.GeneralExteriorPrincipalSymbolDecoder
+import GaloisForLFunctions.HTGeometry.CyclicClockLift
 
 /-!
 # Universal principal-symbol completion
@@ -21,36 +22,7 @@ variable {K : Type u} [Field K] [CharZero K]
 
 /-- The finite state space of the clocked nilpotent completion. -/
 abbrev QuantumPrincipalCompletionState (M : Type v) (n d : ℕ) :=
-  FiniteQuantumState (Fin n) d → ZMod d → M
-
-/-- Lift an internal operator through the root-of-unity clock sector. -/
-def quantumCompletionClockLift
-    (q : K) (hq : q ^ d = 1) (A : Module.End K M) :
-    Module.End K (QuantumPrincipalCompletionState M n d) where
-  toFun f a k := finiteQuantumCharacter d q hq k • A (f a k)
-  map_add' f g := by
-    funext a k
-    simp [smul_add]
-  map_smul' c f := by
-    funext a k
-    simp [smul_smul, mul_comm]
-
-/-- Clock lifting is linear in the internal operator. -/
-def quantumCompletionClockLiftLinear
-    (q : K) (hq : q ^ d = 1) :
-    Module.End K M →ₗ[K]
-      Module.End K (QuantumPrincipalCompletionState M n d) where
-  toFun := quantumCompletionClockLift (n := n) q hq
-  map_add' A B := by
-    apply LinearMap.ext
-    intro f
-    funext a k
-    simp [quantumCompletionClockLift, smul_add]
-  map_smul' c A := by
-    apply LinearMap.ext
-    intro f
-    funext a k
-    simp [quantumCompletionClockLift, smul_smul, mul_comm]
+  CyclicClockState M (FiniteQuantumState (Fin n) d) d
 
 /-- A nilpotent detector generator that also shifts the cyclic clock coordinate. -/
 def quantumCompletionDetectorGenerator
@@ -179,48 +151,20 @@ theorem quantumCompletionDetectorSymbol_pow_degree_zero
         quantumCompletionDetectorGenerator_mul_of_lt q hq.pow_eq_one hij)]
   simp [quantumCompletionDetectorGenerator_pow_degree]
 
-/-- Exact power formula for the clock lift. -/
-theorem quantumCompletionClockLift_pow_apply
-    (q : K) (hq : q ^ d = 1) (A : Module.End K M) :
-    ∀ r : ℕ, ∀ f : QuantumPrincipalCompletionState M n d,
-      ∀ a : FiniteQuantumState (Fin n) d, ∀ k : ZMod d,
-      ((quantumCompletionClockLift (n := n) q hq A) ^ r) f a k =
-        (finiteQuantumCharacter d q hq k) ^ r • (A ^ r) (f a k)
-  | 0, f, a, k => by simp
-  | r + 1, f, a, k => by
-      rw [pow_succ, Module.End.mul_apply,
-        quantumCompletionClockLift_pow_apply q hq A r]
-      simp only [quantumCompletionClockLift, LinearMap.coe_mk, AddHom.coe_mk,
-        map_smul, smul_smul, pow_succ]
-      rfl
-
-/-- The clock lift preserves a scalar `d`th-power relation exactly. -/
-theorem quantumCompletionClockLift_pow_degree
-    (q : K) (hq : q ^ d = 1) (A : Module.End K M) (F : K)
-    (hA : A ^ d = F • LinearMap.id) :
-    (quantumCompletionClockLift (n := n) q hq A) ^ d =
-      F • LinearMap.id := by
-  apply LinearMap.ext
-  intro f
-  funext a k
-  rw [quantumCompletionClockLift_pow_apply,
-    finiteQuantumCharacter_pow_degree, hA]
-  simp
-
 /-- The clock sector `q`-commutes with every detector generator. -/
 theorem quantumCompletionClockLift_mul_detectorGenerator
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (i : Fin n) :
-    quantumCompletionClockLift (n := n) q hq A *
+    cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A *
         quantumCompletionDetectorGenerator (M := M) q hq i =
       q • (quantumCompletionDetectorGenerator (M := M) q hq i *
-        quantumCompletionClockLift (n := n) q hq A) := by
+        cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A) := by
   apply LinearMap.ext
   intro f
   funext a k
   by_cases hi : a i = 0
-  · simp [quantumCompletionClockLift, quantumCompletionDetectorGenerator,
+  · simp [cyclicClockLift, quantumCompletionDetectorGenerator,
       Module.End.mul_apply, hi]
-  · simp only [Module.End.mul_apply, quantumCompletionClockLift,
+  · simp only [Module.End.mul_apply, cyclicClockLift,
       quantumCompletionDetectorGenerator, LinearMap.coe_mk, AddHom.coe_mk,
       LinearMap.smul_apply, Pi.smul_apply, if_neg hi, map_smul]
     have hclock := finiteQuantumCharacter_sub_one_mul q hq k
@@ -230,26 +174,26 @@ theorem quantumCompletionClockLift_mul_detectorGenerator
 /-- The clock sector `q`-commutes with every value of the detector pencil. -/
 theorem quantumCompletionClockLift_mul_detectorSymbol
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (c : Fin n → K) :
-    quantumCompletionClockLift (n := n) q hq A *
+    cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A *
         quantumCompletionDetectorSymbol (M := M) q hq c =
       q • (quantumCompletionDetectorSymbol (M := M) q hq c *
-        quantumCompletionClockLift (n := n) q hq A) := by
+        cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A) := by
   classical
   rw [quantumCompletionDetectorSymbol, quantumGeneratorSymbol,
     Fintype.linearCombination_apply, Finset.mul_sum, Finset.sum_mul, Finset.smul_sum]
   apply Finset.sum_congr rfl
   intro i _
   calc
-    quantumCompletionClockLift (n := n) q hq A *
+    cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A *
         (c i • quantumCompletionDetectorGenerator (M := M) q hq i) =
-      c i • (quantumCompletionClockLift (n := n) q hq A *
+      c i • (cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A *
         quantumCompletionDetectorGenerator (M := M) q hq i) := by simp
     _ = c i • (q •
         (quantumCompletionDetectorGenerator (M := M) q hq i *
-          quantumCompletionClockLift (n := n) q hq A)) := by
+          cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A)) := by
       rw [quantumCompletionClockLift_mul_detectorGenerator]
     _ = q • ((c i • quantumCompletionDetectorGenerator (M := M) q hq i) *
-        quantumCompletionClockLift (n := n) q hq A) := by
+        cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A) := by
       simp [smul_smul]
       congr 1
       ring
@@ -260,7 +204,7 @@ def quantumPrincipalSymbolCompletion
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M) :
     (Fin n → K) →ₗ[K]
       Module.End K (QuantumPrincipalCompletionState M n d) :=
-  (quantumCompletionClockLiftLinear (n := n) q hq).comp A₀ +
+  (cyclicClockLiftLinear (ι := FiniteQuantumState (Fin n) d) q hq).comp A₀ +
     quantumCompletionDetectorSymbol (M := M) q hq
 
 @[simp]
@@ -268,12 +212,12 @@ theorem quantumPrincipalSymbolCompletion_basisFun
     (q : K) (hq : q ^ d = 1)
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M) (i : Fin n) :
     quantumPrincipalSymbolCompletion q hq A₀ (Pi.basisFun K (Fin n) i) =
-      quantumCompletionClockLift (n := n) q hq
+      cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq
           (A₀ (Pi.basisFun K (Fin n) i)) +
         quantumCompletionDetectorGenerator (M := M) q hq i := by
   classical
   simp [quantumPrincipalSymbolCompletion, quantumCompletionDetectorSymbol,
-    quantumGeneratorSymbol, quantumCompletionClockLiftLinear]
+    quantumGeneratorSymbol, cyclicClockLiftLinear]
 
 /-- **Scalar preservation under principal-symbol completion.**  The nilpotent detector changes no
 degree-`d` scalar law. -/
@@ -283,14 +227,14 @@ theorem quantumPrincipalSymbolCompletion_pow
     (hA₀ : ∀ c, (A₀ c) ^ d = F c • LinearMap.id) (c : Fin n → K) :
     (quantumPrincipalSymbolCompletion q hq.pow_eq_one A₀ c) ^ d =
       F c • LinearMap.id := by
-  change (quantumCompletionClockLift (n := n) q hq.pow_eq_one (A₀ c) +
+  change (cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq.pow_eq_one (A₀ c) +
     quantumCompletionDetectorSymbol (M := M) q hq.pow_eq_one c) ^ d = _
   rw [quantumBinomial_pow_primitive hq
       (lt_trans Nat.zero_lt_one Fact.out)
-      (quantumCompletionClockLift (n := n) q hq.pow_eq_one (A₀ c))
+      (cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq.pow_eq_one (A₀ c))
       (quantumCompletionDetectorSymbol (M := M) q hq.pow_eq_one c)
       (quantumCompletionClockLift_mul_detectorSymbol q hq.pow_eq_one (A₀ c) c),
-    quantumCompletionClockLift_pow_degree q hq.pow_eq_one (A₀ c) (F c) (hA₀ c),
+    cyclicClockLift_pow_degree (ι := FiniteQuantumState (Fin n) d) q hq.pow_eq_one (A₀ c) (F c) (hA₀ c),
     quantumCompletionDetectorSymbol_pow_degree_zero q hq]
   simp
 
@@ -423,26 +367,26 @@ theorem quantumPrincipalCompletionPairReadout_detectorPair
 theorem quantumPrincipalCompletionPairReadout_clock_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A B : Module.End K M) :
     quantumPrincipalCompletionPairReadout (d := d) m
-        (quantumCompletionClockLift (n := n) q hq A *
-          quantumCompletionClockLift (n := n) q hq B) = 0 := by
+        (cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A *
+          cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq B) = 0 := by
   funext p k
   simp [quantumPrincipalCompletionPairReadout, Module.End.mul_apply,
-    quantumCompletionClockLift, quantumPrincipalCompletionRoot,
+    cyclicClockLift, quantumPrincipalCompletionRoot,
     finiteQuantumPairState_ne_zero]
 
 /-- A clock-then-detector cross term has no degree-two detector readout. -/
 theorem quantumPrincipalCompletionPairReadout_clock_mul_detector
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     quantumPrincipalCompletionPairReadout (d := d) m
-        (quantumCompletionClockLift (n := n) q hq A *
+        (cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A *
           quantumCompletionDetectorGenerator (M := M) q hq i) = 0 := by
   funext p k
   by_cases hi : finiteQuantumPairState (d := d) p i = 0
   · simp [quantumPrincipalCompletionPairReadout, Module.End.mul_apply,
-      quantumCompletionClockLift, quantumCompletionDetectorGenerator, hi]
+      cyclicClockLift, quantumCompletionDetectorGenerator, hi]
   · have hshift := finiteQuantumShift_pairState_ne_zero_of_apply_ne_zero p i hi
     simp [quantumPrincipalCompletionPairReadout, Module.End.mul_apply,
-      quantumCompletionClockLift, quantumCompletionDetectorGenerator,
+      cyclicClockLift, quantumCompletionDetectorGenerator,
       quantumPrincipalCompletionRoot, hi, hshift]
 
 /-- A detector-then-clock cross term has no degree-two detector readout. -/
@@ -450,14 +394,14 @@ theorem quantumPrincipalCompletionPairReadout_detector_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     quantumPrincipalCompletionPairReadout (d := d) m
         (quantumCompletionDetectorGenerator (M := M) q hq i *
-          quantumCompletionClockLift (n := n) q hq A) = 0 := by
+          cyclicClockLift (ι := FiniteQuantumState (Fin n) d) q hq A) = 0 := by
   funext p k
   by_cases hi : finiteQuantumPairState (d := d) p i = 0
   · simp [quantumPrincipalCompletionPairReadout, Module.End.mul_apply,
-      quantumCompletionClockLift, quantumCompletionDetectorGenerator, hi]
+      cyclicClockLift, quantumCompletionDetectorGenerator, hi]
   · have hshift := finiteQuantumShift_pairState_ne_zero_of_apply_ne_zero p i hi
     simp [quantumPrincipalCompletionPairReadout, Module.End.mul_apply,
-      quantumCompletionClockLift, quantumCompletionDetectorGenerator,
+      cyclicClockLift, quantumCompletionDetectorGenerator,
       quantumPrincipalCompletionRoot, hi, hshift]
 
 /-- The pair readout sees the detector commutator as one nonzero coordinate vector. -/

@@ -1591,3 +1591,5 @@ import GaloisForLFunctions.HTGeometry.ParameterMotion
 import GaloisForLFunctions.HTGeometry.FiberFinite
 import GaloisForLFunctions.HTGeometry.LeafTightness
 import GaloisForLFunctions.HTGeometry.LeafUniqueness
+import GaloisForLFunctions.HTGeometry.WeakLimitTransfer
+import GaloisForLFunctions.HTGeometry.LeafContinuity

@@ -5372,3 +5372,60 @@ it.
 pass to weak limits, and carriedness passes to weak limits — are both already proved in the forms used
 by links 154 and 158; what is new is only running them with the parameter, rather than the level, as
 the moving index.
+
+### Link 178 — what survives a weak limit
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/WeakLimitTransfer.lean`
+- **`hasHamburgerMoments_of_tendsto`** — a weak limit of probability measures **all representing the
+  same sequence** represents it. The uniform even-moment hypothesis that
+  `tendsto_integral_pow_of_uniform_even_moment` consumes is trivial here (the moments are constant in
+  the index), so the proof is shorter than its level-indexed ancestor in link 154.
+- **`measure_eq_zero_of_tendsto`** — a weak limit of measures that eventually miss every compact
+  subset of an open `U` misses `U`. The interior-plus-portmanteau argument of link 158, extracted from
+  the leaf construction and stated for an arbitrary sequence.
+
+Axiom-clean, zero placeholders, registered, first-try compile.
+
+Both had existed only inline, with the *level* as the moving index. Stating them for an arbitrary
+sequence is what lets them be re-run with the *parameter* moving — the same generalisation that link
+173 needed for `exists_leaf_approx` and that link 174 needed for the sign change.
+
+**Everything for `continuous_leaf` is now proved; only the assembly is left.** For `tₙ → t₀`:
+1. tightness (link 176) + Prokhorov ⇒ every subsequence has a weakly convergent sub-subsequence, say
+   to `ν`;
+2. `hasHamburgerMoments_of_tendsto` (here) ⇒ `ν` represents `s`, since every `leaf tₙ` does;
+3. `exists_param_radius_no_zero` (link 174) ⇒ for `n` large the fiber of `tₙ` misses any compact
+   subset of `F_{t₀}ᶜ`, so `leaf tₙ` gives it zero mass; `measure_eq_zero_of_tendsto` (here) ⇒ `ν` is
+   carried by `F_{t₀}`;
+4. `nevLeaf_unique` (link 177) ⇒ `ν = leaf t₀`.
+
+Every subsequential limit is the same point, so `leaf tₙ → leaf t₀`; and `ProbabilityMeasure ℝ` is
+metrizable, so sequential continuity is continuity. The remaining work is writing that argument down —
+it introduces no statement that is not already in the tree.
+
+### Link 179 — the leaf is weakly continuous in a finite parameter
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/LeafContinuity.lean`
+- `exists_param_radius_nevLeaf_eq_zero` — a leaf of a nearby parameter gives no mass to a compact set
+  away from the fiber of `t₀`: link 174 says such a set contains no fiber point of `t`, and the leaf
+  of `t` is carried by that fiber.
+- `isCompact_closure_range_nevLeaf` — the leaf family has compact closure (link 176 + Prokhorov).
+- **`continuousAt_nevLeaf`** — **the leaf is weakly continuous at every finite parameter.**
+
+The assembly is exactly the four steps of link 178, with `tendsto_of_subseq_tendsto` doing the
+subsequence principle: given `ns → t₀`, extract a weakly convergent sub-subsequence by compactness;
+its limit represents `s` (link 178) and is carried by `F_{t₀}` (link 174 + link 178); uniqueness
+(link 177) identifies it as `leaf t₀`.
+
+Axiom-clean, zero placeholders, registered, first-try compile.
+
+Worth noting how little was left to do once the pieces were stated for a moving index: the proof is
+sixty lines of plumbing over five previously proved theorems, and every one of them had been extracted
+from an inline argument in an earlier link precisely because it was about to be needed again.
+
+**Remaining for the `continuous_leaf` field:** continuity at the point `∞` of `OnePoint ℝ`, then
+assembling the two into `Continuous (nevLeaf h h0b h0)`. Continuity at `∞` is the same argument with
+`|t| → ∞` in place of `t → t₀`: the neighbourhoods of `∞` are complements of compacts, the fiber of a
+large parameter escapes any compact set — which is again `exists_param_radius_no_zero` read with the
+roles of the parameter and the point exchanged — and the limit must then be carried by the fiber of
+`∞`, where `nevLeaf_infinity_unique` (link 177) applies.

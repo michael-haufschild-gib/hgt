@@ -20,7 +20,7 @@ namespace RHTower
 /-! ## Ordinary-prime endpoint weights -/
 
 /-- Weight carried by either endpoint of the physical ordinary-prime aperture interval. -/
-def physicalPrimeEndpointWeight (p : ℕ) : ℝ :=
+noncomputable def physicalPrimeEndpointWeight (p : ℕ) : ℝ :=
   Real.log p / (p : ℝ)
 
 /-- Distinct primes have distinct physical endpoint weights.  Equality would exponentiate to

@@ -21,36 +21,7 @@ variable {K : Type u} [Field K] [CharZero K]
 
 /-- Clocked amplitudes on the vacuum, one-event, and two-event detector grades. -/
 abbrev QuadraticPrincipalCompletionState (M : Type v) (n d : ℕ) :=
-  QuadraticQuantumDetectorIndex n → ZMod d → M
-
-/-- Lift an internal operator through the cyclic clock on the quadratic detector packet. -/
-def quadraticCompletionClockLift
-    (q : K) (hq : q ^ d = 1) (A : Module.End K M) :
-    Module.End K (QuadraticPrincipalCompletionState M n d) where
-  toFun f x k := finiteQuantumCharacter d q hq k • A (f x k)
-  map_add' f g := by
-    funext x k
-    simp [smul_add]
-  map_smul' c f := by
-    funext x k
-    simp [smul_smul, mul_comm]
-
-/-- Clock lifting is linear in the internal operator. -/
-def quadraticCompletionClockLiftLinear
-    (q : K) (hq : q ^ d = 1) :
-    Module.End K M →ₗ[K]
-      Module.End K (QuadraticPrincipalCompletionState M n d) where
-  toFun := quadraticCompletionClockLift (n := n) q hq
-  map_add' A B := by
-    apply LinearMap.ext
-    intro f
-    funext x k
-    simp [quadraticCompletionClockLift, smul_add]
-  map_smul' c A := by
-    apply LinearMap.ext
-    intro f
-    funext x k
-    simp [quadraticCompletionClockLift, smul_smul, mul_comm]
+  CyclicClockState M (QuadraticQuantumDetectorIndex n) d
 
 /-- The quadratic detector generator, with one simultaneous cyclic clock shift. -/
 def quadraticCompletionDetectorGenerator
@@ -133,34 +104,6 @@ theorem quadraticCompletionDetectorSymbol_pow_degree_zero
       (fun i j hij ↦ quadraticCompletionDetectorGenerator_mul_of_lt q hij)]
   simp [quadraticCompletionDetectorGenerator_pow_degree]
 
-/-- Exact power formula for the quadratic clock lift. -/
-theorem quadraticCompletionClockLift_pow_apply
-    (q : K) (hq : q ^ d = 1) (A : Module.End K M) :
-    ∀ r : ℕ, ∀ f : QuadraticPrincipalCompletionState M n d,
-      ∀ x : QuadraticQuantumDetectorIndex n, ∀ k : ZMod d,
-      ((quadraticCompletionClockLift (n := n) q hq A) ^ r) f x k =
-        (finiteQuantumCharacter d q hq k) ^ r • (A ^ r) (f x k)
-  | 0, f, x, k => by simp
-  | r + 1, f, x, k => by
-      rw [pow_succ, Module.End.mul_apply,
-        quadraticCompletionClockLift_pow_apply q hq A r]
-      simp only [quadraticCompletionClockLift, LinearMap.coe_mk, AddHom.coe_mk,
-        map_smul, smul_smul, pow_succ]
-      rfl
-
-/-- The quadratic clock lift preserves a scalar `d`th-power relation. -/
-theorem quadraticCompletionClockLift_pow_degree
-    (q : K) (hq : q ^ d = 1) (A : Module.End K M) (F : K)
-    (hA : A ^ d = F • LinearMap.id) :
-    (quadraticCompletionClockLift (n := n) q hq A) ^ d =
-      F • LinearMap.id := by
-  apply LinearMap.ext
-  intro f
-  funext x k
-  rw [quadraticCompletionClockLift_pow_apply,
-    finiteQuantumCharacter_pow_degree, hA]
-  simp
-
 /-- Internal endomorphisms commute through the purely coordinatewise quadratic detector action. -/
 theorem map_quadraticQuantumDetectorGenerator
     (q : K) (A : Module.End K M) (i : Fin n)
@@ -183,14 +126,14 @@ theorem map_quadraticQuantumDetectorGenerator
 /-- The clock sector `q`-commutes with every quadratic detector generator. -/
 theorem quadraticCompletionClockLift_mul_detectorGenerator
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (i : Fin n) :
-    quadraticCompletionClockLift (n := n) q hq A *
+    cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A *
         quadraticCompletionDetectorGenerator (M := M) (d := d) q i =
       q • (quadraticCompletionDetectorGenerator (M := M) (d := d) q i *
-        quadraticCompletionClockLift (n := n) q hq A) := by
+        cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A) := by
   apply LinearMap.ext
   intro f
   funext x k
-  rw [show (quadraticCompletionClockLift (n := n) q hq A *
+  rw [show (cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A *
       quadraticCompletionDetectorGenerator (M := M) (d := d) q i) f x k =
       finiteQuantumCharacter d q hq k •
         A (quadraticQuantumDetectorGenerator (M := M) q i
@@ -208,26 +151,26 @@ theorem quadraticCompletionClockLift_mul_detectorGenerator
 /-- The clock sector `q`-commutes with every quadratic detector-pencil value. -/
 theorem quadraticCompletionClockLift_mul_detectorSymbol
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (c : Fin n → K) :
-    quadraticCompletionClockLift (n := n) q hq A *
+    cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A *
         quadraticCompletionDetectorSymbol (M := M) (d := d) q c =
       q • (quadraticCompletionDetectorSymbol (M := M) (d := d) q c *
-        quadraticCompletionClockLift (n := n) q hq A) := by
+        cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A) := by
   classical
   rw [quadraticCompletionDetectorSymbol, quantumGeneratorSymbol,
     Fintype.linearCombination_apply, Finset.mul_sum, Finset.sum_mul, Finset.smul_sum]
   apply Finset.sum_congr rfl
   intro i _
   calc
-    quadraticCompletionClockLift (n := n) q hq A *
+    cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A *
         (c i • quadraticCompletionDetectorGenerator (M := M) (d := d) q i) =
-      c i • (quadraticCompletionClockLift (n := n) q hq A *
+      c i • (cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A *
         quadraticCompletionDetectorGenerator (M := M) (d := d) q i) := by simp
     _ = c i • (q •
         (quadraticCompletionDetectorGenerator (M := M) (d := d) q i *
-          quadraticCompletionClockLift (n := n) q hq A)) := by
+          cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A)) := by
       rw [quadraticCompletionClockLift_mul_detectorGenerator]
     _ = q • ((c i • quadraticCompletionDetectorGenerator (M := M) (d := d) q i) *
-        quadraticCompletionClockLift (n := n) q hq A) := by
+        cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A) := by
       simp [smul_smul]
       congr 1
       ring
@@ -238,7 +181,7 @@ def quadraticWidthPrincipalSymbolCompletion
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M) :
     (Fin n → K) →ₗ[K]
       Module.End K (QuadraticPrincipalCompletionState M n d) :=
-  (quadraticCompletionClockLiftLinear (n := n) q hq).comp A₀ +
+  (cyclicClockLiftLinear (ι := QuadraticQuantumDetectorIndex n) q hq).comp A₀ +
     quadraticCompletionDetectorSymbol (M := M) (d := d) q
 
 /-- **Quadratic-width scalar preservation.**  The three-grade detector changes no scalar law. -/
@@ -248,15 +191,15 @@ theorem quadraticWidthPrincipalSymbolCompletion_pow
     (hA₀ : ∀ c, (A₀ c) ^ d = F c • LinearMap.id) (c : Fin n → K) :
     (quadraticWidthPrincipalSymbolCompletion q hq.pow_eq_one A₀ c) ^ d =
       F c • LinearMap.id := by
-  change (quadraticCompletionClockLift (n := n) q hq.pow_eq_one (A₀ c) +
+  change (cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq.pow_eq_one (A₀ c) +
     quadraticCompletionDetectorSymbol (M := M) (d := d) q c) ^ d = _
   rw [quantumBinomial_pow_primitive hq
       (lt_trans Nat.zero_lt_one Fact.out)
-      (quadraticCompletionClockLift (n := n) q hq.pow_eq_one (A₀ c))
+      (cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq.pow_eq_one (A₀ c))
       (quadraticCompletionDetectorSymbol (M := M) (d := d) q c)
       (quadraticCompletionClockLift_mul_detectorSymbol
         q hq.pow_eq_one (A₀ c) c),
-    quadraticCompletionClockLift_pow_degree q hq.pow_eq_one (A₀ c) (F c) (hA₀ c),
+    cyclicClockLift_pow_degree (ι := QuadraticQuantumDetectorIndex n) q hq.pow_eq_one (A₀ c) (F c) (hA₀ c),
     quadraticCompletionDetectorSymbol_pow_degree_zero q hq]
   simp
 
@@ -265,11 +208,11 @@ theorem quadraticWidthPrincipalSymbolCompletion_basisFun
     (q : K) (hq : q ^ d = 1)
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M) (i : Fin n) :
     quadraticWidthPrincipalSymbolCompletion q hq A₀ (Pi.basisFun K (Fin n) i) =
-      quadraticCompletionClockLift (n := n) q hq
+      cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq
           (A₀ (Pi.basisFun K (Fin n) i)) +
         quadraticCompletionDetectorGenerator (M := M) (d := d) q i := by
   classical
-  simp [quadraticWidthPrincipalSymbolCompletion, quadraticCompletionClockLiftLinear,
+  simp [quadraticWidthPrincipalSymbolCompletion, cyclicClockLiftLinear,
     quadraticCompletionDetectorSymbol, quantumGeneratorSymbol]
 
 /-- Completed vacuum at detector grade zero and clock degree zero. -/
@@ -370,30 +313,30 @@ theorem quadraticPrincipalCompletionPairReadout_detectorPair
 theorem quadraticPrincipalCompletionPairReadout_clock_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A B : Module.End K M) :
     quadraticPrincipalCompletionPairReadout (n := n) (d := d) m
-        (quadraticCompletionClockLift (n := n) q hq A *
-          quadraticCompletionClockLift (n := n) q hq B) = 0 := by
+        (cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A *
+          cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq B) = 0 := by
   funext p k
   simp [quadraticPrincipalCompletionPairReadout, Module.End.mul_apply,
-    quadraticCompletionClockLift, quadraticPrincipalCompletionRoot]
+    cyclicClockLift, quadraticPrincipalCompletionRoot]
 
 theorem quadraticPrincipalCompletionPairReadout_clock_mul_detector
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     quadraticPrincipalCompletionPairReadout (n := n) (d := d) m
-        (quadraticCompletionClockLift (n := n) q hq A *
+        (cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A *
           quadraticCompletionDetectorGenerator (M := M) (d := d) q i) = 0 := by
   funext p k
   simp [quadraticPrincipalCompletionPairReadout, Module.End.mul_apply,
-    quadraticCompletionClockLift, quadraticCompletionDetectorGenerator,
+    cyclicClockLift, quadraticCompletionDetectorGenerator,
     quadraticQuantumDetectorGenerator, quadraticPrincipalCompletionRoot]
 
 theorem quadraticPrincipalCompletionPairReadout_detector_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     quadraticPrincipalCompletionPairReadout (n := n) (d := d) m
         (quadraticCompletionDetectorGenerator (M := M) (d := d) q i *
-          quadraticCompletionClockLift (n := n) q hq A) = 0 := by
+          cyclicClockLift (ι := QuadraticQuantumDetectorIndex n) q hq A) = 0 := by
   funext p k
   simp [quadraticPrincipalCompletionPairReadout, Module.End.mul_apply,
-    quadraticCompletionClockLift, quadraticCompletionDetectorGenerator,
+    cyclicClockLift, quadraticCompletionDetectorGenerator,
     quadraticQuantumDetectorGenerator, quadraticPrincipalCompletionRoot]
 
 theorem quadraticPrincipalCompletionPairReadout_detectorBracket
