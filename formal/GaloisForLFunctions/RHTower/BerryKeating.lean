@@ -29,6 +29,13 @@ def berryKeatingU (s : ℂ) : ℂ := s * (1 - s)
 /-- Unfolding lemma: `u s = s·(1-s)`. -/
 @[aesop safe, simp] theorem berryKeatingU_apply (s : ℂ) : berryKeatingU s = s * (1 - s) := rfl
 
+/-- Centering the reflection coordinate turns `u = s(1-s)` into a square subtracted from
+`1/4`. -/
+theorem berryKeatingU_eq_centered (s : ℂ) :
+    berryKeatingU s = 1 / 4 - (s - 1 / 2) ^ 2 := by
+  rw [berryKeatingU]
+  ring
+
 /-- The coordinate `u=s(1-s)` is invariant under the functional-equation involution. -/
 @[aesop safe]
 theorem berryKeatingU_sigma (s : ℂ) : berryKeatingU (sigma s) = berryKeatingU s := by

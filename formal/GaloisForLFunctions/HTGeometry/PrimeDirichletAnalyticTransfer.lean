@@ -20,32 +20,6 @@ noncomputable section
 
 open scoped LSeries.notation
 
-/-- The absolutely convergent right-half-plane arithmetic functions as a complex subalgebra. -/
-def rightHalfPlaneArithmeticSubalgebra : Subalgebra ℂ (ArithmeticFunction ℂ) where
-  carrier := rightHalfPlaneArithmeticSubring
-  zero_mem' := rightHalfPlaneArithmeticSubring.zero_mem
-  one_mem' := rightHalfPlaneArithmeticSubring.one_mem
-  add_mem' := rightHalfPlaneArithmeticSubring.add_mem
-  mul_mem' := rightHalfPlaneArithmeticSubring.mul_mem
-  algebraMap_mem' := by
-    intro c
-    change ∀ y : ℝ, 1 < y → LSeriesSummable
-      (fun n => (algebraMap ℂ (ArithmeticFunction ℂ) c) n) (y : ℂ)
-    intro y hy
-    have hone : LSeriesSummable
-        (fun n => (1 : ArithmeticFunction ℂ) n) (y : ℂ) :=
-      rightHalfPlaneArithmeticSubring.one_mem y hy
-    simpa [Algebra.algebraMap_eq_smul_one] using hone.smul c
-
-/-- Forgetting the complex-subalgebra packaging recovers the original convergence subring. -/
-def rightHalfPlaneArithmeticSubalgebraToSubring :
-    rightHalfPlaneArithmeticSubalgebra →+* rightHalfPlaneArithmeticSubring where
-  toFun f := ⟨f.1, f.2⟩
-  map_one' := rfl
-  map_mul' _ _ := rfl
-  map_zero' := rfl
-  map_add' _ _ := rfl
-
 /-- A Boolean orientation as a prime-supported arithmetic function. -/
 def signedPrimeArithmeticFunction (ε : Nat.Primes → Bool) : ArithmeticFunction ℂ :=
   arithmeticOfPrimeColumn (fun p => primeDirichletSign (ε p))
@@ -98,8 +72,7 @@ ambient upper-end germ algebra. -/
 noncomputable def rightHalfPlaneLSeriesToUpperEndGerm :
     rightHalfPlaneArithmeticSubalgebra →ₐ[ℂ] Germ upperEndFilter ℂ where
   __ := (SubringClass.subtype upperEndAnalyticSubring).comp
-    (rightHalfPlaneLSeriesToUpperEndAnalytic.comp
-      rightHalfPlaneArithmeticSubalgebraToSubring)
+    rightHalfPlaneLSeriesToUpperEndAnalytic
   commutes' := by
     intro c
     change Germ.coeRingHom upperEndFilter
@@ -126,15 +99,11 @@ noncomputable def rightHalfPlaneLSeriesToUpperEndGerm :
 theorem rightHalfPlaneLSeriesToUpperEndGerm_injective :
     Function.Injective rightHalfPlaneLSeriesToUpperEndGerm := by
   intro f g hfg
-  apply Subtype.ext
-  have hold : rightHalfPlaneLSeriesToUpperEndAnalytic
-      (rightHalfPlaneArithmeticSubalgebraToSubring f) =
-      rightHalfPlaneLSeriesToUpperEndAnalytic
-        (rightHalfPlaneArithmeticSubalgebraToSubring g) := by
+  have hold : rightHalfPlaneLSeriesToUpperEndAnalytic f =
+      rightHalfPlaneLSeriesToUpperEndAnalytic g := by
     apply Subtype.ext
     exact hfg
-  exact congrArg Subtype.val
-    (rightHalfPlaneLSeriesToUpperEndAnalytic_injective hold)
+  exact rightHalfPlaneLSeriesToUpperEndAnalytic_injective hold
 
 /-- Tail-independent signed prime Dirichlet series are algebraically independent as analytic
 upper-end germs. -/
@@ -165,15 +134,13 @@ theorem rotatedPrimeLogClock_injective : Function.Injective rotatedPrimeLogClock
 
 /-- The order-`k` rotated derivative of a signed prime arithmetic carrier. -/
 def signedPrimeRotatedJet (ε : Nat.Primes → Bool) (k : ℕ) :
-    rightHalfPlaneArithmeticSubalgebra := by
-  let f0 := rightHalfPlaneArithmeticSubalgebraToSubring (signedPrimeRightHalfPlane ε)
-  let fk := (rightHalfPlaneRotatedDeriv^[k]) f0
-  exact ⟨fk.1, fk.2⟩
+    rightHalfPlaneArithmeticSubalgebra :=
+  (rightHalfPlaneRotatedDeriv^[k]) (signedPrimeRightHalfPlane ε)
 
 /-- Coefficient formula for the iterated rotated derivation on any convergent arithmetic
 function. -/
 theorem rightHalfPlaneRotatedDeriv_iterate_apply
-    (f : rightHalfPlaneArithmeticSubring) (k n : ℕ) :
+    (f : rightHalfPlaneArithmeticSubalgebra) (k n : ℕ) :
     ((rightHalfPlaneRotatedDeriv^[k]) f).1 n =
       (Complex.I * (Real.log n : ℂ)) ^ k * f.1 n := by
   induction k with
@@ -187,8 +154,7 @@ theorem signedPrimeRotatedJet_apply
     (ε : Nat.Primes → Bool) (k n : ℕ) :
     (signedPrimeRotatedJet ε k).1 n =
       (Complex.I * (Real.log n : ℂ)) ^ k * signedPrimeArithmeticFunction ε n := by
-  change ((rightHalfPlaneRotatedDeriv^[k])
-      (rightHalfPlaneArithmeticSubalgebraToSubring (signedPrimeRightHalfPlane ε))).1 n = _
+  change ((rightHalfPlaneRotatedDeriv^[k]) (signedPrimeRightHalfPlane ε)).1 n = _
   rw [rightHalfPlaneRotatedDeriv_iterate_apply]
   rfl
 
@@ -274,37 +240,25 @@ theorem signedPrimeUpperEndGerm_jets_algebraicIndependent
   (signedPrimeRotatedJets_algebraicIndependent ε htail m).map'
     rightHalfPlaneLSeriesToUpperEndGerm_injective
 
-/-- The rotated coefficient derivation on the complex convergence subalgebra. -/
-def rightHalfPlaneRotatedDerivSubalgebra
-    (f : rightHalfPlaneArithmeticSubalgebra) :
-    rightHalfPlaneArithmeticSubalgebra := by
-  let Df := rightHalfPlaneRotatedDeriv
-    (rightHalfPlaneArithmeticSubalgebraToSubring f)
-  exact ⟨Df.1, Df.2⟩
-
 /-- The faithful analytic realization intertwines the coefficient derivation and germ
 differentiation. -/
 theorem upperEndGermDeriv_rightHalfPlaneLSeries
     (f : rightHalfPlaneArithmeticSubalgebra) :
     upperEndGermDeriv (rightHalfPlaneLSeriesToUpperEndGerm f) =
       rightHalfPlaneLSeriesToUpperEndGerm
-        (rightHalfPlaneRotatedDerivSubalgebra f) := by
+        (rightHalfPlaneRotatedDeriv f) := by
   exact congrArg Subtype.val
-    (upperEndAnalyticDeriv_rightHalfPlaneLSeries
-      (rightHalfPlaneArithmeticSubalgebraToSubring f))
+    (upperEndAnalyticDeriv_rightHalfPlaneLSeries f)
 
 /-- Successive signed arithmetic jets are generated by the rotated coefficient derivation. -/
 theorem signedPrimeRotatedJet_succ
     (ε : Nat.Primes → Bool) (k : ℕ) :
     signedPrimeRotatedJet ε (k + 1) =
-      rightHalfPlaneRotatedDerivSubalgebra (signedPrimeRotatedJet ε k) := by
+      rightHalfPlaneRotatedDeriv (signedPrimeRotatedJet ε k) := by
   apply Subtype.ext
-  change ((rightHalfPlaneRotatedDeriv^[k + 1])
-      (rightHalfPlaneArithmeticSubalgebraToSubring (signedPrimeRightHalfPlane ε))).1 =
+  change ((rightHalfPlaneRotatedDeriv^[k + 1]) (signedPrimeRightHalfPlane ε)).1 =
     (rightHalfPlaneRotatedDeriv
-      ((rightHalfPlaneRotatedDeriv^[k])
-        (rightHalfPlaneArithmeticSubalgebraToSubring
-          (signedPrimeRightHalfPlane ε)))).1
+      ((rightHalfPlaneRotatedDeriv^[k]) (signedPrimeRightHalfPlane ε))).1
   rw [Function.iterate_succ_apply']
 
 /-- Each realized rotated jet is exactly the corresponding iterated analytic derivative. -/

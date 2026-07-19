@@ -199,84 +199,39 @@ theorem freeJetPolynomial_lie_H_one_E
         simp [freeJetEPolynomialDerivation_X, hkn,
           Algebra.smul_def]
 
-/-- Extend a polynomial free-jet derivation to the rational free-jet field by the quotient rule. -/
-def extendFreeJetPolynomialDerivation
-    {C : Type*} [Field C]
-    (D : Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C)) :
-    Derivation C (FreeScalarJetField C) (FreeScalarJetField C) :=
-  GaloisForLFunctions.fractionRingDerivation
-    ((Algebra.linearMap (FreeScalarJetPolynomial C) (FreeScalarJetField C)).compDer D)
-
-@[simp]
-theorem extendFreeJetPolynomialDerivation_algebraMap
-    {C : Type*} [Field C]
-    (D : Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C))
-    (P : FreeScalarJetPolynomial C) :
-    extendFreeJetPolynomialDerivation D
-        (algebraMap (FreeScalarJetPolynomial C) (FreeScalarJetField C) P) =
-      algebraMap (FreeScalarJetPolynomial C) (FreeScalarJetField C) (D P) := by
-  rw [extendFreeJetPolynomialDerivation,
-    GaloisForLFunctions.fractionRingDerivation_algebraMap]
-  rfl
-
-/-- Fraction-field extension preserves the Lie bracket of polynomial endoderivations. -/
-theorem extendFreeJetPolynomialDerivation_lie
-    {C : Type*} [Field C]
-    (D E : Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C)) :
-    ⁅extendFreeJetPolynomialDerivation D, extendFreeJetPolynomialDerivation E⁆ =
-      extendFreeJetPolynomialDerivation ⁅D, E⁆ := by
-  apply GaloisForLFunctions.fractionRing_derivation_ext
-    (A := FreeScalarJetPolynomial C)
-  intro P
-  simp [Derivation.commutator_apply]
-
-/-- Fraction-field extension preserves scalar multiplication of polynomial derivations. -/
-theorem extendFreeJetPolynomialDerivation_smul
-    {C : Type*} [Field C] (c : C)
-    (D : Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C)) :
-    extendFreeJetPolynomialDerivation (c • D) =
-      c • extendFreeJetPolynomialDerivation D := by
-  apply GaloisForLFunctions.fractionRing_derivation_ext
-    (A := FreeScalarJetPolynomial C)
-  intro P
-  simp only [extendFreeJetPolynomialDerivation_algebraMap,
-    Derivation.smul_apply]
-  simp [Algebra.smul_def,
-    IsScalarTower.algebraMap_apply C (FreeScalarJetPolynomial C)]
-
 /-- Raw translation current on the rational free-jet field. -/
 def freeJetE
     (C : Type*) [Field C] (k : ℕ) :
     Derivation C (FreeScalarJetField C) (FreeScalarJetField C) :=
-  extendFreeJetPolynomialDerivation (freeJetEPolynomialDerivation C k)
+  extendFreeCoordinatePolynomialDerivation (freeJetEPolynomialDerivation C k)
 
 /-- Opposite velocity current on the rational free-jet field. -/
 def freeJetFOne
     (C : Type*) [Field C] :
     Derivation C (FreeScalarJetField C) (FreeScalarJetField C) :=
-  extendFreeJetPolynomialDerivation (freeJetFOnePolynomialDerivation C)
+  extendFreeCoordinatePolynomialDerivation (freeJetFOnePolynomialDerivation C)
 
 /-- First diagonal current on the rational free-jet field. -/
 def freeJetHOne
     (C : Type*) [Field C] :
     Derivation C (FreeScalarJetField C) (FreeScalarJetField C) :=
-  extendFreeJetPolynomialDerivation (freeJetHOnePolynomialDerivation C)
+  extendFreeCoordinatePolynomialDerivation (freeJetHOnePolynomialDerivation C)
 
 /-- Rational-field form of `[E_0,F_1]=H_1`. -/
 theorem freeJet_lie_E_zero_F_one
     {C : Type*} [Field C] :
     ⁅freeJetE C 0, freeJetFOne C⁆ = freeJetHOne C := by
   rw [freeJetE, freeJetFOne, freeJetHOne,
-    extendFreeJetPolynomialDerivation_lie,
+    extendFreeCoordinatePolynomialDerivation_lie,
     freeJetPolynomial_lie_E_zero_F_one]
 
 /-- Rational-field form of `[H_1,E_k]=2E_(k+1)`. -/
 theorem freeJet_lie_H_one_E
     {C : Type*} [Field C] (k : ℕ) :
     ⁅freeJetHOne C, freeJetE C k⁆ = (2 : C) • freeJetE C (k + 1) := by
-  rw [freeJetHOne, freeJetE, extendFreeJetPolynomialDerivation_lie,
+  rw [freeJetHOne, freeJetE, extendFreeCoordinatePolynomialDerivation_lie,
     freeJetPolynomial_lie_H_one_E,
-    extendFreeJetPolynomialDerivation_smul]
+    extendFreeCoordinatePolynomialDerivation_smul]
   rfl
 
 /-- The normalized `E_k` current is the nonzero factorial multiple of the coordinate partial. -/
@@ -285,9 +240,9 @@ theorem freeJetE_apply
     freeJetE C k f =
       (Nat.factorial k : C) • freeCoordinateDerivation C ℕ k f := by
   change
-    extendFreeJetPolynomialDerivation
+    extendFreeCoordinatePolynomialDerivation
         ((Nat.factorial k : C) • MvPolynomial.pderiv k) f = _
-  rw [extendFreeJetPolynomialDerivation_smul, Derivation.smul_apply]
+  rw [extendFreeCoordinatePolynomialDerivation_smul, Derivation.smul_apply]
   rfl
 
 /-- The intermediate field killed simultaneously by the direct position current and the opposite

@@ -46,13 +46,9 @@ theorem movingTent_continuation (L : ℝ) (hL : 0 ≤ L) (s : ℂ) (hs32 : 3 / 2
   have hs1 : s ≠ 1 := by intro h; rw [h] at hs32; norm_num at hs32
   have hσ : 1 / 2 < s.re := by linarith
   set A2 := (rectangularWindowAmplitude L (s - 1)) ^ 2 with hA2
-  have hnorm_eq : ∀ k : ℕ, ‖(Λ k / Real.sqrt k) • Eterm L k s‖
-      = (Λ k / Real.sqrt k) * ‖Eterm L k s‖ := fun k => by
-    rw [norm_smul, Real.norm_eq_abs,
-      abs_of_nonneg (div_nonneg vonMangoldt_nonneg (Real.sqrt_nonneg _))]
   have hsumE : Summable (fun k : ℕ => (Λ k / Real.sqrt k) • Eterm L k s) := by
     apply Summable.of_norm
-    simp only [hnorm_eq]
+    simp only [norm_vonMangoldt_div_sqrt_smul]
     exact weighted_E_summable L hL s hs1 hσ
   have hLSsum : Summable (fun k : ℕ => (Λ k / Real.sqrt k) • (k : ℂ) ^ (1 - s)) := by
     have hsum := LSeriesSummable_vonMangoldt (s := s - 1 / 2)

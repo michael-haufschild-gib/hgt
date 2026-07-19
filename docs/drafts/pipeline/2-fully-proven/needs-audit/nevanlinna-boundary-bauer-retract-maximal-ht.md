@@ -467,3 +467,35 @@ than introducing a new analytic axiom. The principal endpoints have only `propex
 - 2026-07-12 -- Extracted the companion Hilbert law: the projector is conditional expectation on
   stationary mixtures, centered polynomials lie in its vertical kernel, and conditional resolvents
   are complete on the horizontal boundary space.
+
+## Log — the classical Nevanlinna input is discharged
+
+**[PROVED]** `formal/GaloisForLFunctions/HTGeometry/NevBauerUnconditional.lean`
+
+This card's Lean status reads "Formalized **relative to** the classical Nevanlinna family stated on
+the card" — the `ClassicalNevanlinnaExtremalFamily` was an assumed input. It is no longer assumed.
+`finite-jet-aperture-complete-germ-closure-law` (links 146–182) constructs one for every positive
+definite normalised moment sequence with bounded kernel at a point, i.e. for every indeterminate
+Hamburger moment problem, and `nevExtremalFamily` is that term.
+
+Instantiating this card's package at `nevBoundaryFamily h h0b h0 := (nevExtremalFamily h h0b h0).toBoundaryFamily`:
+
+- `nevBauer_isClosedEmbedding` — **the complete-moment fiber contains a canonical closed embedded
+  Bauer simplex**, affinely parametrised by the probability measures on the projective line.
+- `nevBauer_continuous_retract`, `nevBauer_retract_idempotent` — **the canonical continuous
+  idempotent retraction of the whole fiber onto that simplex.**
+- `nevBauer_range_retract` — its image is exactly the simplex.
+- `nevBauer_fixed_iff` — a fiber point is fixed exactly when it lies on the simplex.
+- `nevBauer_extreme_iff` — the extreme points are exactly the barycentres of Dirac parameter laws,
+  i.e. the N-extremal leaves.
+
+All endpoints `[propext, Classical.choice, Quot.sound]`; zero placeholders; registered in the
+umbrella.
+
+**Effect on this card.** Every statement above previously carried the standing hypothesis "given a
+classical Nevanlinna family". They now carry only `PositiveMomentForm s`, `BoundedKernel s 0`,
+`s 0 = 1`. The Lean-status line "Formalized relative to the classical Nevanlinna family stated on the
+card" should be revised on audit: the classical family is now a theorem of this tree, not an input.
+
+Not touched by this entry: the residual maximal-translation-HT statements on infinite closed faces,
+which are independent of where the family comes from, and the priority/novelty gates.

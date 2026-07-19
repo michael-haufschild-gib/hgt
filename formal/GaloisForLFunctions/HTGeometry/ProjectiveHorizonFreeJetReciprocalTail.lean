@@ -32,7 +32,7 @@ open MvPolynomial
 def freeJetShift
     (C : Type*) [Field C] :
     Derivation C (FreeScalarJetField C) (FreeScalarJetField C) :=
-  extendFreeJetPolynomialDerivation (freeJetShiftPolynomialDerivation C)
+  extendFreeCoordinatePolynomialDerivation (freeJetShiftPolynomialDerivation C)
 
 @[simp]
 theorem freeJetShift_algebraMap
@@ -41,7 +41,7 @@ theorem freeJetShift_algebraMap
         (algebraMap (FreeScalarJetPolynomial C) (FreeScalarJetField C) P) =
       algebraMap (FreeScalarJetPolynomial C) (FreeScalarJetField C)
         (freeJetShiftPolynomialDerivation C P) := by
-  exact extendFreeJetPolynomialDerivation_algebraMap
+  exact extendFreeCoordinatePolynomialDerivation_algebraMap
     (freeJetShiftPolynomialDerivation C) P
 
 @[simp]
@@ -140,7 +140,7 @@ theorem freeJetPolynomial_lie_shift_F_one
 def freeJetFZero
     (C : Type*) [Field C] :
     Derivation C (FreeScalarJetField C) (FreeScalarJetField C) :=
-  extendFreeJetPolynomialDerivation (freeJetFZeroPolynomialDerivation C)
+  extendFreeCoordinatePolynomialDerivation (freeJetFZeroPolynomialDerivation C)
 
 @[simp]
 theorem freeJetFZero_freeCoordinate
@@ -149,7 +149,7 @@ theorem freeJetFZero_freeCoordinate
       -algebraMap (FreeScalarJetPolynomial C) (FreeScalarJetField C)
         (freeJetSquareCoefficient C n) := by
   rw [freeJetFZero, freeCoordinate,
-    extendFreeJetPolynomialDerivation_algebraMap,
+    extendFreeCoordinatePolynomialDerivation_algebraMap,
     freeJetFZeroPolynomialDerivation_X, map_neg]
 
 @[simp]
@@ -157,46 +157,25 @@ theorem freeJetFOne_freeCoordinate_zero
     {C : Type*} [Field C] :
     freeJetFOne C (freeCoordinate C ℕ 0) = 0 := by
   rw [freeJetFOne, freeCoordinate,
-    extendFreeJetPolynomialDerivation_algebraMap]
+    extendFreeCoordinatePolynomialDerivation_algebraMap]
   simp [freeJetFOnePolynomialDerivation]
-
-/-- The quotient-rule extension sends the zero polynomial derivation to zero. -/
-theorem extendFreeJetPolynomialDerivation_zero
-    {C : Type*} [Field C] :
-    extendFreeJetPolynomialDerivation
-        (0 : Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C)) = 0 := by
-  apply GaloisForLFunctions.fractionRing_derivation_ext
-    (A := FreeScalarJetPolynomial C)
-  intro P
-  simp
-
-/-- The quotient-rule extension preserves negation. -/
-theorem extendFreeJetPolynomialDerivation_neg
-    {C : Type*} [Field C]
-    (D : Derivation C (FreeScalarJetPolynomial C) (FreeScalarJetPolynomial C)) :
-    extendFreeJetPolynomialDerivation (-D) =
-      -extendFreeJetPolynomialDerivation D := by
-  apply GaloisForLFunctions.fractionRing_derivation_ext
-    (A := FreeScalarJetPolynomial C)
-  intro P
-  simp
 
 /-- Rational-field form of `[D,F_0]=0`. -/
 theorem freeJet_lie_shift_F_zero
     {C : Type*} [Field C] :
     ⁅freeJetShift C, freeJetFZero C⁆ = 0 := by
-  rw [freeJetShift, freeJetFZero, extendFreeJetPolynomialDerivation_lie,
+  rw [freeJetShift, freeJetFZero, extendFreeCoordinatePolynomialDerivation_lie,
     freeJetPolynomial_lie_shift_F_zero,
-    extendFreeJetPolynomialDerivation_zero]
+    extendFreeCoordinatePolynomialDerivation_zero]
 
 /-- Rational-field form of `[D,F_1]=-F_0`. -/
 theorem freeJet_lie_shift_F_one
     {C : Type*} [Field C] :
     ⁅freeJetShift C, freeJetFOne C⁆ = -freeJetFZero C := by
   rw [freeJetShift, freeJetFOne, freeJetFZero,
-    extendFreeJetPolynomialDerivation_lie,
+    extendFreeCoordinatePolynomialDerivation_lie,
     freeJetPolynomial_lie_shift_F_one,
-    extendFreeJetPolynomialDerivation_neg]
+    extendFreeCoordinatePolynomialDerivation_neg]
 
 /-- Pointwise commutation of the total derivative and `F_0`. -/
 theorem freeJetFZero_freeJetShift

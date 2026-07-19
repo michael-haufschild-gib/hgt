@@ -333,6 +333,35 @@ gap is the finite-type tensor/fraction presentation needed to specialize an arbi
 this concrete compositum to one elliptic factor and then instantiate the simultaneous Ostrowski
 no-telescoping criterion for the actual defect family.  The card therefore remains in Stage 2.
 
+**Lean update, 2026-07-19.**  The stale gap above has now been closed through
+`EllipticGammaExternalDefectOstrowski.lean`, and the complementary structural direction is
+formalized in `EllipticGammaStructuralGeneratorSpectrum.lean`.  The new theorem
+`differentialAlgebraicOver_ellipticGammaExternalLogDerivDefectMero_iff_resonant` proves, over the
+concrete paired elliptic compositum `K`, that the genuine external logarithmic-derivative defect is
+DA exactly when `h = a + b*tau + n*sigma` for integers `a,b,n`.  Its proof uses the exact direct
+source faces modulo their unavoidable theta-comparison constants, a general affine first-order DA
+law, translation-defect cocycle and reflection laws, and a translation-uniform integer-span
+theorem.  The same module proves that defects in the same rank-three coset have DA difference,
+closing the rank-neutral half of the partition-matroid argument.  All named theorems compile with
+the project axiom baseline `[propext, Classical.choice, Quot.sound]`.
+
+`EllipticGammaPeriodCosetMatroid.lean` now closes the full additive family law over `K`.  It first
+proves a reusable differential collision theorem: injectively labelled nonloop packets are free,
+DA differences make repeated labels parallel, and DA entries make a distinguished label into a
+loop.  Applied to the genuine elliptic-gamma defects, the represented differential matroid of an
+arbitrary shift family is exactly the pointed collision matroid of
+`C / (Z + Z*tau + Z*sigma)`, with the zero class declared algebraic.  Consequently the extended
+differential rank of every (finite or infinite) packet is exactly the cardinality of the distinct
+nonzero period classes it meets.  This subsumes the prior separated-family free-matroid theorem,
+the exact one-defect spectrum, and same-coset rank neutrality.  The new leaf compiles cleanly and
+its complete public surface has the project axiom baseline
+`[propext, Classical.choice, Quot.sound]`.
+
+The remaining headline gap is now narrower and explicit: transport this exact pointed partition
+matroid from `K` to `C(z)` by formalizing that every element of the concrete elliptic compositum is
+differentially algebraic over the rational coordinate field, then transfer the resulting exact
+rank law to the multiplicative quotient family.  The card therefore remains in Stage 2.
+
 ## Gates
 
 - [x] Exact theorem stated.

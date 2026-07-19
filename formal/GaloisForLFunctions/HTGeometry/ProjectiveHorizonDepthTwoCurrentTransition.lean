@@ -162,15 +162,15 @@ theorem projectiveJetCurrentE_lie_F
       projectiveJetCurrentH C (i + j) := by
   calc
     ⁅projectiveJetCurrentE C i, projectiveJetCurrentF C j⁆ =
-        liftProjectiveJetPolynomialCurrent
+        extendFreeCoordinatePolynomialDerivation
           ⁅projectiveJetCurrentEPolynomial C i,
             projectiveJetCurrentFPolynomial C j⁆ :=
-      liftProjectiveJetPolynomialCurrent_lie
+      extendFreeCoordinatePolynomialDerivation_lie
         (projectiveJetCurrentEPolynomial C i)
         (projectiveJetCurrentFPolynomial C j)
-    _ = liftProjectiveJetPolynomialCurrent
+    _ = extendFreeCoordinatePolynomialDerivation
         (projectiveJetCurrentHPolynomial C (i + j)) :=
-      congrArg liftProjectiveJetPolynomialCurrent
+      congrArg extendFreeCoordinatePolynomialDerivation
         (projectiveJetCurrentEPolynomial_lie_FPolynomial i j)
     _ = projectiveJetCurrentH C (i + j) := rfl
 
@@ -182,19 +182,19 @@ theorem projectiveJetCurrentH_lie_E
       (2 : C) • projectiveJetCurrentE C (i + j) := by
   calc
     ⁅projectiveJetCurrentH C i, projectiveJetCurrentE C j⁆ =
-        liftProjectiveJetPolynomialCurrent
+        extendFreeCoordinatePolynomialDerivation
           ⁅projectiveJetCurrentHPolynomial C i,
             projectiveJetCurrentEPolynomial C j⁆ :=
-      liftProjectiveJetPolynomialCurrent_lie
+      extendFreeCoordinatePolynomialDerivation_lie
         (projectiveJetCurrentHPolynomial C i)
         (projectiveJetCurrentEPolynomial C j)
-    _ = liftProjectiveJetPolynomialCurrent
+    _ = extendFreeCoordinatePolynomialDerivation
         ((2 : C) • projectiveJetCurrentEPolynomial C (i + j)) :=
-      congrArg liftProjectiveJetPolynomialCurrent
+      congrArg extendFreeCoordinatePolynomialDerivation
         (projectiveJetCurrentHPolynomial_lie_EPolynomial i j)
-    _ = (2 : C) • liftProjectiveJetPolynomialCurrent
+    _ = (2 : C) • extendFreeCoordinatePolynomialDerivation
         (projectiveJetCurrentEPolynomial C (i + j)) :=
-      liftProjectiveJetPolynomialCurrent_smul 2 _
+      extendFreeCoordinatePolynomialDerivation_smul 2 _
     _ = (2 : C) • projectiveJetCurrentE C (i + j) := rfl
 
 /-! ## Direct translations and direct/inverse current fields -/

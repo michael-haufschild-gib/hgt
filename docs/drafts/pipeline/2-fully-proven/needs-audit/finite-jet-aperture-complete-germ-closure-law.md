@@ -5468,3 +5468,412 @@ green. Beyond it, the natural continuations are the two the interface already an
 `toBoundaryFamily` now has a genuine inhabitant, so the projective-label recovery
 (`map_projectiveLabel_leaf`) and the barycenter/simplex consequences in
 `NevanlinnaBoundaryKernel` apply to a *constructed* family rather than a hypothetical one.
+
+### Link 181 — the interface's consequences become unconditional
+
+The downstream theorems of `NevanlinnaClassicalInterface` and `NevanlinnaBoundaryKernel` were proved
+for an *arbitrary* `ClassicalNevanlinnaExtremalFamily`. Link 180 supplied one for every indeterminate
+moment sequence, so they are now statements about the sequence itself.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevFamilyConsequences.lean`
+- **`nevLeaf_map_projectiveLabel`** — pushing a constructed leaf forward along the projective label of
+  the constructed matrix returns `dirac t`: **the parameter is recovered exactly as a measurable
+  coordinate on the carrier.**
+- `nevBarycenter` — the barycentre of the leaves against a law on `ℝ ∪ {∞}`.
+- **`nevBarycenter_hasHamburgerMoments`** — every barycentre represents `s`, so the construction
+  yields one solution of the moment problem per parameter law.
+- **`nevBarycenter_isClosedEmbedding`** — the barycentre map is a closed topological embedding: the
+  solutions so obtained form a closed copy of the space of parameter laws.
+- **`nevLeaf_injective`** — distinct parameters give distinct leaves, immediately from label recovery.
+
+Axiom-clean, zero placeholders, registered.
+
+**Card status.** The target object is constructed (link 180) and its classical consequences hold
+unconditionally (here). What the card asked for — `ClassicalNevanlinnaExtremalFamily` for the
+indeterminate Hamburger moment problem, with the N-extremal weights identified — is done, from
+`PositiveMomentForm s`, `BoundedKernel s 0`, `s 0 = 1` and nothing else.
+
+Summary of the route, for the audit:
+`quasi-orthogonal polynomials` (151) → `denominator = quasi-orthogonal` (152) → `quadrature, positive
+weights` (153) → `tightness and a representing weak limit` (154) → `global kernel transfer, entire
+matrix, isolated zeros` (146–148) → `real matrix, discrete fibers, leaf measures` (149–150, 158–159) →
+`kernel continuity from the tunable estimate` (164–165) → `B,D Wronskian, sign change, node
+convergence` (166–169) → `atoms are the Christoffel limits` (170–172) → `leaf function, uniqueness,
+weak continuity` (173–179) → `the family` (180) → `consequences` (181).
+
+**Opens next:** promotion to `3-formalized` after an umbrella build, and the two directions the
+construction now makes concrete — whether the barycentre embedding is *onto* the representing
+measures (the Bauer-simplex statement in full), and what the same machinery says for the
+Stieltjes and trigonometric moment problems, where the denominator geometry differs but the kernel
+estimates of links 146–148 are unchanged.
+
+### Link 182 — a bounded kernel forces indeterminacy, and the session's verification sweep
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/IndeterminacyCriterion.lean`
+- **`exists_ne_hasHamburgerMoments`** — two *distinct* measures represent `s`: the leaves of the
+  parameters `0` and `∞`, distinct by `nevLeaf_injective` (link 181).
+- **`injective_leaf_into_representing`** — the solution set of the moment problem contains an
+  injective copy of `ℝ ∪ {∞}`.
+- **`not_subsingleton_representing`** — the moment problem is not determinate.
+
+This closes the loop with the construction's hypothesis: `BoundedKernel s 0` is not a technical
+convenience but exactly a witness of indeterminacy, and the construction turns that witness into the
+whole family of solutions.
+
+Axiom-clean, zero placeholders, registered, first-try compile.
+
+**Verification sweep.** All 47 modules written for this card were checked mechanically:
+
+> 47 modules — missing oleans: **0** — unregistered in the umbrella: **0** — containing
+> `sorry`/`admit`/`axiom`/`opaque`/`unsafe`: **0**
+
+and every named endpoint quoted in links 146–182 was confirmed to depend only on
+`[propext, Classical.choice, Quot.sound]`.
+
+**Card status: the target is constructed and its consequences proved.** Ready for promotion to
+`3-formalized` subject to the umbrella build, which is a whole-tree operation and deliberately not
+run here.
+
+**Opens next.** With indeterminacy now both hypothesis and conclusion, the sharp question is the
+converse: does *every* indeterminate sequence have bounded kernel at a point? Classically yes — it is
+the standard equivalence — and the corpus already has one half of the bridge in
+`ChristoffelBoundedKernel` (`christoffelLimit_pos_of_boundedKernel`). Proving the converse would turn
+every theorem of links 146–182 from "for sequences with bounded kernel" into "for indeterminate
+sequences", which is the form the classical literature states them in.
+
+### Link 183 — the construction discharges a sibling card's standing hypothesis
+
+`nevanlinna-boundary-bauer-retract-maximal-ht` records its Lean as "formalized **relative to** the
+classical Nevanlinna family stated on the card". That family is now constructed here, so the relation
+is dischargeable.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/NevBauerUnconditional.lean` — instantiating
+that card's boundary-carrier package at `(nevExtremalFamily h h0b h0).toBoundaryFamily`:
+`nevBauer_isClosedEmbedding`, `nevBauer_continuous_retract`, `nevBauer_retract_idempotent`,
+`nevBauer_range_retract`, `nevBauer_fixed_iff`, `nevBauer_extreme_iff`.
+
+So for **every** indeterminate normalised Hamburger moment sequence, unconditionally: the
+complete-moment fiber contains a canonical closed embedded Bauer simplex, carries a continuous
+idempotent retraction onto it, and the extreme points of that simplex are exactly the N-extremal
+leaves — with the weights `λ(ξ)` identified by link 171.
+
+Axiom-clean, zero placeholders, registered. Logged on the sibling card as well.
+
+This is the payoff of the card beyond its own statement: results elsewhere in the tree that were
+conditional on a classical input become unconditional the moment that input is built.
+
+### Link 184 — the leaves are extreme points of the moment fiber
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/LeafExtreme.lean`
+- `carried_of_mixture_eq_nevLeaf` — if a leaf is `a·μ + b·ν` with `a ≠ 0`, then `μ` is carried by the
+  leaf's fiber: the fiber complement is null for the leaf, and in `ENNReal` a sum of two terms is zero
+  only if both are.
+- **`nevLeaf_eq_of_mixture`**, **`nevLeaf_infinity_eq_of_mixture`**, **`nevLeaf_of_half_mixture`** —
+  **each leaf is an extreme point of the complete-moment fiber.**
+
+The proof is three lines on top of uniqueness (link 177): a representing measure carried by `F_τ`
+*is* the leaf of `τ`, so a mixture representation collapses. No convexity argument is involved, which
+is why extremality costs almost nothing here while classically it is a separate step.
+
+Logged on `indeterminate-moment-fiber-maximal-translation-ht`, whose Lean status names "the absent
+Nevanlinna N-extremal construction" as a blocker for its `Ext M(s)` step. The construction is present
+and the extremality half of that step is now proved; the density half remains, and is a statement
+about the fiber rather than about the family.
+
+Process note: the heredoc for this module was first issued while the working directory had drifted to
+the card folder, and failed with "no such file or directory" rather than writing anything — the
+`GaloisForLFunctions/HTGeometry` path does not exist there. Checked before rewriting; no stray file
+was created. Absolute paths for both `cd` and the target avoid the drift, as recorded earlier.
+
+### Link 185 — integrals against a leaf are Christoffel-weighted fiber sums
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/LeafIntegral.lean`
+- `integral_fiberMeasure` — a weighted Dirac family integrates any integrable function to the
+  weighted sum of its values (`integral_sum_measure` plus `integral_dirac` termwise).
+- **`integral_nevLeaf`** — hence
+  `∫ f d(leaf τ) = ∑_{ξ ∈ F_τ} λ(ξ)·f(ξ)` for every integrable `f`.
+- `integral_nevLeaf_of_boundedContinuous` — the same for bounded continuous test functions, which are
+  automatically integrable against a probability measure.
+
+Axiom-clean, zero placeholders, registered.
+
+This is the form the sibling card's Cauchy-transform analysis consumes: with the weights identified as
+`λ(ξ)` (link 171) and the fiber discrete (link 150), every integral against a leaf is an explicit
+convergent series indexed by the zeros of `B·τ − D`. In particular the Cauchy transform
+`m_τ(z) = ∫(x − z)⁻¹ d(leaf τ)` is the series `∑_ξ λ(ξ)/(ξ − z)` — absolutely convergent for non-real
+`z`, since `∑ λ(ξ) = 1` (link 177) and `|ξ − z|⁻¹ ≤ |Im z|⁻¹`.
+
+**Opens next.** The classical Nevanlinna identity
+`m_τ(z) = −(A(z)τ − C(z))/(B(z)τ − D(z))` would connect that series to the constructed matrix. The
+pieces on hand are the factorisation `(B(x)τ − D(x))·B(ξ) = h₀(x − ξ)K(x,ξ)` (link 167) and the atom
+identification; what is missing is a residue/partial-fraction argument for the entire function
+`B·τ − D`, which is the first place on this card where genuinely new complex-analytic machinery — a
+Mittag-Leffler expansion — would be needed rather than reused.
+
+### Link 186 — the Cauchy transform of a leaf, as an explicit series
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/LeafCauchyTransform.lean`
+- `integral_fiberMeasure_vector` — the vector-valued form of link 185 (needs `CompleteSpace` on the
+  target, which the real-valued statement did not).
+- `norm_cauchy_kernel_le` — `‖(x − z)⁻¹‖ ≤ |Im z|⁻¹` for real `x`, since `|Im z| ≤ ‖x − z‖`.
+- `integrable_cauchy_kernel` — hence the Cauchy kernel is integrable against any finite measure on
+  `ℝ` off the real axis.
+- **`cauchyTransform_nevLeaf`** —
+  `m_τ(z) = ∫ (x − z)⁻¹ d(leaf τ) = ∑_{ξ ∈ F_τ} λ(ξ)·(ξ − z)⁻¹`,
+  the Cauchy transform of every leaf as an explicit series over the zeros of `B·τ − D` with the
+  Christoffel weights.
+- **`norm_cauchyTransform_nevLeaf_le`** — `‖m_t(z)‖ ≤ |Im z|⁻¹`, uniformly in the parameter.
+
+Axiom-clean, zero placeholders, registered.
+
+This is the object the sibling card's equation `(1)` is about, now constructed rather than quoted:
+its left-hand side `m_τ(z)` exists, is given by a convergent weighted series over the fiber, and is
+uniformly bounded on each half-plane. What remains to match `(1)` exactly is the identification of
+that series with `−(A(z)τ − C(z))/(B(z)τ − D(z))`, which is the Mittag-Leffler step flagged at link
+185 and is the natural first target of a next session on this thread.
+
+Traps this link: `inv_le_inv_of_le` no longer exists (`one_div_le_one_div_of_le` after `← one_div`),
+and the vector-valued integral needs `[CompleteSpace E]` — an instance the `ℝ`-valued version got for
+free.
+
+### Link 187 — the second kind is the moment functional of a divided difference
+
+Link 186 flagged the Nevanlinna identity `m_τ(z) = −(A(z)τ − C(z))/(B(z)τ − D(z))` as needing
+Mittag-Leffler. Working out the finite-level statement first shows it does not: the identity is
+*algebraic* at each level, and reduces by linearity to one fact about the second-kind polynomials.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/SecondKindDividedDiff.lean`
+- `firstKindDividedDiff s n z` — the divided difference `(Qₙ(x) − Qₙ(z))/(x − z)` as an honest
+  polynomial in `x`, defined by `/ₘ (X − C z)`, with `mul_firstKindDividedDiff` the defining identity
+  (`modByMonic_X_sub_C_eq_C_eval` gives the zero remainder).
+- `firstKindDividedDiff_zero`, `firstKindDividedDiff_one` — the base cases `0` and `1`.
+- `firstKindDividedDiff_succ_succ` — **the recurrence**
+  `E_{n+2} = (z − aₙ)·E_{n+1} − bₙ·Eₙ + Q_{n+1}`.
+  Note the coefficient is the *constant* `(z − aₙ)`, not the polynomial `(X − aₙ)`: the divided
+  difference recurs in the frozen variable. Getting that wrong was the one real error here.
+- **`momentFunctional_firstKindDividedDiff`** —
+  `L_x[(Qₙ(x) − Qₙ(z))/(x − z)] = s₀·Rₙ(z)`.
+  Two-step induction: the extra term `L(Q_{n+1})` vanishes by orthogonality to the constants, so both
+  sides obey the same three-term recurrence with the same initial data.
+
+Axiom-clean, zero placeholders, registered.
+
+**Why this is the Nevanlinna identity's crux.** At level `n`, with `Gₙ = Bₙτ − Dₙ` and nodes the zeros
+of `Gₙ`, multiplying the quadrature Cauchy transform by `Gₙ(z)` gives
+`Gₙ(z)·∑_ξ w_ξ/(ξ − z) = −L_x[(Gₙ(z) − Gₙ(x))/(z − x)]`
+— the bracket is a polynomial in `x` of degree `n`, so quadrature exactness to `2n` (link 153) turns
+the sum into the moment functional. By linearity and link 159's closed forms
+`Gₙ = (h₀/hₙ)(αₙQ_{n+1} + βₙQₙ)` and `Hₙ = Aₙτ − Cₙ = (h₀/hₙ)(αₙR_{n+1} + βₙRₙ)`, the theorem above
+gives exactly `L_x[…] = s₀·Hₙ(z)`. So the finite-level identity is algebraic, and the limit form
+follows from weak convergence of the quadrature measures (link 154) plus entrywise convergence
+(links 155–156) — **no Mittag-Leffler and no residue calculus**.
+
+Traps: `modByMonic_add_div` takes two polynomials, not a monic proof (recorded at link 153 and hit
+again); `ring` treats `C (z − a)` and `C z − C a` as distinct atoms; a `Fin` coercion blocks
+`monicOrtho_zero` until `Fin.val_zero` fires; and `momentFunctional` has no `sub`/`C_mul` lemmas —
+routing through `momentInner` and `momentInner_def` supplies the whole linearity API.
+
+### Link 188 — the finite-level Nevanlinna identity
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiCauchyIdentity.lean`
+- `quasiDividedDiff`, `mul_quasiDividedDiff` — the divided difference of `P = Q_{n+1} + t·Qₙ`, in the
+  two-term basis, with its defining identity.
+- `firstKindDividedDiff_degree_lt`, `quasiDividedDiff_degree_lt` — degree below the index (via
+  `natDegree_divByMonic`), so the level-`n` rule integrates it exactly.
+- **`quasiCauchy_identity`** — for `z` off the node set,
+
+  > `P(z)·∑_{ξ ∈ nodes} w_ξ/(ξ − z) = −s₀·(R_{n+1}(z) + t·Rₙ(z))`.
+
+  At a node, `P(z) = −(ξ − z)·E(ξ)`, so multiplying the Cauchy sum by `P(z)` turns it into minus the
+  quadrature of `E`, a polynomial of degree `n`; exactness (link 153) makes that the moment
+  functional, and link 187 evaluates it.
+
+Axiom-clean, zero placeholders, registered.
+
+**This is equation `(1)` of the sibling card, at finite level, proved algebraically.** Combining with
+link 159's closed forms — `Bₙτ − Dₙ = (h₀/hₙ)(αₙQ_{n+1} + βₙQₙ)` and
+`Aₙτ − Cₙ = (h₀/hₙ)(αₙR_{n+1} + βₙRₙ)`, the *same* `αₙ, βₙ` — the identity reads
+`(Bₙ(z)τ − Dₙ(z))·mₙ(z) = −s₀·(Aₙ(z)τ − Cₙ(z))`, i.e. the classical Padé form of the Nevanlinna
+parametrization at level `n`.
+
+**Opens next:** the limit. Both sides converge — the left by weak convergence of the quadrature
+measures against the bounded continuous Cauchy kernel (links 154, 186) together with entrywise
+convergence of `Bₙ, Dₙ` (link 156), the right by entrywise convergence of `Aₙ, Cₙ`. What is needed is
+the analogue of link 156 for the `A` and `C` entries, whose series are the same bilinear objects with
+the second-kind family in place of the first; `tendstoUniformlyOn_bilinearLimit` (link 155) covers
+them unchanged. That would give the classical identity
+`m_τ(z) = −(A(z)τ − C(z))/(B(z)τ − D(z))` for the constructed leaves, closing equation `(1)` of the
+sibling card unconditionally.
+
+### Link 189 — the numerator entries converge uniformly too
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/EntryNumeratorUniform.lean`
+- `tendstoUniformlyOn_nevA_series`, `tendstoUniformlyOn_nevC_series` — the `A` and `C` series converge
+  uniformly on every ball. They are the same bilinear objects as `B` and `D` with the second-kind
+  family in the varying slot, and — unlike `B` — both are already written with the constant factor
+  first, so `tendstoUniformlyOn_bilinearLimit` (link 155) applies with no commutation.
+- `nevAreal_ofReal_partial`, `nevCreal_ofReal_partial`, `nevAinf_tsum`, `nevCinf_tsum` — the truncated
+  numerators as complex partial sums along `Complex.ofReal`.
+- **`eventually_nevAreal_close`**, **`eventually_nevCreal_close`** — `Aₙ → A` and `Cₙ → C` uniformly on
+  every bounded interval, exactly as link 156 for the denominators.
+
+Axiom-clean, zero placeholders, registered; the first module compiled first try.
+
+**All four entries now converge uniformly on bounded intervals.** With link 188's finite-level identity
+`(Bₙ(z)τ − Dₙ(z))·mₙ(z) = −s₀·(Aₙ(z)τ − Cₙ(z))`, the limit form needs only:
+1. `mₙ(z) → m_τ(z)` — weak convergence of the quadrature measures against the bounded continuous
+   Cauchy kernel (links 154, 186);
+2. the four entry convergences (links 156, 189);
+3. `B(z)τ − D(z) ≠ 0` at the chosen `z` — true off the fiber, and the fiber is a discrete subset of
+   `ℝ` (link 150), so every non-real `z` qualifies once the identity is read on `ℂ`.
+
+Item 3 is the one that still needs care: links 156 and 189 give convergence along the *real* axis,
+whereas the Cauchy transform is naturally evaluated off it. The complex versions are available — the
+uniform estimates of links 155 and 189 are stated on complex balls, and only the `ofReal`
+specialisation restricted them to `ℝ`. Lifting `eventually_*_close` to complex `z` is mechanical and
+is the next step.
+
+### Link 190 — all four entries converge at every complex point
+
+Link 189 flagged that the packaged convergence statements were restricted to the real axis while the
+Cauchy transform wants complex arguments. That restriction came from the `ofReal` specialisation
+only; the underlying estimates were always on complex balls.
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/EntryComplexLimit.lean`
+- `nevAtruncC`, `nevBtruncC`, `nevCtruncC`, `nevDtruncC` — the four truncated entries packaged as
+  complex functions of `z`.
+- **`tendsto_nevAtruncC`**, **`tendsto_nevBtruncC`**, **`tendsto_nevCtruncC`**,
+  **`tendsto_nevDtruncC`** — each converges to its limiting entire entry **at every point of `ℂ`**,
+  by reading the ball estimate at `z` (`TendstoUniformlyOn.tendsto_at` on the ball of radius
+  `‖z‖ + 1`) and composing with the index shift.
+
+Axiom-clean, zero placeholders, registered, first-try compile.
+
+The `B` case needs `nevBinf_comm_tsum` (link 156) because its series is the one written with the
+constant factor second; the other three are direct.
+
+**State of the Nevanlinna-identity thread.** Of the three items listed at link 189:
+1. `mₙ(z) → m_τ(z)` — available from weak convergence (links 154, 186);
+2. entry convergence — **now complete on all of `ℂ`** (links 156, 189, 190);
+3. non-vanishing of the limiting denominator at the evaluation point — holds off the fiber, which is
+   a discrete subset of `ℝ` (link 150), so at every non-real `z`.
+
+What remains is the finite-level identity at *complex* `z`. Link 188 proves it for real `z` via
+`Polynomial.eval`; both sides are rational in `z` with real coefficients and agree at infinitely many
+reals, so they agree identically — but formalising that step means either redoing the divided-difference
+construction over `ℂ` with `aeval`, or invoking an identity-theorem argument for rational functions.
+That is the concrete next task, and it is bookkeeping over an already-proved identity rather than new
+mathematics.
+
+### Link 191 — the finite-level identity, as a polynomial identity and at complex arguments
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiCauchyPolynomial.lean`
+- `quasiCofactorSum` — `∑_ξ w_ξ·(P /ₘ (X − ξ))`. Since each node is a root, `P(z)/(z − ξ)` *is* a
+  polynomial in `z`, so the weighted Cauchy sum times `P(z)` is polynomial rather than rational.
+- `eval_quasiCofactor` — the cofactor evaluates to the Cauchy quotient off the node.
+- **`quasiCofactorSum_eq`** — `∑_ξ w_ξ·(P /ₘ (X − ξ)) = s₀·(R_{n+1} + t·Rₙ)` **as polynomials**.
+  Link 188 gives agreement at every real point off the node set; that set is infinite (the complement
+  of a finite set in `ℝ`), so `Polynomial.eq_of_infinite_eval_eq` upgrades it to equality.
+- **`quasiCofactorSum_aeval`** — hence the identity holds at every **complex** argument.
+
+Axiom-clean, zero placeholders, registered.
+
+This closes the step flagged at link 190. The route was the one noted there — recognise that the
+apparently rational object is polynomial, prove the identity where link 188 applies, and extend by
+the infinitude of the real line minus finitely many points. No identity theorem for rational
+functions and no re-derivation over `ℂ` was needed.
+
+**Status of the Nevanlinna-identity thread.** Every ingredient of
+`m_τ(z) = −(A(z)τ − C(z))/(B(z)τ − D(z))` is now in the tree:
+- the finite-level identity at complex `z` (here);
+- entry convergence on all of `ℂ` (link 190);
+- `mₙ(z) → m_τ(z)` from weak convergence (links 154, 186);
+- non-vanishing of the limit denominator off the real fiber (links 147, 150).
+
+What remains is assembling them — expressing `mₙ(z)` for the *level-`n` quasi measure* in terms of
+`quasiCofactorSum` (the bridge is `integral_fiberMeasure_vector` of link 186 applied to the finite
+node set), then passing to the limit. That is the same shape as links 178–179 and needs no new
+estimate.
+
+### Link 192 — the finite-level Nevanlinna identity at complex arguments
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiCauchyComplex.lean`
+- `aeval_quasiCofactor` — the cofactor at a node evaluated at a complex point off that node.
+- **`quasiCauchy_identity_complex`** — for complex `z` off the node set,
+
+  > `P(z)·∑_{ξ ∈ nodes} w_ξ/(ξ − z) = −s₀·(R_{n+1}(z) + t·Rₙ(z))`.
+
+Read off link 191's polynomial identity through `aeval` and dividing out the linear factors. The sum
+is finite (there are `n+1` nodes), so nothing analytic is involved.
+
+Axiom-clean, zero placeholders, registered.
+
+**The finite-level Nevanlinna parametrization is now complete over `ℂ`.** With link 159's closed forms
+this reads `(Bₙ(z)τ − Dₙ(z))·mₙ(z) = −s₀·(Aₙ(z)τ − Cₙ(z))` at every complex `z` off the level-`n`
+nodes — equation `(1)` of `indeterminate-moment-fiber-maximal-translation-ht`, at finite level,
+proved from the moment sequence with no classical input.
+
+**Remaining for the limit form**, and it is now purely mechanical:
+1. identify `∑_ξ w_ξ/(ξ − z)` with `∫(x − z)⁻¹ d(quasiMeasure)` — the finite-family analogue of link
+   186's `integral_fiberMeasure_vector`;
+2. let `n → ∞` along the good levels: the left side converges by weak convergence (link 154) against
+   the bounded continuous Cauchy kernel (link 186), the right by entry convergence (link 190);
+3. divide by `B(z)τ − D(z)`, nonzero off the real fiber (links 147, 150).
+
+Traps this link: `Finset.sum_neg_distrib` does not exist under that name (a `have … := by simp` for
+the specific sum is the reliable substitute — hit twice now), `algebraMap ℝ ℂ` needs
+`Complex.coe_algebraMap` to meet `↑`, and `linear_combination` sign errors show up as a residual that
+is exactly `2×` the goal, which is a quick way to read them off.
+
+### Link 193 — the quadrature Cauchy transform is the finite node sum
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiMeasureIntegral.lean`
+- **`integral_finsetWeightedDirac_vector`** — vector-valued integration against a finite weighted
+  Dirac family is the weighted sum of values. **No measurability or continuity hypothesis**: a Dirac
+  measure integrates every function, so `integrable_dirac` needs only finiteness of the norm at the
+  point. The continuity hypothesis first written into the statement turned out to be unused, and the
+  linter caught it — the lemma is stronger without it.
+- **`integral_cauchy_quasiMeasure`** — hence
+  `∫(x − z)⁻¹ d(quasiMeasure s n t) = ∑_{ξ ∈ nodes} w_ξ·(ξ − z)⁻¹` for **every** complex `z`.
+
+Axiom-clean, zero placeholders, registered.
+
+This is step 1 of link 192's remaining list. Combining with `quasiCauchy_identity_complex`:
+
+> `P(z)·∫(x − z)⁻¹ d(quasiMeasure s n t) = −s₀·(R_{n+1}(z) + t·Rₙ(z))` off the level-`n` nodes,
+
+so the level-`n` Cauchy transform of the *measure* satisfies the Nevanlinna identity. Steps 2 and 3 —
+letting `n → ∞` along the good levels and dividing by the limit denominator — are the remaining
+assembly, and both of their inputs are proved (links 154, 186, 190 and links 147, 150 respectively).
+
+**Session state.** Fifty-eight modules were written for this card across links 146–193, all
+registered in the umbrella, all with oleans emitted at write time, none containing a placeholder, and
+every quoted endpoint depending only on `[propext, Classical.choice, Quot.sound]`. The card's target —
+`ClassicalNevanlinnaExtremalFamily` for the indeterminate Hamburger moment problem, with the
+N-extremal weights identified as the Christoffel limits — is constructed (link 180) and its classical
+consequences are unconditional (links 181, 183, 184).
+
+### Link 194 — the Nevanlinna identity for the quadrature measure, off the real axis
+
+**[PROVED HERE]** `formal/GaloisForLFunctions/HTGeometry/QuasiMeasureCauchy.lean`
+- **`quasiMeasure_cauchy_identity`** —
+  `P(z)·∫(x − z)⁻¹ d(quasiMeasure s n t) = −s₀·(R_{n+1}(z) + t·Rₙ(z))` for complex `z` off the nodes,
+  combining links 192 and 193.
+- `quasiNodes_ne_of_im_ne_zero` — the nodes are real, so they avoid every non-real point.
+- **`quasiMeasure_cauchy_identity_of_im_ne_zero`** — hence the identity holds throughout both
+  half-planes, with no exceptional set.
+
+Axiom-clean, zero placeholders, registered, first-try compile.
+
+**The finite-level Nevanlinna parametrization is complete for the quadrature measures.** At every
+non-real `z`, the Cauchy transform of the level-`n` measure satisfies the classical relation with the
+level-`n` first- and second-kind polynomials. Via link 159's closed forms — writing
+`Bₙτ − Dₙ = (h₀/hₙ)·αₙ·P` and `Aₙτ − Cₙ = (h₀/hₙ)·αₙ·(R_{n+1} + tRₙ)` with `t = βₙ/αₙ` — this is
+`(Bₙ(z)τ − Dₙ(z))·mₙ(z) = −s₀·(Aₙ(z)τ − Cₙ(z))`, equation `(1)` of the sibling card at finite level.
+
+**Remaining for the limit**, unchanged and both inputs proved: pass `n → ∞` along the good levels
+(weak convergence, links 154 and 186, against the bounded continuous Cauchy kernel of link 186; entry
+convergence, link 190), then divide by `B(z)τ − D(z)`, non-zero at non-real `z` because the fiber is a
+discrete subset of `ℝ` (links 147, 150). Translating the closed forms of link 159 to complex arguments
+— they are currently stated for real `x` — is the one piece of plumbing that step needs, and it is the
+same `ofReal`-bridge pattern as links 149 and 189.

@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.FractionRingDerivation
 import GaloisForLFunctions.HTGeometry.MvPolynomialGradient
 import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
 import Mathlib.Algebra.MvPolynomial.Supported
+import Mathlib.RingTheory.Derivation.Lie
 import Mathlib.RingTheory.Localization.NumDen
 
 /-!
@@ -37,28 +38,80 @@ def freeCoordinateField
     IntermediateField C (FreeCoordinateRationalField C σ) :=
   IntermediateField.adjoin C (freeCoordinate C σ '' S)
 
-/-- The polynomial `i`-th partial derivative, valued in the ambient fraction field. -/
-def freeCoordinatePolynomialDerivation
-    (C σ : Type*) [Field C] (i : σ) :
-    Derivation C (MvPolynomial σ C) (FreeCoordinateRationalField C σ) :=
-  (Algebra.linearMap (MvPolynomial σ C) (FreeCoordinateRationalField C σ)).compDer
-    (MvPolynomial.pderiv i)
+/-- Extend a polynomial endoderivation to the free rational coordinate field by the quotient
+rule. -/
+def extendFreeCoordinatePolynomialDerivation
+    {C σ : Type*} [Field C]
+    (D : Derivation C (MvPolynomial σ C) (MvPolynomial σ C)) :
+    Derivation C (FreeCoordinateRationalField C σ)
+      (FreeCoordinateRationalField C σ) :=
+  GaloisForLFunctions.fractionRingDerivation
+    ((Algebra.linearMap (MvPolynomial σ C)
+      (FreeCoordinateRationalField C σ)).compDer D)
 
 @[simp]
-theorem freeCoordinatePolynomialDerivation_apply
-    {C σ : Type*} [Field C] (i : σ) (p : MvPolynomial σ C) :
-    freeCoordinatePolynomialDerivation C σ i p =
-      algebraMap (MvPolynomial σ C) (FreeCoordinateRationalField C σ)
-        (MvPolynomial.pderiv i p) :=
+theorem extendFreeCoordinatePolynomialDerivation_algebraMap
+    {C σ : Type*} [Field C]
+    (D : Derivation C (MvPolynomial σ C) (MvPolynomial σ C))
+    (p : MvPolynomial σ C) :
+    extendFreeCoordinatePolynomialDerivation D
+        (algebraMap (MvPolynomial σ C) (FreeCoordinateRationalField C σ) p) =
+      algebraMap (MvPolynomial σ C) (FreeCoordinateRationalField C σ) (D p) := by
+  rw [extendFreeCoordinatePolynomialDerivation,
+    GaloisForLFunctions.fractionRingDerivation_algebraMap]
   rfl
+
+/-- Quotient-rule extension preserves Lie brackets. -/
+theorem extendFreeCoordinatePolynomialDerivation_lie
+    {C σ : Type*} [Field C]
+    (D E : Derivation C (MvPolynomial σ C) (MvPolynomial σ C)) :
+    ⁅extendFreeCoordinatePolynomialDerivation D,
+        extendFreeCoordinatePolynomialDerivation E⁆ =
+      extendFreeCoordinatePolynomialDerivation ⁅D, E⁆ := by
+  apply GaloisForLFunctions.fractionRing_derivation_ext
+    (A := MvPolynomial σ C)
+  intro p
+  simp [Derivation.commutator_apply]
+
+/-- Quotient-rule extension preserves scalar multiplication. -/
+theorem extendFreeCoordinatePolynomialDerivation_smul
+    {C σ : Type*} [Field C] (c : C)
+    (D : Derivation C (MvPolynomial σ C) (MvPolynomial σ C)) :
+    extendFreeCoordinatePolynomialDerivation (c • D) =
+      c • extendFreeCoordinatePolynomialDerivation D := by
+  apply GaloisForLFunctions.fractionRing_derivation_ext
+    (A := MvPolynomial σ C)
+  intro p
+  simp only [extendFreeCoordinatePolynomialDerivation_algebraMap,
+    Derivation.smul_apply]
+  simp [Algebra.smul_def, IsScalarTower.algebraMap_apply C (MvPolynomial σ C)]
+
+@[simp]
+theorem extendFreeCoordinatePolynomialDerivation_zero
+    {C σ : Type*} [Field C] :
+    extendFreeCoordinatePolynomialDerivation
+        (0 : Derivation C (MvPolynomial σ C) (MvPolynomial σ C)) = 0 := by
+  apply GaloisForLFunctions.fractionRing_derivation_ext
+    (A := MvPolynomial σ C)
+  intro p
+  simp
+
+theorem extendFreeCoordinatePolynomialDerivation_neg
+    {C σ : Type*} [Field C]
+    (D : Derivation C (MvPolynomial σ C) (MvPolynomial σ C)) :
+    extendFreeCoordinatePolynomialDerivation (-D) =
+      -extendFreeCoordinatePolynomialDerivation D := by
+  apply GaloisForLFunctions.fractionRing_derivation_ext
+    (A := MvPolynomial σ C)
+  intro p
+  simp
 
 /-- The quotient-rule extension of the `i`-th partial derivative. -/
 def freeCoordinateDerivation
     (C σ : Type*) [Field C] (i : σ) :
     Derivation C (FreeCoordinateRationalField C σ)
       (FreeCoordinateRationalField C σ) :=
-  GaloisForLFunctions.fractionRingDerivation
-    (freeCoordinatePolynomialDerivation C σ i)
+  extendFreeCoordinatePolynomialDerivation (MvPolynomial.pderiv i)
 
 @[simp]
 theorem freeCoordinateDerivation_algebraMap
@@ -67,9 +120,7 @@ theorem freeCoordinateDerivation_algebraMap
         (algebraMap (MvPolynomial σ C) (FreeCoordinateRationalField C σ) p) =
       algebraMap (MvPolynomial σ C) (FreeCoordinateRationalField C σ)
         (MvPolynomial.pderiv i p) := by
-  rw [freeCoordinateDerivation,
-    GaloisForLFunctions.fractionRingDerivation_algebraMap]
-  rfl
+  exact extendFreeCoordinatePolynomialDerivation_algebraMap _ _
 
 @[simp]
 theorem freeCoordinateDerivation_freeCoordinate_self

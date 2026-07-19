@@ -25,40 +25,40 @@ variable {s : ℕ → ℝ} (F : ClassicalAnalyticNevanlinnaCarrierFamily s)
 
 /-- A generously rectangular evaluation-row type for a canonical finite differential pattern.
 The extra `shiftCount + 2` rows make the transversality codimension inequality automatic. -/
-abbrev CarrierPatternRow (p : FiniteDifferentialPattern Unit) :=
+abbrev CarrierPatternRow {Γ : Type*} (p : FiniteDifferentialPattern Γ) :=
   Fin (Fintype.card (PatternShape p) + p.coefficientDegree + p.shiftCount + 2)
 
-abbrev CarrierPatternMonomial (p : FiniteDifferentialPattern Unit) :=
+abbrev CarrierPatternMonomial {Γ : Type*} (p : FiniteDifferentialPattern Γ) :=
   Fin p.monomialCount
 
-abbrev CarrierPatternShift (p : FiniteDifferentialPattern Unit) :=
+abbrev CarrierPatternShift {Γ : Type*} (p : FiniteDifferentialPattern Γ) :=
   Fin p.shiftCount
 
 /-- Enumerate the dependent within-shift jet variables in the finite coordinate type used by the
 expanded evaluation matrix. -/
-noncomputable def carrierPatternExponent (p : FiniteDifferentialPattern Unit) :
+noncomputable def carrierPatternExponent {Γ : Type*} (p : FiniteDifferentialPattern Γ) :
     CarrierPatternMonomial p →
       (Fin (Fintype.card (Σ i : CarrierPatternShift p, Fin (p.orders i))) →₀ ℕ) :=
   fun b => Finsupp.equivCongrLeft
     (Fintype.equivFin (Σ i : CarrierPatternShift p, Fin (p.orders i)))
     (p.jetExponent b)
 
-theorem carrierPatternExponent_injective (p : FiniteDifferentialPattern Unit) :
+theorem carrierPatternExponent_injective {Γ : Type*} (p : FiniteDifferentialPattern Γ) :
     Function.Injective (carrierPatternExponent p) :=
   (Finsupp.equivCongrLeft
     (Fintype.equivFin (Σ i : CarrierPatternShift p, Fin (p.orders i)))).injective.comp
       p.jetExponent_injective
 
-theorem carrierPattern_rows_strictly_dominate_columns
-    (p : FiniteDifferentialPattern Unit) :
+theorem carrierPattern_rows_strictly_dominate_columns {Γ : Type*}
+    (p : FiniteDifferentialPattern Γ) :
     Fintype.card
         (CarrierPatternMonomial p × Fin (p.coefficientDegree + 1)) +
         p.coefficientDegree < Fintype.card (CarrierPatternRow p) := by
   simp [CarrierPatternRow, CarrierPatternMonomial, PatternShape]
   omega
 
-theorem carrierPattern_shift_dimension_below_codimension
-    (p : FiniteDifferentialPattern Unit) :
+theorem carrierPattern_shift_dimension_below_codimension {Γ : Type*}
+    (p : FiniteDifferentialPattern Γ) :
     Module.finrank ℝ (CarrierPatternShift p → ℂ) <
       2 * (Fintype.card (CarrierPatternRow p) -
         Fintype.card
@@ -311,6 +311,7 @@ theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
 finite admissible row-packet certificate of full coefficient rank for every canonical pattern and
 every tuple of distinct complex shifts. -/
 theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
+    {Γ : Type} [Countable Γ]
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
@@ -325,7 +326,7 @@ theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
     let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
       (fun i => F.quotient (zf i)) nf eta hupperf
     let S := LinearMap.ker frozen.toLinearMap
-    let fullRank : Set S := {w | ∀ (p : FiniteDifferentialPattern Unit)
+    let fullRank : Set S := {w | ∀ (p : FiniteDifferentialPattern Γ)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p)),
       actualNevanlinnaExpandedFullRankWitness
         (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
@@ -342,7 +343,7 @@ theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
   letI : BaireSpace S := by
     set_option synthInstance.maxHeartbeats 100000 in
       infer_instance
-  let goodPattern : FiniteDifferentialPattern Unit → Set S := fun p =>
+  let goodPattern : FiniteDifferentialPattern Γ → Set S := fun p =>
     {w | ∀ shift : InjectiveShiftConfiguration (CarrierPatternShift p),
       actualNevanlinnaExpandedFullRankWitness
         (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
@@ -358,7 +359,7 @@ theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
   have hupperf' : ∀ i,
       0 < (projectiveNevanlinnaQuotient F.c F.d (zf i)).im := by
     simpa [quotient, projectiveNevanlinnaQuotient] using hupperf
-  have hgoodPattern : ∀ p : FiniteDifferentialPattern Unit,
+  have hgoodPattern : ∀ p : FiniteDifferentialPattern Γ,
       Dense (goodPattern p) ∧ goodPattern p ∈ residual S := by
     intro p
     simpa [goodPattern, frozen, S, amplitude, quotient,
@@ -377,7 +378,7 @@ theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
   have hresidual : (⋂ p, goodPattern p) ∈ residual S :=
     countable_iInter_mem.mpr fun p => (hgoodPattern p).2
   have heq : (⋂ p, goodPattern p) = {w | ∀
-      (p : FiniteDifferentialPattern Unit)
+      (p : FiniteDifferentialPattern Γ)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p)),
       actualNevanlinnaExpandedFullRankWitness
         (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
@@ -393,6 +394,7 @@ theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
 simultaneous abstract witness phase to the unit ball preserves density and residuality and makes
 every tangent vector a strictly positive mass-one density. -/
 theorem allFinitePatterns_positiveAbstractCarrier_fullRankWitness_dense_residual
+    {Γ : Type} [Countable Γ]
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
@@ -409,7 +411,7 @@ theorem allFinitePatterns_positiveAbstractCarrier_fullRankWitness_dense_residual
     let S := LinearMap.ker frozen.toLinearMap
     let positiveChart : Set S := Metric.ball 0 1
     let fullRank : Set positiveChart := {w | ∀
-      (p : FiniteDifferentialPattern Unit)
+      (p : FiniteDifferentialPattern Γ)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p)),
       actualNevanlinnaExpandedFullRankWitness
         (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
@@ -425,7 +427,7 @@ theorem allFinitePatterns_positiveAbstractCarrier_fullRankWitness_dense_residual
     (fun i => F.quotient (zf i)) nf eta hupperf
   let S := LinearMap.ker frozen.toLinearMap
   let abstractFullRank : Set S := {w | ∀
-    (p : FiniteDifferentialPattern Unit)
+    (p : FiniteDifferentialPattern Γ)
     (shift : InjectiveShiftConfiguration (CarrierPatternShift p)),
     actualNevanlinnaExpandedFullRankWitness
       (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
@@ -446,6 +448,7 @@ patterns is countable.  Intersecting the one-pattern global rank theorems theref
 dense residual tangent locus with coefficient rigidity for every finite differential-pattern
 shape at once. -/
 theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
+    {Γ : Type} [Countable Γ]
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
@@ -460,7 +463,7 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
     let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
       (fun i => F.quotient (zf i)) nf eta hupperf
     let S := LinearMap.ker frozen.toLinearMap
-    let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Unit)
+    let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Γ)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
       (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
       actualNevanlinnaExpandedPatternRelationHolds
@@ -473,14 +476,14 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
   let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
     (fun i => F.quotient (zf i)) nf eta hupperf
   let S := LinearMap.ker frozen.toLinearMap
-  let goodPattern : FiniteDifferentialPattern Unit → Set S := fun p =>
+  let goodPattern : FiniteDifferentialPattern Γ → Set S := fun p =>
     {w | ∀ shift : InjectiveShiftConfiguration (CarrierPatternShift p),
       actualNevanlinnaExpandedFullRankWitness
         (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
         (ι := CarrierPatternShift p)
         F.background F.amplitude F.quotient p.coefficientDegree p.orders
           (carrierPatternExponent p) eta (linftyOne eta) S w shift}
-  let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Unit)
+  let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Γ)
     (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
     (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
     actualNevanlinnaExpandedPatternRelationHolds
@@ -497,7 +500,7 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
   have hupperf' : ∀ i,
       0 < (projectiveNevanlinnaQuotient F.c F.d (zf i)).im := by
     simpa [quotient, projectiveNevanlinnaQuotient] using hupperf
-  have hgoodPattern : ∀ p : FiniteDifferentialPattern Unit,
+  have hgoodPattern : ∀ p : FiniteDifferentialPattern Γ,
       Dense (goodPattern p) ∧ goodPattern p ∈ residual S := by
     intro p
     simpa [goodPattern, frozen, S, amplitude, quotient,
@@ -528,6 +531,7 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
 dense residual family of actual weighted Nevanlinna carrier transforms admits no nonzero relation
 of any canonical finite differential-pattern shape. -/
 theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
+    {Γ : Type} [Countable Γ]
     (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
@@ -544,7 +548,7 @@ theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
     let S := LinearMap.ker frozen.toLinearMap
     let positiveChart : Set S := Metric.ball 0 1
     let actualRelationFree : Set positiveChart := {w | ∀
-      (p : FiniteDifferentialPattern Unit)
+      (p : FiniteDifferentialPattern Γ)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
       (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
       F.weightedBoundaryCarrierExpandedPatternRelationHolds
@@ -559,7 +563,7 @@ theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
   let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
     (fun i => F.quotient (zf i)) nf eta hupperf
   let S := LinearMap.ker frozen.toLinearMap
-  let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Unit)
+  let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Γ)
     (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
     (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
     actualNevanlinnaExpandedPatternRelationHolds
@@ -574,9 +578,9 @@ theorem allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
         zf hqf_inj hupperf nf eta heta)
   exact F.normalizedPositiveChart_actualCarrier_relationFree_dense_residual
     zf nf eta hupperf
-    (fun p : FiniteDifferentialPattern Unit => CarrierPatternRow p)
-    (fun p : FiniteDifferentialPattern Unit => CarrierPatternMonomial p)
-    (fun p : FiniteDifferentialPattern Unit => CarrierPatternShift p)
+    (fun p : FiniteDifferentialPattern Γ => CarrierPatternRow p)
+    (fun p : FiniteDifferentialPattern Γ => CarrierPatternMonomial p)
+    (fun p : FiniteDifferentialPattern Γ => CarrierPatternShift p)
     (fun p => p.coefficientDegree) (fun p => p.orders)
     (fun p => carrierPatternExponent p) hupperMap relationFree habstract.2 (by
       intro w hw p shift coeff

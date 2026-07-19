@@ -134,7 +134,7 @@ def weightedJetControlLinear (μ : Measure ℝ)
     rw [integral_congr_ae hae, integral_const_mul]
     rfl
 
-set_option linter.unusedSectionVars false in
+omit [Fintype ι] [DecidableEq ι] in
 @[simp]
 theorem weightedJetControlLinear_apply (μ : Measure ℝ)
     (w : ℝ → ℝ) (hw : Integrable w μ)
@@ -149,7 +149,7 @@ def weightedJetControlBound (μ : Measure ℝ) (w : ℝ → ℝ)
     (x : ι → ℂ) (n : ι → ℕ) : ℝ :=
   (∑ s : jetIndex n, cauchyJetKernelBound x n s) * ∫ t, |w t| ∂μ
 
-set_option linter.unusedSectionVars false in
+omit [DecidableEq ι] in
 /-- **The weighted control map is bounded.** -/
 theorem norm_weightedJetControlLinear_le (μ : Measure ℝ)
     (w : ℝ → ℝ) (hw : Integrable w μ)
@@ -181,7 +181,7 @@ def weightedJetControl (μ : Measure ℝ)
     (weightedJetControlBound μ w x n)
     (norm_weightedJetControlLinear_le μ w hw x hne n)
 
-set_option linter.unusedSectionVars false in
+omit [DecidableEq ι] in
 @[simp]
 theorem weightedJetControl_apply (μ : Measure ℝ)
     (w : ℝ → ℝ) (hw : Integrable w μ)

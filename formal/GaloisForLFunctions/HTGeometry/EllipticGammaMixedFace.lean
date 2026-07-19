@@ -74,6 +74,12 @@ local instance ellipticGammaMixedFaceUnivDifferential :
       jacobiTheta₂' z τ := by
   rfl
 
+@[simp] theorem univGermEval_constToAnalytic_mixedFace
+    (c z : ℂ) :
+    univGermEval z
+        (constToAnalytic Set.univ c : Germ (Filter.principal Set.univ) ℂ) = c := by
+  rfl
+
 /-- On the regular locus, evaluation of the global logarithmic-derivative fraction is the additive
 double-sum kernel. -/
 theorem univGermEval_ellipticGammaLogDeriv_div_eq_additiveKernel
@@ -123,16 +129,22 @@ theorem univGermEval_thetaLogDerivDefect_div_eq
 
 /-! ## Direct structural source faces -/
 
-/-- **First direct elliptic-gamma source face.**  The `sigma`-translation defect of the genuine
-elliptic-gamma logarithmic derivative is exactly the `tau`-theta logarithmic derivative.  This
-global meromorphic identity closes the direct value interface left implicit by the mixed-face
-law. -/
+/-- **First direct elliptic-gamma source face modulo normalization.**  The `sigma`-translation
+defect of the genuine elliptic-gamma logarithmic derivative is the `tau`-theta logarithmic
+derivative up to the single comparison constant between the constructed and analytic theta
+kernels. -/
 theorem ellipticGammaLogDerivMero_source_face_sigma
     {sigma tau : ℂ} (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
-    addTranslationMeroEquiv sigma
-        (ellipticGammaLogDerivMero sigma tau hsigma htau) -
-      ellipticGammaLogDerivMero sigma tau hsigma htau =
-        thetaLogDerivMero tau htau := by
+    ∃ c : ℂ,
+      addTranslationMeroEquiv sigma
+          (ellipticGammaLogDerivMero sigma tau hsigma htau) -
+        ellipticGammaLogDerivMero sigma tau hsigma htau =
+          thetaLogDerivMero tau htau +
+            algebraMap (analyticSubring Set.univ) (meroField Set.univ)
+              (constToAnalytic Set.univ c) := by
+  obtain ⟨c, hc⟩ :=
+    ellipticThetaAdditiveLogKernel_eq_thetaLogDeriv_add_constant htau
+  refine ⟨c, ?_⟩
   let D := ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau
   let Q := thetaAnalytic tau htau
   have hmap_ne {a : analyticSubring Set.univ} (ha : a ≠ 0) :
@@ -159,7 +171,7 @@ theorem ellipticGammaLogDerivMero_source_face_sigma
     map_div₀, addTranslationMeroEquiv_algebraMap,
     addTranslationMeroEquiv_algebraMap]
   field_simp [hmap_ne hD, hmap_ne hTD, hmap_ne hQ]
-  simp only [← map_mul, ← map_sub]
+  simp only [← map_mul, ← map_sub, ← map_add]
   rw [(IsFractionRing.injective (analyticSubring Set.univ)
     (meroField Set.univ)).eq_iff]
   apply analyticSubring_eq_of_eventually_eval_eq (z₀ := z0)
@@ -192,10 +204,9 @@ theorem ellipticGammaLogDerivMero_source_face_sigma
       univGermEval z
           (thetaPrimeAnalytic tau htau : Germ (Filter.principal Set.univ) ℂ) /
         univGermEval z
-          (thetaAnalytic tau htau : Germ (Filter.principal Set.univ) ℂ) := by
-    rw [hKs, hK]
-    simpa [thetaLogDeriv] using
-      ellipticGammaAdditiveLogKernel_add_sigma_sub hsigma htau
+          (thetaAnalytic tau htau : Germ (Filter.principal Set.univ) ℂ) + c := by
+    rw [hKs, hK, ellipticGammaAdditiveLogKernel_add_sigma_sub hsigma htau]
+    simpa [thetaLogDeriv] using hc z hztheta
   have hds : univGermEval (z + sigma)
       (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
         Germ (Filter.principal Set.univ) ℂ) ≠ 0 := by
@@ -208,22 +219,29 @@ theorem ellipticGammaLogDerivMero_source_face_sigma
     change ellipticGammaForwardProduct sigma tau z *
       ellipticGammaBackwardProduct sigma tau z ≠ 0
     exact mul_ne_zero hzF hzB
-  simp only [univGermEval_analyticSubring_mul,
+  simp only [univGermEval_analyticSubring_add,
+    univGermEval_analyticSubring_mul,
     univGermEval_analyticSubring_sub,
-    univGermEval_addTranslationAnalyticEquiv]
+    univGermEval_addTranslationAnalyticEquiv,
+    univGermEval_constToAnalytic_mixedFace]
   field_simp [hds, hd, hztheta] at hratio
   linear_combination hratio
 
-/-- **Second direct elliptic-gamma source face.**  The `tau`-translation defect of the genuine
-elliptic-gamma logarithmic derivative is the recentered `sigma`-theta logarithmic derivative
-forced by the polarized additive coordinate. -/
+/-- **Second direct elliptic-gamma source face modulo normalization.**  The `tau`-translation
+defect is the recentered `sigma`-theta logarithmic derivative up to its comparison constant. -/
 theorem ellipticGammaLogDerivMero_source_face_tau
     {sigma tau : ℂ} (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
-    addTranslationMeroEquiv tau
-        (ellipticGammaLogDerivMero sigma tau hsigma htau) -
-      ellipticGammaLogDerivMero sigma tau hsigma htau =
-        addTranslationMeroEquiv ((tau - sigma) / 2)
-          (thetaLogDerivMero sigma hsigma) := by
+    ∃ d : ℂ,
+      addTranslationMeroEquiv tau
+          (ellipticGammaLogDerivMero sigma tau hsigma htau) -
+        ellipticGammaLogDerivMero sigma tau hsigma htau =
+          addTranslationMeroEquiv ((tau - sigma) / 2)
+              (thetaLogDerivMero sigma hsigma) +
+            algebraMap (analyticSubring Set.univ) (meroField Set.univ)
+              (constToAnalytic Set.univ d) := by
+  obtain ⟨d, hcomparison⟩ :=
+    ellipticThetaAdditiveLogKernel_eq_thetaLogDeriv_add_constant hsigma
+  refine ⟨d, ?_⟩
   let c : ℂ := (tau - sigma) / 2
   let D := ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau
   let Q := addTranslationAnalyticEquiv c (thetaAnalytic sigma hsigma)
@@ -239,6 +257,9 @@ theorem ellipticGammaLogDerivMero_source_face_tau
     fun hz ↦ thetaAnalytic_ne_zero sigma hsigma
       ((addTranslationAnalyticEquiv c).injective (by simpa [Q] using hz))
   dsimp [D, Q] at hD hTD hQ
+  have hQ' : addTranslationAnalyticEquiv ((tau - sigma) / 2)
+      (thetaAnalytic sigma hsigma) ≠ 0 := by
+    simpa [c] using hQ
   let R : analyticSubring Set.univ :=
     addTranslationAnalyticEquiv tau
           (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau) *
@@ -254,8 +275,8 @@ theorem ellipticGammaLogDerivMero_source_face_tau
     addTranslationMeroEquiv_algebraMap,
     map_div₀, addTranslationMeroEquiv_algebraMap,
     addTranslationMeroEquiv_algebraMap]
-  field_simp [hmap_ne hD, hmap_ne hTD, hmap_ne hQ]
-  simp only [← map_mul, ← map_sub]
+  field_simp [hmap_ne hD, hmap_ne hTD, hmap_ne hQ']
+  simp only [← map_mul, ← map_sub, ← map_add]
   rw [(IsFractionRing.injective (analyticSubring Set.univ)
     (meroField Set.univ)).eq_iff]
   apply analyticSubring_eq_of_eventually_eval_eq (z₀ := z0)
@@ -288,11 +309,11 @@ theorem ellipticGammaLogDerivMero_source_face_tau
       univGermEval (z + c)
             (thetaPrimeAnalytic sigma hsigma : Germ (Filter.principal Set.univ) ℂ) /
         univGermEval (z + c)
-          (thetaAnalytic sigma hsigma : Germ (Filter.principal Set.univ) ℂ) := by
-    rw [hKt, hK]
+          (thetaAnalytic sigma hsigma : Germ (Filter.principal Set.univ) ℂ) + d := by
+    rw [hKt, hK, ellipticGammaAdditiveLogKernel_add_tau_sub hsigma htau]
     dsimp only [c]
     simpa [thetaLogDeriv, add_assoc] using
-      ellipticGammaAdditiveLogKernel_add_tau_sub hsigma htau
+      hcomparison (z + (tau - sigma) / 2) hztheta
   have hdt : univGermEval (z + tau)
       (ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau :
         Germ (Filter.principal Set.univ) ℂ) ≠ 0 := by
@@ -305,9 +326,11 @@ theorem ellipticGammaLogDerivMero_source_face_tau
     change ellipticGammaForwardProduct sigma tau z *
       ellipticGammaBackwardProduct sigma tau z ≠ 0
     exact mul_ne_zero hzF hzB
-  simp only [univGermEval_analyticSubring_mul,
+  simp only [univGermEval_analyticSubring_add,
+    univGermEval_analyticSubring_mul,
     univGermEval_analyticSubring_sub,
-    univGermEval_addTranslationAnalyticEquiv]
+    univGermEval_addTranslationAnalyticEquiv,
+    univGermEval_constToAnalytic_mixedFace]
   field_simp [hdt, hd, hztheta] at hratio
   linear_combination hratio
 
@@ -323,11 +346,12 @@ theorem ellipticGammaLogDerivMero_mixed_face_sigma
       (addTranslationMeroEquiv h (ellipticGammaLogDerivMero σ τ hσ hτ) -
         ellipticGammaLogDerivMero σ τ hσ hτ) =
       thetaLogDerivDefectMero h τ hτ := by
-  let D := ellipticGammaLogDerivDenominatorAnalytic σ τ hσ hτ
   rw [addTranslationMeroEquiv_mixed_defect_comm]
-  rw [ellipticGammaLogDerivMero_source_face_sigma hσ hτ]
-  rfl
-  linear_combination hratio
+  obtain ⟨c, hface⟩ := ellipticGammaLogDerivMero_source_face_sigma hσ hτ
+  rw [hface, (addTranslationMeroEquiv h).map_add,
+    addTranslationMeroEquiv_const,
+    thetaLogDerivDefectMero]
+  ring
 
 end
 

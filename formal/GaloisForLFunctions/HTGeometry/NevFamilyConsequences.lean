@@ -57,8 +57,10 @@ theorem nevLeaf_injective (h : PositiveMomentForm s) (h0b : BoundedKernel s 0) (
   have := congrArg (fun μ => μ {t₁}) h1
   simp only [Measure.dirac_apply' _ (measurableSet_singleton t₁)] at this
   by_contra hne
-  rw [Set.indicator_of_mem rfl, Set.indicator_of_notMem (fun hc => hne (by simpa using hc.symm))]
-    at this
+  have hmem1 : t₂ ∉ ({t₁} : Set (OnePoint ℝ)) := by
+    simp only [Set.mem_singleton_iff]
+    exact fun hc => hne hc.symm
+  rw [Set.indicator_of_notMem hmem1, Set.indicator_of_mem (Set.mem_singleton t₁)] at this
   simp at this
 
 end HTGeometry

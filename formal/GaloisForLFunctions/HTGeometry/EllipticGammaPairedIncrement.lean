@@ -138,13 +138,14 @@ theorem ellipticGammaLogDerivMero_mixed_face_tau
         ellipticGammaLogDerivMero sigma tau hsigma htau) =
       addTranslationMeroEquiv ((tau - sigma) / 2)
         (thetaLogDerivDefectMero h sigma hsigma) := by
-  let D := ellipticGammaLogDerivDenominatorAnalytic sigma tau hsigma htau
-  let Q := thetaLogDerivDefectDenominatorAnalytic h sigma hsigma
   rw [addTranslationMeroEquiv_mixed_defect_comm]
-  rw [ellipticGammaLogDerivMero_source_face_tau hsigma htau]
-  rw [thetaLogDerivDefectMero, map_sub,
+  obtain ⟨d, hface⟩ := ellipticGammaLogDerivMero_source_face_tau hsigma htau
+  rw [hface, (addTranslationMeroEquiv h).map_add,
+    addTranslationMeroEquiv_const, thetaLogDerivDefectMero,
+    (addTranslationMeroEquiv ((tau - sigma) / 2)).map_sub,
     addTranslationMeroEquiv_add, addTranslationMeroEquiv_add]
   rw [show h + (tau - sigma) / 2 = (tau - sigma) / 2 + h by ring]
+  ring
 
 /-! ## The compatible primitive family -/
 
@@ -171,20 +172,27 @@ theorem ellipticGammaExternalLogDerivDefectMero_one
   rw [ellipticGammaExternalLogDerivDefectMero,
     addTranslationMeroEquiv_ellipticGammaLogDerivMero_one, sub_self]
 
-/-- The external-defect value at the first structural generator is the first direct theta face. -/
+/-- The external-defect value at the first structural generator is the first theta face modulo its
+normalization constant. -/
 theorem ellipticGammaExternalLogDerivDefectMero_sigma
     (sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
-    ellipticGammaExternalLogDerivDefectMero sigma sigma tau hsigma htau =
-      thetaLogDerivMero tau htau := by
+    ∃ c : ℂ,
+      ellipticGammaExternalLogDerivDefectMero sigma sigma tau hsigma htau =
+        thetaLogDerivMero tau htau +
+          algebraMap (analyticSubring Set.univ) (meroField Set.univ)
+            (constToAnalytic Set.univ c) := by
   exact ellipticGammaLogDerivMero_source_face_sigma hsigma htau
 
 /-- The external-defect value at the second structural generator is the recentered second theta
-face. -/
+face modulo its normalization constant. -/
 theorem ellipticGammaExternalLogDerivDefectMero_tau
     (sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
-    ellipticGammaExternalLogDerivDefectMero tau sigma tau hsigma htau =
-      addTranslationMeroEquiv ((tau - sigma) / 2)
-        (thetaLogDerivMero sigma hsigma) := by
+    ∃ d : ℂ,
+      ellipticGammaExternalLogDerivDefectMero tau sigma tau hsigma htau =
+        addTranslationMeroEquiv ((tau - sigma) / 2)
+            (thetaLogDerivMero sigma hsigma) +
+          algebraMap (analyticSubring Set.univ) (meroField Set.univ)
+            (constToAnalytic Set.univ d) := by
   exact ellipticGammaLogDerivMero_source_face_tau hsigma htau
 
 /-- The genuine elliptic-gamma external defects inherit the universal additive translation

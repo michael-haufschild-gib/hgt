@@ -4775,3 +4775,485 @@ with the global `Hypertranscendental`, because it was written against the pre-st
 corollary. Restating that set with the half-plane predicate and rerouting its one call site to
 `not_differentiallyAlgebraicOn_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree`
 would carry the dense/residual packaging over to the composed statement verbatim.
+
+### Dense/residual packaging carried to the half-plane
+
+`countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_residual` (in
+`CarrierHerglotzPresentationFree`) — the dense residual family of pattern-free carriers, recorded
+with the half-plane predicate. Same hypotheses as
+`allFinitePatterns_positiveActualCarrier_relationFree_dense_residual`, whose dense/residual
+conclusion it reuses directly; the only new content is the subset map through the strengthened
+packet lemma. Unconditional.
+
+This was written as a new theorem rather than by editing
+`positiveSingularContinuousCarrier_hypertranscendental_dense_residual`, because the dense/residual
+property belongs to the *pattern-free* set and both predicates are supersets of it — so no existing
+statement had to change, and the global capstone keeps working untouched.
+
+Net state of the HT half, all unconditional:
+- per carrier — `not_differentiallyAlgebraicOn_herglotzPresentation_weightedBoundaryCarrier`
+- dense residual family — `countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_residual`
+- the gauge for an arbitrary finite measure — `not_differentiallyAlgebraicOn_herglotzPresentation`
+- the regularized transform of a Nevanlinna-weighted measure —
+  `not_differentiallyAlgebraicOn_regularizedHerglotzTransform`
+
+A note on a Lean detail worth remembering: writing the subset as a standalone `have hsubset : {w | …}
+⊆ {w | …}` fails, because the set-builder binder has no type annotation and `w.1.1` cannot be
+resolved. Leaving both subset obligations as goals of `Dense.mono` / `Filter.mem_of_superset` lets
+the expected type determine `w`, and the same term closes both.
+
+### Correction: what "the HT half is complete" does and does not mean
+
+The previous entry said the HT half was complete end-to-end. That overstates it, and reading the
+card's headline claim against `BoundaryCarrierTranslationFreeness` shows where the line actually is.
+
+The card's HT claim is about the **full complex translation family**: no nonzero differential
+polynomial over `C(z)` in any finite tuple of *distinct translates* vanishes identically. That
+predicate is already formalized, as `MaximalTranslationDifferentialFree` — "every
+polynomial-coefficient relation among every finite family of distinct complex translates and finite
+jet depths has zero coefficient vector" — and it is exactly the shape of the `hfree` hypothesis this
+card's chain carries. Dense/residual families satisfying it are already proved
+(`allFinitePatterns_positiveActualCarrier_relationFree_dense_residual`,
+`maximalTranslationDifferentialFree_of_fullRankWitness`).
+
+So the translation-family content was never the missing piece, and the pattern machinery — with
+`InjectiveShiftConfiguration` and `CarrierPatternShift` — is what encodes the shifts.
+
+What is genuinely established by the work logged above:
+- that freeness holds for the **Cauchy transform of the carrier** (corpus, pre-existing), and
+- a **single-function** gauge from that Cauchy transform to the regularized transform `m_u`
+  (`not_differentiallyAlgebraicOn_herglotzPresentation…`, this card).
+
+What remains is the **multi-shift gauge**: transporting `MaximalTranslationDifferentialFree` from
+the carrier's Cauchy family to the translated family of `m_u`. Mathematically this should go
+through, since each translate satisfies `m_u(z + h) = (z + h) · M + (1 + (z + h)²) · C(z + h)`, a
+polynomial gauge with coefficients polynomial in `z`, so a joint relation among the `m_u`-translates
+substitutes into a joint relation among the `C`-translates. But it is a pattern-level statement, not
+an instance of the single-function gauge, and it is not formalized.
+
+Stated precisely, the open item is: from `MaximalTranslationDifferentialFree` for the carrier,
+derive the corresponding pattern-relation-freeness for the family `z ↦ z · M + (1 + z²) · C z` and
+its translates. That is the last step between the corpus's freeness theorems and the card's claim as
+written about `m_u`.
+
+### The multi-shift gauge
+
+`GaloisForLFunctions.HTGeometry.FamilyPolynomialGauge` — the componentwise version of the
+multiplicative gauge, which is the piece the translation-family claim needs.
+
+- `FamilyJetIndex`, `familyJetVec`, `FamilyDifferentiallyAlgebraicOn` — jet coordinates of a finite
+  family: one spectral variable plus one jet block per component.
+- `familyJetVariable`, `familyMulJetImage` — the blockwise Leibniz substitution.
+- `bindPointMap_familyMulJetImage` — on actual jets it returns the jets of the multiplied family.
+- `exists_familyMulJetImage_preimage` — the point map covers every packet where no multiplier
+  vanishes. The substitution is *block diagonal*, so each block is the same triangular system as the
+  single-function case and `mulPolynomialJetLower` / `mulPolynomialJetLower_congr` are reused per
+  block, with `choose` supplying one solution per component.
+- `familyDifferentiallyAlgebraicOn_of_mul_polynomial` — **the componentwise gauge**: a differential
+  relation among a family each multiplied by its own nonzero polynomial pulls back to a relation
+  among the original family. Nonvanishing uses the product `∏ i, aeval (X (inl ())) (a i)`, nonzero
+  because `MvPolynomial` over `ℂ` is a domain.
+
+Stated for an arbitrary family rather than for translates; the translated family is the instance,
+with `a i = 1 + (X + h i) ^ 2`. Unconditional; only `propext`, `Classical.choice`, `Quot.sound`.
+
+What this does and does not close. The gauge now exists at multi-shift level, so the obstruction
+named in the previous entry — that the gauge was single-function while the card's claim is about the
+translation family — is removed *in the jet formalism*. What is still not bridged is the encoding
+gap: the corpus states freeness in the packet/pattern formalism
+(`probabilityCarrierExpandedPatternRelationHolds`, `MaximalTranslationDifferentialFree`), whereas
+this gauge is stated for `FamilyDifferentiallyAlgebraicOn` in the `MvPolynomial` jet formalism. The
+single-shift bridge between the two already exists inside the proof of
+`hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree`
+(`reshapeJet`, `renameToSingleShiftJets`, `finitePatternOfPolynomial` at `shiftCode : Fin 1 → Unit`).
+`finitePatternOfPolynomial` is already general in the number of shifts `m`, so the multi-shift bridge
+is the same construction without the `m = 1` specialisation — that is the remaining connector.
+
+### The componentwise affine gauge completed
+
+The multiplicative family gauge only handled multipliers, so the affine case needed the additive
+half. Added to `FamilyPolynomialGauge`:
+
+- `familyShiftPoly`, `familyDifferentiallyAlgebraicOn_of_add_polynomial` — adding a polynomial
+  componentwise preserves relation-freeness. This reuses `axisShiftSubst` at the distinguished
+  coordinate `Sum.inl ()` together with `axisShiftSubst_ne_zero`, so nonvanishing is free: the
+  substitution is invertible, unlike the multiplicative one. The jet identity is
+  `iteratedDeriv_add_polynomial_at`, already proved for the single-function local gauge.
+- `familyDifferentiallyAlgebraicOn_of_affine` — **the componentwise affine gauge**: for a family
+  `g`, nonzero multipliers `a`, and shifts `b`, a relation among
+  `fun i w => eval w (b i) + eval w (a i) * g i w` pulls back to a relation among `g`.
+
+Unconditional; only `propext`, `Classical.choice`, `Quot.sound`.
+
+This is the exact shape the translated transform needs, since
+`m_u (z + h i) = (z + h i) · M + (1 + (z + h i)²) · C (z + h i)`
+is `eval z (b i) + eval z (a i) * C (z + h i)` with `a i = 1 + (X + C (h i))²` and
+`b i = (X + C (h i)) * C M`, and `a i ≠ 0`.
+
+So the gauge side of the translation-family claim is now complete: multiplicative, additive, and
+affine, at family level, for an arbitrary family with translates as the instance.
+
+The remaining connector is unchanged and is purely one of encoding: bridging the corpus's
+packet/pattern formalism (`MaximalTranslationDifferentialFree`,
+`probabilityCarrierExpandedPatternRelationHolds`) to `FamilyDifferentiallyAlgebraicOn`. The
+single-shift bridge exists inside
+`hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree` via
+`reshapeJet`, `renameToSingleShiftJets` and `finitePatternOfPolynomial`; the latter is already
+general in the shift count, and `Fin m × Fin (n+1) ≃ Σ i : Fin m, Fin (orders i)` at constant
+`orders` is the index identification the multi-shift version needs.
+
+### Encoding bridge, first half: reshaping family jets
+
+`GaloisForLFunctions.HTGeometry.FamilyJetReshape` — the multi-component analogue of `reshapeJet`,
+which handles one distinguished spectral variable in `Fin (n + 2)`. Here the spectral variable is
+the `Sum.inl` coordinate and the jet variables are indexed by component and order.
+
+- `familyReshapeJet`, `familyReshapeJetInv`, `familyReshapeJetInv_comp_familyReshapeJet`,
+  `familyReshapeJet_injective` — absorbing the spectral variable into `ℂ[X]` coefficients is an
+  injective ring map, by exhibiting the inverse.
+- `eval_specialize_familyReshapeJet` — specializing the coefficients at `z` and evaluating at the
+  jet values is evaluating the original at `Sum.elim (fun _ => z) v`, i.e. at the family jet vector.
+  This is the compatibility the pattern argument runs on.
+- `familySigmaEquiv`, `renameToFamilyShiftJets`, `renameToFamilyShiftJets_injective` — the identity
+  `Σ _ : Fin m, Fin (n+1) ≃ Fin m × Fin (n+1)` carrying jet coordinates into the pattern's dependent
+  shift/order form, at constant `orders`.
+
+Unconditional; only `propext`, `Classical.choice`, `Quot.sound`. `specializePolynomialCoefficients`
+needed no generalisation — it was already stated for an arbitrary index type.
+
+What remains of the bridge is the second half: building the finite pattern from a reshaped relation
+(`finitePatternOfPolynomial` at `shiftCode` the tuple of distinct translates, `orders ≡ n+1`),
+showing `probabilityCarrierExpandedPatternRelationHolds` for it, and running
+`polynomial_eq_zero_of_patternCoefficientVector_eq_zero` back through the two injectivity lemmas
+above. That is the multi-shift analogue of the ~90-line argument inside
+`hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree`, and it is the
+only step still separating the corpus's freeness theorems from the card's translation-family claim
+about `m_u`.
+
+### The gauge instantiated at the actual translates
+
+`GaloisForLFunctions.HTGeometry.TranslatedFamilyGauge`
+- `translatedNevanlinnaMultiplier c = 1 + (X + C c)²`, `translatedMassShift c M = (X + C c) * C M`,
+  with their evaluation lemmas.
+- `translatedNevanlinnaMultiplier_ne_zero` — nonzero, seen by evaluating at `-c`, where it is `1`.
+- `contDiffAt_cauchyTransform_translate` — the translated Cauchy transform is smooth wherever its
+  node is off the real axis.
+- `familyDifferentiallyAlgebraicOn_translatedCauchy_of_presentation` — **a differential relation
+  among the translates of the Herglotz presentation pulls back to one among the translates of the
+  Cauchy transform.**
+
+Unconditional; only `propext`, `Classical.choice`, `Quot.sound`.
+
+This closes the analytic side of the translation-family claim: the gauge is no longer abstract, it
+applies to `m_u (z + h i)` for an arbitrary finite tuple of shifts, on any set where every translated
+node is off the real axis.
+
+Remaining, unchanged: the pattern-encoding step. `FamilyJetReshape` supplies the reshape and rename
+with their injectivity, and this module supplies the gauge; what is still missing is building the
+finite pattern from a reshaped relation and deriving
+`probabilityCarrierExpandedPatternRelationHolds`, i.e. the multi-shift analogue of the argument
+inside `hypertranscendental_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree`. In
+that argument the shift configuration is the zero one; for translates it is the tuple `h` itself,
+which is exactly what `combinedProjectiveRowShiftPacket packet shift x = packet.1 x.1 + shift.1 x.2`
+was built to express — so the machinery is already shaped for it.
+
+### The translation family is capped at one translate by the shift palette `[VERIFIED]`
+
+Attempting the pattern-encoding step surfaced a type-level constraint that changes the status of the
+card's headline HT claim, and corrects an earlier entry of mine.
+
+`FiniteDifferentialPattern Γ` carries `shiftCode : Fin shiftCount → Γ` together with
+`shiftCode_injective`. Every carrier-freeness statement in the tree instantiates `Γ = Unit`
+(`MaximalTranslationDifferentialFree`, `weightedBoundaryCarrierExpandedPatternRelationHolds`,
+`probabilityCarrierExpandedPatternRelationHolds`, and the dense/residual theorems above them —
+checked by enumeration, every occurrence of `FiniteDifferentialPattern` in `GaloisForLFunctions` is
+at palette `Unit`). Injectivity into `Unit` forces `shiftCount ≤ 1`. Verified in Lean:
+
+    example (p : FiniteDifferentialPattern Unit) : p.shiftCount ≤ 1 := by
+      have h := p.shiftCode_injective
+      have : Fintype.card (Fin p.shiftCount) ≤ Fintype.card Unit :=
+        Fintype.card_le_of_injective _ h
+      simpa using this
+
+Since `CarrierPatternShift p = Fin p.shiftCount`, an `InjectiveShiftConfiguration
+(CarrierPatternShift p)` supplies **at most one** complex shift. So a pattern relation can involve
+the carrier's jets at nodes carrying at most one translate. Many packet rows give many *points*, not
+many distinct *translates*.
+
+Consequence for this card. `MaximalTranslationDifferentialFree` does not say what its docstring says
+("every finite family of distinct complex translates"); as typed it is the single-translate
+statement. The card's headline claim — no nonzero differential polynomial over `C(z)` in any finite
+tuple of distinct translates — is therefore **not** established by the existing freeness theorems.
+
+Correction to an earlier entry. I wrote that "the translation-family content was never the missing
+piece" and that `MaximalTranslationDifferentialFree` "is exactly the card's HT claim". Both are
+wrong, for this reason. What the corpus establishes, and what the gauge work above transports, is
+the single-function statement.
+
+What the fix would be: the structure is already generic in `Γ`, so the freeness layer would have to
+be re-instantiated at a palette admitting `m` distinct codes (`Fin m`, or `ℂ` with the translates as
+codes). That is a change to definitions with wide blast radius through the packet/pattern layer, not
+a missing lemma. It is the honest open item for the HT half.
+
+Unaffected by this: the chamber half (M3), and the gauge modules, which are stated for an arbitrary
+finite family `Fin m → ℂ → ℂ` with no palette constraint and so already support `m` translates —
+`familyDifferentiallyAlgebraicOn_of_affine` and
+`familyDifferentiallyAlgebraicOn_translatedCauchy_of_presentation` are ready for the corrected
+freeness input whenever it exists.
+
+### How hard the palette fix actually is `[VERIFIED]`
+
+The previous entry called the multi-translate fix "a change to definitions with wide blast radius".
+That was an estimate, not a check. Checking it gives a much sharper picture.
+
+**The rectangularization and evaluation core is already palette-generic.** Each of
+`finitePatternOfPolynomial`, `polynomialPatternCoefficientVector`,
+`polynomial_eq_zero_of_patternCoefficientVector_eq_zero`, `polynomialPatternCoefficientExpansion` is
+stated `{Γ : Type*} {m : ℕ}`, and `expandedDifferentialEvaluationMatrix` is generic in its index
+types. `PatternShape` and `PatternRow` are already `{Γ : Type*}`. None of these needs touching.
+
+**Only the carrier-layer abbreviations pin `Unit`,** and they relax mechanically. Verified by
+compiling palette-general copies of them verbatim — `CarrierPatternRow`, `CarrierPatternMonomial`,
+`CarrierPatternShift`, `carrierPatternExponent`, `carrierPatternExponent_injective`, and crucially
+the load-bearing dimension count `carrierPattern_rows_strictly_dominate_columns`, whose proof
+(`simp` then `omega`) goes through unchanged at arbitrary `Γ`. Nothing in them uses a `Unit`-specific
+fact; they only consume `p.jetExponent`, `p.orders` and cardinalities.
+
+Also verified: patterns with two distinct shifts genuinely exist at a larger palette —
+
+    example : ∃ p : FiniteDifferentialPattern (Fin 2), p.shiftCount = 2 :=
+      ⟨finitePatternOfPolynomial (fun i : Fin 2 => i) Function.injective_id (fun _ => 1) 0, rfl⟩
+
+so the cap really is the `Unit` instantiation and nothing deeper in the encoding.
+
+**Where the real content sits.** What does *not* follow mechanically is the deep input: the
+dense/residual freeness theorems (`allFinitePatterns_abstractCarrier_relationFree_dense_residual`
+and the chain above it) must still hold when a pattern carries `m > 1` shifts, i.e. the full-rank /
+controllability argument must survive the extra columns that distinct translates contribute. That is
+genuine mathematics, not re-typing, and it is the actual open core of the HT half.
+
+Nothing was installed for this entry: writing `Gen*` copies alongside the existing carrier
+abbreviations would duplicate the corpus rather than improve it. The relaxation belongs in
+`AnalyticNevanlinnaCarrierRelationFree` itself, as part of the same change that re-proves the
+freeness layer at `m > 1`.
+
+### Locating exactly what breaks at `m > 1` `[VERIFIED]`
+
+Two entries ago I called the multi-translate fix "wide blast radius"; one entry ago I called the
+remainder "genuine mathematics, not re-typing". Both were estimates. Checking further narrows it
+again, and I want the record to reflect evidence rather than successive guesses.
+
+Verified shift-generic (compiles verbatim at arbitrary palette `Γ`):
+- the rectangularization/evaluation core, already stated `{Γ : Type*} {m : ℕ}`;
+- the carrier-layer abbreviations and `carrierPatternExponent` with its injectivity;
+- **both** dimension conditions — `carrierPattern_rows_strictly_dominate_columns` and
+  `carrierPattern_shift_dimension_below_codimension`, the transversality codimension inequality,
+  whose `finrank_pi_fintype` / `simp` / `omega` proof goes through unchanged;
+- the control input `normalizedProjectiveCauchyJetLinftyContinuousControl`, which is generic in the
+  node family `{ι : Type*} [Fintype ι]`.
+
+Note also that `CarrierPatternRow` already budgets `Fintype.card (PatternShape p) +
+coefficientDegree + p.shiftCount + 2` rows, with the docstring explaining that the extra
+`shiftCount + 2` rows exist to make the transversality inequality automatic. The row budget was
+designed for many shifts.
+
+What actually depends on `Unit` being a subsingleton: exactly three sites, all in
+`AnalyticNevanlinnaCarrierRelationFree.lean` and all inside the *bridge* from a differential
+relation to a pattern, none in the freeness chain itself —
+- line 78, inside `singleShiftJetEquiv` (the `Σ _ : Fin 1, Fin n ≃ Fin n` collapse). `FamilyJetReshape`'s
+  `familySigmaEquiv` / `renameToFamilyShiftJets` already replace this for `m` shifts.
+- line 609, `hshiftCode : Function.Injective shiftCode` for `shiftCode : Fin 1 → Unit`. At palette
+  `Fin m` this is `Function.injective_id`.
+- line 616, `shift0 := ⟨fun _ => 0, …⟩`, the *zero* shift configuration, injective only because the
+  index is a subsingleton. At `m > 1` this must be the tuple of distinct translates itself, which is
+  what `InjectiveShiftConfiguration` and `combinedProjectiveRowShiftPacket packet shift x =
+  packet.1 x.1 + shift.1 x.2` exist to carry.
+
+`BoundaryCarrierTranslationFreeness` and `NevanlinnaNoncriticalProjectiveCompactPatch` contain no
+`Subsingleton` use at all.
+
+Revised estimate, stated as such: the deep freeness content appears already shift-generic, and the
+cap looks confined to the palette instantiation plus those three bridge sites. The step that remains
+genuinely unverified is whether the dense/residual proofs, once re-typed at general `Γ`, still close
+— they have no subsingleton dependence and their dimension and control inputs are shift-generic, so
+there is reason to expect they do, but that has not been run.
+
+### The multi-shift bridge, contradiction step
+
+`GaloisForLFunctions.HTGeometry.FamilyPatternBridge`
+- `familyShiftCode m = id : Fin m → Fin m`, `familyShiftCode_injective`, `familyOrders m n` — the
+  `m`-translate pattern data, with the palette taken to be `Fin m` itself so that `m` distinct shift
+  codes exist. This is the point where the `Unit` palette was the binding constraint.
+- `familyPatternOfRelation` — the finite pattern attached to a family jet relation.
+- `familyJetRelation_eq_zero_of_patternCoefficients_zero` — **if every pattern coefficient of the
+  reshaped relation vanishes, the original family jet relation was zero.**
+
+Unconditional; only `propext`, `Classical.choice`, `Quot.sound`.
+
+This is the step that turns pattern-freeness back into a contradiction, and it composes the two
+injectivity lemmas from `FamilyJetReshape` with the generic
+`polynomial_eq_zero_of_patternCoefficientVector_eq_zero`. Notably it needs nothing about the palette
+beyond injectivity of the shift codes, so — unlike the single-shift bridge, which uses
+`Subsingleton.elim` at lines 78/609/616 — it does not rely on the shift index being a subsingleton.
+
+Bridge status. Of the three `Unit`-dependent sites identified above, replacements now exist for two:
+`singleShiftJetEquiv` is replaced by `familySigmaEquiv` / `renameToFamilyShiftJets`, and
+`hshiftCode` by `familyShiftCode_injective`. The third, `shift0` — the zero shift configuration —
+has no replacement yet because at `m > 1` it must be the tuple of distinct translates supplied by
+the caller, not a constructed object.
+
+What is still missing from the bridge is its *forward* step: showing that a family jet relation
+actually makes `probabilityCarrierExpandedPatternRelationHolds` true for this pattern, which is the
+`hrelation` calc chain of the single-shift argument (packet values, `carrierPatternExponent`,
+`expandedDifferentialEvaluationMatrix`, `polynomialPatternCoefficientExpansion`). With the back step
+now in place and both dimension conditions verified shift-generic, that calc chain is the remaining
+piece of the encoding, alongside the still-unrun question of whether the dense/residual freeness
+proofs close at `m > 1`.
+
+### Identifying the two descriptions of a translated family
+
+`GaloisForLFunctions.HTGeometry.IteratedDerivTranslate`
+- `iteratedDeriv_comp_add_right` — `iteratedDeriv n (fun w => f (w + c)) z = iteratedDeriv n f (z + c)`.
+  Absent from mathlib; `exact?` fails on it. Mathlib has only the single-derivative case
+  `deriv_comp_add_const`, from which this follows by induction with the function generalised.
+- `familyJetVec_translates` — the family jet vector of a translated family equals the jet vector of
+  the single function read at the translated nodes.
+
+Unconditional; only `propext`, `Classical.choice`, `Quot.sound`.
+
+This is the identification the forward bridge step needs, and it is the conceptual join between the
+two formalisms this card has been working across: the family gauge describes `m` separate functions
+differentiated at one point, while the packet formalism describes one function differentiated at `m`
+translated points. They are the same data, and now provably so.
+
+With this, the forward step reduces to the calc chain proper — matching packet values against
+`carrierPatternExponent` and `expandedDifferentialEvaluationMatrix`, then applying
+`polynomialPatternCoefficientExpansion`. Every ingredient it consumes is now either generic or
+supplied: the reshape and rename with injectivity (`FamilyJetReshape`), the contradiction step
+(`FamilyPatternBridge`), the jet identification (here), and both dimension conditions verified
+shift-generic.
+
+### The multi-shift bridge closed on its algebraic side
+
+`familyPatternExpansion_eq_eval` (added to `FamilyPatternBridge`) — **the forward step**: the pattern
+coefficient expansion of a family jet relation, evaluated at jet values `x` and spectral value `z`,
+is the original relation evaluated at the family jet vector `Sum.elim (fun _ => z) x`. It composes
+`polynomialPatternCoefficientExpansion` with the rename compatibility (`MvPolynomial.eval₂_rename`)
+and `eval_specialize_familyReshapeJet`.
+
+With the back step already in place, the algebraic content of the multi-shift bridge is now complete
+in both directions, at palette `Fin m` and with no subsingleton assumption anywhere:
+
+- reshape and rename, with injectivity — `FamilyJetReshape`
+- forward: expansion equals evaluation at the jet vector — `FamilyPatternBridge`
+- back: vanishing pattern coefficients force the relation to vanish — `FamilyPatternBridge`
+- the identification of the two descriptions of a translated family — `IteratedDerivTranslate`
+- both dimension conditions, verified shift-generic
+- the control input, generic in the node family
+
+All unconditional; only `propext`, `Classical.choice`, `Quot.sound`.
+
+What is left is no longer algebra. Two items, both outside the bridge:
+1. The measure-side instantiation: matching `weightedBoundaryCarrierExpandedPacketValue` against the
+   jet values `x`, which is where the carrier definitions (currently typed at palette `Unit`) enter,
+   and which `familyJetVec_translates` is the identification for.
+2. Whether the dense/residual freeness proofs close at `m > 1` — still unrun, and still the genuine
+   open core of the HT half.
+
+### The measure side identified, at any number of shifts
+
+`GaloisForLFunctions.HTGeometry.PacketValueFamilyJet`
+- `weightedBoundaryCarrierExpandedPacketValue_eq_familyJetVec` — **packet values are family jets of
+  the translated Cauchy transforms.** The packet formalism evaluates one function at shifted nodes;
+  the family gauge evaluates a jet vector of translated functions at one node. Same data.
+
+Unconditional; only `propext`, `Classical.choice`, `Quot.sound`.
+
+The key observation making this possible: `weightedBoundaryCarrierExpandedPacketValue` is already
+generic in its shift index type, `{row ι : Type} [Fintype row] [Fintype ι]`, taking `orders : ι → ℕ`
+and `shift : InjectiveShiftConfiguration ι`. It is *not* tied to `Unit` or to a pattern. The `m ≤ 1`
+cap enters only when `CarrierPatternShift p` — which is `Fin p.shiftCount` for a `Unit`-palette
+pattern — is supplied as that `ι`. Instantiated at `ι = Fin m` directly, the packet machinery
+already describes `m` distinct translates, and the proof is `iteratedDeriv_comp_add_right` after
+cancelling the `Fintype.equivFin` round trip.
+
+So item 1 of the previous entry is discharged: the measure-side identification exists and is not
+palette-restricted. Everything the multi-shift argument needs is now built except the deep input —
+whether the dense/residual freeness proofs close at `m > 1`. That single question is the whole of
+what separates this card's HT half from its stated claim.
+
+### The abstract freeness layer is already multi-shift `[VERIFIED]`
+
+The open core named in the previous entries — "do the dense/residual freeness proofs close at
+`m > 1`" — is answered at the abstract level: they already do.
+
+`NevanlinnaNoncriticalProjectiveCompactPatch.countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual`
+takes `(row κ ι : ℕ → Type)` with `[∀ n, Fintype (ι n)]` — the shift type is an arbitrary finite
+type of **any** cardinality, one per pattern index. Its only dimension hypotheses are
+
+    hrows : ∀ n, Fintype.card (κ n × Fin (degree n + 1)) + degree n < Fintype.card (row n)
+    hdim  : ∀ n, Module.finrank ℝ (ι n → ℂ) <
+              2 * (Fintype.card (row n) - Fintype.card (κ n × Fin (degree n + 1)) - degree n + 1)
+
+which are exactly `carrierPattern_rows_strictly_dominate_columns` and
+`carrierPattern_shift_dimension_below_codimension`, both verified above to generalise verbatim to an
+arbitrary palette. Its conclusion is density and residuality of
+
+    {w | ∀ n (shift : InjectiveShiftConfiguration (ι n)), actualNevanlinnaExpandedFullRankWitness … shift}
+
+i.e. full-rank witnesses for *every* tuple of distinct complex shifts, as its docstring states.
+
+So the `m ≤ 1` cap is not mathematical. It is entirely an artefact of the carrier layer
+instantiating `ι` as `CarrierPatternShift p = Fin p.shiftCount` for a `FiniteDifferentialPattern
+Unit`, where injectivity of `shiftCode : Fin shiftCount → Unit` forces `shiftCount ≤ 1`. The abstract
+theorem underneath never had that restriction.
+
+Status, stated carefully. What is verified: the abstract full-rank result is ι-generic and its
+dimension hypotheses hold at arbitrary palette; the packet values, the control input, the
+rectangularization core, and every bridge component built above are ι-generic or palette-general.
+What is **not** done: performing the instantiation — re-typing the carrier layer at a palette with
+`m` distinct codes and threading `hrows`/`hdim` through to recover multi-translate freeness. That is
+plumbing across the carrier layer, not new mathematics, and it is the remaining work for the HT half.
+
+This supersedes the earlier characterisation of that step as "genuine mathematics, not re-typing".
+
+### The palette cap removed: freeness now holds at any number of translates `[DONE]`
+
+The instantiation is performed. `AnalyticNevanlinnaCarrierRelationFree` no longer fixes the shift
+palette at `Unit`.
+
+Relaxed in place, so the `Unit` case remains available as a special case and no caller changes:
+- `CarrierPatternRow`, `CarrierPatternMonomial`, `CarrierPatternShift`, `carrierPatternExponent`,
+  `carrierPatternExponent_injective`, and both dimension theorems — now `{Γ : Type*}`.
+- `allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual`,
+  `allFinitePatterns_positiveAbstractCarrier_fullRankWitness_dense_residual`,
+  `allFinitePatterns_abstractCarrier_relationFree_dense_residual`,
+  `allFinitePatterns_positiveActualCarrier_relationFree_dense_residual` — now `{Γ : Type}
+  [Countable Γ]`, the countability being what the `⋂` over patterns needs.
+
+Nothing else had to change: the abstract compact-patch theorem was already generic in the shift
+type, the packet values were already generic in it, and both dimension hypotheses were verified to
+generalise before the edit.
+
+Verified after the change: the module builds, `BoundaryCarrierTranslationFreeness` builds, and both
+relaxed freeness theorems still depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
+Verified consequence — at palette `Fin M` the patterns carry `M` distinct shifts:
+
+    example (M n : ℕ) :
+        (finitePatternOfPolynomial (fun i : Fin M => i) Function.injective_id
+          (fun _ => n + 1) 0).shiftCount = M := rfl
+
+and `CarrierPatternShift` of that pattern is `Fin M`, so an `InjectiveShiftConfiguration` on it
+supplies `M` distinct complex translates. The `shiftCount ≤ 1` bound proved earlier applies only to
+the `Unit` palette and no longer constrains the chain.
+
+So the freeness layer now states and proves relation-freeness against patterns carrying arbitrarily
+many distinct complex translates — the form the card's headline HT claim needs, and the form the
+gauge and bridge modules above were built to consume.
+
+Note on the tree state: `DirichletLSeriesUpperEnd.lean` is currently broken by another agent's
+in-flight edit (first a type mismatch, then a `whnf` heartbeat timeout, and its olean is absent).
+It contains no reference to any declaration changed here. It sits in the import closure of
+`CarrierHerglotzPresentationFree`, so that module could not be rebuilt this turn; the relaxation
+itself is verified independently.

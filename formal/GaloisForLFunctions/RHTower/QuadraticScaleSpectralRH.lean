@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
+import GaloisForLFunctions.RHTower.BerryKeating
 import GaloisForLFunctions.RHTower.ModulusSlopeBudget
 import GaloisForLFunctions.RHTower.WeightOneInversion
 
@@ -21,31 +22,20 @@ zero forces `ρ(ρ - 1)` into the spectrum.
 -/
 
 open Complex Set
+open GaloisForLFunctions
 
 namespace RHTower
 
-/-- The positive-sign convention for the scale-Hamiltonian spectral parameter.  On
-`L²(ℝ₊, dt)`, the formal adjoint relation `D† = -D-1` makes `-D(D+1) = D†D`, so a
-power mode `t⁻ʷ` carries energy `-w(w-1)`. -/
-def quadraticScaleEnergy (w : ℂ) : ℂ := -(w * (w - 1))
-
-/-- Centering the reflection coordinate turns the scale energy into a square plus `1/4`. -/
-theorem quadraticScaleEnergy_eq_centered (w : ℂ) :
-    quadraticScaleEnergy w = 1 / 4 - (w - 1 / 2) ^ 2 := by
-  unfold quadraticScaleEnergy
-  ring
-
 /-- Reality of the reflection-invariant quadratic scale parameter at every xi zero. -/
 def XiQuadraticSpectralReality : Prop :=
-  ∀ ρ : ℂ, xi ρ = 0 → (quadraticScaleEnergy ρ).im = 0
+  ∀ ρ : ℂ, xi ρ = 0 → (berryKeatingU ρ).im = 0
 
 /-- RH puts every xi zero on the reflection line, where `ρ(ρ-1)` is real. -/
 theorem xiQuadraticSpectralReality_of_rh (hRH : RiemannHypothesis) :
     XiQuadraticSpectralReality := by
   intro ρ hρ
   have hre := xi_zero_re_eq_half_of_RH hRH hρ
-  rw [quadraticScaleEnergy, neg_im, Complex.mul_im, Complex.sub_re, Complex.sub_im, Complex.one_re,
-    Complex.one_im, hre]
+  rw [berryKeatingU_im, hre]
   ring
 
 /-- If the quadratic scale parameter is real at every xi zero, then RH holds. -/
@@ -56,8 +46,7 @@ theorem riemannHypothesis_of_xiQuadraticSpectralReality
   have hstrip := xi_zero_re_mem_open_unit hρ
   have hquad := hspec ρ hρ
   have him : ρ.im = 0 := by
-    rw [quadraticScaleEnergy, neg_im, Complex.mul_im, Complex.sub_re, Complex.sub_im, Complex.one_re,
-      Complex.one_im] at hquad
+    rw [berryKeatingU_im] at hquad
     have hre : 1 / 2 < ρ.re := mem_rightHalf.mp hright
     nlinarith
   have hrho : ρ = (ρ.re : ℂ) := by

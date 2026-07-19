@@ -21,6 +21,8 @@ quadratic parameter.
 
 namespace RHTower
 
+open GaloisForLFunctions
+
 noncomputable section
 
 /-- The centered scale generator `C = D + 1/2`. -/
@@ -100,11 +102,11 @@ theorem weightOneCliffordDirac_sq
 def weightOneCliffordEnergy (a : ℝ) (w : ℂ) : ℂ :=
   (a : ℂ) ^ 2 + (w - 1 / 2) ^ 2
 
-/-- The Clifford energy is a real affine transform of the quadratic-scale energy. -/
-theorem weightOneCliffordEnergy_eq_quadraticScaleEnergy (a : ℝ) (w : ℂ) :
+/-- The Clifford energy is a real affine transform of the Berry--Keating coordinate. -/
+theorem weightOneCliffordEnergy_eq_berryKeatingU (a : ℝ) (w : ℂ) :
     weightOneCliffordEnergy a w =
-      ((a ^ 2 + 1 / 4 : ℝ) : ℂ) - quadraticScaleEnergy w := by
-  rw [weightOneCliffordEnergy, quadraticScaleEnergy_eq_centered]
+      ((a ^ 2 + 1 / 4 : ℝ) : ℂ) - berryKeatingU w := by
+  rw [weightOneCliffordEnergy, berryKeatingU_eq_centered]
   push_cast
   ring
 
@@ -117,12 +119,12 @@ theorem xiWeightOneCliffordSpectralReality_iff_quadratic (a : ℝ) :
   constructor
   · intro h ρ hρ
     have hr := h ρ hρ
-    rw [weightOneCliffordEnergy_eq_quadraticScaleEnergy] at hr
+    rw [weightOneCliffordEnergy_eq_berryKeatingU] at hr
     simp only [Complex.sub_im, Complex.ofReal_im, zero_sub] at hr
     exact neg_eq_zero.mp hr
   · intro h ρ hρ
     have hr := h ρ hρ
-    rw [weightOneCliffordEnergy_eq_quadraticScaleEnergy]
+    rw [weightOneCliffordEnergy_eq_berryKeatingU]
     simp only [Complex.sub_im, Complex.ofReal_im, zero_sub]
     exact neg_eq_zero.mpr hr
 

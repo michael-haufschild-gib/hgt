@@ -1,7 +1,7 @@
 # Xi unit--double fused response and physical-weight renormalization
 
 - **ID:** `xi-unit-double-fused-response-physical-weight-renormalization`
-- **Stage:** `1-in-progress`
+- **Stage:** `3-formalized/needs-audit`
 - **Type:** theorem / source-to-response renormalization / AC28 reduction
 - **Scientific status:** `[PAPER-PROVED LOCAL CORE] [CANDIDATE NEW RH-PROOF-SHAPE KNOWLEDGE]`
   `[EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
@@ -132,7 +132,7 @@ remain paper-level until the clipped endpoint packet is represented in Lean.
 - [x] internal corpus collision search for `(UR3)`--`(UR7)`
 - [x] paper proof of the active-packet `M^(-1) log M` correction
 - [x] hostile check against scalar-completion and Gram-sign circularity
-- [ ] targeted Lean leaf and axiom audit
+- [x] targeted Lean leaf and axiom audit
 - [ ] external specialist novelty audit
 - [ ] completed prime--Gamma signed lift at the unit endpoint
 - [ ] identify the signed lift with the joined `(AC25)` response
@@ -142,4 +142,5 @@ remain paper-level until the clipped endpoint packet is represented in Lean.
 
 - 2026-07-19 — derived `(UR3)` from complete valuation fusion, recognized `-sigma_p` as the exact
   critical Möbius damping, and obtained the trace-class physical-weight correction `(UR7)` with
-  the active-packet bound `(UR9)`.
+  the active-packet bound `(UR9)`; installed the unconditional Lean leaf, wired its umbrella import,
+  and confirmed all public theorems use only the standard Lean axioms.

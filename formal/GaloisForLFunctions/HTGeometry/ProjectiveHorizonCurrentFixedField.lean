@@ -143,68 +143,23 @@ theorem projectiveJetCurrentHPolynomial_one_lie_EPolynomial
 
 /-! ## Quotient-rule action on the free rational jet field -/
 
-/-- Extend a polynomial jet derivation to the free rational jet field. -/
-def liftProjectiveJetPolynomialCurrent
-    {C : Type*} [Field C]
-    (D : Derivation C (MvPolynomial ℕ C) (MvPolynomial ℕ C)) :
-    Derivation C (FreeCoordinateRationalField C ℕ)
-      (FreeCoordinateRationalField C ℕ) :=
-  GaloisForLFunctions.fractionRingDerivation
-    ((Algebra.linearMap (MvPolynomial ℕ C)
-      (FreeCoordinateRationalField C ℕ)).compDer D)
-
-@[simp]
-theorem liftProjectiveJetPolynomialCurrent_algebraMap
-    {C : Type*} [Field C]
-    (D : Derivation C (MvPolynomial ℕ C) (MvPolynomial ℕ C))
-    (p : MvPolynomial ℕ C) :
-    liftProjectiveJetPolynomialCurrent D
-        (algebraMap (MvPolynomial ℕ C) (FreeCoordinateRationalField C ℕ) p) =
-      algebraMap (MvPolynomial ℕ C) (FreeCoordinateRationalField C ℕ) (D p) := by
-  rw [liftProjectiveJetPolynomialCurrent,
-    GaloisForLFunctions.fractionRingDerivation_algebraMap]
-  rfl
-
-/-- Quotient-rule extension preserves Lie brackets. -/
-theorem liftProjectiveJetPolynomialCurrent_lie
-    {C : Type*} [Field C]
-    (D₁ D₂ : Derivation C (MvPolynomial ℕ C) (MvPolynomial ℕ C)) :
-    ⁅liftProjectiveJetPolynomialCurrent D₁, liftProjectiveJetPolynomialCurrent D₂⁆ =
-      liftProjectiveJetPolynomialCurrent ⁅D₁, D₂⁆ := by
-  apply GaloisForLFunctions.fractionRing_derivation_ext
-    (A := MvPolynomial ℕ C)
-  intro p
-  simp [Derivation.commutator_apply]
-
-/-- Quotient-rule extension preserves scalar multiplication. -/
-theorem liftProjectiveJetPolynomialCurrent_smul
-    {C : Type*} [Field C] (c : C)
-    (D : Derivation C (MvPolynomial ℕ C) (MvPolynomial ℕ C)) :
-    liftProjectiveJetPolynomialCurrent (c • D) =
-      c • liftProjectiveJetPolynomialCurrent D := by
-  apply GaloisForLFunctions.fractionRing_derivation_ext
-    (A := MvPolynomial ℕ C)
-  intro p
-  simp only [liftProjectiveJetPolynomialCurrent_algebraMap, Derivation.smul_apply]
-  simp [Algebra.smul_def, IsScalarTower.algebraMap_apply C (MvPolynomial ℕ C)]
-
 /-- The rational translation-current mode `Eₖ`. -/
 def projectiveJetCurrentE (C : Type*) [Field C] (k : ℕ) :
     Derivation C (FreeCoordinateRationalField C ℕ)
       (FreeCoordinateRationalField C ℕ) :=
-  liftProjectiveJetPolynomialCurrent (projectiveJetCurrentEPolynomial C k)
+  extendFreeCoordinatePolynomialDerivation (projectiveJetCurrentEPolynomial C k)
 
 /-- The rational inversion-conjugate current mode `Fₖ`. -/
 def projectiveJetCurrentF (C : Type*) [Field C] (k : ℕ) :
     Derivation C (FreeCoordinateRationalField C ℕ)
       (FreeCoordinateRationalField C ℕ) :=
-  liftProjectiveJetPolynomialCurrent (projectiveJetCurrentFPolynomial C k)
+  extendFreeCoordinatePolynomialDerivation (projectiveJetCurrentFPolynomial C k)
 
 /-- The rational diagonal current mode `Hₖ`. -/
 def projectiveJetCurrentH (C : Type*) [Field C] (k : ℕ) :
     Derivation C (FreeCoordinateRationalField C ℕ)
       (FreeCoordinateRationalField C ℕ) :=
-  liftProjectiveJetPolynomialCurrent (projectiveJetCurrentHPolynomial C k)
+  extendFreeCoordinatePolynomialDerivation (projectiveJetCurrentHPolynomial C k)
 
 /-- Translation-current modes are exactly the existing free-coordinate derivations. -/
 theorem projectiveJetCurrentE_eq_freeCoordinateDerivation
@@ -219,15 +174,15 @@ theorem projectiveJetCurrentE_lie_F_one
       projectiveJetCurrentH C 1 := by
   calc
     ⁅projectiveJetCurrentE C 0, projectiveJetCurrentF C 1⁆ =
-        liftProjectiveJetPolynomialCurrent
+        extendFreeCoordinatePolynomialDerivation
           ⁅projectiveJetCurrentEPolynomial C 0,
             projectiveJetCurrentFPolynomial C 1⁆ :=
-      liftProjectiveJetPolynomialCurrent_lie
+      extendFreeCoordinatePolynomialDerivation_lie
         (projectiveJetCurrentEPolynomial C 0)
         (projectiveJetCurrentFPolynomial C 1)
-    _ = liftProjectiveJetPolynomialCurrent
+    _ = extendFreeCoordinatePolynomialDerivation
         (projectiveJetCurrentHPolynomial C 1) :=
-      congrArg liftProjectiveJetPolynomialCurrent
+      congrArg extendFreeCoordinatePolynomialDerivation
         projectiveJetCurrentEPolynomial_lie_FPolynomial_one
     _ = projectiveJetCurrentH C 1 := rfl
 
@@ -238,19 +193,19 @@ theorem projectiveJetCurrentH_one_lie_E
       (2 : C) • projectiveJetCurrentE C (k + 1) := by
   calc
     ⁅projectiveJetCurrentH C 1, projectiveJetCurrentE C k⁆ =
-        liftProjectiveJetPolynomialCurrent
+        extendFreeCoordinatePolynomialDerivation
           ⁅projectiveJetCurrentHPolynomial C 1,
             projectiveJetCurrentEPolynomial C k⁆ :=
-      liftProjectiveJetPolynomialCurrent_lie
+      extendFreeCoordinatePolynomialDerivation_lie
         (projectiveJetCurrentHPolynomial C 1)
         (projectiveJetCurrentEPolynomial C k)
-    _ = liftProjectiveJetPolynomialCurrent
+    _ = extendFreeCoordinatePolynomialDerivation
         ((2 : C) • projectiveJetCurrentEPolynomial C (k + 1)) :=
-      congrArg liftProjectiveJetPolynomialCurrent
+      congrArg extendFreeCoordinatePolynomialDerivation
         (projectiveJetCurrentHPolynomial_one_lie_EPolynomial k)
-    _ = (2 : C) • liftProjectiveJetPolynomialCurrent
+    _ = (2 : C) • extendFreeCoordinatePolynomialDerivation
         (projectiveJetCurrentEPolynomial C (k + 1)) :=
-      liftProjectiveJetPolynomialCurrent_smul 2 _
+      extendFreeCoordinatePolynomialDerivation_smul 2 _
     _ = (2 : C) • projectiveJetCurrentE C (k + 1) := rfl
 
 /-! ## One-sided generation and the exact fixed field -/

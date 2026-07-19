@@ -969,3 +969,38 @@ full-configuration incidence and transversality stack is unconditional.
   parameter and residual maximal full-translation HT throughout the exact jet level. Conditionally
   on Xi orientation, every finite Xi Pick matrix is strictly positive definite, so its sign is
   necessarily a cofinal/complete-germ phenomenon.
+
+## Log — the absent Nevanlinna N-extremal construction is now present
+
+This card's Lean status records two related gaps:
+
+> "The named Nevanlinna family remains an explicit structure input, not a Lean axiom."
+> "The rest of `(28)` — density of `Ext M(s)` — still needs the **absent Nevanlinna N-extremal
+> construction**."
+
+That construction is no longer absent. `finite-jet-aperture-complete-germ-closure-law` (links
+146–182) builds `HTGeometry.nevExtremalFamily`, a term of `ClassicalNevanlinnaExtremalFamily s`, for
+every positive definite normalised moment sequence with bounded kernel at a point — that is, for every
+indeterminate Hamburger moment problem — with each leaf's weights identified as the Christoffel limits
+`λ(ξ)`.
+
+**[PROVED]** `formal/GaloisForLFunctions/HTGeometry/LeafExtreme.lean` — the consequence this card
+needs about `Ext M(s)`:
+
+- `carried_of_mixture_eq_nevLeaf` — a component of a mixture equal to a leaf is carried by the leaf's
+  denominator fiber (the other component's mass cannot compensate, the fiber complement being null).
+- **`nevLeaf_eq_of_mixture`**, **`nevLeaf_infinity_eq_of_mixture`**, **`nevLeaf_of_half_mixture`** —
+  **each N-extremal leaf is an extreme point of the complete-moment fiber `M(s)`.**
+
+The proof is a corollary of uniqueness (`nevLeaf_unique`, link 177 of the sibling card), not an
+independent convexity argument: a representing measure carried by `F_τ` *is* the leaf of `τ`, so any
+mixture representation of a leaf is trivial.
+
+All endpoints `[propext, Classical.choice, Quot.sound]`; zero placeholders; registered.
+
+**What this does and does not settle.** It supplies the missing construction and proves the
+N-extremals are genuine extreme points of `M(s)`, together with an injective continuous
+`ℝ ∪ {∞} → Ext M(s)`. It does **not** yet prove *density* of `Ext M(s)` in `M(s)`, which is the
+remaining half of `(28)`: that needs every representing measure to be approximated by extreme ones,
+a statement about the fiber rather than about the N-extremal family. The `G_δ` half is already
+formalized here as `HTGeometry.isGδ_extremePoints`.

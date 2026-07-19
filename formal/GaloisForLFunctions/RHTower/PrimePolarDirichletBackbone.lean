@@ -22,6 +22,12 @@ open ArithmeticFunction Filter Topology
 
 namespace RHTower
 
+/-- The nonnegative von Mangoldt square-root weight passes through a complex norm unchanged. -/
+@[simp] theorem norm_vonMangoldt_div_sqrt_smul (k : ℕ) (z : ℂ) :
+    ‖(Λ k / Real.sqrt k) • z‖ = (Λ k / Real.sqrt k) * ‖z‖ := by
+  rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg
+    (div_nonneg vonMangoldt_nonneg (Real.sqrt_nonneg _))]
+
 /-- **Per-term power shift.**  The `L`-series term of `n ↦ nᵃ` at `s` equals the term of the constant
 `1` at the shifted argument `s − a`: `nᵃ / nˢ = 1 / n^{s-a}`. -/
 theorem term_cpow_eq (a s : ℂ) (n : ℕ) :

@@ -139,9 +139,8 @@ theorem HL_differentiableOn_gt_half (L : ℝ) (hL : 0 ≤ L) :
             = KR * (Real.exp (2 * L) + 1) / 2 * ((k : ℝ) ^ (1 - σ) * (k : ℝ) / (k : ℝ) ^ 2) by ring,
           hpow]
       calc ‖(Λ k / Real.sqrt k) • Eterm L k s‖
-          = (Λ k / Real.sqrt k) * ‖Eterm L k s‖ := by
-            rw [norm_smul, Real.norm_eq_abs,
-              abs_of_nonneg (div_nonneg vonMangoldt_nonneg (Real.sqrt_nonneg _))]
+          = (Λ k / Real.sqrt k) * ‖Eterm L k s‖ :=
+            norm_vonMangoldt_div_sqrt_smul k _
         _ ≤ (Λ k / Real.sqrt k) * (MB * (k : ℝ) ^ (-σ)) :=
             mul_le_mul_of_nonneg_left hEs (div_nonneg vonMangoldt_nonneg (Real.sqrt_nonneg _))
         _ = MB * ((Λ k) * (k : ℝ) ^ (-(σ + 1 / 2))) := by
