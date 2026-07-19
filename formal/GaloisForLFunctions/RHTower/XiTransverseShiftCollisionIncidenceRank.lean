@@ -79,6 +79,28 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialIndependent_i
   rw [← differentialFamilyMatroid_indep_iff y I,
     xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
 
+/-- **Arbitrary-label Xi Kirchhoff interface.** A finite pairwise packet is differentially
+independent exactly when every coefficient flow conserved at each occupied-shift quotient vertex
+is zero. The `none` vertex is the collapsed zero-shift class. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialIndependent_finset_iff_pointedCollisionVertexConservation
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (shift : V → ℕ) (tail head : E → V) (I : Finset E) :
+    DifferentialIndependent upperEndRationalCoordinateField
+        (fun e : ↑(↑I : Set E) ↦
+          xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head e) ↔
+      ∀ weight : ↑(↑I : Set E) → upperEndRationalCoordinateField,
+        (∀ q : pointedCollisionIncidenceVertex shift 0,
+          (∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf shift 0
+                (head (e : E)) = q then weight e else 0) =
+            ∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf shift 0
+                (tail (e : E)) = q then weight e else 0) →
+          ∀ e, weight e = 0 := by
+  rw [xiTransverseShiftPairDifferenceUpperEndCarrier_differentialIndependent_iff_pointedCollisionIncidence
+      shift tail head (↑I : Set E),
+    pointedCollisionIncidenceMatroid_indep_iff_vertex_conservation]
+
 /-- Exact differential rank of every packet after collapsing repeated shift labels. -/
 theorem xiTransverseShiftPairDifferenceUpperEndCarrier_pointedCollisionIncidence_eRk
     {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]

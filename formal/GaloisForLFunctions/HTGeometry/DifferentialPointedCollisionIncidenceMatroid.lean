@@ -24,6 +24,51 @@ def pointedCollisionIncidenceSupport
     (frame : V → Frame) (loopFrame : Frame) : Finset Frame :=
   (Finset.univ.image frame).erase loopFrame
 
+/-- Vertices of the occupied-label quotient: one vertex for each occupied nonloop label and a
+distinguished collapsed vertex for the loop label. -/
+abbrev pointedCollisionIncidenceVertex
+    {V Frame : Type u} [Fintype V] [DecidableEq Frame]
+    (frame : V → Frame) (loopFrame : Frame) : Type u :=
+  Option (pointedCollisionIncidenceSupport frame loopFrame)
+
+/-- Map an original vertex to its occupied-label quotient vertex. -/
+def pointedCollisionIncidenceVertexOf
+    {V Frame : Type u} [Fintype V] [DecidableEq Frame]
+    (frame : V → Frame) (loopFrame : Frame) (v : V) :
+    pointedCollisionIncidenceVertex frame loopFrame :=
+  if h : frame v = loopFrame then none
+  else some ⟨frame v, by simp [pointedCollisionIncidenceSupport, h]⟩
+
+@[simp]
+theorem pointedCollisionIncidenceVertexOf_eq_none_iff
+    {V Frame : Type u} [Fintype V] [DecidableEq Frame]
+    (frame : V → Frame) (loopFrame : Frame) (v : V) :
+    pointedCollisionIncidenceVertexOf frame loopFrame v = none ↔
+      frame v = loopFrame := by
+  simp [pointedCollisionIncidenceVertexOf]
+
+@[simp]
+theorem pointedCollisionIncidenceVertexOf_eq_some_iff
+    {V Frame : Type u} [Fintype V] [DecidableEq Frame]
+    (frame : V → Frame) (loopFrame : Frame) (v : V)
+    (q : pointedCollisionIncidenceSupport frame loopFrame) :
+    pointedCollisionIncidenceVertexOf frame loopFrame v = some q ↔
+      frame v = (q : Frame) := by
+  simp only [pointedCollisionIncidenceVertexOf]
+  split_ifs with h
+  · have hq : (q : Frame) ≠ loopFrame := (Finset.mem_erase.mp q.property).1
+    constructor
+    · intro hs
+      cases hs
+    · intro hv
+      exact (hq (hv.symm.trans h)).elim
+  · constructor
+    · intro hs
+      exact congrArg Subtype.val (Option.some.inj hs)
+    · intro hv
+      apply congrArg some
+      exact Subtype.ext hv
+
 /-- Incidence matrix after vertices with equal labels have been collapsed and the loop-label
 column has been deleted. -/
 def pointedCollisionIncidenceMatrix
@@ -127,6 +172,116 @@ theorem pointedCollisionIncidenceMatrix_coefficients_constant
   intro e q
   simp only [pointedCollisionIncidenceMatrix]
   split_ifs <;> simp
+
+/-- A coefficient family is a collision-quotient circulation when its incidence coefficient
+vanishes at every occupied nonloop label. -/
+def IsPointedCollisionIncidenceCirculation
+    {C V E J Frame : Type u} [Field C] [Fintype V] [Fintype J]
+    [DecidableEq Frame]
+    (frame : V → Frame) (loopFrame : Frame) (tail head : E → V)
+    (edge : J → E) (weight : J → C) : Prop :=
+  ∀ q : pointedCollisionIncidenceSupport frame loopFrame,
+    ∑ j, weight j * pointedCollisionIncidenceMatrix
+      (C := C) frame loopFrame tail head (edge j) q = 0
+
+/-- The circulation equations are Kirchhoff conservation at every occupied nonloop label. -/
+theorem isPointedCollisionIncidenceCirculation_iff_nonloop_conservation
+    {C V E J Frame : Type u} [Field C] [Fintype V] [Fintype J]
+    [DecidableEq Frame]
+    (frame : V → Frame) (loopFrame : Frame) (tail head : E → V)
+    (edge : J → E) (weight : J → C) :
+    IsPointedCollisionIncidenceCirculation frame loopFrame tail head edge weight ↔
+      ∀ q : pointedCollisionIncidenceSupport frame loopFrame,
+        (∑ j, if frame (head (edge j)) = (q : Frame) then weight j else 0) =
+          ∑ j, if frame (tail (edge j)) = (q : Frame) then weight j else 0 := by
+  constructor
+  · intro h q
+    simpa [IsPointedCollisionIncidenceCirculation,
+      pointedCollisionIncidenceMatrix, mul_sub, Finset.sum_sub_distrib,
+      sub_eq_zero] using h q
+  · intro h q
+    simpa [pointedCollisionIncidenceMatrix, mul_sub, Finset.sum_sub_distrib,
+      sub_eq_zero] using h q
+
+/-- **Collapsed-loop equation discharge.** Conservation at occupied nonloop labels forces the
+equation at the collapsed loop-label vertex, since total incidence is zero. Hence a circulation
+is equivalent to full Kirchhoff conservation on the occupied-label quotient. -/
+theorem isPointedCollisionIncidenceCirculation_iff_vertex_conservation
+    {C V E J Frame : Type u} [Field C] [Fintype V] [Fintype J]
+    [DecidableEq Frame]
+    (frame : V → Frame) (loopFrame : Frame) (tail head : E → V)
+    (edge : J → E) (weight : J → C) :
+    IsPointedCollisionIncidenceCirculation frame loopFrame tail head edge weight ↔
+      ∀ q : pointedCollisionIncidenceVertex frame loopFrame,
+        (∑ j, if pointedCollisionIncidenceVertexOf frame loopFrame
+              (head (edge j)) = q then weight j else 0) =
+          ∑ j, if pointedCollisionIncidenceVertexOf frame loopFrame
+              (tail (edge j)) = q then weight j else 0 := by
+  rw [isPointedCollisionIncidenceCirculation_iff_nonloop_conservation]
+  constructor
+  · intro h q
+    cases q with
+    | none =>
+        let incoming : pointedCollisionIncidenceVertex frame loopFrame → C := fun w ↦
+          ∑ j, if pointedCollisionIncidenceVertexOf frame loopFrame
+            (head (edge j)) = w then weight j else 0
+        let outgoing : pointedCollisionIncidenceVertex frame loopFrame → C := fun w ↦
+          ∑ j, if pointedCollisionIncidenceVertexOf frame loopFrame
+            (tail (edge j)) = w then weight j else 0
+        have htotal : ∑ w, (incoming w - outgoing w) = 0 := by
+          simp [incoming, outgoing, Finset.sum_sub_distrib, Finset.sum_comm]
+        have hsingle : ∑ w, (incoming w - outgoing w) =
+            incoming none - outgoing none := by
+          apply Fintype.sum_eq_single none
+          intro w hw
+          cases w with
+          | none => exact (hw rfl).elim
+          | some q =>
+              apply sub_eq_zero.mpr
+              simpa [incoming, outgoing] using h q
+        rw [hsingle] at htotal
+        exact sub_eq_zero.mp htotal
+    | some q =>
+        simpa using h q
+  · intro h q
+    simpa using h (some q)
+
+/-- A finite collision-quotient incidence packet is independent exactly when it has no nonzero
+coefficient circulation. -/
+theorem pointedCollisionIncidenceMatroid_indep_iff_no_nonzero_circulation
+    {C V E Frame : Type u} [Field C] [Fintype V] [Fintype E]
+    [DecidableEq Frame] [DecidableEq E]
+    (frame : V → Frame) (loopFrame : Frame) (tail head : E → V) (I : Finset E) :
+    (pointedCollisionIncidenceMatroid
+        (C := C) frame loopFrame tail head).Indep (↑I : Set E) ↔
+      ∀ weight : ↑(↑I : Set E) → C,
+        IsPointedCollisionIncidenceCirculation frame loopFrame tail head
+            (fun e : ↑(↑I : Set E) ↦ (e : E)) weight →
+          ∀ e, weight e = 0 := by
+  rw [pointedCollisionIncidenceMatroid_indep_iff]
+  rw [Fintype.linearIndependent_iff]
+  simp only [IsPointedCollisionIncidenceCirculation, funext_iff, Pi.zero_apply,
+    Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+
+/-- **Full quotient Kirchhoff Prop interface.** Independence is equivalent to triviality of every
+coefficient flow conserved at every occupied-label quotient vertex. -/
+theorem pointedCollisionIncidenceMatroid_indep_iff_vertex_conservation
+    {C V E Frame : Type u} [Field C] [Fintype V] [Fintype E]
+    [DecidableEq Frame] [DecidableEq E]
+    (frame : V → Frame) (loopFrame : Frame) (tail head : E → V) (I : Finset E) :
+    (pointedCollisionIncidenceMatroid
+        (C := C) frame loopFrame tail head).Indep (↑I : Set E) ↔
+      ∀ weight : ↑(↑I : Set E) → C,
+        (∀ q : pointedCollisionIncidenceVertex frame loopFrame,
+          (∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf frame loopFrame
+                (head (e : E)) = q then weight e else 0) =
+            ∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf frame loopFrame
+                (tail (e : E)) = q then weight e else 0) →
+          ∀ e, weight e = 0 := by
+  rw [pointedCollisionIncidenceMatroid_indep_iff_no_nonzero_circulation]
+  simp_rw [isPointedCollisionIncidenceCirculation_iff_vertex_conservation]
 
 /-- **Pointed-collision incidence law.** Pairwise differences of a labelled family whose occupied
 nonloop label values are differentially independent represent exactly the incidence matroid of

@@ -92,6 +92,27 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differential
   rw [← differentialFamilyMatroid_indep_iff y I,
     xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollisionIncidenceMatroid]
 
+/-- Full occupied-shift quotient Kirchhoff interface over the all-valuation base. -/
+theorem xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_finset_iff_pointedCollisionVertexConservation
+    {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
+    (shift : V → ℕ) (tail head : E → V) (I : Finset E) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+        (fun e : ↑(↑I : Set E) ↦
+          xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head e) ↔
+      ∀ weight : ↑(↑I : Set E) →
+          analyticScalarValuationLayerDifferentialField,
+        (∀ q : pointedCollisionIncidenceVertex shift 0,
+          (∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf shift 0
+                (head (e : E)) = q then weight e else 0) =
+            ∑ e : ↑(↑I : Set E),
+              if pointedCollisionIncidenceVertexOf shift 0
+                (tail (e : E)) = q then weight e else 0) →
+          ∀ e, weight e = 0 := by
+  rw [xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialIndependent_iff_pointedCollisionIncidence
+      shift tail head (↑I : Set E),
+    pointedCollisionIncidenceMatroid_indep_iff_vertex_conservation]
+
 /-- Exact all-valuation differential rank after collapsing repeated shift labels. -/
 theorem xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_pointedCollisionIncidence_eRk
     {V E : Type} [Fintype V] [Fintype E] [DecidableEq E]
