@@ -150,7 +150,7 @@ both endpoint eigenspaces have multiplicity at least `r`.  If `delta <= 1`, taki
 
 For integral positive degrees, `a=1`, `b=M`.  At `M=4`, equality is the endpoint mixture
 `p=1/3` between degrees one and four.  At `M=5`, the minimizing mixture `p=3/8` has margin
-`-1/4` per occupied direction.  These are symbolic consequences of the exact formula, not
+`-5/4` per occupied direction.  These are symbolic consequences of the exact formula, not
 numerical evidence.
 
 ## Metric and Fock connector
