@@ -650,6 +650,59 @@ theorem rankOneSchurExponential_logDet_secondDerivative_eq {n : ℕ}
             (rankOneLabelDiagonal a))) / 2 := by
   exact (hasDerivAt_rankOneSchurExponential_logDetDerivative C a hC t ht).deriv
 
+/-- The Schur-exponential log-determinant curvature vanishes exactly on the label-block
+decomposition of the background. -/
+theorem rankOneSchurExponential_logDet_secondDerivative_eq_zero_iff_block {n : ℕ}
+    (C : Matrix (Fin n) (Fin n) ℝ) (a : Fin n → ℝ)
+    (hC : C.PosDef) (t : ℝ) (ht : 0 ≤ t) :
+    deriv (deriv (fun s => Real.log (rankOneSchurExponentialPath C a s).det)) t = 0 ↔
+      ∀ i j, a i ≠ a j → C i j = 0 := by
+  rw [rankOneSchurExponential_logDet_secondDerivative_eq C a hC t ht]
+  let S := matrixSelfCommutator
+    (matrixSqrtSimilarity (rankOneSchurExponentialPath C a t)
+      (rankOneLabelDiagonal a))
+  constructor
+  · intro hzero
+    have henergy : matrixHilbertSchmidtEnergy S = 0 := by
+      dsimp [S] at hzero ⊢
+      linarith
+    exact (rankOneSchurExponential_selfCommutator_eq_zero_iff_block C a hC t ht).1
+      ((matrixHilbertSchmidtEnergy_eq_zero_iff S).1 henergy)
+  · intro hblock
+    have hS : S = 0 :=
+      (rankOneSchurExponential_selfCommutator_eq_zero_iff_block C a hC t ht).2 hblock
+    have henergy : matrixHilbertSchmidtEnergy S = 0 :=
+      (matrixHilbertSchmidtEnergy_eq_zero_iff S).2 hS
+    dsimp [S] at henergy ⊢
+    rw [henergy]
+    norm_num
+
+/-- Nontrivial label coupling makes the Schur-exponential log-determinant curvature strictly
+negative at every nonnegative scale. -/
+theorem rankOneSchurExponential_logDet_secondDerivative_lt_zero {n : ℕ}
+    (C : Matrix (Fin n) (Fin n) ℝ) (a : Fin n → ℝ)
+    (hC : C.PosDef) (t : ℝ) (ht : 0 ≤ t)
+    (hentries : ∀ i j, C i j ≠ 0)
+    (hlabels : ∃ i j, a i ≠ a j) :
+    deriv (deriv (fun s => Real.log (rankOneSchurExponentialPath C a s).det)) t < 0 := by
+  let S := matrixSelfCommutator
+    (matrixSqrtSimilarity (rankOneSchurExponentialPath C a t)
+      (rankOneLabelDiagonal a))
+  have hS : S ≠ 0 := by
+    intro hzero
+    have hblock :=
+      (rankOneSchurExponential_selfCommutator_eq_zero_iff_block C a hC t ht).1 hzero
+    obtain ⟨i, j, hij⟩ := hlabels
+    exact hentries i j (hblock i j hij)
+  have henergy_ne : matrixHilbertSchmidtEnergy S ≠ 0 := by
+    intro hzero
+    exact hS ((matrixHilbertSchmidtEnergy_eq_zero_iff S).1 hzero)
+  have henergy_pos : 0 < matrixHilbertSchmidtEnergy S :=
+    lt_of_le_of_ne (matrixHilbertSchmidtEnergy_nonneg S) henergy_ne.symm
+  rw [rankOneSchurExponential_logDet_secondDerivative_eq C a hC t ht]
+  dsimp [S] at henergy_pos ⊢
+  linarith
+
 /-- The arbitrary-background rank-one Schur exponential log determinant is globally concave on
 the closed nonnegative half-line. -/
 theorem rankOneSchurExponential_logDet_concaveOn {n : ℕ}
@@ -831,6 +884,62 @@ theorem rankOneSchurGaussian_logDet_secondDerivative_eq {n : ℕ}
     (hgsecond.sub_const (2 * S)).congr_of_eventuallyEq hkFirst
   simpa [k, E, H] using hkSecond.deriv
 
+/-- Gaussian rank-one metric curvature vanishes exactly when the background splits along the
+equal-label blocks. -/
+theorem rankOneSchurGaussian_logDet_secondDerivative_eq_zero_iff_block {n : ℕ}
+    (C : Matrix (Fin n) (Fin n) ℝ) (a : Fin n → ℝ)
+    (hC : C.PosDef) (t : ℝ) (ht : 0 ≤ t) :
+    deriv (deriv (fun s => Real.log (rankOneSchurGaussianPath C a s).det)) t = 0 ↔
+      ∀ i j, a i ≠ a j → C i j = 0 := by
+  rw [rankOneSchurGaussian_logDet_secondDerivative_eq C a hC t ht]
+  let S := matrixSelfCommutator
+    (matrixSqrtSimilarity (rankOneSchurExponentialPath C a (2 * t))
+      (rankOneLabelDiagonal a))
+  constructor
+  · intro hzero
+    have henergy : matrixHilbertSchmidtEnergy S = 0 := by
+      dsimp [S] at hzero ⊢
+      linarith
+    exact (rankOneSchurExponential_selfCommutator_eq_zero_iff_block
+      C a hC (2 * t) (by linarith)).1
+        ((matrixHilbertSchmidtEnergy_eq_zero_iff S).1 henergy)
+  · intro hblock
+    have hS : S = 0 :=
+      (rankOneSchurExponential_selfCommutator_eq_zero_iff_block
+        C a hC (2 * t) (by linarith)).2 hblock
+    have henergy : matrixHilbertSchmidtEnergy S = 0 :=
+      (matrixHilbertSchmidtEnergy_eq_zero_iff S).2 hS
+    dsimp [S] at henergy ⊢
+    rw [henergy]
+    norm_num
+
+/-- If the background couples every pair and the rank-one labels are nonconstant, Gaussian
+rank-one metric log-volume has strictly negative curvature at every nonnegative scale. -/
+theorem rankOneSchurGaussian_logDet_secondDerivative_lt_zero {n : ℕ}
+    (C : Matrix (Fin n) (Fin n) ℝ) (a : Fin n → ℝ)
+    (hC : C.PosDef) (t : ℝ) (ht : 0 ≤ t)
+    (hentries : ∀ i j, C i j ≠ 0)
+    (hlabels : ∃ i j, a i ≠ a j) :
+    deriv (deriv (fun s => Real.log (rankOneSchurGaussianPath C a s).det)) t < 0 := by
+  rw [rankOneSchurGaussian_logDet_secondDerivative_eq C a hC t ht]
+  let S := matrixSelfCommutator
+    (matrixSqrtSimilarity (rankOneSchurExponentialPath C a (2 * t))
+      (rankOneLabelDiagonal a))
+  have hS : S ≠ 0 := by
+    intro hzero
+    have hblock :=
+      (rankOneSchurExponential_selfCommutator_eq_zero_iff_block
+        C a hC (2 * t) (by linarith)).1 hzero
+    obtain ⟨i, j, hij⟩ := hlabels
+    exact hentries i j (hblock i j hij)
+  have henergy_ne : matrixHilbertSchmidtEnergy S ≠ 0 := by
+    intro hzero
+    exact hS ((matrixHilbertSchmidtEnergy_eq_zero_iff S).1 hzero)
+  have henergy_pos : 0 < matrixHilbertSchmidtEnergy S :=
+    lt_of_le_of_ne (matrixHilbertSchmidtEnergy_nonneg S) henergy_ne.symm
+  dsimp [S] at henergy_pos ⊢
+  linarith
+
 /-- Coordinate-wise global concavity of Gaussian-kernel log volume under every rank-one
 positive-semidefinite metric update, for an arbitrary positive-definite background. -/
 theorem rankOneSchurGaussian_logDet_concaveOn {n : ℕ}
@@ -878,6 +987,33 @@ theorem rankOneSchurGaussian_universalLaw {n : ℕ}
         (fun s => Real.log (rankOneSchurGaussianPath C a s).det) := by
   exact ⟨rankOneSchurExponential_logDet_secondDerivative_eq C a hC t ht,
     rankOneSchurGaussian_logDet_concaveOn C a hC⟩
+
+/-- Packaged sharp law: both exact curvature identities, global Gaussian concavity, and the
+complete equality classification. -/
+theorem rankOneSchurGaussian_sharpUniversalLaw {n : ℕ}
+    (C : Matrix (Fin n) (Fin n) ℝ) (a : Fin n → ℝ)
+    (hC : C.PosDef) (t : ℝ) (ht : 0 ≤ t) :
+    deriv (deriv (fun s =>
+      Real.log (rankOneSchurExponentialPath C a s).det)) t =
+        -matrixHilbertSchmidtEnergy
+          (matrixSelfCommutator
+            (matrixSqrtSimilarity (rankOneSchurExponentialPath C a t)
+              (rankOneLabelDiagonal a))) / 2 ∧
+      deriv (deriv (fun s =>
+        Real.log (rankOneSchurGaussianPath C a s).det)) t =
+          -2 * matrixHilbertSchmidtEnergy
+            (matrixSelfCommutator
+              (matrixSqrtSimilarity (rankOneSchurExponentialPath C a (2 * t))
+                (rankOneLabelDiagonal a))) ∧
+      ConcaveOn ℝ (Set.Ici 0)
+        (fun s => Real.log (rankOneSchurGaussianPath C a s).det) ∧
+      (deriv (deriv (fun s =>
+        Real.log (rankOneSchurGaussianPath C a s).det)) t = 0 ↔
+          ∀ i j, a i ≠ a j → C i j = 0) := by
+  exact ⟨rankOneSchurExponential_logDet_secondDerivative_eq C a hC t ht,
+    rankOneSchurGaussian_logDet_secondDerivative_eq C a hC t ht,
+    rankOneSchurGaussian_logDet_concaveOn C a hC,
+    rankOneSchurGaussian_logDet_secondDerivative_eq_zero_iff_block C a hC t ht⟩
 
 end
 

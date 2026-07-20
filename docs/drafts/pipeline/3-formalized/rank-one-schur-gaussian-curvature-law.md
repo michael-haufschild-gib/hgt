@@ -1,10 +1,10 @@
 # Rank-one Schur--Gaussian curvature law
 
 - **ID:** rank-one-schur-gaussian-curvature-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** FAILURE-DRIVEN UNIVERSAL MATRIX / KERNEL LAW
 - **Source:** `gaussian-hilbert-dimension-sandwich-law.md`
-- **Scientific status:** `[PAPER-PROVED] [SEARCH NONCOLLISION] [PRIORITY UNVERIFIED]`
+- **Scientific status:** `[FORMALIZED] [SEARCH NONCOLLISION] [PRIORITY UNVERIFIED]`
 - **Statement:** Schur multiplication of an arbitrary positive-definite matrix by a
   one-dimensional Gaussian semigroup has a log-concave determinant, with an exact
   self-commutator curvature and equality classification.
@@ -192,6 +192,29 @@ therefore forces all labels to coincide, which proves the stated strictness.
    arbitrary `C>0` and proves global concavity.  Restricting `C` to the all-ones matrix would
    merely recover the already formalized Hilbert-line law.
 
+## Lean formalization
+
+The exact theorem surface is compiled in
+`GaloisForLFunctions.HilbertMetric.RankOneSchurGaussianConcavity` and exported through the
+`GaloisForLFunctions.HilbertMetric` umbrella.  It includes:
+
+- the reusable real-normal eigenvector orthogonality lemmas;
+- `matrixSqrtSimilarity_selfCommutator_eq_zero_iff_diagonal_blocks`, the positive-Gram
+  normality-rigidity parent theorem;
+- `rankOneSchurExponential_logDet_secondDerivative_eq`, the literal identity `(SGI)`;
+- `rankOneSchurGaussian_logDet_secondDerivative_eq`, the literal identity `(SGD)`;
+- `rankOneSchurGaussian_logDet_concaveOn`, global concavity on `Set.Ici 0`;
+- both literal zero-curvature iff block theorems and both strict-curvature corollaries; and
+- `rankOneSchurGaussian_sharpUniversalLaw`, packaging `(SGI)`, `(SGD)`, global concavity, and
+  the complete equality classification.
+
+The direct leaf check and direct Hilbert umbrella check pass.  The final narrow audit
+`lake build GaloisForLFunctions.HilbertMetric` completed all 2820 jobs successfully.  Explicit
+`#print axioms` checks of ten headline declarations report only `propext`, `Classical.choice`, and
+`Quot.sound`; no `sorryAx` or project axiom occurs.  Repository lint recognizes the new module as
+reachable.  Its nonzero exit is caused only by eight unrelated concurrently owned modules missing
+from the `RHTower`, `HTGeometry`, or Hilbert umbrellas; none is imported by this theorem.
+
 ## External frontier checked
 
 - M. S. Floater, *Bounds on the determinant of an exponential matrix*, arXiv:2603.19900:
@@ -209,7 +232,7 @@ therefore forces all labels to coincide, which proves the stated strictness.
 
 - [x] 0 -> 1: exact claim, parent boundary, higher-rank falsifier, and initial SOTA map recorded
 - [x] 1 -> 2: dependency-closed paper proof and hostile equality audit
-- [ ] 2 -> 3: exact unconditional Lean theorem, direct checks, axiom audit, and final module build
+- [x] 2 -> 3: exact unconditional Lean theorem, direct checks, axiom audit, and final module build
 - [ ] 3 -> 4: independent priority audit and demonstrated general-journal significance
 
 ## Log
@@ -220,3 +243,7 @@ therefore forces all labels to coincide, which proves the stated strictness.
 - 2026-07-20 -- closed the dependency-complete trace proof, arbitrary-background positivity,
   Gaussian diagonal gauge, and exact equality/strictness classification; promoted to Stage 2
   without changing the conservative priority label.
+- 2026-07-20 -- formalized the exact positive-Gram normality rigidity, both curvature identities,
+  the complete equality classification, strictness, and global Gaussian concavity; direct leaf and
+  umbrella checks, the 2820-job Hilbert module build, and the explicit axiom audit passed.  Kept
+  priority and general-journal significance unverified.

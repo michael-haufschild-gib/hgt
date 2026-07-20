@@ -148,7 +148,11 @@ theorem reflectionFourthCurvatureJet_one_add_lower
   have hr₁pow : r₁ ^ 4 ≤ R₁ ^ 4 := by
     have habs0 : 0 ≤ |r₁| := abs_nonneg _
     have hp := pow_le_pow_left₀ habs0 hr₁ 4
-    simpa [abs_pow] using hp
+    calc
+      r₁ ^ 4 = |r₁| ^ 4 := by
+        have hpow : 0 ≤ r₁ ^ 4 := by nlinarith [sq_nonneg (r₁ ^ 2)]
+        rw [← abs_pow, abs_of_nonneg hpow]
+      _ ≤ R₁ ^ 4 := hp
   have h1four : r₁ ^ 4 * q ^ 4 ≤ R₁ ^ 4 := by
     calc
       r₁ ^ 4 * q ^ 4 ≤ R₁ ^ 4 * 1 := by
@@ -157,13 +161,13 @@ theorem reflectionFourthCurvatureJet_one_add_lower
   have hfour0 : 0 ≤ r₄ * q := mul_nonneg hr₄ hq0
   have hcubic0 : 0 ≤ 12 * r₂ * r₁ ^ 2 * q ^ 3 := by positivity
   have hsquare0 : 0 ≤ 4 * (r₂ * q - (r₁ * q) ^ 2) ^ 2 := by positivity
-  unfold reflectionFourthCurvatureJet logarithmicFourthJet logarithmicSecondJet
-  simp only [div_eq_mul_inv, inv_pow]
-  change -(4 * R₁ * R₃ + 3 * R₂ ^ 2 + 6 * R₁ ^ 4) ≤
-    r₄ * q - 4 * r₃ * r₁ * q ^ 2 - 3 * (r₂ * q) ^ 2 +
+  have hmain : -(4 * R₁ * R₃ + 3 * R₂ ^ 2 + 6 * R₁ ^ 4) ≤
+      r₄ * q - 4 * r₃ * r₁ * q ^ 2 - 3 * (r₂ * q) ^ 2 +
       12 * r₂ * r₁ ^ 2 * q ^ 3 - 6 * r₁ ^ 4 * q ^ 4 +
-        4 * (r₂ * q - (r₁ * q) ^ 2) ^ 2
-  nlinarith [h13, h2sq, h1four]
+        4 * (r₂ * q - (r₁ * q) ^ 2) ^ 2 := by
+    nlinarith [h13, h2sq, h1four]
+  simpa only [reflectionFourthCurvatureJet, logarithmicFourthJet,
+    logarithmicSecondJet, div_eq_mul_inv, g, q, ← inv_pow] using hmain
 
 end
 

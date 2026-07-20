@@ -680,7 +680,7 @@ theorem thetaCuspHigherLikelihoodJetTwo_lt
       have hsum := tsum_thetaCuspReflectionJetTailWeight_two_lt
       have hsum0 : 0 ≤ ∑' k : ℕ, thetaCuspReflectionJetTailWeight 2 k :=
         tsum_nonneg (fun k => thetaCuspReflectionJetTailWeight_nonneg 2 k)
-      have hproduct := mul_lt_mul_of_nonneg hpi2 hsum hsum0 (by positivity)
+      have hproduct := mul_lt_mul_of_nonneg hpi2 hsum (by positivity) hsum0
       nlinarith
 
 theorem abs_thetaCuspHigherLikelihoodJetThree_lt
@@ -714,7 +714,7 @@ theorem abs_thetaCuspHigherLikelihoodJetThree_lt
       have hsum := tsum_thetaCuspReflectionJetTailWeight_three_lt
       have hsum0 : 0 ≤ ∑' k : ℕ, thetaCuspReflectionJetTailWeight 3 k :=
         tsum_nonneg (fun k => thetaCuspReflectionJetTailWeight_nonneg 3 k)
-      have hproduct := mul_lt_mul_of_nonneg hpi3 hsum hsum0 (by positivity)
+      have hproduct := mul_lt_mul_of_nonneg hpi3 hsum (by positivity) hsum0
       nlinarith
 
 theorem thetaCuspHigherLikelihoodJetFour_pos
@@ -796,9 +796,7 @@ private theorem thetaCuspFirstLogCurvature_lt_twenty_thirds_scale
       mul_pos (by linarith) (by linarith)
     nlinarith
   have hscale : thetaCuspMorseScale 1 x = A := by
-    change Real.pi * ((1 : ℝ) * Real.exp x) ^ 2 = A
-    dsimp [A, thetaCuspLogConcavityScale]
-    ring
+    simp [thetaCuspMorseScale, A, thetaCuspLogConcavityScale]
   unfold thetaCuspBornWittenLogCurvature thetaCuspBornWittenCurvature
   rw [thetaCuspBornWittenWeight_eq, hscale]
   change 2 * (2 * A + 3 * A / (A - 3 / 2) ^ 2) < (20 / 3 : ℝ) * A
@@ -832,6 +830,521 @@ theorem eight_mul_thetaCuspFirstLogCurvature_mul_higherLikelihoodJetTwo_lt
     simpa only [A, c, r2, mul_assoc] using mul_lt_mul_of_pos_right hc hr2
   dsimp [A, c, r2] at hcr2 hAr2 ⊢
   nlinarith [mul_lt_mul_of_pos_right hpi3 (by norm_num : (0 : ℝ) < 13 / 1000)]
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- The first theta atom has a quantitative fourth logarithmic Turan margin on the
+positive half-line.  This is the source margin against which all higher-atom
+perturbation terms are charged. -/
+theorem thetaCuspFirstAtomLogFourthTuran_gt_four_hundred
+    {x : ℝ} (hx : 0 < x) :
+    (400 : ℝ) <
+      4 * thetaCuspBornWittenLogCurvature 1 x ^ 2 -
+        thetaCuspBornWittenLogFourthDerivative 1 x := by
+  let A := thetaCuspLogConcavityScale x
+  let B := A - 3 / 2
+  have hA : 3 < A := thetaCuspLogConcavityScale_gt_three hx.le
+  have hB : 0 < B := by dsimp [B]; linarith
+  have hscale : thetaCuspMorseScale 1 x = A := by
+    simp [thetaCuspMorseScale, A, thetaCuspLogConcavityScale]
+  have hc : thetaCuspBornWittenLogCurvature 1 x =
+      4 * A + 6 * A / B ^ 2 := by
+    unfold thetaCuspBornWittenLogCurvature thetaCuspBornWittenCurvature
+    rw [thetaCuspBornWittenWeight_eq, hscale]
+    dsimp [B]
+    ring
+  have hv4 : thetaCuspBornWittenLogFourthDerivative 1 x =
+      16 * A + 24 * A / B ^ 2 + 216 * A / B ^ 3 + 324 * A / B ^ 4 := by
+    unfold thetaCuspBornWittenLogFourthDerivative
+    rw [thetaCuspBornWittenWeight_eq, hscale]
+    dsimp [B]
+    field_simp [hB.ne'] <;> ring
+  have hdecomp :
+      4 * thetaCuspBornWittenLogCurvature 1 x ^ 2 -
+          thetaCuspBornWittenLogFourthDerivative 1 x =
+        16 * A * (4 * A - 1) +
+          24 * A * (8 * A - 1) / B ^ 2 -
+          72 * A ^ 2 / B ^ 4 := by
+    rw [hc, hv4]
+    field_simp [hB.ne'] <;> ring
+  have hfrac : A / B ^ 4 < (16 / 27 : ℝ) := by
+    apply (div_lt_iff₀ (pow_pos hB 4)).2
+    let y := A - 3
+    have hy : 0 < y := by dsimp [y]; linarith
+    apply sub_pos.mp
+    rw [show (16 / 27 : ℝ) * B ^ 4 - A =
+        (16 / 27) * y ^ 4 + (32 / 9) * y ^ 3 + 8 * y ^ 2 + 7 * y by
+      dsimp [B, y]
+      ring]
+    positivity
+  have hlead : (176 / 3 : ℝ) * A ^ 2 < 16 * A * (4 * A - 1) := by
+    have hA0 : 0 < A := by linarith
+    have hgap : 0 < A - 3 := by linarith
+    nlinarith [mul_pos hA0 hgap]
+  have hmiddle : 0 < 24 * A * (8 * A - 1) / B ^ 2 := by
+    apply div_pos
+    · exact mul_pos (mul_pos (by norm_num) (by linarith)) (by linarith)
+    · exact sq_pos_of_pos hB
+  have htailProduct : 72 * A * (A / B ^ 4) < (128 / 3 : ℝ) * A := by
+    have hA0 : 0 < A := by linarith
+    nlinarith [mul_lt_mul_of_pos_left hfrac (mul_pos (by norm_num : (0 : ℝ) < 72) hA0)]
+  have htailIdentity : 72 * A ^ 2 / B ^ 4 = 72 * A * (A / B ^ 4) := by
+    field_simp [hB.ne'] <;> ring
+  have htailLinear : 72 * A ^ 2 / B ^ 4 < (128 / 3 : ℝ) * A := by
+    rw [htailIdentity]
+    exact htailProduct
+  have hlinearQuadratic : (128 / 3 : ℝ) * A < (128 / 9 : ℝ) * A ^ 2 := by
+    have hA0 : 0 < A := by linarith
+    nlinarith [mul_pos hA0 (sub_pos.mpr hA)]
+  have hA2 : (9 : ℝ) < A ^ 2 := by nlinarith
+  rw [hdecomp]
+  nlinarith
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- Second logarithmic derivative of the complete higher-to-first-atom correction. -/
+def thetaCuspHigherLikelihoodLogJetTwo (x : ℝ) : ℝ :=
+  thetaCuspHigherLikelihoodJetTwo x /
+      (1 + thetaCuspHigherToFirstAtomLikelihoodRatio x) -
+    thetaCuspHigherLikelihoodJetOne x ^ 2 /
+      (1 + thetaCuspHigherToFirstAtomLikelihoodRatio x) ^ 2
+
+/-- Fourth logarithmic derivative of the complete higher-to-first-atom correction. -/
+def thetaCuspHigherLikelihoodLogJetFour (x : ℝ) : ℝ :=
+  let s := 1 + thetaCuspHigherToFirstAtomLikelihoodRatio x
+  thetaCuspHigherLikelihoodJetFour x / s -
+    4 * thetaCuspHigherLikelihoodJetOne x * thetaCuspHigherLikelihoodJetThree x / s ^ 2 -
+    3 * thetaCuspHigherLikelihoodJetTwo x ^ 2 / s ^ 2 +
+    12 * thetaCuspHigherLikelihoodJetOne x ^ 2 * thetaCuspHigherLikelihoodJetTwo x / s ^ 3 -
+    6 * thetaCuspHigherLikelihoodJetOne x ^ 4 / s ^ 4
+
+/-- The logarithmic second correction is bounded above by the ordinary second tail jet. -/
+theorem thetaCuspHigherLikelihoodLogJetTwo_le
+    {x : ℝ} (hx : 0 < x) :
+    thetaCuspHigherLikelihoodLogJetTwo x ≤ thetaCuspHigherLikelihoodJetTwo x := by
+  let r0 := thetaCuspHigherToFirstAtomLikelihoodRatio x
+  let r1 := thetaCuspHigherLikelihoodJetOne x
+  let r2 := thetaCuspHigherLikelihoodJetTwo x
+  let s := 1 + r0
+  have hr0 : 0 ≤ r0 := by
+    simpa only [r0] using thetaCuspHigherToFirstAtomLikelihoodRatio_nonneg hx
+  have hr2 : 0 < r2 := by simpa only [r2] using thetaCuspHigherLikelihoodJetTwo_pos hx
+  have hs : 0 < s := by dsimp [s]; linarith
+  have hdiv : r2 / s ≤ r2 := by
+    apply (div_le_iff₀ hs).2
+    have : 0 ≤ r2 * r0 := mul_nonneg hr2.le hr0
+    dsimp [s]
+    nlinarith
+  have hsquare : 0 ≤ r1 ^ 2 / s ^ 2 := div_nonneg (sq_nonneg _) (sq_nonneg _)
+  dsimp [thetaCuspHigherLikelihoodLogJetTwo, r0, r1, r2, s] at hdiv hsquare ⊢
+  linarith
+
+/-- The fourth logarithmic correction from all higher atoms loses less than seventeen units. -/
+theorem neg_seventeen_lt_thetaCuspHigherLikelihoodLogJetFour
+    {x : ℝ} (hx : 0 < x) :
+    (-17 : ℝ) < thetaCuspHigherLikelihoodLogJetFour x := by
+  let r0 := thetaCuspHigherToFirstAtomLikelihoodRatio x
+  let r1 := thetaCuspHigherLikelihoodJetOne x
+  let r2 := thetaCuspHigherLikelihoodJetTwo x
+  let r3 := thetaCuspHigherLikelihoodJetThree x
+  let r4 := thetaCuspHigherLikelihoodJetFour x
+  let s := 1 + r0
+  have hr0 : 0 ≤ r0 := by
+    simpa only [r0] using thetaCuspHigherToFirstAtomLikelihoodRatio_nonneg hx
+  have hs : 1 ≤ s := by dsimp [s]; linarith
+  have hs0 : 0 < s := lt_of_lt_of_le zero_lt_one hs
+  have hr1 := abs_thetaCuspHigherLikelihoodJetOne_lt hx
+  have hr2pos : 0 < r2 := by simpa only [r2] using thetaCuspHigherLikelihoodJetTwo_pos hx
+  have hr2 : r2 < (13 / 10 : ℝ) := by
+    simpa only [r2] using thetaCuspHigherLikelihoodJetTwo_lt hx
+  have hr3 : |r3| < (29 : ℝ) := by
+    simpa only [r3] using abs_thetaCuspHigherLikelihoodJetThree_lt hx
+  have hr4 : 0 < r4 := by simpa only [r4] using thetaCuspHigherLikelihoodJetFour_pos hx
+  have hcrossDiv : r1 * r3 / s ^ 2 ≤ |r1| * |r3| := by
+    apply (div_le_iff₀ (sq_pos_of_pos hs0)).2
+    have hraw : r1 * r3 ≤ |r1| * |r3| := by
+      calc
+        r1 * r3 ≤ |r1 * r3| := le_abs_self _
+        _ = |r1| * |r3| := abs_mul r1 r3
+    have hscale : |r1| * |r3| ≤ |r1| * |r3| * s ^ 2 := by
+      have hnonneg : 0 ≤ |r1| * |r3| := mul_nonneg (abs_nonneg _) (abs_nonneg _)
+      have hs2 : 1 ≤ s ^ 2 := by nlinarith
+      nlinarith [mul_nonneg hnonneg (sub_nonneg.mpr hs2)]
+    exact hraw.trans hscale
+  have hr2Div : r2 ^ 2 / s ^ 2 ≤ r2 ^ 2 := by
+    apply (div_le_iff₀ (sq_pos_of_pos hs0)).2
+    have hs2 : 1 ≤ s ^ 2 := by nlinarith
+    nlinarith [mul_nonneg (sq_nonneg r2) (sub_nonneg.mpr hs2)]
+  have hr1FourDiv : r1 ^ 4 / s ^ 4 ≤ |r1| ^ 4 := by
+    apply (div_le_iff₀ (pow_pos hs0 4)).2
+    have hs4 : 1 ≤ s ^ 4 := one_le_pow₀ hs
+    have heq : r1 ^ 4 = |r1| ^ 4 := by
+      calc
+        r1 ^ 4 = (r1 ^ 2) ^ 2 := by ring
+        _ = (|r1| ^ 2) ^ 2 := by rw [sq_abs]
+        _ = |r1| ^ 4 := by ring
+    rw [heq]
+    nlinarith [mul_nonneg (pow_nonneg (abs_nonneg r1) 4) (sub_nonneg.mpr hs4)]
+  have hcross : |r1| * |r3| < (29 / 10 : ℝ) := by
+    have := mul_lt_mul_of_nonneg hr1 hr3 (abs_nonneg r1) (abs_nonneg r3)
+    norm_num at this ⊢
+    exact this
+  have hr2sq : r2 ^ 2 < (169 / 100 : ℝ) := by
+    have hsum : 0 < (13 / 10 : ℝ) + r2 := by linarith
+    nlinarith [mul_pos (sub_pos.mpr hr2) hsum]
+  have hr1sq : |r1| ^ 2 < (1 / 100 : ℝ) := by
+    have hsum : 0 < (1 / 10 : ℝ) + |r1| := by positivity
+    nlinarith [mul_pos (sub_pos.mpr hr1) hsum]
+  have hr1four : |r1| ^ 4 < (1 / 10000 : ℝ) := by
+    have hsum : 0 < (1 / 100 : ℝ) + |r1| ^ 2 := by positivity
+    nlinarith [mul_pos (sub_pos.mpr hr1sq) hsum]
+  have hpositiveFour : 0 < r4 / s := div_pos hr4 hs0
+  have hpositiveCubic : 0 ≤ 12 * r1 ^ 2 * r2 / s ^ 3 := by positivity
+  have hcrossTerm :
+      -4 * |r1| * |r3| ≤ -4 * r1 * r3 / s ^ 2 := by
+    have h := mul_le_mul_of_nonpos_left hcrossDiv (by norm_num : (-4 : ℝ) ≤ 0)
+    convert h using 1 <;> ring
+  have hr2Term : -3 * r2 ^ 2 ≤ -3 * r2 ^ 2 / s ^ 2 := by
+    have h := mul_le_mul_of_nonpos_left hr2Div (by norm_num : (-3 : ℝ) ≤ 0)
+    convert h using 1 <;> ring
+  have hr1FourTerm : -6 * |r1| ^ 4 ≤ -6 * r1 ^ 4 / s ^ 4 := by
+    have h := mul_le_mul_of_nonpos_left hr1FourDiv (by norm_num : (-6 : ℝ) ≤ 0)
+    convert h using 1 <;> ring
+  have hcrossLower : (-58 / 5 : ℝ) < -4 * r1 * r3 / s ^ 2 := by
+    nlinarith
+  have hr2Lower : (-507 / 100 : ℝ) < -3 * r2 ^ 2 / s ^ 2 := by
+    nlinarith
+  have hr1FourLower : (-3 / 5000 : ℝ) < -6 * r1 ^ 4 / s ^ 4 := by
+    nlinarith
+  change (-17 : ℝ) < r4 / s - 4 * r1 * r3 / s ^ 2 - 3 * r2 ^ 2 / s ^ 2 +
+    12 * r1 ^ 2 * r2 / s ^ 3 - 6 * r1 ^ 4 / s ^ 4
+  calc
+    (-17 : ℝ) < (-58 / 5 : ℝ) + (-507 / 100 : ℝ) + (-3 / 5000 : ℝ) := by
+      norm_num
+    _ < r4 / s + (-4 * r1 * r3 / s ^ 2) + (-3 * r2 ^ 2 / s ^ 2) +
+        12 * r1 ^ 2 * r2 / s ^ 3 + (-6 * r1 ^ 4 / s ^ 4) := by
+      linarith
+    _ = r4 / s - 4 * r1 * r3 / s ^ 2 - 3 * r2 ^ 2 / s ^ 2 +
+        12 * r1 ^ 2 * r2 / s ^ 3 - 6 * r1 ^ 4 / s ^ 4 := by ring
+
+/-- The normalized fourth logarithmic Turan invariant of the complete theta source. -/
+def thetaCuspFullLogFourthTuranNormalized (x : ℝ) : ℝ :=
+  -thetaCuspBornWittenLogFourthDerivative 1 x +
+    thetaCuspHigherLikelihoodLogJetFour x +
+    4 * (-thetaCuspBornWittenLogCurvature 1 x +
+      thetaCuspHigherLikelihoodLogJetTwo x) ^ 2
+
+/-- The complete theta source retains a uniform positive fourth logarithmic Turan margin on the
+positive half-line after every higher atom is included. -/
+theorem one_hundred_sixty_lt_thetaCuspFullLogFourthTuranNormalized
+    {x : ℝ} (hx : 0 < x) :
+    (160 : ℝ) < thetaCuspFullLogFourthTuranNormalized x := by
+  let c := thetaCuspBornWittenLogCurvature 1 x
+  let e2 := thetaCuspHigherLikelihoodLogJetTwo x
+  let e4 := thetaCuspHigherLikelihoodLogJetFour x
+  let r2 := thetaCuspHigherLikelihoodJetTwo x
+  have hbase := thetaCuspFirstAtomLogFourthTuran_gt_four_hundred hx
+  have he4 : (-17 : ℝ) < e4 := by
+    simpa only [e4] using neg_seventeen_lt_thetaCuspHigherLikelihoodLogJetFour hx
+  have he2 : e2 ≤ r2 := by
+    simpa only [e2, r2] using thetaCuspHigherLikelihoodLogJetTwo_le hx
+  have hc : 0 < c := by
+    have h := nineteen_le_thetaCuspBornWittenLogCurvature (n := 1) (by norm_num) hx.le
+    dsimp only [c]
+    linarith
+  have hcross := eight_mul_thetaCuspFirstLogCurvature_mul_higherLikelihoodJetTwo_lt hx
+  have hcross' : 8 * c * e2 < (220 : ℝ) := by
+    have hle : 8 * c * e2 ≤ 8 * c * r2 := by gcongr
+    exact lt_of_le_of_lt hle hcross
+  have he2sq : 0 ≤ e2 ^ 2 := sq_nonneg e2
+  dsimp [thetaCuspFullLogFourthTuranNormalized, c, e2, e4] at hbase he4 hcross' he2sq ⊢
+  nlinarith
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- Logarithm of the complete higher-to-first correction factor. -/
+def thetaCuspHigherLikelihoodLog (x : ℝ) : ℝ :=
+  Real.log (1 + thetaCuspHigherToFirstAtomLikelihoodRatio x)
+
+/-- First logarithmic jet of the complete correction factor. -/
+def thetaCuspHigherLikelihoodLogJetOne (x : ℝ) : ℝ :=
+  thetaCuspHigherLikelihoodJetOne x /
+    (1 + thetaCuspHigherToFirstAtomLikelihoodRatio x)
+
+/-- Third logarithmic jet of the complete correction factor. -/
+def thetaCuspHigherLikelihoodLogJetThree (x : ℝ) : ℝ :=
+  let s := 1 + thetaCuspHigherToFirstAtomLikelihoodRatio x
+  thetaCuspHigherLikelihoodJetThree x / s -
+    3 * thetaCuspHigherLikelihoodJetOne x * thetaCuspHigherLikelihoodJetTwo x / s ^ 2 +
+    2 * thetaCuspHigherLikelihoodJetOne x ^ 3 / s ^ 3
+
+private theorem hasDerivAt_thetaCuspHigherLikelihoodLog
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspHigherLikelihoodLog
+      (thetaCuspHigherLikelihoodLogJetOne x) x := by
+  have h0 := hasDerivAt_thetaCuspHigherToFirstAtomLikelihoodRatio hx
+  have hs := h0.const_add 1
+  have hspos : 0 < 1 + thetaCuspHigherToFirstAtomLikelihoodRatio x := by
+    have h := thetaCuspHigherToFirstAtomLikelihoodRatio_nonneg hx
+    linarith
+  simpa only [thetaCuspHigherLikelihoodLog, thetaCuspHigherLikelihoodLogJetOne] using
+    hs.log hspos.ne'
+
+private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetOne
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspHigherLikelihoodLogJetOne
+      (thetaCuspHigherLikelihoodLogJetTwo x) x := by
+  have h0 := hasDerivAt_thetaCuspHigherToFirstAtomLikelihoodRatio hx
+  have h1 := hasDerivAt_thetaCuspHigherLikelihoodJetOne hx
+  have hs := h0.const_add 1
+  have hspos : 0 < 1 + thetaCuspHigherToFirstAtomLikelihoodRatio x := by
+    have h := thetaCuspHigherToFirstAtomLikelihoodRatio_nonneg hx
+    linarith
+  have hquot := h1.div hs hspos.ne'
+  convert hquot using 1
+  unfold thetaCuspHigherLikelihoodLogJetTwo
+  field_simp [hspos.ne']
+  ring
+
+private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetTwo
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspHigherLikelihoodLogJetTwo
+      (thetaCuspHigherLikelihoodLogJetThree x) x := by
+  have h0 := hasDerivAt_thetaCuspHigherToFirstAtomLikelihoodRatio hx
+  have h1 := hasDerivAt_thetaCuspHigherLikelihoodJetOne hx
+  have h2 := hasDerivAt_thetaCuspHigherLikelihoodJetTwo hx
+  have hs := h0.const_add 1
+  have hspos : 0 < 1 + thetaCuspHigherToFirstAtomLikelihoodRatio x := by
+    have h := thetaCuspHigherToFirstAtomLikelihoodRatio_nonneg hx
+    linarith
+  have hraw := (h2.div hs hspos.ne').sub
+    ((h1.pow 2).div (hs.pow 2) (pow_ne_zero 2 hspos.ne'))
+  convert hraw using 1
+  unfold thetaCuspHigherLikelihoodLogJetThree
+  simp only [Pi.pow_apply, Pi.mul_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one]
+  field_simp [hspos.ne']
+  ring
+
+private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetThree
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspHigherLikelihoodLogJetThree
+      (thetaCuspHigherLikelihoodLogJetFour x) x := by
+  have h0 := hasDerivAt_thetaCuspHigherToFirstAtomLikelihoodRatio hx
+  have h1 := hasDerivAt_thetaCuspHigherLikelihoodJetOne hx
+  have h2 := hasDerivAt_thetaCuspHigherLikelihoodJetTwo hx
+  have h3 := hasDerivAt_thetaCuspHigherLikelihoodJetThree hx
+  have hs := h0.const_add 1
+  have hspos : 0 < 1 + thetaCuspHigherToFirstAtomLikelihoodRatio x := by
+    have h := thetaCuspHigherToFirstAtomLikelihoodRatio_nonneg hx
+    linarith
+  have hraw := ((h3.div hs hspos.ne').sub
+      (((h1.mul h2).const_mul 3).div (hs.pow 2) (pow_ne_zero 2 hspos.ne'))).add
+    (((h1.pow 3).const_mul 2).div (hs.pow 3) (pow_ne_zero 3 hspos.ne'))
+  convert hraw using 1
+  · funext y
+    simp only [thetaCuspHigherLikelihoodLogJetThree, Pi.add_apply, Pi.sub_apply,
+      Pi.mul_apply, Pi.div_apply, Pi.pow_apply]
+    ring_nf
+  · unfold thetaCuspHigherLikelihoodLogJetFour
+    simp only [Pi.pow_apply, Pi.mul_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one]
+    field_simp [hspos.ne']
+    ring
+
+/-- Logarithm of the first positive theta atom. -/
+def thetaCuspFirstAtomLog (x : ℝ) : ℝ :=
+  Real.log (thetaCuspSourceTerm x 1)
+
+def thetaCuspFirstAtomLogJetOne (x : ℝ) : ℝ :=
+  -2 * thetaCuspBornWittenSuperpotential 1 x
+
+def thetaCuspFirstAtomLogJetTwo (x : ℝ) : ℝ :=
+  -thetaCuspBornWittenLogCurvature 1 x
+
+def thetaCuspFirstAtomLogJetThree (x : ℝ) : ℝ :=
+  -thetaCuspBornWittenLogThirdDerivative 1 x
+
+def thetaCuspFirstAtomLogJetFour (x : ℝ) : ℝ :=
+  -thetaCuspBornWittenLogFourthDerivative 1 x
+
+private theorem hasDerivAt_thetaCuspFirstAtomLog
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFirstAtomLog (thetaCuspFirstAtomLogJetOne x) x := by
+  have hsource := hasDerivAt_thetaCuspSourceTerm_eq_bornWittenScore
+    (n := 1) (by norm_num) hx
+  have hpos := thetaCuspSourceTerm_pos_of_pos_of_nat_pos
+    (n := 1) hx (by norm_num)
+  have hlog := hsource.log hpos.ne'
+  convert hlog using 1
+  unfold thetaCuspFirstAtomLogJetOne
+  field_simp [hpos.ne']
+
+private theorem hasDerivAt_thetaCuspFirstAtomLogJetOne
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFirstAtomLogJetOne (thetaCuspFirstAtomLogJetTwo x) x := by
+  have h := (hasDerivAt_thetaCuspBornWittenSuperpotential
+    (n := 1) (by norm_num) hx.le).const_mul (-2)
+  convert h using 1
+  · funext y
+    simp only [thetaCuspFirstAtomLogJetOne]
+  · simp only [thetaCuspFirstAtomLogJetTwo, thetaCuspBornWittenLogCurvature]
+    ring
+
+private theorem hasDerivAt_thetaCuspFirstAtomLogJetTwo
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFirstAtomLogJetTwo (thetaCuspFirstAtomLogJetThree x) x := by
+  simpa only [thetaCuspFirstAtomLogJetTwo, thetaCuspFirstAtomLogJetThree] using
+    (hasDerivAt_thetaCuspBornWittenLogCurvature
+      (n := 1) (by norm_num) hx.le).neg
+
+private theorem hasDerivAt_thetaCuspFirstAtomLogJetThree
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFirstAtomLogJetThree (thetaCuspFirstAtomLogJetFour x) x := by
+  simpa only [thetaCuspFirstAtomLogJetThree, thetaCuspFirstAtomLogJetFour] using
+    (hasDerivAt_thetaCuspBornWittenLogThirdDerivative
+      (n := 1) (by norm_num) hx.le).neg
+
+/-- Local factorization of the complete source by its first atom and the exact higher tail. -/
+theorem thetaCuspFullSource_eq_firstAtom_mul_higherFactor
+    {x : ℝ} (hx : 0 < x) :
+    thetaCuspFullSource x = thetaCuspSourceTerm x 1 *
+      (1 + thetaCuspHigherToFirstAtomLikelihoodRatio x) := by
+  have hfirst := thetaCuspSourceTerm_pos_of_pos_of_nat_pos
+    (n := 1) hx (by norm_num)
+  unfold thetaCuspHigherToFirstAtomLikelihoodRatio
+  field_simp [hfirst.ne']
+  ring
+
+private def thetaCuspFullLogFactorZero (x : ℝ) : ℝ :=
+  thetaCuspFirstAtomLog x + thetaCuspHigherLikelihoodLog x
+
+private def thetaCuspFullLogFactorOne (x : ℝ) : ℝ :=
+  thetaCuspFirstAtomLogJetOne x + thetaCuspHigherLikelihoodLogJetOne x
+
+private def thetaCuspFullLogFactorTwo (x : ℝ) : ℝ :=
+  thetaCuspFirstAtomLogJetTwo x + thetaCuspHigherLikelihoodLogJetTwo x
+
+private def thetaCuspFullLogFactorThree (x : ℝ) : ℝ :=
+  thetaCuspFirstAtomLogJetThree x + thetaCuspHigherLikelihoodLogJetThree x
+
+private def thetaCuspFullLogFactorFour (x : ℝ) : ℝ :=
+  thetaCuspFirstAtomLogJetFour x + thetaCuspHigherLikelihoodLogJetFour x
+
+private theorem hasDerivAt_thetaCuspFullLogFactorZero
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFullLogFactorZero (thetaCuspFullLogFactorOne x) x := by
+  simpa only [thetaCuspFullLogFactorZero, thetaCuspFullLogFactorOne] using
+    (hasDerivAt_thetaCuspFirstAtomLog hx).add
+      (hasDerivAt_thetaCuspHigherLikelihoodLog hx)
+
+private theorem hasDerivAt_thetaCuspFullLogFactorOne
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFullLogFactorOne (thetaCuspFullLogFactorTwo x) x := by
+  simpa only [thetaCuspFullLogFactorOne, thetaCuspFullLogFactorTwo] using
+    (hasDerivAt_thetaCuspFirstAtomLogJetOne hx).add
+      (hasDerivAt_thetaCuspHigherLikelihoodLogJetOne hx)
+
+private theorem hasDerivAt_thetaCuspFullLogFactorTwo
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFullLogFactorTwo (thetaCuspFullLogFactorThree x) x := by
+  simpa only [thetaCuspFullLogFactorTwo, thetaCuspFullLogFactorThree] using
+    (hasDerivAt_thetaCuspFirstAtomLogJetTwo hx).add
+      (hasDerivAt_thetaCuspHigherLikelihoodLogJetTwo hx)
+
+private theorem hasDerivAt_thetaCuspFullLogFactorThree
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFullLogFactorThree (thetaCuspFullLogFactorFour x) x := by
+  simpa only [thetaCuspFullLogFactorThree, thetaCuspFullLogFactorFour] using
+    (hasDerivAt_thetaCuspFirstAtomLogJetThree hx).add
+      (hasDerivAt_thetaCuspHigherLikelihoodLogJetThree hx)
+
+private theorem thetaCuspLogSource_eventuallyEq_fullLogFactorZero
+    {x : ℝ} (hx : 0 < x) :
+    thetaCuspLogSource =ᶠ[nhds x] thetaCuspFullLogFactorZero := by
+  filter_upwards [Ioi_mem_nhds hx] with y hy
+  have hfirst := thetaCuspSourceTerm_pos_of_pos_of_nat_pos
+    (n := 1) hy (by norm_num)
+  have hhigher : 0 < 1 + thetaCuspHigherToFirstAtomLikelihoodRatio y := by
+    have h := thetaCuspHigherToFirstAtomLikelihoodRatio_nonneg hy
+    linarith
+  rw [thetaCuspLogSource, thetaCuspFullLogFactorZero,
+    thetaCuspFullSource_eq_firstAtom_mul_higherFactor hy,
+    Real.log_mul hfirst.ne' hhigher.ne']
+  rfl
+
+private theorem iteratedDeriv_one_thetaCuspLogSource_eq_factor
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 1 thetaCuspLogSource x = thetaCuspFullLogFactorOne x := by
+  rw [iteratedDeriv_one]
+  exact (hasDerivAt_thetaCuspFullLogFactorZero hx |>.congr_of_eventuallyEq
+    (thetaCuspLogSource_eventuallyEq_fullLogFactorZero hx)).deriv
+
+/-- The actual logarithmic source curvature is the first-atom curvature plus the exact complete
+higher-tail correction. -/
+theorem iteratedDeriv_two_thetaCuspLogSource_eq_factor
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 2 thetaCuspLogSource x =
+      -thetaCuspBornWittenLogCurvature 1 x + thetaCuspHigherLikelihoodLogJetTwo x := by
+  have heq : iteratedDeriv 1 thetaCuspLogSource =ᶠ[nhds x]
+      thetaCuspFullLogFactorOne := by
+    filter_upwards [Ioi_mem_nhds hx] with y hy
+    exact iteratedDeriv_one_thetaCuspLogSource_eq_factor hy
+  rw [iteratedDeriv_succ]
+  have h := (hasDerivAt_thetaCuspFullLogFactorOne hx |>.congr_of_eventuallyEq heq).deriv
+  simpa only [thetaCuspFullLogFactorTwo, thetaCuspFirstAtomLogJetTwo] using h
+
+private theorem iteratedDeriv_three_thetaCuspLogSource_eq_factor
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 3 thetaCuspLogSource x = thetaCuspFullLogFactorThree x := by
+  have heq : iteratedDeriv 2 thetaCuspLogSource =ᶠ[nhds x]
+      thetaCuspFullLogFactorTwo := by
+    filter_upwards [Ioi_mem_nhds hx] with y hy
+    have h := iteratedDeriv_two_thetaCuspLogSource_eq_factor hy
+    simpa only [thetaCuspFullLogFactorTwo, thetaCuspFirstAtomLogJetTwo] using h
+  rw [iteratedDeriv_succ]
+  exact (hasDerivAt_thetaCuspFullLogFactorTwo hx |>.congr_of_eventuallyEq heq).deriv
+
+/-- Exact fourth logarithmic derivative of the actual complete theta source. -/
+theorem iteratedDeriv_four_thetaCuspLogSource_eq_factor
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 4 thetaCuspLogSource x =
+      -thetaCuspBornWittenLogFourthDerivative 1 x +
+        thetaCuspHigherLikelihoodLogJetFour x := by
+  have heq : iteratedDeriv 3 thetaCuspLogSource =ᶠ[nhds x]
+      thetaCuspFullLogFactorThree := by
+    filter_upwards [Ioi_mem_nhds hx] with y hy
+    exact iteratedDeriv_three_thetaCuspLogSource_eq_factor hy
+  rw [iteratedDeriv_succ]
+  have h := (hasDerivAt_thetaCuspFullLogFactorThree hx |>.congr_of_eventuallyEq heq).deriv
+  simpa only [thetaCuspFullLogFactorFour, thetaCuspFirstAtomLogJetFour] using h
+
+/-- Source-level fourth logarithmic Turan inequality for the complete Riemann--Jacobi theta
+source.  This is the strict positive-half-line theorem required by the center-mixed fourth-jet
+route. -/
+theorem thetaCuspLogSource_fourthTuran_gt_one_hundred_sixty
+    {x : ℝ} (hx : 0 < x) :
+    (160 : ℝ) < iteratedDeriv 4 thetaCuspLogSource x +
+      4 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 := by
+  rw [iteratedDeriv_four_thetaCuspLogSource_eq_factor hx,
+    iteratedDeriv_two_thetaCuspLogSource_eq_factor hx]
+  exact one_hundred_sixty_lt_thetaCuspFullLogFourthTuranNormalized hx
 
 end
 
