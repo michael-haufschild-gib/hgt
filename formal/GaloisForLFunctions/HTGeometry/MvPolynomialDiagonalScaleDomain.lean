@@ -86,6 +86,17 @@ theorem mvPolynomialDiagonalScaleRing_ne_zero
     (fun i => f (c i)) hc' hmapP
   exact hscaled (by simpa using hmap)
 
+/-- Diagonal scaling by nonzero elements of an integral domain is injective. -/
+theorem mvPolynomialDiagonalScaleRing_injective
+    {R : Type*} [CommRing R] [IsDomain R] {σ : Type*}
+    (c : σ → R) (hc : ∀ i, c i ≠ 0) :
+    Function.Injective (mvPolynomialDiagonalScaleRing c) := by
+  intro P Q hPQ
+  apply sub_eq_zero.mp
+  by_contra hne
+  exact mvPolynomialDiagonalScaleRing_ne_zero c hc hne <| by
+    rw [map_sub, hPQ, sub_self]
+
 end
 
 end GaloisForLFunctions

@@ -193,18 +193,9 @@ theorem gammaPoleScaleAndUnitDerivativeEval_eq_comp :
 theorem gammaPoleScaleAndUnitDerivativeEval_injective :
     Function.Injective gammaPoleScaleAndUnitDerivativeEval := by
   rw [gammaPoleScaleAndUnitDerivativeEval_eq_comp]
-  apply gammaPoleScaleAndUnitPositiveCoefficientEval_injective.comp
-  intro P Q hPQ
-  have hPQ' :
-      GaloisForLFunctions.mvPolynomialDiagonalScaleRing gammaPoleUnitDerivativeScale P =
-        GaloisForLFunctions.mvPolynomialDiagonalScaleRing gammaPoleUnitDerivativeScale Q := hPQ
-  have h := congrArg
-    (GaloisForLFunctions.mvPolynomialDiagonalScaleRing
-      (fun o => (gammaPoleUnitDerivativeScale o)⁻¹)) hPQ'
-  simpa only [GaloisForLFunctions.mvPolynomialDiagonalScaleRing_inv_apply
-    gammaPoleUnitDerivativeScale gammaPoleUnitDerivativeScale_ne_zero P,
-    GaloisForLFunctions.mvPolynomialDiagonalScaleRing_inv_apply
-      gammaPoleUnitDerivativeScale gammaPoleUnitDerivativeScale_ne_zero Q] using h
+  exact gammaPoleScaleAndUnitPositiveCoefficientEval_injective.comp
+    (GaloisForLFunctions.mvPolynomialDiagonalScaleRing_injective
+      gammaPoleUnitDerivativeScale gammaPoleUnitDerivativeScale_ne_zero)
 
 theorem algebraicIndependent_gammaPoleScaleAndUnitDerivativeFamily :
     AlgebraicIndependent ℂ gammaPoleScaleAndUnitDerivativeFamily := by

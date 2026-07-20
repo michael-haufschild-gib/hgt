@@ -1,8 +1,8 @@
 # Generalized spin-tower channel differential boundary
 
 - **ID:** `generalized-spin-tower-differential-boundary`
-- **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM (paper) / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
+- **Stage:** 3-formalized / not_new_scientific_knowledge
+- **Type:** THEOREM (Lean) / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Source:** Berman--Caron-Huot--Chandra--Elvang--Herderschee--Lin--Morales,
   *Gravitational Effective Theories with Maximal Supersymmetry and a Peculiar Parity*,
   arXiv:2607.14230, equations (5.16)--(5.18)
@@ -37,7 +37,10 @@ multiplier.  It does not assert the paper's stronger all-channel amplitude uniqu
 - [x] Complete unconditional paper proof.
 - [x] Hostile internal and external novelty audit; classification fixed to `BRIDGE`.
 - [x] Exact Lean proof passes `lake env lean` on the source file.
-- [ ] Capstone axiom audit, generated indexes/lint, final module build, and stage-3 promotion.
+- [x] Capstone axiom audit, generated indexes, final module build, and stage-3 promotion.
+- [x] Repository lint localized: this module is umbrella-reachable and clean; the remaining lint
+  failures are unrelated pre-existing/concurrent unreachable modules in `RHTower`, `HTGeometry`,
+  and `HilbertMetric`.
 
 ## Complete paper proof
 
@@ -121,10 +124,14 @@ complete collision proof is written.  No conditional Prop interface has been int
   covering all complex continuation parameters `N`, including outer-orbit collisions.
 - **New insight for the programme:** finite physical tower length is exactly the DA lattice;
   analytic continuation away from integer length creates an unavoidable charge-`-2` Gamma clock.
-- **Status:** paper proof complete; Lean source check complete; final audit pending.
+- **Status:** paper proof and exact Lean theorem complete; direct check, axiom audit, generated
+  index, and final module build pass.
 
 ## Log
 
 - 2026-07-20 -- 2026 source formula harvested and matched against the whole formal corpus.
 - 2026-07-20 -- paper proof completed; hostile audit demoted the claim from possible novelty to an
   exact bridge; direct Lean source check passed.
+- 2026-07-20 -- capstone axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`;
+  generated indexes include the public surface; the exact final module build passed.  Promoted to
+  stage 3 as `not_new_scientific_knowledge`.

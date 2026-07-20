@@ -335,15 +335,25 @@ bootstrap, and Airy ensemble laws are composers or consumers; none is a new HT s
 
 1. **Closed/open string differential boundary — COMPLETE:** exact paper proof, hostile formula
    review, Lean module, axiom audit, index/lint, final build, and stage-3 promotion all pass.
-2. **LSZ/Haag--Ruelle Kolchin transfer:** scientifically highest QFT gap, but it requires a genuine
+2. **2026 generalized spin-tower channel — COMPLETE BRIDGE:** the exact continued channel is DA
+   iff the tower parameter is integral and HT otherwise; paper proof, Lean proof, axiom audit,
+   public index, final build, and stage-3 non-novelty promotion pass.
+3. **Renormalized q-Pochhammer/Gamma product:** the 2026 product formula is an exact source, but a
+   meromorphic bi-infinite-product construction and convergence-compatible DA/HT theorem are open.
+4. **Source quantum curves:** the 2026 knot-complement and localized-defect q-difference equations
+   select genuine partition functions and polarizations; the missing connector is from that
+   difference module to the corpus's meromorphic differential field, not an arbitrary interpolation.
+5. **SUSY beta integral and elliptic kernels:** exact contour/residue identities are harvested;
+   contour convergence, balancing, and differential classification are the open interfaces.
+6. **LSZ/Haag--Ruelle Kolchin transfer:** scientifically highest QFT gap, but it requires a genuine
    compact-local reporter; no Lean wrapper until the analytic theorem exists.
-3. **Cosmological wavefunction transfer:** coefficient specialization is ready; source construction,
+7. **Cosmological wavefunction transfer:** coefficient specialization is ready; source construction,
    gauge-invariant in-in survival, and observation stability are the physical open core.
-4. **Non-Fredholm Witten-index defect:** finite trace cancellation is closed; construct the source
+8. **Non-Fredholm Witten-index defect:** finite trace cancellation is closed; construct the source
    supercharge and relative resolvent before formal spectral-shift work.
-5. **QED Ward--Takahashi HT transfer:** potentially new, but only after an actual inverse propagator,
+9. **QED Ward--Takahashi HT transfer:** potentially new, but only after an actual inverse propagator,
    contracted vertex, and derivation/translation-compatible reporter are defined.
-6. **BRST/Hodge source audit — COMPLETE:** the bounded operator surface and both direct consumers
+10. **BRST/Hodge source audit — COMPLETE:** the bounded operator surface and both direct consumers
    are checked, axiom-audited, optimized, and promoted; source-specific `P` and `G` construction
    remains separate.
 
@@ -360,8 +370,9 @@ also records why the parent formula does or does not discharge a project interfa
 | Cosmological-collider tower | A massive field produces squeezed-limit power-law/oscillatory mass and spin signatures; ordinary Bunch--Davies heavy signals carry Boltzmann suppression, while non-BD states can remove it.  Sources: Arkani-Hamed--Maldacena, arXiv:1503.08043; Yin, arXiv:2309.05244.  Continuous spectra have a distinct damped squeezed limit: Aoki, arXiv:2301.07920. | These sources justify the single-frequency physics and show that state choice changes the suppression; they do not force the exact geometric spectrum `mu_k=p^k` or shell-universal residues.  The Mahler tower therefore remains `LIVE`, with source selection—not the HT proof—as the open core. |
 | Non-Fredholm Witten index | For `H_1=D^*D`, `H_2=DD^*`, the resolvent-regularized index is `lim_(lambda->0-) (-lambda) Tr((H_1-lambda)^{-1}-(H_2-lambda)^{-1})` and equals a zero-energy spectral-shift boundary value under trace-class/Lebesgue-point hypotheses.  Sources: Carey--Gesztesy--Levitina--Sukochev, arXiv:1505.04895; explicit model arXiv:1509.01356. | This is the correct positive survivor of the finite-supertrace no-go.  The project lacks the coupled Sonin/prime--Gamma supercharge, relative trace-class resolvent theorem, and spectral-shift layer, so the route remains `LIVE`; none of those hypotheses is discharged by the bounded BRST module. |
 
-This completes the primary-formula review for every row marked `LIVE`.  It closes no source gap by
-fiat: all five surviving routes retain an explicitly named construction or analytic theorem.
+Together with the 2026 table, this completes the primary-formula review for every row marked
+`LIVE`.  It closes no source gap by fiat: every surviving route retains an explicitly named
+construction or analytic theorem.
 
 ## Focused search log
 
@@ -386,8 +397,11 @@ analytic interpolation that the source does not supply.
 ## Gates
 
 - [x] Read live formal source, generated API, stage-3 cards, stage-2 cards, and failed routes first.
+- [x] Cross-match every retained law against all six owned Lean areas plus the package/root layer.
 - [x] Freeze a reproducible Wikipedia/search boundary and verdict vocabulary.
 - [x] Give every canonical formula family found in both canonical-page sweeps an explicit application verdict.
+- [x] Freeze and PDF-check a 2026 arXiv frontier sample through 2026-07-20; harvest each retained
+  theorem/formula and give it a whole-corpus verdict.
 - [x] Select one source-pure disjoint theorem and prove it on paper.
 - [x] Implement its exact unconditional Lean surface and pass a direct single-file check.
 - [x] Complete formula-level primary-source review for every `LIVE` row.
@@ -398,6 +412,8 @@ analytic interpolation that the source does not supply.
   module builds while launching at most one owned Lean process at a time.
 - [x] Promote only claims whose exact stated gate is met; keep LSZ, cosmology, and non-Fredholm
   constructions explicitly open.
+- [x] Formalize the exact generalized-spin-tower bridge without introducing its stronger open
+  two-parameter collision classification as a Prop interface.
 
 ## Log
 
@@ -416,3 +432,11 @@ analytic interpolation that the source does not supply.
   infrared, LQC, worldsheet, double-copy, M-theory, and SUSY-breaking formula families.  The LQC
   difference equation was primary-source checked and rejected as an immediate HT theorem because
   its physical carrier is discrete and no canonical analytic interpolation is selected.
+- 2026-07-20 -- scope corrected from three folders to the whole Lean research corpus: `HTGeometry`,
+  `RHTower`, `Hurwitz`, `U0`, `Bottcher`, `HilbertMetric`, and package/root consumers were each
+  audited explicitly.
+- 2026-07-20 -- ten retained 2026 arXiv papers were checked at theorem/formula level.  The exact
+  generalized-spin-tower channel boundary was proved and formalized as a non-novel bridge.  Its four
+  audited capstones use only `propext`, `Classical.choice`, and `Quot.sound`; the final exact module
+  build passes.  Repository lint sees this module through the `HTGeometry` umbrella; the current
+  remaining lint failures are unrelated concurrent unreachable modules in three theorem areas.

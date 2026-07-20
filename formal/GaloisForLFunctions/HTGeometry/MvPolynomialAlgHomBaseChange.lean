@@ -25,9 +25,10 @@ coefficient ring. -/
 def mvPolynomialAlgHomBaseChange
     {k K σ τ : Type*} [CommSemiring k] [CommSemiring K] [Algebra k K]
     (f : MvPolynomial σ k →ₐ[k] MvPolynomial τ k) :
-    MvPolynomial σ K →+* MvPolynomial τ K :=
-  MvPolynomial.eval₂Hom MvPolynomial.C fun i =>
+    MvPolynomial σ K →ₐ[K] MvPolynomial τ K where
+  toRingHom := MvPolynomial.eval₂Hom MvPolynomial.C fun i =>
     MvPolynomial.map (algebraMap k K) (f (MvPolynomial.X i))
+  commutes' c := by simp
 
 @[simp] theorem mvPolynomialAlgHomBaseChange_C
     {k K σ τ : Type*} [CommSemiring k] [CommSemiring K] [Algebra k K]
@@ -51,7 +52,7 @@ theorem mvPolynomialAlgHomBaseChange_map
         (MvPolynomial.map (algebraMap k K) P) =
       MvPolynomial.map (algebraMap k K) (f P) := by
   let lhs : MvPolynomial σ k →+* MvPolynomial τ K :=
-    (mvPolynomialAlgHomBaseChange f).comp
+    (mvPolynomialAlgHomBaseChange f).toRingHom.comp
       (MvPolynomial.map (algebraMap k K))
   let rhs : MvPolynomial σ k →+* MvPolynomial τ K :=
     (MvPolynomial.map (algebraMap k K)).comp f.toRingHom
@@ -71,21 +72,17 @@ theorem mvPolynomialAlgHomBaseChange_comp
     mvPolynomialAlgHomBaseChange (K := K) (g.comp f) =
       (mvPolynomialAlgHomBaseChange (K := K) g).comp
         (mvPolynomialAlgHomBaseChange (K := K) f) := by
-  apply MvPolynomial.ringHom_ext
-  · intro c
-    simp
-  · intro i
-    simp [mvPolynomialAlgHomBaseChange_map]
+  apply MvPolynomial.algHom_ext
+  intro i
+  simp [mvPolynomialAlgHomBaseChange_map]
 
 @[simp] theorem mvPolynomialAlgHomBaseChange_id
     {k K σ : Type*} [CommSemiring k] [CommSemiring K] [Algebra k K] :
     mvPolynomialAlgHomBaseChange (AlgHom.id k (MvPolynomial σ k)) =
-      RingHom.id (MvPolynomial σ K) := by
-  apply MvPolynomial.ringHom_ext
-  · intro c
-    simp
-  · intro i
-    simp
+      AlgHom.id K (MvPolynomial σ K) := by
+  apply MvPolynomial.algHom_ext
+  intro i
+  simp
 
 /-- A polynomial automorphism remains injective after arbitrary commutative scalar extension. -/
 theorem mvPolynomialAlgHomBaseChange_injective
@@ -99,12 +96,12 @@ theorem mvPolynomialAlgHomBaseChange_injective
     intro i
     exact e.symm_apply_apply (MvPolynomial.X i)
   have hcomp : g.comp (mvPolynomialAlgHomBaseChange (K := K) e.toAlgHom) =
-      RingHom.id (MvPolynomial σ K) := by
+      AlgHom.id K (MvPolynomial σ K) := by
     rw [← mvPolynomialAlgHomBaseChange_comp, he,
       mvPolynomialAlgHomBaseChange_id]
   exact (show Function.LeftInverse g
       (mvPolynomialAlgHomBaseChange (K := K) e.toAlgHom) from fun P => by
-        simpa using RingHom.congr_fun hcomp P).injective
+        simpa using AlgHom.congr_fun hcomp P).injective
 
 /-- A polynomial automorphism remains bijective after arbitrary commutative scalar extension. -/
 theorem mvPolynomialAlgHomBaseChange_bijective
@@ -119,19 +116,19 @@ theorem mvPolynomialAlgHomBaseChange_bijective
     intro i
     exact e.apply_symm_apply (MvPolynomial.X i)
   have hcomp : (mvPolynomialAlgHomBaseChange (K := K) e.toAlgHom).comp g =
-      RingHom.id (MvPolynomial σ K) := by
+      AlgHom.id K (MvPolynomial σ K) := by
     rw [← mvPolynomialAlgHomBaseChange_comp, he,
       mvPolynomialAlgHomBaseChange_id]
   exact (show Function.RightInverse g
       (mvPolynomialAlgHomBaseChange (K := K) e.toAlgHom) from fun P => by
-        simpa using RingHom.congr_fun hcomp P).surjective
+        simpa using AlgHom.congr_fun hcomp P).surjective
 
-/-- Scalar extension of a polynomial algebra automorphism as an actual ring equivalence. -/
+/-- Scalar extension of a polynomial algebra automorphism as an algebra equivalence. -/
 noncomputable def mvPolynomialAlgEquivBaseChange
     {k K σ : Type*} [CommSemiring k] [CommSemiring K] [Algebra k K]
     (e : MvPolynomial σ k ≃ₐ[k] MvPolynomial σ k) :
-    MvPolynomial σ K ≃+* MvPolynomial σ K :=
-  RingEquiv.ofBijective (mvPolynomialAlgHomBaseChange (K := K) e.toAlgHom)
+    MvPolynomial σ K ≃ₐ[K] MvPolynomial σ K :=
+  AlgEquiv.ofBijective (mvPolynomialAlgHomBaseChange (K := K) e.toAlgHom)
     (mvPolynomialAlgHomBaseChange_bijective (K := K) e)
 
 end

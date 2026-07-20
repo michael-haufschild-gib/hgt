@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.SimpleZeroBellHorizon
 # Complete-Bell coordinate change after scalar extension
 
 The finite complete-Bell substitution is already a polynomial automorphism over `ℂ`.  The general
-scalar-extension law upgrades it to an injective substitution over every commutative complex
+scalar-extension law upgrades it to a polynomial automorphism over every commutative complex
 algebra.  This is stronger than value-level invertibility over `ℂ`: it discharges the coefficient
 base interface needed to transport Gamma pole coordinates to the rational pole-position field
 `ℂ(n)`.
@@ -24,18 +24,23 @@ noncomputable def bellCoefficientAlgEquiv (n : ℕ) :
     rw [bellCoefficientEquiv_apply]
     simp [bellCoefficientMap]
 
+/-- Complete-Bell coordinate equivalence after extending the coefficient algebra. -/
+noncomputable def bellCoefficientAlgEquivBaseChange
+    {K : Type*} [CommSemiring K] [Algebra ℂ K] (n : ℕ) :
+    MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K :=
+  GaloisForLFunctions.mvPolynomialAlgEquivBaseChange
+    (K := K) (bellCoefficientAlgEquiv n)
+
 /-- Complete-Bell substitution after extending the coefficient algebra. -/
 noncomputable def bellCoefficientMapBaseChange
     {K : Type*} [CommSemiring K] [Algebra ℂ K] (n : ℕ) :
-    MvPolynomial (Fin (n + 1)) K →+* MvPolynomial (Fin (n + 1)) K :=
-  GaloisForLFunctions.mvPolynomialAlgHomBaseChange
-    (K := K) (bellCoefficientAlgEquiv n).toAlgHom
+    MvPolynomial (Fin (n + 1)) K →ₐ[K] MvPolynomial (Fin (n + 1)) K :=
+  (bellCoefficientAlgEquivBaseChange (K := K) n).toAlgHom
 
 theorem bellCoefficientMapBaseChange_injective
     {K : Type*} [CommSemiring K] [Algebra ℂ K] (n : ℕ) :
     Function.Injective (bellCoefficientMapBaseChange (K := K) n) :=
-  GaloisForLFunctions.mvPolynomialAlgHomBaseChange_injective
-    (K := K) (bellCoefficientAlgEquiv n)
+  (bellCoefficientAlgEquivBaseChange (K := K) n).injective
 
 @[simp] theorem bellCoefficientMapBaseChange_C
     {K : Type*} [CommSemiring K] [Algebra ℂ K]
@@ -50,7 +55,11 @@ theorem bellCoefficientMapBaseChange_injective
     bellCoefficientMapBaseChange (K := K) n (MvPolynomial.X j) =
       MvPolynomial.map (algebraMap ℂ K)
         (bellAt n ((j : ℕ) + 1) j.isLt) := by
-  simp [bellCoefficientMapBaseChange, bellCoefficientAlgEquiv,
-    bellCoefficientEquiv_apply, bellCoefficientMap]
+  change GaloisForLFunctions.mvPolynomialAlgHomBaseChange
+      (K := K) (bellCoefficientAlgEquiv n).toAlgHom (MvPolynomial.X j) = _
+  rw [GaloisForLFunctions.mvPolynomialAlgHomBaseChange_X]
+  congr 1
+  simp [bellCoefficientAlgEquiv, bellCoefficientEquiv_apply,
+    bellCoefficientMap]
 
 end GaloisForLFunctions.HTGeometry

@@ -152,8 +152,13 @@ theorem hypertranscendentalOver_generalizedSpinTowerGammaCarrierMero_of_noninteg
         push_cast
         simpa [base] using congrArg Neg.neg h
       · simpa [base] using hnoninteger k
-  simpa [gammaCommonScaleProductMero, base, offsets, charges,
-    generalizedSpinTowerGammaCarrierMero, div_eq_mul_inv] using hproduct
+  have hrefined : generalizedSpinTowerGammaCarrierMero N =
+      gammaCommonScaleProductMero base offsets charges := by
+    rw [generalizedSpinTowerGammaCarrierMero, gammaCommonScaleProductMero]
+    norm_num [base, offsets, charges, div_eq_mul_inv, Fin.prod_univ_succ]
+    ring_nf
+  rw [hrefined]
+  exact hproduct
 
 theorem differentiallyAlgebraicOver_generalizedSpinTowerChannelMero_of_integer
     (N : ℂ) (hinteger : ∃ k : ℤ, N = (k : ℂ)) :

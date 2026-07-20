@@ -623,11 +623,73 @@ s_(j,lambda)>=1  ==>  H_j(lambda)<F_j(lambda)/80.          (40)
 So the integrated statement is quantitatively contractive against the literal signed first atom;
 no further asymptotic estimate is hidden in the word "contraction".
 
+The signed `p=2` correction also admits an exact score transport against the positive `p=4`
+channel.  Put
+
+```text
+R_j^(p)=C_(p,j+1)/C_(p,j),
+s_j=sqrt(R_j^(4)),
+rho_j=C_(2,j)/C_(4,j),
+m_j=d_(j+1)/d_j.
+```
+
+The two natural scores differ by exactly one height, while the common residual
+`J_lambda-3*pi*x^2` is increasing.  The resulting likelihood comparison and Cauchy--Schwarz give
+
+```text
+3*pi*(R_j^(4)-R_j^(2))
+ <= E_(2,j)[x] <= sqrt(R_j^(2)) <= sqrt(R_j^(4)),
+
+0 <= sqrt(R_j^(4))-sqrt(R_j^(2)) <= 1/(6*pi),             (41)
+
+3*pi*s_j*(rho_j-rho_(j+1)) <= rho_j,
+
+pi^2*min(s_j,s_(j+1))*|m_(j+1)-m_j|
+ <= rho_j+rho_(j+1).                                      (42)
+```
+
+There is a second source-specific collar.  Since the leading score residual is positive on the
+whole open half-line, its centered integral proves
+
+```text
+q_j^(4)=R_j^(4)/(j+1/2) <= 1/(3*pi).                      (43)
+```
+
+This is the exact Gaussian reference selected by the source score, not an imposed comparison
+measure.  Most importantly, the second-degree signed-amplitude error now has a closed formula.
+Writing
+
+```text
+S_j^(4)=q_j^(4)-2*q_(j+1)^(4)+q_(j+2)^(4),
+S_j^F =q_j^F  -2*q_(j+1)^F  +q_(j+2)^F,
+ell_j=min(s_j,s_(j+1)),
+epsilon_j=rho_j+rho_(j+1),
+```
+
+one has the exact product rule and the denominator-free leakage bound
+
+```text
+S_j^F
+ =m_(j+1)*S_j^(4)
+   +(m_j-m_(j+1))*q_j^(4)
+   +(m_(j+2)-m_(j+1))*q_(j+2)^(4),
+
+pi^2*ell_j*ell_(j+1)*(m_(j+1)*S_j^(4)-S_j^F)
+ <=ell_(j+1)*q_j^(4)*epsilon_j
+   +ell_j*q_(j+2)^(4)*epsilon_(j+1).                     (44)
+```
+
+Together with `(43)`, the right side of `(44)` is at most
+`(ell_(j+1)*epsilon_j+ell_j*epsilon_(j+1))/(3*pi)`.  Thus the amplitude part of the transfer is no
+longer an unnamed analytic remainder: it is an explicit local curvature budget built from three
+correction masses and two response heights.  This still does not prove positivity.  The remaining
+positive-channel theorem must produce a strict `S_j^(4)` margin large enough to dominate `(44)`.
+
 Thus the pointwise-to-moment higher-atom transfer formerly listed after `(31)` is complete, with
-no HT graph saturation and no division by the signed first atom.  The surviving transfer packet
-has exactly two parts: convert the source-score localization into positive second difference for
-the `C_4` gamma-normalized ratio, and control the second-degree distortion of the amplitude
-multiplier.  A generic Laplace expansion is no longer needed for higher-atom localization.
+no HT graph saturation and no division by the signed first atom.  The amplitude distortion has
+now been converted into the explicit budget `(44)`.  The surviving transfer problem is to prove a
+positive second-difference margin for the `C_4` gamma-normalized ratio and compare that margin with
+`(44)`.  A generic Laplace expansion is no longer needed for higher-atom localization.
 
 Permanent Lean module
 `PrimeArchThetaGaussianApertureCurvatureFlow.lean` proves `(20)`--`(24)` for the actual completed
@@ -636,22 +698,28 @@ quantitative cascade.  It formalizes the exact coefficient in `(25)`, not the an
 remainder that remains open.  The same module proves `(26)`--`(30)` for the literal source; it
 does not assume the transfer conjecture `(31)`.
 
-Permanent Lean modules `PrimeArchThetaGaussianApertureScoreConcentration.lean` and
-`PrimeArchThetaGaussianApertureHeightLocalizedContraction.lean` prove `(32)`--`(40)` for the
-literal source.  The exact score identity is a classical integration-by-parts mechanism, but the
+Permanent Lean modules `PrimeArchThetaGaussianApertureScoreConcentration.lean`,
+`PrimeArchThetaGaussianApertureHeightLocalizedContraction.lean`, and
+`PrimeArchThetaGaussianApertureTwoChannelTransport.lean` prove `(32)`--`(44)` for the literal
+source.  The exact score identity is a classical integration-by-parts mechanism, but the
 source-specialized score, the global `3*pi` coercive residual, the response-centered saddle window,
-and the rational resolution-safe completed-tail contraction were not found in the audited corpus
-or targeted exact-formula searches.  This is search noncollision, not a priority claim.  The known
-parent literature remains the Gaussian moment/Turan theory of Csordas--Varga
+the rational resolution-safe completed-tail contraction, the two-channel RMS collar, and the
+three-mass/two-height curvature leakage law were not found in the audited corpus or targeted
+exact-formula searches.  This is search noncollision, not a priority claim.  The known parent
+literature remains the Gaussian moment/Turan theory of Csordas--Varga
 (https://www.math.kent.edu/~varga/pub/paper_161.pdf), which does not state `(32)`--`(38)`.
+The two-channel transport module's direct leaf and exact module build pass.  Its audited transport,
+collar, multiplier-variation, product-rule, leakage, and scaled-deficit capstones use only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Exact open core
 
 1. Formalize the real-theta/modular-differential bridge `(15)`--`(16)`, closing the compiled
    positive modular value against the literal source jet numerator.
-2. Prove the surviving two-part analytic transfer following `(31)` and `(32)`--`(38)`: positive
-   second difference for the `C_4` gamma-normalized ratio and second-degree control of the
-   amplitude multiplier.  The infinite higher-atom transfer is now closed exactly.
+2. Prove a strict positive second difference for the `C_4` gamma-normalized ratio large enough to
+   dominate the explicit signed-amplitude leakage `(44)`.  The amplitude error is now closed as a
+   quantitative local budget, and the infinite higher-atom mass transfer is closed by `(38)`--`(40)`;
+   curvature stability of that higher tail is not implied by mass contraction alone.
 3. Alternatively, compare the negative tail of the proved one-crossing `L_lambda` with its
    positive core using the fixed curvature `E` and the exact theta reflection law.
 4. Once either route proves `(14)`, formalize the missing curvature-window identity `(8)` if it is
@@ -702,8 +770,12 @@ found no collision for `(9a)`--`(9c)`; this is search noncollision, not a priori
   atom, with rational resolution-safe constants
 - [x] strict `1/80` contraction of the complete higher-atom tail once the canonical response
   saddle reaches height one
-- [x] final direct leaf checks, serialized exact module build, and capstone axiom audit of the
-  curvature, score-concentration, and height-localized-contraction modules
+- [x] exact two-channel score transport, universal RMS collar, and relative correction decrement
+- [x] exact Gaussian-reference collar for the positive channel
+- [x] denominator-free three-mass/two-height bound for the complete signed-amplitude curvature
+  leakage
+- [x] final direct leaf checks, serialized exact module builds, and capstone axiom audits of the
+  curvature, score-concentration, height-localized-contraction, and two-channel-transport modules
 - [ ] formal equality of the modular-closure value with the literal `N_6`
 - [ ] uniform physical saddle-transfer packet `(31)`
 - [ ] uniform large-degree boundary excluding negative curvature entrance from infinity
@@ -746,3 +818,9 @@ found no collision for `(9a)`--`(9c)`; this is search noncollision, not a priori
   height one, all higher atoms together contribute less than `1/80` of the literal signed first
   atom.  Targeted exact-formula and exact-constant searches found no collision; this remains a
   noncollision statement, not a priority claim.
+- 2026-07-20 -- The shifted `p=2` score was compared directly with the `p=4` score.  The exact
+  transport gives the RMS collar `(41)`, the correction decrement and multiplier variation `(42)`,
+  and the positive residual gives the Gaussian reference collar `(43)`.  The exact product rule
+  then turns the entire signed-amplitude second-degree distortion into the explicit local budget
+  `(44)`.  This closes the identity and size of the amplitude leakage, but not the positive
+  leading-channel margin needed to dominate it.

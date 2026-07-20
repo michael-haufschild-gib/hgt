@@ -31,26 +31,29 @@ local instance jointLogRationalNatGermAlgebra :
     Algebra GammaPoleRationalBase NatGerm :=
   ratNatEval.toAlgebra
 
-def optionTailAffineMap (m : ℕ) (alpha beta : Fin m → ℂ) :
-    MvPolynomial (Option (Fin m)) ℂ →ₐ[ℂ] MvPolynomial (Option (Fin m)) ℂ :=
+def optionTailAffineMap {K : Type*} [Field K]
+    (m : ℕ) (alpha beta : Fin m → K) :
+    MvPolynomial (Option (Fin m)) K →ₐ[K] MvPolynomial (Option (Fin m)) K :=
   MvPolynomial.aeval fun o => match o with
     | none => MvPolynomial.X none
     | some j => MvPolynomial.C (alpha j) * MvPolynomial.X (some j) +
         MvPolynomial.C (beta j)
 
-def optionTailAffineMapInv (m : ℕ) (alpha beta : Fin m → ℂ) :
-    MvPolynomial (Option (Fin m)) ℂ →ₐ[ℂ] MvPolynomial (Option (Fin m)) ℂ :=
+def optionTailAffineMapInv {K : Type*} [Field K]
+    (m : ℕ) (alpha beta : Fin m → K) :
+    MvPolynomial (Option (Fin m)) K →ₐ[K] MvPolynomial (Option (Fin m)) K :=
   MvPolynomial.aeval fun o => match o with
     | none => MvPolynomial.X none
     | some j => MvPolynomial.C (alpha j)⁻¹ *
         (MvPolynomial.X (some j) - MvPolynomial.C (beta j))
 
-theorem optionTailAffineMap_injective (m : ℕ) {alpha beta : Fin m → ℂ}
+theorem optionTailAffineMap_injective {K : Type*} [Field K]
+    (m : ℕ) {alpha beta : Fin m → K}
     (halpha : ∀ j, alpha j ≠ 0) :
     Function.Injective (optionTailAffineMap m alpha beta) := by
   have hcomp :
       (optionTailAffineMapInv m alpha beta).comp (optionTailAffineMap m alpha beta) =
-        AlgHom.id ℂ _ := by
+        AlgHom.id K _ := by
     apply MvPolynomial.algHom_ext
     intro o
     rcases o with (_ | j)
@@ -64,26 +67,27 @@ theorem optionTailAffineMap_injective (m : ℕ) {alpha beta : Fin m → ℂ}
       (optionTailAffineMap m alpha beta P) = P
   exact AlgHom.congr_fun hcomp P
 
-def optionTailScaleMap (m : ℕ) :
-    MvPolynomial (Option (Fin m)) ℂ →ₐ[ℂ] MvPolynomial (Option (Fin m)) ℂ :=
-  (MvPolynomial.optionEquivRight ℂ (Fin m)).symm.toAlgHom.comp
+def optionTailScaleMap {K : Type*} [Field K] (m : ℕ) :
+    MvPolynomial (Option (Fin m)) K →ₐ[K] MvPolynomial (Option (Fin m)) K :=
+  (MvPolynomial.optionEquivRight K (Fin m)).symm.toAlgHom.comp
     ((mvPolynomialDiagonalScaleRing
-      (fun j : Fin m => (Polynomial.X : Polynomial ℂ) ^ ((j : ℕ) + 1))).restrictScalars ℂ |>.comp
-        (MvPolynomial.optionEquivRight ℂ (Fin m)).toAlgHom)
+      (fun j : Fin m => (Polynomial.X : Polynomial K) ^ ((j : ℕ) + 1))).restrictScalars K |>.comp
+        (MvPolynomial.optionEquivRight K (Fin m)).toAlgHom)
 
-theorem optionTailScaleMap_none (m : ℕ) :
-    optionTailScaleMap m (MvPolynomial.X none) = MvPolynomial.X none := by
+theorem optionTailScaleMap_none {K : Type*} [Field K] (m : ℕ) :
+    optionTailScaleMap (K := K) m (MvPolynomial.X none) = MvPolynomial.X none := by
   simp [optionTailScaleMap, mvPolynomialDiagonalScaleRing]
 
-theorem optionTailScaleMap_some (m : ℕ) (j : Fin m) :
-    optionTailScaleMap m (MvPolynomial.X (some j)) =
+theorem optionTailScaleMap_some {K : Type*} [Field K]
+    (m : ℕ) (j : Fin m) :
+    optionTailScaleMap (K := K) m (MvPolynomial.X (some j)) =
       MvPolynomial.X none ^ ((j : ℕ) + 1) * MvPolynomial.X (some j) := by
   simp [optionTailScaleMap, mvPolynomialDiagonalScaleRing]
 
-theorem optionTailScaleMap_injective (m : ℕ) :
-    Function.Injective (optionTailScaleMap m) := by
-  let E := MvPolynomial.optionEquivRight ℂ (Fin m)
-  let c : Fin m → Polynomial ℂ :=
+theorem optionTailScaleMap_injective {K : Type*} [Field K] (m : ℕ) :
+    Function.Injective (optionTailScaleMap (K := K) m) := by
+  let E := MvPolynomial.optionEquivRight K (Fin m)
+  let c : Fin m → Polynomial K :=
     fun j => Polynomial.X ^ ((j : ℕ) + 1)
   intro P Q hPQ
   apply sub_eq_zero.mp
@@ -100,25 +104,29 @@ theorem optionTailScaleMap_injective (m : ℕ) :
     mvPolynomialDiagonalScaleRing_ne_zero c hc hE
   apply hscale
   apply E.symm.injective
-  have hmap : optionTailScaleMap m (P - Q) = 0 := by
+  have hmap : optionTailScaleMap (K := K) m (P - Q) = 0 := by
     rw [map_sub, hPQ, sub_self]
   simpa [optionTailScaleMap, E, c] using hmap
 
-def weightedScaleAffineMap (m : ℕ) (alpha beta : Fin m → ℂ) :
-    MvPolynomial (Option (Fin m)) ℂ →ₐ[ℂ] MvPolynomial (Option (Fin m)) ℂ :=
+def weightedScaleAffineMap {K : Type*} [Field K]
+    (m : ℕ) (alpha beta : Fin m → K) :
+    MvPolynomial (Option (Fin m)) K →ₐ[K] MvPolynomial (Option (Fin m)) K :=
   (optionTailAffineMap m alpha beta).comp (optionTailScaleMap m)
 
-theorem weightedScaleAffineMap_injective (m : ℕ) {alpha beta : Fin m → ℂ}
+theorem weightedScaleAffineMap_injective {K : Type*} [Field K]
+    (m : ℕ) {alpha beta : Fin m → K}
     (halpha : ∀ j, alpha j ≠ 0) :
     Function.Injective (weightedScaleAffineMap m alpha beta) :=
   (optionTailAffineMap_injective m halpha).comp (optionTailScaleMap_injective m)
 
-theorem weightedScaleAffineMap_none (m : ℕ) (alpha beta : Fin m → ℂ) :
+theorem weightedScaleAffineMap_none {K : Type*} [Field K]
+    (m : ℕ) (alpha beta : Fin m → K) :
     weightedScaleAffineMap m alpha beta (MvPolynomial.X none) =
       MvPolynomial.X none := by
   simp [weightedScaleAffineMap, optionTailScaleMap_none, optionTailAffineMap]
 
-theorem weightedScaleAffineMap_some (m : ℕ) (alpha beta : Fin m → ℂ)
+theorem weightedScaleAffineMap_some {K : Type*} [Field K]
+    (m : ℕ) (alpha beta : Fin m → K)
     (j : Fin m) :
     weightedScaleAffineMap m alpha beta (MvPolynomial.X (some j)) =
       MvPolynomial.X none ^ ((j : ℕ) + 1) *
@@ -194,33 +202,33 @@ theorem algebraicIndependent_gammaPoleScaleAndLogCoefficientFamily (m : ℕ) :
     gammaPoleScaleAndLogCoefficientEval_injective m
 
 /-- Extend a tail coordinate map by fixing one distinguished head variable. -/
-def optionHeadLiftAlgHom {iota : Type*}
-    (f : MvPolynomial iota ℂ →ₐ[ℂ] MvPolynomial iota ℂ) :
-    MvPolynomial (Option iota) ℂ →ₐ[ℂ] MvPolynomial (Option iota) ℂ :=
-  (MvPolynomial.optionEquivLeft ℂ iota).symm.toAlgHom.comp
+def optionHeadLiftAlgHom {K iota : Type*} [CommSemiring K]
+    (f : MvPolynomial iota K →ₐ[K] MvPolynomial iota K) :
+    MvPolynomial (Option iota) K →ₐ[K] MvPolynomial (Option iota) K :=
+  (MvPolynomial.optionEquivLeft K iota).symm.toAlgHom.comp
     ((Polynomial.mapAlgHom f).comp
-      (MvPolynomial.optionEquivLeft ℂ iota).toAlgHom)
+      (MvPolynomial.optionEquivLeft K iota).toAlgHom)
 
-theorem optionHeadLiftAlgHom_injective {iota : Type*}
-    {f : MvPolynomial iota ℂ →ₐ[ℂ] MvPolynomial iota ℂ}
+theorem optionHeadLiftAlgHom_injective {K iota : Type*} [CommSemiring K]
+    {f : MvPolynomial iota K →ₐ[K] MvPolynomial iota K}
     (hf : Function.Injective f) :
     Function.Injective (optionHeadLiftAlgHom f) := by
-  exact (MvPolynomial.optionEquivLeft ℂ iota).symm.injective.comp
+  exact (MvPolynomial.optionEquivLeft K iota).symm.injective.comp
     ((Polynomial.map_injective f.toRingHom hf).comp
-      (MvPolynomial.optionEquivLeft ℂ iota).injective)
+      (MvPolynomial.optionEquivLeft K iota).injective)
 
-theorem optionHeadLiftAlgHom_none {iota : Type*}
-    (f : MvPolynomial iota ℂ →ₐ[ℂ] MvPolynomial iota ℂ) :
+theorem optionHeadLiftAlgHom_none {K iota : Type*} [CommSemiring K]
+    (f : MvPolynomial iota K →ₐ[K] MvPolynomial iota K) :
     optionHeadLiftAlgHom f (MvPolynomial.X none) = MvPolynomial.X none := by
   simp [optionHeadLiftAlgHom]
 
-theorem optionHeadLiftAlgHom_C {iota : Type*}
-    (f : MvPolynomial iota ℂ →ₐ[ℂ] MvPolynomial iota ℂ) (c : ℂ) :
+theorem optionHeadLiftAlgHom_C {K iota : Type*} [CommSemiring K]
+    (f : MvPolynomial iota K →ₐ[K] MvPolynomial iota K) (c : K) :
     optionHeadLiftAlgHom f (MvPolynomial.C c) = MvPolynomial.C c := by
   simp [optionHeadLiftAlgHom]
 
-theorem optionHeadLiftAlgHom_some {iota : Type*}
-    (f : MvPolynomial iota ℂ →ₐ[ℂ] MvPolynomial iota ℂ) (i : iota) :
+theorem optionHeadLiftAlgHom_some {K iota : Type*} [CommSemiring K]
+    (f : MvPolynomial iota K →ₐ[K] MvPolynomial iota K) (i : iota) :
     optionHeadLiftAlgHom f (MvPolynomial.X (some i)) =
       MvPolynomial.rename some (f (MvPolynomial.X i)) := by
   simp [optionHeadLiftAlgHom]
@@ -423,9 +431,10 @@ def optionFinInclude (n : ℕ) : Option (Fin (n + 1)) → Option ℕ :=
   Option.map fun j => (j : ℕ)
 
 theorem algebraicIndependent_optionNat_of_prefix
-    {A : Type*} [CommRing A] [Algebra ℂ A] (x : Option ℕ → A)
-    (hprefix : ∀ n, AlgebraicIndependent ℂ (x ∘ optionFinInclude n)) :
-    AlgebraicIndependent ℂ x := by
+    {R A : Type*} [CommRing R] [CommRing A] [Algebra R A]
+    (x : Option ℕ → A)
+    (hprefix : ∀ n, AlgebraicIndependent R (x ∘ optionFinInclude n)) :
+    AlgebraicIndependent R x := by
   apply algebraicIndependent_of_finite_type
   intro t ht
   have hfinite : (optionNatValue '' (t : Set (Option ℕ))).Finite :=
@@ -602,4 +611,3 @@ theorem algebraicIndependent_gammaPoleScaleAndInverseBranchCoefficientFamily :
 end
 
 end GaloisForLFunctions
-
