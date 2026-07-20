@@ -7,12 +7,12 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 1826 | 23786 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
-| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 1804 | 19402 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 1829 | 23898 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 1805 | 19419 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 58 | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 73 | 889 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 377 | 5359 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
-| `hilbert_metric` | `GaloisForLFunctions.HilbertMetric` | 19 | 355 | `gaussianCorrectedDeterminant_mul_sq_le`, `gaussianDistanceMatrix_det_mul_sq_le` |
+| `hilbert_metric` | `GaloisForLFunctions.HilbertMetric` | 22 | 448 | `gaussianCorrectedDeterminant_mul_sq_le`, `gaussianDistanceMatrix_det_mul_sq_le` |
 
 ## Wiring
 

@@ -2,14 +2,15 @@ import GaloisForLFunctions.RHTower.ProjectiveWeightedFloquetRecurrence
 import GaloisForLFunctions.RHTower.ProjectiveBinaryWaterEntropy
 
 /-!
-# Projective Gaussian rate--distortion law
+# Gaussian-form representation of projective water entropy
 
 The anisotropic resolution problem governing weighted projective recurrence
-is exactly the reverse-water-filling variational problem for independent
+has the same finite reverse-water-filling variational form as independent
 Gaussian modes after one projective pivot is removed.  This file proves the
-identification at the level of feasible distortion packets and then states
-the recurrence theorem with the rate--distortion value as its single
-intrinsic exponent.
+equality of those algebraic programs and transfers the recurrence sandwich to
+that notation.  It does not construct a random source, reconstruction channel,
+mutual information, or operational source code, and it does not identify the
+separable program with the exact quotient fidelity metric.
 -/
 
 open scoped BigOperators
@@ -195,8 +196,9 @@ theorem projectiveGaussianRateCost_canonicalDistortion
     projectiveCoordinateEntropy_waterScale]
   rfl
 
-/-- **Exact projective Gaussian rate--distortion identity.**  The canonical
-water allocation attains the Gaussian rate minimum on every pivot fibre. -/
+/-- **Exact Gaussian-form variational identity.**  The canonical water
+allocation attains the displayed logarithmic allocation minimum on every
+pivot fibre. -/
 theorem projectiveCanonicalWaterEntropy_isGaussianRateDistortionMinimum
     {d : ℕ} (hd : 0 < d) (w : Fin d → ℝ) (k : Fin d)
     (hw : ∀ j, 0 < w j) (hmass : ∑ j, w j = 1)
@@ -216,7 +218,8 @@ theorem projectiveCanonicalWaterEntropy_isGaussianRateDistortionMinimum
   exact projectiveCanonicalWaterEntropy_le_gaussianRateCost
     w k hw hmass D hD
 
-/-- Gaussian rate--distortion after optimizing the projective pivot. -/
+/-- Gaussian-form allocation value after optimizing the projective pivot.
+The historical name is retained for API compatibility. -/
 noncomputable def projectiveGaussianRateDistortionMinimum
     {d : ℕ} (hd : 0 < d) (w : Fin d → ℝ) (eta : ℝ) : ℝ :=
   projectiveCanonicalWaterEntropyMinimum hd w eta
@@ -355,10 +358,9 @@ theorem binary_projectiveGaussianRateDistortionMinimum
     rw [hcost] at hlower
     exact hlower
 
-/-- **Minimax recurrence--rate-distortion law.**  The least worst-spectrum
-pure-state Floquet recurrence deadline has logarithm equal, up to explicit
-dimension-only costs, to the minimum Gaussian rate--distortion value after
-projective gauge removal. -/
+/-- **Minimax recurrence/water-entropy sandwich in Gaussian-form notation.**
+The least worst-spectrum pure-state Floquet recurrence deadline is trapped,
+up to explicit dimension-only costs, around the pivot water allocation value. -/
 theorem universalWeightedFloquetFidelityRecurrenceTime_rateDistortionSandwich
     {d : ℕ} (hd : 2 ≤ d) (w : Fin d → ℝ)
     (hw : ∀ j, 0 < w j) (hmass : ∑ j, w j = 1)

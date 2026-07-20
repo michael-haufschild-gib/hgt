@@ -70,19 +70,8 @@ theorem xiWeilSharp_xiHedenmalmDeBrangesE (z : ℂ) :
 /-- The derivative of the centered even Xi function is odd. -/
 theorem deriv_XiC_neg (z : ℂ) :
     deriv XiC (-z) = -deriv XiC z := by
-  have hcomp : HasDerivAt (fun w : ℂ => XiC (-w))
-      (deriv XiC (-z) * (-1)) z :=
-    (XiC_differentiable.differentiableAt.hasDerivAt.comp z
-      (hasDerivAt_neg z))
-  have heq : (fun w : ℂ => XiC (-w)) = XiC := by
-    funext w
-    exact XiC_even w
-  have h := congrArg (fun f : ℂ → ℂ => deriv f z) heq
-  change deriv (fun w : ℂ => XiC (-w)) z = deriv XiC z at h
-  rw [hcomp.deriv] at h
-  calc
-    deriv XiC (-z) = -(deriv XiC (-z) * (-1)) := by ring
-    _ = -deriv XiC z := congrArg Neg.neg h
+  simpa only [iteratedDeriv_one, pow_one, neg_one_mul] using
+    iteratedDeriv_XiC_neg 1 z
 
 /-- Centered functional-equation reflection exchanges the Hedenmalm value with its sharp
 partner. -/

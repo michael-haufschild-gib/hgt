@@ -222,6 +222,70 @@ theorem deriv_hardyZ_eq_zero_iff_thetaCuspFirstSineMoment_of_zero
     deriv_thetaCuspCosineRepresentation_eq_neg_two_mul_firstSineMoment, mul_eq_zero]
   norm_num
 
+/-- **General Xi/Hardy first-jet law.**  Differentiating the exact value reflection keeps both
+the archimedean-scale jet and the Hardy jet in one unconditional identity. -/
+theorem deriv_Xi_eq_hardyZArchScale_firstJet (t : ℝ) :
+    deriv Xi t = (-deriv hardyZArchScale t / 2) * hardyZ t +
+      (-hardyZArchScale t / 2) * deriv hardyZ t := by
+  have hjet := ((differentiable_hardyZArchScale t).hasDerivAt.neg.div_const 2).mul
+    (differentiable_hardyZ t).hasDerivAt
+  have hfun : Xi = fun u : ℝ => -hardyZArchScale u / 2 * hardyZ u := by
+    funext u
+    exact Xi_eq_neg_half_hardyZArchScale_mul_hardyZ u
+  change HasDerivAt (fun u : ℝ => -hardyZArchScale u / 2 * hardyZ u) _ t at hjet
+  rw [← hfun] at hjet
+  exact hjet.deriv
+
+/-- At a Hardy zero, the Xi derivative is the Hardy derivative times the nonzero negative
+archimedean scale. -/
+theorem deriv_Xi_eq_neg_half_scale_mul_deriv_hardyZ_of_zero
+    {t : ℝ} (hZ : hardyZ t = 0) :
+    deriv Xi t = -hardyZArchScale t / 2 * deriv hardyZ t := by
+  rw [deriv_Xi_eq_hardyZArchScale_firstJet, hZ]
+  ring
+
+/-- At a Hardy zero, Xi and Hardy Z have the same derivative-vanishing predicate. -/
+theorem deriv_Xi_eq_zero_iff_deriv_hardyZ_of_zero
+    {t : ℝ} (hZ : hardyZ t = 0) :
+    deriv Xi t = 0 ↔ deriv hardyZ t = 0 := by
+  rw [deriv_Xi_eq_neg_half_scale_mul_deriv_hardyZ_of_zero hZ]
+  have hs := hardyZArchScale_pos t
+  constructor
+  · intro h
+    exact (mul_eq_zero.mp h).resolve_left
+      (div_ne_zero (neg_ne_zero.mpr hs.ne') (by norm_num))
+  · rintro h
+    rw [h, mul_zero]
+
+/-- **Global real-Xi/source first-jet law.**  At every height, the Xi derivative is minus twice
+the positive theta source's first sine moment.  This strengthens the zero-local multiplicity
+interface to an unconditional value relation. -/
+theorem deriv_Xi_eq_neg_two_mul_thetaCuspFirstSineMoment (t : ℝ) :
+    deriv Xi t =
+      -2 * ∫ x : ℝ in Ioi 0,
+        x * thetaCuspFullSource x * Real.sin (t * x) := by
+  rw [show Xi = thetaCuspCosineRepresentation by
+    funext u
+    exact Xi_eq_thetaCuspCosineRepresentation u]
+  exact deriv_thetaCuspCosineRepresentation_eq_neg_two_mul_firstSineMoment t
+
+/-- The Xi derivative vanishes exactly when the explicit positive-source first sine moment
+vanishes, with no zero-value premise. -/
+theorem deriv_Xi_eq_zero_iff_thetaCuspFirstSineMoment (t : ℝ) :
+    deriv Xi t = 0 ↔
+      (∫ x : ℝ in Ioi 0,
+        x * thetaCuspFullSource x * Real.sin (t * x)) = 0 := by
+  rw [deriv_Xi_eq_neg_two_mul_thetaCuspFirstSineMoment, mul_eq_zero]
+  norm_num
+
+/-- Equivalently, the Xi derivative is nonzero exactly when the explicit positive-source first
+sine moment does not vanish. -/
+theorem deriv_Xi_ne_zero_iff_thetaCuspFirstSineMoment_ne_zero (t : ℝ) :
+    deriv Xi t ≠ 0 ↔
+      (∫ x : ℝ in Ioi 0,
+        x * thetaCuspFullSource x * Real.sin (t * x)) ≠ 0 :=
+  not_congr (deriv_Xi_eq_zero_iff_thetaCuspFirstSineMoment t)
+
 /-- **Two-height value reflection.**  The product of two Hardy values and the product of the
 corresponding positive-theta cosine traces differ by an explicitly positive scale.  This single
 law subsumes every two-height sign-bracket transfer between the two models. -/

@@ -1,31 +1,31 @@
 # Spectral-bandwidth Slater Fano law
 
 - **ID:** spectral-bandwidth-slater-fano-law
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / UNIVERSAL HILBERT-SPACE LAW / NOVELTY GATE
-- **Scientific status:** `[PAPER-PROVED] [LEAN OPEN]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED]`
 - **Novelty:** `[NOVELTY UNVERIFIED]`; no priority claim
 - **Source:** positive survivor of the quartic Fock-stability conjecture
-- **Statement:** Spectral bandwidth alone gives the sharp dimension-free threshold at which every
-  Slater determinant has sub-Poisson additive spectral statistics.
+- **Statement:** The Slater Fano margin has an exact decomposition into a universal spectral-band
+  floor plus endpoint leakage, spectral-centering energy, and occupied-coherence energy.
 
 ## Goal
 
 Replace the single-top and annihilation-invariance restrictions of the current Gaussian/Fock
 phase laws by a theorem about an arbitrary finite subspace of an arbitrary spectrally graded
-Hilbert space.  The theorem must expose an exact threshold, prove that the threshold is sharp, and
-specialize to unconditional quartic stability without a graph decomposition or a completion
-certificate.
+Hilbert space.  The theorem must expose an exact sum-of-nonnegative-defects law, deduce its phase
+threshold, prove that the threshold is sharp, and specialize to unconditional quartic stability
+without a graph decomposition or a completion certificate.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: well-posed, parent theory separated, hostile proof audit complete
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open mathematical dependency
-- [ ] 2 -> 3 formalized: exact universal bound and quartic corollary compiled unconditionally
+- [x] 2 -> 3 formalized: exact universal bound, Pluecker connector, and quartic corollary compiled
 - [ ] 3 -> 4 publication-ready: independent novelty audit plus a genuine metric/application theorem
 
-The checked paper proof is recorded here before Lean work.  The card remains in `1-in-progress`
-until the theorem-shaped external novelty audit and the exact formal statement are both closed.
+The paper proof and exact formal statement are closed.  The card remains below publication-ready
+until independent novelty review and a genuinely external application close the final gate.
 
 ## The universal law
 
@@ -37,7 +37,29 @@ an `r`-dimensional occupied subspace and let `Psi_S` be its normalized Slater de
  X=d\Gamma(A)
 \]
 
-for the additive many-body observable on the exterior power.  Then
+for the additive many-body observable on the exterior power.  Put
+
+\[
+ c=\frac{a+b-1}{2},\qquad
+ q=a-\frac{(b-a-1)^2}{4}=ab-c^2.
+\]
+
+The Fano margin obeys the exact **three-defect identity**
+
+\[
+\boxed{\begin{aligned}
+ \mathbb E_{\Psi_S}X-\operatorname{Var}_{\Psi_S}(X)
+ &=rq+\mathcal E_{\rm edge}+\mathcal E_{\rm ctr}+\mathcal E_{\rm coh},\\
+ \mathcal E_{\rm edge}
+ &=\sum_i\langle u_i,(A-aI)(bI-A)u_i\rangle,\\
+ \mathcal E_{\rm ctr}
+ &=\sum_i(\langle u_i,Au_i\rangle-c)^2,\\
+ \mathcal E_{\rm coh}
+ &=\sum_{i\ne j}|\langle u_i,Au_j\rangle|^2.
+\end{aligned}}                                                   \tag{SBD}
+\]
+
+Every defect on the right is nonnegative.  Hence
 
 \[
  \boxed{\quad
@@ -52,7 +74,18 @@ If the spectral width `delta=b-a` is at most one, the stronger sharp bound is
  \mathbb E_{\Psi_S}X-\operatorname{Var}_{\Psi_S}(X)\ge ra. \tag{SBF0}
 \]
 
-Consequently every occupied subspace is sub-Poisson whenever
+It also has an exact defect form:
+
+\[
+ \mathbb E X-\operatorname{Var}(X)-ra
+ =\mathcal E_{\rm edge}+\mathcal E_{\rm coh}
+  +\sum_i(\mu_i-a)(\mu_i-b+1).                            \tag{SBD0}
+\]
+
+When `b-a<=1`, both factors in the last summand are nonnegative because
+`mu_i>=a>=b-1`.
+
+Consequently every occupied subspace is Fano-underdispersed (`Var X <= E X`) whenever
 
 \[
  \boxed{\quad b-a\le 1+2\sqrt a.\quad}                    \tag{ST}
@@ -95,7 +128,27 @@ Therefore
  \nu_i\le(a+b)\mu_i-ab.                                  \tag{2}
 \]
 
-Keeping only the diagonal squares in (1), and then using (2), yields
+Define the exact secant residual
+
+\[
+ \epsilon_i=(a+b)\mu_i-ab-\nu_i
+ =\langle u_i,(A-aI)(bI-A)u_i\rangle\ge0.                \tag{3}
+\]
+
+Separating the diagonal and off-diagonal compression squares in (1), and completing the square,
+gives
+
+\[
+\begin{aligned}
+ \mathbb E X-\operatorname{Var}(X)
+ &=\sum_i(\mu_i-\nu_i+\mu_i^2)+\sum_{i\ne j}|C_{ij}|^2\\
+ &=\sum_i\left[q+(\mu_i-c)^2+\epsilon_i\right]
+   +\sum_{i\ne j}|C_{ij}|^2.
+\end{aligned}                                                \tag{4}
+\]
+
+This is exactly (SBD).  Dropping its three defects proves (SBF).  Equivalently, keeping only the
+diagonal squares in (1), and then using (2), yields
 
 \[
 \begin{aligned}
@@ -104,13 +157,19 @@ Keeping only the diagonal squares in (1), and then using (2), yields
  &\ge\sum_i\left(\mu_i^2-(a+b-1)\mu_i+ab\right)\\
  &=\sum_i\left[
    \left(\mu_i-\frac{a+b-1}{2}\right)^2
-   +a-\frac{(b-a-1)^2}{4}\right].                       \tag{3}
+   +a-\frac{(b-a-1)^2}{4}\right].                       \tag{5}
 \end{aligned}
 \]
 
-Dropping the squares proves (SBF).  If `b-a <= 1`, the vertex `(a+b-1)/2` lies at or below `a`,
-while every `mu_i` lies in `[a,b]`.  The quadratic in the second line of (3) is then increasing
-on `[a,b]` and its minimum is its value `a` at `mu_i=a`; this proves (SBF0).
+If `b-a <= 1`, the vertex `(a+b-1)/2` lies at or below `a`, while every `mu_i` lies in `[a,b]`.
+The exact factorization
+
+\[
+ \mu_i-\nu_i+\mu_i^2-a
+ =\epsilon_i+(\mu_i-a)(\mu_i-b+1)
+\]
+
+proves (SBD0), and hence (SBF0), without a derivative argument.
 
 For the nonnegative phase, (SBF) is nonnegative exactly when
 
@@ -143,7 +202,7 @@ on the two endpoints, and
  \mu_i=a+p\delta=\frac{a+b-1}{2}.
 \]
 
-Every inequality in (2)--(3) is therefore an equality.  Hence (SBF) is sharp in every rank once
+All three defects in (SBD) vanish.  Hence (SBF) is sharp in every rank once
 both endpoint eigenspaces have multiplicity at least `r`.  If `delta <= 1`, taking `S` inside the
 `a`-eigenspace attains (SBF0).  Thus the threshold cannot be enlarged using only `a`, `b`, and
 `r`.
@@ -164,17 +223,50 @@ direction.  In particular it proves the former conjecture ACB-3 in the stronger 
 > has nonnegative determinant-line degree Fano margin, without annihilation invariance.
 
 Via the existing partition-curvature identity, this says that every such quartic collision model
-has nonpositive logarithmic Gaussian Gram-determinant curvature.  The connector from the compiled
-coordinate compression expression to the existing canonical Pluecker partition is a formalization
-obligation, not an assumption to be hidden in the headline.
+has nonpositive logarithmic Gaussian Gram-determinant curvature.
+
+Here is the dependency-closed connector proof.  Let `v_1,...,v_r` be an orthonormal coordinate
+frame, let the coordinate energies be nonnegative integers `d_k`, and define the exponential Gram
+path
+
+\[
+ G(s)_{ij}=\sum_k e^{s d_k}v_i(k)v_j(k).
+\]
+
+Cauchy--Binet, with each feature column scaled by `exp(s d_k/2)`, gives the literal identity
+
+\[
+ \det G(s)=\sum_{|J|=r}\det(v_J)^2 e^{s\sum_{k\in J}d_k}. \tag{6}
+\]
+
+The right side is the moment-generating function of the canonical Pluecker degree variable `D`;
+orthonormality makes its value at zero equal to one.  On the matrix side,
+
+\[
+ G(0)=I,qquad G'(0)_{ij}=\sum_kd_kv_i(k)v_j(k),\qquad
+ G''(0)_{ij}=\sum_kd_k^2v_i(k)v_j(k).
+\]
+
+Jacobi's second logarithmic derivative formula therefore gives
+
+\[
+ (\log\det G)''(0)
+ =\operatorname{tr}G''(0)-\operatorname{tr}(G'(0)^2)
+ =\sum_i\nu_i-\sum_{i,j}|C_{ij}|^2.                    \tag{7}
+\]
+
+Differentiating the finite sum in (6) gives `(log det G)''(0)=Var(D)`.  Equations (6)--(7) prove
+that the compression variance used in (SBD) is the actual canonical Pluecker degree variance.  No
+probabilistic or exterior-algebra identity remains as an assumption.  This connector is formalized
+in `GaloisForLFunctions.HilbertMetric.SlaterPluckerConnector`.
 
 ## Hostile attacks
 
 1. **Known-ingredient attack.**  The Slater moment formula is standard in fermionic full counting
    statistics, and the scalar spectral estimate is the Bhatia--Davis secant bound.  Neither is new.
-   The candidate content is only the sharp combined bandwidth/Fano threshold and its simultaneous
-   interpretation for Slater states, projection determinantal processes, and Gaussian/Fock
-   determinant curvature.
+   The candidate content is only the exact three-defect identity, its sharp bandwidth/Fano phase
+   boundary, and its simultaneous interpretation for Slater states, projection determinantal
+   processes, and Gaussian/Fock determinant curvature.
 2. **Off-diagonal attack.**  Dropping `i != j` compression squares can only lower the margin;
    endpoint-pair extremizers make them vanish, so this loss does not weaken the universal constant.
 3. **Small-width attack.**  Formula (SBF) is not sharp when `b-a<1`; (SBF0) closes that defect and
@@ -199,24 +291,26 @@ width`, `Fano factor`, `weighted determinantal process`, and `mean minus varianc
 - the standard variance formula for additive functionals of projection determinantal processes;
 - extensive model-specific sub-/super-Poisson and free-fermion counting literature.
 
-No exact spectral threshold (ST), sharp dimension-scaled inequality (SBF), or quartic Fock/Gaussian
-corollary was found.  This is an exact-search boundary, not evidence that the theorem is absent from
-all literature.  The novelty label remains `[NOVELTY UNVERIFIED]`.
+No exact three-defect identity (SBD), spectral threshold (ST), sharp dimension-scaled inequality
+(SBF), or quartic Fock/Gaussian corollary was found.  This is an exact-search boundary, not evidence
+that the theorem is absent from all literature.  The novelty label remains `[NOVELTY UNVERIFIED]`.
 
-## Lean target
+## Lean result
 
-Create `GaloisForLFunctions.HilbertMetric.SpectralBandwidthFano` with unconditional finite-coordinate
-statements:
+`GaloisForLFunctions.HilbertMetric.SpectralBandwidthFano` and
+`GaloisForLFunctions.HilbertMetric.SlaterPluckerConnector` compile unconditional finite-coordinate
+statements for:
 
 1. the secant square inequality on `[a,b]`;
 2. the Slater compression mean, second moment, variance, and Fano margin;
-3. the sharp interval lower bound (SBF);
-4. the bandwidth nonnegativity criterion and the quartic `[1,4]` corollary;
-5. if the existing exterior API permits it without a certificate layer, the canonical Pluecker
-   moment connector.
+3. the exact three-defect decomposition (SBD) and its small-width form (SBD0);
+4. the sharp interval lower bound (SBF);
+5. the bandwidth nonnegativity criterion and the quartic `[1,4]` corollary;
+6. the canonical Pluecker first- and second-log-derivative connectors.
 
 ## Log
 
 - 2026-07-20 -- extracted from ACB-3 after the symmetric-shadow theorem; separated the Klich and
-  Bhatia--Davis parents, proved the sharp interval law and equality construction, and retained the
-  conservative `[NOVELTY UNVERIFIED]` label pending exact Lean and broader application work.
+  Bhatia--Davis parents, proved the sharp interval law and equality construction; then compiled the
+  exact three-defect theorem and literal Pluecker log-partition connector.  Retained the conservative
+  `[NOVELTY UNVERIFIED]` label pending independent review and broader application work.

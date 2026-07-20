@@ -81,8 +81,12 @@ condition by a fixed involutive constraint.  It also separates two questions cle
 
 1. **No zero localization is gained.**  The right side of `(1)` is exactly `XiC(w)`.  The relation
    detects zeros but gives no independent sign or reality mechanism.
-2. **No hidden multiplicity result is gained.**  Differentiating `(1)` in `w` can read higher
-   vanishing order, but does not force simplicity.
+2. **The exact multiplicity reader is now formalized, but it does not force simplicity.**
+   Differentiating `(1)` in `w` gives a triangular Leibniz transform of the Xi jet by the
+   nonvanishing cut-dependent exponential.  At a divisor of multiplicity `m`, every defect jet
+   below `m` vanishes and the `m`th defect jet is that exponential times the explicit order-`m`
+   theta Fourier--Laplace moment.  Thus every cut reads the same multiplicity; none proves that
+   the multiplicity is one.
 3. **The fixed-point relation alone is complete.**  Equation `(2)` already detects the same zero
    condition as the all-boundary equation `(4)`; quantifying over `a` adds covariance, not strength.
 4. **No flow is required.**  The parameter `a` chooses a cut in one fixed completed source.  The
@@ -103,12 +107,19 @@ Primary source:
 ## Lean declarations
 
 - `thetaCuspBoundaryPrimitive`;
+- `thetaCuspBoundaryReflectionDefect`;
 - `integral_thetaCuspFourierLaplaceIntegrand_reflection`;
 - `thetaCuspBoundaryPrimitive_reflection_defect`;
+- `thetaCuspBoundaryReflectionDefect_eq`;
+- `iteratedDeriv_thetaCuspBoundaryReflectionDefect`;
 - `thetaCuspBoundaryPrimitive_midpoint_value_relation`;
 - `thetaCuspBoundaryPrimitive_anti_reflection_iff_XiC_eq_zero`;
 - `ThetaCuspBoundaryAntiReflection`;
-- `thetaCuspBoundaryAntiReflection_iff_XiC_eq_zero`.
+- `thetaCuspBoundaryAntiReflection_iff_XiC_eq_zero`;
+- `iteratedDeriv_thetaCuspBoundaryReflectionDefect_eq_zero_before_supportMultiplicity`;
+- `iteratedDeriv_thetaCuspBoundaryReflectionDefect_at_supportMultiplicity`;
+- `iteratedDeriv_thetaCuspBoundaryReflectionDefect_ne_zero_at_supportMultiplicity`;
+- `xiSupportMultiplicity_eq_iff_thetaCuspBoundaryReflectionDefectJet`.
 
 ## Gates
 
@@ -116,4 +127,3 @@ Primary source:
 - [x] 1 → 2  complete proof from theta evenness and the Fourier--Laplace identity
 - [x] 2 → 3  Lean theorem in the RHTower umbrella; targeted module passes
 - [ ] 3 → 4  no standalone preprint planned for a bridge-grade consequence
-

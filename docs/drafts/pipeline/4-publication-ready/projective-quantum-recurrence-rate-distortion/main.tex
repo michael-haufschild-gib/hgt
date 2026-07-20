@@ -26,10 +26,11 @@
 \newcommand{\dd}{\,\mathrm d}
 \newcommand{\one}{\mathbf 1}
 \newcommand{\proj}{\mathrm{proj}}
-\newcommand{\RD}{\mathcal R}
+\newcommand{\WH}{\mathcal H}
 \newcommand{\Fid}{\mathcal F}
 
-\title{Quantum Recurrence Is Projective Rate--Distortion}
+\title{Projective Water-Entropy Bounds for Worst-Spectrum\\
+Pure-State Floquet Recurrence}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{20 July 2026}
 
@@ -38,26 +39,24 @@
 \maketitle
 
 \begin{abstract}
-The recurrence of a finite pure quantum state depends on both its spectral
-support and the probability carried by each spectral component.  Existing
-dimension and effective-support bounds do not identify the weight-sensitive
-quantity that governs the worst spectrum.  We identify that quantity exactly.
-For a spectral probability vector $w$ and an amplitude defect $\eta$, let
-$T_w(\eta)$ be the least discrete-time deadline that guarantees a return of
-fidelity at least $(1-\eta)^2$ for every choice of eigenphases.  We prove that
+For a positive spectral probability vector $w\in\mathbb R^d$ and amplitude
+defect $0<\eta\le1$, let $T_w(\eta)$ be the least discrete-time deadline that
+guarantees fidelity at least $(1-\eta)^2$ for every eigenphase packet.  We
+introduce a pivot-optimized water entropy $\WH_{\proj}(w,\eta)$ and prove
 \[
- \log T_w(\eta)=\RD_{\proj}(w,\eta)+O(d),
+ \WH_{\proj}(w,\eta)-\frac{\pi}{4}(d-1)-\log(2d)
+ <\log T_w(\eta)
+ \le \WH_{\proj}(w,\eta)+(d-1)\log(2\pi\sqrt2).
 \]
-with explicit constants, where $\RD_{\proj}$ is the minimum Gaussian
-rate--distortion function obtained after removing one common phase.  The
-optimizer is an exact reverse-water-filling allocation.  The upper bound is a
-deterministic anisotropic recurrence construction; the lower bound constructs
-an adversarial spectrum by Haar avoidance.  Both are governed by the same
-rate--distortion value.  A two-level family has hard effective support two at
-every target accuracy while its recurrence exponent remains bounded, whereas
-the balanced two-level family diverges.  Thus effective support is only a
-cardinality envelope: projective rate--distortion is the minimax recurrence
-invariant.
+The optimizer is exact reverse water filling.  A product-box construction
+proves the ceiling for every spectrum, while Haar avoidance produces an
+adversarial spectrum for the floor.  We distinguish this finite geometric
+functional from both Shannon rate--distortion and the exact projective
+fidelity quadratic form.  At the half-trace-distance support scale used in
+current recurrence bounds, a binary family and the balanced binary state have
+the same effective support but strictly different water entropies.  The result
+concerns worst-spectrum discrete Floquet deadlines; it does not include an
+exit-time condition or a prescribed continuous-time Hamiltonian.
 \end{abstract}
 
 \section{Introduction}
@@ -69,46 +68,50 @@ amplitude of a pure state is a weighted exponential sum, so a recurrence bound
 must simultaneously account for the geometry of a torus orbit and the
 probability distribution of the initial state over the spectrum.
 
-Recent work has made the finite-dimensional problem quantitative.
+Recent work has made several finite-dimensional recurrence problems
+quantitative.
 Campos Venuti related generic recurrence scales to energy and effective
 dimension \cite{CamposVenuti2015}.  Kotowski and Oszmaniec proved deterministic
 packing upper bounds, generic lower bounds for random Hamiltonians, and
 effective-support refinements \cite{KotowskiOszmaniec2026}.  Gupta and Short
 studied state-independent recurrence through simultaneous Diophantine
 approximation \cite{GuptaShort2026}.  Exact Floquet recurrence has a different,
-arithmetic character \cite{AnandEtAl2026}.  These results isolate dimension,
-effective support, randomness, or exact spectral arithmetic.  They do not
-identify a continuous invariant of the complete spectral probability vector
-that gives matching deterministic minimax bounds.
+arithmetic character \cite{AnandEtAl2026}.  Those results isolate dimension,
+effective support, randomness, exit time, or exact spectral arithmetic.  The
+question addressed here is narrower: after fixing the complete probability
+vector, what finite deadline works for every discrete eigenphase packet, and
+how strongly can an adversarial packet delay return?
 
-This paper supplies that invariant.  It is a rate--distortion function, not by
-analogy but by exact variational identity.  After one spectral component is
-chosen as a projective phase reference, coordinatewise phase resolutions are
-equivalent to distortion allocations.  Their logarithmic covering cost is the
-Gaussian rate cost, and its optimizer is reverse water filling.  Minimizing
-over the projective reference gives $\RD_{\proj}(w,\eta)$.
+The answer is a pivot-optimized water entropy.  After choosing one spectral
+component as a projective reference, coordinate resolutions are optimized
+under a weighted quadratic budget.  The convex program has the same algebraic
+reverse-water-filling solution as the parallel Gaussian rate--distortion
+problem \cite{CoverThomas2006,QianEtAl2024}.  We do not infer an operational
+source-coding theorem from that coincidence: there is no random source,
+reconstruction variable, mutual information, or code in the present problem.
+The object below is a finite geometric resolution functional.
+Rate--distortion also appears in approximate block-match recurrence for
+stationary ergodic sources \cite{KanayaMuramatsu1997}; that is a random-string,
+block-length theorem rather than the finite deterministic clock studied here.
 
-Our main theorem shows that the same $\RD_{\proj}$ controls both directions of
-the worst-spectrum recurrence problem.  A product-box construction gives the
-upper bound for every eigenphase vector.  Conversely, a Haar-measure estimate
-shows that, before the corresponding exponential time, some eigenphase vector
-avoids recurrence.  The result is finite, deterministic, uniform in the
-weights, and contains explicit constants.
+Our contribution is the two-sided finite theorem.  A product-box construction
+gives the upper bound for every eigenphase vector.  A weighted target-volume
+estimate and Haar avoidance give the lower bound for some eigenphase vector.
+Both bounds contain the same optimized water entropy, with explicit additive
+costs linear in the ambient support size.  Accordingly, the theorem identifies
+a normalized asymptotic law only in regimes where the water entropy dominates
+those carrier costs; it does not prove uniqueness among all functionals within
+an $O(d)$ band.
 
-The result also distinguishes rate--distortion from hard effective support in
-the smallest nontrivial dimension.  For the weights $(1-q\eta,q\eta)$, with
-fixed $q>1$, both spectral levels are necessary to carry mass $1-\eta$, but
-$\RD_{\proj}=\tfrac12\log q$ is independent of $\eta$.  For the balanced
-weights $(1/2,1/2)$, the hard effective support is again two while
-$\RD_{\proj}=\tfrac12\log(1/(2\eta))$.  The two states have identical hard
-support complexity and different minimax recurrence complexity.
-
-Rate--distortion already governs approximate block-match recurrence for
-stationary ergodic sources \cite{KanayaMuramatsu1997}.  That setting concerns
-random strings and a block-length limit.  The law proved here concerns finite
-quantum phase dynamics.  It takes a deterministic worst-spectrum deadline,
-removes a physical projective gauge, and supplies matching finite upper and
-adversarial lower bounds for every fixed spectral probability profile.
+The support comparison is made at the operational scale of
+Kotowski--Oszmaniec \cite{KotowskiOszmaniec2026}.  It gives a finite separation
+between a hard cardinality and the water entropy for a triangular binary
+family.  It is not a claim about a fixed state's high-resolution exponent.
+Classical metric entropy, quantization, simultaneous approximation, and
+reverse water filling are essential parents
+\cite{KolmogorovTikhomirov1959,GrayNeuhoff1998,Cassels1957}.  The claimed delta
+is their conjunction in one worst-spectrum Floquet sandwich, not a new coding
+theorem.
 
 \section{Weighted quantum recurrence}
 
@@ -149,38 +152,73 @@ over all compatible eigenphase packets.
 Adding a common phase to every $\omega_j$ leaves \eqref{eq:amplitude}
 unchanged.  The recurrence problem therefore has $d-1$, not $d$, independent
 phase directions.  This projective reduction is responsible for the pivot in
-the rate--distortion functional below.
+the water functional below.
 
-\section{The projective rate--distortion function}
+The exact projective geometry should be separated from the coordinate envelope
+used later.
 
-Fix a pivot $k\in\{1,\ldots,d\}$.  A distortion allocation is a vector
+\begin{proposition}[Exact projective variance]
+\label{prop:variance}
+For unit phases $z_j\in\T$,
+\begin{equation}
+ \sum_{j,k}w_jw_k|z_j-z_k|^2
+ =2\left(1-\left|\sum_jw_jz_j\right|^2\right).
+ \label{eq:exact-variance}
+\end{equation}
+For real coordinates $\theta_j$, the associated quadratic form is
+\begin{equation}
+ Q_w(\theta)
+ :=\frac12\sum_{j,k}w_jw_k(\theta_j-\theta_k)^2
+ =\sum_jw_j\theta_j^2-\left(\sum_jw_j\theta_j\right)^2.
+ \label{eq:covariance-form}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Expand $|z_j-z_k|^2=|z_j|^2+|z_k|^2-2\Re(z_j\overline
+z_k)$, sum, and use $\sum_jw_j=1$ and $|z_j|=1$.  The same expansion over
+real coordinates proves \eqref{eq:covariance-form}.
+\end{proof}
+
+In a pivot chart $\theta_k=0$, the last square in
+\eqref{eq:covariance-form} couples the remaining coordinates.  The separable
+program introduced next is therefore not asserted to be the exact metric
+entropy of $Q_w$.  It is the diagonal resolution envelope that occurs in both
+the constructive and target-volume estimates.
+
+\section{The projective pivot water entropy}
+
+Fix a pivot $k\in\{1,\ldots,d\}$.  A budget allocation is a vector
 $D=(D_j)_{j\ne k}$ satisfying
 \begin{equation}
  0<D_j\le w_j,\qquad \sum_{j\ne k}D_j\le\eta.
  \label{eq:distortion-feasible}
 \end{equation}
-Its Gaussian rate cost is
+Its logarithmic resolution cost is
 \begin{equation}
- \RD_k(w;D)=\frac12\sum_{j\ne k}\log\frac{w_j}{D_j}.
+ \WH_k(w;D)=\frac12\sum_{j\ne k}\log\frac{w_j}{D_j}.
  \label{eq:rate-cost}
 \end{equation}
 Define
 \begin{equation}
- \RD_k(w,\eta)=\min_{D\text{ satisfying }\eqref{eq:distortion-feasible}}
-       \RD_k(w;D),
+ \WH_k(w,\eta)=\min_{D\text{ satisfying }\eqref{eq:distortion-feasible}}
+       \WH_k(w;D),
  \qquad
- \RD_{\proj}(w,\eta)=\min_{1\le k\le d}\RD_k(w,\eta).
+ \WH_{\proj}(w,\eta)=\min_{1\le k\le d}\WH_k(w,\eta).
  \label{eq:projective-rd}
 \end{equation}
-The factor $1/2$ is the Gaussian rate--distortion normalization.  The pivot
-is uncharged because a common phase is physically invisible.
+The factor $1/2$ matches the square-root resolution in the covering argument.
+Numerically, this is the classical parallel-Gaussian reverse-water-filling
+program, but $\WH_{\proj}$ is defined here by \eqref{eq:projective-rd}, without
+an operational coding interpretation.  The pivot is uncharged because a
+common phase is physically invisible.
 
 \begin{proposition}[Exact reverse water filling]
 \label{prop:water}
 For every pivot $k$, the minimum in \eqref{eq:projective-rd} is attained.
 If $\eta\ge1-w_k$, then
 \[
- \RD_k(w,\eta)=0.
+ \WH_k(w,\eta)=0.
 \]
 If $0<\eta<1-w_k$, there is a water level $\lambda_k>0$ satisfying
 \begin{equation}
@@ -194,7 +232,7 @@ and the allocation
 \end{equation}
 attains the minimum.  Its value is
 \begin{equation}
- \RD_k(w,\eta)=\frac12\sum_{j\ne k}
+ \WH_k(w,\eta)=\frac12\sum_{j\ne k}
        \log_+(\lambda_k w_j).
  \label{eq:water-rate}
 \end{equation}
@@ -208,7 +246,7 @@ Put $x_j=w_j/D_j$.  Conditions \eqref{eq:distortion-feasible} become
 \end{equation}
 and the rate becomes
 \[
- \RD_k(w;D)=\frac12\sum_{j\ne k}\log x_j.
+ \WH_k(w;D)=\frac12\sum_{j\ne k}\log x_j.
 \]
 Thus the distortion program is exactly a logarithmic anisotropic-resolution
 program.
@@ -258,38 +296,41 @@ Set
  \label{eq:constants}
 \end{equation}
 
-\begin{theorem}[Projective recurrence--rate-distortion law]
+\begin{theorem}[Projective water-entropy sandwich]
 \label{thm:main}
 For every $d\ge2$, every positive probability vector $w\in\R^d$, and every
 $0<\eta\le1$, the least universal fidelity-recurrence deadline satisfies
 \begin{equation}
  \boxed{
- \RD_{\proj}(w,\eta)-C_-(d)
+ \WH_{\proj}(w,\eta)-C_-(d)
  <\log T_w(\eta)
- \le\RD_{\proj}(w,\eta)+C_+(d).}
+ \le\WH_{\proj}(w,\eta)+C_+(d).}
  \label{eq:main}
 \end{equation}
 The constants are independent of the weights, the defect, and the
 eigenphases.
 \end{theorem}
 
-The theorem says more than that recurrence is exponential in a dimension.
-It determines the exponent from the entire spectral probability profile.
-The upper and lower bounds use different mechanisms, but the optimized
-quantity is identical in both.
+The theorem is a uniform finite comparison for the stated minimax clock.  The
+upper and lower bounds use different mechanisms but contain the same
+weight-sensitive functional.  Their additive errors remain linear in the full
+dimension, including coordinates below the water line.  Thus
+\eqref{eq:main} alone does not make inactive modes free in the actual deadline
+and does not establish uniqueness of $\WH_{\proj}$ among all possible
+$O(d)$-equivalent functionals.
 
 \begin{corollary}[Finite relative law]
 \label{cor:relative}
-Suppose $\RD_{\proj}(w,\eta)>0$ and, for some $\varepsilon\in\R$,
+Suppose $\WH_{\proj}(w,\eta)>0$ and, for some $\varepsilon\in\R$,
 \[
- C_-(d)\le\varepsilon\RD_{\proj}(w,\eta),
+ C_-(d)\le\varepsilon\WH_{\proj}(w,\eta),
  \qquad
- C_+(d)\le\varepsilon\RD_{\proj}(w,\eta).
+ C_+(d)\le\varepsilon\WH_{\proj}(w,\eta).
 \]
 Then
 \begin{equation}
  1-\varepsilon
- <\frac{\log T_w(\eta)}{\RD_{\proj}(w,\eta)}
+ <\frac{\log T_w(\eta)}{\WH_{\proj}(w,\eta)}
  \le1+\varepsilon.
  \label{eq:relative}
 \end{equation}
@@ -297,7 +338,7 @@ Then
 
 \begin{proof}
 Subtract the lower carrier cost and add the upper carrier cost in
-\eqref{eq:main}, then divide by the positive rate--distortion value.
+\eqref{eq:main}, then divide by the positive water entropy.
 \end{proof}
 
 Thus the additive band cannot conceal the law in a high-resolution regime:
@@ -355,7 +396,7 @@ Choose the minimizing pivot and the reverse-water-filled resolution
 $x_j=w_j/D_j^*$.  Lemma \ref{lem:upper} gives
 \begin{equation}
  \log T_w(\eta)
- \le\RD_{\proj}(w,\eta)+(d-1)\log(2\pi\sqrt2),
+ \le\WH_{\proj}(w,\eta)+(d-1)\log(2\pi\sqrt2),
  \label{eq:upper}
 \end{equation}
 which is the upper half of Theorem \ref{thm:main}.
@@ -375,7 +416,7 @@ measure
 For every positive probability vector $w$ and $0<\eta\le1$,
 \begin{equation}
  \mu_w(\eta)
- \le d\exp\left\{\frac{\pi}{4}(d-1)-\RD_{\proj}(w,\eta)\right\}.
+ \le d\exp\left\{\frac{\pi}{4}(d-1)-\WH_{\proj}(w,\eta)\right\}.
  \label{eq:target-bound}
 \end{equation}
 \end{lemma}
@@ -418,7 +459,7 @@ For an active pivot, choose $s=\pi\lambda_k/16$, where $\lambda_k$ solves
 \eqref{eq:markov}, and \eqref{eq:laplace} imply
 \[
  m_{\T^d}(E_k)
- \le\exp\left\{\frac{\pi}{4}\lambda_k\eta-RD_k(w,\eta)\right\}.
+ \le\exp\left\{\frac{\pi}{4}\lambda_k\eta-\WH_k(w,\eta)\right\}.
 \]
 Multiplying the water equation by $\lambda_k$ gives
 \begin{equation}
@@ -426,9 +467,9 @@ Multiplying the water equation by $\lambda_k$ gives
  =\sum_{j\ne k}\min\{\lambda_kw_j,1\}\le d-1.
  \label{eq:water-budget}
 \end{equation}
-For an inactive pivot, $\RD_k=0$ and the same final bound follows from the
+For an inactive pivot, $\WH_k=0$ and the same final bound follows from the
 trivial estimate $m_{\T^d}(E_k)\le1$.  A union bound over the $d$ pivots and
-$\RD_{\proj}\le\RD_k$ prove \eqref{eq:target-bound}.
+$\WH_{\proj}\le\WH_k$ prove \eqref{eq:target-bound}.
 \end{proof}
 
 \begin{lemma}[Haar avoidance]
@@ -448,85 +489,104 @@ measure at most $N\mu_w(\eta)<1$ and cannot cover the torus.
 To complete the lower bound, put
 \[
  B=\frac{1}{2d}
- \exp\left\{\RD_{\proj}(w,\eta)-\frac{\pi}{4}(d-1)\right\}.
+ \exp\left\{\WH_{\proj}(w,\eta)-\frac{\pi}{4}(d-1)\right\}.
 \]
 If $B<1$, then $T_w(\eta)\ge1>B$.  If $B\ge1$, set $N=\lfloor B\rfloor$.
 Lemma \ref{lem:target} gives $N\mu_w(\eta)\le1/2$, so Lemma
 \ref{lem:avoidance} gives $T_w(\eta)>N$, hence $T_w(\eta)>B$.  Taking
 logarithms proves
 \begin{equation}
- \RD_{\proj}(w,\eta)-\frac{\pi}{4}(d-1)-\log(2d)
+ \WH_{\proj}(w,\eta)-\frac{\pi}{4}(d-1)-\log(2d)
  <\log T_w(\eta).
  \label{eq:lower}
 \end{equation}
 Together, \eqref{eq:upper} and \eqref{eq:lower} prove Theorem
 \ref{thm:main}.
 
-\section{Effective support is not the recurrence invariant}
+\section{An operational effective-support separation}
 
-For comparison with hard truncation, define the $\eta$-effective support
-size
+For a tail tolerance $\delta$, define
 \begin{equation}
- s_\eta(w)=\min\left\{|C|:\ C\subseteq\{1,\ldots,d\},\
-       \sum_{j\in C}w_j\ge1-\eta\right\}.
+ s_\delta(w)=\min\left\{|C|:\ C\subseteq\{1,\ldots,d\},\
+       \sum_{j\in C}w_j\ge1-\delta\right\}.
  \label{eq:effective-support}
 \end{equation}
+For pure states, fidelity at least $(1-\eta)^2$ implies trace distance at most
+\begin{equation}
+ \varepsilon_\eta=\sqrt{1-(1-\eta)^2}
+ =\sqrt{2\eta-\eta^2}.
+ \label{eq:trace-radius}
+\end{equation}
+The main effective-support bound in \cite{KotowskiOszmaniec2026} uses
+$s_{\varepsilon^2/4}$, while its sharper covering remark uses
+$s_{\varepsilon/2}$.  We compare at the latter scale
+$\delta_\eta=\varepsilon_\eta/2$.
 
-\begin{corollary}[Binary separation]
+\begin{corollary}[Binary separation at the half-trace-distance scale]
 \label{cor:binary}
-Let $0<\eta<c\le1/2$ and $w(c)=(1-c,c)$.  Then
+Let $0<\eta<2/5$, $q>1$, and
 \begin{equation}
- \RD_{\proj}(w(c),\eta)=\frac12\log\frac{c}{\eta}
- \label{eq:binary-rd}
+ q\delta_\eta<\frac12.
+ \label{eq:binary-condition}
 \end{equation}
-and
+Set
+\[
+ w_\eta=(1-q\delta_\eta,q\delta_\eta),
+ \qquad u=(1/2,1/2).
+\]
+Then
 \begin{equation}
- \frac12\log\frac{c}{\eta}-\frac{\pi}{4}-\log4
- <\log T_{w(c)}(\eta)
- \le\frac12\log\frac{c}{\eta}+\log(2\pi\sqrt2).
+ s_{\delta_\eta}(w_\eta)=s_{\delta_\eta}(u)=2,
+ \label{eq:binary-support}
+\end{equation}
+but
+\begin{equation}
+ \WH_{\proj}(w_\eta,\eta)
+ =\frac12\log\frac{q\delta_\eta}{\eta}
+ <\frac12\log\frac{1}{2\eta}
+ =\WH_{\proj}(u,\eta).
+ \label{eq:binary-entropy}
+\end{equation}
+Moreover,
+\begin{equation}
+ \frac12\log\frac{q\delta_\eta}{\eta}-\frac{\pi}{4}-\log4
+ <\log T_{w_\eta}(\eta)
+ \le\frac12\log\frac{q\delta_\eta}{\eta}
+      +\log(2\pi\sqrt2).
  \label{eq:binary-clock}
-\end{equation}
-In particular, fix $q>1$ and impose $q\eta\le1/2$.  For
-$w_\eta=(1-q\eta,q\eta)$,
-\begin{equation}
- s_\eta(w_\eta)=2,
- \qquad
- \RD_{\proj}(w_\eta,\eta)=\frac12\log q.
- \label{eq:binary-scaled}
-\end{equation}
-The universal recurrence deadlines of this family are bounded independently
-of $\eta$.  By contrast, the balanced vector $u=(1/2,1/2)$ has the same hard
-effective support and
-\begin{equation}
- \RD_{\proj}(u,\eta)=\frac12\log\frac{1}{2\eta}.
- \label{eq:binary-balanced}
 \end{equation}
 \end{corollary}
 
 \begin{proof}
-With the first coordinate as pivot, the only distortion variable is bounded
-by both $c$ and $\eta$, so its optimum is $D=\eta$ and its rate is
-$\tfrac12\log(c/\eta)$.  With the second coordinate as pivot, the rate is
-$\tfrac12\log((1-c)/\eta)$, which is no smaller because $c\le1-c$.  This
-proves \eqref{eq:binary-rd}; \eqref{eq:binary-clock} is Theorem
-\ref{thm:main} with $d=2$.
+The identity $\delta_\eta^2=(2\eta-\eta^2)/4$ and the assumption
+$\eta<2/5$ give
+\[
+ 4\delta_\eta^2-4\eta^2=2\eta-5\eta^2>0.
+\]
+Thus $\eta<\delta_\eta<1/2$.  Put $c=q\delta_\eta$.  Then
+$\eta<\delta_\eta<c<1/2$.  For $(1-c,c)$, the heavy singleton has mass
+$1-c<1-\delta_\eta$, while the light singleton has mass
+$c<1-\delta_\eta$; hence both coordinates are required.  The same conclusion
+holds for $(1/2,1/2)$ because $\delta_\eta<1/2$.  This proves
+\eqref{eq:binary-support}.
 
-For $c=q\eta$, neither singleton carries mass $1-\eta$: the heavier
-coordinate has mass $1-q\eta<1-\eta$, and the lighter coordinate has mass at
-most $1/2<1-\eta$.  Thus $s_\eta=2$, while \eqref{eq:binary-rd} gives
-\eqref{eq:binary-scaled}.  The upper half of \eqref{eq:binary-clock} is then
-independent of $\eta$.  Equation \eqref{eq:binary-balanced} is the case
-$c=1/2$.
+For any $0<\eta<c\le1/2$, the two possible pivot values are
+$\tfrac12\log(c/\eta)$ and $\tfrac12\log((1-c)/\eta)$, so their minimum is the
+first.  Applying this formula to $c=q\delta_\eta$ and $c=1/2$ gives the two
+equalities in \eqref{eq:binary-entropy}; its strict inequality follows from
+\eqref{eq:binary-condition}.  Equation \eqref{eq:binary-clock} is Theorem
+\ref{thm:main} with $d=2$.
 \end{proof}
 
-Corollary \ref{cor:binary} is a finite separation, not an asymptotic
-dimension-counting effect.  Hard effective support records whether a mode is
-indispensable; it does not record how much phase resolution that mode costs.
-The projective rate--distortion function records both through its water level.
+This is a finite separation at a common operational truncation scale.  The
+states vary with $\eta$; no claim is made that it changes the fixed-state
+high-resolution exponent.  It shows only, and exactly, that the cited hard
+support cardinality does not determine the finite water entropy.
 
 \section{Relation to current recurrence bounds}
 
-The new law and existing recurrence results answer complementary questions.
+The finite sandwich and existing recurrence results answer complementary
+questions.
 The distinctions are summarized in Table \ref{tab:comparison}.
 
 \begin{table}[ht]
@@ -559,63 +619,72 @@ compatible eigenphase packet.}
 
 The theorem does not assert that a prescribed physical Hamiltonian realizes
 the worst spectrum, and it does not estimate the time needed first to leave a
-recurrence neighborhood.  Those are separate dynamical questions.  Its role
-is to solve the minimax phase-transport problem exactly at the exponential
-scale and to identify the complete state invariant governing that problem.
+recurrence neighborhood.  It concerns discrete powers of an arbitrary
+diagonal Floquet operator, not continuous time after an exit event.  Its exact
+content is the finite band \eqref{eq:main}; a relative asymptotic conclusion
+requires the hypotheses of Corollary \ref{cor:relative}.
 
-The rate--distortion interpretation also clarifies why a dimension-only
-covering argument is sometimes wasteful.  Equal coordinate resolution assigns
-the same phase accuracy to modes with very different probabilities.  Reverse
-water filling instead allocates distortion until low-weight modes fall below
-the water line.  The lower-bound argument shows that this allocation is not
-merely an efficient proof strategy: an adversarial spectrum forces the same
-optimized exponent.
+Equal coordinate resolution can be wasteful when spectral probabilities are
+very different.  Reverse water filling removes a coordinate from the
+logarithmic objective when it falls below the water line.  The full error band,
+however, still charges one constant per nonpivot coordinate.  The theorem
+therefore records an active-set improvement in its leading functional without
+claiming an active-dimension remainder.
 
 \section{Discussion}
 
-Theorem \ref{thm:main} establishes a direct finite bridge between three
-subjects:
+Theorem \ref{thm:main} joins three classical structures:
 \begin{enumerate}[label=(\roman*)]
  \item pure-state quantum recurrence;
  \item anisotropic simultaneous phase approximation;
- \item Gaussian rate--distortion and reverse water filling.
+ \item the reverse-water-filling convex program familiar from Gaussian
+       rate--distortion.
 \end{enumerate}
-The bridge is projective.  Removing the common phase deletes exactly one
-rate-bearing coordinate, and minimizing the choice of reference produces an
-intrinsic state functional.
+The construction is projective: removing the common phase deletes one
+coordinate from each pivot program, and minimizing the reference makes the
+result permutation invariant.  This does not identify it with the exact
+quotient metric.  Proposition \ref{prop:variance} displays the latter's
+covariance cross term explicitly.
 
 The result is also a minimax duality.  On the constructive side, a product
 cover discretizes phase coordinates at the water-filled resolutions.  On the
-adversarial side, the weighted target has Haar measure exponentially small in
-the same rate.  The agreement of these two independent mechanisms is what
-makes $\RD_{\proj}$ a recurrence law rather than an upper-bound parameter.
+adversarial side, the weighted target has Haar measure bounded by the same
+water entropy.  Their conjunction is the paper's main theorem.  We make no
+claim that $\WH_{\proj}$ is a complete invariant or the unique functional that
+could appear within the displayed $O(d)$ band.
 
-The binary separation gives a practical interpretation.  A mode may be
-logically necessary for the target mass and nevertheless cost only bounded
-phase information.  Hard effective support cannot express that distinction.
-The water level can.
+The operational binary separation gives a concrete interpretation: the same
+hard support at the same trace-distance truncation scale can coexist with
+strictly different water entropies.  It is a finite distinction between two
+summaries of a probability vector, not a universal refutation of support-based
+recurrence bounds.
 
-Several extensions require separate work.  Countably supported states need a
-tail-stable version of the finite minimax theorem.  Structured Hamiltonian
-families require arithmetic information determining where they lie between
-the universal ceiling and the adversarial floor.  Continuous spectra fall
-outside the recurrence model used here.  None of these extensions is needed
-for the finite law: Theorem \ref{thm:main} is unconditional and exact for every
-finite positive spectral probability vector.
+Several extensions require separate work.  Sharpening the remainder from the
+ambient dimension to an active-set quantity would require a different covering
+and target-volume analysis.  Countably supported states need tail stability.
+Structured Hamiltonian families require arithmetic information locating them
+between the universal ceiling and adversarial floor.  Continuous spectra and
+exit--return dynamics fall outside the present model.
 
 \section{Conclusion}
 
-The least deadline for worst-spectrum pure-state quantum recurrence is
-governed by a rate--distortion function of the state.  Its optimizer is exact
-projective reverse water filling, its constructive and adversarial bounds
-match up to explicit dimension-only constants, and it distinguishes states
-that hard effective support identifies.  The resulting principle is
+For the stated worst-spectrum discrete Floquet problem, a single
+pivot-optimized water entropy controls constructive and adversarial deadlines
+up to explicit dimension-linear costs.  The resulting finite statement is
 \[
- \boxed{\text{minimax quantum recurrence entropy}
- =\text{projective spectral rate--distortion}+O(d).}
+ \boxed{\text{worst-spectrum discrete Floquet deadline}
+ =\text{projective pivot water entropy}+O(d).}
 \]
-This replaces dimension as the primary recurrence carrier by a continuous,
-accuracy-dependent invariant of the complete spectral probability profile.
+Reverse water filling computes the leading functional exactly.  Proposition
+\ref{prop:variance}, Corollary \ref{cor:relative}, and the operational support
+comparison delimit what this statement does and does not establish.
+
+\section*{Author-contribution statement}
+
+Michael Haufschild directed the project and takes responsibility for the
+manuscript and its claims.  GPT 5.6 Sol, Fable 5, and Grok 4.5 contributed to
+proof exploration, literature triage, adversarial review, and language
+editing.
 
 \footnotesize
 \begin{thebibliography}{99}
@@ -672,6 +741,28 @@ J.~W.~S. Cassels,
 T.~M. Cover and J.~A. Thomas,
 \newblock \emph{Elements of Information Theory}, 2nd ed.,
 \newblock Wiley, Hoboken (2006).
+
+\bibitem{QianEtAl2024}
+J.~Qian, S.~Salehkalaibar, J.~Chen, A.~Khisti, W.~Yu, W.~Shi, Y.~Ge,
+and W.~Tong,
+\newblock Rate-distortion-perception tradeoff for Gaussian vector sources,
+\newblock arXiv:\href{https://arxiv.org/abs/2406.18008}{2406.18008}
+(2024).
+
+\bibitem{KolmogorovTikhomirov1959}
+A.~N. Kolmogorov and V.~M. Tikhomirov,
+\newblock $\varepsilon$-entropy and $\varepsilon$-capacity of sets in function
+spaces,
+\newblock \emph{Uspekhi Matematicheskikh Nauk} \textbf{14}(2), 3--86
+(1959).
+
+\bibitem{GrayNeuhoff1998}
+R.~M. Gray and D.~L. Neuhoff,
+\newblock Quantization,
+\newblock \emph{IEEE Transactions on Information Theory} \textbf{44}(6),
+2325--2383 (1998),
+\newblock doi: \href{https://doi.org/10.1109/18.720541}
+{10.1109/18.720541}.
 
 \end{thebibliography}
 

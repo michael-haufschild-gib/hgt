@@ -25,6 +25,31 @@ def affineRelativeTrace (T : ℂ → ℂ) (sigma z : ℂ) : ℂ :=
 def reflectionFoldedMomentGerm (T : ℂ → ℂ) (sigma : ℂ) : ℂ → ℂ :=
   fun z => -dslope (affineRelativeTrace T sigma) 0 z
 
+/-- Analyticity of the source at the base point discharges analyticity of its centered affine
+trace at the spectral origin. -/
+theorem analyticAt_affineRelativeTrace
+    {T : ℂ → ℂ} {sigma : ℂ} (hT : AnalyticAt ℂ T sigma) :
+    AnalyticAt ℂ (affineRelativeTrace T sigma) 0 := by
+  unfold affineRelativeTrace
+  have hinner : AnalyticAt ℂ (fun z : ℂ => sigma + z * Complex.I) 0 := by
+    exact analyticAt_const.add (analyticAt_id.mul analyticAt_const)
+  have hcomp : AnalyticAt ℂ (fun z : ℂ => T (sigma + z * Complex.I)) 0 :=
+    hT.comp_of_eq hinner (by simp)
+  exact analyticAt_const.mul (hcomp.sub analyticAt_const)
+
+/-- **Folded-germ/source jet law.**  Every folded germ jet is the next centered affine-trace jet,
+with the exact removable-division factor.  This identifies the entries of all folded Hankel
+matrices with shifted source jets instead of leaving them as opaque divided-difference jets. -/
+theorem iteratedDeriv_reflectionFoldedMomentGerm_eq
+    {T : ℂ → ℂ} {sigma : ℂ} (hT : AnalyticAt ℂ T sigma) (n : ℕ) :
+    iteratedDeriv n (reflectionFoldedMomentGerm T sigma) 0 =
+      -iteratedDeriv (n + 1) (affineRelativeTrace T sigma) 0 / (n + 1 : ℂ) := by
+  change iteratedDeriv n (-(dslope (affineRelativeTrace T sigma) 0)) 0 = _
+  rw [iteratedDeriv_neg]
+  rw [iteratedDeriv_dslope_self_eq_iteratedDeriv_succ_div
+    (analyticAt_affineRelativeTrace hT) n]
+  ring
+
 /-- Affine anti-reflection of the source reflects the relative trace with one minus sign. -/
 theorem affineRelativeTrace_reflection
     (T : ℂ → ℂ) (kappa sigma z : ℂ)

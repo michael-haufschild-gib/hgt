@@ -3,16 +3,17 @@
 - **ID:** `projective-weighted-coherence-water-filling-law`
 - **Stage:** 3-formalized
 - **Type:** UNIVERSAL THEOREM / WEIGHTED KRONECKER MINIMAX LAW /
-  PROJECTIVE RATE--DISTORTION LAW
+  PROJECTIVE WATER-ENTROPY SANDWICH
 - **Scientific status:** `[UNCONDITIONAL THEOREM] [COMPLETE PAPER ARGUMENT]`
   `[FULL LEAN FORMALIZATION 2026-07-20]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE: EXACT-OBJECT SEARCH PASSED 2026-07-20]`
 - **Statement:** The logarithm of the least deadline that guarantees pure-state Floquet recurrence
-  for every eigenphase packet with a prescribed spectral probability vector is, up to explicit
-  universal errors linear in the support size, the projective Gaussian rate--distortion function
-  of that vector.  The rate--distortion value is not an analogy: it is the exact minimum of the
-  Gaussian distortion program after one common phase is removed, is attained by reverse water
-  filling, and controls both the constructive recurrence ceiling and an adversarial Haar floor.
+  for every eigenphase packet with a prescribed spectral probability vector lies within explicit
+  universal errors linear in the support size of a pivot-optimized water entropy.  Its separable
+  convex program is attained by reverse water filling and controls both the constructive recurrence
+  ceiling and an adversarial Haar floor.  The program has the same numerical form as parallel
+  Gaussian rate--distortion, but no operational source-coding theorem or exact quotient-metric
+  identification is claimed.
 
 ## 1. Weighted projective clock
 
@@ -37,7 +38,7 @@ T_a(eta)=sup_omega tau_a(eta;omega),       0<eta<1.        (4)
 The clock is projective: adding the same real number to every `omega_i` does not change `(2)`.
 Consequently only `r-1` relative phases can carry recurrence entropy.
 
-## 2. The intrinsic entropy
+## 2. The pivot water entropy
 
 For a pivot `k in S` and `epsilon>0`, define
 
@@ -74,7 +75,7 @@ a_j>1/lambda_(k,epsilon).                                  (9)
 Coordinates below the water level are not charged.  This is not an imposed truncation: the
 active set is selected intrinsically by the weights and the requested coherence defect.
 
-### 2.1 Exact Gaussian rate--distortion identity
+### 2.1 Gaussian-form variational representation
 
 Assume the weights on `S` are positive.  For a pivot `k`, let `D_j` be positive distortion
 allocations satisfying
@@ -83,7 +84,7 @@ allocations satisfying
 0<D_j<=a_j,       sum_(j!=k) D_j<=epsilon.                 (9a)
 ```
 
-Define their Gaussian rate cost by
+Define their logarithmic allocation cost by
 
 ```text
 R_(a,k)(D)=(1/2)sum_(j!=k)log(a_j/D_j).                    (9b)
@@ -109,8 +110,10 @@ R_a^proj(epsilon)
  :=min_k min_D R_(a,k)(D)=H_a^proj(epsilon).               (9e)
 ```
 
-The content of the main theorem is that this exact compression functional is also the minimax
-recurrence exponent of the deterministic phase clock.
+The change of variables proves equality of two finite convex programs.  It does not by itself
+construct a random source, reconstruction channel, mutual information, or code.  The content of
+the main theorem is instead that the same geometric water functional appears in both finite
+recurrence bounds.
 
 ## 3. Universal recurrence--rate-distortion law `[THEOREM]`
 
@@ -135,11 +138,12 @@ This is the proposed universal law.  It identifies the correct carrier positivel
 
 ```text
 worst-spectrum quantum recurrence entropy
- = projective Gaussian rate--distortion + universal extensive error.  (12)
+ = projective pivot water entropy + universal extensive error.       (12)
 ```
 
-No coordinate is paid merely because it exists.  A coordinate is paid exactly when its weight
-crosses the water level determined jointly by all other coordinates and the target defect.
+The water entropy charges a coordinate only when its weight crosses the water level.  The explicit
+remainder in `(10)` still charges every nonpivot coordinate.  Therefore an active-set leading term
+has been proved, but an active-dimension remainder has not.
 
 ## 4. Proof of the upper bound
 
@@ -413,7 +417,7 @@ bounds for every fixed spectral probability vector.
 The exact-object searches found no theorem joining all four defining features of `(10)`:
 
 1. least universal deadline over every frequency packet with fixed weights;
-2. exact projective Gaussian rate--distortion value of those weights;
+2. exact pivot water-entropy value of those weights;
 3. deterministic anisotropic construction for the ceiling;
 4. an adversarial Haar-avoidance floor governed by the same value.
 
@@ -448,75 +452,64 @@ The result is not paper-level if:
 4. no downstream prime, spectral, oscillator, or quantum-coherence problem uses the active-weight
    carrier rather than the old dimension-only bound.
 
-The two-level separation in Section 8.1 defeats tests 1--3: it supplies a regime where the hard
-effective support is identical but the new invariant, and hence the recurrence law, changes.  The
-pure-state Floquet translation supplies the direct quantum use required by test 4.  The exact
-paper proof and its full dependency surface have survived unconditional formal verification.
+The operational two-level separation in Section 8.1 defeats the narrow version of tests 2--3: at
+the same trace-distance truncation scale it supplies identical hard support but strictly different
+water entropies.  It does not defeat test 1 by itself, because the `O(r)` remainder remains.  The
+finite normalized theorem handles test 1 only when the water entropy dominates that remainder.
 
-## 8.1 Exact separation from effective support `[PAPER-PROVED]`
+## 8.1 Operational separation from effective support `[LEAN-PROVED]`
 
-The water entropy is not merely a smooth notation for effective-support cardinality. Consider the
-two-level probability vector
-
-```text
-a(c)=(1-c,c),       0<eta<c<=1/2.                            (38)
-```
-
-For the first pivot the water equation is
+For amplitude defect `0<eta<2/5`, set
 
 ```text
-min(c,1/lambda)=eta,
+epsilon_eta=sqrt(2 eta-eta^2),
+delta_eta=epsilon_eta/2.                                   (38)
 ```
 
-and for the second it is
+The fidelity target `(1-eta)^2` is the pure-state trace-distance target `epsilon_eta`.  The scale
+`delta_eta` is the sharper effective-support scale used in the covering refinement of the 2026
+recurrence frontier.  Elementary algebra gives
 
 ```text
-min(1-c,1/lambda)=eta.
+eta<delta_eta<1/2.                                         (39)
 ```
 
-The hypotheses force the unique solution `lambda=1/eta` in both cases. The two pivot entropies are
+Fix `q>1` with `q delta_eta<1/2` and put
 
 ```text
-(1/2)log(c/eta),        (1/2)log((1-c)/eta),                (39)
+a_eta=(1-q delta_eta,q delta_eta),
+u=(1/2,1/2).                                               (40)
 ```
 
-so `c<=1-c` gives the exact minimum
+Neither singleton of either packet carries mass `1-delta_eta`, so
 
 ```text
-H_(a(c))^proj(eta)=(1/2)log(c/eta).                         (40)
+s_(delta_eta)(a_eta)=s_(delta_eta)(u)=2.                   (41)
 ```
 
-Consequently the least universal deadline obeys
+At amplitude defect `eta`, however,
 
 ```text
-(1/2)log(c/eta) - pi/4 - log 4
-  < log T_(a(c))(eta)
-  <= (1/2)log(c/eta) + log(2 pi sqrt(2)).                   (41)
+H_(a_eta)^proj(eta)
+ =(1/2)log(q delta_eta/eta)
+ <(1/2)log(1/(2 eta))
+ =H_u^proj(eta).                                           (42)
 ```
 
-Now fix `q>1` and set `c=q eta`, with `q eta<=1/2`. Any subset carrying mass at least `1-eta`
-must contain both coordinates: the heavy coordinate alone has mass `1-q eta<1-eta`, while the
-light coordinate alone has mass at most `1/2<1-eta`. Hence the hard `eta`-effective support is
-identically two. Nevertheless `(40)` becomes
+The corresponding clock for `a_eta` obeys the exact dimension-two band
 
 ```text
-H_(a(q eta))^proj(eta)=(1/2)log q,                          (42)
+(1/2)log(q delta_eta/eta)-pi/4-log 4
+ <log T_(a_eta)(eta)
+ <=(1/2)log(q delta_eta/eta)+log(2 pi sqrt 2).              (43)
 ```
 
-and the universal recurrence deadline stays bounded as `eta` decreases through this family. For
-the uniform two-level state, by contrast,
-
-```text
-H_(1/2,1/2)^proj(eta)=(1/2)log(1/(2 eta)),                  (43)
-```
-
-which diverges. Therefore two state families with the same effective support have different
-recurrence exponents. Effective support is not the recurrence invariant; it is a coarse
-cardinality envelope of the water entropy.
-
-This is the strongest significance delta on the card. It directly answers the state-complexity
-question left by the 2026 quantum-recurrence frontier, without randomness, genericity, or a
-Hamiltonian ensemble.
+This is a triangular-family finite separation at a common operational scale.  It is not claimed to
+alter the fixed-state high-resolution exponent or to refute every support-based recurrence bound.
+The exact formal statements are
+`operationalBinary_supportAndWaterEntropySeparation` and
+`operationalBinary_floquetTime_waterEntropySandwich` in
+`RHTower/ProjectiveOperationalEffectiveSupport.lean`.
 
 ## 9. Formalization plan
 
@@ -560,10 +553,13 @@ The dependency-closed formal surface is:
 8. exact pure-state Floquet fidelity translation:
    `ProjectiveWeightedFloquetRecurrence.lean`;
 9. exact Gaussian distortion feasible set, optimizer, global projective minimum, and the
-   recurrence--rate-distortion capstone:
+   Gaussian-form variational representation:
    `ProjectiveGaussianRateDistortion.lean`;
-10. two-level separation from hard effective support:
-   `ProjectiveBinaryWaterEntropy.lean`.
+10. two-level water entropy and the operational half-trace-distance support separation:
+   `ProjectiveBinaryWaterEntropy.lean` and
+   `ProjectiveOperationalEffectiveSupport.lean`;
+11. exact projective fidelity variance and its real covariance quadratic:
+   `ProjectiveWeightedCoherence.lean`.
 
 No theorem in this surface assumes randomness, rational independence, genericity, an arithmetic
 source, an asymptotic hypothesis, or the conjectural prime-log pressure law.

@@ -69,10 +69,10 @@ theorem norm_thetaCuspFourierLaplaceIntegrand_le
       rw [show Real.exp (|w.im| * |x|) *
           (thetaCuspDerivativeExpConstant 0 * Real.exp (-|x|)) =
         thetaCuspDerivativeExpConstant 0 *
-          (Real.exp (|w.im| * |x|) * Real.exp (-|x|)) by ring,
+          (Real.exp (|w.im| * |x|) * Real.exp (-|x|)) by ring_nf,
         ← Real.exp_add]
       congr 1
-      ring
+      ring_nf
 
 theorem integrable_thetaCuspFourierLaplaceIntegrand
     {w : ℂ} (hw : |w.im| < 1) :
@@ -120,25 +120,55 @@ theorem hasDerivAt_thetaCuspFourierLaplaceIntegrand (w : ℂ) (x : ℝ) :
       (thetaCuspFourierLaplaceDerivativeIntegrand w x) w := by
   have hlin : HasDerivAt (fun z : ℂ => -I * z * (x : ℂ))
       (-I * (x : ℂ)) w := by
-    convert (((hasDerivAt_id w).const_mul (-I)).mul_const (x : ℂ)) using 1 <;> ring
+    convert (((hasDerivAt_id w).const_mul (-I)).mul_const (x : ℂ)) using 1
+    all_goals ring_nf
   have hexp := hlin.cexp
-  convert hexp.mul_const (thetaCuspFullSource x : ℂ) using 1 <;>
+  convert hexp.mul_const (thetaCuspFullSource x : ℂ) using 1
+  all_goals
     simp [thetaCuspFourierLaplaceIntegrand,
-      thetaCuspFourierLaplaceDerivativeIntegrand] <;> ring
+      thetaCuspFourierLaplaceDerivativeIntegrand]
+    ring_nf
 
-theorem integrable_abs_mul_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
-    Integrable (fun x : ℝ => |x| * Real.exp (-c * |x|)) := by
+/-- The `k`-th spectral jet integrand of the theta-cusp Fourier--Laplace transform. -/
+def thetaCuspFourierLaplaceJetIntegrand (k : ℕ) (w : ℂ) (x : ℝ) : ℂ :=
+  (-I * (x : ℂ)) ^ k * thetaCuspFourierLaplaceIntegrand w x
+
+@[simp] theorem thetaCuspFourierLaplaceJetIntegrand_zero (w : ℂ) (x : ℝ) :
+    thetaCuspFourierLaplaceJetIntegrand 0 w x =
+      thetaCuspFourierLaplaceIntegrand w x := by
+  simp [thetaCuspFourierLaplaceJetIntegrand]
+
+@[simp] theorem thetaCuspFourierLaplaceJetIntegrand_one (w : ℂ) (x : ℝ) :
+    thetaCuspFourierLaplaceJetIntegrand 1 w x =
+      thetaCuspFourierLaplaceDerivativeIntegrand w x := by
+  simp [thetaCuspFourierLaplaceJetIntegrand,
+    thetaCuspFourierLaplaceDerivativeIntegrand]
+
+theorem hasDerivAt_thetaCuspFourierLaplaceJetIntegrand
+    (k : ℕ) (w : ℂ) (x : ℝ) :
+    HasDerivAt (fun z : ℂ => thetaCuspFourierLaplaceJetIntegrand k z x)
+      (thetaCuspFourierLaplaceJetIntegrand (k + 1) w x) w := by
+  convert (hasDerivAt_thetaCuspFourierLaplaceIntegrand w x).const_mul
+    ((-I * (x : ℂ)) ^ k) using 1
+  all_goals
+    simp only [thetaCuspFourierLaplaceJetIntegrand,
+      thetaCuspFourierLaplaceDerivativeIntegrand]
+    ring_nf
+
+/-- Every polynomially weighted two-sided exponential is integrable. -/
+theorem integrable_abs_pow_mul_exp_neg_mul_abs (k : ℕ) {c : ℝ} (hc : 0 < c) :
+    Integrable (fun x : ℝ => |x| ^ k * Real.exp (-c * |x|)) := by
   let d : ℝ := c / 2
-  let A : ℝ := (Nat.factorial 1 : ℝ) / d
+  let A : ℝ := (Nat.factorial k : ℝ) / d ^ k
   have hd : 0 < d := by dsimp [d]; linarith
   have hmajor : Integrable (fun x : ℝ => A * Real.exp (-d * |x|)) :=
     (integrable_exp_neg_mul_abs hd).const_mul A
   apply hmajor.mono
   · exact (by fun_prop : Continuous (fun x : ℝ =>
-      |x| * Real.exp (-c * |x|))).aestronglyMeasurable
+      |x| ^ k * Real.exp (-c * |x|))).aestronglyMeasurable
   · filter_upwards with x
-    have hp := pow_mul_exp_neg_mul_le_factorial_div 1 hd (abs_nonneg x)
-    have hpA : |x| ^ 1 * Real.exp (-d * |x|) ≤ A := by
+    have hp := pow_mul_exp_neg_mul_le_factorial_div k hd (abs_nonneg x)
+    have hpA : |x| ^ k * Real.exp (-d * |x|) ≤ A := by
       simpa [A] using hp
     have hA : 0 ≤ A := by dsimp [A]; positivity
     have he : Real.exp (-c * |x|) =
@@ -146,34 +176,77 @@ theorem integrable_abs_mul_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
       rw [← Real.exp_add]
       congr 1
       dsimp [d]
-      ring
+      ring_nf
     rw [Real.norm_eq_abs, abs_of_nonneg]
     · rw [he]
       calc
-        |x| * (Real.exp (-d * |x|) * Real.exp (-d * |x|)) =
-            (|x| ^ 1 * Real.exp (-d * |x|)) *
-              Real.exp (-d * |x|) := by ring
+        |x| ^ k * (Real.exp (-d * |x|) * Real.exp (-d * |x|)) =
+            (|x| ^ k * Real.exp (-d * |x|)) *
+              Real.exp (-d * |x|) := by ring_nf
         _ ≤ A * Real.exp (-d * |x|) := by
           exact mul_le_mul_of_nonneg_right hpA (Real.exp_pos _).le
         _ = ‖A * Real.exp (-d * |x|)‖ := by
           have hnon : 0 ≤ A * Real.exp (-d * |x|) :=
             mul_nonneg hA (Real.exp_pos _).le
           rw [Real.norm_eq_abs, abs_of_nonneg hnon]
-    · exact mul_nonneg (abs_nonneg x) (Real.exp_pos _).le
+    · exact mul_nonneg (pow_nonneg (abs_nonneg x) k) (Real.exp_pos _).le
 
-theorem hasDerivAt_thetaCuspFourierLaplace
-    {w₀ : ℂ} (hw₀ : |w₀.im| < 1) :
-    HasDerivAt thetaCuspFourierLaplace
-      (∫ x : ℝ, thetaCuspFourierLaplaceDerivativeIntegrand w₀ x) w₀ := by
+theorem integrable_abs_mul_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
+    Integrable (fun x : ℝ => |x| * Real.exp (-c * |x|)) := by
+  simpa only [pow_one] using integrable_abs_pow_mul_exp_neg_mul_abs 1 hc
+
+theorem integrable_thetaCuspFourierLaplaceJetIntegrand
+    (k : ℕ) {w : ℂ} (hw : |w.im| < 1) :
+    Integrable (thetaCuspFourierLaplaceJetIntegrand k w) := by
+  let c : ℝ := 1 - |w.im|
+  have hc : 0 < c := by dsimp [c]; linarith
+  have hmajor : Integrable (fun x : ℝ =>
+      thetaCuspDerivativeExpConstant 0 *
+        (|x| ^ k * Real.exp (-c * |x|))) :=
+    (integrable_abs_pow_mul_exp_neg_mul_abs k hc).const_mul _
+  apply hmajor.mono
+  · have hk : Continuous thetaCuspFullSource :=
+      contDiff_thetaCuspFullSource.continuous
+    unfold thetaCuspFourierLaplaceJetIntegrand
+      thetaCuspFourierLaplaceIntegrand
+    exact (by fun_prop (disch := assumption) : Continuous (fun x : ℝ =>
+      (-I * (x : ℂ)) ^ k *
+        (Complex.exp (-I * w * (x : ℂ)) *
+          (thetaCuspFullSource x : ℂ)))).aestronglyMeasurable
+  · filter_upwards with x
+    have hbase := norm_thetaCuspFourierLaplaceIntegrand_le w x
+    rw [thetaCuspFourierLaplaceJetIntegrand, norm_mul, norm_pow,
+      norm_mul, norm_neg, norm_I, one_mul, norm_real, Real.norm_eq_abs]
+    dsimp [c]
+    calc
+      |x| ^ k * ‖thetaCuspFourierLaplaceIntegrand w x‖ ≤
+          |x| ^ k * (thetaCuspDerivativeExpConstant 0 *
+            Real.exp (-(1 - |w.im|) * |x|)) := by gcongr
+      _ = thetaCuspDerivativeExpConstant 0 *
+          (|x| ^ k * Real.exp (-(1 - |w.im|) * |x|)) := by ring_nf
+      _ = ‖thetaCuspDerivativeExpConstant 0 *
+          (|x| ^ k * Real.exp (-(1 - |w.im|) * |x|))‖ := by
+        have hnon : 0 ≤ thetaCuspDerivativeExpConstant 0 *
+            (|x| ^ k * Real.exp (-(1 - |w.im|) * |x|)) :=
+          mul_nonneg (thetaCuspDerivativeExpConstant_nonneg 0)
+            (mul_nonneg (pow_nonneg (abs_nonneg x) k) (Real.exp_pos _).le)
+        rw [Real.norm_eq_abs, abs_of_nonneg hnon]
+
+/-- Differentiating the explicit `k`-th theta-source moment gives the `(k+1)`-st moment
+throughout the Fourier--Laplace strip. -/
+theorem hasDerivAt_integral_thetaCuspFourierLaplaceJet
+    (k : ℕ) {w₀ : ℂ} (hw₀ : |w₀.im| < 1) :
+    HasDerivAt
+      (fun w : ℂ => ∫ x : ℝ, thetaCuspFourierLaplaceJetIntegrand k w x)
+      (∫ x : ℝ, thetaCuspFourierLaplaceJetIntegrand (k + 1) w₀ x) w₀ := by
   let ε : ℝ := (1 - |w₀.im|) / 4
   let B : ℝ := |w₀.im| + ε
   let c : ℝ := 1 - B
   let bound : ℝ → ℝ := fun x =>
     thetaCuspDerivativeExpConstant 0 *
-      (|x| * Real.exp (-c * |x|))
+      (|x| ^ (k + 1) * Real.exp (-c * |x|))
   have hε : 0 < ε := by dsimp [ε]; linarith
   have hc : 0 < c := by dsimp [c, B, ε]; linarith
-  have hB : B < 1 := by dsimp [B, ε]; linarith
   have him {z : ℂ} (hz : z ∈ Metric.ball w₀ ε) : |z.im| ≤ B := by
     have hdist : ‖z - w₀‖ < ε := by
       rw [← dist_eq_norm]
@@ -186,33 +259,27 @@ theorem hasDerivAt_thetaCuspFourierLaplace
       _ ≤ |w₀.im| + ε := by linarith
       _ = B := by rfl
   have hbound : Integrable bound := by
-    exact (integrable_abs_mul_exp_neg_mul_abs hc).const_mul
+    exact (integrable_abs_pow_mul_exp_neg_mul_abs (k + 1) hc).const_mul
       (thetaCuspDerivativeExpConstant 0)
   have hFmeas : ∀ z : ℂ,
-      AEStronglyMeasurable (thetaCuspFourierLaplaceIntegrand z) := by
+      AEStronglyMeasurable (thetaCuspFourierLaplaceJetIntegrand k z) := by
     intro z
     have hk : Continuous thetaCuspFullSource :=
       contDiff_thetaCuspFullSource.continuous
-    unfold thetaCuspFourierLaplaceIntegrand
-    exact (by fun_prop (disch := assumption) : Continuous (fun x : ℝ =>
-      Complex.exp (-I * z * (x : ℂ)) *
-        (thetaCuspFullSource x : ℂ))).aestronglyMeasurable
-  have hF'meas : AEStronglyMeasurable
-      (thetaCuspFourierLaplaceDerivativeIntegrand w₀) := by
-    have hk : Continuous thetaCuspFullSource :=
-      contDiff_thetaCuspFullSource.continuous
-    unfold thetaCuspFourierLaplaceDerivativeIntegrand
+    unfold thetaCuspFourierLaplaceJetIntegrand
       thetaCuspFourierLaplaceIntegrand
     exact (by fun_prop (disch := assumption) : Continuous (fun x : ℝ =>
-      (-I * (x : ℂ)) *
-        (Complex.exp (-I * w₀ * (x : ℂ)) *
+      (-I * (x : ℂ)) ^ k *
+        (Complex.exp (-I * z * (x : ℂ)) *
           (thetaCuspFullSource x : ℂ)))).aestronglyMeasurable
+  have hF'meas : AEStronglyMeasurable
+      (thetaCuspFourierLaplaceJetIntegrand (k + 1) w₀) :=
+    (integrable_thetaCuspFourierLaplaceJetIntegrand (k + 1) hw₀).1
   have hdom : ∀ᵐ x : ℝ, ∀ z ∈ Metric.ball w₀ ε,
-      ‖thetaCuspFourierLaplaceDerivativeIntegrand z x‖ ≤ bound x := by
+      ‖thetaCuspFourierLaplaceJetIntegrand (k + 1) z x‖ ≤ bound x := by
     filter_upwards with x
     intro z hz
     have hzB := him hz
-    have hzstrip : |z.im| < 1 := lt_of_le_of_lt hzB hB
     have hbase := norm_thetaCuspFourierLaplaceIntegrand_le z x
     have hC : 0 ≤ thetaCuspDerivativeExpConstant 0 :=
       thetaCuspDerivativeExpConstant_nonneg 0
@@ -223,31 +290,58 @@ theorem hasDerivAt_thetaCuspFourierLaplace
         Real.exp (-c * |x|) := by
       apply Real.exp_le_exp.mpr
       nlinarith [abs_nonneg x]
-    rw [thetaCuspFourierLaplaceDerivativeIntegrand, norm_mul,
+    rw [thetaCuspFourierLaplaceJetIntegrand, norm_mul, norm_pow,
       norm_mul, norm_neg, norm_I, one_mul, norm_real, Real.norm_eq_abs]
     dsimp [bound]
     calc
-      |x| * ‖thetaCuspFourierLaplaceIntegrand z x‖ ≤
-          |x| * (thetaCuspDerivativeExpConstant 0 *
+      |x| ^ (k + 1) * ‖thetaCuspFourierLaplaceIntegrand z x‖ ≤
+          |x| ^ (k + 1) * (thetaCuspDerivativeExpConstant 0 *
             Real.exp (-(1 - |z.im|) * |x|)) := by gcongr
-      _ ≤ |x| * (thetaCuspDerivativeExpConstant 0 *
-            Real.exp (-c * |x|)) := by
-        gcongr
+      _ ≤ |x| ^ (k + 1) * (thetaCuspDerivativeExpConstant 0 *
+            Real.exp (-c * |x|)) := by gcongr
       _ = thetaCuspDerivativeExpConstant 0 *
-          (|x| * Real.exp (-c * |x|)) := by ring
+          (|x| ^ (k + 1) * Real.exp (-c * |x|)) := by ring_nf
   have hresult := hasDerivAt_integral_of_dominated_loc_of_deriv_le
-    (F := thetaCuspFourierLaplaceIntegrand)
-    (F' := thetaCuspFourierLaplaceDerivativeIntegrand)
+    (F := thetaCuspFourierLaplaceJetIntegrand k)
+    (F' := thetaCuspFourierLaplaceJetIntegrand (k + 1))
     (x₀ := w₀) (s := Metric.ball w₀ ε) (bound := bound)
     (Metric.ball_mem_nhds w₀ hε)
     (Filter.Eventually.of_forall hFmeas)
-    (integrable_thetaCuspFourierLaplaceIntegrand hw₀)
+    (integrable_thetaCuspFourierLaplaceJetIntegrand k hw₀)
     hF'meas hdom hbound
     (by
       filter_upwards with x
       intro z hz
-      exact hasDerivAt_thetaCuspFourierLaplaceIntegrand z x)
-  simpa only [thetaCuspFourierLaplace] using hresult.2
+      exact hasDerivAt_thetaCuspFourierLaplaceJetIntegrand k z x)
+  exact hresult.2
+
+theorem hasDerivAt_thetaCuspFourierLaplace
+    {w₀ : ℂ} (hw₀ : |w₀.im| < 1) :
+    HasDerivAt thetaCuspFourierLaplace
+      (∫ x : ℝ, thetaCuspFourierLaplaceDerivativeIntegrand w₀ x) w₀ := by
+  simpa [thetaCuspFourierLaplaceJetIntegrand,
+    thetaCuspFourierLaplace, thetaCuspFourierLaplaceDerivativeIntegrand] using
+    (hasDerivAt_integral_thetaCuspFourierLaplaceJet 0 hw₀)
+
+/-- **All-order theta-source jet law.**  Every spectral derivative of the Fourier--Laplace
+transform is the explicit source moment with weight `(-i x)^k`, throughout the open strip. -/
+theorem iteratedDeriv_thetaCuspFourierLaplace_eq_integral_jet
+    (k : ℕ) {w : ℂ} (hw : |w.im| < 1) :
+    iteratedDeriv k thetaCuspFourierLaplace w =
+      ∫ x : ℝ, thetaCuspFourierLaplaceJetIntegrand k w x := by
+  induction k generalizing w with
+  | zero => simp [iteratedDeriv_zero, thetaCuspFourierLaplace]
+  | succ k ih =>
+      rw [iteratedDeriv_succ]
+      have hwmem : w ∈ {z : ℂ | |z.im| < 1} := hw
+      have hopen : IsOpen {z : ℂ | |z.im| < 1} :=
+        isOpen_lt (by fun_prop) continuous_const
+      have heq : iteratedDeriv k thetaCuspFourierLaplace =ᶠ[𝓝 w]
+          fun z : ℂ => ∫ x : ℝ, thetaCuspFourierLaplaceJetIntegrand k z x := by
+        filter_upwards [hopen.mem_nhds hwmem] with z hz
+        exact ih hz
+      rw [heq.deriv_eq]
+      exact (hasDerivAt_integral_thetaCuspFourierLaplaceJet k hw).deriv
 
 theorem differentiableAt_thetaCuspFourierLaplace
     {w₀ : ℂ} (hw₀ : |w₀.im| < 1) :
@@ -318,6 +412,25 @@ theorem thetaCuspFourierLaplace_eq_XiC_on_strip :
   have := hzero hw
   dsimp [F] at this
   exact sub_eq_zero.mp this
+
+/-- The theta Fourier--Laplace transform and centered Xi have identical jets of every order
+throughout their common strip. -/
+theorem iteratedDeriv_thetaCuspFourierLaplace_eq_iteratedDeriv_XiC
+    (k : ℕ) {w : ℂ} (hw : w ∈ thetaCuspFourierLaplaceStrip) :
+    iteratedDeriv k thetaCuspFourierLaplace w = iteratedDeriv k XiC w := by
+  have heq : thetaCuspFourierLaplace =ᶠ[𝓝 w] XiC :=
+    thetaCuspFourierLaplace_eq_XiC_on_strip.eventuallyEq_of_mem
+      (isOpen_thetaCuspFourierLaplaceStrip.mem_nhds hw)
+  exact heq.iteratedDeriv_eq k
+
+/-- **Explicit all-order Xi source law.**  Every centered Xi jet inside the strip is the
+corresponding theta-cusp Fourier--Laplace moment. -/
+theorem iteratedDeriv_XiC_eq_integral_thetaCuspFourierLaplaceJet
+    (k : ℕ) {w : ℂ} (hw : w ∈ thetaCuspFourierLaplaceStrip) :
+    iteratedDeriv k XiC w =
+      ∫ x : ℝ, thetaCuspFourierLaplaceJetIntegrand k w x := by
+  rw [← iteratedDeriv_thetaCuspFourierLaplace_eq_iteratedDeriv_XiC k hw]
+  exact iteratedDeriv_thetaCuspFourierLaplace_eq_integral_jet k (abs_lt.mpr hw)
 
 theorem fourier_thetaCuspTiltedSchwartz_scaled
     {a : ℝ} (ha : |a| < 1) (b : ℝ) :

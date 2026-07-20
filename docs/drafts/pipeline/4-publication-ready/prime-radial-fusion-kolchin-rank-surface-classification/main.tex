@@ -42,7 +42,7 @@
 \title{Prime-Profile Differential Fields and the\\
 Valuation-Quotient Hypertranscendence Law}
 
-\author{Michael Haufschild}
+\author{Michael Haufschild, GPT 5.6 Sol, Fable 5, Grok 4.5}
 \date{}
 
 \begin{document}
@@ -237,7 +237,7 @@ These derivations also extend to $\F$.  Their commutator with $D$ is exact.
 For every prime $q$ and every $x\in\F$,
 \begin{align}
  [\partial_q,D]&=\mathrm i\log(q)\,\partial_q,
-                                                        \label{eq:commutator}\
+                                                        \label{eq:commutator}\\
  \partial_qx=0&\Longrightarrow \partial_q(Dx)=0.       \label{eq:no-activation}
 \end{align}
 \end{proposition}
@@ -309,13 +309,14 @@ Summing with permutation signs is the scalar determinant in
 nonzero, so the determinant itself is nonzero.
 \end{proof}
 
-We also use two finite-dimensional facts.  First, if $u_1,\ldots,u_d$ are linearly independent
-sequences, then there are indices $e_1,\ldots,e_d$ for which the evaluation matrix
+We also use two finite-dimensional facts.  First, if $u_1,\ldots,u_d\in t\C[[t]]$ are linearly
+independent, then there are distinct positive integers $n_1,\ldots,n_d$ for which the coefficient
+matrix
 \begin{equation}\label{eq:profile-minor}
- P=(u_j(e_a))_{1\le a,j\le d}
+ P=([t^{n_a}]u_j)_{1\le a,j\le d}
 \end{equation}
 is nonsingular.  This follows by choosing a basis from the span of the evaluation functionals;
-repeated indices would give repeated rows, so the $e_a$ are automatically distinct.  Second, the
+repeated indices would give repeated rows, so the $n_a$ are automatically distinct.  Second, the
 Vandermonde matrix $(\lambda_\ell^k)_{0\le\ell,k\le m}$ is nonsingular when the
 $\lambda_\ell$ are distinct.
 
@@ -335,7 +336,7 @@ suffices to prove independence of
  x_{j,k}=D^ka_{u_j},
  \qquad 1\le j\le d,\quad 0\le k\le m,
 \]
-for arbitrary finite $d,m$.  Choose distinct valuation indices $e_1,\ldots,e_d$ such that the
+for arbitrary finite $d,m$.  Choose distinct positive valuation depths $n_1,\ldots,n_d$ such that the
 profile matrix $P$ in~\eqref{eq:profile-minor} is nonsingular.
 
 Suppose a proposed polynomial relation has coefficients $c_1,\ldots,c_s\in\Efin$.  The union of
@@ -347,32 +348,32 @@ outside that union, with all $d(m+1)$ primes distinct.  Use the derivations
 $\partial_{q_{a,\ell}}$ as the Jacobian rows.  Directly from
 \eqref{eq:log-derivation}--\eqref{eq:prime-derivation},
 \begin{equation}\label{eq:jacobian-scalar-entry}
- \bigl(\partial_{q_{a,\ell}}x_{j,k}\bigr)(q_{a,\ell}^{e_a})
- =(e_a+1)u_j(e_a)
-   \bigl(\mathrm i(e_a+1)\log q_{a,\ell}\bigr)^k.
+ \bigl(\partial_{q_{a,\ell}}x_{j,k}\bigr)(q_{a,\ell}^{n_a-1})
+ =n_a[t^{n_a}]u_j
+   \bigl(\mathrm i n_a\log q_{a,\ell}\bigr)^k.
 \end{equation}
 Moreover, the whole arithmetic function
 $\partial_{q_{a,\ell}}x_{j,k}$ is supported on the nonnegative powers of the single prime
 $q_{a,\ell}$.
 
 The scalar matrix in~\eqref{eq:jacobian-scalar-entry}, with rows $(a,\ell)$ and columns $(j,k)$,
-is nonsingular.  Indeed, suppose coefficients $C_{j,k}$ lie in its kernel.  For fixed $a$, the
-$m+1$ row equations say that the polynomial
+is nonsingular.  Indeed, suppose coefficients $C_{j,k}$ lie in its kernel.  For fixed $a$, divide
+the $m+1$ row equations by the nonzero scalar $n_a$.  They say that the polynomial
 \[
  \sum_{k=0}^m\left(\sum_{j=1}^dP_{a,j}C_{j,k}\right)T^k
 \]
 vanishes at the $m+1$ distinct numbers
-$T=\mathrm i(e_a+1)\log q_{a,\ell}$.  The corresponding Vandermonde matrix is nonsingular, hence
+$T=\mathrm i n_a\log q_{a,\ell}$.  The corresponding Vandermonde matrix is nonsingular, hence
 $\sum_jP_{a,j}C_{j,k}=0$ for every $a,k$.  Since $P$ is nonsingular, every $C_{j,k}=0$.
 
 Let $J$ be the arithmetic-function Jacobian
 \[
  J_{(a,\ell),(j,k)}=\partial_{q_{a,\ell}}x_{j,k}.
 \]
-Apply Lemma~\ref{lem:separated-coefficient} with exponent $e_a$ on row $(a,\ell)$.  The coefficient
+Apply Lemma~\ref{lem:separated-coefficient} with exponent $n_a-1$ on row $(a,\ell)$.  The coefficient
 of $\det J$ at
 \[
- \prod_{a=1}^d\prod_{\ell=0}^m q_{a,\ell}^{e_a}
+ \prod_{a=1}^d\prod_{\ell=0}^m q_{a,\ell}^{n_a-1}
 \]
 is precisely the nonsingular scalar determinant just obtained.  Therefore $\det J\ne0$ in
 $\A$, and hence in $\F$.
@@ -413,7 +414,7 @@ For every complex subspace $W\le\Pcal$ and every $u\in\Pcal$,
 Consequently, for arbitrary subspaces $U,W\le\Pcal$,
 \begin{align}
  \K(U)\subseteq\K(W)&\quad\Longleftrightarrow\quad U\subseteq W,
-                                                        \label{eq:field-order}\
+                                                        \label{eq:field-order}\\
  \K(U)=\K(W)&\quad\Longleftrightarrow\quad U=W.        \label{eq:field-equality}
 \end{align}
 \end{theorem}
@@ -443,7 +444,7 @@ differential field.
 Fix a subspace $W\le\Pcal$ and $N\ge0$.  Define
 \begin{align}
  \pi_N:W&\longrightarrow\C^N,
- &\pi_N(u)&=([t]u,\ldots,[t^N]u),                         \label{eq:prefix-map}\
+ &\pi_N(u)&=([t]u,\ldots,[t^N]u),                         \label{eq:prefix-map}\\
  W_{>N}&=W\cap\ker\pi_N,
  &V_N(W)&=\pi_N(W).                                      \label{eq:tail-space}
 \end{align}
@@ -472,7 +473,7 @@ remainder lies in $W_{>N}$ and is therefore a finite linear combination of the $
 With the notation above,
 \begin{align}
  \K(W)&=\K(W_{>N})\langle a_{b_j}:j\in J_N\rangle_D,
-                                                        \label{eq:tail-generation}\
+                                                        \label{eq:tail-generation}\\
  (a_{b_j})_{j\in J_N}&\text{ is differentially independent over }\K(W_{>N}).
                                                         \label{eq:tail-relative-free}
 \end{align}
@@ -564,7 +565,7 @@ Theorem~\ref{thm:jet-rank}.
 \begin{proposition}[Order census]\label{prop:order-census}
 For every $N\ge0$,
 \begin{align}
- h_W(N)&=\#\bigl(\Omega(W)\cap[1,N]\bigr),                \label{eq:order-census}\
+ h_W(N)&=\#\bigl(\Omega(W)\cap[1,N]\bigr),                \label{eq:order-census}\\
  h_W(N+1)-h_W(N)&=\mathbf 1_{\Omega(W)}(N+1).             \label{eq:order-jump}
 \end{align}
 Consequently
@@ -733,9 +734,9 @@ relatively hypertranscendental channels.
 
 \section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
 
-During the preparation of this work, the author used GPT 5.6 Sol, Fable 5, and Grok 4.5 for
-research assistance, literature organization, proof-review support, and manuscript drafting.
-The author reviewed and edited the resulting material, verified the mathematical claims and
+During the preparation of this work, GPT 5.6 Sol, Fable 5, and Grok 4.5 contributed research
+assistance, literature organization, proof-review support, and manuscript drafting. Michael
+Haufschild reviewed and edited the resulting material, verified the mathematical claims and
 references, and takes full responsibility for the content of the article.
 
 \begin{thebibliography}{99}

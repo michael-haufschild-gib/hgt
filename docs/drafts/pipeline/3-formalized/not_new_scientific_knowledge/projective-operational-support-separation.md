@@ -1,8 +1,8 @@
 # Operational effective-support separation for projective recurrence
 
 - **ID:** `projective-operational-support-separation`
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parent:** `projective-weighted-coherence-water-filling-law`
 - **Statement:** At the trace-distance support scale used by the strongest published
   effective-support recurrence bound, two binary spectral packets can have identical effective
@@ -130,10 +130,14 @@ in the current recurrence literature.
 - [x] 0 to 1: operational scale identified and complete proof written
 - [x] exact relation to the parent minimax theorem stated
 - [x] fixed-state versus triangular-family scope made explicit
-- [ ] 1 to 2: hostile proof audit
-- [ ] 2 to 3: unconditional Lean theorem and targeted audit
-- [ ] 3 to 4: replace the paper's obsolete support comparison
+- [x] 1 to 2: hostile proof audit
+- [x] 2 to 3: unconditional Lean theorems
+  `operationalBinary_supportAndWaterEntropySeparation` and
+  `operationalBinary_floquetTime_waterEntropySandwich`
+- [x] targeted source checks pass for the new module and covariance dependency
+- [x] 3 to 4: obsolete support comparison replaced in the paper
 
 ## Log
 
 - 2026-07-20 — created after referee-scale audit of the publication draft.
+- 2026-07-20 — paper proof formalized unconditionally and operational comparison incorporated.

@@ -453,6 +453,113 @@ characterizes strict opposite signs of the two theta-cusp cosine traces.
 - `thetaCuspCosine_pair_neg_iff_exists_hardySEM_certified_pair`
 - `exists_riemannZeta_line_zero_of_hardySEM_certified_sign_bracket`
 
+## 2026-07-20 first-jet, curvature, and source-value extension
+
+`[LEAN-PROVED] [BRIDGE]` The exact theorem surface now also includes:
+
+- `deriv_digamma_partialSum_tendsto`
+- `one_div_sq_le_re_deriv_digamma_of_pos`
+- `hasDerivAt_re_digamma_ofReal`, `strictMonoOn_re_digamma_ofReal`
+- `deriv_digamma_vertical_im_neg`
+- `differentiable_hardyZArchScale`, `hardyZArchScale_firstJet`
+- `deriv_hardyZ_eq_zero_iff_thetaCuspFirstSineMoment_of_zero`
+- `deriv_Xi_eq_hardyZArchScale_firstJet`
+- `deriv_Xi_eq_neg_half_scale_mul_deriv_hardyZ_of_zero`
+- `deriv_Xi_eq_zero_iff_deriv_hardyZ_of_zero`
+- `deriv_Xi_eq_neg_two_mul_thetaCuspFirstSineMoment`
+- `deriv_Xi_eq_zero_iff_thetaCuspFirstSineMoment`
+- `deriv_Xi_ne_zero_iff_thetaCuspFirstSineMoment_ne_zero`
+- `hasDerivAt_gammaHardyPhaseRate`, `deriv_gammaHardyPhaseRate`
+- `strictMonoOn_gammaHardyPhaseRate`, `strictAntiOn_gammaHardyPhaseRate`
+- `strictConvexOn_gammaHardyTheta`, `strictConcaveOn_gammaHardyTheta`
+- `abs_deriv_gammaHardyPhaseRate_le`, `windingRateDeriv_abs_le_sharp`
+- `gammaHardyPhaseRate_sub_log_conductor_bound`
+- `existsUnique_pos_gammaHardyPhaseRate_eq_zero`
+- `gammaHardyTheta_morseGeometry_of_rate_eq_zero`
+- `gammaHardyTheta_eq_minimum_iff_of_rate_eq_zero`
+- `gammaHardyTheta_bijOn_Ici_of_rate_eq_zero`
+- `factorial_nsmul_iterate_dslope_self_eq_iteratedDeriv`
+- `iterate_dslope_self_eq_iteratedDeriv_div_factorial`
+- `xiThetaDividedChain_self_eq_iteratedDeriv_div_factorial`
+- `iteratedDeriv_XiC_neg`, `xiThetaDividedChain_self_neg`
+- `iteratedDeriv_XiC_eq_zero_before_supportMultiplicity`
+- `iteratedDeriv_XiC_ne_zero_at_supportMultiplicity`
+- `xiSupportMultiplicity_eq_iff_iteratedDeriv`
+- `xiSupportMultiplicity_reflect`
+- `thetaCuspFourierLaplaceJetIntegrand`
+- `integrable_abs_pow_mul_exp_neg_mul_abs`
+- `integrable_thetaCuspFourierLaplaceJetIntegrand`
+- `hasDerivAt_integral_thetaCuspFourierLaplaceJet`
+- `iteratedDeriv_thetaCuspFourierLaplace_eq_integral_jet`
+- `iteratedDeriv_thetaCuspFourierLaplace_eq_iteratedDeriv_XiC`
+- `iteratedDeriv_XiC_eq_integral_thetaCuspFourierLaplaceJet`
+- `xiC_zero_mem_thetaCuspFourierLaplaceStrip`
+- `xiSpectralPointSupport_mem_thetaCuspFourierLaplaceStrip`
+- `xiThetaDividedChain_self_eq_integral_thetaCuspFourierLaplaceJet_div_factorial`
+- `xiThetaDividedChain_self_eq_integral_thetaCuspFourierLaplaceJet_div_factorial_of_zero`
+- `xiSupportMultiplicity_eq_iff_thetaCuspFourierLaplaceJet`
+- `thetaCuspBoundaryReflectionDefect`
+- `thetaCuspBoundaryReflectionDefect_eq`
+- `iteratedDeriv_thetaCuspBoundaryReflectionDefect`
+- `iteratedDeriv_thetaCuspBoundaryReflectionDefect_eq_zero_before_supportMultiplicity`
+- `iteratedDeriv_thetaCuspBoundaryReflectionDefect_at_supportMultiplicity`
+- `iteratedDeriv_thetaCuspBoundaryReflectionDefect_ne_zero_at_supportMultiplicity`
+- `xiSupportMultiplicity_eq_iff_thetaCuspBoundaryReflectionDefectJet`
+- `integral_thetaCuspFourierLaplaceJet_neg`
+- `iteratedDeriv_XiC_conj`
+- `integral_thetaCuspFourierLaplaceJet_conj`
+- `integral_thetaCuspFourierLaplaceJet_neg_conj`
+- `integral_thetaCuspFourierLaplaceJet_ofReal`
+- `xiSupportMultiplicity_eq_iff_thetaCuspCosineDerivativeIntegral`
+- `xiSpectralPointSupport_eq_ofReal_of_rh`
+- `xiSupportMultiplicity_eq_iff_thetaCuspCosineDerivativeIntegral_of_rh`
+- `xiThetaEigenFourier_self_eq_I_mul_thetaCuspFourierLaplaceFirstMoment`
+- `xiThetaEigenFourier_self_eq_I_mul_thetaCuspFourierLaplaceFirstMoment_of_zero`
+- `xiThetaFirstQuotientValueConstraint_iff_thetaCuspFourierLaplace_deriv_ne_zero`
+- `xiThetaFirstQuotientValueConstraint_iff_thetaCuspFourierLaplaceFirstMoment_ne_zero`
+- `continuedPrimeArchUpperCauchy_and_thetaCuspFourierLaplaceFirstMoment_iff_rh_and_simple`
+- `continuedPrimeArchUpperCauchy_and_thetaCuspFourierLaplaceFirstMoment_iff_exists_conservative_metric`
+- `riemannHypothesis_and_xiZerosSimple_iff_thetaCuspFirstSineMoment`
+- `riemannHypothesis_and_xiThetaFirstQuotientValueConstraint_iff_thetaCuspFirstSineMoment`
+- `continuedPrimeArchUpperCauchy_and_thetaCuspFirstSineMoment_iff_rh_and_simple`
+- `continuedPrimeArchUpperCauchy_and_thetaCuspFirstSineMoment_iff_exists_conservative_metric`
+
+The source-value law is now all-order, not only first-order.  Over every complete
+characteristic-zero nontrivially normed field, `k!` times the value after `k` removable divided
+slopes of an analytic map into any complete normed space is its `k`-th derivative; the scalar
+division form is an immediate corollary.  Applied to centered Xi, this
+identifies the complete Hedenmalm multiplicity chain with the normalized Taylor jet.  Uniform
+dominated differentiation on the entire theta Fourier--Laplace strip then identifies that jet with
+the explicit moment weighted by `(-i x)^k`.  Every centered Xi zero lies in the strip, so the strip
+premise disappears on the divisor.  Analytic multiplicity `k` is therefore equivalent to vanishing
+of all explicit source moments below `k` and nonvanishing of the order-`k` moment.  At `k = 1`, the
+Hedenmalm quotient self-value is exactly `i` times the differentiated source integral, and the
+resulting first-moment condition is unconditionally equivalent to the Hedenmalm quotient constraint
+and global Xi simplicity.  Under RH it specializes to nonvanishing of the real positive-theta sine
+moment at every real Xi zero.  Centered Xi evenness and Schwarz reality now propagate through the
+entire jet/source chain: negation contributes `(-1)^k`, conjugation conjugates the value, their
+composition does both, and reflected divisor support points have exactly equal analytic
+multiplicity.  On the real centered axis the two-sided complex jet integral is exactly the
+complexification of the pre-existing positive-half cosine-phase derivative integral; consequently,
+at a real divisor support point, the first nonzero member of that real integral hierarchy is the
+exact analytic multiplicity.  Under RH the support point is canonically the complexification of
+its real part, so this last interface no longer carries an existential multiplicity-copy witness
+or a caller-supplied coordinate equality.
+
+The same classification now closes the higher-order seam in the one-sided Hedenmalm boundary
+primitive.  For every logarithmic cut, its unnormalized anti-reflection defect is the Xi function
+times an explicit nonvanishing exponential gauge.  The full defect jet is the corresponding
+triangular Leibniz transform; at a divisor of multiplicity `m`, all orders below `m` vanish and the
+order-`m` defect jet is the cut exponential times the explicit order-`m` theta source moment.
+Hence every cut reads exactly the same multiplicity, without normalizing away the boundary value.
+This covariance supplies no estimate forcing the first moment to be nonzero.
+
+Focused `lake env lean` checks passed for `ReflectedDividedDifference.lean`,
+`ThetaCuspFourierLaplace.lean`, `XiHedenmalmMultiplicityChain.lean`,
+`HardyZThetaTrace.lean`, and `XiHedenmalmThetaJetSource.lean`.  A `/tmp`
+`#print axioms` audit reports only `propext`, `Classical.choice`, and `Quot.sound` for the audited
+declarations above.
+
 ## Scientific status and open core
 
 The mathematics is classical; the contribution is the dependency-closed Lean bridge, the
@@ -461,8 +568,13 @@ source.  It closes the `HardyZ.lean` substrate item in
 `hardy-critical-line-moment-anchor.md` but does **not** prove a critical-line zero.  The exact open
 core remains analytic: a symmetric approximate functional equation with height-dependent cutoff,
 the required zeta moment estimates, and the Hardy mean/sign-change inequality.  The corpus already
-contains the needed first/second derivative-test machinery; the newly discharged differentiability
-interfaces and exact global phase lift do not supply the missing height-dependent AFE estimates.
-The first-order laws `theta'(t) = (1/2)log(t/(2*pi)) + o(1)` and
-`theta(t) = (t/2)log(t/(2*pi)) - t/2 + o(t)` are closed, but the quantitative
-digamma/trigamma bounds used by the smooth AFE remain open.  No RH statement is claimed here.
+contains the needed first/second derivative-test machinery; the newly discharged differentiability,
+first-jet, source-value, and exact global phase interfaces do not supply the missing
+height-dependent AFE estimates.  The first-order laws
+`theta'(t) = (1/2)log(t/(2*pi)) + o(1)` and
+`theta(t) = (t/2)log(t/(2*pi)) - t/2 + o(t)` are closed, as are an explicit rate-error bound, a
+coarse unconditional second-jet bound, strict half-line curvature, and the unique positive phase
+minimum.  What remains open for the smooth AFE is the sharper complex-uniform asymptotic control
+and the source/moment estimates, not the real branch-free phase geometry.  The Hedenmalm/source
+equivalences characterize `RH + simplicity`; they prove neither conjunct.  No RH statement is
+claimed here.

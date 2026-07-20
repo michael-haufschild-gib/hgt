@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmFourierEquation
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.CarrierSlope
+import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
 
 /-!
 # Exact multiplicity depth of the Hedenmalm divided chain
@@ -38,6 +39,40 @@ theorem xiThetaDividedChain_analyticAt (alpha : ℂ) (k : ℕ) (z : ℂ) :
   | succ k ih =>
       rw [xiThetaDividedChain, Function.iterate_succ_apply']
       exact analyticAt_dslope_of_analyticAt (ih alpha) (ih z)
+
+/-- Every center value in the Xi divided chain is the corresponding factorially normalized Xi
+jet.  Thus the removable Hedenmalm chain and the Taylor jet are the same local data at every
+complex base point, without a zero or multiplicity hypothesis. -/
+theorem xiThetaDividedChain_self_eq_iteratedDeriv_div_factorial
+    (alpha : ℂ) (k : ℕ) :
+    xiThetaDividedChain alpha k alpha =
+      iteratedDeriv k XiC alpha / k.factorial := by
+  simpa only [xiThetaDividedChain] using
+    HTGeometry.iterate_dslope_self_eq_iteratedDeriv_div_factorial
+      (XiC_analytic alpha (Set.mem_univ alpha)) k
+
+/-- **Graded Xi jet reflection.**  The `k`-th jet of the centered even Xi function has parity
+`(-1)^k`.  This subsumes the previously separate oddness law for the first derivative. -/
+theorem iteratedDeriv_XiC_neg (k : ℕ) (z : ℂ) :
+    iteratedDeriv k XiC (-z) =
+      (-1 : ℂ) ^ k * iteratedDeriv k XiC z := by
+  have heven : (fun w : ℂ => XiC (-w)) = XiC := by
+    funext w
+    exact XiC_even w
+  calc
+    iteratedDeriv k XiC (-z) =
+        iteratedDeriv k (fun w : ℂ => XiC (-w)) (-z) := by rw [heven]
+    _ = (-1 : ℂ) ^ k * iteratedDeriv k XiC z := by
+      simpa only [neg_neg, smul_eq_mul] using iteratedDeriv_comp_neg k XiC (-z)
+
+/-- The center values of the full removable Xi chain obey the same graded reflection. -/
+theorem xiThetaDividedChain_self_neg (k : ℕ) (z : ℂ) :
+    xiThetaDividedChain (-z) k (-z) =
+      (-1 : ℂ) ^ k * xiThetaDividedChain z k z := by
+  rw [xiThetaDividedChain_self_eq_iteratedDeriv_div_factorial,
+    xiThetaDividedChain_self_eq_iteratedDeriv_div_factorial,
+    iteratedDeriv_XiC_neg]
+  ring
 
 /-- Analytic multiplicity of one centered Xi divisor support point. -/
 def xiSupportMultiplicity (rho : XiDivisorSupport) : ℕ :=
@@ -102,6 +137,64 @@ theorem xiThetaDividedChain_nonzero_at_multiplicity
     xiThetaDividedChain (xiSpectralPointSupport rho) (xiSupportMultiplicity rho)
       (xiSpectralPointSupport rho) ≠ 0 :=
   (xiThetaDividedChain_local_order rho).2.1
+
+/-- Every Xi jet strictly below the analytic multiplicity vanishes.  This discharges the
+divided-chain interface and exposes the usual jet criterion directly. -/
+theorem iteratedDeriv_XiC_eq_zero_before_supportMultiplicity
+    (rho : XiDivisorSupport) {k : ℕ} (hk : k < xiSupportMultiplicity rho) :
+    iteratedDeriv k XiC (xiSpectralPointSupport rho) = 0 := by
+  have hzero := xiThetaDividedChain_vanish_before_multiplicity rho hk
+  rw [xiThetaDividedChain_self_eq_iteratedDeriv_div_factorial] at hzero
+  exact (div_eq_zero_iff.mp hzero).resolve_right
+    (Nat.cast_ne_zero.mpr k.factorial_ne_zero)
+
+/-- The Xi jet at the exact analytic multiplicity is nonzero. -/
+theorem iteratedDeriv_XiC_ne_zero_at_supportMultiplicity
+    (rho : XiDivisorSupport) :
+    iteratedDeriv (xiSupportMultiplicity rho) XiC
+      (xiSpectralPointSupport rho) ≠ 0 := by
+  intro hzero
+  apply xiThetaDividedChain_nonzero_at_multiplicity rho
+  rw [xiThetaDividedChain_self_eq_iteratedDeriv_div_factorial,
+    hzero, zero_div]
+
+/-- **Exact multiplicity-by-jet classification.**  A natural number `k` is the analytic
+multiplicity of a centered Xi divisor point exactly when all lower Xi jets vanish and the
+`k`-th jet does not. -/
+theorem xiSupportMultiplicity_eq_iff_iteratedDeriv
+    (rho : XiDivisorSupport) (k : ℕ) :
+    xiSupportMultiplicity rho = k ↔
+      (∀ j < k, iteratedDeriv j XiC (xiSpectralPointSupport rho) = 0) ∧
+        iteratedDeriv k XiC (xiSpectralPointSupport rho) ≠ 0 := by
+  constructor
+  · intro hm
+    subst k
+    exact ⟨fun _ hj =>
+      iteratedDeriv_XiC_eq_zero_before_supportMultiplicity rho hj,
+      iteratedDeriv_XiC_ne_zero_at_supportMultiplicity rho⟩
+  · rintro ⟨hvanish, hnonzero⟩
+    apply Nat.le_antisymm
+    · by_contra hle
+      have hk : k < xiSupportMultiplicity rho := Nat.lt_of_not_ge hle
+      exact hnonzero (iteratedDeriv_XiC_eq_zero_before_supportMultiplicity rho hk)
+    · by_contra hle
+      have hk : xiSupportMultiplicity rho < k := Nat.lt_of_not_ge hle
+      exact iteratedDeriv_XiC_ne_zero_at_supportMultiplicity rho
+        (hvanish (xiSupportMultiplicity rho) hk)
+
+/-- Centered functional-equation reflection preserves the exact analytic multiplicity of every
+Xi divisor support point. -/
+theorem xiSupportMultiplicity_reflect (rho : XiDivisorSupport) :
+    xiSupportMultiplicity (xiZeroReflectEquiv rho) = xiSupportMultiplicity rho := by
+  apply (xiSupportMultiplicity_eq_iff_iteratedDeriv
+    (xiZeroReflectEquiv rho) (xiSupportMultiplicity rho)).2
+  constructor
+  · intro j hj
+    rw [xiSpectralPointSupport_reflect, iteratedDeriv_XiC_neg,
+      iteratedDeriv_XiC_eq_zero_before_supportMultiplicity rho hj, mul_zero]
+  · rw [xiSpectralPointSupport_reflect, iteratedDeriv_XiC_neg]
+    exact mul_ne_zero (pow_ne_zero _ (by norm_num))
+      (iteratedDeriv_XiC_ne_zero_at_supportMultiplicity rho)
 
 theorem xiThetaDividedChain_factorization
     (rho : XiDivisorSupport) (z : ℂ) :

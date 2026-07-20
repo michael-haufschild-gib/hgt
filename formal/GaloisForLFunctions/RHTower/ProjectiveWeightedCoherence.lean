@@ -64,6 +64,23 @@ theorem projectiveWeightedPairwiseEnergy_eq_two_mul_fidelityDeficit
     ← projectiveWeightedPhaseAmplitude_eq_finiteWeightedMean]
   ring
 
+/-- **Exact real projective covariance.**  The quadratic form obtained from
+real phase coordinates is the weighted second moment minus the square of the
+weighted mean.  In particular, it contains the projective covariance term
+that a diagonal coordinate envelope must dominate rather than identify with
+the intrinsic quotient metric. -/
+theorem half_projectiveWeightedPairwiseEnergy_ofReal_eq_covariance
+    {d : ℕ} (w theta : Fin d → ℝ) (hmass : ∑ i, w i = 1) :
+    (1 / 2 : ℝ) *
+        projectiveWeightedPairwiseEnergy w (fun i => (theta i : ℂ)) =
+      (∑ i, w i * theta i ^ 2) - (∑ i, w i * theta i) ^ 2 := by
+  rw [projectiveWeightedPairwiseEnergy_eq_finiteWeightedDifferenceEnergy,
+    finiteWeightedDifferenceEnergy_eq_variance]
+  simp only [finiteWeightMass, hmass, finiteWeightedNormSq,
+    Complex.norm_real, Real.norm_eq_abs, sq_abs,
+    finiteWeightedMean, Complex.ofReal_mul, Complex.ofReal_sum]
+  ring
+
 /-- The weighted average of the pivot energies is the pairwise energy. -/
 theorem sum_weight_mul_projectiveWeightedPivotEnergy
     {d : ℕ} (w : Fin d → ℝ) (phase : Fin d → ℂ) :

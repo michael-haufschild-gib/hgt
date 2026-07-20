@@ -370,3 +370,38 @@ S1, S2 entirely. Historical notes retained:
   ψ/ψ' asymptotics (ψ = log + O(1/|z|), ψ' = 1/z + O(1/|z|²)); the weaker real
   first-order Gamma-phase rate and exact Hardy phase lift are complete;
   SmoothAFE.lean (keystone); moments C/F; ZMeanLemma; HardyTheorem assembly.
+
+- 2026-07-20 — `[BRIDGE] [PAPER-PROVED]` Xi/Hardy/source simplicity interface.  Differentiate
+  the exact identity `Xi(t) = -hardyZArchScale(t) / 2 * hardyZ(t)`.  At a Hardy zero, the term
+  containing the scale derivative vanishes, so
+  `Xi'(t) = -hardyZArchScale(t) / 2 * hardyZ'(t)`.  Since the scale is strictly positive, Xi and
+  Hardy Z have the same derivative-vanishing predicate there.  Globally on the real axis the
+  existing identity `Xi = thetaCuspCosineRepresentation` gives the stronger all-height law
+  `Xi'(t) = -2 ∫₀⁺∞ x * thetaCuspFullSource(x) * sin(t*x) dx`.
+  There is also an unconditional complex form: every `XiC` zero lies in the open strip on which
+  `thetaCuspFourierLaplace = XiC`, so their derivatives agree at every divisor; differentiating
+  under the integral identifies that derivative with
+  `∫ thetaCuspFourierLaplaceDerivativeIntegrand(alpha,x) dx`.  Consequently global Xi
+  simplicity, the Hedenmalm first-quotient value constraint, and nonvanishing of this explicit
+  complex source moment at every centered Xi zero are equivalent without RH.  Under RH this
+  specializes to nonvanishing of the real sine moment at every real Xi zero.  This is an exact
+  source/value bridge and hypothesis discharge, not new scientific knowledge and not evidence for
+  RH.  The smooth height-dependent AFE and moment/sign-change estimates remain the analytic open
+  core.
+  The bridge extends to every order: the `k`-fold removable quotient at its center is the
+  factorially normalized `k`-th Xi jet, and dominated differentiation gives that jet as the
+  explicit Fourier--Laplace moment with weight `(-i x)^k`.  Hence a centered Xi divisor has
+  multiplicity `k` exactly when the source moments of orders `< k` vanish and the order-`k` moment
+  is nonzero.  The order-`k` moment and divided-chain value at the reflected point are
+  `(-1)^k` times the original values, so functional-equation reflection preserves the exact
+  multiplicity.  Schwarz conjugation conjugates every order-`k` moment, and the combined centered
+  reflection gives `(-1)^k` times the conjugate.  This is a dependency-closed
+  multiplicity/source classification.  On the real centered axis it agrees exactly with the
+  existing positive-half cosine-phase derivative integral, so the same first-nonzero-order law
+  reads analytic multiplicity from that real hierarchy.  Under RH, the centered support point is
+  canonically the complexification of its real part, discharging both the multiplicity-copy witness
+  and the caller-supplied real-coordinate equality from this all-order interface.  The one-sided
+  theta boundary anti-reflection defect has the same exact first-nonzero-order classification at
+  every logarithmic cut: its terminal jet is the nonvanishing cut exponential times the explicit
+  order-`m` theta moment.  Thus boundary covariance preserves, but does not constrain,
+  multiplicity.  It is still not an RH proof or a source estimate.

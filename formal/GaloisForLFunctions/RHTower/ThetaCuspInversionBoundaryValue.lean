@@ -24,6 +24,12 @@ def thetaCuspBoundaryPrimitive (w : ℂ) (x : ℝ) : ℂ :=
   Complex.exp (I * w * (x : ℂ)) *
     ∫ y : ℝ in Iic x, thetaCuspFourierLaplaceIntegrand w y
 
+/-- The unnormalized failure of the one-sided theta primitive to be anti-invariant under
+simultaneous spectral and boundary reflection. -/
+def thetaCuspBoundaryReflectionDefect (x : ℝ) (w : ℂ) : ℂ :=
+  thetaCuspBoundaryPrimitive w x +
+    thetaCuspBoundaryPrimitive (-w) (-x)
+
 /-- Inversion reflection turns the opposite boundary primitive into the complementary
 half-line integral. -/
 theorem integral_thetaCuspFourierLaplaceIntegrand_reflection
@@ -74,6 +80,52 @@ theorem thetaCuspBoundaryPrimitive_reflection_defect
   rw [thetaCuspBoundaryPrimitive, thetaCuspBoundaryPrimitive, hexp,
     integral_thetaCuspFourierLaplaceIntegrand_reflection]
   rw [← mul_add, hsplit, ← thetaCuspFourierLaplace, hXi]
+
+/-- The boundary reflection defect is the centered Xi function in the explicit nonvanishing
+exponential gauge determined by the cut. -/
+theorem thetaCuspBoundaryReflectionDefect_eq
+    {w : ℂ} (hw : |w.im| < 1) (x : ℝ) :
+    thetaCuspBoundaryReflectionDefect x w =
+      Complex.exp (I * w * (x : ℂ)) * XiC w := by
+  simpa only [thetaCuspBoundaryReflectionDefect] using
+    thetaCuspBoundaryPrimitive_reflection_defect hw x
+
+/-- **All-order boundary-defect jet law.**  Every spectral jet of the unnormalized one-sided
+reflection defect is the triangular Leibniz transform of the centered Xi jet by the cut-dependent
+exponential gauge. -/
+theorem iteratedDeriv_thetaCuspBoundaryReflectionDefect
+    (k : ℕ) {w : ℂ} (hw : |w.im| < 1) (x : ℝ) :
+    iteratedDeriv k (thetaCuspBoundaryReflectionDefect x) w =
+      ∑ i ∈ Finset.range (k + 1),
+        (k.choose i : ℂ) *
+          ((I * (x : ℂ)) ^ i * Complex.exp (I * w * (x : ℂ))) *
+            iteratedDeriv (k - i) XiC w := by
+  have hopen : IsOpen {z : ℂ | |z.im| < 1} :=
+    isOpen_lt (by fun_prop) continuous_const
+  have heq : thetaCuspBoundaryReflectionDefect x =ᶠ[𝓝 w]
+      fun z : ℂ => Complex.exp (I * z * (x : ℂ)) * XiC z := by
+    filter_upwards [hopen.mem_nhds hw] with z hz
+    exact thetaCuspBoundaryReflectionDefect_eq hz x
+  rw [heq.iteratedDeriv_eq k]
+  change iteratedDeriv k
+    ((fun z : ℂ => Complex.exp (I * z * (x : ℂ))) * XiC) w = _
+  rw [iteratedDeriv_mul
+    (by fun_prop : ContDiffAt ℂ k
+      (fun z : ℂ => Complex.exp (I * z * (x : ℂ))) w)
+    ((XiC_analytic w (Set.mem_univ w)).contDiffAt.of_le le_top)]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hexp :
+      iteratedDeriv i (fun z : ℂ => Complex.exp (I * z * (x : ℂ))) w =
+        (I * (x : ℂ)) ^ i * Complex.exp (I * w * (x : ℂ)) := by
+    rw [show (fun z : ℂ => Complex.exp (I * z * (x : ℂ))) =
+        fun z : ℂ => Complex.exp ((I * (x : ℂ)) * z) by
+      funext z
+      congr 1
+      ring]
+    simpa only [mul_assoc, mul_comm, mul_left_comm] using
+      congrFun (iteratedDeriv_cexp_const_mul i (I * (x : ℂ))) w
+  rw [hexp]
 
 /-- At the fixed logarithmic boundary, the two reflected one-sided source values add to the
 completed Xi value. -/
