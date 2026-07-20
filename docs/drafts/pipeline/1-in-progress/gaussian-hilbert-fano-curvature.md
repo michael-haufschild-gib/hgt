@@ -3,7 +3,7 @@
 - **ID:** gaussian-hilbert-fano-curvature
 - **Stage:** 1-in-progress
 - **Type:** COMPETING CONJECTURES / ANTI-THEATRE AUDIT
-- **Novelty:** `[CONJECTURE BEYOND SOTA]`; no discovery claim
+- **Novelty:** `[NOVELTY UNVERIFIED]`; no priority claim
 - **Source:** failure-driven successor to the Gaussian Hilbert-metric SOTA foundation
 
 ## Exact frontier
@@ -463,19 +463,30 @@ size `M-1`; the lowering skeleton pays the charge `B_T`.  For the full top space
 `T=Sym^M(R^d)`, `B_T/k=M(M-1)/(d+1)`.  At `M=5,d=16`, `lambda^2=5/3`, and `t=1`, the margin is
 `-5k/68`.
 
-`[LEAN-PROVED]` The compiled determinant connector now proves directly, for the literal balanced
-graph partition, that `(log Z)''(1)=-B_T+5k/4=5k/68>0`; this is no longer inferred only from the
-formal Fano proxy.  The scalar coherent-collision jets for the Gram entry and its first two scale
-derivatives are also Lean-proved through exact order ten.  The remaining Lean gap is exactly
-finite unisolvent recombination, determinant assembly, and strict-curvature persistence.
+`[LEAN-PROVED]` The full chain now compiles unconditionally.  It includes the exact graph
+partition curvature `(log Z)''(1)=-B_T+5k/4=5k/68>0`, unisolvent injective nodes, polynomial
+moment cancellation, the value/first/second coherent collision jets, matrix recombination,
+invertible-curvature persistence, determinant differentiation, and the final diagonal gauge
+from exponential inner products to squared Hilbert distances.  Its literal endpoint is
 
-The full-top space is a collision limit of spans of distinct coherent vectors.  An explicit
-unisolvent-node construction perturbs nodes `epsilon u_i` by transverse terms
-`epsilon^M w_i`; divided differences converge in the graph norms of the first two powers of
-the number operator to the displayed invariant space.  Strict negativity therefore persists
-before collision.  Hence C2--C5 are all false, including for actual finite Gaussian point
-configurations.  The dependency-closed proof and exact universal survivor (TD)--(TP) are in
-`2-fully-proven/gaussian-hilbert-transverse-degree-phase-transition.md`.
+```lean
+theorem exists_finiteGaussianDistanceGram_positiveLogDetCurvature :
+    ∃ x : DegreeFiveIndex 16 → (Fin 16 ⊕ DegreeFiveTopIndex 16 → ℝ),
+      Function.Injective x ∧
+      (finiteGaussianDistanceGram x 1).det ≠ 0 ∧
+      0 < deriv (deriv
+        (fun t => Real.log (finiteGaussianDistanceGram x t).det)) 1
+```
+
+Here `finiteGaussianDistanceGram x t i j` is definitionally
+`exp (-t * ∑ a, (x i a - x j a)^2)`.  No point coordinates, nonzero collision scale, matrix
+invertibility, convergence certificate, or curvature sign is assumed by the theorem; the
+endpoint returns nonsingularity explicitly.
+
+Thus C2--C5 are false for actual finite injective Euclidean configurations, not only for a
+limiting Fock model.  The dependency-closed paper proof and universal survivor (TD)--(TP) are
+in `2-fully-proven/gaussian-hilbert-transverse-degree-phase-transition.md`; the complete Lean
+chain is recorded in `3-formalized/gaussian-hilbert-transverse-channel-square-law.md`.
 
 ### C6 -- low-ambient Gaussian curvature boundary
 
@@ -518,9 +529,9 @@ two is the first place where the signed row--column term can survive.
 
 Prove or refute (LD3).  The collision boundary reduces to an extremal problem for Hilbert
 functions of smoothable inverse systems in at most three variables; the non-collision step must
-control the same curvature for finite coherent spans rather than assume it from the limit.
-Separately, formalise the already closed transverse-degree law and its Gaussian collision
-consequence without turning convergence into an assumption.
+control the same curvature for finite coherent spans rather than assume it from the limit.  The
+high-dimensional transverse-degree law and its Gaussian collision consequence are now fully
+formalized, so they are the compiled falsification boundary rather than part of this open core.
 
 ## Literature audit log
 
@@ -530,11 +541,15 @@ consequence without turning convergence into an assumption.
   supermultiplicativity.
 - Flat Gaussian RBF determinant asymptotics own the small-scale polynomial-rank order.
 - Coherent-state Gram characterizations own the Fock realization.
-- Searches through Gaussian-process log determinants, Hadamard powers, infinitely
-  divisible correlation matrices, coherent-state Gram determinants, sub-Poisson photon
-  statistics, least interpolation, and collision limits located the parent theories but no
-  source for the transverse phase law or Gaussian counterexample.  This remains a search
-  boundary, not a priority proof.
+- Hostile exact searches for Gaussian-kernel determinant log-concavity, a positive second
+  bandwidth derivative, Hadamard-power determinant curvature, and Fock/coalescence
+  counterexamples found numerical log-determinant work and the established parent theories,
+  but no equivalent of the transverse channel-square law or the positive-curvature
+  configuration.  Schaback owns analytic-RBF coalescence to Hermite interpolation;
+  Barthelme--Usevich own flat-limit determinant/eigenvalue asymptotics; Alpay--Colombo--Diki--
+  Sabadini own the Gaussian-RBF/Fock connection.  None of those search hits states the sign
+  reversal proved here.  This remains a search boundary, not a priority proof, hence
+  `[NOVELTY UNVERIFIED]`.
 
 ## Log
 
@@ -555,3 +570,7 @@ consequence without turning convergence into an assumption.
   transferred the negative Fano margin through an unisolvent coherent collision to distinct
   Gaussian points; extracted the universal lowering-charge phase law (TD)--(TP) and opened the
   low-ambient boundary conjecture (LD3).
+- 2026-07-19 -- closed the former Lean gap: formalized injective unisolvent nodes, all polynomial
+  cancellations and matrix limits, local determinant nonvanishing, literal `log det`
+  differentiation, and the conventional squared-distance Gaussian gauge.  The unconditional
+  endpoint is `exists_finiteGaussianDistanceGram_positiveLogDetCurvature`.

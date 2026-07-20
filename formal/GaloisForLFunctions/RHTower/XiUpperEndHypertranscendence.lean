@@ -191,6 +191,33 @@ noncomputable def xiShiftTwoRationalCorrectionUpperEndCarrier : upperEndMeroFiel
   algebraMap upperEndAnalyticSubring upperEndMeroField
     xiShiftTwoRationalCorrectionUpperEndAnalytic
 
+/-- The explicit completed-Xi shift correction is differentially algebraic over the constants. -/
+theorem xiShiftTwoRationalCorrectionUpperEndCarrier_differentialAlgebraicOver_complex :
+    DifferentialAlgebraicOver ℂ
+      xiShiftTwoRationalCorrectionUpperEndCarrier := by
+  change DifferentialAlgebraicOver ℂ
+    (algebraMap upperEndAnalyticSubring upperEndMeroField
+      xiShiftTwoRationalCorrectionUpperEndAnalytic)
+  rw [show xiShiftTwoRationalCorrectionUpperEndAnalytic =
+    xiShiftReciprocalUpperEndAnalytic 2 +
+      xiShiftReciprocalUpperEndAnalytic 1 -
+        xiShiftReciprocalUpperEndAnalytic (-1) by rfl,
+    map_sub, map_add]
+  exact differentialAlgebraicOver_sub
+    (differentialAlgebraicOver_add
+      (xiShiftReciprocalUpperEndCarrier_differentialAlgebraic 2)
+      (xiShiftReciprocalUpperEndCarrier_differentialAlgebraic 1))
+    (xiShiftReciprocalUpperEndCarrier_differentialAlgebraic (-1))
+
+/-- The same correction is DA over the genuine upper-end rational-coordinate field. -/
+theorem xiShiftTwoRationalCorrectionUpperEndCarrier_differentialAlgebraicOver :
+    DifferentialAlgebraicOver upperEndRationalCoordinateField
+      xiShiftTwoRationalCorrectionUpperEndCarrier := by
+  intro hIndependent
+  exact
+    xiShiftTwoRationalCorrectionUpperEndCarrier_differentialAlgebraicOver_complex
+      (DifferentialIndependent.restrictScalars hIndependent)
+
 /-- **Actual value-reflection law in the meromorphic field.**  Translation by `2*I` of the
 rotated completed logarithmic derivative, minus its original value and rational correction, is
 exactly the filtered von Mangoldt carrier. -/
@@ -242,25 +269,12 @@ theorem xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver_complex :
     rw [← differentialAdjoin_upperEndCoordinateMero_eq] at h
     exact (hypertranscendentalOver_differentialAdjoinSingleton_iff
       differentialAlgebraicOver_upperEndCoordinateMero).mp h
-  have hcorrection : DifferentialAlgebraicOver ℂ
-      xiShiftTwoRationalCorrectionUpperEndCarrier := by
-    change DifferentialAlgebraicOver ℂ
-      (algebraMap upperEndAnalyticSubring upperEndMeroField
-        xiShiftTwoRationalCorrectionUpperEndAnalytic)
-    rw [show xiShiftTwoRationalCorrectionUpperEndAnalytic =
-      xiShiftReciprocalUpperEndAnalytic 2 +
-        xiShiftReciprocalUpperEndAnalytic 1 -
-          xiShiftReciprocalUpperEndAnalytic (-1) by rfl,
-      map_sub, map_add]
-    exact differentialAlgebraicOver_sub
-      (differentialAlgebraicOver_add
-        (xiShiftReciprocalUpperEndCarrier_differentialAlgebraic 2)
-        (xiShiftReciprocalUpperEndCarrier_differentialAlgebraic 1))
-      (xiShiftReciprocalUpperEndCarrier_differentialAlgebraic (-1))
   have hsum : HypertranscendentalOver ℂ
       (filteredVonMangoldtUpperEndCarrier +
         xiShiftTwoRationalCorrectionUpperEndCarrier) :=
-    (hypertranscendentalOver_add_differentialAlgebraic_iff hcorrection).2 hcarrier
+    (hypertranscendentalOver_add_differentialAlgebraic_iff
+      xiShiftTwoRationalCorrectionUpperEndCarrier_differentialAlgebraicOver_complex).2
+        hcarrier
   have hdefect :
       upperEndTranslationMeroEquiv (2 * I) xiLogDerivRotatedUpperEndCarrier -
           xiLogDerivRotatedUpperEndCarrier =
@@ -279,10 +293,24 @@ theorem xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver_complex :
 theorem xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver :
     HypertranscendentalOver upperEndRationalCoordinateField
       xiLogDerivRotatedUpperEndCarrier := by
-  rw [← differentialAdjoin_upperEndCoordinateMero_eq]
-  exact (hypertranscendentalOver_differentialAdjoinSingleton_iff
-    differentialAlgebraicOver_upperEndCoordinateMero).2
-      xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver_complex
+  have hsum : HypertranscendentalOver upperEndRationalCoordinateField
+      (filteredVonMangoldtUpperEndCarrier +
+        xiShiftTwoRationalCorrectionUpperEndCarrier) :=
+    (hypertranscendentalOver_add_differentialAlgebraic_iff
+      xiShiftTwoRationalCorrectionUpperEndCarrier_differentialAlgebraicOver).2
+        filteredVonMangoldtUpperEndCarrier_hypertranscendentalOver
+  have hdefect :
+      upperEndTranslationMeroEquiv (2 * I) xiLogDerivRotatedUpperEndCarrier -
+          xiLogDerivRotatedUpperEndCarrier =
+        filteredVonMangoldtUpperEndCarrier +
+          xiShiftTwoRationalCorrectionUpperEndCarrier := by
+    linear_combination xiLogDerivRotatedUpperEnd_translation_defect
+  apply DifferentialSemilinearEquiv.hypertranscendentalOver_of_sub_self
+    (upperEndRationalCoordinateTranslationDifferentialSemilinearEquiv (2 * I))
+  change HypertranscendentalOver upperEndRationalCoordinateField
+    (upperEndTranslationMeroEquiv (2 * I) xiLogDerivRotatedUpperEndCarrier -
+      xiLogDerivRotatedUpperEndCarrier)
+  rwa [hdefect]
 
 private noncomputable def xiRotatedReciprocalUpperEndAnalytic :
     upperEndAnalyticSubring := by

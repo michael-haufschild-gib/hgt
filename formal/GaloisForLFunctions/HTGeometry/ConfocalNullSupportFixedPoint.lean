@@ -571,6 +571,321 @@ theorem confocalNullSupportOperator_contraction_modulus_optimal
   rw [abs_of_pos hpositive]
   exact hquot
 
+/-- On a radius domain lying strictly outside a fixed source bound, membership in the confocal
+hull is exactly membership in the projectively selected null half-spaces.  This is the
+bound-aware projective form of the maximal confocal completion. -/
+theorem mem_confocalHullOfField_add_defect_iff_nullFunctional_le
+    {D : Set ℝ} {M : ℝ} (hM : 0 ≤ M)
+    (hD : ∀ R ∈ D, M < R) {d : ℝ → ℝ}
+    (hd : ∀ R ∈ D, 0 ≤ d R) {q : ℝ × ℝ} (hqM : q.2 ≤ M) :
+    q ∈ confocalHullOfField D (fun R => R + d R) ↔
+      q ∈ confocalLorentzCone ∧
+        ∀ R ∈ D,
+          confocalNullFunctional q (confocalProjectiveParameter R (d R)) ≤ d R := by
+  constructor
+  · rintro ⟨hqCone, hqField⟩
+    refine ⟨hqCone, ?_⟩
+    intro R hRD
+    have hR : 0 < R := hM.trans_lt (hD R hRD)
+    have hqR : q.2 < R := hqM.trans_lt (hD R hRD)
+    exact (liftedConfocalBranch_le_add_iff_nullFunctional_le
+      hqCone hR hqR (hd R hRD)).mp (hqField R hRD)
+  · rintro ⟨hqCone, hqNull⟩
+    refine ⟨hqCone, ?_⟩
+    intro R hRD
+    have hR : 0 < R := hM.trans_lt (hD R hRD)
+    have hqR : q.2 < R := hqM.trans_lt (hD R hRD)
+    exact (liftedConfocalBranch_le_add_iff_nullFunctional_le
+      hqCone hR hqR (hd R hRD)).mpr (hqNull R hRD)
+
+/-- The bounded part of a confocal hull is the intersection of its projectively selected null
+half-spaces. -/
+theorem confocalHullOfField_inter_snd_le_eq_projectiveNullHalfspaces
+    {D : Set ℝ} {M : ℝ} (hM : 0 ≤ M)
+    (hD : ∀ R ∈ D, M < R) {d : ℝ → ℝ}
+    (hd : ∀ R ∈ D, 0 ≤ d R) :
+    confocalHullOfField D (fun R => R + d R) ∩ {q | q.2 ≤ M} =
+      {q | q ∈ confocalLorentzCone ∧ q.2 ≤ M ∧
+        ∀ R ∈ D,
+          confocalNullFunctional q (confocalProjectiveParameter R (d R)) ≤ d R} := by
+  ext q
+  constructor
+  · rintro ⟨hqHull, hqM⟩
+    have hprojective :=
+      (mem_confocalHullOfField_add_defect_iff_nullFunctional_le
+        hM hD hd hqM).mp hqHull
+    exact ⟨hprojective.1, hqM, hprojective.2⟩
+  · rintro ⟨hqCone, hqM, hqNull⟩
+    refine ⟨?_, hqM⟩
+    exact (mem_confocalHullOfField_add_defect_iff_nullFunctional_le
+      hM hD hd hqM).mpr ⟨hqCone, hqNull⟩
+
+/-- Radius reconstructed from a positive projective direction and its support value. -/
+def confocalRadiusFromProjective (lambda d : ℝ) : ℝ :=
+  d * (1 - lambda) / (2 * lambda)
+
+/-- The projective radius reconstruction is inverse to the defect parameter. -/
+theorem confocalProjectiveParameter_radiusFromProjective
+    {lambda d : ℝ} (hlambda0 : 0 < lambda) (hd : 0 < d) :
+    confocalProjectiveParameter (confocalRadiusFromProjective lambda d) d = lambda := by
+  rw [confocalProjectiveParameter, confocalRadiusFromProjective]
+  field_simp [hlambda0.ne', hd.ne']
+  ring
+
+/-- Conversely, a positive radius and positive defect are recovered from their projective
+parameter. -/
+theorem confocalRadiusFromProjective_projectiveParameter
+    {R d : ℝ} (hR : 0 < R) (hd : 0 < d) :
+    confocalRadiusFromProjective (confocalProjectiveParameter R d) d = R := by
+  rw [confocalRadiusFromProjective, confocalProjectiveParameter]
+  have hden : 0 < 2 * R + d := by positivity
+  field_simp [hden.ne', hd.ne']
+  ring
+
+/-- The null support field is monotone in its projective direction. -/
+theorem confocalNullSupport_mono
+    {S : Set (ℝ × ℝ)} (hne : S.Nonempty) {M lambda mu : ℝ}
+    (hcone : S ⊆ confocalLorentzCone)
+    (hbound : ∀ q ∈ S, q.2 ≤ M)
+    (hlambda0 : 0 ≤ lambda) (hlambdaMu : lambda ≤ mu) (hmu1 : mu ≤ 1) :
+    confocalNullSupport S lambda ≤ confocalNullSupport S mu := by
+  have hmu0 : 0 ≤ mu := hlambda0.trans hlambdaMu
+  have hlambda1 : lambda ≤ 1 := hlambdaMu.trans hmu1
+  have hLlambda := isLUB_confocalNullSupport hne hcone hbound hlambda0 hlambda1
+  have hLmu := isLUB_confocalNullSupport hne hcone hbound hmu0 hmu1
+  apply hLlambda.2
+  rintro _ ⟨q, hqS, rfl⟩
+  have hv0 := confocalNullPlus_nonneg (hcone hqS)
+  have hmul : lambda * confocalNullPlus q ≤ mu * confocalNullPlus q :=
+    mul_le_mul_of_nonneg_right hlambdaMu hv0
+  have hqmu : confocalNullFunctional q mu ≤ confocalNullSupport S mu :=
+    hLmu.1 ⟨q, hqS, rfl⟩
+  change confocalNullMinus q + mu * confocalNullPlus q ≤
+    confocalNullSupport S mu at hqmu
+  change confocalNullMinus q + lambda * confocalNullPlus q ≤
+    confocalNullSupport S mu
+  linarith
+
+/-- The radius chart obtained by feeding a null-support value into the inverse projective map. -/
+def confocalNullSupportRadius (S : Set (ℝ × ℝ)) (lambda : ℝ) : ℝ :=
+  confocalRadiusFromProjective lambda (confocalNullSupport S lambda)
+
+/-- The exterior defect graph of a field above a source-radius bound. -/
+def confocalExteriorDefectGraph (M : ℝ) (G : ℝ → ℝ) : Set (ℝ × ℝ) :=
+  {p | M < p.1 ∧ p.2 = G p.1 - p.1}
+
+/-- The admissible projective support graph above a source-radius bound. -/
+def confocalProjectiveSupportGraph (S : Set (ℝ × ℝ)) (M : ℝ) : Set (ℝ × ℝ) :=
+  {p | ∃ lambda : ℝ,
+    0 < lambda ∧ lambda < 1 ∧
+    0 < confocalNullSupport S lambda ∧
+    M < confocalNullSupportRadius S lambda ∧
+    p.1 = confocalNullSupportRadius S lambda ∧
+    p.2 = confocalNullSupport S lambda}
+
+/-- **Global projective support--envelope duality.**  Away from the exact positive-null radical,
+the complete exterior confocal defect graph is exactly the rational projective image of the
+ordinary null-support graph.  This is a global classification, not merely a pointwise fixed-point
+identity. -/
+theorem confocalExteriorDefectGraph_eq_projectiveSupportGraph
+    {S : Set (ℝ × ℝ)} (hne : S.Nonempty) {M : ℝ} (hM : 0 ≤ M)
+    (hcone : S ⊆ confocalLorentzCone)
+    (hbound : ∀ q ∈ S, q.2 ≤ M)
+    {G : ℝ → ℝ}
+    (hG : IsConfocalEnvelopeOn {R | M < R} S G)
+    (hnonradical : 0 < confocalNullSupport S 0) :
+    confocalExteriorDefectGraph M G = confocalProjectiveSupportGraph S M := by
+  ext p
+  constructor
+  · rintro ⟨hMR, hpDefect⟩
+    let R := p.1
+    let d := G R - R
+    let lambda := confocalProjectiveParameter R d
+    have hR : 0 < R := hM.trans_lt hMR
+    have hLUB : IsLUB (liftedConfocalBranch (R := R) '' S) (G R) :=
+      hG R hMR
+    have hfixed := confocalEnvelopeDefect_eq_nullSupport_fixedPoint
+      hne hM hMR hcone hbound hLUB
+    have hd0 : 0 ≤ d := hfixed.1
+    have hlambda0 : 0 ≤ lambda := confocalProjectiveParameter_nonneg hR hd0
+    have hlambda1le : lambda ≤ 1 := confocalProjectiveParameter_le_one hR hd0
+    have hsupport : d = confocalNullSupport S lambda := by
+      simpa only [d, lambda, confocalNullSupportOperator] using hfixed.2
+    have hsupport0le : confocalNullSupport S 0 ≤ confocalNullSupport S lambda :=
+      confocalNullSupport_mono hne hcone hbound (by norm_num) hlambda0 hlambda1le
+    have hd : 0 < d := by
+      rw [hsupport]
+      exact hnonradical.trans_le hsupport0le
+    have hlambdaPos : 0 < lambda := by
+      dsimp only [lambda]
+      rw [confocalProjectiveParameter]
+      positivity
+    have hlambdaLt : lambda < 1 := by
+      dsimp only [lambda]
+      rw [confocalProjectiveParameter]
+      apply (div_lt_one (by positivity)).2
+      linarith
+    have hRadius : confocalNullSupportRadius S lambda = R := by
+      rw [confocalNullSupportRadius, ← hsupport]
+      exact confocalRadiusFromProjective_projectiveParameter hR hd
+    refine ⟨lambda, hlambdaPos, hlambdaLt, ?_, ?_, ?_, ?_⟩
+    · rwa [← hsupport]
+    · rwa [hRadius]
+    · exact hRadius.symm
+    · calc
+        p.2 = d := hpDefect
+        _ = confocalNullSupport S lambda := hsupport
+  · rintro ⟨lambda, hlambda0, hlambda1, hsupport0, hMRadius, hpRadius, hpSupport⟩
+    let R := confocalNullSupportRadius S lambda
+    let d := confocalNullSupport S lambda
+    have hR : 0 < R := hM.trans_lt hMRadius
+    have hprojective : confocalProjectiveParameter R d = lambda := by
+      dsimp only [R, d, confocalNullSupportRadius]
+      exact confocalProjectiveParameter_radiusFromProjective
+        hlambda0 hsupport0
+    have hfix : d = confocalNullSupportOperator S R d := by
+      rw [confocalNullSupportOperator, hprojective]
+    have hLUB : IsLUB (liftedConfocalBranch (R := R) '' S) (G R) :=
+      hG R hMRadius
+    have hactual : d = G R - R :=
+      (confocalEnvelopeDefect_eq_iff_nullSupport_fixedPoint
+        hne hM hMRadius hcone hbound hLUB).2 ⟨hsupport0.le, hfix⟩
+    constructor
+    · rwa [hpRadius]
+    · calc
+        p.2 = d := hpSupport
+        _ = G R - R := hactual
+        _ = G p.1 - p.1 := by rw [hpRadius]
+
+/-- The projective support radius is one-to-one on the complete exterior chart.  Hence the field
+radius and the selected projective direction recover one another without a presentation choice. -/
+theorem confocalNullSupportRadius_injective_on_exterior
+    {S : Set (ℝ × ℝ)} (hne : S.Nonempty) {M : ℝ} (hM : 0 ≤ M)
+    (hcone : S ⊆ confocalLorentzCone)
+    (hbound : ∀ q ∈ S, q.2 ≤ M)
+    {G : ℝ → ℝ}
+    (hG : IsConfocalEnvelopeOn {R | M < R} S G)
+    (hnonradical : 0 < confocalNullSupport S 0)
+    {lambda mu : ℝ}
+    (hlambda0 : 0 < lambda) (hlambda1 : lambda < 1)
+    (hmu0 : 0 < mu) (hmu1 : mu < 1)
+    (hMlambda : M < confocalNullSupportRadius S lambda)
+    (hMmu : M < confocalNullSupportRadius S mu)
+    (hRadius : confocalNullSupportRadius S lambda = confocalNullSupportRadius S mu) :
+    lambda = mu := by
+  have hsupportLambda : 0 < confocalNullSupport S lambda := by
+    have hmono := confocalNullSupport_mono hne hcone hbound
+      (show 0 ≤ (0 : ℝ) by norm_num) hlambda0.le hlambda1.le
+    exact hnonradical.trans_le hmono
+  have hsupportMu : 0 < confocalNullSupport S mu := by
+    have hmono := confocalNullSupport_mono hne hcone hbound
+      (show 0 ≤ (0 : ℝ) by norm_num) hmu0.le hmu1.le
+    exact hnonradical.trans_le hmono
+  have hGraph := confocalExteriorDefectGraph_eq_projectiveSupportGraph
+    hne hM hcone hbound hG hnonradical
+  have hLambda :
+      (confocalNullSupportRadius S lambda, confocalNullSupport S lambda) ∈
+        confocalExteriorDefectGraph M G := by
+    rw [hGraph]
+    exact ⟨lambda, hlambda0, hlambda1, hsupportLambda, hMlambda, rfl, rfl⟩
+  have hMu :
+      (confocalNullSupportRadius S mu, confocalNullSupport S mu) ∈
+        confocalExteriorDefectGraph M G := by
+    rw [hGraph]
+    exact ⟨mu, hmu0, hmu1, hsupportMu, hMmu, rfl, rfl⟩
+  have hsupportEq : confocalNullSupport S lambda = confocalNullSupport S mu := by
+    have hLambdaDefect := hLambda.2
+    have hMuDefect := hMu.2
+    rw [hRadius] at hLambdaDefect
+    exact hLambdaDefect.trans hMuDefect.symm
+  have hprojectiveLambda :
+      confocalProjectiveParameter (confocalNullSupportRadius S lambda)
+        (confocalNullSupport S lambda) = lambda := by
+    rw [confocalNullSupportRadius]
+    exact confocalProjectiveParameter_radiusFromProjective
+      hlambda0 hsupportLambda
+  have hprojectiveMu :
+      confocalProjectiveParameter (confocalNullSupportRadius S mu)
+        (confocalNullSupport S mu) = mu := by
+    rw [confocalNullSupportRadius]
+    exact confocalProjectiveParameter_radiusFromProjective hmu0 hsupportMu
+  rw [hRadius, hsupportEq] at hprojectiveLambda
+  exact hprojectiveLambda.symm.trans hprojectiveMu
+
+/-- Two bounded sources realizing the same exterior value have the same support value at the
+projective direction selected by that value.  This is the presentation-independent support
+trace carried by the common field. -/
+theorem confocalNullSupport_eq_on_common_exterior_trace
+    {S T : Set (ℝ × ℝ)} (hneS : S.Nonempty) (hneT : T.Nonempty)
+    {M R G : ℝ} (hM : 0 ≤ M) (hRM : M < R)
+    (hconeS : S ⊆ confocalLorentzCone)
+    (hconeT : T ⊆ confocalLorentzCone)
+    (hboundS : ∀ q ∈ S, q.2 ≤ M)
+    (hboundT : ∀ q ∈ T, q.2 ≤ M)
+    (hGS : IsLUB (liftedConfocalBranch (R := R) '' S) G)
+    (hGT : IsLUB (liftedConfocalBranch (R := R) '' T) G) :
+    confocalNullSupport S (confocalProjectiveParameter R (G - R)) = G - R ∧
+      confocalNullSupport T (confocalProjectiveParameter R (G - R)) = G - R := by
+  have hS := confocalEnvelopeDefect_eq_nullSupport_fixedPoint
+    hneS hM hRM hconeS hboundS hGS
+  have hT := confocalEnvelopeDefect_eq_nullSupport_fixedPoint
+    hneT hM hRM hconeT hboundT hGT
+  constructor
+  · simpa only [confocalNullSupportOperator] using hS.2.symm
+  · simpa only [confocalNullSupportOperator] using hT.2.symm
+
+/-- At projective parameter zero, the null support of a complex Lorentz lift is exactly the
+transverse-defect envelope. -/
+theorem confocalNullSupport_lorentzLift_zero_eq_transverseDefectEnvelope
+    (S : Set ℂ) :
+    confocalNullSupport (confocalLorentzLift '' S) 0 = transverseDefectEnvelope S := by
+  rw [confocalNullSupport, transverseDefectEnvelope]
+  congr 1
+  ext y
+  constructor
+  · rintro ⟨q, ⟨z, hz, rfl⟩, rfl⟩
+    exact ⟨z, hz, by
+      simp [confocalNullFunctional, confocalNullMinus, confocalLorentzLift,
+        transverseDefect]⟩
+  · rintro ⟨z, hz, rfl⟩
+    exact ⟨confocalLorentzLift z, ⟨z, hz, rfl⟩, by
+      simp [confocalNullFunctional, confocalNullMinus, confocalLorentzLift,
+        transverseDefect]⟩
+
+/-- For a bounded complex source, its ordinary confocal defect envelope is exactly the unique
+nonnegative fixed point of the null-support operator of its Lorentz lift. -/
+theorem complexConfocalDefectEnvelope_eq_iff_nullSupport_fixedPoint
+    {S : Set ℂ} (hne : S.Nonempty) {M R d : ℝ}
+    (hM : 0 ≤ M) (hRM : M < R)
+    (hbound : ∀ z ∈ S, ‖z‖ ≤ M) :
+    d = confocalDefectEnvelope S R ↔
+      0 ≤ d ∧ d =
+        confocalNullSupportOperator (confocalLorentzLift '' S) R d := by
+  have hR : 0 < R := hM.trans_lt hRM
+  have hneLift : (confocalLorentzLift '' S).Nonempty := hne.image _
+  have hcone : confocalLorentzLift '' S ⊆ confocalLorentzCone := by
+    rintro _ ⟨z, hz, rfl⟩
+    exact confocalLorentzLift_mem z
+  have hboundLift : ∀ q ∈ confocalLorentzLift '' S, q.2 ≤ M := by
+    rintro _ ⟨z, hz, rfl⟩
+    exact hbound z hz
+  have hfield := isConfocalEnvelopeOn_confocalLorentzLift_image
+    hne hM hbound (D := {R}) (by
+      intro r hr
+      rw [Set.mem_singleton_iff] at hr
+      subst r
+      exact hR)
+  have hG : IsLUB
+      (liftedConfocalBranch (R := R) '' (confocalLorentzLift '' S))
+      (R + confocalDefectEnvelope S R) := by
+    have hAtR := hfield R (by simp)
+    have hupper : confocalUpperField S R = R + confocalDefectEnvelope S R := by
+      rw [confocalUpperField, confocalAmplitudeEnvelope]
+      field_simp [hR.ne']
+    rwa [hupper] at hAtR
+  simpa using confocalEnvelopeDefect_eq_iff_nullSupport_fixedPoint
+    hneLift hM hRM hcone hboundLift hG
+
 section AxialInnerProductSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

@@ -75,9 +75,9 @@ theorem exists_phasePivot_sum_norm_sub_sq_le
   push Not at h
   have hstrict :
       ∑ _k : d, (4 * η * D) < ∑ k, ∑ j, ‖phase j - phase k‖ ^ 2 := by
-    apply Finset.sum_lt_sum
+    apply Finset.sum_lt_sum_of_nonempty Finset.univ_nonempty
     intro k hk
-    exact h k
+    simpa only [D] using h k
   have hleft : ∑ _k : d, (4 * η * D) = 4 * η * D ^ 2 := by
     simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, D]
     ring
@@ -89,7 +89,7 @@ theorem exists_phasePivot_sum_norm_sub_sq_le
   exact (not_lt_of_ge hpair) hstrict
 
 /-- The normalized amplitude of a `d`-frequency phase clock. -/
-def phaseClockAmplitude {d : ℕ} [NeZero d] (ω : Fin d → ℝ) (n : ℕ) : ℂ :=
+def phaseClockAmplitude {d : ℕ} (ω : Fin d → ℝ) (n : ℕ) : ℂ :=
   ∑ i, (((d : ℝ)⁻¹ : ℂ) *
     Complex.exp (Complex.I * (((n : ℝ) * ω i : ℝ) : ℂ)))
 
@@ -99,7 +99,7 @@ theorem phaseClockAmplitude_eq_equalPhaseAmplitude
     phaseClockAmplitude ω n = equalPhaseAmplitude
       (fun i ↦ Complex.exp (Complex.I * (((n : ℝ) * ω i : ℝ) : ℂ))) := by
   rw [phaseClockAmplitude, equalPhaseAmplitude, hilbertCentroid]
-  simp only [Finset.mul_sum, smul_eq_mul]
+  rw [Fintype.card_fin, Complex.real_smul, Complex.ofReal_inv, Finset.mul_sum]
 
 /-- **Universal finite coherence ceiling.**  Every packet of `d` real
 frequencies has a positive clock no larger than `(Q+1)^d` at which its
@@ -115,7 +115,7 @@ theorem exists_phaseClockAmplitude_coherence_quantitative
       (Q := Q) ω
   refine ⟨n, hnpos, hnTop, ?_⟩
   have hweight : ∑ _i : Fin d, (1 / (d : ℝ)) = 1 := by
-    simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     field_simp
   have hfloor :=
     nonnegative_weighted_phaseSum_norm_floor_of_phase_approximation

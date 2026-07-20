@@ -6,14 +6,19 @@ the carrier reflects onto its own conjugate: `zetaChi·conj(gN) = gN` (the finit
 reality). Writing `D = dirichletPoly N(½+iτ)`, the carrier is `gN = D + zetaChi·conj D`, i.e. a
 unimodular phase `w` (a square root of `zetaChi`) times a REAL amplitude:
 `conj(w)·gN = 2·Re(conj(w)·D) =: H_N(τ)`, the finite Hardy carrier. Hence `‖gN(½+iτ)‖ = |H_N(τ)|`, so
-the on-line zeros of `gN` are exactly the sign changes of the real function `H_N` — the object the
-sign-based counting gates consume, and the honest correction to the impossible on-line modulus floor
+the on-line zeros of `gN` are exactly the zeros of the real function `H_N`.  Its principal-log
+phase can jump by sign, so this module only uses its square continuously; `HardyZ.lean` later
+constructs the branch-free continuous Gamma-oriented amplitude for sign arguments.  This is the
+honest correction to the impossible on-line modulus floor
 (the two AFE halves have equal modulus on the line, `‖zetaChi·conj D‖ = ‖D‖`, so no single term
 dominates).
 -/
 import GaloisForLFunctions.RHTower.ZetaCarrier
+import GaloisForLFunctions.HTGeometry.UnitaryReflectionPhaseHalving
 open Complex
 namespace RHTower
+
+open GaloisForLFunctions.HTGeometry
 
 noncomputable def linePt (τ : ℝ) : ℂ := ((1/2 : ℝ) : ℂ) + (τ : ℂ) * I
 
@@ -79,6 +84,18 @@ theorem conj_hardyPhase_mul_self (τ : ℝ) : (starRingEnd ℂ) (hardyPhase τ) 
     rw [Complex.normSq_eq_norm_sq, norm_hardyPhase]; norm_num
   rw [hns]; norm_num
 
+/-- The chosen square root of the zeta reflection factor is a unitary phase. -/
+theorem hardyPhase_isUnitary (τ : ℝ) : IsUnitaryPhase (hardyPhase τ) :=
+  conj_hardyPhase_mul_self τ
+
+/-- The finite carrier is reflected by the square of its Hardy phase.  This is the exact Prop
+interface connecting its functional equation to unitary phase halving. -/
+theorem gN_line_isPhaseReflected (N : ℕ) (τ : ℝ) :
+    IsPhaseReflected (hardyPhase τ) (gN N (linePt τ)) := by
+  unfold IsPhaseReflected
+  rw [hardyPhase_sq]
+  exact zetaChi_mul_conj_gN_line N τ
+
 /-- **The finite Hardy carrier** `H_N(τ) := Re(conj(w)·gN(½+iτ))`, the real amplitude whose sign
 changes are the on-line zeros of `gN`. -/
 noncomputable def hardyCarrier (N : ℕ) (τ : ℝ) : ℝ :=
@@ -102,20 +119,20 @@ theorem conj_hardyPhase_mul_gN_eq (N : ℕ) (τ : ℝ) :
   rw [key, Complex.add_conj]
 
 /-- **The carrier modulus is the Hardy amplitude.** `‖gN(½+iτ)‖ = |H_N(τ)|`. In particular the
-on-line zeros of `gN` are exactly the sign changes of the real Hardy carrier `H_N`. -/
+on-line zeros of `gN` are exactly the zeros of the real Hardy carrier `H_N`; continuity of an
+oriented sign representative is supplied downstream by the normalized Gamma phase. -/
 theorem norm_gN_line_eq_abs_hardyCarrier (N : ℕ) (τ : ℝ) :
     ‖gN N (linePt τ)‖ = |hardyCarrier N τ| := by
-  have hconj := conj_hardyPhase_mul_gN_eq N τ
-  have hHC : hardyCarrier N τ
-      = 2 * ((starRingEnd ℂ) (hardyPhase τ) * dirichletPoly N (linePt τ)).re := by
-    rw [hardyCarrier, hconj, Complex.ofReal_re]
-  have h1 : ‖gN N (linePt τ)‖ = ‖(starRingEnd ℂ) (hardyPhase τ) * gN N (linePt τ)‖ := by
-    rw [norm_mul, Complex.norm_conj, norm_hardyPhase, one_mul]
-  rw [h1, hconj, Complex.norm_real, Real.norm_eq_abs, hHC]
+  change ‖gN N (linePt τ)‖ =
+    |phaseHalvedAmplitude (hardyPhase τ) (gN N (linePt τ))|
+  exact (gN_line_isPhaseReflected N τ).norm_eq_abs_amplitude (hardyPhase_isUnitary τ)
 
 theorem gN_line_eq_zero_iff (N : ℕ) (τ : ℝ) :
     gN N (linePt τ) = 0 ↔ hardyCarrier N τ = 0 := by
-  rw [← norm_eq_zero, norm_gN_line_eq_abs_hardyCarrier, abs_eq_zero]
+  change gN N (linePt τ) = 0 ↔
+    phaseHalvedAmplitude (hardyPhase τ) (gN N (linePt τ)) = 0
+  exact (gN_line_isPhaseReflected N τ).eq_zero_iff_amplitude_eq_zero
+    (hardyPhase_isUnitary τ)
 
 end RHTower
 
@@ -130,23 +147,28 @@ theorem hardyCarrier_sq_eq_norm_gN_line_sq (N : ℕ) (τ : ℝ) :
     (hardyCarrier N τ) ^ 2 = |hardyCarrier N τ| ^ 2 := by rw [sq_abs]
     _ = ‖gN N (linePt τ)‖ ^ 2 := by rw [← norm_gN_line_eq_abs_hardyCarrier]
 
-/-- The concrete finite carrier is continuous along the critical line. -/
-theorem continuous_gN_line (N : ℕ) :
-    Continuous fun τ : ℝ => gN N (linePt τ) := by
-  rw [continuous_iff_continuousAt]
+/-- The concrete finite carrier is differentiable along the whole critical line. -/
+theorem differentiable_gN_line (N : ℕ) :
+    Differentiable ℝ fun τ : ℝ => gN N (linePt τ) := by
   intro τ
-  have h1 : ContinuousAt (gN N) (linePt τ) := by
-    apply (gN_analyticAt (N := N) ?_).continuousAt
+  have h1 : DifferentiableAt ℝ (gN N) (linePt τ) := by
+    apply (gN_analyticAt (N := N) ?_).differentiableAt.restrictScalars ℝ
     have hre : (1 - linePt τ).re = 1 / 2 := by
       unfold linePt
       simp
       norm_num
     exact Gammaℝ_ne_zero_of_re_pos (by rw [hre]; norm_num)
-  have hlin : ContinuousAt linePt τ := by
+  have hline : HasDerivAt linePt I τ := by
     unfold linePt
-    fun_prop
-  show ContinuousAt (gN N ∘ linePt) τ
-  exact ContinuousAt.comp h1 hlin
+    simpa using
+      (((Complex.ofRealCLM.hasDerivAt (x := τ)).mul_const I).const_add
+        (((1 / 2 : ℝ) : ℂ)))
+  exact h1.comp τ hline.differentiableAt
+
+/-- The concrete finite carrier is continuous along the critical line. -/
+theorem continuous_gN_line (N : ℕ) :
+    Continuous fun τ : ℝ => gN N (linePt τ) :=
+  (differentiable_gN_line N).continuous
 
 /-- The squared Hardy amplitude is continuous, even though the chosen square-root phase itself may
 jump by sign. -/

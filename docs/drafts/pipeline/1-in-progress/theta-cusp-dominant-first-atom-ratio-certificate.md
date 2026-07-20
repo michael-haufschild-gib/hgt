@@ -4,6 +4,11 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Scientific status:** `[CONJECTURE]`
+- **2026-07-20 target correction:** `[SUPERSEDED AS THE NATIVE GATE]`.  Conditions `(5)`--`(6)`
+  remain a correct sufficient certificate, but the exact consumer is the single completed-source
+  balance in `theta-cusp-gaussian-aperture-composite-balance.md`.  The positive first-atom endpoint
+  slope is cancelled at first order by completed-source evenness and is not a boundary sign for
+  the full aperture.
 - **Statement:** The `n=1` theta-cusp atom has enough explicit ratio margin, and the `n>=2`
   atom tail is small enough, to prove the two quadratic source inequalities forcing the first
   nonconstant prime--Gamma Hankel block.

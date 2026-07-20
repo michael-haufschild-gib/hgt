@@ -401,16 +401,13 @@ The exact theorem should be formalised in four connected layers:
 3. the binomial-dimension identity `B/k=M(M-1)/(d+1)` and the exact `M=5,d=16` sign;
 4. the finite coherent-collision connector, including convergence of two scale derivatives.
 
-`[LEAN-PROVED]` Layers 1--3, including the integral symmetric-power lowering-charge identity,
-its exact density ratio, the normalized full-top phase formula, the exact degree-five negative
-crossing, and the literal positive second derivative of the limiting log determinant compile in
-`GaloisForLFunctions.HilbertMetric.TransverseDegreePhase` and
-`GaloisForLFunctions.HilbertMetric.TransverseDegreeCurvature`.  The three scalar value/derivative
-jets below also compile in `GaloisForLFunctions.HilbertMetric.CoherentCollisionJet`; their exact
-declaration surface is recorded in
-`3-formalized/gaussian-hilbert-transverse-channel-square-law.md`.  Finite unisolvent matrix
-assembly and curvature persistence in layer 4 remain paper-only, so the full Gaussian
-counterexample card remains Stage 2.
+`[LEAN-PROVED]` All four layers now compile.  Layers 1--3 are owned by
+`TransverseDegreePhase` and `TransverseDegreeCurvature`.  The analytic and determinant
+connectors are owned by `CoherentCollisionJet`, `GramCurvaturePersistence`, and
+`DeterminantCurvatureJet`.  The former open collision layer is closed by
+`UnisolventEvaluation`, `PolynomialMomentCancellation`, `PolynomialFockKernel`,
+`PolynomialFockRecombination`, `TransverseCollisionGraph`, `DegreeFiveCollisionGraphJet`, and
+`DegreeFiveGaussianCurvature`.
 
 The first exact Lean lemma in layer 4 is now isolated.  For fixed real `a,b`, put
 `y_epsilon=epsilon^2 a+epsilon^10 b`.  For `q=0,1,2`, one needs the three simultaneous limits
@@ -424,11 +421,23 @@ The first exact Lean lemma in layer 4 is now isolated.  For fixed real `a,b`, pu
 \]
 
 These are respectively the value and first two scale derivatives of one coherent Gram entry.
-`[LEAN-PROVED]` All three limits in (CJ) now compile unconditionally.  After finite unisolvent
-recombination, (CJ) gives convergence of the Gram matrix and its first two scale derivatives;
-determinant continuity then gives the required curvature persistence.  Thus `[OPEN CORE]` is now
-the finite unisolvent recombination and determinant assembly—not an assumed collision
-certificate and not the scalar asymptotics.
+`[LEAN-PROVED]` All three limits in (CJ) compile unconditionally.  Lean also constructs an
+injective unisolvent node family, derives the inverse evaluation coefficients and every required
+polynomial moment cancellation, assembles the normalized matrix 2-jet, proves eventual strict
+positive curvature and determinant nonvanishing at a nonzero collision scale, and connects the
+algebraic curvature to the literal second derivative of `log det`.  Finally it proves that the
+diagonal exponential gauge changes `log det` only by an affine function and rescales the points
+by `sqrt 2` to the conventional kernel `exp(-t ||x_i-x_j||^2)`.
+
+The unconditional endpoint is
+
+```lean
+exists_finiteGaussianDistanceGram_positiveLogDetCurvature
+```
+
+which asserts an injective finite Euclidean configuration with positive literal Gaussian
+`log det` curvature at `t=1`.  There is no remaining Lean open core for (GCX); the scientific
+open core is the low-ambient boundary conjecture on the parent in-progress card.
 
 ## Log
 
@@ -440,11 +449,23 @@ certificate and not the scalar asymptotics.
   for finite Gaussian point configurations, refuting universal scale log-concavity on paper.
 - 2026-07-19 -- formalized the arbitrary higher-degree graph determinant, the finite-family
   channel-square law, its universal lower bound, the exact symmetric-power lowering-charge
-  ratio, and the degree-five negative crossing; the coherent-collision connector remains open
-  in Lean.
+  ratio, and the degree-five negative crossing; the coherent-collision connector was then the
+  remaining Lean checkpoint and was closed later the same day.
 - 2026-07-19 -- formalized the exact identity `(log Z)''(1)=-B+5k/4` for the literal balanced
   graph determinant and the full-top value `5k/68>0`; persistence under coherent collision is
   now the sole formal gap to the distinct-point Gaussian counterexample.
 - 2026-07-19 -- formalized the exact order-ten coherent-collision jets for the Gram entry and
   its first two scale derivatives; only finite unisolvent matrix assembly and strict-curvature
   persistence remain in the collision layer.
+- 2026-07-19 -- formalized continuity and strict-sign persistence of the Gram log-curvature
+  matrix 2-jet at every invertible limit; the sole collision-layer gap is now unisolvent
+  recombination proving the required matrix convergence.
+- 2026-07-19 -- formalized arbitrary finite linear assembly of the three collision-jet
+  remainders; the exact remaining gap is the unisolvent-node and polynomial
+  moment-cancellation construction identifying the limiting graph 2-jet.
+- 2026-07-19 -- formalized determinant first/second jets from entrywise derivatives and the
+  literal second-derivative identity for `log det`; this removes determinant differentiation
+  from the collision gap.
+- 2026-07-19 -- formalized the unisolvent construction, moment cancellation, full collision
+  matrix 2-jet, eventual invertibility and strict curvature, and the diagonal metric gauge.
+  The literal distinct-point Gaussian counterexample now compiles unconditionally.

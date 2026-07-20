@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PrimeProfileInvariantGrassmannRepresentation
 import GaloisForLFunctions.HTGeometry.PrimeValuationFusion
+import GaloisForLFunctions.HTGeometry.FinitePrimeCoefficientDifferentialField
 import Mathlib.Algebra.Algebra.NonUnitalSubalgebra
 import Mathlib.RingTheory.PowerSeries.Order
 

@@ -27,7 +27,7 @@
 \newcommand{\cof}{\operatorname{cof}}
 \newcommand{\RH}{\mathrm{RH}}
 
-\title{Local Positive Scale Tomography and Presentation-Rigid Confocal Spectra}
+\title{Positive Scale Bicompletion and Projective Support--Envelope Duality}
 \author{Michael Haufschild \and GPT 5.6 Sol \and Fable 5 \and Grok 4.5}
 \date{}
 
@@ -35,22 +35,27 @@
 \maketitle
 
 \begin{abstract}
-We introduce one positive, scale-dependent observation field for a pointed real moment sequence
-$m=(m_n)_{n\geq0}$,
+We prove that one positive, scale-dependent observation field of a pointed real moment sequence
+$m=(m_n)_{n\geq0}$ has two canonical and complementary completions.  For
 \[
   \mathcal P_m(N,R)=P_{N,m}(R^{-1}),\qquad
   \chi_m(R,t)=\sum_{N\geq0}\mathcal P_m(N,R)t^N,
 \]
-where $P_{N,m}$ is the squared Euclidean norm of the Bernstein coefficient vector of the dilated
-moments.  Our main theorem establishes a local-to-global conjunction not supplied by moment
-inversion, phase retrieval, or Abelian asymptotics separately.  Restriction of this positive
-field to any nonempty open scale-coordinate interval determines the complete pointed moment
-sequence: its scale coefficients are global triangular coordinates on every finite prefix, with
-an explicit nowhere-vanishing Jacobian.  For every bounded absolutely summable complex atomic
-presentation whose transverse defect $|z|-\Rea z$ vanishes cofinally, the same field is exactly
-the quadratic energy of the inverse-scaled atomic Bernstein packet.  At the optimal uniform
-threshold $R>M$, every transverse source selects a finite maximal packet and, for every real
-$p>0$,
+where $P_{N,m}$ is the squared Bernstein coefficient norm of the dilated moments, a signed
+divided-power transform factors exactly as
+\[
+ \mathfrak D_NP_{N,m}=F_{N,m}^{2},\qquad
+ F_{N,m}(T)=\sum_{r=0}^N\binom Nr\frac{m_r}{r!}T^r.
+\]
+The pointing $m_0>0$ selects the root.  Consequently, restriction of the positive field to any
+nonempty open scale interval determines the complete moment sequence, its finite-prefix chart
+has an explicit nowhere-vanishing Jacobian, and the root inverse is uniformly stable on a natural
+degree-adapted weighted chamber.
+
+For every bounded absolutely summable complex atomic presentation with cofinally vanishing
+transverse defect $|z|-\Rea z$, the same observation is exactly the quadratic energy of its
+inverse-scaled atomic Bernstein packet.  At the optimal threshold $R>M$, every transverse source
+selects a finite maximal packet and, for every real $p>0$,
 \[
  E_{p,N}(R)^{1/N}\longrightarrow B(R)^p.
 \]
@@ -58,30 +63,43 @@ The quadratic packet has the sharper asymptotic
 \[
  \mathcal P_m(N,R)\sim L(R)\frac{B(R)^{2N}}{\sqrt N},\qquad L(R)>0,
 \]
-and hence an exact square-root Abel singularity.  Most importantly, the common moments split the
-entire admissible presentation fibre into an intrinsic alternative: either every presentation is
-supported on the nonnegative-real radical, or every presentation contains a transverse atom.
-Across the whole fibre the confocal amplitude $B(R)$ and transverse-defect envelope
-\(
- \Delta=\sup(|z|-\Rea z)
-\)
-are invariant; in the transverse stratum the half-order coefficient $L(R)$ is invariant as well.
-Whenever one atom exposes the confocal envelope on an open radius interval, that local branch
-reconstructs its full conjugation orbit $(\Rea z,|\Ima z|)$, which is consequently
-presentation-rigid.
-Quantitatively,
+and hence an exact square-root Abel singularity.
+
+The geometric completion is the maximal closed convex Lorentz hull compatible with the exterior
+confocal field.  In null coordinates $u=a-x$, $v=a+x$, let
+$h(\lambda)=\sup(u+\lambda v)$.  Outside the exact positive-null radical, the complete exterior
+defect graph is the rational projective image of this ordinary support graph:
+\[
+ \{(R,D(R)):R>M\}
+ =\left\{\left(\frac{1-\lambda}{2\lambda}h(\lambda),h(\lambda)\right):
+ 0<\lambda<1,\ \frac{1-\lambda}{2\lambda}h(\lambda)>M\right\}.
+\]
+The radius chart is injective and its inverse is
+$\lambda=D(R)/(2R+D(R))$.  Equivalently, each realized defect is the unique nonnegative solution
+of the projective support equation
+\[
+ D(R)=h\!\left(\frac{D(R)}{2R+D(R)}\right),
+\]
+The fixed-point operator has the optimal contraction modulus $M/R$; perturbing the complete
+support field by at most $\varepsilon$ perturbs $D(R)$ by at most
+$\varepsilon/(1-M/R)$.  The law is independent of source cardinality and ambient Hilbert-space
+dimension.  It also gives an exact projective half-space representation of the bounded maximal
+hull.
+
+Thus the common moments split the entire admissible presentation fibre into an intrinsic
+radical/transverse alternative and determine the complete confocal upper field, its maximal hull,
+its half-order coefficient, and every singleton exposed conjugation orbit.  Quantitatively,
 \[
  0\le R(B(R)^2-1)-2\Delta
  \le \frac{M^2}{R-M}+\frac{4M^2}{R},
 \]
-and both the amplitude and Abel-radius recessions converge to $2\Delta$.  Thus one locally
-observed positive field recovers the oriented source, classifies its admissible presentation
-fibre, selects every positive-power spectral rate, and reconstructs every stably exposed complex
-orbit up to the unavoidable conjugation symmetry.
+and both the amplitude and Abel-radius recessions converge to $2\Delta$.  This analytic root,
+maximal geometric hull, projective dynamics, and Abel spectrum constitute one bicompletion law,
+not four independent reconstructions.
 \end{abstract}
 
 \noindent\textbf{Keywords.} Bernstein polynomials; complex moments; positive tomography;
-Abel singularities; phase retrieval; presentation rigidity; confocal geometry.
+Abel singularities; convex support functions; fixed-point dynamics; confocal geometry.
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.} 44A60, 41A10, 30E05, 42A38.
@@ -91,46 +109,60 @@ Abel singularities; phase retrieval; presentation rigidity; confocal geometry.
 A positive observation normally forgets orientation.  Squared norms are invariant under phase,
 moment data can admit inequivalent representing objects, and an Abel singularity generally
 records only the dominant growth of a chosen expansion.  This paper exhibits a structured
-exception.  By retaining a dilation variable before taking a squared Bernstein norm, one obtains
-a positive scalar field whose low scale coefficients recover an oriented real moment sequence
-and whose high-degree asymptotics select geometric data of any admissible complex atomic
-presentation.
+exception and identifies its exact boundary.  Retaining a dilation variable before taking a
+squared Bernstein norm produces a positive scalar field with two canonical completions.  A
+signed divided-power transform exposes its unique pointed polynomial square root, while the
+high-degree atomic realization exposes a maximal Lorentz hull.  The first completion is analytic
+and oriented; the second is geometric and presentation-invariant.
 
-The strongest conclusion is a moment-fibre classification theorem.  Suppose two bounded
+The geometric completion has an additional structure which is not visible in the original
+Bernstein coordinates.  After Lorentz lifting and null-coordinate projectivization, the entire
+nonlinear distance-sum envelope is the rational image of an ordinary one-variable support graph.
+This correspondence is one-to-one off the exact positive-null radical; its inverse is an explicit
+projective coordinate.  Pointwise, the same law becomes the unique fixed point of a support
+operator.  The operator is a strict contraction outside the source radius, with an optimal modulus
+depending only on the ratio of source radius to focal radius.  Thus the same positive observation
+has a source inverse, an exact geometric quotient, a global projective chart, a stable scalar
+dynamics, and an Abel boundary.
+
+The moment-fibre consequence is correspondingly sharp.  Suppose two bounded
 absolutely summable complex atomic sources have the same pointed real moments.  We do not assume
 that their nodes or weights agree.  After canonical aggregation of repeated nodes, assume only
 that real occupied nodes are nonnegative and that the transverse defects $|z|-\Rea z$ vanish
 cofinally.  Then one source contains a nonreal occupied node if and only if the other does.  At
 every common exterior scale their selected confocal amplitudes agree, and their transverse-defect
-envelopes agree globally.  In the transverse stratum their sharp square-root coefficients agree.
-If an atom remains exposed while the radius varies through an interval, the common field even
-recovers that atom's conjugation orbit.  These invariants are extracted from the common moment
-sequence by a positive observation, rather than imposed through a determinacy hypothesis.
+envelopes agree globally.  Their entire exterior upper fields therefore have the same maximal
+closed convex Lorentz hull.  In the transverse stratum their sharp square-root coefficients agree.
+A singleton active face forces the same conjugation orbit in every presentation; exposure on an
+open radius interval gives the same conclusion by differential inversion.  These invariants are
+extracted from the common moment sequence rather than imposed through a determinacy hypothesis.
 
-This conclusion depends on four mechanisms which must be kept together.
+The theorem depends on four mechanisms which must be kept together.
 \begin{enumerate}
-\item The restriction of $P_{N,m}$ to any nonempty open scale-coordinate interval determines the
-      polynomial, and its first $N+1$ coefficients form a global triangular chart on
-      $(m_0,\ldots,m_N)$ once the sign $m_0>0$ is fixed.
+\item A signed divided-power transform turns $P_{N,m}$ into the exact square of a polynomial whose
+      coefficients are the pointed moments.  This gives global inversion, the triangular chart,
+      and a degree-uniform stability chamber from the same identity.
 \item Evaluation at inverse scale is exactly the square energy of the original atomic Bernstein
       packet, not merely an asymptotic model.
 \item Cofinal transverse neutrality, rather than convergence of all nodes to one point, produces
       a finite source-attained maximal packet at every scale $R>M$.
-\item The quadratic half-order law forces the exponential rate of every positive real-power
-      energy.  Uniqueness of the limit then makes the radical/transverse stratum, the selected
-      amplitude, the exposed conjugation orbits, and the recession independent of the admissible
-      presentation.
+\item The quadratic half-order law forces every positive-power spectral rate.  The resulting
+      common confocal field determines a maximal Lorentz hull, and null-coordinate
+      projectivization identifies its complete exterior graph bijectively with an admissible
+      support graph; the sharp stable fixed point is the pointwise form of this global law.
 \end{enumerate}
 
 The individual parent mechanisms are classical.  Bernstein coordinates and their asymptotics
 are standard \cite{LorentzBernstein}; Hausdorff moment criteria use finite differences to encode
 support positivity, including in Riemann-type applications \cite{Zhang2023}; algebraic phase
-retrieval studies recovery from intensity data \cite{ConcaEdidinHeringVinzant2015}; and the final
-boundary passage is Abelian \cite{HardyDivergentSeries}.  The contribution here is the exact
-local scale-resolved conjunction and, in particular, the presentation-fibre classification and
-exposed-orbit consequences.  Generic intensity measurements do not provide the triangular moment
-chart below, while moment inversion alone does not identify the confocal spectral rate or any
-exposed complex orbit of a presentation.
+retrieval studies recovery from intensity data \cite{ConcaEdidinHeringVinzant2015}; support
+functions and exposed faces are basic convex geometry \cite{SchneiderConvexBodies}; focal
+functions play a related role for convex reflectors \cite{Oliker2008}; and the final boundary
+passage is Abelian \cite{HardyDivergentSeries}.  The contribution here is the exact
+scale-resolved conjunction: the divided-power square, the maximal geometric quotient, the global
+projective support--envelope duality with its optimal local modulus, and their common Abel selector.
+Generic intensity measurements do not provide this pointed root, while moment inversion alone
+does not identify the maximal confocal quotient or its projective dynamics.
 
 The construction was motivated in part by finite and semilocal spectral approaches to the
 Riemann hypothesis.  In Connes' absorption-spectrum interpretation \cite{Connes1999}, the scaling
@@ -142,8 +174,9 @@ with an exact source chart and an intrinsic scale recession.  It does not prove 
 arithmetic estimate and is not presented as an equivalent reformulation of that estimate.
 
 Section~\ref{sec:setup} states the single main theorem.  Sections~\ref{sec:aggregation}--
-\ref{sec:abel} prove its local source and asymptotic clauses.  Section~\ref{sec:rigidity} proves the
-confocal recession, moment-fibre classification, and exposed-orbit rigidity.
+\ref{sec:abel} prove its analytic source and spectral-selection clauses.
+Section~\ref{sec:projective} proves the projective fixed-point and maximal-hull laws, and
+Section~\ref{sec:rigidity} proves the moment-fibre classification and exposed-face rigidity.
 Section~\ref{sec:gibbs} records a short
 free-energy corollary.  Section~\ref{sec:xi} gives the precise Riemann--Xi specialization and its
 limitation.
@@ -195,6 +228,15 @@ Define
  \chi_m(R,t)=\sum_{N\ge0}\mathcal P_m(N,R)t^N.
  \tag{2.5}
 \end{equation}
+The analytic completion uses
+\begin{equation}
+ F_{N,m}(T)=\sum_{r=0}^N\binom Nr\frac{m_r}{r!}T^r,
+ \qquad
+ (\mathfrak D_NQ)(T)=\sum_{r\ge0}
+   \frac{(-1)^r}{r!}[x^r]Q(x)\,T^r.
+ \tag{2.5a}
+\end{equation}
+Only finitely many terms occur in the second sum.
 For $u\in S$ put $u_R=u/R$ and
 \begin{equation}
  A_{N,k}(R)=\sum_{u\in S}\widehat c(u)\binom Nk
@@ -214,12 +256,41 @@ The scale geometry is described by
  A_S(R)&=B_S(R)^{-2}.\notag
 \end{align}
 
-\begin{theorem}[Local positive scale tomography and admissible-fibre rigidity]
+For the geometric completion, lift $u\in\C$ to
+\[
+ \Lambda u=(\Rea u,|u|)=(x,a),\qquad
+ \mathcal C=\{(x,a)\in\R^2:|x|\le a\},
+\]
+and put
+\begin{align}
+ g_R(x,a)&=a+\sqrt{R^2-2Rx+a^2},
+ &G_S(R)&=RB_S(R)=R+D_S(R),\tag{2.7a}\\
+ u_-(x,a)&=a-x,&u_+(x,a)&=a+x,\notag\\
+ \ell_\lambda(x,a)&=u_-(x,a)+\lambda u_+(x,a),
+ &h_S(\lambda)&=\sup_{q\in\Lambda S}\ell_\lambda(q),\tag{2.7b}\\
+ \lambda_R(d)&=\frac d{2R+d},
+ &\Phi_{S,R}(d)&=h_S(\lambda_R(d)),\notag\\
+ \rho_S(\lambda)&=\frac{1-\lambda}{2\lambda}h_S(\lambda).
+ &&\tag{2.7c}
+\end{align}
+For a radius domain $D\subset(0,\infty)$ and a field $G:D\to\R$, define its maximal Lorentz
+hull by
+\begin{equation}
+ \mathcal H_D(G)=\{q\in\mathcal C:g_R(q)\le G(R)\text{ for every }R\in D\}.
+ \tag{2.7d}
+\end{equation}
+
+\begin{theorem}[Positive-scale bicompletion and projective support--envelope duality]
 \label{thm:master}
 Under \emph{(2.1)--(2.2)}, the field \emph{(2.5)} satisfies the following.
 
 \begin{enumerate}
-\item For every $N$, the coefficient map
+\item For every $N$, the positive polynomial has the exact pointed square completion
+\begin{equation}
+ \mathfrak D_NP_{N,m}=F_{N,m}^{2}.
+ \tag{2.8a}
+\end{equation}
+Consequently the coefficient map
 \[
  J_N:(m_0,\ldots,m_N)\longmapsto
  \bigl([x^r]P_{N,m}(x)\bigr)_{r=0}^N
@@ -236,6 +307,26 @@ sequence.  More locally, if $m'_0>0$ and, on one nonempty open interval $J\subse
  P_{N,m}(x)=P_{N,m'}(x)\qquad(x\in J,\ N\ge0),
 \]
 then $m=m'$.  Thus an arbitrarily small open scale-coordinate window is source-faithful.
+
+The analytic inverse also has a degree-independent stability chamber.  Define
+\[
+ \|m\|_{N,\tau,\mathrm{tail}}
+ =\sum_{r=1}^N\binom Nr\frac{|m_r|\tau^r}{r!}.
+\]
+If $\mu>0$, $\theta<1$, $m_0,m'_0\ge\mu$,
+\[
+ \|m\|_{N,\tau,\mathrm{tail}},
+ \|m'\|_{N,\tau,\mathrm{tail}}\le\theta\mu,
+ \qquad |T|\le\tau,
+\]
+then
+\begin{equation}
+ |F_{N,m}(T)-F_{N,m'}(T)|
+ \le
+ \frac{|F_{N,m}(T)^2-F_{N,m'}(T)^2|}
+ {2(1-\theta)\mu}.
+ \tag{2.8b}
+\end{equation}
 
 \item For every $R>0$ and $N\ge0$,
 \begin{equation}
@@ -292,6 +383,74 @@ The radical and the two first recessions are
 The uniform exterior threshold is optimal: if $0<R<M$, the allowed node $u=M$ has
 $\delta_\infty(u)=0$ but $|u/R|+|1-u/R|>1$.
 
+\item The nonlinear confocal field has an exact projective support dynamics.  For every $R>M$,
+the realized defect $D_S(R)$ is the unique nonnegative fixed point of $\Phi_{S,R}$:
+\begin{equation}
+ D_S(R)=h_S\!\left(\frac{D_S(R)}{2R+D_S(R)}\right).
+ \tag{2.19a}
+\end{equation}
+For all $d,e\ge0$,
+\begin{equation}
+ |\Phi_{S,R}(d)-\Phi_{S,R}(e)|
+ \le\frac MR|d-e|.
+ \tag{2.19b}
+\end{equation}
+The uniform modulus $M/R$ is optimal.  Already for the singleton Lorentz source
+$\{(M,M)\}$, every smaller nonnegative modulus fails.
+
+More generally, let $Q,T\subset\mathcal C$ be nonempty sources with second coordinate at most
+$M$, and let $D_Q(R),D_T(R)$ be their exterior defects.  If
+\[
+ \sup_{0\le\lambda\le1}|h_Q(\lambda)-h_T(\lambda)|\le\varepsilon,
+\]
+then
+\begin{equation}
+ |D_Q(R)-D_T(R)|\le\frac{\varepsilon}{1-M/R}.
+ \tag{2.19c}
+\end{equation}
+The exact radical is the positive null ray:
+\begin{equation}
+ D_Q(R)=0
+ \Longleftrightarrow
+ Q\subset\{(x,a)\in\mathcal C:a=x\}.
+ \tag{2.19d}
+\end{equation}
+
+The same projective coordinates linearize the bounded maximal hull.  If
+$D\subset(M,\infty)$ and $d:D\to[0,\infty)$, then
+\begin{equation}
+ \mathcal H_D(R\mapsto R+d(R))\cap\{(x,a):a\le M\}
+ =\left\{q\in\mathcal C:
+   \begin{array}{l}
+   q_2\le M,\\[-2pt]
+   \ell_{\lambda_R(d(R))}(q)\le d(R)\quad(R\in D)
+   \end{array}\right\}.
+ \tag{2.19e}
+\end{equation}
+Furthermore $h_S(0)=\Delta_S$.  In the transverse case $\Delta_S>0$, the complete exterior
+defect graph is exactly
+\begin{equation}
+ \{(R,D_S(R)):R>M\}
+ =\{(\rho_S(\lambda),h_S(\lambda)):
+      0<\lambda<1,\ \rho_S(\lambda)>M\}.
+ \tag{2.19f}
+\end{equation}
+The map $\rho_S$ is one-to-one on the displayed admissible projective domain, and the inverse
+coordinate is
+\begin{equation}
+ \lambda=\frac{D_S(R)}{2R+D_S(R)}.
+ \tag{2.19g}
+\end{equation}
+In the complementary radical case $\Delta_S=0$, the graph is simply
+$\{(R,0):R>M\}$.
+
+Finally, these conclusions are dimension-free.  If $E$ is a real Hilbert space, $e\in E$ is a
+unit vector, and $z\mapsto(\langle z,e\rangle,\|z\|)$ is the axial Lorentz lift, then
+\[
+ g_R(\langle z,e\rangle,\|z\|)=\|z\|+\|R e-z\|,
+\]
+and the fixed-point, contraction, stability, radical, and projective-hull laws apply verbatim.
+
 \item Let a second raw source $(d_j,w_j)$ satisfy the same hypotheses with bound $M'$ and the
 same moments $m_n$, and let $S'$ be its nonzero aggregate support.  Then the stratum is intrinsic:
 \begin{equation}
@@ -307,6 +466,30 @@ For every $R>\max(M,M')$ the amplitudes agree, and the global defect envelopes a
 \end{equation}
 In the transverse stratum one also has $L_S(R)=L_{S'}(R)$ at every common exterior scale.
 
+Put $M_*=\max(M,M')$ and $D_*=(M_*,\infty)$.  The complete upper field and maximal geometric
+completion agree:
+\begin{equation}
+ G_S=G_{S'}\quad\hbox{on }D_*,
+ \qquad
+ \mathcal H_{D_*}(G_S)=\mathcal H_{D_*}(G_{S'}).
+ \tag{2.21a}
+\end{equation}
+The common field also carries a presentation-independent projective support trace.  With
+\[
+ D_*(R)=G_S(R)-R,
+ \qquad \lambda_*(R)=\frac{D_*(R)}{2R+D_*(R)},
+\]
+one has, for every $R\in D_*$,
+\begin{equation}
+ h_S(\lambda_*(R))=D_*(R)=h_{S'}(\lambda_*(R)).
+ \tag{2.21b}
+\end{equation}
+The hull is the largest Lorentz source whose branches remain below the common field.  If its
+active face at a radius $R\in D_*$ is a singleton $\{q_0\}$, every source realizing the common
+field and having an active point at $R$ has that same point $q_0$.  This singleton-face condition
+is the exact geometric identifiability boundary: adjoining any hull point preserves the whole
+upper field.
+
 More strongly, let $u\in S$ and $u'\in S'$ be nonreal.  Suppose
 $\max(M,M')<a<b$ and that for every $R\in(a,b)$ they expose the two envelopes:
 \[
@@ -321,10 +504,11 @@ Then the exposed conjugation orbit is intrinsic:
 \end{enumerate}
 \end{theorem}
 
-Clause~5 is the central strengthening.  The theorem does not assert uniqueness of the complete
-atomic representation.  It proves instead that the radical/transverse stratum, the complete
-confocal rate field, its first recession, and every stably exposed conjugation orbit survive any
-admissible change of presentation because they are selected by one common positive observation.
+Clauses~1, 5, and 6 are the bicompletion core.  The theorem does not assert uniqueness of the
+complete atomic representation.  It identifies instead the exact analytic inverse and the exact
+geometric quotient: the pointed divided-power root is selected by $m_0>0$, while the maximal
+Lorentz hull and its projective support dynamics survive every admissible change of presentation.
+The Abel law is the spectral face of this same geometry.
 
 \section{Canonical aggregation and local source tomography}
 \label{sec:aggregation}
@@ -380,6 +564,62 @@ By definition,
 \]
 After squaring, the coefficient of $x^r$ is the sum over the antidiagonal $a+b=r$.  Summation in
 $k$ gives (3.1), and both antidiagonal indices are at most $r$.
+\end{proof}
+
+\begin{proposition}[Exact divided-power square and stable pointed root]
+\label{prop:dividedpower}
+For every real sequence $m$ and every $N$,
+\[
+ \mathfrak D_NP_{N,m}=F_{N,m}^{2}.
+\]
+If $m_0>0$, this square has the unique polynomial root with positive constant coefficient.
+Under the chamber hypotheses of Theorem~\ref{thm:master}(1), inequality \emph{(2.8b)} holds with
+a constant independent of $N$.
+\end{proposition}
+
+\begin{proof}
+The Bernstein coefficient formula is
+\[
+ [X^a]b_{N,k}(X)=
+ \begin{cases}
+ (-1)^{a-k}\binom Na\binom ak,&k\le a,\\
+ 0,&k>a.
+ \end{cases}
+\]
+Therefore Vandermonde's identity gives, for $a,b\le N$,
+\begin{align*}
+ \sum_{k=0}^N[X^a]b_{N,k}[X^b]b_{N,k}
+ &=(-1)^{a+b}\binom Na\binom Nb
+   \sum_{k\ge0}\binom ak\binom bk\\
+ &=(-1)^{a+b}\binom Na\binom Nb\binom{a+b}{a}.
+\end{align*}
+Substitution in Lemma~\ref{lem:antidiagonal} yields
+\[
+ [x^r]P_{N,m}(x)
+ =(-1)^r r!\sum_{a+b=r}
+   \binom Na\frac{m_a}{a!}\binom Nb\frac{m_b}{b!}
+ =(-1)^r r![T^r]F_{N,m}(T)^2.
+\]
+This is exactly the defining coefficient identity for
+$\mathfrak D_NP_{N,m}=F_{N,m}^2$.
+
+If $F_{N,m}^2=F_{N,m'}^2$, then
+$(F_{N,m}-F_{N,m'})(F_{N,m}+F_{N,m'})=0$ in the real polynomial domain.  The second factor has
+constant coefficient $m_0+m'_0>0$, so it is nonzero and the first factor vanishes.  Its $r$th
+coefficient is $\binom Nr(m_r-m'_r)/r!$; hence the pointed prefixes agree.
+
+For stability, $|T|\le\tau$ and the weighted tail bound give
+\[
+ |F_{N,m}(T)-m_0|\le\theta\mu,
+ \qquad |F_{N,m'}(T)-m'_0|\le\theta\mu.
+\]
+Thus both roots are at least $(1-\theta)\mu$, and
+\[
+ |F_{N,m}(T)^2-F_{N,m'}(T)^2|
+ =|F_{N,m}-F_{N,m'}|\,|F_{N,m}+F_{N,m'}|
+ \ge2(1-\theta)\mu|F_{N,m}-F_{N,m'}|.
+\]
+Division proves (2.8b), with no dependence on $N$.
 \end{proof}
 
 Let $Q_{N,r}(m_0,\ldots,m_{r-1})$ denote the expression in (3.1) with $m_r$ set to zero.
@@ -657,8 +897,8 @@ on the tail, the defining $o(N^{-1/2})$ bound is dominated by an arbitrary multi
 displayed model series.  Let the error multiple tend to zero.
 \end{proof}
 
-\section{Confocal recession and presentation rigidity}
-\label{sec:rigidity}
+\section{Confocal recession and projective support dynamics}
+\label{sec:projective}
 
 The selected amplitude can be analyzed without the coefficient packet.  The following exact
 collar also yields the finite-scale stability estimate in the main theorem.
@@ -715,10 +955,132 @@ Thus transverse neutrality alone cannot prevent a spurious superunit amplitude a
 smaller scale.
 \end{proof}
 
+\begin{proof}[Proof of Theorem~\ref{thm:master}(5)]
+We first prove the pointwise projective identity.  Let $q=(x,a)\in\mathcal C$, assume
+$a<R$, and let $d\ge0$.  The elementary Lorentz half-space form of the branch inequality is
+\begin{equation}
+ g_R(q)\le L
+ \Longleftrightarrow
+ a\le L\quad\hbox{and}\quad
+ Rx-La\ge\frac{R^2-L^2}{2}.
+ \tag{6.3}
+\end{equation}
+Set $L=R+d$.  The first condition is automatic.  Multiplying the second by two and passing to
+$u_-=a-x$, $u_+=a+x$ gives
+\[
+ (2R+d)u_-+d u_+\le d(2R+d).
+\]
+Since $2R+d>0$, division proves
+\begin{equation}
+ g_R(q)\le R+d
+ \Longleftrightarrow
+ \ell_{\lambda_R(d)}(q)\le d.
+ \tag{6.4}
+\end{equation}
+
+Let $D=D_S(R)$.  Every source branch is at most $R+D$, so (6.4) gives
+$h_S(\lambda_R(D))\le D$.  Conversely, for a source point $q$ put
+$d_q=g_R(q)-R$.  Equality in (6.4) gives
+\[
+ d_q=\ell_{\lambda_R(d_q)}(q).
+\]
+Now $0\le d_q\le D$, the map $d\mapsto\lambda_R(d)$ is increasing, and $u_+(q)\ge0$ on
+$\mathcal C$.  Hence
+\[
+ d_q\le\ell_{\lambda_R(D)}(q)\le h_S(\lambda_R(D)).
+\]
+Taking the supremum of $d_q$ proves (2.19a).
+
+For $d,e\ge0$, direct subtraction yields
+\begin{equation}
+ |\lambda_R(d)-\lambda_R(e)|
+ =\frac{2R|d-e|}{(2R+d)(2R+e)}
+ \le\frac{|d-e|}{2R}.
+ \tag{6.5}
+\end{equation}
+On a source with $a\le M$, one has $0\le u_+=a+x\le2M$.  Therefore
+\begin{equation}
+ |h_S(\lambda)-h_S(\mu)|\le2M|\lambda-\mu|
+ \qquad(0\le\lambda,\mu\le1).
+ \tag{6.6}
+\end{equation}
+Combining (6.5) and (6.6) proves (2.19b).  Since $M/R<1$, two nonnegative fixed points must
+coincide.
+
+For stability, let $d_Q,d_T$ be the two fixed points.  Add and subtract
+$h_Q(\lambda_R(d_T))$ and use first the contraction estimate and then the support-field error:
+\[
+ |d_Q-d_T|\le\frac MR|d_Q-d_T|+\varepsilon.
+\]
+Rearrangement gives (2.19c).  The fixed point is zero exactly when $h_Q(0)=0$.  But
+$h_Q(0)=\sup_Q(a-x)$ and $a-x\ge0$ on $\mathcal C$; hence it vanishes exactly on the positive
+null ray, proving (2.19d).
+
+Sharpness already occurs for $Q=\{(M,M)\}$.  Here
+\[
+ h_Q(\lambda)=2M\lambda,
+ \qquad \Phi_{Q,R}(d)=\frac{2Md}{2R+d}.
+\]
+Its difference quotient against $d=0$ is $2M/(2R+d)$, which tends to $M/R$ as $d\downarrow0$.
+Thus no smaller uniform nonnegative contraction modulus is possible.
+
+For (2.19e), take $q\in\mathcal C$ with $q_2\le M$.  Since every $R\in D$ satisfies $R>M$,
+identity (6.4) applies pointwise and gives
+\[
+ g_R(q)\le R+d(R)
+ \Longleftrightarrow
+ \ell_{\lambda_R(d(R))}(q)\le d(R).
+\]
+Intersecting these equivalent conditions over $R\in D$ proves the hull formula.
+
+It remains to pass from the pointwise fixed point to the global projective chart.  Since
+$u_-(\Lambda u)=|u|-\Rea u$, one has
+\[
+ h_S(0)=\sup_{u\in S}(|u|-\Rea u)=\Delta_S.
+\]
+Assume first that $\Delta_S>0$.  Given $R>M$, put $d=D_S(R)$ and
+$\lambda=\lambda_R(d)$.  Equation (2.19a), monotonicity of $h_S$, and
+$h_S(0)=\Delta_S>0$ give
+\[
+ d=h_S(\lambda)>0,
+ \qquad 0<\lambda<1.
+\]
+Solving $\lambda=d/(2R+d)$ for $R$ now gives
+\[
+ R=\frac{1-\lambda}{2\lambda}d
+  =\rho_S(\lambda).
+\]
+This proves inclusion of the left-hand graph in the right-hand graph of (2.19f).
+
+Conversely, let $0<\lambda<1$ and suppose $R=\rho_S(\lambda)>M$.  Set
+$d=h_S(\lambda)$.  The positivity of $R$ forces $d>0$, and direct algebra gives
+\[
+ \lambda=\frac d{2R+d}.
+\]
+Thus $d=h_S(\lambda_R(d))$ is a nonnegative fixed point of $\Phi_{S,R}$.  The uniqueness already
+proved from the strict contraction gives $d=D_S(R)$.  This proves the reverse inclusion.
+
+If $\rho_S(\lambda)=\rho_S(\mu)=R>M$ for two admissible parameters, the reverse inclusion gives
+$h_S(\lambda)=D_S(R)=h_S(\mu)$.  Applying the displayed inverse formula to the common pair
+$(R,D_S(R))$ yields $\lambda=\mu$.  Hence the chart is injective and (2.19g) is its inverse.
+When $\Delta_S=0$, (2.18) gives $D_S(R)=0$ for every $R>M$, proving the radical clause.
+
+Finally let $E$ be a real Hilbert space and $e$ a unit vector.  Cauchy--Schwarz places
+$q(z)=(\langle z,e\rangle,\|z\|)$ in $\mathcal C$, while polarization gives
+\[
+ \|R e-z\|^2=R^2-2R\langle z,e\rangle+\|z\|^2.
+\]
+Taking the nonnegative square root identifies the Hilbert-space distance-sum branch with
+$g_R(q(z))$.  Every preceding assertion therefore transfers through the axial lift.
+\end{proof}
+
+\section{Bicompletion and presentation rigidity}
+\label{sec:rigidity}
+
 We now prove the classification clause.  Its key point is that the common positive observation
 separates the radical and transverse growth regimes before any finer invariant is compared.
 
-\begin{proof}[Proof of Theorem~\ref{thm:master}(5)]
+\begin{proof}[Proof of Theorem~\ref{thm:master}(6)]
 Apply Lemma~\ref{lem:aggregate} to both raw sources.  Their intrinsic sources satisfy the
 injectivity, nonvanishing, boundedness, orientation, and cofinite-neutrality assumptions used in
 Propositions~\ref{prop:atomic}--\ref{prop:halforder}.
@@ -772,6 +1134,35 @@ $\Delta_S=\Delta_{S'}$.  In the radical stratum, (2.18) gives directly
 $B_S(R)=B_{S'}(R)=1$ and $\Delta_S=\Delta_{S'}=0$.  This proves (2.21) without a transverse
 premise.
 
+Let $D_*=(M_*,\infty)$.  Since $G_S(R)=RB_S(R)$, the amplitude equality gives
+$G_S=G_{S'}$ on $D_*$.  By definition, $\mathcal H_{D_*}(G)$ is the intersection of
+$\mathcal C$ with the branch sublevels $g_R\le G(R)$.  Formula (6.3) writes each sublevel as the
+intersection of two closed affine half-spaces, so the hull is closed and convex.  Every source
+realizing $G$ lies in the hull.  Conversely every hull branch is bounded by $G$, and the original
+realizing source is contained in the hull; therefore the hull itself realizes $G$ and is the
+largest compatible Lorentz source.  Equality of the fields gives equality of the defining
+intersections and proves (2.21a).  Conversely, equality of two realized hulls forces equality of
+their pointwise least upper bounds, so this quotient is exact.
+
+For $R\in D_*$, put $D_*(R)=G_S(R)-R=G_{S'}(R)-R$.  Applying the projective fixed-point identity
+to each realizing source at the common radius gives
+\[
+ h_S\!\left(\frac{D_*(R)}{2R+D_*(R)}\right)=D_*(R)
+ =h_{S'}\!\left(\frac{D_*(R)}{2R+D_*(R)}\right),
+\]
+which is (2.21b).  Thus presentation changes may alter unused parts of a source support function,
+but cannot alter the complete projective trace selected by the exterior field.
+
+At a fixed radius, an active point of any realizing source lies in the active face
+\[
+ \mathcal F_R(G)=\{q\in\mathcal H_{D_*}(G):g_R(q)=G(R)\}.
+\]
+If this face is $\{q_0\}$, the active point must be $q_0$.  Conversely, adjoining any point of the
+hull preserves every branch upper bound, while the original source still attains the same least
+upper bounds.  Hence the whole field is unchanged.  In particular, a nonsingleton active face
+cannot be resolved by the geometric field alone.  This proves the asserted maximality and the
+singleton-face identifiability boundary.
+
 It remains to prove exposed-orbit rigidity.  Write $u=x+iy$ with $y\ne0$ and define its moving
 confocal branch
 \[
@@ -799,9 +1190,10 @@ the confocal branch, like the real moment data, is invariant under complex conju
 \begin{remark}
 The proof deliberately avoids a determinacy assertion for arbitrary complex atomic measures.
 It establishes a quotient statement: within the stated admissible class, every presentation lies
-in one common radical/transverse stratum and over the same confocal field and first recession.
-Stable exposed atoms descend further to conjugation orbits.  This is stronger than saying that
-each presentation separately admits an asymptotic formula.
+in one common radical/transverse stratum and over the same confocal field, maximal Lorentz hull,
+global projective support trace, and first recession.  Singleton active faces and stably exposed
+atoms descend further to conjugation orbits.  This is stronger than saying that each presentation
+separately admits an asymptotic formula.
 \end{remark}
 
 \section{A Gibbs radical/free-energy corollary}
@@ -896,7 +1288,9 @@ zeros have $\gamma\ne0$.  Therefore
 
 Equation (8.4) locates, but does not solve, the arithmetic problem.  The theorem proves that the
 positive field carrying this condition is source-faithful, has a finite selected packet at every
-transverse scale, and has a presentation-rigid recession.  It does not prove
+transverse scale, has a maximal geometric completion, and has a presentation-rigid recession.
+Its projective support--envelope duality gives an exact global representation of the exterior
+defect graph and a stable representation of each finite defect, but it does not prove
 $\Delta_\Xi=0$.
 
 The relationship to Connes' programme is consequently precise.  A finite or semilocal spectral
@@ -911,40 +1305,53 @@ separate proposed analytic step \cite{ConnesConsaniMoscovici2025}.
 \section{Scientific scope and further questions}
 
 The main theorem establishes more than a list of compatible estimates.  It gives a local-to-global
-identification driven by one field:
+identification and an exact quotient driven by one field:
 \[
  \boxed{\begin{gathered}
  \text{positive data on any open scale window}
- \Longrightarrow\text{oriented moment source}\\
- \Longrightarrow\text{intrinsic radical/transverse stratum}\\
- \Longrightarrow\text{all-}p\text{ confocal spectrum}\\
- \Longrightarrow\text{exposed conjugation orbits and first recession}
+ \Longrightarrow
+ \left\{\begin{array}{l}
+ \text{unique pointed divided-power root}\\
+ \text{maximal closed convex Lorentz hull}
+ \end{array}\right.\\[3pt]
+ \Longrightarrow\text{bijective projective support--envelope chart and exact radical}\\
+ \Longrightarrow\text{all-}p\text{ Abel spectrum, exposed faces, and first recession}
  \end{gathered}}
 \]
-The first arrow is polynomial interval rigidity plus an exact global chart.  The second is the
-subexponential/superunit growth alternative.  The third is an exact atomic identity plus a sharp
-finite selector, while the last combines uniqueness of asymptotic limits with the differential
-inverse of an exposed confocal branch.  Removing any one level breaks the conclusion: a single
-fixed-scale intensity need not recover orientation; a moment chart alone does not select complex
-geometry; and an asymptotic attached separately to each presentation is not yet an invariant.
+The analytic branch is an exact polynomial square with a positive root and a degree-independent
+stability chamber.  The geometric branch is the largest source compatible with the complete
+upper field.  Null-coordinate projectivization classifies its entire exterior graph and identifies
+its finite-radius dynamics, while the
+atomic half-order law identifies its spectrum.  Removing any level breaks the conclusion: a
+single fixed-scale intensity need not recover orientation; a moment chart alone does not select
+complex geometry; an abstract hull does not supply the sharp fixed-point stability; and an
+asymptotic attached separately to each presentation is not yet an invariant.
 
 The result differs from Hausdorff positivity because no support criterion is inferred merely from
 signs of finite differences.  It differs from generic phase retrieval because one structured
 scalar polynomial restricted to any open scale interval recovers the entire pointed prefix,
-rather than a generic vector up to global phase.  It differs from a routine Abelian theorem
-because the stratum, singular radius, coefficient, exposed orbit, and first recession are all tied
-back to one locally source-faithful observation and are invariant across the admissible
-presentation fibre.
+rather than a generic vector up to global phase.  It differs from classical support-function
+reconstruction because the moving confocal defect and the admissible support graph are related by
+an explicit one-to-one rational projective chart, whose pointwise dynamics has the optimal
+contraction modulus $M/R$.  It differs from a routine Abelian theorem
+because the maximal hull, fixed point, stratum, singular radius, coefficient, exposed orbit, and
+first recession are all tied back to one locally source-faithful observation.
 
-Two open questions remain natural.  First, exact inversion is not the same as uniformly stable
-inversion: the condition number of the triangular chart can deteriorate with $N$ or as
-$m_0\downarrow0$.  Weighted norms adapted simultaneously to the chart and the Abel boundary may
-produce a useful quantitative cofinal stability theory.  Second, the admissible class is defined
-by cofinite transverse neutrality.  It would be valuable to characterize the largest class of
-complex moment presentations for which the positive scale field still rigidifies the confocal
-geometry.  A sharper geometric question is whether the full upper envelope determines all
-exposed branches beyond those stable on an open interval.  Neither question changes the
-unconditional theorem proved here.
+Three questions raised by the earlier formulation are now closed.  The analytic inverse is uniformly
+stable in the degree-adapted tail chamber of (2.8b); no uniform extension through $m_0=0$ is
+possible because the zeroth inverse is $y_0\mapsto\sqrt{y_0}$.  On the geometric side, the maximal
+hull is the exact quotient and its active faces are the exact identifiability boundary; interval
+exposure is sufficient but no longer the only reconstruction mechanism.  Finally, the family of
+pointwise fixed points is not merely compatible: off the radical it assembles into the bijective
+global chart (2.19f)--(2.19g), so the exterior envelope and its admissible support profile are two
+coordinates on the same object.
+
+One structural question remains.  Cofinite transverse neutrality is a transparent sufficient
+hypothesis for finite selection, but it may not be maximal.  The natural frontier is to classify
+the largest presentation class for which every exterior amplitude superlevel is compact enough
+to yield a finite positive half-order packet and for which equality of the local positive field
+still forces equality of the maximal confocal hull.  This is a question about the domain of the
+bicompletion functor, not a missing clause in the theorem proved here.
 
 \begin{thebibliography}{99}
 
@@ -987,6 +1394,17 @@ G.~H.~Hardy,
 G.~G.~Lorentz,
 \newblock \emph{Bernstein Polynomials}, second edition,
 \newblock Chelsea Publishing, New York, 1986.
+
+\bibitem{Oliker2008}
+V.~I.~Oliker,
+\newblock A Minkowski-style theorem for focal functions of compact convex reflectors,
+\newblock \emph{Transactions of the American Mathematical Society} \textbf{360} (2008), 563--574,
+\newblock \href{https://doi.org/10.1090/S0002-9947-07-04569-2}{doi:10.1090/S0002-9947-07-04569-2}.
+
+\bibitem{SchneiderConvexBodies}
+R.~Schneider,
+\newblock \emph{Convex Bodies: The Brunn--Minkowski Theory}, second expanded edition,
+\newblock Cambridge University Press, Cambridge, 2014.
 
 \bibitem{Zhang2023}
 R.~Zhang,

@@ -157,7 +157,7 @@ def ellipticGammaExternalDefectIncrementFamily
 /-- A nonzero polynomial differential-operator character of a pairwise separated actual defect
 family cannot be the `sigma`-coboundary of an element of `E_sigma E_tau`. -/
 theorem ellipticGammaExternalDefectFamily_no_operator_telescoping
-    {kappa : Type*} [DecidableEq kappa]
+    {kappa : Type*}
     (h : kappa → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
@@ -291,7 +291,7 @@ theorem ellipticGammaExternalDefectFamily_no_operator_telescoping
 /-- No nonzero finite jet character of a pairwise separated actual defect family can be the
 simultaneous coboundary of one element of `E_sigma E_tau`. -/
 theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
-    {kappa : Type*} [DecidableEq kappa]
+    {kappa : Type*}
     (h : kappa → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
@@ -352,7 +352,7 @@ theorem ellipticGammaExternalDefectFamily_no_simultaneous_jet_telescoping
 pairwise distinct nonzero rank-three period cosets are differentially algebraically independent
 over the concrete paired elliptic compositum. -/
 theorem ellipticGammaExternalDefectFamily_differentialIndependent
-    {kappa : Type*} [DecidableEq kappa]
+    {kappa : Type*}
     (h : kappa → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
@@ -361,6 +361,7 @@ theorem ellipticGammaExternalDefectFamily_differentialIndependent
       ThetaTranslationNonresonant tau sigma (h j - h i)) :
     DifferentialIndependent (meromorphicEllipticCompositum sigma tau)
       (ellipticGammaExternalDefectFamily h sigma tau hsigma htau) := by
+  classical
   let SK := ellipticGammaCompositumDifferenceDifferentialField sigma tau
   let SL := rankThreeGeneratorMeromorphicDifferenceDifferentialField
     (ellipticGammaSourcePeriods sigma tau)

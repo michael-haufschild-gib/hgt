@@ -4,6 +4,11 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / `[OPEN CORE] [SOURCE-PURE CONSTRAINT]`
 - **Scientific status:** `[CONJECTURE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **2026-07-20 target correction:** `[SUPERSEDED AS THE NATIVE GATE]`.  The two displayed window
+  estimates remain valid sufficient conditions, but
+  `theta-cusp-gaussian-aperture-composite-balance.md` proves that the consumer needs only one
+  forced composite of `K_1` and `K_2`.  Do not attack `(8)` and `(9)` separately before testing
+  that weaker exact balance.
 - **Parent:**
   `../2-fully-proven/not_new_scientific_knowledge/theta-cusp-antisymmetric-half-density-turan-curvature-transfer.md`
 - **Value-chart input:**

@@ -150,6 +150,13 @@ theorem xiEvenShiftPrimeDefect_telescope (m : ℕ) (s : ℂ) :
           intro j _
           rfl
 
+/-- The one-step even telescope is exactly the original rationally corrected shift-two value. -/
+@[simp]
+theorem xiEvenShiftPrimeDefect_one (s : ℂ) :
+    xiEvenShiftPrimeDefect 1 s = xiShiftTwoPrimeDefect s := by
+  simp [xiEvenShiftPrimeDefect, xiEvenShiftPrimeCorrection,
+    xiShiftTwoPrimeDefect]
+
 /-- Upper-end germ of the directly corrected actual completed-Xi shift-`2m` defect. -/
 def xiEvenShiftPrimeDefectUpperEndGerm (m : ℕ) : Germ upperEndFilter ℂ :=
   ((fun z : ℂ => xiEvenShiftPrimeDefect m (-Complex.I * z)) :
@@ -208,6 +215,57 @@ theorem xiTransverseEvenShiftUpperEndGerm_eq_xiEvenShiftPrimeDefect (m : ℕ) :
   change filteredVonMangoldtUpperEndGerm =
     xiLogDerivShiftTwoPrimeDefectUpperEndGerm
   exact filteredVonMangoldtUpperEndGerm_eq_xiLogDerivShiftTwoPrimeDefect
+
+/-- **Even/general corrected-value identification.** The explicit rationally corrected
+shift-`2m` Xi germ is exactly the arbitrary-shift corrected Xi germ specialized to `2m`. The two
+constructions are therefore not merely source-equivalent: they are the same upper-end value. -/
+theorem xiEvenShiftPrimeDefectUpperEndGerm_eq_transverse (m : ℕ) :
+    xiEvenShiftPrimeDefectUpperEndGerm m =
+      xiTransverseShiftPrimeDefectUpperEndGerm (2 * m) := by
+  rw [← xiTransverseEvenShiftUpperEndGerm_eq_xiEvenShiftPrimeDefect,
+    xiTransverseShiftUpperEndGerm_eq_xiTransverseShiftPrimeDefect]
+
+/-- The original shift-two Xi value germ is the shift-`2` specialization of the arbitrary-shift
+completed-Xi corrected germ. This closes the historical shift-two/general-shift interface. -/
+theorem xiLogDerivShiftTwoPrimeDefectUpperEndGerm_eq_transverse :
+    xiLogDerivShiftTwoPrimeDefectUpperEndGerm =
+      xiTransverseShiftPrimeDefectUpperEndGerm 2 := by
+  calc
+    xiLogDerivShiftTwoPrimeDefectUpperEndGerm =
+        xiEvenShiftPrimeDefectUpperEndGerm 1 := by
+      apply Germ.coe_eq.mpr
+      exact Filter.Eventually.of_forall fun z ↦
+        (xiEvenShiftPrimeDefect_one (-Complex.I * z)).symm
+    _ = xiTransverseShiftPrimeDefectUpperEndGerm (2 * 1) :=
+      xiEvenShiftPrimeDefectUpperEndGerm_eq_transverse 1
+    _ = xiTransverseShiftPrimeDefectUpperEndGerm 2 := by norm_num
+
+/-- **Rational/archimedean correction bridge.** On the upper end, the finite rational telescope
+used for even Xi shifts is exactly the logarithmic-derivative difference of the genuine
+archimedean factor. Thus the explicit rational correction and the abstract completed-Xi
+correction agree as germs for every even shift. -/
+theorem xiEvenShiftPrimeCorrection_upperEndGerm_eq_archimedean (m : ℕ) :
+    ((fun z : ℂ ↦ xiEvenShiftPrimeCorrection m (-Complex.I * z)) :
+        Germ upperEndFilter ℂ) =
+      ((fun z : ℂ ↦
+        xiTransverseShiftArchimedeanCorrection (2 * m) (-Complex.I * z)) :
+        Germ upperEndFilter ℂ) := by
+  have h := xiEvenShiftPrimeDefectUpperEndGerm_eq_transverse m
+  rw [xiEvenShiftPrimeDefectUpperEndGerm,
+    xiTransverseShiftPrimeDefectUpperEndGerm] at h
+  change
+    ((fun z : ℂ ↦
+        logDeriv xi (-Complex.I * z + ((2 * m : ℕ) : ℂ)) -
+          logDeriv xi (-Complex.I * z)) : Germ upperEndFilter ℂ) -
+        ((fun z : ℂ ↦ xiEvenShiftPrimeCorrection m (-Complex.I * z)) :
+          Germ upperEndFilter ℂ) =
+      ((fun z : ℂ ↦
+        logDeriv xi (-Complex.I * z + ((2 * m : ℕ) : ℂ)) -
+          logDeriv xi (-Complex.I * z)) : Germ upperEndFilter ℂ) -
+        ((fun z : ℂ ↦
+          xiTransverseShiftArchimedeanCorrection (2 * m) (-Complex.I * z)) :
+          Germ upperEndFilter ℂ) at h
+  exact sub_right_inj.mp h
 
 /-! ## Exact matroid of the actual even-shift family -/
 

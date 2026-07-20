@@ -124,7 +124,7 @@ matroid of genuine elliptic-gamma defects over the paired elliptic compositum is
 collision matroid of rank-three period classes.  The zero class consists of loops, and every
 nonzero class is a rank-one parallel class. -/
 theorem ellipticGammaExternalDefectFamily_differentialMatroid_eq_periodCosetPartitionMatroid
-    {κ : Type*} [DecidableEq κ]
+    {κ : Type*}
     (h : κ → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau)) :
@@ -165,7 +165,7 @@ theorem ellipticGammaExternalDefectFamily_differentialMatroid_eq_periodCosetPart
 its negative preserves every differential dependence relation, including zero-coset loops and all
 parallel period-coset classes. -/
 theorem ellipticGammaExternalDefectFamily_differentialMatroid_reflection
-    {κ : Type*} [DecidableEq κ]
+    {κ : Type*}
     (h : κ → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau)) :
@@ -197,7 +197,7 @@ theorem ellipticGammaExternalDefectFamily_differentialMatroid_reflection
 /-- An arbitrary external-defect subfamily is independent exactly when its period classes are
 pairwise distinct and nonzero. -/
 theorem ellipticGammaExternalDefectFamily_indep_iff_periodClass_injOn_and_ne_zero
-    {κ : Type*} [DecidableEq κ]
+    {κ : Type*}
     (h : κ → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
@@ -214,7 +214,7 @@ theorem ellipticGammaExternalDefectFamily_indep_iff_periodClass_injOn_and_ne_zer
 /-- **Exact defect-family rank law.**  The extended differential rank of any external-defect
 packet is the number of distinct nonzero rank-three period classes that it meets. -/
 theorem ellipticGammaExternalDefectFamily_eRk_eq_nonzeroPeriodClass_encard
-    {κ : Type*} [DecidableEq κ]
+    {κ : Type*}
     (h : κ → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
@@ -232,7 +232,7 @@ matroid of genuine elliptic-gamma defects over the paired elliptic compositum is
 collision matroid of their rank-three period classes.  Thus repetitions within a coset are
 parallel and distinct cosets are free. -/
 theorem ellipticGammaExternalDefectFamily_differentialMatroid_eq_periodCosetMatroid
-    {κ : Type*} [DecidableEq κ]
+    {κ : Type*}
     (h : κ → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
@@ -258,7 +258,7 @@ theorem ellipticGammaExternalDefectFamily_differentialMatroid_eq_periodCosetMatr
 /-- A subfamily of nonresonant external defects is independent exactly when its period classes
 are pairwise distinct. -/
 theorem ellipticGammaExternalDefectFamily_indep_iff_periodClass_injOn
-    {κ : Type*} [DecidableEq κ]
+    {κ : Type*}
     (h : κ → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
@@ -274,7 +274,7 @@ theorem ellipticGammaExternalDefectFamily_indep_iff_periodClass_injOn
 /-- The extended differential rank of a nonresonant packet is the number of period cosets it
 meets. -/
 theorem ellipticGammaExternalDefectFamily_eRk_eq_periodClass_encard
-    {κ : Type*} [DecidableEq κ]
+    {κ : Type*}
     (h : κ → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))

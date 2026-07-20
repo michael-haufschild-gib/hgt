@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** Lean-corpus synthesis: `XiShiftPrimeHypertranscendence`,
-  `DifferentialAutomorphismDefectEscape`, `UpperEndDifferentialField`, and
+  `DifferentialSemilinearAutomorphism`, `UpperEndDifferentialField`, and
   `DifferentialAlgebraicBaseChange`
 - **Statement:** The actual upper-end meromorphic carriers of `xi'/xi` and `xi` are
   hypertranscendental over the genuine rational coordinate field.  Global differential
@@ -34,9 +34,10 @@ completed function.
    logarithmic derivative in the fraction field.
 3. Prove the exact field identity: translation by `2I` minus the identity equals the filtered von
    Mangoldt carrier plus the explicit rational correction.
-4. The correction is DA.  Hence the translation defect is HT; differential-automorphism defect
-   escape makes the logarithmic derivative HT over `C`, and differential-adjoin base change upgrades
-   it to `C(z)`.
+4. The correction is DA over both `C` and the genuine upper-end `C(z)`.  Translation normalizes
+   that rational-coordinate field and commutes with derivation, so semilinear defect escape makes
+   the logarithmic derivative HT directly over `C(z)`.  The constants theorem remains as a
+   scalar-restriction companion rather than an intermediate hypothesis.
 5. If the xi carrier were DA, its logarithmic derivative would be DA.  Contradiction.  Map every
    hypothetical global differential equation for an entire function into the actual upper-end
    field by `reshapeJet`; specialize the resulting general law to the nonzero rotation of `xi`.
@@ -49,11 +50,11 @@ identity gives
 `T_(2i)L - L - A = V`,
 
 where `A` is the explicit rational correction and `V` is the filtered von Mangoldt carrier.  The
-formal leading-echelon theorem makes `V` hypertranscendental over the actual copy of `C(z)`, hence
-also over `C`.  The coordinate has derivative one, so adjoining it is a differentially algebraic
-base change.  The correction `A` is differentially algebraic.  Therefore `T_(2i)L - L` is
-hypertranscendental.  Translation is a differential automorphism over `C`; defect escape now forces
-`L` itself to be hypertranscendental, first over `C` and then over `C(z)`.
+formal leading-echelon theorem makes `V` hypertranscendental over the actual copy of `C(z)`.  The
+correction `A` is differentially algebraic over that same field.  Translation sends the coordinate
+to `z+2i`, hence maps `C(z)` onto itself, and its restricted base automorphism commutes with the
+inherited derivation.  Therefore `T_(2i)L - L` is hypertranscendental and normalized-base
+semilinear defect escape forces `L` itself to be hypertranscendental directly over `C(z)`.
 
 For `X(z) = xi(-iz)`, the exact chain rule gives `X'/X = -iL`.  Differential algebraicity is closed
 under logarithmic derivatives and nonzero differentially algebraic scalar multiplication, so `X`
@@ -84,21 +85,49 @@ the converse.
   [arXiv:2211.02088](https://arxiv.org/abs/2211.02088); L. Markus, *Differential independence of
   Gamma and zeta*, J. Dynam. Differential Equations 19 (2007), 133--154.
 - **Formal contribution:** The corpus now derives the classical global theorem from its own exact
-  prime-source value relation, actual meromorphic carrier, differential-automorphism defect law,
-  differential-adjoin base change, and a reusable global-to-upper-end reflection theorem.
+  prime-source value relation, actual meromorphic carrier, normalized-base semilinear defect law,
+  rational-coordinate translation covariance, an exact differential-algebraic base-change
+  matroid identity, and a reusable global-to-upper-end reflection theorem.
 
 ## Lean certificate
 
 - General base-change law:
   `diffIndepOn_differentialAdjoin_of_differentialAlgebraicOver`,
+  `diffIndepOn_differentialAdjoin_iff_of_differentialAlgebraicOver`,
   `DifferentialIndependent.extendScalarsDifferentialAdjoin`, and
-  `hypertranscendentalOver_differentialAdjoin_iff`; these cover an arbitrary set of individually
-  differentially algebraic coefficients.  The earlier singleton equivalence remains as the
+  `differentialIndependent_differentialAdjoin_iff`; these cover an arbitrary set of individually
+  differentially algebraic coefficients. The complete statement is
+  `differentialMatroidOverDifferentialAdjoin_eq_of_differentialAlgebraicOver`: the relative and
+  original differential matroids are identical, so DA contraction is deletion. The exact DA/HT
+  Prop interfaces are `differentialAlgebraicOver_differentialAdjoin_iff`,
+  `differentialAlgebraicOver_iteratedDifferentialAdjoin_iff`, and
+  `hypertranscendentalOver_iteratedDifferentialAdjoin_iff`; the latter two remain valid after an
+  arbitrary observation set is adjoined. The earlier singleton equivalence remains as the
   cross-universe specialization.
 - Actual rational-coordinate identification:
   `differentialAdjoin_upperEndCoordinateMero_eq`.
+- Normalized-base translation interface:
+  `upperEndTranslationMeroEquiv_coordinate`,
+  `upperEndRationalCoordinateField_map_translation`,
+  `upperEndRationalCoordinateTranslationDifferentialSemilinearEquiv`, and
+  `upperEndTranslationMeroEquiv_differentialFamilyMatroid_eq`.
+- Exact normalized-base generated-field covariance:
+  `DifferentialSemilinearEquiv.mapIntermediateField`,
+  `DifferentialSemilinearEquiv.derivationClosed_mapIntermediateField`,
+  `DifferentialSemilinearEquiv.mapIntermediateField_differentialAdjoin`, and the concrete
+  `upperEndTranslationMeroEquiv_map_differentialAdjoin`.  These identify the full translated
+  differential field, not only the DA/HT status or represented matroid of its generators.
+- Relative generated-field DA/HT covariance:
+  `DifferentialSemilinearEquiv.mem_differentialMatroid_closure_image_iff`,
+  `DifferentialSemilinearEquiv.hypertranscendentalOver_differentialAdjoin_image_iff`,
+  `DifferentialSemilinearEquiv.differentialAlgebraicOver_differentialAdjoin_image_iff`, and their
+  concrete upper-end translation specializations.  These remove any independence requirement on
+  the observation set.
 - Exact value-defect law:
   `RHTower.xiLogDerivRotatedUpperEnd_translation_defect`.
+- Discharged correction interfaces:
+  `RHTower.xiShiftTwoRationalCorrectionUpperEndCarrier_differentialAlgebraicOver_complex` and
+  `RHTower.xiShiftTwoRationalCorrectionUpperEndCarrier_differentialAlgebraicOver`.
 - Upper-end capstones:
   `RHTower.xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver`,
   `RHTower.xiRotatedUpperEndCarrier_hypertranscendentalOver_ratFunc`.
@@ -144,3 +173,11 @@ the converse.
   ordinary-axioms checks passed.
 - 2026-07-18 — instantiated the generic global jet-freeness and finite-order interfaces for xi;
   linked the centered reflection value germ to its exact analytic and meromorphic carrier.
+- 2026-07-19 — generalized defect escape from coefficient-fixing to normalized-base semilinear
+  differential automorphisms; proved upper-end translation covariance of the actual `C(z)` field
+  and its complete family matroid; exposed the rational correction's DA interfaces; and refactored
+  the Xi logarithmic-derivative capstone to escape directly over `C(z)`.
+- 2026-07-20 — closed the remaining generated-field interface: normalized-base differential
+  automorphisms now act invertibly on intermediate fields, preserve derivation closure, and carry
+  every differential adjunction exactly to the adjunction of the transformed values.  Specialized
+  this law to genuine upper-end translation.

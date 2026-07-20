@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.AdditiveReflectionCocycleHalving
 import GaloisForLFunctions.RHTower.ReflectionDifferenceFaces
 import GaloisForLFunctions.RHTower.XiUpperEndHypertranscendence
 
@@ -97,6 +98,13 @@ theorem xiShiftTwoReflectionCocycle_reflection (s : ℂ) :
   simp only [one_div, inv_neg]
   ring_nf
 
+/-- The shift-two rational cocycle vanishes at the reflection center `-1/2`. -/
+theorem xiShiftTwoReflectionCocycle_center :
+    xiShiftTwoReflectionCocycle (-1 / 2) = 0 := by
+  apply IsAdditiveReflectionCocycle.eq_zero_of_fixed
+    xiShiftTwoReflectionCocycle_reflection
+  ring
+
 /-- **Exact shift-two reflection cocycle.**  The filtered prime defect changes under
 `s ↦ -1-s` by the explicit rational cocycle `1/s + 1/(s+1)`. -/
 theorem xiShiftTwoPrimeDefect_reflection_cocycle (s : ℂ) :
@@ -121,10 +129,15 @@ reflection about `-1 / 2`. -/
 theorem xiCenteredShiftTwoPrimeDefect_reflection (s : ℂ) :
     xiCenteredShiftTwoPrimeDefect (-1 - s) =
       xiCenteredShiftTwoPrimeDefect s := by
-  rw [xiCenteredShiftTwoPrimeDefect, xiCenteredShiftTwoPrimeDefect,
-    xiShiftTwoPrimeDefect_reflection_cocycle,
-    xiShiftTwoReflectionCocycle_reflection]
-  ring_nf
+  change xiShiftTwoPrimeDefect (-1 - s) +
+      (1 / 2 : ℂ) * xiShiftTwoReflectionCocycle (-1 - s) =
+    xiShiftTwoPrimeDefect s + (1 / 2 : ℂ) * xiShiftTwoReflectionCocycle s
+  exact (add_half_reflection_fixed_iff
+    (r := fun z : ℂ ↦ -1 - z)
+    (f := xiShiftTwoPrimeDefect)
+    (c := xiShiftTwoReflectionCocycle)
+    xiShiftTwoReflectionCocycle_reflection s).2
+      (xiShiftTwoPrimeDefect_reflection_cocycle s)
 
 /-- Upper-end germ of the actual half-cocycle centered prime defect in the rotated coordinate
 `s = -I*z`. -/

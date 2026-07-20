@@ -66,5 +66,8 @@ written directly as `C = U - 1`.  A primary modern QFT source is:
 - isolated source check of `FiniteConstraintGroupAverage.lean`: passed (three pre-existing style
   warnings only);
 - isolated source check of `SoninLogCoordinateScattering.lean`: passed with no diagnostics;
-- targeted module builds: pending the final audit batch;
+- targeted module builds of `FiniteConstraintGroupAverage` and
+  `SoninLogCoordinateScattering`: passed;
+- `#print axioms` for both the general involutive-scattering theorem and the Sonin specialization
+  reports only `propext`, `Classical.choice`, and `Quot.sound`;
 - numerical scripts: none.

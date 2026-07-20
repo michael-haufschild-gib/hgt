@@ -381,6 +381,28 @@ first `N` depth coordinates separate every injective `N`-prime packet by a nonze
 Vandermonde determinant.  It therefore retains unbounded finite prime rank while respecting the
 existing critical source domain.
 
+There is also an exact all-order Rees law.  If `Delta_e` is forward difference in the valuation
+depth, then the geometric source feature `(15)` gives
+
+```text
+Delta_e^k B_x(p,e)
+ = (-1)^k C_(x,p) * [p^(-1)/(1+p^(-1))]
+   * (1-p^(-x))^(k+1) * p^(-x*e).                               (16a)
+```
+
+Consequently
+
+```text
+lim_(x->0+) (-1)^k Delta_e^k B_x(p,e)/x^(k+1)
+ = [p^(-1)/(1+p^(-1))] * (log p)^(k+1).                         (16b)
+```
+
+For an injective packet `p : Fin N -> Primes`, the matrix of `(16b)` for `k=0,...,N-1`
+factorizes as the transpose of the Vandermonde matrix on `log p_j`, times the nonzero diagonal
+`[p_j^(-1)/(1+p_j^(-1))] log p_j`.  Hence its determinant is nonzero.  This closes the full
+Rees-grade rank gate at every order: Gamma sewing preserves the unbounded prime-log filtration,
+while its exact first subprincipal modification remains cubic by `(13c)`.
+
 The permanent Lean target `GammaSewnMobiusValuationContraction.lean` defines the multiplier,
 infinite stream map, feature `(15)`, and kernel `(16)`; it proves the fourth-power and gap laws,
 the exact quadratic tangency/cubic source correction `(13a)`--`(13c)`, strict contractivity, the
@@ -439,10 +461,8 @@ have passive responses converging pointwise at every regular point of the upper 
 This conjecture has four nonoptional strengthening clauses.
 
 1. **Full Rees faithfulness.** Every finite aperture jet order is retained before the prime limit.
-   The order-`j` grade carries the new prime-log profile forced by differentiating the exact disk
-   nodes; the resulting finite profile matrices must have unbounded exact rank.  Replacing the
-   Rees germ by `kappa_M` fails this clause.  The fixed-aperture prime-rank part is already proved
-   for `(15)`; the aperture-jet rank is the remaining clause.
+   Equations `(16a)`--`(16b)` prove that the first `N` principal symbols have exact rank `N` on
+   every injective `N`-prime packet.  Replacing the Rees germ by `kappa_M` fails this proved clause.
 2. **Pre-Gram Stokes law.** Aperture signs are combined before positivity.  A direct sum of the
    pointwise kernels `(16)` is explicitly disallowed by the prior aperture-cost no-go.
 3. **Corona compatibility.** The cofinal limit is taken in the Gamma finite-blind/projective
@@ -503,8 +523,10 @@ and its source-value limit.
 - [x] no-free-Hilbertization theorem `(14)` extracted from its uniform lower bound
 - [x] actual all-prime complete-valuation metric `(16)` constructed on paper
 - [x] complete Gram, prime summability, and fixed-aperture all-rank laws formalized in Lean source
+- [x] all-order Rees principal-symbol law `(16a)`--`(16b)` and unbounded exact prime-log rank proved
+      on paper
 - [ ] complete the narrow Lean verification of `GammaSewnMobiusValuationContraction.lean`
-- [ ] prove finite Rees-grade prime-profile determinants have unbounded exact rank
+- [ ] complete the Lean formalization of the Rees principal-symbol limit and determinant
 - [ ] derive the pre-Gram aperture Stokes coefficient formula from `(15)` and the inverse-tilted
       coefficients
 - [ ] construct the finite KMS completion only after the signed coefficient identity is known
@@ -512,3 +534,31 @@ and its source-value limit.
 - [ ] prove locally uniform, path-independent cofinal response convergence
 - [ ] discharge `riemannHypothesis_of_finiteKMSWightmanResponse_tendsto`
 - [ ] external specialist novelty audit
+
+## 2026-07-20 endpoint zero-mode correction
+
+The corrected physical endpoint kernel does **not** have the continuum cancellation previously
+required by `(PVC11c)`.  Its zero-frequency real value `k_0` is strictly positive, unconditionally,
+and the symmetric small-aperture energy begins with `(4/3)k_0 epsilon^3`.  The raw cofinal
+ratio-kernel estimate `(PVC12)` is therefore retired.
+
+The exact survivor is the tangent kernel
+
+```text
+K_tan(p,q)=Re K_end^sym(log(p/q))-k_0,
+```
+
+whose diagonal vanishes.  The completed aperture energy splits exactly into positive local
+stiffness plus tangent energy, and the pointed pairing debits both halves separately.  After this
+forced subtraction the symmetric small-aperture tangent response begins at order `epsilon^5`, with
+coefficient `(53/90)K_end^sym''(0)`.
+
+This sharpens the cubic exterior target.  A source construction must now satisfy two independent
+falsifiers before any contraction claim:
+
+1. its disconnected/density coordinate must reproduce the positive local stiffness, not erase it;
+2. its connected causal coordinate must reproduce the tangent prime-ratio kernel coefficientwise.
+
+Only the connected coordinate may enter the height-localized three-node exterior response.  A
+direct norm bound on the already-assembled tangent energy, or a free factorization of its finite
+matrix, remains architecture theatre.

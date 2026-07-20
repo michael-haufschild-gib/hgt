@@ -273,24 +273,23 @@ theorem symmetric_multiplicative_integral_eq_one {f : ℂ → ℂ} {a : Arithmet
     obtain ⟨s0, hs0⟩ := hne
     exact hs0 (symmetric_infinite_support_zero hint hrep hsym hfin s0)
 
-/-- **The reflection cocycle is faithful on nonvanishing integral multiplicative data.**  For a
-carrier `f` that is the everywhere-valid `L`-series of an integer-valued multiplicative arithmetic
-function and is nowhere zero, the reflection cocycle `h_f(s) = f(1−s)/f(s)` is trivial (identically
-`1`) if and only if `f` is the constant `1`.
+/-- **The reflection cocycle is faithful on integral multiplicative data.**  For a carrier `f` that
+is the everywhere-valid `L`-series of an integer-valued multiplicative arithmetic function, the
+reflection cocycle `h_f(s) = f(1−s)/f(s)` is trivial (identically `1`) if and only if `f` is the
+constant `1`. No nonvanishing premise is required: cocycle triviality itself forces `f s ≠ 0` at
+every point, since division by zero is zero in the ambient field.
 
-Forward: `h_f(s) = 1` with `f s ≠ 0` gives `f(1−s) = f(s)`, so `f` is self-reflective, and the
-structure theorem forces `f ≡ 1`.  Backward: a constant carrier has `f(1−s)/f(s) = 1/1 = 1`. -/
+Forward: `h_f(s) = 1` first forces `f s ≠ 0`, then gives `f(1−s) = f(s)`, so `f` is
+self-reflective and the structure theorem forces `f ≡ 1`. Backward: a constant carrier has
+`f(1−s)/f(s) = 1/1 = 1`. -/
 theorem reflCocycle_eq_one_iff_const {f : ℂ → ℂ} {a : ArithmeticFunction ℂ}
     (hmul : a.IsMultiplicative) (hint : ∀ n, ∃ k : ℤ, a n = (k : ℂ))
-    (hrep : ∀ s, f s = LSeries (fun n => a n) s) (hne : ∀ s, f s ≠ 0) :
+    (hrep : ∀ s, f s = LSeries (fun n => a n) s) :
     (∀ s, reflCocycle f s = 1) ↔ ∀ s, f s = 1 := by
   constructor
   · intro hcoc
-    have hsym : ∀ s, f (1 - s) = f s := by
-      intro s
-      have hs := hcoc s
-      simp only [reflCocycle] at hs
-      exact (div_eq_one_iff_eq (hne s)).mp hs
+    obtain ⟨hne, hsym⟩ :=
+      (reflCocycle_eq_one_iff_reflectionInvariant f).mp hcoc
     exact symmetric_multiplicative_integral_eq_one hmul hint hrep hsym ⟨0, hne 0⟩
   · intro hconst s
     simp only [reflCocycle, hconst, div_one]

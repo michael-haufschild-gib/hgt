@@ -178,9 +178,11 @@ location-blind and do not qualify.
    open.
 5. `QuotientCharacterAnnihilator` proves that algebraic quotient characters recover `H` exactly.
 6. The genuine meromorphic quotient now has its exact rank-three DA/HT spectrum and full pointed
-   period-coset matroid formalized over the paired elliptic compositum.  Theta-quotient membership
-   in the intended DA sector `B`, base transport, and hypertranscendence of the source elliptic
-   gamma function itself remain open.
+   period-coset matroid formalized over the paired elliptic compositum.  The source elliptic gamma
+   function is already formalized as hypertranscendental over `C(z)` and now, by normalized-base
+   semilinear escape, over the larger paired elliptic compositum as well.  Theta-quotient
+   membership in the intended DA sector `B` and transport of the full matroid to that base remain
+   open.
 
 ## Gates
 
@@ -193,7 +195,8 @@ location-blind and do not qualify.
 - [x] Actual elliptic-gamma multiplier cocycle and nonvanishing proved on paper and formalized
   unconditionally in Lean, together with inverse/reflection and arbitrary-family value interfaces.
 - [x] Independent-period elliptic-gamma hypertranscendence and exact defect matroid proved on paper.
-- [ ] Independent-period elliptic-gamma hypertranscendence formalized unconditionally in Lean.
+- [x] Independent-period elliptic-gamma hypertranscendence formalized unconditionally over both
+  `C(z)` and the paired elliptic compositum; this does not discharge DA-sector `B` transport.
 - [x] Exact DA/HT spectrum and full pointed period-coset matroid formalized unconditionally for the
   genuine multiplicative quotient over the paired elliptic compositum; transport to `B` remains
   open.

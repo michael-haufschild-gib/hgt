@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.AdditiveReflectionCocycleHalving
 import GaloisForLFunctions.RHTower.XiTransverseShiftDefectDifferentialRank
 import GaloisForLFunctions.RHTower.ReflectionDifferenceFaces
 
@@ -147,6 +148,14 @@ theorem xiTransverseShiftReflectionCocycle_reflection (a : ℕ) (s : ℂ) :
     xiTransverseShiftReflection_involutive]
   ring
 
+/-- The archimedean correction cocycle vanishes at the midpoint fixed by its reflection. -/
+theorem xiTransverseShiftReflectionCocycle_center (a : ℕ) :
+    xiTransverseShiftReflectionCocycle a ((1 - (a : ℂ)) / 2) = 0 := by
+  apply IsAdditiveReflectionCocycle.eq_zero_of_fixed
+    (xiTransverseShiftReflectionCocycle_reflection a)
+  change 1 - (a : ℂ) - ((1 - (a : ℂ)) / 2) = (1 - (a : ℂ)) / 2
+  ring
+
 /-- **General integral-shift reflection cocycle.** The corrected prime defect changes under
 reflection exactly by the archimedean correction cocycle. -/
 theorem xiTransverseShiftPrimeDefect_reflection_cocycle (a : ℕ) (s : ℂ) :
@@ -167,10 +176,17 @@ defect exactly fixed by reflection about `(1-a)/2`. -/
 theorem xiTransverseCenteredShiftPrimeDefect_reflection (a : ℕ) (s : ℂ) :
     xiTransverseCenteredShiftPrimeDefect a (xiTransverseShiftReflection a s) =
       xiTransverseCenteredShiftPrimeDefect a s := by
-  rw [xiTransverseCenteredShiftPrimeDefect, xiTransverseCenteredShiftPrimeDefect,
-    xiTransverseShiftPrimeDefect_reflection_cocycle,
-    xiTransverseShiftReflectionCocycle_reflection]
-  ring
+  change xiTransverseShiftPrimeDefect a (xiTransverseShiftReflection a s) +
+      (1 / 2 : ℂ) * xiTransverseShiftReflectionCocycle a
+        (xiTransverseShiftReflection a s) =
+    xiTransverseShiftPrimeDefect a s +
+      (1 / 2 : ℂ) * xiTransverseShiftReflectionCocycle a s
+  exact (add_half_reflection_fixed_iff
+    (r := xiTransverseShiftReflection a)
+    (f := xiTransverseShiftPrimeDefect a)
+    (c := xiTransverseShiftReflectionCocycle a)
+    (xiTransverseShiftReflectionCocycle_reflection a) s).2
+      (xiTransverseShiftPrimeDefect_reflection_cocycle a s)
 
 /-- Upper-end germ of the actual corrected completed-Xi shift-`a` defect. -/
 def xiTransverseShiftPrimeDefectUpperEndGerm (a : ℕ) : Germ upperEndFilter ℂ :=

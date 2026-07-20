@@ -281,6 +281,19 @@ theorem differentialAlgebraicOver_ellipticGammaExternalLogDerivDefectMero_iff_re
     exact differentialAlgebraicOver_ellipticGammaExternalLogDerivDefectMero_of_resonant
       sigma tau hsigma htau a b n
 
+/-- Equivalently, the genuine logarithmic-derivative defect is hypertranscendental over the
+paired elliptic compositum exactly off the rank-three integer period group. -/
+theorem hypertranscendentalOver_ellipticGammaExternalLogDerivDefectMero_iff_nonresonant
+    (h sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
+    (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau)) :
+    HypertranscendentalOver (meromorphicEllipticCompositum sigma tau)
+        (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) ↔
+      ThetaTranslationNonresonant tau sigma h := by
+  simpa [HypertranscendentalOver, ThetaTranslationNonresonant] using
+    not_congr
+      (differentialAlgebraicOver_ellipticGammaExternalLogDerivDefectMero_iff_resonant
+        h sigma tau hsigma htau hindependent)
+
 end
 
 

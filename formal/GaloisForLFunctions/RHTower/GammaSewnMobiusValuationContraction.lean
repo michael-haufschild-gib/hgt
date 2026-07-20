@@ -34,7 +34,7 @@ namespace RHTower
 noncomputable section
 
 open scoped BigOperators
-open Matrix
+open Filter Matrix Set
 
 /-- The analytic-aperture continuation of the inverse Möbius--Schur dressing. -/
 def xiMobiusPrimeSchurApertureValuationRecovery
@@ -84,10 +84,10 @@ theorem semilocalArchimedeanCharacteristic_two_aperture_log_sq
     semilocalArchimedeanCharacteristic_sq, Real.cosh_eq]
   change ((Real.exp (2 * u) + Real.exp (-(2 * u))) / 2)⁻¹ =
     2 * q ^ 2 / (1 + q ^ 4)
-  rw [Real.exp_two_mul, show -(2 * u) = 2 * (-u) by ring,
-    Real.exp_two_mul, ← hqexp]
+  rw [show -(2 * u) = (-u) + (-u) by ring,
+    show 2 * u = u + u by ring, Real.exp_add, Real.exp_add, ← hqexp]
   field_simp [hqne]
-  nlinarith
+  nlinarith [hexp_mul]
 
 /-- Exact fourth-power law of the sewn source multiplier. -/
 theorem gammaSewnMobiusValuationContractionMultiplier_pow_four
@@ -101,41 +101,54 @@ theorem gammaSewnMobiusValuationContractionMultiplier_pow_four
   have hchar0 :
       0 ≤ semilocalArchimedeanCharacteristic
         (2 * x * Real.log (p : ℝ)) := by
-    exact (semilocalArchimedeanCharacteristic_pos _).le
+    exact (Real.rpow_pos_of_pos (Real.cosh_pos _) (-(1 : ℝ) / 2)).le
   rw [gammaSewnMobiusValuationContractionMultiplier,
     xiMobiusPrimeSchurApertureValuationRecovery]
   change ((1 / 2 : ℝ) *
       Real.sqrt (semilocalArchimedeanCharacteristic
         (2 * x * Real.log (p : ℝ))) *
-      ((1 + q) / Real.sqrt q)) ^ 4 = _
-  rw [show ((1 / 2 : ℝ) *
-      Real.sqrt (semilocalArchimedeanCharacteristic
-        (2 * x * Real.log (p : ℝ))) *
       ((1 + q) / Real.sqrt q)) ^ 4 =
+        (1 + q) ^ 4 / (8 * (1 + q ^ 4))
+  have hchar4 : (Real.sqrt
+      (semilocalArchimedeanCharacteristic
+        (2 * x * Real.log (p : ℝ)))) ^ 4 =
+      (semilocalArchimedeanCharacteristic
+        (2 * x * Real.log (p : ℝ))) ^ 2 := by
+    calc
+      (Real.sqrt
+          (semilocalArchimedeanCharacteristic
+            (2 * x * Real.log (p : ℝ)))) ^ 4 =
+          (Real.sqrt
+            (semilocalArchimedeanCharacteristic
+              (2 * x * Real.log (p : ℝ))) ^ 2) ^ 2 := by ring
+      _ = _ := by rw [Real.sq_sqrt hchar0]
+  have hq4 : (Real.sqrt q) ^ 4 = q ^ 2 := by
+    calc
+      (Real.sqrt q) ^ 4 = (Real.sqrt q ^ 2) ^ 2 := by ring
+      _ = _ := by rw [Real.sq_sqrt hq0]
+  calc
+    ((1 / 2 : ℝ) *
+        Real.sqrt (semilocalArchimedeanCharacteristic
+          (2 * x * Real.log (p : ℝ))) *
+        ((1 + q) / Real.sqrt q)) ^ 4 =
       (1 / 16 : ℝ) *
         semilocalArchimedeanCharacteristic
           (2 * x * Real.log (p : ℝ)) ^ 2 *
-        (1 + q) ^ 4 / q ^ 2 by
-      rw [mul_pow, mul_pow, div_pow,
-        show (Real.sqrt
-          (semilocalArchimedeanCharacteristic
-            (2 * x * Real.log (p : ℝ)))) ^ 4 =
+        (1 + q) ^ 4 / q ^ 2 := by
+          rw [mul_pow, mul_pow, hchar4]
+          simp only [div_pow]
+          rw [hq4]
+          ring
+    _ = (1 + q) ^ 4 / (8 * (1 + q ^ 4)) := by
+      have hcharFormula :
           semilocalArchimedeanCharacteristic
-            (2 * x * Real.log (p : ℝ)) ^ 2 by
-          rw [show (Real.sqrt
-            (semilocalArchimedeanCharacteristic
-              (2 * x * Real.log (p : ℝ)))) ^ 4 =
-            (Real.sqrt
-              (semilocalArchimedeanCharacteristic
-                (2 * x * Real.log (p : ℝ))) ^ 2) ^ 2 by ring,
-            Real.sq_sqrt hchar0],
-        Real.sq_sqrt hq0]
-      ring]
-  rw [semilocalArchimedeanCharacteristic_two_aperture_log_sq]
-  change (1 / 16 : ℝ) * (2 * q ^ 2 / (1 + q ^ 4)) *
-      (1 + q) ^ 4 / q ^ 2 =
-    (1 + q) ^ 4 / (8 * (1 + q ^ 4))
-  field_simp [hqne]
+              (2 * x * Real.log (p : ℝ)) ^ 2 =
+            2 * q ^ 2 / (1 + q ^ 4) := by
+        simpa only [q] using
+          semilocalArchimedeanCharacteristic_two_aperture_log_sq x p
+      rw [hcharFormula]
+      field_simp [hqne]
+      norm_num
 
 /-- Algebraic factorization behind strict contractivity away from the boundary node `q=1`. -/
 theorem gammaSewnMobiusValuationContraction_gap_factorization (q : ℝ) :
@@ -150,9 +163,12 @@ theorem gammaSewnMobiusValuationContractionMultiplier_pos
   unfold gammaSewnMobiusValuationContractionMultiplier
     xiMobiusPrimeSchurApertureValuationRecovery
   have hq := xiMobiusContinuousApertureDiskNode_pos x p
+  have hchar : 0 < semilocalArchimedeanCharacteristic
+      (2 * x * Real.log (p : ℝ)) :=
+    Real.rpow_pos_of_pos (Real.cosh_pos _) (-(1 : ℝ) / 2)
   exact mul_pos
     (mul_pos (by norm_num)
-      (Real.sqrt_pos.2 (semilocalArchimedeanCharacteristic_pos _)))
+      (Real.sqrt_pos.2 hchar))
     (div_pos (by linarith) (Real.sqrt_pos.2 hq))
 
 /-- On every positive aperture the source-sewn multiplier is a strict contraction. -/
@@ -239,7 +255,9 @@ theorem gammaSewnMobiusValuationContractionMultiplier_zero
     gammaSewnMobiusValuationContractionMultiplier 0 p = 1 := by
   rw [gammaSewnMobiusValuationContractionMultiplier]
   simp [xiMobiusPrimeSchurApertureValuationRecovery,
-    xiMobiusContinuousApertureDiskNode]
+    xiMobiusContinuousApertureDiskNode,
+    semilocalArchimedeanCharacteristic]
+  norm_num
 
 /-- The regular gain after extracting the exact quadratic true-aperture defect of Gamma sewing. -/
 def gammaSewnMobiusValuationQuadraticDefectGain
@@ -346,9 +364,195 @@ theorem gammaSewnMobiusContinuousApertureFeature_one_eq
     ring
   rw [gammaSewnMobiusContinuousApertureFeature, hforward,
     gammaSewnMobiusValuationContractionMultiplier,
-    xiMobiusPrimeSchurApertureValuationRecovery_one,
-    xiMobiusPrimeSchurValuationRecovery_mul_forwardDifference]
+    xiMobiusPrimeSchurApertureValuationRecovery_one]
+  rw [show 2 * 1 * Real.log (p : ℝ) = 2 * Real.log (p : ℝ) by ring]
+  calc
+    (1 / 2 : ℝ) *
+          Real.sqrt (semilocalArchimedeanCharacteristic (2 * Real.log (p : ℝ))) *
+        xiMobiusPrimeSchurValuationRecovery p *
+      xiMobiusPrimeSchurForwardDifference p e =
+        (1 / 2 : ℝ) *
+          Real.sqrt (semilocalArchimedeanCharacteristic (2 * Real.log (p : ℝ))) *
+            (xiMobiusPrimeSchurValuationRecovery p *
+              xiMobiusPrimeSchurForwardDifference p e) := by ring
+    _ = _ := by rw [xiMobiusPrimeSchurValuationRecovery_mul_forwardDifference]
+
+/-! ## All-order Rees principal symbols -/
+
+/-- Iterated forward difference of the sewn source in valuation depth.  The iteration index is the
+Rees grade minus one. -/
+def gammaSewnMobiusContinuousApertureDepthDifference :
+    ℕ → ℝ → Nat.Primes → ℕ → ℝ
+  | 0, x, p, e => gammaSewnMobiusContinuousApertureFeature x p e
+  | k + 1, x, p, e =>
+      gammaSewnMobiusContinuousApertureDepthDifference k x p (e + 1) -
+        gammaSewnMobiusContinuousApertureDepthDifference k x p e
+
+/-- Every iterated valuation difference is still one geometric ray, with one new copy of the
+physical aperture increment at each Rees grade. -/
+theorem gammaSewnMobiusContinuousApertureDepthDifference_eq_geometric
+    (k : ℕ) (x : ℝ) (p : Nat.Primes) (e : ℕ) :
+    gammaSewnMobiusContinuousApertureDepthDifference k x p e =
+      (-1 : ℝ) ^ k * gammaSewnMobiusValuationContractionMultiplier x p *
+        (xiTransversePrimeApertureDiskNode 1 p /
+          (1 + xiTransversePrimeApertureDiskNode 1 p)) *
+        (1 - xiMobiusContinuousApertureDiskNode x p) ^ (k + 1) *
+        xiMobiusContinuousApertureDiskNode x p ^ e := by
+  induction k generalizing e with
+  | zero =>
+      rw [gammaSewnMobiusContinuousApertureDepthDifference,
+        gammaSewnMobiusContinuousApertureFeature,
+        xiMobiusPrimeSchurContinuousForwardDifference_eq_geometric]
+      ring
+  | succ k ih =>
+      rw [gammaSewnMobiusContinuousApertureDepthDifference, ih (e + 1), ih e,
+        pow_succ (xiMobiusContinuousApertureDiskNode x p) e]
+      rw [pow_succ (-1 : ℝ) k,
+        show k + 1 + 1 = (k + 1) + 1 by omega,
+        pow_succ (1 - xiMobiusContinuousApertureDiskNode x p) (k + 1)]
+      ring
+
+/-- The sewing multiplier is continuous at the lossless aperture boundary. -/
+theorem continuousAt_gammaSewnMobiusValuationContractionMultiplier_zero
+    (p : Nat.Primes) :
+    ContinuousAt (fun x : ℝ =>
+      gammaSewnMobiusValuationContractionMultiplier x p) 0 := by
+  unfold gammaSewnMobiusValuationContractionMultiplier
+    xiMobiusPrimeSchurApertureValuationRecovery
+    semilocalArchimedeanCharacteristic
+    xiMobiusContinuousApertureDiskNode
+  have hq : Real.exp (-(0 : ℝ) * Real.log (p : ℝ)) ≠ 0 := by positivity
+  have hchar : 0 <
+      Real.cosh (2 * (0 : ℝ) * Real.log (p : ℝ)) ^ (-(1 : ℝ) / 2) :=
+    Real.rpow_pos_of_pos (Real.cosh_pos _) _
+  fun_prop (disch := aesop)
+
+/-- The all-order principal Rees symbol retained by Gamma sewing.  Grade `k` carries the
+prime-log power `k+1` with the original critical Möbius damping. -/
+def gammaSewnMobiusReesPrincipalSymbol (k : ℕ) (p : Nat.Primes) : ℝ :=
+  (xiTransversePrimeApertureDiskNode 1 p /
+      (1 + xiTransversePrimeApertureDiskNode 1 p)) *
+    Real.log (p : ℝ) ^ (k + 1)
+
+/-- **All-order Rees symbol law.**  After the canonical sign and aperture normalization, every
+iterated valuation difference converges to the corresponding prime-log symbol.  The limit is
+independent of the starting valuation depth. -/
+theorem tendsto_gammaSewnMobiusContinuousApertureDepthDifference_div_pow
+    (k : ℕ) (p : Nat.Primes) (e : ℕ) :
+    Tendsto
+      (fun x : ℝ =>
+        (-1 : ℝ) ^ k *
+          gammaSewnMobiusContinuousApertureDepthDifference k x p e /
+            x ^ (k + 1))
+      (nhdsWithin (0 : ℝ) (Ioi 0))
+      (nhds (gammaSewnMobiusReesPrincipalSymbol k p)) := by
+  let q : ℝ := xiTransversePrimeApertureDiskNode 1 p
+  let L : ℝ := Real.log (p : ℝ)
+  let r : ℝ → ℝ := fun x => xiMobiusContinuousApertureDiskNode x p
+  let c : ℝ → ℝ := fun x =>
+    gammaSewnMobiusValuationContractionMultiplier x p
+  have hc : Tendsto c (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds 1) := by
+    have h : ContinuousWithinAt c (Ioi 0) 0 :=
+      (continuousAt_gammaSewnMobiusValuationContractionMultiplier_zero p).continuousWithinAt
+    simpa only [c, gammaSewnMobiusValuationContractionMultiplier_zero] using h.tendsto
+  have hgap : Tendsto (fun x : ℝ => (1 - r x) / x)
+      (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds L) := by
+    convert
+      tendsto_one_sub_xiMobiusContinuousApertureDiskNode_mul_div_nhdsGT_zero
+        1 p using 1 <;> simp only [r, L, mul_one, one_mul]
+  have hr : Tendsto (fun x : ℝ => r x ^ e)
+      (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds 1) := by
+    have hcont : ContinuousAt (fun x : ℝ => r x ^ e) 0 := by
+      dsimp only [r]
+      unfold xiMobiusContinuousApertureDiskNode
+      fun_prop
+    have hwithin : ContinuousWithinAt (fun x : ℝ => r x ^ e) (Ioi 0) 0 :=
+      hcont.continuousWithinAt
+    simpa only [r, xiMobiusContinuousApertureDiskNode, neg_zero, zero_mul,
+      Real.exp_zero, one_pow] using hwithin.tendsto
+  have hlimit : Tendsto
+      (fun x : ℝ =>
+        (-1 : ℝ) ^ k * (-1 : ℝ) ^ k * c x *
+          (q / (1 + q)) * ((1 - r x) / x) ^ (k + 1) * r x ^ e)
+      (nhdsWithin (0 : ℝ) (Ioi 0))
+      (nhds (((-1 : ℝ) ^ k * (-1 : ℝ) ^ k) * 1 *
+        (q / (1 + q)) * L ^ (k + 1) * 1)) := by
+    exact (((((tendsto_const_nhds.mul tendsto_const_nhds).mul hc).mul
+      tendsto_const_nhds).mul (hgap.pow (k + 1))).mul hr)
+  convert hlimit using 1
+  · funext x
+    rw [gammaSewnMobiusContinuousApertureDepthDifference_eq_geometric]
+    change (-1 : ℝ) ^ k *
+        ((-1 : ℝ) ^ k * c x * (q / (1 + q)) *
+          (1 - r x) ^ (k + 1) * r x ^ e) / x ^ (k + 1) = _
+    rw [div_pow]
+    ring
+  · simp only [gammaSewnMobiusReesPrincipalSymbol, q, L]
+    have hsign : (-1 : ℝ) ^ k * (-1 : ℝ) ^ k = 1 := by
+      rw [← mul_pow]
+      simp
+    rw [hsign]
+    ring
+
+/-- The first `N` Rees symbols on `N` primes.  Rows are increasing aperture grades and columns are
+prime labels. -/
+def gammaSewnMobiusReesPrincipalSymbolMatrix
+    {N : ℕ} (p : Fin N → Nat.Primes) : Matrix (Fin N) (Fin N) ℝ :=
+  fun k j => gammaSewnMobiusReesPrincipalSymbol k.val (p j)
+
+/-- The Rees symbol matrix is a diagonally weighted Vandermonde on the prime logarithms. -/
+theorem gammaSewnMobiusReesPrincipalSymbolMatrix_factorization
+    {N : ℕ} (p : Fin N → Nat.Primes) :
+    gammaSewnMobiusReesPrincipalSymbolMatrix p =
+      (Matrix.vandermonde (fun j => Real.log ((p j : Nat.Primes) : ℝ)))ᵀ *
+        Matrix.diagonal (fun j =>
+          (xiTransversePrimeApertureDiskNode 1 (p j) /
+            (1 + xiTransversePrimeApertureDiskNode 1 (p j))) *
+          Real.log (p j : ℝ)) := by
+  classical
+  ext k j
+  rw [Matrix.mul_diagonal]
+  simp only [gammaSewnMobiusReesPrincipalSymbolMatrix,
+    gammaSewnMobiusReesPrincipalSymbol, Matrix.transpose_apply,
+    Matrix.vandermonde_apply]
+  rw [pow_succ]
   ring
+
+/-- **Unbounded exact Rees rank.**  Every injective `N`-prime packet is separated by its first
+`N` Gamma-sewn principal symbols. -/
+theorem gammaSewnMobiusReesPrincipalSymbolMatrix_det_ne_zero
+    {N : ℕ} {p : Fin N → Nat.Primes} (hp : Function.Injective p) :
+    (gammaSewnMobiusReesPrincipalSymbolMatrix p).det ≠ 0 := by
+  let L : Fin N → ℝ := fun j => Real.log (p j : ℝ)
+  let d : Fin N → ℝ := fun j =>
+    (xiTransversePrimeApertureDiskNode 1 (p j) /
+      (1 + xiTransversePrimeApertureDiskNode 1 (p j))) * L j
+  have hL : Function.Injective L := by
+    intro i j hij
+    have hi : (0 : ℝ) < (p i : ℝ) := by exact_mod_cast (p i).2.pos
+    have hj : (0 : ℝ) < (p j : ℝ) := by exact_mod_cast (p j).2.pos
+    have hreal : (p i : ℝ) = (p j : ℝ) := by
+      rw [← Real.exp_log hi, ← Real.exp_log hj]
+      exact congrArg Real.exp hij
+    apply hp
+    apply Subtype.ext
+    exact_mod_cast hreal
+  have hd : ∀ j, d j ≠ 0 := by
+    intro j
+    have hq : 0 < xiTransversePrimeApertureDiskNode 1 (p j) :=
+      xiTransversePrimeApertureDiskNode_pos 1 (p j)
+    have hp1 : (1 : ℝ) < (p j : ℝ) := by
+      exact_mod_cast (p j).2.one_lt
+    dsimp only [d, L]
+    exact mul_ne_zero
+      (div_ne_zero hq.ne' (by positivity))
+      (Real.log_pos hp1).ne'
+  rw [gammaSewnMobiusReesPrincipalSymbolMatrix_factorization,
+    Matrix.det_mul, Matrix.det_transpose]
+  apply mul_ne_zero
+  · exact Matrix.det_vandermonde_ne_zero_iff.mpr hL
+  · rw [Matrix.det_diagonal, Finset.prod_ne_zero_iff]
+    exact fun j _ => hd j
 
 /-- Closed all-prime, complete-valuation Gram kernel of the Gamma-sewn source rays. -/
 def gammaSewnMobiusContinuousAperturePrimeKernel
@@ -406,7 +610,6 @@ theorem tsum_gammaSewnMobiusContinuousApertureFeature_mul_eq_kernel
     _ = gammaSewnMobiusContinuousAperturePrimeKernel x p r := by
         simp only [gammaSewnMobiusContinuousAperturePrimeKernel,
           qp, qr, u, v, cp, cr, div_eq_mul_inv]
-        ring
 
 /-- Positive aperture makes the true prime nodes injective in the prime label. -/
 theorem xiMobiusContinuousApertureDiskNode_injective_prime
@@ -469,8 +672,12 @@ theorem gammaSewnMobiusContinuousApertureSamplingMatrix_det_ne_zero
       xiTransversePrimeApertureDiskNode_pos 1 (p j)
     have hq1 : q j < 1 :=
       xiMobiusContinuousApertureDiskNode_lt_one hx (p j)
+    have hc0 := gammaSewnMobiusValuationContractionMultiplier_pos x (p j)
     dsimp only [d]
-    positivity
+    exact mul_ne_zero
+      (mul_ne_zero hc0.ne'
+        (div_ne_zero hnode0.ne' (by positivity)))
+      (sub_ne_zero.mpr hq1.ne')
   rw [gammaSewnMobiusContinuousApertureSamplingMatrix_factorization,
     Matrix.det_mul, Matrix.det_transpose]
   apply mul_ne_zero
@@ -505,8 +712,11 @@ theorem summable_gammaSewnMobiusContinuousAperturePrimeKernel_self
       have hc0 := gammaSewnMobiusValuationContractionMultiplier_pos x p
       have hc1 := gammaSewnMobiusValuationContractionMultiplier_lt_one hx p
       have hmetric := xiMobiusPrimeContinuousApertureSzegoMetric_self_nonneg hx p
-      nlinarith [sq_nonneg
-        (gammaSewnMobiusValuationContractionMultiplier x p - 1)])
+      have hc2 : gammaSewnMobiusValuationContractionMultiplier x p ^ 2 ≤ 1 := by
+        nlinarith [mul_nonpos_of_nonpos_of_nonneg
+          (sub_nonpos.mpr hc1.le) (by linarith : 0 ≤
+            gammaSewnMobiusValuationContractionMultiplier x p + 1)]
+      simpa only [one_mul] using mul_le_mul_of_nonneg_right hc2 hmetric)
     hbase
 
 /-- Pointwise action of the source-sewn contraction on the full prime--valuation stream. -/

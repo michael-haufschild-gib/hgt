@@ -167,6 +167,154 @@ theorem affinePointedCollisionMatroid_indep_iff {Λ Frame : Type*}
     rintro q ⟨i, hi, rfl⟩
     exact hnonloop i hi
 
+/-- **Exact pointed-collision closure law.** The closure of an arbitrary observation set consists
+precisely of every loop and every index whose nonloop label is already observed. Thus pointed
+collision dependence over a subfamily is completely determined by label incidence, with no
+finiteness or injectivity assumption. -/
+theorem affinePointedCollisionMatroid_mem_closure_iff
+    {Λ Frame : Type*} (frame : Λ → Frame) (loopFrame : Frame)
+    (I : Set Λ) (i : Λ) :
+    i ∈ (affinePointedCollisionMatroid frame loopFrame).closure I ↔
+      frame i = loopFrame ∨ frame i ∈ frame '' I := by
+  classical
+  by_cases hloop : frame i = loopFrame <;>
+    simp [affinePointedCollisionMatroid, Matroid.comap_closure_eq,
+      Matroid.uniqueBaseOn_closure_eq, hloop]
+
+/-- Loop classifier for pointed collision matroids. -/
+theorem affinePointedCollisionMatroid_isLoop_iff
+    {Λ Frame : Type*} (frame : Λ → Frame) (loopFrame : Frame) (i : Λ) :
+    (affinePointedCollisionMatroid frame loopFrame).IsLoop i ↔
+      frame i = loopFrame := by
+  change i ∈ (affinePointedCollisionMatroid frame loopFrame).closure ∅ ↔ _
+  rw [affinePointedCollisionMatroid_mem_closure_iff]
+  simp
+
+/-- Nonloop classifier for pointed collision matroids. -/
+theorem affinePointedCollisionMatroid_isNonloop_iff
+    {Λ Frame : Type*} (frame : Λ → Frame) (loopFrame : Frame) (i : Λ) :
+    (affinePointedCollisionMatroid frame loopFrame).IsNonloop i ↔
+      frame i ≠ loopFrame := by
+  simp [Matroid.isNonloop_iff, affinePointedCollisionMatroid_ground,
+    affinePointedCollisionMatroid_isLoop_iff]
+
+/-- A pair of distinct indices is a circuit exactly when it carries one common nonloop label. -/
+theorem affinePointedCollisionMatroid_pair_isCircuit_iff
+    {Λ Frame : Type*} (frame : Λ → Frame) (loopFrame : Frame)
+    {i j : Λ} (hij : i ≠ j) :
+    (affinePointedCollisionMatroid frame loopFrame).IsCircuit {i, j} ↔
+      frame i = frame j ∧ frame i ≠ loopFrame := by
+  let M := affinePointedCollisionMatroid frame loopFrame
+  constructor
+  · intro hC
+    have hiIndep : M.Indep ({i} : Set Λ) := by
+      have h := hC.diff_singleton_indep (show j ∈ ({i, j} : Set Λ) by simp)
+      simpa [Set.pair_diff_right hij] using h
+    have hjIndep : M.Indep ({j} : Set Λ) := by
+      have h := hC.diff_singleton_indep (show i ∈ ({i, j} : Set Λ) by simp)
+      simpa [Set.pair_diff_left hij] using h
+    have hi : M.IsNonloop i := by rwa [← Matroid.indep_singleton]
+    have hj : M.IsNonloop j := by rwa [← Matroid.indep_singleton]
+    have hclosure : M.closure {i} = M.closure {j} :=
+      (hi.closure_eq_closure_iff_isCircuit_of_ne hij).2 hC
+    have hjcl : j ∈ M.closure {i} := by
+      rw [hclosure]
+      exact M.mem_closure_self j
+    have hlabel :=
+      (affinePointedCollisionMatroid_mem_closure_iff
+        frame loopFrame {i} j).1 hjcl
+    refine ⟨?_, (affinePointedCollisionMatroid_isNonloop_iff
+      frame loopFrame i).1 hi⟩
+    rcases hlabel with hloop | himage
+    · exact False.elim
+        ((affinePointedCollisionMatroid_isNonloop_iff
+          frame loopFrame j).1 hj hloop)
+    · have hji : frame j = frame i := by simpa using himage
+      exact hji.symm
+  · rintro ⟨hframe, hloop⟩
+    have hi : M.IsNonloop i :=
+      (affinePointedCollisionMatroid_isNonloop_iff
+        frame loopFrame i).2 hloop
+    apply (hi.closure_eq_closure_iff_isCircuit_of_ne hij).1
+    ext k
+    rw [affinePointedCollisionMatroid_mem_closure_iff,
+      affinePointedCollisionMatroid_mem_closure_iff]
+    simp [hframe]
+
+/-- **Complete pointed-collision circuit classification.** Every minimal dependence is either a
+singleton carrying the distinguished loop label or a pair of distinct indices carrying the same
+nonloop label. There are no higher circuits, even for infinite or highly repeated families. -/
+theorem affinePointedCollisionMatroid_isCircuit_iff
+    {Λ Frame : Type*} (frame : Λ → Frame) (loopFrame : Frame) (C : Set Λ) :
+    (affinePointedCollisionMatroid frame loopFrame).IsCircuit C ↔
+      (∃ i, C = {i} ∧ frame i = loopFrame) ∨
+        ∃ i j, i ≠ j ∧ C = {i, j} ∧
+          frame i = frame j ∧ frame i ≠ loopFrame := by
+  classical
+  let M := affinePointedCollisionMatroid frame loopFrame
+  constructor
+  · intro hC
+    obtain ⟨i, hiC⟩ := hC.nonempty
+    by_cases hloopi : frame i = loopFrame
+    · left
+      have hiLoop : M.IsLoop i :=
+        (affinePointedCollisionMatroid_isLoop_iff
+          frame loopFrame i).2 hloopi
+      exact ⟨i, hiLoop.eq_of_isCircuit_mem hC hiC, hloopi⟩
+    · right
+      have hall : ∀ j ∈ C, frame j ≠ loopFrame := by
+        intro j hjC hloopj
+        have hjLoop : M.IsLoop j :=
+          (affinePointedCollisionMatroid_isLoop_iff
+            frame loopFrame j).2 hloopj
+        have hCeq : C = {j} := hjLoop.eq_of_isCircuit_mem hC hjC
+        have hij : i = j := by simpa [hCeq] using hiC
+        exact hloopi (hij ▸ hloopj)
+      have hnotinj : ¬ Set.InjOn frame C := by
+        intro hinj
+        have hIndep : M.Indep C :=
+          (affinePointedCollisionMatroid_indep_iff
+            frame loopFrame C).2 ⟨hinj, hall⟩
+        exact hC.not_indep hIndep
+      simp only [Set.InjOn] at hnotinj
+      push Not at hnotinj
+      obtain ⟨j, hjC, k, hkC, hframe, hjk⟩ := hnotinj
+      have hpair : M.IsCircuit {j, k} :=
+        (affinePointedCollisionMatroid_pair_isCircuit_iff
+          frame loopFrame hjk).2 ⟨hframe, hall j hjC⟩
+      have hpairC : ({j, k} : Set Λ) = C :=
+        (Matroid.isCircuit_iff.mp hC).2 hpair.dep
+          (Set.pair_subset hjC hkC)
+      exact ⟨j, k, hjk, hpairC.symm, hframe, hall j hjC⟩
+  · rintro (⟨i, rfl, hloop⟩ |
+      ⟨i, j, hij, rfl, hframe, hloop⟩)
+    · exact
+        ((affinePointedCollisionMatroid_isLoop_iff
+          frame loopFrame i).2 hloop).isCircuit
+    · exact
+        (affinePointedCollisionMatroid_pair_isCircuit_iff
+          frame loopFrame hij).2 ⟨hframe, hloop⟩
+
+/-- **Coloop classifier for pointed collision matroids.** An index is essential exactly when it
+carries a nonloop label that occurs nowhere else in the family. -/
+theorem affinePointedCollisionMatroid_isColoop_iff
+    {Λ Frame : Type*} (frame : Λ → Frame) (loopFrame : Frame) (i : Λ) :
+    (affinePointedCollisionMatroid frame loopFrame).IsColoop i ↔
+      frame i ≠ loopFrame ∧ ∀ j, frame j = frame i → j = i := by
+  rw [Matroid.isColoop_iff_notMem_closure_compl]
+  simp only [affinePointedCollisionMatroid_ground]
+  simp [affinePointedCollisionMatroid, Matroid.comap_closure_eq,
+    Matroid.uniqueBaseOn_closure_eq]
+  constructor
+  · rintro ⟨hunique, hloop⟩
+    refine ⟨hloop, fun j hj ↦ ?_⟩
+    by_contra hji
+    exact hloop (hunique j hji hj)
+  · rintro ⟨hloop, hunique⟩
+    refine ⟨?_, hloop⟩
+    intro j hji hj
+    exact (hji (hunique j hj)).elim
+
 /-- A pointed collision matroid is unchanged by a relabelling that is injective on exactly the
 labels used by the family together with its distinguished loop label. -/
 theorem affinePointedCollisionMatroid_comp_eq_of_injOn

@@ -81,12 +81,67 @@ same discriminant.  Applying the argument to each pair gives infinitely many cou
 
 ## Formal theorem surface
 
+- `reflCocycle_mul`
+- `reflCocycle_div`
+- `reflCocycleMonoidWithZeroHom`
+- `reflCocycle_one_sub`
+- `reflCocycle_eq_zero_iff`
+- `reflCocycle_eq_ite_of_reflection`
+- `reflCocycle_eq_zero_iff_of_reflection`
+- `reflCocycle_eq_one_iff`
+- `reflCocycle_eq_one_iff_reflection_fixed`
+- `reflCocycle_eq_one_iff_reflectionInvariant`
+- `reflCocycle_eq_iff_cross_mul`
+- `reflCocycle_eq_iff_div_reflection_fixed`
+- `reflCocycle_eq_iff_div_reflectionInvariant`
+- `reflCocycle_eq_iff_of_common_reflection`
+- `reflCocycle_eq_of_common_reflection`
+- `ratio_one_sub_eq_iff_of_common_reflection`
 - `ratio_one_sub_eq_of_common_reflection`
+- `reflCocycle_div_eq_one_iff_of_common_reflection`
 - `reflCocycle_div_eq_one_of_common_reflection`
+- `reflCocycle_of_conductor_eq_ite`
+- `reflCocycle_of_conductor_eq_zero_iff`
+- `riemannZeta_one_sub_eq_gammaRatio_mul`
+- `riemannZeta_one_sub_eq_zero_iff`
+- `reflCocycle_zeta_eq_ite`
+- `reflCocycle_zeta_eq_zero_iff`
+- `reflCocycle_eq_one_iff_const`
 
-These theorems formalize the exact common-completion cancellation.  Dedekind zeta functions are not
-present in the current Lean dependency surface, so the number-field instantiation remains a paper
-application of standard algebraic-number-theory theorems.
+The general laws classify the complete fiber of the reflection-cocycle map on nonvanishing
+carriers: two carriers have the same cocycle exactly when their quotient is reflection invariant.
+Multiplicativity and quotient compatibility themselves are unconditional, including at zeros,
+because totalized inversion preserves the required product identities; nonvanishing first enters
+only when cocycle equality is converted to equality of cross-multiplied or quotient values.
+At each point the cocycle is therefore a zero-preserving monoid homomorphism in the carrier, and
+argument reflection sends its value unconditionally to its inverse. Its exact trivial fiber needs
+no external premise: `h_F(s)=1` is equivalent to `F(s) ≠ 0` together with
+`F(1-s)=F(s)`, and the global version forces both nowhere-vanishing and reflection invariance.
+Its zero support is equally exact: `h_F(s)=0` iff `F(s)=0` or `F(1-s)=0`, so totalization records
+the reflection-saturation of the carrier divisor rather than discarding it.
+More generally, a pointwise reflection law `F(1-s)=H(s)F(s)` evaluates the cocycle exactly as
+`0` on the carrier zero locus and `H(s)` off it. This removes the old conductor-size premise from
+the pure-conductor cocycle theorem and yields the exact conductor cocycle-zero/carrier-zero
+equivalence whenever the natural conductor is nonzero.
+For the actual Riemann zeta function, the completed functional equation is now exposed as an
+unconditional open-strip value relation, including at zeros.  Consequently its totalized
+reflection cocycle is the archimedean Gamma ratio off the zeta zero locus and zero exactly on that
+locus; `reflCocycle_zeta_eq_zero_iff` is an exact Prop interface for the critical-strip divisor,
+not a nonvanishing-conditioned formula.
+Pointwise cocycle equality first factors through a denominator-free cross relation requiring
+nonvanishing only at the evaluation point; reflected nonvanishing is needed solely to rewrite that
+relation as invariance of a quotient.
+The common-reflection specialization is now exact even at carrier zeros: the two cocycles agree
+if and only if the shared multiplier vanishes or the two unreflected carrier values have matching
+zero status. Thus equality does not require the shared reflection multiplier to be nonzero, since
+a vanishing multiplier simply makes both reflected values and both cocycles zero. Quotient
+invariance has the exact totalized boundary: it holds if and only if the multiplier is nonzero or
+at least one unreflected carrier value vanishes. The quotient cocycle is one exactly when the
+multiplier and both unreflected carrier values are nonzero; failure of any factor makes it zero,
+not one. Dedekind zeta functions are not present in the current Lean dependency surface, so the number-field
+instantiation remains a paper application of standard algebraic-number-theory theorems.
+For the formal integral-multiplicative carrier class, the previous nowhere-nonzero input to
+`reflCocycle_eq_one_iff_const` has consequently been removed: cocycle triviality supplies it.
 
 ## Parent-literature audit
 

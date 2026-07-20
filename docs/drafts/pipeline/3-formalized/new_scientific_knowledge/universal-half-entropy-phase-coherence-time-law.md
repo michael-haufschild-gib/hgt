@@ -1,14 +1,16 @@
 # Universal half-entropy law for near-perfect phase coherence
 
 - **ID:** `universal-half-entropy-phase-coherence-time-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / HIGH-DIMENSIONAL KRONECKER MINIMAX LAW / PHASE-CAPACITY LAW
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
-  `[TARGETED NOVELTY AUDIT PASSED 2026-07-19] [LEAN FORMALIZATION IN PROGRESS]`
-- **Statement:** The worst-case first clock at which a `d`-frequency phase source reaches relative
-  coherence `1-eta` has the universal near-perfect asymptotic
-  `log T_d(eta)~(d/2)log(1/eta)` in the iterated high-dimension, high-coherence limit.  The exponent
-  `1/2` is exact.
+  `[TARGETED NOVELTY AUDIT PASSED 2026-07-19] [LEAN FORMALIZED]`
+- **Statement:** The least worst-frequency clock at recurrence resolution `Q+1` satisfies the
+  explicit universal law
+  `((d-1)log(Q+1)-O(d)-log d)<log T_(d,Q)<=d log(Q+1)`.
+  More precisely, its normalized dimension--resolution entropy differs from one by at most
+  `1/d+C/log(Q+1)`, with an explicit universal `C`.  Since the coherence defect is quadratic in
+  `(Q+1)^(-1)`, the corresponding defect entropy coefficient is exactly `1/2`.
 
 ## 1. Minimax coherence clock
 
@@ -66,6 +68,38 @@ The constants in `(4)`--`(9)` are explicit but not claimed optimal.  The exponen
 them is optimal.
 
 ## 3. Universal half-entropy law `[MAIN THEOREM]`
+
+The formal master statement is finite and stronger than the limit formulation.  Put
+
+```text
+delta_Q=(2pi/(Q+1))^2/2,
+C_0=sqrt(pi^3),
+R_0=|log C_0|+1/2+log 2+1.                                 (10a)
+```
+
+Let `T_(d,Q)` be the least integer `N` such that every `omega in R^d` has some
+`1<=n<=N` with
+
+```text
+A_d(n;omega)>=1-delta_Q.                                   (10b)
+```
+
+Whenever `delta_Q<=1`,
+
+```text
+(d-1)log(Q+1)-(d-1)log C_0-d/2-log(2d)
+  <log T_(d,Q)<=d log(Q+1).                                (10c)
+```
+
+For `Q>=1`, the normalized form is
+
+```text
+1-1/d-R_0/log(Q+1)
+ <log T_(d,Q)/(d log(Q+1))<=1.                             (10d)
+```
+
+This finite squeeze is the universal dimension--resolution law.  It immediately yields the
+near-perfect defect statement below because `delta_Q` is proportional to `(Q+1)^(-2)`.
 
 One has
 
@@ -235,7 +269,9 @@ exp((pi(X)/2)log(1/eta)+O(pi(X))).                          (29)
 ```
 
 The actual prime-log vector is not random and need not be worst-case.  Its unresolved arithmetic
-rigidity is now isolated by `prime-log-kronecker-coherence-capacity-conjecture.md`:
+rigidity is now isolated at level 2 by `prime-log-level-two-entropy-budget-law.md`; the scalar
+phasor contraction and Connes application remain in
+`prime-log-kronecker-coherence-capacity-conjecture.md`:
 
 ```text
 every fixed nonzero prime--polar coherence level
@@ -285,7 +321,7 @@ Closest comparison sources:
 - M. Hauke, A. Shubin, E. Stefanescu, and A. Zafeiropoulos, *Circle coverings driven by arithmetic
   sequences*, arXiv:2604.02005.
 
-## 9. Lean status
+## 9. Formal theorem map
 
 The complete upper mechanism, including the stronger delayed weighted and prime--polar forms, is
 formalized in
@@ -303,8 +339,29 @@ nonnegative_weighted_phaseSum_norm_floor_of_phase_approximation
 exists_fin_primeLog_nonnegative_phaseSum_polar_floor_delayed_quantitative
 ```
 
-are axiom-audited.  The Haar target-measure estimate `(25)`, orbit avoidance `(26)`, and the
-asymptotic squeeze `(10)` remain to be formalized.  They use no conjectural number theory.
+are axiom-audited.  The lower and minimax layers are formalized in
+
+```text
+formal/GaloisForLFunctions/RHTower/UniversalPhaseCoherenceEntropy.lean
+formal/GaloisForLFunctions/RHTower/UniversalPhaseCoherenceTargetMeasure.lean
+formal/GaloisForLFunctions/RHTower/UniversalPhaseCoherenceAvoidance.lean
+formal/GaloisForLFunctions/RHTower/UniversalPhaseCoherenceMinimax.lean
+```
+
+The principal declarations are
+
+```text
+measureReal_torusCoherenceTarget_le_optimized
+exists_torus_phase_avoiding_coherence_until
+exists_real_frequency_avoiding_coherence_until
+not_isUniversalPhaseCoherenceDeadline_of_budget
+universalPhaseCoherenceTime_log_sandwich
+universalPhaseCoherence_dimensionResolution_sandwich
+universalPhaseCoherence_normalized_entropy_sandwich
+```
+
+Their axiom audit contains only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.
+No number-theoretic conjecture, numerical certificate, or conditional interface occurs.
 
 ## Gates
 
@@ -316,9 +373,11 @@ asymptotic squeeze `(10)` remain to be formalized.  They use no conjectural numb
 - [x] prove the exact half-entropy exponent
 - [x] run targeted corpus and external novelty searches
 - [x] formalize and axiom-audit the complete upper mechanism
-- [ ] formalize the Haar target-measure estimate
-- [ ] formalize finite-time orbit avoidance
-- [ ] formalize the asymptotic squeeze
+- [x] formalize the Haar target-measure estimate
+- [x] formalize finite-time orbit avoidance
+- [x] formalize the exact minimax clock
+- [x] formalize the finite dimension--resolution squeeze
+- [x] formalize the normalized entropy law
 
 ## Log
 

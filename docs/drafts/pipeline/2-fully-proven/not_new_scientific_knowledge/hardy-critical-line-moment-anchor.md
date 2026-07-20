@@ -1,7 +1,8 @@
 # Hardy critical-line moment anchor: first unconditional divisor theorem for the corpus
 
 - **ID:** hardy-critical-line-moment-anchor
-- **Stage:** 2-fully-proven (paper proof closed 2026-07-18; Lean formalization pending)
+- **Stage:** 2-fully-proven (paper proof closed 2026-07-18; Lean formalization partial:
+  the continuous Hardy-Z substrate is now compiled)
 - **Type:** THEOREM (paper) `[PROVED HERE — dependency-closed assembly]`; THEOREM (Lean) pending; `[LITERATURE]` result (Hardy 1914), honestly `not_new_scientific_knowledge`
 - **Source:** Hardy 1914; Titchmarsh *Theory of the Riemann Zeta-Function* Ch. 10
   (Thm 10.1: `N_0(T) -> infinity`); Ivić Ch. 11. Corpus substrate:
@@ -156,20 +157,18 @@ divisor data fed in.
   `x = √(t/2π)` is the new content); (ii) van der Corput first/second-derivative
   tests written out (elementary); (iii) `θ'`,`θ''` asymptotics from mathlib Stirling.
 - [ ] 2 → 3: Lean. Ordered build list:
-  (a) `VanDerCorput.lean`: first/second derivative tests (only new analytic lemma);
-  (b) `HardyZ.lean`: `hardyZ` def, reality from FE, continuity, zeros ↔ line zeros;
+  (a) `VanDerCorput.lean` plus the weighted/second-derivative modules: first/second derivative
+  tests **DONE IN THE LIVE CORPUS**;
+  (b) `HardyZ.lean`, `HardyZThetaTrace.lean`, and `HardyZSignChange.lean`: `hardyZ` def,
+  reality from FE, continuity, zeros ↔ line zeros, exact positive-theta value/sign/zero interfaces,
+  the moment-gap-to-actual-zeta-zero Prop consumer, and a finite symmetrized-EM sign certificate
+  with explicit pointwise error margins **DONE**;
   (c) `SymmetricAFE.lean`: Lemma A (keystone);
   (d) `ZetaSecondMomentLower.lean` / `ZetaFourthMoment.lean`: Lemmas C, F (reuse
   `SecondMoment.lean`, `FourthMomentDiagonal.fourthMoment_bounded` — NOTE its
   `σ > 1/2` hypothesis: the line case needs the limit/perturbation adapter);
   (e) `ZMeanLemma.lean`: Lemma E; (f) `HardyTheorem.lean`: assembly + dyadic
   corollary `N₀(T) ≥ c log T`. Then lint + `#print axioms`.
-- [ ] 2 → 3: Lean. Ordered build list:
-  (a) `HardyZ.lean`: def `hardyZ`, reality from FE, continuity, `zeros(hardyZ) ↔ line zeros`;
-  (b) `ZetaSecondMomentLower.lean`: step 2 (reuse SecondMoment.lean discrete MV);
-  (c) `ZetaConvexityBound.lean`: step 3;
-  (d) `ZMeanLemma.lean`: step 1 (heaviest);
-  (e) `HardyTheorem.lean`: step 4 + dyadic corollary. Then lint + `#print axioms`.
 - [ ] 3 → 4: publication-ready as formalization (novelty: first Lean Hardy theorem;
   honestly `not_new_scientific_knowledge` as mathematics).
 
@@ -204,6 +203,24 @@ estimate needs, (iii) a falsification lab with real external scoreboards.
   Z function + assembly**. Paper proof closes next session; no Lean before that
   (Gate 4). Competitor lanes checked: fable = parity/divisibility cluster,
   gpt = Carleson cancellation — no collision.
+- 2026-07-19 — The `HardyZ.lean` substrate is formalized.  A general unitary
+  reflection-phase-halving law now covers both `gN` and zeta; the explicit normalized Gamma phase
+  gives a globally continuous square root of `zetaChi`, and `hardyZ` has exact zeta-zero, Xi-zero,
+  norm-square, continuity, and interval-integrability interfaces.  `HardyZThetaTrace.lean` now
+  identifies this same value with the positive theta-cusp cosine trace, including exact sign and
+  zeta-zero reflections; `HardyZSignChange.lean` closes a Hardy moment gap into an actual zeta zero
+  on the same interval.  The symmetric AFE and moment estimates remain the open analytic core.
+- 2026-07-19 — The same substrate now discharges its first-jet interfaces: the normalized Gamma
+  phase, zeta line restriction, Hardy Z, continuously oriented finite carriers, and nontrivial
+  symmetrized-EM approximants are differentiable.  General phase-halving product-rule and
+  even-value-to-odd-derivative laws yield exact derivative reflections and stationary-centre
+  corollaries.  This closes regularity bookkeeping for later derivative arguments but does not
+  replace the missing height-dependent symmetric AFE.
+- 2026-07-19 — Live-corpus reconciliation also discharges the derivative-test item:
+  `VanDerCorput.lean`, `VanDerCorputSecond.lean`, and the weighted second-derivative modules already
+  provide the required first/second derivative integral bounds.  This is existing corpus support,
+  not new work from this card.  The first genuinely missing module in the ordered chain is now the
+  height-dependent symmetric AFE.
 
 ## Lemma A derivation route (session-2 FINAL: smooth AFE, never sharpened)
 

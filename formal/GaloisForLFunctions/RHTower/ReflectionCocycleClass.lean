@@ -17,8 +17,9 @@ weld class* rather than a postulated shape.
   real-`rpow` injectivity in the base at a nonzero exponent.  Nondegeneracy is discharged for class
   members from the structure theorem: a nonzero member has finite-support integer coefficients with
   `a 1 = 1`, so along the real axis it tends to `1` and is nonzero at some large argument.
-* For `riemannZeta` the reflection cocycle is a pure archimedean Gamma quotient
-  `Gammaℝ(s)/Gammaℝ(1−s)`, whose rate-lattice content is zero.
+* For `riemannZeta` the reflection cocycle is the pure archimedean Gamma quotient
+  `Gammaℝ(s)/Gammaℝ(1−s)` off the zeta zero locus and is zero exactly on that locus; its
+  rate-lattice content away from zeros is zero.
 
 Thus the functional equation enters the weld category as a class to be computed: exact-conductor
 members carry the nonzero weld ray `log Q`, additive under convolution, while `ζ`'s datum is purely
@@ -43,29 +44,182 @@ formed without choosing any completion.  A completion factor is exactly a trivia
 cocycle; its fixed-point value `h_F(1/2)` carries the completion-parity bit. -/
 def reflCocycle (F : ℂ → ℂ) : ℂ → ℂ := fun s => F (1 - s) / F s
 
-/-- **The reflection cocycle is multiplicative in the carrier.**  At a point where both carriers are
-nonzero, the cocycle of a product is the product of the cocycles:
+/-- **The reflection cocycle is unconditionally multiplicative in the carrier.** The cocycle of a
+product is the product of the cocycles:
 `h_{F·G}(s) = h_F(s)·h_G(s)`.  This is field algebra: `F(1−s)G(1−s)/(F(s)G(s))` distributes over the
-two quotients. -/
-theorem reflCocycle_mul {F G : ℂ → ℂ} {s : ℂ} (hF : F s ≠ 0) (hG : G s ≠ 0) :
+two quotients. Totalized inversion makes the identity valid even at zeros, so no nonvanishing
+hypothesis is needed. -/
+theorem reflCocycle_mul {F G : ℂ → ℂ} {s : ℂ} :
     reflCocycle (fun z => F z * G z) s = reflCocycle F s * reflCocycle G s := by
+  simp only [reflCocycle, div_eq_mul_inv, mul_inv_rev]
+  ring
+
+/-- **Bundled multiplicative reflection law.** At every point, the intrinsic reflection cocycle is
+a zero-preserving monoid homomorphism from carriers under pointwise multiplication to complex
+values. This packages the unconditional product law and discharges the multiplicativity interface
+needed by downstream character and kernel arguments. -/
+def reflCocycleMonoidWithZeroHom (s : ℂ) : (ℂ → ℂ) →*₀ ℂ where
+  toFun F := reflCocycle F s
+  map_one' := by simp [reflCocycle]
+  map_mul' F G := by
+    simpa only [Pi.mul_apply] using (reflCocycle_mul (F := F) (G := G) (s := s))
+  map_zero' := by simp [reflCocycle]
+
+/-- **The reflection cocycle sends carrier quotients to cocycle quotients unconditionally.**
+`h_(F/G)(s) = h_F(s) / h_G(s)` holds even at zeros, by the totalized inverse laws in the ambient
+field. Together with `reflCocycle_mul`, this makes the reflection cocycle an exact multiplicative
+and quotient-compatible operation on all carriers. -/
+theorem reflCocycle_div {F G : ℂ → ℂ} {s : ℂ} :
+    reflCocycle (fun z ↦ F z / G z) s =
+      reflCocycle F s / reflCocycle G s := by
+  simp only [reflCocycle, div_eq_mul_inv, mul_inv_rev, inv_inv]
+  ring
+
+/-- **Unconditional value-reflection law.** Reflecting the argument of an intrinsic reflection
+cocycle inverts its value:
+`h_F(1-s) = h_F(s)⁻¹`. This is stronger than the usual nonvanishing cocycle identity
+`h_F(s) h_F(1-s) = 1`: it remains exact at every zero because inversion is totalized in `ℂ`. -/
+theorem reflCocycle_one_sub (F : ℂ → ℂ) (s : ℂ) :
+    reflCocycle F (1 - s) = (reflCocycle F s)⁻¹ := by
+  simp only [reflCocycle, show (1 : ℂ) - (1 - s) = s from by ring,
+    div_eq_mul_inv, mul_inv_rev, inv_inv]
+
+/-- **Exact cocycle-zero support law.** For an arbitrary carrier, the totalized reflection
+cocycle vanishes exactly when either endpoint of the reflected pair is a carrier zero. Thus its
+zero set is precisely the reflection-saturation of the carrier zero set, with no functional
+equation or nonvanishing premise. -/
+theorem reflCocycle_eq_zero_iff {F : ℂ → ℂ} {s : ℂ} :
+    reflCocycle F s = 0 ↔ F (1 - s) = 0 ∨ F s = 0 := by
+  exact (div_eq_zero_iff : F (1 - s) / F s = 0 ↔ _)
+
+/-- **Exact reflection-law evaluation, including zeros.** If a carrier obeys a pointwise
+reflection law with multiplier `H`, then its intrinsic cocycle is `H` precisely off the carrier
+zero locus and is zero on that locus. This is the unconditional normal form behind every
+functional-equation cocycle calculation; no multiplier or carrier nonvanishing premise is needed. -/
+theorem reflCocycle_eq_ite_of_reflection
+    {F H : ℂ → ℂ} {s : ℂ} (hF : F (1 - s) = H s * F s) :
+    reflCocycle F s = if F s = 0 then 0 else H s := by
+  rw [reflCocycle, hF]
+  by_cases hFs : F s = 0 <;> simp [hFs]
+
+/-- **Exact zero reflection interface.** Under a nonzero pointwise reflection multiplier, the
+intrinsic cocycle vanishes exactly on the unreflected carrier zero locus. -/
+theorem reflCocycle_eq_zero_iff_of_reflection
+    {F H : ℂ → ℂ} {s : ℂ}
+    (hF : F (1 - s) = H s * F s) (hH : H s ≠ 0) :
+    reflCocycle F s = 0 ↔ F s = 0 := by
+  rw [reflCocycle_eq_zero_iff, hF]
+  simp [hH]
+
+/-- **Unconditional exact pointwise kernel law.** The reflection cocycle is trivial exactly when
+the carrier is nonzero at the unreflected point and its two reflected values agree. Thus the
+nonvanishing premise in the usual kernel statement is not external data: it is forced by cocycle
+triviality itself. -/
+theorem reflCocycle_eq_one_iff {F : ℂ → ℂ} {s : ℂ} :
+    reflCocycle F s = 1 ↔ F s ≠ 0 ∧ F (1 - s) = F s := by
+  constructor
+  · intro h
+    have hne : F s ≠ 0 := by
+      intro hzero
+      simp [reflCocycle, hzero] at h
+    exact ⟨hne, (div_eq_one_iff_eq hne).mp h⟩
+  · rintro ⟨hne, heq⟩
+    simpa only [reflCocycle] using (div_eq_one_iff_eq hne).mpr heq
+
+/-- **Nonvanishing pointwise kernel law.** At a nonzero carrier value, the reflection cocycle is
+trivial exactly when the carrier value is fixed by reflection. -/
+theorem reflCocycle_eq_one_iff_reflection_fixed
+    {F : ℂ → ℂ} {s : ℂ} (hFs : F s ≠ 0) :
+    reflCocycle F s = 1 ↔ F (1 - s) = F s := by
+  rw [reflCocycle_eq_one_iff]
+  exact and_iff_right hFs
+
+/-- **Global kernel classification without external hypotheses.** An intrinsic reflection cocycle
+is identically trivial exactly when its carrier is nowhere zero and reflection-invariant. Both
+parts of the usual kernel interface are therefore consequences of cocycle triviality. -/
+theorem reflCocycle_eq_one_iff_reflectionInvariant (F : ℂ → ℂ) :
+    (∀ s, reflCocycle F s = 1) ↔
+      (∀ s, F s ≠ 0) ∧ ∀ s, F (1 - s) = F s := by
+  constructor
+  · intro h
+    exact ⟨fun s ↦ (reflCocycle_eq_one_iff.mp (h s)).1,
+      fun s ↦ (reflCocycle_eq_one_iff.mp (h s)).2⟩
+  · rintro ⟨hne, hfix⟩ s
+    exact reflCocycle_eq_one_iff.mpr ⟨hne s, hfix s⟩
+
+/-- **Denominator-free pointwise fiber law.** At a point where the two carrier values are nonzero,
+their reflection cocycles agree exactly when their reflected and unreflected values satisfy the
+cross relation. No nonvanishing hypothesis at the reflected point is needed. -/
+theorem reflCocycle_eq_iff_cross_mul
+    {F G : ℂ → ℂ} {s : ℂ} (hFs : F s ≠ 0) (hGs : G s ≠ 0) :
+    reflCocycle F s = reflCocycle G s ↔
+      F (1 - s) * G s = G (1 - s) * F s := by
   simp only [reflCocycle]
-  field_simp
+  exact div_eq_div_iff hFs hGs
+
+/-- **Exact pointwise fiber law.** Two nonvanishing carriers have the same reflection cocycle at
+`s` exactly when their quotient is fixed by reflection there. Thus common-completion blindness is
+the full kernel of the cocycle map, not merely a family of counterexamples. -/
+theorem reflCocycle_eq_iff_div_reflection_fixed
+    {F G : ℂ → ℂ} {s : ℂ}
+    (hFs : F s ≠ 0) (hGs : G s ≠ 0) (hG1 : G (1 - s) ≠ 0) :
+    reflCocycle F s = reflCocycle G s ↔
+      F (1 - s) / G (1 - s) = F s / G s := by
+  rw [reflCocycle_eq_iff_cross_mul hFs hGs, div_eq_div_iff hG1 hGs]
+  simp only [mul_comm]
+
+/-- **Global reflection-cocycle fiber classification.** For nowhere-vanishing carriers, equality
+of the entire cocycles is equivalent to pointwise reflection invariance of their quotient. -/
+theorem reflCocycle_eq_iff_div_reflectionInvariant
+    {F G : ℂ → ℂ} (hF : ∀ s, F s ≠ 0) (hG : ∀ s, G s ≠ 0) :
+    reflCocycle F = reflCocycle G ↔
+      ∀ s, F (1 - s) / G (1 - s) = F s / G s := by
+  constructor
+  · intro h s
+    apply (reflCocycle_eq_iff_div_reflection_fixed
+      (hF s) (hG s) (hG (1 - s))).mp
+    exact congrFun h s
+  · intro h
+    funext s
+    exact (reflCocycle_eq_iff_div_reflection_fixed
+      (hF s) (hG s) (hG (1 - s))).mpr (h s)
 
 /-! ### §2 The exact-conductor collapse -/
 
-/-- **The reflection cocycle of an exact-conductor member is a pure power.**  If `f` satisfies the
-degree-zero equation `f s = Q^{1−2s}·f (1−s)` with `Q ≥ 2` and `f s ≠ 0`, then
-`h_f(s) = Q^{2s−1}`.  Cross-multiplying `f(1−s)/f(s) = Q^{2s−1}` by `f s` and substituting the
-functional equation, the exponents combine `Q^{2s−1}·Q^{1−2s} = Q^0 = 1`, leaving `f(1−s)`.  The
-rate-lattice content of the cocycle is the single scale `log Q`. -/
-theorem reflCocycle_of_conductor {f : ℂ → ℂ} {Q : ℕ} (hQ : 2 ≤ Q)
+/-- **Unconditional exact-conductor cocycle normal form.** If `f` satisfies the degree-zero
+equation `f s = Q^{1−2s}·f (1−s)`, then its cocycle is the conductor power `Q^{2s−1}` off the
+carrier zero locus and zero on that locus. This follows by evaluating the same functional equation
+at `1-s`; no size or nonvanishing assumption on `Q` or `f s` is needed. -/
+theorem reflCocycle_of_conductor_eq_ite {f : ℂ → ℂ} {Q : ℕ}
+    (hfe : ∀ s, f s = (Q : ℂ) ^ (1 - 2 * s) * f (1 - s)) {s : ℂ} :
+    reflCocycle f s =
+      if f s = 0 then 0 else (Q : ℂ) ^ (2 * s - 1) := by
+  have hreflect : f (1 - s) = (Q : ℂ) ^ (2 * s - 1) * f s := by
+    simpa only [show (1 : ℂ) - 2 * (1 - s) = 2 * s - 1 by ring,
+      show (1 : ℂ) - (1 - s) = s by ring] using hfe (1 - s)
+  exact reflCocycle_eq_ite_of_reflection
+    (F := f) (H := fun z => (Q : ℂ) ^ (2 * z - 1)) hreflect
+
+/-- **The reflection cocycle of an exact-conductor member is a pure power.** If `f` satisfies the
+degree-zero equation `f s = Q^{1−2s}·f (1−s)` and `f s ≠ 0`, then
+`h_f(s) = Q^{2s−1}`. This is the nonzero branch of the unconditional piecewise normal form above;
+the rate-lattice content of the cocycle is the single scale `log Q`. -/
+theorem reflCocycle_of_conductor {f : ℂ → ℂ} {Q : ℕ}
     (hfe : ∀ s, f s = (Q:ℂ)^(1 - 2*s) * f (1-s)) {s : ℂ} (hfs : f s ≠ 0) :
     reflCocycle f s = (Q:ℂ)^(2*s - 1) := by
-  have hQ0 : (Q:ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-  simp only [reflCocycle]
-  rw [div_eq_iff hfs, hfe s, ← mul_assoc, ← Complex.cpow_add _ _ hQ0,
-    show (2*s - 1) + (1 - 2*s) = (0:ℂ) from by ring, Complex.cpow_zero, one_mul]
+  simpa only [if_neg hfs] using reflCocycle_of_conductor_eq_ite hfe (s := s)
+
+/-- **Exact-conductor zero reflection.** For a nonzero natural conductor, the intrinsic cocycle
+vanishes exactly at zeros of the carrier. Thus the traditional carrier nonvanishing premise is a
+decidable stratum of the cocycle value, not additional functional-equation data. -/
+theorem reflCocycle_of_conductor_eq_zero_iff {f : ℂ → ℂ} {Q : ℕ} (hQ : Q ≠ 0)
+    (hfe : ∀ s, f s = (Q : ℂ) ^ (1 - 2 * s) * f (1 - s)) {s : ℂ} :
+    reflCocycle f s = 0 ↔ f s = 0 := by
+  rw [reflCocycle_of_conductor_eq_ite hfe]
+  have hQ0 : (Q : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hQ
+  by_cases hfs : f s = 0
+  · simp [hfs]
+  · simp [hfs, (Complex.cpow_ne_zero_iff).2 (Or.inl hQ0)]
 
 /-! ### §3 Conductors multiply under convolution -/
 
@@ -211,17 +365,14 @@ theorem conductorClass_ne_zero {Q : ℕ} (hQ : 2 ≤ Q) : weldClassHom (Real.log
 
 /-! ### §7 Zeta's reflection cocycle is purely archimedean -/
 
-/-- **The reflection cocycle of `ζ` is a pure archimedean Gamma quotient.**  On the open critical
-strip, where `ζ(s) ≠ 0` and both `Gammaℝ(s), Gammaℝ(1−s)` are nonzero,
-`h_ζ(s) = Gammaℝ(s)/Gammaℝ(1−s)`.  From `Gammaℝ(z)·ζ(z) = completedRiemannZeta(z)` at `z = s` and
-`z = 1−s`, together with `completedRiemannZeta(1−s) = completedRiemannZeta(s)`, one has
-`Gammaℝ(1−s)·ζ(1−s) = Gammaℝ(s)·ζ(s)`; cross-multiplying gives the quotient.  The rate-lattice
-content of `ζ`'s reflection cocycle is therefore zero: the functional-equation datum of `ζ` is
-purely archimedean, while every exact-conductor member carries the nonzero weld ray `log Q`, additive
-under Dirichlet convolution.  The functional-equation shape is a computed weld class, not an
-axiom. -/
-theorem reflCocycle_zeta {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1) (hζ : riemannZeta s ≠ 0) :
-    reflCocycle riemannZeta s = Complex.Gammaℝ s / Complex.Gammaℝ (1 - s) := by
+/-- **Exact open-strip zeta value reflection.** Throughout the open critical strip, including at
+zeta zeros, reflection multiplies `ζ(s)` by the pure archimedean ratio
+`Gammaℝ(s)/Gammaℝ(1-s)`. This is the denominator-free value law underlying the zeta cocycle; no
+zeta nonvanishing premise is needed. -/
+theorem riemannZeta_one_sub_eq_gammaRatio_mul {s : ℂ}
+    (h0 : 0 < s.re) (h1 : s.re < 1) :
+    riemannZeta (1 - s) =
+      (Complex.Gammaℝ s / Complex.Gammaℝ (1 - s)) * riemannZeta s := by
   have hsne : s ≠ 0 := by intro h; rw [h] at h0; simp at h0
   have h1re : 0 < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
   have h1ne : (1 - s) ≠ 0 := by intro h; rw [h] at h1re; simp at h1re
@@ -233,36 +384,154 @@ theorem reflCocycle_zeta {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1) (hζ : rieman
     rw [riemannZeta_def_of_ne_zero hz]; field_simp
   have hfe : Complex.Gammaℝ (1 - s) * riemannZeta (1 - s) = Complex.Gammaℝ s * riemannZeta s := by
     rw [key (1 - s) h1ne hΓ1, key s hsne hΓs, completedRiemannZeta_one_sub]
-  simp only [reflCocycle]
-  rw [div_eq_div_iff hζ hΓ1]
+  field_simp [hΓ1]
   linear_combination hfe
+
+/-- **Open-strip zeta-zero reflection.** Functional-equation reflection preserves the zeta zero
+locus exactly; the archimedean multiplier is nowhere zero in the open strip. -/
+theorem riemannZeta_one_sub_eq_zero_iff {s : ℂ}
+    (h0 : 0 < s.re) (h1 : s.re < 1) :
+    riemannZeta (1 - s) = 0 ↔ riemannZeta s = 0 := by
+  rw [riemannZeta_one_sub_eq_gammaRatio_mul h0 h1]
+  have h1re : 0 < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
+  have hΓs : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos h0
+  have hΓ1 : Complex.Gammaℝ (1 - s) ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos h1re
+  simp [hΓs, hΓ1]
+
+/-- **Unconditional open-strip zeta cocycle normal form.** The totalized reflection cocycle of
+`ζ` is the archimedean Gamma ratio off the zeta zero locus and is zero exactly on that locus. This
+is the sharp replacement for externally assuming `ζ(s) ≠ 0`. -/
+theorem reflCocycle_zeta_eq_ite {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1) :
+    reflCocycle riemannZeta s =
+      if riemannZeta s = 0 then 0
+      else Complex.Gammaℝ s / Complex.Gammaℝ (1 - s) := by
+  exact reflCocycle_eq_ite_of_reflection
+    (F := riemannZeta)
+    (H := fun z => Complex.Gammaℝ z / Complex.Gammaℝ (1 - z))
+    (riemannZeta_one_sub_eq_gammaRatio_mul h0 h1)
+
+/-- **Exact cocycle-zero/zeta-zero interface.** In the open critical strip the intrinsic
+reflection cocycle vanishes exactly at zeros of `ζ`. -/
+theorem reflCocycle_zeta_eq_zero_iff {s : ℂ}
+    (h0 : 0 < s.re) (h1 : s.re < 1) :
+    reflCocycle riemannZeta s = 0 ↔ riemannZeta s = 0 := by
+  rw [reflCocycle_eq_zero_iff, riemannZeta_one_sub_eq_zero_iff h0 h1]
+  simp
+
+/-- **The nonzero branch of zeta's pure archimedean cocycle.** Away from a zeta zero in the open
+critical strip, `h_ζ(s) = Gammaℝ(s)/Gammaℝ(1-s)`. The rate-lattice content is therefore zero while
+exact-conductor members carry the nonzero weld ray `log Q`. -/
+theorem reflCocycle_zeta {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1)
+    (hζ : riemannZeta s ≠ 0) :
+    reflCocycle riemannZeta s = Complex.Gammaℝ s / Complex.Gammaℝ (1 - s) := by
+  simpa only [if_neg hζ] using reflCocycle_zeta_eq_ite h0 h1
 
 /-! ### §8 Common-completion ratio blindness -/
 
-/-- **A common reflection multiplier cancels from a quotient.**  If two carriers have the same
-nonzero pointwise reflection multiplier, then their quotient is fixed by reflection at that point.
-This is the algebraic mechanism behind common-completion counterexamples: dividing two arithmetic
-carriers with identical conductor and archimedean data erases the entire functional-equation
-factor. -/
+/-- **Exact zero-sensitive common-reflection classifier.** If two carriers obey one common
+pointwise reflection multiplier, then their cocycles agree exactly in either of two situations:
+the common multiplier vanishes, or the two unreflected carrier values have the same zero status.
+Indeed each cocycle value is the multiplier at a nonzero carrier value and zero at a zero carrier
+value. This removes all carrier nonvanishing hypotheses while recording the precise exceptional
+locus rather than hiding it. -/
+theorem reflCocycle_eq_iff_of_common_reflection
+    {F G H : ℂ → ℂ} {s : ℂ}
+    (hF : F (1 - s) = H s * F s)
+    (hG : G (1 - s) = H s * G s) :
+    reflCocycle F s = reflCocycle G s ↔
+      H s = 0 ∨ (F s = 0 ↔ G s = 0) := by
+  rw [reflCocycle, reflCocycle, hF, hG]
+  by_cases hH : H s = 0
+  · simp [hH]
+  · have hH' : (0 : ℂ) ≠ H s := Ne.symm hH
+    by_cases hFs : F s = 0 <;>
+      by_cases hGs : G s = 0 <;> simp [hH, hH', hFs, hGs]
+
+/-- **Common reflection multipliers have identical cocycles without multiplier nonvanishing.** If
+two carriers obey the same pointwise reflection law and their unreflected values are nonzero, then
+their intrinsic reflection cocycles agree. The common multiplier may vanish: in that case both
+reflected values vanish and the common cocycle value is zero. This is the sharp denominator-free
+form of common-completion blindness. -/
+theorem reflCocycle_eq_of_common_reflection
+    {F G H : ℂ → ℂ} {s : ℂ}
+    (hF : F (1 - s) = H s * F s)
+    (hG : G (1 - s) = H s * G s)
+    (hF0 : F s ≠ 0) (hG0 : G s ≠ 0) :
+    reflCocycle F s = reflCocycle G s := by
+  apply (reflCocycle_eq_iff_of_common_reflection hF hG).2
+  right
+  simp [hF0, hG0]
+
+/-- **Exact zero-sensitive quotient-reflection classifier.** Under a common reflection law, the
+carrier quotient is reflection-fixed exactly when the multiplier is nonzero or one of the two
+unreflected carrier values vanishes. A zero multiplier collapses the reflected quotient to zero,
+so outside the carrier zero locus it is the precise obstruction to quotient invariance. -/
+theorem ratio_one_sub_eq_iff_of_common_reflection
+    {F G H : ℂ → ℂ} {s : ℂ}
+    (hF : F (1 - s) = H s * F s)
+    (hG : G (1 - s) = H s * G s) :
+    F (1 - s) / G (1 - s) = F s / G s ↔
+      H s ≠ 0 ∨ F s = 0 ∨ G s = 0 := by
+  rw [hF, hG]
+  by_cases hH0 : H s = 0
+  · rw [hH0]
+    simp only [zero_mul, zero_div, ne_eq, not_true_eq_false, false_or]
+    rw [eq_comm (a := 0) (b := F s / G s)]
+    exact (div_eq_zero_iff :
+      F s / G s = (0 : ℂ) ↔ F s = 0 ∨ G s = 0)
+  · have hratio : H s * F s / (H s * G s) = F s / G s := by
+      simp only [div_eq_mul_inv, mul_inv_rev]
+      calc
+        H s * F s * ((G s)⁻¹ * (H s)⁻¹) =
+            (H s * (H s)⁻¹) * (F s * (G s)⁻¹) := by ring
+        _ = F s * (G s)⁻¹ := by rw [mul_inv_cancel₀ hH0, one_mul]
+    simp [hratio, hH0]
+
+/-- **A common nonzero reflection multiplier cancels from a quotient.** No carrier
+nonvanishing premise is needed: at a zero denominator both totalized quotients vanish. This is the
+algebraic mechanism behind common-completion counterexamples: dividing two arithmetic carriers
+with identical conductor and archimedean data erases the entire functional-equation factor. -/
 theorem ratio_one_sub_eq_of_common_reflection
     {F G H : ℂ → ℂ} {s : ℂ}
     (hF : F (1 - s) = H s * F s)
     (hG : G (1 - s) = H s * G s)
-    (hH : H s ≠ 0) (hG0 : G s ≠ 0) :
+    (hH : H s ≠ 0) :
     F (1 - s) / G (1 - s) = F s / G s := by
-  rw [hF, hG]
-  field_simp
+  exact (ratio_one_sub_eq_iff_of_common_reflection hF hG).2 (Or.inl hH)
 
-/-- **The reflection cocycle is blind to common-completion quotients.**  Under the same hypotheses
-as `ratio_one_sub_eq_of_common_reflection`, and away from zeros of both carriers, the intrinsic
-reflection cocycle of `F/G` is exactly `1`. -/
+/-- **Exact common-completion quotient kernel.** Under a shared reflection law, the quotient
+cocycle is trivial exactly when the common multiplier and both unreflected carrier values are
+nonzero. This is the sharp boundary: failure of any one factor makes the totalized quotient
+cocycle zero rather than one. -/
+theorem reflCocycle_div_eq_one_iff_of_common_reflection
+    {F G H : ℂ → ℂ} {s : ℂ}
+    (hF : F (1 - s) = H s * F s)
+    (hG : G (1 - s) = H s * G s) :
+    reflCocycle (fun z => F z / G z) s = 1 ↔
+      H s ≠ 0 ∧ F s ≠ 0 ∧ G s ≠ 0 := by
+  rw [reflCocycle_eq_one_iff]
+  rw [ratio_one_sub_eq_iff_of_common_reflection hF hG]
+  constructor
+  · rintro ⟨hQ0, hcases⟩
+    have hF0 : F s ≠ 0 := by
+      intro hzero
+      exact hQ0 (by simp [hzero])
+    have hG0 : G s ≠ 0 := by
+      intro hzero
+      exact hQ0 (by simp [hzero])
+    exact ⟨hcases.resolve_right (by simp [hF0, hG0]), hF0, hG0⟩
+  · rintro ⟨hH, hF0, hG0⟩
+    exact ⟨div_ne_zero hF0 hG0, Or.inl hH⟩
+
+/-- **The reflection cocycle is blind to nonvanishing common-completion quotients.** Under the
+sharp hypotheses classified above, the intrinsic reflection cocycle of `F/G` is exactly `1`. -/
 theorem reflCocycle_div_eq_one_of_common_reflection
     {F G H : ℂ → ℂ} {s : ℂ}
     (hF : F (1 - s) = H s * F s)
     (hG : G (1 - s) = H s * G s)
     (hH : H s ≠ 0) (hF0 : F s ≠ 0) (hG0 : G s ≠ 0) :
     reflCocycle (fun z => F z / G z) s = 1 := by
-  rw [reflCocycle, ratio_one_sub_eq_of_common_reflection hF hG hH hG0]
-  exact div_self (div_ne_zero hF0 hG0)
+  exact (reflCocycle_div_eq_one_iff_of_common_reflection hF hG).2
+    ⟨hH, hF0, hG0⟩
 
 end RHTower

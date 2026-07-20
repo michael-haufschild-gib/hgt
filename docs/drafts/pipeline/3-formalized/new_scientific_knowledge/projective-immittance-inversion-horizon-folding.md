@@ -1,15 +1,15 @@
 # Projective immittance charts have an exact inversion-horizon folding locus
 
 - **ID:** `projective-immittance-inversion-horizon-folding`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized/new_scientific_knowledge
 - **Type:** GENERAL HT THEOREM / PROJECTIVE CHART CLASSIFICATION / SMITH-CHART SYNTHESIS
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC SYNTHESIS] [NOT RH]`
+- **Scientific status:** `[FORMALIZED UNCONDITIONALLY] [CANDIDATE NEW SCIENTIFIC SYNTHESIS] [NOT RH]`
 - **Novelty boundary:** the Smith impedance/admittance half-turn, conjugation of Möbius maps, and
   differential Lüroth theory are classical.  The candidate-new statement is the exact folding
   locus for the positive-order HT jet-tail flag, together with the resulting collapse of a pair of
   complementary HT horizons.  It depends on the candidate-new projective jet-horizon stabilizer
   theorem and is not claimed as an independent new mathematical core.
-- **Parents:** `../../3-formalized/new_scientific_knowledge/projective-jet-horizon-stabilizer-law.md`,
+- **Parents:** `projective-jet-horizon-stabilizer-law.md`,
   `ProjectiveHorizonComplementarity.lean`, `ExponentialObservationHypertranscendence.lean`
 - **Formal target:** `formal/GaloisForLFunctions/HTGeometry/ProjectiveImmittanceHorizon.lean`
 
@@ -211,6 +211,27 @@ classifiers, or no-go mechanisms around that core.
 - [x] external parent and exact-statement search
 - [x] hostile collision and falsification audit
 - [x] dependency-closed paper proof
-- [ ] unconditional Lean formalization
-- [ ] isolated source check, targeted module build, lint, and axiom audit
+- [x] unconditional Lean formalization
+- [x] isolated source check
+- [x] targeted module build
+- [x] generated indexes refreshed and the new module is reachable from the HTGeometry umbrella
+- [x] axiom audit
+- [ ] repository-wide lint green (blocked only by unrelated universal-phase and prime-radial
+  umbrella debt listed below)
 
+## Verification
+
+- `lake env lean GaloisForLFunctions/HTGeometry/ProjectiveImmittanceHorizon.lean`: passed with no
+  diagnostics;
+- `lake build GaloisForLFunctions.HTGeometry.ProjectiveImmittanceHorizon`: passed (`8505` jobs);
+- `#print axioms` for the HT-observation theorem, both folding iff theorems, and the Smith
+  complementarity theorem reports only `propext`, `Classical.choice`, and `Quot.sound`;
+- the project lint/index gate was run after formalization; any remaining failures are recorded as
+  unrelated pre-existing or concurrent umbrella/index debt, not silently attributed to this module:
+  `UniversalPhaseCoherenceAvoidance`, `UniversalPhaseCoherenceEntropy`,
+  `UniversalPhaseCoherenceMinimax`, `UniversalPhaseCoherenceTargetMeasure`,
+  `FinitePrimeCoefficientDifferentialField`, `PrimeRadialFusionConductorLaw`,
+  `PrimeRadialFusionFieldCorrespondence`, `PrimeRadialFusionKolchinRank`,
+  `PrimeRadialFusionRankSurfaceLaw`, and `PrimeRadialFusionRankSurfaceRealization`.  Concurrent
+  source edits also made `LEAN_API.md` and `LEAN_OVERVIEW.md` stale during the check-generated scan;
+  the indexer was rerun after that scan.

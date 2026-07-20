@@ -17,6 +17,7 @@ edge reversal is negation and every telescoping cycle is an exact value relation
 namespace RHTower
 
 open Complex
+open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
@@ -116,6 +117,12 @@ def xiPairwiseShiftArchimedeanCorrectionDifference (a b : ℕ) (s : ℂ) : ℂ :
   xiTransverseShiftArchimedeanCorrection a s -
     xiTransverseShiftArchimedeanCorrection b s
 
+/-- Reversing an integral pair negates its archimedean correction difference. -/
+theorem xiPairwiseShiftArchimedeanCorrectionDifference_swap (a b : ℕ) (s : ℂ) :
+    xiPairwiseShiftArchimedeanCorrectionDifference b a s =
+      -xiPairwiseShiftArchimedeanCorrectionDifference a b s := by
+  simp [xiPairwiseShiftArchimedeanCorrectionDifference]
+
 /-- For ordered integral endpoints, the pairwise midpoint reflection is exactly the one-shift
 reflection of their relative shift in the translated coordinate. -/
 theorem xiPairwiseShiftReflection_eq_transverse_relativeShift_of_le
@@ -138,6 +145,21 @@ theorem xiPairwiseShiftArchimedeanCorrectionDifference_eq_relativeShift_of_le
   simpa [Nat.cast_sub hba] using
     forwardDifference_sub_forwardDifference
       (logDeriv archFactor) (a : ℂ) (b : ℂ) s
+
+/-- **Unconditional correction normal form.** Every pairwise archimedean correction is one
+translated nonnegative relative-shift correction, with orientation recorded only by its sign.
+This removes endpoint order from the public correction interface. -/
+theorem xiPairwiseShiftArchimedeanCorrectionDifference_eq_relativeShift
+    (a b : ℕ) (s : ℂ) :
+    xiPairwiseShiftArchimedeanCorrectionDifference a b s =
+      if b ≤ a then xiTransverseShiftArchimedeanCorrection (a - b) (s + b)
+      else -xiTransverseShiftArchimedeanCorrection (b - a) (s + a) := by
+  by_cases hba : b ≤ a
+  · rw [if_pos hba,
+      xiPairwiseShiftArchimedeanCorrectionDifference_eq_relativeShift_of_le a b s hba]
+  · have hab : a ≤ b := Nat.le_of_lt (Nat.lt_of_not_ge hba)
+    rw [if_neg hba, xiPairwiseShiftArchimedeanCorrectionDifference_swap b a,
+      xiPairwiseShiftArchimedeanCorrectionDifference_eq_relativeShift_of_le b a s hab]
 
 /-- Corrected pairwise values are raw pairwise completed-Xi differences minus the exact
 archimedean correction difference. -/
@@ -206,6 +228,15 @@ def xiPairwiseShiftReflectionCocycle (a b : ℕ) (s : ℂ) : ℂ :=
     xiPairwiseShiftArchimedeanCorrectionDifference a b
       (xiPairwiseShiftReflection (a : ℂ) (b : ℂ) s)
 
+/-- Reversing the endpoint orientation negates the induced reflection cocycle. -/
+theorem xiPairwiseShiftReflectionCocycle_swap (a b : ℕ) (s : ℂ) :
+    xiPairwiseShiftReflectionCocycle b a s =
+      -xiPairwiseShiftReflectionCocycle a b s := by
+  simp only [xiPairwiseShiftReflectionCocycle,
+    xiPairwiseShiftArchimedeanCorrectionDifference,
+    xiPairwiseShiftReflection]
+  ring_nf
+
 /-- The pairwise correction cocycle is anti-invariant under its midpoint reflection. -/
 theorem xiPairwiseShiftReflectionCocycle_reflection (a b : ℕ) (s : ℂ) :
     xiPairwiseShiftReflectionCocycle a b
@@ -214,6 +245,17 @@ theorem xiPairwiseShiftReflectionCocycle_reflection (a b : ℕ) (s : ℂ) :
   rw [xiPairwiseShiftReflectionCocycle,
     xiPairwiseShiftReflectionCocycle,
     xiPairwiseShiftReflection_involutive]
+  ring
+
+/-- The pairwise archimedean cocycle vanishes at its reflection midpoint. -/
+theorem xiPairwiseShiftReflectionCocycle_center (a b : ℕ) :
+    xiPairwiseShiftReflectionCocycle a b
+      ((1 - (a : ℂ) - (b : ℂ)) / 2) = 0 := by
+  apply IsAdditiveReflectionCocycle.eq_zero_of_fixed
+    (xiPairwiseShiftReflectionCocycle_reflection a b)
+  change 1 - (a : ℂ) - (b : ℂ) -
+      ((1 - (a : ℂ) - (b : ℂ)) / 2) =
+    (1 - (a : ℂ) - (b : ℂ)) / 2
   ring
 
 /-- The pairwise correction cocycle is the translated one-shift cocycle of the relative shift. -/
@@ -228,6 +270,20 @@ theorem xiPairwiseShiftReflectionCocycle_eq_relativeShift_of_le
     xiPairwiseShiftArchimedeanCorrectionDifference_eq_relativeShift_of_le
       a b (xiPairwiseShiftReflection (a : ℂ) (b : ℂ) s) hba,
     xiPairwiseShiftReflection_eq_transverse_relativeShift_of_le a b s hba]
+
+/-- **Unconditional reflection-cocycle normal form.** Every pairwise correction cocycle is one
+translated one-shift cocycle, with the endpoint orientation contributing exactly a sign. -/
+theorem xiPairwiseShiftReflectionCocycle_eq_relativeShift
+    (a b : ℕ) (s : ℂ) :
+    xiPairwiseShiftReflectionCocycle a b s =
+      if b ≤ a then xiTransverseShiftReflectionCocycle (a - b) (s + b)
+      else -xiTransverseShiftReflectionCocycle (b - a) (s + a) := by
+  by_cases hba : b ≤ a
+  · rw [if_pos hba,
+      xiPairwiseShiftReflectionCocycle_eq_relativeShift_of_le a b s hba]
+  · have hab : a ≤ b := Nat.le_of_lt (Nat.lt_of_not_ge hba)
+    rw [if_neg hba, xiPairwiseShiftReflectionCocycle_swap b a,
+      xiPairwiseShiftReflectionCocycle_eq_relativeShift_of_le b a s hab]
 
 /-- **Corrected pairwise completed-Xi reflection law.** Reflection changes an integral pairwise
 prime defect exactly by its archimedean correction cocycle. -/
@@ -248,6 +304,16 @@ def xiPairwiseCenteredShiftPrimeDifference (a b : ℕ) (s : ℂ) : ℂ :=
   xiPairwiseShiftPrimeDifference a b s +
     (1 / 2 : ℂ) * xiPairwiseShiftReflectionCocycle a b s
 
+/-- Reversing the endpoints negates the half-cocycle-centered pairwise value. -/
+theorem xiPairwiseCenteredShiftPrimeDifference_swap (a b : ℕ) (s : ℂ) :
+    xiPairwiseCenteredShiftPrimeDifference b a s =
+      -xiPairwiseCenteredShiftPrimeDifference a b s := by
+  rw [xiPairwiseCenteredShiftPrimeDifference,
+    xiPairwiseCenteredShiftPrimeDifference,
+    xiPairwiseShiftPrimeDifference_swap,
+    xiPairwiseShiftReflectionCocycle_swap]
+  ring
+
 /-- **Centered pairwise reflection law.** Half-cocycle centering restores exact reflection
 invariance about `(1-a-b)/2` for every integral shift pair. -/
 theorem xiPairwiseCenteredShiftPrimeDifference_reflection
@@ -255,11 +321,18 @@ theorem xiPairwiseCenteredShiftPrimeDifference_reflection
     xiPairwiseCenteredShiftPrimeDifference a b
         (xiPairwiseShiftReflection (a : ℂ) (b : ℂ) s) =
       xiPairwiseCenteredShiftPrimeDifference a b s := by
-  rw [xiPairwiseCenteredShiftPrimeDifference,
-    xiPairwiseCenteredShiftPrimeDifference,
-    xiPairwiseShiftPrimeDifference_reflection_cocycle,
-    xiPairwiseShiftReflectionCocycle_reflection]
-  ring
+  change xiPairwiseShiftPrimeDifference a b
+        (xiPairwiseShiftReflection (a : ℂ) (b : ℂ) s) +
+      (1 / 2 : ℂ) * xiPairwiseShiftReflectionCocycle a b
+        (xiPairwiseShiftReflection (a : ℂ) (b : ℂ) s) =
+    xiPairwiseShiftPrimeDifference a b s +
+      (1 / 2 : ℂ) * xiPairwiseShiftReflectionCocycle a b s
+  exact (add_half_reflection_fixed_iff
+    (r := xiPairwiseShiftReflection (a : ℂ) (b : ℂ))
+    (f := xiPairwiseShiftPrimeDifference a b)
+    (c := xiPairwiseShiftReflectionCocycle a b)
+    (xiPairwiseShiftReflectionCocycle_reflection a b) s).2
+      (xiPairwiseShiftPrimeDifference_reflection_cocycle a b s)
 
 /-- Half-cocycle centering commutes with the ordered relative-shift reduction. Thus the centered
 pairwise reflection law contains no analytic degree of freedom beyond the one-shift law. -/
@@ -271,6 +344,22 @@ theorem xiPairwiseCenteredShiftPrimeDifference_eq_relativeShift_of_le
     xiTransverseCenteredShiftPrimeDefect,
     xiPairwiseShiftPrimeDifference_eq_relativeShift_of_le a b s hba,
     xiPairwiseShiftReflectionCocycle_eq_relativeShift_of_le a b s hba]
+
+/-- **Unconditional centered-value normal form.** Every centered pairwise Xi prime value is one
+translated centered nonnegative relative-shift defect, with orientation recorded exactly by sign.
+Thus the full centered two-endpoint reflection theory contains no endpoint-order hypothesis and no
+extra analytic degree of freedom beyond the one-shift theory. -/
+theorem xiPairwiseCenteredShiftPrimeDifference_eq_relativeShift
+    (a b : ℕ) (s : ℂ) :
+    xiPairwiseCenteredShiftPrimeDifference a b s =
+      if b ≤ a then xiTransverseCenteredShiftPrimeDefect (a - b) (s + b)
+      else -xiTransverseCenteredShiftPrimeDefect (b - a) (s + a) := by
+  by_cases hba : b ≤ a
+  · rw [if_pos hba,
+      xiPairwiseCenteredShiftPrimeDifference_eq_relativeShift_of_le a b s hba]
+  · have hab : a ≤ b := Nat.le_of_lt (Nat.lt_of_not_ge hba)
+    rw [if_neg hba, xiPairwiseCenteredShiftPrimeDifference_swap b a,
+      xiPairwiseCenteredShiftPrimeDifference_eq_relativeShift_of_le b a s hab]
 
 /-- The pairwise corrected value law recovers the existing one-shift prime defect at tail zero. -/
 @[simp]

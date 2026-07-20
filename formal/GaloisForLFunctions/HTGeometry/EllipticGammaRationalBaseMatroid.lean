@@ -90,6 +90,45 @@ local instance ellipticGammaRationalBaseCoordinateDifferentialAlgebra :
     meromorphicRationalCoordinateField
     meromorphicRationalCoordinateField_derivationClosed x⟩
 
+/-- **The natural rational base preserves the complete meromorphic differential matroid.** The
+matroid of all global meromorphic elements over `ℂ(z)` is exactly its matroid over `ℂ`. Hence every
+closure, circuit, rank, dependence, and relative minor is unchanged by adjoining the coordinate. -/
+theorem differentialMatroid_meromorphicRationalCoordinateField_eq :
+    differentialMatroid meromorphicRationalCoordinateField
+        (meroField (Set.univ : Set ℂ)) =
+      differentialMatroid ℂ (meroField (Set.univ : Set ℂ)) := by
+  apply Matroid.ext_indep
+  · simp [differentialMatroid_ground]
+  · intro I _
+    rw [differentialMatroid_indep_iff,
+      differentialMatroid_indep_iff,
+      ← differentialAdjoin_meromorphicRationalCoordinate_eq]
+    constructor
+    · exact HTGeometry.DifferentialIndependent.restrictScalarsTower
+    · exact fun hI ↦
+        HTGeometry.diffIndepOn_differentialAdjoin_singleton_of_differentialAlgebraicOver
+          differentialAlgebraicOver_meromorphicRationalCoordinate hI
+
+/-- **Exact natural rational-base HT interface.** Adjoining the genuine meromorphic coordinate
+does not change hypertranscendence of any global meromorphic element: `ℂ(z)` is a purely
+differential-algebraic coefficient extension of the constants. -/
+theorem hypertranscendentalOver_meromorphicRationalCoordinateField_iff
+    {x : meroField (Set.univ : Set ℂ)} :
+    HypertranscendentalOver meromorphicRationalCoordinateField x ↔
+      HypertranscendentalOver ℂ x := by
+  rw [← differentialAdjoin_meromorphicRationalCoordinate_eq]
+  exact HTGeometry.hypertranscendentalOver_differentialAdjoinSingleton_iff
+    differentialAlgebraicOver_meromorphicRationalCoordinate
+
+/-- **Exact natural rational-base DA interface.** Differential algebraicity of a global
+meromorphic element is likewise identical over `ℂ(z)` and over the constants. -/
+theorem differentialAlgebraicOver_meromorphicRationalCoordinateField_iff
+    {x : meroField (Set.univ : Set ℂ)} :
+    DifferentialAlgebraicOver meromorphicRationalCoordinateField x ↔
+      DifferentialAlgebraicOver ℂ x := by
+  simpa only [HypertranscendentalOver, not_not] using not_congr
+    (hypertranscendentalOver_meromorphicRationalCoordinateField_iff (x := x))
+
 /-- Additive translation of global meromorphic functions, bundled as a differential
 automorphism over the complex constants. -/
 noncomputable def addTranslationMeroDifferentialAlgEquiv (q : ℂ) :
@@ -121,7 +160,7 @@ theorem exists_thetaTranslationNonresonant (tau sigma : ℂ) :
 nonzero rank-three period cosets are differentially algebraically independent over the genuine
 embedded rational-coordinate field. -/
 theorem ellipticGammaExternalDefectFamily_differentialIndependent_rationalBase
-    {kappa : Type*} [DecidableEq kappa]
+    {kappa : Type*}
     (h : kappa → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
@@ -147,7 +186,7 @@ theorem ellipticGammaExternalDefectFamily_differentialIndependent_rationalBase
 /-- The represented nonlinear differential matroid of every separated external-defect family is
 the free matroid over `ℂ(z)`. -/
 theorem ellipticGammaExternalDefectFamily_differentialMatroid_eq_freeOn_rationalBase
-    {kappa : Type*} [DecidableEq kappa]
+    {kappa : Type*}
     (h : kappa → ℂ) (sigma tau : ℂ)
     (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
     (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
@@ -197,14 +236,7 @@ theorem hypertranscendentalOver_ellipticGammaLogDerivMero_rationalBase
     apply (addTranslationMeroDifferentialAlgEquiv h).hypertranscendentalOver_of_sub_self
     simpa [addTranslationMeroDifferentialAlgEquiv,
       ellipticGammaExternalLogDerivDefectMero] using hdefectConstants
-  rw [hypertranscendentalOver_iff_differentialIndependent_singleton] at hlogConstants
-  rw [hypertranscendentalOver_iff_differentialIndependent_singleton]
-  have hbaseChanged :=
-    HTGeometry.DifferentialIndependent.extendScalarsDifferentialAdjoinSingleton
-      hlogConstants
-      differentialAlgebraicOver_meromorphicRationalCoordinate
-  rw [differentialAdjoin_meromorphicRationalCoordinate_eq] at hbaseChanged
-  exact hbaseChanged
+  exact hypertranscendentalOver_meromorphicRationalCoordinateField_iff.mpr hlogConstants
 
 /-- **Natural-base elliptic-gamma hypertranscendence.**  For rationally independent rank-three
 periods, the genuine meromorphic elliptic-gamma product is hypertranscendental over the embedded

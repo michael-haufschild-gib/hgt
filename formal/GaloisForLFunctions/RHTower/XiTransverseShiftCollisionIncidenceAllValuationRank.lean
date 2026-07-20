@@ -112,6 +112,128 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_allValuation_dif
     (V := V) (L := ℕ) anchor shift 0
     xiTransverseShiftUpperEndCarrier hx0 hx
 
+/-- **All-valuation arbitrary-observation DA law.** Even after every scalar valuation layer is
+adjoined, a corrected Xi value is differentially algebraic over a selected subfamily exactly when
+its shift is zero or its shift label is already observed. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_differentialAlgebraicOver_differentialAdjoin_image_iff_zero_or_observed
+    {V : Type*} (shift : V → ℕ) (I : Set V) (anchor : V) :
+    DifferentialAlgebraicOver
+        (differentialAdjoin analyticScalarValuationLayerDifferentialField
+          ((fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) '' I))
+        (xiTransverseShiftUpperEndCarrier (shift anchor)) ↔
+      shift anchor = 0 ∨ shift anchor ∈ shift '' I := by
+  exact
+    differentialAlgebraicOver_differentialAdjoin_image_iff_loop_or_observedLabel_of_pointedCollisionMatroid
+      (F := analyticScalarValuationLayerDifferentialField)
+      (fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) shift 0 I anchor
+      (xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision
+        shift)
+
+/-- **All-valuation arbitrary-observation HT law.** The marked corrected-Xi value remains
+hypertranscendental over the selected observation field exactly when its positive shift label is
+absent from that packet. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_hypertranscendentalOver_differentialAdjoin_image_iff_pos_unobserved
+    {V : Type*} (shift : V → ℕ) (I : Set V) (anchor : V) :
+    HypertranscendentalOver
+        (differentialAdjoin analyticScalarValuationLayerDifferentialField
+          ((fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) '' I))
+        (xiTransverseShiftUpperEndCarrier (shift anchor)) ↔
+      shift anchor ≠ 0 ∧ shift anchor ∉ shift '' I := by
+  exact
+    hypertranscendentalOver_differentialAdjoin_image_iff_nonloop_unobservedLabel_of_pointedCollisionMatroid
+      (F := analyticScalarValuationLayerDifferentialField)
+      (fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) shift 0 I anchor
+      (xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision
+        shift)
+
+/-- **All-valuation corrected-Xi circuit classification.** The same exact singleton/pair circuit
+spectrum survives after every scalar valuation layer is adjoined to the coefficient field. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_differentialFamilyMatroid_isCircuit_iff
+    {V : Type*} (shift : V → ℕ) (C : Set V) :
+    (differentialFamilyMatroid
+      (F := analyticScalarValuationLayerDifferentialField)
+      (fun v ↦ xiTransverseShiftUpperEndCarrier (shift v))).IsCircuit C ↔
+      (∃ i, C = {i} ∧ shift i = 0) ∨
+        ∃ i j, i ≠ j ∧ C = {i, j} ∧
+          shift i = shift j ∧ shift i ≠ 0 := by
+  rw [xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision,
+    affinePointedCollisionMatroid_isCircuit_iff]
+
+/-- **All-valuation relative corrected-Xi HT spectrum.** Even over the full scalar valuation
+layer, a corrected Xi value is hypertranscendental over every other family value exactly when its
+positive shift label is unique. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_hypertranscendentalOver_differentialAdjoin_compl_iff_unique_pos
+    {V : Type*} (anchor : V) (shift : V → ℕ) :
+    HypertranscendentalOver
+        (differentialAdjoin analyticScalarValuationLayerDifferentialField
+          ((fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) ''
+            (Set.univ \ {anchor})))
+        (xiTransverseShiftUpperEndCarrier (shift anchor)) ↔
+      shift anchor ≠ 0 ∧ ∀ j, shift j = shift anchor → j = anchor := by
+  exact
+    hypertranscendentalOver_differentialAdjoin_compl_iff_unique_nonloop_of_pointedCollisionMatroid
+      (F := analyticScalarValuationLayerDifferentialField)
+      (fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) shift 0 anchor
+      (xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision
+        shift)
+
+/-- Over the full valuation layer, relative differential algebraicity is still exactly zero shift
+or repetition of the anchor's shift label. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_differentialAlgebraicOver_differentialAdjoin_compl_iff_zero_or_repeated
+    {V : Type*} (anchor : V) (shift : V → ℕ) :
+    DifferentialAlgebraicOver
+        (differentialAdjoin analyticScalarValuationLayerDifferentialField
+          ((fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) ''
+            (Set.univ \ {anchor})))
+        (xiTransverseShiftUpperEndCarrier (shift anchor)) ↔
+      shift anchor = 0 ∨ ∃ j, j ≠ anchor ∧ shift j = shift anchor := by
+  exact
+    differentialAlgebraicOver_differentialAdjoin_compl_iff_loop_or_collision_of_pointedCollisionMatroid
+      (F := analyticScalarValuationLayerDifferentialField)
+      (fun v ↦ xiTransverseShiftUpperEndCarrier (shift v)) shift 0 anchor
+      (xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision
+        shift)
+
+/-- **All-valuation exact corrected-Xi common-mode spectrum.** After every scalar valuation layer
+is adjoined, a corrected completed-Xi value is hypertranscendental over the complete pairwise
+reporter exactly when shift zero is absent. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_hypertranscendentalOver_completePairDifferences_iff_zero_not_mem_range
+    {V : Type} (anchor : V) (shift : V → ℕ) :
+    HypertranscendentalOver
+      (differentialAdjoin analyticScalarValuationLayerDifferentialField
+        (Set.range
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift Prod.snd Prod.fst)))
+      (xiTransverseShiftUpperEndCarrier (shift anchor)) ↔
+      0 ∉ Set.range shift := by
+  have hx :=
+    xiTransverseShiftUpperEndCarrier_allValuation_pointedOccupiedLabelSupport_differentialIndependent
+      shift
+  change HypertranscendentalOver
+    (differentialAdjoin analyticScalarValuationLayerDifferentialField
+      (Set.range fun p : V × V ↦
+        xiTransverseShiftUpperEndCarrier (shift p.1) -
+          xiTransverseShiftUpperEndCarrier (shift p.2)))
+    (xiTransverseShiftUpperEndCarrier (shift anchor)) ↔ 0 ∉ Set.range shift
+  exact hypertranscendentalOver_gradedPairwiseDifferences_iff_loop_not_mem_range
+    (F := analyticScalarValuationLayerDifferentialField) (K := upperEndMeroField)
+    anchor shift 0 xiTransverseShiftUpperEndCarrier
+    xiTransverseShiftUpperEndCarrier_zero hx
+
+/-- The corrected-Xi contracted nonloop phase transition survives after adjoining every scalar
+valuation observable to the coefficient field. -/
+theorem xiTransverseShiftUpperEndCarrier_allValuation_contract_completePairDifferences_isNonloop_iff_zero_not_mem_range
+    {V : Type} (anchor : V) (shift : V → ℕ) :
+    (Matroid.contract
+        (differentialMatroid analyticScalarValuationLayerDifferentialField upperEndMeroField)
+        (Set.range
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift Prod.snd Prod.fst))).IsNonloop
+      (xiTransverseShiftUpperEndCarrier (shift anchor)) ↔
+        0 ∉ Set.range shift := by
+  rw [differentialMatroid_contract_isNonloop_iff_hypertranscendentalOver]
+  exact
+    xiTransverseShiftUpperEndCarrier_allValuation_hypertranscendentalOver_completePairDifferences_iff_zero_not_mem_range
+      anchor shift
+
 /-- **All-valuation arbitrary-label Xi incidence law.** Repeated and zero integral shifts are
 classified by the same occupied-label quotient incidence matroid over the enlarged base. -/
 theorem xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollisionIncidenceMatroid

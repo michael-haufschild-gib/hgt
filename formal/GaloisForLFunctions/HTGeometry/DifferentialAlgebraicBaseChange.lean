@@ -3,13 +3,14 @@ import GaloisForLFunctions.HTGeometry.WickContractedMatroidPersistence
 /-!
 # Differential-algebraic coefficient-field base change
 
-Differential independence is insensitive to adjoining a differentially algebraic coefficient.
-The set-valued persistence theorem already proves the matroid statement.  This module closes the
-family/set interface and exposes the coefficient-field law directly for arbitrary indexed
-families.
+Differential independence is insensitive to adjoining any set of differentially algebraic
+coefficients. The set-valued persistence theorem supplies one direction; this module proves the
+exact set and family equivalences, identifies the complete relative differential matroid with the
+original one, and derives arbitrary-observation DA/HT invariance. Contracting such a coefficient
+set is consequently just deleting its loop directions.
 -/
 
-open Set
+open Matroid Set
 open scoped Differential
 
 namespace GaloisForLFunctions.HTGeometry
@@ -60,6 +61,48 @@ theorem diffIndepOn_differentialAdjoin_of_differentialAlgebraicOver
   rw [Set.empty_union] at hstage
   exact hstage
 
+/-- **Exact set-level differential-algebraic base change.** Adjoining an arbitrary set of
+elements individually differentially algebraic over the coefficient field preserves and reflects
+differential independence of every set. -/
+theorem diffIndepOn_differentialAdjoin_iff_of_differentialAlgebraicOver
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {I G : Set E} (hG : ∀ g ∈ G, DifferentialAlgebraicOver F g) :
+    DiffIndepOn (differentialAdjoin F G) I ↔ DiffIndepOn F I := by
+  constructor
+  · exact DifferentialIndependent.restrictScalars
+  · exact fun hI ↦
+      diffIndepOn_differentialAdjoin_of_differentialAlgebraicOver hI hG
+
+/-- **Differential-algebraic base change preserves the entire differential matroid.** If every
+adjoined coefficient is differentially algebraic over `F`, then the relative differential
+matroid over the generated field is exactly the original differential matroid over `F`. This
+single identity simultaneously controls every finite or infinite family, closure, circuit, rank,
+DA, and HT predicate; no independence or finiteness assumption is imposed on the adjoined set. -/
+theorem differentialMatroidOverDifferentialAdjoin_eq_of_differentialAlgebraicOver
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {G : Set E} (hG : ∀ g ∈ G, DifferentialAlgebraicOver F g) :
+    differentialMatroidOverDifferentialAdjoin F E G =
+      differentialMatroid F E := by
+  apply Matroid.ext_indep
+  · simp [differentialMatroid_ground]
+  · intro I _
+    rw [differentialMatroidOverDifferentialAdjoin_indep_iff,
+      differentialMatroid_indep_iff]
+    exact diffIndepOn_differentialAdjoin_iff_of_differentialAlgebraicOver hG
+
+/-- **DA contraction is deletion.** Contracting an arbitrary, possibly infinite and dependent,
+set of elements individually differentially algebraic over the base has no rank effect: it is
+exactly deletion of those loop directions. -/
+theorem differentialMatroid_contract_eq_delete_of_differentialAlgebraicOver
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {G : Set E} (hG : ∀ g ∈ G, DifferentialAlgebraicOver F g) :
+    differentialMatroid F E ／ G = differentialMatroid F E ＼ G := by
+  rw [differentialMatroid_contract_eq_delete_differentialMatroidOverDifferentialAdjoin,
+    differentialMatroidOverDifferentialAdjoin_eq_of_differentialAlgebraicOver hG]
+
 /-- **Arbitrary differential-algebraic base-change law.**  Adjoining any set of elements that
 are individually differentially algebraic over the coefficient field preserves differential
 independence of every indexed family. -/
@@ -79,6 +122,20 @@ theorem DifferentialIndependent.extendScalarsDifferentialAdjoin
     diffIndepOn_differentialAdjoin_of_differentialAlgebraicOver hRange hG
   have h := hRangeBase.comp e e.injective
   simpa [e] using h
+
+/-- **Exact family-level differential-algebraic base change.** Adjoining an arbitrary set of
+differentially algebraic coefficients preserves and reflects joint differential independence of
+every indexed family. -/
+theorem differentialIndependent_differentialAdjoin_iff
+    {F E : Type u} {ι : Type v} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x : ι → E} {G : Set E} (hG : ∀ g ∈ G, DifferentialAlgebraicOver F g) :
+    DifferentialIndependent (differentialAdjoin F G) x ↔
+      DifferentialIndependent F x := by
+  constructor
+  · exact DifferentialIndependent.restrictScalars
+  · exact fun hx ↦
+      DifferentialIndependent.extendScalarsDifferentialAdjoin hx hG
 
 /-- **Differential-algebraic base-change law.**  Adjoining one differentially algebraic element
 to the coefficient field preserves differential independence of an arbitrary indexed family. -/
@@ -115,6 +172,55 @@ theorem hypertranscendentalOver_differentialAdjoin_iff
   · exact DifferentialIndependent.restrictScalars
   · exact fun hx ↦
       DifferentialIndependent.extendScalarsDifferentialAdjoin hx hG
+
+/-- Differential algebraicity is unchanged after adjoining an arbitrary set of coefficients
+that are individually differentially algebraic over the original field. -/
+theorem differentialAlgebraicOver_differentialAdjoin_iff
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x : E} {G : Set E} (hG : ∀ g ∈ G, DifferentialAlgebraicOver F g) :
+    DifferentialAlgebraicOver (differentialAdjoin F G) x ↔
+      DifferentialAlgebraicOver F x := by
+  simpa only [HypertranscendentalOver, not_not] using
+    not_congr (hypertranscendentalOver_differentialAdjoin_iff hG)
+
+/-- **Relative DA base-change law.** Differentially algebraic coefficients remain invisible after
+adjoining an arbitrary observation set: adjoining `G` before `S` does not change differential
+algebraicity over the field generated by `S`. -/
+theorem differentialAlgebraicOver_iteratedDifferentialAdjoin_iff
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x : E} {G S : Set E} (hG : ∀ g ∈ G, DifferentialAlgebraicOver F g) :
+    DifferentialAlgebraicOver
+        (differentialAdjoin (differentialAdjoin F G) S) x ↔
+      DifferentialAlgebraicOver (differentialAdjoin F S) x := by
+  letI : Differential ↥(differentialAdjoin F S) :=
+    derivationClosedDifferential _ (derivationClosed_differentialAdjoin F S)
+  letI : DifferentialAlgebra ↥(differentialAdjoin F S) E :=
+    ⟨fun c ↦ derivationClosedDifferential_apply _
+      (derivationClosed_differentialAdjoin F S) c⟩
+  have hGS : ∀ g ∈ G,
+      DifferentialAlgebraicOver (differentialAdjoin F S) g :=
+    fun g hg ↦ differentialAlgebraicOver_mono (hG g hg)
+  have h := differentialAlgebraicOver_differentialAdjoin_iff
+    (F := differentialAdjoin F S) (E := E) (G := G) (x := x) hGS
+  rw [← differentialAlgebraicOver_union_iff_nested (F := F) S G x] at h
+  rw [Set.union_comm] at h
+  rw [differentialAlgebraicOver_union_iff_nested (F := F) G S x] at h
+  exact h
+
+/-- **Relative HT base-change law.** The same arbitrary differentially algebraic coefficient
+extension preserves and reflects hypertranscendence over every generated observation field. -/
+theorem hypertranscendentalOver_iteratedDifferentialAdjoin_iff
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {x : E} {G S : Set E} (hG : ∀ g ∈ G, DifferentialAlgebraicOver F g) :
+    HypertranscendentalOver
+        (differentialAdjoin (differentialAdjoin F G) S) x ↔
+      HypertranscendentalOver (differentialAdjoin F S) x := by
+  simpa only [HypertranscendentalOver] using not_congr
+    (differentialAlgebraicOver_iteratedDifferentialAdjoin_iff
+      (F := F) (E := E) (x := x) (G := G) (S := S) hG)
 
 /-- **Differential-algebraic base-change equivalence.**  Adjoining one differentially algebraic
 coefficient does not change whether an element is hypertranscendental. -/

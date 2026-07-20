@@ -318,3 +318,58 @@ passes.  The headline axiom audit reports only `propext`, `Classical.choice`, an
   reflector, and `k`-ellipse parents.
 - 2026-07-19 -- strengthened to the optimal modulus and arbitrary real inner-product spaces;
   promoted after exact Lean development, module, and axiom audits.
+
+## Global projective support--envelope duality (2026-07-20 strengthening)
+
+The pointwise fixed-point law assembles into a strictly stronger global classification.  Define
+
+```text
+rho_S(lambda)=h_S(lambda)(1-lambda)/(2lambda).
+```
+
+If `h_S(0)>0` (equivalently, the source is outside the positive-null radical), then
+
+```text
+{(R,D_S(R)): R>M}
+ = {(rho_S(lambda),h_S(lambda)):
+      0<lambda<1 and rho_S(lambda)>M}.                     (GD)
+```
+
+Moreover `rho_S` is injective on the displayed admissible domain and the inverse coordinate is
+
+```text
+lambda=D_S(R)/(2R+D_S(R)).                                (GI)
+```
+
+Thus the complete nonlinear exterior envelope and the admissible part of the ordinary linear
+support graph are not merely related pointwise: they are two coordinates on the same object.  The
+radical is the complementary exact case `D_S(R)=0` for every `R>M`.
+
+The proof is algebraic but global.  The fixed-point law gives `D=h(lambda)` at
+`lambda=D/(2R+D)`; nonradicality makes `D,lambda` positive, and solving for `R` gives `(GD)`.
+Conversely, a point of the support graph makes `h(lambda)` a nonnegative fixed point at radius
+`rho_S(lambda)`, so uniqueness recovers the envelope.  Two parameters with the same admissible
+radius therefore give the same unique defect, and `(GI)` forces the parameters to coincide.
+
+The formal theorem surface is:
+
+- `confocalRadiusFromProjective`;
+- `confocalProjectiveParameter_radiusFromProjective`;
+- `confocalRadiusFromProjective_projectiveParameter`;
+- `confocalNullSupport_mono`;
+- `confocalNullSupportRadius`;
+- `confocalExteriorDefectGraph_eq_projectiveSupportGraph`;
+- `confocalNullSupportRadius_injective_on_exterior`;
+- `confocalNullSupport_eq_on_common_exterior_trace`;
+- `confocalNullSupport_lorentzLift_zero_eq_transverseDefectEnvelope`.
+
+The exact source-file check passes with no diagnostics.  This strengthening is now integrated into
+the single main theorem of the publication manuscript.  The earlier gate “3 -> 4: integrate as the
+single paper theorem” is therefore closed for the mathematical content; final typesetting and
+publication audit remain document-level tasks.
+
+**Final formal audit (2026-07-20).**  The focused module build
+`lake build GaloisForLFunctions.HTGeometry.ConfocalNullSupportFixedPoint` passes.  A scratch
+`#print axioms` audit of every new global-duality declaration reports only `propext`,
+`Classical.choice`, and `Quot.sound`; there are no project axioms or conditional scientific
+hypotheses.

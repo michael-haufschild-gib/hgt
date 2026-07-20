@@ -95,9 +95,13 @@ of the odd-shift archimedean correction is asserted.
 
 For every `m`, `(T1)` and `(T2)` are now formalized as an equality of upper-end germs: the
 finite-abscissa source carrier at shift `2m` is exactly the directly corrected shift-`2m` defect of
-the actual completed logarithmic derivative. Hence every arbitrarily indexed family of actual
-even-shift defects has the pointed collision matroid of its half-shift grades. In particular,
-distinct positive even-shift completed-Xi defects are jointly differentially independent.
+the actual completed logarithmic derivative. This explicit rational telescope is also proved
+equal to the general corrected shift-`2m` Xi germ, and its rational correction is exactly the
+upper-end germ of the genuine arch-factor logarithmic-derivative difference. The historical
+shift-two construction is the `m=1` specialization. Hence every arbitrarily indexed family of
+actual even-shift defects has the pointed collision matroid of its half-shift grades. In
+particular, distinct positive even-shift completed-Xi defects are jointly differentially
+independent.
 
 The rational correction can now be removed completely. Its accumulated value is constructed as
 an honest upper-end analytic element, proved to lie in the embedded rational coordinate field,
@@ -188,7 +192,10 @@ retained anchor value is hypertranscendental over the pairwise field and the inc
 If zero is present, its carrier is literally zero and the common mode is recovered. This iff
 classification holds over both the rational coordinate and complete scalar valuation-layer bases;
 the earlier finite collision-quotient and chosen-zero-root equalities are its finitary and rooted
-specializations.
+specializations. The hypertranscendence assertion is now itself an exact unconditional Prop
+interface: for every chosen occupied value, hypertranscendence over the complete pairwise field is
+equivalent to absence of the zero label, rather than being left as an inference from strict field
+loss.
 
 The uncorrected even-shift value reflection satisfies the same stronger classification directly.
 For arbitrary finite grade families, literal pairwise differences of the actual completed-Xi
@@ -199,8 +206,10 @@ arbitrary inhabited grade family the complete raw pairwise reporter recovers the
 if and only if grade zero occurs; otherwise the absolute common mode remains hypertranscendental.
 This removes the chosen-zero-root and distinct-grade hypotheses from the raw pairwise matroid,
 Prop, Kirchhoff, rank, and generated-field theory, and removes finiteness from the generated-field
-classifier. Combining the raw/corrected vertex-field identity with this iff gives the same exact
-arbitrary-index threshold for recovery of the corrected prime-source field itself.
+classifier. The raw common-mode statement is also formalized as an exact hypertranscendence iff,
+both over `C(s)` and after adjoining every scalar valuation layer. Combining the raw/corrected
+vertex-field identity with this iff gives the same exact arbitrary-index threshold for recovery of
+the corrected prime-source field itself.
 
 At the value level this incidence structure extends beyond even integral shifts. For arbitrary
 complex shifts `a,b,c`, the raw pairwise differences form an additive cocycle, reverse orientation
@@ -341,6 +350,12 @@ RH-strength assertion must be proved.
   `RHTower.xiTransverseShiftUpperEndCarrier_differentialMatroid_eRk`
 - **General completed-Xi value-reflection module:**
   `formal/GaloisForLFunctions/RHTower/XiTransverseShiftPrimeDefectValueReflection.lean`
+- **General additive reflection-cohomology module:**
+  `formal/GaloisForLFunctions/HTGeometry/AdditiveReflectionCocycleHalving.lean`
+- **Characteristic-zero half-coboundary and exact centering interface:**
+  `GaloisForLFunctions.HTGeometry.half_sub_half_reflection_eq`,
+  `GaloisForLFunctions.HTGeometry.eq_half_of_sub_reflection_eq`, and
+  `GaloisForLFunctions.HTGeometry.add_half_reflection_fixed_iff`
 - **General integral-shift exposure:**
   `RHTower.xiTransverseShiftPrimeDefect_eq_lSeries`
 - **General source-to-completed-Xi germ reflection:**
@@ -349,6 +364,8 @@ RH-strength assertion must be proved.
   `RHTower.xiTransverseShiftRawLogDerivDefect_reflection`
 - **General corrected-defect reflection cocycle:**
   `RHTower.xiTransverseShiftPrimeDefect_reflection_cocycle`
+- **Forced center value:**
+  `RHTower.xiTransverseShiftReflectionCocycle_center`
 - **General centered reflection law:**
   `RHTower.xiTransverseCenteredShiftPrimeDefect_reflection`
 - **Completed-Xi telescope module:**
@@ -359,6 +376,10 @@ RH-strength assertion must be proved.
   `RHTower.xiEvenShiftPrimeDefect_telescope`
 - **Source-to-completed-Xi germ reflection:**
   `RHTower.xiTransverseEvenShiftUpperEndGerm_eq_xiEvenShiftPrimeDefect`
+- **Even/general value and correction bridges:**
+  `RHTower.xiEvenShiftPrimeDefectUpperEndGerm_eq_transverse`,
+  `RHTower.xiLogDerivShiftTwoPrimeDefectUpperEndGerm_eq_transverse`, and
+  `RHTower.xiEvenShiftPrimeCorrection_upperEndGerm_eq_archimedean`
 - **Actual even-shift matroid, Prop, and rank capstones:**
   `RHTower.xiEvenShiftPrimeDefectUpperEndCarrier_differentialMatroid_eq_pointedCollision`,
   `RHTower.xiEvenShiftPrimeDefectUpperEndCarrier_differentialIndependent_iff`, and
@@ -384,6 +405,22 @@ RH-strength assertion must be proved.
   `GaloisForLFunctions.HTGeometry.differentialAdjoin_range_pairwiseDifferences_eq_of_root_zero`
 - **General strict common-mode and occupied-label classifier module:**
   `formal/GaloisForLFunctions/HTGeometry/DifferentialPairwiseCommonMode.lean`
+- **Unconditional differential-closure, contraction, and relative-family interfaces:**
+  `GaloisForLFunctions.HTGeometry.differentialMatroid_closure_eq_differentialClosure`,
+  `GaloisForLFunctions.HTGeometry.differentialMatroid_contract_eq_delete_differentialMatroidOverDifferentialAdjoin`,
+  `GaloisForLFunctions.HTGeometry.differentialMatroid_contract_isNonloop_iff_hypertranscendentalOver`,
+  `GaloisForLFunctions.HTGeometry.differentialClosure_idempotent`,
+  `GaloisForLFunctions.HTGeometry.differentialClosure_eq_of_differentialMatroid_isBasis`,
+  `GaloisForLFunctions.HTGeometry.differentialAlgebraicOver_differentialAdjoin_iff_exists_finite_independent_subset`,
+  `GaloisForLFunctions.HTGeometry.differentialFamilyMatroid_closure_eq_preimage_differentialClosure`,
+  `GaloisForLFunctions.affinePointedCollisionMatroid_mem_closure_iff`,
+  `GaloisForLFunctions.HTGeometry.differentialAlgebraicOver_differentialAdjoin_image_iff_loop_or_observedLabel_of_pointedCollisionMatroid`,
+  `GaloisForLFunctions.HTGeometry.hypertranscendentalOver_differentialAdjoin_image_iff_nonloop_unobservedLabel_of_pointedCollisionMatroid`,
+  `GaloisForLFunctions.affinePointedCollisionMatroid_isCircuit_iff`,
+  `GaloisForLFunctions.HTGeometry.differentialFamilyMatroid_isColoop_iff_hypertranscendentalOver_differentialAdjoin_compl`,
+  `GaloisForLFunctions.HTGeometry.hypertranscendentalOver_differentialAdjoin_compl_iff_unique_nonloop_of_pointedCollisionMatroid`,
+  and
+  `GaloisForLFunctions.HTGeometry.differentialAlgebraicOver_differentialAdjoin_compl_iff_loop_or_collision_of_pointedCollisionMatroid`.
 - **General occupied-label reduction, strict loss, and exact pointed iff laws:**
   `GaloisForLFunctions.HTGeometry.pointedOccupiedLabelSupport`,
   `GaloisForLFunctions.HTGeometry.range_comp_eq_occupiedRange`,
@@ -392,11 +429,18 @@ RH-strength assertion must be proved.
   `GaloisForLFunctions.HTGeometry.range_pairwiseComp_eq_occupiedLabels`,
   `GaloisForLFunctions.HTGeometry.differentialIndependent_anchorDifferenceGauge_finite`,
   `GaloisForLFunctions.HTGeometry.differentialIndependent_anchorDifferenceGauge`,
+  `GaloisForLFunctions.HTGeometry.hypertranscendentalOver_anchor_pairwiseDifferences`,
+  `GaloisForLFunctions.HTGeometry.differentialFamilyMatroid_isLoop_iff_differentialAlgebraicOver`,
+  `GaloisForLFunctions.HTGeometry.hypertranscendentalOver_anchor_pairwiseDifferences_iff_loop_not_mem_range_of_nonloop_independent`,
+  `GaloisForLFunctions.HTGeometry.hypertranscendentalOver_anchor_pairwiseDifferences_iff_loop_not_mem_range_of_pointedCollisionMatroid`,
   `GaloisForLFunctions.HTGeometry.anchor_not_mem_differentialAdjoin_pairwiseDifferences`,
   `GaloisForLFunctions.HTGeometry.differentialAdjoin_range_pairwiseDifferences_ne_of_differentialIndependent`,
+  `GaloisForLFunctions.HTGeometry.hypertranscendentalOver_gradedPairwiseDifferences_of_loop_not_mem_range`,
   and
   `GaloisForLFunctions.HTGeometry.differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range_arbitrary`,
-  with the finite compatibility interface
+  with the exact hypertranscendence Prop interface
+  `GaloisForLFunctions.HTGeometry.hypertranscendentalOver_gradedPairwiseDifferences_iff_loop_not_mem_range`
+  and finite compatibility interface
   `GaloisForLFunctions.HTGeometry.differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range`
 - **Raw even completed-Xi rank module:**
   `formal/GaloisForLFunctions/RHTower/XiEvenShiftRawDefectDifferentialRank.lean`
@@ -410,9 +454,24 @@ RH-strength assertion must be proved.
   `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision`,
   `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialIndependent_iff`,
   and `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialMatroid_eRk`
+- **Complete raw-Xi minimal-relation spectra over both bases:**
+  `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_differentialFamilyMatroid_isCircuit_iff`
+  and its `allValuation` counterpart.
 - **Raw/corrected generated-field identities:**
   `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_differentialAdjoin_eq_corrected` and
   `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_differentialAdjoin_eq_corrected`
+- **Exact raw common-mode hypertranscendence spectra:**
+  `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_hypertranscendentalOver_completePairDifferences_iff_zero_not_mem_range`
+  and
+  `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_hypertranscendentalOver_completePairDifferences_iff_zero_not_mem_range`
+- **Exact raw relative HT/DA spectra over the complementary family:**
+  `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_hypertranscendentalOver_differentialAdjoin_compl_iff_unique_pos`,
+  `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_differentialAlgebraicOver_differentialAdjoin_compl_iff_zero_or_repeated`,
+  and their `allValuation` counterparts.
+- **Exact raw contracted common-mode nonloop spectra:**
+  `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_contract_completePairDifferences_isNonloop_iff_zero_not_mem_range`
+  and
+  `RHTower.xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_contract_completePairDifferences_isNonloop_iff_zero_not_mem_range`
 - **Pairwise raw completed-Xi value identity:**
   `RHTower.xiEvenShiftRawPairDifferenceUpperEndCarrier_germ_eq`
 - **Pairwise rational-base incidence matroid, Prop, and rank:**
@@ -483,13 +542,22 @@ RH-strength assertion must be proved.
   `RHTower.xiPairwiseShiftPrimeDifference_cocycle`,
   `RHTower.xiPairwiseShiftPrimeDifference_reflection_cocycle`, and
   `RHTower.xiPairwiseCenteredShiftPrimeDifference_reflection`
+- **Pairwise forced center value:**
+  `RHTower.xiPairwiseShiftReflectionCocycle_center`
 - **Corrected relative-shift normal forms:**
   `RHTower.xiPairwiseShiftReflection_eq_transverse_relativeShift_of_le`,
   `RHTower.xiPairwiseShiftArchimedeanCorrectionDifference_eq_relativeShift_of_le`,
+  `RHTower.xiPairwiseShiftArchimedeanCorrectionDifference_eq_relativeShift`,
   `RHTower.xiPairwiseShiftPrimeDifference_eq_relativeShift_of_le`,
   `RHTower.xiPairwiseShiftPrimeDifference_eq_relativeShift`,
-  `RHTower.xiPairwiseShiftReflectionCocycle_eq_relativeShift_of_le`, and
-  `RHTower.xiPairwiseCenteredShiftPrimeDifference_eq_relativeShift_of_le`
+  `RHTower.xiPairwiseShiftReflectionCocycle_eq_relativeShift_of_le`,
+  `RHTower.xiPairwiseShiftReflectionCocycle_eq_relativeShift`,
+  `RHTower.xiPairwiseCenteredShiftPrimeDifference_eq_relativeShift_of_le`, and
+  `RHTower.xiPairwiseCenteredShiftPrimeDifference_eq_relativeShift`
+- **Pairwise orientation laws:**
+  `RHTower.xiPairwiseShiftArchimedeanCorrectionDifference_swap`,
+  `RHTower.xiPairwiseShiftReflectionCocycle_swap`, and
+  `RHTower.xiPairwiseCenteredShiftPrimeDifference_swap`
 - **Corrected-pair tail-zero interfaces:**
   `RHTower.xiPairwiseShiftPrimeDifference_nat_zero` and
   `RHTower.xiPairwiseShiftReflectionCocycle_nat_zero`
@@ -558,6 +626,27 @@ RH-strength assertion must be proved.
   `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_complete_differentialAdjoin_eq_vertices_iff_zero_mem_range`
   and
   `RHTower.xiTransverseShiftPairDifferenceUpperEndCarrier_complete_allValuation_differentialAdjoin_eq_vertices_iff_zero_mem_range`
+- **Exact corrected-Xi common-mode hypertranscendence spectra over both bases:**
+  `RHTower.xiTransverseShiftUpperEndCarrier_hypertranscendentalOver_completePairDifferences_iff_zero_not_mem_range`
+  and
+  `RHTower.xiTransverseShiftUpperEndCarrier_allValuation_hypertranscendentalOver_completePairDifferences_iff_zero_not_mem_range`
+- **Exact corrected-Xi relative HT/DA spectra over the complementary family:**
+  `RHTower.xiTransverseShiftUpperEndCarrier_hypertranscendentalOver_differentialAdjoin_compl_iff_unique_pos`,
+  `RHTower.xiTransverseShiftUpperEndCarrier_differentialAlgebraicOver_differentialAdjoin_compl_iff_zero_or_repeated`,
+  and their `allValuation` counterparts.
+- **Exact corrected-Xi spectra over arbitrary selected observations:**
+  `RHTower.xiTransverseShiftUpperEndCarrier_hypertranscendentalOver_differentialAdjoin_image_iff_pos_unobserved`
+  and
+  `RHTower.xiTransverseShiftUpperEndCarrier_differentialAlgebraicOver_differentialAdjoin_image_iff_zero_or_observed`,
+  together with their `allValuation` counterparts.
+- **Complete corrected-Xi minimal-relation spectrum:**
+  `RHTower.xiTransverseShiftUpperEndCarrier_differentialFamilyMatroid_isCircuit_iff`
+  and its `allValuation` counterpart classify every circuit as either a zero-shift singleton or a
+  pair of distinct indices with one repeated positive shift.
+- **Exact corrected-Xi contracted common-mode nonloop spectra over both bases:**
+  `RHTower.xiTransverseShiftUpperEndCarrier_contract_completePairDifferences_isNonloop_iff_zero_not_mem_range`
+  and
+  `RHTower.xiTransverseShiftUpperEndCarrier_allValuation_contract_completePairDifferences_isNonloop_iff_zero_not_mem_range`
 - **All-valuation module:**
   `formal/GaloisForLFunctions/RHTower/XiTransverseShiftAllValuationLayerRank.lean`
 - **All-valuation capstone:**
@@ -578,7 +667,10 @@ RH-strength assertion must be proved.
   Xi collision-incidence leaves also pass direct source checks and exact targeted module builds.
   The arbitrary-index occupied-range classifier and its corrected/raw Xi specializations pass the
   same scoped source checks and exact builds; only the incidence-matroid layer remains intrinsically
-  finite. The relative-shift chain passes isolated scratch verification, direct checks of its two
+  finite. The strengthened common-mode theorem and its exact corrected/raw Xi
+  hypertranscendence-iff spectra pass direct source checks and one final build of the three touched
+  Xi leaves; the general module is rebuilt as their dependency. The relative-shift chain passes
+  isolated scratch verification, direct checks of its two
   parent modules, and the exact pairwise consumer build.
   The coefficient-to-meromorphic relative-shift chain likewise passes its general source check,
   isolated combined proof, and exact pairwise-carrier consumer build.
@@ -616,7 +708,9 @@ RH-strength assertion must be proved.
   equivalence, exact matrix reindexing, and rooted-specialization matroid identity have the same
   audit result. The occupied-label range reductions, strict
   common-mode loss, pointed field-recovery iff classifier, and its Xi occupied-support and exact
-  field-recovery specializations over both bases also report only this baseline. The raw occupied-
+  field-recovery specializations over both bases also report only this baseline. The promoted
+  general common-mode hypertranscendence law, exact graded iff, and four corrected/raw Xi spectra
+  over both bases have the same audit result. The raw occupied-
   grade independence interfaces, exact zero-range field classifiers, arbitrary-label collision
   matroids, abstract Props, full quotient-Kirchhoff laws, and ranks over both bases have the same
   audit result. The actual corrected
@@ -785,3 +879,17 @@ RH-strength assertion must be proved.
   over both the rational-coordinate and all-valuation bases, now use this general equality directly;
   about eighty lines of duplicated independence reconstruction were removed, and their exact
   module builds and four-capstone axiom audit pass.
+- 2026-07-19 -- Promoted the strict pairwise common-mode obstruction from non-membership to the
+  exact `HypertranscendentalOver` law latent in its proof. For arbitrary repeated labels with a
+  distinguished zero-valued class, every occupied value is hypertranscendental over the complete
+  pairwise reporter exactly when that zero label is absent. Specialized the unconditional iff to
+  corrected integral Xi values and raw even-shift completed-Xi defects, over both the rational
+  coordinate and full scalar valuation-layer bases. Direct checks, the one three-leaf final build,
+  and the eight-declaration axiom audit pass with only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- 2026-07-20 -- Extracted the characteristic-zero cohomology law behind every additive Xi
+  half-cocycle: anti-invariant reflection cocycles are uniquely the coboundaries of their halves,
+  vanish on the fixed locus, and centered invariance is equivalent to the original value relation.
+  The shift-two, arbitrary integral-shift, and pairwise centered Xi laws now use that exact Prop
+  interface; the corresponding reflection cocycles have unconditional zero values at their
+  symmetry centers.

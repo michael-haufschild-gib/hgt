@@ -311,3 +311,120 @@ its source-specific specialization `(PVC11)`, together with the diagonal-free so
 The continuum cancellation `(PVC11c)`, the finite source identity, and `(PVC12)` remain
 conjectural.  They must be attacked in that order.  The Pontryagin/conormal proposal remains only
 a candidate mechanism for `(PVC12)`.
+
+## 2026-07-20 correction: positive local stiffness kills the raw continuum cancellation
+
+`[PAPER-PROVED] [LEAN-PROVED] [NO-GO CLOSED] [POSITIVE SURVIVOR]`
+
+The necessary condition `(PVC11c)` is false.  Put
+
+```text
+k_0 = Re K_end(0).
+```
+
+The completed source itself gives
+
+```text
+k_0
+ =-Re (xi'/xi)(1)+2 Re (xi'/xi)(2)
+   +sum_p log(p)/(p(p+1)).                                  (PVC13)
+```
+
+Functional-equation reciprocity identifies
+
+```text
+Re (xi'/xi)(1)=xiEndpointCompletedCurvature/2.
+```
+
+The full squared-Euler response gives `Re (xi'/xi)(2)>0`.  The `p=2` correction term is
+`log(2)/6`, while the compiled exact inequalities
+
+```text
+xiEndpointCompletedCurvature < 2/43,
+log(2)>9/10
+```
+
+imply
+
+```text
+xiEndpointCompletedCurvature/2 < log(2)/6.
+```
+
+Therefore
+
+```text
+k_0>0.                                                       (PVC14)
+```
+
+This is unconditional and uses no numerical experiment.
+
+The obstruction is visible already in the symmetric small-aperture family `A=c=epsilon`.  After
+`u=epsilon s`, the centered interval carrier on `(0,1)` is `phi_s`, `-1<s<1`, with
+
+```text
+integral phi_s ds=0,
+integral ||phi_s||^2 ds=1/3,
+integral integral ||phi_s-phi_t||^2 ds dt=4/3.
+```
+
+Continuity of the completed endpoint kernel therefore forces
+
+```text
+I_end(epsilon,epsilon)/epsilon^3 -> (4/3) k_0 > 0.            (PVC15)
+```
+
+Thus the unrenormalized estimate `(PVC12)`, and with it the proposed raw ratio-kernel route to
+`HGS29c`, is retired.  No diagonal completion, HT closure, or alternative finite norm can remove
+this positive continuum stiffness.
+
+The exact positive survivor is unique zero-frequency tangent renormalization:
+
+```text
+K_tan(p,q)=Re K_end^sym(log(p/q))-k_0,
+K_tan(p,p)=0.                                                (PVC16)
+```
+
+For every finite physical prime packet, Lean proves the source decomposition
+
+```text
+E_end=E_stiff+E_tan,
+E_stiff=k_0 sum_(p,q) [log(p)/p][log(q)/q] d_A(I_p,I_q)^2>=0, (PVC17)
+```
+
+and, on a two-prime packet distinguished by the true aperture, `E_stiff>0`.  The corrected pointed
+pairing is consequently
+
+```text
+Q_end=marginal-(1/2)E_stiff-(1/2)E_tan.                      (PVC18)
+```
+
+The next small-aperture coefficient is also forced.  If `K_tan` is expanded at zero, then
+
+```text
+E_tan(epsilon,epsilon)/epsilon^5 -> (53/90) K_end^sym''(0).  (PVC19)
+```
+
+Indeed `N_2=integral s^2||phi_s||^2 ds=1/10`,
+`||integral s phi_s ds||^2=1/12`, and hence
+
+```text
+integral integral (s-t)^2||phi_s-phi_t||^2 ds dt=53/45.
+```
+
+Equation `(PVC19)` is not yet a sign theorem.  It identifies the first legal local response after
+the false cubic zero-mode cancellation: a fifth-order tangent coefficient.
+
+Permanent Lean:
+
+```text
+formal/GaloisForLFunctions/RHTower/XiPhysicalEndpointLocalStiffness.lean
+```
+
+The direct leaf check passes.  The raw `(PVC11c)`/`(PVC12)` conjecture must not be attempted again.
+The only surviving source question is whether the connected, causal joined response produces
+`K_tan` coefficientwise and controls its three-node exterior response; a bound imposed directly
+on `E_tan` without that source identity is terminal-energy theatre.
+
+Validation update: the direct leaf check and serialized exact module build pass.  The zero-mode
+positivity, strict two-prime stiffness, energy decomposition, and pointed pairing decomposition
+have axiom surface exactly `propext`, `Classical.choice`, and `Quot.sound`.

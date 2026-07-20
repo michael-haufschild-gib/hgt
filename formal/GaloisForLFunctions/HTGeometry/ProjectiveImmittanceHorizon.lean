@@ -49,6 +49,8 @@ theorem hypertranscendentalOver_projectiveImmittanceChart
   let y : E := projectiveImmittanceChart a b c d x
   have hden : algebraMap F E c * x + algebraMap F E d ≠ 0 :=
     mobiusDenominator_ne_zero_of_hypertranscendentalOver x hx a b c d hdet
+  have hdenComm : x * algebraMap F E c + algebraMap F E d ≠ 0 := by
+    simpa [mul_comm] using hden
   have hdetE : algebraMap F E (a * d - b * c) ≠ 0 :=
     by simpa using (algebraMap F E).injective.ne hdet
   have hrecoverDenEq :
@@ -57,7 +59,7 @@ theorem hypertranscendentalOver_projectiveImmittanceChart
           (algebraMap F E c * x + algebraMap F E d) := by
     dsimp only [y, projectiveImmittanceChart]
     rw [map_neg, map_sub, map_mul, map_mul]
-    field_simp [hden]
+    field_simp [hden, hdenComm]
     ring
   have hrecoverDen : algebraMap F E (-c) * y + algebraMap F E a ≠ 0 := by
     rw [hrecoverDenEq]
@@ -67,7 +69,7 @@ theorem hypertranscendentalOver_projectiveImmittanceChart
   apply (eq_div_iff hrecoverDen).2
   dsimp only [y, projectiveImmittanceChart]
   simp only [map_neg]
-  field_simp [hden]
+  field_simp [hden, hdenComm]
   ring
 
 /-- Exact chart identity for impedance/admittance inversion.  The right side is `M I M⁻¹`
@@ -89,6 +91,9 @@ theorem projectiveImmittanceChart_inv_eq_conjugate
   let D : F := a * c - b * d
   have hxInv : HypertranscendentalOver F x⁻¹ :=
     HTGeometry.hypertranscendentalOver_inv_iff.mpr hx
+  have hx0 : x ≠ 0 := by
+    simpa only [differentialJet_zero] using
+      hypertranscendentalOver_differentialJet_ne_zero hx 0
   have hy : HypertranscendentalOver F y := by
     exact hypertranscendentalOver_projectiveImmittanceChart x hx a b c d hdet
   have hdetQ : A * D - B * C ≠ 0 := by
@@ -98,15 +103,44 @@ theorem projectiveImmittanceChart_inv_eq_conjugate
     exact neg_ne_zero.mpr (pow_ne_zero 2 hdet)
   have hdenX : algebraMap F E c * x + algebraMap F E d ≠ 0 :=
     mobiusDenominator_ne_zero_of_hypertranscendentalOver x hx a b c d hdet
+  have hdenXComm : x * algebraMap F E c + algebraMap F E d ≠ 0 := by
+    simpa [mul_comm] using hdenX
   have hdenInv : algebraMap F E c * x⁻¹ + algebraMap F E d ≠ 0 :=
     mobiusDenominator_ne_zero_of_hypertranscendentalOver x⁻¹ hxInv a b c d hdet
+  have hdenInvComm : x⁻¹ * algebraMap F E c + algebraMap F E d ≠ 0 := by
+    simpa [mul_comm] using hdenInv
+  have hinvNumEq :
+      algebraMap F E a * x⁻¹ + algebraMap F E b =
+        (algebraMap F E a + x * algebraMap F E b) / x := by
+    apply (eq_div_iff hx0).2
+    field_simp [hx0]
+  have hinvDenEq :
+      algebraMap F E c * x⁻¹ + algebraMap F E d =
+        (x * algebraMap F E d + algebraMap F E c) / x := by
+    field_simp [hx0]
+    ring
+  have hdenInvCleared : x * algebraMap F E d + algebraMap F E c ≠ 0 := by
+    rw [hinvDenEq] at hdenInv
+    exact (div_ne_zero_iff.mp hdenInv).1
+  have hinvChartEq :
+      projectiveImmittanceChart a b c d x⁻¹ =
+        (algebraMap F E a + x * algebraMap F E b) /
+          (x * algebraMap F E d + algebraMap F E c) := by
+    dsimp only [projectiveImmittanceChart]
+    rw [hinvNumEq, hinvDenEq]
+    exact div_div_div_cancel_right₀ hx0 _ _
   have hdenQ : algebraMap F E C * y + algebraMap F E D ≠ 0 :=
     mobiusDenominator_ne_zero_of_hypertranscendentalOver y hy A B C D hdetQ
+  have hdenQComm : y * algebraMap F E C + algebraMap F E D ≠ 0 := by
+    simpa [mul_comm] using hdenQ
   change projectiveImmittanceChart a b c d x⁻¹ =
     projectiveImmittanceChart A B C D y
+  rw [hinvChartEq]
   apply (eq_div_iff hdenQ).2
-  dsimp only [projectiveImmittanceChart]
-  field_simp [hdenX, hdenInv]
+  dsimp only [projectiveImmittanceChart, y, A, B, C, D]
+  field_simp [hx0, hdenX, hdenXComm, hdenInv, hdenInvComm, hdenInvCleared,
+    hdenQ, hdenQComm]
+  simp only [map_sub, map_mul, map_pow]
   ring
 
 private theorem projectiveImmittanceConjugate_stabilizer_iff
@@ -217,9 +251,24 @@ theorem smithReflectionChart_inv_eq_neg_of_hypertranscendentalOver
     [Differential F] [Differential E] [DifferentialAlgebra F E]
     (x : E) (hx : HypertranscendentalOver F x) :
     smithReflectionChart x⁻¹ = -smithReflectionChart x := by
-  have hconj := projectiveImmittanceChart_inv_eq_conjugate
-    x hx (1 : F) (-1) 1 1 (by norm_num)
-  simpa [smithReflectionChart, projectiveImmittanceChart, sub_eq_add_neg] using hconj
+  have hxInv : HypertranscendentalOver F x⁻¹ :=
+    HTGeometry.hypertranscendentalOver_inv_iff.mpr hx
+  have hx0 : x ≠ 0 := by
+    simpa only [differentialJet_zero] using
+      hypertranscendentalOver_differentialJet_ne_zero hx 0
+  have hplus : x + 1 ≠ 0 := by
+    simpa using (mobiusDenominator_ne_zero_of_hypertranscendentalOver
+      x hx (1 : F) 0 1 1 (by norm_num))
+  have hplusComm : 1 + x ≠ 0 := by
+    simpa [add_comm] using hplus
+  have hplusInv : x⁻¹ + 1 ≠ 0 := by
+    simpa using (mobiusDenominator_ne_zero_of_hypertranscendentalOver
+      x⁻¹ hxInv (1 : F) 0 1 1 (by norm_num))
+  have hplusInvComm : 1 + x⁻¹ ≠ 0 := by
+    simpa [add_comm] using hplusInv
+  unfold smithReflectionChart
+  field_simp [hx0, hplus, hplusComm, hplusInv, hplusInvComm]
+  ring
 
 /-- The Smith chart folds the complete reciprocal pair of HT jet-tail flags. -/
 theorem smithReflectionChart_inv_all_jetTailField_eq

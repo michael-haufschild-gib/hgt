@@ -323,6 +323,49 @@ theorem coherentCollision_secondJet (a b : ℝ) :
   simp [Finset.sum_range_succ, Nat.factorial]
   ring
 
+/-! ### Finite recombination -/
+
+/-- Any finite linear recombination of the value-jet remainders is still little-oh of order
+ten.  Taking the index type to be a product assembles a recombined Gram entry. -/
+theorem coherentCollision_valueJet_finset {ι : Type*} (s : Finset ι)
+    (c a b : ι → ℝ) :
+    (fun e => ∑ i ∈ s, c i *
+      (Real.exp (coherentCollisionExponent (a i) (b i) e) -
+        ∑ j ∈ Finset.range 6,
+          e ^ (2 * j) * (a i) ^ j / (j.factorial : ℝ) -
+        e ^ 10 * b i)) =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+  apply IsLittleO.sum
+  intro i hi
+  exact (coherentCollision_valueJet (a i) (b i)).const_mul_left (c i)
+
+/-- Any finite linear recombination of the first-derivative jet remainders remains little-oh of
+order ten. -/
+theorem coherentCollision_firstJet_finset {ι : Type*} (s : Finset ι)
+    (c a b : ι → ℝ) :
+    (fun e => ∑ i ∈ s, c i *
+      (coherentCollisionExponent (a i) (b i) e *
+          Real.exp (coherentCollisionExponent (a i) (b i) e) -
+        ∑ j ∈ Finset.range 5,
+          e ^ (2 * (j + 1)) * (a i) ^ (j + 1) / (j.factorial : ℝ) -
+        e ^ 10 * b i)) =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+  apply IsLittleO.sum
+  intro i hi
+  exact (coherentCollision_firstJet (a i) (b i)).const_mul_left (c i)
+
+/-- Any finite linear recombination of the second-derivative jet remainders remains little-oh
+of order ten. -/
+theorem coherentCollision_secondJet_finset {ι : Type*} (s : Finset ι)
+    (c a b : ι → ℝ) :
+    (fun e => ∑ i ∈ s, c i *
+      (coherentCollisionExponent (a i) (b i) e ^ 2 *
+          Real.exp (coherentCollisionExponent (a i) (b i) e) -
+        ∑ j ∈ Finset.range 4,
+          e ^ (2 * (j + 2)) * (a i) ^ (j + 2) / (j.factorial : ℝ)))
+      =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+  apply IsLittleO.sum
+  intro i hi
+  exact (coherentCollision_secondJet (a i) (b i)).const_mul_left (c i)
+
 end
 
 end GaloisForLFunctions.HilbertMetric

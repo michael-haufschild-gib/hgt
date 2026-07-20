@@ -13,7 +13,11 @@ the limit base is already witnessed at one finite stage.
 Directedness is essential: two bases can each leave a signal free while their union explains it.
 Finitarity is essential: it provides the finite witness for any dependence over the limit base.
 The differential-transcendence matroid is finitary, so the persistence law holds for the
-interaction skeleton of every differential field extension.
+interaction skeleton of every differential field extension.  The limit-field theorem also
+identifies the entire contraction with the relative differential matroid over the generated field
+after deleting the contracted labels.  Contracted nonloops are therefore relative
+hypertranscendental directions, and matroid closure is differential-algebraic closure for arbitrary
+dependent source sets.
 -/
 
 open Matroid Set
@@ -458,5 +462,206 @@ theorem differentialMatroid_contract_indep_iff_diffIndepOn_differentialAdjoin
   rw [differentialMatroid_contract_indep_iff_forall_finite_stage]
   exact and_congr_right fun _ =>
     diffIndepOn_differentialAdjoin_iff_forall_finite_subset.symm
+
+/-- The differential matroid over a generated differential field, with the ambient compatibility
+instance bundled into the definition. -/
+noncomputable def differentialMatroidOverDifferentialAdjoin
+    (F E : Type u) [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    (G : Set E) : Matroid E := by
+  letI : DifferentialAlgebra ↥(differentialAdjoin F G) E :=
+    ⟨fun c ↦ derivationClosedDifferential_apply
+      (differentialAdjoin F G)
+      (derivationClosed_differentialAdjoin F G) c⟩
+  exact differentialMatroid (differentialAdjoin F G) E
+
+@[simp]
+theorem differentialMatroidOverDifferentialAdjoin_ground
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    (G : Set E) :
+    (differentialMatroidOverDifferentialAdjoin F E G).E = Set.univ := by
+  simp [differentialMatroidOverDifferentialAdjoin, differentialMatroid_ground]
+
+@[simp]
+theorem differentialMatroidOverDifferentialAdjoin_indep_iff
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {G I : Set E} :
+    (differentialMatroidOverDifferentialAdjoin F E G).Indep I ↔
+      DiffIndepOn (differentialAdjoin F G) I := by
+  simp [differentialMatroidOverDifferentialAdjoin, differentialMatroid_indep_iff]
+
+/-- **Contraction is relative differential geometry.** Contracting an arbitrary source set in the
+absolute differential matroid is exactly the relative differential matroid over the field generated
+by that source, with the contracted source labels deleted. This identifies the entire minor—not
+only its singleton nonloops—with relative differential independence, and requires no independence
+or finiteness hypothesis on the source. -/
+theorem differentialMatroid_contract_eq_delete_differentialMatroidOverDifferentialAdjoin
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    (G : Set E) :
+    differentialMatroid F E ／ G =
+      differentialMatroidOverDifferentialAdjoin F E G ＼ G := by
+  apply Matroid.ext_indep
+  · simp [differentialMatroidOverDifferentialAdjoin, differentialMatroid_ground]
+  · intro I _
+    rw [differentialMatroid_contract_indep_iff_diffIndepOn_differentialAdjoin,
+      Matroid.delete_indep_iff]
+    change Disjoint G I ∧ DiffIndepOn (differentialAdjoin F G) I ↔
+      DiffIndepOn (differentialAdjoin F G) I ∧ Disjoint I G
+    rw [and_comm, disjoint_comm]
+
+/-- **Singleton set/family interface.** A singleton is differentially independent exactly when
+its unique value is hypertranscendental. -/
+theorem diffIndepOn_singleton_iff_hypertranscendentalOver
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {x : E} :
+    DiffIndepOn F ({x} : Set E) ↔ HypertranscendentalOver F x := by
+  rw [hypertranscendentalOver_iff_differentialIndependent_singleton]
+  let e : Unit ≃ ↑({x} : Set E) :=
+    { toFun := fun _ ↦ ⟨x, by simp⟩
+      invFun := fun _ ↦ ()
+      left_inv := fun _ ↦ rfl
+      right_inv := fun y ↦ by
+        apply Subtype.ext
+        exact (Set.mem_singleton_iff.mp y.property).symm }
+  simpa [DiffIndepOn, e, Function.comp_def] using
+    (differentialIndependent_equiv e
+      (Subtype.val : ↑({x} : Set E) → E)).symm
+
+/-- A hypertranscendental element over a generated differential field cannot already belong to
+that field. This discharges the ground-membership side condition in contraction interfaces. -/
+theorem HypertranscendentalOver.not_mem_differentialAdjoin
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {G : Set E} {x : E}
+    (hx : HypertranscendentalOver (differentialAdjoin F G) x) :
+    x ∉ differentialAdjoin F G := by
+  intro hxmem
+  letI : DifferentialAlgebra ↑(differentialAdjoin F G) E :=
+    ⟨fun c ↦ derivationClosedDifferential_apply
+      (differentialAdjoin F G)
+      (derivationClosed_differentialAdjoin F G) c⟩
+  exact hx (by
+    simpa using differentialAlgebraicOver_algebraMap
+      (F := differentialAdjoin F G) (E := E)
+      (⟨x, hxmem⟩ : differentialAdjoin F G))
+
+/-- **Atomic contraction/hypertranscendence law.** After contracting an arbitrary source set,
+the surviving nonloops are exactly the new hypertranscendental directions over the full
+differential field generated by that source. The source need not itself be independent. -/
+theorem differentialMatroid_contract_isNonloop_iff_hypertranscendentalOver
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {G : Set E} {x : E} :
+    (differentialMatroid F E ／ G).IsNonloop x ↔
+      HypertranscendentalOver (differentialAdjoin F G) x := by
+  rw [← Matroid.indep_singleton,
+    differentialMatroid_contract_indep_iff_diffIndepOn_differentialAdjoin,
+    Set.disjoint_singleton_right,
+    diffIndepOn_singleton_iff_hypertranscendentalOver]
+  constructor
+  · exact And.right
+  · intro hx
+    exact ⟨fun hxG ↦
+      HypertranscendentalOver.not_mem_differentialAdjoin hx
+        (subset_differentialAdjoin F G hxG), hx⟩
+
+/-- **Unconditional Kolchin-closure law.** For an arbitrary, possibly dependent source set,
+matroid closure is exactly differential algebraicity over the differential field generated by
+that source. This removes the independence hypothesis from the earlier closure interface. -/
+theorem differentialMatroid_mem_closure_iff_differentialAlgebraicOver_differentialAdjoin
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {G : Set E} {x : E} :
+    x ∈ (differentialMatroid F E).closure G ↔
+      DifferentialAlgebraicOver (differentialAdjoin F G) x := by
+  have h :=
+    differentialMatroid_contract_isNonloop_iff_hypertranscendentalOver
+      (F := F) (E := E) (G := G) (x := x)
+  rw [Matroid.contract_isNonloop_iff, differentialMatroid_ground] at h
+  simp only [Set.mem_diff, Set.mem_univ, true_and] at h
+  simpa only [HypertranscendentalOver, not_not] using not_congr h
+
+/-- **Matroid closure equals differential-algebraic closure.** For every source set, with no
+independence hypothesis, the closure operator of the differential-transcendence matroid is exactly
+the set of elements differential-algebraic over the generated differential field. -/
+theorem differentialMatroid_closure_eq_differentialClosure
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    (G : Set E) :
+    (differentialMatroid F E).closure G = differentialClosure F G := by
+  ext x
+  exact
+    differentialMatroid_mem_closure_iff_differentialAlgebraicOver_differentialAdjoin
+
+/-- Differential-algebraic closure is monotone in its generating set. -/
+theorem differentialClosure_mono
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {G H : Set E} (hGH : G ⊆ H) :
+    differentialClosure F G ⊆ differentialClosure F H := by
+  rw [← differentialMatroid_closure_eq_differentialClosure,
+    ← differentialMatroid_closure_eq_differentialClosure]
+  exact (differentialMatroid F E).closure_mono hGH
+
+/-- Differential-algebraic closure is idempotent, now as a direct consequence of its exact
+identification with matroid closure. -/
+theorem differentialClosure_idempotent
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    (G : Set E) :
+    differentialClosure F (differentialClosure F G) = differentialClosure F G := by
+  rw [← differentialMatroid_closure_eq_differentialClosure,
+    ← differentialMatroid_closure_eq_differentialClosure,
+    (differentialMatroid F E).closure_closure]
+
+/-- Every source value is differentially algebraic over the field generated by any
+differential-matroid basis of that source set. -/
+theorem differentialAlgebraicOver_differentialAdjoin_of_differentialMatroid_isBasis
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {I G : Set E} (hI : (differentialMatroid F E).IsBasis I G)
+    {x : E} (hx : x ∈ G) :
+    DifferentialAlgebraicOver (differentialAdjoin F I) x :=
+  differentialMatroid_mem_closure_iff_differentialAlgebraicOver_differentialAdjoin.mp
+    (hI.subset_closure hx)
+
+/-- **Basis invariance of differential-algebraic closure.** A differential-matroid basis and the
+source set it spans have exactly the same differential-algebraic closure, even though their
+generated differential fields need not be equal. -/
+theorem differentialClosure_eq_of_differentialMatroid_isBasis
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {I G : Set E} (hI : (differentialMatroid F E).IsBasis I G) :
+    differentialClosure F I = differentialClosure F G := by
+  rw [← differentialMatroid_closure_eq_differentialClosure,
+    ← differentialMatroid_closure_eq_differentialClosure,
+    hI.closure_eq_closure]
+
+/-- **Finite independent witness law.** Differential algebraicity over an arbitrarily generated
+differential field is witnessed over a finite differentially independent subset of the original
+generators. -/
+theorem differentialAlgebraicOver_differentialAdjoin_iff_exists_finite_independent_subset
+    {F E : Type u} [Field F] [Field E] [Algebra F E]
+    [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+    {G : Set E} {x : E} :
+    DifferentialAlgebraicOver (differentialAdjoin F G) x ↔
+      ∃ I ⊆ G, I.Finite ∧ DiffIndepOn F I ∧
+        DifferentialAlgebraicOver (differentialAdjoin F I) x := by
+  let M := differentialMatroid F E
+  constructor
+  · intro hx
+    have hxcl : x ∈ M.closure G :=
+      differentialMatroid_mem_closure_iff_differentialAlgebraicOver_differentialAdjoin.mpr hx
+    obtain ⟨I, hIG, hIfin, hIind, hxI⟩ :=
+      Matroid.exists_mem_finite_closure_of_mem_closure hxcl
+    exact ⟨I, hIG, hIfin, differentialMatroid_indep_iff.mp hIind,
+      differentialMatroid_mem_closure_iff_differentialAlgebraicOver_differentialAdjoin.mp hxI⟩
+  · rintro ⟨I, hIG, -, -, hxI⟩
+    apply differentialMatroid_mem_closure_iff_differentialAlgebraicOver_differentialAdjoin.mp
+    exact M.closure_mono hIG
+      (differentialMatroid_mem_closure_iff_differentialAlgebraicOver_differentialAdjoin.mpr hxI)
 
 end GaloisForLFunctions.HTGeometry

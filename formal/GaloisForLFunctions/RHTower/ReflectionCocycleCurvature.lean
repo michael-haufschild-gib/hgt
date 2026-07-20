@@ -92,15 +92,15 @@ theorem conductorCocycle_curvature_zero {Q : ℕ} (hQ : 2 ≤ Q) :
     funext s; exact conductorCocycle_logDeriv hQ s
   rw [hconst]; funext s; simp
 
-/-- **An exact-conductor member is curvature-flat where it is nonzero.**  If `f` satisfies the
-degree-zero equation `f s = Q^{1−2s}·f(1−s)` with `Q ≥ 2` and is nonvanishing on an open set `U`, its
+/-- **An exact-conductor member is curvature-flat where it is nonzero.** If `f` satisfies the
+degree-zero equation `f s = Q^{1−2s}·f(1−s)` and is nonvanishing on an open set `U`, its
 reflection cocycle agrees with the conductor cocycle throughout `U`, so on `U` the two logarithmic
 derivatives coincide.  Combined with `conductorCocycle_curvature_zero`, the reflection curvature of `f`
 vanishes on `U`: exact conductors sit on the flat locus of the curvature invariant. -/
-theorem reflCocycle_eqOn_conductorCocycle {f : ℂ → ℂ} {Q : ℕ} (hQ : 2 ≤ Q)
+theorem reflCocycle_eqOn_conductorCocycle {f : ℂ → ℂ} {Q : ℕ}
     (hfe : ∀ s, f s = (Q : ℂ) ^ (1 - 2 * s) * f (1 - s)) {U : Set ℂ} (hU : ∀ s ∈ U, f s ≠ 0) :
     Set.EqOn (reflCocycle f) (conductorCocycle Q) U := by
   intro s hs
-  rw [conductorCocycle, reflCocycle_of_conductor hQ hfe (hU s hs)]
+  rw [conductorCocycle, reflCocycle_of_conductor hfe (hU s hs)]
 
 end RHTower
