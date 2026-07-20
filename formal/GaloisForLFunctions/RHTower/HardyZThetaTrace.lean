@@ -37,6 +37,15 @@ theorem hardyZArchScale_pos (τ : ℝ) : 0 < hardyZArchScale τ := by
     ring]
   rw [← conj_linePt τ, Gammaℝ_conj, Complex.norm_conj]
 
+/-- The positive archimedean Hardy scale is differentiable at every real height.  Nonvanishing of
+`Gammaℝ` discharges the only premise needed to differentiate its norm. -/
+theorem differentiable_hardyZArchScale : Differentiable ℝ hardyZArchScale := by
+  have hnorm : Differentiable ℝ (fun t : ℝ => ‖Gammaℝ (linePt t)‖) :=
+    differentiable_Gammaℝ_line.norm ℝ
+      (fun t => Gammaℝ_ne_zero_of_re_pos (linePt_re_pos t))
+  unfold hardyZArchScale
+  exact (by fun_prop : Differentiable ℝ fun t : ℝ => 1 / 4 + t ^ 2).mul hnorm
+
 /-- **Exact real-Xi/Hardy-Z value reflection.**  The corpus's centered real function `Xi` is the
 negative Hardy amplitude multiplied by half of the positive archimedean scale. -/
 theorem Xi_eq_neg_half_hardyZArchScale_mul_hardyZ (τ : ℝ) :
@@ -141,6 +150,77 @@ theorem hardyZArchScale_mul_hardyZ_eq_neg_four_mul_thetaCuspCosine (τ : ℝ) :
     exact hre
   unfold hardyZArchScale
   nlinarith [hreal]
+
+/-- **General positive-theta first-jet law.**  Differentiating the exact value relation keeps the
+scale derivative, Hardy derivative, and theta-cusp derivative in one unconditional identity. -/
+theorem hardyZArchScale_firstJet (t : ℝ) :
+    deriv hardyZArchScale t * hardyZ t + hardyZArchScale t * deriv hardyZ t =
+      -2 * deriv thetaCuspCosineRepresentation t := by
+  have hleft := (differentiable_hardyZArchScale t).hasDerivAt.mul
+    (differentiable_hardyZ t).hasDerivAt
+  have hright : HasDerivAt (fun u : ℝ => -2 * thetaCuspCosineRepresentation u)
+      (-2 * deriv thetaCuspCosineRepresentation t) t :=
+    ((hasDerivAt_thetaCuspCosineRepresentation t).differentiableAt.hasDerivAt).const_mul (-2)
+  have hfun : hardyZArchScale * hardyZ =
+      fun u => -2 * thetaCuspCosineRepresentation u := by
+    funext u
+    rw [thetaCuspCosineRepresentation]
+    calc
+      hardyZArchScale u * hardyZ u =
+          -4 * ∫ x : ℝ in Ioi 0, thetaCuspFullSource x * Real.cos (u * x) :=
+        hardyZArchScale_mul_hardyZ_eq_neg_four_mul_thetaCuspCosine u
+      _ = -2 * (2 * ∫ x : ℝ in Ioi 0,
+          thetaCuspFullSource x * Real.cos (u * x)) := by ring
+  rw [hfun] at hleft
+  exact hleft.unique hright
+
+/-- **Positive-theta first-jet law at a zero.**  At a Hardy-Z zero the derivative of the positive
+archimedean scale drops out, leaving an exact relation between the Hardy derivative and the
+derivative of the theta-cusp cosine representation. -/
+theorem
+    hardyZArchScale_mul_deriv_hardyZ_eq_neg_two_mul_deriv_thetaCuspCosineRepresentation_of_zero
+    {t : ℝ} (hZ : hardyZ t = 0) :
+    hardyZArchScale t * deriv hardyZ t =
+      -2 * deriv thetaCuspCosineRepresentation t := by
+  have hu := hardyZArchScale_firstJet t
+  rw [hZ] at hu
+  simpa using hu
+
+/-- At a Hardy-Z zero, its derivative vanishes exactly when the derivative of the positive-theta
+cosine representation vanishes.  The positive archimedean scale discharges the multiplier. -/
+theorem deriv_hardyZ_eq_zero_iff_deriv_thetaCuspCosineRepresentation_of_zero
+    {t : ℝ} (hZ : hardyZ t = 0) :
+    deriv hardyZ t = 0 ↔ deriv thetaCuspCosineRepresentation t = 0 := by
+  have hrel :=
+    hardyZArchScale_mul_deriv_hardyZ_eq_neg_two_mul_deriv_thetaCuspCosineRepresentation_of_zero hZ
+  have hs := hardyZArchScale_pos t
+  constructor <;> intro h
+  · rw [h, mul_zero] at hrel
+    linarith
+  · rw [h, mul_zero] at hrel
+    exact (mul_eq_zero.mp hrel).resolve_left hs.ne'
+
+/-- The derivative of the positive-theta cosine representation is its explicit first sine
+moment. -/
+theorem deriv_thetaCuspCosineRepresentation_eq_neg_two_mul_firstSineMoment (t : ℝ) :
+    deriv thetaCuspCosineRepresentation t =
+      -2 * ∫ x : ℝ in Ioi 0,
+        x * thetaCuspFullSource x * Real.sin (t * x) := by
+  rw [(hasDerivAt_thetaCuspCosineRepresentation t).deriv, ← integral_const_mul]
+  apply integral_congr_ae
+  filter_upwards with x
+  ring
+
+/-- **Hardy/simple-source interface.**  At a Hardy zero, failure of simplicity is exactly
+vanishing of the positive theta source's first sine moment. -/
+theorem deriv_hardyZ_eq_zero_iff_thetaCuspFirstSineMoment_of_zero
+    {t : ℝ} (hZ : hardyZ t = 0) :
+    deriv hardyZ t = 0 ↔
+      (∫ x : ℝ in Ioi 0,
+        x * thetaCuspFullSource x * Real.sin (t * x)) = 0 := by
+  rw [deriv_hardyZ_eq_zero_iff_deriv_thetaCuspCosineRepresentation_of_zero hZ,
+    deriv_thetaCuspCosineRepresentation_eq_neg_two_mul_firstSineMoment, mul_eq_zero]
+  norm_num
 
 /-- **Two-height value reflection.**  The product of two Hardy values and the product of the
 corresponding positive-theta cosine traces differ by an explicitly positive scale.  This single

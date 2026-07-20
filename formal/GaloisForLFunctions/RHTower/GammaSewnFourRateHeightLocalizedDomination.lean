@@ -15,10 +15,12 @@ dispersion and `F` is the strictly positive complementary Fisher mass, then
 
 `dispersion(e) - correctedFisher(e) = (e + 1/2)^2 D - F`.
 
-Consequently the desired domination holds exactly beyond the finite source-computable scale
-`sqrt(F / D)`, and some finite valuation depth always crosses it.  No target response, Xi zero,
-closure of the source graph, or boundary normalization enters the theorem.  This is the finite
-height-localized producer needed before attempting the cofinal CEERT-4C response intertwining.
+Consequently the *Rees-boundary coordinate packet* crosses the finite scale `sqrt(F / D)`.  This
+does **not** give a physical height-localized contraction.  The literal Euler amplitude depends on
+depth and conductor, so deep safe-half-plane packets concentrate on the least conductor and the
+boundary probability used here is not their physical probability.  The exact transition laws
+below are retained as the sharp no-go witness.  The positive survivor is the normalized all-depth
+synchronized law in `GammaSewnSynchronizedEulerFisherBarycenter`, not selection of a large depth.
 -/
 
 open scoped BigOperators
@@ -247,11 +249,10 @@ theorem gammaSewnFourRateCommonDepth_correctedFisher_lt_dispersion_iff
     apply (div_lt_iff₀ hD).1
     nlinarith
 
-/-- **Valuation-depth Hilbert transition.**  In every nondegenerate four-prime Cauchy boundary
-cell, some finite common valuation depth makes the source midpoint-height dispersion strictly
-dominate the cumulant-corrected complementary Fisher charge.  No target response, Xi zero, or
-post-hoc positive form is used: the transition is forced by the depth-blind Fisher clock and the
-quadratically depth-amplified source height. -/
+/-- **Rees-coordinate transition/no-go witness.**  In every nondegenerate four-prime boundary
+coordinate packet, some common depth makes midpoint-height dispersion dominate corrected Fisher
+charge.  This theorem is not a literal-Euler probability statement; conductor-dependent physical
+amplitudes invalidate selected-depth transfer. -/
 theorem exists_gammaSewnFourRateCommonDepth_correctedFisher_lt_dispersion
     {a : ℝ} {rate : Fin 4 → ℝ} {prime : Fin 4 → Nat.Primes}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
@@ -386,9 +387,9 @@ theorem gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion_iff
     apply (div_lt_iff₀ hD).1
     nlinarith
 
-/-- **Euler-calibrated valuation-depth transition.**  Every nondegenerate four-prime Cauchy
-boundary cell has a finite common valuation depth at which the literal Euler half-height
-dispersion strictly dominates the cumulant-corrected complementary Fisher charge. -/
+/-- **Euler-height coordinate transition/no-go witness.**  The calibrated height formula crosses
+the corrected Fisher charge under the depth-blind Rees boundary probability.  Literal Euler
+amplitudes do not preserve that probability at large depth, so this is not the physical producer. -/
 theorem exists_gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion
     {a : ℝ} {rate : Fin 4 → ℝ} {prime : Fin 4 → Nat.Primes}
     (ha : a ≠ 0) (hrate : Function.Injective rate)

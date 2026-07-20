@@ -10,6 +10,7 @@
   `formal/GaloisForLFunctions/HTGeometry/UnitaryReflectionPhaseHalving.lean`,
   `formal/GaloisForLFunctions/RHTower/HardyCarrier.lean`,
   `formal/GaloisForLFunctions/RHTower/HardyZ.lean`,
+  `formal/GaloisForLFunctions/RHTower/HardyZPhaseAsymptotic.lean`,
   `formal/GaloisForLFunctions/RHTower/HardyZThetaTrace.lean`,
   `formal/GaloisForLFunctions/RHTower/HardyZSignChange.lean`
 
@@ -28,6 +29,72 @@ w(t)^2 = zetaChi(s(t)),
 zeta(s(t)) = w(t) * hardyZ(t),
 hardyZ(t) in R.
 ```
+
+The residual phase orientation is now discharged exactly.  Define the global real lift
+
+```text
+theta(t) = integral_[0,t] (Re(digamma(1/4+iu/2))/2 - log(pi)/2) du.
+```
+
+The central Gamma value is a positive real, hence `w(0)=1`, and the phase differential law
+integrates without any branch choice or undetermined constant:
+
+```text
+w(t) = exp(-i*theta(t)),
+zeta(1/2+it) = exp(-i*theta(t)) * hardyZ(t),
+exp(i*theta(t)) * zeta(1/2+it) = hardyZ(t).
+```
+
+More generally, every complex value reflected by this Gamma phase equals `exp(-i*theta(t))`
+times its canonical real phase-halved amplitude.  This one exponential normal form simultaneously
+covers zeta, `gN`, and the symmetrized Euler--Maclaurin carrier, so their critical-line
+approximation errors are entirely real after the same exact unwinding.
+
+The same general law is now closed at first-jet level.  For every differentiable reflected path
+`z(t)=exp(-i*theta(t))*A(t)` with real canonical amplitude `A`,
+
+```text
+exp(i*theta(t)) * z'(t) = A'(t) - i*theta'(t)*A(t).
+```
+
+It specializes both to zeta/Hardy Z and to every finite `gN`/`gammaHardyCarrier`.  At a zero the
+phase-velocity term vanishes, so complex transversality and real-amplitude transversality are
+equivalent.  In particular,
+
+```text
+zeta(1/2+it) = 0
+  implies
+(zeta'(1/2+it) = 0  iff  hardyZ'(t) = 0).
+```
+
+This discharges the simple-zero/first-jet Prop interface without assuming that any such zero
+exists or is simple.
+
+The lift is differentiable and odd, with exact velocity
+
+```text
+theta'(t) = Re(digamma(1/4+it/2))/2 - log(pi)/2.
+```
+
+The corpus's vertical digamma asymptotic gives the unconditional first-order law
+
+```text
+theta'(t) - (1/2)*log(t/(2*pi)) -> 0  as t -> +infinity.
+```
+
+The general asymptotic-integration law extracted alongside it then gives the phase-value form
+
+```text
+(theta(t) - ((t/2)*log(t/(2*pi)) - t/2)) / t -> 0.
+```
+
+Thus `theta'`, `theta(t)/t`, and `theta(t)` tend to positive infinity.  The phase is strictly
+increasing on some terminal ray, and on a possibly enlarged terminal ray it is a bijection onto
+the ray beginning at its boundary value.  Every sufficiently large phase level therefore has a
+unique positive-tail height, giving an exact Gram-point/Riemann--Siegel Prop interface.
+This closes the global branch, orientation, exact first derivative, and first-order derivative and
+value asymptotic interfaces; it does not supply the quantitative second derivative or remainder
+bounds needed by the smooth approximate functional equation.
 
 This uses the normalized Gamma value rather than a principal-log square root.  It therefore
 discharges the global phase-continuity premise that the existing finite Hardy carrier could only
@@ -283,6 +350,7 @@ characterizes strict opposite signs of the two theta-cusp cosine traces.
 - `riemannZeta_conj_of_re_pos`
 - `riemannZeta_conj_eq_zero_iff_of_re_pos`
 - `gammaHardyPhase_isUnitary`, `gammaHardyPhase_sq`
+- `gammaHardyPhaseRate`, `hasDerivAt_gammaHardyPhase`
 - `gammaHardyPhase_neg`, `riemannZeta_line_neg`
 - `differentiable_Gammaℝ_line`, `differentiable_gammaHardyPhase`
 - `continuous_gammaHardyPhase`
@@ -302,6 +370,35 @@ characterizes strict opposite signs of the two theta-cusp cosine traces.
 - `riemannZeta_line_isPhaseReflected`
 - `conj_gammaHardyPhase_mul_zeta_eq_hardyZ`
 - `riemannZeta_line_eq_gammaHardyPhase_mul_hardyZ`
+- `gammaHardyTheta`, `hasDerivAt_gammaHardyTheta`, `odd_gammaHardyTheta`
+- `gammaHardyPhase_zero`, `gammaHardyPhase_eq_exp_neg_theta`
+- `gammaPhaseReflected_eq_exp_neg_theta_mul_amplitude`
+- `exp_theta_mul_gammaPhaseReflected_eq_amplitude`
+- `riemannZeta_line_eq_exp_neg_theta_mul_hardyZ`
+- `exp_theta_mul_riemannZeta_line_eq_hardyZ`
+- `gN_line_eq_exp_neg_theta_mul_gammaHardyCarrier`
+- `semCarrier_line_eq_exp_neg_theta_mul_two_hardySEM`
+- `deriv_gammaPhaseReflected_eq_exp_neg_theta_mul`
+- `exp_theta_mul_deriv_gammaPhaseReflected_eq`
+- `re_exp_theta_mul_deriv_gammaPhaseReflected_eq_amplitude_deriv`
+- `im_exp_theta_mul_deriv_gammaPhaseReflected_eq_neg_rate_mul_amplitude`
+- `deriv_gammaPhaseReflected_eq_zero_iff_amplitude_deriv_of_zero`
+- `exp_theta_mul_deriv_gN_line`
+- `deriv_gN_line_eq_zero_iff_deriv_gammaHardyCarrier_of_zero`
+- `exp_theta_mul_deriv_riemannZeta_line`
+- `re_exp_theta_mul_deriv_riemannZeta_line`
+- `im_exp_theta_mul_deriv_riemannZeta_line`
+- `exp_theta_mul_deriv_riemannZeta_line_eq_deriv_hardyZ_of_zero`
+- `deriv_riemannZeta_line`, `deriv_riemannZeta_line_eq_zero_iff_deriv_hardyZ_of_zero`
+- `deriv_riemannZeta_eq_zero_iff_deriv_hardyZ_of_zero`
+- `gammaHardyPhaseRate_sub_log_conductor_tendsto_zero`
+- `tendsto_div_atTop_zero_of_deriv_tendsto_zero`
+- `gammaHardyThetaMain`, `hasDerivAt_gammaHardyThetaMain`
+- `gammaHardyTheta_sub_main_div_tendsto_zero`
+- `gammaHardyTheta_div_sub_log_conductor_tendsto_zero`
+- `gammaHardyTheta_div_tendsto_atTop`, `gammaHardyTheta_tendsto_atTop`
+- `gammaHardyPhaseRate_tendsto_atTop`, `exists_gammaHardyTheta_strictMonoOn`
+- `exists_gammaHardyTheta_terminal_bijOn`
 - `xi_line_eq_scale_mul_hardyZ`
 - `hardyZ_zero_height_neg`
 - `riemannZeta_line_eq_zero_iff_hardyZ`
@@ -365,5 +462,7 @@ source.  It closes the `HardyZ.lean` substrate item in
 core remains analytic: a symmetric approximate functional equation with height-dependent cutoff,
 the required zeta moment estimates, and the Hardy mean/sign-change inequality.  The corpus already
 contains the needed first/second derivative-test machinery; the newly discharged differentiability
-interfaces do not supply the missing height-dependent AFE estimates.  No RH statement is claimed
-here.
+interfaces and exact global phase lift do not supply the missing height-dependent AFE estimates.
+The first-order laws `theta'(t) = (1/2)log(t/(2*pi)) + o(1)` and
+`theta(t) = (t/2)log(t/(2*pi)) - t/2 + o(t)` are closed, but the quantitative
+digamma/trigamma bounds used by the smooth AFE remain open.  No RH statement is claimed here.

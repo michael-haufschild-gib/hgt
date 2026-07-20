@@ -110,6 +110,7 @@ import GaloisForLFunctions.RHTower.AnnealCarrier
 import GaloisForLFunctions.RHTower.ZetaCarrier
 import GaloisForLFunctions.RHTower.HardyCarrier
 import GaloisForLFunctions.RHTower.HardyZ
+import GaloisForLFunctions.RHTower.HardyZPhaseAsymptotic
 import GaloisForLFunctions.RHTower.HardyZThetaTrace
 import GaloisForLFunctions.RHTower.DigammaLine
 import GaloisForLFunctions.RHTower.RouteBOfflineDomination

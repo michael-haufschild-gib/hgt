@@ -180,6 +180,64 @@ theorem transverseChannelFanoMargin_lower_bound
     (Finset.sum_nonneg fun i _ => sq_nonneg
       ((topDegree - 1) * p i - (topDegree - 2) / 2))
 
+/-! ### Unequal-gap multichannel law -/
+
+/-- Mean degree of an arbitrary orthogonal graph completion.  Each channel starts at its own
+lower degree and makes its own homogeneous degree jump. -/
+def unequalGapChannelMean (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) : ℝ :=
+  loweringCharge + ∑ i, (lowerDegree i + gap i * p i)
+
+/-- Variance of independent Bernoulli channels with channel-dependent degree gaps. -/
+def unequalGapChannelVariance (gap p : ι → ℝ) : ℝ :=
+  ∑ i, (gap i) ^ 2 * p i * (1 - p i)
+
+/-- Mean-minus-variance margin for an arbitrary unequal-gap graph completion. -/
+def unequalGapChannelFanoMargin
+    (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) : ℝ :=
+  unequalGapChannelMean loweringCharge lowerDegree gap p -
+    unequalGapChannelVariance gap p
+
+/-- **Unequal-gap channel-square law.**  Every orthogonal graph channel contributes one exact
+square, with its lower endpoint charged separately. -/
+theorem unequalGapChannelFanoMargin_square
+    (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) :
+    unequalGapChannelFanoMargin loweringCharge lowerDegree gap p =
+      loweringCharge +
+        ∑ i, (lowerDegree i - (gap i - 1) ^ 2 / 4 +
+          (gap i * p i - (gap i - 1) / 2) ^ 2) := by
+  unfold unequalGapChannelFanoMargin unequalGapChannelMean unequalGapChannelVariance
+  rw [show loweringCharge + (∑ i, (lowerDegree i + gap i * p i)) -
+      ∑ i, (gap i) ^ 2 * p i * (1 - p i) =
+      loweringCharge + ((∑ i, (lowerDegree i + gap i * p i)) -
+        ∑ i, (gap i) ^ 2 * p i * (1 - p i)) by ring]
+  rw [← Finset.sum_sub_distrib]
+  apply congrArg (loweringCharge + ·)
+  apply Finset.sum_congr rfl
+  intro i _
+  ring
+
+/-- Separated form of the unequal-gap law: deterministic lowering budget, sharp phase credit,
+and a sum of manifest channel squares. -/
+theorem unequalGapChannelFanoMargin_square_separated
+    (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) :
+    unequalGapChannelFanoMargin loweringCharge lowerDegree gap p =
+      loweringCharge +
+          ∑ i, (lowerDegree i - (gap i - 1) ^ 2 / 4) +
+        ∑ i, (gap i * p i - (gap i - 1) / 2) ^ 2 := by
+  rw [unequalGapChannelFanoMargin_square]
+  rw [Finset.sum_add_distrib]
+  ring
+
+/-- The unequal-gap squares give the sharp channelwise phase lower bound. -/
+theorem unequalGapChannelFanoMargin_lower_bound
+    (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) :
+    loweringCharge + ∑ i, (lowerDegree i - (gap i - 1) ^ 2 / 4) ≤
+      unequalGapChannelFanoMargin loweringCharge lowerDegree gap p := by
+  rw [unequalGapChannelFanoMargin_square_separated]
+  exact le_add_of_nonneg_right
+    (Finset.sum_nonneg fun i _ => sq_nonneg
+      (gap i * p i - (gap i - 1) / 2))
+
 /-- Mean degree of a lowering skeleton plus `topCount` identical Bernoulli jumps from degree
 `1` to degree `topDegree`. -/
 def transverseDegreeMean (loweringCharge topCount topDegree p : ℝ) : ℝ :=

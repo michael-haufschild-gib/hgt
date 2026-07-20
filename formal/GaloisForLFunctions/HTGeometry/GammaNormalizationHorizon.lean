@@ -123,46 +123,7 @@ theorem tendsto_realTrigamma_add_nat (x : ℝ) :
 /-- The first positive summand gives the elementary lower bound `1/x² ≤ ψ'(x)`. -/
 theorem one_div_sq_le_realTrigamma {x : ℝ} (hx : 0 < x) :
     1 / x ^ 2 ≤ realTrigamma x := by
-  have hterm : ∀ n : ℕ,
-      ((((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re = 1 / (x + n) ^ 2 := by
-    intro n
-    calc
-      ((((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re =
-          ((((x + (n : ℝ)) ^ 2)⁻¹ : ℝ) : ℂ).re := by
-        apply congrArg Complex.re
-        rw [Complex.ofReal_inv, Complex.ofReal_pow]
-        norm_cast
-      _ = 1 / (x + n) ^ 2 := by
-        rw [Complex.ofReal_re]
-        simp only [one_div]
-  have hre_sum : ∀ N : ℕ,
-      (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re =
-        ∑ n ∈ Finset.range N, ((((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re := by
-    intro N
-    induction Finset.range N using Finset.induction_on with
-    | empty => simp
-    | @insert a s ha ih => simp [ha, ih, Complex.add_re]
-  have hxre : 0 < ((x : ℂ)).re := by simpa using hx
-  have hlim := RHTower.deriv_digamma_eq_tsum_limit hxre
-  have hlimre : Tendsto (fun N : ℕ =>
-      (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re)
-      atTop (𝓝 (realTrigamma x)) := by
-    simpa [realTrigamma, Function.comp_def] using
-      (Complex.continuous_re.continuousAt.tendsto.comp hlim)
-  apply ge_of_tendsto hlimre
-  filter_upwards [eventually_ge_atTop 1] with N hN
-  obtain ⟨M, rfl⟩ : ∃ M, N = M + 1 := ⟨N - 1, by omega⟩
-  rw [hre_sum, Finset.sum_range_succ']
-  have htail : 0 ≤ ∑ n ∈ Finset.range M,
-      ((((x : ℂ) + ((n + 1 : ℕ) : ℂ)) ^ 2)⁻¹).re := by
-    apply Finset.sum_nonneg
-    intro n _
-    rw [hterm]
-    positivity
-  have hzero : ((((x : ℂ) + ((0 : ℕ) : ℂ)) ^ 2)⁻¹).re = 1 / x ^ 2 := by
-    simpa using hterm 0
-  rw [hzero]
-  linarith
+  simpa [realTrigamma] using RHTower.one_div_sq_le_re_deriv_digamma_of_pos hx
 
 /-- An explicit pointed analytic periodic gauge small enough to survive up to horizon `B`. -/
 def gammaLocalGauge (B : ℝ) (x : ℝ) : ℝ :=

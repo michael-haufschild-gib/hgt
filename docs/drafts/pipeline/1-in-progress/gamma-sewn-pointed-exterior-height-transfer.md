@@ -410,7 +410,56 @@ and strict negativity, and proves `(FS14)`:
 The analytic statement that these are the derivatives of the normalized feature remains exactly
 the boundary-extension gate `(FS7)`; no such identification is hidden in the Lean theorem.
 
-## Selected bold conjecture: cumulant-corrected four-rate transfer (CEERT-4C)
+## `[LEAN-PROVED]` Synchronized infinite-depth contraction and four-rate Jordan control
+
+The tempting fixed-common-depth amplifier is not physical.  Although its Rees boundary-minor
+probabilities are depth-blind, the literal Euler amplitude decays as
+`p^(-(e+1)(1+u)/2)` on the safe half-plane, so deep packets concentrate on the least conductor.
+That route is retired.
+
+Normalize the actual synchronized singleton ray before taking the boundary.  With
+`q=p^(-x)` and physical half-height `E_p(e)=((e+1)/2)log p`, the resulting all-depth law is
+
+```text
+pi_(x,p)(e)=(1-q)q^e,
+M_x(p)=E_pi[E_p]=log p/[2(1-q)],
+V_x(p)=Var_pi(E_p)=(log p)^2q/[4(1-q)^2],
+dM_x(p)/dx=-2V_x(p)<0.                                  (FS15)
+```
+
+Lean proves that `pi` is exactly the synchronized-lcm source ray divided by its total mass.  The
+full Gamma Fisher curvature then has the positive-aperture source decomposition
+
+```text
+G_x(p)=16V_(2x)(p)
+      +4(log p)^2p^(-4x)/(1+p^(-4x))^2.                 (FS16)
+```
+
+After the universal pole is removed, the two terms have finite parts `-kappa(p)/2` and
+`3kappa(p)/2`.  Therefore on the six-minor four-rate packet, with
+`F=E_mu[kappa_(I^c)]`, the complementary channel splits as
+
+```text
+F_H=-F/2<0,
+F_S= 3F/2>0,
+-F_H=F_S/3,
+F_H+F_S=F.                                              (FS17)
+```
+
+This is exact local signed-Jordan control, not a generic variance statement.  The negative mass
+has one third the magnitude of the positive sewing mass before any target response enters.  It
+falsifies a two-positive-channel reading of CEERT-4C: the two complementary components must remain
+correlated until after the physical response join.
+
+Permanent Lean is in
+`formal/GaloisForLFunctions/RHTower/GammaSewnSynchronizedEulerFisherBarycenter.lean` and
+`formal/GaloisForLFunctions/RHTower/GammaSewnFourRateSynchronizedEulerFisher.lean`.
+
+The `1/24` Laurent coefficient used in the boundary calculation is classical Bernoulli theory and
+is not claimed as new.  Hostile exact searches found no collision for `(FS16)`--`(FS17)`; that is
+search noncollision, not a priority claim.
+
+## Selected bold conjecture: Jordan-joined four-rate transfer (CEERT-4J)
 
 `[CONJECTURE] [SOURCE-DERIVED] [HEIGHT-LOCALIZED] [INFINITE] [NOT RH]`
 
@@ -422,14 +471,16 @@ join, zero-mode switch, causal order, future Bernoulli weights, Gamma connection
 window are exactly the existing source definitions; no coefficient may be chosen from a Xi zero
 or target eigenvector.
 
-**CEERT-4C.**  The local connected producer is not a two-source minor.  It is the source-normalized
+**CEERT-4J.**  The local connected producer is not a two-source minor.  It is the source-normalized
 four-rate Cauchy determinant with rows `(+1/2,-1/2,w_1,w_2)`, or equivalently the exterior Gram of
 the two future vectors after canonical two-boundary compression.  Apply the causal first-crossing
-dressing to the calibrated Euler legs before this compression.  These four-rate cells assemble
-cofinally and intertwine with the second compound of the completed prime--archimedean response.
-On every finite physical-height window the resulting pointed map is a contraction.  Along a
-source-prescribed cofinal aperture schedule it extends contractively on the closed causal
-first-crossing subspace, with amplitude
+dressing to the calibrated Euler legs before this compression, and build every cell from the
+normalized all-depth law `(FS15)`, never from one selected valuation depth.  Keep `(F_H,F_S)` as a
+signed correlated pair until the physical response join.  These four-rate cells assemble cofinally
+and intertwine with the second compound of the completed prime--archimedean response.  On every
+finite physical-height window the joined pointed map is a contraction.  Along a source-prescribed
+cofinal aperture schedule it extends contractively on the closed causal first-crossing subspace,
+with amplitude
 
 ```text
 O(M^(-1/2) log(M)^B).                                   (PE23)
@@ -437,7 +488,9 @@ O(M^(-1/2) log(M)^B).                                   (PE23)
 
 Its rooted response converges locally uniformly to the completed scalar Xi response, and its
 second-compound response converges to the positive cross-orbit slope-dispersion term in the exact
-Xi central-minor identity.  The contractive defect converges to the transverse boundary charge.
+Xi central-minor identity.  Correlation carries the exact join `F_H+F_S`, rather than separate
+component norms, to the transverse boundary charge; the ratio `-F_H=F_S/3` survives until that
+join.  The contractive defect converges to the transverse boundary charge.
 Consequently contractivity gives
 
 ```text
@@ -453,17 +506,18 @@ This is deliberately stronger and more falsifiable than “there exists a passiv
 The finite maps are fixed by source coefficients.  The open theorem is their bounded extension,
 amplitude, and locally uniform value identification.
 
-**Fisher-seam refinement.**  The first source jet must map the pair-sum height dispersion in
-`(FS13)` to cross-orbit dispersion.  The second channel is not raw Schur curvature: it is the
-uniquely corrected complementary Fisher mean `(FS14)`, and it must map to transverse boundary
-charge.  This is the proposed source-derived origin of both terms in the exact Xi minor; neither
-term may be inserted as a target-selected coefficient.
+**Fisher/Jordan refinement.**  The first source jet must map the pair-sum height dispersion in
+`(FS13)` to cross-orbit dispersion.  The second channel is neither raw Schur curvature nor one
+primitive positive Fisher variable: it is the signed join `(FS17)`, and only the joined value may
+map to transverse boundary charge.  This is the proposed source-derived origin of both terms in
+the exact Xi minor; neither term may be inserted as a target-selected coefficient.
 
 **Sharp falsifier.**  Literal compression of the full boundary/future cell must preserve the
-quarter-prime Euler seam and transport the two summands of `(FS13)` separately.  Mixing them again,
-omitting the variance debit in `(FS14)`, or a normalization mismatch between the complementary
-Fisher mean and transverse charge retires CEERT-4C.  Generic Wronskian, Fisher, or
-Schur-complement theory does not discharge this source-to-response test.
+quarter-prime Euler seam, transport the pair dispersion separately, and preserve the signed ratio
+`-F_H=F_S/3` until response correlation.  Selected-depth amplification, separate component norms,
+or a normalization mismatch between the joined complementary mass and transverse charge retires
+CEERT-4J.  Generic Wronskian, Bernoulli, Fisher, or Schur-complement theory does not discharge this
+source-to-response test.
 
 ## Immediate hostile tests
 
@@ -483,12 +537,16 @@ Schur-complement theory does not discharge this source-to-response test.
    family.
 6. **Four-rate boundary/future minor.** The boundary normalization and curvature now pass in
    `(FS10)`--`(FS14)`.  The remaining test is the full rows `(+1/2,-1/2,w_1,w_2)` with causal
-   dressing; vanishing or loss of the two-channel split kills CEERT-4C.
-7. **Singleton/father cancellation.** Persistent positive father cost must vanish in the exterior
+   dressing; vanishing or loss of the joined three-channel split kills CEERT-4J.
+7. **All-depth Jordan join -- PASSED LOCALLY IN LEAN.**  The normalized synchronized ray, exact
+   infinite expectation/variance, strict contraction `(FS15)`, full-aperture identity `(FS16)`,
+   and six-minor ratio `(FS17)` compile.  The remaining falsifier is preservation of that ratio by
+   the physical response correlation; separate component norms fail the test.
+8. **Singleton/father cancellation.** Persistent positive father cost must vanish in the exterior
    leg before Gram formation.  Cancellation only after squaring is the retired aperture-cost route.
-8. **Amplitude.** Any loss larger than `M^(-1/2)` in amplitude cannot close the endpoint energy and
-   retires CEERT-4C.
-9. **Response identity.** The finite second-compound packet must reproduce the known three-node
+9. **Amplitude.** Any loss larger than `M^(-1/2)` in amplitude cannot close the endpoint energy and
+   retires CEERT-4J.
+10. **Response identity.** The finite second-compound packet must reproduce the known three-node
    response determinant normalization before any global convergence claim.
 
 ## Gates
@@ -515,6 +573,11 @@ Schur-complement theory does not discharge this source-to-response test.
   `(FS10)`--`(FS11)` in Lean.
 - [x] formal boundary-partition jet curvature, complementary Fisher--dispersion law `(FS13)`,
   strict negativity, and unique cumulant correction `(FS14)` in Lean.
+- [x] selected-large-depth route falsified by literal Euler conductor concentration.
+- [x] normalized all-depth synchronized law, exact Euler height barycenter/variance, and strict
+  infinite contraction `(FS15)` in Lean.
+- [x] full-aperture height--sewing decomposition `(FS16)` and four-rate signed Jordan control
+  `(FS17)` in Lean.
 - [ ] analytic boundary source-jet identity `(FS7)` in Lean.
 - [x] `GammaSewnApertureFisherSeam.lean` passes its direct Lean check and exact module build.
 - [x] the three preceding modules pass direct leaf checks and exact module builds; audited capstones use only
@@ -523,7 +586,8 @@ Schur-complement theory does not discharge this source-to-response test.
 - [x] Euler calibration `(PE18)`--`(PE19)` and literal phase-Wronskian identity in Lean.
 - [ ] concrete all-depth source-ray specialization of the four-direction theorem in Lean.
 - [ ] nonzero full four-rate boundary/future Cauchy determinant with causal calibrated amplitudes.
-- [ ] cumulant-corrected two-channel Schur-complement intertwining.
+- [ ] Jordan-joined three-channel Schur-complement/response intertwining; separate norms do not
+  satisfy this gate.
 - [ ] causal-subspace boundedness and `(PE23)`.
 - [ ] locally uniform second-compound response identification.
 - [ ] `(PE24)` and RH.

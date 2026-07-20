@@ -443,6 +443,74 @@ theorem gammaSewnMobiusApertureFisherCurvature_eq_sixteen_heightVariance_add_sew
   field_simp [hminus, hplus]
   ring
 
+/-- The sewing channel has the finite lossless-boundary value `(log p)^2`. -/
+theorem tendsto_gammaSewnSewingBernoulliFisherCurvature_zero
+    (p : Nat.Primes) :
+    Tendsto (fun x : ℝ => gammaSewnSewingBernoulliFisherCurvature x p)
+      (𝓝[≠] 0) (𝓝 (Real.log (p : ℝ) ^ 2)) := by
+  have hcont : ContinuousAt
+      (fun x : ℝ => gammaSewnSewingBernoulliFisherCurvature x p) 0 := by
+    let q : ℝ → ℝ := fun x => xiMobiusContinuousApertureDiskNode x p
+    have hq : ContinuousAt q 0 := by
+      dsimp only [q]
+      unfold xiMobiusContinuousApertureDiskNode
+      fun_prop
+    have hden : (1 + q 0 ^ 4) ^ 2 ≠ 0 := by
+      dsimp only [q, xiMobiusContinuousApertureDiskNode]
+      norm_num
+    exact (continuousAt_const.mul (hq.pow 4)).div
+      ((continuousAt_const.add (hq.pow 4)).pow 2) hden
+  convert hcont.tendsto.mono_left inf_le_left using 1
+  unfold gammaSewnSewingBernoulliFisherCurvature
+    xiMobiusContinuousApertureDiskNode
+  norm_num
+
+/-- After the universal pole is removed, the infinite Euler depth-variance channel has a
+*negative* finite part.  The positive Fisher clock is created only after the larger sewing
+boundary term is joined. -/
+theorem tendsto_sixteen_heightVariance_two_mul_sub_pole_zero
+    (p : Nat.Primes) :
+    Tendsto
+      (fun x : ℝ =>
+        16 * gammaSewnSynchronizedEulerHalfHeightVariance (2 * x) p - 1 / x ^ 2)
+      (𝓝[>] 0) (𝓝 ((-1 / 3 : ℝ) * Real.log (p : ℝ) ^ 2)) := by
+  have hsubset : Ioi (0 : ℝ) ⊆ ({0} : Set ℝ)ᶜ := by
+    intro x hx
+    simp only [mem_compl_iff, mem_singleton_iff]
+    exact ne_of_gt hx
+  have hfilter : (𝓝[>] (0 : ℝ)) ≤ (𝓝[≠] 0) :=
+    nhdsWithin_mono 0 hsubset
+  have hgamma :=
+    (tendsto_gammaSewnMobiusApertureRenormalizedFisherCurvature_zero p).mono_left hfilter
+  have hsewing :=
+    (tendsto_gammaSewnSewingBernoulliFisherCurvature_zero p).mono_left hfilter
+  have hdiff := hgamma.sub hsewing
+  have heq :
+      (fun x : ℝ =>
+          gammaSewnMobiusApertureRenormalizedFisherCurvature x p -
+            gammaSewnSewingBernoulliFisherCurvature x p) =ᶠ[𝓝[>] 0]
+        (fun x : ℝ =>
+          16 * gammaSewnSynchronizedEulerHalfHeightVariance (2 * x) p - 1 / x ^ 2) := by
+    filter_upwards [self_mem_nhdsWithin] with x hx
+    rw [gammaSewnMobiusApertureRenormalizedFisherCurvature,
+      gammaSewnMobiusApertureFisherCurvature_eq_sixteen_heightVariance_add_sewing hx p]
+    ring
+  have hfinal := hdiff.congr' heq
+  convert hfinal using 1
+  ring
+
+/-- **Boundary 3:1 sewing law.**  Relative to the final Gamma Fisher clock, the regularized
+infinite-depth height channel contributes `-1/2` and the sewing channel contributes `3/2`.
+The clock is their signed join, not either positive term alone. -/
+theorem gammaSewnSynchronizedEulerBoundary_height_sewing_three_to_one
+    (p : Nat.Primes) :
+    (-1 / 3 : ℝ) * Real.log (p : ℝ) ^ 2 =
+        -(1 / 2 : ℝ) * gammaSewnMobiusApertureBoundaryFisherClock p ∧
+      Real.log (p : ℝ) ^ 2 =
+        (3 / 2 : ℝ) * gammaSewnMobiusApertureBoundaryFisherClock p := by
+  unfold gammaSewnMobiusApertureBoundaryFisherClock
+  constructor <;> ring
+
 /-- First regular aperture coefficient after subtracting the universal depth pole and the
 forced quarter-prime calibration seam. -/
 def gammaSewnSynchronizedEulerBarycenterRegularCoefficient

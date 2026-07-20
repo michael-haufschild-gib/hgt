@@ -162,7 +162,11 @@ divisor data fed in.
   (b) `HardyZ.lean`, `HardyZThetaTrace.lean`, and `HardyZSignChange.lean`: `hardyZ` def,
   reality from FE, continuity, zeros ↔ line zeros, exact positive-theta value/sign/zero interfaces,
   the moment-gap-to-actual-zeta-zero Prop consumer, and a finite symmetrized-EM sign certificate
-  with explicit pointwise error margins **DONE**;
+  with explicit pointwise error margins **DONE**. `HardyZPhaseAsymptotic.lean` additionally fixes
+  the central orientation, constructs the exact branch-free phase lift, proves
+  `zeta(1/2+it)=exp(-i*theta(t))*Z(t)`, and closes the first-order
+  `theta'(t)=(1/2)log(t/(2*pi))+o(1)` and
+  `theta(t)=(t/2)log(t/(2*pi))-t/2+o(t)` laws **DONE**;
   (c) `SymmetricAFE.lean`: Lemma A (keystone);
   (d) `ZetaSecondMomentLower.lean` / `ZetaFourthMoment.lean`: Lemmas C, F (reuse
   `SecondMoment.lean`, `FourthMomentDiagonal.fourthMoment_bounded` — NOTE its
@@ -221,6 +225,20 @@ estimate needs, (iii) a falsification lab with real external scoreboards.
   provide the required first/second derivative integral bounds.  This is existing corpus support,
   not new work from this card.  The first genuinely missing module in the ordered chain is now the
   height-dependent symmetric AFE.
+- 2026-07-19 — The archimedean phase interface is now exact and branch-free:
+  `HardyZPhaseAsymptotic.lean` integrates the real normalized-Gamma velocity, proves positivity
+  directly at the real central Gamma factors to fix the orientation to one, and identifies the
+  resulting exponential phase simultaneously for zeta, `gN`, and symmetrized E--M carriers.  The
+  vertical digamma theorem supplies `theta'(t)=(1/2)log(t/(2*pi))+o(1)`, whose general asymptotic
+  integration law gives `theta(t)=(t/2)log(t/(2*pi))-t/2+o(t)`, and eventual strict monotonicity.
+  The resulting phase is a bijection between terminal rays, so every sufficiently large phase
+  level has a unique height.
+  A general rotating-frame first-jet law also gives
+  `exp(i*theta)z'=A'-i*theta'A` for zeta and every finite reflected carrier; at a zero it identifies
+  complex derivative vanishing exactly with real Hardy-amplitude derivative vanishing.
+  This closes the value, first-jet, and first-order phase interfaces only; S4's
+  quantitative complex digamma and trigamma remainders, S5, and the height-dependent smooth AFE
+  remain open.
 
 ## Lemma A derivation route (session-2 FINAL: smooth AFE, never sharpened)
 
@@ -336,7 +354,8 @@ S1, S2 entirely. Historical notes retained:
   compact rectangles (for the logDeriv interchange; dominator split at x=1 with
   x^{c−1}/x^{C−1}); ψ-series `ψ = −γ + Σ(1/(k+1) − 1/(s+k))` via
   TendstoLocallyUniformlyOn.deriv + ratio convergence; ψ/ψ' asymptotics from
-  limit forms; HardyZ.lean (Z def, reality from FE, zeros ↔ line zeros);
+  limit forms (the real first-order phase-velocity `o(1)` specialization is now complete);
+  the Hardy-Z value, phase, and zero substrate is complete;
   SmoothAFE.lean (keystone: Mellin V from G(u)=e^{u²}, contour shift, S5
   Stirling ratio); moment files C/F (corpus MV reuse); ZMeanLemma (E);
   HardyTheorem assembly.
@@ -348,5 +367,6 @@ S1, S2 entirely. Historical notes retained:
   `tendstoLocallyUniformlyOn_euler`). In umbrella, module build green.
   Gate-5 step 2 closed. Remaining queue: ψ series via logDeriv interchange
   (TendstoLocallyUniformlyOn.deriv + ratio; logDeriv P_n = log n − Σ_{k=0}^n 1/(s+k));
-  ψ/ψ' asymptotics (ψ = log + O(1/|z|), ψ' = 1/z + O(1/|z|²)); HardyZ.lean;
+  ψ/ψ' asymptotics (ψ = log + O(1/|z|), ψ' = 1/z + O(1/|z|²)); the weaker real
+  first-order Gamma-phase rate and exact Hardy phase lift are complete;
   SmoothAFE.lean (keystone); moments C/F; ZMeanLemma; HardyTheorem assembly.

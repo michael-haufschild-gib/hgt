@@ -35,16 +35,8 @@ trigamma series converge to `ψ'(z) = deriv ψ z`.  The differentiated digamma r
 far-field anchor `ψ'(z+N) → 0` sends the shift term to `0`. -/
 theorem deriv_digamma_eq_tsum_limit {z : ℂ} (hz : 0 < z.re) :
     Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹)
-      atTop (nhds (deriv Complex.digamma z)) := by
-  have hpart : ∀ N : ℕ, (∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹) =
-      deriv Complex.digamma z - deriv Complex.digamma (z + (N : ℂ)) := by
-    intro N; rw [deriv_digamma_apply_add_nat hz N]; ring
-  have h1 : Tendsto (fun N : ℕ =>
-      deriv Complex.digamma z - deriv Complex.digamma (z + (N : ℂ)))
-      atTop (nhds (deriv Complex.digamma z - 0)) :=
-    tendsto_const_nhds.sub (deriv_digamma_add_nat_tendsto z)
-  rw [sub_zero] at h1
-  exact h1.congr fun N => (hpart N).symm
+      atTop (nhds (deriv Complex.digamma z)) :=
+  deriv_digamma_partialSum_tendsto hz
 
 /-- **Strict trigamma monotonicity at two real points.**  For `0 < x < y` the trigamma values obey
 `ψ'(y) < ψ'(x)`, so `ψ'(y) − ψ'(x) ≠ 0`.  Each term `(x+n)⁻²` of the trigamma series strictly
