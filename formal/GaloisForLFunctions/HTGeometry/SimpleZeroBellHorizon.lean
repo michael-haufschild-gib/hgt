@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DigammaRationalCarrier
 import GaloisForLFunctions.HTGeometry.GammaPoleFormalGermFreeness
 import GaloisForLFunctions.HTGeometry.MvPolynomialHomogeneousDehomogenization
+import GaloisForLFunctions.HTGeometry.MvPolynomialTopHomogeneousComponent
 
 /-!
 # The simple-zero Bell horizon
@@ -104,23 +105,6 @@ theorem simpleZeroPrincipalProfile_coeff_of_isHomogeneous
     (simpleZeroPrincipalProfile n P).coeff d = simpleZeroDehomogenize n P := by
   rw [simpleZeroPrincipalProfile_factor hP]
   simp
-
-/-- The top homogeneous component of a nonzero finite multivariate polynomial is nonzero. -/
-theorem homogeneousComponent_totalDegree_ne_zero
-    {n : ℕ} {P : MvPolynomial (Fin n) ℂ} (hP0 : P ≠ 0) :
-    MvPolynomial.homogeneousComponent P.totalDegree P ≠ 0 := by
-  classical
-  obtain ⟨m, hm, hmax⟩ := P.support.exists_mem_eq_sup
-    (Finsupp.support_nonempty_iff.mpr hP0)
-    (fun e : Fin n →₀ ℕ => e.sum fun _ k => k)
-  have hdeg : m.degree = P.totalDegree := by
-    rw [MvPolynomial.totalDegree]
-    simpa [Finsupp.degree] using hmax.symm
-  intro hzero
-  have hcoeff := congrArg (MvPolynomial.coeff m) hzero
-  rw [MvPolynomial.coeff_homogeneousComponent, if_pos hdeg,
-    MvPolynomial.coeff_zero] at hcoeff
-  exact (MvPolynomial.mem_support_iff.mp hm) hcoeff
 
 /-- For an arbitrary polynomial, the coefficient at its total-degree pole grade is the
 dehomogenized top homogeneous component. -/

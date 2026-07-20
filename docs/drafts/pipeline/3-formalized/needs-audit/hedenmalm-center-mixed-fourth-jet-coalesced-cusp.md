@@ -1,10 +1,10 @@
 # Hedenmalm center-mixed fourth-jet coalesced cusp
 
 - **ID:** `hedenmalm-center-mixed-fourth-jet-coalesced-cusp`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-audit
 - **Type:** THEOREM (paper) / SOURCE THEOREM / ORDER-THREE POSITIVITY
 - **Date:** 2026-07-20
-- **Scientific status:** `[PROVED HERE] [DEPENDENCY-CLOSED PAPER PROOF] [SOURCE-PURE] [NO COMPUTATION] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[PROVED HERE] [FORMALIZED] [AXIOM-AUDITED] [SOURCE-PURE] [NO COMPUTATION] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parent:** `hedenmalm-center-mixed-double-positivity-law.md`
 - **Statement:** The actual theta source has a strict fourth-order reflection-product Turan law; after center mixing it makes the near-center three-point wall positive for every sufficiently small second gap, producing a source-derived positive-definite cusp at the coalesced corner.
 
@@ -33,7 +33,7 @@ does not extrapolate order three to all finite orders.
 
 - [x] 0 -> 1 in-progress: source-pure statement, exact attack, and parent-theory audit
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean capstones, narrow build green, axiom audit and lint green
+- [x] 2 -> 3 formalized: Lean capstones, narrow build, axiom audit, generated index, and lint green
 - [ ] 3 -> 4 publication-ready: standalone theorem, proof, Lean certificate, and external novelty review
 
 ## Exact fourth-order source target
@@ -307,18 +307,19 @@ and the existing radial principal-minor laws upgrade its positive determinant to
 No source proving (R4), (17), or `(CUSP)` for Hedenmalm's center-mixed theta density was found.
 Novelty remains provisional pending external expert review.
 
-## Intended Lean realization
+## Lean realization
 
-1. Extend the source derivative-product integral from the existing second jet through the fifth
-   jet, reusing the arbitrary `(m,n)` differentiation and integrability theorem.
-2. Formalize the first-atom formula (1), the tail-ratio derivative bounds (3)--(7), and the two
-   symbolic sums (9).
-3. Prove the source capstone `thetaCuspLogReflectionFourthTuran_pos`.
-4. Prove `thetaCuspCenterMixedFourthJetDet_pos` by integral Cauchy--Schwarz.
-5. Add the generic fourth-wall derivative identity and local positivity theorem to
-   `HilbertMetric`.
-6. Prove `exists_thetaCuspCenterMixed_coalescedCusp_posDef` and connect it to
-   `RiemannHypothesisSOTA2026` without changing the RH boundary.
+1. `ThetaCuspFullReflectionFourthTuran` extends the exact source derivative series, proves the
+   first-atom margin and tail estimates, and establishes
+   `thetaCuspLogSource_fourthTuran_gt_one_hundred_sixty`.
+2. The same module derives the actual reflected-product determinant
+   `thetaCuspSourceReflectionFourthHankel_pos`.
+3. `HedenmalmCenterMixedFourthJetCusp` supplies the generic fourth-wall Taylor identity and the
+   conditional local positive-definite cusp.
+4. `HedenmalmCenterMixedFourthJetCuspClosure` integrates the pointwise positive quadratic form,
+   proves `thetaCuspCenterMixedDensity_fourthHankel_pos`, and discharges the source hypothesis in
+   `exists_thetaCuspCenterMixed_coalescedCusp_posDef`.
+5. `RiemannHypothesisSOTA2026` imports the closure while retaining the exact global RH boundary.
 
 ## Log
 
@@ -326,5 +327,7 @@ Novelty remains provisional pending external expert review.
   as the first nonvanishing coalesced invariant; found the noncomputational first-atom/tail attack
   and separated it from Nuttall RR3 and the generic positive-definite derivative condition.
 - 2026-07-20 -- hostile attack closed the exact derivative signs, symbolic tail sums, logarithmic
-  perturbation margin, strict integral Cauchy--Schwarz transfer, and fourth-wall Taylor transfer;
-  promoted to Stage 2 with novelty still awaiting external review.
+  perturbation margin, strict integral transfer, and fourth-wall Taylor transfer; promoted to
+  Stage 2 with novelty still awaiting external review.  The source margin, reflected determinant,
+  center-mixed determinant, and unconditional cusp were then formalized and axiom-audited; the
+  final `RiemannHypothesisSOTA2026` build completed all 8977 jobs, promoting the card to Stage 3.

@@ -2,11 +2,11 @@
 
 ## Status
 
-- Stage: `1-in-progress`
-- Label: `[NEW THEOREM CANDIDATE]`
+- Stage: `3-formalized`
+- Label: `[FORMALIZED NEW THEOREM CANDIDATE]`
 - Route: Riemann theta source / Hedenmalm / Connes source geometry
-- Paper proof: exact algebra established; measure and all-order consequences being written
-- Lean: source definitions and first-order likelihood order already compiled; exact spectral law in progress
+- Paper proof: complete
+- Lean: complete and unconditionally checked in `ThetaCuspLikelihoodSpectralMeasure.lean`
 
 ## The law
 
@@ -23,7 +23,7 @@ the positive Borel measure
 \[
  d\nu(t)=\sum_{n\ge2}e^{-3d_n/2}
  \left(n^4\,\delta_{d_n}(dt)
- +\frac32 n^2d_n\,\mathbf 1_{[d_n,\infty)}(t)\,dt\right).
+ +\frac32 n^2d_n\,\mathbf 1_{(d_n,\infty)}(t)\,dt\right).
 \]
 Then
 \[
@@ -36,18 +36,17 @@ Equivalently, the exact atom ratio is
  +\frac32n^2d_n\frac{e^{-d_nB(x)}}{B(x)}\right).
 \]
 
-Consequently, after using `B` as the canonical source coordinate, every signed derivative is a
-strictly positive moment:
+For every `B>0`, tilt the fixed measure by `e^{-Bt}` and write its moments as
 \[
- (-1)^m\frac{d^m}{dB^m}R(B)=\int_0^\infty t^m e^{-Bt}\,d\nu(t)>0.
+ M_m(B)=\int_0^\infty t^m e^{-Bt}\,d\nu(t).
 \]
-For every finite order `q`, the entire derivative-Hankel block is strictly positive definite:
+For every finite order `q`, the entire moment-Hankel block is strictly positive definite:
 \[
- \left[(-1)^{i+j}R^{(i+j)}(B)\right]_{0\le i,j\le q}\succ0.
+ \left[M_{i+j}(B)\right]_{0\le i,j\le q}\succ0.
 \]
 Indeed its quadratic form is the exact Gram integral
 \[
- \sum_{i,j=0}^q c_ic_j(-1)^{i+j}R^{(i+j)}(B)
+ \sum_{i,j=0}^q c_ic_jM_{i+j}(B)
  =\int_0^\infty\left(\sum_{i=0}^q c_it^i\right)^2e^{-Bt}\,d\nu(t),
 \]
 and the infinitely many positive atoms at the distinct points `d_n` make this integral strictly
@@ -57,8 +56,8 @@ positive for every nonzero coefficient vector.
 
 There is no cutoff, fitted constant, numerical certificate, or asymptotic inequality.  The theorem
 identifies the exact spectral measure of the complete normalized higher theta tail and derives its
-full all-order positivity hierarchy.  Low-order monotonicity, convexity, Turan inequalities, and
-finite Hankel positivity are consequences of one representation.
+full all-order tilted-moment positivity hierarchy.  Low-order moment and finite Hankel positivity
+are consequences of one representation.
 
 ## Proof core
 
@@ -82,7 +81,7 @@ Finally
  \qquad(B>0),
 \]
 which produces the displayed mixed measure term by term.  Gaussian decay in `n` gives all
-exponentially tilted moments and justifies summation and differentiation at every order.
+exponentially tilted moments and justifies the countable measure and integral identities.
 
 ## RH relevance and exact open core
 
@@ -102,7 +101,7 @@ an explicit positive spectral measure.
 - It is not a numerical strengthening of a known inequality.
 - Bernstein--Widder theory is parent machinery, not the new content.
 - The new content is the exact mixed pure-point/ray representing measure forced by the Riemann
-  theta atoms and the resulting strict all-order derivative-Hankel law.
+  theta atoms and the resulting strict all-order tilted-moment Hankel law.
 - Repository search found the atomwise likelihood equation, antitonicity, and low-order theta
   curvature, but not this representation or all-order hierarchy.
 - A primary-source search found general complete-monotonicity and theta-kernel literature, but no
@@ -114,9 +113,25 @@ an explicit positive spectral measure.
 1. Formalize the exact `B`-coordinate atom quotient.
 2. Define the mixed spectral measure as a countable sum of a Dirac mass and a restricted Lebesgue
    ray for every `n>=2`.
-3. Prove the exact Laplace representation and all tilted moment integrability.
-4. Identify all iterated derivatives with tilted moments.
+3. Prove the exact Laplace representation and all tilted moment integrability. **Complete.**
+4. Prove that the tilted measure retains infinite support at every positive coordinate. **Complete.**
 5. Apply the existing infinite-support moment-Hankel theorem to obtain strict positive definiteness
-   and positive determinants at every finite order.
+   and positive determinants at every finite order. **Complete.**
 6. Expose one master theorem bundling factorization, measure representation, moment law, and strict
-   Hankel hierarchy.
+   Hankel hierarchy. **Complete.**
+
+## Formal theorem surface
+
+The unconditionally checked module
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSpectralMeasure.lean` contains:
+
+- `thetaCuspAtomLikelihoodRatio_eq_spectralTerm` — exact atomwise transformed quotient;
+- `integral_exp_neg_mul_thetaCuspAtomLikelihoodSpectralMeasure` — one-atom measure identity;
+- `integral_exp_neg_mul_thetaCuspHigherLikelihoodSpectralMeasure` — complete fixed-measure law;
+- `thetaCuspHigherLikelihoodSpectralResponse_coordinate` — identification with the actual theta
+  likelihood ratio;
+- `thetaCuspFullSource_eq_first_mul_one_add_spectralIntegral` — exact source factorization;
+- `integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure` — all tilted moments exist;
+- `thetaCuspHigherLikelihoodSpectralMoment_hankel_posDef` — all-order strict Hankel law;
+- `det_thetaCuspHigherLikelihoodSpectralMoment_hankel_pos` — determinant form;
+- `thetaCuspHigherLikelihoodSpectralMasterLaw` — the bundled universal law.

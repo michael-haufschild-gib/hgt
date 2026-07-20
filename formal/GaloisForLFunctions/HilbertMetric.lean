@@ -27,6 +27,11 @@ import GaloisForLFunctions.HilbertMetric.DeterminantCurvatureJet
 import GaloisForLFunctions.HilbertMetric.DegreeFiveGaussianCurvature
 import GaloisForLFunctions.HilbertMetric.ThreePointCorrelation
 import GaloisForLFunctions.HilbertMetric.ThreePointCorrelationLocal
+import GaloisForLFunctions.HilbertMetric.ReflectionFourthJet
+import GaloisForLFunctions.HilbertMetric.FourthCurvatureMixture
+import GaloisForLFunctions.HilbertMetric.FourthJetCoalescedCusp
+import GaloisForLFunctions.HilbertMetric.SixthJetRaywiseCoalescedCone
+import GaloisForLFunctions.HilbertMetric.GaussianMetricRankOneFracture
 
 /-!
 # Hilbert-metric theorem area

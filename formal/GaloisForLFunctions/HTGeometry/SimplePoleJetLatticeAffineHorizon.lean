@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SimplePoleJetLatticeHorizon
+import GaloisForLFunctions.HTGeometry.MvPolynomialTopHomogeneousComponent
 import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 
 /-!
@@ -210,23 +211,6 @@ theorem sum_homogeneousComponent_of_totalDegree_le
   refine MvPolynomial.homogeneousComponent_eq_zero e P ?_
   rw [Finset.mem_range, Nat.lt_succ_iff, not_le] at hne
   exact hne
-
-/-- The top homogeneous component of a nonzero multivariate polynomial is nonzero. -/
-theorem homogeneousComponent_totalDegree_ne_zero
-    {σ : Type*} {P : MvPolynomial σ ℂ} (hP0 : P ≠ 0) :
-    MvPolynomial.homogeneousComponent P.totalDegree P ≠ 0 := by
-  classical
-  obtain ⟨m, hm, hmax⟩ := P.support.exists_mem_eq_sup
-    (Finsupp.support_nonempty_iff.mpr hP0)
-    (fun e : σ →₀ ℕ => e.sum fun _ k => k)
-  have hdeg : m.degree = P.totalDegree := by
-    rw [MvPolynomial.totalDegree]
-    simpa [Finsupp.degree] using hmax.symm
-  intro hzero
-  have hcoeff := congrArg (MvPolynomial.coeff m) hzero
-  rw [MvPolynomial.coeff_homogeneousComponent, if_pos hdeg,
-    MvPolynomial.coeff_zero] at hcoeff
-  exact (MvPolynomial.mem_support_iff.mp hm) hcoeff
 
 /-- The finite source profile agrees with the existing countable universal profile after the
 canonical inclusion of finite jet coordinates. -/

@@ -1122,7 +1122,6 @@ private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetOne
   convert hquot using 1
   unfold thetaCuspHigherLikelihoodLogJetTwo
   field_simp [hspos.ne']
-  ring
 
 private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetTwo
     {x : ℝ} (hx : 0 < x) :
@@ -1202,10 +1201,8 @@ private theorem hasDerivAt_thetaCuspFirstAtomLogJetOne
   have h := (hasDerivAt_thetaCuspBornWittenSuperpotential
     (n := 1) (by norm_num) hx.le).const_mul (-2)
   convert h using 1
-  · funext y
-    simp only [thetaCuspFirstAtomLogJetOne]
-  · simp only [thetaCuspFirstAtomLogJetTwo, thetaCuspBornWittenLogCurvature]
-    ring
+  simp only [thetaCuspFirstAtomLogJetTwo, thetaCuspBornWittenLogCurvature]
+  ring
 
 private theorem hasDerivAt_thetaCuspFirstAtomLogJetTwo
     {x : ℝ} (hx : 0 < x) :
@@ -1345,6 +1342,199 @@ theorem thetaCuspLogSource_fourthTuran_gt_one_hundred_sixty
   rw [iteratedDeriv_four_thetaCuspLogSource_eq_factor hx,
     iteratedDeriv_two_thetaCuspLogSource_eq_factor hx]
   exact one_hundred_sixty_lt_thetaCuspFullLogFourthTuranNormalized hx
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+private def thetaCuspFullLogExponentialJetZero (x : ℝ) : ℝ :=
+  Real.exp (thetaCuspFullLogFactorZero x)
+
+private def thetaCuspFullLogExponentialJetOne (x : ℝ) : ℝ :=
+  thetaCuspFullLogExponentialJetZero x * thetaCuspFullLogFactorOne x
+
+private def thetaCuspFullLogExponentialJetTwo (x : ℝ) : ℝ :=
+  thetaCuspFullLogExponentialJetZero x *
+    (thetaCuspFullLogFactorOne x ^ 2 + thetaCuspFullLogFactorTwo x)
+
+private def thetaCuspFullLogExponentialJetThree (x : ℝ) : ℝ :=
+  thetaCuspFullLogExponentialJetZero x *
+    (thetaCuspFullLogFactorOne x ^ 3 +
+      3 * thetaCuspFullLogFactorOne x * thetaCuspFullLogFactorTwo x +
+      thetaCuspFullLogFactorThree x)
+
+private def thetaCuspFullLogExponentialJetFour (x : ℝ) : ℝ :=
+  thetaCuspFullLogExponentialJetZero x *
+    (thetaCuspFullLogFactorOne x ^ 4 +
+      6 * thetaCuspFullLogFactorOne x ^ 2 * thetaCuspFullLogFactorTwo x +
+      3 * thetaCuspFullLogFactorTwo x ^ 2 +
+      4 * thetaCuspFullLogFactorOne x * thetaCuspFullLogFactorThree x +
+      thetaCuspFullLogFactorFour x)
+
+private theorem hasDerivAt_thetaCuspFullLogExponentialJetZero
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFullLogExponentialJetZero
+      (thetaCuspFullLogExponentialJetOne x) x := by
+  simpa only [thetaCuspFullLogExponentialJetZero,
+    thetaCuspFullLogExponentialJetOne] using
+      (hasDerivAt_thetaCuspFullLogFactorZero hx).exp
+
+private theorem hasDerivAt_thetaCuspFullLogExponentialJetOne
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFullLogExponentialJetOne
+      (thetaCuspFullLogExponentialJetTwo x) x := by
+  have h := (hasDerivAt_thetaCuspFullLogExponentialJetZero hx).mul
+    (hasDerivAt_thetaCuspFullLogFactorOne hx)
+  unfold thetaCuspFullLogExponentialJetOne thetaCuspFullLogExponentialJetTwo
+  convert h using 1 <;> (try funext y) <;>
+    simp only [thetaCuspFullLogExponentialJetOne] <;> ring
+
+private theorem hasDerivAt_thetaCuspFullLogExponentialJetTwo
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFullLogExponentialJetTwo
+      (thetaCuspFullLogExponentialJetThree x) x := by
+  have h0 := hasDerivAt_thetaCuspFullLogExponentialJetZero hx
+  have h1 := hasDerivAt_thetaCuspFullLogFactorOne hx
+  have h2 := hasDerivAt_thetaCuspFullLogFactorTwo hx
+  have hcoeff := (h1.pow 2).add h2
+  unfold thetaCuspFullLogExponentialJetTwo thetaCuspFullLogExponentialJetThree
+  convert h0.mul hcoeff using 1 <;> (try funext y) <;>
+    simp only [thetaCuspFullLogExponentialJetOne, Pi.add_apply, Pi.mul_apply,
+      Pi.pow_apply] <;> ring
+
+private theorem hasDerivAt_thetaCuspFullLogExponentialJetThree
+    {x : ℝ} (hx : 0 < x) :
+    HasDerivAt thetaCuspFullLogExponentialJetThree
+      (thetaCuspFullLogExponentialJetFour x) x := by
+  have h0 := hasDerivAt_thetaCuspFullLogExponentialJetZero hx
+  have h1 := hasDerivAt_thetaCuspFullLogFactorOne hx
+  have h2 := hasDerivAt_thetaCuspFullLogFactorTwo hx
+  have h3 := hasDerivAt_thetaCuspFullLogFactorThree hx
+  have hcoeff := ((h1.pow 3).add ((h1.mul h2).const_mul 3)).add h3
+  unfold thetaCuspFullLogExponentialJetThree thetaCuspFullLogExponentialJetFour
+  convert h0.mul hcoeff using 1 <;> (try funext y) <;>
+    simp only [thetaCuspFullLogExponentialJetOne, Pi.add_apply, Pi.mul_apply,
+      Pi.pow_apply] <;> ring
+
+private theorem thetaCuspFullSource_eventuallyEq_logExponentialJetZero
+    {x : ℝ} (hx : 0 < x) :
+    thetaCuspFullSource =ᶠ[nhds x] thetaCuspFullLogExponentialJetZero := by
+  filter_upwards [Ioi_mem_nhds hx] with y hy
+  have hpos := thetaCuspFullSource_pos_of_pos hy
+  have hlog := thetaCuspLogSource_eventuallyEq_fullLogFactorZero hy
+  have hvalue := hlog.self_of_nhds
+  rw [thetaCuspFullLogExponentialJetZero, ← hvalue, thetaCuspLogSource,
+    Real.exp_log hpos]
+
+private theorem iteratedDeriv_one_thetaCuspFullSource_eq_logExponentialJet
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 1 thetaCuspFullSource x = thetaCuspFullLogExponentialJetOne x := by
+  rw [iteratedDeriv_one]
+  exact (hasDerivAt_thetaCuspFullLogExponentialJetZero hx |>.congr_of_eventuallyEq
+    (thetaCuspFullSource_eventuallyEq_logExponentialJetZero hx)).deriv
+
+private theorem iteratedDeriv_two_thetaCuspFullSource_eq_logExponentialJet
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 2 thetaCuspFullSource x = thetaCuspFullLogExponentialJetTwo x := by
+  have heq : iteratedDeriv 1 thetaCuspFullSource =ᶠ[nhds x]
+      thetaCuspFullLogExponentialJetOne := by
+    filter_upwards [Ioi_mem_nhds hx] with y hy
+    exact iteratedDeriv_one_thetaCuspFullSource_eq_logExponentialJet hy
+  rw [iteratedDeriv_succ]
+  exact (hasDerivAt_thetaCuspFullLogExponentialJetOne hx |>.congr_of_eventuallyEq heq).deriv
+
+private theorem iteratedDeriv_three_thetaCuspFullSource_eq_logExponentialJet
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 3 thetaCuspFullSource x = thetaCuspFullLogExponentialJetThree x := by
+  have heq : iteratedDeriv 2 thetaCuspFullSource =ᶠ[nhds x]
+      thetaCuspFullLogExponentialJetTwo := by
+    filter_upwards [Ioi_mem_nhds hx] with y hy
+    exact iteratedDeriv_two_thetaCuspFullSource_eq_logExponentialJet hy
+  rw [iteratedDeriv_succ]
+  exact (hasDerivAt_thetaCuspFullLogExponentialJetTwo hx |>.congr_of_eventuallyEq heq).deriv
+
+private theorem iteratedDeriv_four_thetaCuspFullSource_eq_logExponentialJet
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 4 thetaCuspFullSource x = thetaCuspFullLogExponentialJetFour x := by
+  have heq : iteratedDeriv 3 thetaCuspFullSource =ᶠ[nhds x]
+      thetaCuspFullLogExponentialJetThree := by
+    filter_upwards [Ioi_mem_nhds hx] with y hy
+    exact iteratedDeriv_three_thetaCuspFullSource_eq_logExponentialJet hy
+  rw [iteratedDeriv_succ]
+  exact (hasDerivAt_thetaCuspFullLogExponentialJetThree hx |>.congr_of_eventuallyEq heq).deriv
+
+/-- Zeroth center jet of the reflected source product at a positive source coordinate. -/
+def thetaCuspSourceReflectionJetZero (x : ℝ) : ℝ :=
+  thetaCuspFullSource x ^ 2
+
+/-- Second center jet of the reflected source product. -/
+def thetaCuspSourceReflectionJetTwo (x : ℝ) : ℝ :=
+  2 * (thetaCuspFullSource x * iteratedDeriv 2 thetaCuspFullSource x -
+    iteratedDeriv 1 thetaCuspFullSource x ^ 2)
+
+/-- Fourth center jet of the reflected source product. -/
+def thetaCuspSourceReflectionJetFour (x : ℝ) : ℝ :=
+  2 * thetaCuspFullSource x * iteratedDeriv 4 thetaCuspFullSource x -
+    8 * iteratedDeriv 1 thetaCuspFullSource x *
+      iteratedDeriv 3 thetaCuspFullSource x +
+    6 * iteratedDeriv 2 thetaCuspFullSource x ^ 2
+
+/-- The reflected complete source has a strictly positive fourth Hankel determinant at every
+positive source coordinate. -/
+theorem thetaCuspSourceReflectionFourthHankel_pos
+    {x : ℝ} (hx : 0 < x) :
+    0 < thetaCuspSourceReflectionJetZero x * thetaCuspSourceReflectionJetFour x -
+      thetaCuspSourceReflectionJetTwo x ^ 2 := by
+  have hlog := thetaCuspLogSource_fourthTuran_gt_one_hundred_sixty hx
+  rw [iteratedDeriv_four_thetaCuspLogSource_eq_factor hx,
+    iteratedDeriv_two_thetaCuspLogSource_eq_factor hx] at hlog
+  have hsource : thetaCuspFullSource x = thetaCuspFullLogExponentialJetZero x := by
+    exact (thetaCuspFullSource_eventuallyEq_logExponentialJetZero hx).self_of_nhds
+  rw [thetaCuspSourceReflectionJetZero, thetaCuspSourceReflectionJetTwo,
+    thetaCuspSourceReflectionJetFour, hsource,
+    iteratedDeriv_one_thetaCuspFullSource_eq_logExponentialJet hx,
+    iteratedDeriv_two_thetaCuspFullSource_eq_logExponentialJet hx,
+    iteratedDeriv_three_thetaCuspFullSource_eq_logExponentialJet hx,
+    iteratedDeriv_four_thetaCuspFullSource_eq_logExponentialJet hx]
+  unfold thetaCuspFullLogExponentialJetOne thetaCuspFullLogExponentialJetTwo
+    thetaCuspFullLogExponentialJetThree thetaCuspFullLogExponentialJetFour
+  have hzero : 0 < thetaCuspFullLogExponentialJetZero x := by
+    unfold thetaCuspFullLogExponentialJetZero
+    positivity
+  have hid :
+      thetaCuspFullLogExponentialJetZero x ^ 2 *
+          (2 * thetaCuspFullLogExponentialJetZero x *
+              (thetaCuspFullLogExponentialJetZero x *
+                (thetaCuspFullLogFactorOne x ^ 4 +
+                  6 * thetaCuspFullLogFactorOne x ^ 2 * thetaCuspFullLogFactorTwo x +
+                  3 * thetaCuspFullLogFactorTwo x ^ 2 +
+                  4 * thetaCuspFullLogFactorOne x * thetaCuspFullLogFactorThree x +
+                  thetaCuspFullLogFactorFour x)) -
+            8 * (thetaCuspFullLogExponentialJetZero x * thetaCuspFullLogFactorOne x) *
+              (thetaCuspFullLogExponentialJetZero x *
+                (thetaCuspFullLogFactorOne x ^ 3 +
+                  3 * thetaCuspFullLogFactorOne x * thetaCuspFullLogFactorTwo x +
+                  thetaCuspFullLogFactorThree x)) +
+            6 * (thetaCuspFullLogExponentialJetZero x *
+              (thetaCuspFullLogFactorOne x ^ 2 + thetaCuspFullLogFactorTwo x)) ^ 2) -
+        (2 * (thetaCuspFullLogExponentialJetZero x *
+            (thetaCuspFullLogExponentialJetZero x *
+              (thetaCuspFullLogFactorOne x ^ 2 + thetaCuspFullLogFactorTwo x)) -
+          (thetaCuspFullLogExponentialJetZero x * thetaCuspFullLogFactorOne x) ^ 2)) ^ 2 =
+      2 * thetaCuspFullLogExponentialJetZero x ^ 4 *
+        (thetaCuspFullLogFactorFour x + 4 * thetaCuspFullLogFactorTwo x ^ 2) := by
+    ring
+  rw [hid]
+  have hfactor : 0 < thetaCuspFullLogExponentialJetZero x ^ 4 := pow_pos hzero 4
+  have hlog' : (160 : ℝ) < thetaCuspFullLogFactorFour x +
+      4 * thetaCuspFullLogFactorTwo x ^ 2 := by
+    simpa only [thetaCuspFullLogFactorFour, thetaCuspFirstAtomLogJetFour,
+      thetaCuspFullLogFactorTwo, thetaCuspFirstAtomLogJetTwo] using hlog
+  exact mul_pos (mul_pos (by norm_num) hfactor) (by linarith)
 
 end
 
