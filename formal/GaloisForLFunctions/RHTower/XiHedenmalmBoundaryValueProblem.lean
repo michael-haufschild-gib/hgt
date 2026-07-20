@@ -50,7 +50,7 @@ theorem norm_xiHedenmalmBoundaryGauge (alpha : ℂ) (x : ℝ) :
   rw [xiHedenmalmBoundaryGauge, xiHedenmalmBoundaryEigenfunction,
     thetaCuspBoundaryPrimitive, norm_mul, norm_mul, hexpNorm]
   simp only [norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
-  rw [mul_assoc, ← Real.exp_add]
+  rw [← mul_assoc, ← Real.exp_add]
   have : -alpha.im * x + alpha.im * x = 0 := by ring
   rw [this, Real.exp_zero, one_mul]
 
@@ -66,7 +66,9 @@ theorem hasDerivAt_thetaCuspCumulativeIntegral
     integrable_thetaCuspFourierLaplaceIntegrand hstripNeg
   have hcont : Continuous (thetaCuspFourierLaplaceIntegrand (-alpha)) := by
     unfold thetaCuspFourierLaplaceIntegrand
-    fun_prop
+    exact (by fun_prop : Continuous
+      (fun x : ℝ => Complex.exp (-I * -alpha * (x : ℂ)))).mul
+        (Complex.continuous_ofReal.comp contDiff_thetaCuspFullSource.continuous)
   have hfun :
       (fun u : ℝ =>
         ∫ y : ℝ in Iic u, thetaCuspFourierLaplaceIntegrand (-alpha) y) =
@@ -98,7 +100,10 @@ theorem hasDerivAt_xiHedenmalmBoundaryEigenfunction
   have hexp : HasDerivAt
       (fun u : ℝ => Complex.exp (I * (-alpha) * (u : ℂ)))
       (Complex.exp (I * (-alpha) * (x : ℂ)) * (I * (-alpha))) x := by
-    fun_prop
+    have hlin : HasDerivAt (fun u : ℝ => I * (-alpha) * (u : ℂ))
+        (I * (-alpha)) x := by
+      simpa using (Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (I * (-alpha))
+    exact hlin.cexp
   have hprod := hexp.mul hcumulative
   rw [xiHedenmalmBoundaryEigenfunction, thetaCuspBoundaryPrimitive]
   change HasDerivAt (fun u : ℝ =>
@@ -111,7 +116,9 @@ theorem hasDerivAt_xiHedenmalmBoundaryEigenfunction
     rw [← Complex.exp_add]
     convert Complex.exp_zero
     ring
-  rw [hexpCancel, one_mul]
+  simp only [cumulative]
+  rw [← mul_assoc (Complex.exp (I * -alpha * (x : ℂ)))
+    (Complex.exp (-I * -alpha * (x : ℂ))), hexpCancel, one_mul]
   ring
 
 /-- The explicit theta integral is a solution of the logarithmic Hedenmalm equation. -/
@@ -170,7 +177,7 @@ theorem tendsto_thetaCuspCumulativeIntegral_atTop
 
 /-- Hedenmalm's weighted boundary condition at zero is automatic in the natural strip. -/
 theorem tendsto_xiHedenmalmBoundaryGauge_atBot
-    {alpha : ℂ} (hstrip : |alpha.im| < 1) :
+    {alpha : ℂ} (_hstrip : |alpha.im| < 1) :
     Tendsto (xiHedenmalmBoundaryGauge alpha) atBot (𝓝 0) := by
   have hcum :
       Tendsto
@@ -195,14 +202,19 @@ theorem xiHedenmalmBoundaryEquation_unique_of_atBot
     have hexp : HasDerivAt
         (fun y : ℝ => Complex.exp (I * alpha * (y : ℂ)))
         (Complex.exp (I * alpha * (x : ℂ)) * (I * alpha)) x := by
-      fun_prop
+      have hlin : HasDerivAt (fun y : ℝ => I * alpha * (y : ℂ))
+          (I * alpha) x := by
+        simpa using (Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (I * alpha)
+      exact hlin.cexp
     have hdiff := (hu x).sub
       (hasDerivAt_xiHedenmalmBoundaryEigenfunction hstrip x)
     have hprod := hexp.mul hdiff
     change HasDerivAt
       (fun y : ℝ => Complex.exp (I * alpha * (y : ℂ)) *
         (u y - xiHedenmalmBoundaryEigenfunction alpha y)) 0 x
-    convert hprod using 1 <;> ring
+    convert hprod using 1
+    simp only [Pi.sub_apply]
+    ring
   have hqDiff : Differentiable ℝ q := fun x => (hqDeriv x).differentiableAt
   have hqConst (x : ℝ) : q x = q 0 :=
     is_const_of_deriv_eq_zero hqDiff (fun y => (hqDeriv y).deriv) x 0
@@ -223,7 +235,9 @@ theorem xiHedenmalmBoundaryEquation_unique_of_atBot
   have hnormQ : Tendsto (fun x : ℝ => ‖q x‖) atBot (𝓝 0) := by
     have hnormDiff := hdiffBot.norm
     simpa only [norm_zero] using hnormDiff.congr' (Filter.Eventually.of_forall fun x => by
-      rw [q, xiHedenmalmWeightedBoundaryGauge, ← mul_sub, norm_mul,
+      dsimp only [q]
+      simp only [xiHedenmalmWeightedBoundaryGauge]
+      rw [← mul_sub, norm_mul, norm_mul,
         Complex.norm_exp, norm_real, Real.norm_eq_abs,
         abs_of_pos (Real.exp_pos _)]
       congr 2
@@ -236,7 +250,8 @@ theorem xiHedenmalmBoundaryEquation_unique_of_atBot
   have hq0 : q 0 = 0 := norm_eq_zero.mp hnormQ0
   funext x
   have hqx : q x = 0 := (hqConst x).trans hq0
-  rw [q, mul_eq_zero] at hqx
+  dsimp only [q] at hqx
+  rw [mul_eq_zero] at hqx
   exact sub_eq_zero.mp (hqx.resolve_left (Complex.exp_ne_zero _))
 
 /-- Hedenmalm's weighted boundary condition at infinity holds exactly at completed Xi zeros. -/

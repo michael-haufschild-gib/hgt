@@ -1373,6 +1373,8 @@ import GaloisForLFunctions.RHTower.ScaledSymmetricPolynomial
 import GaloisForLFunctions.RHTower.SecularHankel
 import GaloisForLFunctions.RHTower.SecularMoments
 import GaloisForLFunctions.RHTower.LiFiniteCriterionFrontier
+import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
+import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
 import GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026
 import GaloisForLFunctions.RHTower.SecularNewton
 import GaloisForLFunctions.RHTower.SigmaOrbit

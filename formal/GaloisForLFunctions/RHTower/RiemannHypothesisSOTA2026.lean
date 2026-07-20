@@ -3,6 +3,8 @@ import GaloisForLFunctions.HTGeometry.HardyClosureZeroFree
 import GaloisForLFunctions.RHTower.ConstrainedProlateFullDistanceCCM
 import GaloisForLFunctions.RHTower.LiFiniteCriterionFrontier
 import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
+import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
+import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
 import GaloisForLFunctions.RHTower.XiHedenmalmSourceCapstone
@@ -56,11 +58,37 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   obstruction.  The concrete half-plane Hardy carrier and the damped Colombeau nets remain to be
   represented.
 
-* Salem, Mobius-Laplace, Gaussian--Perron, Riccati--Gamma, de Bruijn--Newman, Jensen-polynomial,
-  and Berry--Keating papers either give equivalent criteria, conditional localization, finite or
-  computational statements, or reviews.  They do not discharge any wall above.  Computational
-  certificates and statements assuming RH or simple zeros are deliberately not promoted to
-  unconditional declarations.
+* The 2026 theta-infinity theorem (`arXiv:2605.24363`) gives zero-free regions, and a family
+  quasi-RH, from suitably bounded mollified second moments at every polynomial mollifier length.
+  The arbitrary-length estimate is the open premise; the concrete automorphic mollifiers and
+  moments are not yet represented.  It is therefore recorded as a live analytic wall, not as an
+  established RH conclusion.
+
+* The 2026 Salem specialization (`arXiv:2604.15396`) is formalized in
+  `SalemFermiModeCriterion`: the evaluated Fermi--Dirac transform of a pure Mellin mode vanishes
+  at every positive scale exactly at a zeta zero, and `SalemFermiModeExclusion` is proved
+  equivalent to RH.  The separate improper-integral evaluation remains an analytic-library wall.
+
+* The 2026 discrete Mobius--Laplace route (`arXiv:2607.09797`) is represented by the absolutely
+  convergent and positive-axis continuous `mobiusDiscreteLaplaceTransform`, its exponential tail,
+  the exact Mellin identity on `Re s > 1`, and the half-power decay premise.  The source's full
+  one-way implication is compiled as
+  `mobiusDiscreteLaplaceHalfDecay_implies_riemannHypothesis`: the decay bound makes the Mellin
+  transform analytic on `Re s > 1/2`, and the identity theorem propagates the regularized
+  `Gamma/zeta` identity.  The decay premise itself remains the research wall.  No simple-zero
+  hypothesis or conditional converse is imported.
+
+* The 2026 nonlinear-deficiency identity (`arXiv:2604.16530`) concerns approximation of zeta
+  values in the absolutely convergent half-plane.  The random-hyperfunction/CUE comparison
+  (`arXiv:2606.07312`) concerns value statistics.  The Guth--Maynard zero-density bound
+  (`arXiv:2405.20552`), highlighted in the 2026 exposition `arXiv:2607.04632`, bounds but does not
+  eliminate off-line zeros.  These are unconditional frontier results, but none supplies a new
+  implication discharging an RH wall.
+
+* Gaussian--Perron, Riccati--Gamma, de Bruijn--Newman, Jensen-polynomial, and Berry--Keating
+  papers give conditional localization, finite or computational statements, or reviews.  They do
+  not discharge any wall above.  Computational certificates and statements assuming RH or simple
+  zeros are deliberately not promoted to unconditional declarations.
 -/
 
 open Complex Filter Set Topology

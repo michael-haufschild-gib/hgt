@@ -35,7 +35,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1912 | `formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
 | 1825 | `formal/GaloisForLFunctions/HTGeometry/PolynomialPowerADEResonance.lean` |
-| 1775 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 1779 | `formal/GaloisForLFunctions/RHTower.lean` |
 
 ## Gap Markers
 
