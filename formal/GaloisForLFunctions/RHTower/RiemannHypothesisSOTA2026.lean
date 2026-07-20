@@ -85,6 +85,19 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   eliminate off-line zeros.  These are unconditional frontier results, but none supplies a new
   implication discharging an RH wall.
 
+* The remaining 2026 criterion refinements do not move their inherited walls.  The parabolic
+  Mellin transform (`arXiv:2602.17007`) supplies new integral reformulations; the Lagarias paper
+  (`arXiv:2602.15905`) reduces a least counterexample to a superabundant integer; the Young-lattice
+  construction (`arXiv:2601.22413`) transports a sum-of-divisors equivalence; and the harmonic
+  contour formulation (`arXiv:2605.30767`) restates off-line zeros as intersections for a pair of
+  harmonic functions.  Each remains an exact equivalent criterion or reduction, not a proof of
+  its global open condition.
+
+* Zhao's positive-proportion large/small zero-gap theorem (`arXiv:2603.17334`) is unconditional
+  zero statistics; Inoue's sharper small-gap constant (`arXiv:2604.05733`) assumes RH.  The
+  probabilistic Mobius partial-sum route (`arXiv:2604.23517`) assumes independence statements.
+  None excludes every off-critical zero, so none is promoted to an RH connector.
+
 * Gaussian--Perron, Riccati--Gamma, de Bruijn--Newman, Jensen-polynomial, and Berry--Keating
   papers give conditional localization, finite or computational statements, or reviews.  They do
   not discharge any wall above.  Computational certificates and statements assuming RH or simple
