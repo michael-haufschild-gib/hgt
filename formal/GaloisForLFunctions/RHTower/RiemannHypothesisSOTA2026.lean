@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.LiFiniteCriterionFrontier
 import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
 import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
 import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
-import GaloisForLFunctions.RHTower.HedenmalmCenterMixedThreePoint
+import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
 import GaloisForLFunctions.RHTower.XiHedenmalmSourceCapstone
@@ -38,9 +38,12 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   repair in `ThetaCuspKernelLogConcavity` proves strict global log-concavity, the multiplicative
   midpoint law, and positive semidefiniteness of every two-node center-mixed matrix.  The next
   source-specific layer proves radial monotonicity and an unconditional far-separated three-node
-  chamber.  `ThetaCuspCenterMixedNearCenterThreePointWall` is proved exactly equivalent to the
-  remaining ordered three-node positive-semidefiniteness statement.  It is not asserted; all-node
-  positive-definiteness remains the RH-equivalent wall.
+  chamber.  `exists_thetaCuspCenterMixedThreePointMatrix_posSemidef_of_large_gap` now closes the
+  entire cofinal order-three region: every packet with at least one sufficiently large adjacent
+  gap is positive semidefinite.  The exact remaining order-three wall is therefore a bounded
+  two-gap core, as stated by `exists_thetaCuspCenterMixedThreePointMatrix_compactCore_iff`.
+  Positivity on that compact core is not asserted, and all-node positive-definiteness remains the
+  RH-equivalent wall.
 
 * Suzuki (`arXiv:2606.09096`) constructs finite-interval self-adjoint extensions and entire
   characteristic functions with only real zeros.  The paper leaves locally uniform convergence

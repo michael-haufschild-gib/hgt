@@ -129,7 +129,12 @@ theorem scaleSeparatedSimplePoleBoundaryTrace_ne_zero
   intro hzero
   apply hP0
   apply simplePoleFinToNat_injective n
-  rw [← simplePoleScaleForget_scaleSeparatedSimplePoleBoundaryTrace, hzero, map_zero]
+  calc
+    simplePoleFinToNat n P =
+        simplePoleScaleForget (scaleSeparatedSimplePoleBoundaryTrace n P) :=
+      (simplePoleScaleForget_scaleSeparatedSimplePoleBoundaryTrace n P).symm
+    _ = simplePoleScaleForget 0 := congrArg simplePoleScaleForget hzero
+    _ = simplePoleFinToNat n 0 := by simp
 
 /-- A homogeneous `d`-particle source has the common pole factor `T^d` also in the
 scale-separated profile. -/

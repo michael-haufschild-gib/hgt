@@ -4,9 +4,12 @@
 - **Stage:** 2-fully-proven/needs-audit
 - **Type:** `[CENSUS] [BRIDGE MAP] [NO-GO CLOSURE] [NO RH CLAIM]`
 - **Area:** `HTGeometry`, `RHTower`, `HilbertMetric`
-- **Child theorem:** `reciprocity-reduced-wigner-smith-kolchin-tomography.md`
+- **Child theorems:** `reciprocity-reduced-wigner-smith-kolchin-tomography.md`,
+  `reciprocal-abcd-projective-ht-horizon-law.md`,
+  `arxiv-2026-electrical-optical-frontier-harvest.md`
 - **Formal output:**
-  `formal/GaloisForLFunctions/HTGeometry/MatrixWignerSmithReciprocity.lean`
+  `formal/GaloisForLFunctions/HTGeometry/MatrixWignerSmithReciprocity.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ReciprocalABCDProjectiveHorizon.lean`
 
 ## Reproducible coverage boundary
 
@@ -19,10 +22,19 @@ finite boundary available in the request:
    [List of optics equations](https://en.wikipedia.org/wiki/List_of_optics_equations), and the
    electrical/optical entries of the [List of equations](https://en.wikipedia.org/wiki/List_of_equations)
    and [List of theorems](https://en.wikipedia.org/wiki/List_of_theorems);
-2. every network/passivity/scattering family returned by repeated Google-style searches for
+2. every mathematical family named by the 2026-01-24 permalink of Wikipedia's
+   [Outline of electrical engineering](https://en.wikipedia.org/w/index.php?title=Outline_of_electrical_engineering&oldid=1334624347),
+   together with every optical/electromagnetic family in the current
+   [Scientific law](https://en.wikipedia.org/wiki/Scientific_law) page and every luminal-wave
+   family in the [List of equations in wave theory](https://en.wikipedia.org/wiki/List_of_equations_in_wave_theory);
+3. every network/passivity/scattering family returned by repeated Google-style searches for
    electrical engineering, optical engineering, passive synthesis, scattering, reciprocity,
-   Wigner--Smith delay, diffraction, polarization, and differential algebra;
-3. the stronger practical-law census already recorded in
+   Wigner--Smith delay, diffraction, polarization, signal processing, control, nonlinear optics,
+   photonics, and differential algebra;
+4. every source-, passivity-, realization-, observation-, and cofinal-limit-facing result returned
+   by a dated arXiv metadata search from 2026-01-01 through 2026-07-20 in the relevant optics,
+   signal, systems/control, mathematical-physics, and quantum categories;
+5. the stronger practical-law census already recorded in
    `projective-immittance-inversion-horizon-folding.md`.
 
 Algebraically identical variants are grouped in one row, but every formula appearing on those
@@ -73,6 +85,8 @@ Verdict codes used below:
 | Telegrapher equations, propagation constant, characteristic impedance, forward/backward waves | ABCD/Mobius cascade and immittance cards | **B.** Exact finite/distributed composer. Source identification and passive cofinal convergence remain open. |
 | Thevenin, Norton, source transformation, superposition, Millman, star--mesh | projective immittance and finite network reduction | **B/C.** Coordinate/reduction equivalences; inversion-horizon folding is already classified exactly. |
 | Maximum-power transfer and conjugate matching | capacity/matching consumers | **C.** Requires a known passive source/load and is downstream of the missing source realization. |
+| Blondel power theorem and one/two/three-wattmeter methods | finite power and phase reporters | **C.** Exact finite measurement reduction for a supplied polyphase network; it creates neither the network nor its source sign. |
+| Earnshaw electrostatic no-equilibrium theorem | potential/Hessian and stability language | **N/O.** Static inverse-square charges cannot furnish a stable free-space trapping producer. The positive survivor is the need for dynamic, constrained, or non-electrostatic stabilization; no arithmetic charge realization exists. |
 | Foster reactance; Cauer, Brune, and Darlington synthesis | dyadic passive-impedance card | **N with survivor.** Exact for positive-real rational functions; the live survivor is source-first positive finite apertures plus a proved cofinal limit, not direct synthesis of the continued source. |
 | Positive-real/bounded-real and KYP lemmas | finite colligation interfaces | **B/N.** They convert storage and frequency inequalities but do not generate the storage inequality for the arithmetic source. |
 | Bode magnitude/phase, Kramers--Kronig, Hilbert transform | analytic response cards | **C.** Dispersion and phase recovery consume causality/analyticity; they do not produce a positive measure or zero-free half-plane. |
@@ -82,6 +96,36 @@ Verdict codes used below:
 | ABCD/chain matrices and Redheffer star product | existing Mobius cascade and finite Schur colligations | **B.** Strong composition connector; it leaves source-resolved convergence and overlap equality open. |
 | Schur complement, Kron reduction, and Feshbach reduction | CCM and Sonin/Feshbach modules | **B.** Eliminates internal ports while preserving the unresolved sign; cannot discharge it. |
 | Smith/Cayley impedance--reflection transform and impedance/admittance inversion | `ProjectiveImmittanceHorizon` | **D/B.** The exact inversion-horizon folding locus is already formalized; this is coordinate information, not passivity. |
+
+## Broader electrical engineering: control, signals, electronics, power, and communications
+
+| Formula or theorem family | Corpus contact | Tested verdict |
+|---|---|---|
+| Joule power `P=VI=I^2R=V^2/R`, complex/apparent/reactive power, power factor | passive energy and finite network reporters | **B/C.** Energy accounting after voltage/current data are supplied; it does not prove arithmetic passivity or source equality. |
+| Biot--Savart, Lenz sign, Faraday induction and flux-linkage laws | Maxwell/scattering interpretations | **O/B.** They are consequences or special regimes of the Maxwell parent already tested; no source-pure current or flux realization exists. |
+| Ideal transformer ratios, mutual coupling, gyrators, and impedance reflection | projective immittance and finite linear systems | **B/C.** Rational coordinate changes preserve existing HT when invertible; they cannot create the source or its sign. |
+| Reciprocal two-port ABCD law `AD-BC=1`, chain-matrix cascade, and normalized paraxial ray transfer | `ProjectiveImmittanceHorizon` | **D/B.** New compiled connector: determinant one discharges projective nondegeneracy and yields HT preservation plus the complete reciprocal-horizon law. It remains a routine parent specialization. |
+| Three-phase line/phase conversion, balanced power, symmetrical components, transformer and transmission-line equivalents | finite Fourier modes and ABCD composers | **B/C.** Finite constant linear transforms reorganize a supplied source and preserve rank; they supply no infinite prime--Gamma realization. |
+| Generator/motor back-emf, torque, electromechanical power and magnetic-circuit laws | Faraday/Lorentz parents and finite state-space systems | **O/B.** They become finite dynamical composers after a machine geometry and material law are supplied; no canonical arithmetic machine realization exists. |
+| Battery/cell voltage, capacity, charge balance and equivalent-circuit laws | finite circuits and source transformations | **O/C.** Electrochemical constitutive data are external. Equivalent circuits report a supplied cell and remain finite DA models. |
+| Rectifiers, inverters, choppers, switched converters, PWM and motor-drive averages | finite switching/clock and circuit laws | **B/N.** Every fixed switching schedule is a finite composer. An unbounded cofinal construction would still need convergence and exact source identification. |
+| Skin depth, conductor loss, waveguide/cavity cutoff, quality factor and standing-mode formulas | damping, finite modal and scattering modules | **B/O.** Finite modal reporters and loss parameters are downstream; material coefficients and boundary geometry are external inputs. |
+| Antenna gain/directivity, effective aperture, Friis transmission, radar range and link-budget equations | aperture and finite observation laws | **O/C.** Engineering budget identities require a physical antenna/channel realization and do not constrain the analytic continuation of the arithmetic source. |
+| Johnson--Nyquist noise, shot noise, noise figure and fluctuation spectra | finite KMS/fluctuation--dissipation response | **B/O.** The finite thermal parent is compiled, but temperature, device charge statistics, and a source spectrum are not arithmetic consequences. |
+| Ideal operational-amplifier laws, closed-loop gain, Barkhausen oscillation, feedback sensitivity | finite differential circuits and Schur feedback | **N/B.** Finite rational feedback stays DA when its atoms are DA. Stability and loop-gain criteria consume the source transfer function. |
+| Shockley diode, Ebers--Moll/BJT, MOSFET square-law, Hall, photovoltaic and photodiode constitutive equations | finite nonlinear differential circuits | **N/O.** Finite algebraic/exponential device laws cannot manufacture HT from DA atoms; semiconductor/material parameters introduce an external physical model. |
+| State-space response, Kalman controllability/observability matrices, Hankel realization rank | `FiniteFieldStateSpaceHankelRank` | **D.** Existing compiled factorization makes the active Hankel block nonsingular iff the realization is simultaneously observable and controllable, and proves fixed-state-dimension escape laws. |
+| Lyapunov/Lyapunov--Malkin stability, Artstein and Krener controllability, algebraic Riccati, LQR and Kalman filtering | operator positivity and state-space surfaces | **B/N.** These certify stability/controllability/optimal estimation after a plant, covariance and coercive solution exist; they do not construct the missing arithmetic plant or positive storage operator. |
+| Kharitonov robust-polynomial stability theorem | finite polynomial/root-location consumers | **C.** It reduces an interval family to finitely many test polynomials, but remains downstream of a supplied finite polynomial model and cannot control an unrestricted continued source. |
+| PID, root locus, Routh--Hurwitz, Nyquist, Bode sensitivity and gain/phase margins | divisor and finite feedback consumers | **C.** All are post-model stability/reporting laws. Applying them to the continued source would require the very pole exclusion or passivity under investigation. |
+| Small-gain, bounded-real, positive-real and KYP lemmas | finite colligation interfaces | **B/N.** They compose or re-express a supplied dissipation inequality; none proves the source-resolved inequality for the prime--polar defect channel. |
+| Nyquist--Shannon sampling, sinc reconstruction, aliasing, oversampling and sample/hold | Hilbert sampling defects, finite Vandermonde sampling, prolate/Shannon area laws | **D/B/N.** Finite injective sampling and time--band area laws are compiled. Bandlimited reconstruction cannot be applied to an unrestricted meromorphic/HT source without a bandlimit theorem, so it cannot close the infinite jet or divisor wall. |
+| Fourier/Laplace/Z transforms, DFT/DCT/DST, initial/final-value theorems, convolution, modulation, Parseval/Plancherel and Wiener--Khinchin | `CausalFourierBridge`, Fourier and Hilbert modules | **D/B.** Exact transform/convolution connectors exist. They change representation and preserve information under their hypotheses; endpoint-value laws require stability and do not create positivity or analyticity. |
+| FIR/IIR recurrences; Butterworth, Chebyshev, Bessel, elliptic, notch and Sallen--Key filters; bilinear transform | finite circuits, finite modal/state-space and observation-filter modules | **N/B.** Every fixed finite filter is rational/DA over DA data. A cofinal filter bank is live only with source equality, convergence and nonvanishing transfer proved. |
+| Wiener filtering, least squares, system identification and data-processing inequalities | finite reporter and conditional-information modules | **B/C.** Existing data-processing and bounded-recovery laws quantify loss after a source/statistical model is specified; estimation does not prove a source theorem. |
+| AM/FM/PM, pulse-code modulation, carrier mixing, multiplexing and communication-channel transforms | finite exponential clocks and Fourier packets | **B/C.** Finite modulation is a constant/exponential coordinate composer and cannot create new differential transcendence. |
+| Shannon entropy, Shannon--Hartley capacity, source/channel coding and Kraft--McMillan inequalities | finite information reporters only by structural analogy | **O/B.** Probability, alphabet and channel laws require an explicit communication model; no canonical entropy or code-length functional presently discharges an HGT or RH-facing premise. |
+| Quantization, ADC/DAC, compression, error correction and digital image-processing formulas | finite observation/data-processing laws | **C/O.** These are finite reporters or algorithmic encodings. They can destroy or preserve supplied information but cannot prove analytic source effectivity. |
 
 ## Wikipedia optics, photonics, diffraction, and interferometry equations
 
@@ -116,6 +160,49 @@ Verdict codes used below:
 | KMS and fluctuation--dissipation relations | passive KMS response card | **D/B then open.** Finite passivity is discharged; equality and convergence to the continued prime--arch source are still open. |
 | Luminosity distance, apparent/absolute magnitude, distance modulus, color indices, bolometric correction | logarithmic magnitude modules only at the level of notation | **O.** Astrophysical calibration laws have no source-pure connector and add empirical distance/flux data. |
 
+## Wave optics, photonics, lasers, fibres, coherence, and nonlinear optics
+
+| Formula or theorem family | Corpus contact | Tested verdict |
+|---|---|---|
+| Fermat stationary-time principle, eikonal equation, reflection law and Snell law | projective/ray-transfer and phase geometry | **B/C.** These derive the finite ray map and its symplectic/ABCD normalization. They do not construct an arithmetic refractive-index field or a passive source. |
+| Scalar/vector wave and Helmholtz equations; plane waves; phase and group velocity; dispersion relation `D(omega,k)=0` | finite exponential clocks, causal Fourier and scattering modules | **B/O.** They supply a propagation parent after boundary/material data are chosen. A linear PDE with DA coefficients is not an HT producer by itself. |
+| Superposition, standing waves, beats, resonance and AM/FM/PM envelopes | finite clock/polarization modules | **B/C.** Finite linear combinations and exponential clocks are already covered and cannot manufacture HT from DA modes. |
+| Gaussian-beam `q` parameter and ABCD law; resonator stability and Gouy phase | reciprocal ABCD connector and finite cavity composers | **D/B.** Determinant-one projective nondegeneracy is discharged by the new theorem. Gaussian/cavity formulas remain finite reporters and do not supply passivity or source equality. |
+| Optical invariant, Lagrange invariant, etendue conservation, Abbe sine condition and numerical aperture | determinant/symplectic transfer geometry | **B/C.** Conservation explains the determinant-one normalization; it preserves phase-space area but does not orient an arithmetic measure. |
+| Fibre numerical aperture, normalized frequency/V-number, modal cutoff, attenuation and chromatic/modal dispersion | finite modes and causal transfer laws | **B/O.** Mode counting and dispersion consume a chosen waveguide/material profile. No canonical prime-log fibre realization is available. |
+| Laser gain/threshold, Einstein coefficients, population inversion, rate equations and Schawlow--Townes linewidth | finite ODE/state-space and KMS language | **N/O.** Finite rate equations are DA over DA coefficients; gain media, populations and quantum noise are external source data. |
+| Planck--Einstein photon energy, photoelectric law and photodetector responsivity/quantum efficiency | frequency clocks and observation maps | **C/O.** Linear frequency-energy conversion or detector calibration does not produce HT or an RH-facing sign. |
+| Stefan--Boltzmann, Planck black-body, Wien displacement and Rayleigh--Jeans laws | `GammaBoseSpectralHankel` and KMS/Gamma modules | **D/B.** The corpus already identifies a positive reciprocal-energy Bose moment with `zeta(m+2)` at unit shift, proves strict Hankel positivity, and identifies the normalized digamma jet. Stefan/Wien specializations are downstream and do not orient the full continued source or prove RH. |
+| Rayleigh, Mie and Raman/Brillouin scattering; cross sections and structure factors | scattering and finite reporter modules | **B/O.** Scattering laws become consumers once a medium and incident field are supplied; they give no arithmetic realization. |
+| Pockels/Kerr electro-optic laws, susceptibility expansion `P=eps0*(chi1 E+chi2 E^2+...)`, harmonic generation, sum/difference frequency and four-wave mixing | finite differential circuit and nonlinear-constraint modules | **N with survivor.** Any fixed polynomial/rational mixing stage built from DA fields stays DA. The positive survivor is source extraction: an HT mixed output forces an HT input atom; no finite nonlinear crystal manufactures the source. |
+| Coupled-mode theory, Bragg gratings, photonic-crystal Bloch bands and transfer matrices | finite modal transfer, Bragg/Fourier packets, ABCD composers | **B/N.** Finite periodic cells compose exactly; an infinite source identification needs convergence and a source equality rather than a band diagram. |
+| Michelson, Mach--Zehnder, Sagnac and Fabry--Perot interferometer phase/intensity laws | finite clock, scattering and cavity reporters | **B/C.** They expose relative phase after a path realization. Intensity collapse can lose the HT logarithmic delay, as the compiled observability no-go theorems show. |
+| Temporal/spatial coherence, degree of coherence, Wiener--Khinchin, van Cittert--Zernike and Hanbury Brown--Twiss laws | correlation, Fourier and Hilbert reporters | **B/C.** Correlation transforms can reconstruct a supplied spectrum under their hypotheses; they do not prove source positivity, independence or continuation. |
+| Faraday/Kerr rotation, birefringence, Jones/Mueller/Stokes/Poincare calculus | reciprocal/polarized finite matrix reporters | **B/O.** These preserve or reconstruct finite polarization data; magneto-optic material tensors are external inputs and reciprocity may fail in Faraday media. |
+| Goos--Haenchen/Wigner delay, group-delay dispersion and density-of-states/Friedel phase | Wigner--Smith logarithmic clock modules | **D/B.** Existing delay observables retain HT that intensity loses. The new reciprocal reporter compression is parent-grade and does not create the scattering source. |
+| Optical theorem, extinction, unitarity and reciprocity for multiport scattering | finite master constraint and Wigner--Smith reciprocity | **D/B.** Exact compiled discharges exist once lossless/reciprocal scattering is given; neither condition follows for the arithmetic source. |
+| Glauber--Sudarshan optical equivalence theorem and coherent-state `P` representation | Hilbert/quantum reporter language | **O/B.** It rewrites quantum-optical expectations using a supplied quasiprobability distribution; positivity of that distribution is not automatic and no arithmetic quantum state/source map is present. |
+
+## 2026 arXiv frontier harvest
+
+The full theorem/formula inventory, hypotheses, and hostile audit are recorded in
+`arxiv-2026-electrical-optical-frontier-harvest.md`.  The frontier-changing results are:
+
+| 2026 paper and exact result | Corpus contact | Tested verdict |
+|---|---|---|
+| `2607.10704`: finite rational positive-real self-energy implies no exact zero reflection on an open interval; stationary Bode--Fano floor `rho >= exp(-pi*kappa/(2B))` | finite KMS/passive response and source-limit consumer | **N with survivor.** Exact open-band equality forces a genuine cofinal/infinite limit or an explicitly active/nonstationary resource. Reflection defect is storage only with a proved capture isometry. |
+| `2607.03849`: stable finite state-linear realization iff finite Hankel rank plus uniform decay; minimal realizations inherit the exponential rate | `FiniteFieldStateSpaceHankelRank` | **B/interface.** The rank half is compiled. Uniform decay is the exact additional stability premise; stability still creates neither source equality nor anti-Herglotz sign. |
+| `2601.02169`: a passive quasistatic cloak cannot perfectly hide a dielectric obstacle on a positive frequency interval; DtN response is Herglotz and obeys sum rules | analytic-continuation and Herglotz no-go surfaces | **N/parent.** Independent physical realization of the same open-interval analytic obstruction, not an arithmetic producer. |
+| `2607.02557`: lossless multivariable synthesis requires `P*P=a1*a1*-a0*a0*`; generic higher-dimensional functions fail this sum-of-squares condition | finite passive synthesis | **N with subclass.** Positive-real/bounded-real sign alone cannot discharge finite network realizability. The source colligation must be constructed or proved to lie in a synthesizable subclass. |
+| `2603.28754`: prescribed sparse state-space support iff a modal similarity transform solves explicit multivariate polynomial zero equations | finite state-space realization | **B/C.** Exact support composer after the transfer function exists; no source, sign, or convergence is produced. |
+| `2602.22034`: `tau=-(i/2pi)d(log rho)/df`, `D_f=-Delta^2 Im tau`, `D_t=Re tau-Omega' delta_t^2 Im tau` for narrowband chirped pulses | Wigner--Smith logarithmic clocks | **C.** Physical scalar reporter under a first-order narrowband approximation; not an unconditional matrix law or producer. |
+| `2601.04407`: `s*Y_in(s)+1/L_J=0`, Cauer ladder, and Jacobi-resolvent boundary formulas | Schur/Cauer finite composers | **B with audit gate.** Its Schur positive-real proposition omits an invertibility/strictness premise; use only after independent regularity proof. |
+| `2606.15505`: claims `sum R_i/(s^2+omega_i^2)` is positive-real | harmonic memory kernels | **Rejected.** Its scalar real part becomes negative in the right half-plane when `tau^2 > sigma^2+omega^2`; the standard positive-real oscillator has the missing factor `s`. |
+
+Two passivity-preservation papers deposited on arXiv in July 2026 were also screened but have
+2025 and 2022 journal references, respectively.  They preserve passivity under convex projection
+or maximal-monotone damping and are downstream composers, not 2026 source-frontier results.
+
 ## Exact surviving outputs
 
 ### 1. New local theorem bridge, not new scientific knowledge
@@ -142,7 +229,24 @@ but no differential-field/Kolchin reporter theorem.  Because the proof is a shor
 classical reciprocity and symmetric-matrix dimension, the output stays `[BRIDGE] [NOVELTY
 UNVERIFIED]`.
 
-### 2. Existing hypotheses/interfaces actually discharged
+### 2. Reciprocal ABCD interface closure, not new scientific knowledge
+
+The determinant-one law shared by reciprocal electrical chain matrices and canonically normalized
+paraxial optical ray matrices now supplies the abstract projective nondegeneracy premise.  The
+compiled capstone proves, for an HT source `x`, both
+
+```text
+HT((a*x+b)/(c*x+d))
+
+and
+
+all reciprocal jet-tail fields coincide  iff  d^2=c^2,
+```
+
+from `a*d-b*c=1`.  This is `[LEAN-PROVED] [BRIDGE] [REDISCOVERED]`: it closes an interface and
+joins two theorem surfaces, but is an immediate specialization of the projective parent theory.
+
+### 3. Existing hypotheses/interfaces actually discharged
 
 - Kirchhoff conservation is already an iff characterization of the pointed/rooted incidence
   matroid and is consumed by Xi rank modules.
@@ -154,8 +258,17 @@ UNVERIFIED]`.
   jet-horizon theorem.
 - Finite KMS/passive response is already available; only source equality and the cofinal limit are
   missing.
+- Finite state-space Hankel rank is already equivalent to full controllability and observability
+  of the active realization.
+- The 2026 state-linear realization theorem identifies the exact extra stability interface:
+  uniform decay of the input-output family.  This premise is not yet discharged by the corpus.
+- The positive Gamma/Bose spectral ladder already realizes every integer Hurwitz-zeta moment,
+  specializes to Riemann-zeta values at unit shift, and supplies strict finite Hankel positivity
+  for the signed normalized digamma jet.
+- Reciprocal ABCD determinant one now discharges projective nondegeneracy for both HT preservation
+  and complete inversion-horizon classification.
 
-### 3. Strongest no-go survivors
+### 4. Strongest no-go survivors
 
 - A raw scalar prime delay is not a Herglotz/positive-real function throughout the upper
   half-plane.  The positive survivor is a coupled finite-aperture colligation, not a scalar delay.
@@ -165,16 +278,28 @@ UNVERIFIED]`.
 - Foster/Cauer/Brune, KYP, Bode--Fano, Kramers--Kronig, Nyquist, small-gain, Redheffer, and Hilbert
   contraction are all downstream composers or consumers.  None produces the arithmetic source
   sign it assumes.
+- A finite stationary rational positive-real interface cannot be exactly reflectionless on an open
+  band.  The strongest survivor is therefore genuinely cofinal/infinite source convergence, not a
+  better finite matching network.
+- Generic multidimensional positive-real/lossless data need not have a finite passive synthesis;
+  the sum-of-squares obstruction forbids treating network realization as automatic.
+- Sampling, finite state-space, finite filters, op-amp feedback, semiconductor constitutive laws,
+  laser rate equations, and finite nonlinear optical mixing cannot manufacture an HT source from
+  DA atoms.  Their strongest positive survivor is source extraction or finite-resolution
+  observability, not source creation.
 
 ## Frontier after exhaustion
 
-No Wikipedia/Google electrical or optical law closes the source-effectivity wall.  The unique
+No Wikipedia/Google law or relevant 2026 arXiv theorem closes the source-effectivity wall.  The
+2026 no-broadband-matching theorem proves that the finite stage cannot be exact, and the
+multidimensional synthesis obstruction proves that sign alone cannot build the stage.  The unique
 RH-bearing open core remains:
 
 ```text
-construct a source-first positive finite-aperture colligation;
-prove cofinal passive convergence;
-identify the limit with the continued dyadic prime--arch source on an open overlap.
+derive the exact source-first signed-aperture prime-power coefficients;
+construct their finite KMS/passive completion;
+prove locally uniform, path-independent cofinal convergence to
+the continued prime--arch source on the required overlap.
 ```
 
 This is strictly stronger than choosing a circuit topology, diffraction aperture, scattering
@@ -185,7 +310,12 @@ normalization, or energy identity.  Those laws become useful only after the sour
 - [x] live formal tree, generated API, paper cards, and failed routes searched first
 - [x] Wikipedia electromagnetism/electrical formula families tested
 - [x] Wikipedia optics/photonics formula families tested
-- [x] Google-style network, passivity, scattering, diffraction, polarization, and delay families tested
+- [x] Wikipedia wave-theory, scientific-law, and electrical-engineering-outline families tested
+- [x] Google-style network, passivity, control, signal, electronics, power, communications,
+  scattering, diffraction, nonlinear-optics, polarization, and delay families tested
+- [x] relevant 2026 arXiv metadata searched through 2026-07-20 and exact papers harvested
+- [x] full-paper hypotheses separated from abstracts, approximations, numerical certificates, and
+  older journal work newly deposited on arXiv
 - [x] direct discharges separated from bridges, consumers, no-go routes, and out-of-scope physical models
 - [x] strongest positive survivors recorded for every no-go family
 - [x] exact surviving bridge paper-proved and hostile-audited
@@ -201,12 +331,20 @@ normalization, or energy identity.  Those laws become useful only after the sour
 - A temporary `#print axioms` audit of all six principal declarations reports only `propext`,
   `Classical.choice`, and `Quot.sound`.
 - `lake build GaloisForLFunctions.HTGeometry.MatrixWignerSmithReciprocity`: passed (`3019` jobs).
+- `lake env lean GaloisForLFunctions/HTGeometry/ReciprocalABCDProjectiveHorizon.lean`: passed.
+- A temporary `#print axioms` audit of its two declarations reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- `lake build GaloisForLFunctions.HTGeometry.ReciprocalABCDProjectiveHorizon`: passed.
 - The generated API/overview/gap indexes were refreshed after the module and umbrella import were
   added.
-- Repository lint was run.  Its only hard failures were unrelated umbrella reachability for
-  `RHTower.PrimeArchThetaGaussianApertureCurvatureFlow` and
-  `HilbertMetric.CCRDimensionFluctuation`; the final check-generated pass reports no stale file.
+- Repository lint was run.  Its only hard failures were unrelated umbrella reachability for the
+  concurrently edited `HilbertMetric.GaussianJetPositivity` and
+  `HilbertMetric.ThreePointCorrelationLocal`; the final check-generated pass reports no stale file
+  and the new ABCD module is reachable from `HTGeometry`.
 - No Lean or Lake process was left running.
+- The 2026 harvest added no Lean declaration: its correct frontier results require analytic
+  rational-continuation, normed realization, or sum-of-squares infrastructure, while two audited
+  preprint claims were rejected rather than imported as conditional interfaces.
 
 ## Log
 
@@ -214,3 +352,14 @@ normalization, or energy identity.  Those laws become useful only after the sour
 - 2026-07-20 -- Lorentz reciprocity selected as the only previously absent direct connector; all
   other laws resolved to existing discharges, parent-grade composers, downstream consumers,
   no-go mechanisms, or physical models requiring a new source map.
+- 2026-07-20 -- Completion audit found that the original tables omitted control, signal,
+  electronics, power, communications, wave-theory, laser, fibre, coherence, radiation, and
+  nonlinear-optics families.  The bounded census was expanded and the prior exhaustion claim was
+  repaired.
+- 2026-07-20 -- Reciprocal ABCD determinant one isolated as a second direct interface closure;
+  its combined HT/horizon theorem was paper-proved, hostile-audited as a routine bridge, and
+  formalized unconditionally.
+- 2026-07-20 -- Dated 2026 arXiv harvest completed.  Finite exact stationary broadband matching
+  and automatic multidimensional synthesis were ruled out; uniform decay was isolated as the
+  missing stable-realization premise; narrowband delay and sparse-support formulas were classified
+  as consumers/composers; two under-specified or false positive-real interfaces were barred.

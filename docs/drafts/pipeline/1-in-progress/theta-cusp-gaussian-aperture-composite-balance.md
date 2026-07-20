@@ -463,61 +463,106 @@ Thus the positive sixth seam seeds every fixed degree, not just GABTC.  The qual
 `fixed` is essential: `(25)` gives no uniform control when `j` grows with `L`.  The remaining
 global obstruction is exactly a diagonal entrance from degree infinity.
 
-The first theta atom exposes a candidate uniform tail mechanism.  Its exact large-height phase is
+The first theta atom exposes a candidate uniform tail mechanism.  The completed higher-atom tail
+now has the exact pointwise contraction
 
 ```text
-x^(2j) exp(-pi exp(2x)),
+Phi(x)-Phi_1(x)
+ <= (8/2997) exp(-3*pi*(exp(2x)-1)) Phi_1(x).           (26)
 ```
 
-so the leading saddle degree and normalized ratio profile are
+Writing `n_0(x)=pi*x*exp(2x)`, the damping factor is exactly
+`exp(3*pi-3*n_0(x)/x)` and is at most `exp(-(3/2)n_0(x)/x)` once `exp(2x)>=2`.  Thus every
+`n>=2` theta atom is separated from the first on the moving saddle scale itself.
+
+The polynomial amplitude of the first atom also resolves exactly, rather than entering as an
+unnamed perturbation:
 
 ```text
-n(x)=pi*x*exp(2x),
-r(x)=x/(pi*exp(2x))=x^2/n(x).                          (26)
+Phi_1(x)=4*pi^2 A_4(x)-6*pi A_2(x),
+A_2(x)=exp(-2x)A_4(x),
+
+C_(p,j)(lambda)=int_0^infinity x^(2j)exp(lambda*x^2)A_p(x)dx,
+rho_j(lambda)=C_(2,j)(lambda)/C_(4,j)(lambda).         (27)
 ```
 
-Differentiating with respect to `n`, rather than `x`, gives the exact identity
+The integrated monotone-likelihood kernel gives, for every `lambda<=0`,
 
 ```text
-d^2r/dn^2
- =8*(2x^2-1)/(pi^3*exp(6x)*(2x+1)^3).                 (27)
+rho_(j+1)<=rho_j,
+d_j=1-(3/(2*pi))*rho_j>0,
+d_j<=d_(j+1),
+
+F_(j+1)/F_j=(C_(4,j+1)/C_(4,j))*(d_(j+1)/d_j),
+d_(j+1)/d_j>=1.                                        (28)
 ```
 
-Therefore the source tail model is strictly degree-convex as soon as `x^2>1/2`.  This is the
-height-localized positive survivor at the degree boundary.  `Lean` proves both parametric degree
-derivatives and the sign threshold for the exact profiles in `(26)`--`(27)`.
+So degree bias suppresses the unique signed amplitude correction, and the literal first-atom
+adjacent ratio dominates the pure positive `A_4` ratio.  This is only a first-order orientation:
+monotonicity of `d_j` does not by itself determine the second difference consumed by `S_j`.
 
-**Uniform saddle-transfer conjecture.**  Let `x_j>0` solve
-`pi*x_j*exp(2*x_j)=j`.  On every compact `lambda`-interval contained in `(-infinity,0]`, the full
-completed-source curvature should satisfy, uniformly in `lambda`,
+Most importantly, the physical stationary saddle of the `A_4` channel can be retained exactly:
+
+```text
+J_lambda(x)=pi*x*exp(2x)-lambda*x^2-9*x/4,
+G_lambda(x)=J_lambda(x)+1/2,
+r_lambda(x)=x^2/G_lambda(x),
+
+p_lambda=J_lambda',
+q_lambda=J_lambda'',
+D_lambda=G_lambda-x*p_lambda
+        =1/2+lambda*x^2-2*pi*x^2*exp(2x),
+H_lambda=p_lambda*D_lambda^2-x*q_lambda*G_lambda^2,
+
+d^2r_lambda/dJ_lambda^2
+ =2*H_lambda/(G_lambda^3*p_lambda^3).                  (29)
+```
+
+The amplitude shift `9x/4` cancels exactly from `D_lambda`.  A direct chamber estimate gives
+
+```text
+lambda<=0, x>=6, -4*lambda*x<=pi*exp(2x)
+  ==> H_lambda>0
+  ==> d^2r_lambda/dJ_lambda^2>0.                       (30)
+```
+
+Lean proves both parametric degree derivatives, the cancellation, and the unconditional chamber
+theorem `(30)`.  On every compact negative-aperture interval the cusp-dominance hypothesis in
+`(30)` is eventually automatic.
+
+**Uniform physical saddle-transfer conjecture.**  Let `x_(j,lambda)>0` solve
+`J_lambda(x_(j,lambda))=j`.  On every compact `lambda`-interval contained in `(-infinity,0]`, the
+full completed-source curvature should satisfy, uniformly in `lambda`,
 
 ```text
 S_j(lambda)
- =8*x_j^3*(2*x_j^2-1)/(j^3*(2*x_j+1)^3)
-   +o(x_j^2/j^3).                                      (28)
+ = [d^2r_lambda/dJ_lambda^2](x_(j,lambda))
+   +o([d^2r_lambda/dJ_lambda^2](x_(j,lambda))).         (31)
 ```
 
-The aperture term `lambda*x^2` and the first-atom polynomial amplitude perturb the saddle below
-the scale in `(28)`, and the `n>=2` theta atoms are exponentially separated at `x_j`.  Those scale
-comparisons identify the proof shape, but the uniform error estimate in `(28)` is not yet proved.
-If proved, `(28)` supplies eventual `S_j>0` uniformly on compact aperture intervals.  Together
-with the fixed-degree cold seed `(25)` and the cooperative flow `(21)`, it excludes entrance from
-infinity and yields GABTC.
+The former claim that aperture and amplitude terms are merely lower order has been replaced by
+the exact convex saddle `(29)`--`(30)`.  What remains is an analytic transfer packet with three
+named pieces: a uniform Laplace curvature remainder for the positive `C_4` channel, a bound on the
+second-degree distortion of the amplitude multiplier in `(28)`, and integration of the
+pointwise completed-tail contraction `(26)` through the same saddle window.  If proved, `(31)`
+supplies eventual `S_j>0` uniformly on compact aperture intervals.  Together with the fixed-degree
+cold seed `(25)` and cooperative flow `(21)`, it excludes entrance from infinity and yields GABTC.
 
 Permanent Lean module
 `PrimeArchThetaGaussianApertureCurvatureFlow.lean` proves `(20)`--`(24)` for the actual completed
 theta source, including the literal differentiation-under-the-integral argument and the
 quantitative cascade.  It formalizes the exact coefficient in `(25)`, not the analytic uniform
-remainder that remains open.  The same module proves the exact saddle identities `(26)`--`(27)`;
-it does not assume the transfer conjecture `(28)`.
+remainder that remains open.  The same module proves `(26)`--`(30)` for the literal source; it
+does not assume the transfer conjecture `(31)`.
 
 ## Exact open core
 
 1. Formalize the real-theta/modular-differential bridge `(15)`--`(16)`, closing the compiled
    positive modular value against the literal source jet numerator.
-2. Prove a source-specific large-degree boundary for the discrete curvature flow `(22)` above,
-   strong enough to exclude negative curvature entering from degree infinity.  Fixed-degree cold
-   asymptotics do not supply the necessary uniformity.
+2. Prove the three-part analytic saddle transfer following `(31)`, strong enough to exclude
+   negative curvature entering from degree infinity.  Fixed-degree cold asymptotics, monotonicity
+   of the amplitude factor, or pointwise atom separation alone do not supply the required second
+   degree difference uniformly.
 3. Alternatively, compare the negative tail of the proved one-crossing `L_lambda` with its
    positive core using the fixed curvature `E` and the exact theta reflection law.
 4. Once either route proves `(14)`, formalize the missing curvature-window identity `(8)` if it is
@@ -557,9 +602,14 @@ found no collision for `(9a)`--`(9c)`; this is search noncollision, not a priori
   cascade in Lean
 - [x] prove the all-fixed-degree sixth-seam coefficient identity in Lean
 - [x] derive and formalize the exact positive large-degree saddle-curvature profile
-- [x] direct Lean leaf check, serialized exact module build, and capstone axiom audit
+- [x] exact height-localized double-exponential contraction of the complete higher-atom tail
+- [x] exact signed two-channel first-atom resolution and degree-monotone amplitude correction
+- [x] exact aperture- and amplitude-corrected physical saddle curvature with an explicit positive
+  cusp chamber
+- [x] final direct leaf check, serialized exact module build, and capstone axiom audit of the
+  enlarged curvature module
 - [ ] formal equality of the modular-closure value with the literal `N_6`
-- [ ] uniform saddle-transfer error estimate `(28)`
+- [ ] uniform physical saddle-transfer packet `(31)`
 - [ ] uniform large-degree boundary excluding negative curvature entrance from infinity
 - [ ] uniform composite-window balance `(8)` for `lambda<=0`
 - [ ] exact aperture derivative and curvature-window identity formalized in Lean
@@ -581,3 +631,10 @@ found no collision for `(9a)`--`(9c)`; this is search noncollision, not a priori
   forces a quantitatively negative successor.  The sixth seam is also the common cold coefficient
   at every fixed degree.  The open global core is therefore a uniform large-degree boundary, not
   another low-order Turan estimate.
+- 2026-07-20 -- The large-degree boundary was sharpened from a zeroth-order phase heuristic to
+  three literal source theorems.  The complete higher-atom tail has a double-exponential
+  height-localized contraction; the first atom is an exact positive-leading minus lower-channel
+  pair whose relative correction is antitone in degree; and the full aperture/amplitude stationary
+  degree has strictly positive ratio curvature in the explicit cusp-dominance chamber `(30)`.  The
+  remaining open core is the uniform second-difference Laplace transfer `(31)`, not identification
+  of the correct saddle or removal of higher atoms.

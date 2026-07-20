@@ -127,6 +127,30 @@ theorem universalSimplePoleJetProfileMV_isWeightedHomogeneous (j : ℕ) :
   have hR := universalSimplePoleRegularProfileMV_isWeightedHomogeneous j
   simpa [simplePoleBoundaryWeight] using hT.mul hR
 
+/-- Evaluating a degree-`d` homogeneous source on targets of common weighted degree `e` produces
+a boundary polynomial of weighted degree `d * e`. -/
+theorem isWeightedHomogeneous_eval₂_of_isHomogeneous_mul
+    {σ τ : Type*} {d e : ℕ} {P : MvPolynomial σ ℂ} (hP : P.IsHomogeneous d)
+    (w : τ → ℕ) (g : σ → MvPolynomial τ ℂ)
+    (hg : ∀ i, MvPolynomial.IsWeightedHomogeneous w (g i) e) :
+    MvPolynomial.IsWeightedHomogeneous w
+      (MvPolynomial.eval₂ MvPolynomial.C g P) (d * e) := by
+  rw [MvPolynomial.eval₂_eq]
+  refine MvPolynomial.IsWeightedHomogeneous.sum _ _ _ ?_
+  intro m hm
+  rw [← zero_add (d * e)]
+  apply (MvPolynomial.isWeightedHomogeneous_C w (P.coeff m)).mul
+  have hprod := MvPolynomial.IsWeightedHomogeneous.prod m.support
+    (fun i => g i ^ m i) (fun i => m i * e)
+      (fun i _ => (hg i).pow (m i))
+  convert hprod using 1
+  have hdeg : ∑ i ∈ m.support, m i = d := by
+    simpa [Finsupp.weight_apply, smul_eq_mul] using
+      hP (MvPolynomial.mem_support_iff.mp hm)
+  calc
+    d * e = (∑ i ∈ m.support, m i) * e := congrArg (· * e) hdeg.symm
+    _ = ∑ i ∈ m.support, m i * e := by rw [Finset.sum_mul]
+
 /-- Evaluating a degree-`d` homogeneous source on weight-one targets produces a
 weight-`d` boundary polynomial. -/
 theorem isWeightedHomogeneous_eval₂_of_isHomogeneous
@@ -135,17 +159,8 @@ theorem isWeightedHomogeneous_eval₂_of_isHomogeneous
     (hg : ∀ i, MvPolynomial.IsWeightedHomogeneous simplePoleBoundaryWeight (g i) 1) :
     MvPolynomial.IsWeightedHomogeneous simplePoleBoundaryWeight
       (MvPolynomial.eval₂ MvPolynomial.C g P) d := by
-  rw [MvPolynomial.eval₂_eq]
-  refine MvPolynomial.IsWeightedHomogeneous.sum _ _ _ ?_
-  intro m hm
-  rw [← zero_add d]
-  apply (MvPolynomial.isWeightedHomogeneous_C simplePoleBoundaryWeight (P.coeff m)).mul
-  convert MvPolynomial.IsWeightedHomogeneous.prod m.support
-    (fun i => g i ^ m i) (fun i => m i) ?_ using 1
-  · simpa [Finsupp.degree, Finsupp.weight_apply, MvPolynomial.IsHomogeneous,
-      smul_eq_mul] using (hP (MvPolynomial.mem_support_iff.mp hm)).symm
-  · intro i hi
-    simpa using (hg i).pow (m i)
+  simpa using isWeightedHomogeneous_eval₂_of_isHomogeneous_mul hP
+    simplePoleBoundaryWeight g hg
 
 theorem finiteUniversalSimplePoleProfileEvalMV_isWeightedHomogeneous
     {n d : ℕ} {P : MvPolynomial (Fin (n + 1)) ℂ} (hP : P.IsHomogeneous d) :
@@ -181,7 +196,8 @@ theorem finiteUniversalSimplePoleProfileEval_coeff_isHomogeneous
     (finiteUniversalSimplePoleProfileEvalMV_isWeightedHomogeneous hP) q
   rwa [optionEquivLeft_finiteUniversalSimplePoleProfileEvalMV] at h
 
-private theorem sum_homogeneousComponent_of_le'
+/-- A total-degree bound permits reconstruction from homogeneous components through that bound. -/
+theorem sum_homogeneousComponent_of_totalDegree_le
     {σ : Type*} {P : MvPolynomial σ ℂ} {N : ℕ} (h : P.totalDegree ≤ N) :
     ∑ e ∈ Finset.range (N + 1), MvPolynomial.homogeneousComponent e P = P := by
   have hsub : Finset.range (P.totalDegree + 1) ⊆ Finset.range (N + 1) := by
@@ -195,7 +211,8 @@ private theorem sum_homogeneousComponent_of_le'
   rw [Finset.mem_range, Nat.lt_succ_iff, not_le] at hne
   exact hne
 
-private theorem homogeneousComponent_totalDegree_ne_zero'
+/-- The top homogeneous component of a nonzero multivariate polynomial is nonzero. -/
+theorem homogeneousComponent_totalDegree_ne_zero
     {σ : Type*} {P : MvPolynomial σ ℂ} (hP0 : P ≠ 0) :
     MvPolynomial.homogeneousComponent P.totalDegree P ≠ 0 := by
   classical
@@ -274,7 +291,7 @@ theorem finiteUniversalSimplePoleProfileEval_totalDegree_le_one
     · intro hnot
       exact absurd (Finset.mem_range.mpr (Nat.lt_succ_self D)) hnot
   have htop : MvPolynomial.homogeneousComponent D P ≠ 0 := by
-    simpa [D] using homogeneousComponent_totalDegree_ne_zero' hP0
+    simpa [D] using homogeneousComponent_totalDegree_ne_zero hP0
   have htopHom :
       (simplePoleFinToNat n (MvPolynomial.homogeneousComponent D P)).IsHomogeneous D := by
     simpa [simplePoleFinToNat] using
@@ -325,7 +342,8 @@ theorem universalSimplePoleJetProfile_coeff_X_zero (i j : ℕ) :
       simp [MvPolynomial.coeff_single_X, hk0]
     · simp [Polynomial.coeff_monomial, hik]
 
-private theorem isHomogeneous_zero_eq_C_coeff_zero
+/-- A degree-zero homogeneous multivariate polynomial is its constant coefficient. -/
+theorem isHomogeneous_zero_eq_C_coeff_zero
     {σ : Type*} {P : MvPolynomial σ ℂ} (hP : P.IsHomogeneous 0) :
     P = MvPolynomial.C (P.coeff 0) := by
   have h := MvPolynomial.homogeneousComponent_of_mem (m := 0) hP
@@ -389,7 +407,7 @@ theorem finiteUniversalSimplePoleProfileEval_natDegree_le_one_iff_affine
     let P₀ := MvPolynomial.homogeneousComponent 0 P
     let P₁ := MvPolynomial.homogeneousComponent 1 P
     have hdecomp : P₀ + P₁ = P := by
-      have hsum := sum_homogeneousComponent_of_le' (P := P) (N := 1) hdegree
+      have hsum := sum_homogeneousComponent_of_totalDegree_le (P := P) (N := 1) hdegree
       change MvPolynomial.homogeneousComponent 0 P +
         MvPolynomial.homogeneousComponent 1 P = P
       simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,

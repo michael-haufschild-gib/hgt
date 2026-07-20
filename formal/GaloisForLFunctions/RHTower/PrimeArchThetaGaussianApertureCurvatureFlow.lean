@@ -1072,9 +1072,10 @@ theorem hasDerivAt_thetaCuspGaussianApertureExactTailSaddleRatioDegreeSlope
   have hquot := hU.div hV hVne
   convert hquot using 1
   all_goals
-    simp only [thetaCuspGaussianApertureExactTailSaddleCurvatureNumerator,
-      thetaCuspGaussianApertureExactTailSaddleDefect]
-    dsimp only [G, p, q]
+    dsimp [thetaCuspGaussianApertureExactTailSaddleRatioDegreeSlope,
+      thetaCuspGaussianApertureExactTailSaddleRatioDegreeCurvature,
+      thetaCuspGaussianApertureExactTailSaddleCurvatureNumerator,
+      thetaCuspGaussianApertureExactTailSaddleDefect, G, p, q]
     field_simp [hG, hp]
     ring
 

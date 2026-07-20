@@ -125,11 +125,12 @@ D=d^3+2pqr-d(p^2+q^2+r^2).
 ```
 
 Whenever `p^2+q^2<=d^2`, radial ordering proves `D>=0`, so the actual three-node Bochner matrix
-is positive semidefinite.  In the complementary near-center chamber, `D>=0` is the exact open
-order-three wall.  This is formalized by
-`thetaCuspCenterMixedThreePointMatrix_posSemidef_of_far_chamber` and the exact boundary
-`thetaCuspCenterMixedThreePointMatrices_posSemidef_iff_nearCenterWall`.  It neither proves the
-near-center inequality nor extrapolates from order three to all finite orders.
+is positive semidefinite.  The successor theorem
+`exists_thetaCuspCenterMixedThreePointMatrix_posSemidef_of_large_gap` also closes every
+near-center packet with at least one sufficiently large adjacent gap.  Consequently
+`exists_thetaCuspCenterMixedThreePointMatrix_compactCore_iff` reduces the complete order-three
+problem to a bounded two-gap core at each aperture.  It does not prove that compact core and does
+not extrapolate from order three to all finite orders.
 
 ## Pure-state tangent interpretation
 

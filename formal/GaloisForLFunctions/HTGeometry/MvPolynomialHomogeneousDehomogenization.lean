@@ -28,6 +28,18 @@ def optionHeadDehomogenize {R σ : Type*} [CommSemiring R] :
     | none => 1
     | some i => MvPolynomial.X i
 
+@[simp]
+theorem optionHeadDehomogenize_X_none {R σ : Type*} [CommSemiring R] :
+    optionHeadDehomogenize (MvPolynomial.X (none : Option σ)) =
+      (1 : MvPolynomial σ R) := by
+  simp [optionHeadDehomogenize]
+
+@[simp]
+theorem optionHeadDehomogenize_X_some {R σ : Type*} [CommSemiring R] (i : σ) :
+    optionHeadDehomogenize (MvPolynomial.X (some i)) =
+      (MvPolynomial.X i : MvPolynomial σ R) := by
+  simp [optionHeadDehomogenize]
+
 /-- `optionHeadDehomogenize` is evaluation at one after separating the distinguished variable. -/
 theorem optionHeadDehomogenize_eq_eval_optionEquivLeft
     {R σ : Type*} [CommSemiring R] (P : MvPolynomial (Option σ) R) :
@@ -63,6 +75,49 @@ theorem optionEquivLeft_coeff_isHomogeneous
   simp only [Finsupp.optionElim_apply_none, Finsupp.some_optionElim,
     smul_eq_mul, Pi.one_apply, mul_one] at hdegree ⊢
   omega
+
+/-- Separating a distinguished variable of weight `w none` leaves coefficient `q` weighted
+homogeneous of complementary degree `d - q * w none`.  This is the arbitrary-weight,
+infinite-variable version of the coefficient-grading law. -/
+theorem optionEquivLeft_coeff_isWeightedHomogeneous
+    {R σ : Type*} [CommSemiring R] (w : Option σ → ℕ)
+    {d : ℕ} {P : MvPolynomial (Option σ) R}
+    (hP : P.IsWeightedHomogeneous w d) (q : ℕ) :
+    ((MvPolynomial.optionEquivLeft R σ P).coeff q).IsWeightedHomogeneous
+      (fun i => w (some i)) (d - q * w none) := by
+  intro m hm
+  have hmSupport : m ∈ ((MvPolynomial.optionEquivLeft R σ P).coeff q).support :=
+    MvPolynomial.mem_support_iff.mpr hm
+  have hfull : m.optionElim q ∈ P.support :=
+    (MvPolynomial.mem_support_coeff_optionEquivLeft R).mp hmSupport
+  have hweight := hP (MvPolynomial.mem_support_iff.mp hfull)
+  have hweight' : q * w none +
+      Finsupp.weight (fun i => w (some i)) m = d := by
+    rw [Finsupp.weight_apply] at hweight
+    rw [Finsupp.sum_option_index_smul] at hweight
+    rw [Finsupp.weight_apply]
+    simpa only [Finsupp.optionElim_apply_none, Finsupp.some_optionElim,
+      smul_eq_mul, nsmul_eq_mul] using hweight
+  omega
+
+/-- A variable renaming transports weighted homogeneity whenever it preserves the assigned
+weights.  Injectivity is unnecessary: collisions can only add monomials of the same weight. -/
+theorem rename_isWeightedHomogeneous
+    {R σ τ : Type*} [CommSemiring R] {wσ : σ → ℕ} {wτ : τ → ℕ}
+    {d : ℕ} {P : MvPolynomial σ R} (hP : P.IsWeightedHomogeneous wσ d)
+    (f : σ → τ) (hw : ∀ i, wτ (f i) = wσ i) :
+    (MvPolynomial.rename f P).IsWeightedHomogeneous wτ d := by
+  rw [← P.support_sum_monomial_coeff, map_sum]
+  apply MvPolynomial.IsWeightedHomogeneous.sum _ _ _
+  intro m hm
+  rw [MvPolynomial.rename_monomial]
+  apply MvPolynomial.isWeightedHomogeneous_monomial
+  rw [Finsupp.weight_apply]
+  rw [Finsupp.sum_mapDomain_index
+    (fun i => zero_smul ℕ (wτ i))
+    (fun i a b => add_smul a b (wτ i))]
+  simpa only [hw, Finsupp.weight_apply] using
+    hP (MvPolynomial.mem_support_iff.mp hm)
 
 /-- **Homogeneous projective-chart faithfulness.**  For an arbitrary index type, setting one
 distinguished coordinate of a nonzero homogeneous multivariate polynomial to one cannot annihilate

@@ -155,9 +155,10 @@ M_a(0)^3+2 M_a(x)M_a(y)M_a(x+y)
   >= M_a(0)(M_a(x)^2+M_a(y)^2+M_a(x+y)^2).               (18)
 ```
 
-No theorem here proves `(18)` in the near-center chamber.  No finite-order extrapolation is made.
-Full positive definiteness of every node packet remains equivalent to the Hedenmalm Fourier sign
-and hence to RH.
+The successor cofinal-closure theorem proves `(18)` whenever either adjacent gap is sufficiently
+large, including its near-center part.  Thus the remaining order-three wall is a bounded two-gap
+core at each aperture.  No finite-order extrapolation is made.  Full positive definiteness of
+every node packet remains equivalent to the Hedenmalm Fourier sign and hence to RH.
 
 ## Hostile tests and parent-theory boundary
 
