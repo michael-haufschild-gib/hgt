@@ -64,6 +64,24 @@ def NoExtensionAt (Φ : ℂ → ℂ) (Ω : Set ℂ) (b : ℂ) : Prop :=
   ¬ ∃ (U : Set ℂ) (g : ℂ → ℂ), IsOpen U ∧ b ∈ U ∧ AnalyticOnNhd ℂ g U ∧
       ∀ s ∈ U ∩ Ω, g s = Φ s
 
+/-- **Boundary no-extension transports to every interior germ.**  On a preconnected analytic
+continuation domain, `NoExtensionAt Φ Ω b` rules out an entire function agreeing with `Φ` near
+any base point of `Ω`.  Analytic uniqueness propagates the local agreement throughout `Ω`, and the
+entire function would then itself be the forbidden analytic element at `b`. -/
+theorem no_entire_germ_extension_of_noExtensionAt
+    {Φ : ℂ → ℂ} {Ω : Set ℂ} {a b : ℂ}
+    (hΦ : AnalyticOnNhd ℂ Φ Ω) (hΩ : IsPreconnected Ω)
+    (ha : a ∈ Ω) (hno : NoExtensionAt Φ Ω b) :
+    ¬ ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g Set.univ ∧
+      Filter.EventuallyEq (nhds a) Φ g := by
+  rintro ⟨g, hg, heq⟩
+  have hgΩ : AnalyticOnNhd ℂ g Ω :=
+    fun z _ => hg z (Set.mem_univ z)
+  have hEqOn : Set.EqOn Φ g Ω :=
+    hΦ.eqOn_of_preconnected_of_eventuallyEq hgΩ hΩ ha heq
+  exact hno ⟨Set.univ, g, isOpen_univ, Set.mem_univ b, hg, fun z hz =>
+    (hEqOn hz.2).symm⟩
+
 /-- **No cross-column healing.**  If the column `Φ` has no analytic element at `b`, while the
 partner `Ψ` has an analytic element `ψ'` at `b` that is *nonvanishing* there (`ψ' b ≠ 0`), then the
 product `F = Φ · Ψ` has no analytic element at `b`.  Indeed, an analytic element `g` of the product

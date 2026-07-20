@@ -196,7 +196,22 @@ With `AnalyticAt V x_0`, the stronger theorem
 `exists_entire_extension_of_rawJetFactorialFockPartialEnergy_le` also discharges the germ interface:
 the same cofinal bound constructs an entire function agreeing with `V` on a neighborhood of `x_0`.
 Thus neither the Taylor-coefficient normalization nor the local identity step remains an assumed
-interface.
+interface.  Its contrapositive
+`exists_rawJetFactorialFockPartialEnergy_gt_of_no_entire_extension` packages the remaining boundary
+cleanly: once the concrete seam is proved to admit no entire germ extension, every proposed finite
+energy bound is exceeded at some clock depth.
+
+The companion module
+`formal/GaloisForLFunctions/RHTower/FactorialFockPoleDivergence.lean` connects this interface to the
+existing `NoExtensionAt` corpus.  Analytic uniqueness transports a boundary no-extension
+obstruction to every interior germ of a preconnected continuation domain, and the specialization
+`exists_simplePoleAt_rawJetFactorialFockPartialEnergy_gt` proves unconditional divergence for
+`1/(z-b)` at every `a != b`.  The parallel
+`exists_expOverSimplePole_rawJetFactorialFockPartialEnergy_gt` shows that multiplication by the
+nonvanishing entire exponential column cannot heal the divergence.  Thus the general law subsumes
+both explicit no-extension providers already in the corpus.  This is the exact parent-theory pole
+mechanism needed by `(10)`--`(16)`; the unresolved work is to realize the time-one arithmetic seam
+in that interface.
 
 This does **not** yet formalize `(14)`.  The remaining zeta-specific Lean obligation is to construct
 the time-one transform `V_rho` with its meromorphic continuation and prove that the entire extension

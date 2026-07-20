@@ -1,9 +1,9 @@
 # Quasi-free rank--variance discriminant law
 
 - **ID:** `quasi-free-rank-variance-discriminant-law`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / UNIVERSAL HILBERT-SPACE LAW / NOVELTY GATE
-- **Scientific status:** `[PAPER-PROVED] [LEAN OPEN]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED]`
 - **Novelty:** `[SURVIVES PRELIMINARY ATTACK] [NOVELTY UNVERIFIED]`; no priority or
   general-journal claim
 - **Source:** scale-covariance attack on `quasi-free-filling-bandwidth-fano-law`
@@ -23,8 +23,8 @@ an operational consequence not already contained in the scalar Bhatia--Davis ine
 - [x] 0 -> 1 in-progress: well-posed, internal corpus searched, parent formulas separated,
   hostile scale attack complete
 - [x] 1 -> 2 fully-proven: dependency-closed paper proof below, `[PROVED HERE]`
-- [ ] 2 -> 3 formalized: exact decomposition, nonnegativity, equality, sharp witness, and
-  connector to the fixed-scale law compile
+- [x] 2 -> 3 formalized: exact decomposition, nonnegativity, equality, sharp witness, and
+  connector to the fixed-scale law compile unconditionally
 - [ ] 3 -> 4 publication-ready: independent expert novelty audit and a demonstrated external
   scientific use case
 
@@ -254,20 +254,31 @@ variance rank`, `determinantal Bhatia--Davis`, `support rank full counting stati
 `effective rank determinantal linear statistics`.  No exact collision was found.  Search-engine
 non-detection is not proof of novelty.
 
-## Lean target
+## Lean formalization
 
-Create `GaloisForLFunctions.HilbertMetric.QuasiFreeRankVarianceDiscriminant` with:
+`GaloisForLFunctions.HilbertMetric.QuasiFreeRankVarianceDiscriminant` contains:
 
-- the exact budget identity (5);
-- the exact two-defect discriminant identity (RVD);
-- the pairwise coordinate identity (RVD3);
-- unconditional nonnegativity and division-free bound (QBD0);
-- equality iff endpoint leakage and compression anisotropy vanish;
-- homogeneous scaling covariance;
-- connectors to the existing fixed-scale Fano law and rank witness.
+- `quasiFreeSpectralBandBudget_eq_secant_add_compressed` for (5);
+- `quasiFreeSpectralRankVarianceDiscriminant_two_defect` and
+  `quasiFreeSpectralRankVarianceDiscriminant_hilbertSchmidt_two_defect` for (RVD)--(HSA);
+- `quasiFreeSpectralRankVarianceDiscriminant_three_defect` for (RVD3);
+- `quasiFreeSpectralVariance_rank_bhatiaDavis` for (QBD0);
+- `quasiFreeSpectralRankVarianceDiscriminant_eq_zero_iff` for equality classification;
+- `quasiFreeEndpointPairRankVarianceDiscriminant_zero` for the sharp rank-one endpoint face;
+- `quasiFreeSpectral_support_rank_lower_bound` for (RC);
+- `quasiFreeSpectralRankVarianceDiscriminant_scale` for energy-unit covariance;
+- `quasiFreeSpectralFanoMargin_lower_bound_of_rankVariance` connecting the stronger theorem to
+  the earlier fixed-scale filling--bandwidth law.
+
+Direct checks of the new source and the `HilbertMetric` umbrella pass.  Exact `#print axioms`
+checks of every headline theorem report only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-07-20 -- Created after the arbitrary-unit attack killed the raw fixed-coefficient Fano
   formulation as a universal headline.  Paper proof and sharpness construction closed; exact Lean
-  implementation remains open.
+  implementation remained open.
+- 2026-07-20 -- Formalized the homogeneous two- and three-defect laws, literal Hilbert--Schmidt
+  geometry, equality classification, endpoint witness, rank certificate, scale covariance, and
+  connector to the fixed-unit theorem.  Direct module and umbrella checks passed; axiom audit is
+  unconditional.  Scientific novelty and the general-journal gate remain open.

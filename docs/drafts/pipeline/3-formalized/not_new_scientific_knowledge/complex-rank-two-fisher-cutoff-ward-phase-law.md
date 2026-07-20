@@ -134,3 +134,35 @@ with orthogonal and unit-source specializations.  The squarefree consumer identi
 energy with `squarefreeMobiusCriticalProjectiveFisherEnergy` and proves exact equality of the lower-
 and complementary-window commutator energies.  These are unconditional value-reflection laws;
 they do not supply the open prime--Gamma/Sonin completed graph transport.
+
+## Projector-tangent inertia addendum (2026-07-20)
+
+The pointed connection is exactly the positive normalization of the pure-state projector tangent:
+
+```text
+X(psi,chi)=2^(-1/2) T(psi,chi).
+```
+
+If `Delta=||psi||^2||chi||^2-|<psi,chi>|^2`, the form matrix of `X` on `(psi,chi)` therefore
+satisfies
+
+```text
+det G_X = -(1/2) Delta^2.
+```
+
+For a complex-linearly independent state--tangent pair, `Delta>0`; hence `G_X` is Hermitian,
+nonsingular, and neither it nor its negative is positive semidefinite.  This connects the positive
+Hilbert--Schmidt energy law above to its sharp ambient-order negative control: Fisher energy is not
+positive-operator order.  The general determinant reflection is formalized in
+`HTGeometry/PureStateProjectorTangentInertia.lean`, and the normalized Fisher consumer is in
+`HTGeometry/PointedFisherConnectionInertia.lean`.  This remains a `[BRIDGE]` in standard
+pure-state quantum geometry.
+
+For the completed squarefree Möbius source, this independence premise is now discharged rather
+than exposed to callers.  Positivity of normalized mass on every squarefree coordinate makes the
+signed weights at `n=1` and `n=2` nonzero.  A vanishing centered logarithmic tangent would then
+force its center to equal both `log 1` and `log 2`, impossible because `log 2>0`.  Together with
+the existing unit-source and orthogonality laws, this proves state--tangent independence for every
+`sigma>1` and hence the exact mixed signature of the actual arithmetic Fisher compression.  The
+source discharge is formalized in `RHTower/MobiusCriticalFisherConnectionInertia.lean` and adds no
+RH or positivity hypothesis.

@@ -88,22 +88,39 @@ theorem radius_taylorSeries_eq_top_of_rawJetFactorialFockPartialEnergy_le
   exact summable_of_sum_range_le
     (fun n => div_nonneg (sq_nonneg _) (Nat.cast_nonneg _)) henergy
 
-/-- **Factorial-Fock entire-extension law.**  An analytic germ whose finite raw-jet factorial
-energies have one cofinal bound agrees near its base point with an entire function.  This is the
-precise analytic-continuation conclusion behind factorial-clock pole obstructions; all
+/-- **Vector-valued factorial-Fock entire-extension law.**  An analytic germ whose finite raw-jet
+factorial energies have one cofinal bound agrees near its base point with an entire function.  This
+is the precise analytic-continuation conclusion behind factorial-clock pole obstructions; all
 source-specific work is confined to proving the energy bound and exhibiting the incompatible
-meromorphic singularity. -/
+boundary obstruction. -/
 theorem exists_entire_extension_of_rawJetFactorialFockPartialEnergy_le
-    {f : ℂ → ℂ} {a : ℂ} (hf : AnalyticAt ℂ f a) {C : ℝ}
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+    {f : ℂ → E} {a : ℂ} (hf : AnalyticAt ℂ f a) {C : ℝ}
     (henergy : ∀ N, ∑ n ∈ Finset.range N,
       ‖iteratedDeriv n f a‖ ^ 2 / n.factorial ≤ C) :
-    ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g Set.univ ∧
+    ∃ g : ℂ → E, AnalyticOnNhd ℂ g Set.univ ∧
       Filter.EventuallyEq (nhds a) f g := by
-  let p := FormalMultilinearSeries.ofScalars ℂ (fun n =>
-    iteratedDeriv n f a / (n.factorial : ℂ))
+  obtain ⟨p, hpAt⟩ := hf
+  have hpEnergy : ∀ N, ∑ n ∈ Finset.range N,
+      (n.factorial : ℝ) * ‖p n‖ ^ 2 ≤ C := by
+    intro N
+    calc
+      ∑ n ∈ Finset.range N, (n.factorial : ℝ) * ‖p n‖ ^ 2 =
+          ∑ n ∈ Finset.range N,
+            ‖iteratedDeriv n f a‖ ^ 2 / n.factorial := by
+        apply Finset.sum_congr rfl
+        intro n _
+        obtain ⟨r, hr⟩ := hpAt
+        have hfac := hr.factorial_smul (1 : ℂ) n
+        rw [iteratedFDeriv_apply_eq_iteratedDeriv_mul_prod,
+          Finset.prod_const_one, one_smul] at hfac
+        change n.factorial • p.coeff n = iteratedDeriv n f a at hfac
+        rw [← hfac, RCLike.norm_nsmul (K := ℂ), nsmul_eq_mul,
+          FormalMultilinearSeries.norm_apply_eq_norm_coef]
+        field_simp
+      _ ≤ C := henergy N
   have hpRadius : p.radius = ∞ :=
-    radius_taylorSeries_eq_top_of_rawJetFactorialFockPartialEnergy_le
-      f a henergy
+    radius_eq_top_of_factorialFockPartialEnergy_le p hpEnergy
   have hpAnalytic : AnalyticOnNhd ℂ p.sum Set.univ := by
     have hp := p.analyticOnNhd
     rw [hpRadius] at hp
@@ -114,9 +131,23 @@ theorem exists_entire_extension_of_rawJetFactorialFockPartialEnergy_le
       analyticAt_id.sub analyticAt_const
     exact AnalyticAt.comp' (f := fun w : ℂ => w - a) (x := z)
       (hpAnalytic (z - a) (Set.mem_univ _)) hinner
-  · have hpAt : HasFPowerSeriesAt f p a := hf.hasFPowerSeriesAt
-    filter_upwards [hpAt.eventually_hasSum_sub] with z hz
+  · filter_upwards [hpAt.eventually_hasSum_sub] with z hz
     simpa only [FormalMultilinearSeries.sum] using hz.tsum_eq.symm
+
+/-- **No-extension/Fock divergence interface.**  If an analytic germ has no entire continuation,
+then its finite raw-jet factorial energies are unbounded.  This contrapositive exposes the exact
+Prop a source-specific pole theorem must discharge. -/
+theorem exists_rawJetFactorialFockPartialEnergy_gt_of_no_entire_extension
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+    {f : ℂ → E} {a : ℂ} (hf : AnalyticAt ℂ f a)
+    (hno : ¬ ∃ g : ℂ → E, AnalyticOnNhd ℂ g Set.univ ∧
+      Filter.EventuallyEq (nhds a) f g) (C : ℝ) :
+    ∃ N, C < ∑ n ∈ Finset.range N,
+      ‖iteratedDeriv n f a‖ ^ 2 / n.factorial := by
+  by_contra hbounded
+  push Not at hbounded
+  exact hno (exists_entire_extension_of_rawJetFactorialFockPartialEnergy_le
+    hf hbounded)
 
 end
 

@@ -27,6 +27,7 @@ concrete operator unless the source-defined objects have also been constructed.
 | Connes--van Suijlekom, [Quadratic Forms, Real Zeros and Echoes of the Spectral Action](https://arxiv.org/abs/2511.23257); Connes, [The Riemann Hypothesis: Past, Present and a Letter Through Time](https://arxiv.org/abs/2602.04022) | A lower-bounded self-adjoint convolution operator with an isolated simple lowest eigenvalue and even eigenfunction has a ground-state Fourier transform with only real zeros.  The finite Toeplitz/paraorthogonal mechanism is unconditional. | `finiteOPUCParaorthogonal_lineCayley_root_im_eq_zero`; `riemannHypothesis_of_XiC_locally_uniform_real_zero_approximants`; typed wall `ConnesXiGroundStateLimitWall`. | Prove simplicity/evenness for the actual Weil ground state and locally uniform convergence of the actual transforms to `XiC`. |
 | Connes--Consani--Moscovici, [Zeta Spectral Triples](https://arxiv.org/abs/2511.22755) | Finite-prime rank-one perturbations are self-adjoint; the reported spectral/determinant agreement is numerical. | The real-zero limit consumer is formalized; constrained-prolate and determinant infrastructure is present.  The paper's concrete finite operator family is not represented end-to-end. | Rigorous operator/ground-state or normalized determinant convergence to Xi. |
 | Hedenmalm, [Spectral interpretation of Riemann zeta zeros](https://arxiv.org/abs/2606.17494) | The explicit theta boundary problem has a nontrivial solution exactly at a Xi zero; a positive inner product making the operator pair self-adjoint would force spectral parameters real. | `XiHedenmalmBoundaryValueProblem`: explicit solution, equation, endpoint limits, uniqueness, and `existsUnique_xiHedenmalmNormalizedBoundaryValueProblem_iff`.  Complete Weil/Hedenmalm positivity wall: `HedenmalmXiPositiveFormWall` and `hedenmalmXiPositiveFormWall_iff_riemannHypothesis`. | Construct the positive source-derived Hilbert form/self-adjoint pair; the boundary-value equivalence alone does not imply reality. |
+| Gershon, [On the Log-Concavity of the Riemann Xi Kernel](https://www.preprints.org/manuscript/202604.0159), v2; Pierson, [Log-Concavity of the Riemann Xi Kernel and the Riemann Hypothesis](https://doi.org/10.5281/zenodo.20465036) | Strict log-concavity of the theta kernel is an order-two total-positivity statement.  It does not imply RH.  Gershon's analytic perturbation step is asserted rather than derived; the linked public Lean files use `True`-valued axioms at that step.  Pierson's advertised closure is computation-dependent. | Independent unconditional repair: `thetaCuspLogConcavityNumerator_neg_all`, `strictConcaveOn_thetaCuspLogSource`, `thetaCuspFullSource_mul_reflect_le_sq`, `thetaCuspCenterMixedDensity_le_zero`, and `thetaCuspCenterMixedTwoNodeMatrix_posSemidef`. | Order two is now compiler-checked.  Proving all finite orders / full positive-definiteness of the source-derived center density remains the RH-equivalent wall; no finite-order extrapolation is imported. |
 | Suzuki, [Weil's quadratic form via the screw function](https://arxiv.org/abs/2606.09096) | Friedrichs realization; continuous lowest eigenvalue; small-aperture positive simple even ground state; a deficiency-`(1,1)` derivative operator whose self-adjoint extensions have entire characteristic functions `W(a,theta;z)` with only real zeros. | Generic symmetric-eigenvalue reality exists.  `suzukiXiCharacteristicTarget`, `SuzukiXiCharacteristicLimitWall`, and `suzukiXiCharacteristicLimitWall_implies_riemannHypothesis` formalize Corollary 6's exact zero-transfer endpoint. | Construct Suzuki's screw function, form domain, Friedrichs extension, deficiency spaces, and actual `W` in Lean; prove the conjectural locally uniform normalized limit to `z^2 xi/xi'`. |
 | Connes--Consani--Moscovici constrained-prolate branch | Exact secular vector and finite/infinite constrained spectral algebra. | `ConstrainedProlateOperator`, `ConstrainedProlateBesselBound`, `ConstrainedProlateFullDistanceCCM`, especially `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed`. | The concrete first two prolate-to-Hermite coordinate limits; no declaration claims them. |
 | Weil positivity / Guinand--Weil | Complete multiplicity-aware Weil positivity is equivalent to RH. | `riemannHypothesis_iff_xiWeilPolarization_nonneg`; complete sharp prime--Gamma identity in `XiGuinandWeilRectangularFullFormula`. | Prove source positivity on the complete divisor test domain, not merely a finite or Cauchy core. |
@@ -90,6 +91,9 @@ These sources are kept in the ledger but do not move an RH proof wall.
 - [x] Separate unconditional theorems, equivalent criteria, conditional statements, and
   computations.
 - [x] Formalize Hedenmalm's normalized explicit boundary-value theorem.
+- [x] Audit the two 2026 theta-kernel log-concavity preprints and linked Lean artifact; replace the
+  missing perturbation argument by a computation-free source proof, then formalize its exact
+  order-two Hedenmalm endpoint without promoting it to full positive-definiteness.
 - [x] Formalize the finite Caratheodory--Fejer/Cayley reality connector.
 - [x] Formalize the Connes and Suzuki locally-uniform zero-transfer walls as named propositions.
 - [x] Formalize the finite Li/secular transforms.
@@ -101,13 +105,13 @@ These sources are kept in the ledger but do not move an RH proof wall.
 - [x] Close the discrete Mobius--Laplace decay-to-Mellin-continuation bridge, including absolute
   convergence, continuity, the exponential tail, the Mellin--Dirichlet identity, and regularized
   analytic continuation.  The source decay estimate remains explicitly open.
-- [x] Axiom audit: all seven representative capstones use only `propext`, `Classical.choice`, and
+- [x] Axiom audit: all eleven representative capstones use only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - [x] Regenerate `LEAN_API.md`, `LEAN_GAPS.md`, and `LEAN_OVERVIEW.md`.
 - [x] Final module audit: `lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026`
-  completed successfully (8899/8899 jobs).
-- [ ] Repository-wide wiring lint is clean.  The 2026 SOTA modules are reachable and have no proof
-  debt, but the current repository still has 15 unrelated pre-existing umbrella-reachability
-  failures (12 in `RHTower`, 3 in `HTGeometry`).
+  completed successfully (8902/8902 jobs).
+- [x] Repository-wide wiring lint is clean.  The 15 pre-existing umbrella-reachability gaps
+  (12 in `RHTower`, 3 in `HTGeometry`) are wired, both umbrellas compile directly, and
+  `scripts/formal_tools.py lint --check-generated` passes.
 - [ ] Move to stage 3 only when every claimed formalized row is compiler- and axiom-audited; leave
   source-realization gaps explicitly open.

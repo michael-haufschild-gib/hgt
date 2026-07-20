@@ -5,6 +5,7 @@ import GaloisForLFunctions.RHTower.LiFiniteCriterionFrontier
 import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
 import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
 import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
+import GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
 import GaloisForLFunctions.RHTower.XiHedenmalmSourceCapstone
@@ -30,6 +31,13 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   parameters are exactly Xi zeros.  `XiHedenmalmBoundaryValueProblem` formalizes that equivalence.
   It does not make the parameters real.  The exact positive-form wall is
   `HedenmalmXiPositiveFormWall`, proved below equivalent to RH on the complete Xi Weil carrier.
+
+* Gershon's revised 2026 theta-kernel log-concavity preprint and Pierson's computation-dependent
+  preprint stop at an order-two condition.  The linked public Lean artifact axiomatizes its
+  perturbation step and concludes `True`, so it is not a proof.  The independent source-level
+  repair in `ThetaCuspKernelLogConcavity` proves strict global log-concavity, the multiplicative
+  midpoint law, and positive semidefiniteness of every two-node center-mixed matrix.  This closes
+  the order-two rung only; all-node positive-definiteness remains the RH-equivalent wall.
 
 * Suzuki (`arXiv:2606.09096`) constructs finite-interval self-adjoint extensions and entire
   characteristic functions with only real zeros.  The paper leaves locally uniform convergence

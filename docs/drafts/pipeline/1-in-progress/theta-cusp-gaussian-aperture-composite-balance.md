@@ -162,9 +162,71 @@ L_lambda(t)
 ```
 
 The old route asked for two estimates of opposite orientation on `K_1` and `K_2`.  Equations
-`(8)`--`(9)` show that only their forced composite is consumed.  `L_lambda` is positive near zero
-and is expected to become negative in the far tail, so pointwise positivity is not the target; the
-target is its exact balance against the fixed positive source curvature `E`.
+`(8)`--`(9)` show that only their forced composite is consumed.  Pointwise positivity is not the
+target; the target is its exact balance against the fixed positive source curvature `E`.
+
+## Exact one-crossing law `[PAPER-PROVED] [LEAN-PROVED]`
+
+The sign geometry of the forced window is no longer conjectural.  Put
+
+```text
+M_j=B_j(lambda)/2,
+A_j(t)=integral_0^t x^(2j) f_lambda(x) dx.
+```
+
+Fubini cancellation inside the crossing window gives
+
+```text
+K_(m,lambda)(t)=A_m(t)M_(m+1)-A_(m+1)(t)M_m,
+K_(m,lambda)'(t)=f_lambda(t)t^(2m)(M_(m+1)-t^2 M_m).   (9a)
+```
+
+Consequently the composite derivative collapses exactly to
+
+```text
+L_lambda'(t)=2 f_lambda(t)t^2 P_lambda(t^2),
+
+P_lambda(y)=M_2^2-(M_1 M_2+M_0 M_3/5)y+(M_0 M_2/5)y^2. (9b)
+```
+
+The discriminant of `P_lambda` is nonnegative by the ordinary source log-convexity
+`M_2^2<=M_1 M_3`: writing `u=M_1 M_2` and `v=M_0 M_3/5`,
+
+```text
+(u+v)^2 >= 4uv >= 4(M_0 M_2/5)M_2^2.
+```
+
+It is in fact strictly positive.  If it vanished, `(9b)` would be a positive multiple of a
+square, so `L_lambda` would be nondecreasing on the positive half-line.  But the exact endpoint
+laws are
+
+```text
+L_lambda(0)=0,
+lim_(t->infinity) L_lambda(t)=0,
+```
+
+while `(9b)` makes `L_lambda` strictly positive at an explicit source-derived small height.  This
+is impossible.  Hence `P_lambda` has two distinct positive roots `r_-<r_+`; the derivative signs
+are
+
+```text
+L_lambda'(t)>0  for 0<t<sqrt(r_-),
+L_lambda'(t)<0  for sqrt(r_-)<t<sqrt(r_+),
+L_lambda'(t)>0  for sqrt(r_+)<t.                         (9c)
+```
+
+The first turning value is positive and the second is negative because the final increasing tail
+converges to zero.  Thus `L_lambda` has exactly one positive zero, lying strictly between the two
+turning heights, for every `lambda<=0`.
+
+Permanent Lean module
+`PrimeArchThetaGaussianApertureCompositeWindow.lean` constructs the literal tilted theta density,
+moment prefixes, crossing windows, and forced composite.  It proves `(9a)`--`(9c)`, strict
+discriminant positivity, the two turning-value signs, and the global unique-positive-zero theorem
+without extra hypotheses.  The result removes the former one-crossing open core; it does not by
+itself sign the curvature-weighted integral `(8)`.  Its direct leaf check and exact module build
+pass; the derivative, strict-discriminant, three-phase, and global one-crossing capstones use only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Completed seam cancellation and the first possible aperture sign
 
@@ -266,17 +328,84 @@ upgrade remains open.
 - **Finite-jet nonselection remains:** positivity of `N_6` cannot imply RH.  It only anchors the
   exact infinite aperture family `(14)`; the full `L`-continuum is essential.
 
+## Self-dual modular elimination of the sixth seam `[PAPER-PROVED] [LEAN PARTIAL]`
+
+The sixth-seam sign is no longer an unconstrained jet problem.  Put
+
+```text
+H(x)=exp(x/2) theta_3(i exp(2x)),
+z=2 lambda-1,
+R=pi H^4,
+p=pi exp(2x) E_2(i exp(2x))-3.
+```
+
+The functional equation makes `H,R` even and `z,p` odd.  The modular-lambda derivative,
+theta-nullwert logarithmic derivative, and Ramanujan identities give the autonomous system
+
+```text
+z'=-R(1-z^2),
+R'=-(2/3)R(p+Rz),
+p'=3-p^2/3+R^2(3+z^2)/12.                              (15)
+```
+
+Since `Phi=(H''-H/4)/2`, exact differentiation of `(15)` through order six eliminates every
+seam jet except `R_0=R(0)`.  With `M=H(0)=theta_3(i)` and `X=R_0^2`, it gives
+
+```text
+N_6=M^3 Q(X)/131072,                                   (16)
+
+Q(X)=99X^6+12X^5-3160X^4-544272X^3
+     -1446144X^2-1509120X+276480.                      (17)
+```
+
+This is the coordinate-field collapse suggested by the HTGeometry development: the completed
+source's first non-Gaussian local obstruction belongs to the one-coordinate self-dual modular
+differential field, rather than requiring independent control of four theta jets.
+
+The source scale is rigorously inside the positive chamber.  The first positive theta term and
+rational exponential bounds prove
+
+```text
+exp(-pi)>431/10000,
+M>5431/5000,
+X=(pi M^4)^2>191/10.                                   (18)
+```
+
+Expanding at the rational threshold gives
+
+```text
+Q(191/10+y)
+ =99y^6+(56787/5)y^5+(10794577/20)y^4
+  +(652723289/50)y^3+(317839252857/2000)y^2
+  +(38870479127747/50000)y+67989377597579/1000000,
+```
+
+so `Q(X)>0`, and `(16)` yields `N_6>0`.  Thus the cheapest large-aperture falsifier does not kill
+GABTC.  This is a local survival theorem, not a proof of the full aperture balance and not an RH
+criterion.
+
+Permanent Lean
+`PrimeArchThetaGaussianApertureSixthSeamChamber.lean` proves `(18)`, positivity of `(17)` on the
+whole threshold chamber, and positivity of the source-specialized modular-closure value.  The
+real-theta/modular-differential derivation of the equality `(16)` remains the exact formalization
+gap; Lean does not yet identify that value with
+`thetaCuspGaussianApertureSixthSeamNumerator`.  Its direct leaf and exact module build pass; the
+four new capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Exact-coefficient and conceptual searches found no primary-source statement of `(15)`--`(18)` in
+this Gaussian-aperture context.  The modular identities used to derive `(15)` are classical; the
+search result is noncollision, not a priority claim.
+
 ## Exact open core
 
-1. Prove or disprove `N_6>=0` symbolically from the modular theta source.  A negative sign retires
-   global GABTC immediately while preserving `(4)`--`(13)`.
-2. Prove the one-crossing structure of `L_lambda` in `(9)`, uniformly for `lambda<=0`, or identify
-   its exact counterexample.  Do not split it back into two independent window estimates.
-3. Compare the negative tail of `L_lambda` with its positive core using the fixed curvature `E` and
+1. Formalize the real-theta/modular-differential bridge `(15)`--`(16)`, closing the compiled
+   positive modular value against the literal source jet numerator.
+2. Compare the negative tail of the now-proved one-crossing `L_lambda` with its positive core using
+   the fixed curvature `E` and
    the exact theta reflection law.  This is the sole analytic sign problem for `(14)`.
-4. Once `(8)` is dependency-closed on paper, formalize that integral identity and the Gaussian
+3. Once `(8)` is dependency-closed on paper, formalize that integral identity and the Gaussian
    aperture derivative in Lean.  The algebraic consumer is already compiled.
-5. If `(14)` is proved, return to the independent higher-degree source cone.  Do not advertise the
+4. If `(14)` is proved, return to the independent higher-degree source cone.  Do not advertise the
    degree-one block as RH.
 
 ## Literature boundary
@@ -292,7 +421,9 @@ upgrade remains open.
 The first paper already contains `(3)` as a Gaussian-deformed moment family and proves its
 ordinary Turan inequalities for all real deformation parameters.  The second sharpens classical
 kernel convexity and Turan lower bounds.  The third formulates the separate double Turan problem.
-None of these sources states `(6)`, `(7)`, `(8)`, `(13)`, or GABTC.
+None of these sources states `(6)`, `(7)`, `(8)`, the forced-window derivative and one-crossing
+law `(9a)`--`(9c)`, `(13)`, or GABTC.  Targeted exact-coefficient and conceptual searches also
+found no collision for `(9a)`--`(9c)`; this is search noncollision, not a priority claim.
 
 ## Gates
 
@@ -302,8 +433,11 @@ None of these sources states `(6)`, `(7)`, `(8)`, `(13)`, or GABTC.
 - [x] actual completed-source Gaussian aperture object in Lean
 - [x] completed evenness cancellation identified
 - [x] sixth-seam leading asymptotic proved on paper
+- [x] self-dual modular elimination of `N_6` to one explicit polynomial
+- [x] actual source scale proved to lie in the polynomial's positive chamber in Lean
+- [x] forced composite window has exactly one positive zero for every `lambda<=0`, in Lean
 - [x] direct Lean leaf check, serialized exact module build, and capstone axiom audit
-- [ ] symbolic sign of `N_6`
+- [ ] formal equality of the modular-closure value with the literal `N_6`
 - [ ] uniform composite-window balance `(8)` for `lambda<=0`
 - [ ] exact aperture derivative and curvature-window identity formalized in Lean
 - [ ] independent higher-degree source cone
@@ -314,3 +448,7 @@ None of these sources states `(6)`, `(7)`, `(8)`, `(13)`, or GABTC.
   deformation and ordinary Turan positivity as known parent theory.  The exact surviving target is
   the boundary composite ratio curvature `(6)`--`(9)`, with the sixth logarithmic seam jet as its
   cheapest source-specific falsifier.
+- 2026-07-20 -- Self-dual modular elimination reduced the sixth seam to `(16)`--`(17)`.  A rigorous
+  source enclosure places its scalar in the strict positive chamber, so the local large-aperture
+  falsifier survives.  Lean proves the complete chamber theorem; the analytic identification
+  `(16)` is the remaining formal bridge.

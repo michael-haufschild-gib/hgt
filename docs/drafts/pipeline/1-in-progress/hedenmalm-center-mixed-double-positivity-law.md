@@ -75,6 +75,30 @@ give the equivalence of RH with the second line of `(3)`.  Since `M_(k,a)` is co
 integrable, the classical Bochner theorem identifies nonnegativity of its Fourier transform with
 positive definiteness, proving the third equivalence.
 
+## Unconditional order-two positive-definiteness rung
+
+The source-specific score--variance theorem in
+`../2-fully-proven/needs-audit/theta-cusp-kernel-log-concavity-score-variance-repair.md` proves
+that `log k` is strictly concave on `R`.  Consequently
+
+```text
+k(u+t)k(u-t) <= k(u)^2,
+0 <= M_(k,a)(t) <= M_(k,a)(0).
+```
+
+Hence every two-node Bochner matrix
+
+```text
+[[M_(k,a)(0), M_(k,a)(x-y)],
+ [M_(k,a)(x-y), M_(k,a)(0)]]
+```
+
+is positive semidefinite unconditionally.  This exact rung is formalized by
+`thetaCuspCenterMixedTwoNodeMatrix_posSemidef` and its determinant form
+`thetaCuspCenterMixedTwoNode_det_nonneg`.  It closes order two only.  The open research wall in
+`(3)` is compatibility of all finite node sets, equivalently the nonnegative Fourier transform;
+no finite-order extrapolation is valid.
+
 ## Pure-state tangent interpretation
 
 Put
@@ -103,6 +127,49 @@ Unless the source is concentrated at one point, `(5)` is indefinite on the span 
 `x f_a`: it has one positive and one negative direction.  Therefore `(3)` does not claim ambient
 operator positivity.  It says that the distinguished momentum diagonal of this universal Krein
 tangent is nonnegative throughout the critical aperture.
+
+### Exact rank-two tangent inertia `[PAPER-PROVED] [BRIDGE]`
+
+Let `H` be a complex Hilbert space, let `u,v in H`, and put
+
+```text
+T_(u,v)=|v><u|+|u><v|,
+Delta(u,v)=||u||^2||v||^2-|<u,v>|^2.
+```
+
+Write `a=<u,u>`, `b=<v,v>`, `c=<u,v>`, and `c*=<v,u>`.  The Hermitian matrix of `T_(u,v)` on the
+ordered pair `(u,v)` is
+
+```text
+G_T = [[a(c+c*),       ab+c^2],
+       [ab+(c*)^2,     b(c+c*)]].
+```
+
+Direct expansion gives the exact value relation
+
+```text
+det G_T
+ = ab(c+c*)^2-(ab+c^2)(ab+(c*)^2)
+ = -(ab-cc*)^2
+ = -Delta(u,v)^2.                                      (6)
+```
+
+The ordinary two-vector Gram theorem gives `Delta(u,v)>=0`, with strict inequality exactly when
+`u,v` are complex-linearly independent.  Under that independence, `(6)` is strictly negative.
+The same determinant belongs to `-G_T`, since the matrix has size two.  Hence neither `G_T` nor
+`-G_T` is positive semidefinite: the restriction has both a positive and a negative direction.
+Because `(6)` is nonzero, its rank is two, so the inertia is exactly `(1,1)`.
+
+For the formal right-line Hedenmalm path take `u=f_a` and `v=-x f_a` in `L^2(R)`.  The theta
+source is strictly positive, so these vectors are independent: a relation `alpha u+beta v=0`
+lifts through the injective Schwartz-to-`L^2` map; evaluation at `x=1` and `x=2` gives
+`alpha-beta=0` and `alpha-2 beta=0`, hence both coefficients vanish.  Thus the actual tangent
+`(5)` has exact inertia `(1,1)` for every `|a|<1` (up to the harmless aperture sign convention).
+
+This is not new quantum geometry.  Pure-state projector tangents and their projective Gram/Fisher
+energy are standard in the Provost--Vallee and Braunstein--Caves framework.  The contribution here
+is the exact reusable determinant interface `(6)` and its source-specific discharge; its scientific
+label is `[BRIDGE]`, not new knowledge.
 
 This is the continuous form of the already formalized two-atom Mellin signature.  It also explains
 why an ambient Hecke square, a Loewner-monotone density matrix, or a positive Gram factorization on
@@ -145,7 +212,8 @@ Pointwise positivity of `M_(k,a)` is only the first half of this obligation.
 - [x] formalize `M_(k,a)(x/2)=partial_a R_(f_a)(x)`, extend integrability and continuity to
       `|a|<1`, and combine strict spatial positivity with the finite differential-frame exclusion;
 - [x] formalize the Fourier-sign/RH equivalence in `(3)` without introducing a positivity premise;
-- [ ] formalize the rank-two inertia statement `(5)`;
+- [x] formalize strict source log-concavity and the resulting two-node Bochner positivity rung;
+- [x] formalize the rank-two inertia statement `(5)`;
 - [ ] audit the exact center-mixed criterion against ambiguity-function, Wigner, and
       positive-definite-function literature;
 - [ ] find or refute a source factorization of `M_(k,a)` inside the positive-definite cone.
@@ -161,6 +229,14 @@ strict-positivity, integrability, and continuity theorems print only the standar
 The exact autocorrelation-path identification and full-aperture regularity are in
 `formal/GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean`; their separate formalized
 card is `../3-formalized/not_new_scientific_knowledge/hedenmalm-autocorrelation-path-boundary.md`.
+
+The general value-reflection law and its unconditional theta-source discharge are in
+`formal/GaloisForLFunctions/HTGeometry/PureStateProjectorTangentInertia.lean` and
+`formal/GaloisForLFunctions/RHTower/HedenmalmRankTwoTangentInertia.lean`.  They prove
+`det G_T = -Delta(u,v)^2`, identify positive projective Gram energy with pair independence, and
+establish that the actual source compression is Hermitian, nonsingular, and neither positive nor
+negative semidefinite for every `|a|<1`.  This closes the ambient rank-two inertia obligation but
+does not prove the momentum-diagonal positivity equivalent to RH.
 
 The exact source-to-orientation boundary is in
 `formal/GaloisForLFunctions/RHTower/HedenmalmCenterMixedOrientationBoundary.lean`.  It proves that
