@@ -178,6 +178,7 @@ theorem projectionPhaseRotation_tangent
 
 /-! ## Supersymmetric energy of the phase rotation -/
 
+omit [CompleteSpace H] in
 /-- A projection normal corner is automatically a nilpotent BRST charge. -/
 theorem projectionNormalCorner_sq_eq_zero
     (P D : H →L[ℂ] H) (hP2 : P * P = P) :

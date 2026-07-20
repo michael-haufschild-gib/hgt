@@ -96,6 +96,14 @@ arbitrary multilevel inverse systems.
 An exact cubic or quartic counterexample retires ACB-3.  A proof must classify the nonhomogeneous
 graph couplings rather than only the graded Hilbert function.
 
+`[PAPER-PROVED] [LEAN-FORMALIZED PARENT BARRIER]` The graded/diagonal spectral part is already
+closed: `positiveQuarticDegree_canonicalFeatureVolume_logFanoMargin_nonnegative` proves that every
+canonical Pluecker degree law supported in positive degrees `1` through `4` has nonnegative Fano
+margin.  This is the sharp positive quartic spectral-bandwidth barrier and should not be
+re-conjectured.  It does **not** by itself settle ACB-3 as stated, because an arbitrary
+nonhomogeneous annihilation-invariant polynomial space need not be diagonal in homogeneous degree;
+the remaining open core is exactly the control or classification of those graph couplings.
+
 ## Unequal-gap multichannel connector
 
 `[PAPER-PROVED] [LEAN-FORMALIZED] [PARENT ALGEBRA, NOT A NOVELTY CLAIM]` Let `I` be finite.  Fix a deterministic

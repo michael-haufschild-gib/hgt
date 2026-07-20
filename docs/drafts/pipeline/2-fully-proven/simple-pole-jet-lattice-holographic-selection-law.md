@@ -2,8 +2,8 @@
 
 - **ID:** `simple-pole-jet-lattice-holographic-selection-law`
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / FORMALIZED ALGEBRAIC CORE / HT BOUNDARY-GEOMETRY CANDIDATE
-- **Scientific status:** `[PROVED HERE: UNIVERSAL LAW AND GLOBAL GAMMA CLASSIFICATION] [FORMALIZED: HOMOGENEOUS TRACE AND RELATIVE SCALE BOUNDARY] [NOVELTY UNVERIFIED]`
+- **Type:** THEOREM (paper) / FORMALIZED UNIVERSAL AFFINE HORIZON / HT BOUNDARY-GEOMETRY CANDIDATE
+- **Scientific status:** `[PROVED HERE: UNIVERSAL LAW AND GLOBAL GAMMA CLASSIFICATION] [FORMALIZED: UNIVERSAL AFFINE HORIZON AND ACTUAL GAMMA BOUNDARY FREENESS] [GLOBAL GAMMA DESCENT OPEN IN LEAN] [NOVELTY UNVERIFIED]`
 - **Methods:** symbolic proof and Lean verification only; no numerical computation
 
 ## Constraint
@@ -316,21 +316,37 @@ filtration.  This is a useful route constraint, not a zero-location theorem.
 3. the identity boundary trace `(4)`; and
 4. survival of that trace under specialization to any algebraically independent boundary family.
 
+`formal/GaloisForLFunctions/HTGeometry/SimplePoleJetLatticeAffineHorizon.lean` now formalizes
+Theorem B for every finite jet order:
+
+1. flattening the pole variable and regular-boundary variables into one weighted polynomial ring;
+2. preservation of boundary homogeneous degree in every pole-grade coefficient;
+3. separation of the top homogeneous source sector for an arbitrary differential polynomial;
+4. the exact diagonal law by which the `X_0` coefficient at pole grade `j+1` reads the linear
+   `j`th-jet coefficient; and
+5. the unconditional equivalence
+   `pole degree <= 1 <-> P = a + b Y_0`.
+
 `formal/GaloisForLFunctions/HTGeometry/GammaPoleScaleHarmonicRelativeFreeness.lean` formalizes:
 
 1. the joint factorial-scale plus harmonic-boundary evaluation over `C(n)`;
 2. its factorization through the existing reciprocal-factorial evaluation; and
 3. finite joint algebraic independence of the scale and harmonic boundary over `C(n)`.
 
-The Bell/birational transfer to the actual `U_n` derivatives and the maximal-weight diagonal
-descent are proved above on paper but are not yet fully encoded in Lean.  The formalized results are
-therefore the two load-bearing algebraic cores, not a falsely advertised formalization of the
-analytic intersection `(9)`.
+`GammaPoleAnalyticCoefficientFreeness.lean` identifies the actual analytic `U_n` derivatives with
+the Bell-transformed logarithmic coordinates, while `GammaInversePoleBranchScaleFreeness.lean`
+proves joint freeness of the factorial scale and the positive regular-unit coefficients.  These
+close the Bell/birational boundary transfer that was open in the original version of this card.
 
-Both touched leaf modules pass direct `lake env lean` verification.  No umbrella or full-project
-build was run because this workspace is concurrently shared and the task explicitly requires the
-smallest possible build.  Direct source-level `#print axioms` audits report only `propext`,
-`Classical.choice`, and `Quot.sound`; the repository formal lint passes.
+The remaining Lean layer for Theorem C is now narrower: encode the polynomial-in-`z` Taylor shift
+at every moving pole, the maximal derivative-weight diagonal descent `(14)`--`(18)`, and the final
+meromorphic pole-order intersection.  The analytic intersection `(9)` is therefore still not
+advertised as formalized.
+
+The new affine-horizon leaf passes direct `lake env lean` verification and the exact final module
+build `lake build GaloisForLFunctions.HTGeometry.SimplePoleJetLatticeAffineHorizon`.  No umbrella or
+full-project build was run.  A scratch-file `#print axioms` audit of every principal theorem reports
+only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Parent-theory and priority audit
 
@@ -366,7 +382,9 @@ bigrading to classify an actual hypertranscendental differential-polynomial alge
 - [x] topology/physics language converted to an exact pole-order filtration
 - [x] all-order universal trace theorem proved on paper
 - [x] homogeneous trace and free-boundary specialization formalized in Lean
+- [x] arbitrary-sector universal affine horizon `(7)` formalized in Lean
 - [x] relative scale--harmonic boundary freeness over `C(n)` formalized in Lean
+- [x] Bell/birational transfer to the actual regular Gamma boundary formalized in Lean
 - [x] leading-symbol tie and local-coordinate counterattacks survived
 - [x] global Gamma polynomial differential simple-pole classification proved on paper
 - [x] primary parent-theory audit completed; priority remains unverified

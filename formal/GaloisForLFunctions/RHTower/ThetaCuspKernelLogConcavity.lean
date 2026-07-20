@@ -1037,18 +1037,18 @@ theorem thetaCuspFullSource_mul_reflect_le_sq (u t : ℝ) :
       Real.exp_le_exp.mpr hlogs
     _ = thetaCuspFullSource u ^ 2 := Real.exp_log (sq_pos_of_pos hcenter)
 
-private theorem integrableOn_thetaCuspCenterMixedZeroIntegrand
-    {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
+theorem integrableOn_thetaCuspCenterMixedIntegrand
+    {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) (t : ℝ) :
     IntegrableOn (fun r : ℝ =>
       r * Real.sinh (a * r) *
-        (thetaCuspFullSource (r / 2) * thetaCuspFullSource (r / 2)))
+        (thetaCuspFullSource (r / 2 + t) * thetaCuspFullSource (r / 2 - t)))
       (Ioi 0) := by
   let mu : Measure ℝ := volume.restrict (Ioi 0)
   let C := thetaCuspDerivativeExpConstant 0
   let c : ℝ := 1 / 2 - a
   let f : ℝ → ℝ := fun r =>
     r * Real.sinh (a * r) *
-      (thetaCuspFullSource (r / 2) * thetaCuspFullSource (r / 2))
+      (thetaCuspFullSource (r / 2 + t) * thetaCuspFullSource (r / 2 - t))
   let bound : ℝ → ℝ := fun r =>
     C ^ 2 * (r ^ (1 : ℝ) * Real.exp (-c * r ^ (1 : ℝ)))
   have hc : 0 < c := by dsimp [c]; linarith
@@ -1063,22 +1063,32 @@ private theorem integrableOn_thetaCuspCenterMixedZeroIntegrand
       dsimp [f]
       exact (by fun_prop (disch := aesop) : Continuous (fun r : ℝ =>
         r * Real.sinh (a * r) *
-          (thetaCuspFullSource (r / 2) * thetaCuspFullSource (r / 2))))
+          (thetaCuspFullSource (r / 2 + t) * thetaCuspFullSource (r / 2 - t))))
         |>.aestronglyMeasurable
     · filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
       have hrpos : 0 < r := hr
       have hk := norm_thetaWignerCenterMixKernel_le
-        (a := a) (r := r) (t := 0) (b := 0) hrpos ha0
-      have hphase : thetaWignerDifferencePhase 0 0 = 1 := by
+        (a := a) (r := r) (t := t) (b := 0) hrpos ha0
+      have hphase : thetaWignerDifferencePhase 0 t = 1 := by
         simp [thetaWignerDifferencePhase]
       have heq : ‖f r‖ =
-          ‖thetaWignerCenterMixKernel thetaCuspComplexSource a 0 (r, 0)‖ := by
+          ‖thetaWignerCenterMixKernel thetaCuspComplexSource a 0 (r, t)‖ := by
         rw [thetaWignerCenterMixKernel, hphase]
         simp only [mul_one, f, thetaCuspComplexSource, Complex.conj_ofReal]
         norm_cast
-        simp
       rw [heq]
-      simpa [bound, C, c, Real.rpow_one, abs_of_pos hrpos, mul_assoc] using hk
+      calc
+        _ ≤ C ^ 2 * r * Real.exp (-(1 / 2 - a) * r) * Real.exp (-|t|) := hk
+        _ ≤ C ^ 2 * r * Real.exp (-(1 / 2 - a) * r) := by
+          exact mul_le_of_le_one_right
+            (mul_nonneg (mul_nonneg (sq_nonneg C) hrpos.le) (Real.exp_pos _).le)
+            (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (abs_nonneg t)))
+        _ = ‖bound r‖ := by
+          rw [Real.norm_eq_abs, abs_of_nonneg]
+          · simp [bound, C, c, Real.rpow_one, mul_assoc]
+          · dsimp [bound]
+            exact mul_nonneg (sq_nonneg C)
+              (mul_nonneg (Real.rpow_nonneg hrpos.le _) (Real.exp_pos _).le)
   simpa [IntegrableOn, f, mu] using hf
 
 /-- The center-mixed Hedenmalm density attains its maximum at the reflection center. -/
@@ -1092,7 +1102,7 @@ theorem thetaCuspCenterMixedDensity_le_zero
       (mul_nonneg hr.le (Real.sinh_nonneg_iff.mpr (mul_nonneg ha0 hr.le)))
       (mul_nonneg (thetaCuspFullSource_pos_all _).le
         (thetaCuspFullSource_pos_all _).le)
-  · simpa using integrableOn_thetaCuspCenterMixedZeroIntegrand ha0 ha
+  · simpa using integrableOn_thetaCuspCenterMixedIntegrand ha0 ha 0
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
     have hweight : 0 ≤ r * Real.sinh (a * r) :=
       mul_nonneg hr.le (Real.sinh_nonneg_iff.mpr (mul_nonneg ha0 hr.le))

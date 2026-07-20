@@ -75,9 +75,9 @@ def universalSimplePoleRegularEval :
     (Polynomial.C.comp MvPolynomial.C)
     universalSimplePoleRegularProfile
 
-private theorem isHomogeneous_eval₂_scale
-    {e : ℕ} {P : MvPolynomial ℕ ℂ} (hP : P.IsHomogeneous e)
-    {S : Type*} [CommSemiring S] (f : ℂ →+* S) (g : ℕ → S) (c : S) :
+theorem isHomogeneous_eval₂_scale
+    {σ : Type*} {e : ℕ} {P : MvPolynomial σ ℂ} (hP : P.IsHomogeneous e)
+    {S : Type*} [CommSemiring S] (f : ℂ →+* S) (g : σ → S) (c : S) :
     MvPolynomial.eval₂ f (fun i => c * g i) P =
       c ^ e * MvPolynomial.eval₂ f g P := by
   rw [MvPolynomial.eval₂_eq, MvPolynomial.eval₂_eq, Finset.mul_sum]

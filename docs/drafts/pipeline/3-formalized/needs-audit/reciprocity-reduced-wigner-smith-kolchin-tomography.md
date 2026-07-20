@@ -1,13 +1,15 @@
 # Reciprocity-reduced Wigner--Smith Kolchin tomography
 
 - **ID:** `reciprocity-reduced-wigner-smith-kolchin-tomography`
-- **Stage:** 2-fully-proven/needs-audit
-- **Type:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized/needs-audit
+- **Type:** `[FORMALIZED UNCONDITIONALLY] [BRIDGE] [NOVELTY UNVERIFIED]`
 - **Area:** general hypertranscendental scattering / reciprocal electromagnetics and optics
 - **Parents:** `matrix-wigner-smith-kolchin-completeness.md`,
   `projective-wigner-smith-nonabelian-ht-separation.md`,
   `formal/GaloisForLFunctions/HTGeometry/MatrixWignerSmithDifferentialMatroid.lean`,
   `formal/GaloisForLFunctions/HTGeometry/MatrixWignerSmithReporterField.lean`
+- **Formal target:**
+  `formal/GaloisForLFunctions/HTGeometry/MatrixWignerSmithReciprocity.lean`
 - **Statement:** For an invertible reciprocal scattering matrix `S` over a characteristic-zero
   differential field, the upper-triangular entries of the reciprocal tangent `S Q`, where
   `Q = -i S⁻¹ S'`, generate over the order-zero scattering field exactly the same differential
@@ -189,8 +191,25 @@ scientific knowledge.
 - [x] hostile parent-theory and physical-reporter attacks recorded
 - [x] dependency-closed paper proof
 - [x] repeated exact-statement novelty audit on the final theorem
-- [ ] exact unconditional Lean theorem
-- [ ] direct file check, axiom audit, generated-index gate, and final HTGeometry module build
+- [x] exact unconditional Lean theorem
+- [x] direct file check and axiom audit
+- [x] generated indexes refreshed and module reachable from the HTGeometry umbrella
+- [x] final targeted module build
+- [x] repository lint run; unrelated RHTower/HilbertMetric umbrella debt recorded
+
+## Verification
+
+- `lake env lean GaloisForLFunctions/HTGeometry/MatrixWignerSmithReciprocity.lean`: passed with
+  no diagnostics.
+- `#print axioms` from `/tmp/hgt_reciprocity_axioms.lean` for the tangent identity, reciprocity
+  identity, generated-field theorem, contracted-rank theorem, linear minimality theorem, and
+  cardinality theorem reports only `propext`, `Classical.choice`, and `Quot.sound`.
+- `lake build GaloisForLFunctions.HTGeometry.MatrixWignerSmithReciprocity`: passed (`3019` jobs).
+- `python3 scripts/formal_tools.py lint --check-generated`: the new module is reachable and no
+  proof debt was reported in it.  The repository-wide gate remains non-green only because the
+  unrelated user-owned modules `RHTower.PrimeArchThetaGaussianApertureCurvatureFlow` and
+  `HilbertMetric.CCRDimensionFluctuation` are not imported by their umbrellas.  The final
+  check-generated pass reports no stale generated file.
 
 ## Log
 
@@ -198,3 +217,6 @@ scientific knowledge.
   reciprocity as a genuine connector to the existing minimal-reporter open core.
 - 2026-07-20 -- Complete paper proof closed; hostile review downgraded the result to a useful
   parent-grade bridge and the card moved to Stage 2 pending exact Lean formalization.
+- 2026-07-20 -- Formalized the exact tangent symmetry, `Q^T S = S Q`, generated-field equality,
+  contracted differential-matroid rank equality, unordered-pair cardinality, and universal linear
+  reporter lower bound.  The card moved to Stage 3 without promotion of its novelty status.

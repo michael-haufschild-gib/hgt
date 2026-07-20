@@ -2,6 +2,8 @@ import GaloisForLFunctions.HilbertMetric.GradedPartition
 import GaloisForLFunctions.HilbertMetric.GaussianFock
 import GaloisForLFunctions.HilbertMetric.CentroidGauge
 import GaloisForLFunctions.HilbertMetric.FanoCommutator
+import GaloisForLFunctions.HilbertMetric.CCRDimensionFluctuation
+import GaloisForLFunctions.HilbertMetric.CCRPowerConcavity
 import GaloisForLFunctions.HilbertMetric.SymmetricFockShadow
 import GaloisForLFunctions.HilbertMetric.QuadraticGraphCompletion
 import GaloisForLFunctions.HilbertMetric.TransverseDegreePhase
@@ -21,6 +23,7 @@ import GaloisForLFunctions.HilbertMetric.CoherentCollisionJet
 import GaloisForLFunctions.HilbertMetric.GramCurvaturePersistence
 import GaloisForLFunctions.HilbertMetric.DeterminantCurvatureJet
 import GaloisForLFunctions.HilbertMetric.DegreeFiveGaussianCurvature
+import GaloisForLFunctions.HilbertMetric.ThreePointCorrelation
 
 /-!
 # Hilbert-metric theorem area

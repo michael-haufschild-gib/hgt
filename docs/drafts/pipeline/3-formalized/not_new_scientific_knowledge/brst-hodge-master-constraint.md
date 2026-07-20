@@ -1,8 +1,8 @@
 # BRST–Hodge master constraint
 
 - **ID:** brst-hodge-master-constraint
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean) / PARENT KNOWLEDGE WITH DIRECT PROJECT DISCHARGES
 - **Source:** [BRIDGE] BRST cohomology, supersymmetric quantum mechanics, and Hodge theory
 - **Statement:** For a bounded operator `Q`, the positive operator `H_Q = Q†Q + QQ†` has kernel
   `ker Q ∩ ker Q†`; when `Q² = 0`, it commutes with both `Q` and `Q†` and is the square of the two
@@ -20,8 +20,8 @@ claimed to prove an RH-equivalent premise.
 ## Gates
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, consumer sketch
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem names checked, targeted Lean check green, axiom audit PASS
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3  formalized: Lean theorem names checked, targeted Lean check green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Physics relation
@@ -127,9 +127,21 @@ Green operator, or establish the renormalized cyclicity needed by the infinite s
 
 ## Verification boundary
 
-The user prohibited computations and requested efficient builds.  During this phase the proposed
-Lean declarations are source-reviewed only: no Lean process, build, lint, numerical experiment, or
-axiom audit is run.  The card remains in progress until targeted validation is authorized.
+No numerical experiment or scientific computation was used.  The generic module and both direct
+consumers were checked independently with the required single-file Lean command:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/BRSTHodgeConstraint.lean
+lake env lean GaloisForLFunctions/RHTower/SemilocalProjectionPhasePolarization.lean
+lake env lean GaloisForLFunctions/RHTower/SeamSuspensionTrace.lean
+```
+
+All three checks pass.  A scratch-file `#print axioms` audit of the physical-state equivalence,
+projection-corner nilpotence, one-equation Hodge homotopy, `N=2` anticommutation, RHTower
+equal-square/anticommutation connectors, and self-adjoint seam inverse discharge reports only
+`propext`, `Classical.choice`, and `Quot.sound`.  Generated-file consistency and repository lint
+pass.  The exact BRST module plus both direct consumer modules pass their final `lake build`
+audits.  Only the publication gate remains.
 
 ## Log
 
@@ -138,3 +150,10 @@ axiom audit is run.  The card remains in progress until targeted validation is a
 - 2026-07-14 — source-level Green-operator commutation and Hodge chain-homotopy theorems added; these reduce the seam-compression Hodge relation to construction of `P` and `G`, but do not solve that source-specific construction.  No computation or build run.
 - 2026-07-15 — self-adjoint adjunction removes one of the two Green equations in generic HTGeometry and one of the two finite resolvent inverse equations in RHTower seam compression.  Direct consumers were added source-only; no computation or build run.
 - 2026-07-15 — the physics `N=2` real-supercharge presentation was added source-only.  Off-diagonal projection corners now discharge BRST nilpotence automatically; the RHTower phase rotation and self-adjoint projection tangent are identified as the two Hermitian supercharges, with equal-square and anticommutation laws.  No Lean process, build, lint, or numerical work was run.
+- 2026-07-20 — the generic module, semilocal projection consumer, and seam-suspension consumer all
+  passed targeted single-file Lean checks.  Eight representative capstones passed `#print axioms`
+  with only the standard logical foundations.  No numerical experiment was performed.
+- 2026-07-20 — redundant `CompleteSpace` premises were removed from the generic and RHTower
+  projection-corner nilpotence declarations.  Generated indexes and repository lint pass, and
+  exact final builds pass for `BRSTHodgeConstraint`, `SemilocalProjectionPhasePolarization`, and
+  `SeamSuspensionTrace`.

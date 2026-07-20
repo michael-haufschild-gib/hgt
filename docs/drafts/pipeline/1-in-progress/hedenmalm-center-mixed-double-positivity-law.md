@@ -99,6 +99,38 @@ is positive semidefinite unconditionally.  This exact rung is formalized by
 `(3)` is compatibility of all finite node sets, equivalently the nonnegative Fourier transform;
 no finite-order extrapolation is valid.
 
+## Unconditional radial and partial order-three rung
+
+The paper-proof and formalization in
+`../3-formalized/needs-audit/hedenmalm-center-mixed-radial-three-point-chamber.md` strengthen
+the source endpoint without assuming any Fourier sign.  The actual reflected product
+
+```text
+t |-> k(u+t)k(u-t)
+```
+
+is strictly decreasing for `t>=0`; consequently `M_(k,a)` is nonincreasing on the positive
+half-line and is strictly below its center for every positive displacement.
+
+For ordered nodes `0,x,x+y`, put
+
+```text
+d=M_(k,a)(0), p=M_(k,a)(x), q=M_(k,a)(y), r=M_(k,a)(x+y).
+```
+
+The exact three-node determinant is
+
+```text
+D=d^3+2pqr-d(p^2+q^2+r^2).
+```
+
+Whenever `p^2+q^2<=d^2`, radial ordering proves `D>=0`, so the actual three-node Bochner matrix
+is positive semidefinite.  In the complementary near-center chamber, `D>=0` is the exact open
+order-three wall.  This is formalized by
+`thetaCuspCenterMixedThreePointMatrix_posSemidef_of_far_chamber` and the exact boundary
+`thetaCuspCenterMixedThreePointMatrices_posSemidef_iff_nearCenterWall`.  It neither proves the
+near-center inequality nor extrapolates from order three to all finite orders.
+
 ## Pure-state tangent interpretation
 
 Put
@@ -213,6 +245,8 @@ Pointwise positivity of `M_(k,a)` is only the first half of this obligation.
       `|a|<1`, and combine strict spatial positivity with the finite differential-frame exclusion;
 - [x] formalize the Fourier-sign/RH equivalence in `(3)` without introducing a positivity premise;
 - [x] formalize strict source log-concavity and the resulting two-node Bochner positivity rung;
+- [x] formalize radial monotonicity, strict center drop, the far-separated order-three chamber,
+      and the exact near-center three-point determinant wall;
 - [x] formalize the rank-two inertia statement `(5)`;
 - [ ] audit the exact center-mixed criterion against ambiguity-function, Wigner, and
       positive-definite-function literature;

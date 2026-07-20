@@ -396,16 +396,132 @@ Exact-coefficient and conceptual searches found no primary-source statement of `
 this Gaussian-aperture context.  The modular identities used to derive `(15)` are classical; the
 search result is noncollision, not a priority claim.
 
+## Discrete curvature-flow reduction `[PAPER-PROVED] [LEAN-PROVED]`
+
+The Gaussian aperture also evolves the entire degree sequence, not only the first balance.  For
+`lambda=-L<0`, let `M_j` be the contracted half moments and put
+
+```text
+q_j=(M_(j+1)/M_j)/(j+1/2),
+S_j=q_j-2q_(j+1)+q_(j+2).                              (19)
+```
+
+Differentiation under the literal theta integral and the quotient rule give
+
+```text
+M_j'=M_(j+1),
+q_j'=q_j*((j+3/2)q_(j+1)-(j+1/2)q_j).                 (20)
+```
+
+The generic ratio equation belongs to the classical exponential-moment/one-sided Volterra
+parent and is not a novelty claim.  Taking the second degree difference and completing a square
+gives the source-facing parabolic--reaction law
+
+```text
+S_j'
+ =4(q_j-q_(j+1))^2+(j+7/2)q_(j+2)S_(j+1)+R_j S_j,    (21)
+
+R_j=-(j+9/2)q_j+(1/2-j)q_(j+1)+(j+9/2)q_(j+2).
+```
+
+At `S_j=0`, a wrong-way derivative therefore forces
+
+```text
+(j+7/2)q_(j+2)S_(j+1)<-4(q_j-q_(j+1))^2,             (22)
+```
+
+and hence `S_(j+1)<0`.  Since the physical balance is exactly
+
+```text
+GABTC(lambda)=(15/2)S_0(lambda),                       (23)
+```
+
+a first bad GABTC crossing cannot be born at a finite terminal degree.  It would have to be fed by
+negative curvature farther out in the degree tail.
+
+The cold-aperture expansion supplies a compatible fixed-degree seed.  With
+
+```text
+c1=Phi''(0)/(2 Phi(0)),
+c2=Phi^(4)(0)/(24 Phi(0)),
+c3=Phi^(6)(0)/(720 Phi(0)),
+```
+
+the second difference of the third ratio-correction coefficient is independent of `j`:
+
+```text
+2(c1^3-3c1c2+3c3)=N_6/(120 Phi(0)^3).                 (24)
+```
+
+Using `(12)` at arbitrary fixed `j` therefore gives
+
+```text
+S_j(-L)=N_6/(120 Phi(0)^3)L^-4+O_j(L^-5).             (25)
+```
+
+Thus the positive sixth seam seeds every fixed degree, not just GABTC.  The qualification
+`fixed` is essential: `(25)` gives no uniform control when `j` grows with `L`.  The remaining
+global obstruction is exactly a diagonal entrance from degree infinity.
+
+The first theta atom exposes a candidate uniform tail mechanism.  Its exact large-height phase is
+
+```text
+x^(2j) exp(-pi exp(2x)),
+```
+
+so the leading saddle degree and normalized ratio profile are
+
+```text
+n(x)=pi*x*exp(2x),
+r(x)=x/(pi*exp(2x))=x^2/n(x).                          (26)
+```
+
+Differentiating with respect to `n`, rather than `x`, gives the exact identity
+
+```text
+d^2r/dn^2
+ =8*(2x^2-1)/(pi^3*exp(6x)*(2x+1)^3).                 (27)
+```
+
+Therefore the source tail model is strictly degree-convex as soon as `x^2>1/2`.  This is the
+height-localized positive survivor at the degree boundary.  `Lean` proves both parametric degree
+derivatives and the sign threshold for the exact profiles in `(26)`--`(27)`.
+
+**Uniform saddle-transfer conjecture.**  Let `x_j>0` solve
+`pi*x_j*exp(2*x_j)=j`.  On every compact `lambda`-interval contained in `(-infinity,0]`, the full
+completed-source curvature should satisfy, uniformly in `lambda`,
+
+```text
+S_j(lambda)
+ =8*x_j^3*(2*x_j^2-1)/(j^3*(2*x_j+1)^3)
+   +o(x_j^2/j^3).                                      (28)
+```
+
+The aperture term `lambda*x^2` and the first-atom polynomial amplitude perturb the saddle below
+the scale in `(28)`, and the `n>=2` theta atoms are exponentially separated at `x_j`.  Those scale
+comparisons identify the proof shape, but the uniform error estimate in `(28)` is not yet proved.
+If proved, `(28)` supplies eventual `S_j>0` uniformly on compact aperture intervals.  Together
+with the fixed-degree cold seed `(25)` and the cooperative flow `(21)`, it excludes entrance from
+infinity and yields GABTC.
+
+Permanent Lean module
+`PrimeArchThetaGaussianApertureCurvatureFlow.lean` proves `(20)`--`(24)` for the actual completed
+theta source, including the literal differentiation-under-the-integral argument and the
+quantitative cascade.  It formalizes the exact coefficient in `(25)`, not the analytic uniform
+remainder that remains open.  The same module proves the exact saddle identities `(26)`--`(27)`;
+it does not assume the transfer conjecture `(28)`.
+
 ## Exact open core
 
 1. Formalize the real-theta/modular-differential bridge `(15)`--`(16)`, closing the compiled
    positive modular value against the literal source jet numerator.
-2. Compare the negative tail of the now-proved one-crossing `L_lambda` with its positive core using
-   the fixed curvature `E` and
-   the exact theta reflection law.  This is the sole analytic sign problem for `(14)`.
-3. Once `(8)` is dependency-closed on paper, formalize that integral identity and the Gaussian
-   aperture derivative in Lean.  The algebraic consumer is already compiled.
-4. If `(14)` is proved, return to the independent higher-degree source cone.  Do not advertise the
+2. Prove a source-specific large-degree boundary for the discrete curvature flow `(22)` above,
+   strong enough to exclude negative curvature entering from degree infinity.  Fixed-degree cold
+   asymptotics do not supply the necessary uniformity.
+3. Alternatively, compare the negative tail of the proved one-crossing `L_lambda` with its
+   positive core using the fixed curvature `E` and the exact theta reflection law.
+4. Once either route proves `(14)`, formalize the missing curvature-window identity `(8)` if it is
+   used, then return to the independent higher-degree source cone.  Do not advertise the
    degree-one block as RH.
 
 ## Literature boundary
@@ -436,8 +552,15 @@ found no collision for `(9a)`--`(9c)`; this is search noncollision, not a priori
 - [x] self-dual modular elimination of `N_6` to one explicit polynomial
 - [x] actual source scale proved to lie in the polynomial's positive chamber in Lean
 - [x] forced composite window has exactly one positive zero for every `lambda<=0`, in Lean
+- [x] literal aperture moments and normalized ratios satisfy the discrete curvature flow in Lean
+- [x] identify GABTC with the first curvature coordinate and prove the finite-degree entrance
+  cascade in Lean
+- [x] prove the all-fixed-degree sixth-seam coefficient identity in Lean
+- [x] derive and formalize the exact positive large-degree saddle-curvature profile
 - [x] direct Lean leaf check, serialized exact module build, and capstone axiom audit
 - [ ] formal equality of the modular-closure value with the literal `N_6`
+- [ ] uniform saddle-transfer error estimate `(28)`
+- [ ] uniform large-degree boundary excluding negative curvature entrance from infinity
 - [ ] uniform composite-window balance `(8)` for `lambda<=0`
 - [ ] exact aperture derivative and curvature-window identity formalized in Lean
 - [ ] independent higher-degree source cone
@@ -452,3 +575,9 @@ found no collision for `(9a)`--`(9c)`; this is search noncollision, not a priori
   source enclosure places its scalar in the strict positive chamber, so the local large-aperture
   falsifier survives.  Lean proves the complete chamber theorem; the analytic identification
   `(16)` is the remaining formal bridge.
+- 2026-07-20 -- The aperture derivative was reorganized as a one-sided discrete curvature flow.
+  The raw ratio evolution has a classical Volterra-type parent; the new source-facing content is
+  that GABTC is exactly its first curvature coordinate and any bad finite-degree boundary crossing
+  forces a quantitatively negative successor.  The sixth seam is also the common cold coefficient
+  at every fixed degree.  The open global core is therefore a uniform large-degree boundary, not
+  another low-order Turan estimate.

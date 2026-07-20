@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.LiFiniteCriterionFrontier
 import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
 import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
 import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
-import GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity
+import GaloisForLFunctions.RHTower.HedenmalmCenterMixedThreePoint
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
 import GaloisForLFunctions.RHTower.XiHedenmalmSourceCapstone
@@ -36,8 +36,11 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   preprint stop at an order-two condition.  The linked public Lean artifact axiomatizes its
   perturbation step and concludes `True`, so it is not a proof.  The independent source-level
   repair in `ThetaCuspKernelLogConcavity` proves strict global log-concavity, the multiplicative
-  midpoint law, and positive semidefiniteness of every two-node center-mixed matrix.  This closes
-  the order-two rung only; all-node positive-definiteness remains the RH-equivalent wall.
+  midpoint law, and positive semidefiniteness of every two-node center-mixed matrix.  The next
+  source-specific layer proves radial monotonicity and an unconditional far-separated three-node
+  chamber.  `ThetaCuspCenterMixedNearCenterThreePointWall` is proved exactly equivalent to the
+  remaining ordered three-node positive-semidefiniteness statement.  It is not asserted; all-node
+  positive-definiteness remains the RH-equivalent wall.
 
 * Suzuki (`arXiv:2606.09096`) constructs finite-interval self-adjoint extensions and entire
   characteristic functions with only real zeros.  The paper leaves locally uniform convergence
@@ -60,6 +63,12 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
 * Li's finite triangular algebra is closed in `LiFiniteCriterionFrontier`.  The infinite
   canonical zero summation and the Bombieri--Lagarias positivity equivalence remain an analytic
   library wall; no finite packet is identified with the global Li sequence.
+
+* Polson's July 2026 Thorin/GGC preprint reports unconditional infinite divisibility and Thorin
+  density positivity for the reciprocal completed-zeta ratio only in `Re s > 1`.  At the critical
+  seam its Thorin/complete-monotonicity/Stieltjes--Pick/Li chain is RH-equivalent, not a proof of
+  the missing positivity.  The project retains the source-pure construction problem in
+  `completed-seam-thorin-subordinator-rh.md`; no critical-seam Thorin measure is asserted here.
 
 * The 2026 Hardy and Colombeau--Beurling criteria (`arXiv:2606.16097`, `arXiv:2606.22562`) are
   closure reformulations.  `HardyClosureZeroFree` proves their common continuous-evaluation

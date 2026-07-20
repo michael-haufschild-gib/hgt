@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.DigammaRationalCarrier
 import GaloisForLFunctions.HTGeometry.GammaPoleFormalGermFreeness
+import GaloisForLFunctions.HTGeometry.MvPolynomialHomogeneousDehomogenization
 
 /-!
 # The simple-zero Bell horizon
@@ -75,61 +76,27 @@ theorem simpleZeroDehomogenize_ne_zero_of_isHomogeneous
     {n d : ℕ} {P : MvPolynomial (Fin (n + 1)) ℂ}
     (hP : P.IsHomogeneous d) (hP0 : P ≠ 0) :
     simpleZeroDehomogenize n P ≠ 0 := by
-  intro hzero
-  let p : Polynomial (MvPolynomial (Fin n) ℂ) := MvPolynomial.finSuccEquiv ℂ n P
-  have hp0 : p ≠ 0 := (MvPolynomial.finSuccEquiv ℂ n).injective.ne hP0
-  let j := p.natDegree
-  have hj : p.coeff j ≠ 0 := by
-    simpa [j] using Polynomial.leadingCoeff_ne_zero.mpr hp0
-  have htd : P.totalDegree = d := hP.totalDegree hP0
-  have hnd : p.natDegree ≤ d := by
-    rw [show p = MvPolynomial.finSuccEquiv ℂ n P from rfl,
-      MvPolynomial.natDegree_finSuccEquiv, ← htd]
-    exact MvPolynomial.degreeOf_le_totalDegree P 0
-  have hjd : j ≤ d := (Polynomial.le_natDegree_of_ne_zero hj).trans hnd
-  have hdehom : simpleZeroDehomogenize n P = p.eval 1 := by
-    let lhs := simpleZeroDehomogenize n
-    let rhs : MvPolynomial (Fin (n + 1)) ℂ →+* MvPolynomial (Fin n) ℂ :=
-      (Polynomial.evalRingHom 1).comp (MvPolynomial.finSuccEquiv ℂ n).toRingHom
-    have hhom : lhs = rhs := by
-      apply MvPolynomial.ringHom_ext
-      · intro c
-        rw [show lhs (MvPolynomial.C c) = MvPolynomial.C c by
-          simp [lhs, simpleZeroDehomogenize]]
-        simp [rhs, MvPolynomial.finSuccEquiv_apply]
-      · intro i
-        induction i using Fin.cases with
-        | zero => simp [lhs, rhs, simpleZeroDehomogenize, simpleZeroBoundaryResidue,
-            MvPolynomial.finSuccEquiv_apply]
-        | succ k => simp [lhs, rhs, simpleZeroDehomogenize, simpleZeroBoundaryResidue,
-            MvPolynomial.finSuccEquiv_apply]
-    exact RingHom.congr_fun hhom P
-  have heval : p.eval 1 = 0 := by rwa [← hdehom]
-  have hevalsum : p.eval 1 = ∑ k ∈ Finset.range (d + 1), p.coeff k := by
-    rw [Polynomial.eval_eq_sum_range' (lt_of_le_of_lt hnd (Nat.lt_succ_self d))]
-    simp
-  have hcomponent := congrArg (MvPolynomial.homogeneousComponent (d - j)) heval
-  rw [hevalsum, map_sum, map_zero] at hcomponent
-  have hsingle :
-      (∑ k ∈ Finset.range (d + 1),
-        MvPolynomial.homogeneousComponent (d - j) (p.coeff k)) = p.coeff j := by
-    rw [Finset.sum_eq_single j]
-    · have hjhom : (p.coeff j).IsHomogeneous (d - j) := by
-        exact hP.finSuccEquiv_coeff_isHomogeneous j (d - j) (Nat.add_sub_of_le hjd)
-      exact MvPolynomial.homogeneousComponent_of_mem hjhom
-        |>.trans (if_pos rfl)
-    · intro k hk hkj
-      have hkd : k ≤ d := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-      have hkhom : (p.coeff k).IsHomogeneous (d - k) := by
-        exact hP.finSuccEquiv_coeff_isHomogeneous k (d - k) (Nat.add_sub_of_le hkd)
-      rw [MvPolynomial.homogeneousComponent_of_mem hkhom, if_neg]
-      intro heq
-      apply hkj
-      omega
-    · intro hnot
-      exact absurd (Finset.mem_range.mpr (Nat.lt_succ_of_le hjd)) hnot
-  rw [hsingle] at hcomponent
-  exact hj hcomponent
+  let E := MvPolynomial.renameEquiv ℂ (_root_.finSuccEquiv n)
+  let Q := E P
+  have hQ : Q.IsHomogeneous d := by
+    simpa [Q, E] using hP.rename_isHomogeneous
+  have hQ0 : Q ≠ 0 := E.injective.ne hP0
+  have hdehom : GaloisForLFunctions.optionHeadDehomogenize Q ≠ 0 :=
+    GaloisForLFunctions.optionHeadDehomogenize_ne_zero_of_isHomogeneous hQ hQ0
+  have heq : simpleZeroDehomogenize n =
+      GaloisForLFunctions.optionHeadDehomogenize.comp E.toRingHom := by
+    apply MvPolynomial.ringHom_ext
+    · intro c
+      simp [simpleZeroDehomogenize, GaloisForLFunctions.optionHeadDehomogenize, E]
+    · intro i
+      induction i using Fin.cases with
+      | zero =>
+          simp [simpleZeroDehomogenize, simpleZeroBoundaryResidue,
+            GaloisForLFunctions.optionHeadDehomogenize, E, _root_.finSuccEquiv]
+      | succ i =>
+          simp [simpleZeroDehomogenize, simpleZeroBoundaryResidue,
+            GaloisForLFunctions.optionHeadDehomogenize, E, _root_.finSuccEquiv_succ]
+  rwa [heq, RingHom.comp_apply]
 
 /-- The grade-`d` boundary trace of a homogeneous sector is its faithful dehomogenization. -/
 theorem simpleZeroPrincipalProfile_coeff_of_isHomogeneous

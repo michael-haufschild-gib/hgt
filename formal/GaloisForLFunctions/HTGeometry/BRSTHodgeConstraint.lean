@@ -128,6 +128,7 @@ theorem physicalMatrixElement_congr_mod_brstHodgeHamiltonianIdeal
 
 /-! ## Nilpotent supercharge algebra -/
 
+omit [CompleteSpace E] in
 /-- An off-diagonal corner of an idempotent is automatically nilpotent.  This is the static
 projection value relation that turns a normal corner into a BRST charge without a separate
 nilpotence hypothesis. -/
