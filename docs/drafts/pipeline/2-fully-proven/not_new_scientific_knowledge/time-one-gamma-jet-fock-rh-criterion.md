@@ -175,6 +175,34 @@ Thus `(14)` holds.
 Equation `(13)` is exactly the factorial Fock norm of the first `N` raw derivative observations,
 the positive metric selected by Gamma's opposite-variance jet clocks.
 
+## Lean bridge status
+
+The source-independent analytic implication in `(13)`--`(16)` is now formalized in
+`formal/GaloisForLFunctions/HTGeometry/FactorialFockInfiniteRadius.lean`.  The general theorem
+`radius_eq_top_of_factorialFockPartialEnergy_le` is vector-valued over an arbitrary
+nontrivially normed field: a uniform bound on every finite `n! * ‖p_n‖²` energy forces the formal
+multilinear series radius to be infinite.  Its exact raw-derivative specialization
+`radius_taylorSeries_eq_top_of_rawJetFactorialFockPartialEnergy_le` proves that
+
+```text
+forall N, sum_(j<N) |V^(j)(x_0)|^2 / j! <= C
+```
+
+forces the normalized formal Taylor series with coefficients `V^(j)(x_0)/j!` to have infinite
+radius.  The proof uses an exact AM--GM majorant by the given factorial energy plus the exponential
+clock `r^(2j)/j!`; no asymptotic estimate or numerical input is used.
+
+With `AnalyticAt V x_0`, the stronger theorem
+`exists_entire_extension_of_rawJetFactorialFockPartialEnergy_le` also discharges the germ interface:
+the same cofinal bound constructs an entire function agreeing with `V` on a neighborhood of `x_0`.
+Thus neither the Taylor-coefficient normalization nor the local identity step remains an assumed
+interface.
+
+This does **not** yet formalize `(14)`.  The remaining zeta-specific Lean obligation is to construct
+the time-one transform `V_rho` with its meromorphic continuation and prove that the entire extension
+forced above is incompatible, by analytic uniqueness, with the explicit uncancelled simple pole for
+`Re rho != 1/2`.  The source producer `(18)` remains open independently.
+
 ## Exact RH criterion
 
 Every nontrivial Xi divisor point lies in the open strip.  Applying `(14)` fibrewise gives

@@ -59,8 +59,8 @@ theorem norm_fourier_thetaCuspRightLineSource_le_zero
       filter_upwards with x
       have hphase :
           ‖Complex.exp (↑(-2 * Real.pi * x * (b / (2 * Real.pi))) * I)‖ = 1 := by
-        rw [Complex.norm_exp]
-        norm_num [Complex.mul_re]
+        simpa using Complex.norm_exp_ofReal_mul_I
+          (-2 * Real.pi * x * (b / (2 * Real.pi)))
       rw [norm_smul, hphase, one_mul, hfg, Complex.norm_real,
         Real.norm_eq_abs, abs_of_nonneg (hg0 x)]
     _ = ‖∫ x : ℝ,
@@ -182,8 +182,8 @@ theorem xiNormalizedApertureCorrelation_le_iff_distance_ge
         xiNormalizedApertureCorrelation b t ↔
       xiNormalizedApertureHilbertDistanceSq b t ≤
         xiNormalizedApertureHilbertDistanceSq a t := by
-  constructor <;> intro h <;>
-    simp only [xiNormalizedApertureHilbertDistanceSq] <;> linarith
+  unfold xiNormalizedApertureHilbertDistanceSq
+  constructor <;> intro h <;> linarith
 
 theorem xiNormalizedApertureCorrelation_eq_zero_iff (a t : ℝ) :
     xiNormalizedApertureCorrelation a t = 0 ↔
@@ -262,21 +262,30 @@ theorem hasDerivAt_xiOnLineZeroNormalizedFactor
   have hden : gamma ^ 2 + a ^ 2 ≠ 0 := by positivity
   have hbase : HasDerivAt (fun u : ℝ => gamma ^ 2 + u ^ 2) (2 * a) a := by
     convert (hasDerivAt_const (x := a) (c := gamma ^ 2)).add
-      ((hasDerivAt_id a).pow 2) using 1 <;> ring
+      ((hasDerivAt_id a).pow 2) using 1
+    all_goals simp [id_eq]
   have hshift :
       HasDerivAt (fun u : ℝ => gamma ^ 2 + u ^ 2 - t ^ 2) (2 * a) a := by
     convert hbase.sub_const (t ^ 2) using 1
+  have hquadratic : HasDerivAt
+      (fun u : ℝ => 4 * u ^ 2 * t ^ 2) ((4 * t ^ 2) * (2 * a)) a := by
+    convert (HasDerivAt.const_mul (4 * t ^ 2) ((hasDerivAt_id a).pow 2)) using 1
+    · funext u
+      simp [id_eq]
+      ring
+    · simp [id_eq]
   have hnum : HasDerivAt
       (fun u : ℝ =>
         (gamma ^ 2 + u ^ 2 - t ^ 2) ^ 2 + 4 * u ^ 2 * t ^ 2)
       (2 * (gamma ^ 2 + a ^ 2 - t ^ 2) * (2 * a) +
         (4 * t ^ 2) * (2 * a)) a := by
-    convert (hshift.pow 2).add
-      ((HasDerivAt.const_mul (4 * t ^ 2) ((hasDerivAt_id a).pow 2))) using 1 <;> ring
+    convert (hshift.pow 2).add hquadratic using 1
+    norm_num
   have hdenDeriv : HasDerivAt
       (fun u : ℝ => (gamma ^ 2 + u ^ 2) ^ 2)
       (2 * (gamma ^ 2 + a ^ 2) * (2 * a)) a := by
-    convert hbase.pow 2 using 1 <;> ring
+    convert hbase.pow 2 using 1
+    ring
   unfold xiOnLineZeroNormalizedFactor
   convert hnum.div hdenDeriv (pow_ne_zero 2 hden) using 1
   field_simp [hden]
@@ -308,21 +317,20 @@ theorem xiOnLineZeroNormalizedFactor_deriv_neg_iff
       3 * gamma ^ 2 < a ^ 2 + t ^ 2 := by
   have ht2 : 0 < t ^ 2 := sq_pos_of_ne_zero ht
   have hden : 0 < (gamma ^ 2 + a ^ 2) ^ 3 := by positivity
-  rw [div_neg_iff]
+  rw [div_lt_iff₀ hden]
+  simp only [zero_mul]
+  have hcoef : 0 < 4 * a * t ^ 2 := by positivity
   constructor
+  · intro hprod
+    have hscaled :
+        (4 * a * t ^ 2) * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) <
+          (4 * a * t ^ 2) * 0 := by simpa using hprod
+    have hlast : 3 * gamma ^ 2 - a ^ 2 - t ^ 2 < 0 :=
+      (mul_lt_mul_iff_of_pos_left hcoef).mp hscaled
+    nlinarith
   · intro h
-    rcases h with h | h
-    · have hcoef : 0 < 4 * a * t ^ 2 := by positivity
-      have hlast : 3 * gamma ^ 2 - a ^ 2 - t ^ 2 < 0 := by
-        exact (mul_neg_iff.mp h.1).resolve_right (by nlinarith)
-      nlinarith
-    · nlinarith
-  · intro h
-    left
-    constructor
-    · have hcoef : 0 < 4 * a * t ^ 2 := by positivity
-      exact mul_neg_of_pos_of_neg hcoef (by nlinarith)
-    · exact hden
+    have hlast : 3 * gamma ^ 2 - a ^ 2 - t ^ 2 < 0 := by nlinarith
+    exact mul_neg_of_pos_of_neg hcoef hlast
 
 theorem xiOnLineZeroNormalizedFactor_deriv_eq_zero_iff
     {gamma a t : ℝ} (ha : 0 < a) (ht : t ≠ 0) :
@@ -330,10 +338,20 @@ theorem xiOnLineZeroNormalizedFactor_deriv_eq_zero_iff
         (gamma ^ 2 + a ^ 2) ^ 3 = 0 ↔
       a ^ 2 + t ^ 2 = 3 * gamma ^ 2 := by
   have hden : (gamma ^ 2 + a ^ 2) ^ 3 ≠ 0 := by positivity
-  rw [div_eq_zero_iff]
-  simp only [hden, or_false, mul_eq_zero, OfNat.ofNat_ne_zero, false_or,
-    ha.ne', ht, pow_eq_zero, sub_eq_zero]
-  nlinarith
+  have hcoef : 4 * a * t ^ 2 ≠ 0 := by positivity
+  constructor
+  · intro hquot
+    have hnum :
+        4 * a * t ^ 2 * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) = 0 :=
+      (div_eq_zero_iff.mp hquot).resolve_right hden
+    have hlast : 3 * gamma ^ 2 - a ^ 2 - t ^ 2 = 0 :=
+      (mul_eq_zero.mp hnum).resolve_left hcoef
+    nlinarith
+  · intro hcircle
+    apply div_eq_zero_iff.mpr
+    left
+    apply mul_eq_zero_of_right
+    nlinarith
 
 end
 

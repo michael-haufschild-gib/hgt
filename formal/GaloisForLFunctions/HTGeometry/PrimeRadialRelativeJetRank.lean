@@ -117,7 +117,7 @@ theorem primeRadialCarrierOfProfile_mem_differentialAdjoin_of_mem_span
     obtain ⟨i, rfl⟩ := hw
     exact GaloisForLFunctions.subset_differentialAdjoin finitePrimeCoefficientField _
       (Set.mem_range_self i)
-  · simpa [L] using (L.zero_mem : (0 : arithmeticFunctionFractionField) ∈ L)
+  · simp [L]
   · intro w z _hw _hz hwL hzL
     simpa [L] using L.add_mem hwL hzL
   · intro a w _hw hwL
