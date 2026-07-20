@@ -71,6 +71,11 @@ def scaleSeparatedPoleUnitDehomogenize :
     ((Polynomial.mapRingHom natHeadDehomogenize).comp
       (MvPolynomial.optionEquivLeft ℂ ℕ).toRingHom)
 
+@[simp] theorem scaleSeparatedPoleUnitDehomogenize_C (c : ℂ) :
+    scaleSeparatedPoleUnitDehomogenize (MvPolynomial.C c) = MvPolynomial.C c := by
+  simp [scaleSeparatedPoleUnitDehomogenize, natHeadDehomogenize,
+    GaloisForLFunctions.optionHeadDehomogenize]
+
 @[simp] theorem scaleSeparatedPoleUnitDehomogenize_X_none :
     scaleSeparatedPoleUnitDehomogenize (MvPolynomial.X none) =
       MvPolynomial.X none := by
@@ -211,6 +216,10 @@ theorem algebraicIndependent_gammaPoleScaleAndUnitDerivativeFamily :
 def gammaScaleSeparatedPoleBoundaryEval :
     ScaleSeparatedPoleBoundaryRing →+* NatGerm :=
   gammaPoleScaleAndUnitDerivativeEval.comp scaleSeparatedPoleUnitDehomogenize
+
+@[simp] theorem gammaScaleSeparatedPoleBoundaryEval_C (c : ℂ) :
+    gammaScaleSeparatedPoleBoundaryEval (MvPolynomial.C c) = complexNatGerm c := by
+  simp [gammaScaleSeparatedPoleBoundaryEval, gammaPoleScaleAndUnitDerivativeEval]
 
 @[simp] theorem gammaScaleSeparatedPoleBoundaryEval_X_none :
     gammaScaleSeparatedPoleBoundaryEval (MvPolynomial.X none) =

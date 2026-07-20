@@ -1179,7 +1179,8 @@ theorem gaussianCoherentGram_posDef_of_coordinate_injective
       truncatedExponentialInnerMatrix y n (1 / 2)).PosSemidef :=
     gaussianCoherentGram_sub_truncation_posSemidef y n
   have hsum := htrunc.add_posSemidef htail
-  convert hsum using 1 <;> abel
+  convert hsum using 1
+  abel
 
 /-! ### Coordinate-free strict positivity
 
@@ -1364,7 +1365,8 @@ theorem gaussianCoherentGram_posDef_of_injective
       truncatedExponentialInnerMatrix y n (1 / 2)).PosSemidef :=
     gaussianCoherentGram_sub_truncation_posSemidef y n
   have hsum := htrunc.add_posSemidef htail
-  convert hsum using 1 <;> abel
+  convert hsum using 1
+  abel
 
 /-! ### Unconditional finite Gaussian CCR law -/
 
@@ -1523,8 +1525,8 @@ theorem gaussianCoherentLogScaleFirst_zero {d n : ℕ}
   ext p q
   simp only [gaussianCoherentLogScaleFirst, gaussianCoherentLogScaleGram,
     Real.exp_zero, one_mul, gaussianCoherentDegreeFirstMoment, Matrix.sum_apply]
-  simp only [gaussianCoordinateDiagonal, Matrix.diagonal_mul_diagonal,
-    gaussianCoherentGram, Matrix.diagonal_mul, Matrix.mul_diagonal]
+  simp only [gaussianCoordinateDiagonal, gaussianCoherentGram,
+    Matrix.diagonal_mul, Matrix.mul_diagonal]
   unfold coordinateDot
   rw [Finset.sum_mul]
   apply Finset.sum_congr rfl
@@ -2088,7 +2090,7 @@ theorem hasDerivAt_gaussianDimensionPowerLogDetFirst
       div_eq_mul_inv, mul_inv_rev]
     ring
   · simp only [gaussianDimensionPowerLogDetSecond]
-    simp only [Function.comp_apply, id_eq, div_eq_mul_inv]
+    simp only [Function.comp_apply, div_eq_mul_inv]
     field_simp [hd0, hu0]
     ring
 
@@ -2115,6 +2117,33 @@ theorem gaussianDimensionPowerLogDet_concaveOn
         (gaussianCoherentLogScale_logDet_secondDerivative_le_dim_mul_derivative_at
           y hy hd (Real.log u / (d : ℝ))))
       (mul_nonneg (sq_nonneg (d : ℝ)) (sq_nonneg u))
+
+/-- **Exact Gaussian power-curvature law.**  The negative curvature in the ambient-dimension
+power coordinate is exactly the mixed-commutator energy plus the trace-free leakage energy of
+the rescaled coherent compression. -/
+theorem gaussianDimensionPowerLogDetSecond_sumOfSquares
+    {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y)
+    (hd : 0 < d) {u : ℝ} (hu : 0 < u) :
+    -((d : ℝ) ^ 3 * ((d : ℝ) + 1) * u ^ 2 *
+        gaussianDimensionPowerLogDetSecond d y u) =
+      (d : ℝ) ^ 2 * ccrPairwiseMixedCommutatorEnergy
+          (gaussianCoherentCompression
+            (gaussianLogScaleRescaledConfiguration y (Real.log u / (d : ℝ)))) +
+        ccrScaledTracelessLeakageEnergy
+          (gaussianCoherentCompression
+            (gaussianLogScaleRescaledConfiguration y (Real.log u / (d : ℝ))))
+          (gaussianCoherentInjectiveLeakage
+            (gaussianLogScaleRescaledConfiguration y (Real.log u / (d : ℝ)))
+            (gaussianLogScaleRescaledConfiguration_injective y hy
+              (Real.log u / (d : ℝ)))) := by
+  have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hd)
+  have hu0 : u ≠ 0 := hu.ne'
+  have h := gaussianCoherentLogScale_dimension_curvature_sumOfSquares_at
+    y hy (Real.log u / (d : ℝ))
+  rw [← h]
+  unfold gaussianDimensionPowerLogDetSecond
+  field_simp [hd0, hu0]
+  ring
 
 /-! ### Intrinsic finite configurations in arbitrary real Hilbert spaces -/
 
@@ -2145,6 +2174,7 @@ def gaussianCenteredSpanCoordinates (x : Fin n → E) :
       (Set.finite_range fun i => x i - hilbertCentroid x)
   exact orthonormalCoordinates (gaussianCenteredSpanPoint x)
 
+omit [NeZero n] in
 theorem gaussianCenteredSpanCoordinates_eq_orthonormalCoordinates
     (x : Fin n → E) : by
     letI : FiniteDimensional ℝ (gaussianCenteredSpan x) :=
@@ -2154,6 +2184,7 @@ theorem gaussianCenteredSpanCoordinates_eq_orthonormalCoordinates
       orthonormalCoordinates (gaussianCenteredSpanPoint x) := by
   rfl
 
+omit [NeZero n] in
 theorem gaussianCenteredSpanPoint_injective
     (x : Fin n → E) (hx : Function.Injective x) :
     Function.Injective (gaussianCenteredSpanPoint x) := by
@@ -2161,8 +2192,9 @@ theorem gaussianCenteredSpanPoint_injective
   apply hx
   have hval : x i - hilbertCentroid x = x j - hilbertCentroid x :=
     congrArg Subtype.val hij
-  exact sub_right_injective hval
+  exact sub_left_injective hval
 
+omit [NeZero n] in
 theorem gaussianCenteredSpanCoordinates_injective
     (x : Fin n → E) (hx : Function.Injective x) :
     Function.Injective (gaussianCenteredSpanCoordinates x) := by
@@ -2179,6 +2211,37 @@ theorem gaussianCenteredSpanCoordinates_injective
   unfold orthonormalCoordinates at hr
   simpa only [real_inner_comm] using hr
 
+omit [NeZero n] in
+/-- Two or more distinct Hilbert points have positive intrinsic affine dimension. -/
+theorem gaussianAffineDimension_pos_of_injective
+    (x : Fin n → E) (hx : Function.Injective x) (hn : 1 < n) :
+    0 < gaussianAffineDimension x := by
+  letI : FiniteDimensional ℝ (gaussianCenteredSpan x) :=
+    FiniteDimensional.span_of_finite ℝ
+      (Set.finite_range fun i => x i - hilbertCentroid x)
+  let i : Fin n := ⟨0, Nat.zero_lt_of_lt hn⟩
+  let j : Fin n := ⟨1, hn⟩
+  have hij : i ≠ j := by
+    intro h
+    have hval := congrArg Fin.val h
+    simp [i, j] at hval
+  have hxij : x i ≠ x j := fun h => hij (hx h)
+  have hi : x i - hilbertCentroid x ∈ gaussianCenteredSpan x :=
+    Submodule.subset_span (Set.mem_range_self i)
+  have hj : x j - hilbertCentroid x ∈ gaussianCenteredSpan x :=
+    Submodule.subset_span (Set.mem_range_self j)
+  let v : gaussianCenteredSpan x :=
+    ⟨(x i - hilbertCentroid x) - (x j - hilbertCentroid x),
+      Submodule.sub_mem (gaussianCenteredSpan x) hi hj⟩
+  apply Module.finrank_pos_iff_exists_ne_zero.mpr
+  refine ⟨v, ?_⟩
+  intro hv
+  have hval := congrArg Subtype.val hv
+  change (x i - hilbertCentroid x) - (x j - hilbertCentroid x) = 0 at hval
+  apply hxij
+  exact sub_left_injective (sub_eq_zero.mp hval)
+
+omit [NeZero n] in
 /-- The coherent log-scale coordinate Gram is the intrinsic centered Hilbert Gram. -/
 theorem gaussianCoherentLogScaleGram_centeredSpanCoordinates
     (x : Fin n → E) (s : ℝ) :
@@ -2206,24 +2269,71 @@ theorem gaussianCoherentLogScaleGram_centeredSpanCoordinates
       ext i j
       rfl
 
+/-- Canonical coherent coordinates in the metric normalization, absorbing the factor `2` in
+the centered Gaussian gauge into the feature vectors. -/
+def gaussianCenteredSpanMetricScaleCoordinates (x : Fin n → E) :
+    Fin n → Fin (gaussianAffineDimension x) → ℝ :=
+  gaussianLogScaleRescaledConfiguration (gaussianCenteredSpanCoordinates x) (Real.log 2)
+
+omit [NeZero n] in
+theorem gaussianCenteredSpanMetricScaleCoordinates_injective
+    (x : Fin n → E) (hx : Function.Injective x) :
+    Function.Injective (gaussianCenteredSpanMetricScaleCoordinates x) := by
+  exact gaussianLogScaleRescaledConfiguration_injective
+    (gaussianCenteredSpanCoordinates x)
+    (gaussianCenteredSpanCoordinates_injective x hx) (Real.log 2)
+
+omit [NeZero n] in
+/-- In metric normalization, the coherent logarithmic parameter is exactly the logarithm of the
+Gaussian inverse squared bandwidth, with no residual factor `2`. -/
+theorem gaussianCoherentLogScaleGram_centeredSpanMetricScaleCoordinates
+    (x : Fin n → E) (s : ℝ) :
+    gaussianCoherentLogScaleGram (gaussianCenteredSpanMetricScaleCoordinates x) s =
+      hilbertExponentialInnerMatrix (fun i => x i - hilbertCentroid x) (Real.exp s) := by
+  unfold gaussianCenteredSpanMetricScaleCoordinates
+  rw [gaussianCoherentLogScaleGram_rescaled]
+  rw [gaussianCoherentLogScaleGram_centeredSpanCoordinates]
+  congr 2
+  rw [Real.exp_add, Real.exp_log (by norm_num : (0 : ℝ) < 2)]
+  ring
+
 /-- Intrinsic corrected Gaussian log determinant in logarithmic metric scale. -/
 def gaussianCorrectedLogScale (x : Fin n → E) (s : ℝ) : ℝ :=
-  Real.log (gaussianCorrectedDeterminant x (Real.exp s / 2))
+  Real.log (gaussianCorrectedDeterminant x (Real.exp s))
 
 /-- Intrinsic corrected Gaussian log determinant in its affine-dimension power scale. -/
 def gaussianCorrectedDimensionPowerLogDet (x : Fin n → E) (u : ℝ) : ℝ :=
   gaussianCorrectedLogScale x
     (Real.log u / (gaussianAffineDimension x : ℝ))
 
+omit [NeZero n] in
+/-- On the positive half-line, the intrinsic power coordinate is literally
+`u ↦ log Z(u^(1/d))` for the corrected Gaussian determinant `Z`. -/
+theorem gaussianCorrectedDimensionPowerLogDet_eq_rpow
+    (x : Fin n → E) {u : ℝ} (hu : 0 < u) :
+    gaussianCorrectedDimensionPowerLogDet x u =
+      Real.log (gaussianCorrectedDeterminant x
+        (u ^ (1 / (gaussianAffineDimension x : ℝ) : ℝ))) := by
+  unfold gaussianCorrectedDimensionPowerLogDet gaussianCorrectedLogScale
+  rw [Real.rpow_def_of_pos hu]
+  congr 3
+  ring
+
+omit [NeZero n] in
 theorem gaussianCorrectedLogScale_eq_coordinateLogDet
     (x : Fin n → E) (s : ℝ) :
     gaussianCorrectedLogScale x s =
       Real.log
-        (gaussianCoherentLogScaleGram (gaussianCenteredSpanCoordinates x) s).det := by
+        (gaussianCoherentLogScaleGram
+          (gaussianCenteredSpanMetricScaleCoordinates x) s).det := by
+  classical
   unfold gaussianCorrectedLogScale
   rw [gaussianCorrectedDeterminant_eq_hilbertExponentialInnerMatrix_det]
-  rw [gaussianCoherentLogScaleGram_centeredSpanCoordinates]
+  rw [gaussianCoherentLogScaleGram_centeredSpanMetricScaleCoordinates]
+  congr 1
+  congr 1
 
+omit [NeZero n] in
 /-- **Universal Hilbert metric dimension sandwich.**  For every injective finite configuration in
 an arbitrary real Hilbert space with positive affine dimension, the centroid-corrected Gaussian
 log determinant is convex in logarithmic metric scale and concave in the affine-dimension power
@@ -2233,22 +2343,34 @@ theorem gaussianCorrectedLogScale_convex_and_dimensionPower_concave
     (hd : 0 < gaussianAffineDimension x) :
     ConvexOn ℝ Set.univ (gaussianCorrectedLogScale x) ∧
       ConcaveOn ℝ (Set.Ioi 0) (gaussianCorrectedDimensionPowerLogDet x) := by
-  let y := gaussianCenteredSpanCoordinates x
-  have hy : Function.Injective y := gaussianCenteredSpanCoordinates_injective x hx
+  let y := gaussianCenteredSpanMetricScaleCoordinates x
+  have hy : Function.Injective y := gaussianCenteredSpanMetricScaleCoordinates_injective x hx
   have hlog : gaussianCorrectedLogScale x =
       fun s => Real.log (gaussianCoherentLogScaleGram y s).det := by
     funext s
     exact gaussianCorrectedLogScale_eq_coordinateLogDet x s
   constructor
   · rw [hlog]
-    exact gaussianCoherentLogScale_logDet_convex y hy
+    exact gaussianCoherentLogScale_logDet_convex
+      (d := gaussianAffineDimension x) (n := n) y hy
   · have hpower : gaussianCorrectedDimensionPowerLogDet x =
         gaussianDimensionPowerLogDet (gaussianAffineDimension x) y := by
       funext u
       unfold gaussianCorrectedDimensionPowerLogDet gaussianDimensionPowerLogDet
       rw [gaussianCorrectedLogScale_eq_coordinateLogDet]
     rw [hpower]
-    exact gaussianDimensionPowerLogDet_concaveOn y hy hd
+    exact gaussianDimensionPowerLogDet_concaveOn
+      (d := gaussianAffineDimension x) (n := n) y hy hd
+
+omit [NeZero n] in
+/-- Assumption-free nondegenerate form of the Hilbert metric dimension sandwich: pairwise
+distinctness and at least two points discharge positivity of the intrinsic affine dimension. -/
+theorem gaussianCorrectedLogScale_convex_and_dimensionPower_concave_of_card_gt_one
+    (x : Fin n → E) (hx : Function.Injective x) (hn : 1 < n) :
+    ConvexOn ℝ Set.univ (gaussianCorrectedLogScale x) ∧
+      ConcaveOn ℝ (Set.Ioi 0) (gaussianCorrectedDimensionPowerLogDet x) :=
+  gaussianCorrectedLogScale_convex_and_dimensionPower_concave x hx
+    (gaussianAffineDimension_pos_of_injective x hx hn)
 
 end HilbertSpace
 

@@ -1,16 +1,17 @@
 # Gaussian Hilbert dimension-sandwich law
 
 - **ID:** gaussian-hilbert-dimension-sandwich-law
-- **Stage:** 2-fully-proven
-- **Type:** CANDIDATE UNIVERSAL METRIC LAW
+- **Stage:** 3-formalized
+- **Type:** CANDIDATE UNIVERSAL DIMENSION--CURVATURE LAW
 - **Source:** `gaussian-hilbert-ccr-dimension-fluctuation-law.md`
-- **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED OPERATOR/CALCULUS CORE]
-  [GAUSSIAN CONNECTOR OPEN] [NOVELTY UNVERIFIED]
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED]
+  [SEARCH NONCOLLISION] [PRIORITY UNVERIFIED]
   [GENERAL-JOURNAL SIGNIFICANCE UNVERIFIED]`
 - **Statement:** The centroid-corrected Gaussian Gram volume of every finite Hilbert
   configuration is logarithmically convex in log bandwidth and logarithmically concave in the
-  affine-dimension power of bandwidth.  Equivalently, its scale elasticity has fluctuation at
-  most affine dimension times its mean.
+  affine-dimension power of bandwidth.  Equivalently, the log-scale curvature of every
+  rank-`d` positive-semidefinite Hadamard exponential determinant lies between zero and `d`
+  times its log-scale slope.
 
 ## Metric statement
 
@@ -101,6 +102,38 @@ The right inequality can be written without the centroid correction as
  \det K_X(a)^{1-\theta}\det K_X(b)^\theta.                 \tag{KD}
 \]
 
+## Matrix and dimension-witness forms
+
+The metric statement is equivalently a rank-sensitive law for entrywise matrix exponentials.
+Let `A` be a real positive-semidefinite matrix of rank `d>=1`, assume no two columns of `A` are
+equal, and put
+
+\[
+ H_A(t)=\exp^{\circ}(tA)=[e^{tA_{ij}}],
+ \qquad \Phi_A(s)=\log\det H_A(e^s).
+\]
+
+Factoring `A` as a Gram matrix places its columns in `R^d`; the no-equal-columns condition is
+exactly distinctness of those feature points.  The law becomes
+
+\[
+ \boxed{\qquad 0\le \Phi_A''(s)\le d\,\Phi_A'(s)\qquad(s\in\mathbb R).\qquad} \tag{DC}
+\]
+
+Consequently `u -> log det H_A(u^(1/d))` is concave on the positive half-line.  Conversely, at
+every scale where `Phi_A'(s)>0`, the determinant curve itself gives the metric-only embedding
+dimension witness
+
+\[
+ \boxed{\qquad {\Phi_A''(s)\over\Phi_A'(s)}\le \operatorname{rank}A.\qquad}   \tag{DW}
+\]
+
+For a centered Hilbert configuration with Gram matrix `A`, the corrected Gaussian determinant
+is `Z_X(t)=det H_A(2t)`.  Thus (DC) is not an analogy or an application-layer wrapper: it is the
+same theorem written entirely in matrix data or entirely in squared-distance data.  It also says
+that the number Fano factor of the associated coherent Slater line is at most the number of
+active Hilbert modes.
+
 ## Dependency-closed proof
 
 Center the points and use the symmetric-Fock feature vectors
@@ -181,15 +214,22 @@ a contradiction when `N>1`.  Hence `V<dE` and the power-scale concavity is stric
    regime.
 5. The theorem is invariant under Hilbert isometries and common translations.  It depends on the
    ambient space only through the intrinsic affine dimension and the squared-distance matrix.
-6. Exact searches across Gaussian-kernel bandwidth curvature, Hadamard-power determinants,
-   power concavity, coherent-state number fluctuations, and multivariable compressed shifts have
-   not located (DS), (FD), (MI), or (3).  Search noncollision is not priority evidence; the result
-   remains `[NOVELTY UNVERIFIED]`.
-7. Closest located parents are Schoenberg Gaussian positivity, flat-kernel determinant
-   asymptotics, the Gaussian-RBF/Fock correspondence, and Arveson's dimension-sensitive
-   commutator theory.  None of those inspected sources states this determinant power-concavity or
-   the finite fluctuation identity used to prove it.
-8. The exponent `d` is forced sharply by the finite CCR trace/traceless identity, but optimality
+6. Exact searches across Gaussian-kernel bandwidth curvature, Hadamard-exponential determinants,
+   power concavity, coherent-state number fluctuations, determinantal processes, complete
+   log-concavity, and multivariable compressed shifts have not located (DS), (DC), (FD), (MI), or
+   (3).  Search noncollision is not priority evidence; the result remains
+   `[PRIORITY UNVERIFIED]`.
+7. The closest direct determinant paper found is Michael Floater's March 2026 preprint *Bounds on
+   the determinant of an exponential matrix* (arXiv:2603.19900).  It proves static upper and lower
+   bounds and a univariate Gaussian corollary, but its searchable full text contains no
+   convexity, concavity, derivative, rank/dimension, or fluctuation theorem.  This is adjacent
+   SOTA, not a collision.
+8. Other inspected parents are Sano's strict-positivity criterion for Hadamard exponentials,
+   Schoenberg/Guella Gaussian positivity on Hilbert spaces, Barthelme--Usevich flat-limit
+   determinant asymptotics, Alpay--Colombo--Diki--Sabadini's Gaussian-RBF/Fock correspondence,
+   and Arveson's dimension-sensitive commutator theory.  None states the rank-sensitive
+   determinant curvature inequality or the finite CCR sum-of-squares identity used here.
+9. The exponent `d` is forced sharply by the finite CCR trace/traceless identity, but optimality
    within the smaller class of finite coherent spans is not yet proved.  The paper must say
    **CCR-sharp**, not **Gaussian-sharp**, until an extremizing sequence is constructed or a smaller
    universal coherent exponent is ruled out.
@@ -198,17 +238,20 @@ a contradiction when `N>1`.  Hence `V<dE` and the power-scale concavity is stric
 
 This has a substantially broader surface than the operator identity alone: it is a metric
 inequality for every finite Hilbert configuration, simultaneously relevant to Gaussian kernels,
-determinantal volumes, scale-space geometry, and bosonic fluctuations.  General-journal
-significance is nevertheless not certified by elegance alone.  Before promotion to Stage 4 the
-package needs:
+Hadamard exponentials, determinantal volumes, intrinsic-dimension witnessing, scale-space
+geometry, and quantum number fluctuations.  The completed Hilbert connector removes the largest
+internal proof-risk, and the 2026 adjacent paper shows that exact Gaussian/exponential determinant
+bounds are an active topic.  General-journal significance is nevertheless not certified by
+formal completeness or search noncollision.  Before promotion to Stage 4 the package still needs:
 
-- a complete typed Lean connector from finite Hilbert/coherent data to (3), not merely the
-  now-formalized full finite block theorem;
-- a final formal metric specialization turning the operator power-concavity into the
-  mean-interpolation form for the actual Gaussian determinant;
-- a deeper expert-level priority audit of the exact right-hand inequality in (MI);
-- either Gaussian-sharpness of exponent `d`, or a concrete cross-domain consequence in kernel
-  bandwidth selection, D-optimal design, or quantum fluctuation dimension witnessing.
+- an independent expert-level priority audit of the exact right-hand inequality in (MI), ideally
+  including citation-network and non-English terminology checks;
+- either Gaussian-sharpness of exponent `d`, or a quantitatively useful dimension-witness theorem
+  showing that (DW) detects dimensions larger than one on a robust geometric class;
+- a worked cross-domain consequence for kernel bandwidth design, D-optimal volume, or coherent
+  quantum-number fluctuations that is not merely a restatement of (DC);
+- a manuscript-level equality/stability analysis.  Strictness is paper-proved for more than one
+  point, but the strict theorem and near-equality geometry are not yet Lean-formalized.
 
 ## Lean programme
 
@@ -216,19 +259,39 @@ package needs:
   `HilbertMetric/CCRDimensionFluctuation.lean`.
 - [x] Finite block-compression connector producing `IsCCRCompletion` from a commuting full CCR
   tuple and an invariant finite subspace.
-- [ ] Slater number mean/variance connector identifying the matrix `E,V` with the graded
+- [x] Slater number mean/variance connector identifying the matrix `E,V` with the graded
   determinant law.
 - [x] Generic twice-differentiable fluctuation-to-power-concavity theorem, exact curvature
   quotient, and log-scale convexity theorem.
 - [x] Exact operator power-curvature sum of squares and combined CCR scale-sandwich theorem:
   `HilbertMetric/CCRPowerConcavity.lean`.
-- [ ] Gaussian metric specialization and intrinsic affine-dimension statement.
+- [x] Strict positivity of every injective finite coherent Gram, including the coordinate-free
+  separating-functional/Vandermonde argument.
+- [x] Literal first- and second-log-determinant derivative connectors identifying slope with CCR
+  mean and curvature with CCR number variance.
+- [x] Exact Gaussian power-curvature sum-of-squares theorem and global log-scale convexity and
+  dimension-power concavity.
+- [x] Intrinsic arbitrary-real-Hilbert-space specialization through the finite centered span,
+  with automatic positive affine dimension for at least two distinct points.
+
+The compiled headline surface in `HilbertMetric/GaussianJetPositivity.lean` is:
+
+- `gaussianCoherentLogScale_dimension_curvature_sumOfSquares_at` for (DC) with its exact defect;
+- `gaussianDimensionPowerLogDetSecond_sumOfSquares` for (PC);
+- `gaussianCoherentLogScale_logDet_convex`;
+- `gaussianDimensionPowerLogDet_concaveOn`;
+- `gaussianAffineDimension_pos_of_injective`;
+- `gaussianCorrectedDimensionPowerLogDet_eq_rpow`, which identifies the formal power coordinate
+  literally with `u ↦ log Z(u^(1/d))` on `u>0`;
+- `gaussianCorrectedLogScale_convex_and_dimensionPower_concave_of_card_gt_one` for the
+  nondegenerate universal Hilbert metric statement.
 
 ## Gates
 
 - [x] 0 -> 1: exact metric statement, falsification boundary, and SOTA parent map recorded
 - [x] 1 -> 2: dependency-closed Fock/CCR/calculus proof and strictness argument closed on paper
-- [ ] 2 -> 3: typed block, Slater, calculus, and Gaussian metric connectors compile
+- [x] 2 -> 3: typed block, Slater, calculus, Gaussian metric, and intrinsic Hilbert connectors
+  compile directly; the final HilbertMetric module build and explicit axiom audit pass
 - [ ] 3 -> 4: priority audit plus Gaussian sharpness or a broad independent consequence
 
 ## Log
@@ -240,3 +303,16 @@ package needs:
   exact identity (PC), and the global operator scale-sandwich theorem.  Direct leaf checking
   passes; umbrella/final build evidence is deliberately deferred until the Gaussian connector is
   either closed or recorded as the exact remaining open core.
+- 2026-07-20 -- closed the Gaussian connector: strict coherent-Gram positivity, the literal
+  determinant-jet/CCR moment identities, the all-scale dimension-curvature sum of squares,
+  global log-scale convexity, global dimension-power concavity, and the arbitrary-Hilbert-space
+  centered-span specialization all pass direct Lean checking.
+- 2026-07-20 -- hostile adjacent-SOTA pass found Floater's arXiv:2603.19900 on static determinant
+  bounds but no scale-shape collision.  Reframed the discovery as the rank-sensitive
+  Hadamard-exponential dimension-curvature law (DC), while retaining `[PRIORITY UNVERIFIED]` and
+  `[GENERAL-JOURNAL SIGNIFICANCE UNVERIFIED]` until the sharpness/application gates are closed.
+- 2026-07-20 -- final Stage-3 audit passed: `lake build GaloisForLFunctions.HilbertMetric`
+  completed successfully, the direct HilbertMetric umbrella check passed, and the seven headline
+  declarations report only `propext`, `Classical.choice`, and `Quot.sound`.  Repository-wide lint
+  remains red only from unrelated reachability/large-file debt, not from a forbidden declaration
+  or unclosed proof in this law.

@@ -548,6 +548,87 @@ pointwise completed-tail contraction `(26)` through the same saddle window.  If 
 supplies eventual `S_j>0` uniformly on compact aperture intervals.  Together with the fixed-degree
 cold seed `(25)` and cooperative flow `(21)`, it excludes entrance from infinity and yields GABTC.
 
+The third piece is now closed by an exact source response law.  Put
+
+```text
+w_lambda(x)=exp(lambda*x^2+9x/2-pi*exp(2x)),
+C_j(lambda)=int_0^infinity x^(2j)w_lambda(x)dx.
+```
+
+Integration by parts gives, for every `lambda<=0`,
+
+```text
+int J_lambda(x)x^(2j)w_lambda(x)dx=(j+1/2)C_j(lambda),       (32)
+
+C_j Score_(j+k)-C_(j+k) Score_j
+  =k C_j C_(j+k).                                           (33)
+```
+
+This is an exact all-degree score correlation, not a saddle approximation.  Moreover
+
+```text
+K_lambda(x)=J_lambda(x)-3*pi*x^2,
+K_lambda'(x)>0  (x>0),                                      (34)
+
+3*pi*(C_j*C_(j+2)-C_(j+1)^2)<=C_j*C_(j+1),
+C_(j+2)/C_(j+1)-C_(j+1)/C_j<=1/(3*pi).                      (35)
+```
+
+Since `J_lambda` is a bijection from `[0,infinity)` to itself, there is a unique positive
+response-centered saddle `s_(j,lambda)` satisfying
+
+```text
+J_lambda(s_(j,lambda))=j+1/2,
+
+3*pi*int (x^2-s_(j,lambda)^2)^2 x^(2j)w_lambda(x)dx
+  <=C_(j+1)(lambda).                                        (36)
+```
+
+This center differs by exactly half a response unit from the stationary center `J_lambda(x)=j`
+in `(31)`.  The distinction is mathematically useful: `(36)` is exact, whereas stationary-phase
+localization was only conjectural.
+
+For the completed higher-atom damping
+`D(x)=exp(-3*pi*(exp(2x)-1))`, the pointwise algebraic split
+
+```text
+D(x)<=D(s/2)+(2/s^4)(x^2-s^2)^2                            (37)
+```
+
+turns `(36)` into a literal integrated infinite contraction.  If `H_j(lambda)` is the aperture
+moment of the complete `n>=2` tail and `F_j(lambda)` is the literal signed first-atom moment, the
+two-channel amplitude floor `d_j>1/2` removes the exact-resolution denominator and yields
+
+```text
+3*pi*s^4 H_j
+ <=(16/2997)(3*pi*s^4)D(s/2)F_j+(32/2997)F_(j+1),          (38)
+
+s=s_(j,lambda), lambda<=0.
+```
+
+The mean-square window also controls the adjacent scale itself.  Cauchy--Schwarz gives
+
+```text
+C_(j+1)<=(2*s^2+1)C_j,
+F_(j+1)<=2(2*s^2+1)F_j.                                   (39)
+```
+
+Since `D(s/2)<=1`, the rational constants in `(38)`, `pi>3`, and `(39)` yield the explicit strict
+contraction
+
+```text
+s_(j,lambda)>=1  ==>  H_j(lambda)<F_j(lambda)/80.          (40)
+```
+
+So the integrated statement is quantitatively contractive against the literal signed first atom;
+no further asymptotic estimate is hidden in the word "contraction".
+
+Thus the pointwise-to-moment higher-atom transfer formerly listed after `(31)` is complete, with
+no HT graph saturation and no division by the signed first atom.  The surviving transfer packet
+has exactly two parts: convert the source-score localization into positive second difference for
+the `C_4` gamma-normalized ratio, and control the second-degree distortion of the amplitude
+multiplier.  A generic Laplace expansion is no longer needed for higher-atom localization.
+
 Permanent Lean module
 `PrimeArchThetaGaussianApertureCurvatureFlow.lean` proves `(20)`--`(24)` for the actual completed
 theta source, including the literal differentiation-under-the-integral argument and the
@@ -555,14 +636,22 @@ quantitative cascade.  It formalizes the exact coefficient in `(25)`, not the an
 remainder that remains open.  The same module proves `(26)`--`(30)` for the literal source; it
 does not assume the transfer conjecture `(31)`.
 
+Permanent Lean modules `PrimeArchThetaGaussianApertureScoreConcentration.lean` and
+`PrimeArchThetaGaussianApertureHeightLocalizedContraction.lean` prove `(32)`--`(40)` for the
+literal source.  The exact score identity is a classical integration-by-parts mechanism, but the
+source-specialized score, the global `3*pi` coercive residual, the response-centered saddle window,
+and the rational resolution-safe completed-tail contraction were not found in the audited corpus
+or targeted exact-formula searches.  This is search noncollision, not a priority claim.  The known
+parent literature remains the Gaussian moment/Turan theory of Csordas--Varga
+(https://www.math.kent.edu/~varga/pub/paper_161.pdf), which does not state `(32)`--`(38)`.
+
 ## Exact open core
 
 1. Formalize the real-theta/modular-differential bridge `(15)`--`(16)`, closing the compiled
    positive modular value against the literal source jet numerator.
-2. Prove the three-part analytic saddle transfer following `(31)`, strong enough to exclude
-   negative curvature entering from degree infinity.  Fixed-degree cold asymptotics, monotonicity
-   of the amplitude factor, or pointwise atom separation alone do not supply the required second
-   degree difference uniformly.
+2. Prove the surviving two-part analytic transfer following `(31)` and `(32)`--`(38)`: positive
+   second difference for the `C_4` gamma-normalized ratio and second-degree control of the
+   amplitude multiplier.  The infinite higher-atom transfer is now closed exactly.
 3. Alternatively, compare the negative tail of the proved one-crossing `L_lambda` with its
    positive core using the fixed curvature `E` and the exact theta reflection law.
 4. Once either route proves `(14)`, formalize the missing curvature-window identity `(8)` if it is
@@ -606,8 +695,15 @@ found no collision for `(9a)`--`(9c)`; this is search noncollision, not a priori
 - [x] exact signed two-channel first-atom resolution and degree-monotone amplitude correction
 - [x] exact aperture- and amplitude-corrected physical saddle curvature with an explicit positive
   cusp chamber
-- [x] final direct leaf check, serialized exact module build, and capstone axiom audit of the
-  enlarged curvature module
+- [x] exact all-degree source-score centering and response correlation
+- [x] global `3*pi` score coercivity, moment-ratio increment bound, and canonical mean-square
+  response-saddle window
+- [x] integrated height-localized infinite contraction directly against the literal signed first
+  atom, with rational resolution-safe constants
+- [x] strict `1/80` contraction of the complete higher-atom tail once the canonical response
+  saddle reaches height one
+- [x] final direct leaf checks, serialized exact module build, and capstone axiom audit of the
+  curvature, score-concentration, and height-localized-contraction modules
 - [ ] formal equality of the modular-closure value with the literal `N_6`
 - [ ] uniform physical saddle-transfer packet `(31)`
 - [ ] uniform large-degree boundary excluding negative curvature entrance from infinity
@@ -638,3 +734,15 @@ found no collision for `(9a)`--`(9c)`; this is search noncollision, not a priori
   degree has strictly positive ratio curvature in the explicit cusp-dominance chamber `(30)`.  The
   remaining open core is the uniform second-difference Laplace transfer `(31)`, not identification
   of the correct saddle or removal of higher atoms.
+- 2026-07-20 -- Exact integration by parts identified `J_lambda` as a centered source score at
+  every moment degree.  Subtracting `3*pi*x^2` leaves a globally increasing residual, producing the
+  moment Hankel bound `(35)` and the canonical mean-square response window `(36)`.  The elementary
+  half-saddle envelope `(37)` then integrates the complete higher-atom tail.  The signed first atom
+  retains more than half of the positive channel, so `(38)` gives a resolution-safe contraction
+  with constants `16/2997` and `32/2997`.  Higher-atom integration is closed; only the positive
+  channel and amplitude **second-difference** transfer survive from `(31)`.
+- 2026-07-20 -- Cauchy--Schwarz converts the response-saddle mean-square window into the adjacent
+  scale bound `(39)`.  Substitution into the rational contraction proves `(40)`: above response
+  height one, all higher atoms together contribute less than `1/80` of the literal signed first
+  atom.  Targeted exact-formula and exact-constant searches found no collision; this remains a
+  noncollision statement, not a priority claim.

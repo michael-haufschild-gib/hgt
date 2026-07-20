@@ -13,9 +13,11 @@
 ## Goal and reproducible completion boundary
 
 Determine which parts of QFT, QED, quantum cosmology, string theory, M-theory, and supersymmetry can
-produce unconditional mathematics in this project's HTGeometry, RHTower, or HilbertMetric surfaces.
-The useful outputs are exact new theorems, genuine hypothesis discharge, stronger connectors, and
-sharp negative classifications.
+produce unconditional mathematics anywhere in the project's Lean research corpus.  The audit is
+not restricted to the three initially named folders: it cross-matches every formula against
+`HTGeometry`, `RHTower`, `Hurwitz`, `U0`, `Bottcher`, `HilbertMetric`, and the package/root theorem
+layer.  The useful outputs are exact new theorems, genuine hypothesis discharge, stronger
+connectors, and sharp negative classifications.
 
 The web is open-ended, so "every formula on Google" is made reproducible as follows.  The audit
 starts from the canonical English Wikipedia pages for the six named domains, follows every named
@@ -26,6 +28,26 @@ been searched.  Every `LIVE` row must then receive a primary-source formula audi
 future search results after the audit date are outside this frozen census and require a new audit.
 
 No numerical experiment or computation is admissible evidence in this programme.
+
+## Whole-corpus ownership and application map
+
+This table is the mandatory second pass for every external formula.  A match in one row does not
+authorize a same-named wrapper in another row.
+
+| Lean area | Existing producers and interfaces checked | What the physics census can actually do |
+|---|---|---|
+| `HTGeometry` | meromorphic Gamma orbit/superselection, q-Pochhammer and elliptic-Gamma limits, finite-difference/difference-differential fields, BRST/Hodge constraints, scattering and cosmological reporters, Hankel positivity, incidence and matroid laws | Main application surface.  Exact special-function formulas can become `BRIDGE` theorems; physical source claims remain blocked until the source operator, state, contour, or convergence theorem is constructed. |
+| `RHTower` | completed prime/Gamma moments, KMS families, trace/colligation, zeta-specific consumers and conditional interfaces | A QFT law can discharge an interface only when it constructs the exact zeta/prime-side object.  Generic thermal, spectral, or amplitude formulas are consumers and do not manufacture the missing arithmetic source. |
+| `Hurwitz` | Hurwitz-zeta continuation, shift/Pochhammer laws, differential-transcendence infrastructure | The exact Bose/Planck moment identity `gammaBoseMoment_ofReal_eq_hzeta` already connects QFT-style occupation moments to Hurwitz zeta.  This is a genuine connector, but no surveyed 2026 law strengthens the Hurwitz source theorem itself. |
+| `U0` | `functional_equation`, `u0_natural_boundary`, relation no-go theorems, and `u0_analyticAffineFilter_naturalBoundary` | q-difference and quantum-curve formulas are comparison objects.  Any analytic affine counterterm nonzero on the unit circle is already proved unable to remove the `u0` natural boundary; a physical label adds no new hypothesis discharge. |
+| `Bottcher` | Böttcher conjugacy, Green/escape-rate laws, natural-boundary capstones, Mahler dynamics, logarithmic potentials and Brolin measures | Coulomb-gas, field-potential, and RG language gives interpretations of existing laws.  It does not discharge the live source-side Brolin convergence, boundary-integrability, or singular-tail interfaces without the exact measure theorem. |
+| `HilbertMetric` | Hilbert-space metric/Gram/positivity, operator constraints, uncertainty and finite Hankel geometry | Positivity, reflection positivity, spectral moments, and bootstrap bounds can be consumed here.  Numerical bootstrap islands and formal positive matrices are not source existence or continuum-QFT theorems. |
+| package/root | public umbrellas, generated API/gap indexes, card targets, and cross-area consumers | Ownership and discoverability only.  A root wrapper is never counted as a new law or as discharge of an area-local hypothesis. |
+
+The resulting direction of travel is asymmetric: QFT supplies exact source formulas mostly to
+`HTGeometry`; `Hurwitz`, `U0`, and `Bottcher` supply already-formal mathematical obstructions and
+connectors back to those formulas; `RHTower` consumes only source-resolved arithmetic bridges; and
+`HilbertMetric` can certify finite positivity without upgrading it to a physical field theory.
 
 ## Verdict language
 
@@ -274,6 +296,40 @@ External anchors include the Wikipedia pages for
 [nonrenormalization theorems](https://en.wikipedia.org/wiki/Supersymmetry_nonrenormalization_theorems), and
 [Seiberg--Witten theory](https://en.wikipedia.org/wiki/Seiberg%E2%80%93Witten_theory), together with
 the [supertrace](https://en.wikipedia.org/wiki/Supertrace).
+
+## 2026 arXiv frontier harvest through 2026-07-20
+
+The 2026 pass searched arXiv `hep-th`, `math-ph`, and adjacent mathematical categories from
+2026-01-01 through the audit date, using the six topic names together with `exact formula`,
+`partition function`, `amplitude`, `wavefunction`, `Gamma`, `q-Pochhammer`, `q-difference`,
+`quantum curve`, `localization`, `duality`, `M-theory`, and `supersymmetry`.  Abstracts were only a
+screen: every retained row below was checked in the paper PDF at the displayed equation or theorem.
+This is a frozen, reproducible frontier sample rather than the false claim that every arXiv paper in
+2026 is topically relevant.
+
+| 2026 paper and harvested theorem/formula | Whole-corpus test | Verdict |
+|---|---|---|
+| [Berman et al., arXiv:2607.14230](https://arxiv.org/abs/2607.14230), eqs. (5.16)--(5.18): the Virasoro--Shapiro product, its finite generalized tower `prod_(n=1)^N ((nm^2+s)(nm^2+t)(nm^2+u))/((nm^2-s)(nm^2-t)(nm^2-u))`, and the Gamma analytic continuation | `HTGeometry` Gamma reflection plus common-scale orbit charge gives the exact per-channel boundary `DA iff N in Z`; all other areas are consumers or no-match. | `APPLIED-LEAN BRIDGE`: `GeneralizedSpinTowerDifferentialBoundary`.  It is not new fundamental mathematics because it specializes the existing superselection law.  The paper's stronger amplitude uniqueness relies on an all-orders ansatz and is not imported. |
+| [Xu, arXiv:2606.19283](https://arxiv.org/abs/2606.19283), fixed-`t` dispersion relations (2.3)--(2.6) and the analytic pole-subtracted bootstrap | `HilbertMetric` can host finite positive moment/Hankel consequences; `HTGeometry` already classifies the exact Virasoro--Shapiro Gamma carrier. | `CONSUMER/NO-GO`: the bounded islands are numerical and the analytic equal-spacing result assumes positivity and a tree-level simple-pole product.  Neither discharges a source interface or proves HT. |
+| [Arabi Ardehali--Rosengren, arXiv:2602.11329](https://arxiv.org/abs/2602.11329), eq. (2): `(e^-y;e^-beta)_infty` equals an explicit dilogarithmic/square-root gauge times an absolutely convergent `n in Z` product of reciprocal Gamma factors with Stirling renormalization, for `Re beta>0`, `y notin 2pi i Z` | Directly meets `HTGeometry.MultipleQPochhammerLimitExchange`, elliptic-Gamma, and infinite Gamma-product surfaces; it also supplies an external comparison for `U0` q-products. | `LIVE SOURCE BRIDGE`: the identity is exact and has a 3d-to-2d BPS Kaluza--Klein interpretation, but the corpus lacks this renormalized bi-infinite Gamma product and a convergence-compatible DA/HT theorem.  No Prop was discharged by pretending finite products control the limit. |
+| [Gahramanov et al., arXiv:2606.29409](https://arxiv.org/abs/2606.29409), eq. (1.1): a parity sum of contour integrals of `q^2`-Pochhammer ratios equals a finite product under `prod_i a_i b_i=q`; eqs. (3.5), (4.2) give star--triangle and pentagon forms | Matches `HTGeometry` q-Pochhammer/elliptic-Gamma, finite KMS/integrability, and incidence surfaces; it gives no direct arithmetic source in `RHTower`, `Hurwitz`, `U0`, or `Bottcher`. | `LIVE IDENTITY / BLOCKED HT`: a new exact SUSY-index evaluator and Yang--Baxter source, but no current Lean contour integral, balancing theorem, or differential classification.  Formalizing only the finite RHS would be a wrapper. |
+| [Hang--Shen, arXiv:2605.30797](https://arxiv.org/abs/2605.30797), eqs. (2.13), (3.3), (3.6): the all-loop two-site wavefunction is an alternating Boolean-subset sum, a product of commuting finite differences, and equivalently a sum over maximal chains; eq. (4.7) is the telescoping induction | Cross-matched against `HTGeometry` Boolean incidence, Möbius, finite-difference, and matroid modules and the package combinatorial layer. | `REDISCOVERED BRIDGE`: a clean formalization target and possible connector between currently separated incidence modules, but the identity is now 2026 literature and cannot be claimed as new science.  Being rational in the energy divisors, it does not source HT or close the cosmological gauge/observation gap. |
+| [Cosmological Wavefunctions as Amplitudes, arXiv:2604.01133](https://arxiv.org/abs/2604.01133), eqs. (1)--(4), (15), (21): `S_I -> s_I`, graph-based hidden-zero loci, zero iff shuffle decomposition, and tree-level uniqueness from locality plus the full zero set | Matches `HTGeometry` face/incidence/shuffle and cosmological reporter interfaces; no theorem constructs the missing gauge-invariant in-in or HT flat-space source. | `LIVE SELECTION LAW / BLOCKED SOURCE`: potentially useful to discharge a future uniqueness premise once its exact graph category is built, but it is model-specific and does not itself create an HT carrier. |
+| [de Sitter Wavefunction from Quadrangular Polylogarithms, arXiv:2605.06542](https://arxiv.org/abs/2605.06542), formulas (5.1)--(5.2): every fixed `n` chain coefficient is an explicit combination of Rudenko quadrangular polylogarithms, proved by matching the wavefunction differential recursion to the coproduct recursion | The finite differential tower belongs to `HTGeometry` finite-circuit/polylog closure; no direct match in the arithmetic or dynamical areas. | `NO-GO FOR HT`, with positive survivor: an exact all-`n` closed form and recursion connector.  For each fixed `n`, the finite iterated-integral system is DA, so the result can benchmark a reporter but cannot be the HT source. |
+| [Bobev--Gautason--van Muiden, arXiv:2607.06493](https://arxiv.org/abs/2607.06493), eqs. (5.7), (5.11), (5.15): fixed-charge partition functions are `Ai`, `Ai^2`, or derivatives of `Ai^2` after the ensemble Laplace transform | `HTGeometry` finite differential closure and `HilbertMetric` transform/positivity surfaces can consume the formulas; `RHTower` gets no prime or zeta source. | `NO-GO FOR HT`: `Ai''=z Ai` makes every displayed fixed observable DA.  Positive survivor: an exact transform law and a sharp warning that all-orders `1/N` does not imply differential transcendence. |
+| [Localization, Factorization and Dualities for Elliptic Kernels, arXiv:2607.00076](https://arxiv.org/abs/2607.00076), eqs. (1.1)--(1.4): mixed boundary determinants are `1`, unmixed determinants are cubic-phase theta quotients, and `Theta(u;omega)=1/(Gamma_e(u)Gamma_e(omega-u))`; later residue identities implement rank-changing duality | Direct match to `HTGeometry` elliptic-Gamma composita, reflection/factorization, constraint, and boundary-kernel surfaces; `U0` and `Bottcher` provide only analogous difference/natural-boundary obstructions. | `LIVE PHYSICAL REALIZATION`: supplies a genuine 4d N=1 source for elliptic kernels, but no proved differential classification of the theta/elliptic-Gamma contour integral and no large-rank limit.  The source identity does not discharge those interfaces. |
+| [Chauhan--Ekholm--Longhi, arXiv:2601.22922](https://arxiv.org/abs/2601.22922), theorem 1.1: the skein-valued knot-complement partition function is a product over flow-loop annulus factors; eq. (2.10): a quantized augmentation polynomial gives `Ahat_K,alpha psi_alpha=0` | Meets `HTGeometry` difference-differential and q-ladder surfaces and provides comparison objects for `U0.functional_equation` and `Bottcher` Mahler dynamics. | `LIVE q-DIFFERENCE SOURCE / BLOCKED DIFFERENTIAL CLASSIFICATION`: a finite q-difference equation is not a differential-algebra theorem.  No canonical embedding into the project's meromorphic differential field or source equality with an existing carrier is proved. |
+| [Refined Invariants and Quantum Curves from Supersymmetric Localization, arXiv:2601.07662](https://arxiv.org/abs/2601.07662), section 2.3: in the Nekrasov--Shatashvili limit the defect partition function satisfies a second-order q-difference equation quantizing the mirror curve, with polarization fixed by brane data | Same whole-corpus match as the knot quantum curve, plus `HTGeometry` elliptic/instanton candidates and `U0`/`Bottcher` functional-equation no-go tests. | `LIVE SOURCE / NO AUTOMATIC HT`: the result supplies a non-arbitrary quantum curve and polarization, but difference algebra and differential algebra must be connected by a new theorem.  Arbitrary analytic interpolation is forbidden. |
+
+### 2026 harvest result
+
+Only the generalized spin-tower channel produced a dependency-closed unconditional Lean theorem in
+this pass.  Two families expose high-value source interfaces: the renormalized bi-infinite Gamma
+product behind the q-Pochhammer identity, and source-defined q-difference partition functions with
+canonical polarizations.  The exact beta/star--triangle identity and elliptic boundary kernels are
+strong formula producers but need contour/convergence and differential-classification theorems.
+The Boolean wavefunction identity, hidden-zero shuffle law, quadrangular-polylog formula, dispersive
+bootstrap, and Airy ensemble laws are composers or consumers; none is a new HT source.
 
 ## Live programme extracted from the census
 

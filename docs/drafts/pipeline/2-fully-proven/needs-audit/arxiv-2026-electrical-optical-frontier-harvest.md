@@ -4,7 +4,8 @@
 - **Stage:** 2-fully-proven/needs-audit
 - **Type:** `[LITERATURE HARVEST] [FRONTIER MAP] [NO-GO CLOSURE] [NO RH CLAIM]`
 - **Parent:** `electrical-optical-law-application-census.md`
-- **Area:** `HTGeometry`, `RHTower`, `HilbertMetric`
+- **Area:** whole owned Lean corpus: `HTGeometry`, `RHTower`, `HilbertMetric`, `Hurwitz`, `U0`,
+  `Bottcher`, plus package-level bridges
 - **Cutoff:** arXiv submissions through 2026-07-20
 - **Formal output:** none; no preprint statement below is treated as a new axiom or interface
 
@@ -20,6 +21,9 @@ passive or positive-real scattering / realization / network synthesis
 finite aperture / inverse source / passive cloaking
 Hankel rank / minimal or sparse state-space realization
 Riemann zeta / prime spectrum with optical or electrical scattering
+Bottcher/Green-potential/conformal optics and inverse branches
+Mahler/dyadic multirate filtering and natural boundaries
+Hurwitz-zeta/Planck/Gamma-Bose spectral laws
 ```
 
 Every returned paper with a theorem or formula capable of touching the live source, passivity,
@@ -228,6 +232,29 @@ project interface.  No theorem or definition is imported from this claim.
   Wirtinger-inequality conditions for delayed port-Hamiltonian passivity/stability.  These are
   conditional certificates for a supplied plant and delay, not a source theorem.
 
+## Whole-corpus application check
+
+The full-paper harvest was tested against the four theorem surfaces omitted by the earlier scope:
+
+- **Hurwitz:** none of the 2026 results strengthens or discharges the unconditional genuine-`hzeta`
+  all-`N` capstone.  Passive spectral moments remain consumers of
+  `gammaBoseMoment_ofReal_eq_hzeta`; finite realization and stability results do not imply a new
+  Hurwitz relation or independence theorem.
+- **U0:** stable finite Hankel realization and sparse state-space synthesis are finite-model
+  theorems.  They cannot remove `u0`'s natural boundary.  The exact positive result is instead the
+  corpus theorem `u0_analyticAffineFilter_naturalBoundary`, obtained from analytic invertibility,
+  not from a 2026 preprint premise.
+- **Bottcher:** passive-cloaking Herglotz bounds and Green-function language do not construct the
+  genuine continued Böttcher lift on the separating cover annulus, nor do they prove the isolated
+  boundary singular-tail estimate.  They are physical parents of analytic-continuation no-go logic,
+  not suppliers for `hDisc`.
+- **Package/root:** the papers add no source map joining an electrical or optical response to a
+  package capstone.  Existing wrappers therefore remain consumers only.
+
+Focused 2026 searches for Böttcher/conformal optics, Mahler multirate filtering/natural boundaries,
+and Hurwitz-zeta blackbody/photonics found no additional primary paper with a theorem capable of
+altering these verdicts through the audit cutoff.
+
 ## Frontier delta
 
 The 2026 literature sharpens the open core without closing it:
@@ -265,6 +292,7 @@ scientific content.  The two audited preprint gaps are explicitly barred from us
 ## Gates
 
 - [x] live source, generated API, formalized KMS/Hankel/Wigner--Smith surfaces searched first
+- [x] Hurwitz, U0, Bottcher, and package-level theorem surfaces searched and cross-tested
 - [x] dated arXiv metadata queried through 2026-07-20
 - [x] relevant full PDFs read; theorem pages visually checked against extraction
 - [x] exact formulas, hypotheses, and limitations harvested

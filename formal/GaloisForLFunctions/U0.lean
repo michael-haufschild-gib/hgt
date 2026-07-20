@@ -17,6 +17,7 @@ import GaloisForLFunctions.U0.VelocityPairIndependence
 import GaloisForLFunctions.U0.PolyAsymptotics
 import GaloisForLFunctions.U0.U0Series
 import GaloisForLFunctions.U0.U0NaturalBoundary
+import GaloisForLFunctions.U0.AnalyticAffineFilterNaturalBoundary
 import GaloisForLFunctions.U0.NaturalBoundaryTranscendence
 import GaloisForLFunctions.U0.U0Transcendence
 import GaloisForLFunctions.U0.U0PhiIndep

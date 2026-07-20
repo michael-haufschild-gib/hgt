@@ -2,8 +2,8 @@
 
 - **ID:** `simple-pole-jet-lattice-holographic-selection-law`
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / FORMALIZED UNIVERSAL AFFINE HORIZON / HT BOUNDARY-GEOMETRY CANDIDATE
-- **Scientific status:** `[PROVED HERE: UNIVERSAL LAW AND GLOBAL GAMMA CLASSIFICATION] [FORMALIZED: UNIVERSAL AFFINE HORIZON AND ACTUAL GAMMA BOUNDARY FREENESS] [GLOBAL GAMMA DESCENT OPEN IN LEAN] [NOVELTY UNVERIFIED]`
+- **Type:** THEOREM (paper) / FORMALIZED UNIVERSAL AND ACTUAL CONSTANT-COEFFICIENT AFFINE HORIZONS / HT BOUNDARY-GEOMETRY CANDIDATE
+- **Scientific status:** `[PROVED HERE: UNIVERSAL LAW AND GLOBAL GAMMA CLASSIFICATION] [FORMALIZED: UNIVERSAL AND FINITE ACTUAL GAMMA CONSTANT-COEFFICIENT AFFINE HORIZONS] [GLOBAL C[z] GAMMA DESCENT OPEN IN LEAN] [NOVELTY UNVERIFIED]`
 - **Methods:** symbolic proof and Lean verification only; no numerical computation
 
 ## Constraint
@@ -327,6 +327,18 @@ Theorem B for every finite jet order:
 5. the unconditional equivalence
    `pole degree <= 1 <-> P = a + b Y_0`.
 
+`formal/GaloisForLFunctions/HTGeometry/MvPolynomialHomogeneousDehomogenization.lean` extracts the
+general algebraic interface behind the specialization arguments.  For an arbitrary nontrivial
+commutative semiring and arbitrary tail-variable type, it proves that the coefficient of the head
+variable in `optionEquivLeft` retains the residual homogeneous or weighted-homogeneous degree, and
+that setting the head coordinate to one cannot kill a nonzero homogeneous polynomial.  This
+removes the former finite-index hypothesis from the Bell-profile use of the law.
+
+`SimplePoleJetScaleSeparatedHorizon.lean` and
+`SimplePoleJetScaleSeparatedReesGrading.lean` formalize the independent moving scale `S`, its
+retraction to the universal boundary, the exact coefficient/particle trace, the universal affine
+horizon after adjoining `S`, and the conserved scale--pole--boundary grading.
+
 `formal/GaloisForLFunctions/HTGeometry/GammaPoleScaleHarmonicRelativeFreeness.lean` formalizes:
 
 1. the joint factorial-scale plus harmonic-boundary evaluation over `C(n)`;
@@ -338,15 +350,40 @@ the Bell-transformed logarithmic coordinates, while `GammaInversePoleBranchScale
 proves joint freeness of the factorial scale and the positive regular-unit coefficients.  These
 close the Bell/birational boundary transfer that was open in the original version of this card.
 
-The remaining Lean layer for Theorem C is now narrower: encode the polynomial-in-`z` Taylor shift
-at every moving pole, the maximal derivative-weight diagonal descent `(14)`--`(18)`, and the final
-meromorphic pole-order intersection.  The analytic intersection `(9)` is therefore still not
-advertised as formalized.
+`GammaPoleScaleSeparatedTrace.lean` now dehomogenizes `U_0=1`, converts positive Taylor
+coefficients to actual derivatives by the nonzero factorial diagonal, proves injectivity of the
+resulting actual Gamma value evaluation, and proves survival of every nonzero homogeneous particle
+trace.  Its constant-coefficient map interfaces are explicit simp laws.
 
-The new affine-horizon leaf passes direct `lake env lean` verification and the exact final module
-build `lake build GaloisForLFunctions.HTGeometry.SimplePoleJetLatticeAffineHorizon`.  No umbrella or
-full-project build was run.  A scratch-file `#print axioms` audit of every principal theorem reports
-only `propext`, `Classical.choice`, and `Quot.sound`.
+`GammaPoleScaleSeparatedAffineHorizon.lean` closes the finite constant-coefficient value-reflection
+problem.  Its exact Rees law is
+
+```text
+source degree d, pole grade q  =>  residual weight (n+1)d-q,               (22)
+```
+
+where the pole variable and moving scale have weight one and the `k`th positive unit derivative
+has weight `k+1`.  For `n>=1`, `(22)` isolates the highest source-particle sector, reduces an
+arbitrary source to degrees zero and one, and prevents any forbidden linear pole coefficient from
+vanishing when `U_0` is set to one.  At `n=0`, the profile is the canonical one-variable polynomial
+isomorphism followed by the injective constant-germ embedding.  Hence Lean proves unconditionally,
+for every finite jet ceiling `n`,
+
+```text
+degree_T(actual_Gamma_profile_n(P)) <= 1
+  <-> exists a b, P = a + b Y_0.                                         (23)
+```
+
+The remaining Lean layer for Theorem C is now exactly the coefficient-base extension from `(23)`
+to `C[z]`: encode the polynomial-in-`z` Taylor shift at every moving pole, the maximal
+derivative-weight diagonal descent `(14)`--`(18)`, and the final meromorphic pole-order
+intersection.  The analytic intersection `(9)` is therefore still not advertised as formalized.
+
+All new leaves pass direct `lake env lean` verification, and the exact final leaf build
+`lake build GaloisForLFunctions.HTGeometry.GammaPoleScaleSeparatedAffineHorizon` succeeds through
+the complete dependency chain.  A scratch-file `#print axioms` audit of every principal
+dehomogenization, Rees-grading, reflection, and affine-horizon theorem reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  No umbrella or full-project build was run.
 
 ## Parent-theory and priority audit
 
@@ -383,6 +420,7 @@ bigrading to classify an actual hypertranscendental differential-polynomial alge
 - [x] all-order universal trace theorem proved on paper
 - [x] homogeneous trace and free-boundary specialization formalized in Lean
 - [x] arbitrary-sector universal affine horizon `(7)` formalized in Lean
+- [x] finite actual Gamma constant-coefficient affine horizon `(23)` formalized in Lean
 - [x] relative scale--harmonic boundary freeness over `C(n)` formalized in Lean
 - [x] Bell/birational transfer to the actual regular Gamma boundary formalized in Lean
 - [x] leading-symbol tie and local-coordinate counterattacks survived

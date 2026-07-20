@@ -1,10 +1,10 @@
 # Hedenmalm center-mixed cofinal three-point closure
 
 - **ID:** `hedenmalm-center-mixed-cofinal-three-point-closure`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE THEOREM / COFINAL ORDER-THREE POSITIVITY
 - **Date:** 2026-07-20
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NO COMPUTATION] [NOT RH]`
+- **Status:** `[LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NO COMPUTATION] [NOT RH]`
 - **Parent:** `../3-formalized/needs-audit/hedenmalm-center-mixed-asymmetric-near-three-point-chamber.md`
 
 ## Exact conjecture
@@ -118,6 +118,21 @@ For the actual theta source, the compiled derivative-product integral identities
 radial antitonicity, and strict center drop are already source theorems.  Hence every hypothesis
 used above is unconditional and source-resolved.
 
+## Lean realization and novelty verdict
+
+`HilbertMetric.exists_uniform_threePointCorrelationDeterminantPath_pos_right_atTop` formalizes the
+uniform two-parameter convexity theorem.  The source endpoint is
+`RHTower.eventually_forall_thetaCuspCenterMixedThreePointMatrix_posSemidef`; its symmetric threshold
+form is `exists_thetaCuspCenterMixedThreePointMatrix_posSemidef_of_large_gap`.  Finally,
+`exists_thetaCuspCenterMixedThreePointMatrix_compactCore_iff` proves that the complete order-three
+problem is equivalent to its restriction to one bounded two-gap square at each aperture.
+
+The result is not the classical `3 x 3` determinant criterion, and it is not a restatement of
+positive definiteness: it proves a previously open source-specific region from center curvature
+and two-jet decay.  Hedenmalm and Gershon do not state this cofinal chamber, and targeted searches
+through the correlation-angle and positive-definite-function parents found no matching theorem.
+The novelty label remains provisional pending independent specialist priority review.
+
 ## Gates
 
 - [x] exact internal frontier established
@@ -127,4 +142,6 @@ used above is unconditional and source-resolved.
 - [x] dependency-complete proof that the near-center condition is trapped in that neighborhood
 - [x] formalize the generic analytic theorem
 - [x] discharge every source hypothesis and connect to the named wall
-- [ ] axiom, lint, and final module-build audit
+- [x] axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
+- [x] generated-index and formal lint audit
+- [x] final `GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` module-build audit
