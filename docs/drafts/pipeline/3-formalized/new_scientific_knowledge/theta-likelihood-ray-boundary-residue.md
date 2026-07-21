@@ -1,7 +1,7 @@
 # Theta-likelihood ray boundary residue and modular completion
 
 - **ID:** `theta-likelihood-ray-boundary-residue`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[CANDIDATE NEW SOURCE-SPECIFIC THEOREM] [UNCONDITIONAL] [NO RH CLAIM]`
 - **Depends on:** `ThetaCuspLikelihoodSpectralMeasure.lean`,
   `ThetaCuspLikelihoodModularSeam.lean`, `ThetaCuspFinitePrimeSource.lean`
@@ -225,12 +225,17 @@ sector and its infinite-mass boundary renormalization.  A finite positive channe
 Hankel packet, or a positive Markov disintegration acting atom by atom cannot cross this seam.
 
 The previous live target—identify the first nonzero atomic-to-ray transition coefficient—is now
-closed by `(14)`–`(17)`.  The new open core is narrower:
+closed by `(14)`–`(17)`.  A hostile typing audit subsequently found that the two Wigner legs do
+not share one temperature: they carry `B(y+t)` and `B(y-t)`.  Directly inserting the common-`B`
+layer into the Fourier window would therefore be invalid.  The successor
+`theta-likelihood-normal-crossing-prime-face.md` replaces it with independent temperatures and
+proves that the normalized prime conormal transports rigidly along both actual boundary faces.
+The remaining open core is now:
 
 ```text
-Push the explicit prime first-boundary-layer current through the completed Fourier/Bezoutian
-window, then prove that its aggregate strictly oriented contribution dominates composite-shell
-interference in the corrected product-fibre seam.
+Prove a source-specific trace-to-bulk law carrying the rigid two-face prime current through the
+complete two-temperature Wigner interior and corrected endpoint windows, without discarding the
+composite sector through a scalar prime-axis quotient.
 ```
 
 This card does **not** assert that domination or RH.
@@ -258,5 +263,6 @@ This card does **not** assert that domination or RH.
 - [x] Lean formalization of atomwise law, residue positivity, infinite total mass,
   scaled-response identity and limit, finite-limit obstruction, prime-shell annihilation,
   exact prime first-layer factorization, normalized phase/derivative limits, and strict current
-- [ ] Axiom/lint/index audit
-- [ ] Fourier/Bezoutian image and aggregate prime/composite domination; this is the new open core
+- [x] Axiom/lint/index audit
+- [x] Two-temperature normal-crossing source-face transport; see successor card
+- [ ] Fourier/Bezoutian trace-to-bulk and aggregate prime/composite domination; this is the open core

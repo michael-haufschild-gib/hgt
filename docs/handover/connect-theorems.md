@@ -1173,3 +1173,367 @@ The three refactored source declarations and determinant capstone use exactly `p
 **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This removes source-local reflection algebra and makes
 the general/source dependency explicit; it neither supplies determinant positivity nor advances
 RH.  Persistent goal remains active for remaining unmatched high-score pairs.
+
+## 22. Finite reporter-network-to-Xi Gram connector completed
+
+The source-facing audit found `HTGeometry/FiniteReporterNetworkFusion.lean` proved the exact
+singular-information alternative for an arbitrary finite dependent family of Hilbert-valued
+reporters, while `RHTower/XiLogDerivReporterGramFisher.lean` specialized only the older
+single-reporter theorem.
+
+The RHTower module now imports the network leaf and exposes two unconditional source theorems:
+
+```text
+xiLogDeriv_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+xiLogDeriv_add_finiteGibbs_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+```
+
+For the bare and finite-Gibbs-dressed Xi logarithmic derivative, respectively, the determinant of
+the fused finite-jet Gram matrix vanishes exactly when one nonzero synthesized derivative packet
+is erased by every reporter in the network.  The first proof derives constant-coefficient
+differential transcendence from the existing actual simple Xi pole.  The second reuses the
+existing theorem that finite Gibbs dressing preserves that property.  No transcendence or RH
+hypothesis remains at either source interface.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/XiLogDerivReporterGramFisher.lean
+lake build GaloisForLFunctions.RHTower.XiLogDerivReporterGramFisher
+  8708/8708
+```
+
+Both new source theorems use exactly `propext`, `Classical.choice`, and `Quot.sound`.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This connects the generic positive
+network-fusion law to its canonical RHTower source and strengthens finite-source observability;
+it is not a new external novelty or RH criterion.  Persistent goal remains active pending final
+hostile audit.
+
+## 23. Thermal finite-action boundary-to-Xi connector completed
+
+`HTGeometry/ThermalMassClockObservability.lean` already proves that a hypertranscendental response
+cannot equal any finite complex mass-action signal
+
+```text
+sum_(i in S) amplitude_i * exp(-action_i * mass).
+```
+
+The endpoint scan found that this generic boundary had no canonical RHTower consumer despite the
+existing unconditional theorem `xi_hypertranscendental`.
+`RHTower/XiHypertranscendenceUnconditional.lean` now imports the thermal mass-clock leaf and proves
+`xi_ne_finiteMassClockSignal` for every finite index set, amplitude family, and complex-action
+family.  The proof is a literal specialization of the generic no-go and has no RH premise.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/XiHypertranscendenceUnconditional.lean
+lake build GaloisForLFunctions.RHTower.XiHypertranscendenceUnconditional
+  8931/8931
+```
+
+The source theorem uses exactly `propext`, `Classical.choice`, and `Quot.sound`.  Targeted diff
+checks passed.  Repository-wide formal lint is currently blocked only by unrelated concurrent
+module `RHTower.SuzukiCompactifiedPhaseProfile` not yet being reachable from the RHTower umbrella.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  It excludes an exact finite-action
+representation of completed Xi; it neither asserts that Xi is physically a probe-mass response
+nor constructs the positive infinite-action alternative.  Persistent goal remains active pending
+final hostile audit.
+
+## 24. Prime coherence-tail-to-Euler lifting connector completed
+
+`HTGeometry/PrimeCoherenceTailReconstruction.lean` characterized finite-boundary one-endedness by
+faithful recovery of projective prime-orientation tail dependence from finite-defect edge
+coherences.  Independently, `RHTower/PrimeEulerOrientationNorm.lean` identified that dependence
+with exactly two Euler lifts: same-sheet finite-gauge equivalence or opposite-sheet
+cyclotomic-norm complementarity.
+
+The RHTower module now imports the coherence leaf and publishes
+
+```text
+finiteBoundaryOneEnded_iff_primeEulerCoherenceTail_faithful
+primeEulerCoherenceTail_faithful_boxProd.
+```
+
+The first theorem says graph one-endedness is exactly the absence of any third Euler lifting mode
+for coherently observed prime orientations.  The second discharges that condition for Cartesian
+products of two infinite preconnected indexing graphs.  Both are unconditional and retain the
+finite-defect/projective scope of their inputs; they do not identify an analytic Euler product or
+prove RH.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/PrimeEulerOrientationNorm.lean
+lake build GaloisForLFunctions.RHTower.PrimeEulerOrientationNorm
+  8520/8520
+```
+
+Both connector theorems use exactly `propext`, `Classical.choice`, and `Quot.sound`.  Targeted diff
+checks passed.  Repository-wide formal lint reached only an unrelated concurrent-worktree error:
+`RHTower.SuzukiFiniteShiftProjectiveHolonomy` is not yet reachable from the RHTower umbrella.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  Persistent goal remains active pending
+final hostile audit.
+
+## 25. Finite observable jet-capacity-to-Xi connector completed
+
+`HTGeometry/FiniteObservableKoopmanBoundary.lean` previously proved only that an
+HT derivative-observable tower eventually escapes every finite-dimensional dictionary.  The
+finite-rank argument actually gives an exact capacity law under the weaker
+constant-coefficient-differential-transcendence premise: for every finite set `S` of derivative
+orders captured by `V`,
+
+```text
+card(S) <= finrank_C(V).
+```
+
+The module now exposes this law as
+`iteratedDeriv_mem_finset_card_le_finrank_of_constantCoefficientDifferentiallyTranscendental`.
+Choosing the first `finrank(V)+1` orders yields
+`exists_iteratedDeriv_not_mem_le_finrank_of_constantCoefficientDifferentiallyTranscendental`:
+some derivative of order at most `finrank(V)` already escapes.  The older unbounded existential
+theorem now derives from this stronger statement.
+
+`RHTower/XiJetFreeness.lean` imports the generic boundary and publishes the unconditional source
+specializations `xi_iteratedDeriv_mem_finset_card_le_finrank` and
+`exists_xi_iteratedDeriv_not_mem_le_finrank`, using the existing completed-Xi
+hypertranscendence theorem.  No invariant-model, approximation, or RH premise is introduced.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/FiniteObservableKoopmanBoundary.lean
+lake build GaloisForLFunctions.HTGeometry.FiniteObservableKoopmanBoundary
+  8518/8518
+lake env lean GaloisForLFunctions/RHTower/XiJetFreeness.lean
+lake build GaloisForLFunctions.RHTower.XiJetFreeness
+  8942/8942
+```
+
+All five affected generic/source theorems use exactly `propext`, `Classical.choice`, and
+`Quot.sound`.  Repository-wide formal lint and targeted diff checks passed.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This is the sharp finite-rank capacity
+form of an existing Koopman/observable no-go, not a quantitative norm-residual estimate or RH
+advance.  Persistent goal remains active.
+
+## 26. Finite-generator escape-to-centered-zeta clock connector completed
+
+`HTGeometry/FiniteGeneratorDifferentialEscape.lean` proves the maximal positive survivor of the
+failed bounded-innovation programme: if a finite rational generator packet contains an HT
+observable, at least one chosen generator derivative leaves the generated field.  The existing
+centered-zeta clock module exposed three unconditional meromorphic HT sources but consumed only the
+weaker negative finite-state predicate.
+
+`RHTower/ZetaChiHypertranscendentalClock.lean` now imports that positive boundary and publishes
+
+```text
+exists_generator_deriv_escape_of_centeredZetaGammaReflectionMero
+exists_generator_deriv_escape_of_centeredZetaChiMero
+exists_generator_deriv_escape_of_inv_centeredZetaChiMero.
+```
+
+For the reflected Gamma clock, complete exponential-dressed archimedean clock, and its reciprocal,
+respectively, every finite rational generator packet containing the source has some generator
+whose derivative is outside the packet.  These statements are unconditional and source-specific;
+they do not claim that bounded per-depth innovation stabilizes, couple the clock to prime data, or
+change RH status.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/ZetaChiHypertranscendentalClock.lean
+lake build GaloisForLFunctions.RHTower.ZetaChiHypertranscendentalClock
+  8684/8684
+```
+
+All three source theorems use exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Repository-wide formal lint and targeted diff checks passed.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This discharges canonical source
+interfaces of the existing positive differential-state boundary; it is not new external science
+or an RH result.  Persistent goal remains active.
+
+## 27. Centered-zeta phase/current finite-generator connector completed
+
+The section-26 source audit extends through the complete observation-channel classification in
+`RHTower/ZetaGammaPhaseIntensityObservability.lean`.  The module already proved that centered zeta
+Gamma intensity is exactly `1`, while orientation-sensitive phase and Wigner--Smith logarithmic
+current remain hypertranscendental.  Only circuit non-recovery was exposed at those two surviving
+channels.
+
+The module now directly publishes
+
+```text
+exists_generator_deriv_escape_of_centeredZetaGammaPhaseObservationMero
+exists_generator_deriv_escape_of_centeredZetaGammaWignerSmithLogClockMero.
+```
+
+Thus every finite rational generator packet containing either HT observation has an explicit
+failed differential-closure edge: some chosen generator derivative leaves the packet.  Intensity
+is correctly excluded, since the existing exact identity makes it differential-algebraic.  The
+proofs reuse the generic positive escape theorem and existing source HT results verbatim.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/ZetaGammaPhaseIntensityObservability.lean
+lake build GaloisForLFunctions.RHTower.ZetaGammaPhaseIntensityObservability
+  8690/8690
+```
+
+Both source theorems use exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Repository-wide formal lint and targeted diff checks passed.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This completes the positive
+finite-generator boundary for the centered-zeta archimedean observation channels; it does not
+couple them to primes or alter RH status.  Persistent goal remains active.
+
+## 28. Zeta intensity/calibration finite-generator connector completed
+
+A systematic declaration inventory found only two unconditional RHTower meromorphic
+`hypertranscendentalOver_*` sources still lacking the positive finite-generator consumer, both in
+`RHTower/ZetaHorizonGammaIntensitySeparation.lean`: the quarter-shifted Gamma intensity core and
+the oriented-clock/intensity quotient.
+
+The module now publishes
+
+```text
+exists_generator_deriv_escape_of_centeredZetaGammaIntensityCoreMero
+exists_generator_deriv_escape_of_centeredZetaGammaReflection_div_intensity.
+```
+
+Every finite rational generator packet containing either source has a chosen generator derivative
+outside the generated field.  Together with sections 26--27, this closes every unconditional
+RHTower theorem whose declaration name begins `hypertranscendentalOver_`; conditional family
+classifications and the differential-algebraic unit-intensity channel are not silently included.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/ZetaHorizonGammaIntensitySeparation.lean
+lake build GaloisForLFunctions.RHTower.ZetaHorizonGammaIntensitySeparation
+  8691/8691
+```
+
+Both source theorems use exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Repository-wide formal lint and targeted diff checks passed.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This completes a source-interface
+class rather than sampling another corollary.  It provides no prime coupling or RH conclusion.
+Persistent goal remains active for the broader HTGeometry/HilbertMetric endpoint audit.
+
+## 29. Finite observable jet-capacity-to-zeta connector completed
+
+`HTGeometry/ZetaJetFreeness.lean` already specialized unconditional Riemann-zeta
+hypertranscendence to algebraic independence of every derivative function.  It did not consume the
+stronger exact finite-rank capacity theorem added in section 25.
+
+The module now imports `FiniteObservableKoopmanBoundary` and publishes
+
+```text
+riemannZeta_iteratedDeriv_mem_finset_card_le_finrank
+exists_riemannZeta_iteratedDeriv_not_mem_le_finrank.
+```
+
+For every finite-dimensional complex function space `V`, any finite set of zeta derivative orders
+captured by `V` has cardinality at most `finrank V`; consequently, some derivative of order at most
+`finrank V` already lies outside `V`.  This is the exact Riemann-zeta twin of the completed-Xi
+connector, not merely an unbounded eventual-escape corollary.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/ZetaJetFreeness.lean
+lake build GaloisForLFunctions.HTGeometry.ZetaJetFreeness
+  8523/8523
+```
+
+Both source theorems use exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Repository-wide formal lint and targeted diff checks passed.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  Sections 25 and 29 now cover both
+unconditional actual-function HT sources in RHTower (`xi` and `riemannZeta`).  The result is
+divisor-blind and makes no RH claim.  Persistent goal remains active.
+
+## 30. Finite reporter-network-to-zeta connector completed
+
+After section 29, `HTGeometry/ZetaJetFreeness.lean` had the source independence and exact
+finite-dictionary capacity laws but no consumer of the stronger finite reporter-network theorem.
+The generic fusion theorem is strictly preferable to a separate single-panel wrapper: it handles
+an arbitrary finite dependent family of heterogeneous Hilbert output spaces.
+
+The zeta leaf now publishes
+
+```text
+riemannZeta_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket.
+```
+
+For every finite reporter family and jet resolution, the fused zeta information determinant
+vanishes exactly when one common coefficient packet is erased by every reporter while its
+synthesized zeta derivative function remains nonzero.  Existing unconditional zeta
+hypertranscendence discharges the only source premise.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/ZetaJetFreeness.lean
+lake build GaloisForLFunctions.HTGeometry.ZetaJetFreeness
+  8528/8528
+```
+
+The source theorem uses exactly `propext`, `Classical.choice`, and `Quot.sound`.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This is the strongest existing finite
+reporter fusion law at the Riemann-zeta source, not an RH criterion or a claim that reporting
+creates dynamics.  Persistent goal remains active.
+
+## 31. Generic reporter data-processing collapse and zeta connector completed
+
+The source-local proof in `RHTower/XiLogDerivReporterDataProcessing.lean` contained a generic law
+that had not been named: finite reporter dimension forces one derivative order which is new before
+reporting but redundant both in the original reporter and after every downstream linear decoder.
+Keeping the same witness order across all clauses is stronger than separate zero-existence
+corollaries.
+
+`HTGeometry/FiniteReporterDataProcessing.lean` now publishes
+
+```text
+exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse.
+```
+
+The Xi theorem is refactored to specialize this generic capstone.  `HTGeometry/ZetaJetFreeness.lean`
+adds the unconditional parallel source theorem
+
+```text
+exists_riemannZeta_finiteReporterConditionalInformation_dataProcessing_collapse.
+```
+
+For both sources, one `k` no larger than reporter dimension has zero conditional information before
+and after decoding, lies in both corresponding previous-reading spans after reporting, and remains
+outside the span of preceding derivative functions at the source.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/FiniteReporterDataProcessing.lean
+lake build GaloisForLFunctions.HTGeometry.FiniteReporterDataProcessing
+  8525/8525
+lake env lean GaloisForLFunctions/RHTower/XiLogDerivReporterDataProcessing.lean
+lake build GaloisForLFunctions.RHTower.XiLogDerivReporterDataProcessing
+  8685/8685
+lake env lean GaloisForLFunctions/HTGeometry/ZetaJetFreeness.lean
+lake build GaloisForLFunctions.HTGeometry.ZetaJetFreeness
+  8531/8531
+```
+
+The generic theorem and both source theorems use exactly `propext`, `Classical.choice`, and
+`Quot.sound`.  Repository-wide formal lint and targeted diff checks passed.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This removes source-local proof
+duplication, narrows the Xi module to its exact simple-pole dependency, and connects zeta to the
+strongest existing downstream no-recovery statement.  It is static observability, not an RH
+criterion.  Persistent goal remains active.

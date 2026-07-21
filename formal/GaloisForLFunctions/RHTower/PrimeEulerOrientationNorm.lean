@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PrimeDirichletTailPattern
+import GaloisForLFunctions.HTGeometry.PrimeCoherenceTailReconstruction
 
 /-!
 # Projective prime tails and the two Euler lifting modes
@@ -104,6 +104,38 @@ theorem primeOrientationTailPairDependent_iff_eulerModes
   rw [primeOrientationTailPairDependent_iff,
     primeEulerTailGaugeEquivalent_iff_eventuallyEqual,
     primeEulerTailNormComplementary_iff_eventuallyOpposite]
+
+/-- **Coherence-end Euler lifting law.**  A graph reconstructs projective prime orientations from
+finite-defect edge coherences exactly when every coherent pair lifts either through the same-sheet
+finite Euler gauge or through the opposite-sheet cyclotomic norm. -/
+theorem finiteBoundaryOneEnded_iff_primeEulerCoherenceTail_faithful
+    {P : Type*} (G : SimpleGraph P) :
+    FiniteBoundaryOneEnded G ↔
+      ∀ ε δ : P → Bool,
+        BooleanEdgeTailEquivalent G ε δ →
+          PrimeEulerTailGaugeEquivalent ε δ ∨
+            PrimeEulerTailNormComplementary ε δ := by
+  rw [finiteBoundaryOneEnded_iff_primeOrientationCoherenceTail_faithful]
+  constructor
+  · intro h ε δ hedge
+    exact (primeOrientationTailPairDependent_iff_eulerModes ε δ).mp
+      (h ε δ hedge)
+  · intro h ε δ hedge
+    exact (primeOrientationTailPairDependent_iff_eulerModes ε δ).mpr
+      (h ε δ hedge)
+
+/-- Cartesian products of two infinite preconnected prime-indexing graphs admit no third Euler
+lifting mode outside finite gauge equality and cyclotomic-norm complementarity. -/
+theorem primeEulerCoherenceTail_faithful_boxProd
+    {P Q : Type*} [Infinite P] [Infinite Q]
+    (G : SimpleGraph P) (H : SimpleGraph Q)
+    (hG : G.Preconnected) (hH : H.Preconnected)
+    (ε δ : P × Q → Bool)
+    (hcoherence : BooleanEdgeTailEquivalent (G □ H) ε δ) :
+    PrimeEulerTailGaugeEquivalent ε δ ∨
+      PrimeEulerTailNormComplementary ε δ :=
+  (primeOrientationTailPairDependent_iff_eulerModes ε δ).mp
+    (primeOrientationCoherenceTail_faithful_boxProd G H hG hH ε δ hcoherence)
 
 /-- The exact finite Euler norm.  The right side is independent of the orientation. -/
 theorem primeEulerOrientationFiniteNorm

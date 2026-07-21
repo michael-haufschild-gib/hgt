@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
+import GaloisForLFunctions.HTGeometry.FiniteGeneratorDifferentialEscape
 import GaloisForLFunctions.RHTower.ZetaChiHypertranscendentalClock
 
 /-!
@@ -147,6 +148,27 @@ theorem hypertranscendentalOver_centeredZetaGammaWignerSmithLogClockMero :
   rw [centeredZetaGammaWignerSmithLogClockMero,
     HTGeometry.hypertranscendentalOver_wignerSmithLogClock_iff]
   exact hypertranscendentalOver_centeredZetaGammaReflectionMero
+
+/-- **Positive finite-generator phase escape.**  Every finite rational state packet containing the
+centered zeta Gamma phase loses differential closure at one of its chosen generators. -/
+theorem exists_generator_deriv_escape_of_centeredZetaGammaPhaseObservationMero
+    {ι : Type*} [Fintype ι] (s : ι → meroField Set.univ)
+    (hmem : centeredZetaGammaPhaseObservationMero ∈
+      IntermediateField.adjoin (RatFunc ℂ) (Set.range s)) :
+    ∃ i, (s i)′ ∉ IntermediateField.adjoin (RatFunc ℂ) (Set.range s) :=
+  GaloisForLFunctions.HTGeometry.exists_generator_deriv_escape_of_hypertranscendentalOver
+    s hypertranscendentalOver_centeredZetaGammaPhaseObservationMero hmem
+
+/-- **Positive finite-generator current escape.**  Every finite rational state packet containing
+the centered archimedean Wigner--Smith logarithmic current loses differential closure at one of its
+chosen generators. -/
+theorem exists_generator_deriv_escape_of_centeredZetaGammaWignerSmithLogClockMero
+    {ι : Type*} [Fintype ι] (s : ι → meroField Set.univ)
+    (hmem : centeredZetaGammaWignerSmithLogClockMero ∈
+      IntermediateField.adjoin (RatFunc ℂ) (Set.range s)) :
+    ∃ i, (s i)′ ∉ IntermediateField.adjoin (RatFunc ℂ) (Set.range s) :=
+  GaloisForLFunctions.HTGeometry.exists_generator_deriv_escape_of_hypertranscendentalOver
+    s hypertranscendentalOver_centeredZetaGammaWignerSmithLogClockMero hmem
 
 /-- **RH-search observability boundary.**  Rational clocks and the unit intensity, closed under
 finite field operations and differentiation, cannot reconstruct the centered Gamma phase. -/

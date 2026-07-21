@@ -1218,3 +1218,503 @@ critical sine polynomials `(S18.5)` for an ordinary cofinal limit. Their nonline
 the full restricted-Weil resolvent is the exact live producer problem.
 
 RH remains open.
+
+## 19. Finite-shift nonlinear integration is a flat projective resolvent holonomy
+
+Section 18 left one explicit question: can the arithmetic-complete free-boundary velocity be
+integrated through a finite Suzuki shift without perturbative remainders or arbitrary pole
+labeling?  The answer is yes at the full meromorphic-carrier level.
+
+### 19.1 A stronger global-flow conjecture was rejected
+
+At fixed aperture every Suzuki extension eigenvalue is real and simple, and the resolvent source
+depends analytically on an admissible shift.  This gives local real-analytic pole curves by the
+implicit-function theorem.  It does **not** give globally labeled curves over the full shift
+interval: simplicity prevents collisions but does not prevent a labeled zero escaping to infinity
+at a finite parameter.  No available theorem supplies the needed properness or uniform zero count.
+
+The result below avoids that missing premise and integrates the entire carrier directly.
+
+### 19.2 Exact endpoint transport
+
+Fix `a>0`, put
+
+```text
+R_r=(A_a+rI)^(-1),
+u_r=R_r e^x,
+F_r(z)=integral_[-a,a] u_r(x) exp(i z x) dx,
+
+Theta_r(z)=((z-i)F_r(z))/((z+i)F_r(-z)).                 (S19.1)
+```
+
+For admissible `r,s`, define
+
+```text
+J_(s,r)(z)=Fourier[R_s R_r e^x](z),
+D_(s,r)(z)=J_(s,r)(z)F_r(-z)-F_r(z)J_(s,r)(-z).          (S19.2)
+```
+
+The second resolvent identity gives
+
+```text
+F_s=F_r+(r-s)J_(s,r).                                    (S19.3)
+```
+
+Subtraction of the two projective carriers now yields the exact finite law
+
+```text
+Theta_s(z)-Theta_r(z)
+ =((z-i)/(z+i))
+   *(r-s)D_(s,r)(z)/(F_s(-z)F_r(-z)).                    (S19.4)
+```
+
+There is no asymptotic sign, Taylor remainder, or small-shift condition in `(S19.4)`.
+
+Define the endpoint transport
+
+```text
+H_(s<-r)(z)
+ =F_s(z)F_r(-z)/(F_s(-z)F_r(z)).                         (S19.5)
+```
+
+Then
+
+```text
+Theta_s=H_(s<-r)Theta_r,
+
+H_(s<-r)-1
+ =(r-s)D_(s,r)/(F_s(-z)F_r(z)).                          (S19.6)
+```
+
+### 19.3 Nonlinear source evolution becomes flat after projectivization
+
+For any three admissible shifts,
+
+```text
+H_(t<-r)=H_(t<-s)H_(s<-r).                               (S19.7)
+```
+
+Every intermediate transform cancels from the cross ratios.  Consequently two different finite
+paths with the same endpoints have identical projective holonomy.  This applies equally to a
+multi-parameter activation of Suzuki's finitely many prime-step operators at fixed aperture:
+operator resolvent dressings are nonlinear, but their scalar reflected carrier transport is
+endpoint-only.  Prime-activation order and path subdivision introduce no new obstruction.
+
+### 19.4 Exact local pole equation is the diagonal of the finite law
+
+Let
+
+```text
+G_r(z)=Fourier[R_r^2 e^x](z),
+Xi_r(z)=G_r(-z)/F_r(-z)-G_r(z)/F_r(z).                   (S19.8)
+```
+
+Since `partial_r R_r=-R_r^2`,
+
+```text
+partial_r Theta_r=Theta_r Xi_r,
+
+Xi_r(z)
+ =-[G_r(z)F_r(-z)-F_r(z)G_r(-z)]/[F_r(z)F_r(-z)].        (S19.9)
+```
+
+At a local simple real pole `Theta_r(x(r))=1`, write
+
+```text
+partial_z Theta_r(x)=i q_r(x),
+mu_r({x})=2/q_r(x).
+```
+
+The exact nonlinear support equation is
+
+```text
+x'(r)=i mu_r({x})Xi_r(x)/2.                              (S19.10)
+```
+
+Real source reflection makes `Xi_r(x)` purely imaginary, so `(S19.10)` is real.  At the free
+prime-step endpoint, `(S19.10)` specializes to the explicit velocity `(S18.3)`.
+
+Full proof and hostile audit:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-finite-shift-flat-projective-resolvent-holonomy.md`
+
+### 19.5 Lean status
+
+New source-specific module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteShiftProjectiveHolonomy.lean`
+
+Formal capstones:
+
+```text
+suzukiProjectiveSourceTransport_comp
+suzukiProjectiveSourceTransport_path_independent
+suzukiProjectiveSourceTransport_finiteShift_sub_one
+suzukiFourierLivsic_eq_transport_mul
+suzukiFourierLivsic_finiteShift_sub
+suzukiFourierLivsic_finiteShift_dividedDifference
+suzukiLogarithmicSourceGenerator_eq_neg_reflectionTangent
+suzukiImplicitPoleVelocity_eq_clarkTransport
+```
+
+The formal layer proves the exact projective algebra and its connectors.  The unbounded-operator
+second-resolvent identity remains paper-level until Suzuki's concrete Friedrichs operator is in
+Lean.
+
+### 19.6 Revised open core
+
+The following chain is now closed unconditionally at fixed aperture:
+
+```text
+prime-power source atom
+  -> exact free-pole velocity
+  -> finite two-resolvent carrier response
+  -> flat endpoint projective holonomy.                  (S19.11)
+```
+
+Do not return to local perturbation series or attempt to order prime activations; `(S19.7)` removes
+both issues.  The remaining frontier is one cofinal endpoint theorem:
+
+```text
+choose intrinsic admissible endpoints (r_a,s_a)
+  -> prove compact-open tightness and divisor control for H_(s_a<-r_a)
+  -> identify its limiting poles and Clark weights with the Xi/de Branges divisor.
+                                                                    (S19.12)
+```
+
+Equivalently, control the normalized dressed determinants in `(S19.4)` or `(S19.6)`.  This is a
+global cofinal compactness/divisor problem, no longer a finite-shift integration problem.
+
+RH remains open.
+
+## 20. Global phase conjugacy closes the finite-shift pole-escape wall
+
+Section 19 deliberately stopped short of globally labeled pole curves: simplicity alone does not
+prevent a local implicit branch from escaping to infinity at a finite shift.  That warning was
+correct but incomplete.  The Donoghue spectral law from Section 16 supplies a different
+properness mechanism that does not use zero estimates.
+
+### 20.1 Cyclic pure-point support forces a global phase chart
+
+For each admissible fixed-aperture shift `r`, write
+
+```text
+m_r=i(1+Theta_r)/(1-Theta_r).
+```
+
+The finite-aperture Donoghue measure is pure point and is the spectral probability of a cyclic
+deficiency vector.  Suzuki's Hilbert space is infinite dimensional, so this probability cannot
+have finite support.  It is even, has no atom at zero, and its meromorphic support has no finite
+accumulation.  Hence it has infinitely many atoms in both real directions.
+
+The unimodular real boundary carrier has the uniquely normalized lift
+
+```text
+Theta_r(x)=exp(i phi_r(x)),
+phi_r(0)=pi.                                             (S20.1)
+```
+
+Away from Clark poles,
+
+```text
+phi_r'(x)=2m_r'(x)/(1+m_r(x)^2)>0,                       (S20.2)
+```
+
+while at a pole of mass `mu_r({x})`,
+
+```text
+phi_r'(x)=2/mu_r({x})>0.                                 (S20.3)
+```
+
+Because the phase assumes infinitely many distinct values in `2 pi Z` in both directions,
+
+```text
+phi_r : R -> R
+```
+
+is a strictly increasing real-analytic bijection.  This is the properness missing from the local
+argument in Section 19.
+
+### 20.2 One diffeomorphism transports every extension divisor
+
+For two admissible shifts define
+
+```text
+T_(s<-r)=phi_s^(-1) o phi_r.                             (S20.4)
+```
+
+Then `T_(s<-r)` is an orientation-preserving real-analytic diffeomorphism and
+
+```text
+T_(r<-r)=id,
+T_(t<-r)=T_(t<-s) o T_(s<-r).                           (S20.5)
+```
+
+Suzuki's angle-`theta` spectrum has the global labels
+
+```text
+x_(theta,k)(r)=phi_r^(-1)(theta+pi+2 pi k),   k in Z.    (S20.6)
+```
+
+Therefore
+
+```text
+T_(s<-r)(x_(theta,k)(r))=x_(theta,k)(s)                 (S20.7)
+```
+
+for every extension angle and every label simultaneously.  Every curve is real analytic on the
+whole admissible shift interval; distinct labels never collide, and no fixed label can escape at
+an interior shift.  Escape remains possible only at an admissible endpoint, at infinite shift, or
+in the changing-aperture limit.
+
+### 20.3 Phase density, Clark masses, and source norms move together
+
+Differentiating the defining phase identity gives
+
+```text
+phi_s'(T(x))T'(x)=phi_r'(x).                             (S20.8)
+```
+
+Thus the complete phase-speed density is transported, and each consecutive phase cell has exact
+mass `2 pi`.  At an even-extension pole, `(S20.3)` turns `(S20.8)` into
+
+```text
+mu_s({T(x)})=T'(x)mu_r({x}).                             (S20.9)
+```
+
+The normalized Donoghue spectral probabilities obey
+
+```text
+nu_s({T(x)})
+ =T'(x)(1+x^2)/(1+T(x)^2) nu_r({x}).                    (S20.10)
+```
+
+Substitution of the restricted-Weil source formula gives the exact new norm transference law
+
+```text
+(1+T(x)^2)|F_s(-T(x))|^2/(N_s||v_(s,T(x))||_(T_s)^2)
+ =T'(x)(1+x^2)|F_r(-x)|^2/(N_r||v_(r,x)||_(T_r)^2).     (S20.11)
+```
+
+So the global flow carries support, order, atom mass, Fourier deficiency amplitude, and extension
+eigenvector norm as one object.
+
+Finally, comparison of
+
+```text
+partial_r Theta_r=Theta_r Xi_r
+```
+
+with `(S20.1)` gives `partial_r phi_r=-i Xi_r`.  Each globally labeled even pole therefore solves
+
+```text
+x_k'(r)=i mu_r({x_k(r)})Xi_r(x_k(r))/2,                 (S20.12)
+```
+
+which proves that Section 19's local Clark velocity is the infinitesimal generator of this global
+divisor-measure flow.
+
+Full proof and hostile audit:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-global-phase-conjugacy-divisor-flow.md`
+
+### 20.4 Lean status
+
+New source-specific module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiGlobalPhaseConjugacy.lean`
+
+Formal capstones:
+
+```text
+suzukiPhaseTransport_comp
+suzukiPhaseTransport_pole
+suzukiPhasePole_lt_phasePole
+suzukiPhaseTransport_phaseSpeed
+suzukiPhaseTransport_atomMass
+suzukiPhaseTransport_probabilityMass
+suzukiPhaseTransport_sourceNormWeight
+suzukiGlobalPoleVelocity_eq_sourceGenerator
+```
+
+Exact source check, exact module build, SOTA import check, and axiom audit pass.  The exported
+theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+### 20.5 Revised open core
+
+The finite-aperture chain is now closed through the complete weighted divisor:
+
+```text
+prime-power source atom
+  -> exact free-pole velocity
+  -> finite projective holonomy
+  -> global all-extension phase conjugacy
+  -> exact Clark/source-weight Jacobian.                 (S20.13)
+```
+
+The remaining frontier is no longer global pole existence or separate residue control.  It is one
+cofinal compactness-and-identification theorem:
+
+```text
+choose intrinsic admissible r_a
+  -> normalize the inverse-phase maps phi_(a,r_a)^(-1)
+  -> prove compactness together with first derivatives at the phase lattice
+  -> identify the limiting weighted lattice with the Xi/de Branges divisor. (S20.14)
+```
+
+That single inverse-phase object contains the pole support and all Clark weights.  Ground escape
+and free clock homogenization are precisely degenerations of this object at the cofinal boundary.
+
+RH remains open.
+
+## 21. Compactified inverse-phase holography solves the cofinal topology wall
+
+Section 20 left compactness of inverse phases and their lattice derivatives as separate tasks.
+They are not separate.  Cayley compactification turns both into one fixed-label jet object and
+exposes the exact defect that can still obstruct an Xi limit.
+
+### 21.1 The forced Cayley zero gives a sharp global speed cap
+
+For any normalized proper Suzuki phase, set
+
+```text
+X(y)=phi^(-1)(pi+y),
+U(y)=arctan X(y).                                       (S21.1)
+```
+
+The normalization `Theta(i)=0` factors
+
+```text
+Theta(z)=((z-i)/(z+i))S(z),                             (S21.2)
+```
+
+with residual meromorphic inner factor `S`.  Its boundary phase speed is nonnegative, so
+
+```text
+q(x)=phi'(x)>=2/(1+x^2).                                (S21.3)
+```
+
+Inverse differentiation now gives the sharp law
+
+```text
+U'(y)=1/[q(X(y))(1+X(y)^2)],
+0<U'(y)<=1/2.                                           (S21.4)
+```
+
+Hence every `U` is odd, increasing, valued in `(-pi/2,pi/2)`, and globally `1/2`-Lipschitz.
+Every aperture/shift sequence therefore has a locally uniformly convergent subsequence on the
+whole phase line.  This is unconditional and uses no zero estimate.
+
+### 21.2 One fixed lattice jet reconstructs the moving probability
+
+Use the fixed odd-`pi` lattice
+
+```text
+y_k=(2k-1)pi,             k in Z.                       (S21.5)
+```
+
+Then `pi+y_k=2pi k`, so the even Clark pole and its normalized Donoghue mass are exactly
+
+```text
+x_k=tan U(y_k),
+nu({x_k})=2U'(y_k),
+sum_(k in Z) 2U'(y_k)=1.                                (S21.6)
+```
+
+Thus
+
+```text
+nu=sum_(k in Z) 2U'(y_k) delta_(tan U(y_k)).             (S21.7)
+```
+
+Pole positions and weights are not two convergence problems: values and derivative samples of
+one compactified inverse phase recover the full spectral probability.
+
+### 21.3 Every cofinal limit has a canonical residual decomposition
+
+For an arbitrary cofinal sequence define
+
+```text
+p_(n,k)=2U_n'(y_k),
+sigma_n=(arctan)_*nu_n
+       =sum_k p_(n,k) delta_(U_n(y_k)).                  (S21.8)
+```
+
+After one diagonal subsequence,
+
+```text
+U_n -> U_infinity locally uniformly,
+p_(n,k) -> p_k for every k,
+sigma_n -> sigma weakly.                                (S21.9)
+```
+
+Writing `u_k=U_infinity(y_k)`, positivity and finite-label convergence imply
+
+```text
+sigma_lab=sum_k p_k delta_(u_k),
+sigma>=sigma_lab,
+sigma_res:=sigma-sigma_lab>=0,
+sigma_res(total)=1-sum_k p_k.                           (S21.10)
+```
+
+This is the exact cofinal classification: a fixed-label atomic survivor plus a unique positive
+phase-label-escape residual.  No derivative convergence of `U_infinity` is assumed; the bounded
+lattice derivatives are extracted as independent coordinates.
+
+If `sum_k p_k=1` and every `|u_k|<pi/2`, then `sigma_res=0`, the physical measures are tight, and
+
+```text
+nu_n -> sum_k p_k delta_(tan u_k).                       (S21.11)
+```
+
+Positivity of every `p_k` and strict increase of `u_k` preserve an infinite simple two-sided
+divisor.  Conversely, `(S21.10)` separates label escape, endpoint escape, and label coalescence.
+
+### 21.4 The two universal boundary states occupy different strata
+
+For the free clock, every fixed label collapses to zero and its mass vanishes, while the full
+compactified probability tends to normalized Lebesgue measure:
+
+```text
+U_infinity=0,
+sigma_lab=0,
+sigma_res=du/pi.                                        (S21.12)
+```
+
+For the ground Cayley carrier, the generalized compactified inverse is the clipped ramp
+
+```text
+U_ground(y)=clip(y/2,-pi/2,pi/2),                        (S21.13)
+```
+
+and escape appears at the projective endpoints.  Free-clock homogenization is therefore phase-
+label escape; ground degeneration is physical escape to infinity.  Compactification distinguishes
+them exactly.
+
+Full proof and hostile audit:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-compactified-inverse-phase-lattice-holography.md`
+
+Lean structural core:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedPhaseProfile.lean`
+
+Formal capstones include `suzukiAnchoredPhaseSpeed_floor`,
+`hasDerivAt_suzukiCompactifiedInversePhase`,
+`suzukiPhaseProbabilityMass_eq_two_mul_compactifiedDeriv`,
+`hasSum_two_mul_suzukiCompactifiedDeriv_one`, and
+`suzukiCompactifiedInversePhase_lipschitz`.
+
+### 21.5 Revised open core
+
+Generic cofinal compactness is no longer open.  The remaining source theorem is exact:
+
+```text
+choose an intrinsic admissible schedule
+  -> prove sum_k p_k=1 and |u_k|<pi/2
+  -> eliminate sigma_res
+  -> identify (u_k,p_k) with the Xi/de Branges divisor jets. (S21.14)
+```
+
+Prime tangent tomography and finite-shift holonomy now have a fixed target: control
+`U_n(y_k),U_n'(y_k)` rather than moving poles and residues separately.  RH remains open.

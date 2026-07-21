@@ -10,6 +10,7 @@
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterConditionalInformation.lean` and
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterDataProcessing.lean` and
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterNetworkFusion.lean` and
+  `formal/GaloisForLFunctions/HTGeometry/ZetaJetFreeness.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivFiniteReporterBlindness.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterRankNullity.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterGramFisher.lean` and
@@ -21,7 +22,7 @@
   `n`, visible rank plus blind nullity is exactly `n`; the blind nullity is at least the excess of
   `n` over reporter dimension.  The conclusion applies to every hypertranscendental function and,
   unconditionally, to the Xi logarithmic derivative even after an arbitrary finite
-  Gibbs/finite-clock dressing.
+  Gibbs/finite-clock dressing, and to every finite reporter network observing Riemann-zeta jets.
 
 ## Goal
 
@@ -220,6 +221,7 @@ postprocessing.
 - `finiteDerivativeReporterConditionalInformation_postcomp_le_of_norm_le_one`
 - `finiteDerivativeReporterGram_det_ne_zero_of_postcomp`
 - `finiteDerivativeReporterGram_postcomp_det_ne_zero_iff`
+- `exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse`
 - `exists_nonzero_finiteDerivativeReporterPacket_ker`
 - `exists_nonzero_finiteDerivativeReporterPacket_ker_of_hypertranscendental`
 
@@ -227,7 +229,10 @@ The first theorem assumes only
 `ConstantCoefficientDifferentiallyTranscendental f`.  This is strictly weaker than
 hypertranscendence and therefore enlarges the usable field beyond HT functions.
 
-### Direct RHTower applications
+### Direct zeta/Xi source applications
+
+- `riemannZeta_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket`
+- `exists_riemannZeta_finiteReporterConditionalInformation_dataProcessing_collapse`
 
 - `exists_xiLogDeriv_nonzero_finiteDerivativeReporterPacket_ker`
 - `exists_xiLogDeriv_add_finiteGibbs_nonzero_finiteDerivativeReporterPacket_ker`
@@ -235,6 +240,8 @@ hypertranscendence and therefore enlarges the usable field beyond HT functions.
 - `xiLogDeriv_add_finiteGibbs_finiteDerivativeReporter_rank_nullity`
 - `xiLogDeriv_reporterGram_det_eq_zero_iff_exists_blindPacket`
 - `xiLogDeriv_add_finiteGibbs_reporterGram_det_eq_zero_iff_exists_blindPacket`
+- `xiLogDeriv_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket`
+- `xiLogDeriv_add_finiteGibbs_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket`
 - `exists_xiLogDeriv_finiteReporterConditionalInformation_collapse`
 - `exists_xiLogDeriv_finiteReporterConditionalInformation_dataProcessing_collapse`
 
@@ -246,11 +253,25 @@ kernel dimension counts genuine erased Xi observables.
 The Gram theorems make the corresponding positive design criterion source-explicit: any finite
 Xi reporter truncation is faithful exactly when its reported-jet information matrix is
 nonsingular, and the criterion is unchanged by finite Gibbs dressing.
+The finite-network specializations additionally identify fused Xi singularity with one genuinely
+nonzero derivative packet erased by every reporter in an arbitrary finite dependent family.
+They discharge the generic differential-transcendence premise from an actual Xi zero, both before
+and after finite Gibbs dressing, so the common-blind-packet alternative is unconditional.
 The conditional-information consumer is sharper at the failure boundary: it unconditionally
 locates an order `k` no larger than reporter dimension whose Xi derivative is new before reporting
 but redundant afterwards.  The data-processing consumer uses the same `k` and proves simultaneous
 zero conditional information and reported dependence before and after every downstream linear
 decoder, while retaining the source-level independence witness.
+
+Unconditional Riemann-zeta hypertranscendence discharges the same strongest finite-family
+interface directly: fused Gram singularity is exactly one common nonzero zeta derivative packet
+erased by every reporter.  No redundant source-specific single-panel theorem is added.
+
+The same-witness data-processing law is now generic in HTGeometry.  It selects one order
+`k <= finrank(Y)` that is genuinely new before reporting but has zero conditional information both
+in `Y` and after every linear decoder `Y -> Z`; both reported dependence witnesses use that same
+`k`.  The Xi source theorem now derives from this generic capstone, and zeta has the parallel
+unconditional specialization.
 
 ## Field transfer
 
@@ -399,6 +420,10 @@ the linear algebra.
   `.olean` was absent, followed by a passing direct source check;
 - the finite-network addition, kernel, completeness, and common-blind-packet declarations use only
   `propext`, `Classical.choice`, and `Quot.sound`;
+- the Riemann-zeta finite-network specialization has the same standard-only axiom profile and
+  passes its exact cached module build;
+- the generic same-witness data-processing collapse, refactored Xi source, and zeta specialization
+  all use only `propext`, `Classical.choice`, and `Quot.sound`;
 - the lint gate reports none of the data-processing or finite-network modules as unreachable; the current
   repo-wide lint remains blocked by unrelated modules being added concurrently without umbrella
   imports;

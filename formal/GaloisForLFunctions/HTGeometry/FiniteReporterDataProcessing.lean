@@ -223,6 +223,33 @@ theorem finiteDerivativeReporterGram_postcomp_det_ne_zero_iff
     apply hdecode
     exact hcd
 
+/-- **Same-witness finite-reporter data-processing collapse.**  For a genuine infinite derivative
+clock, some derivative order no larger than reporter dimension is new at the source but redundant
+both before and after every downstream linear decoder. -/
+theorem exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    {f : ℂ → ℂ} (hf : ConstantCoefficientDifferentiallyTranscendental f)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ finrank ℂ Y ∧
+      finiteDerivativeReporterConditionalInformation k f report = 0 ∧
+      finiteDerivativeReporterConditionalInformation k f (decode.comp report) = 0 ∧
+      report (iteratedDeriv k f) ∈
+        finiteDerivativeReporterPreviousSpace k f report ∧
+      decode (report (iteratedDeriv k f)) ∈
+        finiteDerivativeReporterPreviousSpace k f (decode.comp report) ∧
+      iteratedDeriv k f ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) f) := by
+  obtain ⟨k, hk, hzero, hreported, hsource⟩ :=
+    exists_finiteDerivativeReporterConditionalInformation_collapse hf report
+  have hpostzero :=
+    finiteDerivativeReporterConditionalInformation_eq_zero_postcomp decode hzero
+  have hpostreported :=
+    (finiteDerivativeReporterConditionalInformation_eq_zero_iff
+      k f (decode.comp report)).mp hpostzero
+  exact ⟨k, hk, hzero, hpostzero, hreported, hpostreported, hsource⟩
+
 end
 
 end HTGeometry

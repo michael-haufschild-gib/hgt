@@ -1091,3 +1091,357 @@ joint-seam domination, with sign reversal localized on the first nontrivial shel
 - generated formal API was regenerated and `scripts/formal_tools.py lint --check-generated`
   passed;
 - no stale `lake`, `lean`, or formal-tool process remained.
+
+## 24. Frontier advance: modular endpoint is carried by an infinite likelihood ray
+
+The modular seam now has an exact source-level boundary law. See
+
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/theta-likelihood-ray-boundary-residue.md`
+
+and
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodRayBoundaryResidue.lean`.
+
+Write
+
+\[
+g_n=n^2-1,
+\quad A_n=e^{-3g_n/2}n^4,
+\quad R_n=e^{-3g_n/2}\frac32n^2g_n,
+\]
+
+and let $L(B)$ be the already formalized higher-likelihood Laplace response. Its atom-plus-ray
+decomposition gives
+
+\[
+L(B)=\sum_{n\ge2}e^{-Bg_n}\left(A_n+\frac{R_n}{B}\right).
+\]
+
+The new theorem identifies the exact positive residue
+
+\[
+R_*=\sum_{n\ge2}R_n>0,
+\qquad \lim_{B\downarrow0}B L(B)=R_*.
+\]
+
+This is not an estimate. The first term vanishes under boundary scaling and the continuous ray
+sector alone survives. Consequently the positive higher-likelihood measure has infinite total
+mass, and the unscaled response has no finite right-boundary limit. Any finite positive carrier
+necessarily loses the nonzero modular endpoint and therefore cannot replace the ray sector.
+
+More importantly, the residue is forced atom by atom by the theta source itself. If $x_*$ is any
+point with $B(x_*)=\pi e^{2x_*}-3/2=0$, and
+
+\[
+C(x)=4\pi e^{x/2}e^{2x}e^{-\pi e^{2x}}>0,
+\]
+
+then for every natural $n$,
+
+\[
+\operatorname{thetaCuspSourceTerm}(x_*,n)=C(x_*)R_n.
+\]
+
+Hence
+
+\[
+\operatorname{thetaCuspFullSource}(x_*)=C(x_*)R_*>0.
+\]
+
+This explains exactly how modular completion crosses the apparent first-atom zero: the zero is
+cancelled by a positive simple pole supplied by infinite Lebesgue rays. Internal and accessible
+external searches found no prior statement of this nonlinear likelihood-coordinate atomwise law;
+it remains labelled candidate source-specific novelty, with no priority claim.
+
+## 25. Frontier advance: prime shells return in the first boundary layer
+
+Zeroth-order boundary scaling initially exposes a sharp no-go. Since $R_1=0$, every prime
+product shell contains a ground leg and its pure ray-residue phase vanishes identically, together
+with its derivative. Thus the modular endpoint kills every prime shell at order zero.
+
+The positive survivor is stronger and resolves the next transition exactly. Define
+
+\[
+S_n(B)=e^{-Bg_n}(B A_n+R_n).
+\]
+
+The ground coefficient is $S_1(B)=B$. If $p$ is prime, unique factorization leaves only
+$(1,p)$ and $(p,1)$, so the complete scaled shell factors as
+
+\[
+\Phi_p^{\mathrm{scaled}}(B,z)=B S_p(B)\Phi_p(z),
+\qquad
+(\Phi_p^{\mathrm{scaled}})'(B,z)=B S_p(B)\Phi_p'(z).
+\]
+
+For every $B>0$, $S_p(B)>0$; therefore the strict upper-half-plane current from Section 21
+survives throughout the approach to the endpoint. More sharply,
+
+\[
+B^{-1}\Phi_p^{\mathrm{scaled}}(B,z)\longrightarrow R_p\Phi_p(z),
+\qquad
+B^{-1}(\Phi_p^{\mathrm{scaled}})'(B,z)\longrightarrow R_p\Phi_p'(z).
+\]
+
+The limiting first-layer current is $R_p^2$ times the atomic prime current and is strictly
+negative for $\operatorname{Im}z>0$. Prime annihilation is therefore exactly first order, not a
+loss of arithmetic orientation. The carrier is now explicit: ground-atom/higher-ray cross term.
+
+This overcomes the carrier-identification part of the previous open frontier. It does **not** by
+itself authorize insertion into the Fourier window: the two Wigner legs have different intrinsic
+temperatures. Section 27 gives the corrected two-temperature transport. Remaining core is a
+trace-to-bulk theorem from those actual boundary faces into the complete Wigner interior.
+
+Do not return to raw atomic shells, pure ray residue, finite positive carriers, or channelwise
+total positivity. Those routes now have exact closure theorems. RH and global Hedenmalm current
+positivity remain open.
+
+## 26. Verification of the ray-residue and first-layer connector
+
+- direct
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspLikelihoodRayBoundaryResidue.lean` passed;
+- final targeted
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodRayBoundaryResidue` passed;
+- temporary `#print axioms` checks for atomwise boundary law, infinite mass, simple-pole limit,
+  prime-shell annihilation, normalized first-layer limits, and strict first-layer current report
+  only `propext`, `Classical.choice`, and `Quot.sound`;
+- generated formal indexes were regenerated and
+  `scripts/formal_tools.py lint --check-generated` passed;
+- no numerical computation enters any statement or proof.
+
+## 27. Hostile correction: common likelihood temperature is not a Wigner coordinate
+
+The proposed next move in Section 25 fails as originally phrased. In a Wigner pair
+
+\[
+k(y+t)k(y-t),
+\]
+
+the two source legs carry independent intrinsic temperatures
+
+\[
+B_+=B(y+t),\qquad B_-=B(y-t).
+\]
+
+There is no identity $B_+=B_-$ away from the diagonal. Therefore the common-temperature prime
+first-layer theorem cannot be inserted directly into the Fourier/Bezoutian integral. Doing so
+would repeat the category-substitution errors already retired for likelihood moments and
+translation Gram kernels.
+
+The failure points to a stronger representation. Treat $(B_+,B_-)$ as normal-crossing
+coordinates and study the union of the two genuine boundary faces $B_-=0$ and $B_+=0$, rather
+than only the artificial common corner $B_+=B_-=0$.
+
+## 28. New source theorem: prime conormal is rigid along both boundary faces
+
+See
+
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/theta-likelihood-normal-crossing-prime-face.md`
+
+and
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodNormalCrossingPrimeFace.lean`.
+
+First, the scaled likelihood channel is globally the exact theta-atom coefficient. For every real
+$x$ and every natural $n$, with no positivity assumption on $B(x)$,
+
+\[
+\operatorname{thetaCuspSourceTerm}(x,n)
+ =C(x)S_n(B(x)),
+\]
+
+where
+
+\[
+S_n(B)=e^{-B(n^2-1)}(B A_n+R_n).
+\]
+
+This removes all division by $B$: the likelihood ray pole is a feature of splitting the
+coefficient into atom and ray pieces, while their scaled sum is the literal original theta atom.
+
+For independent temperatures define
+
+\[
+\Pi_k(B,D;z)=\sum_{nm=k}S_n(B)S_m(D)
+ e^{\frac{i}{2}(\log n-\log m)z}.
+\]
+
+On the two boundary faces put
+
+\[
+F_k(B;z)=\Pi_k(B,0;z)+\Pi_k(0,B;z).
+\]
+
+If $p$ is prime, its only ordered factor pairs are $(1,p)$ and $(p,1)$. Since
+$S_1(B)=B$, $S_1(0)=0$, and $S_p(0)=R_p$, Lean now proves the exact rigidity law
+
+\[
+F_p(B;z)=B R_p\Phi_p(z),
+\qquad
+F_p'(B;z)=B R_p\Phi_p'(z).
+\]
+
+Thus, for every nonzero face coordinate $B$,
+
+\[
+B^{-1}F_p(B;z)=R_p\Phi_p(z).
+\]
+
+The normalized conormal is independent of position along the face and equals the corner
+first-boundary-layer limit from Section 25. This is the exact transport missing from the invalid
+common-temperature substitution.
+
+The result also holds for literal theta-source traces. At the zero-likelihood point $x_*$, define
+
+\[
+G_k(x;z)=\sum_{nm=k}
+ [\theta_n(x)\theta_m(x_*)+\theta_n(x_*)\theta_m(x)]
+ e^{\frac{i}{2}(\log n-\log m)z}.
+\]
+
+For every prime $p$,
+
+\[
+G_p(x;z)
+ =C(x)C(x_*)B(x)R_p\Phi_p(z).
+\]
+
+All scalar factors are positive when $B(x)>0$. Hence for every
+$\operatorname{Im}z>0$,
+
+\[
+\Im(G_p'(x;z)\overline{G_p(x;z)})<0.
+\]
+
+This is real frontier progress: a prime-oriented phase has been transported from an auxiliary
+equal-temperature corner to actual two-ended theta-source boundary traces. It remains weaker than
+RH. Boundary orientation does not yet control the two-temperature bulk or composite endpoint
+windows, and restricting to prime faces cannot be allowed to factor the completed source through
+a disconnected prime-axis quotient.
+
+The new open core is:
+
+> Prove a source-specific trace-to-bulk identity or positivity law carrying the rigid paired-face
+> current through the complete two-temperature Wigner interior and corrected product-fibre
+> windows while retaining composite coupling.
+
+## 29. Verification of normal-crossing prime-face rigidity
+
+- direct
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspLikelihoodNormalCrossingPrimeFace.lean`
+  passed;
+- final targeted
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodNormalCrossingPrimeFace` passed;
+- temporary `#print axioms` checks for exact source desingularization, prime two-face
+  factorization, normalized conormal rigidity, and both strict-current capstones report only
+  `propext`, `Classical.choice`, and `Quot.sound`;
+- generated formal indexes were regenerated and
+  `scripts/formal_tools.py lint --check-generated` passed;
+- no numerical computation enters any statement or proof, and no Lean or lake process remains.
+
+## 30. Frontier advance: arithmetic normal crossing now reaches the two-temperature bulk
+
+See
+
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/theta-likelihood-swap-bulk-arithmetic-stratification.md`
+
+and
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSwapBulkStratification.lean`.
+
+Section 28 left a precise representation problem: a boundary-face current cannot be transported
+by setting the two Wigner temperatures equal. The correct operation is leg exchange. Define
+
+\[
+\Sigma_k(B,D;z)=\Pi_k(B,D;z)+\Pi_k(D,B;z).
+\]
+
+This retains the independent temperatures and every ordered factor pair. Lean proves, for every
+shell $k$,
+
+\[
+\Sigma_k(B,0;z)=F_k(B;z),
+\qquad
+\Sigma_k(0,0;z)=2\Psi_k(z),
+\]
+
+where $F_k$ is the paired boundary face and $\Psi_k$ is the complete ray--ray corner shell. Thus
+$\Sigma_k$ is an exact two-temperature bulk extension of the earlier boundary object, not a new
+unrelated carrier.
+
+The corner now has a sharp arithmetic interpretation. Put
+
+\[
+M_k=\sum_{nm=k}R_nR_m.
+\]
+
+For every $k>1$, Lean proves the exhaustive classification
+
+\[
+M_k=0\iff k\text{ is prime},
+\qquad
+M_k>0\iff k\text{ is composite}.
+\]
+
+Prime shells vanish at zeroth normal-crossing order because every factorization has a ground leg.
+Every composite shell contains a factorization with both indices at least two, producing one
+strictly positive ray--ray term. This prevents the bulk construction from secretly factoring
+through a disconnected prime-axis quotient: composite coupling is exactly the positive corner
+mass.
+
+For a prime $p$, leg exchange produces a stronger rigidity law throughout the closed nonnegative
+temperature quadrant:
+
+\[
+\Sigma_p(B,D;z)
+ =[B S_p(D)+D S_p(B)]\Phi_p(z).
+\]
+
+If $B,D\ge0$ and $B+D>0$, the scalar is strictly positive. Hence for every
+$\operatorname{Im}z>0$,
+
+\[
+\Im\!\left(
+ \Sigma_p'(B,D;z)\overline{\Sigma_p(B,D;z)}
+\right)<0.
+\]
+
+One theorem now covers both boundary faces and every positive interior point. This is the first
+exact trace-to-bulk transport in the intrinsic two-temperature likelihood coordinates.
+
+The same transport is literal at source level. For the leg-exchange theta trace
+
+\[
+\mathcal S_k(x,y;z)=\sum_{nm=k}
+ [\theta_n(x)\theta_m(y)+\theta_n(y)\theta_m(x)]
+ e^{\frac{i}{2}(\log n-\log m)z},
+\]
+
+the global atomwise source law gives
+
+\[
+\mathcal S_k(x,y;z)
+ =C(x)C(y)\Sigma_k(B(x),B(y);z)
+\]
+
+for every shell, including composites. Prime source traces therefore have strict negative current
+whenever $B(x),B(y)\ge0$, $B(x)+B(y)>0$, and $\operatorname{Im}z>0$.
+
+This advances the frontier but does not prove RH. The swap-invariant algebraic source bulk is now
+under control; the remaining producer is the analytic current of the nonzero composite residual
+together with its exact corrected positive-half-line endpoint windows. Do not return to
+equal-temperature substitution or prime-only quotients.
+
+## 31. Verification of swap-bulk arithmetic stratification
+
+- direct
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSwapBulkStratification.lean`
+  passed without diagnostics;
+- final targeted
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSwapBulkStratification` passed;
+- temporary `#print axioms` checks for boundary restriction, both corner classifiers, prime bulk
+  factorization/current, exact source transport, and literal source current report only `propext`,
+  `Classical.choice`, and `Quot.sound`;
+- generated formal indexes were regenerated and
+  `scripts/formal_tools.py lint --check-generated` passed;
+- no numerical computation enters any statement or proof.

@@ -58,6 +58,27 @@ theorem observablePushforwardMeasure_infiniteSupport
   rw [Measure.map_apply hnode F.measurableSet.compl]
   simpa only [Set.mem_preimage, Set.mem_setOf_eq, Finset.mem_coe] using hinf F
 
+/-- Infinite support of a reported pushforward forces infinite support of the hidden measure.
+No injectivity is needed: the image of every finite hidden palette is still finite. -/
+theorem infiniteSupport_of_observablePushforwardMeasure
+    (mu : Measure X) {node : X → ℝ} (hnode : Measurable node)
+    (hinf : ∀ G : Finset ℝ,
+      0 < observablePushforwardMeasure mu node {y : ℝ | y ∉ G}) :
+    ∀ F : Finset X, 0 < mu {x : X | x ∉ F} := by
+  intro F
+  classical
+  let G : Finset ℝ := F.image node
+  have hG := hinf G
+  rw [observablePushforwardMeasure] at hG
+  change 0 < (Measure.map node mu) ((↑G : Set ℝ)ᶜ) at hG
+  rw [Measure.map_apply hnode G.measurableSet.compl] at hG
+  refine hG.trans_le (measure_mono ?_)
+  intro x hx
+  simp only [Set.mem_preimage, Set.mem_compl_iff, Finset.mem_coe,
+    Set.mem_setOf_eq] at hx ⊢
+  intro hxF
+  exact hx (Finset.mem_image.mpr ⟨x, hxF, rfl⟩)
+
 /-- **Observable-pushforward strict Hankel law.**  A continuum of reported values makes every
 finite observed moment Hankel determinant positive. -/
 theorem det_momentHankelMatrix_pos_of_observable_infiniteSupport

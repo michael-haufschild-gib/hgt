@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MomentHankelStrict
 import GaloisForLFunctions.HTGeometry.MomentFunctionalPositivity
+import GaloisForLFunctions.HTGeometry.MomentCharacterisation
 import GaloisForLFunctions.RHTower.PrimeArchHankelDeterminantCriterion
 
 /-!
@@ -104,6 +105,70 @@ theorem riemannHypothesis_of_primeArchInfiniteSupportMomentRepresentation
     RiemannHypothesis :=
   primeArchSourceMomentHankelDeterminantsPositive_iff_riemannHypothesis.mp
     (primeArchSourceMomentHankelDeterminantsPositive_of_infiniteSupportRepresentation hrep)
+
+/-- RH makes the canonical prime--archimedean moment form positive definite on every nonzero real
+polynomial.  This closes the finite-coordinate bridge from the existing source Hankel hierarchy to
+the abstract Hamburger moment machinery. -/
+theorem positiveMomentForm_normalizedPrimeArchMoment_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    HTGeometry.PositiveMomentForm normalizedPrimeArchMoment := by
+  refine ⟨fun p hp => ?_⟩
+  let n := p.natDegree + 1
+  let a : Fin n → ℝ := Polynomial.toFn n p
+  have hpof : Polynomial.ofFn n a = p := by
+    exact Polynomial.ofFn_comp_toFn_eq_id_of_natDegree_lt (Nat.lt_succ_self _)
+  have ha : a ≠ 0 := by
+    intro ha
+    apply hp
+    rw [← hpof, ha, Polynomial.ofFn_zero]
+  have hpos : (HTGeometry.momentHankelMatrix normalizedPrimeArchMoment n).PosDef := by
+    change (primeArchSourceMomentHankelMatrix n).PosDef
+    rw [primeArchSourceMomentHankelMatrix_eq_xiCentralMomentHankelMatrix]
+    exact (xiCentralMomentHankelPosDef_iff_riemannHypothesis.mpr hRH) n
+  have hquad := hpos.dotProduct_mulVec_pos ha
+  rw [star_trivial, HTGeometry.dotProduct_mulVec_momentHankelMatrix, hpof,
+    ← HTGeometry.momentInner_self] at hquad
+  exact hquad
+
+/-- Positive definiteness of the canonical moment form constructs, rather than assumes, an exact
+finite representing measure with infinite support. -/
+theorem primeArchInfiniteSupportMomentRepresentation_of_positiveMomentForm
+    (hpos : HTGeometry.PositiveMomentForm normalizedPrimeArchMoment) :
+    PrimeArchInfiniteSupportMomentRepresentation := by
+  obtain ⟨ν, _, hmom, hinf⟩ :=
+    (HTGeometry.positiveMomentForm_iff_exists_representing
+      normalizedPrimeArchMoment).mp hpos
+  exact ⟨ν, fun k => (hmom k).2.symm, fun k => (hmom k).1, hinf⟩
+
+/-- RH constructs an exact infinite-support Hamburger representation of every canonical
+prime--archimedean moment. -/
+theorem primeArchInfiniteSupportMomentRepresentation_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    PrimeArchInfiniteSupportMomentRepresentation :=
+  primeArchInfiniteSupportMomentRepresentation_of_positiveMomentForm
+    (positiveMomentForm_normalizedPrimeArchMoment_of_riemannHypothesis hRH)
+
+/-- Infinite-support representation is not an additional producer hypothesis: for the canonical
+prime--archimedean moment tower it is exactly RH. -/
+theorem primeArchInfiniteSupportMomentRepresentation_iff_riemannHypothesis :
+    PrimeArchInfiniteSupportMomentRepresentation ↔ RiemannHypothesis := by
+  constructor
+  · exact riemannHypothesis_of_primeArchInfiniteSupportMomentRepresentation
+  · exact primeArchInfiniteSupportMomentRepresentation_of_riemannHypothesis
+
+/-- RH also constructs the weaker unrestricted positive moment representation. -/
+theorem primeArchMomentRepresentation_of_riemannHypothesis
+    (hRH : RiemannHypothesis) : PrimeArchMomentRepresentation :=
+  primeArchMomentRepresentation_of_infiniteSupport
+    (primeArchInfiniteSupportMomentRepresentation_of_riemannHypothesis hRH)
+
+/-- An unrestricted positive measure represents all canonical prime--archimedean moments exactly
+if and only if RH holds. -/
+theorem primeArchMomentRepresentation_iff_riemannHypothesis :
+    PrimeArchMomentRepresentation ↔ RiemannHypothesis := by
+  constructor
+  · exact riemannHypothesis_of_primeArchMomentRepresentation
+  · exact primeArchMomentRepresentation_of_riemannHypothesis
 
 end
 

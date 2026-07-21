@@ -28,14 +28,35 @@ actual normalized Xi-shift valuation innovations
   -> coefficientwise source-to-completed-response exterior intertwiner       [OPEN]
   -> rooted second compound + pure tangent third compound + signed Jordan join
   -> three-node response controls transverse charge                          [OPEN]
-  -> all-degree prime--Gamma Hankel / Weil positivity                         [OPEN]
+  -> integer-polynomial squared-Euler charge domination                       [OPEN; RIGHTMOST]
+  -> all-degree prime--Gamma Hankel / Weil positivity                         [LEAN-CLOSED]
   -> RH.
 ```
 
-The new fact is that the source **already produces the missing third exterior order**. Do not spend
-another session trying to manufacture a third compound using a generic Gram completion. The live
-frontier is to prove that the actual completed causal response receives this source exterior cube
-with the correct coefficientwise sign and normalization.
+The source **already produces the missing third exterior order**. Do not spend another session
+trying to manufacture a third compound using a generic Gram completion. Backward traversal must
+nevertheless attack the rightmost open node first: discharge
+`XiSquaredEulerApertureIntChargeDominated`.  The exact infinite-summability, multiplicity grouping,
+and implication from that condition through complete Weil positivity to RH are now formalized in
+`XiSquaredEulerAllDegreeChargeCriterion`; no separate all-degree connector remains.  Return to the
+upstream exterior intertwiner only if the charge condition has first been reduced or obstructed.
+
+The direct source edge is now also closed, without passing through RH:
+
+```text
+coupled-Sonin finite moment/Gram producer                              [OPEN CONSTRUCTION]
+  -> PrimeArchSourceTraceHankelIntNonnegative                         [LEAN-CLOSED]
+  <-> XiSquaredEulerApertureIntChargeDominated                        [LEAN-CLOSED]
+  -> complete square-summable Xi Weil positivity                      [LEAN-CLOSED]
+  -> RH.                                                               [LEAN-CLOSED]
+```
+
+The new equivalence is
+`xiSquaredEulerApertureIntChargeDominated_iff_primeArchSourceTraceHankelIntNonnegative`.
+Moment-measure, finite-KMS, Sonin-barycenter, and coupled-Sonin hypotheses already construct the
+source Hankel condition conditionally.  Do not add wrappers for them.  Work on an actual producer,
+preferably the source-specific coupled-Sonin variational/finite-Gram condition, or prove `(AH9)`
+directly.
 
 ## 2. Mandatory initialization and working rules
 
@@ -601,7 +622,8 @@ completed theta / prime--Gamma source
   -> exact father/detail decomposition and stiffness/tangent subtraction
   -> source exterior cube and coefficientwise completed-response intertwiner
   -> off-diagonal response dispersion cancels transverse Jordan charge
-  -> complete signed prime--Gamma Hankel / Weil positivity
+  -> integer-polynomial squared-Euler charge domination
+  -> complete signed prime--Gamma Hankel / Weil positivity                   [Lean connector closed]
   -> every Xi zero is critical.
 ```
 
@@ -698,7 +720,8 @@ The next session has made real progress only if it does at least one of the foll
 3. refutes a concrete intertwiner and extracts a sharp positive classification or unique surviving
    response channel, then formalizes it;
 4. proves that the exterior response controls the actual transverse charge rather than a surrogate;
-5. establishes an all-degree lift from the source aperture cone to Weil positivity;
+5. discharges or strictly reduces `XiSquaredEulerApertureIntChargeDominated`, whose all-degree
+   lift to Weil positivity and RH is already formalized;
 6. closes Open Core A or B with a source theorem strong enough to feed Open Core C.
 
 It is not progress to add a name for the desired map, assume its positivity, restate RH, prove a

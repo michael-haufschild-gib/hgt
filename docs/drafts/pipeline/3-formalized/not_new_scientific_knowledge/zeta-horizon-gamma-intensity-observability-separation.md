@@ -28,8 +28,11 @@ translation orbit.  Zeta's quarter shift prevents that collapse.
 4. Rule out every DA multiplicative calibration from zeta intensity to zeta phase.
 5. Rule out every scalar-aware finite differential circuit from the DA horizon intensity to the HT
    zeta intensity.
+6. Every finite rational generator packet containing zeta's HT intensity has a generator derivative
+   outside the packet.
+7. The same positive escape holds when the packet contains the HT phase/intensity quotient.
 
-All five statements are now unconditional Lean theorems.  The fifth is the cross-domain positive
+All seven statements are now unconditional Lean theorems.  The fifth is the cross-domain positive
 separation: a Planck/horizon intensity cannot serve as the sole non-scalar atom of any finite
 differential reconstruction of zeta's archimedean intensity.
 
@@ -67,6 +70,7 @@ an HT source unavailable to finite differential post-processing.
   the object.
 - The direct single-file Lean check completed successfully.
 - The four capstone axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`.
+- The two finite-generator escape capstones have the same standard-only axiom profile.
 - The Lean source contains no active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` token.
 
 ## Log
@@ -75,3 +79,5 @@ an HT source unavailable to finite differential post-processing.
 - 2026-07-17 -- zeta intensity survival, phase/intensity inequivalence, and horizon-to-zeta finite
   circuit obstruction formalized and narrowly verified; promoted to stage 3.
 - 2026-07-17 -- refactored onto the existing thermal-CFT symmetric Gamma boundary and reverified.
+- 2026-07-21 -- connected the intensity and phase/intensity quotient HT sources to the positive
+  finite-generator derivative-escape boundary; exact cached build and axiom audit pass.

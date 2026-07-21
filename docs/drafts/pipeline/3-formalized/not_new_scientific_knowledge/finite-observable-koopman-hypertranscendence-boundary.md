@@ -5,7 +5,8 @@
 - **Type:** THEOREM, `[GENERAL HT]`, `[ML/AI BRIDGE]`, `[POSITIVE ESCAPE LAW]`
 - **Scientific status:** `[LEAN-VERIFIED] [STANDARD FINITE-RANK PARENT THEORY] [NOT AN RH PROOF]`
 - **Formal module:**
-  `formal/GaloisForLFunctions/HTGeometry/FiniteObservableKoopmanBoundary.lean`
+  `formal/GaloisForLFunctions/HTGeometry/FiniteObservableKoopmanBoundary.lean` and
+  `formal/GaloisForLFunctions/RHTower/XiJetFreeness.lean`
 
 ## Result
 
@@ -51,6 +52,30 @@ Thus an HT clock has an observable tower that escapes every fixed finite feature
 finite learned model may be approximate, but exact derivative closure has a certified failure at
 some observable depth.  This is the nontrivial positive statement retained from the finite-model
 no-go.
+
+The exact finite-rank strengthening is sharper.  If `S` is any finite set of derivative orders
+whose corresponding observables all lie in `V`, then
+
+```text
+card(S) <= finrank_C(V).                                    (6)
+```
+
+Only constant-coefficient differential transcendence is needed for `(6)`.  Taking
+`S = {0,...,finrank(V)}` proves the bounded escape law
+
+```text
+there exists n <= finrank_C(V) such that f^(n) notin V.     (7)
+```
+
+For the completed Xi function, unconditional `xi_hypertranscendental` discharges the source
+premise.  The theorems `xi_iteratedDeriv_mem_finset_card_le_finrank` and
+`exists_xi_iteratedDeriv_not_mem_le_finrank` therefore expose `(6)--(7)` directly in RHTower,
+without RH or a model-invariance assumption.
+
+Unconditional `hypertranscendental_riemannZeta` now discharges the same interface for the Riemann
+zeta function.  `riemannZeta_iteratedDeriv_mem_finset_card_le_finrank` and
+`exists_riemannZeta_iteratedDeriv_not_mem_le_finrank` give the exact capacity and bounded-escape
+laws without any zero-location premise.
 
 ## ML/AI relation
 
@@ -142,6 +167,9 @@ whether that escape lower bound feeds an existing Gram/Hankel or orientation con
 - [x] finite exact observable closure implies differential algebraicity
 - [x] HT excludes every finite exact invariant observable model
 - [x] HT derivative tower escapes every finite-dimensional observable space
+- [x] arbitrary finite captured jet sets obey the exact dimension capacity bound
+- [x] completed Xi escapes by derivative order at most the dictionary dimension
+- [x] Riemann zeta obeys the same finite-rank capacity and bounded-escape laws
 - [ ] quantitative source-uniform escape residual for prime--Gamma observables
 - [ ] feed such a residual into an existing strict Gram/Hankel or orientation theorem
 - [ ] RH

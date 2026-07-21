@@ -1,5 +1,8 @@
 import GaloisForLFunctions.HTGeometry.DifferentialOrder
 import GaloisForLFunctions.HTGeometry.EntireJetEvaluation
+import GaloisForLFunctions.HTGeometry.FiniteObservableKoopmanBoundary
+import GaloisForLFunctions.HTGeometry.FiniteReporterDataProcessing
+import GaloisForLFunctions.HTGeometry.FiniteReporterNetworkFusion
 import GaloisForLFunctions.HTGeometry.HypertranscendentalPointJetFreeness
 import GaloisForLFunctions.RHTower.XiHypertranscendenceUnconditional
 
@@ -51,5 +54,64 @@ finite order. -/
 theorem xi_not_differentiallyAlgebraicOfOrder (n : ℕ) :
     ¬ DifferentiallyAlgebraicOfOrder xi n :=
   xi_hypertranscendental.not_differentiallyAlgebraicOfOrder n
+
+/-- **Exact Xi finite-dictionary jet capacity.**  Every finite set of completed-Xi derivative
+observables captured by a finite-dimensional function space has cardinality at most that space's
+dimension. -/
+theorem xi_iteratedDeriv_mem_finset_card_le_finrank
+    (V : Submodule ℂ (ℂ → ℂ)) [FiniteDimensional ℂ V]
+    (s : Finset ℕ) (hmem : ∀ n ∈ s, iteratedDeriv n xi ∈ V) :
+    s.card ≤ Module.finrank ℂ V :=
+  HTGeometry.iteratedDeriv_mem_finset_card_le_finrank_of_constantCoefficientDifferentiallyTranscendental
+    V (HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
+      xi_hypertranscendental) s hmem
+
+/-- Some completed-Xi derivative among orders at most `finrank V` escapes every fixed
+finite-dimensional observable dictionary `V`. -/
+theorem exists_xi_iteratedDeriv_not_mem_le_finrank
+    (V : Submodule ℂ (ℂ → ℂ)) [FiniteDimensional ℂ V] :
+    ∃ n ≤ Module.finrank ℂ V, iteratedDeriv n xi ∉ V :=
+  HTGeometry.exists_iteratedDeriv_not_mem_le_finrank_of_constantCoefficientDifferentiallyTranscendental
+    V (HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
+      xi_hypertranscendental)
+
+/-- **Unconditional finite-network completed-Xi Gram alternative.**  Fused reporter information
+is singular exactly when every reporter erases one common genuinely nonzero Xi derivative
+packet. -/
+theorem xi_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+    (N : ℕ) {ι : Type*} [Fintype ι]
+    {Y : ι → Type*}
+    [∀ a, NormedAddCommGroup (Y a)] [∀ a, InnerProductSpace ℂ (Y a)]
+    (report : ∀ a, (ℂ → ℂ) →ₗ[ℂ] Y a) :
+    (HTGeometry.finiteDerivativeReporterGram N xi
+      (HTGeometry.finiteFamilyDerivativeReporter report)).det = 0 ↔
+      ∃ c : Fin N → ℂ,
+        (∀ a, report a (HTGeometry.finiteDerivativeReporterPacket c xi) = 0) ∧
+        HTGeometry.finiteDerivativeReporterPacket c xi ≠ 0 := by
+  apply HTGeometry.finiteDerivativeReporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+  exact HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
+    xi_hypertranscendental
+
+/-- **Completed-Xi data-processing no-recovery law.**  Some derivative order no larger than the
+reporter dimension is new at the Xi source but redundant both before and after every downstream
+linear decoder. -/
+theorem exists_xi_finiteReporterConditionalInformation_dataProcessing_collapse
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ Module.finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k xi report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k xi
+        (decode.comp report) = 0 ∧
+      report (iteratedDeriv k xi) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k xi report ∧
+      decode (report (iteratedDeriv k xi)) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k xi (decode.comp report) ∧
+      iteratedDeriv k xi ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) xi) := by
+  apply HTGeometry.exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse
+  exact HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
+    xi_hypertranscendental
 
 end RHTower

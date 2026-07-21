@@ -41,6 +41,11 @@ Its logarithmic phase current `R'/R` also remains HT.  More precisely, it is the
 Wigner--Smith current of the reciprocal frequency-reflected carrier.  This supplies a standard
 derivative observation that retains the source after the modulus channel has collapsed.
 
+The finite-generator obstruction is positive at both surviving channels.  Every finite rational
+state field containing the phase, or containing the logarithmic current, has at least one chosen
+generator whose derivative is outside that field.  No analogous conclusion is asserted for the
+intensity: it is exactly `1` and therefore differentially algebraic.
+
 ## Corpus value
 
 This discharges the missing observation-channel classification for
@@ -63,6 +68,8 @@ Capstones:
 - `no_scalarAwareFiniteDifferentialCircuit_centeredZetaGammaPhase_from_intensity`
 - `centeredZetaGammaWignerSmithLogClockMero_eq_neg_reflectedFrequency`
 - `hypertranscendentalOver_centeredZetaGammaWignerSmithLogClockMero`
+- `exists_generator_deriv_escape_of_centeredZetaGammaPhaseObservationMero`
+- `exists_generator_deriv_escape_of_centeredZetaGammaWignerSmithLogClockMero`
 - `no_scalarAwareFiniteDifferentialCircuit_centeredZetaGammaWignerSmith_from_intensity`
 
 The exact module target and direct file check pass.  All audited capstones depend only on
@@ -86,3 +93,5 @@ and is not an RH proof.
 - 2026-07-17 — added the centered Wigner--Smith/logarithmic-current channel.  Direct source
   verification passes; its exact reciprocal-current relation, HT theorem, and finite-circuit
   non-recovery theorem have only the standard three axioms.
+- 2026-07-21 — specialized the positive finite-generator derivative-escape theorem to the HT phase
+  and logarithmic-current channels; exact cached module build and standard-only axiom audit pass.

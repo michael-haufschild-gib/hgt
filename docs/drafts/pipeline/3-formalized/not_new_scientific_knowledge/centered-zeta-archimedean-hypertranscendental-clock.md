@@ -34,6 +34,12 @@ the same global meromorphic differential field.  The complete centered archimede
 admits no finite algebraic state realization.  Its reciprocal is also HT and admits no finite
 algebraic state realization, by the reusable unconditional inversion transport theorem.
 
+The positive finite-generator form is now explicit.  If any finite rational state field generated
+by coordinates `s_i` contains the reflected Gamma clock, complete exponential-dressed clock, or
+its reciprocal, then at least one derivative `D(s_i)` lies outside that generated field.  Thus the
+source obstruction identifies a concrete failed closure edge in every proposed finite generator
+presentation, rather than recording only the negation of an abstract finite-state predicate.
+
 This is a source-complexity theorem for the known archimedean factor.  It does not constrain zeta
 zeros, prove an RH criterion's positivity, couple the archimedean clock to the prime source, or
 upgrade any existing RH equivalence to a proof.
@@ -57,6 +63,9 @@ Theorems:
 - `RHTower.hypertranscendentalOver_inv_centeredZetaChiMero`
 - `RHTower.not_finiteAlgebraicStateObservable_inv_centeredZetaChiMero`
 - `RHTower.not_finiteAlgebraicStateObservable_centeredZetaChiMero`
+- `RHTower.exists_generator_deriv_escape_of_centeredZetaGammaReflectionMero`
+- `RHTower.exists_generator_deriv_escape_of_centeredZetaChiMero`
+- `RHTower.exists_generator_deriv_escape_of_inv_centeredZetaChiMero`
 - `RHTower.pi_cpow_two_mul_eq_physicalExponentialValue`
 - `RHTower.zetaChi_centered_eq`
 - `RHTower.zetaChi_centered_eq_centeredZetaChiValue`
@@ -75,3 +84,6 @@ Verification:
 - 2026-07-17 — the general orientation-quotient theorem removed the center-separation proof from
   the RH specialization; inversion transport added the reciprocal complete-clock HT and
   finite-state obstruction.  Cached exact-module verification and the capstone axiom audit pass.
+- 2026-07-21 — the generic positive finite-generator escape theorem was specialized to the
+  reflected, complete, and reciprocal centered-zeta archimedean clocks; exact cached build and
+  standard-only axiom audit pass.

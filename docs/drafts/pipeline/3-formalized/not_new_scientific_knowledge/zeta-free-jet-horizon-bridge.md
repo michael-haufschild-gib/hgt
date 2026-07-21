@@ -32,6 +32,20 @@ AlgebraicIndependent C
 Thus the complete Riemann-zeta derivative family is formally certified as a free jet family over
 the constant field.
 
+The exact finite-rank capacity consequence is now exposed at the same source interface.  If a
+finite-dimensional function space `V` contains zeta derivatives at every order in a finite set
+`S`, then
+
+```text
+card(S) <= finrank_C(V).                                  (3)
+```
+
+Taking `S={0,...,finrank(V)}` gives a bounded witness:
+
+```text
+there exists n <= finrank_C(V) with zeta^(n) notin V.     (4)
+```
+
 ## Proof
 
 For a finite initial family, a nonzero polynomial relation among
@@ -51,6 +65,10 @@ Hypertranscendental.algebraicIndependent_initialJets
 Hypertranscendental.algebraicIndependent_iteratedDeriv
 algebraicIndependent_riemannZeta_initialJets
 algebraicIndependent_riemannZeta_iteratedDeriv
+riemannZeta_iteratedDeriv_mem_finset_card_le_finrank
+exists_riemannZeta_iteratedDeriv_not_mem_le_finrank
+riemannZeta_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+exists_riemannZeta_finiteReporterConditionalInformation_dataProcessing_collapse
 ```
 
 ## Verification
@@ -59,6 +77,17 @@ algebraicIndependent_riemannZeta_iteratedDeriv
 - targeted builds of both bridge leaves: passed
 - axiom audit of all four declarations: only `propext`, `Classical.choice`, and `Quot.sound`
 - no full build was run
+
+The two capacity declarations were subsequently checked directly, built through the exact cached
+module target, and audited with the same standard-only axiom profile.
+
+The finite-family reporter capstone further identifies singular fused zeta-jet information with
+one genuinely nonzero derivative packet erased by every network member.  It is the strongest
+finite-network form; a separate single-panel wrapper is unnecessary.
+
+The downstream capstone selects one derivative order no larger than reporter dimension which is
+new in the zeta source yet redundant both before and after every linear decoder.  It specializes a
+new generic same-witness theorem shared with the Xi logarithmic-derivative source.
 
 ## Scientific status
 
@@ -73,3 +102,11 @@ projective-horizon theorems.
 applicable to `zeta` without adding a conjectural freeness assumption. It still says nothing about
 where the zero level of `zeta` lies, because algebraic jet freeness is divisor-blind.
 
+## Log
+
+- 2026-07-21 -- connected the unconditional zeta source to the generic exact finite-rank
+  jet-capacity and bounded-escape laws.
+- 2026-07-21 -- connected zeta to the exact finite reporter-network Gram/common-blind-packet
+  alternative.
+- 2026-07-21 -- connected zeta to the generic same-witness conditional-information collapse under
+  arbitrary downstream linear data processing.

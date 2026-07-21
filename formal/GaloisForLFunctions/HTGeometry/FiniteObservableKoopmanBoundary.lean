@@ -106,16 +106,46 @@ theorem not_mem_derivInvariantObservableSpace_of_hypertranscendental
   exact not_linearIndependent_iteratedDeriv_of_forall_mem_finiteDimensional V f
     (iteratedDeriv_mem_of_mem_derivInvariantObservableSpace hV hmem) hcc
 
+/-- **Exact finite-dictionary jet-capacity law.**  A finite-dimensional observable space can
+contain at most its dimension many derivative observables from a constant-coefficient
+differentially transcendental source, at arbitrary distinct derivative orders. -/
+theorem iteratedDeriv_mem_finset_card_le_finrank_of_constantCoefficientDifferentiallyTranscendental
+    (V : Submodule ℂ (ℂ → ℂ)) [FiniteDimensional ℂ V]
+    {f : ℂ → ℂ} (hf : ConstantCoefficientDifferentiallyTranscendental f)
+    (s : Finset ℕ) (hmem : ∀ n ∈ s, iteratedDeriv n f ∈ V) :
+    s.card ≤ finrank ℂ V := by
+  let jets : s → V := fun n => ⟨iteratedDeriv n f, hmem n n.2⟩
+  have hjets : LinearIndependent ℂ jets := by
+    apply LinearIndependent.of_comp V.subtype
+    exact
+      ((constantCoefficientDifferentiallyTranscendental_iff_linearIndependent_iteratedDeriv f).mp
+        hf).comp (fun n : s => (n : ℕ)) Subtype.coe_injective
+  simpa only [Fintype.card_coe] using hjets.fintype_card_le_finrank
+
+/-- Quantitative positive escape: some derivative among the first `finrank V + 1` observables
+already lies outside every fixed finite-dimensional dictionary. -/
+theorem exists_iteratedDeriv_not_mem_le_finrank_of_constantCoefficientDifferentiallyTranscendental
+    (V : Submodule ℂ (ℂ → ℂ)) [FiniteDimensional ℂ V]
+    {f : ℂ → ℂ} (hf : ConstantCoefficientDifferentiallyTranscendental f) :
+    ∃ n ≤ finrank ℂ V, iteratedDeriv n f ∉ V := by
+  by_contra hescape
+  push Not at hescape
+  have hcard :=
+    iteratedDeriv_mem_finset_card_le_finrank_of_constantCoefficientDifferentiallyTranscendental
+      V hf (Finset.range (finrank ℂ V + 1))
+        (fun n hn => hescape n (by have := Finset.mem_range.mp hn; omega))
+  simp only [Finset.card_range] at hcard
+  omega
+
 /-- Positive escape theorem: the derivative-observable tower leaves every finite model space. -/
 theorem exists_iteratedDeriv_not_mem_finiteDimensional_of_hypertranscendental
     (V : Submodule ℂ (ℂ → ℂ)) [FiniteDimensional ℂ V]
     {f : ℂ → ℂ} (hf : Hypertranscendental f) :
     ∃ n : ℕ, iteratedDeriv n f ∉ V := by
-  by_contra hescape
-  push Not at hescape
-  have hcc := hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental hf
-  rw [constantCoefficientDifferentiallyTranscendental_iff_linearIndependent_iteratedDeriv] at hcc
-  exact not_linearIndependent_iteratedDeriv_of_forall_mem_finiteDimensional V f hescape hcc
+  obtain ⟨n, _, hn⟩ :=
+    exists_iteratedDeriv_not_mem_le_finrank_of_constantCoefficientDifferentiallyTranscendental
+      V (hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental hf)
+  exact ⟨n, hn⟩
 
 end
 

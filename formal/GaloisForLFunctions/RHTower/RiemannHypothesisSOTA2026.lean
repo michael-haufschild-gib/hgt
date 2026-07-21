@@ -13,6 +13,9 @@ import GaloisForLFunctions.RHTower.SuzukiDonoghueSpectralMeasure
 import GaloisForLFunctions.RHTower.SuzukiFiniteShiftNonClock
 import GaloisForLFunctions.RHTower.SuzukiPrimeTangentTomography
 import GaloisForLFunctions.RHTower.SuzukiPrimeClockAtomVelocity
+import GaloisForLFunctions.RHTower.SuzukiFiniteShiftProjectiveHolonomy
+import GaloisForLFunctions.RHTower.SuzukiGlobalPhaseConjugacy
+import GaloisForLFunctions.RHTower.SuzukiCompactifiedPhaseProfile
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
@@ -105,11 +108,34 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   `Λ(m)/(a*sqrt(m)) * sin(((k+1/2)*pi/a)*log(m))`.  The reflected source geometry and pole
   normalization cancel exactly, leaving the critical explicit-formula weight `Λ(m)/sqrt(m)`, and
   nonresonant demodulation of the atom-velocity packet again recovers `Λ(m)`.  Thus arithmetic
-  survival and its infinitesimal transfer into divisor motion are no longer the wall.  The live
-  problem is nonlinear integration: choose one intrinsic finite-shift path, retain these critical
-  modes while proving tight infinite atomic survival, then identify support and weights with the
-  global Xi/de Branges divisor.  The screw-function Hilbert space and its unbounded differential
-  operators are not yet present in Lean.
+  survival and its infinitesimal transfer into divisor motion are no longer the wall.
+  `SuzukiFiniteShiftProjectiveHolonomy` now closes finite-shift nonlinear integration in the exact
+  meromorphic category.  The endpoint cross ratio
+  `H(F₁,F₀;z)=F₁(z)F₀(-z)/(F₁(-z)F₀(z))` transports the complete Livšic carrier, obeys an exact
+  flat cocycle through arbitrary intermediate shifts, and is path-independent under different
+  prime-activation orders.  The second resolvent identity turns its finite response into one
+  reflected two-resolvent determinant, with no Taylor remainder; its diagonal limit is the exact
+  logarithmic generator, and the Clark atom converts that generator into real simple-pole
+  velocity.  `SuzukiGlobalPhaseConjugacy` now supplies the missing properness by changing
+  representation: on paper, the cyclic pure-point Donoghue measure on Suzuki's infinite-dimensional
+  space has infinite two-sided support, so the normalized increasing phase is an order isomorphism
+  of the real line.  Conjugating two such phase charts globally labels every extension spectrum,
+  gives a flat orientation-preserving divisor flow, transports phase density by
+  `q_s(T(x))T'(x)=q_r(x)`, and transports every even Clark atom by
+  `mu_s({T(x)})=T'(x)mu_r({x})`.  The formal module proves this complete order-isomorphism,
+  derivative, probability-mass, restricted-source-weight, and source-generator core.  Thus local
+  pole escape, collision, and separate residue matching are no longer walls.
+  `SuzukiCompactifiedPhaseProfile` now supplies the source-specific compactness coordinate.  After
+  factoring the forced Cayley zero, the boundary phase speed satisfies the sharp floor
+  `q(x)(1+x^2) >= 2`; hence `U(y)=arctan(phi⁻¹(pi+y))` is odd, increasing, and globally
+  `1/2`-Lipschitz.  On the fixed odd-`pi` lattice, every compactified Donoghue atom is exactly
+  `2 U'(y_k)`, so the moving probability measure is encoded by one inverse-phase `C¹` jet.  The
+  paper theorem classifies every cofinal subsequential limit as the surviving fixed-label atomic
+  measure plus a unique positive escape residual.  This distinguishes free-clock label escape
+  (uniform compactified residual) from ground-edge physical escape (endpoint residual).  The live
+  wall is now sharp: choose an intrinsic admissible schedule, prove its residual vanishes, and
+  identify the limiting lattice jets with the global Xi/de Branges divisor.  The screw-function
+  Hilbert space and its unbounded differential operators are not yet present in Lean.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete

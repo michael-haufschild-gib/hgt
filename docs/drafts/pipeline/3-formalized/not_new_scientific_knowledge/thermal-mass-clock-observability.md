@@ -112,6 +112,12 @@ action or ratio has been established.
 - `finiteMassClockSignal`
 - `differentiallyAlgebraic_finiteMassClockSignal`
 - `hypertranscendental_ne_finiteMassClockSignal`
+- `RHTower.xi_ne_finiteMassClockSignal`
+
+The RHTower specialization uses unconditional completed-Xi hypertranscendence to rule out every
+exact finite complex action palette for `xi` itself.  It contains no RH premise and does not claim
+that Xi is physically a mass-probe observable; it records the exact consequence should such a
+finite-action representation be proposed.
 
 ## RH impact
 

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaReflectionRatioClock
 import GaloisForLFunctions.HTGeometry.FiniteAlgebraicStateBoundary
+import GaloisForLFunctions.HTGeometry.FiniteGeneratorDifferentialEscape
 import GaloisForLFunctions.HTGeometry.MeromorphicExponentialGaugeDA
 import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
 import GaloisForLFunctions.RHTower.ZetaCarrier
@@ -124,6 +125,38 @@ theorem not_finiteAlgebraicStateObservable_centeredZetaChiMero :
         (RatFunc ℂ) centeredZetaChiMero :=
   GaloisForLFunctions.HTGeometry.not_finiteAlgebraicStateObservable_of_hypertranscendentalOver
     hypertranscendentalOver_centeredZetaChiMero
+
+/-- **Positive finite-generator escape for the reflected Gamma clock.**  Every finite rational
+state packet containing the centered reflected clock loses closure under differentiation at one
+of its chosen generators. -/
+theorem exists_generator_deriv_escape_of_centeredZetaGammaReflectionMero
+    {ι : Type*} [Fintype ι] (s : ι → meroField Set.univ)
+    (hmem : centeredZetaGammaReflectionMero ∈
+      IntermediateField.adjoin (RatFunc ℂ) (Set.range s)) :
+    ∃ i, (s i)′ ∉ IntermediateField.adjoin (RatFunc ℂ) (Set.range s) :=
+  GaloisForLFunctions.HTGeometry.exists_generator_deriv_escape_of_hypertranscendentalOver
+    s hypertranscendentalOver_centeredZetaGammaReflectionMero hmem
+
+/-- **Positive finite-generator escape for the complete archimedean clock.**  Any finite rational
+state packet containing the exponential-dressed centered zeta clock has a generator derivative
+outside that packet. -/
+theorem exists_generator_deriv_escape_of_centeredZetaChiMero
+    {ι : Type*} [Fintype ι] (s : ι → meroField Set.univ)
+    (hmem : centeredZetaChiMero ∈
+      IntermediateField.adjoin (RatFunc ℂ) (Set.range s)) :
+    ∃ i, (s i)′ ∉ IntermediateField.adjoin (RatFunc ℂ) (Set.range s) :=
+  GaloisForLFunctions.HTGeometry.exists_generator_deriv_escape_of_hypertranscendentalOver
+    s hypertranscendentalOver_centeredZetaChiMero hmem
+
+/-- The reciprocal complete archimedean clock forces the same finite-generator derivative escape
+on the reflected side of the functional equation. -/
+theorem exists_generator_deriv_escape_of_inv_centeredZetaChiMero
+    {ι : Type*} [Fintype ι] (s : ι → meroField Set.univ)
+    (hmem : (centeredZetaChiMero)⁻¹ ∈
+      IntermediateField.adjoin (RatFunc ℂ) (Set.range s)) :
+    ∃ i, (s i)′ ∉ IntermediateField.adjoin (RatFunc ℂ) (Set.range s) :=
+  GaloisForLFunctions.HTGeometry.exists_generator_deriv_escape_of_hypertranscendentalOver
+    s hypertranscendentalOver_inv_centeredZetaChiMero hmem
 
 /-- Actual-function Gamma quotient in the centered zeta reflection coordinate. -/
 def centeredZetaGammaReflectionValue (w : ℂ) : ℂ :=

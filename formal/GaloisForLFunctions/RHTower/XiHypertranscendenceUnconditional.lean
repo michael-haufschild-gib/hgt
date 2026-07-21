@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GlobalToUpperEndDifferentialAlgebraicity
+import GaloisForLFunctions.HTGeometry.ThermalMassClockObservability
 import GaloisForLFunctions.RHTower.XiHypertranscendenceChain
 import GaloisForLFunctions.RHTower.XiUpperEndHypertranscendence
 
@@ -45,6 +46,15 @@ theorem xi_hypertranscendental : Hypertranscendental xi := by
     xi_analyticOnNhd_univ (neg_ne_zero.mpr I_ne_zero)
   rw [← xiRotatedUpperEndCarrier_eq_rotatedEntireUpperEndMero]
   exact xiRotatedUpperEndCarrier_hypertranscendentalOver_ratFunc
+
+/-- **Unconditional finite-action mass-clock boundary for Xi.**  The completed Xi function is not
+an exact finite sum of complex mass-action exponentials. -/
+theorem xi_ne_finiteMassClockSignal
+    {I : Type*} [DecidableEq I]
+    (s : Finset I) (amplitude action : I → ℂ) :
+    xi ≠ HTGeometry.finiteMassClockSignal s amplitude action :=
+  HTGeometry.hypertranscendental_ne_finiteMassClockSignal
+    xi_hypertranscendental s amplitude action
 
 /-- Global xi hypertranscendence discharges the frequency-collapse interface: the interface's
 nonzero differential-relation premise is impossible. -/

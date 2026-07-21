@@ -82,6 +82,12 @@ transcendence nonlinear state above.  The project already proves that sibling in
 The only missing Lean surface is the finite-generator closure lemma and its escape contrapositive;
 the differential-elimination endpoint already exists.
 
+The centered zeta archimedean source now consumes the positive interface.  For each of its
+reflected-Gamma, complete exponential-dressed, and reciprocal complete clocks, every finite
+rational generator packet containing that clock has some chosen generator `s_i` with
+`D(s_i)` outside the generated field.  These are unconditional source specializations of `(5)`,
+not a return to the false bounded-per-depth stabilization claim.
+
 ## Novelty and significance
 
 This is standard rational-vector-field differential algebra, not new scientific knowledge.  Its
@@ -98,6 +104,17 @@ Module: `formal/GaloisForLFunctions/HTGeometry/FiniteGeneratorDifferentialEscape
 - `differentialAlgebraicOver_of_mem_finiteGeneratorState`
 - `exists_generator_deriv_escape_of_hypertranscendentalOver`
 
+Source specializations in
+`formal/GaloisForLFunctions/RHTower/ZetaChiHypertranscendentalClock.lean`:
+
+- `RHTower.exists_generator_deriv_escape_of_centeredZetaGammaReflectionMero`
+- `RHTower.exists_generator_deriv_escape_of_centeredZetaChiMero`
+- `RHTower.exists_generator_deriv_escape_of_inv_centeredZetaChiMero`
+- `RHTower.exists_generator_deriv_escape_of_centeredZetaGammaPhaseObservationMero`
+- `RHTower.exists_generator_deriv_escape_of_centeredZetaGammaWignerSmithLogClockMero`
+- `RHTower.exists_generator_deriv_escape_of_centeredZetaGammaIntensityCoreMero`
+- `RHTower.exists_generator_deriv_escape_of_centeredZetaGammaReflection_div_intensity`
+
 ## Gates
 
 - [x] 0 -> 1: exact claim and falsifier boundary identified
@@ -107,6 +124,7 @@ Module: `formal/GaloisForLFunctions/HTGeometry/FiniteGeneratorDifferentialEscape
 - [x] 2 -> 3: unconditional Lean theorem batch
 - [x] targeted touched-file check
 - [x] touched-slice formal lint and axiom audit
+- [x] centered-zeta canonical source interfaces discharge the positive escape theorem
 
 ## Log
 
@@ -116,3 +134,9 @@ Module: `formal/GaloisForLFunctions/HTGeometry/FiniteGeneratorDifferentialEscape
   `propext`, `Classical.choice`, and `Quot.sound`.  The project lint reports no proof debt or
   reachability defect for this module; its nonzero repository-wide exit is an unrelated pre-existing
   umbrella-reachability baseline.
+- 2026-07-21 -- Connected the positive generator-derivative escape law to all three unconditional
+  centered-zeta archimedean HT clocks.
+- 2026-07-21 -- Closed the remaining centered-zeta phase/current HT interfaces; unit intensity is
+  deliberately excluded because it is exactly one and differentially algebraic.
+- 2026-07-21 -- Closed all remaining unconditional RHTower meromorphic HT declarations by
+  specializing the escape law to zeta's quarter-shifted intensity and phase/intensity quotient.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ThermalKrylovDeterminant
+import GaloisForLFunctions.RHTower.PrimeArchCanonicalReflectionPositiveEquivalence
 import GaloisForLFunctions.RHTower.PrimeArchReflectionPositiveHankelRH
 
 /-!
@@ -167,6 +168,51 @@ theorem riemannHypothesis_of_primeArchComplexKrylovResidualsNonzero
   primeArchSourceMomentHankelDeterminantsPositive_iff_riemannHypothesis.mp
     (primeArchSourceMomentHankelDeterminantsPositive_of_complexKrylovResidualsNonzero
       v hgram hresidual)
+
+/-- Under RH, the canonical reflection-positive Xi orbit has no terminating Krylov residual.
+Strict source Hankel determinants make every finite Gram packet linearly independent. -/
+theorem complexKrylovResidualsNonzero_primeArchReflectionVector
+    (hRH : RiemannHypothesis) :
+    ComplexKrylovResidualsNonzero (primeArchReflectionVector hRH) := by
+  intro k
+  let n := k + 1
+  have hmatrix :
+      Matrix.gram ℂ
+          (fun i : Fin n => primeArchReflectionVector hRH (i : ℕ)) =
+        (algebraMap ℝ ℂ).mapMatrix (primeArchSourceMomentHankelMatrix n) := by
+    ext i j
+    rw [Matrix.gram_apply, inner_primeArchReflectionVector_eq_normalizedMoment]
+    rfl
+  have hdetReal : 0 < (primeArchSourceMomentHankelMatrix n).det :=
+    (primeArchSourceMomentHankelDeterminantsPositive_iff_riemannHypothesis.mpr hRH) n
+  have hdet :
+      (Matrix.gram ℂ
+        (fun i : Fin n => primeArchReflectionVector hRH (i : ℕ))).det ≠ 0 := by
+    rw [hmatrix, ← RingHom.map_det]
+    exact (map_ne_zero (algebraMap ℝ ℂ)).2 (ne_of_gt hdetReal)
+  have hli : LinearIndependent ℂ
+      (fun i : Fin n => primeArchReflectionVector hRH (i : ℕ)) :=
+    Matrix.det_gram_ne_zero_iff_linearIndependent.mp hdet
+  have hres := InnerProductSpace.gramSchmidt_ne_zero
+    (⟨k, Nat.lt_succ_self k⟩ : Fin n) hli
+  rw [GaloisForLFunctions.HTGeometry.gramSchmidt_fin_val] at hres
+  exact hres
+
+/-- Existence of an exact complex Gram realization with nonterminating Krylov chain is exactly RH.
+The converse realization is the canonical reciprocal-square Xi orbit. -/
+theorem riemannHypothesis_iff_exists_primeArchComplexKrylovRealization :
+    RiemannHypothesis ↔
+      ∃ v : ℕ → lp (fun _ : XiZeroCopy => ℂ) 2,
+        (∀ i j, inner ℂ (v i) (v j) =
+          (normalizedPrimeArchMoment (i + j) : ℂ)) ∧
+        ComplexKrylovResidualsNonzero v := by
+  constructor
+  · intro hRH
+    exact ⟨primeArchReflectionVector hRH,
+      inner_primeArchReflectionVector_eq_normalizedMoment hRH,
+      complexKrylovResidualsNonzero_primeArchReflectionVector hRH⟩
+  · rintro ⟨v, hgram, hres⟩
+    exact riemannHypothesis_of_primeArchComplexKrylovResidualsNonzero v hgram hres
 
 end
 

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HorizonBogoliubovGammaObservability
 import GaloisForLFunctions.HTGeometry.ThermalCFTGammaResponseBoundary
+import GaloisForLFunctions.HTGeometry.FiniteGeneratorDifferentialEscape
 import GaloisForLFunctions.RHTower.ZetaChiHypertranscendentalClock
 
 /-!
@@ -116,6 +117,27 @@ theorem hypertranscendentalOver_centeredZetaGammaReflection_div_intensity :
   rw [centeredZetaGammaReflection_div_intensity_eq_inv_positivePair,
     HTGeometry.hypertranscendentalOver_inv_iff]
   exact hypertranscendentalOver_gammaPositiveShiftPairMero (1 / 4) (1 / 4)
+
+/-- **Positive finite-generator intensity escape.**  Every finite rational state packet containing
+the quarter-shifted zeta Gamma intensity loses differential closure at a chosen generator. -/
+theorem exists_generator_deriv_escape_of_centeredZetaGammaIntensityCoreMero
+    {ι : Type*} [Fintype ι] (s : ι → meroField Set.univ)
+    (hmem : centeredZetaGammaIntensityCoreMero ∈
+      IntermediateField.adjoin (RatFunc ℂ) (Set.range s)) :
+    ∃ i, (s i)′ ∉ IntermediateField.adjoin (RatFunc ℂ) (Set.range s) :=
+  GaloisForLFunctions.HTGeometry.exists_generator_deriv_escape_of_hypertranscendentalOver
+    s hypertranscendentalOver_centeredZetaGammaIntensityCoreMero hmem
+
+/-- **Positive finite-generator calibration escape.**  Every finite rational state packet
+containing the quotient of zeta's oriented Gamma clock by its intensity loses differential closure
+at a chosen generator. -/
+theorem exists_generator_deriv_escape_of_centeredZetaGammaReflection_div_intensity
+    {ι : Type*} [Fintype ι] (s : ι → meroField Set.univ)
+    (hmem : centeredZetaGammaReflectionMero / centeredZetaGammaIntensityCoreMero ∈
+      IntermediateField.adjoin (RatFunc ℂ) (Set.range s)) :
+    ∃ i, (s i)′ ∉ IntermediateField.adjoin (RatFunc ℂ) (Set.range s) :=
+  GaloisForLFunctions.HTGeometry.exists_generator_deriv_escape_of_hypertranscendentalOver
+    s hypertranscendentalOver_centeredZetaGammaReflection_div_intensity hmem
 
 /-- No DA multiplicative calibration converts the zeta intensity into its oriented Gamma phase. -/
 theorem centeredZetaGammaReflectionMero_ne_da_mul_intensity

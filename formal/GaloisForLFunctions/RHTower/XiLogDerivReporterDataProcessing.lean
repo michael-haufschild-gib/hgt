@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteReporterDataProcessing
-import GaloisForLFunctions.RHTower.XiLogDerivReporterConditionalInformation
+import GaloisForLFunctions.RHTower.XiLogDerivNonholonomic
 
 /-!
 # Data-processing stability of the Xi finite-reporter collapse
@@ -35,14 +35,10 @@ theorem exists_xiLogDeriv_finiteReporterConditionalInformation_dataProcessing_co
           (decode.comp report) ∧
       iteratedDeriv k (logDeriv xi) ∉ Submodule.span ℂ
         (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) (logDeriv xi)) := by
-  obtain ⟨k, hk, hzero, hreported, hsource⟩ :=
-    exists_xiLogDeriv_finiteReporterConditionalInformation_collapse zeroIndex report
-  have hpostzero :=
-    HTGeometry.finiteDerivativeReporterConditionalInformation_eq_zero_postcomp decode hzero
-  have hpostreported :=
-    (HTGeometry.finiteDerivativeReporterConditionalInformation_eq_zero_iff
-      k (logDeriv xi) (decode.comp report)).mp hpostzero
-  exact ⟨k, hk, hzero, hpostzero, hreported, hpostreported, hsource⟩
+  apply HTGeometry.exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse
+  exact HTGeometry.constantCoefficientDifferentiallyTranscendental_of_meromorphic_simplePole
+    (meromorphicAt_logDeriv_xi (xiZeroPoint zeroIndex))
+    (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero zeroIndex))
 
 end
 

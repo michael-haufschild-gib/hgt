@@ -112,6 +112,37 @@ theorem self_ne_zero {p : Polynomial ℝ} (hp : p ≠ 0) : momentInner s p p ≠
 
 end PositiveMomentForm
 
+/-- A moment form is positive definite on every nonzero polynomial exactly when every finite
+Hankel matrix of its coefficient sequence is positive definite.  This is the basis-free/finite-
+coordinate bridge used by Hamburger representation arguments. -/
+theorem positiveMomentForm_iff_momentHankelMatrix_posDef {s : ℕ → ℝ} :
+    PositiveMomentForm s ↔ ∀ n : ℕ, (momentHankelMatrix s n).PosDef := by
+  constructor
+  · intro h n
+    rw [Matrix.posDef_iff_dotProduct_mulVec]
+    refine ⟨momentHankelMatrix_isHermitian s n, ?_⟩
+    intro a ha
+    rw [star_trivial, dotProduct_mulVec_momentHankelMatrix, ← momentInner_self]
+    apply h.pos_of_ne_zero
+    intro hp
+    apply ha
+    apply Polynomial.injective_ofFn n
+    rw [hp, Polynomial.ofFn_zero]
+  · intro h
+    refine ⟨fun p hp => ?_⟩
+    let n := p.natDegree + 1
+    let a : Fin n → ℝ := Polynomial.toFn n p
+    have hpof : Polynomial.ofFn n a = p := by
+      exact Polynomial.ofFn_comp_toFn_eq_id_of_natDegree_lt (Nat.lt_succ_self _)
+    have ha : a ≠ 0 := by
+      intro ha
+      apply hp
+      rw [← hpof, ha, Polynomial.ofFn_zero]
+    have hquad := (h n).dotProduct_mulVec_pos ha
+    rw [star_trivial, dotProduct_mulVec_momentHankelMatrix, hpof,
+      ← momentInner_self] at hquad
+    exact hquad
+
 /-- **Positive definiteness from an infinitely supported representing measure.**  This is the
 hypothesis already used for strict Hankel positivity, so every moment sequence carried by a
 measure with infinite support generates a genuine inner product on real polynomials. -/

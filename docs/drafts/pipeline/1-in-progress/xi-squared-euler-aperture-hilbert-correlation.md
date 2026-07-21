@@ -2,11 +2,12 @@
 
 - **ID:** `xi-squared-euler-aperture-hilbert-correlation`
 - **Stage:** `1-in-progress`
-- **Type:** `[THEOREM ON PAPER] [LEAN TARGET WRITTEN, VERIFICATION OPEN]`
+- **Type:** `[THEOREM ON PAPER] [LEAN-PROVED RIGHT-EDGE CRITERION]`
 - **Scientific status:** `[CORPUS-NEW EXACT DECOMPOSITION]`
   `[CANDIDATE NEW RH-PROOF-SHAPE KNOWLEDGE] [EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
 - **Lean target:**
-  `formal/GaloisForLFunctions/RHTower/XiSquaredEulerApertureHilbertCorrelation.lean`
+  `formal/GaloisForLFunctions/RHTower/XiSquaredEulerApertureHilbertCorrelation.lean`,
+  `formal/GaloisForLFunctions/RHTower/XiSquaredEulerAllDegreeChargeCriterion.lean`
 
 ## Problem
 
@@ -146,6 +147,76 @@ three-node transverse determinant.
 4. `(AH6)` does not prove its right-hand inequality for the complete Xi divisor.  Calling the
    decomposition an RH proof would be false.
 
+## Exact right-edge closure
+
+The complete two-channel sums in `(AH9)` are well-defined without RH.  The already-proved Xi
+reciprocal-square sector estimate gives
+
+```text
+b_q^2 <= a_q^2/84,
+(a_q^2+b_q^2)/a_q <= (85/84) a_q.                       (AH7)
+```
+
+The reciprocal-square spectrum is bounded, so for each fixed real polynomial `p` there is a
+finite `C_p` with `|p(lambda_q)|<=C_p`.  Therefore the transverse term is bounded by
+`(85/84) C_p^2 a_q`.  Since `sum_q lambda_q` is absolutely convergent, `sum_q a_q` converges and
+the complete transverse channel is summable.  The raw Hankel term is bounded in absolute value by
+`C_p^2 |lambda_q|`, hence is summable as well.  Equation `(AH1)` then makes the Hilbert channel
+summable.
+
+Grouping the multiplicity copies over each distinct Xi divisor point gives exactly
+
+```text
+sum_q Re(lambda_q p(lambda_q)^2)
+  = Re(xiCentralTraceHankel(p))
+  = HilbertEnergy(p) - TransverseEnergy(p).              (AH8)
+```
+
+Consequently
+
+```text
+(AH9) for every p in R[X]
+  <-> XiCentralTraceHankelNonnegative
+  <-> RH.                                                 (AH9-RH)
+```
+
+Coefficient density sharpens the producer interface: it is enough to prove `(AH9)` for the
+countable family `p in Z[X]`.  Lean names this exact remaining condition
+`XiSquaredEulerApertureIntChargeDominated` and proves
+`xiSquaredEulerApertureIntChargeDominated_iff_riemannHypothesis`.  The explicit downstream
+connector is
+`xiWeilPolarization_nonneg_of_xiSquaredEulerApertureIntChargeDominated`; hence the formal chain is
+
+```text
+integer-polynomial charge domination
+  -> complete square-summable Xi Weil positivity
+  -> RH.
+```
+
+The zero-data-elimination identity now closes the source connector directly, without using RH as
+an intermediate implication:
+
+```text
+PrimeArchSourceTraceHankelIntNonnegative
+  <-> XiSquaredEulerApertureIntChargeDominated
+  -> complete square-summable Xi Weil positivity
+  -> RH.                                                   (AH10)
+```
+
+Lean theorem
+`xiSquaredEulerApertureIntChargeDominated_iff_primeArchSourceTraceHankelIntNonnegative`
+proves `(AH10)` from `(AH8)` and
+`xiCentralTraceHankel_eq_primeArchSourceTraceHankel`.  Therefore existing coherent producers—one
+positive moment representation, finite-KMS local closure, a positive Sonin aperture barycenter,
+or coupled-Sonin finite-Gram closure—now discharge `(AH9)` through their already-formalized source
+Hankel theorems.  Their construction hypotheses remain open; the connector itself is closed.
+
+Hostile audit: `(AH9-RH)` is a consumer theorem, not a proof of its left side.  It closes the
+previously unstated infinite-summability and multiplicity-grouping obligations and shows that no
+additional “three nodes to all degrees” connector remains after `(AH9)` itself.  Any source route
+must now construct one of the coherent source producers above or prove the named integer-polynomial
+charge inequality directly; merely renaming prime--Gamma Hankel positivity does not do so.
+
 ## Surviving open target
 
 The source-side theorem must prove, for every real polynomial in the remaining tail cone,
@@ -172,8 +243,9 @@ not merely another equivalent positivity statement.
 - [x] all-degree oriented Hilbert/charge identity proved on paper
 - [x] first-minor Hilbert dispersion minus transverse charge proved on paper
 - [x] exact atomic negative charge and critical radical proved on paper
-- [ ] direct Lean check of the permanent target module
-- [ ] narrow final module build and axiom audit
+- [x] zero-free prime--Gamma source positivity connected directly to integer charge domination
+- [x] direct Lean check of both permanent target modules
+- [x] narrow final module build, lint, and axiom audit
 - [ ] source proof of `(AH9)` / RH
 
 ## Log
@@ -182,3 +254,15 @@ not merely another equivalent positivity statement.
   Hilbert dispersion/charge law `(AH4)`--`(AH6)` and derived its all-degree oriented-square parent
   `(AH1)`--`(AH2)`.  Permanent Lean source written; verification deferred until the shared foreign
   build load permits one owned foreground check.
+- 2026-07-21 — Closed the right-edge consumer.  Proved unconditional summability of both complete
+  channels from the `1/84` reciprocal-square sector, grouped multiplicity copies back to the Xi
+  trace-Hankel form, and formalized real- and integer-polynomial `(AH9) <-> RH` criteria in
+  `XiSquaredEulerAllDegreeChargeCriterion.lean`.  Direct `lake env lean` check passed.  Remaining
+  open theorem is exactly `XiSquaredEulerApertureIntChargeDominated`, not an unspecified
+  all-degree lift.
+- 2026-07-21 — Final audit: exact module build completed at `9077/9077`; formal lint passed; five
+  right-edge capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-07-21 — Closed the direct source-discharge edge.  Integer squared-Euler charge domination
+  is exactly the zero-free normalized prime--Gamma source Hankel condition by two existing value
+  identities, with no RH detour.  This wires every coherent source producer already in the corpus
+  into complete Weil positivity; constructing such a producer remains RH-hard.

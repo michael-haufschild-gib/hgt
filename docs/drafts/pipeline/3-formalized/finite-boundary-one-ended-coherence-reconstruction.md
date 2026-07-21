@@ -66,6 +66,14 @@ differential fields; the latter remains an analytic independence problem in the 
 - `finiteBoundaryOneEnded_iff_primeOrientationCoherenceTail_faithful`;
 - `exists_coherenceTailEquivalent_not_primeOrientationTailPairDependent_of_not_oneEnded`;
 - `primeOrientationCoherenceTail_faithful_boxProd`.
+- `RHTower.finiteBoundaryOneEnded_iff_primeEulerCoherenceTail_faithful`;
+- `RHTower.primeEulerCoherenceTail_faithful_boxProd`.
+
+The RHTower connector resolves the projective tail dependence in the prime consequence into its
+two exact Euler lifts: same-sheet finite-gauge equivalence or opposite-sheet cyclotomic-norm
+complementarity.  Thus finite-boundary one-endedness is also the exact graph condition for
+finite-defect coherences to admit no third Euler lifting mode.  Cartesian products of two infinite
+preconnected indexing graphs satisfy this Euler alternative unconditionally.
 
 ## Gates
 
