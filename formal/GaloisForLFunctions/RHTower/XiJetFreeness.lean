@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DifferentialOrder
 import GaloisForLFunctions.HTGeometry.EntireJetEvaluation
 import GaloisForLFunctions.HTGeometry.FiniteObservableKoopmanBoundary
-import GaloisForLFunctions.HTGeometry.FiniteReporterDataProcessing
+import GaloisForLFunctions.HTGeometry.FiniteReporterIsometricRecovery
 import GaloisForLFunctions.HTGeometry.FiniteReporterNetworkFusion
 import GaloisForLFunctions.HTGeometry.HypertranscendentalPointJetFreeness
 import GaloisForLFunctions.RHTower.XiHypertranscendenceUnconditional
@@ -113,5 +113,50 @@ theorem exists_xi_finiteReporterConditionalInformation_dataProcessing_collapse
   apply HTGeometry.exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse
   exact HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
     xi_hypertranscendental
+
+/-- **Perfectly recoverable completed-Xi reporter, irrecoverable source direction.**  At one
+bounded-order Xi collapse witness, an isometric encoding preserves zero information and its
+adjoint recovers the reporter exactly, while the source derivative remains new. -/
+theorem exists_xi_isometricReporterRecovery_collapse
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ Module.finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k xi report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k xi
+        (decode.toLinearMap.comp report) = 0 ∧
+      report (iteratedDeriv k xi) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k xi report ∧
+      decode (report (iteratedDeriv k xi)) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k xi
+          (decode.toLinearMap.comp report) ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k xi ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) xi) := by
+  apply HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
+  exact HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
+    xi_hypertranscendental
+
+/-- Every completed-Xi coefficient direction newly erased by a decoder is a genuine nonzero Xi
+derivative packet which was visible before decoding. -/
+theorem xi_finiteDerivativeReporterMap_postcomp_newBlindPacket
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    {N : ℕ} (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    {c : Fin N → ℂ}
+    (hcpost : c ∈ LinearMap.ker
+      (HTGeometry.finiteDerivativeReporterMap N xi (decode.comp report)))
+    (hcpre : c ∉ LinearMap.ker
+      (HTGeometry.finiteDerivativeReporterMap N xi report)) :
+    HTGeometry.finiteDerivativeReporterPacket c xi ≠ 0 ∧
+      report (HTGeometry.finiteDerivativeReporterPacket c xi) ≠ 0 ∧
+      decode (report (HTGeometry.finiteDerivativeReporterPacket c xi)) = 0 := by
+  exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
+    (HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
+      xi_hypertranscendental)
+    report decode hcpost hcpre
 
 end RHTower

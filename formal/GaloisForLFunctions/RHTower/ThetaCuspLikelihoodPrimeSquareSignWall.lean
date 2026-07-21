@@ -256,8 +256,8 @@ theorem thetaCuspLikelihoodSwapPrimeSquarePhase_wall {p : ℕ} (hp : p.Prime) (B
         -2 * (Real.cosh (Real.log p * y) : ℂ) := by
     apply Complex.ext <;> simp [Real.cosh_eq] <;> ring
   rw [hcosh]
-  norm_cast
-  ring_nf
+  push_cast
+  ring
 
 theorem thetaCuspLikelihoodSwapPrimeSquarePhaseDerivative_wall {p : ℕ} (hp : p.Prime) (B D y : ℝ) :
     thetaCuspLikelihoodSwapMassShellPhaseDerivative (p ^ 2) B D
@@ -271,8 +271,8 @@ theorem thetaCuspLikelihoodSwapPrimeSquarePhaseDerivative_wall {p : ℕ} (hp : p
         2 * (Real.sinh (Real.log p * y) : ℂ) := by
     apply Complex.ext <;> simp [Real.sinh_eq] <;> ring
   rw [hsinh]
-  norm_cast
-  ring_nf
+  push_cast
+  ring
 
 def thetaCuspLikelihoodSwapMassShellCurrent (k : ℕ) (B D : ℝ) (z : ℂ) : ℝ :=
   (thetaCuspLikelihoodSwapMassShellPhaseDerivative k B D z *
@@ -299,6 +299,52 @@ theorem thetaCuspLikelihoodSwapPrimeSquareCurrent_wall {p : ℕ} (hp : p.Prime) 
     ring]
   simp
 
+/-- Current after removing exactly the prime-square zero-rapidity diagonal mode. -/
+def thetaCuspLikelihoodSwapPrimeSquareDiagonalRenormalizedCurrent
+    (p : ℕ) (B D : ℝ) (z : ℂ) : ℝ :=
+  (thetaCuspLikelihoodSwapMassShellPhaseDerivative (p ^ 2) B D z *
+    (starRingEnd ℂ) (thetaCuspLikelihoodSwapMassShellPhase (p ^ 2) B D z -
+      (thetaCuspLikelihoodPrimeSquareCentralScale p B D : ℂ))).im
+
+theorem thetaCuspLikelihoodSwapPrimeSquareDiagonalRenormalizedCurrent_wall
+    {p : ℕ} (hp : p.Prime) (B D y : ℝ) :
+    thetaCuspLikelihoodSwapPrimeSquareDiagonalRenormalizedCurrent p B D
+        (thetaCuspLikelihoodPrimeSquareReflectionWallPoint p y) =
+      -4 * Real.log p * thetaCuspLikelihoodPrimeSquareEndpointScale p B D ^ 2 *
+        Real.sinh (Real.log p * y) * Real.cosh (Real.log p * y) := by
+  unfold thetaCuspLikelihoodSwapPrimeSquareDiagonalRenormalizedCurrent
+  rw [thetaCuspLikelihoodSwapPrimeSquarePhaseDerivative_wall hp,
+    thetaCuspLikelihoodSwapPrimeSquarePhase_wall hp]
+  simp only [map_sub, Complex.conj_ofReal]
+  rw [show
+      ((thetaCuspLikelihoodPrimeSquareCentralScale p B D -
+        2 * thetaCuspLikelihoodPrimeSquareEndpointScale p B D *
+          Real.cosh (Real.log p * y) : ℝ) : ℂ) -
+          (thetaCuspLikelihoodPrimeSquareCentralScale p B D : ℂ) =
+        ((-2 * thetaCuspLikelihoodPrimeSquareEndpointScale p B D *
+          Real.cosh (Real.log p * y) : ℝ) : ℂ) by
+    push_cast
+    ring]
+  let lam : ℝ := Real.log (p : ℝ)
+  let E : ℝ := thetaCuspLikelihoodPrimeSquareEndpointScale p B D
+  let S : ℝ := Real.sinh (Real.log p * y)
+  let H : ℝ := Real.cosh (Real.log p * y)
+  change (2 * Complex.I * (lam : ℂ) * (E : ℂ) * (S : ℂ) *
+      ((-2 * E * H : ℝ) : ℂ)).im = -4 * lam * E ^ 2 * S * H
+  have hmul :
+      2 * Complex.I * (lam : ℂ) * (E : ℂ) * (S : ℂ) *
+          ((-2 * E * H : ℝ) : ℂ) =
+        ((-4 * lam * E * E * S * H : ℝ) : ℂ) * Complex.I := by
+    push_cast
+    ring
+  calc
+    (2 * Complex.I * (lam : ℂ) * (E : ℂ) * (S : ℂ) *
+        ((-2 * E * H : ℝ) : ℂ)).im =
+        (((-4 * lam * E * E * S * H : ℝ) : ℂ) * Complex.I).im :=
+      congrArg Complex.im hmul
+    _ = -4 * lam * E * E * S * H := by simp
+    _ = -4 * lam * E ^ 2 * S * H := by ring
+
 theorem thetaCuspLikelihoodPrimeSquareEndpointScale_pos {p : ℕ} (hp : p.Prime) {B D : ℝ}
     (hB : 0 ≤ B) (hD : 0 ≤ D) (hBD : 0 < B + D) :
     0 < thetaCuspLikelihoodPrimeSquareEndpointScale p B D := by
@@ -321,6 +367,28 @@ theorem thetaCuspLikelihoodPrimeSquareCentralScale_pos {p : ℕ} (hp : p.Prime) 
   have hSD := thetaCuspLikelihoodScaledBoundaryTerm_pos_of_nonneg hp.two_le hD
   unfold thetaCuspLikelihoodPrimeSquareCentralScale
   positivity
+
+theorem thetaCuspLikelihoodSwapPrimeSquareDiagonalRenormalizedCurrent_wall_neg
+    {p : ℕ} (hp : p.Prime) {B D y : ℝ}
+    (hB : 0 ≤ B) (hD : 0 ≤ D) (hBD : 0 < B + D) (hy : 0 < y) :
+    thetaCuspLikelihoodSwapPrimeSquareDiagonalRenormalizedCurrent p B D
+        (thetaCuspLikelihoodPrimeSquareReflectionWallPoint p y) < 0 := by
+  rw [thetaCuspLikelihoodSwapPrimeSquareDiagonalRenormalizedCurrent_wall hp]
+  have hlog : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
+  have hE := thetaCuspLikelihoodPrimeSquareEndpointScale_pos hp hB hD hBD
+  have hsinh : 0 < Real.sinh (Real.log p * y) :=
+    Real.sinh_pos_iff.mpr (mul_pos hlog hy)
+  have hcosh : 0 < Real.cosh (Real.log p * y) := Real.cosh_pos _
+  have hfac :
+      0 < 4 * Real.log p * thetaCuspLikelihoodPrimeSquareEndpointScale p B D ^ 2 *
+        Real.sinh (Real.log p * y) * Real.cosh (Real.log p * y) := by
+    positivity
+  calc
+    -4 * Real.log p * thetaCuspLikelihoodPrimeSquareEndpointScale p B D ^ 2 *
+          Real.sinh (Real.log p * y) * Real.cosh (Real.log p * y) =
+        -(4 * Real.log p * thetaCuspLikelihoodPrimeSquareEndpointScale p B D ^ 2 *
+          Real.sinh (Real.log p * y) * Real.cosh (Real.log p * y)) := by ring
+    _ < 0 := neg_lt_zero.mpr hfac
 
 theorem thetaCuspLikelihoodSwapPrimeSquareCurrent_wall_pos_iff {p : ℕ} (hp : p.Prime) {B D y : ℝ}
     (hB : 0 ≤ B) (hD : 0 ≤ D) (hBD : 0 < B + D) (hy : 0 < y) :

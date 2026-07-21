@@ -29,13 +29,13 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2379 | `formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean` |
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
+| 2208 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
 | 2202 | `formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean` |
-| 2198 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
 | 2173 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean` |
 | 2004 | `formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean` |
 | 1912 | `formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
-| 1836 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 1838 | `formal/GaloisForLFunctions/RHTower.lean` |
 
 ## Gap Markers
 

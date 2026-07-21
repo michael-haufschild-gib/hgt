@@ -81,16 +81,19 @@ evaluation or any RH assumption.
 - **Exact killing theorem/mechanism:** Prime squares contain a zero-rapidity diagonal mode.  It
   contributes to shell value but not derivative.  Interference with endpoint derivative produces
   formula `(1)`, whose sign is not fixed.
-- **Strongest positive survivor:** Exact prime-square sign-wall classification and strictly
-  positive first conormal residue `(3)`; see
-  `../1-in-progress/theta-likelihood-prime-square-conormal-sign-wall.md`.
+- **Strongest positive survivor:** Exact prime-square sign-wall classification, strictly positive
+  first conormal residue `(3)`, and strict negative orientation after subtracting exactly the
+  zero-rapidity diagonal amplitude; see
+  `../3-formalized/new_scientific_knowledge/theta-likelihood-prime-square-conormal-sign-wall.md`.
 - **New insight:** Composite corner mass is not merely a retained coupling witness.  Square-diagonal
-  mass is the first orientation defect and must be subtracted, renormalized, or paired with the
-  corrected endpoint window in any viable RH current.  A single global sign law for raw swap bulk
+  mass is the first orientation defect.  Removing exactly that stationary amplitude restores
+  strict reflection-wall orientation for every prime square, so diagonal renormalization is now
+  an exact viable mechanism rather than a guess.  A single global sign law for raw swap bulk
   cannot work.
 - **Status:** Internal corpus audit found no existing theorem for this likelihood carrier.  Primary
   literature audit found only parent theories, not formulas `(1)`--`(3)`.  Survivor has a
-  dependency-closed paper proof and is being formalized exactly.
+  dependency-closed paper proof and an exact Lean formalization in
+  `ThetaCuspLikelihoodPrimeSquareSignWall.lean`.
 
 ## Anti-theatre gate
 
@@ -103,4 +106,5 @@ evaluation or any RH assumption.
 
 - 2026-07-21 — Candidate attacked at first composite square stratum and falsified exactly.
 - 2026-07-21 — Positive conormal sign-wall survivor extracted for paper proof and Lean.
-
+- 2026-07-21 — Survivor formalized; failure now closes with exact positive witnesses on every
+  prime-square shell.

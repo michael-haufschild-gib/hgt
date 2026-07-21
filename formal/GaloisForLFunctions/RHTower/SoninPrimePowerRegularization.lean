@@ -314,6 +314,13 @@ theorem centralSoninPrimePowerResidual_eq_cosineResponse
     centralSoninDilationCornerResidual_eq_correctionResponse,
     unitaryCosineRecurrence_soninPrimeDilationSignal_eq_primePower]
 
+/-- Every retained prime-power channel is unconditionally nonzero at every positive aperture. -/
+theorem centralSoninPrimePowerResidual_ne_zero
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    centralSoninPrimePowerResidual a pk ≠ 0 := by
+  exact centralSoninDilationCornerResidual_ne_zero a (soninPrimePowerScale pk) ha
+    (one_lt_soninPrimePowerScale pk)
+
 /-- The logarithmically weighted actual Sonin residual block. -/
 def centralSoninWeightedPrimePowerResidual
     (a : ℝ) (pk : Nat.Primes × ℕ) : SoninL2 →L[Complex] SoninL2 :=

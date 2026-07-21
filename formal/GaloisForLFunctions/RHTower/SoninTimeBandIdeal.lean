@@ -13,6 +13,7 @@ noncomputable section
 namespace RHTower
 
 open ContinuousLinearMap
+open Filter Topology
 open scoped InnerProduct InnerProductSpace
 
 theorem adjoint_indicatorCutoff_central (a : ℝ) :
@@ -347,6 +348,129 @@ theorem centralSoninCornerCorrectionResponse_eq_correction_factorization
   simp only [crossBoundary]
   noncomm_ring
 
+/-- If the exact Sonin projection correction kills a vector, then the part of that vector
+outside the actual Sonin carrier has zero physical component.  The decisive input is one-sided
+time--frequency transversality: a physically supported vector whose Fourier transform vanishes
+on the central interval must be zero. -/
+theorem centralPhysicalProjection_one_sub_projection_eq_zero_of_correction_eq_zero
+    (a : ℝ) (ha : 0 < a) (psi : SoninL2)
+    (hpsi : centralSoninProjectionCorrection a psi = 0) :
+    (centralPhysicalForbidden a).starProjection
+        (((1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a) psi) = 0 := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  let C : SoninL2 →L[ℂ] SoninL2 := centralSoninProjectionCorrection a
+  let y : SoninL2 := (1 - Q) psi
+  have hRR : R * R = R := B.isIdempotentElem_starProjection
+  have hQQ : Q * Q = Q := by
+    dsimp only [Q, centralSoninProjection, centralSoninCarrier]
+    exact (A.orthogonal ⊓ B.orthogonal).isIdempotentElem_starProjection
+  have hPQ : P * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change A.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
+    apply A.starProjection_apply_eq_zero_iff.mpr
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).1
+  have hRQ : R * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change B.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
+    apply B.starProjection_apply_eq_zero_iff.mpr
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).2
+  have hC : C = Q - (1 - P - R) := by
+    simp only [C, Q, P, R, A, B, centralSoninProjectionCorrection,
+      centralPhysicalForbidden, centralFourierForbidden, centralInterval,
+      indicatorCutoff_eq_physicalForbidden_starProjection,
+      fourierCutoff_eq_fourierForbidden_starProjection]
+  have hCQ : C * Q = 0 := by
+    rw [hC]
+    noncomm_ring [hQQ, hPQ, hRQ]
+  have hQy : Q y = 0 := by
+    dsimp only [y]
+    change Q (psi - Q psi) = 0
+    rw [map_sub]
+    have hQQpsi := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T psi) hQQ
+    have hQQpsi' : Q (Q psi) = Q psi := by
+      simpa only [ContinuousLinearMap.mul_apply] using hQQpsi
+    rw [hQQpsi', sub_self]
+  have hCy : C y = 0 := by
+    dsimp only [y]
+    change C (psi - Q psi) = 0
+    rw [map_sub, show C (Q psi) = 0 by
+      have h := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T psi) hCQ
+      simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.zero_apply] using h]
+    simpa only [sub_zero, C] using hpsi
+  have hy : y = P y + R y := by
+    have h := hCy
+    rw [hC] at h
+    change (Q - (1 - P - R)) y = 0 at h
+    simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] at h
+    rw [hQy] at h
+    have h' : y - P y - R y = 0 := by
+      simpa only [zero_sub, neg_eq_zero] using h
+    have hsub : y - P y = R y := sub_eq_zero.mp h'
+    calc
+      y = (y - P y) + P y := by abel
+      _ = R y + P y := by rw [hsub]
+      _ = P y + R y := add_comm _ _
+  have hRPy : R (P y) = 0 := by
+    have h := congrArg R hy
+    rw [map_add] at h
+    have hRRy := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T y) hRR
+    simp only [ContinuousLinearMap.mul_apply] at hRRy
+    rw [hRRy] at h
+    apply add_right_cancel (b := R y)
+    simpa only [zero_add] using h.symm
+  have hPyMem : P y ∈ A ⊓ Bᗮ := by
+    constructor
+    · exact A.starProjection_apply_mem y
+    · exact B.starProjection_apply_eq_zero_iff.mp hRPy
+  have htrans : A ⊓ Bᗮ = ⊥ := by
+    simpa only [A, B, centralPhysicalForbidden, centralFourierForbidden] using
+      physicalForbidden_inf_fourierForbidden_orthogonal_eq_bot a ha
+  have hPyZero : P y = 0 := by
+    rw [htrans] at hPyMem
+    simpa using hPyMem
+  simpa only [A, P, Q, y] using hPyZero
+
+/-- Multiplying a correction response by the actual Sonin projection isolates the projection
+correction on the crossed vector.  This is the exact bridge from response vanishing to the
+correction-kernel transversality theorem above. -/
+theorem centralSoninCornerCorrectionResponse_mul_projection
+    (a : ℝ) (D : SoninL2 →L[ℂ] SoninL2) :
+    centralSoninCornerCorrectionResponse a D * centralSoninProjection a =
+      -(centralSoninProjectionCorrection a * D * centralSoninProjection a) := by
+  let A := centralPhysicalForbidden a
+  let B := centralFourierForbidden a
+  let P : SoninL2 →L[ℂ] SoninL2 := A.starProjection
+  let R : SoninL2 →L[ℂ] SoninL2 := B.starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  have hQQ : Q * Q = Q := by
+    dsimp only [Q, centralSoninProjection, centralSoninCarrier]
+    exact (A.orthogonal ⊓ B.orthogonal).isIdempotentElem_starProjection
+  have hPQ : P * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change A.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
+    apply A.starProjection_apply_eq_zero_iff.mpr
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).1
+  have hRQ : R * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change B.starProjection ((A.orthogonal ⊓ B.orthogonal).starProjection x) = 0
+    apply B.starProjection_apply_eq_zero_iff.mpr
+    exact ((A.orthogonal ⊓ B.orthogonal).starProjection_apply_mem x).2
+  simp only [centralSoninCornerCorrectionResponse, crossBoundary,
+    centralSoninFormalComplement, centralSoninProjectionCorrection, centralInterval,
+    indicatorCutoff_eq_physicalForbidden_starProjection,
+    fourierCutoff_eq_fourierForbidden_starProjection]
+  change (((1 - Q) * D * Q - (1 - (1 - P - R)) * D * (1 - P - R)) * Q) =
+    -((Q - (1 - P - R)) * D * Q)
+  noncomm_ring [hQQ, hPQ, hRQ]
+
 /-- The correction response is a bounded linear map of the inserted observable.  This is the
 continuity interface needed by operator tomography; it does not assume a time evolution. -/
 noncomputable def centralSoninCornerCorrectionResponseCLM (a : ℝ) :
@@ -465,6 +589,76 @@ theorem centralSoninDilationCornerResidual_eq_correction_factorization
           centralSoninFormalComplement a := by
   rw [centralSoninDilationCornerResidual_eq_correctionResponse,
     centralSoninCornerCorrectionResponse_eq_correction_factorization]
+
+/-- **Unconditional Sonin residual nondegeneracy.**  Every positive-aperture symmetric dilation
+has a nonzero principal-subtracted Sonin corner residual.  If the residual vanished, the exact
+response/projection identity would put every crossed vector in the correction kernel.  One-sided
+time--frequency transversality would then kill its physical component, contradicting the explicit
+shell sequence on which that component tends to norm one. -/
+theorem centralSoninDilationCornerResidual_ne_zero
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
+    centralSoninDilationCornerResidual a p hp ≠ 0 := by
+  intro hres
+  let P : SoninL2 →L[ℂ] SoninL2 := (centralPhysicalForbidden a).starProjection
+  let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
+  let C : SoninL2 →L[ℂ] SoninL2 := centralSoninProjectionCorrection a
+  let D : SoninL2 →L[ℂ] SoninL2 := dilationSum p hp
+  have hresponse : centralSoninCornerCorrectionResponse a D = 0 := by
+    simpa only [D, ← centralSoninDilationCornerResidual_eq_correctionResponse] using hres
+  have hmul := centralSoninCornerCorrectionResponse_mul_projection a D
+  rw [hresponse, zero_mul] at hmul
+  have hCDQ : C * D * Q = 0 := by
+    exact neg_eq_zero.mp (by simpa only [C, D, Q] using hmul.symm)
+  have hPQ : P * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    change (centralPhysicalForbidden a).starProjection
+      ((centralSoninCarrier a).starProjection x) = 0
+    apply (centralPhysicalForbidden a).starProjection_apply_eq_zero_iff.mpr
+    exact ((centralSoninCarrier a).starProjection_apply_mem x).1
+  have hPDQ : P * D * Q = 0 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    have hCx : C (D (Q x)) = 0 := by
+      have h := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T x) hCDQ
+      simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.zero_apply] using h
+    have hkernel :=
+      centralPhysicalProjection_one_sub_projection_eq_zero_of_correction_eq_zero
+        a ha (D (Q x)) (by simpa only [C] using hCx)
+    have hPQx : P (Q (D (Q x))) = 0 := by
+      have h := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T (D (Q x))) hPQ
+      simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.zero_apply] using h
+    change P (D (Q x)) = 0
+    change P ((1 - Q) (D (Q x))) = 0 at hkernel
+    simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
+      map_sub, hPQx, sub_zero] at hkernel
+    exact hkernel
+  have hzero : ∀ n : ℕ,
+      ‖(centralPhysicalForbidden a).starProjection
+        (dilationSum p hp
+          (centralSoninProjection a
+            (evenShellVector a (p * a) ha (by nlinarith) n)))‖ = 0 := by
+    intro n
+    have h := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 =>
+      T (evenShellVector a (p * a) ha (by nlinarith) n)) hPDQ
+    simpa only [P, D, Q, ContinuousLinearMap.mul_apply,
+      ContinuousLinearMap.zero_apply, norm_zero] using congrArg norm h
+  have ht := centralPhysicalProjection_dilationSum_correctedShell_tendsto a p ha hp
+  have ht0 : Tendsto (fun n : ℕ =>
+      ‖(centralPhysicalForbidden a).starProjection
+        (dilationSum p hp
+          (centralSoninProjection a
+            (evenShellVector a (p * a) ha (by nlinarith) n)))‖) atTop (𝓝 0) := by
+    have heq : (fun n : ℕ =>
+        ‖(centralPhysicalForbidden a).starProjection
+          (dilationSum p hp
+            (centralSoninProjection a
+              (evenShellVector a (p * a) ha (by nlinarith) n)))‖) =
+        (fun _ : ℕ => (0 : ℝ)) := funext hzero
+    rw [heq]
+    exact tendsto_const_nhds
+  have h01 : (0 : ℝ) = 1 := tendsto_nhds_unique ht0 ht
+  norm_num at h01
 
 /-! ### Aperture-independent operator radius -/
 

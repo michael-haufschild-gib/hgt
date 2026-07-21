@@ -1675,6 +1675,16 @@ def SoninCoupledNondegenerateAperture :=
   {a : SoninPositiveAperture //
     soninAllPrimeColumnCoordinateOperator a.1 a.2 ≠ 0}
 
+/-- Every positive Sonin aperture canonically inhabits the formerly conditional nondegenerate
+aperture type. -/
+def soninCoupledNondegenerateAperture
+    (a : SoninPositiveAperture) : SoninCoupledNondegenerateAperture :=
+  ⟨a, soninAllPrimeColumnCoordinateOperator_ne_zero a.1 a.2⟩
+
+@[simp]
+theorem soninCoupledNondegenerateAperture_value (a : SoninPositiveAperture) :
+    (soninCoupledNondegenerateAperture a).1 = a := rfl
+
 /-- Build the nondegenerate aperture required by the coupled source-normalization chain from one
 concrete prime-power residual witness.  No global all-prime cancellation hypothesis remains. -/
 def soninCoupledNondegenerateApertureOfPrimePowerResidual

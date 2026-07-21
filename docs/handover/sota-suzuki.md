@@ -49,12 +49,17 @@ The contrapositive is formalized: a non-Cayley limit forces the leakage **not** 
 This is an unconditional and useful scale-selection law.  It is not sufficient for an
 arithmetic limit, and it is not an RH proof.
 
-The exact remaining scientific wall is now:
+The exact remaining scientific wall is now narrower.  The boundary-free continuous-kernel targets
+form the affine pencil `D_eta=XiC'-eta*XiC`.  Every finite fibre has the same Xi zero divisor, so an
+intrinsic schedule need not converge to Suzuki's distinguished zero shift.  It need only avoid both
+classified erasing boundaries, have a finite shift cluster, and satisfy:
 
-> Construct a source-derived cofinal intermediate shift schedule which avoids the far-negative
-> free boundary and retains nonvanishing excited-state leakage, prove locally uniform convergence
-> of its concrete Suzuki Livšic carriers, and identify the resulting non-universal meromorphic
-> carrier with the global Xi/de Branges object without assuming RH.
+> Prove common-gauge parity-pair normality, zero linear Nevanlinna mass, and finite-Neumann-boundary
+> control identifying one cluster pair with `(z^2 XiC,D_eta)`; alternatively identify two distinct
+> denominator fibres and recover Xi by their affine secant.
+
+At an Xi zero of arbitrary multiplicity `m`, every shifted target zero is simple with exact first
+coefficient `z^2/m`.  Shift normalization and Xi-zero simplicity are therefore no longer premises.
 
 The concrete Suzuki screw Hilbert space, Friedrichs operator, spectral projections, resolvents,
 deficiency vectors, and characteristic functions are not yet represented end-to-end in Lean.
@@ -70,7 +75,7 @@ results summarized below.
 2. Read `/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md` completely and use that
    research posture.  Do not use `lean-consolidate` for this task.
 3. Read `formal/README.md`, `formal/AGENTS.md` if present, and `formal/LEAN_OVERVIEW.md`.
-4. Read these four Suzuki cards completely:
+4. Read these five Suzuki cards completely:
 
    ```text
    docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
@@ -81,6 +86,8 @@ results summarized below.
      suzuki-projective-defect-free-boundary.md
    docs/drafts/pipeline/3-formalized/needs-audit/
      suzuki-ground-edge-cayley-universality.md
+   docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+     suzuki-shifted-xi-target-flat-pencil.md
    ```
 
 5. Read the Suzuki row and checklist in
@@ -91,6 +98,7 @@ results summarized below.
    formal/GaloisForLFunctions/RHTower/SuzukiFiniteApertureHermiteBiehler.lean
    formal/GaloisForLFunctions/RHTower/SuzukiProjectiveDefectBoundary.lean
    formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeCayleyUniversality.lean
+   formal/GaloisForLFunctions/RHTower/SuzukiShiftedXiTargetFlatPencil.lean
    formal/GaloisForLFunctions/RHTower/RiemannHypothesisSOTA2026.lean
    ```
 
@@ -1718,3 +1726,193 @@ choose an intrinsic admissible schedule
 
 Prime tangent tomography and finite-shift holonomy now have a fixed target: control
 `U_n(y_k),U_n'(y_k)` rather than moving poles and residues separately.  RH remains open.
+
+## 22. Residual mass is exactly overcrowding plus linear escape
+
+The residual in `(S21.10)` has two disjoint analytic producers.  For every nonnegative continuous
+test `f` on the compactified interval,
+
+```text
+int f d sigma_res
+ =lim_(K->infinity) lim_(n->infinity)
+    sum_(|k|>K) p_(n,k) f(U_n(y_k)).                     (S22.1)
+```
+
+Thus interior residual is probability whose phase label escapes while its physical position stays
+bounded.  If
+
+```text
+sup_n #{k: |U_n(y_k)|<=r}<infinity       for every r<pi/2, (S22.2)
+```
+
+then `sigma_res` has no mass in `(-pi/2,pi/2)`.  Strict phase order is essential: a large label in
+a fixed physical window forces every intervening central label into a slightly larger fixed
+window, contradicting `(S22.2)`.
+
+This turns interior residual elimination into a complex-analytic normality problem.  If zero-free
+entire gauges `g_n` make the even characteristic functions converge locally uniformly,
+
+```text
+g_n W_(n,-1) -> W_(-1) != 0,                            (S22.3)
+```
+
+Rouche's theorem bounds their zero counts on every real compact, so `(S22.2)` holds.  Common-gauge
+convergence of the parity pair additionally gives
+
+```text
+-i W_(n,1)/W_(n,-1) -> -i W_1/W_(-1)                   (S22.4)
+```
+
+meromorphically away from the limiting pole set.  This is pair normality before quotienting, not
+the impossible ordinary entire convergence to Suzuki's meromorphic target.
+
+The remaining endpoint defect is exact.  The Donoghue probability kernel obeys
+
+```text
+K_z(t)=(tz+1)/(t-z)=z+(z^2+1)/(t-z),
+K_z(+infinity)=K_z(-infinity)=z.                         (S22.5)
+```
+
+If `alpha` is total endpoint mass of the compactified weak limit, then
+
+```text
+m_infinity(z)=alpha z+int_R K_z(t)dnu_int(t).            (S22.6)
+```
+
+Hence `alpha` is exactly the linear Nevanlinna coefficient; evenness splits it equally between
+the two endpoints.  The two-condition closure theorem is therefore
+
+```text
+common-gauge entire-pair normality
+  + zero linear Nevanlinna coefficient
+  => sigma_res=0 and sum_k p_k=1.                        (S22.7)
+```
+
+The conditions are independent.  Free clocks violate local zero-count boundedness and produce
+uniform interior residual; the Cayley ground edge has no interior overcrowding but produces linear
+endpoint mass.
+
+There is also a rigidity gain.  Equality of `U(y_k)` and `U'(y_k)` for all fixed labels makes the
+Donoghue probabilities equal, hence their Herglotz transforms, Livsic carriers, normalized phases,
+and every extension divisor are equal.  The lattice first jet is a complete carrier invariant.
+
+Full paper proof and hostile audit:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-residual-overcrowding-entire-pair-closure.md`
+
+The projective endpoint limits `(S22.5)` are formalized as
+`tendsto_suzukiDonoghueKernel_atTop` and `tendsto_suzukiDonoghueKernel_atBot` in
+`formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedPhaseProfile.lean`.
+
+The remaining frontier is no longer an unspecified compactness/tightness estimate.  It is the
+source construction of one common entire gauge for the parity pair, proof that the limiting
+Donoghue function has no linear term, and identification of its meromorphic ratio with the global
+Xi/de Branges carrier.  RH remains open.
+
+## 23. The continuous-kernel shift is a flat Xi pencil, not a distinguished target
+
+Section 8 contains a stronger consequence than the displayed `lambda=0` heuristic.  Suzuki's
+continuous kernel is
+
+```text
+S_a=G_a-lambda(-Delta_N)^(-1),
+hat(g)(z)=z^(-2)xi'(1/2-iz)/xi(1/2-iz).                 (S23.1)
+```
+
+After the still-open finite-interval Neumann boundary passage, the inverse-Laplacian symbol shifts
+the logarithmic derivative by a constant.  In centered even coordinates the complete
+boundary-free target pencil is, up to Suzuki's fixed nonzero scalar,
+
+```text
+D_eta(z)=XiC'(z)-eta XiC(z),
+R_eta(z)=z^2 XiC(z)/D_eta(z),
+eta=-i lambda.                                          (S23.2)
+```
+
+This is not asserted at finite aperture: the Neumann inverse there is not a whole-line convolution
+operator.  The boundary term remains part of the operator frontier.
+
+The pencil is exactly affine:
+
+```text
+D_alpha-D_beta=(beta-alpha)XiC,
+XiC=(D_alpha-D_beta)/(beta-alpha)       (alpha!=beta).  (S23.3)
+```
+
+Hence two normalized finite shift fibres recover Xi directly.  Its target transport is flat:
+
+```text
+T_(alpha,beta)=D_alpha/D_beta,
+T_(alpha,beta)R_alpha=R_beta,
+T_(alpha,beta)T_(beta,gamma)=T_(alpha,gamma),           (S23.4)
+
+[z^2-(beta-alpha)R_alpha]R_beta=z^2R_alpha,
+z^2/R_beta-z^2/R_alpha=alpha-beta.                      (S23.5)
+```
+
+The decisive local theorem is unconditional and allows arbitrary Xi multiplicity.  If `z_0` is an
+Xi zero of order `m>=1`, then for every finite `eta`,
+
+```text
+ord_(z_0)(D_eta)=m-1,
+ord_(z_0)(R_eta)=1,
+TC_(z_0)(R_eta)=z_0^2/m.                                (S23.6)
+```
+
+Thus every finite shifted target has exactly the same Xi zero set.  Every Xi multiplicity is
+collapsed to a simple target zero, but is not lost: it is the reciprocal factor in the exact first
+coefficient.  For a simple Xi zero,
+
+```text
+R_eta'(z_0)=z_0^2,                                      (S23.7)
+```
+
+independent of the shift.  This removes the apparent conflict between simple self-adjoint
+extension spectra and potentially multiple Xi zeros without assuming simplicity.
+
+At fixed nonzero `z`, shift variation is the exact Riccati flow
+
+```text
+dR_eta(z)/deta=R_eta(z)^2/z^2.                          (S23.8)
+```
+
+The old source demand
+
+```text
+choose lambda_a -> 0 and identify R_0
+```
+
+was unnecessarily strong.  Divisor recovery now needs only a non-erasing intrinsic schedule with
+a finite shift cluster and identification of any cluster target `R_eta`.  Uniqueness of the cluster
+and convergence to zero are unnecessary.  Alternatively, prove common-gauge normality for two
+distinct finite fibres and use the affine secant `(S23.3)`.
+
+Full proof and hostile audit:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-shifted-xi-target-flat-pencil.md`
+
+Exact Lean formalization:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiShiftedXiTargetFlatPencil.lean`
+
+Formal capstones include
+`XiC_eq_suzukiShiftedXiDenominator_secant`,
+`suzukiXiShiftTransport_cocycle`,
+`meromorphicOrderAt_suzukiShiftedXiTarget_eq_one_of_XiC_zero`,
+`meromorphicTrailingCoeffAt_suzukiShiftedXiTarget_of_XiC_zero`, and
+`hasDerivAt_suzukiShiftedXiTarget_parameter_riccati`.
+
+### 23.1 Revised open core
+
+The remaining frontier is narrower:
+
+```text
+intrinsic schedule avoiding both erasing boundaries
+  -> finite shift cluster (not necessarily zero)
+  -> common-gauge parity-pair normality and zero linear mass
+  -> finite-Neumann-boundary control identifying (z^2 XiC,D_eta)
+  -> Xi divisor recovery via any fibre, or Xi recovery via two-fibre secant. (S23.9)
+```
+
+Shift normalization and Xi-zero simplicity are no longer open premises.  Finite-aperture boundary
+control and common-gauge operator convergence remain; RH remains open.

@@ -70,21 +70,29 @@ Re Tr(C_a† C_a) > 0 <-> C_a != 0.
 Thus no independent sign estimate remains at degree zero.  Its input is the concrete positive
 statement that the source-built all-prime column is nonzero.
 
-`[SOURCE-FORMALIZED, UNVERIFIED]` The Kraus/Stinespring direct-sum reading localizes this remaining
-nondegeneracy input exactly:
+`[PROVED IN LEAN]` The Kraus/Stinespring direct-sum reading localizes nondegeneracy exactly:
 
 ```text
 C_a != 0
   <-> exists one prime-power channel alpha with R_{a,alpha} != 0.
 ```
 
-The logarithmic Euler coefficient of every retained channel is nonzero, so weighted and
-unweighted residual nondegeneracy are equivalent.  A constructor now turns one concrete residual
-witness directly into `SoninCoupledNondegenerateAperture`.  The infinite all-prime column can no
-longer hide or cancel a nonzero local channel; the open nondegeneracy problem is one-channel
-operator nonvanishing.  The general master-effect identity `C†C = 0 <-> C = 0` also makes the same
-local witness equivalent to nonvanishing of the coupled positive energy and to strict positivity
-of its zeroth trace moment.
+The one-channel obligation is now discharged unconditionally.  Compact-support Fourier unique
+continuation proves the one-sided transversality
+
+```text
+physical-forbidden ∩ Fourier-forbidden⊥ = {0}.
+```
+
+If a correction response vanished, its exact right-projection identity would place every crossed
+vector in the kernel of the Sonin projection correction.  Transversality then kills the physical
+component of the actual dilation corner, contradicting the explicit shell sequence on which that
+component tends to norm one.  Hence every positive-aperture dilation residual is nonzero, so every
+retained prime-power residual is nonzero and every positive aperture canonically defines a
+`SoninCoupledNondegenerateAperture`.  The logarithmic Euler coefficient of every retained channel
+is nonzero, so weighted and unweighted conclusions agree.  The general master-effect identity
+`C†C = 0 <-> C = 0` makes the same local witness equivalent to nonvanishing of the coupled positive
+energy and to strict positivity of its zeroth trace moment.
 
 The finite approximants are whole Gram matrices of the Hilbert--Schmidt coordinate vectors of
 `C_a (C_a† C_a)^n`.  Thus one aperture schedule at cutoff `N` couples all `N^2` matrix entries and
@@ -255,9 +263,7 @@ subpower estimate.
 
 ## Named open core
 
-`[OPEN CORE]` For every cutoff `N`, construct a positive aperture sequence `a_{N,j}>0` whose
-coupled all-prime source columns `C_{a_{N,j}}` are nonzero—equivalently, at every selected
-aperture exhibit one prime-power residual `R_{a_{N,j},alpha} != 0`—and for which
+`[OPEN CORE]` For every cutoff `N`, construct a positive aperture sequence `a_{N,j}>0` for which
 
 ```text
 Tr((C_a† C_a)^(k+1)) / Tr(C_a† C_a)
@@ -265,7 +271,8 @@ Tr((C_a† C_a)^(k+1)) / Tr(C_a† C_a)
   1 ≤ k < 2N-1.
 ```
 
-Equivalently, prove that every finite normalized prime--Gamma moment-Hankel block is a cluster
+All positive apertures now have nonzero coupled columns unconditionally.  Equivalently, prove
+that every finite normalized prime--Gamma moment-Hankel block is a cluster
 point of the positively rescaled positive-aperture Gram blocks of the coupled Sonin column
 operator.  Lean constructs the scale canonically as
 `normalizedPrimeArchMoment(0) / Tr(C_a† C_a)` and proves that `k=0` then matches identically.
@@ -731,3 +738,32 @@ variational interface and its direct RH capstone.
 `[PROVED IN LEAN]` The exact module build, project-module build, axiom inspection, formal lint, and
 generated-index refresh pass for the variational and Rayleigh capstones.  Axiom inspection reports
 only `propext`, `Classical.choice`, and `Quot.sound`.
+
+### Right-edge diagonal-control obstruction
+
+`[PROVED IN LEAN]` The all-degree squared-Euler Hilbert/charge decomposition cannot be closed by
+an orbit-diagonal comparison.  For every off-critical reciprocal-square atom `lambda`, real affine
+polynomial evaluation is onto `C`.  Choosing the value
+
+```text
+w = Im(lambda)/Re(lambda) + i
+```
+
+kills the sheared Hilbert response exactly while leaving transverse charge
+`|lambda|^2/Re(lambda) > 0`.  Hence there is no finite constant `K_lambda`, even one chosen
+separately for each atom, satisfying
+
+```text
+transverse_lambda(P) <= K_lambda * hilbert_lambda(P)
+```
+
+for all real polynomials `P`.  Conversely, under RH every transverse term vanishes.  Lean therefore
+proves that existence of completely nonuniform orbitwise termwise bounds is equivalent to RH.
+This is a kernel-inclusion obstruction, not a failed estimate: any noncircular source/response
+intertwiner capable of proving all-degree charge control must mix distinct atoms globally.
+
+Formal declarations are in
+`RHTower/XiSquaredEulerApertureDiagonalControlObstruction.lean`:
+`exists_xiSquaredEulerAperture_atom_charge_without_hilbert`,
+`not_exists_xiSquaredEulerAperture_termwise_bound_of_ne_half`, and
+`xiSquaredEulerApertureOrbitwiseBoundedCharge_iff_riemannHypothesis`.

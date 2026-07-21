@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HypertranscendentalFunctionJetFreeness
 import GaloisForLFunctions.HTGeometry.FiniteObservableKoopmanBoundary
 import GaloisForLFunctions.HTGeometry.FiniteReporterNetworkFusion
-import GaloisForLFunctions.HTGeometry.FiniteReporterDataProcessing
+import GaloisForLFunctions.HTGeometry.FiniteReporterIsometricRecovery
 import GaloisForLFunctions.RHTower.ZetaHypertranscendental
 
 /-!
@@ -86,5 +86,50 @@ theorem exists_riemannZeta_finiteReporterConditionalInformation_dataProcessing_c
   apply HTGeometry.exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse
   exact HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
     hypertranscendental_riemannZeta
+
+/-- **Perfectly recoverable zeta reporter, irrecoverable source direction.**  An isometric
+downstream encoding is exactly recovered by its adjoint but cannot restore the bounded-order zeta
+derivative direction erased by the original finite reporter. -/
+theorem exists_riemannZeta_isometricReporterRecovery_collapse
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ Module.finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k riemannZeta report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k riemannZeta
+        (decode.toLinearMap.comp report) = 0 ∧
+      report (iteratedDeriv k riemannZeta) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k riemannZeta report ∧
+      decode (report (iteratedDeriv k riemannZeta)) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k riemannZeta
+          (decode.toLinearMap.comp report) ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k riemannZeta ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) riemannZeta) := by
+  apply HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
+  exact HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
+    hypertranscendental_riemannZeta
+
+/-- Every zeta coefficient direction newly erased by a decoder is a genuine nonzero derivative
+packet which was visible before decoding. -/
+theorem riemannZeta_finiteDerivativeReporterMap_postcomp_newBlindPacket
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    {N : ℕ} (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    {c : Fin N → ℂ}
+    (hcpost : c ∈ LinearMap.ker
+      (HTGeometry.finiteDerivativeReporterMap N riemannZeta (decode.comp report)))
+    (hcpre : c ∉ LinearMap.ker
+      (HTGeometry.finiteDerivativeReporterMap N riemannZeta report)) :
+    HTGeometry.finiteDerivativeReporterPacket c riemannZeta ≠ 0 ∧
+      report (HTGeometry.finiteDerivativeReporterPacket c riemannZeta) ≠ 0 ∧
+      decode (report (HTGeometry.finiteDerivativeReporterPacket c riemannZeta)) = 0 := by
+  exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
+    (HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
+      hypertranscendental_riemannZeta)
+    report decode hcpost hcpre
 
 end GaloisForLFunctions

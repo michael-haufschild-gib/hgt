@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.GammaSewnFourRateSchurFisherCurvature
+import GaloisForLFunctions.RHTower.GammaSewnFourRatePluckerConnector
 import GaloisForLFunctions.RHTower.GammaSewnEulerCalibratedExterior
 
 /-!

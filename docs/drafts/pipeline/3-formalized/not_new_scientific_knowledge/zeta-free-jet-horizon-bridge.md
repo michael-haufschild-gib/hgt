@@ -69,6 +69,8 @@ riemannZeta_iteratedDeriv_mem_finset_card_le_finrank
 exists_riemannZeta_iteratedDeriv_not_mem_le_finrank
 riemannZeta_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
 exists_riemannZeta_finiteReporterConditionalInformation_dataProcessing_collapse
+exists_riemannZeta_isometricReporterRecovery_collapse
+riemannZeta_finiteDerivativeReporterMap_postcomp_newBlindPacket
 ```
 
 ## Verification
@@ -88,6 +90,15 @@ finite-network form; a separate single-panel wrapper is unnecessary.
 The downstream capstone selects one derivative order no larger than reporter dimension which is
 new in the zeta source yet redundant both before and after every linear decoder.  It specializes a
 new generic same-witness theorem shared with the Xi logarithmic-derivative source.
+
+For an isometric decoder between complete Hilbert spaces, the stronger recovery specialization
+retains that same source-new/reporter-redundant witness and proves that the decoder adjoint exactly
+recovers the original reporter.  Thus representation recovery is perfect even though no
+downstream operation recreates the zeta derivative direction already erased before encoding.
+
+At arbitrary finite resolution, every coefficient direction newly erased by a decoder now has an
+explicit zeta interpretation: its synthesized derivative packet is nonzero, its original reported
+value is nonzero, and only the downstream decoded value vanishes.
 
 ## Scientific status
 
@@ -110,3 +121,7 @@ where the zero level of `zeta` lies, because algebraic jet freeness is divisor-b
   alternative.
 - 2026-07-21 -- connected zeta to the generic same-witness conditional-information collapse under
   arbitrary downstream linear data processing.
+- 2026-07-21 -- connected zeta to the generic isometric-recovery collapse: adjoint recovery is
+  exact while the same bounded-order source direction remains reporter-blind.
+- 2026-07-21 -- discharged the exact decoder-created blind-packet witness for zeta at every finite
+  jet resolution.

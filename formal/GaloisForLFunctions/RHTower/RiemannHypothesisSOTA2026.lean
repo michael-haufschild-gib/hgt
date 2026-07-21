@@ -16,6 +16,7 @@ import GaloisForLFunctions.RHTower.SuzukiPrimeClockAtomVelocity
 import GaloisForLFunctions.RHTower.SuzukiFiniteShiftProjectiveHolonomy
 import GaloisForLFunctions.RHTower.SuzukiGlobalPhaseConjugacy
 import GaloisForLFunctions.RHTower.SuzukiCompactifiedPhaseProfile
+import GaloisForLFunctions.RHTower.SuzukiShiftedXiTargetFlatPencil
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
@@ -132,10 +133,22 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   `2 U'(y_k)`, so the moving probability measure is encoded by one inverse-phase `C¹` jet.  The
   paper theorem classifies every cofinal subsequential limit as the surviving fixed-label atomic
   measure plus a unique positive escape residual.  This distinguishes free-clock label escape
-  (uniform compactified residual) from ground-edge physical escape (endpoint residual).  The live
-  wall is now sharp: choose an intrinsic admissible schedule, prove its residual vanishes, and
-  identify the limiting lattice jets with the global Xi/de Branges divisor.  The screw-function
-  Hilbert space and its unbounded differential operators are not yet present in Lean.
+  (uniform compactified residual) from ground-edge physical escape (endpoint residual).  The
+  residual-overcrowding closure theorem sharpens this again: interior residual is exactly mass in
+  unbounded phase labels remaining inside a bounded physical window, so common-gauge entire-pair
+  normality eliminates it by local zero-count stability; endpoint residual is exactly the linear
+  Nevanlinna coefficient, with both projective kernel limits now formalized.  The live wall is now
+  a two-producer source theorem: choose an intrinsic schedule, prove entire-pair normality and zero
+  linear mass, then identify the limiting ratio with the Xi/de Branges carrier.
+  `SuzukiShiftedXiTargetFlatPencil` removes a further false obligation from that identification.
+  The continuous-kernel shift produces the affine boundary-free pencil
+  `D_eta=XiC'-eta*XiC`, and every finite shifted quotient `z^2*XiC/D_eta` has exactly the same Xi
+  divisor.  An Xi zero of arbitrary multiplicity `m` becomes a simple target zero with exact
+  trailing coefficient `z^2/m`, independent of `eta`; two distinct denominator fibres recover
+  `XiC` by an affine secant.  Thus the intrinsic shift need only have a non-erasing finite cluster,
+  not converge to zero.  Finite-aperture Neumann boundary control, common-gauge normality, and zero
+  linear mass remain the honest operator walls.  The screw-function Hilbert space and its
+  unbounded differential operators are not yet present in Lean.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete
@@ -248,13 +261,18 @@ theorem hedenmalmXiPositiveFormWall_iff_riemannHypothesis :
 /-- Suzuki's conjectural centered limit target, up to the harmless nonzero constants introduced
 by the change from `xi'(1/2-iz)` to `deriv XiC z`.  Its zeros include every centered Xi zero. -/
 def suzukiXiCharacteristicTarget (z : ℂ) : ℂ :=
-  z ^ 2 * XiC z / deriv XiC z
+  suzukiShiftedXiTarget 0 z
 
 /-- Every centered Xi zero is a zero of Suzuki's quotient target in Lean's totalized field. -/
 theorem suzukiXiCharacteristicTarget_eq_zero_of_XiC_eq_zero
     {z : ℂ} (hz : XiC z = 0) :
     suzukiXiCharacteristicTarget z = 0 := by
-  simp [suzukiXiCharacteristicTarget, hz]
+  simp [suzukiXiCharacteristicTarget, suzukiShiftedXiTarget,
+    suzukiShiftedXiDenominator, hz]
+
+/-- The legacy unshifted target is the zero fibre of the complete flat shift pencil. -/
+theorem suzukiXiCharacteristicTarget_eq_shifted_zero (z : ℂ) :
+    suzukiXiCharacteristicTarget z = suzukiShiftedXiTarget 0 z := rfl
 
 /-- **Legacy impossible-premise connector.**  This is the ordinary entire-compact reading of
 Suzuki's displayed Corollary 1.6 limit.  It is retained for API compatibility and to record the

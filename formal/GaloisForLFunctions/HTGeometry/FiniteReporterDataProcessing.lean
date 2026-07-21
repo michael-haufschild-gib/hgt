@@ -223,6 +223,115 @@ theorem finiteDerivativeReporterGram_postcomp_det_ne_zero_iff
     apply hdecode
     exact hcd
 
+/-- Postprocessed finite-jet coefficient reporting is literal linear-map composition. -/
+theorem finiteDerivativeReporterMap_postcomp
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z) :
+    finiteDerivativeReporterMap N f (decode.comp report) =
+      decode.comp (finiteDerivativeReporterMap N f report) := by
+  rfl
+
+/-- Downstream linear processing can only enlarge the blind coefficient subspace. -/
+theorem ker_finiteDerivativeReporterMap_le_postcomp
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z) :
+    LinearMap.ker (finiteDerivativeReporterMap N f report) ≤
+      LinearMap.ker (finiteDerivativeReporterMap N f (decode.comp report)) := by
+  intro c hc
+  rw [LinearMap.mem_ker] at hc ⊢
+  rw [finiteDerivativeReporterMap_postcomp, LinearMap.comp_apply, hc, map_zero]
+
+/-- **Exact finite-reporter capacity data processing.**  A downstream decoder cannot increase
+visible coefficient rank or decrease blind nullity, and every lost visible dimension becomes
+exactly one additional blind dimension. -/
+theorem finiteDerivativeReporterMap_postcomp_capacity_balance
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z) :
+    finrank ℂ (LinearMap.range
+        (finiteDerivativeReporterMap N f (decode.comp report))) ≤
+        finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) ∧
+      finrank ℂ (LinearMap.ker (finiteDerivativeReporterMap N f report)) ≤
+        finrank ℂ (LinearMap.ker
+          (finiteDerivativeReporterMap N f (decode.comp report))) ∧
+      finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) -
+          finrank ℂ (LinearMap.range
+            (finiteDerivativeReporterMap N f (decode.comp report))) =
+        finrank ℂ (LinearMap.ker
+            (finiteDerivativeReporterMap N f (decode.comp report))) -
+          finrank ℂ (LinearMap.ker (finiteDerivativeReporterMap N f report)) := by
+  have hker :
+      finrank ℂ (LinearMap.ker (finiteDerivativeReporterMap N f report)) ≤
+        finrank ℂ (LinearMap.ker
+          (finiteDerivativeReporterMap N f (decode.comp report))) :=
+    Submodule.finrank_mono
+      (ker_finiteDerivativeReporterMap_le_postcomp N f report decode)
+  have hpre := finiteDerivativeReporterMap_rank_nullity N f report
+  have hpost := finiteDerivativeReporterMap_rank_nullity N f (decode.comp report)
+  omega
+
+/-- Injective postprocessing preserves both visible rank and the complete blind coefficient
+subspace. -/
+theorem finiteDerivativeReporterMap_postcomp_capacity_eq_of_injective
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    (hdecode : Function.Injective decode) :
+    finrank ℂ (LinearMap.range
+        (finiteDerivativeReporterMap N f (decode.comp report))) =
+        finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) ∧
+      LinearMap.ker (finiteDerivativeReporterMap N f (decode.comp report)) =
+        LinearMap.ker (finiteDerivativeReporterMap N f report) := by
+  have hker :
+      LinearMap.ker (finiteDerivativeReporterMap N f (decode.comp report)) =
+        LinearMap.ker (finiteDerivativeReporterMap N f report) := by
+    apply le_antisymm
+    · intro c hc
+      rw [LinearMap.mem_ker] at hc ⊢
+      apply hdecode
+      simpa [finiteDerivativeReporterMap_postcomp] using hc
+    · exact ker_finiteDerivativeReporterMap_le_postcomp N f report decode
+  have hpre := finiteDerivativeReporterMap_rank_nullity N f report
+  have hpost := finiteDerivativeReporterMap_rank_nullity N f (decode.comp report)
+  constructor
+  · rw [hker] at hpost
+    omega
+  · exact hker
+
+/-- Every coefficient direction newly erased by a decoder is a genuinely nonzero source packet
+which was visible before decoding and vanishes afterwards. -/
+theorem finiteDerivativeReporterMap_postcomp_newBlindPacket
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    {N : ℕ} {f : ℂ → ℂ}
+    (hf : ConstantCoefficientDifferentiallyTranscendental f)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    {c : Fin N → ℂ}
+    (hcpost : c ∈ LinearMap.ker
+      (finiteDerivativeReporterMap N f (decode.comp report)))
+    (hcpre : c ∉ LinearMap.ker (finiteDerivativeReporterMap N f report)) :
+    finiteDerivativeReporterPacket c f ≠ 0 ∧
+      report (finiteDerivativeReporterPacket c f) ≠ 0 ∧
+      decode (report (finiteDerivativeReporterPacket c f)) = 0 := by
+  have hc0 : c ≠ 0 := by
+    intro hc
+    subst c
+    exact hcpre (by simp)
+  obtain ⟨hpacket, hdecode⟩ :=
+    finiteDerivativeReporterMap_nonzero_packet_of_mem_ker
+      hf (decode.comp report) hcpost hc0
+  refine ⟨hpacket, ?_, ?_⟩
+  · intro hreport
+    apply hcpre
+    simpa [finiteDerivativeReporterMap, finiteDerivativeJetSynthesis] using hreport
+  · simpa using hdecode
+
 /-- **Same-witness finite-reporter data-processing collapse.**  For a genuine infinite derivative
 clock, some derivative order no larger than reporter dimension is new at the source but redundant
 both before and after every downstream linear decoder. -/

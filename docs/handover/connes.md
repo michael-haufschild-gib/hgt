@@ -1445,3 +1445,93 @@ equal-temperature substitution or prime-only quotients.
 - generated formal indexes were regenerated and
   `scripts/formal_tools.py lint --check-generated` passed;
 - no numerical computation enters any statement or proof.
+
+## 32. Frontier correction: prime-square diagonal is exact orientation defect
+
+See
+
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/theta-likelihood-prime-square-conormal-sign-wall.md`
+
+and
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeSquareSignWall.lean`.
+
+Section 30 established strict negative current for prime shells and left composite residual current
+as open core. The proposed universal nonpositive extension to all composite shells is now ruled
+out exactly, already on every prime square.
+
+For prime $p$, set $\lambda=\log p$ and
+
+\[
+E_p(B,D)=B S_{p^2}(D)+D S_{p^2}(B),
+\qquad
+C_p(B,D)=2S_p(B)S_p(D).
+\]
+
+The full $p^2$ factor packet is
+
+\[
+(1,p^2),\quad(p,p),\quad(p^2,1),
+\]
+
+with rapidities $-\lambda,0,+\lambda$. Therefore the swap shell and its derivative are exactly
+
+\[
+\Sigma_{p^2}=E_p(e^{-i\lambda z}+e^{i\lambda z})+C_p,
+\qquad
+\Sigma'_{p^2}=i\lambda E_p(e^{i\lambda z}-e^{-i\lambda z}).
+\]
+
+On the reflection wall $z=\pi/\lambda+iy$, $y>0$, Lean proves
+
+\[
+J_{p^2}
+=2\lambda E_p\sinh(\lambda y)
+  \bigl[C_p-2E_p\cosh(\lambda y)\bigr].
+\]
+
+Thus current has a sharp diagonal-versus-endpoint sign wall. More decisively, on $D=0$,
+
+\[
+\lim_{B\to0^+}\frac{J_{p^2}(B,0)}{B}
+=4\lambda R_{p^2}\sinh(\lambda y)R_p^2>0.
+\]
+
+For every prime and every positive wall height, raw composite current is positive for all
+sufficiently small positive $B$. No estimate, zero table, or RH assumption enters this
+counterexample. Raw swap-bulk orientation is not an RH route.
+
+The obstruction also supplies an exact correction. Remove only the stationary diagonal amplitude
+$C_p$ from the phase, leaving its derivative unchanged. The renormalized current is
+
+\[
+\widehat J_{p^2}
+=-4\lambda E_p^2\sinh(\lambda y)\cosh(\lambda y)<0
+\]
+
+throughout $B,D\ge0$, $B+D>0$, $y>0$. Hence square-diagonal subtraction is no longer a heuristic:
+it exactly restores prime orientation on every prime-square reflection wall.
+
+This is the representation-level advance. Composite corner mass must remain present in the source,
+but its zero-rapidity diagonal component cannot remain unprojected inside the orientation current.
+The next open core is:
+
+> Construct a source-intrinsic diagonal projection for every squareful product fibre, prove
+> compatibility with the completed theta trace and corrected positive-half-line endpoint windows,
+> and determine whether the projected composite current has a global upper-half-plane sign.
+
+Do not spend effort estimating raw composite current: its desired sign is now formally false.
+
+## 33. Verification of prime-square sign wall and diagonal correction
+
+- direct
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeSquareSignWall.lean`
+  passed without diagnostics;
+- final targeted
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodPrimeSquareSignWall` passed;
+- temporary `#print axioms` checks for factor-packet classification, raw wall identity and sign
+  classifier, diagonal-renormalized strict sign, conormal limit, residue positivity, and positive
+  witnesses report only `propext`, `Classical.choice`, and `Quot.sound`;
+- generated formal indexes were regenerated and
+  `scripts/formal_tools.py lint --check-generated` passed;
+- no numerical computation enters any statement or proof.

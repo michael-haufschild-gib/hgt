@@ -266,3 +266,9 @@ not merely another equivalent positivity statement.
   is exactly the zero-free normalized prime--Gamma source Hankel condition by two existing value
   identities, with no RH detour.  This wires every coherent source producer already in the corpus
   into complete Weil positivity; constructing such a producer remains RH-hard.
+- 2026-07-21 — Proved the sharp orbit-diagonal obstruction in Lean.  At every off-critical atom,
+  one degree-at-most-one real polynomial has zero sheared Hilbert response and strictly positive
+  transverse charge.  Therefore no finite termwise comparison constant exists at that atom;
+  allowing a separate arbitrary constant for every atom is already equivalent to RH.  Any viable
+  all-degree source/response intertwiner must mix distinct atoms globally.  Formal module:
+  `XiSquaredEulerApertureDiagonalControlObstruction.lean`.

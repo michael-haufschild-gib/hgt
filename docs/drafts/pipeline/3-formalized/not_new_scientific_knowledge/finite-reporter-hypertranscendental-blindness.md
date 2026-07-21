@@ -11,6 +11,7 @@
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterDataProcessing.lean` and
   `formal/GaloisForLFunctions/HTGeometry/FiniteReporterNetworkFusion.lean` and
   `formal/GaloisForLFunctions/HTGeometry/ZetaJetFreeness.lean` and
+  `formal/GaloisForLFunctions/RHTower/XiJetFreeness.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivFiniteReporterBlindness.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterRankNullity.lean` and
   `formal/GaloisForLFunctions/RHTower/XiLogDerivReporterGramFisher.lean` and
@@ -22,7 +23,8 @@
   `n`, visible rank plus blind nullity is exactly `n`; the blind nullity is at least the excess of
   `n` over reporter dimension.  The conclusion applies to every hypertranscendental function and,
   unconditionally, to the Xi logarithmic derivative even after an arbitrary finite
-  Gibbs/finite-clock dressing, and to every finite reporter network observing Riemann-zeta jets.
+  Gibbs/finite-clock dressing, and to every finite reporter network observing completed-Xi or
+  Riemann-zeta jets.
 
 ## Goal
 
@@ -167,6 +169,21 @@ D injective -> (I_N(D o R) = 0 <-> I_N(R) = 0),            (18)
 D injective -> (I_N(D o R) > 0 <-> I_N(R) > 0).            (19)
 ```
 
+At every finite jet resolution, let `v_R,b_R` be visible rank and blind nullity before decoding,
+and `v_D,b_D` the corresponding values afterwards.  Rank--nullity and literal map composition give
+the exact capacity law
+
+```text
+v_D <= v_R,                                                (20)
+b_R <= b_D,                                                (21)
+v_R - v_D = b_D - b_R.                                    (22)
+```
+
+Thus each visible coefficient dimension lost downstream becomes exactly one new blind dimension;
+injective decoding preserves both spaces exactly.  For a constant-coefficient-differentially-
+transcendental source, every coefficient packet in the new kernel difference is nonzero at the
+source, nonzero after the original reporter, and zero only after decoding.
+
 Hence ordinary measurement, coarse graining, or decoding cannot repair a derivative direction
 already lost by a finite reporter.  Injective coordinate changes preserve the exact zero/positive
 boundary; noninjective processing can only lose more.  A nonsingular postprocessed Gram matrix
@@ -221,6 +238,11 @@ postprocessing.
 - `finiteDerivativeReporterConditionalInformation_postcomp_le_of_norm_le_one`
 - `finiteDerivativeReporterGram_det_ne_zero_of_postcomp`
 - `finiteDerivativeReporterGram_postcomp_det_ne_zero_iff`
+- `finiteDerivativeReporterMap_postcomp`
+- `ker_finiteDerivativeReporterMap_le_postcomp`
+- `finiteDerivativeReporterMap_postcomp_capacity_balance`
+- `finiteDerivativeReporterMap_postcomp_capacity_eq_of_injective`
+- `finiteDerivativeReporterMap_postcomp_newBlindPacket`
 - `exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse`
 - `exists_nonzero_finiteDerivativeReporterPacket_ker`
 - `exists_nonzero_finiteDerivativeReporterPacket_ker_of_hypertranscendental`
@@ -231,8 +253,12 @@ hypertranscendence and therefore enlarges the usable field beyond HT functions.
 
 ### Direct zeta/Xi source applications
 
+- `xi_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket`
+- `exists_xi_finiteReporterConditionalInformation_dataProcessing_collapse`
+- `xi_finiteDerivativeReporterMap_postcomp_newBlindPacket`
 - `riemannZeta_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket`
 - `exists_riemannZeta_finiteReporterConditionalInformation_dataProcessing_collapse`
+- `riemannZeta_finiteDerivativeReporterMap_postcomp_newBlindPacket`
 
 - `exists_xiLogDeriv_nonzero_finiteDerivativeReporterPacket_ker`
 - `exists_xiLogDeriv_add_finiteGibbs_nonzero_finiteDerivativeReporterPacket_ker`
@@ -244,6 +270,8 @@ hypertranscendence and therefore enlarges the usable field beyond HT functions.
 - `xiLogDeriv_add_finiteGibbs_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket`
 - `exists_xiLogDeriv_finiteReporterConditionalInformation_collapse`
 - `exists_xiLogDeriv_finiteReporterConditionalInformation_dataProcessing_collapse`
+- `xiLogDeriv_finiteDerivativeReporterMap_postcomp_newBlindPacket`
+- `xiLogDeriv_add_finiteGibbs_postcomp_newBlindPacket`
 
 The Xi logarithmic derivative has the required infinite derivative rank unconditionally because
 the corpus already proves an actual simple pole.  The finite-spectral-dressing theorem then shows
@@ -267,11 +295,24 @@ Unconditional Riemann-zeta hypertranscendence discharges the same strongest fini
 interface directly: fused Gram singularity is exactly one common nonzero zeta derivative packet
 erased by every reporter.  No redundant source-specific single-panel theorem is added.
 
+Unconditional completed-Xi hypertranscendence now discharges those same two capstones for `xi`
+itself.  This closes the gap between its earlier exact finite-dictionary capacity laws and the
+stronger network/data-processing layer: one common nonzero Xi packet characterizes fused
+singularity, and one order `k <= finrank(Y)` remains new at the source while becoming redundant
+both before and after every linear decoder.  These function-level results complement rather than
+replace the simple-pole-based `logDeriv xi` results.
+
 The same-witness data-processing law is now generic in HTGeometry.  It selects one order
 `k <= finrank(Y)` that is genuinely new before reporting but has zero conditional information both
 in `Y` and after every linear decoder `Y -> Z`; both reported dependence witnesses use that same
 `k`.  The Xi source theorem now derives from this generic capstone, and zeta has the parallel
 unconditional specialization.
+
+The capacity data-processing law strengthens this pointwise zero statement at every resolution:
+visible-rank loss and blind-nullity gain agree exactly.  Its source witnesses are discharged for
+bare and finite-Gibbs-dressed `logDeriv xi`, completed `xi`, and `riemannZeta`; a coefficient newly
+lost by the decoder therefore represents a genuine nonzero source packet which the original
+reporter still detected.
 
 ## Field transfer
 
@@ -424,9 +465,13 @@ the linear algebra.
   passes its exact cached module build;
 - the generic same-witness data-processing collapse, refactored Xi source, and zeta specialization
   all use only `propext`, `Classical.choice`, and `Quot.sound`;
-- the lint gate reports none of the data-processing or finite-network modules as unreachable; the current
-  repo-wide lint remains blocked by unrelated modules being added concurrently without umbrella
-  imports;
+- the two completed-Xi function-level capstones pass a direct source check and exact
+  `GaloisForLFunctions.RHTower.XiJetFreeness` build (`8950/8950`); both use only `propext`,
+  `Classical.choice`, and `Quot.sound`, and their targeted diff check passes;
+- the exact decoder capacity-balance/equality/witness laws and all four source witnesses pass
+  direct checks and exact builds (`8525/8525`, `8708/8708`, `8951/8951`, `8532/8532`); all seven
+  audited capstones use only `propext`, `Classical.choice`, and `Quot.sound`;
+- repository-wide formal lint and targeted decoder-capacity diff checks pass;
 - no numerical computation and no full or self-concurrent build was run.
 
 ## Gates

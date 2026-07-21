@@ -107,6 +107,35 @@ theorem finiteDerivativeReporterConditionalInformation_postcomp_linearIsometry
     rw [finiteDerivativeReporter_isometricAdjointRecovery report decode] at hback
     exact hback
 
+/-- **Perfectly recoverable representation, irrecoverable source direction.**  For an infinite
+derivative clock observed through a finite-dimensional reporter, an isometric downstream encoding
+has the same collapse witness and is recovered exactly by its adjoint, while that derivative
+direction remains independent before reporting. -/
+theorem exists_finiteDerivativeReporter_isometricRecovery_collapse
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    {f : ℂ → ℂ} (hf : ConstantCoefficientDifferentiallyTranscendental f)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ Module.finrank ℂ Y ∧
+      finiteDerivativeReporterConditionalInformation k f report = 0 ∧
+      finiteDerivativeReporterConditionalInformation k f
+        (decode.toLinearMap.comp report) = 0 ∧
+      report (iteratedDeriv k f) ∈
+        finiteDerivativeReporterPreviousSpace k f report ∧
+      decode (report (iteratedDeriv k f)) ∈
+        finiteDerivativeReporterPreviousSpace k f (decode.toLinearMap.comp report) ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k f ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) f) := by
+  obtain ⟨k, hk, hzero, hpostzero, hreported, hpostreported, hsource⟩ :=
+    exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse
+      hf report decode.toLinearMap
+  exact ⟨k, hk, hzero, hpostzero, hreported, hpostreported,
+    finiteDerivativeReporter_isometricAdjointRecovery report decode, hsource⟩
+
 end
 
 end HTGeometry

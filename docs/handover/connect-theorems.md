@@ -1537,3 +1537,157 @@ Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This removes source-
 duplication, narrows the Xi module to its exact simple-pole dependency, and connects zeta to the
 strongest existing downstream no-recovery statement.  It is static observability, not an RH
 criterion.  Persistent goal remains active.
+
+## 32. Completed-Xi reporter-network and data-processing connectors completed
+
+The source-interface audit found a precise asymmetry: `RHTower/XiJetFreeness.lean` connected
+unconditional completed-Xi hypertranscendence to exact finite-dictionary capacity, while the
+stronger finite reporter-network and same-witness data-processing capstones were available only
+for `logDeriv xi`.  The completed Xi function itself now publishes
+
+```text
+xi_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+exists_xi_finiteReporterConditionalInformation_dataProcessing_collapse.
+```
+
+For every finite dependent family of Hilbert-valued reporters, fused Xi information is singular
+exactly when all reporters erase one common nonzero synthesized Xi derivative packet.  For every
+finite-dimensional reporter and downstream linear decoder, one derivative order no larger than
+reporter dimension remains independent at the Xi source while becoming redundant both before and
+after decoding.  Both source premises are discharged by existing unconditional
+`xi_hypertranscendental`; no zero-location or RH premise is added.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/XiJetFreeness.lean
+lake build GaloisForLFunctions.RHTower.XiJetFreeness
+  8950/8950
+```
+
+Both new declarations use exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Targeted diff checking passed.  Repository-wide formal lint reached only unrelated concurrent
+module `RHTower.ThetaCuspLikelihoodPrimeSquareSignWall`, which is not yet reachable from the
+RHTower umbrella; it reported no reachability issue for `XiJetFreeness`.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This closes the completed-Xi
+function-level reporter interface and complements the pole-based logarithmic-derivative results;
+it is a finite observability boundary, not an RH criterion.  Persistent goal remains active.
+
+## 33. Generic isometric-recovery collapse and source connectors completed
+
+`RHTower/XiLogDerivReporterIsometricRecovery.lean` still carried the proof that perfect recovery
+of an isometrically recoded reporter does not recover a derivative direction erased before
+reporting.  The underlying statement is source-independent and strictly stronger when it retains
+the same reported-dependence witnesses supplied by section 31.
+
+`HTGeometry/FiniteReporterIsometricRecovery.lean` now publishes
+
+```text
+exists_finiteDerivativeReporter_isometricRecovery_collapse.
+```
+
+For every constant-coefficient-differentially-transcendental source, finite-dimensional reporter,
+and isometric downstream encoding, one order `k` no larger than reporter dimension is new at the
+source but redundant before and after encoding.  The encoding adjoint recovers the original
+reporter exactly.  Hence reporter representation is perfectly recoverable while the erased source
+direction remains absent; all clauses use the same `k`.
+
+The existing `exists_xiLogDeriv_isometricReporterRecovery_collapse` keeps its signature and now
+specializes the generic theorem directly from the actual simple pole.  Completed Xi and zeta add
+the stronger full-witness source theorems
+
+```text
+exists_xi_isometricReporterRecovery_collapse
+exists_riemannZeta_isometricReporterRecovery_collapse.
+```
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/FiniteReporterIsometricRecovery.lean
+lake build GaloisForLFunctions.HTGeometry.FiniteReporterIsometricRecovery
+  8526/8526
+lake env lean GaloisForLFunctions/RHTower/XiLogDerivReporterIsometricRecovery.lean
+lake build GaloisForLFunctions.RHTower.XiLogDerivReporterIsometricRecovery
+  8686/8686
+lake env lean GaloisForLFunctions/RHTower/XiJetFreeness.lean
+lake build GaloisForLFunctions.RHTower.XiJetFreeness
+  8951/8951
+lake env lean GaloisForLFunctions/HTGeometry/ZetaJetFreeness.lean
+lake build GaloisForLFunctions.HTGeometry.ZetaJetFreeness
+  8532/8532
+```
+
+The generic theorem and all three source capstones use exactly `propext`, `Classical.choice`, and
+`Quot.sound`.  Repository-wide formal lint and targeted diff checks passed.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This is the Hilbert-space equality
+and recovery boundary of the existing reporter data-processing law, not a general quantum Petz
+theorem, an external novelty claim, or an RH criterion.  Persistent goal remains active.
+
+## 34. Exact reporter capacity data processing and source witnesses completed
+
+The conditional-information layer controlled individual sequential innovations but did not state
+what downstream decoding does to the full coefficient-space capacity census.  Literal composition
+of reporter maps and the existing rank--nullity theorem force a sharper conservation law.
+
+`HTGeometry/FiniteReporterDataProcessing.lean` now publishes
+
+```text
+finiteDerivativeReporterMap_postcomp
+ker_finiteDerivativeReporterMap_le_postcomp
+finiteDerivativeReporterMap_postcomp_capacity_balance
+finiteDerivativeReporterMap_postcomp_capacity_eq_of_injective
+finiteDerivativeReporterMap_postcomp_newBlindPacket.
+```
+
+For every finite jet resolution, decoded visible rank cannot increase and blind nullity cannot
+decrease.  More precisely,
+
+```text
+visible_before - visible_after = blind_after - blind_before.
+```
+
+Every lost visible dimension becomes exactly one additional blind dimension.  Injective decoding
+preserves the entire blind subspace and visible rank.  Under constant-coefficient differential
+transcendence, each coefficient direction newly entering the decoded kernel synthesizes a nonzero
+source packet which was visible before decoding and vanishes afterwards.
+
+The source premise is discharged unconditionally by
+
+```text
+xiLogDeriv_finiteDerivativeReporterMap_postcomp_newBlindPacket
+xiLogDeriv_add_finiteGibbs_postcomp_newBlindPacket
+xi_finiteDerivativeReporterMap_postcomp_newBlindPacket
+riemannZeta_finiteDerivativeReporterMap_postcomp_newBlindPacket.
+```
+
+The first Xi-log theorem uses an actual simple pole; finite spectral dressing supplies the second.
+Completed-Xi and zeta hypertranscendence supply the remaining two.  Hence decoder-created blindness
+cannot be mistaken for a source differential relation in any of the canonical unconditional
+reporter sources.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/FiniteReporterDataProcessing.lean
+lake build GaloisForLFunctions.HTGeometry.FiniteReporterDataProcessing
+  8525/8525
+lake env lean GaloisForLFunctions/RHTower/XiLogDerivReporterDataProcessing.lean
+lake build GaloisForLFunctions.RHTower.XiLogDerivReporterDataProcessing
+  8708/8708
+lake env lean GaloisForLFunctions/RHTower/XiJetFreeness.lean
+lake build GaloisForLFunctions.RHTower.XiJetFreeness
+  8951/8951
+lake env lean GaloisForLFunctions/HTGeometry/ZetaJetFreeness.lean
+lake build GaloisForLFunctions.HTGeometry.ZetaJetFreeness
+  8532/8532
+```
+
+The three generic capstones and four source witnesses use exactly `propext`, `Classical.choice`,
+and `Quot.sound`.  Repository-wide formal lint and targeted diff checks passed.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This is exact finite-dimensional
+rank--nullity data processing, not an external novelty claim, a nonlinear decoder theorem, or an
+RH criterion.  Persistent goal remains active.

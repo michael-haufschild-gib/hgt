@@ -1,12 +1,12 @@
 # Theta-likelihood prime-square conormal sign wall
 
 - **ID:** `theta-likelihood-prime-square-conormal-sign-wall`
-- **Stage:** 1-in-progress
-- **Type:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [UNCONDITIONAL] [NO RH CLAIM]`
+- **Stage:** 3-formalized
+- **Type:** `[NEW SCIENTIFIC KNOWLEDGE] [UNCONDITIONAL] [NO RH CLAIM]`
 - **Parent:**
-  `../3-formalized/new_scientific_knowledge/theta-likelihood-swap-bulk-arithmetic-stratification.md`
+  `theta-likelihood-swap-bulk-arithmetic-stratification.md`
 - **Failed route:**
-  `../5-failed/theta-likelihood-universal-composite-swap-orientation.md`
+  `../../5-failed/theta-likelihood-universal-composite-swap-orientation.md`
 - **Formal target:**
   `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeSquareSignWall.lean`
 - **Statement:** On every prime-square swap shell, reflection-wall current has one exact
@@ -68,6 +68,18 @@ Then:
    Hence for every prime `p` and every `y>0`, sufficiently small `B>0` gives strictly positive
    prime-square current.
 
+4. The obstruction has an exact correction.  Remove only the zero-rapidity diagonal amplitude
+   `C_p` from the phase, leaving the derivative unchanged, and call the resulting current
+   `Jhat`.  Then throughout the same reflection wall,
+
+   ```text
+   Jhat_(p^2)(B,D;z_p(y))
+     =-4 lambda E_p(B,D)^2 sinh(lambda y) cosh(lambda y) < 0   (5)
+   ```
+
+   whenever `B,D>=0`, `B+D>0`, and `y>0`.  Thus the square diagonal is not merely one possible
+   source of the sign defect: deleting exactly that stationary mode restores strict orientation.
+
 ## Approach
 
 - Classify divisors of `p^2` with `Nat.dvd_prime_pow`; reuse zero-based factor-packet machinery.
@@ -75,6 +87,7 @@ Then:
 - Evaluate modes on reflection wall using complex exponential identities.
 - Reduce current to real product `(2)` and use positive endpoint prefactor for iff classifier.
 - Use continuity of `S_p` at zero for conormal limit `(4)` and eventual positivity.
+- Subtract the unique zero-rapidity diagonal amplitude and prove the restored strict sign `(5)`.
 
 ## Hostile audit
 
@@ -89,7 +102,8 @@ Then:
 - **RH circularity:** none; inputs are prime-square factorization, elementary exponential algebra,
   explicit positive theta coefficients, and continuity.
 - **Overclaim:** theorem diagnoses raw swap-bulk obstruction.  It does not sign corrected endpoint
-  windows or prove RH.
+  windows or prove RH.  Its diagonal-renormalized sign is currently only on the prime-square
+  reflection wall, not on arbitrary composite shells.
 
 **Verdict:** `SURVIVES INTERNAL ATTACK`; paper proof below is dependency-closed.
 
@@ -168,20 +182,62 @@ The explicit function `S_p(B)=exp(-B g_p)(B A_p+R_p)` is continuous and `S_p(0)=
 Taking `B->0+` in `(9)` proves `(4)`.  Here `R_p>0`, `R_(p^2)>0`, `lambda>0`, and
 `sinh(lambda y)>0`, so the limit is strictly positive.  The defining property of convergence to
 a point in the open interval `(0,infinity)` implies that `(9)` is positive throughout some right
-neighborhood of zero.  Multiplication by `B>0` then gives `J>0`, completing the theorem.
+neighborhood of zero.  Multiplication by `B>0` then gives `J>0`.
+
+Finally, subtracting `C_p` from the phase in `(7)` leaves `-2E_p cosh(lambda y)` while the
+derivative remains `2i lambda E_p sinh(lambda y)`.  Their current is therefore
+
+```text
+-4lambda E_p^2 sinh(lambda y)cosh(lambda y).
+```
+
+All factors after the leading minus sign are strictly positive under the stated quadrant and
+height hypotheses.  This proves `(5)` and identifies an exact orientation-restoring correction.
 
 No dependency remains open on paper.
+
+## Lean formalization
+
+`ThetaCuspLikelihoodPrimeSquareSignWall.lean` proves the complete package:
+
+- exact factor packet and logarithmic displacements;
+- exact phase and derivative decompositions;
+- reflection-wall phase, derivative, and current identities;
+- exact diagonal-renormalized current and its restored strict negative sign;
+- strict endpoint and central scale positivity;
+- positive, zero, and negative sign-wall equivalences;
+- exact boundary quotient and its conormal limit;
+- strict positivity of the conormal residue;
+- eventual and existential positive-current witnesses on every prime-square shell.
+
+Primary capstones are
+`thetaCuspLikelihoodSwapPrimeSquareCurrent_wall_pos_iff`,
+`thetaCuspLikelihoodSwapPrimeSquareDiagonalRenormalizedCurrent_wall_neg`,
+`tendsto_thetaCuspLikelihoodSwapPrimeSquareCurrent_boundary_div`, and
+`exists_thetaCuspLikelihoodSwapPrimeSquareCurrent_boundary_pos`.
 
 ## Gates
 
 - [x] 0 -> 1: source-pure statement, exact attack, Door passport, internal audit.
 - [x] Dependency-closed paper proof marked `[PROVED HERE]`.
-- [ ] Move to stage 2 after final hostile proof review.
-- [ ] Formalize exact theorem package in Lean.
-- [ ] Run direct Lean, targeted final build, axiom audit, lint, and process cleanup.
+- [x] Hostile proof review: central mode, sign convention, boundary domain, and RH separation audited.
+- [x] Exact theorem package formalized in Lean.
+- [ ] Publication novelty review remains independent-review work; candidate novelty remains provisional.
+
+## Verification
+
+- Direct `lake env lean` check passes without diagnostics.
+- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodPrimeSquareSignWall` passes.
+- `#print axioms` on factor classification, raw sign wall, diagonal-renormalized strict sign,
+  conormal limit, residue positivity, and positive witness reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- Generated formal indexes were regenerated and `scripts/formal_tools.py lint --check-generated`
+  passed.
+- No numerical computation or RH hypothesis enters any proof.
 
 ## Log
 
 - 2026-07-21 — Universal composite sign conjecture attacked and killed at prime-square stratum.
 - 2026-07-21 — Exact sign-wall classifier and positive conormal residue proved on paper.
-
+- 2026-07-21 — Full exact theorem package formalized in Lean; raw composite orientation route closed.
+- 2026-07-21 — Exact zero-rapidity diagonal subtraction proved to restore strict wall orientation.

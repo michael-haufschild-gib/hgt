@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.SuzukiGlobalPhaseConjugacy
+import GaloisForLFunctions.RHTower.SuzukiDonoghueSpectralMeasure
 import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Analysis.SpecificLimits.RCLike
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv
 
 /-!
@@ -208,6 +210,36 @@ theorem hasSum_two_mul_suzukiCompactifiedDeriv_one
     funext hmass
   rw [← hfun]
   exact hprobability
+
+/-! ## Projective endpoint mass -/
+
+/-- At positive projective infinity, the Donoghue probability kernel becomes the linear
+Nevanlinna kernel.  Thus probability escaping through this end contributes linear mass. -/
+theorem tendsto_suzukiDonoghueKernel_atTop (z : ℂ) :
+    Filter.Tendsto (fun t : ℝ => suzukiDonoghueKernel t z)
+      Filter.atTop (nhds z) := by
+  have hden : Filter.Tendsto (fun t : ℝ => (t : ℂ) - z) Filter.atTop
+      (Bornology.cobounded ℂ) :=
+    (tendsto_sub_const_cobounded z).comp (RCLike.tendsto_ofReal_atTop_cobounded ℂ)
+  have hinv : Filter.Tendsto (fun t : ℝ => ((t : ℂ) - z)⁻¹) Filter.atTop (nhds 0) :=
+    Filter.tendsto_inv₀_cobounded.comp hden
+  simpa only [suzukiDonoghueKernel, div_eq_mul_inv, mul_zero, add_zero] using
+    (tendsto_const_nhds (x := z)).add
+      ((tendsto_const_nhds (x := z ^ 2 + 1)).mul hinv)
+
+/-- Negative projective infinity has the same Donoghue kernel value.  The Herglotz transform sees
+the sum of the two endpoint masses; Suzuki evenness separates them equally. -/
+theorem tendsto_suzukiDonoghueKernel_atBot (z : ℂ) :
+    Filter.Tendsto (fun t : ℝ => suzukiDonoghueKernel t z)
+      Filter.atBot (nhds z) := by
+  have hden : Filter.Tendsto (fun t : ℝ => (t : ℂ) - z) Filter.atBot
+      (Bornology.cobounded ℂ) :=
+    (tendsto_sub_const_cobounded z).comp (RCLike.tendsto_ofReal_atBot_cobounded ℂ)
+  have hinv : Filter.Tendsto (fun t : ℝ => ((t : ℂ) - z)⁻¹) Filter.atBot (nhds 0) :=
+    Filter.tendsto_inv₀_cobounded.comp hden
+  simpa only [suzukiDonoghueKernel, div_eq_mul_inv, mul_zero, add_zero] using
+    (tendsto_const_nhds (x := z)).add
+      ((tendsto_const_nhds (x := z ^ 2 + 1)).mul hinv)
 
 /-! ## Global equi-Lipschitz compactness input -/
 

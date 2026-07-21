@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteReporterIsometricRecovery
-import GaloisForLFunctions.RHTower.XiLogDerivReporterDataProcessing
+import GaloisForLFunctions.RHTower.XiLogDerivNonholonomic
 
 /-!
 # Isometric recovery does not repair Xi reporter blindness
@@ -52,17 +52,13 @@ theorem exists_xiLogDeriv_isometricReporterRecovery_collapse
           (decode.toLinearMap.comp report) = report ∧
       iteratedDeriv k (logDeriv xi) ∉ Submodule.span ℂ
         (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) (logDeriv xi)) := by
-  obtain ⟨k, hk, hzero, hreported, hsource⟩ :=
-    exists_xiLogDeriv_finiteReporterConditionalInformation_collapse zeroIndex report
-  have hinfo :=
-    HTGeometry.finiteDerivativeReporterConditionalInformation_postcomp_linearIsometry
-      k (logDeriv xi) report decode
-  have hpostzero :
-      HTGeometry.finiteDerivativeReporterConditionalInformation k (logDeriv xi)
-        (decode.toLinearMap.comp report) = 0 := by
-    rw [hinfo, hzero]
-  exact ⟨k, hk, hzero, hpostzero,
-    HTGeometry.finiteDerivativeReporter_isometricAdjointRecovery report decode, hsource⟩
+  obtain ⟨k, hk, hzero, hpostzero, _, _, hrecover, hsource⟩ :=
+    HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
+      (HTGeometry.constantCoefficientDifferentiallyTranscendental_of_meromorphic_simplePole
+        (meromorphicAt_logDeriv_xi (xiZeroPoint zeroIndex))
+        (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero zeroIndex)))
+      report decode
+  exact ⟨k, hk, hzero, hpostzero, hrecover, hsource⟩
 
 end
 

@@ -312,6 +312,15 @@ theorem soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_primePowerResid
     exact soninAllPrimeColumnCoordinateOperator_ne_zero_of_primePowerResidual_ne_zero
       a ha pk hpk
 
+/-- The coupled all-prime source column is nonzero at every positive aperture.  Any retained
+prime-power coordinate supplies a witness; the prime-square channel at `2²` is canonical. -/
+theorem soninAllPrimeColumnCoordinateOperator_ne_zero
+    (a : ℝ) (ha : 0 < a) :
+    soninAllPrimeColumnCoordinateOperator a ha ≠ 0 := by
+  let pk : Nat.Primes × ℕ := (⟨2, Nat.prime_two⟩, 0)
+  exact soninAllPrimeColumnCoordinateOperator_ne_zero_of_primePowerResidual_ne_zero
+    a ha pk (centralSoninPrimePowerResidual_ne_zero a ha pk)
+
 /-- The global coupled source is nonzero exactly when its correction response detects one
 Chebyshev mode of one prime dilation signal.  This replaces the two-parameter scale family by one
 polynomial orbit per prime without changing the nondegeneracy obligation. -/
