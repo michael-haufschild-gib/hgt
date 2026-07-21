@@ -40,6 +40,40 @@ theorem exists_xiLogDeriv_finiteReporterConditionalInformation_dataProcessing_co
     (meromorphicAt_logDeriv_xi (xiZeroPoint zeroIndex))
     (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero zeroIndex))
 
+/-- The same-witness Xi data-processing collapse survives arbitrary finite Gibbs spectral
+dressing.  The dressed source retains constant-coefficient differential transcendence, so its
+collapsed reported direction is still genuinely new before reporting. -/
+theorem exists_xiLogDeriv_add_finiteGibbs_finiteReporterConditionalInformation_dataProcessing_collapse
+    (zeroIndex : ℕ) {A : Type*} [Fintype A] (energy : A → ℝ)
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.comp report) = 0 ∧
+      report (iteratedDeriv k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) report ∧
+      decode (report (iteratedDeriv k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy))) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.comp report) ∧
+      iteratedDeriv k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) ∉
+        Submodule.span ℂ (Set.range fun i : Fin k =>
+          iteratedDeriv (i : ℕ)
+            (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)) := by
+  exact HTGeometry.exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse
+    (xiLogDeriv_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+      zeroIndex energy)
+    report decode
+
 /-- A decoder-created blind Xi coefficient direction is a nonzero derivative packet which was
 visible before decoding and is erased afterwards. -/
 theorem xiLogDeriv_finiteDerivativeReporterMap_postcomp_newBlindPacket

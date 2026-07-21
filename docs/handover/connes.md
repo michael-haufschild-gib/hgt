@@ -1535,3 +1535,129 @@ Do not spend effort estimating raw composite current: its desired sign is now fo
 - generated formal indexes were regenerated and
   `scripts/formal_tools.py lint --check-generated` passed;
 - no numerical computation enters any statement or proof.
+
+## 34. Corpus frontier correction: prime-cube Lee--Yang cone
+
+See
+
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/theta-likelihood-prime-cube-lee-yang-cone.md`,
+
+`docs/drafts/pipeline/5-failed/theta-likelihood-zero-rapidity-diagonal-projection.md`,
+
+and
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeCubeLeeYangCone.lean`.
+
+The actual corpus stopping point must be kept explicit.  It is not local divisor-phase
+orientation: `thetaProductFiberCenteredPhase_current_lt_zero` already settles every complete
+unweighted product fibre.  It is not a favorable replacement carrier either.  The exact corpus
+identities are
+
+\[
+C_k(z)=B_k(c,z)+S_k(c,z),
+\]
+
+where \(C_k\) is actual Hermitian positive-half-line fibre current, \(B_k\) is coherent oriented
+divisor base, and \(S_k\) is complete polarization-plus-window seam.  Moreover the centered-seam
+no-go proves \(C_k\le S_k\) in upper half-plane, and finite-arithmetic/Haar conservation returns
+raw current as surviving remainder.  Thus replacing \(C_k\) by \(B_k\), even canonically, solves
+a surrogate.  Unconditional raw theta-tail current control remains RH-bearing frontier; corpus
+formalizes its scaled anisotropic form as equivalent to RH.
+
+Scientific-method test was applied to Section 32 proposal.
+
+**Conjecture H0.** Zero-rapidity diagonal modes are complete composite orientation defect.
+
+**Falsifiable prediction.** First odd prime power, which has no diagonal, should retain strict
+negative upper-half-plane current without correction.
+
+**Test.** For prime \(p\), let \(L=\log p\).  Complete \(p^3\) likelihood boundary packet is
+
+\[
+F_{a,b,L}(z)
+=a(e^{-3iLz/2}+e^{3iLz/2})
+ +b(e^{-iLz/2}+e^{iLz/2}).
+\]
+
+Its coefficient polynomial is
+
+\[
+P_r(X)=1+rX+rX^2+X^3
+      =(X+1)(X^2+(r-1)X+1),
+\qquad r=b/a.
+\]
+
+Lean proves exact global classifier
+
+\[
+\bigl[\forall\,\operatorname{Im}z>0,
+  \operatorname{Im}(F'\overline F)<0\bigr]
+\iff b\le3a.                                             \tag{34.1}
+\]
+
+Sufficiency is existing corpus unit-circle-root orientation.  Necessity is explicit.  On
+\(z=\pi/L+iy\),
+
+\[
+J=-L\sinh(Ly)
+ [b-a(2\cosh(Ly)+1)]
+ [b-a(6\cosh(Ly)-3)].                                   \tag{34.2}
+\]
+
+If \(b>3a\), choose \(Ly=\operatorname{arcosh}(b/(3a))\); factors in (34.2) have opposite signs,
+so \(J>0\).
+
+For actual source face \(D=0\), coefficients are
+
+\[
+a_p(B)=B R_{p^3},
+\qquad
+b_p(B)=S_p(B)R_{p^2}+R_pS_{p^2}(B).
+\]
+
+At \(B=0\), \(a_p(0)=0\) while \(b_p(0)=2R_pR_{p^2}>0\).  Continuity gives
+
+\[
+b_p(B)>3a_p(B)
+\]
+
+for every sufficiently small \(B>0\).  Lean then supplies an upper-half-plane point with positive
+actual shell current.  Separately, Lean classifies all four factor pairs and proves every
+rapidity is nonzero.  Diagonal projection acts identically and fails.
+
+**Verdict.** H0 is false.  Positive survivor is sharp Lee--Yang coefficient cone (34.1): composite
+orientation is root-confinement problem for full palindromic coefficient packet, not stationary
+mode deletion.
+
+This is frontier progress, not RH proof.  It prevents another local correction from being mistaken
+for raw-source theorem and gives exact hostile gate any source-compatible seam mechanism must pass.
+
+### Next corpus-native conjecture
+
+`[CONJECTURE]` Apply Schur/Lee--Yang defect factorization only after forming finite **completed
+cofinal source packet**, before product-fibre/Haar separation.  Reciprocal root defects of this
+global packet should equal complete modular Hermitian/window seam plus one remote boundary term;
+remote term should vanish under source cofinal limit.  This ordering is essential: per-fibre
+projection is refuted by \(p^3\), while post-Haar endpoint tuning is refuted by conserved survivor.
+
+Required first experiment is exact and symbolic, not estimative:
+
+1. construct smallest completed cofinal packet containing \(p^2\) and \(p^3\) strata;
+2. prove reciprocal polynomial symmetry and exact Schur defect identity;
+3. identify defect with existing complete seam by equality, not domination;
+4. test whether remainder is sole modular remote row.  If any extra local term survives, retire
+   conjecture before asymptotic work.
+
+## 35. Verification of prime-cube frontier test
+
+- direct
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeCubeLeeYangCone.lean`
+  passed;
+- final targeted
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodPrimeCubeLeeYangCone` passed;
+- temporary `#print axioms` checks for unit-root classification, sharp global iff, no-zero-rapidity
+  packet, exact source identity, eventual anti-cone exit, and eventual positive-current witnesses
+  report only `propext`, `Classical.choice`, and `Quot.sound`;
+- `scripts/formal_tools.py lint` passed;
+- no numerical computation enters any statement or proof.
+

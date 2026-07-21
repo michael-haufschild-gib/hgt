@@ -178,16 +178,22 @@ The RHTower implementation is
 ## Open core
 
 `[OPEN CORE]` Prove the weaker source-variational aperture inequality from the explicit coupled
-prime-power and Gamma residual formulas.  For each zero-constant tail, both the aperture and scalar
-counterterm may be selected.  The remaining family is smaller in one exact algebraic direction
-but still contains all zero-constant integer tails; Feshbach elimination does not manufacture the
-source comparison.
+prime-power and Gamma residual formulas. For each zero-constant tail in the strict centered
+analytic-tail residual, both aperture and scalar counterterm may be selected. Feshbach elimination
+does not manufacture the source comparison.
 
-The shifted-sector cones in `sonin-coupled-finite-gram-closure-rh.md` do **not** automatically
-discharge the new remainder: `Q(q)>=0` alone does not imply
-`Q(q)-L(q)^2/m0>=0`.  They become complementary only after a genuinely centered sector estimate
-is proved and transported through the target-centering map.  Until then, no previously discharged
-sector is counted as discharged in this route.
+The earlier shifted-sector cones in `sonin-coupled-finite-gram-closure-rh.md` do **not**
+automatically discharge the new remainder: `Q(q)>=0` alone does not imply
+`Q(q)-L(q)^2/m0>=0`. The later formalized centered analytic-tail theorem now discharges one
+genuine Feshbach family directly:
+
+```text
+tailL1(q) <= 8 |E_PG(q)| -> Var_PG(q) >= 0.
+```
+
+Consequently the live source comparison is required only on the strict residual
+`8|E_PG(q)| < tailL1(q)`. This is a proper right-edge hypothesis reduction, not full closure; the
+residual comparison remains open.
 
 ## Literature provenance
 

@@ -1,8 +1,11 @@
 import GaloisForLFunctions.HTGeometry.HypertranscendentalFunctionJetFreeness
+import GaloisForLFunctions.HTGeometry.FiniteSpectralDressingStability
+import GaloisForLFunctions.HTGeometry.JacobiThetaDefectMeromorphicOrder
 import GaloisForLFunctions.HTGeometry.FiniteObservableKoopmanBoundary
 import GaloisForLFunctions.HTGeometry.FiniteReporterNetworkFusion
 import GaloisForLFunctions.HTGeometry.FiniteReporterIsometricRecovery
 import GaloisForLFunctions.RHTower.ZetaHypertranscendental
+import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
 
 /-!
 # The Riemann zeta derivative jets are algebraically independent
@@ -130,6 +133,150 @@ theorem riemannZeta_finiteDerivativeReporterMap_postcomp_newBlindPacket
   exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
     (HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
       hypertranscendental_riemannZeta)
+    report decode hcpost hcpre
+
+/-! ## Finite Gibbs spectral dressing -/
+
+/-- The Riemann zeta function is meromorphic at its pole `s = 1`.  This packages the existing
+analytic residue unit as the local factorization `ζ(s) = (s - 1)⁻¹ G(s)`. -/
+theorem meromorphicAt_riemannZeta_one :
+    MeromorphicAt riemannZeta 1 := by
+  have hsub : MeromorphicAt (fun z : ℂ => z - 1) 1 := by fun_prop
+  have hmodel : MeromorphicAt
+      (fun z : ℂ => (z - 1)⁻¹ * RHTower.zetaResidueUnit z) 1 :=
+    hsub.inv.mul RHTower.zetaResidueUnit_analyticAt.meromorphicAt
+  apply hmodel.congr
+  filter_upwards [self_mem_nhdsWithin] with z hz
+  have hz1 : z ≠ 1 := by simpa using hz
+  rw [RHTower.zetaResidueUnit, Function.update_of_ne hz1]
+  field_simp [sub_ne_zero.mpr hz1]
+
+/-- The pole of Riemann zeta at `s = 1` has exact meromorphic order `-1`. -/
+theorem meromorphicOrderAt_riemannZeta_one :
+    meromorphicOrderAt riemannZeta 1 = ((-1 : ℤ) : WithTop ℤ) := by
+  exact meromorphicOrderAt_eq_neg_one_of_tendsto_mul_sub
+    meromorphicAt_riemannZeta_one (by norm_num) riemannZeta_residue_one
+
+/-- Riemann zeta retains infinite constant-coefficient spectral complexity after addition of any
+finite Gibbs partition response. -/
+theorem riemannZeta_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+    {A : Type*} [Fintype A] (energy : A → ℝ) :
+    HTGeometry.ConstantCoefficientDifferentiallyTranscendental
+      (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) :=
+  HTGeometry.constantCoefficientDifferentiallyTranscendental_add_finiteComplexGibbsPartition_of_simplePole
+    meromorphicAt_riemannZeta_one meromorphicOrderAt_riemannZeta_one energy
+
+/-- Fused reporter information for finite-Gibbs dressed Riemann zeta is singular exactly when all
+reporters erase one common genuinely nonzero dressed-zeta derivative packet. -/
+theorem riemannZeta_add_finiteGibbs_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+    (N : ℕ) {A ι : Type*} [Fintype A] [Fintype ι]
+    {Y : ι → Type*}
+    [∀ a, NormedAddCommGroup (Y a)] [∀ a, InnerProductSpace ℂ (Y a)]
+    (energy : A → ℝ) (report : ∀ a, (ℂ → ℂ) →ₗ[ℂ] Y a) :
+    (HTGeometry.finiteDerivativeReporterGram N
+      (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)
+      (HTGeometry.finiteFamilyDerivativeReporter report)).det = 0 ↔
+      ∃ c : Fin N → ℂ,
+        (∀ a, report a (HTGeometry.finiteDerivativeReporterPacket c
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)) = 0) ∧
+        HTGeometry.finiteDerivativeReporterPacket c
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) ≠ 0 := by
+  apply HTGeometry.finiteDerivativeReporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+  exact
+    riemannZeta_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+      energy
+
+/-- Finite-Gibbs dressing preserves the Riemann-zeta same-witness data-processing collapse. -/
+theorem exists_riemannZeta_add_finiteGibbs_finiteReporterConditionalInformation_dataProcessing_collapse
+    {A : Type*} [Fintype A] (energy : A → ℝ)
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ Module.finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.comp report) = 0 ∧
+      report (iteratedDeriv k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) report ∧
+      decode (report (iteratedDeriv k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy))) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.comp report) ∧
+      iteratedDeriv k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) ∉
+        Submodule.span ℂ (Set.range fun i : Fin k =>
+          iteratedDeriv (i : ℕ)
+            (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)) := by
+  apply HTGeometry.exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse
+  exact
+    riemannZeta_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+      energy
+
+/-- An isometrically encoded finite-Gibbs dressed-zeta reporter is exactly recovered, while the
+same bounded-order source direction erased before encoding remains genuinely new. -/
+theorem exists_riemannZeta_add_finiteGibbs_isometricReporterRecovery_collapse
+    {A : Type*} [Fintype A] (energy : A → ℝ)
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ Module.finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.toLinearMap.comp report) = 0 ∧
+      report (iteratedDeriv k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) report ∧
+      decode (report (iteratedDeriv k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy))) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.toLinearMap.comp report) ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k
+          (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) ∉
+        Submodule.span ℂ (Set.range fun i : Fin k =>
+          iteratedDeriv (i : ℕ)
+            (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)) := by
+  apply HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
+  exact
+    riemannZeta_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+      energy
+
+/-- Every coefficient direction newly erased by a decoder for finite-Gibbs dressed zeta
+synthesizes a genuine nonzero packet visible before decoding. -/
+theorem riemannZeta_add_finiteGibbs_finiteDerivativeReporterMap_postcomp_newBlindPacket
+    {A : Type*} [Fintype A] (energy : A → ℝ)
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    {N : ℕ} (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    {c : Fin N → ℂ}
+    (hcpost : c ∈ LinearMap.ker
+      (HTGeometry.finiteDerivativeReporterMap N
+        (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) (decode.comp report)))
+    (hcpre : c ∉ LinearMap.ker
+      (HTGeometry.finiteDerivativeReporterMap N
+        (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) report)) :
+    HTGeometry.finiteDerivativeReporterPacket c
+        (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy) ≠ 0 ∧
+      report (HTGeometry.finiteDerivativeReporterPacket c
+        (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy)) ≠ 0 ∧
+      decode (report (HTGeometry.finiteDerivativeReporterPacket c
+        (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy))) = 0 := by
+  exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
+    (riemannZeta_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+      energy)
     report decode hcpost hcpre
 
 end GaloisForLFunctions

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteReporterIsometricRecovery
+import GaloisForLFunctions.RHTower.XiLogDerivFiniteSpectralDressing
 import GaloisForLFunctions.RHTower.XiLogDerivNonholonomic
 
 /-!
@@ -59,6 +60,43 @@ theorem exists_xiLogDeriv_isometricReporterRecovery_collapse
         (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero zeroIndex)))
       report decode
   exact ⟨k, hk, hzero, hpostzero, hrecover, hsource⟩
+
+/-- **Finite-Gibbs dressed Xi recovery boundary.**  Isometric postprocessing exactly recovers the
+dressed reporter and preserves its zero-information witness, but cannot recover the same genuinely
+new derivative direction erased before reporting. -/
+theorem exists_xiLogDeriv_add_finiteGibbs_isometricReporterRecovery_collapse
+    (zeroIndex : ℕ) {A : Type*} [Fintype A] (energy : A → ℝ)
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.toLinearMap.comp report) = 0 ∧
+      report (iteratedDeriv k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) report ∧
+      decode (report (iteratedDeriv k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy))) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.toLinearMap.comp report) ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) ∉
+        Submodule.span ℂ (Set.range fun i : Fin k =>
+          iteratedDeriv (i : ℕ)
+            (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)) := by
+  exact HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
+    (xiLogDeriv_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+      zeroIndex energy)
+    report decode
 
 end
 

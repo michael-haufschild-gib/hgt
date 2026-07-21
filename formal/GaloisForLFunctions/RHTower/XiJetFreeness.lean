@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.FiniteObservableKoopmanBoundary
 import GaloisForLFunctions.HTGeometry.FiniteReporterIsometricRecovery
 import GaloisForLFunctions.HTGeometry.FiniteReporterNetworkFusion
 import GaloisForLFunctions.HTGeometry.HypertranscendentalPointJetFreeness
+import GaloisForLFunctions.HTGeometry.HypertranscendentalReporterFreeness
 import GaloisForLFunctions.RHTower.XiHypertranscendenceUnconditional
 
 /-!
@@ -157,6 +158,121 @@ theorem xi_finiteDerivativeReporterMap_postcomp_newBlindPacket
   exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
     (HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
       xi_hypertranscendental)
+    report decode hcpost hcpre
+
+/-! ## Finite Gibbs spectral dressing -/
+
+/-- Completed Xi retains infinite constant-coefficient spectral complexity after addition of any
+finite Gibbs partition response. -/
+theorem xi_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+    {A : Type*} [Fintype A] (energy : A → ℝ) :
+    HTGeometry.ConstantCoefficientDifferentiallyTranscendental
+      (xi + HTGeometry.finiteComplexGibbsPartition energy) :=
+  GaloisForLFunctions.Hypertranscendental.add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+    xi_hypertranscendental xi_differentiable.contDiff energy
+
+/-- Fused reporter information for finite-Gibbs dressed completed Xi is singular exactly when all
+reporters erase one common genuinely nonzero dressed-Xi derivative packet. -/
+theorem xi_add_finiteGibbs_reporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+    (N : ℕ) {A ι : Type*} [Fintype A] [Fintype ι]
+    {Y : ι → Type*}
+    [∀ a, NormedAddCommGroup (Y a)] [∀ a, InnerProductSpace ℂ (Y a)]
+    (energy : A → ℝ) (report : ∀ a, (ℂ → ℂ) →ₗ[ℂ] Y a) :
+    (HTGeometry.finiteDerivativeReporterGram N
+      (xi + HTGeometry.finiteComplexGibbsPartition energy)
+      (HTGeometry.finiteFamilyDerivativeReporter report)).det = 0 ↔
+      ∃ c : Fin N → ℂ,
+        (∀ a, report a (HTGeometry.finiteDerivativeReporterPacket c
+          (xi + HTGeometry.finiteComplexGibbsPartition energy)) = 0) ∧
+        HTGeometry.finiteDerivativeReporterPacket c
+          (xi + HTGeometry.finiteComplexGibbsPartition energy) ≠ 0 := by
+  apply HTGeometry.finiteDerivativeReporterGram_family_det_eq_zero_iff_exists_commonBlindPacket
+  exact xi_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental energy
+
+/-- Finite-Gibbs dressing preserves the completed-Xi same-witness data-processing collapse. -/
+theorem exists_xi_add_finiteGibbs_finiteReporterConditionalInformation_dataProcessing_collapse
+    {A : Type*} [Fintype A] (energy : A → ℝ)
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ Module.finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy) report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.comp report) = 0 ∧
+      report (iteratedDeriv k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy)) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy) report ∧
+      decode (report (iteratedDeriv k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy))) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.comp report) ∧
+      iteratedDeriv k (xi + HTGeometry.finiteComplexGibbsPartition energy) ∉
+        Submodule.span ℂ (Set.range fun i : Fin k =>
+          iteratedDeriv (i : ℕ)
+            (xi + HTGeometry.finiteComplexGibbsPartition energy)) := by
+  apply HTGeometry.exists_finiteDerivativeReporterConditionalInformation_dataProcessing_collapse
+  exact xi_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental energy
+
+/-- An isometrically encoded finite-Gibbs dressed-Xi reporter is exactly recovered, while the same
+bounded-order source direction erased before encoding remains genuinely new. -/
+theorem exists_xi_add_finiteGibbs_isometricReporterRecovery_collapse
+    {A : Type*} [Fintype A] (energy : A → ℝ)
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ Module.finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy) report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.toLinearMap.comp report) = 0 ∧
+      report (iteratedDeriv k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy)) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy) report ∧
+      decode (report (iteratedDeriv k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy))) ∈
+        HTGeometry.finiteDerivativeReporterPreviousSpace k
+          (xi + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.toLinearMap.comp report) ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k (xi + HTGeometry.finiteComplexGibbsPartition energy) ∉
+        Submodule.span ℂ (Set.range fun i : Fin k =>
+          iteratedDeriv (i : ℕ)
+            (xi + HTGeometry.finiteComplexGibbsPartition energy)) := by
+  apply HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
+  exact xi_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental energy
+
+/-- Every coefficient direction newly erased by a decoder for finite-Gibbs dressed completed Xi
+synthesizes a genuine nonzero packet visible before decoding. -/
+theorem xi_add_finiteGibbs_finiteDerivativeReporterMap_postcomp_newBlindPacket
+    {A : Type*} [Fintype A] (energy : A → ℝ)
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    {N : ℕ} (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    {c : Fin N → ℂ}
+    (hcpost : c ∈ LinearMap.ker
+      (HTGeometry.finiteDerivativeReporterMap N
+        (xi + HTGeometry.finiteComplexGibbsPartition energy) (decode.comp report)))
+    (hcpre : c ∉ LinearMap.ker
+      (HTGeometry.finiteDerivativeReporterMap N
+        (xi + HTGeometry.finiteComplexGibbsPartition energy) report)) :
+    HTGeometry.finiteDerivativeReporterPacket c
+        (xi + HTGeometry.finiteComplexGibbsPartition energy) ≠ 0 ∧
+      report (HTGeometry.finiteDerivativeReporterPacket c
+        (xi + HTGeometry.finiteComplexGibbsPartition energy)) ≠ 0 ∧
+      decode (report (HTGeometry.finiteDerivativeReporterPacket c
+        (xi + HTGeometry.finiteComplexGibbsPartition energy))) = 0 := by
+  exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
+    (xi_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental energy)
     report decode hcpost hcpre
 
 end RHTower

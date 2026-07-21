@@ -1,10 +1,9 @@
 # Theta-likelihood prime-cube Lee--Yang coefficient cone
 
 - **ID:** `theta-likelihood-prime-cube-lee-yang-cone`
-- **Stage:** 2-fully-proven
-- **Type:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [UNCONDITIONAL] [NO RH CLAIM]`
-- **Parent:**
-  `../3-formalized/new_scientific_knowledge/theta-likelihood-prime-square-conormal-sign-wall.md`
+- **Stage:** 3-formalized
+- **Type:** `[FORMALIZED] [NOVELTY UNVERIFIED] [UNCONDITIONAL] [NO RH CLAIM]`
+- **Parent:** `theta-likelihood-prime-square-conormal-sign-wall.md`
 - **Formal target:**
   `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeCubeLeeYangCone.lean`
 - **Statement:** A positive symmetric prime-cube packet has strict negative current throughout the
@@ -198,17 +197,47 @@ the full palindromic coefficient polynomial.  The next stronger conjecture is:
 The cube theorem proves why the square obstruction no longer kills this replacement: it controls
 interference between distinct nonzero rapidity bands, not only the stationary band.
 
+## Lean certificate
+
+Module:
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeCubeLeeYangCone.lean`
+
+Principal declarations:
+
+- `thetaPositiveFactorPairs_prime_cube`
+- `thetaFactorPairLogDisplacement_ne_zero_prime_cube`
+- `primeCubeCoefficientPolynomial_roots_unit`
+- `primeCubeCoefficientCurrent_wall`
+- `exists_primeCubeCoefficientCurrent_pos_of_three_mul_lt`
+- `primeCubeCoefficientCurrent_lt_zero_iff_leeYangCone`
+- `thetaCuspLikelihoodSwapMassShellPhase_eq_prime_cube_boundary`
+- `thetaCuspLikelihoodSwapMassShellCurrent_eq_prime_cube_boundary`
+- `eventually_thetaCuspLikelihoodPrimeCube_antiCone`
+- `eventually_exists_thetaCuspLikelihoodSwapPrimeCubeCurrent_pos`
+
+The formal theorem is deliberately local to the likelihood boundary packet.  Corpus modules
+`XiCTaylorThetaTailProductFiberCenteredSeam.lean`,
+`XiCTaylorThetaTailProductFiberCenteredSeamNoGo.lean`, and
+`XiCTaylorThetaTailCoreCurrentCapstone.lean` prove that replacing the actual Hermitian/window seam
+by this favorable local carrier does not discharge the RH-bearing raw-current problem.
+
 ## Gates
 
 - [x] 0 -> 1: source-pure exact claim, Door passport, internal/external frontier, hostile attack.
 - [x] Dependency-closed paper proof marked `[PROVED HERE]`.
 - [x] 1 -> 2: exact statement normalized against source definitions; hostile review passed;
   dependency-closed proof marked `[PROVED HERE]`.
-- [ ] Formalize exact classifier, source identity, and eventual positive witnesses in Lean.
-- [ ] Run direct Lean, targeted module build, axiom audit, lint, and cleanup.
+- [x] Formalize exact classifier, source identity, and eventual positive witnesses in Lean.
+- [x] Run targeted module build, axiom audit, lint, and cleanup.
 
 ## Log
 
 - 2026-07-21 — Prime-cube shell selected as first diagonal-free test of the square correction.
 - 2026-07-21 — Sharp `b<=3a` global cone and explicit anti-cone witness proved on paper.
 - 2026-07-21 — Actual likelihood boundary shown to enter anti-cone arbitrarily near the face.
+- 2026-07-21 — Lean formalization closed: four-divisor classification, no-zero-rapidity theorem,
+  unit-circle-root sufficiency, explicit anti-cone witness, sharp global iff, exact source identity,
+  eventual anti-cone exit, and eventual positive-current witnesses.
+- 2026-07-21 — Direct Lean, targeted module build, axiom audit, and formal lint passed.  Capstones
+  depend only on `propext`, `Classical.choice`, and `Quot.sound`.

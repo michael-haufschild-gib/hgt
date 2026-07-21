@@ -376,6 +376,7 @@ import GaloisForLFunctions.HTGeometry.GalePeriodClosureFracture
 import GaloisForLFunctions.HTGeometry.GammaBellSubstitution
 import GaloisForLFunctions.HTGeometry.GammaDifferentialFE
 import GaloisForLFunctions.HTGeometry.GammaHypertranscendental
+import GaloisForLFunctions.HTGeometry.GammaDigammaJetFreeness
 import GaloisForLFunctions.HTGeometry.GammaMultiplication
 import GaloisForLFunctions.HTGeometry.GammaNatShift
 import GaloisForLFunctions.HTGeometry.RiemannSumCell

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.GammaSewnFourRateSchurFisherCurvature
 import GaloisForLFunctions.HilbertMetric.GradedPartition
+import GaloisForLFunctions.HilbertMetric.GramCurvaturePersistence
 
 /-!
 # Gamma-sewn four-rate Pluecker connector
@@ -33,8 +34,82 @@ def gammaSewnFourRateBoundaryPluckerFeature
       if i = 0 then 1 / (rate j ^ 2 - a ^ 2)
       else -2 * a * rate j / (rate j ^ 2 - a ^ 2)
 
-/-- The six Gamma boundary weights are exactly the determinant of their weighted Cauchy feature
-Gram matrix. -/
+/-- A scalar jet represented as a one-dimensional matrix jet. -/
+def boundaryPairPartitionScalarJetMatrix (z : ℝ) : Matrix (Fin 1) (Fin 1) ℝ :=
+  fun _ _ => z
+
+/-- One-dimensional Gram log-curvature is exactly scalar logarithmic curvature.  The identity is
+unconditional because both matrix and scalar inverses use the same zero convention. -/
+theorem gramLogCurvatureJet_boundaryPairPartitionScalarJetMatrix
+    (z z₁ z₂ : ℝ) :
+    gramLogCurvatureJet
+        (boundaryPairPartitionScalarJetMatrix z)
+        (boundaryPairPartitionScalarJetMatrix z₁)
+        (boundaryPairPartitionScalarJetMatrix z₂) =
+      z₂ / z - (z₁ / z) ^ 2 := by
+  simp [gramLogCurvatureJet, boundaryPairPartitionScalarJetMatrix,
+    Matrix.trace, Matrix.mul_apply]
+  ring
+
+/-- The scalar boundary-partition 2-jet is literally a one-dimensional HilbertMetric Gram
+log-curvature jet. -/
+theorem boundaryPairPartitionLogCurvatureFromJets_eq_gramLogCurvatureJet
+    {β : Type*} [Fintype β]
+    (rawWeight selectedHeight selectedFisher : β → ℝ) :
+    boundaryPairPartitionLogCurvatureFromJets
+        rawWeight selectedHeight selectedFisher =
+      gramLogCurvatureJet
+        (boundaryPairPartitionScalarJetMatrix
+          (boundaryPairPartitionJetZero rawWeight))
+        (boundaryPairPartitionScalarJetMatrix
+          (boundaryPairPartitionJetOne rawWeight selectedHeight))
+        (boundaryPairPartitionScalarJetMatrix
+          (boundaryPairPartitionJetTwo rawWeight selectedHeight selectedFisher)) := by
+  rw [gramLogCurvatureJet_boundaryPairPartitionScalarJetMatrix]
+  rfl
+
+/-- The generic four-rate Schur boundary jet is the total numerator Fisher curvature minus its
+one-dimensional denominator Gram log-curvature. -/
+theorem fourRateSchurBoundaryLogCurvatureFromJets_eq_gramLogCurvatureJet
+    {β : Type*} [Fintype β]
+    (rawWeight selectedHeight selectedFisher : β → ℝ) (totalFisher : ℝ) :
+    fourRateSchurBoundaryLogCurvatureFromJets
+        rawWeight selectedHeight selectedFisher totalFisher =
+      -2 * totalFisher -
+        gramLogCurvatureJet
+          (boundaryPairPartitionScalarJetMatrix
+            (boundaryPairPartitionJetZero rawWeight))
+          (boundaryPairPartitionScalarJetMatrix
+            (boundaryPairPartitionJetOne rawWeight selectedHeight))
+          (boundaryPairPartitionScalarJetMatrix
+            (boundaryPairPartitionJetTwo rawWeight selectedHeight selectedFisher)) := by
+  unfold fourRateSchurBoundaryLogCurvatureFromJets
+  rw [boundaryPairPartitionLogCurvatureFromJets_eq_gramLogCurvatureJet]
+
+/-- The actual Gamma-sewn four-rate curvature is therefore an exact HilbertMetric determinant-jet
+curvature connector, with the source Fisher numerator retained explicitly. -/
+theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_gramLogCurvatureJet
+    (a : ℝ) (rate : Fin 4 → ℝ) (cell : Fin 4 → Nat.Primes × ℕ) :
+    gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
+      -2 * gammaSewnFourRateTotalFisher cell -
+        gramLogCurvatureJet
+          (boundaryPairPartitionScalarJetMatrix
+            (boundaryPairPartitionJetZero
+              (gammaSewnFourRateBoundaryPairRawWeight a rate cell)))
+          (boundaryPairPartitionScalarJetMatrix
+            (boundaryPairPartitionJetOne
+              (gammaSewnFourRateBoundaryPairRawWeight a rate cell)
+              (gammaSewnFourRateSelectedHeight cell)))
+          (boundaryPairPartitionScalarJetMatrix
+            (boundaryPairPartitionJetTwo
+              (gammaSewnFourRateBoundaryPairRawWeight a rate cell)
+              (gammaSewnFourRateSelectedHeight cell)
+              (gammaSewnFourRateSelectedFisher cell))) := by
+  unfold gammaSewnFourRateSchurBoundaryLogCurvature
+  rw [fourRateSchurBoundaryLogCurvatureFromJets_eq_gramLogCurvatureJet]
+
+/-- The six Gamma boundary weights are exactly the determinant of their weighted rational
+Pluecker-feature Gram matrix. -/
 theorem gammaSewnFourRateBoundaryPairPartition_eq_gramDet
     (a : ℝ) (rate : Fin 4 → ℝ) (cell : Fin 4 → Nat.Primes × ℕ) :
     (∑ s, gammaSewnFourRateBoundaryPairRawWeight a rate cell s) =
@@ -74,8 +149,8 @@ theorem gammaSewnFourRateBoundaryPairPartition_eq_canonicalFeatureVolume
   rw [hrows] at h
   simpa using h
 
-/-- Under the source's nondegeneracy conditions, the weighted Cauchy feature Gram determinant is
-strictly positive. -/
+/-- Under the source's nondegeneracy conditions, the weighted rational Pluecker-feature Gram
+determinant is strictly positive. -/
 theorem gammaSewnFourRateBoundaryFeature_gramDet_pos
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)

@@ -285,3 +285,49 @@ folders:
 make sure you don't leave stale lean processes running - clean up after yourself
 
 Goal is met when every law / rule that can be found for the topic is tested if it can be applied to our research.
+
+
+## Revert
+
+Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research this:
+- Walk backwards from any RH endpoint we know in our corpus
+- Try to find extensions of the chain to create the longest possible proof chain on the right side of a possible RH proof 
+- Example:  x1 -> x2 -> RH where you try to find x1
+
+lean rules:
+1. You work independent from other agents and can run 1 build process in the foreground at a time yourself, parallel to builds of other agents.
+2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
+3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
+4. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
+5. no computations.
+
+folders:
+- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
+- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
+
+**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
+make sure you don't leave stale lean processes running - clean up after yourself
+
+Goal is met when there is a full RH proof chain start to finish.
+
+## Ñawe
+
+Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research our whole lean corpus and take 2 or more theorems and attempt to subsume them into a universal law that cannot be found in our corpus nor in the literature. 
+
+lean rules:
+1. You work independent from other agents and can run 1 build process in the foreground at a time yourself, parallel to builds of other agents.
+2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
+3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
+4. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
+5. no computations.
+
+folders:
+- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
+- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
+
+**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
+make sure you don't leave stale lean processes running - clean up after yourself
+
+Goal is met when after honest scan of the whole lean body no such universal law can be found.

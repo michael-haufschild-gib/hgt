@@ -289,8 +289,17 @@ the general Feshbach minimum there; no `natDegree` coefficient-linearity premise
 ## Open core
 
 `[OPEN CORE]` Prove the equivalent normalized-variance inequality `(7)` from the explicit coupled
-prime-power and Gamma residual formulas.  Its source value can be computed through either the
-normalized moment state or the canonical scalar Schur complement
+prime-power and Gamma residual formulas, now only for zero-constant integer tails in the strict
+centered analytic-tail residual
+
+```text
+8 |E_PG(q)| < tailL1(q).
+```
+
+The complementary family has unconditional target variance positivity in
+`PrimeArchCenteredAnalyticTailVacuumCone.lean`; under `not RH`, Lean extracts a negative-variance
+witness in this strict residual. The source value on that residual can be computed through either
+the normalized moment state or the canonical scalar Schur complement
 
 ```text
 sourceFeshbach_a(q)
