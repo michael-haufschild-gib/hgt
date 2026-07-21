@@ -1,9 +1,9 @@
 # Squared-Xi dyadic half-plane rigidity RH bridge
 
 - **ID:** `squared-xi-dyadic-half-plane-rigidity-rh`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / RH BRIDGE
-- **Claim labels:** `[BRIDGE] [NOVELTY UNVERIFIED]`
+- **Claim labels:** `[BRIDGE] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
 - **Source lane:** squared-Xi fixed-order atom positivity
 
 ## Exact claim
@@ -163,13 +163,40 @@ The next source question is whether the existing quartet/source-exclusion mechan
 dyadic recurrence or a uniform corner budget. Repeating the fixed-order proof independently at
 orders `32, 64, ...` is not yet a structural producer.
 
+## Formal certificate
+
+Generic module:
+
+- `formal/GaloisForLFunctions/HTGeometry/DyadicHalfPlaneRigidity.lean`
+- `GaloisForLFunctions.ComplexDyadicHalfPlane`
+- `GaloisForLFunctions.complexDyadicHalfPlane_iff_nonnegativeReal`
+
+Xi module:
+
+- `formal/GaloisForLFunctions/RHTower/XiSquaredSeamDyadicHalfPlaneRigidity.lean`
+- `RHTower.XiSquaredSeamDyadicHalfPlane`
+- `RHTower.riemannHypothesis_of_xiSquaredSeamDyadicHalfPlane`
+- `RHTower.xiSquaredSeamDyadicHalfPlane_of_riemannHypothesis`
+- `RHTower.xiSquaredSeamDyadicHalfPlane_iff_riemannHypothesis`
+- `RHTower.xiSquaredSeamDyadic_rung_four_pos`
+
+Both modules are imported by their umbrellas. Direct `lake env lean` checks pass. Formal lint passes
+with zero proof debt. `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+Final targeted audit:
+
+```text
+lake build GaloisForLFunctions.RHTower.XiSquaredSeamDyadicHalfPlaneRigidity
+```
+
+passes.
+
 ## Gates
 
 - [x] Internal corpus and failed-route audit
 - [x] Exact conjecture and hostile falsity/circularity audit
 - [x] Dependency-closed paper proof written
 - [x] Hostile second pass and Stage-2 promotion: `[PAPER-PROVED]`
-- [ ] Exact Lean theorem
-- [ ] Axiom/lint/module audit and Stage-3 promotion
+- [x] Exact Lean theorem: `[LEAN-PROVED]`
+- [x] Axiom/lint/module audit and Stage-3 promotion
 - [ ] Unconditional dyadic source producer
 - [ ] Full RH proof

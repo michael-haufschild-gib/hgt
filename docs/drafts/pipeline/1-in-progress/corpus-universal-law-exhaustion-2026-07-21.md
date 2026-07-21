@@ -15,6 +15,22 @@ Finding one law is not completion. `spectral-depth-da-resonance-law.md` is Law 1
 research lane. This card remains active until a full post-law rescan produces no further non-patched
 mathematical delta. Every failure must record its killing mechanism and positive-survivor audit.
 
+## Corrected discovery method
+
+Do not predict a universal law and search for supporting declarations. The corpus may contain
+cross-folder compositions absent from the model's prior distribution, so template-first search is
+systematically biased toward familiar mathematics. Discovery is bottom-up:
+
+1. enumerate every proved theorem endpoint in `HTGeometry`, `RHTower`, and `HilbertMetric`;
+2. read actual hypotheses/conclusions and trace imports, specializations, and discharge theorems;
+3. identify compositions only when one proved endpoint supplies another theorem's live hypothesis or
+   when two endpoints compute the same object from independent source mechanisms;
+4. only then state, attack, and name the induced law;
+5. after every surviving law, restart the endpoint pass because the new theorem is itself a connector.
+
+Earlier candidate-chain lanes remain an occupancy ledger, not the discovery engine for the rest of
+the audit.
+
 ## Law ledger
 
 1. `[LEAN-PROVED] [NOVELTY UNVERIFIED]` **Spectral-depth DA resonance.** One DA shift polynomial
@@ -34,9 +50,10 @@ internal master or exact external parent already supplies the proposed universal
 an exhaustion claim for other representations in that family.
 
 1. differential algebra / Mahler / jets / Kolchin — `OPEN`; Taylor resonance sublane `LAW`;
-2. Gamma / Barnes / elliptic / Hurwitz shift fields — arbitrary-oriented multiscale lane `LAW`,
-   remainder `OPEN`;
-3. prime / Euler / Dirichlet / Mobius valuation sources — `ACTIVE`;
+2. Gamma / Barnes / elliptic / Hurwitz shift fields — arbitrary-oriented multiscale lane `LAW`;
+   Barnes/multiple-elliptic hierarchy lane `OCCUPIED`, remainder `OPEN`;
+3. prime / Euler / Dirichlet / Mobius valuation sources — valuation/fusion/orientation lanes
+   `OCCUPIED`, remainder `OPEN`;
 4. Xi / zeta / RH reflection and reciprocal moments — finite-order lane `FAILED`;
 5. theta / heat / likelihood / Lee--Yang packets — square/cube lane `OCCUPIED`, remainder `OPEN`;
 6. clocks / reporters / observability / innovation — capacity-modular lane `FAILED`, masters
@@ -353,9 +370,71 @@ Nevanlinna theory already classifies finite negative squares by such signed meas
 substantive but already present as the chamber and facet-sewn laws. `NO POSITIVE SALVAGE FOUND`
 beyond existing masters for this representation.
 
+## Lane 2J — Barnes and multiple-elliptic-Gamma hierarchy intersections
+
+### Candidate chain
+
+`[CONJECTURE]` Multiple-elliptic-Gamma reflection parity and structural coface deletion should form
+a new reflection-graded boundary law: deleting `k` parameters flips reflection parity by `(-1)^k`.
+
+`[REDISCOVERED / OCCUPIED]` The precise algebra is already inside the constructed hierarchy.
+`multipleEllipticGammaLogSign_subtype_ne` proves the parity flip under one deletion and is used in
+the telescoping proof that constructs the lower-rank boundary. `multipleEllipticGammaLogKernel_mul_coordinate_sub`
+and `multipleEllipticGammaAdditiveLogKernel_add_sub` give the actual coface operator;
+`multipleEllipticGammaAdditiveLogKernel_reflection` gives reflection on every finite parameter type;
+and `multipleEllipticGammaLogDerivFaceMero_addTranslation_sub` plus reindexing identifies arbitrary
+unordered faces. Iteration already yields the proposed `(-1)^k` rule. Calling this an odd
+differential adds no consequence beyond the existing rank-parity sign.
+
+**Stronger replacement attempt:** combine reflection grading with the squarefree coface resolution.
+The abstract boundary complex, maximal-minor reconstruction, exact Betti ranks `(1,r+1,r)`, and
+absence of higher syzygies are already formalized in `CofaceBoundaryReconstruction.lean`; grading
+that complex by chain degree is standard. The actual all-order nonlinear structural matroid is
+already paper-proved in `all-order-multiple-elliptic-gamma-structural-differential-matroid.md`, with
+its honest analytic audit still open. A new wrapper would neither close that audit nor strengthen
+the theorem.
+
+**Positive survivor:** translation annihilators, parity inversion, face matroids, and perfect
+codimension-two reconstruction are substantive existing laws. The reflection/coface conjunction is
+their immediate compatibility, not an unoccupied law. `NO POSITIVE SALVAGE FOUND` beyond existing
+masters for this representation.
+
+## Lane 2K — prime valuation, orientation, fusion, and Gamma coordinates
+
+### Candidate chain
+
+`[CONJECTURE]` Pairwise incommensurability of prime logarithms and the oriented arbitrary-scale
+Gamma charge law should force countable multiplicative HT-independence for prime-log Gamma slopes.
+
+`[REDISCOVERED / OCCUPIED]` The corpus already contains a stronger result.
+`archimedean-relative-prime-cocycle-curvature.md` proves that all distinct prime-log Gamma
+translates are differentially algebraically independent over the one-periodic meromorphic base,
+computes the nonzero-translation fixed field, separates every Laurent monomial by its complete
+Stirling signature, and proves joint algebraic independence with arbitrary finite zeta-jet packets.
+Law 2 gives an alternate product classifier but no stronger conclusion.
+
+The remaining prime mechanisms are also already exact:
+
+- `PrimeValuationProfileFieldClassification.lean` identifies source membership, relative HT,
+  field containment, and field equality exactly with profile-span membership/containment/equality;
+- `PrimeValuationProfileRankLaw.lean` computes the complete relation ideal and pivot field;
+- `TailCompletePrimeValuationFusionDuality.lean` reconstructs constraint hulls and morphisms from
+  tail relations;
+- `PrimeDirichletDifferentialField.lean`, `PrimeDirichletTailPattern.lean`, and
+  `PrimeDirichletTailGroupoid.lean` classify orientation dependence by eventual equality/opposition,
+  recurring pattern span, and the projective tail quotient;
+- `PrimeValuationFusionCompletionLaw.lean` and `PrimeRadialFusionConductorLaw.lean` give unbounded
+  fusion rank and exact eventual conductor periodicity.
+
+**Stronger replacement attempt:** mix these families through arbitrary differential-operator
+matrices. `differentialIndependent_differentialOperatorRows_iff` already gives the exact universal
+full-row-rank criterion, so every such prime specialization is automatic. No source-independent
+new invariant remains. `NO POSITIVE SALVAGE FOUND` beyond existing masters for this representation.
+
 ## Next active lanes
 
-1. Barnes/multiple-elliptic-Gamma hierarchy intersections beyond the Euler-Gamma law.
+1. theorem-first endpoint and connector pass over every module in all three owned folders;
+2. compositions produced by that pass, ordered by actual dependency closure rather than topic.
 
 ## Log
 
@@ -387,3 +466,21 @@ beyond existing masters for this representation.
   identity, small-height Krein-Hamming inertia, residual carrier HT, and facet differential matroid
   are already present. Pure-atomic all-height inertia is classical Cauchy congruence; positive
   backgrounds show the localized theorem is sharp.
+- 2026-07-21 — closed Barnes/multiple-elliptic hierarchy intersection. Reflection parity already
+  flips inside the constructed coface telescope, while arbitrary faces and the codimension-two
+  boundary resolution are existing results; an odd-complex label adds no theorem.
+- 2026-07-21 — closed prime valuation/orientation/fusion representation. Exact span-field,
+  relation-ideal, fusion-duality, conductor, and tail-groupoid classifiers are internal. The
+  prime-log Gamma specialization is strictly weaker than an existing joint differential-coordinate
+  theorem with zeta jets.
+- 2026-07-21 — method correction after user review: stopped candidate-first searches. Restarted from
+  complete theorem endpoint enumeration across `HTGeometry`, `RHTower`, and `HilbertMetric`; laws
+  will be named only after actual theorem conclusions compose.
+- 2026-07-21 — theorem-first Gamma bivariate-moment component closed as occupied: mixed all-depth
+  Gram positivity, pointed Ward/Bianchi reconstruction, cofinal Euler-germ recovery, and the
+  factorial-normalization no-go are all already formalized.  No new law remained there.
+- 2026-07-21 — actual Gamma-sewn component exposed an unconsumed cross-folder closure.  Canonical
+  HilbertMetric Pluecker normalization, synchronized Euler--Fisher signed Jordan control, Schur
+  curvature, and the exact valuation-depth threshold force the Pluecker--Jordan transition
+  `C(e) < -(8/3) S_Pl <-> sqrt(F/D) < e+1/2`.  Paper proof and hostile literature search are
+  complete; direct Lean verification is pending.

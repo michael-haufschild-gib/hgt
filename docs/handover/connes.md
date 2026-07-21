@@ -1673,7 +1673,7 @@ See
 
 `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/xi-full-density-source-exchange-obstruction.md`,
 
-`docs/drafts/pipeline/1-in-progress/xi-completed-density-antipodal-crossing-barrier.md`,
+`docs/drafts/pipeline/1-in-progress/xi-completed-density-projective-heteroclinic-barrier.md`,
 
 and
 
@@ -1875,10 +1875,7 @@ E+E^\#=4z^2\Xi_C.                                     \tag{38.7}
 
 Away from $z=0$, off-axis Xi zero is exact antipodal collision $E^\#=-E$.  Corpus also proves
 global completed-density de Branges gap \(|E|>|E^\#|\) is false in open critical half-strip.
-Actual frontier is therefore collision-only: allow norm-gap/unit-circle crossings at other phases,
-but exclude projective ratio $E^\#/E=-1$.  Active conjecture is negative-ray no-return for this
-ratio, with first nonzero projective jets handling simultaneous zeros.  It is strictly weaker than
-refuted global Hermite--Biehler orientation.
+Section 39 corrects first collision-only conjecture after differentiating actual projective ratio.
 
 Formal module:
 `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailFullDensityWronskianNoGo.lean`.
@@ -1895,3 +1892,101 @@ Verification:
   transfer-current limit reports only `propext`, `Classical.choice`, and `Quot.sound`;
 - `scripts/formal_tools.py lint` passed;
 - no numerical computation enters any statement or proof.
+
+## 39. Projective correction: frontier is unanchored heteroclinic, not no-return
+
+Hostile derivative audit of section 38 changes active conjecture materially.  Put
+
+\[
+R=\frac{E^\#}{E},\qquad
+\mathcal W_E=(E^\#)'E-E^\#E'.
+\]
+
+Then on regular chart
+
+\[
+R'=\frac{\mathcal W_E}{E^2}.                          \tag{39.1}
+\]
+
+Previous full-density connection \(\mathcal C_F\) differentiates \(\Xi_C/F\), not
+\(E^\#/E\).  Exact completed reflection gives
+
+\[
+\mathcal W_E
+ =8z\Xi_CE+4z^2(\Xi_C'E-\Xi_CE'),                    \tag{39.2}
+\]
+
+and at every Xi zero
+
+\[
+\mathcal W_E=4z^2\Xi_C'E,\qquad
+\mathcal W_E-(z^2+\tfrac14)\mathcal C_F=-z^2\Xi_C'.  \tag{39.3}
+\]
+
+Thus two connections are unequal at every noncentral simple collision.  Nonvanishing of
+\(\mathcal C_F\) cannot control projective ratio flow.
+
+Define division-free tangent vector
+
+\[
+V_E=E^2\overline{\mathcal W_E}.
+\]
+
+Formal algebra proves exact flow law
+
+\[
+dR(V_E)=|\mathcal W_E|^2.                             \tag{39.4}
+\]
+
+Therefore on every regular component of
+\(R^{-1}(( -\infty,0))\), ratio is already strictly monotone.  “No return while connection is
+nonzero” is generic and cannot prove RH: off-axis zero may occur once on an unanchored regular
+component without any return or critical point.
+
+Real boundary geometry is now exact.  For positive real Xi zero \(t\), source sine positivity
+gives \(E(t)=i\,\operatorname{Im}E(t)\), with \(\operatorname{Im}E(t)>0\), so \(R(t)=-1\).  Inward
+normal derivative is
+
+\[
+\left.\frac d{dy}R(t+iy)\right|_{y=0}
+ =\frac{4t^2\operatorname{Re}\Xi_C'(t)}{\operatorname{Im}E(t)}. \tag{39.5}
+\]
+
+It is nonzero at every simple real zero; sign may vary.
+
+### Actual corpus frontier after correction
+
+An off-axis Xi zero is exactly a maximal projective trajectory whose real image contains \(-1\)
+but which has no real boundary anchor.  Current conjecture is **no unanchored
+source-to-reflection heteroclinic**: every negative-ray trajectory bracketing \(-1\) must have a
+unique finite real endpoint.  Required source proof splits into negative-ray Wronskian regularity,
+top-edge exclusion, horizontal theta-Schwartz escape, and projective zero/pole endpoint separation.
+Global gap, innerness, Pick/Herglotz positivity, divisor assumptions, and recurrence are disallowed.
+
+This is frontier progress, not RH proof.  It removes wrong connection and a vacuous dynamical
+condition, and names exact global source trajectory corpus still cannot control.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedDensityProjectiveCollision.lean`.
+
+Pipeline:
+
+- failed interface:
+  `docs/drafts/pipeline/5-failed/xi-completed-density-antipodal-crossing-barrier.md`;
+- formalized survivor:
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/xi-completed-density-projective-collision-geometry.md`;
+- active conjecture:
+  `docs/drafts/pipeline/1-in-progress/xi-completed-density-projective-heteroclinic-barrier.md`.
+
+Verification of projective collision geometry:
+
+- direct
+  `lake env lean GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedDensityProjectiveCollision.lean`
+  passed;
+- targeted
+  `lake build GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedDensityProjectiveCollision`
+  passed;
+- temporary `#print axioms` checks for ten capstones report only `propext`, `Classical.choice`, and
+  `Quot.sound`;
+- `scripts/formal_tools.py lint` passed;
+- no owned Lean process remained after audit.

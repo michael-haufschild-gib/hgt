@@ -10,7 +10,9 @@ from __future__ import annotations
 import dataclasses
 import itertools
 import json
+import re
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
@@ -25,6 +27,8 @@ AREA_ALIASES = {
 AREA_TARGETS = {"rh": "RiemannHypothesis"}
 VALID_RELATIONS = frozenset({"implication", "iff", "refutation"})
 VALID_STATUSES = frozenset({"live", "retired"})
+IDENTIFIER_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
+PROP_RESULT_RE = re.compile(r":\s*Prop\b")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -232,6 +236,121 @@ def load_lean_frontier_export(path: Path) -> LeanFrontierExport:
         return parse_lean_frontier_export(path.read_text(encoding="utf-8"))
     except OSError as error:
         raise ValueError(f"cannot read Lean frontier graph {path}: {error}") from error
+
+
+def render_lean_frontier_export_json(export: LeanFrontierExport) -> str:
+    payload = {
+        "schema_version": export.schema_version,
+        "area": export.area,
+        "commit": export.commit,
+        "target": _prop_dict(export.target),
+        "reductions": [
+            {
+                "name": reduction.name,
+                "module": reduction.module,
+                "type_text": reduction.type_text,
+                "premises": [_prop_dict(item) for item in reduction.premises],
+                "conclusions": [_prop_dict(item) for item in reduction.conclusions],
+                "relation": reduction.relation,
+                "status": reduction.status,
+                "type_dependencies": list(reduction.type_dependencies),
+                "proof_dependencies": list(reduction.proof_dependencies),
+                "axioms": list(reduction.axioms),
+                "doc": reduction.doc,
+                "source": {"path": reduction.relpath, "line": reduction.line},
+            }
+            for reduction in export.reductions
+        ],
+    }
+    return json.dumps(payload, separators=(",", ":"), sort_keys=True) + "\n"
+
+
+def frontier_export_candidates(
+    root: Path, declarations: Sequence[object]
+) -> tuple[str, ...]:
+    """Cheap source prefilter; compiled Lean types remain authoritative.
+
+    Only theorem signatures mentioning a corpus-declared `Prop` interface can
+    form the graph used here.  False positives are harmless because exporter
+    validates and structurally classifies every candidate in Lean.
+    """
+
+    grouped: dict[str, list[object]] = {}
+    for declaration in declarations:
+        relpath = str(getattr(declaration, "relpath", ""))
+        line = getattr(declaration, "line", 0)
+        if relpath and isinstance(line, int) and line > 0:
+            grouped.setdefault(relpath, []).append(declaration)
+
+    headers: list[tuple[object, str]] = []
+    for relpath, file_declarations in sorted(grouped.items()):
+        path = root / relpath
+        try:
+            lines = path.read_text(encoding="utf-8").splitlines()
+        except OSError:
+            continue
+        ordered = sorted(file_declarations, key=lambda item: int(getattr(item, "line")))
+        for index, declaration in enumerate(ordered):
+            start = int(getattr(declaration, "line")) - 1
+            end = (
+                int(getattr(ordered[index + 1], "line")) - 1
+                if index + 1 < len(ordered)
+                else len(lines)
+            )
+            block = "\n".join(lines[start:end])
+            headers.append((declaration, block.split(":=", 1)[0]))
+
+    prop_names = {"RiemannHypothesis"}
+    for declaration, header in headers:
+        if getattr(declaration, "kind", "") in {
+            "def",
+            "abbrev",
+            "inductive",
+            "class",
+            "structure",
+        } and PROP_RESULT_RE.search(header):
+            prop_names.add(str(getattr(declaration, "name")).split(".")[-1])
+
+    theorem_refs: list[tuple[object, frozenset[str]]] = []
+    consumers: dict[str, list[int]] = {}
+    for declaration, header in headers:
+        if getattr(declaration, "kind", "") not in {"theorem", "lemma"}:
+            continue
+        refs = frozenset(prop_names.intersection(IDENTIFIER_RE.findall(header)))
+        if not refs:
+            continue
+        index = len(theorem_refs)
+        theorem_refs.append((declaration, refs))
+        for ref in refs:
+            consumers.setdefault(ref, []).append(index)
+
+    # Lexical pass only bounds work. Lean rechecks exact heads, binders, and
+    # implication direction. Traverse complete named-Prop component of target.
+    pending = ["RiemannHypothesis"]
+    seen_props: set[str] = set()
+    seen_theorems: set[int] = set()
+    while pending:
+        proposition = pending.pop()
+        if proposition in seen_props:
+            continue
+        seen_props.add(proposition)
+        for index in consumers.get(proposition, ()):
+            if index in seen_theorems:
+                continue
+            seen_theorems.add(index)
+            pending.extend(theorem_refs[index][1] - seen_props)
+
+    qualified: set[str] = set()
+    for index in seen_theorems:
+        declaration = theorem_refs[index][0]
+        raw_name = str(getattr(declaration, "name"))
+        qualified.add(raw_name)
+        module_parts = str(getattr(declaration, "module", "")).split(".")
+        if len(module_parts) >= 2 and module_parts[0] == "GaloisForLFunctions":
+            area_namespace = module_parts[1]
+            if not raw_name.startswith(area_namespace + "."):
+                qualified.add(f"{area_namespace}.{raw_name}")
+    return tuple(sorted(qualified))
 
 
 def _edges(export: LeanFrontierExport) -> tuple[tuple[_Edge, ...], tuple[str, ...], tuple[str, ...]]:
@@ -473,21 +592,51 @@ def compute_frontier(export: LeanFrontierExport, *, limit: int = 12) -> Research
     )
 
 
-def run_lean_frontier_export(root: Path, *, area: str) -> LeanFrontierExport:
+def run_lean_frontier_export(
+    root: Path,
+    *,
+    area: str,
+    declarations: Sequence[object],
+    refresh: bool = False,
+) -> LeanFrontierExport:
     canonical = canonical_area(area)
     if canonical != "rh":
         raise ValueError(f"no Lean exporter configured for area {canonical}")
     exporter = root / "scripts" / "lean" / "export_research_frontier.lean"
     if not exporter.exists():
         raise ValueError(f"Lean frontier exporter not found: {exporter}")
-    process = subprocess.run(
-        ["lake", "env", "lean", str(exporter)],
-        cwd=root / "formal",
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
+    cache = root / "formal" / ".lake" / "hgt-research" / f"{canonical}-frontier.json"
+    source_paths = {
+        root / str(getattr(declaration, "relpath"))
+        for declaration in declarations
+        if getattr(declaration, "relpath", "")
+    }
+    newest_input = max(
+        (path.stat().st_mtime for path in source_paths | {exporter} if path.exists()),
+        default=0.0,
     )
+    if not refresh and cache.exists() and cache.stat().st_mtime >= newest_input:
+        return load_lean_frontier_export(cache)
+    theorem_names = frontier_export_candidates(root, declarations)
+    if not theorem_names:
+        raise ValueError("Lean frontier export received no corpus theorem declarations")
+    command = "\n#export_research_frontier [\n" + ",\n".join(
+        f"  {json.dumps(name)}" for name in theorem_names
+    ) + "\n]\n"
+    with tempfile.TemporaryDirectory(prefix="hgt-frontier-") as temporary:
+        generated = Path(temporary) / "ExportResearchFrontier.lean"
+        generated.write_text(
+            exporter.read_text(encoding="utf-8") + command,
+            encoding="utf-8",
+        )
+        process = subprocess.run(
+            ["lake", "env", "lean", str(generated)],
+            cwd=root / "formal",
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
     if process.returncode:
         detail = (process.stderr or process.stdout).strip()
         raise ValueError(f"Lean frontier export failed: {detail}")
@@ -501,7 +650,10 @@ def run_lean_frontier_export(root: Path, *, area: str) -> LeanFrontierExport:
     )
     if payload is None:
         raise ValueError("Lean frontier exporter produced no graph payload")
-    return parse_lean_frontier_export(payload)
+    export = parse_lean_frontier_export(payload)
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    cache.write_text(render_lean_frontier_export_json(export), encoding="utf-8")
+    return export
 
 
 def build_research_brief(
@@ -511,12 +663,19 @@ def build_research_brief(
     graph_path: Path | None = None,
     limit: int = 12,
     declarations: Sequence[object] | None = None,
+    refresh: bool = False,
 ) -> ResearchBrief:
-    del declarations  # Legacy regex declarations are intentionally not frontier evidence.
+    # Source declaration names bound export cost; Lean still validates every
+    # name and supplies all logical data used by frontier computation.
     export = (
         load_lean_frontier_export(graph_path)
         if graph_path is not None
-        else run_lean_frontier_export(root, area=area)
+        else run_lean_frontier_export(
+            root,
+            area=area,
+            declarations=declarations or (),
+            refresh=refresh,
+        )
     )
     expected = canonical_area(area)
     if export.area != expected:

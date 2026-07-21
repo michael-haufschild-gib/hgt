@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -9,32 +8,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from research_brief import EXPORT_SENTINEL, compute_frontier, parse_lean_frontier_export  # noqa: E402
+import formal_tools  # noqa: E402
+from research_brief import compute_frontier, run_lean_frontier_export  # noqa: E402
 
 
 class LeanFrontierExporterIntegrationTests(unittest.TestCase):
     def test_real_rh_export_is_compiler_derived(self) -> None:
-        exporter = ROOT / "scripts" / "lean" / "export_research_frontier.lean"
-        process = subprocess.run(
-            ["lake", "env", "lean", str(exporter)],
-            cwd=ROOT / "formal",
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            check=False,
-            timeout=180,
+        export = run_lean_frontier_export(
+            ROOT,
+            area="RH",
+            declarations=formal_tools.declarations(),
+            refresh=True,
         )
-        self.assertEqual(process.returncode, 0, process.stderr or process.stdout)
-        payload = next(
-            (
-                line[len(EXPORT_SENTINEL) :]
-                for line in process.stdout.splitlines()
-                if line.startswith(EXPORT_SENTINEL)
-            ),
-            None,
-        )
-        self.assertIsNotNone(payload, process.stdout)
-        export = parse_lean_frontier_export(payload)
         by_name = {item.name: item for item in export.reductions}
 
         connes = by_name[

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HilbertMetric.DeterminantCurvatureJet
+import GaloisForLFunctions.HilbertMetric.GaussianFock
 import GaloisForLFunctions.HilbertMetric.SpectralBandwidthFano
 
 /-!
@@ -20,6 +21,20 @@ namespace GaloisForLFunctions.HilbertMetric
 noncomputable section
 
 variable {n : ℕ} {κ : Type*} [Fintype κ]
+
+/-- Mathlib orthonormal Hilbert families satisfy the coordinate-frame interface after passage to
+the canonical finite orthonormal coordinates.  This discharges the separate coordinate
+certificate required by the Slater spectral API. -/
+theorem orthonormalCoordinates_isOrthonormalCoordinateFrame
+    {E : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    (x : Fin n → E) (hx : Orthonormal ℝ x) :
+    IsOrthonormalCoordinateFrame (orthonormalCoordinates x) := by
+  intro i j
+  change coordinateDot (orthonormalCoordinates x) i j =
+    if i = j then 1 else 0
+  rw [coordinateDot_orthonormalCoordinates]
+  exact (orthonormal_iff_ite.mp hx) i j
 
 /-- Compression of a diagonal spectral observable to a finite coordinate frame. -/
 def slaterSpectralCompressionMatrix (evaluation : Fin n → κ → ℝ)
@@ -350,6 +365,76 @@ theorem positiveQuarticDegree_canonicalFeatureVolume_logFanoMargin_nonnegative
     evaluation degree hframe]
   exact positiveQuarticDegree_slaterSpectralFanoMargin_nonnegative
     evaluation degree hframe hpositive hquartic
+
+/-! ## Canonical-coordinate Hilbert-space consequences -/
+
+/-- **Hilbert Slater--Pluecker log-jet connector.**  For an orthonormal family in any finite-
+dimensional real Hilbert space, canonical coordinates identify the first two logarithmic
+derivatives of the Pluecker partition with the Slater mean and variance.  No coordinate-frame
+certificate remains among the hypotheses. -/
+theorem orthonormalHilbert_canonicalFeatureVolume_logJets
+    {E : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    (x : Fin n → E) (hx : Orthonormal ℝ x)
+    (degree : Fin (Module.finrank ℝ E) → ℕ) :
+    deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalCoordinates x) (fun _ => 1)
+          degree (Real.exp s))) 0 =
+        slaterSpectralMean (orthonormalCoordinates x)
+          (fun k => (degree k : ℝ)) ∧
+      deriv (deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalCoordinates x) (fun _ => 1)
+          degree (Real.exp s)))) 0 =
+        slaterSpectralVariance (orthonormalCoordinates x)
+          (fun k => (degree k : ℝ)) := by
+  have hframe := orthonormalCoordinates_isOrthonormalCoordinateFrame x hx
+  exact ⟨canonicalFeatureVolume_logDerivative_eq_slaterSpectralMean
+      (orthonormalCoordinates x) degree hframe,
+    canonicalFeatureVolume_logSecondDerivative_eq_slaterSpectralVariance
+      (orthonormalCoordinates x) degree hframe⟩
+
+/-- The exact Pluecker three-defect decomposition therefore holds for every finite-dimensional
+Hilbert orthonormal family in canonical coordinates. -/
+theorem orthonormalHilbert_canonicalFeatureVolume_logFanoMargin_three_defect
+    {E : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    (x : Fin n → E) (hx : Orthonormal ℝ x)
+    (degree : Fin (Module.finrank ℝ E) → ℕ) (lower upper : ℝ) :
+    deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalCoordinates x) (fun _ => 1)
+          degree (Real.exp s))) 0 -
+      deriv (deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalCoordinates x) (fun _ => 1)
+          degree (Real.exp s)))) 0 =
+      (n : ℝ) * (lower - (upper - lower - 1) ^ 2 / 4) +
+        slaterSpectralSecantDefect (orthonormalCoordinates x)
+          (fun k => (degree k : ℝ)) lower upper +
+        slaterSpectralCenteringDefect (orthonormalCoordinates x)
+          (fun k => (degree k : ℝ)) lower upper +
+        slaterSpectralCoherenceDefect (orthonormalCoordinates x)
+          (fun k => (degree k : ℝ)) := by
+  exact canonicalFeatureVolume_logFanoMargin_three_defect
+    (orthonormalCoordinates x) degree
+    (orthonormalCoordinates_isOrthonormalCoordinateFrame x hx) lower upper
+
+/-- Every positive degree spectrum bounded by four gives a nonnegative Pluecker log-Fano margin
+for an arbitrary finite-dimensional Hilbert orthonormal family. -/
+theorem positiveQuarticDegree_orthonormalHilbert_canonicalFeatureVolume_logFanoMargin_nonnegative
+    {E : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    (x : Fin n → E) (hx : Orthonormal ℝ x)
+    (degree : Fin (Module.finrank ℝ E) → ℕ)
+    (hpositive : ∀ k, 1 ≤ degree k) (hquartic : ∀ k, degree k ≤ 4) :
+    0 ≤ deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalCoordinates x) (fun _ => 1)
+          degree (Real.exp s))) 0 -
+      deriv (deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalCoordinates x) (fun _ => 1)
+          degree (Real.exp s)))) 0 := by
+  exact positiveQuarticDegree_canonicalFeatureVolume_logFanoMargin_nonnegative
+    (orthonormalCoordinates x) degree
+    (orthonormalCoordinates_isOrthonormalCoordinateFrame x hx)
+    hpositive hquartic
 
 end
 

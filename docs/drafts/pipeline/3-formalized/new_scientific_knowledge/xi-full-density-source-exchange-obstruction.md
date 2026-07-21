@@ -6,7 +6,7 @@
 - **Failed predecessor:**
   `../../5-failed/xi-taylor-full-density-transfer-wronskian.md`
 - **Successor:**
-  `../../1-in-progress/xi-completed-density-antipodal-crossing-barrier.md`
+  `../../1-in-progress/xi-completed-density-projective-heteroclinic-barrier.md`
 
 ## Result
 
@@ -102,3 +102,5 @@ zero set, and transfer-current limit reports only `propext`, `Classical.choice`,
 
 - 2026-07-21 — Derived by first hostile symbolic experiment on proposed transfer Wronskian.
 - 2026-07-21 — Paper proof formalized; direct check, targeted build, axiom audit, and lint passed.
+- 2026-07-21 — Successor audit proved `C_F` is not derivative connection of `E#/E`; corrected
+  successor is projective heteroclinic barrier.

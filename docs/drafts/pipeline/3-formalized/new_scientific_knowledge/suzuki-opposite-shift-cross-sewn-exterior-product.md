@@ -207,6 +207,19 @@ already implies `z!=0`, so displayed coefficient is defined without extra premis
 
 ## Corrected open core
 
+### Subsequent source-admissibility correction
+
+The algebraic theorem above remains valid, but its proposed actual source schedule is not
+unconditional. Suzuki requires each real shift to satisfy `lambda<lambda_a`. A nonzero opposite
+pair `lambda,-lambda` satisfies both inequalities exactly when `|lambda|<lambda_a`; existence of
+such a pair is equivalent to `lambda_a>0`. Thus actual opposite-channel availability can import
+the localized Weil/RH positivity that route seeks to prove.
+
+`suzuki-admissible-two-shift-affine-sewing.md` supersedes source schedule: every half-line below an
+arbitrary floor contains two distinct shifts, and any two distinct source shifts reconstruct zero
+shift by exact affine sewing. Its pair-change theorem also proves that all such normalized
+observables have same nonreal singular germ modulo analytic interval-quotient corrections.
+
 This theorem does not prove RH. It removes two false prerequisites from source producer:
 
 ```text
@@ -214,16 +227,16 @@ no need W_+=W_-;
 no need common gauge across shifts.
 ```
 
-Remaining frontier is exact:
+For opposite shifts considered purely algebraically, remaining frontier was:
 
 > Identify actual finite-aperture exterior pairs `(W_+,I_+)`, `(W_-,I_-)` and prove their
 > projectively normalized cross-sewn channel `N_eta` has cofinal analytic continuation at every
 > nonreal point.
 
-By `(10)`--`(12)`, this is sufficient for RH and cannot be faked by shift choice, gauge choice,
-characteristic normalization, zero multiplicity, or opposite-channel cancellation. It is still as
-hard as excluding nonreal Xi zeros. What changed is representation: open producer now lives on
-product of two projective source lines and matches actual distinct Hilbert-space channels.
+The superseding affine theorem removes need to construct an opposite pair. Its remaining frontier
+is to identify one arbitrary admissible pair with actual source channels and prove off-real
+analytic continuation. By `(10)`--`(12)`, continuation remains sufficient for RH and cannot be
+faked by gauge choice, characteristic normalization, zero multiplicity, or channel cancellation.
 
 ## Lean status
 

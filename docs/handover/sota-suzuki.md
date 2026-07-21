@@ -2249,20 +2249,12 @@ Equation `(S27.11)` is universal: independent of `eta`, both characteristic func
 interval terms, and both gauges. Opposite-channel cancellation cannot move, cancel, or renormalize
 a nonreal Xi pole.
 
-Actual frontier corpus still cannot solve is now:
-
-```text
-intrinsic schedule avoiding both erasing boundaries
-  -> construct actual source channels (+eta,-eta), allowing distinct Hilbert spaces
-  -> apply finite-Neumann clock annihilator before each gauge
-  -> form projective cross-sewn observable N_eta
-  -> prove its cofinal continuation is analytic at every nonreal point
-  -> RH by (S27.9).                                      (S27.12)
-```
-
-This does not prove last continuation. It removes false common-`W`, common-`I`, and common-gauge
-premises and converts open producer to one gauge-free source observable whose every possible RH
-obstruction has exact universal local coefficient.
+Subsequent source audit corrects proposed opposite-channel schedule. Suzuki requires real shift
+`lambda<lambda_a`; simultaneous admissibility of `lambda,-lambda` is equivalent to
+`|lambda|<lambda_a`, and existence of a nonzero pair is equivalent to `lambda_a>0`. Thus actual
+opposite-channel availability can already import localized Weil/RH positivity. Cross-sewn algebra
+and pole invariant remain correct, but `(S27.12)` is not an unconditional source schedule.
+Section 28 replaces it with arbitrary two-shift affine sewing below every spectral floor.
 
 Paper proof and hostile audit:
 
@@ -2277,3 +2269,149 @@ Key declarations are `suzukiCrossSewnExterior_eq_zeroShift`,
 `suzukiCrossSewnNormalizedExterior_eq_zeroShift`,
 `riemannHypothesis_iff_suzukiCrossSewnNormalizedExterior_analytic_offReal`, and
 `meromorphicTrailingCoeffAt_suzukiCrossSewnNormalizedExterior`.
+
+## 28. Arbitrary admissible two-shift sewing and canonical nonreal germ
+
+The actual source constraint is
+
+```text
+lambda<lambda_a.                                       (S28.1)
+```
+
+The opposite schedule from Section 27 fails unconditionally:
+
+```text
+lambda<lambda_a and -lambda<lambda_a
+  <=> |lambda|<lambda_a,
+
+exists nonzero opposite pair <=> 0<lambda_a.           (S28.2)
+```
+
+In contrast, every real floor has two distinct admissible shifts, for example
+`lambda_a-1` and `lambda_a-2`. Centering by `eta(lambda)=-i lambda` preserves distinctness. This
+supplies two positive Suzuki source Hilbert spaces regardless of sign of restricted-Weil floor.
+
+Let `alpha!=beta` be corresponding centered source parameters and let `gamma` be arbitrary; target
+shift need not be source-admissible. For unrelated channels define
+
+```text
+E_eta(W,I)=G_eta W-I,
+
+C_(alpha,beta->gamma)
+ =(beta-gamma)W_beta E_alpha(W_alpha,I_alpha)
+  -(alpha-gamma)W_alpha E_beta(W_beta,I_beta),          (S28.3)
+
+P_(alpha,beta)=(beta-alpha)W_alpha W_beta,              (S28.4)
+
+J_(alpha,beta->gamma)
+ =(beta-gamma)W_beta I_alpha
+  -(alpha-gamma)W_alpha I_beta.                         (S28.5)
+```
+
+Affine multiplier pencil obeys totalized Lagrange identity
+
+```text
+(beta-gamma)G_alpha-(alpha-gamma)G_beta
+ =(beta-alpha)G_gamma.                                  (S28.6)
+```
+
+Hence pointwise, including `z=0` and Xi divisor,
+
+```text
+C_(alpha,beta->gamma)=E_gamma(P_(alpha,beta),
+                              J_(alpha,beta->gamma)).   (S28.7)
+```
+
+In particular `gamma=0` reconstructs Suzuki's distinguished zero-shift exterior from two
+same-side admissible sources even when zero shift itself is inadmissible. No positive floor,
+opposite pair, common characteristic, common interval term, common gauge, or shift limit occurs.
+
+Normalize by `P`:
+
+```text
+N_(alpha,beta->gamma)=C_(alpha,beta->gamma)/P_(alpha,beta).
+```
+
+Independent gauges on source lines cancel. Away from characteristic divisors,
+
+```text
+N_(alpha,beta->gamma)
+ =G_gamma-Q_(alpha,beta->gamma),                        (S28.8)
+
+Q_(alpha,beta->gamma)
+ =[(beta-gamma)I_alpha/W_alpha
+   -(alpha-gamma)I_beta/W_beta]/(beta-alpha).            (S28.9)
+```
+
+Strong new schedule-independence follows. For another distinct pair `(delta,epsilon)`,
+
+```text
+N_(alpha,beta->gamma)-N_(delta,epsilon->gamma)
+ =Q_(delta,epsilon->gamma)-Q_(alpha,beta->gamma).       (S28.10)
+```
+
+If source characteristic functions are entire with only real zeros and interval terms are entire,
+right side is analytic at every nonreal point. Therefore
+
+```text
+N_(alpha,beta->gamma) analytic at z
+  <=> N_(delta,epsilon->gamma) analytic at z,
+  Im z != 0.                                            (S28.11)
+```
+
+All arbitrary admissible source pairs define one canonical nonreal meromorphic germ modulo
+holomorphic correction. In particular, shifts may move far negative with unknown `lambda_a`;
+pair selection cannot change RH-bearing singularities. Suzuki's open shift-floor control and a
+cofinal schedule `lambda->0` are removed from divisor detection.
+
+Analytic and pole capstones are
+
+```text
+RH <=> C_(alpha,beta->gamma) analytic at every nonreal point,
+                                                               (S28.12)
+RH <=> N_(alpha,beta->gamma) analytic at every nonreal point.  (S28.13)
+```
+
+At hypothetical nonreal Xi zero `z` of arbitrary multiplicity `m`,
+
+```text
+ord_z C=-1,  TC_z C=mP(z)/z^2,
+ord_z N=-1,  TC_z N=m/z^2.                              (S28.14)
+```
+
+Normalized pole is independent of source pair, target shift, both characteristics, interval
+terms, and gauges. Opposite cross-sewing is recovered as specialization
+`beta=-alpha`, `gamma=0`; for nonzero `alpha`, both raw exterior and characteristic acquire same
+scalar `-alpha`, so normalized observables agree.
+
+Actual frontier corpus cannot solve is now source-exact and shift-independent:
+
+```text
+choose any two actual shifts below each finite-aperture floor
+  -> identify their corrected exterior channels independently of Xi quotient
+  -> apply finite-Neumann clock annihilator before each gauge
+  -> form affine-sewn projective observable N_(alpha,beta->0)
+  -> prove its exterior continuation analytic at every nonreal point
+  -> RH by (S28.13).                                    (S28.15)
+```
+
+This does not prove final continuation; by `(S28.13)` it is RH-equivalent after source
+identification. Scientific progress is deletion of circular positive-floor/opposite-shift premise
+and proof that all admissible pair choices share exactly same nonreal singular germ. Remaining
+difficulty is genuine exterior continuation, not shift control or normalization.
+
+Paper proof, hostile audit, and novelty boundary:
+
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-admissible-two-shift-affine-sewing.md`
+
+Exact Lean formalization:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiAdmissibleTwoShiftAffineSewing.lean`
+
+Key declarations are `exists_nonzero_opposite_suzuki_shifts_below_iff`,
+`exists_distinct_centered_suzuki_shifts_below`,
+`suzukiShiftedXiMultiplier_affine_interpolation`,
+`suzukiAffineSewnExterior_eq_targetShift`,
+`analyticAt_suzukiAffineSewnNormalizedExterior_pair_iff`,
+`riemannHypothesis_iff_suzukiAffineSewnNormalizedExterior_analytic_offReal`, and
+`meromorphicTrailingCoeffAt_suzukiAffineSewnNormalizedExterior`.

@@ -1695,3 +1695,4 @@ import GaloisForLFunctions.HTGeometry.QuasiCauchyComplex
 import GaloisForLFunctions.HTGeometry.QuasiMeasureIntegral
 import GaloisForLFunctions.HTGeometry.QuasiMeasureCauchy
 import GaloisForLFunctions.HTGeometry.NevEntryPolynomial
+import GaloisForLFunctions.HTGeometry.DyadicHalfPlaneRigidity

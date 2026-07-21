@@ -21,6 +21,7 @@ import GaloisForLFunctions.RHTower.SuzukiExteriorPoleTomography
 import GaloisForLFunctions.RHTower.SuzukiAnchoredEulerWronskian
 import GaloisForLFunctions.RHTower.SuzukiOppositeShiftParityHarmonicRecovery
 import GaloisForLFunctions.RHTower.SuzukiOppositeShiftCrossSewnExterior
+import GaloisForLFunctions.RHTower.SuzukiAdmissibleTwoShiftAffineSewing
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
@@ -166,11 +167,22 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   characteristic.  Division by that product descends through two independent zero-free gauges,
   eliminates explicit shift, and has universal pole coefficient `ord_z(XiC)/z^2` at every
   hypothetical nonreal Xi zero.  Off-real holomorphy of this projective distinct-channel
-  observable is equivalent to RH.  Thus arbitrary one-fibre cluster remains insufficient, but
-  opposite source channels need neither coincide nor share a gauge.  Intrinsic paired-schedule
-  construction and cofinal analytic continuation of the projective cross-sewn channel remain the
-  honest operator wall.  The screw-function Hilbert space and its unbounded differential
-  operators are not yet present in Lean.
+  observable is equivalent to RH.  Source admissibility invalidates the proposed opposite-shift
+  schedule, however: a nonzero pair `lambda,-lambda` lies below Suzuki's spectral floor exactly
+  when that floor is positive, which is already an RH-bearing condition.
+  `SuzukiAdmissibleTwoShiftAffineSewing` removes this circularity.  Every real spectral floor,
+  including a negative one, has two distinct admissible shifts.  Any such pair reconstructs any
+  target fibre by an exact Lagrange sewing law; in particular it reconstructs the zero-shift
+  exterior without requiring zero shift to be admissible.  Independent gauges disappear after
+  projective normalization.  More strongly, normalized observables from any two distinct source
+  pairs differ only by an off-real analytic interval-quotient correction, so the nonreal Xi-pole
+  germ is independent of source-pair choice and retains universal coefficient
+  `ord_z(XiC)/z^2`.  Shift-floor control and a cofinal shift tending to zero are therefore not
+  operator walls.  The honest remaining theorem is source-side: identify one affine-sewn
+  exterior observable with actual finite-aperture channels and prove its off-real analytic
+  continuation.  That continuation is equivalent to RH after source identification.  The
+  screw-function Hilbert space and its unbounded differential operators are not yet present in
+  Lean.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete
