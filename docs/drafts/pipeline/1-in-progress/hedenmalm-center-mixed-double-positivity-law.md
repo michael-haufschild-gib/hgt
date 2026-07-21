@@ -309,3 +309,58 @@ The transform identity and criterion are not yet sufficient for a publication-le
 They become significant only if the center-mixed density admits a new source-side
 positive-definiteness mechanism, or if the failure of every natural factorization can be classified
 by a theorem stronger than the existing two-point Krein obstruction.
+
+## 2026-07-21 complete-tower producer audit
+
+The all-order distinction is now explicit.
+
+1. The canonical strip-boundary aperture is closed unconditionally.  For every `tau>0`,
+   `HedenmalmExteriorGaussianHankel.lean` proves
+
+   ```text
+   J_(1/2)(b)>=0 for every real b
+   ```
+
+   and hence the complete Gaussian Hankel cone at `a=1/2`.  This uses every polynomial degree;
+   it is not a finite-section result.  The same proof covers every exterior aperture
+   `1/2<=a<1`.
+
+2. This boundary law does not perturb automatically into a fixed interior aperture.  The current
+   has no uniform positive margin at frequency infinity, and the exact aperture--width theorem
+   shows that a cofinal inward propagation to `a downarrow 0` is RH itself.
+
+3. `HTGeometry/ReflectionPositiveHankel.lean` is an all-order consumer, not a producer.  It proves
+   that an independently constructed Gram orbit with entries `m_(i+j)` makes every polynomial
+   square a Hilbert norm square.  The canonical prime--archimedean Gram orbit currently available
+   in `PrimeArchCanonicalReflectionPositiveEquivalence.lean` exists exactly when RH holds.
+   Importing that orbit into the Hedenmalm current would therefore be circular.
+
+4. The positive spectral measure in `ThetaCuspLikelihoodSpectralMeasure.lean` belongs to the
+   nonlinear higher-to-first likelihood coordinate
+
+   ```text
+   B(x)=pi*exp(2*x)-3/2.
+   ```
+
+   Its strict all-order tilted Hankel hierarchy does not give a translation Gram factorization of
+   the center-mixed density `M_(k,a)(t)`.  The two moment problems have different semigroup
+   coordinates; identifying them without a new intertwiner would be category substitution.
+
+5. The independent four-unit leakage route would imply every interior Hedenmalm tower by first
+   proving RH, but its source-first graph incidence remains open.  Toeplitz contractivity and
+   Osterwalder--Schrader reflection positivity alone do not bound the boundary curvature corner;
+   the one-layer Cauchy mode gives an arbitrarily large corner while preserving contractivity.
+
+The surviving proof target is consequently not another finite Hankel minor or another abstract
+Gram theorem.  It is one of the following equivalent-strength source constructions:
+
+```text
+(a) a nonlocal theta-source factorization of M_(k,a) inside the positive-definite cone,
+(b) a source-defined reflected Gram orbit for every translation packet of M_(k,a), or
+(c) an independently normalized all-prime--Gamma continuation that transports the four-unit
+    contact budget to the Xi anti-causal profile without increasing Hilbert energy.
+```
+
+No item `(a)`--`(c)` is proved here.  Until one is proved, the only complete unconditional
+Gaussian tower is the sharp boundary/exterior family, and the interior all-order sign remains the
+RH-bearing theorem.

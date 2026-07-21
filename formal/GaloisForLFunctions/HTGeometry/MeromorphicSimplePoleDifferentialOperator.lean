@@ -90,6 +90,55 @@ theorem meromorphicOrderAt_eq_neg_nat_of_tendsto_pow_mul
   have hnneg : n = -(k : ℤ) := by omega
   simp [hnneg]
 
+/-- A finite normalized pole limit detects exact meromorphic order precisely when its value is
+nonzero. -/
+theorem meromorphicOrderAt_eq_neg_nat_iff_limit_ne_zero
+    {f : ℂ → ℂ} {p c : ℂ} (k : ℕ) (hf : MeromorphicAt f p)
+    (hlim : Tendsto (fun z : ℂ => (z - p) ^ k * f z) (𝓝[≠] p) (𝓝 c)) :
+    meromorphicOrderAt f p = ((-(k : ℤ) : ℤ) : WithTop ℤ) ↔ c ≠ 0 := by
+  constructor
+  · intro horder hc
+    subst c
+    have hpow : MeromorphicAt (fun z : ℂ => (z - p) ^ k) p := by fun_prop
+    have hprod : MeromorphicAt (fun z : ℂ => (z - p) ^ k * f z) p := hpow.mul hf
+    have hpowOrder : meromorphicOrderAt (fun z : ℂ => (z - p) ^ k) p =
+        ((k : ℤ) : WithTop ℤ) := by
+      simpa only using
+        (meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := p) (n := k))
+    have hprodOrder :
+        meromorphicOrderAt (fun z : ℂ => (z - p) ^ k * f z) p = 0 := by
+      change meromorphicOrderAt ((fun z : ℂ => (z - p) ^ k) * f) p = 0
+      rw [meromorphicOrderAt_mul hpow hf, hpowOrder, horder]
+      norm_num
+    obtain ⟨d, hd, hdlim⟩ :=
+      tendsto_ne_zero_of_meromorphicOrderAt_eq_zero hprod hprodOrder
+    exact hd (tendsto_nhds_unique hdlim hlim)
+  · intro hc
+    exact meromorphicOrderAt_eq_neg_nat_of_tendsto_pow_mul k hf hc hlim
+
+/-- A vanishing normalized `k`th-pole limit forces strict improvement over order `-k`. -/
+theorem neg_nat_lt_meromorphicOrderAt_of_tendsto_pow_mul_zero
+    {f : ℂ → ℂ} {p : ℂ} (k : ℕ) (hf : MeromorphicAt f p)
+    (hlim : Tendsto (fun z : ℂ => (z - p) ^ k * f z) (𝓝[≠] p) (𝓝 0)) :
+    ((-(k : ℤ) : ℤ) : WithTop ℤ) < meromorphicOrderAt f p := by
+  have hpow : MeromorphicAt (fun z : ℂ => (z - p) ^ k) p := by fun_prop
+  have hprod : MeromorphicAt (fun z : ℂ => (z - p) ^ k * f z) p := hpow.mul hf
+  have hpos : 0 < meromorphicOrderAt (fun z : ℂ => (z - p) ^ k * f z) p :=
+    (tendsto_zero_iff_meromorphicOrderAt_pos hprod).mp hlim
+  change meromorphicOrderAt ((fun z : ℂ => (z - p) ^ k) * f) p > 0 at hpos
+  rw [meromorphicOrderAt_mul hpow hf] at hpos
+  have hpowOrder : meromorphicOrderAt (fun z : ℂ => (z - p) ^ k) p =
+      ((k : ℤ) : WithTop ℤ) := by
+    simpa only using
+      (meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := p) (n := k))
+  rw [hpowOrder] at hpos
+  by_cases htop : meromorphicOrderAt f p = ⊤
+  · rw [htop]
+    exact WithTop.coe_lt_top (-(k : ℤ))
+  · lift meromorphicOrderAt f p to ℤ using htop with q hq
+    have hposInt : (0 : ℤ) < (k : ℤ) + q := by exact_mod_cast hpos
+    exact_mod_cast (show -(k : ℤ) < q by omega)
+
 /-- The `j`th derivative of a simple pole has exact order `-(j+1)`. -/
 theorem meromorphicOrderAt_iteratedDeriv_of_simplePole
     {f : ℂ → ℂ} {p : ℂ} (hf : MeromorphicAt f p)

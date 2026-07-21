@@ -128,6 +128,47 @@ theorem movingPoleTaylorLaurent_injective
     (Polynomial.toLaurent_injective.comp
       (scaledTaylorAlgHom_injective a s hs))
 
+/-- Evaluating an inverted polynomial Laurent embedding at a unit evaluates
+the original polynomial at the inverse unit. -/
+theorem eval₂_invert_toLaurent
+    {R : Type*} [CommRing R] (u : Rˣ) (p : R[X]) :
+    LaurentPolynomial.eval₂ (RingHom.id R) u
+        (LaurentPolynomial.invert (Polynomial.toLaurent p)) =
+      p.eval ((u⁻¹ : Rˣ) : R) := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [map_add, hp, hq, Polynomial.eval_add]
+  | monomial n c =>
+      rw [Polynomial.toLaurent_C_mul_T, map_mul,
+        LaurentPolynomial.invert_C, LaurentPolynomial.invert_T,
+        LaurentPolynomial.eval₂_C_mul_T_neg_n]
+      simp [Polynomial.eval_monomial]
+
+/-- **Moving Taylor value law.**  Laurent evaluation of the scaled Taylor
+transform is exactly substitution at the corresponding moving point. -/
+theorem eval₂_movingPoleTaylorLaurent
+    {R : Type*} [CommRing R] (a s : R) (u : Rˣ) (p : R[X]) :
+    LaurentPolynomial.eval₂ (RingHom.id R) u
+        (movingPoleTaylorLaurent a s p) =
+      p.eval (a + s * ((u⁻¹ : Rˣ) : R)) := by
+  rw [movingPoleTaylorLaurent_apply, eval₂_invert_toLaurent,
+    scaledTaylorAlgHom_apply, Polynomial.eval_comp]
+  simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
+  rw [Polynomial.taylor_eval]
+  congr 1
+  ring
+
+/-- Field-coordinate form of the moving Taylor value law. -/
+theorem eval₂_movingPoleTaylorLaurent_inv
+    {K : Type*} [Field K] (a s : K) {x : K} (hx : x ≠ 0) (p : K[X]) :
+    LaurentPolynomial.eval₂ (RingHom.id K)
+        (Units.mk0 x⁻¹ (inv_ne_zero hx))
+        (movingPoleTaylorLaurent a s p) =
+      p.eval (a + s * x) := by
+  rw [eval₂_movingPoleTaylorLaurent]
+  congr 2
+  simp [Units.mk0]
+
 end
 
 end GaloisForLFunctions

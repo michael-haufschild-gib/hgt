@@ -850,3 +850,108 @@ the build were pre-existing dependency lint suggestions; the new leaf itself pas
 A scratch `#print axioms` audit of the eleven capstones listed above reports only `propext`,
 `Classical.choice`, and `Quot.sound`.  The scratch sources and literature-extraction temporaries
 were moved to Trash after the audit, and no owned Lean process was left running.
+
+### 2026-07-21 moving-center coefficient and value interfaces
+
+The first moving-coefficient gap after the constant-coefficient classification is now closed at
+the algebraic coefficient-field level.  The new module
+`GaloisForLFunctions.HTGeometry.GammaPoleReciprocalRelativeFreeness` extends formal unit inversion
+from `C` to the rational pole-position field `C(N)`, proves the extended inversion involutive and
+injective, and transports the existing factorial-scale/unit-coefficient freeness through both
+unit inversion and the nonzero factorial diagonal.  Consequently:
+
+- the factorial scale together with every reciprocal regular-unit coefficient is algebraically
+  independent over `C(N)`;
+- the factorial scale together with every covariant simple-zero residue is algebraically
+  independent over `C(N)`;
+- polynomial and Laurent evaluation in that scale/residue family are injective over `C(N)`.
+
+The capstone
+`gammaPoleScaleAndCovariantResidueRationalLaurentEval_injective` is the exact moving-center value
+reflection: a nonzero finite Laurent relation cannot be made to vanish by allowing rational
+functions of the pole index as coefficients.
+
+The existing `PolynomialMovingPoleTaylor` module now also contains the generic value law
+
+```text
+eval_u(movingPoleTaylorLaurent(a,s,p)) = p(a + s*u^(-1)),
+```
+
+with its field-coordinate form.  Thus the Laurent encoding, moving substitution, and rational
+coefficient field are no longer missing interfaces.  What remains is genuinely analytic: the
+running regular-unit Taylor variation must still be descended to the frozen profile without
+assuming away possible lower-grade cancellation.  These results do not claim that final
+polynomial-coefficient intersection and do not prove RH.
+
+Final verification used only
+
+```text
+lake build GaloisForLFunctions.HTGeometry.GammaPoleReciprocalRelativeFreeness
+```
+
+and completed successfully at `8711/8711`; the build also rebuilt the changed exact dependency
+`PolynomialMovingPoleTaylor`.  Direct `lake env lean` checks of both changed leaves were clean.
+A scratch axiom audit of the algebraic-independence capstone, Laurent reflection, and moving Taylor
+value law reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+### 2026-07-21 analytic weighted reflection and running-to-frozen descent
+
+The first analytic layer of the moving-coefficient descent is now formalized in
+`GaloisForLFunctions.HTGeometry.GammaPoleWeightedCovariantAsymptotic`.  Its general weighted
+boundary-value law allows both the pole-scaled coordinates and the coefficient ring homomorphism
+to vary.  For any finite multivariate polynomial, maximal-weight normalization selects exactly
+the evaluation of its maximal weighted-homogeneous component at the limiting coefficients and
+coordinate residues.  This strictly subsumes the previous weight-one, fixed-coefficient
+`pow_totalDegree_mul_eval` law.
+
+The Gamma specialization uses the new exact dynamic residue theorem in
+`GammaPoleCovariantJetRealization`:
+
+```text
+x^(j+1) D^j Gamma(-branch + scale*x)
+  -> -scale^(-j) (-1)^j j!.
+```
+
+Consequently every running polynomial-coefficient Gamma packet has an explicit maximal
+Bell-weight boundary value: coefficient polynomials are evaluated at the pole center, and the
+Gamma variables are evaluated on the exact factorial top-residue frame.  The same value is the
+maximal boundary of the center-frozen packet.  Their difference therefore has meromorphic order
+*strictly greater* than the negative maximal Bell weight, both for the covariant realization and
+for the native Gamma packet.  This is the unconditional running-to-frozen top-layer descent:
+Taylor motion cannot affect the leading pole layer.
+
+Two general meromorphic interfaces were promoted to
+`MeromorphicSimplePoleDifferentialOperator`:
+
+- a finite normalized pole limit has exact order `-k` iff its limiting value is nonzero;
+- a zero normalized limit forces strict order improvement above `-k`.
+
+The named Gamma capstones are:
+
+- `tendsto_pow_succ_mul_simplePoleCovariantJetValue`;
+- `tendsto_pow_succ_mul_gammaPoleCovariantJetValue`;
+- `meromorphicOrderAt_gammaPoleJet_affine`;
+- `tendsto_pow_weightedTotalDegree_mul_eval₂`;
+- `tendsto_pow_weightedTotalDegree_mul_gammaPoleCovariantPolynomialJetEval`;
+- `neg_weightedTotalDegree_lt_meromorphicOrderAt_gammaPoleCovariant_sub_centerFrozen`;
+- `neg_weightedTotalDegree_lt_meromorphicOrderAt_gammaPolyJetEval_affine_sub_centerFrozen`;
+- `meromorphicOrderAt_gammaPoleCovariantPolynomialJetEval_eq_iff`;
+- `meromorphicOrderAt_gammaPolyJetEval_affine_eq_iff`.
+
+Final verification used only
+
+```text
+lake build GaloisForLFunctions.HTGeometry.GammaPoleWeightedCovariantAsymptotic
+```
+
+and completed successfully at `8715/8715`, rebuilding only the required changed dependency chain.
+Focused `lake env lean` checks of the changed base, realization, and leaf files passed.  Formal
+source lint passed with only the repository's existing large-file warnings.  A scratch axiom audit
+of the new general and Gamma capstones reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This closes the leading analytic running/frozen gap but not the full polynomial-coefficient
+intersection.  A nonzero source can still have a zero reflected top value through cancellation
+among equal-weight monomials or vanishing pole-center coefficients; the exact iff theorem records
+that boundary honestly and sends such sources to lower layers.  A complete result now requires an
+iterated lower-grade descent/noncancellation argument.  No RH claim is made, and priority remains
+unverified pending specialist review.

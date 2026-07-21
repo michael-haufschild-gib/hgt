@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.SimplePoleJetLatticeHorizon
 import GaloisForLFunctions.HTGeometry.GammaPoleAnalyticCoefficientFreeness
 import GaloisForLFunctions.HTGeometry.GammaGammaFactorialBlowUp
 import GaloisForLFunctions.HTGeometry.MeromorphicPuncturedRepresentation
+import GaloisForLFunctions.HTGeometry.MeromorphicSimplePoleDifferentialOperator
 
 /-!
 # Dynamic covariant realization of the Gamma pole profile
@@ -126,6 +127,55 @@ theorem meromorphicAt_simplePoleCovariantJetValue
   exact hderiv.congr
     (simplePoleCovariantJetValue_eventuallyEq_iteratedDeriv_div hU j).symm
 
+/-- **Dynamic top-residue reflection.**  The running covariant jet retains
+the exact highest pole residue of `U(x) / x`; all Taylor variation affects
+only lower Laurent grades. -/
+theorem tendsto_pow_succ_mul_simplePoleCovariantJetValue
+    {U : ℂ → ℂ} (hU : AnalyticAt ℂ U 0) (j : ℕ) :
+    Tendsto (fun x : ℂ => x ^ (j + 1) * simplePoleCovariantJetValue U j x)
+      (𝓝[≠] 0) (𝓝 (U 0 * ((-1 : ℂ) ^ j * (j.factorial : ℂ)))) := by
+  have hev : (fun x : ℂ => x ^ (j + 1) * simplePoleCovariantJetValue U j x) =ᶠ[𝓝[≠] 0]
+      fun x => ∑ k ∈ range (j + 1),
+        (j.choose k : ℂ) * iteratedDeriv k U x *
+          ((-1 : ℂ) ^ (j - k) * ((j - k).factorial : ℂ)) * x ^ k := by
+    filter_upwards [self_mem_nhdsWithin] with x hx
+    have hx0 : x ≠ 0 := by simpa using hx
+    rw [simplePoleCovariantJetValue_eq_sum, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro k hk
+    rw [mem_range, Nat.lt_succ_iff] at hk
+    have hpow : x ^ (j + 1) * x⁻¹ ^ (j - k + 1) = x ^ k := by
+      rw [inv_pow, ← pow_sub₀ x hx0 (by omega : j - k + 1 ≤ j + 1)]
+      congr 1
+      omega
+    linear_combination
+      ((j.choose k : ℂ) * iteratedDeriv k U x *
+        ((-1 : ℂ) ^ (j - k) * ((j - k).factorial : ℂ))) * hpow
+  have hlim : Tendsto (fun x : ℂ => ∑ k ∈ range (j + 1),
+      (j.choose k : ℂ) * iteratedDeriv k U x *
+        ((-1 : ℂ) ^ (j - k) * ((j - k).factorial : ℂ)) * x ^ k)
+      (𝓝[≠] 0) (𝓝 (∑ k ∈ range (j + 1),
+        (j.choose k : ℂ) * iteratedDeriv k U 0 *
+          ((-1 : ℂ) ^ (j - k) * ((j - k).factorial : ℂ)) * (0 : ℂ) ^ k)) := by
+    apply tendsto_finsetSum
+    intro k hk
+    have hkcont : ContinuousAt (iteratedDeriv k U) 0 :=
+      continuousAt_iteratedDeriv_of_contDiffAt hU.contDiffAt
+    exact ((((continuousAt_const.mul hkcont).mul continuousAt_const).mul
+      (continuousAt_id.pow k)).continuousWithinAt)
+  have hvalue : (∑ k ∈ range (j + 1),
+      (j.choose k : ℂ) * iteratedDeriv k U 0 *
+        ((-1 : ℂ) ^ (j - k) * ((j - k).factorial : ℂ)) * (0 : ℂ) ^ k) =
+      U 0 * ((-1 : ℂ) ^ j * (j.factorial : ℂ)) := by
+    rw [Finset.sum_eq_single 0]
+    · simp
+    · intro k hk hk0
+      rw [zero_pow hk0, mul_zero]
+    · intro h0
+      exact (h0 (Finset.mem_range.mpr (Nat.zero_lt_succ j))).elim
+  rw [hvalue] at hlim
+  exact hlim.congr' (hev.mono fun _ h => h.symm)
+
 /-- The hypotheses of `gammaPoleRegularUnit_source_identity` hold throughout
 a deleted neighborhood of the normalized pole coordinate. -/
 theorem gammaPoleRegularUnit_source_eventuallyEq (branch : ℕ) :
@@ -189,6 +239,39 @@ theorem meromorphicAt_gammaPoleCovariantJetValue (branch j : ℕ) :
   exact hconst.mul (meromorphicAt_simplePoleCovariantJetValue
     (gammaPoleRegularUnit_analyticAt_zero branch) j)
 
+/-- Exact top-residue limit for a factorially normalized Gamma derivative. -/
+theorem tendsto_pow_succ_mul_gammaPoleCovariantJetValue (branch j : ℕ) :
+    Tendsto (fun x : ℂ => x ^ (j + 1) * gammaPoleCovariantJetValue branch j x)
+      (𝓝[≠] 0)
+      (𝓝 (-(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
+        ((-1 : ℂ) ^ j * (j.factorial : ℂ)))) := by
+  let c : ℂ := -(reciprocalGammaFactorialScale branch)⁻¹ ^ j
+  have hc : Tendsto (fun _ : ℂ => c) (𝓝[≠] 0) (𝓝 c) := tendsto_const_nhds
+  have h := hc.mul (tendsto_pow_succ_mul_simplePoleCovariantJetValue
+    (gammaPoleRegularUnit_analyticAt_zero branch) j)
+  have hev : (fun x : ℂ => x ^ (j + 1) *
+      (c * simplePoleCovariantJetValue (gammaPoleRegularUnit branch) j x)) =ᶠ[𝓝[≠] 0]
+      (fun x => c * (x ^ (j + 1) *
+        simplePoleCovariantJetValue (gammaPoleRegularUnit branch) j x)) :=
+    Filter.Eventually.of_forall fun x => by ring
+  simpa only [gammaPoleRegularUnit_zero, one_mul] using
+    h.congr' (hev.mono fun _ hx => hx.symm)
+
+/-- Every normalized Gamma covariant jet has exact pole order `-(j+1)`. -/
+theorem meromorphicOrderAt_gammaPoleCovariantJetValue (branch j : ℕ) :
+    meromorphicOrderAt (gammaPoleCovariantJetValue branch j) 0 =
+      ((-((j + 1 : ℕ) : ℤ) : ℤ) : WithTop ℤ) := by
+  apply meromorphicOrderAt_eq_neg_nat_of_tendsto_pow_mul (j + 1)
+    (meromorphicAt_gammaPoleCovariantJetValue branch j)
+  · have hscale : (-(reciprocalGammaFactorialScale branch)⁻¹ ^ j : ℂ) ≠ 0 :=
+      neg_ne_zero.mpr (pow_ne_zero _
+        (inv_ne_zero (reciprocalGammaFactorialScale_ne_zero branch)))
+    have hsign : ((-1 : ℂ) ^ j) ≠ 0 := pow_ne_zero _ (by norm_num)
+    have hfactorial : ((j.factorial : ℂ)) ≠ 0 := by
+      exact_mod_cast Nat.factorial_ne_zero j
+    exact mul_ne_zero hscale (mul_ne_zero hsign hfactorial)
+  · simpa using tendsto_pow_succ_mul_gammaPoleCovariantJetValue branch j
+
 /-- **Gamma generator value relation.**  Every native Gamma derivative equals
 its dynamic covariant simple-pole profile on a deleted neighborhood. -/
 theorem gammaPoleJet_eventuallyEq_covariant (branch j : ℕ) :
@@ -248,6 +331,40 @@ theorem gammaPoleJet_eventuallyEq_covariant (branch j : ℕ) :
           (s * x + -(branch : ℂ))) := by rw [← mul_assoc, hpow, one_mul]
     _ = -s⁻¹ ^ j * simplePoleCovariantJetValue
           (gammaPoleRegularUnit branch) j x := by rw [hDx']; ring
+
+/-- **Native Gamma top-residue reflection.**  The exact dynamic residue limit
+transfers through the affine Gamma value relation. -/
+theorem tendsto_pow_succ_mul_gammaPoleJet_affine (branch j : ℕ) :
+    Tendsto
+      (fun x : ℂ => x ^ (j + 1) * iteratedDeriv j Complex.Gamma
+        (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x))
+      (𝓝[≠] 0)
+      (𝓝 (-(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
+        ((-1 : ℂ) ^ j * (j.factorial : ℂ)))) := by
+  have hev :
+      (fun x : ℂ => x ^ (j + 1) * iteratedDeriv j Complex.Gamma
+        (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) =ᶠ[𝓝[≠] 0]
+      (fun x => x ^ (j + 1) * gammaPoleCovariantJetValue branch j x) :=
+    (gammaPoleJet_eventuallyEq_covariant branch j).mono fun x hx =>
+      congrArg (fun y => x ^ (j + 1) * y) hx
+  exact (tendsto_pow_succ_mul_gammaPoleCovariantJetValue branch j).congr'
+    (hev.mono fun _ hx => hx.symm)
+
+/-- Every native Gamma derivative in the normalized affine pole chart has
+exact pole order `-(j+1)`. -/
+theorem meromorphicOrderAt_gammaPoleJet_affine (branch j : ℕ) :
+    meromorphicOrderAt
+        (fun x : ℂ => iteratedDeriv j Complex.Gamma
+          (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) 0 =
+      ((-((j + 1 : ℕ) : ℤ) : ℤ) : WithTop ℤ) := by
+  calc
+    meromorphicOrderAt
+        (fun x : ℂ => iteratedDeriv j Complex.Gamma
+          (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) 0 =
+        meromorphicOrderAt (gammaPoleCovariantJetValue branch j) 0 :=
+      meromorphicOrderAt_congr (gammaPoleJet_eventuallyEq_covariant branch j)
+    _ = ((-((j + 1 : ℕ) : ℤ) : ℤ) : WithTop ℤ) :=
+      meromorphicOrderAt_gammaPoleCovariantJetValue branch j
 
 /-- Covariant local evaluation of a polynomial-coefficient Gamma jet packet. -/
 def gammaPoleCovariantPolynomialJetEval (branch n : ℕ) (x : ℂ) :

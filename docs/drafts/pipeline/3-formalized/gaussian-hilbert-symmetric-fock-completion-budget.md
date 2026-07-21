@@ -196,3 +196,62 @@ not yet clear the stated general-scientific-journal bar.  That bar requires at l
   `Classical.choice`, and `Quot.sound`.
 - 2026-07-20 -- final `lake build GaloisForLFunctions.HilbertMetric` completed all 2541 targets;
   the only message was a pre-existing tactic suggestion in `DegreeFiveGaussianCurvature.lean`.
+
+## 2026-07-21 equality and defect rigidity closure
+
+The one-sided shadow and graded-charge bounds now have exact equality and strictness
+classifications in
+`GaloisForLFunctions.HilbertMetric.SymmetricFockShadowRigidity`.
+
+For an arbitrary finite tight operator family `T_j : X -> Y` with scalar left and right energies,
+and subspaces satisfying `T_j(U) subset V`, equality in
+
+```text
+a * dim(U) <= b * dim(V)
+```
+
+holds exactly when every adjoint returns the target subspace to the source:
+
+```text
+T_j^*(V) subset U  for every j.
+```
+
+Strictness is therefore equivalent to one explicit adjoint departure.  The proof identifies the
+entire defect with the sum of the Bessel residuals; equality forces each residual to vanish and
+hence each adjoint basis vector to equal its orthogonal projection onto `U`.  Reapplying the
+one-sided law to the adjoint family proves the converse.
+
+For the symmetric-Fock lowering family this specializes to:
+
+1. equality in the adjacent shadow law iff every creation operator maps the lowering shadow back
+   into the original upper level;
+2. strict adjacent expansion iff one creation operator leaves that upper level;
+3. equality in the full graded endpoint-charge law iff, at every positive-weight adjacent level,
+   the lowering shadow fills the lower level and every creator maps it back into the upper level;
+4. a strict global charge gap iff some positive level has either an incomplete lowering shadow or
+   a concrete creator departure.
+
+The zero-to-one step is correctly absent from the global classification because its telescope
+weight is zero.  This closes the equality/Prop interface and reduces the remaining classification
+problem to classifying the resulting two-sided Fock submodules; it does not itself assert that only
+full symmetric-power levels occur, nor does it settle arbitrary Gaussian ambient completions.
+Priority for the combined graded rigidity statement remains unverified.
+
+The exact new declarations are:
+
+- `tightOperatorFamily_subspace_finrank_eq_iff_adjoint_mem`;
+- `tightOperatorFamily_subspace_finrank_lt_iff_exists_adjoint_not_mem`;
+- `symmetricFockLoweringShadow_finrank_eq_iff_adjoint_mem`;
+- `symmetricFockLoweringShadow_finrank_lt_iff_exists_adjoint_not_mem`;
+- `weightedFockShadowCharge_eq_iff`;
+- `gradedFockLoweringCharge_eq_iff_levelwise_creator_closed`;
+- `gradedFockLoweringCharge_lt_iff_exists_level_defect`.
+
+Direct checking was clean.  Final verification used only
+
+```text
+lake build GaloisForLFunctions.HilbertMetric.SymmetricFockShadowRigidity
+```
+
+and completed successfully at `2348/2348`.  A scratch axiom audit of every declaration above
+reports only `propext`, `Classical.choice`, and `Quot.sound`.
