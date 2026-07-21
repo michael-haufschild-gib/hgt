@@ -193,9 +193,10 @@ analytic extension. -/
 theorem exists_analyticAt_simplePoleCovariantJetValue_sub_principal
     {U : ℂ → ℂ} (hU : AnalyticAt ℂ U 0) (j : ℕ) :
     ∃ R : ℂ → ℂ, AnalyticAt ℂ R 0 ∧
+      R 0 = iteratedDeriv (j + 1) U 0 / ((j + 1 : ℕ) : ℂ) ∧
       (fun x : ℂ => simplePoleCovariantJetValue U j x -
         U 0 * ((-1 : ℂ) ^ j * (j.factorial : ℂ)) * x⁻¹ ^ (j + 1)) =ᶠ[𝓝[≠] 0] R := by
-  refine ⟨iteratedDeriv j (dslope U 0), ?_,
+  refine ⟨iteratedDeriv j (dslope U 0), ?_, iteratedDeriv_dslope_zero_eq hU j,
     simplePoleCovariantJetValue_sub_principal_eventuallyEq hU j⟩
   exact analyticAt_iteratedDeriv_of_analyticAt
     (analyticAt_dslope_zero_of_analyticAt hU) j
@@ -301,6 +302,11 @@ def gammaPoleJetPrincipalPartValue (branch j : ℕ) (x : ℂ) : ℂ :=
   -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
     ((-1 : ℂ) ^ j * (j.factorial : ℂ)) * x⁻¹ ^ (j + 1)
 
+/-- First regular coefficient after the unique pole monomial of a normalized Gamma jet. -/
+def gammaPoleJetPrincipalRemainderValue (branch j : ℕ) : ℂ :=
+  -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
+    (iteratedDeriv (j + 1) (gammaPoleRegularUnit branch) 0 / ((j + 1 : ℕ) : ℂ))
+
 /-- Subtracting the Gamma principal monomial leaves the explicitly scaled divided-difference jet. -/
 theorem gammaPoleCovariantJetValue_sub_principal_eventuallyEq
     (branch j : ℕ) :
@@ -320,14 +326,18 @@ monomial plus a germ analytic at the pole center. -/
 theorem exists_analyticAt_gammaPoleCovariantJetValue_sub_principal
     (branch j : ℕ) :
     ∃ R : ℂ → ℂ, AnalyticAt ℂ R 0 ∧
+      R 0 = gammaPoleJetPrincipalRemainderValue branch j ∧
       (fun x : ℂ => gammaPoleCovariantJetValue branch j x -
         gammaPoleJetPrincipalPartValue branch j x) =ᶠ[𝓝[≠] 0] R := by
   refine ⟨fun x => -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
-      iteratedDeriv j (dslope (gammaPoleRegularUnit branch) 0) x, ?_,
+      iteratedDeriv j (dslope (gammaPoleRegularUnit branch) 0) x, ?_, ?_,
     gammaPoleCovariantJetValue_sub_principal_eventuallyEq branch j⟩
   exact analyticAt_const.mul (analyticAt_iteratedDeriv_of_analyticAt
     (analyticAt_dslope_zero_of_analyticAt
       (gammaPoleRegularUnit_analyticAt_zero branch)) j)
+  simp only [gammaPoleJetPrincipalRemainderValue]
+  rw [iteratedDeriv_dslope_zero_eq
+    (gammaPoleRegularUnit_analyticAt_zero branch) j]
 
 /-- **Gamma generator value relation.**  Every native Gamma derivative equals
 its dynamic covariant simple-pole profile on a deleted neighborhood. -/
@@ -428,12 +438,13 @@ realization. -/
 theorem exists_analyticAt_gammaPoleJet_affine_sub_principal
     (branch j : ℕ) :
     ∃ R : ℂ → ℂ, AnalyticAt ℂ R 0 ∧
+      R 0 = gammaPoleJetPrincipalRemainderValue branch j ∧
       (fun x : ℂ => iteratedDeriv j Complex.Gamma
           (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x) -
         gammaPoleJetPrincipalPartValue branch j x) =ᶠ[𝓝[≠] 0] R := by
-  obtain ⟨R, hR, hcov⟩ :=
+  obtain ⟨R, hR, hR0, hcov⟩ :=
     exists_analyticAt_gammaPoleCovariantJetValue_sub_principal branch j
-  refine ⟨R, hR, ?_⟩
+  refine ⟨R, hR, hR0, ?_⟩
   filter_upwards [gammaPoleJet_eventuallyEq_covariant branch j, hcov] with x hx hrem
   rw [hx]
   exact hrem
@@ -446,7 +457,7 @@ theorem meromorphicOrderAt_gammaPoleJet_affine_sub_principal_nonneg
       (fun x : ℂ => iteratedDeriv j Complex.Gamma
           (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x) -
         gammaPoleJetPrincipalPartValue branch j x) 0 := by
-  obtain ⟨R, hR, hev⟩ :=
+  obtain ⟨R, hR, _, hev⟩ :=
     exists_analyticAt_gammaPoleJet_affine_sub_principal branch j
   rw [meromorphicOrderAt_congr hev]
   exact hR.meromorphicOrderAt_nonneg

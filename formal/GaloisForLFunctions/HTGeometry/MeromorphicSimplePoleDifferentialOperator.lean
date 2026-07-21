@@ -150,6 +150,50 @@ theorem analyticAt_dslope_zero_of_analyticAt
     (differentiableOn_dslope (hopen.mem_nhds hU)).mpr hdiff
   exact hds.analyticAt (hopen.mem_nhds hU)
 
+/-- The `j`th derivative at zero of the analytic divided difference is the next derivative of the
+original function divided by `j+1`. -/
+theorem iteratedDeriv_dslope_zero_eq
+    {U : ℂ → ℂ} (hU : AnalyticAt ℂ U 0) (j : ℕ) :
+    iteratedDeriv j (dslope U 0) 0 =
+      iteratedDeriv (j + 1) U 0 / ((j + 1 : ℕ) : ℂ) := by
+  let V := dslope U 0
+  have hV : AnalyticAt ℂ V 0 := analyticAt_dslope_zero_of_analyticAt hU
+  have hfun : (fun x : ℂ => x * V x) = fun x => U x - U 0 := by
+    funext x
+    have hs := sub_smul_dslope U 0 x
+    simpa only [V, sub_zero, smul_eq_mul] using hs
+  have hder := congrArg (fun f : ℂ → ℂ => iteratedDeriv (j + 1) f 0) hfun
+  have hleft : iteratedDeriv (j + 1) (fun x : ℂ => x * V x) 0 =
+      ((j + 1 : ℕ) : ℂ) * iteratedDeriv j V 0 := by
+    change iteratedDeriv (j + 1) ((id : ℂ → ℂ) * V) 0 = _
+    rw [iteratedDeriv_mul contDiffAt_id (hV.contDiffAt.of_le le_top)]
+    rw [Finset.sum_eq_single 1]
+    · simp [iteratedDeriv_one]
+    · intro k hk hk1
+      have hk' : k ≤ j + 1 := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+      by_cases hk0 : k = 0
+      · subst k
+        simp [iteratedDeriv_zero]
+      · have hk2 : 2 ≤ k := by omega
+        have hid : iteratedDeriv k (id : ℂ → ℂ) 0 = 0 := by
+          rw [show k = (k - 2) + 1 + 1 by omega,
+            iteratedDeriv_succ', iteratedDeriv_succ']
+          simp
+        rw [hid, mul_zero, zero_mul]
+    · simp
+  have hright : iteratedDeriv (j + 1) (fun x : ℂ => U x - U 0) 0 =
+      iteratedDeriv (j + 1) U 0 := by
+    have hconst : ContDiffAt ℂ (j + 1) (fun _ : ℂ => U 0) 0 := contDiffAt_const
+    change iteratedDeriv (j + 1) (U - fun _ : ℂ => U 0) 0 = _
+    rw [iteratedDeriv_sub (hU.contDiffAt.of_le le_top) hconst]
+    simp only [iteratedDeriv_const, if_neg (Nat.add_one_ne_zero j), sub_zero]
+  change iteratedDeriv (j + 1) (fun x : ℂ => x * V x) 0 =
+    iteratedDeriv (j + 1) (fun x : ℂ => U x - U 0) 0 at hder
+  rw [hleft, hright] at hder
+  have hj : (((j + 1 : ℕ) : ℂ)) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero j
+  apply (eq_div_iff hj).2
+  simpa [mul_comm] using hder
+
 /-- On the punctured germ, an analytic numerator over the coordinate is its residue pole plus its
 analytic divided difference. -/
 theorem div_id_eventuallyEq_const_mul_inv_add_dslope
@@ -212,9 +256,10 @@ theorem iteratedDeriv_div_id_sub_principal_eventuallyEq
 theorem exists_analyticAt_iteratedDeriv_div_id_sub_principal
     {U : ℂ → ℂ} (hU : AnalyticAt ℂ U 0) (j : ℕ) :
     ∃ R : ℂ → ℂ, AnalyticAt ℂ R 0 ∧
+      R 0 = iteratedDeriv (j + 1) U 0 / ((j + 1 : ℕ) : ℂ) ∧
       (fun x : ℂ => iteratedDeriv j (fun z => U z / z) x -
         U 0 * ((-1 : ℂ) ^ j * (j.factorial : ℂ)) * x⁻¹ ^ (j + 1)) =ᶠ[𝓝[≠] 0] R := by
-  refine ⟨iteratedDeriv j (dslope U 0), ?_,
+  refine ⟨iteratedDeriv j (dslope U 0), ?_, iteratedDeriv_dslope_zero_eq hU j,
     iteratedDeriv_div_id_sub_principal_eventuallyEq hU j⟩
   have hds := analyticAt_dslope_zero_of_analyticAt hU
   induction j with
