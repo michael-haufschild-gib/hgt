@@ -1,8 +1,11 @@
 # RH ultra research handover
 
-**Handover date:** 2026-07-21  
-**Repository:** `/Volumes/Intenso/code/hgt`  
-**Research areas:** `RHTower`, `HTGeometry`, and `HilbertMetric`  
+**Handover date:** 2026-07-21
+
+**Repository:** `/Volumes/Intenso/code/hgt`
+
+**Research areas:** `RHTower`, `HTGeometry`, and `HilbertMetric`
+
 **Current verdict:** **RH is not proved.** The source-derived infinite aperture, several exact
 cancellation laws, and a new source exterior cube are available. The RH-bearing source-to-response
 exterior intertwiner and the all-degree signed response inequality are still open.
