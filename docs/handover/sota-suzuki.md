@@ -892,3 +892,126 @@ derivative transfer, Schwarz rigidity, and the contrapositive scale-selection la
 those results.  Resume by constructing or estimating the concrete parity-resolved Suzuki
 resolvent on a source-selected intermediate schedule, with the aim of retaining excited spectral
 mass and proving a non-universal, divisor-preserving Xi/de Branges limit.  RH remains open.
+
+## 16. 2026-07-21 update: exact Herglotz boundary-state classification
+
+This section supersedes Sections 12--15 as restart guidance.  Scalar leakage estimates are no
+longer the right frontier object.
+
+### 16.1 New theorem
+
+For the universal far-negative Suzuki carrier
+
+```text
+Theta_a^free(z)=(exp(-2a)-exp(2iaz))/(1-exp(-2a)exp(2iaz)),
+m_a^free(z)=i(1+Theta_a^free(z))/(1-Theta_a^free(z)),
+```
+
+direct Cayley algebra gives the exact identity
+
+```text
+m_a^free(z)=coth(a) tan(a z),                 a>0, Im z>0.       (S16.1)
+```
+
+Its Nevanlinna measure is therefore the half-integer clock
+
+```text
+mu_a=(coth(a)/a) sum_(k in Z) delta_((k+1/2)pi/a).              (S16.2)
+```
+
+Midpoint Riemann sums give
+
+```text
+mu_a -> dx/pi vaguely,
+m_a^free -> i locally uniformly on Im z>0.                      (S16.3)
+```
+
+The opposite universal ground edge has
+
+```text
+Theta_edge(z)=(z-i)/(z+i),
+i(1+Theta_edge)/(1-Theta_edge)=z.                               (S16.4)
+```
+
+In normalized Nevanlinna data, `(S16.3)` is homogenization of discrete clock atoms to Lebesgue
+measure, whereas `(S16.4)` is zero finite-plane measure with unit linear coefficient: spectral
+mass at the projective point at infinity.  Suzuki's two shift extremes erase arithmetic by two
+different exact mechanisms.
+
+Full dependency-closed proof, hostile audit, and literature caveat:
+
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-free-clock-homogenization.md`
+
+Generic tangent/Herglotz theory is classical.  Candidate source-specific novelty is the exact
+identification of Suzuki's free projective boundary with this clock law and its comparison with
+ground-edge mass escape.  Priority remains unverified.  This is not an RH proof.
+
+### 16.2 Lean status
+
+New module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiHerglotzBoundaryStates.lean`
+
+It proves, without project axioms or RH assumptions:
+
+- `suzukiFreeHerglotz_eq_rcoth_mul_tan`;
+- `suzukiFreeClock_cos_eq_zero_iff`;
+- `suzukiFreeHerglotz_I_eq_I`;
+- `suzukiFreeHerglotz_tendstoLocallyUniformlyOn`.
+
+The opposite boundary identity reuses `suzukiUpperCayleyInv_lineCayley`.  The new module is wired
+into `RiemannHypothesisSOTA2026.lean` and the `RHTower.lean` import ledger.  Verification completed:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/SuzukiHerglotzBoundaryStates.lean
+lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026
+lake env lean /tmp/SuzukiBoundaryAxiomAudit.lean
+python3 scripts/formal_tools.py lint
+```
+
+The axiom audit reports only Lean/mathlib foundations `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+### 16.3 Correct frontier invariant
+
+The leakage scalar from the ground-edge no-go is only a first-moment shadow.  A nonzero scalar can
+still converge to finite support, continuous spectrum, a wrong clock, or a finite Blaschke model.
+The actual intermediate-window state is the complete normalized Nevanlinna triple
+
+```text
+(linear coefficient at infinity, affine constant, finite-plane spectral measure),
+```
+
+together with spectral type and infinite atomic support.  A divisor-bearing Suzuki schedule must
+prove simultaneously:
+
+```text
+linear coefficient -> 0,                    excluding ground escape;
+mu_a does not approach dx/pi,                excluding free-clock homogenization;
+a tight infinite atomic component survives, excluding finite/continuous collapse;
+its atoms and weights converge to the Xi/de Branges divisor.                    (S16.5)
+```
+
+Avoid another round of leakage, gap, or overlap estimates unless it closes one item of `(S16.5)`
+for the concrete Suzuki source measure.
+
+### 16.4 Next frontier attack
+
+Construct the actual normalized Nevanlinna data of Suzuki's parity-resolved resolvent, not another
+abstract carrier:
+
+1. Derive the Clark/Nevanlinna measure of the finite-aperture characteristic quotient directly
+   from Suzuki's two source vectors and Friedrichs resolvent.
+2. Identify its linear coefficient and atomic weights as explicit parity-resolved spectral
+   projection data.
+3. Choose the cofinal shift intrinsically by a measure normalization or quantile condition that is
+   invariant under common defect scaling.
+4. Prove measure tightness plus vanishing linear coefficient on that schedule.
+5. Prove a source-level obstruction to the clock law `dx/pi`, preferably a persistent arithmetic
+   statistic that sees infinitely many atoms rather than finitely many moments.
+6. Weld the surviving atomic divisor to the global Xi/de Branges divisor.  This remains the open
+   producer theorem and must not assume admissibility of the RH-bearing shift `lambda=0`.
+
+Do not spend a session formalizing generic Clark theory, generalized Schur algorithms, or a finite
+moment hierarchy already present in `HTGeometry`.  First derive one concrete source identity that
+forces the finite-aperture Suzuki Nevanlinna measure into the framework above.

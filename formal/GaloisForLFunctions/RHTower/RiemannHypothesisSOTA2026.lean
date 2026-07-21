@@ -8,6 +8,8 @@ import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
 import GaloisForLFunctions.RHTower.SuzukiFiniteApertureHermiteBiehler
 import GaloisForLFunctions.RHTower.SuzukiProjectiveDefectBoundary
 import GaloisForLFunctions.RHTower.SuzukiGroundEdgeCayleyUniversality
+import GaloisForLFunctions.RHTower.SuzukiHerglotzBoundaryStates
+import GaloisForLFunctions.RHTower.SuzukiDonoghueSpectralMeasure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
@@ -78,12 +80,21 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   parity gap, the defect angle tends to one and every locally uniform carrier limit is the
   universal Cayley map `(z-i)/(z+i)`.  The contrapositive theorem
   `suzukiGroundEdge_nonCayley_forces_leakage_not_tendsto_zero` records the positive survivor as an
-  exact scale-selection law.  Thus both extreme shift regimes erase arithmetic data.  The live
-  wall is a two-scale intermediate window: keep
-  `tau * ||sinh||^2 / (gap * |<phi_0,cosh>|^2)` away from zero while excluding the far-negative
-  free boundary, then identify the resulting non-universal meromorphic Livšic limit with the
-  global Xi/de Branges carrier.  The concrete screw-function Hilbert space and its unbounded
-  differential operators are not yet present in this project.
+  exact scale-selection law.  `SuzukiHerglotzBoundaryStates` now identifies the far-negative
+  Herglotz state exactly as `coth(a) tan(a z)`, proves its half-integer clock singular set, and
+  transports free Schur collapse to locally uniform Herglotz convergence `m_a -> i`.  Together
+  with the already formalized opposite identity `CayleyInv((z-i)/(z+i))=z`, this separates two
+  exact data-erasure mechanisms: clock-spectrum homogenization to the constant Herglotz state and
+  ground-edge escape to the linear point at infinity.  `SuzukiDonoghueSpectralMeasure` identifies
+  the exact finite-aperture measure interface: the canonical Herglotz function is
+  `-i W_1/W_{-1}`, its Donoghue kernel has zero linear term, and every simple Clark atom has weight
+  reciprocal to boundary phase speed.  On paper the full source measure is `(1+t^2)` times the
+  spectral probability of the normalized positive deficiency vector for the even extension, with
+  atom weight `(1+x^2)|F(-x)|^2/(||v_+||_T^2 ||v_x||_T^2)`.  The live wall is therefore concrete
+  and measure-level: choose one intrinsic intermediate shift schedule, prove tight infinite atomic
+  survival and non-clock behavior, then identify support and weights with the global Xi/de Branges
+  divisor.  The screw-function Hilbert space and its unbounded differential operators are not yet
+  present in Lean.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete

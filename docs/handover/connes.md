@@ -699,37 +699,81 @@ The final proof chain must have no RH-equivalent assumption hidden in a “posit
 factorization” hypothesis. Each such property must be derived unconditionally for the actual theta
 source.
 
-## 13. A promising but unproved source identity
+## 13. New theorem: fixed-measure modular likelihood scattering
 
-For \(x>0\), the corpus gives a positive likelihood factorization of the form
+The former promising identity is now a dependency-closed paper theorem with a substantial Lean
+surface. See
+
+`docs/drafts/pipeline/2-fully-proven/needs-audit/theta-likelihood-modular-seam-transport.md`
+
+and
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodModularSeam.lean`.
+
+Let \(h\) be the first theta atom,
 
 \[
-k(x)=h(x)\left(1+\int e^{-B(x)t}\,d\mu(t)\right),
-\qquad
 B(x)=\pi e^{2x}-\tfrac32,
+\qquad
+Z(B)=1+\int e^{-Bt}\,d\nu(t),
 \]
 
-with \(h\) the first atom and \(\mu\) positive. This is the most plausible bridge from modular seam
-cancellation to an exact positive carrier.
+where the fixed positive higher-tail measure is
 
-What is known:
+\[
+d\nu(t)=\sum_{n\ge2}e^{-3(n^2-1)/2}
+\left[n^4\delta_{n^2-1}
++\tfrac32n^2(n^2-1)\mathbf1_{(n^2-1,\infty)}(t)\,dt\right].
+\]
 
-- the measure is positive;
-- it gives exact higher-tail likelihood response;
-- all tilted moment Hankel matrices in the \(B\)-coordinate are strictly positive;
-- the first atom endpoint slope is positive;
-- the completed source is smooth and even, forcing cancellation of the cusp hierarchy.
+The factorization \(k(x)=h(x)Z(B(x))\) now holds on the full intrinsic domain \(B(x)>0\), not only
+for \(x>0\). In the two-ended seam window, modular reflection becomes the exact Möbius scattering
+law
 
-What is **not** known:
+\[
+\iota(B)=\frac{\pi^2}{B+3/2}-\frac32,
+\qquad B(-x)=\iota(B(x)),
+\qquad \iota^2=1,
+\]
 
-- a translation-positive-definite representation for \(M_a(t)\);
-- a proof that the likelihood measure is PF-infinity or variation diminishing in the required
-  coordinate;
-- a sign theorem for the beyond-all-orders residual;
-- the phase-current domination inequality.
+\[
+Z(B(x))=S(x)Z(B(-x)),
+\qquad S(x)=\frac{h(-x)}{h(x)},
+\qquad 0<S(x)<1,
+\qquad S(x)S(-x)=1.
+\]
 
-This identity should be developed, but only through exact transformations. Do not infer the
-Hedenmalm sign merely from positivity of \(\mu\).
+The normalized reflected channel laws have an exact decreasing likelihood ratio and one crossing.
+Its location is the nonperturbative log-partition scattering phase
+
+\[
+\tau(x)=\frac{\log Z(B(-x))-\log Z(B(x))}{B(x)-B(-x)}.
+\]
+
+Writing \(m(B)=-(\log Z)'(B)\), strict Laplace log-convexity yields
+
+\[
+m(B(x))<\tau(x)<m(B(-x)).
+\]
+
+The two gaps are exactly directed relative entropies divided by \(B(x)-B(-x)\); their sum is the
+Jeffreys flux. At the seam, all odd integrated channel jets vanish and the first identity fixes
+
+\[
+m(\pi-3/2)
+=\frac1{2\pi}\left(\frac92-2\pi+\frac6{2\pi-3}\right).
+\]
+
+Lean proves the extended factorization, reflection balance, Möbius involution, reciprocal strict
+scattering contraction, one-crossing law, log-partition secant, log-partition derivative, all odd
+integrated jets, and the first barycenter. The explicit score-polynomial expansion and strict
+convexity/relative-entropy corollaries remain paper-only.
+
+This is a genuine nonperturbative source law, not another endpoint estimate. It still does not
+prove the Hedenmalm current sign: passivity and monotone likelihood ratio in latent temperature do
+not automatically orient Fourier phase. Next producer must express the phase-current term in
+Section 7 as a monotone observable or a conditionally positive two-parameter kernel in this same
+latent coordinate.
 
 ## 14. Connes interpretation of the surviving target
 
@@ -766,18 +810,21 @@ At handover time the worktree contains concurrent modifications and new files in
 `HTGeometry` and `RHTower`, including Suzuki and Gamma-pole work belonging to other agents. Do not
 reset, revert, reformat, or delete them.
 
-The Connes/Hedenmalm work from this stopping point modified:
+The Connes/Hedenmalm work before this continuation modified:
 
 - `docs/drafts/pipeline/1-in-progress/hedenmalm-center-mixed-double-positivity-law.md`
   - added the two-ended causal-resolvent theorem;
   - added the modular-seam/first-atom theorem.
 
-This handover adds:
+This continuation adds:
 
-- `docs/handover/connes.md`.
+- `docs/drafts/pipeline/2-fully-proven/needs-audit/theta-likelihood-modular-seam-transport.md`;
+- `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodModularSeam.lean`;
+- one import in `formal/GaloisForLFunctions/RHTower.lean`;
+- this updated handover.
 
-No Lean file for either new theorem had been created at the stopping point. Check the live tree
-again because another agent may have added one after this handover was written.
+The first-atom wrong-sign asymptotic and two-ended causal-resolvent factorization remain paper-only.
+Check the live tree before editing because unrelated concurrent files remain present.
 
 ## 16. Integrity and novelty rules
 
@@ -823,13 +870,91 @@ This lane is complete only when all of the following hold:
 
 ## 18. Exact stopping point
 
-Work stopped immediately after deriving and recording the modular-seam dominance theorem. The
-next concrete task is **not** to search for another criterion and **not** to add another finite
-Hankel estimate. It is:
+Work stopped after deriving and formalizing the fixed-measure modular likelihood scattering law.
+The exact open core is now narrower:
 
-> Formalize the first-atom wrong-sign and higher-tail compensation theorem in
-> `HedenmalmFirstAtomSeamDominance.lean`, then derive the exact all-order seam moment hierarchy and
-> use it to seek a positive representation of the nonperturbative residual or to prove the
-> phase-current domination inequality.
+> Rewrite
+> \(\operatorname{Re}\langle xg,(A_r-A_R)g\rangle\) using the fixed latent measure and prove that
+> its two-parameter channel kernel is conditionally positive on the modular-scattering orbit, or
+> identify a monotone latent observable whose stochastic order supplies inequality (40).
 
-No compiler process was left running by the handover task, and no build was run for this document.
+Do not return to finite endpoint estimates, finite Hankel sections, or generic log-concavity. The
+Möbius scattering law and exact relative-entropy flux are the source-specific hypotheses the
+generic counterfamily lacks or must visibly fail. A successful next theorem must connect one of
+them to Fourier phase orientation. RH and global interior current positivity remain open.
+
+Verification at this stopping point:
+
+- direct `lake env lean GaloisForLFunctions/RHTower/ThetaCuspLikelihoodModularSeam.lean` passed;
+- targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodModularSeam` passed;
+- temporary `#print axioms` checks report only `propext`, `Classical.choice`, and `Quot.sound`;
+- `scripts/formal_tools.py lint --check-generated` passed after one index regeneration;
+- no `lake` or `lean` process remained running.
+
+## 19. New obstruction and survivor: square-gap nondivisibility
+
+The direct Lévy/Thorin continuation of Section 13 is now closed. See
+
+`docs/drafts/pipeline/2-fully-proven/needs-audit/theta-likelihood-square-gap-nondivisibility.md`
+
+and
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`.
+
+For every intrinsic coordinate \(B>0\), normalize the fixed tilted seam carrier to
+
+\[
+dP_B(t)=Z(B)^{-1}\bigl(\delta_0(dt)+e^{-Bt}d\nu(t)\bigr).
+\]
+
+Its atomic sector has the exact arithmetic signature
+
+\[
+P_B\{0\}>0,\qquad P_B\{3\}>0,\qquad P_B\{6\}=0.
+\]
+
+An infinitely divisible law on \([0,\infty)\) with an atom at zero is compound Poisson.
+Compound-Poisson atom support is additively closed: concatenate jump-atom tuples producing
+two atoms to produce their sum. Thus \(P_B\{3\}>0\) would force \(P_B\{6\}>0\), a
+contradiction. Every \(P_B\) is therefore non-infinitely-divisible and, in particular, is not a
+GGC or Thorin-subordinator marginal. This holds throughout \(B>0\), not only at the seam.
+
+This does not conflict with Polson's incomplete-gamma or zero-based Thorin objects: those are
+different probability laws. It rules out exponentiating this fixed likelihood carrier into
+independent increments.
+
+The positive survivor is stronger than the negation. Pairing creates a new latent atom:
+
+\[
+6\notin A(P_B),\qquad 6\in A(P_B*P_B),
+\qquad (P_B*P_B)\{6\}\ge P_B\{3\}^2>0.
+\]
+
+Lean formalizes the exact one-particle atoms, failure of additive atom closure under every
+nonzero normalization, and nonzero self-convolution mass at \(6\). The general classification
+from infinite divisibility to compound Poisson remains paper-only.
+
+Interpretation: missing Xi orientation cannot live in another one-particle monotone-likelihood,
+Lévy-exponent, or passive-subordinator observable. It first appears in an irreducible
+two-particle sector created by the square-gap incidence. This is source-specific structure the
+generic log-concave counterfamily does not automatically possess.
+
+## 20. Revised exact stopping point
+
+The next frontier is no longer “find a one-particle latent observable.” That route is impossible
+for the actual fixed carrier. Retain the full two-parameter channel kernel
+
+\[
+D_a(s;t,u)=\int_0^\infty r\sinh(ar)
+q_t(r/2+s)q_u(r/2-s)\,dr,
+\qquad q_t(x)=h(|x|)e^{-B(|x|)t},
+\]
+
+and isolate the phase contribution supported on pair sectors absent from the one-particle atomic
+law, beginning with the exact birth \((3,3)\mapsto6\). Required theorem must show that modular
+reflection or square-gap/ray coherence orients this two-particle defect contribution after the
+full \(\nu\otimes\nu\) reassembly. Diagonal channel positivity, MLR, infinite divisibility, and
+Thorin exponentiation cannot supply it.
+
+RH and global Hedenmalm current positivity remain open. Novelty of the square-gap application is
+unverified; no priority claim is made.

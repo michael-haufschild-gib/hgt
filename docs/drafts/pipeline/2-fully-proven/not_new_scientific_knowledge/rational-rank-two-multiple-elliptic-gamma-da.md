@@ -14,6 +14,11 @@
 - **Statement:** A finite multiple-elliptic-Gamma period tuple in the upper half-plane is DA as
   soon as the rational span of the tuple together with the unit period has rank at most two.
 
+> **2026-07-21 completion note.** This bridge is the DA half of the exact universal classification
+> proved in `../../4-publication-ready/multiple-elliptic-gamma-rational-rank-dichotomy/`. The new
+> complementary theorem proves HT for every augmented-rank-at-least-three tuple, so the two halves
+> now exhaust all finite upper-half-plane period configurations.
+
 ## Exact theorem
 
 Let `I` be finite and nonempty and let

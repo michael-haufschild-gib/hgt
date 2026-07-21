@@ -757,3 +757,168 @@ That standard has not been met. The concrete next frontier is the cofinal joint 
 ## 11. One-paragraph restart summary
 
 The current code proves an exact analytic remainder formula for all derivatives of a simple pole, identifies Gamma finite-part jet germs and proves their rational-evaluation injectivity, derives a cofinal exact-order binomial cancellation family including `Gamma*Gamma'' - 2(Gamma')^2`, and then subsumes that family under a universal weighted first-subprincipal reflection: when a Bell-weight homogeneous packet's principal value cancels, its next normalized boundary is the `X₀` partial derivative at the principal frame times the base finite part, with exact order `-(W-1)` when nonzero. All affected leaf modules have passed direct Lean checks and exact module builds; the newest general module still needs a `/tmp` `#print axioms` audit, and the combined additions still need lint, diff-check, pipeline-card append, and owned-scratch cleanup. After that, attempt the joint branch-germ theorem that makes the partial reflection and finite part simultaneously nonzero cofinally, thereby discharging the general Gamma theorem's two remaining branchwise hypotheses. Do not touch concurrent RHTower/Suzuki/API work, do not run broad builds, do not use `lean-consolidate`, and do not claim RH progress.
+
+## 12. Continuation completed after this handover
+
+The pending first-subprincipal axiom audit passed with exactly `propext`, `Classical.choice`, and
+`Quot.sound`; formal lint and `git diff --check` passed.  The active card was updated with the
+binomial and universal first-subprincipal results.
+
+The proposed common-branch theorem is now formalized in
+`formal/GaloisForLFunctions/HTGeometry/GammaPoleWeightedFirstSubprincipalCofinal.lean` and imported
+by `HTGeometry.lean`.  It reuses the existing injective Laurent evaluation for the factorial scale
+and positive Gamma-unit derivatives.  The exact symbolic source is the principal reflection of
+`pderiv X₀ P` multiplied by the finite-part generator.  Its nonzero image yields, beyond every
+branch bound, one branch where principal cancellation, partial-reflection nonvanishing, and
+finite-part nonvanishing all hold simultaneously.  The capstone
+`exists_cofinal_meromorphicOrderAt_gammaWeightedJetEval_of_firstSubprincipal` then gives exact order
+`-(W-1)` for both covariant and native affine packets on that same branch.
+
+Verification completed:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/GammaPoleWeightedFirstSubprincipalCofinal.lean
+lake build GaloisForLFunctions.HTGeometry.GammaPoleWeightedFirstSubprincipalCofinal
+  8723/8723
+```
+
+The five new audited declarations use exactly the standard axioms.  This is a **[BRIDGE]
+[LEAN-PROVED]** result, not an external novelty or RH claim.  The next honest local layer is the
+second-subprincipal reflection for packets whose symbolic principal reflection and first partial
+both vanish.  Derive its complete normalized-curve second-derivative identity on paper before
+adding Lean infrastructure.  The persistent goal remains active.
+
+## 13. Exact second-subprincipal reflection completed
+
+The next analytic layer is now paper-proved and Lean-proved in
+`formal/GaloisForLFunctions/HTGeometry/SimplePoleWeightedSecondSubprincipal.lean`, imported by
+`HTGeometry.lean`.  For an analytic polynomial curve `F(x)=P(g(x))` with `F(0)=F'(0)=0`, the new
+generic theorem proves
+
+```text
+F(x)/x^2 -> (1/2) * F''(0),
+
+F''(0) =
+  sum_i (partial_i P)(C) g_i''(0)
+    + sum_i sum_j (partial_j partial_i P)(C) g_j'(0) g_i'(0).
+```
+
+For honest normalized simple-pole coordinates
+
+```text
+g_q(x) = C_q + x^(q+1) R_q(x),
+```
+
+the exact second boundary is
+
+```text
+(partial_0 P)(C) R_0'(0)
+  + (partial_1 P)(C) R_1(0)
+  + (1/2) (partial_0 partial_0 P)(C) R_0(0)^2.
+```
+
+Do not remove the first term under only the product cancellation
+`(partial_0 P)(C) R_0(0)=0`: `R_0(0)` may vanish while `R_0'(0)` does not.  A two-term form needs
+the stronger symbolic condition `(partial_0 P)(C)=0`.
+
+For Bell weight `W >= 2`, nonzero second boundary gives exact order `-(W-2)`.  This is formalized
+for general simple-pole packets, Gamma covariant packets, and native affine Gamma packets.  Key
+declarations are:
+
+- `HTGeometry.iteratedDeriv_two_mvPolynomial_eval_curve_complex`;
+- `HTGeometry.tendsto_inv_sq_mul_mvPolynomial_eval_curve`;
+- `tendsto_pow_sub_two_mul_weightedJetEval_of_normalizedExtension`;
+- `simplePoleSecondSubprincipalBoundary`;
+- `meromorphicOrderAt_simplePoleWeightedJetEval_of_secondSubprincipal`;
+- `gammaPoleSecondSubprincipalBoundary`;
+- `meromorphicOrderAt_gammaAffineWeightedJetEval_of_secondSubprincipal`.
+
+Verification completed:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/SimplePoleWeightedSecondSubprincipal.lean
+lake build GaloisForLFunctions.HTGeometry.SimplePoleWeightedSecondSubprincipal
+  8723/8723
+```
+
+Seven audited capstones use exactly `propext`, `Classical.choice`, and `Quot.sound`.  Formal lint
+and `git diff --check` passed after the documentation and import updates.
+
+Scientific classification: **[BRIDGE] [LEAN-PROVED]**.  Multivariate Taylor/Faa di Bruno is
+classical parent theory; no external novelty or RH claim is made.  The strongest immediate next
+frontier is a cofinal Gamma discharge at this second layer: represent the complete second-boundary
+combination in the existing joint scale/unit-derivative Laurent algebra, then prove symbolic
+nonzero implies one common remote branch with principal cancellation, first-boundary cancellation,
+and nonzero complete second boundary.  Do not replace that joint statement by separate cofinal
+existentials.  After this local frontier, resume the required fresh producer/consumer scan across
+HTGeometry, RHTower, and HilbertMetric.  Persistent goal remains active.
+
+## 14. Cofinal Gamma second-subprincipal discharge completed
+
+The common-branch second layer is now Lean-proved in
+`formal/GaloisForLFunctions/HTGeometry/GammaPoleWeightedSecondSubprincipalCofinal.lean` and imported
+by `HTGeometry.lean`.  It defines exact Laurent symbols
+
+```text
+R_0'(0)  <->  -(1/2) C(X_1),
+R_1(0)   <->   T^(-1) (1/2) C(X_1),
+R_0(0)   <->  -C(X_0)                 (existing),
+```
+
+then combines them with the principal reflections of `pderiv X_0 P`, `pderiv X_1 P`, and
+`pderiv X_0 (pderiv X_0 P)` into one complete second-boundary source.  Its evaluation is exactly
+the actual branchwise three-term boundary germ.  Existing joint Laurent injectivity proves that a
+nonzero source has nonzero boundary germ.
+
+If the symbolic principal reflections of `P` and `pderiv X_0 P` vanish and the complete symbolic
+second boundary is nonzero, then for every bound there is one later Gamma branch where both
+cancellations and boundary nonvanishing hold simultaneously.  The capstone
+`exists_cofinal_meromorphicOrderAt_gammaWeightedJetEval_of_secondSubprincipal` gives exact order
+`-(W-2)` there for both covariant and native affine packets when `W >= 2`.
+
+Verification completed:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/GammaPoleWeightedSecondSubprincipalCofinal.lean
+lake build GaloisForLFunctions.HTGeometry.GammaPoleWeightedSecondSubprincipalCofinal
+  8725/8725
+```
+
+Six audited declarations depend on exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Scientific classification: **[BRIDGE] [LEAN-PROVED]**.  No new freeness axiom, computation,
+external novelty claim, or RH claim is involved.  Resume the required fresh producer/consumer scan
+across HTGeometry, RHTower, and HilbertMetric.  For this Gamma hierarchy, a higher-order layer is
+honest only after deriving the full normalized-curve boundary and identifying a reusable named
+gap; do not extrapolate by dropping moving-remainder terms.  Persistent goal remains active.
+
+## 15. Opaque second-boundary hypothesis eliminated
+
+The same cofinal module now contains an exact nonvanishing classification.  Principal reflections
+live in the pure factorial-scale Laurent subring.  Specializing all positive unit-derivative
+variables therefore cannot kill a nonzero principal reflection: re-inclusion is a proved left
+inverse on that subring.
+
+Selecting only `X₁` isolates the `pderiv X₁ P` first-jet channel after `pderiv X₀ P` cancels;
+selecting only `X₀` isolates the repeated-base Hessian channel.  These projections prove
+
+```text
+gammaPoleSecondSubprincipalBoundarySymbol n P != 0
+  <-> principalReflection(pderiv X_1 P) != 0
+       or principalReflection(pderiv X_0 (pderiv X_0 P)) != 0
+```
+
+under the existing first-partial cancellation.  The forward implication is exact because if both
+channels vanish, the original three-term source is zero.  The reverse implication uses the
+nonzero scalar `1/2` and Laurent unit `T^(-1)`.
+
+Use
+`exists_cofinal_meromorphicOrderAt_gammaWeightedJetEval_of_secondSubprincipal_channels` as the
+strongest current capstone: it replaces the opaque complete-boundary hypothesis by the explicit
+channel disjunction and returns exact order `-(W-2)` for covariant and native affine Gamma packets
+on one arbitrarily remote common branch.  Classification remains **[BRIDGE] [LEAN-PROVED]** and
+does not change RH status.  Persistent goal remains active; next work is the cross-folder scan, not
+automatic extrapolation to third order.
+
+The exact module rebuild passed `8725/8725`.  Seven classification and channel-capstone
+declarations were axiom-audited; each depends on exactly `propext`, `Classical.choice`, and
+`Quot.sound`.

@@ -6,6 +6,13 @@
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — contingent on independent audit of the order-one elliptic-gamma theorem
 - **Statement:** For rationally independent periods, every multiple elliptic gamma function is hypertranscendental. Its logarithmic derivative undergoes a sharp spectral transition: order one has the rank-three DA translation spectrum, while every higher order has exact spectrum `Z`. Equivalently, for order at least two every nonintegral shift quotient is hypertranscendental.
 
+> **2026-07-21 update.** The generic HT component is strictly superseded by the complete
+> rational-rank dichotomy in
+> `../../4-publication-ready/multiple-elliptic-gamma-rational-rank-dichotomy/`.
+> Every tuple of augmented rational rank at least three is now HT, including all partially
+> dependent cases; every tuple of augmented rank two is DA. This card remains only for its
+> stronger exact-translation-spectrum claim under full independence.
+
 ## Setup
 
 For `r>=1`, let
@@ -162,14 +169,19 @@ The claim is not independent of the order-one theorem. If `elliptic-gamma-rank-t
 
 ## Boundaries
 
-1. Full `Q`-linear independence is sufficient, not claimed necessary.
-2. The theorem does not classify partially dependent non-rational tuples. Their lower-order spectra can have larger intersections.
+1. Full `Q`-linear independence is needed here for the displayed exact higher-order spectrum, not
+   for source hypertranscendence.
+2. Source DA/HT is completely classified for partially dependent tuples by augmented rational
+   rank. Their exact lower-order translation spectra can still have larger intersections.
 3. At order at least two the exact one-defect spectrum is proved, but no complete finite-family defect matroid is claimed.
 4. Rational tuples lie on the opposite side of the phase diagram: Kato's theorem makes `G_r` DA there.
 
 ## Lean route
 
-The hierarchy induction and subgroup-intersection step are elementary, but their only substantive input is the analytic order-one theorem, which is not formalized. Formalizing the conditional induction now would be theorem-wrapper theatre. No Lean edit is warranted.
+The source-HT implication is now formalized unconditionally for the actual all-order product in
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaHypertranscendence.lean`. The exact
+generic spectrum `Z` stated on this card remains a stronger separate paper theorem and is not
+claimed by that module.
 
 ## Gates
 

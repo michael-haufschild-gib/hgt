@@ -908,3 +908,113 @@ At the time of this handover:
 
 The next mathematical delta is not another narrative, analogy, or paper draft. It is closure of the
 concrete all-depth pair-face exact-image and relative nonlinear-independence capstone.
+
+## 20. 2026-07-21 frontier override: universal rational-rank dichotomy
+
+Sections above describe the earlier generic-only frontier. Their statements that partially
+dependent non-rational multiple-elliptic-gamma tuples remain unclassified are now stale.
+
+### Closed universal theorem
+
+For every nonempty finite upper-half-plane tuple `tau=(tau_i)`, define
+
+```text
+d_Q(tau)=dim_Q span_Q({1} union {tau_i}).
+```
+
+Then the actual Nishizawa multiple elliptic gamma and its logarithmic derivative satisfy the exact
+dichotomy
+
+```text
+d_Q(tau) <= 2  iff  differential algebraicity over C(z),
+d_Q(tau) >= 3  iff  hypertranscendence over C(z).
+```
+
+Since positive imaginary parts force `d_Q(tau)>=2`, these cases exhaust every finite tuple. No
+genericity, full-family independence, or absence of repeated/dependent periods is assumed.
+
+### Proof architecture
+
+1. **Rank at most two:** every period has form `a_i+b_i*omega` with rational `a_i,b_i` and
+   `b_i>0`. Clearing denominators and applying the exact all-coordinate multiplication identity
+   reduces the source to a finite product of translates with periods on one rational ray. Kato's
+   Theorem 1.1 makes every factor DA.
+2. **Rank at least three:** finite linear algebra extracts distinct labels `q,r` for which
+   `1,tau_q,tau_r` are rationally independent.
+3. **Two-period seed:** exact factorwise normalization identifies the two-period multiple product
+   with a translate of the genuine elliptic gamma.
+4. **Hierarchy ascent:** deleting every other label reaches that HT pair face. The intrinsic
+   coface equation `Delta_(tau_q) Psi_J=Psi_(J union {q})` and automorphism-defect escape propagate
+   HT back to the full source.
+
+The key conceptual correction is that Kato-rationality is not the sharp boundary. Integer offsets
+and finite root-of-unity twists create Kato-non-rational but DA tuples. Augmented rational rank is
+the sharp invariant.
+
+### New unconditional Lean module
+
+```text
+formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaHypertranscendence.lean
+```
+
+Primary declarations:
+
+```text
+MultipleEllipticGammaHasRankThreeMinor
+hypertranscendentalOver_multipleEllipticGammaLogDerivMero_of_rankThreeMinor
+hypertranscendentalOver_multipleEllipticGammaMero_of_rankThreeMinor
+```
+
+The module proves exact two-period coordinate/factor/product/meromorphic normalization, HT of the
+two-period source, intrinsic face ascent, finite deletion recovery, and all-order product/logarithmic-
+derivative HT from one rank-three minor. It is imported by `HTGeometry.lean`.
+
+Verification on 2026-07-21:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/MultipleEllipticGammaHypertranscendence.lean  # PASS
+lake build GaloisForLFunctions.HTGeometry.MultipleEllipticGammaHypertranscendence          # PASS
+scripts/formal_tools.py lint                                                              # PASS
+```
+
+`#print axioms` for both headline theorems reports only `propext`, `Classical.choice`, and
+`Quot.sound`. No `sorry`, `admit`, project axiom, `opaque`, or `unsafe` dependency occurs.
+
+### Standalone paper
+
+```text
+docs/drafts/pipeline/4-publication-ready/
+  multiple-elliptic-gamma-rational-rank-dichotomy/
+    main.tex
+    main.pdf
+```
+
+Revised title: **Differential Algebraicity of Nishizawa's Multiple Elliptic Gamma Functions: An
+Exact Rational-Rank Dichotomy**.
+
+The 2026-07-21 referee repair supersedes the earlier requested AI coauthor list: Michael
+Haufschild is the accountable author, while GPT 5.6 Sol, Fable 5, and Grok 4.5 are disclosed as
+drafting and proof-audit tools. The manuscript contains no Lean discussion. It now proves the
+paired elliptic-gamma obstruction through a self-contained joint Ostrowski theorem based on
+Kähler differentials, minimal-support fixed-vector descent, and field trace; no several-operator
+Picard--Vessiot or Cassidy inference remains. It also uses the exact Nishizawa product convention
+throughout and fixes the earlier deleted-face/surviving-face notation collision. The PDF has 9
+pages; all pages were rendered and visually checked after the final revision. No unresolved
+mathematical parameter case remains. Independent specialist priority review remains a
+publication-process gate, not a theorem hypothesis.
+
+### External boundary rechecked
+
+- Kato (2021), Theorem 1.1: DA on the rational-ray locus.
+- Kato (2021), Remark 1.2: non-rational differential algebraicity stated as unknown.
+- Narukawa, Winding, and Tizzano: modular/integral/cone geometry, not the DA/HT classification.
+- Morain I--II (2025--2026): geometric families, arithmetic cocycles, and modular symbols, not
+  algebraic differential equations in `z`.
+- Targeted searches through 2026-07-21 found no rational-rank iff theorem or equivalent all-period
+  classification. Priority verdict remains preliminary until independent specialist review.
+
+### Remaining work is outside theorem scope
+
+The complete DA/HT classification is closed. Separate stronger questions about exact
+arbitrary-translation annihilator ideals and full nonlinear differential matroids remain separate
+projects; they are not missing cases or dependencies of the rational-rank dichotomy paper.

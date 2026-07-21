@@ -1,0 +1,730 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1.05in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\setlength{\parindent}{1.25em}
+\setlength{\parskip}{0.15em}
+\numberwithin{equation}{section}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\HH}{\mathbb H}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\dd}{\mathrm d}
+\newcommand{\T}{\mathsf T}
+\newcommand{\Deltaop}{\mathop{\Delta}}
+
+\title{\bfseries Differential Algebraicity of Nishizawa's Multiple
+Elliptic Gamma Functions:\\An Exact Rational-Rank Dichotomy}
+\author{Michael Haufschild}
+\date{July 21, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $I$ be a nonempty finite set, let $\tau=(\tau_i)_{i\in I}$ lie in the
+complex upper half-plane, and let $G_I(z;\tau)$ be Nishizawa's multiple
+elliptic gamma function.  Define
+\[
+ d_{\Q}(\tau)=
+ \dim_{\Q}\Span_{\Q}\bigl(\{1\}\cup\{\tau_i:i\in I\}\bigr).
+\]
+We prove that $G_I$ is differentially algebraic over $\C(z)$ if and only if
+$d_{\Q}(\tau)=2$, and is hypertranscendental if and only if
+$d_{\Q}(\tau)\geq3$.  The same dichotomy holds for its logarithmic
+derivative.  Thus every finite upper-half-plane period tuple is classified,
+including partially dependent non-rational tuples.
+
+The rank-two direction follows from an exact all-coordinate multiplication
+identity and Kato's rational-period theorem.  For rank at least three, two
+periods form a rationally independent triple with the unit period.  We prove
+hypertranscendence of the corresponding elliptic-gamma face by an elementary
+joint Ostrowski descent: a differential relation would force one
+constant-coefficient differential operator to telescope simultaneously in
+two elliptic translation directions.  Specialization to one elliptic curve
+and a pole-orbit boundary obstruction exclude such a telescoper.  Nishizawa's
+exact face equations then propagate the obstruction through every higher
+order.  This resolves the non-rational-period problem stated by Kato.
+\end{abstract}
+
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 33E30; Secondary 12H05, 39A13.
+
+\noindent\textbf{Keywords.}
+Multiple elliptic gamma function; differential algebraicity;
+hypertranscendence; elliptic translation; rational rank; Ostrowski descent.
+
+\section{Introduction}
+
+For periods $\tau_i$ in the upper half-plane
+$\HH=\{w\in\C:\operatorname{Im}w>0\}$, put
+\[
+ q_i=e^{2\pi i\tau_i},\qquad x=e^{2\pi iz},\qquad
+ Q_I=\prod_{i\in I}q_i.
+\]
+For a finite family $q=(q_i)_{i\in I}$, write
+\[
+ (x;q)_\infty=
+ \prod_{n\in\N^I}\left(1-x\prod_{i\in I}q_i^{n_i}\right).
+\]
+The standard Nishizawa function is
+\begin{equation}
+ G_I(z;\tau)=
+ (Q_I/x;q)_\infty\,
+ (x;q)_\infty^{\,(-1)^{|I|-1}}.
+ \label{eq:defG}
+\end{equation}
+When $I=\{0,\ldots,r\}$, this is Nishizawa's notation
+$G_r(z;(\tau_0,\ldots,\tau_r))$.
+The products converge locally uniformly because $|q_i|<1$.  Formula
+\eqref{eq:defG} therefore defines a meromorphic function of $z$ on $\C$.
+For $|I|=1$ it is a theta function; for $|I|=2$ it is the elliptic gamma
+function.  These functions occur in elliptic hypergeometric analysis,
+integrable models, supersymmetric partition functions, and modular and
+arithmetic constructions; see
+\cite{FelderVarchenko2000,Narukawa2004,Nishizawa2001}.
+
+We equip $\C(z)$ and fields of meromorphic functions with
+$\partial=\dd/\dd z$.  A meromorphic function is
+\emph{differentially algebraic} over $\C(z)$ if a nonzero polynomial over
+$\C(z)$ vanishes on a finite jet
+$(f,\partial f,\ldots,\partial^m f)$.  It is
+\emph{hypertranscendental} if it is not differentially algebraic.
+
+Kato proved differential algebraicity when the period vector is rational:
+there is an $\omega\in\HH$ such that every $\tau_i$ is a positive rational
+multiple of $\omega$ \cite[Theorem~1.1]{Kato2021}.  He then stated that the
+non-rational case was unknown and anticipated possible exceptional cases
+\cite[Remark~1.2]{Kato2021}.  Literal rational-ray membership is not the
+sharp invariant.  Integer offsets disappear under exponentiation, and
+finite root-of-unity twists disappear after a multiplication identity.  The
+correct invariant is the augmented rational rank
+\begin{equation}
+ d_{\Q}(\tau)=
+ \dim_{\Q}\Span_{\Q}\bigl(\{1\}\cup\{\tau_i:i\in I\}\bigr).
+ \label{eq:rank}
+\end{equation}
+The unit period appears because \eqref{eq:defG} is $1$-periodic.  Since $I$
+is nonempty and every $\tau_i$ is nonreal, $d_{\Q}(\tau)\geq2$.
+
+Our result gives a complete answer for the standard finite Nishizawa
+hierarchy.  Rank two is exactly the differential-algebraic phase.  Every
+higher rank is hypertranscendental.  The difficult seed is the
+two-period elliptic gamma with rationally independent periods
+$1,\sigma,\tau$.  We prove this seed without assuming a
+Picard--Vessiot existence or constant-extension theorem.  Instead, a short
+K\"ahler-differential argument gives the required simultaneous telescoper
+directly, and a trace argument descends its primitive to the base field.
+This makes every hypothesis used in the transcendence proof explicit.
+
+\section{Main theorem}
+
+Put
+\[
+ \Psi_I(z;\tau)=\frac{\partial G_I(z;\tau)}{G_I(z;\tau)}.
+\]
+
+\begin{theorem}[Exact rational-rank dichotomy]
+\label{thm:main}
+Let $I$ be a nonempty finite set and let $\tau:I\to\HH$.  Then
+\begin{align*}
+ G_I(\,\cdot\,;\tau)\text{ is differentially algebraic over }\C(z)
+ &\Longleftrightarrow d_{\Q}(\tau)=2,\\
+ G_I(\,\cdot\,;\tau)\text{ is hypertranscendental over }\C(z)
+ &\Longleftrightarrow d_{\Q}(\tau)\geq3.
+\end{align*}
+Both equivalences remain true with $G_I$ replaced by $\Psi_I$.
+\end{theorem}
+
+The two alternatives in Theorem~\ref{thm:main} are exhaustive because
+$d_{\Q}(\tau)\geq2$.  No independence is required among all periods in the
+hypertranscendental phase: two independent period directions suffice.
+
+\begin{corollary}[Kato's non-rational-period problem]
+\label{cor:kato}
+A period vector outside Kato's rational-ray locus is differentially
+algebraic precisely when its augmented rational rank is two.  It is
+hypertranscendental precisely when its augmented rational rank is at least
+three.
+\end{corollary}
+
+\begin{example}[The exceptional non-rational phase]
+\label{ex:rank2}
+Fix $\omega\in\HH$.  Every tuple
+\[
+ \tau_i=a_i+b_i\omega,\qquad
+ a_i,b_i\in\Q,\quad b_i>0,
+\]
+has augmented rank two.  For every $\omega\in\HH$, the tuple
+$(\omega,\omega+\tfrac12,2\omega+\tfrac13)$ is not contained in a rational
+ray, but Theorem~\ref{thm:main} makes its multiple elliptic gamma function
+differentially algebraic.
+\end{example}
+
+\begin{example}[Dependent hypertranscendental phase]
+If distinct labels $q,r$ make $1,\tau_q,\tau_r$ rationally independent,
+then arbitrary dependencies among the remaining periods are harmless.
+Repeated periods, rational multiples of $\tau_q$, and periods in the
+rational span of earlier entries do not restore differential algebraicity.
+\end{example}
+
+\begin{remark}[Scope]
+Theorem~\ref{thm:main} concerns the standard one-variable Nishizawa product
+\eqref{eq:defG} for arbitrary nonempty finite upper-half-plane period
+families.  Cone-indexed and geometric-family generalizations
+\cite{MorainI,MorainII,Winding2016} are different functions, not omitted
+parameter cases of this theorem.
+\end{remark}
+
+\section{The complete rank-two phase}
+
+\begin{lemma}[Affine rational normal form]
+\label{lem:normal}
+If $d_{\Q}(\tau)=2$ and $\omega=\tau_{i_0}$ for one $i_0\in I$, then
+\begin{equation}
+ \tau_i=a_i+b_i\omega,\qquad
+ a_i,b_i\in\Q,\quad b_i>0
+ \label{eq:affine}
+\end{equation}
+for every $i\in I$.
+\end{lemma}
+
+\begin{proof}
+The pair $\{1,\omega\}$ is rationally independent because
+$\operatorname{Im}\omega>0$.  It is therefore a basis of the augmented
+period span.  Taking imaginary parts in the resulting rational expansion
+gives
+$\operatorname{Im}\tau_i=b_i\operatorname{Im}\omega$, hence $b_i>0$.
+\end{proof}
+
+Choose a positive integer $M$ clearing all denominators in
+\eqref{eq:affine}.  Then
+\begin{equation}
+ M\tau_i=A_i+B_i\omega,\qquad
+ A_i\in\Z,\quad B_i\in\Z_{>0},
+ \label{eq:integer-normal}
+\end{equation}
+so the corresponding nomes satisfy
+\begin{equation}
+ e^{2\pi iM\tau_i}=e^{2\pi iB_i\omega}.
+ \label{eq:nome-normal}
+\end{equation}
+
+\begin{lemma}[All-coordinate multiplication identity]
+\label{lem:multiplication}
+For every positive integer $M$,
+\begin{equation}
+ G_I(z;\tau)=
+ \prod_{k\in\prod_{i\in I}\{0,\ldots,M-1\}}
+ G_I\left(z+\sum_{i\in I}k_i\tau_i;M\tau\right).
+ \label{eq:multiplication}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write $p_i=q_i^M$ and
+$x_k=x\prod_iq_i^{k_i}$.  In every factor
+$(x_k;p)_\infty$, the exponent of $q_i$ is
+$M\ell_i+k_i$.  As $\ell_i\geq0$ and $0\leq k_i<M$, these exponents
+partition $\N$ uniquely.  Hence the product of all $x$-side
+$q$-shifted factorials on the right of \eqref{eq:multiplication} is
+$(x;q)_\infty$.
+
+For the $Q_I/x$-side factorial, the exponent of $q_i$ is
+\[
+ M(\ell_i+1)-k_i.
+\]
+As $(\ell_i,k_i)$ varies, this partitions the positive integers.  Equivalently,
+write
+\[
+ M(\ell_i+1)-k_i=M\ell_i+(M-1-k_i)+1.
+\]
+Thus the product of all $Q_I/x$-side factorials is
+$(Q_I/x;q)_\infty$.  The parity exponent
+$(-1)^{|I|-1}$ is unchanged.  Local uniform absolute convergence permits
+these finite residue decompositions, proving \eqref{eq:multiplication} as a
+meromorphic identity.
+\end{proof}
+
+\begin{proposition}[Rank two is differentially algebraic]
+\label{prop:rank2}
+If $d_{\Q}(\tau)=2$, then $G_I$ and $\Psi_I$ are differentially algebraic
+over $\C(z)$.
+\end{proposition}
+
+\begin{proof}
+Apply Lemma~\ref{lem:multiplication} with the denominator-clearing integer
+$M$.  By \eqref{eq:nome-normal} and the product definition, the function
+with period tuple $M\tau$ is identical to the function with tuple
+$(B_i\omega)_{i\in I}$.  The latter is differentially algebraic by
+Kato's theorem \cite[Theorem~1.1]{Kato2021}.
+
+For each $c\in\C$, translation $z\mapsto z+c$ is a differential
+automorphism of $\C(z)$ and preserves differential algebraicity of
+meromorphic functions.  Differentially algebraic elements form a field.
+The finite product in \eqref{eq:multiplication} is therefore
+differentially algebraic.  Closure under differentiation and division by a
+nonzero element gives the same conclusion for
+$\Psi_I=\partial G_I/G_I$.
+\end{proof}
+
+\section{An elementary joint Ostrowski descent}
+
+We isolate the algebraic mechanism needed for the elliptic-gamma seed.  It
+is a several-translation version of the additive Ostrowski principle, but
+the proof below is elementary and self-contained.
+
+\begin{lemma}[Joint Ostrowski descent]
+\label{lem:ostrowski}
+Let $C\subseteq k\subseteq F$ be fields of characteristic zero.  Suppose
+$F$ is a differential field, $k$ is stable under $\partial$, and
+$\rho_1,\ldots,\rho_s$ are commuting automorphisms of $F$ which stabilize
+$k$, fix $C$, and commute with $\partial$.  Assume
+\[
+ F^{\rho_1,\ldots,\rho_s}=C.
+\]
+Let $y\in F$ satisfy
+\[
+ \rho_j(y)-y=a_j\in k\qquad(1\leq j\leq s).
+\]
+If $y$ is differentially algebraic over $k$, then there are a nonzero
+constant-coefficient operator
+\[
+ L=\sum_{n=0}^{N}c_n\partial^n\in C[\partial]
+\]
+and elements $g\in k$, $c\in C$ such that
+\begin{equation}
+ L(y)=g+c,\qquad
+ \rho_j(g)-g=L(a_j)\quad(1\leq j\leq s).
+ \label{eq:joint-telescope}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Differential algebraicity supplies $N$ such that
+$x_n=\partial^ny$ $(0\leq n\leq N)$ are algebraically dependent over $k$.
+In the module of K\"ahler differentials $\Omega_{F/k}$, the vectors
+$\dd x_0,\ldots,\dd x_N$ are therefore linearly dependent.  Let
+\[
+ W=\left\{(u_0,\ldots,u_N)\in F^{N+1}:
+          \sum_nu_n\,\dd x_n=0\right\}.
+\]
+This is a nonzero $F$-subspace.  Since
+\[
+ \rho_j(x_n)=x_n+\partial^na_j
+\]
+and $\partial^na_j\in k$, applying $\rho_j$ to a relation in $W$ gives
+another relation in $W$.
+
+Choose a nonzero vector $u\in W$ with minimal support and divide by one
+nonzero coordinate so that this coordinate equals $1$.  For each $j$, the
+vector $\rho_j(u)-u$ belongs to $W$ and has strictly smaller support.
+Minimality forces $\rho_j(u)=u$.  Every coordinate of $u$ consequently
+belongs to the joint fixed field $C$.  We obtain coefficients
+$c_0,\ldots,c_N\in C$, not all zero, such that, for
+$L=\sum c_n\partial^n$,
+\[
+ \dd L(y)=0\quad\text{in }\Omega_{F/k}.
+\]
+In characteristic zero, the kernel of the universal derivation
+$F\to\Omega_{F/k}$ is the relative algebraic closure of $k$ in $F$.
+Indeed, if an element of that kernel were transcendental over $k$, extend
+it to a transcendence basis of $F/k$, send it to $1$ and the other basis
+elements to $0$, and extend this derivation uniquely across the remaining
+algebraic extension.  This contradicts membership in the kernel.
+Thus $u_0:=L(y)$ is algebraic over $k$.
+
+Put $E=k(u_0)$ and $d=[E:k]$.  Because
+\[
+ \rho_j(u_0)-u_0=L(a_j)\in k,
+\]
+each $\rho_j$ stabilizes $E$.  Define
+\[
+ g=\frac1d\Tr_{E/k}(u_0)\in k.
+\]
+Trace is compatible with the semilinear action of $\rho_j$, and the trace
+of an element of $k$ is $d$ times that element.  Therefore
+\[
+ \rho_j(g)-g
+ =\frac1d\Tr_{E/k}\bigl(\rho_j(u_0)-u_0\bigr)
+ =L(a_j).
+\]
+It follows that $u_0-g$ is fixed by every $\rho_j$, hence belongs to $C$.
+This is \eqref{eq:joint-telescope}.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:ostrowski} requires neither a differential closure of $C$
+nor a Picard--Vessiot existence theorem.  The same base element $g$ works
+in every translation direction because it is obtained from one field
+trace.
+\end{remark}
+
+\section{The rank-three elliptic-gamma seed}
+
+Let $\sigma,\tau\in\HH$, set
+\[
+ \Gamma(z)=G_{\{0,1\}}(z;\sigma,\tau),\qquad
+ \theta_\omega(z)=G_{\{0\}}(z;\omega),
+\]
+and put
+\[
+ \Psi=\frac{\partial\Gamma}{\Gamma},\qquad
+ \lambda_\omega=\frac{\partial\theta_\omega}{\theta_\omega}.
+\]
+For $p=e^{2\pi i\sigma}$ and $q=e^{2\pi i\tau}$, direct residue
+separation in \eqref{eq:defG} gives
+\[
+ \frac{\Gamma(z+\sigma)}{\Gamma(z)}
+  =(q/x;q)_\infty(x;q)_\infty=\theta_\tau(z),
+\]
+and the same calculation with $p$ and $q$ interchanged gives the
+$\tau$-shift.  Thus the exact functional equations are
+\begin{equation}
+ \Gamma(z+1)=\Gamma(z),\qquad
+ \Gamma(z+\sigma)=\theta_\tau(z)\Gamma(z),\qquad
+ \Gamma(z+\tau)=\theta_\sigma(z)\Gamma(z).
+ \label{eq:gamma-equations}
+\end{equation}
+Consequently,
+\begin{equation}
+ \Deltaop_1\Psi=0,\qquad
+ \Deltaop_\sigma\Psi=\lambda_\tau,\qquad
+ \Deltaop_\tau\Psi=\lambda_\sigma,
+ \qquad
+ \Deltaop_hf(z)=f(z+h)-f(z).
+ \label{eq:psi-equations}
+\end{equation}
+
+Write $\Lambda_\omega=\Z+\Z\omega$ and let $E_\omega$ be the field of
+$\Lambda_\omega$-elliptic meromorphic functions.  The theta function has
+one simple zero modulo $\Lambda_\omega$.  Its two lattice shifts multiply
+it by nonzero exponential factors, so the corresponding shifts of
+$\lambda_\omega$ differ from $\lambda_\omega$ by constants.  Hence
+$\lambda_\omega$ has one simple pole, of residue one, modulo
+$\Lambda_\omega$, and
+$\Deltaop_h\lambda_\omega$ belongs to $E_\omega$.
+
+We need two elementary geometric facts.
+
+\begin{lemma}[Independence of the two elliptic fields]
+\label{lem:elliptic-fields}
+If $1,\sigma,\tau$ are rationally linearly independent, then $E_\tau$ and
+$E_\sigma$ are algebraically disjoint over $\C$.  Their compositum
+$K=E_\tau E_\sigma$ is the function field of the product of the two
+elliptic curves.
+\end{lemma}
+
+\begin{proof}
+If algebraic disjointness failed, two nonconstant functions
+$f\in E_\tau$ and $v\in E_\sigma$ would be algebraically dependent.
+Translation by $\tau$ fixes $f$, so the functions
+$v(z+n\tau)$ would all be roots of one polynomial over $\C(f)$.  Two of
+them must coincide.  Thus $N\tau$ is a period of $v$ for some nonzero
+integer $N$.  The period lattice of a nonconstant function in $E_\sigma$
+contains $\Lambda_\sigma$ with finite index in its full period lattice.
+A further nonzero multiple therefore gives
+$MN\tau=a+b\sigma$ with $M\ne0$ and $a,b\in\Z$, contradicting rational
+independence of $1,\sigma,\tau$.
+
+Both fields are regular one-variable function fields over $\C$.
+Algebraic disjointness makes
+$E_\tau\otimes_\C E_\sigma$ a domain whose fraction field is $K$, which
+is the function field of the product curve.
+\end{proof}
+
+\begin{lemma}[One-orbit boundary obstruction]
+\label{lem:pole}
+Let $X$ be an elliptic curve, let $\T_a$ be translation by a nontorsion
+point, and let $u\in\C(X)$.  On every $\T_a$-orbit, the polar support of
+$(\T_a-1)u$ is either empty or contains at least two points.
+\end{lemma}
+
+\begin{proof}
+The polar divisor of $u$ is finite.  On a fixed orbit, index its finite
+nonempty polar support by integers.  At the point immediately before the
+least index, exactly the translated summand is singular.  At the greatest
+index, exactly the untranslated summand is singular.  These two boundary
+points are distinct because $a$ is nontorsion.  Cancellation is therefore
+impossible at either boundary.
+\end{proof}
+
+\begin{theorem}[Rank-three elliptic gamma]
+\label{thm:elliptic-seed}
+If $1,\sigma,\tau$ are rationally linearly independent, then $\Gamma$ and
+$\Psi$ are hypertranscendental over $\C(z)$.
+\end{theorem}
+
+\begin{proof}
+Let
+\[
+ H=\Z+\Z\sigma+\Z\tau.
+\]
+Choose $h\in\C\setminus H$ and put $d_h=\Deltaop_h\Psi$.  Commuting
+translations in \eqref{eq:psi-equations} gives
+\begin{equation}
+ \Deltaop_\sigma d_h=\Deltaop_h\lambda_\tau=:b_{\tau,h},
+ \qquad
+ \Deltaop_\tau d_h=\Deltaop_h\lambda_\sigma=:b_{\sigma,h}.
+ \label{eq:paired-system}
+\end{equation}
+The right sides belong to $E_\tau$ and $E_\sigma$, respectively.
+Differentiation and arbitrary translations preserve each elliptic field,
+so $K=E_\tau E_\sigma$ is a differential field stable under
+$\T_\sigma$ and $\T_\tau$.
+
+Suppose that $d_h$ were differentially algebraic over $\C(z)$.  Although
+$K$ and $\C(z)$ are not nested, both lie in $K(z)$.  The assumed relation
+makes $d_h$ differentially algebraic over $K(z)$, while
+$\partial z=1$ makes $K(z)$ differentially algebraic over $K$.
+Transitivity gives differential algebraicity of $d_h$ over $K$.
+
+The differential field $F=K\langle d_h\rangle_\partial$ is stable under
+translations by $\sigma$ and $\tau$, by \eqref{eq:paired-system}.  Every
+element of $F$ is $1$-periodic.  An element fixed also by both translations
+has every element of $H$ as a period.  The rank-three subgroup $H$ of
+$\C\simeq\R^2$ is nondiscrete.  A meromorphic function with a sequence of
+nonzero periods tending to zero is constant: first it can have no pole,
+and then its difference quotients force its derivative to vanish.
+Consequently
+\[
+ F^{\T_\sigma,\T_\tau}=\C.
+\]
+
+Apply Lemma~\ref{lem:ostrowski} to \eqref{eq:paired-system}.  There exist a
+nonzero $L\in\C[\partial]$ and one $g\in K$ such that
+\begin{equation}
+ (\T_\sigma-1)g=L(b_{\tau,h}),\qquad
+ (\T_\tau-1)g=L(b_{\sigma,h}).
+ \label{eq:paired-coboundary}
+\end{equation}
+
+By Lemma~\ref{lem:elliptic-fields}, regard $g$ as a rational function on
+the product of the $\tau$- and $\sigma$-elliptic curves.  Translation by
+$\sigma$ acts on the first factor and fixes the second.  Restrict the first
+identity in \eqref{eq:paired-coboundary} to a fiber over a point of the
+second curve outside the finite indeterminacy locus of $g$.  This produces
+$g_\tau\in E_\tau$ satisfying
+\begin{equation}
+ (\T_\sigma-1)g_\tau=L(b_{\tau,h}).
+ \label{eq:specialized}
+\end{equation}
+
+On $\C/\Lambda_\tau$, the function $b_{\tau,h}$ has precisely two simple
+poles, at the classes of $0$ and $-h$, with opposite nonzero residues.
+Let $N$ be the order of $L$.  The leading term of $L$ creates a nonzero
+pole of order $N+1$ at each of these two points and creates no other pole.
+The points lie in distinct $\T_\sigma$-orbits because
+$h\notin\Lambda_\tau+\Z\sigma=H$.  Translation by $\sigma$ is nontorsion
+on $\C/\Lambda_\tau$ for the same rational-independence reason.  Thus on
+each of two orbits, $L(b_{\tau,h})$ has exactly one pole.  This contradicts
+Lemma~\ref{lem:pole} and \eqref{eq:specialized}.
+
+Therefore $d_h$ is hypertranscendental over $\C(z)$.  If $\Psi$ were
+differentially algebraic, its translated difference $d_h$ would be
+differentially algebraic, a contradiction.  Hence $\Psi$ is
+hypertranscendental.  Differential algebraicity of $\Gamma$ would imply
+that of $\partial\Gamma/\Gamma=\Psi$, so $\Gamma$ is
+hypertranscendental as well.
+\end{proof}
+
+\section{Hypertranscendence climbs the face lattice}
+
+For every nonempty subset $S\subseteq I$, let $G_S$ and $\Psi_S$ denote
+the multiple elliptic gamma function and its logarithmic derivative for
+the restricted period family $(\tau_i)_{i\in S}$.  Nishizawa's product
+recursion is the exact identity
+\begin{equation}
+ G_S(z+\tau_q)=G_{S\setminus\{q\}}(z)\,G_S(z)
+ \qquad(q\in S,\ |S|\geq2).
+ \label{eq:face-product}
+\end{equation}
+Logarithmic differentiation gives
+\begin{equation}
+ \Deltaop_{\tau_q}\Psi_S=\Psi_{S\setminus\{q\}}.
+ \label{eq:face-log}
+\end{equation}
+
+\begin{lemma}[Face escape]
+\label{lem:escape}
+If $q\notin S$ and $\Psi_S$ is hypertranscendental over $\C(z)$, then
+$\Psi_{S\cup\{q\}}$ is hypertranscendental over $\C(z)$.
+\end{lemma}
+
+\begin{proof}
+If $\Psi_{S\cup\{q\}}$ were differentially algebraic, translation by
+$\tau_q$ and subtraction would preserve differential algebraicity.
+Equation \eqref{eq:face-log} would then make $\Psi_S$ differentially
+algebraic, a contradiction.
+\end{proof}
+
+\begin{lemma}[Rank-three minor extraction]
+\label{lem:minor}
+For a finite nonempty period tuple, $d_{\Q}(\tau)\geq3$ if and only if
+there are distinct $q,r\in I$ such that
+$1,\tau_q,\tau_r$ are rationally linearly independent.
+\end{lemma}
+
+\begin{proof}
+One implication is immediate.  Conversely, extend the independent set
+$\{1\}$ to a basis selected from the finite spanning family
+$\{1\}\cup\{\tau_i:i\in I\}$.  Dimension at least three supplies two
+period entries, with distinct labels because the selected vectors are
+independent.
+\end{proof}
+
+\begin{proposition}[Rank-three-minor propagation]
+\label{prop:propagation}
+If $d_{\Q}(\tau)\geq3$, then $\Psi_I$ and $G_I$ are
+hypertranscendental over $\C(z)$.
+\end{proposition}
+
+\begin{proof}
+Choose $q,r$ as in Lemma~\ref{lem:minor}.  The two-period face
+$\Psi_{\{q,r\}}$ is hypertranscendental by
+Theorem~\ref{thm:elliptic-seed}.  List the labels in
+$I\setminus\{q,r\}$ and adjoin them one at a time.  Lemma~\ref{lem:escape}
+propagates hypertranscendence at each step, ending at $\Psi_I$.  If $G_I$
+were differentially algebraic, then
+$\partial G_I/G_I=\Psi_I$ would be differentially algebraic, a
+contradiction.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+If $d_{\Q}(\tau)=2$, Proposition~\ref{prop:rank2} gives differential
+algebraicity of both functions.  If $d_{\Q}(\tau)\geq3$,
+Proposition~\ref{prop:propagation} gives hypertranscendence of both.
+Since $d_{\Q}(\tau)\geq2$, the cases are exhaustive and disjoint.
+\end{proof}
+
+\section{Interpretation and relation to prior work}
+
+The threshold in Theorem~\ref{thm:main} is forced by period geometry.
+At augmented rank two, there is only one nonreal rational direction.  A
+finite cover turns all nomes into powers of one nome, placing every factor
+inside Kato's differential-algebraic phase.  At augmented rank three, a
+two-period face contains two noncommensurable elliptic translations.  Joint
+Ostrowski descent forces any hypothetical differential relation into a
+simultaneous elliptic coboundary, while one isolated pole orbit prohibits
+that coboundary.  Higher periods cannot hide the obstruction because
+translation differences recover lower faces exactly.
+
+Nishizawa introduced the hierarchy and its recursion
+\cite{Nishizawa2001}.  Felder and Varchenko developed the automorphic
+structure of the elliptic gamma function \cite{FelderVarchenko2000}, and
+Narukawa established modular and integral representations for the multiple
+hierarchy \cite{Narukawa2004}.  Kato's rational-period theorem
+\cite{Kato2021} supplies the sharp positive half of the present
+classification.  Parameterized difference Galois theory provides broad
+criteria for differential relations in one difference direction
+\cite{HardouinSinger2008}; Lemma~\ref{lem:ostrowski} gives the narrower
+several-translation implication needed here directly from K\"ahler
+differentials and trace.
+
+Recent geometric-family work \cite{MorainI,MorainII} studies modular
+cocycles, partial modular symbols, and arithmetic applications.  Cone
+generalizations \cite{Winding2016} alter the indexing geometry.  Neither
+direction supplies a differential-algebraic classification of the standard
+finite Nishizawa period tuple.  Theorem~\ref{thm:main} closes precisely that
+classification and identifies Kato's anticipated exceptional
+non-rational cases as the augmented-rank-two locus.
+
+\section{Conclusion}
+
+For every nonempty finite upper-half-plane period tuple of the standard
+Nishizawa hierarchy,
+\[
+ \boxed{
+ \begin{array}{ccl}
+ d_{\Q}(\tau)=2 &\Longleftrightarrow&
+   \text{differential algebraicity},\\[2mm]
+ d_{\Q}(\tau)\geq3 &\Longleftrightarrow&
+   \text{hypertranscendence}.
+ \end{array}}
+\]
+The multiplication identity closes the full rank-two locus.  Joint
+Ostrowski descent, the elliptic pole-orbit obstruction, and exact face
+propagation close every higher-rank locus.  Thus the standard finite
+hierarchy has no unclassified upper-half-plane period configurations.
+
+\section*{Disclosure}
+
+Generative AI systems GPT 5.6 Sol, Fable 5, and Grok 4.5 were used as
+drafting and proof-audit tools.  They are not listed as authors because
+authorship requires responsibility for the complete argument.  The named
+human author accepts that responsibility.  No empirical data or numerical
+computation is used in this work.
+
+\begin{thebibliography}{99}
+
+\bibitem{FelderVarchenko2000}
+G. Felder and A. Varchenko,
+\emph{The elliptic gamma function and
+$\mathrm{SL}(3,\Z)\ltimes\Z^3$},
+Adv. Math. \textbf{156} (2000), 44--76.
+
+\bibitem{HardouinSinger2008}
+C. Hardouin and M. F. Singer,
+\emph{Differential Galois theory of linear difference equations},
+Math. Ann. \textbf{342} (2008), 333--377.
+
+\bibitem{Kato2021}
+M. Kato,
+\emph{Differential algebraicity of the multiple elliptic gamma function
+for a rational period},
+Funkcial. Ekvac. \textbf{64} (2021), 225--235.
+
+\bibitem{MorainI}
+P. L. L. Morain,
+\emph{Geometric families of multiple elliptic Gamma functions and
+arithmetic applications, I},
+arXiv:2510.16515, 2025.
+
+\bibitem{MorainII}
+P. L. L. Morain,
+\emph{Geometric families of multiple elliptic Gamma functions and
+arithmetic applications, II},
+arXiv:2602.06561, 2026.
+
+\bibitem{Narukawa2004}
+A. Narukawa,
+\emph{The modular properties and the integral representations of the
+multiple elliptic gamma functions},
+Adv. Math. \textbf{189} (2004), 247--267.
+
+\bibitem{Nishizawa2001}
+M. Nishizawa,
+\emph{An elliptic analogue of the multiple gamma function},
+J. Phys. A \textbf{34} (2001), 7411--7421.
+
+\bibitem{Winding2016}
+J. Winding,
+\emph{Multiple elliptic gamma functions associated to cones},
+Adv. Math. \textbf{325} (2018), 56--86.
+
+\end{thebibliography}
+
+\end{document}
