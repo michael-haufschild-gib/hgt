@@ -1020,3 +1020,80 @@ polynomial-coefficient intersection.  Products of several jet generators and Tay
 coefficient polynomials can mix distinct lower grades after the top reflected value cancels.  A
 complete result still requires a packet-wide iterated graded descent separating those mixtures.
 No RH claim is made, and priority remains unverified pending specialist review.
+
+### 2026-07-21 binomial cancellation and universal first-subprincipal reflection
+
+The first pole layer below a canceled maximal Bell weight is now identified exactly.  The explicit
+binomial module `GammaPoleBinomialSubprincipalDescent` starts from the divided-power defect
+
+```text
+J_0 J_(j+k) - choose(j+k,j) J_j J_k,
+```
+
+whose nominal order is `-(j+k+2)`.  The simple-pole principal coefficients satisfy the exact
+binomial identity
+
+```text
+C_0 C_(j+k) = choose(j+k,j) C_j C_k,
+```
+
+so that layer cancels.  For positive `j,k`, the next normalized value is
+
+```text
+x^(j+k+1) defect(x) -> C_(j+k) R_0(0).
+```
+
+The relative finite-part theory proves `R_0(0) != 0` on arbitrarily remote Gamma branches.  Since
+`C_(j+k)` is nonzero, this discharges both factors jointly for the binomial family and yields exact
+order `-(j+k+1)` cofinally, for both covariant and native affine Gamma packets.  In particular,
+`Gamma * Gamma'' - 2 * (Gamma')^2` has exact local order `-3` on cofinally many Gamma poles.
+
+The general module `SimplePoleWeightedFirstSubprincipal` subsumes this mechanism.  Let `P` be
+weighted homogeneous of positive Bell weight `W`, with coordinate weight `weight(X_q)=q+1`.  For
+normalized simple-pole coordinates
+
+```text
+g_q(x) = C_q + x^(q+1) R_q(x),
+```
+
+one has `g'_0(0)=R_0(0)` and `g'_q(0)=0` for every `q>0`.  Therefore, whenever the principal
+reflection cancels,
+
+```text
+eval(C,P) = 0,
+```
+
+the complete first-subprincipal value reflection is
+
+```text
+x^(W-1) eval(J(x),P)
+  -> eval(C, pderiv X_0 P) * R_0(0).
+```
+
+Only the weight-one coordinate can move one grade below the maximal boundary.  If both reflected
+factors are nonzero, the packet has exact meromorphic order `-(W-1)`.  The theorem is formalized as
+an abstract normalized-extension law, a general analytic simple-pole law, a Gamma covariant law,
+and a native affine Gamma law connected by the exact eventual value relation.  For the binomial
+polynomial, `pderiv X_0 P = X_(j+k)`, recovering the explicit boundary above.
+
+Focused source checks and exact-module final builds passed:
+
+```text
+lake build GaloisForLFunctions.HTGeometry.GammaPoleBinomialSubprincipalDescent
+  8702/8702
+lake build GaloisForLFunctions.HTGeometry.SimplePoleWeightedFirstSubprincipal
+  8722/8722
+```
+
+The six general/Gamma first-subprincipal capstones report exactly `propext`, `Classical.choice`, and
+`Quot.sound` under scratch `#print axioms`.  Combined formal lint passes with only pre-existing
+large-file warnings, and `git diff --check` passes.
+
+The broad Gamma exact-order theorem still assumes branchwise nonvanishing of
+`eval(principalFrame, pderiv X_0 P)` and `gammaPoleJetRegularRemainder branch 0 0`.  Existing
+finite-part freeness discharges the second factor cofinally, but a general theorem needs a single
+joint branch-germ injection proving both factors nonzero at the same cofinal branch.  Separate
+cofinal statements are insufficient.  This joint nonvanishing problem remains the exact open core.
+
+Status: **[EXTERNAL NOVELTY UNVERIFIED]**.  These are unconditional HTGeometry theorems, not a
+polynomial-coefficient packet intersection theorem and not RH progress.
