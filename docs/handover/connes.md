@@ -1990,3 +1990,203 @@ Verification of projective collision geometry:
   `Quot.sound`;
 - `scripts/formal_tools.py lint` passed;
 - no owned Lean process remained after audit.
+
+## 40. Transverse Pick breakthrough: damped channel is zero-free; RH frontier is one top edge
+
+Section 39 still overstates global difficulty.  Completed density supplies a rank-two inequality
+strictly stronger than positive real part of its derivative completion.
+
+Let
+
+\[
+\rho(t)=4T''(t),\qquad
+F(z)=\int_0^\infty \rho(t)e^{itz}\,dt,\qquad
+E(z)=(z^2+\tfrac14)F(z)-\tfrac14.
+\]
+
+Corpus already proves
+
+\[
+\rho>0,\qquad \int_0^\infty\rho=1,\qquad \rho'<0,
+\]
+
+and, with (h=-\rho'>0),
+
+\[
+G(z)=\int_0^\infty h(t)(1-e^{itz})\,dt=-izF(z).
+\]
+
+For (z=x+iy), (y>0), put
+
+\[
+e^{itz}=a(c+is),\quad a=e^{-ty},\quad c=\cos(tx),\quad s=\sin(tx),
+\quad d=1-ac.
+\]
+
+Convexity of exponential and (|\sin u|\le |u|) give
+
+\[
+aty\le d,\qquad y|as|\le |x|d.
+\]
+
+After squaring and using
+
+\[
+|1-e^{itz}|^2=d^2+a^2s^2,qquad |z|^2=x^2+y^2,
+\]
+
+one obtains the pointwise transverse cone
+
+\[
+\left|\frac{i}{z}(1-e^{itz})\right|
+ \le \frac{1-\operatorname{Re}e^{itz}}{y}.
+\]
+
+Integration against (h) proves the new source theorem
+
+\[
+\boxed{\;y|F(z)|\le \operatorname{Im}(zF(z))\;}      \tag{40.1}
+\]
+
+throughout upper half-plane.
+
+### Zero-free endpoint
+
+If (E(z)=0), then
+
+\[
+(z^2+\tfrac14)F(z)=\tfrac14.                         \tag{40.2}
+\]
+
+For (x\ne0), substitution in (40.1) forces
+
+\[
+|z^2+\tfrac14|\le \tfrac14-|z|^2.
+\]
+
+But exact identity
+
+\[
+|z^2+\tfrac14|^2-(\tfrac14-|z|^2)^2=x^2             \tag{40.3}
+\]
+
+contradicts it.  On (z=iy), positivity and unit mass give
+
+\[
+0\le F(iy)\le1.
+\]
+
+For (0<y<1/2), (40.2) would require (F(iy)>1); for (y\ge1/2), its left side is nonpositive.
+Therefore
+
+\[
+\boxed{\;E(z)\ne0\quad(\operatorname{Im}z>0).\;}     \tag{40.4}
+\]
+
+This is unconditional and machine-checked.  It eliminates every upper-half-plane pole of
+
+\[
+R=E^\#/E.
+\]
+
+Hence section 39's projective zero/pole endpoint separation is not frontier.
+
+### Direct RH deformation and failed shortcut
+
+Define affine pencil
+
+\[
+H_\tau(z)=\frac{1+\tau}{2}E(z)+\frac{1-\tau}{2}E^\#(z),
+\qquad0\le\tau\le1.
+\]
+
+Then
+
+\[
+H_1=E,\qquad H_0=2z^2\Xi_C.                           \tag{40.5}
+\]
+
+The first direct attempt was to copy (40.1) to (F(-z)), then add two cones.  This is invalid:
+one-sided Fourier transform satisfies
+
+\[
+\overline{F(\bar z)}=F(-z),
+\]
+
+so reflected channel in upper half-strip is growing, not damped conjugate.  Bilateral cone would
+already contain RH-grade phase information and is not inferred from density monotonicity.
+
+Interior multiple-root collisions are also not independent extinction events.  For holomorphic
+pencil (H_\tau), argument principle preserves total zero multiplicity until boundary crossing or
+escape to infinity.  Thus previous demand for negative-ray Wronskian regularity was unnecessary.
+
+### Actual frontier after corpus audit
+
+For (\tau>0), positive real bottom edge is safe because
+
+\[
+\operatorname{Im}H_\tau(x)=\tau\operatorname{Im}E(x)>0\qquad(x>0).
+\]
+
+Positive imaginary edge (z=iy), (0<y<1/2), is safe because
+
+\[
+H_\tau=\tau E+(1-\tau)H_0,qquad E(iy)<0,\qquad H_0(iy)<0.
+\]
+
+Theta-Schwartz decay reduces horizontal infinity to uniform nonvanishing near (-1/4).  Only top
+edge remains.  New source conjecture is
+
+\[
+\boxed{\;
+\operatorname{Re}\!\left(
+ E(x+i/2)\overline{,2(x+i/2)^2\Xi_C(x+i/2),}
+\right)>0\quad(x>0).
+\;}                                                     \tag{40.6}
+\]
+
+This **top-edge acute-angle conjecture** implies (H_\tau(x+i/2)\ne0) for every
+(0<\tau\le1).  Indeed
+
+\[
+\operatorname{Re}(H_\tau\overline{H_0})
+=\tau\operatorname{Re}(E\overline{H_0})+(1-\tau)|H_0|^2>0,
+\]
+
+and (H_0) is nonzero on top edge by classical zero-free line (\operatorname{Re}s=1).
+
+Argument principle on truncated positive half-strip would then transfer zero count from zero-free
+(H_1) to every (H_\tau), (\tau>0); Hurwitz limit (\tau\downarrow0) makes (H_0) zero-free
+inside.  Symmetry gives RH.  No simplicity assumption is needed.
+
+Therefore actual research-corpus frontier is now exact:
+
+> prove top-edge acute-angle law (40.6), or sharp nonintersection
+> (H_\tau(x+i/2)\ne0), from joint half-density Ward source; do not seek more bulk estimates,
+> projective recurrence, or interior collision regularity.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedDensityTransversePick.lean`.
+
+Pipeline:
+
+- formalized survivor:
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/xi-completed-density-transverse-pick-zero-free.md`;
+- retired overbroad frontier:
+  `docs/drafts/pipeline/5-failed/xi-completed-density-projective-heteroclinic-barrier.md`;
+- actual active conjecture:
+  `docs/drafts/pipeline/1-in-progress/xi-completed-density-affine-pencil-top-edge-barrier.md`.
+
+Novelty status is `[NOVELTY UNVERIFIED]`.  Current primary-literature audit found adjacent Xi
+Wronskian and deformation results, not exact theta-tail cone (40.1), zero-free endpoint (40.4), or
+acute top-edge reduction (40.6).
+
+Verification:
+
+- scratch and direct `lake env lean` checks passed;
+- final targeted `lake build
+  GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedDensityTransversePick` passed;
+- seven `#print axioms` capstones report only `propext`, `Classical.choice`, and `Quot.sound`;
+- new source contains no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration;
+- whole-tree `scripts/formal_tools.py lint` passed (large-file warnings only);
+- no owned Lean or Lake process remained.

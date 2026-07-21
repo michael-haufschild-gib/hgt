@@ -5,7 +5,8 @@
 - **Type:** `[FALSIFIED INTERFACE] [POSITIVE SURVIVOR FORMALIZED] [NO RH CLAIM]`
 - **Parent:** `xi-taylor-full-density-transfer-wronskian.md`
 - **Replacement:**
-  `../1-in-progress/xi-completed-density-projective-heteroclinic-barrier.md`
+  `../5-failed/xi-completed-density-projective-heteroclinic-barrier.md`, then
+  `../1-in-progress/xi-completed-density-affine-pencil-top-edge-barrier.md`
 
 ## Proposed route
 

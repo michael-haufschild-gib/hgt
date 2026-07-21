@@ -53,6 +53,10 @@ class Reduction:
     doc: str = ""
     relpath: str = ""
     line: int = 0
+    provenance: str = "declared"
+    witness: str | None = None
+    solver_depth: int = 0
+    solver_attempts: int = 0
 
 
 @dataclasses.dataclass(frozen=True)
@@ -197,6 +201,20 @@ def parse_lean_frontier_export(payload: str | Mapping[str, object]) -> LeanFront
         line_value = source_data.get("line", 0)
         if not isinstance(line_value, int) or line_value < 0:
             raise ValueError(f"{field}.source.line must be a nonnegative integer")
+        provenance = _require_string(
+            item.get("provenance", "declared"), f"{field}.provenance"
+        )
+        if provenance not in {"declared", "interface_solver"}:
+            raise ValueError(f"{field}.provenance has unsupported value {provenance!r}")
+        witness_value = item.get("witness")
+        if witness_value is not None and not isinstance(witness_value, str):
+            raise ValueError(f"{field}.witness must be a string or null")
+        solver_depth = item.get("solver_depth", 0)
+        solver_attempts = item.get("solver_attempts", 0)
+        if not isinstance(solver_depth, int) or solver_depth < 0:
+            raise ValueError(f"{field}.solver_depth must be a nonnegative integer")
+        if not isinstance(solver_attempts, int) or solver_attempts < 0:
+            raise ValueError(f"{field}.solver_attempts must be a nonnegative integer")
         reductions.append(
             Reduction(
                 name=name,
@@ -220,6 +238,10 @@ def parse_lean_frontier_export(payload: str | Mapping[str, object]) -> LeanFront
                     source_data.get("path", ""), f"{field}.source.path", allow_empty=True
                 ),
                 line=line_value,
+                provenance=provenance,
+                witness=witness_value or None,
+                solver_depth=solver_depth,
+                solver_attempts=solver_attempts,
             )
         )
     return LeanFrontierExport(
@@ -258,6 +280,10 @@ def render_lean_frontier_export_json(export: LeanFrontierExport) -> str:
                 "axioms": list(reduction.axioms),
                 "doc": reduction.doc,
                 "source": {"path": reduction.relpath, "line": reduction.line},
+                "provenance": reduction.provenance,
+                "witness": reduction.witness,
+                "solver_depth": reduction.solver_depth,
+                "solver_attempts": reduction.solver_attempts,
             }
             for reduction in export.reductions
         ],
@@ -423,12 +449,15 @@ def _target_scc(target: str, edges: Sequence[_Edge]) -> frozenset[str]:
 
 
 def _prune_solutions(solutions: Iterable[_Solution], *, limit: int = 256) -> tuple[_Solution, ...]:
-    unique: dict[tuple[frozenset[str], tuple[str, ...]], _Solution] = {}
+    unique: dict[frozenset[str], _Solution] = {}
     for solution in solutions:
-        key = (solution.leaves, solution.path)
-        current = unique.get(key)
-        if current is None or len(solution.discharged) > len(current.discharged):
-            unique[key] = solution
+        current = unique.get(solution.leaves)
+        if current is None or (
+            len(solution.path), len(solution.discharged), solution.path
+        ) > (
+            len(current.path), len(current.discharged), current.path
+        ):
+            unique[solution.leaves] = solution
     ordered = sorted(
         unique.values(),
         key=lambda item: (
@@ -458,13 +487,28 @@ def compute_frontier(export: LeanFrontierExport, *, limit: int = 12) -> Research
     closed = _closed_propositions(edges, refuted)
     target = export.target.key
     target_scc = _target_scc(target, edges)
-    equivalent = tuple(sorted(target_scc - {target}))
     incoming: dict[str, list[_Edge]] = {}
     refs: dict[str, PropositionRef] = {export.target.key: export.target}
     reduction_by_name = {item.name: item for item in export.reductions}
     for reduction in export.reductions:
         for ref in reduction.premises + reduction.conclusions:
             refs.setdefault(ref.key, ref)
+    equivalent = tuple(
+        sorted(
+            {
+                (refs.get(key).declaration if refs.get(key) else None) or key
+                for key in target_scc - {target}
+            }
+        )
+    )
+    refuted_display = tuple(
+        sorted(
+            {
+                (refs.get(key).declaration if refs.get(key) else None) or key
+                for key in refuted_tuple
+            }
+        )
+    )
     for edge in edges:
         for conclusion in edge.conclusions:
             incoming.setdefault(conclusion, []).append(edge)
@@ -586,7 +630,7 @@ def compute_frontier(export: LeanFrontierExport, *, limit: int = 12) -> Research
         cuts=tuple(cuts),
         frontier=tuple(frontier),
         equivalent_criteria=equivalent,
-        refuted_interfaces=refuted_tuple,
+        refuted_interfaces=refuted_display,
         retired_reductions=retired,
         commit=export.commit,
     )
@@ -606,13 +650,19 @@ def run_lean_frontier_export(
     if not exporter.exists():
         raise ValueError(f"Lean frontier exporter not found: {exporter}")
     cache = root / "formal" / ".lake" / "hgt-research" / f"{canonical}-frontier.json"
-    source_paths = {
-        root / str(getattr(declaration, "relpath"))
-        for declaration in declarations
-        if getattr(declaration, "relpath", "")
-    }
+    compiled_umbrella = (
+        root / "formal" / ".lake" / "build" / "lib" / "lean" / "GaloisForLFunctions.olean"
+    )
+    if not compiled_umbrella.exists():
+        raise ValueError(
+            "compiled GaloisForLFunctions umbrella is missing; build a stable corpus snapshot first"
+        )
     newest_input = max(
-        (path.stat().st_mtime for path in source_paths | {exporter} if path.exists()),
+        (
+            path.stat().st_mtime
+            for path in {compiled_umbrella, exporter, Path(__file__).resolve()}
+            if path.exists()
+        ),
         default=0.0,
     )
     if not refresh and cache.exists() and cache.stat().st_mtime >= newest_input:
@@ -623,20 +673,28 @@ def run_lean_frontier_export(
     command = "\n#export_research_frontier [\n" + ",\n".join(
         f"  {json.dumps(name)}" for name in theorem_names
     ) + "\n]\n"
+    template = exporter.read_text(encoding="utf-8")
+    project_import = "import GaloisForLFunctions\n"
+    if project_import not in template:
+        raise ValueError("Lean frontier exporter is missing project import marker")
+    generated_source = template + command
     with tempfile.TemporaryDirectory(prefix="hgt-frontier-") as temporary:
         generated = Path(temporary) / "ExportResearchFrontier.lean"
-        generated.write_text(
-            exporter.read_text(encoding="utf-8") + command,
-            encoding="utf-8",
-        )
-        process = subprocess.run(
-            ["lake", "env", "lean", str(generated)],
-            cwd=root / "formal",
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            check=False,
-        )
+        generated.write_text(generated_source, encoding="utf-8")
+        try:
+            process = subprocess.run(
+                ["lake", "env", "lean", str(generated)],
+                cwd=root / "formal",
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+                timeout=300,
+            )
+        except subprocess.TimeoutExpired as error:
+            raise ValueError(
+                "Lean frontier export exceeded 300 seconds on compiled corpus snapshot"
+            ) from error
     if process.returncode:
         detail = (process.stderr or process.stdout).strip()
         raise ValueError(f"Lean frontier export failed: {detail}")
@@ -651,6 +709,29 @@ def run_lean_frontier_export(
     if payload is None:
         raise ValueError("Lean frontier exporter produced no graph payload")
     export = parse_lean_frontier_export(payload)
+    source_index = {
+        (str(getattr(declaration, "module", "")), str(getattr(declaration, "name", ""))): declaration
+        for declaration in declarations
+    }
+    enriched: list[Reduction] = []
+    for reduction in export.reductions:
+        parts = reduction.name.split(".")
+        source = next(
+            (
+                source_index[(reduction.module, ".".join(parts[index:]))]
+                for index in range(len(parts))
+                if (reduction.module, ".".join(parts[index:])) in source_index
+            ),
+            None,
+        )
+        enriched.append(
+            dataclasses.replace(
+                reduction,
+                relpath=(str(getattr(source, "relpath")) if source else reduction.relpath),
+                line=(int(getattr(source, "line")) if source else reduction.line),
+            )
+        )
+    export = dataclasses.replace(export, reductions=tuple(enriched))
     cache.parent.mkdir(parents=True, exist_ok=True)
     cache.write_text(render_lean_frontier_export_json(export), encoding="utf-8")
     return export
@@ -698,6 +779,15 @@ def render_research_brief(brief: ResearchBrief) -> str:
         for index, cut in enumerate(brief.cuts, start=1):
             declarations = " + ".join(f"`{node.key}`" for node in cut.nodes)
             lines.append(f"{index}. {declarations}")
+            sources = sorted(
+                {
+                    f"{node.relpath}:{node.line}"
+                    for node in cut.nodes
+                    if node.relpath and node.line
+                }
+            )
+            if sources:
+                lines.append("   - Lean evidence: " + ", ".join(f"`{source}`" for source in sources))
             lines.append(f"   - Closed route: {' → '.join(f'`{name}`' for name in cut.via_reductions)}")
             if cut.discharged:
                 lines.append(
@@ -706,10 +796,18 @@ def render_research_brief(brief: ResearchBrief) -> str:
                 )
     if brief.equivalent_criteria:
         lines.extend(["", "## RH-equivalent criteria (not frontier tasks)", ""])
-        lines.append(", ".join(f"`{name}`" for name in brief.equivalent_criteria))
+        shown = brief.equivalent_criteria[:12]
+        lines.append(", ".join(f"`{name}`" for name in shown))
+        if len(brief.equivalent_criteria) > len(shown):
+            lines.append(
+                f"\n{len(brief.equivalent_criteria) - len(shown)} more in JSON output."
+            )
     if brief.refuted_interfaces:
         lines.extend(["", "## Refuted interfaces", ""])
-        lines.append(", ".join(f"`{name}`" for name in brief.refuted_interfaces))
+        shown = brief.refuted_interfaces[:12]
+        lines.append(", ".join(f"`{name}`" for name in shown))
+        if len(brief.refuted_interfaces) > len(shown):
+            lines.append(f"\n{len(brief.refuted_interfaces) - len(shown)} more in JSON output.")
     if brief.retired_reductions:
         lines.extend(["", "## Retired Lean reductions", ""])
         lines.append(", ".join(f"`{name}`" for name in brief.retired_reductions))

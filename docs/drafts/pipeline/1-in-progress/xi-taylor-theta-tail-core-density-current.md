@@ -2351,11 +2351,22 @@ W_E-q C_F=-z^2 XiC',
 
 so two connections differ at every noncentral simple collision.  Division-free flow
 `V_E=E^2 conjugate(W_E)` satisfies `dR(V_E)=|W_E|^2`; regular no-return is automatic and cannot
-exclude one interior antipodal crossing on an unanchored component.  Actual next frontier is
-source exclusion of an unanchored projective heteroclinic whose `R`-image contains `-1`.  See
-`xi-completed-density-projective-heteroclinic-barrier.md`.
+exclude one interior antipodal crossing on an unanchored component.
+
+The later transverse Pick cone
+
+```text
+Im(z)|F(z)| <= Im(zF(z))
+```
+
+proves `E(z)!=0` throughout the upper half-plane.  Hence `R` has no upper poles, and interior
+affine-pencil collisions cannot change total zero multiplicity.  Bottom, imaginary, and horizontal
+boundaries reduce by existing source orientation and theta-Schwartz decay.  Actual frontier is now
+the top-edge acute-angle/nonintersection law for the affine pencil joining `E` to `2z^2 XiC`.
+See `xi-completed-density-affine-pencil-top-edge-barrier.md`.
 
 Lean implementation:
 `XiCTaylorThetaTailFullDensityMonotoneCurrent.lean` and
 `XiCTaylorThetaTailFullDensityWronskianNoGo.lean`, followed by
-`XiCTaylorThetaTailCompletedDensityProjectiveCollision.lean`.
+`XiCTaylorThetaTailCompletedDensityProjectiveCollision.lean` and
+`XiCTaylorThetaTailCompletedDensityTransversePick.lean`.

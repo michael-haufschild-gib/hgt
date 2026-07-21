@@ -653,12 +653,30 @@ def brief(args: argparse.Namespace) -> int:
         print(error, file=sys.stderr)
         return 2
 
-    result = build_research_brief(
-        root=ROOT,
-        area=args.area,
-        declarations=declarations(),
-        limit=args.limit,
-    )
+    declaration_index = declarations() if args.refresh else ()
+    try:
+        try:
+            result = build_research_brief(
+                root=ROOT,
+                area=args.area,
+                graph_path=args.graph,
+                declarations=declaration_index,
+                limit=args.limit,
+                refresh=args.refresh,
+            )
+        except ValueError as error:
+            if args.graph is not None or "received no corpus theorem" not in str(error):
+                raise
+            result = build_research_brief(
+                root=ROOT,
+                area=args.area,
+                declarations=declarations(),
+                limit=args.limit,
+                refresh=True,
+            )
+    except ValueError as error:
+        print(error, file=sys.stderr)
+        return 2
     rendered = (
         render_research_brief_json(result)
         if args.format == "json"
@@ -694,11 +712,17 @@ def main(argv: list[str] | None = None) -> int:
 
     brief_parser = sub.add_parser(
         "brief",
-        help="generate an automatic, evidence-backed research frontier brief",
+        help="compute Lean-native minimal open cuts to a research target",
     )
     brief_parser.add_argument("--area", required=True)
     brief_parser.add_argument("--limit", type=int, default=3)
     brief_parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
+    brief_parser.add_argument("--graph", type=Path, help="read an existing Lean graph export")
+    brief_parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help="rebuild compiled Lean graph even when cache is current",
+    )
     brief_parser.set_defaults(func=brief)
 
     args = parser.parse_args(argv)

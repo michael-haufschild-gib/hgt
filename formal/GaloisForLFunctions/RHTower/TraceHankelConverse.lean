@@ -453,3 +453,239 @@ theorem finite_traceHankel_nonneg_implies_real
 end
 
 end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- A trace-class complex spectrum cannot hide a nonreal atom from every real-polynomial
+trace--Hankel test in a principal ideal.  Local finiteness away from zero lets the
+phase-corrected separator kill the finite outer spectrum; its radial factor suppresses the
+inner tail.  The generator only has to be nonzero at nonreal atoms.
+
+This countable-spectrum theorem is the abstract form of the Xi outer-spectrum argument and is
+independent of any zero-divisor structure. -/
+theorem traceHankel_nonnegative_on_principalIdeal_implies_real
+    {ι : Type*} (lam : ι → ℂ)
+    (hne : ∀ i, lam i ≠ 0)
+    (hfinite : ∀ {r : ℝ}, 0 < r → {i : ι | r ≤ ‖lam i‖}.Finite)
+    (hsum : Summable lam)
+    (a : Polynomial ℝ)
+    (ha : ∀ i, (lam i).im ≠ 0 → evalRealPolynomial a (lam i) ≠ 0)
+    (hpos : ∀ p : Polynomial ℝ,
+      0 ≤ (∑' i : ι,
+        lam i * evalRealPolynomial (a * p) (lam i) ^ 2).re) :
+    ∀ i, (lam i).im = 0 := by
+  classical
+  intro i₀
+  let α := lam i₀
+  by_contra him
+  have hα0 : α ≠ 0 := by
+    exact hne i₀
+  have haα : evalRealPolynomial a α ≠ 0 := by
+    exact ha i₀ him
+  have hrpos : 0 < ‖α‖ := norm_pos_iff.mpr hα0
+  let S : Finset ι := (hfinite hrpos).toFinset
+  have hi₀S : i₀ ∈ S := by
+    simpa only [S, Set.Finite.mem_toFinset, α] using
+      (le_rfl : ‖lam i₀‖ ≤ ‖lam i₀‖)
+  let F : Finset ℂ := S.image lam
+  obtain ⟨c, hc⟩ := exists_phase_sq_re_neg him
+  let d : ℂ := c / evalRealPolynomial a α
+  have had : evalRealPolynomial a α * d = c := by
+    dsimp only [d]
+    exact mul_div_cancel₀ c haα
+  let p : ℕ → Polynomial ℝ := fun n =>
+    phaseCorrectedSeparatorPolynomial F α d n
+  let q : ℕ → Polynomial ℝ := fun n => a * p n
+  have hevalTarget (n : ℕ) : evalRealPolynomial (q n) α = c := by
+    simp only [q, evalRealPolynomial_mul]
+    rw [eval_phaseCorrectedSeparatorPolynomial_target hα0 him n, had]
+  have hevalConjTarget (n : ℕ) :
+      evalRealPolynomial (q n) ((starRingEnd ℂ) α) = (starRingEnd ℂ) c := by
+    simp only [q, evalRealPolynomial_mul]
+    rw [evalRealPolynomial_conj,
+      eval_phaseCorrectedSeparatorPolynomial_conj_target hα0 him n]
+    rw [← map_mul, had]
+  let f : ℕ → ι → ℂ := fun n i =>
+    lam i * evalRealPolynomial (q n) (lam i) ^ 2
+  let g : ι → ℂ := fun i =>
+    if lam i = α then α * c ^ 2
+    else if lam i = (starRingEnd ℂ) α then
+      (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2
+    else 0
+  have hpointwise (i : ι) : Tendsto (fun n => f n i) atTop (nhds (g i)) := by
+    by_cases hiα : lam i = α
+    · have hfconst : (fun n => f n i) = fun _ => α * c ^ 2 := by
+        funext n
+        change lam i * evalRealPolynomial (q n) (lam i) ^ 2 = _
+        rw [hiα, hevalTarget]
+      have hgconst : g i = α * c ^ 2 := by
+        simp only [g, hiα, if_pos]
+      rw [hfconst, hgconst]
+      exact tendsto_const_nhds
+    · by_cases hic : lam i = (starRingEnd ℂ) α
+      · have hfconst : (fun n => f n i) = fun _ =>
+            (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2 := by
+          funext n
+          change lam i * evalRealPolynomial (q n) (lam i) ^ 2 = _
+          rw [hic, hevalConjTarget]
+        have hgconst : g i = (starRingEnd ℂ) α *
+            ((starRingEnd ℂ) c) ^ 2 := by
+          have hconjne : (starRingEnd ℂ) α ≠ α :=
+            Complex.conj_eq_iff_im.not.mpr him
+          simp only [g, hic, hconjne, if_false, if_pos]
+        rw [hfconst, hgconst]
+        exact tendsto_const_nhds
+      · by_cases houter : ‖α‖ ≤ ‖lam i‖
+        · have hiS : i ∈ S := by
+            simp only [S, Set.Finite.mem_toFinset]
+            exact houter
+          have hiF : lam i ∈ F := Finset.mem_image.mpr ⟨i, hiS, rfl⟩
+          have hevalP (n : ℕ) : evalRealPolynomial (p n) (lam i) = 0 :=
+            eval_phaseCorrectedSeparatorPolynomial_outer_zero hiF hiα hic n
+          have hfzero : (fun n => f n i) = fun _ => (0 : ℂ) := by
+            funext n
+            change lam i * evalRealPolynomial (q n) (lam i) ^ 2 = 0
+            simp only [q, evalRealPolynomial_mul, hevalP, mul_zero]
+            ring
+          have hgzero : g i = 0 := by
+            simp only [g, hiα, hic, if_false]
+          rw [hfzero, hgzero]
+          exact tendsto_const_nhds
+        · have hinner : ‖lam i‖ < ‖α‖ := lt_of_not_ge houter
+          have heval := tendsto_eval_phaseCorrectedSeparatorPolynomial_zero
+            (F := F) (c := d) hα0 him hinner
+          have hevalq := heval.const_mul (evalRealPolynomial a (lam i))
+          have hsq := hevalq.pow 2
+          have hmul := hsq.const_mul (lam i)
+          simpa only [f, g, q, evalRealPolynomial_mul, p, hiα, hic,
+            if_false, pow_two, zero_mul, mul_zero] using hmul
+  let A := evalRealPolynomialNormBound a ‖α‖
+  have hA : 0 ≤ A := evalRealPolynomialNormBound_nonneg a (norm_nonneg α)
+  let C := phaseCorrectedSeparatorNormBound F α d
+  have hC : 0 ≤ C := phaseCorrectedSeparatorNormBound_nonneg F him
+  let E := A * C
+  have hE : 0 ≤ E := mul_nonneg hA hC
+  let bound : ι → ℝ := fun i => E ^ 2 * ‖lam i‖
+  have hboundSum : Summable bound := by
+    exact hsum.norm.mul_left (E ^ 2)
+  have hevalPBound (n : ℕ) (i : ι) :
+      ‖evalRealPolynomial (p n) (lam i)‖ ≤ C := by
+    by_cases hle : ‖lam i‖ ≤ ‖α‖
+    · exact norm_eval_phaseCorrectedSeparatorPolynomial_le hα0 him hle n
+    · have houter : ‖α‖ ≤ ‖lam i‖ := le_of_not_ge hle
+      have hiS : i ∈ S := by
+        simp only [S, Set.Finite.mem_toFinset]
+        exact houter
+      have hiF : lam i ∈ F := Finset.mem_image.mpr ⟨i, hiS, rfl⟩
+      have hiα : lam i ≠ α := by
+        intro h
+        apply hle
+        rw [h]
+      have hic : lam i ≠ (starRingEnd ℂ) α := by
+        intro h
+        apply hle
+        rw [h, norm_conj]
+      rw [eval_phaseCorrectedSeparatorPolynomial_outer_zero hiF hiα hic n,
+        norm_zero]
+      exact hC
+  have hevalBound (n : ℕ) (i : ι) :
+      ‖evalRealPolynomial (q n) (lam i)‖ ≤ E := by
+    by_cases hle : ‖lam i‖ ≤ ‖α‖
+    · simp only [q, evalRealPolynomial_mul, norm_mul]
+      exact mul_le_mul (norm_evalRealPolynomial_le a hle) (hevalPBound n i)
+        (norm_nonneg _) hA
+    · have houter : ‖α‖ ≤ ‖lam i‖ := le_of_not_ge hle
+      have hiS : i ∈ S := by
+        simp only [S, Set.Finite.mem_toFinset]
+        exact houter
+      have hiF : lam i ∈ F := Finset.mem_image.mpr ⟨i, hiS, rfl⟩
+      have hiα : lam i ≠ α := by
+        intro h
+        apply hle
+        rw [h]
+      have hic : lam i ≠ (starRingEnd ℂ) α := by
+        intro h
+        apply hle
+        rw [h, norm_conj]
+      have hpzero :=
+        eval_phaseCorrectedSeparatorPolynomial_outer_zero (c := d) hiF hiα hic n
+      change evalRealPolynomial (p n) (lam i) = 0 at hpzero
+      have hqzero : evalRealPolynomial (q n) (lam i) = 0 := by
+        simp only [q, evalRealPolynomial_mul, hpzero, mul_zero]
+      rw [hqzero, norm_zero]
+      exact hE
+  have hdom : ∀ n i, ‖f n i‖ ≤ bound i := by
+    intro n i
+    have hev := hevalBound n i
+    have hevSq : ‖evalRealPolynomial (q n) (lam i)‖ ^ 2 ≤ E ^ 2 := by
+      nlinarith [norm_nonneg (evalRealPolynomial (q n) (lam i))]
+    change ‖lam i * evalRealPolynomial (q n) (lam i) ^ 2‖ ≤
+      E ^ 2 * ‖lam i‖
+    rw [norm_mul, norm_pow]
+    nlinarith [norm_nonneg (lam i)]
+  have htsum : Tendsto (fun n => ∑' i, f n i) atTop (nhds (∑' i, g i)) :=
+    tendsto_tsum_of_dominated_convergence hboundSum hpointwise
+      (Eventually.of_forall hdom)
+  have hnonneg_n (n : ℕ) : 0 ≤ (∑' i, f n i).re := by
+    have hp := hpos (p n)
+    simpa only [f, q] using hp
+  have hreTend : Tendsto (fun n => (∑' i, f n i).re) atTop
+      (nhds ((∑' i, g i).re)) :=
+    Complex.continuous_re.continuousAt.tendsto.comp htsum
+  have hlimit_nonneg : 0 ≤ (∑' i, g i).re :=
+    ge_of_tendsto hreTend (Eventually.of_forall hnonneg_n)
+  let T : Finset ι := S.filter (fun i =>
+    lam i = α ∨ lam i = (starRingEnd ℂ) α)
+  have hi₀T : i₀ ∈ T := Finset.mem_filter.mpr ⟨hi₀S, Or.inl rfl⟩
+  have hTnonempty : T.Nonempty := ⟨i₀, hi₀T⟩
+  have hgoutside : ∀ i ∉ T, g i = 0 := by
+    intro i hiT
+    by_cases hiS : i ∈ S
+    · have hnot : ¬(lam i = α ∨ lam i = (starRingEnd ℂ) α) := by
+        intro hor
+        exact hiT (Finset.mem_filter.mpr ⟨hiS, hor⟩)
+      simp only [not_or] at hnot
+      simp only [g, hnot.1, hnot.2, if_false]
+    · have hneα : lam i ≠ α := by
+        intro h
+        apply hiS
+        have hnorm : ‖α‖ ≤ ‖lam i‖ := by rw [h]
+        simpa only [S, Set.Finite.mem_toFinset] using hnorm
+      have hnec : lam i ≠ (starRingEnd ℂ) α := by
+        intro h
+        apply hiS
+        have hnorm : ‖α‖ ≤ ‖lam i‖ := by rw [h, norm_conj]
+        simpa only [S, Set.Finite.mem_toFinset] using hnorm
+      simp only [g, hneα, hnec, if_false]
+  have hgsum : (∑' i, g i) = ∑ i ∈ T, g i := tsum_eq_sum hgoutside
+  have hgneg : ∀ i ∈ T, (g i).re < 0 := by
+    intro i hiT
+    have hor := (Finset.mem_filter.mp hiT).2
+    rcases hor with hiα | hic
+    · simp only [g, hiα, if_pos]
+      exact hc
+    · have hiα : lam i ≠ α := by
+        intro h
+        have hcfix : (starRingEnd ℂ) α = α := by rw [← hic, h]
+        exact him (Complex.conj_eq_iff_im.mp hcfix)
+      have hgval : g i = (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2 := by
+        have hconjne : (starRingEnd ℂ) α ≠ α :=
+          Complex.conj_eq_iff_im.not.mpr him
+        simp only [g, hic, hconjne, if_false, if_pos]
+      rw [hgval]
+      have hconjRe :
+          ((starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2).re =
+            (α * c ^ 2).re := by
+        rw [← map_pow, ← map_mul, Complex.conj_re]
+      rw [hconjRe]
+      exact hc
+  have hlimit_neg : (∑' i, g i).re < 0 := by
+    rw [hgsum, Complex.re_sum]
+    exact Finset.sum_neg hgneg hTnonempty
+  linarith
+
+end
+
+end RHTower

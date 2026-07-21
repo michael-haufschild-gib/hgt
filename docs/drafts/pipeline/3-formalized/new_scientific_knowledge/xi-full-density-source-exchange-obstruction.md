@@ -6,7 +6,7 @@
 - **Failed predecessor:**
   `../../5-failed/xi-taylor-full-density-transfer-wronskian.md`
 - **Successor:**
-  `../../1-in-progress/xi-completed-density-projective-heteroclinic-barrier.md`
+  `../../1-in-progress/xi-completed-density-affine-pencil-top-edge-barrier.md`
 
 ## Result
 

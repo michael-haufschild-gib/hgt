@@ -55,8 +55,10 @@ At every simple real zero this velocity and `W_E(t)` are nonzero.
 
 Equation `(4)` turns every regular negative-real level component into an oriented trajectory with
 strict projective coordinate `R`; no-return on one regular component is therefore automatic.
-Equation `(7)` proves earlier full-density Wronskian cannot certify that trajectory.  Together they
-relocate global frontier from recurrence to unanchored source-to-reflection heteroclinics.
+Equation `(7)` proves earlier full-density Wronskian cannot certify that trajectory.  Subsequent
+transverse Pick work proves `E` is upper-zero-free and supersedes the heteroclinic classification:
+interior collisions conserve zero multiplicity, so current frontier is affine-pencil top-edge
+entry rather than global trajectory regularity.
 
 ## Scope
 

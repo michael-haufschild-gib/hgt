@@ -22,6 +22,8 @@ import GaloisForLFunctions.RHTower.SuzukiAnchoredEulerWronskian
 import GaloisForLFunctions.RHTower.SuzukiOppositeShiftParityHarmonicRecovery
 import GaloisForLFunctions.RHTower.SuzukiOppositeShiftCrossSewnExterior
 import GaloisForLFunctions.RHTower.SuzukiAdmissibleTwoShiftAffineSewing
+import GaloisForLFunctions.RHTower.SuzukiProjectedContinuousDeficiency
+import GaloisForLFunctions.RHTower.SuzukiOneSidedCarlemanSeam
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
@@ -183,6 +185,23 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   continuation.  That continuation is equivalent to RH after source identification.  The
   screw-function Hilbert space and its unbounded differential operators are not yet present in
   Lean.
+  `SuzukiProjectedContinuousDeficiency` now corrects one source-level ambiguity in that last
+  identification.  Since Suzuki's compressed operator maps into the zero-mean space, its printed
+  exponential deficiency representatives are equalities only modulo constants.  Reflection
+  forces the two representatives to share one constant; at the corrected phase `q=1`, their
+  first-order bulk cancels and the entire interval bracket is exactly `2*A*sin(a*z)`.  This clock
+  has only real zeros and remains a common factor after arbitrary two-shift affine sewing.
+  Consequently no unknown interval entire function can cancel a hypothetical nonreal Xi pole.
+  `SuzukiOneSidedCarlemanSeam` corrects the transform category of the resulting exterior problem.
+  Suzuki's cited screw identity is explicitly a positive-half-line transform, not a bilateral
+  Fourier multiplier of the even screw kernel.  The continued right and left sheets have opposite
+  Xi multipliers; their sum is identically the negative compact interval transform and loses every
+  Xi pole.  Hence bilateral exterior holomorphy is automatic and not RH-bearing.  The exact
+  frontier is one-sided: identify the right convolution triangle and continue its Carleman sheet
+  from the unconditional high half-plane through all of the upper half-plane.  That continuation
+  is equivalent to RH.  A formal parity no-go independently rules out the old bilateral reading:
+  the zero-shift multiplier times the phase-one characteristic is even, while the nonzero
+  projected sine clock is odd.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete

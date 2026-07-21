@@ -58,9 +58,8 @@ theorem boundaryCompletedJetWeyl_iff_zero_or_completedSEMContourCharge_zero
         integralJetCharge 1 (2 ^ k) (by omega)
           (completedSEMContourBoundaryZ rho r0 R N 1) = 0 := by
   rw [dyadicBoundaryCompletedJetWeyl_iff_zero_or_dvd]
-  congr 1
-  rw [completedSEMContourCharge_zero_iff_dyadicPhase_pow_holeCount hsplit k]
-  rw [hlen]
+  apply or_congr Iff.rfl
+  rw [completedSEMContourCharge_zero_iff_dyadicPhase_pow_holeCount hsplit k, hlen]
   exact (dyadicWeylPhase_isPrimitiveRoot k).pow_eq_one_iff_dvd (n + 1) |>.symm
 
 end RHTower

@@ -6,7 +6,7 @@
 - **Parent:**
   `../3-formalized/new_scientific_knowledge/full-theta-density-monotone-completion-current.md`
 - **Successor:**
-  `../1-in-progress/xi-completed-density-projective-heteroclinic-barrier.md`
+  `../1-in-progress/xi-completed-density-affine-pencil-top-edge-barrier.md`
 
 ## Conjecture tested
 
