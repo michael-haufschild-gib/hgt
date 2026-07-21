@@ -25,7 +25,7 @@ coefficient directions add to the resolution, and the Xi logarithmic-derivative 
 has no coefficient aliases.  The latter is unconditional because one actual Xi zero supplies a
 simple pole of the logarithmic derivative. -/
 theorem xiLogDeriv_finiteDerivativeReporter_rank_nullity
-    (zeroIndex N : ℕ)
+    (N : ℕ)
     {Y : Type*} [AddCommGroup Y] [Module ℂ Y]
     (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
     finrank ℂ (LinearMap.range
@@ -37,14 +37,12 @@ theorem xiLogDeriv_finiteDerivativeReporter_rank_nullity
   constructor
   · exact HTGeometry.finiteDerivativeReporterMap_rank_nullity N (logDeriv xi) report
   · apply HTGeometry.finiteDerivativeJetSynthesis_injective
-    exact HTGeometry.constantCoefficientDifferentiallyTranscendental_of_meromorphic_simplePole
-      (meromorphicAt_logDeriv_xi (xiZeroPoint zeroIndex))
-      (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero zeroIndex))
+    exact xiLogDeriv_constantCoefficientDifferentiallyTranscendental
 
 /-- Finite Gibbs/finite-clock dressing preserves the exact reporter capacity law and cannot create
 coefficient aliases in any finite derivative packet. -/
 theorem xiLogDeriv_add_finiteGibbs_finiteDerivativeReporter_rank_nullity
-    (zeroIndex N : ℕ) {A Y : Type*} [Fintype A]
+    (N : ℕ) {A Y : Type*} [Fintype A]
     [AddCommGroup Y] [Module ℂ Y]
     (energy : A → ℝ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
     finrank ℂ (LinearMap.range
@@ -61,7 +59,7 @@ theorem xiLogDeriv_add_finiteGibbs_finiteDerivativeReporter_rank_nullity
       (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) report
   · exact HTGeometry.finiteDerivativeJetSynthesis_injective
       (xiLogDeriv_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
-        zeroIndex energy)
+        energy)
 
 end
 

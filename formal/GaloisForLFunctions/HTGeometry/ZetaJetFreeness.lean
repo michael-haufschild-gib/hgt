@@ -131,8 +131,6 @@ theorem riemannZeta_finiteDerivativeReporterMap_postcomp_newBlindPacket
       report (HTGeometry.finiteDerivativeReporterPacket c riemannZeta) ≠ 0 ∧
       decode (report (HTGeometry.finiteDerivativeReporterPacket c riemannZeta)) = 0 := by
   exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
-    (HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
-      hypertranscendental_riemannZeta)
     report decode hcpost hcpre
 
 /-! ## Finite Gibbs spectral dressing -/
@@ -275,8 +273,6 @@ theorem riemannZeta_add_finiteGibbs_finiteDerivativeReporterMap_postcomp_newBlin
       decode (report (HTGeometry.finiteDerivativeReporterPacket c
         (riemannZeta + HTGeometry.finiteComplexGibbsPartition energy))) = 0 := by
   exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
-    (riemannZeta_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
-      energy)
     report decode hcpost hcpre
 
 end GaloisForLFunctions

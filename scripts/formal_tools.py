@@ -18,6 +18,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+from research_brief import (
+    build_research_brief,
+    canonical_area,
+    render_research_brief,
+    render_research_brief_json,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FORMAL = ROOT / "formal"
@@ -639,7 +646,29 @@ def research(args: argparse.Namespace) -> int:
     return 0
 
 
-def main() -> int:
+def brief(args: argparse.Namespace) -> int:
+    try:
+        canonical_area(args.area)
+    except ValueError as error:
+        print(error, file=sys.stderr)
+        return 2
+
+    result = build_research_brief(
+        root=ROOT,
+        area=args.area,
+        declarations=declarations(),
+        limit=args.limit,
+    )
+    rendered = (
+        render_research_brief_json(result)
+        if args.format == "json"
+        else render_research_brief(result)
+    )
+    print(rendered, end="")
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="cmd", required=True)
 
@@ -663,7 +692,16 @@ def main() -> int:
     research_parser.add_argument("--limit", type=int, default=20)
     research_parser.set_defaults(func=research)
 
-    args = parser.parse_args()
+    brief_parser = sub.add_parser(
+        "brief",
+        help="generate an automatic, evidence-backed research frontier brief",
+    )
+    brief_parser.add_argument("--area", required=True)
+    brief_parser.add_argument("--limit", type=int, default=3)
+    brief_parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
+    brief_parser.set_defaults(func=brief)
+
+    args = parser.parse_args(argv)
     return args.func(args)
 
 

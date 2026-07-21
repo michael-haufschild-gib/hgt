@@ -111,6 +111,171 @@ theorem finiteDerivativeReporterConditionalInformation_pos_iff
       exact hnotmem (hzero.mp hz)
     exact lt_of_le_of_ne hnonneg (Ne.symm hne)
 
+/-! ## Sequential visible-rank law -/
+
+/-- The span of the first `N` reported readings is exactly the visible coefficient range of the
+`N`-jet reporter map.  This identifies the geometric space used by conditional information with
+the algebraic space used by reporter rank--nullity. -/
+theorem finiteDerivativeReporterPreviousSpace_eq_range
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    finiteDerivativeReporterPreviousSpace N f report =
+      LinearMap.range (finiteDerivativeReporterMap N f report) := by
+  ext y
+  constructor
+  · intro hy
+    obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp hy
+    refine ⟨c, ?_⟩
+    simpa [finiteDerivativeReporterMap, finiteDerivativeJetSynthesis,
+      finiteDerivativeReporterPacket] using hc
+  · rintro ⟨c, rfl⟩
+    apply (Submodule.mem_span_range_iff_exists_fun ℂ).mpr
+    refine ⟨c, ?_⟩
+    simp [finiteDerivativeReporterMap, finiteDerivativeJetSynthesis,
+      finiteDerivativeReporterPacket]
+
+/-- Visible reporter spaces are monotone as the derivative resolution grows. -/
+theorem finiteDerivativeReporterPreviousSpace_mono_succ
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    finiteDerivativeReporterPreviousSpace N f report ≤
+      finiteDerivativeReporterPreviousSpace (N + 1) f report := by
+  apply Submodule.span_mono
+  rintro y ⟨i, rfl⟩
+  exact ⟨Fin.castSucc i, rfl⟩
+
+/-- Advancing one derivative step adjoins exactly the newest reported reading to the preceding
+visible space. -/
+theorem finiteDerivativeReporterPreviousSpace_succ_eq_sup
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    finiteDerivativeReporterPreviousSpace (N + 1) f report =
+      finiteDerivativeReporterPreviousSpace N f report ⊔
+        ℂ ∙ report (iteratedDeriv N f) := by
+  apply le_antisymm
+  · apply Submodule.span_le.mpr
+    rintro y ⟨i, rfl⟩
+    exact Fin.lastCases
+      ((show ℂ ∙ report (iteratedDeriv N f) ≤
+          finiteDerivativeReporterPreviousSpace N f report ⊔
+            ℂ ∙ report (iteratedDeriv N f) from le_sup_right)
+        (Submodule.mem_span_singleton_self _))
+      (fun j =>
+        (show finiteDerivativeReporterPreviousSpace N f report ≤
+            finiteDerivativeReporterPreviousSpace N f report ⊔
+              ℂ ∙ report (iteratedDeriv N f) from le_sup_left)
+          (Submodule.subset_span ⟨j, rfl⟩)) i
+  · apply sup_le
+    · exact finiteDerivativeReporterPreviousSpace_mono_succ N f report
+    · rw [Submodule.span_le, Set.singleton_subset_iff]
+      exact Submodule.subset_span ⟨Fin.last N, rfl⟩
+
+/-- One new derivative reading can enlarge the visible coefficient range by at most one
+dimension, even when the reporter output space is infinite-dimensional. -/
+theorem finiteDerivativeReporterMap_range_finrank_succ_le
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    finrank ℂ (LinearMap.range (finiteDerivativeReporterMap (N + 1) f report)) ≤
+      finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) + 1 := by
+  letI : FiniteDimensional ℂ
+      (finiteDerivativeReporterPreviousSpace N f report) :=
+    FiniteDimensional.span_of_finite ℂ (Set.finite_range _)
+  letI : FiniteDimensional ℂ (ℂ ∙ report (iteratedDeriv N f)) :=
+    FiniteDimensional.span_of_finite ℂ (Set.finite_singleton _)
+  rw [← finiteDerivativeReporterPreviousSpace_eq_range,
+    ← finiteDerivativeReporterPreviousSpace_eq_range,
+    finiteDerivativeReporterPreviousSpace_succ_eq_sup]
+  calc
+    finrank ℂ (finiteDerivativeReporterPreviousSpace N f report ⊔
+        ℂ ∙ report (iteratedDeriv N f) : Submodule ℂ Y) ≤
+      finrank ℂ (finiteDerivativeReporterPreviousSpace N f report) +
+        finrank ℂ (ℂ ∙ report (iteratedDeriv N f)) :=
+      Submodule.finrank_add_le_finrank_add_finrank _ _
+    _ ≤ finrank ℂ (finiteDerivativeReporterPreviousSpace N f report) + 1 := by
+      gcongr
+      simpa using
+        (finrank_span_le_card ({report (iteratedDeriv N f)} : Set Y))
+
+/-- Zero conditional information is exactly stagnation of the visible reporter space at the next
+derivative resolution. -/
+theorem finiteDerivativeReporterConditionalInformation_eq_zero_iff_previousSpace_succ_eq
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    finiteDerivativeReporterConditionalInformation N f report = 0 ↔
+      finiteDerivativeReporterPreviousSpace (N + 1) f report =
+        finiteDerivativeReporterPreviousSpace N f report := by
+  rw [finiteDerivativeReporterConditionalInformation_eq_zero_iff]
+  constructor
+  · intro hnew
+    apply le_antisymm
+    · apply Submodule.span_le.mpr
+      rintro y ⟨i, rfl⟩
+      exact Fin.lastCases hnew
+        (fun j => Submodule.subset_span ⟨j, rfl⟩) i
+    · exact finiteDerivativeReporterPreviousSpace_mono_succ N f report
+  · intro hspace
+    rw [← hspace]
+    exact Submodule.subset_span ⟨Fin.last N, rfl⟩
+
+/-- **Sequential rank-stagnation law.** Conditional information vanishes exactly when admitting
+the newest derivative coefficient leaves reporter capacity unchanged.  No source-independence or
+finite-dimensional output hypothesis is required. -/
+theorem finiteDerivativeReporterConditionalInformation_eq_zero_iff_finrank_range_eq
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    finiteDerivativeReporterConditionalInformation N f report = 0 ↔
+      finrank ℂ (LinearMap.range (finiteDerivativeReporterMap (N + 1) f report)) =
+        finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) := by
+  rw [finiteDerivativeReporterConditionalInformation_eq_zero_iff_previousSpace_succ_eq]
+  rw [finiteDerivativeReporterPreviousSpace_eq_range,
+    finiteDerivativeReporterPreviousSpace_eq_range]
+  constructor
+  · exact congrArg (fun W : Submodule ℂ Y => finrank ℂ W)
+  · intro hrank
+    apply (Submodule.eq_of_le_of_finrank_le ?_ ?_).symm
+    · simpa only [← finiteDerivativeReporterPreviousSpace_eq_range] using
+        finiteDerivativeReporterPreviousSpace_mono_succ N f report
+    · exact le_of_eq hrank
+
+/-- Positive conditional information is exactly strict growth of visible reporter rank. -/
+theorem finiteDerivativeReporterConditionalInformation_pos_iff_finrank_range_lt
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    0 < finiteDerivativeReporterConditionalInformation N f report ↔
+      finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) <
+        finrank ℂ (LinearMap.range (finiteDerivativeReporterMap (N + 1) f report)) := by
+  have hmono :
+      finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) ≤
+        finrank ℂ (LinearMap.range (finiteDerivativeReporterMap (N + 1) f report)) := by
+    apply Submodule.finrank_mono
+    simpa only [← finiteDerivativeReporterPreviousSpace_eq_range] using
+      finiteDerivativeReporterPreviousSpace_mono_succ N f report
+  have hzero :=
+    finiteDerivativeReporterConditionalInformation_eq_zero_iff_finrank_range_eq N f report
+  have hnonneg := finiteDerivativeReporterConditionalInformation_nonneg N f report
+  constructor
+  · intro hpos
+    apply lt_of_le_of_ne hmono
+    intro heq
+    exact (ne_of_gt hpos) (hzero.mpr heq.symm)
+  · intro hrank
+    apply lt_of_le_of_ne hnonneg
+    intro hzero'
+    exact (ne_of_lt hrank) (hzero.mp hzero'.symm).symm
+
+/-- **Exact one-step reporter-capacity law.** A derivative reading carries positive conditional
+information exactly when it raises visible coefficient capacity by one.  Together with the zero
+case above, every step has the sharp dichotomy `0` or `1`. -/
+theorem finiteDerivativeReporterConditionalInformation_pos_iff_finrank_range_succ_eq_add_one
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    0 < finiteDerivativeReporterConditionalInformation N f report ↔
+      finrank ℂ (LinearMap.range (finiteDerivativeReporterMap (N + 1) f report)) =
+        finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) + 1 := by
+  rw [finiteDerivativeReporterConditionalInformation_pos_iff_finrank_range_lt]
+  have hupper := finiteDerivativeReporterMap_range_finrank_succ_le N f report
+  omega
+
 /-- **Sequential D-optimal/Fisher value law.**  Once the first `N` reported derivatives are
 identifiable, the next Gram determinant is the old determinant times the new conditional
 information. -/

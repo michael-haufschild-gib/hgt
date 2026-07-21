@@ -17,6 +17,10 @@ import GaloisForLFunctions.RHTower.SuzukiFiniteShiftProjectiveHolonomy
 import GaloisForLFunctions.RHTower.SuzukiGlobalPhaseConjugacy
 import GaloisForLFunctions.RHTower.SuzukiCompactifiedPhaseProfile
 import GaloisForLFunctions.RHTower.SuzukiShiftedXiTargetFlatPencil
+import GaloisForLFunctions.RHTower.SuzukiExteriorPoleTomography
+import GaloisForLFunctions.RHTower.SuzukiAnchoredEulerWronskian
+import GaloisForLFunctions.RHTower.SuzukiOppositeShiftParityHarmonicRecovery
+import GaloisForLFunctions.RHTower.SuzukiOppositeShiftCrossSewnExterior
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
@@ -137,18 +141,36 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   residual-overcrowding closure theorem sharpens this again: interior residual is exactly mass in
   unbounded phase labels remaining inside a bounded physical window, so common-gauge entire-pair
   normality eliminates it by local zero-count stability; endpoint residual is exactly the linear
-  Nevanlinna coefficient, with both projective kernel limits now formalized.  The live wall is now
-  a two-producer source theorem: choose an intrinsic schedule, prove entire-pair normality and zero
-  linear mass, then identify the limiting ratio with the Xi/de Branges carrier.
+  Nevanlinna coefficient, with both projective kernel limits now formalized.
+  `SuzukiExteriorPoleTomography` then removes finite-Neumann endpoint estimates as an independent
+  premise: the full boundary flux is a rank-two trigonometric clock killed identically by a
+  polynomial second-order annihilator before gauge formation.
+  `SuzukiAnchoredEulerWronskian` removes zero linear mass as a separate limiting premise for the
+  canonical Donoghue ratio.  The Euler defect `z*m'-m` has an endpoint-vanishing Donoghue kernel,
+  is represented by a homogeneous common-gauge Wronskian, and is injective after the canonical
+  anchor `m(i)=i`.  It does not identify that ratio with Suzuki's one-phase Xi target.
   `SuzukiShiftedXiTargetFlatPencil` removes a further false obligation from that identification.
   The continuous-kernel shift produces the affine boundary-free pencil
   `D_eta=XiC'-eta*XiC`, and every finite shifted quotient `z^2*XiC/D_eta` has exactly the same Xi
   divisor.  An Xi zero of arbitrary multiplicity `m` becomes a simple target zero with exact
   trailing coefficient `z^2/m`, independent of `eta`; two distinct denominator fibres recover
-  `XiC` by an affine secant.  Thus the intrinsic shift need only have a non-erasing finite cluster,
-  not converge to zero.  Finite-aperture Neumann boundary control, common-gauge normality, and zero
-  linear mass remain the honest operator walls.  The screw-function Hilbert space and its
-  unbounded differential operators are not yet present in Lean.
+  `XiC` by an affine secant.  `SuzukiOppositeShiftParityHarmonicRecovery` supplies the missing
+  semantic classifier: reflection exchanges `eta` and `-eta`, and the zero fibre is the unique odd
+  member, so a nonzero fibre cannot itself be the canonical odd Donoghue carrier.  Opposite finite
+  fibres instead recover the distinguished zero fibre by an exact harmonic law.  On the corrected
+  exterior multipliers this becomes a linear projection: the symmetric part is exactly the
+  zero-shift RH channel, while the antisymmetric part is Xi-free.
+  `SuzukiOppositeShiftCrossSewnExterior` removes the common-characteristic and cross-shift
+  common-gauge premises, which actual opposite resolvents do not supply.  Cross-multiplying each
+  remainder by the opposite characteristic gives one zero-shift exterior remainder with product
+  characteristic.  Division by that product descends through two independent zero-free gauges,
+  eliminates explicit shift, and has universal pole coefficient `ord_z(XiC)/z^2` at every
+  hypothetical nonreal Xi zero.  Off-real holomorphy of this projective distinct-channel
+  observable is equivalent to RH.  Thus arbitrary one-fibre cluster remains insufficient, but
+  opposite source channels need neither coincide nor share a gauge.  Intrinsic paired-schedule
+  construction and cofinal analytic continuation of the projective cross-sewn channel remain the
+  honest operator wall.  The screw-function Hilbert space and its unbounded differential
+  operators are not yet present in Lean.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete

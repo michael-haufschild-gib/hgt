@@ -17,7 +17,7 @@ Thus a contraction cannot increase conditional clock information.  These are sta
 relations between observation structures; no temporal channel evolution is assumed.
 -/
 
-open scoped InnerProductSpace
+open scoped BigOperators InnerProductSpace
 open InnerProductSpace
 
 namespace HTGeometry
@@ -310,7 +310,6 @@ theorem finiteDerivativeReporterMap_postcomp_newBlindPacket
     {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
     [AddCommGroup Z] [Module ℂ Z]
     {N : ℕ} {f : ℂ → ℂ}
-    (hf : ConstantCoefficientDifferentiallyTranscendental f)
     (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
     {c : Fin N → ℂ}
     (hcpost : c ∈ LinearMap.ker
@@ -319,18 +318,206 @@ theorem finiteDerivativeReporterMap_postcomp_newBlindPacket
     finiteDerivativeReporterPacket c f ≠ 0 ∧
       report (finiteDerivativeReporterPacket c f) ≠ 0 ∧
       decode (report (finiteDerivativeReporterPacket c f)) = 0 := by
-  have hc0 : c ≠ 0 := by
-    intro hc
-    subst c
-    exact hcpre (by simp)
-  obtain ⟨hpacket, hdecode⟩ :=
-    finiteDerivativeReporterMap_nonzero_packet_of_mem_ker
-      hf (decode.comp report) hcpost hc0
-  refine ⟨hpacket, ?_, ?_⟩
-  · intro hreport
+  have hreport : report (finiteDerivativeReporterPacket c f) ≠ 0 := by
+    intro hreport
     apply hcpre
     simpa [finiteDerivativeReporterMap, finiteDerivativeJetSynthesis] using hreport
-  · simpa using hdecode
+  have hpacket : finiteDerivativeReporterPacket c f ≠ 0 := by
+    intro hpacket
+    apply hreport
+    rw [hpacket, map_zero]
+  have hdecode : decode (report (finiteDerivativeReporterPacket c f)) = 0 := by
+    rw [LinearMap.mem_ker] at hcpost
+    simpa [finiteDerivativeReporterMap, finiteDerivativeJetSynthesis] using hcpost
+  exact ⟨hpacket, hreport, hdecode⟩
+
+/-- **Strict capacity loss has a genuine packet witness.**  If downstream decoding strictly
+reduces visible coefficient rank, some coefficient direction enters the decoded kernel.  Its
+synthesized source packet is nonzero, was visible before decoding, and is erased afterwards. -/
+theorem exists_finiteDerivativeReporterMap_postcomp_newBlindPacket_of_finrank_lt
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    (hdrop : finrank ℂ (LinearMap.range
+        (finiteDerivativeReporterMap N f (decode.comp report))) <
+      finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report))) :
+    ∃ c : Fin N → ℂ,
+      c ∈ LinearMap.ker
+          (finiteDerivativeReporterMap N f (decode.comp report)) ∧
+      c ∉ LinearMap.ker (finiteDerivativeReporterMap N f report) ∧
+      finiteDerivativeReporterPacket c f ≠ 0 ∧
+      report (finiteDerivativeReporterPacket c f) ≠ 0 ∧
+      decode (report (finiteDerivativeReporterPacket c f)) = 0 := by
+  have hpre := finiteDerivativeReporterMap_rank_nullity N f report
+  have hpost := finiteDerivativeReporterMap_rank_nullity N f (decode.comp report)
+  have hkerFinrank :
+      finrank ℂ (LinearMap.ker (finiteDerivativeReporterMap N f report)) <
+        finrank ℂ (LinearMap.ker
+          (finiteDerivativeReporterMap N f (decode.comp report))) := by
+    omega
+  have hkerLe := ker_finiteDerivativeReporterMap_le_postcomp N f report decode
+  have hkerNe :
+      LinearMap.ker (finiteDerivativeReporterMap N f report) ≠
+        LinearMap.ker (finiteDerivativeReporterMap N f (decode.comp report)) := by
+    intro hker
+    rw [hker] at hkerFinrank
+    exact Nat.lt_irrefl _ hkerFinrank
+  have hkerLt :
+      LinearMap.ker (finiteDerivativeReporterMap N f report) <
+        LinearMap.ker (finiteDerivativeReporterMap N f (decode.comp report)) :=
+    lt_of_le_of_ne hkerLe hkerNe
+  obtain ⟨_, c, hcpost, hcpre⟩ :=
+    (SetLike.lt_iff_le_and_exists).mp hkerLt
+  obtain ⟨hpacket, hreport, hdecode⟩ :=
+    finiteDerivativeReporterMap_postcomp_newBlindPacket report decode hcpost hcpre
+  exact ⟨c, hcpost, hcpre, hpacket, hreport, hdecode⟩
+
+/-- **Gram singularity created by decoding has a genuine lost-packet witness.**  If the original
+finite reporter Gram matrix is nonsingular but its decoded Gram matrix is singular, then decoding
+strictly loses visible coefficient rank.  A nonzero source packet witnesses that loss: it was
+visible before decoding and is erased afterwards. -/
+theorem exists_finiteDerivativeReporterMap_postcomp_newBlindPacket_of_gram_det_transition
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    (hpre : (finiteDerivativeReporterGram N f report).det ≠ 0)
+    (hpost : (finiteDerivativeReporterGram N f (decode.comp report)).det = 0) :
+    ∃ c : Fin N → ℂ,
+      c ∈ LinearMap.ker
+          (finiteDerivativeReporterMap N f (decode.comp report)) ∧
+      c ∉ LinearMap.ker (finiteDerivativeReporterMap N f report) ∧
+      finiteDerivativeReporterPacket c f ≠ 0 ∧
+      report (finiteDerivativeReporterPacket c f) ≠ 0 ∧
+      decode (report (finiteDerivativeReporterPacket c f)) = 0 := by
+  have hpreInjective : Function.Injective (finiteDerivativeReporterMap N f report) :=
+    (finiteDerivativeReporterGram_det_ne_zero_iff_injective N f report).mp hpre
+  have hpostNotInjective :
+      ¬ Function.Injective (finiteDerivativeReporterMap N f (decode.comp report)) := by
+    intro hpostInjective
+    exact (finiteDerivativeReporterGram_det_ne_zero_iff_injective
+      N f (decode.comp report)).mpr hpostInjective hpost
+  have hpreRank :
+      finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) = N := by
+    simpa using LinearMap.finrank_range_of_inj hpreInjective
+  have hpostKerNe :
+      LinearMap.ker (finiteDerivativeReporterMap N f (decode.comp report)) ≠ ⊥ := by
+    intro hker
+    apply hpostNotInjective
+    exact LinearMap.ker_eq_bot.mp hker
+  have hpostKerPos :
+      0 < finrank ℂ (LinearMap.ker
+        (finiteDerivativeReporterMap N f (decode.comp report))) := by
+    exact (Submodule.one_le_finrank_iff.mpr hpostKerNe)
+  have hpostRankNullity :=
+    finiteDerivativeReporterMap_rank_nullity N f (decode.comp report)
+  apply exists_finiteDerivativeReporterMap_postcomp_newBlindPacket_of_finrank_lt
+  rw [hpreRank]
+  omega
+
+/-- **A lost sequential innovation has a normalized packet witness.**  Suppose the `N`-th reading
+is new before decoding but becomes conditionally redundant afterward.  Then a newly blind
+coefficient packet can be chosen with newest coefficient
+exactly `-1`; hence the witness records loss of that specific innovation, not merely an earlier
+rank defect.  This local positive-innovation premise is strictly weaker than requiring the whole
+preceding reporter Gram block to be nonsingular.  No differential-transcendence premise on the
+source is needed. -/
+theorem exists_finiteDerivativeReporterMap_postcomp_newBlindPacket_of_conditionalInformation_eq_zero
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    (hpre : 0 < finiteDerivativeReporterConditionalInformation N f report)
+    (hpost : finiteDerivativeReporterConditionalInformation N f
+      (decode.comp report) = 0) :
+    ∃ c : Fin (N + 1) → ℂ,
+      c (Fin.last N) = -1 ∧
+      c ∈ LinearMap.ker
+          (finiteDerivativeReporterMap (N + 1) f (decode.comp report)) ∧
+      c ∉ LinearMap.ker (finiteDerivativeReporterMap (N + 1) f report) ∧
+      finiteDerivativeReporterPacket c f ≠ 0 ∧
+      report (finiteDerivativeReporterPacket c f) ≠ 0 ∧
+      decode (report (finiteDerivativeReporterPacket c f)) = 0 := by
+  have hmem :=
+    (finiteDerivativeReporterConditionalInformation_eq_zero_iff
+      N f (decode.comp report)).mp hpost
+  obtain ⟨a, ha⟩ :=
+    (Submodule.mem_span_range_iff_exists_fun ℂ).mp hmem
+  have ha' :
+      ∑ i, a i • decode (report (iteratedDeriv (i : ℕ) f)) =
+        decode (report (iteratedDeriv N f)) := by
+    simpa using ha
+  let c : Fin (N + 1) → ℂ := Fin.lastCases (-1) a
+  have hclast : c (Fin.last N) = -1 := by
+    simp [c]
+  have hcpost : c ∈ LinearMap.ker
+      (finiteDerivativeReporterMap (N + 1) f (decode.comp report)) := by
+    rw [LinearMap.mem_ker]
+    simp [finiteDerivativeReporterMap, finiteDerivativeJetSynthesis,
+      finiteDerivativeReporterPacket, c, Fin.sum_univ_castSucc, ha']
+  have hpreNew : report (iteratedDeriv N f) ∉
+      finiteDerivativeReporterPreviousSpace N f report :=
+    (finiteDerivativeReporterConditionalInformation_pos_iff N f report).mp hpre
+  have hcpre : c ∉ LinearMap.ker
+      (finiteDerivativeReporterMap (N + 1) f report) := by
+    rw [LinearMap.mem_ker]
+    intro hc
+    apply hpreNew
+    apply (Submodule.mem_span_range_iff_exists_fun ℂ).mpr
+    refine ⟨a, ?_⟩
+    have hc' :
+        (∑ i, a i • report (iteratedDeriv (i : ℕ) f)) +
+          -report (iteratedDeriv N f) = 0 := by
+      simpa [finiteDerivativeReporterMap, finiteDerivativeJetSynthesis,
+        finiteDerivativeReporterPacket, c, Fin.sum_univ_castSucc] using hc
+    apply sub_eq_zero.mp
+    simpa [sub_eq_add_neg] using hc'
+  obtain ⟨hpacket, hreport, hdecode⟩ :=
+    finiteDerivativeReporterMap_postcomp_newBlindPacket report decode hcpost hcpre
+  exact ⟨c, hclast, hcpost, hcpre, hpacket, hreport, hdecode⟩
+
+/-- **Local innovation loss forces global capacity loss.**  If the newest derivative reading
+raises visible rank before decoding but is redundant afterward, then decoding strictly reduces
+visible coefficient rank at resolution `N + 1`.  Earlier readings need not be independent. -/
+theorem finiteDerivativeReporterMap_postcomp_finrank_lt_of_conditionalInformation
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
+    (hpre : 0 < finiteDerivativeReporterConditionalInformation N f report)
+    (hpost : finiteDerivativeReporterConditionalInformation N f
+      (decode.comp report) = 0) :
+    finrank ℂ (LinearMap.range
+        (finiteDerivativeReporterMap (N + 1) f (decode.comp report))) <
+      finrank ℂ (LinearMap.range
+        (finiteDerivativeReporterMap (N + 1) f report)) := by
+  obtain ⟨c, _, hcpost, hcpre, _⟩ :=
+    exists_finiteDerivativeReporterMap_postcomp_newBlindPacket_of_conditionalInformation_eq_zero
+      N f report decode hpre hpost
+  have hkerLe :=
+    ker_finiteDerivativeReporterMap_le_postcomp (N + 1) f report decode
+  have hkerNe :
+      LinearMap.ker (finiteDerivativeReporterMap (N + 1) f report) ≠
+        LinearMap.ker
+          (finiteDerivativeReporterMap (N + 1) f (decode.comp report)) := by
+    intro hker
+    apply hcpre
+    rw [hker]
+    exact hcpost
+  have hkerLt :
+      LinearMap.ker (finiteDerivativeReporterMap (N + 1) f report) <
+        LinearMap.ker
+          (finiteDerivativeReporterMap (N + 1) f (decode.comp report)) :=
+    lt_of_le_of_ne hkerLe hkerNe
+  have hkerFinrankLt := Submodule.finrank_lt_finrank_of_lt hkerLt
+  have hpreRankNullity := finiteDerivativeReporterMap_rank_nullity (N + 1) f report
+  have hpostRankNullity :=
+    finiteDerivativeReporterMap_rank_nullity (N + 1) f (decode.comp report)
+  omega
 
 /-- **Same-witness finite-reporter data-processing collapse.**  For a genuine infinite derivative
 clock, some derivative order no larger than reporter dimension is new at the source but redundant

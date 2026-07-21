@@ -1,8 +1,8 @@
 # Suzuki screw-function RH route — complete research handover
 
 **Last updated:** 2026-07-21  
-**Repository:** `/Users/Spare/Documents/code/riemann/publications/hgt`  
-**Resolved repository path:** `/Volumes/Intenso/code/hgt`  
+**Repository:** `/Users/michael/Documents/code/hgt`
+**Resolved repository path:** `/Users/michael/Documents/code/hgt`
 **Persistent goal:** active; do **not** mark complete or blocked  
 **Primary formal area:** `formal/GaloisForLFunctions/RHTower`  
 **Primary literature source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
@@ -49,14 +49,23 @@ The contrapositive is formalized: a non-Cayley limit forces the leakage **not** 
 This is an unconditional and useful scale-selection law.  It is not sufficient for an
 arithmetic limit, and it is not an RH proof.
 
-The exact remaining scientific wall is now narrower.  The boundary-free continuous-kernel targets
-form the affine pencil `D_eta=XiC'-eta*XiC`.  Every finite fibre has the same Xi zero divisor, so an
-intrinsic schedule need not converge to Suzuki's distinguished zero shift.  It need only avoid both
-classified erasing boundaries, have a finite shift cluster, and satisfy:
+The exact remaining scientific wall is now narrower, but it has two object types that must not be
+conflated. Suzuki's canonical Donoghue function is an anchored ratio of two parity phases. His
+conjectural reciprocal-logarithmic target is one characteristic phase. The auxiliary boundary-free
+targets form `D_eta=XiC'-eta*XiC`, and every finite fibre has the same Xi divisor, but reflection
+exchanges `eta` and `-eta`; the zero fibre is the unique odd member. Therefore a nonzero one-fibre
+cluster cannot itself be reconstructed as the canonical odd Donoghue carrier.
 
-> Prove common-gauge parity-pair normality, zero linear Nevanlinna mass, and finite-Neumann-boundary
-> control identifying one cluster pair with `(z^2 XiC,D_eta)`; alternatively identify two distinct
-> denominator fibres and recover Xi by their affine secant.
+The strongest exact replacement is distinct-channel opposite-shift cross-sewing. Actual `+eta`
+and `-eta` resolvents need not produce the same characteristic function, interval term, or gauge.
+Cross-multiplying each exterior remainder by the opposite characteristic factor produces exactly
+one zero-shift remainder with product characteristic. Dividing by that product yields a projective
+observable invariant under two independent zero-free gauges; its hypothetical nonreal Xi-pole
+coefficient is universally `ord_z(XiC)/z^2`. Remaining frontier is:
+
+> Construct actual opposite-shift exterior source channels and prove cofinal off-real analytic
+> continuation of their projectively normalized cross-sewn observable. No equality or common
+> gauge between shift channels is required.
 
 At an Xi zero of arbitrary multiplicity `m`, every shifted target zero is simple with exact first
 coefficient `z^2/m`.  Shift normalization and Xi-zero simplicity are therefore no longer premises.
@@ -1916,3 +1925,355 @@ intrinsic schedule avoiding both erasing boundaries
 
 Shift normalization and Xi-zero simplicity are no longer open premises.  Finite-aperture boundary
 control and common-gauge operator convergence remain; RH remains open.
+
+Later semantic correction: this conclusion concerns one-phase divisor recovery only. It does not
+make `R_eta` the canonical odd Donoghue carrier. Section 26 proves that only `R_0` is odd and gives
+the required opposite-shift projection for a parity-compatible finite-cluster route.
+
+## 24. Exact finite-Neumann clock annihilation
+
+The finite Neumann passage in `(S23.9)` does not require endpoint decay.  Twice integrating by
+parts shows that its complete boundary defect belongs to the rank-two clock module
+
+```text
+C_(a,A,B)(z)=z[A cos(az)+B sin(az)].                    (S24.1)
+```
+
+The polynomial differential operator
+
+```text
+L_a H=z^2 H''-2z H'+(2+a^2z^2)H                        (S24.2)
+```
+
+kills this module identically for arbitrary coefficients:
+
+```text
+L_a C_(a,A,B)=0.                                        (S24.3)
+```
+
+If `U-z^2F` is Suzuki's finite-Neumann Fourier defect, then
+
+```text
+L_a U=L_a(z^2F),                                        (S24.4)
+L_a(z^2F)=a^2z^2[z^2F+a^(-2)(2zF'+z^2F'')].            (S24.5)
+```
+
+Along `a->infinity`, compact-open holomorphic convergence makes the correction in `(S24.5)` tend
+to zero by derivative convergence.  No endpoint coefficient estimate occurs.  The operator must
+be applied to the ungauged source identity; it is not commuted through a varying common gauge.
+
+Paper proof and exact Lean formalization:
+
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-neumann-clock-annihilator.md`
+- `formal/GaloisForLFunctions/RHTower/SuzukiExteriorPoleTomography.lean`
+
+Finite-Neumann boundary control is therefore deleted from the open premise list.
+
+## 25. Anchored Euler--Wronskian elimination of cofinal linear escape
+
+Common-gauge normality removes interior label overcrowding, but compactified probability may still
+escape to the two projective ends and add `alpha*z` to the limiting Donoghue function.  Proving
+`alpha=0` separately is unnecessary after changing observable to the degree-one Euler defect
+
+```text
+E[m](z)=z m'(z)-m(z).                                   (S25.1)
+```
+
+It has exact linear kernel
+
+```text
+E[m+alpha*z]=E[m].                                      (S25.2)
+```
+
+For a common-gauge pair `m=-iA/B`, define
+
+```text
+P[A,B]=z(A'B-AB')-AB.                                   (S25.3)
+```
+
+Then
+
+```text
+E[-iA/B]=-i P[A,B]/B^2,
+P[gA,gB]=g^2P[A,B].                                     (S25.4)
+```
+
+Thus `(S25.4)` is exactly invariant under the zero-free entire gauges needed by the parity-pair
+topology.  More decisively, its Donoghue probability kernel is
+
+```text
+K^E_z(t)
+ =z partial_z[(tz+1)/(t-z)]-(tz+1)/(t-z)
+ =[t(z^2-1)+2z]/(t-z)^2,                                (S25.5)
+
+K^E_z(+infinity)=K^E_z(-infinity)=0.                    (S25.6)
+```
+
+Therefore compactified weak convergence passes the Euler transform locally uniformly even with
+positive endpoint escape.  No tightness or zero-linear-mass hypothesis is needed for this passage.
+The transform loses only `c*z`: if two holomorphic carriers on the upper half-plane have equal
+Euler defect, their difference divided by `z` has derivative zero.  Suzuki's canonical anchor
+`m(i)=i` kills the constant, so
+
+```text
+E[m]=E[n] on H and m(i)=n(i)  =>  m=n on H.             (S25.7)
+```
+
+The shifted-Xi one-phase target has a named algebraic covariant:
+
+```text
+P_eta=P[z^2XiC,D_eta],
+E[R_eta]=P_eta/D_eta^2.                                 (S25.8)
+```
+
+Exact Lean formalization is in
+`formal/GaloisForLFunctions/RHTower/SuzukiAnchoredEulerWronskian.lean`.
+
+Semantic correction: `(S25.7)` reconstructs one anchored Donoghue ratio from another. It does not
+identify that ratio with `R_eta`. Suzuki's `W(a,theta;z)` target and the two-phase Donoghue quotient
+are different objects. Formula `(S25.8)` remains correct as an algebraic identity only.
+
+### 25.1 Current exact frontier
+
+The earlier producer chain
+
+```text
+intrinsic schedule avoiding both erasing boundaries
+  -> finite shift cluster
+  -> apply L_a before gauge formation
+  -> common-gauge parity-pair normality eliminating interior overcrowding
+  -> identify the limiting Euler--Wronskian defect with P_eta/D_eta^2
+  -> anchor m(i)=i reconstructs R_eta
+  -> recover the Xi divisor.                            (S25.9)
+```
+
+is false at its anchor step. Nonzero `R_eta` is not odd; no canonical parity-normalized Donoghue
+carrier can equal it. The Euler transform still removes linear endpoint escape from the canonical
+ratio, but one-phase Xi target identification must proceed through the exterior channel described
+below. RH remains open.
+
+## 26. Opposite-shift parity exchange and exact zero-fibre projection
+
+The source/corpus audit exposes an object-type error in the previous frontier. Suzuki's
+Corollary 1.6 asks for the one-phase zero-shift target
+
+```text
+R_0(z)=z^2 XiC(z)/XiC'(z),                              (S26.1)
+```
+
+whereas the anchored Donoghue function is a ratio of two parity phases. Suzuki explicitly says
+his conjectural limit is formulated with `lambda=0` in mind; finite `lambda<lambda_a` is an
+auxiliary form shift. The paper does not identify arbitrary shifted fibres with the Donoghue
+ratio.
+
+Put
+
+```text
+D_eta=XiC'-eta XiC,
+R_eta=z^2 XiC/D_eta,
+G_eta=R_eta^(-1).
+```
+
+Evenness of `XiC` and oddness of `XiC'` give the exact exchange law
+
+```text
+D_eta(-z)=-D_(-eta)(z),
+R_eta(-z)=-R_(-eta)(z).                                 (S26.2)
+```
+
+Combining `(S26.2)` with reciprocal shift translation proves the parity classifier
+
+```text
+R_eta is odd  <=>  eta=0.                               (S26.3)
+```
+
+Thus arbitrary one-fibre parity reconstruction is impossible. The strongest positive survivor is
+not `eta -> 0`, however. Opposite finite fibres recover the distinguished zero fibre exactly:
+
+```text
+z^2/R_eta+z^2/R_(-eta)=2z^2/R_0,                        (S26.4)
+
+(R_eta+R_(-eta))R_0=2R_eta R_(-eta)                     (S26.5)
+```
+
+away from the displayed divisors. Equation `(S26.5)` says `R_0` is the harmonic mean of the two
+opposite fibres.
+
+For the actual corrected exterior multiplier, harmonic recovery linearizes:
+
+```text
+G_eta+G_(-eta)=2G_0.                                    (S26.6)
+```
+
+If one common-gauge characteristic factor `W` and interval part `I` define
+`E_eta=G_eta W-I`, then
+
+```text
+E_eta+E_(-eta)=2E_0,                                    (S26.7)
+
+z^2(E_(-eta)-E_eta)=2eta W                              (S26.8)
+```
+
+off `z=0` and the Xi divisor for the last identity. Symmetric projection is exactly the
+zero-shift exterior channel carrying the complete Xi pole obstruction. Antisymmetric projection
+cancels both `I` and Xi, leaving an explicit shift-gauge term. Finite shift cannot cancel or move
+the RH-bearing exterior poles. Combined with exterior pole tomography, this gives the exact
+capstone
+
+```text
+RH <=> E_eta+E_(-eta) is analytic at every nonreal point, (S26.9)
+```
+
+for a common all-real characteristic member and common entire interval part.
+
+This produces the corrected frontier:
+
+```text
+intrinsic schedule avoiding both erasing boundaries
+  -> construct zero-shift fibre, or a common-gauge opposite pair (+eta,-eta)
+  -> finite-Neumann annihilation before gauge formation
+  -> common-gauge normality eliminating interior label overcrowding
+  -> corrected exterior continuation for both paired channels
+  -> symmetric projection E_eta+E_(-eta)=2E_0
+  -> prove E_0 has no nonreal poles
+  -> RH by exterior pole tomography.                    (S26.10)
+```
+
+The last producer statement is exactly what corpus cannot solve. It is equivalent to excluding
+nonreal Xi zeros after source identification; it is not disguised progress bookkeeping. New
+knowledge is the unique-odd classifier and exact paired projection, which delete the false
+one-fibre anchored route and make a finite nonzero shift schedule compatible with Suzuki's actual
+zero-shift target.
+
+Paper proof and hostile audit:
+
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-opposite-shift-parity-harmonic-recovery.md`
+
+Exact Lean formalization:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiOppositeShiftParityHarmonicRecovery.lean`
+
+Key declarations are `suzukiShiftedXiTarget_neg`, `suzukiShiftedXiTarget_odd_iff`,
+`suzukiShiftedXiTarget_opposite_harmonic_cross`,
+`suzukiExteriorRemainder_opposite_average`, and
+`riemannHypothesis_iff_suzukiExteriorRemainder_opposite_average_analytic_offReal`.
+
+## 27. Distinct-channel cross-sewing and universal projective Xi-pole invariant
+
+Section 26's common-characteristic exterior average is exact algebra but not yet Suzuki's actual
+opposite source pair. Finite shifts are constructed from different resolvents and source
+transforms. Neither source nor corpus identifies
+
+```text
+W_+=W_-,   I_+=I_-,   or   g_+=g_-.                    (S27.1)
+```
+
+Suzuki only expects shift-independence of characteristic zeros from a Hilbert-space isomorphism;
+he explicitly leaves shift control to new arithmetic analysis. Treating `(S27.1)` as available
+would therefore hide producer problem.
+
+For genuinely distinct channels put
+
+```text
+E_eta(W,I)=G_eta W-I,
+
+C_eta
+ =W_-E_eta(W_+,I_+)+W_+E_(-eta)(W_-,I_-),              (S27.2)
+
+P=2W_+W_-,
+J=W_-I_+ + W_+I_-.                                     (S27.3)
+```
+
+Opposite multiplier law `G_eta+G_(-eta)=2G_0` gives pointwise, with no divisor exclusions,
+
+```text
+C_eta=E_0(P,J).                                         (S27.4)
+```
+
+This is cross-sewn replacement for common-channel average. If `W_+` and `W_-` are entire with
+only real zeros, then `P` is entire with only real zeros; if interval terms are entire, so is `J`.
+Thus existing exterior tomography applies directly to `(P,J)`.
+
+Two unrelated pointwise gauges act by
+
+```text
+(W_+,I_+)->g_+(W_+,I_+),
+(W_-,I_-)->g_-(W_-,I_-).
+```
+
+Exact covariance is
+
+```text
+C_eta -> g_+g_- C_eta,
+P     -> g_+g_- P,
+J     -> g_+g_- J.                                     (S27.5)
+```
+
+Therefore normalized channel
+
+```text
+N_eta=C_eta/P                                           (S27.6)
+```
+
+is invariant under two independent nonzero gauges. Away from characteristic divisors it obeys
+stronger projective descent law
+
+```text
+N_eta
+ =G_0-(1/2)(I_+/W_+ + I_-/W_-).                        (S27.7)
+```
+
+Explicit opposite shift has disappeared. Gauge matching and shift matching are both absent before
+any cofinal limit.
+
+The new analytic capstones are
+
+```text
+RH <=> C_eta is analytic at every nonreal point,         (S27.8)
+
+RH <=> N_eta is analytic at every nonreal point.        (S27.9)
+```
+
+Second criterion is projectively intrinsic. More strongly, if `z` is hypothetical nonreal Xi
+zero of arbitrary multiplicity `m`, then
+
+```text
+ord_z(C_eta)=-1,
+TC_z(C_eta)=mP(z)/z^2,                                  (S27.10)
+
+ord_z(N_eta)=-1,
+TC_z(N_eta)=m/z^2.                                      (S27.11)
+```
+
+Equation `(S27.11)` is universal: independent of `eta`, both characteristic functions, both
+interval terms, and both gauges. Opposite-channel cancellation cannot move, cancel, or renormalize
+a nonreal Xi pole.
+
+Actual frontier corpus still cannot solve is now:
+
+```text
+intrinsic schedule avoiding both erasing boundaries
+  -> construct actual source channels (+eta,-eta), allowing distinct Hilbert spaces
+  -> apply finite-Neumann clock annihilator before each gauge
+  -> form projective cross-sewn observable N_eta
+  -> prove its cofinal continuation is analytic at every nonreal point
+  -> RH by (S27.9).                                      (S27.12)
+```
+
+This does not prove last continuation. It removes false common-`W`, common-`I`, and common-gauge
+premises and converts open producer to one gauge-free source observable whose every possible RH
+obstruction has exact universal local coefficient.
+
+Paper proof and hostile audit:
+
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-opposite-shift-cross-sewn-exterior-product.md`
+
+Exact Lean formalization:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiOppositeShiftCrossSewnExterior.lean`
+
+Key declarations are `suzukiCrossSewnExterior_eq_zeroShift`,
+`suzukiCrossSewnNormalizedExterior_independentGauge`,
+`suzukiCrossSewnNormalizedExterior_eq_zeroShift`,
+`riemannHypothesis_iff_suzukiCrossSewnNormalizedExterior_analytic_offReal`, and
+`meromorphicTrailingCoeffAt_suzukiCrossSewnNormalizedExterior`.

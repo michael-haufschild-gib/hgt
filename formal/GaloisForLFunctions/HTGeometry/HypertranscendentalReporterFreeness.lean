@@ -111,25 +111,6 @@ theorem Hypertranscendental.exists_isometricReporterRecovery_collapse
   apply HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
   exact HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental hf
 
-/-- Every coefficient direction newly erased by a decoder synthesizes a nonzero source packet which
-was visible before decoding. -/
-theorem Hypertranscendental.finiteDerivativeReporterMap_postcomp_newBlindPacket
-    {f : ℂ → ℂ} (hf : Hypertranscendental f)
-    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
-    [AddCommGroup Z] [Module ℂ Z]
-    {N : ℕ} (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z)
-    {c : Fin N → ℂ}
-    (hcpost : c ∈ LinearMap.ker
-      (HTGeometry.finiteDerivativeReporterMap N f (decode.comp report)))
-    (hcpre : c ∉ LinearMap.ker
-      (HTGeometry.finiteDerivativeReporterMap N f report)) :
-    HTGeometry.finiteDerivativeReporterPacket c f ≠ 0 ∧
-      report (HTGeometry.finiteDerivativeReporterPacket c f) ≠ 0 ∧
-      decode (report (HTGeometry.finiteDerivativeReporterPacket c f)) = 0 := by
-  exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
-    (HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental hf)
-    report decode hcpost hcpre
-
 end
 
 end GaloisForLFunctions

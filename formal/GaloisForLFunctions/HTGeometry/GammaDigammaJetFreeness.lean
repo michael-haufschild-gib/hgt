@@ -114,7 +114,7 @@ theorem gamma_finiteDerivativeReporterMap_postcomp_newBlindPacket
     HTGeometry.finiteDerivativeReporterPacket c Complex.Gamma ≠ 0 ∧
       report (HTGeometry.finiteDerivativeReporterPacket c Complex.Gamma) ≠ 0 ∧
       decode (report (HTGeometry.finiteDerivativeReporterPacket c Complex.Gamma)) = 0 :=
-  hypertranscendental_gamma.finiteDerivativeReporterMap_postcomp_newBlindPacket
+  HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
     report decode hcpost hcpre
 
 /-! ## Digamma source -/
@@ -219,7 +219,7 @@ theorem digamma_finiteDerivativeReporterMap_postcomp_newBlindPacket
     HTGeometry.finiteDerivativeReporterPacket c Complex.digamma ≠ 0 ∧
       report (HTGeometry.finiteDerivativeReporterPacket c Complex.digamma) ≠ 0 ∧
       decode (report (HTGeometry.finiteDerivativeReporterPacket c Complex.digamma)) = 0 :=
-  hypertranscendental_digamma.finiteDerivativeReporterMap_postcomp_newBlindPacket
+  HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
     report decode hcpost hcpre
 
 /-! ## Exact pole orders and finite Gibbs spectral dressing -/
@@ -359,8 +359,6 @@ theorem gamma_add_finiteGibbs_finiteDerivativeReporterMap_postcomp_newBlindPacke
       decode (report (HTGeometry.finiteDerivativeReporterPacket c
         (Complex.Gamma + HTGeometry.finiteComplexGibbsPartition energy))) = 0 := by
   exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
-    (gamma_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
-      energy)
     report decode hcpost hcpre
 
 /-- Digamma retains infinite constant-coefficient spectral complexity after addition of any finite
@@ -480,8 +478,6 @@ theorem digamma_add_finiteGibbs_finiteDerivativeReporterMap_postcomp_newBlindPac
       decode (report (HTGeometry.finiteDerivativeReporterPacket c
         (Complex.digamma + HTGeometry.finiteComplexGibbsPartition energy))) = 0 := by
   exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
-    (digamma_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
-      energy)
     report decode hcpost hcpre
 
 end GaloisForLFunctions

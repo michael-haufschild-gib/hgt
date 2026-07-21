@@ -195,6 +195,13 @@ Consequently the live source comparison is required only on the strict residual
 `8|E_PG(q)| < tailL1(q)`. This is a proper right-edge hypothesis reduction, not full closure; the
 residual comparison remains open.
 
+The later centered-Eisenstein residual theorem shrinks this again. It is enough to compare only
+tails `q=polynomialVacuumTail(P)` where `P` is monic, Eisenstein at `2`, and has degree in any one
+selected infinite set. Under `not RH`, negative residual witnesses occur at all but finitely many
+degrees. The remaining comparison is therefore confined simultaneously by vacuum centering,
+analytic-tail residual, fixed Eisenstein chamber, and an arbitrarily sparse infinite degree
+schedule.
+
 ## Literature provenance
 
 1. H. Feshbach, *A unified theory of nuclear reactions*, Annals of Physics 5 (1958), 357--390,

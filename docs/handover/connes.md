@@ -1661,3 +1661,237 @@ Required first experiment is exact and symbolic, not estimative:
 - `scripts/formal_tools.py lint` passed;
 - no numerical computation enters any statement or proof.
 
+## 36. Frontier correction: continuous full-density contraction, not scalar prime polynomial
+
+See
+
+`docs/drafts/pipeline/5-failed/cofinal-completed-lee-yang-seam-defect.md`,
+
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/full-theta-density-monotone-completion-current.md`,
+
+`docs/drafts/pipeline/5-failed/xi-taylor-full-density-transfer-wronskian.md`,
+
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/xi-full-density-source-exchange-obstruction.md`,
+
+`docs/drafts/pipeline/1-in-progress/xi-completed-density-antipodal-crossing-barrier.md`,
+
+and
+
+`formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailFullDensityMonotoneCurrent.lean`.
+
+Section 34 conjectured a scalar cofinal self-reciprocal phase polynomial.  Corpus hostile test kills
+that carrier before root analysis.  A one-variable phase polynomial requires frequencies in one
+affine lattice, while corpus proves prime-log linear independence, aperture character rank
+`pi(N)`, and no fixed finite carrier.  A prime polydisk does not restore actual completion:
+`SeamArchimedeanSamplingQuotient.lean` proves continuous archimedean seam does not factor through
+prime-power samples, or even all positive integer-log samples.  Scalar/discrete-only cofinal
+Lee--Yang route is retired.
+
+Positive survivor retains continuous archimedean density.  Put
+
+\[
+\rho(t)=4T''(t),\qquad
+F(z)=\int_0^\infty \rho(t)e^{itz}\,dt,\qquad
+D(z)=\int_0^\infty it\rho(t)e^{itz}\,dt,
+\]
+
+and $h(t)=-\rho'(t)$.  Corpus strict monotonicity gives $h(t)>0$ for $t\ge0$.  Exact
+integrations by parts give
+
+\[
+G_h(z)=\int_0^\infty h(t)(1-e^{itz})\,dt=-izF(z),
+\]
+
+\[
+G_h'(z)=-i(F(z)+zD(z)).                                  \tag{36.1}
+\]
+
+For $\operatorname{Im}z>0$ every completion integrand has positive real part because
+$|e^{itz}|=e^{-t\operatorname{Im}z}<1$.  Hence $F(z)\ne0$.  Pointwise inequality
+
+\[
+t e^{-ty}\le \frac{1-e^{-ty}}{y},\qquad y>0,
+\]
+
+then yields
+
+\[
+|D(z)|\le\frac2{\operatorname{Im}z}|F(z)|,
+\quad
+\left|\frac{D(z)}{F(z)}\right|\le\frac2{\operatorname{Im}z},
+\]
+
+\[
+|\operatorname{Im}(D(z)\overline{F(z)})|
+ \le\frac2{\operatorname{Im}z}|F(z)|^2.                 \tag{36.2}
+\]
+
+Global product-fibre bridge converts left side of (36.2) into absolutely convergent sum of every
+actual Hermitian product-fibre current.  This is exact answer to prime-cube obstruction: bad local
+faces do occur, but full continuous source forces aggregate cancellation.  No individual fibre is
+estimated or assigned false sign.
+
+This is frontier progress, not RH proof.  Full transform $F$ is untruncated one-sided channel;
+RH-bearing object is finite odd Xi Taylor section.
+
+## 37. Exact RH-equivalent transfer bridge
+
+Zero-freeness of $F$ makes following factor canonical throughout upper half-plane:
+
+\[
+T_d(z)=\frac{P_{2d+3}(z)}{F(z)}.
+\]
+
+Lean formalizes quotient-rule derivative and division-free product-current identity
+
+\[
+J(P_{2d+3})=|T_d|^2J(F)+|F|^2J(T_d).                    \tag{37.1}
+\]
+
+Combining (36.2) and (37.1) preserves final Taylor denominator exactly:
+
+\[
+J(P_{2d+3})(z)
+ \le \frac2{\operatorname{Im}z}|P_{2d+3}(z)|^2
+     +|F(z)|^2J(T_d)(z).                                \tag{37.2}
+\]
+
+On every left-strip anisotropic mesh, $2/\operatorname{Im}z_n=O(1)=o(n)$.  Forward and reverse
+transport through (37.1), using existing anisotropic coefficient-current equivalence, proves
+
+\[
+\texttt{XiCTaylorFullDensityTransferCurrentSublinearUpper D}
+\iff \mathrm{RH}.                                       \tag{37.3}
+\]
+
+Equation (37.3) is a correct RH-equivalent gauge bridge.  What has been removed unconditionally is
+entire untruncated density/arithmetic current, including all polarization/window seams after full
+recombination.  It was initially interpreted as concentrating remaining RH content in finite
+truncation transfer.  Section 38 corrects that interpretation by exact hostile test.
+
+Verification of source theorem and bridge:
+
+- direct
+  `lake env lean GaloisForLFunctions/RHTower/XiCTaylorThetaTailFullDensityMonotoneCurrent.lean`
+  passed;
+- final targeted
+  `lake build GaloisForLFunctions.RHTower.XiCTaylorThetaTailFullDensityMonotoneCurrent` passed;
+- axiom audit of completion identities, strict right-half-plane theorem, zero-freeness,
+  logarithmic-derivative disk, aggregate fibre-current bound, transfer factorization, and RH
+  equivalence reports only `propext`, `Classical.choice`, and `Quot.sound`;
+- `scripts/formal_tools.py lint` passed;
+- no numerical computation enters any statement or proof.
+
+## 38. Frontier correction: transfer retains full Xi divisor
+
+First symbolic experiment on proposed source Wronskian is decisive.  For two positive full phases,
+
+\[
+(ixe^{ixz})e^{itz}-e^{ixz}(ite^{itz})
+ =i(x-t)e^{i(x+t)z}.                                  \tag{38.1}
+\]
+
+This vanishes exactly when $x=t$, not identically.  Antisymmetric integration cancels only for
+the same source measure.  Here $P_d$ carries completed source \(\Phi\) and even cosine phase,
+while $F$ carries \(\rho=T+4\Phi\) and one-sided exponential phase.  Proposed full-channel
+cancellation is false before estimates.
+
+Put
+
+\[
+W_d=P_{2d+3}'F-P_{2d+3}F',\quad
+\Omega_F=\Xi_C'F-\Xi_CF',\quad
+R_d=\Xi_C-P_{2d+3}.
+\]
+
+Exact algebra gives
+
+\[
+W_d=\Omega_F-(R_d'F-R_dF').                            \tag{38.2}
+\]
+
+Local-uniform Taylor convergence, including derivatives, yields
+
+\[
+W_d(z)\longrightarrow\Omega_F(z).                     \tag{38.3}
+\]
+
+Background is unconditionally nonzero.  Xi parity gives \(\Xi_C'(0)=0\), while positivity of
+\(\rho\) gives
+
+\[
+F'(0)=i\int_0^\infty t\rho(t)\,dt\ne0,
+\quad
+\Omega_F(0)=-\Xi_C(0)F'(0)\ne0.                       \tag{38.4}
+\]
+
+Therefore $W_d$ is not a vanishing Taylor-remainder object.  More strongly, if
+
+\[
+Q=\Xi_C/F,
+\]
+
+then pointwise
+
+\[
+T_d\to Q,\qquad T_d'\to Q',\qquad J(T_d)\to J(Q),      \tag{38.5}
+\]
+
+and $Q(z)=0\iff\Xi_C(z)=0$ for \(\operatorname{Im}z>0\).  Thus transfer current retains full Xi
+divisor.  Description “finite-truncation transfer” is retired; (37.3) is gauge reformulation, not
+new source producer.
+
+Completed reflection exposes exact survivor.  With $F_-=F(-z)$, $D=F'(z)$,
+$D_-=F'(-z)$, and $q=z^2+1/4$, define
+
+\[
+\mathcal C_F
+ =2z(F+F_-)F-q(D_-F+F_-D)+\tfrac12D.
+\]
+
+Then
+
+\[
+\mathcal C_F=8z\Xi_CF+4z^2\Omega_F.                   \tag{38.6}
+\]
+
+At simple upper-strip Xi zero, \(\mathcal C_F=4z^2\Xi_C'F\ne0\).  Full survivor is reflected
+growing channel plus central seam—the zero signal proposed cancellation would erase.
+
+### Actual unsolved frontier
+
+Let
+
+\[
+E=(z^2+1/4)F(z)-1/4,\qquad
+E^\#=(z^2+1/4)F(-z)-1/4.
+\]
+
+Corpus proves
+
+\[
+E+E^\#=4z^2\Xi_C.                                     \tag{38.7}
+\]
+
+Away from $z=0$, off-axis Xi zero is exact antipodal collision $E^\#=-E$.  Corpus also proves
+global completed-density de Branges gap \(|E|>|E^\#|\) is false in open critical half-strip.
+Actual frontier is therefore collision-only: allow norm-gap/unit-circle crossings at other phases,
+but exclude projective ratio $E^\#/E=-1$.  Active conjecture is negative-ray no-return for this
+ratio, with first nonzero projective jets handling simultaneous zeros.  It is strictly weaker than
+refuted global Hermite--Biehler orientation.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailFullDensityWronskianNoGo.lean`.
+
+Verification:
+
+- direct
+  `lake env lean GaloisForLFunctions/RHTower/XiCTaylorThetaTailFullDensityWronskianNoGo.lean`
+  passed;
+- final targeted
+  `lake build GaloisForLFunctions.RHTower.XiCTaylorThetaTailFullDensityWronskianNoGo` passed;
+- axiom audit of kernel classification, exact remainder decomposition, reflected connection,
+  simple-zero survivor, central noncancellation, pointwise Wronskian limit, quotient zero set, and
+  transfer-current limit reports only `propext`, `Classical.choice`, and `Quot.sound`;
+- `scripts/formal_tools.py lint` passed;
+- no numerical computation enters any statement or proof.

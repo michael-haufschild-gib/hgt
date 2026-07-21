@@ -259,27 +259,20 @@ standalone and can be wired into the umbrella only after the shared worktree set
    Hankel block.  The live corpus does not discharge that block unconditionally; adding it would
    trade the removed linear counterterm for a new target hypothesis.  No two-nuisance wrapper was
    promoted.  Revisit only after the first target minor is independently available.
-7. **Small-aperture collapse audit:** the corpus has quadratic aperture majorants for each
-   weighted residual and for the all-prime residual energy, but it has no theorem producing
-   nondegenerate coupled apertures cofinally near zero and no operator-polynomial estimate forcing
-   `QFI_a(q) -> 0`.  Therefore equation `(6)` cannot currently be dismissed as a disguised target
-   sign test, but neither can small-aperture decay be claimed as a source mechanism.  The exact
-   missing audit inputs are a nondegenerate aperture schedule and a normalized polynomial-energy
-   bound.
-8. **Collapse no-go formalized:** if every fixed test admits nondegenerate apertures with
-   `Var_a(q) -> 0`, then equation `(7)` is exactly equivalent to target Feshbach positivity and
-   therefore exactly equivalent to RH.  Thus a quantum-metrology spectral-width estimate proving
-   only variance collapse would retire the small-aperture route as a sign test; it would not prove
-   RH.  The declarations are
-   `SoninCoupledPrimeArchNormalizedVarianceCollapseToZero` and
-   `soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_riemannHypothesis_of_collapse`.
-9. **Quantum-instrument nondegeneracy localized:** `[SOURCE-FORMALIZED, UNVERIFIED]` the all-prime
-   direct-sum column is nonzero exactly when one prime-power residual channel is nonzero.  This is
-   the Kraus/Stinespring outcome-stacking value relation applied to the live Sonin operator: an
-   orthogonal direct sum cannot cancel a nonzero transition amplitude.  The global
-   `SoninCoupledNondegenerateAperture` premise is therefore constructible from one local residual
-   witness.  This strengthens the source interface but does not yet prove such a witness exists at
-   the apertures needed for `(7)`.
+7. **Small-aperture collapse closed:** every positive aperture is nondegenerate by the canonical
+   prime-square residual witness.  Exact column Parseval plus the all-prime Hilbert--Schmidt area
+   bound gives `||C_a||^2 <= 128*a^2*W`.  For every `q(0)=0`, the normalized source variance obeys
+   `Var_a(q) <= ||q^2||_coeffL1 * (128*a^2*W)^2` once the radius is at most one.  Thus
+   `Var_a(q) -> 0` along positive nondegenerate apertures, unconditionally.
+8. **Collapse no-go unconditional:** equation `(7)` is now proved exactly equivalent to target
+   Feshbach positivity and therefore to RH.  Small-aperture decay is a source theorem, not the
+   missing RH mechanism.  The declarations are
+   `soninCoupledPrimeArchNormalizedVarianceCollapseToZero` and
+   `soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_riemannHypothesis`.
+9. **Positive survivor:** the explicit `O_q(a^4)` normalized-variance concentration law is stronger
+   than the existential collapse premise.  It closes both former audit gaps—cofinal
+   nondegeneracy and normalized polynomial-energy decay—without target moments, Xi zeros, Weil
+   signs, or an RH-equivalent input.
 
 The exact specialized equivalence between the previous `exists c` polynomial-vector condition and
 the new determinant condition is now source-formalized.  It is obtained by identifying every
@@ -288,17 +281,21 @@ the general Feshbach minimum there; no `natDegree` coefficient-linearity premise
 
 ## Open core
 
-`[OPEN CORE]` Prove the equivalent normalized-variance inequality `(7)` from the explicit coupled
-prime-power and Gamma residual formulas, now only for zero-constant integer tails in the strict
-centered analytic-tail residual
+`[OPEN CORE]` Prove the normalized source--target variance comparison `(7)` from the explicit coupled
+prime-power and Gamma residual formulas, now only for tails
+`q=polynomialVacuumTail(P)` where `P` lies in one selected infinite degree set and satisfies
 
 ```text
+P is monic,
+P is Eisenstein at 2,
 8 |E_PG(q)| < tailL1(q).
 ```
 
-The complementary family has unconditional target variance positivity in
-`PrimeArchCenteredAnalyticTailVacuumCone.lean`; under `not RH`, Lean extracts a negative-variance
-witness in this strict residual. The source value on that residual can be computed through either
+The formalized centered-Eisenstein residual law proves this restricted family is still
+RH-complete. Under `not RH`, structured negative-variance witnesses occur in all but finitely many
+degrees. Thus the remaining producer may select any convenient infinite degree schedule; no
+comparison is needed outside this fixed arithmetic chamber.
+The source value on that residual can be computed through either
 the normalized moment state or the canonical scalar Schur complement
 
 ```text
@@ -307,10 +304,9 @@ sourceFeshbach_a(q)
 ```
 
 The aperture may still depend on `q` and `epsilon`, but no scalar optimization or source-mass
-comparison remains.  A useful attack must compare source and target variances using common
-prime--Gamma structure.  Bounding the source variance solely by the spectral width of the positive
-coupled energy can at most establish collapse to zero; the formal no-go above shows that this does
-not supply the missing arithmetic comparison.
+comparison remains.  Unconditional source collapse proves this comparison is itself exactly RH;
+it cannot be discharged by another source-only smallness estimate.  A useful attack must create an
+arithmetic source--target identity or sign transfer using common prime--Gamma structure.
 
 ## Literature provenance
 
@@ -362,6 +358,11 @@ new declarations remain stage 1 until a narrow validation pass is authorized.
 
 ## Log
 
+- 2026-07-21 -- small-aperture audit closed unconditionally.  Exact all-prime column norm control
+  yields `Var_a(q) <= ||q^2||_coeffL1 * (128*a^2*W)^2`; every positive aperture is nondegenerate.
+  The collapse premise and both general and centered-`2`-Eisenstein comparison iff-RH theorems are
+  Lean-formalized and audited.  The surviving open core is the arithmetic source--target
+  comparison itself, not source residual variance.
 - 2026-07-15 -- primary quantum-geometry provenance checked; general HTGeometry value identity,
   moment-Feshbach bridge, coupled Sonin counterterm-free source value, and RH consumers written
   source-only.  No computation or build run.

@@ -25,21 +25,19 @@ open GaloisForLFunctions Module
 /-- Every finite-dimensional readout of the Xi logarithmic-derivative clock misses a nonzero finite
 derivative packet.  No RH hypothesis is used. -/
 theorem exists_xiLogDeriv_nonzero_finiteDerivativeReporterPacket_ker
-    (n : ℕ) {Y : Type*} [AddCommGroup Y] [Module ℂ Y] [FiniteDimensional ℂ Y]
+    {Y : Type*} [AddCommGroup Y] [Module ℂ Y] [FiniteDimensional ℂ Y]
     (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
     ∃ c : Fin (finrank ℂ Y + 1) → ℂ,
       (∃ i, c i ≠ 0) ∧
       HTGeometry.finiteDerivativeReporterPacket c (logDeriv xi) ≠ 0 ∧
       report (HTGeometry.finiteDerivativeReporterPacket c (logDeriv xi)) = 0 := by
   apply HTGeometry.exists_nonzero_finiteDerivativeReporterPacket_ker
-  exact HTGeometry.constantCoefficientDifferentiallyTranscendental_of_meromorphic_simplePole
-    (meromorphicAt_logDeriv_xi (xiZeroPoint n))
-    (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero n))
+  exact xiLogDeriv_constantCoefficientDifferentiallyTranscendental
 
 /-- Finite Gibbs/finite-clock dressing does not repair finite-reporter blindness of the Xi
 logarithmic derivative. -/
 theorem exists_xiLogDeriv_add_finiteGibbs_nonzero_finiteDerivativeReporterPacket_ker
-    (n : ℕ) {A Y : Type*} [Fintype A]
+    {A Y : Type*} [Fintype A]
     [AddCommGroup Y] [Module ℂ Y] [FiniteDimensional ℂ Y]
     (energy : A → ℝ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
     ∃ c : Fin (finrank ℂ Y + 1) → ℂ,
@@ -50,7 +48,7 @@ theorem exists_xiLogDeriv_add_finiteGibbs_nonzero_finiteDerivativeReporterPacket
         (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)) = 0 := by
   apply HTGeometry.exists_nonzero_finiteDerivativeReporterPacket_ker
   exact xiLogDeriv_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
-    n energy
+    energy
 
 end
 

@@ -21,7 +21,6 @@ open GaloisForLFunctions Module
 /-- **Unconditional Xi finite-reporter collapse.**  Some derivative order no larger than the
 output dimension is redundant after reporting but genuinely new in the Xi source. -/
 theorem exists_xiLogDeriv_finiteReporterConditionalInformation_collapse
-    (zeroIndex : ℕ)
     {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
     [FiniteDimensional ℂ Y]
     (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
@@ -32,9 +31,7 @@ theorem exists_xiLogDeriv_finiteReporterConditionalInformation_collapse
       iteratedDeriv k (logDeriv xi) ∉ Submodule.span ℂ
         (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) (logDeriv xi)) := by
   apply HTGeometry.exists_finiteDerivativeReporterConditionalInformation_collapse
-  exact HTGeometry.constantCoefficientDifferentiallyTranscendental_of_meromorphic_simplePole
-    (meromorphicAt_logDeriv_xi (xiZeroPoint zeroIndex))
-    (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero zeroIndex))
+  exact xiLogDeriv_constantCoefficientDifferentiallyTranscendental
 
 end
 

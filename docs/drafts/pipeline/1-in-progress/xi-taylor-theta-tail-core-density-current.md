@@ -2254,3 +2254,92 @@ This retires the finite-arithmetic composition as a source producer.  The card r
 at its original target: an unconditional source theorem that orients or dissipates the raw
 current `J` itself.  Any proof of the combined remainder bound without new source structure is
 already an RH proof by `(54)`.
+
+## Full-density monotone contraction and exact transfer frontier
+
+**[PROVED, NEW SOURCE REDUCTION]** The complete canonical density
+`rho=4 thetaCuspTailDerivative 2` is strictly decreasing on `[0,infinity)`.  Put
+
+```text
+F(z)=integral rho(t) exp(i t z)dt,
+D(z)=integral rho(t) i t exp(i t z)dt,
+h(t)=-rho'(t)>0.
+```
+
+Two exact integrations by parts give positive completion identities
+
+```text
+G_h(z)=-i z F(z),
+G_h'(z)=-i(F(z)+zD(z)).                                  (55)
+```
+
+For `Im z>0`, `Re G_h(z)>0`; hence `F(z)!=0`.  The pointwise completion contraction gives
+
+```text
+|D(z)| <= (2/Im z)|F(z)|,
+|D(z)/F(z)| <= 2/Im z,
+|Im(D(z)conj(F(z)))| <= (2/Im z)|F(z)|^2.                (56)
+```
+
+Exact product-fibre reassembly identifies current in `(56)` with absolutely convergent sum of all
+actual Hermitian product-fibre currents.  Thus positive prime-cube faces cancel in full continuous
+aggregate.  This is not fibrewise sign and does not use discrete sampling.
+
+Zero-freeness of `F` creates canonical finite transfer
+
+```text
+T_d(z)=P_(2d+3)(z)/F(z).
+```
+
+Quotient rule and product-current Leibniz identity yield, without assuming `P_d!=0`,
+
+```text
+J(P_d)=|T_d|^2 J(F)+|F|^2 J(T_d),
+J(P_d)<= (2/Im z)|P_d|^2+|F|^2 J(T_d).                  (57)
+```
+
+The `2/Im z` term is `O(1)` on every anisotropic mesh.  Formal forward and reverse transport prove
+
+```text
+XiCTaylorFullDensityTransferCurrentSublinearUpper D
+  <-> RiemannHypothesis.
+```
+
+This is a valid exact gauge localization of `(54)`: all untruncated full-density arithmetic current
+is discharged unconditionally and final Taylor denominator is preserved by `P_d=T_dF`.
+
+**[CORRECTED BY HOSTILE WRONSKIAN TEST]** It is not a finite-truncation localization.  Put
+
+```text
+W_d=P_d'F-P_dF',
+Omega_F=XiC'F-XiC F',
+R_d=XiC-P_d.
+```
+
+Then exact algebra and Taylor convergence give
+
+```text
+W_d=Omega_F-(R_d'F-R_dF'),
+W_d(z)->Omega_F(z),
+Omega_F(0)!=0.
+```
+
+Consequently `T_d->XiC/F`, `T_d'->(XiC/F)'`, and `J(T_d)->J(XiC/F)` pointwise.  Because `F` is
+zero-free in the upper half-plane, `XiC/F` has exactly the Xi zeros.  Transfer predicate therefore
+retains full divisor rather than isolating truncation.  Pure-remainder route is retired in
+`../5-failed/xi-taylor-full-density-transfer-wronskian.md`.
+
+Exact completed reflection identifies surviving background with reflected growing channel:
+
+```text
+C_F=2z(F+F(-z))F-(z^2+1/4)(F'(-z)F+F(-z)F')+(1/2)F'
+   =8z XiC F+4z^2 Omega_F.
+```
+
+Actual next frontier is collision-only projective control of `E#=-E`, not global
+Hermite--Biehler gap (already formally refuted).  See
+`xi-completed-density-antipodal-crossing-barrier.md`.
+
+Lean implementation:
+`XiCTaylorThetaTailFullDensityMonotoneCurrent.lean` and
+`XiCTaylorThetaTailFullDensityWronskianNoGo.lean`.

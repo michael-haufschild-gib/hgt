@@ -156,8 +156,6 @@ theorem xi_finiteDerivativeReporterMap_postcomp_newBlindPacket
       report (HTGeometry.finiteDerivativeReporterPacket c xi) ≠ 0 ∧
       decode (report (HTGeometry.finiteDerivativeReporterPacket c xi)) = 0 := by
   exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
-    (HTGeometry.hypertranscendental_imp_constantCoefficientDifferentiallyTranscendental
-      xi_hypertranscendental)
     report decode hcpost hcpre
 
 /-! ## Finite Gibbs spectral dressing -/
@@ -272,7 +270,6 @@ theorem xi_add_finiteGibbs_finiteDerivativeReporterMap_postcomp_newBlindPacket
       decode (report (HTGeometry.finiteDerivativeReporterPacket c
         (xi + HTGeometry.finiteComplexGibbsPartition energy))) = 0 := by
   exact HTGeometry.finiteDerivativeReporterMap_postcomp_newBlindPacket
-    (xi_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental energy)
     report decode hcpost hcpre
 
 end RHTower

@@ -1,8 +1,8 @@
 # Cofinal completed Lee--Yang seam-defect conjecture
 
 - **ID:** `cofinal-completed-lee-yang-seam-defect`
-- **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE] [OPEN CORE] [UNCONDITIONAL TARGET] [NO RH CLAIM]`
+- **Stage:** 5-failed
+- **Type:** `[FALSIFIED] [ILL-TYPED SCALAR CARRIER] [NO RH CLAIM]`
 - **Parent:**
   `../3-formalized/new_scientific_knowledge/theta-likelihood-prime-cube-lee-yang-cone.md`
 - **Failed predecessor:**
@@ -83,10 +83,32 @@ and proves actual `p^3` face violates gate near boundary with no zero-rapidity m
 successful global identity must create reciprocity/confinement through completed cofinal coupling,
 not local deletion.
 
+## No-go closure
+
+- **Exact killing mechanism.** A one-variable reciprocal phase polynomial requires all packet
+  frequencies in one affine lattice.  Corpus proves `linearIndependent_log_primes`, finite prime
+  aperture character rank `pi(N)`, and no fixed finite carrier.  Distinct prime logs therefore do
+  not admit the conjectured scalar cofinal phase variable.  Moving to a prime polydisk does not
+  repair completion: `SeamArchimedeanSamplingQuotient.lean` proves the actual continuous
+  archimedean seam does not factor through prime-power samples, or even through all positive
+  integer-log samples.
+- **Strongest positive survivor.** Retain continuous archimedean coordinate and recombine full
+  density before arithmetic fibre separation.  Strict monotonicity of `4 T''` gives an exact
+  positive completion, zero-freeness of full one-sided transform in upper half-plane, and absolute
+  contraction of sum of all actual Hermitian product-fibre currents.
+- **New insight.** Prime-cube sign violations are not repaired fibrewise.  They cancel only in full
+  continuous-density aggregate.  Remaining RH-bearing gap is finite Taylor-kernel transfer, not
+  scalar or multivariate discrete root confinement.
+- **Status.** Positive survivor is paper-proved and formalized in
+  `XiCTaylorThetaTailFullDensityMonotoneCurrent.lean`; external publication novelty remains
+  unaudited beyond nearby multivariate stability literature.
+
 ## Status
 
-Open.  No completed packet or seam-defect equality claimed yet.
+Falsified.  Do not reconstruct scalar cofinal polynomial or discrete-only prime-torus carrier.
 
 ## Log
 
 - 2026-07-21 — Formulated after corpus audit and prime-cube falsification of diagonal-only route.
+- 2026-07-21 — Retired after prime-log rank and archimedean nonfactorization hostile tests; full
+  continuous-density monotone completion extracted and formalized as positive survivor.

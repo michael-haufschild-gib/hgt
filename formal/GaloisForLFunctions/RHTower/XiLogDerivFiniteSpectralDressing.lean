@@ -17,26 +17,35 @@ namespace RHTower
 
 noncomputable section
 
+/-- The Xi logarithmic derivative has infinite constant-coefficient differential complexity.
+The fixed divisor point `xiZeroPoint 0` supplies the required simple pole, so consumers need not
+carry an irrelevant zero-index witness. -/
+theorem xiLogDeriv_constantCoefficientDifferentiallyTranscendental :
+    HTGeometry.ConstantCoefficientDifferentiallyTranscendental (logDeriv xi) :=
+  HTGeometry.constantCoefficientDifferentiallyTranscendental_of_meromorphic_simplePole
+    (meromorphicAt_logDeriv_xi (xiZeroPoint 0))
+    (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero 0))
+
 /-- The Xi logarithmic derivative retains infinite constant-coefficient spectral complexity after
 adding any finite-level Gibbs response. -/
 theorem xiLogDeriv_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
-    (n : ℕ) {α : Type*} [Fintype α] (energy : α → ℝ) :
+    {α : Type*} [Fintype α] (energy : α → ℝ) :
     HTGeometry.ConstantCoefficientDifferentiallyTranscendental
       (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) :=
   HTGeometry.constantCoefficientDifferentiallyTranscendental_add_finiteComplexGibbsPartition_of_simplePole
-    (meromorphicAt_logDeriv_xi (xiZeroPoint n))
-    (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero n)) energy
+    (meromorphicAt_logDeriv_xi (xiZeroPoint 0))
+    (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero 0)) energy
 
 /-- No finite Gibbs dressing of the Xi logarithmic derivative can equal a finite Gibbs partition
 function, for arbitrary finite dressing and target spectra. -/
 theorem xiLogDeriv_add_finiteComplexGibbsPartition_ne_finiteComplexGibbsPartition
-    (n : ℕ) {α β : Type*} [Fintype α] [Fintype β]
+    {α β : Type*} [Fintype α] [Fintype β]
     (dressing : α → ℝ) (target : β → ℝ) :
     logDeriv xi + HTGeometry.finiteComplexGibbsPartition dressing ≠
       HTGeometry.finiteComplexGibbsPartition target :=
   HTGeometry.add_finiteComplexGibbsPartition_ne_finiteComplexGibbsPartition_of_simplePole
-    (meromorphicAt_logDeriv_xi (xiZeroPoint n))
-    (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero n)) dressing target
+    (meromorphicAt_logDeriv_xi (xiZeroPoint 0))
+    (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero 0)) dressing target
 
 end
 

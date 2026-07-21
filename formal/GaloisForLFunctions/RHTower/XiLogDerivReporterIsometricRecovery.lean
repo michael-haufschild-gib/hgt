@@ -39,7 +39,6 @@ theorem xiLogDerivReporter_isometric_information_and_recovery
 collapse order, the isometric encoding has the same zero information and its adjoint recovers the
 original reporter exactly, while the source derivative remains independent of all predecessors. -/
 theorem exists_xiLogDeriv_isometricReporterRecovery_collapse
-    (zeroIndex : ℕ)
     {Y Z : Type*}
     [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
     [FiniteDimensional ℂ Y]
@@ -55,9 +54,7 @@ theorem exists_xiLogDeriv_isometricReporterRecovery_collapse
         (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) (logDeriv xi)) := by
   obtain ⟨k, hk, hzero, hpostzero, _, _, hrecover, hsource⟩ :=
     HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
-      (HTGeometry.constantCoefficientDifferentiallyTranscendental_of_meromorphic_simplePole
-        (meromorphicAt_logDeriv_xi (xiZeroPoint zeroIndex))
-        (meromorphicOrderAt_logDeriv_xi_eq_neg_one (xiZeroPoint_eq_zero zeroIndex)))
+      xiLogDeriv_constantCoefficientDifferentiallyTranscendental
       report decode
   exact ⟨k, hk, hzero, hpostzero, hrecover, hsource⟩
 
@@ -65,7 +62,7 @@ theorem exists_xiLogDeriv_isometricReporterRecovery_collapse
 dressed reporter and preserves its zero-information witness, but cannot recover the same genuinely
 new derivative direction erased before reporting. -/
 theorem exists_xiLogDeriv_add_finiteGibbs_isometricReporterRecovery_collapse
-    (zeroIndex : ℕ) {A : Type*} [Fintype A] (energy : A → ℝ)
+    {A : Type*} [Fintype A] (energy : A → ℝ)
     {Y Z : Type*}
     [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
     [FiniteDimensional ℂ Y]
@@ -95,7 +92,7 @@ theorem exists_xiLogDeriv_add_finiteGibbs_isometricReporterRecovery_collapse
             (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)) := by
   exact HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
     (xiLogDeriv_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
-      zeroIndex energy)
+      energy)
     report decode
 
 end
