@@ -51,6 +51,36 @@ def thetaCuspGaussianApertureSignedAmplitudeCurvatureCorrection
     thetaCuspGaussianApertureTailAmplitudeMultiplier lambda (j + 1) *
       thetaCuspGaussianApertureTailChannelRatioCurvature lambda 4 j
 
+/-- The signed correction is the weighted second difference of the amplitude multiplier.  This is
+the denominator-free form most directly exposed to the source score calculus. -/
+theorem thetaCuspGaussianApertureSignedAmplitudeCurvatureCorrection_eq_weightedDecrements
+    {lambda : ℝ} (hlambda : lambda ≤ 0) (j : ℕ) :
+    thetaCuspGaussianApertureSignedAmplitudeCurvatureCorrection lambda j =
+      thetaCuspGaussianApertureTailChannelGammaRatio lambda 4 j *
+          (thetaCuspGaussianApertureTailAmplitudeMultiplier lambda j -
+            thetaCuspGaussianApertureTailAmplitudeMultiplier lambda (j + 1)) -
+        thetaCuspGaussianApertureTailChannelGammaRatio lambda 4 (j + 2) *
+          (thetaCuspGaussianApertureTailAmplitudeMultiplier lambda (j + 1) -
+            thetaCuspGaussianApertureTailAmplitudeMultiplier lambda (j + 2)) := by
+  rw [thetaCuspGaussianApertureSignedAmplitudeCurvatureCorrection,
+    thetaCuspGaussianApertureFirstAtomRatioCurvature_eq_transport hlambda]
+  ring
+
+/-- The open signed-curvature producer is exactly a weighted concavity law for the amplitude
+multiplier sequence. -/
+theorem thetaCuspGaussianApertureSignedAmplitudeCurvatureCorrection_nonneg_iff_weightedDecrements
+    {lambda : ℝ} (hlambda : lambda ≤ 0) (j : ℕ) :
+    0 ≤ thetaCuspGaussianApertureSignedAmplitudeCurvatureCorrection lambda j ↔
+      thetaCuspGaussianApertureTailChannelGammaRatio lambda 4 (j + 2) *
+          (thetaCuspGaussianApertureTailAmplitudeMultiplier lambda (j + 1) -
+            thetaCuspGaussianApertureTailAmplitudeMultiplier lambda (j + 2)) ≤
+        thetaCuspGaussianApertureTailChannelGammaRatio lambda 4 j *
+          (thetaCuspGaussianApertureTailAmplitudeMultiplier lambda j -
+            thetaCuspGaussianApertureTailAmplitudeMultiplier lambda (j + 1)) := by
+  rw [thetaCuspGaussianApertureSignedAmplitudeCurvatureCorrection_eq_weightedDecrements
+    hlambda]
+  constructor <;> intro h <;> linarith
+
 /-- Denominator-free signed projective transport law.  It is the exact cancellation-preserving
 replacement for the absolute-value leakage bound. -/
 theorem thetaCuspGaussianApertureSignedAmplitudeCurvatureCorrection_mul_factors
@@ -135,6 +165,97 @@ theorem thetaCuspGaussianAperture_coldSlope_signFlip_pos :
         thetaCuspGaussianApertureColdSignedCorrectionCoefficient := by
   rw [thetaCuspGaussianAperture_coldSlope_signFlip]
   exact thetaCuspFirstAtomBoundaryLogSlope_pos
+
+/-! ### Exact all-degree sign of the cold half-order coefficient -/
+
+/-- The Gamma quotient multiplying the first half-order Watson correction at degree `j`. -/
+def thetaCuspGaussianApertureColdHalfOrderGammaGap (j : ℕ) : ℝ :=
+  Real.Gamma ((j : ℝ) + 1) /
+    ((2 * (j : ℝ) + 1) * Real.Gamma ((j : ℝ) + 1 / 2))
+
+theorem thetaCuspGaussianApertureColdHalfOrderGammaGap_pos (j : ℕ) :
+    0 < thetaCuspGaussianApertureColdHalfOrderGammaGap j := by
+  rw [thetaCuspGaussianApertureColdHalfOrderGammaGap]
+  exact div_pos
+    (Real.Gamma_pos_of_pos (by positivity))
+    (mul_pos (by positivity) (Real.Gamma_pos_of_pos (by positivity)))
+
+/-- The half-order Gamma gap has an exact rational degree recurrence. -/
+theorem thetaCuspGaussianApertureColdHalfOrderGammaGap_succ (j : ℕ) :
+    thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 1) =
+      ((2 * (j : ℝ) + 2) / (2 * (j : ℝ) + 3)) *
+        thetaCuspGaussianApertureColdHalfOrderGammaGap j := by
+  rw [thetaCuspGaussianApertureColdHalfOrderGammaGap,
+    thetaCuspGaussianApertureColdHalfOrderGammaGap]
+  rw [show ((j + 1 : ℕ) : ℝ) + 1 = ((j : ℝ) + 1) + 1 by
+      norm_num [Nat.cast_add, Nat.cast_one],
+    Real.Gamma_add_one (by positivity : (j : ℝ) + 1 ≠ 0)]
+  rw [show ((j + 1 : ℕ) : ℝ) + 1 / 2 = ((j : ℝ) + 1 / 2) + 1 by
+      norm_num [Nat.cast_add, Nat.cast_one]
+      ring,
+    Real.Gamma_add_one (by positivity : (j : ℝ) + 1 / 2 ≠ 0)]
+  have hgamma : Real.Gamma ((j : ℝ) + 1 / 2) ≠ 0 :=
+    (Real.Gamma_pos_of_pos (by positivity)).ne'
+  norm_num [Nat.cast_add, Nat.cast_one]
+  field_simp [hgamma]
+  ring
+
+/-- The discrete curvature of the cold half-order coefficient is exactly positive in every
+degree.  This is the all-degree factor shared by the bad `p = 4` slope and the sign-reversing
+literal first-atom slope. -/
+theorem thetaCuspGaussianApertureColdHalfOrderGammaGap_secondDiff (j : ℕ) :
+    thetaCuspGaussianApertureColdHalfOrderGammaGap j -
+        2 * thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 1) +
+        thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 2) =
+      3 * thetaCuspGaussianApertureColdHalfOrderGammaGap j /
+        ((2 * (j : ℝ) + 3) * (2 * (j : ℝ) + 5)) := by
+  have h1 := thetaCuspGaussianApertureColdHalfOrderGammaGap_succ j
+  have h2 := thetaCuspGaussianApertureColdHalfOrderGammaGap_succ (j + 1)
+  rw [h1, h2, h1]
+  norm_num [Nat.cast_add, Nat.cast_one]
+  field_simp
+  ring
+
+theorem thetaCuspGaussianApertureColdHalfOrderGammaGap_secondDiff_pos (j : ℕ) :
+    0 < thetaCuspGaussianApertureColdHalfOrderGammaGap j -
+        2 * thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 1) +
+        thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 2) := by
+  rw [thetaCuspGaussianApertureColdHalfOrderGammaGap_secondDiff]
+  exact div_pos
+    (mul_pos (by norm_num)
+      (thetaCuspGaussianApertureColdHalfOrderGammaGap_pos j))
+    (mul_pos (by positivity) (by positivity))
+
+/-- The leading positive `p = 4` channel has the wrong cold half-order sign in every degree. -/
+theorem thetaCuspGaussianAperture_coldLeadingSlopeCoefficient_neg (j : ℕ) :
+    (9 / 2 - 2 * Real.pi) *
+        (thetaCuspGaussianApertureColdHalfOrderGammaGap j -
+          2 * thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 1) +
+          thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 2)) < 0 := by
+  exact mul_neg_of_neg_of_pos
+    (by nlinarith [Real.pi_gt_three])
+    (thetaCuspGaussianApertureColdHalfOrderGammaGap_secondDiff_pos j)
+
+/-- The signed `p = 2` correction has the opposite, strictly positive cold coefficient in every
+degree. -/
+theorem thetaCuspGaussianAperture_coldSignedCorrectionCoefficient_pos (j : ℕ) :
+    0 < thetaCuspGaussianApertureColdSignedCorrectionCoefficient *
+        (thetaCuspGaussianApertureColdHalfOrderGammaGap j -
+          2 * thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 1) +
+          thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 2)) := by
+  exact mul_pos
+    thetaCuspGaussianApertureColdSignedCorrectionCoefficient_pos
+    (thetaCuspGaussianApertureColdHalfOrderGammaGap_secondDiff_pos j)
+
+/-- After the signed correction is restored, the literal first-atom cold coefficient is strictly
+positive in every degree. -/
+theorem thetaCuspGaussianAperture_coldFirstAtomSlopeCoefficient_pos (j : ℕ) :
+    0 < thetaCuspFirstAtomBoundaryLogSlope *
+        (thetaCuspGaussianApertureColdHalfOrderGammaGap j -
+          2 * thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 1) +
+          thetaCuspGaussianApertureColdHalfOrderGammaGap (j + 2)) := by
+  exact mul_pos thetaCuspFirstAtomBoundaryLogSlope_pos
+    (thetaCuspGaussianApertureColdHalfOrderGammaGap_secondDiff_pos j)
 
 end
 

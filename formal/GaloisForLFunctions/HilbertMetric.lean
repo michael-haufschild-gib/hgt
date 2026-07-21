@@ -31,6 +31,8 @@ import GaloisForLFunctions.HilbertMetric.ReflectionFourthJet
 import GaloisForLFunctions.HilbertMetric.FourthCurvatureMixture
 import GaloisForLFunctions.HilbertMetric.FourthJetCoalescedCusp
 import GaloisForLFunctions.HilbertMetric.SixthJetRaywiseCoalescedCone
+import GaloisForLFunctions.HilbertMetric.PositiveHessianSquare
+import GaloisForLFunctions.HilbertMetric.UniformCoalescedThreePointSquare
 import GaloisForLFunctions.HilbertMetric.GaussianMetricRankOneFracture
 
 /-!

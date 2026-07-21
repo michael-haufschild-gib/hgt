@@ -325,6 +325,158 @@ theorem gammaPolePolynomialJetLaurentEval_eq_iff_symbolic_eq
     ← gammaPoleSymbolicToActual_polynomialJetLaurentEval]
   exact gammaPoleSymbolicToActual_injective.eq_iff
 
+/-- The highest pole grade of the universal `j`-th simple-pole jet is
+the `U₀` boundary term with its signed factorial coefficient. -/
+theorem universalSimplePoleJetProfile_coeff_top (j : ℕ) :
+    (HTGeometry.universalSimplePoleJetProfile j).coeff (j + 1) =
+      MvPolynomial.C (((-1 : ℂ) ^ j) * (j.factorial : ℂ)) *
+        MvPolynomial.X 0 := by
+  rw [HTGeometry.universalSimplePoleJetProfile,
+    Polynomial.coeff_X_mul,
+    HTGeometry.universalSimplePoleRegularProfile,
+    Polynomial.finsetSum_coeff]
+  rw [Finset.sum_eq_single 0]
+  · simp
+  · intro k hk hk0
+    have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
+    have hkle : k ≤ j := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+    have hsub : j - k ≠ j := by omega
+    simp [Polynomial.coeff_monomial, hsub]
+  · simp
+
+theorem gammaPoleSymbolicDerivativeLaurentProfile_coeff_top (j : ℕ) :
+    gammaPoleSymbolicDerivativeLaurentProfile j ((j + 1 : ℕ) : ℤ) =
+      gammaPoleSymbolicDerivativeScale j *
+        gammaPoleComplexScaleDerivativeInclude
+          (((-1 : ℂ) ^ j) * (j.factorial : ℂ)) := by
+  have hboundary :
+      (((HTGeometry.universalSimplePoleJetProfile j).map
+        gammaPoleSymbolicUnitDerivativeBoundaryEval).coeff (j + 1)) =
+        gammaPoleComplexScaleDerivativeInclude
+          (((-1 : ℂ) ^ j) * (j.factorial : ℂ)) := by
+    rw [Polynomial.coeff_map, universalSimplePoleJetProfile_coeff_top]
+    simp [gammaPoleSymbolicUnitDerivativeBoundaryEval,
+      gammaPoleSymbolicUnitDerivativeBoundaryFamily]
+  rw [gammaPoleSymbolicDerivativeLaurentProfile,
+    ← LaurentPolynomial.smul_eq_C_mul]
+  change gammaPoleSymbolicDerivativeScale j *
+      (Polynomial.toLaurent
+        ((HTGeometry.universalSimplePoleJetProfile j).map
+          gammaPoleSymbolicUnitDerivativeBoundaryEval)
+        ((j + 1 : ℕ) : ℤ)) = _
+  congr 1
+  rw [Polynomial.toLaurent_apply]
+  change Finsupp.mapDomain (fun n : ℕ => (n : ℤ))
+      ((HTGeometry.universalSimplePoleJetProfile j).map
+        gammaPoleSymbolicUnitDerivativeBoundaryEval).toFinsupp
+        ((j + 1 : ℕ) : ℤ) = _
+  have hinj : Function.Injective (fun n : ℕ => (n : ℤ)) :=
+    Int.ofNat_injective
+  rw [Finsupp.mapDomain_apply hinj]
+  exact hboundary
+
+/-- **Linear top-edge diagonal.** The outer grade `j+1`, scale grade `-j`,
+boundary-constant coefficient of the symbolic `j`-th Gamma derivative is
+exactly `-j!`. -/
+theorem gammaPoleSymbolicDerivativeLaurentProfile_top_scale_boundary
+    (j : ℕ) :
+    MvPolynomial.coeff 0
+        ((gammaPoleSymbolicDerivativeLaurentProfile j ((j + 1 : ℕ) : ℤ))
+          (-(j : ℤ))) =
+      RatFunc.C (-(j.factorial : ℂ)) := by
+  rw [gammaPoleSymbolicDerivativeLaurentProfile_coeff_top]
+  have hsign : (-1 : GammaPoleRationalBase) ^ j *
+      (-1 : GammaPoleRationalBase) ^ j = 1 := by
+    rw [← mul_pow]
+    simp
+  have hinner :
+      (gammaPoleSymbolicDerivativeScale j *
+        gammaPoleComplexScaleDerivativeInclude
+          (((-1 : ℂ) ^ j) * (j.factorial : ℂ))) (-(j : ℤ)) =
+        MvPolynomial.C (RatFunc.C (-(j.factorial : ℂ))) := by
+    have hscaleCoeff :
+        gammaPoleSymbolicDerivativeScale j (-(j : ℤ)) =
+          -MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j) := by
+      rw [gammaPoleSymbolicDerivativeScale]
+      have hpow :
+          (-1 : GammaPoleScaleDerivativeSymbolic) ^ j =
+            LaurentPolynomial.C
+              (MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j)) := by
+        calc
+          (-1 : GammaPoleScaleDerivativeSymbolic) ^ j =
+              (gammaPoleRationalScaleDerivativeInclude
+                (-1 : GammaPoleRationalBase)) ^ j := by
+            simp [gammaPoleRationalScaleDerivativeInclude]
+          _ = gammaPoleRationalScaleDerivativeInclude
+              ((-1 : GammaPoleRationalBase) ^ j) := by rw [map_pow]
+          _ = _ := rfl
+      rw [hpow]
+      change (-((LaurentPolynomial.C
+          (MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j)) *
+            LaurentPolynomial.T (-(j : ℤ)) :
+          GammaPoleScaleDerivativeSymbolic) (-(j : ℤ)))) = _
+      congr 1
+      calc
+        (LaurentPolynomial.C
+            (MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j)) *
+              LaurentPolynomial.T (-(j : ℤ)) :
+            GammaPoleScaleDerivativeSymbolic) (-(j : ℤ)) =
+            (Finsupp.single (-(j : ℤ))
+              (MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j)) :
+                GammaPoleScaleDerivativeSymbolic) (-(j : ℤ)) :=
+          congrArg (fun f : GammaPoleScaleDerivativeSymbolic => f (-(j : ℤ)))
+            (LaurentPolynomial.single_eq_C_mul_T
+              (MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j))
+              (-(j : ℤ))).symm
+        _ = MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j) :=
+          Finsupp.single_eq_same
+    rw [mul_comm]
+    change (((LaurentPolynomial.C
+          (MvPolynomial.C (RatFunc.C (((-1 : ℂ) ^ j) * (j.factorial : ℂ)))) *
+            gammaPoleSymbolicDerivativeScale j) :
+          GammaPoleScaleDerivativeSymbolic) (-(j : ℤ))) = _
+    rw [← LaurentPolynomial.smul_eq_C_mul]
+    change MvPolynomial.C
+        (RatFunc.C (((-1 : ℂ) ^ j) * (j.factorial : ℂ))) *
+          gammaPoleSymbolicDerivativeScale j (-(j : ℤ)) = _
+    rw [hscaleCoeff]
+    rw [mul_neg]
+    have hbase :
+        -(RatFunc.C (((-1 : ℂ) ^ j) * (j.factorial : ℂ)) *
+            (-1 : GammaPoleRationalBase) ^ j) =
+          RatFunc.C (-(j.factorial : ℂ)) := by
+      have hpowK : (-1 : GammaPoleRationalBase) ^ j =
+          RatFunc.C ((-1 : ℂ) ^ j) := by
+        calc
+          (-1 : GammaPoleRationalBase) ^ j =
+              (RatFunc.C (-1 : ℂ)) ^ j := by simp
+          _ = RatFunc.C ((-1 : ℂ) ^ j) := by rw [map_pow]
+      have hsignC : (-1 : ℂ) ^ j * (-1 : ℂ) ^ j = 1 := by
+        rw [← mul_pow]
+        simp
+      have hcomplex :
+          -((((-1 : ℂ) ^ j) * (j.factorial : ℂ)) * (-1 : ℂ) ^ j) =
+            -(j.factorial : ℂ) := by
+        congr 1
+        calc
+          (((-1 : ℂ) ^ j) * (j.factorial : ℂ)) * (-1 : ℂ) ^ j =
+              ((-1 : ℂ) ^ j * (-1 : ℂ) ^ j) * (j.factorial : ℂ) := by ring
+          _ = (j.factorial : ℂ) := by rw [hsignC, one_mul]
+      calc
+        _ = -(RatFunc.C ((((-1 : ℂ) ^ j) * (j.factorial : ℂ)) *
+            (-1 : ℂ) ^ j)) := by rw [hpowK, ← map_mul]
+        _ = RatFunc.C (-(j.factorial : ℂ)) := by
+          rw [← map_neg, hcomplex]
+    simpa only [map_mul, map_neg] using
+      congrArg (MvPolynomial.C : GammaPoleRationalBase →+*
+        MvPolynomial ℕ GammaPoleRationalBase) hbase
+  calc
+    _ = MvPolynomial.coeff 0
+        (MvPolynomial.C (RatFunc.C (-(j.factorial : ℂ)))) :=
+      congrArg (MvPolynomial.coeff 0) hinner
+    _ = RatFunc.C (-(j.factorial : ℂ)) :=
+      MvPolynomial.coeff_zero_C _
+
 end
 
 end GaloisForLFunctions

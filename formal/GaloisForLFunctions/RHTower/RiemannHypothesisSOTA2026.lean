@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
 import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
-import GaloisForLFunctions.RHTower.HedenmalmCenterMixedRaywiseCoalescedCone
+import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
 import GaloisForLFunctions.RHTower.XiHedenmalmSourceCapstone
@@ -49,11 +49,14 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   `exists_thetaCuspCenterMixed_coalescedCusp_posDef` opens an unconditional positive-definite
   nested cusp at the coalesced corner.  The sixth-jet determinant identity now strengthens this
   to `exists_thetaCuspCenterMixed_raywiseCoalescedCone_posDef`: every fixed positive aspect-ratio
-  ray through the corner eventually enters the strict chamber.  The exact remaining order-three
-  wall still lies inside the bounded two-gap core from
+  ray through the corner eventually enters the strict chamber.  The mixed sixth-jet Hessian law
+  strengthens this again to `exists_thetaCuspCenterMixed_uniformCoalescedSquare_posDef`: one
+  radius works for both positive gaps and hence closes the entire small--small corner, uniformly
+  even as the aspect ratio tends to either axis.  The exact remaining order-three wall lies in
+  the bounded noncoalesced annulus between that square and the far chamber, inside the compact
+  two-gap core from
   `exists_thetaCuspCenterMixedThreePointMatrix_compactCore_iff`, outside the proved far chamber
-  and raywise coalesced cone; the ray radius is not uniform in the direction.  All-node positive-
-  definiteness remains the RH-equivalent wall.
+  and uniform coalesced square.  All-node positive-definiteness remains the RH-equivalent wall.
 
 * Suzuki (`arXiv:2606.09096`) constructs finite-interval self-adjoint extensions and entire
   characteristic functions with only real zeros.  The paper leaves locally uniform convergence

@@ -118,27 +118,46 @@ theorem gammaPoleScaleAndUnitDerivativeLaurentEval_toLaurent
   simp [gammaPoleScaleAndUnitDerivativeLaurentEval,
     gammaPoleScaleAndUnitDerivativePolynomialEval]
 
+/-- An injective polynomial evaluation at a unit extends injectively through
+Laurent localization.  No domain hypothesis on the target is needed because
+the clearing monomial is itself a unit. -/
+theorem laurentPolynomial_eval₂_injective_of_polynomial_eval₂_injective
+    {R S : Type*} [CommRing R] [CommRing S]
+    (f : R →+* S) (x : Sˣ)
+    (hpoly : Function.Injective (Polynomial.eval₂RingHom f x)) :
+    Function.Injective (LaurentPolynomial.eval₂ f x) := by
+  intro F G hFG
+  apply sub_eq_zero.mp
+  let q := F - G
+  have hqeval : LaurentPolynomial.eval₂ f x q = 0 := by
+    simp [q, hFG]
+  obtain ⟨n, p, hp⟩ := LaurentPolynomial.exists_T_pow q
+  have hpeval : Polynomial.eval₂RingHom f x p = 0 := by
+    change Polynomial.eval₂ f (x : S) p = 0
+    rw [← LaurentPolynomial.eval₂_toLaurent, hp,
+      map_mul, hqeval, zero_mul]
+  have hp0 : p = 0 :=
+    hpoly (hpeval.trans (map_zero _).symm)
+  have hqT : q * LaurentPolynomial.T (n : ℤ) = 0 := by
+    rw [← hp, hp0, map_zero]
+  calc
+    q = q * 1 := by rw [mul_one]
+    _ = q * (LaurentPolynomial.T (n : ℤ) *
+        LaurentPolynomial.T (-(n : ℤ))) := by
+      rw [← LaurentPolynomial.T_add, add_neg_cancel,
+        LaurentPolynomial.T_zero]
+    _ = (q * LaurentPolynomial.T (n : ℤ)) *
+        LaurentPolynomial.T (-(n : ℤ)) := by rw [mul_assoc]
+    _ = 0 := by rw [hqT, zero_mul]
+
 /-- **Laurent value reflection.** Joint relative freeness survives localization
 at the nonzero Gamma factorial scale. -/
 theorem gammaPoleScaleAndUnitDerivativeLaurentEval_injective :
     Function.Injective gammaPoleScaleAndUnitDerivativeLaurentEval := by
-  intro f g hfg
-  apply sub_eq_zero.mp
-  let q := f - g
-  have hqeval : gammaPoleScaleAndUnitDerivativeLaurentEval q = 0 := by
-    simp [q, hfg]
-  obtain ⟨n, p, hp⟩ := LaurentPolynomial.exists_T_pow q
-  have hpeval : gammaPoleScaleAndUnitDerivativePolynomialEval p = 0 := by
-    rw [← gammaPoleScaleAndUnitDerivativeLaurentEval_toLaurent, hp,
-      map_mul, hqeval, zero_mul]
-  have hp0 : p = 0 :=
-    gammaPoleScaleAndUnitDerivativePolynomialEval_injective
-      (hpeval.trans (map_zero _).symm)
-  have hqT : q * LaurentPolynomial.T (n : ℤ) = 0 := by
-    rw [← hp, hp0, map_zero]
-  exact (mul_eq_zero.mp hqT).resolve_right
-    (LaurentPolynomial.isUnit_T
-      (R := MvPolynomial ℕ GammaPoleRationalBase) n).ne_zero
+  apply laurentPolynomial_eval₂_injective_of_polynomial_eval₂_injective
+  simpa [gammaPoleScaleAndUnitDerivativePolynomialEval,
+    reciprocalSignedFactorialGermUnit_val] using
+      gammaPoleScaleAndUnitDerivativePolynomialEval_injective
 
 end
 

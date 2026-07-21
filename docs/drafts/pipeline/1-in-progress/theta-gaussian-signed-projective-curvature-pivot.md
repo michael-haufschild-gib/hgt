@@ -139,12 +139,23 @@ q_j^(4)*d_(j+2)*T_j
 `(SPC6)` is the new global source conjecture.  `(SPC2)` proves its eventual cold-aperture sign for
 each fixed degree.  Its validity over the whole physical aperture continuum remains open.
 
+After cancelling the positive amplitude factors, `(SPC6)` is equivalently the weighted concavity
+law
+
+```text
+q_j^(4)*(m_j-m_(j+1))
+ >=q_(j+2)^(4)*(m_(j+1)-m_(j+2)).                (SPC7)
+```
+
+This is the form directly exposed to the score/Stein calculus: the weighted adjacent decrement of
+the signed amplitude multiplier must itself decrease with degree.
+
 ## No-go closure
 
 - **Exact killing theorem/mechanism:** `(SPC1)` rules out any globally positive lower bound for `S_j^(4)`.  The W18 absolute leakage budget is `O(L^-1/2)` in the cold chamber while the actual signed curvature is `O(L^-3/2)`, so it loses a full factor `L` and cannot close the global boundary.
 - **Strongest positive survivor:** `(SPC2)`--`(SPC5)` show that the signed amplitude correction reverses the cold sign and is governed exactly by adjacent projective minors.
 - **New insight:** the first-atom proof must preserve the signed `p=2/p=4` correction.  Positive `C_4` curvature may be used only inside a genuine cusp chamber; the cold seam must be carried by signed projective transport or the completed-source flow.
-- **Status:** `(SPC1)`--`(SPC3)` are paper-proved and novelty-unverified.  `(SPC4)`--`(SPC5)`, the sign equivalence, and the exact positive sign-flip coefficient are formalized in `PrimeArchThetaGaussianApertureSignedProjectiveCurvature.lean`.  The global inequality `(SPC6)` is the named open core.
+- **Status:** `(SPC1)`--`(SPC3)` are paper-proved and novelty-unverified.  `(SPC4)`--`(SPC5)`, the `(SPC6)`/`(SPC7)` equivalence, the exact recurrence `g_(j+1)=((2j+2)/(2j+3))g_j`, the positive second difference, and the opposite all-degree coefficient signs are formalized in `PrimeArchThetaGaussianApertureSignedProjectiveCurvature.lean`.  Direct leaf checking and the exact module build pass; audited declarations use only `propext`, `Classical.choice`, and `Quot.sound`.  The global inequality `(SPC6)` is the named open core.
 
 ## Novelty audit
 
@@ -163,3 +174,5 @@ reversal or the adjacent projective-flux law.  Those exact source-compiled state
 
 - 2026-07-20 — cold `C_4` positivity falsified; signed curvature producer and exact projective-flux survivor identified.
 - 2026-07-20 — `(SPC4)`--`(SPC5)` and the nonnegative-flux equivalence added to permanent Lean source.
+- 2026-07-20 — exact Gamma-gap recurrence and the all-degree cold sign separation formalized.
+- 2026-07-20 — exact module build and axiom audit passed.
