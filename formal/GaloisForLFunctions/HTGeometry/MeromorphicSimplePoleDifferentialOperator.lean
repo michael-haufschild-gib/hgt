@@ -194,6 +194,16 @@ theorem iteratedDeriv_dslope_zero_eq
   apply (eq_div_iff hj).2
   simpa [mul_comm] using hder
 
+/-- **Complete divided-difference jet reflection.** Every derivative of the analytic remainder of
+`U/x` is the corresponding shifted numerator derivative with its exact integral normalization. -/
+theorem iteratedDeriv_iteratedDeriv_dslope_zero_eq
+    {U : ℂ → ℂ} (hU : AnalyticAt ℂ U 0) (j m : ℕ) :
+    iteratedDeriv m (iteratedDeriv j (dslope U 0)) 0 =
+      iteratedDeriv (j + m + 1) U 0 / ((j + m + 1 : ℕ) : ℂ) := by
+  rw [congrFun (iteratedDeriv_comp_iterate (dslope U 0) m j) 0]
+  simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
+    iteratedDeriv_dslope_zero_eq hU (m + j)
+
 /-- On the punctured germ, an analytic numerator over the coordinate is its residue pole plus its
 analytic divided difference. -/
 theorem div_id_eventuallyEq_const_mul_inv_add_dslope

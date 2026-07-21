@@ -5,6 +5,9 @@ import GaloisForLFunctions.RHTower.LiFiniteCriterionFrontier
 import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
 import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
 import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
+import GaloisForLFunctions.RHTower.SuzukiFiniteApertureHermiteBiehler
+import GaloisForLFunctions.RHTower.SuzukiProjectiveDefectBoundary
+import GaloisForLFunctions.RHTower.SuzukiGroundEdgeCayleyUniversality
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
@@ -18,7 +21,7 @@ import GaloisForLFunctions.RHTower.XiWeilPositivityCriterion
 # Riemann-hypothesis research frontier through 2026
 
 This is the typed endpoint ledger for the live RH routes in the primary literature through
-2026-07-20.  It records mathematical walls, not evidence and not a claimed proof.
+2026-07-21.  It records mathematical walls, not evidence and not a claimed proof.
 
 ## Spectral routes
 
@@ -59,10 +62,28 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   and uniform coalesced square.  All-node positive-definiteness remains the RH-equivalent wall.
 
 * Suzuki (`arXiv:2606.09096`) constructs finite-interval self-adjoint extensions and entire
-  characteristic functions with only real zeros.  The paper leaves locally uniform convergence
-  of normalized characteristic functions to `z^2 xi/xi'` conjectural.  The centered target and
-  the exact sequential zero-transfer wall are formalized below.  The concrete screw-function
-  Hilbert space and its unbounded differential operators are not yet present in this project.
+  characteristic functions with only real zeros.  `SuzukiFiniteApertureHermiteBiehler` extracts
+  the full-angle consequence: a finite-aperture Hermite--Biehler function, a Schur/Livšic quotient,
+  its canonical Herglotz normalization `m(i)=i`, the aperture-independent Schwarz majorant
+  `|Theta(z)| <= |(z-i)/(z+i)|`, unconditional local Montel subsequences, and a two-angle quotient
+  in which common entire gauges cancel.  The paper's ordinary entire-compact
+  target `z^2 xi/xi'` has unconditional real poles,
+  so the old zero-transfer predicate below is retained only as a legacy impossible-premise
+  connector.  `SuzukiProjectiveDefectBoundary` proves the positive survivor of the failed
+  arbitrary-shift route: common source scales cancel, the two-defect Gram state splits exactly
+  into even/odd energy weights, parity uniquely selects the odd/even extension phases, and the
+  universal free carriers converge locally uniformly to zero at the far-negative projective
+  boundary.  `SuzukiGroundEdgeCayleyUniversality` closes the opposite-end no-go: if the shift
+  approaches a simple even ground state faster than odd spectral mass leaks through the first
+  parity gap, the defect angle tends to one and every locally uniform carrier limit is the
+  universal Cayley map `(z-i)/(z+i)`.  The contrapositive theorem
+  `suzukiGroundEdge_nonCayley_forces_leakage_not_tendsto_zero` records the positive survivor as an
+  exact scale-selection law.  Thus both extreme shift regimes erase arithmetic data.  The live
+  wall is a two-scale intermediate window: keep
+  `tau * ||sinh||^2 / (gap * |<phi_0,cosh>|^2)` away from zero while excluding the far-negative
+  free boundary, then identify the resulting non-universal meromorphic Livšic limit with the
+  global Xi/de Branges carrier.  The concrete screw-function Hilbert space and its unbounded
+  differential operators are not yet present in this project.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete
@@ -183,10 +204,12 @@ theorem suzukiXiCharacteristicTarget_eq_zero_of_XiC_eq_zero
     suzukiXiCharacteristicTarget z = 0 := by
   simp [suzukiXiCharacteristicTarget, hz]
 
-/-- The exact sequential form of Suzuki's remaining characteristic-function limit wall.  The
-analytic and nonzero clauses state what locally uniform convergence of the paper's entire
-functions necessarily requires of the displayed quotient target; they prevent a meromorphic or
-identically-zero surrogate from passing as the conjectured limit. -/
+/-- **Legacy impossible-premise connector.**  This is the ordinary entire-compact reading of
+Suzuki's displayed Corollary 1.6 limit.  It is retained for API compatibility and to record the
+zero-transfer logic, but it is no longer the current research wall: the displayed target has
+unconditional real poles and therefore cannot satisfy the `AnalyticOnNhd ... univ` clause.  The
+pole-compatible finite-aperture replacement is the Livšic/two-angle carrier formalized in
+`SuzukiFiniteApertureHermiteBiehler`. -/
 def SuzukiXiCharacteristicLimitWall : Prop :=
   ∃ W : ℕ → ℂ → ℂ,
     TendstoLocallyUniformly W suzukiXiCharacteristicTarget atTop ∧
@@ -195,8 +218,8 @@ def SuzukiXiCharacteristicLimitWall : Prop :=
       AnalyticOnNhd ℂ suzukiXiCharacteristicTarget Set.univ ∧
       ∃ a : ℂ, suzukiXiCharacteristicTarget a ≠ 0
 
-/-- Closing Suzuki's locally uniform characteristic-function wall proves RH by the same closed
-zero-locus mechanism as the Connes route. -/
+/-- The legacy ordinary entire-compact premise implies RH by the closed zero-locus mechanism.  This
+logical implication does not make the premise viable; the current Suzuki wall is meromorphic. -/
 theorem suzukiXiCharacteristicLimitWall_implies_riemannHypothesis
     (h : SuzukiXiCharacteristicLimitWall) : RiemannHypothesis := by
   rcases h with ⟨W, hconv, hentire, hreal, htarget, a, ha⟩

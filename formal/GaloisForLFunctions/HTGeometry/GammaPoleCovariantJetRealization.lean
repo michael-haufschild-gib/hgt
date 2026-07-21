@@ -307,15 +307,58 @@ def gammaPoleJetPrincipalRemainderValue (branch j : ℕ) : ℂ :=
   -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
     (iteratedDeriv (j + 1) (gammaPoleRegularUnit branch) 0 / ((j + 1 : ℕ) : ℂ))
 
+/-- Canonical analytic remainder after the unique principal monomial of a normalized Gamma jet. -/
+def gammaPoleJetRegularRemainder (branch j : ℕ) (x : ℂ) : ℂ :=
+  -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
+    iteratedDeriv j (dslope (gammaPoleRegularUnit branch) 0) x
+
+theorem analyticAt_gammaPoleJetRegularRemainder (branch j : ℕ) :
+    AnalyticAt ℂ (gammaPoleJetRegularRemainder branch j) 0 := by
+  exact analyticAt_const.mul (analyticAt_iteratedDeriv_of_analyticAt
+    (analyticAt_dslope_zero_of_analyticAt
+      (gammaPoleRegularUnit_analyticAt_zero branch)) j)
+
+/-- Every Taylor jet of the regular remainder is the corresponding shifted jet of the Gamma pole
+unit, with the exact affine scale and divided-difference denominator. -/
+theorem iteratedDeriv_gammaPoleJetRegularRemainder_zero
+    (branch j m : ℕ) :
+    iteratedDeriv m (gammaPoleJetRegularRemainder branch j) 0 =
+      -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
+        (iteratedDeriv (j + m + 1) (gammaPoleRegularUnit branch) 0 /
+          ((j + m + 1 : ℕ) : ℂ)) := by
+  change iteratedDeriv m (fun x =>
+    -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
+      iteratedDeriv j (dslope (gammaPoleRegularUnit branch) 0) x) 0 = _
+  rw [congrFun (iteratedDeriv_const_mul_field
+      (-(reciprocalGammaFactorialScale branch)⁻¹ ^ j)
+      (iteratedDeriv j (dslope (gammaPoleRegularUnit branch) 0)) m) 0,
+    iteratedDeriv_iteratedDeriv_dslope_zero_eq
+      (gammaPoleRegularUnit_analyticAt_zero branch) j m]
+
+/-- Bell-coordinate value reflection for the complete regular-remainder jet tower. -/
+theorem iteratedDeriv_gammaPoleJetRegularRemainder_zero_eq_sequenceBell
+    (branch j m : ℕ) :
+    iteratedDeriv m (gammaPoleJetRegularRemainder branch j) 0 =
+      -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
+        (MvPolynomial.eval
+          (fun q : Fin (j + m + 1) =>
+            reciprocalSignedFactorialSequence (branch + 1) ^ ((q : ℕ) + 1) *
+              (-harmonicJetSequence (q : ℕ) (branch + 1) +
+                (((q : ℕ) + 1).factorial : ℂ) *
+                  gammaPoleLogConstant (q : ℕ)))
+          (bellCore (j + m + 1)) / ((j + m + 1 : ℕ) : ℂ)) := by
+  rw [iteratedDeriv_gammaPoleJetRegularRemainder_zero,
+    iteratedDeriv_gammaPoleRegularUnit_zero_eq_sequenceBell]
+
 /-- Subtracting the Gamma principal monomial leaves the explicitly scaled divided-difference jet. -/
 theorem gammaPoleCovariantJetValue_sub_principal_eventuallyEq
     (branch j : ℕ) :
     (fun x : ℂ => gammaPoleCovariantJetValue branch j x -
       gammaPoleJetPrincipalPartValue branch j x) =ᶠ[𝓝[≠] 0]
-      (fun x => -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
-        iteratedDeriv j (dslope (gammaPoleRegularUnit branch) 0) x) := by
+      gammaPoleJetRegularRemainder branch j := by
   filter_upwards [simplePoleCovariantJetValue_sub_principal_eventuallyEq
     (gammaPoleRegularUnit_analyticAt_zero branch) j] with x hx
+  simp only [gammaPoleJetRegularRemainder]
   rw [← hx]
   simp only [gammaPoleCovariantJetValue, gammaPoleJetPrincipalPartValue,
     gammaPoleRegularUnit_zero, one_mul]
@@ -329,15 +372,11 @@ theorem exists_analyticAt_gammaPoleCovariantJetValue_sub_principal
       R 0 = gammaPoleJetPrincipalRemainderValue branch j ∧
       (fun x : ℂ => gammaPoleCovariantJetValue branch j x -
         gammaPoleJetPrincipalPartValue branch j x) =ᶠ[𝓝[≠] 0] R := by
-  refine ⟨fun x => -(reciprocalGammaFactorialScale branch)⁻¹ ^ j *
-      iteratedDeriv j (dslope (gammaPoleRegularUnit branch) 0) x, ?_, ?_,
+  refine ⟨gammaPoleJetRegularRemainder branch j,
+    analyticAt_gammaPoleJetRegularRemainder branch j, ?_,
     gammaPoleCovariantJetValue_sub_principal_eventuallyEq branch j⟩
-  exact analyticAt_const.mul (analyticAt_iteratedDeriv_of_analyticAt
-    (analyticAt_dslope_zero_of_analyticAt
-      (gammaPoleRegularUnit_analyticAt_zero branch)) j)
-  simp only [gammaPoleJetPrincipalRemainderValue]
-  rw [iteratedDeriv_dslope_zero_eq
-    (gammaPoleRegularUnit_analyticAt_zero branch) j]
+  simpa [gammaPoleJetPrincipalRemainderValue] using
+    iteratedDeriv_gammaPoleJetRegularRemainder_zero branch j 0
 
 /-- **Gamma generator value relation.**  Every native Gamma derivative equals
 its dynamic covariant simple-pole profile on a deleted neighborhood. -/

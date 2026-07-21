@@ -955,3 +955,68 @@ among equal-weight monomials or vanishing pole-center coefficients; the exact if
 that boundary honestly and sends such sources to lower layers.  A complete result now requires an
 iterated lower-grade descent/noncancellation argument.  No RH claim is made, and priority remains
 unverified pending specialist review.
+
+### 2026-07-21 complete principal-remainder jet and relative finite-part freeness
+
+The lower analytic layer below the maximal pole boundary is now identified exactly.  For every
+function `U` analytic at zero, the `j`th derivative of `U(x)/x` has only its residue pole monomial;
+after that monomial is subtracted, the complete remainder is the analytic divided-difference jet
+`iteratedDeriv j (dslope U 0)`.  The new all-order value reflection is
+
+```text
+D^m (D^j (dslope U 0))(0) = U^(j+m+1)(0) / (j+m+1).
+```
+
+Thus the earlier removable-singularity statement is no longer merely existential or limited to the
+first regular value.  Every Taylor coefficient of every differential principal remainder is
+explicit, unconditional, and carried by a shifted numerator jet.
+
+`GammaPoleCovariantJetRealization` now names the canonical analytic witness
+`gammaPoleJetRegularRemainder`.  It proves its analyticity, its complete shifted-unit jet formula,
+and its exact Bell-coordinate reflection through the factorial scale, harmonic jet sequence, and
+Gamma logarithmic constants.  The existing covariant and native affine principal-part theorems use
+this named witness, so their existential `Prop` interfaces now expose a reusable analytic object.
+
+The new module `GammaPolePrincipalRemainderFreeness` connects that analytic witness to the existing
+relative coefficient theory.  For Gamma itself (`j=0`), the `m`th finite-part jet across pole labels
+is exactly
+
+```text
+gammaPoleFinitePartJetGerm m
+  = complexNatGerm (-m!) * gammaPoleUnitPositiveCoefficientGerm m.
+```
+
+Because the diagonal factor is nonzero, the complete finite-part jet family remains algebraically
+independent over the full rational pole-position field `C(N)`.  Equivalently, the new ring
+interface `gammaPoleFinitePartJetRationalEval` is injective.  Principal-part subtraction therefore
+does not collapse the analytically free Gamma information below the pole boundary, even when
+rational functions of the moving pole label are admitted as coefficients.
+
+The principal capstones are:
+
+- `iteratedDeriv_iteratedDeriv_dslope_zero_eq`;
+- `iteratedDeriv_div_id_sub_principal_eventuallyEq`;
+- `gammaPoleJetRegularRemainder` and `analyticAt_gammaPoleJetRegularRemainder`;
+- `iteratedDeriv_gammaPoleJetRegularRemainder_zero`;
+- `iteratedDeriv_gammaPoleJetRegularRemainder_zero_eq_sequenceBell`;
+- `algebraicIndependent_gammaPoleFinitePartJetGerm_over_ratFunc`;
+- `gammaPoleFinitePartJetRationalEval_injective`.
+
+Focused source checks passed.  Final verification used only the exact changed dependency chain:
+
+```text
+lake build GaloisForLFunctions.HTGeometry.MeromorphicSimplePoleDifferentialOperator
+lake build GaloisForLFunctions.HTGeometry.GammaPoleCovariantJetRealization
+lake build GaloisForLFunctions.HTGeometry.GammaPolePrincipalRemainderFreeness
+```
+
+They completed successfully at `8510/8510`, `8685/8685`, and `8701/8701`; no umbrella build was
+run.  Formal source lint passed with only existing large-file warnings.  A scratch axiom audit of
+the general remainder law, Gamma/Bell reflections, native affine interface, relative-freeness
+capstone, and injective evaluation reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This is a genuine lower-layer noncollapse theorem, but it is not yet the full moving
+polynomial-coefficient intersection.  Products of several jet generators and Taylor-moving
+coefficient polynomials can mix distinct lower grades after the top reflected value cancels.  A
+complete result still requires a packet-wide iterated graded descent separating those mixtures.
+No RH claim is made, and priority remains unverified pending specialist review.
