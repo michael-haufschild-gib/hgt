@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteInvolutiveClockQuantumFisherDephasing
+import GaloisForLFunctions.HTGeometry.QuantumFisherClockReparametrization
 import GaloisForLFunctions.RHTower.SoninLogClockDephasing
 
 /-!
@@ -43,6 +44,35 @@ theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_four_mul_observabilit
         soninLogFourierScattering X 2 two_ne_zero
         soninLogFourierScattering_adjoint_mul_self
         soninLogFourierScattering_sq_eq_one hX hψnorm hfixed)
+
+/-- The Sonin hidden-clock QFI/variance identity is an equality of coordinate-free clock line
+values.  The observer algebra fixes the visible tangent while `clockIncrement` records an arbitrary
+local clock calibration. -/
+theorem soninLogClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue
+    (X : SoninL2 →L[ℂ] SoninL2) (hX : IsSelfAdjoint X)
+    {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
+    (hψ : GaloisForLFunctions.PhysicalState
+      (soninLogFourierScattering - 1).toLinearMap ψ)
+    (clockIncrement : ℝ) :
+    HTGeometry.quantumFisherClockLineValue (‖ψ‖ ^ 2)
+        (‖inner ℂ ψ ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
+        (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2)
+        clockIncrement =
+      HTGeometry.finiteClockObservabilityLineValue
+        (Complex.re
+          (inner ℂ ψ (soninLogFourierObservableTwirlKadisonDefect X ψ)))
+        clockIncrement := by
+  rw [GaloisForLFunctions.PhysicalState] at hψ
+  have hfixed : soninLogFourierScattering ψ = ψ := by
+    apply sub_eq_zero.mp
+    simpa using hψ
+  simpa only [soninLogFourierInvariantAverage,
+    soninLogFourierObservableTwirlKadisonDefect,
+    HTGeometry.finiteInvolutiveObservableTwirlKadisonDefect] using
+      (HTGeometry.finiteClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue
+        soninLogFourierScattering X 2 two_ne_zero
+        soninLogFourierScattering_adjoint_mul_self
+        soninLogFourierScattering_sq_eq_one hX hψnorm hfixed clockIncrement)
 
 /-- **Sonin clock QFI/commutator identity.**  On the physical constraint surface, the entire
 hidden-clock QFI is the squared scattering--observable commutator.  Consequently no independent

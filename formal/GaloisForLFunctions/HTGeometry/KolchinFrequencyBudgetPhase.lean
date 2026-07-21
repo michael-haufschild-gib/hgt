@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ShortExactRankConservation
 import GaloisForLFunctions.HTGeometry.CoveringDimension
+import GaloisForLFunctions.HTGeometry.GammaProjectivePrimeTorusCarrier
 import GaloisForLFunctions.RHTower.GaussPairedChannelSchattenDepth
 
 /-!
@@ -107,6 +108,49 @@ theorem nonautonomous_gammaCoefficient_capacity_floor
     (Nat.primeCounting N - rInfinity + 1) / 2 ≤ kappa := by
   have hbudget := nonautonomous_primeComplement_budget
     N kappa V coefficientModule hprime hstate
+  omega
+
+/-- The canonical aperture module removes the abstract prime-rank premise from the nonautonomous
+budget: its rational rank is exactly `π(N)`.  The displayed quotient is the arithmetic complement
+for `V = ⊤` inside the aperture module. -/
+theorem primeAperture_nonautonomous_primeComplement_budget
+    (N kappa : ℕ)
+    (coefficientModule :
+      Submodule ℚ (GaloisForLFunctions.primeApertureCharacterModule N))
+    (hstate :
+      let V : Submodule ℚ
+          (GaloisForLFunctions.primeApertureCharacterModule N) := ⊤
+      finrank ℚ (↥V ⧸ Submodule.comap V.subtype coefficientModule) ≤ 2 * kappa) :
+    Nat.primeCounting N ≤ finrank ℚ ↥coefficientModule + 2 * kappa := by
+  letI : Module.Finite ℚ
+      (GaloisForLFunctions.primeApertureCharacterModule N) := by
+    unfold GaloisForLFunctions.primeApertureCharacterModule
+      GaloisForLFunctions.primeLogSpan
+    exact Module.Finite.span_of_finite ℚ (Set.finite_range _)
+  dsimp only at hstate
+  have hbudget := nonautonomous_primeComplement_budget
+    N kappa
+    (⊤ : Submodule ℚ (GaloisForLFunctions.primeApertureCharacterModule N))
+    coefficientModule
+    (by simp [GaloisForLFunctions.primeApertureCharacterModule_finrank])
+    hstate
+  rw [inf_eq_right.mpr le_top] at hbudget
+  exact hbudget
+
+/-- For the canonical prime-aperture source, a coefficient hull of rank at most `rInfinity`
+forces the exact residual half-rank Kolchin-capacity floor without a supplied prime-rank equality. -/
+theorem primeAperture_nonautonomous_gammaCoefficient_capacity_floor
+    (N kappa rInfinity : ℕ)
+    (coefficientModule :
+      Submodule ℚ (GaloisForLFunctions.primeApertureCharacterModule N))
+    (hstate :
+      let V : Submodule ℚ
+          (GaloisForLFunctions.primeApertureCharacterModule N) := ⊤
+      finrank ℚ (↥V ⧸ Submodule.comap V.subtype coefficientModule) ≤ 2 * kappa)
+    (hcoeff : finrank ℚ ↥coefficientModule ≤ rInfinity) :
+    (Nat.primeCounting N - rInfinity + 1) / 2 ≤ kappa := by
+  have hbudget := primeAperture_nonautonomous_primeComplement_budget
+    N kappa coefficientModule hstate
   omega
 
 /-- Explicit operator-analytic endpoint input for the direct-sum Gauss channel.  The arithmetic

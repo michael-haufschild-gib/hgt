@@ -142,6 +142,80 @@ integral exp(-B*t) dmu(t) -> mu([0,infinity)) < infinity,
 so multiplication by `B` would force zero at the boundary.  This contradicts the positive value
 in `(6)`.  Thus infinite ray mass is load-bearing, not an artifact of the representation.
 
+## Prime-shell orientation collapse
+
+The boundary residue imposes a sharper arithmetic selection rule.  Since
+
+```text
+R_1=0,
+R_n>0 for n>=2,
+```
+
+the ray-renormalized phase on product shell `k` is
+
+```text
+Psi_k(z)=sum_(nm=k) R_n R_m exp(i*(log(n)-log(m))*z/2).    (12)
+```
+
+If `k` is prime, every factorization contains `n=1` or `m=1`, so
+
+```text
+Psi_k(z)=Psi_k'(z)=0                                      (13)
+```
+
+identically.  This sharply contrasts with the unscaled atomic shell phase `Phi_k`: unique
+factorization proves
+
+```text
+Im(Phi_k'(z)*conj(Phi_k(z)))<0
+```
+
+for every prime `k` and every `Im(z)>0`.  Thus modular boundary scaling does not merely weaken
+atomic arithmetic orientation; it annihilates every prime shell exactly.  The first shell not
+killed for support reasons is composite, and shell `4` retains only its central `(2,2)` pair,
+which has zero rapidity and is current-neutral.  Any prime-sensitive RH mechanism must therefore
+live in the transition away from `B=0` or in the completed ray/atomic cross term, not in the
+boundary residue alone.
+
+## Prime first boundary layer
+
+The transition can be resolved exactly.  Define the boundary-scaled channel coefficient
+
+```text
+S_n(B)=exp(-B*g_n)*(B*A_n+R_n).                            (14)
+```
+
+The ground channel satisfies `S_1(B)=B` exactly: `g_1=R_1=0` and `A_1=1`.  If `p` is prime, its
+only ordered factor pairs are `(1,p)` and `(p,1)`.  Consequently the complete scaled prime shell
+and its spectral derivative factor as
+
+```text
+Phi_p^scaled(B,z)=B*S_p(B)*Phi_p(z),
+(Phi_p^scaled)'(B,z)=B*S_p(B)*Phi_p'(z).                  (15)
+```
+
+For every `B>0`, `S_p(B)>0`.  Hence the prime current remains strictly oriented throughout the
+positive-temperature approach:
+
+```text
+Im((Phi_p^scaled)'(B,z)*conj(Phi_p^scaled(B,z)))<0
+                                      when Im(z)>0.       (16)
+```
+
+Moreover `S_p(B) -> R_p>0` as `B downarrow 0`, so division by the forced simple zero has the exact
+nonzero limits
+
+```text
+B^(-1)*Phi_p^scaled(B,z)    -> R_p*Phi_p(z),
+B^(-1)*(Phi_p^scaled)'(B,z) -> R_p*Phi_p'(z).             (17)
+```
+
+The limiting first-layer current is `R_p^2` times the atomic prime current and is therefore
+strictly negative in the upper half-plane.  Thus `(13)` is only a zeroth-order annihilation.  Its
+first boundary layer restores every prime shell through a uniquely identified
+ground-atom/higher-ray cross term.  This is stronger than the support no-go: it isolates the first
+carrier surviving the modular seam and proves its sign.
+
 ## Frontier consequence
 
 This closes the attempted channelwise total-positivity/incomplete-Gamma shortcut.  Atomic gaps do
@@ -150,12 +224,13 @@ endpoint.  Any proof of the Hedenmalm phase-current domination must retain the c
 sector and its infinite-mass boundary renormalization.  A finite positive channel family, a finite
 Hankel packet, or a positive Markov disintegration acting atom by atom cannot cross this seam.
 
-The new live target is precise:
+The previous live target—identify the first nonzero atomic-to-ray transition coefficient—is now
+closed by `(14)`–`(17)`.  The new open core is narrower:
 
 ```text
-Construct the Fourier/Bezoutian image of the renormalized ray response
-    B * integral exp(-B*t) dmu_ray(t)
-and prove that its modularly reflected phase current dominates the corrected product-fibre seam.
+Push the explicit prime first-boundary-layer current through the completed Fourier/Bezoutian
+window, then prove that its aggregate strictly oriented contribution dominates composite-shell
+interference in the corrected product-fibre seam.
 ```
 
 This card does **not** assert that domination or RH.
@@ -180,6 +255,8 @@ This card does **not** assert that domination or RH.
 - [x] Exact paper proof, including strict positivity and no-go closure
 - [x] Internal corpus collision search
 - [x] External parent/noncollision search
-- [ ] Lean formalization of atomwise law, residue positivity, scaled-response identity, and limit
+- [x] Lean formalization of atomwise law, residue positivity, infinite total mass,
+  scaled-response identity and limit, finite-limit obstruction, prime-shell annihilation,
+  exact prime first-layer factorization, normalized phase/derivative limits, and strict current
 - [ ] Axiom/lint/index audit
-- [ ] Fourier/Bezoutian ray-image theorem; this is the new open core
+- [ ] Fourier/Bezoutian image and aggregate prime/composite domination; this is the new open core

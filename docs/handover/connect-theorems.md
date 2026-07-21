@@ -1055,3 +1055,121 @@ exactly `propext`, `Classical.choice`, and `Quot.sound`.  Classification:
 **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This strengthens theorem graph and removes duplicate
 algebra; it is not a new external novelty or RH claim.  Persistent goal remains active for the
 remaining umbrella-excluded endpoint scan.
+
+## 19. Canonical prime-aperture-to-Kolchin budget connector completed
+
+The endpoint audit compared `HTGeometry/KolchinFrequencyBudgetPhase.lean` with the independent
+finite prime-torus source `HTGeometry/GammaProjectivePrimeTorusCarrier.lean`.  The former required
+callers to supply
+
+```text
+finrank_Q(V) = π(N)
+```
+
+to obtain its nonautonomous arithmetic-complement and Gamma-coefficient capacity bounds.  The
+latter already proves this equality unconditionally for the canonical source
+`primeApertureCharacterModule N = span_Q {log p : p <= N}`.
+
+`KolchinFrequencyBudgetPhase.lean` now imports that source and exposes two specializations.  At
+`V = top` inside the canonical aperture module,
+`primeAperture_nonautonomous_primeComplement_budget` invokes the existing general complement
+theorem after discharging its rank premise with `primeApertureCharacterModule_finrank`.
+`primeAperture_nonautonomous_gammaCoefficient_capacity_floor` then derives the exact residual
+half-rank floor
+
+```text
+(π(N) - rInfinity + 1) / 2 <= kappa
+```
+
+from only the relative-state and coefficient-rank bounds.  No caller must duplicate the
+unique-factorization rank certificate, and no analytic Bohr/Pontryagin or Ritt--Kolchin input is
+claimed.
+
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This is a theorem-graph connection
+between two already formalized finite-rank results, not a new external novelty or RH claim.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/KolchinFrequencyBudgetPhase.lean
+lake build GaloisForLFunctions.HTGeometry.KolchinFrequencyBudgetPhase
+  8484/8484
+```
+
+Both new source-facing theorems use exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Formal lint and targeted diff checks passed.  Persistent goal remains active for remaining
+high-signal endpoint exclusions.
+
+## 20. Quantum-Fisher clock-line-to-Sonin connector completed
+
+Cross-folder audit found `HTGeometry/QuantumFisherClockReparametrization.lean` terminal despite its
+formalized card stating that the coordinate-free finite-clock line law applies directly to
+existing moment and Sonin clock identities.  `RHTower/SoninLogClockQuantumFisher.lean` exposed only
+raw QFI/variance, commutator, and dephasing equalities.
+
+The Sonin module now imports the reparameterization leaf and proves
+
+```text
+soninLogClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue
+```
+
+for every normalized physical Sonin state, self-adjoint observable, and real clock increment.
+Physicality supplies the fixed-vector premise for the involutive logarithmic Fourier-scattering
+clock; the proof then invokes the generic
+`finiteClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue` theorem at period two.
+The result identifies the hidden-tangent Fisher line with four times the static Kadison variance
+times the squared coordinate increment, making the existing source relation explicitly invariant
+under the already formalized reciprocal clock reparameterization.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/SoninLogClockQuantumFisher.lean
+lake build GaloisForLFunctions.RHTower.SoninLogClockQuantumFisher
+  8517/8517
+```
+
+The new source specialization uses exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  It is a coordinate-free reformulation
+of existing static observability, not a dynamical-time premise, novelty claim, or RH advance.
+Persistent goal remains active for remaining endpoint audit.
+
+## 21. Affine folded-germ-to-moving prime--Gamma Hankel connector completed
+
+Declaration-vocabulary dependency audit exposed a full duplicated proof chain.
+`HTGeometry/ReflectionFoldedMomentGerm.lean` already proves, for any affine anti-invariant source,
+that its centered relative trace anti-reflects, its normalized divided-difference germ reflects,
+and every germ jet acquires the expected parity.  Nevertheless,
+`RHTower/CompletedPrimeGammaMovingHankelReflection.lean` independently rederived all three steps
+for `logDeriv xi` from the functional equation.
+
+The RHTower module now imports the generic folded-germ leaf.  Lean definition unfolding gives the
+literal adapters
+
+```text
+completedMovingRelativeTrace sigma
+  = affineRelativeTrace (logDeriv xi) sigma,
+completedMovingMomentGerm sigma
+  = reflectionFoldedMomentGerm (logDeriv xi) sigma.
+```
+
+The existing source theorems `completedMovingRelativeTrace_one_sub`,
+`completedMovingMomentGerm_one_sub`, and
+`iteratedDeriv_completedMovingMomentGerm_one_sub` now invoke the corresponding generic theorems
+with `kappa=1`; `logDeriv_xi_reciprocity` discharges their only source premise.  Existing real
+even-moment, matrix, determinant, and complex-Hankel consumers retain unchanged signatures.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/CompletedPrimeGammaMovingHankelReflection.lean
+lake build GaloisForLFunctions.RHTower.CompletedPrimeGammaMovingHankelReflection
+  8739/8739
+lake env lean GaloisForLFunctions/RHTower/CompletedPrimeGammaMovingComplexHankel.lean
+```
+
+The three refactored source declarations and determinant capstone use exactly `propext`,
+`Classical.choice`, and `Quot.sound`.  Classification:
+**[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This removes source-local reflection algebra and makes
+the general/source dependency explicit; it neither supplies determinant positivity nor advances
+RH.  Persistent goal remains active for remaining unmatched high-score pairs.

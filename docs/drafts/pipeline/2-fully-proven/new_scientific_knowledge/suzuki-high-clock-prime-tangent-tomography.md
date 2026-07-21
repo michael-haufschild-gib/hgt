@@ -249,9 +249,11 @@ Formalized unconditionally:
 4. Suzuki's exact phase `exp(i pi log(m)/a)` has unit norm;
 5. the source coefficient is exactly
    `Lambda(m)(sqrt(m)+1/(m sqrt(m)))`;
-6. this coefficient is nonzero exactly on prime powers;
-7. normalized nonresonant Bohr recovery converges to `Lambda(m)` itself;
-8. one nonresonance certificate reconstructs every coefficient in a finite aperture packet.
+6. that scale is exactly the sum of Suzuki's reflected `m` and `m^(-1)` step multipliers after
+   extraction of `1/sqrt(m)`;
+7. this coefficient is nonzero exactly on prime powers;
+8. normalized nonresonant Bohr recovery converges to `Lambda(m)` itself;
+9. one nonresonance certificate reconstructs every coefficient in a finite aperture packet.
 
 The analytic passage from Suzuki's distributional operator to (3) is paper-proved above. The Lean
 module formalizes the exact finite harmonic-analysis and arithmetic recovery core without axioms.
@@ -276,5 +278,5 @@ module formalizes the exact finite harmonic-analysis and arithmetic recovery cor
 
 - [x] 0 -> 1: exact source identity and non-circular attack isolated
 - [x] 1 -> 2: dependency-closed paper proof and hostile audit complete
-- [ ] 2 -> 3: Lean module and axiom/build audit pending
+- [x] 2 -> 3: Lean module, exact build, and axiom audit complete
 - [ ] 3 -> 4: external mathematical novelty review and publication treatment pending

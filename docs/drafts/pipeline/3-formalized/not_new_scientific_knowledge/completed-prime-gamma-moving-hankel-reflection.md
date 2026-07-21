@@ -74,6 +74,13 @@ positive far-right determinant anchor                         [paper]
 - `completedMovingHankelMatrix_one_sub`
 - `completedMovingHankelDet_one_sub`
 
+The first three declarations now specialize the source-independent affine-folding results in
+`HTGeometry/ReflectionFoldedMomentGerm.lean`.  Definition unfolding identifies
+`completedMovingRelativeTrace` with `affineRelativeTrace (logDeriv xi)` and the moving normalized
+germ with `reflectionFoldedMomentGerm (logDeriv xi)`; `logDeriv_xi_reciprocity` supplies the sole
+anti-reflection premise.  The real even-moment and determinant consequences retain their existing
+public statements.
+
 ## Gates
 
 - [x] derive the translated trace anti-reflection from the completed functional equation

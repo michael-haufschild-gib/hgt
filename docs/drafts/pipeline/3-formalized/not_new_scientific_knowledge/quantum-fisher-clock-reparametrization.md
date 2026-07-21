@@ -82,6 +82,12 @@ formal theorem; only its coordinate-change value law is retained.
 - `finiteClockObservabilityLineValue`
 - `finiteClockObservabilityLineValue_reparameterize`
 - `finiteClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue`
+- `RHTower.soninLogClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue`
+
+The final theorem is the literal logarithmic-Sonin specialization of equation `(3)`: physicality
+supplies the fixed-vector premise for the order-two scattering clock, and the existing generic
+finite-clock line theorem supplies the equality.  Thus the source module no longer stops at its
+raw numerical QFI identity.
 
 ## RH impact and boundary
 

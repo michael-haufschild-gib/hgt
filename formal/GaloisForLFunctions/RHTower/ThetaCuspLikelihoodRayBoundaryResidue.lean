@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodModularSeam
+import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEisensteinMassShell
 
 /-!
 # The theta-likelihood ray is the modular boundary residue
@@ -40,6 +40,39 @@ def thetaCuspLikelihoodScaledBoundaryTerm (n : ℕ) (B : ℝ) : ℝ :=
 /-- Boundary-renormalized response of the complete higher-likelihood measure. -/
 def thetaCuspLikelihoodScaledBoundaryResponse (B : ℝ) : ℝ :=
   ∑' k : ℕ, thetaCuspLikelihoodScaledBoundaryTerm (k + 2) B
+
+/-- Product-shell phase after modular boundary scaling.  Its coefficients are precisely the
+surviving ray residues on the two likelihood legs. -/
+def thetaCuspLikelihoodRayBoundaryMassShellPhase (k : ℕ) (z : ℂ) : ℂ :=
+  ∑ q ∈ thetaPositiveFactorPairs k,
+    ((thetaCuspLikelihoodRayWeight (q.1 + 1) *
+        thetaCuspLikelihoodRayWeight (q.2 + 1) : ℝ) : ℂ) *
+      Complex.exp (Complex.I * (thetaFactorPairLogDisplacement q : ℂ) * z)
+
+/-- Spectral derivative of the ray-renormalized product-shell phase. -/
+def thetaCuspLikelihoodRayBoundaryMassShellPhaseDerivative
+    (k : ℕ) (z : ℂ) : ℂ :=
+  ∑ q ∈ thetaPositiveFactorPairs k,
+    ((thetaCuspLikelihoodRayWeight (q.1 + 1) *
+        thetaCuspLikelihoodRayWeight (q.2 + 1) : ℝ) : ℂ) *
+      (Complex.I * (thetaFactorPairLogDisplacement q : ℂ)) *
+        Complex.exp (Complex.I * (thetaFactorPairLogDisplacement q : ℂ) * z)
+
+/-- Full boundary-scaled shell before setting `B=0`. -/
+def thetaCuspLikelihoodScaledMassShellPhase (k : ℕ) (B : ℝ) (z : ℂ) : ℂ :=
+  ∑ q ∈ thetaPositiveFactorPairs k,
+    ((thetaCuspLikelihoodScaledBoundaryTerm (q.1 + 1) B *
+        thetaCuspLikelihoodScaledBoundaryTerm (q.2 + 1) B : ℝ) : ℂ) *
+      Complex.exp (Complex.I * (thetaFactorPairLogDisplacement q : ℂ) * z)
+
+/-- Spectral derivative of the full boundary-scaled shell. -/
+def thetaCuspLikelihoodScaledMassShellPhaseDerivative
+    (k : ℕ) (B : ℝ) (z : ℂ) : ℂ :=
+  ∑ q ∈ thetaPositiveFactorPairs k,
+    ((thetaCuspLikelihoodScaledBoundaryTerm (q.1 + 1) B *
+        thetaCuspLikelihoodScaledBoundaryTerm (q.2 + 1) B : ℝ) : ℂ) *
+      (Complex.I * (thetaFactorPairLogDisplacement q : ℂ)) *
+        Complex.exp (Complex.I * (thetaFactorPairLogDisplacement q : ℂ) * z)
 
 theorem thetaCuspLikelihoodBoundaryDesingularizer_pos (x : ℝ) :
     0 < thetaCuspLikelihoodBoundaryDesingularizer x := by
@@ -143,6 +176,275 @@ theorem thetaCuspLikelihoodRayBoundaryResidue_pos :
   exact summable_thetaCuspLikelihoodRayWeight_shift.tsum_pos
     (fun k => (thetaCuspLikelihoodRayWeight_pos (n := k + 2) (by omega)).le)
     0 (thetaCuspLikelihoodRayWeight_pos (n := 2) (by norm_num))
+
+/-- On a prime arithmetic shell, every factor pair contains the ground index `1`; its likelihood
+ray weight is zero. -/
+theorem thetaCuspLikelihoodRayWeight_pair_mul_eq_zero_of_prime
+    {k : ℕ} (hk : k.Prime) {q : ℕ × ℕ}
+    (hq : q ∈ thetaPositiveFactorPairs k) :
+    thetaCuspLikelihoodRayWeight (q.1 + 1) *
+      thetaCuspLikelihoodRayWeight (q.2 + 1) = 0 := by
+  have hprod : (q.1 + 1) * (q.2 + 1) = k := (Finset.mem_filter.mp hq).2
+  have hdiv : q.1 + 1 ∣ k := ⟨q.2 + 1, hprod.symm⟩
+  rcases hk.eq_one_or_self_of_dvd (q.1 + 1) hdiv with ha | ha
+  · have hq0 : q.1 = 0 := by omega
+    simp [hq0, thetaCuspLikelihoodRayWeight, thetaCuspLikelihoodGap]
+  · have hprod' := hprod
+    rw [ha] at hprod'
+    have hb : q.2 + 1 = 1 := by
+      apply Nat.eq_of_mul_eq_mul_left hk.pos
+      calc
+        k * (q.2 + 1) = k := hprod'
+        _ = k * 1 := by ring
+    have hq0 : q.2 = 0 := by omega
+    simp [hq0, thetaCuspLikelihoodRayWeight, thetaCuspLikelihoodGap]
+
+/-- A prime product fibre contains only its two ground/higher factorizations. -/
+theorem thetaFactorPair_indices_of_prime
+    {k : ℕ} (hk : k.Prime) {q : ℕ × ℕ}
+    (hq : q ∈ thetaPositiveFactorPairs k) :
+    (q.1 + 1 = 1 ∧ q.2 + 1 = k) ∨
+      (q.1 + 1 = k ∧ q.2 + 1 = 1) := by
+  have hprod : (q.1 + 1) * (q.2 + 1) = k := (Finset.mem_filter.mp hq).2
+  have hdiv : q.1 + 1 ∣ k := ⟨q.2 + 1, hprod.symm⟩
+  rcases hk.eq_one_or_self_of_dvd (q.1 + 1) hdiv with ha | ha
+  · exact Or.inl ⟨ha, by simpa [ha] using hprod⟩
+  · have hprod' := hprod
+    rw [ha] at hprod'
+    have hb : q.2 + 1 = 1 := by
+      apply Nat.eq_of_mul_eq_mul_left hk.pos
+      calc
+        k * (q.2 + 1) = k := hprod'
+        _ = k * 1 := by ring
+    exact Or.inr ⟨ha, hb⟩
+
+/-- The ground likelihood channel is exactly the boundary coordinate itself. -/
+@[simp] theorem thetaCuspLikelihoodScaledBoundaryTerm_one (B : ℝ) :
+    thetaCuspLikelihoodScaledBoundaryTerm 1 B = B := by
+  simp [thetaCuspLikelihoodScaledBoundaryTerm, thetaCuspLikelihoodGap,
+    thetaCuspLikelihoodAtomWeight, thetaCuspLikelihoodRayWeight]
+
+/-- On a prime shell, both ordered factor pairs have one ground leg and the same higher leg. -/
+theorem thetaCuspLikelihoodScaledBoundaryTerm_pair_mul_eq_prime
+    {k : ℕ} (hk : k.Prime) {q : ℕ × ℕ}
+    (hq : q ∈ thetaPositiveFactorPairs k) (B : ℝ) :
+    thetaCuspLikelihoodScaledBoundaryTerm (q.1 + 1) B *
+        thetaCuspLikelihoodScaledBoundaryTerm (q.2 + 1) B =
+      B * thetaCuspLikelihoodScaledBoundaryTerm k B := by
+  rcases thetaFactorPair_indices_of_prime hk hq with h | h
+  · rw [h.1, h.2, thetaCuspLikelihoodScaledBoundaryTerm_one]
+  · rw [h.1, h.2, thetaCuspLikelihoodScaledBoundaryTerm_one]
+    ring
+
+/-- **Exact prime first-boundary-layer factorization.**  The full scaled prime shell is the
+strictly oriented atomic shell multiplied by `B` and one positive higher-channel amplitude. -/
+theorem thetaCuspLikelihoodScaledMassShellPhase_eq_primeBoundaryLayer
+    {k : ℕ} (hk : k.Prime) (B : ℝ) (z : ℂ) :
+    thetaCuspLikelihoodScaledMassShellPhase k B z =
+      ((B * thetaCuspLikelihoodScaledBoundaryTerm k B : ℝ) : ℂ) *
+        thetaCuspLikelihoodMassShellPhase k z := by
+  rw [thetaCuspLikelihoodMassShellPhase_eq_productFiber]
+  unfold thetaCuspLikelihoodScaledMassShellPhase thetaProductFiberCenteredPhase
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro q hq
+  rw [thetaCuspLikelihoodScaledBoundaryTerm_pair_mul_eq_prime hk hq]
+
+/-- The same prime boundary-layer factorization holds for the spectral derivative. -/
+theorem thetaCuspLikelihoodScaledMassShellPhaseDerivative_eq_primeBoundaryLayer
+    {k : ℕ} (hk : k.Prime) (B : ℝ) (z : ℂ) :
+    thetaCuspLikelihoodScaledMassShellPhaseDerivative k B z =
+      ((B * thetaCuspLikelihoodScaledBoundaryTerm k B : ℝ) : ℂ) *
+        thetaCuspLikelihoodMassShellPhaseDerivative k z := by
+  rw [thetaCuspLikelihoodMassShellPhaseDerivative_eq_productFiber]
+  unfold thetaCuspLikelihoodScaledMassShellPhaseDerivative
+    thetaProductFiberCenteredPhaseDerivative
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro q hq
+  rw [thetaCuspLikelihoodScaledBoundaryTerm_pair_mul_eq_prime hk hq]
+  push_cast
+  ring
+
+/-- Every scaled channel has the ray weight as its continuous boundary value. -/
+@[simp] theorem thetaCuspLikelihoodScaledBoundaryTerm_zero (n : ℕ) :
+    thetaCuspLikelihoodScaledBoundaryTerm n 0 =
+      thetaCuspLikelihoodRayWeight n := by
+  simp [thetaCuspLikelihoodScaledBoundaryTerm]
+
+/-- Away from the endpoint, dividing a scaled prime shell by its forced simple zero leaves the
+single higher-channel amplitude multiplying the original arithmetic shell. -/
+theorem thetaCuspLikelihoodScaledPrimeMassShellPhase_div_boundaryCoordinate
+    {k : ℕ} (hk : k.Prime) {B : ℝ} (hB : 0 < B) (z : ℂ) :
+    (B : ℂ)⁻¹ * thetaCuspLikelihoodScaledMassShellPhase k B z =
+      (thetaCuspLikelihoodScaledBoundaryTerm k B : ℂ) *
+        thetaCuspLikelihoodMassShellPhase k z := by
+  rw [thetaCuspLikelihoodScaledMassShellPhase_eq_primeBoundaryLayer hk]
+  push_cast
+  field_simp [hB.ne']
+
+/-- The same exact cancellation holds for the differentiated shell. -/
+theorem thetaCuspLikelihoodScaledPrimeMassShellPhaseDerivative_div_boundaryCoordinate
+    {k : ℕ} (hk : k.Prime) {B : ℝ} (hB : 0 < B) (z : ℂ) :
+    (B : ℂ)⁻¹ * thetaCuspLikelihoodScaledMassShellPhaseDerivative k B z =
+      (thetaCuspLikelihoodScaledBoundaryTerm k B : ℂ) *
+        thetaCuspLikelihoodMassShellPhaseDerivative k z := by
+  rw [thetaCuspLikelihoodScaledMassShellPhaseDerivative_eq_primeBoundaryLayer hk]
+  push_cast
+  field_simp [hB.ne']
+
+/-- **Prime first-boundary-layer limit.**  Although the boundary-scaled prime shell vanishes,
+division by its forced simple zero converges to the nonzero ray-weighted arithmetic shell. -/
+theorem tendsto_thetaCuspLikelihoodScaledPrimeMassShellPhase_div_nhdsGT_zero
+    {k : ℕ} (hk : k.Prime) (z : ℂ) :
+    Tendsto
+      (fun B : ℝ => (B : ℂ)⁻¹ *
+        thetaCuspLikelihoodScaledMassShellPhase k B z)
+      (𝓝[>] 0)
+      (𝓝 ((thetaCuspLikelihoodRayWeight k : ℂ) *
+        thetaCuspLikelihoodMassShellPhase k z)) := by
+  have hcont : ContinuousAt
+      (fun B : ℝ => (thetaCuspLikelihoodScaledBoundaryTerm k B : ℂ) *
+        thetaCuspLikelihoodMassShellPhase k z) 0 := by
+    unfold thetaCuspLikelihoodScaledBoundaryTerm
+    fun_prop
+  have hlim : Tendsto
+      (fun B : ℝ => (thetaCuspLikelihoodScaledBoundaryTerm k B : ℂ) *
+        thetaCuspLikelihoodMassShellPhase k z)
+      (𝓝[>] 0)
+      (𝓝 ((thetaCuspLikelihoodRayWeight k : ℂ) *
+        thetaCuspLikelihoodMassShellPhase k z)) := by
+    simpa using hcont.tendsto.mono_left inf_le_left
+  apply hlim.congr'
+  filter_upwards [self_mem_nhdsWithin] with B hB
+  exact (thetaCuspLikelihoodScaledPrimeMassShellPhase_div_boundaryCoordinate
+    hk hB z).symm
+
+/-- The differentiated first boundary layer converges to the correspondingly ray-weighted
+arithmetic derivative. -/
+theorem tendsto_thetaCuspLikelihoodScaledPrimeMassShellPhaseDerivative_div_nhdsGT_zero
+    {k : ℕ} (hk : k.Prime) (z : ℂ) :
+    Tendsto
+      (fun B : ℝ => (B : ℂ)⁻¹ *
+        thetaCuspLikelihoodScaledMassShellPhaseDerivative k B z)
+      (𝓝[>] 0)
+      (𝓝 ((thetaCuspLikelihoodRayWeight k : ℂ) *
+        thetaCuspLikelihoodMassShellPhaseDerivative k z)) := by
+  have hcont : ContinuousAt
+      (fun B : ℝ => (thetaCuspLikelihoodScaledBoundaryTerm k B : ℂ) *
+        thetaCuspLikelihoodMassShellPhaseDerivative k z) 0 := by
+    unfold thetaCuspLikelihoodScaledBoundaryTerm
+    fun_prop
+  have hlim : Tendsto
+      (fun B : ℝ => (thetaCuspLikelihoodScaledBoundaryTerm k B : ℂ) *
+        thetaCuspLikelihoodMassShellPhaseDerivative k z)
+      (𝓝[>] 0)
+      (𝓝 ((thetaCuspLikelihoodRayWeight k : ℂ) *
+        thetaCuspLikelihoodMassShellPhaseDerivative k z)) := by
+    simpa using hcont.tendsto.mono_left inf_le_left
+  apply hlim.congr'
+  filter_upwards [self_mem_nhdsWithin] with B hB
+  exact (thetaCuspLikelihoodScaledPrimeMassShellPhaseDerivative_div_boundaryCoordinate
+    hk hB z).symm
+
+/-- Every prime boundary layer is strictly positive away from the endpoint. -/
+theorem thetaCuspLikelihoodScaledBoundaryTerm_pos
+    {n : ℕ} (hn : 2 ≤ n) {B : ℝ} (hB : 0 < B) :
+    0 < thetaCuspLikelihoodScaledBoundaryTerm n B := by
+  have hgap := thetaCuspLikelihoodGap_pos hn
+  have hAtom := thetaCuspLikelihoodAtomWeight_pos
+    (n := n) (lt_of_lt_of_le (by omega) hn)
+  have hRay := thetaCuspLikelihoodRayWeight_pos hn
+  unfold thetaCuspLikelihoodScaledBoundaryTerm
+  exact mul_pos (Real.exp_pos _)
+    (add_pos (mul_pos hB hAtom) hRay)
+
+/-- **Prime orientation survives every positive likelihood temperature.**  Boundary scaling only
+forces a first-order zero; after the positive scalar factor, the arithmetic current keeps its
+strict upper-half-plane sign. -/
+theorem thetaCuspLikelihoodScaledPrimeMassShellPhase_current_lt_zero
+    {k : ℕ} (hk : k.Prime) {B : ℝ} (hB : 0 < B)
+    {z : ℂ} (hz : 0 < z.im) :
+    (thetaCuspLikelihoodScaledMassShellPhaseDerivative k B z *
+      (starRingEnd ℂ) (thetaCuspLikelihoodScaledMassShellPhase k B z)).im < 0 := by
+  rw [thetaCuspLikelihoodScaledMassShellPhaseDerivative_eq_primeBoundaryLayer hk,
+    thetaCuspLikelihoodScaledMassShellPhase_eq_primeBoundaryLayer hk]
+  let c : ℝ := B * thetaCuspLikelihoodScaledBoundaryTerm k B
+  have hc : 0 < c := mul_pos hB
+    (thetaCuspLikelihoodScaledBoundaryTerm_pos hk.two_le hB)
+  have hbase := thetaCuspLikelihoodMassShellPhase_current_lt_zero hk.one_lt hz
+  have heq :
+      (((c : ℂ) * thetaCuspLikelihoodMassShellPhaseDerivative k z) *
+        (starRingEnd ℂ) ((c : ℂ) * thetaCuspLikelihoodMassShellPhase k z)).im =
+        c ^ 2 *
+          (thetaCuspLikelihoodMassShellPhaseDerivative k z *
+            (starRingEnd ℂ) (thetaCuspLikelihoodMassShellPhase k z)).im := by
+    rw [map_mul, Complex.conj_ofReal]
+    simp only [Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im]
+    ring
+  change (((c : ℂ) * thetaCuspLikelihoodMassShellPhaseDerivative k z) *
+    (starRingEnd ℂ) ((c : ℂ) * thetaCuspLikelihoodMassShellPhase k z)).im < 0
+  rw [heq]
+  exact mul_neg_of_pos_of_neg (sq_pos_of_pos hc) hbase
+
+/-- **The first boundary layer retains strict prime orientation.**  The zeroth-order prime shell
+is annihilated, but the limiting phase and derivative after division by the boundary coordinate
+still have strictly negative Hermitian current in the upper half-plane. -/
+theorem thetaCuspLikelihoodPrimeFirstBoundaryLayer_current_lt_zero
+    {k : ℕ} (hk : k.Prime) {z : ℂ} (hz : 0 < z.im) :
+    (((thetaCuspLikelihoodRayWeight k : ℂ) *
+          thetaCuspLikelihoodMassShellPhaseDerivative k z) *
+        (starRingEnd ℂ) ((thetaCuspLikelihoodRayWeight k : ℂ) *
+          thetaCuspLikelihoodMassShellPhase k z)).im < 0 := by
+  let c : ℝ := thetaCuspLikelihoodRayWeight k
+  have hc : 0 < c := thetaCuspLikelihoodRayWeight_pos hk.two_le
+  have hbase := thetaCuspLikelihoodMassShellPhase_current_lt_zero hk.one_lt hz
+  have heq :
+      (((c : ℂ) * thetaCuspLikelihoodMassShellPhaseDerivative k z) *
+        (starRingEnd ℂ) ((c : ℂ) * thetaCuspLikelihoodMassShellPhase k z)).im =
+        c ^ 2 *
+          (thetaCuspLikelihoodMassShellPhaseDerivative k z *
+            (starRingEnd ℂ) (thetaCuspLikelihoodMassShellPhase k z)).im := by
+    rw [map_mul, Complex.conj_ofReal]
+    simp only [Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im]
+    ring
+  change (((c : ℂ) * thetaCuspLikelihoodMassShellPhaseDerivative k z) *
+    (starRingEnd ℂ) ((c : ℂ) * thetaCuspLikelihoodMassShellPhase k z)).im < 0
+  rw [heq]
+  exact mul_neg_of_pos_of_neg (sq_pos_of_pos hc) hbase
+
+/-- **Prime-shell boundary annihilation.**  Modular boundary renormalization removes every prime
+likelihood mass-shell phase: only pairs with two genuinely higher indices survive. -/
+theorem thetaCuspLikelihoodRayBoundaryMassShellPhase_eq_zero_of_prime
+    {k : ℕ} (hk : k.Prime) (z : ℂ) :
+    thetaCuspLikelihoodRayBoundaryMassShellPhase k z = 0 := by
+  unfold thetaCuspLikelihoodRayBoundaryMassShellPhase
+  apply Finset.sum_eq_zero
+  intro q hq
+  rw [thetaCuspLikelihoodRayWeight_pair_mul_eq_zero_of_prime hk hq]
+  simp
+
+/-- The derivative is annihilated on prime shells as well. -/
+theorem thetaCuspLikelihoodRayBoundaryMassShellPhaseDerivative_eq_zero_of_prime
+    {k : ℕ} (hk : k.Prime) (z : ℂ) :
+    thetaCuspLikelihoodRayBoundaryMassShellPhaseDerivative k z = 0 := by
+  unfold thetaCuspLikelihoodRayBoundaryMassShellPhaseDerivative
+  apply Finset.sum_eq_zero
+  intro q hq
+  rw [thetaCuspLikelihoodRayWeight_pair_mul_eq_zero_of_prime hk hq]
+  simp
+
+/-- Atomic arithmetic orientation is strict on every prime shell in the upper half-plane, but its
+entire ray-renormalized boundary image is zero.  This is the exact orientation-loss seam. -/
+theorem thetaCuspLikelihood_primeMassShell_atomicOrientation_rayBoundaryCollapse
+    {k : ℕ} (hk : k.Prime) {z : ℂ} (hz : 0 < z.im) :
+    (thetaCuspLikelihoodMassShellPhaseDerivative k z *
+        (starRingEnd ℂ) (thetaCuspLikelihoodMassShellPhase k z)).im < 0 ∧
+      thetaCuspLikelihoodRayBoundaryMassShellPhase k z = 0 ∧
+      thetaCuspLikelihoodRayBoundaryMassShellPhaseDerivative k z = 0 := by
+  exact ⟨thetaCuspLikelihoodMassShellPhase_current_lt_zero hk.one_lt hz,
+    thetaCuspLikelihoodRayBoundaryMassShellPhase_eq_zero_of_prime hk z,
+    thetaCuspLikelihoodRayBoundaryMassShellPhaseDerivative_eq_zero_of_prime hk z⟩
 
 /-- The likelihood carrier has genuinely infinite total mass.  One positive Lebesgue ray already
 forces this; exponential tilting, rather than finiteness, makes its interior response integrable.

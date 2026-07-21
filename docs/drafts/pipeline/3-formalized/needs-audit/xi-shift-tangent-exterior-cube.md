@@ -1,13 +1,14 @@
 # Xi-shift tangent exterior cube
 
 - **ID:** `xi-shift-tangent-exterior-cube`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM / source-producer audit
 - **Source:** `GammaSewnXiShiftTangentInnovation.lean`,
   `GammaSewnXiShiftTangentHilbertKernel.lean`, and HTGeometry confluent Cauchy-jet rigidity
-- **Scientific status:** `[PROVED HERE ON PAPER] [INTERNAL NOVELTY AUDITED]`
-  `[EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
-- **Lean target:** `RHTower/XiShiftTangentExteriorCube.lean`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [INTERNAL NOVELTY AUDITED]`
+  `[NOVELTY UNVERIFIED] [NOT RH]`
+- **Lean theorem:** `RHTower.gammaSewnXiShiftEndpointUnitTangentFrame_det_sq_pos`
+- **Lean file:** `RHTower/XiShiftTangentExteriorCube.lean`
 
 ## Exact theorem
 
@@ -137,7 +138,7 @@ Primary parent links:
 - [x] internal exact-statement search found no duplicate
 - [x] dependency-closed paper proof of `(XC1)`--`(XC4)`
 - [x] parent-theory and exact-form external search
-- [ ] Lean formalization, direct leaf check, exact module build, and axiom audit
+- [x] Lean formalization, direct leaf check, exact module build, lint, and axiom audit
 - [ ] coefficientwise source/response third-compound intertwiner
 - [ ] joined three-node response inequality / RH
 
@@ -147,3 +148,6 @@ Primary parent links:
   The normalized Xi-shift source does not stop at a pair metric: its first three literal valuation
   innovations have the strict exterior cube `(XC2)`.  The RH-bearing gap is now the exterior
   intertwiner, not production of a source third compound.
+- 2026-07-21 — Formalized `(XC1)`--`(XC4)` exactly.  Direct `lake env lean` and final exact-module
+  `lake build GaloisForLFunctions.RHTower.XiShiftTangentExteriorCube` passed; generated indexes and
+  formal lint are current.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.

@@ -68,14 +68,18 @@ used. The theorem does not assert uniformity as aperture grows or identify a Xi 
 
 ```text
 lake env lean GaloisForLFunctions/RHTower/SuzukiPrimeTangentTomography.lean
+lake build GaloisForLFunctions.RHTower.SuzukiPrimeTangentTomography
+lake env lean /tmp/SuzukiPrimeTangentAxioms.lean
 ```
 
-passed. Final exact module build, lint, and scratch axiom audit are recorded after completion of
-the audit batch.
+passed. The exact build completed successfully. Every audited capstone reports only Lean/mathlib
+foundations `propext`, `Classical.choice`, and `Quot.sound`.
+
+Repository-wide `scripts/formal_tools.py lint` also passed after concurrent umbrella state settled.
 
 ## Gates
 
 - [x] 0 -> 1: source packet and exact recovery target isolated
 - [x] 1 -> 2: full paper proof complete
-- [ ] 2 -> 3: final module build, lint, and axiom audit pending
+- [x] 2 -> 3: source check, exact module build, and axiom audit complete
 - [ ] 3 -> 4: external novelty audit and publication treatment pending

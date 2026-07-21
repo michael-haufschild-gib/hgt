@@ -12,6 +12,7 @@ import GaloisForLFunctions.RHTower.SuzukiHerglotzBoundaryStates
 import GaloisForLFunctions.RHTower.SuzukiDonoghueSpectralMeasure
 import GaloisForLFunctions.RHTower.SuzukiFiniteShiftNonClock
 import GaloisForLFunctions.RHTower.SuzukiPrimeTangentTomography
+import GaloisForLFunctions.RHTower.SuzukiPrimeClockAtomVelocity
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
@@ -99,12 +100,16 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   completeness: nonresonant Bohr demodulation of the finite tangent packet recovers each
   von-Mangoldt coefficient, and its normalized limit is exactly `Λ(m)`.  The paper-level source
   theorem derives that packet from Suzuki's distribution formula and supplies cofinal
-  nonresonant apertures.  Thus arithmetic survival at first order is no longer the wall; its
-  transfer from nonuniform high clock modes into a tight intermediate-shift measure is.  Choose
-  one intrinsic shift schedule, prevent that mode escape, prove tight infinite atomic non-clock
-  survival, then identify support and weights with the global Xi/de Branges divisor.  The
-  screw-function Hilbert space and its unbounded differential operators are not yet present in
-  Lean.
+  nonresonant apertures.  `SuzukiPrimeClockAtomVelocity` now closes the first-order transfer to
+  spectral support: the `m`th prime step moves the `k`th free Donoghue pole by
+  `Λ(m)/(a*sqrt(m)) * sin(((k+1/2)*pi/a)*log(m))`.  The reflected source geometry and pole
+  normalization cancel exactly, leaving the critical explicit-formula weight `Λ(m)/sqrt(m)`, and
+  nonresonant demodulation of the atom-velocity packet again recovers `Λ(m)`.  Thus arithmetic
+  survival and its infinitesimal transfer into divisor motion are no longer the wall.  The live
+  problem is nonlinear integration: choose one intrinsic finite-shift path, retain these critical
+  modes while proving tight infinite atomic survival, then identify support and weights with the
+  global Xi/de Branges divisor.  The screw-function Hilbert space and its unbounded differential
+  operators are not yet present in Lean.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete

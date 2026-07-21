@@ -319,3 +319,10 @@ theorem surface.  It proves the exact coefficient/state split from an actual sho
 of rational vector spaces, the relative-capacity bound, the exact prime-complement budget, and the
 Gamma-coefficient half-rank floor.  The Bohr/Pontryagin and Ritt--Kolchin analytic parents are
 exposed explicitly; no axiom or placeholder is added.
+
+The canonical source connection is also formalized.  The exact aperture-rank theorem
+`primeApertureCharacterModule_finrank` now discharges the abstract `hprime` premise at
+`V = ⊤` in `primeAperture_nonautonomous_primeComplement_budget`; its consequence
+`primeAperture_nonautonomous_gammaCoefficient_capacity_floor` supplies the residual half-rank
+floor without asking callers to restate unique-factorization rank.  This strengthens only the
+finite rational-rank layer; the analytic parent inputs listed above remain open.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CompletedPrimeGammaMovingHankel
-import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
+import GaloisForLFunctions.HTGeometry.ReflectionFoldedMomentGerm
 
 /-!
 # Reflection of the moving completed prime--Gamma Hankel family
@@ -27,41 +27,31 @@ noncomputable section
 theorem completedMovingRelativeTrace_one_sub (sigma z : ℂ) :
     completedMovingRelativeTrace (1 - sigma) z =
       -completedMovingRelativeTrace sigma (-z) := by
-  rw [completedMovingRelativeTrace, completedMovingRelativeTrace]
-  have hz := logDeriv_xi_reciprocity (sigma - z * Complex.I)
-  have hs := logDeriv_xi_reciprocity sigma
-  have harg : 1 - (sigma - z * Complex.I) =
-      1 - sigma + z * Complex.I := by ring
-  rw [harg] at hz
-  have hnegarg : sigma + -z * Complex.I = sigma - z * Complex.I := by ring
-  rw [hnegarg, hz, hs]
-  ring
+  change HTGeometry.affineRelativeTrace (logDeriv xi) (1 - sigma) z =
+    -HTGeometry.affineRelativeTrace (logDeriv xi) sigma (-z)
+  exact HTGeometry.affineRelativeTrace_reflection
+    (logDeriv xi) 1 sigma z logDeriv_xi_reciprocity
 
 /-- Exact reflection of the moving normalized moment germ. -/
 theorem completedMovingMomentGerm_one_sub (sigma z : ℂ) :
     completedMovingMomentGerm (1 - sigma) z =
       completedMovingMomentGerm sigma (-z) := by
-  have href : completedMovingRelativeTrace (1 - sigma) =
-      fun w => -completedMovingRelativeTrace sigma (-w) := by
-    funext w
-    exact completedMovingRelativeTrace_one_sub sigma w
-  rw [completedMovingMomentGerm, completedMovingMomentGerm, href,
-    normalizedTraceMomentGerm, normalizedTraceMomentGerm]
-  have h := HTGeometry.dslope_neg_comp_neg
-    (completedMovingRelativeTrace sigma) 0 z
-  simpa using congrArg Neg.neg h
+  change HTGeometry.reflectionFoldedMomentGerm (logDeriv xi) (1 - sigma) z =
+    HTGeometry.reflectionFoldedMomentGerm (logDeriv xi) sigma (-z)
+  exact HTGeometry.reflectionFoldedMomentGerm_reflection
+    (logDeriv xi) 1 sigma z logDeriv_xi_reciprocity
 
 /-- Every moving moment-germ jet has the parity forced by base reflection. -/
 theorem iteratedDeriv_completedMovingMomentGerm_one_sub
     (k : ℕ) (sigma : ℂ) :
     iteratedDeriv k (completedMovingMomentGerm (1 - sigma)) 0 =
       (-1 : ℂ) ^ k * iteratedDeriv k (completedMovingMomentGerm sigma) 0 := by
-  have href : completedMovingMomentGerm (1 - sigma) =
-      fun z => completedMovingMomentGerm sigma (-z) := by
-    funext z
-    exact completedMovingMomentGerm_one_sub sigma z
-  rw [href, iteratedDeriv_comp_neg]
-  simp
+  change iteratedDeriv k
+      (HTGeometry.reflectionFoldedMomentGerm (logDeriv xi) (1 - sigma)) 0 =
+    (-1 : ℂ) ^ k * iteratedDeriv k
+      (HTGeometry.reflectionFoldedMomentGerm (logDeriv xi) sigma) 0
+  exact HTGeometry.iteratedDeriv_reflectionFoldedMomentGerm_reflection
+    (logDeriv xi) 1 sigma logDeriv_xi_reciprocity k
 
 /-- All even Taylor moments of the moving source are invariant under base reflection. -/
 theorem analyticTraceMoments_completedMovingMomentGerm_one_sub
