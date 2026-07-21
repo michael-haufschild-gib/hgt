@@ -74,11 +74,15 @@ theorem half_projectiveWeightedPairwiseEnergy_ofReal_eq_covariance
     (1 / 2 : ℝ) *
         projectiveWeightedPairwiseEnergy w (fun i => (theta i : ℂ)) =
       (∑ i, w i * theta i ^ 2) - (∑ i, w i * theta i) ^ 2 := by
+  have hmean :
+      (∑ i, (w i : ℂ) * (theta i : ℂ)) =
+        ((∑ i, w i * theta i : ℝ) : ℂ) := by
+    simp only [Complex.ofReal_sum, Complex.ofReal_mul]
   rw [projectiveWeightedPairwiseEnergy_eq_finiteWeightedDifferenceEnergy,
     finiteWeightedDifferenceEnergy_eq_variance]
   simp only [finiteWeightMass, hmass, finiteWeightedNormSq,
     Complex.norm_real, Real.norm_eq_abs, sq_abs,
-    finiteWeightedMean, Complex.ofReal_mul, Complex.ofReal_sum]
+    finiteWeightedMean, hmean]
   ring
 
 /-- The weighted average of the pivot energies is the pairwise energy. -/

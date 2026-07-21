@@ -64,9 +64,11 @@ theorem finiteGaussianDistanceGram_one_posDef_of_injective {n d : ℕ}
         2 * (y i k - y j k) ^ 2 by
           rw [show Real.sqrt 2 * y i k - Real.sqrt 2 * y j k =
             Real.sqrt 2 * (y i k - y j k) by ring]
-          rw [mul_pow, hsquare]
-          ring)]
+          rw [mul_pow, hsquare])]
     rw [Finset.mul_sum]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro k _hk
     ring
   have hinnerEq : finiteExponentialInnerGram z 1 = gaussianCoherentGram z := by
     ext i j

@@ -1,4 +1,5 @@
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+import Mathlib.LinearAlgebra.Matrix.Block
 import Mathlib.Data.Real.Basic
 
 /-!
@@ -101,7 +102,7 @@ theorem lowerTriangular_orthogonal_pos_diag_eq_one
           intro k hka
           rcases lt_or_gt_of_ne hka with hlt | hgt
           · have hk := ih k hlt a
-            simpa [hka] using hk
+            simpa [Ne.symm hka] using hk
           · exact htri (by simpa using hgt)
         have haaEntry := congrFun (congrFun horth a) a
         simp only [Matrix.mul_apply, Matrix.one_apply, if_pos] at haaEntry
