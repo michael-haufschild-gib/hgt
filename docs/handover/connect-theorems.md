@@ -922,3 +922,136 @@ automatic extrapolation to third order.
 The exact module rebuild passed `8725/8725`.  Seven classification and channel-capstone
 declarations were axiom-audited; each depends on exactly `propext`, `Classical.choice`, and
 `Quot.sound`.
+
+## 16. HilbertMetric-to-RHTower strict mixture connector completed
+
+Fresh cross-folder audit found a genuine producer/consumer duplication.  The terminal
+`HilbertMetric/FourthCurvatureMixture.lean` advertised use by the theta tower, but
+`RHTower/HedenmalmCenterMixedFourthJetCuspClosure.lean` independently carried the full quadratic-
+form integration proof.
+
+The general leaf now proves `integral_twoByTwo_det_pos`: if integrable real fields `p0,p2,p4`
+satisfy `0 < integral p0` and their `2 x 2` Hankel determinant is strictly positive almost
+everywhere with `p0>0`, then
+
+```text
+0 < integral(p0) * integral(p4) - integral(p2)^2.
+```
+
+The proof evaluates each pointwise positive matrix on the nonzero vector
+`(-integral(p2), integral(p0))`; its integrated quadratic form is exactly the first mass times the
+mixed determinant.  No uniform determinant gap is required.
+
+The theta closure now invokes this generic Hilbert theorem directly and discharges its assumptions
+using existing integrability, positive center mass, and full-source reflection-Hankel positivity.
+The source determinant is multiplied by the positive square `(r*sinh(a*r))^2`.  More than a hundred
+lines of duplicated source-specific quadratic/integral algebra were removed while preserving the
+same unconditional fourth-Hankel and coalesced-cusp capstones.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HilbertMetric/FourthCurvatureMixture.lean
+lake build GaloisForLFunctions.HilbertMetric.FourthCurvatureMixture
+  8476/8476
+lake env lean GaloisForLFunctions/RHTower/HedenmalmCenterMixedFourthJetCuspClosure.lean
+lake build GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
+  8822/8822
+```
+
+All four audited generic/source capstones use exactly `propext`, `Classical.choice`, and
+`Quot.sound`.  Classification: **[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This is classical strict
+positive-cone integration, not external novelty and not RH progress.  Continue scanning RHTower
+for other source-specific reproofs or conditional consumers whose hypotheses are already available.
+Persistent goal remains active.
+
+## 17. HTGeometry-to-RHTower affine-Gamma curvature connector completed
+
+RHTower audit first rejected a tempting but invalid Thue--Morse/Perron splice.  The proved
+square-integrable completed carrier is `Gamma * LSeries`, while the aggregate strip-mass consumer
+requires the carrier itself to equal `LSeries` on the right half-plane.  Cancelling Gamma would
+discard the available flank control.  The existing balanced third-charge theorem is therefore the
+correct positive survivor; no false strip interface was added.
+
+The same scan found a genuine duplication in
+`RHTower/PrimeArchThetaGaussianApertureCurvatureFlow.lean`.  That source module independently
+derived its normalized-ratio Riccati law and expanded its parabolic-reaction identity, although
+`HTGeometry/AffineGammaMomentCurvature.lean` already proves the universal shifted-moment theorem
+and the exact affine-weight curvature law.  The pipeline card explicitly states that the completed
+theta flow is its `alpha=1/2`, `h=1` specialization, but the Lean dependency graph did not realize
+that statement.
+
+The RHTower module now imports the generic leaf.  Its source ratio derivative is proved by
+`HTGeometry.hasDerivAt_normalizedMomentRatio`, after discharging the literal moment-shift and
+nonvanishing facts.  The new stronger theorem
+
+```text
+hasDerivAt_thetaCuspGaussianApertureRatioCurvature_affineGamma
+```
+
+specializes `hasDerivAt_normalizedMomentRatioCurvature_of_affineWeights` at weights
+`a_j=j+1/2`.  It returns the full `HasDerivAt` identity: square production, transport from the next
+curvature coordinate, and reaction by the current curvature.  The old derivative equality is now
+its immediate `.deriv` corollary, and all existing forward-barrier, entrance-cascade, GABTC, and
+finite-section consumers keep their unconditional signatures.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/PrimeArchThetaGaussianApertureCurvatureFlow.lean
+lake build GaloisForLFunctions.RHTower.PrimeArchThetaGaussianApertureCurvatureFlow
+  8809/8809
+lake env lean GaloisForLFunctions/RHTower/PrimeArchThetaGaussianApertureFiniteSectionMaximum.lean
+```
+
+Six generic, source, derivative, and downstream capstones were axiom-audited; each uses exactly
+`propext`, `Classical.choice`, and `Quot.sound`.  Formal lint passed.  Classification of this new
+edge: **[BRIDGE] [LEAN-PROVED]**.  It realizes the already audited affine-Gamma theorem in the
+literal theta source; it is not an additional novelty claim and does not establish the missing
+large-degree curvature boundary or RH.  Persistent goal remains active.
+
+## 18. HilbertMetric-to-RHTower fourth-reflection jet connector completed
+
+Umbrella-excluded endpoint audit found `HilbertMetric/ReflectionFourthJet.lean` was imported only
+by the HilbertMetric umbrella, while
+`RHTower/ThetaCuspFullReflectionFourthTuran.lean` independently expanded the same fourth Bell-jet
+determinant with a source-local `ring` proof.
+
+The Hilbert leaf now exposes two exact identities.  In Bell-logarithmic coordinates
+
+```text
+f₁ = f₀ ℓ₁,
+f₂ = f₀ (ℓ₁² + ℓ₂),
+f₃ = f₀ (ℓ₁³ + 3ℓ₁ℓ₂ + ℓ₃),
+f₄ = f₀ (ℓ₁⁴ + 6ℓ₁²ℓ₂ + 3ℓ₂² + 4ℓ₁ℓ₃ + ℓ₄),
+```
+
+`reflectionFourthCurvatureJet_of_logJets` cancels the first and third channels exactly and returns
+`ℓ₄ + 4ℓ₂²`.  `reflectedProduct_fourthHankel_of_logJets` composes that result with the
+generic reflected-product determinant law:
+
+```text
+f₀² R₄ - R₂² = 2 f₀⁴ (ℓ₄ + 4ℓ₂²).
+```
+
+The theta module now imports this generic leaf and publishes the source specialization
+`thetaCuspSourceReflectionFourthHankel_eq_logFactors`.  Its existing strict positivity theorem
+uses this exact equality plus the already proved theta logarithmic fourth-Turán margin; the large
+source-specific polynomial expansion is gone.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HilbertMetric/ReflectionFourthJet.lean
+lake build GaloisForLFunctions.HilbertMetric.ReflectionFourthJet
+  8475/8475
+lake env lean GaloisForLFunctions/RHTower/ThetaCuspFullReflectionFourthTuran.lean
+lake build GaloisForLFunctions.RHTower.ThetaCuspFullReflectionFourthTuran
+  8814/8814
+```
+
+The two generic identities, exact theta specialization, and strict source capstone each use
+exactly `propext`, `Classical.choice`, and `Quot.sound`.  Classification:
+**[REDISCOVERED] [BRIDGE] [LEAN-PROVED]**.  This strengthens theorem graph and removes duplicate
+algebra; it is not a new external novelty or RH claim.  Persistent goal remains active for the
+remaining umbrella-excluded endpoint scan.

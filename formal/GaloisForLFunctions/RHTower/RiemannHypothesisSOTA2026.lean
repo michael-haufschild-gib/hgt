@@ -10,6 +10,8 @@ import GaloisForLFunctions.RHTower.SuzukiProjectiveDefectBoundary
 import GaloisForLFunctions.RHTower.SuzukiGroundEdgeCayleyUniversality
 import GaloisForLFunctions.RHTower.SuzukiHerglotzBoundaryStates
 import GaloisForLFunctions.RHTower.SuzukiDonoghueSpectralMeasure
+import GaloisForLFunctions.RHTower.SuzukiFiniteShiftNonClock
+import GaloisForLFunctions.RHTower.SuzukiPrimeTangentTomography
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
@@ -91,10 +93,18 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   reciprocal to boundary phase speed.  On paper the full source measure is `(1+t^2)` times the
   spectral probability of the normalized positive deficiency vector for the even extension, with
   atom weight `(1+x^2)|F(-x)|^2/(||v_+||_T^2 ||v_x||_T^2)`.  The live wall is therefore concrete
-  and measure-level: choose one intrinsic intermediate shift schedule, prove tight infinite atomic
-  survival and non-clock behavior, then identify support and weights with the global Xi/de Branges
-  divisor.  The screw-function Hilbert space and its unbounded differential operators are not yet
-  present in Lean.
+  and measure-level.  `SuzukiFiniteShiftNonClock` proves that no finite admissible shift is the
+  free clock and that the far-negative source path has a nonzero first projective tangent.
+  `SuzukiPrimeTangentTomography` strengthens this from nonvanishing to exact arithmetic
+  completeness: nonresonant Bohr demodulation of the finite tangent packet recovers each
+  von-Mangoldt coefficient, and its normalized limit is exactly `Λ(m)`.  The paper-level source
+  theorem derives that packet from Suzuki's distribution formula and supplies cofinal
+  nonresonant apertures.  Thus arithmetic survival at first order is no longer the wall; its
+  transfer from nonuniform high clock modes into a tight intermediate-shift measure is.  Choose
+  one intrinsic shift schedule, prevent that mode escape, prove tight infinite atomic non-clock
+  survival, then identify support and weights with the global Xi/de Branges divisor.  The
+  screw-function Hilbert space and its unbounded differential operators are not yet present in
+  Lean.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete

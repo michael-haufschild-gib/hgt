@@ -50,6 +50,39 @@ theorem reflectedProduct_fourthHankel_eq
   field_simp [hf₀]
   ring
 
+/-- Bell-logarithmic coordinates diagonalize the fourth reflection curvature: all first- and
+third-log-jet terms cancel, leaving the fourth log jet plus four times the square of the second
+log jet. -/
+theorem reflectionFourthCurvatureJet_of_logJets
+    {f₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : ℝ} (hf₀ : f₀ ≠ 0) :
+    reflectionFourthCurvatureJet
+        f₀
+        (f₀ * ℓ₁)
+        (f₀ * (ℓ₁ ^ 2 + ℓ₂))
+        (f₀ * (ℓ₁ ^ 3 + 3 * ℓ₁ * ℓ₂ + ℓ₃))
+        (f₀ * (ℓ₁ ^ 4 + 6 * ℓ₁ ^ 2 * ℓ₂ + 3 * ℓ₂ ^ 2 +
+          4 * ℓ₁ * ℓ₃ + ℓ₄)) =
+      ℓ₄ + 4 * ℓ₂ ^ 2 := by
+  unfold reflectionFourthCurvatureJet logarithmicFourthJet logarithmicSecondJet
+  field_simp [hf₀]
+  ring
+
+/-- Exact fourth reflected-product Hankel determinant in Bell-logarithmic coordinates. -/
+theorem reflectedProduct_fourthHankel_of_logJets
+    {f₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : ℝ} (hf₀ : f₀ ≠ 0) :
+    f₀ ^ 2 * reflectedProductFourthJet
+        f₀
+        (f₀ * ℓ₁)
+        (f₀ * (ℓ₁ ^ 2 + ℓ₂))
+        (f₀ * (ℓ₁ ^ 3 + 3 * ℓ₁ * ℓ₂ + ℓ₃))
+        (f₀ * (ℓ₁ ^ 4 + 6 * ℓ₁ ^ 2 * ℓ₂ + 3 * ℓ₂ ^ 2 +
+          4 * ℓ₁ * ℓ₃ + ℓ₄)) -
+      reflectedProductSecondJet
+        f₀ (f₀ * ℓ₁) (f₀ * (ℓ₁ ^ 2 + ℓ₂)) ^ 2 =
+      2 * f₀ ^ 4 * (ℓ₄ + 4 * ℓ₂ ^ 2) := by
+  rw [reflectedProduct_fourthHankel_eq hf₀,
+    reflectionFourthCurvatureJet_of_logJets hf₀]
+
 /-- Exact second logarithmic jet of a product from the jets of its factors. -/
 theorem logarithmicSecondJet_mul
     {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ} (ha₀ : a₀ ≠ 0) (hb₀ : b₀ ≠ 0) :

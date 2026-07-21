@@ -312,3 +312,9 @@ degree infinity for the actual prime--archimedean source.
 - 2026-07-20 — both directions, coefficient uniqueness, the full reaction law, global affine
   rigidity, Pochhammer accumulation, and the abstract differentiable-moment bridge proved on paper
   and in Lean.
+- 2026-07-21 — connected the abstract theorem to the literal completed-theta source in
+  `PrimeArchThetaGaussianApertureCurvatureFlow.lean`.  The source ratio derivative now invokes
+  `hasDerivAt_normalizedMomentRatio`, and
+  `hasDerivAt_thetaCuspGaussianApertureRatioCurvature_affineGamma` specializes the full abstract
+  curvature law at `a_j=j+1/2`; the older derivative equation is its corollary.  Focused build
+  `8809/8809`, downstream finite-section check, standard-axiom audit, and formal lint all pass.

@@ -745,3 +745,66 @@ not settle `(40)`: those results control a positive amplitude topology, whereas 
 current is carried by the modular seam in a strictly stronger oscillatory topology.  Formulae
 `(43)`--`(44)` still do not determine the sign of that beyond-all-orders remainder, so they do not
 prove RH.
+
+## 2026-07-21 strict positive-matrix mixing connector
+
+**[REDISCOVERED] [BRIDGE] [LEAN-PROVED].**  The order-four center-mixture closure previously
+contained a source-specific proof of a general fact: strict positivity of an integrable real
+`2 x 2` Hankel field survives integration when the integrated first diagonal mass is positive.
+The exact theorem now lives in
+`formal/GaloisForLFunctions/HilbertMetric/FourthCurvatureMixture.lean`:
+
+```text
+integral_twoByTwo_det_pos
+```
+
+For integrable fields `p0,p2,p4`, assume
+
+```text
+0 < integral p0,
+almost everywhere: 0 < p0 and 0 < p0*p4-p2^2.
+```
+
+Put `A=integral p0`, `B=integral p2`, and use the nonzero vector `(-B,A)`.  Pointwise Sylvester
+positivity makes
+
+```text
+Q = p0*B^2 - 2*p2*A*B + p4*A^2
+```
+
+strictly positive almost everywhere.  Its integral is exactly
+
+```text
+A * (A*integral(p4)-B^2),
+```
+
+so positivity of `A` gives the strict mixed determinant.  No uniform lower determinant gap or
+finite-measure normalization is needed.  This is elementary positive-cone/Sylvester theory; broad
+matrix-valued positive-definite integration is classical parent theory, so no novelty claim is
+made.
+
+`RHTower/HedenmalmCenterMixedFourthJetCuspClosure.lean` now uses this theorem directly.  Its proof
+only discharges source facts already present in the corpus:
+
+- integrability of the weighted zeroth, second, and fourth reflection jets;
+- positive mixed zeroth mass;
+- pointwise strict fourth Hankel positivity from the full theta reflection theorem.
+
+The pointwise determinant factors as the square of `r*sinh(a*r)` times the source determinant.
+The prior bespoke quadratic-form integration and explicit positive-measure interval argument were
+removed.  The unconditional capstones and RH status are unchanged: this is a theorem-graph
+consolidation that exposes the exact general producer consumed by the theta closure.
+
+Focused verification passed:
+
+```text
+lake env lean GaloisForLFunctions/HilbertMetric/FourthCurvatureMixture.lean
+lake build GaloisForLFunctions.HilbertMetric.FourthCurvatureMixture
+  8476/8476
+lake env lean GaloisForLFunctions/RHTower/HedenmalmCenterMixedFourthJetCuspClosure.lean
+lake build GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
+  8822/8822
+```
+
+The generic quadratic lemma, strict mixture theorem, theta fourth-Hankel theorem, and coalesced-cusp
+capstone depend on exactly `propext`, `Classical.choice`, and `Quot.sound`.

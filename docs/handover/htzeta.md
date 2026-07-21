@@ -1018,3 +1018,82 @@ publication-process gate, not a theorem hypothesis.
 The complete DA/HT classification is closed. Separate stronger questions about exact
 arbitrary-translation annihilator ideals and full nonlinear differential matroids remain separate
 projects; they are not missing cases or dependencies of the rational-rank dichotomy paper.
+
+## 21. Major-journal gate and universal Ostrowski upgrade (2026-07-21)
+
+A hostile submission audit against the current *Advances in Mathematics* standard produced one
+substantive upgrade and several submission repairs.
+
+### Universal theorem now exposed in the paper
+
+Section 4 no longer states only a one-primitive, one-way descent. It proves the exact finite-family
+criterion: for additive primitives `(y_r)` under an arbitrary family of compatible automorphisms,
+differential algebraic dependence over the base field is equivalent to existence of a nonzero
+family of constant-coefficient differential operators `(L_r)` and one base element `g` whose
+automorphism defects simultaneously equal `sum_r L_r(a_(j,r))` in every direction. The
+automorphisms need not commute and their index family may be infinite. Kähler differentials,
+minimal-support descent, and one field trace prove the forward direction; joint fixed-field
+descent proves the converse.
+
+This exact result is already mirrored unconditionally by
+
+```text
+formal/GaloisForLFunctions/HTGeometry/SourceLogarithmicBoundary.lean
+  automorphismFamily_differentialIndependent_iff_no_constant_simultaneous_jet_telescoping
+```
+
+and its noncommutative descent core in `AutomorphismFamilyOstrowski.lean`. No Lean file changed in
+this journal audit, so the prior successful targeted Lean check, final module build, lint, and
+axiom audit remain the applicable formal verification.
+
+### Priority and context repair
+
+The manuscript now compares its two-translation mechanism explicitly with the closest literature:
+
+- Adamczewski--Dreyfus--Hardouin (JAMS 2021), linear difference equations over rational-function
+  settings;
+- Arreche--Dreyfus--Roques (JEP 2021), second-order equations and elliptic hypergeometric
+  functions;
+- de Shalit (AIF 2025), algebraic independence for independent elliptic-curve isogenies;
+- de Shalit--Hardouin--Roques (2024 preprint), hypertranscendence for elliptic-curve isogeny
+  equations;
+- Dreyfus (J. Algebra 2026), global meromorphic linear shift equations.
+
+None of these sources classifies Nishizawa's nonlinear hierarchy over `C(z)` from two
+incommensurable translations on different elliptic curves. Searches through 2026-07-21 still found
+no augmented-rational-rank classification. This is strong preliminary priority evidence, not a
+substitute for MathSciNet/Zentralblatt and specialist review.
+
+### Submission package and verification
+
+The paper directory now also contains:
+
+```text
+cover-letter.md   # target-specific letter for Advances in Mathematics
+highlights.txt    # four highlights, each below the 85-character journal limit
+```
+
+The AI declaration uses Elsevier's required heading and states tool names, purposes, human review,
+and human responsibility. A data-availability statement records that no empirical data or
+numerical computation was used. Bibliographic records and DOIs for newly added near-field sources
+were checked against primary publisher pages.
+
+Final document audit:
+
+```text
+tectonic main.tex                 # PASS; two passes, no warnings
+main.pdf                          # 10 US-letter pages
+all pages rendered and inspected # PASS; no clipping, overflow, broken citation, or layout defect
+```
+
+### Honest submission verdict
+
+Mathematical scope is closed and manuscript is technically suitable for submission to a major pure
+mathematics journal. Acceptance cannot be predicted or guaranteed. Two human-only gates remain:
+
+1. add corresponding-author affiliation, full postal address, current email, and phone required by
+   the target journal;
+2. obtain independent specialist proof and priority review before making the author-responsibility
+   declaration operational at submission.
+
+These are publication-integrity gates, not open cases or assumptions in the theorem.

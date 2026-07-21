@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaGaussianApertureCompositeWindow
 import GaloisForLFunctions.RHTower.PrimeArchThetaLiouvilleWard
+import GaloisForLFunctions.HTGeometry.AffineGammaMomentCurvature
 
 /-!
 # Gaussian-aperture curvature flow
@@ -14,8 +15,9 @@ curvature at level `j`, the reaction term disappears and the surviving derivativ
 Thus nonnegative curvature one level higher is a forward barrier against loss of curvature at the
 current level.  This identifies the genuinely infinite part of GABTC: a first failure cannot be
 born at a finite level whose successor remains nonnegative; it must enter through the large-degree
-boundary.  The result is proved for the literal completed theta aperture, not an assumed moment
-flow.
+boundary.  The generic algebra is the affine-Gamma moment-curvature law from `HTGeometry`; this
+module verifies the literal completed theta moment shift and specializes that universal theorem,
+rather than assuming a moment flow.
 -/
 
 open Real MeasureTheory Set Filter Topology Polynomial
@@ -1368,19 +1370,16 @@ theorem hasDerivAt_thetaCuspGaussianApertureGammaRatio
     {lambda : ℝ} (hlambda : lambda < 0) (j : ℕ) :
     HasDerivAt (fun eta => thetaCuspGaussianApertureGammaRatio eta j)
       (thetaCuspGaussianApertureGammaRatioVelocity lambda j) lambda := by
-  have hmj := thetaCuspGaussianApertureHalfMoment_pos hlambda.le j
-  have hmnext := thetaCuspGaussianApertureHalfMoment_pos hlambda.le (j + 1)
-  have hquot :=
-    (hasDerivAt_thetaCuspGaussianApertureHalfMoment hlambda (j + 1)).div
-      (hasDerivAt_thetaCuspGaussianApertureHalfMoment hlambda j) hmj.ne'
-  have hscaled := hquot.div_const (thetaCuspGaussianApertureGammaShape j)
-  have hshape := thetaCuspGaussianApertureGammaShape_pos j
-  have hshapeNext := thetaCuspGaussianApertureGammaShape_pos (j + 1)
-  convert hscaled using 1
-  simp only [thetaCuspGaussianApertureGammaRatioVelocity,
+  have hgeneric := HTGeometry.hasDerivAt_normalizedMomentRatio
+    (M := thetaCuspGaussianApertureHalfMoment)
+    (a := thetaCuspGaussianApertureGammaShape) (lambda := lambda) j
+    (fun k => hasDerivAt_thetaCuspGaussianApertureHalfMoment hlambda k)
+    (fun k => (thetaCuspGaussianApertureHalfMoment_pos hlambda.le k).ne')
+    (fun k => (thetaCuspGaussianApertureGammaShape_pos k).ne')
+  simpa only [HTGeometry.normalizedMomentRatio,
+    HTGeometry.weightedMomentRatioVelocity,
     thetaCuspGaussianApertureGammaRatio,
-    thetaCuspGaussianApertureGammaShape]
-  field_simp [hmj.ne', hmnext.ne', hshape.ne', hshapeNext.ne']
+    thetaCuspGaussianApertureGammaRatioVelocity] using hgeneric
 
 /-- Literal derivative of one ratio-curvature coordinate. -/
 theorem hasDerivAt_thetaCuspGaussianApertureRatioCurvature
@@ -1394,6 +1393,40 @@ theorem hasDerivAt_thetaCuspGaussianApertureRatioCurvature
   have h2 := hasDerivAt_thetaCuspGaussianApertureGammaRatio hlambda (j + 2)
   convert (h0.sub h1).add h2 using 1
 
+/-- The completed theta curvature flow is the literal source specialization of the universal
+affine-Gamma moment-curvature theorem.  This stronger `HasDerivAt` form supplies both the closed
+parabolic-reaction law and all derivative consumers below. -/
+theorem hasDerivAt_thetaCuspGaussianApertureRatioCurvature_affineGamma
+    {lambda : ℝ} (hlambda : lambda < 0) (j : ℕ) :
+    HasDerivAt (fun eta => thetaCuspGaussianApertureRatioCurvature eta j)
+      (4 * (thetaCuspGaussianApertureGammaRatio lambda j -
+          thetaCuspGaussianApertureGammaRatio lambda (j + 1)) ^ 2 +
+        thetaCuspGaussianApertureGammaShape (j + 3) *
+          thetaCuspGaussianApertureGammaRatio lambda (j + 2) *
+          thetaCuspGaussianApertureRatioCurvature lambda (j + 1) +
+        thetaCuspGaussianApertureRatioCurvature lambda j *
+          thetaCuspGaussianApertureRatioCurvatureReaction lambda j) lambda := by
+  have hgeneric :=
+    HTGeometry.hasDerivAt_normalizedMomentRatioCurvature_of_affineWeights
+      (M := thetaCuspGaussianApertureHalfMoment)
+      (a := thetaCuspGaussianApertureGammaShape)
+      (lambda := lambda) (A := thetaCuspGaussianApertureGammaShape j) (h := 1) j
+      (fun k => hasDerivAt_thetaCuspGaussianApertureHalfMoment hlambda k)
+      (fun k => (thetaCuspGaussianApertureHalfMoment_pos hlambda.le k).ne')
+      (fun k => (thetaCuspGaussianApertureGammaShape_pos k).ne')
+      rfl
+      (by simp [thetaCuspGaussianApertureGammaShape, Nat.cast_add]; ring)
+      (by simp [thetaCuspGaussianApertureGammaShape, Nat.cast_add]; ring)
+      (by simp [thetaCuspGaussianApertureGammaShape, Nat.cast_add]; ring)
+  convert hgeneric using 1
+  simp only [HTGeometry.normalizedMomentRatio, HTGeometry.ratioSecondCurvature,
+    thetaCuspGaussianApertureGammaRatio,
+    thetaCuspGaussianApertureRatioCurvature,
+    thetaCuspGaussianApertureRatioCurvatureReaction,
+    thetaCuspGaussianApertureGammaShape]
+  push_cast
+  ring
+
 /-- **Discrete parabolic-reaction law.**  The curvature velocity is a positive square, transport
 from the next curvature level, and a reaction multiple of the current curvature. -/
 theorem deriv_thetaCuspGaussianApertureRatioCurvature_eq
@@ -1406,13 +1439,8 @@ theorem deriv_thetaCuspGaussianApertureRatioCurvature_eq
           thetaCuspGaussianApertureRatioCurvature lambda (j + 1) +
         thetaCuspGaussianApertureRatioCurvature lambda j *
           thetaCuspGaussianApertureRatioCurvatureReaction lambda j := by
-  rw [(hasDerivAt_thetaCuspGaussianApertureRatioCurvature hlambda j).deriv]
-  simp only [thetaCuspGaussianApertureGammaRatioVelocity,
-    thetaCuspGaussianApertureRatioCurvature,
-    thetaCuspGaussianApertureRatioCurvatureReaction,
-    thetaCuspGaussianApertureGammaShape]
-  push_cast
-  ring
+  exact
+    (hasDerivAt_thetaCuspGaussianApertureRatioCurvature_affineGamma hlambda j).deriv
 
 /-- On a zero-curvature boundary, only the positive square and next-level transport survive. -/
 theorem deriv_thetaCuspGaussianApertureRatioCurvature_eq_of_eq_zero

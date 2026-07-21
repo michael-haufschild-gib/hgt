@@ -139,16 +139,19 @@ Equations `(10)--(12)` are direct substitutions into `(5)`.
 
 ## 4. Theorem B: first arithmetic tangent away from the free clock
 
-For `|epsilon|<||A_a||^(-1)`, the bounded resolvent has the operator-norm expansion
+The operator `A_a` is unbounded, so no operator-norm Neumann expansion is available.  The source
+domain theorem in `suzuki-boundary-log-nonclock-nonflat-tangent.md` proves
+`e^x in Dom(A_a)`.  Therefore, as `epsilon -> 0+`, the resolvent has the strong source-vector
+expansion
 
 ```text
-(I+epsilon A_a)^(-1)=I-epsilon A_a+O(epsilon^2).
+(I+epsilon A_a)^(-1)e^x=e^x-epsilon A_a e^x+o(epsilon) in L^2.
 ```
 
 Consequently, locally uniformly in `z`,
 
 ```text
-F_epsilon(z)=F_0(z)-epsilon H_a(z)+O(epsilon^2).           (15)
+F_epsilon(z)=F_0(z)-epsilon H_a(z)+o(epsilon).             (15)
 ```
 
 Let
@@ -227,8 +230,15 @@ locations and weights before any cofinal limit is taken.
 
 ## 5. Proof of Theorem B
 
-Equation `(15)` is the derivative of inversion at the identity, followed by the bounded Fourier
-functional on `[-a,a]`.  Logarithmic differentiation of the quotient in `(16)` gives
+The source-vector derivative is the exact identity
+
+```text
+[(I+epsilon A_a)^(-1)e^x-e^x]/epsilon
+ =-(I+epsilon A_a)^(-1)A_a e^x -> -A_a e^x.
+```
+
+Uniform boundedness of the Fourier functionals on compact `z`-sets gives `(15)`.
+Logarithmic differentiation of the quotient in `(16)` gives
 
 ```text
 dot Theta/Theta
@@ -272,8 +282,8 @@ that such a theorem must propagate; generic Clark theory does not.
 1. **Classical parent theory.** Resolvent differentiation, quotient perturbation, Clark residues,
    and compact moment determinacy are classical.  Candidate novelty is their exact synthesis for
    Suzuki's restricted-Weil source, especially `(17)`, `(20)`, and the clock response `(22)--(24)`.
-2. **No nonzero tangent is assumed.** A scalar `A_a` makes `Delta_a=0`; the theorem correctly
-   records projective invisibility.  Proving source nonvanishing and cofinal survival remains open.
+2. **Nonzero tangent is now proved.** The companion boundary-log theorem proves `Delta_a` is not
+   identically zero for every fixed aperture.  Uniform cofinal survival remains open.
 3. **No RH-bearing shift.** The expansion is taken at `lambda=-infinity` through
    `epsilon=(-lambda)^(-1)`.  It never inserts `lambda=0`.
 4. **No finite-jet overclaim.** A finite prefix does not determine the measure.  Faithfulness uses

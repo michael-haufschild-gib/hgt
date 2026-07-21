@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCuspReflectionFourthTuran
+import GaloisForLFunctions.HilbertMetric.ReflectionFourthJet
 
 /-!
 # Fourth reflection--Turan law for the complete theta source
@@ -1483,15 +1484,14 @@ def thetaCuspSourceReflectionJetFour (x : ℝ) : ℝ :=
       iteratedDeriv 3 thetaCuspFullSource x +
     6 * iteratedDeriv 2 thetaCuspFullSource x ^ 2
 
-/-- The reflected complete source has a strictly positive fourth Hankel determinant at every
-positive source coordinate. -/
-theorem thetaCuspSourceReflectionFourthHankel_pos
+/-- Exact source connector from the fourth reflected-product Hankel determinant to the fourth and
+second logarithmic source factors. -/
+theorem thetaCuspSourceReflectionFourthHankel_eq_logFactors
     {x : ℝ} (hx : 0 < x) :
-    0 < thetaCuspSourceReflectionJetZero x * thetaCuspSourceReflectionJetFour x -
-      thetaCuspSourceReflectionJetTwo x ^ 2 := by
-  have hlog := thetaCuspLogSource_fourthTuran_gt_one_hundred_sixty hx
-  rw [iteratedDeriv_four_thetaCuspLogSource_eq_factor hx,
-    iteratedDeriv_two_thetaCuspLogSource_eq_factor hx] at hlog
+    thetaCuspSourceReflectionJetZero x * thetaCuspSourceReflectionJetFour x -
+        thetaCuspSourceReflectionJetTwo x ^ 2 =
+      2 * thetaCuspFullSource x ^ 4 *
+        (thetaCuspFullLogFactorFour x + 4 * thetaCuspFullLogFactorTwo x ^ 2) := by
   have hsource : thetaCuspFullSource x = thetaCuspFullLogExponentialJetZero x := by
     exact (thetaCuspFullSource_eventuallyEq_logExponentialJetZero hx).self_of_nhds
   rw [thetaCuspSourceReflectionJetZero, thetaCuspSourceReflectionJetTwo,
@@ -1505,31 +1505,44 @@ theorem thetaCuspSourceReflectionFourthHankel_pos
   have hzero : 0 < thetaCuspFullLogExponentialJetZero x := by
     unfold thetaCuspFullLogExponentialJetZero
     positivity
-  have hid :
-      thetaCuspFullLogExponentialJetZero x ^ 2 *
-          (2 * thetaCuspFullLogExponentialJetZero x *
-              (thetaCuspFullLogExponentialJetZero x *
-                (thetaCuspFullLogFactorOne x ^ 4 +
-                  6 * thetaCuspFullLogFactorOne x ^ 2 * thetaCuspFullLogFactorTwo x +
-                  3 * thetaCuspFullLogFactorTwo x ^ 2 +
-                  4 * thetaCuspFullLogFactorOne x * thetaCuspFullLogFactorThree x +
-                  thetaCuspFullLogFactorFour x)) -
-            8 * (thetaCuspFullLogExponentialJetZero x * thetaCuspFullLogFactorOne x) *
-              (thetaCuspFullLogExponentialJetZero x *
-                (thetaCuspFullLogFactorOne x ^ 3 +
-                  3 * thetaCuspFullLogFactorOne x * thetaCuspFullLogFactorTwo x +
-                  thetaCuspFullLogFactorThree x)) +
-            6 * (thetaCuspFullLogExponentialJetZero x *
-              (thetaCuspFullLogFactorOne x ^ 2 + thetaCuspFullLogFactorTwo x)) ^ 2) -
-        (2 * (thetaCuspFullLogExponentialJetZero x *
-            (thetaCuspFullLogExponentialJetZero x *
-              (thetaCuspFullLogFactorOne x ^ 2 + thetaCuspFullLogFactorTwo x)) -
-          (thetaCuspFullLogExponentialJetZero x * thetaCuspFullLogFactorOne x) ^ 2)) ^ 2 =
+  change
+    thetaCuspFullLogExponentialJetZero x ^ 2 *
+        HilbertMetric.reflectedProductFourthJet
+          (thetaCuspFullLogExponentialJetZero x)
+          (thetaCuspFullLogExponentialJetZero x * thetaCuspFullLogFactorOne x)
+          (thetaCuspFullLogExponentialJetZero x *
+            (thetaCuspFullLogFactorOne x ^ 2 + thetaCuspFullLogFactorTwo x))
+          (thetaCuspFullLogExponentialJetZero x *
+            (thetaCuspFullLogFactorOne x ^ 3 +
+              3 * thetaCuspFullLogFactorOne x * thetaCuspFullLogFactorTwo x +
+              thetaCuspFullLogFactorThree x))
+          (thetaCuspFullLogExponentialJetZero x *
+            (thetaCuspFullLogFactorOne x ^ 4 +
+              6 * thetaCuspFullLogFactorOne x ^ 2 * thetaCuspFullLogFactorTwo x +
+              3 * thetaCuspFullLogFactorTwo x ^ 2 +
+              4 * thetaCuspFullLogFactorOne x * thetaCuspFullLogFactorThree x +
+              thetaCuspFullLogFactorFour x)) -
+      HilbertMetric.reflectedProductSecondJet
+          (thetaCuspFullLogExponentialJetZero x)
+          (thetaCuspFullLogExponentialJetZero x * thetaCuspFullLogFactorOne x)
+          (thetaCuspFullLogExponentialJetZero x *
+            (thetaCuspFullLogFactorOne x ^ 2 + thetaCuspFullLogFactorTwo x)) ^ 2 =
       2 * thetaCuspFullLogExponentialJetZero x ^ 4 *
-        (thetaCuspFullLogFactorFour x + 4 * thetaCuspFullLogFactorTwo x ^ 2) := by
-    ring
-  rw [hid]
-  have hfactor : 0 < thetaCuspFullLogExponentialJetZero x ^ 4 := pow_pos hzero 4
+        (thetaCuspFullLogFactorFour x + 4 * thetaCuspFullLogFactorTwo x ^ 2)
+  exact HilbertMetric.reflectedProduct_fourthHankel_of_logJets hzero.ne'
+
+/-- The reflected complete source has a strictly positive fourth Hankel determinant at every
+positive source coordinate. -/
+theorem thetaCuspSourceReflectionFourthHankel_pos
+    {x : ℝ} (hx : 0 < x) :
+    0 < thetaCuspSourceReflectionJetZero x * thetaCuspSourceReflectionJetFour x -
+      thetaCuspSourceReflectionJetTwo x ^ 2 := by
+  have hlog := thetaCuspLogSource_fourthTuran_gt_one_hundred_sixty hx
+  rw [iteratedDeriv_four_thetaCuspLogSource_eq_factor hx,
+    iteratedDeriv_two_thetaCuspLogSource_eq_factor hx] at hlog
+  rw [thetaCuspSourceReflectionFourthHankel_eq_logFactors hx]
+  have hfactor : 0 < thetaCuspFullSource x ^ 4 :=
+    pow_pos (thetaCuspFullSource_pos_of_pos hx) 4
   have hlog' : (160 : ℝ) < thetaCuspFullLogFactorFour x +
       4 * thetaCuspFullLogFactorTwo x ^ 2 := by
     simpa only [thetaCuspFullLogFactorFour, thetaCuspFirstAtomLogJetFour,

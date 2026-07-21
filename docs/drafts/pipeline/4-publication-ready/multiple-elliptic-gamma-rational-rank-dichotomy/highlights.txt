@@ -1,0 +1,7 @@
+Exact rational-rank classification of every finite Nishizawa period tuple
+
+Rank two is differentially algebraic; all higher ranks are hypertranscendental
+
+A finite-family Ostrowski criterion detects joint differential dependence
+
+Two elliptic translations and pole orbits force hypertranscendence

@@ -958,3 +958,136 @@ Thorin exponentiation cannot supply it.
 
 RH and global Hedenmalm current positivity remain open. Novelty of the square-gap application is
 unverified; no priority claim is made.
+
+## 21. Offensive connector: likelihood gaps are Eisenstein mass shells
+
+The pair-sector search in Section 20 now has an exact arithmetic solution. See
+
+`docs/drafts/pipeline/3-formalized/needs-audit/theta-likelihood-eisenstein-mass-shell-orientation.md`
+
+and
+
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEisensteinMassShell.lean`.
+
+For the atomic likelihood gaps \(t_n=n^2-1\), every ordered pair satisfies
+
+\[
+(t_n+1)(t_m+1)=(nm)^2,
+\]
+
+or, in energy--displacement coordinates,
+
+\[
+(t_n+t_m+2)^2-(t_n-t_m)^2=4(nm)^2.
+\]
+
+Conversely, because all indices are nonnegative, equality with \(k^2\) detects \(nm=k\)
+exactly. Thus the product fibres that carry the divisor coefficients in the
+Wigner--Bessel--Eisenstein expansion are not merely analogous to pair sectors of the latent
+likelihood law: they are its integral shifted-gap mass shells.
+
+The phase coordinate also agrees exactly:
+
+\[
+\frac{\log n-\log m}{2}
+=\frac{\log(t_n+1)-\log(t_m+1)}4.
+\]
+
+Hence the complete likelihood-shell phase
+
+\[
+\Phi_k(z)=\sum_{nm=k}
+ \exp\!\left(\frac{i z}{4}
+ [\log(t_n+1)-\log(t_m+1)]\right)
+\]
+
+is literally the already formalized centered product-fibre/divisor phase. Unique factorization
+therefore gives, unconditionally, for every \(k>1\) and \(\operatorname{Im}z>0\),
+
+\[
+\Im\bigl(\Phi'_k(z)\overline{\Phi_k(z)}\bigr)<0,
+\qquad \Phi_k(z)\ne0.
+\]
+
+This is genuine sign progress: arithmetic phase orientation is complete inside every atomic
+product shell. It is not a global RH proof. The Wigner divisor character is the real-boundary
+specialization
+
+\[
+\tau_b(k)=\sum_{nm=k}(m/n)^{ib}=\Phi_k(-2b),
+\]
+
+while strict current holds in the open analytic half-plane. The full source also contains
+Hermitian conjugate polarization, index-dependent positive-half-line windows, and the continuous
+likelihood rays. Existing absolute convergence groups every ordered atom pair by its unique
+product mode, so no additional cross-mode current is created by this regrouping.
+
+The connector corrects the tempting interpretation of the first new convolution atom. The pair
+\((3,3)=(t_2,t_2)\) is the central divisor point \((2,2)\) on mode \(k=4\), but its rapidity is zero.
+It is current-neutral alone. Orientation belongs to the completed mode-four shell, including its
+reflected off-diagonal pairs, not to the isolated atom at total gap \(6\). Lean formalizes this
+correction together with the mass-shell law, phase equality, strict current, and zero-freeness.
+
+## 22. New exact stopping point: intra-shell Hermitian/seam domination
+
+The open frontier has moved. Do not keep attacking individual atom pairs, individual divisor
+fibres, or one-particle stochastic order. Exact atomic-shell phase is already oriented, and full
+theta current is already an absolutely convergent sum of actual product-fibre currents. Each
+ordered pair has one unique product, so “cross-shell interference” is not the missing term. The
+remaining producer theorem is:
+
+> In the exact decomposition
+> \[
+> C_k(z)=|F_c(z)|^2
+> \operatorname{Im}\bigl(\Phi'_k(z)\overline{\Phi_k(z)}\bigr)+S_k(c,z),
+> \]
+> prove after cofinal summation that the complete corrected seams \(S_k\)—Hermitian-polarization
+> defect plus all oriented endpoint windows—are dominated by the favorable likelihood-shell
+> bases on the target strip.
+
+Concretely, start from the Wigner--Eisenstein expansion in
+`theta-wigner-eisenstein-orientation-current.md`. Rewrite its divisor character as
+\(\Phi_k(-2b)\) via Section 21, then use
+`thetaProductFiberActualPhaseCurrent_eq_likelihoodMassShellBase_add_correctedSeam` to retain the
+whole positive-half-line correction. Do not replace the index-dependent windows by one scalar
+Bessel/radial weight: that erases the actual seam.
+
+The first nontrivial shell already shows why this is hard. At the explicit point
+
+\[
+z_*=\frac{\pi}{\log 2}+\frac{i}{4},
+\]
+
+Lean proves the coherent likelihood-shell current for \(k=2\) is strictly negative while the
+seam-free Hermitian common-unit-tail current is strictly positive. Thus conjugate polarization
+can reverse the arithmetic phase sign even before endpoint windows appear. This is exposed in
+likelihood coordinates by `thetaCuspLikelihoodMassShell_two_hermitian_sign_reversal`.
+
+Promising theorem shapes are sharply constrained:
+
+1. an exact completed-square identity for the **joint** polarization-plus-window seam;
+2. a conditionally positive kernel coupling reflected factor pairs to their nested swept windows;
+3. a cofinal cancellation law for the signed series \(\sum_k S_k(c,z)\) strong enough to dominate
+   the summed favorable bases.
+
+Any proof must control polarization and windows together, not merely reprove per-mode phase sign
+or estimate seam pieces separately. The mode-two reversal already retires naïve radial
+sign-preservation.
+
+RH and global Hedenmalm current positivity remain open. This continuation has overcome one real
+frontier problem—the missing arithmetic identification and orientation of the atomic pair
+sectors—and connected that orientation to the actual fibre current. Unsolved core is now exact
+joint-seam domination, with sign reversal localized on the first nontrivial shell.
+
+## 23. Verification of the mass-shell/current connector
+
+- direct `lake env lean GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEisensteinMassShell.lean`
+  passed;
+- final targeted
+  `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEisensteinMassShell` passed;
+- temporary `#print axioms` checks for mass-shell algebra, phase orientation, actual-current
+  bridge, sign reversal, and zero-freeness report only `propext`, `Classical.choice`, and
+  `Quot.sound`;
+- generated formal API was regenerated and `scripts/formal_tools.py lint --check-generated`
+  passed;
+- no stale `lake`, `lean`, or formal-tool process remained.

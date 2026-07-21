@@ -60,14 +60,15 @@ including partially dependent non-rational tuples.
 
 The rank-two direction follows from an exact all-coordinate multiplication
 identity and Kato's rational-period theorem.  For rank at least three, two
-periods form a rationally independent triple with the unit period.  We prove
-hypertranscendence of the corresponding elliptic-gamma face by an elementary
-joint Ostrowski descent: a differential relation would force one
-constant-coefficient differential operator to telescope simultaneously in
-two elliptic translation directions.  Specialization to one elliptic curve
-and a pole-orbit boundary obstruction exclude such a telescoper.  Nishizawa's
-exact face equations then propagate the obstruction through every higher
-order.  This resolves the non-rational-period problem stated by Kato.
+periods form a rationally independent triple with the unit period.  The main
+algebraic tool is an exact finite-family Ostrowski criterion: differential
+dependence of additive primitives under any family of compatible
+automorphisms is equivalent to one constant-coefficient differential
+combination of their increments being a simultaneous coboundary.  Applied to
+two elliptic translations, specialization to one elliptic curve and a
+pole-orbit boundary obstruction exclude that coboundary.  Nishizawa's exact
+face equations then propagate hypertranscendence through every higher order.
+This resolves the non-rational-period problem stated by Kato.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -136,9 +137,11 @@ higher rank is hypertranscendental.  The difficult seed is the
 two-period elliptic gamma with rationally independent periods
 $1,\sigma,\tau$.  We prove this seed without assuming a
 Picard--Vessiot existence or constant-extension theorem.  Instead, a short
-K\"ahler-differential argument gives the required simultaneous telescoper
-directly, and a trace argument descends its primitive to the base field.
-This makes every hypothesis used in the transcendence proof explicit.
+K\"ahler-differential argument gives an exact finite-family criterion for
+simultaneous telescoping under an arbitrary, even noncommuting, automorphism
+family; a trace argument descends its primitive to the base field.  This
+reusable criterion makes every hypothesis used in the transcendence proof
+explicit.
 
 \section{Main theorem}
 
@@ -291,63 +294,68 @@ nonzero element gives the same conclusion for
 $\Psi_I=\partial G_I/G_I$.
 \end{proof}
 
-\section{An elementary joint Ostrowski descent}
+\section{An exact joint Ostrowski criterion}
 
-We isolate the algebraic mechanism needed for the elliptic-gamma seed.  It
-is a several-translation version of the additive Ostrowski principle, but
-the proof below is elementary and self-contained.
+We isolate the algebraic mechanism needed for the elliptic-gamma seed in a
+finite-family form.  No commutation law is required among the automorphisms.
+The result is an exact criterion rather than only a one-way obstruction.
 
-\begin{lemma}[Joint Ostrowski descent]
+\begin{theorem}[Joint Ostrowski criterion]
 \label{lem:ostrowski}
 Let $C\subseteq k\subseteq F$ be fields of characteristic zero.  Suppose
-$F$ is a differential field, $k$ is stable under $\partial$, and
-$\rho_1,\ldots,\rho_s$ are commuting automorphisms of $F$ which stabilize
-$k$, fix $C$, and commute with $\partial$.  Assume
+$F$ is a differential field, $k$ is stable under $\partial$, and $C$
+consists of differential constants.  Let $(\rho_j)_{j\in J}$ be any family
+of automorphisms of $F$ which stabilize $k$, fix $C$, and commute with
+$\partial$.  Assume
 \[
- F^{\rho_1,\ldots,\rho_s}=C.
+ F^{(\rho_j)_{j\in J}}=C.
 \]
-Let $y\in F$ satisfy
+For $1\leq r\leq m$, let $y_r\in F$ satisfy
 \[
- \rho_j(y)-y=a_j\in k\qquad(1\leq j\leq s).
+ \rho_j(y_r)-y_r=a_{j,r}\in k\qquad(j\in J).
 \]
-If $y$ is differentially algebraic over $k$, then there are a nonzero
-constant-coefficient operator
-\[
- L=\sum_{n=0}^{N}c_n\partial^n\in C[\partial]
-\]
-and elements $g\in k$, $c\in C$ such that
+Then $y_1,\ldots,y_m$ are differentially algebraically dependent over $k$
+if and only if there are operators $L_1,\ldots,L_m\in C[\partial]$, not all
+zero, and an element $g\in k$ such that
 \begin{equation}
- L(y)=g+c,\qquad
- \rho_j(g)-g=L(a_j)\quad(1\leq j\leq s).
+ \rho_j(g)-g=\sum_{r=1}^m L_r(a_{j,r})
+ \qquad(j\in J).
  \label{eq:joint-telescope}
 \end{equation}
-\end{lemma}
+Whenever this holds, there is a $c\in C$ such that
+\begin{equation}
+ \sum_{r=1}^m L_r(y_r)=g+c.
+ \label{eq:joint-linear-relation}
+\end{equation}
+\end{theorem}
 
 \begin{proof}
-Differential algebraicity supplies $N$ such that
-$x_n=\partial^ny$ $(0\leq n\leq N)$ are algebraically dependent over $k$.
-In the module of K\"ahler differentials $\Omega_{F/k}$, the vectors
-$\dd x_0,\ldots,\dd x_N$ are therefore linearly dependent.  Let
+Suppose first that the family is differentially algebraically dependent.
+There is an $N$ such that the finite jet family
+$x_{r,n}=\partial^ny_r$ $(1\leq r\leq m,\ 0\leq n\leq N)$ is algebraically
+dependent over $k$.  Its K\"ahler differentials in $\Omega_{F/k}$ are
+therefore linearly dependent.  Let
 \[
- W=\left\{(u_0,\ldots,u_N)\in F^{N+1}:
-          \sum_nu_n\,\dd x_n=0\right\}.
+ W=\left\{(u_{r,n})\in F^{m(N+1)}:
+          \sum_{r,n}u_{r,n}\,\dd x_{r,n}=0\right\}.
 \]
 This is a nonzero $F$-subspace.  Since
 \[
- \rho_j(x_n)=x_n+\partial^na_j
+ \rho_j(x_{r,n})=x_{r,n}+\partial^na_{j,r}
 \]
-and $\partial^na_j\in k$, applying $\rho_j$ to a relation in $W$ gives
+and $\partial^na_{j,r}\in k$, applying $\rho_j$ to a relation in $W$ gives
 another relation in $W$.
 
 Choose a nonzero vector $u\in W$ with minimal support and divide by one
 nonzero coordinate so that this coordinate equals $1$.  For each $j$, the
 vector $\rho_j(u)-u$ belongs to $W$ and has strictly smaller support.
-Minimality forces $\rho_j(u)=u$.  Every coordinate of $u$ consequently
-belongs to the joint fixed field $C$.  We obtain coefficients
-$c_0,\ldots,c_N\in C$, not all zero, such that, for
-$L=\sum c_n\partial^n$,
+Minimality forces $\rho_j(u)=u$ for every $j\in J$.  Every coordinate of
+$u$ consequently belongs to the joint fixed field $C$.  We obtain
+coefficients $c_{r,n}\in C$, not all zero, such that, for
+$L_r=\sum_n c_{r,n}\partial^n$,
 \[
- \dd L(y)=0\quad\text{in }\Omega_{F/k}.
+ \dd\!\left(\sum_rL_r(y_r)\right)=0
+ \quad\text{in }\Omega_{F/k}.
 \]
 In characteristic zero, the kernel of the universal derivation
 $F\to\Omega_{F/k}$ is the relative algebraic closure of $k$ in $F$.
@@ -355,11 +363,11 @@ Indeed, if an element of that kernel were transcendental over $k$, extend
 it to a transcendence basis of $F/k$, send it to $1$ and the other basis
 elements to $0$, and extend this derivation uniquely across the remaining
 algebraic extension.  This contradicts membership in the kernel.
-Thus $u_0:=L(y)$ is algebraic over $k$.
+Thus $u_0:=\sum_rL_r(y_r)$ is algebraic over $k$.
 
 Put $E=k(u_0)$ and $d=[E:k]$.  Because
 \[
- \rho_j(u_0)-u_0=L(a_j)\in k,
+ \rho_j(u_0)-u_0=\sum_rL_r(a_{j,r})\in k,
 \]
 each $\rho_j$ stabilizes $E$.  Define
 \[
@@ -370,17 +378,25 @@ of an element of $k$ is $d$ times that element.  Therefore
 \[
  \rho_j(g)-g
  =\frac1d\Tr_{E/k}\bigl(\rho_j(u_0)-u_0\bigr)
- =L(a_j).
+ =\sum_rL_r(a_{j,r}).
 \]
 It follows that $u_0-g$ is fixed by every $\rho_j$, hence belongs to $C$.
-This is \eqref{eq:joint-telescope}.
+This proves \eqref{eq:joint-telescope} and
+\eqref{eq:joint-linear-relation}.
+
+Conversely, suppose \eqref{eq:joint-telescope} holds.  Then
+$\sum_rL_r(y_r)-g$ is fixed by every $\rho_j$, so it lies in $C$.  Since
+the operators are not all zero, this is a nontrivial differential-polynomial
+relation over $k$.  The family $(y_r)$ is differentially algebraically
+dependent.
 \end{proof}
 
 \begin{remark}
-Lemma~\ref{lem:ostrowski} requires neither a differential closure of $C$
-nor a Picard--Vessiot existence theorem.  The same base element $g$ works
-in every translation direction because it is obtained from one field
-trace.
+Theorem~\ref{lem:ostrowski} requires neither a differential closure of $C$
+nor a Picard--Vessiot existence theorem.  One field trace produces the same
+base element $g$ in every direction.  The proof also shows that the index
+set $J$ may be infinite: every dependence still yields finitely many
+operators because it involves a finite jet family.
 \end{remark}
 
 \section{The rank-three elliptic-gamma seed}
@@ -514,7 +530,7 @@ Consequently
  F^{\T_\sigma,\T_\tau}=\C.
 \]
 
-Apply Lemma~\ref{lem:ostrowski} to \eqref{eq:paired-system}.  There exist a
+Apply Theorem~\ref{lem:ostrowski} to \eqref{eq:paired-system}.  There exist a
 nonzero $L\in\C[\partial]$ and one $g\in K$ such that
 \begin{equation}
  (\T_\sigma-1)g=L(b_{\tau,h}),\qquad
@@ -640,9 +656,21 @@ hierarchy \cite{Narukawa2004}.  Kato's rational-period theorem
 \cite{Kato2021} supplies the sharp positive half of the present
 classification.  Parameterized difference Galois theory provides broad
 criteria for differential relations in one difference direction
-\cite{HardouinSinger2008}; Lemma~\ref{lem:ostrowski} gives the narrower
-several-translation implication needed here directly from K\"ahler
-differentials and trace.
+\cite{HardouinSinger2008}.  Complete linear-equation classifications over
+rational-function fields and for global meromorphic shift equations appear
+in \cite{AdamczewskiDreyfusHardouin2021,Dreyfus2026}.  Arreche, Dreyfus, and
+Roques proved differential transcendence criteria for second-order equations
+and elliptic hypergeometric functions \cite{ArrecheDreyfusRoques2021}.  De
+Shalit studied algebraic independence for independent isogenies of elliptic
+curves \cite{deShalit2025}, and de Shalit, Hardouin, and Roques classified
+differentially algebraic solutions of linear equations for an elliptic-curve
+isogeny \cite{deShalitHardouinRoques2024}.  Those works use one linear
+operator, elliptic-curve isogenies, or elliptic hypergeometric equations.
+They do not classify the nonlinear Nishizawa hierarchy over $\C(z)$ from
+two incommensurable translations on different elliptic curves.
+Theorem~\ref{lem:ostrowski} supplies the needed several-automorphism criterion
+directly from K\"ahler differentials and trace, without commutativity or a
+Galois-theoretic extension.
 
 Recent geometric-family work \cite{MorainI,MorainII} studies modular
 cocycles, partial modular symbols, and arithmetic applications.  Cone
@@ -665,20 +693,60 @@ Nishizawa hierarchy,
    \text{hypertranscendence}.
  \end{array}}
 \]
-The multiplication identity closes the full rank-two locus.  Joint
-Ostrowski descent, the elliptic pole-orbit obstruction, and exact face
-propagation close every higher-rank locus.  Thus the standard finite
-hierarchy has no unclassified upper-half-plane period configurations.
+The multiplication identity closes the full rank-two locus.  The exact
+finite-family Ostrowski criterion, the elliptic pole-orbit obstruction, and
+exact face propagation close every higher-rank locus.  Thus the standard
+finite hierarchy has no unclassified upper-half-plane period configurations.
 
-\section*{Disclosure}
+\section*{Declaration of generative AI and AI-assisted technologies in the
+manuscript preparation process}
 
-Generative AI systems GPT 5.6 Sol, Fable 5, and Grok 4.5 were used as
-drafting and proof-audit tools.  They are not listed as authors because
-authorship requires responsibility for the complete argument.  The named
-human author accepts that responsibility.  No empirical data or numerical
-computation is used in this work.
+During preparation of this work, the author used GPT 5.6 Sol, Fable 5, and
+Grok 4.5 for literature triage, drafting, and proof auditing.  The author
+reviewed and edited the resulting content, checked the cited sources and
+mathematical arguments, and takes full responsibility for the content of the
+article.  These systems are not listed as authors because authorship requires
+responsibility for the complete argument.
+
+\section*{Data availability}
+
+No empirical data or numerical computation was used in this work.
 
 \begin{thebibliography}{99}
+
+\bibitem{AdamczewskiDreyfusHardouin2021}
+B. Adamczewski, T. Dreyfus, and C. Hardouin,
+\emph{Hypertranscendence and linear difference equations},
+J. Amer. Math. Soc. \textbf{34} (2021), 475--503,
+\url{https://doi.org/10.1090/jams/960}.
+
+\bibitem{ArrecheDreyfusRoques2021}
+C. E. Arreche, T. Dreyfus, and J. Roques,
+\emph{Differential transcendence criteria for second-order linear difference
+equations and elliptic hypergeometric functions},
+J. \`Ec. polytech. Math. \textbf{8} (2021), 147--168,
+\url{https://doi.org/10.5802/jep.143}.
+
+\bibitem{deShalit2025}
+E. de Shalit,
+\emph{Algebraic independence and difference equations over elliptic function
+fields},
+Ann. Inst. Fourier \textbf{75} (2025), 1509--1554,
+\url{https://doi.org/10.5802/aif.3694}.
+
+\bibitem{deShalitHardouinRoques2024}
+E. de Shalit, C. Hardouin, and J. Roques,
+\emph{Hypertranscendence and $q$-difference equations over elliptic function
+fields},
+arXiv preprint arXiv:2409.10092, 2024,
+\url{https://doi.org/10.48550/arXiv.2409.10092}.
+
+\bibitem{Dreyfus2026}
+T. Dreyfus,
+\emph{Hypertranscendence and linear difference equations, the exponential
+case},
+J. Algebra \textbf{686} (2026), 775--792,
+\url{https://doi.org/10.1016/j.jalgebra.2025.08.025}.
 
 \bibitem{FelderVarchenko2000}
 G. Felder and A. Varchenko,

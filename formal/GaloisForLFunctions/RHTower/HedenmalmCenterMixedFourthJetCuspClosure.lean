@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCusp
 import GaloisForLFunctions.RHTower.ThetaCuspFullReflectionFourthTuran
+import GaloisForLFunctions.HilbertMetric.FourthCurvatureMixture
 
 /-!
 # Unconditional closure of the center-mixed fourth-jet cusp
@@ -27,24 +28,6 @@ def thetaCuspCenterMixedReflectionJetTwoIntegrand (a r : ℝ) : ℝ :=
 /-- Weighted fourth reflected-source jet in the center mixture. -/
 def thetaCuspCenterMixedReflectionJetFourIntegrand (a r : ℝ) : ℝ :=
   r * Real.sinh (a * r) * thetaCuspSourceReflectionJetFour (r / 2)
-
-private theorem two_by_two_quadratic_pos_of_first_det
-    {p0 p2 p4 x y : ℝ} (hp0 : 0 < p0) (hdet : 0 < p0 * p4 - p2 ^ 2)
-    (hy : y ≠ 0) :
-    0 < p0 * x ^ 2 + 2 * p2 * x * y + p4 * y ^ 2 := by
-  have hgap : 0 < p4 - p2 ^ 2 / p0 := by
-    apply (sub_pos).2
-    apply (div_lt_iff₀ hp0).2
-    nlinarith
-  have hid :
-      p0 * x ^ 2 + 2 * p2 * x * y + p4 * y ^ 2 =
-        p0 * (x + p2 / p0 * y) ^ 2 + (p4 - p2 ^ 2 / p0) * y ^ 2 := by
-    field_simp [hp0.ne']
-    ring
-  rw [hid]
-  exact add_pos_of_nonneg_of_pos
-    (mul_nonneg hp0.le (sq_nonneg _))
-    (mul_pos hgap (sq_pos_of_ne_zero hy))
 
 private theorem integrableOn_thetaCuspCenterMixedReflectionJetZeroIntegrand
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
@@ -244,102 +227,53 @@ theorem thetaCuspCenterMixedDensity_fourthHankel_pos
     0 < thetaCuspCenterMixedDensity a 0 *
         thetaCuspCenterMixedDensityFourthJet a 0 -
       thetaCuspCenterMixedDensitySecondJet a 0 ^ 2 := by
-  let d := thetaCuspCenterMixedDensity a 0
-  let h := thetaCuspCenterMixedDensitySecondJet a 0
-  let q := thetaCuspCenterMixedDensityFourthJet a 0
-  let Q : ℝ → ℝ := fun r =>
-    (-h) ^ 2 * thetaCuspCenterMixedReflectionJetZeroIntegrand a r +
-      (2 * (-h) * d) * thetaCuspCenterMixedReflectionJetTwoIntegrand a r +
-        d ^ 2 * thetaCuspCenterMixedReflectionJetFourIntegrand a r
-  have hd : 0 < d := by
-    simpa only [d] using thetaCuspCenterMixedDensity_pos ha0 ha 0
-  have hQint : IntegrableOn Q (Ioi 0) := by
-    exact (((integrableOn_thetaCuspCenterMixedReflectionJetZeroIntegrand ha0.le ha).const_mul
-      ((-h) ^ 2)).add
-        ((integrableOn_thetaCuspCenterMixedReflectionJetTwoIntegrand ha0.le ha).const_mul
-          (2 * (-h) * d))).add
-        ((integrableOn_thetaCuspCenterMixedReflectionJetFourIntegrand ha0.le ha).const_mul
-          (d ^ 2))
-  have hQpos : ∀ r ∈ Ioi (0 : ℝ), 0 < Q r := by
-    intro r hr
+  have hI0 := integrableOn_thetaCuspCenterMixedReflectionJetZeroIntegrand ha0.le ha
+  have hI2 := integrableOn_thetaCuspCenterMixedReflectionJetTwoIntegrand ha0.le ha
+  have hI4 := integrableOn_thetaCuspCenterMixedReflectionJetFourIntegrand ha0.le ha
+  have hmass : 0 < ∫ r : ℝ in Ioi 0,
+      thetaCuspCenterMixedReflectionJetZeroIntegrand a r := by
+    rw [integral_thetaCuspCenterMixedReflectionJetZeroIntegrand]
+    exact thetaCuspCenterMixedDensity_pos ha0 ha 0
+  have hpoint : ∀ᵐ r : ℝ ∂volume.restrict (Ioi 0),
+      0 < thetaCuspCenterMixedReflectionJetZeroIntegrand a r ∧
+        0 < thetaCuspCenterMixedReflectionJetZeroIntegrand a r *
+            thetaCuspCenterMixedReflectionJetFourIntegrand a r -
+          thetaCuspCenterMixedReflectionJetTwoIntegrand a r ^ 2 := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
     have hweight : 0 < r * Real.sinh (a * r) :=
       mul_pos hr (Real.sinh_pos_iff.mpr (mul_pos ha0 hr))
     have hp0 : 0 < thetaCuspSourceReflectionJetZero (r / 2) := by
       unfold thetaCuspSourceReflectionJetZero
       exact sq_pos_of_pos (thetaCuspFullSource_pos_of_pos (half_pos hr))
-    have hdet := thetaCuspSourceReflectionFourthHankel_pos (x := r / 2) (half_pos hr)
-    have hquad := two_by_two_quadratic_pos_of_first_det
-      (x := -h) (y := d) hp0 hdet hd.ne'
-    have hfactor : Q r = (r * Real.sinh (a * r)) *
-        (thetaCuspSourceReflectionJetZero (r / 2) * (-h) ^ 2 +
-          2 * thetaCuspSourceReflectionJetTwo (r / 2) * (-h) * d +
-          thetaCuspSourceReflectionJetFour (r / 2) * d ^ 2) := by
-      dsimp only [Q]
-      unfold thetaCuspCenterMixedReflectionJetZeroIntegrand
-        thetaCuspCenterMixedReflectionJetTwoIntegrand
-        thetaCuspCenterMixedReflectionJetFourIntegrand
-      ring
-    rw [hfactor]
-    exact mul_pos hweight hquad
-  have hQnonneg : 0 ≤ᵐ[volume.restrict (Ioi (0 : ℝ))] Q := by
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
-    exact (hQpos r hr).le
-  have hQintegralPos : 0 < ∫ r : ℝ in Ioi 0, Q r := by
-    rw [integral_pos_iff_support_of_nonneg_ae hQnonneg hQint]
-    have hsubset : Ioc (1 : ℝ) 2 ⊆ Function.support Q := by
-      intro r hr
-      exact (hQpos r (lt_trans zero_lt_one hr.1)).ne'
-    have hmeasure : 0 < (volume.restrict (Ioi (0 : ℝ))) (Ioc 1 2) := by
-      norm_num
-    exact lt_of_lt_of_le hmeasure (measure_mono hsubset)
-  have hQvalue : (∫ r : ℝ in Ioi 0, Q r) = d * (d * q - h ^ 2) := by
-    have hI0 := integrableOn_thetaCuspCenterMixedReflectionJetZeroIntegrand ha0.le ha
-    have hI2 := integrableOn_thetaCuspCenterMixedReflectionJetTwoIntegrand ha0.le ha
-    have hI4 := integrableOn_thetaCuspCenterMixedReflectionJetFourIntegrand ha0.le ha
-    dsimp only [Q]
-    change (∫ r : ℝ in Ioi 0,
-      (((fun s => (-h) ^ 2 * thetaCuspCenterMixedReflectionJetZeroIntegrand a s) +
-        (fun s => (2 * (-h) * d) * thetaCuspCenterMixedReflectionJetTwoIntegrand a s)) +
-        (fun s => d ^ 2 * thetaCuspCenterMixedReflectionJetFourIntegrand a s)) r) =
-      d * (d * q - h ^ 2)
-    have houter := integral_add
-      ((hI0.const_mul ((-h) ^ 2)).add (hI2.const_mul (2 * (-h) * d)))
-      (hI4.const_mul (d ^ 2))
-    have hinner := integral_add (hI0.const_mul ((-h) ^ 2))
-      (hI2.const_mul (2 * (-h) * d))
-    calc
-      (∫ r : ℝ in Ioi 0,
-          (((fun s => (-h) ^ 2 * thetaCuspCenterMixedReflectionJetZeroIntegrand a s) +
-            (fun s => (2 * (-h) * d) * thetaCuspCenterMixedReflectionJetTwoIntegrand a s)) +
-            (fun s => d ^ 2 * thetaCuspCenterMixedReflectionJetFourIntegrand a s)) r) =
-          (∫ r : ℝ in Ioi 0,
-            (-h) ^ 2 * thetaCuspCenterMixedReflectionJetZeroIntegrand a r +
-              (2 * (-h) * d) * thetaCuspCenterMixedReflectionJetTwoIntegrand a r) +
-            ∫ r : ℝ in Ioi 0,
-              d ^ 2 * thetaCuspCenterMixedReflectionJetFourIntegrand a r := houter
-      _ = (∫ r : ℝ in Ioi 0,
-              (-h) ^ 2 * thetaCuspCenterMixedReflectionJetZeroIntegrand a r) +
-            (∫ r : ℝ in Ioi 0,
-              (2 * (-h) * d) * thetaCuspCenterMixedReflectionJetTwoIntegrand a r) +
-            (∫ r : ℝ in Ioi 0,
-              d ^ 2 * thetaCuspCenterMixedReflectionJetFourIntegrand a r) := by
-          apply congrArg (fun z => z +
-            ∫ r : ℝ in Ioi 0,
-              d ^ 2 * thetaCuspCenterMixedReflectionJetFourIntegrand a r)
-          exact hinner
-      _ = (-h) ^ 2 * thetaCuspCenterMixedDensity a 0 +
-            (2 * (-h) * d) * thetaCuspCenterMixedDensitySecondJet a 0 +
-            d ^ 2 * thetaCuspCenterMixedDensityFourthJet a 0 := by
-          rw [integral_const_mul, integral_const_mul, integral_const_mul,
-            integral_thetaCuspCenterMixedReflectionJetZeroIntegrand,
-            integral_thetaCuspCenterMixedReflectionJetTwoIntegrand ha0.le ha,
-            integral_thetaCuspCenterMixedReflectionJetFourIntegrand ha0.le ha]
-      _ = d * (d * q - h ^ 2) := by
-          dsimp only [d, h, q]
-          ring
-  rw [hQvalue] at hQintegralPos
-  dsimp only [d, h, q] at hd hQintegralPos ⊢
-  nlinarith
+    have hdet := thetaCuspSourceReflectionFourthHankel_pos
+      (x := r / 2) (half_pos hr)
+    constructor
+    · unfold thetaCuspCenterMixedReflectionJetZeroIntegrand
+      exact mul_pos hweight hp0
+    · have hfactor :
+          thetaCuspCenterMixedReflectionJetZeroIntegrand a r *
+              thetaCuspCenterMixedReflectionJetFourIntegrand a r -
+            thetaCuspCenterMixedReflectionJetTwoIntegrand a r ^ 2 =
+          (r * Real.sinh (a * r)) ^ 2 *
+            (thetaCuspSourceReflectionJetZero (r / 2) *
+                thetaCuspSourceReflectionJetFour (r / 2) -
+              thetaCuspSourceReflectionJetTwo (r / 2) ^ 2) := by
+        unfold thetaCuspCenterMixedReflectionJetZeroIntegrand
+          thetaCuspCenterMixedReflectionJetTwoIntegrand
+          thetaCuspCenterMixedReflectionJetFourIntegrand
+        ring
+      rw [hfactor]
+      exact mul_pos (sq_pos_of_pos hweight) hdet
+  have hmix :=
+    GaloisForLFunctions.HilbertMetric.integral_twoByTwo_det_pos
+      (thetaCuspCenterMixedReflectionJetZeroIntegrand a)
+      (thetaCuspCenterMixedReflectionJetTwoIntegrand a)
+      (thetaCuspCenterMixedReflectionJetFourIntegrand a)
+      hI0 hI2 hI4 hmass hpoint
+  rw [integral_thetaCuspCenterMixedReflectionJetZeroIntegrand,
+    integral_thetaCuspCenterMixedReflectionJetTwoIntegrand ha0.le ha,
+    integral_thetaCuspCenterMixedReflectionJetFourIntegrand ha0.le ha] at hmix
+  exact hmix
 
 /-- **Unconditional center-mixed coalesced cusp.**  Every critical aperture has a nested
 positive-definite three-point cusp for the actual theta density, with no fourth-jet hypothesis. -/

@@ -331,3 +331,10 @@ Novelty remains provisional pending external expert review.
   Stage 2 with novelty still awaiting external review.  The source margin, reflected determinant,
   center-mixed determinant, and unconditional cusp were then formalized and axiom-audited; the
   final `RiemannHypothesisSOTA2026` build completed all 8977 jobs, promoting the card to Stage 3.
+- 2026-07-21 -- connected the source determinant to the previously isolated
+  `HilbertMetric.ReflectionFourthJet` algebra.  Generic Bell-logarithmic coordinates now give the
+  exact determinant identity, and public theorem
+  `thetaCuspSourceReflectionFourthHankel_eq_logFactors` specializes it to the complete theta
+  source.  The strict source theorem is its immediate analytic consequence.  This is a
+  `[BRIDGE] [LEAN-PROVED]` refactor/strengthening, not a new novelty or RH claim; both exact module
+  builds and standard-axiom audit passed.
