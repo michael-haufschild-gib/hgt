@@ -139,6 +139,90 @@ theorem neg_nat_lt_meromorphicOrderAt_of_tendsto_pow_mul_zero
     have hposInt : (0 : ℤ) < (k : ℤ) + q := by exact_mod_cast hpos
     exact_mod_cast (show -(k : ℤ) < q by omega)
 
+/-- The divided difference of a function analytic at zero is itself analytic at zero. -/
+theorem analyticAt_dslope_zero_of_analyticAt
+    {U : ℂ → ℂ} (hU : AnalyticAt ℂ U 0) :
+    AnalyticAt ℂ (dslope U 0) 0 := by
+  have hopen : IsOpen {z | AnalyticAt ℂ U z} := isOpen_analyticAt ℂ U
+  have hdiff : DifferentiableOn ℂ U {z | AnalyticAt ℂ U z} :=
+    fun z hz => hz.differentiableAt.differentiableWithinAt
+  have hds : DifferentiableOn ℂ (dslope U 0) {z | AnalyticAt ℂ U z} :=
+    (differentiableOn_dslope (hopen.mem_nhds hU)).mpr hdiff
+  exact hds.analyticAt (hopen.mem_nhds hU)
+
+/-- On the punctured germ, an analytic numerator over the coordinate is its residue pole plus its
+analytic divided difference. -/
+theorem div_id_eventuallyEq_const_mul_inv_add_dslope
+    {U : ℂ → ℂ} :
+    (fun x : ℂ => U x / x) =ᶠ[𝓝[≠] 0]
+      (fun x => U 0 * x⁻¹ + dslope U 0 x) := by
+  filter_upwards [self_mem_nhdsWithin] with x hx
+  have hx0 : x ≠ 0 := by simpa using hx
+  have hs := sub_smul_dslope U 0 x
+  simp only [sub_zero, smul_eq_mul] at hs
+  have hds : dslope U 0 x = (U x - U 0) / x := by
+    apply (eq_div_iff hx0).2
+    simpa [mul_comm] using hs
+  rw [hds]
+  field_simp [hx0]
+  ring
+
+/-- **Complete differential principal-part law.** The `j`th derivative of `U/x` has exactly one
+pole monomial; after subtracting it, the remainder is the `j`th derivative of the analytic divided
+difference of `U`. -/
+theorem iteratedDeriv_div_id_sub_principal_eventuallyEq
+    {U : ℂ → ℂ} (hU : AnalyticAt ℂ U 0) (j : ℕ) :
+    (fun x : ℂ => iteratedDeriv j (fun z => U z / z) x -
+      U 0 * ((-1 : ℂ) ^ j * (j.factorial : ℂ)) * x⁻¹ ^ (j + 1)) =ᶠ[𝓝[≠] 0]
+      iteratedDeriv j (dslope U 0) := by
+  have hdiv := div_id_eventuallyEq_const_mul_inv_add_dslope (U := U)
+  have hderiv : iteratedDeriv j (fun x => U x / x) =ᶠ[𝓝[≠] 0]
+      iteratedDeriv j (fun x => U 0 * x⁻¹ + dslope U 0 x) := by
+    induction j with
+    | zero => simpa [iteratedDeriv_zero] using hdiv
+    | succ n ih =>
+        rw [iteratedDeriv_succ, iteratedDeriv_succ]
+        exact ih.nhdsNE_deriv
+  have hds := analyticAt_dslope_zero_of_analyticAt hU
+  have hdsevent : ∀ᶠ x : ℂ in 𝓝[≠] 0,
+      ContDiffAt ℂ j (dslope U 0) x :=
+    nhdsWithin_le_nhds (hds.eventually_analyticAt.mono fun _ hx => hx.contDiffAt)
+  filter_upwards [hderiv, hdsevent, self_mem_nhdsWithin] with x hder hdsx hx
+  have hx0 : x ≠ 0 := by simpa using hx
+  have hinv : ContDiffAt ℂ j (fun z : ℂ => z⁻¹) x :=
+    (contDiffAt_id (𝕜 := ℂ)).inv hx0
+  have hconstInv :
+      iteratedDeriv j (fun z : ℂ => U 0 * z⁻¹) x =
+        U 0 * ((-1 : ℂ) ^ j * (j.factorial : ℂ)) * x⁻¹ ^ (j + 1) := by
+    rw [iteratedDeriv_const_mul_field (U 0) (fun z : ℂ => z⁻¹)]
+    have hinvder := iteratedDeriv_inv_add_const 0 j x (by simpa using hx0)
+    simp only [add_zero] at hinvder
+    rw [hinvder, inv_pow]
+    ring
+  have hadd :
+      iteratedDeriv j (fun z : ℂ => U 0 * z⁻¹ + dslope U 0 z) x =
+        iteratedDeriv j (fun z : ℂ => U 0 * z⁻¹) x +
+          iteratedDeriv j (dslope U 0) x := by
+    simpa only [Pi.add_apply] using
+      iteratedDeriv_add (contDiffAt_const.mul hinv) hdsx
+  rw [hder, hadd, hconstInv]
+  ring
+
+/-- The complete differential principal-part remainder has an explicit analytic extension. -/
+theorem exists_analyticAt_iteratedDeriv_div_id_sub_principal
+    {U : ℂ → ℂ} (hU : AnalyticAt ℂ U 0) (j : ℕ) :
+    ∃ R : ℂ → ℂ, AnalyticAt ℂ R 0 ∧
+      (fun x : ℂ => iteratedDeriv j (fun z => U z / z) x -
+        U 0 * ((-1 : ℂ) ^ j * (j.factorial : ℂ)) * x⁻¹ ^ (j + 1)) =ᶠ[𝓝[≠] 0] R := by
+  refine ⟨iteratedDeriv j (dslope U 0), ?_,
+    iteratedDeriv_div_id_sub_principal_eventuallyEq hU j⟩
+  have hds := analyticAt_dslope_zero_of_analyticAt hU
+  induction j with
+  | zero => simpa [iteratedDeriv_zero] using hds
+  | succ n ih =>
+      rw [iteratedDeriv_succ]
+      exact ih.deriv
+
 /-- The `j`th derivative of a simple pole has exact order `-(j+1)`. -/
 theorem meromorphicOrderAt_iteratedDeriv_of_simplePole
     {f : ℂ → ℂ} {p : ℂ} (hf : MeromorphicAt f p)
