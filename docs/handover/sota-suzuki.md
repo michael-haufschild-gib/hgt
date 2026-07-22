@@ -6172,3 +6172,190 @@ Research records:
 - `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin-aperture-principal-cyclic-mass-conservation.md`;
 - `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/sonin-aperture-principal-cyclic-mass-conservation.md`;
 - `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`.
+
+## S80. Aperture curvature is a faithful negative square with exact Ward transgression (2026-07-22)
+
+S79 left `Tr Kappa` as an unknown scalar.  It is now computed exactly and carries no independent
+sign freedom.
+
+For `0<a<b<c<r*a`, put
+
+```text
+L_(a,b)=Q_a-Q_b,
+Z_(a,b,c;r)=L_(a,b)D_rL_(b,c),
+D_r=U_r+U_r^*.
+```
+
+Successive layers are orthogonal.  The exact compressed defect cocycle and positive Gram
+factorization give
+
+```text
+Kappa=Q_c Delta_(a,b;r)Q_c-Delta_(a,b;r),
+Delta_(a,b;r)=Y^*Y,
+Y(1-Q_c)=Z_(a,b,c;r).                                  (S80.1)
+```
+
+Although `Y` is noncompact, the curvature is Schatten-1.  Compression-trace cyclicity therefore
+forces `Z^*Z` to be Schatten-1 and `Z` to be Hilbert--Schmidt.  The scalar curvature is
+
+```text
+Re Tr Kappa=-||Z_(a,b,c;r)||_HS^2<=0.                  (S80.2)
+```
+
+The trace is faithful on this special curvature:
+
+```text
+Re Tr Kappa=0
+ iff Kappa=0
+ iff Z_(a,b,c;r)=0.                                    (S80.3)
+```
+
+Thus zero scalar curvature is not a cancellation among hidden trace-class blocks; it is literal
+aperture functoriality.
+
+There is also a canonical positive transgression.  Symmetrize the successive transition,
+
+```text
+X=Z+Z^*.
+```
+
+Its lower boundary across the first layer is exactly `Z^*`.  The two-corner Ward identity yields
+
+```text
+||[X,L_(a,b)]||_HS^2=2||Z||_HS^2,
+2 Re Tr Kappa+||[X,L_(a,b)]||_HS^2=0.                  (S80.4)
+```
+
+Equation `(S80.4)` is the exact universal aperture Ward-curvature law.  It resolves the first
+arrow of `(S79.8)`: there is one forced positive counterterm, equal to half the canonical Ward
+energy.
+
+This does **not** yet identify Suzuki's concrete Burnol counterterm.  Corpus audit shows the raw
+Burnol conductor edge is bounded but generally noncompact, while `Z` is the Hilbert--Schmidt
+relative remainder after principal mass subtraction.  Literal operator equality is therefore the
+wrong target.  The exact remaining connector is
+
+```text
+relative finite part of the concrete Burnol conductor
+ = (1/2)||[Z+Z^*,L_(a,b)]||_HS^2                       (S80.5)
+```
+
+on the common semilocal source graph, followed by the cutoff-uniform completed co-Poisson lower
+floor.  Failure of `(S80.5)` kills the current coherent Burnol weld; success removes aperture
+curvature but still leaves the RH-bearing source floor.
+
+S80 is not RH, not a disproof of RH, and not a full Suzuki impossibility theorem.  It prevents
+another loop: do not recompute `Tr Kappa`, search for its sign, or invent a second aperture
+counterterm.
+
+Lean:
+
+- `formal/GaloisForLFunctions/RHTower/TraceClassCompressionCurvature.lean`;
+- `formal/GaloisForLFunctions/RHTower/SoninApertureCurvatureTrace.lean`;
+- `formal/GaloisForLFunctions/RHTower/SoninApertureWardCurvature.lean`.
+
+Research records:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin-aperture-ward-curvature-transgression.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/sonin-aperture-ward-curvature-transgression.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`.
+
+## S81. Ward curvature is globally exact; invariant-trace Suzuki weld is impossible (2026-07-22)
+
+S80 left open whether a canonical invariant relative finite part of Burnol's edge could return the
+positive Ward energy. Two exact universal laws settle that proposal negatively and remove scalar
+aperture curvature from RH-bearing frontier.
+
+First, aperture curvature obeys operator Bianchi. For `0<o<a<b<c<r*o`,
+
+```text
+Kappa(o,b,c)+Kappa(o,a,b)=Kappa(o,a,c)+Kappa(a,b,c).    (S81.1)
+```
+
+Combining `(S81.1)` with `Re Tr Kappa=-||Z||_HS^2` gives exact quadrilateral conservation:
+
+```text
+||Z(o,b,c)||_HS^2+||Z(o,a,b)||_HS^2
+ =||Z(o,a,c)||_HS^2+||Z(a,b,c)||_HS^2.                 (S81.2)
+```
+
+Hence base-aperture potential
+
+```text
+B_o(a,b)=||Z(o,a,b)||_HS^2                              (S81.3)
+```
+
+integrates scalar curvature:
+
+```text
+Re Tr Kappa(a,b,c)+B_o(a,b)+B_o(b,c)-B_o(a,c)=0.        (S81.4)
+```
+
+Changing base from `o` to `p` is exact vertex gauge,
+
+```text
+B_o(a,b)-B_p(a,b)=V_(o,p)(b)-V_(o,p)(a),
+V_(o,p)(x)=||Z(o,p,x)||_HS^2.                           (S81.5)
+```
+
+Thus scalar aperture curvature has zero cohomology class on every ordered chamber. It is not an
+independent global obstruction.
+
+Second, exact Fourier parity separates cancellation from RH orientation. Let `J` be cosine
+Fourier involution. Sonin projection, symmetric dilation sum, successive transition, and Ward
+channel are Fourier-even:
+
+```text
+JQ_a=Q_aJ,  JD_r=D_rJ,  JZ=ZJ,  J(Z+Z^*)=(Z+Z^*)J.     (S81.6)
+```
+
+The forward-minus-inverse bilateral holonomy used by Burnol/co-Poisson orientation is
+
+```text
+H_(a,r)=U_rQ_aU_r^*-U_r^*Q_aU_r,
+JH_(a,r)J=-H_(a,r).                                     (S81.7)
+```
+
+Therefore every complex-linear reader `Phi` invariant under Fourier conjugation satisfies
+
+```text
+Phi(JTJ)=Phi(T)  for all T  ->  Phi(H_(a,r))=0.          (S81.8)
+```
+
+Together with exact Ward energy
+
+```text
+||[Z+Z^*,L_(a,b)]||_HS^2=2||Z||_HS^2,                  (S81.9)
+```
+
+Lean proves sharp no-go equivalence
+
+```text
+Phi(H_(a,r))=||[Z+Z^*,L_(a,b)]||_HS^2
+ iff Z=0
+ iff Kappa=0.                                           (S81.10)
+```
+
+This is a terminal verdict for one precise surviving class: **no Fourier-invariant complex-linear
+relative trace can turn bilateral Suzuki holonomy into the positive Ward counterterm except when
+there is no curvature to cancel.** The proposed `(S80.5)` invariant relative-trace weld is dead.
+
+This is not RH, not a disproof of RH, and not a whole-Suzuki impossibility theorem. It identifies
+the only remaining kind of reader: fibre-pointed, with Fourier reflection exchanging distinct
+character fibres `w` and `1-conj(w)` rather than averaging them. Corpus realization is Burnol's
+co-Poisson Berezin diagonal. Its right-half annihilator sign is now the single live Suzuki edge;
+proving it from explicit source sums proves RH, while an unavoidable opposite-sign source square
+would kill that final co-Poisson contraction.
+
+Lean:
+
+- `formal/GaloisForLFunctions/RHTower/SoninApertureWardPotential.lean`;
+- `formal/GaloisForLFunctions/RHTower/SoninApertureFourierParityNoGo.lean`;
+- supporting exact energy equality in
+  `formal/GaloisForLFunctions/RHTower/SoninApertureWardCurvature.lean`.
+
+Research records:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin-aperture-ward-cohomology-fourier-parity-no-go.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/sonin-aperture-ward-cohomology-fourier-parity-no-go.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`.

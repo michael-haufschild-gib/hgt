@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.LeafDistinct
+import GaloisForLFunctions.HTGeometry.ChristoffelPointMass
 
 /-!
 # A degenerate direction confines every representative
@@ -99,18 +100,35 @@ theorem positiveMomentForm_of_two_representatives {nu1 nu2 : Measure ℝ}
     (fun k => (h1 k).2.symm) (fun k => (h1 k).1)
     (fun k => (h2 k).2.symm) (fun k => (h2 k).1))
 
-/-- **Unconditional form.**  An extremal family with two distinct finite parameters has Gauss nodes
-outside every compact interval — with no positivity hypothesis, since the two distinct leaves supply
-it. -/
+/-- **An extremal family forces strict moment positivity.**  No positivity input is needed:
+the leaves at `0` and `1` are distinct representatives of the same moment sequence, so the
+semidefinite moment form cannot have a nonzero null direction. -/
+theorem positiveMomentForm_of_extremalFamily
+    (F : GaloisForLFunctions.HTGeometry.ClassicalNevanlinnaExtremalFamily s) :
+    PositiveMomentForm s := by
+  haveI hf0 : IsFiniteMeasure (F.leaf ((0 : ℝ) : OnePoint ℝ) : Measure ℝ) := inferInstance
+  haveI hf1 : IsFiniteMeasure (F.leaf ((1 : ℝ) : OnePoint ℝ) : Measure ℝ) := inferInstance
+  exact positiveMomentForm_of_two_representatives
+    (F.leaf_moments ((0 : ℝ) : OnePoint ℝ)) (F.leaf_moments ((1 : ℝ) : OnePoint ℝ))
+    (leaf_ne_of_ne F zero_ne_one)
+
+/-- Every atom of every extremal leaf is bounded by the moment sequence's Christoffel limit,
+without a separate positive-definiteness hypothesis. -/
+theorem leaf_measureReal_singleton_le_christoffelLimit_unconditional
+    (F : GaloisForLFunctions.HTGeometry.ClassicalNevanlinnaExtremalFamily s)
+    (t : OnePoint ℝ) (x : ℝ) :
+    (F.leaf t : Measure ℝ).real {x} ≤ christoffelLimit s x :=
+  leaf_measureReal_singleton_le_christoffelLimit
+    (positiveMomentForm_of_extremalFamily F) F t x
+
+/-- **Unconditional node escape.**  Every extremal family has Gauss nodes outside every compact
+interval.  The canonical leaves at `0` and `1` discharge both positive definiteness and the former
+choice of two distinct parameters. -/
 theorem exists_node_outside_of_extremalFamily_unconditional
     (F : GaloisForLFunctions.HTGeometry.ClassicalNevanlinnaExtremalFamily s)
-    {t1 t2 : ℝ} (hne : t1 ≠ t2) {B : ℝ} (hB : 0 < B) :
+    {B : ℝ} (hB : 0 < B) :
     ∃ n : ℕ, ∃ xi ∈ gaussNodes s n, xi ∉ Set.Icc (-B) B := by
-  haveI hf1 : IsFiniteMeasure (F.leaf (t1 : OnePoint ℝ) : Measure ℝ) := inferInstance
-  haveI hf2 : IsFiniteMeasure (F.leaf (t2 : OnePoint ℝ) : Measure ℝ) := inferInstance
-  have hpos : PositiveMomentForm s :=
-    positiveMomentForm_of_two_representatives (F.leaf_moments (t1 : OnePoint ℝ))
-      (F.leaf_moments (t2 : OnePoint ℝ)) (leaf_ne_of_ne F hne)
-  exact exists_node_outside_of_extremalFamily hpos F hne hB
+  exact exists_node_outside_of_extremalFamily
+    (positiveMomentForm_of_extremalFamily F) F zero_ne_one hB
 
 end HTGeometry

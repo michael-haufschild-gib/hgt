@@ -1366,20 +1366,61 @@ theorem gaussianCoherentGram_posDef_of_injective
   convert hsum using 1
   abel
 
+/-- The coherent Gaussian Gram matrix is invertible exactly when its finite configuration has no
+repeated point. -/
+theorem gaussianCoherentGram_isUnit_iff_injective
+    {d n : ℕ} (y : Fin n → Fin d → ℝ) :
+    IsUnit (gaussianCoherentGram y) ↔ Function.Injective y := by
+  constructor
+  · intro hunit p q hpq
+    by_contra hpne
+    have hrow : (gaussianCoherentGram y).row p =
+        (gaussianCoherentGram y).row q := by
+      funext r
+      change Real.exp (coordinateDot y p r) = Real.exp (coordinateDot y q r)
+      unfold coordinateDot
+      rw [hpq]
+    have hinj : Function.Injective (gaussianCoherentGram y).vecMul :=
+      Matrix.vecMul_injective_iff_isUnit.mpr hunit
+    have hsingle : Pi.single p (1 : ℝ) = Pi.single q 1 :=
+      hinj (by simpa only [Matrix.single_one_vecMul] using hrow)
+    have hp := congrFun hsingle p
+    simp [hpne] at hp
+  · intro hy
+    exact (gaussianCoherentGram_posDef_of_injective y hy).isUnit
+
+/-- Positive definiteness of the coherent Gaussian Gram matrix is equivalent to injectivity of the
+underlying finite Euclidean configuration. -/
+theorem gaussianCoherentGram_posDef_iff_injective
+    {d n : ℕ} (y : Fin n → Fin d → ℝ) :
+    (gaussianCoherentGram y).PosDef ↔ Function.Injective y := by
+  constructor
+  · intro hG
+    exact (gaussianCoherentGram_isUnit_iff_injective y).mp hG.isUnit
+  · exact gaussianCoherentGram_posDef_of_injective y
+
+/-- The coherent Gaussian Gram determinant is nonzero exactly for injective configurations. -/
+theorem gaussianCoherentGram_det_ne_zero_iff_injective
+    {d n : ℕ} (y : Fin n → Fin d → ℝ) :
+    (gaussianCoherentGram y).det ≠ 0 ↔ Function.Injective y := by
+  rw [← isUnit_iff_ne_zero,
+    ← (gaussianCoherentGram y).isUnit_iff_isUnit_det,
+    gaussianCoherentGram_isUnit_iff_injective]
+
 /-! ### Unconditional finite Gaussian CCR law -/
 
 /-- Canonical CCR leakage of an injective finite coherent Gaussian family. -/
 def gaussianCoherentInjectiveLeakage {d n : ℕ}
     (y : Fin n → Fin d → ℝ) (hy : Function.Injective y) :
     Fin d → Matrix (Fin n) (Fin d × Fin n) ℝ :=
-  gaussianCoherentLeakage y (gaussianCoherentGram_posDef_of_injective y hy)
+  gaussianCoherentLeakage y ((gaussianCoherentGram_posDef_iff_injective y).2 hy)
 
 theorem gaussianCoherentInjectiveLeakage_isCCRCompletion {d n : ℕ}
     (y : Fin n → Fin d → ℝ) (hy : Function.Injective y) :
     IsCCRCompletion (gaussianCoherentCompression y)
       (gaussianCoherentInjectiveLeakage y hy) :=
   gaussianCoherentLeakage_isCCRCompletion y
-    (gaussianCoherentGram_posDef_of_injective y hy)
+    ((gaussianCoherentGram_posDef_iff_injective y).2 hy)
 
 /-- Every injective finite Euclidean configuration obeys the exact coherent pairwise CCR
 dimension--fluctuation identity, with no positivity certificate among its hypotheses. -/
@@ -1763,10 +1804,12 @@ theorem gaussianCoherentLogScale_logDet_derivative_eq_ccrMeanEnergy
     {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y) :
     deriv (fun s => Real.log (gaussianCoherentLogScaleGram y s).det) 0 =
       ccrMeanEnergy (gaussianCoherentCompression y) := by
-  have hG := gaussianCoherentGram_posDef_of_injective y hy
+  have hG := (gaussianCoherentGram_posDef_iff_injective y).2 hy
+  have hGramDet : (gaussianCoherentGram y).det ≠ 0 :=
+    (gaussianCoherentGram_det_ne_zero_iff_injective y).2 hy
   have hdet : (gaussianCoherentLogScaleGram y 0).det ≠ 0 := by
     rw [gaussianCoherentLogScaleGram_zero]
-    exact hG.det_pos.ne'
+    exact hGramDet
   have hlog := (hasDerivAt_matrixDet (gaussianCoherentLogScaleGram y)
     (gaussianCoherentLogScaleFirst y 0) 0
     (hasDerivAt_gaussianCoherentLogScaleGram y 0)).log hdet
@@ -1774,7 +1817,7 @@ theorem gaussianCoherentLogScale_logDet_derivative_eq_ccrMeanEnergy
     detFirstJet_eq_det_mul_trace_inv_mul _ _ hdet]
   rw [gaussianCoherentLogScaleGram_zero, gaussianCoherentLogScaleFirst_zero]
   rw [← ccrMeanEnergy_gaussianCoherentCompression_eq_trace y hG]
-  field_simp [hG.det_pos.ne']
+  field_simp [hGramDet]
 
 /-- The second logarithmic-scale derivative of the coherent log determinant is exactly the
 coherent CCR number variance. -/

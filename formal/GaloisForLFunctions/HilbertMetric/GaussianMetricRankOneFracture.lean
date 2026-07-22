@@ -75,7 +75,7 @@ theorem finiteGaussianDistanceGram_one_posDef_of_injective {n d : ℕ}
     simp [finiteExponentialInnerGram, gaussianCoherentGram, coordinateDot]
   have hinner : (finiteExponentialInnerGram z 1).PosDef := by
     rw [hinnerEq]
-    exact gaussianCoherentGram_posDef_of_injective z hz
+    exact (gaussianCoherentGram_posDef_iff_injective z).2 hz
   have hB : B.PosDef := by
     dsimp [B]
     exact Matrix.PosDef.diagonal fun i => Real.exp_pos _

@@ -119,9 +119,13 @@ diagonal. -/
 theorem threePointCorrelationDeterminant_nonneg_of_far_chamber
     {d p q r : ℝ}
     (hd0 : 0 ≤ d) (hp0 : 0 ≤ p) (hq0 : 0 ≤ q) (hr0 : 0 ≤ r)
-    (hpd : p ≤ d) (hqd : q ≤ d) (hrp : r ≤ p) (hrq : r ≤ q)
+    (hrp : r ≤ p) (hrq : r ≤ q)
     (hfar : p ^ 2 + q ^ 2 ≤ d ^ 2) :
     0 ≤ threePointCorrelationDeterminant d p q r := by
+  have hpd : p ≤ d := by
+    nlinarith [sq_nonneg q]
+  have hqd : q ≤ d := by
+    nlinarith [sq_nonneg p]
   rcases le_total p q with hpq | hqp
   · exact threePointCorrelationDeterminant_nonneg_of_le_left
       hd0 hp0 hq0 hr0 hqd hpq hrp hfar
@@ -129,5 +133,47 @@ theorem threePointCorrelationDeterminant_nonneg_of_far_chamber
       hd0 hq0 hp0 hr0 hpd hqp hrq (by nlinarith [hfar])
     simpa [threePointCorrelationDeterminant, add_comm, add_left_comm, add_assoc,
       mul_comm, mul_left_comm, mul_assoc] using h
+
+/-- Every nonnegative radially ordered packet in the far-separated chamber has a positive
+semidefinite correlation matrix, including the zero-diagonal and rank-deficient boundary cases. -/
+theorem threePointCorrelationMatrix_posSemidef_of_far_chamber
+    {d p q r : ℝ}
+    (hd0 : 0 ≤ d) (hp0 : 0 ≤ p) (hq0 : 0 ≤ q) (hr0 : 0 ≤ r)
+    (hrp : r ≤ p) (hrq : r ≤ q)
+    (hfar : p ^ 2 + q ^ 2 ≤ d ^ 2) :
+    Matrix.PosSemidef (threePointCorrelationMatrix d p q r) := by
+  have hpd : p ≤ d := by
+    nlinarith [sq_nonneg q]
+  have hdet : 0 ≤ threePointCorrelationDeterminant d p q r :=
+    threePointCorrelationDeterminant_nonneg_of_far_chamber
+      hd0 hp0 hq0 hr0 hrp hrq hfar
+  by_cases hd : d = 0
+  · have hp : p = 0 := by linarith
+    have hq : q = 0 := by nlinarith [sq_nonneg p, sq_nonneg q]
+    have hr : r = 0 := by linarith
+    subst d
+    subst p
+    subst q
+    subst r
+    have hzero : threePointCorrelationMatrix 0 0 0 0 =
+        (0 : Matrix (Fin 3) (Fin 3) ℝ) := by
+      ext i j
+      fin_cases i <;> fin_cases j <;> simp [threePointCorrelationMatrix]
+    rw [hzero]
+    exact Matrix.PosSemidef.zero
+  · have hdpos : 0 < d := lt_of_le_of_ne hd0 (Ne.symm hd)
+    by_cases hp : p < d
+    · exact (threePointCorrelationMatrix_posSemidef_iff hdpos hp0 hp).2 hdet
+    · have hpeq : p = d := le_antisymm hpd (le_of_not_gt hp)
+      have hqzero : q = 0 := by nlinarith
+      have hrzero : r = 0 := by linarith
+      subst p
+      subst q
+      subst r
+      apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+        (threePointCorrelationMatrix_isHermitian d d 0 0)
+      intro v
+      simp [threePointCorrelationMatrix, dotProduct, Matrix.mulVec, Fin.sum_univ_three]
+      nlinarith [sq_nonneg (v 0 + v 1), sq_nonneg (v 2)]
 
 end HilbertMetric

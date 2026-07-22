@@ -585,7 +585,7 @@ theorem eventually_forall_thetaCuspCenterMixedThreePointMatrix_posSemidef
           hlocal_y x hx hxδ
     exact (thetaCuspCenterMixedThreePointMatrix_posSemidef_iff ha0 ha hx).2 hdet.le
   · exact thetaCuspCenterMixedThreePointMatrix_posSemidef_of_far_chamber
-      ha0 ha hx hy (le_of_not_gt hnear)
+      ha0 ha hx.le hy.le (le_of_not_gt hnear)
 
 theorem thetaCuspCenterMixedThreePointMatrix_posSemidef_comm
     {a x y : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) (hx : 0 < x) (hy : 0 < y) :

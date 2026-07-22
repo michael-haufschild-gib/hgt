@@ -140,4 +140,23 @@ theorem two_mul_re_opTrace_apertureCurvature_add_WardEnergy_eq_zero
   rw [hward, hcurv]
   ring
 
+/-- The canonical Ward commutator energy is exactly twice the successive-layer transition
+energy.  This is the positive form of the aperture transgression law. -/
+theorem hsNormSq_apertureWardCommutator_eq_two_mul_successiveLayerTransition
+    {a b c r : ℝ} (ha : 0 < a) (hab : a < b) (hbc : b < c)
+    (hr : 1 < r) (hcr : c < r * a) :
+    hsNormSq
+        (ccmCommutator
+          (evenSoninApertureSymmetricSuccessiveLayerChannel a b c r hr)
+          (evenSoninApertureLayer a b)) =
+      2 * hsNormSq
+        (evenSoninApertureSuccessiveLayerTransition a b c r hr) := by
+  have htrans :=
+    two_mul_re_opTrace_apertureCurvature_add_WardEnergy_eq_zero
+      ha hab hbc hr hcr
+  have hcurv :=
+    re_opTrace_evenSoninApertureRestrictionCurvature_eq_neg_hsNormSq
+      ha hab hbc hr hcr
+  linarith
+
 end RHTower

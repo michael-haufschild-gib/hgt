@@ -807,3 +807,130 @@ the Möbius floor remainder remains admissible.
 - [x] reject rederivation of parity/Stieltjes, aperture, and Landau connectors
 - [ ] construct signed first-crossing factorization proving `(49)`
 - [ ] RH, or contradiction proving original active-even CCM source cannot satisfy `(49)`
+
+## C15 frontier correction: first-crossing algebra is closed; only reverse saturation remains
+
+C14's last sentence was too coarse. The causal first-crossing expansion, complete future-alias
+probability contraction, physical low/high cutoff joining, and arbitrary-grade cutoff collapse are
+already corpus theorems. Their exact joined scalar satisfies
+
+```text
+FCRJ_M=D_M-R_M=||P_M||^2-E_M,
+D_M-R_M+E_M=||P_M||^2>=0,                              (50)
+```
+
+where `E_M=E_prog+E_quad` is already within the admissible `M^(-1) polylog(M)` budget and `P_M`
+is the ordinary-prime endpoint carrier. Thus the negative orientation of the old absolute FCRJ
+checkpoint is unconditional. The only unproved orientation is
+
+```text
+R_M>=D_M-O_(A,rho)(M^(-1) log(M)^b),                   (51)
+```
+
+equivalently
+
+```text
+||P_M||^2<=O_(A,rho)(M^(-1) log(M)^b).                 (52)
+```
+
+The cutoff split is an allocation gauge: low and high endpoint vectors join exactly to `P_M`.
+The centered Brownian endpoint Gram, sharp mesh coercivity, prime-power completion, and the
+off-diagonal triangular aperture kernel are also corpus theorems. Brownian inverse-Monge/total
+positivity cannot orient `(51)`; explicit actual-prime packets have opposite Boolean curvature
+signs even in the favorable chamber. Fixed grades, semiprime-only fibres, sectorwise absolute
+estimates, alias total variation, and re-splitting `P_M=X_M+Y_M` are frozen.
+
+Therefore do not retry the `PF10` first-crossing expansion, alias regrouping, cutoff Jordan mass,
+Monge variation diminution, or high-grade one-mode reduction. The sole live analytic object is
+the common-source, globally joined endpoint energy `(52)`, equivalently the aperture-centered
+moving von-Mangoldt discrepancy after the already-controlled prime-power renormalization. A valid
+next theorem must prove `(51)`/`(52)` from that common source, or prove the active-even CCM source
+cannot satisfy it. Anything weaker does not advance this lane.
+
+### Gate update after C15
+
+- [x] close first-crossing, future-alias, physical-cutoff, and high-grade joining algebra
+- [x] freeze Monge/total-positivity and sectorwise absolute-value providers
+- [x] identify the unique open orientation `R_M>=D_M-error`
+- [ ] prove `||P_M||^2=O(M^(-1) polylog(M))`, hence `(49)` and RH
+- [ ] or prove a contradiction excluding the sole active-even CCM source
+
+## C16 determinant sign/interlacing obstruction does not reach the CCM source `[KILLED]`
+
+The surviving active-even determinant has the signed source form
+
+```text
+det(A-zI)=-z det(D-zI)<eta,(D-zI)^(-1)c>.
+```
+
+If all residues of the resolvent scalar had one sign, it would be a Herglotz/Stieltjes function:
+its zeros would interlace the clock, and its normalized positive-real growth would be at most
+linear.  The corpus already proves that such a positive-residue cofinal limit cannot be `Xi`, whose
+positive-real growth is superlinear.  But the actual CCM source completion does not impose one-sign
+residues.  Its simple-even ground coordinates are signed, and neither the rank-one completion nor
+the radical-index/active-boundary laws change those signs.  Hence no interlacing or zero-density
+contradiction follows for the actual branch.
+
+The clock spacing `pi/log(lambda)` also shrinks in the cofinal limit, so a fixed-density clock-zero
+obstruction is false.  The radical zero at the origin is removed by the quotient used in the CCM
+self-adjoint realization, and residual clock zeros can escape compact sets when
+`N/log(lambda)->infinity`.  Do not retry positive-residue Herglotz, fixed clock density, central
+zero, or residual-lattice arguments against the signed active-even branch.
+
+### Gate update after C16
+
+- [x] reject determinant sign/interlacing and fixed-density obstructions
+- [x] retain signed active-even source as the sole determinant branch
+- [ ] prove the common-source endpoint energy bound `(52)`, hence RH
+- [ ] or prove a category-wide obstruction applying to signed active-even completion
+
+## C17 graph-null first valuation does not by itself kill boundary relative trace `[KILLED]`
+
+`ArithmeticSchurFirstTraceNonclosability.lean` gives actual-prime packets `x_n->0` whose intrinsic
+Hardy first-trace clock images converge to a nonzero valuation vector.  This rules out every closed
+extension that agrees with that clock on the coherent source core.  It does not by itself rule out
+the closed anti-causal Xi Hankel graph `D_Xi` or its boundary relative trace: those live in the
+target Paley--Wiener realization, and no proved source map intertwines the first-trace marker with
+`Q_u D_Xi`.
+
+Adding such an intertwiner, strong seam limit, or first-valuation observability is exactly the
+retired source-framed conservative comparison conjecture.  Boundedness of the relative-trace
+output alone does not imply it.  Therefore graph-null invisibility cannot be promoted to a
+category-wide CCM death theorem without first proving the missing source-to-Hankel identification;
+using that identification as an assumption is circular.
+
+Do not retry a contradiction between first-trace nonclosability and boundary Hilbert--Schmidt
+finiteness unless an explicit definition-level source intertwiner has first been constructed.
+
+## C18 two-boundary slab variance is exact but supplies no contraction `[CORPUS-REDUCED]`
+
+Write the completed moving flux as
+
+```text
+W_m(u)=mu_Lambda((m-u,m+c-u]),       0<u<A,
+P_m=Center_A(W_m).
+```
+
+The Hilbert variance identity and finite additivity give the exact two-boundary formula
+
+```text
+||P_m||_2^2
+ =A^(-1) integral_(0<v<u<A)
+   |mu_Lambda((m-u,m-v])
+     -mu_Lambda((m+c-u,m+c-v])|^2 dv du.                (53)
+```
+
+The two slabs have equal logarithmic length, so the Lebesgue continuum cancels before the square.
+Formula `(53)` is only a lossless rewrite of the already-formalized centered aperture variance:
+it neither signs nor contracts the separated boundary imbalance.
+
+Applying `Lambda=mu*log` to either slab factors its Laplace multiplier through the Möbius source,
+but controlling the resulting convolution at the norm required by `(52)` needs the same half-unit
+weighted Möbius domain already proved RH-equivalent in
+`mobius-half-unit-exponential-moment-rh-law.md`.  Canonical finite or all-depth two-boundary
+Cauchy balances do not help: the corpus proves their canonical source packet collapses, while the
+unbalanced slab difference in `(53)` is exactly the information that remains.
+
+Therefore do not retry generic variance polarization, two-boundary Gram compression, or formal
+Dirichlet convolution as a provider.  A live successor must prove a new source-specific stability
+law for the unbalanced completed slab current itself.

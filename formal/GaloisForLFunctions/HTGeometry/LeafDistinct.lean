@@ -50,9 +50,9 @@ theorem leaf_ne_of_ne (F : ClassicalNevanlinnaExtremalFamily s) {t1 t2 : ℝ} (h
 /-- **Nodes of an indeterminate family diverge.**  An extremal family with two distinct finite
 parameters has Gauss nodes outside every compact interval.
 
-`PositiveMomentForm s` is an explicit hypothesis rather than a consequence: the family's fields give
-carriers, continuity and moments, but nothing forces a leaf to have infinite support, which is what
-`positiveMomentForm_iff_exists_representing` would need. -/
+`PositiveMomentForm s` remains explicit at this dependency layer.  The downstream
+`positiveMomentForm_of_extremalFamily` theorem discharges it from two distinct leaves via compact
+moment determinacy, without requiring either leaf to have infinite support. -/
 theorem exists_node_outside_of_extremalFamily (h : PositiveMomentForm s)
     (F : ClassicalNevanlinnaExtremalFamily s) {t1 t2 : ℝ} (hne : t1 ≠ t2)
     {B : ℝ} (hB : 0 < B) :

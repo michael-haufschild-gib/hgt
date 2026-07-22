@@ -168,7 +168,7 @@ def thetaCuspCenterMixedThreePointDeterminant (a x y : ℝ) : ℝ :=
 center value, the actual three-node Hedenmalm matrix is positive semidefinite unconditionally. -/
 theorem thetaCuspCenterMixedThreePointMatrix_posSemidef_of_far_chamber
     {a x y : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2)
-    (hx : 0 < x) (hy : 0 < y)
+    (hx : 0 ≤ x) (hy : 0 ≤ y)
     (hfar : thetaCuspCenterMixedDensity a x ^ 2 +
         thetaCuspCenterMixedDensity a y ^ 2 ≤
           thetaCuspCenterMixedDensity a 0 ^ 2) :
@@ -177,30 +177,21 @@ theorem thetaCuspCenterMixedThreePointMatrix_posSemidef_of_far_chamber
   let p := thetaCuspCenterMixedDensity a x
   let q := thetaCuspCenterMixedDensity a y
   let r := thetaCuspCenterMixedDensity a (x + y)
-  have hd : 0 < d := thetaCuspCenterMixedDensity_pos ha0 ha 0
-  have hp : 0 < p := thetaCuspCenterMixedDensity_pos ha0 ha x
-  have hq : 0 < q := thetaCuspCenterMixedDensity_pos ha0 ha y
-  have hr : 0 < r := thetaCuspCenterMixedDensity_pos ha0 ha (x + y)
+  have hnonneg : ∀ t, 0 ≤ thetaCuspCenterMixedDensity a t :=
+    fun _ => thetaCuspCenterMixedDensity_nonneg ha0.le
   have hanti := antitoneOn_thetaCuspCenterMixedDensity ha0.le ha
-  have hpd : p ≤ d := hanti (by norm_num) hx.le (by linarith)
-  have hqd : q ≤ d := hanti (by norm_num) hy.le (by linarith)
-  have hxy0 : 0 ≤ x + y := add_nonneg hx.le hy.le
-  have hxxy : x ≤ x + y := le_add_of_nonneg_right hy.le
-  have hyxy : y ≤ x + y := le_add_of_nonneg_left hx.le
+  have hxy0 : 0 ≤ x + y := add_nonneg hx hy
+  have hxxy : x ≤ x + y := le_add_of_nonneg_right hy
+  have hyxy : y ≤ x + y := le_add_of_nonneg_left hx
   have hrp : r ≤ p := by
     dsimp [r, p]
-    exact hanti hx.le hxy0 hxxy
+    exact hanti hx hxy0 hxxy
   have hrq : r ≤ q := by
     dsimp [r, q]
-    exact hanti hy.le hxy0 hyxy
+    exact hanti hy hxy0 hyxy
   have hfar' : p ^ 2 + q ^ 2 ≤ d ^ 2 := by simpa [d, p, q] using hfar
-  have hp_lt : p < d := by
-    simpa [p, d] using thetaCuspCenterMixedDensity_lt_zero ha0 ha hx
-  have hdet : 0 ≤ HilbertMetric.threePointCorrelationDeterminant d p q r :=
-    HilbertMetric.threePointCorrelationDeterminant_nonneg_of_far_chamber
-      hd.le hp.le hq.le hr.le hpd hqd hrp hrq hfar'
-  have hpsd :=
-    (HilbertMetric.threePointCorrelationMatrix_posSemidef_iff hd hp.le hp_lt).2 hdet
+  have hpsd := HilbertMetric.threePointCorrelationMatrix_posSemidef_of_far_chamber
+    (hnonneg 0) (hnonneg x) (hnonneg y) (hnonneg (x + y)) hrp hrq hfar'
   simpa [thetaCuspCenterMixedThreePointMatrix, d, p, q, r] using hpsd
 
 /-- Once the first adjacent correlation is known to be strictly below the center, three-node
@@ -240,7 +231,7 @@ theorem thetaCuspCenterMixedThreePointMatrices_posSemidef_iff_nearCenterWall :
             thetaCuspCenterMixedDensity a y ^ 2 ≤
           thetaCuspCenterMixedDensity a 0 ^ 2
     · exact thetaCuspCenterMixedThreePointMatrix_posSemidef_of_far_chamber
-        ha0 ha hx hy hfar
+        ha0 ha hx.le hy.le hfar
     · apply (thetaCuspCenterMixedThreePointMatrix_posSemidef_iff ha0 ha hx).2
       exact hwall a x y ha0 ha hx hy (lt_of_not_ge hfar)
 

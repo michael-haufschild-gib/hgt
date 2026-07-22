@@ -95,81 +95,95 @@ and finite-support coefficient reconstructions do not count as progress.
     `tau(retained)+tau(lost)=log r=tau(total)`. Do not search for another aperture-layer algebra,
     cyclic reader, or principal Burnol cancellation. Only the ordinary trace of the explicit
     Schatten-1 curvature remains on the aperture side.
+17. **Aperture curvature is an exact negative square with canonical Ward cancellation.**
+    `SoninApertureCurvatureTrace.lean` proves
+    `Re Tr Kappa=-||L_(a,b)D_rL_(b,c)||_HS^2` and proves scalar faithfulness:
+    `Re Tr Kappa=0 iff Kappa=0 iff L_(a,b)D_rL_(b,c)=0`.
+    `SoninApertureWardCurvature.lean` proves the exact transgression
+    `2 Re Tr Kappa+||[Z+Z^*,L_(a,b)]||_HS^2=0`. Do not recompute the curvature trace, seek its
+    sign, or invent a different positive aperture counterterm.
+18. **Scalar aperture curvature is globally exact, and invariant trace cannot read RH orientation.**
+    `SoninApertureWardPotential.lean` proves the operator Bianchi identity, exact four-aperture
+    energy conservation, an explicit base-aperture Ward potential, and exact base-gauge change.
+    Hence `Re Tr Kappa` has zero cohomology class on every ordered chamber.
+    `SoninApertureFourierParityNoGo.lean` proves that `Z` and `Z+Z^*` are Fourier-even while the
+    forward-minus-inverse bilateral holonomy `H_(a,r)` is Fourier-odd. Every Fourier-invariant
+    complex-linear reader annihilates `H_(a,r)`, and it equals the positive Ward energy iff
+    `Z=0 iff Kappa=0`. This kills the proposed invariant relative-trace/Ward identification as an
+    RH mechanism. Do not ask a global cyclic trace to recover same-fibre horizontal orientation;
+    only a fibre-pointed reflection-covariant reader can survive.
 
 ## Single live edge
 
-`SUZUKI-COFINAL-COMPLETED-LEAKAGE-FLOOR`
+`SUZUKI-COPOISSON-FIBRE-ORIENTATION`
 
-Construct from the actual aperture-dependent Sonin graph, before reading any Xi zero or assuming
-any Weil sign, a *joint* prime--archimedean cutoff carrier using the now-closed mass-conserving
-principal aperture algebra, whose finite part is the canonical Connes--CCM source, and prove
-one cutoff-uniform finite lower bound for its real trace.
-Equivalently, prove the completed lower floor consumed by
-`CompletedPrimeGammaGaussianRatLeftHalfBoundedBelow`.
+Let `E_b` be orthogonal projection onto Burnol's source-defined co-Poisson quotient and let
+`k_w^b` be continuous completed-Mellin evaluation kernel. For bilateral aperture holonomy
+`H_(a,r)`, define fibre-pointed Berezin value
 
-The archimedean term must depend on the same cutoff as the prime shell. A fixed trace-class Gamma
-operator cannot repair the already-proved non-summability of the positive critical prime tangent
-family. Cancellation must occur inside each completed cutoff carrier, before any trace-norm limit.
-The finite part cannot be a finite-valued positive linear functional on any domain containing an
-RH-bearing Mellin profile and its finite cutoffs: item 13 rules that class out without a unit,
-continuity, or normality premise.
+```text
+h_(a,r)(w)=<E_b k_w^b,H_(a,r) E_b k_w^b>.
+```
+
+Construct from explicit co-Poisson source sums, without selecting a zeta zero or assuming a Weil
+sign, a source law forcing
+
+```text
+h_(a,r)(w)<=0
+```
+
+at every right-half co-Poisson annihilator character. Existing exact fibre identity is
+
+```text
+h_(a,r)(w)
+ =2 sinh(2 log(r)(Re(w)-1/2)) ||k_w^a||^2
+```
+
+on that annihilator. Therefore requested source law rules out every right-half off-critical
+annihilator character and proves RH. This is now sole RH-bearing Suzuki arrow. A global relative
+trace cannot provide it by item 18; reader must remain fibre-pointed, with Fourier reflection
+exchanging `w` and `1-conj(w)` rather than averaging them.
 
 ## Current falsifiable conjecture — only surviving form
 
-`SUZUKI-COHERENT-FUSION-GAMMA-WELD`, **closed unbounded graph form only**:
+`SUZUKI-COPOISSON-KREIN-CONTRACTION`:
 
-Construct a closed cutoff-dependent **renormalized/semifinite** observation `T_A` from the genuine
-restricted-Weil/Robin resolvent, the noncompact aperture-layer principal channel, and Burnol
-conductor such that:
-
-```text
-T_A (coherent causal response) = exact gated sharp wall source,
-```
-
-on every finite source core, despite forced cofinal gain at least linear in `p`; no ordinary
-all-prime `ell^2` sharp-source vector may be used. Prove the completed
-finite-part trace descends through this graph and satisfies
+The co-Poisson quotient evaluation-kernel colligation for forward/inverse normalized dilation has
+a source-defined Krein contractivity law on the right-half annihilator character cone. Its
+diagonal is exactly
 
 ```text
-Re FP Tr(completed prime--Burnol carrier at A) >= -C
+||epsilon^-_(a,r,w)||^2-||epsilon^+_(a,r,w)||^2<=0,
 ```
 
-with one finite `C` independent of `A`. Bounded/frame-preserving `T_A` is formally impossible.
-Conjecture is false if forced inverse weights prevent closability, the ordinary trace of the
-aperture curvature cannot be canceled by the Burnol term, or the completed trace defect is
-unbounded below on the normalized source family. The diagonal aperture layer no longer supplies
-an algebraic-reader falsifier: its principal class is already a canonical live state.
+or equivalently `h_(a,r)(w)<=0`. The conjecture must be proved from compactly supported
+co-Poisson seed relations before imposing annihilator condition; restating sign only on zeta-zero
+fibres is not a producer.
 
-Excluding the cofinal order unit is insufficient: every critical-strip Mellin profile itself has
-infinite positive Suzuki mass. The completed finite part is necessarily signed and cannot be
-lower-bounded on the full nonnegative prime cone. Thus the only admissible lower-floor claim is on
-the source-normalized completed resolvent family itself, not its positive conic hull.
+Conjecture is false for a proposed source colligation if its exact diagonal contains an
+uncontrolled positive boundary term on the annihilator, if its invariant part is the whole reader
+(item 18 forces zero), or if physical/Fourier defect comparison has opposite orientation. A
+successful exact time-band/Calkin lift of compactly supported co-Poisson divided differences is an
+alternative realization of this same fibre orientation, not a second frontier.
 
 ## Immediate experiment — symbolic, not numerical
 
-For a nested strict-crossing triple, compute the ordinary trace of the now-explicit Schatten-1
-aperture curvature
+Do not compare invariant relative trace with Ward energy: item 18 proves equality only in flat
+case. Work directly with projected co-Poisson evaluation kernel and exact bilateral defects.
+Factor the quotient dilation colligation into Fourier parity blocks and test whether explicit
+co-Poisson seed map supplies a Krein contractive identity before annihilator specialization:
 
 ```text
-Kappa_(a,b,c;p)=Delta_(a,c;p)-Delta_(a,b;p)-Delta_(b,c;p).
+B_+(w)B_+(w)^*-B_-(w)B_-(w)^*
+ = -S(w)^*S(w) + terms divisible by Lambda_b(w).
 ```
 
-The principal quotient is already flat and its cyclic character is `log(c/a)`. Determine whether
-`Tr Kappa` is exactly the negative cutoff cocycle of the Burnol conductor on the common semilocal
-graph. Then determine:
+At an annihilator character `Lambda_b(w)=0`, such factorization gives required sign. Outcomes:
 
-```text
-domain(T_A) = {response vectors whose p-weighted sharp reconstruction is square/trace summable}.
-```
-
-Then compare this exact graph domain with existing Burnol conductor graph and Connes finite-part
-domain. Outcomes:
-
-- exact trace-curvature/Burnol cancellation on a common dense closed domain: advance live edge;
-- trace mismatch, graph non-closable, or trivial domain intersection:
-  source-complete no-go for current coherent weld;
-- generic abstract closed operator without exact source/finite-part identity: no progress; do not
-  formalize it.
+- exact negative-square-plus-co-Poisson-ideal factorization: proves source sign, then RH;
+- unavoidable positive square on annihilator: kills this co-Poisson contraction and sends route to
+  time-band lift/no-go audit;
+- reflection averaging, global trace zero, or sign asserted only on zeros: no progress.
 
 ## Anti-loop checkpoint
 
@@ -248,3 +262,19 @@ Before each new action, answer in this file's log:
 - **2026-07-22 aperture mass conservation.** Exact live-window telescoping proves that retained
   mass plus lost mass equals the original `log r`; the aperture cocycle is internal transfer, not
   an archimedean anomaly. Burnol can only cancel the ordinary trace of the Schatten-1 curvature.
+- **2026-07-22 aperture Ward transgression.** The remaining curvature trace is now exact:
+  `Re Tr Kappa=-||L_(a,b)D_rL_(b,c)||_HS^2`. Trace zero is faithful, and symmetrizing the
+  successive-layer transition gives a canonical Ward channel satisfying
+  `2 Re Tr Kappa+WardEnergy=0`. This is a source-side theorem, not RH restatement. The aperture
+  scalar is no longer open; sole connector is equality between this forced relative Ward energy
+  and the relative finite part of Suzuki's concrete Burnol conductor, followed by the completed
+  co-Poisson source floor.
+- **2026-07-22 Ward cohomology and parity no-go.** The proposed connector in prior entry is false
+  for every Fourier-invariant complex-linear reader. Aperture curvature obeys exact operator
+  Bianchi; its energy integrates to an explicit Ward potential, and base changes are vertex
+  gauges. More decisively, symmetric Ward channel is Fourier-even while bilateral RH-orientation
+  holonomy is Fourier-odd. Lean proves every invariant linear reader kills holonomy, and equality
+  with Ward energy holds iff aperture curvature is literally zero. This is a class-complete no-go
+  for invariant relative-trace Suzuki welds, not RH and not a whole-lane no-go. Sole survivor is
+  fibre-pointed co-Poisson Berezin orientation (or equivalent time-band lift) that reflection
+  transports between distinct character fibres instead of averaging.
