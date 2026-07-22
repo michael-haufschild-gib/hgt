@@ -88,7 +88,7 @@ def projectiveNevanlinnaJetExpansionColumn
 Nevanlinna jets.  Unlike the triangular equivalence, this map needs no nonvanishing diagonal
 hypothesis: criticality can destroy invertibility but never the forward jet expansion. -/
 def nevanlinnaJetPacketForwardLinearMap
-    {ι : Type*} [Fintype ι]
+    {ι : Type*}
     (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ) :
     ((Σ i, Fin (n i)) → ℂ) →ₗ[ℂ] ((Σ i, Fin (n i)) → ℂ) where
   toFun v s := ∑ k : Fin (n s.1),
@@ -107,7 +107,7 @@ def nevanlinnaJetPacketForwardLinearMap
 
 @[simp]
 theorem nevanlinnaJetPacketForwardLinearMap_apply
-    {ι : Type*} [Fintype ι]
+    {ι : Type*}
     (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ)
     (v : (Σ i, Fin (n i)) → ℂ) (s : Σ i, Fin (n i)) :
     nevanlinnaJetPacketForwardLinearMap a q z n v s =
@@ -118,7 +118,7 @@ theorem nevanlinnaJetPacketForwardLinearMap_apply
 /-- The forward expansion column factors through the projective Cauchy-power column at every
 source packet, including critical packets. -/
 theorem projectiveNevanlinnaJetExpansionColumn_eq_forwardLinearMap_cauchyColumn
-    {ι : Type*} [Fintype ι]
+    {ι : Type*}
     (a q : ℂ → ℂ) (z : ι → ℂ) (n : ι → ℕ) (t : OnePoint ℝ) :
     projectiveNevanlinnaJetExpansionColumn a q z n t =
       nevanlinnaJetPacketForwardLinearMap a q z n

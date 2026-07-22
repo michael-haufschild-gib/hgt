@@ -22,17 +22,18 @@ open Matrix
 
 noncomputable section
 
-/-- The positive Green square attached to a finite matrix. -/
-def matrixGreenSquare {n : Type*} [Fintype n] [DecidableEq n]
+/-- The positive Green square attached to an indexed matrix. -/
+def matrixGreenSquare {n : Type*} [Fintype n]
     (G : Matrix n n ℂ) : Matrix n n ℂ :=
   Gᴴ * G
 
 /-- Every finite Green square is positive semidefinite. -/
 theorem matrixGreenSquare_posSemidef
-    {n : Type*} [Fintype n] [DecidableEq n]
+    {n : Type*} [Fintype n]
     (G : Matrix n n ℂ) :
-    (matrixGreenSquare G).PosSemidef :=
-  posSemidef_conjTranspose_mul_self G
+    (matrixGreenSquare G).PosSemidef := by
+  classical
+  exact posSemidef_conjTranspose_mul_self G
 
 /-- A skew-adjoint Green operator identifies its positive square with the negative ordinary
 square. -/

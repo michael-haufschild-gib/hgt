@@ -80,21 +80,21 @@ theorem algebraicIndependent_linearFormPolynomial_iff_linearIndependent
       M h MvPolynomial.X (MvPolynomial.algebraicIndependent_X κ K)
     simpa [M, matrixLinearForms, linearFormPolynomial] using hpoly
 
-/-- The ordinary vector matroid represented by a finite family of finite-dimensional rows.
+/-- The ordinary vector matroid represented by a family of finite-dimensional rows.
 
 It is constructed inside mathlib's algebraic matroid by sending a row to its homogeneous linear
 polynomial.  This avoids adding independent matroid axioms: algebraic independence of the linear
 forms is already a certified matroid, and the preceding theorem identifies it with row linear
 independence. -/
 def linearFamilyMatroid
-    {K ι κ : Type u} [Field K] [Fintype ι] [Fintype κ]
+    {K ι κ : Type u} [Field K] [Fintype κ]
     (v : ι → κ → K) : Matroid ι :=
   (AlgebraicIndependent.matroid K (MvPolynomial κ K)).comap
     (fun i => linearFormPolynomial (v i))
 
 @[simp]
 theorem linearFamilyMatroid_ground
-    {K ι κ : Type u} [Field K] [Fintype ι] [Fintype κ]
+    {K ι κ : Type u} [Field K] [Fintype κ]
     (v : ι → κ → K) :
     (linearFamilyMatroid v).E = Set.univ := by
   simp [linearFamilyMatroid]
@@ -231,13 +231,13 @@ theorem linearIndependent_localizeOperatorRow_iff
 /-- The ordinary row matroid of polynomial differential operators, computed over the fraction
 field of `C[X]`. -/
 def differentialOperatorRowMatroid
-    {C ι κ : Type u} [Field C] [Fintype ι] [Fintype κ]
+    {C ι κ : Type u} [Field C] [Fintype κ]
     (L : ι → κ → Polynomial C) : Matroid ι :=
   linearFamilyMatroid (fun i => localizeOperatorRow (L i))
 
 @[simp]
 theorem differentialOperatorRowMatroid_ground
-    {C ι κ : Type u} [Field C] [Fintype ι] [Fintype κ]
+    {C ι κ : Type u} [Field C] [Fintype κ]
     (L : ι → κ → Polynomial C) :
     (differentialOperatorRowMatroid L).E = Set.univ := by
   simp [differentialOperatorRowMatroid]

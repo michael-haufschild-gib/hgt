@@ -496,3 +496,103 @@ Hermitian Abel certificate are in
 
 Classification: `[PROVED HERE] [UNCONDITIONAL POSITIVE RECURRENCE]`
 `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`.
+
+## Even-index and dyadic Gram strengthening — 2026-07-22
+
+The raw theorem is now strictly localized to even totals.  Order-two character projection gives
+
+```text
+sum_q R_(chi,k)(2q)u^q
+ = (|A_chi(sqrt(u))|^(2k)+|A_chi(-sqrt(u))|^(2k))/2 >= 0.
+```
+
+The even-index positive-part exponent has the same lower edge `2k Theta_chi-1`, and
+`R_(chi,k)(2q)>0` for infinitely many `q`.  Hence, unconditionally,
+
+```text
+sum_(a+b=2q) mu(a)mu(b) >= 1
+```
+
+for infinitely many `q`.
+
+For every completely multiplicative `f`, `c=f(2)`, the binary channel has the exact universal
+dyadic Gram form
+
+```text
+sum_q (sum_(a+b=2q)f(a)conjugate(f(b)))r^(2q)
+ = |F(r)-cF(r^2)|^2+|cF(r^2)|^2.
+```
+
+For Liouville this proves a strict same-sign majority along infinitely many even totals.  Pushing
+the identity toward the upper source gives an exact no-go: every sequence with `a(2n)=ca(n)` is
+classified by a free odd seed `O`,
+
+```text
+F(r)=sum_(j>=0)c^j O(r^(2^j)),
+D_odd(s)=(1-c2^(-s))D(s).
+```
+
+At `c=-1`, `1+2^(-s)` is an analytic unit on `Re(s)>0`; dyadic projection cannot move the pole
+wall or supply the critical upper estimate.  Full proof and formal connector:
+
+- `../2-fully-proven/needs-audit/even-index-hermitian-additive-pole-law.md`;
+- `../../../../formal/GaloisForLFunctions/RHTower/DirichletLMixedAdditiveEvenIndexLaw.lean`.
+
+Canonical do-not-rediscover ledger:
+`mobius-additive-frontier-research-ledger.md`.
+
+## One-prime tent law and exact parity barrier — 2026-07-22
+
+For every prime `p`, removing its Euler factor gives the coefficientwise finite identity
+
+```text
+M(a)=sum_(p∤r, r<=a<pr) mu(r).
+```
+
+Consequently the signed antidiagonal has the exact transfer form
+
+```text
+U(N)=sum_(p∤r,p∤s) mu(r)mu(s) K_(p,N)(r,s),
+```
+
+where `K` is a cardinality kernel: it counts pairs of interval offsets and is therefore a
+nonnegative discrete tent.  Its support and size are exact:
+
+```text
+K_(p,N)(r,s)>0 iff r+s<=N and N+2<=p(r+s),
+K_(p,N)(r,s)<=min((p-1)r,(p-1)s).
+```
+
+These kernels increase pointwise with `p`; prime `2` is optimal.  Positivity cannot be iterated.
+For every `2<=p<q`, the two-factor unit transfer polynomial
+
+```text
+Q_(p,q)(z)=(z-z^p-z^q+z^(pq))/(1-z)
+```
+
+has a strictly negative squared coefficient at `k=max(q+1,2p-1)`; the first instance is
+`[z^4]Q_(2,3)(z)^2=-2`.  Thus local Euler-factor positivity has depth exactly one.  This is the
+finite additive form of the sieve parity barrier: the second prime necessarily introduces the
+negative lobe that a successful proof must exploit rather than dominate by absolute values.
+
+The local kernel itself has cubic positive directions.  If the odd seed is replaced by the
+constant seed `1`, then its window sum counts odd integers in `(a/2,a]`, which is of order `a`; its
+antidiagonal is therefore of order `N^3`.  Hence no arithmetic-blind spectral or entrywise bound on
+the tent matrix can yield `OPEN-SOURCE-001`.  Möbius-specific global cancellation across primes is
+logically indispensable.
+
+Dependency-closed paper proof:
+`../2-fully-proven/needs-audit/mobius-antidiagonal-one-prime-tent-sign-wall.md`.
+Lean module `MobiusMertensPrimeRemovalTentLaw.lean` proves the coefficient Euler difference, exact
+Mertens prime-window formula, connector to the existing RH-bearing antidiagonal, tent positivity,
+prime-2 optimality, and universal two-factor negative lobe.  Direct Lean, formal lint, standard
+axiom audit, and targeted cached build passed.
+
+Remaining open core is no longer “find a better local factor.”  It is:
+
+```text
+sum_(r,s odd) mu(r)mu(s) Tent(N+1-r-s;r,s) <= N^(2+o(1)),
+```
+
+using signed interactions among primes `>=3`.  No estimate of this strength is known; proving it
+would prove RH through the already formalized bridge.

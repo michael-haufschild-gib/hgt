@@ -49,22 +49,22 @@ theorem differentialFamilyMatroid_matrixLinearForms_eq_linearFamilyMatroid
 column makes the vertex source family free while retaining every edge difference when the root
 value is zero. -/
 def rootedIncidenceMatrix
-    {C V E : Type u} [Field C] [Fintype V] [DecidableEq V]
+    {C V E : Type u} [Field C] [DecidableEq V]
     (root : V) (tail head : E → V) :
     Matrix E ↑({v | v ≠ root} : Set V) C :=
   fun e v ↦
     (if head e = (v : V) then 1 else 0) -
       (if tail e = (v : V) then 1 else 0)
 
-/-- The ordinary rooted incidence matroid of an oriented finite edge family. -/
+/-- The ordinary rooted incidence matroid of an oriented edge family. -/
 def rootedIncidenceMatroid
-    {C V E : Type u} [Field C] [Fintype V] [Fintype E] [DecidableEq V]
+    {C V E : Type u} [Field C] [Fintype V] [DecidableEq V]
     (root : V) (tail head : E → V) : Matroid E :=
   linearFamilyMatroid (rootedIncidenceMatrix (C := C) root tail head)
 
 @[simp]
 theorem rootedIncidenceMatroid_ground
-    {C V E : Type u} [Field C] [Fintype V] [Fintype E] [DecidableEq V]
+    {C V E : Type u} [Field C] [Fintype V] [DecidableEq V]
     (root : V) (tail head : E → V) :
     (rootedIncidenceMatroid (C := C) root tail head).E = Set.univ := by
   simp [rootedIncidenceMatroid]
@@ -95,7 +95,7 @@ theorem rootedIncidenceMatroid_eRk_finset
 net incidence coefficient vanishes at every non-root vertex. The missing root equation follows
 from the fact that every incidence row has total coefficient zero. -/
 def IsRootedIncidenceCirculation
-    {C V E J : Type u} [Field C] [Fintype V] [Fintype J] [DecidableEq V]
+    {C V E J : Type u} [Field C] [Fintype J] [DecidableEq V]
     (root : V) (tail head : E → V) (edge : J → E) (weight : J → C) : Prop :=
   ∀ v : ↑({v | v ≠ root} : Set V),
     ∑ j, weight j * rootedIncidenceMatrix (C := C) root tail head (edge j) v = 0
@@ -103,7 +103,7 @@ def IsRootedIncidenceCirculation
 /-- A rooted incidence circulation is exactly Kirchhoff conservation: total incoming weight
 equals total outgoing weight at every non-root vertex. -/
 theorem isRootedIncidenceCirculation_iff_nonroot_vertex_conservation
-    {C V E J : Type u} [Field C] [Fintype V] [Fintype J] [DecidableEq V]
+    {C V E J : Type u} [Field C] [Fintype J] [DecidableEq V]
     (root : V) (tail head : E → V) (edge : J → E) (weight : J → C) :
     IsRootedIncidenceCirculation root tail head edge weight ↔
       ∀ v : ↑({v | v ≠ root} : Set V),

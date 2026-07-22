@@ -8,8 +8,13 @@ quadratic-corner reduction without passing to arbitrary compact operators.
 -/
 import GaloisForLFunctions.RHTower.CCMSoninFiniteWordNormalForm
 import GaloisForLFunctions.RHTower.SoninEulerFiniteGramLower
+import GaloisForLFunctions.RHTower.SoninTimeBandSchatten
+import GaloisForLFunctions.RHTower.TraceClassOperatorTrace
 
 noncomputable section
+
+set_option maxHeartbeats 3000000
+set_option synthInstance.maxHeartbeats 100000
 
 namespace RHTower
 
@@ -90,6 +95,105 @@ theorem isCompactOperator {T : evenSubspace →L[Complex] evenSubspace}
   | leftMul L hT ihT => exact ihT.clm_comp L
   | rightMul hT R ihT => exact ihT.comp_clm R
 
+/-- The exact even projection correction is Schatten-1, by invariant-subspace descent from the
+ambient Sonin time-band ideal. -/
+theorem projectionCorrection_memSchattenClass_one (a : ℝ) (ha : 0 < a) :
+    MemSchattenClass 1 (evenSoninProjectionCorrection a) := by
+  let T : SoninL2 →L[Complex] SoninL2 := centralSoninProjectionCorrection a
+  have hT : MemSchattenClass 1 T := by
+    simpa [T] using centralSoninProjectionCorrection_memSchattenClass_one a ha
+  have hmap : Set.MapsTo T evenSubspace evenSubspace := by
+    intro f hf
+    change centralSoninProjection a f -
+      (f - indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) f -
+        fourierCutoff (centralInterval a) (measurableSet_centralInterval a) f) ∈ evenSubspace
+    exact evenSubspace.sub_mem
+      (centralSoninProjection_mapsTo_evenSubspace a hf)
+      (evenSubspace.sub_mem
+        (evenSubspace.sub_mem hf (indicatorCutoff_central_mapsTo_evenSubspace a hf))
+        (fourierCutoff_central_mapsTo_evenSubspace a hf))
+  have hr := memSchattenClass_one_restrict evenSubspace T hmap hT
+  have heq : T.restrict hmap = evenSoninProjectionCorrection a := by
+    apply ContinuousLinearMap.ext
+    intro f
+    apply Subtype.ext
+    rfl
+  rwa [heq] at hr
+
+/-- Every physical-then-Fourier block on the even carrier is Schatten-1. -/
+theorem indicatorFourier_memSchattenClass_one
+    (s t : ℝ) (hs : 0 < s) :
+    MemSchattenClass 1 (evenIndicatorCutoff s * evenFourierCutoff t) := by
+  let T : SoninL2 →L[Complex] SoninL2 :=
+    indicatorCutoff (centralInterval s) (measurableSet_centralInterval s) *
+      fourierCutoff (centralInterval t) (measurableSet_centralInterval t)
+  have hT : MemSchattenClass 1 T := by
+    simpa [T] using
+      memSchattenClass_one_indicatorCutoff_fourierCutoff_central s t hs
+  have hmap : Set.MapsTo T evenSubspace evenSubspace := by
+    intro f hf
+    exact indicatorCutoff_central_mapsTo_evenSubspace s
+      (fourierCutoff_central_mapsTo_evenSubspace t hf)
+  have hr := memSchattenClass_one_restrict evenSubspace T hmap hT
+  have heq : T.restrict hmap = evenIndicatorCutoff s * evenFourierCutoff t := by
+    apply ContinuousLinearMap.ext
+    intro f
+    apply Subtype.ext
+    rfl
+  rwa [heq] at hr
+
+/-- Every Fourier-then-physical block on the even carrier is Schatten-1. -/
+theorem fourierIndicator_memSchattenClass_one
+    (s t : ℝ) (hs : 0 < s) :
+    MemSchattenClass 1 (evenFourierCutoff s * evenIndicatorCutoff t) := by
+  let T : SoninL2 →L[Complex] SoninL2 :=
+    fourierCutoff (centralInterval s) (measurableSet_centralInterval s) *
+      indicatorCutoff (centralInterval t) (measurableSet_centralInterval t)
+  have hT : MemSchattenClass 1 T := by
+    simpa [T] using
+      memSchattenClass_one_fourierCutoff_indicatorCutoff_central s t hs
+  have hmap : Set.MapsTo T evenSubspace evenSubspace := by
+    intro f hf
+    exact fourierCutoff_central_mapsTo_evenSubspace s
+      (indicatorCutoff_central_mapsTo_evenSubspace t hf)
+  have hr := memSchattenClass_one_restrict evenSubspace T hmap hT
+  have heq : T.restrict hmap = evenFourierCutoff s * evenIndicatorCutoff t := by
+    apply ContinuousLinearMap.ext
+    intro f
+    apply Subtype.ext
+    rfl
+  rwa [heq] at hr
+
+/-- Every exact principal-relative correction is Schatten-1.  This closes all constructors of
+the algebraic ideal, rather than merely its named generators. -/
+theorem memSchattenClass_one {T : evenSubspace →L[Complex] evenSubspace}
+    (hT : IsSoninPrincipalRelativeIdeal T) : MemSchattenClass 1 T := by
+  induction hT with
+  | zero => simp [MemSchattenClass, approxNumber_zero_op]
+  | projectionCorrection a ha => exact projectionCorrection_memSchattenClass_one a ha
+  | indicatorFourier s t hs => exact indicatorFourier_memSchattenClass_one s t hs
+  | fourierIndicator s t hs => exact fourierIndicator_memSchattenClass_one s t hs
+  | add hS hT ihS ihT =>
+      exact memSchattenClass_one_add
+        hS.isCompactOperator hT.isCompactOperator ihS ihT
+  | neg hT ihT => simpa using memSchattenClass_one_smul ihT (-1)
+  | leftMul L hT ihT => exact memSchattenClass_one_comp_left ihT L
+  | rightMul hT R ihT => exact memSchattenClass_one_comp_right ihT R
+
+/-- The ordinary operator trace is genuinely defined on every principal-relative correction:
+its canonical diagonal converges absolutely. -/
+theorem summable_inner_diag {T : evenSubspace →L[Complex] evenSubspace}
+    (hT : IsSoninPrincipalRelativeIdeal T) :
+    Summable (fun i => inner ℂ (ContinuousLinearMap.hsBasis ℂ evenSubspace i)
+      (T (ContinuousLinearMap.hsBasis ℂ evenSubspace i))) :=
+  hT.memSchattenClass_one.one_summable_inner_diag
+
+/-- The ordinary trace of a principal-relative correction is controlled by its trace norm. -/
+theorem norm_opTrace_le_traceNorm {T : evenSubspace →L[Complex] evenSubspace}
+    (hT : IsSoninPrincipalRelativeIdeal T) :
+    ‖ContinuousLinearMap.opTrace T‖ ≤ traceNorm evenSubspace T :=
+  RHTower.norm_opTrace_le_traceNorm hT.memSchattenClass_one
+
 end IsSoninPrincipalRelativeIdeal
 
 /-- Congruence modulo the exact Sonin principal-relative ideal. -/
@@ -139,7 +243,7 @@ theorem sum {ι : Type*} (s : Finset ι)
     (∑ i ∈ s, S i) =ᵣ ∑ i ∈ s, T i := by
   classical
   induction s using Finset.induction_on with
-  | empty => simp only [Finset.not_mem_empty, Finset.sum_empty]; exact refl 0
+  | empty => simp only [Finset.sum_empty]; exact refl 0
   | @insert i s hi ih =>
       rw [Finset.sum_insert hi, Finset.sum_insert hi]
       exact (h i (Finset.mem_insert_self i s)).add
@@ -261,9 +365,13 @@ theorem physicalWindow_mul_fourierWindow_mem_principalRelativeIdeal
     have h := hdirect.sub (hAx.leftMul AB)
     apply h.of_eq
     calc
-      AB * RD - AB * (Ax * RD) = AB * (RD - Ax * RD) := by rw [mul_sub]
-      _ = AB * ((1 - Ax) * RD) := by rw [sub_mul, one_mul]
-      _ = AB * (1 - Ax) * RD := by rw [mul_assoc]
+      AB * RD - AB * (Ax * RD) = AB * RD - (AB * Ax) * RD := by
+        rw [mul_assoc]
+      _ = (AB - AB * Ax) * RD := (sub_mul AB (AB * Ax) RD).symm
+      _ = (AB * 1 - AB * Ax) * RD := by rw [mul_one]
+      _ = AB * (1 - Ax) * RD := by
+        congr 1
+        exact (mul_sub AB 1 Ax).symm
   have heq :
       AB * Ux * (1 - A) * ((evenFourierCutoff d - evenFourierCutoff e) * Uy * (1 - R)) =
         (AB * (1 - Ax) * RD) * (Ux * Uy * (1 - R)) := by
@@ -325,9 +433,13 @@ theorem fourierWindow_mul_physicalWindow_mem_principalRelativeIdeal
     have h := hdirect.sub (hRx.leftMul RB)
     apply h.of_eq
     calc
-      RB * AD - RB * (Rx * AD) = RB * (AD - Rx * AD) := by rw [mul_sub]
-      _ = RB * ((1 - Rx) * AD) := by rw [sub_mul, one_mul]
-      _ = RB * (1 - Rx) * AD := by rw [mul_assoc]
+      RB * AD - RB * (Rx * AD) = RB * AD - (RB * Rx) * AD := by
+        rw [mul_assoc]
+      _ = (RB - RB * Rx) * AD := (sub_mul RB (RB * Rx) AD).symm
+      _ = (RB * 1 - RB * Rx) * AD := by rw [mul_one]
+      _ = RB * (1 - Rx) * AD := by
+        congr 1
+        exact (mul_sub RB 1 Rx).symm
   have heq :
       RB * Ux * (1 - R) * ((evenIndicatorCutoff d - evenIndicatorCutoff e) * Uy * (1 - A)) =
         (RB * (1 - Rx) * AD) * (Ux * Uy * (1 - A)) := by
@@ -368,15 +480,22 @@ theorem evenSoninWindowTranslation_mul_principalRelativeEq
   have hFF := SoninPrincipalRelativeEq.of_eq
     (evenFourierWindowTranslation_mul a C₁ F₁ x C₂ F₂ y
       haF₂ hF₁C₁ hF₂C₂ hx hy)
-  have hPF := SoninPrincipalRelativeEq.eq_zero
-    (physicalWindow_mul_fourierWindow_mem_principalRelativeIdeal
-      a C₁ F₁ C₂ F₂ x y ha hC₁ hF₁ hx hy)
-  have hFP := SoninPrincipalRelativeEq.eq_zero
-    (fourierWindow_mul_physicalWindow_mem_principalRelativeIdeal
-      a C₁ F₁ C₂ F₂ x⁻¹ y ha hC₁ hF₁ (inv_pos.mpr hx) hy)
-  have hsum := (hPP.add hPF).add (hFP.add hFF)
-  dsimp only [evenSoninWindowTranslation, evenPhysicalWindowTranslation,
-    evenFourierWindowTranslation] at hsum ⊢
+  have hPF : evenPhysicalWindowTranslation a C₁ F₁ x hx *
+      evenFourierWindowTranslation a C₂ F₂ y hy =ᵣ 0 :=
+    SoninPrincipalRelativeEq.eq_zero (by
+      simpa only [evenPhysicalWindowTranslation, evenFourierWindowTranslation] using
+        physicalWindow_mul_fourierWindow_mem_principalRelativeIdeal
+          a C₁ F₁ C₂ F₂ x y⁻¹ ha hC₁ hF₁ hx (inv_pos.mpr hy))
+  have hFP : evenFourierWindowTranslation a C₁ F₁ x hx *
+      evenPhysicalWindowTranslation a C₂ F₂ y hy =ᵣ 0 :=
+    SoninPrincipalRelativeEq.eq_zero (by
+      simpa only [evenPhysicalWindowTranslation, evenFourierWindowTranslation] using
+        fourierWindow_mul_physicalWindow_mem_principalRelativeIdeal
+          a C₁ F₁ C₂ F₂ x⁻¹ y ha hC₁ hF₁ (inv_pos.mpr hx) hy)
+  have hsum := SoninPrincipalRelativeEq.add
+    (SoninPrincipalRelativeEq.add hPP hPF)
+    (SoninPrincipalRelativeEq.add hFP hFF)
+  dsimp only [evenSoninWindowTranslation]
   simpa only [mul_add, add_mul, add_zero, zero_add, add_assoc,
     add_left_comm, add_comm] using hsum
 
@@ -592,7 +711,9 @@ theorem finitePrimeSoninQuadraticCornerCombination_eq_finiteEvenDilationGramComb
     (A : Matrix (Fin n) (Fin n) ℂ) :
     finitePrimeSoninQuadraticCornerCombination a p hp A =
       finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
-        (fun i => by exact_mod_cast (hp i).one_lt) A := by
+        (fun i => by
+          change (1 : ℝ) < (p i : ℝ)
+          exact_mod_cast (show 1 < p i from (hp i).one_lt)) A := by
   classical
   unfold finitePrimeSoninQuadraticCornerCombination
     finiteEvenDilationGramCombination evenCentralSoninQuadraticCorner

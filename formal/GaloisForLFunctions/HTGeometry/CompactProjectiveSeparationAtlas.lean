@@ -7,8 +7,8 @@ open scoped BigOperators Topology
 
 noncomputable section
 
-/-- Finite complex shift configurations with the collision-free locus built into the type. -/
-abbrev InjectiveShiftConfiguration (ι : Type*) [Fintype ι] :=
+/-- Complex shift configurations with the collision-free locus built into the type. -/
+abbrev InjectiveShiftConfiguration (ι : Type*) :=
   {shift : ι → ℂ // Function.Injective shift}
 
 /-- Configurations for which one fixed base row simultaneously regularizes and separates the

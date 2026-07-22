@@ -258,7 +258,7 @@ theorem marked_interior {c : ℤ × ℤ} (h : clr Mk c = Color.marked)
 
 /-- The interior reading of a free interior cell. -/
 theorem free_interior {c : ℤ × ℤ} (h : clr Mk c = Color.free)
-    (hi : 0 ≤ c.1) (hi' : c.1 ≤ (m : ℤ)) (_hj : 0 ≤ c.2) (hj' : c.2 ≤ (n : ℤ)) :
+    (hi : 0 ≤ c.1) (hi' : c.1 ≤ (m : ℤ)) (hj' : c.2 ≤ (n : ℤ)) :
     ¬ Mk (⟨c.1.toNat, by omega⟩, ⟨c.2.toNat, by omega⟩) := by
   simp only [clr] at h
   split_ifs at h with a1 a2 a3 a4 a5 a6
@@ -925,8 +925,8 @@ theorem rook_chain_toFin :
         · rcases hstep with h | h
           · exact Or.inr (by simp; omega)
           · exact Or.inl (by simp; omega)
-    · exact free_interior Mk hqfr hqint.1 hqint.2.1 hqint.2.2.1 hqint.2.2.2
-    · exact free_interior Mk hrs.2.2 hb.1 hb.2.1 hb.2.2.1 hb.2.2.2
+    · exact free_interior Mk hqfr hqint.1 hqint.2.1 hqint.2.2.2
+    · exact free_interior Mk hrs.2.2 hb.1 hb.2.1 hb.2.2.2
 
 /-- **Marked pipeline.**  An augmented king chain from the bottom-sentinel start to a top-sentinel
 cell yields an interior marked king crossing of the original board. -/
@@ -998,8 +998,8 @@ theorem free_pipeline
         rcases free_cases Mk hpfr with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
       refine ⟨(⟨w.1.toNat, by omega⟩, ⟨w.2.toNat, by omega⟩),
         (⟨p.1.toNat, by omega⟩, ⟨p.2.toNat, by omega⟩),
-        free_interior Mk hwfr hwint.1 hwint.2.1 hwint.2.2.1 hwint.2.2.2,
-        free_interior Mk hpfr hpint.1 hpint.2.1 hpint.2.2.1 hpint.2.2.2,
+        free_interior Mk hwfr hwint.1 hwint.2.1 hwint.2.2.2,
+        free_interior Mk hpfr hpint.1 hpint.2.1 hpint.2.2.2,
         ?_, ?_, rook_chain_toFin Mk ch4 hwint hpint⟩
       · exact Fin.ext (by simp; omega)
       · exact Fin.ext (by simp [Fin.last]; omega)

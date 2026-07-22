@@ -495,7 +495,7 @@ theorem boundedPrimeShiftedRotatedJet_linearCombination
 
 /-- The full finite Walsh palette at a finite family of distinct shifts. -/
 def primeWalshShiftPalette
-    {I A : Type*} [Fintype I]
+    {I A : Type*}
     (ε : I → Nat.Primes → Bool) (alpha : A → ℂ) (Ba : Finset I × A) :
     arithmeticFunctionRationalCoordinateField :=
   boundedPrimeShiftCarrier

@@ -90,7 +90,6 @@ the formal uniform finite probe, the smooth row-evaluation theorem, and the proj
 codimension law produce a finite-dimensional probe whose parameters densely avoid the literal
 expanded rank defect over the whole compact configuration patch. -/
 theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
-    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {H row κ ιf : Type}
     [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
     [Fintype row] [DecidableEq row]
@@ -253,9 +252,9 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
   intro center
   letI : Module.Finite ℝ V := Module.Finite.of_fg hVfg
   apply expandedEvaluation_affineProbe_compactPatchAvoidance_dense
-    projectiveGeometry degree jetOrder rowBase hrowBase
+    degree jetOrder rowBase hrowBase
     exponent hexponent hrows (fun h => base h + direction h center)
-    directionV Usurj K hUsurj hK hKUsurj
+    directionV Usurj K hUsurj hKUsurj
   · exact (hbase.add (hdirection.clm_apply contDiffOn_const)).mono inter_subset_left
   · exact hdirectionV.mono inter_subset_left
   · exact fun h hh => hh.2

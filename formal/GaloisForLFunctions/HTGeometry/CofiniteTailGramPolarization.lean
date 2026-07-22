@@ -19,10 +19,10 @@ open scoped ComplexOrder
 
 noncomputable section
 
-/-- The column vector obtained by evaluating one coefficient function on a square packet outside
-a deleted coordinate set. -/
+/-- The column vector obtained by evaluating one coefficient function on a packet outside a
+deleted coordinate set. -/
 def cofiniteEvaluationColumn
-    {J P : Type*} [Fintype J]
+    {J P : Type*}
     (c : J → P → ℂ) (F : Set P) (points : J → {p : P // p ∉ F})
     (j : J) : EuclideanSpace ℂ J :=
   WithLp.toLp 2 fun row => c j (points row)

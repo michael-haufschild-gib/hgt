@@ -252,10 +252,10 @@ def continuedHurwitzAugmentedExponent {I : Type*}
   | none => s
   | some i => anchor i
 
-/-- The Hurwitz function at `s` lies in the differential-matroid closure of a finite anchor
+/-- The Hurwitz function at `s` lies in the differential-matroid closure of an anchor
 family when adjoining it destroys differential independence. -/
 def ContinuedHurwitzDifferentiallyDependentOverAnchors
-    {I : Type*} [Fintype I] [DecidableEq I]
+    {I : Type*}
     (s : ℂ) (anchor : I → ℂ) : Prop :=
   letI := isDomain_upperEndAnalyticSubring
   letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra

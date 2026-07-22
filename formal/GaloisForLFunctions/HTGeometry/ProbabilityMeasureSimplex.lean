@@ -36,9 +36,9 @@ theorem probabilityMixture_toMeasure {X : Type*} [MeasurableSpace X]
     (probabilityMixture t ht mu nu : Measure X) =
       t • (mu : Measure X) + (1 - t) • (nu : Measure X) := rfl
 
-/-- A probability law conditioned on a positive-measure measurable set. -/
+/-- A probability law conditioned on a positive-measure set. -/
 noncomputable def conditionalProbability {X : Type*} [MeasurableSpace X]
-    (mu : ProbabilityMeasure X) (A : Set X) (_hA : MeasurableSet A)
+    (mu : ProbabilityMeasure X) (A : Set X)
     (hpos : (mu : Measure X) A ≠ 0) : ProbabilityMeasure X := by
   refine ⟨((mu : Measure X) A)⁻¹ • (mu : Measure X).restrict A, ?_⟩
   rw [isProbabilityMeasure_iff, Measure.smul_apply,
@@ -48,9 +48,9 @@ noncomputable def conditionalProbability {X : Type*} [MeasurableSpace X]
 
 @[simp]
 theorem conditionalProbability_toMeasure {X : Type*} [MeasurableSpace X]
-    (mu : ProbabilityMeasure X) (A : Set X) (hA : MeasurableSet A)
+    (mu : ProbabilityMeasure X) (A : Set X)
     (hpos : (mu : Measure X) A ≠ 0) :
-    (conditionalProbability mu A hA hpos : Measure X) =
+    (conditionalProbability mu A hpos : Measure X) =
       ((mu : Measure X) A)⁻¹ • (mu : Measure X).restrict A := rfl
 
 /-- A conull singleton determines a probability measure uniquely. -/
@@ -149,8 +149,8 @@ theorem probabilityMixture_conditionals
       (by
         rw [← mu.prop.measure_univ]
         exact measure_mono (subset_univ A))
-      (conditionalProbability mu A hA hA0)
-      (conditionalProbability mu Aᶜ hA.compl hAc0) =
+      (conditionalProbability mu A hA0)
+      (conditionalProbability mu Aᶜ hAc0) =
       mu := by
   apply ProbabilityMeasure.toMeasure_injective
   simp only [probabilityMixture_toMeasure, conditionalProbability_toMeasure]
@@ -182,12 +182,12 @@ theorem isExtremeProbabilityLaw_univ_iff_dirac
       rw [← mu.prop.measure_univ]
       exact measure_mono (subset_univ A)
     have hAlt : (mu : Measure X) A < 1 := lt_of_le_of_ne hAle hA1
-    let muA := conditionalProbability mu A hA hA0
+    let muA := conditionalProbability mu A hA0
     have hAc0 : (mu : Measure X) Aᶜ ≠ 0 := by
       have huniv : (mu : Measure X) Set.univ = 1 := mu.prop.measure_univ
       rw [measure_compl hA (measure_ne_top _ _), huniv]
       exact ne_of_gt (tsub_pos_iff_lt.mpr hAlt)
-    let muAc := conditionalProbability mu Aᶜ hA.compl hAc0
+    let muAc := conditionalProbability mu Aᶜ hAc0
     have hdecomp : probabilityMixture ((mu : Measure X) A) hAle muA muAc = mu :=
       probabilityMixture_conditionals mu A hA hA0 hAc0
     have hparts := hextreme.2 ((mu : Measure X) A) hAle

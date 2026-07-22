@@ -117,7 +117,7 @@ theorem exists_normalizedGeometricPolynomialFaceCluster_tendsto_zero
         _ ≤ ∑ ν ∈ T, ‖aevalWeight n (D * q + τ) Q ν‖ :=
           div_le_self (by positivity) hden
         _ ≤ (q : ℝ) ^ P := by simpa [T, q] using hmassq
-    have hcluster := norm_cluster_sum_le_mass_mul_exp_neg_gap T Ckey hCkeyT
+    have hcluster := norm_cluster_sum_le_mass_mul_exp_neg_gap T Ckey
       (fun ν => aevalWeight n (D * q + τ) Q ν / den)
       (fun ν => normalizedAtomPhase F (fun i => A * lam ^ i + c i) ν)
       (fun ν => atomValuation (fun i => A * lam ^ i + c i) ν)

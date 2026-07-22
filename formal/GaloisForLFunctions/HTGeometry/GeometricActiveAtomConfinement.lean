@@ -165,7 +165,7 @@ theorem exists_eventually_activeAtom_geometricWitness_pattern
   let K := K₀ + R
   let M := 2 * R + 1
   refine ⟨K, M, by simp [K], ?_⟩
-  filter_upwards [hR, eventually_ge_atTop K] with q hRq hKq
+  filter_upwards [hR] with q hRq
   intro ν hν hnear
   have hdata := hRq ν hν hnear
   have hsupp : ∀ i, ν i ≠ 0 → q - K ≤ i ∧ i < q - K + M := by
@@ -173,7 +173,7 @@ theorem exists_eventually_activeAtom_geometricWitness_pattern
     have hi' := hdata.2 i hi
     dsimp [K, M]
     omega
-  exact exists_boundedPattern_of_atom_support_interval hKq ν hdata.1 hsupp
+  exact exists_boundedPattern_of_atom_support_interval ν hdata.1 hsupp
 
 end
 

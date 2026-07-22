@@ -19,7 +19,7 @@ def rowCoefficientPolynomialOf
 modulo a prime, at most `q` rows can have all row coefficients inside that prime. -/
 theorem coefficientPrime_activeRows
     {A row κ : Type} [CommRing A] [Algebra ℂ A]
-    [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
+    [Fintype row] [DecidableEq row]
     (q : ℕ) (z : row → ℂ) (hz : Function.Injective z)
     (coeff : κ × Fin (q + 1) → A) (p : Ideal A) [p.IsPrime]
     (hprojective : ∃ ad, coeff ad ∉ p) :
@@ -77,14 +77,10 @@ theorem coefficientPrime_activeRows
       rw [map_pow, mul_comm]
     rw [heval, ← hφker (rowCoefficientPolynomialOf q z coeff b a)]
   have hcard :
-      (Finset.univ.filter fun b =>
-        ∃ a, ∑ d, c (a, d) * zK b ^ (d : ℕ) ≠ 0).card =
+      Set.ncard {b | ∃ a, ∑ d, c (a, d) * zK b ^ (d : ℕ) ≠ 0} =
       Set.ncard {b | ∃ a, rowCoefficientPolynomialOf q z coeff b a ∉ p} := by
-    rw [Set.ncard_eq_toFinset_card]
     congr 1
     ext b
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.Finite.mem_toFinset,
-      Set.mem_setOf_eq]
     exact hpred b
   rw [hcard] at hcount
   exact hcount

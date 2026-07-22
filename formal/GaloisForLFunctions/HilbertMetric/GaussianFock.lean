@@ -239,8 +239,8 @@ theorem coordinateExponentialInnerMatrix_det_mul_sq_le
 
 /-! ### Reduction of arbitrary finite Hilbert configurations to finite coordinates -/
 
-/-- The exponential inner-product matrix of a finite family in a real Hilbert space. -/
-def hilbertExponentialInnerMatrix {ι E : Type*} [Fintype ι]
+/-- The exponential inner-product matrix of a family in a real Hilbert space. -/
+def hilbertExponentialInnerMatrix {ι E : Type*}
     [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     (x : ι → E) (t : ℝ) : Matrix ι ι ℝ :=
   fun i j => Real.exp (2 * t * inner ℝ (x i) (x j))

@@ -5,6 +5,8 @@
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [UNCONDITIONAL] [NOT RH]`
+- **Dominance status:** strict even-index strengthening proved in
+  `even-index-hermitian-additive-pole-law.md`; do not reuse unrestricted recurrence as newest claim.
 - **Source:** ordinary generating function of reciprocal Dirichlet coefficients / Mellin pole
   obstruction
 - **Statement:** Raw Hermitian additive convolutions of twisted Möbius coefficients have
@@ -263,3 +265,5 @@ paper-level.  No duplicate Lean wrapper is warranted.
 - 2026-07-22 -- derived raw Hermitian radial law from existing mixed Abel core; proved the
   zero-frontier lower exponent, unconditional higher-order positive excursions, and separate
   binary endpoint positive recurrence; audited closest 2015, 2025, and 2026 literature.
+- 2026-07-22 -- superseded as publication headline by `PARITY-RAW-001`, which proves the same
+  lower edge and recurrence on even output indices and contains a dyadic Gram refinement.

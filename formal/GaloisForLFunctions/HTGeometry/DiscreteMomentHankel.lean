@@ -17,7 +17,7 @@ namespace HTGeometry
 noncomputable section
 
 /-- The positive atomic measure with weight `w i` at node `x i`. -/
-def discreteMomentMeasure {ι : Type*} [Countable ι]
+def discreteMomentMeasure {ι : Type*}
     (w x : ι → ℝ) : Measure ℝ :=
   Measure.sum fun i ↦ ENNReal.ofReal (w i) • Measure.dirac (x i)
 

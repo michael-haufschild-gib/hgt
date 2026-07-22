@@ -109,6 +109,21 @@ theorem ccmReflectionMatrix_transpose
   · have h' : j ≠ rho i := fun h' => h ((ccm_eq_reflection_iff rho hrho i j).2 h')
     rw [if_neg h, if_neg h']
 
+/-- An involutive reflection matrix squares to the identity. -/
+theorem ccmReflectionMatrix_sq
+    (rho : n ≃ n) (hrho : ∀ i, rho (rho i) = i) :
+    ccmReflectionMatrix rho * ccmReflectionMatrix rho = 1 := by
+  ext i j
+  rw [Matrix.mul_apply, Finset.sum_eq_single (rho i)]
+  · by_cases hij : i = j
+    · subst j
+      simp [ccmReflectionMatrix, hrho]
+    · have hji : j ≠ i := Ne.symm hij
+      simp [ccmReflectionMatrix, hrho, hij, hji]
+  · intro b hb hne
+    simp [ccmReflectionMatrix, hne]
+  · simp
+
 omit [Fintype n] in
 /-- Odd clock/source data and an even diagonal make the divided-difference matrix reflection
 invariant entrywise. -/

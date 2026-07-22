@@ -16,7 +16,7 @@ def coefficientRowPolynomial
 
 /-- Distinct monomial exponents recover each coefficient polynomial exactly. -/
 @[simp] theorem coefficientRowPolynomial_coeff
-    {κ σ : Type*} [Fintype κ] [DecidableEq κ]
+    {κ σ : Type*} [Fintype κ]
     (q : ℕ) (exponent : κ → (σ →₀ ℕ)) (hexponent : Function.Injective exponent)
     (c : κ × Fin (q + 1) → ℂ) (z : ℂ) (a : κ) :
     (coefficientRowPolynomial q exponent c z).coeff (exponent a) =
@@ -28,7 +28,7 @@ def coefficientRowPolynomial
 
 /-- A row carrying a nonzero coefficient polynomial gives a nonzero jet polynomial. -/
 theorem coefficientRowPolynomial_ne_zero
-    {κ σ : Type*} [Fintype κ] [DecidableEq κ]
+    {κ σ : Type*} [Fintype κ]
     (q : ℕ) (exponent : κ → (σ →₀ ℕ)) (hexponent : Function.Injective exponent)
     (c : κ × Fin (q + 1) → ℂ) (z : ℂ)
     (hgood : ∃ a, ∑ d, c (a, d) * z ^ (d : ℕ) ≠ 0) :
@@ -43,12 +43,12 @@ theorem coefficientRowPolynomial_ne_zero
 
 /-- Rows on which at least one bounded coefficient polynomial is nonzero. -/
 def coefficientGoodRow
-    {row κ : Type*} [Fintype κ]
+    {row κ : Type*}
     (q : ℕ) (z : row → ℂ) (c : κ × Fin (q + 1) → ℂ) :=
   {b : row // ∃ a, ∑ d, c (a, d) * z b ^ (d : ℕ) ≠ 0}
 
 noncomputable instance coefficientGoodRowFintype
-    {row κ : Type*} [Fintype row] [Fintype κ]
+    {row κ : Type*} [Fintype row]
     (q : ℕ) (z : row → ℂ) (c : κ × Fin (q + 1) → ℂ) :
     Fintype (coefficientGoodRow q z c) := by
   exact Fintype.ofInjective Subtype.val Subtype.val_injective
@@ -56,19 +56,22 @@ noncomputable instance coefficientGoodRowFintype
 /-- Root counting supplies at least `card row - q` good rows. -/
 theorem coefficientGoodRow_card_lower
     {row κ : Type*} [Fintype row] [DecidableEq row]
-    [Fintype κ] [DecidableEq κ]
     (q : ℕ) (z : row → ℂ) (hz : Function.Injective z)
     (c : κ × Fin (q + 1) → ℂ) (hc : c ≠ 0) :
     Fintype.card row ≤ q + Fintype.card (coefficientGoodRow q z c) := by
   classical
   have h := card_rows_some_boundedCoefficientPolynomial_nonzero q z hz c hc
-  unfold coefficientGoodRow
-  rw [Fintype.card_subtype]
-  simpa [coefficientGoodRow] using h
+  have hcard :
+      Fintype.card (coefficientGoodRow q z c) =
+        Set.ncard {b | ∃ a, ∑ d, c (a, d) * z b ^ (d : ℕ) ≠ 0} := by
+    rw [← Nat.card_eq_fintype_card]
+    exact Nat.card_coe_set_eq _
+  rw [hcard]
+  exact h
 
 /-- A nonzero constant row polynomial has an empty zero locus. -/
 theorem coefficientRowPolynomial_eval_ne_zero_of_constant
-    {κ σ : Type*} [Fintype κ] [DecidableEq κ]
+    {κ σ : Type*} [Fintype κ]
     (q : ℕ) (exponent : κ → (σ →₀ ℕ)) (hexponent : Function.Injective exponent)
     (c : κ × Fin (q + 1) → ℂ) (z : ℂ)
     (hgood : ∃ a, ∑ d, c (a, d) * z ^ (d : ℕ) ≠ 0)
@@ -91,7 +94,7 @@ a nonzero constant, so the incidence fiber is empty, or all active equations are
 after placement in disjoint row-variable blocks, are algebraically independent. -/
 theorem coefficientIncidenceFiber_empty_or_algebraicIndependent
     {row κ σ : Type*} [Fintype row] [DecidableEq row]
-    [Fintype κ] [DecidableEq κ]
+    [Fintype κ]
     (q : ℕ) (z : row → ℂ) (hz : Function.Injective z)
     (exponent : κ → (σ →₀ ℕ)) (hexponent : Function.Injective exponent)
     (c : κ × Fin (q + 1) → ℂ) (hc : c ≠ 0) :

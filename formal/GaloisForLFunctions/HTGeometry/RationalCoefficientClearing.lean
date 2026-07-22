@@ -155,13 +155,14 @@ theorem exists_upper_specialization_avoiding_polynomial
 point.  This deliberately does not pretend that rational-function evaluation at a pole is a global
 ring homomorphism. -/
 noncomputable def specializeRatFuncCoefficients
-    {σ : Type*} [DecidableEq σ] (z : ℂ)
-    (Q : MvPolynomial σ (RatFunc ℂ)) : MvPolynomial σ ℂ :=
-  ∑ d ∈ Q.support, MvPolynomial.monomial d
+    {σ : Type*} (z : ℂ)
+    (Q : MvPolynomial σ (RatFunc ℂ)) : MvPolynomial σ ℂ := by
+  classical
+  exact ∑ d ∈ Q.support, MvPolynomial.monomial d
     (RatFunc.eval (RingHom.id ℂ) z (MvPolynomial.coeff d Q))
 
 theorem coeff_specializeRatFuncCoefficients_of_mem
-    {σ : Type*} [DecidableEq σ] (z : ℂ)
+    {σ : Type*} (z : ℂ)
     (Q : MvPolynomial σ (RatFunc ℂ)) {d : σ →₀ ℕ} (hd : d ∈ Q.support) :
     MvPolynomial.coeff d (specializeRatFuncCoefficients z Q) =
       RatFunc.eval (RingHom.id ℂ) z (MvPolynomial.coeff d Q) := by
@@ -176,7 +177,7 @@ theorem coeff_specializeRatFuncCoefficients_of_mem
     exact (hnot hd).elim
 
 theorem coeff_specializeRatFuncCoefficients_of_not_mem
-    {σ : Type*} [DecidableEq σ] (z : ℂ)
+    {σ : Type*} (z : ℂ)
     (Q : MvPolynomial σ (RatFunc ℂ)) {d : σ →₀ ℕ} (hd : d ∉ Q.support) :
     MvPolynomial.coeff d (specializeRatFuncCoefficients z Q) = 0 := by
   classical

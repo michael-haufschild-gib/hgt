@@ -19,7 +19,7 @@ noncomputable instance projectivePrimeGoodRowFinite
   Finite.of_injective Subtype.val Subtype.val_injective
 
 def localizedUniversalRowPolynomial
-    {row κ : Type} [Fintype κ] [DecidableEq κ]
+    {row κ : Type} [Fintype κ]
     (q n : ℕ) (z : row → ℂ) (exponent : κ → (Fin n →₀ ℕ))
     (p : Ideal (MvPolynomial (κ × Fin (q + 1)) ℂ)) [p.IsPrime]
     (b : row) : MvPolynomial (Fin n) (Localization.AtPrime p) :=
@@ -27,7 +27,7 @@ def localizedUniversalRowPolynomial
     (algebraMap _ (Localization.AtPrime p) (universalRowCoefficientPolynomial q z b a))
 
 @[simp] theorem localizedUniversalRowPolynomial_coeff
-    {row κ : Type} [Fintype κ] [DecidableEq κ]
+    {row κ : Type} [Fintype κ]
     (q n : ℕ) (z : row → ℂ) (exponent : κ → (Fin n →₀ ℕ))
     (hexponent : Function.Injective exponent)
     (p : Ideal (MvPolynomial (κ × Fin (q + 1)) ℂ)) [p.IsPrime]
@@ -40,7 +40,7 @@ def localizedUniversalRowPolynomial
   simp [hexponent.eq_iff]
 
 def projectivePrimeActiveBlockRing
-    {row κ : Type} [Fintype row] [Fintype κ] [DecidableEq κ]
+    {row κ : Type} [Fintype row] [Fintype κ]
     (q n : ℕ) (z : row → ℂ) (exponent : κ → (Fin n →₀ ℕ))
     (p : Ideal (MvPolynomial (κ × Fin (q + 1)) ℂ)) [p.IsPrime] :
     CommAlgCat (Localization.AtPrime p) :=
@@ -54,7 +54,7 @@ prime, at least `card row - q` active row equations have unit coefficients after
 and their fresh-block incidence coordinate ring loses one Krull dimension per active row. -/
 theorem projectivePrime_activeBlockRing_krullDim
     {row κ : Type} [Fintype row] [DecidableEq row]
-    [Fintype κ] [DecidableEq κ]
+    [Fintype κ]
     (q n : ℕ) (z : row → ℂ) (hz : Function.Injective z)
     (exponent : κ → (Fin n →₀ ℕ)) (hexponent : Function.Injective exponent)
     (p : Ideal (MvPolynomial (κ × Fin (q + 1)) ℂ)) [p.IsPrime]

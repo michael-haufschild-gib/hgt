@@ -21,7 +21,7 @@ noncomputable section
 open MvPolynomial
 
 /-- The expanded evaluation matrix with fixed numeric nodes and indeterminate jet coordinates. -/
-def expandedJetPolyMatrix {κ : Type} [Fintype κ] [DecidableEq κ] (q n : ℕ)
+def expandedJetPolyMatrix {κ : Type} (q n : ℕ)
     (exponent : κ → (Fin n →₀ ℕ)) (z : κ × Fin (q + 1) → ℂ) :
     Matrix (κ × Fin (q + 1)) (κ × Fin (q + 1))
       (MvPolynomial ((κ × Fin (q + 1)) × Fin n) ℂ) :=
@@ -29,7 +29,7 @@ def expandedJetPolyMatrix {κ : Type} [Fintype κ] [DecidableEq κ] (q n : ℕ)
     (exponent c.1).prod fun k e => MvPolynomial.X (r, k) ^ e
 
 /-- Evaluating the jet-indeterminate matrix recovers the numeric evaluation matrix. -/
-theorem map_eval_expandedJetPolyMatrix {κ : Type} [Fintype κ] [DecidableEq κ] (q n : ℕ)
+theorem map_eval_expandedJetPolyMatrix {κ : Type} (q n : ℕ)
     (exponent : κ → (Fin n →₀ ℕ)) (z : κ × Fin (q + 1) → ℂ)
     (y : (κ × Fin (q + 1)) × Fin n → ℂ) :
     (expandedJetPolyMatrix q n exponent z).map (MvPolynomial.eval y) =

@@ -132,7 +132,7 @@ theorem differentialAdjoin_range_pairwiseDifferences_eq_rootedDifferences
 /-- Constant linear gauge retaining one anchor and replacing every other coordinate by its
 difference from that anchor. -/
 def anchorDifferenceGaugeMatrix
-    {C : Type u} {V : Type v} [Field C] [Fintype V] [DecidableEq V]
+    {C : Type u} {V : Type v} [Field C] [DecidableEq V]
     (root : V) : Matrix V V C :=
   fun i j ↦
     if i = root then

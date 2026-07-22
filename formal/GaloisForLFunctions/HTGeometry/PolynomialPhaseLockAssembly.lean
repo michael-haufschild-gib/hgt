@@ -78,7 +78,7 @@ theorem sum_image_shiftedAtomPatternKey
   exact shiftedAtomPatternKey_injective hpr
 
 theorem polynomialPatternCluster_moments
-    {β : ℝ} (hβ : 2 < β) {M D : ℕ}
+    {β : ℝ} {M D : ℕ}
     (S : Finset (Fin M → Fin (D + 1))) (hS : S.Nonempty)
     (hcount : ∀ p ∈ S, (∑ r, (p r : ℕ)) = D)
     {p r : Fin M → Fin (D + 1)}
@@ -113,11 +113,7 @@ theorem polynomialPatternCluster_moments
         polynomialPatternSignature (Nat.ceil β - 2) r := by
       rw [signature_eq_of_mem_polynomialPatternMinimalCluster hp,
         signature_eq_of_mem_polynomialPatternMinimalCluster hr]
-    have hceil3 : 3 ≤ Nat.ceil β := by
-      by_contra hnot
-      have hceil2 : Nat.ceil β ≤ 2 := by omega
-      have : β ≤ (2 : ℝ) := Nat.ceil_le.mp hceil2
-      linarith
+    have hceil3 : 3 ≤ Nat.ceil β := by omega
     let i : Fin (Nat.ceil β - 2) := ⟨j - 2, by omega⟩
     have hsigfun : (fun i : Fin (Nat.ceil β - 2) =>
         polynomialPatternMoment p ((i : ℕ) + 2)) =
@@ -129,7 +125,7 @@ theorem polynomialPatternCluster_moments
     simpa only [hij] using hi
 
 theorem polynomialPatternCluster_prouhet_dvd
-    {β : ℝ} (hβ : 2 < β) {M D : ℕ}
+    {β : ℝ} {M D : ℕ}
     (S : Finset (Fin M → Fin (D + 1))) (hS : S.Nonempty)
     (hcount : ∀ p ∈ S, (∑ r, (p r : ℕ)) = D)
     {p r : Fin M → Fin (D + 1)}
@@ -151,7 +147,7 @@ theorem polynomialPatternCluster_prouhet_dvd
   apply sub_one_pow_dvd_of_polynomialRealCoeff_moments
   intro j hj
   rw [stretchedMoment_atomPatternDifference p r (hcount p hpS) (hcount r hrS),
-    polynomialPatternCluster_moments hβ S hS hcount hp hr j hj]
+    polynomialPatternCluster_moments S hS hcount hp hr j hj]
   simp
 
 end

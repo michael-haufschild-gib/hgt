@@ -27,7 +27,7 @@
 \newcommand{\eps}{\varepsilon}
 
 \title{One-Sided Additive Convolution Laws for Dirichlet \(L\)-Functions:\\
-Zero Abscissae and Raw M\"obius Positivity}
+Zero Abscissae, Parity Gram Identities, and Euler-Prime Sign Walls}
 \author{Michael Haufschild}
 \date{}
 
@@ -59,10 +59,18 @@ $\GRH$, functional-equation symmetry yields
 $C_{\chi,k}(N)=\Omega_+(N^{3k-1-\eps})$ for every $\eps>0$; hence every primitive
 character has near-critical positive excursions at every mixed order.  At the raw coefficient
 level, if $R_{\chi,k}$ is the Hermitian $2k$-fold additive convolution of
-$\mu(n)\chi(n)$, we prove
-$\limsup \log(1+[R_{\chi,k}(N)]_+)/\log(N+1)\geq2k\Theta_\chi-1$ and show that
-$R_{\chi,k}(N)>0$ infinitely often.  In particular,
-$\sum_{a+b=N}\mu(a)\mu(b)>0$ for infinitely many $N$, unconditionally.  The proof combines an
+$\mu(n)\chi(n)$, we prove the stronger even-index law
+$\limsup \log(1+[R_{\chi,k}(2N)]_+)/\log(N+1)\geq2k\Theta_\chi-1$ and show that
+$R_{\chi,k}(2N)>0$ infinitely often.  Thus
+$\sum_{a+b=2N}\mu(a)\mu(b)>0$ for infinitely many $N$, unconditionally.  More generally, the
+even binary convolution of every completely multiplicative sequence satisfies an exact dyadic
+Gram identity.  For the Liouville function this identity, together with the structural pole of
+$\zeta(2s)/\zeta(s)$ at $s=1/2$, proves that same-sign pairs form a strict majority among the
+ordered decompositions of infinitely many even integers.  For the integrated M\"obius
+antidiagonal, we also prove an exact local-factor classification: removal of one Euler prime gives
+a nonnegative discrete-tent kernel, prime $2$ is pointwise optimal, and removal of any second
+prime necessarily creates a negative transfer lobe.  Thus coefficientwise local-factor positivity
+has depth exactly one.  The proof combines an
 exact Hermitian Abel identity with the Mellin transform
 $\Gamma(s)/L(s,\chi)$ and the classical twisted Littlewood zero-abscissa theorem.  We also
 state an abstract one-sided spectral law for reciprocal Dirichlet series and record a Lean~4
@@ -71,8 +79,9 @@ establishing the critical upper value remains precisely the unresolved source pr
 \end{abstract}
 
 \medskip
-\noindent\textbf{Keywords.} Dirichlet $L$-function; Mertens function; additive
-convolution; one-sided omega theorem; Mellin transform; generalized Riemann hypothesis.
+\noindent\textbf{Keywords.} Dirichlet $L$-function; Mertens function; M\"obius function;
+Liouville function; additive convolution; discrete tent; parity projection; Mellin transform; generalized
+Riemann hypothesis.
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.} 11M26, 11M06, 11N37, 40E05.
@@ -132,12 +141,15 @@ establishes strict nonmaximality rather than a critical positive-side order
 \cite{Mangerel}.  The two summations hidden in $M_\chi$ are exactly what permit the present
 Mellin--Abel argument.
 
-The raw binary problem nevertheless has a rigorous one-sided consequence.  The ordinary
-generating function of its Hermitian $2k$-fold convolution is $|A_\chi(r)|^{2k}$ on the positive
-radius.  A finite positive tail would therefore bound $A_\chi(r)$ as $r\uparrow1$, and Mellin
-transformation would make $1/L(s,\chi)$ holomorphic throughout $\Rea s>0$.  Nontrivial zeros rule
-this out.  We obtain unconditional positive recurrence at every order and a power-law
-$\Omega_+$ theorem for every $k\geq2$.  This is a sign theorem, not a binary Chowla estimate.
+The raw binary problem nevertheless has a rigorous one-sided consequence.  Averaging its
+generating function at $r$ and $-r$ extracts the even output indices and remains an average of two
+Hermitian squares.  A finite positive tail on this single arithmetic progression would bound
+$A_\chi(r)$ as $r\uparrow1$, and Mellin transformation would make $1/L(s,\chi)$ holomorphic
+throughout $\Rea s>0$.  Nontrivial zeros rule this out.  We obtain unconditional positive
+recurrence on even totals at every order and a power-law $\Omega_+$ theorem for every $k\geq2$.
+For completely multiplicative coefficients, the local factor at $2$ converts the parity average
+into a sum of two adjacent dyadic squares.  This is a sign theorem and an exact identity, not a
+binary Chowla estimate.
 
 Additive convolutions of arithmetic functions have a large literature, but the nearby results
 address different questions.  Everlove proves meromorphic continuation for Dirichlet series
@@ -149,16 +161,19 @@ formula and a direct decay criterion for the discrete Möbius Laplace transform
 \cite{Liflandsky}.  Cantarini, Gambini and Zaccagnini derive weighted explicit formulas for raw
 Liouville and Möbius convolutions under RH and simplicity assumptions
 \cite{CantariniGambiniZaccagnini}; their results do not include the unconditional positive
-recurrence proved below.  Kaczorowski and Perelli's general $\Omega$-theorem concerns Dirichlet
+recurrence on even totals proved below.  Mangerel proves the strict-nonmaximality statement
+$|\sum_{n<N}\lambda(n)\lambda(N-n)|<N-1$ for every $N\geq11$, but no aggregate sign conclusion
+\cite{Mangerel}.  Kaczorowski and Perelli's general $\Omega$-theorem concerns Dirichlet
 coefficients of polynomial combinations of Selberg-class $L$-functions
 \cite{KaczorowskiPerelli}; the coefficients below are ordinary-additive Cauchy convolutions of
 reciprocal coefficients.  None of these results states the positive-part order laws proved here.
 
 Section~\ref{sec:abstract} proves an abstract one-sided spectral law.  Section~\ref{sec:dirichlet}
 checks its hypotheses for primitive Dirichlet $L$-functions and derives the $\GRH$ and
-$\Omega_+$ corollaries.  Section~\ref{sec:raw} treats raw Möbius convolutions and the binary
-positive-recurrence endpoint.  Section~\ref{sec:boundary} distinguishes the result from neighboring
-convolution problems and isolates the remaining open source.  Section~\ref{sec:lean} records the
+$\Omega_+$ corollaries.  Section~\ref{sec:raw} treats raw Möbius convolutions, even-index
+recurrence, and the dyadic Liouville Gram law.  Section~\ref{sec:boundary} distinguishes the result from neighboring
+convolution problems, proves the Euler-prime tent/sign-wall theorem, and isolates the remaining
+open source.  Section~\ref{sec:lean} records the
 formal certificate for the Hermitian Abel mechanism.
 
 \section{An abstract one-sided spectral law}
@@ -465,20 +480,143 @@ Therefore positive coefficients occur infinitely often.  Finally,
 $\Theta_\chi\geq1/2$ and (4.4) give $\Psi_{\chi,k}\geq k-1>0$ for $k\geq2$, which is (4.5).
 \end{proof}
 
-\begin{corollary}[Binary additive M\"obius positivity]
+The unrestricted theorem admits a strict arithmetic-progression refinement.  Define
+\[
+ \Psi^{\mathrm{ev}}_{\chi,k}=\limsup_{q\to\infty}
+ \frac{\log(1+[R_{\chi,k}(2q)]_+)}{\log(q+1)}.
+\]
+
+\begin{theorem}[Even-index Hermitian pole law]
+\label{thm:parity}
+For every primitive $\chi$ and every $k\geq1$,
+\begin{equation}
+ \sum_{q\geq0}R_{\chi,k}(2q)u^q
+ =\frac{|A_\chi(\sqrt u)|^{2k}+|A_\chi(-\sqrt u)|^{2k}}2\geq0,
+ \qquad 0<u<1.                                                \tag{4.6}
+\end{equation}
+Moreover,
+\begin{equation}
+ 2k\Theta_\chi-1\leq\Psi^{\mathrm{ev}}_{\chi,k}\leq2k-1,    \tag{4.7}
+\end{equation}
+and $R_{\chi,k}(2q)>0$ for infinitely many $q$.  For $k\geq2$ and every $\eps>0$,
+$R_{\chi,k}(2q)\geq q^{k-1-\eps}$ for infinitely many $q$.
+\end{theorem}
+
+\begin{proof}
+Let
+\[
+ F_{\chi,k}(z)=A_\chi(z)^k
+ \left(\sum_{n\geq1}\overline{a_\chi(n)}z^n\right)^k.
+\]
+Its coefficient of $z^N$ is $R_{\chi,k}(N)$, while
+$F_{\chi,k}(r)=|A_\chi(r)|^{2k}$ for real $r$.  The order-two character projector gives
+\[
+ \frac{F_{\chi,k}(r)+F_{\chi,k}(-r)}2
+ =\sum_{q\geq0}R_{\chi,k}(2q)r^{2q},
+\]
+which is (4.6).  In particular,
+\[
+ |A_\chi(\sqrt u)|^{2k}
+ \leq2\sum_{q\geq0}[R_{\chi,k}(2q)]_+u^q.                   \tag{4.8}
+\]
+If the lower inequality in (4.7) failed, choose
+$\Psi^{\mathrm{ev}}_{\chi,k}<\lambda<2k\Theta_\chi-1$ and put
+$u=e^{-2x}$ in (4.8).  The Abel moment bound would give
+$A_\chi(e^{-x})=O(x^{-(\lambda+1)/(2k)})$, continuing $1/L(s,\chi)$
+holomorphically across a zero to the right.  The upper inequality follows from the number of
+compositions as before.
+
+If only finitely many even-index coefficients were positive, the right side of (4.8) would be
+bounded as $u\uparrow1$.  The same Mellin integral would then continue $1/L(s,\chi)$ throughout
+$\Rea s>0$, again contradicting a nontrivial zero.  Finally $\Theta_\chi\geq1/2$ gives the stated
+higher-order positive excursions.
+\end{proof}
+
+\begin{corollary}[Binary additive M\"obius positivity on even totals]
 For infinitely many positive integers $N$,
 \begin{equation}
- \sum_{a+b=N}\mu(a)\mu(b)\geq1.
- \tag{4.6}
+ \sum_{a+b=2N}\mu(a)\mu(b)\geq1.                              \tag{4.9}
 \end{equation}
 \end{corollary}
 
 \begin{proof}
-Take the conductor-one character and $k=1$ in Theorem~\ref{thm:raw}.  The raw coefficients are
+Take the conductor-one character and $k=1$ in Theorem~\ref{thm:parity}.  The raw coefficients are
 integers, so every positive coefficient is at least one.
 \end{proof}
 
-Theorem~\ref{thm:raw} uses no RH, zero simplicity, linear-independence, or zero-density
+There is a further exact refinement for completely multiplicative sequences.  Let $f$ be
+complex-valued and completely multiplicative, put $c=f(2)$ and
+\[
+ F_f(r)=\sum_{n\geq1}f(n)r^n,
+ \qquad H_f(N)=\sum_{a+b=N}f(a)\overline{f(b)}.
+\]
+Since
+\[
+ F_f(r)+F_f(-r)=2\sum_{n\ \mathrm{even}}f(n)r^n=2cF_f(r^2),
+\]
+the binary parity projector and the parallelogram identity give the following universal law.
+
+\begin{proposition}[Dyadic Gram law]
+\label{prop:dyadic}
+For every real $0<r<1$ for which the power series converges absolutely,
+\begin{equation}
+ \boxed{\quad
+ \sum_{q\geq0}H_f(2q)r^{2q}
+ =|F_f(r)-cF_f(r^2)|^2+|cF_f(r^2)|^2.
+ \quad}                                                       \tag{4.10}
+\end{equation}
+\end{proposition}
+
+More generally, full multiplicativity is not needed.  If a sequence satisfies $a(2n)=ca(n)$ and
+$O(r)=\sum_{n\ \mathrm{odd}}a(n)r^n$, then even--odd splitting gives
+\begin{equation}
+ A(r)=O(r)+cA(r^2),
+ \qquad
+ A(r)=\sum_{j\geq0}c^jO(r^{2^j}).                             \tag{4.10a}
+\end{equation}
+The second identity follows by iteration; its remainder tends to zero doubly exponentially.
+Conversely, within the polynomial-growth class, arbitrary odd-index data $O$ in (4.10a) give the
+unique sequence satisfying the local recursion.  Proposition~\ref{prop:dyadic} is therefore the
+orthogonal decomposition
+\begin{equation}
+ \sum_{q\geq0}H_f(2q)r^{2q}=|O(r)|^2+|cF_f(r^2)|^2.           \tag{4.10b}
+\end{equation}
+At the Dirichlet-series level,
+\[
+ D_{\mathrm{odd}}(s)=(1-c2^{-s})D(s).
+\]
+This classifies the exact freedom left by the dyadic law: every odd-index coefficient remains
+source data.
+
+For $f=\lambda$, $c=-1$ and
+$\sum_n\lambda(n)n^{-s}=\zeta(2s)/\zeta(s)$.  The quotient has a structural pole at
+$s=1/2$, since $\zeta(1/2)$ is finite and nonzero.  If the even coefficients in (4.10) were
+positive only finitely often, its right side would bound $F_\lambda(r)$ at $r=1$ and the Mellin
+transform would continue $\zeta(2s)/\zeta(s)$ holomorphically through $s=1/2$.  Hence:
+
+\begin{corollary}[Liouville same-sign majority]
+\label{cor:liouville}
+For infinitely many positive integers $N$,
+\begin{equation}
+ \sum_{a+b=2N}\lambda(a)\lambda(b)\geq1.                     \tag{4.11}
+\end{equation}
+Equivalently, among the $2N-1$ ordered positive decompositions of these even integers, same-sign
+Liouville pairs form a strict majority over opposite-sign pairs.
+\end{corollary}
+
+For Liouville, the multiplier $1+2^{-s}$ relating the odd seed to the full Dirichlet series has
+all its zeros on $\Rea s=0$.  It is therefore an analytic unit on $\Rea s>0$: the dyadic Gram law
+exposes two nonnegative channels but cannot remove any right-half pole.  An upper theorem for the
+odd seed remains a genuine source problem, not a consequence of parity projection.
+
+For $m\geq2$, the known generalized Liouville function $\lambda_m$ of de
+Camargo~\cite{Camargo} has Dirichlet series $\zeta(ms)/\zeta(s)$ and local coefficients
+$1,-1,0,\ldots,0,1,-1,\ldots$ of period $m$ on every prime-power tower.  The proof of
+Theorem~\ref{thm:parity} applies verbatim: its Hermitian raw convolutions are positive at infinitely many even totals, and
+their even-index positive-part exponent is at least $2k\Theta-1$.  The family interpolates
+$\lambda_2=\lambda$ and the pointwise limit $\lambda_m\to\mu$; the family itself is not new.
+
+Theorems~\ref{thm:raw} and~\ref{thm:parity} use no RH, zero simplicity, linear-independence, or zero-density
 hypothesis.  It is weaker than the binary cancellation estimates sought in current work:
 positive recurrence neither bounds $|R_{\chi,1}(N)|$ nor proves $R_{\chi,1}(N)=o(N)$.
 
@@ -510,6 +648,95 @@ if an off-line zero exists, then positive values alone must violate (5.1) at the
 $2(1+\Theta_\chi)-1$.  Higher order cannot evade that obstruction, because all $k$ encode the
 same $\Theta_\chi$.
 
+The parity refinement does not evade it either.  Equations (4.10a)--(4.10b) classify every
+sequence with the local rule $a(2n)=ca(n)$ by a free odd-index seed.  In the Liouville case the
+factor relating that seed to the full Dirichlet series is $1+2^{-s}$, an analytic unit throughout
+$\Rea s>0$.  Thus the dyadic Gram decomposition neither cancels nor moves a right-half pole.
+It converts a hypothetical upper bound for even convolution coefficients into transform control,
+but supplies no such coefficient bound itself.
+
+There is nevertheless an exact local-factor law for the integrated M\"obius antidiagonal.  Put
+$M(a)=\sum_{n\leq a}\mu(n)$, $U(N)=\sum_{a+b=N}M(a)M(b)$, and
+$w_N(t)=(N-t+1)_+$.
+
+\begin{proposition}[Euler-prime tent and two-prime sign wall]
+\label{prop:prime-tent}
+Let $p$ be prime.  Then
+\begin{equation}
+ M(a)=\sum_{\substack{p\nmid r\\r\leq a<pr}}\mu(r)                 \tag{5.2}
+\end{equation}
+and
+\begin{equation}
+ U(N)=\sum_{\substack{p\nmid r\\p\nmid s}}\mu(r)\mu(s)
+ K_{p,N}(r,s),                                                    \tag{5.3}
+\end{equation}
+where
+\begin{align}
+ K_{p,N}(r,s)
+ &=w_N(r+s)-w_N(pr+s)-w_N(r+ps)+w_N(p(r+s))                       \tag{5.4}\\
+ &=A-(A-R)_+-(A-S)_++(A-R-S)_+,                                  \tag{5.5}
+\end{align}
+with $A=(N+1-r-s)_+$, $R=(p-1)r$, and $S=(p-1)s$.  In particular,
+$K_{p,N}(r,s)$ is a nonnegative integer, and for $r,s\geq1$,
+\begin{equation}
+ K_{p,N}(r,s)>0
+ \quad\Longleftrightarrow\quad
+ r+s\leq N\ \text{ and }\ N+2\leq p(r+s).                       \tag{5.6}
+\end{equation}
+Moreover $K_{2,N}(r,s)\leq K_{p,N}(r,s)$ for every prime $p$.
+
+In contrast, if $2\leq p<q$ and
+\[
+ Q_{p,q}(z)=\frac{z-z^p-z^q+z^{pq}}{1-z},
+ \qquad k=\max(q+1,2p-1),
+\]
+then
+\begin{equation}
+ [z^k]Q_{p,q}(z)^2<0.                                             \tag{5.7}
+\end{equation}
+For $(p,q)=(2,3)$, the coefficient in degree $4$ is $-2$.
+\end{proposition}
+
+\begin{proof}
+Remove the Euler factor at $p$ coefficientwise:
+\[
+ \mu(n)=\mu^{(p)}(n)-\mathbf 1_{p\mid n}\mu^{(p)}(n/p),
+ \qquad
+ \mu^{(p)}(r)=\mathbf 1_{p\nmid r}\mu(r).
+\]
+Summation gives (5.2), or equivalently the coefficientwise formal identity
+\[
+ \sum_{a\geq0}M(a)z^a
+ =\sum_{p\nmid r}\mu(r)\frac{z^r-z^{pr}}{1-z}
+ =\sum_{p\nmid r}\mu(r)\sum_{a=r}^{pr-1}z^a.
+\]
+Squaring and extracting degree $N$ proves (5.3)--(5.4).  After translating the two intervals by
+$(r,s)$, the kernel counts
+\[
+ \#\{(i,j):0\leq i<R,\ 0\leq j<S,\ i+j=A-1\}.
+\]
+Inclusion--exclusion gives (5.5); nonnegativity, (5.6), and the bound by each of $R,S$ follow at
+once.  Increasing $p$ enlarges both interval polynomials coefficientwise, proving the asserted
+minimality of $p=2$.
+
+For the sign wall, polynomial division gives
+\[
+ Q_{p,q}(z)=(z+\cdots+z^{p-1})-(z^q+\cdots+z^{pq-1}).
+\]
+The choice of $k$ satisfies $2p-2<k<2q$.  Thus its squared coefficient has no
+positive--positive or negative--negative contribution.  A cross contribution exists because
+$1\leq k-q\leq p-1$ after choosing the appropriate endpoint case.  Every surviving contribution
+is therefore negative and occurs with its transposed partner.  For $(2,3,4)$ the two terms are
+$(1,3)$ and $(3,1)$, giving $-2$.
+\end{proof}
+
+Proposition~\ref{prop:prime-tent} is a sharp local classification, not an upper estimate for
+$U(N)$.  It says that coefficientwise local-factor positivity has depth exactly one: prime $2$
+gives the smallest positive tent, while every attempted second removal necessarily creates a
+negative lobe.  The remaining source must exploit signed multi-prime interactions.  Replacing the
+odd M\"obius seed by an arbitrary bounded seed cannot work: the constant odd seed makes its window
+sum grow linearly and its reflected antidiagonal cubically.
+
 This identifies the actual frontier.  Neither ordinary $L^2$ control nor a phase average is
 enough: such positive norms discard the signed reflected covariance that appears pointwise in
 (5.1).  Current estimates for Möbius correlations do not supply the needed growing-reflection
@@ -540,12 +767,31 @@ mixed series;
 \item coefficientwise upper bounds alone imply the corresponding norm-square Abel bound, with
 all negative coefficients discarded.
 \end{enumerate}
+The companion module
+\begin{center}
+\small
+\texttt{GaloisForLFunctions.RHTower.}\\
+\texttt{DirichletLMixedAdditiveEvenIndexLaw}
+\end{center}
+proves the exact order-two projector (4.6), nonnegativity of its real Abel sum, and the complex
+parallelogram identity behind Proposition~\ref{prop:dyadic}.  It reuses the preceding Hermitian
+Cauchy-power machinery; no duplicate convolution hierarchy is introduced.
+The module
+\begin{center}
+\small
+\texttt{GaloisForLFunctions.RHTower.}\\
+\texttt{MobiusMertensPrimeRemovalTentLaw}
+\end{center}
+proves the coefficientwise Euler-prime difference, the exact prime-free interval formula for each
+Mertens partial sum, its connector to the existing signed-antidiagonal RH criterion, discrete-tent
+positivity and monotonicity, and the two-prime sign wall of
+Proposition~\ref{prop:prime-tent}.
 The source compiles with
 \begin{center}
 \small
 \texttt{lake env lean}\\
 \texttt{GaloisForLFunctions/RHTower/}\\
-\texttt{DirichletLMixedAdditiveZeroAbscissaLaw.lean}.
+\texttt{DirichletLMixedAdditiveEvenIndexLaw.lean}.
 \end{center}
 An axiom audit reports only the standard logical principles
 \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.  The definitions of
@@ -557,9 +803,17 @@ remain paper-level; no formal $\GRH$ claim is made.
 The rightmost zero of a primitive Dirichlet $L$-function has an exact nonlinear additive
 signature.  Every mixed even order gives the same coordinate, and the positive coefficients
 alone carry all of it.  This produces both an all-character $\GRH$ criterion and an unconditional
-$\Omega_+$ theorem at the critical order.  Before summation, the same radial mechanism proves
-that raw Hermitian convolutions have recurrent positive coefficients; in the zeta case this
-settles unconditional positive recurrence of the binary additive M\"obius self-convolution.
+$\Omega_+$ theorem at the critical order.  Before summation, the parity-projected radial mechanism
+proves that raw Hermitian convolutions have recurrent positive coefficients on even totals.  In
+the zeta case this gives unconditional even-index positivity of the binary additive M\"obius
+self-convolution.  For completely multiplicative sequences, the same projector is an exact
+two-square dyadic Gram law; the Liouville specialization forces a same-sign majority along an
+infinite sequence of even totals.
+
+For the integrated M\"obius statistic, Euler-prime removal has an exact and rigid sign geometry:
+one prime produces a nonnegative interval-overlap tent, prime $2$ is optimal, and a second prime
+forces a negative lobe.  This closes coefficientwise local positivity as a source mechanism and
+locates the unresolved arithmetic content in genuinely global signed prime interactions.
 
 The remaining open problem is now sharply separated from the transform machinery: prove the
 critical upper exponent for one order without assuming zero information.  For zeta, that means
@@ -578,6 +832,11 @@ Q. J. Math. 77 (2026), 109--127.
 M. Cantarini, A. Gambini and A. Zaccagnini,
 \emph{On the discrete convolution of the Liouville and M\"obius functions},
 arXiv:2603.10241 (2026).
+
+\bibitem{Camargo}
+A. P. de Camargo,
+\emph{Two generalizations of Liouville $\lambda$ function},
+Notes Number Theory Discrete Math. 29 (2023), no.~1, 30--39.
 
 \bibitem{Davenport}
 H. Davenport,
@@ -608,7 +867,7 @@ arXiv:2607.09797 (2026).
 \bibitem{Mangerel}
 A. P. Mangerel,
 \emph{On a Goldbach-type problem for the Liouville function},
-arXiv:2404.12117 (2024).
+Int. Math. Res. Not. IMRN 2024, no.~16, 11865--11877.
 
 \bibitem{MisraSahaSharma}
 B. Misra, B. Saha and A. Sharma,

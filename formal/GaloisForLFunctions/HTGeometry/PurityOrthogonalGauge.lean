@@ -72,10 +72,10 @@ theorem gram_eq_iff_existsUnique_orthogonalGauge_mul
   · rintro ⟨O, ⟨hO, hA⟩, _huniq⟩
     exact transpose_mul_self_eq_of_orthogonal_mul hO hA
 
-/-- The unique orthogonal gauge supplied by equal Gram matrices is explicitly `A * B⁻¹`. -/
+/-- Any left gauge of an invertible frame is recovered explicitly as `A * B⁻¹`. -/
 theorem orthogonalGauge_eq_mul_nonsing_inv
     {A B O : Matrix n n ℝ} (hB : IsUnit B.det)
-    (_hO : IsOrthogonalGauge O) (hA : A = O * B) :
+    (hA : A = O * B) :
     O = A * B⁻¹ := by
   calc
     O = O * 1 := by simp
@@ -185,7 +185,7 @@ theorem upperTriangular_pos_diag_eq_of_gram_eq
   have hBinvtri : B⁻¹.BlockTriangular id :=
     Matrix.blockTriangular_inv_of_blockTriangular hBtri
   have hOform : O = A * B⁻¹ :=
-    orthogonalGauge_eq_mul_nonsing_inv hBdet hOorth hA
+    orthogonalGauge_eq_mul_nonsing_inv hBdet hA
   have hOtri : O.BlockTriangular id := by
     rw [hOform]
     exact hAtri.mul hBinvtri

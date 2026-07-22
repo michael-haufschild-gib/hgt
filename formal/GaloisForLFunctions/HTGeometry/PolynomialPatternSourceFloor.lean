@@ -54,7 +54,6 @@ bounded pattern whose grouped weight polynomial is nonzero. -/
 theorem polynomialPattern_source_floor_of_survivor
     {n D K τ M : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
     {anchor : Fin (n + 2) →₀ ℕ}
-    (haD : jetMonomialDegree n anchor = D)
     (haMax : ∀ m ∈ Q.support,
       jetMonomialDegree n m = D →
         magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)

@@ -13,7 +13,7 @@ fiber is empty, or the active equations in their independent row blocks cut iter
 dimension by at least the number of active rows. -/
 theorem coefficientIncidenceFiber_empty_or_krullDimDrop
     {row κ σ : Type} [Fintype row] [DecidableEq row]
-    [Fintype κ] [DecidableEq κ]
+    [Fintype κ]
     [Finite σ] [LinearOrder σ] [WellFoundedGT σ]
     (q : ℕ) (z : row → ℂ) (hz : Function.Injective z)
     (exponent : κ → (σ →₀ ℕ)) (hexponent : Function.Injective exponent)

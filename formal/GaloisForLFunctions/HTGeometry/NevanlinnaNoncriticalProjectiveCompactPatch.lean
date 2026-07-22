@@ -178,13 +178,13 @@ theorem noncriticalProjectiveUpperGoodCombinedRowPacket_complete_data
 
 /-- The literal affine node family on the ambient finite-dimensional shift packet space. -/
 def ambientCombinedProjectiveNodes
-    {row ι : Type*} [Fintype row] [Fintype ι]
+    {row ι : Type*}
     (packet : InjectiveProjectiveRowPacket row) (shift : ι → ℂ) : row × ι → ℂ :=
   fun x => packet.1 x.1 + shift x.2
 
 /-- Forget the built-in injectivity proof on a compact shift piece. -/
 def ambientImageOfInjectiveShiftPiece
-    {ι : Type*} [Fintype ι] (piece : Set (InjectiveShiftConfiguration ι)) :
+    {ι : Type*} (piece : Set (InjectiveShiftConfiguration ι)) :
     Set (ι → ℂ) :=
   Subtype.val '' piece
 
@@ -210,7 +210,7 @@ def actualNevanlinnaExpandedPacketValue
 
 /-- One complete row packet witnesses full coefficient-uniform expanded-evaluation rank. -/
 def actualNevanlinnaExpandedFullRankWitness
-    {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
+    {row κ ι : Type} [Fintype row] [Fintype κ] [Fintype ι]
     (m0 a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
@@ -228,7 +228,7 @@ def actualNevanlinnaExpandedFullRankWitness
 /-- A polynomial-coefficient relation of one finite expanded pattern holds on every admissible
 evaluation packet.  This is the finite functional relation surface seen by the row geometry. -/
 def actualNevanlinnaExpandedPatternRelationHolds
-    {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
+    {row κ ι : Type} [Fintype row] [Fintype κ] [Fintype ι]
     (m0 a q : ℂ → ℂ) (degree : ℕ) (orders : ι → ℕ)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (mu : Measure (OnePoint ℝ)) [IsFiniteMeasure mu]
@@ -325,7 +325,6 @@ derives an ambient open regularity collar and a positive uniform projective heig
 piece; it then instantiates the genuine smooth Nevanlinna row family and the uniform finite probe.
 The only upper-half-plane hypothesis is the classical Nevanlinna mapping property of `-D/C`. -/
 theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProbe
-    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {row κ ι ιf : Type}
     [Fintype row] [DecidableEq row]
     [Fintype κ] [DecidableEq κ]
@@ -506,7 +505,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
     exact (hdataU0 h (hKU0 hh)).2.2.2 x
   obtain ⟨V, hVfg, hDense⟩ :=
     compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
-    projectiveGeometry a q Omega hOmega ha hq η hη
+    a q Omega hOmega ha hq η hη
     zf hqf_inj hupperf nf degree orders packet.1 packet.2
     exponent hexponent hrows mu hmu baseDensity background nodes hnodes U K hU hK hKU
     hbackground
@@ -554,7 +553,6 @@ the actual Nevanlinna expanded-evaluation rank condition on every member of that
 open dense.  Thus every shift in the original compact patch has at least one simultaneous row
 packet witnessing full coefficient-uniform rank. -/
 theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
-    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {row κ ι ιf : Type}
     [Fintype row] [DecidableEq row]
     [Fintype κ] [DecidableEq κ]
@@ -646,7 +644,7 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
     intro j
     obtain ⟨V, hVfg, hj⟩ :=
       compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProbe
-        projectiveGeometry hCmin.1 hD hupperMap
+        hCmin.1 hD hupperMap
         m0 hm0
         zf hqf_inj hupperf nf degree orders (packets j)
         exponent hexponent hrows mu hmu baseDensity (pieces j)
@@ -682,7 +680,6 @@ law and sigma-compactness of the collision-free shift configuration space produc
 residual subset of the frozen tangent on which every distinct shift tuple has a complete row
 packet witnessing full expanded-evaluation rank. -/
 theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
-    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {row κ ι ιf : Type}
     [Fintype row] [DecidableEq row]
     [Fintype κ] [DecidableEq κ]
@@ -738,7 +735,7 @@ theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
   obtain ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart,
       hDense, hOpen, hWitness⟩ :=
     compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
-      projectiveGeometry hCmin hD hnoCommon hCp hCc hupperMap
+      hCmin hD hnoCommon hCp hCc hupperMap
       m0 hm0
       zf hqf_inj hupperf nf degree orders exponent hexponent hrows
       mu hmu baseDensity Kshift hKshift hdim
@@ -748,7 +745,6 @@ theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
 simultaneously has complete row-packet witnesses for every pattern in a countable family and every
 tuple of distinct complex shifts. -/
 theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
-    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     (row κ ι : ℕ → Type)
     [∀ n, Fintype (row n)] [∀ n, DecidableEq (row n)]
     [∀ n, Fintype (κ n)] [∀ n, DecidableEq (κ n)]
@@ -807,7 +803,7 @@ theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitnes
     intro n
     simpa [goodPattern, a, q, frozen, S] using
       (global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
-        projectiveGeometry hCmin hD hnoCommon hCp hCc hupperMap
+        hCmin hD hnoCommon hCp hCc hupperMap
         m0 hm0
         zf hqf_inj hupperf nf (degree n) (orders n) (exponent n)
         (hexponent n) (hrows n) mu hmu baseDensity (hdim n))
@@ -828,7 +824,6 @@ projective-incidence, stratified-transversality, and Nevanlinna upper-mapping in
 residual subset of every frozen tangent satisfies coefficient rigidity for every encoded finite
 differential pattern and every tuple of distinct complex shifts. -/
 theorem countablePatterns_actualNevanlinna_relationFree_dense_residual
-    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     (row κ ι : ℕ → Type)
     [∀ n, Fintype (row n)] [∀ n, DecidableEq (row n)]
     [∀ n, Fintype (κ n)] [∀ n, DecidableEq (κ n)]
@@ -882,7 +877,7 @@ theorem countablePatterns_actualNevanlinna_relationFree_dense_residual
       infer_instance
   have hfull :=
     countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
-      projectiveGeometry row κ ι hCmin hD hnoCommon hCp hCc
+      row κ ι hCmin hD hnoCommon hCp hCc
       hupperMap m0 hm0 zf hqf_inj hupperf nf degree orders exponent
       hexponent hrows mu hmu baseDensity hdim
   exact countablePatterns_relationFree_dense_residual_of_fullRankWitness

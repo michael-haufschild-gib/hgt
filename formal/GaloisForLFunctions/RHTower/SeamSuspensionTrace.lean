@@ -76,7 +76,7 @@ theorem flat_eq_cohomology_trace {n : Type*} [Fintype n] [DecidableEq n]
 
 /-- The finite graded trace `Str_Γ(A)=Tr(ΓA)`.  In a boson/fermion decomposition, `Γ` is the
 parity operator with eigenvalues `+1` and `-1`. -/
-def gradedMatrixTrace {n : Type*} [Fintype n] [DecidableEq n]
+def gradedMatrixTrace {n : Type*} [Fintype n]
     (Γ A : Matrix n n ℂ) : ℂ :=
   (Γ * A).trace
 

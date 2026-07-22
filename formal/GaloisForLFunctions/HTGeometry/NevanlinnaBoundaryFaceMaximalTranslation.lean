@@ -23,7 +23,6 @@ variable {s : ℕ → ℝ} (F : ClassicalAnalyticNevanlinnaCarrierFamily s)
 
 /-- The classical analytic inputs used by the compact-patch Nevanlinna transversality theorem. -/
 structure MaximalTranslationInputs where
-  projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry
   minimalExponentialType : HasMinimalExponentialType F.c
   noCommonZero : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0)
   zeroPoint : ℂ
@@ -72,7 +71,6 @@ theorem barycenter_mem_closure_maximalTranslationFullRankWitness_inter_face
           ∫ t, (linftyOne mu + w.1.1) t ∂mu = 1 := by
     simpa [good, positiveChart, S, frozen, mu, zf, nf] using
       (F.allFinitePatterns_positiveAbstractCarrier_fullRankWitness_dense_residual
-        inputs.projectiveGeometry
         inputs.minimalExponentialType inputs.noCommonZero
         inputs.zeroPoint_spec inputs.regularPoint_spec inputs.upperMap
         zf hqf hupperf nf mu hetaInfinite)

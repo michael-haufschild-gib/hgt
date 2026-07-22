@@ -20,7 +20,7 @@ noncomputable section
 
 /-- The simultaneous finite packet of actual Cauchy-transform derivatives of a probability law. -/
 def probabilityCarrierExpandedPacketValue
-    {row ι : Type} [Fintype row] [Fintype ι]
+    {row ι : Type} [Fintype ι]
     (nu : ProbabilityMeasure ℝ) (orders : ι → ℕ)
     (packet : InjectiveProjectiveRowPacket row)
     (shift : InjectiveShiftConfiguration ι) :
@@ -34,7 +34,7 @@ def probabilityCarrierExpandedPacketValue
 /-- One finite polynomial-coefficient differential relation on the translated Cauchy family of a
 probability law. -/
 def probabilityCarrierExpandedPatternRelationHolds
-    {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
+    {row κ ι : Type} [Fintype κ] [Fintype ι]
     (nu : ProbabilityMeasure ℝ)
     (degree : ℕ) (orders : ι → ℕ)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
@@ -51,7 +51,7 @@ def probabilityCarrierExpandedPatternRelationHolds
 probability carrier.  Unlike relation-freeness, this is a finite open certificate once the shift
 configuration is fixed. -/
 def probabilityCarrierExpandedFullRankWitness
-    {row κ ι : Type} [Fintype row] [Fintype κ] [DecidableEq κ] [Fintype ι]
+    {row κ ι : Type} [Fintype κ] [Fintype ι]
     (nu : ProbabilityMeasure ℝ)
     (degree : ℕ) (orders : ι → ℕ)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))

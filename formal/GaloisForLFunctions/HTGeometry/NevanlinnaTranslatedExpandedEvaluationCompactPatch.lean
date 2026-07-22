@@ -91,7 +91,6 @@ row-by-translate nodes has a uniform finite-dimensional frozen-tangent probe.  T
 Nevanlinna row evaluation, after the exact dependent reassociation, densely avoids the literal
 expanded coefficient-rank defect on the whole compact configuration patch. -/
 theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
-    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {H row κ ι ιf : Type}
     [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
     [Fintype row] [DecidableEq row]
@@ -292,10 +291,10 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
   intro center
   letI : Module.Finite ℝ V := Module.Finite.of_fg hVfg
   apply expandedEvaluation_affineProbe_compactPatchAvoidance_dense
-    projectiveGeometry degree
+    degree
     (Fintype.card (Σ i, Fin (orders i))) rowBase hrowBase
     exponent hexponent hrows (fun h => base h + direction h center)
-    directionV Usurj K hUsurj hK hKUsurj
+    directionV Usurj K hUsurj hKUsurj
   · exact (hbase.add (hdirection.clm_apply contDiffOn_const)).mono inter_subset_left
   · exact hdirectionV.mono inter_subset_left
   · exact fun h hh => hh.2

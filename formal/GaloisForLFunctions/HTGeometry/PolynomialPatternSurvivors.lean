@@ -98,7 +98,7 @@ theorem polynomialPatternSurvivors_eventually_weight_ne_zero
 /-- Every count-`D` atom supported in a translated interval is the shifted key
 of a bounded pattern in that interval. -/
 theorem exists_boundedPattern_of_atom_support_interval
-    {D q K M : ℕ} (hKq : K ≤ q) (ν : ℕ →₀ ℕ)
+    {D q K M : ℕ} (ν : ℕ →₀ ℕ)
     (hcount : ν.sum (fun _ k => k) = D)
     (hsupp : ∀ i, ν i ≠ 0 → q - K ≤ i ∧ i < q - K + M) :
     ∃ p : Fin M → Fin (D + 1),

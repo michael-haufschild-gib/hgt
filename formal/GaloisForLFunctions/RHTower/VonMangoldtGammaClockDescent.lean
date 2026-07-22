@@ -26,8 +26,8 @@ noncomputable section
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
-/-- Coordinate translation on a finite resolved exponential source. -/
-def finiteExponentialSourceShift {P : Type*} [Fintype P]
+/-- Coordinate translation on a resolved exponential source. -/
+def finiteExponentialSourceShift {P : Type*}
     (frequency : P → ℂ) : (P → ℂ) →ₗ[ℂ] (P → ℂ) where
   toFun a p := Complex.exp (-frequency p) * a p
   map_add' _ _ := by

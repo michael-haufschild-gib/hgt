@@ -20,7 +20,7 @@ noncomputable instance coefficientPrimeGoodRowFinite
 
 def localizedCoefficientRowPolynomial
     {A row κ : Type} [CommRing A] [Algebra ℂ A]
-    [Fintype κ] [DecidableEq κ]
+    [Fintype κ]
     (q n : ℕ) (z : row → ℂ) (coeff : κ × Fin (q + 1) → A)
     (exponent : κ → (Fin n →₀ ℕ)) (p : Ideal A) [p.IsPrime]
     (b : row) : MvPolynomial (Fin n) (Localization.AtPrime p) :=
@@ -29,7 +29,7 @@ def localizedCoefficientRowPolynomial
 
 @[simp] theorem localizedCoefficientRowPolynomial_coeff
     {A row κ : Type} [CommRing A] [Algebra ℂ A]
-    [Fintype κ] [DecidableEq κ]
+    [Fintype κ]
     (q n : ℕ) (z : row → ℂ) (coeff : κ × Fin (q + 1) → A)
     (exponent : κ → (Fin n →₀ ℕ)) (hexponent : Function.Injective exponent)
     (p : Ideal A) [p.IsPrime] (b : row) (a : κ) :
@@ -42,7 +42,7 @@ def localizedCoefficientRowPolynomial
 
 def coefficientPrimeActiveBlockRing
     {A row κ : Type} [CommRing A] [Algebra ℂ A]
-    [Fintype row] [Fintype κ] [DecidableEq κ]
+    [Fintype row] [Fintype κ]
     (q n : ℕ) (z : row → ℂ) (coeff : κ × Fin (q + 1) → A)
     (exponent : κ → (Fin n →₀ ℕ)) (p : Ideal A) [p.IsPrime] :
     CommAlgCat (Localization.AtPrime p) :=
@@ -55,7 +55,7 @@ def coefficientPrimeActiveBlockRing
 coefficient algebra. -/
 theorem coefficientPrime_activeBlockRing_krullDim
     {A row κ : Type} [CommRing A] [Algebra ℂ A] [IsNoetherianRing A]
-    [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
+    [Fintype row] [DecidableEq row] [Fintype κ]
     (q n : ℕ) (z : row → ℂ) (hz : Function.Injective z)
     (coeff : κ × Fin (q + 1) → A)
     (exponent : κ → (Fin n →₀ ℕ)) (hexponent : Function.Injective exponent)

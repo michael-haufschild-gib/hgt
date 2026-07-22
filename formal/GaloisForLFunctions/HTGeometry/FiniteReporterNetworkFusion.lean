@@ -21,9 +21,9 @@ noncomputable section
 
 open GaloisForLFunctions Module
 
-/-- Fuse a finite family of Hilbert-valued reporters into their `L2` direct sum. -/
+/-- Fuse a family of Hilbert-valued reporters into its `L2` product. -/
 def finiteFamilyDerivativeReporter
-    {ι : Type*} [Fintype ι]
+    {ι : Type*}
     {Y : ι → Type*}
     [∀ a, NormedAddCommGroup (Y a)] [∀ a, InnerProductSpace ℂ (Y a)]
     (report : ∀ a, (ℂ → ℂ) →ₗ[ℂ] Y a) :

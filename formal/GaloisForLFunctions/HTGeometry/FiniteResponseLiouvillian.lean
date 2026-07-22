@@ -21,8 +21,8 @@ namespace HTGeometry
 
 noncomputable section
 
-/-- The finite spectral Liouvillian as a linear map on transition entries. -/
-def transitionGapLiouvillianLinear {α : Type*} [Fintype α] (energy : α → ℝ) :
+/-- The spectral Liouvillian as a linear map on transition entries. -/
+def transitionGapLiouvillianLinear {α : Type*} (energy : α → ℝ) :
     EuclideanSpace ℂ (α × α) →ₗ[ℂ] EuclideanSpace ℂ (α × α) where
   toFun x := WithLp.toLp 2 fun ab =>
     ((energy ab.1 - energy ab.2 : ℝ) : ℂ) * x ab

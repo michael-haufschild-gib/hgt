@@ -334,12 +334,5 @@ theorem compactConfigurationAvoidance_dense_of_finiteRegularStratification
     rw [hBempty]
     simp
 
-theorem classicalStratifiedParametricAvoidance :
-    ClassicalStratifiedParametricAvoidance := by
-  constructor
-  intro P H Y _ _ _ _ _ _ _ _ _ F bad c U K hU hK hKU hF hparameter hstrata hdim
-  exact compactConfigurationAvoidance_dense_of_finiteRegularStratification
-    F bad c U K hU hKU hF hparameter hstrata hdim
-
 end
 end GaloisForLFunctions.HTGeometry

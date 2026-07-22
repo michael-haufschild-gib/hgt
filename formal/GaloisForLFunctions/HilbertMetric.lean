@@ -38,6 +38,7 @@ import GaloisForLFunctions.HilbertMetric.SixthJetRaywiseCoalescedCone
 import GaloisForLFunctions.HilbertMetric.PositiveHessianSquare
 import GaloisForLFunctions.HilbertMetric.UniformCoalescedThreePointSquare
 import GaloisForLFunctions.HilbertMetric.GaussianMetricRankOneFracture
+import GaloisForLFunctions.HilbertMetric.DenseClosedScalarRigidity
 
 /-!
 # Hilbert-metric theorem area

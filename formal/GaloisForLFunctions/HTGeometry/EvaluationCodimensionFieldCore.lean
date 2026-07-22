@@ -62,11 +62,10 @@ theorem boundedCoefficientPolynomialOver_ne_zero_of_apply_ne_zero
 /-- Field-valued root count for coefficient tensors. -/
 theorem card_rows_all_boundedCoefficientPolynomialsOver_zero_le
     {K row κ : Type*} [Field K] [DecidableEq K]
-    [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
+    [Fintype row] [DecidableEq row]
     (q : ℕ) (z : row → K) (hz : Function.Injective z)
     (c : κ × Fin (q + 1) → K) (hc : c ≠ 0) :
-    (Finset.univ.filter fun b =>
-      ∀ a, ∑ d, c (a, d) * z b ^ (d : ℕ) = 0).card ≤ q := by
+    Set.ncard {b | ∀ a, ∑ d, c (a, d) * z b ^ (d : ℕ) = 0} ≤ q := by
   classical
   have hex : ∃ a d, c (a, d) ≠ 0 := by
     by_contra h
@@ -79,6 +78,12 @@ theorem card_rows_all_boundedCoefficientPolynomialsOver_zero_le
   have hP : P ≠ 0 := boundedCoefficientPolynomialOver_ne_zero_of_apply_ne_zero q _ had
   let bad : Finset row := Finset.univ.filter fun b =>
     ∀ a, ∑ d, c (a, d) * z b ^ (d : ℕ) = 0
+  have hbadCard :
+      Set.ncard {b | ∀ a, ∑ d, c (a, d) * z b ^ (d : ℕ) = 0} = bad.card := by
+    rw [Set.ncard_eq_toFinset_card]
+    congr 1
+    ext b
+    simp [bad]
   have himage : Finset.image z bad ⊆ P.roots.toFinset := by
     intro w hw
     obtain ⟨b, hb, rfl⟩ := Finset.mem_image.mp hw
@@ -88,6 +93,7 @@ theorem card_rows_all_boundedCoefficientPolynomialsOver_zero_le
   have hcard : bad.card = (Finset.image z bad).card := by
     symm
     exact Finset.card_image_iff.mpr hz.injOn
+  rw [hbadCard]
   calc
     bad.card = (Finset.image z bad).card := hcard
     _ ≤ P.roots.toFinset.card := Finset.card_le_card himage
@@ -98,26 +104,38 @@ theorem card_rows_all_boundedCoefficientPolynomialsOver_zero_le
 /-- At least `card row - q` rows are active over an arbitrary coefficient field. -/
 theorem card_rows_some_boundedCoefficientPolynomialOver_nonzero
     {K row κ : Type*} [Field K] [DecidableEq K]
-    [Fintype row] [DecidableEq row] [Fintype κ] [DecidableEq κ]
+    [Fintype row] [DecidableEq row]
     (q : ℕ) (z : row → K) (hz : Function.Injective z)
     (c : κ × Fin (q + 1) → K) (hc : c ≠ 0) :
     Fintype.card row ≤ q +
-      (Finset.univ.filter fun b =>
-        ∃ a, ∑ d, c (a, d) * z b ^ (d : ℕ) ≠ 0).card := by
+      Set.ncard {b | ∃ a, ∑ d, c (a, d) * z b ^ (d : ℕ) ≠ 0} := by
   classical
   let bad : Finset row := Finset.univ.filter fun b =>
     ∀ a, ∑ d, c (a, d) * z b ^ (d : ℕ) = 0
   let good : Finset row := Finset.univ.filter fun b =>
     ∃ a, ∑ d, c (a, d) * z b ^ (d : ℕ) ≠ 0
-  have hbad : bad.card ≤ q :=
-    card_rows_all_boundedCoefficientPolynomialsOver_zero_le q z hz c hc
+  have hbadCard :
+      Set.ncard {b | ∀ a, ∑ d, c (a, d) * z b ^ (d : ℕ) = 0} = bad.card := by
+    rw [Set.ncard_eq_toFinset_card]
+    congr 1
+    ext b
+    simp [bad]
+  have hgoodCard :
+      Set.ncard {b | ∃ a, ∑ d, c (a, d) * z b ^ (d : ℕ) ≠ 0} = good.card := by
+    rw [Set.ncard_eq_toFinset_card]
+    congr 1
+    ext b
+    simp [good]
+  have hbad : bad.card ≤ q := by
+    rw [← hbadCard]
+    exact card_rows_all_boundedCoefficientPolynomialsOver_zero_le q z hz c hc
   have hpartition : bad.card + good.card = Fintype.card row := by
     have h := Finset.card_filter_add_card_filter_not
       (s := (Finset.univ : Finset row))
       (fun b => ∀ a, ∑ d, c (a, d) * z b ^ (d : ℕ) = 0)
     change bad.card + good.card = Fintype.card row
     simpa [bad, good] using h
-  rw [← hpartition]
+  rw [hgoodCard, ← hpartition]
   exact Nat.add_le_add_right hbad good.card
 
 end

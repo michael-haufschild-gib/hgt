@@ -112,6 +112,33 @@ structure ClockEnvelope (D : ℝ → ℕ → ℝ) (e : ℕ → ℕ) (E : ℝ →
 
 variable {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
 
+/-- A clock envelope depends only on the germ of its clock at `atTop`. -/
+theorem ClockEnvelope.congr_clock (h : ClockEnvelope D e E) {F : ℝ → ℝ}
+    (hEF : E =ᶠ[atTop] F) : ClockEnvelope D e F where
+  step := h.step
+  clock_pos := by
+    filter_upwards [h.clock_pos, hEF] with lam hpos hEq
+    simpa only [hEq] using hpos
+  nonneg := h.nonneg
+  mono := h.mono
+  lower := by
+    intro j
+    obtain ⟨c, hc, hlo⟩ := h.lower j
+    refine ⟨c, hc, ?_⟩
+    filter_upwards [hlo, hEF] with lam hlam hEq
+    simpa only [clockRate, hEq] using hlam
+  upper := by
+    intro j
+    obtain ⟨C, hC, hup⟩ := h.upper j
+    refine ⟨C, hC, ?_⟩
+    filter_upwards [hup, hEF] with lam hlam hEq
+    simpa only [clockRate, hEq] using hlam
+
+/-- Eventually equal clocks define equivalent envelope interfaces. -/
+theorem clockEnvelope_congr_clock_iff {F : ℝ → ℝ} (hEF : E =ᶠ[atTop] F) :
+    ClockEnvelope D e E ↔ ClockEnvelope D e F :=
+  ⟨fun h => h.congr_clock hEF, fun h => h.congr_clock hEF.symm⟩
+
 /-- Adjacent leakages eventually separate strictly. -/
 theorem ClockEnvelope.lt_succ (h : ClockEnvelope D e E) (j : ℕ) :
     ∀ᶠ lam in atTop, D lam j < D lam (j + 1) := by
@@ -323,5 +350,29 @@ theorem FuchsEnvelope.toClockEnvelope (h : FuchsEnvelope D e) :
   mono := h.mono
   lower := h.lower
   upper := h.upper
+
+/-- A Gaussian-clock envelope carries precisely the Fuchs bounds; its separate clock-positivity
+field is automatic and can be discarded. -/
+theorem ClockEnvelope.toFuchsEnvelope
+    (h : ClockEnvelope D e (fun l => Real.exp (-(4 * Real.pi * l ^ 2)))) :
+    FuchsEnvelope D e where
+  step := h.step
+  nonneg := h.nonneg
+  mono := h.mono
+  lower := h.lower
+  upper := h.upper
+
+/-- The Fuchs and Gaussian-clock envelope interfaces are logically equivalent. -/
+theorem fuchsEnvelope_iff_gaussianClockEnvelope :
+    FuchsEnvelope D e ↔
+      ClockEnvelope D e (fun l => Real.exp (-(4 * Real.pi * l ^ 2))) :=
+  ⟨FuchsEnvelope.toClockEnvelope, ClockEnvelope.toFuchsEnvelope⟩
+
+/-- Any clock eventually equal to the Gaussian yields exactly the Fuchs envelope interface. -/
+theorem fuchsEnvelope_iff_clockEnvelope_of_eventuallyEq_gaussian
+    (hE : E =ᶠ[atTop] fun l => Real.exp (-(4 * Real.pi * l ^ 2))) :
+    FuchsEnvelope D e ↔ ClockEnvelope D e E := by
+  rw [fuchsEnvelope_iff_gaussianClockEnvelope,
+    clockEnvelope_congr_clock_iff hE.symm]
 
 end RHTower

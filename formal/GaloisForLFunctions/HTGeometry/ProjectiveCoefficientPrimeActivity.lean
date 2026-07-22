@@ -19,7 +19,6 @@ def universalRowCoefficientPolynomial
 carry a coefficient polynomial outside that prime. -/
 theorem projectiveCoefficientPrime_activeRows
     {row κ : Type} [Fintype row] [DecidableEq row]
-    [Fintype κ] [DecidableEq κ]
     (q : ℕ) (z : row → ℂ) (hz : Function.Injective z)
     (p : Ideal (MvPolynomial (κ × Fin (q + 1)) ℂ)) [p.IsPrime]
     (hprojective : ∃ ad, MvPolynomial.X ad ∉ p) :
@@ -79,14 +78,10 @@ theorem projectiveCoefficientPrime_activeRows
       rw [map_pow, mul_comm]
     rw [heval, ← hφker (universalRowCoefficientPolynomial q z b a)]
   have hcard :
-      (Finset.univ.filter fun b =>
-        ∃ a, ∑ d, c (a, d) * zK b ^ (d : ℕ) ≠ 0).card =
+      Set.ncard {b | ∃ a, ∑ d, c (a, d) * zK b ^ (d : ℕ) ≠ 0} =
       Set.ncard {b | ∃ a, universalRowCoefficientPolynomial q z b a ∉ p} := by
-    rw [Set.ncard_eq_toFinset_card]
     congr 1
     ext b
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.Finite.mem_toFinset,
-      Set.mem_setOf_eq]
     exact hpred b
   rw [hcard] at hcount
   exact hcount

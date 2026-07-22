@@ -106,7 +106,7 @@ theorem eventually_polynomialPhaseLock_of_activeAtom_gap
       ‖normalizedAtomPhase F (fun i => B * (i : ℝ) ^ β) ν‖ ≤ 1 := by
     intro ν hν
     rw [norm_normalizedAtomPhase F (fun i => B * (i : ℝ) ^ β) hb ν]
-  have hbound := norm_cluster_sum_le_mass_mul_exp_neg_gap T Ckey hCkeyT
+  have hbound := norm_cluster_sum_le_mass_mul_exp_neg_gap T Ckey
     (fun ν => aevalWeight n (D * q + τ) Q ν)
     (fun ν => normalizedAtomPhase F (fun i => B * (i : ℝ) ^ β) ν)
     (fun ν => atomValuation (fun i => B * (i : ℝ) ^ β) ν)
@@ -360,7 +360,7 @@ theorem exists_residueCluster_activeAtom_gap
           polynomialPatternSourceSum p := by
         intro p hp
         have hpFloor := polynomialPattern_source_floor_of_survivor
-          (Q := Q) (anchor := anchor) (by rfl) (by
+          (Q := Q) (anchor := anchor) (by
             intro m hm hmD
             apply haMax m hm
             simpa [D, haD] using hmD) hp
@@ -496,7 +496,7 @@ theorem exists_residueCluster_activeAtom_gap
       dsimp [K, M, qraw] at *
       omega
     obtain ⟨p, hpcount, hpkey⟩ :=
-      exists_boundedPattern_of_atom_support_interval hKq ν hwindow.1 hsupp
+      exists_boundedPattern_of_atom_support_interval ν hwindow.1 hsupp
     have hpS : p ∈ S := by
       apply mem_polynomialPatternSurvivors_of_aevalWeight_ne_zero hpcount hqlarge'
       rw [hpkey]
@@ -766,8 +766,8 @@ theorem exists_polynomialTaylorProuhetPhaseLock
       (Polynomial.X - 1) ^ Nat.ceil β ∣
         atomPatternDifferencePolynomial p r := by
     intro p hp r hr
-    exact ⟨polynomialPatternCluster_moments hβ S hS hcountS hp hr,
-      polynomialPatternCluster_prouhet_dvd hβ S hS hcountS hp hr⟩
+    exact ⟨polynomialPatternCluster_moments S hS hcountS hp hr,
+      polynomialPatternCluster_prouhet_dvd S hS hcountS hp hr⟩
   have hactiveS := polynomialPatternSurvivors_eventually_weight_ne_zero
     (n := n) (D := D) (K := K) (τ := τ) (M := M) Q
   have hactive : ∀ᶠ q : ℕ in atTop, ∀ p ∈ C,

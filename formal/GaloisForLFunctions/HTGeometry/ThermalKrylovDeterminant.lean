@@ -127,8 +127,8 @@ theorem det_momentHankelMatrix_eq_prod_complexKrylovResidualNormSq
   rw [inner_self_eq_norm_sq_to_K]
   norm_cast
 
-/-- The finite complex Krylov vector whose Gram values are the even thermal gap moments. -/
-def thermalKrylovVector {α : Type*} [Fintype α]
+/-- The complex Krylov vector whose finite Gram values are the even thermal gap moments. -/
+def thermalKrylovVector {α : Type*}
     (intensity : α → α → ℝ) (energy : α → ℝ) (n : ℕ) :
     EuclideanSpace ℂ (α × α) :=
   WithLp.toLp 2 fun ab =>

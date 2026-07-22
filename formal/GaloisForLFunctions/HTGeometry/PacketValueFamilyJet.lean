@@ -28,7 +28,7 @@ reads one function at shifted nodes; the family gauge reads one jet vector of tr
 They agree. -/
 theorem weightedBoundaryCarrierExpandedPacketValue_eq_familyJetVec
     {m n : ℕ} {row : Type} [Fintype row]
-    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
+    (eta : Measure (OnePoint ℝ))
     (density : Lp ℝ (⊤ : ENNReal) eta)
     (packet : InjectiveProjectiveRowPacket row)
     (shift : InjectiveShiftConfiguration (Fin m)) (r : row)

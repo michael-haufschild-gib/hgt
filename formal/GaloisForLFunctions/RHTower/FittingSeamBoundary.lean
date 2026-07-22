@@ -302,7 +302,7 @@ theorem no_nontrivialFittingBoundary_of_left_factor_mod_X_pow {Sigma : Type*} (m
 
 /-- A module has a nonzero local class supported on the divisor element `f` if it has
 nonzero `f`-torsion.  This is the algebraic target behind a boundary map into `R/(f)`. -/
-def HasSupportedTorsion (S M : Type*) [Zero S] [Zero M] [SMul S M] (f : S) : Prop :=
+def HasSupportedTorsion (S M : Type*) [Zero M] [SMul S M] (f : S) : Prop :=
   ∃ x : M, x ≠ 0 ∧ f • x = 0
 
 /-- For every positive divisor order, the local divisor jet has a canonical nonzero class supported

@@ -838,8 +838,8 @@ theorem cayleyMoment_prefix_weightedBoundaryCarrier_eq_base_of_cauchyFrozenTange
 /-- The simultaneous finite packet of actual Cauchy-transform derivatives of one weighted
 Nevanlinna carrier. -/
 def weightedBoundaryCarrierExpandedPacketValue
-    {row ι : Type} [Fintype row] [Fintype ι]
-    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
+    {row ι : Type} [Fintype ι]
+    (eta : Measure (OnePoint ℝ))
     (density : Lp ℝ (⊤ : ENNReal) eta) (orders : ι → ℕ)
     (packet : InjectiveProjectiveRowPacket row)
     (shift : InjectiveShiftConfiguration ι) :

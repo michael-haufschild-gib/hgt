@@ -146,7 +146,7 @@ theorem exists_residueProuhetCluster
           polynomialPatternSourceSum p := by
         intro p hp
         have hpFloor := polynomialPattern_source_floor_of_survivor
-          (Q := Q) (anchor := anchor) (by rfl) (by
+          (Q := Q) (anchor := anchor) (by
             intro m hm hmD
             apply haMax m hm
             simpa [D, haD] using hmD) hp
@@ -187,8 +187,8 @@ theorem exists_residueProuhetCluster
   · exact (polynomialPatternMinimalCluster_subset T hT).trans
       (polynomialPatternLeastSourceClass_subset S hS)
   · intro p hp r hr
-    exact ⟨polynomialPatternCluster_moments hβ S hS hcount hp hr,
-      polynomialPatternCluster_prouhet_dvd hβ S hS hcount hp hr⟩
+    exact ⟨polynomialPatternCluster_moments S hS hcount hp hr,
+      polynomialPatternCluster_prouhet_dvd S hS hcount hp hr⟩
 
 end
 

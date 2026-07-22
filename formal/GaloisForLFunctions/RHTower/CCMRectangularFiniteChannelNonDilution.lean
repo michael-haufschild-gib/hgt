@@ -24,7 +24,7 @@ set_option maxHeartbeats 1000000
 /-- A finite family of nonnegative channels whose sum dominates the actual rectangular negative
 mass pointwise. -/
 def XiRectangularFiniteNegativeChannelCover
-    {ι : Type*} [DecidableEq ι]
+    {ι : Type*}
     (L : ℝ) (N : ℕ) (s : Finset ι) (a : ι → ℕ → ℝ) : Prop :=
   ∀ n : ℕ,
     (∀ i ∈ s, 0 ≤ a i n) ∧
@@ -32,7 +32,7 @@ def XiRectangularFiniteNegativeChannelCover
 
 /-- A finite pointwise nonnegative exact decomposition of the actual rectangular negative mass. -/
 def XiRectangularFiniteNegativeChannelSplit
-    {ι : Type*} [DecidableEq ι]
+    {ι : Type*}
     (L : ℝ) (N : ℕ) (s : Finset ι) (a : ι → ℕ → ℝ) : Prop :=
   ∀ n : ℕ,
     (∀ i ∈ s, 0 ≤ a i n) ∧

@@ -20,8 +20,8 @@ open Set Topology
 
 noncomputable section
 
-/-- The collision-free locus inside the ambient finite complex packet space. -/
-def injectiveShiftConfigurationSet (ι : Type*) [Fintype ι] : Set (ι → ℂ) :=
+/-- The collision-free locus inside the ambient complex packet space. -/
+def injectiveShiftConfigurationSet (ι : Type*) : Set (ι → ℂ) :=
   {shift | Function.Injective shift}
 
 /-- Finite collision-free complex shift configurations form an open set. -/

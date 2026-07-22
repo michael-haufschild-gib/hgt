@@ -2,19 +2,21 @@
 
 - **ID:** `ccm-source-response-determinant-dichotomy`
 - **Stage:** 1-in-progress
-- **Type:** THEOREM / RH ROUTE
-- **Status:** `[PAPER PROOF IN PROGRESS] [LEAN IN PROGRESS] [NOVELTY UNDER AUDIT] [NOT RH]`
+- **Type:** CORPUS-COLLIDED ROUTE / FORMAL STRENGTHENING AUDIT
+- **Status:** `[SIMPLE-EVEN REMOVAL NOT NEW] [SOURCE/RESPONSE EXCLUSIVITY NOT NEW]`
+  `[FULL-CHARPOLY RESIDUAL UNDER AUDIT] [NOT RH]`
 - **Parent:** `ccm-radical-quotient-hermitian-law.md`
 
 ## Frontier
 
-CCM prove real-zero Fourier determinants after assuming that the shifted Weil matrix has a simple,
-even ground state.  The radical-quotient theorem removes simplicity only after discarding the
-radical and therefore loses the original Fourier determinant when the radical has dimension
-greater than one.
+The project already proved the unconditional boundary-channel trichotomy, mutual exclusion of the
+active source/response channels, arbitrary-radical completion, and a Hermitian radical quotient.
+Therefore removing the simple-even hypothesis from the finite completion mechanism is prior corpus
+knowledge and cannot support a novelty claim.
 
-The target here is stronger: retain a full-size characteristic determinant and its exact
-rank-one/Fourier identity at arbitrary radical multiplicity.
+Only the strict residual target survives audit: retain the **full-size** characteristic determinant
+and its exact rank-one resolvent identity at arbitrary radical multiplicity, rather than cancelling
+the radical in the already-known quotient determinant.
 
 ## Candidate theorem
 
@@ -62,17 +64,19 @@ has only real zeros.  Reflection makes it even in both branches:
 
 - even/source branch: `alpha=eta`, `c` is even, and `P` is the cardinal numerator of the Fourier
   transform used by CCM;
-- odd/response branch: `alpha=beta`, `c` is odd, and `P` is a new response-weighted cardinal
-  numerator.
+- odd/response branch: `alpha=beta`, `c` is odd, and `P` is a response-weighted cardinal
+  numerator. No novelty claim is made for existence of this channel.
 
-This removes the simple-ground-state premise from the finite real-zero mechanism and replaces the
-evenness premise by an exhaustive source/response dichotomy.
+The source/response dichotomy itself is not new.  The only possible strengthening is that the
+specific orthogonal-Riesz completion controls every residual-radical eigenvalue and hence the full
+characteristic polynomial, whereas prior corpus proves reality only after radical quotient.
 
 ## Exact RH interface
 
 For a cofinal family of actual shifted CCM matrices, prove that one channel occurs cofinally and
 that its nowhere-zero normalized polynomial converges locally uniformly to `Xi`.  The even branch
-is the original CCM Fourier route without simplicity.  The odd branch is a new response route.
+is the original CCM Fourier route without simplicity.  The response determinant is only an
+uncollided variant under audit, not established as a new route.
 
 No convergence or RH claim is currently made.
 
@@ -86,19 +90,22 @@ No convergence or RH claim is currently made.
   radical collapse, but no full characteristic-polynomial reality theorem for the canonical
   source projection and no odd response determinant route.
 
-Potential novelty rests only on the exact CCM source/response dichotomy and full determinant
-application, not on semidefinite quotient theory, Moore--Penrose inversion, or block triangularity.
+The source/response dichotomy collides with
+`CCMBoundaryChannelCompletion.lean` and the existing boundary-completion manuscript.  Any surviving
+novelty rests only on full-characteristic-polynomial reality for the canonical orthogonal-Riesz
+completion.  That residual is insufficient by itself for a significant paper or RH progress; it is
+retained only if it shortens the genuine cofinal divisor interface.
 
 ## Gates
 
 - [x] exact CCM formulas recovered from primary source
-- [x] corpus collision search
+- [x] corpus collision search -- simple-even removal and active dichotomy rejected as prior work
 - [x] generic semidefinite novelty claim rejected
 - [x] numerical sign pre-certification in both channels
-- [ ] dependency-closed paper proof
-- [ ] Lean theorem for full characteristic-zero reality
-- [ ] concrete divided-difference connector
-- [ ] hostile external priority audit of exact dichotomy
+- [x] dependency-closed proof of full characteristic-zero reality
+- [x] Lean theorem for full characteristic-zero reality
+- [x] concrete divided-difference connector
+- [ ] hostile external priority audit of exact full-characteristic Riesz-pinning law
 - [ ] cofinal channel selection
 - [ ] locally uniform convergence to `Xi`
 - [ ] RH
@@ -110,3 +117,6 @@ application, not on semidefinite quotient theory, Moore--Penrose inversion, or b
 - 2026-07-22 -- Observed neutral channel is impossible for injective diagonal clock with constant
   cyclic source.
 - 2026-07-22 -- Identified even Fourier and odd response real-rooted polynomial branches.
+- 2026-07-22 -- Hostile corpus audit found the claimed removal of simple-evenness and active
+  source/response exclusion already in the formalized boundary-channel trichotomy.  Retracted that
+  novelty claim; isolated only full-charpoly reality as a possible strict survivor.

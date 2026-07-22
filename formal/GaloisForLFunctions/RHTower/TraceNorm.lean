@@ -225,9 +225,9 @@ theorem traceNorm_comp_right_le {T : H →L[ℂ] H}
 
 omit [CompleteSpace H] in
 /-- Bessel over an orthonormal-with-zeros family, against a fixed vector. -/
-theorem sum_inner_sq_le_of_orthonormal_with_zeros (v : ℕ → H)
+theorem sum_inner_sq_le_of_orthonormal_with_zeros {ι : Type*} (v : ι → H)
     (hv : ∀ n, v n = 0 ∨ ‖v n‖ = 1)
-    (horth : ∀ m n, m ≠ n → inner ℂ (v m) (v n) = 0) (y : H) (s : Finset ℕ) :
+    (horth : ∀ m n, m ≠ n → inner ℂ (v m) (v n) = 0) (y : H) (s : Finset ι) :
     ∑ n ∈ s, ‖inner ℂ (v n) y‖ ^ 2 ≤ ‖y‖ ^ 2 := by
   classical
   have hsplit : ∑ n ∈ s, ‖inner ℂ (v n) y‖ ^ 2
@@ -242,7 +242,7 @@ theorem sum_inner_sq_le_of_orthonormal_with_zeros (v : ℕ → H)
     rw [hz, add_zero]
   rw [hsplit]
   set t := s.filter (fun n => v n ≠ 0) with ht
-  have horthsub : Orthonormal ℂ (fun p : {n : ℕ // n ∈ t} => v p.1) := by
+  have horthsub : Orthonormal ℂ (fun p : {n : ι // n ∈ t} => v p.1) := by
     rw [orthonormal_iff_ite]
     intro p q
     by_cases hpq : p = q
@@ -263,15 +263,22 @@ theorem sum_inner_sq_le_of_orthonormal_with_zeros (v : ℕ → H)
 families is dominated by the trace norm: expand by the singular value decomposition, swap the
 sums, and apply Cauchy–Schwarz with Bessel on both families. -/
 theorem sum_norm_inner_le_traceNorm {S : H →L[ℂ] H} (hcpt : IsCompactOperator S)
-    (hsum : Summable (fun n => approxNumber S n)) {g h : ℕ → H}
+    (hsum : Summable (fun n => approxNumber S n)) {ι : Type*} {g h : ι → H}
     (hg1 : ∀ n, g n = 0 ∨ ‖g n‖ = 1) (hgo : ∀ m n, m ≠ n → inner ℂ (g m) (g n) = 0)
     (hh1 : ∀ n, h n = 0 ∨ ‖h n‖ = 1) (hho : ∀ m n, m ≠ n → inner ℂ (h m) (h n) = 0)
-    (s : Finset ℕ) :
+    (s : Finset ι) :
     ∑ n ∈ s, ‖inner ℂ (g n) (S (h n))‖ ≤ traceNorm H S := by
   classical
   have hsv : Summable (fun k => singVal S k) :=
     hsum.congr fun k => approxNumber_eq_singVal hcpt k
-  have hnorm_le_one : ∀ (v : ℕ → H), (∀ n, v n = 0 ∨ ‖v n‖ = 1) → ∀ n, ‖v n‖ ≤ 1 := by
+  have hnorm_le_one_i : ∀ (v : ι → H),
+      (∀ n, v n = 0 ∨ ‖v n‖ = 1) → ∀ n, ‖v n‖ ≤ 1 := by
+    intro v hv n
+    rcases hv n with h0 | h1
+    · rw [h0, norm_zero]; norm_num
+    · rw [h1]
+  have hnorm_le_one_nat : ∀ (v : ℕ → H),
+      (∀ n, v n = 0 ∨ ‖v n‖ = 1) → ∀ n, ‖v n‖ ≤ 1 := by
     intro v hv n
     rcases hv n with h0 | h1
     · rw [h0, norm_zero]; norm_num
@@ -296,7 +303,7 @@ theorem sum_norm_inner_le_traceNorm {S : H →L[ℂ] H} (hcpt : IsCompactOperato
     have h1 := (hasSum_svd hcpt (h n)).mapL (innerSL ℂ (g n))
     simpa only [innerSL_apply_apply, inner_smul_right, mul_comm] using h1
   -- the pointwise product bound
-  set q : ℕ → ℕ → ℝ := fun n k =>
+  set q : ι → ℕ → ℝ := fun n k =>
     singVal S k * (‖inner ℂ (svVec (energyOp S) k) (h n)‖ * ‖inner ℂ (g n) (svdVec S k)‖)
     with hq
   have hq_le : ∀ n k, q n k ≤ singVal S k := by
@@ -305,13 +312,13 @@ theorem sum_norm_inner_le_traceNorm {S : H →L[ℂ] H} (hcpt : IsCompactOperato
     have h1 : ‖inner ℂ (svVec (energyOp S) k) (h n)‖ ≤ 1 := by
       calc ‖inner ℂ (svVec (energyOp S) k) (h n)‖
           ≤ ‖svVec (energyOp S) k‖ * ‖h n‖ := norm_inner_le_norm _ _
-        _ ≤ 1 * 1 := mul_le_mul (hnorm_le_one _ he_unit k) (hnorm_le_one _ hh1 n)
+        _ ≤ 1 * 1 := mul_le_mul (hnorm_le_one_nat _ he_unit k) (hnorm_le_one_i _ hh1 n)
             (norm_nonneg _) zero_le_one
         _ = 1 := one_mul 1
     have h2 : ‖inner ℂ (g n) (svdVec S k)‖ ≤ 1 := by
       calc ‖inner ℂ (g n) (svdVec S k)‖
           ≤ ‖g n‖ * ‖svdVec S k‖ := norm_inner_le_norm _ _
-        _ ≤ 1 * 1 := mul_le_mul (hnorm_le_one _ hg1 n) (hnorm_le_one _ hf_unit k)
+        _ ≤ 1 * 1 := mul_le_mul (hnorm_le_one_i _ hg1 n) (hnorm_le_one_nat _ hf_unit k)
             (norm_nonneg _) zero_le_one
         _ = 1 := one_mul 1
     calc singVal S k * (‖inner ℂ (svVec (energyOp S) k) (h n)‖
@@ -383,14 +390,14 @@ theorem sum_norm_inner_le_traceNorm {S : H →L[ℂ] H} (hcpt : IsCompactOperato
         _ ≤ ‖svVec (energyOp S) k‖ ^ 2 :=
             sum_inner_sq_le_of_orthonormal_with_zeros h hh1 hho _ s
         _ ≤ 1 := by
-            have := hnorm_le_one _ he_unit k
+            have := hnorm_le_one_nat _ he_unit k
             nlinarith [norm_nonneg (svVec (energyOp S) k)]
     have hB2 : ∑ n ∈ s, ‖inner ℂ (g n) (svdVec S k)‖ ^ 2 ≤ 1 := by
       calc ∑ n ∈ s, ‖inner ℂ (g n) (svdVec S k)‖ ^ 2
           ≤ ‖svdVec S k‖ ^ 2 :=
             sum_inner_sq_le_of_orthonormal_with_zeros g hg1 hgo _ s
         _ ≤ 1 := by
-            have := hnorm_le_one _ hf_unit k
+            have := hnorm_le_one_nat _ hf_unit k
             nlinarith [norm_nonneg (svdVec S k)]
     calc singVal S k * ∑ n ∈ s, ‖inner ℂ (svVec (energyOp S) k) (h n)‖
           * ‖inner ℂ (g n) (svdVec S k)‖

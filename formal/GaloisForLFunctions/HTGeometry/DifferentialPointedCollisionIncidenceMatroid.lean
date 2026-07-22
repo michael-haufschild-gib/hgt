@@ -81,7 +81,7 @@ def pointedCollisionIncidenceMatrix
 
 /-- The ordinary incidence matroid of the finite occupied-label quotient. -/
 def pointedCollisionIncidenceMatroid
-    {C V E Frame : Type u} [Field C] [Fintype V] [Fintype E]
+    {C V E Frame : Type u} [Field C] [Fintype V]
     [DecidableEq Frame]
     (frame : V → Frame) (loopFrame : Frame) (tail head : E → V) : Matroid E :=
   linearFamilyMatroid
@@ -89,7 +89,7 @@ def pointedCollisionIncidenceMatroid
 
 @[simp]
 theorem pointedCollisionIncidenceMatroid_ground
-    {C V E Frame : Type u} [Field C] [Fintype V] [Fintype E]
+    {C V E Frame : Type u} [Field C] [Fintype V]
     [DecidableEq Frame]
     (frame : V → Frame) (loopFrame : Frame) (tail head : E → V) :
     (pointedCollisionIncidenceMatroid

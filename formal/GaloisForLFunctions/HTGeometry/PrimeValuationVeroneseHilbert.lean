@@ -44,7 +44,7 @@ theorem valuationTailHilbertFunction_eq_recurrent
     valuationTailHilbertFunction x m = recurrentHomogeneousHilbertFunction x m :=
   finrank_homogeneousTailQuotient_eq_recurringRange x hrange m
 
-/-- A coordinate separating two distinct points of a finite embedded point family. -/
+/-- A coordinate separating two distinct points of an embedded point family. -/
 theorem exists_finitePointSeparatingCoordinate
     {σ V : Type*} (v : V → σ → ℂ) (hinj : Function.Injective v)
     {a b : V} (hab : a ≠ b) : ∃ i, v a i ≠ v b i := by
@@ -56,13 +56,14 @@ theorem exists_finitePointSeparatingCoordinate
   exact h ⟨i, hi⟩
 
 noncomputable def finitePointSeparatingCoordinate
-    {σ V : Type*} [Fintype V] [DecidableEq V]
-    (h₀ : σ) (v : V → σ → ℂ) (hinj : Function.Injective v) (a b : V) : σ :=
-  if hab : a = b then h₀ else
+    {σ V : Type*}
+    (h₀ : σ) (v : V → σ → ℂ) (hinj : Function.Injective v) (a b : V) : σ := by
+  classical
+  exact if hab : a = b then h₀ else
     Classical.choose (exists_finitePointSeparatingCoordinate v hinj hab)
 
 theorem finitePointSeparatingCoordinate_ne
-    {σ V : Type*} [Fintype V] [DecidableEq V]
+    {σ V : Type*}
     (h₀ : σ) (v : V → σ → ℂ) (hinj : Function.Injective v)
     {a b : V} (hab : a ≠ b) :
     v a (finitePointSeparatingCoordinate h₀ v hinj a b) ≠
@@ -72,14 +73,14 @@ theorem finitePointSeparatingCoordinate_ne
 
 /-- The normalized homogeneous linear separator that is one at `a` and zero at `b`. -/
 noncomputable def finitePointHomogeneousSeparator
-    {σ V : Type*} [Fintype V] [DecidableEq V]
+    {σ V : Type*}
     (h₀ : σ) (v : V → σ → ℂ) (hinj : Function.Injective v) (a b : V) :
     MvPolynomial σ ℂ :=
   let i := finitePointSeparatingCoordinate h₀ v hinj a b
   C ((v a i - v b i)⁻¹) * (X i - C (v b i) * X h₀)
 
 theorem finitePointHomogeneousSeparator_isHomogeneous
-    {σ V : Type*} [Fintype V] [DecidableEq V]
+    {σ V : Type*}
     (h₀ : σ) (v : V → σ → ℂ) (hinj : Function.Injective v) (a b : V) :
     IsHomogeneous (finitePointHomogeneousSeparator h₀ v hinj a b) 1 := by
   unfold finitePointHomogeneousSeparator
@@ -89,14 +90,14 @@ theorem finitePointHomogeneousSeparator_isHomogeneous
         (v b (finitePointSeparatingCoordinate h₀ v hinj a b)) h₀)).C_mul _
 
 theorem eval_finitePointHomogeneousSeparator_right
-    {σ V : Type*} [Fintype V] [DecidableEq V]
+    {σ V : Type*}
     (h₀ : σ) (v : V → σ → ℂ) (hinj : Function.Injective v)
     (hone : ∀ a, v a h₀ = 1) (a b : V) :
     eval (v b) (finitePointHomogeneousSeparator h₀ v hinj a b) = 0 := by
   simp [finitePointHomogeneousSeparator, hone]
 
 theorem eval_finitePointHomogeneousSeparator_left
-    {σ V : Type*} [Fintype V] [DecidableEq V]
+    {σ V : Type*}
     (h₀ : σ) (v : V → σ → ℂ) (hinj : Function.Injective v)
     (hone : ∀ a, v a h₀ = 1) {a b : V} (hab : a ≠ b) :
     eval (v a) (finitePointHomogeneousSeparator h₀ v hinj a b) = 1 := by

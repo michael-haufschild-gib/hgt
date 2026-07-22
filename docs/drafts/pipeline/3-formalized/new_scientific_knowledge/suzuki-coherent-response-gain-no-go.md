@@ -25,7 +25,11 @@ complete causal fused response.
 
 - `lake env lean GaloisForLFunctions/RHTower/SuzukiCoherentResponseGainNoGo.lean`: pass.
 - Capstone `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
-- Formal lint and final cached module build: pending final audit.
+- `lake build GaloisForLFunctions.RHTower.SuzukiCoherentResponseGainNoGo`: pass
+  (`Build completed successfully`, 9320 jobs; cached/replayed dependencies).
+- Repository lint reaches new module through `GaloisForLFunctions.RHTower`; global lint remains red
+  only because 22 unrelated shared-tree modules are not yet imported by their theorem-area
+  umbrellas. No failure names this module.
 
 ## Scope
 

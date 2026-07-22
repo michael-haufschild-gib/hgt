@@ -22,7 +22,6 @@ noncomputable section
 def smoothAffineControlFamily
     {P H Y : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
-    [NormedAddCommGroup H] [NormedSpace ℝ H]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     (base : H → Y) (direction : H → (P →L[ℝ] Y)) : P × H → Y :=
   fun p => base p.2 + direction p.2 p.1

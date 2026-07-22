@@ -5750,6 +5750,425 @@ Scientific artifacts:
 - `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-critical-apex-vacuum-capacity-no-go.md`.
 
 Direct source checks pass.  S72 and S73 capstone axiom surfaces use only `propext`,
-`Classical.choice`, and `Quot.sound`.  Final cached module build and repository lint are recorded
-after shared-tree audit.  No paper is promoted: terminal RH/disproof/full-Suzuki-no-go outcome is
-still absent.
+`Classical.choice`, and `Quot.sound`.  Final cached build
+`lake build GaloisForLFunctions.RHTower.SuzukiCoherentResponseGainNoGo` passes. Repository lint
+reaches S73 but remains globally red on 22 unrelated shared-tree modules missing theorem-area
+umbrella imports. No paper is promoted: terminal RH/disproof/full-Suzuki-no-go outcome is still
+absent.
+
+## S74. Faithful Sonin normal states carry canonical cyclic prime trace (2026-07-22)
+
+The cyclic/source side of `(S73.6)` was narrower than recorded. Corpus audit found exact
+principal-relative shell descent, multiplication closure, and faithful zero/live finite-word
+normal forms already formalized in `SoninPrincipalRelativeIdeal.lean` and
+`CCMSoninFiniteWordFaithfulness.lean`. Those gates are closed and must not be reopened.
+
+For a live canonical normal window `d=(C,F,x)` at aperture `a>0`, define
+
+```text
+tau_a(d)=log(C)-log(F) if x=1, and 0 otherwise; tau_a(0)=0. (S74.1)
+```
+
+The new universal Sonin law is
+
+```text
+tau_a(s*t)=tau_a(t*s)                                    (S74.2)
+```
+
+for the exact tropical state product. If product displacement is not one, both sides vanish. If
+first and second displacements satisfy `xy=1`, the reverse overlap is exactly the `x`-dilate of
+the forward overlap:
+
+```text
+C_(t*s)=x C_(s*t),       F_(t*s)=x F_(s*t).              (S74.3)
+```
+
+Thus both products are simultaneously live or zero and logarithmic width is invariant. Faithful
+normal-form classification makes `tau_a` invariant under compact congruence. Its finite-support
+bilinear extension is cyclic.
+
+On genuine CCM Gram factors this trace diagonalizes exactly:
+
+```text
+tau_a(Gram(r,q)) = if r=q then log r else 0.              (S74.4)
+```
+
+Therefore a diagonal prime-power scale `r=p^m` returns `m log p`, independently of aperture.
+Multiplying by the unsquared Euler coefficient `p^(-m/2)/m` gives
+
+```text
+log(p) p^(-m/2),                                         (S74.5)
+```
+
+the exact nonarchimedean Connes/Weil orbital coefficient. This is not the old bounded
+projection-correction response: orbital growth lives intrinsically in principal logarithmic shell
+trace.
+
+The first unresolved connector is now exact:
+
+```text
+SUZUKI-PRINCIPAL-RELATIVE-FINITE-PART-WELD:
+extend tau_a through the retained Sonin principal-relative ideal, with ordinary trace on its
+trace-class part; prove aperture-restriction compatibility; attach the Burnol archimedean finite
+part; then prove one cutoff-uniform completed lower floor.                  (S74.6)
+```
+
+This advances the source construction but does not prove RH, disprove RH, or finish a full Suzuki
+no-go. Targeted inspection of the primary semilocal prolate paper found the Hilbertian Sonin
+isomorphism and operator program, not `(S74.1)`--`(S74.4)`; external novelty remains provisional.
+
+Scientific artifacts:
+
+- `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`;
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin-principal-shell-cyclic-trace.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/sonin-principal-shell-cyclic-trace.md`;
+- `docs/drafts/pipeline/1-in-progress/sonin-log-shell-cyclic-finite-part-descent.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`.
+
+## S75. Exact sharp-source domain no-go (2026-07-22)
+
+Novelty is not a terminal criterion. The required outcome remains RH, not-RH, or a
+class-complete Suzuki impossibility theorem.
+
+The unbounded-graph escape left by S73 has an additional exact obstruction. The depth-zero
+observer-free sharp-wall amplitude is definitionally tied, via equality of its exact square, to
+the earlier critical rooted-Bianchi amplitude:
+
+```text
+suzukiCriticalEntryWallBareAmplitude(p,0)
+  =suzukiCriticalRootedBianchiPrimeAmplitude(p).
+```
+
+The corpus had already proved that the right side has nonsummable squared prime norm. The new
+connector therefore gives
+
+```text
+not Summable_p |BareAmplitude(p,0)|^2,
+Summable_p |c BareAmplitude(p,0)|^2  iff  c=0.
+```
+
+Hence exact all-prime sharp-source recovery cannot land in an ordinary `ell^2` Hilbert carrier,
+even through a closed unbounded graph. This kills the global Hilbert-target reading of the
+coherent weld, not merely its bounded/frame-preserving reading. It also prevents a constant
+rescaling or finite scalar border from repairing the domain.
+
+This is not a full Suzuki no-go. The surviving mechanism is narrower: finite-cutoff recovery with
+a genuinely joint renormalized/semifinite prime--Burnol finite part. Its cutoff-uniform completed
+lower floor remains the RH-bearing frontier.
+
+Lean: `formal/GaloisForLFunctions/RHTower/SuzukiCoherentSharpSourceDomainNoGo.lean`.
+
+## S76. Positive cofinal finite parts are impossible (2026-07-22)
+
+S75 left a possible finite-cutoff/semifinite escape. The first hostile question is whether finite
+Suzuki Gram positivity can pass to a finite-valued cofinal linear trace. It cannot.
+
+Let `w_i >= 0` be any nonsummable coordinate weight. Suppose a real linear functional `Phi` on
+the full coordinate product preserves every finite cutoff:
+
+```text
+Phi(1_F) = sum_(i in F) w_i                              (S76.1)
+```
+
+for every finite `F`. If `Phi` were positive, then `0 <= 1-1_F` would give
+
+```text
+sum_(i in F) w_i = Phi(1_F) <= Phi(1),                   (S76.2)
+```
+
+uniformly in `F`. The nonnegative finite-sum criterion would make `w` summable, contradiction.
+No continuity or boundedness premise is involved.
+
+There is a stronger lower-floor law. Any linear functional bounded below on its whole
+nonnegative cone is automatically positive: a negative value can be multiplied by an arbitrary
+positive scalar and driven below the proposed floor. Therefore every exact extension satisfying
+`(S76.1)` obeys
+
+```text
+for every L, there exists f >= 0 with Phi(f) < L.         (S76.3)
+```
+
+The result remains true on an arbitrary linear subdomain `D` provided `D` contains the order unit
+`1` and every finite indicator `1_F`. Thus choosing a proper domain does not repair positivity
+unless the cofinal unit is excluded or assigned infinite trace.
+
+For Suzuki take
+
+```text
+w_p = suzukiCriticalEntryWallBareAmplitude(p,0)^2.        (S76.4)
+```
+
+S75 proves that this nonnegative weight is nonsummable. Hence no finite-valued positive linear
+functional can preserve all finite critical sharp-source traces, and every unital exact linear
+extension is unbounded below on positive prime observables.
+
+This closes a whole interpretation of the surviving weld: finite-level Gram positivity cannot
+descend through a positive or globally lower-bounded cofinal finite part. Any remaining Suzuki
+mechanism must use a genuinely nonunital semifinite domain and a signed finite part whose lower
+floor is asserted only on the source-fixed completed Burnol-resolvent family. That restricted
+floor is still RH-equivalent, so no terminal verdict is claimed.
+
+Next exact falsifier: prove that the completed Gaussian-rational/Burnol resolvent test family
+forces the cofinal unit into its finite linear domain. S76 would then make its uniform lower floor
+impossible and kill the last explicit Suzuki weld. Otherwise construct the proper nonunital domain
+and prove the completed floor, which yields RH.
+
+Lean: `formal/GaloisForLFunctions/RHTower/SuzukiCofinalPositiveFinitePartNoGo.lean`.
+
+## S77. No positive finite domain contains a completed Mellin profile (2026-07-22)
+
+The proposed S76 falsifier was too weak: forcing the cofinal unit into the domain is unnecessary.
+Positivity at a single nonnegative profile already supplies the required upper bound.
+
+Let `w_i>=0`, let `f_i>=0`, and let a linear domain `D` contain `f` and every finite truncation
+`f|_F`. Suppose a finite-valued linear functional preserves the exact finite weighted values
+
+```text
+Phi(f|_F)=sum_(i in F) w_i f_i.                          (S77.1)
+```
+
+If `Phi` is positive, then `f-f|_F>=0` gives
+
+```text
+sum_(i in F) w_i f_i <= Phi(f)                          (S77.2)
+```
+
+for every finite `F`. Hence the nonnegative series `sum_i w_i f_i` is summable. This theorem uses
+neither an order unit nor continuity, normality, topology, or a regulator. As in S76, a finite
+lower bound on the whole positive cone forces positivity by scalar dilation. Therefore whenever
+the weighted profile mass is nonsummable, every exact linear extension satisfying `(S77.1)` is
+unbounded below on the positive cone of `D`.
+
+The Suzuki specialization lands exactly on the completed Euler source. Transport the critical
+sharp mass from exponent `1/2` to actual Mellin abscissa `sigma` by
+
+```text
+f_sigma(p)=exp(-(sigma-1/2) log p).                      (S77.3)
+```
+
+The corpus source connectors and Gamma--Bianchi displacement law now give, prime by prime,
+
+```text
+suzukiCriticalSharpPrimeMass(p) f_sigma(p)
+  =suzukiRootedBianchiPrimeMassAt(sigma-1,p)
+  =Lambda(p) exp(-sigma log p).                          (S77.4)
+```
+
+The already formalized sharp displacement threshold then yields the exact abscissa law
+
+```text
+Summable_p [suzukiCriticalSharpPrimeMass(p) f_sigma(p)]
+  iff 1<sigma.                                           (S77.5)
+```
+
+Every Gaussian-rational profile in the RH-bearing left half-strip has `sigma<1/2`, hence violates
+`(S77.5)`. Consequently no positive finite-valued linear functional on any domain—unital or
+nonunital—can contain even one such profile, preserve all of its finite Suzuki cutoff values, and
+remain positive. Every exact extension containing it is globally unbounded below on positive
+observables.
+
+This is stronger than S76 and closes the positive-semifinite interpretation of the completed
+Suzuki weld class-completely. Removing the unit, choosing a proper trace ideal, or invoking
+semifiniteness does not help: the completed profile itself has infinite positive mass.
+
+This is not yet a proof of RH, not-RH, or a no-go for every signed renormalization. The sole
+survivor is now sharply isolated: a **signed, canonically fixed Burnol finite-part anomaly** whose
+lower floor is asserted only on the normalized completed profile family, not on its positive conic
+or linear closure. Such a floor cannot descend from finite Suzuki Gram positivity. It must come
+from an additional source-specific coercivity theorem; without one, it is exactly the existing
+RH-bearing endpoint.
+
+Next terminal attack: extend the principal Sonin cyclic functional through the concrete
+trace-class relative ideal and Burnol conductor, then determine whether cyclicity and aperture
+compatibility uniquely fix the signed anomaly. If they force a lower floor, the formal completed
+flux endpoint proves RH. If they force a trace anomaly unbounded below already on the normalized
+profile family, the last explicit Suzuki weld is dead.
+
+Lean:
+`formal/GaloisForLFunctions/RHTower/SuzukiCompletedMellinPositiveDomainNoGo.lean`.
+
+## S78. Fixed-aperture finite part closes; cofinal relative compatibility is impossible (2026-07-22)
+
+S77 left one explicit signed survivor: extend the Sonin principal shell trace through its exact
+trace-class relative ideal, then impose aperture compatibility and attach Burnol's conductor.
+The first step now closes, but the second is false in that source class.
+
+For an injective finite prime system, every presentation
+
+```text
+T=S_A+K,             K in I_a                              (S78.1)
+```
+
+is unique.  Here `S_A` is the canonical principal shell and `I_a` is the exact Sonin
+principal-relative ideal.  Every `K in I_a` is Schatten-1, so the unique signed finite part is
+
+```text
+FP_a(T)=sum_i A_ii log(p_i)+Tr(K).                        (S78.2)
+```
+
+For the actual finite Gram combination `O_A`,
+
+```text
+FP_a(O_A)=sum_i A_ii log(p_i)+Tr(O_A-S_A).                (S78.3)
+```
+
+Thus representative ambiguity and fixed-aperture trace construction are no longer open.
+
+The aperture parameter is not a unitary gauge.  For the exact ambient Sonin projection
+correction `C_a`, the corpus identity and unitary invariance give
+
+```text
+||C_a||_HS^2=8a^2,
+(exists unitary U, U C_a U*=C_b)  iff  a=b,   a,b>0.      (S78.4)
+```
+
+Canonical comparison is nested restriction.  If `a<=b`, then `Q_bQ_a=Q_aQ_b=Q_b`, and the exact
+quadratic prime-corner defect is
+
+```text
+G_b(p,q)-Q_bG_a(p,q)Q_b
+  =Q_bD_p(Q_a-Q_b)D_qQ_b.                                (S78.5)
+```
+
+On the diagonal, with `X_(a,b,p)=(Q_a-Q_b)D_pQ_b`,
+
+```text
+G_b(p,p)-Q_bG_a(p,p)Q_b=X_(a,b,p)* X_(a,b,p)>=0.         (S78.6)
+```
+
+This is not a new trace-class residual.  In every crossing chamber
+
+```text
+0<a<b<p a,
+```
+
+an explicit orthonormal inverse-dilated shell sequence gives
+
+```text
+1<=||X_(a,b,p)-K||       for every compact K.             (S78.7)
+```
+
+Hence both `X_(a,b,p)` and its positive Gram square `(S78.6)` are noncompact.  Finally, for every
+strict pair `0<a<b`, choose `n>b/a` and a prime `p>=n`.  Then `b<p a`, so `(S78.7)` applies at a
+genuine prime.  Therefore
+
+```text
+for every 0<a<b, there exists prime p such that
+G_b(p,p)-Q_bG_a(p,p)Q_b is not in I_b.                   (S78.8)
+```
+
+This gives a definitive negative verdict on the previously sole principal-relative cofinal
+class: **no strict aperture enlargement preserves all prime corners modulo the exact Schatten-1
+relative ideal**.  Neither unitary conjugacy nor ordinary relative trace can implement the needed
+compatibility.
+
+The positive survivor forced by the obstruction is also exact.  At the S78 stopping point, a
+remaining Suzuki proof had to place the noncompact lost-aperture layers in a principal algebra and
+extend the logarithmic reader. S79 below closes that gate: the layers are existing live shells and
+their mass is conserved. The remaining RH-bearing assertion is the signed completed lower floor
+after the trace-class curvature/Burnol weld. S78 does not itself prove RH, not-RH, or a
+class-complete no-go for every possible enlarged principal algebra.
+
+Lean:
+
+- `formal/GaloisForLFunctions/RHTower/TraceClassCyclicity.lean`;
+- `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeTraceSplitting.lean`;
+- `formal/GaloisForLFunctions/RHTower/SoninApertureRestrictionDefect.lean`;
+- `formal/GaloisForLFunctions/RHTower/SoninApertureAreaRigidity.lean`;
+- `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeApertureNoGo.lean`.
+
+Research records:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin-principal-relative-trace-splitting.md`;
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin-aperture-area-rigidity-and-restriction-defect.md`;
+- `docs/drafts/pipeline/1-in-progress/sonin-log-shell-cyclic-finite-part-descent.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`.
+
+## S79. Aperture restriction conserves principal orbital mass (2026-07-22)
+
+S78 proved that strict aperture restriction exits the trace-class relative ideal.  The resulting
+noncompact layer does not, however, require a new principal trace or a compensating archimedean
+mass.  Exact normal-state reduction closes that possible obstruction positively.
+
+For `0<a<b<r*a`, let
+
+```text
+S(s,t)=(A_t-A_s)+(R_t-R_s)
+```
+
+be the two-polarization shell.  At aperture `b`, the retained, lost, and total scale-one live
+windows have exact operators
+
+```text
+W_keep  =S(b,r*a),
+W_lost  =S(r*a,r*b),
+W_total =S(b,r*b).                                      (S79.1)
+```
+
+Shell telescoping is an exact operator identity:
+
+```text
+W_total=W_keep+W_lost.                                  (S79.2)
+```
+
+The faithful Sonin cyclic reader gives logarithmic width on each scale-one live window.  Hence
+
+```text
+tau(W_lost)=log(b)-log(a),                               (S79.3)
+
+tau(W_keep)+tau(W_lost)
+  =[log(r*a)-log(b)]+[log(b)-log(a)]
+  =log(r)
+  =tau(W_total).                                        (S79.4)
+```
+
+Thus aperture enlargement transfers principal mass from the retained shell to a noncompact lost
+shell but creates no net source anomaly.  The transferred mass is independent of `r` and is the
+exact additive cocycle
+
+```text
+c(a,c)=c(a,b)+c(b,c),     c(a,b)=log(b)-log(a).          (S79.5)
+```
+
+The operator restriction defects themselves satisfy the stronger exact compressed law
+
+```text
+Delta(a,c;r)=Delta(b,c;r)+Q_c Delta(a,b;r) Q_c.          (S79.6)
+```
+
+In one common strict crossing chamber they are ordinarily additive modulo the concrete
+principal-relative ideal.  Therefore
+
+```text
+Kappa(a,b,c;r)
+ =Delta(a,c;r)-Delta(a,b;r)-Delta(b,c;r)                 (S79.7)
+```
+
+is Schatten-1.  The principal aperture quotient is flat and conserves exact prime orbital mass;
+all remaining path dependence is the ordinary scalar `Tr Kappa`.
+
+This materially narrows the terminal Suzuki problem.  Do not reconstruct an enlarged aperture
+algebra or ask Burnol's conductor to cancel `(S79.3)`: both are wrong targets.  The exact live edge
+is now
+
+```text
+compute Tr Kappa on actual semilocal source packets
+  -> compare with the cutoff-dependent Burnol conductor counterterm
+    -> either exact signed completed finite part and uniform lower floor (hence RH),
+       or an explicit normalized source sequence unbounded below (terminal weld no-go). (S79.8)
+```
+
+S79 is significant progress but not a terminal verdict.  It falsifies the enlarged-reader
+obstruction and removes all noncompact principal aperture ambiguity; it does not compute
+`Tr Kappa`, prove the completed floor, disprove it, prove RH, or retire every Suzuki mechanism.
+
+Lean:
+
+- `formal/GaloisForLFunctions/RHTower/SoninApertureRestrictionDefect.lean`;
+- `formal/GaloisForLFunctions/RHTower/SoninApertureCyclicMassConservation.lean`.
+
+Research records:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin-aperture-principal-cyclic-mass-conservation.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/sonin-aperture-principal-cyclic-mass-conservation.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`.

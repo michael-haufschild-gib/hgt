@@ -22,7 +22,7 @@ noncomputable section
 
 /-- Scalar row of a profile jet at one prime direction and one valuation coordinate. -/
 def primeProfileJetRayCoefficient
-    {I : Type*} [Fintype I]
+    {I : Type*}
     (g : I -> ArithmeticFunction ℂ) (m : Nat)
     (col : I × Fin (m + 1)) (p : Nat.Primes) (e : Nat) : ℂ :=
   primeDeriv p.1 (primeProfileJetSource g m col) ((p : Nat) ^ e)

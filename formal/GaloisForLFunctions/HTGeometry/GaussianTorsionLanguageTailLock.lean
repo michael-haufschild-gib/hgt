@@ -1382,7 +1382,6 @@ global signed-offset form of `polynomialPattern_source_floor_of_survivor`. -/
 theorem gaussianOffsetSource_floor_of_weightPoly_ne_zero
     {n D τ : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
     {anchor : Fin (n + 2) →₀ ℕ}
-    (haD : jetMonomialDegree n anchor = D)
     (haMax : ∀ m ∈ Q.support,
       jetMonomialDegree n m = D →
         magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
@@ -1402,7 +1401,7 @@ theorem gaussianOffsetSource_floor_of_weightPoly_ne_zero
       Finset.mem_filter, Finset.mem_filter]
     exact ⟨⟨Finset.mem_univ p, hpcount⟩, by simpa only [p] using hpoly⟩
   have hfloor := polynomialPattern_source_floor_of_survivor
-    haD haMax hpSurvivor
+    haMax hpSurvivor
   have hfloorInt :
       (D : ℤ) * (R : ℤ) + (τ : ℤ) +
           (magnitudeMaxJetOrder n Q : ℤ) ≤
@@ -1421,7 +1420,6 @@ every nonzero top-degree global pattern. -/
 theorem gaussianOffsetSource_le_of_anchor_floor_eq
     {n D τ : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
     {anchor : Fin (n + 2) →₀ ℕ}
-    (haD : jetMonomialDegree n anchor = D)
     (haMax : ∀ m ∈ Q.support,
       jetMonomialDegree n m = D →
         magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
@@ -1435,7 +1433,7 @@ theorem gaussianOffsetSource_le_of_anchor_floor_eq
         (gaussianOffsetFace_totalCount haFace) R) ≠ 0) :
     S ≤ T := by
   have hfloor := gaussianOffsetSource_floor_of_weightPoly_ne_zero
-    haD haMax haFace hpoly
+    haMax haFace hpoly
   nlinarith
 
 /-- The finite set of polynomial degrees actually attained by nonzero global patterns on one

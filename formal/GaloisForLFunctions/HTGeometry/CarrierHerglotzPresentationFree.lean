@@ -69,7 +69,6 @@ theorem not_differentiallyAlgebraicOn_herglotzPresentation_weightedBoundaryCarri
 residual pattern-free family that the global statement uses, recorded with the half-plane predicate
 the polynomial gauge consumes, so that the gauge applies to every member. -/
 theorem countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_residual
-    (projectiveGeometry : ClassicalComplexProjectiveIncidenceGeometry)
     {ιf : Type} [Fintype ιf] [DecidableEq ιf]
     (hCmin : HasMinimalExponentialType F.c)
     (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
@@ -93,7 +92,7 @@ theorem countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_re
   obtain ⟨hdense, hres, _⟩ :=
     F.allFinitePatterns_positiveActualCarrier_relationFree_dense_residual
       (Γ := Unit)
-      projectiveGeometry hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta heta
+      hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta heta
   refine ⟨hdense.mono ?_, Filter.mem_of_superset hres ?_⟩ <;>
     exact fun w hw =>
       F.not_differentiallyAlgebraicOn_cauchyTransform_weightedBoundaryCarrier eta _ hw

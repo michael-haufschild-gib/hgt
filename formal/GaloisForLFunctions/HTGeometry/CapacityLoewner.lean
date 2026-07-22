@@ -16,14 +16,13 @@ open scoped ComplexOrder
 
 noncomputable section
 
-/-- Loewner order on finite complex Hermitian matrices. -/
-def Matrix.LoewnerLE {n : Type*} [Fintype n]
+/-- Loewner order on complex Hermitian matrices. -/
+def Matrix.LoewnerLE {n : Type*}
     (K L : Matrix n n ℂ) : Prop :=
   (L - K).PosSemidef
 
-/-- A finite two-sided multiplicative Loewner bound.  This is the order-theoretic content of a
-finite Thompson-distance bound. -/
-def Matrix.HasTwoSidedMultiplicativeBound {n : Type*} [Fintype n]
+/-- A two-sided multiplicative Loewner bound. -/
+def Matrix.HasTwoSidedMultiplicativeBound {n : Type*}
     (K L : Matrix n n ℂ) (c d : ℝ) : Prop :=
   Matrix.LoewnerLE L ((c : ℂ) • K) ∧
     Matrix.LoewnerLE K ((d : ℂ) • L)

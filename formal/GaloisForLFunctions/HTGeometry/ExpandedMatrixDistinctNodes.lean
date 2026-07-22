@@ -36,7 +36,7 @@ theorem X_sub_X_ne_zero {σ : Type*} [DecidableEq σ] {a b : σ} (hab : a ≠ b)
   exact one_ne_zero hev
 
 /-- The expanded evaluation matrix with indeterminate node and jet coordinates. -/
-def expandedPolyMatrix {κ : Type} [Fintype κ] [DecidableEq κ] (q n : ℕ)
+def expandedPolyMatrix {κ : Type} (q n : ℕ)
     (exponent : κ → (Fin n →₀ ℕ)) :
     Matrix (κ × Fin (q + 1)) (κ × Fin (q + 1))
       (MvPolynomial ((κ × Fin (q + 1)) ⊕ ((κ × Fin (q + 1)) × Fin n)) ℂ) :=
@@ -44,7 +44,7 @@ def expandedPolyMatrix {κ : Type} [Fintype κ] [DecidableEq κ] (q n : ℕ)
     (exponent c.1).prod fun k e => MvPolynomial.X (Sum.inr (r, k)) ^ e
 
 /-- Evaluating the indeterminate matrix recovers the numeric evaluation matrix. -/
-theorem map_eval_expandedPolyMatrix {κ : Type} [Fintype κ] [DecidableEq κ] (q n : ℕ)
+theorem map_eval_expandedPolyMatrix {κ : Type} (q n : ℕ)
     (exponent : κ → (Fin n →₀ ℕ))
     (p : ((κ × Fin (q + 1)) ⊕ ((κ × Fin (q + 1)) × Fin n)) → ℂ) :
     (expandedPolyMatrix q n exponent).map (MvPolynomial.eval p) =

@@ -88,7 +88,7 @@ a uniform outside valuation gap, and a weight-mass bound imply an
 exponentially small cluster sum. -/
 theorem norm_cluster_sum_le_mass_mul_exp_neg_gap
     {α : Type*} [DecidableEq α]
-    (T C : Finset α) (hCT : C ⊆ T)
+    (T C : Finset α)
     (w phase : α → ℂ) (V : α → ℝ) (m G P : ℝ)
     (hbalance :
       ∑ a ∈ C, w a * (Real.exp (-(V a - m)) : ℂ) * phase a =

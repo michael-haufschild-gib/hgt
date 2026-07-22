@@ -26,7 +26,6 @@ def continuousAffineLinearObservation
 /-- The one-variable polynomial representing a continuous affine scalar observation. -/
 def continuousAffineObservationPolynomial
     {X : Type*} [TopologicalSpace X] [AddCommGroup X] [Module ℂ X]
-    [IsTopologicalAddGroup X]
     (f : X →ᴬ[ℂ] ℂ) : MvPolynomial Unit ℂ :=
   MvPolynomial.X () + MvPolynomial.C (f 0)
 

@@ -25,7 +25,7 @@ namespace HTGeometry
 noncomputable section
 
 /-- Hankel matrix of a sequence over an arbitrary coefficient type. -/
-def algebraicHankelMatrix {K : Type*} [Zero K]
+def algebraicHankelMatrix {K : Type*}
     (s : ℕ → K) (n : ℕ) : Matrix (Fin n) (Fin n) K :=
   fun i j => s ((i : ℕ) + (j : ℕ))
 

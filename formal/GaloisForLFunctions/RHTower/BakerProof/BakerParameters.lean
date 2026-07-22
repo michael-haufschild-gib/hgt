@@ -389,7 +389,7 @@ theorem dimension_inequality {n t : ℕ} (hn : 3 ≤ n) (ht : 2 ≤ t) :
   omega
 
 /-- The exact two-to-one count makes the Siegel exponent `rows/(cols-rows)` at most one. -/
-theorem double_rowCount_le_columnCount {n t : ℕ} (hn : 3 ≤ n) (_ht : 2 ≤ t) :
+theorem double_rowCount_le_columnCount {n t : ℕ} (hn : 3 ≤ n) :
     2 * (sampleCount n t * derivativeCutoff n t ^ (n - 1)) ≤
       exponentWidth n t ^ n :=
   (double_rowCount_eq_columnCount hn).le
@@ -463,7 +463,7 @@ theorem Relation.parameterizedCoefficientBoundClosed_le_linear
     positivity
   apply R.auxiliaryCoefficientBoundClosed_le_linear
   · exact mul_pos hS (pow_pos hT _)
-  · exact double_rowCount_le_columnCount hn ht
+  · exact double_rowCount_le_columnCount hn
   · exact R.one_le_auxiliaryHeightClosed c hc hint pivot hL hS hT
 
 theorem Relation.firstStepGrowth_le_majorant

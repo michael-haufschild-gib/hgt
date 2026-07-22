@@ -73,14 +73,14 @@ theorem linearIndependent_restrict_finiteFinsuppOperatorRows_iff
 polynomial operators. -/
 def finiteFinsuppRowMatroid
     {C ι σ G : Type u} [Field C] [Fintype ι] [Fintype σ]
-    [DecidableEq ι] [DecidableEq σ] [DecidableEq G]
+    [DecidableEq σ] [DecidableEq G]
     (Q : ι → σ → G →₀ Polynomial C) : Matroid ι :=
   differentialOperatorRowMatroid (finiteFinsuppOperatorRows Q)
 
 @[simp]
 theorem finiteFinsuppRowMatroid_ground
     {C ι σ G : Type u} [Field C] [Fintype ι] [Fintype σ]
-    [DecidableEq ι] [DecidableEq σ] [DecidableEq G]
+    [DecidableEq σ] [DecidableEq G]
     (Q : ι → σ → G →₀ Polynomial C) :
     (finiteFinsuppRowMatroid Q).E = Set.univ := by
   simp [finiteFinsuppRowMatroid]
@@ -99,7 +99,7 @@ theorem finiteFinsuppRowMatroid_indep_iff
 /-- The complete localized Stanley--Reisner row matroid of a finite numerator family. -/
 def stanleyReisnerLaurentMatroid
     {C α ι : Type u} [Field C] [Fintype α] [Fintype ι]
-    [DecidableEq α] [DecidableEq ι]
+    [DecidableEq α]
     (d : translationSubmonoid (Polynomial C) α)
     (facets : Finset (Finset α))
     (N : ι → MvPolynomial α (Polynomial C) ⧸
@@ -109,7 +109,7 @@ def stanleyReisnerLaurentMatroid
 @[simp]
 theorem stanleyReisnerLaurentMatroid_ground
     {C α ι : Type u} [Field C] [Fintype α] [Fintype ι]
-    [DecidableEq α] [DecidableEq ι]
+    [DecidableEq α]
     (d : translationSubmonoid (Polynomial C) α)
     (facets : Finset (Finset α))
     (N : ι → MvPolynomial α (Polynomial C) ⧸

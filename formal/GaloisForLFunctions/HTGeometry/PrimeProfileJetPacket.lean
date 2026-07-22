@@ -67,9 +67,9 @@ def primeProfileJetSource
     (x : I × Fin (m + 1)) : ArithmeticFunction ℂ :=
   primeProfileRotatedLogJet x.2 (g x.1)
 
-/-- The scalar Jacobian read at one selected valuation coordinate on each separated prime ray. -/
+/-- The scalar Jacobian read at one selected valuation coordinate on each prime ray. -/
 def primeProfileJetPacketMatrix
-    {I : Type*} [Fintype I]
+    {I : Type*}
     (g : I → ArithmeticFunction ℂ) (m : ℕ)
     (q : I × Fin (m + 1) → Nat.Primes)
     (e : I × Fin (m + 1) → ℕ) :
@@ -92,7 +92,7 @@ def CofinitePrimeProfileJetPacket
 
 /-- The arithmetic-function Jacobian of one explicit profile-jet packet. -/
 def primeProfileJetArithmeticJacobian
-    {I : Type*} [Fintype I]
+    {I : Type*}
     (g : I → ArithmeticFunction ℂ) (m : ℕ)
     (q : I × Fin (m + 1) → Nat.Primes) :
     Matrix (I × Fin (m + 1)) (I × Fin (m + 1)) (ArithmeticFunction ℂ) :=
@@ -115,7 +115,7 @@ theorem primeProfileJetArithmeticJacobian_det_ne_zero
 
 /-- The packet Jacobian embedded into the arithmetic-function fraction field. -/
 def fractionPrimeProfileJetJacobian
-    {I : Type*} [Fintype I]
+    {I : Type*}
     (g : I → ArithmeticFunction ℂ) (m : ℕ)
     (q : I × Fin (m + 1) → Nat.Primes) :
     Matrix (I × Fin (m + 1)) (I × Fin (m + 1))
@@ -125,7 +125,7 @@ def fractionPrimeProfileJetJacobian
       (primeProfileJetArithmeticJacobian g m q row col)
 
 theorem fractionPrimeProfileJetJacobian_apply
-    {I : Type*} [Fintype I]
+    {I : Type*}
     (g : I → ArithmeticFunction ℂ) (m : ℕ)
     (q : I × Fin (m + 1) → Nat.Primes)
     (row col : I × Fin (m + 1)) :

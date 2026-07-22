@@ -21,14 +21,14 @@ abbrev FiniteExposedSource
 
 /-- Coefficient evaluation matrix restricted to one exposed source level. -/
 def finiteExposedCoefficientMatrix
-    {J P : Type*} [Fintype J] [Fintype P]
+    {J P : Type*}
     (c : J → P → ℂ) (energy : P → ℝ) (radius : ℝ) :
     Matrix (FiniteExposedSource energy radius) J ℂ :=
   fun p j => c j p.1
 
 /-- Rank of the coefficient geometry visible on an exposed source level. -/
 def finiteExposedConstraintRank
-    {J P : Type*} [Fintype J] [Fintype P]
+    {J P : Type*} [Fintype J]
     (c : J → P → ℂ) (energy : P → ℝ) (radius : ℝ) : ℕ :=
   (finiteExposedCoefficientMatrix c energy radius).rank
 
@@ -47,21 +47,21 @@ theorem finiteExposedConstraintRank_le_sourceCard
 
 /-- The visible coefficient rank is bounded by the number of probes. -/
 theorem finiteExposedConstraintRank_le_probeCard
-    {J P : Type*} [Fintype J] [Fintype P]
+    {J P : Type*} [Fintype J]
     (c : J → P → ℂ) (energy : P → ℝ) (radius : ℝ) :
     finiteExposedConstraintRank c energy radius ≤ Fintype.card J := by
   exact Matrix.rank_le_card_width (finiteExposedCoefficientMatrix c energy radius)
 
 /-- Linear evaluation of a coefficient packet on one exposed source level. -/
 def finiteExposedCoefficientEvaluation
-    {J P : Type*} [Fintype J] [Fintype P]
+    {J P : Type*} [Fintype J]
     (c : J → P → ℂ) (energy : P → ℝ) (radius : ℝ) :
     (J → ℂ) →ₗ[ℂ] (FiniteExposedSource energy radius → ℂ) :=
   (finiteExposedCoefficientMatrix c energy radius).mulVecLin
 
 /-- Evaluation on an exposed point is the corresponding coefficient linear form. -/
 theorem finiteExposedCoefficientEvaluation_apply
-    {J P : Type*} [Fintype J] [Fintype P]
+    {J P : Type*} [Fintype J]
     (c : J → P → ℂ) (energy : P → ℝ) (radius : ℝ)
     (q : J → ℂ) (p : FiniteExposedSource energy radius) :
     finiteExposedCoefficientEvaluation c energy radius q p =

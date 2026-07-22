@@ -20,14 +20,14 @@ open MeasureTheory
 noncomputable section
 
 /-- The node at which one packet coordinate is evaluated. -/
-def packetNode {row ι : Type} [Fintype row] [Fintype ι]
+def packetNode {row ι : Type} [Fintype ι]
     (orders : ι → ℕ) (packet : InjectiveProjectiveRowPacket row)
     (shift : InjectiveShiftConfiguration ι)
     (p : row × Fin (Fintype.card (Σ i, Fin (orders i)))) : ℂ :=
   packet.1 p.1 + shift.1 ((Fintype.equivFin (Σ i, Fin (orders i))).symm p.2).1
 
 /-- The jet order of one packet coordinate. -/
-def packetOrder {row ι : Type} [Fintype row] [Fintype ι]
+def packetOrder {row ι : Type} [Fintype ι]
     (orders : ι → ℕ)
     (p : row × Fin (Fintype.card (Σ i, Fin (orders i)))) : ℕ :=
   ((Fintype.equivFin (Σ i, Fin (orders i))).symm p.2).2
