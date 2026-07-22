@@ -14,6 +14,9 @@ weight is exactly the order-one Riesz weight
 The complete Möbius--log future dressing of this weight has no hidden probabilistic cancellation:
 the divisor cube collapses exactly, with fixed sign, to the positive von-Mangoldt renewal.  Thus
 the unresolved cancellation is only between that prime-power renewal and the polar continuum.
+
+These are known-derived exact identities recorded as corpus infrastructure.  This module makes no
+novelty claim and proves no RH estimate.
 -/
 
 open Nat ArithmeticFunction Finset

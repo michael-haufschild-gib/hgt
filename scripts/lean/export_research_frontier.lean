@@ -18,7 +18,7 @@ set_option maxHeartbeats 8000000
 
 private def interfaceSolverMaxDepth : Nat := 5
 private def interfaceSolverMaxCandidatesPerGoal : Nat := 512
-private def interfaceSolverMaxAttemptsPerInterface : Nat := 5000
+private def interfaceSolverMaxAttemptsPerInterface : Nat := 1000
 
 private def projectPrefix : String := "GaloisForLFunctions."
 

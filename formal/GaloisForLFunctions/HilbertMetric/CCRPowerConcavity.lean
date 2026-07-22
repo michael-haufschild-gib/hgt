@@ -351,6 +351,71 @@ theorem ccr_dimensionPowerSecondDerivative_sumOfSquares
   nlinarith
 
 omit [DecidableEq m] in
+/-- Exact rigidity classification for CCR power curvature.  At every positive power coordinate,
+curvature vanishes exactly when every literal CCR defect channel vanishes, and it is strictly
+negative exactly when at least one channel survives. -/
+theorem ccr_dimensionPowerSecondDerivative_classification
+    (A : I → Matrix n n ℝ) (B : I → Matrix n m ℝ)
+    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B)
+    (hI : 0 < Fintype.card I) {u : ℝ} (hu : 0 < u)
+    (F₁ F₂ : ℝ → ℝ)
+    (hmean : logarithmicScaleMean F₁ (u ^ (1 / (Fintype.card I : ℝ) : ℝ)) =
+      ccrMeanEnergy A)
+    (hvariance : logarithmicScaleVariance F₁ F₂
+        (u ^ (1 / (Fintype.card I : ℝ) : ℝ)) = ccrNumberVariance A B) :
+    (dimensionPowerSecondDerivative (Fintype.card I : ℝ) F₁ F₂ u = 0 ↔
+        (∀ i j, ccrMixedCommutator A i j = 0) ∧
+          ∀ i j, ccrScaledTracelessLeakage A B i j = 0) ∧
+      (dimensionPowerSecondDerivative (Fintype.card I : ℝ) F₁ F₂ u < 0 ↔
+        (∃ i j, ccrMixedCommutator A i j ≠ 0) ∨
+          ∃ i j, ccrScaledTracelessLeakage A B i j ≠ 0) := by
+  have hdR : 0 < (Fintype.card I : ℝ) := by exact_mod_cast hI
+  have hd0 : (Fintype.card I : ℝ) ≠ 0 := hdR.ne'
+  have hden : 0 < (Fintype.card I : ℝ) ^ 2 * u ^ 2 :=
+    mul_pos (sq_pos_of_pos hdR) (sq_pos_of_pos hu)
+  have heq := ccr_numberVariance_eq_card_mul_mean_literal_iff A B hcomm hccr
+  have hlt := ccr_numberVariance_lt_card_mul_mean_literal_iff A B hcomm hccr
+  constructor
+  · rw [dimensionPowerSecondDerivative_eq_fluctuation_quotient hd0 hu,
+      hvariance, hmean, div_eq_zero_iff]
+    simp only [hden.ne', or_false, sub_eq_zero]
+    exact heq
+  · rw [dimensionPowerSecondDerivative_eq_fluctuation_quotient hd0 hu,
+      hvariance, hmean, div_neg_iff]
+    constructor
+    · rintro (h | h)
+      · exact (not_lt_of_ge hden.le h.2).elim
+      · exact hlt.mp (sub_neg.mp h.1)
+    · intro hdefect
+      exact Or.inr ⟨sub_neg.mpr (hlt.mpr hdefect), hden⟩
+
+/-- Full commuting CCR tuples inherit the exact power-curvature rigidity classification on every
+invariant coordinate summand.  The full matrix hypotheses discharge both compression interfaces. -/
+theorem fullCCR_dimensionPowerSecondDerivative_classification
+    (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
+    (hinv : IsInvariantFullCompression T) (hcomm : IsCommutingFullTuple T)
+    (hccr : IsFullCCRMatrixTuple T) (hI : 0 < Fintype.card I)
+    {u : ℝ} (hu : 0 < u) (F₁ F₂ : ℝ → ℝ)
+    (hmean : logarithmicScaleMean F₁ (u ^ (1 / (Fintype.card I : ℝ) : ℝ)) =
+      ccrMeanEnergy (fullCCRCompressionBlock T))
+    (hvariance : logarithmicScaleVariance F₁ F₂
+        (u ^ (1 / (Fintype.card I : ℝ) : ℝ)) =
+      ccrNumberVariance (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)) :
+    (dimensionPowerSecondDerivative (Fintype.card I : ℝ) F₁ F₂ u = 0 ↔
+        (∀ i j, ccrMixedCommutator (fullCCRCompressionBlock T) i j = 0) ∧
+          ∀ i j, ccrScaledTracelessLeakage
+            (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) i j = 0) ∧
+      (dimensionPowerSecondDerivative (Fintype.card I : ℝ) F₁ F₂ u < 0 ↔
+        (∃ i j, ccrMixedCommutator (fullCCRCompressionBlock T) i j ≠ 0) ∨
+          ∃ i j, ccrScaledTracelessLeakage
+            (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) i j ≠ 0) := by
+  exact ccr_dimensionPowerSecondDerivative_classification
+    (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)
+    (fullCCRCompressionBlock_commutes T hinv hcomm)
+    (fullCCRLeakageBlock_isCCRCompletion T hinv hccr)
+    hI hu F₁ F₂ hmean hvariance
+
+omit [DecidableEq m] in
 /-- A smooth family of finite CCR compressions has concave log-volume in the mode-cardinality
 power scale. -/
 theorem ccr_dimensionPowerReparametrization_concaveOn

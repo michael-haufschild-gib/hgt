@@ -4603,3 +4603,122 @@ Research:
 Internal corpus and targeted primary-paper searches found no prior occurrence of `(62.2)--(62.6)`.
 External priority remains `[NOVELTY UNVERIFIED]`; elementary Laplace algebra alone is not a novelty
 claim.
+
+## 63. Unit-Riesz corpus closure: known-derived algebra formalized; one RH core remains
+
+### Classification correction
+
+The unit-aperture Riesz, Möbius-renewal, Markov-density, and causal-virial identities below are
+now classified as **known-derived corpus infrastructure**, not new scientific knowledge.  Their
+purpose is to prevent another research pass from rediscovering elementary Laplace/Möbius algebra
+and presenting it as frontier progress.
+
+### Formalized exact layer
+
+Unit aperture gives
+
+\[
+ \frac{2(e^{-x/2}-e^{-x})}{\sqrt n}
+ \bigg|_{x=\log(X/n)}
+ =\frac2{\sqrt X}\left(1-\sqrt{n/X}\right).             \tag{63.1}
+\]
+
+The complete Möbius--log divisor dressing collapses exactly to the negative von-Mangoldt renewal,
+whose physical atoms are nonnegative.  This is formalized in
+`CCMCriticalMellinRieszMobiusRenewal.lean`.
+
+For
+
+\[
+ W(t)=\frac3t\sum_{1\le r\le t}(1-\sqrt{r/t}),\qquad
+ w(v)=W(e^v),                                             \tag{63.2}
+\]
+
+the cell `log m <= v < log(m+1)` is
+
+\[
+ w(v)=3me^{-v}-3\left(\sum_{r=1}^m\sqrt r\right)e^{-3v/2}. \tag{63.3}
+\]
+
+Lean proves
+
+\[
+ 2m\sqrt{m+1}\le3\sum_{r=1}^m\sqrt r,                   \tag{63.4}
+\]
+
+the exact derivative of `(63.3)`, its nonnegativity throughout the cell, exact adjacent-cell
+gluing, `w(0)=0`, and reduction of the global `floor(exp v)` profile to every cell.  These are in
+`CCMUnitRieszMarkovDensity.lean`.
+
+For the finite critical Möbius boundary, Lean also proves the exact virial cancellation
+
+\[
+ V_K(T)=1-(1+T)e^{-T}
+       +\sum_{n\le K}\frac{\mu(n)\log n}{n}
+ =1-(1+T)e^{-T}-Q_K.                                    \tag{63.5}
+\]
+
+This is `finiteCriticalMobiusCausalVirial_eq_logMoment` and
+`finiteCriticalMobiusCausalVirial_eq_one_sub_logDefect` in
+`CCMUnitRieszMobiusCausalVirial.lean`.
+
+### Paper-level connector, not a novelty claim
+
+Let `d=w'` almost everywhere.  Cell positivity and gluing give `d>=0` and `integral d=1`.  For the
+critical causal complement
+
+\[
+ h_0(t)=e^{-t}-\sum_{n\le e^t}\frac{\mu(n)}n,
+\]
+
+the moving unit-Riesz coefficient factors as
+
+\[
+ I(T)=\int_0^T h_0(u)K_T(u)\,du=(d*V_{h_0})(T).          \tag{63.6}
+\]
+
+Its elementary Laplace calculation is
+
+\[
+ \mathcal Ld(z)=\frac{3z\zeta(1+z)}{2(z+1)(z+3/2)},     \tag{63.7}
+\]
+
+and
+
+\[
+ \mathcal LI(z)=\frac3{2(z+1)(z+3/2)}
+ \left(\frac{\zeta(1+z)}{(1+z)^2}
+       +\frac{\zeta'(1+z)}{\zeta(1+z)}\right).          \tag{63.8}
+\]
+
+Every zero `rho` contributes a genuine pole at `z=rho-1`.  Classical one-sided Landau therefore
+shows that
+
+\[
+ \forall\epsilon>0,\qquad
+ I(T)\ge-C_\epsilon e^{(-1/2+\epsilon)T}                \tag{63.9}
+\]
+
+implies RH.  Equations `(63.6)--(63.9)` are recorded as a paper proof and are **not** claimed fully
+formalized in Lean.
+
+### Actual frontier
+
+All filter phase, Volterra memory, Riesz normalization, future Möbius dressing, cell positivity,
+cell gluing, finite virial algebra, and Landau noncensorship are downstream infrastructure.  Sole
+unproved RH-bearing Connes/CCM statement is `(63.9)`, equivalently the one-sided half-unit bound on
+the positive Markov average of exact logarithmic Möbius defect `(63.5)`.
+
+Generic Schur/coisometry contractivity cannot supply it: critical causal recombination gives
+`e^{-t}`, Markov kernel is fixed in `T`, and `(63.8)` retains every off-line pole.  Required new
+science must prove a source-specific signed first-crossing law for `Q_K` before scalar norm
+estimation.  No such law is known or proved here.  **RH remains unproved.**
+
+Corpus:
+
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm-unit-riesz-mobius-wavelet-reduction.md`;
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm-unit-riesz-markov-virial-landau-law.md`;
+- `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-unit-riesz-mobius-renewal-law.md`;
+- `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-unit-riesz-markov-density.md`;
+- `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-unit-riesz-mobius-causal-virial.md`;
+- `docs/drafts/pipeline/1-in-progress/ccm-unit-riesz-causal-complement-wavelet.md`.

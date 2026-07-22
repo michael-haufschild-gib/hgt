@@ -1,10 +1,10 @@
 # CCM unit-Riesz Markov--virial and one-sided Landau law
 
 - **ID:** `ccm-unit-riesz-markov-virial-landau-law`
-- **Stage:** 2-fully-proven/new_scientific_knowledge
+- **Stage:** 2-fully-proven/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), exact source factorization and RH connector
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
-  `[NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[PROVED] [KNOWN-DERIVED CORPUS INFRASTRUCTURE]`
+  `[NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 - **Parent:** `ccm-unit-riesz-mobius-wavelet-reduction.md`
 - **Open consumer:**
   `../../1-in-progress/ccm-unit-riesz-causal-complement-wavelet.md`
@@ -17,6 +17,11 @@ transform retains every off-critical zeta zero as a genuine simple pole.  Conseq
 all-epsilon one-sided coefficient bound implies RH by Landau's first-singularity theorem.
 
 This closes the connector.  It does not prove the one-sided coefficient bound.
+
+Cell positivity/gluing and finite Möbius virial algebra are formalized respectively in
+`formal/GaloisForLFunctions/RHTower/CCMUnitRieszMarkovDensity.lean` and
+`formal/GaloisForLFunctions/RHTower/CCMUnitRieszMobiusCausalVirial.lean`.  Global convolution and
+Laplace/Landau analysis remain paper-level.
 
 ## 1. Fixed logarithmic profile
 
@@ -260,8 +265,8 @@ did not locate `(7)`, `(11)`, `(13)`, and `(16)` as one CCM unit-aperture Markov
 The recent discrete-Laplace Möbius criterion of Liflandsky (`arXiv:2607.09797`) studies a different
 kernel and assumes simple zeros for its explicit formula.  It does not prove `(23)`.
 
-Novelty remains `[NOVELTY UNVERIFIED]`; all derivations above are elementary enough that an
-unlocated equivalent may exist.
+Novelty claim withdrawn.  These elementary identities are retained to prevent the corpus from
+re-proposing them as frontier research.
 
 ## Gates
 
@@ -272,6 +277,6 @@ unlocated equivalent may exist.
 - [x] prove continued coefficient retains every off-critical zero
 - [x] prove one-sided Landau connector to RH
 - [x] retire generic critical coisometry as exponent provider
+- [x] cell positivity/gluing and finite virial algebra formalized
 - [ ] prove source-specific Markov--virial lower bound `(23)`
 - [ ] RH
-

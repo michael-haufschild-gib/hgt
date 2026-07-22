@@ -1,10 +1,10 @@
 # CCM unit-Riesz Möbius wavelet reduction
 
 - **ID:** `ccm-unit-riesz-mobius-wavelet-reduction`
-- **Stage:** 2-fully-proven/new_scientific_knowledge
+- **Stage:** 2-fully-proven/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), exact source reduction
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
-  `[NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[PROVED] [KNOWN-DERIVED CORPUS INFRASTRUCTURE]`
+  `[NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 - **Parent:** `ccm-critical-mellin-aperture-resolvent-law.md`
 - **Open consumer:**
   `../../1-in-progress/ccm-unit-riesz-causal-complement-wavelet.md`
@@ -19,6 +19,9 @@ critical causal complement `h_0(t)=exp(-t)-sum_(n<=exp(t))mu(n)/n`.
 
 This identifies a source-specific half-unit coefficient problem strictly smaller than the full
 weighted-Mertens `L2` tower.  It does not prove the coefficient bound.
+
+Finite unit-Riesz normalization and complete Möbius-renewal collapse are formalized in
+`formal/GaloisForLFunctions/RHTower/CCMCriticalMellinRieszMobiusRenewal.lean`.
 
 ## 1. Unit aperture is a double resonance
 
@@ -239,8 +242,8 @@ unit-aperture CCM profile and its causal complement.  Connes--Consani's archimed
 constructs the positivity framework, while the 2025 zeta-spectral-triple paper explicitly leaves
 rigorous spectral/determinant convergence as the RH-closing step.  No located source proves `(25)`.
 
-Exact novelty remains `[NOVELTY UNVERIFIED]`: equations `(1)--(25)` use elementary Laplace,
-Möbius inversion, and Stieltjes calculus, and may have an unlocated equivalent form.
+Novelty claim withdrawn.  Equations `(1)--(25)` are elementary Laplace, Möbius inversion, and
+Stieltjes calculus; their value here is exact corpus closure and frontier localization.
 
 ## Gates
 
@@ -250,7 +253,7 @@ Möbius inversion, and Stieltjes calculus, and may have an unlocated equivalent 
 - [x] zero-mean critical Möbius wavelet
 - [x] deterministic pole-channel saturation with explicit error
 - [x] causal-complement localization of the half-unit burden
+- [x] finite normalization and renewal core formalized
 - [ ] prove causal-complement coefficient bound `(25)`
 - [ ] compose with one-sided Landau connector
 - [ ] RH
-

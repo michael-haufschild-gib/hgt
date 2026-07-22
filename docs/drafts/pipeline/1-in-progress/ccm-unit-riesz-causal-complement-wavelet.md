@@ -5,9 +5,9 @@
 - **Type:** CONJECTURE, `[OPEN RH CORE]`
 - **Scientific status:** `[CONJECTURE] [CONNES/CCM SOURCE-SPECIFIC] [NOT RH YET]`
 - **Parent theorem:**
-  `../2-fully-proven/new_scientific_knowledge/ccm-unit-riesz-mobius-wavelet-reduction.md`
+  `../2-fully-proven/not_new_scientific_knowledge/ccm-unit-riesz-mobius-wavelet-reduction.md`
 - **Connector theorem:**
-  `../2-fully-proven/new_scientific_knowledge/ccm-unit-riesz-markov-virial-landau-law.md`
+  `../2-fully-proven/not_new_scientific_knowledge/ccm-unit-riesz-markov-virial-landau-law.md`
 
 ## Exact open statement
 

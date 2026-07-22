@@ -8,6 +8,7 @@ proposition cuts leading to a configured research target.
 from __future__ import annotations
 
 import dataclasses
+import functools
 import itertools
 import json
 import os
@@ -309,6 +310,49 @@ def render_lean_frontier_export_json(export: LeanFrontierExport) -> str:
     return json.dumps(payload, separators=(",", ":"), sort_keys=True) + "\n"
 
 
+@functools.lru_cache(maxsize=None)
+def _compiled_module_declarations(ilean_path: str) -> tuple[str, ...]:
+    """Read exact declaration names from Lean's compiled information file."""
+
+    path = Path(ilean_path)
+    if not path.exists():
+        return ()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ()
+    declarations = payload.get("decls", {})
+    if not isinstance(declarations, Mapping):
+        return ()
+    return tuple(sorted(name for name in declarations if isinstance(name, str)))
+
+
+def _compiled_names_for_declaration(
+    root: Path, declaration: object
+) -> tuple[str, ...]:
+    """Resolve one source declaration to exact names present in compiled snapshot."""
+
+    module = str(getattr(declaration, "module", ""))
+    raw_name = str(getattr(declaration, "name", ""))
+    if not module or not raw_name:
+        return ()
+    ilean = (
+        root
+        / "formal"
+        / ".lake"
+        / "build"
+        / "lib"
+        / "lean"
+        / Path(*module.split("."))
+    ).with_suffix(".ilean")
+    suffix = "." + raw_name
+    return tuple(
+        name
+        for name in _compiled_module_declarations(str(ilean))
+        if name == raw_name or name.endswith(suffix)
+    )
+
+
 def frontier_export_candidates(
     root: Path, declarations: Sequence[object]
 ) -> tuple[str, ...]:
@@ -387,38 +431,26 @@ def frontier_export_candidates(
     qualified: set[str] = set()
     for index in seen_theorems:
         declaration = theorem_refs[index][0]
-        raw_name = str(getattr(declaration, "name"))
-        qualified.add(raw_name)
-        module_parts = str(getattr(declaration, "module", "")).split(".")
-        if len(module_parts) >= 2 and module_parts[0] == "GaloisForLFunctions":
-            area_namespace = module_parts[1]
-            if not raw_name.startswith(area_namespace + "."):
-                qualified.add(f"{area_namespace}.{raw_name}")
+        qualified.update(_compiled_names_for_declaration(root, declaration))
     return tuple(sorted(qualified))
 
 
-def corpus_theorem_candidates(declarations: Sequence[object]) -> tuple[str, ...]:
+def corpus_theorem_candidates(
+    declarations: Sequence[object], *, root: Path | None = None
+) -> tuple[str, ...]:
     """Return source-indexed theorem names for Lean to validate against compiled corpus.
 
     Source index is only a cheap name supplier. Missing, stale, and active-WIP names
     are ignored by the Lean environment; no source file is compiled here.
     """
 
+    if root is None:
+        root = Path(__file__).resolve().parents[1]
     qualified: set[str] = set()
     for declaration in declarations:
         if getattr(declaration, "kind", "") not in {"theorem", "lemma"}:
             continue
-        raw_name = str(getattr(declaration, "name", ""))
-        if not raw_name:
-            continue
-        qualified.add(raw_name)
-        module_parts = str(getattr(declaration, "module", "")).split(".")
-        if len(module_parts) >= 2 and module_parts[0] == "GaloisForLFunctions":
-            area_namespace = module_parts[1]
-            if not raw_name.startswith(area_namespace + "."):
-                qualified.add(f"{area_namespace}.{raw_name}")
-            if not raw_name.startswith("GaloisForLFunctions."):
-                qualified.add(f"GaloisForLFunctions.{raw_name}")
+        qualified.update(_compiled_names_for_declaration(root, declaration))
     return tuple(sorted(qualified))
 
 
@@ -1012,10 +1044,15 @@ def run_lean_frontier_export(
     theorem_names = frontier_export_candidates(root, declarations)
     if not theorem_names:
         raise ValueError("Lean frontier export received no corpus theorem declarations")
+    producer_names = corpus_theorem_candidates(declarations, root=root)
+    if not producer_names:
+        raise ValueError("Lean frontier export received no compiled producer declarations")
     command = (
         "\n#export_research_frontier_with_producers [\n"
         + ",\n".join(f"  {json.dumps(name)}" for name in theorem_names)
-        + "\n] using []\n"
+        + "\n] using [\n"
+        + ",\n".join(f"  {json.dumps(name)}" for name in producer_names)
+        + "\n]\n"
     )
     template = exporter.read_text(encoding="utf-8")
     project_import = "import GaloisForLFunctions\n"

@@ -71,6 +71,9 @@ import GaloisForLFunctions.RHTower.SuzukiRectangularWardDefectBoundedness
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
 import GaloisForLFunctions.RHTower.CCMCriticalMellinApertureResolvent
+import GaloisForLFunctions.RHTower.CCMCriticalMellinRieszMobiusRenewal
+import GaloisForLFunctions.RHTower.CCMUnitRieszMarkovDensity
+import GaloisForLFunctions.RHTower.CCMUnitRieszMobiusCausalVirial
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
@@ -540,10 +543,14 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   The separate critical-Mellin source branch now closes fixed-aperture filter phase:
   `criticalMellinApertureAveragedMultiplier_one_eq` turns exponential aperture averaging into
   `-1/(w+1)`, and `criticalMellinApertureCausalKernel_volterra_collapse` cancels the completed
-  Chebyshev Volterra memory exactly.  The remaining source theorem is a one-sided all-epsilon
-  subpower upper bound for
-  `X^(-1) * integral_0^X (psi(y)-y)/sqrt(y) dy`, plus its power-corrected Landau connector to RH.
-  Neither source-sector bound nor connector is asserted here.
+  Chebyshev Volterra memory exactly.  Unit aperture then gives the ordinary order-one Riesz
+  weight; the complete Möbius--log dressing is exactly the positive von-Mangoldt renewal.
+  `CCMUnitRieszMarkovDensity` formalizes the floor-assembled logarithmic profile, cell derivative
+  positivity, and cell gluing.  `CCMUnitRieszMobiusCausalVirial` formalizes the finite causal
+  virial collapse to the logarithmic Möbius defect.  These are known-derived identities, not RH
+  progress.  Paper-level Landau analysis reduces the branch to one source theorem: the
+  all-epsilon half-unit lower bound for the Markov average of that exact logarithmic defect.
+  This source bound is not asserted here.
 
 ## Positivity, Li, approximation, and explicit-formula routes
 

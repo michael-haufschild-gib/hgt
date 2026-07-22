@@ -1,11 +1,11 @@
 # CCM unit-Riesz Möbius renewal law
 
 - **ID:** `ccm-unit-riesz-mobius-renewal-law`
-- **Stage:** 3-formalized/new_scientific_knowledge
+- **Stage:** 3-formalized/not_new_scientific_knowledge
 - **Type:** THEOREM, finite source core
-- **Scientific status:** `[FORMALIZED] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 - **Paper parent:**
-  `../../2-fully-proven/new_scientific_knowledge/ccm-unit-riesz-mobius-wavelet-reduction.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/ccm-unit-riesz-mobius-wavelet-reduction.md`
 
 ## Formal theorem surface
 
@@ -43,4 +43,3 @@ probability-collapse conclusion used by the paper theorem.
 - [ ] formalize critical boundary/Stieltjes wavelet after reusable API exists
 - [ ] prove open coefficient bound
 - [ ] RH
-

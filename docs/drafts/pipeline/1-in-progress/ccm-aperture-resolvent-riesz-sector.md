@@ -64,7 +64,7 @@ prime and polar channels are coupled before scalar absolute values.
    ```
 
 2. Apply the power-corrected one-sided Landau argument.  This connector is now paper-proved in
-   `../2-fully-proven/new_scientific_knowledge/ccm-unit-riesz-markov-virial-landau-law.md`:
+   `../2-fully-proven/not_new_scientific_knowledge/ccm-unit-riesz-markov-virial-landau-law.md`:
    the transformed Markov--virial coefficient has every off-critical zero as a genuine pole and
    no matching real singularity at its nonnegative-function abscissa.
 3. Attack `(2)` at source level using the exact Stieltjes form
