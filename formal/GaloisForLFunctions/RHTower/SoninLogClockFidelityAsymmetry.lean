@@ -40,10 +40,22 @@ theorem soninLogFourierScattering_pureStateFidelityDeficit_eq_four_mul_sectorWei
       soninLogFourierScattering soninLogFourierScattering_adjoint_mul_self
       soninLogFourierScattering_sq_eq_one hψnorm
 
-/-- The same sector product is the projective Gram distance from a normalized state to its
-scattering transform. -/
+/-- Before normalization, the homogeneous Sonin fidelity deficit is exactly the product of its
+physical and nonphysical scattering-sector weights. -/
+theorem soninLogFourierScattering_homogeneousFidelityDeficit_eq_four_mul_sectorWeights
+    (ψ : SoninL2) :
+    ‖ψ‖ ^ 4 - ‖inner ℂ ψ (soninLogFourierScattering ψ)‖ ^ 2 =
+      4 * ‖soninLogFourierInvariantAverage ψ‖ ^ 2 *
+        ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2 := by
+  simpa only [soninLogFourierInvariantAverage] using
+    HTGeometry.finiteInvolutiveClock_homogeneousFidelityDeficit_eq_four_mul_sectorWeights
+      soninLogFourierScattering soninLogFourierScattering_adjoint_mul_self
+      soninLogFourierScattering_sq_eq_one ψ
+
+/-- The same sector product is the projective Gram distance from every state to its scattering
+transform; no unit-norm hypothesis is required. -/
 theorem soninLogFourierScattering_projectiveAsymmetry_eq_four_mul_sectorWeights
-    {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1) :
+    (ψ : SoninL2) :
     HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ) ψ
         (soninLogFourierScattering ψ) =
       4 * ‖soninLogFourierInvariantAverage ψ‖ ^ 2 *
@@ -51,7 +63,7 @@ theorem soninLogFourierScattering_projectiveAsymmetry_eq_four_mul_sectorWeights
   simpa only [soninLogFourierInvariantAverage] using
     HTGeometry.finiteInvolutiveClock_projectiveAsymmetry_eq_four_mul_sectorWeights
       soninLogFourierScattering soninLogFourierScattering_adjoint_mul_self
-      soninLogFourierScattering_sq_eq_one hψnorm
+      soninLogFourierScattering_sq_eq_one ψ
 
 end
 

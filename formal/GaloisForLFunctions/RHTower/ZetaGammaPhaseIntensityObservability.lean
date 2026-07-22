@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
 import GaloisForLFunctions.HTGeometry.FiniteGeneratorDifferentialEscape
+import GaloisForLFunctions.HTGeometry.ScalarLogCurrentReconstruction
+import GaloisForLFunctions.HTGeometry.ProjectiveHorizonJetTailTransition
 import GaloisForLFunctions.RHTower.ZetaChiHypertranscendentalClock
 
 /-!
@@ -80,6 +82,51 @@ theorem centeredZetaGammaReflectedFrequencyMero_ne_zero :
     centeredZetaGammaReflectedFrequencyMero ≠ 0 := by
   exact gammaOppositeShiftQuotientMero_ne_zero _ _
 
+/-- The centered zeta Gamma reflection clock is nonzero in the meromorphic field. -/
+theorem centeredZetaGammaReflectionMero_ne_zero :
+    centeredZetaGammaReflectionMero ≠ 0 := by
+  rw [centeredZetaGammaReflectionMero_eq_inv_reflectedFrequency]
+  exact inv_ne_zero centeredZetaGammaReflectedFrequencyMero_ne_zero
+
+/-- **Centered Gamma projective-horizon complementarity.**  The actual frequency-reflected Gamma
+carrier and the original reflection clock define distinct first-jet horizons.  Jointly they recover
+the complete differential source field, while their common part retains the Schwarzian curvature.
+All abstract HT hypotheses are discharged by the centered Gamma clock theorem. -/
+theorem centeredZetaGamma_projectiveHorizon_complementarityProfile :
+    jetTailField (RatFunc ℂ) centeredZetaGammaReflectedFrequencyMero 1 ≠
+        jetTailField (RatFunc ℂ) centeredZetaGammaReflectionMero 1 ∧
+      jetTailField (RatFunc ℂ) centeredZetaGammaReflectionMero 1 ⊔
+          jetTailField (RatFunc ℂ) centeredZetaGammaReflectedFrequencyMero 1 =
+        jetTailField (RatFunc ℂ) centeredZetaGammaReflectionMero 0 ∧
+      schwarzian centeredZetaGammaReflectionMero ∈
+        jetTailField (RatFunc ℂ) centeredZetaGammaReflectionMero 1 ⊓
+          jetTailField (RatFunc ℂ) centeredZetaGammaReflectedFrequencyMero 1 := by
+  have hinv : centeredZetaGammaReflectionMero⁻¹ =
+      centeredZetaGammaReflectedFrequencyMero := by
+    rw [centeredZetaGammaReflectionMero_eq_inv_reflectedFrequency, inv_inv]
+  simpa only [hinv] using
+    GaloisForLFunctions.hypertranscendentalOver_projectiveHorizon_complementarityProfile
+      centeredZetaGammaReflectionMero
+      hypertranscendentalOver_centeredZetaGammaReflectionMero
+
+/-- **Sharp centered Gamma horizon transition.** The opposite first Gamma horizons share a
+nontrivial curvature field, whereas every positive-depth pair has only rational clocks in common
+as soon as either horizon reaches depth two.  All ambient-generation and abstract HT hypotheses
+are discharged. -/
+theorem centeredZetaGamma_projectiveHorizon_sharpDepthTransition :
+    jetTailField (RatFunc ℂ) centeredZetaGammaReflectionMero 1 ⊓
+          jetTailField (RatFunc ℂ) centeredZetaGammaReflectedFrequencyMero 1 ≠ ⊥ ∧
+      ∀ {m n : ℕ}, 1 ≤ m → 1 ≤ n → (2 ≤ m ∨ 2 ≤ n) →
+        jetTailField (RatFunc ℂ) centeredZetaGammaReflectionMero m ⊓
+            jetTailField (RatFunc ℂ) centeredZetaGammaReflectedFrequencyMero n = ⊥ := by
+  have hinv : centeredZetaGammaReflectionMero⁻¹ =
+      centeredZetaGammaReflectedFrequencyMero := by
+    rw [centeredZetaGammaReflectionMero_eq_inv_reflectedFrequency, inv_inv]
+  simpa only [hinv] using
+    GaloisForLFunctions.hypertranscendentalOver_projectiveHorizon_sharpDepthTransition
+      centeredZetaGammaReflectionMero
+      hypertranscendentalOver_centeredZetaGammaReflectionMero
+
 /-- **Centered Gamma log-current value relation.**  The Wigner--Smith current of the centered
 reflection clock is the negative current of its reciprocal frequency-reflected carrier. -/
 theorem centeredZetaGammaWignerSmithLogClockMero_eq_neg_reflectedFrequency :
@@ -122,6 +169,69 @@ theorem centeredZetaGammaPhaseObservationMero_eq_square :
     centeredZetaGammaReflectionMero_eq_inv_reflectedFrequency]
   field_simp [centeredZetaGammaReflectedFrequencyMero_ne_zero]
 
+/-- **Phase--current connector.**  The logarithmic derivative of the complete centered Gamma
+phase is exactly twice its Wigner--Smith current.  Intensity loses the clock, but phase and current
+retain the same oriented logarithmic information. -/
+theorem centeredZetaGammaPhaseObservationMero_logDeriv_eq_two_mul_wignerSmith :
+    Differential.logDeriv centeredZetaGammaPhaseObservationMero =
+      2 * centeredZetaGammaWignerSmithLogClockMero := by
+  rw [centeredZetaGammaPhaseObservationMero_eq_square]
+  unfold centeredZetaGammaWignerSmithLogClockMero HTGeometry.wignerSmithLogClock
+  exact HTGeometry.differential_logDeriv_pow
+    centeredZetaGammaReflectionMero centeredZetaGammaReflectionMero_ne_zero 2
+
+/-- **Phase-current field invariance.**  Logarithmic differentiation of the observed squared
+phase generates exactly the same differential field as the Wigner--Smith current of the original
+reflection clock.  The square observation loses only an ordinary amplitude sign, not differential
+current information. -/
+theorem differentialAdjoin_centeredZetaGammaPhase_logDeriv_eq_wignerSmith :
+    differentialAdjoin (RatFunc ℂ)
+        ({Differential.logDeriv centeredZetaGammaPhaseObservationMero} :
+          Set (meroField Set.univ)) =
+      differentialAdjoin (RatFunc ℂ)
+        ({centeredZetaGammaWignerSmithLogClockMero} :
+          Set (meroField Set.univ)) := by
+  rw [centeredZetaGammaPhaseObservationMero_eq_square]
+  unfold centeredZetaGammaWignerSmithLogClockMero HTGeometry.wignerSmithLogClock
+  exact HTGeometry.differentialAdjoin_logDeriv_pow_eq
+    (F := RatFunc ℂ) centeredZetaGammaReflectionMero_ne_zero
+      (N := 2) (by norm_num)
+
+/-- **Exact phase-current finite-cover reconstruction.**  The differential field generated by
+the centered Gamma phase is the ordinary field obtained by adjoining that phase coordinate to the
+Wigner--Smith current field.  Thus no further differential generators are hidden in the square
+phase channel. -/
+theorem differentialAdjoin_centeredZetaGammaPhase_eq_current_adjoin_phase :
+    differentialAdjoin (RatFunc ℂ)
+        ({centeredZetaGammaPhaseObservationMero} : Set (meroField Set.univ)) =
+      IntermediateField.adjoin (RatFunc ℂ)
+        (((differentialAdjoin (RatFunc ℂ)
+          ({centeredZetaGammaWignerSmithLogClockMero} :
+            Set (meroField Set.univ)) :
+              IntermediateField (RatFunc ℂ) (meroField Set.univ)) :
+            Set (meroField Set.univ)) ∪
+          {centeredZetaGammaPhaseObservationMero}) := by
+  rw [centeredZetaGammaPhaseObservationMero_eq_square]
+  unfold centeredZetaGammaWignerSmithLogClockMero HTGeometry.wignerSmithLogClock
+  exact HTGeometry.differentialAdjoin_pow_eq_logCurrentOrdinaryExtension
+    (F := RatFunc ℂ) centeredZetaGammaReflectionMero_ne_zero
+      (N := 2) (by norm_num)
+
+/-- Every differential observable of the centered Gamma Wigner--Smith current is reconstructible
+from the phase channel.  Together with intensity blindness, this gives the exact one-way
+observability order `intensity < phase`. -/
+theorem centeredZetaGammaCurrentField_le_phaseField :
+    differentialAdjoin (RatFunc ℂ)
+        ({centeredZetaGammaWignerSmithLogClockMero} :
+          Set (meroField Set.univ)) ≤
+      differentialAdjoin (RatFunc ℂ)
+        ({centeredZetaGammaPhaseObservationMero} :
+          Set (meroField Set.univ)) := by
+  intro z hz
+  rw [differentialAdjoin_centeredZetaGammaPhase_eq_current_adjoin_phase]
+  exact IntermediateField.subset_adjoin (RatFunc ℂ) _
+    (Set.mem_union_left _ hz)
+
 /-- Squaring the centered zeta Gamma clock does not remove its HT source. -/
 theorem hypertranscendentalOver_centeredZetaGammaPhaseObservationMero :
     HypertranscendentalOver (RatFunc ℂ)
@@ -148,6 +258,25 @@ theorem hypertranscendentalOver_centeredZetaGammaWignerSmithLogClockMero :
   rw [centeredZetaGammaWignerSmithLogClockMero,
     HTGeometry.hypertranscendentalOver_wignerSmithLogClock_iff]
   exact hypertranscendentalOver_centeredZetaGammaReflectionMero
+
+/-- **Complete centered Gamma observability profile.**  Intensity is identically one, phase is
+the squared reflection clock, its logarithmic derivative is twice the Wigner--Smith current, and
+both oriented observables remain hypertranscendental over rational clocks. -/
+theorem centeredZetaGamma_phaseIntensityCurrent_observabilityProfile :
+    centeredZetaGammaIntensityObservationMero = 1 ∧
+      centeredZetaGammaPhaseObservationMero =
+        centeredZetaGammaReflectionMero ^ 2 ∧
+      Differential.logDeriv centeredZetaGammaPhaseObservationMero =
+        2 * centeredZetaGammaWignerSmithLogClockMero ∧
+      HypertranscendentalOver (RatFunc ℂ)
+        centeredZetaGammaPhaseObservationMero ∧
+      HypertranscendentalOver (RatFunc ℂ)
+        centeredZetaGammaWignerSmithLogClockMero := by
+  exact ⟨centeredZetaGammaIntensityObservationMero_eq_one,
+    centeredZetaGammaPhaseObservationMero_eq_square,
+    centeredZetaGammaPhaseObservationMero_logDeriv_eq_two_mul_wignerSmith,
+    hypertranscendentalOver_centeredZetaGammaPhaseObservationMero,
+    hypertranscendentalOver_centeredZetaGammaWignerSmithLogClockMero⟩
 
 /-- **Positive finite-generator phase escape.**  Every finite rational state packet containing the
 centered zeta Gamma phase loses differential closure at one of its chosen generators. -/

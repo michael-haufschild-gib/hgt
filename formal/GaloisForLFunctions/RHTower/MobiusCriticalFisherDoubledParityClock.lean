@@ -316,6 +316,25 @@ theorem norm_finiteMobiusDoubledObservable_source_sq (sigma : ℝ) (N : ℕ) :
       (finiteMobiusParity_comm_centeredLog sigma N)]
   exact norm_finiteMobiusCriticalCenteredLogObservable_source_sq sigma N
 
+/-- The complete doubled-clock star-Kadison energy is exactly the scaled finite Möbius logarithmic
+variance.  This is the static arbitrary-operator observability value underlying the doubled QFI. -/
+theorem re_inner_finiteMobiusDoubledObservableTwirlStarKadisonDefect_eq_variance
+    (sigma : ℝ) (N : ℕ) :
+    RCLike.re
+        (inner ℂ (finiteMobiusDoubledSource sigma N)
+          (HTGeometry.finiteCyclicObservableTwirlStarKadisonDefect
+            (finiteMobiusDoubledClock N) (finiteMobiusDoubledObservable sigma N) 2
+            (finiteMobiusDoubledSource sigma N))) =
+      (sigma - 1) ^ 2 * finiteMobiusLogVariance sigma N := by
+  rw [HTGeometry.re_inner_finiteInvolutiveObservableTwirlStarKadisonDefect_eq_quarter_commutatorNormSq_of_fixed
+    (finiteMobiusDoubledClock N) (finiteMobiusDoubledObservable sigma N)
+    (finiteMobiusDoubledClock_adjoint_mul N) (finiteMobiusDoubledClock_sq N)
+    (finiteMobiusDoubledClock_fixed_source sigma N),
+    finiteMobiusDoubledClock_commutator_source, norm_smul]
+  have htwo : ‖(2 : ℂ)‖ = 2 := by norm_num
+  rw [htwo, mul_pow, norm_finiteMobiusDoubledObservable_source_sq]
+  ring
+
 def finiteMobiusDoubledErasedQFI (sigma : ℝ) (N : ℕ) : ℝ :=
   HTGeometry.pureStateQuantumFisherValue (‖finiteMobiusDoubledSource sigma N‖ ^ 2)
     (‖inner ℂ (finiteMobiusDoubledSource sigma N)
@@ -329,19 +348,13 @@ def finiteMobiusDoubledErasedQFI (sigma : ℝ) (N : ℕ) : ℝ :=
 theorem finiteMobiusDoubledErasedQFI_eq_variance (sigma : ℝ) (N : ℕ) :
     finiteMobiusDoubledErasedQFI sigma N =
       4 * (sigma - 1) ^ 2 * finiteMobiusLogVariance sigma N := by
-  unfold finiteMobiusDoubledErasedQFI finiteMobiusDoubledClock
-    finiteMobiusDoubledObservable finiteMobiusDoubledSource
-  rw [HTGeometry.doubledParityClock_erasedQFI_eq_four_mul_oddNormSq
-    (finiteMobiusParity N) (finiteMobiusCriticalCenteredLogObservable sigma N)
-    (finiteMobiusParity_isSelfAdjoint N) (finiteMobiusParity_sq N)
-    (finiteMobiusParity_norm N)
-    (finiteMobiusCriticalCenteredLogObservable_isSelfAdjoint sigma N)
-    (finiteMobiusParity_comm_centeredLog sigma N)
-    (norm_finiteMobiusSource sigma N)]
-  rw [HTGeometry.norm_doubledOddObservable_source_sq _ _
-    (finiteMobiusParity_norm N)
-    (finiteMobiusParity_comm_centeredLog sigma N),
-    norm_finiteMobiusCriticalCenteredLogObservable_source_sq]
+  unfold finiteMobiusDoubledErasedQFI
+  rw [HTGeometry.finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+    (finiteMobiusDoubledClock N) (finiteMobiusDoubledObservable sigma N) 2 two_ne_zero
+    (finiteMobiusDoubledClock_adjoint_mul N) (finiteMobiusDoubledClock_sq N)
+    (norm_finiteMobiusDoubledSource sigma N)
+    (finiteMobiusDoubledClock_fixed_source sigma N),
+    re_inner_finiteMobiusDoubledObservableTwirlStarKadisonDefect_eq_variance]
   ring
 
 theorem norm_finiteMobiusDoubledClock_commutator_source_sq

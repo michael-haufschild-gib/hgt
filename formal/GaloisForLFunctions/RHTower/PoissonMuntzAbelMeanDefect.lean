@@ -54,6 +54,63 @@ theorem intervalIntegrable_poissonMuntzAngularDatum
   · field_simp [Real.pi_ne_zero]
   · field_simp [Real.pi_ne_zero]
 
+/-- Continuity at zero discharges the symmetric-Lebesgue boundary condition exactly. -/
+theorem tendsto_symmetricLebesgueAverage_of_continuousAt
+    {φ : ℝ → ℝ} (hφint : IntervalIntegrable φ volume (-Real.pi) Real.pi)
+    (hφ : ContinuousAt φ 0) :
+    Tendsto (fun s : ℝ =>
+      ((∫ t in (0 : ℝ)..s,
+        (|φ t - φ 0| + |φ (-t) - φ 0|)) / s))
+      (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+  let q : ℝ → ℝ := fun t => |φ t - φ 0| + |φ (-t) - φ 0|
+  have hnegφ : ContinuousAt (fun t => φ (-t)) 0 := by
+    convert hφ.comp_of_eq continuousAt_neg neg_zero using 1
+  have hq : ContinuousAt q 0 := by
+    dsimp only [q]
+    exact (hφ.sub continuousAt_const).abs.add
+      (hnegφ.sub continuousAt_const).abs
+  have hq0 : q 0 = 0 := by simp [q]
+  have hnegint : IntervalIntegrable (fun t => φ (-t)) volume (-Real.pi) Real.pi := by
+    simpa only [neg_neg] using ((IntervalIntegrable.iff_comp_neg).mp hφint).symm
+  have hconst : IntervalIntegrable (fun _ : ℝ => φ 0) volume (-Real.pi) Real.pi :=
+    _root_.intervalIntegrable_const
+  have hqint : IntervalIntegrable q volume (-Real.pi) Real.pi := by
+    exact (hφint.sub hconst).abs.add (hnegint.sub hconst).abs
+  have hqon : IntegrableOn q (uIoc (-Real.pi) Real.pi) volume :=
+    intervalIntegrable_iff.mp hqint
+  have hset : uIoc (-Real.pi) Real.pi ∈ 𝓝 (0 : ℝ) := by
+    rw [uIoc_of_le (by linarith [Real.pi_pos])]
+    exact mem_of_superset
+      (isOpen_Ioo.mem_nhds (by constructor <;> linarith [Real.pi_pos]))
+      Ioo_subset_Ioc_self
+  have hmeas : StronglyMeasurableAtFilter q (𝓝 (0 : ℝ)) volume :=
+    AEStronglyMeasurable.stronglyMeasurableAtFilter_of_mem
+      (MeasureTheory.Integrable.aestronglyMeasurable hqon) hset
+  have hderiv : HasDerivAt (fun s => ∫ t in (0 : ℝ)..s, q t) 0 0 := by
+    have h := intervalIntegral.integral_hasDerivAt_right
+      (a := (0 : ℝ)) (b := (0 : ℝ)) (f := q)
+      IntervalIntegrable.refl hmeas hq
+    simpa only [hq0] using h
+  have hslope := hderiv.tendsto_slope_zero_right
+  simpa [slope, q, div_eq_mul_inv, mul_comm] using hslope
+
+/-- Continuous scaled periodization supplies Poisson--Muntz's symmetric-Lebesgue input. -/
+theorem tendsto_poissonMuntz_symmetricLebesgueAverage_of_continuousAt
+    {f : ℝ → ℝ} (hf : Integrable f) {a : ℝ} (ha : 0 < a)
+    (hcont : ContinuousAt (poissonMuntzScaledPeriodization f a) 0) :
+    Tendsto (fun s : ℝ =>
+      ((∫ t in (0 : ℝ)..s,
+        |poissonMuntzAngularDatum f a t - poissonMuntzAngularDatum f a 0| +
+          |poissonMuntzAngularDatum f a (-t) - poissonMuntzAngularDatum f a 0|) / s))
+      (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+  apply tendsto_symmetricLebesgueAverage_of_continuousAt
+    (intervalIntegrable_poissonMuntzAngularDatum hf ha)
+  unfold poissonMuntzAngularDatum
+  have hscale : ContinuousAt (fun t : ℝ => t / (2 * Real.pi)) 0 :=
+    continuousAt_id.div_const (2 * Real.pi)
+  simpa only [Function.comp_apply] using
+    hcont.comp_of_eq hscale (by norm_num)
+
 /-- On the angular scale, the integer Fourier character is the ordinary phase
 `exp(i t) ^ m`. -/
 theorem fourier_apply_div_two_pi (m : ℤ) (t : ℝ) :

@@ -934,3 +934,218 @@ unbalanced slab difference in `(53)` is exactly the information that remains.
 Therefore do not retry generic variance polarization, two-boundary Gram compression, or formal
 Dirichlet convolution as a provider.  A live successor must prove a new source-specific stability
 law for the unbalanced completed slab current itself.
+
+## C19 bounded finite-tree completion is categorically excluded `[PROVED / LEAN-FORMALIZED]`
+
+The balanced finite prime-Ising comparison subroute now has an exact closure obstruction, not
+another variance estimate.  Every finite tree `T` admits a recursively constructed complex
+spectral packet with exactly
+
+```text
+2^|V(T)|
+```
+
+lines whose evaluation is its balanced partition.  At every point its complete derivative jet
+therefore has modal width at most `2^|V(T)|`.  Independently, for every fixed `d`, the determinant
+of the `(d+1)`-square derivative Hankel matrix is a genuine nonzero differential polynomial.
+Local-uniform convergence transports that determinant, so an eventually fixed-width family can
+never converge to a hypertranscendental entire function.
+
+The already-formalized FK curvature floor says any hypothetical unscaled balanced-tree sequence
+converging to unit-central Xi has eventually bounded vertex count.  The exact packet law converts
+that bound to eventually fixed modal width.  Unconditional hypertranscendence of `xi`, transported
+through the critical-line affine map and nonzero central scaling, gives the contradiction:
+
+```text
+not TendstoLocallyUniformly
+  (n |-> balancedPrimeIsingTreePartition(T_n))
+  unitCentralXiC.
+```
+
+Lean modules:
+
+- `formal/GaloisForLFunctions/HTGeometry/FixedModalLocallyUniformHankel.lean`;
+- `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeFixedModalClosureNoGo.lean`.
+
+Targeted module build and the repository formal lint pass.  Axiom audit of the universal
+polynomial, closure law, exact packet cardinality, jet-width theorem, and convergence no-go reports
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Do not retry theta-moment positivity, finite rank, finite tree topology, changing prime labels, or
+changing ferromagnetic couplings as escape hatches: the theorem allows all of them.  Exact scope:
+critical rescaling can let `|V_n|` grow while the scale collapses, and infinite active-even CCM is
+not a bounded-modal family.  C19 therefore freezes the entire unscaled balanced finite-tree branch
+but does not discharge `(52)` or the four-unit infinite graph endpoint.
+
+## C20 closed-graph conservative intertwiner is already excluded `[CORPUS COLLISION]`
+
+Do not repackage C17's actual-prime graph-null sequence as a new abstract graph-morphism theorem.
+`ArithmeticSchurExactNormRiggingNoGo.lean` already proves the stronger statement: nonclosability
+survives every exact-norm complete rigging, every source norm bounded above by the arithmetic-Schur
+norm with response norm bounded by the model response, every bounded first-valuation marker, every
+closed everywhere-defined scalar marker, and every closable densely defined scalar marker.
+Consequently an energy-injective intertwiner into a closed Xi operator graph is already dead in the
+entire source-controlled conservative category.  C17's missing definition-level source-to-Xi map
+cannot rescue that category; if it preserved the relevant source/response norms it would contradict
+the existing rigging theorem.  Remaining endpoint work must act directly on the completed
+unbalanced slab current or use a genuinely nonconservative/unbounded-distortion construction.
+
+## C21 local prime--archimedean reflection cancellation cannot bound the source slab `[KILLED]`
+
+`CompletedFluxPrimeArchDecomposition.lean` proves the exact all-order identity
+
+```text
+(-1)^n a_prime(1-rho,n)-a_prime(rho,n)
+  =a_arch(rho,n)-(-1)^n a_arch(1-rho,n).
+```
+
+This identity is not a pre-square source cancellation for `(52)`.  Its prime germ is the
+*meromorphically continued* logarithmic derivative at a selected strip point `rho`, its removable
+value uses `analyticOrderAt xi rho`, and the proof obtains cancellation by decomposing the
+completed Xi flux and applying the functional equation.  At `rho=1/2` the odd cancellation is
+exactly the odd Taylor parity of the completed flux.  Summing it over the physical moving slab
+would therefore insert the completed divisor continuation after the source has been selected; it
+does not estimate the raw von-Mangoldt current whose critical `L2` bound is `(52)`.
+
+Do not retry Taylor-parity summation, local-zero reflection, or central odd-jet cancellation as a
+provider for the endpoint energy.  Valid cancellation must be defined on the finite/all-prime CCM
+source before choosing a zero or invoking completed-flux parity.
+
+## C22 current CCM paper frontier and stale radial gate reconciliation `[CORPUS-RESOLVED]`
+
+The current Connes--Consani--Moscovici paper identifies two missing inputs: large-aperture
+simple-evenness of the true restricted-Weil ground and sufficiently accurate projective comparison
+of that ground with the prolate vector `k_lambda=E(h_lambda)`. The corpus already supplies the
+finite/Galerkin determinant transfer, exact growing Mellin topology, parity determinant algebra,
+fixed-depth prolate ladder, and radial Toeplitz--Schur correction. Do not rederive those layers.
+
+One apparent source frontier was stale. `ccm-radial-von-mangoldt-resonance-law.md` still listed the
+truncated-divisor high radial first row and all-prime interchange as open. The later weighted
+nuclear theorem in `universal-radial-prolate-arithmetic-dilation-spectrum.md` proves both, and
+`constrained-prolate-arithmetic-dilation-operator-limit.md` extracts the stronger arithmetic
+trace-class spectrum. Divisor reindexing gives the exact identity
+
+```text
+sum_(q>=2) Lambda(q)/q sum_(j>=1) arcsin(1/(q*j))/j
+ =sum_(k>=2) log(k)/k*arcsin(1/k),
+```
+
+so the old resonance constant and the later trace constant are the same theorem, not two open
+problems. The stale card is now marked resolved.
+
+The first unclosed prolate-source term is therefore the intact polar--prime critical-Mellin graph
+assembly in `constrained-prolate-continuous-polar-charge-law.md`. Its regular archimedean channel,
+complete raw radial prime channel, central Abel algebra, and normalized budget transfer are already
+proved. Once that assembly is closed, no source asymptotic alone proves RH: the independent endpoint
+is the true restricted-Weil negative-floor/no-birth theorem (equivalently the complete Euler-ray
+kernel positivity). Do not return to fixed-dilation resonance, high radial first-row estimates,
+or finite determinant algebra.
+
+## C23 parity algebra frozen; source variation has a new Sturm route `[ACTIVE]`
+
+`CCMParityCompressionDeterminant.lean` now formalizes the universal central-cofactor determinant,
+central resolvent quotient, and positive-distinct-atomic Hankel law. Do not retry adjugate,
+Vandermonde, or finite positive-atom arguments. They reduce simple-evenness to actual source
+positivity but do not supply it.
+
+The first genuinely new source attack replaces the unproved claim that the fixed prolate modes
+converge in `W^(1,1)`. On the positive half-band, a spheroidal mode satisfies
+
+```text
+((1-z^2)y')'=(gamma^2 z^2-alpha_n)y.
+```
+
+The coefficient on the right has one turning point. Away from the finitely many nodal points and
+that turning point, `y` has fixed sign and `(1-z^2)y'` is strictly monotone, hence `y'` has at most
+one zero. The degree-`n` spheroidal mode has exactly `n/2` positive nodal zeros when `n` is even.
+Thus every fixed even mode has a number of monotonicity pieces bounded independently of `lambda`.
+CCM Lemma 7.2 supplies a uniform sup-norm bound for modes `0` and `4`; their vanishing-integral
+coefficients converge and are bounded. Subadditivity of variation therefore gives
+
+```text
+Var(g_lambda^+)=O(1).
+```
+
+This closes the paper argument for the exact regularity budget `(19e)` without derivative
+asymptotics. It is not yet admitted as a completed corpus theorem: formalize the universal
+one-turning-point Sturm variation law and the actual prolate representative/oscillation instance
+before promoting the polar--prime source law. Endpoint values must use the half-jump convention so
+the scaled periodization has the correct symmetric Lebesgue value when `lambda*a` is integral.
+
+Formal progress: `FiniteMonotonicityVariation.lean` proves the one-sign Sturm critical-point law
+and the exact `2*n*B` finite-monotonicity variation bound;
+`ProlateOneTurningVariation.lean` proves
+`((1-y^2)psi')'=(chi+c^2*y^2)psi` from the existing prolate action and specializes both sign-cell
+critical-point laws. Do not re-prove this calculus. Remaining source instance is spheroidal nodal
+enumeration plus the half-endpoint pointwise representative.
+
+## C24 canonical compact prolate representatives are exact `[LEAN-FORMALIZED]`
+
+`ConstrainedProlatePointwiseRepresentative.lean` closes the representative ambiguity for every
+nonzero eigenmode of the actual even time-band Fourier operator. Starting only from
+
+```text
+P_a F P_a f = chi f,   chi != 0,
+```
+
+it constructs a canonical source `g` with full values on `(-a,a)`, half values at `+-a`, and zero
+outside. Lean proves unconditionally that:
+
+```text
+g has compact support;
+g is integrable and equals f almost everywhere;
+g and its continuous Fourier representative are exactly even;
+Fourier(g)(w) is exactly the continuous representative for every real w;
+g(x)=chi^(-1) Fourier(g)(x) for every |x|<a;
+g(+-a)=chi^(-1) Fourier(g)(+-a)/2.
+```
+
+The endpoint equation is the exact symmetric Poisson convention: a lattice hit at either aperture
+boundary contributes the combined boundary value once, rather than two full endpoint copies.
+No spectral ordering, simplicity, PSWF asymptotic, or RH premise enters this module.
+
+Do not re-open L2 representative selection, interior continuity, pointwise Fourier identification,
+evenness, compact support, integrability, or half-endpoint normalization. Remaining route-specific
+source work is strictly:
+
+```text
+identify the classical real h_0,h_4 modes inside the actual operator spectrum;
+form their vanishing-integral contrast;
+prove the concrete nodal/turning-point partition and uniform variation;
+instantiate the already-formalized one-sided Poisson--Muntz theorem;
+close the all-radial weighted primitive and polar--prime source law.
+```
+
+None of those source statements proves the independent true restricted-Weil no-negative-birth
+theorem. Ultimate CCM endpoint remains the sharp complete Euler-frame lower bound, equivalently
+zero negative Morse birth for every aperture.
+
+## C25 half-endpoint collision and canonical Poisson--Muntz source law `[LEAN-FORMALIZED]`
+
+`SymmetricHalfEndpointPeriodization.lean` proves a universal boundary-exchange law. If `G` is
+continuous and even, the compact cutoff taking full values on `(-A,A)`, half values at `+-A`, and
+zero outside has a periodization continuous at zero for every positive lattice scale. At an exact
+integer boundary collision the `+n` and `-n` terms exchange inside/outside roles and their two
+half-values sum to one boundary value. This is exact; no BV estimate, non-lattice restriction, or
+Lebesgue-point hypothesis remains.
+
+`ConstrainedProlatePointwiseRepresentative.lean` now also proves that the opposite-integral
+contrast of any two nonzero time-band eigenmodes has a real source which is integrable, even,
+compactly supported, exactly zero mean, and exactly this half-endpoint cutoff of a continuous even
+profile. `PoissonMuntzAbelMeanDefect.lean` proves continuity implies the symmetric-Lebesgue input.
+`ConstrainedProlatePoissonMuntz.lean` therefore gives the unconditional square-root-normalized
+Poisson--Muntz physical-lattice boundary law for every such two-mode eigenpacket.
+
+Do not re-open endpoint double counting, integer-aperture continuity, symmetric-Lebesgue
+regularity, real-source extraction, algebraic zero mean, compact support, or generic two-mode
+Poisson--Muntz specialization. Exact remaining prolate-source work is only:
+
+```text
+identify CCM's classical h_0,h_4 as concrete nonzero eigenmodes of the formal operator;
+prove the concrete spheroidal nodal enumeration and uniform variation instance;
+insert those two already-closed connectors into the all-radial polar--prime law.
+```
+
+After that source law, the ultimate CCM/RH frontier is still independent: prove or refute the
+true restricted-Weil no-negative-birth theorem for every aperture. No source regularity argument
+can be counted as that spectral-floor theorem.

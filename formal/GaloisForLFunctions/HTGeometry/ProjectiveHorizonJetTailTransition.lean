@@ -9,12 +9,13 @@ The free rational current calculation becomes a statement about the actual diffe
 an arbitrary hypertranscendental scalar once the free raw coordinates are evaluated at its jet
 family.  This module supplies that transport.
 
-For a scalar `x` whose complete jet family generates the ambient field, the canonical rational
-jet parametrization sends the free coordinate `X_n` to `delta^n x`.  It sends the universal
-reciprocal jet to `delta^n (x⁻¹)`.  Consequently the free one-sided current collapse proves that
-the direct depth-`m` tail and reciprocal depth-`n` tail have scalar intersection when `m >= 1`
-and `n >= 2`.  Applying the same theorem to `x⁻¹` gives the opposite one-sided trigger, hence the
-complete positive-depth phase law whenever either horizon reaches depth two.
+For any hypertranscendental scalar `x`, the canonical rational jet parametrization targets its
+intrinsic order-zero jet field.  It sends the free coordinate `X_n` to `delta^n x` and the
+universal reciprocal jet to `delta^n (x⁻¹)`.  Consequently the free one-sided current collapse
+proves unconditionally that the direct depth-`m` tail and reciprocal depth-`n` tail have scalar
+intersection when `m >= 1` and `n >= 2`.  Applying the same theorem to `x⁻¹` gives the opposite
+one-sided trigger, hence the complete positive-depth phase law whenever either horizon reaches
+depth two.
 -/
 
 open scoped Differential
@@ -24,6 +25,18 @@ namespace GaloisForLFunctions
 noncomputable section
 
 open HTGeometry MvPolynomial
+
+/-! ## Basic nesting and exact intrinsic complementarity -/
+
+/-- Jet-tail fields are antitone in the cutoff order. -/
+theorem jetTailField_antitone
+    (C : Type*) {E : Type*} [Field C] [Field E] [Algebra C E]
+    [Differential E] (x : E) {m n : ℕ} (hmn : m ≤ n) :
+    jetTailField C x n ≤ jetTailField C x m := by
+  unfold jetTailField
+  apply IntermediateField.adjoin_le_iff.mpr
+  rintro _ ⟨k, hk, rfl⟩
+  exact IntermediateField.subset_adjoin C _ ⟨k, hmn.trans hk, rfl⟩
 
 /-! ## Ordinary descriptions of the scalar differential field -/
 
@@ -116,40 +129,97 @@ theorem differentialAdjoin_inv_singleton_eq
   · exact differentialAdjoin_inv_singleton_le C x
   · simpa only [inv_inv] using differentialAdjoin_inv_singleton_le C (x⁻¹)
 
-/-! ## The canonical raw-jet parametrization -/
+/-- Every reciprocal jet tail lies in the intrinsic order-zero jet field of the original
+scalar. -/
+theorem jetTailField_inv_le_zeroJetTail
+    (C : Type*) {E : Type*} [Field C] [Field E] [Algebra C E]
+    [Differential E] (x : E) (n : ℕ) :
+    jetTailField C x⁻¹ n ≤ jetTailField C x 0 := by
+  calc
+    jetTailField C x⁻¹ n ≤ jetTailField C x⁻¹ 0 :=
+      jetTailField_antitone C x⁻¹ (Nat.zero_le n)
+    _ = differentialAdjoin C ({x⁻¹} : Set E) :=
+      (differentialAdjoin_singleton_eq_jetTailField_zero C x⁻¹).symm
+    _ = differentialAdjoin C ({x} : Set E) :=
+      differentialAdjoin_inv_singleton_eq C x
+    _ = jetTailField C x 0 :=
+      differentialAdjoin_singleton_eq_jetTailField_zero C x
 
-/-- Evaluate the literal free raw-jet rational field at the complete jet family of `x`. -/
+/-- **Exact intrinsic projective complementarity.**  For an HT scalar, the two opposite first
+jet horizons jointly generate exactly its order-zero jet field.  This removes the ambient-field
+generation hypothesis from the earlier `= ⊤` formulation and identifies the precise join. -/
+theorem hypertranscendentalOver_sup_firstJetTail_inv_eq_zeroJetTail
+    {C E : Type*} [Field C] [CharZero C] [Differential C]
+    [Field E] [CharZero E] [Algebra C E] [Differential E]
+    [DifferentialAlgebra C E]
+    (x : E) (hx : HypertranscendentalOver C x) :
+    jetTailField C x 1 ⊔ jetTailField C x⁻¹ 1 = jetTailField C x 0 := by
+  apply le_antisymm
+  · apply sup_le
+    · exact jetTailField_antitone C x (by omega)
+    · calc
+        jetTailField C x⁻¹ 1 ≤ jetTailField C x⁻¹ 0 :=
+          jetTailField_antitone C x⁻¹ (by omega)
+        _ = differentialAdjoin C ({x⁻¹} : Set E) :=
+          (differentialAdjoin_singleton_eq_jetTailField_zero C x⁻¹).symm
+        _ = differentialAdjoin C ({x} : Set E) :=
+          differentialAdjoin_inv_singleton_eq C x
+        _ = jetTailField C x 0 :=
+          differentialAdjoin_singleton_eq_jetTailField_zero C x
+  · exact hypertranscendentalOver_zeroJetTail_le_sup_firstJetTail_inv x hx
+
+/-- The common part of opposite first jet horizons is genuinely larger than the coefficient
+field: it contains the nonconstant Schwarzian of the hypertranscendental source. -/
+theorem hypertranscendentalOver_inf_firstJetTail_inv_ne_bot
+    {C E : Type*} [Field C] [CharZero C] [Differential C]
+    [Field E] [CharZero E] [Algebra C E] [Differential E]
+    [DifferentialAlgebra C E]
+    (x : E) (hx : HypertranscendentalOver C x) :
+    jetTailField C x 1 ⊓ jetTailField C x⁻¹ 1 ≠ ⊥ := by
+  intro hbot
+  have hmem : schwarzian x ∈ (⊥ : IntermediateField C E) := by
+    rw [← hbot]
+    exact hypertranscendentalOver_schwarzian_mem_inf_firstJetTail_inv x hx
+  rw [IntermediateField.mem_bot] at hmem
+  rcases hmem with ⟨c, hc⟩
+  exact schwarzian_ne_constant_of_hypertranscendentalOver hx c hc.symm
+
+/-- **Complete projective-horizon profile.**  Opposite HT first horizons are distinct, their join
+is the full differential field intrinsic to the source, and their meet retains its Schwarzian
+curvature. -/
+theorem hypertranscendentalOver_projectiveHorizon_complementarityProfile
+    {C E : Type*} [Field C] [CharZero C] [Differential C]
+    [Field E] [CharZero E] [Algebra C E] [Differential E]
+    [DifferentialAlgebra C E]
+    (x : E) (hx : HypertranscendentalOver C x) :
+    jetTailField C x⁻¹ 1 ≠ jetTailField C x 1 ∧
+      jetTailField C x 1 ⊔ jetTailField C x⁻¹ 1 = jetTailField C x 0 ∧
+      schwarzian x ∈ jetTailField C x 1 ⊓ jetTailField C x⁻¹ 1 := by
+  exact ⟨jetTailField_inv_ne_of_hypertranscendentalOver x hx,
+    hypertranscendentalOver_sup_firstJetTail_inv_eq_zeroJetTail x hx,
+    hypertranscendentalOver_schwarzian_mem_inf_firstJetTail_inv x hx⟩
+
+/-! ## The intrinsic canonical raw-jet parametrization -/
+
+/-- Evaluate the literal free raw-jet rational field at the complete jet family of `x`.  Its
+natural codomain is the order-zero jet field, so no ambient generation hypothesis is needed. -/
 def projectiveHorizonJetParametrization
     {C E : Type*} [Field C] [Field E] [Algebra C E] [Differential E]
-    (x : E) (hx : HypertranscendentalOver C x)
-    (hgen : jetTailField C x 0 = ⊤) :
-    FreeScalarJetField C ≃ₐ[C] E := by
-  let j : ℕ → E := fun n => differentialJet n x
-  have hj : AlgebraicIndependent C j :=
-    algebraicIndependent_differentialJet_of_hypertranscendentalOver hx
-  have htop : IntermediateField.adjoin C (Set.range j) = ⊤ := by
-    rw [← jetTailField_zero_eq_adjoin_range C x]
-    exact hgen
-  exact hj.aevalEquivField.trans
-    ((IntermediateField.equivOfEq htop).trans IntermediateField.topEquiv)
+    (x : E) (hx : HypertranscendentalOver C x) :
+    FreeScalarJetField C ≃ₐ[C]
+      IntermediateField.adjoin C (Set.range fun n : ℕ => differentialJet n x) :=
+  (algebraicIndependent_differentialJet_of_hypertranscendentalOver hx).aevalEquivField
 
 /-- The canonical parametrization sends the `n`-th free coordinate to `delta^n x`. -/
 @[simp]
 theorem projectiveHorizonJetParametrization_freeCoordinate
     {C E : Type*} [Field C] [Field E] [Algebra C E] [Differential E]
-    (x : E) (hx : HypertranscendentalOver C x)
-    (hgen : jetTailField C x 0 = ⊤) (n : ℕ) :
-    projectiveHorizonJetParametrization x hx hgen
-        (freeCoordinate C ℕ n) = differentialJet n x := by
+    (x : E) (hx : HypertranscendentalOver C x) (n : ℕ) :
+    (projectiveHorizonJetParametrization x hx
+        (freeCoordinate C ℕ n) : E) = differentialJet n x := by
   let j : ℕ → E := fun n => differentialJet n x
   have hj : AlgebraicIndependent C j :=
     algebraicIndependent_differentialJet_of_hypertranscendentalOver hx
-  have htop : IntermediateField.adjoin C (Set.range j) = ⊤ := by
-    rw [← jetTailField_zero_eq_adjoin_range C x]
-    exact hgen
-  change (((IntermediateField.equivOfEq htop).trans IntermediateField.topEquiv)
-    (hj.aevalEquivField
-      (algebraMap (MvPolynomial ℕ C) (FreeScalarJetField C) (MvPolynomial.X n)))) = _
   change ((hj.aevalEquivField
       (algebraMap (MvPolynomial ℕ C) (FreeScalarJetField C) (MvPolynomial.X n)) :
         IntermediateField.adjoin C (Set.range j)) : E) = _
@@ -160,31 +230,57 @@ theorem projectiveHorizonJetParametrization_freeCoordinate
 theorem projectiveHorizonJetParametrization_freeJetReciprocalJet
     {C E : Type*} [Field C] [CharZero C] [Field E] [Algebra C E]
     [Differential E]
-    (x : E) (hx : HypertranscendentalOver C x)
-    (hgen : jetTailField C x 0 = ⊤) (n : ℕ) :
-    projectiveHorizonJetParametrization x hx hgen
-        (freeJetReciprocalJet C n) = differentialJet n x⁻¹ := by
-  let e := projectiveHorizonJetParametrization x hx hgen
+    (x : E) (hx : HypertranscendentalOver C x) (n : ℕ) :
+    (projectiveHorizonJetParametrization x hx
+        (freeJetReciprocalJet C n) : E) = differentialJet n x⁻¹ := by
+  let e := projectiveHorizonJetParametrization x hx
   have hx0 : x ≠ 0 := by
     simpa only [differentialJet_zero] using
       hypertranscendentalOver_differentialJet_ne_zero hx 0
   have hrec := finiteReciprocalJetValue_differentialJet_eq
     (F := C) (E := E) x hx0 n
-  change e (finiteReciprocalJetValue (F := C)
-      (fun k => freeCoordinate C ℕ k) n) = differentialJet n x⁻¹
+  change ((e (finiteReciprocalJetValue (F := C)
+      (fun k => freeCoordinate C ℕ k) n) :
+        IntermediateField.adjoin C
+          (Set.range fun k : ℕ => differentialJet k x)) : E) =
+    differentialJet n x⁻¹
   rw [← hrec]
   unfold finiteReciprocalJetValue
   rw [← AlgHom.coe_coe e, MvPolynomial.comp_aeval_apply]
+  have hcoe (g : ℕ → IntermediateField.adjoin C
+      (Set.range fun k : ℕ => differentialJet k x))
+      (p : MvPolynomial ℕ C) :
+      ((MvPolynomial.aeval g p : IntermediateField.adjoin C
+          (Set.range fun k : ℕ => differentialJet k x)) : E) =
+        MvPolynomial.aeval (fun i => (g i : E)) p := by
+    have hcomp :
+        (IntermediateField.val (IntermediateField.adjoin C
+          (Set.range fun k : ℕ => differentialJet k x))).comp
+            (MvPolynomial.aeval g) =
+          MvPolynomial.aeval (fun i => (g i : E)) := by
+      ext i
+      simp
+    exact DFunLike.congr_fun hcomp p
+  rw [hcoe]
   apply congrArg (fun g : ℕ → E =>
     MvPolynomial.aeval g (universalReciprocalJetPolynomialOver C n))
   funext k
   cases k with
   | zero =>
-      change e (freeCoordinate C ℕ 0)⁻¹ = (differentialJet 0 x)⁻¹
-      rw [map_inv₀, projectiveHorizonJetParametrization_freeCoordinate]
+      change ((e (freeCoordinate C ℕ 0)⁻¹ :
+          IntermediateField.adjoin C
+            (Set.range fun k : ℕ => differentialJet k x)) : E) =
+        (differentialJet 0 x)⁻¹
+      rw [map_inv₀]
+      simpa only [e] using congrArg Inv.inv
+        (projectiveHorizonJetParametrization_freeCoordinate x hx 0)
   | succ k =>
-      change e (freeCoordinate C ℕ (k + 1)) = differentialJet (k + 1) x
-      exact projectiveHorizonJetParametrization_freeCoordinate x hx hgen (k + 1)
+      change ((e (freeCoordinate C ℕ (k + 1)) :
+          IntermediateField.adjoin C
+            (Set.range fun j : ℕ => differentialJet j x)) : E) =
+        differentialJet (k + 1) x
+      simpa only [e] using
+        projectiveHorizonJetParametrization_freeCoordinate x hx (k + 1)
 
 /-! ## Pulling actual horizons back to the free field -/
 
@@ -192,65 +288,136 @@ theorem projectiveHorizonJetParametrization_freeJetReciprocalJet
 theorem projectiveHorizonJetParametrization_symm_mem_freeJetRawTailField
     {C E : Type*} [Field C] [Field E] [Algebra C E] [Differential E]
     (x : E) (hx : HypertranscendentalOver C x)
-    (hgen : jetTailField C x 0 = ⊤) (n : ℕ) {z : E}
-    (hz : z ∈ jetTailField C x n) :
-    (projectiveHorizonJetParametrization x hx hgen).symm z ∈
+    (n : ℕ)
+    (z : IntermediateField.adjoin C
+      (Set.range fun k : ℕ => differentialJet k x))
+    (hz : (z : E) ∈ jetTailField C x n) :
+    (projectiveHorizonJetParametrization x hx).symm z ∈
       freeJetRawTailField C n := by
-  let e := projectiveHorizonJetParametrization x hx hgen
+  let e := projectiveHorizonJetParametrization x hx
+  have hle : jetTailField C x n ≤ IntermediateField.adjoin C
+      (Set.range fun k : ℕ => differentialJet k x) := by
+    rw [← jetTailField_zero_eq_adjoin_range C x]
+    exact jetTailField_antitone C x (Nat.zero_le n)
+  let i := IntermediateField.inclusion hle
+  let phi : (jetTailField C x n) →ₐ[C] FreeScalarJetField C :=
+    e.symm.toAlgHom.comp i
   rw [jetTailField] at hz
-  apply IntermediateField.adjoin_induction C
+  have hp := IntermediateField.adjoin_induction C
     (s := (fun m => differentialJet m x) '' Set.Ici n)
-    (p := fun y _ => e.symm y ∈ freeJetRawTailField C n)
-  · rintro y ⟨m, hm, rfl⟩
-    have hpre : e.symm (differentialJet m x) = freeCoordinate C ℕ m := by
-      apply e.injective
-      rw [e.apply_symm_apply]
-      simpa only [e] using
-        (projectiveHorizonJetParametrization_freeCoordinate x hx hgen m).symm
-    rw [hpre]
-    exact IntermediateField.subset_adjoin C _ ⟨m, hm, rfl⟩
-  · intro c
-    simpa using (freeJetRawTailField C n).algebraMap_mem c
-  · intro a b ha hb hpa hpb
-    simpa using (freeJetRawTailField C n).add_mem hpa hpb
-  · intro a ha hpa
-    simpa using (freeJetRawTailField C n).inv_mem hpa
-  · intro a b ha hb hpa hpb
-    simpa using (freeJetRawTailField C n).mul_mem hpa hpb
-  · exact hz
+    (p := fun y hy => phi ⟨y, hy⟩ ∈
+          freeJetRawTailField C n)
+    (fun y hy => by
+      rcases hy with ⟨m, hm, rfl⟩
+      have hpre : phi ⟨differentialJet m x,
+          IntermediateField.subset_adjoin C _ ⟨m, hm, rfl⟩⟩ =
+          freeCoordinate C ℕ m := by
+        apply e.injective
+        change e (e.symm (i _)) = _
+        rw [e.apply_symm_apply]
+        apply Subtype.ext
+        exact (projectiveHorizonJetParametrization_freeCoordinate x hx m).symm
+      rw [hpre]
+      exact IntermediateField.subset_adjoin C _ ⟨m, hm, rfl⟩)
+    (fun c => by
+      change phi (⟨algebraMap C E c, _⟩ : jetTailField C x n) ∈
+        freeJetRawTailField C n
+      have hsub : (⟨algebraMap C E c, _⟩ : jetTailField C x n) =
+          algebraMap C (jetTailField C x n) c := Subtype.ext rfl
+      rw [hsub, phi.commutes]
+      exact (freeJetRawTailField C n).algebraMap_mem c)
+    (fun a b ha hb hpa hpb => by
+      change phi (⟨a + b, _⟩ : jetTailField C x n) ∈ freeJetRawTailField C n
+      have hsub : (⟨a + b, _⟩ : jetTailField C x n) =
+          (⟨a, ha⟩ : jetTailField C x n) + ⟨b, hb⟩ := Subtype.ext rfl
+      rw [hsub, map_add]
+      exact (freeJetRawTailField C n).add_mem hpa hpb)
+    (fun a ha hpa => by
+      change phi (⟨a⁻¹, _⟩ : jetTailField C x n) ∈ freeJetRawTailField C n
+      have hsub : (⟨a⁻¹, _⟩ : jetTailField C x n) =
+          (⟨a, ha⟩ : jetTailField C x n)⁻¹ := Subtype.ext rfl
+      rw [hsub, map_inv₀]
+      exact (freeJetRawTailField C n).inv_mem hpa)
+    (fun a b ha hb hpa hpb => by
+      change phi (⟨a * b, _⟩ : jetTailField C x n) ∈ freeJetRawTailField C n
+      have hsub : (⟨a * b, _⟩ : jetTailField C x n) =
+          (⟨a, ha⟩ : jetTailField C x n) * ⟨b, hb⟩ := Subtype.ext rfl
+      rw [hsub, map_mul]
+      exact (freeJetRawTailField C n).mul_mem hpa hpb)
+    hz
+  change e.symm (i ⟨(z : E), hz⟩) ∈ freeJetRawTailField C n at hp
+  rw [show i ⟨(z : E), hz⟩ = z by exact Subtype.ext rfl] at hp
+  exact hp
 
 /-- The preimage of an actual reciprocal jet tail lies in the universal free reciprocal tail. -/
 theorem projectiveHorizonJetParametrization_symm_mem_freeJetReciprocalTailField
     {C E : Type*} [Field C] [CharZero C] [Field E] [Algebra C E]
     [Differential E]
     (x : E) (hx : HypertranscendentalOver C x)
-    (hgen : jetTailField C x 0 = ⊤) (n : ℕ) {z : E}
-    (hz : z ∈ jetTailField C x⁻¹ n) :
-    (projectiveHorizonJetParametrization x hx hgen).symm z ∈
+    (n : ℕ)
+    (z : IntermediateField.adjoin C
+      (Set.range fun k : ℕ => differentialJet k x))
+    (hz : (z : E) ∈ jetTailField C x⁻¹ n) :
+    (projectiveHorizonJetParametrization x hx).symm z ∈
       freeJetReciprocalTailField C n := by
-  let e := projectiveHorizonJetParametrization x hx hgen
+  let e := projectiveHorizonJetParametrization x hx
+  have hle : jetTailField C x⁻¹ n ≤ IntermediateField.adjoin C
+      (Set.range fun k : ℕ => differentialJet k x) := by
+    rw [← jetTailField_zero_eq_adjoin_range C x]
+    exact jetTailField_inv_le_zeroJetTail C x n
+  let i := IntermediateField.inclusion hle
+  let phi : (jetTailField C x⁻¹ n) →ₐ[C] FreeScalarJetField C :=
+    e.symm.toAlgHom.comp i
   rw [jetTailField] at hz
-  apply IntermediateField.adjoin_induction C
+  have hp := IntermediateField.adjoin_induction C
     (s := (fun m => differentialJet m x⁻¹) '' Set.Ici n)
-    (p := fun y _ => e.symm y ∈ freeJetReciprocalTailField C n)
-  · rintro y ⟨m, hm, rfl⟩
-    have hpre : e.symm (differentialJet m x⁻¹) = freeJetReciprocalJet C m := by
-      apply e.injective
-      rw [e.apply_symm_apply]
-      simpa only [e] using
-        (projectiveHorizonJetParametrization_freeJetReciprocalJet
-          x hx hgen m).symm
-    rw [hpre]
-    exact IntermediateField.subset_adjoin C _ ⟨m, hm, rfl⟩
-  · intro c
-    simpa using (freeJetReciprocalTailField C n).algebraMap_mem c
-  · intro a b ha hb hpa hpb
-    simpa using (freeJetReciprocalTailField C n).add_mem hpa hpb
-  · intro a ha hpa
-    simpa using (freeJetReciprocalTailField C n).inv_mem hpa
-  · intro a b ha hb hpa hpb
-    simpa using (freeJetReciprocalTailField C n).mul_mem hpa hpb
-  · exact hz
+    (p := fun y hy => phi ⟨y, hy⟩ ∈
+          freeJetReciprocalTailField C n)
+    (fun y hy => by
+      rcases hy with ⟨m, hm, rfl⟩
+      have hpre : phi ⟨differentialJet m x⁻¹,
+          IntermediateField.subset_adjoin C _ ⟨m, hm, rfl⟩⟩ =
+          freeJetReciprocalJet C m := by
+        apply e.injective
+        change e (e.symm (i _)) = _
+        rw [e.apply_symm_apply]
+        apply Subtype.ext
+        exact (projectiveHorizonJetParametrization_freeJetReciprocalJet
+          x hx m).symm
+      rw [hpre]
+      exact IntermediateField.subset_adjoin C _ ⟨m, hm, rfl⟩)
+    (fun c => by
+      change phi (⟨algebraMap C E c, _⟩ : jetTailField C x⁻¹ n) ∈
+        freeJetReciprocalTailField C n
+      have hsub : (⟨algebraMap C E c, _⟩ : jetTailField C x⁻¹ n) =
+          algebraMap C (jetTailField C x⁻¹ n) c := Subtype.ext rfl
+      rw [hsub, phi.commutes]
+      exact (freeJetReciprocalTailField C n).algebraMap_mem c)
+    (fun a b ha hb hpa hpb => by
+      change phi (⟨a + b, _⟩ : jetTailField C x⁻¹ n) ∈
+        freeJetReciprocalTailField C n
+      have hsub : (⟨a + b, _⟩ : jetTailField C x⁻¹ n) =
+          (⟨a, ha⟩ : jetTailField C x⁻¹ n) + ⟨b, hb⟩ := Subtype.ext rfl
+      rw [hsub, map_add]
+      exact (freeJetReciprocalTailField C n).add_mem hpa hpb)
+    (fun a ha hpa => by
+      change phi (⟨a⁻¹, _⟩ : jetTailField C x⁻¹ n) ∈
+        freeJetReciprocalTailField C n
+      have hsub : (⟨a⁻¹, _⟩ : jetTailField C x⁻¹ n) =
+          (⟨a, ha⟩ : jetTailField C x⁻¹ n)⁻¹ := Subtype.ext rfl
+      rw [hsub, map_inv₀]
+      exact (freeJetReciprocalTailField C n).inv_mem hpa)
+    (fun a b ha hb hpa hpb => by
+      change phi (⟨a * b, _⟩ : jetTailField C x⁻¹ n) ∈
+        freeJetReciprocalTailField C n
+      have hsub : (⟨a * b, _⟩ : jetTailField C x⁻¹ n) =
+          (⟨a, ha⟩ : jetTailField C x⁻¹ n) * ⟨b, hb⟩ := Subtype.ext rfl
+      rw [hsub, map_mul]
+      exact (freeJetReciprocalTailField C n).mul_mem hpa hpb)
+    hz
+  change e.symm (i ⟨(z : E), hz⟩) ∈ freeJetReciprocalTailField C n at hp
+  rw [show i ⟨(z : E), hz⟩ = z by exact Subtype.ext rfl] at hp
+  exact hp
 
 /-! ## Exact actual-horizon phase transition -/
 
@@ -260,20 +427,24 @@ theorem hypertranscendentalOver_jetTailField_inf_inv_eq_bot_of_right_depth_two
     {C E : Type*} [Field C] [CharZero C] [Field E] [Algebra C E]
     [Differential E]
     (x : E) (hx : HypertranscendentalOver C x)
-    (hgen : jetTailField C x 0 = ⊤)
     {m n : ℕ} (hm : 1 ≤ m) (hn : 2 ≤ n) :
     jetTailField C x m ⊓ jetTailField C x⁻¹ n = ⊥ := by
-  let e := projectiveHorizonJetParametrization x hx hgen
+  let e := projectiveHorizonJetParametrization x hx
   apply le_antisymm
   · intro z hz
     rw [IntermediateField.mem_inf] at hz
-    have hraw : e.symm z ∈ freeJetRawTailField C m :=
+    let z0 : IntermediateField.adjoin C
+        (Set.range fun k : ℕ => differentialJet k x) :=
+      ⟨z, by
+        rw [← jetTailField_zero_eq_adjoin_range C x]
+        exact jetTailField_antitone C x (Nat.zero_le m) hz.1⟩
+    have hraw : e.symm z0 ∈ freeJetRawTailField C m :=
       projectiveHorizonJetParametrization_symm_mem_freeJetRawTailField
-        x hx hgen m hz.1
-    have hrec : e.symm z ∈ freeJetReciprocalTailField C n :=
+        x hx m z0 hz.1
+    have hrec : e.symm z0 ∈ freeJetReciprocalTailField C n :=
       projectiveHorizonJetParametrization_symm_mem_freeJetReciprocalTailField
-        x hx hgen n hz.2
-    have hfree : e.symm z ∈
+        x hx n z0 hz.2
+    have hfree : e.symm z0 ∈
         freeJetRawTailField C m ⊓ freeJetReciprocalTailField C n :=
       ⟨hraw, hrec⟩
     rw [freeJetRawTail_inf_reciprocalTail_eq_bot_of_right_depth_two hm hn,
@@ -281,11 +452,16 @@ theorem hypertranscendentalOver_jetTailField_inf_inv_eq_bot_of_right_depth_two
     rcases hfree with ⟨c, hc⟩
     rw [IntermediateField.mem_bot]
     refine ⟨c, ?_⟩
-    calc
-      algebraMap C E c =
-          e (algebraMap C (FreeScalarJetField C) c) := (e.commutes c).symm
-      _ = e (e.symm z) := congrArg e hc
-      _ = z := e.apply_symm_apply z
+    have hsub : algebraMap C
+        (IntermediateField.adjoin C
+          (Set.range fun k : ℕ => differentialJet k x)) c = z0 := by
+      calc
+        algebraMap C (IntermediateField.adjoin C
+            (Set.range fun k : ℕ => differentialJet k x)) c =
+            e (algebraMap C (FreeScalarJetField C) c) := (e.commutes c).symm
+        _ = e (e.symm z0) := congrArg e hc
+        _ = z0 := e.apply_symm_apply z0
+    exact congrArg Subtype.val hsub
   · exact bot_le
 
 /-- If the direct horizon reaches depth two, inversion reduces the claim to the opposite
@@ -295,18 +471,13 @@ theorem hypertranscendentalOver_jetTailField_inf_inv_eq_bot_of_left_depth_two
     [Field E] [CharZero E] [Algebra C E] [Differential E]
     [DifferentialAlgebra C E]
     (x : E) (hx : HypertranscendentalOver C x)
-    (hgen : jetTailField C x 0 = ⊤)
     {m n : ℕ} (hm : 2 ≤ m) (hn : 1 ≤ n) :
     jetTailField C x m ⊓ jetTailField C x⁻¹ n = ⊥ := by
   have hxinv : HypertranscendentalOver C x⁻¹ :=
     hypertranscendentalOver_inv_iff.mpr hx
-  have hgenInv : jetTailField C x⁻¹ 0 = ⊤ := by
-    rw [← differentialAdjoin_singleton_eq_jetTailField_zero C (x⁻¹),
-      differentialAdjoin_inv_singleton_eq C x,
-      differentialAdjoin_singleton_eq_jetTailField_zero C x, hgen]
   have hswap :=
     hypertranscendentalOver_jetTailField_inf_inv_eq_bot_of_right_depth_two
-      x⁻¹ hxinv hgenInv hn hm
+      x⁻¹ hxinv hn hm
   rw [inf_comm]
   simpa only [inv_inv] using hswap
 
@@ -317,15 +488,14 @@ theorem hypertranscendentalOver_jetTailField_inf_inv_eq_bot
     [Field E] [CharZero E] [Algebra C E] [Differential E]
     [DifferentialAlgebra C E]
     (x : E) (hx : HypertranscendentalOver C x)
-    (hgen : jetTailField C x 0 = ⊤)
     {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n)
     (hdeep : 2 ≤ m ∨ 2 ≤ n) :
     jetTailField C x m ⊓ jetTailField C x⁻¹ n = ⊥ := by
   rcases hdeep with hm2 | hn2
   · exact hypertranscendentalOver_jetTailField_inf_inv_eq_bot_of_left_depth_two
-      x hx hgen hm2 hn
+      x hx hm2 hn
   · exact hypertranscendentalOver_jetTailField_inf_inv_eq_bot_of_right_depth_two
-      x hx hgen hm hn2
+      x hx hm hn2
 
 /-- Equal-depth specialization of the exact depth-two-and-beyond transition. -/
 theorem hypertranscendentalOver_equal_jetTailField_inf_inv_eq_bot
@@ -333,11 +503,25 @@ theorem hypertranscendentalOver_equal_jetTailField_inf_inv_eq_bot
     [Field E] [CharZero E] [Algebra C E] [Differential E]
     [DifferentialAlgebra C E]
     (x : E) (hx : HypertranscendentalOver C x)
-    (hgen : jetTailField C x 0 = ⊤)
     {n : ℕ} (hn : 2 ≤ n) :
     jetTailField C x n ⊓ jetTailField C x⁻¹ n = ⊥ :=
   hypertranscendentalOver_jetTailField_inf_inv_eq_bot
-    x hx hgen (by omega) (by omega) (Or.inl hn)
+    x hx (by omega) (by omega) (Or.inl hn)
+
+/-- **Sharp intrinsic projective-horizon transition.** Opposite first horizons have a nontrivial
+common curvature field, but every positive pair has scalar intersection once either side reaches
+depth two. -/
+theorem hypertranscendentalOver_projectiveHorizon_sharpDepthTransition
+    {C E : Type*} [Field C] [CharZero C] [Differential C]
+    [Field E] [CharZero E] [Algebra C E] [Differential E]
+    [DifferentialAlgebra C E]
+    (x : E) (hx : HypertranscendentalOver C x) :
+    jetTailField C x 1 ⊓ jetTailField C x⁻¹ 1 ≠ ⊥ ∧
+      ∀ {m n : ℕ}, 1 ≤ m → 1 ≤ n → (2 ≤ m ∨ 2 ≤ n) →
+        jetTailField C x m ⊓ jetTailField C x⁻¹ n = ⊥ := by
+  exact ⟨hypertranscendentalOver_inf_firstJetTail_inv_ne_bot x hx,
+    fun hm hn hdeep =>
+      hypertranscendentalOver_jetTailField_inf_inv_eq_bot x hx hm hn hdeep⟩
 
 end
 

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaJordanXiTangentResponseGap
+import GaloisForLFunctions.RHTower.GammaSewnFourRatePluckerJordanTransition
 
 /-!
 # Four-rate Gamma/Jordan father--detail transfer
@@ -16,6 +17,7 @@ retain the rooted/common-mode channel identified by HTGeometry.
 -/
 
 open scoped BigOperators
+open GaloisForLFunctions.HilbertMetric
 
 namespace RHTower
 
@@ -381,6 +383,106 @@ theorem xiTangentFourRateDetail_eq_joinedDetail_add_gap
   have hfather := gammaJordanFourRateJoinedFather_eq_tangent_add_gap a rate cell
   linarith
 
+/-- Nonvanishing Hilbert-feature volume discharges the raw normalization premise in the exact
+Gamma-to-Xi detail transfer. -/
+theorem xiTangentFourRateDetail_eq_joinedDetail_add_gap_of_volume_ne_zero
+    {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
+    (hvolume : canonicalFeatureVolume
+      (gammaSewnFourRateBoundaryPluckerFeature a rate cell)
+      (fun _ => 1) (fun _ => 0) 1 ≠ 0) :
+    xiTangentFourRateDetailEnergy a rate cell =
+      gammaJordanFourRateJoinedDetailEnergy a rate cell +
+        gammaJordanXiFourRateGapTransfer a rate cell := by
+  apply xiTangentFourRateDetail_eq_joinedDetail_add_gap
+  rw [gammaSewnFourRateBoundaryPairPartition_eq_canonicalFeatureVolume]
+  exact hvolume
+
+/-- **Canonical Pluecker father--detail conservation.**  For every nonzero canonical feature
+volume, the same canonical sewing mass is `3/2` of either the joined-Gamma or Xi-tangent
+father--detail total, and Schur curvature is `-2` times either total minus the selected-height
+dispersion penalty.  Thus the response-gap transfer changes only the father/detail allocation. -/
+theorem gammaJordanXiFourRateCanonicalPlucker_energy_conservation_of_volume_ne_zero
+    {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
+    (hvolume : canonicalFeatureVolume
+      (gammaSewnFourRateBoundaryPluckerFeature a rate cell)
+      (fun _ => 1) (fun _ => 0) 1 ≠ 0) :
+    gammaSewnFourRateCanonicalPluckerSewingMass a rate cell =
+        (3 / 2 : ℝ) *
+          (gammaJordanFourRateJoinedDetailEnergy a rate cell +
+            gammaJordanFourRateJoinedFatherEnergy a rate cell) ∧
+      gammaSewnFourRateCanonicalPluckerSewingMass a rate cell =
+        (3 / 2 : ℝ) *
+          (xiTangentFourRateDetailEnergy a rate cell +
+            xiTangentFourRateFatherEnergy a rate cell) ∧
+      gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
+        -2 * (gammaJordanFourRateJoinedDetailEnergy a rate cell +
+          gammaJordanFourRateJoinedFatherEnergy a rate cell) -
+        2 * normalizedFinitePairDispersion
+          (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
+          (gammaSewnFourRateSelectedHeight cell) ∧
+      gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
+        -2 * (xiTangentFourRateDetailEnergy a rate cell +
+          xiTangentFourRateFatherEnergy a rate cell) -
+        2 * normalizedFinitePairDispersion
+          (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
+          (gammaSewnFourRateSelectedHeight cell) := by
+  have hpartition :
+      (∑ s, gammaSewnFourRateBoundaryPairRawWeight a rate cell s) ≠ 0 := by
+    rw [gammaSewnFourRateBoundaryPairPartition_eq_canonicalFeatureVolume]
+    exact hvolume
+  have hjoined := gammaJordanFourRateFisherMean_eq_joinedDetail_add_father hpartition
+  have htangent := gammaJordanFourRateFisherMean_eq_tangentDetail_add_father hpartition
+  have hprob :
+      gammaSewnFourRateBoundaryPairProbability a rate cell =
+        gammaSewnFourRateCanonicalPluckerProbability a rate cell := by
+    funext s
+    exact gammaSewnFourRateBoundaryPairProbability_eq_canonicalFeatureVolume_normalized
+      a rate cell s
+  rw [hprob] at hjoined htangent
+  have hcorrected :=
+    gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker_of_volume_ne_zero hvolume
+  have hsewing :=
+    gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher_of_volume_ne_zero
+      hvolume
+  have hcurvature :=
+    gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPluckerJordan_of_volume_ne_zero
+      hvolume
+  constructor
+  · nlinarith
+  constructor
+  · nlinarith
+  constructor <;> nlinarith
+
+/-- Source nondegeneracy supplies the Hilbert-feature volume in canonical Pluecker father--detail
+conservation. -/
+theorem gammaJordanXiFourRateCanonicalPlucker_energy_conservation
+    {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
+    (ha : a ≠ 0) (hrate : Function.Injective rate)
+    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    gammaSewnFourRateCanonicalPluckerSewingMass a rate cell =
+        (3 / 2 : ℝ) *
+          (gammaJordanFourRateJoinedDetailEnergy a rate cell +
+            gammaJordanFourRateJoinedFatherEnergy a rate cell) ∧
+      gammaSewnFourRateCanonicalPluckerSewingMass a rate cell =
+        (3 / 2 : ℝ) *
+          (xiTangentFourRateDetailEnergy a rate cell +
+            xiTangentFourRateFatherEnergy a rate cell) ∧
+      gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
+        -2 * (gammaJordanFourRateJoinedDetailEnergy a rate cell +
+          gammaJordanFourRateJoinedFatherEnergy a rate cell) -
+        2 * normalizedFinitePairDispersion
+          (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
+          (gammaSewnFourRateSelectedHeight cell) ∧
+      gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
+        -2 * (xiTangentFourRateDetailEnergy a rate cell +
+          xiTangentFourRateFatherEnergy a rate cell) -
+        2 * normalizedFinitePairDispersion
+          (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
+          (gammaSewnFourRateSelectedHeight cell) := by
+  exact gammaJordanXiFourRateCanonicalPlucker_energy_conservation_of_volume_ne_zero
+    (gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
+      (cell := cell) ha hrate hboundary).ne'
+
 theorem gammaJordanXiFourRateGapTransfer_nonneg
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
@@ -487,9 +589,9 @@ theorem gammaJordanFourRateJoinedFather_le_tangentDetail_transfer
     (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
     gammaJordanFourRateJoinedDetailEnergy a rate cell ≤
       xiTangentFourRateDetailEnergy a rate cell := by
-  have hpartition := gammaSewnFourRateBoundaryPairPartition_pos
+  have hvolume := gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
     (cell := cell) ha hrate hboundary
-  rw [xiTangentFourRateDetail_eq_joinedDetail_add_gap hpartition.ne']
+  rw [xiTangentFourRateDetail_eq_joinedDetail_add_gap_of_volume_ne_zero hvolume.ne']
   exact le_add_of_nonneg_right
     (gammaJordanXiFourRateGapTransfer_nonneg ha hrate hboundary)
 
@@ -514,9 +616,9 @@ theorem gammaJordanFourRateJoinedDetail_lt_tangentDetail_of_aligned_crossPrime
           (cell (fourRatePairComplementRight t)).1) :
     gammaJordanFourRateJoinedDetailEnergy a rate cell <
       xiTangentFourRateDetailEnergy a rate cell := by
-  have hpartition := gammaSewnFourRateBoundaryPairPartition_pos
+  have hvolume := gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
     (cell := cell) ha hrate hboundary
-  rw [xiTangentFourRateDetail_eq_joinedDetail_add_gap hpartition.ne']
+  rw [xiTangentFourRateDetail_eq_joinedDetail_add_gap_of_volume_ne_zero hvolume.ne']
   exact lt_add_of_pos_right _
     (gammaJordanXiFourRateGapTransfer_pos_of_aligned_crossPrime
       ha hrate hboundary hcross)

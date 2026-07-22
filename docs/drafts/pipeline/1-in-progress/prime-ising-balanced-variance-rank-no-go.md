@@ -1,13 +1,13 @@
 # Balanced prime-Ising variance and Hankel-rank obstruction
 
 - **ID:** `prime-ising-balanced-variance-rank-no-go`
-- **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE] [SOURCE-PURE NO-GO]`
+- **Stage:** 3-formalized (historical path retained to preserve corpus links)
+- **Type:** `[THEOREM] [SOURCE-PURE NO-GO] [UNCONDITIONAL]`
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeBalancedCentering.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeFKExpansion.lean`,
   `formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartzFourierXi.lean`, and
-  `formal/GaloisForLFunctions/HTGeometry/FiniteSpectralHankelRank.lean`
-- **Statement:** `[CONJECTURE]` No sequence of balanced finite prime-labelled ferromagnetic Ising
+  `formal/GaloisForLFunctions/HTGeometry/FixedModalLocallyUniformHankel.lean`
+- **Statement:** `[PROVED]` No sequence of balanced finite prime-labelled ferromagnetic Ising
   trees converges locally uniformly to `XiC(0)⁻¹ XiC`.
 
 ## Goal
@@ -103,10 +103,10 @@ the critically rescaled reporter graphs have a nontrivial source-canonical limit
 - [x] balanced second derivative identified with the FK-averaged cluster square mass
 - [x] local-uniform convergence shown to force uniformly bounded vertex count
 - [x] arbitrary real rescaling formalized and `a_n^2 |V_n|=O(1)` proved for every convergent family
-- [ ] uniformly bounded count converted to fixed spectral width
-- [ ] strict theta-source Hankel determinant supplies the contradiction
-- [ ] 1 -> 2: complete unconditional paper proof
-- [ ] 2 -> 3: unconditional Lean theorem and targeted build
+- [x] exact spin packet has `2 ^ |V|` lines and gives fixed derivative-jet modal width
+- [x] universal nonzero differential-Hankel polynomial supplies the target contradiction
+- [x] 1 -> 2: complete unconditional paper proof
+- [x] 2 -> 3: unconditional Lean theorem, targeted build, lint, and axiom audit
 
 ## Anti-theatre gate
 
@@ -136,3 +136,15 @@ clear the gate.
   finite-source regime.  The theorem
   `tendsto_scale_zero_of_vertexCount_tendsto_atTop_of_rescaled_tendstoLocallyUniformly` proves the
   corresponding scale-collapse statement when the source rank tends to infinity.
+- 2026-07-22 -- Closed the anti-theatre gate.  `FixedModalLocallyUniformHankel.lean` proves that
+  every locally-uniform limit of entire functions with eventually fixed derivative-jet modal width
+  satisfies one explicit nonzero differential-Hankel equation; hence such a limit cannot be
+  hypertranscendental.  `PrimeIsingTreeFixedModalClosureNoGo.lean` constructs the exact recursive
+  spin spectral packet, proves its cardinality is `2 ^ |V|`, transports it through balancing and
+  all derivatives, proves `XiC` and its unit-central normalization hypertranscendental from the
+  unconditional `xi` theorem, and composes the vertex-count floor with the universal closure law.
+  The capstone
+  `not_tendstoLocallyUniformly_balancedPrimeIsingTreePartition_unitCentralXiC` negates the actual
+  comparison premise for arbitrary changing labels, couplings, topology, and size.  Scope is
+  exact: this kills the unscaled balanced finite-tree source family; it does not kill critically
+  rescaled unbounded-rank families or the infinite active-even CCM graph.

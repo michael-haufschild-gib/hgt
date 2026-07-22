@@ -1,11 +1,43 @@
 # CCM radial von Mangoldt resonance law
 
 - **ID:** `ccm-radial-von-mangoldt-resonance-law`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Scientific status:** `[CONJECTURE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Stage:** resolved by later paper theorem; retained here as derivation history
+- **Type:** SUPERSEDED CONJECTURE
+- **Scientific status:** `[PROVED IN A STRONGER WEIGHTED NUCLEAR FORM] [DO NOT RE-ATTACK]`
 - **Source:** global radial-prolate defect measure plus the exact Poisson summation vector
 - **Statement:** The exact constrained CCM lower tail has a von Mangoldt-weighted dilation response governed by the divisibility resonances `k=qj`, with an explicit arcsine constant.
+
+## Resolution and no-repeat notice
+
+This card's fixed-dilation and all-prime conclusions are discharged by the later weighted
+projective/nuclear theorem in
+`universal-radial-prolate-arithmetic-dilation-spectrum.md` and its stage-2 extraction
+`../2-fully-proven/new_scientific_knowledge/constrained-prolate-arithmetic-dilation-operator-limit.md`.
+That theorem proves the stronger trace-class operator limit, not only the scalar response.
+
+The constants agree exactly. Reindexing `k=qj` and using
+
+```text
+sum_(q|k,q>=2) Lambda(q)=log k
+```
+
+turns `(6)` into
+
+```text
+K_rad=8/(11*pi) sum_(k>=2) log(k)/k*arcsin(1/k),
+```
+
+so the signed contribution `-2*K_rad` is exactly Theorem D's trace
+
+```text
+-16/(11*pi) sum_(k>=2) log(k)/k*arcsin(1/k).
+```
+
+In particular the truncated-divisor high radial first row `(24a)`, central Poisson joining,
+uniform prime interchange, and complete raw radial prime response are no longer frontier gates.
+Do not retry them. The next source gate is the intact polar--prime critical-Mellin graph assembly
+in `constrained-prolate-continuous-polar-charge-law.md`; after that, the independent RH-bearing
+gate is the true restricted-Weil lower floor/gap.
 
 ## Exact object
 
@@ -359,8 +391,8 @@ finite-determinant route.
 - [x] 0 → 1 in-progress: explicit source, candidate constant, resonance mechanism, and falsifiers stated
 - [x] finite-aperture cutoff `q>lambda^2` formalized in Lean
 - [x] exact low radial first-row vanishing proved with the nonzero degree-four phase
-- [ ] truncated-divisor weighted high radial first row proved negligible
-- [ ] 1 → 2 fully-proven: close the four proof gates above and audit the constant against parent theory
+- [x] truncated-divisor weighted high radial first row proved negligible by weighted projective convergence
+- [x] fixed-dilation and all-prime response proved in the stronger arithmetic trace-class theorem
 - [ ] 2 → 3 formalized: requires formal PSWF and semiclassical infrastructure; no wrapper Lean theorem
 - [ ] 3 → 4 publication-ready: only if novelty and significance survive after the full Rayleigh consequence is known
 
@@ -369,3 +401,6 @@ finite-determinant route.
 - 2026-07-11 — generated top down from the exact Hermitian determinant implication and the global
   radial defect measure; divisibility resonance `k=qj` isolated as the first nontrivial all-prime
   carrier beyond the endpoint sawtooth scalar.
+- 2026-07-22 — no-repeat reconciliation: the later weighted nuclear/projective theorem proves this
+  conjecture and more. The apparent high-radial frontier was stale; the live source gate moved to
+  intact polar--prime critical-Mellin graph assembly.

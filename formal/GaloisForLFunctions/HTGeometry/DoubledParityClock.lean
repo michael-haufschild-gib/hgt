@@ -265,11 +265,12 @@ theorem norm_doubledOddObservable_source_sq (J A : E →L[𝕜] E)
   field_simp
   ring
 
-/-- The QFI erased by the doubled parity clock is exactly four times the odd-observable energy. -/
+/-- The QFI erased by the doubled parity clock is exactly four times the odd-observable energy;
+no self-adjointness of the observable is required. -/
 theorem doubledParityClock_erasedQFI_eq_four_mul_oddNormSq
     [CompleteSpace E] (J A : E →L[𝕜] E)
     (hJself : IsSelfAdjoint J) (hJsq : J ^ 2 = 1)
-    (hJnorm : ∀ x, ‖J x‖ = ‖x‖) (hA : IsSelfAdjoint A)
+    (hJnorm : ∀ x, ‖J x‖ = ‖x‖)
     (hcomm : J * A = A * J) {ψ : E} (hψnorm : ‖ψ‖ = 1) :
     pureStateQuantumFisherValue (‖doubledParitySource J ψ‖ ^ 2)
         (‖inner 𝕜 (doubledParitySource J ψ)
@@ -282,7 +283,6 @@ theorem doubledParityClock_erasedQFI_eq_four_mul_oddNormSq
     (doubledParityClock J) (doubledOddObservable A)
     (doubledParityClock_adjoint_mul J hJself hJsq)
     (doubledParityClock_sq J hJsq)
-    (doubledOddObservable_isSelfAdjoint A hA)
     (norm_doubledParitySource J ψ (hJnorm ψ) hψnorm)
     (doubledParityClock_fixed_source J hJsq ψ),
     doubledParityClock_commutator_source J A hJsq hcomm]

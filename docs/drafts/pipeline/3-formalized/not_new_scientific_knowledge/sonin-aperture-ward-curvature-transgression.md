@@ -2,7 +2,8 @@
 
 - **ID:** `sonin-aperture-ward-curvature-transgression`
 - **Stage:** 3-formalized
-- **Type:** UNIVERSAL THEOREM / SUZUKI FRONTIER REDUCTION
+- **Type:** FORMAL CLOSURE / SUZUKI ANTI-LOOP REDUCTION
+- **Scientific status:** `[NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Status:** unconditional Lean 4 proof
 - **Terminal status:** not RH, not not-RH, not a full Suzuki no-go
 
@@ -54,4 +55,3 @@ No hypothesis is left undisclosed and no computation is used.
 
 Direct module checks passed with `lake env lean`; final project audit is recorded in session
 handover after the narrow `lake build` and axiom/lint checks.
-

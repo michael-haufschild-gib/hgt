@@ -188,8 +188,35 @@ theorem gammaSewnFourRateBoundaryPairProbability_eq_canonicalFeatureVolume_norma
     gammaSewnFourRateCanonicalPluckerProbability
   rw [gammaSewnFourRateBoundaryPairPartition_eq_canonicalFeatureVolume]
 
-/-- Source nondegeneracy discharges the partition hypothesis in the four-rate curvature law and
-states it directly over the canonical Pluecker probability packet. -/
+/-- Nonvanishing of the canonical Pluecker volume is the exact geometric normalization condition
+needed by the four-rate curvature law. -/
+theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPlucker_of_volume_ne_zero
+    {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
+    (hvolume : canonicalFeatureVolume
+      (gammaSewnFourRateBoundaryPluckerFeature a rate cell)
+      (fun _ => 1) (fun _ => 0) 1 ≠ 0) :
+    gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
+      -2 * complementaryFisherMean
+        (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
+        (gammaSewnFourRateComplementaryFisher cell) -
+      2 * normalizedFinitePairDispersion
+        (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
+        (gammaSewnFourRateSelectedHeight cell) := by
+  have hpartition :
+      (∑ s, gammaSewnFourRateBoundaryPairRawWeight a rate cell s) ≠ 0 := by
+    rw [gammaSewnFourRateBoundaryPairPartition_eq_canonicalFeatureVolume]
+    exact hvolume
+  have h := gammaSewnFourRateSchurBoundaryLogCurvature_eq hpartition
+  have hprob :
+      gammaSewnFourRateBoundaryPairProbability a rate cell =
+        gammaSewnFourRateCanonicalPluckerProbability a rate cell := by
+    funext s
+    exact gammaSewnFourRateBoundaryPairProbability_eq_canonicalFeatureVolume_normalized
+      a rate cell s
+  rw [hprob] at h
+  exact h
+
+/-- Source nondegeneracy discharges canonical-volume nonvanishing in the four-rate curvature law. -/
 theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPlucker
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
@@ -201,9 +228,25 @@ theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPlucker
       2 * normalizedFinitePairDispersion
         (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
         (gammaSewnFourRateSelectedHeight cell) := by
-  have h := gammaSewnFourRateSchurBoundaryLogCurvature_eq
-    (gammaSewnFourRateBoundaryPairPartition_pos
+  exact gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPlucker_of_volume_ne_zero
+    (gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
       (cell := cell) ha hrate hboundary).ne'
+
+/-- Nonvanishing canonical Pluecker volume likewise suffices for the corrected Fisher channel. -/
+theorem gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker_of_volume_ne_zero
+    {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
+    (hvolume : canonicalFeatureVolume
+      (gammaSewnFourRateBoundaryPluckerFeature a rate cell)
+      (fun _ => 1) (fun _ => 0) 1 ≠ 0) :
+    gammaSewnFourRateSchurCorrectedFisher a rate cell =
+      complementaryFisherMean
+        (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
+        (gammaSewnFourRateComplementaryFisher cell) := by
+  have hpartition :
+      (∑ s, gammaSewnFourRateBoundaryPairRawWeight a rate cell s) ≠ 0 := by
+    rw [gammaSewnFourRateBoundaryPairPartition_eq_canonicalFeatureVolume]
+    exact hvolume
+  have h := gammaSewnFourRateSchurCorrectedFisher_eq hpartition
   have hprob :
       gammaSewnFourRateBoundaryPairProbability a rate cell =
         gammaSewnFourRateCanonicalPluckerProbability a rate cell := by
@@ -213,8 +256,7 @@ theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPlucker
   rw [hprob] at h
   exact h
 
-/-- Source nondegeneracy likewise discharges the partition hypothesis for the corrected Fisher
-channel, whose averaging packet is the canonical Pluecker normalization. -/
+/-- Source nondegeneracy discharges canonical-volume nonvanishing for corrected Fisher. -/
 theorem gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
@@ -223,17 +265,9 @@ theorem gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker
       complementaryFisherMean
         (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
         (gammaSewnFourRateComplementaryFisher cell) := by
-  have h := gammaSewnFourRateSchurCorrectedFisher_eq
-    (gammaSewnFourRateBoundaryPairPartition_pos
+  exact gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker_of_volume_ne_zero
+    (gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
       (cell := cell) ha hrate hboundary).ne'
-  have hprob :
-      gammaSewnFourRateBoundaryPairProbability a rate cell =
-        gammaSewnFourRateCanonicalPluckerProbability a rate cell := by
-    funext s
-    exact gammaSewnFourRateBoundaryPairProbability_eq_canonicalFeatureVolume_normalized
-      a rate cell s
-  rw [hprob] at h
-  exact h
 
 end
 

@@ -221,6 +221,39 @@ theorem exists_finiteDerivativeReporter_isometricRecovery_exactBlindPacket_colla
     hprofile.2.2.2.1, hprofile.2.2.1, hpacket, hreport, hdecode,
     hprofile.2.2.2.2, hsource⟩
 
+/-- **Perfect recovery preserves singular information.**  Every finite-dimensional reporter of
+a genuine infinite derivative clock has a bounded resolution whose Gram information is singular
+both before and after isometric recoding.  The two Gram matrices agree, the adjoint recovers the
+reporter exactly, and the collapsed derivative remains genuinely new at the source. -/
+theorem exists_finiteDerivativeReporter_isometricRecovery_singularGram_collapse
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    {f : ℂ → ℂ} (hf : ConstantCoefficientDifferentiallyTranscendental f)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ Module.finrank ℂ Y ∧
+      (finiteDerivativeReporterGram (k + 1) f report).det = 0 ∧
+      (finiteDerivativeReporterGram (k + 1) f
+        (decode.toLinearMap.comp report)).det = 0 ∧
+      finiteDerivativeReporterGram (k + 1) f
+          (decode.toLinearMap.comp report) =
+        finiteDerivativeReporterGram (k + 1) f report ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k f ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) f) := by
+  obtain ⟨k, c, hk, _hzero, _hpostzero, _hclast, _hc, _hcpost,
+      _hker, _hrank, hpacket, hreport, _hdecode, hrecover, hsource⟩ :=
+    exists_finiteDerivativeReporter_isometricRecovery_exactBlindPacket_collapse
+      hf report decode
+  have hdet : (finiteDerivativeReporterGram (k + 1) f report).det = 0 :=
+    (finiteDerivativeReporterGram_det_eq_zero_iff_exists_blindPacket hf report).2
+      ⟨c, hreport, hpacket⟩
+  have hgram := finiteDerivativeReporterGram_postcomp_linearIsometry
+    (k + 1) f report decode
+  exact ⟨k, hk, hdet, by rw [hgram]; exact hdet, hgram, hrecover, hsource⟩
+
 end
 
 end HTGeometry

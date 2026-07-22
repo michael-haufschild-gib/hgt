@@ -42,6 +42,31 @@ theorem card_smul_hilbertCentroid (x : ι → E) :
         exact_mod_cast Fintype.card_ne_zero
       simp [hilbertCentroid, smul_smul, hn]
 
+/-- The centroid lies in every centered norm ball containing the family.  This is the finite
+Hilbert-space convex-hull bound, stated without choosing coordinates. -/
+theorem norm_hilbertCentroid_le_of_norm_le
+    [Nonempty ι] (x : ι → E) {R : ℝ} (hx : ∀ i, ‖x i‖ ≤ R) :
+    ‖hilbertCentroid x‖ ≤ R := by
+  let D : ℝ := Fintype.card ι
+  have hD : 0 < D := by
+    dsimp only [D]
+    exact_mod_cast Fintype.card_pos
+  have hsum : ‖∑ i, x i‖ ≤ ∑ i, ‖x i‖ := by
+    exact norm_sum_le Finset.univ _
+  have hsumR : ∑ i, ‖x i‖ ≤ D * R := by
+    calc
+      ∑ i, ‖x i‖ ≤ ∑ _i : ι, R := Finset.sum_le_sum fun i _ ↦ hx i
+      _ = D * R := by
+        simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, D]
+  calc
+    ‖hilbertCentroid x‖ = D⁻¹ * ‖∑ i, x i‖ := by
+      simp [hilbertCentroid, norm_smul, D]
+    _ ≤ D⁻¹ * ∑ i, ‖x i‖ :=
+      mul_le_mul_of_nonneg_left hsum (inv_nonneg.mpr hD.le)
+    _ ≤ D⁻¹ * (D * R) :=
+      mul_le_mul_of_nonneg_left hsumR (inv_nonneg.mpr hD.le)
+    _ = R := by field_simp [hD.ne']
+
 /-- Centered Hilbert vectors have zero total displacement. -/
 theorem sum_sub_hilbertCentroid (x : ι → E) :
     ∑ i, (x i - hilbertCentroid x) = 0 := by

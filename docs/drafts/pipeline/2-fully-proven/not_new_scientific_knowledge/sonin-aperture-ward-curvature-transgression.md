@@ -2,7 +2,8 @@
 
 - **ID:** `sonin-aperture-ward-curvature-transgression`
 - **Stage:** 2-fully-proven
-- **Type:** UNIVERSAL THEOREM / SUZUKI FRONTIER REDUCTION
+- **Type:** FORMAL CLOSURE / SUZUKI ANTI-LOOP REDUCTION
+- **Scientific status:** `[NOT NEW SCIENTIFIC KNOWLEDGE] [UNCONDITIONAL]`
 - **Status:** unconditional paper proof; Lean formalization complete in companion Stage-3 card
 - **Terminal status:** not RH, not not-RH, not a full Suzuki no-go
 
@@ -89,6 +90,13 @@ This closes the aperture-curvature experiment in the terminal ledger.  Curvature
 unknown signed anomaly nor a possible independent source of coercivity.  It is a fixed negative
 square with a canonical Ward cancellation.
 
+## Scientific classification
+
+This is an exact operator-theoretic closure result, not novel scientific knowledge. Compression
+of a Gram operator, Hilbert--Schmidt square identities, and two-corner commutator energy are
+standard mechanisms. Source-specific specialization prevents another Suzuki loop but does not
+construct the co-Poisson fibre orientation or cross critical half-weight.
+
 The corpus Burnol edge is a bounded, generally noncompact conductor commutator, whereas `Z` is the
 Hilbert--Schmidt relative remainder after principal aperture mass has been removed.  Therefore the
 remaining source theorem is precise: prove that the **relative finite part** of Suzuki's concrete
@@ -98,4 +106,3 @@ conductor edge with `Z` is the wrong operator-class statement.
 Even exact cancellation does not prove the completed prime--Gamma lower floor.  After aperture
 transgression, the RH-bearing problem is still the canonical co-Poisson/Burnol source sign.  No
 terminal verdict is claimed.
-

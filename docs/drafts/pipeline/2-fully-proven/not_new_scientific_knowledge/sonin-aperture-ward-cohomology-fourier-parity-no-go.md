@@ -2,8 +2,8 @@
 
 - **ID:** `sonin-aperture-ward-cohomology-fourier-parity-no-go`
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM, `[UNIVERSAL LAW] [CLASS-COMPLETE NO-GO] [SUZUKI FRONTIER]`
-- **Scientific status:** `[PROVED HERE] [NOT RH] [NOT A WHOLE-LANE NO-GO]`
+- **Type:** THEOREM, `[FORMAL CLOSURE] [READER-CLASS NO-GO] [SUZUKI ANTI-LOOP]`
+- **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH] [NOT A WHOLE-LANE NO-GO]`
 - **Lean status:** every displayed mathematical assertion below is formalized without project
   axioms in `SoninApertureWardPotential.lean` and
   `SoninApertureFourierParityNoGo.lean`.

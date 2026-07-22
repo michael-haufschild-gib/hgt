@@ -127,6 +127,29 @@ theorem exists_xiLogDeriv_isometricReporterRecovery_exactBlindPacket_collapse
   exact HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_exactBlindPacket_collapse
     xiLogDeriv_constantCoefficientDifferentiallyTranscendental report decode
 
+/-- **Perfect Xi recovery preserves singular information.**  Some bounded Xi logarithmic-
+derivative Gram block is singular both before and after isometric recoding, even though the
+encoded reporter is recovered exactly and the collapsed derivative remains new at the source. -/
+theorem exists_xiLogDeriv_isometricReporterRecovery_singularGram_collapse
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ finrank ℂ Y ∧
+      (HTGeometry.finiteDerivativeReporterGram (k + 1) (logDeriv xi) report).det = 0 ∧
+      (HTGeometry.finiteDerivativeReporterGram (k + 1) (logDeriv xi)
+        (decode.toLinearMap.comp report)).det = 0 ∧
+      HTGeometry.finiteDerivativeReporterGram (k + 1) (logDeriv xi)
+          (decode.toLinearMap.comp report) =
+        HTGeometry.finiteDerivativeReporterGram (k + 1) (logDeriv xi) report ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k (logDeriv xi) ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) (logDeriv xi)) := by
+  exact HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_singularGram_collapse
+    xiLogDeriv_constantCoefficientDifferentiallyTranscendental report decode
+
 /-- **Finite-Gibbs dressed Xi recovery boundary.**  Isometric postprocessing exactly recovers the
 dressed reporter and preserves its zero-information witness, but cannot recover the same genuinely
 new derivative direction erased before reporting. -/
@@ -160,6 +183,38 @@ theorem exists_xiLogDeriv_add_finiteGibbs_isometricReporterRecovery_collapse
           iteratedDeriv (i : ℕ)
             (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)) := by
   exact HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_collapse
+    (xiLogDeriv_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
+      energy)
+    report decode
+
+/-- Finite Gibbs dressing likewise cannot remove simultaneous original/encoded Xi Gram
+singularity under perfect isometric recovery. -/
+theorem exists_xiLogDeriv_add_finiteGibbs_isometricReporterRecovery_singularGram_collapse
+    {A : Type*} [Fintype A] (energy : A → ℝ)
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ k : ℕ, k ≤ finrank ℂ Y ∧
+      (HTGeometry.finiteDerivativeReporterGram (k + 1)
+        (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) report).det = 0 ∧
+      (HTGeometry.finiteDerivativeReporterGram (k + 1)
+        (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)
+        (decode.toLinearMap.comp report)).det = 0 ∧
+      HTGeometry.finiteDerivativeReporterGram (k + 1)
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)
+          (decode.toLinearMap.comp report) =
+        HTGeometry.finiteDerivativeReporterGram (k + 1)
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) report ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k
+          (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy) ∉
+        Submodule.span ℂ (Set.range fun i : Fin k =>
+          iteratedDeriv (i : ℕ)
+            (logDeriv xi + HTGeometry.finiteComplexGibbsPartition energy)) := by
+  exact HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_singularGram_collapse
     (xiLogDeriv_add_finiteComplexGibbsPartition_constantCoefficientDifferentiallyTranscendental
       energy)
     report decode

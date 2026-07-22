@@ -5,11 +5,11 @@ import GaloisForLFunctions.HTGeometry.TwoOutcomePinchingKadison
 /-!
 # Fidelity asymmetry of an involutive clock
 
-For a normalized pure state and an involutive isometric clock, the fidelity deficit between the
-state and its transformed copy is exactly four times the product of its invariant and
-anti-invariant sector weights.  Thus the fidelity-based asymmetry resource used by quantitative
-Wigner--Araki--Yanase bounds is already a native finite-clock value; no generator or temporal flow
-is required.
+For an arbitrary state and an involutive isometric clock, projective asymmetry and the homogeneous
+fidelity deficit are exactly four times the product of its invariant and anti-invariant sector
+weights.  The normalized pure-state fidelity law follows as a corollary.  Thus the fidelity-based
+asymmetry resource used by quantitative Wigner--Araki--Yanase bounds is already a native
+finite-clock value; no generator or temporal flow is required.
 
 Physics provenance: A. Hokkyo and H. Tajima, *Quantitative Wigner-Araki-Yanase Theorems for
 Unitary and Antiunitary Symmetries*, arXiv:2607.09075, bounds the error of symmetry-breaking
@@ -70,11 +70,12 @@ theorem inner_finiteInvolutiveClockTransform_eq_sectorNormSq_sub
   simp [a, b, P]
   ring
 
-/-- The projective distance from a normalized state to its clock transform is the exact product
-of the invariant and anti-invariant clock-sector weights. -/
+/-- The projective distance from any state to its clock transform is the exact product of the
+invariant and anti-invariant clock-sector weights.  Homogeneity removes any normalization
+hypothesis. -/
 theorem finiteInvolutiveClock_projectiveAsymmetry_eq_four_mul_sectorWeights
     (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ 2 = 1)
-    {ψ : E} (hψnorm : ‖ψ‖ = 1) :
+    (ψ : E) :
     projectiveGramTangentEnergy (𝕜 := ℂ) ψ (U ψ) =
       4 * ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ 2 *
         ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ 2 := by
@@ -82,12 +83,27 @@ theorem finiteInvolutiveClock_projectiveAsymmetry_eq_four_mul_sectorWeights
     U hadjoint_mul hsq ψ
   have hsum := norm_finiteInvolutiveGaugeAverage_sq_add_complement_sq
     U hadjoint_mul hsq ψ
-  have hUnormSq : ‖U ψ‖ ^ 2 = 1 := by
-    simpa [hψnorm] using
-      (norm_pow_apply_sq_eq_of_adjoint_mul_self U 1 hadjoint_mul ψ)
+  have hUnormSq : ‖U ψ‖ ^ 2 = ‖ψ‖ ^ 2 := by
+    simpa using (norm_pow_apply_sq_eq_of_adjoint_mul_self U 1 hadjoint_mul ψ)
   unfold projectiveGramTangentEnergy
-  rw [hinner, Complex.norm_real, Real.norm_eq_abs, sq_abs, hψnorm] at *
+  rw [hinner, Complex.norm_real, Real.norm_eq_abs, sq_abs, hUnormSq]
   nlinarith
+
+/-- **Homogeneous fidelity-sector identity.**  Before unit normalization, the fourth-power mass
+minus squared clock overlap is exactly the same invariant/anti-invariant sector product. -/
+theorem finiteInvolutiveClock_homogeneousFidelityDeficit_eq_four_mul_sectorWeights
+    (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ 2 = 1)
+    (ψ : E) :
+    ‖ψ‖ ^ 4 - ‖inner ℂ ψ (U ψ)‖ ^ 2 =
+      4 * ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ 2 *
+        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ 2 := by
+  rw [← finiteInvolutiveClock_projectiveAsymmetry_eq_four_mul_sectorWeights
+    U hadjoint_mul hsq ψ]
+  unfold projectiveGramTangentEnergy
+  have hUnormSq : ‖U ψ‖ ^ 2 = ‖ψ‖ ^ 2 := by
+    simpa using (norm_pow_apply_sq_eq_of_adjoint_mul_self U 1 hadjoint_mul ψ)
+  rw [hUnormSq]
+  ring
 
 /-- **Pure-state fidelity-sector identity.**  The squared-fidelity deficit under an involutive
 clock equals four times the product of its two sector weights.  This is the exact apparatus
@@ -98,13 +114,8 @@ theorem finiteInvolutiveClock_pureStateFidelityDeficit_eq_four_mul_sectorWeights
     1 - ‖inner ℂ ψ (U ψ)‖ ^ 2 =
       4 * ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ 2 *
         ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ 2 := by
-  rw [← finiteInvolutiveClock_projectiveAsymmetry_eq_four_mul_sectorWeights
-    U hadjoint_mul hsq hψnorm]
-  unfold projectiveGramTangentEnergy
-  have hUnormSq : ‖U ψ‖ ^ 2 = 1 := by
-    simpa [hψnorm] using
-      (norm_pow_apply_sq_eq_of_adjoint_mul_self U 1 hadjoint_mul ψ)
-  rw [hψnorm, hUnormSq]
+  rw [← finiteInvolutiveClock_homogeneousFidelityDeficit_eq_four_mul_sectorWeights
+    U hadjoint_mul hsq ψ, hψnorm]
   norm_num
 
 end

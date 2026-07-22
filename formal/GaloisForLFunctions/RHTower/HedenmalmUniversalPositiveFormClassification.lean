@@ -138,4 +138,18 @@ theorem universalPositiveForm_identicallyZero_iff_canonicalMeasure_zero
       exact h u v
   exact hzero.trans (spectralMeasureForm_eq_zero_iff_measure_eq_zero μ)
 
+/-- **Scalar-null exact closure classification.**  For a nonnegative momentum-symmetric form,
+vanishing only on the theta diagonal already forces the complete theta left radical through its
+canonical positive spectral measure.  This discharges the stronger `∀ w, Q θ w = 0` hypothesis
+from the existing ordinary-`L²` closure classifier: such a form is closable exactly when it
+vanishes identically. -/
+theorem universalPositiveForm_thetaNull_sequentiallyL2Closable_iff_zero
+    (Q : SchwartzMap.ContinuousSchwartzSesquilinearForm)
+    (hQ : Q.MomentumSymmetric) (hQnonneg : Q.IsNonnegative)
+    (hnull : Q xiThetaSchwartzSource xiThetaSchwartzSource = 0) :
+    Q.IsSequentiallyClosableThrough xiThetaSchwartzToL2 ↔
+      ∀ u v : SchwartzMap ℝ ℂ, Q u v = 0 := by
+  exact xiThetaSchwartzForm_sequentiallyL2Closable_iff_zero Q hQnonneg hQ
+    (universalPositiveForm_theta_leftRadical_of_thetaNull Q hQ hQnonneg hnull)
+
 end RHTower

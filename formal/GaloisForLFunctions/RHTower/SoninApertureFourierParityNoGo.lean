@@ -263,6 +263,84 @@ theorem evenSoninBilateralApertureHolonomy_fourier_odd
     _ = V * Q * U - U * Q * V := by rw [hJUJ, hJQJ, hJVJ]
     _ = -(U * Q * V - V * Q * U) := by module
 
+/-- **Non-vacuity of bilateral holonomy.**  At every positive aperture and every nontrivial
+dilation scale, forward and inverse conjugations of the Sonin projection are distinct. -/
+theorem evenSoninBilateralApertureHolonomy_ne_zero
+    (a r : ℝ) (ha : 0 < a) (hr : 1 < r) :
+    evenSoninBilateralApertureHolonomy a r hr ≠ 0 := by
+  let Q := evenCentralSoninProjection a
+  let U := evenDilationCLM r (zero_lt_one.trans hr)
+  let V := ContinuousLinearMap.adjoint U
+  have hr0 : 0 < r := zero_lt_one.trans hr
+  have hVU : V * U = 1 := by
+    dsimp only [V, U]
+    rw [adjoint_evenDilationCLM]
+    exact evenDilationCLM_inv_mul r hr0
+  have hUV : U * V = 1 := by
+    dsimp only [V, U]
+    rw [adjoint_evenDilationCLM, evenDilationCLM_mul]
+    have hscale : evenDilationCLM (r * r⁻¹)
+        (mul_pos hr0 (inv_pos.mpr hr0)) =
+          evenDilationCLM 1 zero_lt_one := by
+      congr 1
+      exact mul_inv_cancel₀ hr0.ne'
+    rw [hscale, evenDilationCLM_one]
+  have hQadj : ContinuousLinearMap.adjoint Q = Q := by
+    simpa only [Q] using adjoint_evenCentralSoninProjection a
+  intro hzero
+  have heq : U * Q * V = V * Q * U := by
+    apply sub_eq_zero.mp
+    simpa only [evenSoninBilateralApertureHolonomy, Q, U, V] using hzero
+  have hU2Q : (U * U) * Q = Q * (U * U) := by
+    calc
+      (U * U) * Q = U * (U * Q * V) * U := by
+        noncomm_ring [hVU]
+      _ = U * (V * Q * U) * U := by rw [heq]
+      _ = (U * V) * Q * (U * U) := by noncomm_ring
+      _ = Q * (U * U) := by rw [hUV, one_mul]
+  have hV2Q : (V * V) * Q = Q * (V * V) := by
+    have h := congrArg ContinuousLinearMap.adjoint hU2Q
+    change ContinuousLinearMap.adjoint ((U * U) ∘L Q) =
+      ContinuousLinearMap.adjoint (Q ∘L (U * U)) at h
+    rw [ContinuousLinearMap.adjoint_comp,
+      ContinuousLinearMap.adjoint_comp] at h
+    have hUU : ContinuousLinearMap.adjoint (U * U) = V * V := by
+      change ContinuousLinearMap.adjoint (U ∘L U) = V * V
+      rw [ContinuousLinearMap.adjoint_comp]
+      rfl
+    rw [hUU, hQadj] at h
+    exact h.symm
+  have hr2 : 1 < r * r := by nlinarith
+  let U2 := evenDilationCLM (r * r) (zero_lt_one.trans hr2)
+  let V2 := evenDilationCLM (r * r)⁻¹
+    (inv_pos.mpr (zero_lt_one.trans hr2))
+  have hU2 : U * U = U2 := by
+    dsimp only [U, U2]
+    exact evenDilationCLM_mul r r hr0 hr0
+  have hV2 : V * V = V2 := by
+    dsimp only [V, U, V2]
+    rw [adjoint_evenDilationCLM, evenDilationCLM_mul]
+    congr 1
+    field_simp
+  have hDcomm : evenDilationSum (r * r) hr2 * Q =
+      Q * evenDilationSum (r * r) hr2 := by
+    rw [evenDilationSum_eq]
+    change (U2 + V2) * Q = Q * (U2 + V2)
+    rw [← hU2, ← hV2]
+    noncomm_ring [hU2Q, hV2Q]
+  have hQid : IsIdempotentElem Q := by
+    dsimp only [Q]
+    rw [evenCentralSoninProjection_eq_starProjection]
+    exact (evenCentralSoninCarrier a).isIdempotentElem_starProjection
+  have hcorner : evenCentralSoninDilationCorner a (r * r) hr2 = 0 := by
+    rw [evenCentralSoninDilationCorner_eq_crossBoundary]
+    exact crossBoundary_eq_zero_of_commute hQid hDcomm
+  have hnot := evenCentralSoninDilationCorner_not_isCompactOperator
+    a (r * r) ha hr2
+  apply hnot
+  rw [hcorner]
+  exact isCompactOperator_zero
+
 /-- **Invariant-reader annihilation law.**  Every Fourier-conjugation-invariant complex-linear
 reader annihilates bilateral aperture holonomy. -/
 theorem reflectionInvariantLinearReader_evenSoninBilateralApertureHolonomy_eq_zero

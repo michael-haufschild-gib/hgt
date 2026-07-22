@@ -286,7 +286,7 @@ Formalize without any RH hypothesis or source computation:
 
 1. principal-minor/adjugate polynomial identity underlying `(7)`;
 2. positive-weight rational Stieltjes monotonicity and unique-zero interlacing;
-3. finite mixed-moment positivity from distinct positive atoms;
+3. `[FORMALIZED]` finite mixed-moment positivity from distinct positive atoms;
 4. the displacement-to-oblique-compression intertwiner in finite modules;
 5. an explicit connector theorem whose hypotheses are exactly CCM's `(1)`.
 
@@ -299,6 +299,8 @@ Do not formalize the open boundary--central Stieltjes conjecture as a wrapper.
 - [x] preliminary corpus and external collision search
 - [ ] independent expert novelty audit
 - [ ] Lean theorem for the complete universal law
+- [x] Lean determinant/central-resolvent core
+- [x] Lean positive-distinct-atomic Hankel direction
 - [ ] instantiate the exact finite CCM matrix definitions in Lean
 - [ ] prove source positivity/cofinal margin for actual von-Mangoldt--Gamma coefficients
 - [ ] continuous restricted-Weil passage
@@ -316,3 +318,7 @@ Do not formalize the open boundary--central Stieltjes conjecture as a wrapper.
   displacement identity. Closed determinant quotient, mixed Stieltjes measure, positive commutant
   metric, complete parity interlacing, and inverse spectral tomography on paper. Classified
   source positivity and cofinal passage as open; no RH claim.
+- 2026-07-22 -- Formalized the universal determinant/central-resolvent identity and the strict
+  finite atomic Hankel law in `CCMParityCompressionDeterminant.lean`. This freezes determinant
+  algebra and positive-atom Vandermonde arguments; actual von-Mangoldt--Gamma source positivity,
+  full interlacing equivalence, and cofinal passage remain open.

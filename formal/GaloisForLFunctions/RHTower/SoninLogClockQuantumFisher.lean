@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.FiniteInvolutiveClockQuantumFisherDephasing
 import GaloisForLFunctions.HTGeometry.QuantumFisherClockReparametrization
 import GaloisForLFunctions.RHTower.SoninLogClockDephasing
+import GaloisForLFunctions.RHTower.SoninLogClockMultiplicativeDomain
 
 /-!
 # Quantum Fisher value of the logarithmic Sonin clock
@@ -21,6 +22,50 @@ namespace RHTower
 
 noncomputable section
 
+/-- The complete Sonin star-Kadison energy is exactly one quarter of the squared
+scattering--observable commutator on every physical state, for arbitrary bounded operators. -/
+theorem re_inner_soninLogFourierObservableTwirlStarKadisonDefect_eq_quarter_commutatorNormSq
+    (X : SoninL2 →L[ℂ] SoninL2) {ψ : SoninL2}
+    (hψ : GaloisForLFunctions.PhysicalState
+      (soninLogFourierScattering - 1).toLinearMap ψ) :
+    Complex.re
+        (inner ℂ ψ (soninLogFourierObservableTwirlStarKadisonDefect X ψ)) =
+      (4 : ℝ)⁻¹ *
+        ‖((X * soninLogFourierScattering - soninLogFourierScattering * X) :
+          SoninL2 →L[ℂ] SoninL2) ψ‖ ^ 2 := by
+  rw [GaloisForLFunctions.PhysicalState] at hψ
+  have hfixed : soninLogFourierScattering ψ = ψ := by
+    apply sub_eq_zero.mp
+    simpa using hψ
+  simpa only [soninLogFourierObservableTwirlStarKadisonDefect] using
+    HTGeometry.re_inner_finiteInvolutiveObservableTwirlStarKadisonDefect_eq_quarter_commutatorNormSq_of_fixed
+      soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
+      soninLogFourierScattering_sq_eq_one hfixed
+
+/-- The pure-state QFI hidden by the logarithmic Sonin clock is four times its complete
+star-Kadison observability energy for every bounded operator.  Physicality discharges the
+projective-overlap term; no self-adjointness premise is required. -/
+theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+    (X : SoninL2 →L[ℂ] SoninL2)
+    {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
+    (hψ : GaloisForLFunctions.PhysicalState
+      (soninLogFourierScattering - 1).toLinearMap ψ) :
+    HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+        (‖inner ℂ ψ ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
+        (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) =
+      4 * Complex.re
+        (inner ℂ ψ (soninLogFourierObservableTwirlStarKadisonDefect X ψ)) := by
+  rw [GaloisForLFunctions.PhysicalState] at hψ
+  have hfixed : soninLogFourierScattering ψ = ψ := by
+    apply sub_eq_zero.mp
+    simpa using hψ
+  simpa only [soninLogFourierInvariantAverage,
+    soninLogFourierObservableTwirlStarKadisonDefect] using
+      (HTGeometry.finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+        soninLogFourierScattering X 2 two_ne_zero
+        soninLogFourierScattering_adjoint_mul_self
+        soninLogFourierScattering_sq_eq_one hψnorm hfixed)
+
 /-- The pure-state QFI hidden by the logarithmic Sonin clock is four times its static
 observability variance.  Physicality discharges the projective-overlap term. -/
 theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_four_mul_observabilityVariance
@@ -33,17 +78,41 @@ theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_four_mul_observabilit
         (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) =
       4 * Complex.re
         (inner ℂ ψ (soninLogFourierObservableTwirlKadisonDefect X ψ)) := by
+  rw [soninLogClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+    X hψnorm hψ]
+  rw [soninLogFourierObservableTwirlStarKadisonDefect,
+    HTGeometry.finiteCyclicObservableTwirlStarKadisonDefect_eq_of_isSelfAdjoint
+      soninLogFourierScattering X 2 two_ne_zero
+      soninLogFourierScattering_adjoint_mul_self
+      soninLogFourierScattering_sq_eq_one hX]
+  rfl
+
+/-- The arbitrary-operator Sonin hidden-clock QFI/star-observability identity is an equality of
+coordinate-free clock line values. -/
+theorem soninLogClock_erasedQuantumFisherClockLineValue_eq_starObservabilityLineValue
+    (X : SoninL2 →L[ℂ] SoninL2)
+    {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
+    (hψ : GaloisForLFunctions.PhysicalState
+      (soninLogFourierScattering - 1).toLinearMap ψ)
+    (clockIncrement : ℝ) :
+    HTGeometry.quantumFisherClockLineValue (‖ψ‖ ^ 2)
+        (‖inner ℂ ψ ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
+        (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2)
+        clockIncrement =
+      HTGeometry.finiteClockObservabilityLineValue
+        (Complex.re
+          (inner ℂ ψ (soninLogFourierObservableTwirlStarKadisonDefect X ψ)))
+        clockIncrement := by
   rw [GaloisForLFunctions.PhysicalState] at hψ
   have hfixed : soninLogFourierScattering ψ = ψ := by
     apply sub_eq_zero.mp
     simpa using hψ
   simpa only [soninLogFourierInvariantAverage,
-    soninLogFourierObservableTwirlKadisonDefect,
-    HTGeometry.finiteInvolutiveObservableTwirlKadisonDefect] using
-      (HTGeometry.finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_observabilityVariance
+    soninLogFourierObservableTwirlStarKadisonDefect] using
+      (HTGeometry.finiteClock_erasedQuantumFisherClockLineValue_eq_starObservabilityLineValue
         soninLogFourierScattering X 2 two_ne_zero
         soninLogFourierScattering_adjoint_mul_self
-        soninLogFourierScattering_sq_eq_one hX hψnorm hfixed)
+        soninLogFourierScattering_sq_eq_one hψnorm hfixed clockIncrement)
 
 /-- The Sonin hidden-clock QFI/variance identity is an equality of coordinate-free clock line
 values.  The observer algebra fixes the visible tangent while `clockIncrement` records an arbitrary
@@ -62,23 +131,20 @@ theorem soninLogClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValu
         (Complex.re
           (inner ℂ ψ (soninLogFourierObservableTwirlKadisonDefect X ψ)))
         clockIncrement := by
-  rw [GaloisForLFunctions.PhysicalState] at hψ
-  have hfixed : soninLogFourierScattering ψ = ψ := by
-    apply sub_eq_zero.mp
-    simpa using hψ
-  simpa only [soninLogFourierInvariantAverage,
-    soninLogFourierObservableTwirlKadisonDefect,
-    HTGeometry.finiteInvolutiveObservableTwirlKadisonDefect] using
-      (HTGeometry.finiteClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue
-        soninLogFourierScattering X 2 two_ne_zero
-        soninLogFourierScattering_adjoint_mul_self
-        soninLogFourierScattering_sq_eq_one hX hψnorm hfixed clockIncrement)
+  rw [soninLogClock_erasedQuantumFisherClockLineValue_eq_starObservabilityLineValue
+    X hψnorm hψ clockIncrement]
+  rw [soninLogFourierObservableTwirlStarKadisonDefect,
+    HTGeometry.finiteCyclicObservableTwirlStarKadisonDefect_eq_of_isSelfAdjoint
+      soninLogFourierScattering X 2 two_ne_zero
+      soninLogFourierScattering_adjoint_mul_self
+      soninLogFourierScattering_sq_eq_one hX]
+  rfl
 
 /-- **Sonin clock QFI/commutator identity.**  On the physical constraint surface, the entire
 hidden-clock QFI is the squared scattering--observable commutator.  Consequently no independent
-QFI-overlap, positivity, or commutator-energy conversion hypothesis remains. -/
+QFI-overlap, positivity, self-adjointness, or commutator-energy conversion hypothesis remains. -/
 theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq
-    (X : SoninL2 →L[ℂ] SoninL2) (hX : IsSelfAdjoint X)
+    (X : SoninL2 →L[ℂ] SoninL2)
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ) :
@@ -87,17 +153,17 @@ theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq
         (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) =
       ‖((X * soninLogFourierScattering - soninLogFourierScattering * X) :
         SoninL2 →L[ℂ] SoninL2) ψ‖ ^ 2 := by
-  rw [soninLogClock_erasedPureStateQuantumFisherValue_eq_four_mul_observabilityVariance
-    X hX hψnorm hψ]
-  rw [re_inner_soninLogFourierObservableTwirlKadisonDefect_eq_quarter_commutatorNormSq
-    X hX.star_eq hψ]
+  rw [soninLogClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+    X hψnorm hψ,
+    re_inner_soninLogFourierObservableTwirlStarKadisonDefect_eq_quarter_commutatorNormSq
+      X hψ]
   ring
 
 /-- **Sonin QFI/dephasing identity.**  On a normalized physical state, the QFI hidden by the
 logarithmic clock is one quarter of the squared double-scattering-commutator value.  This applies
 the relational-clock dephasing relation directly to the existing Sonin QFI corpus. -/
 theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_quarter_doubleCommutatorNormSq
-    (X : SoninL2 →L[ℂ] SoninL2) (hX : IsSelfAdjoint X)
+    (X : SoninL2 →L[ℂ] SoninL2)
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ) :
@@ -112,7 +178,7 @@ theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_quarter_doubleCommuta
   simpa only [soninLogFourierInvariantAverage, soninLogFourierDoubleCommutator] using
     HTGeometry.finiteInvolutiveClock_erasedPureStateQuantumFisherValue_eq_quarter_doubleCommutatorNormSq
       soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
-      soninLogFourierScattering_sq_eq_one hX hψnorm hfixed
+      soninLogFourierScattering_sq_eq_one hψnorm hfixed
 
 end
 

@@ -6256,8 +6256,8 @@ Lean:
 
 Research records:
 
-- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin-aperture-ward-curvature-transgression.md`;
-- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/sonin-aperture-ward-curvature-transgression.md`;
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/sonin-aperture-ward-curvature-transgression.md`;
+- `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/sonin-aperture-ward-curvature-transgression.md`;
 - `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`.
 
 ## S81. Ward curvature is globally exact; invariant-trace Suzuki weld is impossible (2026-07-22)
@@ -6356,6 +6356,236 @@ Lean:
 
 Research records:
 
-- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin-aperture-ward-cohomology-fourier-parity-no-go.md`;
-- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/sonin-aperture-ward-cohomology-fourier-parity-no-go.md`;
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/sonin-aperture-ward-cohomology-fourier-parity-no-go.md`;
+- `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/sonin-aperture-ward-cohomology-fourier-parity-no-go.md`;
 - `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`.
+- `docs/drafts/pipeline/1-in-progress/suzuki-source-realization-knowledge-ledger.md`.
+- `docs/drafts/pipeline/1-in-progress/critical-half-weight-copoisson-cocycle-unitarization.md`.
+
+## S82. Resolved Euler Ward--Schur capacity law kills bounded channel mixing (2026-07-22)
+
+The prime--Gamma source programme ended at a request for infinite-rank off-diagonal incidence
+which converts inverse-log balanced Cauchy packets to positive-log Mellin jets while preserving
+Euler source law. Two ambiguous escape routes remained: call incidence “channel-resolved” while
+mixing channels, or let one fixed Gamma conductor pay all off-diagonal energy. Both are now closed.
+
+Let `P_i` be coordinate projection on arbitrary complex channel space `I -> C`. For any complex
+linear map `T`, Lean proves exact commutant classification
+
+```text
+T P_i=P_i T for every i
+ iff
+(T x)(i)=x(i)(T e_i)(i) for every x,i.                 (S82.1)
+```
+
+Thus literal preservation of every resolved Euler channel is exactly diagonal action, without
+finite-dimensional or continuity assumptions. In particular `i!=j` implies `(T e_j)(i)=0`.
+
+For finite channel matrix `A`, set
+
+```text
+Omega_i(A)=A P_i-P_i A,
+E_comm(A)=sum_i ||Omega_i(A)||_F^2,
+E_off(A)=sum_(i!=j)|A_ij|^2.
+```
+
+Direct commutator expansion gives incoming and outgoing corners. Summing them proves exact
+resolved Ward law
+
+```text
+E_comm(A)=2 E_off(A),                                  (S82.2)
+
+E_comm(A)=0
+ iff every Omega_i(A)=0
+ iff A is diagonal.                                    (S82.3)
+```
+
+This composes with already formalized positive-log obstruction. If a prime-channel incidence
+commutes with every resolved prime projection and its forced diagonal realizes `r`th positive-log
+Mellin jet, its weighted output energy is nonsummable. Lean packages unconditional nonexistence:
+
+```text
+no fully resolved channel-preserving incidence
+  + positive-log Mellin-jet realization
+  + summable weighted output energy.                   (S82.4)
+```
+
+The stronger advance uses actual Gamma cyclic coupling. For finite normalized prime covariance
+`K`, coupling vector `u`, fixed scalar conductor capacity `B>0`, and
+
+```text
+S=sum_i u_i^2=sum_i R_(p_i),
+C_off=sum_(i!=j)K_ij u_i u_j,
+W=sum_(i!=j)(u_i u_j)^2,
+```
+
+off-diagonal Cauchy--Schwarz and `(S82.2)` prove universal Ward--Schur law
+
+```text
+C_off^2<=E_off(K)W,
+W<=S^2,
+
+0<=L<=C_off
+ -> 2L^2<=E_comm(K)W<=E_comm(K)S^2.                   (S82.5)
+```
+
+Existing Gamma Schur-capacity theorem supplies exact positive-block bound
+
+```text
+C_off>=S^2/B-S.                                        (S82.6)
+```
+
+Therefore, once `S>=B`, Lean proves
+
+```text
+E_comm(K)>=2(S/B-1)^2.                                 (S82.7)
+```
+
+One-prime Gamma Schur costs are nonsummable. New cofinal Lean corollary states: for every fixed
+`B>0` and every `M>=0`, some finite prime packet forces `E_comm(K)>M` for every normalized positive
+prime--conductor block. Required channel mixing is not merely nonzero; its resolved Ward energy is
+cofinally unbounded.
+
+This changes Suzuki source architecture materially before any zeta zero or co-Poisson annihilator
+is read. Three classes are now forbidden:
+
+1. exact commutation with every resolved Euler channel;
+2. uniformly Ward-bounded finite-packet off-diagonal incidence;
+3. fixed finite scalar Gamma conductor paying completed Schur boundary.
+
+Survivor is narrower: singular or locally finite connection with growing archimedean channel
+capacity, or source-fixed principal-relative subtraction of divergent carré-du-champ before target
+moments. General containing problem is source-renormalized covariant Dirichlet form relative to
+resolved Euler algebra:
+
+```text
+FP_F[(1/2)sum_(i in F)||T_F P_i-P_i T_F||_F^2
+       -boundaryEnergy(B_F)]
+ = completed Euler trace defect,                       (S82.8)
+```
+
+with cutoff cocycle and finite part fixed from source data. Any finite part defined from desired
+moment difference is circular. Fixed boundary capacity is falsified by `(S82.7)`.
+
+This is genuine source-side frontier progress but not RH, not not-RH, and not whole-lane
+impossibility. Exact remaining source question is construction or class-complete refutation of
+`(S82.8)` using actual prime--Gamma/co-Poisson principal algebra. Success must retain meromorphic
+principal part and yield completed Green--Schur Euler identity; failure for every source-canonical
+growing-capacity/principal-relative connection would retire this Suzuki branch.
+
+Artifacts:
+
+- `formal/GaloisForLFunctions/HTGeometry/ResolvedChannelWardLaw.lean`;
+- `formal/GaloisForLFunctions/RHTower/PrimeMellinJetResolvedChannelNoGo.lean`;
+- `docs/drafts/pipeline/1-in-progress/resolved-euler-channel-ward-mixing-no-go.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-source-realization-knowledge-ledger.md`.
+
+Internal collision audit found generic two-corner Ward identities and Gamma Schur-capacity law,
+but no multi-channel factor-two commutator classification composed into cofinal Gamma Ward blow-up.
+Universal algebra ingredients are not claimed new to literature; source-specific synthesis and
+priority remain externally unaudited.
+
+Formal audit: direct universal-module Lean check passes; targeted cached build
+`lake build GaloisForLFunctions.RHTower.PrimeMellinJetResolvedChannelNoGo` passes `8570/8570`.
+Formal lint passes with large-file warnings only. Six capstone axiom surfaces use only `propext`,
+`Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean. No stale Lean/lake
+process remains.
+
+## S83. Parity-protected Schur floor kills growing even Gamma/Jacobi capacity (2026-07-22)
+
+S82 proved that fixed scalar Gamma capacity cannot pay cofinally divergent resolved Ward cost, but
+left growing Gamma/polar boundary capacity as one escape. Corpus audit found two pieces already
+known separately: odd Gamma sine kernel and all-even semilocal Jacobi residue tower. Missing
+statement was whether arbitrarily many even boundary modes could jointly erase odd source cost.
+They cannot.
+
+Let `J` be self-adjoint parity on arbitrary real or complex Hilbert space. For finite packet,
+assume
+
+```text
+J e_i=e_i,       J o_i=-o_i,       J b_i=b_i,
+```
+
+where `b_i` is any correction family in even sector. No common finite-dimensional boundary space,
+projection, optimality, or rank bound is assumed. Lean proves exact universal law
+
+```text
+||sum_i z_i ((e_i+o_i)-b_i)||^2
+ =||sum_i z_i (e_i-b_i)||^2+||sum_i z_i o_i||^2.       (S83.1)
+```
+
+Hence every even correction has same capacity-independent odd floor:
+
+```text
+||sum_i z_i o_i||^2
+ <=||sum_i z_i ((e_i+o_i)-b_i)||^2.                    (S83.2)
+```
+
+Proof is forced by parity. Self-adjointness gives
+`<e_i-b_i,o_j>=<J(e_i-b_i),o_j>=<e_i-b_i,J o_j>=-<e_i-b_i,o_j>`, so even residual and odd packet
+are orthogonal; Pythagoras gives `(S83.1)`.
+
+For actual normalized archimedean Gamma measure, Lean proves literal sine Gram identity
+
+```text
+O(t,u):=int sin(ts)sin(us)dmu_Gamma(s)
+       =(phi(t-u)-phi(t+u))/2,
+phi(t)=(cosh t)^(-1/2).                                (S83.3)
+```
+
+For `t,u>0`, this is strictly positive. On prime-log diagonal,
+
+```text
+O(log p,log p)=(1-phi(2 log p))/2
+ >=c_Gamma:=(1-sqrt(2)/2)/2>0.                        (S83.4)
+```
+
+Let `R_p` be actual one-prime Gamma conductor Schur cost from S82. Since `R_p` is nonsummable,
+protected residual
+
+```text
+E_p=R_p O(log p,log p)
+```
+
+satisfies
+
+```text
+E_p>=c_Gamma R_p,
+not Summable_p E_p,
+for every M exists finite prime packet F with
+  M<sum_(p in F)E_p.                                   (S83.5)
+```
+
+This closes growing reflection-even Gamma/Jacobi boundary capacity as source class, regardless of
+dimension. It materially narrows S82 before any zeta zero, Xi character, or desired completed
+moment is read.
+
+This is not full Suzuki no-go and not RH. Two exact survivors remain:
+
+1. source-derived odd or parity-mixing boundary channel, which can touch protected floor;
+2. signed principal-relative finite part, which is not positive Hilbert-space Schur correction.
+
+General topic exposed is symmetry-protected residual energy in renormalized Schur complements:
+counterterms confined to one isotypic sector cannot affect opposite sector, so arithmetic
+summability of protected sector becomes decisive source test. Here actual Gamma Schur weights fail
+that test.
+
+Collision control is explicit. `(S83.3)` alone and all-even Jacobi tower were corpus-known; only
+arbitrary-capacity law `(S83.1)` composed with actual prime divergence `(S83.5)` counts as advance.
+Current primary-source audit of Connes--Consani--Moscovici's Gamma/Jacobi framework and Suzuki's
+parity-split localized Weil framework found no such composed theorem; novelty remains provisional
+pending specialist review.
+
+Artifacts:
+
+- `formal/GaloisForLFunctions/HTGeometry/ParityProtectedSchurFloor.lean`;
+- `formal/GaloisForLFunctions/RHTower/GammaEvenBoundaryParityNoGo.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/gamma-even-boundary-parity-floor-no-go.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-source-realization-knowledge-ledger.md`.
+
+Formal audit: direct `lake env lean` checks pass for both new leaves; targeted cached build
+`lake build GaloisForLFunctions.RHTower.GammaEvenBoundaryParityNoGo` passes `3588/3588`, compiling
+only two new leaves and replaying one cached dependency with pre-existing linter warnings. Formal
+lint passes with large-file warnings only. Six capstone axiom surfaces use only `propext`,
+`Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean. No stale Lean/lake
+process remains.

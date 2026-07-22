@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HilbertMetric.DeterminantCurvatureJet
 import GaloisForLFunctions.HilbertMetric.GaussianFock
+import GaloisForLFunctions.HilbertMetric.QuasiFreeFillingFano
+import GaloisForLFunctions.HilbertMetric.QuasiFreeRankVarianceDiscriminant
 import GaloisForLFunctions.HilbertMetric.SpectralBandwidthFano
 
 /-!
@@ -498,6 +500,107 @@ theorem slaterSpectralFanoMargin_orthonormalRealGramCoordinates
   rw [slaterSpectralFanoMargin,
     slaterSpectralMean_orthonormalRealGramCoordinates 𝕜 x hx,
     slaterSpectralVariance_orthonormalRealGramCoordinates 𝕜 x hx]
+  simp
+
+/-- Arbitrary diagonal occupations of a square orthonormal Gram frame have spectral mean equal
+to the occupation-weighted sum of orbital energies. -/
+theorem quasiFreeSpectralMean_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (energy occupation : Fin n → ℝ) :
+    quasiFreeSpectralMean (orthonormalRealGramCoordinates 𝕜 x) energy occupation =
+      ∑ i, occupation i * energy i := by
+  simp [quasiFreeSpectralMean, orbitalSpectralMean, hx]
+
+/-- The quasi-free compression energy of a square orthonormal Gram frame is diagonal: each mode
+contributes the square of its occupied energy. -/
+theorem quasiFreeCompressedSpectralEnergy_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (energy occupation : Fin n → ℝ) :
+    quasiFreeCompressedSpectralEnergy
+        (orthonormalRealGramCoordinates 𝕜 x) energy occupation =
+      ∑ i, occupation i ^ 2 * energy i ^ 2 := by
+  simp [quasiFreeCompressedSpectralEnergy, hx, pow_two]
+
+/-- **Independent-mode quasi-free variance law.**  In square orthonormal Gram coordinates every
+off-diagonal compression term vanishes, leaving the sum of Bernoulli-mode variances. -/
+theorem quasiFreeSpectralVariance_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (energy occupation : Fin n → ℝ) :
+    quasiFreeSpectralVariance
+        (orthonormalRealGramCoordinates 𝕜 x) energy occupation =
+      ∑ i, occupation i * (1 - occupation i) * energy i ^ 2 := by
+  rw [quasiFreeSpectralVariance,
+    quasiFreeCompressedSpectralEnergy_orthonormalRealGramCoordinates
+      𝕜 x hx energy occupation]
+  simp only [orbitalSpectralSecondMoment]
+  simp [hx]
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  ring
+
+/-- **Independent-mode quasi-free Fano law.**  The exact mean-minus-variance margin of a square
+orthonormal Gram frame is the sum of its one-mode margins, with no band or filling hypothesis. -/
+theorem quasiFreeSpectralFanoMargin_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (energy occupation : Fin n → ℝ) :
+    quasiFreeSpectralFanoMargin
+        (orthonormalRealGramCoordinates 𝕜 x) energy occupation =
+      ∑ i, occupation i *
+        (energy i - (1 - occupation i) * energy i ^ 2) := by
+  rw [quasiFreeSpectralFanoMargin,
+    quasiFreeSpectralMean_orthonormalRealGramCoordinates
+      𝕜 x hx energy occupation,
+    quasiFreeSpectralVariance_orthonormalRealGramCoordinates
+      𝕜 x hx energy occupation]
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  ring
+
+/-- **Orthonormal rank--variance defect law.**  In square orthonormal Gram coordinates, the
+quasi-free rank discriminant is exactly support rank times endpoint leakage plus the ordered
+pairwise dispersion of occupied orbital energies.  The off-diagonal compression-coherence defect
+vanishes identically. -/
+theorem quasiFreeSpectralRankVarianceDiscriminant_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (energy occupation : Fin n → ℝ) (lower upper : ℝ) :
+    quasiFreeSpectralRankVarianceDiscriminant
+        (orthonormalRealGramCoordinates 𝕜 x) energy occupation lower upper =
+      (n : ℝ) * ∑ i, occupation i * (energy i - lower) * (upper - energy i) +
+        (∑ i, ∑ j,
+          (occupation i * energy i - occupation j * energy j) ^ 2) / 2 := by
+  have hsecant :
+      quasiFreeSpectralSecantDefect
+          (orthonormalRealGramCoordinates 𝕜 x) energy occupation lower upper =
+        ∑ i, occupation i * (energy i - lower) * (upper - energy i) := by
+    unfold quasiFreeSpectralSecantDefect
+    apply Finset.sum_congr rfl
+    intro i _hi
+    simp [orbitalSpectralMean, orbitalSpectralSecondMoment, hx]
+    ring
+  have hpair :
+      quasiFreeSpectralPairwiseMeanDefect
+          (orthonormalRealGramCoordinates 𝕜 x) energy occupation =
+        (∑ i, ∑ j,
+          (occupation i * energy i - occupation j * energy j) ^ 2) / 2 := by
+    simp [quasiFreeSpectralPairwiseMeanDefect, orbitalSpectralMean, hx]
+  have hcoherence :
+      quasiFreeSpectralCoherenceDefect
+          (orthonormalRealGramCoordinates 𝕜 x) energy occupation = 0 := by
+    simp [quasiFreeSpectralCoherenceDefect, hx]
+  rw [quasiFreeSpectralRankVarianceDiscriminant_three_defect]
+  rw [hsecant, hpair, hcoherence]
   simp
 
 private theorem slaterSpectralSecantDefect_orthonormalRealGramCoordinates

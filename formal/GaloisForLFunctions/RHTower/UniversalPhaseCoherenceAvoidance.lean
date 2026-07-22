@@ -64,7 +64,7 @@ theorem measureReal_torusCoherenceHitUnion_le
 estimate. -/
 theorem measureReal_torusCoherenceHitUnion_le_optimized
     {d : Type*} [Fintype d] [Nonempty d]
-    (N : ℕ) {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) :
+    (N : ℕ) {η : ℝ} (hη0 : 0 < η) :
     volume.real (torusCoherenceHitUnion (d := d) N η) ≤
       (N : ℝ) * ((Fintype.card d : ℝ) *
         Real.exp ((Fintype.card d : ℝ) / 2) *
@@ -77,7 +77,7 @@ theorem measureReal_torusCoherenceHitUnion_le_optimized
         Real.exp ((Fintype.card d : ℝ) / 2) *
           Real.sqrt (Real.pi * η / 2) ^ (Fintype.card d - 1)) := by
       exact mul_le_mul_of_nonneg_left
-        (measureReal_torusCoherenceTarget_le_optimized hη0 hη1)
+        (measureReal_torusCoherenceTarget_le_optimized hη0)
         (Nat.cast_nonneg N)
 
 /-- **Finite-time coherence avoidance law.**  If `N` times the optimized
@@ -85,7 +85,7 @@ coherence-target volume bound is below one, one phase vector has no
 `1 - η` coherent clock among the first `N` positive clocks. -/
 theorem exists_torus_phase_avoiding_coherence_until
     {d : Type*} [Fintype d] [Nonempty d]
-    (N : ℕ) {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1)
+    (N : ℕ) {η : ℝ} (hη0 : 0 < η)
     (hbudget :
       (N : ℝ) * ((Fintype.card d : ℝ) *
         Real.exp ((Fintype.card d : ℝ) / 2) *
@@ -94,7 +94,7 @@ theorem exists_torus_phase_avoiding_coherence_until
       ‖equalPhaseAmplitude (fun j ↦
         fourier 1 (((k.1 + 1 : ℕ) : ℤ) • x j))‖ < 1 - η := by
   have hhit : volume.real (torusCoherenceHitUnion (d := d) N η) < 1 :=
-    (measureReal_torusCoherenceHitUnion_le_optimized N hη0 hη1).trans_lt
+    (measureReal_torusCoherenceHitUnion_le_optimized N hη0).trans_lt
       hbudget
   have hexists : ∃ x : d → UnitAddCircle,
       x ∉ torusCoherenceHitUnion (d := d) N η := by
@@ -147,7 +147,7 @@ theorem exp_torusRealFrequency_eq_fourier_zsmul
 /-- Real-frequency form of finite-time coherence avoidance. -/
 theorem exists_real_frequency_avoiding_coherence_until
     {d : Type*} [Fintype d] [Nonempty d]
-    (N : ℕ) {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1)
+    (N : ℕ) {η : ℝ} (hη0 : 0 < η)
     (hbudget :
       (N : ℝ) * ((Fintype.card d : ℝ) *
         Real.exp ((Fintype.card d : ℝ) / 2) *
@@ -157,7 +157,7 @@ theorem exists_real_frequency_avoiding_coherence_until
         Complex.exp (Complex.I *
           ((((k.1 + 1 : ℕ) : ℝ) * ω j : ℝ) : ℂ)))‖ < 1 - η := by
   obtain ⟨x, hx⟩ := exists_torus_phase_avoiding_coherence_until
-    N hη0 hη1 hbudget
+    N hη0 hbudget
   refine ⟨fun j ↦ torusRealFrequency (x j), fun k ↦ ?_⟩
   simpa only [exp_torusRealFrequency_eq_fourier_zsmul] using hx k
 
@@ -183,7 +183,7 @@ theorem isUniversalPhaseCoherenceDeadline_recurrence
 
 /-- Below the Haar budget, `N` is not a universal coherence deadline. -/
 theorem not_isUniversalPhaseCoherenceDeadline_of_budget
-    {d N : ℕ} (hd : 0 < d) {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1)
+    {d N : ℕ} (hd : 0 < d) {η : ℝ} (hη0 : 0 < η)
     (hbudget :
       (N : ℝ) * ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
         Real.sqrt (Real.pi * η / 2) ^ (d - 1)) < 1) :
@@ -191,7 +191,7 @@ theorem not_isUniversalPhaseCoherenceDeadline_of_budget
   letI : NeZero d := ⟨hd.ne'⟩
   letI : Nonempty (Fin d) := Fin.pos_iff_nonempty.mp hd
   obtain ⟨ω, hω⟩ := exists_real_frequency_avoiding_coherence_until
-    (d := Fin d) N hη0 hη1 (by simpa using hbudget)
+    (d := Fin d) N hη0 (by simpa using hbudget)
   intro hdeadline
   obtain ⟨n, hn0, hnN, hncoh⟩ := hdeadline ω
   have hnlt : n - 1 < N := by omega

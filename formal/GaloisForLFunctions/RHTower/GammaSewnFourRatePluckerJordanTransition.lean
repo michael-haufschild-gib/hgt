@@ -21,6 +21,7 @@ the physical depth-dependent Euler amplitude and makes no RH claim.
 -/
 
 open scoped BigOperators
+open GaloisForLFunctions.HilbertMetric
 
 namespace RHTower
 
@@ -58,6 +59,78 @@ theorem gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFis
     gammaSewnFourRateBoundaryComplementarySewingMass_eq_three_halves_fisher,
     gammaSewnFourRateSchurCorrectedFisher_eq hpartition]
 
+/-- Canonical-volume nonvanishing discharges the raw partition premise in the Pluecker--Jordan
+ratio. -/
+theorem gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher_of_volume_ne_zero
+    {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
+    (hvolume : canonicalFeatureVolume
+      (gammaSewnFourRateBoundaryPluckerFeature a rate cell)
+      (fun _ => 1) (fun _ => 0) 1 ≠ 0) :
+    gammaSewnFourRateCanonicalPluckerSewingMass a rate cell =
+      (3 / 2 : ℝ) * gammaSewnFourRateSchurCorrectedFisher a rate cell := by
+  apply gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher
+  rw [gammaSewnFourRateBoundaryPairPartition_eq_canonicalFeatureVolume]
+  exact hvolume
+
+/-- Source nondegeneracy makes the canonical Pluecker--Jordan ratio unconditional at the
+normalization interface. -/
+theorem gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher_of_nondegenerate
+    {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
+    (ha : a ≠ 0) (hrate : Function.Injective rate)
+    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    gammaSewnFourRateCanonicalPluckerSewingMass a rate cell =
+      (3 / 2 : ℝ) * gammaSewnFourRateSchurCorrectedFisher a rate cell := by
+  exact
+    gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher_of_volume_ne_zero
+      (gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
+        (cell := cell) ha hrate hboundary).ne'
+
+/-- **Universal canonical Pluecker--Jordan curvature law.**  Once the Hilbert-feature volume is
+nonzero, Schur curvature is the sum of `-4/3` times canonical sewing mass and the selected-height
+dispersion penalty.  This removes the intermediate corrected-Fisher and raw-partition interfaces. -/
+theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPluckerJordan_of_volume_ne_zero
+    {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
+    (hvolume : canonicalFeatureVolume
+      (gammaSewnFourRateBoundaryPluckerFeature a rate cell)
+      (fun _ => 1) (fun _ => 0) 1 ≠ 0) :
+    gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
+      -(4 / 3 : ℝ) * gammaSewnFourRateCanonicalPluckerSewingMass a rate cell -
+      2 * normalizedFinitePairDispersion
+        (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
+        (gammaSewnFourRateSelectedHeight cell) := by
+  have hpartition :
+      (∑ s, gammaSewnFourRateBoundaryPairRawWeight a rate cell s) ≠ 0 := by
+    rw [gammaSewnFourRateBoundaryPairPartition_eq_canonicalFeatureVolume]
+    exact hvolume
+  have hcurvature := gammaSewnFourRateSchurBoundaryLogCurvature_eq hpartition
+  have hcorrected := gammaSewnFourRateSchurCorrectedFisher_eq hpartition
+  have hprob :
+      gammaSewnFourRateBoundaryPairProbability a rate cell =
+        gammaSewnFourRateCanonicalPluckerProbability a rate cell := by
+    funext s
+    exact gammaSewnFourRateBoundaryPairProbability_eq_canonicalFeatureVolume_normalized
+      a rate cell s
+  rw [hprob] at hcurvature hcorrected
+  have hsewing :=
+    gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher_of_volume_ne_zero
+      hvolume
+  nlinarith
+
+/-- Source nondegeneracy supplies the Hilbert-feature volume premise in the universal canonical
+Pluecker--Jordan curvature law. -/
+theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPluckerJordan
+    {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
+    (ha : a ≠ 0) (hrate : Function.Injective rate)
+    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
+      -(4 / 3 : ℝ) * gammaSewnFourRateCanonicalPluckerSewingMass a rate cell -
+      2 * normalizedFinitePairDispersion
+        (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
+        (gammaSewnFourRateSelectedHeight cell) := by
+  exact gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPluckerJordan_of_volume_ne_zero
+    (gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
+      (cell := cell) ha hrate hboundary).ne'
+
 /-- **Canonical Pluecker--Jordan curvature transition.**  For a nondegenerate four-prime packet
 at common valuation depth `e`, Schur log-curvature crosses `-8/3` times the canonical Pluecker
 sewing mass exactly at the source-computable Rees scale `sqrt(F / D)`. -/
@@ -75,19 +148,24 @@ theorem gammaSewnFourRatePluckerJordan_curvature_transition_iff
           (gammaSewnFourRateBoundaryComplementaryFisherMass a rate prime /
             gammaSewnFourRateBoundaryPrimeLogDispersion a rate prime) <
         (e : ℝ) + 1 / 2 := by
-  let cell := gammaSewnFourRateCommonDepthCell prime e
-  have hpartition :
-      0 < ∑ s, gammaSewnFourRateBoundaryPairRawWeight a rate cell s :=
-    gammaSewnFourRateBoundaryPairPartition_pos
-      (cell := cell) ha hrate hboundary
-  have hcurvature := gammaSewnFourRateSchurBoundaryLogCurvature_eq hpartition.ne'
-  have hcorrected := gammaSewnFourRateSchurCorrectedFisher_eq hpartition.ne'
+  have hcurvature :=
+    gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPluckerJordan
+      (cell := gammaSewnFourRateCommonDepthCell prime e) ha hrate hboundary
   have hsewing :=
-    gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher
-      hpartition.ne'
+    gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher_of_nondegenerate
+      (cell := gammaSewnFourRateCommonDepthCell prime e) ha hrate hboundary
+  have hprob :
+      gammaSewnFourRateBoundaryPairProbability a rate
+          (gammaSewnFourRateCommonDepthCell prime e) =
+        gammaSewnFourRateCanonicalPluckerProbability a rate
+          (gammaSewnFourRateCommonDepthCell prime e) := by
+    funext s
+    exact gammaSewnFourRateBoundaryPairProbability_eq_canonicalFeatureVolume_normalized
+      a rate (gammaSewnFourRateCommonDepthCell prime e) s
   have htransition :=
     gammaSewnFourRateCommonDepth_correctedFisher_lt_dispersion_iff
       e ha hrate hboundary hprime
+  rw [hprob] at htransition
   constructor
   · intro hcross
     apply htransition.mp

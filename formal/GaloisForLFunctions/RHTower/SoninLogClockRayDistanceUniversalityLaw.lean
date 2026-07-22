@@ -12,7 +12,8 @@ noncomputable section
 
 Logarithmic Sonin scattering has only two real phase chambers.  One of the signs `±1` attains
 the exact projective ray distance, determined by the smaller invariant/anti-invariant sector.
-On normalized states, the projective asymmetry is an exact quadratic function of this distance.
+On arbitrary states, the projective asymmetry is an exact homogeneous quadratic function of this
+distance and total mass.  The normalized law is a corollary.
 -/
 
 /-- Exact squared distance from a Sonin state to the closer of its two scattering rays. -/
@@ -65,21 +66,17 @@ theorem exists_sign_soninLogFourierScatteringRayDistanceSq
     norm_num
     ring
 
-/-- **Sonin ray/asymmetry conversion law.**  On normalized states, projective asymmetry is an
-exact quadratic function of signed-ray distance, not merely bounded by it. -/
-theorem soninLogFourierScattering_projectiveAsymmetry_eq_rayDistanceSq_mul_complement
-    {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1) :
+/-- **Homogeneous Sonin ray/asymmetry law.**  For every state, projective asymmetry is the exact
+product of squared signed-ray distance and its complement inside the total squared mass. -/
+theorem soninLogFourierScattering_projectiveAsymmetry_eq_rayDistanceSq_mul_massComplement
+    (ψ : SoninL2) :
     HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ) ψ
         (soninLogFourierScattering ψ) =
       soninLogFourierScatteringRayDistanceSq ψ *
-        (1 - soninLogFourierScatteringRayDistanceSq ψ / 4) := by
+        (‖ψ‖ ^ 2 - soninLogFourierScatteringRayDistanceSq ψ / 4) := by
   have hsum := norm_soninLogFourierInvariantAverage_sq_add_complement_sq ψ
-  rw [hψnorm] at hsum
-  norm_num at hsum
-  change ‖soninLogFourierInvariantAverage ψ‖ ^ 2 +
-    ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2 = 1 at hsum
   rw [soninLogFourierScattering_projectiveAsymmetry_eq_four_mul_sectorWeights
-    hψnorm]
+    ψ]
   unfold soninLogFourierScatteringRayDistanceSq
   by_cases hab : ‖soninLogFourierInvariantAverage ψ‖ ^ 2 ≤
       ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2
@@ -87,6 +84,18 @@ theorem soninLogFourierScattering_projectiveAsymmetry_eq_rayDistanceSq_mul_compl
     nlinarith
   · rw [min_eq_right (le_of_not_ge hab)]
     nlinarith
+
+/-- **Normalized Sonin ray/asymmetry conversion law.**  On unit states, the homogeneous mass
+complement specializes to the familiar unit complement. -/
+theorem soninLogFourierScattering_projectiveAsymmetry_eq_rayDistanceSq_mul_complement
+    {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1) :
+    HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ) ψ
+        (soninLogFourierScattering ψ) =
+      soninLogFourierScatteringRayDistanceSq ψ *
+        (1 - soninLogFourierScatteringRayDistanceSq ψ / 4) := by
+  rw [soninLogFourierScattering_projectiveAsymmetry_eq_rayDistanceSq_mul_massComplement,
+    hψnorm]
+  norm_num
 
 end
 

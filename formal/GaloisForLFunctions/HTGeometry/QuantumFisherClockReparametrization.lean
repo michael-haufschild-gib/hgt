@@ -111,6 +111,26 @@ theorem finiteClockObservabilityLineValue_reparameterize
 variable {K E : Type*} [RCLike K]
   [NormedAddCommGroup E] [InnerProductSpace K E] [CompleteSpace E]
 
+/-- The arbitrary-operator finite-clock QFI/star-observability identity is exactly an equality of
+coordinate-free clock line values, with no self-adjointness premise. -/
+theorem finiteClock_erasedQuantumFisherClockLineValue_eq_starObservabilityLineValue
+    (U X : E →L[K] E) (N : ℕ) (hN : N ≠ 0)
+    (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
+    {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ)
+    (clockIncrement : ℝ) :
+    quantumFisherClockLineValue (‖ψ‖ ^ 2)
+        (‖inner K ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2)
+        clockIncrement =
+      finiteClockObservabilityLineValue
+        (RCLike.re
+          (inner K ψ
+            (finiteCyclicObservableTwirlStarKadisonDefect U X N ψ)))
+        clockIncrement := by
+  unfold quantumFisherClockLineValue finiteClockObservabilityLineValue
+  rw [finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+    U X N hN hadjoint_mul hperiod hψnorm hψ]
+
 /-- The finite-clock QFI/variance identity is exactly an equality of coordinate-free clock line
 values, not a premise about Hamiltonian evolution. -/
 theorem finiteClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue
@@ -126,9 +146,10 @@ theorem finiteClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue
         (RCLike.re
           (inner K ψ (finiteCyclicObservableTwirlKadisonDefect U X N ψ)))
         clockIncrement := by
-  unfold quantumFisherClockLineValue finiteClockObservabilityLineValue
-  rw [finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_observabilityVariance
-    U X N hN hadjoint_mul hperiod hX hψnorm hψ]
+  rw [← finiteCyclicObservableTwirlStarKadisonDefect_eq_of_isSelfAdjoint
+    U X N hN hadjoint_mul hperiod hX]
+  exact finiteClock_erasedQuantumFisherClockLineValue_eq_starObservabilityLineValue
+    U X N hN hadjoint_mul hperiod hψnorm hψ clockIncrement
 
 end
 

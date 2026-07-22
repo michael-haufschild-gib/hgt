@@ -1,5 +1,4 @@
 import GaloisForLFunctions.RHTower.UniversalPhaseCoherenceEntropy
-import Mathlib.Analysis.Real.Pi.Bounds
 
 /-!
 # Universal phase-coherence half-entropy law
@@ -21,7 +20,7 @@ noncomputable section
 positive recurrence clock, at the Dirichlet time cost `(Q+1)^d`, and a packet pivot whose total
 squared phase dispersion is at most `8π² d/(Q+1)²`. -/
 theorem exists_phaseClockPivot_halfEntropy_quantitative
-    {d Q : ℕ} (hd : 0 < d) (hQ : 7 ≤ Q) (ω : Fin d → ℝ) :
+    {d Q : ℕ} (hd : 0 < d) (ω : Fin d → ℝ) :
     ∃ n : ℕ, ∃ k : Fin d,
       0 < n ∧ n ≤ (Q + 1) ^ d ∧
         ∑ j : Fin d,
@@ -39,24 +38,11 @@ theorem exists_phaseClockPivot_halfEntropy_quantitative
     rw [show phase n i = Complex.exp
       (Complex.I * (((n : ℝ) * ω i : ℝ) : ℂ)) by rfl, Complex.norm_exp]
     simp
-  have hden : (8 : ℝ) ≤ (Q + 1 : ℕ) := by
-    exact_mod_cast (show 8 ≤ Q + 1 by omega)
-  norm_num at hden
-  have hratio0 : 0 ≤ 2 * Real.pi / (Q + 1 : ℝ) := by positivity
-  have hratio : 2 * Real.pi / (Q + 1 : ℝ) < 1 := by
-    rw [div_lt_one (by positivity : (0 : ℝ) < (Q : ℝ) + 1)]
-    linarith [Real.pi_lt_four]
-  have hratioSq : (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 ≤ 1 := by
-    simpa using
-      (sq_le_sq₀ hratio0 (by norm_num : (0 : ℝ) ≤ 1)).2 hratio.le
-  have hη1 : η ≤ 1 := by
-    dsimp only [η]
-    linarith
   have hcoh' : 1 - η ≤ ‖equalPhaseAmplitude (phase n)‖ := by
     rw [← phaseClockAmplitude_eq_equalPhaseAmplitude ω n]
     exact hcoh
   obtain ⟨k, hk⟩ :=
-    exists_phasePivot_sum_norm_sub_sq_le (phase n) hphase hη1 hcoh'
+    exists_phasePivot_sum_norm_sub_sq_le (phase n) hphase hcoh'
   refine ⟨n, k, hnpos, hnQ, ?_⟩
   change (∑ j : Fin d, ‖phase n j - phase n k‖ ^ 2) ≤ _
   calc

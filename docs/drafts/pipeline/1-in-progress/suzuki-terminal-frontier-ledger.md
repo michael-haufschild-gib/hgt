@@ -5,6 +5,9 @@
 - **Terminal objective:** prove RH, disprove RH, or prove a source-complete no-go for Suzuki's
   operator mechanism.
 - **Current terminal result:** none.
+- **Knowledge control:** `suzuki-source-realization-knowledge-ledger.md` classifies every attempted
+  mechanism as parent theory, corpus-known, formal closure, failed class, or live source theorem.
+  Read it before changing this file.
 
 ## Rule
 
@@ -112,6 +115,35 @@ and finite-support coefficient reconstructions do not count as progress.
     `Z=0 iff Kappa=0`. This kills the proposed invariant relative-trace/Ward identification as an
     RH mechanism. Do not ask a global cyclic trace to recover same-fibre horizontal orientation;
     only a fibre-pointed reflection-covariant reader can survive.
+19. **Resolved Euler mixing requires cofinally unbounded Ward capacity.**
+    `ResolvedChannelWardLaw.lean` proves that commuting with every resolved channel projection is
+    exactly diagonal action and that total projection-commutator energy equals twice off-diagonal
+    Frobenius energy. `PrimeMellinJetResolvedChannelNoGo.lean` composes this with positive-log prime
+    divergence: a fully resolved channel-preserving incidence cannot realize a summable Mellin jet.
+    More strongly, off-diagonal Cauchy--Schwarz and existing Gamma Schur-capacity theorem force
+    `E_comm>=2(S/B-1)^2` for accumulated Gamma cost `S` and fixed scalar capacity `B`; cofinally
+    `E_comm` exceeds every bound. Do not propose a uniformly Ward-bounded mixer or fixed finite
+    Gamma boundary. Sole survivor is singular/growing-capacity principal-relative connection fixed
+    from source before fibre evaluation.
+20. **Growing reflection-even Gamma/Jacobi capacity is class-completely dead.**
+    `ParityProtectedSchurFloor.lean` proves a capacity-independent law: arbitrary corrections in
+    the even sector of a self-adjoint parity leave the entire odd packet Gram as an exact
+    Pythagorean residual. `GammaEvenBoundaryParityNoGo.lean` identifies that protected Gram for the
+    actual normalized Gamma source as `(phi(t-u)-phi(t+u))/2`, proves a uniform positive diagonal at
+    every prime logarithm, and shows that weighting by the actual Gamma conductor Schur costs is
+    nonsummable and cofinally unbounded. Do not propose more even Jacobi modes as the
+    growing-capacity repair. Only a source-derived odd/parity-mixing boundary or signed
+    principal-relative finite part survives.
+21. **Actual odd Gamma-Jacobi capacity exists and is coherently summable.**
+    `GammaOddJacobiCapacity.lean` proves the literal odd Jacobi sine coefficients, the exact Mercer
+    expansion of the protected Gamma kernel, its finite-rank tail law, and a least source rank at
+    each prime whose Gamma-conductor-weighted residual is bounded by `p^-2` and hence summable.
+    `GammaOddJacobiCoherentCapacity.lean` zero-pads those prime-dependent cutoffs in the common
+    absolute Jacobi coordinate, proving one positive cross-prime kernel on every finite packet with
+    exactly that summable weighted diagonal. Do not reopen parity capacity, seek a common rank, or
+    mistake generic Gram positivity for novelty. Sole source-realization gap is placement of this
+    fixed boundary kernel in an actual singular/local Green--Schur incidence preserving completed
+    Euler multiplication; a signed principal-relative alternative remains possible.
 
 ## Single live edge
 
@@ -144,46 +176,56 @@ annihilator character and proves RH. This is now sole RH-bearing Suzuki arrow. A
 trace cannot provide it by item 18; reader must remain fibre-pointed, with Fourier reflection
 exchanging `w` and `1-conj(w)` rather than averaging them.
 
-## Current falsifiable conjecture — only surviving form
+## Current falsifiable conjecture — source form
 
-`SUZUKI-COPOISSON-KREIN-CONTRACTION`:
+Generic `SUZUKI-COPOISSON-KREIN-CONTRACTION` is retired as a research description. Douglas
+factorization, Schur realization, quotient Berezin diagonal, and the fixed critical half-weight
+gap were already in corpus; naming a Krein colligation did not change source knowledge.
 
-The co-Poisson quotient evaluation-kernel colligation for forward/inverse normalized dilation has
-a source-defined Krein contractivity law on the right-half annihilator character cone. Its
-diagonal is exactly
+Live source core is corpus's pre-existing cofinal source-bornology/stable-synthesis/passivity
+problem. `CRITICAL-HALF-WEIGHT-COPOISSON-UNITARIZATION`, stated with controls and falsifiers in
+`critical-half-weight-copoisson-cocycle-unitarization.md`, is one specialization, not a newly
+identified conjecture.
 
-```text
-||epsilon^-_(a,r,w)||^2-||epsilon^+_(a,r,w)||^2<=0,
-```
-
-or equivalently `h_(a,r)(w)<=0`. The conjecture must be proved from compactly supported
-co-Poisson seed relations before imposing annihilator condition; restating sign only on zeta-zero
-fibres is not a producer.
-
-Conjecture is false for a proposed source colligation if its exact diagonal contains an
-uncontrolled positive boundary term on the annihilator, if its invariant part is the whole reader
-(item 18 forces zero), or if physical/Fourier defect comparison has opposite orientation. A
-successful exact time-band/Calkin lift of compactly supported co-Poisson divided differences is an
-alternative realization of this same fibre orientation, not a second frontier.
-
-## Immediate experiment — symbolic, not numerical
-
-Do not compare invariant relative trace with Ward energy: item 18 proves equality only in flat
-case. Work directly with projected co-Poisson evaluation kernel and exact bilateral defects.
-Factor the quotient dilation colligation into Fourier parity blocks and test whether explicit
-co-Poisson seed map supplies a Krein contractive identity before annihilator specialization:
+Its exact source obligation is to derive from compactly supported co-Poisson seeds, before any
+annihilator specialization, either a source-fixed contractive graph between forward and inverse
+quotient channels or a Hermitian identity
 
 ```text
-B_+(w)B_+(w)^*-B_-(w)B_-(w)^*
- = -S(w)^*S(w) + terms divisible by Lambda_b(w).
+A_-A_-^*-A_+A_+^*
+ =S^*S+R M_(Lambda_b)+M_(Lambda_b)^* R^*.
 ```
 
-At an annihilator character `Lambda_b(w)=0`, such factorization gives required sign. Outcomes:
+This is the critical-half-weight causal-polarization problem for a reflection-reversible cocycle.
+Reflection alone permits exponents `delta,-delta`; it does not force `delta=0`.
 
-- exact negative-square-plus-co-Poisson-ideal factorization: proves source sign, then RH;
-- unavoidable positive square on annihilator: kills this co-Poisson contraction and sends route to
-  time-band lift/no-go audit;
-- reflection averaging, global trace zero, or sign asserted only on zeros: no progress.
+## Immediate experiment — symbolic, source-first, not numerical
+
+Finite-Müntz adjoint and Stieltjes autocorrelation pairing live on different source objects, so
+their proposed direct insertion is retired. The first existing source orbit carrying both positive
+finite-cutoff Stein defect and exact horizontal character is the fixed BV prime-window orbit.
+
+Construct or refute a closable source map from that coefficient orbit into Burnol's co-Poisson
+quotient graph such that square-index decimation intertwines compressed normalized dilation,
+quotient evaluation equals continued Laurent principal part, and the nonzero off-multiple layer
+survives as the aperture defect. Source norm must make decimation contractive while leaving
+inflation unbounded or discontinuous; making both maps contractive is already refuted.
+
+This is not a newly discovered general programme. Existing prime--Gamma reflection-decimation
+research has already closed finite all-depth balanced packets and killed finite-rank/diagonal
+unbalancing. Its exact remaining general arrow is infinite-rank off-diagonal Green--Schur
+incidence preserving completed Euler multiplication. Item 19 further requires cofinally unbounded
+Ward energy with growing boundary capacity or source-fixed principal subtraction. Present
+experiment asks only whether Burnol's co-Poisson quotient supplies that singular boundary
+realization.
+
+Outcomes:
+
+- negative-square-plus-multiplier-ideal boundary factorization: proves source sign, then RH;
+- unavoidable positive boundary square surviving modulo multiplier ideal: kills this contraction
+  and narrows the time-band survivor;
+- only abstract Douglas/Krein existence, reflection averaging, global trace zero, or sign asserted
+  on zeros: rediscovery/no progress.
 
 ## Anti-loop checkpoint
 
@@ -278,3 +320,41 @@ Before each new action, answer in this file's log:
   for invariant relative-trace Suzuki welds, not RH and not a whole-lane no-go. Sole survivor is
   fibre-pointed co-Poisson Berezin orientation (or equivalent time-band lift) that reflection
   transports between distinct character fibres instead of averaging.
+- **2026-07-22 anti-rediscovery reset.** Ward curvature, Bianchi, and parity are reclassified as
+  formal closure/reader-class no-go, not new scientific knowledge. Corpus audit also found that
+  generic Krein-colligation and Douglas-factor language was already banked. Dedicated knowledge
+  register `suzuki-source-realization-knowledge-ledger.md` now controls future work. General live
+  problem is source-canonical unitarization of reflection-reversible quotient dilation across the
+  fixed critical half-weight. First allowed experiment is explicit co-Poisson seed-window boundary
+  dissipation, not another quotient criterion.
+- **2026-07-22 general-core collision.** Corpus already contained broader cofinal
+  source-bornology/stable-synthesis/passivity core, exact Douglas target `(ER12)`, actual finite
+  Müntz map, and finite Möbius recovery. Critical-half-weight cocycle card is demoted to a
+  specialization. First admissible new attack is cutoff-uniform adjoint synthesis of existing
+  Stieltjes boundary vector. Algebraic finite synthesis alone is rediscovery.
+- **2026-07-22 level-lift and interface correction.** Full S66--S81 and BV-window audit is now
+  indexed in `suzuki-source-realization-knowledge-ledger.md`. It closes scalar transport,
+  positive-finite-part, invariant-reader, ordinary `ell^2`, and two-sided coefficient-coisometry
+  loops. Direct Müntz-adjoint/Stieltjes insertion is ill-typed at source level. Correct containing
+  problem is a critical positive boundary representation of multiplicative decimation retaining
+  meromorphic principal parts. Current falsifiable experiment is a BV-to-co-Poisson singular graph
+  intertwiner; generic operator realization does not count.
+- **2026-07-22 broader-form collision.** `prime-gamma-reflection-decimation-defect-resolvent-rh.md`
+  already contains the general singular boundary programme, all-depth balanced finite packets,
+  and diagonal/fixed-rank no-gos. Its surviving source theorem is an infinite-rank off-diagonal
+  Green--Schur incidence preserving Euler multiplication. BV-to-co-Poisson graph is only a direct
+  realization test for that known core, not a new conjecture.
+- **2026-07-22 Ward--Schur capacity advance.** Literal resolved-channel Euler preservation is
+  class-completely dead: its commutant is diagonal and positive-log output energy diverges. More
+  strongly, fixed scalar Gamma capacity forces cofinally unbounded resolved commutator energy.
+  This changes source architecture before fibre specialization. Surviving Green--Schur incidence
+  must be singular or locally finite, with growing boundary capacity or source-fixed
+  principal-relative subtraction; uniform finite-packet Ward bounds are ruled out.
+- **2026-07-22 even-capacity parity-floor advance.** Corpus already knew the odd Gamma sine kernel
+  and all-even Jacobi residue tower separately, so neither was relabelled as new. Their missing
+  arbitrary-capacity composition is now proved: every even correction family leaves the exact odd
+  Gram floor, and the actual Schur-cost-weighted prime diagonal is nonsummable. This eliminates
+  growing reflection-even Gamma/Jacobi capacity before any fibre or zero is read. Falsifier/control
+  remains explicit: odd/parity-mixing channels can remove the floor, and signed principal-relative
+  subtraction is not a Hilbert projection. Next arrow is construction or class-complete refutation
+  of one of those two source-derived survivors.

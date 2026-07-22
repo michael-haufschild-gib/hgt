@@ -54,20 +54,18 @@ most `4 η d` from the whole packet. -/
 theorem exists_phasePivot_sum_norm_sub_sq_le
     [Nonempty d]
     (phase : d → ℂ) (hphase : ∀ i, ‖phase i‖ = 1)
-    {η : ℝ} (hη1 : η ≤ 1)
-    (hcoh : 1 - η ≤ ‖equalPhaseAmplitude phase‖) :
+    {η : ℝ} (hcoh : 1 - η ≤ ‖equalPhaseAmplitude phase‖) :
     ∃ k, ∑ j, ‖phase j - phase k‖ ^ 2 ≤
       4 * η * (Fintype.card d : ℝ) := by
   let D : ℝ := Fintype.card d
-  have hDpos : 0 < D := by
-    have hcard : 0 < Fintype.card d := Fintype.card_pos
-    dsimp only [D]
-    exact_mod_cast hcard
-  have hsq : (1 - η) ^ 2 ≤ ‖equalPhaseAmplitude phase‖ ^ 2 := by
-    exact (sq_le_sq₀ (sub_nonneg.mpr hη1) (norm_nonneg _)).2 hcoh
+  have hnorm : ‖equalPhaseAmplitude phase‖ ≤ 1 := by
+    exact norm_hilbertCentroid_le_of_norm_le phase fun i ↦ (hphase i).le
+  have hdefect : 1 - ‖equalPhaseAmplitude phase‖ ^ 2 ≤ 2 * η := by
+    nlinarith [norm_nonneg (equalPhaseAmplitude phase)]
   have hpair : phasePairwiseSqEnergy phase ≤ 4 * η * D ^ 2 := by
     rw [phasePairwiseSqEnergy_eq_two_card_sq_mul_fidelityDeficit phase hphase]
-    nlinarith [sq_nonneg η]
+    dsimp only [D]
+    nlinarith [sq_nonneg D]
   by_contra h
   push Not at h
   have hstrict :

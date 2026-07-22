@@ -217,8 +217,33 @@ For the fixed `m=0,4` constrained source, the strongest convenient source-side e
 Var(g_lambda^+)=O(1).                                          (19e)
 ```
 
-It follows from fixed-mode prolate-to-Hermite convergence in `W^(1,1)`. The exact resource
-threshold is weaker but must be stated with the correct logarithm: `(27)=o(d_lambda)` follows from
+This does **not** require prolate-to-Hermite convergence in `W^(1,1)`. Put `z=x/lambda`. Each
+angular prolate mode `y_n(z)=h_(n,lambda)(lambda*z)` satisfies
+
+```text
+((1-z^2)y_n')'=(gamma^2*z^2-alpha_n)y_n,   gamma=2*pi*lambda^2. (19f)
+```
+
+On `0<z<1`, the coefficient on the right has at most one zero. Remove that turning point and the
+`n/2` positive nodal zeros of the even degree-`n` spheroidal function. On every remaining interval
+both right-hand factors in `(19f)` have fixed nonzero sign, so `(1-z^2)y_n'` is strictly monotone
+and `y_n'` has at most one zero. Nodal zeros are simple; the turning point and `z=0` add at most two
+further critical points. Hence every fixed even mode has a number `M_n` of monotonicity intervals
+bounded independently of `lambda`, and
+
+```text
+Var_(0,lambda)(h_(n,lambda))
+ <=2*M_n*||h_(n,lambda)||_infinity.                            (19g)
+```
+
+CCM Lemma 7.2 gives uniform sup bounds for `n=0,4`. The coefficients of the unique
+vanishing-integral combination are bounded because
+`integral h_(n,lambda)=chi_n(lambda)h_(n,lambda)(0)` and these factors converge to nonzero Hermite
+limits. Variation is subadditive, so `(19e)` follows; zero extension adds only the bounded endpoint
+jump. This one-turning-point Sturm argument replaces the previously unproved `W^(1,1)` assertion.
+
+The exact resource threshold is weaker but must be stated with the correct logarithm:
+`(27)=o(d_lambda)` follows from
 `Var(g_lambda^+)=o(lambda/log lambda)`, while preservation of the positive
 `d_lambda*log lambda` leading term alone follows from `Var(g_lambda^+)=o(lambda)`. The formerly
 stated condition `o(lambda*log lambda)` was insufficient. This replaces the former
@@ -403,10 +428,17 @@ The required new infrastructure is:
    the center error `o(d_lambda)`;
 6. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
    the all-radial primitive `(11)`;
-7. `[GENERIC COMPACT-SOURCE ONE-SIDED SPECIALIZATION FORMALIZED; PROLATE INSTANCE OPEN]` construct
-   the concrete pointwise constrained source, prove its symmetric-Lebesgue input, identify its
-   Fourier transform with `q_lambda`, and prove the fixed-mode source variation bound `(19e)`;
+7. `[CANONICAL TWO-MODE SOURCE AND POISSON--MUNTZ LAW FORMALIZED; CLASSICAL IDENTIFICATION OPEN]`
+   identify the classical real `h_0,h_4` modes in the actual operator spectrum and prove the
+   concrete fixed-mode variation bound `(19e)`;
 8. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
+
+The universal variation endpoint of item 7 is now formalized in
+`HTGeometry/FiniteMonotonicityVariation.lean`: one-sign Sturm cells contain at most one critical
+point and an `n`-cell monotonicity partition has variation at most `2*n*||f||_infinity`.
+`RHTower/ProlateOneTurningVariation.lean` proves the exact prolate flux equation and both sign-cell
+critical-point specializations. The remaining Lean work is the classical spheroidal nodal-count
+instance, ordered partition assembly, and concrete representative.
 
 No abstract hypothesis wrapper is sufficient: the concrete prolate primitive, one-sided Poisson
 specialization, and fixed-mode variation estimate must be theorems before `(32)` can be promoted
@@ -427,18 +459,27 @@ constrained L2 prolate mode
   -> Fourier(g_lambda)=q_lambda.                                (35)
 ```
 
-The current operator corpus proves time-limited support and the vanishing aperture integral only
-at the `L2`-subspace level. It does not yet construct the continuous PSWF representative needed to
-evaluate `g_lambda(0)`, form the physical lattice samples, or state total variation. Thus `(35)`,
-not Poisson summation, is the first exact formal source gate. After `(35)`, the remaining analytic
-estimate is the cofinal fixed-mode regularity law
+`ConstrainedProlatePointwiseRepresentative.lean` now constructs the canonical half-endpoint source
+for every nonzero eigenmode of the actual even time-band operator. It proves compact support,
+integrability, exact evenness, equality with the original `L2` vector almost everywhere, exact
+pointwise Fourier identification, the interior eigen-equation, and both half-endpoint equations.
+`ConstrainedProlatePoissonMuntz.lean` now closes the rest of `(35)` generically for every pair of
+nonzero eigenmodes: opposite-integral coefficients give exact zero mean, real extraction preserves
+evenness/integrability/compact support, half endpoints make the scaled periodization continuous at
+zero, continuity supplies the symmetric-Lebesgue condition, and the exact square-root-normalized
+one-sided Poisson--Muntz physical-lattice law follows. The remaining part of `(35)` is therefore
+only identification of the classical real `h_0,h_4` modes inside the actual operator spectrum.
+After that identification, the fixed-mode
+regularity law
 
 ```text
 Var(g_lambda^+)=O(1),                                          (19e)
 ```
 
-followed by its substitution into the already formalized BV envelope and clipped critical-Mellin
-pairing. This separates the representative/regularity problem from the completed Abel machinery.
+is paper-proved by the one-turning-point Sturm argument `(19f)`--`(19g)`, but its universal
+variation lemma and concrete spheroidal instance still require Lean formalization. It is then
+substituted into the already formalized BV envelope and clipped critical-Mellin pairing. This
+separates the representative/regularity problem from the completed Abel machinery.
 
 ## Gates
 
@@ -462,9 +503,13 @@ pairing. This separates the representative/regularity problem from the completed
   generic one-sided Poisson--Muntz specialization, including a finite physical-lattice cutoff
 - [x] formalize the normalized center-budget transfer and the sublinear-variation sufficient law
   at the `d_lambda*log(lambda)` leading scale
-- [ ] construct the canonical pointwise representative of the constrained prolate mode and
-  instantiate the generic theorem as the source-specific identity `(19a)`
-- [ ] prove the fixed-mode source variation bound `(19e)`
+- [x] construct the canonical compact half-endpoint representative of every nonzero actual
+  even time-band eigenmode and identify its pointwise Fourier transform
+- [ ] identify the classical real `h_0,h_4` pair in the actual spectrum; constrained contrast,
+  real extraction, symmetric-Lebesgue regularity, and source-specific identity `(19a)` are already
+  formalized for every nonzero eigenmode pair
+- [x] prove the fixed-mode source variation bound `(19e)` on paper by one-turning-point Sturm
+  oscillation; Lean specialization remains open
 - [ ] promote `(18)` and `(32)` after the primitive and source-regularity audits
 - [ ] formalize the concrete radial-PSWF primitive theorem and its polar consequence in Lean
 - [ ] true even ground/gap comparison

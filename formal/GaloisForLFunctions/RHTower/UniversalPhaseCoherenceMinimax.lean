@@ -85,14 +85,13 @@ theorem universalPhaseCoherenceTime_pos
 universal minimax coherence time. -/
 theorem lt_universalPhaseCoherenceTime_of_budget
     {d Q N : ℕ} (hd : 0 < d)
-    (hdefect : recurrencePhaseDefect Q ≤ 1)
     (hbudget :
       (N : ℝ) * phaseCoherenceTargetBudget d (recurrencePhaseDefect Q) < 1) :
     N < universalPhaseCoherenceTime d Q hd := by
   have hnot : ¬ IsUniversalPhaseCoherenceDeadline d
       (recurrencePhaseDefect Q) N := by
     apply not_isUniversalPhaseCoherenceDeadline_of_budget hd
-      (recurrencePhaseDefect_pos Q) hdefect
+      (recurrencePhaseDefect_pos Q)
     simpa only [phaseCoherenceTargetBudget] using hbudget
   by_contra hNT
   push Not at hNT
@@ -102,8 +101,7 @@ theorem lt_universalPhaseCoherenceTime_of_budget
 coherence time dominates the negative logarithm of twice the Haar target
 budget. -/
 theorem neg_log_two_mul_phaseCoherenceTargetBudget_lt_log_time
-    {d Q : ℕ} (hd : 0 < d)
-    (hdefect : recurrencePhaseDefect Q ≤ 1) :
+    {d Q : ℕ} (hd : 0 < d) :
     -Real.log (2 * phaseCoherenceTargetBudget d (recurrencePhaseDefect Q)) <
       Real.log (universalPhaseCoherenceTime d Q hd : ℝ) := by
   let B : ℝ := phaseCoherenceTargetBudget d (recurrencePhaseDefect Q)
@@ -120,7 +118,7 @@ theorem neg_log_two_mul_phaseCoherenceTargetBudget_lt_log_time
         _ = 1 / 2 := by field_simp [hB.ne']
     linarith
   have hNT : N < universalPhaseCoherenceTime d Q hd :=
-    lt_universalPhaseCoherenceTime_of_budget hd hdefect (by
+    lt_universalPhaseCoherenceTime_of_budget hd (by
       simpa only [B] using hNB)
   have hreal : 1 / (2 * B) <
       (universalPhaseCoherenceTime d Q hd : ℝ) := by
@@ -142,13 +140,12 @@ theorem neg_log_two_mul_phaseCoherenceTargetBudget_lt_log_time
 the minimax clock lies between the reciprocal Haar target budget and the
 simultaneous-recurrence ceiling. -/
 theorem universalPhaseCoherenceTime_log_sandwich
-    {d Q : ℕ} (hd : 0 < d)
-    (hdefect : recurrencePhaseDefect Q ≤ 1) :
+    {d Q : ℕ} (hd : 0 < d) :
     -Real.log (2 * phaseCoherenceTargetBudget d (recurrencePhaseDefect Q)) <
         Real.log (universalPhaseCoherenceTime d Q hd : ℝ) ∧
       Real.log (universalPhaseCoherenceTime d Q hd : ℝ) ≤
         (d : ℝ) * Real.log (Q + 1 : ℝ) := by
-  refine ⟨neg_log_two_mul_phaseCoherenceTargetBudget_lt_log_time hd hdefect, ?_⟩
+  refine ⟨neg_log_two_mul_phaseCoherenceTargetBudget_lt_log_time hd, ?_⟩
   have hTpos : 0 < (universalPhaseCoherenceTime d Q hd : ℝ) := by
     exact_mod_cast universalPhaseCoherenceTime_pos d Q hd
   have hQpos : 0 < (((Q + 1) ^ d : ℕ) : ℝ) := by positivity
@@ -213,8 +210,7 @@ between an explicit `(d - 1)`-dimensional Haar entropy and the exact
 coefficient is one, equivalently one half when parametrized by the quadratic
 coherence defect. -/
 theorem universalPhaseCoherence_dimensionResolution_sandwich
-    {d Q : ℕ} (hd : 0 < d)
-    (hdefect : recurrencePhaseDefect Q ≤ 1) :
+    {d Q : ℕ} (hd : 0 < d) :
     ((d - 1 : ℕ) : ℝ) * Real.log (Q + 1 : ℝ) -
         ((d - 1 : ℕ) : ℝ) * Real.log phaseCoherenceResolutionConstant -
           (d : ℝ) / 2 - Real.log (2 * (d : ℝ)) <
@@ -222,7 +218,7 @@ theorem universalPhaseCoherence_dimensionResolution_sandwich
       Real.log (universalPhaseCoherenceTime d Q hd : ℝ) ≤
         (d : ℝ) * Real.log (Q + 1 : ℝ) := by
   rw [← neg_log_two_mul_phaseCoherenceTargetBudget_eq hd]
-  exact universalPhaseCoherenceTime_log_sandwich hd hdefect
+  exact universalPhaseCoherenceTime_log_sandwich hd
 
 /-- Dimension-independent remainder in the normalized entropy law. -/
 def phaseCoherenceEntropyRemainder : ℝ :=
@@ -245,8 +241,7 @@ dimension--resolution ratio at most one and within
 coefficient tends to one as dimension and resolution diverge, equivalently to
 one half when resolution is expressed by the quadratic coherence defect. -/
 theorem universalPhaseCoherence_normalized_entropy_sandwich
-    {d Q : ℕ} (hd : 0 < d) (hQ : 0 < Q)
-    (hdefect : recurrencePhaseDefect Q ≤ 1) :
+    {d Q : ℕ} (hd : 0 < d) (hQ : 0 < Q) :
     1 - 1 / (d : ℝ) -
         phaseCoherenceEntropyRemainder / Real.log (Q + 1 : ℝ) <
         Real.log (universalPhaseCoherenceTime d Q hd : ℝ) /
@@ -278,7 +273,7 @@ theorem universalPhaseCoherence_normalized_entropy_sandwich
     dsimp only [phaseCoherenceEntropyRemainder]
     nlinarith
   obtain ⟨hlow, hupp⟩ :=
-    universalPhaseCoherence_dimensionResolution_sandwich hd hdefect
+    universalPhaseCoherence_dimensionResolution_sandwich (Q := Q) hd
   rw [hpred] at hlow
   change (D - 1) * a - (D - 1) * c - D / 2 - Real.log (2 * D) <
     Real.log (universalPhaseCoherenceTime d Q hd : ℝ) at hlow

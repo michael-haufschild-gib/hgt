@@ -1,8 +1,9 @@
 # Formalization record: Sonin aperture Ward cohomology and Fourier-parity no-go
 
 - **Stage:** 3-formalized
+- **Scientific status:** `[FORMAL CLOSURE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/sonin-aperture-ward-cohomology-fourier-parity-no-go.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/sonin-aperture-ward-cohomology-fourier-parity-no-go.md`
 - **Lean modules:**
   - `formal/GaloisForLFunctions/RHTower/SoninApertureWardPotential.lean`
   - `formal/GaloisForLFunctions/RHTower/SoninApertureFourierParityNoGo.lean`

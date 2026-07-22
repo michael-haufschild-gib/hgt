@@ -34,6 +34,45 @@ theorem constrainedProlateHermiteWeight_pos (j : ℕ) :
   unfold constrainedProlateHermiteWeight
   exact div_pos (by exact_mod_cast Nat.choose_pos (by omega : 2 * j ≤ 4 * j)) (by positivity)
 
+/-- Every positive-index constrained-prolate Hermite weight is at most one half. -/
+theorem constrainedProlateHermiteWeight_le_half_of_pos {j : ℕ} (hj : 0 < j) :
+    constrainedProlateHermiteWeight j ≤ 1 / 2 := by
+  have hfour : 4 * j = (4 * j - 1) + 1 := by omega
+  have hchoose := Nat.choose_succ_le_two_pow (4 * j - 1) (2 * j)
+  rw [← hfour] at hchoose
+  have hchooseReal :
+      (Nat.choose (4 * j) (2 * j) : ℝ) ≤ (2 : ℝ) ^ (4 * j - 1) := by
+    exact_mod_cast hchoose
+  have hden : (16 : ℝ) ^ j = 2 * (2 : ℝ) ^ (4 * j - 1) := by
+    calc
+      (16 : ℝ) ^ j = (2 ^ 4 : ℝ) ^ j := by norm_num
+      _ = (2 : ℝ) ^ (4 * j) := by rw [← pow_mul]
+      _ = (2 : ℝ) ^ ((4 * j - 1) + 1) := by rw [← hfour]
+      _ = 2 * (2 : ℝ) ^ (4 * j - 1) := by rw [pow_succ]; ring
+  rw [constrainedProlateHermiteWeight, hden]
+  rw [div_le_iff₀ (by positivity : 0 < 2 * (2 : ℝ) ^ (4 * j - 1))]
+  calc
+    (Nat.choose (4 * j) (2 * j) : ℝ) ≤ (2 : ℝ) ^ (4 * j - 1) := hchooseReal
+    _ = (1 / 2) * (2 * (2 : ℝ) ^ (4 * j - 1)) := by ring
+
+/-- The constrained-prolate Hermite weights form a physical occupation profile in `(0, 1]`. -/
+theorem constrainedProlateHermiteWeight_le_one (j : ℕ) :
+    constrainedProlateHermiteWeight j ≤ 1 := by
+  by_cases hj : j = 0
+  · subst j
+    simp [constrainedProlateHermiteWeight]
+  · exact (constrainedProlateHermiteWeight_le_half_of_pos
+      (Nat.pos_of_ne_zero hj)).trans (by norm_num)
+
+theorem constrainedProlateHermiteWeight_mem_Ioc (j : ℕ) :
+    constrainedProlateHermiteWeight j ∈ Set.Ioc 0 1 :=
+  ⟨constrainedProlateHermiteWeight_pos j, constrainedProlateHermiteWeight_le_one j⟩
+
+/-- Away from the fully occupied ground mode, every constrained-prolate occupation is strict. -/
+theorem constrainedProlateHermiteWeight_lt_one_of_pos {j : ℕ} (hj : 0 < j) :
+    constrainedProlateHermiteWeight j < 1 :=
+  (constrainedProlateHermiteWeight_le_half_of_pos hj).trans_lt (by norm_num)
+
 /-- The positive normalized Hermite coordinate with square `sqrt(2) q_j`. -/
 def constrainedProlateHermiteCoordinate (j : ℕ) : ℝ :=
   Real.sqrt (Real.sqrt 2 * constrainedProlateHermiteWeight j)

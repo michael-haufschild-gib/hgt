@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.FiniteClockResolutionVariance
+import GaloisForLFunctions.HTGeometry.FiniteClockStarKadison
 import GaloisForLFunctions.HTGeometry.ProjectiveQuantumFisherValue
 
 /-!
@@ -56,8 +56,27 @@ theorem inner_finiteClockErasedTangent_eq_zero
       (P.adjoint_inner_right ψ ((1 - P) y)).symm
     _ = 0 := by rw [hPadj, hPcomp, inner_zero_right]
 
-/-- On a unit stationary state, finite-clock Kadison observability variance is exactly the
-projective Gram energy of the erased observable tangent. -/
+/-- On a unit stationary state, arbitrary-operator star-Kadison observability energy is exactly
+the projective Gram energy of the erased observable tangent. -/
+theorem finiteClock_starObservabilityEnergy_eq_projectiveQuantumTangentEnergy
+    (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
+    (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
+    {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
+    RCLike.re
+        (inner 𝕜 ψ
+          (finiteCyclicObservableTwirlStarKadisonDefect U X N ψ)) =
+      projectiveGramTangentEnergy (𝕜 := 𝕜) ψ
+        ((1 - finiteCyclicGaugeAverage U N) (X ψ)) := by
+  rw [re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_erasedNormSq
+    U X N hN hadjoint_mul hperiod hψ]
+  have horth := inner_finiteClockErasedTangent_eq_zero
+    U N hN hadjoint_mul hperiod hψ (X ψ)
+  unfold projectiveGramTangentEnergy
+  rw [hψnorm, horth, norm_zero]
+  ring
+
+/-- On a unit stationary state, finite-clock squared-Kadison observability variance is exactly
+the projective Gram energy of the erased self-adjoint observable tangent. -/
 theorem finiteClock_observabilityVariance_eq_projectiveQuantumTangentEnergy
     (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
@@ -66,13 +85,107 @@ theorem finiteClock_observabilityVariance_eq_projectiveQuantumTangentEnergy
         (inner 𝕜 ψ (finiteCyclicObservableTwirlKadisonDefect U X N ψ)) =
       projectiveGramTangentEnergy (𝕜 := 𝕜) ψ
         ((1 - finiteCyclicGaugeAverage U N) (X ψ)) := by
-  rw [re_inner_finiteCyclicObservableTwirlKadisonDefect_eq_erasedNormSq
-    U X N hN hadjoint_mul hperiod hX hψ]
-  have horth := inner_finiteClockErasedTangent_eq_zero
-    U N hN hadjoint_mul hperiod hψ (X ψ)
-  unfold projectiveGramTangentEnergy
-  rw [hψnorm, horth]
-  simp
+  rw [← finiteCyclicObservableTwirlStarKadisonDefect_eq_of_isSelfAdjoint
+    U X N hN hadjoint_mul hperiod hX]
+  exact finiteClock_starObservabilityEnergy_eq_projectiveQuantumTangentEnergy
+    U X N hN hadjoint_mul hperiod hψnorm hψ
+
+/-- **Arbitrary-operator finite-clock QFI/star-observability identity.**  The QFI of the tangent
+hidden by a finite clock observer is four times its star-Kadison observability energy.  No
+self-adjointness premise on the observed operator is required. -/
+theorem finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+    (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
+    (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
+    {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
+    pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+        (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) =
+      4 * RCLike.re
+        (inner 𝕜 ψ
+          (finiteCyclicObservableTwirlStarKadisonDefect U X N ψ)) := by
+  rw [pureStateQuantumFisherValue,
+    ← projectiveGramTangentEnergy_eq_value (𝕜 := 𝕜)]
+  rw [← finiteClock_starObservabilityEnergy_eq_projectiveQuantumTangentEnergy
+    U X N hN hadjoint_mul hperiod hψnorm hψ]
+  rw [hψnorm]
+  norm_num
+
+/-- **Arbitrary-operator law of total finite-clock QFI.**  Refining a power subclock to the full
+clock adds exactly four times the squared norm of the newly erased resolution layer.  No
+self-adjointness premise on the observed operator is required. -/
+theorem finiteClockResolution_erasedPureStateQuantumFisherValue
+    (U X : E →L[𝕜] E) (d M : ℕ) (hd : d ≠ 0) (hM : M ≠ 0)
+    (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ (d * M) = 1)
+    {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
+    pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+        (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U (d * M)) (X ψ))‖)
+        (‖(1 - finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ 2) =
+      pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+          (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage (U ^ d) M) (X ψ))‖)
+          (‖(1 - finiteCyclicGaugeAverage (U ^ d) M) (X ψ)‖ ^ 2) +
+        4 * ‖(finiteCyclicGaugeAverage (U ^ d) M -
+          finiteCyclicGaugeAverage U (d * M)) (X ψ)‖ ^ 2 := by
+  have hfullN : d * M ≠ 0 := Nat.mul_ne_zero hd hM
+  have hsubadjoint : (U ^ d).adjoint * U ^ d = 1 :=
+    adjoint_pow_mul_pow_eq_one_of_adjoint_mul_self U d hadjoint_mul
+  have hsubperiod : (U ^ d) ^ M = 1 := by
+    rw [← pow_mul]
+    exact hperiod
+  have hsubψ : (U ^ d) ψ = ψ :=
+    pow_apply_eq_self_of_apply_eq_self U hψ d
+  rw [finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+      U X (d * M) hfullN hadjoint_mul hperiod hψnorm hψ,
+    finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+      (U ^ d) X M hM hsubadjoint hsubperiod hψnorm hsubψ,
+    finiteClockResolution_starObservabilityVariance
+      U X d M hd hM hadjoint_mul hperiod hψ]
+  ring
+
+/-- **Finite-clock QFI physicality detector.**  For an arbitrary bounded operator, zero erased QFI
+is equivalent to preservation of the finite-clock physical constraint on the observed state. -/
+theorem finiteClock_erasedPureStateQuantumFisherValue_eq_zero_iff_physical
+    (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
+    (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
+    {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
+    pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+        (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) = 0 ↔
+      GaloisForLFunctions.PhysicalState (U - 1).toLinearMap (X ψ) := by
+  rw [finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+    U X N hN hadjoint_mul hperiod hψnorm hψ]
+  norm_num
+  exact re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_zero_iff_physical
+    U X N hN hadjoint_mul hperiod hψ
+
+/-- Zero erased finite-clock QFI is equivalently the statewise clock--observable commutator
+condition, for arbitrary bounded operators and arbitrary finite periods. -/
+theorem finiteClock_erasedPureStateQuantumFisherValue_eq_zero_iff_commutator
+    (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
+    (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
+    {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
+    pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+        (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) = 0 ↔
+      (U * X - X * U) ψ = 0 := by
+  rw [finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+    U X N hN hadjoint_mul hperiod hψnorm hψ]
+  norm_num
+  exact re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_zero_iff_commutator
+    U X N hN hadjoint_mul hperiod hψ
+
+/-- Zero erased finite-clock QFI supplies every positive-master Ward identity for the observed
+state, with no self-adjointness premise on the observed operator. -/
+theorem finiteClock_zeroQFI_WardValue_eq_zero
+    (U X A : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
+    (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
+    {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ)
+    (hzero : pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+      (‖inner 𝕜 ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
+      (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) = 0) :
+    inner 𝕜 (X ψ) (quantumMasterConstraint (U - 1) (A (X ψ))) = 0 := by
+  apply quantumMasterConstraint_WardValue_eq_zero (U - 1) A
+  exact (finiteClock_erasedPureStateQuantumFisherValue_eq_zero_iff_physical
+    U X N hN hadjoint_mul hperiod hψnorm hψ).mp hzero
 
 /-- **Finite-clock QFI/observability identity.**  The QFI of the tangent hidden by a finite
 clock observer is four times the clock's Kadison observability variance.  Stationarity supplies
@@ -86,12 +199,10 @@ theorem finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_observabilityV
         (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2) =
       4 * RCLike.re
         (inner 𝕜 ψ (finiteCyclicObservableTwirlKadisonDefect U X N ψ)) := by
-  rw [pureStateQuantumFisherValue,
-    ← projectiveGramTangentEnergy_eq_value (𝕜 := 𝕜)]
-  rw [← finiteClock_observabilityVariance_eq_projectiveQuantumTangentEnergy
-    U X N hN hadjoint_mul hperiod hX hψnorm hψ]
-  rw [hψnorm]
-  norm_num
+  rw [← finiteCyclicObservableTwirlStarKadisonDefect_eq_of_isSelfAdjoint
+    U X N hN hadjoint_mul hperiod hX]
+  exact finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
+    U X N hN hadjoint_mul hperiod hψnorm hψ
 
 end
 

@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.SoninLogClockMultiplicativeDomain
 /-!
 # Sonin logarithmic pinching QFI--multiplicative--compression law
 
-Invariant-sector pinching maps every self-adjoint Sonin observable into the scattering commutant.
+Invariant-sector pinching maps every Sonin observable into the scattering commutant.
 On every normalized physical state, this single pinched observable simultaneously has zero
 hidden-clock quantum Fisher value, vanishing Ward values, zero complete star-Kadison defect, and
 zero compressed adjoint scattering-constraint sandwich.
@@ -19,10 +19,10 @@ namespace RHTower
 noncomputable section
 
 /-- **Sonin pinching universality law.**  Static invariant-sector measurement sends every
-self-adjoint observable to the common zero locus of the state QFI, all positive-master Ward
+observable to the common zero locus of the state QFI, all positive-master Ward
 functionals, the operator multiplicative-domain defect, and the compressed constraint sandwich. -/
 theorem soninLogPinching_zeroQFI_multiplicativeDomain_compression
-    (X : SoninL2 →L[ℂ] SoninL2) (hX : IsSelfAdjoint X)
+    (X : SoninL2 →L[ℂ] SoninL2)
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ) :
@@ -45,13 +45,6 @@ theorem soninLogPinching_zeroQFI_multiplicativeDomain_compression
       soninLogFourierObservableTwirl] using
       HTGeometry.twoOutcomePinching_finiteInvolutiveGaugeAverage_eq_observableTwirl
         soninLogFourierScattering X soninLogFourierScattering_sq_eq_one
-  have hXadj : X.adjoint = X := by
-    have h := hX.star_eq
-    change X.adjoint = X at h
-    exact h
-  have hYself : IsSelfAdjoint Y := by
-    change Y.adjoint = Y
-    rw [hYeq, soninLogFourierObservableTwirl_adjoint, hXadj]
   have hYcomm : soninLogFourierScattering * Y =
       Y * soninLogFourierScattering := by
     rw [hYeq]
@@ -71,11 +64,11 @@ theorem soninLogPinching_zeroQFI_multiplicativeDomain_compression
       (‖inner ℂ ψ ((1 - soninLogFourierInvariantAverage) (Y ψ))‖)
       (‖(1 - soninLogFourierInvariantAverage) (Y ψ)‖ ^ 2) = 0 :=
     (soninLogClock_erasedPureStateQuantumFisherValue_eq_zero_iff_observedPhysical
-      Y hYself hψnorm hψ).mpr hYphysical
+      Y hψnorm hψ).mpr hYphysical
   refine ⟨hQFI, ?_, ?_, ?_⟩
   · intro A
     exact soninLogClock_zeroQFI_WardValue_eq_zero
-      Y A hYself hψnorm hψ hQFI
+      Y A hψnorm hψ hQFI
   · exact (soninLogFourierObservableTwirlStarKadisonDefect_eq_zero_iff_commutes Y).mpr
       hYcomm
   · simpa only [Y] using

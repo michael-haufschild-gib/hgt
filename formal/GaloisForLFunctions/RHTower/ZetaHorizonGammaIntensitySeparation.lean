@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HorizonBogoliubovGammaObservability
 import GaloisForLFunctions.HTGeometry.ThermalCFTGammaResponseBoundary
 import GaloisForLFunctions.HTGeometry.FiniteGeneratorDifferentialEscape
+import GaloisForLFunctions.RHTower.ZetaGammaPhaseIntensityObservability
 import GaloisForLFunctions.RHTower.ZetaChiHypertranscendentalClock
 
 /-!
@@ -94,6 +95,16 @@ private theorem gammaNegativeQuarterMero_ne_zero :
   exact mul_ne_zero (gammaReflectionGaugeMero_ne_zero (1 / 4))
     (inv_ne_zero (gammaShiftMero_ne_zero (1 - 1 / 4)))
 
+/-- Multiplying the centered reflection clock by the quarter-shifted Gamma intensity recovers the
+square of the negative-frequency Gamma amplitude. -/
+theorem centeredZetaGammaReflection_mul_intensity_eq_negativeSquare :
+    centeredZetaGammaReflectionMero * centeredZetaGammaIntensityCoreMero =
+      gammaNegativeShiftMero (1 / 4) ^ 2 := by
+  rw [centeredZetaGammaReflectionMero, gammaReflectionRatioMero,
+    centeredZetaGammaIntensityCoreMero, gammaReflectionProductMero]
+  field_simp [gammaShiftMero_ne_zero (1 / 4), gammaNegativeQuarterMero_ne_zero]
+  exact mul_div_cancel_right₀ _ (gammaShiftMero_ne_zero (1 / 4))
+
 /-- Dividing the centered zeta phase by its intensity cancels the negative-frequency factor and
 leaves the inverse square of the positive-frequency Gamma carrier. -/
 theorem centeredZetaGammaReflection_div_intensity_eq_inv_positivePair :
@@ -109,6 +120,17 @@ theorem centeredZetaGammaReflection_div_intensity_eq_inv_positivePair :
     gammaNegativeQuarterMero_ne_zero
   field_simp [hp, hn, mul_ne_zero hn (pow_ne_zero 2 hp)]
 
+/-- Dividing the quarter-shifted Gamma intensity by the centered reflection clock recovers the
+square of the positive-frequency Gamma amplitude. -/
+theorem centeredZetaGammaIntensity_div_reflection_eq_positiveSquare :
+    centeredZetaGammaIntensityCoreMero / centeredZetaGammaReflectionMero =
+      gammaPositiveShiftPairMero (1 / 4) (1 / 4) := by
+  rw [centeredZetaGammaReflectionMero, gammaReflectionRatioMero,
+    centeredZetaGammaIntensityCoreMero, gammaReflectionProductMero,
+    gammaPositiveShiftPairMero]
+  field_simp [gammaShiftMero_ne_zero (1 / 4), gammaNegativeQuarterMero_ne_zero]
+  exact mul_div_cancel_right₀ _ gammaNegativeQuarterMero_ne_zero
+
 /-- Zeta's phase and intensity retain inequivalent HT information: their quotient is itself HT. -/
 theorem hypertranscendentalOver_centeredZetaGammaReflection_div_intensity :
     HypertranscendentalOver (RatFunc ℂ)
@@ -117,6 +139,85 @@ theorem hypertranscendentalOver_centeredZetaGammaReflection_div_intensity :
   rw [centeredZetaGammaReflection_div_intensity_eq_inv_positivePair,
     HTGeometry.hypertranscendentalOver_inv_iff]
   exact hypertranscendentalOver_gammaPositiveShiftPairMero (1 / 4) (1 / 4)
+
+/-- **Joint phase--intensity negative-amplitude recovery.**  The observable squared phase and
+the shifted Gamma intensity recover the fourth power of the negative-frequency Gamma amplitude. -/
+theorem centeredZetaGammaPhase_mul_intensity_sq_eq_negativeFourth :
+    centeredZetaGammaPhaseObservationMero *
+        centeredZetaGammaIntensityCoreMero ^ 2 =
+      gammaNegativeShiftMero (1 / 4) ^ 4 := by
+  rw [centeredZetaGammaPhaseObservationMero_eq_square]
+  calc
+    centeredZetaGammaReflectionMero ^ 2 *
+          centeredZetaGammaIntensityCoreMero ^ 2 =
+        (centeredZetaGammaReflectionMero *
+          centeredZetaGammaIntensityCoreMero) ^ 2 := by ring
+    _ = gammaNegativeShiftMero (1 / 4) ^ 4 := by
+      rw [centeredZetaGammaReflection_mul_intensity_eq_negativeSquare]
+      ring
+
+/-- **Joint phase--intensity positive-amplitude recovery.**  Dividing the squared shifted
+intensity by phase recovers the fourth power of the positive-frequency Gamma amplitude. -/
+theorem centeredZetaGammaIntensity_sq_div_phase_eq_positiveFourth :
+    centeredZetaGammaIntensityCoreMero ^ 2 /
+        centeredZetaGammaPhaseObservationMero =
+      gammaShiftMero (1 / 4) ^ 4 := by
+  rw [centeredZetaGammaPhaseObservationMero_eq_square]
+  calc
+    centeredZetaGammaIntensityCoreMero ^ 2 /
+          centeredZetaGammaReflectionMero ^ 2 =
+        (centeredZetaGammaIntensityCoreMero /
+          centeredZetaGammaReflectionMero) ^ 2 := by
+            field_simp [centeredZetaGammaReflectionMero_ne_zero]
+    _ = gammaShiftMero (1 / 4) ^ 4 := by
+      rw [centeredZetaGammaIntensity_div_reflection_eq_positiveSquare,
+        gammaPositiveShiftPairMero]
+      ring
+
+/-- The negative-frequency amplitude recovered from joint phase--intensity data remains
+hypertranscendental. -/
+theorem hypertranscendentalOver_centeredZetaGammaPhase_mul_intensity_sq :
+    HypertranscendentalOver (RatFunc ℂ)
+      (centeredZetaGammaPhaseObservationMero *
+        centeredZetaGammaIntensityCoreMero ^ 2) := by
+  rw [centeredZetaGammaPhase_mul_intensity_sq_eq_negativeFourth]
+  have h := hypertranscendentalOver_gammaFintypeNegativeOrbitProductMero_of_pos
+    (fun _ : Fin 1 => (1 / 4 : ℂ)) (fun _ : Fin 1 => (4 : ℤ))
+    (by intro i; norm_num)
+  simpa [gammaFintypeNegativeOrbitProductMero] using h
+
+/-- The positive-frequency amplitude recovered from joint phase--intensity data remains
+hypertranscendental. -/
+theorem hypertranscendentalOver_centeredZetaGammaIntensity_sq_div_phase :
+    HypertranscendentalOver (RatFunc ℂ)
+      (centeredZetaGammaIntensityCoreMero ^ 2 /
+        centeredZetaGammaPhaseObservationMero) := by
+  rw [centeredZetaGammaIntensity_sq_div_phase_eq_positiveFourth]
+  have h := hypertranscendentalOver_gammaFintypeOrbitProductMero_of_pos
+    (fun _ : Fin 1 => (1 / 4 : ℂ)) (fun _ : Fin 1 => (4 : ℤ))
+    (by intro i; norm_num)
+  simpa [gammaFintypeOrbitProductMero] using h
+
+/-- **Centered Gamma joint tomography profile.**  Phase and shifted intensity together recover
+both oriented quarter-shifted Gamma amplitudes up to fourth power, and neither recovered channel
+becomes differentially algebraic. -/
+theorem centeredZetaGamma_phaseCoreIntensity_amplitudeTomographyProfile :
+    centeredZetaGammaPhaseObservationMero *
+          centeredZetaGammaIntensityCoreMero ^ 2 =
+        gammaNegativeShiftMero (1 / 4) ^ 4 ∧
+      centeredZetaGammaIntensityCoreMero ^ 2 /
+          centeredZetaGammaPhaseObservationMero =
+        gammaShiftMero (1 / 4) ^ 4 ∧
+      HypertranscendentalOver (RatFunc ℂ)
+        (centeredZetaGammaPhaseObservationMero *
+          centeredZetaGammaIntensityCoreMero ^ 2) ∧
+      HypertranscendentalOver (RatFunc ℂ)
+        (centeredZetaGammaIntensityCoreMero ^ 2 /
+          centeredZetaGammaPhaseObservationMero) := by
+  exact ⟨centeredZetaGammaPhase_mul_intensity_sq_eq_negativeFourth,
+    centeredZetaGammaIntensity_sq_div_phase_eq_positiveFourth,
+    hypertranscendentalOver_centeredZetaGammaPhase_mul_intensity_sq,
+    hypertranscendentalOver_centeredZetaGammaIntensity_sq_div_phase⟩
 
 /-- **Positive finite-generator intensity escape.**  Every finite rational state packet containing
 the quarter-shifted zeta Gamma intensity loses differential closure at a chosen generator. -/

@@ -19,7 +19,7 @@ state-dependent constraint test and automatically supplies all positive-master W
 /-- **Sonin QFI physicality law.**  Hidden logarithmic-clock QFI vanishes exactly when the
 observable preserves the physical Sonin constraint on the chosen state. -/
 theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_zero_iff_observedPhysical
-    (X : SoninL2 →L[ℂ] SoninL2) (hX : IsSelfAdjoint X)
+    (X : SoninL2 →L[ℂ] SoninL2)
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ) :
@@ -28,22 +28,20 @@ theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_zero_iff_observedPhys
         (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) = 0 ↔
       GaloisForLFunctions.PhysicalState
         (soninLogFourierScattering - 1).toLinearMap (X ψ) := by
-  rw [soninLogClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq
-    X hX hψnorm hψ]
-  rw [sq_eq_zero_iff, norm_eq_zero]
-  rw [GaloisForLFunctions.PhysicalState] at hψ ⊢
+  rw [GaloisForLFunctions.PhysicalState] at hψ
   have hfixed : soninLogFourierScattering ψ = ψ := by
     apply sub_eq_zero.mp
     simpa using hψ
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply, hfixed]
-  constructor <;> intro h
-  · exact sub_eq_zero.mpr (sub_eq_zero.mp h).symm
-  · exact sub_eq_zero.mpr (sub_eq_zero.mp h).symm
+  simpa only [soninLogFourierInvariantAverage] using
+    HTGeometry.finiteClock_erasedPureStateQuantumFisherValue_eq_zero_iff_physical
+      soninLogFourierScattering X 2 two_ne_zero
+      soninLogFourierScattering_adjoint_mul_self
+      soninLogFourierScattering_sq_eq_one hψnorm hfixed
 
 /-- Zero hidden-clock QFI supplies every positive-master Ward identity for the observed Sonin
 state. -/
 theorem soninLogClock_zeroQFI_WardValue_eq_zero
-    (X A : SoninL2 →L[ℂ] SoninL2) (hX : IsSelfAdjoint X)
+    (X A : SoninL2 →L[ℂ] SoninL2)
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ)
@@ -53,10 +51,15 @@ theorem soninLogClock_zeroQFI_WardValue_eq_zero
     inner ℂ (X ψ)
       (HTGeometry.quantumMasterConstraint (soninLogFourierScattering - 1)
         (A (X ψ))) = 0 := by
-  apply HTGeometry.quantumMasterConstraint_WardValue_eq_zero
-    (soninLogFourierScattering - 1) A
-  exact (soninLogClock_erasedPureStateQuantumFisherValue_eq_zero_iff_observedPhysical
-    X hX hψnorm hψ).mp hzero
+  rw [GaloisForLFunctions.PhysicalState] at hψ
+  have hfixed : soninLogFourierScattering ψ = ψ := by
+    apply sub_eq_zero.mp
+    simpa using hψ
+  apply HTGeometry.finiteClock_zeroQFI_WardValue_eq_zero
+    soninLogFourierScattering X A 2 two_ne_zero
+    soninLogFourierScattering_adjoint_mul_self
+    soninLogFourierScattering_sq_eq_one hψnorm hfixed
+  simpa only [soninLogFourierInvariantAverage] using hzero
 
 end
 
