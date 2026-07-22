@@ -26,8 +26,8 @@
 \newcommand{\RH}{\mathrm{RH}}
 \newcommand{\eps}{\varepsilon}
 
-\title{One-Sided Additive Convolution Exponents\\
-Detect Rightmost Zeros of Dirichlet \(L\)-Functions}
+\title{One-Sided Additive Convolution Laws for Dirichlet \(L\)-Functions:\\
+Zero Abscissae and Raw M\"obius Positivity}
 \author{Michael Haufschild}
 \date{}
 
@@ -57,7 +57,12 @@ rightmost zero abscissa at every even nonlinear order.  In particular, $\GRH$ fo
 $L(s,\chi)$ is equivalent to the value $3k-1$ at any one order $k$.  Independently of
 $\GRH$, functional-equation symmetry yields
 $C_{\chi,k}(N)=\Omega_+(N^{3k-1-\eps})$ for every $\eps>0$; hence every primitive
-character has near-critical positive excursions at every mixed order.  The proof combines an
+character has near-critical positive excursions at every mixed order.  At the raw coefficient
+level, if $R_{\chi,k}$ is the Hermitian $2k$-fold additive convolution of
+$\mu(n)\chi(n)$, we prove
+$\limsup \log(1+[R_{\chi,k}(N)]_+)/\log(N+1)\geq2k\Theta_\chi-1$ and show that
+$R_{\chi,k}(N)>0$ infinitely often.  In particular,
+$\sum_{a+b=N}\mu(a)\mu(b)>0$ for infinitely many $N$, unconditionally.  The proof combines an
 exact Hermitian Abel identity with the Mellin transform
 $\Gamma(s)/L(s,\chi)$ and the classical twisted Littlewood zero-abscissa theorem.  We also
 state an abstract one-sided spectral law for reciprocal Dirichlet series and record a Lean~4
@@ -87,7 +92,7 @@ excursions are ignored.
 Write $[y]_+=\max(y,0)$.  The main theorem states that for every primitive character and every
 $k\geq1$,
 \[
- \Lambda_{\chi,k}:=limsup_{N\to\infty}
+ \Lambda_{\chi,k}:=\limsup_{N\to\infty}
  \frac{\log(1+[C_{\chi,k}(N)]_+)}{\log(N+1)}
  =2k(1+\Theta_\chi)-1.
 \]
@@ -127,6 +132,13 @@ establishes strict nonmaximality rather than a critical positive-side order
 \cite{Mangerel}.  The two summations hidden in $M_\chi$ are exactly what permit the present
 Mellin--Abel argument.
 
+The raw binary problem nevertheless has a rigorous one-sided consequence.  The ordinary
+generating function of its Hermitian $2k$-fold convolution is $|A_\chi(r)|^{2k}$ on the positive
+radius.  A finite positive tail would therefore bound $A_\chi(r)$ as $r\uparrow1$, and Mellin
+transformation would make $1/L(s,\chi)$ holomorphic throughout $\Rea s>0$.  Nontrivial zeros rule
+this out.  We obtain unconditional positive recurrence at every order and a power-law
+$\Omega_+$ theorem for every $k\geq2$.  This is a sign theorem, not a binary Chowla estimate.
+
 Additive convolutions of arithmetic functions have a large literature, but the nearby results
 address different questions.  Everlove proves meromorphic continuation for Dirichlet series
 attached to additive convolutions when one ordinary generating function is meromorphic near
@@ -134,11 +146,18 @@ $z=1$, and separately analyzes $\sum M(n)n^{-s}$ and character partial sums
 \cite{Everlove}.  Misra, Saha and Sharma study divisor convolutions and functions with absolutely
 convergent Ramanujan expansions~\cite{MisraSahaSharma}.  Liflandsky gives a recent explicit
 formula and a direct decay criterion for the discrete Möbius Laplace transform
-\cite{Liflandsky}.  None of these results states the positive-part order law proved here.
+\cite{Liflandsky}.  Cantarini, Gambini and Zaccagnini derive weighted explicit formulas for raw
+Liouville and Möbius convolutions under RH and simplicity assumptions
+\cite{CantariniGambiniZaccagnini}; their results do not include the unconditional positive
+recurrence proved below.  Kaczorowski and Perelli's general $\Omega$-theorem concerns Dirichlet
+coefficients of polynomial combinations of Selberg-class $L$-functions
+\cite{KaczorowskiPerelli}; the coefficients below are ordinary-additive Cauchy convolutions of
+reciprocal coefficients.  None of these results states the positive-part order laws proved here.
 
 Section~\ref{sec:abstract} proves an abstract one-sided spectral law.  Section~\ref{sec:dirichlet}
 checks its hypotheses for primitive Dirichlet $L$-functions and derives the $\GRH$ and
-$\Omega_+$ corollaries.  Section~\ref{sec:boundary} distinguishes the result from neighboring
+$\Omega_+$ corollaries.  Section~\ref{sec:raw} treats raw Möbius convolutions and the binary
+positive-recurrence endpoint.  Section~\ref{sec:boundary} distinguishes the result from neighboring
 convolution problems and isolates the remaining open source.  Section~\ref{sec:lean} records the
 formal certificate for the Hermitian Abel mechanism.
 
@@ -274,7 +293,7 @@ character and $L(s,\chi)=\zeta(s)$.  For $q>1$, $\chi$ is nonprincipal.  Euler p
 \end{equation}
 Let
 \[
- \Theta_\chi=sup\{\Rea\rho:L(\rho,\chi)=0,\ 0<\Rea\rho<1\}.
+ \Theta_\chi=\sup\{\Rea\rho:L(\rho,\chi)=0,\ 0<\Rea\rho<1\}.
 \]
 
 We use the following classical fixed-character form of Littlewood's theorem.  It follows by the
@@ -379,6 +398,90 @@ C_k(N)=\Omega_+(N^{3k-1-\eps}).
 \]
 \end{corollary}
 
+\section{Raw convolutions and positive recurrence}
+\label{sec:raw}
+
+The same radial mechanism applies before taking partial sums.  Put
+$a_\chi(n)=\mu(n)\chi(n)$ and, for $k\geq1$, define
+\begin{equation}
+ R_{\chi,k}(N)=
+ \sum_{\substack{n_1+\cdots+n_k+m_1+\cdots+m_k=N\\n_j,m_j\geq1}}
+ \prod_{j=1}^k a_\chi(n_j)
+ \prod_{j=1}^k\overline{a_\chi(m_j)}.
+ \tag{4.1}
+\end{equation}
+Exchanging the two tuples shows that $R_{\chi,k}(N)$ is real.  Absolute convergence gives the
+exact radial identity
+\begin{equation}
+ \sum_{N\geq1}R_{\chi,k}(N)r^N=|A_\chi(r)|^{2k}\geq0,
+ \qquad 0<r<1.
+ \tag{4.2}
+\end{equation}
+Define
+\begin{equation}
+ \Psi_{\chi,k}=\limsup_{N\to\infty}
+ \frac{\log(1+[R_{\chi,k}(N)]_+)}{\log(N+1)}.
+ \tag{4.3}
+\end{equation}
+
+\begin{theorem}[Raw positive-excursion law]
+\label{thm:raw}
+For every primitive $\chi$ and every $k\geq1$,
+\begin{equation}
+ 2k\Theta_\chi-1\leq\Psi_{\chi,k}\leq2k-1.
+ \tag{4.4}
+\end{equation}
+Moreover, $R_{\chi,k}(N)>0$ for infinitely many $N$.  Consequently, for $k\geq2$ and every
+$\eps>0$,
+\begin{equation}
+ R_{\chi,k}(N)=\Omega_+\bigl(N^{k-1-\eps}\bigr).
+ \tag{4.5}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+There are at most $(N+1)^{2k-1}$ compositions in (4.1), and every summand has modulus at most
+one.  This proves the upper inequality in (4.4).
+
+For the lower inequality, the assertion is automatic if $2k\Theta_\chi-1\leq0$.  Otherwise,
+suppose that $\Psi_{\chi,k}<\lambda<2k\Theta_\chi-1$.  Then
+$[R_{\chi,k}(N)]_+\ll_\lambda(N+1)^\lambda$.  With $r=e^{-x}$, (4.2) gives
+\[
+ |A_\chi(e^{-x})|^{2k}
+ \leq\sum_{N\geq1}[R_{\chi,k}(N)]_+e^{-Nx}
+ \ll_\lambda x^{-\lambda-1}.
+\]
+Thus $A_\chi(e^{-x})=O(x^{-b})$ for
+$b=(\lambda+1)/(2k)<\Theta_\chi$.  As in the proof of
+Theorem~\ref{thm:abstract}, Mellin transformation makes $1/L(s,\chi)$ holomorphic in
+$\Rea s>b$, contradicting a nontrivial zero to the right of $b$.  This proves (4.4).
+
+It remains to handle positive recurrence, including the endpoint $k=1$ when the lower exponent
+can be zero.  If only finitely many $R_{\chi,k}(N)$ were positive, (4.2) would give a uniform
+bound for $|A_\chi(r)|^{2k}$ on $0<r<1$.  Hence $A_\chi(e^{-x})$ would be bounded at zero and
+exponentially decaying at infinity.  Its Mellin transform would continue $1/L(s,\chi)$
+holomorphically throughout $\Rea s>0$, contradicting the existence of nontrivial zeros.
+Therefore positive coefficients occur infinitely often.  Finally,
+$\Theta_\chi\geq1/2$ and (4.4) give $\Psi_{\chi,k}\geq k-1>0$ for $k\geq2$, which is (4.5).
+\end{proof}
+
+\begin{corollary}[Binary additive M\"obius positivity]
+For infinitely many positive integers $N$,
+\begin{equation}
+ \sum_{a+b=N}\mu(a)\mu(b)\geq1.
+ \tag{4.6}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Take the conductor-one character and $k=1$ in Theorem~\ref{thm:raw}.  The raw coefficients are
+integers, so every positive coefficient is at least one.
+\end{proof}
+
+Theorem~\ref{thm:raw} uses no RH, zero simplicity, linear-independence, or zero-density
+hypothesis.  It is weaker than the binary cancellation estimates sought in current work:
+positive recurrence neither bounds $|R_{\chi,1}(N)|$ nor proves $R_{\chi,1}(N)=o(N)$.
+
 \section{Boundary with raw binary correlations and the remaining source}
 \label{sec:boundary}
 
@@ -400,18 +503,19 @@ The upper value in the $\GRH$ corollary is not automatic.  At $k=1$, proving for
 $\eps>0$ that
 \begin{equation}
  C_{\chi,1}(N)\ll_{\chi,\eps}N^{2+\eps}
- \tag{4.1}
+ \tag{5.1}
 \end{equation}
 already implies $\GRH$ for $L(s,\chi)$.  Theorem~\ref{thm:dirichlet} sharpens this statement:
-if an off-line zero exists, then positive values alone must violate (4.1) at the exact exponent
+if an off-line zero exists, then positive values alone must violate (5.1) at the exact exponent
 $2(1+\Theta_\chi)-1$.  Higher order cannot evade that obstruction, because all $k$ encode the
 same $\Theta_\chi$.
 
 This identifies the actual frontier.  Neither ordinary $L^2$ control nor a phase average is
 enough: such positive norms discard the signed reflected covariance that appears pointwise in
-(4.1).  Current estimates for Möbius correlations do not supply the needed growing-reflection
-upper law.  The contribution of the present theorem is therefore an exact spectral
-classification and an unconditional positive-excursion theorem, not a proof of $\GRH$.
+(5.1).  Current estimates for Möbius correlations do not supply the needed growing-reflection
+upper law.  The contribution of the present theorem is therefore an exact spectral classification,
+an unconditional raw sign-recurrence theorem, and positive-excursion laws, not a proof of
+$\GRH$.
 
 \section{Lean formalization}
 \label{sec:lean}
@@ -453,7 +557,9 @@ remain paper-level; no formal $\GRH$ claim is made.
 The rightmost zero of a primitive Dirichlet $L$-function has an exact nonlinear additive
 signature.  Every mixed even order gives the same coordinate, and the positive coefficients
 alone carry all of it.  This produces both an all-character $\GRH$ criterion and an unconditional
-$\Omega_+$ theorem at the critical order.
+$\Omega_+$ theorem at the critical order.  Before summation, the same radial mechanism proves
+that raw Hermitian convolutions have recurrent positive coefficients; in the zeta case this
+settles unconditional positive recurrence of the binary additive M\"obius self-convolution.
 
 The remaining open problem is now sharply separated from the transform machinery: prove the
 critical upper exponent for one order without assuming zero information.  For zeta, that means
@@ -466,7 +572,12 @@ would prove $\RH$; no argument in this paper is claimed to provide it.
 \bibitem{BanksShparlinski}
 W. D. Banks and I. E. Shparlinski,
 \emph{Multiple sums with the M\"obius function},
-arXiv:2506.08787 (2025).
+Q. J. Math. 77 (2026), 109--127.
+
+\bibitem{CantariniGambiniZaccagnini}
+M. Cantarini, A. Gambini and A. Zaccagnini,
+\emph{On the discrete convolution of the Liouville and M\"obius functions},
+arXiv:2603.10241 (2026).
 
 \bibitem{Davenport}
 H. Davenport,
@@ -482,6 +593,11 @@ C. Everlove,
 G. H. Hardy and J. E. Littlewood,
 \emph{Tauberian theorems concerning power series and Dirichlet's series whose coefficients are
 positive}, Proc. London Math. Soc. (2) 13 (1914), 174--191.
+
+\bibitem{KaczorowskiPerelli}
+J. Kaczorowski and A. Perelli,
+\emph{General $\Omega$-theorems for coefficients of $L$-functions},
+Proc. Amer. Math. Soc. 143 (2015), 5139--5145.
 
 \bibitem{Liflandsky}
 S. Liflandsky,

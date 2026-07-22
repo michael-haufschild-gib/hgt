@@ -169,7 +169,7 @@ theorem conj_fourier_xiThetaPositiveSource (w : ℝ) :
     funext u
     exact xiThetaPositiveSource_ofReal_re u
   rw [← hsource]
-  exact conj_fourier_ofReal xiThetaPositiveSource_integrable.re w
+  exact conj_fourier_ofReal w
 
 /-- The critical trace is the even part of the one-sided Fourier transform. -/
 theorem completedRiemannZeta₀_critical_eq_positiveFourierEvenPart (t : ℝ) :

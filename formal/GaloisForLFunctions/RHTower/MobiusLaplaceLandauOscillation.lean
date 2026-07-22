@@ -1055,11 +1055,11 @@ theorem exists_mobiusLaplaceComparisonCarrier_re_pos
   rw [mobiusLaplaceComparisonCutoff_eq_carrier hxd] at hpos
   exact ⟨x, hx, hxd, hpos⟩
 
-/-- Arbitrarily near zero, the Möbius--Laplace transform exceeds every positive subcritical
-power barrier. -/
+/-- Arbitrarily near zero, the Möbius--Laplace transform exceeds every real multiple of a
+subcritical power barrier. -/
 theorem exists_mobiusDiscreteLaplaceTransform_re_gt_subcritical
     {epsilon A delta : ℝ} (hepsilon0 : 0 < epsilon) (hepsilonHalf : epsilon < 1 / 2)
-    (_hA : 0 < A) (hdelta : 0 < delta) :
+    (hdelta : 0 < delta) :
     ∃ x : ℝ, 0 < x ∧ x < delta ∧
       A * x ^ (-(1 / 2 - epsilon) : ℝ) <
         (mobiusDiscreteLaplaceTransform x).re := by
@@ -1080,11 +1080,11 @@ theorem exists_mobiusDiscreteLaplaceTransform_re_gt_subcritical
   dsimp [a] at hpos ⊢
   exact ⟨x, hx, hxdlt, by linarith⟩
 
-/-- Arbitrarily near zero, the Möbius--Laplace transform falls below every negative
-subcritical power barrier. -/
+/-- Arbitrarily near zero, the Möbius--Laplace transform falls below the negative of every real
+multiple of a subcritical power barrier. -/
 theorem exists_mobiusDiscreteLaplaceTransform_re_lt_neg_subcritical
     {epsilon A delta : ℝ} (hepsilon0 : 0 < epsilon) (hepsilonHalf : epsilon < 1 / 2)
-    (_hA : 0 < A) (hdelta : 0 < delta) :
+    (hdelta : 0 < delta) :
     ∃ x : ℝ, 0 < x ∧ x < delta ∧
       (mobiusDiscreteLaplaceTransform x).re <
         -A * x ^ (-(1 / 2 - epsilon) : ℝ) := by
@@ -1105,11 +1105,11 @@ theorem exists_mobiusDiscreteLaplaceTransform_re_lt_neg_subcritical
   dsimp [a] at hneg ⊢
   exact ⟨x, hx, hxdlt, by linarith⟩
 
-/-- **Two-sided subcritical oscillation law.**  Both normalized signs exceed every prescribed
+/-- **Two-sided subcritical oscillation law.**  Both signed excursions hold for every real
 amplitude arbitrarily close to zero. -/
 theorem exists_twoSided_mobiusDiscreteLaplaceTransform_subcritical_excursions
     {epsilon A delta : ℝ} (hepsilon0 : 0 < epsilon) (hepsilonHalf : epsilon < 1 / 2)
-    (hA : 0 < A) (hdelta : 0 < delta) :
+    (hdelta : 0 < delta) :
     (∃ x : ℝ, 0 < x ∧ x < delta ∧
       A * x ^ (-(1 / 2 - epsilon) : ℝ) <
         (mobiusDiscreteLaplaceTransform x).re) ∧
@@ -1117,9 +1117,9 @@ theorem exists_twoSided_mobiusDiscreteLaplaceTransform_subcritical_excursions
       (mobiusDiscreteLaplaceTransform x).re <
         -A * x ^ (-(1 / 2 - epsilon) : ℝ)) :=
   ⟨exists_mobiusDiscreteLaplaceTransform_re_gt_subcritical
-      hepsilon0 hepsilonHalf hA hdelta,
+      hepsilon0 hepsilonHalf hdelta,
     exists_mobiusDiscreteLaplaceTransform_re_lt_neg_subcritical
-      hepsilon0 hepsilonHalf hA hdelta⟩
+      hepsilon0 hepsilonHalf hdelta⟩
 
 /-- Positive zeros of the concrete Möbius--Laplace transform accumulate at the origin. -/
 theorem exists_mobiusDiscreteLaplaceTransform_zero_below
@@ -1127,10 +1127,10 @@ theorem exists_mobiusDiscreteLaplaceTransform_zero_below
     ∃ c : ℝ, 0 < c ∧ c < delta ∧ mobiusDiscreteLaplaceTransform c = 0 := by
   obtain ⟨xp, hxp0, hxpdelta, hxppos⟩ :=
     exists_mobiusDiscreteLaplaceTransform_re_gt_subcritical
-      (epsilon := 1 / 4) (A := 1) (by norm_num) (by norm_num) (by norm_num) hdelta
+      (epsilon := 1 / 4) (A := 1) (by norm_num) (by norm_num) hdelta
   obtain ⟨xn, hxn0, hxndelta, hxnneg⟩ :=
     exists_mobiusDiscreteLaplaceTransform_re_lt_neg_subcritical
-      (epsilon := 1 / 4) (A := 1) (by norm_num) (by norm_num) (by norm_num) hdelta
+      (epsilon := 1 / 4) (A := 1) (by norm_num) (by norm_num) hdelta
   have hpos : 0 < (mobiusDiscreteLaplaceTransform xp).re := by
     have hpow : 0 < xp ^ (-(1 / 2 - (1 / 4 : ℝ)) : ℝ) :=
       Real.rpow_pos_of_pos hxp0 _

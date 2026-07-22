@@ -61,11 +61,11 @@ theorem ratFuncFixedPointToInfinityEquiv_symm (r : K) :
     (ratFuncFixedPointToInfinityEquiv_mul_inverse r)
   simpa using h.symm
 
-/-- A nondegenerate Möbius matrix with nonzero lower-left entry has a finite fixed point over an
-algebraically closed field. -/
+/-- A fractional-linear coefficient tuple with nonzero lower-left entry has a finite fixed point
+over an algebraically closed field. -/
 theorem exists_mobius_fixedPoint_of_c_ne_zero
     [IsAlgClosed K] {a b c d : K}
-    (_hdet : a * d - b * c ≠ 0) (hc : c ≠ 0) :
+    (hc : c ≠ 0) :
     ∃ r : K, a * r + b = r * (c * r + d) := by
   let p : K[X] := C c * X ^ 2 + C (d - a) * X - C b
   have hpdegree : p.degree ≠ 0 := by
@@ -118,7 +118,8 @@ theorem exists_conjugate_affine_of_c_ne_zero
           RatFunc.mobiusEquiv a b c d hdet *
             ratFuncFixedPointToInfinityEquiv r =
         ratFuncAffineEquiv u β := by
-  obtain ⟨r, hr⟩ := exists_mobius_fixedPoint_of_c_ne_zero hdet hc
+  obtain ⟨r, hr⟩ := exists_mobius_fixedPoint_of_c_ne_zero
+    (a := a) (b := b) (d := d) hc
   have hprod :
       (c * r + d) * (a - r * c) = a * d - b * c := by
     linear_combination c * hr

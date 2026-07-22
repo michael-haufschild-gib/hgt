@@ -377,7 +377,7 @@ theorem poissonKer_concentration_symm {δ : ℝ} (hδ0 : 0 < δ) (hδπ : δ ≤
   rw [poissonKer_integral_neg r δ]
 
 theorem poissonKer_split_bound {f : ℝ → ℝ} (hf : Continuous f) {r ε δ M : ℝ}
-    (hr0 : 0 ≤ r) (hr1 : r < 1) (hδ0 : 0 < δ) (hδπ : δ ≤ π) (hε : 0 < ε) (_hM0 : 0 ≤ M)
+    (hr0 : 0 ≤ r) (hr1 : r < 1) (hδ0 : 0 < δ) (hδπ : δ ≤ π) (hε : 0 < ε)
     (hsmall : ∀ t ∈ Set.Icc (-δ) δ, |f t - f 0| ≤ ε / 2)
     (hbig : ∀ t ∈ Set.Icc (-π) π, |f t - f 0| ≤ M) :
     |∫ t in (-π)..π, poissonKer r t * (f t - f 0)|
@@ -495,7 +495,7 @@ theorem tendsto_poissonKerAvg_of_continuous {f : ℝ → ℝ} (hf : Continuous f
       exact intervalIntegral.integral_congr (fun t _ => by ring)
     rw [hint, mul_sub]; linarith [hf0]
   rw [Real.dist_eq, hdiff, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ (2 * π)⁻¹)]
-  have hbnd := poissonKer_split_bound hf hr0 hrmem hδ0 hδπ hε hM0 hsmall hM
+  have hbnd := poissonKer_split_bound hf hr0 hrmem hδ0 hδπ hε hsmall hM
   have hcpos : (∫ t in (-π)..(-δ), poissonKer r t) + ∫ t in δ..π, poissonKer r t < π * ε / (M + 1) := by
     have hd := hη (Set.mem_Iio.mpr hrmem) (lt_of_lt_of_le hrdist (min_le_left _ _))
     rw [Real.dist_eq, sub_zero] at hd

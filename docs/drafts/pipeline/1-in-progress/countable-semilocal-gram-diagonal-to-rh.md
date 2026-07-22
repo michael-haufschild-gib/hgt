@@ -870,3 +870,11 @@ contribution to the completed divided difference is exactly half that value.  Bo
 signs for every finite nonempty aperture.  Therefore the desired cyclic descent must preserve the
 complex phase and produce a completed remainder that compensates the finite negative chamber; a
 positive metric compression of the individual local factors is not enough.
+
+`[2026-07-22 CORRECTION]` Compact-support cyclic phase descent is now closed in
+`SoninSemilocalCyclicWeylDescent.lean`; do not list it as open again. The same module proves fixed
+nonzero Hilbert--Schmidt probes cannot assemble all critical prime tangents in trace norm. Moreover
+`SuzukiCoherentResponseGainNoGo.lean` proves the actual coherent causal response loses
+`1/(p+1)` relative to exact moving-wall source, so bounded/frame-preserving recovery is impossible.
+The first unresolved connector is a closed **unbounded**, cutoff-dependent source-recovery graph
+compatible with Burnol conductor and Connes finite part, followed by completed lower floor.

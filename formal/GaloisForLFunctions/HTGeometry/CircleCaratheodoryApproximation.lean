@@ -86,11 +86,12 @@ theorem bernsteinSzegoProbabilityApproximation_caratheodory_tendsto
   exact ((continuous_circleCaratheodoryTransform_probability hw).tendsto mu).comp
     (bernsteinSzegoProbabilityApproximation_tendsto mu hmu)
 
-/-- On every closed disk of radius strictly below one, the canonical transforms converge
-uniformly.  This is the literal locally-uniform convergence asserted by the card. -/
+/-- On every closed ball of radius strictly below one, the canonical transforms converge
+uniformly.  For negative radii the carrier is empty; nonnegative radii give the geometric disks
+used by locally-uniform convergence. -/
 theorem bernsteinSzegoProbabilityApproximation_caratheodory_tendstoUniformly_closedBall
     (mu : ProbabilityMeasure Circle) (hmu : (mu : Measure Circle).support.Infinite)
-    {r : ℝ} (_hr0 : 0 ≤ r) (hr1 : r < 1) :
+    {r : ℝ} (hr1 : r < 1) :
     let K := (Metric.closedBall (0 : ℂ) r : Set ℂ)
     Tendsto
       (fun N => UniformFun.ofFun (fun w : K =>

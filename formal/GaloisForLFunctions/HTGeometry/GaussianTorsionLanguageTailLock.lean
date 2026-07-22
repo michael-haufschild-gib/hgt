@@ -1579,8 +1579,6 @@ chosen centered window, or least-source exterior. -/
 theorem activeAevalAtom_gaussian_four_way
     {n D τ q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
     {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ}
-    (ha : anchor ∈ Q.support)
-    (haD : jetMonomialDegree n anchor = D)
     (haMax : ∀ m ∈ Q.support,
       jetMonomialDegree n m = D →
         magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
@@ -1762,8 +1760,6 @@ classes are kept in one finset so that their cancellations survive the later lim
 theorem activeAevalAtoms_sdiff_gaussianInterior_eq_gap_union_exterior
     {n D τ q R : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
     {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ}
-    (ha : anchor ∈ Q.support)
-    (haD : jetMonomialDegree n anchor = D)
     (haMax : ∀ m ∈ Q.support,
       jetMonomialDegree n m = D →
         magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
@@ -1781,7 +1777,7 @@ theorem activeAevalAtoms_sdiff_gaussianInterior_eq_gap_union_exterior
     have hactive := (Finset.mem_sdiff.mp hν).1
     have hnotInterior := (Finset.mem_sdiff.mp hν).2
     rcases activeAevalAtom_gaussian_four_way
-        ha haD haMax hDmax hS hactive with
+        haMax hDmax hS hactive with
       hlower | hlarger | hinterior | hexterior
     · exact Finset.mem_union_left _
         (Finset.mem_filter.mpr ⟨hactive, Or.inl hlower⟩)
@@ -1829,15 +1825,8 @@ least-source witness. -/
 theorem exists_eventually_gaussianGapActiveAtom_linear
     {B : ℝ} (hB : 0 < B)
     {n D τ : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
-    {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ} {R₀ : ℕ} {a₀ : ℤ →₀ ℕ}
-    (ha : anchor ∈ Q.support)
-    (haD : jetMonomialDegree n anchor = D)
-    (haMax : ∀ m ∈ Q.support,
-      jetMonomialDegree n m = D →
-        magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
+    {S : ℤ} {R₀ : ℕ} {a₀ : ℤ →₀ ℕ}
     (hDmax : D = magnitudeMaxJetDegree n Q) (hD : 0 < D)
-    (hS : S + (magnitudeShiftCode n Q anchor : ℤ) =
-      ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ))
     (ha₀ : a₀ ∈ gaussianOffsetFace D S R₀) :
     ∃ c : ℝ, 0 < c ∧ ∀ᶠ t : ℕ in atTop,
       ∀ ν ∈ gaussianGapActiveAtoms n D τ Q S (t + R₀),
@@ -3158,7 +3147,7 @@ theorem prod_exp_neg_sq
 constant multiple of the coordinatewise ambient Gaussian. -/
 theorem maxPolynomial_gaussian_le_coordinateMajorant
     {ι : Type*} [Fintype ι] [Nonempty ι]
-    (J : ℕ) {B : ℝ} (_hB : 0 ≤ B) (Q₀ : ℝ) (z : ι → ℤ) :
+    (J : ℕ) {B : ℝ} (Q₀ : ℝ) (z : ι → ℤ) :
     (1 + (integerLatticeMaxNatAbs z : ℝ)) ^ J *
         Real.exp (-B * (gaussianOffsetEnergy z - Q₀)) ≤
       Real.exp (B * Q₀) * gaussianCoordinateMajorant J B z := by
@@ -3194,7 +3183,7 @@ theorem summable_maxPolynomial_gaussian
         Real.exp (-B * (gaussianOffsetEnergy z - Q₀))) := by
   refine Summable.of_nonneg_of_le (fun z => by positivity) (fun z => ?_)
     ((summable_gaussianCoordinateMajorant ι J hB).mul_left (Real.exp (B * Q₀)))
-  exact maxPolynomial_gaussian_le_coordinateMajorant J hB.le Q₀ z
+  exact maxPolynomial_gaussian_le_coordinateMajorant J Q₀ z
 
 /-- Every exterior Gaussian lattice tail is strictly positive.  This lets an independently
 vanishing lower-degree/larger-source ADE residual be absorbed into the exterior tail at each fixed
@@ -3288,24 +3277,17 @@ noncomputable def gaussianGapResidual
 theorem tendsto_gaussianGapResidual_zero
     {B : ℝ} (hB : 0 < B)
     {n D τ H : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
-    {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ} {R₀ : ℕ} {a₀ : ℤ →₀ ℕ}
+    {S : ℤ} {R₀ : ℕ} {a₀ : ℤ →₀ ℕ}
     (F : PowerSeries ℂ)
     (hb : ∀ i, ‖PowerSeries.coeff i F‖ =
       Real.exp (-(B * (i : ℝ) ^ 2)))
-    (ha : anchor ∈ Q.support)
-    (haD : jetMonomialDegree n anchor = D)
-    (haMax : ∀ m ∈ Q.support,
-      jetMonomialDegree n m = D →
-        magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
     (hDmax : D = magnitudeMaxJetDegree n Q) (hD : 0 < D)
-    (hS : S + (magnitudeShiftCode n Q anchor : ℤ) =
-      ((τ + magnitudeMaxJetOrder n Q : ℕ) : ℤ))
     (ha₀ : a₀ ∈ gaussianOffsetFace D S R₀) :
     Tendsto (gaussianGapResidual F n D τ Q B S H R₀ a₀)
       atTop (𝓝 0) := by
   classical
   obtain ⟨c, hc, hgap⟩ := exists_eventually_gaussianGapActiveAtom_linear
-    hB ha haD haMax hDmax hD hS ha₀
+    hB hDmax hD ha₀
   obtain ⟨P, hmass⟩ := exists_aevalWeight_mass_natPow_bound n D τ Q
   have hmassShift := (tendsto_add_atTop_nat R₀).eventually hmass
   have hdecay := tendsto_natAdd_pow_mul_exp_neg_mul_zero R₀ P hc
@@ -3392,7 +3374,7 @@ noncomputable def gaussianADEExteriorConstant
 
 theorem gaussianADEExteriorConstant_nonneg
     (n D : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ)
-    {B : ℝ} (hB : 0 ≤ B) (Q₀ : ℝ) (P : ℕ) :
+    {B : ℝ} (Q₀ : ℝ) (P : ℕ) :
     0 ≤ gaussianADEExteriorConstant n D Q B Q₀ P := by
   unfold gaussianADEExteriorConstant
   exact mul_nonneg
@@ -3725,7 +3707,7 @@ theorem sum_norm_normalized_gaussianExteriorActiveAtoms_le_tail
           ∑ ν : ↥E, g (encode ν) := by rw [Finset.mul_sum]
     _ ≤ gaussianADEExteriorConstant n D Q B Q₀ P * ∑' z, g z :=
       mul_le_mul_of_nonneg_left hfinite
-        (gaussianADEExteriorConstant_nonneg n D Q hB.le Q₀ P)
+        (gaussianADEExteriorConstant_nonneg (B := B) n D Q Q₀ P)
     _ = gaussianADEExteriorConstant n D Q B Q₀ P *
         ∑' z : {z : Fin D → ℤ // z ∉ integerLatticeBox (Fin D) R},
           (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^
@@ -3964,8 +3946,6 @@ theorem norm_sum_gaussianInteriorActiveAtoms_le_gap_add_exterior
     {anchor : Fin (n + 2) →₀ ℕ} {S : ℤ}
     (F : PowerSeries ℂ)
     (hrel : aeval (formalJets n F) Q = 0)
-    (ha : anchor ∈ Q.support)
-    (haD : jetMonomialDegree n anchor = D)
     (haMax : ∀ a ∈ Q.support,
       jetMonomialDegree n a = D →
         magnitudeShiftCode n Q a ≤ magnitudeShiftCode n Q anchor)
@@ -3991,7 +3971,7 @@ theorem norm_sum_gaussianInteriorActiveAtoms_le_gap_add_exterior
   have hrem : T \ I = G ∪ E := by
     simpa only [T, I, G, E] using
       activeAevalAtoms_sdiff_gaussianInterior_eq_gap_union_exterior
-        ha haD haMax hDmax hS
+        haMax hDmax hS
   have hGE : Disjoint G E := by
     simpa only [G, E] using
       (gaussianGapActiveAtoms_disjoint_gaussianExteriorActiveAtoms
@@ -4017,8 +3997,6 @@ theorem exists_eventually_norm_gaussianFaceCluster_le_tail
       ((Real.exp (-(B * (i : ℝ) ^ 2)) : ℝ) : ℂ) * u i)
     (huNorm : ∀ i, ‖u i‖ = 1)
     (hrel : aeval (formalJets n F) Q = 0)
-    (ha : anchor ∈ Q.support)
-    (haD : jetMonomialDegree n anchor = D)
     (haMax : ∀ m ∈ Q.support,
       jetMonomialDegree n m = D →
         magnitudeShiftCode n Q m ≤ magnitudeShiftCode n Q anchor)
@@ -4068,8 +4046,8 @@ theorem exists_eventually_norm_gaussianFaceCluster_le_tail
   have hTail : 0 < Tail := by
     simpa only [Tail, J] using
       gaussianExteriorTail_pos (Fin D) J (by linarith : 0 < B / 2) Q₀ R
-  have hgap := tendsto_gaussianGapResidual_zero (H := H) hB F hb
-    ha haD haMax hDmax hD hS ha₀
+  have hgap := tendsto_gaussianGapResidual_zero (τ := τ) (H := H) hB F hb
+    hDmax hD ha₀
   have hgapShift : Tendsto (fun t : ℕ =>
       ‖gaussianGapResidual F n D τ Q B S H R₀ a₀ (t + R)‖)
       atTop (𝓝 0) := by
@@ -4097,7 +4075,7 @@ theorem exists_eventually_norm_gaussianFaceCluster_le_tail
   have hsplit := norm_sum_gaussianInteriorActiveAtoms_le_gap_add_exterior
     (B := B) (m := B * ((D : ℝ) * (q : ℝ) ^ 2 +
       2 * (q : ℝ) * (S : ℝ) + Q₀))
-    (H := H) (q := q) (R := K) F hrel ha haD haMax hDmax hS
+    (H := H) (q := q) (R := K) F hrel haMax hDmax hS
   have hgapEq :
       (∑ ν ∈ gaussianGapActiveAtoms n D τ Q S q,
         gaussianNormalizedADETerm F n (D * q + τ) H Q B
@@ -4251,7 +4229,7 @@ norm at most `epsilon`.  This is the quantitative replacement for
 `face_fin_weights_eq_zero` needed before sending a Gaussian window radius to infinity. -/
 theorem norm_face_fin_weight_le_of_uniform_torsion_bound
     {M D : ℕ} (F : Finset (Fin M → Fin (D + 1)))
-    (ell : (Fin M → Fin (D + 1)) → ℂ) {epsilon : ℝ} (_hepsilon : 0 ≤ epsilon)
+    (ell : (Fin M → Fin (D + 1)) → ℂ) {epsilon : ℝ}
     (hbound : ∀ s : Fin M → ℂ, (∀ r, s r ^ (D + 1) = 1) →
       ‖∑ p ∈ F, ell p * ∏ r, s r ^ (p r : ℕ)‖ ≤ epsilon) :
     ∀ p ∈ F, ‖ell p‖ ≤ epsilon := by
@@ -4402,13 +4380,13 @@ theorem norm_face_weight_le_of_torsionLanguageUniversal
     (F : Finset (Fin M → Fin (D + 1)))
     (w : ℕ → (Fin M → Fin (D + 1)) → ℂ)
     (ell : (Fin M → Fin (D + 1)) → ℂ)
-    {epsilon : ℝ} (hepsilon : 0 ≤ epsilon)
+    {epsilon : ℝ}
     (hw : ∀ p ∈ F, Tendsto (fun q => w q p) atTop (𝓝 (ell p)))
     (hface : ∀ᶠ q : ℕ in atTop,
       ‖∑ p ∈ F, w q p *
         ∏ r : Fin M, u (q + (r : ℕ)) ^ (p r : ℕ)‖ ≤ epsilon) :
     ∀ p ∈ F, ‖ell p‖ ≤ epsilon := by
-  apply norm_face_fin_weight_le_of_uniform_torsion_bound F ell hepsilon
+  apply norm_face_fin_weight_le_of_uniform_torsion_bound F ell
   intro s hs
   obtain ⟨q, _hqmono, hqtop, hqword⟩ :=
     hu.exists_strictMono_occurrences (show 0 < D + 1 by omega) s hs
@@ -4433,7 +4411,6 @@ theorem false_of_torsionLanguageUniversal_approximateFaces
     (ell : ∀ R, (Fin (M R) → Fin (D + 1)) → ℂ)
     (p₀ : ∀ R, Fin (M R) → Fin (D + 1))
     (epsilon : ℕ → ℝ)
-    (hepsilon : ∀ R, 0 ≤ epsilon R)
     (hepsilonZero : Tendsto epsilon atTop (𝓝 0))
     (hp₀ : ∀ R, p₀ R ∈ F R)
     (hw : ∀ R, ∀ p ∈ F R,
@@ -4447,7 +4424,7 @@ theorem false_of_torsionLanguageUniversal_approximateFaces
     intro R
     rw [← hell₀ R]
     exact norm_face_weight_le_of_torsionLanguageUniversal
-      u hu (F R) (w R) (ell R) (hepsilon R) (hw R) (hface R) (p₀ R) (hp₀ R)
+      u hu (F R) (w R) (ell R) (hw R) (hface R) (p₀ R) (hp₀ R)
   have hzero : ‖ell₀‖ ≤ 0 :=
     ge_of_tendsto hepsilonZero (Eventually.of_forall hbound)
   exact hell₀ne (norm_eq_zero.mp (le_antisymm hzero (norm_nonneg ell₀)))
@@ -4457,7 +4434,7 @@ coefficient and its exterior error is bounded by one fixed polynomially weighted
 Gaussian tail, torsion-language universality is impossible. -/
 theorem false_of_torsionLanguageUniversal_gaussianTailLock
     (ι : Type) [Fintype ι] [Nonempty ι]
-    {D J : ℕ} {B : ℝ} (hB : 0 < B) (Q₀ C : ℝ) (hC : 0 ≤ C)
+    {D J : ℕ} {B : ℝ} (hB : 0 < B) (Q₀ C : ℝ)
     (u : ℕ → ℂ) (hu : TorsionLanguageUniversal u)
     (M : ℕ → ℕ)
     (F : ∀ R, Finset (Fin (M R) → Fin (D + 1)))
@@ -4479,15 +4456,12 @@ theorem false_of_torsionLanguageUniversal_gaussianTailLock
     C * ∑' z : {z : ι → ℤ // z ∉ integerLatticeBox ι R},
       (1 + (integerLatticeMaxNatAbs z.1 : ℝ)) ^ J *
         Real.exp (-B * (gaussianOffsetEnergy z.1 - Q₀))
-  have hepsilon : ∀ R, 0 ≤ epsilon R := by
-    intro R
-    exact mul_nonneg hC (tsum_nonneg fun _ => by positivity)
   have hepsilonZero : Tendsto epsilon atTop (𝓝 0) := by
     simpa only [epsilon, mul_zero] using
       (tendsto_maxPolynomial_gaussian_tsum_outside_box_zero
         ι J hB Q₀).const_mul C
   exact false_of_torsionLanguageUniversal_approximateFaces
-    u hu M F w ell p₀ epsilon hepsilon hepsilonZero hp₀ hw hface
+    u hu M F w ell p₀ epsilon hepsilonZero hp₀ hw hface
       ell₀ hell₀ hell₀ne
 
 /-! ## Exclusion of arbitrary integer ADEs -/
@@ -4526,8 +4500,7 @@ theorem false_of_integerADE_gaussian_torsionLanguageUniversal
       ha (by simpa only [D] using hD) 0 (by simpa only [D] using hD)
   obtain ⟨P, htail⟩ :=
     exists_eventually_norm_gaussianFaceCluster_le_tail hB
-      hcoeff huNorm hrel ha (by rfl)
-      (by
+      hcoeff huNorm hrel (by
         intro m hm hmD
         apply haMax m hm
         simpa only [D, haD] using hmD)
@@ -4606,13 +4579,9 @@ theorem false_of_integerADE_gaussian_torsionLanguageUniversal
     rw [hcoeffStable, henergy]
     simp only [Q₀, sub_self, mul_zero, neg_zero, Real.exp_zero,
       Complex.ofReal_one, mul_one]
-  have hC : 0 ≤ C := by
-    dsimp only [C]
-    exact add_nonneg
-      (gaussianADEExteriorConstant_nonneg n D Q hB.le Q₀ P) zero_le_one
   exact false_of_torsionLanguageUniversal_gaussianTailLock
     (Fin D) (D := D) (J := J) (B := B / 2) (by linarith)
-    Q₀ C hC u hu M Face w ellFace p₀ hp₀ hw hface
+    Q₀ C u hu M Face w ellFace p₀ hp₀ hw hface
       ell hell₀ hell
 
 /-! ## Entire Gaussian phase series -/

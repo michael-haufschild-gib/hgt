@@ -3,7 +3,7 @@
 ## What This Is
 
 This folder is the Lean 4 proof project.  Every research module belongs to one
-of five theorem areas:
+of six theorem areas:
 
 | Area | Umbrella | Capstone surface |
 |---|---|---|
@@ -12,8 +12,9 @@ of five theorem areas:
 | Hurwitz | `GaloisForLFunctions.Hurwitz` | `hurwitz_n2_unconditional` |
 | u0_pui | `GaloisForLFunctions.U0` | `U0CardTheorems.u0_phi_independence_all_parameters` |
 | q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap`, `Bottcher.q62_phiMero_linGap`, `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`, `Bottcher.q62_phiMero_mixed_far_roots`, `Bottcher.q62_phiMero_mixed_far_roots_swapped` |
+| Hilbert metrics | `GaloisForLFunctions.HilbertMetric` | finite graded Pluecker partitions and Gaussian feature-determinant laws |
 
-`GaloisForLFunctions.MainTheorems` imports all five.
+`GaloisForLFunctions.MainTheorems` imports all six.
 
 ## Start Here
 
@@ -53,7 +54,7 @@ This gate fails on Lean build warnings.
   `GaloisForLFunctions/U0/`, `GaloisForLFunctions/Bottcher/`, or
   `GaloisForLFunctions/Hurwitz/`.
 - Do not add research leaf modules directly under `GaloisForLFunctions/`.
-  That level is reserved for `Core.lean`, the five area umbrellas,
+  That level is reserved for `Core.lean`, the six area umbrellas,
   `MainTheorems.lean`, and the two cross-area aggregators
   `FullyProvenNewTargets.lean` and `KummerRootApplications.lean`.
 - No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.

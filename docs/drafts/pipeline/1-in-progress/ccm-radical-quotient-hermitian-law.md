@@ -3,8 +3,8 @@
 - **ID:** `ccm-radical-quotient-hermitian-law`
 - **Stage:** 1-in-progress
 - **Type:** UNIVERSAL THEOREM / CCM SIMPLE-EVEN HYPOTHESIS REMOVAL
-- **Scientific status:** `[CORE PROVED IN LEAN SCRATCH] [CCM CONNECTOR IN PROGRESS]`
-  `[NOVELTY AUDIT OPEN] [NOT AN RH PROOF]`
+- **Scientific status:** `[UNCONDITIONALLY FORMALIZED] [ACTUAL CCM CLASS CONNECTED]`
+  `[UNIVERSAL QUOTIENT CORE CLASSICAL] [CCM APPLICATION CANDIDATE NEW] [NOT AN RH PROOF]`
 - **Parents:** `ccm-boundary-channel-completion-trichotomy.md`,
   `infinite-semimetric-symmetrization-closed-range-law.md`, Connes--Consani--Moscovici
   *Zeta Spectral Triples*.
@@ -33,6 +33,13 @@ C=R* B* B A R=R* A* B* B R=C*.                         (3)
 No simplicity, parity, choice of a kernel generator, or positivity margin occurs. If in addition
 `A` preserves `ker B`, then `C B=B A`, so `C` is the honest operator induced by `A` after removing
 the full radical of `T`.
+
+The universal semidefinite-quotient principle is not new. Bovdi--Klymchuk--Rybalkina--Salim--
+Sergeichuk, *Operators on positive semidefinite inner product spaces* (Linear Algebra Appl. 596
+(2020), arXiv:2003.06919), Lemma 3, prove that a self-adjoint operator on a semiunitary space is
+bounded precisely when it preserves the isotropic part and then induces a self-adjoint quotient.
+Candidate novelty is therefore restricted to the exhaustive CCM boundary completion and the
+resulting arbitrary-radical determinant route.
 
 ## CCM consequence under audit
 
@@ -87,16 +94,38 @@ old one-dimensional argument would be circular.
 5. Connect the existing CCM completion output to `(2)` without assuming a preferred kernel vector.
 6. Audit axioms and build only the leaf module, then wire the `RHTower` umbrella.
 
+Implemented module:
+
+```text
+formal/GaloisForLFunctions/RHTower/CCMRadicalQuotientHermitian.lean
+```
+
+Standalone manuscript, with no reference to the internal formal layer:
+
+```text
+docs/drafts/manuscripts/ccm-radical-quotient-hermitian/main.tex
+```
+
 ## Gates
 
 - [x] exact algebraic law discovered
 - [x] Hermitian core proved in `/tmp` with project toolchain
-- [ ] quotient intertwining formalized
-- [ ] real-rooted characteristic polynomial formalized
-- [ ] RH convergence consumer formalized
-- [ ] actual finite CCM completion connector formalized
-- [ ] paper proof integrated without references to Lean
+- [x] quotient intertwining formalized
+- [x] real-rooted characteristic polynomial formalized
+- [x] RH convergence consumer formalized
+- [x] actual finite CCM completion connector formalized
+- [x] paper proof integrated without references to Lean
 - [ ] external novelty audit
 - [ ] quotient determinant convergence
 - [ ] RH
 
+## Log
+
+- 2026-07-22 -- Extracted exact CCM coefficients and identified the semimetric quotient route.
+- 2026-07-22 -- Hostile literature audit found the universal quotient principle in
+  arXiv:2003.06919; narrowed novelty claim to the CCM boundary application.
+- 2026-07-22 -- Formalized complex and real Gram compression, radical intertwining, real-rooted
+  characteristic polynomials, locally uniform determinant transfer to RH, and the concrete
+  reflection-graded divided-difference connector.
+- 2026-07-22 -- Wrote and compiled the standalone manuscript. Exact surviving open core is
+  cofinal quotient-determinant convergence to `Xi`.

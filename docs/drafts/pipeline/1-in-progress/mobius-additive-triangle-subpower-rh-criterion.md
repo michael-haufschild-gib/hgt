@@ -406,3 +406,93 @@ literature boundary, and formal certificate are in
 `MobiusLaplaceGammaHankelWall.lean`.
 
 Classification: `[NEW TO CORPUS] [NOVELTY UNVERIFIED] [NOT AN UNCONDITIONAL RH PROOF]`.
+
+## Visible-coprime nonlinear route closed — 2026-07-22
+
+The Lambert identity has an exact higher-dimensional primitive-lattice closure:
+
+```text
+sum_(gcd(a_1,...,a_r)=1) product_j Phi(a_j x_j)
+  = Phi(x_1+...+x_r).
+```
+
+This does not control `Phi`.  Its Mellin symbol is the classical visible-lattice quotient
+
+```text
+product_j zeta(s_j) / zeta(sum_j s_j),
+```
+
+so every zeta-zero mode lies in its radical.  Differentiating to the first nonzero Hermitian jet
+recovers the exact orientation sign
+
+```text
+sign J(rho)=sign(2 Re(rho)-1),
+```
+
+but the finite coprimality matrix has inertia exactly counted by the signs of
+`mu(1),...,mu(N)`.  Its negative index is unbounded.  More generally, every positive
+divisor-stationary kernel loses the critical zero, and every positive diagonal completion adds a
+strictly positive even logarithmic moment to the zero jet.  Hence primitive-dilation positivity,
+finite-negative-index repair, and positive diagonal completion cannot supply the source.
+
+Full dependency-closed proof and parent-theory audit:
+`../2-fully-proven/not_new_scientific_knowledge/visible-coprime-zero-jet-indefiniteness-law.md`.
+Classification: `[REDISCOVERED PARENTS] [BRIDGE] [PAPER-PROVED POSITIVITY NO-GO] [NOT RH]`.
+
+Surviving source requirement is sharper: cancellation must be non-GCD-stationary and must occur
+before positivity, or an infinite-index Krein carrier needs an independent source-side sign
+selection.  No such selector is currently proved.
+
+## Raw Hermitian positive recurrence found — 2026-07-22
+
+The source-defined selector exists on the **lower** side of the raw additive frontier.  For a
+primitive Dirichlet character `chi`, let
+
+```text
+R_(chi,k)(N)
+ = sum_(n_1+...+n_k+m_1+...+m_k=N)
+     product_j mu(n_j)chi(n_j)
+     product_j conjugate(mu(m_j)chi(m_j)).
+```
+
+The ordinary generating function is exactly nonnegative on the positive radius:
+
+```text
+sum_N R_(chi,k)(N) r^N = |sum_n mu(n)chi(n)r^n|^(2k).          (RAW1)
+```
+
+Let `Psi_(chi,k)` be the limsup exponent of the positive part of `R_(chi,k)` and let
+`Theta_chi` be the rightmost-zero abscissa of `L(s,chi)`.  The Mellin pole obstruction gives
+
+```text
+2k Theta_chi-1 <= Psi_(chi,k) <= 2k-1.                         (RAW2)
+```
+
+The zero exponent at `k=1` needs a separate endpoint argument.  If only finitely many raw
+coefficients were positive, `(RAW1)` would bound the Laplace transform at zero.  Its Mellin
+transform would then continue `1/L(s,chi)` holomorphically throughout `Re(s)>0`, contradicting
+the existence of nontrivial zeros.  Hence `R_(chi,k)(N)>0` infinitely often for every `k`.
+For zeta the binary coefficients are integers, so unconditionally
+
+```text
+sum_(a+b=N) mu(a)mu(b) >= 1
+```
+
+for infinitely many `N`.  For `k>=2`, zero symmetry and `(RAW2)` give the quantitative
+unconditional law
+
+```text
+R_(chi,k)(N)=Omega_+(N^(k-1-epsilon))
+```
+
+for every `epsilon>0`.
+
+This is a genuine raw-binary sign theorem, but it does not control the upper side and therefore
+does not prove binary Chowla or RH.  The remaining RH source is still a critical **upper** law:
+at the integrated level `C_(chi,1)(N)<=N^(2+o(1))`, or a comparably strong raw positive-part
+upper bound.  Full proof, hostile audit, 2015/2025/2026 literature boundary, and the reused Lean
+Hermitian Abel certificate are in
+`../2-fully-proven/needs-audit/raw-mobius-hermitian-positive-excursion-law.md`.
+
+Classification: `[PROVED HERE] [UNCONDITIONAL POSITIVE RECURRENCE]`
+`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`.

@@ -154,10 +154,9 @@ theorem xi_rightSum_dvd_of_completedGN_discBit_zero {N k : ℕ}
   (windowDiscBit_eq_zero_iff k t₁ m₁).mp
     (xi_rung_of_completedGN_discBit_zero (N := N) hm₁ hcl₁ hstrip hm₂ hcl₂ hD hL hfin)
 
-/-- A vanishing ξ DISC bit on a reflection-closed subwindow is exactly the subwindow congruence.
-This is the local, per-subconfiguration form that avoids the full-window total-sum blindness. -/
-theorem subWindow_congruence_of_windowDiscBit_zero {k : ℕ} {T : ℝ} {t : Finset ℂ}
-    (_hsub : ↑t ⊆ stripZeros T)
+/-- A vanishing ξ DISC bit on any reflection-closed finite set is exactly its center-line
+congruence.  No ambient height-window membership is needed. -/
+theorem subWindow_congruence_of_windowDiscBit_zero {k : ℕ} {t : Finset ℂ}
     (hclosed : ∀ z ∈ t, lineReflect z ∈ t)
     (hbit : windowDiscBit k t (fun z => (analyticOrderAt xi z).toNat) = 0) :
     ∑ ρ ∈ t, (analyticOrderAt xi ρ).toNat ≡
@@ -180,7 +179,7 @@ theorem windowCertificate_of_subWindow_discBits_zero {k : ℕ} {T : ℝ}
     WindowCertificate k T := by
   rw [windowCertificate_iff_subWindow_congruences]
   intro t hsub hclosed
-  exact subWindow_congruence_of_windowDiscBit_zero hsub hclosed (hbits t hsub hclosed)
+  exact subWindow_congruence_of_windowDiscBit_zero hclosed (hbits t hsub hclosed)
 
 /-- Window certificates from transported finite DISC bits on every reflection-closed subwindow.
 Each subconfiguration may use its own finite completed-carrier presentation; what matters is that

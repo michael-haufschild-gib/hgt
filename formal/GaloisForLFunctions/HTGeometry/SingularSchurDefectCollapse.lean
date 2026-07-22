@@ -149,9 +149,9 @@ theorem hasBernsteinSzegoCofinalApproximation_of_mutuallySingular
   · intro N
     exact bernsteinSzegoProbabilityApproximation_caratheodory_differentiallyAlgebraicOn_disk
       mu hmu N
-  · intro r hr0 hr1
+  · intro r _hr0 hr1
     exact bernsteinSzegoProbabilityApproximation_caratheodory_tendstoUniformly_closedBall
-      mu hmu hr0 hr1
+      mu hmu hr1
   · intro N
     exact ⟨bernsteinSzegoApproximationDensity_continuous mu hmu N,
       bernsteinSzegoApproximationDensity_pos mu hmu N,

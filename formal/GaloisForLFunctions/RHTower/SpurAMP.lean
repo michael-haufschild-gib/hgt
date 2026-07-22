@@ -39,7 +39,7 @@ theorem spur_pair_rootProd_sign_transfer_of_margin_lower_bound (a b : ℝ)
 
 /-- Theorem A tracking clearance, upgraded from a lower bound to `margin > 1`. -/
 theorem theoremA_margin_gt_one_from_tracking {a b R z denom m M : ℝ} {d : ℕ}
-    (hdpos : 0 < d) (hb : 0 < b) (hm : 0 < m) (hM : 0 ≤ M) (hR : 0 < R)
+    (hdpos : 0 < d) (hm : 0 < m) (hM : 0 ≤ M) (hR : 0 < R)
     (hz : |z| ≤ R)
     (hdsize : 2 * R ^ 2 ≤ (d : ℝ) * b ^ 2)
     (hdenpos : 0 < denom)
@@ -47,7 +47,7 @@ theorem theoremA_margin_gt_one_from_tracking {a b R z denom m M : ℝ} {d : ℕ}
     (hlarge : 1 < b ^ 2 * m * (d : ℝ) ^ 2 / (4 * (M + 1) * R ^ 4)) :
     1 < spurQ a b d (z / (d : ℝ)) / denom :=
   margin_gt_one_of_lower_bound_gt_one hlarge
-    (theoremA_margin_lower_bound_from_tracking hdpos hb hm hM hR hz hdsize hdenpos hden)
+    (theoremA_margin_lower_bound_from_tracking hdpos hm hM hR hz hdsize hdenpos hden)
 
 /-- Theorem A tracking clearance gives copy/sign transfer at a tracked critical point.
 
@@ -56,7 +56,7 @@ The denominator is instantiated as the AMP denominator `c^4 E(c)` with
 explicit hypotheses; the finite clearance-to-sign-transfer composition is closed here. -/
 theorem spur_pair_rootProd_tracking_sign_transfer (a b : ℝ) (s : Multiset ℝ)
     {d : ℕ} {z m M R : ℝ}
-    (hdpos : 0 < d) (hb : 0 < b) (hm : 0 < m) (hM : 0 ≤ M) (hR : 0 < R)
+    (hdpos : 0 < d) (hm : 0 < m) (hM : 0 ≤ M) (hR : 0 < R)
     (hz : |z| ≤ R)
     (hdsize : 2 * R ^ 2 ≤ (d : ℝ) * b ^ 2)
     (hdenpos : 0 < (z / (d : ℝ)) ^ 4 * spurEnergy s (z / (d : ℝ)))
@@ -69,7 +69,7 @@ theorem spur_pair_rootProd_tracking_sign_transfer (a b : ℝ) (s : Multiset ℝ)
         (spurPairPolar (a ^ 2 + b ^ 2) (2 * a) d (rootProd s)) *
       eval (z / (d : ℝ)) (rootProd s) :=
   spur_pair_rootProd_sign_transfer_of_margin_lower_bound a b s hc hcrit hdenpos
-    (theoremA_margin_lower_bound_from_tracking hdpos hb hm hM hR hz hdsize hdenpos hden)
+    (theoremA_margin_lower_bound_from_tracking hdpos hm hM hR hz hdsize hdenpos hden)
     hlarge
 
 end

@@ -118,7 +118,7 @@ longer tries to pay a divergent scalar cost independently.  Cross-prime covarian
 one common Gamma spectral variable before projection.  Formula `(7)` is a direct Hilbert
 projection identity, not a positivity conjecture.
 
-## `SUZUKI-COHERENT-FUSION-GAMMA-WELD` `[CONJECTURE]`
+## `SUZUKI-COHERENT-FUSION-GAMMA-WELD` `[CONJECTURE — UNBOUNDED GRAPH FORM ONLY]`
 
 For one fixed rectangular width `L>0`, the actual division-free causal Weil--Robin boundary
 observation takes compact gated wall Grams `(5a)` as arithmetic input and factors their response
@@ -138,6 +138,18 @@ It is false if any one of the following occurs:
 4. marked-halfgap or holonomy debt is not uniformly controlled on the projected graph domain;
 5. the resulting Ward residual tends to `-infinity` on any admissible aperture sequence.
 
+The bounded-gain reading is now formally false. The source-specific theorem
+`SuzukiCoherentResponseGainNoGo.lean` proves that the full causal depth-fused response satisfies
+
+```text
+|R_(a,t,p)| <= C_h B_p/(p+1),
+```
+
+while at moving-wall aperture `(log p+1)/2` the exact unit-width sharp gate is one and source norm
+is `B_p`. Hence no finite uniform inverse gain recovers sharp source from coherent response. Any
+surviving weld must be a closed unbounded relative observation with at least linear prime gain,
+not bounded restricted-Weil response followed by bounded trace functional.
+
 ## Gates
 
 - [x] 0 -> 1: source-pure coherent carrier and falsifiers isolated
@@ -148,7 +160,9 @@ It is false if any one of the following occurs:
 - [x] cofinal cross-prime Gram expansion and faithful global cap proved on paper
 - [x] Gamma conductor Schur payment identified as an actual covariance projection
 - [x] formalize all-prime coherent fusion and global cap
+- [x] bounded/frame-preserving sharp-source recovery formally ruled out
 - [ ] identify `(7)` with concrete Robin--Gamma rectangular trace
+- [ ] construct and prove closability of forced unbounded source-recovery graph
 - [ ] pay marked-halfgap and holonomy graph debts
 - [ ] prove Ward residual uniformly lower bounded
 - [ ] RH
@@ -166,3 +180,6 @@ It is false if any one of the following occurs:
 - 2026-07-22 — sharp-support/source-degree audit corrected architecture: gated observer-free wall
   Gram is arithmetic source; coherent fused ray is boundary response.  Open core now includes exact
   restricted-Weil source-to-response intertwiner before Gamma covariance projection.
+- 2026-07-22 — bounded intertwiner interpretation killed: causal fused response/sharp-source gain
+  is at most `C_h/(p+1)` on exact moving-wall cells. Surviving source-to-response morphism must be
+  unbounded and cutoff-relative; coherent covariance existence alone cannot supply trace weld.

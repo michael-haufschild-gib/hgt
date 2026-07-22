@@ -5567,3 +5567,189 @@ passes `9414/9414`.  Lint no longer reports any module in this four-module theor
 unreachable; global lint remains red on 21 unrelated concurrent modules.  Rendered 10-page paper
 is `output/pdf/suzuki-mangoldt-macroscopic-prime-block-surplus.pdf`.  No stale owned Lean/lake
 process remains.
+
+## S70--S72. Scalar positive transport closes as a no-go; operator source remains (2026-07-22)
+
+S69 proved an unbounded apex-relative prime-block surplus but did not prove that this surplus was
+unused target capacity.  The proposed continuum argument tried to pay a width-two future/past seam
+from the total two-flank deficit.  Hostile capacity accounting falsifies that interpretation.
+
+For `a<=s`, `h>=0`, `s+h<=b`, and any interval-integrable profile `Phi`, mixed future/past targets
+satisfy the universal inclusion--exclusion law
+
+```text
+M(Phi)=integral_a^(s+h)Phi+integral_s^b Phi
+      =integral_a^b Phi+integral_s^(s+h)Phi.               (S70.1)
+```
+
+Hence for every source quadrature `Q`,
+
+```text
+M(Phi)-Q-seam(Phi)=capacityOne(Phi)-Q,                     (S70.2)
+
+M(Phi)-Q>=seam(Phi) iff capacityOne(Phi)>=Q.               (S70.3)
+```
+
+In the continuum model the one-sided slack equals seam mass exactly.  The proved tilted-tent
+identity `D(1/2,2)=16-8cosh(1)>2` remains correct, but `D` is apex-relative deficit, not free
+transport slack.  The manuscript promoting it as seam payment is retracted; the exact survivor is
+the no-free-splice classification.
+
+The common-shift result still left a broader objection: perhaps arbitrary block transport could
+combine the sharp S67 band with S69's unbounded flank surplus.  S72 supplies an explicit
+information-class countermodel.  For a moving apex `c`, define the atomless measure
+
+```text
+dmu_c/dt=1 outside (c-2,c),
+          0 on (c-2,c-1/4),
+          8 on (c-1/4,c).                                  (S72.1)
+```
+
+Its cumulative mass is monotone and satisfies exactly
+
+```text
+t-2<=mu_c((0,t])<=t                                        (S72.2)
+```
+
+for every `t>=0`.  It agrees with Lebesgue measure on the whole decreasing flank.  At Suzuki width
+two, with
+
+```text
+c_a=4a-4,   H_a=2exp(a-1),
+A_a(c_a+2x)=H_a exp(x/2)(1-|x|/2),
+```
+
+elementary interval bounds give
+
+```text
+integral A_a dmu_(c_a)-integral_0^infinity A_a(t)dt
+ >=H_a/128.                                                (S72.3)
+```
+
+This excess is unbounded.  The completed reserve does not scale with the apex.  Writing
+
+```text
+R_a=integral_0^infinity (K_a-A_a)dt-(gamma+log pi)4,
+```
+
+the exact common-lag decomposition gives
+
+```text
+R_a=integral_0^infinity exp(-t/4)C_(2,a)(t/2)dt
+    +rectangularGammaPolarCorrection(2,a).                 (S72.4)
+```
+
+Autocorrelation contraction `C_(2,a)(t/2)<=C_(2,a)(0)=4` and the formal Gamma bound imply
+
+```text
+R_a<=16+rectangularGammaPolarUniformBound(2).               (S72.5)
+```
+
+Choosing the symbolic aperture
+
+```text
+a=64(16+rectangularGammaPolarUniformBound(2))+3
+```
+
+and using `1+x<=exp(x)` yields the strict completed-lag violation
+
+```text
+integral_0^infinity K_a(t)dt
+ <integral A_a dmu_(c_a)+(gamma+log pi)4.                  (S72.6)
+```
+
+Thus cumulative width-two capacity, atom-size control or atomlessness, and an unbounded untouched
+right-flank apex deficit do **not** imply Suzuki's RH-bearing quadrature inequality.  This is a
+class-level no-go for the scalar log-Haar/apex-block transport sublane.  It also corrects S69:
+that prime-block surplus is a true source theorem, but it is not free capacity without an
+independent actual-source identity.
+
+This is not RH, a disproof of RH, or a no-go for Suzuki's complete screw/operator program.
+Suzuki's 2026 paper itself conjectures an operator limit rather than a scalar capacity theorem.
+The proposed label `SUZUKI-SOURCE-COMMUTATOR-GRAM` is itself retired after a complete-corpus audit.
+The corpus already proves the logarithmic-position/Euler commutator Gram, exact valuation Gamma
+Schur translation, compact-support Sonin cyclic descent, and coherent cross-prime covariance.  It
+would be another rediscovery, not a frontier.
+
+## S73. Coherent causal response has vanishing gain on exact sharp source (2026-07-22)
+
+The surviving coherent-weld conjecture takes exact gated sharp wall Grams as arithmetic source and
+the causal depth-fused field as boundary response.  The exact source formulas expose a previously
+unrecorded cofinal scale obstruction.  Let `B_p` be observer-free depth-zero wall amplitude.  For
+fixed `h>0`, every aperture `a>0`, height `t`, and prime `p`, Lean proves
+
+```text
+|R_(a,t,p)| <= C_h B_p/(p+1),
+C_h=(h sqrt(h))^(-1)(1-exp(-(log 2)/4))^(-1).              (S73.1)
+```
+
+This is not an asymptotic estimate.  Endpoint factorization has exact observer innovation
+
+```text
+EndpointAmplitude(h,a,p,0)
+ =B_p (h sqrt(h))^(-1) [p^(-1)/(1+p^(-1))]
+   (1-p^(-ha/2))^2,                                      (S73.2)
+```
+
+and middle factor is exactly `1/(p+1)`.  Exact causal Möbius resolvent has radius at most
+`exp(-(log 2)/4)<1`, giving `(S73.1)` by reverse triangle inequality.
+
+At prime moving-wall aperture
+
+```text
+a_p=(log p+1)/2,
+```
+
+four-tent autocorrelation gives, for `log p>=1`,
+
+```text
+suzukiRectangularWallGramGate(1,a_p,p,0)=1,               (S73.3)
+sharp wall diagonal=B_p^2.                                (S73.4)
+```
+
+Thus response loses a reciprocal-prime order while exact sharp source loses none.  The formal
+cofinal theorem is
+
+```text
+for every M>=0 and height t,
+there exists prime p with M |R_(a_p,t,p)| < B_p.           (S73.5)
+```
+
+Therefore coherent causal fusion is not a uniformly frame-equivalent image of sharp wall source.
+Bounded/frame-preserving interpretations of `SUZUKI-COHERENT-FUSION-GAMMA-WELD` are false.  Any
+surviving Robin--Gamma identification must use a closed unbounded, cutoff-dependent relative
+observation with at least linear prime gain; at energy level required amplification is at least
+quadratic in `p`.
+
+The exact live frontier is now
+
+```text
+SUZUKI-COFINAL-UNBOUNDED-GRAPH-FLOOR:
+construct and prove closability of forced unbounded sharp-source recovery on actual
+Sonin/Robin--Burnol graph; prove Connes finite part survives this graph and has one
+cutoff-uniform lower floor; then invoke the formal completed-flux endpoint to prove RH. (S73.6)
+```
+
+Failure of closability, trivial common finite-part domain, or unavoidable trace defect unbounded
+below would instead give a source-complete no-go for current coherent Suzuki weld.  Any construction
+factoring only through `(S72.2)`, apex surplus, a fixed Hilbert--Schmidt probe, bounded causal
+recovery, or another abstract Gram is formally ruled out or already present in corpus.
+
+Scientific artifacts:
+
+- `formal/GaloisForLFunctions/HTGeometry/BicausalDisplacementOverlap.lean`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiBicausalNoFreeSplice.lean`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCoherentResponseGainNoGo.lean`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-coherent-response-gain-no-go.md`;
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-coherent-response-gain-no-go.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-coherent-response-gain-no-go.md`;
+- `docs/drafts/pipeline/5-failed/suzuki-continuum-two-flank-surplus-pays-bicausal-seam.md`;
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-apex-vacuum-capacity-no-go.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-critical-apex-vacuum-capacity-no-go.md`.
+
+Direct source checks pass.  S72 and S73 capstone axiom surfaces use only `propext`,
+`Classical.choice`, and `Quot.sound`.  Final cached module build and repository lint are recorded
+after shared-tree audit.  No paper is promoted: terminal RH/disproof/full-Suzuki-no-go outcome is
+still absent.

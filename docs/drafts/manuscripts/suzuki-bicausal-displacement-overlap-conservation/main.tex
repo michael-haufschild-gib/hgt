@@ -19,7 +19,7 @@
 \newcommand{\A}{\mathcal A}
 \newcommand{\F}{\mathcal F}
 
-\title{Displacement--Overlap Conservation in Bicausal Transport\\
+\title{\textsc{Retracted}: Displacement--Overlap Conservation in Bicausal Transport\\
 and a Critical Surplus Law for Suzuki's Zeta Channel}
 \author{HGT Research Project}
 \date{22 July 2026}
@@ -28,39 +28,18 @@ and a Critical Surplus Law for Suzuki's Zeta Channel}
 \maketitle
 
 \begin{abstract}
-We identify a sharp conservation law at every reversal of a contiguous positive transport.
-If a cumulative-mass partition is shifted forward by $h$ on an increasing branch and left
-unshifted on a decreasing branch, then the two aggregate targets double-cover one interval of
-exact width $h$.  For every interval-integrable profile $\Phi$ this becomes the exact ledger
-\[
- \int_a^{s+h}\Phi+\int_s^b\Phi
- =\int_a^b\Phi+\int_s^{s+h}\Phi.
-\]
-Thus one-sided displacement is conserved as duplicate target capacity at a turning seam.
-
-We then compute the bilateral transform of the exponentially tilted triangular profile
-\[
- r_{\beta,L}(x)=e^{\beta x}(1-|x|/L),\qquad |x|\le L,
-\]
-obtaining the universal two-flank surplus
-\[
- D(\beta,L)=4L-\frac{4(\cosh(\beta L)-1)}{L\beta^2}.
-\]
-At the critical Suzuki parameters $(\beta,L)=(1/2,2)$,
-\[
- D(1/2,2)=16-8\cosh(1)>2.
-\]
-We prove an exact specialization to Suzuki's completed positive rectangular sample channel:
-for every aperture $a\ge3$, its full moving tent is the critical normalized profile times the
-apex height.  Consequently its continuum two-flank surplus is strictly larger than twice that
-height, while the sharp Mangoldt bicausal seam has width exactly two.
-
-These results decide the geometric capacity question: critical Suzuki geometry has enough total
-surplus to pay the unavoidable seam, so geometry is not a dead end.  They also prove that
-capacity-band information alone cannot perform the splice; actual Mangoldt flank structure and a
-disjoint surplus assignment remain necessary.  All stated identities and inequalities are proved
-unconditionally in Lean~4.  No zero-location premise, prime-gap estimate, numerical experiment,
-or unformalized positivity hypothesis is used.
+\textbf{Retracted on 22 July 2026.}
+The interval-overlap identity and tilted-tent integral computed below are mathematically correct,
+but the manuscript's central interpretation is false.  After duplicate seam capacity is charged
+back, mixed future/past slack is exactly the original capacity-one quadrature deficit; total
+apex-relative flank deficit is not free transport capacity.  A stronger formal countermodel now
+shows that even an atomless source satisfying the sharp width-two cumulative band, with the full
+decreasing flank left untouched, can violate Suzuki's completed-lag inequality because its
+rising-flank excess grows with the apex while the reflected-polar/Gamma reserve is uniformly
+bounded.  This document is retained only as a record of the failed route and must not be cited as
+an RH advance.  Corrected results are recorded in
+\texttt{SuzukiBicausalNoFreeSplice.lean} and
+\texttt{SuzukiCriticalApexVacuumCapacityNoGo.lean}.
 \end{abstract}
 
 \section{Introduction}

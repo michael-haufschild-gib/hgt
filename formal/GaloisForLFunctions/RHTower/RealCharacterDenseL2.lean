@@ -124,9 +124,10 @@ theorem ae_eq_zero_of_integral_realProbCharacter_mul_eq_zero
   have hge : 0 ≤ f x := by simpa using hnx
   exact le_antisymm hle hge
 
-/-- Fourier conjugation for a real integrable density. -/
+/-- Fourier conjugation for a real density; Lean's integral convention makes the identity
+unconditional, including the nonintegrable case. -/
 theorem integral_realProbCharacter_neg_mul_ofReal
-    (mu : Measure ℝ) {f : ℝ → ℝ} (_hf : Integrable f mu) (t : ℝ) :
+    (mu : Measure ℝ) {f : ℝ → ℝ} (t : ℝ) :
     ∫ x, realProbCharacter (-t) x * (f x : ℂ) ∂mu =
       starRingEnd ℂ (∫ x, realProbCharacter t x * (f x : ℂ) ∂mu) := by
   rw [← integral_conj]
@@ -196,8 +197,8 @@ theorem ae_eq_zero_of_integral_realProbCharacter_mul_eq_zero_complex
           (hphaseMeas (-t)) (hphaseBound (-t))
       rw [hpoint, integral_add hArneg (hBineg.const_mul Complex.I),
         integral_const_mul,
-        integral_realProbCharacter_neg_mul_ofReal mu hfrint,
-        integral_realProbCharacter_neg_mul_ofReal mu hfiint] at hz
+        integral_realProbCharacter_neg_mul_ofReal (f := fr) mu t,
+        integral_realProbCharacter_neg_mul_ofReal (f := fi) mu t] at hz
       have hzconj := congrArg (starRingEnd ℂ) hz
       dsimp [A, B]
       simpa using hzconj

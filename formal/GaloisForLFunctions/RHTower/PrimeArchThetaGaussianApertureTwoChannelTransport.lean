@@ -445,7 +445,7 @@ theorem thetaCuspGaussianApertureTailChannelMomentRatio_pos
     (thetaCuspGaussianApertureTailChannelMoment_pos hlambda p j)
 
 theorem thetaCuspGaussianApertureTailChannelFirstHeightMoment_nonneg
-    {lambda : ℝ} (_hlambda : lambda ≤ 0) (p j : ℕ) :
+    {lambda : ℝ} (p j : ℕ) :
     0 ≤ thetaCuspGaussianApertureTailChannelFirstHeightMoment lambda p j := by
   rw [thetaCuspGaussianApertureTailChannelFirstHeightMoment]
   apply integral_nonneg_of_ae
@@ -561,7 +561,8 @@ theorem thetaCuspGaussianApertureCorrectionChannelMeanHeight_le_sqrt_ratio
     thetaCuspGaussianApertureTailChannelMoment_pos hlambda 2 j
   have hA1 : 0 < A1 :=
     thetaCuspGaussianApertureTailChannelMoment_pos hlambda 2 (j + 1)
-  have hH : 0 ≤ H := thetaCuspGaussianApertureTailChannelFirstHeightMoment_nonneg hlambda 2 j
+  have hH : 0 ≤ H :=
+    thetaCuspGaussianApertureTailChannelFirstHeightMoment_nonneg (lambda := lambda) 2 j
   have hsq : H ^ 2 ≤ A0 * A1 := by
     simpa only [A0, A1, H] using thetaCuspGaussianApertureCorrectionChannelFirstHeightMoment_sq_le hlambda j
   have hr : 0 ≤ r := (div_pos hA1 hA0).le

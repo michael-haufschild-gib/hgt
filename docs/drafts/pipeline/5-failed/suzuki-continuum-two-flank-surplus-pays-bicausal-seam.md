@@ -47,3 +47,34 @@ prevents a false RH claim while leaving source-specific operator transport open.
 Positive survivor is dependency-closed on paper and formalized in
 `formal/GaloisForLFunctions/RHTower/SuzukiBicausalNoFreeSplice.lean`.  Targeted module and axiom
 audits are recorded on its Stage 3 card.
+
+## Stronger 2026-07-22 closure: capacity and flank surplus still do not suffice
+
+The no-free-splice identity killed one fixed-displacement realization but left an objection:
+perhaps a different block arrangement could use the unbounded right-flank surplus from S69.
+`SUZUKI-CRITICAL-APEX-VACUUM-CAPACITY-NO-GO` now kills that scalar inference at information-class
+level.
+
+Lean constructs an explicit atomless source measure satisfying the sharp band
+
+```text
+t-2 <= source([0,t]) <= t
+```
+
+at every positive lag and agreeing with Lebesgue measure on the entire decreasing flank.  Its
+rising-flank mass compression creates Suzuki sample-channel excess at least `H_a/128`, unbounded
+with aperture.  The complete reflected-polar/Gamma reserve is uniformly bounded by
+`16+rectangularGammaPolarUniformBound(2)`.  At a symbolic aperture the source therefore violates
+completed-lag domination despite atomlessness, capacity band, and unbounded untouched flank
+surplus.
+
+This closes the scalar **capacity/flank-surplus** sublane, not Suzuki's entire screw-function
+program.  Exact remaining discriminator must use actual-Mangoldt source structure not shared by
+the countermodel—equivalently, an independently derived restricted-Weil/Robin commutator or Gram
+identity.  Treating S69's apex-relative block surplus as free target capacity is retired.
+
+Paper and Lean survivor:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-apex-vacuum-capacity-no-go.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`;
+- capstone axioms: only `propext`, `Classical.choice`, `Quot.sound`.

@@ -183,5 +183,13 @@ did not expose.
 - [x] atomic objection removed by explicit atomless source
 - [x] reflected-polar, Gamma, and fixed-charge reserve included
 - [x] scope limited to capacity/flank-surplus information class
-- [ ] exact Lean theorem
+- [x] exact Lean theorem `exists_atomless_capacityBand_suzukiCompletedLag_violation`
 - [ ] actual-Mangoldt source discriminator or RH
+
+## Formalization
+
+`formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean` proves the exact
+atomless measure, its cumulative band and quadrature identity, the `H_a/128` apex amplification,
+the sharper reflected-channel bound `<=16`, the completed-reserve bound, and the symbolic
+completed-lag violation.  Direct source check passes.  Axiom audit of six capstones reports only
+`propext`, `Classical.choice`, and `Quot.sound`.  Final target build remains pending.

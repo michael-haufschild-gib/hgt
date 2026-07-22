@@ -44,6 +44,20 @@ theorem homogeneousMultipleEllipticGammaProduct_scale
     exact mul_div_mul_left (ω i) ω₀ hc
   · exact mul_div_mul_left z ω₀ hc
 
+/-- **Infinitesimal radial Ward law.**  The exact simultaneous-scale orbit has derivative zero at
+the identity scale.  This is unconditional and does not assume a separate multivariable
+differentiability theory for the homogeneous carrier. -/
+theorem hasDerivAt_homogeneousMultipleEllipticGammaProduct_scaleOrbit
+    (ω₀ : ℂ) (ω : ι → ℂ) (z : ℂ) :
+    HasDerivAt
+      (fun c : ℂ => homogeneousMultipleEllipticGammaProduct
+        (c * ω₀) (fun i => c * ω i) (c * z))
+      0 1 := by
+  apply (hasDerivAt_const (1 : ℂ)
+    (homogeneousMultipleEllipticGammaProduct ω₀ ω z)).congr_of_eventuallyEq
+  filter_upwards [eventually_ne_nhds (show (1 : ℂ) ≠ 0 by norm_num)] with c hc
+  exact homogeneousMultipleEllipticGammaProduct_scale c hc ω₀ ω z
+
 end
 
 end GaloisForLFunctions

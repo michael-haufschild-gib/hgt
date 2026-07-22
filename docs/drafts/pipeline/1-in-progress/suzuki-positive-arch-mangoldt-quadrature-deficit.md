@@ -233,3 +233,45 @@ with disjoint continuum blocks and Gamma reserve.  Because `q5` is the least uni
 ceiling on `[log 2,log 5]`, that coefficient cannot be improved without changing block geometry or
 using additional target structure.  Next work must attack that capacity comparison, not return to
 single-atom estimates.
+
+## S70--S72 hostile closure: scalar apex-block transport is not a producer
+
+Two exact no-go theorems overturn the final paragraph above.
+
+First, common-displacement future/past targets overlap by exactly their displacement seam, and
+
+```text
+mixed target-source-seam = capacity-one target-source.
+```
+
+Thus B2 is identically the original quadrature deficit after duplicate capacity is removed.
+
+Second, the atomless apex-vacuum theorem constructs a source measure satisfying the same sharp
+width-two band `t-2<=F(t)<=t`, agreeing with Lebesgue measure on the full decreasing flank, and
+having arbitrarily large apex-relative flank surplus, while violating the completed-lag inequality.
+Its sample-channel excess is at least `H_a/128`; reflected-polar/Gamma reserve is uniformly bounded
+by `16+rectangularGammaPolarUniformBound(2)`.  Therefore B1 cannot use capacity, atom-size control,
+atomlessness, or unbounded flank deficit as sufficient data.  S69 remains a correct source theorem
+but its surplus is consumed capacity until an independent source identity proves otherwise.
+
+Verdict:
+
+- B1 capacity/rearrangement producer: **FALSE for the exact information class above**;
+- B2 common-shift splice: **CIRCULAR/IDENTICAL to `(Q)`**;
+- arbitrary target-defined block certificate: not a producer; its existence is `(Q)`;
+- B3 actual restricted-Weil/Robin source commutator: sole surviving route on this card.
+
+The new exact open core is `SUZUKI-SOURCE-COMMUTATOR-GRAM`: derive from actual Mangoldt and Gamma
+source, before knowing target sign, a positive Gram/Schur identity whose scalar trace is the
+capacity-corrected displacement commutator.  Any construction factoring only through the S67 band
+or S69 apex-relative scalar surplus is now forbidden by a formal countermodel.
+
+Formal artifacts:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiBicausalNoFreeSplice.lean`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`;
+- `docs/drafts/pipeline/5-failed/suzuki-continuum-two-flank-surplus-pays-bicausal-seam.md`.
+
+This closes a scalar transport sublane, not Suzuki's complete operator program, and does not prove
+RH.  Next legitimate attack is B3 only; no further paper may promote block surplus without an
+actual-source operator identity and completed-lag sign.

@@ -155,3 +155,9 @@ Actual open core is now narrower: prove the centered Gamma-conductor projection 
 field is the concrete division-free Robin--Gamma boundary trace, include marked-halfgap and
 holonomy graph debts, and prove resulting rectangular Ward residual lower bounded.  This is
 `SUZUKI-COHERENT-FUSION-GAMMA-WELD`; it remains RH-bearing and unproved.
+
+The bounded-transfer version is no longer live. `SuzukiCoherentResponseGainNoGo.lean` proves the
+coherent causal response loses `1/(p+1)` relative to exact sharp wall source on moving-wall cells,
+so no finite uniform inverse gain exists. The remaining trace weld must be a closed unbounded
+relative graph with cutoff-dependent renormalization; a bounded response plus bounded observer
+cannot identify sharp diagonal.

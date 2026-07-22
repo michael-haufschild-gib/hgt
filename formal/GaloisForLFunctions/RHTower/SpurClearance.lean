@@ -42,7 +42,7 @@ theorem spurQRescaled_eq_sq (a b : ℝ) (d : ℕ) (z : ℝ) :
 /-- Doc 25 (E2): on `|z| ≤ R`, the rescaled pair quadratic is at least `b²/2`
 once `d*b² ≥ 2R²`. -/
 theorem spurQRescaled_lower_bound {a b R z : ℝ} {d : ℕ}
-    (hdpos : 0 < d) (_hb : 0 < b) (hz : |z| ≤ R)
+    (hdpos : 0 < d) (hz : |z| ≤ R)
     (hd : 2 * R ^ 2 ≤ (d : ℝ) * b ^ 2) :
     b ^ 2 / 2 ≤ spurQRescaled a b d z := by
   have hd0 : (0 : ℝ) < d := by positivity
@@ -59,11 +59,11 @@ theorem spurQRescaled_lower_bound {a b R z : ℝ} {d : ℕ}
 
 /-- Unscaled version of the tracking-window lower bound for `q_d(z/d)`. -/
 theorem spurQ_rescaled_lower_bound {a b R z : ℝ} {d : ℕ}
-    (hdpos : 0 < d) (hb : 0 < b) (hz : |z| ≤ R)
+    (hdpos : 0 < d) (hz : |z| ≤ R)
     (hd : 2 * R ^ 2 ≤ (d : ℝ) * b ^ 2) :
     b ^ 2 / 2 ≤ spurQ a b d (z / (d : ℝ)) := by
   rw [spurQ_rescale hdpos]
-  exact spurQRescaled_lower_bound hdpos hb hz hd
+  exact spurQRescaled_lower_bound hdpos hz hd
 
 /-- Doc 25 Theorem A arithmetic shell: a lower bound on `q` and an upper bound on the
 energy denominator give the margin lower bound. -/
@@ -84,7 +84,7 @@ theorem theoremA_margin_lower_bound_arithmetic {q denom b m M R d : ℝ}
 
 /-- Tracking-window form of the Theorem A arithmetic shell, with `q = q_d(z/d)`. -/
 theorem theoremA_margin_lower_bound_from_tracking {a b R z denom m M : ℝ} {d : ℕ}
-    (hdpos : 0 < d) (hb : 0 < b) (hm : 0 < m) (hM : 0 ≤ M) (hR : 0 < R)
+    (hdpos : 0 < d) (hm : 0 < m) (hM : 0 ≤ M) (hR : 0 < R)
     (hz : |z| ≤ R)
     (hdsize : 2 * R ^ 2 ≤ (d : ℝ) * b ^ 2)
     (hdenpos : 0 < denom)
@@ -93,7 +93,7 @@ theorem theoremA_margin_lower_bound_from_tracking {a b R z denom m M : ℝ} {d :
       ≤ spurQ a b d (z / (d : ℝ)) / denom := by
   exact theoremA_margin_lower_bound_arithmetic (q := spurQ a b d (z / (d : ℝ)))
     (denom := denom) (b := b) (m := m) (M := M) (R := R) (d := (d : ℝ))
-    hm hM hR (by positivity) hdenpos (spurQ_rescaled_lower_bound hdpos hb hz hdsize) hden
+    hm hM hR (by positivity) hdenpos (spurQ_rescaled_lower_bound hdpos hz hdsize) hden
 
 /-- Completing the square for the unscaled `q_d`; the dip is at `c = a/(d-1)`. -/
 theorem spurQ_eq_sq_about_dip {a b c : ℝ} {d : ℕ} (hd : 1 < d) :

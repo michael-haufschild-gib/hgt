@@ -382,7 +382,7 @@ lemma fourier_eq_zero_of_ae_zero_on_Ioo {f : ℝ → ℂ} {a c d : ℝ}
   exact hline_zero w
 
 open scoped ComplexConjugate in
-lemma conj_fourier_ofReal {r : ℝ → ℝ} (_hr : Integrable r) (w : ℝ) :
+lemma conj_fourier_ofReal {r : ℝ → ℝ} (w : ℝ) :
     conj (FourierTransform.fourier (fun x ↦ (r x : ℂ)) w) =
       FourierTransform.fourier (fun x ↦ (r x : ℂ)) (-w) := by
   rw [Real.fourier_real_eq_integral_exp_smul,
@@ -450,11 +450,11 @@ lemma fourier_re_im_eq_zero_of_fourier_eq_zero {f : ℝ → ℂ} (hf : Integrabl
   have hReSym :
       conj (FourierTransform.fourier (fun x ↦ ((f x).re : ℂ)) w) =
         FourierTransform.fourier (fun x ↦ ((f x).re : ℂ)) (-w) := by
-    exact conj_fourier_ofReal (r := fun x ↦ (f x).re) hf.re w
+    exact conj_fourier_ofReal (r := fun x ↦ (f x).re) w
   have hImSym :
       conj (FourierTransform.fourier (fun x ↦ ((f x).im : ℂ)) w) =
         FourierTransform.fourier (fun x ↦ ((f x).im : ℂ)) (-w) := by
-    exact conj_fourier_ofReal (r := fun x ↦ (f x).im) hf.im w
+    exact conj_fourier_ofReal (r := fun x ↦ (f x).im) w
   rw [← hReSym, ← hImSym] at hneg
   have hminus : R - I * S = 0 := by
     have hc := congrArg conj hneg

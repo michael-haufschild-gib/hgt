@@ -175,9 +175,10 @@ theorem tendsto_thetaCuspCumulativeIntegral_atTop
     · simp
   simpa [htotal] using hcum
 
-/-- Hedenmalm's weighted boundary condition at zero is automatic in the natural strip. -/
+/-- Hedenmalm's weighted boundary condition at zero is automatic for every complex spectral
+parameter. -/
 theorem tendsto_xiHedenmalmBoundaryGauge_atBot
-    {alpha : ℂ} (_hstrip : |alpha.im| < 1) :
+    {alpha : ℂ} :
     Tendsto (xiHedenmalmBoundaryGauge alpha) atBot (𝓝 0) := by
   have hcum :
       Tendsto
@@ -223,7 +224,7 @@ theorem xiHedenmalmBoundaryEquation_unique_of_atBot
         (xiHedenmalmWeightedBoundaryGauge alpha
           (xiHedenmalmBoundaryEigenfunction alpha)) atBot (𝓝 0) := by
     simpa only [xiHedenmalmWeightedBoundaryGauge, xiHedenmalmBoundaryGauge] using
-      tendsto_xiHedenmalmBoundaryGauge_atBot hstrip
+      tendsto_xiHedenmalmBoundaryGauge_atBot (alpha := alpha)
   have hdiffBot :
       Tendsto
         (fun x : ℝ =>
@@ -310,7 +311,7 @@ theorem existsUnique_xiHedenmalmNormalizedBoundaryValueProblem_iff
     · refine ⟨xiHedenmalmBoundaryEigenfunction_satisfies_equation hstrip, ?_, ?_⟩
       · simpa only [xiHedenmalmWeightedBoundaryGauge,
           xiHedenmalmBoundaryGauge] using
-          tendsto_xiHedenmalmBoundaryGauge_atBot hstrip
+          tendsto_xiHedenmalmBoundaryGauge_atBot (alpha := alpha)
       · simpa only [xiHedenmalmWeightedBoundaryGauge,
           xiHedenmalmBoundaryGauge] using
           (tendsto_xiHedenmalmBoundaryGauge_atTop_iff hstrip).mpr hzero
@@ -325,7 +326,7 @@ theorem xiHedenmalmBoundaryGauge_twoEnded_iff_XiC_eq_zero
     (Tendsto (xiHedenmalmBoundaryGauge alpha) atBot (𝓝 0) ∧
         Tendsto (xiHedenmalmBoundaryGauge alpha) atTop (𝓝 0)) ↔
       XiC alpha = 0 := by
-  rw [and_iff_right (tendsto_xiHedenmalmBoundaryGauge_atBot hstrip),
+  rw [and_iff_right (tendsto_xiHedenmalmBoundaryGauge_atBot (alpha := alpha)),
     tendsto_xiHedenmalmBoundaryGauge_atTop_iff hstrip]
 
 end RHTower
