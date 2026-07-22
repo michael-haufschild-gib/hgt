@@ -39,7 +39,7 @@ theorem exists_svdVec_extension (hcpt : IsCompactOperator T) :
     · subst hmn
       rw [if_pos rfl, inner_self_eq_norm_sq_to_K, norm_svdVec_sq hcpt hm]
       norm_num
-    · rw [if_neg fun h => hmn (svdVec_live_injective hcpt hm hn h),
+    · rw [if_neg fun h => hmn (svdVec_live_injective hcpt hn h),
         inner_svdVec_svdVec_of_ne T hmn]
   obtain ⟨w', b', hAw', hb'⟩ := hA_orth.exists_hilbertBasis_extension
   exact ⟨w', b', hAw', hb'⟩
@@ -80,7 +80,7 @@ theorem polarCoeff_apply_of_eq (hcpt : IsCompactOperator T) (x : H) {n : ℕ}
   rw [polarCoeff, dif_pos hex]
   have hspec := hex.choose_spec
   have heq : hex.choose = n :=
-    svdVec_live_injective hcpt hspec.1 hn (by rw [hspec.2, hv])
+    svdVec_live_injective hcpt hn (by rw [hspec.2, hv])
   rw [heq]
 
 theorem polarCoeff_apply_of_notMem (hcpt : IsCompactOperator T) (x : H)
@@ -97,7 +97,7 @@ theorem summable_polarCoeff_sq (hcpt : IsCompactOperator T) (x : H) :
     fun p => ⟨svdVec T p.1, polarSet_subset T hcpt ⟨p.1, p.2, rfl⟩⟩ with hi_def
   have hi : Function.Injective i := by
     rintro ⟨m, hm⟩ ⟨n, hn⟩ h
-    exact Subtype.ext (svdVec_live_injective hcpt hm hn (congrArg Subtype.val h))
+    exact Subtype.ext (svdVec_live_injective hcpt hn (congrArg Subtype.val h))
   have hoff : ∀ v' ∉ Set.range i, ‖polarCoeff T hcpt x v'‖ ^ 2 = 0 := by
     intro v' hv
     have hnotMem : (v' : H) ∉ svdVec T '' {n | singVal T n ≠ 0} := by
@@ -133,7 +133,7 @@ theorem norm_polarLp_sq_le (hcpt : IsCompactOperator T) (x : H) :
       (fun p => ⟨svdVec T p.1.1, polarSet_subset T hcpt ⟨p.1.1, p.1.2, rfl⟩⟩) ?_ ?_ ?_
     · rintro ⟨⟨m, hm⟩, hm'⟩ ⟨⟨n, hn⟩, hn'⟩ h
       exact Subtype.ext (Subtype.ext
-        (svdVec_live_injective hcpt hm hn (congrArg Subtype.val h)))
+        (svdVec_live_injective hcpt hn (congrArg Subtype.val h)))
     · rintro v' hv'
       rw [Function.mem_support] at hv'
       have hmem : (v' : H) ∈ svdVec T '' {n | singVal T n ≠ 0} := by

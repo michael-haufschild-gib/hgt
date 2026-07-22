@@ -228,7 +228,7 @@ theorem sequenceTraceHankelNonnegative_xiThermalProjectiveMoment :
 
 /-- A global Xi half-plane bound gives the sharp source-normalized projective moment bounds. -/
 theorem xiThermalProjectiveMoment_le_source_mul_pow_of_halfPlaneBound
-    {alpha : ℝ} (_halpha : 0 ≤ alpha) (hzeros : XiZeroHalfPlaneBound alpha)
+    {alpha : ℝ} (hzeros : XiZeroHalfPlaneBound alpha)
     (m : ℕ) :
     xiThermalProjectiveMoment m ≤ normalizedPrimeArchMoment 0 * alpha ^ m := by
   have hmass : Summable (fun q : XiZeroCopy => xiThermalNode q) := by
@@ -258,10 +258,17 @@ theorem xiThermalProjectiveMoment_le_source_mul_pow_of_halfPlaneBound
 /-- Faithfulness of the thermal mass makes the complete geometric moment bounds recover the
 pointwise Xi half-plane bound. -/
 theorem xiZeroHalfPlaneBound_of_forall_thermalProjectiveMoment_le
-    {alpha : ℝ} (halpha : 0 ≤ alpha)
+    {alpha : ℝ}
     (hmom : ∀ m : ℕ,
       xiThermalProjectiveMoment m ≤ normalizedPrimeArchMoment 0 * alpha ^ m) :
     XiZeroHalfPlaneBound alpha := by
+  have halpha : 0 ≤ alpha := by
+    by_contra hnot
+    have hupper := hmom 1
+    have hnegative : normalizedPrimeArchMoment 0 * alpha ^ 1 < 0 := by
+      rw [pow_one]
+      exact mul_neg_of_pos_of_neg normalizedPrimeArchMoment_zero_pos (lt_of_not_ge hnot)
+    linarith [xiThermalProjectiveMoment_nonneg 1]
   intro rho hzero
   let support : XiDivisorSupport :=
     ⟨rho, mem_xi_divisor_support_of_eq_zero hzero⟩
@@ -322,18 +329,18 @@ theorem xiZeroHalfPlaneBound_of_forall_thermalProjectiveMoment_le
   rw [abs_le] at hpoint
   linarith
 
-/-- **Faithful thermal support law.**  The source-normalized projective moment envelope is exactly
-the Xi half-plane width. -/
+/-- **Faithful thermal support law.**  For every real scale, the source-normalized projective moment
+envelope is exactly the Xi half-plane width.  At negative scale, the first-moment inequality itself
+is impossible. -/
 theorem xiZeroHalfPlaneBound_iff_forall_thermalProjectiveMoment_le
-    {alpha : ℝ} (halpha : 0 ≤ alpha) :
+    {alpha : ℝ} :
     XiZeroHalfPlaneBound alpha ↔
       ∀ m : ℕ, xiThermalProjectiveMoment m ≤
         normalizedPrimeArchMoment 0 * alpha ^ m := by
   constructor
   · exact fun hzeros m =>
-      xiThermalProjectiveMoment_le_source_mul_pow_of_halfPlaneBound
-        halpha hzeros m
-  · exact xiZeroHalfPlaneBound_of_forall_thermalProjectiveMoment_le halpha
+      xiThermalProjectiveMoment_le_source_mul_pow_of_halfPlaneBound hzeros m
+  · exact xiZeroHalfPlaneBound_of_forall_thermalProjectiveMoment_le
 
 /-- **Fixed-window thermal moment abscissa spectrum.**  At every nonnegative transverse scale,
 the prime--Gamma negative-source abscissa bound is exactly the source-normalized growth bound for
@@ -349,7 +356,7 @@ theorem primeGamma_abscissa_le_iff_forall_thermalProjectiveMoment_le
   exact (primeGamma_abscissa_le_iff_projectiveReflectionRadius_le
       hL halpha hN).trans
     ((xiZeroHalfPlaneBound_iff_projectiveReflectionRadius_le halpha).symm.trans
-      (xiZeroHalfPlaneBound_iff_forall_thermalProjectiveMoment_le halpha))
+      xiZeroHalfPlaneBound_iff_forall_thermalProjectiveMoment_le)
 
 /-- An eventual geometric envelope for the faithful thermal moments already forces the pointwise
 Xi half-plane bound.  The constant may be arbitrary: strict excess of one displacement over
@@ -420,7 +427,7 @@ theorem xiZeroHalfPlaneBound_iff_exists_eventually_thermalProjectiveMoment_le
     refine ⟨normalizedPrimeArchMoment 0, ?_⟩
     exact Filter.Eventually.of_forall fun m =>
       xiThermalProjectiveMoment_le_source_mul_pow_of_halfPlaneBound
-        halpha.le hzeros m
+        hzeros m
   · rintro ⟨C, hC⟩
     exact xiZeroHalfPlaneBound_of_eventually_thermalProjectiveMoment_le halpha hC
 
@@ -489,7 +496,7 @@ theorem rectangularPrimePolarSource_negativeAbscissa_le_one_iff_cofinal_thermalP
 
 /-- A Xi half-plane bound gives the sharp source-normalized cold-partition envelope. -/
 theorem xiThermalProjectiveColdPartition_le_source_exp_of_halfPlaneBound
-    {alpha : ℝ} (_halpha : 0 ≤ alpha) (hzeros : XiZeroHalfPlaneBound alpha)
+    {alpha : ℝ} (hzeros : XiZeroHalfPlaneBound alpha)
     (k : ℕ) :
     xiThermalProjectiveColdPartition k ≤
       normalizedPrimeArchMoment 0 * Real.exp ((k : ℝ) * alpha) := by
@@ -522,7 +529,7 @@ theorem xiThermalProjectiveColdPartition_le_source_exp_of_halfPlaneBound
 /-- Any eventual exponential envelope for the cold partition function forces the Xi half-plane
 bound at the same exponent.  One atom outside the bound would dominate every fixed prefactor. -/
 theorem xiZeroHalfPlaneBound_of_eventually_thermalProjectiveColdPartition_le
-    {alpha C : ℝ} (_halpha : 0 ≤ alpha)
+    {alpha C : ℝ}
     (hcold : ∀ᶠ k : ℕ in atTop,
       xiThermalProjectiveColdPartition k ≤
         C * Real.exp ((k : ℝ) * alpha)) :
@@ -594,10 +601,10 @@ theorem xiZeroHalfPlaneBound_of_eventually_thermalProjectiveColdPartition_le
   rw [abs_le] at hpoint
   linarith
 
-/-- **Cold free-energy support law.**  At every nonnegative scale, the Xi half-plane bound is
-equivalent to an eventual cold-partition envelope with an arbitrary finite prefactor. -/
+/-- **Cold free-energy support law.**  At every real scale, the Xi half-plane bound is equivalent
+to an eventual cold-partition envelope with an arbitrary finite prefactor. -/
 theorem xiZeroHalfPlaneBound_iff_exists_eventually_thermalProjectiveColdPartition_le
-    {alpha : ℝ} (halpha : 0 ≤ alpha) :
+    {alpha : ℝ} :
     XiZeroHalfPlaneBound alpha ↔
       ∃ C : ℝ, ∀ᶠ k : ℕ in atTop,
         xiThermalProjectiveColdPartition k ≤
@@ -607,10 +614,10 @@ theorem xiZeroHalfPlaneBound_iff_exists_eventually_thermalProjectiveColdPartitio
     refine ⟨normalizedPrimeArchMoment 0, ?_⟩
     exact Filter.Eventually.of_forall fun k =>
       xiThermalProjectiveColdPartition_le_source_exp_of_halfPlaneBound
-        halpha hzeros k
+        hzeros k
   · rintro ⟨C, hC⟩
     exact xiZeroHalfPlaneBound_of_eventually_thermalProjectiveColdPartition_le
-      halpha hC
+      hC
 
 /-- **Bounded cold-partition RH criterion.**  RH is equivalent to eventual boundedness of one
 positive faithful zero-temperature partition function. -/
@@ -627,7 +634,7 @@ theorem riemannHypothesis_iff_exists_eventually_bounded_thermalProjectiveColdPar
       norm_num
     have hbound :=
       xiThermalProjectiveColdPartition_le_source_exp_of_halfPlaneBound
-        (le_refl 0) hzeros k
+        hzeros k
     simpa using hbound
   · rintro ⟨C, hC⟩
     have hColdScaled : ∀ᶠ k : ℕ in atTop,
@@ -636,7 +643,7 @@ theorem riemannHypothesis_iff_exists_eventually_bounded_thermalProjectiveColdPar
       simpa using hC
     have hzeros :=
       xiZeroHalfPlaneBound_of_eventually_thermalProjectiveColdPartition_le
-        (le_refl 0) hColdScaled
+        hColdScaled
     rw [rh_iff_xi_ne_zero_right]
     intro rho hrho hzero
     have hbound := hzeros rho hzero

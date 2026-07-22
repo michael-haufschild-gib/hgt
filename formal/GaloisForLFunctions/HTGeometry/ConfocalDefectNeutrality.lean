@@ -18,7 +18,7 @@ noncomputable section
 /-- On a radius-`M` disk and beyond the radial threshold, the confocal defect is linearly
 controlled by the transverse defect. -/
 theorem confocalDefect_le_scale_mul_transverseDefect
-    {M R : ℝ} (hM : 0 ≤ M) (hRM : M < R) {z : ℂ} (hz : ‖z‖ ≤ M) :
+    {M R : ℝ} (hRM : M < R) {z : ℂ} (hz : ‖z‖ ≤ M) :
     confocalDefect R z ≤ R / (R - M) * transverseDefect z := by
   let x : ℝ := z.re
   let y : ℝ := z.im
@@ -96,7 +96,7 @@ theorem confocalDefect_le_scale_mul_transverseDefect
 at every fixed scale beyond the source radius. -/
 theorem tendsto_confocalDefect_cofinite_zero_of_transverseDefect
     {I : Type*} {z : I → ℂ} {M R : ℝ}
-    (hM : 0 ≤ M) (hRM : M < R) (hbound : ∀ i, ‖z i‖ ≤ M)
+    (hRM : M < R) (hbound : ∀ i, ‖z i‖ ≤ M)
     (htrans : Tendsto (fun i => transverseDefect (z i)) cofinite (nhds 0)) :
     Tendsto (fun i => confocalDefect R (z i)) cofinite (nhds 0) := by
   have hscale : Tendsto
@@ -106,7 +106,7 @@ theorem tendsto_confocalDefect_cofinite_zero_of_transverseDefect
   exact squeeze_zero'
     (Eventually.of_forall fun i => confocalDefect_nonneg (z i))
     (Eventually.of_forall fun i =>
-      confocalDefect_le_scale_mul_transverseDefect hM hRM (hbound i))
+      confocalDefect_le_scale_mul_transverseDefect hRM (hbound i))
     hscale
 
 /-- The threshold `R>M` is optimal uniformly over the positively oriented source class.  Below

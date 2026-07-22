@@ -178,7 +178,7 @@ private theorem bddAbove_confocalNullFunctional_image
     {S : Set (ℝ × ℝ)} {M lambda : ℝ}
     (hcone : S ⊆ confocalLorentzCone)
     (hbound : ∀ q ∈ S, q.2 ≤ M)
-    (_hlambda0 : 0 ≤ lambda) (hlambda1 : lambda ≤ 1) :
+    (hlambda1 : lambda ≤ 1) :
     BddAbove (confocalNullFunctional (lambda := lambda) '' S) := by
   refine ⟨2 * max M 0, ?_⟩
   rintro _ ⟨q, hqS, rfl⟩
@@ -199,24 +199,23 @@ theorem isLUB_confocalNullSupport
     {S : Set (ℝ × ℝ)} (hne : S.Nonempty) {M lambda : ℝ}
     (hcone : S ⊆ confocalLorentzCone)
     (hbound : ∀ q ∈ S, q.2 ≤ M)
-    (hlambda0 : 0 ≤ lambda) (hlambda1 : lambda ≤ 1) :
+    (hlambda1 : lambda ≤ 1) :
     IsLUB (confocalNullFunctional (lambda := lambda) '' S)
       (confocalNullSupport S lambda) := by
   exact isLUB_csSup (hne.image _) <|
-    bddAbove_confocalNullFunctional_image hcone hbound hlambda0 hlambda1
+    bddAbove_confocalNullFunctional_image hcone hbound hlambda1
 
-/-- Ordinary null support is Lipschitz, with constant twice the source radius. -/
+/-- Ordinary null support is Lipschitz, with constant twice the source radius, throughout the
+entire upper parameter half-line `lambda ≤ 1`. -/
 theorem confocalNullSupport_lipschitz
     {S : Set (ℝ × ℝ)} (hne : S.Nonempty) {M lambda mu : ℝ}
-    (_hM : 0 ≤ M)
     (hcone : S ⊆ confocalLorentzCone)
     (hbound : ∀ q ∈ S, q.2 ≤ M)
-    (hlambda0 : 0 ≤ lambda) (hlambda1 : lambda ≤ 1)
-    (hmu0 : 0 ≤ mu) (hmu1 : mu ≤ 1) :
+    (hlambda1 : lambda ≤ 1) (hmu1 : mu ≤ 1) :
     |confocalNullSupport S lambda - confocalNullSupport S mu| ≤
       2 * M * |lambda - mu| := by
-  have hLlambda := isLUB_confocalNullSupport hne hcone hbound hlambda0 hlambda1
-  have hLmu := isLUB_confocalNullSupport hne hcone hbound hmu0 hmu1
+  have hLlambda := isLUB_confocalNullSupport hne hcone hbound hlambda1
+  have hLmu := isLUB_confocalNullSupport hne hcone hbound hmu1
   have hforward : confocalNullSupport S lambda ≤
       confocalNullSupport S mu + 2 * M * |lambda - mu| := by
     apply hLlambda.2
@@ -285,12 +284,10 @@ theorem confocalNullSupportOperator_contraction
     (hd : 0 ≤ d) (he : 0 ≤ e) :
     |confocalNullSupportOperator S R d - confocalNullSupportOperator S R e| ≤
       (M / R) * |d - e| := by
-  have hlambda0 := confocalProjectiveParameter_nonneg hR hd
   have hlambda1 := confocalProjectiveParameter_le_one hR hd
-  have hmu0 := confocalProjectiveParameter_nonneg hR he
   have hmu1 := confocalProjectiveParameter_le_one hR he
-  have hsupp := confocalNullSupport_lipschitz hne hM hcone hbound
-    hlambda0 hlambda1 hmu0 hmu1
+  have hsupp := confocalNullSupport_lipschitz hne hcone hbound
+    hlambda1 hmu1
   have hparam := confocalProjectiveParameter_lipschitz hR hd he
   rw [confocalNullSupportOperator]
   calc
@@ -319,7 +316,6 @@ theorem confocalEnvelopeDefect_eq_nullSupport_fixedPoint
     (le_liftedConfocalBranch_of_snd_lt_radius (hcone hq0) (hqR q0 hq0)).trans
       (hG.1 ⟨q0, hq0, rfl⟩)
   have hD0 : 0 ≤ G - R := sub_nonneg.mpr hGR
-  have hlambda0 := confocalProjectiveParameter_nonneg hR hD0
   have hlambda1 := confocalProjectiveParameter_le_one hR hD0
   have hnullLUB : IsLUB
       (confocalNullFunctional
@@ -364,7 +360,7 @@ theorem confocalEnvelopeDefect_eq_nullSupport_fixedPoint
   rw [confocalNullSupportOperator]
   exact hnullLUB.unique
     (isLUB_confocalNullSupport (Set.nonempty_def.mpr ⟨q0, hq0⟩)
-      hcone hbound hlambda0 hlambda1)
+      hcone hbound hlambda1)
 
 /-- The projective null-support equation has at most one nonnegative solution outside the source
 radius. -/
@@ -480,7 +476,7 @@ theorem confocalEnvelopeDefect_eq_zero_iff_positiveNullRay
       rw [hzero, confocalNullSupportOperator, confocalProjectiveParameter] at hfix
       simpa using hfix.symm
     have hLUB := isLUB_confocalNullSupport hne hcone hbound (lambda := 0)
-      (by norm_num) (by norm_num)
+      (by norm_num)
     have hle : confocalNullFunctional q 0 ≤ 0 := by
       have hqle : confocalNullFunctional q 0 ≤ confocalNullSupport S 0 :=
         hLUB.1 ⟨q, hqS, rfl⟩
@@ -642,17 +638,17 @@ theorem confocalRadiusFromProjective_projectiveParameter
   field_simp [hden.ne', hd.ne']
   ring
 
-/-- The null support field is monotone in its projective direction. -/
+/-- The null support field is monotone in its projective direction whenever the larger parameter is
+at most one; no lower bound on either parameter is needed. -/
 theorem confocalNullSupport_mono
     {S : Set (ℝ × ℝ)} (hne : S.Nonempty) {M lambda mu : ℝ}
     (hcone : S ⊆ confocalLorentzCone)
     (hbound : ∀ q ∈ S, q.2 ≤ M)
-    (hlambda0 : 0 ≤ lambda) (hlambdaMu : lambda ≤ mu) (hmu1 : mu ≤ 1) :
+    (hlambdaMu : lambda ≤ mu) (hmu1 : mu ≤ 1) :
     confocalNullSupport S lambda ≤ confocalNullSupport S mu := by
-  have hmu0 : 0 ≤ mu := hlambda0.trans hlambdaMu
   have hlambda1 : lambda ≤ 1 := hlambdaMu.trans hmu1
-  have hLlambda := isLUB_confocalNullSupport hne hcone hbound hlambda0 hlambda1
-  have hLmu := isLUB_confocalNullSupport hne hcone hbound hmu0 hmu1
+  have hLlambda := isLUB_confocalNullSupport hne hcone hbound hlambda1
+  have hLmu := isLUB_confocalNullSupport hne hcone hbound hmu1
   apply hLlambda.2
   rintro _ ⟨q, hqS, rfl⟩
   have hv0 := confocalNullPlus_nonneg (hcone hqS)
@@ -712,7 +708,7 @@ theorem confocalExteriorDefectGraph_eq_projectiveSupportGraph
     have hsupport : d = confocalNullSupport S lambda := by
       simpa only [d, lambda, confocalNullSupportOperator] using hfixed.2
     have hsupport0le : confocalNullSupport S 0 ≤ confocalNullSupport S lambda :=
-      confocalNullSupport_mono hne hcone hbound (by norm_num) hlambda0 hlambda1le
+      confocalNullSupport_mono hne hcone hbound hlambda0 hlambda1le
     have hd : 0 < d := by
       rw [hsupport]
       exact hnonradical.trans_le hsupport0le
@@ -775,11 +771,11 @@ theorem confocalNullSupportRadius_injective_on_exterior
     lambda = mu := by
   have hsupportLambda : 0 < confocalNullSupport S lambda := by
     have hmono := confocalNullSupport_mono hne hcone hbound
-      (show 0 ≤ (0 : ℝ) by norm_num) hlambda0.le hlambda1.le
+      hlambda0.le hlambda1.le
     exact hnonradical.trans_le hmono
   have hsupportMu : 0 < confocalNullSupport S mu := by
     have hmono := confocalNullSupport_mono hne hcone hbound
-      (show 0 ≤ (0 : ℝ) by norm_num) hmu0.le hmu1.le
+      hmu0.le hmu1.le
     exact hnonradical.trans_le hmono
   have hGraph := confocalExteriorDefectGraph_eq_projectiveSupportGraph
     hne hM hcone hbound hG hnonradical
@@ -870,7 +866,7 @@ theorem complexConfocalDefectEnvelope_eq_iff_nullSupport_fixedPoint
     rintro _ ⟨z, hz, rfl⟩
     exact hbound z hz
   have hfield := isConfocalEnvelopeOn_confocalLorentzLift_image
-    hne hM hbound (D := {R}) (by
+    hne hbound (D := {R}) (by
       intro r hr
       rw [Set.mem_singleton_iff] at hr
       subst r

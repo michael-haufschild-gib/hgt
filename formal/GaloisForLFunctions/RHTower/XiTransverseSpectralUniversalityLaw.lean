@@ -86,8 +86,7 @@ theorem hedenmalmGaussianHankelTailCone_iff_transverseUniversalCertificate
       (all_xiZeros_re_le_iff_negativeChannelSpectrum
         hL halpha.le hN hsplit).1 hzeros
     have hmoments :=
-      (xiZeroHalfPlaneBound_iff_forall_thermalProjectiveMoment_le
-        halpha.le).1 hzeros
+      xiZeroHalfPlaneBound_iff_forall_thermalProjectiveMoment_le.1 hzeros
     refine ⟨htail,
       (xiZeroHalfPlaneBound_iff_inverseTiltedDyadicSourceAnalyticAbove
         halpha.le).1 hzeros,
@@ -120,8 +119,7 @@ theorem hedenmalmGaussianHankelTailCone_iff_transverseUniversalCertificate
       hmoments,
       (xiZeroHalfPlaneBound_iff_exists_eventually_thermalProjectiveMoment_le
         halpha).1 hzeros,
-      (xiZeroHalfPlaneBound_iff_exists_eventually_thermalProjectiveColdPartition_le
-        halpha.le).1 hzeros⟩
+      xiZeroHalfPlaneBound_iff_exists_eventually_thermalProjectiveColdPartition_le.1 hzeros⟩
   · intro hcertificate
     apply (hedenmalmGaussianHankelTailCone_iff_xiZeroHalfPlaneBound
       htau halpha.le).2

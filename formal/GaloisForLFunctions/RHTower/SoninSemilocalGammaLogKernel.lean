@@ -23,8 +23,9 @@ theorem norm_semilocalGammaLogKernel (a x : ℝ) :
   unfold semilocalGammaLogKernel
   exact Complex.norm_of_nonneg (by positivity)
 
+/-- Dropping the superexponential factor gives a global exponential majorant. -/
 theorem norm_semilocalGammaLogKernel_le_of_nonneg
-    {a x : ℝ} (_hx : 0 ≤ x) :
+    {a x : ℝ} :
     ‖semilocalGammaLogKernel a x‖ ≤ Real.exp (-a * x) := by
   rw [norm_semilocalGammaLogKernel]
   have hfactor : Real.exp (-Real.exp (-x)) ≤ 1 := by
@@ -66,7 +67,7 @@ theorem integrable_semilocalGammaLogKernel
   have hright : IntegrableOn (semilocalGammaLogKernel a) (Ioi 0) := by
     refine hrightMajorant.mono' (hmeas.mono_measure Measure.restrict_le_self) ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-    exact norm_semilocalGammaLogKernel_le_of_nonneg hx.le
+    exact norm_semilocalGammaLogKernel_le_of_nonneg
   rw [← integrableOn_univ, ← Iic_union_Ioi (a := (0 : ℝ))]
   exact hleft.union hright
 

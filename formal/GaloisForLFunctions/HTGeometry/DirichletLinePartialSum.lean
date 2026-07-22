@@ -66,7 +66,7 @@ theorem norm_gpow (α : ℝ) {x : ℝ} (hx : 0 < x) : ‖gpow α x‖ = x⁻¹ :
     simp [Complex.mul_re, Complex.add_re, Complex.add_im]
   rw [hre, Real.exp_neg, Real.exp_log hx]
 
-theorem norm_Gpow (α : ℝ) (_hα : α ≠ 0) {x : ℝ} (_hx : 0 < x) : ‖Gpow α x‖ = |α|⁻¹ := by
+theorem norm_Gpow (α : ℝ) {x : ℝ} : ‖Gpow α x‖ = |α|⁻¹ := by
   rw [Gpow, norm_div, Complex.norm_exp]
   have hre : (((α:ℂ) * Complex.I) * (Real.log x : ℂ)).re = 0 := by
     simp [Complex.mul_re]
@@ -114,7 +114,9 @@ theorem gpow_diff_le (α : ℝ) {k x : ℝ} (hk : 1 ≤ k) (hx : x ∈ Set.Icc k
   calc C * ‖x - k‖ ≤ C * 1 := by apply mul_le_mul_of_nonneg_left hxk; rw [hC]; positivity
     _ = C := mul_one C
 
-theorem corr_bound (α : ℝ) (_hα : α ≠ 0) {k : ℝ} (hk : 1 ≤ k) :
+/-- The one-step Euler--Maclaurin correction bound holds at every real frequency, including the
+zero-frequency harmonic kernel. -/
+theorem corr_bound (α : ℝ) {k : ℝ} (hk : 1 ≤ k) :
     ‖gpow α k - ∫ x in k..(k+1), gpow α x‖ ≤ ‖(-1 + α * Complex.I)‖ / k ^ 2 := by
   have hk0 : (0:ℝ) < k := by linarith
   have hkk1 : k ≤ k + 1 := by linarith
@@ -162,7 +164,7 @@ theorem dirichlet_line_partialSum_bounded (α : ℝ) (hα : α ≠ 0) :
   refine le_trans (norm_add_le _ _) ?_
   have hG1 : ‖Gpow α ((N:ℝ)+1) - Gpow α 1‖ ≤ 2 * |α|⁻¹ := by
     refine le_trans (norm_sub_le _ _) ?_
-    rw [norm_Gpow α hα (by positivity : (0:ℝ) < (N:ℝ)+1), norm_Gpow α hα (by norm_num : (0:ℝ)<1)]
+    rw [norm_Gpow α, norm_Gpow α]
     linarith
   have hcorr : ‖∑ n ∈ Finset.range N,
         (gpow α ((n:ℝ)+1) - (Gpow α ((n:ℝ)+1+1) - Gpow α ((n:ℝ)+1)))‖
@@ -174,7 +176,7 @@ theorem dirichlet_line_partialSum_bounded (α : ℝ) (hα : α ≠ 0) :
       apply Finset.sum_le_sum
       intro n _
       have hk : (1:ℝ) ≤ (n:ℝ)+1 := le_add_of_nonneg_left (Nat.cast_nonneg n)
-      have hcb := corr_bound α hα hk
+      have hcb := corr_bound α hk
       rw [integral_gpow α hα (by positivity : (0:ℝ) < (n:ℝ)+1) (by linarith)] at hcb
       exact hcb
     exact le_trans hstep

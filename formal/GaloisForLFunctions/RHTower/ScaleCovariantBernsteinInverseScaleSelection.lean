@@ -157,7 +157,7 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket_of_neutral_amplitude
     · exact le_csSup hbdd hBmem
   have hconfocal :=
     HTGeometry.sSup_affineAmplitude_eq_confocalAmplitudeEnvelope
-      (S := Set.range z) ⟨z i0, ⟨i0, rfl⟩⟩ hM hRpos
+      (S := Set.range z) ⟨z i0, ⟨i0, rfl⟩⟩ hRpos
       (by rintro w ⟨i, rfl⟩; exact hbound i)
   have hBconf : B = HTGeometry.confocalAmplitudeEnvelope (Set.range z) R := by
     rw [← hconfocal]
@@ -229,7 +229,7 @@ theorem exists_positive_halfOrder_inverseScaleAtomicPacket_of_transverse_neutral
         atTop (nhds L) := by
   have hRpos : 0 < R := hM.trans_lt hR
   have hconf := HTGeometry.tendsto_confocalDefect_cofinite_zero_of_transverseDefect
-    hM hR hbound htrans
+    hR hbound htrans
   have hscaled : Tendsto
       (fun i => HTGeometry.confocalDefect R (z i) / R)
       cofinite (nhds 0) := by

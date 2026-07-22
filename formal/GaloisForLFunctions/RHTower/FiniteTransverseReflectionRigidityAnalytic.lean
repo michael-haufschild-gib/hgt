@@ -163,7 +163,7 @@ lower-flank trace is a finite sum of shift eigenfunctions with eigenvalues `ω^n
 multiplicative order, `n ∈ S`) and which is bounded on the lower flank is constant. -/
 theorem finiteTransverse_reflection_rigidity
     {G : ℂ → ℂ} (hG : Differentiable ℂ G) (hEven : ∀ z, G (-z) = G z)
-    {T w : ℝ} (hT : 0 < T) (hw : 0 < w)
+    {T w : ℝ} (hT : 0 < T)
     {ω : ℂ} (hω0 : ω ≠ 0) (hωinf : ∀ k : ℕ, 0 < k → ω ^ k ≠ 1)
     {S : Finset ℕ} {Gn : ℕ → ℂ → ℂ}
     (hslice : ∀ z, z.im ≤ -w → G z = ∑ n ∈ S, Gn n z)
@@ -213,7 +213,7 @@ theorem finiteTransverse_reflection_rigidity
         (forward_reflected_phase_residual_isCoprime hω0 hωinf S) hfwd hrev
     have hper : Function.Periodic G (T : ℂ) := by
       intro z; have := congrFun hfix z; rwa [shiftEnd_apply] at this
-    exact even_periodic_flankBounded_const hT hw hG (fun z => (hEven z).symm) hper hbound
+    exact even_periodic_flankBounded_const hT hG (fun z => (hEven z).symm) hper hbound
   · rw [fullPhase_eq h0] at hfwd
     rw [fullPhaseInv_eq h0] at hrev
     have hG0 : (G : ℂ → ℂ) = 0 :=

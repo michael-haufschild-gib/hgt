@@ -116,10 +116,10 @@ theorem mirror_line_integral_iff {a a' b : ℕ} (ha : 1 ≤ a) (ha' : 1 ≤ a') 
 
 /-! ### §4 A multiplicative column quantizes every integral zero-line -/
 
-/-- **Column factorizations are prime-power splits.**  Every factorization `a·a′ = p^k` has
-`a = p^i` and `a′ = p^{k−i}` for some `i ≤ k`: divisors of a prime power are prime powers, and the
-cofactor is fixed by cancellation. -/
-theorem column_quantization {p : ℕ} (hp : p.Prime) {k : ℕ} (_hk : 0 < k) {a a' : ℕ}
+/-- **Column factorizations are prime-power splits.**  Every factorization `a·a′ = p^k`, including
+the degenerate column `k = 0`, has `a = p^i` and `a′ = p^{k−i}` for some `i ≤ k`: divisors of a
+prime power are prime powers, and the cofactor is fixed by cancellation. -/
+theorem column_quantization {p : ℕ} (hp : p.Prime) {k : ℕ} {a a' : ℕ}
     (ha : a * a' = p ^ k) : ∃ i ≤ k, a = p ^ i ∧ a' = p ^ (k - i) := by
   obtain ⟨i, hik, hai⟩ := (Nat.dvd_prime_pow hp).mp ⟨a', ha.symm⟩
   refine ⟨i, hik, hai, ?_⟩
@@ -135,8 +135,9 @@ theorem column_lines_quantized {p : ℕ} (hp : p.Prime) (i k : ℕ) :
   have hlp : Real.log (p : ℝ) ≠ 0 := ne_of_gt (Real.log_pos (by exact_mod_cast hp.one_lt))
   rw [Real.log_pow, Real.log_pow, mul_div_mul_right _ _ hlp]
 
-/-- **The critical line is the unique self-dual quantized line.**  `i/k = 1 − i/k ↔ 2i = k`. -/
-theorem selfdual_iff_half {k i : ℕ} (hk : 0 < k) (_hik : i ≤ k) :
+/-- **The critical line is the unique self-dual quantized line.**  For every positive denominator,
+`i/k = 1 − i/k ↔ 2i = k`; no separate range condition on `i` is needed. -/
+theorem selfdual_iff_half {k i : ℕ} (hk : 0 < k) :
     (i : ℝ) / k = 1 - (i : ℝ) / k ↔ 2 * i = k := by
   have hkR : (k : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hk.ne'
   constructor

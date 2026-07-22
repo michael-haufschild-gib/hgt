@@ -50,7 +50,7 @@ theorem semilocalArchimedeanCharacteristic_pos (t : ℝ) :
     0 < semilocalArchimedeanCharacteristic t :=
   Real.rpow_pos_of_pos (Real.cosh_pos t) (-(1 : ℝ) / 2)
 
-theorem tanh_even_pow_pos {k : ℕ} (_hk : 0 < k) {t : ℝ} (ht : t ≠ 0) :
+theorem tanh_even_pow_pos {k : ℕ} {t : ℝ} (ht : t ≠ 0) :
     0 < Real.tanh t ^ (2 * k) := by
   have htanh : Real.tanh t ≠ 0 := by
     rw [Real.tanh_eq_sinh_div_cosh]
@@ -60,9 +60,9 @@ theorem tanh_even_pow_pos {k : ℕ} (_hk : 0 < k) {t : ℝ} (ht : t ≠ 0) :
   rw [pow_mul]
   exact pow_pos (sq_pos_of_ne_zero htanh) k
 
-/-- Every nonzero frequency has the rigid sign `(-1)^k` at positive even degree `2k`. -/
+/-- Every nonzero frequency has the rigid sign `(-1)^k` at every even degree `2k`. -/
 theorem semilocalArchimedeanEvenJacobiKernel_signed_pos
-    {k : ℕ} (hk : 0 < k) {t : ℝ} (ht : t ≠ 0) :
+    {k : ℕ} {t : ℝ} (ht : t ≠ 0) :
     0 < (-1 : ℝ) ^ k * semilocalArchimedeanEvenJacobiKernel k t := by
   have hsign : (-1 : ℝ) ^ k * (-1 : ℝ) ^ k = 1 := by
     rw [← pow_add, ← two_mul, pow_mul]
@@ -74,7 +74,7 @@ theorem semilocalArchimedeanEvenJacobiKernel_signed_pos
       mul_pos
         (mul_pos (semilocalArchimedeanJacobiNormalization_pos _)
           (semilocalArchimedeanCharacteristic_pos t))
-        (tanh_even_pow_pos hk ht)
+        (tanh_even_pow_pos ht)
     _ = (-1 : ℝ) ^ k *
         (((-1 : ℝ) ^ k * semilocalArchimedeanJacobiNormalization (2 * k) *
           semilocalArchimedeanCharacteristic t * Real.tanh t ^ (2 * k))) := by
@@ -92,7 +92,7 @@ theorem semilocalArchimedeanEvenJacobiKernel_signed_pos
 
 /-- A nonempty positive packet of nonzero frequencies retains the same strict alternating sign. -/
 theorem semilocalArchimedeanEvenJacobiKernel_weightedPacket_signed_pos
-    {ι : Type*} {k : ℕ} (hk : 0 < k) (s : Finset ι) (hs : s.Nonempty)
+    {ι : Type*} {k : ℕ} (s : Finset ι) (hs : s.Nonempty)
     (weight frequency : ι → ℝ)
     (hweight : ∀ i ∈ s, 0 < weight i)
     (hfrequency : ∀ i ∈ s, frequency i ≠ 0) :
@@ -101,7 +101,8 @@ theorem semilocalArchimedeanEvenJacobiKernel_weightedPacket_signed_pos
   rw [Finset.mul_sum]
   apply Finset.sum_pos
   · intro i hi
-    have hkernel := semilocalArchimedeanEvenJacobiKernel_signed_pos hk (hfrequency i hi)
+    have hkernel :=
+      semilocalArchimedeanEvenJacobiKernel_signed_pos (k := k) (hfrequency i hi)
     calc
       0 < weight i *
           ((-1 : ℝ) ^ k * semilocalArchimedeanEvenJacobiKernel k (frequency i)) :=
@@ -113,7 +114,7 @@ theorem semilocalArchimedeanEvenJacobiKernel_weightedPacket_signed_pos
 /-- Summable positive packets retain the strict all-even sign.  This is the limit theorem used
 after the absolutely convergent semilocal Poisson expansion. -/
 theorem semilocalArchimedeanEvenJacobiKernel_weightedSeries_signed_pos
-    {ι : Type*} [Nonempty ι] {k : ℕ} (hk : 0 < k)
+    {ι : Type*} [Nonempty ι] {k : ℕ}
     (weight frequency : ι → ℝ)
     (hweight : ∀ i, 0 < weight i) (hfrequency : ∀ i, frequency i ≠ 0)
     (hsummable : Summable fun i =>
@@ -124,7 +125,8 @@ theorem semilocalArchimedeanEvenJacobiKernel_weightedSeries_signed_pos
   have hterm (i : ι) :
       0 < (-1 : ℝ) ^ k *
         (weight i * semilocalArchimedeanEvenJacobiKernel k (frequency i)) := by
-    have hkernel := semilocalArchimedeanEvenJacobiKernel_signed_pos hk (hfrequency i)
+    have hkernel :=
+      semilocalArchimedeanEvenJacobiKernel_signed_pos (k := k) (hfrequency i)
     calc
       0 < weight i *
           ((-1 : ℝ) ^ k * semilocalArchimedeanEvenJacobiKernel k (frequency i)) :=
@@ -160,7 +162,7 @@ theorem finitePrimeLogFrequency_ne_zero
 all-even alternating sign law.  The infinite Poisson expansion is obtained by summable passage
 from these packets. -/
 theorem finitePrimePoissonPacket_evenJacobi_signed_pos
-    {ι : Type*} {n k : ℕ} (hk : 0 < k)
+    {ι : Type*} {n k : ℕ}
     (p : Fin n → ℕ) (hp : Function.Injective p) (hprime : ∀ i, (p i).Prime)
     (packet : ι → Fin n → ℤ) (s : Finset ι) (hs : s.Nonempty)
     (hpacket : ∀ j ∈ s, ∃ i, packet j i ≠ 0)
@@ -168,7 +170,7 @@ theorem finitePrimePoissonPacket_evenJacobi_signed_pos
     0 < (-1 : ℝ) ^ k * ∑ j ∈ s, weight j *
       semilocalArchimedeanEvenJacobiKernel k
         (∑ i, (packet j i : ℝ) * Real.log (p i)) := by
-  exact semilocalArchimedeanEvenJacobiKernel_weightedPacket_signed_pos hk s hs weight
+  exact semilocalArchimedeanEvenJacobiKernel_weightedPacket_signed_pos s hs weight
     (fun j ↦ ∑ i, (packet j i : ℝ) * Real.log (p i)) hweight
     (fun j hj ↦ finitePrimeLogFrequency_ne_zero p hp hprime (packet j) (hpacket j hj))
 
@@ -353,11 +355,11 @@ def semilocalFinitePrimeEvenJacobiNumerator
 
 /-- Every nonempty finite set of distinct primes has the strict all-even alternating residue sign. -/
 theorem semilocalFinitePrimeEvenJacobiNumerator_signed_pos
-    {n k : ℕ} (hk : 0 < k)
+    {n k : ℕ}
     (p : Fin (n + 1) → ℕ) (hp : Function.Injective p)
     (hprime : ∀ i, (p i).Prime) :
     0 < (-1 : ℝ) ^ k * semilocalFinitePrimeEvenJacobiNumerator k p := by
-  exact semilocalArchimedeanEvenJacobiKernel_weightedSeries_signed_pos hk
+  exact semilocalArchimedeanEvenJacobiKernel_weightedSeries_signed_pos
     (fun m : SemilocalNonzeroPrimePacket n =>
       semilocalFinitePrimePoissonWeight p m.1)
     (fun m : SemilocalNonzeroPrimePacket n =>
@@ -414,16 +416,16 @@ def semilocalFinitePrimeEvenJacobiMoment
     semilocalFinitePrimePoissonMass p
 
 /-- **Normalized all-even semilocal Jacobi tower.**  Every nonempty finite family of distinct
-primes gives a nonzero ground-state component in every positive even archimedean mode, with sign
-`(-1)^k`. -/
+primes gives a nonzero ground-state component in every even archimedean mode, including degree
+zero, with sign `(-1)^k`. -/
 theorem semilocalFinitePrimeEvenJacobiMoment_signed_pos
-    {n k : ℕ} (hk : 0 < k)
+    {n k : ℕ}
     (p : Fin (n + 1) → ℕ) (hp : Function.Injective p)
     (hprime : ∀ i, (p i).Prime) :
     0 < (-1 : ℝ) ^ k * semilocalFinitePrimeEvenJacobiMoment k p := by
   rw [semilocalFinitePrimeEvenJacobiMoment]
   rw [← mul_div_assoc]
-  exact div_pos (semilocalFinitePrimeEvenJacobiNumerator_signed_pos hk p hp hprime)
+  exact div_pos (semilocalFinitePrimeEvenJacobiNumerator_signed_pos p hp hprime)
     (semilocalFinitePrimePoissonMass_pos p hprime)
 
 /-- Ground-state row of the number-operator naturality defect. -/
@@ -437,7 +439,7 @@ theorem semilocalFinitePrimeGradingGroundDefect_signed_pos
     (p : Fin (n + 1) → ℕ) (hp : Function.Injective p)
     (hprime : ∀ i, (p i).Prime) :
     0 < (-1 : ℝ) ^ (k + 1) * semilocalFinitePrimeGradingGroundDefect k p := by
-  have hmom := semilocalFinitePrimeEvenJacobiMoment_signed_pos hk p hp hprime
+  have hmom := semilocalFinitePrimeEvenJacobiMoment_signed_pos (k := k) p hp hprime
   rw [semilocalFinitePrimeGradingGroundDefect, pow_succ]
   calc
     (-1 : ℝ) ^ k * -1 *

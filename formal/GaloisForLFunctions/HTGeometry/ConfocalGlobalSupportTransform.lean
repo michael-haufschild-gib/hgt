@@ -135,10 +135,9 @@ theorem confocalEnvelopeDefect_eq_nullSupport_fixedPoint_global
     (le_liftedConfocalBranch (hcone hq0) R).trans
       (hG.1 ⟨q0, hq0, rfl⟩)
   have hD0 : 0 ≤ G - R := sub_nonneg.mpr hRG
-  have hlambda0 := confocalProjectiveParameter_nonneg hR hD0
   have hlambda1 := confocalProjectiveParameter_le_one hR hD0
   have hnullLUB := isLUB_confocalNullSupport
-    (Set.nonempty_def.mpr ⟨q0, hq0⟩) hcone hbound hlambda0 hlambda1
+    (Set.nonempty_def.mpr ⟨q0, hq0⟩) hcone hbound hlambda1
   have hsupport_le :
       confocalNullSupport S (confocalProjectiveParameter R (G - R)) ≤ G - R := by
     apply hnullLUB.2
@@ -267,8 +266,8 @@ theorem confocalNullSupportRadius_strictAnti_of_support_pos
   have hmu0 : 0 < mu := hlambda0.trans hlambdaMu
   have hlambda1 : lambda < 1 := hlambdaMu.trans hmu1
   have hLlambda := isLUB_confocalNullSupport hne hcone hbound
-    hlambda0.le hlambda1.le
-  have hLmu := isLUB_confocalNullSupport hne hcone hbound hmu0.le hmu1.le
+    hlambda1.le
+  have hLmu := isLUB_confocalNullSupport hne hcone hbound hmu1.le
   let cMu := (1 - mu) / (2 * mu)
   let delta := (mu - lambda) / 2
   let cLambda := (1 - lambda) / (2 * lambda)
@@ -397,7 +396,6 @@ theorem confocalPositiveFixedPoint_eq_envelopeDefect_global
     have hsupportE :
         confocalNullSupport S (confocalProjectiveParameter R e) ≤ e := by
       have hL := isLUB_confocalNullSupport hne hcone hbound
-        (confocalProjectiveParameter_nonneg hR he0.le)
         (confocalProjectiveParameter_le_one hR he0.le)
       apply hL.2
       rintro _ ⟨q, hqS, rfl⟩
@@ -548,7 +546,7 @@ theorem confocalNullSupport_zero_iff_forall_nullMinus_zero
     confocalNullSupport S 0 = 0 ↔
       ∀ q ∈ S, confocalNullMinus q = 0 := by
   have hL0 := isLUB_confocalNullSupport hne hcone hbound
-    (lambda := 0) (by norm_num) (by norm_num)
+    (lambda := 0) (by norm_num)
   constructor
   · intro hsupport q hqS
     have hle : confocalNullMinus q ≤ 0 := by
@@ -599,9 +597,9 @@ theorem confocalNullSupport_eq_mul_one_of_zero
   rcases hlambda0.eq_or_lt with rfl | hlambdaPos
   · simpa only [zero_mul] using hsupport0
   · have hLlambda := isLUB_confocalNullSupport hne hcone hbound
-      hlambdaPos.le hlambda1
+      hlambda1
     have hLone := isLUB_confocalNullSupport hne hcone hbound
-      (lambda := 1) (by norm_num) (by norm_num)
+      (lambda := 1) (by norm_num)
     have hcandidate :
         IsLUB (confocalNullFunctional (lambda := lambda) '' S)
           (lambda * confocalNullSupport S 1) := by
@@ -732,7 +730,6 @@ theorem confocalGlobalDefect_pos_of_nullSupport_zero_pos
   have hmono := confocalNullSupport_mono hne hcone hbound
     (lambda := 0)
     (mu := confocalProjectiveParameter R (confocalGlobalDefect S R))
-    (by norm_num)
     (confocalProjectiveParameter_nonneg hR hactual.1)
     (confocalProjectiveParameter_le_one hR hactual.1)
   have hsupportEq :

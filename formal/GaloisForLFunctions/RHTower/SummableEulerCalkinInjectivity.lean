@@ -122,7 +122,7 @@ theorem scaledEvenShellCutoff_summableDilationCombination_apply
     _ = c k • dilation (r k) (zero_lt_one.trans (hr k)) g := by
       have hk0 : 0 < r k := zero_lt_one.trans (hr k)
       rw [ContinuousLinearMap.smul_apply, dilationSum_apply, map_smul, map_add,
-        scaledEvenShellCutoff_target_inward hk0 ha hab m,
+        scaledEvenShellCutoff_target_inward hk0 hab m,
         scaledEvenShellCutoff_outward hk0 (hr k) ha hab hba m]
       rw [add_zero]
 

@@ -36,11 +36,11 @@ theorem gaussPairedChannel_exact_schattenDepth
   exact exact_schattenDepth_of_weak_of_positive_logResidue hdepth
     (gaussPairedChannelResidue_pos hm prime) hweak hres
 
-/-- Card-specialized form with exactly `m` distinct labeled prime channels. -/
+/-- Card-specialized form with exactly `m` labeled prime channels. Prime labels may repeat: exact
+Schatten depth uses positivity of each component residue, not label injectivity. -/
 theorem gaussPairedFinChannel_exact_schattenDepth
     {m : ℕ} (hm : 1 ≤ m) (prime : Fin m → Nat.Primes)
-    (_hprime : Function.Injective prime) {T : H →L[ℂ] H}
-    (hweak : MemWeakSchattenClass ((2 * m : ℕ) : ℝ) T)
+    {T : H →L[ℂ] H} (hweak : MemWeakSchattenClass ((2 * m : ℕ) : ℝ) T)
     (hres : HasSchattenLogResidue ((2 * m : ℕ) : ℝ) T
       (gaussPairedChannelResidue m prime)) :
     (∀ q : ℝ, 0 < q → q ≤ (2 * m : ℕ) → ¬ MemSchattenClass q T) ∧
@@ -53,7 +53,6 @@ nonempty prime aperture cannot lie in any one fixed positive Schatten class. -/
 theorem exists_cutoff_not_memSchattenClass
     (T : ℕ → H →L[ℂ] H)
     (prime : ∀ N, Fin (Nat.primeCounting N) → Nat.Primes)
-    (_hprime : ∀ N, Function.Injective (prime N))
     (hweak : ∀ N, Nat.primeCounting N ≠ 0 →
       MemWeakSchattenClass ((gaussPairedCriticalDepth N : ℕ) : ℝ) (T N))
     (hres : ∀ N, Nat.primeCounting N ≠ 0 →

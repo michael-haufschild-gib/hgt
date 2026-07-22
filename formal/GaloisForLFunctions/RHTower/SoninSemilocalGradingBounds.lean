@@ -506,7 +506,7 @@ theorem semilocalOnePrimeEvenJacobiMagnitudeSeries_lower_of_matched
     _ ≤ semilocalOnePrimeEvenJacobiMagnitudeSeries k p := by
       unfold semilocalOnePrimeEvenJacobiMagnitudeSeries
       exact hs.le_tsum (M - 1) (fun m _ =>
-        (semilocalOnePrimeEvenJacobiMagnitudeTerm_pos hk hp m).le)
+        (semilocalOnePrimeEvenJacobiMagnitudeTerm_pos hp m).le)
 
 theorem semilocalOnePrimeEvenJacobiMagnitudeSeries_upper_at
     {k p M : ℕ} (hk : 0 < k) (hp : p.Prime) :
@@ -644,7 +644,7 @@ theorem semilocalOnePrimeEvenJacobiMagnitudeSeries_pow_four_bounds
     exact semilocalArchimedeanJacobiNormalization_pos _
   have hS : 0 < S := by
     dsimp [S]
-    exact semilocalOnePrimeEvenJacobiMagnitudeSeries_pos hk hp
+    exact semilocalOnePrimeEvenJacobiMagnitudeSeries_pos hp
   have hb : 0 < b := by dsimp [b]; positivity
   have hc4bounds :=
     semilocalArchimedeanJacobiNormalization_pow_four_bounds
@@ -734,7 +734,7 @@ theorem abs_semilocalOnePrimeEvenJacobiCoefficient_pow_four_bounds
   have hS := semilocalOnePrimeEvenJacobiMagnitudeSeries_pow_four_bounds hk hp
   have hS0 : 0 ≤ S := by
     dsimp [S]
-    exact (semilocalOnePrimeEvenJacobiMagnitudeSeries_pos hk hp).le
+    exact (semilocalOnePrimeEvenJacobiMagnitudeSeries_pos hp).le
   have hcoeff : |semilocalOnePrimeEvenJacobiCoefficient k p| = P * S := by
     dsimp [P, S]
     exact abs_semilocalOnePrimeEvenJacobiCoefficient_eq_magnitudeSeries hk hp

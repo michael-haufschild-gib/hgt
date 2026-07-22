@@ -182,7 +182,7 @@ edge is below the cutoff after scaling. -/
 theorem inwardDilatedEvenShell_mem_centralPhysicalForbidden_of_upper
     (a c d s : ℝ) (hc : 0 < c) (hcd : c < d) (hs : 0 < s)
     (hds : d < s * a) (m : ℕ) :
-    inwardDilatedEvenShell c d s hc hcd hs m ∈ centralPhysicalForbidden a := by
+    inwardDilatedEvenShell c d s hcd hs m ∈ centralPhysicalForbidden a := by
   rw [centralPhysicalForbidden]
   apply (physicalForbidden (Set.Icc (-a) a) measurableSet_Icc).starProjection_eq_self_iff.mp
   rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
@@ -199,21 +199,21 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_ratio_of_le
     Tendsto (fun m =>
       ‖(crossBoundary (centralSoninProjection a) (dilationSum q hq) :
           SoninL2 →L[ℂ] SoninL2)
-          (centralSoninProjection a (inverseDilatedEvenShell c d p hc hcd hp m)) -
-        inwardDilatedEvenShell c d (q / p) hc hcd
+          (centralSoninProjection a (inverseDilatedEvenShell c d p hcd hp m)) -
+        inwardDilatedEvenShell c d (q / p) hcd
           (div_pos (zero_lt_one.trans hq) (zero_lt_one.trans hp)) m‖)
       atTop (𝓝 0) := by
   let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
   let D : SoninL2 →L[ℂ] SoninL2 := dilationSum q hq
   let B : SoninL2 →L[ℂ] SoninL2 := 1 - Q
   let v : ℕ → SoninL2 := evenShellVector c d hcd
-  let g : ℕ → SoninL2 := inverseDilatedEvenShell c d p hc hcd hp
+  let g : ℕ → SoninL2 := inverseDilatedEvenShell c d p hcd hp
   let e : ℕ → SoninL2 := fun m => Q (g m)
   let t : ℕ → SoninL2 := fun m =>
-    inwardDilatedEvenShell c d (q / p) hc hcd
+    inwardDilatedEvenShell c d (q / p) hcd
       (div_pos (zero_lt_one.trans hq) (zero_lt_one.trans hp)) m
   have hpqOne : 1 < p * q := by nlinarith [hp, hq]
-  let w : ℕ → SoninL2 := inverseDilatedEvenShell c d (p * q) hc hcd hpqOne
+  let w : ℕ → SoninL2 := inverseDilatedEvenShell c d (p * q) hcd hpqOne
   have hgeNorm : Tendsto (fun m => ‖e m - g m‖) atTop (𝓝 0) := by
     simpa [e, g, Q] using
       centralSoninProjection_inverseDilatedEvenShell_tendsto
@@ -289,19 +289,19 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_zero_of_lt
     Tendsto (fun m =>
       ‖(crossBoundary (centralSoninProjection a) (dilationSum q hq) :
           SoninL2 →L[ℂ] SoninL2)
-          (centralSoninProjection a (inverseDilatedEvenShell c d p hc hcd hp m))‖)
+          (centralSoninProjection a (inverseDilatedEvenShell c d p hcd hp m))‖)
       atTop (𝓝 0) := by
   let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
   let D : SoninL2 →L[ℂ] SoninL2 := dilationSum q hq
   let B : SoninL2 →L[ℂ] SoninL2 := 1 - Q
-  let g : ℕ → SoninL2 := inverseDilatedEvenShell c d p hc hcd hp
+  let g : ℕ → SoninL2 := inverseDilatedEvenShell c d p hcd hp
   let e : ℕ → SoninL2 := fun m => Q (g m)
   have hpqRatio : 1 < p / q := by
     rw [one_lt_div (zero_lt_one.trans hq)]
     exact hqp
-  let t : ℕ → SoninL2 := inverseDilatedEvenShell c d (p / q) hc hcd hpqRatio
+  let t : ℕ → SoninL2 := inverseDilatedEvenShell c d (p / q) hcd hpqRatio
   have hpqOne : 1 < p * q := by nlinarith [hp, hq]
-  let w : ℕ → SoninL2 := inverseDilatedEvenShell c d (p * q) hc hcd hpqOne
+  let w : ℕ → SoninL2 := inverseDilatedEvenShell c d (p * q) hcd hpqOne
   have hgeNorm : Tendsto (fun m => ‖e m - g m‖) atTop (𝓝 0) := by
     have hapc : a < p * c := by
       have hq1 : 1 < q := hq
@@ -381,16 +381,16 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_zero_of_lt
 /-- The corrected inverse-dilated input associated with one scale. -/
 def finitePairedEvenSoninInput
     {n : ℕ} (a c d : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
-    (hc : 0 < c) (hcd : c < d) (k : Fin n) (m : ℕ) : evenSubspace :=
+    (hcd : c < d) (k : Fin n) (m : ℕ) : evenSubspace :=
   evenCentralSoninProjection a
-    (inverseDilatedEvenShellEven c d (r k) hc hcd (hr k) m)
+    (inverseDilatedEvenShellEven c d (r k) hcd (hr k) m)
 
 /-- The active inward ratio shell; inactive ratios are represented by zero. -/
 def finiteSoninRatioOutput
     {n : ℕ} (c d : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
-    (hc : 0 < c) (hcd : c < d) (j k : Fin n) (m : ℕ) : evenSubspace :=
+    (hcd : c < d) (j k : Fin n) (m : ℕ) : evenSubspace :=
   if _h : r k ≤ r j then
-    inwardDilatedEvenShellEven c d (r j / r k) hc hcd
+    inwardDilatedEvenShellEven c d (r j / r k) hcd
       (div_pos (zero_lt_one.trans (hr j)) (zero_lt_one.trans (hr k))) m
   else 0
 
@@ -404,16 +404,16 @@ theorem evenCentralSoninDilationCorner_finitePairedInput_tendsto
     (j k : Fin n) :
     Tendsto (fun m =>
       ‖evenCentralSoninDilationCorner a (r j) (hr j)
-          (finitePairedEvenSoninInput a c d r hr hc hcd k m) -
-        finiteSoninRatioOutput c d r hr hc hcd j k m‖) atTop (𝓝 0) := by
+          (finitePairedEvenSoninInput a c d r hr hcd k m) -
+        finiteSoninRatioOutput c d r hr hcd j k m‖) atTop (𝓝 0) := by
   by_cases hkj : r k ≤ r j
   · simp only [finitePairedEvenSoninInput, finiteSoninRatioOutput, dif_pos hkj]
     change Tendsto (fun m =>
       ‖(crossBoundary (centralSoninProjection a) (dilationSum (r j) (hr j)) :
           SoninL2 →L[ℂ] SoninL2)
           (centralSoninProjection a
-            (inverseDilatedEvenShell c d (r k) hc hcd (hr k) m)) -
-        inwardDilatedEvenShell c d (r j / r k) hc hcd
+            (inverseDilatedEvenShell c d (r k) hcd (hr k) m)) -
+        inwardDilatedEvenShell c d (r j / r k) hcd
           (div_pos (zero_lt_one.trans (hr j)) (zero_lt_one.trans (hr k))) m‖)
       atTop (𝓝 0)
     exact centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_ratio_of_le
@@ -424,7 +424,7 @@ theorem evenCentralSoninDilationCorner_finitePairedInput_tendsto
       ‖(crossBoundary (centralSoninProjection a) (dilationSum (r j) (hr j)) :
           SoninL2 →L[ℂ] SoninL2)
           (centralSoninProjection a
-            (inverseDilatedEvenShell c d (r k) hc hcd (hr k) m))‖)
+            (inverseDilatedEvenShell c d (r k) hcd (hr k) m))‖)
       atTop (𝓝 0)
     exact centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_zero_of_lt
       a c d (r k) (r j) ha hc hcd (hr k) (hr j) hjk (hout j k hjk)
@@ -432,25 +432,25 @@ theorem evenCentralSoninDilationCorner_finitePairedInput_tendsto
 theorem norm_finiteSoninRatioOutput_le_one
     {n : ℕ} (c d : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
     (hc : 0 < c) (hcd : c < d) (j k : Fin n) (m : ℕ) :
-    ‖finiteSoninRatioOutput c d r hr hc hcd j k m‖ ≤ 1 := by
+    ‖finiteSoninRatioOutput c d r hr hcd j k m‖ ≤ 1 := by
   by_cases hkj : r k ≤ r j
   · rw [finiteSoninRatioOutput, dif_pos hkj]
     let hratio : 0 < r j / r k :=
       div_pos (zero_lt_one.trans (hr j)) (zero_lt_one.trans (hr k))
-    change ‖inwardDilatedEvenShell c d (r j / r k) hc hcd
+    change ‖inwardDilatedEvenShell c d (r j / r k) hcd
       hratio m‖ ≤ 1
-    rw [norm_inwardDilatedEvenShell]
+    rw [norm_inwardDilatedEvenShell c d (r j / r k) hc hcd hratio m]
   · rw [finiteSoninRatioOutput, dif_neg hkj]
     simp
 
 theorem norm_finiteSoninRatioOutput_eq_one_of_le
     {n : ℕ} (c d : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
     (hc : 0 < c) (hcd : c < d) (j k : Fin n) (hkj : r k ≤ r j) (m : ℕ) :
-    ‖finiteSoninRatioOutput c d r hr hc hcd j k m‖ = 1 := by
+    ‖finiteSoninRatioOutput c d r hr hcd j k m‖ = 1 := by
   rw [finiteSoninRatioOutput, dif_pos hkj]
   let hratio : 0 < r j / r k :=
     div_pos (zero_lt_one.trans (hr j)) (zero_lt_one.trans (hr k))
-  change ‖inwardDilatedEvenShell c d (r j / r k) hc hcd hratio m‖ = 1
+  change ‖inwardDilatedEvenShell c d (r j / r k) hcd hratio m‖ = 1
   exact norm_inwardDilatedEvenShell c d (r j / r k) hc hcd hratio m
 
 /-- Active ratio shells have inner product one exactly at equal ratios and zero at distinct ratios
@@ -462,15 +462,15 @@ theorem inner_finiteSoninRatioOutput_active
       finiteActiveScaleRatio r z < finiteActiveScaleRatio r w →
         d * finiteActiveScaleRatio r z < c * finiteActiveScaleRatio r w)
     (j k i l : Fin n) (hkj : r k ≤ r j) (hli : r l ≤ r i) (m : ℕ) :
-    inner ℂ (finiteSoninRatioOutput c d r hr hc hcd i l m)
-      (finiteSoninRatioOutput c d r hr hc hcd j k m) =
+    inner ℂ (finiteSoninRatioOutput c d r hr hcd i l m)
+      (finiteSoninRatioOutput c d r hr hcd j k m) =
         if r i / r l = r j / r k then 1 else 0 := by
   let z : finiteActiveScaleRatioIndex r := ⟨(i, l), hli⟩
   let w : finiteActiveScaleRatioIndex r := ⟨(j, k), hkj⟩
   by_cases heq : r i / r l = r j / r k
   · rw [if_pos heq]
-    have hv : finiteSoninRatioOutput c d r hr hc hcd i l m =
-        finiteSoninRatioOutput c d r hr hc hcd j k m := by
+    have hv : finiteSoninRatioOutput c d r hr hcd i l m =
+        finiteSoninRatioOutput c d r hr hcd j k m := by
       rw [finiteSoninRatioOutput, dif_pos hli,
         finiteSoninRatioOutput, dif_pos hkj]
       congr 2
@@ -484,9 +484,9 @@ theorem inner_finiteSoninRatioOutput_active
     · rw [finiteSoninRatioOutput, dif_pos hli,
         finiteSoninRatioOutput, dif_pos hkj]
       change inner ℂ
-        (inwardDilatedEvenShell c d (finiteActiveScaleRatio r z) hc hcd
+        (inwardDilatedEvenShell c d (finiteActiveScaleRatio r z) hcd
           (div_pos (zero_lt_one.trans (hr i)) (zero_lt_one.trans (hr l))) m)
-        (inwardDilatedEvenShell c d (finiteActiveScaleRatio r w) hc hcd
+        (inwardDilatedEvenShell c d (finiteActiveScaleRatio r w) hcd
           (div_pos (zero_lt_one.trans (hr j)) (zero_lt_one.trans (hr k))) m) = 0
       exact inner_inwardDilatedEvenShell_eq_zero_of_lt hc hcd
         (div_pos (zero_lt_one.trans (hr i)) (zero_lt_one.trans (hr l)))
@@ -495,14 +495,14 @@ theorem inner_finiteSoninRatioOutput_active
     · rw [finiteSoninRatioOutput, dif_pos hli,
         finiteSoninRatioOutput, dif_pos hkj, ← inner_conj_symm]
       change star (inner ℂ
-        (inwardDilatedEvenShell c d (finiteActiveScaleRatio r w) hc hcd
+        (inwardDilatedEvenShell c d (finiteActiveScaleRatio r w) hcd
           (div_pos (zero_lt_one.trans (hr j)) (zero_lt_one.trans (hr k))) m)
-        (inwardDilatedEvenShell c d (finiteActiveScaleRatio r z) hc hcd
+        (inwardDilatedEvenShell c d (finiteActiveScaleRatio r z) hcd
           (div_pos (zero_lt_one.trans (hr i)) (zero_lt_one.trans (hr l))) m)) = 0
       have hzero : inner ℂ
-          (inwardDilatedEvenShell c d (finiteActiveScaleRatio r w) hc hcd
+          (inwardDilatedEvenShell c d (finiteActiveScaleRatio r w) hcd
             (div_pos (zero_lt_one.trans (hr j)) (zero_lt_one.trans (hr k))) m)
-          (inwardDilatedEvenShell c d (finiteActiveScaleRatio r z) hc hcd
+          (inwardDilatedEvenShell c d (finiteActiveScaleRatio r z) hcd
             (div_pos (zero_lt_one.trans (hr i)) (zero_lt_one.trans (hr l))) m) = 0 :=
         inner_inwardDilatedEvenShell_eq_zero_of_lt hc hcd
           (div_pos (zero_lt_one.trans (hr j)) (zero_lt_one.trans (hr k)))
@@ -568,11 +568,11 @@ def finiteEvenDilationGramCombination
 /-- The finite-shell compression coefficient predicted by the active scale-ratio table. -/
 def finiteGramShellCoefficient
     {n : ℕ} (c d : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
-    (hc : 0 < c) (hcd : c < d) (A : Matrix (Fin n) (Fin n) ℂ)
+    (hcd : c < d) (A : Matrix (Fin n) (Fin n) ℂ)
     (k l : Fin n) (m : ℕ) : ℂ :=
   ∑ i, ∑ j, A i j *
-    inner ℂ (finiteSoninRatioOutput c d r hr hc hcd i l m)
-      (finiteSoninRatioOutput c d r hr hc hcd j k m)
+    inner ℂ (finiteSoninRatioOutput c d r hr hcd i l m)
+      (finiteSoninRatioOutput c d r hr hcd j k m)
 
 theorem inner_adjointComp_eq_corner_inner
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -620,18 +620,18 @@ theorem finiteEvenDilationGramCombination_pairedShell_inner_tendsto
     (hout : ∀ i j, r i < r j → a * r i < c * r j)
     (A : Matrix (Fin n) (Fin n) ℂ) (k l : Fin n) :
     Tendsto (fun m =>
-      ‖inner ℂ (finitePairedEvenSoninInput a c d r hr hc hcd l m)
+      ‖inner ℂ (finitePairedEvenSoninInput a c d r hr hcd l m)
           (finiteEvenDilationGramCombination a r hr A
-            (finitePairedEvenSoninInput a c d r hr hc hcd k m)) -
-        finiteGramShellCoefficient c d r hr hc hcd A k l m‖)
+            (finitePairedEvenSoninInput a c d r hr hcd k m)) -
+        finiteGramShellCoefficient c d r hr hcd A k l m‖)
       atTop (𝓝 0) := by
   classical
   let f : Fin n → ℕ → evenSubspace := fun k m =>
-    finitePairedEvenSoninInput a c d r hr hc hcd k m
+    finitePairedEvenSoninInput a c d r hr hcd k m
   let L : Fin n → evenSubspace →L[ℂ] evenSubspace := fun i =>
     evenCentralSoninDilationCorner a (r i) (hr i)
   let v : Fin n → Fin n → ℕ → evenSubspace := fun i k m =>
-    finiteSoninRatioOutput c d r hr hc hcd i k m
+    finiteSoninRatioOutput c d r hr hcd i k m
   have hij : ∀ i j, Tendsto (fun m =>
       ‖inner ℂ (L i (f l m)) (L j (f k m)) - inner ℂ (v i l m) (v j k m)‖)
       atTop (𝓝 0) := by
@@ -726,19 +726,19 @@ theorem inner_finiteSoninRatioOutput_prime_offDiagonal
       (finiteSoninRatioOutput c d (fun x => (p x : ℝ))
         (fun x => by
           change (1 : ℝ) < (p x : ℝ)
-          exact_mod_cast (hp x).one_lt) hc hcd i l m)
+          exact_mod_cast (hp x).one_lt) hcd i l m)
       (finiteSoninRatioOutput c d (fun x => (p x : ℝ))
         (fun x => by
           change (1 : ℝ) < (p x : ℝ)
-          exact_mod_cast (hp x).one_lt) hc hcd j k m) =
+          exact_mod_cast (hp x).one_lt) hcd j k m) =
       if i = l ∧ j = k then 1 else 0 := by
   let r : Fin n → ℝ := fun x => (p x : ℝ)
   let hr : ∀ x, 1 < r x := fun x => by
     change (1 : ℝ) < (p x : ℝ)
     exact_mod_cast (hp x).one_lt
   change inner ℂ
-      (finiteSoninRatioOutput c d r hr hc hcd i l m)
-      (finiteSoninRatioOutput c d r hr hc hcd j k m) =
+      (finiteSoninRatioOutput c d r hr hcd i l m)
+      (finiteSoninRatioOutput c d r hr hcd j k m) =
     if i = l ∧ j = k then 1 else 0
   by_cases hli : r l ≤ r i
   · by_cases hkj : r k ≤ r j
@@ -760,13 +760,13 @@ theorem inner_finiteSoninRatioOutput_prime_offDiagonal
     · have hnot : ¬(i = l ∧ j = k) := by
         intro h
         exact hkj (by simp [h.2])
-      have hvzero : finiteSoninRatioOutput c d r hr hc hcd j k m = 0 := by
+      have hvzero : finiteSoninRatioOutput c d r hr hcd j k m = 0 := by
         rw [finiteSoninRatioOutput, dif_neg hkj]
       rw [hvzero, inner_zero_right, if_neg hnot]
   · have hnot : ¬(i = l ∧ j = k) := by
       intro h
       exact hli (by simp [h.1])
-    have hvzero : finiteSoninRatioOutput c d r hr hc hcd i l m = 0 := by
+    have hvzero : finiteSoninRatioOutput c d r hr hcd i l m = 0 := by
       rw [finiteSoninRatioOutput, dif_neg hli]
     rw [hvzero, inner_zero_left, if_neg hnot]
 
@@ -782,7 +782,7 @@ theorem finiteGramShellCoefficient_prime_offDiagonal_eq
     finiteGramShellCoefficient c d (fun i => (p i : ℝ))
       (fun i => by
         change (1 : ℝ) < (p i : ℝ)
-        exact_mod_cast (hp i).one_lt) hc hcd A k l m = A l k := by
+        exact_mod_cast (hp i).one_lt) hcd A k l m = A l k := by
   classical
   unfold finiteGramShellCoefficient
   simp_rw [inner_finiteSoninRatioOutput_prime_offDiagonal
@@ -819,7 +819,7 @@ theorem norm_matrixEntry_le_norm_finitePrimeEvenDilationGram_sub_compact
   obtain ⟨c, d, hc, hcd, hda, harc, hout, hsep⟩ :=
     exists_finiteScale_gramSeparatingInteriorShell a ha r hr
   let f : Fin n → ℕ → evenSubspace := fun i m =>
-    finitePairedEvenSoninInput a c d r hr hc hcd i m
+    finitePairedEvenSoninInput a c d r hr hcd i m
   let T : evenSubspace →L[ℂ] evenSubspace := finiteEvenDilationGramCombination a r hr A
   have hinnerApprox : Tendsto (fun m =>
       ‖inner ℂ (f l m) (T (f k m)) - A l k‖) atTop (𝓝 0) := by
@@ -834,7 +834,7 @@ theorem norm_matrixEntry_le_norm_finitePrimeEvenDilationGram_sub_compact
     tendsto_norm_of_norm_sub_tendsto_zero_of_norm_eq hinnerApprox (fun _ => rfl)
   have hfWeak : ∀ ℓ : evenSubspace →L[ℂ] ℂ,
       Tendsto (fun m => ℓ (f k m)) atTop (𝓝 0) := by
-    let g : ℕ → evenSubspace := inverseDilatedEvenShellEven c d (r k) hc hcd (hr k)
+    let g : ℕ → evenSubspace := inverseDilatedEvenShellEven c d (r k) hcd (hr k)
     have hg : Orthonormal ℂ g := by
       simpa [g] using inverseDilatedEvenShellEven_orthonormal c d (r k) hc hcd (hr k)
     have hfApprox : Tendsto (fun m => ‖f k m - g m‖) atTop (𝓝 0) := by
@@ -846,9 +846,9 @@ theorem norm_matrixEntry_le_norm_finitePrimeEvenDilationGram_sub_compact
   have hfBound : ∀ m, ‖f k m‖ ≤ 1 := by
     intro m
     calc
-      ‖f k m‖ ≤ ‖inverseDilatedEvenShellEven c d (r k) hc hcd (hr k) m‖ := by
+      ‖f k m‖ ≤ ‖inverseDilatedEvenShellEven c d (r k) hcd (hr k) m‖ := by
         change ‖evenCentralSoninProjection a
-          (inverseDilatedEvenShellEven c d (r k) hc hcd (hr k) m)‖ ≤ _
+          (inverseDilatedEvenShellEven c d (r k) hcd (hr k) m)‖ ≤ _
         rw [evenCentralSoninProjection_eq_starProjection]
         exact (evenCentralSoninCarrier a).norm_starProjection_apply_le _
       _ = 1 :=
@@ -856,9 +856,9 @@ theorem norm_matrixEntry_le_norm_finitePrimeEvenDilationGram_sub_compact
   have hlBound : ∀ m, ‖f l m‖ ≤ 1 := by
     intro m
     calc
-      ‖f l m‖ ≤ ‖inverseDilatedEvenShellEven c d (r l) hc hcd (hr l) m‖ := by
+      ‖f l m‖ ≤ ‖inverseDilatedEvenShellEven c d (r l) hcd (hr l) m‖ := by
         change ‖evenCentralSoninProjection a
-          (inverseDilatedEvenShellEven c d (r l) hc hcd (hr l) m)‖ ≤ _
+          (inverseDilatedEvenShellEven c d (r l) hcd (hr l) m)‖ ≤ _
         rw [evenCentralSoninProjection_eq_starProjection]
         exact (evenCentralSoninCarrier a).norm_starProjection_apply_le _
       _ = 1 :=
@@ -910,10 +910,10 @@ theorem finitePairedEvenSoninInput_weakly_tendsto_zero
     (ha : 0 < a) (hc : 0 < c) (hcd : c < d) (harc : ∀ i, a < r i * c)
     (k : Fin n) :
     ∀ ℓ : evenSubspace →L[ℂ] ℂ,
-      Tendsto (fun m => ℓ (finitePairedEvenSoninInput a c d r hr hc hcd k m))
+      Tendsto (fun m => ℓ (finitePairedEvenSoninInput a c d r hr hcd k m))
         atTop (𝓝 0) := by
-  let g : ℕ → evenSubspace := inverseDilatedEvenShellEven c d (r k) hc hcd (hr k)
-  let f : ℕ → evenSubspace := finitePairedEvenSoninInput a c d r hr hc hcd k
+  let g : ℕ → evenSubspace := inverseDilatedEvenShellEven c d (r k) hcd (hr k)
+  let f : ℕ → evenSubspace := finitePairedEvenSoninInput a c d r hr hcd k
   have hg : Orthonormal ℂ g := by
     simpa [g] using inverseDilatedEvenShellEven_orthonormal c d (r k) hc hcd (hr k)
   have hfApprox : Tendsto (fun m => ‖f m - g m‖) atTop (𝓝 0) := by
@@ -926,10 +926,10 @@ theorem finitePairedEvenSoninInput_weakly_tendsto_zero
 theorem norm_finitePairedEvenSoninInput_le_one
     {n : ℕ} (a c d : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
     (hc : 0 < c) (hcd : c < d) (k : Fin n) (m : ℕ) :
-    ‖finitePairedEvenSoninInput a c d r hr hc hcd k m‖ ≤ 1 := by
+    ‖finitePairedEvenSoninInput a c d r hr hcd k m‖ ≤ 1 := by
   calc
-    ‖finitePairedEvenSoninInput a c d r hr hc hcd k m‖ ≤
-        ‖inverseDilatedEvenShellEven c d (r k) hc hcd (hr k) m‖ := by
+    ‖finitePairedEvenSoninInput a c d r hr hcd k m‖ ≤
+        ‖inverseDilatedEvenShellEven c d (r k) hcd (hr k) m‖ := by
       rw [finitePairedEvenSoninInput, evenCentralSoninProjection_eq_starProjection]
       exact (evenCentralSoninCarrier a).norm_starProjection_apply_le _
     _ = 1 :=
@@ -941,11 +941,11 @@ theorem norm_shellCoefficient_le_norm_finiteEvenDilationGram_sub_compact_of_shel
     (harc : ∀ i, a < r i * c)
     (hout : ∀ i j, r i < r j → a * r i < c * r j)
     (A : Matrix (Fin n) (Fin n) ℂ) (k l : Fin n) (z : ℂ)
-    (hz : ∀ m, finiteGramShellCoefficient c d r hr hc hcd A k l m = z)
+    (hz : ∀ m, finiteGramShellCoefficient c d r hr hcd A k l m = z)
     (K : evenSubspace →L[ℂ] evenSubspace) (hK : IsCompactOperator K) :
     ‖z‖ ≤ ‖finiteEvenDilationGramCombination a r hr A - K‖ := by
   let f : Fin n → ℕ → evenSubspace := fun i m =>
-    finitePairedEvenSoninInput a c d r hr hc hcd i m
+    finitePairedEvenSoninInput a c d r hr hcd i m
   let T : evenSubspace →L[ℂ] evenSubspace := finiteEvenDilationGramCombination a r hr A
   have hinnerApprox : Tendsto (fun m =>
       ‖inner ℂ (f l m) (T (f k m)) - z‖) atTop (𝓝 0) := by
@@ -1020,19 +1020,19 @@ theorem inner_finiteSoninRatioOutput_prime_diagonal
       (finiteSoninRatioOutput c d (fun x => (p x : ℝ))
         (fun x => by
           change (1 : ℝ) < (p x : ℝ)
-          exact_mod_cast (hp x).one_lt) hc hcd i k m)
+          exact_mod_cast (hp x).one_lt) hcd i k m)
       (finiteSoninRatioOutput c d (fun x => (p x : ℝ))
         (fun x => by
           change (1 : ℝ) < (p x : ℝ)
-          exact_mod_cast (hp x).one_lt) hc hcd j k m) =
+          exact_mod_cast (hp x).one_lt) hcd j k m) =
       if i = j ∧ p k ≤ p i then 1 else 0 := by
   let r : Fin n → ℝ := fun x => (p x : ℝ)
   let hr : ∀ x, 1 < r x := fun x => by
     change (1 : ℝ) < (p x : ℝ)
     exact_mod_cast (hp x).one_lt
   change inner ℂ
-      (finiteSoninRatioOutput c d r hr hc hcd i k m)
-      (finiteSoninRatioOutput c d r hr hc hcd j k m) =
+      (finiteSoninRatioOutput c d r hr hcd i k m)
+      (finiteSoninRatioOutput c d r hr hcd j k m) =
     if i = j ∧ p k ≤ p i then 1 else 0
   by_cases hki : r k ≤ r i
   · by_cases hkj : r k ≤ r j
@@ -1057,7 +1057,7 @@ theorem inner_finiteSoninRatioOutput_prime_diagonal
         apply hkj
         rw [← h.1]
         exact hki
-      have hvzero : finiteSoninRatioOutput c d r hr hc hcd j k m = 0 := by
+      have hvzero : finiteSoninRatioOutput c d r hr hcd j k m = 0 := by
         rw [finiteSoninRatioOutput, dif_neg hkj]
       rw [hvzero, inner_zero_right, if_neg hnot]
   · have hnot : ¬(i = j ∧ p k ≤ p i) := by
@@ -1065,7 +1065,7 @@ theorem inner_finiteSoninRatioOutput_prime_diagonal
       apply hki
       change (p k : ℝ) ≤ (p i : ℝ)
       exact_mod_cast h.2
-    have hvzero : finiteSoninRatioOutput c d r hr hc hcd i k m = 0 := by
+    have hvzero : finiteSoninRatioOutput c d r hr hcd i k m = 0 := by
       rw [finiteSoninRatioOutput, dif_neg hki]
     rw [hvzero, inner_zero_left, if_neg hnot]
 
@@ -1085,7 +1085,7 @@ theorem finiteGramShellCoefficient_prime_diagonal_eq
     finiteGramShellCoefficient c d (fun i => (p i : ℝ))
       (fun i => by
         change (1 : ℝ) < (p i : ℝ)
-        exact_mod_cast (hp i).one_lt) hc hcd A k k m =
+        exact_mod_cast (hp i).one_lt) hcd A k k m =
       finitePrimeDiagonalTail p A k := by
   classical
   unfold finiteGramShellCoefficient
@@ -1122,7 +1122,7 @@ theorem norm_finitePrimeDiagonalTail_le_norm_finitePrimeEvenDilationGram_sub_com
     exact_mod_cast (hp i).one_lt
   obtain ⟨c, d, hc, hcd, hda, harc, hout, hsep⟩ :=
     exists_finiteScale_gramSeparatingInteriorShell a ha r hr
-  have hz : ∀ m, finiteGramShellCoefficient c d r hr hc hcd A k k m =
+  have hz : ∀ m, finiteGramShellCoefficient c d r hr hcd A k k m =
       finitePrimeDiagonalTail p A k := by
     intro m
     exact finiteGramShellCoefficient_prime_diagonal_eq

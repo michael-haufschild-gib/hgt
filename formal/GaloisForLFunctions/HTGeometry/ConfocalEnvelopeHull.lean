@@ -303,7 +303,7 @@ theorem liftedConfocalBranch_eq_mul_affineAmplitude
 source on every positive radius domain. -/
 theorem isConfocalEnvelopeOn_confocalLorentzLift_image
     {S : Set ℂ} (hne : S.Nonempty) {M : ℝ}
-    (hM : 0 ≤ M) (hbound : ∀ z ∈ S, ‖z‖ ≤ M)
+    (hbound : ∀ z ∈ S, ‖z‖ ≤ M)
     {D : Set ℝ} (hD : ∀ R ∈ D, 0 < R) :
     IsConfocalEnvelopeOn D (confocalLorentzLift '' S) (confocalUpperField S) := by
   intro R hRD
@@ -321,7 +321,7 @@ theorem isConfocalEnvelopeOn_confocalLorentzLift_image
     simpa only [add_comm] using
       add_le_add_left (div_le_div_of_nonneg_right hdef hR.le) 1
   have hAsup : IsLUB (A '' S) (confocalAmplitudeEnvelope S R) := by
-    rw [← sSup_affineAmplitude_eq_confocalAmplitudeEnvelope hne hM hR hbound]
+    rw [← sSup_affineAmplitude_eq_confocalAmplitudeEnvelope hne hR hbound]
     exact isLUB_csSup hAne hAbdd
   constructor
   · rintro _ ⟨q, ⟨z, hz, rfl⟩, rfl⟩

@@ -68,7 +68,7 @@ exponential series occupying a finite set `S` of transverse slices.  The series 
 many first-generator frequencies in every occupied slice.  If `β / α` is irrational, the carrier is
 constant. -/
 theorem finiteTransverse_infiniteSeries_reflection_rigidity
-    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β) (hw : 0 < w)
+    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β)
     (hirr : Irrational (β / α))
     {G : ℂ → ℂ} (hG : Differentiable ℂ G) (hEven : ∀ z, G (-z) = G z)
     (b : ℕ → ℕ → ℂ) (S : Finset ℕ)
@@ -120,7 +120,7 @@ theorem finiteTransverse_infiniteSeries_reflection_rigidity
       _ = B := rfl
   refine finiteTransverse_reflection_rigidity hG hEven
     (T := 2 * Real.pi / α) (w := w) (ω := ω) (S := S)
-    (Gn := finiteTransverseInfiniteSlice α β b) (by positivity) hw (Complex.exp_ne_zero _) ?_ htrace
+    (Gn := finiteTransverseInfiniteSlice α β b) (by positivity) (Complex.exp_ne_zero _) ?_ htrace
     ?_ hbound
   · intro k hk
     have hneg : Irrational (-(β / α)) := hirr.neg
@@ -135,7 +135,7 @@ generator ratio admits no absolutely convergent lower-flank representation suppo
 many transverse slices.  Swapping `α`, `β` and transposing the coefficients gives the identical
 conclusion for the other slice direction. -/
 theorem finiteTransverse_nonconstant_forces_no_finiteSliceRepresentation
-    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β) (hw : 0 < w)
+    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β)
     (hirr : Irrational (β / α))
     {G : ℂ → ℂ} (hG : Differentiable ℂ G) (hEven : ∀ z, G (-z) = G z)
     (hNonconstant : ∃ s t : ℂ, G s ≠ G t) (b : ℕ → ℕ → ℂ) :
@@ -147,7 +147,7 @@ theorem finiteTransverse_nonconstant_forces_no_finiteSliceRepresentation
   rintro ⟨S, hb, htrace⟩
   obtain ⟨s, t, hst⟩ := hNonconstant
   exact hst (finiteTransverse_infiniteSeries_reflection_rigidity
-    α β w hα hβ hw hirr hG hEven b S hb htrace s t)
+    α β w hα hβ hirr hG hEven b S hb htrace s t)
 
 /-! ## The literal double-series statement -/
 
@@ -240,7 +240,7 @@ theorem finiteTransverseFlankSeries_eq_sum_slices
 absolutely convergent double series and a finite occupied transverse support, rather than a sliced
 representation supplied as a hypothesis. -/
 theorem finiteTransverse_flankSeries_reflection_rigidity
-    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β) (hw : 0 < w)
+    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β)
     (hirr : Irrational (β / α))
     {G : ℂ → ℂ} (hG : Differentiable ℂ G) (hEven : ∀ z, G (-z) = G z)
     (b : ℕ → ℕ → ℂ)
@@ -264,7 +264,7 @@ theorem finiteTransverse_flankSeries_reflection_rigidity
       intro m k hmk
       exact congrArg Prod.fst hmk)
   apply finiteTransverse_infiniteSeries_reflection_rigidity
-    α β w hα hβ hw hirr hG hEven b S hb
+    α β w hα hβ hirr hG hEven b S hb
   intro z hz
   rw [htrace z hz]
   exact finiteTransverseFlankSeries_eq_sum_slices α β w hα hβ b S hS habs hz
@@ -272,7 +272,7 @@ theorem finiteTransverse_flankSeries_reflection_rigidity
 /-- **Symmetric literal theorem.**  Finite support in the first-generator direction also forces the
 even entire carrier to be constant. -/
 theorem finiteTransverse_flankSeries_reflection_rigidity_of_finiteFirstSupport
-    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β) (hw : 0 < w)
+    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β)
     (hirr : Irrational (β / α))
     {G : ℂ → ℂ} (hG : Differentiable ℂ G) (hEven : ∀ z, G (-z) = G z)
     (b : ℕ → ℕ → ℂ)
@@ -296,7 +296,7 @@ theorem finiteTransverse_flankSeries_reflection_rigidity_of_finiteFirstSupport
     simpa only [finiteTransverseSecondSupport, finiteTransverseFirstSupport]
       using hfinite
   apply finiteTransverse_flankSeries_reflection_rigidity
-    β α w hβ hα hw hirr' hG hEven (fun n m => b m n) habs' hfinite'
+    β α w hβ hα hirr' hG hEven (fun n m => b m n) habs' hfinite'
   intro z hz
   rw [finiteTransverseFlankSeries_transpose]
   exact htrace z hz
@@ -305,7 +305,7 @@ theorem finiteTransverse_flankSeries_reflection_rigidity_of_finiteFirstSupport
 two-generator lower-flank representation has infinitely many occupied slices in both generator
 directions. -/
 theorem finiteTransverse_nonconstant_forces_both_sliceSupports_infinite
-    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β) (hw : 0 < w)
+    (α β w : ℝ) (hα : 0 < α) (hβ : 0 < β)
     (hirr : Irrational (β / α))
     {G : ℂ → ℂ} (hG : Differentiable ℂ G) (hEven : ∀ z, G (-z) = G z)
     (hNonconstant : ∃ s t : ℂ, G s ≠ G t) (b : ℕ → ℕ → ℂ)
@@ -319,10 +319,10 @@ theorem finiteTransverse_nonconstant_forces_both_sliceSupports_infinite
   · intro hfinite
     obtain ⟨s, t, hst⟩ := hNonconstant
     exact hst (finiteTransverse_flankSeries_reflection_rigidity_of_finiteFirstSupport
-      α β w hα hβ hw hirr hG hEven b habs hfinite htrace s t)
+      α β w hα hβ hirr hG hEven b habs hfinite htrace s t)
   · intro hfinite
     obtain ⟨s, t, hst⟩ := hNonconstant
     exact hst (finiteTransverse_flankSeries_reflection_rigidity
-      α β w hα hβ hw hirr hG hEven b habs hfinite htrace s t)
+      α β w hα hβ hirr hG hEven b habs hfinite htrace s t)
 
 end RHTower

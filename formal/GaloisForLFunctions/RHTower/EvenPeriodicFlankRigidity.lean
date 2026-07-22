@@ -17,10 +17,11 @@ noncomputable section
 
 namespace RHTower
 
-/-- **Even periodic flank rigidity.**  An even entire `G` that is `P`-periodic for a real period
-`P > 0` and bounded by `B` on the lower flank `Im z ≤ -w` is constant. -/
+/-- **Even periodic flank rigidity.**  An even entire `G` that is `P`-periodic for a positive real
+period `P` and bounded by `B` on the lower flank `Im z ≤ -w` is constant.  No sign condition on
+the flank parameter `w` is needed. -/
 theorem even_periodic_flankBounded_const {G : ℂ → ℂ} {pR w B : ℝ}
-    (hpRpos : 0 < pR) (_hw : 0 < w) (hG : Differentiable ℂ G)
+    (hpRpos : 0 < pR) (hG : Differentiable ℂ G)
     (hsym : ∀ z : ℂ, G z = G (-z))
     (hper : Function.Periodic G (pR : ℂ))
     (hflank : ∀ z : ℂ, z.im ≤ -w → ‖G z‖ ≤ B) :

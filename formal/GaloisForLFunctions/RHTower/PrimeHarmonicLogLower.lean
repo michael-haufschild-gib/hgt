@@ -221,7 +221,7 @@ theorem sqrt_log_log_sub_one_le_norm_sum_primesBelow_eulerCorners_sub_compact
     (primesBelowEnum_injective (X + 1)) K hK
   have hop : finiteArchimedeanPrimeEulerCorners a
       (fun i => ((primesBelowEnum (X + 1) i : ℕ) : ℝ))
-      (fun i => one_lt_primesBelowEnum_real (X + 1) i) (fun _ => 1) =
+      (fun _ => 1) =
       ∑ p ∈ Nat.primesBelow (X + 1), archimedeanPrimeEulerCorner a (p : ℝ) := by
     rw [finiteArchimedeanPrimeEulerCorners]
     simp only [one_smul]

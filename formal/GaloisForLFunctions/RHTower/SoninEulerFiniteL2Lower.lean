@@ -522,7 +522,7 @@ theorem finiteEulerCoefficientL2Norm_le_norm_finiteArchimedeanPrimeEulerCorners_
     (K : ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2)
     (hK : IsCompactOperator K) :
     finiteEulerCoefficientL2Norm r c ≤
-      ‖finiteArchimedeanPrimeEulerCorners a r hr c - K‖ := by
+      ‖finiteArchimedeanPrimeEulerCorners a r c - K‖ := by
   let u := archimedeanDualHardyTitchmarshUnitary
   let Kpull : evenSubspace →L[ℂ] evenSubspace := unitaryPush u.symm K
   have hKpull : IsCompactOperator Kpull := by
@@ -534,7 +534,7 @@ theorem finiteEulerCoefficientL2Norm_le_norm_finiteArchimedeanPrimeEulerCorners_
     dsimp [Kpull, u]
     exact unitaryPush_symm_unitaryPush
       archimedeanDualHardyTitchmarshUnitary.symm K
-  have heq : finiteArchimedeanPrimeEulerCorners a r hr c - K =
+  have heq : finiteArchimedeanPrimeEulerCorners a r c - K =
       unitaryPush u (finiteEvenPositiveEulerCorners a r hr c - Kpull) := by
     rw [finiteArchimedeanPrimeEulerCorners_eq_unitaryPush]
     rw [unitaryPush_sub, hpushK]
@@ -561,7 +561,7 @@ theorem finiteReciprocalScaleL2Norm_le_norm_finiteArchimedeanPrimeEulerCorners_s
     (K : ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2)
     (hK : IsCompactOperator K) :
     finiteReciprocalScaleL2Norm r ≤
-      ‖finiteArchimedeanPrimeEulerCorners a r hr (fun _ => 1) - K‖ := by
+      ‖finiteArchimedeanPrimeEulerCorners a r (fun _ => 1) - K‖ := by
   rw [← finiteEulerCoefficientL2Norm_one]
   exact finiteEulerCoefficientL2Norm_le_norm_finiteArchimedeanPrimeEulerCorners_sub_compact
     a ha r hr hinj (fun _ => 1) K hK
@@ -576,9 +576,7 @@ theorem finitePrimeReciprocalL2Norm_le_norm_archimedeanEulerCorners_sub_compact
     (hK : IsCompactOperator K) :
     finiteReciprocalScaleL2Norm (fun i => (p i : ℝ)) ≤
       ‖finiteArchimedeanPrimeEulerCorners a (fun i => (p i : ℝ))
-        (fun i => by
-          change (1 : ℝ) < (p i : ℝ)
-          exact_mod_cast (hp i).one_lt) (fun _ => 1) - K‖ := by
+        (fun _ => 1) - K‖ := by
   have hinjR : Function.Injective (fun i => (p i : ℝ)) := by
     intro i j hij
     apply hinj
@@ -594,14 +592,12 @@ theorem finitePrimeReciprocalL2Norm_le_norm_archimedeanEulerCorners_sub_compact
 weighted coefficient energy `∑ₚ ‖c p‖² / p` is summable. -/
 theorem summable_primeEulerCoefficientEnergy_of_uniform_sub_compact_bound
     (a B : ℝ) (ha : 0 < a) (hB : 0 ≤ B) (c : ℕ → ℂ)
-    (hbound : ∀ (n : ℕ) (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime)
+    (hbound : ∀ (n : ℕ) (p : Fin n → ℕ) (_hp : ∀ i, (p i).Prime)
       (_hinj : Function.Injective p),
       ∃ K : ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2,
         IsCompactOperator K ∧
           ‖finiteArchimedeanPrimeEulerCorners a (fun i => (p i : ℝ))
-            (fun i => by
-              change (1 : ℝ) < (p i : ℝ)
-              exact_mod_cast (hp i).one_lt) (fun i => c (p i)) - K‖ ≤ B) :
+            (fun i => c (p i)) - K‖ ≤ B) :
     Summable (fun p : Nat.Primes => ‖c (p : ℕ)‖ ^ 2 / (p : ℝ)) := by
   apply summable_of_sum_le (c := B ^ 2) (fun p => by positivity)
   intro s
@@ -688,14 +684,12 @@ theorem exists_finitePrimeFamily_reciprocalL2Norm_gt (M : ℝ) (hM : 0 ≤ M) :
 sums whose distance from every compact operator exceeds any prescribed nonnegative bound. -/
 theorem exists_finitePrime_archimedeanEulerCorner_sub_compact_norm_gt
     (a M : ℝ) (ha : 0 < a) (hM : 0 ≤ M) :
-    ∃ (n : ℕ) (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime)
+    ∃ (n : ℕ) (p : Fin n → ℕ) (_hp : ∀ i, (p i).Prime)
       (_hinj : Function.Injective p),
       ∀ (K : ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2),
         IsCompactOperator K →
           M < ‖finiteArchimedeanPrimeEulerCorners a (fun i => (p i : ℝ))
-            (fun i => by
-              change (1 : ℝ) < (p i : ℝ)
-              exact_mod_cast (hp i).one_lt) (fun _ => 1) - K‖ := by
+            (fun _ => 1) - K‖ := by
   obtain ⟨n, p, hp, hinj, henergy⟩ := exists_finitePrimeFamily_reciprocalL2Norm_gt M hM
   refine ⟨n, p, hp, hinj, ?_⟩
   intro K hK
@@ -706,12 +700,10 @@ theorem exists_finitePrime_archimedeanEulerCorner_sub_compact_norm_gt
 /-- Canonical finite positive Euler corner sums also have arbitrarily large operator norm. -/
 theorem exists_finitePrime_archimedeanEulerCorner_norm_gt
     (a M : ℝ) (ha : 0 < a) (hM : 0 ≤ M) :
-    ∃ (n : ℕ) (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime)
+    ∃ (n : ℕ) (p : Fin n → ℕ) (_hp : ∀ i, (p i).Prime)
       (_hinj : Function.Injective p),
       M < ‖finiteArchimedeanPrimeEulerCorners a (fun i => (p i : ℝ))
-        (fun i => by
-          change (1 : ℝ) < (p i : ℝ)
-          exact_mod_cast (hp i).one_lt) (fun _ => 1) - 0‖ := by
+        (fun _ => 1) - 0‖ := by
   obtain ⟨n, p, hp, hinj, hall⟩ :=
     exists_finitePrime_archimedeanEulerCorner_sub_compact_norm_gt a M ha hM
   exact ⟨n, p, hp, hinj,

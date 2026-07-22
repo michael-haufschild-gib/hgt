@@ -1,0 +1,749 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{needspace}
+\usepackage[hidelinks,hypertexnames=false]{hyperref}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{problem}[theorem]{Open problem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cK}{\mathcal K}
+\newcommand{\cP}{\mathcal P}
+\newcommand{\cQ}{\mathcal Q}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\ip}[2]{\langle #1,#2\rangle}
+
+\title{A Universal One-Probe Real-Descent Law\\
+and the Riemann Hypothesis}
+\author{}
+\date{Draft of July 22, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\mathcal Z\subset\C\setminus\{0\}$ be any conjugation-invariant multiset and let $z\notin
+\mathcal Z$ be nonreal.  Put
+\[
+ K_z(p)(a)=\frac{p(a^{-1})}{a-z},
+ \qquad
+ r_z(a)=\frac{\bar a^{-2}}{\bar a-z}.
+\]
+We prove a universal pointwise field-descent law:
+\[
+ \exists (p_n)\subset\R[X]\ \forall a\in\mathcal Z,
+       K_z(p_n)(a)\longrightarrow r_z(a)
+ \quad\Longleftrightarrow\quad
+ \mathcal Z\subset\R.
+\]
+No discreteness, summability, norm convergence, or positivity hypothesis is used; if the right
+side holds, the constant choice $p_n=X^2$ is exact.  Thus reality of an entire symmetric spectrum
+is encoded by descent of one pointwise Cauchy response from complex to real polynomial scalars.
+
+Let $\rho$ run through the nontrivial zeros of the Riemann zeta function, with multiplicity, and
+put $a_\rho=-i(\rho-\tfrac12)$.  Thus the Riemann hypothesis says that every $a_\rho$ is real.
+For a regular point $z=u+iv$ define the single Cauchy-probe defect
+\[
+ \mathfrak D(z)=
+ \sum_\rho\frac{-\Ima(a_\rho^{-2})}{|a_\rho-z|^2}.
+\]
+We prove the exact quartet-variance identity
+\[
+ \mathfrak D(z)=16uv\sum_\rho
+ \frac{(\Rea a_\rho)^2(\Ima a_\rho)^2
+       (|a_\rho|^2+|z|^2)}
+ {|a_\rho|^4|a_\rho-z|^2|\overline{a_\rho}-z|^2
+  |a_\rho+z|^2|\overline{a_\rho}+z|^2}.
+\]
+At the fixed zero-free point $z_0=(1+i)/4$ the prefactor is one.  Consequently
+\[
+ \mathfrak D(z_0)\geq0,
+ \qquad
+ \mathfrak D(z_0)=0\Longleftrightarrow\mathrm{RH},
+ \qquad
+ \mathfrak D(z_0)>0\Longleftrightarrow\neg\mathrm{RH}.
+\]
+This replaces a family of positivity tests by one predetermined scalar with an unconditional
+sign and a cancellation-free failure decomposition.
+
+The same scalar has a one-vector operator interpretation.  On the multiplicity-exact zero space
+let $B$ be multiplication by $a_\rho^{-1}$, let
+$k_z(a)=(a-z)^{-1}$, and let
+$r_z(a)=\bar a^{-2}(\bar a-z)^{-1}$.  Complex polynomials always recover $r_{z_0}$ from the
+single Krylov orbit of $k_{z_0}$, whereas real polynomials do so exactly under RH:
+\[
+ r_{z_0}\in\overline{\{p(B)k_{z_0}:p\in\R[X]\}}
+ \quad\Longleftrightarrow\quad\mathrm{RH}.
+\]
+The obstruction is local and explicit: every real-Krylov limit satisfies a two-point seam law,
+and its residual on $r_{z_0}$ is a nonzero rational factor times $\Ima a_\rho$.
+Finally, we connect the criterion to finite divided differences of the continued
+prime--Gamma logarithmic derivative.  This isolates a new source-side route: construct one real
+reciprocal-Krylov recovery, or prove the opposite sign of one fixed prime--Gamma energy contrast.
+An attempted canonical realification of the unconditional complex recovery is computed exactly
+and shown to stop at the same seam, so conjugation symmetry alone cannot close the route.  We do
+not prove the remaining source theorem and do not claim a proof of RH.
+\end{abstract}
+
+\paragraph{Logical status.}
+Every theorem, proposition, lemma, and corollary below is unconditional.  The only unproved
+statement is explicitly labelled as an open problem.  In particular, the paper proves a new
+one-probe criterion and an exact real-form obstruction; it does not prove the Riemann hypothesis.
+
+\section{The one-probe principle}
+
+Write
+\[
+ \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s),
+ \qquad
+ X(z)=\xi\!\left(\frac12+iz\right).
+\]
+The zeros of $X$ form a discrete multiset $\cA$, counted with analytic multiplicity.  We use
+letters $a,x+iy\in\cA$.  The functional equation and Schwarz symmetry give multiplicity-preserving
+involutions
+\begin{equation}
+ a\longmapsto-a,
+ \qquad
+ a\longmapsto\bar a.                                      \tag{1.1}
+\end{equation}
+No point of $\cA$ lies on the imaginary axis: in the original $s$-coordinate this is the
+classical fact that $\zeta$ has no real zero in $0<s<1$.  Moreover
+\begin{equation}
+ \sum_{a\in\cA}|a|^{-2}<\infty.                            \tag{1.2}
+\end{equation}
+The standard symmetric enumeration is not needed below because every series that is rearranged
+will be absolutely convergent.
+
+For $z\notin\cA$, define
+\begin{equation}
+ d_z(a)=-\frac{\Ima(a^{-2})}{|a-z|^2},
+ \qquad
+ \mathfrak D(z)=\sum_{a\in\cA}d_z(a).                    \tag{1.3}
+\end{equation}
+For large $|a|$, the summand is $O_z(|a|^{-4})$; discreteness handles the finite inner part.
+Thus (1.3) converges absolutely.
+
+The key algebra is a four-point identity.
+
+\begin{lemma}[Quartet variance]
+\label{lem:quartet}
+Let $a=x+iy\ne0$ and $z=u+iv$, and suppose none of
+$a,\bar a,-a,-\bar a$ equals $z$.  Then
+\begin{align}
+ &d_z(a)+d_z(\bar a)+d_z(-a)+d_z(-\bar a) \notag\\
+ &\quad=64uv\,
+ \frac{x^2y^2(|a|^2+|z|^2)}
+ {|a|^4|a-z|^2|\bar a-z|^2|a+z|^2|\bar a+z|^2}.          \tag{1.4}
+\end{align}
+\end{lemma}
+
+\begin{proof}
+Since
+\[
+ -\Ima(a^{-2})=\frac{2xy}{|a|^4},
+\]
+the left side of (1.4) equals
+\[
+ \frac{2xy}{|a|^4}
+ \left(
+ \frac1{|a-z|^2}-\frac1{|\bar a-z|^2}
+ +\frac1{|a+z|^2}-\frac1{|\bar a+z|^2}
+ \right).
+\]
+Putting the four fractions over their common denominator, the numerator is
+\[
+ 32uvxy(|a|^2+|z|^2).
+\]
+Multiplication by the outer factor $2xy/|a|^4$ gives (1.4).
+\end{proof}
+
+The calculation is not specific to zeta.  It gives the following universal law.
+
+\begin{theorem}[Universal one-probe law]
+\label{thm:universal}
+Let $\mathcal Z$ be a discrete multiset in $\C\setminus\{0\}$, invariant with multiplicity under
+$a\mapsto-a$ and $a\mapsto\bar a$.  Assume that the series below are absolutely convergent and
+that $z=u+iv$ misses $\mathcal Z$.  Then
+\begin{equation}
+ \sum_{a\in\mathcal Z}\frac{-\Ima(a^{-2})}{|a-z|^2}
+ =16uv\sum_{a\in\mathcal Z}
+ \frac{(\Rea a)^2(\Ima a)^2(|a|^2+|z|^2)}
+ {|a|^4|a-z|^2|\bar a-z|^2|a+z|^2|\bar a+z|^2}.          \tag{UQV}
+\end{equation}
+If $uv\ne0$ and $\mathcal Z$ avoids the imaginary axis, the left side vanishes exactly when
+$\mathcal Z\subset\R$.
+\end{theorem}
+
+\begin{proof}
+Sum Lemma~\ref{lem:quartet} over $\mathcal Z$.  Each of its four left-hand sums is the same by
+the two multiplicity-preserving involutions, so division by four gives (UQV).  Every summand on
+the right is nonnegative.  Under the axis-avoidance hypothesis, its numerator vanishes exactly
+when $\Ima a=0$.
+\end{proof}
+
+Define the nonnegative quartet variance
+\begin{equation}
+ V_z(a)=
+ \frac{(\Rea a)^2(\Ima a)^2(|a|^2+|z|^2)}
+ {|a|^4|a-z|^2|\bar a-z|^2|a+z|^2|\bar a+z|^2}.          \tag{1.5}
+\end{equation}
+
+\begin{theorem}[One-probe quartet-variance law]
+\label{thm:variance}
+For every $z=u+iv\notin\cA$,
+\begin{equation}
+ \boxed{\quad \mathfrak D(z)=16uv\sum_{a\in\cA}V_z(a).\quad} \tag{1.6}
+\end{equation}
+In particular,
+\begin{equation}
+ uv\,\mathfrak D(z)\geq0.                                 \tag{1.7}
+\end{equation}
+If $uv\ne0$, then
+\begin{equation}
+ \mathfrak D(z)=0
+ \quad\Longleftrightarrow\quad
+ \Ima a=0\text{ for every }a\in\cA
+ \quad\Longleftrightarrow\quad\mathrm{RH}.              \tag{1.8}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Absolute convergence permits reindexing by both involutions in (1.1).  Hence the sum over
+$\cA$ of the left side of (1.4) is $4\mathfrak D(z)$, while its right side is
+$64uv\sum_aV_z(a)$.  This proves (1.6), and (1.7) follows termwise.
+
+Assume $uv\ne0$.  Every denominator in (1.5) is positive.  Also $\Rea a\ne0$ for all
+$a\in\cA$.  Thus $V_z(a)=0$ exactly when $\Ima a=0$.  A convergent sum of nonnegative terms
+vanishes exactly when every term vanishes.  Finally,
+$a=-i(\rho-\tfrac12)$ is real exactly when $\Rea\rho=1/2$.
+\end{proof}
+
+The point used throughout the paper is
+\begin{equation}
+ z_0=\frac{1+i}{4}.                                      \tag{1.9}
+\end{equation}
+It is regular because $X$ has no zero at the corresponding low height.  More importantly,
+\[
+ 16\Rea(z_0)\Ima(z_0)=1.
+\]
+
+\begin{corollary}[Predetermined scalar witness]
+\label{cor:fixed}
+At $z_0=(1+i)/4$,
+\begin{equation}
+ \boxed{
+ \mathfrak D(z_0)=\sum_{a\in\cA}V_{z_0}(a)\geq0,
+ \qquad
+ \mathfrak D(z_0)=0\Longleftrightarrow\mathrm{RH}.}       \tag{1.10}
+\end{equation}
+Equivalently,
+\begin{equation}
+ \mathfrak D(z_0)>0\Longleftrightarrow\neg\mathrm{RH},
+ \qquad
+ \mathfrak D(z_0)\leq0\Longleftrightarrow\mathrm{RH}.    \tag{1.11}
+\end{equation}
+\end{corollary}
+
+The unusual feature of (1.10) is not merely that one scalar is equivalent to RH.  Its sign is
+known in advance, and every hypothetical off-line quartet contributes with the same strict sign.
+There is no cancellation among distinct heights, no search for a witnessing test function, and
+no limit over a family of inequalities.
+
+\section{Operator form: one vector, not one operator}
+
+Let $\cH=\ell^2(\cA)$, with multiplicities retained, and take the inner product conjugate-linear
+in the first variable.  Define compact diagonal operators
+\begin{equation}
+ (Bf)(a)=a^{-1}f(a),
+ \qquad
+ (Af)(a)=a^{-2}f(a)=B^2f(a).                              \tag{2.1}
+\end{equation}
+The reciprocal summability (1.2) makes $B$ Hilbert--Schmidt and $A$ trace class.  For a regular
+point $z$, set
+\begin{equation}
+ k_z(a)=\frac1{a-z}.                                      \tag{2.2}
+\end{equation}
+Then $k_z\in\cH$ and
+\begin{equation}
+ \mathfrak D(z)=\Ima\ip{Ak_z}{k_z}.                      \tag{2.3}
+\end{equation}
+Thus Corollary~\ref{cor:fixed} is a one-vector weak-symmetry criterion.  It does not require
+$A$ to be self-adjoint on all of $\cH$; reality of one predetermined quadratic value suffices.
+
+Let $J$ be the complex-linear involution induced by $a\mapsto\bar a$:
+\begin{equation}
+ (Jf)(a)=f(\bar a).                                       \tag{2.4}
+\end{equation}
+It is a unitary involution.  Define the adjoint response
+\begin{equation}
+ r_z=JAk_z,
+ \qquad
+ r_z(a)=\frac{\bar a^{-2}}{\bar a-z}.                    \tag{2.5}
+\end{equation}
+
+\begin{proposition}[Polarization of the fixed defect]
+\label{prop:polarization}
+Put $Q(f)=\Rea\ip{Jf}{f}$.  Then
+\begin{equation}
+ \frac{Q(k_z+i r_z)-Q(k_z-i r_z)}4=\mathfrak D(z).        \tag{2.6}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Expand both quadratic values.  Their diagonal terms cancel, and $Jr_z=Ak_z$ gives the remaining
+cross term $\Ima\ip{Ak_z}{k_z}$.
+\end{proof}
+
+Formula (2.6) is the bridge to the Weil form: $Q$ is the zero-side Hermitian form obtained by
+critical-line reflection.  The next section shows that the decisive distinction is not existence
+of a complex cyclic realization, but descent of that realization to real coefficients.
+
+\section{Universal complex cyclicity}
+
+For $p\in\C[X]$ define
+\begin{equation}
+ K_z(p)=p(B)k_z,
+ \qquad
+ K_z(p)(a)=p(a^{-1})(a-z)^{-1}.                           \tag{3.1}
+\end{equation}
+Vectors coming from functions of the spectral location are constant on all multiplicity copies
+of a fixed zero.  Call their closed subspace $\cH_{\rm ev}$.
+
+\begin{theorem}[One-Cauchy-vector complex cyclicity]
+\label{thm:cyclic}
+For every regular $z$,
+\begin{equation}
+ \overline{\{K_z(p):p\in\C[X]\}}=\cH_{\rm ev}.           \tag{3.2}
+\end{equation}
+In particular, there are complex polynomials $p_n$ such that
+\begin{equation}
+ K_{z_0}(p_n)\longrightarrow r_{z_0}\quad\text{in }\cH. \tag{3.3}
+\end{equation}
+No zero-location hypothesis is used.
+\end{theorem}
+
+\begin{proof}
+Write $\mu_a=a^{-1}$.  For every $\delta>0$, the outer spectral shell
+$\{a:|\mu_a|\geq\delta\}$ is finite.  Fix one spectral location $\alpha=\mu_a$ and a desired
+fiber value $c$.  On a finite outer shell, a Lagrange polynomial separates $\alpha$ from every
+other spectral location.  Multiplying by a high power of $X/\alpha$ leaves its value at
+$\alpha$ unchanged and drives its value to zero at every point with modulus strictly below
+$|\alpha|$.  Enlarging the shell if necessary handles ties of equal modulus.  The resulting
+polynomials are uniformly bounded on the reciprocal spectrum.  Dominated convergence against
+$|k_z|^2$ therefore recovers the complete multiplicity fiber at $a$ in norm.
+
+Finite sums recover all finitely supported fiber-constant vectors, and such vectors are dense in
+$\cH_{\rm ev}$.  This proves (3.2).  The response (2.5) is square-summable and fiber-constant,
+so (3.3) follows.
+\end{proof}
+
+Theorem~\ref{thm:cyclic} is an important guardrail.  A complex Krylov realization of the adjoint
+response cannot prove RH: it exists unconditionally.  The arithmetic content starts only after
+imposing the real form.
+
+\section{Real Krylov descent is exactly RH}
+
+Every real polynomial obeys $p(\bar w)=\overline{p(w)}$.  Applied at a conjugate pair of spectral
+locations, this gives an exact seam equation.
+
+\begin{lemma}[Real-Krylov seam]
+\label{lem:seam}
+If $p\in\R[X]$ and $v=K_z(p)$, then for every $a\in\cA$,
+\begin{equation}
+ (\bar a-z)v(\bar a)
+ -(\bar a-\bar z)\overline{v(a)}=0.                       \tag{4.1}
+\end{equation}
+The same identity holds for every norm limit of real-Krylov vectors.
+\end{lemma}
+
+\begin{proof}
+For a polynomial vector,
+\[
+ (\bar a-z)v(\bar a)=p(\bar a^{-1})
+ =\overline{p(a^{-1})}
+ =(\bar a-\bar z)\overline{v(a)}.
+\]
+Coordinate evaluation is continuous on $\ell^2(\cA)$, so (4.1) survives norm limits.
+\end{proof}
+
+The seam residual of the desired response has no hidden term.
+
+\begin{lemma}[Adjoint-response seam residual]
+\label{lem:residual}
+For $r_z$ from (2.5), the left side of (4.1) is
+\begin{equation}
+ \frac{4\,\Ima(a)\Ima(z)\,a^{-2}}
+ {(a-z)(a-\bar z)}.                                      \tag{4.2}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Substitute
+\[
+ r_z(\bar a)=\frac{a^{-2}}{a-z},
+ \qquad
+ \overline{r_z(a)}=\frac{a^{-2}}{a-\bar z}
+\]
+into (4.1), put the two terms over a common denominator, and use
+$(\bar a-a)(\bar z-z)=4\Ima(a)\Ima(z)$.
+\end{proof}
+
+The seam is not special to the zeta divisor, to a Hilbert norm, or even to a discrete spectrum.
+It gives the following field-descent classification.
+
+\Needspace{17\baselineskip}
+\begin{theorem}[Universal pointwise real-descent law]
+\label{thm:universaldescent}
+Let $\mathcal Z\subset\C\setminus\{0\}$ be a multiset invariant with multiplicity under complex
+conjugation.  Let $z\notin\mathcal Z$ with $\Ima z\ne0$.  For
+\[
+ K_z(p)(a)=\frac{p(a^{-1})}{a-z},
+ \qquad
+ r_z(a)=\frac{\bar a^{-2}}{\bar a-z},
+\]
+the following are equivalent:
+\begin{enumerate}
+ \item there is one sequence $p_n\in\R[X]$ such that
+       $K_z(p_n)(a)\to r_z(a)$ for every $a\in\mathcal Z$;
+ \item $\mathcal Z\subset\R$.
+\end{enumerate}
+The forward implication requires only pointwise convergence.  Under the second condition the
+constant sequence $p_n=X^2$ gives equality at every point.
+\end{theorem}
+
+\begin{proof}
+Every $K_z(p_n)$ satisfies the seam (4.1).  Pointwise convergence at $a$ and $\bar a$ therefore
+passes that identity to $r_z$.  Lemma~\ref{lem:residual} gives
+\[
+ \frac{4\,\Ima(a)\Ima(z)\,a^{-2}}
+ {(a-z)(a-\bar z)}=0.
+\]
+All factors except $\Ima(a)$ are nonzero, so $\Ima(a)=0$.  This holds for every
+$a\in\mathcal Z$.  Conversely, if $a=\bar a$, then
+$r_z(a)=a^{-2}(a-z)^{-1}=K_z(X^2)(a)$.
+\end{proof}
+
+\begin{theorem}[One-vector real-descent law]
+\label{thm:realdescent}
+At the fixed point $z_0=(1+i)/4$,
+\begin{equation}
+ \boxed{\quad
+ r_{z_0}\in\overline{\{p(B)k_{z_0}:p\in\R[X]\}}
+ \quad\Longleftrightarrow\quad\mathrm{RH}.
+ \quad}                                                   \tag{4.3}
+\end{equation}
+More precisely, complex polynomial recovery always holds by
+Theorem~\ref{thm:cyclic}, while real polynomial recovery holds under RH with the single polynomial
+$p(X)=X^2$.
+\end{theorem}
+
+\begin{proof}
+Suppose real polynomial vectors converge to $r_{z_0}$.  Lemma~\ref{lem:seam} gives (4.1) for the
+limit.  In (4.2), $\Ima z_0\ne0$, and all remaining rational factors are nonzero at a regular
+probe.  Hence $\Ima a=0$ for every $a\in\cA$, which is RH.
+
+Conversely, under RH every $a$ is real.  Then $J$ acts trivially on spectral locations, and
+\[
+ r_{z_0}=Ak_{z_0}=B^2k_{z_0}=K_{z_0}(X^2).
+\]
+\end{proof}
+
+Theorem~\ref{thm:realdescent} is stronger than the statement that a hypothetical Hilbert--P\'olya
+operator should be self-adjoint.  The compact diagonal operator, its spectrum, a cyclic vector,
+and the target response already exist without RH.  The entire hypothesis is concentrated in one
+descent question:
+\[
+ \textit{does one known complex Krylov solution descend to the real coefficient field?}
+\]
+
+\section{Prime--Gamma source realization}
+
+The preceding sections use the divisor to expose the geometry.  A route toward RH must recover
+the decisive real structure from the arithmetic source.  We now state the exact interface.
+
+\Needspace{12\baselineskip}
+Let
+\[
+ s(z)=\frac12+iz,
+ \qquad
+ A_\infty(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2),
+\]
+and define the meromorphically continued prime--Gamma trace
+\begin{equation}
+ T(z)=-i\left(-\frac{\zeta'}{\zeta}(s(z))
+                   -\frac{A_\infty'}{A_\infty}(s(z))\right).
+                                                               \tag{5.1}
+\end{equation}
+At every regular point this is $i\xi'(s(z))/\xi(s(z))$, equivalently $X'(z)/X(z)$.
+For regular, conjugate-separated points define
+\begin{equation}
+ \cK(z,w)=\frac{T(\bar w)-T(z)}{z-\bar w}.                \tag{5.2}
+\end{equation}
+In the absolute Euler half-plane, (5.1) consists of the convergent von Mangoldt series and the
+explicit Gamma connection.  Formula (5.2) then continues this source kernel into the critical
+strip.
+
+For a finite packet $P=\{(c_j,z_j)\}_{j=1}^m$, put
+\begin{equation}
+ E(P)=\Rea\sum_{i,j=1}^m c_i\bar c_j\cK(z_i,z_j).         \tag{5.3}
+\end{equation}
+
+\begin{proposition}[Finite source identity]
+\label{prop:source}
+Let $F_P(a)=\sum_jc_j(a-z_j)^{-1}$.  Whenever all denominators in (5.2) are regular,
+\begin{equation}
+ E(P)=\Rea\sum_{a\in\cA}F_P(a)\overline{F_P(\bar a)}
+     =Q(F_P|_{\cA}).                                     \tag{5.4}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The Hadamard logarithmic derivative of $X$ gives the divided-difference identity
+\[
+ \cK(z,w)=\sum_{a\in\cA}\frac{1}{(a-z)(a-\bar w)}.
+\]
+Absolute convergence permits expansion of the finite double sum in (5.3), yielding (5.4).
+The equality with the prime--Gamma expression follows from the completed logarithmic derivative
+in (5.1).
+\end{proof}
+
+Combining Cauchy density, Proposition~\ref{prop:source}, and continuity of $Q$ gives an arithmetic
+approximation of the one-probe defect.
+
+\begin{theorem}[Finite prime--Gamma contrast reconstruction]
+\label{thm:reconstruction}
+There are two sequences of finite, conjugate-separated regular packets $P_n^+$ and $P_n^-$ such
+that their spectral evaluations converge respectively to $k_{z_0}+ir_{z_0}$ and
+$k_{z_0}-ir_{z_0}$, and
+\begin{equation}
+ \frac{E(P_n^+)-E(P_n^-)}4\longrightarrow\mathfrak D(z_0). \tag{5.5}
+\end{equation}
+Consequently, eventual nonpositivity of the contrast in (5.5) implies RH.
+\end{theorem}
+
+\begin{proof}
+Finite regular Cauchy packets are dense in the fiber-constant evaluation space.  Colliding poles
+may be perturbed to conjugate-separated regular poles without changing the Hilbert limit.
+Apply this to the two square-summable target vectors.  Proposition~\ref{prop:source} identifies
+each finite energy with $Q$, and continuity together with (2.6) gives (5.5).  Corollary
+\ref{cor:fixed} supplies the final implication.
+\end{proof}
+
+The packets in Theorem~\ref{thm:reconstruction} are existence witnesses extracted from spectral
+closure.  That fact matters: the theorem does not yet provide a divisor-free recipe for their
+coefficients.  It does, however, prove that no analytic continuation, pole separation, or finite
+source representation gap remains after such a recipe is found.
+
+\Needspace{12\baselineskip}
+\section{The new route and its exact open core}
+
+The results give two sufficient ways to attack the remaining source problem.
+
+\begin{problem}[Real source selection]
+\label{prob:real}
+Construct, from the continued prime--Gamma trace $T$ and its divided differences alone, real
+polynomials $p_n\in\R[X]$ such that
+\begin{equation}
+ p_n(B)k_{z_0}\longrightarrow r_{z_0}.                   \tag{6.1}
+\end{equation}
+Alternatively, construct source-determined packets in Theorem~\ref{thm:reconstruction} whose
+energy contrast is eventually nonpositive.
+\end{problem}
+
+By Theorem~\ref{thm:realdescent}, a solution of Problem~\ref{prob:real} proves RH.  The point is
+not that the problem is known to be easier.  Its value is that it exposes a sharply different
+mechanism from an all-test positivity theorem:
+\begin{equation}
+ \boxed{
+ \begin{gathered}
+ \text{one fixed probe}\longrightarrow\text{one adjoint response}\\
+ \longrightarrow\text{real descent of one complex Krylov orbit}
+ \longrightarrow\mathrm{RH}.
+ \end{gathered}}                                         \tag{6.2}
+\end{equation}
+
+The source data needed by an iterative construction are explicit divided differences of (5.1).
+The missing invariant is coefficient reality.  This suggests studying conjugation-preserving
+continued-fraction, Lanczos, or moment recursions for the prime--Gamma kernel, but any such
+recursion must prove its realness rather than import self-adjointness.
+
+\section{Hostile audit}
+
+We record what the new formulation does and does not accomplish.
+
+\subsection*{Complex cyclicity is not evidence for RH}
+The complex orbit is universal by Theorem~\ref{thm:cyclic}.  Any argument ending with
+$r_{z_0}\in\overline{\C[B]k_{z_0}}$ has proved no zero-location information.  Complex Lagrange
+coefficients absorb every off-line phase.
+
+\subsection*{Finite real interpolation cannot evade the wall}
+At a conjugate pair $a,\bar a$, real coefficients force (4.1).  The target residual (4.2) is
+already nonzero when $\Ima a\ne0$.  Therefore neither higher polynomial degree nor a more
+accurate finite interpolation can solve the real problem under a hypothetical off-line zero.
+The obstruction is closed under norm limits.
+
+\subsection*{Canonical realification was attempted and fails exactly at the frontier}
+Start with the unconditional complex recovery $K_{z_0}(p_n)\to r_{z_0}$.  Let $p_n^\#$ be
+obtained by conjugating every coefficient and let
+$q_n=(p_n+p_n^\#)/2\in\R[X]$.  Direct coefficient transport gives, at every regular coordinate,
+\begin{equation}
+ K_z(q_n)(a)=\frac12\left(
+ K_z(p_n)(a)+\frac{a-\bar z}{a-z}\,
+       \overline{K_z(p_n)(\bar a)}\right).               \tag{7.1}
+\end{equation}
+Hence $K_z(q_n)$ converges pointwise to the canonical real-form projection
+\[
+ (P_zv)(a)=\frac12\left(v(a)+\frac{a-\bar z}{a-z}\overline{v(\bar a)}\right)
+\]
+with $v=r_z$.  The equality $P_zr_z=r_z$ is exactly the seam equation (4.1), and by (4.2) it
+holds at every coordinate exactly when all coordinates are real.  Thus the most direct attempt
+to turn the known complex source solution into a real one succeeds exactly under RH and cannot
+be used as an unconditional proof.  This calculation rules out coefficient averaging as the
+missing source mechanism; any successful construction must inject additional zeta-specific
+arithmetic structure before realification.
+
+\subsection*{The known sign points in the wrong direction}
+Equation (1.10) proves $\mathfrak D(z_0)\geq0$ unconditionally.  More estimates of the same sign
+cannot prove RH.  A source argument must force the opposite inequality, exact cancellation, or
+real Krylov descent.  This prevents a positive-resolvent or Cauchy--Schwarz argument from being
+mistaken for progress.
+
+\subsection*{Weil Hermiticity is insufficient}
+The form $Q(f)=\Rea\ip{Jf}{f}$ is Hermitian because $J$ is a unitary involution.  Hermiticity does
+not identify $J$ with the identity and does not make $A$ self-adjoint in the ordinary Hilbert
+metric.  The seam (4.1) measures exactly that missing identification.
+
+\subsection*{The source reconstruction is not yet canonical}
+Theorem~\ref{thm:reconstruction} removes a representation gap but selects approximants through
+the target Hilbert closure.  Treating their existence as a source proof would be circular.  A
+valid proof must specify coefficients from prime--Gamma data and then establish the real-form
+constraint independently.
+
+These failures do not invalidate route (6.2).  They isolate its only live producer: a
+conjugation-preserving source selection theorem.  Conversely, they make the route falsifiable.
+A claimed construction can be rejected immediately if it uses complex coefficients, a
+zero-selected interpolation set, ordinary Hilbert self-adjointness, or the desired sign as an
+input.
+
+\section{Relation to existing criteria}
+
+Li's criterion replaces RH by positivity of an infinite sequence of coefficients, and
+Bombieri--Lagarias relate that sequence to Weil positivity~\cite{Li1997,BombieriLagarias1999}.
+Weil's criterion asks for nonnegativity on a full test class~\cite{Weil1952}.  Recent spectral
+programs seek self-adjoint realizations or limits of self-adjoint finite systems; see, for example,
+Hedenmalm's theta differential pair~\cite{Hedenmalm2026} and Suzuki's screw-function framework
+\cite{Suzuki2026}.  Caruso describes closed Krylov spaces of compact normal operators through
+their spectral projections~\cite{Caruso2023}, while general Krylov solvability is closely related
+to spectral measures and moment problems~\cite{Caruso2024}.
+
+The present criterion has a different quantifier structure.  It fixes one regular point, one
+Cauchy vector, one compact reciprocal operator, and one target response.  RH is neither positivity
+of all vectors nor existence of a complex cyclic model.  It is descent of one already-existing
+complex solution from $\C[X]$ to $\R[X]$.  The universal pointwise theorem shows that this field
+descent, unlike ordinary compact-normal Krylov solvability, is already rigid before a Hilbert
+topology is imposed.  The quartet identity then supplies a cancellation-free one-scalar witness
+for failure.
+
+\enlargethispage{\baselineskip}
+Targeted searches across the Li/Weil, Cauchy-transform, Hilbert--P\'olya, and Krylov literature
+found no prior statement of the universal pointwise descent theorem, the fixed-probe identity
+(1.10), or the zeta real-descent equivalence (4.3).  This is not a claim of exhaustive priority.
+The algebraic ingredients are elementary; the claimed contribution is their field-sensitive,
+multiplicity-exact synthesis and the resulting one-vector source interface.
+
+\section{Conclusion}
+
+The central result is the universal classification in
+Theorem~\ref{thm:universaldescent}: one nonreal Cauchy response descends pointwise from
+$\C[X]$ to $\R[X]$ exactly when the entire conjugation-symmetric spectrum is real.  For the
+centered zeta divisor it yields the paired fixed-probe law
+\[
+ \boxed{
+ \begin{gathered}
+ \mathfrak D\!\left(\frac{1+i}{4}\right)
+   =\sum_{a\in\cA}V_{(1+i)/4}(a)\geq0,\\
+ \mathfrak D\!\left(\frac{1+i}{4}\right)=0
+   \Longleftrightarrow
+ r_{(1+i)/4}\in\overline{\R[B]k_{(1+i)/4}}
+   \Longleftrightarrow\mathrm{RH}.
+ \end{gathered}}                                         \tag{9.1}
+\]
+Every off-line quartet contributes strictly to the first scalar and creates an explicit local
+seam residual in the second criterion.  Yet the same response always lies in the complex Krylov
+closure.  RH is therefore the exact real-form descent of one universal complex cyclic response.
+
+This does not solve RH.  It creates a new route with one unambiguous frontier: obtain coefficient
+reality from the continued prime--Gamma divided-difference source.  Success would close the chain;
+failure can no longer hide behind analytic continuation, density, finite packet realization,
+operator existence, or a family of unlocated negative directions.
+
+\begin{thebibliography}{99}
+
+\bibitem{BombieriLagarias1999}
+E.~Bombieri and J.~C.~Lagarias,
+\emph{Complements to Li's criterion for the Riemann hypothesis},
+Journal of Number Theory \textbf{77} (1999), 274--287,
+\href{https://doi.org/10.1006/jnth.1999.2392}{doi:10.1006/jnth.1999.2392}.
+
+\bibitem{Caruso2024}
+N.~A.~Caruso,
+\emph{Structural properties of Krylov subspaces, Krylov solvability, and applications to
+unbounded self-adjoint operators},
+arXiv:2404.19698 (2024),
+\url{https://arxiv.org/abs/2404.19698}.
+
+\bibitem{Caruso2023}
+N.~A.~Caruso,
+\emph{A note on the Krylov solvability of compact normal operators on Hilbert space},
+Complex Analysis and Operator Theory \textbf{17} (2023), Article 100,
+\url{https://doi.org/10.1007/s11785-023-01413-0}.
+
+\bibitem{Hedenmalm2026}
+H.~Hedenmalm,
+\emph{Spectral interpretation of Riemann zeta zeros},
+arXiv:2606.17494 (2026),
+\url{https://arxiv.org/abs/2606.17494}.
+
+\bibitem{Li1997}
+X.-J.~Li,
+\emph{The positivity of a sequence of numbers and the Riemann hypothesis},
+Journal of Number Theory \textbf{65} (1997), 325--333.
+
+\bibitem{Suzuki2026}
+M.~Suzuki,
+\emph{Weil's quadratic form via the screw function},
+arXiv:2606.09096 (2026),
+\url{https://arxiv.org/abs/2606.09096}.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh, revised by D.~R.~Heath-Brown,
+\emph{The Theory of the Riemann Zeta-Function}, second edition,
+Oxford University Press, 1986.
+
+\bibitem{Weil1952}
+A.~Weil,
+\emph{Sur les formules explicites de la th\'eorie des nombres premiers},
+Communications du S\'eminaire Math\'ematique de l'Universit\'e de Lund (1952), 252--265.
+
+\end{thebibliography}
+
+\end{document}

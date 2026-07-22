@@ -34,7 +34,7 @@ theorem inverseDilatedEvenShellEven_orthonormal_scales_of_ratioSeparation
       finiteActiveScaleRatio r z < finiteActiveScaleRatio r w →
         d * finiteActiveScaleRatio r z < c * finiteActiveScaleRatio r w)
     (m : ℕ) :
-    Orthonormal ℂ (fun i => inverseDilatedEvenShellEven c d (r i) hc hcd (hr i) m) := by
+    Orthonormal ℂ (fun i => inverseDilatedEvenShellEven c d (r i) hcd (hr i) m) := by
   constructor
   · intro i
     exact (inverseDilatedEvenShellEven_orthonormal c d (r i) hc hcd (hr i)).norm_eq_one m
@@ -62,16 +62,16 @@ theorem inverseDilatedEvenShellEven_orthonormal_scales_of_ratioSeparation
         simpa [div_eq_mul_inv] using (div_lt_div_iff₀ hrj0 hri0).2 hrij
       rw [← inner_conj_symm]
       have hzero : inner ℂ
-          (inwardDilatedEvenShellEven c d (r j)⁻¹ hc hcd (inv_pos.mpr hrj0) m)
-          (inwardDilatedEvenShellEven c d (r i)⁻¹ hc hcd (inv_pos.mpr hri0) m) = 0 := by
+          (inwardDilatedEvenShellEven c d (r j)⁻¹ hcd (inv_pos.mpr hrj0) m)
+          (inwardDilatedEvenShellEven c d (r i)⁻¹ hcd (inv_pos.mpr hri0) m) = 0 := by
         change inner ℂ
-          (inwardDilatedEvenShell c d (r j)⁻¹ hc hcd (inv_pos.mpr hrj0) m)
-          (inwardDilatedEvenShell c d (r i)⁻¹ hc hcd (inv_pos.mpr hri0) m) = 0
+          (inwardDilatedEvenShell c d (r j)⁻¹ hcd (inv_pos.mpr hrj0) m)
+          (inwardDilatedEvenShell c d (r i)⁻¹ hcd (inv_pos.mpr hri0) m) = 0
         exact inner_inwardDilatedEvenShell_eq_zero_of_lt hc hcd
           (inv_pos.mpr hrj0) (inv_pos.mpr hri0) hband m
       have hinvzero : inner ℂ
-          (inverseDilatedEvenShellEven c d (r j) hc hcd (hr j) m)
-          (inverseDilatedEvenShellEven c d (r i) hc hcd (hr i) m) = 0 := by
+          (inverseDilatedEvenShellEven c d (r j) hcd (hr j) m)
+          (inverseDilatedEvenShellEven c d (r i) hcd (hr i) m) = 0 := by
         simpa only [inverseDilatedEvenShellEven, inwardDilatedEvenShellEven] using hzero
       rw [hinvzero]
       simp
@@ -95,11 +95,11 @@ theorem inverseDilatedEvenShellEven_orthonormal_scales_of_ratioSeparation
             _ = c * r i := by field_simp
         simpa [div_eq_mul_inv] using (div_lt_div_iff₀ hri0 hrj0).2 hrji
       have hzero : inner ℂ
-          (inwardDilatedEvenShellEven c d (r i)⁻¹ hc hcd (inv_pos.mpr hri0) m)
-          (inwardDilatedEvenShellEven c d (r j)⁻¹ hc hcd (inv_pos.mpr hrj0) m) = 0 := by
+          (inwardDilatedEvenShellEven c d (r i)⁻¹ hcd (inv_pos.mpr hri0) m)
+          (inwardDilatedEvenShellEven c d (r j)⁻¹ hcd (inv_pos.mpr hrj0) m) = 0 := by
         change inner ℂ
-          (inwardDilatedEvenShell c d (r i)⁻¹ hc hcd (inv_pos.mpr hri0) m)
-          (inwardDilatedEvenShell c d (r j)⁻¹ hc hcd (inv_pos.mpr hrj0) m) = 0
+          (inwardDilatedEvenShell c d (r i)⁻¹ hcd (inv_pos.mpr hri0) m)
+          (inwardDilatedEvenShell c d (r j)⁻¹ hcd (inv_pos.mpr hrj0) m) = 0
         exact inner_inwardDilatedEvenShell_eq_zero_of_lt hc hcd
           (inv_pos.mpr hri0) (inv_pos.mpr hrj0) hband m
       simpa only [inverseDilatedEvenShellEven, inwardDilatedEvenShellEven] using hzero
@@ -107,32 +107,32 @@ theorem inverseDilatedEvenShellEven_orthonormal_scales_of_ratioSeparation
 /-- A finite linear combination of the paired Sonin input shells. -/
 def finitePairedEvenSoninInputCombination
     {n : ℕ} (a c d : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
-    (hc : 0 < c) (hcd : c < d) (x : Fin n → ℂ) (m : ℕ) : evenSubspace :=
-  ∑ i, x i • finitePairedEvenSoninInput a c d r hr hc hcd i m
+    (hcd : c < d) (x : Fin n → ℂ) (m : ℕ) : evenSubspace :=
+  ∑ i, x i • finitePairedEvenSoninInput a c d r hr hcd i m
 
 /-- Paired input combinations converge to the corresponding raw inverse-shell combinations. -/
 theorem finitePairedEvenSoninInputCombination_tendsto_raw
     {n : ℕ} (a c d : ℝ) (ha : 0 < a) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
     (hc : 0 < c) (hcd : c < d) (harc : ∀ i, a < r i * c) (x : Fin n → ℂ) :
-    Tendsto (fun m => ‖finitePairedEvenSoninInputCombination a c d r hr hc hcd x m -
-      ∑ i, x i • inverseDilatedEvenShellEven c d (r i) hc hcd (hr i) m‖)
+    Tendsto (fun m => ‖finitePairedEvenSoninInputCombination a c d r hr hcd x m -
+      ∑ i, x i • inverseDilatedEvenShellEven c d (r i) hcd (hr i) m‖)
       atTop (nhds 0) := by
   have hi : ∀ i, Tendsto (fun m => x i •
-      (finitePairedEvenSoninInput a c d r hr hc hcd i m -
-        inverseDilatedEvenShellEven c d (r i) hc hcd (hr i) m)) atTop (nhds 0) := by
+      (finitePairedEvenSoninInput a c d r hr hcd i m -
+        inverseDilatedEvenShellEven c d (r i) hcd (hr i) m)) atTop (nhds 0) := by
     intro i
     have h := evenCentralSoninProjection_inverseDilatedEvenShell_tendsto
       a c d (r i) ha hc hcd (hr i) (harc i)
     have hv : Tendsto (fun m =>
-        finitePairedEvenSoninInput a c d r hr hc hcd i m -
-          inverseDilatedEvenShellEven c d (r i) hc hcd (hr i) m) atTop (nhds 0) :=
+        finitePairedEvenSoninInput a c d r hr hcd i m -
+          inverseDilatedEvenShellEven c d (r i) hcd (hr i) m) atTop (nhds 0) :=
       tendsto_zero_iff_norm_tendsto_zero.mpr (by
         simpa [finitePairedEvenSoninInput] using h)
     simpa only [smul_zero] using hv.const_smul (x i)
   have hsum := tendsto_finsetSum Finset.univ (fun i _ => hi i)
   have hsum0 : Tendsto (fun m => ∑ i, x i •
-      (finitePairedEvenSoninInput a c d r hr hc hcd i m -
-        inverseDilatedEvenShellEven c d (r i) hc hcd (hr i) m)) atTop (nhds 0) := by
+      (finitePairedEvenSoninInput a c d r hr hcd i m -
+        inverseDilatedEvenShellEven c d (r i) hcd (hr i) m)) atTop (nhds 0) := by
     simpa using hsum
   apply tendsto_zero_iff_norm_tendsto_zero.mp
   convert hsum0 using 1
@@ -150,10 +150,10 @@ theorem norm_finitePairedEvenSoninInputCombination_tendsto
       finiteActiveScaleRatio r z < finiteActiveScaleRatio r w →
         d * finiteActiveScaleRatio r z < c * finiteActiveScaleRatio r w)
     (x : Fin n → ℂ) :
-    Tendsto (fun m => ‖finitePairedEvenSoninInputCombination a c d r hr hc hcd x m‖)
+    Tendsto (fun m => ‖finitePairedEvenSoninInputCombination a c d r hr hcd x m‖)
       atTop (nhds (finiteCoefficientL2Norm x)) := by
   let g : ℕ → evenSubspace := fun m =>
-    ∑ i, x i • inverseDilatedEvenShellEven c d (r i) hc hcd (hr i) m
+    ∑ i, x i • inverseDilatedEvenShellEven c d (r i) hcd (hr i) m
   have happrox := finitePairedEvenSoninInputCombination_tendsto_raw
     a c d ha r hr hc hcd harc x
   have hnorm : ∀ m, ‖g m‖ = finiteCoefficientL2Norm x := by
@@ -169,11 +169,11 @@ index. -/
 theorem norm_finitePairedEvenSoninInputCombination_le
     {n : ℕ} (a c d : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
     (hc : 0 < c) (hcd : c < d) (x : Fin n → ℂ) (m : ℕ) :
-    ‖finitePairedEvenSoninInputCombination a c d r hr hc hcd x m‖ ≤ ∑ i, ‖x i‖ := by
+    ‖finitePairedEvenSoninInputCombination a c d r hr hcd x m‖ ≤ ∑ i, ‖x i‖ := by
   rw [finitePairedEvenSoninInputCombination]
   calc
-    ‖∑ i, x i • finitePairedEvenSoninInput a c d r hr hc hcd i m‖ ≤
-        ∑ i, ‖x i • finitePairedEvenSoninInput a c d r hr hc hcd i m‖ :=
+    ‖∑ i, x i • finitePairedEvenSoninInput a c d r hr hcd i m‖ ≤
+        ∑ i, ‖x i • finitePairedEvenSoninInput a c d r hr hcd i m‖ :=
       norm_sum_le _ _
     _ ≤ ∑ i, ‖x i‖ := by
       apply Finset.sum_le_sum
@@ -187,11 +187,11 @@ theorem finitePairedEvenSoninInputCombination_weakly_tendsto_zero
     {n : ℕ} (a c d : ℝ) (ha : 0 < a) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
     (hc : 0 < c) (hcd : c < d) (harc : ∀ i, a < r i * c) (x : Fin n → ℂ) :
     ∀ ℓ : evenSubspace →L[ℂ] ℂ,
-      Tendsto (fun m => ℓ (finitePairedEvenSoninInputCombination a c d r hr hc hcd x m))
+      Tendsto (fun m => ℓ (finitePairedEvenSoninInputCombination a c d r hr hcd x m))
         atTop (nhds 0) := by
   intro ℓ
   have hi : ∀ i, Tendsto (fun m =>
-      ℓ (x i • finitePairedEvenSoninInput a c d r hr hc hcd i m))
+      ℓ (x i • finitePairedEvenSoninInput a c d r hr hcd i m))
       atTop (nhds 0) := by
     intro i
     have h := finitePairedEvenSoninInput_weakly_tendsto_zero
@@ -220,18 +220,18 @@ theorem finitePrimeGram_pairedShell_inner_tendsto_matrixEntry_of_diagonal_zero
     (A : Matrix (Fin n) (Fin n) ℂ) (hdiag : ∀ i, A i i = 0) (k l : Fin n) :
     Tendsto (fun m => ‖inner ℂ
       (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-        (real_prime_one_lt p hp) hc hcd l m)
+        (real_prime_one_lt p hp) hcd l m)
       (finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
         (real_prime_one_lt p hp) A
         (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-          (real_prime_one_lt p hp) hc hcd k m)) - A l k‖)
+          (real_prime_one_lt p hp) hcd k m)) - A l k‖)
       atTop (nhds 0) := by
   let r : Fin n → ℝ := fun i => (p i : ℝ)
   let hr : ∀ i, 1 < r i := real_prime_one_lt p hp
   change Tendsto (fun m => ‖inner ℂ
-      (finitePairedEvenSoninInput a c d r hr hc hcd l m)
+      (finitePairedEvenSoninInput a c d r hr hcd l m)
       (finiteEvenDilationGramCombination a r hr A
-        (finitePairedEvenSoninInput a c d r hr hc hcd k m)) - A l k‖)
+        (finitePairedEvenSoninInput a c d r hr hcd k m)) - A l k‖)
       atTop (nhds 0)
   have hbase := finiteEvenDilationGramCombination_pairedShell_inner_tendsto
     a c d ha hc hcd hda r hr harc hout A k l
@@ -262,39 +262,39 @@ theorem finitePrimeGram_pairedCombination_inner_tendsto_bilinear
     (x y : Fin n → ℂ) :
     Tendsto (fun m => inner ℂ
       (finitePairedEvenSoninInputCombination a c d (fun i => (p i : ℝ))
-        (real_prime_one_lt p hp) hc hcd y m)
+        (real_prime_one_lt p hp) hcd y m)
       (finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
         (real_prime_one_lt p hp) A
         (finitePairedEvenSoninInputCombination a c d (fun i => (p i : ℝ))
-          (real_prime_one_lt p hp) hc hcd x m)))
+          (real_prime_one_lt p hp) hcd x m)))
       atTop (nhds (finiteMatrixBilinear A x y)) := by
   have hlk : ∀ l k, Tendsto (fun m => star (y l) * x k * inner ℂ
       (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-        (real_prime_one_lt p hp) hc hcd l m)
+        (real_prime_one_lt p hp) hcd l m)
       (finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
         (real_prime_one_lt p hp) A
         (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-          (real_prime_one_lt p hp) hc hcd k m)))
+          (real_prime_one_lt p hp) hcd k m)))
       atTop (nhds (star (y l) * x k * A l k)) := by
     intro l k
     have hz := finitePrimeGram_pairedShell_inner_tendsto_matrixEntry_of_diagonal_zero
       a c d ha hc hcd hda p hp hinj harc hout hsep A hdiag k l
     have hv : Tendsto (fun m => inner ℂ
         (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-          (real_prime_one_lt p hp) hc hcd l m)
+          (real_prime_one_lt p hp) hcd l m)
         (finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
           (real_prime_one_lt p hp) A
           (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-            (real_prime_one_lt p hp) hc hcd k m)) - A l k)
+            (real_prime_one_lt p hp) hcd k m)) - A l k)
         atTop (nhds 0) := tendsto_zero_iff_norm_tendsto_zero.mpr hz
     have hentry : Tendsto (fun m =>
         (inner ℂ
           (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-            (real_prime_one_lt p hp) hc hcd l m)
+            (real_prime_one_lt p hp) hcd l m)
           (finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
             (real_prime_one_lt p hp) A
             (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-              (real_prime_one_lt p hp) hc hcd k m)) - A l k) + A l k)
+              (real_prime_one_lt p hp) hcd k m)) - A l k) + A l k)
         atTop (nhds (0 + A l k)) := hv.add tendsto_const_nhds
     have hscaled := (hentry.const_mul (x k)).const_mul (star (y l))
     simpa [mul_assoc] using hscaled
@@ -312,18 +312,18 @@ theorem finitePrimeGram_pairedCombination_inner_tendsto_bilinear
     rw [map_smul]
     change inner ℂ
       (y l • ((finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-        (real_prime_one_lt p hp) hc hcd l m : evenSubspace) : SoninL2))
+        (real_prime_one_lt p hp) hcd l m : evenSubspace) : SoninL2))
       (x k • (((finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
         (real_prime_one_lt p hp) A)
         (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-          (real_prime_one_lt p hp) hc hcd k m) : evenSubspace) : SoninL2)) =
+          (real_prime_one_lt p hp) hcd k m) : evenSubspace) : SoninL2)) =
       star (y l) * x k * inner ℂ
         ((finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-          (real_prime_one_lt p hp) hc hcd l m : evenSubspace) : SoninL2)
+          (real_prime_one_lt p hp) hcd l m : evenSubspace) : SoninL2)
         (((finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
           (real_prime_one_lt p hp) A)
           (finitePairedEvenSoninInput a c d (fun i => (p i : ℝ))
-            (real_prime_one_lt p hp) hc hcd k m) : evenSubspace) : SoninL2)
+            (real_prime_one_lt p hp) hcd k m) : evenSubspace) : SoninL2)
     rw [inner_smul_left, inner_smul_right, starRingEnd_apply]
     ring
 
@@ -350,9 +350,9 @@ theorem norm_finiteMatrixBilinear_le_norm_finitePrimeEvenDilationGram_sub_compac
   obtain ⟨c, d, hc, hcd, hda, harc, hout, hsep⟩ :=
     exists_finiteScale_gramSeparatingInteriorShell a ha r hr
   let fx : ℕ → evenSubspace := fun m =>
-    finitePairedEvenSoninInputCombination a c d r hr hc hcd x m
+    finitePairedEvenSoninInputCombination a c d r hr hcd x m
   let fy : ℕ → evenSubspace := fun m =>
-    finitePairedEvenSoninInputCombination a c d r hr hc hcd y m
+    finitePairedEvenSoninInputCombination a c d r hr hcd y m
   let T : evenSubspace →L[ℂ] evenSubspace :=
     finiteEvenDilationGramCombination a r hr A
   have hxNorm : Tendsto (fun m => ‖fx m‖) atTop (nhds (finiteCoefficientL2Norm x)) := by

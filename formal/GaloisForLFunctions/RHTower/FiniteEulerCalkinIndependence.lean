@@ -143,7 +143,7 @@ def scaledEvenShellCutoff (r a b : ℝ) : SoninL2 →L[ℂ] SoninL2 :=
     (measurableSet_scaledEvenShellBand r a b)
 
 theorem scaledEvenShellCutoff_target_inward
-    {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hab : a < b) (n : ℕ) :
+    {r a b : ℝ} (hr : 0 < r) (hab : a < b) (n : ℕ) :
     scaledEvenShellCutoff r a b
         (dilation r hr (evenShellVector a b hab n)) =
       dilation r hr (evenShellVector a b hab n) := by
@@ -310,7 +310,7 @@ theorem scaledEvenShellCutoff_finiteDilationCombination_apply
     _ = c k • dilation (r k) hk0 g := by
       rw [Finset.sum_eq_single k]
       · rw [ContinuousLinearMap.smul_apply, dilationSum_apply, map_smul, map_add,
-          scaledEvenShellCutoff_target_inward hk0 ha hab m,
+          scaledEvenShellCutoff_target_inward hk0 hab m,
           scaledEvenShellCutoff_outward hk0 (hr k) ha hab hba m]
         module
       · intro j _ hjk
@@ -641,14 +641,14 @@ theorem finiteEvenPositiveEulerCorners_calkinIndependent
 /-- A finite linear combination of the literal positive Euler metric corners on the concrete
 archimedean Hardy--Titchmarsh line. -/
 def finiteArchimedeanPrimeEulerCorners {n : ℕ} (a : ℝ) (r : Fin n → ℝ)
-    (_hr : ∀ j, 1 < r j) (c : Fin n → ℂ) :
+    (c : Fin n → ℂ) :
     ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2 :=
   ∑ j, c j • archimedeanPrimeEulerCorner a (r j)
 
 theorem finiteArchimedeanPrimeEulerCorners_eq_unitaryPush
     {n : ℕ} (a : ℝ) (r : Fin n → ℝ) (hr : ∀ j, 1 < r j)
     (c : Fin n → ℂ) :
-    finiteArchimedeanPrimeEulerCorners a r hr c =
+    finiteArchimedeanPrimeEulerCorners a r c =
       unitaryPush archimedeanDualHardyTitchmarshUnitary
         (finiteEvenPositiveEulerCorners a r hr c) := by
   classical
@@ -680,7 +680,7 @@ theorem finiteArchimedeanPrimeEulerCorners_calkinIndependent
     {n : ℕ} {a : ℝ} (r : Fin n → ℝ) (hr : ∀ j, 1 < r j)
     (hinj : Function.Injective r) (c : Fin n → ℂ) (ha : 0 < a)
     (hc : ∃ j, c j ≠ 0) :
-    ¬ IsCompactOperator (finiteArchimedeanPrimeEulerCorners a r hr c) := by
+    ¬ IsCompactOperator (finiteArchimedeanPrimeEulerCorners a r c) := by
   rw [finiteArchimedeanPrimeEulerCorners_eq_unitaryPush]
   intro hcompact
   apply finiteEvenPositiveEulerCorners_calkinIndependent r hr hinj c ha hc

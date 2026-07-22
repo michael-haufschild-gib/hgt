@@ -338,13 +338,14 @@ theorem exists_recurrentProuhetLock_of_polynomialPower_relation
         B * polynomialPowerFiniteDifference β
             (polynomialRealCoeffFinsupp Qlock) (q k) <
           (C : ℝ) * Real.log (((q k + K : ℕ) : ℝ) + 2) := by
-  obtain ⟨D, K, C, Q₀, hDmax, hD, hC, hpairs⟩ :=
+  obtain ⟨D, K, C, Q₀, hDmax, _hD, hC, hpairs⟩ :=
     exists_eventually_polynomialPower_bend_pair_of_positiveJetDegree
       hβ hB F hb Q hQint hrel hDpos
   subst D
+  have hβone : 1 < β := by linarith
   obtain ⟨μ, p₀, p₁, Qlock, q, hceil, hμD, hpne, hcount₀, hcount₁,
       hsum, hQeq, hQne, hdiv, hq, hdefect⟩ :=
-    exists_recurrentProuhetLock_of_polynomialPower_bend_pairs hβ hB hD hpairs
+    exists_recurrentProuhetLock_of_polynomialPower_bend_pairs hβone hB hpairs
   exact ⟨K, C, μ, p₀, p₁, Qlock, q, hC, hceil, hμD, hpne,
     hcount₀, hcount₁, hsum, hQeq, hQne, hdiv, hq, hdefect⟩
 
@@ -1660,13 +1661,14 @@ theorem exists_recurrentProuhetLock_of_eventual_polynomialPower_relation
       norm_coeff_eq_exp_eventualPolynomialPowerValuation_of_ne htail i hi
   have hDpos := magnitudeMaxJetDegree_pos_of_integer_relation_on_active_support
     F hbactive Q hQ hQint hrel
-  obtain ⟨D, K, C, Q₀, hDmax, hD, hC, hpairs⟩ :=
+  obtain ⟨D, K, C, Q₀, hDmax, _hD, hC, hpairs⟩ :=
     exists_eventually_polynomialPower_bend_pair_of_eventual_profile
       hβ hB F htail Q hQint hrel hDpos
   subst D
+  have hβone : 1 < β := by linarith
   obtain ⟨μ, p₀, p₁, Qlock, q, hceil, hμD, hpne, hcount₀, hcount₁,
       hsum, hQeq, hQne, hdiv, hq, hdefect⟩ :=
-    exists_recurrentProuhetLock_of_polynomialPower_bend_pairs hβ hB hD hpairs
+    exists_recurrentProuhetLock_of_polynomialPower_bend_pairs hβone hB hpairs
   exact ⟨K, C, μ, p₀, p₁, Qlock, q, hC, hceil, hμD, hpne,
     hcount₀, hcount₁, hsum, hQeq, hQne, hdiv, hq, hdefect⟩
 

@@ -300,7 +300,7 @@ theorem compactConfigurationAvoidance_dense_of_finiteRegularStratification
     [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y]
     (F : P × H → Y) (bad : Set Y) (c : ℕ)
     (U : Set H) (K : Set H)
-    (hU : IsOpen U) (_hK : IsCompact K) (hKU : K ⊆ U)
+    (hU : IsOpen U) (hKU : K ⊆ U)
     (hF : ContDiffOn ℝ ⊤ F (Set.univ ×ˢ U))
     (hparameter : ∀ p h, h ∈ U →
       Function.Surjective (fderiv ℝ (fun v => F (v, h)) p))
@@ -339,8 +339,7 @@ theorem classicalStratifiedParametricAvoidance :
   constructor
   intro P H Y _ _ _ _ _ _ _ _ _ F bad c U K hU hK hKU hF hparameter hstrata hdim
   exact compactConfigurationAvoidance_dense_of_finiteRegularStratification
-    F bad c U K hU hK hKU hF hparameter hstrata hdim
+    F bad c U K hU hKU hF hparameter hstrata hdim
 
 end
 end GaloisForLFunctions.HTGeometry
-

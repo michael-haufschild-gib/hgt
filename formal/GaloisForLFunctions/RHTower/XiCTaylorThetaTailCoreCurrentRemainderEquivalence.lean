@@ -26,7 +26,7 @@ sublinear relative to the scaled squared Taylor value.  The proof uses only loca
 theorem eventually_abs_xiCTaylorThetaTailCoreCurrent_lt_scaled_normSq_of_riemannHypothesis
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
     (hRH : RiemannHypothesis)
-    (sigma : ℂ) (_hsigma0 : 0 < sigma.re) (hsigmaHalf : sigma.re < 1 / 2)
+    (sigma : ℂ) (hsigmaHalf : sigma.re < 1 / 2)
     (epsilon : ℝ) (hepsilon : 0 < epsilon) :
     ∀ᶠ n : ℕ in atTop,
       |orientedPolynomialCurrent
@@ -174,7 +174,7 @@ theorem xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_of_ri
   intro sigma hsigma0 hsigmaHalf epsilon hepsilon
   have hraw :=
     eventually_abs_xiCTaylorThetaTailCoreCurrent_lt_scaled_normSq_of_riemannHypothesis
-      hD hRH sigma hsigma0 hsigmaHalf (epsilon / 4) (div_pos hepsilon (by norm_num))
+      hD hRH sigma hsigmaHalf (epsilon / 4) (div_pos hepsilon (by norm_num))
   have himPos :=
     eventually_xiCTaylorAnisotropicCenteredPoint_im_pos sigma hsigmaHalf
   have himHalf :=

@@ -1,0 +1,509 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=30mm]{geometry}
+\setlength{\emergencystretch}{2em}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[hypertexnames=false,colorlinks=true,linkcolor=blue!45!black,
+  citecolor=blue!45!black,urlcolor=blue!55!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Mell}{\mathcal M}
+\newcommand{\GRH}{\mathrm{GRH}}
+\newcommand{\RH}{\mathrm{RH}}
+\newcommand{\eps}{\varepsilon}
+
+\title{One-Sided Additive Convolution Exponents\\
+Detect Rightmost Zeros of Dirichlet \(L\)-Functions}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\chi$ be a primitive Dirichlet character, let
+$M_\chi(N)=\sum_{n\leq N}\mu(n)\chi(n)$, and let $\Theta_\chi$ be the supremum of
+the real parts of the nontrivial zeros of $L(s,\chi)$.  For $k\geq1$, form the real
+mixed additive convolution
+\[
+ C_{\chi,k}(N)=
+ \sum_{\substack{a_1+\cdots+a_k+b_1+\cdots+b_k=N\\a_j,b_j\geq0}}
+ \prod_{j=1}^k M_\chi(a_j)
+ \prod_{j=1}^k \overline{M_\chi(b_j)},
+ \qquad M_\chi(0)=0.
+\]
+We prove the exact one-sided order law
+\[
+ \limsup_{N\to\infty}
+ \frac{\log\bigl(1+[C_{\chi,k}(N)]_+\bigr)}{\log(N+1)}
+ =2k(1+\Theta_\chi)-1.
+\]
+Thus the positive excursions alone, with every negative coefficient discarded, recover the
+rightmost zero abscissa at every even nonlinear order.  In particular, $\GRH$ for
+$L(s,\chi)$ is equivalent to the value $3k-1$ at any one order $k$.  Independently of
+$\GRH$, functional-equation symmetry yields
+$C_{\chi,k}(N)=\Omega_+(N^{3k-1-\eps})$ for every $\eps>0$; hence every primitive
+character has near-critical positive excursions at every mixed order.  The proof combines an
+exact Hermitian Abel identity with the Mellin transform
+$\Gamma(s)/L(s,\chi)$ and the classical twisted Littlewood zero-abscissa theorem.  We also
+state an abstract one-sided spectral law for reciprocal Dirichlet series and record a Lean~4
+formalization of its Hermitian convolution and Abel core.  The theorem does not prove $\GRH$:
+establishing the critical upper value remains precisely the unresolved source problem.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords.} Dirichlet $L$-function; Mertens function; additive
+convolution; one-sided omega theorem; Mellin transform; generalized Riemann hypothesis.
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.} 11M26, 11M06, 11N37, 40E05.
+
+\section{Introduction}
+
+The classical Littlewood criterion reads the zero-free abscissa of the Riemann zeta function
+from the growth of the Mertens function.  Its fixed-character form says that the rightmost zero
+of $L(s,\chi)$ determines the order of
+\[
+ M_\chi(x)=\sum_{n\leq x}\mu(n)\chi(n).
+\]
+This is a linear statement with an absolute value.  We show that the same zero coordinate is
+encoded, without loss, by a family of nonlinear additive statistics in which all negative
+excursions are ignored.
+
+Write $[y]_+=\max(y,0)$.  The main theorem states that for every primitive character and every
+$k\geq1$,
+\[
+ \Lambda_{\chi,k}:=limsup_{N\to\infty}
+ \frac{\log(1+[C_{\chi,k}(N)]_+)}{\log(N+1)}
+ =2k(1+\Theta_\chi)-1.
+\]
+The affine dependence on $k$ is rigid.  Raising the convolution order neither weakens nor
+amplifies the zero obstruction: every order records the same $\Theta_\chi$.  The use of the
+positive part is essential.  The theorem is not an estimate for $|C_{\chi,k}(N)|$ and makes no
+claim about its negative excursions.
+
+For complex characters, the correct object is Hermitian rather than a plain even power.  If
+\[
+ A_\chi(z)=\sum_{n\geq1}\mu(n)\chi(n)z^n,
+ \qquad
+ B_\chi(z)=\sum_{N\geq0}M_\chi(N)z^N,
+\]
+then $A_\chi(z)=(1-z)B_\chi(z)$.  For real $0<z<1$, the mixed convolution is defined so that
+\[
+ |A_\chi(z)|^{2k}
+ =(1-z)^{2k}\sum_{N\geq0}C_{\chi,k}(N)z^N.
+\]
+The left side is nonnegative, so the full series is bounded above by the series of positive
+coefficient parts.  Any improvement in their exponent would force excessive decay of
+$A_\chi(e^{-x})$ as $x\downarrow0$.  Mellin transformation would then continue
+$1/L(s,\chi)$ holomorphically across an actual zero, which is impossible.
+
+This argument also gives an unconditional positive-side theorem.  The functional equation and
+coefficient conjugation make the zero set of a fixed $L(s,\chi)$ symmetric under
+$\rho\mapsto1-\overline\rho$, so $\Theta_\chi\geq1/2$.  Consequently, for every $\eps>0$,
+infinitely many $N$ satisfy
+\[
+ C_{\chi,k}(N)\geq N^{3k-1-\eps}.
+\]
+At $k=1$, this is a near-quadratic $\Omega_+$ theorem for the reflected twisted-Mertens
+convolution.  It is substantially different from current work on raw binary sums of the form
+$\sum_{n<N}\mu(n)\mu(N-n)$.  Binary raw Möbius analogues remain out of reach in the setting of
+Banks and Shparlinski~\cite{BanksShparlinski}; Mangerel's theorem for the Liouville function
+establishes strict nonmaximality rather than a critical positive-side order
+\cite{Mangerel}.  The two summations hidden in $M_\chi$ are exactly what permit the present
+Mellin--Abel argument.
+
+Additive convolutions of arithmetic functions have a large literature, but the nearby results
+address different questions.  Everlove proves meromorphic continuation for Dirichlet series
+attached to additive convolutions when one ordinary generating function is meromorphic near
+$z=1$, and separately analyzes $\sum M(n)n^{-s}$ and character partial sums
+\cite{Everlove}.  Misra, Saha and Sharma study divisor convolutions and functions with absolutely
+convergent Ramanujan expansions~\cite{MisraSahaSharma}.  Liflandsky gives a recent explicit
+formula and a direct decay criterion for the discrete Möbius Laplace transform
+\cite{Liflandsky}.  None of these results states the positive-part order law proved here.
+
+Section~\ref{sec:abstract} proves an abstract one-sided spectral law.  Section~\ref{sec:dirichlet}
+checks its hypotheses for primitive Dirichlet $L$-functions and derives the $\GRH$ and
+$\Omega_+$ corollaries.  Section~\ref{sec:boundary} distinguishes the result from neighboring
+convolution problems and isolates the remaining open source.  Section~\ref{sec:lean} records the
+formal certificate for the Hermitian Abel mechanism.
+
+\section{An abstract one-sided spectral law}
+\label{sec:abstract}
+
+Let $(a_n)_{n\geq1}$ be a complex sequence, set $S(0)=0$ and
+\[
+ S(N)=\sum_{n\leq N}a_n,
+ \qquad
+ A(z)=\sum_{n\geq1}a_nz^n,
+ \qquad
+ B(z)=\sum_{N\geq0}S(N)z^N.
+\]
+We assume polynomial growth whenever needed, so all power series below converge for $|z|<1$.
+For $k\geq1$, define
+\begin{equation}
+ C_k(N)=
+ \sum_{\substack{a_1+\cdots+a_k+b_1+\cdots+b_k=N\\a_j,b_j\geq0}}
+ \prod_{j=1}^k S(a_j)\prod_{j=1}^k\overline{S(b_j)}.
+ \tag{2.1}
+\end{equation}
+
+\begin{lemma}[Hermitian Abel identity]
+For every $N$, the coefficient $C_k(N)$ is real.  For real $0<z<1$,
+\begin{equation}
+ |A(z)|^{2k}=(1-z)^{2k}\sum_{N\geq0}C_k(N)z^N.
+ \tag{2.2}
+\end{equation}
+Consequently,
+\begin{equation}
+ |A(z)|^{2k}
+ \leq(1-z)^{2k}\sum_{N\geq0}[C_k(N)]_+z^N.
+ \tag{2.3}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Exchanging the two $k$-tuples in (2.1) conjugates every summand and preserves the indexing set;
+hence $\overline{C_k(N)}=C_k(N)$.  The partial-sum identity gives
+$B(z)=A(z)/(1-z)$.  The coefficient of $z^N$ in
+$B(z)^k\overline{B(z)}^k$ is (2.1), and for real $z$ the product equals $|B(z)|^{2k}$.
+This proves (2.2).  Since the left side is nonnegative and
+$C_k(N)\leq[C_k(N)]_+$ termwise, (2.3) follows.
+\end{proof}
+
+We isolate the analytic inputs.  Let $D(s)=\sum_{n\geq1}a_nn^{-s}$ in an initial right
+half-plane.  Assume that:
+\begin{enumerate}
+\item for every $\eta>0$,
+\begin{equation}
+ |S(N)|\ll_\eta (N+1)^{\theta+\eta};
+ \tag{2.4}
+\end{equation}
+\item $D$ has a meromorphic continuation and has poles $\rho$ with $\Rea\rho>0$ whose real
+parts have supremum $\theta$;
+\item for $\Rea s$ initially large,
+\begin{equation}
+ \int_0^\infty A(e^{-x})x^{s-1}\,dx=\Gamma(s)D(s).
+ \tag{2.5}
+\end{equation}
+\end{enumerate}
+
+\begin{theorem}[One-sided even-convolution spectral law]
+\label{thm:abstract}
+Under the three hypotheses above, for every $k\geq1$,
+\begin{equation}
+ \limsup_{N\to\infty}
+ \frac{\log(1+[C_k(N)]_+)}{\log(N+1)}
+ =2k(1+\theta)-1.
+ \tag{2.6}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Fix $\eta>0$.  There are at most $(N+1)^{2k-1}$ weak compositions of $N$ into $2k$
+coordinates.  By (2.4), every product in (2.1) is
+$O_\eta((N+1)^{2k(\theta+\eta)})$.  Therefore
+\[
+ |C_k(N)|\ll_\eta
+ (N+1)^{2k(1+\theta)-1+2k\eta},
+\]
+which proves the upper inequality in (2.6).
+
+Suppose the lower inequality fails.  Choose
+\[
+ \Lambda_k<\lambda<2k(1+\theta)-1,
+ \qquad
+ \Lambda_k:=\limsup_{N\to\infty}
+ \frac{\log(1+[C_k(N)]_+)}{\log(N+1)},
+\]
+with $\lambda>0$.  Absorbing finitely many initial values into a constant gives
+\begin{equation}
+ [C_k(N)]_+\ll_\lambda(N+1)^\lambda.
+ \tag{2.7}
+\end{equation}
+Put $z=e^{-x}$ with $0<x\leq1$.  The elementary bound
+\[
+ \sum_{N\geq0}(N+1)^\lambda e^{-Nx}\ll_\lambda x^{-\lambda-1}
+\]
+and $1-e^{-x}\leq x$ turn (2.3) into
+\begin{equation}
+ |A(e^{-x})|\ll x^{-b},
+ \qquad
+ b=\frac{\lambda+1}{2k}-1<\theta.
+ \tag{2.8}
+\end{equation}
+The exponential decay as $x\to\infty$ and (2.8) show that
+\[
+ H(s):=\frac1{\Gamma(s)}\int_0^\infty A(e^{-x})x^{s-1}\,dx
+\]
+is holomorphic in $\Rea s>b$.  By (2.5), $H(s)=D(s)$ in the initial half-plane, so uniqueness
+of analytic continuation makes $H$ a holomorphic continuation of $D$ throughout
+$\Rea s>b$.  By the definition of $\theta$, however, $D$ has a pole $\rho$ with
+$\Rea\rho>b$.  This contradiction proves the lower inequality.
+\end{proof}
+
+\begin{remark}
+The lower argument is one-sided.  It never bounds $|C_k(N)|$ and never uses
+$[{-C_k(N)}]_+$.  The nonnegative radial quantity $|A(e^{-x})|^{2k}$ forces positive
+coefficient mass at the exact spectral order.
+\end{remark}
+
+\section{Primitive Dirichlet characters}
+\label{sec:dirichlet}
+
+Let $\chi$ be a primitive Dirichlet character of conductor $q$.  For $q=1$, we use the trivial
+character and $L(s,\chi)=\zeta(s)$.  For $q>1$, $\chi$ is nonprincipal.  Euler products give
+\begin{equation}
+ \frac1{L(s,\chi)}=\sum_{n\geq1}\frac{\mu(n)\chi(n)}{n^s},
+ \qquad \Rea s>1.
+ \tag{3.1}
+\end{equation}
+Let
+\[
+ \Theta_\chi=sup\{\Rea\rho:L(\rho,\chi)=0,\ 0<\Rea\rho<1\}.
+\]
+
+We use the following classical fixed-character form of Littlewood's theorem.  It follows by the
+usual reciprocal-$L$ Perron argument; see the treatments of reciprocal zeta and Dirichlet
+$L$-functions in Titchmarsh~\cite{Titchmarsh} and Davenport~\cite{Davenport}.
+
+\begin{proposition}[Twisted Littlewood zero-abscissa theorem]
+\label{prop:littlewood}
+For every fixed primitive $\chi$ and every $\eta>0$,
+\begin{equation}
+ M_\chi(N)=\sum_{n\leq N}\mu(n)\chi(n)
+ \ll_{\chi,\eta}(N+1)^{\Theta_\chi+\eta}.
+ \tag{3.2}
+\end{equation}
+Equivalently, the abscissa of convergence of the reciprocal Dirichlet series (3.1) is
+$\Theta_\chi$.
+\end{proposition}
+
+\begin{remark}
+No uniformity in $q$ is asserted.  For fixed $\delta>0$, the completed functional equation,
+finite order, and the logarithmic-derivative expansion over zeros give the standard Littlewood
+bound for $1/L(s,\chi)$ in $\Rea s\geq\Theta_\chi+\delta$; Perron inversion yields (3.2).
+Conversely, any smaller partial-sum exponent would, by Abel summation, continue (3.1)
+holomorphically across a zero to its right.
+\end{remark}
+
+For $x>0$, termwise integration in $\Rea s>1$ gives
+\begin{equation}
+ \int_0^\infty
+ \left(\sum_{n\geq1}\mu(n)\chi(n)e^{-nx}\right)x^{s-1}\,dx
+ =\frac{\Gamma(s)}{L(s,\chi)}.
+ \tag{3.3}
+\end{equation}
+The poles of $1/L(s,\chi)$ in the critical strip are exactly the nontrivial zeros of
+$L(s,\chi)$, counted with multiplicity.  The hypotheses of Theorem~\ref{thm:abstract} therefore
+hold with $a_n=\mu(n)\chi(n)$ and $\theta=\Theta_\chi$.
+
+\begin{theorem}[Dirichlet-$L$ mixed additive order law]
+\label{thm:dirichlet}
+For every primitive character $\chi$ and every integer $k\geq1$,
+\begin{equation}
+ \boxed{\quad
+ \Lambda_{\chi,k}=2k(1+\Theta_\chi)-1.
+ \quad}
+ \tag{3.4}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Apply Theorem~\ref{thm:abstract} using Proposition~\ref{prop:littlewood} and (3.3).
+\end{proof}
+
+For complex $\chi$, the functional equation first exchanges $\chi$ and $\overline\chi$.
+Combining it with coefficient conjugation shows that the zero set of the same $L(s,\chi)$ is
+stable under $\rho\mapsto1-\overline\rho$.  Hence $\Theta_\chi\geq1/2$, and equality holds if
+and only if every nontrivial zero lies on the critical line.
+
+\begin{corollary}[One-order $\GRH$ criterion]
+For every fixed primitive $\chi$ and every fixed $k\geq1$,
+\[
+ \GRH\text{ for }L(s,\chi)
+ \quad\Longleftrightarrow\quad
+ \Lambda_{\chi,k}=3k-1.
+\]
+Thus Dirichlet $\GRH$ is equivalent to this identity for all primitive characters at any one
+fixed order $k$.
+\end{corollary}
+
+\begin{corollary}[Unconditional positive excursions]
+\label{cor:omega}
+For every primitive $\chi$, every $k\geq1$, and every $\eps>0$,
+\begin{equation}
+ C_{\chi,k}(N)=\Omega_+\bigl(N^{3k-1-\eps}\bigr).
+ \tag{3.5}
+\end{equation}
+More explicitly, infinitely many $N$ satisfy
+$C_{\chi,k}(N)\geq N^{3k-1-\eps}$.
+\end{corollary}
+
+\begin{proof}
+The zero symmetry gives $\Theta_\chi\geq1/2$, so (3.4) gives
+$\Lambda_{\chi,k}\geq3k-1$.  By the definition of the limsup, for every $\eps>0$ there are
+infinitely many $N$ for which
+$1+[C_{\chi,k}(N)]_+>(N+1)^{3k-1-\eps/2}$.  For sufficiently large such $N$, this implies
+$C_{\chi,k}(N)\geq N^{3k-1-\eps}$.
+\end{proof}
+
+\begin{corollary}[Zeta specialization]
+Let $M(N)=\sum_{n\leq N}\mu(n)$ and
+\[
+ C_k(N)=\sum_{n_1+\cdots+n_{2k}=N}\prod_{j=1}^{2k}M(n_j).
+\]
+If $\Theta$ is the supremum of the real parts of the nontrivial zeta zeros, then
+\[
+ \limsup_{N\to\infty}\frac{\log(1+[C_k(N)]_+)}{\log(N+1)}
+ =2k(1+\Theta)-1.
+\]
+In particular, $\RH$ is equivalent to the value $3k-1$, and for every $\eps>0$,
+unconditionally,
+\[
+C_k(N)=\Omega_+(N^{3k-1-\eps}).
+\]
+\end{corollary}
+
+\section{Boundary with raw binary correlations and the remaining source}
+\label{sec:boundary}
+
+Theorem~\ref{thm:dirichlet} does not estimate the raw binary sum
+\[
+ R_\chi(N)=\sum_{n=1}^{N-1}\mu(n)\chi(n)\mu(N-n)\chi(N-n).
+\]
+For $k=1$, the object in this paper is the twice-discrete-integrated correlation
+\[
+ C_{\chi,1}(N)=\sum_{a+b=N}M_\chi(a)\overline{M_\chi(b)}.
+\]
+Indeed, if $\Delta f(N)=f(N)-f(N-1)$, then the generating-function identity shows that the
+appropriate second difference of $C_{\chi,1}$ recovers the corresponding raw additive
+coefficient.  Two integrations are analytically decisive: they introduce the factor
+$(1-z)^{-2}$ that shifts the coefficient order while retaining the Mellin singularity of
+$1/L(s,\chi)$.
+
+The upper value in the $\GRH$ corollary is not automatic.  At $k=1$, proving for every
+$\eps>0$ that
+\begin{equation}
+ C_{\chi,1}(N)\ll_{\chi,\eps}N^{2+\eps}
+ \tag{4.1}
+\end{equation}
+already implies $\GRH$ for $L(s,\chi)$.  Theorem~\ref{thm:dirichlet} sharpens this statement:
+if an off-line zero exists, then positive values alone must violate (4.1) at the exact exponent
+$2(1+\Theta_\chi)-1$.  Higher order cannot evade that obstruction, because all $k$ encode the
+same $\Theta_\chi$.
+
+This identifies the actual frontier.  Neither ordinary $L^2$ control nor a phase average is
+enough: such positive norms discard the signed reflected covariance that appears pointwise in
+(4.1).  Current estimates for Möbius correlations do not supply the needed growing-reflection
+upper law.  The contribution of the present theorem is therefore an exact spectral
+classification and an unconditional positive-excursion theorem, not a proof of $\GRH$.
+
+\section{Lean formalization}
+\label{sec:lean}
+
+The algebraic and Abel core has been formalized in Lean~4 against mathlib.  The module
+\begin{center}
+\small
+\texttt{GaloisForLFunctions.RHTower.}\\
+\texttt{DirichletLMixedAdditiveZeroAbscissaLaw}
+\end{center}
+defines the mixed additive convolution for an arbitrary complex sequence and proves:
+\begin{enumerate}
+\item every mixed coefficient is fixed by conjugation and has zero imaginary part;
+\item absolute summability of the original Abel series implies absolute summability of every
+mixed series;
+\item for conjugation-fixed $q$,
+\[
+ \left(\sum_Na_Nq^N\right)^k
+ \overline{\left(\sum_Na_Nq^N\right)^k}
+ =\sum_N C_k(N)q^N;
+\]
+\item coefficientwise upper bounds alone imply the corresponding norm-square Abel bound, with
+all negative coefficients discarded.
+\end{enumerate}
+The source compiles with
+\begin{center}
+\small
+\texttt{lake env lean}\\
+\texttt{GaloisForLFunctions/RHTower/}\\
+\texttt{DirichletLMixedAdditiveZeroAbscissaLaw.lean}.
+\end{center}
+An axiom audit reports only the standard logical principles
+\texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.  The definitions of
+Dirichlet characters, $\Theta_\chi$, Proposition~\ref{prop:littlewood}, and the exact limsup law
+remain paper-level; no formal $\GRH$ claim is made.
+
+\section{Concluding perspective}
+
+The rightmost zero of a primitive Dirichlet $L$-function has an exact nonlinear additive
+signature.  Every mixed even order gives the same coordinate, and the positive coefficients
+alone carry all of it.  This produces both an all-character $\GRH$ criterion and an unconditional
+$\Omega_+$ theorem at the critical order.
+
+The remaining open problem is now sharply separated from the transform machinery: prove the
+critical upper exponent for one order without assuming zero information.  For zeta, that means
+controlling the positive side of $\sum_{a+b=N}M(a)M(b)$ at order $N^{2+o(1)}$.  Such a theorem
+would prove $\RH$; no argument in this paper is claimed to provide it.
+
+\begin{thebibliography}{99}
+\raggedright
+
+\bibitem{BanksShparlinski}
+W. D. Banks and I. E. Shparlinski,
+\emph{Multiple sums with the M\"obius function},
+arXiv:2506.08787 (2025).
+
+\bibitem{Davenport}
+H. Davenport,
+\emph{Multiplicative Number Theory}, 3rd ed., revised by H. L. Montgomery,
+Graduate Texts in Mathematics 74, Springer, 2000.
+
+\bibitem{Everlove}
+C. Everlove,
+\emph{Meromorphic Dirichlet Series}, Ph.D. thesis, University of Michigan, 2018,
+\url{https://deepblue.lib.umich.edu/items/7997c479-ffa7-4330-bdae-e408bd0a2d9a}.
+
+\bibitem{HardyLittlewood}
+G. H. Hardy and J. E. Littlewood,
+\emph{Tauberian theorems concerning power series and Dirichlet's series whose coefficients are
+positive}, Proc. London Math. Soc. (2) 13 (1914), 174--191.
+
+\bibitem{Liflandsky}
+S. Liflandsky,
+\emph{Explicit formula for the discrete Laplace transform of the M\"obius function, related
+special functions, and a criterion for the Riemann hypothesis},
+arXiv:2607.09797 (2026).
+
+\bibitem{Mangerel}
+A. P. Mangerel,
+\emph{On a Goldbach-type problem for the Liouville function},
+arXiv:2404.12117 (2024).
+
+\bibitem{MisraSahaSharma}
+B. Misra, B. Saha and A. Sharma,
+\emph{On additive convolution sum of arithmetic functions and related questions},
+arXiv:2502.08305, version 2 (2026).
+
+\bibitem{Titchmarsh}
+E. C. Titchmarsh,
+\emph{The Theory of the Riemann Zeta-Function}, 2nd ed., revised by D. R. Heath-Brown,
+Oxford University Press, 1986.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,670 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=30mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\A}{\mathcal A}
+\newcommand{\w}{\mathsf w}
+\newcommand{\Sur}{\mathsf S}
+
+\title{Sharp Tilted-Tent Laws and Unbounded\\Suzuki--Mangoldt Prime-Block Surplus}
+\author{HGT Research Project}
+\date{22 July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We establish two exact laws for exponentially tilted tent profiles and use them to solve the
+source-scaling problem at aligned Suzuki--Mangoldt apices.  First, the lower envelope of two
+geometric-bracket endpoint profiles has an explicit sharp minimax constant.  Second, the normalized
+right flank
+\[
+ R_{\beta,L}(d)=e^{\beta d}(1-d/L)
+\]
+is strictly decreasing whenever $\beta L<1$; more strongly, $R_{\beta,L}(r)$ is the exact least
+uniform ceiling on every tail $[r,L]$.
+
+At width $L=\log5$, let the moving Suzuki apex be the Mangoldt node $2\log n$, and let
+$P_n=\{p\text{ prime}:2n<p\le5n\}$.  The continuous tail law gives the sharp contraction
+\[
+ q_5=\sqrt2\left(1-\frac{\log2}{\log5}\right)\in(0,1)
+\]
+for every $p\in P_n$.  A symbolic Chebyshev argument proves, for $n\ge e^{20}$,
+\[
+ \sum_{p\in P_n}\frac{2\log p}{p}\ge\frac1{10}.
+\]
+Consequently the actual-prime source surplus obeys the macroscopic law
+\[
+ \Sur_5(n)\ge
+ \frac{1-q_5}{10}\sqrt n\log5>0.
+\]
+In particular, $\Sur_5$ is unbounded.  This replaces the vanishing $O(n^{-1/2})$ single-flank
+certificate by an unconditional $\Omega(\sqrt n)$ block certificate, the scale of a fixed-width
+moving-apex seam.  We retain the sharp dyadic law as the local extremal model.  Every mathematical
+claim is checked in Lean~4 without RH, a prime-gap hypothesis, a capacity premise, or numerical
+certification.  The remaining obstruction is target-side capacity domination, not source scale.
+\end{abstract}
+
+\section{Introduction}\leavevmode\par
+
+Suzuki's Hilbert-space program packages the Riemann hypothesis into positivity and extension
+questions for concrete spaces and operators associated with the completed zeta function
+\cite{Suzuki2026}.  In the rectangular lane, exact Fourier and autocorrelation identities convert
+the prime contribution into a positive lag channel sampled at the logarithmic Mangoldt nodes.
+After monotone branches are transported, the remaining obstruction occurs at a moving maximum:
+an individual atom at the maximum cannot be paid by a positive-measure pointwise superlevel set.
+
+Two neighboring literatures delimit the contribution.  Groskin's finite Guinand--Weil dictionary
+identifies exact finite quadratic forms and controls an omitted archimedean tail, while making no
+prime-counting claim \cite{Groskin2026}.  Transport-majorization supplies general convex-order
+machinery from controlled transport maps \cite{MelbourneRoberto2021}.  Neither scope supplies the
+source-specific object required here: an actual Mangoldt block aligned to a Suzuki moving apex
+with a sharp contraction and macroscopic surplus.  The result below constructs that object; it
+does not claim the still-missing target-capacity comparison.
+
+The natural next object is therefore a block, not an individual atom.  A block must contain the
+apex atom together with lower-valued source atoms, so its weighted average is strictly below the
+apex.  Two issues are logically distinct:
+\begin{enumerate}
+\item produce a source-canonical block with a proved positive sample deficit;
+\item construct disjoint continuum target blocks whose kernel excess dominates that deficit.
+\end{enumerate}
+Earlier local certificates settle strict positivity but decay like $n^{-1/2}$.  A fixed-width
+future/past overlap at a moving apex has height proportional to $\sqrt n$, so positivity alone does
+not answer the scale question.  This paper settles that question: an explicit source-canonical
+prime block produces surplus proportional to $\sqrt n$, with no prime-gap input.  It makes no
+assertion about target domination and no assertion of RH.
+
+There are four complementary laws.  The cross-prime three-atom theorem proves local dilution.
+The geometric-bracket theorem gives the exact two-endpoint minimax constant.  The subcritical
+tail theorem gives an exact one-sided envelope and, at width $\log5$, converts a macroscopic prime
+block into a surplus of order $\sqrt n$.  The dyadic boundary identity remains the sharp local
+model: an adjacent zero-sample boundary atom is useful for dilution even though its mass alone is
+too small to control the macroscopic seam.
+
+All mathematical statements below are mirrored by named declarations in four Lean modules.  The
+formal theorem map is recorded in Section~\ref{sec:formal}.
+
+\section{Aligned samples and exact support}\leavevmode\par
+
+For $n\ge2$, set
+\[
+ a_n=\frac12\log(2n),\qquad \tau_m=2\log m.
+\]
+Let $\A_n(m)$ denote the width-$\log 2$ positive rectangular Suzuki channel at aperture $a_n$,
+sampled at $\tau_m$.  The previously established exact sample formula is
+\begin{equation}\label{eq:sample}
+ \A_n(m)=\sqrt m\,
+ \max\!\left\{0,\log 2-\left|\log\frac mn\right|\right\}.
+\end{equation}
+The Mangoldt mass attached to the node is
+\begin{equation}\label{eq:mass}
+ \w_m=\frac{2\Lam(m)}m.
+\end{equation}
+
+\begin{theorem}[Exact open-annulus support]\label{thm:support}
+For all integers $n,m\ge2$,
+\[
+ \A_n(m)>0
+ \quad\Longleftrightarrow\quad
+ n<2m\ \text{ and }\ m<2n.
+\]
+\end{theorem}
+
+\begin{proof}
+The factor $\sqrt m$ in \eqref{eq:sample} is positive.  The remaining factor is positive exactly
+when
+\[
+ \left|\log\frac mn\right|<\log2.
+\]\leavevmode\par
+Strict monotonicity of the logarithm on $(0,\infty)$ converts this inequality to
+$1/2<m/n<2$, which is the claimed pair of integer inequalities.
+\end{proof}
+
+At the apex,
+\begin{equation}\label{eq:self}
+ \A_n(n)=\sqrt n\log2>0.
+\end{equation}
+For $n\ge4$, the aligned node is the unique positive-lag maximizer.  Hence
+\begin{equation}\label{eq:strictmax}
+ m\ge2,\ m\ne n \quad\Longrightarrow\quad \A_n(m)<\A_n(n).
+\end{equation}
+Equation \eqref{eq:strictmax} is included in the Lean development as a connector to the earlier
+unique-apex theorem.
+
+\section{Cross-prime three-atom dilution}\leavevmode\par
+
+\begin{lemma}[Prime flanks]\label{lem:flanks}
+For every integer $n\ge4$, there are primes $p,q$ with
+\[
+ \frac n2<p<n<q<2n.
+\]
+\end{lemma}
+
+\begin{proof}
+Apply Bertrand's theorem first to $\lfloor n/2\rfloor$ and then to $n$.  The weak upper endpoints
+provided by Bertrand are strict here: equality would make an even integer at least four prime.
+The lower inequality $n<2p$ follows from $\lfloor n/2\rfloor<p$.
+\end{proof}
+
+The next estimate uses the standard inequality $\Lam(n)\le\log n$ and antitonicity of
+$x\mapsto\log x/x$ on $[e,\infty)$.
+
+\begin{theorem}[Prime mass dominance]\label{thm:mass}
+Let $n\ge4$, and let $p,q$ be as in Lemma~\ref{lem:flanks}.  Then
+\begin{equation}\label{eq:masscmp}
+ \w_n\le\w_p,\qquad \w_n<2\w_q.
+\end{equation}
+Consequently,
+\begin{equation}\label{eq:twofifths}
+ 5\w_n<2(\w_n+\w_p+\w_q).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Since $p\ge3>e$ and $p<n$, antitonicity gives
+\[
+ \frac{\log n}{n}\le\frac{\log p}{p}.
+\]
+Together with $\Lam(n)\le\log n$ and $\Lam(p)=\log p$, this proves the first inequality in
+\eqref{eq:masscmp}.  Since $n<q<2n$,
+\[
+ \frac{\log n}{n}<\frac{2\log q}{q}.
+\]
+Using $\Lam(q)=\log q$ proves the second inequality.  Equation \eqref{eq:twofifths} is immediate.
+\end{proof}
+
+\begin{corollary}[Three-atom block dilution]\label{cor:primeblock}
+For every $n\ge4$, primes $p,q$ may be chosen so that the apex occupies strictly less than two
+fifths of the total block mass and
+\begin{equation}\label{eq:blockdilute}
+ \w_n\A_n(n)+\w_p\A_n(p)+\w_q\A_n(q)
+ <(\w_n+\w_p+\w_q)\A_n(n).
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+The mass assertion is \eqref{eq:twofifths}.  Theorem~\ref{thm:support} makes both prime flank
+samples positive, while \eqref{eq:strictmax} makes both strictly smaller than the apex.  Their
+Mangoldt masses are positive, so their weighted deficits have positive sum, proving
+\eqref{eq:blockdilute}.
+\end{proof}
+
+The prime block proves strict dilution but supplies no uniform sample gap.  The next construction
+removes that dependence on the position of the Bertrand primes.
+
+\section{Sharp geometric-bracket minimax law}\leavevmode\par
+
+The dyadic problem is an instance of a scale-free two-endpoint law.  Let $L>0$ be logarithmic
+bracket width, let $\beta\ge0$ be exponential tilt, and put
+\begin{equation}\label{eq:profiles}
+ F_{\beta,L}(d)=e^{-\beta d}\left(1-\frac dL\right),\qquad
+ G_{\beta,L}(d)=e^{\beta(L-d)}\frac dL
+ \quad(0\le d\le L).
+\end{equation}
+Define
+\begin{equation}\label{eq:balance}
+ \alpha_{\beta,L}=\frac1{1+e^{\beta L}},\qquad
+ C_{\beta,L}=e^{-\beta\alpha_{\beta,L}L}(1-\alpha_{\beta,L}).
+\end{equation}
+
+\begin{theorem}[Sharp tilted-tent minimax law]\label{thm:minimax}
+For every $L>0$, $\beta\ge0$, and $d\in[0,L]$,
+\begin{equation}\label{eq:minimax}
+ \min\{F_{\beta,L}(d),G_{\beta,L}(d)\}\le C_{\beta,L}.
+\end{equation}
+Equality holds at $d=\alpha_{\beta,L}L$, so no smaller uniform factor can replace
+$C_{\beta,L}$.  The two profiles are equal if and only if
+$d=\alpha_{\beta,L}L$, and
+\begin{equation}\label{eq:Cunit}
+ 0<C_{\beta,L}<1.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Write $\alpha=\alpha_{\beta,L}$.  Direct algebra gives
+\begin{equation}\label{eq:balanceidentity}
+ \alpha e^{\beta L}=1-\alpha,
+\end{equation}
+so the profiles agree at $d=\alpha L$, with common value $C_{\beta,L}$.
+Conversely, canceling the positive factor $e^{-\beta d}$ from
+$F_{\beta,L}(d)=G_{\beta,L}(d)$ and using
+$e^{\beta(L-d)}=e^{-\beta d}e^{\beta L}$ recovers
+$1-d/L=e^{\beta L}d/L$, hence $d=\alpha L$.
+
+The upper profile has derivative
+\[
+ G'_{\beta,L}(d)=\frac{e^{\beta(L-d)}}L(1-\beta d).
+\]
+It is positive up to the balance point.  Indeed
+\[
+ \beta\alpha L=\frac{\beta L}{1+e^{\beta L}}<1,
+\]
+where the last inequality follows from $x+1\le e^x$.  Therefore, for
+$d\le\alpha L$, monotonicity gives
+$\min(F(d),G(d))\le G(d)\le G(\alpha L)=C_{\beta,L}$.
+For $d\ge\alpha L$, both
+$e^{-\beta d}\le e^{-\beta\alpha L}$ and
+$1-d/L\le1-\alpha$, with nonnegative factors, so
+$\min(F(d),G(d))\le F(d)\le C_{\beta,L}$.
+This proves \eqref{eq:minimax} and sharpness.  Finally $0<\alpha<1$; the exponential factor is
+positive and at most one, while $0<1-\alpha<1$, proving \eqref{eq:Cunit}.
+\end{proof}
+
+The theorem is universal: it has no arithmetic input, no regularity premise on a prime sequence,
+and no smallness restriction on $\beta L$.  It identifies the exact obstruction constant for any
+two-endpoint geometric-bracket argument with power-law amplitude tilt.
+
+\section{Universal subcritical tail law}\label{sec:tail}\leavevmode\par
+
+The macroscopic construction uses a one-sided law that is stronger than pointwise contraction.
+For $L>0$, $\beta\ge0$, define
+\begin{equation}\label{eq:rightprofile}
+ R_{\beta,L}(d)=e^{\beta d}\left(1-\frac dL\right),
+ \qquad 0\le d\le L.
+\end{equation}
+
+\begin{theorem}[Sharp subcritical tail envelope]\label{thm:tail}
+Assume $\beta L<1$.  Then $R_{\beta,L}$ is strictly decreasing on $[0,L]$.  For every
+$0\le r\le L$ and $C\in\R$,
+\begin{equation}\label{eq:tailiff}
+ \bigl(\forall d\in[r,L],\ R_{\beta,L}(d)\le C\bigr)
+ \quad\Longleftrightarrow\quad
+ R_{\beta,L}(r)\le C.
+\end{equation}
+Consequently $R_{\beta,L}(r)$ is the exact least uniform ceiling on the entire tail, and
+$0<d\le L$ implies $R_{\beta,L}(d)<1$.
+\end{theorem}
+
+\begin{proof}
+Differentiation gives
+\[
+ R'_{\beta,L}(d)
+ =\frac{e^{\beta d}}L\bigl(\beta(L-d)-1\bigr).
+\]
+On $[0,L]$, nonnegativity of $\beta$ and the subcritical inequality imply
+$\beta(L-d)\le\beta L<1$.  Thus the derivative is strictly negative, and the mean-value theorem
+gives strict decrease.  The forward implication in \eqref{eq:tailiff} follows by taking $d=r$;
+the reverse implication follows from decrease.  The least-ceiling assertion is exactly this
+equivalence.  Finally $R_{\beta,L}(0)=1$.
+\end{proof}
+
+Theorem~\ref{thm:tail} is an exact envelope statement, not merely a pointwise estimate: any
+uniform ceiling on the tail must already dominate its left-endpoint value.
+
+\section{Sharp Suzuki specialization and absolute surplus}\leavevmode\par
+
+For $n\ge2$, put $k=\lfloor\log_2n\rfloor$, $\ell=2^k$, and $h=2^{k+1}$, so
+$\ell\le n<h=2\ell$.  Set
+\[
+ d=\log(n/\ell)\in[0,\log2].
+\]
+After division by the apex value \eqref{eq:self}, the two endpoint samples are exactly
+\begin{equation}\label{eq:profileidentities}
+ \frac{\A_n(\ell)}{\A_n(n)}=F_{1/2,\log2}(d),\qquad
+ \frac{\A_n(h)}{\A_n(n)}=G_{1/2,\log2}(d).
+\end{equation}
+The tilt $1/2$ is forced by the square-root amplitude in \eqref{eq:sample}; it cannot be discarded
+without losing the sharp constant.
+
+Since $e^{(\log2)/2}=\sqrt2$, the balance and contraction specialize to
+\begin{equation}\label{eq:Cstar}
+ \alpha_{1/2,\log2}=\sqrt2-1,
+ \qquad
+ C_*:=C_{1/2,\log2}
+ =e^{-(\sqrt2-1)\log2/2}(2-\sqrt2).
+\end{equation}
+
+\begin{theorem}[Sharp dyadic Suzuki contraction]\label{thm:contraction}
+For every integer $n\ge2$, one of $m\in\{\ell,h\}$ satisfies
+\begin{equation}\label{eq:dyadicgeometry}
+ n<2m,\qquad m\le2n,\qquad m\ne n,
+\end{equation}
+is a prime power, and obeys
+\begin{equation}\label{eq:sharpcontraction}
+ \A_n(m)\le C_*\A_n(n),
+ \qquad
+ 0<C_*<\frac{\sqrt2}{2}<1.
+\end{equation}
+Its Mangoldt mass satisfies the absolute lower bound
+\begin{equation}\label{eq:masslower}
+ \w_m\ge\frac{\log2}{n}>0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Apply Theorem~\ref{thm:minimax} to \eqref{eq:profileidentities} and choose the endpoint realizing
+the smaller profile.  If $n=\ell$, the lower profile equals one and the upper profile equals zero,
+so the selected endpoint is $h\ne n$; otherwise both possible choices are already distinct from
+$n$ when selected.  The annulus bounds follow from $\ell\le n<h=2\ell$.
+
+Both endpoints are nontrivial powers of $2$, hence $\Lam(m)=\log2$ and
+$\w_m=2\log2/m$.  Since $m\le2n$, this gives \eqref{eq:masslower}.  The formula for $C_*$ is
+\eqref{eq:Cstar}.  Its exponential factor is strictly below one and
+$2-\sqrt2<\sqrt2/2$, proving the strict improvement in \eqref{eq:sharpcontraction}.
+\end{proof}
+
+Define the source flank surplus
+\begin{equation}\label{eq:surplusdef}
+ \Sur_n(m)=\w_m\bigl(\A_n(n)-\A_n(m)\bigr).
+\end{equation}
+
+\begin{theorem}[Absolute prime-gap-free source surplus]\label{thm:surplus}
+For every integer $n\ge2$, the dyadic $m$ in Theorem~\ref{thm:contraction} may be selected so that
+\begin{equation}\label{eq:surplus}
+ 0<(1-C_*)\frac{(\log2)^2}{\sqrt n}
+ \le (1-C_*)\w_m\A_n(n)
+ \le \Sur_n(m).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The right inequality follows by multiplying \eqref{eq:sharpcontraction} by $\w_m$ and
+rearranging.  Equations \eqref{eq:masslower} and \eqref{eq:self} give
+\[
+ \w_m\A_n(n)\ge\frac{\log2}{n}\sqrt n\log2
+ =\frac{(\log2)^2}{\sqrt n}.
+\]
+All factors are positive because $C_*<1$.
+\end{proof}
+
+The bound in \eqref{eq:surplus} is produced from source geometry and source mass alone.  It is not
+a renamed target deficit, and it removes both prime gaps and the arithmetic value $\Lam(n)$ from
+the lower bound.
+
+\section{Exact dyadic boundary law}\leavevmode\par
+
+Dyadic apices have a sharper identity.
+
+\begin{theorem}[Dyadic successor boundary law]\label{thm:boundary}
+For every integer $k\ge1$, put $n=2^k$ and $m=2^{k+1}$.  Then
+\begin{equation}\label{eq:boundaryzero}
+ \A_{2^k}(2^{k+1})=0
+\end{equation}
+and
+\begin{equation}\label{eq:boundarysurplus}
+ \Sur_{2^k}(2^{k+1})
+ =\w_{2^{k+1}}\A_{2^k}(2^k)>0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The ratio $m/n$ equals $2$, so the absolute logarithmic displacement in
+\eqref{eq:sample} equals $\log2$ and the tent factor vanishes.  This proves
+\eqref{eq:boundaryzero}.  Substitution into \eqref{eq:surplusdef} proves the equality in
+\eqref{eq:boundarysurplus}; both factors are positive.
+\end{proof}
+
+\begin{remark}[Scope of power-ray isolation]
+Power-ray isolation says that distinct positive powers on one base ray cannot produce a
+\emph{positive} aligned sample.  Theorem~\ref{thm:boundary} shows that this is not a no-go for block
+dilution: at a dyadic apex, the adjacent same-ray atom is a positive-mass, zero-sample boundary
+flank and therefore produces maximal deficit per unit of its own mass.
+\end{remark}
+
+\section{Macroscopic width-five prime-block law}\label{sec:macro}\leavevmode\par
+
+The local dyadic surplus in \eqref{eq:surplus} tends to zero.  To reach the moving-apex scale, we
+widen the support and aggregate actual primes.  Put
+\begin{equation}\label{eq:fiveobjects}
+ L_5=\log5,\qquad
+ a_5(n)=\frac12\log(5n),\qquad
+ P_n=\{p\text{ prime}:2n<p\le5n\}.
+\end{equation}
+Write $\A_n^{(5)}(m)$ for the positive rectangular channel of width $L_5$ and aperture $a_5(n)$,
+sampled at the node $2\log m$.  Define
+\begin{equation}\label{eq:qfive}
+ q_5=\sqrt2\left(1-\frac{\log2}{\log5}\right).
+\end{equation}
+
+\begin{lemma}[Exact width-five aligned samples]\label{lem:fivesample}
+For integers $n,m\ge5$,
+\begin{equation}\label{eq:fivesample}
+ \A_n^{(5)}(m)
+ =\sqrt m\max\!\left\{0,\log5-\left|\log\frac mn\right|\right\}.
+\end{equation}
+In particular,
+\begin{equation}\label{eq:fiveself}
+ \A_n^{(5)}(n)=\sqrt n\log5.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+At the sample time $2\log m$, the fixed tent is
+$2\sqrt m\max\{0,\log5-\log m\}=0$ because $m\ge5$.  The moving tent is centered at
+$2a_5(n)-\log5=\log n$, and its exponential amplitude is
+$e^{(2\log m)/4}=\sqrt m$.  This gives \eqref{eq:fivesample}; setting $m=n$ gives
+\eqref{eq:fiveself}.
+\end{proof}
+
+\begin{theorem}[Sharp width-five flank contraction]\label{thm:fivecontraction}
+One has $0<q_5<1$.  For $n\ge5$ and $p\in P_n$,
+\begin{equation}\label{eq:fivecontract}
+ \A_n^{(5)}(p)\le q_5\A_n^{(5)}(n).
+\end{equation}
+Moreover $q_5$ is the exact least uniform ceiling of the normalized continuous flank:
+for every $C\in\R$,
+\begin{equation}\label{eq:qsharp}
+ \bigl(\forall d\in[\log2,\log5],\
+ R_{1/2,\log5}(d)\le C\bigr)
+ \quad\Longleftrightarrow\quad q_5\le C.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+For $p\in P_n$, put $d=\log(p/n)$.  Then $\log2<d\le\log5$, and
+Lemma~\ref{lem:fivesample} gives
+\[
+ \frac{\A_n^{(5)}(p)}{\A_n^{(5)}(n)}
+ =R_{1/2,\log5}(d).
+\]
+The certified inequality $\log5<2$ gives $(\log5)/2<1$, so
+Theorem~\ref{thm:tail} bounds the ratio by its value at $\log2$.  Direct substitution gives
+$R_{1/2,\log5}(\log2)=q_5$.  Strict decrease and
+$0<\log2<\log5$ give $0<q_5<1$.  Equation \eqref{eq:qsharp} is
+Theorem~\ref{thm:tail} with $r=\log2$.
+\end{proof}
+
+The arithmetic input is a block-mass theorem.  Let
+$\vartheta(x)=\sum_{p\le x}\log p$.
+
+\begin{lemma}[Macroscopic log-Haar mass]\label{lem:massfloor}
+For every natural number $n$ with $e^{20}\le n$,
+\begin{equation}\label{eq:massfloorfive}
+ \sum_{p\in P_n}\frac{2\log p}{p}\ge\frac1{10}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write $N=n$ as a real number.  The formalized Chebyshev bounds give
+\begin{align}
+ \vartheta(5N)-\vartheta(2N)
+ &\ge (5N-1)\log2-\log(5N+2)-2\sqrt{5N}\log(5N)-2N\log4 \notag\\
+ &= (N-1)\log2-\log(5N+2)-2\sqrt{5N}\log(5N).             \label{eq:thetaerror}
+\end{align}
+Antitonicity of $x\mapsto\log x/\sqrt x$ on $[e^2,\infty)$ and $N\ge e^{20}$ imply
+\begin{equation}\label{eq:logroot}
+ \frac{\log(5N)}{\sqrt{5N}}
+ \le\frac{20}{e^{10}}<\frac1{50}.
+\end{equation}
+The strict inequality is symbolic: $e>2$, hence $e^{10}>2^{10}>1000$.  Therefore
+\begin{equation}\label{eq:firsterror}
+ 2\sqrt{5N}\log(5N)\le\frac N5.
+\end{equation}
+Also $5N+2\le6N$, $\log x\le2\sqrt x$, $\sqrt6<3$, and
+$\sqrt N\ge e^{10}>1000$, giving
+\begin{equation}\label{eq:seconderror}
+ \log(5N+2)\le6\sqrt N\le\frac N{100}.
+\end{equation}
+Finally $1/2<\log2<1$ and $N>20$ yield
+\[
+ (N-1)\log2-\frac N5-\frac N{100}
+ \ge\frac{29N}{100}-\frac12\ge\frac N4.
+\]
+Substitution into \eqref{eq:thetaerror} proves
+$\sum_{p\in P_n}\log p\ge N/4$.  Since $p\le5N$ throughout $P_n$,
+\[
+ \sum_{p\in P_n}\frac{2\log p}{p}
+ \ge\frac2{5N}\sum_{p\in P_n}\log p
+ \ge\frac1{10}.
+\]
+No prime table, prime-gap theorem, asymptotic remainder, or zero hypothesis enters the argument.
+\end{proof}
+
+Define the width-five source surplus
+\begin{equation}\label{eq:sfivedef}
+ \Sur_5(n)=\sum_{p\in P_n}\frac{2\log p}{p}
+ \bigl(\A_n^{(5)}(n)-\A_n^{(5)}(p)\bigr).
+\end{equation}
+
+\begin{theorem}[Macroscopic Suzuki--Mangoldt block law]\label{thm:macro}
+For every natural number $n$ with $e^{20}\le n$,
+\begin{equation}\label{eq:macrolower}
+ \Sur_5(n)\ge\frac{1-q_5}{10}\sqrt n\log5>0.
+\end{equation}
+Moreover $\Sur_5$ is unbounded: for every $B\in\R$, there is a natural number
+$n\ge e^{20}$ such that
+\begin{equation}\label{eq:unbounded}
+ B<\Sur_5(n).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Theorem~\ref{thm:fivecontraction} gives, term by term,
+\[
+ \A_n^{(5)}(n)-\A_n^{(5)}(p)
+ \ge(1-q_5)\A_n^{(5)}(n).
+\]
+All prime weights are nonnegative.  Sum this inequality, apply
+Lemma~\ref{lem:massfloor}, and use \eqref{eq:fiveself}; the result is
+\eqref{eq:macrolower}.  Its right-hand side is positive because $q_5<1$.
+For \eqref{eq:unbounded}, the coefficient
+$c_5=(1-q_5)\log5/10$ is positive.  Given $B$, choose a natural number
+$n>\max\{e^{20},(\max\{B,0\}/c_5)^2\}$.  Then
+$B<c_5\sqrt n\le\Sur_5(n)$.
+\end{proof}
+
+Theorem~\ref{thm:macro} is the scale transition.  A single dyadic flank gives a certified surplus
+of order $n^{-1/2}$, whereas the actual-prime block gives a certified surplus of order $\sqrt n$.
+The gain is not a better estimate for one atom: it comes from a block carrying a fixed positive
+amount of log-Haar mass while every member lies beneath one sharp flank ceiling.
+
+\section{Formal verification}\label{sec:formal}\leavevmode\par
+
+The universal laws are in
+\begin{center}
+\small\nolinkurl{GaloisForLFunctions.HTGeometry.TiltedTentGeometricBracketMinimax},\\
+\small\nolinkurl{GaloisForLFunctions.HTGeometry.TiltedTentRightFlank},
+\end{center}
+and the Suzuki specializations are in
+\begin{center}
+\small\nolinkurl{GaloisForLFunctions.RHTower.SuzukiMangoldtApexCrossPrimeBlock},\\
+\small\nolinkurl{GaloisForLFunctions.RHTower.SuzukiMangoldtMacroscopicPrimeBlock}.
+\end{center}
+The theorem correspondence is as follows.
+
+\begin{sloppypar}
+\raggedright
+\begin{description}
+\small
+\item[Theorem~\ref{thm:support}.]
+\nolinkurl{suzukiMangoldtAlignedApex_sample_pos_iff_openAnnulus}
+\item[Lemma~\ref{lem:flanks}.]
+\nolinkurl{exists_prime_straddling_multiplicativeAnnulus}
+\item[Theorem~\ref{thm:mass}.]
+\nolinkurl{mangoldtLogHaarAtomMass_le_lowerPrimeFlank};
+\nolinkurl{mangoldtLogHaarAtomMass_lt_twice_upperPrimeFlank}
+\item[Corollary~\ref{cor:primeblock}.]
+\nolinkurl{exists_suzukiMangoldtCrossPrimeThreeAtomBlockDilution}
+\item[Theorem~\ref{thm:minimax}.]
+\nolinkurl{tiltedTent_geometricBracket_minimax};
+\nolinkurl{tiltedTent_geometricBracket_minimax_sharp};
+\nolinkurl{tiltedTent_profiles_eq_iff};
+\nolinkurl{tiltedTentSharpContraction_mem_Ioo}
+\item[Theorem~\ref{thm:tail}.]
+\nolinkurl{tiltedTentRightProfile_strictAntiOn};
+\nolinkurl{tiltedTentRightProfile_tail_bound_iff};
+\nolinkurl{tiltedTentRightProfile_lt_one}
+\item[Theorem~\ref{thm:contraction}.]
+\nolinkurl{suzukiMangoldtDyadicSharpContraction_closedForm};
+\nolinkurl{suzukiMangoldtDyadicSharpContraction_lt_sqrtTwo_div_two};
+\nolinkurl{exists_dyadic_sharp_suzukiMangoldtFlankDilution}
+\item[Theorem~\ref{thm:surplus}.]
+\nolinkurl{suzukiMangoldt_logTwo_div_mul_alignedApex_eq};
+\nolinkurl{exists_dyadic_absolute_suzukiMangoldtFlankSurplus}
+\item[Theorem~\ref{thm:boundary}.]
+\nolinkurl{suzukiMangoldtDyadicApex_successor_sample_eq_zero};
+\nolinkurl{suzukiMangoldtDyadicApex_successor_surplus_eq_and_pos}
+\item[Lemma~\ref{lem:fivesample}.]
+\nolinkurl{suzukiMangoldtFiveAlignedApex_sample_eq};
+\nolinkurl{suzukiMangoldtFiveAlignedApex_self_eq}
+\item[Theorem~\ref{thm:fivecontraction}.]
+\nolinkurl{suzukiMangoldtFiveFlankContraction_mem_Ioo};
+\nolinkurl{suzukiMangoldtFiveFlankContraction_isSharp};
+\nolinkurl{suzukiMangoldtFivePrimeBlock_sample_le}
+\item[Lemma~\ref{lem:massfloor}.]
+\nolinkurl{chebyshev_fivePrimeBlock_logMass_floor};
+\nolinkurl{suzukiMangoldtFivePrimeBlock_atomMass_floor}
+\item[Theorem~\ref{thm:macro}.]
+\nolinkurl{suzukiMangoldtFivePrimeBlockSurplus_lower};
+\nolinkurl{suzukiMangoldtFivePrimeBlockSurplus_pos};
+\nolinkurl{suzukiMangoldtFivePrimeBlockSurplus_unbounded}
+\end{description}
+
+The capstone declarations depend only on Lean/mathlib's standard foundations
+\texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.  The modules contain no
+\texttt{sorry}, \texttt{admit}, user axiom, opaque declaration, or unsafe declaration.  No theorem
+accepts RH, the external log-Haar capacity inequality, or an abstract positivity premise.
+\end{sloppypar}
+
+\section{What remains}\leavevmode\par
+
+Theorem~\ref{thm:macro} eliminates the source-scale obstruction: the explicit block surplus is
+positive, grows on the moving-apex scale, and is unbounded.  The sharpness statement
+\eqref{eq:qsharp} also prevents an artificial improvement of the coefficient by reusing the same
+continuous right-flank interval.
+
+This does not complete block transport.  Remaining statement is target-side: construct disjoint
+capacity-one continuum blocks for the completed positive kernel, prove their integral excess
+dominates the explicit quantity in \eqref{eq:sfivedef} uniformly in $n$, and retain enough unused
+kernel mass for the Gamma boundary charge.  Source positivity or source scaling can no longer be
+inserted as a hypothesis; the unresolved theorem is the concrete capacity comparison itself.
+Neither that comparison nor RH is assumed or claimed here.
+
+\begin{thebibliography}{9}
+
+\bibitem{Suzuki2026}
+M.~Suzuki,
+\emph{A canonical system of the Riemann zeta-function and the Riemann hypothesis},
+arXiv:2606.09096, 2026.
+
+\bibitem{RamareZuniga2026}
+O.~Ramar\'e and S.~Zuniga Alterman, with an appendix by M.~Balazard,
+\emph{M\"obius function and primes: an identity factory with applications},
+arXiv:2312.05138v3, 2026.
+
+\bibitem{Groskin2026}
+A.~Groskin,
+\emph{A finite Guinand--Weil dictionary and archimedean tail order for the truncated Weil
+quadratic form},
+arXiv:2607.02828, 2026.
+
+\bibitem{MelbourneRoberto2021}
+J.~Melbourne and C.~Roberto,
+\emph{Transport-majorization to analytic and geometric inequalities},
+arXiv:2110.03641, 2021.
+
+\end{thebibliography}
+
+\end{document}

@@ -563,4 +563,25 @@ theorem ccmBoundaryChannelCompletion_trichotomy
       exact ccmNeutralBoundaryCompletion_preserves_radical
         T D eta beta y k hdisp hk (heta0 k hk) (hbeta0 k hk)
 
+/-- Existence form consumed by concrete finite CCM matrices: some rank-one completed clock is
+metric-adjoint and preserves the entire radical. -/
+theorem ccmBoundaryChannelCompletion_exists
+    (T D Gamma : Matrix n n ℝ) (eta beta : n → ℝ)
+    (hT : T.transpose = T) (hD : D.transpose = D)
+    (hG : Gamma.transpose = Gamma) (hTG : T * Gamma = Gamma * T)
+    (hetaG : Gamma *ᵥ eta = eta) (hbetaG : Gamma *ᵥ beta = -beta)
+    (hdisp : D * T - T * D =
+      Matrix.vecMulVec beta eta - Matrix.vecMulVec eta beta) :
+    ∃ A : Matrix n n ℝ,
+      T * A = A.transpose * T ∧
+      ∀ k : n → ℝ, T *ᵥ k = 0 → T *ᵥ (A *ᵥ k) = 0 := by
+  rcases ccmBoundaryChannelCompletion_trichotomy T D Gamma eta beta
+      hT hD hG hTG hetaG hbetaG hdisp with hE | hO | hN
+  · rcases hE with ⟨e, he, heta, hbeta, hbeta0, hadj, hkill, hrad⟩
+    exact ⟨ccmEvenBoundaryCompletion D eta e, hadj, hrad⟩
+  · rcases hO with ⟨o, ho, heta, hbeta, heta0, hadj, hkill, hrad⟩
+    exact ⟨ccmOddBoundaryCompletion D beta o, hadj, hrad⟩
+  · rcases hN with ⟨y, heta0, hbeta0, hy, hadj, hrad⟩
+    exact ⟨ccmNeutralBoundaryCompletion D y eta, hadj, hrad⟩
+
 end RHTower

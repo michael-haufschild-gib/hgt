@@ -110,14 +110,14 @@ lemma ccmFrostmanPoissonProfile_le_one {q θ : ℝ} (hq : 1 < q) :
   have hc := Real.cos_le_one θ
   nlinarith
 
-@[simp] theorem ccmFrostmanPoissonProfile_zero {q : ℝ} (hq : 1 < q) :
+@[simp] theorem ccmFrostmanPoissonProfile_zero {q : ℝ} (hq : q ≠ 1) :
     ccmFrostmanPoissonProfile q 0 = 1 := by
   rw [ccmFrostmanPoissonProfile, Real.cos_zero]
-  have hq1 : q - 1 ≠ 0 := sub_ne_zero.mpr hq.ne'
+  have hq1 : q - 1 ≠ 0 := sub_ne_zero.mpr hq
   have hden : q ^ 2 - 2 * q * 1 + 1 = (q - 1) ^ 2 := by ring
   rw [hden, div_self (pow_ne_zero 2 hq1)]
 
-@[simp] theorem ccmFrostmanPoissonProfile_pi {q : ℝ} (_hq : 1 < q) :
+@[simp] theorem ccmFrostmanPoissonProfile_pi {q : ℝ} :
     ccmFrostmanPoissonProfile q Real.pi = ccmFrostmanProfileFloor q := by
   rw [ccmFrostmanPoissonProfile, ccmFrostmanProfileFloor, Real.cos_pi]
   ring_nf
@@ -163,15 +163,15 @@ lemma ccmFrostmanAngleProfile_le_one {q : ℝ} (hq : 1 < q) (θ : Real.Angle) :
       simpa [ccmFrostmanAngleProfile, ccmFrostmanPoissonProfile] using
         ccmFrostmanPoissonProfile_le_one (q := q) (θ := θ) hq
 
-@[simp] theorem ccmFrostmanAngleProfile_zero {q : ℝ} (hq : 1 < q) :
+@[simp] theorem ccmFrostmanAngleProfile_zero {q : ℝ} (hq : q ≠ 1) :
     ccmFrostmanAngleProfile q 0 = 1 := by
   simpa [ccmFrostmanAngleProfile, ccmFrostmanPoissonProfile] using
     ccmFrostmanPoissonProfile_zero (q := q) hq
 
-@[simp] theorem ccmFrostmanAngleProfile_pi {q : ℝ} (hq : 1 < q) :
+@[simp] theorem ccmFrostmanAngleProfile_pi {q : ℝ} :
     ccmFrostmanAngleProfile q (Real.pi : Real.Angle) = ccmFrostmanProfileFloor q := by
   simpa [ccmFrostmanAngleProfile, ccmFrostmanPoissonProfile] using
-    ccmFrostmanPoissonProfile_pi (q := q) hq
+    ccmFrostmanPoissonProfile_pi (q := q)
 
 def ccmPrimePoleOrbitAngle (p q : ℕ) (n : ℤ) : Real.Angle :=
   n • ((2 * Real.pi * (Real.log q / Real.log p) : ℝ) : Real.Angle)
@@ -218,7 +218,7 @@ theorem exists_ccmPrimeTransverseFrostmanProfile_lt_floor_add
     change ccmFrostmanAngleProfile q (Real.pi : Real.Angle) <
       ccmFrostmanProfileFloor q + ε
     rw [show ccmFrostmanAngleProfile q (Real.pi : Real.Angle) =
-      ccmFrostmanProfileFloor q from ccmFrostmanAngleProfile_pi hqR]
+      ccmFrostmanProfileFloor q from ccmFrostmanAngleProfile_pi]
     exact lt_add_of_pos_right _ hε
   obtain ⟨n, hn⟩ := (denseRange_ccmPrimePoleOrbitAngle hp hq hpq).exists_mem_open
     hopen ⟨_, hmem⟩
@@ -237,7 +237,7 @@ theorem exists_one_sub_lt_ccmPrimeTransverseFrostmanProfile
   have hmem : (0 : Real.Angle) ∈ U := by
     change 1 - ε < ccmFrostmanAngleProfile q (0 : Real.Angle)
     rw [show ccmFrostmanAngleProfile q (0 : Real.Angle) = 1 from
-      ccmFrostmanAngleProfile_zero hqR]
+      ccmFrostmanAngleProfile_zero hqR.ne']
     linarith
   obtain ⟨n, hn⟩ := (denseRange_ccmPrimePoleOrbitAngle hp hq hpq).exists_mem_open
     hopen ⟨_, hmem⟩

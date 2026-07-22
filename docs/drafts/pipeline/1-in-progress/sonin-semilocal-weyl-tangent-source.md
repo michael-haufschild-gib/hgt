@@ -211,3 +211,15 @@ authorized.
 - 2026-07-15 — primary physics provenance checked; generic Weyl-character generator, actual Sonin
   dilation conjugation/Kubo tangent specialization, and finite von Mangoldt trace consumer written
   source-only.  No computation or build run.
+
+- 2026-07-22 — `[OPEN CORE CLOSED FOR COMPACT-SUPPORT TESTS]` The full logarithmic `L²(ℝ)` phase
+  and translation unitaries now satisfy the global operator Weyl law, and their group commutator
+  is exactly the scalar central character.  A universal normalized Hilbert--Schmidt cyclic-trace
+  theorem proves that every nonzero probe reads this character unchanged.  The exact unit-aperture
+  Sonin projection correction has self-energy `8`, supplies a canonical trace-class probe, and
+  yields a real-axis cyclic response equal to the physical prime-power Weyl character.  Its
+  analytic continuation has tangent equal to the von Mangoldt flux coefficient; finite
+  compact-support tests are exact sums of these infinite-dimensional trace-class generators.
+  Source: `RHTower/SoninSemilocalCyclicWeylDescent.lean`.  Targeted `lake env lean` passed.  This
+  closes cyclic source descent, not cofinal prime--archimedean Weil positivity; that positivity is
+  now the first unresolved RH-bearing frontier.

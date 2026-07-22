@@ -159,6 +159,7 @@ another pointwise cell assignment and do not return to global prime estimates.
 - [x] RH-bearing debt localized to bounded moving turning seam
 - [x] pointwise capacity-one future/past seam splice falsified cofinally
 - [x] exact Mangoldt/Suzuki apex-lock rigidity formalized
+- [x] unconditional source-canonical prime block with sharp contraction and `sqrt(n)` surplus
 - [ ] capacity-one apex/flank block transport
 - [ ] source-derived restricted-Weil/Robin transport identity
 - [ ] positive residual after prime assembly
@@ -196,3 +197,39 @@ Immediate hostile test: integrate by parts against
 `delta(t)=t-2*sum_(2 log n<=t) Lambda(n)/n`. If proposed surplus is merely the signed pairing of
 `delta` with the derivative of the moving apex profile, then it is an equivalent reformulation of
 the RH-bearing deficit, not a producer theorem.
+
+## S69 source-scaling advance: sharp width-five block surplus
+
+The width-`log 2` single-flank theorem is too small for the seam: its certified absolute surplus is
+on the `n^(-1/2)` scale.  This is now repaired by changing object, not optimizing that estimate.
+
+For
+
+```text
+L5=log 5,
+a5(n)=log(5n)/2,
+P_n={p prime : 2n<p<=5n},
+q5=sqrt(2)(1-log(2)/log(5)),
+```
+
+Lean proves the universal subcritical tail law, including exact optimality of its tail ceiling,
+and the source-specific statements
+
+```text
+0<q5<1,
+sum_(p in P_n) 2log(p)/p >= 1/10,
+A_n(2log p) <= q5 A_n(2log n),
+S5(n) >= ((1-q5)/10)sqrt(n)log(5)>0
+```
+
+for every natural `n>=exp(20)`.  It further proves `S5` unbounded.  Proof is unconditional and
+symbolic: exact aligned Suzuki sampling, tilted-tent derivative law, formalized Chebyshev theta
+bounds, positive prime weights.  No zero statement, target deficit, prime-gap hypothesis, or
+numerical certificate occurs.
+
+Frontier effect: `SUZUKI-APEX-BLOCK-TRANSPORT` is no longer blocked by source positivity or source
+scale.  The exact remaining theorem is target-capacity domination of this explicit prime block,
+with disjoint continuum blocks and Gamma reserve.  Because `q5` is the least uniform continuous
+ceiling on `[log 2,log 5]`, that coefficient cannot be improved without changing block geometry or
+using additional target structure.  Next work must attack that capacity comparison, not return to
+single-atom estimates.

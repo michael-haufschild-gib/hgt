@@ -123,10 +123,10 @@ def reflectedPhaseResidual (ω : ℂ) (s : Finset ℕ) : Polynomial ℂ :=
   ∏ n ∈ s.filter (· ≠ 0),
     (Polynomial.X - Polynomial.C ((ω ^ n)⁻¹))
 
-/-- A phase of infinite multiplicative order never equals the inverse of another positive power.
-This is the exact algebraic use of irrationality in the two-base application. -/
+/-- A positive power of a phase of infinite multiplicative order never equals the inverse of any
+nonnegative power.  This is the exact algebraic use of irrationality in the two-base application. -/
 theorem phase_ne_inverse_phase_of_infinite_order {ω : ℂ} (hω0 : ω ≠ 0)
-    (hω : ∀ k : ℕ, 0 < k → ω ^ k ≠ 1) {m n : ℕ} (hm : 0 < m) (_hn : 0 < n) :
+    (hω : ∀ k : ℕ, 0 < k → ω ^ k ≠ 1) {m n : ℕ} (hm : 0 < m) :
     ω ^ m ≠ (ω ^ n)⁻¹ := by
   intro h
   have hn0 : ω ^ n ≠ 0 := pow_ne_zero n hω0
@@ -147,9 +147,8 @@ theorem forward_reflected_phase_residual_isCoprime {ω : ℂ} (hω0 : ω ≠ 0)
   apply IsCoprime.prod_right
   intro n hn
   have hm0 : m ≠ 0 := (Finset.mem_filter.mp hm).2
-  have hn0 : n ≠ 0 := (Finset.mem_filter.mp hn).2
   exact isCoprime_X_sub_C_X_sub_C_of_ne
     (phase_ne_inverse_phase_of_infinite_order hω0 hω
-      (Nat.pos_of_ne_zero hm0) (Nat.pos_of_ne_zero hn0))
+      (Nat.pos_of_ne_zero hm0))
 
 end RHTower

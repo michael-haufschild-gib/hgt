@@ -33,6 +33,19 @@ def thetaCuspCenterMixedDerivativeProductIntegral
     (m n : ℕ) (a t : ℝ) : ℝ :=
   ∫ r : ℝ in Ioi 0, thetaCuspCenterMixedDerivativeProduct m n a r t
 
+/-- At the reflection center, exchanging the two derivative orders leaves the weighted product
+integral unchanged. -/
+theorem thetaCuspCenterMixedDerivativeProductIntegral_zero_comm
+    (m n : ℕ) (a : ℝ) :
+    thetaCuspCenterMixedDerivativeProductIntegral m n a 0 =
+      thetaCuspCenterMixedDerivativeProductIntegral n m a 0 := by
+  unfold thetaCuspCenterMixedDerivativeProductIntegral
+  apply integral_congr_ae
+  filter_upwards with r
+  unfold thetaCuspCenterMixedDerivativeProduct
+  simp only [add_zero, sub_zero]
+  ring
+
 /-- First center derivative of the center-mixed density. -/
 def thetaCuspCenterMixedDensityFirstJet (a t : ℝ) : ℝ :=
   thetaCuspCenterMixedDerivativeProductIntegral 1 0 a t -
@@ -349,16 +362,10 @@ theorem thetaCuspCenterMixedDensitySecondJet_tendsto_zero
   all_goals norm_num
 
 theorem thetaCuspCenterMixedDensityFirstJet_zero
-    {a : ℝ} (_ha0 : 0 ≤ a) (_ha : a < 1 / 2) :
+    (a : ℝ) :
     thetaCuspCenterMixedDensityFirstJet a 0 = 0 := by
-  unfold thetaCuspCenterMixedDensityFirstJet
-  apply sub_eq_zero.mpr
-  unfold thetaCuspCenterMixedDerivativeProductIntegral
-  apply integral_congr_ae
-  filter_upwards with r
-  unfold thetaCuspCenterMixedDerivativeProduct
-  simp only [add_zero, sub_zero, iteratedDeriv_zero]
-  ring
+  rw [thetaCuspCenterMixedDensityFirstJet,
+    thetaCuspCenterMixedDerivativeProductIntegral_zero_comm 1 0, sub_self]
 
 theorem thetaCuspCenterMixedDensitySecondJet_zero_neg
     {a : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) :
@@ -497,7 +504,7 @@ theorem eventually_exists_thetaCuspCenterMixed_nearCenter_posDef
     (fun t => hasDerivAt_thetaCuspCenterMixedDensity ha0.le ha t)
     (fun t => hasDerivAt_thetaCuspCenterMixedDensityFirstJet ha0.le ha t)
     (continuous_thetaCuspCenterMixedDensitySecondJet ha0.le ha)
-    (thetaCuspCenterMixedDensityFirstJet_zero ha0.le ha) hwall
+    (thetaCuspCenterMixedDensityFirstJet_zero a) hwall
   rcases hlocal with ⟨ε1, hε1, hdet⟩
   have hnear0 : f 0 ^ 2 < f 0 ^ 2 + f y ^ 2 := by
     have hfy := thetaCuspCenterMixedDensity_pos ha0 ha y
@@ -538,7 +545,7 @@ theorem eventually_forall_thetaCuspCenterMixedThreePointMatrix_posSemidef
       (fun t => hasDerivAt_thetaCuspCenterMixedDensity ha0.le ha t)
       (fun t => hasDerivAt_thetaCuspCenterMixedDensityFirstJet ha0.le ha t)
       (continuous_thetaCuspCenterMixedDensitySecondJet ha0.le ha)
-      (thetaCuspCenterMixedDensityFirstJet_zero ha0.le ha)
+      (thetaCuspCenterMixedDensityFirstJet_zero a)
       (thetaCuspCenterMixedDensity_pos ha0 ha 0)
       (thetaCuspCenterMixedDensitySecondJet_zero_neg ha0 ha)
       (thetaCuspCenterMixedDensity_tendsto_zero ha0.le ha)

@@ -129,7 +129,7 @@ theorem localPositiveScaleField_selects_maximalConfocalHull
       (HTGeometry.confocalLorentzLift '' Set.range (atomicAggregateNode c z))
       (HTGeometry.confocalUpperField (Set.range (atomicAggregateNode c z))) := by
     apply HTGeometry.isConfocalEnvelopeOn_confocalLorentzLift_image
-      (Set.range_nonempty (atomicAggregateNode c z)) hM
+      (Set.range_nonempty (atomicAggregateNode c z))
       (by rintro _ ⟨u, rfl⟩; exact hbz u)
     intro R hR
     exact hM.trans_lt ((le_max_left M N).trans_lt hR)
@@ -137,7 +137,7 @@ theorem localPositiveScaleField_selects_maximalConfocalHull
       (HTGeometry.confocalLorentzLift '' Set.range (atomicAggregateNode d w))
       (HTGeometry.confocalUpperField (Set.range (atomicAggregateNode d w))) := by
     apply HTGeometry.isConfocalEnvelopeOn_confocalLorentzLift_image
-      (Set.range_nonempty (atomicAggregateNode d w)) hN
+      (Set.range_nonempty (atomicAggregateNode d w))
       (by rintro _ ⟨v, rfl⟩; exact hbw v)
     intro R hR
     exact hN.trans_lt ((le_max_right M N).trans_lt hR)

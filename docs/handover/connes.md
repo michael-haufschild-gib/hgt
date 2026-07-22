@@ -4722,3 +4722,218 @@ Corpus:
 - `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-unit-riesz-markov-density.md`;
 - `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-unit-riesz-mobius-causal-virial.md`;
 - `docs/drafts/pipeline/1-in-progress/ccm-unit-riesz-causal-complement-wavelet.md`.
+
+## 64. Boundary-channel completion law: finite algebraic obstruction closed
+
+The CCM finite-clock correction no longer needs a simple-even radical premise at the level of
+metric-adjoint completion. For finite real symmetric `T,D,Gamma` with
+
+\[
+T\Gamma=\Gamma T,\qquad \Gamma\eta=\eta,\qquad \Gamma\beta=-\beta,
+\qquad DT-TD=|\beta\rangle\langle\eta|-|\eta\rangle\langle\beta|,
+\]
+
+Lean proves the radical transport law
+
+\[
+TDk=-\langle\eta,k\rangle\beta+\langle\beta,k\rangle\eta,
+\qquad k\in\ker T.
+\]
+
+This yields an exhaustive three-channel completion:
+
+1. if `eta` sees the radical, normalize `e` and use
+   `A_E=D-|De><eta|`;
+2. if `eta` vanishes but `beta` sees the radical, normalize `o` and use
+   `A_O=D-|Do><beta|`;
+3. if both vanish, Lean proves existence of `y` with `Ty=beta` and uses
+   `A_N=D+|y><eta|`.
+
+Every branch satisfies
+
+\[
+TA=A^{\mathsf T}T,\qquad A(\ker T)\subseteq\ker T,
+\]
+
+and the active channels are incompatible. Neutral source existence is derived from the
+finite-dimensional dual-annihilator theorem, not assumed.
+
+The concrete connector is also formalized. For every injective divided-difference matrix
+
+\[
+Q_{ii}=a_i,\qquad Q_{ij}=\frac{b_i-b_j}{c_i-c_j},
+\]
+
+with an involution satisfying `c_(rho i)=-c_i`, `b_(rho i)=-b_i`, and
+`a_(rho i)=a_i`, Lean proves symmetry, exact rank-two displacement, reflection commutation, source
+parity, preservation under every scalar shift, and existence of a completed clock. No positivity,
+kernel dimension, or kernel parity premise occurs.
+
+Formalization:
+
+- `formal/GaloisForLFunctions/RHTower/CCMBoundaryChannelCompletion.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMDividedDifferenceInstantiation.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-boundary-channel-completion-trichotomy.md`;
+- `docs/drafts/manuscripts/ccm-boundary-channel-completion/main.tex`.
+
+Manuscript claim gate is strict: quotient spectra, real-root determinants, actual special-function
+`Q_lambda^N`, simple-even ground states, normalized determinant transfer, and RH are not claimed.
+Earlier draft language asserting those consequences was removed because no matching Lean
+declarations exist.
+
+Exact frontier remains source-specific. Corpus has no formal definition-to-theorem connector for
+actual CCM `Q_lambda^N`, no proof of its cofinal branch selection, and no divisor-preserving
+normalized determinant convergence to `Xi`. The new theorem closes finite metric-adjoint
+completion only; it does not prove finite-Weil transfer or RH.
+
+## 65. Correction: CCM endpoint is infinite, and finite rank two is only a boundary chart
+
+Section 64 is not paper headline and not claimed as universal CCM law. It solves one finite
+algebraic correction problem. Every finite matrix has closed range, so it cannot see decisive
+cofinal obstruction: singular values accumulating at zero and inverse becoming unbounded.
+
+The replacement theorem is formalized on an arbitrary complete real Hilbert space, with no
+finite-dimensional, finite-rank, matrix-size, compactness, or trace-class parameter. For every
+bounded operator `T`, Lean constructs the algebraic equivalence
+
+```text
+(ker T)^perp  ~=  range T,
+```
+
+whose inverse chooses unique preimage orthogonal to `ker T`; this needs no closed-range premise.
+For bounded self-adjoint `T`, Lean proves sharp phase law
+
+```text
+IsClosed (range T)  <->  Nonempty (SymmetricSupportInverse T).
+```
+
+When equivalent conditions hold, support projection `P` and generalized inverse `G` are unique,
+and for every bounded clock `D`
+
+```text
+S_T(D) = (1/2) (P D P + G D* T)
+```
+
+is supported on both sides, annihilates all of `ker T`, satisfies
+`T S_T(D) = S_T(D)* T`, is idempotent, and has exactly supported `T`-self-adjoint operators as
+fixed points. If range is nonclosed, Lean proves no bounded symmetric support inverse can exist.
+
+Formal source:
+
+- `formal/GaloisForLFunctions/RHTower/InfiniteSemimetricSymmetrization.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/infinite-semimetric-symmetrization-closed-range-law.md`;
+- `docs/drafts/manuscripts/ccm-boundary-channel-completion/main.tex`.
+
+This infinite theorem exposes rather than closes actual CCM/RH frontier. Corpus theorem
+`ccm-exterior-inverse-symbol-graph-norm-law.md` proves at paper level that natural exterior
+inverse-symbol block is positive and injective with dense nonclosed range. Therefore actual CCM
+construction lies in nonclosed branch: it must prove exact finite-to-infinite range incidence and
+construct controlled logarithmic graph-domain inverse or closed linear relation before forming
+Feshbach/Evans reduction. No such source-defined graph relation, divisor-preserving cofinal
+transfer, or RH proof is present. Finite rank-two corrections cannot decide this topological
+branch.
+
+## 66. Infinite nonclosed branch constructed: graph inverse and exact incidence law
+
+Section 65's closed-range theorem was diagnosis, not final infinite carrier. Nonclosed branch now
+has unconditional Lean construction on arbitrary real Hilbert space.
+
+For every bounded `T`, define partial operator `G_T` by restricting `T` to `(ker T)^perp` and
+inverting onto its algebraic range. Lean proves
+
+```text
+domain G_T = range T,
+T (G_T y) = y,
+graph G_T is closed,
+G_T y = unique preimage orthogonal to ker T.
+```
+
+No self-adjointness or closed-range assumption is used for these statements. If range is nonclosed,
+domain of `G_T` is nonclosed. If `T` is self-adjoint, `G_T` is formally symmetric on its domain.
+
+For bounded self-adjoint `T` and arbitrary bounded `D`, Lean defines exact incidence domain
+
+```text
+I(T,D) = {x | D* (T x) in range T}
+```
+
+and closed-graph inverse symmetrizer
+
+```text
+GraphSymm(T,D)x = (1/2) (P D P x + G_T (D* T x)).
+```
+
+Lean proves its domain equals `I(T,D)`, entire radical belongs to domain and is annihilated, and
+
+```text
+<T GraphSymm(T,D)x, y> = <T x, GraphSymm(T,D)y>
+```
+
+for all domain vectors `x,y`. Dimension, defect rank, and radical rank are unrestricted.
+
+Formal source:
+
+- `formal/GaloisForLFunctions/RHTower/InfiniteSemimetricGraphInverse.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/infinite-semimetric-graph-inverse-incidence-law.md`;
+- `docs/drafts/manuscripts/ccm-boundary-channel-completion/main.tex`.
+
+This closes abstract graph-domain construction, but not source-specific CCM bridge. Exact remaining
+frontier is to identify actual CCM boundary weight/clock with `T,D`, prove actual boundary source
+satisfies incidence `D*Tx in range T` on required core, prove resulting Evans/Feshbach relation
+has divisor-preserving cofinal transfer to `Xi`, then RH. None is assumed or claimed.
+
+## 67. Correction: finite incidence is closed; live CCM obstruction is infinite/cofinal
+
+The last paragraph of Section 66 overstates the remaining range-incidence gate.  The paper theorem
+`ccm-log-symbol-dirichlet-exterior-reconstruction-law.md` already proves, for every aperture and
+every interior characteristic forcing `f`, that
+
+```text
+u_f=C_(a,I)^(-1)f
+```
+
+exists uniquely in the global logarithmic multiplier domain.  Hence every finite characteristic
+trace satisfies the exact exterior range-incidence condition.  The abstract graph inverse in
+Section 66 is a faithful infinite-dimensional carrier theorem, but applying it again to prove
+finite characteristic incidence would duplicate a closed paper-level CCM step.
+
+The finite square Evans map
+
+```text
+N_(a,lambda):F_(a,lambda) -> R_(a,lambda)
+```
+
+is only an exact Grushin coordinate chart for the infinite restricted-Weil/Fredholm family.  Its
+entries retain the full infinite logarithmic Dirichlet inverse.  Finite matrix size therefore does
+not make the CCM problem finite, and no finite-rank theorem is a universal RH endpoint.
+
+The actual unresolved CCM theorem is infinite and cofinal.  In either equivalent source-defined
+form it is
+
+```text
+source-normalized Evans nonvanishing:
+  E_a(lambda) != 0 for every a>0 and lambda<=0,
+
+or, on the closed anti-causal logarithmic-source graph
+  D_Xi=closure(P_- M_(-2 Xi'/Xi)),
+
+four-unit boundary relative-trace contraction:
+  limsup_(u->0+)
+    ||Q_u D_Xi||_(S_2,ext)^2 / (4(1-exp(-u))) <= 1.
+```
+
+The corpus proves that either statement implies RH and that every off-critical divisor unit costs
+strictly more than four units of boundary trace, whereas the incoming Euler pole carries exactly
+four.  It does **not** prove the displayed nonvanishing or trace contraction.  This is the true
+frontier: construct an infinite, orbit-sensitive prime--Gamma transport on the Xi graph and prove
+it is nonexpansive at the singular boundary.  Finite Evans coordinates may diagnose its zeros but
+cannot supply that transport.
+
+Relevant corpus:
+
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm-log-symbol-dirichlet-exterior-reconstruction-law.md`;
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm-restricted-weil-square-evans-determinant-law.md`;
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm-weierstrass-stabilized-square-evans-line-law.md`;
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm-logderivative-closed-two-channel-graph-law.md`;
+- `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm-hankel-boundary-relative-trace-four-unit-law.md`;
+- `docs/drafts/pipeline/1-in-progress/ccm-direct-cofinal-weil-floor.md`.

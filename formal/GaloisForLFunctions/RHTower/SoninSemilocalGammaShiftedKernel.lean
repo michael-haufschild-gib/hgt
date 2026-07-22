@@ -31,8 +31,9 @@ theorem exp_neg_exp_neg_le_factorial_mul_exp_nat_mul (n : ℕ) (x : ℝ) :
       rw [div_eq_mul_inv, mul_inv_rev, inv_inv, ← inv_pow,
         ← Real.exp_neg, neg_neg, ← Real.exp_nat_mul]
 
+/-- The factorial-exponential shifted-kernel majorant is valid globally. -/
 theorem norm_semilocalGammaShiftedKernel_le_of_nonpos
-    (j : ℕ) {x : ℝ} (_hx : x ≤ 0) :
+    (j : ℕ) {x : ℝ} :
     ‖semilocalGammaLogKernel ((j : ℝ) + 1 / 4) x‖ ≤
       (Nat.factorial (j + 1) : ℝ) * Real.exp ((3 / 4 : ℝ) * x) := by
   rw [norm_semilocalGammaLogKernel]
@@ -74,13 +75,13 @@ theorem integrable_semilocalGammaShiftedKernel (j : ℕ) :
     refine hleftMajorant.mono'
       (hmeas.mono_measure Measure.restrict_le_self) ?_
     filter_upwards [ae_restrict_mem measurableSet_Iic] with x hx
-    exact norm_semilocalGammaShiftedKernel_le_of_nonpos j hx
+    exact norm_semilocalGammaShiftedKernel_le_of_nonpos j
   have hright : IntegrableOn
       (semilocalGammaLogKernel ((j : ℝ) + 1 / 4)) (Ioi 0) := by
     refine hrightMajorant.mono'
       (hmeas.mono_measure Measure.restrict_le_self) ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-    exact norm_semilocalGammaLogKernel_le_of_nonneg hx.le
+    exact norm_semilocalGammaLogKernel_le_of_nonneg
   rw [← integrableOn_univ, ← Iic_union_Ioi (a := (0 : ℝ))]
   exact hleft.union hright
 
@@ -88,7 +89,7 @@ theorem norm_semilocalGammaShiftedKernel_le (j : ℕ) (x : ℝ) :
     ‖semilocalGammaLogKernel ((j : ℝ) + 1 / 4) x‖ ≤
       (Nat.factorial (j + 1) : ℝ) + 1 := by
   by_cases hx : x ≤ 0
-  · refine (norm_semilocalGammaShiftedKernel_le_of_nonpos j hx).trans ?_
+  · refine (norm_semilocalGammaShiftedKernel_le_of_nonpos j).trans ?_
     have hexp : Real.exp ((3 / 4 : ℝ) * x) ≤ 1 := by
       simpa only [Real.exp_zero] using
         Real.exp_le_exp.mpr (mul_nonpos_of_nonneg_of_nonpos (by norm_num) hx)
@@ -97,7 +98,7 @@ theorem norm_semilocalGammaShiftedKernel_le (j : ℕ) (x : ℝ) :
           (Nat.factorial (j + 1) : ℝ) * 1 := by gcongr
       _ ≤ (Nat.factorial (j + 1) : ℝ) + 1 := by linarith
   · have hx0 : 0 ≤ x := le_of_not_ge hx
-    refine (norm_semilocalGammaLogKernel_le_of_nonneg hx0).trans ?_
+    refine norm_semilocalGammaLogKernel_le_of_nonneg.trans ?_
     have hparam : 0 ≤ (j : ℝ) + 1 / 4 := by positivity
     have hexp : Real.exp (-((j : ℝ) + 1 / 4) * x) ≤ 1 := by
       simpa only [Real.exp_zero] using

@@ -2,12 +2,12 @@
 
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{microtype}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{lemma}[theorem]{Lemma}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
@@ -15,367 +15,400 @@
 \newtheorem{remark}[theorem]{Remark}
 
 \newcommand{\R}{\mathbb R}
+\newcommand{\Hh}{\mathcal H}
 \newcommand{\K}{\mathcal K}
-\newcommand{\ip}[2]{\langle #1,#2\rangle}
-\newcommand{\rank}{\operatorname{rank}}
-\newcommand{\spec}{\operatorname{Spec}}
-\newcommand{\adj}{\operatorname{adj}}
+\newcommand{\ran}{\operatorname{ran}}
+\newcommand{\kerop}{\operatorname{ker}}
 
-\title{Boundary-Channel Completion of Rank-Two Displacement Clocks\\
-and Finite Zeta Spectral Triples}
+\title{The Infinite Semimetric Graph-Inverse Law:\\
+Closed-Range Phase Transition and CCM Incidence Symmetrization}
 \author{}
-\date{Draft of July 22, 2026}
+\date{July 22, 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Connes, Consani, and Moscovici construct finite zeta spectral triples from truncated Weil forms
-under the assumption that the lowest eigenvalue is simple and its eigenvector is even.  We prove
-that neither hypothesis is needed for finite self-adjoint completion.  The result is a universal
-boundary-channel trichotomy for a positive semidefinite matrix $T$, a self-adjoint clock $D$, and
-the rank-two displacement identity
-\[
- DT-TD=|\beta\rangle\langle\eta|-|\eta\rangle\langle\beta|.
-\]
-If the radical of $T$ meets the even boundary functional, then
-$D-|De\rangle\langle\eta|$ preserves the full radical and is self-adjoint in the quotient metric
-defined by $T$.  If it meets the odd boundary functional, the dual correction
-$D-|Do\rangle\langle\beta|$ has the same properties.  If both functionals vanish on the radical,
-a Moore--Penrose source solution gives the neutral correction
-$D+|T^\dagger\beta\rangle\langle\eta|$.  The active even and odd cases are mutually exclusive.
+Let $\Hh$ be an arbitrary real Hilbert space and let $T$ be a bounded self-adjoint operator,
+possibly singular and with infinite-dimensional kernel or range.  We prove a sharp two-phase law.
+The restriction of $T$ to $(\kerop T)^\perp$ is always algebraically equivalent to $\ran T$.
+It has a bounded symmetric support inverse precisely when $\ran T$ is closed, and that inverse and
+its support projection are unique.
 
-For a one-dimensional radical, the neutral case is impossible for the CCM clock.  The even branch
-recovers the published real-rooted ground-state transform, while the odd branch produces a new
-real-rooted weighted transform
+In the closed-range phase, every bounded operator $D$ has the canonical completion
 \[
- \sum_j \beta_j\xi_j\prod_{k\ne j}(k-z).
+ \mathfrak S_T(D)=\frac12\bigl(PDP+T^\dagger D^*T\bigr),
 \]
-Thus every finite truncated Weil matrix, after subtraction of its spectral floor, canonically
-produces a self-adjoint radical quotient without a simplicity or parity assumption.  The theorem
-closes the finite completion obstruction; it does not establish the separate cofinal convergence
-of normalized determinants to the Riemann $\Xi$ function.  The matrix identities have been
-formalized in Lean~4 without additional axioms.
+where $P$ is the support projection.  We prove that $\mathfrak S_T$ is an idempotent retraction
+onto the supported $T$-self-adjoint operators, annihilates the whole radical, and satisfies
+$T\mathfrak S_T(D)=\mathfrak S_T(D)^*T$.  No finite-dimensional or finite-rank condition occurs.
+In the nonclosed-range phase, bounded symmetric support inversion is impossible, but inversion
+does not disappear.  We construct a canonical closed partially defined inverse whose domain is
+exactly $\ran T$.  For arbitrary bounded $D$, it yields a canonical graph-domain symmetrizer on
+the exact incidence domain
+\[
+ \{x:D^*Tx\in\ran T\}.
+\]
+This partial symmetrizer annihilates $\kerop T$ and is symmetric for the $T$-metric on its domain.
+
+The finite rank-two Connes--Consani--Moscovici clock correction is recovered as a sparse boundary
+realization of the metric-adjoint equation, but it is not the universal theorem.  Every theorem
+and displayed identity asserted as a result in this article is formalized unconditionally in
+Lean~4.  We do not claim
+that the actual unbounded CCM Weil operator has closed range, nor that this theorem proves
+finite-Weil transfer or the Riemann hypothesis.
 \end{abstract}
 
-\section{Introduction}
+\section{Why the infinite problem is different}
 
-The finite spectral construction in \emph{Zeta Spectral Triples} starts from the restriction
-$Q_{\lambda}^{N}$ of the Weil quadratic form to the Fourier modes indexed by
-$\{-N,\ldots,N\}$~\cite{CCM2025}.  Its matrix is real symmetric, commutes with reflection, and has
-the divided-difference form
+Finite CCM truncations reduce clock completion to matrix algebra~\cite{CCM2025,CvS2025}.  Their
+cofinal use, however, is an infinite Hilbert-space problem: small singular values may accumulate at
+zero, an algebraic inverse may cease to be bounded, and a finite correction need not converge in
+operator norm.  A theorem restricted to finite matrices cannot detect this transition.
+
+The correct universal object is therefore not a rank-two displacement matrix.  It is the pair
+consisting of a bounded self-adjoint weight $T$ and an arbitrary bounded clock $D$ on an arbitrary
+Hilbert space.  The rank of the metric-adjoint defect
 \[
- q_{ii}=a_i,\qquad q_{ij}=\frac{b_i-b_j}{i-j}\quad(i\ne j),
- \qquad a_{-i}=a_i,\quad b_{-i}=-b_i.                       \tag{1.1}
+ TD-D^*T                                                     \tag{1.1}
 \]
-Writing
+is unrestricted.  The central question is whether there is a canonical bounded operation that
+removes (1.1), respects the support of $T$, and kills its radical.
+
+This article answers that question exactly.  Closed range is neither silently assumed nor treated
+as a technical convenience: it is proved equivalent to existence of the required bounded support
+inverse.  The nonclosed phase is part of the theorem.
+
+\section{Algebraic inverse without closed range}
+
+Let $T\in\mathcal B(\Hh)$ and put $\K=\kerop T$.  No self-adjointness is needed in this section.
+
+\begin{theorem}[Algebraic support--range equivalence]
+\label{thm:algebraic}
+There is a canonical linear equivalence
 \[
- De_j=je_j,\qquad \eta=\sum_{j=-N}^{N}e_j,
- \qquad \beta=\sum_{j=-N}^{N}b_je_j,                       \tag{1.2}
+ T_{\rm alg}:\K^\perp\xrightarrow{\ \sim\ }\ran T,
+ \qquad T_{\rm alg}x=Tx.                                  \tag{2.1}
 \]
-one obtains the exact displacement identity
-\[
- DQ_{\lambda}^{N}-Q_{\lambda}^{N}D
- =|\beta\rangle\langle\eta|-|\eta\rangle\langle\beta|.    \tag{1.3}
-\]
-
-Let $\epsilon_{\lambda,N}$ be the lowest eigenvalue and set
-\[
- T=Q_{\lambda}^{N}-\epsilon_{\lambda,N}I.                  \tag{1.4}
-\]
-Then $T\geq0$, its radical is the full ground eigenspace, and (1.3) is unchanged.  The construction
-in~\cite{CCM2025} assumes that this radical is generated by an even vector $\xi$ normalized by
-$\ip{\eta}{\xi}=1$.  The corrected clock
-\[
- D'=D-|D\xi\rangle\langle\eta|                              \tag{1.5}
-\]
-then descends to a self-adjoint operator on the quotient by $\R\xi$.  Its characteristic
-determinant is the numerator of the Fourier transform of $\xi$.  The same assumption underlies the
-finite real-zero theorem of Connes and van Suijlekom~\cite{CvS2025}.
-
-The simple-even condition is not a consequence of divided-difference displacement: positive
-matrices of the same class can have odd or multiple radicals~\cite[Appendices A--B]{CvS2025}.
-This makes a source-specific proof of simple-evenness a genuine problem.  Our result shows that it
-is not a finite self-adjointness obstruction.  Identity (1.3) already contains a second, parity-dual
-boundary channel.  Once all radical vectors are retained, it also contains a neutral source
-completion.
-
-The central formula is the radical transport law
-\[
- TDv=-\beta\ip{\eta}{v}+\eta\ip{\beta}{v},\qquad v\in\ker T. \tag{1.6}
-\]
-If an even radical vector has nonzero $\eta$-pairing, (1.6) puts $\beta$ in the range of $T$ and
-therefore makes $\beta$ orthogonal to the entire radical.  If an odd radical vector has nonzero
-$\beta$-pairing, the same argument puts $\eta$ in the range of $T$.  These alternatives are
-mutually exclusive.  The appropriate rank-one correction cancels (1.3) exactly and preserves all
-of $\ker T$, not only the chosen vector.
-
-Section~\ref{sec:abstract} proves the abstract trichotomy.  Section~\ref{sec:realzero} derives the
-parity-dual real-zero law for a simple radical.  Section~\ref{sec:ccm} applies the theorem to every
-finite Weil truncation and separates the closed finite problem from the still-open cofinal
-determinant transfer.  Section~\ref{sec:lean} records the formal certificate.
-
-\section{Rank-two displacement systems}
-\label{sec:abstract}
-
-Let $V$ be a finite-dimensional real Hilbert space.  All adjoints in this section refer to its
-given Euclidean inner product.
-
-\begin{definition}
-A \emph{reflection-graded displacement system} is a tuple
-$(T,D,\Gamma,\eta,\beta)$ satisfying
+Its inverse selects the unique preimage orthogonal to $\K$:
 \begin{align}
- &T=T^*,\quad D=D^*,\quad T\geq0,\quad \Gamma^2=I,\\
- &\Gamma T=T\Gamma,\quad \Gamma D=-D\Gamma,
- \quad \Gamma\eta=\eta,\quad \Gamma\beta=-\beta,            \tag{2.1}\\
- &DT-TD=|\beta\rangle\langle\eta|-|\eta\rangle\langle\beta|. \tag{2.2}
+ T\,T_{\rm alg}^{-1}y&=y &&(y\in\ran T),                 \tag{2.2}\\
+ T_{\rm alg}^{-1}(Tx)&=x &&(x\in\K^\perp).              \tag{2.3}
 \end{align}
-Put $\K=\ker T$ and $\K_\pm=\ker(\Gamma\mp I)\cap\K$.
-\end{definition}
-
-Since $T\geq0$, the formula
-\[
- \ip{[x]}{[y]}_T:=\ip{Tx}{y}                               \tag{2.3}
-\]
-defines a positive-definite inner product on $V/\K$.
-
-\begin{lemma}[Radical transport]
-\label{lem:transport}
-For every $v\in\K$,
-\[
- TDv=-\beta\ip{\eta}{v}+\eta\ip{\beta}{v}.                \tag{2.4}
-\]
-\end{lemma}
-
-\begin{proof}
-Apply (2.2) to $v$ and use $Tv=0$.
-\end{proof}
-
-\begin{lemma}[Boundary exclusivity]
-\label{lem:exclusive}
-The following statements hold.
-\begin{enumerate}
-\item If $e\in\K_+$ and $\ip{\eta}{e}=1$, then $TDe=-\beta$ and
-      $\beta\perp\K$.
-\item If $o\in\K_-$ and $\ip{\beta}{o}=1$, then $TDo=\eta$ and
-      $\eta\perp\K$.
-\end{enumerate}
-In particular, the two displayed boundary activities cannot occur simultaneously.
-\end{lemma}
-
-\begin{proof}
-Parity gives $\ip{\beta}{e}=0$ and $\ip{\eta}{o}=0$, so the two source identities follow from
-Lemma~\ref{lem:transport}.  Since $T=T^*$ in finite dimension,
-$\operatorname{ran}T=(\ker T)^\perp$.  Thus $\beta=-TDe$ or $\eta=TDo$ is orthogonal to $\K$.
-\end{proof}
-
-\begin{theorem}[Boundary-channel completion trichotomy]
-\label{thm:trichotomy}
-Exactly one of the following three cases holds.
-\begin{enumerate}
-\item[\rm(E)] $\eta|_{\K}\ne0$.  Choose $e\in\K_+$ with $\ip{\eta}{e}=1$ and set
-\[
- A_E=D-|De\rangle\langle\eta|.                             \tag{2.5}
-\]
-Then $A_E\K\subseteq\K$, $A_Ee=0$, and
-\[
- TA_E=A_E^*T.                                               \tag{2.6}
-\]
-\item[\rm(O)] $\beta|_{\K}\ne0$.  Choose $o\in\K_-$ with $\ip{\beta}{o}=1$ and set
-\[
- A_O=D-|Do\rangle\langle\beta|.                            \tag{2.7}
-\]
-Then $A_O\K\subseteq\K$, $A_Oo=0$, and
-\[
- TA_O=A_O^*T.                                               \tag{2.8}
-\]
-\item[\rm(N)] $\eta|_{\K}=\beta|_{\K}=0$.  Let $y=T^\dagger\beta$ be the unique solution of
-$Ty=\beta$ in $\K^\perp$, and set
-\[
- A_N=D+|y\rangle\langle\eta|.                              \tag{2.9}
-\]
-Then $A_N\K\subseteq\K$ and
-\[
- TA_N=A_N^*T.                                               \tag{2.10}
-\]
-\end{enumerate}
-Each $A_\bullet$ induces a self-adjoint operator $\overline A_\bullet$ on the Hilbert space
-$(V/\K,\ip{\cdot}{\cdot}_T)$; hence its characteristic polynomial has only real zeros.
 \end{theorem}
 
 \begin{proof}
-The restrictions of $\eta$ and $\beta$ to $\K$ see only $\K_+$ and $\K_-$, respectively.
-Lemma~\ref{lem:exclusive} makes (E) and (O) mutually exclusive; if neither occurs, (N) holds.
+The kernel $\K$ is closed, hence $\Hh=\K\oplus\K^\perp$.  Restriction of $T$ to $\K^\perp$ is
+injective.  If $y=Tx$, orthogonal projection of $x$ onto $\K^\perp$ has the same image under $T$,
+which proves surjectivity onto the algebraic range.  Equations (2.2)--(2.3) are the inverse laws.
 
-In case (E), Lemma~\ref{lem:exclusive} and (2.4) give, for $v\in\K$,
-\[
- TA_Ev=TDv-TDe\ip{\eta}{v}
-       =-\beta\ip{\eta}{v}+\beta\ip{\eta}{v}=0.           \tag{2.11}
-\]
-Moreover,
-\begin{align*}
- TA_E-A_E^*T
- &=(TD-DT)-|TDe\rangle\langle\eta|+|\eta\rangle\langle TDe|\\
- &=\bigl(|\eta\rangle\langle\beta|-|\beta\rangle\langle\eta|\bigr)
-   +|\beta\rangle\langle\eta|-|\eta\rangle\langle\beta|=0.
-\end{align*}
-The normalization gives $A_Ee=0$.  The odd proof is the same calculation with $TDo=\eta$:
-\[
- TA_O-A_O^*T
- =(TD-DT)-|\eta\rangle\langle\beta|+|\beta\rangle\langle\eta|=0. \tag{2.12}
-\]
-
-In case (N), finite-dimensional self-adjointness gives
-$\eta,\beta\in\K^\perp=\operatorname{ran}T$, so $y$ exists.  Equation (2.4) shows
-$D\K\subseteq\K$, while $\eta|_\K=0$ makes the correction vanish on $\K$.  Finally,
-\[
- TA_N-A_N^*T
- =(TD-DT)+|\beta\rangle\langle\eta|-|\eta\rangle\langle\beta|=0. \tag{2.13}
-\]
-
-In every case, radical preservation makes the quotient operator well defined.  For quotient
-classes,
-\[
- \ip{\overline A[x]}{[y]}_T
- =\ip{TAx}{y}=\ip{Tx}{Ay}=\ip{[x]}{\overline A[y]}_T,
-\]
-so it is self-adjoint.
+Lean declarations are:
+\begin{quote}\footnotesize
+\path{algebraicSupportRangeEquiv}\\
+\path{algebraicSupportRangeEquiv_apply}\\
+\path{algebraicSupportRangeEquiv_symm_rightInverse}\\
+\path{algebraicSupportRangeEquiv_symm_leftInverse}
+\end{quote}
 \end{proof}
 
-\begin{remark}[Affine neutral completions]
-The neutral branch is not tied to the displayed pseudoinverse formula.  If $Tx=\eta$ and
-$Ty=\beta$, both $D+|y\rangle\langle\eta|$ and
-$D-|x\rangle\langle\beta|$ complete the metric adjointness defect.  Convex affine combinations
-do as well.  The Moore--Penrose choice is canonical because it lies in $\K^\perp$.
-\end{remark}
+Theorem~\ref{thm:algebraic} is valid in both topological phases.  It deliberately asserts only a
+linear equivalence.  Bounded extension to all of $\Hh$ is the separate issue settled next.
 
-\section{The parity-dual real-zero law}
-\label{sec:realzero}
+\section{The closed-range phase law}
 
-Assume now that $\K=\R\xi$ and that $D$ has simple real spectrum.  In the CCM clock,
-$\ker D=\R e_0$, where $\Gamma e_0=e_0$ and $\ip{\eta}{e_0}=1$.
+Now let $T=T^*$.  A \emph{symmetric support inverse} is a pair $(G,P)$ of bounded operators such
+that $G=G^*$, $P=P^*=P^2$, and
+\begin{align}
+ TG=GT&=P,                                                \tag{3.1}\\
+ TP=PT&=T,                                                \tag{3.2}\\
+ PG&=G.                                                   \tag{3.3}
+\end{align}
+These equations are exact data used below; Lean structure is
+\path{SymmetricSupportInverse}.
 
-\begin{lemma}
-\label{lem:noneutral}
-The neutral branch is impossible.  Hence a simple radical is active even or active odd.
-\end{lemma}
-
-\begin{proof}
-Reflection invariance makes $\xi$ even or odd.  If both boundary pairings vanished,
-Lemma~\ref{lem:transport} would give $D\xi\in\K$.  Since $D$ reverses parity while $\K$ has one
-parity, $D\xi=0$.  Thus $\xi$ is proportional to $e_0$, contradicting
-$\ip{\eta}{e_0}=1$.
-\end{proof}
-
-\begin{theorem}[Parity-dual real-zero determinants]
-\label{thm:realzero}
-Let $K=\R\xi$.
-\begin{enumerate}
-\item If $\xi$ is even and $\ip{\eta}{\xi}=1$, then
+\begin{theorem}[Sharp closed-range boundary]
+\label{thm:closed}
+For every bounded self-adjoint $T$,
 \[
- P_E(z)=\det(D-zI)\ip{\eta}{(D-zI)^{-1}\xi}                \tag{3.1}
+ \ran T\text{ is closed}
+ \quad\Longleftrightarrow\quad
+ T\text{ has a symmetric support inverse}.               \tag{3.4}
 \]
-is the characteristic polynomial of $\overline A_E$ and has only real zeros.
-\item If $\xi$ is odd and $\ip{\beta}{\xi}=1$, then
-\[
- P_O(z)=\det(D-zI)\ip{\beta}{(D-zI)^{-1}\xi}              \tag{3.2}
-\]
-is the characteristic polynomial of $\overline A_O$ and has only real zeros.
-\end{enumerate}
-Both identities extend polynomially through $\spec D$.
+When the pair $(G,P)$ exists, it is unique.
 \end{theorem}
 
 \begin{proof}
-Let $c=\eta$ in the even case and $c=\beta$ in the odd case.  The correction has the common form
-$A=D-|D\xi\rangle\langle c|$, with $\ip{c}{\xi}=1$.  Away from $\spec D$, the matrix determinant
-lemma gives
-\begin{align*}
- \det(A-zI)
- &=\det(D-zI)\left(1-\ip{c}{(D-zI)^{-1}D\xi}\right)\\
- &=-z\det(D-zI)\ip{c}{(D-zI)^{-1}\xi}.                    \tag{3.3}
-\end{align*}
-Since $A\xi=0$ and $A$ preserves $\R\xi$, the left side is
-$-z\det(\overline A-zI)$.  Canceling $-z$ proves (3.1)--(3.2).  The quotient operator is
-self-adjoint by Theorem~\ref{thm:trichotomy}.
+Assume first that $\ran T$ is closed.  Self-adjointness gives
+$\ran T=(\kerop T)^\perp$.  Restrict $T$ to this closed subspace.  Theorem~\ref{thm:algebraic}
+makes the restriction bijective, and the bounded inverse theorem makes its inverse bounded.
+Extending it by zero across $\kerop T$ gives $G$; orthogonal projection onto
+$(\kerop T)^\perp$ gives $P$.  Direct inner-product calculation proves $G=G^*$ and
+(3.1)--(3.3).
+
+Conversely, (3.1)--(3.2) give $\ran T=\ran P$.  The range of a bounded idempotent is closed, so
+$\ran T$ is closed.
+
+For uniqueness, if $(G_1,P_1)$ and $(G_2,P_2)$ satisfy the equations, then
+$P_1P_2=P_2$ and $P_2P_1=P_1$.  Taking adjoints identifies $P_1=P_2$.  Then
+\[
+ G_1=G_1P_1=G_1TG_2=P_1G_2=G_2.                         \tag{3.5}
+\]
+
+Formal declarations are:
+\begin{quote}\footnotesize
+\path{exists_symmetricSupportInverse_of_isClosed_range}\\
+\path{isClosed_range_iff_nonempty_symmetricSupportInverse}\\
+\path{symmetricSupportInverse_support_unique}\\
+\path{symmetricSupportInverse_inverse_unique}\\
+\path{symmetricSupportInverse_unique}
+\end{quote}
 \end{proof}
 
-If $De_j=je_j$, formula (3.2) becomes
-\[
- P_O(z)=\sum_{j=-N}^{N}\beta_j\xi_j
-          \prod_{\substack{k=-N\\k\ne j}}^{N}(k-z).       \tag{3.4}
-\]
-The even formula has $\eta_j=1$ and is the polynomial appearing in the CCM Fourier transform.
-The odd formula is its displacement-weighted dual.
-
-\section{Application to finite zeta spectral triples}
-\label{sec:ccm}
-
-\begin{corollary}[Unconditional finite completion]
-For every aperture $\lambda>1$ and every Fourier truncation $N$, let
-$\epsilon_{\lambda,N}$ be the lowest eigenvalue of the actual truncated Weil matrix and put
-$T=Q_\lambda^N-\epsilon_{\lambda,N}I$.  Then one of the completions in
-Theorem~\ref{thm:trichotomy} induces a self-adjoint clock on the quotient by the full ground
-eigenspace.  No assumption on ground multiplicity or parity is required.
+\begin{corollary}[Nonclosed obstruction]
+If $T=T^*$ and $\ran T$ is not closed, then no bounded symmetric support inverse exists.
 \end{corollary}
 
 \begin{proof}
-The matrix $T$ is positive semidefinite and retains the displacement identity (1.3), because a
-scalar matrix commutes with $D$.  Reflection properties follow from (1.1).  Apply
-Theorem~\ref{thm:trichotomy}.
+This is reverse implication of (3.4), formalized as
+\path{no_symmetricSupportInverse_of_not_isClosed_range}.
 \end{proof}
 
-This corollary changes the logical boundary of the CCM program.  The finite self-adjoint quotient
-does not require a proof that the actual ground is simple even.  What simple-evenness supplies is
-a specific identification: the boundary determinant is then the unweighted Fourier transform of
-the even ground vector, which is the branch compared in~\cite{CCM2025} with the prolate
-$h_0-h_4$ seed.  An odd ground produces the equally real-rooted polynomial (3.4), but no theorem
-currently identifies its cofinal limit with $\Xi$.
+\section{Universal semimetric symmetrization}
 
-Nor does finite completion prove the second missing CCM step.  To deduce RH from finite real
-spectra one still needs normalization and locally uniform convergence strong enough to transport
-the divisor to $\Xi$.  The present theorem supplies no such estimate.  Its contribution is
-orthogonal and exact: it removes the parity/multiplicity obstruction from every finite stage and
-exposes cofinal branch selection as the remaining source problem.
-
-\section{Formal verification}
-\label{sec:lean}
-
-The algebraic core is formalized in the Lean~4 module
-\texttt{GaloisForLFunctions.RHTower.CCMBoundaryChannelCompletion}.  The certificate proves:
-\begin{itemize}
-\item the radical transport identity (2.4);
-\item even/odd boundary exclusivity;
-\item all three metric-adjointness identities $TA=A^\mathsf{T}T$;
-\item annihilation of the normalized active vector;
-\item preservation of every vector in the full radical;
-\item bundled active-even and active-odd connector theorems from displacement alone.
-\end{itemize}
-The declarations use only Lean's standard logical axioms
-\texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}; no mathematical axiom,
-\texttt{sorry}, or RH-facing hypothesis is introduced.  The quotient spectral theorem and the
-determinant lemma are standard finite-dimensional consumers of the certified identities; their
-specialized polynomial packaging is left for a subsequent formal layer.
-
-\section{Contribution and open boundary}
-
-The universal law is the source/radical classification
+Assume $(G,P)$ is the unique pair from Theorem~\ref{thm:closed}.  For arbitrary
+$D\in\mathcal B(\Hh)$ define
 \[
-\begin{array}{ccl}
-\eta|_\K\ne0 &\Longrightarrow& \eta\text{-boundary completion and }\beta\perp\K,\\
-\beta|_\K\ne0&\Longrightarrow& \beta\text{-boundary completion and }\eta\perp\K,\\
-\eta|_\K=\beta|_\K=0&\Longrightarrow&\text{neutral source-solution completion}.
-\end{array}                                                     \tag{6.1}
+ \mathfrak S_T(D)=\frac12\left(PDP+GD^*T\right).         \tag{4.1}
 \]
-It applies beyond the zeta setting to every reflection-graded rank-two displacement pencil.  Its
-finite CCM consequence is unconditional and solves the need for a simple-even hypothesis in the
-construction of a self-adjoint radical quotient.
 
-Two problems remain separate.  First, the actual source may still select a simple even ground;
-our theorem neither proves nor needs that assertion at a finite stage.  Second, a proof of the
-Riemann hypothesis through this lane still requires cofinal source/divisor transport from a
-specified branch to $\Xi$.  Finite real-rootedness alone cannot provide it.  Any future transfer
-theorem must therefore do more than re-establish finite self-adjointness: it must identify the
-active channel and control its normalized determinant in the cofinal aperture limit.
+\begin{theorem}[Infinite semimetric symmetrization law]
+\label{thm:symmetrizer}
+For every bounded $D$:
+\begin{align}
+ T\mathfrak S_T(D)&=\mathfrak S_T(D)^*T,                 \tag{4.2}\\
+ P\mathfrak S_T(D)&=\mathfrak S_T(D)
+                  =\mathfrak S_T(D)P,                   \tag{4.3}\\
+ \mathfrak S_T(D)x&=0 &&(x\in\kerop T),                 \tag{4.4}\\
+ \mathfrak S_T(\mathfrak S_T(D))&=\mathfrak S_T(D).     \tag{4.5}
+\end{align}
+Moreover,
+\[
+ \mathfrak S_T(D)=D
+ \quad\Longleftrightarrow\quad
+ PD=D=DP\ \text{ and }\ TD=D^*T.                        \tag{4.6}
+\]
+Thus $\mathfrak S_T$ is a canonical idempotent retraction onto all supported
+$T$-self-adjoint bounded operators.
+\end{theorem}
+
+\begin{proof}
+Using (3.1)--(3.3) and self-adjointness of $T,G,P$,
+\begin{align*}
+ T\mathfrak S_T(D)
+ &=\tfrac12\bigl(TDP+PD^*T\bigr),\\
+ \mathfrak S_T(D)^*T
+ &=\tfrac12\bigl(PD^*T+TDP\bigr),
+\end{align*}
+which proves (4.2).  Equations (4.3) follow by multiplying (4.1) by $P$.  If $Tx=0$, then
+$Px=GTx=0$, and (4.3) gives (4.4).
+
+If $D$ is already supported and $TD=D^*T$, then
+\[
+ GD^*T=GTD=PD=D,
+\]
+so (4.1) returns $D$.  Applying this fixed-point calculation to $\mathfrak S_T(D)$ proves
+(4.5), and the converse direction of (4.6) follows from (4.2)--(4.3).
+
+These are declarations:
+\begin{quote}\footnotesize
+\path{infiniteSemimetricSymmetrization_metricAdjoint}\\
+\path{infiniteSemimetricSymmetrization_support}\\
+\path{infiniteSemimetricSymmetrization_apply_eq_zero_of_mem_ker}\\
+\path{infiniteSemimetricSymmetrization_idempotent}\\
+\path{infiniteSemimetricSymmetrization_fixed_iff}
+\end{quote}
+\end{proof}
+
+No rank appears in Theorems~\ref{thm:closed}--\ref{thm:symmetrizer}; both the radical and the
+metric-adjoint defect may be infinite-dimensional.
+
+\section{The nonclosed phase: canonical graph inversion}
+
+Closed range is the exact boundary for a bounded support inverse, not for inversion itself.  Put
+\[
+ T_{\mathrm{sup}}=T|_{(\kerop T)^\perp}.
+\]
+The map is injective and its image is $\ran T$.  Let
+\[
+ \mathcal G_T=T_{\mathrm{sup}}^{-1},\qquad
+ \operatorname{dom}\mathcal G_T=\ran T.                  \tag{5.1}
+\]
+Here $\mathcal G_T$ is treated as a partially defined linear operator on $\Hh$.
+Closed and Moore--Penrose inverses of unbounded operators and linear relations are classical
+subjects~\cite{MJ2024,M2025,KR2015}.  New claim investigated here is exact semimetric incidence
+symmetrizer below; no priority claim is made for graph inversion alone.
+
+\begin{theorem}[Canonical closed graph inverse]
+\label{thm:graphinverse}
+For every bounded $T$, without self-adjointness or closed range:
+\begin{enumerate}
+\item $\mathcal G_T$ is a closed partially defined linear operator;
+\item $\operatorname{dom}\mathcal G_T=\ran T$;
+\item $T\mathcal G_Ty=y$ for every $y\in\ran T$;
+\item $\mathcal G_Ty$ is the unique preimage of $y$ in $(\kerop T)^\perp$.
+\end{enumerate}
+If $\ran T$ is nonclosed, the domain of $\mathcal G_T$ is nonclosed.  If $T=T^*$, then
+$\mathcal G_T$ is formally symmetric on its domain.
+\end{theorem}
+
+\begin{proof}
+The graph of $T_{\mathrm{sup}}$ is
+\[
+ \{(x,Tx):x\in(\kerop T)^\perp\}.                       \tag{5.2}
+\]
+It is closed because $(\kerop T)^\perp$ is closed and $T$ is continuous.  Coordinate swap is a
+homeomorphism, so the inverse graph
+\[
+ \{(Tx,x):x\in(\kerop T)^\perp\}                       \tag{5.3}
+\]
+is closed.  Its first projection is exactly $\ran T$.  Injectivity of the restriction gives the
+right-inverse and uniqueness laws.  Formal symmetry follows, for $y=Tx$ and $z=Tw$ with
+$x,w\perp\kerop T$, from
+\[
+ \langle\mathcal G_Ty,z\rangle
+ =\langle x,Tw\rangle
+ =\langle Tx,w\rangle
+ =\langle y,\mathcal G_Tz\rangle.                       \tag{5.4}
+\]
+
+Lean declarations are:
+\begin{quote}\footnotesize
+\path{closedSupportInverse_isClosed}\\
+\path{closedSupportInverse_domain}\\
+\path{closedSupportInverse_rightInverse}\\
+\path{closedSupportInverse_apply_eq_algebraicSupportRangeEquiv_symm}\\
+\path{closedSupportInverse_formalSymmetric}
+\end{quote}
+\end{proof}
+
+The graph inverse makes the exact domain obligation visible.  For self-adjoint $T$ and arbitrary
+bounded $D$, define
+\[
+ \mathcal D_{T,D}=\{x\in\Hh:D^*Tx\in\ran T\},           \tag{5.5}
+\]
+and on this subspace put
+\[
+ \mathfrak G_{T,D}x
+ =\frac12\left(PDPx+\mathcal G_T(D^*Tx)\right).          \tag{5.6}
+\]
+
+\begin{theorem}[Infinite graph-domain symmetrization]
+\label{thm:graphsymm}
+For every bounded self-adjoint $T$ and bounded $D$:
+\begin{align}
+ \operatorname{dom}\mathfrak G_{T,D}&=\mathcal D_{T,D},                 \tag{5.7}\\
+ T\mathfrak G_{T,D}x
+ &=\tfrac12\left(TDPx+D^*Tx\right) &&(x\in\mathcal D_{T,D}),           \tag{5.8}\\
+ \langle T\mathfrak G_{T,D}x,y\rangle
+ &=\langle Tx,\mathfrak G_{T,D}y\rangle
+ &&(x,y\in\mathcal D_{T,D}).                                           \tag{5.9}
+\end{align}
+Moreover $\kerop T\subseteq\mathcal D_{T,D}$ and
+$\mathfrak G_{T,D}x=0$ for every $x\in\kerop T$.
+\end{theorem}
+
+\begin{proof}
+Equation (5.7) is the definition of the partial composition.  The support projection satisfies
+$TP=T$.  Since $D^*Tx$ lies in the domain of $\mathcal G_T$, the right-inverse law gives
+$T\mathcal G_T(D^*Tx)=D^*Tx$, proving (5.8).  For (5.9), use formal symmetry of
+$\mathcal G_T$, self-adjointness of $T$ and $P$, and the incidence conditions in (5.5).  If
+$Tx=0$, both inputs in (5.6) vanish because $Px=0$, proving the radical law.
+
+These are declarations:
+\begin{quote}\footnotesize
+\path{graphSemimetricSymmetrization_domain}\\
+\path{mem_graphSemimetricSymmetrization_domain_iff}\\
+\path{metric_graphSemimetricSymmetrization_apply}\\
+\path{graphSemimetricSymmetrization_metricSymmetric}\\
+\path{graphSemimetricSymmetrization_apply_eq_zero_of_mem_ker}
+\end{quote}
+\end{proof}
+
+The universal nonclosed-range problem is therefore not ``take a pseudoinverse everywhere.''  It
+is exact range incidence (5.5).  This statement survives arbitrary defect rank and arbitrary
+Hilbert dimension.
+
+\section{CCM boundary corrections as sparse refinements}
+
+The rank-two CCM displacement law is now a specialization, not the claimed universal principle.
+For finite real matrices satisfying
+\[
+ DT-TD=|\beta\rangle\langle\eta|-|\eta\rangle\langle\beta|, \tag{6.1}
+\]
+reflection parity splits the radical into three boundary activities.  Lean proves explicit sparse
+corrections
+\begin{align}
+ A_E&=D-|De\rangle\langle\eta|,\notag\\
+ A_O&=D-|Do\rangle\langle\beta|,\notag\\
+ A_N&=D+|y\rangle\langle\eta|. \tag{6.2}
+\end{align}
+each satisfying $TA=A^{\mathsf T}T$ and preserving $\kerop T$.  In the neutral branch, existence
+of $y$ with $Ty=\beta$ is proved from finite-dimensional orthogonality rather than assumed.
+
+These statements are formalized in:
+\begin{quote}\footnotesize
+\path{GaloisForLFunctions.RHTower.CCMBoundaryChannelCompletion}\\
+\path{GaloisForLFunctions.RHTower.CCMDividedDifferenceInstantiation}
+\end{quote}
+
+The sparse formulas (6.2) exploit the rank-two source structure and need not equal the global
+support symmetrizer (4.1) on the radical itself.  Their common universal content is the
+metric-adjoint identity; the infinite theorem explains the additional topological price of asking
+for a canonical bounded radical-annihilating completion.
+
+\section{Formal certificate and exact frontier}
+
+The headline module is
+\[
+\texttt{GaloisForLFunctions.RHTower.InfiniteSemimetricGraphInverse},
+\]
+which extends
+\path{GaloisForLFunctions.RHTower.InfiniteSemimetricSymmetrization}.
+Its carrier type is an arbitrary complete real inner-product space.  There is no finite type,
+matrix size, compactness, trace-class, or defect-rank parameter in the declarations.
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Claim & Lean declaration \\
+\midrule
+algebraic inverse on $\ran T$ & \texttt{algebraicSupportRangeEquiv} \\
+closed-range equivalence & \texttt{isClosed\_range\_iff\_nonempty\_*} \\
+uniqueness/canonicity & \texttt{symmetricSupportInverse\_*\_unique} \\
+metric-adjoint identity & \texttt{infiniteSemimetricSymmetrization\_metricAdjoint} \\
+support and radical annihilation & \texttt{infiniteSemimetricSymmetrization\_support} \\
+idempotent retraction & \texttt{infiniteSemimetricSymmetrization\_idempotent} \\
+fixed-point classification & \texttt{infiniteSemimetricSymmetrization\_fixed\_iff} \\
+nonclosed obstruction & \texttt{no\_symmetricSupportInverse\_*} \\
+closed partial inverse & \texttt{closedSupportInverse\_isClosed} \\
+exact inverse domain & \texttt{closedSupportInverse\_domain} \\
+exact incidence domain & \texttt{mem\_graphSemimetricSymmetrization\_domain\_iff} \\
+graph-domain metric symmetry & \texttt{graphSemimetricSymmetrization\_metricSymmetric} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The theorems resolve the universal bounded completion problem and construct its canonical
+graph-domain replacement in the nonclosed phase.  They do not resolve source-specific CCM/RH
+problem.  Present Lean corpus does not
+identify the actual unbounded Weil clock with a bounded $D$ in (4.1), prove closed range for its
+weight, prove that its boundary source satisfies incidence condition (5.5), identify its concrete
+graph relation with (5.6), or prove divisor-preserving cofinal convergence to $\Xi$.  None of those
+statements is used as premise or claimed as result.
+
+Consequently exact CCM frontier is sharper: source-defined boundary datum must be proved to lie in
+$\ran T$ before graph inverse can be applied, and resulting graph-domain Evans/Feshbach map must
+transport divisor cofinally.  Finite rank-two algebra alone cannot prove either statement.
 
 \begin{thebibliography}{9}
 
@@ -389,6 +422,24 @@ A.~Connes and W.~D. van Suijlekom,
 \emph{Quadratic Forms, Real Zeros and Echoes of the Spectral Action},
 arXiv:2511.23257 (2025),
 \url{https://arxiv.org/abs/2511.23257}.
+
+\bibitem{MJ2024}
+A.~Majumdar and P.~S. Johnson,
+\emph{The Moore--Penrose inverses of unbounded closable operators and the Cartesian product of
+closed operators in Hilbert spaces}, arXiv:2405.11480 (2024),
+\url{https://arxiv.org/abs/2405.11480}.
+
+\bibitem{M2025}
+A.~Majumdar,
+\emph{Spectral Properties of Off Diagonal Block Linear Relations via Moore Penrose Inverses in
+Hilbert Spaces}, arXiv:2502.07361 (2025; revised 2026),
+\url{https://arxiv.org/abs/2502.07361}.
+
+\bibitem{KR2015}
+S.~H. Kulkarni and G.~Ramesh,
+\emph{Perturbation of closed range operators and Moore--Penrose inverse},
+arXiv:1510.01534 (2015),
+\url{https://arxiv.org/abs/1510.01534}.
 
 \end{thebibliography}
 

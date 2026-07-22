@@ -17,7 +17,7 @@ theorem norm_semilocalGammaLogKernel_le_one
   by_cases hx : 0 ≤ x
   · calc
       ‖semilocalGammaLogKernel a x‖ ≤ Real.exp (-a * x) :=
-        norm_semilocalGammaLogKernel_le_of_nonneg hx
+        norm_semilocalGammaLogKernel_le_of_nonneg
       _ ≤ 1 := by
         rw [← Real.exp_zero]
         exact Real.exp_le_exp.mpr (by nlinarith)

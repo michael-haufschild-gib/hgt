@@ -117,7 +117,7 @@ shift-eigenslice structure is discharged from `FiniteTransverseExpEigenslice`; o
 analytic inputs — evenness of the concrete series and its lower-flank boundedness — remain as
 hypotheses (supplied by the explicit `A·Pₙ` construction). -/
 theorem expFlank_reflection_rigidity (α β : ℝ) (hα : 0 < α) (hirr : Irrational (β / α))
-    {w : ℝ} (hw : 0 < w) (a : ℤ → ℤ → ℂ) (M : Finset ℤ) (S : Finset ℕ)
+    {w : ℝ} (a : ℤ → ℤ → ℂ) (M : Finset ℤ) (S : Finset ℕ)
     (hEven : ∀ z, (∑ n ∈ S, expFlankSlice α β a M (n : ℤ) (-z))
                   = ∑ n ∈ S, expFlankSlice α β a M (n : ℤ) z)
     {B : ℝ} (hbound : ∀ z, z.im ≤ -w →
@@ -129,7 +129,7 @@ theorem expFlank_reflection_rigidity (α β : ℝ) (hα : 0 < α) (hirr : Irrati
     (G := fun z => ∑ n ∈ S, expFlankSlice α β a M (n : ℤ) z)
     (T := 2 * π / α) (w := w) (ω := Complex.exp (2 * π * Complex.I * ((β / α : ℝ)))) (S := S)
     (Gn := fun (n : ℕ) z => expFlankSlice α β a M (n : ℤ) z)
-    ?hG hEven (by positivity) hw (Complex.exp_ne_zero _)
+    ?hG hEven (by positivity) (Complex.exp_ne_zero _)
     (fun k hk => expOmega_pow_ne_one hirr k hk) (fun z _ => rfl) ?heig hbound
   case hG =>
     have hrw : (fun z => ∑ n ∈ S, expFlankSlice α β a M (n : ℤ) z)
@@ -154,7 +154,7 @@ theorem expFlank_reflection_rigidity_of_freqNonpos (α β : ℝ) (hα : 0 < α) 
     (hfreq : ∀ n ∈ S, ∀ m ∈ M, (m : ℝ) * α + (n : ℝ) * β ≤ 0) :
     ∀ s t : ℂ, (∑ n ∈ S, expFlankSlice α β a M (n : ℤ) s)
              = ∑ n ∈ S, expFlankSlice α β a M (n : ℤ) t :=
-  expFlank_reflection_rigidity α β hα hirr (w := 1) one_pos a M S hEven
+  expFlank_reflection_rigidity α β hα hirr (w := 1) a M S hEven
     (fun z hz => expFlank_lowerFlank_bounded α β a M S hfreq z (le_trans hz (by norm_num)))
 
 end RHTower

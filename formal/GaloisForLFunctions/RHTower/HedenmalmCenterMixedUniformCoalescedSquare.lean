@@ -37,7 +37,7 @@ theorem exists_thetaCuspCenterMixed_uniformCoalescedSquare_posDef
       (fun t => hasDerivAt_thetaCuspCenterMixedDensityFourthJet ha0.le ha t)
       (fun t => hasDerivAt_thetaCuspCenterMixedDensityFifthJet ha0.le ha t)
       (continuous_thetaCuspCenterMixedDensitySixthJet ha0.le ha)
-      (thetaCuspCenterMixedDensityFirstJet_zero ha0.le ha)
+      (thetaCuspCenterMixedDensityFirstJet_zero a)
       (thetaCuspCenterMixedDensityThirdJet_zero a)
       (thetaCuspCenterMixedDensitySecondJet_zero_neg ha0 ha)
       (thetaCuspCenterMixedDensity_fourthHankel_pos ha0 ha) with

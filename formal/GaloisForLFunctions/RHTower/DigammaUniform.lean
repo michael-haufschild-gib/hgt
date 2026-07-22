@@ -377,8 +377,9 @@ theorem intervalIntegrable_euler_sub_left {s : ℂ} (hsre : 0 < s.re) {n : ℕ} 
         mul_le_mul_of_nonneg_right h8 (Real.rpow_nonneg (le_of_lt hx.1) _)
     _ = x ^ (s.re - 1) := one_mul _
 
-/-- Integrability of `(e^{-x} - (1-x/n)^n)·x^{s-1}` on `[1,n]`. -/
-theorem intervalIntegrable_euler_sub_right {s : ℂ} (_hsre : 0 < s.re) {n : ℕ} (hn : 1 ≤ n) :
+/-- Integrability of `(e^{-x} - (1-x/n)^n)·x^{s-1}` on `[1,n]` for every `s`.
+Unlike the interval adjacent to zero, this compact interval imposes no condition on `Re s`. -/
+theorem intervalIntegrable_euler_sub_right {s : ℂ} {n : ℕ} (hn : 1 ≤ n) :
     IntervalIntegrable (fun x : ℝ => (Real.exp (-x) - (1 - x / n) ^ n) * x ^ (s.re - 1))
       volume 1 n := by
   apply (intervalIntegrable_iff_integrableOn_Ioc_of_le (by exact_mod_cast hn : (1:ℝ) ≤ n)).mpr
@@ -395,7 +396,7 @@ theorem intervalIntegrable_euler_sub_right {s : ℂ} (_hsre : 0 < s.re) {n : ℕ
 
 /-- The uniform rectangle bound: `‖P_n(s) − Γ(s)‖` is bounded, uniformly in `s`
 with `c ≤ Re s ≤ C`, by the three `L¹`-convergent sequences A, B, C. -/
-theorem euler_rect_bound {c C : ℝ} (hc : 0 < c) (hcC : c ≤ C) {s : ℂ}
+theorem euler_rect_bound {c C : ℝ} (hc : 0 < c) {s : ℂ}
     (hs : c ≤ s.re) (hsC : s.re ≤ C) {n : ℕ} (hn : 1 ≤ n) :
     ‖(n : ℂ) ^ s * Nat.factorial n / ∏ k ∈ Finset.range (n + 1), (s + k) - Gamma s‖ ≤
       (∫ x in (0 : ℝ)..1, (Real.exp (-x) - (1 - x / n) ^ n) * x ^ (c - 1)) +
@@ -520,7 +521,9 @@ theorem euler_rect_bound {c C : ℝ} (hc : 0 < c) (hcC : c ≤ C) {s : ℂ}
       have h2 : (∫ x in (0 : ℝ)..1, (Real.exp (-x) - (1 - x / n) ^ n) * x ^ (s.re - 1)) +
           ∫ x in (1 : ℝ)..n, (Real.exp (-x) - (1 - x / n) ^ n) * x ^ (s.re - 1) =
           ∫ x in (0 : ℝ)..n, (Real.exp (-x) - (1 - x / n) ^ n) * x ^ (s.re - 1) :=
-        intervalIntegral.integral_add_adjacent_intervals (intervalIntegrable_euler_sub_left hsre hn) (intervalIntegrable_euler_sub_right hsre hn)
+        intervalIntegral.integral_add_adjacent_intervals
+          (intervalIntegrable_euler_sub_left hsre hn)
+          (intervalIntegrable_euler_sub_right (s := s) hn)
       rw [← intervalIntegral.integral_of_le ((Nat.cast_nonneg n) : (0:ℝ) ≤ (n : ℝ)), ← h2]
     rw [hsplit1]
     -- exponent comparisons
@@ -543,9 +546,8 @@ theorem euler_rect_bound {c C : ℝ} (hc : 0 < c) (hcC : c ≤ C) {s : ℂ}
     have hcmp2 : (∫ x in (1 : ℝ)..n, (Real.exp (-x) - (1 - x / n) ^ n) * x ^ (s.re - 1)) ≤
         ∫ x in (1 : ℝ)..n, (Real.exp (-x) - (1 - x / n) ^ n) * x ^ (C - 1) := by
       apply intervalIntegral.integral_mono_on (by exact_mod_cast hn : (1:ℝ) ≤ n)
-        (intervalIntegrable_euler_sub_right hsre hn)
-        (intervalIntegrable_euler_sub_right
-          (show 0 < ((C : ℂ)).re from by rw [Complex.ofReal_re]; exact lt_of_lt_of_le hc hcC) hn)
+        (intervalIntegrable_euler_sub_right (s := s) hn)
+        (intervalIntegrable_euler_sub_right (s := (C : ℂ)) hn)
       intro x hx
       have h5 : (1 - x / n) ^ n ≤ Real.exp (-x) :=
         one_sub_div_pow_le_exp_neg hn (by linarith [hx.1] : 0 ≤ x) hx.2
@@ -628,8 +630,7 @@ theorem tendstoLocallyUniformlyOn_euler :
       (Iio_mem_nhds (by linarith [hε] : (0:ℝ) < ε / 3))
     filter_upwards [hA, hB, hC, eventually_atTop.2 ⟨1, fun n hn => hn⟩] with n hAn hBn hCn hn t ht
     have hb := euler_rect_bound (c := s.re / 2) (C := 2 * s.re)
-      (by linarith [hsre] : 0 < s.re / 2) (by linarith [hsre] : s.re / 2 ≤ 2 * s.re)
-      ht.1 ht.2.1 hn
+      (by linarith [hsre] : 0 < s.re / 2) ht.1 ht.2.1 hn
     have hdist : dist (Gamma t) ((fun s : ℂ => (n : ℂ) ^ s * Nat.factorial n /
         ∏ k ∈ Finset.range (n + 1), (s + k)) t) =
         ‖(n : ℂ) ^ t * Nat.factorial n / ∏ k ∈ Finset.range (n + 1), (t + k) - Gamma t‖ := by

@@ -165,7 +165,7 @@ theorem tendsto_xiThermalProjectiveColdTruncation_log_div_cold
             Real.exp ((cold j : ℝ) * xiProjectiveReflectionRadius) :=
       (xiThermalProjectiveColdTruncation_le_partition (size j) (cold j)).trans
         (xiThermalProjectiveColdPartition_le_source_exp_of_halfPlaneBound
-          xiProjectiveReflectionRadius_nonneg hzeros (cold j))
+          hzeros (cold j))
     have hlogle := Real.log_le_log hfinitePos hupper
     have hkpos : 0 < (cold j : ℝ) := by exact_mod_cast hkj
     have hnormalized :

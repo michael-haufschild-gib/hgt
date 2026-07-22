@@ -371,6 +371,6 @@ theorem semilocalFinitePrimeActualEvenJacobiMoment_signed_pos
     (hprime : ∀ i, (p i).Prime) :
     0 < (-1 : ℝ) ^ k * semilocalFinitePrimeActualEvenJacobiMoment k p := by
   rw [semilocalFinitePrimeActualEvenJacobiMoment_eq_seriesMoment hk p hprime]
-  exact semilocalFinitePrimeEvenJacobiMoment_signed_pos hk p hp hprime
+  exact semilocalFinitePrimeEvenJacobiMoment_signed_pos p hp hprime
 
 end RHTower

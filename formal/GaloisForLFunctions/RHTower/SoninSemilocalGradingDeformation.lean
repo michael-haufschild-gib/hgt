@@ -154,7 +154,7 @@ theorem semilocalOnePrimePositiveEvenJacobiSeries_eq_signed_magnitudeSeries
       ring
 
 theorem semilocalOnePrimeEvenJacobiMagnitudeTerm_pos
-    {k p : ℕ} (hk : 0 < k) (hp : p.Prime) (m : ℕ) :
+    {k p : ℕ} (hp : p.Prime) (m : ℕ) :
     0 < semilocalOnePrimeEvenJacobiMagnitudeTerm k p m := by
   unfold semilocalOnePrimeEvenJacobiMagnitudeTerm
   have hfreq : (((m + 1 : ℕ) : ℝ) * Real.log p) ≠ 0 := by
@@ -165,17 +165,17 @@ theorem semilocalOnePrimeEvenJacobiMagnitudeTerm_pos
       (mul_pos (pow_pos (semilocalPrimePoissonRatio_pos hp) _)
         (semilocalArchimedeanJacobiNormalization_pos (2 * k)))
       (semilocalArchimedeanCharacteristic_pos _))
-    (tanh_even_pow_pos hk hfreq)
+    (tanh_even_pow_pos hfreq)
 
 theorem semilocalOnePrimeEvenJacobiMagnitudeSeries_pos
-    {k p : ℕ} (hk : 0 < k) (hp : p.Prime) :
+    {k p : ℕ} (hp : p.Prime) :
     0 < semilocalOnePrimeEvenJacobiMagnitudeSeries k p := by
   have hs := summable_semilocalOnePrimeEvenJacobiMagnitudeTerm (k := k) hp
-  exact (semilocalOnePrimeEvenJacobiMagnitudeTerm_pos hk hp 0).trans_le
+  exact (semilocalOnePrimeEvenJacobiMagnitudeTerm_pos hp 0).trans_le
     (by
       unfold semilocalOnePrimeEvenJacobiMagnitudeSeries
       exact hs.le_tsum 0 (fun m _ =>
-        (semilocalOnePrimeEvenJacobiMagnitudeTerm_pos hk hp m).le))
+        (semilocalOnePrimeEvenJacobiMagnitudeTerm_pos hp m).le))
 
 theorem tsum_semilocalOnePrimeEvenJacobiTerm_eq_two_mul_positiveSeries
     {k p : ℕ} (hk : 0 < k) (hp : p.Prime) :
@@ -258,7 +258,7 @@ theorem abs_semilocalOnePrimeEvenJacobiCoefficient_eq_magnitudeSeries
     have hr0 := semilocalPrimePoissonRatio_pos hp
     have hr1 := semilocalPrimePoissonRatio_lt_one hp
     nlinarith [sq_nonneg (semilocalPrimePoissonRatio p)]
-  have hseries := semilocalOnePrimeEvenJacobiMagnitudeSeries_pos hk hp
+  have hseries := semilocalOnePrimeEvenJacobiMagnitudeSeries_pos (k := k) hp
   have hright : 0 < 2 * (1 - semilocalPrimePoissonRatio p ^ 2)⁻¹ *
       semilocalOnePrimeEvenJacobiMagnitudeSeries k p := by positivity
   have habs := congrArg abs h

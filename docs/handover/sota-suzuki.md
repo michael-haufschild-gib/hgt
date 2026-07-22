@@ -5499,3 +5499,71 @@ Final targeted SOTA build passes `9514/9514`.  Nine capstone axiom surfaces are 
 `Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean.  Repository lint reaches
 new module and remains red on 23 unrelated shared-tree unreachable modules.  No stale owned
 Lean/lake process remains.
+
+## S69. Sharp width-five source blocks have unbounded seam-scale surplus (2026-07-22)
+
+S68 forced blocks but left a genuine scale objection: the sharp width-`log 2` dyadic flank surplus
+is only `Omega(n^(-1/2))`, while a fixed-width moving-apex seam has `sqrt(n)` height.  Optimizing a
+single atom cannot close that gap.
+
+New universal law: for
+
+```text
+R_(beta,L)(d)=exp(beta d)(1-d/L),  0<=d<=L,
+```
+
+if `beta L<1`, then `R_(beta,L)` is strictly decreasing.  More sharply, for every tail `[r,L]`,
+
+```text
+(∀ d in [r,L], R_(beta,L)(d)<=C) iff R_(beta,L)(r)<=C.          (S69.1)
+```
+
+Thus the left endpoint is the exact least tail ceiling.
+
+Set
+
+```text
+L5=log 5,  a5(n)=log(5n)/2,
+P_n={p prime:2n<p<=5n},
+q5=sqrt(2)(1-log(2)/log(5)).                                  (S69.2)
+```
+
+Exact aligned sampling plus `(S69.1)` gives `0<q5<1`, sharpness on the full continuous tail, and
+
+```text
+A_n(2log p)<=q5 A_n(2log n)  for every p in P_n.               (S69.3)
+```
+
+Formalized Chebyshev bounds yield symbolically, for every natural `n>=exp(20)`,
+
+```text
+sum_(p in P_n) 2log(p)/p >= 1/10.                              (S69.4)
+```
+
+Therefore the actual-prime source surplus satisfies
+
+```text
+S5(n)>=((1-q5)/10)sqrt(n)log(5)>0.                             (S69.5)
+```
+
+Lean also proves `S5` unbounded.  This closes source scaling: the new block is on the `sqrt(n)`
+seam scale, not the vanishing single-flank scale.  It does not prove RH.  Exact remaining open core
+is target-capacity domination of `(S69.5)` by disjoint completed-kernel blocks while reserving Gamma
+boundary mass.  Sharpness of `q5` rules out improving the coefficient on the same continuous tail;
+next attack must change target/block geometry or exploit additional completed-kernel structure.
+
+Scientific artifacts:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-mangoldt-macroscopic-prime-block-surplus.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-mangoldt-macroscopic-prime-block-surplus.md`;
+- `formal/GaloisForLFunctions/HTGeometry/TiltedTentRightFlank.lean`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiMangoldtMacroscopicPrimeBlock.lean`;
+- `docs/drafts/manuscripts/suzuki-mangoldt-uniform-dyadic-block-surplus/main.tex`.
+
+Internal and primary-source novelty audit found no matching Suzuki-aligned macroscopic block
+theorem; external priority remains unverified.  Direct source checks pass.  Six audited capstone
+axiom surfaces are only `propext`, `Classical.choice`, and `Quot.sound`.  Final targeted build
+passes `9414/9414`.  Lint no longer reports any module in this four-module theorem chain as
+unreachable; global lint remains red on 21 unrelated concurrent modules.  Rendered 10-page paper
+is `output/pdf/suzuki-mangoldt-macroscopic-prime-block-surplus.pdf`.  No stale owned Lean/lake
+process remains.

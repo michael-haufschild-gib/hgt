@@ -81,7 +81,6 @@ theorem tendsto_sqrtNat_mul_xiEndpointCoordinateDiagonalPurity_div_pow
           bernsteinAffineRowHalfOrderConstant u)) := by
   exact tendsto_sqrtNat_mul_finiteBernsteinCoordinateDiagonalEnergy_div_pow
     (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D)
-    (lt_trans zero_lt_one hB)
     (fun u hu => xiEndpoint_coordinate_amplitude hD hu)
     (fun u hu => xiEndpoint_coordinate_ne_zero hB hD hu)
     (fun u hu => xiEndpoint_coordinate_ne_one hB hD hu)
@@ -98,7 +97,6 @@ theorem hasSum_xiEndpointCoordinateDiagonalPurity_eq_squareRootKernel
         (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) B t) := by
   exact hasSum_finiteBernsteinCoordinateDiagonalEnergy_eq_squareRootKernel
     (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D)
-    (lt_trans zero_lt_one hB)
     (fun u hu => xiEndpoint_coordinate_amplitude hD hu)
     (fun u hu => xiEndpoint_coordinate_ne_zero hB hD hu)
     (fun u hu => xiEndpoint_coordinate_ne_one hB hD hu) ht0 htB

@@ -285,11 +285,11 @@ theorem atomPattern_weighted_sum_eq_of_moment_one
     simpa [mul_comm] using (sub_eq_zero.mp hzero).symm
   exact_mod_cast hreal
 
-/-- Persistent bounded ADE bends for the profile `B n^β`, with `β > 2`, force one fixed
+/-- Persistent bounded ADE bends for the profile `B n^β`, with `β > 1`, force one fixed
 Prouhet pair whose root multiplicity at one lies between `ceil β` and the ADE degree. -/
 theorem exists_recurrentProuhetLock_of_polynomialPower_bend_pairs
-    {β B : ℝ} (hβ : 2 < β) (hB : 0 < B)
-    {D K C Q₀ : ℕ} (_hD : 0 < D)
+    {β B : ℝ} (hβ : 1 < β) (hB : 0 < B)
+    {D K C Q₀ : ℕ}
     (hpairs : ∀ q ≥ Q₀,
       ∃ ν₀ ν₁ : ℕ →₀ ℕ,
         ν₀ ≠ ν₁ ∧
@@ -355,8 +355,8 @@ theorem exists_recurrentProuhetLock_of_polynomialPower_bend_pairs
     hB hcancel hmoment hq C K hdefect'
   have hdiv : (Polynomial.X - 1) ^ μ ∣ Q :=
     sub_one_pow_dvd_of_polynomialRealCoeff_moments Q μ hcancel
-  have htwoCeil : 2 < Nat.ceil β := Nat.lt_ceil.mpr hβ
-  have honeμ : 1 < μ := lt_of_lt_of_le (by omega) hceilμ
+  have honeCeil : 1 < Nat.ceil β := Nat.lt_ceil.mpr (by simpa using hβ)
+  have honeμ : 1 < μ := lt_of_lt_of_le honeCeil hceilμ
   have hmomentOne : stretchedMoment d 1 = 0 := hcancel 1 honeμ
   have hweighted := atomPattern_weighted_sum_eq_of_moment_one (by omega) p₀ p₁
     (by simpa [d, Q] using hmomentOne)

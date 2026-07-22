@@ -45,7 +45,7 @@ theorem evenIndicatorShell_mul_eq_left_of_subset
 /-- A compact congruence between nondegenerate two-polarization shells cannot increase the
 ceiling. -/
 theorem evenTwoPolarizationShell_ceiling_not_lt_of_compactEq
-    {s t u v : ℝ} (hs : 0 < s) (hst : s < t) (_hu : 0 < u) (huv : u < v)
+    {s t u v : ℝ} (hs : 0 < s) (hst : s < t) (huv : u < v)
     (h : evenTwoPolarizationShell s t =ₖ evenTwoPolarizationShell u v) :
     ¬ t < v := by
   intro htv
@@ -95,13 +95,13 @@ theorem evenTwoPolarizationShell_ceiling_eq_of_compactEq
     t = v := by
   apply le_antisymm
   · exact le_of_not_gt
-      (evenTwoPolarizationShell_ceiling_not_lt_of_compactEq hu huv hs hst h.symm)
+      (evenTwoPolarizationShell_ceiling_not_lt_of_compactEq hu huv hst h.symm)
   · exact le_of_not_gt
-      (evenTwoPolarizationShell_ceiling_not_lt_of_compactEq hs hst hu huv h)
+      (evenTwoPolarizationShell_ceiling_not_lt_of_compactEq hs hst huv h)
 
 /-- With a common ceiling, compact congruence cannot increase the floor. -/
 theorem evenTwoPolarizationShell_floor_not_lt_of_compactEq
-    {s u t : ℝ} (hs : 0 < s) (hst : s < t) (_hu : 0 < u) (hut : u < t)
+    {s u t : ℝ} (hs : 0 < s) (hst : s < t) (hut : u < t)
     (h : evenTwoPolarizationShell s t =ₖ evenTwoPolarizationShell u t) :
     ¬ s < u := by
   intro hsu
@@ -144,9 +144,9 @@ theorem evenTwoPolarizationShell_floor_eq_of_compactEq
     s = u := by
   apply le_antisymm
   · exact le_of_not_gt
-      (evenTwoPolarizationShell_floor_not_lt_of_compactEq hu hut hs hst h.symm)
+      (evenTwoPolarizationShell_floor_not_lt_of_compactEq hu hut hst h.symm)
   · exact le_of_not_gt
-      (evenTwoPolarizationShell_floor_not_lt_of_compactEq hs hst hu hut h)
+      (evenTwoPolarizationShell_floor_not_lt_of_compactEq hs hst hut h)
 
 /-- **Two-polarization shell faithfulness.**  The Calkin class of a nondegenerate shell recovers
 both endpoints. -/

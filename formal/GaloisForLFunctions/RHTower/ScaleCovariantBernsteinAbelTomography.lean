@@ -118,7 +118,7 @@ phase through a finite positive square-root packet, gives the powered confocal b
 positive real-power energy at the sharp threshold `M<R`, and has a confocal boundary flow whose
 first recession is twice the intrinsic transverse defect. -/
 theorem scaleCovariantBernsteinAbel_tomography_of_transverse_neutral
-    {I : Type*} [Nonempty I] (c z : I → ℂ) (m : ℕ → ℝ)
+    {I : Type*} (c z : I → ℂ) (m : ℕ → ℝ)
     (hc : Summable c)
     (htrans : Tendsto (fun i => HTGeometry.transverseDefect (z i))
       cofinite (nhds 0))
@@ -129,6 +129,14 @@ theorem scaleCovariantBernsteinAbel_tomography_of_transverse_neutral
     (hmoment : ∀ n, (m n : ℂ) = atomicPowerMoment c z n)
     (hm0 : 0 < m 0) :
     ScaleCovariantBernsteinAbelTomographyLaw c z m M := by
+  have hI : Nonempty I := by
+    by_contra hne
+    haveI : IsEmpty I := not_nonempty_iff.mp hne
+    have hzero : atomicPowerMoment c z 0 = 0 := by
+      simp [atomicPowerMoment]
+    have hcast : (m 0 : ℂ) = 0 := (hmoment 0).trans hzero
+    exact (Complex.ofReal_ne_zero.mpr hm0.ne') hcast
+  letI : Nonempty I := hI
   let S : Set ℂ := Set.range z
   have hSne : S.Nonempty := Set.range_nonempty z
   have hSbound : ∀ w ∈ S, ‖w‖ ≤ M := by
@@ -192,7 +200,7 @@ theorem scaleCovariantBernsteinAbel_tomography_of_transverse_neutral
 /-- Cofinite convergence of the support to the origin is a sufficient special case of the
 intrinsic transverse-neutrality theorem. -/
 theorem scaleCovariantBernsteinAbel_tomography
-    {I : Type*} [Nonempty I] (c z : I → ℂ) (m : ℕ → ℝ)
+    {I : Type*} (c z : I → ℂ) (m : ℕ → ℝ)
     (hc : Summable c)
     (hz0 : Tendsto z cofinite (nhds 0))
     (hzinj : Function.Injective z)

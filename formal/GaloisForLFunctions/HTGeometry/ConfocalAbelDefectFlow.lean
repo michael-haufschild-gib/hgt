@@ -225,7 +225,7 @@ def confocalAbelRadius (S : Set ℂ) (R : ℝ) : ℝ :=
 /-- The intrinsic amplitude envelope agrees with the literal supremum of affine Bernstein
 amplitudes. -/
 theorem sSup_affineAmplitude_eq_confocalAmplitudeEnvelope
-    {S : Set ℂ} (hne : S.Nonempty) {M R : ℝ} (hM : 0 ≤ M) (hR : 0 < R)
+    {S : Set ℂ} (hne : S.Nonempty) {M R : ℝ} (hR : 0 < R)
     (hbound : ∀ z ∈ S, ‖z‖ ≤ M) :
     sSup ((fun z : ℂ => ‖z / (R : ℂ)‖ + ‖1 - z / (R : ℂ)‖) '' S) =
       confocalAmplitudeEnvelope S R := by
@@ -309,7 +309,7 @@ theorem transverseDefectEnvelope_eq_zero_iff
 /-- If the transverse envelope vanishes, then every sufficiently large confocal envelope vanishes
 exactly, not merely asymptotically. -/
 theorem confocalDefectEnvelope_eq_zero_of_transverse_eq_zero
-    {S : Set ℂ} (hne : S.Nonempty) {M R : ℝ} (hM : 0 ≤ M) (hRM : M < R)
+    {S : Set ℂ} (hne : S.Nonempty) {M R : ℝ} (hRM : M < R)
     (hbound : ∀ z ∈ S, ‖z‖ ≤ M) (hzero : transverseDefectEnvelope S = 0) :
     confocalDefectEnvelope S R = 0 := by
   have hpos := (transverseDefectEnvelope_eq_zero_iff hne hbound).mp hzero
@@ -362,7 +362,7 @@ theorem confocalAmplitudeEnvelope_eq_one_iff
     linarith
   · intro hzero
     rw [confocalAmplitudeEnvelope,
-      confocalDefectEnvelope_eq_zero_of_transverse_eq_zero hne hM hRM hbound hzero]
+      confocalDefectEnvelope_eq_zero_of_transverse_eq_zero hne hRM hbound hzero]
     simp
 
 /-- Equivalent exact selection statement for the Abel radius. -/

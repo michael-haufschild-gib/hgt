@@ -91,17 +91,6 @@ theorem continuous_thetaCuspCenterMixedDensityFifthJet
   unfold thetaCuspCenterMixedDensityFifthJet
   fun_prop
 
-theorem thetaCuspCenterMixedDerivativeProductIntegral_zero_comm
-    (m n : ℕ) (a : ℝ) :
-    thetaCuspCenterMixedDerivativeProductIntegral m n a 0 =
-      thetaCuspCenterMixedDerivativeProductIntegral n m a 0 := by
-  unfold thetaCuspCenterMixedDerivativeProductIntegral
-  apply integral_congr_ae
-  filter_upwards with r
-  unfold thetaCuspCenterMixedDerivativeProduct
-  simp only [add_zero, sub_zero]
-  ring
-
 theorem thetaCuspCenterMixedDensityThirdJet_zero
     (a : ℝ) :
     thetaCuspCenterMixedDensityThirdJet a 0 = 0 := by
@@ -139,7 +128,7 @@ theorem exists_thetaCuspCenterMixedCoalescedWall_pos_right_of_fourthJet
     (fun t => hasDerivAt_thetaCuspCenterMixedDensityThirdJet ha0.le ha t)
     (fun t => hasDerivAt_thetaCuspCenterMixedDensityFourthJet ha0.le ha t)
     (continuous_thetaCuspCenterMixedDensityFifthJet ha0.le ha)
-    (thetaCuspCenterMixedDensityFirstJet_zero ha0.le ha)
+    (thetaCuspCenterMixedDensityFirstJet_zero a)
     (thetaCuspCenterMixedDensityThirdJet_zero a)
     (thetaCuspCenterMixedDensitySecondJet_zero_neg ha0 ha)
     hfourth
@@ -164,7 +153,7 @@ theorem exists_thetaCuspCenterMixed_coalescedCusp_posDef_of_fourthJet
     (fun t => hasDerivAt_thetaCuspCenterMixedDensity ha0.le ha t)
     (fun t => hasDerivAt_thetaCuspCenterMixedDensityFirstJet ha0.le ha t)
     (continuous_thetaCuspCenterMixedDensitySecondJet ha0.le ha)
-    (thetaCuspCenterMixedDensityFirstJet_zero ha0.le ha)
+    (thetaCuspCenterMixedDensityFirstJet_zero a)
     (hwall y hy hyδ)
   rcases hlocal with ⟨ε, hε, hdet⟩
   refine ⟨ε, hε, fun x hx hxε => ?_⟩

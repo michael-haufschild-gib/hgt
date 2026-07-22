@@ -368,39 +368,53 @@ theorem xiTransverseShiftArithmetic_clockTailIndependent
 /-- **Finite transverse source-rank theorem.** Distinct positive filtered
 von-Mangoldt shift defects are differentially independent over `C`. -/
 theorem xiTransverseShiftArithmetic_differentialIndependent
-    {A : Type*} [Fintype A] [DecidableEq A] [Nonempty A]
+    {A : Type*} [Fintype A] [DecidableEq A]
     (shift : A → ℕ) (hpos : ∀ a, 0 < shift a)
     (hinj : Function.Injective shift) :
     GaloisForLFunctions.DifferentialIndependent ℂ
       (fun a => algebraMap (ArithmeticFunction ℂ)
         arithmeticFunctionFractionField
           (xiTransverseShiftArithmetic (shift a))) := by
-  have hlarge : GaloisForLFunctions.DifferentialIndependent
-      finitePrimeCoefficientField
-      (fun a => algebraMap (ArithmeticFunction ℂ)
-        arithmeticFunctionFractionField
-          (xiTransverseShiftArithmetic (shift a))) := by
-    apply (differentialIndependent_fractionPrimeProfiles_iff_clockTailIndependent
-      (fun a => xiTransverseShiftArithmetic (shift a))
-      (fun a => xiTransverseShiftArithmetic_supportedOnPositivePrimePowers (shift a))).2
-    exact xiTransverseShiftArithmetic_clockTailIndependent shift hpos hinj
-  unfold GaloisForLFunctions.DifferentialIndependent at hlarge ⊢
-  exact AlgebraicIndependent.restrictScalars
-    (FaithfulSMul.algebraMap_injective ℂ finitePrimeCoefficientField) hlarge
+  classical
+  cases isEmpty_or_nonempty A with
+  | inl hEmpty =>
+      letI : IsEmpty A := hEmpty
+      exact algebraicIndependent_empty_type
+  | inr hNonempty =>
+      letI : Nonempty A := hNonempty
+      have hlarge : GaloisForLFunctions.DifferentialIndependent
+          finitePrimeCoefficientField
+          (fun a => algebraMap (ArithmeticFunction ℂ)
+            arithmeticFunctionFractionField
+              (xiTransverseShiftArithmetic (shift a))) := by
+        apply (differentialIndependent_fractionPrimeProfiles_iff_clockTailIndependent
+          (fun a => xiTransverseShiftArithmetic (shift a))
+          (fun a => xiTransverseShiftArithmetic_supportedOnPositivePrimePowers (shift a))).2
+        exact xiTransverseShiftArithmetic_clockTailIndependent shift hpos hinj
+      unfold GaloisForLFunctions.DifferentialIndependent at hlarge ⊢
+      exact AlgebraicIndependent.restrictScalars
+        (FaithfulSMul.algebraMap_injective ℂ finitePrimeCoefficientField) hlarge
 
 /-- **Actual analytic transverse-rank theorem.** The upper-end meromorphic
 carriers of distinct positive filtered von-Mangoldt shift defects are jointly
 differentially independent over the genuine rational coordinate field. -/
 theorem xiTransverseShiftUpperEndCarrier_differentialIndependent
-    {A : Type*} [Fintype A] [DecidableEq A] [Nonempty A]
+    {A : Type*} [Fintype A] [DecidableEq A]
     (shift : A → ℕ) (hpos : ∀ a, 0 < shift a)
     (hinj : Function.Injective shift) :
     GaloisForLFunctions.DifferentialIndependent
       upperEndRationalCoordinateField
       (fun a => xiTransverseShiftUpperEndCarrier (shift a)) := by
-  apply differentialIndependent_finiteAbscissaPrimeProfiles_of_formal
-  simpa [xiTransverseShiftArithmetic, xiTransverseShiftUpperEndCarrier] using
-    xiTransverseShiftArithmetic_differentialIndependent shift hpos hinj
+  classical
+  cases isEmpty_or_nonempty A with
+  | inl hEmpty =>
+      letI : IsEmpty A := hEmpty
+      exact algebraicIndependent_empty_type
+  | inr hNonempty =>
+      letI : Nonempty A := hNonempty
+      apply differentialIndependent_finiteAbscissaPrimeProfiles_of_formal
+      simpa [xiTransverseShiftArithmetic, xiTransverseShiftUpperEndCarrier] using
+        xiTransverseShiftArithmetic_differentialIndependent shift hpos hinj
 
 /-- Injective nonzero transverse shift families are differentially independent without a
 finiteness assumption on the index type. -/

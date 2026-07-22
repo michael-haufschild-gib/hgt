@@ -214,9 +214,6 @@ theorem scaleCovariantBernsteinAbel_tomography_of_aggregate_transverse_neutral
     ScaleCovariantBernsteinAbelTomographyLaw
       (atomicAggregateCoefficient c z) (atomicAggregateNode c z) m M := by
   classical
-  letI : Nonempty (AtomicAggregateSupport c z) :=
-    nonempty_atomicAggregateSupport_of_positive_real_moment
-      hc hbound hmoment hm0
   apply scaleCovariantBernsteinAbel_tomography_of_transverse_neutral
   · exact summable_atomicAggregateCoefficient hc
   · exact tendsto_atomicAggregateNode_transverseDefect_cofinite_zero htrans

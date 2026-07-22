@@ -265,7 +265,7 @@ theorem suzukiCriticalApertureDepthFrostmanProfile_le_one
     suzukiCriticalApertureDepthFrostmanProfile h a 0 p = 1 := by
   rw [suzukiCriticalApertureDepthFrostmanProfile]
   simpa using ccmFrostmanPoissonProfile_zero
-    (one_lt_inv_suzukiCriticalApertureDepthFusionRadius hh ha p)
+    (one_lt_inv_suzukiCriticalApertureDepthFusionRadius hh ha p).ne'
 
 private theorem ccmFrostmanPoissonProfile_eq_one_iff_cos
     {q θ : ℝ} (hq : 1 < q) :

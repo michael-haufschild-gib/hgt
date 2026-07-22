@@ -45,7 +45,7 @@ descending vertical ray `s = -(w+n)i` collapses the series onto its zeroth coeff
 growth, quietness, or flank-bound hypothesis enters: the arithmetic-progression spectrum alone is the
 constraint that closes the cell. -/
 theorem periodic_spectrum_rigidity {G : ℂ → ℂ} {b : ℕ → ℂ} {α w : ℝ}
-    (hα : 0 < α) (_hw : 0 < w)
+    (hα : 0 < α)
     (hG : Differentiable ℂ G)
     (hb : Summable fun k => ‖b k‖ * Real.exp (-(α * k * w)))
     (htrace : ∀ z : ℂ, z.im ≤ -w →

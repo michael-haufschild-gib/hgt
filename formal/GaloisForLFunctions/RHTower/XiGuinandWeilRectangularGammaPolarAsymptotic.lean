@@ -159,7 +159,7 @@ theorem integral_rectangularGammaMovingKernel_support
     · simp [Set.indicator, ht, htpos]
 
 theorem rectangularGammaMovingKernel_le_exp
-    {L a t : ℝ} (hL : 0 ≤ L) (ha : L + 1 / 4 ≤ a) (_ht : 0 < t) :
+    {L a t : ℝ} (hL : 0 ≤ L) (ha : L + 1 / 4 ≤ a) :
     rectangularGammaMovingKernel L a t ≤
       (L / (1 - Real.exp (-1))) * Real.exp (-(a - L)) := by
   by_cases htent : rectangularGammaMovingTent L a t = 0
@@ -220,7 +220,7 @@ theorem integral_rectangularGammaMovingKernel_le_exp
       have htpos : 0 < t := (by linarith : 0 < 4 * (a - L)).trans ht.1
       rw [Real.norm_eq_abs, abs_of_nonneg
         (rectangularGammaMovingKernel_nonneg htpos)]
-      exact rectangularGammaMovingKernel_le_exp hL ha htpos
+      exact rectangularGammaMovingKernel_le_exp hL ha
     have hnorm := norm_setIntegral_le_of_norm_le_const
       (μ := volume)
       (f := rectangularGammaMovingKernel L a)

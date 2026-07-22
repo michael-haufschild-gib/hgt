@@ -151,9 +151,9 @@ theorem isClosed_badHeightSet (k : ℕ) : IsClosed (badHeightSet k) := by
   rwa [show (⋃ t : badHeightSet k, ({(t : ℝ)} : Set ℝ)) = badHeightSet k from by ext x; simp]
     at hkey
 
-/-- **The variation zero-set is discrete.**  Each rung-failing height is isolated: a punctured ball
-around it meets the set nowhere. -/
-theorem badHeightSet_isolated (k : ℕ) {x : ℝ} (_hx : x ∈ badHeightSet k) :
+/-- **The variation zero-set is locally isolated at every ambient point.**  A sufficiently small
+ball about any real `x` contains no rung-failing height other than possibly `x` itself. -/
+theorem badHeightSet_isolated (k : ℕ) {x : ℝ} :
     ∃ ε > 0, ∀ y ∈ badHeightSet k, dist y x < ε → y = x := by
   classical
   have hfin : (badHeightSet k ∩ Metric.ball x 1).Finite :=

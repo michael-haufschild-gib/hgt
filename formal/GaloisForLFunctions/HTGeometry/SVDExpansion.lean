@@ -306,17 +306,17 @@ theorem apply_eq_zero_of_forall_inner_svVec_energyOp (hcpt : IsCompactOperator T
     simp
   simpa [pow_eq_zero_iff] using hz
 
-/-- Live injectivity of the right singular vectors. -/
+/-- A right singular vector at a live index cannot coincide with one at any different index. -/
 theorem svdVec_live_injective (hcpt : IsCompactOperator T) {m n : ℕ}
-    (_hm : singVal T m ≠ 0) (hn : singVal T n ≠ 0) (h : svdVec T m = svdVec T n) : m = n := by
+    (hn : singVal T n ≠ 0) (h : svdVec T m = svdVec T n) : m = n := by
   by_contra hne
   have h0 := inner_svdVec_svdVec_of_ne T hne
   rw [h, inner_self_eq_norm_sq_to_K, norm_svdVec_sq hcpt hn] at h0
   norm_num at h0
 
-/-- Live injectivity of the greedy vectors. -/
+/-- A greedy vector at a live index cannot coincide with one at any different index. -/
 theorem svVec_live_injective (hcpt : IsCompactOperator T) {m n : ℕ}
-    (_hm : svVal (energyOp T) m ≠ 0) (hn : svVal (energyOp T) n ≠ 0)
+    (hn : svVal (energyOp T) n ≠ 0)
     (h : svVec (energyOp T) m = svVec (energyOp T) n) : m = n := by
   by_contra hne
   have h0 := inner_svVec_svVec_of_ne (energyOp T) hne

@@ -166,7 +166,7 @@ theorem exists_thetaCuspCenterMixed_raywiseCoalescedCone_posDef
   have hf : ContDiff ℝ 6 f := contDiff_six_thetaCuspCenterMixedDensity ha0.le ha
   have hjet1 : iteratedDeriv 1 f 0 = 0 := by
     rw [iteratedDeriv_one_thetaCuspCenterMixedDensity ha0.le ha]
-    exact thetaCuspCenterMixedDensityFirstJet_zero ha0.le ha
+    exact thetaCuspCenterMixedDensityFirstJet_zero a
   have hjet2 : iteratedDeriv 2 f 0 < 0 := by
     rw [iteratedDeriv_two_thetaCuspCenterMixedDensity ha0.le ha]
     exact thetaCuspCenterMixedDensitySecondJet_zero_neg ha0 ha

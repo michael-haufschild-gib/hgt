@@ -34,7 +34,7 @@ instance : IsProbabilityMeasure intervalUnitProbability where
       Real.volume_Icc]
     norm_num
 
-theorem volume_abs_mul_add_le (a c R : ℝ) (ha : a ≠ 0) (_hR : 0 ≤ R) :
+theorem volume_abs_mul_add_le (a c R : ℝ) (ha : a ≠ 0) :
     volume {x : ℝ | |a * x + c| ≤ R} = ENNReal.ofReal (2 * R / |a|) := by
   have hset : {x : ℝ | |a * x + c| ≤ R} =
       (fun x : ℝ => c + a * x) ⁻¹' Set.Icc (-R) R := by
@@ -53,18 +53,18 @@ theorem volume_abs_mul_add_le (a c R : ℝ) (ha : a ≠ 0) (_hR : 0 ≤ R) :
   ring
 
 theorem intervalUnitProbability_abs_mul_add_le (a c R : ℝ)
-    (ha : a ≠ 0) (hR : 0 ≤ R) :
+    (ha : a ≠ 0) :
     intervalUnitProbability {x : ℝ | |a * x + c| ≤ R} ≤
       ENNReal.ofReal (2 * R / |a|) := by
   calc
     intervalUnitProbability {x : ℝ | |a * x + c| ≤ R}
         ≤ volume {x : ℝ | |a * x + c| ≤ R} :=
           Measure.restrict_le_self _
-    _ = _ := volume_abs_mul_add_le a c R ha hR
+    _ = _ := volume_abs_mul_add_le a c R ha
 
 theorem measure_pi_abs_affine_sum_le
     {ι : Type*} [Fintype ι] [DecidableEq ι]
-    (a : ι → ℝ) (i₀ : ι) (ha : a i₀ ≠ 0) (c R : ℝ) (hR : 0 ≤ R) :
+    (a : ι → ℝ) (i₀ : ι) (ha : a i₀ ≠ 0) (c R : ℝ) :
     Measure.pi (fun _ : ι => intervalUnitProbability)
         {x : ι → ℝ | |c + ∑ i, a i * x i| ≤ R} ≤
       ENNReal.ofReal (2 * R / |a i₀|) := by
@@ -118,13 +118,13 @@ theorem measure_pi_abs_affine_sum_le
       exact measurableSet_Iic.preimage (by fun_prop)
     rw [hsection, lintegral_indicator_one hsectionMeas]
     simp only [lintegral_const, MeasureTheory.measure_univ, mul_one]
-    exact intervalUnitProbability_abs_mul_add_le (a i₀) c' R ha hR
+    exact intervalUnitProbability_abs_mul_add_le (a i₀) c' R ha
 
 def intervalUnitProductProbability : Measure (ℕ → ℝ) :=
   Measure.infinitePi (fun _ : ℕ => intervalUnitProbability)
 
 theorem intervalUnitProductProbability_finsupp_smallBall
-    (a : ℕ →₀ ℝ) {i₀ : ℕ} (ha : a i₀ ≠ 0) (c R : ℝ) (hR : 0 ≤ R) :
+    (a : ℕ →₀ ℝ) {i₀ : ℕ} (ha : a i₀ ≠ 0) (c R : ℝ) :
     intervalUnitProductProbability
         {x : ℕ → ℝ | |c + a.sum (fun i ai => ai * x i)| ≤ R} ≤
       ENNReal.ofReal (2 * R / |a i₀|) := by
@@ -147,7 +147,7 @@ theorem intervalUnitProductProbability_finsupp_smallBall
     Measure.infinitePi_cylinder (fun _ : ℕ => intervalUnitProbability) hE]
   let i₀' : a.support := ⟨i₀, Finsupp.mem_support_iff.mpr ha⟩
   exact measure_pi_abs_affine_sum_le
-    (fun i : a.support => a i) i₀' (by simpa [i₀']) c R hR
+    (fun i : a.support => a i) i₀' (by simpa [i₀']) c R
 
 def roughPolynomialProfile (β α : ℝ) (u : ℕ → ℝ) (n : ℕ) : ℝ :=
   (n : ℝ) ^ β + (n : ℝ) ^ α * u n
@@ -231,7 +231,7 @@ theorem intervalUnitProductProbability_roughPolynomial_smallBall
     rw [roughPolynomialStencil_apply_top]
     exact mul_ne_zero hcoeffReal (ne_of_gt (Real.rpow_pos_of_pos hbase α))
   have hsmall := intervalUnitProductProbability_finsupp_smallBall
-    a ha c R hR
+    a ha c R
   have hset :
       {u : ℕ → ℝ |
           |∑ j ∈ Finset.range (Q.natDegree + 1),
@@ -262,7 +262,7 @@ theorem intervalUnitProductProbability_roughPolynomial_smallBall
     exact hbaseMono.trans (le_mul_of_one_le_left
       (Real.rpow_nonneg hbase.le α) hcoeffOne)
   have hdenPos : 0 < ((n : ℝ) + 1) ^ α := Real.rpow_pos_of_pos (by positivity) α
-  have hnum : 0 ≤ 2 * R := by positivity
+  have hnum : 0 ≤ 2 * R := mul_nonneg (by norm_num) hR
   have hdiv := div_le_div_of_nonneg_left hnum hdenPos haLower
   simpa [R, mul_assoc] using hdiv
 
