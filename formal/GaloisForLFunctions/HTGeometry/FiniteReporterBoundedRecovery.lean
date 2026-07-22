@@ -77,6 +77,40 @@ theorem finiteDerivativeReporterConditionalInformation_boundedRecovery_sandwich
     finiteDerivativeReporterConditionalInformation_le_recovery_norm_sq_mul
       N f report decode recover hrecover⟩
 
+/-- **Recoverable algebraic-metric reporter profile.**  Exact left recovery preserves visible
+coefficient rank and the entire blind coefficient subspace, even when the recoding is not
+isometric.  Decoder and recovery norms separately control the possible metric distortion of the
+same reporter's conditional information. -/
+theorem finiteDerivativeReporter_recoverableCapacityAndInformationProfile
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y)
+    (decode : Y →L[ℂ] Z) (recover : Z →L[ℂ] Y)
+    (hrecover : recover.toLinearMap.comp
+        (decode.toLinearMap.comp report) = report) :
+    Module.finrank ℂ (LinearMap.range
+        (finiteDerivativeReporterMap N f (decode.toLinearMap.comp report))) =
+        Module.finrank ℂ
+          (LinearMap.range (finiteDerivativeReporterMap N f report)) ∧
+      LinearMap.ker
+          (finiteDerivativeReporterMap N f (decode.toLinearMap.comp report)) =
+        LinearMap.ker (finiteDerivativeReporterMap N f report) ∧
+      finiteDerivativeReporterConditionalInformation N f
+          (decode.toLinearMap.comp report) ≤
+        ‖decode‖ ^ 2 * finiteDerivativeReporterConditionalInformation N f report ∧
+      finiteDerivativeReporterConditionalInformation N f report ≤
+        ‖recover‖ ^ 2 *
+          finiteDerivativeReporterConditionalInformation N f
+            (decode.toLinearMap.comp report) := by
+  have hcapacity := finiteDerivativeReporterMap_postcomp_capacity_eq_of_recovery
+    N f report decode.toLinearMap recover.toLinearMap hrecover
+  have hinformation :=
+    finiteDerivativeReporterConditionalInformation_boundedRecovery_sandwich
+      N f report decode recover hrecover
+  exact ⟨hcapacity.1, hcapacity.2, hinformation.1, hinformation.2⟩
+
 /-- A positive uniform recovery-norm bound gives an explicit lower bound on every surviving
 postprocessed innovation value. -/
 theorem finiteDerivativeReporterConditionalInformation_div_recovery_bound_le

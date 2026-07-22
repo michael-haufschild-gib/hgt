@@ -1,6 +1,6 @@
 # Suzuki screw-function RH route — complete research handover
 
-**Last updated:** 2026-07-21  
+**Last updated:** 2026-07-22
 **Repository:** `/Users/michael/Documents/code/hgt`
 **Resolved repository path:** `/Users/michael/Documents/code/hgt`
 **Persistent goal:** active; do **not** mark complete or blocked  
@@ -4801,3 +4801,701 @@ Direct source check passes diagnostic-free; axiom audit reports only `propext`,
 `lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes `9455/9455`.
 Repository formal lint reaches new module but remains red on thirteen unrelated concurrent
 unreachable modules.  RH is not proved.
+
+## S60. Projective density and FE-reflected wall Gram (2026-07-22)
+
+S59 one-mode resolvent law is exact but corpus projective audit prevents using it as canonical
+Suzuki producer: multiplying one source state by common scalar cancels from normalized
+characteristic response.  Correct pre-division carrier is marked affine-secant tensor and
+denominator.  Both obey exact degree-two scaling
+
+```text
+T(omega*x,omega*X,omega*y,omega*Y,omega*c)=omega^2*T,
+D(omega*y,omega*Y)=omega^2*D.                          (S60.1)
+```
+
+For critical wall field, `omega=omega_e(t)` and `omega_e(t)^2=H_e(t)`, exact far-hinge numerator.
+Thus both division-free terms retain `H_e`, while quotient cancels it.  Far source is common
+determinant-line density, not independent normalized-response atom.
+
+Prior obstruction “complex square is not norm square” is resolved without discarding phase.
+Define independent-height Hermitian kernel
+
+```text
+K_e(t,u)=omega_e(t)*conj(omega_e(u))
+        =Lambda(n)/sqrt(n)*exp(I*(t-u)*log(n)/2).       (S60.2)
+```
+
+Lean proves every finite height section is literal rank-one Gram and hence PSD.  Two distinct
+restrictions carry two required source types:
+
+```text
+K_e(t,t) =Lambda(n)/sqrt(n)>0,                         (S60.3)
+K_e(t,-t)=Lambda(n)/sqrt(n)*exp(I*t*log n).             (S60.4)
+```
+
+Equation `(S60.4)` is exact far-hinge numerator because FE reflection gives
+`conj(omega_e(-t))=omega_e(t)`.  Equation `(S60.3)` is exact local rooted currency:
+
+```text
+S_(m,d)(b_e(r,s),b_e(r,s))+d^2*(b_e*s)^2
+ =Lambda(n)/sqrt(n)*(r-m*s)^2 >= 0.                    (S60.5)
+```
+
+Scientific advance: same genuine Hermitian block carries positive diagonal needed for sharp
+marked halfgap completion and reflected anti-diagonal needed for complete far phase.  It neither
+claims anti-diagonal nonnegative nor constructs nonsummable all-prime vector.
+
+Actual corpus frontier is now `SUZUKI-FE-REFLECTED-WALL-WARD-ASSEMBLY`:
+
+```text
+assemble local K_e blocks with actual division-free marked Robin/polar--Gamma/holonomy carrier;
+compensate divergent all-prime diagonal before cofinal limit;
+prove exact d^2 and holonomy Schur debts are paid;
+prove resulting rectangular Ward defect uniformly lower semibounded.
+```
+
+That global assembly and lower bound remain unproved; RH is not proved.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-wall-field-projective-density-separation-law.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-wall-field-projective-density-separation-law.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiWallFieldProjectiveDensitySeparationLaw.lean`;
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-wall-field-antidiagonal-gram-lift.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-wall-field-antidiagonal-gram-lift.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiWallFieldAntidiagonalGramLift.lean`.
+
+Direct source checks are diagnostic-free.  Final targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes `9457/9457`.  Axiom audit
+reports only `propext`, `Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean.
+Formal lint reaches both new modules but remains red on 22 unrelated concurrent unreachable
+modules.  No stale Lean/lake process remains.
+
+## S61. Wall field realizes forced FE/Xi-real light completion (2026-07-22)
+
+S60 exposed positive diagonal and phase-bearing anti-diagonal in one Hermitian wall Gram, but did
+not realize abstract negative light completion from actual source.  Common wall scaling cannot do
+this because corpus proves it only acts by projective congruence.
+
+For wall field `omega_e`, define non-common reflected amplitudes
+
+```text
+ellPlus(t) =(omega_e(t)+I*omega_e(-t))/2,
+ellMinus(t)=(omega_e(t)-I*omega_e(-t))/2.
+```
+
+Their two-variable Gram kernels and reflected current satisfy exact unconditional laws
+
+```text
+LPlus-LMinus=F_reflected,
+LPlus+LMinus=(K_e(t,u)+K_e(-t,-u))/2,
+F_reflected+LMinus=LPlus.                               (S61.1)
+```
+
+The two light legs are unique under first two equations.  This is literal source realization,
+not abstract coordinate analogy.  For `v_e(t)=(Re omega_e(t),Im omega_e(t))`,
+
+```text
+R v_e(t)=-v_e(-t),
+LPlus(t,u) =QPlus_1(v_e(t),v_e(u)),
+LMinus(t,u)=QMinus_1(v_e(t),v_e(u)),
+F(t,u)     =QFE_1(v_e(t),v_e(u)).                       (S61.2)
+```
+
+Every finite prime-power/height packet of `LPlus` and `LMinus` is literal Gram matrix in finite
+source-coordinate Euclidean space, hence PSD, and `(S61.1)` survives source summation.  On
+diagonal, `F(t,t)=Im(omega_e(t)^2)`.  Existing square-root weld therefore gives, off center,
+
+```text
+t^2*Re J_e(t)+|ellMinus(t)|^2=|ellPlus(t)|^2>=0.        (S61.3)
+```
+
+Scientific advance: actual critical wall source supplies unique local negative-light leg; no
+external fitted completion is needed.  Abstract source-realization gap is closed at every finite
+aperture.
+
+Hostile cofinal audit exposes next obstruction.  Unsplit light mass contains divergent
+`sum Lambda(n)/sqrt(n)`.  Subtracting one common PSD counterterm after light splitting cannot
+generically remove it: on multi-height packets positive and negative rank-one light ranges are
+transverse, so common positive lower bound is generically zero.  Positive survivor is therefore
+pre-split fixed-width renormalization: assemble causal Robin/Gamma/holonomy carrier and cancel
+cofinal mass before FE/Xi-real projection.  Actual RH-bearing frontier is
+`SUZUKI-PRESPLIT-RECTANGULAR-LIGHT-RENORMALIZATION`: prove concrete boundary trace supplies or
+dominates forced `LMinus`, pays holonomy Schur and marked halfgap debts, and leaves rectangular Ward
+defect uniformly lower semibounded.  Existing connector then proves RH.  This remains unproved;
+RH is not proved.
+
+Paper, Lean, and next conjecture:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-wall-field-light-cone-kernel-completion.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-wall-field-light-cone-kernel-completion.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiWallFieldLightConeKernelCompletion.lean`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-presplit-rectangular-light-renormalization.md`.
+
+Direct source check passes.  Final targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes `9458/9458`.  Axiom audit
+reports only `propext`, `Classical.choice`, and `Quot.sound`; forbidden declaration and whitespace
+scans are clean.  Formal lint reaches new module but remains red on 21 unrelated concurrent
+unreachable modules.
+
+## S62. Aperture innovation gives all-prime pre-split light completion—and exact height-flat no-go (2026-07-22)
+
+S61's cofinal obstruction can be attacked using actual source operation already present before
+light projection.  Let real cubic dyadic innovation be `iota_(h,a)(p,e)` and define observer-dressed
+wall field
+
+```text
+psi_t(p,e)=suzukiCriticalApertureBoundaryAtom(h,a,t,p,e)
+           =omega_e(t)*iota_(h,a)(p,e).                 (S62.1)
+```
+
+For `h,a>0`, exact dyadic Gram identity and prime-square bound give
+
+```text
+sum_e iota_(h,a)(p,e)^2
+ =|(h*sqrt(h))^-1|^2 I_p(h;a,a),
+0<=I_p(h;a,a)<=2/p^2.                                  (S62.2)
+```
+
+Critical Gamma density is at most `log p`, hence
+
+```text
+sum_e |psi_t(p,e)|^2
+ <=2 |(h*sqrt(h))^-1|^2 log(p)/p^2.                    (S62.3)
+```
+
+Prime summability proves `psi_t in ell^2(Nat.Primes x N)` unconditionally.  Since innovation is
+real, FE reflection survives: `psi_(-t)=conj(psi_t)`.  Therefore completed light vectors
+
+```text
+PsiPlus_t =(psi_t+I psi_(-t))/2,
+PsiMinus_t=(psi_t-I psi_(-t))/2                        (S62.4)
+```
+
+are genuine all-prime Hilbert vectors.  Coordinatewise they are exactly old wall light legs times
+innovation, so no fitted completion is introduced.  Their global Grams obey
+
+```text
+P-N=F_reflected,       F_reflected+N=P,                (S62.5)
+```
+
+and both legs are PSD on every finite height packet.  This is first concrete pre-split completion:
+cofinal wall divergence and negative-leg realization are closed for actual observer-dyadic source.
+
+Scientific method also kills tempting overclaim.  Phase is unimodular, so Lean proves exact global
+law
+
+```text
+<psi_t,psi_t>=<psi_u,psi_u>   for all t,u.              (S62.6)
+```
+
+Thus dressed norm alone cannot prove rectangular Ward semiboundedness; subtracting it shifts Xi
+curvature by one constant and leaves RH-equivalent lower-bound problem unchanged.  This is not a
+reason to avoid an RH-equivalent positivity statement: it identifies what must still be proved
+unconditionally.  Actual frontier is now `SUZUKI-RESOLVENT-RECTANGULAR-LIGHT-INTERTWINER`:
+construct actual restricted-Weil resolvent/marked Robin/polar--Gamma/holonomy transfer of completed
+carrier, prove negative light channel uniformly contractive, and prove remaining rectangular trace
+uniformly lower bounded.  That structural identity plus bound feeds existing connector and proves
+RH.  Corpus does not yet prove transfer or bound; RH remains open.
+
+Paper, Lean, and active conjecture:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-aperture-dressed-wall-light-completion.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-aperture-dressed-wall-light-completion.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiApertureDressedWallLightCompletion.lean`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-presplit-rectangular-light-renormalization.md`.
+
+Internal collision search and targeted arXiv audit found source parents but no matching theorem;
+external priority remains unverified.  Direct Lean check passes.  Final build, axiom, and lint
+audits pass for owned module: axiom surface is only `propext`, `Classical.choice`, and `Quot.sound`;
+forbidden declaration and whitespace scans are clean; targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes `9461/9461`.  Repository
+lint reaches new module but remains red on 21 unrelated concurrently unreachable modules.  No
+stale owned Lean/lake process remains.
+
+## S63. Causal valuation fusion breaks height flatness by an exact Frostman law (2026-07-22)
+
+S62 squares dressed wall coordinates before summing valuation depths and therefore has flat
+diagonal energy.  Corpus audit found a different operation already forced by Suzuki source: the
+critical entry-wall atoms obey an exact geometric causal recursion.  For `h,a>0`, set
+
+```text
+r_p=exp(-log(p)/4)
+      xiMobiusContinuousApertureDiskNode((h/2)a,p)^2,
+z_p(t)=exp(i t log(p)/2),
+R_p(t)=sum_(e>=0) psi_t(p,e).
+```
+
+Then `0<r_p<1`, and existing entry-wall calibration and depth recursion give the exact source law
+
+```text
+R_p(t)=A_p z_p(t)/(1-r_p z_p(t)).                       (S63.1)
+```
+
+Consequently its normalized diagonal is not flat:
+
+```text
+|R_p(t)|^2/|R_p(0)|^2
+ =(1-r_p)^2/(1-2r_p cos(t log(p)/2)+r_p^2)
+ =ccmFrostmanPoissonProfile(r_p^(-1),t log(p)/2).        (S63.2)
+```
+
+This is exact Suzuki--CCM source identification, not analogy.  It proves that causal valuation
+fusion **before** square is concrete non-flat transfer missing from S62.  One prime remains
+periodic.  For distinct primes `p!=q`, however, each profile is at most one and simultaneous
+equality recovers both half-prime-log phases.  Incommensurability of `log(q)/log(p)` gives
+
+```text
+P_p(t)+P_q(t)=2  <->  t=0.                              (S63.3)
+```
+
+Thus
+
+```text
+D_(p,q)(t,u)=2-P_p(t-u)-P_q(t-u)                        (S63.4)
+```
+
+is nonnegative and vanishes exactly when `t=u`.  This is first source-derived faithful scalar
+height separator in completed wall branch.  No Xi zero, RH premise, computation, fitted matrix, or
+target positivity was used.
+
+Scientific boundary is also sharper.  Primewise Frostman diagonal has positive profile floor; it
+cannot itself supply signed cross-prime cancellation in Xi trace.  Remaining frontier is no longer
+“find some height dependence.”  It is to prove concrete restricted-Weil rectangular trace contains
+`(S63.2)` plus source-derived cross-prime/archimedean Robin--Gamma--holonomy correction, then prove
+resulting Ward remainder uniformly lower bounded.  That unconditional theorem feeds existing RH
+connector.
+
+Paper, Lean, and active conjecture:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-causal-depth-frostman-transfer.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-causal-depth-frostman-transfer.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthFrostmanTransfer.lean`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-presplit-rectangular-light-renormalization.md`.
+
+Internal collision search found separate quarter-shift resolvent, entry-wall Green law, CCM
+Frostman profile, and incommensurate prime clock, but no identification `(S63.2)` or separator
+`(S63.4)`.  Targeted primary-source/arXiv search found no matching theorem; external priority
+remains unverified.  Direct Lean source check passes.  Final targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes `9477/9477`.  Axiom
+surface of six capstones is only `propext`, `Classical.choice`, and `Quot.sound`; forbidden
+declaration and whitespace scans are clean.  Repository lint reaches the new module and remains red
+only on 21 unrelated unreachable modules.  No stale owned Lean/lake process remains.
+
+## S64. Gamma-boundary pairing gives strict causal rectangular orientation (2026-07-22)
+
+S63 supplied height dependence but not fixed-width aperture sign.  Direct hostile test kills
+undemodulated conjecture: at prime phase `z=-1`, causal ray is negative real and its aperture
+increment points left.  Correct operation is forced by source, not selected from target.
+
+For `0<c<1`, `s<=1`, and `0<x<1`, define
+
+```text
+H_(c,s)(x)=(1-x)^2(1-cx^2s)/(1-2cx^2s+c^2x^4).       (S64.1)
+```
+
+Exact derivative comparison proves `H_(c,s)` strictly decreasing on `(0,1)`.  Lean exposed
+stronger half-line range `s<=1`; lower phase bound is unnecessary.  With
+
+```text
+c=exp(-log(p)/4),
+x(a)=exp(-(ha/2)log(p)),
+z_p(t)=exp(i t log(p)/2),
+R_p(a,t)=suzukiCriticalApertureDepthFusedAtom(h,a,t,p),
+```
+
+actual source recursion gives
+
+```text
+conj(z_p(t))R_p(a,t)
+ =B_p(h)(1-x(a))^2/(1-cx(a)^2z_p(t)),                 (S64.2)
+```
+
+where `B_p(h)>0`.  Since `x(a)` strictly decreases, for `h,a,L>0`, every real `t`, and every prime,
+
+```text
+0 < Re[conj(z_p(t))(R_p(a+L,t)-R_p(a,t))].            (S64.3)
+```
+
+Corpus tracing then removes remaining arbitrariness.  Actual unstarred depth-zero Gamma--Euler
+boundary coordinate satisfies
+
+```text
+xiGammaEulerHeightBoundaryFeature(-1/2,t,(p,0))
+ =G_p conj(z_p(t)),   G_p>0.                            (S64.4)
+```
+
+Therefore literal source-boundary pairing obeys
+
+```text
+0 < Re[xiGammaEulerHeightBoundaryFeature(-1/2,t,(p,0))
+       (R_p(a+L,t)-R_p(a,t))].                         (S64.5)
+```
+
+This is first exact causal fixed-width rectangular sign linked to actual Gamma--Euler boundary
+coordinate before FE light splitting or Gram square.  It is unconditional and uses no Xi zero,
+RH premise, computation, fitted phase, or target positivity.
+
+Frontier moves materially.  Phase discovery and primewise observer-response sign are solved.
+Subsequent exact sharp-support audit in S65 proves that `(S64.5)` cannot itself be the literal sharp
+prime trace cell: it remains strictly positive beyond the wall where sharp cell is exactly zero,
+and it has wrong linear source degree.  S64 is therefore transfer/response layer.  Arithmetic
+source is S65 compactly gated observer-free wall Gram.  Remaining open core is to prove concrete
+restricted-Weil/Robin boundary operator transports that source into observer response, derive exact
+Gamma/marked-halfgap/holonomy Schur remainder, and prove resulting Ward defect uniformly lower
+bounded.  Fixed-prime increments decay toward finite aperture ceiling, so `(S64.5)` alone is not
+uniform Ward bound and does not prove RH.
+
+Paper, Lean, formalization certificate, and active frontier:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-causal-depth-rectangular-caratheodory-growth.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthRectangularCaratheodoryGrowth.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-causal-depth-rectangular-caratheodory-growth.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-presplit-rectangular-light-renormalization.md`.
+
+Targeted internal collision audit found no radial half-line law `(S64.1)`, causal rectangle
+`(S64.3)`, or boundary identification `(S64.4)--(S64.5)`; external priority remains unverified.
+Direct Lean check passes without module-local warnings.  Final targeted build passes `9479/9479`.
+Six capstone axiom surfaces are only `propext`, `Classical.choice`, and `Quot.sound`; forbidden
+declaration scan is clean.  Repository lint remains red on 21 unrelated unreachable modules.
+
+## S65. Sharp prime cell is gated wall-Gram diagonal, not fused observer ray (2026-07-22)
+
+S64 ended with wrong candidate trace identification.  Exact corpus comparison gives immediate
+hostile falsifier.  Sharp rectangular prime term is finite:
+
+```text
+P_(L,a)=sum_(2<=n<=exp(2a))
+          Lambda(n)/sqrt(n) R_(L,a)(log n),             (S65.1)
+```
+
+and exact support theorem gives `R_(L,a)(log n)=0` whenever `0<=L<=a` and `2a<log n`.
+S64 Gamma-boundary fused observer rectangle instead has strictly positive real part for every
+prime.  It therefore cannot literally be `(S65.1)`.  Source degree independently kills same
+conjecture: fused response is linear in observer-dressed wall field; von Mangoldt cell is square of
+bare observer-free wall field.
+
+Competing conjectures were attacked explicitly:
+
+1. direct S64 rectangle = sharp trace cell — **falsified** by positive tail versus exact zero;
+2. sharp gate times fused observer ray — **falsified as source identification** by wrong degree and
+   mixed valuation-depth response;
+3. sharp gate times observer-free Hermitian wall Gram — survives and is now paper/Lean proved.
+
+For `n=p^(e+1)`, let
+
+```text
+K_e(t,u)=omega_e(t) conjugate(omega_e(u)),
+A_(L,a,e)=R_(L,a)(log n),
+G_(L,a,e)(t,u)=A_(L,a,e) K_e(t,u).                     (S65.2)
+```
+
+Four-tent formula proves `A_(L,a,e)>=0` without any parameter restrictions.  Exact wall-Gram laws
+then give
+
+```text
+conjugate(G(u,t))=G(t,u),
+G(t,u)=A Lambda(n)/sqrt(n) exp(i(t-u)log(n)/2),
+G(t,t)=A Lambda(n)/sqrt(n),                             (S65.3)
+G(t,-t)=A Lambda(n)/sqrt(n) exp(i t log n).             (S65.4)
+```
+
+Every finite height section is PSD because it is nonnegative scalar multiple of rank-one wall
+Gram.  Thus one local object now carries exact sharp prime cell as positive diagonal and full
+delayed Weil phase as FE anti-diagonal.  Exact causal support gives `G=0` beyond `log n=2a`.
+
+Positive no-go survivor is formal.  Under `h,a,L>0`, `L<=a`, and `2a<log p`, Lean proves
+
+```text
+GammaBoundary_p(t)
+ [FusedObserver_p(h,a+L,t)-FusedObserver_p(h,a,t)]
+ != G_(L,a,0)(t,t),                                    (S65.5)
+```
+
+because left real part is strictly positive and right side is exactly zero.  This corrects
+architecture rather than merely retiring route: compact gated wall Gram is arithmetic source;
+S64 coherent/fused field is downstream transfer/response.
+
+This is material but not RH.  Full sharp Weil formula carries `-2 P_(L,a)` plus polar--Gamma
+block.  Local PSD identifies source type; it does not prove total sign.  Actual unresolved
+frontier is now exact `SUZUKI-GATED-WALL-GLOBAL-COMPENSATION`: construct restricted-Weil resolvent
+and Robin boundary observation taking gated bare wall blocks as input, prove source-to-observer
+intertwining without duplicate prime count, add polar--Gamma/marked-halfgap/holonomy Schur terms,
+and establish cofinal fixed-width Ward residual uniformly lower bounded.  Existing connector then
+proves RH.  Corpus has no unconditional theorem supplying that global compensated operator.
+
+Paper, Lean, and active frontier:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-rectangular-wall-gram-gate.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-rectangular-wall-gram-gate.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiRectangularWallGramGate.lean`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-presplit-rectangular-light-renormalization.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-coherent-fusion-gamma-weld.md`.
+
+Internal collision audit found wall Gram, sharp autocorrelation, sharp prime--Gamma formula, and
+resolvent dressing separately, but no gated synthesis or exact S64 mismatch theorem.  Current
+primary audit of Suzuki arXiv:2606.09096 and Groskin arXiv:2607.02828 found no matching local
+source theorem; external priority remains unverified.  Direct new-module Lean check passes.  Final
+targeted build `lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes
+`9480/9480`.  Six capstone axiom surfaces are only `propext`, `Classical.choice`, and `Quot.sound`;
+forbidden declaration scan is clean.  Repository lint reaches new module and is red only on 22
+unrelated shared-tree unreachable modules.  No stale owned Lean/lake process remains.
+
+## S66. Polar--Gamma completion is positive; prime wall is its exact Mangoldt quadrature (2026-07-22)
+
+S65 left a mixed global compensation problem: full sharp Weil value subtracts finite positive prime
+wall and adds polar--Gamma archimedean block whose pointwise sign had not been identified.  Corpus
+already proved Gamma kernel integrability/bounded correction and separate polar-square identity, but
+not common-lag sign.  Exact tent geometry closes that sub-frontier.
+
+Write
+
+```text
+C(h)=R_(L,a)(h),  C(0)=2L,
+G(t)=[exp(-t)C(0)-exp(-t/4)C(t/2)]/[1-exp(-t)].
+```
+
+Existing moving-tent bound `M(h)<=min(L,h)` now gives new sharp contraction
+
+```text
+0 <= C(h) <= C(0)=2L                             (S66.1)
+```
+
+for `0<=L<=a`, `h>=0`.  Define completed common-lag kernel
+
+```text
+K_(L,a)(t)=2 cosh(t/4) C(t/2)+G(t).
+```
+
+Exact algebra, not estimate, yields
+
+```text
+K(t)=exp(t/4)C(t/2)
+ +exp(-t)/[1-exp(-t)] [C(0)-exp(-t/4)C(t/2)].     (S66.2)
+```
+
+Both channels on right are nonnegative for `t>0`; second is strictly positive when `L>0`.
+Therefore `K(t)>=0`, and `K(t)>0` for every positive lag at positive width.  Gamma kernel need not
+be positive separately: pointwise positivity is exact polar--Gamma completion.
+
+Half-tilted autocorrelation rescaling proves exact mass identity
+
+```text
+integral_0^infinity K_(L,a)(t)dt
+ =normalizedArch(L,a)+(gamma+log pi)2L.            (S66.3)
+```
+
+Hence full sharp formula becomes
+
+```text
+Weil(L,a)+(gamma+log pi)2L
+ =integral_0^infinity K_(L,a)(t)dt-2 PrimeWall(L,a). (S66.4)
+```
+
+Stronger source connector emerged after hostile test.  First positive channel
+
+```text
+A_(L,a)(t)=exp(t/4)C(t/2)
+```
+
+is sampled by every sharp von-Mangoldt cell exactly:
+
+```text
+Lambda(n)/sqrt(n) C(log n)
+ =Lambda(n)/n A_(L,a)(2 log n).                    (S66.5)
+```
+
+Thus entire finite prime wall is not merely analogous to a positive quadrature; it is literally
+
+```text
+PrimeWall(L,a)
+ =sum_(2<=n<=exp(2a)) Lambda(n)/n A_(L,a)(2 log n). (S66.6)
+```
+
+Also `0<=A(t)<=K(t)`, so same-node completed-kernel Mangoldt quadrature dominates prime wall.
+Combining `(S66.4)--(S66.6)`, Lean proves for every admissible logarithmic tail:
+
+```text
+RH <-> for every tail aperture a,
+  2 sum Lambda(n)/n A_(L,a)(2 log n)+(gamma+log pi)2L
+    <= integral_0^infinity K_(L,a)(t)dt.           (S66.7)
+```
+
+This is material frontier progress but not RH proof.  Two former unknowns are closed: Gamma sign
+ambiguity and aggregate prime/arch source interface.  Actual remaining RH-bearing theorem is now
+one explicit positive atomic-versus-continuous discrepancy `(S66.7)`.  Corpus sampling no-go proves
+general archimedean seam cannot factor through integer-log samples on arbitrary continuous tests,
+so universal quadrature reconstruction is dead.  Surviving attack must exploit special sharp
+rectangular family through actual restricted-Weil resolvent and Robin boundary transport, producing
+a source-derived positive Ward/Schur residual.  Defining residual from target difference would be
+circular and is explicitly forbidden.
+
+Scientific artifacts:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-rectangular-positive-arch-lag-completion.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-rectangular-positive-arch-lag-completion.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-positive-arch-mangoldt-quadrature-deficit.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiRectangularPositiveArchLagCompletion.lean`.
+
+Internal collision audit found separate Gamma/polar laws, dyadic Mellin quadrature estimates, and
+sampling no-go, but no common-lag positive split `(S66.2)` or exact sharp-wall sample weld
+`(S66.5)--(S66.6)`.  Current Suzuki/Groskin primary audit found no matching theorem; external
+priority remains unverified, so status is candidate new scientific knowledge.  Direct Lean check
+passes.  Final targeted SOTA build passes `9512/9512`.  Eight capstone axiom surfaces are only
+`propext`, `Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean.  Repository
+lint reaches new module and remains red on 21 unrelated shared-tree unreachable modules.  No stale
+owned Lean/lake process remains.
+
+## S67. Exact Mangoldt log-Haar transport localizes all debt to turning seam (2026-07-22)
+
+S66 exposed exact atomic-versus-continuous deficit, but gave no legitimate way to pay atom
+`2 Lambda(n)/n` at lag `tau_n=2 log n` from Lebesgue mass.  Universal sampling is impossible and
+fitting a residual to target inequality would be circular.  S67 constructs source-derived cells.
+
+Set
+
+```text
+F_n=2 sum_(d<=n) Lambda(d)/d,   tau_n=2 log n,
+w_n=F_n-F_(n-1)=2 Lambda(n)/n.
+```
+
+Endpoint-retaining factorial estimate and divisor swap prove unconditionally
+
+```text
+n log n-n+1 <= sum_(m<=n) log m,
+tau_n-2+2/n <= F_n,
+tau_n-2 <= F_(n-1).                                      (S67.1)
+```
+
+The upper capacity law `F_n<=tau_n` is not new: it is Ramaré--Zuniga Alterman's theorem
+`sum_(d<=X) Lambda(d)/d<=log X`.  Combining known upper law with new predecessor lower law gives
+two canonical exact-mass systems
+
+```text
+P_n=(F_(n-1),F_n]       subset (tau_n-2,tau_n],
+Q_n=(F_(n-1)+2,F_n+2]   subset (tau_n,tau_n+2],
+length(P_n)=length(Q_n)=w_n.                              (S67.2)
+```
+
+Each family is pairwise disjoint.  Therefore decreasing profiles pay atom from `P_n`, increasing
+profiles from `Q_n`, with Lebesgue multiplicity at most one.  Exact Suzuki normalization welds
+transported atom to actual prime wall:
+
+```text
+w_n A_(L,a)(tau_n)
+ =2 Lambda(n)/sqrt(n) R_(L,a)(log n).                     (S67.3)
+```
+
+No external premise is needed for transport architecture in Lean.  Existing formal Mertens bound
+gives radius `R=2(log 4+4)`, width `W=2+2R`, and unconditional exact cells
+
+```text
+(F_(n-1)-R,F_n-R]             subset (tau_n-W,tau_n],
+(F_(n-1)+R+2,F_n+R+2]         subset (tau_n,tau_n+W].     (S67.4)
+```
+
+They retain exact mass, pairwise disjointness, monotone integral consumers, and Suzuki weld.
+For a unimodal channel, formal seam trichotomy localizes every atom not handled by one monotone
+branch to `|tau_n-c|<W`; sharp paper interface reduces this to `|tau_n-c|<2` once known capacity
+premise is supplied.
+
+This is frontier progress, not RH.  Exact remaining core is
+`SUZUKI-TURNING-SEAM-BICAUSAL-SPLICE`: choose future cells on rising side and past cells on falling
+side across moving seam, including seam atoms, without using overlapping Lebesgue mass twice; then
+use genuinely unused completed-kernel mass to pay fixed Gamma boundary charge.  This blocks a full
+RH proof.  Returning to global prime estimates or naming target defect as residual does not solve
+it.
+
+Scientific artifacts:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-mangoldt-log-haar-bicausal-transport.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-mangoldt-log-haar-bicausal-transport.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiMangoldtLogHaarTransport.lean`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-positive-arch-mangoldt-quadrature-deficit.md`.
+
+Corpus collision audit found no existing cell transport or endpoint predecessor theorem.  External
+novelty is not certified; known capacity theorem is explicitly separated from claims proved here.
+Direct new-module Lean check passes.  Final targeted SOTA build passes `9513/9513`.  Nine capstone
+axiom surfaces are only `propext`, `Classical.choice`, and `Quot.sound`; forbidden declaration scan
+is clean.  Repository lint reaches new module and remains red on 22 unrelated shared-tree
+unreachable modules.  Other agents' Lean process was left untouched; no stale owned process remains.
+
+## S68. Mangoldt atoms lock cofinally to unique Suzuki apices; pointwise seam cells fail (2026-07-22)
+
+S67 isolated turning seam and proposed paying each remaining atom from positive-volume part of its
+pointwise value-dominating superlevel.  Hostile test now proves this representation impossible on
+an unbounded actual-source family.
+
+Set
+
+```text
+L_2=log 2,
+a_n=(1/2)log(2n),
+tau_n=2log n,
+A_n(t)=exp(t/4)R_(L_2,a_n)(t/2).
+```
+
+Split channel into fixed and moving terms
+
+```text
+F_L(t)=2exp(t/4)max(0,L-t/2),
+M_(L,a)(t)=exp(t/4)max(0,L-|t/2-(2a-L)|).               (S68.1)
+```
+
+For `0<L<2`, exponential tilt leaves moving term with unique maximum at
+`c=4a-2L`.  If `t>c`, writing `x=(t-c)/4>0` gives exact strict comparison
+
+```text
+L-2x < L(1-x) < L exp(-x),                              (S68.2)
+```
+
+while left branch is strict from exponential monotonicity.  Same argument proves
+`F_L(t)<2L` for every `t>0`.  At `a_n`, logarithm law gives
+
+```text
+c=4a_n-2L_2=2log n=tau_n.                               (S68.3)
+```
+
+For `n>=4`, fixed and moving positive supports are disjoint and moving apex is at least `2L_2`.
+Therefore Lean proves exact rigidity
+
+```text
+t>0 and A_n(tau_n)<=A_n(t)  iff  t=tau_n.               (S68.4)
+```
+
+Every pointwise-dominating target set is contained in singleton `{tau_n}`, hence is Lebesgue null.
+But at a prime power
+
+```text
+w_n=2Lambda(n)/n>0.                                     (S68.5)
+```
+
+Thus no same-mass target cell exists.  Formal corollary takes `n=2^k`, `k>=2`, so obstruction is
+cofinal and cannot be removed by starting RH criterion farther out.
+
+Verdict: `SUZUKI-TURNING-SEAM-BICAUSAL-SPLICE` is **falsified in per-atom pointwise form**.  This is
+not merely past/future interval overlap: arbitrary non-interval adaptive cells still live in a null
+superlevel.  Positive survivor is source-aligned unique-apex rigidity `(S68.3)--(S68.5)`.
+
+The stronger live conjecture is `SUZUKI-APEX-BLOCK-TRANSPORT`: group apex and flank atoms before
+comparison, derive nonnegative aggregate block surplus, enforce capacity one only after grouping,
+and retain unused completed-kernel mass for fixed Gamma boundary charge.  Individual same-channel
+payment is now forbidden architecture.  If block surplus cannot be derived directly, restricted-
+Weil/Robin boundary current must produce it; defining surplus from target RH deficit is circular.
+
+Scientific artifacts:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-mangoldt-apex-lock-rigidity.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-mangoldt-apex-lock-rigidity.md`;
+- `docs/drafts/pipeline/5-failed/suzuki-pointwise-turning-seam-cell-transport.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiMangoldtApexLock.lean`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-positive-arch-mangoldt-quadrature-deficit.md`.
+
+Generic strict-max/null-superlevel mechanism is standard and not claimed new.  Corpus audit and
+primary-source audit of Suzuki arXiv:2606.09096 and Groskin arXiv:2607.02828 found no matching
+Mangoldt aperture-lock theorem; external priority remains unverified.  Direct source check passes.
+Final targeted SOTA build passes `9514/9514`.  Nine capstone axiom surfaces are only `propext`,
+`Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean.  Repository lint reaches
+new module and remains red on 23 unrelated shared-tree unreachable modules.  No stale owned
+Lean/lake process remains.

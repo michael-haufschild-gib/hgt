@@ -92,4 +92,22 @@ theorem entire_eq_zero_of_zero_on_real_tail
     hF.eqOn_zero_of_preconnected_of_frequently_eq_zero isPreconnected_univ
       (Set.mem_univ z₀) hfreq (Set.mem_univ z)
 
+/-- **Entire Lambert-ray recovery.**  If every point on a real tail has some geometric
+Fourier--Borel majorant and a vanishing weighted Lambert transform along its multiplicative ray,
+then the entire source vanishes identically.  Decay constants may vary from one tail point to
+another; no uniform ray estimate is required. -/
+theorem entire_eq_zero_of_lambert_ray_zero
+    (F : ℂ → ℂ) (X : ℝ)
+    (hF : AnalyticOnNhd ℂ F Set.univ)
+    (hray : ∀ x : ℝ, X ≤ x →
+      ∃ C r : ℝ, 0 ≤ C ∧ 0 ≤ r ∧ r < 1 ∧
+        (∀ n : ℕ+, ‖F ((n : ℂ) * (x : ℂ))‖ ≤ C * r ^ (n : ℕ)) ∧
+        (∀ n : ℕ+, positiveLambertDerivative F ((n : ℂ) * (x : ℂ)) = 0)) :
+    ∀ z : ℂ, F z = 0 := by
+  apply entire_eq_zero_of_zero_on_real_tail F X hF
+  intro x hx
+  obtain ⟨C, r, hC, hr0, hr1, hdecay, hzero⟩ := hray x hx
+  exact fourierBorel_eq_zero_of_lambert_ray_zero
+    F (x : ℂ) C r hC hr0 hr1 hdecay hzero
+
 end RHTower

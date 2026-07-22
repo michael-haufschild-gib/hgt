@@ -33,9 +33,9 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2202 | `formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean` |
 | 2173 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean` |
 | 2004 | `formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean` |
+| 1994 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 1912 | `formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
-| 1862 | `formal/GaloisForLFunctions/RHTower.lean` |
 
 ## Gap Markers
 

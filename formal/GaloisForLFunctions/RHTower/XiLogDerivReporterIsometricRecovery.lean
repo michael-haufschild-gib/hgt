@@ -17,6 +17,39 @@ noncomputable section
 
 open GaloisForLFunctions Module
 
+/-- **Complete Xi isometric observability profile.**  At every jet resolution, isometric recoding
+preserves Gram geometry, conditional information, visible coefficient rank, and the complete blind
+coefficient subspace; one adjoint recovers the reporter uniformly across all resolutions. -/
+theorem xiLogDerivReporter_isometricObservabilityProfile
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    (∀ N,
+      HTGeometry.finiteDerivativeReporterGram N (logDeriv xi)
+          (decode.toLinearMap.comp report) =
+        HTGeometry.finiteDerivativeReporterGram N (logDeriv xi) report ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi)
+          (decode.toLinearMap.comp report) =
+        HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi) report ∧
+      Module.finrank ℂ (LinearMap.range
+          (HTGeometry.finiteDerivativeReporterMap N (logDeriv xi)
+            (decode.toLinearMap.comp report))) =
+        Module.finrank ℂ (LinearMap.range
+          (HTGeometry.finiteDerivativeReporterMap N (logDeriv xi) report)) ∧
+      LinearMap.ker (HTGeometry.finiteDerivativeReporterMap N (logDeriv xi)
+          (decode.toLinearMap.comp report)) =
+        LinearMap.ker
+          (HTGeometry.finiteDerivativeReporterMap N (logDeriv xi) report)) ∧
+    decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+        (decode.toLinearMap.comp report) = report := by
+  constructor
+  · intro N
+    have h := HTGeometry.finiteDerivativeReporter_isometricObservabilityProfile
+      N (logDeriv xi) report decode
+    exact ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1⟩
+  · exact HTGeometry.finiteDerivativeReporter_isometricAdjointRecovery report decode
+
 /-- Isometric postprocessing preserves the complete Xi conditional-information tower and admits
 the adjoint as an exact reporter recovery. -/
 theorem xiLogDerivReporter_isometric_information_and_recovery
@@ -30,10 +63,8 @@ theorem xiLogDerivReporter_isometric_information_and_recovery
         HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi) report) ∧
     decode.toContinuousLinearMap.adjoint.toLinearMap.comp
         (decode.toLinearMap.comp report) = report := by
-  exact ⟨fun N =>
-      HTGeometry.finiteDerivativeReporterConditionalInformation_postcomp_linearIsometry
-        N (logDeriv xi) report decode,
-    HTGeometry.finiteDerivativeReporter_isometricAdjointRecovery report decode⟩
+  have h := xiLogDerivReporter_isometricObservabilityProfile report decode
+  exact ⟨fun N => (h.1 N).2.1, h.2⟩
 
 /-- **Perfectly recoverable reporter, irrecoverable source direction.**  At the unconditional Xi
 collapse order, the isometric encoding has the same zero information and its adjoint recovers the
@@ -57,6 +88,44 @@ theorem exists_xiLogDeriv_isometricReporterRecovery_collapse
       xiLogDeriv_constantCoefficientDifferentiallyTranscendental
       report decode
   exact ⟨k, hk, hzero, hpostzero, hrecover, hsource⟩
+
+/-- **Exact Xi collapse packet under isometric recovery.**  At one unconditional Xi
+logarithmic-derivative collapse order, the newest coefficient can be normalized to `-1` in a
+genuinely nonzero source packet.  Original and encoded reporters annihilate that same packet and
+have identical visible rank and blind kernel at its resolution. -/
+theorem exists_xiLogDeriv_isometricReporterRecovery_exactBlindPacket_collapse
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ (k : ℕ) (c : Fin (k + 1) → ℂ),
+      k ≤ finrank ℂ Y ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k (logDeriv xi) report = 0 ∧
+      HTGeometry.finiteDerivativeReporterConditionalInformation k (logDeriv xi)
+          (decode.toLinearMap.comp report) = 0 ∧
+      c (Fin.last k) = -1 ∧
+      c ∈ LinearMap.ker
+        (HTGeometry.finiteDerivativeReporterMap (k + 1) (logDeriv xi) report) ∧
+      c ∈ LinearMap.ker (HTGeometry.finiteDerivativeReporterMap (k + 1) (logDeriv xi)
+        (decode.toLinearMap.comp report)) ∧
+      LinearMap.ker (HTGeometry.finiteDerivativeReporterMap (k + 1) (logDeriv xi)
+          (decode.toLinearMap.comp report)) =
+        LinearMap.ker
+          (HTGeometry.finiteDerivativeReporterMap (k + 1) (logDeriv xi) report) ∧
+      finrank ℂ (LinearMap.range (HTGeometry.finiteDerivativeReporterMap (k + 1)
+          (logDeriv xi) (decode.toLinearMap.comp report))) =
+        finrank ℂ (LinearMap.range
+          (HTGeometry.finiteDerivativeReporterMap (k + 1) (logDeriv xi) report)) ∧
+      HTGeometry.finiteDerivativeReporterPacket c (logDeriv xi) ≠ 0 ∧
+      report (HTGeometry.finiteDerivativeReporterPacket c (logDeriv xi)) = 0 ∧
+      decode (report (HTGeometry.finiteDerivativeReporterPacket c (logDeriv xi))) = 0 ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k (logDeriv xi) ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) (logDeriv xi)) := by
+  exact HTGeometry.exists_finiteDerivativeReporter_isometricRecovery_exactBlindPacket_collapse
+    xiLogDeriv_constantCoefficientDifferentiallyTranscendental report decode
 
 /-- **Finite-Gibbs dressed Xi recovery boundary.**  Isometric postprocessing exactly recovers the
 dressed reporter and preserves its zero-information witness, but cannot recover the same genuinely

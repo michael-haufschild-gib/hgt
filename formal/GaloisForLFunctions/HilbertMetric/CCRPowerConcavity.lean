@@ -124,19 +124,19 @@ theorem fullCCR_dimension_fluctuation_pairwise_identity
 theorem fullCCR_numberVariance_le_card_mul_mean
     (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
     (hinv : IsInvariantFullCompression T) (hcomm : IsCommutingFullTuple T)
-    (hccr : IsFullCCRMatrixTuple T) (hI : 0 < Fintype.card I) :
+    (hccr : IsFullCCRMatrixTuple T) :
     ccrNumberVariance (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) ≤
       (Fintype.card I : ℝ) * ccrMeanEnergy (fullCCRCompressionBlock T) := by
   exact ccr_numberVariance_le_card_mul_mean
     (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)
     (fullCCRCompressionBlock_commutes T hinv hcomm)
-    (fullCCRLeakageBlock_isCCRCompletion T hinv hccr) hI
+    (fullCCRLeakageBlock_isCCRCompletion T hinv hccr)
 
 /-- Equality for a full tuple is literal mixed normality plus pure-trace leakage. -/
 theorem fullCCR_numberVariance_eq_card_mul_mean_literal_iff
     (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
     (hinv : IsInvariantFullCompression T) (hcomm : IsCommutingFullTuple T)
-    (hccr : IsFullCCRMatrixTuple T) (hI : 0 < Fintype.card I) :
+    (hccr : IsFullCCRMatrixTuple T) :
     ccrNumberVariance (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) =
         (Fintype.card I : ℝ) * ccrMeanEnergy (fullCCRCompressionBlock T) ↔
       (∀ i j, ccrMixedCommutator (fullCCRCompressionBlock T) i j = 0) ∧
@@ -145,7 +145,23 @@ theorem fullCCR_numberVariance_eq_card_mul_mean_literal_iff
   exact ccr_numberVariance_eq_card_mul_mean_literal_iff
     (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)
     (fullCCRCompressionBlock_commutes T hinv hcomm)
-    (fullCCRLeakageBlock_isCCRCompletion T hinv hccr) hI
+    (fullCCRLeakageBlock_isCCRCompletion T hinv hccr)
+
+/-- Strict full-block variance is equivalent to a literal mixed-normality or pure-trace leakage
+defect. -/
+theorem fullCCR_numberVariance_lt_card_mul_mean_literal_iff
+    (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
+    (hinv : IsInvariantFullCompression T) (hcomm : IsCommutingFullTuple T)
+    (hccr : IsFullCCRMatrixTuple T) :
+    ccrNumberVariance (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) <
+        (Fintype.card I : ℝ) * ccrMeanEnergy (fullCCRCompressionBlock T) ↔
+      (∃ i j, ccrMixedCommutator (fullCCRCompressionBlock T) i j ≠ 0) ∨
+        ∃ i j, ccrScaledTracelessLeakage
+          (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) i j ≠ 0 := by
+  exact ccr_numberVariance_lt_card_mul_mean_literal_iff
+    (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)
+    (fullCCRCompressionBlock_commutes T hinv hcomm)
+    (fullCCRLeakageBlock_isCCRCompletion T hinv hccr)
 
 /-- Reparametrize a smooth log-volume by the reciprocal dimension power `t = u^(1/d)`. -/
 def dimensionPowerReparametrization (d : ℝ) (F : ℝ → ℝ) (u : ℝ) : ℝ :=
@@ -353,7 +369,7 @@ theorem ccr_dimensionPowerReparametrization_concaveOn
   intro t ht
   rw [hvariance t ht, hmean t ht]
   exact ccr_numberVariance_le_card_mul_mean (A t) (B t)
-    (hcomm t ht) (hccr t ht) hI
+    (hcomm t ht) (hccr t ht)
 
 omit [DecidableEq I] [DecidableEq n] [DecidableEq m] in
 /-- The same CCR family is convex in logarithmic scale because its scale curvature is a squared

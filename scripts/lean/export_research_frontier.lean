@@ -42,6 +42,8 @@ private structure Producer where
   name : Name
   heads : Array String
 
+private abbrev ProducerIndex := Std.HashMap String (Array Producer)
+
 private structure SolverResult where
   proof : Expr
   usedTheorems : Array Name
@@ -226,13 +228,30 @@ private def expressionHeadKeys (expr : Expr) : MetaM (Array String) := do
         keys := pushStringUnique keys (exprHeadKey argumentReduced)
   return keys
 
+private def syntacticHeadKeys (expr : Expr) : Array String := Id.run do
+  let mut keys := #[exprHeadKey expr]
+  if expr.isAppOfArity ``Iff 2 || expr.isAppOfArity ``And 2 then
+    for argument in expr.getAppArgs do
+      keys := pushStringUnique keys (exprHeadKey argument)
+  keys
+
 private def buildProducers (names : Array Name) : MetaM (Array Producer) := do
   let mut producers := #[]
   for name in names.qsort (fun left right => left.toString < right.toString) do
     let info ← getConstInfo name
     let (_, result) := telescopeDomains info.type #[]
-    producers := producers.push { name, heads := ← expressionHeadKeys result }
+    let heads ←
+      if result.hasLooseBVars then
+        pure (syntacticHeadKeys result)
+      else expressionHeadKeys result
+    producers := producers.push { name, heads }
   return producers
+
+private def buildProducerIndex (producers : Array Producer) : ProducerIndex :=
+  producers.foldl (init := {}) fun index producer =>
+    producer.heads.foldl (init := index) fun index head =>
+      let bucket := index[head]?.getD #[]
+      index.insert head (bucket.push producer)
 
 private def instantiateInterface (spec : InterfaceSpec) : MetaM Expr := do
   let source ← mkConstWithFreshMVarLevels spec.sourceTheorem
@@ -287,7 +306,7 @@ private def appendNamesUnique (items more : Array Name) : Array Name :=
   more.foldl (init := items) pushNameUnique
 
 private partial def solveInterfaceGoal
-    (producers : Array Producer)
+    (producerIndex : ProducerIndex)
     (goal : MVarId)
     (depth : Nat)
     (ancestors : Array Expr)
@@ -302,16 +321,13 @@ private partial def solveInterfaceGoal
   let goalHeads ← expressionHeadKeys goalType
   let mut matching := #[]
   let mut seen : NameSet := {}
-  let rawHead := goalHeads[0]!
-  for producer in producers do
-    if producer.heads[0]? == some rawHead then
-      matching := matching.push producer
-      seen := seen.insert producer.name
-  for producer in producers do
+  for head in goalHeads do
     if matching.size >= interfaceSolverMaxCandidatesPerGoal then break
-    if !seen.contains producer.name && producerMayMatch producer goalHeads then
-      matching := matching.push producer
-      seen := seen.insert producer.name
+    for producer in producerIndex[head]?.getD #[] do
+      if matching.size >= interfaceSolverMaxCandidatesPerGoal then break
+      if !seen.contains producer.name && producerMayMatch producer goalHeads then
+        matching := matching.push producer
+        seen := seen.insert producer.name
 
   for producer in matching do
     if usedOnPath.contains producer.name then continue
@@ -332,7 +348,7 @@ private partial def solveInterfaceGoal
           if ← isProp subgoalType then
             let childDepth :=
               if isNamedResearchProposition (← getEnv) subgoalType then depth - 1 else 1
-            let result? ← solveInterfaceGoal producers subgoal childDepth
+            let result? ← solveInterfaceGoal producerIndex subgoal childDepth
               (ancestors.push goalType) (usedOnPath.insert producer.name) attempts
             match result? with
             | some (childUsed, childDepth) =>
@@ -359,7 +375,7 @@ private partial def solveInterfaceGoal
   return none
 
 private def solveInterface
-    (producers : Array Producer) (spec : InterfaceSpec) : MetaM (Option SolverResult) := do
+    (producerIndex : ProducerIndex) (spec : InterfaceSpec) : MetaM (Option SolverResult) := do
   let saved ← saveState
   try
     let target ← instantiateInterface spec
@@ -368,7 +384,7 @@ private def solveInterface
       return none
     let goalExpr ← mkFreshExprSyntheticOpaqueMVar target
     let attempts ← IO.mkRef 0
-    let result? ← solveInterfaceGoal producers goalExpr.mvarId! interfaceSolverMaxDepth #[] {} attempts
+    let result? ← solveInterfaceGoal producerIndex goalExpr.mvarId! interfaceSolverMaxDepth #[] {} attempts
     match result? with
     | none =>
         restoreState saved
@@ -382,22 +398,28 @@ private def solveInterface
     restoreState saved
     return none
 
-private def exportResearchFrontier (theoremNames : Array Name) : MetaM Json := do
+private def exportResearchFrontier
+    (theoremNames producerNames : Array Name) : MetaM Json := do
   let env ← getEnv
-  let requested := theoremNames.foldl (init := ({} : NameSet)) (·.insert ·)
-  let allProjectTheoremNames := env.const2ModIdx.toList.toArray.filterMap fun entry =>
-    let (declName, moduleIdx) := entry
-    match env.header.moduleNames[moduleIdx.toNat]? with
-    | some moduleName =>
-        if moduleName.toString.startsWith projectPrefix &&
-            env.find? declName matches some (.thmInfo _) then
-          some declName
-        else none
-    | none => none
-  let candidateNames :=
-    if requested.isEmpty then allProjectTheoremNames
-    else allProjectTheoremNames.filter requested.contains
+  let validateTheorems := fun names => names.filter fun name =>
+    isProjectDeclaration env name && env.find? name matches some (.thmInfo _)
+  let candidateNames := validateTheorems theoremNames
+  let allProjectTheoremNames :=
+    if producerNames.isEmpty then
+      env.const2ModIdx.toList.toArray.filterMap fun entry =>
+        let (declName, moduleIdx) := entry
+        match env.header.moduleNames[moduleIdx.toNat]? with
+        | some moduleName =>
+            if moduleName.toString.startsWith projectPrefix &&
+                env.find? declName matches some (.thmInfo _) then
+              some declName
+            else none
+        | none => none
+    else validateTheorems producerNames
+  logInfo m!"HGT_FRONTIER_PHASE:producer_names={allProjectTheoremNames.size}"
   let producers ← buildProducers allProjectTheoremNames
+  logInfo m!"HGT_FRONTIER_PHASE:producer_heads={producers.size}"
+  let producerIndex := buildProducerIndex producers
   let mut reductions : Array Json := #[]
   let mut interfaces : Array InterfaceSpec := #[]
   let mut seenInterfaceKeys : Std.HashSet String := {}
@@ -412,10 +434,15 @@ private def exportResearchFrontier (theoremNames : Array Name) : MetaM Json := d
           seenInterfaceKeys := seenInterfaceKeys.insert spec.key
           interfaces := interfaces.push spec
 
+  logInfo m!"HGT_FRONTIER_PHASE:reductions={reductions.size},interfaces={interfaces.size}"
   let mut solvedCount := 0
+  let mut checkedCount : Nat := 0
   for spec in interfaces do
+    checkedCount := checkedCount + 1
+    if checkedCount % 100 == 0 then
+      logInfo m!"HGT_FRONTIER_PHASE:interfaces_checked={checkedCount}"
     if exactClosedKeys.contains spec.key then continue
-    if let some solved ← solveInterface producers spec then
+    if let some solved ← solveInterface producerIndex spec then
       let some rootTheorem := solved.usedTheorems[0]? | continue
       let mut axioms : Array Name := #[]
       for theoremName in solved.usedTheorems do
@@ -464,7 +491,8 @@ private def exportResearchFrontier (theoremNames : Array Name) : MetaM Json := d
       ("interfaces_proven", toJson solvedCount),
       ("max_depth", toJson interfaceSolverMaxDepth),
       ("max_candidates_per_goal", toJson interfaceSolverMaxCandidatesPerGoal),
-      ("max_attempts_per_interface", toJson interfaceSolverMaxAttemptsPerInterface)
+      ("max_attempts_per_interface", toJson interfaceSolverMaxAttemptsPerInterface),
+      ("producer_count", toJson producers.size)
     ])
   ]
 
@@ -474,5 +502,18 @@ syntax (name := exportResearchFrontierCmd)
 elab_rules : command
   | `(#export_research_frontier [$[$names:str],*]) => do
       let declNames := names.map (·.getString.toName)
-      let payload ← liftCoreM <| MetaM.run' <| exportResearchFrontier declNames
+      let payload ← liftCoreM <| MetaM.run' <| exportResearchFrontier declNames declNames
+      liftIO <| IO.println s!"HGT_FRONTIER_JSON:{payload.compress}"
+
+syntax (name := exportResearchFrontierWithProducersCmd)
+  "#export_research_frontier_with_producers"
+    "[" str,* "]" "using" "[" str,* "]" : command
+
+elab_rules : command
+  | `(#export_research_frontier_with_producers
+        [$[$names:str],*] using [$[$producerNames:str],*]) => do
+      let declNames := names.map (·.getString.toName)
+      let producerDeclNames := producerNames.map (·.getString.toName)
+      let payload ← liftCoreM <| MetaM.run' <|
+        exportResearchFrontier declNames producerDeclNames
       liftIO <| IO.println s!"HGT_FRONTIER_JSON:{payload.compress}"

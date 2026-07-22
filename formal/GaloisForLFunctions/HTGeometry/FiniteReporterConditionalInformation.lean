@@ -92,6 +92,38 @@ theorem finiteDerivativeReporterConditionalInformation_eq_zero_iff
     have hzero := (finiteDerivativeReporterInnovation_eq_zero_iff N f report).mpr hmem
     simp [finiteDerivativeReporterConditionalInformation, hzero]
 
+/-- **Normalized blind-packet classification of zero innovation.**  The newest derivative reading
+is conditionally redundant exactly when the coefficient kernel at the next resolution contains a
+packet whose newest coefficient is `-1`.  Thus zero conditional information records a relation
+involving that specific new reading, rather than an arbitrary older kernel defect. -/
+theorem finiteDerivativeReporterConditionalInformation_eq_zero_iff_exists_normalizedBlindPacket
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    (N : ℕ) (f : ℂ → ℂ) (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    finiteDerivativeReporterConditionalInformation N f report = 0 ↔
+      ∃ c : Fin (N + 1) → ℂ,
+        c (Fin.last N) = -1 ∧
+        c ∈ LinearMap.ker (finiteDerivativeReporterMap (N + 1) f report) := by
+  rw [finiteDerivativeReporterConditionalInformation_eq_zero_iff]
+  constructor
+  · intro hmem
+    obtain ⟨a, ha⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp hmem
+    let c : Fin (N + 1) → ℂ := Fin.lastCases (-1) a
+    refine ⟨c, by simp [c], ?_⟩
+    rw [LinearMap.mem_ker]
+    simp [finiteDerivativeReporterMap, finiteDerivativeJetSynthesis,
+      finiteDerivativeReporterPacket, c, Fin.sum_univ_castSucc, ha]
+  · rintro ⟨c, hclast, hc⟩
+    apply (Submodule.mem_span_range_iff_exists_fun ℂ).mpr
+    refine ⟨fun i => c i.castSucc, ?_⟩
+    rw [LinearMap.mem_ker] at hc
+    have hc' :
+        (∑ i : Fin N, c i.castSucc • report (iteratedDeriv (i : ℕ) f)) -
+            report (iteratedDeriv N f) = 0 := by
+      simpa [finiteDerivativeReporterMap, finiteDerivativeJetSynthesis,
+        finiteDerivativeReporterPacket, Fin.sum_univ_castSucc, hclast,
+        sub_eq_add_neg] using hc
+    exact sub_eq_zero.mp hc'
+
 /-- Positive conditional information means that the new clock reading escapes the preceding
 reported observable space. -/
 theorem finiteDerivativeReporterConditionalInformation_pos_iff
@@ -399,6 +431,38 @@ theorem exists_finiteDerivativeReporterConditionalInformation_collapse
   have hsource := hjets.notMem_span_image (show k ∉ Set.Iio k by simp)
   rw [hsourceImage] at hsource
   exact ⟨k, hk, hinfo, hreported, hsource⟩
+
+/-- **Normalized finite-reporter collapse packet.**  A finite-dimensional reporter of a genuine
+infinite derivative clock has a first-resolution relation that can be normalized on the newly
+redundant derivative.  Its synthesized source packet is nonzero, while the reporter annihilates it
+exactly. -/
+theorem exists_finiteDerivativeReporterConditionalInformation_normalizedBlindPacket_collapse
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    [FiniteDimensional ℂ Y]
+    {f : ℂ → ℂ} (hf : ConstantCoefficientDifferentiallyTranscendental f)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) :
+    ∃ (k : ℕ) (c : Fin (k + 1) → ℂ),
+      k ≤ finrank ℂ Y ∧
+      finiteDerivativeReporterConditionalInformation k f report = 0 ∧
+      c (Fin.last k) = -1 ∧
+      c ∈ LinearMap.ker (finiteDerivativeReporterMap (k + 1) f report) ∧
+      finiteDerivativeReporterPacket c f ≠ 0 ∧
+      report (finiteDerivativeReporterPacket c f) = 0 ∧
+      iteratedDeriv k f ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) f) := by
+  obtain ⟨k, hk, hzero, _, hsource⟩ :=
+    exists_finiteDerivativeReporterConditionalInformation_collapse hf report
+  obtain ⟨c, hclast, hc⟩ :=
+    (finiteDerivativeReporterConditionalInformation_eq_zero_iff_exists_normalizedBlindPacket
+      k f report).mp hzero
+  have hcne : c ≠ 0 := by
+    intro hczero
+    have h := congrFun hczero (Fin.last k)
+    rw [hclast] at h
+    simp at h
+  obtain ⟨hpacket, hreport⟩ :=
+    finiteDerivativeReporterMap_nonzero_packet_of_mem_ker hf report hc hcne
+  exact ⟨k, c, hk, hzero, hclast, hc, hpacket, hreport, hsource⟩
 
 end
 

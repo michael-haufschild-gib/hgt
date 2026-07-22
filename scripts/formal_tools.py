@@ -19,10 +19,12 @@ import sys
 from pathlib import Path
 
 from research_brief import (
+    build_frontier_chains,
     build_research_brief,
     canonical_area,
     render_research_brief,
     render_research_brief_json,
+    write_chain_reports,
 )
 
 
@@ -686,6 +688,44 @@ def brief(args: argparse.Namespace) -> int:
     return 0
 
 
+def frontier_reports(args: argparse.Namespace) -> int:
+    try:
+        canonical_area(args.area)
+    except ValueError as error:
+        print(error, file=sys.stderr)
+        return 2
+
+    declaration_index = declarations() if args.refresh else ()
+    try:
+        try:
+            result = build_frontier_chains(
+                root=ROOT,
+                area=args.area,
+                graph_path=args.graph,
+                declarations=declaration_index,
+                max_gaps=args.max_gaps,
+                refresh=args.refresh,
+            )
+        except ValueError as error:
+            if args.graph is not None or "received no corpus theorem" not in str(error):
+                raise
+            result = build_frontier_chains(
+                root=ROOT,
+                area=args.area,
+                declarations=declarations(),
+                max_gaps=args.max_gaps,
+                refresh=True,
+            )
+    except ValueError as error:
+        print(error, file=sys.stderr)
+        return 2
+
+    output_dir = args.output if args.output.is_absolute() else ROOT / args.output
+    paths = write_chain_reports(result, output_dir, limit=args.limit)
+    print(f"Wrote {len(paths) - 1} chain reports plus index to {output_dir}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -724,6 +764,22 @@ def main(argv: list[str] | None = None) -> int:
         help="rebuild compiled Lean graph even when cache is current",
     )
     brief_parser.set_defaults(func=brief)
+
+    reports_parser = sub.add_parser(
+        "frontier-reports",
+        help="write least-gap Lean frontier chain reports",
+    )
+    reports_parser.add_argument("--area", required=True)
+    reports_parser.add_argument("--max-gaps", type=int, default=4)
+    reports_parser.add_argument("--limit", type=int, default=20)
+    reports_parser.add_argument("--output", type=Path, default=Path("docs/reports"))
+    reports_parser.add_argument("--graph", type=Path, help="read an existing Lean graph export")
+    reports_parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help="refresh from compiled corpus snapshot without building source files",
+    )
+    reports_parser.set_defaults(func=frontier_reports)
 
     args = parser.parse_args(argv)
     return args.func(args)

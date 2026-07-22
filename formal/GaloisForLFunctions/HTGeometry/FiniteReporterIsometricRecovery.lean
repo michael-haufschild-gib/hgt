@@ -107,6 +107,36 @@ theorem finiteDerivativeReporterConditionalInformation_postcomp_linearIsometry
     rw [finiteDerivativeReporter_isometricAdjointRecovery report decode] at hback
     exact hback
 
+/-- **Complete isometric finite-reporter profile.**  Isometric recoding simultaneously preserves
+the Gram geometry, every sequential innovation value, visible coefficient capacity, and the
+entire blind coefficient subspace; its adjoint recovers the original reporter. -/
+theorem finiteDerivativeReporter_isometricObservabilityProfile
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    finiteDerivativeReporterGram N f (decode.toLinearMap.comp report) =
+        finiteDerivativeReporterGram N f report ∧
+      finiteDerivativeReporterConditionalInformation N f
+          (decode.toLinearMap.comp report) =
+        finiteDerivativeReporterConditionalInformation N f report ∧
+      Module.finrank ℂ (LinearMap.range
+          (finiteDerivativeReporterMap N f (decode.toLinearMap.comp report))) =
+        Module.finrank ℂ
+          (LinearMap.range (finiteDerivativeReporterMap N f report)) ∧
+      LinearMap.ker
+          (finiteDerivativeReporterMap N f (decode.toLinearMap.comp report)) =
+        LinearMap.ker (finiteDerivativeReporterMap N f report) ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report := by
+  have hrecover := finiteDerivativeReporter_isometricAdjointRecovery report decode
+  have hcapacity := finiteDerivativeReporterMap_postcomp_capacity_eq_of_recovery
+    N f report decode.toLinearMap decode.toContinuousLinearMap.adjoint.toLinearMap hrecover
+  exact ⟨finiteDerivativeReporterGram_postcomp_linearIsometry N f report decode,
+    finiteDerivativeReporterConditionalInformation_postcomp_linearIsometry N f report decode,
+    hcapacity.1, hcapacity.2, hrecover⟩
+
 /-- **Perfectly recoverable representation, irrecoverable source direction.**  For an infinite
 derivative clock observed through a finite-dimensional reporter, an isometric downstream encoding
 has the same collapse witness and is recovered exactly by its adjoint, while that derivative
@@ -135,6 +165,61 @@ theorem exists_finiteDerivativeReporter_isometricRecovery_collapse
       hf report decode.toLinearMap
   exact ⟨k, hk, hzero, hpostzero, hreported, hpostreported,
     finiteDerivativeReporter_isometricAdjointRecovery report decode, hsource⟩
+
+/-- **Exact isometric collapse packet and capacity law.**  At one bounded collapse order, a
+normalized nonzero source packet is already blind before recoding and remains the same blind
+packet afterward.  Isometric recoding preserves the complete coefficient kernel and visible rank
+at that resolution, so it introduces no additional algebraic blindness. -/
+theorem exists_finiteDerivativeReporter_isometricRecovery_exactBlindPacket_collapse
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] [CompleteSpace Y]
+    [FiniteDimensional ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] [CompleteSpace Z]
+    {f : ℂ → ℂ} (hf : ConstantCoefficientDifferentiallyTranscendental f)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗᵢ[ℂ] Z) :
+    ∃ (k : ℕ) (c : Fin (k + 1) → ℂ),
+      k ≤ Module.finrank ℂ Y ∧
+      finiteDerivativeReporterConditionalInformation k f report = 0 ∧
+      finiteDerivativeReporterConditionalInformation k f
+          (decode.toLinearMap.comp report) = 0 ∧
+      c (Fin.last k) = -1 ∧
+      c ∈ LinearMap.ker (finiteDerivativeReporterMap (k + 1) f report) ∧
+      c ∈ LinearMap.ker (finiteDerivativeReporterMap (k + 1) f
+        (decode.toLinearMap.comp report)) ∧
+      LinearMap.ker (finiteDerivativeReporterMap (k + 1) f
+          (decode.toLinearMap.comp report)) =
+        LinearMap.ker (finiteDerivativeReporterMap (k + 1) f report) ∧
+      Module.finrank ℂ (LinearMap.range (finiteDerivativeReporterMap (k + 1) f
+          (decode.toLinearMap.comp report))) =
+        Module.finrank ℂ
+          (LinearMap.range (finiteDerivativeReporterMap (k + 1) f report)) ∧
+      finiteDerivativeReporterPacket c f ≠ 0 ∧
+      report (finiteDerivativeReporterPacket c f) = 0 ∧
+      decode (report (finiteDerivativeReporterPacket c f)) = 0 ∧
+      decode.toContinuousLinearMap.adjoint.toLinearMap.comp
+          (decode.toLinearMap.comp report) = report ∧
+      iteratedDeriv k f ∉ Submodule.span ℂ
+        (Set.range fun i : Fin k => iteratedDeriv (i : ℕ) f) := by
+  obtain ⟨k, c, hk, hzero, hclast, hc, hpacket, hreport, hsource⟩ :=
+    exists_finiteDerivativeReporterConditionalInformation_normalizedBlindPacket_collapse
+      hf report
+  have hpostzero :
+      finiteDerivativeReporterConditionalInformation k f
+          (decode.toLinearMap.comp report) = 0 := by
+    rw [finiteDerivativeReporterConditionalInformation_postcomp_linearIsometry]
+    exact hzero
+  have hprofile := finiteDerivativeReporter_isometricObservabilityProfile
+    (k + 1) f report decode
+  have hcpost :
+      c ∈ LinearMap.ker (finiteDerivativeReporterMap (k + 1) f
+        (decode.toLinearMap.comp report)) := by
+    rw [hprofile.2.2.2.1]
+    exact hc
+  have hdecode : decode (report (finiteDerivativeReporterPacket c f)) = 0 := by
+    rw [hreport, map_zero]
+  exact ⟨k, c, hk, hzero, hpostzero, hclast, hc, hcpost,
+    hprofile.2.2.2.1, hprofile.2.2.1, hpacket, hreport, hdecode,
+    hprofile.2.2.2.2, hsource⟩
 
 end
 

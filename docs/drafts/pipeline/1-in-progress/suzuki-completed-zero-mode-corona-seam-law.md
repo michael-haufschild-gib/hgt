@@ -9,7 +9,9 @@
 - **Analytic source:** H. Chen and T. Weth, *The Dirichlet Problem for the Logarithmic
   Laplacian*, arXiv:1710.03416; P. A. Feulefack, S. Jarohs, and T. Weth, *Small order
   asymptotics of the Dirichlet eigenvalue problem for the fractional Laplacian*,
-  arXiv:2010.10448
+  arXiv:2010.10448; V. Hernandez-Santamaria, L. F. Lopez Rios, and A. Saldana,
+  *Optimal boundary regularity and a Hopf-type lemma for Dirichlet problems involving the
+  logarithmic Laplacian*, arXiv:2401.18033v2
 - **Statement:** The RH-bearing zero fiber is the kernel of Suzuki's extension of `G_a` to the
   completed derivative space, not necessarily the kernel of the raw compact operator on `L2`.
   The principal boundary model has universal half-logarithmic indicial root `1/2`; conjecturally
@@ -28,6 +30,13 @@ equivalently nonvanishing of the eigenfunction-variable square Evans section at 
 In the derivative variable the same target is injectivity of the **extended** screw operator on
 Suzuki's completion. A proof on raw `L2_0(-a,a)` alone does not close RH unless a regularity lift
 is supplied.
+
+> **2026-07-22 two-scale correction.** The model audit in
+> `suzuki-corona-regular-two-scale-boundary-law.md` falsifies whole-packet separation by
+> inverse-log grades. Nonzero power-scale `H1` solutions and inverse-log-flat non-`H1` solutions
+> are invisible to every such grade. The seam hierarchy remains a detector for the corona
+> quotient. The corrected gate is source-specific: zero corona trace must imply `H1_0`, after
+> which the mode passes to the raw Evans problem.
 
 ## 1. Source audit: two derivative spaces must not be identified
 
@@ -160,12 +169,13 @@ with `C_log>0` determined by normalization. The unique leading indicial cancella
 tau=1/2.                                                   (13)
 ```
 
-This recovers and sharpens the mechanism visible in Chen--Weth's barrier coefficient: their
-proved boundary estimate holds for every `tau<1/2`, while the leading barrier coefficient
-vanishes at `1/2`. Feulefack--Jarohs--Weth prove logarithmic-Laplacian eigenfunctions are bounded,
-locally continuous, and continuous with zero exterior value under an exterior sphere condition;
-they explicitly leave the optimal boundary rate open. Equation `(12)` identifies the critical
-rate that their estimates do not determine.
+This recovers the mechanism visible in Chen--Weth's barrier coefficient: their proved boundary
+estimate holds for every `tau<1/2`, while the leading barrier coefficient vanishes at `1/2`.
+Feulefack--Jarohs--Weth explicitly left the optimal rate open. That gap was closed in 2024 by
+Hernandez-Santamaria--Lopez Rios--Saldana: they prove the `tau=1/2` upper bound, show it is optimal
+on the torsion solution, and prove a half-log Hopf lower bound for nonnegative supersolutions.
+Their result validates the critical scale but does not supply a signed trace limit, trace-zero
+`H1` lift, or polyhomogeneous expansion for Suzuki's signed perturbation.
 
 If a nonzero zero mode has
 
@@ -395,12 +405,12 @@ Use density of `Gamma` to choose
 d in Gamma intersect (beta,2a-beta).                     (18f2)
 ```
 
-Write `-d` as a reduced finite word in `+/-alpha,+/-beta`. A finite real word of negative total
-can be ordered so that its partial sums lie below zero and no farther down than its total minus the
-largest step. One proof first alternates positive and negative letters greedily, which confines the
-partial sums to an interval of length at most `d+beta`, and then cyclically starts the word just
-after a maximal partial sum. In the present reduced two-letter word, irrationality excludes a
-nonempty zero partial sum. Thus the ordered word has
+Write `-d` as a reduced finite word in `+/-alpha,+/-beta`. If both signs occur, order it greedily
+around its terminal value `-d`: take a negative letter when the current partial sum is greater than
+`-d`, and a positive letter when it is at most `-d`. While both signs remain, one step can cross
+`-d` by less than `beta`; after one sign is exhausted, the remaining tail is monotone to `-d`.
+Because `d>beta`, every nonempty partial sum is strictly negative. If only negative letters occur,
+the monotone ordering has the same property. Thus the ordered word has
 
 ```text
 -d-beta < partial sum < 0.                               (18f3)
@@ -436,8 +446,13 @@ with finite-dimensional piece at every grade.             (18g)
 ```
 
 The grading prevents a later dense seam from canceling a lower-order direct seam, but it rules out
-any proof based on a finite seam matrix. An infinite graded transport operator must first be
-constructed and only then eliminated to recover the finite square Evans determinant.
+any proof based on one fixed *a priori* seam matrix.  A subsequent finite-dimensional compression
+sharpens the last sentence: the square-Evans characteristic packet is finite-dimensional, so full
+convergence of an infinite graded state is not necessary for kernel exclusion.  If exact
+finite-order residual coordinates exist at every grade and jointly separate the characteristic
+packet, at most `dim F_a` scalar coordinates already separate it, hence all grades through one
+finite aperture-dependent cutoff suffice.  The required analytic input is arbitrary finite-order
+expansion plus infinite-order log-flatness rigidity, not summation of the dense seam orbit.
 
 ### Prime-valuation semiring and first-arrival noncancellation
 
@@ -450,7 +465,8 @@ T_a(z)=sum_(p^j<=exp(2a)) (log p)/p^(j/2)
        (z_p^j+z_p^(-j)).                                 (18h)
 ```
 
-`[PROVED]` Before support pruning, the grade-`k` coefficient at valuation vector `nu` is exactly
+`[PROVED ALGEBRAICALLY]` Before support pruning, the grade-`k` coefficient at valuation vector `nu`
+is exactly
 
 ```text
 [z^nu] T_a(z)^k,                                         (18i)
@@ -467,9 +483,10 @@ so `(18i)` classifies every same-end spatial collision. After support pruning th
 the corresponding subsum over admissible words. It is strictly positive exactly when at least one
 admissible word reaches `nu`; there is no same-grade arithmetic cancellation.
 
-For the log-parametrix expansion, each prime propagation contributes the same real principal
-factor `-1/kappa` and raises inverse-log grade by one. Therefore all admissible prime words of the
-same length acquire one common sign. The bounded local subprincipal term may insert extra grade
+`[PROVED CONDITIONAL ON THE POLYHOMOGENEOUS EXPANSION]` For the log-parametrix expansion, each prime
+propagation contributes the same nonzero real principal factor (its sign depends only on the fixed
+operator convention) and raises inverse-log grade by one. Therefore all admissible prime words of
+the same length acquire one common sign. The bounded local subprincipal term may insert extra grade
 without moving the seam, and the regular polar--Gamma convolution creates no new interior
 one-sided singular support. Consequently the **first-arrival** coefficient at any reachable
 prime-valuation vertex is a nonzero common-sign multiple of `(18i)`. Later grades may alter its
@@ -483,28 +500,36 @@ a>log 3 and a nonzero endpoint half-log trace
  -> nonzero first-arrival one-sided seams on a dense subset of C_a.            (18k)
 ```
 
-It does **not** by itself contradict the logarithmic form domain: the seam grade tends to infinity,
-and dense increasingly weak logarithmic germs can in principle converge. The two remaining
+It does **not** by itself contradict the logarithmic form domain: the seam grade tends to infinity.
+The convergence concern is now resolved at multiplier level by the weighted valuation Wiener
+inverse in `suzuki-two-root-valuation-wiener-lift.md`: for sufficiently large logarithmic frequency
+the complete Neumann series converges absolutely in `ell^1(Z^(P_a))`, with a geometric remainder,
+and all seams are slaved to two exterior endpoint amplitudes.  What remains is not summation but
+construction and classification of those two amplitudes on Suzuki's completed form domain.  The
 proof-bearing questions are now sharply separated:
 
 ```text
-trace separation:
-  a nonzero square-Evans characteristic packet produces a nonzero endpoint
-  trace or a first nonzero flat descendant;
+corona separation:
+  a nonzero square-Evans packet outside the H1 branch produces a nonzero endpoint
+  trace or a first nonzero corona descendant;
 
-graded summation/no-return:
-  the resulting positive Laurent-semiring state converges in the exact
-  Dirichlet graph space and cannot satisfy both endpoint residual conditions. (18l)
+scale-gap regularity:
+  a packet flat in every corona grade lies in H1_0 and enters the raw Evans problem;
+
+finite-grade no-return:
+  exact residual coordinates exist to arbitrary finite grade, jointly separate
+  the finite characteristic packet, and their finite separating truncation
+  cannot satisfy both endpoint residual conditions.                    (18l)
 ```
 
 ### `SUZUKI-COMPLETED-LOG-SEAM-NO-RETURN`
 
-`[CONJECTURE]` For the actual polar--Gamma symbol and the exact von-Mangoldt coefficients, every
-`f` in the finite characteristic packet of the square Evans reduction has a full two-ended
-half-logarithmic expansion under Dirichlet reconstruction. If its reconstructed vector satisfies
-the zero residual equation, endpoint and all propagated seam coefficients define a convergent
-countable transport state graded by inverse-log order. The graded two-ended transport operator has
-no nonzero state arising from a characteristic packet.
+`[REVISED CONJECTURE]` For the actual polar--Gamma symbol and the exact von-Mangoldt coefficients,
+every `f` in the finite characteristic packet of the square Evans reduction has a two-ended
+half-logarithmic expansion to every prescribed finite order under Dirichlet reconstruction. The
+resulting coordinates separate the **corona quotient**, not the whole packet. A packet flat in all
+corona grades has an `H1_0` reconstruction and hence enters the raw screw Evans kernel. The corona
+residuals have no nonzero two-ended state, and the raw Evans Gram is positive definite.
 
 The chain would be
 
@@ -528,28 +553,42 @@ Proving `(19)` for every `a` gives `ker A_a=0` for every aperture and therefore 
    logarithmic seam exponent by exactly one and compute the nonzero coefficient in `(18)`.
 3. **Collision test.** Same-end direct seams retain `Lambda(n)/sqrt(n)`. Opposite-end direct seams
    collide exactly when `exp(2a)=mn`, but their opposite one-sided orientations separate them.
-   Audit later iterated collisions by exact Dirichlet convolution and log order.
-4. **Graded-carrier test.** Construct the countable seam transport with a finite-dimensional piece
-   in every inverse-log grade and prove convergence despite dense spatial orbit.
-5. **Two-ended test.** Eliminate the graded state to the finite characteristic packet and prove the
+   Later same-end collisions are classified by `(18h)`--`(18j)` and cannot cancel at first arrival;
+   translations preserve the opposite orientations of two-ended collisions at every depth.
+4. **Finite-order graded-carrier test.** Construct exact transport through every prescribed finite
+   inverse-log grade.  Full convergence of the countable dense-seam state is sufficient but no
+   longer necessary for kernel exclusion.
+5. **Trace-separation test.** Prove that a nonzero square-Evans characteristic packet cannot be
+   flat at both endpoints and at every recursively exposed seam.
+6. **Two-ended test.** Eliminate the graded state to the finite characteristic packet and prove the
    resulting two-ended operator has no nonzero packet.
-6. **Hostile generic-symbol control.** Logarithmic ellipticity alone cannot prove the result:
+7. **Hostile generic-symbol control.** Logarithmic ellipticity alone cannot prove the result:
    tuned Dirichlet symbols can have special-aperture zero modes. Any proof that discards the
    actual polar--Gamma remainder or the von-Mangoldt coefficients is rejected.
 
-Kill the conjecture if the logarithmic Dirichlet problem admits an independent flat boundary
-datum invisible to all half-log coefficients, if the coefficient in `(18)` can vanish for a
-visible prime power, or if a nonzero characteristic packet satisfies the exact two-ended seam
-system. In that event the positive survivor remains the completion-corona theorem `(5)`--`(7)`
-and the critical indicial law `(12)`--`(13)`.
+The former whole-packet conjecture is killed: the principal Volterra problem admits both a nonzero
+power-scale `H1` datum and an intermediate inverse-log-flat non-`H1` datum invisible to all
+half-log coefficients. The strongest survivor is the two-channel law in
+`suzuki-corona-regular-two-scale-boundary-law.md`. Kill the revised conjecture if the exact Suzuki
+equation admits an inverse-log-flat non-`H1` zero mode, if the coefficient in `(18)` can vanish for
+a visible prime power, or if a nonzero corona state satisfies the exact two-ended seam system.
 
 ## 7. Lean decision
 
-No Lean wrapper is added. The formal tree does not yet contain Suzuki's closed Weil form, its
-completed derivative space, logarithmic Dirichlet reconstruction, or boundary polyhomogeneous
-calculus. Formalizing only the set-theoretic dichotomy would not certify `(1)`, `(5)`, or the
-source-specific seam transport. Lean work begins when the analytic boundary expansion and its
-transport operator are dependency-closed on paper.
+The arithmetic collision classifier is formalized in
+
+```text
+formal/GaloisForLFunctions/RHTower/SuzukiPrimeValuationSeam.lean.
+```
+
+It reuses the existing unconditional `primeLog_linearIndependent` theorem and proves injectivity of
+the complete finite-support prime-valuation seam coordinate, same-end collision classification, and
+the exact opposite-end affine resonance law. This is not a wrapper around the RH conjecture.
+
+The formal tree still does not contain Suzuki's closed Weil form, its completed derivative space,
+logarithmic Dirichlet reconstruction, or boundary polyhomogeneous calculus. Consequently the
+support-pruned density proof, first-arrival asymptotic statement, and two-ended no-return remain
+paper mathematics; abstract formalization would not certify source-specific analytic transport.
 
 ## Gates
 
@@ -566,9 +605,18 @@ transport operator are dependency-closed on paper.
 - [ ] prove full endpoint half-log expansion for the exact positive factor
 - [x] prove local prime-seam order-raising law and nonzero principal coefficient
 - [x] prove opposite-end direct resonances cannot cancel by one-sided orientation
-- [x] prove finite shift alphabet generates countable dense log-graded seam orbit cofinally
-- [ ] construct convergent infinite graded seam transport
-- [ ] derive all later iterated collision blocks grade by grade
+- [x] prove support-pruned dense seam reachability for every `a>log 3`
+- [x] classify iterated collisions by the positive prime-valuation Laurent semiring
+- [x] exclude first-arrival arithmetic cancellation within any valid polyhomogeneous expansion
+- [x] formalize prime-valuation seam-coordinate injectivity and opposite-end resonance in Lean
+- [x] remove convergence of the infinite graded seam state as a necessary kernel-exclusion gate
+- [x] formalize finite-dimensional collapse of a jointly separating hierarchy to finite grade
+- [x] falsify whole-packet inverse-log separation and extract two-channel survivor
+- [ ] construct exact Suzuki transport to every prescribed finite grade
+- [ ] prove inverse-log-flat zero modes lie in `H1_0`
+- [ ] identify the trace-zero square-Evans kernel with the raw Evans kernel
+- [ ] prove corona separation for the finite square-Evans characteristic packet
+- [ ] prove raw Evans Gram positivity for every aperture
 - [ ] eliminate graded carrier to exact two-ended characteristic operator
 - [ ] prove its injectivity for every aperture
 - [ ] `det N_(a,0)!=0` for every aperture
@@ -579,3 +627,7 @@ transport operator are dependency-closed on paper.
 - 2026-07-22 — Source audit found raw `L2`/Suzuki-completion mismatch; proved the completion-corona
   alternative, derived critical half-log boundary exponent, and opened the source-specific
   prime-seam no-return conjecture.
+- 2026-07-22 — Critical translation flux made every finite log grade metrically observable.
+  Finite-dimensional square-Evans compression then removed countable seam convergence as a
+  prerequisite: arbitrary finite-order transport plus joint log-flatness separation yields one
+  finite separating grade cutoff.

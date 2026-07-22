@@ -155,6 +155,6 @@ endpoint equality and not normalized quotient positivity.
 
 - [x] internal and external audit
 - [x] exact paper proof and hostile review
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 - [ ] actual unscaled marked-tensor compensation identity
 - [ ] rectangular Ward lower bound and RH

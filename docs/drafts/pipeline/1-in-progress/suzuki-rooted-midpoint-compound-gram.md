@@ -260,3 +260,22 @@ Only cancelled residual may be squared and passed cofinally.
   prove marked Robin/polar--Gamma/holonomy compensation pays exact negative-mode debt with
   uniformly lower-bounded rectangular residual.  Paper/Lean:
   `../2-fully-proven/new_scientific_knowledge/suzuki-critical-wall-field-resolvent-dressing-law.md`.
+- 2026-07-22 — **projective carrier correction.**  One-mode dressing is exact but not canonical
+  producer because common source scaling cancels from Suzuki normalized characteristic response.
+  Division-free marked affine-secant tensor and denominator are both homogeneous degree two.
+  Scaling all source coordinates by `omega_e(t)` multiplies each by exact far-hinge numerator
+  `omega_e(t)^2`; quotient cancels it.  Arithmetic source therefore lives as common
+  determinant-line density before division.  Paper/Lean:
+  `../2-fully-proven/new_scientific_knowledge/suzuki-wall-field-projective-density-separation-law.md`.
+- 2026-07-22 — **FE-reflected Hermitian lift closes positivity-type obstruction.**  Define
+  `K_e(t,u)=omega_e(t)*conj(omega_e(u))`.  Lean proves every finite height section is literal
+  rank-one Gram, `K_e(t,t)=Lambda(n)/sqrt(n)>0`, and
+  `K_e(t,-t)=Lambda(n)/sqrt(n)*exp(I*t*log n)`, exact far-hinge numerator.  Same positive diagonal
+  gives sharp local identity
+  `S_(m,d)(b_e(r,s),b_e(r,s))+d^2(b_e*s)^2=(Lambda(n)/sqrt(n))(r-m*s)^2>=0`.
+  Complex wall square was not failed Gram diagonal; it is FE-reflected anti-diagonal of genuine
+  PSD block.  Correct open core is now `SUZUKI-FE-REFLECTED-WALL-WARD-ASSEMBLY`: compensate
+  nonsummable all-prime diagonal, assemble local blocks with actual Robin/polar--Gamma/holonomy
+  carrier before projective division, and prove uniformly lower-semibounded rectangular Ward
+  defect.  Paper/Lean:
+  `../2-fully-proven/new_scientific_knowledge/suzuki-wall-field-antidiagonal-gram-lift.md`.

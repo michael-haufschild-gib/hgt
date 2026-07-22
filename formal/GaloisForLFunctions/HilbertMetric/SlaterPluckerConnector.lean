@@ -10,7 +10,11 @@ partition into the moment-generating function of the total selected degree.  Thi
 the literal differential connector: its first logarithmic derivative is the Slater spectral
 mean, while its second logarithmic derivative is the Slater compression variance.  Consequently
 the spectral-bandwidth Fano law is an exact theorem about the canonical Pluecker partition, not
-only about an abstract compression formula.
+only about an abstract compression formula.  For a fully occupied square Gram frame over any
+real or complex Hilbert space, the entire partition collapses to one exponential of total degree,
+so its logarithm is globally affine and its compression variance vanishes exactly.  In nonzero
+rank, equality in the universal spectral-band floor is rigid: the band has width one and every
+occupied energy lies at its lower endpoint.
 -/
 
 open Filter
@@ -365,6 +369,363 @@ theorem positiveQuarticDegree_canonicalFeatureVolume_logFanoMargin_nonnegative
     evaluation degree hframe]
   exact positiveQuarticDegree_slaterSpectralFanoMargin_nonnegative
     evaluation degree hframe hpositive hquartic
+
+/-! ## Full-occupancy Gram-coordinate consequences -/
+
+/-- The real part of the Gram matrix of a finite family over any real or complex Hilbert space,
+viewed as a square real coordinate matrix. -/
+def orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) : Fin n → Fin n → ℝ :=
+  fun i j => RCLike.re (inner 𝕜 (x i) (x j))
+
+@[simp] theorem orthonormalRealGramCoordinates_apply
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (i j : Fin n) :
+    orthonormalRealGramCoordinates 𝕜 x i j = if i = j then 1 else 0 := by
+  unfold orthonormalRealGramCoordinates
+  rw [(orthonormal_iff_ite.mp hx) i j]
+  split <;> simp
+
+/-- The Gram coordinates of every finite orthonormal family discharge the abstract coordinate-frame
+interface, without requiring a finite-dimensional ambient Hilbert space. -/
+theorem orthonormalRealGramCoordinates_isOrthonormalCoordinateFrame
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) :
+    IsOrthonormalCoordinateFrame (orthonormalRealGramCoordinates 𝕜 x) := by
+  intro i j
+  simp only [orthonormalRealGramCoordinates_apply 𝕜 x hx]
+  by_cases hij : i = j
+  · subst j
+    simp
+  · simp [hij]
+
+/-- Full occupancy makes the exponential Gram path diagonal for every finite orthonormal family. -/
+theorem exponentialFeatureGram_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (degree : Fin n → ℕ) (s : ℝ) :
+    exponentialFeatureGram (orthonormalRealGramCoordinates 𝕜 x) degree s =
+      Matrix.diagonal (fun k => Real.exp (s * (degree k : ℝ))) := by
+  ext i j
+  by_cases hij : i = j
+  · subst j
+    simp [exponentialFeatureGram, hx]
+  · simp [exponentialFeatureGram, hx, hij]
+
+/-- **Exact full-occupancy Pluecker partition.**  The canonical feature volume of a square Gram
+frame is one exponential carrying the total degree. -/
+theorem orthonormalRealGram_canonicalFeatureVolume_exp_eq_exp_totalDegree
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (degree : Fin n → ℕ) (s : ℝ) :
+    canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+        degree (Real.exp s) =
+      Real.exp (s * ∑ k, (degree k : ℝ)) := by
+  rw [← det_exponentialFeatureGram_eq_canonicalFeatureVolume]
+  rw [exponentialFeatureGram_orthonormalRealGramCoordinates 𝕜 x hx,
+    Matrix.det_diagonal]
+  rw [← Real.exp_sum]
+  congr 1
+  rw [Finset.mul_sum]
+
+/-- The full-occupancy Pluecker log-partition is globally affine, not merely flat to second order
+at the origin. -/
+theorem orthonormalRealGram_log_canonicalFeatureVolume_exp_eq
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (degree : Fin n → ℕ) (s : ℝ) :
+    Real.log (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+        degree (Real.exp s)) = s * ∑ k, (degree k : ℝ) := by
+  rw [orthonormalRealGram_canonicalFeatureVolume_exp_eq_exp_totalDegree 𝕜 x hx,
+    Real.log_exp]
+
+/-- **Full-occupancy log-jet classification.**  Every iterated logarithmic derivative of the
+canonical feature volume is determined: order zero is the affine log-partition, order one is the
+total degree, and every higher order vanishes, at every scaling parameter. -/
+theorem orthonormalRealGram_iteratedDeriv_log_canonicalFeatureVolume_exp_eq
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (degree : Fin n → ℕ) (order : ℕ) (s : ℝ) :
+    iteratedDeriv order (fun t => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp t))) s =
+      if order = 0 then s * ∑ k, (degree k : ℝ)
+      else if order = 1 then ∑ k, (degree k : ℝ) else 0 := by
+  have hfun :
+      (fun t => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp t))) =
+        fun t => t * ∑ k, (degree k : ℝ) := by
+    funext t
+    exact orthonormalRealGram_log_canonicalFeatureVolume_exp_eq 𝕜 x hx degree t
+  rw [hfun]
+  simp [iteratedDeriv_mul_const_field, iteratedDeriv_fun_id]
+
+/-- Full occupancy makes the additive Slater mean equal the total assigned orbital energy. -/
+theorem slaterSpectralMean_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (energy : Fin n → ℝ) :
+    slaterSpectralMean (orthonormalRealGramCoordinates 𝕜 x) energy = ∑ k, energy k := by
+  simp [slaterSpectralMean, orbitalSpectralMean, hx]
+
+/-- Full occupancy has no residual spectral fluctuation for any orthonormal family or energy
+assignment. -/
+theorem slaterSpectralVariance_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (energy : Fin n → ℝ) :
+    slaterSpectralVariance (orthonormalRealGramCoordinates 𝕜 x) energy = 0 := by
+  simp [slaterSpectralVariance, orbitalSpectralSecondMoment,
+    slaterCompressedSpectralEnergy, hx]
+
+/-- Full occupancy identifies the Slater mean-minus-variance margin with total assigned energy,
+without any spectral-band hypothesis. -/
+theorem slaterSpectralFanoMargin_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (energy : Fin n → ℝ) :
+    slaterSpectralFanoMargin (orthonormalRealGramCoordinates 𝕜 x) energy =
+      ∑ k, energy k := by
+  rw [slaterSpectralFanoMargin,
+    slaterSpectralMean_orthonormalRealGramCoordinates 𝕜 x hx,
+    slaterSpectralVariance_orthonormalRealGramCoordinates 𝕜 x hx]
+  simp
+
+private theorem slaterSpectralSecantDefect_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (energy : Fin n → ℝ) (lower upper : ℝ) :
+    slaterSpectralSecantDefect (orthonormalRealGramCoordinates 𝕜 x) energy lower upper =
+      ∑ k, (energy k - lower) * (upper - energy k) := by
+  simp only [slaterSpectralSecantDefect]
+  apply Finset.sum_congr rfl
+  intro i _
+  simp [orbitalSpectralMean, orbitalSpectralSecondMoment, hx]
+  ring
+
+private theorem slaterSpectralCenteringDefect_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (energy : Fin n → ℝ) (lower upper : ℝ) :
+    slaterSpectralCenteringDefect (orthonormalRealGramCoordinates 𝕜 x) energy lower upper =
+      ∑ k, (energy k - (lower + upper - 1) / 2) ^ 2 := by
+  simp [slaterSpectralCenteringDefect, orbitalSpectralMean, hx]
+
+private theorem slaterSpectralCoherenceDefect_orthonormalRealGramCoordinates
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (energy : Fin n → ℝ) :
+    slaterSpectralCoherenceDefect (orthonormalRealGramCoordinates 𝕜 x) energy = 0 := by
+  simp [slaterSpectralCoherenceDefect, hx]
+
+/-- **Full-occupancy spectral-floor rigidity.**  In positive rank and inside a prescribed spectral
+band, a fully occupied orthonormal frame attains the universal Slater Fano floor exactly when the
+band has width one and every occupied energy is its lower endpoint. -/
+theorem slaterSpectralFanoMargin_orthonormalRealGramCoordinates_eq_lower_bound_iff
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (energy : Fin n → ℝ) (lower upper : ℝ) (hn : 0 < n)
+    (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper) :
+    slaterSpectralFanoMargin (orthonormalRealGramCoordinates 𝕜 x) energy =
+        (n : ℝ) * (lower - (upper - lower - 1) ^ 2 / 4) ↔
+      upper = lower + 1 ∧ ∀ k, energy k = lower := by
+  have hframe := orthonormalRealGramCoordinates_isOrthonormalCoordinateFrame 𝕜 x hx
+  constructor
+  · intro hmargin
+    have hdefects :=
+      (slaterSpectralFanoMargin_eq_lower_bound_iff
+        (orthonormalRealGramCoordinates 𝕜 x) energy hframe lower upper hlower hupper).mp
+        (by simpa using hmargin)
+    rcases hdefects with ⟨hsecant, hcenter, _⟩
+    rw [slaterSpectralSecantDefect_orthonormalRealGramCoordinates
+      𝕜 x hx energy lower upper] at hsecant
+    rw [slaterSpectralCenteringDefect_orthonormalRealGramCoordinates
+      𝕜 x hx energy lower upper] at hcenter
+    have hcenterEach (k : Fin n) :
+        energy k = (lower + upper - 1) / 2 := by
+      have hsquare :=
+        (Finset.sum_eq_zero_iff_of_nonneg
+          (fun i (_ : i ∈ Finset.univ) =>
+            sq_nonneg (energy i - (lower + upper - 1) / 2))).mp
+          hcenter k (Finset.mem_univ k)
+      exact sub_eq_zero.mp (sq_eq_zero_iff.mp hsquare)
+    let i0 : Fin n := ⟨0, hn⟩
+    have hsecantTerm : (energy i0 - lower) * (upper - energy i0) = 0 := by
+      apply (Finset.sum_eq_zero_iff_of_nonneg ?_).mp hsecant i0 (Finset.mem_univ i0)
+      intro k _
+      exact mul_nonneg (sub_nonneg.mpr (hlower k)) (sub_nonneg.mpr (hupper k))
+    have hlowerUpper : lower ≤ upper := le_trans (hlower i0) (hupper i0)
+    have hwidth : upper = lower + 1 := by
+      rw [hcenterEach i0] at hsecantTerm
+      nlinarith
+    refine ⟨hwidth, ?_⟩
+    intro k
+    have hk := hcenterEach k
+    rw [hwidth] at hk
+    linarith
+  · rintro ⟨hwidth, henergy⟩
+    have hdefects :
+        slaterSpectralSecantDefect (orthonormalRealGramCoordinates 𝕜 x)
+            energy lower upper = 0 ∧
+          slaterSpectralCenteringDefect (orthonormalRealGramCoordinates 𝕜 x)
+            energy lower upper = 0 ∧
+          slaterSpectralCoherenceDefect (orthonormalRealGramCoordinates 𝕜 x)
+            energy = 0 := by
+      constructor
+      · rw [slaterSpectralSecantDefect_orthonormalRealGramCoordinates
+          𝕜 x hx energy lower upper]
+        apply Finset.sum_eq_zero
+        intro k _
+        rw [henergy k, hwidth]
+        ring
+      constructor
+      · rw [slaterSpectralCenteringDefect_orthonormalRealGramCoordinates
+          𝕜 x hx energy lower upper]
+        apply Finset.sum_eq_zero
+        intro k _
+        rw [henergy k, hwidth]
+        ring
+      · exact slaterSpectralCoherenceDefect_orthonormalRealGramCoordinates 𝕜 x hx energy
+    simpa using
+      (slaterSpectralFanoMargin_eq_lower_bound_iff
+        (orthonormalRealGramCoordinates 𝕜 x) energy hframe lower upper hlower hupper).mpr
+        hdefects
+
+/-- **Exact full-occupancy Pluecker Fano law.**  The first log jet minus the second is exactly the
+total degree.  In contrast to partial occupancy, no positivity or quartic bandwidth premise is
+needed for the identity. -/
+theorem orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_eq_totalDegree
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (degree : Fin n → ℕ) :
+    deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s))) 0 -
+      deriv (deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s)))) 0 = ∑ k, (degree k : ℝ) := by
+  rw [canonicalFeatureVolume_logFanoMargin_eq_slaterSpectralFanoMargin
+    (orthonormalRealGramCoordinates 𝕜 x) degree
+    (orthonormalRealGramCoordinates_isOrthonormalCoordinateFrame 𝕜 x hx)]
+  exact slaterSpectralFanoMargin_orthonormalRealGramCoordinates 𝕜 x hx _
+
+/-- Every natural-degree full-occupancy Pluecker partition is Fano-underdispersed, with no upper
+degree bound and no positive-degree premise. -/
+theorem orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_nonnegative
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (degree : Fin n → ℕ) :
+    0 ≤ deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s))) 0 -
+      deriv (deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s)))) 0 := by
+  rw [orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_eq_totalDegree 𝕜 x hx degree]
+  exact Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
+
+/-- **Full-occupancy Fano equality classification.**  The Pluecker log-Fano margin vanishes
+exactly when every occupied natural orbital degree is zero.  Thus equality in unconditional
+Fano underdispersion has no hidden geometric cancellation at full occupancy. -/
+theorem orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_eq_zero_iff
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (degree : Fin n → ℕ) :
+    deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s))) 0 -
+      deriv (deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s)))) 0 = 0 ↔
+      ∀ k, degree k = 0 := by
+  rw [orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_eq_totalDegree 𝕜 x hx degree]
+  constructor
+  · intro hzero k
+    have hall := (Finset.sum_eq_zero_iff_of_nonneg
+      (s := Finset.univ) (fun j _ => Nat.cast_nonneg (degree j))).mp (by
+        simpa using hzero)
+    exact_mod_cast hall k (Finset.mem_univ k)
+  · intro hdegree
+    simp [hdegree]
+
+/-- The full-occupancy Pluecker log-Fano margin is strictly positive exactly when at least one
+occupied natural orbital has positive degree. -/
+theorem orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_pos_iff
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (degree : Fin n → ℕ) :
+    0 < deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s))) 0 -
+      deriv (deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s)))) 0 ↔
+      ∃ k, 0 < degree k := by
+  rw [orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_eq_totalDegree 𝕜 x hx degree]
+  have hnonneg : ∀ k ∈ (Finset.univ : Finset (Fin n)), 0 ≤ (degree k : ℝ) :=
+    fun k _ => Nat.cast_nonneg (degree k)
+  constructor
+  · intro hpos
+    obtain ⟨k, _, hk⟩ := (Finset.sum_pos_iff_of_nonneg hnonneg).mp (by
+      simpa using hpos)
+    exact ⟨k, by exact_mod_cast hk⟩
+  · rintro ⟨k, hk⟩
+    apply (Finset.sum_pos_iff_of_nonneg hnonneg).mpr
+    exact ⟨k, Finset.mem_univ k, by exact_mod_cast hk⟩
+
+/-- The full-occupancy Pluecker log-partition attains the universal spectral-band floor exactly in
+the width-one, uniform-lower-degree configuration. -/
+theorem orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_eq_lower_bound_iff
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x)
+    (degree : Fin n → ℕ) (lower upper : ℝ) (hn : 0 < n)
+    (hlower : ∀ k, lower ≤ (degree k : ℝ))
+    (hupper : ∀ k, (degree k : ℝ) ≤ upper) :
+    deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s))) 0 -
+      deriv (deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s)))) 0 =
+        (n : ℝ) * (lower - (upper - lower - 1) ^ 2 / 4) ↔
+      upper = lower + 1 ∧ ∀ k, (degree k : ℝ) = lower := by
+  rw [canonicalFeatureVolume_logFanoMargin_eq_slaterSpectralFanoMargin
+    (orthonormalRealGramCoordinates 𝕜 x) degree
+    (orthonormalRealGramCoordinates_isOrthonormalCoordinateFrame 𝕜 x hx)]
+  exact slaterSpectralFanoMargin_orthonormalRealGramCoordinates_eq_lower_bound_iff
+    𝕜 x hx (fun k => (degree k : ℝ)) lower upper hn hlower hupper
+
+/-- Exact first- and second-log-jet form of the full-occupancy partition law. -/
+theorem orthonormalRealGram_canonicalFeatureVolume_logJets_exact
+    (𝕜 : Type*) [RCLike 𝕜]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    (x : Fin n → E) (hx : Orthonormal 𝕜 x) (degree : Fin n → ℕ) :
+    deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s))) 0 = ∑ k, (degree k : ℝ) ∧
+      deriv (deriv (fun s => Real.log
+        (canonicalFeatureVolume (orthonormalRealGramCoordinates 𝕜 x) (fun _ => 1)
+          degree (Real.exp s)))) 0 = 0 := by
+  constructor
+  · simpa [iteratedDeriv_succ] using
+      orthonormalRealGram_iteratedDeriv_log_canonicalFeatureVolume_exp_eq
+        𝕜 x hx degree 1 0
+  · simpa [iteratedDeriv_succ] using
+      orthonormalRealGram_iteratedDeriv_log_canonicalFeatureVolume_exp_eq
+        𝕜 x hx degree 2 0
 
 /-! ## Canonical-coordinate Hilbert-space consequences -/
 

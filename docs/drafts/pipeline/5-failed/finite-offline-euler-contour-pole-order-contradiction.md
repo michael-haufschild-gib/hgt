@@ -107,3 +107,76 @@ function with a finite FE--Schwarz packet inserted.
 - [ ] find a source-specific arithmetic law annihilating every finite nonempty residue packet
 - [ ] compose that law with finite contour-jump energy and the existing Cauchy threshold
 
+## Version-26 audit: independent tangent-intercept failure
+
+The replacement preprint, Yukitaka Abe, *A rigorous proof of the Riemann hypothesis*, Version 26
+(Cambridge Open Engage, 17 July 2026), still contains the higher-order residue failure above in
+Section 8.  Its earlier claimed high-height zero-free region also has an independent algebraic
+error.
+
+Use the paper's notation
+
+```text
+alpha = t^2 - sigma(sigma-1),    beta = (2sigma-1)t,
+P = (R,I).
+```
+
+At a hypothetical zero, its equations (5.1)--(5.2) put `P` on the two circles
+
+```text
+C1: R^2 + (I-1/(2 beta))^2 = 1/(4 beta^2),
+C2: (R-1/(2 alpha))^2 + I^2 = 1/(4 alpha^2).
+```
+
+The tangent to `C2` at `P` has slope
+
+```text
+(1/(2 alpha)-R) / sqrt(R/alpha-R^2).
+```
+
+Therefore its `R`-axis intercept is
+
+```text
+B_R = R - I sqrt(R/alpha-R^2)/(1/(2 alpha)-R),
+```
+
+not
+
+```text
+R - sqrt(R/alpha-R^2)/(1/(2 alpha)-R)
+```
+
+as asserted in equation (5.5).  The omitted factor is `I`.
+
+The correction can be checked without geometry.  The two circle equations give
+
+```text
+R^2+I^2 = R/alpha = I/beta.
+```
+
+For the non-origin intersection,
+
+```text
+R = alpha/(alpha^2+beta^2),
+I = beta /(alpha^2+beta^2).
+```
+
+Substitution in the corrected intercept gives
+
+```text
+B_R = alpha/(alpha^2-beta^2),
+```
+
+exactly the tangent length computed from `C1`.  Thus the corrected equation is an identity on the
+non-origin circle intersection.  The spurious equation (5.6), and hence the incompatible
+`t^2`-asymptotics used to prove Theorem 1, arise entirely from dropping `I`.  Restoring `I` changes
+the relevant scale by `I=O(t^-3)` and removes the contradiction.
+
+This is the strongest positive survivor: the two zero equations classify the non-origin circle
+intersection exactly.  They impose no additional high-height obstruction beyond the original
+zero equations.  Version 26 therefore supplies neither its Theorem 1 nor an RH proof.
+
+## Log
+
+- 2026-07-22 — Version 26 audited; independent missing-`I` tangent-intercept error identified and
+  exact non-origin intersection retained.

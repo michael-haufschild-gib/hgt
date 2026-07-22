@@ -160,6 +160,17 @@ should therefore target this weighted energy before attempting the stronger unif
     excess by `sqrt(2)*(log 4+4)*sqrt(n)`.  Thus an exceptional set may be specified before seeing
     any prime values: it is enough that `sum_(n in E)n^(-1/2-epsilon)` converge for every positive
     `epsilon`, while the pointwise target is proved only on `E^c`.
+12. `[PROVED, APERTURE-RESOLVENT PHASE COLLAPSE]` Exponentially average the exact CCM aperture
+    multiplier.  At unit rate,
+    `integral_0^infinity exp(-L)M_L(w)dL=-1/(w+1)`, with strictly negative real part throughout
+    `Re(w)>0`.  In time domain the aperture kernel cancels the completed-error Volterra memory and
+    leaves the positive causal kernel `exp(-t)`.  The surviving source scalar is exactly
+    `X^(-1) integral_0^X (psi(y)-y)y^(-1/2)dy`.  Admissible truncation `L<=log(X)/2` changes every
+    possible off-critical mode only by an exponentially decaying tail.  Filter phase and aperture
+    censorship are therefore closed; source-sector sign is not.
+13. `[LIVE, EXACT CONNES SOURCE FRONTIER]` Prove the one-sided all-epsilon subpower upper bound for
+    the aperture-resolvent Riesz mean and prove its one-sided Landau connector to RH.  This is
+    `ccm-aperture-resolvent-riesz-sector.md`; it replaces further fixed-window filter work.
 
 ## Formal endpoint
 
@@ -185,8 +196,11 @@ interface.
 - [x] bounded Gamma term shown harmless on paper
 - [x] square-root polar/prime cancellation reduced in Lean to the normalized Chebyshev potential
 - [x] causal Volterra--Haar transfer multiplier computed and proved right-half-plane faithful
+- [x] exponential aperture average computed; unit rate collapses to an oriented resolvent
+- [x] causal Volterra memory and legal-aperture tail shown not to censor positive-growth modes
 - [x] pointwise target weakened to positive-excess Dirichlet energy and square energy in Lean
 - [ ] prove `(1)` unconditionally from the completed source
+- [ ] prove aperture-resolvent Riesz-sector source bound and one-sided Landau connector
 - [ ] formalize the critical-Mellin Stieltjes/autocorrelation identity
 - [ ] compose to RH
 

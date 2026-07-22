@@ -43,6 +43,39 @@ theorem xiLogDerivReporter_boundedRecovery_sandwich
   exact HTGeometry.finiteDerivativeReporterConditionalInformation_boundedRecovery_sandwich
     N (logDeriv xi) report decode recover hrecover
 
+/-- **Xi recoverable capacity-and-information profile.**  At every jet resolution, exact
+recovery preserves the complete visible/blind coefficient census, while decoder and recovery
+norms bound the distortion of retained Xi conditional information. -/
+theorem xiLogDerivReporter_recoverableCapacityAndInformationProfile
+    {Y Z : Type*}
+    [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
+    [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y)
+    (decode : Y →L[ℂ] Z) (recover : Z →L[ℂ] Y)
+    (hrecover : recover.toLinearMap.comp
+        (decode.toLinearMap.comp report) = report) :
+    ∀ N,
+      Module.finrank ℂ (LinearMap.range
+          (HTGeometry.finiteDerivativeReporterMap N (logDeriv xi)
+            (decode.toLinearMap.comp report))) =
+          Module.finrank ℂ (LinearMap.range
+            (HTGeometry.finiteDerivativeReporterMap N (logDeriv xi) report)) ∧
+        LinearMap.ker (HTGeometry.finiteDerivativeReporterMap N (logDeriv xi)
+            (decode.toLinearMap.comp report)) =
+          LinearMap.ker
+            (HTGeometry.finiteDerivativeReporterMap N (logDeriv xi) report) ∧
+        HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi)
+            (decode.toLinearMap.comp report) ≤
+          ‖decode‖ ^ 2 *
+            HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi) report ∧
+        HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi) report ≤
+          ‖recover‖ ^ 2 *
+            HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi)
+              (decode.toLinearMap.comp report) := by
+  intro N
+  exact HTGeometry.finiteDerivativeReporter_recoverableCapacityAndInformationProfile
+    N (logDeriv xi) report decode recover hrecover
+
 /-- A uniform recovery-norm bound gives a uniform lower transport bound throughout the Xi
 conditional-information tower. -/
 theorem xiLogDerivReporter_div_recovery_bound_le

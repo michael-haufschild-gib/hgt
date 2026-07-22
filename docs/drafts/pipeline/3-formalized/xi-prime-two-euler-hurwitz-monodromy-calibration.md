@@ -1,9 +1,9 @@
 # Prime-two Euler boundary calibration of Hurwitz monodromy
 
 - **ID:** `xi-prime-two-euler-hurwitz-monodromy-calibration`
-- **Stage:** 2-fully-proven (Lean target in progress)
+- **Stage:** 3-formalized
 - **Type:** THEOREM / right-to-left source-character weld
-- **Scientific status:** `[PROVED HERE] [CORPUS-NOVEL INTERFACE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED HERE] [FORMALIZED] [CORPUS-NOVEL INTERFACE] [NOT AN RH PROOF]`
 - **Target:** `formal/GaloisForLFunctions/RHTower/XiPrimeTwoEulerHurwitzMonodromyCalibration.lean`
 
 ## Claim
@@ -97,6 +97,50 @@ all radial prime-two Euler seams vanish
   <-> RH.                                                   (9)
 ```
 
+### All-cell Hilbert section
+
+The radial identity is not a prime-two coincidence.  For every prime-power cell
+`pe=(p,e)`, `n=p^(e+1)`, the same proof gives
+
+```text
+xiGammaEulerHeightBoundaryFeature(2*Re(s),2*Im(s),pe)
+  = sqrt(log(p)/n)*n^(-s).                                (10)
+```
+
+The map `pe -> n-2` is injective by uniqueness of prime-power presentation.  Composing the
+existing absolutely summable pointed-Ward Euler stream with this injection proves that, whenever
+`Re(s)>0`, the complete section in `(10)` is a genuine complex `ell^2` vector.  Therefore both
+Xi reflection endpoints define unconditional Hilbert vectors, and their difference
+
+```text
+S(rho)=section(conj(rho))-section(1-rho)                  (11)
+```
+
+is an actual all-prime/all-valuation source seam.
+
+For every cell, Lean proves the exact value law
+
+```text
+log(n)*S(rho)[p,e]
+  = sqrt(log(p)/n)*orbitwiseNatPrimeSeamCharge(n,rho).    (12)
+```
+
+The prime-two coordinate is faithful, while equality of the endpoints makes every coordinate
+zero.  Hence
+
+```text
+S(rho)=0 <-> Re(rho)=1/2,
+
+(forall Xi rho, S(rho)=0)
+  <-> all prime-two radial seams vanish
+  <-> fixed reciprocal-square Cauchy real-Krylov seam saturation
+  <-> RH.                                                  (13)
+```
+
+This upgrades the bridge from a selected scalar cell to a complete source Hilbert section.  The
+reverse implication in `(13)` is still faithful at one coordinate; no artificial all-coordinate
+hypothesis is needed to detect off-line support.
+
 ## Proof
 
 At `pe=(2,0)`, the boundary coordinate is
@@ -137,9 +181,10 @@ After multiplying by the squared source amplitude `log 2/2`, both sides agree ex
 
 ## New knowledge and right-to-left consequence
 
-This closes two missing source-character interfaces.  A source-defined Gamma-renormalized Euler
+This closes three missing source-character interfaces.  A source-defined Gamma-renormalized Euler
 cell is literally the Hurwitz unit-translation character at one forced sampling law, and literally
-the reciprocal-prime character at another.  Earlier strict Bianchi, Hardy, and joint-Gram objects
+the reciprocal-prime character at another; the latter extends to the complete `ell^2`
+square-root von Mangoldt section `(10)`.  Earlier strict Bianchi, Hardy, and joint-Gram objects
 were prime-source objects but did not carry the first periodic character.  Equations `(4)` and
 `(7)` identify two actual-source seams whose global vanishing is the rightmost open obligation.
 
@@ -185,7 +230,7 @@ creation and exact formal interfaces rather than a literature survey.
 
 - [x] 0 → 1: source-pure statement and exact algebraic attack
 - [x] 1 → 2: dependency-closed paper proof above
-- [ ] 2 → 3: dedicated Lean module and umbrella import complete; final audit pending
+- [x] 2 → 3: dedicated Lean module, umbrella import, targeted build, and axiom audit complete
 - [ ] 3 → 4: publication-ready standalone theorem
 
 ## Log
@@ -194,3 +239,10 @@ creation and exact formal interfaces rather than a literature survey.
 - 2026-07-22 — paper proof and stronger exact seam-energy law closed.
 - 2026-07-22 — discovered and Lean-checked exact radial calibration `(6)`--`(9)`; this upgrades
   zero-fibre agreement to a literal value-level Gamma--Euler/von-Mangoldt weld.
+- 2026-07-22 — generalized radial calibration to every prime-power cell, proved positive-half-
+  plane square summability from the existing pointed-Ward Euler stream, constructed the full
+  Hilbert section, and welded its reflection seam directly to fixed real-Krylov saturation.
+- 2026-07-22 — targeted `lake build` and direct `lake env lean` checks passed; axiom audit reports
+  only `propext`, `Classical.choice`, and `Quot.sound`; scoped forbidden-declaration and diff checks
+  passed. Full-repository lint remains red only because 22 unrelated concurrently owned modules
+  are not imported by their theorem-area umbrellas.

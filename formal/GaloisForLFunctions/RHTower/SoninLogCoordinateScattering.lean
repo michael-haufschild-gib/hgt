@@ -122,6 +122,25 @@ theorem physicalState_soninLogFourierScattering_iff_invariantAverage_fixed
   exact HTGeometry.physicalState_iff_finiteCyclicGaugeAverage_fixed
     soninLogFourierScattering 2 two_ne_zero soninLogFourierScattering_sq_eq_one g
 
+/-- **Exact Sonin physical-sector image.**  Logarithmic scattering averaging maps onto precisely
+the kernel of the static scattering constraint. -/
+theorem soninLogFourierInvariantAverage_range_eq_constraint_ker :
+    soninLogFourierInvariantAverage.toLinearMap.range =
+      LinearMap.ker (soninLogFourierScattering - 1).toLinearMap := by
+  simpa only [soninLogFourierInvariantAverage] using
+    (HTGeometry.finiteCyclicGaugeAverage_range_eq_constraint_ker
+      soninLogFourierScattering 2 two_ne_zero soninLogFourierScattering_sq_eq_one)
+
+/-- The same invariant Sonin sector is exactly the zero-energy space of the positive scattering
+master constraint. -/
+theorem soninLogFourierInvariantAverage_range_eq_masterConstraint_ker :
+    soninLogFourierInvariantAverage.toLinearMap.range =
+      (HTGeometry.quantumMasterConstraint
+        (soninLogFourierScattering - 1)).toLinearMap.ker := by
+  simpa only [soninLogFourierInvariantAverage] using
+    (HTGeometry.finiteCyclicGaugeAverage_range_eq_masterConstraint_ker
+      soninLogFourierScattering 2 two_ne_zero soninLogFourierScattering_sq_eq_one)
+
 /-- The `Z₂` observer-algebra projection of a Sonin observable under logarithmic Fourier
 scattering.  This is a static observable average, not a temporal evolution. -/
 def soninLogFourierObservableTwirl

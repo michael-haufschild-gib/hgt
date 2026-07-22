@@ -929,11 +929,10 @@ theorem gaussianCoherent_dimension_fluctuation_pairwise_identity {n d : ℕ}
     (gaussianCoherentCompression_commutes y hG)
     (gaussianCoherentLeakage_isCCRCompletion y hG)
 
-/-- The number variance of an independent finite coherent Gaussian family is at most the ambient
-coordinate dimension times its compressed mean energy. -/
+/-- The number variance of a finite coherent Gaussian family is at most the ambient coordinate
+dimension times its compressed mean energy, including dimension zero. -/
 theorem gaussianCoherent_numberVariance_le_dim_mul_mean {n d : ℕ}
-    (y : Fin n → Fin d → ℝ) (hG : (gaussianCoherentGram y).PosDef)
-    (hd : 0 < d) :
+    (y : Fin n → Fin d → ℝ) (hG : (gaussianCoherentGram y).PosDef) :
     ccrNumberVariance (gaussianCoherentCompression y)
         (gaussianCoherentLeakage y hG) ≤
       (d : ℝ) * ccrMeanEnergy (gaussianCoherentCompression y) := by
@@ -941,7 +940,6 @@ theorem gaussianCoherent_numberVariance_le_dim_mul_mean {n d : ℕ}
     (gaussianCoherentCompression y) (gaussianCoherentLeakage y hG)
     (gaussianCoherentCompression_commutes y hG)
     (gaussianCoherentLeakage_isCCRCompletion y hG)
-    (show 0 < Fintype.card (Fin d) by simpa using hd)
 
 /-! ### Strict positivity of distinct coherent families -/
 
@@ -1398,15 +1396,15 @@ theorem gaussianCoherentInjective_dimension_fluctuation_pairwise_identity
   exact gaussianCoherent_dimension_fluctuation_pairwise_identity y
     (gaussianCoherentGram_posDef_of_injective y hy)
 
-/-- For every injective finite Euclidean configuration in positive dimension, coherent number
-variance is at most ambient dimension times coherent mean energy. -/
+/-- Every injective finite Euclidean configuration obeys the coherent variance bound, including
+dimension zero. -/
 theorem gaussianCoherentInjective_numberVariance_le_dim_mul_mean
-    {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y) (hd : 0 < d) :
+    {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y) :
     ccrNumberVariance (gaussianCoherentCompression y)
         (gaussianCoherentInjectiveLeakage y hy) ≤
       (d : ℝ) * ccrMeanEnergy (gaussianCoherentCompression y) := by
   exact gaussianCoherent_numberVariance_le_dim_mul_mean y
-    (gaussianCoherentGram_posDef_of_injective y hy) hd
+    (gaussianCoherentGram_posDef_of_injective y hy)
 
 /-! ### Literal log-determinant scale curvature -/
 
@@ -1819,15 +1817,15 @@ theorem gaussianCoherentLogScale_logDet_secondDerivative_nonneg
   rw [gaussianCoherentLogScale_logDet_secondDerivative_eq_ccrNumberVariance y hy]
   exact rectangularMatrixHilbertSchmidtEnergy_nonneg _
 
-/-- **Gaussian dimension--curvature upper bound at unit scale.** -/
+/-- **Gaussian dimension--curvature upper bound at unit scale, including dimension zero.** -/
 theorem gaussianCoherentLogScale_logDet_secondDerivative_le_dim_mul_derivative
-    {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y) (hd : 0 < d) :
+    {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y) :
     deriv (deriv (fun s => Real.log (gaussianCoherentLogScaleGram y s).det)) 0 ≤
       (d : ℝ) * deriv (fun s =>
         Real.log (gaussianCoherentLogScaleGram y s).det) 0 := by
   rw [gaussianCoherentLogScale_logDet_derivative_eq_ccrMeanEnergy y hy,
     gaussianCoherentLogScale_logDet_secondDerivative_eq_ccrNumberVariance y hy]
-  exact gaussianCoherentInjective_numberVariance_le_dim_mul_mean y hy hd
+  exact gaussianCoherentInjective_numberVariance_le_dim_mul_mean y hy
 
 /-! ### Every logarithmic scale -/
 
@@ -1935,18 +1933,54 @@ theorem gaussianCoherentLogScale_logDet_secondDerivative_nonneg_at
   exact h
 
 /-- Coherent Gaussian log-determinant curvature is at most dimension times log-slope at every
-logarithmic scale. -/
+logarithmic scale, including dimension zero. -/
 theorem gaussianCoherentLogScale_logDet_secondDerivative_le_dim_mul_derivative_at
-    {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y)
-    (hd : 0 < d) (s : ℝ) :
+    {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y) (s : ℝ) :
     deriv (deriv (fun u => Real.log (gaussianCoherentLogScaleGram y u).det)) s ≤
       (d : ℝ) * deriv (fun u =>
         Real.log (gaussianCoherentLogScaleGram y u).det) s := by
   have h := gaussianCoherentLogScale_logDet_secondDerivative_le_dim_mul_derivative
     (gaussianLogScaleRescaledConfiguration y s)
-    (gaussianLogScaleRescaledConfiguration_injective y hy s) hd
+    (gaussianLogScaleRescaledConfiguration_injective y hy s)
   rw [deriv_logDet_shift y s, secondDeriv_logDet_shift y s] at h
   exact h
+
+/-- Exact every-scale classification of the Gaussian dimension--curvature bound.  Equality means
+that every rescaled mixed-commutator and traceless-leakage channel vanishes; strictness means that
+at least one such channel survives. -/
+theorem gaussianCoherentLogScale_dimension_curvature_classification_at
+    {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y) (s : ℝ) :
+    (deriv (deriv (fun u => Real.log (gaussianCoherentLogScaleGram y u).det)) s =
+          (d : ℝ) * deriv (fun u =>
+            Real.log (gaussianCoherentLogScaleGram y u).det) s ↔
+        (∀ i j, ccrMixedCommutator
+            (gaussianCoherentCompression (gaussianLogScaleRescaledConfiguration y s)) i j = 0) ∧
+          ∀ i j, ccrScaledTracelessLeakage
+            (gaussianCoherentCompression (gaussianLogScaleRescaledConfiguration y s))
+            (gaussianCoherentInjectiveLeakage (gaussianLogScaleRescaledConfiguration y s)
+              (gaussianLogScaleRescaledConfiguration_injective y hy s)) i j = 0) ∧
+      (deriv (deriv (fun u => Real.log (gaussianCoherentLogScaleGram y u).det)) s <
+          (d : ℝ) * deriv (fun u =>
+            Real.log (gaussianCoherentLogScaleGram y u).det) s ↔
+        (∃ i j, ccrMixedCommutator
+            (gaussianCoherentCompression (gaussianLogScaleRescaledConfiguration y s)) i j ≠ 0) ∨
+          ∃ i j, ccrScaledTracelessLeakage
+            (gaussianCoherentCompression (gaussianLogScaleRescaledConfiguration y s))
+            (gaussianCoherentInjectiveLeakage (gaussianLogScaleRescaledConfiguration y s)
+              (gaussianLogScaleRescaledConfiguration_injective y hy s)) i j ≠ 0) := by
+  let z := gaussianLogScaleRescaledConfiguration y s
+  have hz : Function.Injective z := gaussianLogScaleRescaledConfiguration_injective y hy s
+  have hcomm := gaussianCoherentCompression_commutes z
+    (gaussianCoherentGram_posDef_of_injective z hz)
+  have hccr := gaussianCoherentInjectiveLeakage_isCCRCompletion z hz
+  have heq := ccr_numberVariance_eq_card_mul_mean_literal_iff
+    (gaussianCoherentCompression z) (gaussianCoherentInjectiveLeakage z hz) hcomm hccr
+  have hlt := ccr_numberVariance_lt_card_mul_mean_literal_iff
+    (gaussianCoherentCompression z) (gaussianCoherentInjectiveLeakage z hz) hcomm hccr
+  rw [← gaussianCoherentLogScale_logDet_derivative_eq_ccrMeanEnergy z hz,
+    ← gaussianCoherentLogScale_logDet_secondDerivative_eq_ccrNumberVariance z hz] at heq hlt
+  rw [deriv_logDet_shift y s, secondDeriv_logDet_shift y s] at heq hlt
+  simpa [z] using And.intro heq hlt
 
 /-! ### Global scale geometry -/
 
@@ -2115,7 +2149,7 @@ theorem gaussianDimensionPowerLogDet_concaveOn
     exact div_nonpos_of_nonpos_of_nonneg
       (sub_nonpos.mpr
         (gaussianCoherentLogScale_logDet_secondDerivative_le_dim_mul_derivative_at
-          y hy hd (Real.log u / (d : ℝ))))
+          y hy (Real.log u / (d : ℝ))))
       (mul_nonneg (sq_nonneg (d : ℝ)) (sq_nonneg u))
 
 /-- **Exact Gaussian power-curvature law.**  The negative curvature in the ambient-dimension
@@ -2144,6 +2178,53 @@ theorem gaussianDimensionPowerLogDetSecond_sumOfSquares
   unfold gaussianDimensionPowerLogDetSecond
   field_simp [hd0, hu0]
   ring
+
+/-- Exact rigidity classification for Gaussian dimension-power curvature.  At every positive power
+coordinate, curvature vanishes exactly when all rescaled CCR defect channels vanish, and it is
+strictly negative exactly when at least one channel survives. -/
+theorem gaussianDimensionPowerLogDetSecond_classification
+    {d n : ℕ} (y : Fin n → Fin d → ℝ) (hy : Function.Injective y)
+    (hd : 0 < d) {u : ℝ} (hu : 0 < u) :
+    (gaussianDimensionPowerLogDetSecond d y u = 0 ↔
+        (∀ i j, ccrMixedCommutator
+            (gaussianCoherentCompression
+              (gaussianLogScaleRescaledConfiguration y (Real.log u / (d : ℝ)))) i j = 0) ∧
+          ∀ i j, ccrScaledTracelessLeakage
+            (gaussianCoherentCompression
+              (gaussianLogScaleRescaledConfiguration y (Real.log u / (d : ℝ))))
+            (gaussianCoherentInjectiveLeakage
+              (gaussianLogScaleRescaledConfiguration y (Real.log u / (d : ℝ)))
+              (gaussianLogScaleRescaledConfiguration_injective y hy
+                (Real.log u / (d : ℝ)))) i j = 0) ∧
+      (gaussianDimensionPowerLogDetSecond d y u < 0 ↔
+        (∃ i j, ccrMixedCommutator
+            (gaussianCoherentCompression
+              (gaussianLogScaleRescaledConfiguration y (Real.log u / (d : ℝ)))) i j ≠ 0) ∨
+          ∃ i j, ccrScaledTracelessLeakage
+            (gaussianCoherentCompression
+              (gaussianLogScaleRescaledConfiguration y (Real.log u / (d : ℝ))))
+            (gaussianCoherentInjectiveLeakage
+              (gaussianLogScaleRescaledConfiguration y (Real.log u / (d : ℝ)))
+              (gaussianLogScaleRescaledConfiguration_injective y hy
+                (Real.log u / (d : ℝ)))) i j ≠ 0) := by
+  have hdR : 0 < (d : ℝ) := by exact_mod_cast hd
+  have hden : 0 < (d : ℝ) ^ 2 * u ^ 2 :=
+    mul_pos (sq_pos_of_pos hdR) (sq_pos_of_pos hu)
+  have hclass := gaussianCoherentLogScale_dimension_curvature_classification_at
+    y hy (Real.log u / (d : ℝ))
+  constructor
+  · unfold gaussianDimensionPowerLogDetSecond
+    rw [div_eq_zero_iff]
+    simp only [hden.ne', or_false, sub_eq_zero]
+    exact hclass.1
+  · unfold gaussianDimensionPowerLogDetSecond
+    rw [div_neg_iff]
+    constructor
+    · rintro (h | h)
+      · exact (not_lt_of_ge hden.le h.2).elim
+      · exact hclass.2.mp (sub_neg.mp h.1)
+    · intro hdefect
+      exact Or.inr ⟨sub_neg.mpr (hclass.2.mpr hdefect), hden⟩
 
 /-! ### Intrinsic finite configurations in arbitrary real Hilbert spaces -/
 

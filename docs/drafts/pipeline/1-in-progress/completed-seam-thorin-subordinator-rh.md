@@ -81,8 +81,10 @@ positive theta-cusp atom density and all raw even moments        [PROVED LEAN]
        [OPEN CORE A: positive packet measure]
   -> one compatible positive Thorin measure U
        [OPEN CORE B: completion-sensitive assembly]
-  -> Frullani identity proves the exact Laplace exponent (3)
-       [OPEN CORE C: source comparison]
+  -> local shifted Markov identity at the genuine theta boundary
+       [OPEN SOURCE CONSTRUCTION: now part of cores A--B]
+  -> analytic transport from Euler-safe Cassini u=0 to centered u=1
+       [CLOSED LEAN FOR COMPACT CARRIERS: CORE C]
   -> Stieltjes representation (4)--(5)                            [GENERAL GGC THEORY]
   -> all shifted seam Hankel square tests                         [MOMENT GRAM]
   -> RH                                                            [PROVED PAPER CONSUMER].
@@ -159,6 +161,32 @@ The corpus offers three nonidentical constructions to test.
    from the nontrivial tier.
    **Positive residue:** the research target is precisely a new source assembly proving positivity
    of the coupled nontrivial tier; no equivalence, coordinate change, or numerical HCM test counts.
+8. **Separated polar-factor tilting fails by a fixed quarter-gap.**  The April 2026 revision of
+   Polson's Thorin programme claims to transport an Euler-safe auxiliary GGC to the critical center.
+   At square aperture `r`, however, its separated polar factor is `Exp(r-1/4)`, while center
+   transport requires exponential tilt by `r`.  The tilted density has exponent `x/4` and is not
+   integrable, independent of `r`.  At the paper's `r=1`, its own Thorin atom `delta_(3/4)` makes
+   `E exp(H_star)=infinity`, contradicting the asserted finite unit tilt.
+   **Positive residue:** the polar factor and zeta-pole channel must be canceled as one completed
+   block before positivity is imposed.  This is formalized by
+   `ThorinPolarQuarterTiltBarrier.lean`; increasing the auxiliary aperture cannot close cores A--B.
+9. **Critical-center comparison is not an independent compact-source wall.**  The genuine theta
+   response is already exact near the Euler-safe Cassini boundary `u=0`, and the canonical source
+   is unconditionally zero-free on the full segment to the center `u=1`.  If one compact positive
+   measure with support radius below `1/2` matches the shifted Markov kernel locally at `u=0`, a
+   zero-free convex-tube identity theorem transports the same measure to the centered seam germ.
+   **Positive residue:** for the compact route, no second Frullani or critical-center source
+   comparison is needed.  The only live construction is the local coupled theta--prime--Gamma
+   positive measure and its cofinal limit.  This is formalized by
+   `ThetaCuspCassiniMarkovBoundaryTransport.lean`.
+10. **The Euler-boundary response has an unconditional positive moving carrier.**  For
+    `0<t<1`, `ThetaCuspCassiniHyperbolicSourceLaw.lean` proves the exact normalized source identity
+    `H(1-t^2)=E_t[x tanh(tx)/t]`, where
+    `dP_t(x)` is proportional to `cosh(tx) thetaCuspFullSource(x) dx` on the positive half-line.
+    **Positive residue:** source positivity and normalization are discharged.  The remaining
+    Thorin/Markov theorem must remove the `t`-dependence coherently and produce one fixed compact
+    measure; replacing `P_t` by a frozen carrier deletes its replicator covariance term and is
+    invalid.
 
 ## Low-aperture falsification protocol
 
@@ -177,16 +205,22 @@ to be retained as an explicit completion-interaction coordinate.
 
 ## Exact open cores
 
-- `[OPEN CORE A]` Derive an explicit all-aperture Levy density `k_N(x)` from completed
-  theta--Euler--Gamma packets and prove it is the Laplace transform of a positive measure.
-- `[OPEN CORE B]` Prove positivity survives the completed limit, with tightness and the Thorin
-  integrability bounds near `0` and `infinity`.
-- `[OPEN CORE C]` Prove the Frullani/Laplace exponent equals `-log F_src` on an open convergence
-  domain, including the cancellation of the divided prime and archimedean singularities.
-- `[OPEN CORE D]` Formalize the abstract bridge “exact GGC representation of `F_src` implies the
-  canonical normalized prime--arch moment representation.  The remaining measure-to-strict-Hankel
-  and RH capstone is already formalized by
-  `riemannHypothesis_of_primeArchInfiniteSupportMomentRepresentation`.
+- `[OPEN CORE A]` Derive an explicit all-aperture coupled theta--Euler--Gamma measure and prove its
+  shifted Markov transform equals the genuine inward theta response on a one-sided neighborhood
+  of the Euler-safe Cassini boundary.  Polar--zeta cancellation must occur before positivity: a
+  raw positive polar atom cannot survive the critical tilt.
+- `[OPEN CORE B]` Prove positivity and compact support survive the completed limit with one fixed
+  support radius `B<1/2` (or extend the transport theorem to a controlled noncompact carrier).
+- `[CLOSED LEAN FOR COMPACT CARRIERS: CORE C]`
+  `ThetaCuspCassiniMarkovBoundaryTransport.lean` proves that the local boundary identity from A--B
+  transports the same measure to the centered completed-seam Markov germ.  Global Frullani/source
+  comparison at the critical center is therefore redundant in the compact route.
+- `[CLOSED LEAN: CORE D]` `CompletedSeamCompactMarkovGermCapstone.lean` formalizes the bridge from
+  a local compact Markov transform to the canonical normalized prime--arch moment representation
+  and RH. `CompletedSeamCompactThorinExponentCapstone.lean` now also proves that the exact centered
+  Cassini-source logarithmic exponent has derivative equal to the completed-seam moment germ and
+  that any finite positive compact Thorin representation of that exponent supplies the Markov
+  premise. Source construction and identification remain exactly cores A--C.
 
 ## Kill conditions
 
@@ -215,5 +249,7 @@ weld, and moment determinacy in one chain.
 - [ ] explicit completed finite Levy density constructed
 - [ ] finite packet positivity and exponent identity proved
 - [ ] tight positive Thorin limit proved
-- [ ] abstract GGC-to-seam-Hankel bridge formalized
-- [ ] GGC coefficient dictionary composed with the formal RH capstone
+- [x] abstract compact-Markov-to-seam-Hankel bridge formalized
+- [x] Markov coefficient dictionary composed with the formal RH capstone
+- [x] exact centered source-exponent-to-compact-Markov wrapper formalized
+- [x] Euler-safe theta-boundary Markov identity transported to the centered RH germ in Lean

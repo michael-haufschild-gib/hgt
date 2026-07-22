@@ -379,6 +379,39 @@ theorem log_mul_xiPrimeTwoEulerRadialSeam_eq_sqrt_mul_firstPrimeSeamCharge
     pow_one, Nat.cast_ofNat]
   ring
 
+/-- The full square-root von Mangoldt radial source sections agree exactly on the critical line.
+The reverse implication needs only their prime-two ground coordinate. -/
+theorem xiGammaEulerRadialReflectionSeamLp_eq_zero_iff_re_eq_half
+    (rho : XiDivisorSupport) :
+    xiGammaEulerRadialReflectionSeamLp rho = 0 ↔
+      (rho : ℂ).re = 1 / 2 := by
+  constructor
+  · intro hzero
+    have hcell := congrArg
+      (fun v : lp (fun _ : Nat.Primes × ℕ => ℂ) 2 =>
+        v xiPrimeTwoEulerCell) hzero
+    have hseam : xiPrimeTwoEulerRadialSeam (rho : ℂ) = 0 := by
+      simpa [xiPrimeTwoEulerRadialSeam, xiGammaEulerRadialCellSeam] using hcell
+    have hscale :=
+      log_mul_xiPrimeTwoEulerRadialSeam_eq_sqrt_mul_firstPrimeSeamCharge
+        (rho : ℂ)
+    rw [hseam, mul_zero] at hscale
+    have hsqrt : (Real.sqrt (Real.log 2 / 2) : ℂ) ≠ 0 := by
+      exact_mod_cast (Real.sqrt_pos.2
+        (div_pos (Real.log_pos (by norm_num)) (by norm_num))).ne'
+    have hcharge : orbitwiseFirstPrimeSeamCharge (rho : ℂ) = 0 :=
+      (mul_eq_zero.mp hscale.symm).resolve_left hsqrt
+    exact (orbitwiseFirstPrimeSeamCharge_eq_zero_iff (rho : ℂ)).mp hcharge
+  · intro hre
+    have horbit : (starRingEnd ℂ) (rho : ℂ) = 1 - (rho : ℂ) := by
+      apply Complex.ext
+      · simp only [Complex.conj_re, Complex.sub_re, Complex.one_re]
+        linarith
+      · simp only [Complex.conj_im, Complex.sub_im, Complex.one_im]
+        ring
+    ext pe
+    simp [xiGammaEulerRadialReflectionSeamLp, horbit]
+
 /-- The radial Euler seam and the first-prime source seam have exactly the same zero fibre at
 every complex point, with no strip or divisor hypothesis. -/
 theorem xiPrimeTwoEulerRadialSeam_eq_zero_iff_firstPrimeSeamCharge_eq_zero
@@ -402,6 +435,11 @@ theorem xiPrimeTwoEulerRadialSeam_eq_zero_iff_firstPrimeSeamCharge_eq_zero
     rw [hcharge, mul_zero] at h
     exact (mul_eq_zero.mp h).resolve_left hlog
 
+/-- Every Xi-indexed full prime-power radial Gamma--Euler section is reflection-fixed. -/
+def XiGammaEulerRadialReflectionSeamsVanish : Prop :=
+  ∀ rho : XiDivisorSupport,
+    xiGammaEulerRadialReflectionSeamLp rho = 0
+
 /-- Every Xi-indexed radial prime-two Euler boundary seam vanishes. -/
 def XiPrimeTwoEulerRadialSeamsVanish : Prop :=
   ∀ rho : XiDivisorSupport,
@@ -414,12 +452,31 @@ theorem xiPrimeTwoEulerRadialSeamsVanish_iff_firstPrimeSeamChargesVanish :
   exact forall_congr' fun rho ↦
     xiPrimeTwoEulerRadialSeam_eq_zero_iff_firstPrimeSeamCharge_eq_zero (rho : ℂ)
 
+/-- Full Hilbert-section reflection is equivalent to the single prime-two radial coordinate. -/
+theorem xiGammaEulerRadialReflectionSeamsVanish_iff_primeTwoRadialSeamsVanish :
+    XiGammaEulerRadialReflectionSeamsVanish ↔
+      XiPrimeTwoEulerRadialSeamsVanish := by
+  unfold XiGammaEulerRadialReflectionSeamsVanish
+    XiPrimeTwoEulerRadialSeamsVanish
+  apply forall_congr'
+  intro rho
+  exact (xiGammaEulerRadialReflectionSeamLp_eq_zero_iff_re_eq_half rho).trans
+    ((xiPrimeTwoEulerRadialSeam_eq_zero_iff_firstPrimeSeamCharge_eq_zero
+        (rho : ℂ)).trans
+      (orbitwiseFirstPrimeSeamCharge_eq_zero_iff (rho : ℂ))).symm
+
 /-- The radial prime-two Euler boundary equality is itself an exact right-side RH endpoint. -/
 theorem xiPrimeTwoEulerRadialSeamsVanish_iff_riemannHypothesis :
     XiPrimeTwoEulerRadialSeamsVanish ↔ RiemannHypothesis :=
   xiPrimeTwoEulerRadialSeamsVanish_iff_firstPrimeSeamChargesVanish.trans
     (xiFirstPrimeSeamChargesVanish_iff_orientationEnergy_zero.trans
       riemannHypothesis_iff_xiHurwitzOrientationEnergy_eq_zero.symm)
+
+/-- The full all-prime/all-valuation radial source-section reflection law is exactly RH. -/
+theorem xiGammaEulerRadialReflectionSeamsVanish_iff_riemannHypothesis :
+    XiGammaEulerRadialReflectionSeamsVanish ↔ RiemannHypothesis :=
+  xiGammaEulerRadialReflectionSeamsVanish_iff_primeTwoRadialSeamsVanish.trans
+    xiPrimeTwoEulerRadialSeamsVanish_iff_riemannHypothesis
 
 /-- Difference of the calibrated Euler samples at the FE/Schwarz endpoints. -/
 def xiHurwitzPrimeTwoEulerBoundarySeam (rho : ℂ) : ℂ :=
@@ -542,6 +599,14 @@ theorem xiPrimeTwoEulerRadialSeamsVanish_iff_reciprocalSquareFixedCauchyRealKryl
   xiPrimeTwoEulerRadialSeamsVanish_iff_firstPrimeSeamChargesVanish.trans
     xiReciprocalSquareFixedCauchyRealKrylovSeamSaturation_iff_firstPrimeSeamChargesVanish.symm
 
+/-- Full prime-power radial Gamma--Euler reflection is directly equivalent to fixed reciprocal
+real-Krylov seam saturation. -/
+theorem xiGammaEulerRadialReflectionSeamsVanish_iff_reciprocalSquareFixedCauchyRealKrylovSeamSaturation :
+    XiGammaEulerRadialReflectionSeamsVanish ↔
+      XiReciprocalSquareFixedCauchyRealKrylovSeamSaturation :=
+  xiGammaEulerRadialReflectionSeamsVanish_iff_primeTwoRadialSeamsVanish.trans
+    xiPrimeTwoEulerRadialSeamsVanish_iff_reciprocalSquareFixedCauchyRealKrylovSeamSaturation
+
 /-- The common-damping monodromy seam and common-phase radial seam are dual exact Euler boundary
 coordinates with the same global vanishing law. -/
 theorem xiHurwitzPrimeTwoEulerBoundarySeamsVanish_iff_radialSeamsVanish :
@@ -549,6 +614,14 @@ theorem xiHurwitzPrimeTwoEulerBoundarySeamsVanish_iff_radialSeamsVanish :
       XiPrimeTwoEulerRadialSeamsVanish :=
   xiHurwitzPrimeTwoEulerBoundarySeamsVanish_iff_firstPrimeSeamChargesVanish.trans
     xiPrimeTwoEulerRadialSeamsVanish_iff_firstPrimeSeamChargesVanish.symm
+
+/-- Common-damping Hurwitz monodromy reflection and the complete common-phase radial source
+reflection are dual exact Gamma--Euler forms of the same global obstruction. -/
+theorem xiHurwitzPrimeTwoEulerBoundarySeamsVanish_iff_fullRadialReflectionSeamsVanish :
+    XiHurwitzPrimeTwoEulerBoundarySeamsVanish ↔
+      XiGammaEulerRadialReflectionSeamsVanish :=
+  xiHurwitzPrimeTwoEulerBoundarySeamsVanish_iff_radialSeamsVanish.trans
+    xiGammaEulerRadialReflectionSeamsVanish_iff_primeTwoRadialSeamsVanish.symm
 
 end
 

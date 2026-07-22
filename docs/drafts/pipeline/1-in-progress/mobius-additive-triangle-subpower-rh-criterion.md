@@ -330,3 +330,79 @@ sum_(a+b=N) M(a)M(b) <= C_epsilon (N+1)^(2+epsilon)
 for every `epsilon>0`, without replacing it by total energy and without applying an invertible
 Mellin multiplier.  PNT/first-moment input, absolute renewal contraction, finite algebraic
 Hurwitz atlases, and square dilation are all rigorously excluded as independent source mechanisms.
+
+## Critical prime-removal cascade closed in every positive multiplier norm — 2026-07-22
+
+For finite prime set `P`, rough Möbius Laplace transforms satisfy exact recurrence
+
+```text
+F_P(x)=F_(P union {p})(x)-F_(P union {p})(p*x).
+```
+
+Critical logarithmic profiles therefore add local factors
+`I-p^(-1/2)U_(log p)`.  Individual factors are invertible, but cofinal positive-norm control fails
+sharply.  For terminal window `W_Y={p:Y/3<p<=Y}` and moving frequency `t_Y=pi/logY`, every local
+phase lies in `[2pi/3,pi]` once `Y>=27`.  Lean proves
+
+```text
+(1+1/sqrt(Y))^(#W_Y) <= |product_(p in W_Y)
+  (1-p^(-1/2-it_Y))|^2,
+
+(1+1/sqrt(Y))^(#W_Y) <= product_(p in W_Y)(1-p^(-1/2))^(-1),
+```
+
+together with the exact Chebyshev window-cardinality budget.  Since `#W_Y >> Y/logY`, both
+forward resonant and inverse zero-frequency blocks grow at least
+`exp(c*sqrt(Y)/logY)`.  The bad frequency tends to zero, so fixed positive Gamma damping cannot
+remove it.
+
+This excludes prime ordering, primewise Neumann inversion, absolute Fourier bounds,
+translation-invariant `L2` multiplier bounds, and fixed positive archimedean weights as source
+providers.  Surviving route must cancel terminal block before any positive norm or use a
+source-defined, non-translation-invariant low-frequency renormalization.  Paper proof, literature
+audit, exact physical Hardy--Titchmarsh connector, Lean theorem, build, and axiom audit are in
+`../3-formalized/needs-audit/mobius-critical-prime-block-resonance-wall.md` and
+`MobiusCriticalPrimeBlockResonance.lean`.
+
+Classification: `[FORMALIZED NO-GO] [CANDIDATE NEW FORMULATION] [NOVELTY NOT CERTIFIED]`.
+
+## Gamma--Hankel localization closes ordinary height averaging — 2026-07-22
+
+For a finite Dirichlet polynomial `P_N(s)=sum_(n<=N)a_n n^(-s)` and its Laplace pencil
+`F_N(x)=sum_(n<=N)a_n exp(-nx)`, exact Gamma Fourier/Mellin localization gives
+
+```text
+integral_R |Gamma(sigma+it)P_N(sigma+it)|^2 dt
+ = 2pi Gamma(2sigma) sum_(m,n<=N) a_m a_n/(m+n)^(2sigma)
+ = 2pi integral_0^infinity x^(2sigma-1)|F_N(x)|^2 dx.
+```
+
+Thus Gamma damping does not turn logarithmic modes into orthogonal channels. It produces the
+positive Hankel kernel `(m+n)^(-2sigma)` and retains every signed additive cross correlation.
+Specializing `a_n=mu(n)` recovers the additive-convolution Dirichlet series
+
+```text
+Gamma(2sigma) sum_k c(k)/k^(2sigma),
+c(k)=sum_(m+n=k)mu(m)mu(n).
+```
+
+The full condition
+
+```text
+integral_0^infinity x^(2sigma-1)|Phi(x)|^2 dx < infinity
+for every sigma>1/2
+```
+
+is paper-equivalent to RH: Cauchy--Schwarz gives Mellin convergence and locally uniform
+holomorphy on `Re(s)>1/2`; RH gives the energy by choosing a strict half-power exponent below
+`sigma`. Long-height Bohr mean, Hilbert-matrix boundedness, and compact synthesis cannot supply
+this cofinal energy. Remaining source is uniform control of signed off-diagonal Möbius Hankel
+covariance before taking the positive norm.
+
+Lean now proves the finite weighted Laplace/Hankel identity and quadratic-form nonnegativity for
+arbitrary real coefficients, plus the exact Möbius specialization. Full proof, hostile audit,
+literature boundary, and formal certificate are in
+`../3-formalized/needs-audit/mobius-laplace-gamma-hankel-localization-wall.md` and
+`MobiusLaplaceGammaHankelWall.lean`.
+
+Classification: `[NEW TO CORPUS] [NOVELTY UNVERIFIED] [NOT AN UNCONDITIONAL RH PROOF]`.

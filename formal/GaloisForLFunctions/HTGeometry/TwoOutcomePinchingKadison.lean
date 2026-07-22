@@ -43,6 +43,78 @@ def twoOutcomeLowerTransition (e X : R) : R :=
 def twoOutcomeUpperTransition (e X : R) : R :=
   e * X * (1 - e)
 
+/-- Two-outcome pinching deletes departure from the measured sector. -/
+theorem twoOutcomeLowerTransition_pinching_eq_zero
+    {e : R} (he : IsIdempotentElem e) (X : R) :
+    twoOutcomeLowerTransition e (twoOutcomePinching e X) = 0 := by
+  have hee : e * e = e := he
+  have hco : (1 - e) * e = 0 := by noncomm_ring [hee]
+  simp only [twoOutcomeLowerTransition, twoOutcomePinching]
+  have hfirst : (1 - e) * (e * X * e) * e = 0 := by
+    calc
+      (1 - e) * (e * X * e) * e = ((1 - e) * e) * X * e * e := by
+        noncomm_ring
+      _ = 0 := by rw [hco]; simp
+  have hsecond : (1 - e) * ((1 - e) * X * (1 - e)) * e = 0 := by
+    calc
+      (1 - e) * ((1 - e) * X * (1 - e)) * e =
+          (1 - e) * (1 - e) * X * ((1 - e) * e) := by noncomm_ring
+      _ = 0 := by rw [hco]; simp
+  rw [mul_add, add_mul, hfirst, hsecond, add_zero]
+
+/-- Two-outcome pinching also deletes return from the complementary sector. -/
+theorem twoOutcomeUpperTransition_pinching_eq_zero
+    {e : R} (he : IsIdempotentElem e) (X : R) :
+    twoOutcomeUpperTransition e (twoOutcomePinching e X) = 0 := by
+  have hee : e * e = e := he
+  have hoc : e * (1 - e) = 0 := by noncomm_ring [hee]
+  simp only [twoOutcomeUpperTransition, twoOutcomePinching]
+  have hfirst : e * (e * X * e) * (1 - e) = 0 := by
+    calc
+      e * (e * X * e) * (1 - e) = e * e * X * (e * (1 - e)) := by
+        noncomm_ring
+      _ = 0 := by rw [hoc]; simp
+  have hsecond : e * ((1 - e) * X * (1 - e)) * (1 - e) = 0 := by
+    calc
+      e * ((1 - e) * X * (1 - e)) * (1 - e) =
+          (e * (1 - e)) * X * (1 - e) * (1 - e) := by noncomm_ring
+      _ = 0 := by rw [hoc]; simp
+  rw [mul_add, add_mul, hfirst, hsecond, add_zero]
+
+/-- Every two-outcome pinched observable commutes with the measured idempotent. -/
+theorem twoOutcomePinching_commutes
+    {e : R} (he : IsIdempotentElem e) (X : R) :
+    e * twoOutcomePinching e X = twoOutcomePinching e X * e := by
+  have hee : e * e = e := he
+  have hco : (1 - e) * e = 0 := by noncomm_ring [hee]
+  have hoc : e * (1 - e) = 0 := by noncomm_ring [hee]
+  simp only [twoOutcomePinching]
+  calc
+    e * (e * X * e + (1 - e) * X * (1 - e)) = e * X * e := by
+      rw [mul_add]
+      have hleft : e * (e * X * e) = e * X * e := by
+        calc
+          e * (e * X * e) = (e * e) * X * e := by noncomm_ring
+          _ = e * X * e := by rw [hee]
+      have hright : e * ((1 - e) * X * (1 - e)) = 0 := by
+        calc
+          e * ((1 - e) * X * (1 - e)) =
+              (e * (1 - e)) * X * (1 - e) := by noncomm_ring
+          _ = 0 := by rw [hoc]; simp
+      rw [hleft, hright, add_zero]
+    _ = (e * X * e + (1 - e) * X * (1 - e)) * e := by
+      rw [add_mul]
+      have hleft : (e * X * e) * e = e * X * e := by
+        calc
+          (e * X * e) * e = e * X * (e * e) := by noncomm_ring
+          _ = e * X * e := by rw [hee]
+      have hright : ((1 - e) * X * (1 - e)) * e = 0 := by
+        calc
+          ((1 - e) * X * (1 - e)) * e =
+              (1 - e) * X * ((1 - e) * e) := by noncomm_ring
+          _ = 0 := by rw [hco]; simp
+      rw [hleft, hright, add_zero]
+
 /-- **Exact two-outcome Kadison defect.**  For an idempotent cutoff, the multiplicativity defect
 of pinching is the sum of the two oriented round-trip transition products. -/
 theorem twoOutcomePinchingKadisonDefect_eq_transitionProducts
@@ -135,7 +207,79 @@ theorem sub_twoOutcomePinching_eq_transition_sum
     twoOutcomeLowerTransition]
   noncomm_ring [hee]
 
+/-- **Algebraic pinching fixed-point classification.**  An observable is unchanged by
+two-outcome pinching exactly when it commutes with the measured idempotent. -/
+theorem twoOutcomePinching_eq_self_iff_commute
+    {e : R} (he : IsIdempotentElem e) (X : R) :
+    twoOutcomePinching e X = X ↔ X * e = e * X := by
+  constructor
+  · intro hfixed
+    have hcomm := twoOutcomePinching_commutes he X
+    rw [hfixed] at hcomm
+    exact hcomm.symm
+  · intro hcomm
+    have hee : e * e = e := he
+    have hLower : twoOutcomeLowerTransition e X = 0 := by
+      simp only [twoOutcomeLowerTransition]
+      calc
+        (1 - e) * X * e = (1 - e) * (X * e) := by rw [mul_assoc]
+        _ = (1 - e) * (e * X) := by rw [hcomm]
+        _ = 0 := by rw [← mul_assoc]; noncomm_ring [hee]
+    have hUpper : twoOutcomeUpperTransition e X = 0 := by
+      simp only [twoOutcomeUpperTransition]
+      calc
+        e * X * (1 - e) = (X * e) * (1 - e) := by rw [hcomm]
+        _ = X * (e * (1 - e)) := by rw [mul_assoc]
+        _ = 0 := by noncomm_ring [hee]
+    symm
+    exact sub_eq_zero.mp (by
+      rw [sub_twoOutcomePinching_eq_transition_sum he X,
+        hUpper, hLower, add_zero])
+
+/-- Repeating the same two-outcome measurement changes nothing after the first pinching. -/
+theorem twoOutcomePinching_apply_twice
+    {e : R} (he : IsIdempotentElem e) (X : R) :
+    twoOutcomePinching e (twoOutcomePinching e X) = twoOutcomePinching e X := by
+  apply (twoOutcomePinching_eq_self_iff_commute he (twoOutcomePinching e X)).2
+  exact (twoOutcomePinching_commutes he X).symm
+
+/-- **Exact image classification.**  The range of two-outcome pinching is precisely the
+commutant of its measured idempotent. -/
+theorem range_twoOutcomePinching_eq_commutant
+    {e : R} (he : IsIdempotentElem e) :
+    Set.range (twoOutcomePinching e) = {X : R | X * e = e * X} := by
+  ext X
+  change (∃ Y, twoOutcomePinching e Y = X) ↔ X * e = e * X
+  constructor
+  · rintro ⟨Y, rfl⟩
+    exact (twoOutcomePinching_eq_self_iff_commute he (twoOutcomePinching e Y)).1
+      (twoOutcomePinching_apply_twice he Y)
+  · intro hcomm
+    exact ⟨X, (twoOutcomePinching_eq_self_iff_commute he X).2 hcomm⟩
+
 variable [StarRing R]
+
+/-- **One-corner pinching fixed-point classification.**  For self-adjoint cutoff and source,
+one oriented transition vanishes exactly when the source already lies in the pinching range. -/
+theorem twoOutcomePinching_eq_self_iff_lowerTransition_eq_zero_of_star_eq
+    {e X : R} (he : IsIdempotentElem e)
+    (heStar : star e = e) (hXStar : star X = X) :
+    twoOutcomePinching e X = X ↔ twoOutcomeLowerTransition e X = 0 := by
+  constructor
+  · intro hfixed
+    rw [← hfixed]
+    exact twoOutcomeLowerTransition_pinching_eq_zero he X
+  · intro hLower
+    have hAdj : star (twoOutcomeLowerTransition e X) =
+        twoOutcomeUpperTransition e X := by
+      simp only [twoOutcomeLowerTransition, twoOutcomeUpperTransition,
+        star_mul, star_sub, star_one, heStar, hXStar, mul_assoc]
+    have hUpper : twoOutcomeUpperTransition e X = 0 := by
+      rw [← hAdj, hLower, star_zero]
+    symm
+    exact sub_eq_zero.mp (by
+      rw [sub_twoOutcomePinching_eq_transition_sum he X,
+        hUpper, hLower, add_zero])
 
 /-- For self-adjoint cutoff and observable, the exact Kadison defect is a sum of two positive
 master products.  This is the algebraic equality underlying Kadison--Schwarz positivity for a

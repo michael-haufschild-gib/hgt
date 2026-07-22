@@ -685,52 +685,105 @@ theorem ccr_dimension_fluctuation_pairwise_identity
   rw [ccrPairwiseMixedCommutatorEnergy_eq A hcomm]
   exact ccr_dimension_fluctuation_identity A B hcomm hccr
 
-/-- The total number variance of a `d`-mode finite CCR compression is at most `d` times its mean
-energy. -/
+/-- The total number variance of a finite CCR compression is at most the number of modes times its
+mean energy, including the empty family. -/
 theorem ccr_numberVariance_le_card_mul_mean
     (A : I → Matrix n n ℝ) (B : I → Matrix n m ℝ)
-    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B)
-    (hI : 0 < Fintype.card I) :
+    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B) :
     ccrNumberVariance A B ≤ (Fintype.card I : ℝ) * ccrMeanEnergy A := by
-  have hid := ccr_dimension_fluctuation_identity A B hcomm hccr
-  have hC := ccrMixedCommutatorEnergy_nonneg A
-  have hK := ccrScaledTracelessLeakageEnergy_nonneg A B
-  have hd : 0 < (Fintype.card I : ℝ) := by exact_mod_cast hI
-  have hd1 : 0 < (Fintype.card I : ℝ) + 1 := by linarith
-  nlinarith [mul_pos hd hd1]
+  by_cases hI : 0 < Fintype.card I
+  · have hid := ccr_dimension_fluctuation_identity A B hcomm hccr
+    have hC := ccrMixedCommutatorEnergy_nonneg A
+    have hK := ccrScaledTracelessLeakageEnergy_nonneg A B
+    have hd : 0 < (Fintype.card I : ℝ) := by exact_mod_cast hI
+    have hd1 : 0 < (Fintype.card I : ℝ) + 1 := by linarith
+    nlinarith [mul_pos hd hd1]
+  · have hI0 : Fintype.card I = 0 := Nat.eq_zero_of_not_pos hI
+    letI : IsEmpty I := Fintype.card_eq_zero_iff.mp hI0
+    simp [ccrNumberVariance, ccrLeakageTrace, ccrMeanEnergy,
+      rectangularMatrixHilbertSchmidtEnergy]
 
 /-- Saturation of the dimension--fluctuation bound is equivalent to simultaneous vanishing of
 mixed nonnormality and traceless leakage. -/
 theorem ccr_numberVariance_eq_card_mul_mean_iff
     (A : I → Matrix n n ℝ) (B : I → Matrix n m ℝ)
-    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B)
-    (hI : 0 < Fintype.card I) :
+    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B) :
     ccrNumberVariance A B = (Fintype.card I : ℝ) * ccrMeanEnergy A ↔
       ccrMixedCommutatorEnergy A = 0 ∧
         ccrScaledTracelessLeakageEnergy A B = 0 := by
-  have hid := ccr_dimension_fluctuation_identity A B hcomm hccr
+  by_cases hI : 0 < Fintype.card I
+  · have hid := ccr_dimension_fluctuation_identity A B hcomm hccr
+    have hC := ccrMixedCommutatorEnergy_nonneg A
+    have hK := ccrScaledTracelessLeakageEnergy_nonneg A B
+    have hd : 0 < (Fintype.card I : ℝ) := by exact_mod_cast hI
+    constructor
+    · intro h
+      rw [h, sub_self, mul_zero] at hid
+      constructor <;> nlinarith [sq_pos_of_pos hd]
+    · rintro ⟨hC0, hK0⟩
+      rw [hC0, hK0, mul_zero, add_zero] at hid
+      have hd1 : 0 < (Fintype.card I : ℝ) + 1 := by linarith
+      nlinarith [mul_pos hd hd1]
+  · have hI0 : Fintype.card I = 0 := Nat.eq_zero_of_not_pos hI
+    letI : IsEmpty I := Fintype.card_eq_zero_iff.mp hI0
+    simp [ccrNumberVariance, ccrLeakageTrace, ccrMeanEnergy,
+      ccrMixedCommutatorEnergy, ccrColumnEnergyMatrix, ccrRowEnergyMatrix,
+      ccrScaledTracelessLeakageEnergy, rectangularMatrixHilbertSchmidtEnergy,
+      matrixHilbertSchmidtEnergy]
+
+/-- The dimension--fluctuation bound is strict exactly when at least one defect energy is
+positive. -/
+theorem ccr_numberVariance_lt_card_mul_mean_iff
+    (A : I → Matrix n n ℝ) (B : I → Matrix n m ℝ)
+    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B) :
+    ccrNumberVariance A B < (Fintype.card I : ℝ) * ccrMeanEnergy A ↔
+      0 < ccrMixedCommutatorEnergy A ∨
+        0 < ccrScaledTracelessLeakageEnergy A B := by
+  have hle := ccr_numberVariance_le_card_mul_mean A B hcomm hccr
+  have heq := ccr_numberVariance_eq_card_mul_mean_iff A B hcomm hccr
   have hC := ccrMixedCommutatorEnergy_nonneg A
   have hK := ccrScaledTracelessLeakageEnergy_nonneg A B
-  have hd : 0 < (Fintype.card I : ℝ) := by exact_mod_cast hI
   constructor
-  · intro h
-    rw [h, sub_self, mul_zero] at hid
-    constructor <;> nlinarith [sq_pos_of_pos hd]
-  · rintro ⟨hC0, hK0⟩
-    rw [hC0, hK0, mul_zero, add_zero] at hid
-    have hd1 : 0 < (Fintype.card I : ℝ) + 1 := by linarith
-    nlinarith [mul_pos hd hd1]
+  · intro hlt
+    have hne : ccrNumberVariance A B ≠
+        (Fintype.card I : ℝ) * ccrMeanEnergy A := ne_of_lt hlt
+    by_cases hC0 : ccrMixedCommutatorEnergy A = 0
+    · right
+      have hKne : ccrScaledTracelessLeakageEnergy A B ≠ 0 := by
+        intro hK0
+        exact hne (heq.mpr ⟨hC0, hK0⟩)
+      exact lt_of_le_of_ne hK (Ne.symm hKne)
+    · left
+      exact lt_of_le_of_ne hC (Ne.symm hC0)
+  · intro hpos
+    apply lt_of_le_of_ne hle
+    intro hequality
+    obtain ⟨hC0, hK0⟩ := heq.mp hequality
+    rcases hpos with hCpos | hKpos
+    · rw [hC0] at hCpos
+      exact (lt_irrefl 0) hCpos
+    · rw [hK0] at hKpos
+      exact (lt_irrefl 0) hKpos
 
 /-- Equality criterion with the literal pairwise mixed-commutator energy. -/
 theorem ccr_numberVariance_eq_card_mul_mean_pairwise_iff
     (A : I → Matrix n n ℝ) (B : I → Matrix n m ℝ)
-    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B)
-    (hI : 0 < Fintype.card I) :
+    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B) :
     ccrNumberVariance A B = (Fintype.card I : ℝ) * ccrMeanEnergy A ↔
       ccrPairwiseMixedCommutatorEnergy A = 0 ∧
         ccrScaledTracelessLeakageEnergy A B = 0 := by
-  rw [ccr_numberVariance_eq_card_mul_mean_iff A B hcomm hccr hI,
+  rw [ccr_numberVariance_eq_card_mul_mean_iff A B hcomm hccr,
     ccrPairwiseMixedCommutatorEnergy_eq A hcomm]
+
+/-- Pairwise form of the strict dimension--fluctuation classification. -/
+theorem ccr_numberVariance_lt_card_mul_mean_pairwise_iff
+    (A : I → Matrix n n ℝ) (B : I → Matrix n m ℝ)
+    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B) :
+    ccrNumberVariance A B < (Fintype.card I : ℝ) * ccrMeanEnergy A ↔
+      0 < ccrPairwiseMixedCommutatorEnergy A ∨
+        0 < ccrScaledTracelessLeakageEnergy A B := by
+  rw [ccrPairwiseMixedCommutatorEnergy_eq A hcomm]
+  exact ccr_numberVariance_lt_card_mul_mean_iff A B hcomm hccr
 
 /-- At one mode the traceless leakage tensor vanishes, so the universal law reduces exactly to
 the self-commutator Fano identity. -/
@@ -803,14 +856,37 @@ theorem ccrScaledTracelessLeakageEnergy_eq_zero_iff
 /-- Literal rigidity classification at equality in the dimension--fluctuation bound. -/
 theorem ccr_numberVariance_eq_card_mul_mean_literal_iff
     (A : I → Matrix n n ℝ) (B : I → Matrix n m ℝ)
-    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B)
-    (hI : 0 < Fintype.card I) :
+    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B) :
     ccrNumberVariance A B = (Fintype.card I : ℝ) * ccrMeanEnergy A ↔
       (∀ i j, ccrMixedCommutator A i j = 0) ∧
         ∀ i j, ccrScaledTracelessLeakage A B i j = 0 := by
-  rw [ccr_numberVariance_eq_card_mul_mean_pairwise_iff A B hcomm hccr hI,
+  rw [ccr_numberVariance_eq_card_mul_mean_pairwise_iff A B hcomm hccr,
     ccrPairwiseMixedCommutatorEnergy_eq_zero_iff,
     ccrScaledTracelessLeakageEnergy_eq_zero_iff]
+
+/-- Literal strictness classification: the bound has a gap exactly when some mixed commutator or
+some traceless leakage channel is nonzero. -/
+theorem ccr_numberVariance_lt_card_mul_mean_literal_iff
+    (A : I → Matrix n n ℝ) (B : I → Matrix n m ℝ)
+    (hcomm : IsCommutingCCRCompression A) (hccr : IsCCRCompletion A B) :
+    ccrNumberVariance A B < (Fintype.card I : ℝ) * ccrMeanEnergy A ↔
+      (∃ i j, ccrMixedCommutator A i j ≠ 0) ∨
+        ∃ i j, ccrScaledTracelessLeakage A B i j ≠ 0 := by
+  classical
+  have hle := ccr_numberVariance_le_card_mul_mean A B hcomm hccr
+  have heq := ccr_numberVariance_eq_card_mul_mean_literal_iff A B hcomm hccr
+  constructor
+  · intro hlt
+    by_contra hdefect
+    push Not at hdefect
+    exact (ne_of_lt hlt) (heq.mpr hdefect)
+  · intro hdefect
+    apply lt_of_le_of_ne hle
+    intro hequality
+    obtain ⟨hC, hK⟩ := heq.mp hequality
+    rcases hdefect with ⟨i, j, hij⟩ | ⟨i, j, hij⟩
+    · exact hij (hC i j)
+    · exact hij (hK i j)
 
 end
 

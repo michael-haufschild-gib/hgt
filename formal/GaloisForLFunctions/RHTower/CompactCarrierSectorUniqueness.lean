@@ -112,9 +112,10 @@ theorem compactFourierBorel_eq_zero_of_tangent_annihilation
       L (compactPrimeEulerUnitTangent s (p : ℕ)) = 0) :
     ∀ z : ℂ, compactFourierBorel L s z = 0 := by
   have hHray := compactCarrierLambert_zero_on_ray L s hn hR₀ hsector hann
-  have hFtail : ∀ x : ℝ, R₀ + 1 ≤ x → compactFourierBorel L s x = 0 := by
-    intro x hx
-    let R : ℝ := x - 1
+  apply entire_eq_zero_of_lambert_ray_zero
+    (compactFourierBorel L s) (R₀ + 1) (compactFourierBorel_analyticOnNhd L s)
+  intro x hx
+  · let R : ℝ := x - 1
     have hRR₀ : R₀ ≤ R := by dsimp [R]; linarith
     obtain ⟨d, hd, hpos⟩ := hsector R hRR₀
     have hbase : ∀ k : K, d ≤ ((x : ℂ) * s k).re := by
@@ -153,7 +154,7 @@ theorem compactFourierBorel_eq_zero_of_tangent_annihilation
         _ ≤ ‖L‖ * Real.exp (-((m : ℝ) * d)) := by gcongr
         _ = ‖L‖ * r ^ (m : ℕ) := by
           congr 1
-          rw [show -((m : ℝ) * d) = (m : ℕ) * (-d) by push_cast; ring,
+          rw [show -((m : ℝ) * d) = (m : ℕ) * (-d) by ring,
             Real.exp_nat_mul]
     have hzero : ∀ m : ℕ+,
         positiveLambertDerivative (compactFourierBorel L s)
@@ -183,10 +184,6 @@ theorem compactFourierBorel_eq_zero_of_tangent_annihilation
           (mul_pos (by exact_mod_cast m.prop) hd) hmre
       rw [positiveLambertDerivative_compactFourierBorel L s _ hq]
       exact htransform
-    exact fourierBorel_eq_zero_of_lambert_ray_zero
-      (compactFourierBorel L s) x ‖L‖ r (norm_nonneg L) hr0 hr1 hdecay hzero
-  exact entire_eq_zero_of_zero_on_real_tail
-    (compactFourierBorel L s) (R₀ + 1)
-    (compactFourierBorel_analyticOnNhd L s) hFtail
+    exact ⟨‖L‖, r, norm_nonneg L, hr0, hr1, hdecay, hzero⟩
 
 end RHTower

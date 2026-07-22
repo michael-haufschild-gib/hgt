@@ -252,6 +252,41 @@ theorem upperBoundary_ludersPinching_eq_zero
   apply upperBoundary_eq_zero_of_commute he
   exact sub_eq_zero.mp (ccmCommutator_ludersPinching_eq_zero he X)
 
+/-- **Algebraic Lüders fixed-point classification.**  An observable is unchanged by an
+idempotent cutoff's nonselective pinching exactly when it commutes with that cutoff.  Thus the
+pinching fixed-point premise is not independent data. -/
+theorem ludersPinching_eq_self_iff_commute
+    {e : R} (he : IsIdempotentElem e) (X : R) :
+    ludersPinching e X = X ↔ X * e = e * X := by
+  simpa only [ludersPinching, HTGeometry.twoOutcomePinching] using
+    (HTGeometry.twoOutcomePinching_eq_self_iff_commute he X)
+
+/-- Repeating the same Lüders measurement is exactly stable after its first application. -/
+theorem ludersPinching_apply_twice
+    {e : R} (he : IsIdempotentElem e) (X : R) :
+    ludersPinching e (ludersPinching e X) = ludersPinching e X := by
+  simpa only [ludersPinching, HTGeometry.twoOutcomePinching] using
+    (HTGeometry.twoOutcomePinching_apply_twice he X)
+
+/-- The image of an idempotent cutoff's Lüders channel is exactly its cutoff commutant. -/
+theorem range_ludersPinching_eq_commutant
+    {e : R} (he : IsIdempotentElem e) :
+    Set.range (ludersPinching e) = {X : R | X * e = e * X} := by
+  simpa only [ludersPinching, HTGeometry.twoOutcomePinching] using
+    (HTGeometry.range_twoOutcomePinching_eq_commutant he)
+
+/-- **One-corner Lüders fixed-point classification.**  For self-adjoint cutoff and source, the
+upper boundary corner is the adjoint of the lower one.  Hence a single native RHTower boundary
+condition is equivalent to exact invariance under nonselective measurement. -/
+theorem ludersPinching_eq_self_iff_crossBoundary_eq_zero_of_star_eq
+    [StarRing R] {e X : R} (he : IsIdempotentElem e)
+    (heStar : star e = e) (hXStar : star X = X) :
+    ludersPinching e X = X ↔ crossBoundary e X = 0 := by
+  simpa only [ludersPinching, HTGeometry.twoOutcomePinching, crossBoundary,
+    HTGeometry.twoOutcomeLowerTransition] using
+      (HTGeometry.twoOutcomePinching_eq_self_iff_lowerTransition_eq_zero_of_star_eq
+        he heStar hXStar)
+
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 /-- A commutator is compact when its left entry is compact. -/

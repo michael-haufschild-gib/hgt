@@ -304,6 +304,47 @@ theorem finiteDerivativeReporterMap_postcomp_capacity_eq_of_injective
     omega
   · exact hker
 
+/-- **Recoverable postprocessing preserves exact finite-reporter capacity.**  A decoder need not
+be injective on its whole domain: a left recovery on the image of the source reporter already
+preserves every finite coefficient kernel and visible rank. -/
+theorem finiteDerivativeReporterMap_postcomp_capacity_eq_of_recovery
+    {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y]
+    [AddCommGroup Z] [Module ℂ Z]
+    (N : ℕ) (f : ℂ → ℂ)
+    (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →ₗ[ℂ] Z) (recover : Z →ₗ[ℂ] Y)
+    (hrecover : recover.comp (decode.comp report) = report) :
+    finrank ℂ (LinearMap.range
+        (finiteDerivativeReporterMap N f (decode.comp report))) =
+        finrank ℂ (LinearMap.range (finiteDerivativeReporterMap N f report)) ∧
+      LinearMap.ker (finiteDerivativeReporterMap N f (decode.comp report)) =
+        LinearMap.ker (finiteDerivativeReporterMap N f report) := by
+  have hrecoverMap :
+      recover.comp (finiteDerivativeReporterMap N f (decode.comp report)) =
+        finiteDerivativeReporterMap N f report := by
+    rw [← finiteDerivativeReporterMap_postcomp, hrecover]
+  have hker :
+      LinearMap.ker (finiteDerivativeReporterMap N f (decode.comp report)) =
+        LinearMap.ker (finiteDerivativeReporterMap N f report) := by
+    apply le_antisymm
+    · intro c hc
+      rw [LinearMap.mem_ker] at hc ⊢
+      calc
+        finiteDerivativeReporterMap N f report c =
+            (recover.comp
+              (finiteDerivativeReporterMap N f (decode.comp report))) c := by
+              exact congrArg
+                (fun T : (Fin N → ℂ) →ₗ[ℂ] Y => T c) hrecoverMap.symm
+        _ = recover (finiteDerivativeReporterMap N f (decode.comp report) c) := rfl
+        _ = recover 0 := by rw [hc]
+        _ = 0 := map_zero recover
+    · exact ker_finiteDerivativeReporterMap_le_postcomp N f report decode
+  have hpre := finiteDerivativeReporterMap_rank_nullity N f report
+  have hpost := finiteDerivativeReporterMap_rank_nullity N f (decode.comp report)
+  constructor
+  · rw [hker] at hpost
+    omega
+  · exact hker
+
 /-- Every coefficient direction newly erased by a decoder is a genuinely nonzero source packet
 which was visible before decoding and vanishes afterwards. -/
 theorem finiteDerivativeReporterMap_postcomp_newBlindPacket

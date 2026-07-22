@@ -142,6 +142,21 @@ theorem hsNormSq_commutator_eq_two_mul_crossBoundary_of_selfAdjoint
       hsNormSq_sub_eq_add_of_hsInner_eq_zero hL' hU horth
     _ = 2 * hsNormSq L := by rw [hUnorm]; ring
 
+/-- **Exact one-corner Lüders energy law.**  For a self-adjoint observable and orthogonal cutoff,
+the full nonselective-measurement disturbance has exactly twice the Hilbert--Schmidt energy of
+one transition corner.  The lone analytic premise is finiteness of that corner itself. -/
+theorem hsNormSq_ludersDisturbance_eq_two_mul_crossBoundary_of_selfAdjoint
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (e X : H →L[ℂ] H) (he : IsIdempotentElem e)
+    (heAdj : ContinuousLinearMap.adjoint e = e)
+    (hXAdj : ContinuousLinearMap.adjoint X = X)
+    (hL : IsHilbertSchmidt (crossBoundary e X)) :
+    hsNormSq (X - ludersPinching e X) =
+      2 * hsNormSq (crossBoundary e X) := by
+  rw [hsNormSq_ludersDisturbance_eq_cutoffCommutator e X he heAdj hXAdj]
+  exact hsNormSq_commutator_eq_two_mul_crossBoundary_of_selfAdjoint
+    e X he heAdj hXAdj hL
+
 /-- Hilbert--Schmidt self-adjoint observables satisfy the transition-rate identity with no
 separate corner hypothesis: the two-sided ideal property supplies it automatically. -/
 theorem hsNormSq_commutator_eq_two_mul_crossBoundary_of_selfAdjoint_hilbertSchmidt
@@ -195,13 +210,13 @@ theorem hsNormSq_centralLudersDisturbance_eq_two_mul_transition
       2 * hsNormSq
         (crossBoundary (centralFourierForbidden a).starProjection
           (centralPhysicalForbidden a).starProjection) := by
-  rw [hsNormSq_ludersDisturbance_eq_cutoffCommutator
+  exact hsNormSq_ludersDisturbance_eq_two_mul_crossBoundary_of_selfAdjoint
     (centralFourierForbidden a).starProjection
     (centralPhysicalForbidden a).starProjection
     (centralFourierForbidden a).isIdempotentElem_starProjection
     (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq
-    (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq]
-  exact hsNormSq_centralCutoffCommutator_eq_two_mul_transition a ha
+    (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
+    (centralProlateTransition_isHilbertSchmidt a ha)
 
 /-- The trace of any Hilbert--Schmidt Sonin transition impurity is exactly the transition-corner
 energy.  This turns the existing operator-valued `T-T²` law into the scalar value used by

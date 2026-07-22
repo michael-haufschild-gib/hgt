@@ -1,9 +1,9 @@
 # Connes / Hedenmalm RH route — complete research handover
 
-**Last updated:** 2026-07-21  
+**Last updated:** 2026-07-22
 **Repository:** `/Users/Spare/Documents/code/riemann/publications/hgt`  
 **Active research card:**
-`docs/drafts/pipeline/1-in-progress/hedenmalm-center-mixed-double-positivity-law.md`
+`docs/drafts/pipeline/1-in-progress/ccm-aperture-resolvent-riesz-sector.md`
 
 ## 1. Status at a glance
 
@@ -3728,8 +3728,9 @@ The unique leading indicial cancellation is
 
 This explains exact threshold in Chen--Weth barriers: their proved estimate gives
 `O(log^(-tau))` for every `tau<1/2`, and its leading barrier coefficient vanishes at `1/2`.
-Current logarithmic-Laplacian literature proves boundedness and zero boundary continuity but
-leaves optimal rate open.  Equation `(57.8)` predicts critical eigenmode layer
+Hernandez-Santamaria--Lopez Rios--Saldana subsequently proved the optimal `tau=1/2` upper rate and
+a matching Hopf lower bound for nonnegative supersolutions. Equation `(57.8)` identifies the same
+critical scale for Suzuki's signed perturbation and predicts eigenmode layer
 
 \[
 v(a-r)=c_+L^{-1/2}+\cdots,
@@ -3802,10 +3803,10 @@ Whenever right side divided by `sqrt(L)` is integrable, canonical boundary trace
 \]
 
 exists; reflection gives `beta_-`.  Exact Suzuki lower-order terms have favorable structure:
-zeroth-order multiplication loses one inverse-log order, finite translations sample other members
-of same finite seam family, and regular polar--Gamma convolution is endpoint-smooth.  Remaining
-boundary theorem is now finite simultaneous log-Dini bootstrap for translated germs, not discovery
-of boundary exponent or trace variable.
+zeroth-order multiplication loses one inverse-log order, the finite translation **alphabet**
+generates a countable graded seam orbit, and regular polar--Gamma convolution is endpoint-smooth.
+Remaining boundary theorem is therefore a simultaneous log-Dini bootstrap on a countable graded
+carrier, not a finite seam system and not discovery of boundary exponent or trace variable.
 
 ### New source-specific conjecture
 
@@ -3856,14 +3857,63 @@ These discrete apertures do not create direct cancellation. The right-end layer 
 `v(x+log n)` occupies the left punctured side of collision point; left-end layer transported by
 `v(x-log m)` occupies right punctured side. Restricting to two half-neighborhoods recovers two
 coefficients separately, so parity cannot erase either oriented germ. Later iterated collisions
-still require audit by log order and exact Dirichlet convolution.
+are no longer an unclassified cancellation problem.  Let `P_a` be visible primes and form positive
+Laurent polynomial on prime-valuation lattice
+
+\[
+T_a(z)=\sum_{p^j\le e^{2a}}\frac{\log p}{p^{j/2}}
+       (z_p^j+z_p^{-j}).                                 \tag{57.12b}
+\]
+
+Grade-`k` coefficient at valuation vector `nu` is exactly `[z^nu]T_a^k`, positive iff at least one
+length-`k` word reaches `nu`. Unique factorization gives
+
+\[
+\sum_p\nu_p\log p=\sum_p\mu_p\log p\iff\nu=\mu,        \tag{57.12c}
+\]
+
+so it classifies all same-end spatial collisions. Support pruning merely removes inadmissible
+positive summands. Every prime propagation has one common nonzero real principal factor (with sign
+fixed by operator convention); smooth polar--Gamma terms create no new interior one-sided singular
+support. Hence first-arrival
+coefficient at every admissibly reachable seam is nonzero **within any valid polyhomogeneous
+expansion**. Translations preserve orientation, so
+collisions between descendants of opposite endpoints remain separated on two punctured sides at
+every grade.
+
+Support pruning also retains density cofinally. Put `alpha=log 2`, `beta=log 3`, and
+`Gamma=Z alpha+Z beta`. For every `a>beta`, admissible descendants of either endpoint are dense in
+
+\[
+C_a=(-a+\beta,a-\beta).                                  \tag{57.12d}
+\]
+
+Proof: `Gamma` is dense because `alpha/beta` is irrational. Choose
+`d in Gamma intersect (beta,2a-beta)`. Order a reduced word for `-d` greedily around terminal value
+`-d`; its partial sums stay in `(-d-beta,0)`, so starting at `a` it reaches
+`b=a-d in C_a` without leaving aperture. For any `gamma` with `b+gamma in C_a`, greedily alternate
+positive and negative letters in a reduced word for `gamma`; all partial sums lie between
+`min(0,gamma)-beta` and `max(0,gamma)+beta`. Thus every point of
+`(b+Gamma) intersect C_a` is admissibly reachable, and this set is dense. This proves
+
+\[
+a>\log3,\ \beta_+(v)\ne0
+\Longrightarrow
+\text{dense nonzero first-arrival seam germs in }C_a.   \tag{57.12e}
+\]
+
+Dense germs of increasing inverse-log grade can still converge in logarithmic form domain, so
+`(57.12e)` is not itself contradiction. It closes geometry and collision gates and exposes two
+genuinely analytic gates: trace separation for nonzero characteristic packets, and convergence plus
+two-ended no-return for resulting graded state.
 
 This yields **`SUZUKI-COMPLETED-LOG-SEAM-NO-RETURN`**:
 
 > For actual polar--Gamma symbol and exact von-Mangoldt coefficients, logarithmic Dirichlet
 > reconstruction of every finite characteristic packet has full two-ended half-log expansion.
 > If square Evans residual vanishes, endpoint and propagated prime-seam coefficients satisfy a
-> triangular two-ended transport system, and that system has only zero solution.
+> convergent countable transport system graded by inverse-log order, and that system has only zero
+> solution.
 
 The decisive chain is
 
@@ -3883,8 +3933,673 @@ Research card:
 
 - `docs/drafts/pipeline/1-in-progress/suzuki-completed-zero-mode-corona-seam-law.md`.
 
-No Lean wrapper was added.  Formal tree lacks Suzuki completed form and logarithmic boundary
-calculus; abstractly formalizing `(57.5)` would not certify source factorization `(57.1)` or seam
-transport `(57.12)`.  RH is not proved.  Actual corpus frontier is now exact: prove full
-half-logarithmic boundary expansion, derive nonresonant and resonant prime-seam transport blocks,
-and prove their two-ended injectivity, equivalently `det N_(a,0)!=0` for every aperture.
+Arithmetic collision law `(57.12c)` and opposite-end resonance are formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/SuzukiPrimeValuationSeam.lean`, reusing existing full
+prime-log linear independence. Formal tree still lacks Suzuki completed form and logarithmic
+boundary calculus, so Lean does not yet certify analytic transport `(57.12)`. RH is not proved.
+Actual corpus frontier is now exact: prove full
+half-logarithmic expansion and trace separation, construct convergent valuation-graded transport,
+and prove its two-ended no-return, equivalently `det N_(a,0)!=0` for every aperture.  Collision
+classification and cofinal support-pruned density are no longer open.
+
+## 58. Critical log-translation flux collapses infinite seam hierarchy to finite grade (2026-07-22)
+
+Section 57 left two analytic tasks entangled: observation of half-log coefficients and convergence
+of countable dense-seam transport.  The first now has an exact positive Hilbert metric, and the
+second is not necessary for kernel exclusion.
+
+For `alpha>0`, let a zero-extended one-sided germ be
+
+\[
+ f_{\alpha,c}(x)=c\,\chi(x)(\log(1/x))^{-\alpha},\qquad x>0,
+\]
+
+where `chi=1` near zero.  If `tau_h f(x)=f(x-h)` and `L_h=log(1/h)`, then
+
+\[
+ \boxed{\displaystyle
+ \lim_{h\downarrow0}\frac{L_h^{2\alpha}}h
+       \|\tau_hf_{\alpha,c}-f_{\alpha,c}\|_2^2=|c|^2.} \tag{58.1}
+\]
+
+The proof separates the exposed strip `(0,h)` from overlap.  After `x=ht`, the exposed term is
+
+\[
+ |c|^2\int_0^1
+ \left(1+\frac{\log(1/t)}{L_h}\right)^{-2\alpha}dt\to |c|^2.
+\]
+
+On `(h,2h)` both normalized profiles converge to one, so their difference is `o(1)` by dominated
+convergence.  On `(2h,epsilon)`, mean value gives
+
+\[
+ |f(x-h)-f(x)|\le
+ C_\alpha\frac{h}{x(\log(1/x))^{\alpha+1}},
+\]
+
+whose squared integral is `O(hL_h^(-2alpha-2))+O(h^(3/2))`; smooth cutoff terms are `O(h^2)`.
+This proves `(58.1)` without a boundary regularity import.
+
+For two interval endpoints with coefficients `beta_+`,`beta_-`, the exposed strips are disjoint:
+
+\[
+ \lim_{h\downarrow0}\frac{L_h^{2\alpha}}h\|\tau_hu-u\|_2^2
+ =|\beta_+|^2+|\beta_-|^2.                              \tag{58.2}
+\]
+
+At critical corona order `alpha=1/2`, normalization is `L_h/h`.  At seam grade `k`, where
+`alpha=k+1/2`, normalization is `L_h^(2k+1)/h`.  A two-sided collision is seen unlocalized as
+`|c_+-c_-|^2`; smooth one-sided localization recovers `|c_+|^2` and `|c_-|^2` separately.  Thus
+every finite endpoint/seam coefficient is metrically observable, including resonant opposite
+orientations.
+
+The more important correction uses the completion-safe square-Evans carrier.  Let `F_a` be its
+finite-dimensional characteristic packet and let `ell_i in F_a^*` be all scalar endpoint/seam
+residual coordinates, indexed by arbitrary grade, valuation, and orientation.  Linear algebra gives
+
+\[
+ \bigcap_i\ker\ell_i=\{0\}
+ \Longrightarrow
+ \exists i_1,\ldots,i_m,\quad
+ m\le\dim F_a,\quad
+ \bigcap_{j=1}^m\ker\ell_{i_j}=\{0\}.                  \tag{58.3}
+\]
+
+For a natural grade hierarchy there is therefore one finite `N_a` such that vanishing through
+grade `N_a` forces the packet to vanish.  Consequently a convergent infinite dense-seam state is
+**not required** to exclude `ker A_a`.  It is enough to prove exact Suzuki expansion to every
+prescribed finite order and the joint separation statement that an infinitely log-flat
+characteristic packet is zero.  Equation `(58.3)` then selects a finite certificate automatically.
+
+This changes the frontier from
+
+```text
+construct and sum an infinite dense transport state
+```
+
+to the sharper pair
+
+```text
+arbitrary finite-order source-faithful transport;
+log-quasianalytic separation on the finite square-Evans packet.             (58.4)
+```
+
+The finite detector is formalized unconditionally as
+`exists_finite_trace_detector` and `exists_finite_grade_trace_cutoff` in
+`formal/GaloisForLFunctions/RHTower/SuzukiFiniteGradeTraceDetector.lean`.
+
+There is also a concrete route to the missing first-crossing calculus.  Split Suzuki's fixed
+whole-line form on compact support as
+
+\[
+ A=L_0+B,\qquad \widehat{L_0f}(\xi)=\log|\xi|\widehat f(\xi),
+\]
+
+with `B` the exact polar--prime--Gamma remainder, and regularize only the principal block by
+
+\[
+ L_s=\frac{(-\Delta)^s-I}{2s}.                          \tag{58.5}
+\]
+
+Fractional Hadamard theory detects `(u_s/delta^s)^2`.  Matching `delta^s=e^{-sL}` to the outer
+half-log layer at `L` of order `1/s` predicts
+
+\[
+ \frac{u_s/\delta^s}{\sqrt s}\longrightarrow C_{\log}\beta,
+\]
+
+and hence the logarithmic crossing form conjecture
+
+\[
+ \dot\lambda_a(v,w)=
+ -\frac{C_{\log}^2}{2}
+ \bigl(\beta_+(v)\overline{\beta_+(w)}
+      +\beta_-(v)\overline{\beta_-(w)}\bigr).          \tag{58.6}
+\]
+
+Primary audit found fractional eigenvalue and pointwise Green Hadamard formulas, but no proved
+logarithmic-Laplacian version.  The only arXiv paper found advertising a logarithmic Pohozaev
+identity is withdrawn for a crucial error in that proof.  Thus `(58.6)` is a genuine boundary-layer
+problem, not an import.
+
+Hostile sign audit is decisive: `(58.6)` alone does not prove RH.  Its negative sign is compatible
+with a false-RH first crossing.  Its proof would establish trace transversality and reduce any
+remaining invisible zero mode to infinite log-flatness.  The RH-bearing step is then `(58.4)` plus
+exact finite-grade two-ended prime--Gamma no-return, equivalently `det N_(a,0)!=0` for every
+aperture.
+
+Research card:
+
+- `docs/drafts/pipeline/1-in-progress/suzuki-log-translation-flux-finite-grade-detector.md`.
+
+## 59. Whole-packet log separation is false; zero modes have corona and regular channels (2026-07-22)
+
+Section 58's finite-dimensional theorem is correct, but its proposed separation premise is not.
+Inverse-log traces do not see the whole square-Evans reconstruction.  A hostile exact model test
+produces both a regular invisible channel and a more dangerous intermediate invisible channel.
+
+First correct the literature boundary.  Chen--Weth proved decay `log^(-tau)` for every
+`tau<1/2`, and Feulefack--Jarohs--Weth left the endpoint open.  Hernandez-Santamaria--Lopez
+Rios--Saldana, arXiv:2401.18033v2, subsequently proved the optimal `log^(-1/2)` upper bound,
+two-sided bounds for the torsion solution, and a half-log Hopf lower bound for nonnegative
+supersolutions.  This validates the critical scale.  It does **not** prove a signed trace limit,
+trace-zero `H1` regularity, or a boundary expansion for Suzuki's signed prime--polar perturbation.
+
+The principal Volterra block already gives the exact classification needed to audit the proposed
+trace hierarchy.  Put
+
+\[
+ (PF)(L)=2LF(L)-\int_0^L F(t)\,dt,qquad
+ H(L)=\sqrt L F(L),qquad \Phi=PF.                       \tag{59.1}
+\]
+
+Then
+
+\[
+ \Phi'(L)=2\sqrt L\,H'(L).                               \tag{59.2}
+\]
+
+If `Phi'(L)/sqrt(L)` is integrable at infinity, the trace
+`beta=lim sqrt(L)F(L)` exists and
+
+\[
+ \boxed{F(L)=\frac{\beta}{\sqrt L}
+ -\frac1{2\sqrt L}\int_L^\infty\frac{\Phi'(t)}{\sqrt t}\,dt.} \tag{59.3}
+\]
+
+This is an identity.  If
+
+\[
+ |\Phi'(L)|\le C e^{-\sigma L}(1+L)^m,qquad \sigma>\tfrac12, \tag{59.4}
+\]
+
+then `(59.3)` has exactly two channels:
+
+\[
+\begin{array}{ll}
+ \beta\ne0:&F(L)=\beta L^{-1/2}+O(e^{-\sigma L}L^{m-1}),
+             \quad u(r)=F(\log(1/r))\notin H^1;\\
+ \beta=0:&F,F'=O(e^{-\sigma L}L^{m-1}),
+             \quad u\in H^1.
+\end{array}                                               \tag{59.5}
+\]
+
+Indeed `F'=Phi'/(2L)-F/(2L)`.  In the second case the derivative energy has tail
+`integral exp(-(2sigma-1)L)L^(2m-2)dL`; in the first it has tail
+`integral exp(L)L^(-3)dL`.
+
+The first counterexample is source-shaped:
+
+\[
+ F_{\rm reg}(L)=e^{-L}-2e^{-2L},\qquad
+ PF_{\rm reg}=(2L+1)e^{-L}-(4L+1)e^{-2L}.                \tag{59.6}
+\]
+
+Every inverse-log coefficient of this nonzero solution vanishes, while in physical coordinates
+`u_reg(r)=r-2r^2` lies in `H1`.  Thus all log grades cannot separate a finite characteristic
+packet even when its forcing is exponential-polynomial.
+
+There is a sharper generic obstruction.  Choose smooth `F_flat` equal to `e^(-sqrt(L))` for large
+`L` and alter it on a bounded interval so that its total integral is zero.  Then on the tail
+
+\[
+ PF_{\rm flat}(L)=(2L+2\sqrt L+2)e^{-\sqrt L},           \tag{59.7}
+\]
+
+so solution and forcing are flat at every inverse-log order, but
+`u_flat(r)=e^(-sqrt(log(1/r)))` is not in `H1`; its derivative energy contains
+`integral L^(-1)e^(L-2sqrt(L))dL`.  Finite-dimensional compression cannot exclude this mode:
+it only compresses a family **after** joint separation is established.
+
+The countermodel is forced, however; it does not solve a homogeneous zero-mode system.  There is
+an exact rigidity theorem for that missing case.  Let `F(L)` take values in a Banach seam carrier,
+put `f(L)=||F(L)||` and `g(L)=integral_L^infinity f`, and suppose
+
+\[
+ 2LF(L)-\int_{L_0}^L F(t)dt+T(L)F(L)+E(L)=0,            \tag{59.7a}
+\]
+
+with `sup ||T(L)||<=C`, `Lf(L)->0`, and
+
+\[
+ \|E(L)\|\le\tfrac12\{Lf(L)+g(L)\}.                    \tag{59.7b}
+\]
+
+If `g(L)=o(L^(-3/2))`, then `F` vanishes on a terminal half-line.  Indeed, passage to infinity in
+`(59.7a)` first forces `integral F=0`.  Replacing the initial integral by the negative tail and
+taking norms gives
+
+\[
+ (3L/2-C)f(L)\le3g(L)/2.
+\]
+
+For `L>=2C`, `g'=-f>=-3g/(2L)`, so `L^(3/2)g(L)` is nondecreasing.  A nonzero tail therefore has
+a polynomial lower bound, contradicting inverse-log flatness.
+
+This applies to the proposed intermediate sector once the exact remainder is relatively small.
+At fixed aperture the prime translation alphabet is finite, hence bounded on a uniform seam
+carrier.  Symmetrizing the exact Volterra remainder gives an exponentially weighted second
+difference, bounded on a controlled tail by a local `F''` envelope plus `O(e^(-L/2))`; every
+intermediate conormal scale `e^(-L^theta)`, `0<theta<1`, makes it `o(LF)`.  Thus the entire
+intermediate transseries obstruction is reduced to one concrete source theorem: construct a
+uniform oriented-seam carrier satisfying `(59.7b)` after regular power jets are subtracted.
+
+The strongest survivor is a new two-scale architecture.  Inverse-log flux is a detector on the
+completion-corona quotient, not on the whole packet.  For a regular zero mode Suzuki's exact
+operator relation supplies the complementary connector
+
+\[
+ v\in\ker A_a\cap H^1_0(-a,a)
+ \quad\Longleftrightarrow\quad
+ Dv\in\ker(G_a:L^2_0(-a,a)\to L^2_0(-a,a)).             \tag{59.8}
+\]
+
+For the forward direction, `A_a` agrees on `H1_0` with `D^*G_aD`; hence `G_aDv` is constant, and
+its zero mean makes it zero.  The reverse implication is immediate.  Therefore a zero-trace
+regularity theorem would pass every invisible regular square-Evans mode to the already constructed
+raw Evans Gram.
+
+The new source-specific conjecture is **`SUZUKI-NO-INTERMEDIATE-BOUNDARY-SCALE`**:
+
+> Every exact Suzuki zero mode has two endpoint half-log traces.  Nonzero traces generate the
+> valuation-graded corona seams.  If both traces vanish, there is no inverse-log-flat non-`H1`
+> homogeneous seam cycle; the mode lies in `H1_0`, with power remainder
+> `O(r^sigma log(1/r)^m)` for some `sigma>1/2`.
+
+This cannot follow from generic logarithmic ellipticity because `(59.7)` is an exact generic
+countermodel.  It must retain Suzuki's finite von-Mangoldt translation alphabet and exact
+polar--Gamma remainder.  If proved, every nonzero zero mode falls into exactly one live branch:
+
+\[
+\begin{array}{c}
+ \text{nonzero corona state}\quad\xrightarrow{\text{prime--Gamma no-return}}\quad\bot,\\
+ \text{zero corona state}\quad\xrightarrow{(59.8)}\quad
+ \text{raw screw kernel}\quad\xrightarrow{\det(M_a^*M_a)>0}\quad\bot.
+\end{array}                                               \tag{59.9}
+\]
+
+This is the actual frontier the corpus cannot solve: prove the no-intermediate-scale theorem,
+prove corona no-return, and prove raw Evans Gram positivity for every aperture.  Section 58's
+Lean finite detector remains useful only after restricting to the corona quotient.  No Lean
+wrapper was added for `(59.3)`--`(59.9)`: current formal tree has no logarithmic boundary calculus,
+and an abstract restatement would not certify the source theorem.
+
+Research card:
+
+- `docs/drafts/pipeline/1-in-progress/suzuki-corona-regular-two-scale-boundary-law.md`.
+
+## 60. Dense Suzuki seams collapse to a two-root valuation Wiener problem
+
+Section 59 left a uniform-carrier problem: iterated prime translations are dense in physical
+space, so no simultaneous system of disjoint seam neighborhoods exists.  The correct carrier is
+not spatial.  At fixed aperture let `P_a` be the finite visible-prime set and put
+
+\[
+ \Gamma_a=\mathbb Z^{P_a},\qquad
+ \lambda(\nu)=\sum_{p\in P_a}\nu_p\log p,
+ \qquad \mathcal W_a=\ell^1(\Gamma_a).                 \tag{60.1}
+\]
+
+Unique factorization makes `lambda` injective.  Every phase character
+
+\[
+ \operatorname{Ev}_\xi(c)
+ =\sum_{\nu\in\Gamma_a}c_\nu e^{-i\xi\lambda(\nu)}
+\]
+
+is contractive on `W_a`, so an `ell^1` coefficient state can be evaluated even when its physical
+phase set is dense.
+
+After splitting the principal polar--Gamma logarithm, the exact finite-aperture high-frequency
+symbol has source form
+
+\[
+ p_a(\xi)=\kappa L(\xi)+q_a(\xi)+\operatorname{Ev}_\xi(t_a),
+ \qquad L(\xi)=\log\langle\xi\rangle,                  \tag{60.2}
+\]
+
+where `kappa>0`, `q_a` is bounded after the digamma logarithm is removed, and
+
+\[
+ t_a=-\sum_{p^j\le e^{2a}}\frac{\log p}{p^{j/2}}
+       (\delta_{je_p}+\delta_{-je_p}),qquad
+ M_a=\|t_a\|_1
+ =2\sum_{p^j\le e^{2a}}\frac{\log p}{p^{j/2}}<\infty. \tag{60.3}
+\]
+
+The normalization in `(60.2)` must still be copied directly from Suzuki when the completed
+analytic realization is built; no guessed value of `kappa` is used below.
+
+There is now an exact convergence theorem.  For any discrete abelian group, `t in ell^1`, scalar
+`|q(L)|<=C`, and
+
+\[
+ h_L=\kappa L\delta_0+q(L)\delta_0+t,
+\]
+
+if `kappa L>C+||t||_1`, then
+
+\[
+ h_L^{-1}=\frac1{\kappa L}\sum_{k\ge0}
+ \left[-\frac{q(L)\delta_0+t}{\kappa L}\right]^{*k},
+ \qquad
+ \|h_L^{-1}\|_1\le
+ \frac1{\kappa L-C-\|t\|_1}.                          \tag{60.4}
+\]
+
+Writing `rho_L=(C+||t||_1)/(kappa L)`, the tail after grade `N` is at most
+
+\[
+ \frac1{\kappa L}\frac{\rho_L^{N+1}}{1-\rho_L}.        \tag{60.5}
+\]
+
+This is the Banach-algebra geometric series, but its Suzuki consequence is new in the corpus: the
+entire dense valuation seam state converges absolutely, not merely grade by grade.
+
+It also closes first-arrival cancellation.  If `d(nu)` is shortest translation-word length
+reaching `nu`, the common sign of Suzuki prime coefficients gives
+
+\[
+ (h_L^{-1})_\nu
+ =\frac{(-1)^{d(\nu)}(t^{*d(\nu)})_\nu}
+        {\kappa^{d(\nu)+1}L^{d(\nu)+1}}
+   +O(L^{-d(\nu)-2}).                                  \tag{60.6}
+\]
+
+No lower Neumann grade reaches `nu`; at first grade no bounded zero-step factor can occur.  The
+leading coefficient is therefore the nonzero common-sign sum of all shortest prime words.
+Arithmetic collisions and infinite-grade convergence are both settled in one coefficient norm.
+
+There is a second reduction.  Extend a putative zero mode `v` by zero outside `(-a,a)` and choose
+the translation-invariant truncated Weil distribution `P_a` representing the same compression.
+The interior equation says
+
+\[
+ b=P_a\widetilde v,qquad
+ \operatorname{supp}b\subset(-\infty,-a]\cup[a,\infty). \tag{60.7}
+\]
+
+Splitting the two exterior half-lines and translating them to zero gives, exactly,
+
+\[
+ p_a(\xi)V(\xi)
+ =e^{ia\xi}B_-(\xi)+e^{-ia\xi}B_+(\xi),qquad
+ V=\widehat{\widetilde v}.                              \tag{60.8}
+\]
+
+The two `B` terms belong to opposite distributional Hardy classes once Suzuki's logarithmic form
+domain is installed.  Applying `(60.4)` on the high-frequency tail in the root module
+
+\[
+ \mathcal W_a e_-\oplus\mathcal W_a e_+                \tag{60.9}
+\]
+
+shows that every dense seam coefficient is slaved to these two endpoint amplitudes.  Resonant
+apertures may identify their evaluated physical phases, but not the two root labels or their
+opposite one-sided orientations.
+
+Crucially, `(60.8)` must **not** be divided globally by `p_a`: finite-frequency zeros are part of
+the RH-bearing problem.  The exact remaining matching problem is
+
+\[
+ \boxed{
+ V\in PW_a,\quad B_-\in H_+,\quad B_+\in H_-,\quad
+ p_aV=e^{ia\xi}B_-+e^{-ia\xi}B_+.}                     \tag{60.10}
+\]
+
+Here all three spaces mean their completed logarithmic distribution versions.  At a real zero of
+`p_a`, `(60.10)` imposes divisibility; on the high-frequency tail `(60.4)` supplies the unique
+absolutely convergent valuation expansion.
+
+The new source-specific conjecture is **`SUZUKI-TWO-PORT-RETURN-INJECTIVITY`**:
+
+> For every aperture, the completed Suzuki classes contain no nonzero triple
+> `(V,B_-,B_+)` satisfying `(60.10)`.
+
+This conjecture is equivalent to `ker A_a=0` for every aperture and hence to RH; it is not a proof.
+The scientific reduction is that the former countable dense-seam frontier is now a two-amplitude
+Hardy divisibility problem with an explicitly inverted high-frequency tail.  The first genuinely
+non-circular target is trace-zero endpoint classification: if both half-log components of
+`B_-` and `B_+` vanish, prove `V` is `H1`.  Then `(59.8)` sends the mode to the raw screw kernel.
+The only remaining branches are
+
+\[
+ \text{nonzero endpoint pair}\xrightarrow{\text{two-port no-return}}\bot,
+ \qquad
+ \text{trace-zero pair}\xrightarrow{H^1\text{ lift}}
+ \ker G_a\xrightarrow{\det(M_a^*M_a)>0}\bot.           \tag{60.11}
+\]
+
+Thus actual corpus frontier is now narrower than Section 59: construct endpoint Hardy classes for
+Suzuki's completion, exclude inverse-log-flat elements of matching kernel `(60.10)`, and prove raw
+Evans Gram positivity.  Generic Wiener inversion cannot decide the finite-frequency matching
+kernel, and assuming its contractivity or positivity would simply assume RH.
+
+Research card:
+
+- `docs/drafts/pipeline/1-in-progress/suzuki-two-root-valuation-wiener-lift.md`.
+
+The standard parent theory is the Wiener convolution algebra and almost-periodic
+pseudodifferential calculus of Shubin/Wahlberg.  Corpus already formalizes prime-log independence,
+finite Laurent collision laws, and finite exponential-pencil coefficient extraction.  No Lean was
+added: the concrete Suzuki multiplier, completion, exterior support split, and Hardy boundary
+classes are absent, while formalizing only geometric series `(60.4)` would be non-RH bridge work.
+
+## 61. Coherent causal fusion creates the missing cofinal cross-prime carrier
+
+Section 60 was based on an incomplete frontier audit.  Its two-root Wiener matching problem remains
+a valid secondary zero-mode reduction, but the formal corpus already proceeds much further through
+entry-wall Green transport, FE light completion, all-prime cubic innovation, rectangular Ward
+completeness, and S63's causal-depth Frostman law.  Actual unresolved RH-bearing statement before
+this section was:
+
+```text
+SUZUKI-FE-REFLECTED-WALL-WARD-ASSEMBLY:
+identify actual division-free Robin--Gamma--holonomy trace on completed wall carrier,
+pay marked-halfgap and holonomy Schur debts,
+and prove fixed-width rectangular Ward residual uniformly lower bounded.
+```
+
+S63 left its cross-prime correction unspecified.  Cubic innovation in fact gives enough damping to
+construct it.  Fix `h,a>0`, put `alpha=ha/2`, and define
+
+\[
+ d_p=p^{-\alpha},\qquad
+ r_p=p^{-(1/4+2\alpha)},\qquad
+ z_p(t)=e^{it\log p/2}.
+\]
+
+The exact causal ray is
+
+\[
+ R_p(t)=\sum_{e\ge0}\psi_t(p,e)
+       =\frac{A_pz_p(t)}{1-r_pz_p(t)},                   \tag{61.1}
+\]
+
+where
+
+\[
+ A_p=(h\sqrt h)^{-1}\sqrt{\log p}\,p^{-1/4}(p+1)^{-1}(1-d_p)^2.
+                                                                  \tag{61.2}
+\]
+
+Since `r_p<=2^(-1/4)<1`, reverse triangle inequality and
+`sqrt(x)<=(1+x)/2` give a height-uniform bound
+
+\[
+ |R_p(t)|\le C_h\sqrt{\log p}\,p^{-5/4}
+       \le \frac{C_h}{2}(1+\log p)p^{-5/4}.              \tag{61.3}
+\]
+
+Both Dirichlet majorants converge.  Therefore a new legal source operation exists:
+
+\[
+ R(t)=\sum_pR_p(t)                                      \tag{61.4}
+\]
+
+converges absolutely over every prime and uniformly in height **before** any Gram square, FE light
+split, or projective division.  Its energy is the absolutely convergent double-prime Gram
+
+\[
+ |R(t)|^2=\sum_{p,q}R_p(t)\overline{R_q(t)}.             \tag{61.5}
+\]
+
+Thus `p!=q` terms required by Gamma conductor capacity are actual source terms, not fitted
+covariance.  Reflection is exact: `R(-t)=conjugate(R(t))`.
+
+There is also a rigidity theorem.  Put `C=sum_p |R_p(0)|`.  Individual Frostman caps and triangle
+inequality give
+
+\[
+ C^2-|R(t-u)|^2\ge0.                                   \tag{61.6}
+\]
+
+If equality holds, the nonnegative summable deficits
+`|R_p(0)|-|R_p(t-u)|` all vanish.  Prime `2` and prime `3` then simultaneously attain their S63
+caps; incommensurate prime-log clocks force `t=u`.  Hence
+
+\[
+ C^2-|R(t-u)|^2=0\quad\Longleftrightarrow\quad t=u.     \tag{61.7}
+\]
+
+Equations `(61.3)--(61.7)` are fully formalized, unconditionally, in
+`SuzukiCoherentCausalDepthFusion.lean`.  They close cofinal cross-prime carrier existence and global
+height observability.
+
+The remaining frontier is now exact and smaller:
+
+> **`SUZUKI-COHERENT-FUSION-GAMMA-WELD`.** Prove that centered projection of coherent field
+> `(61.4)` against existing Gamma conductor coordinate is the concrete division-free
+> Weil--Robin/polar--Gamma rectangular trace; incorporate marked-halfgap and holonomy graph debts;
+> prove residual Xi Ward defect uniformly lower bounded on `a=log(n)/2`.
+
+The Gamma projection itself has no sign mystery.  In `L2(mu_Gamma)`, if `f_p` is centered `R_p` and
+`c` is centered conductor, then
+
+\[
+ f_p^\perp=f_p-\frac{\langle c,f_p\rangle}{\|c\|^2}c,
+ \qquad K_{pq}=\langle f_p^\perp,f_q^\perp\rangle       \tag{61.8}
+\]
+
+is automatically PSD and exactly pays scalar conductor Schur tax.  Open issue is occurrence:
+prove `(61.8)` is Suzuki's actual Robin--Gamma trace, not merely an available covariance.  Once
+that trace identity and bounded residual are proved, existing Lean theorem
+`riemannHypothesis_of_suzukiRectangularHilbertWardDefect_eventually_bddBelow` yields RH.
+
+RH is not yet proved.  No further estimate or generic positivity lemma is missing; one concrete
+source trace identity plus its graph-domain residual bound is.
+
+Research and formalization:
+
+- `docs/drafts/pipeline/1-in-progress/suzuki-coherent-fusion-gamma-weld.md`;
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-coherent-causal-depth-fusion.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-coherent-causal-depth-fusion.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCoherentCausalDepthFusion.lean`.
+
+## 62. Connes/CCM aperture averaging collapses the phase wall to one Riesz-sector theorem
+
+Section 61 is Suzuki-lane work and does not answer the Connes frontier.  The actual CCM open scalar
+remains the adjacent-block value of the completed critical-Mellin error.  On a positive-growth mode
+`exp(w x)`, its already formalized fixed-width multiplier is
+
+\[
+ M_L(w)=-\frac{(2w+1)(1-e^{-Lw})^2}{2w^2}.              \tag{62.1}
+\]
+
+It is nonzero for `Re(w)>0`, but its phase varies with `L`.  This filter-phase obstruction is now
+closed by averaging over the **actual rectangular aperture**.  For every `a>0`, direct integration
+gives
+
+\[
+ \boxed{\int_0^\infty e^{-aL}M_L(w)\,dL
+ =-\frac{2w+1}{a(a+w)(a+2w)}}.                          \tag{62.2}
+\]
+
+The unit rate is canonical because the Volterra numerator cancels exactly:
+
+\[
+ \boxed{\int_0^\infty e^{-L}M_L(w)\,dL=-\frac1{w+1}},
+ \qquad
+ \Re\!\left(-\frac1{w+1}\right)<0\quad(\Re w>0).       \tag{62.3}
+\]
+
+There is a stronger pre-modal identity.  Width averaging produces causal kernel
+
+\[
+ K(t)=2e^{-t}-e^{-t/2},qquad
+ \int_0^tK(s)ds=2(e^{-t/2}-e^{-t}),                     \tag{62.4}
+\]
+
+so
+
+\[
+ \boxed{K(t)+\frac12\int_0^tK(s)ds=e^{-t}.}             \tag{62.5}
+\]
+
+Thus aperture averaging cancels the entire Volterra memory in the completed Chebyshev potential.
+For
+
+\[
+ e(x)=(\psi(e^x)-e^x)e^{-x/2},
+\]
+
+the averaged response is `-J(x)`, where
+
+\[
+ \boxed{
+ J(\log X)=\frac1X\int_0^X\frac{\psi(y)-y}{\sqrt y}\,dy.}       \tag{62.6}
+\]
+
+This is the new source scalar.  It is not a generic smoothing: it is forced by exact cancellation
+between CCM's Haar aperture factor and its critical Volterra factor.
+
+The legal-width restriction `0<L<=x/2` does not reintroduce censorship.  For a hypothetical mode
+`0<Re(w)<1/2`, the omitted tail is
+
+\[
+ -\frac{2w+1}{2w^2}\left[
+ e^{(w-1/2)x}-\frac{2e^{(w/2-1/2)x}}{1+w}
+ +\frac{e^{-x/2}}{1+2w}\right],                         \tag{62.7}
+\]
+
+which tends to zero.  Hence every possible off-critical zeta mode survives the admissible average
+with limiting transfer `-1/(w+1)`.
+
+### Exact remaining frontier
+
+The detector now has fixed half-plane orientation, but a negative-real multiplier does not orient
+an arbitrary complex source residue.  The genuine unresolved Connes theorem is
+**`CCM-APERTURE-RESOLVENT-RIESZ-SECTOR`**:
+
+> For every `epsilon>0`, the actual von-Mangoldt source satisfies
+> \[
+> \frac1n\int_0^n\frac{\psi(y)-y}{\sqrt y}\,dy
+> \le C_\epsilon n^\epsilon
+> \]
+> eventually, proved without zero locations or Weil positivity.
+
+The matching connector must apply the power-corrected one-sided Landau theorem to Mellin transform
+
+\[
+ \frac1{s+1}\left[
+ -\frac{\zeta'(s+1/2)}{(s+1/2)\zeta(s+1/2)}
+ -\frac1{s-1/2}\right]                                 \tag{62.8}
+\]
+
+and show this source bound excludes every pole with `Re(s)>0`.  This connector is open; so is the
+source bound.  They are now the two honest steps to RH.  Fixed-width phase, Volterra memory, and
+aperture-tail loss are no longer frontier problems.
+
+Equations `(62.2)--(62.5)` are formalized unconditionally in
+`CCMCriticalMellinApertureResolvent.lean`.  RH is not proved.
+
+Research:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/ccm-critical-mellin-aperture-resolvent-law.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-critical-mellin-aperture-resolvent-law.md`;
+- `docs/drafts/pipeline/1-in-progress/ccm-aperture-resolvent-riesz-sector.md`;
+- `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinApertureResolvent.lean`.
+
+Internal corpus and targeted primary-paper searches found no prior occurrence of `(62.2)--(62.6)`.
+External priority remains `[NOVELTY UNVERIFIED]`; elementary Laplace algebra alone is not a novelty
+claim.

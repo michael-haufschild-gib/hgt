@@ -56,9 +56,21 @@ import GaloisForLFunctions.RHTower.SuzukiCausalEntryThirdJetBoundaryLaw
 import GaloisForLFunctions.RHTower.SuzukiCriticalEntryWallQuarterShiftGreenLaw
 import GaloisForLFunctions.RHTower.SuzukiCriticalWallFieldSquareRootWeld
 import GaloisForLFunctions.RHTower.SuzukiCriticalWallFieldResolventDressingLaw
+import GaloisForLFunctions.RHTower.SuzukiWallFieldProjectiveDensitySeparationLaw
+import GaloisForLFunctions.RHTower.SuzukiWallFieldAntidiagonalGramLift
+import GaloisForLFunctions.RHTower.SuzukiWallFieldLightConeKernelCompletion
+import GaloisForLFunctions.RHTower.SuzukiApertureDressedWallLightCompletion
+import GaloisForLFunctions.RHTower.SuzukiCausalDepthFrostmanTransfer
+import GaloisForLFunctions.RHTower.SuzukiCausalDepthRectangularCaratheodoryGrowth
+import GaloisForLFunctions.RHTower.SuzukiRectangularWallGramGate
+import GaloisForLFunctions.RHTower.SuzukiRectangularPositiveArchLagCompletion
+import GaloisForLFunctions.RHTower.SuzukiMangoldtLogHaarTransport
+import GaloisForLFunctions.RHTower.SuzukiMangoldtApexLock
+import GaloisForLFunctions.RHTower.SuzukiCoherentCausalDepthFusion
 import GaloisForLFunctions.RHTower.SuzukiRectangularWardDefectBoundedness
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
+import GaloisForLFunctions.RHTower.CCMCriticalMellinApertureResolvent
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
@@ -492,14 +504,46 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   scalar mode resolvent `(s-lambda)^(-1)`.  Self-paired two-shift mismatch is exactly
   `K_(alpha,beta)(s)*omega_e^2`, hence exact Krein defect times far-hinge numerator.  At zero
   height it is strictly negative on every negative spectral level and positive on every positive
-  level.  Remaining source problem is concrete: instantiate actual restricted-Weil spectral
-  measure and boundary endpoint observation on this dressed field, then prove marked
-  Robin/polar--Gamma/holonomy compensation pays exact negative-mode debt with uniformly lower
-  semibounded rectangular residual.  Ward-defect lower bound remains unproved.
+  level.  Corpus projective audit prevents treating this one-mode law as canonical producer:
+  common source scaling cancels from normalized characteristic response.
+  `SuzukiWallFieldProjectiveDensitySeparationLaw` relocates arithmetic source to correct carrier.
+  Division-free marked affine-secant tensor and its denominator are both homogeneous degree two;
+  scaling all source coordinates by `omega_e` multiplies both by exact far-hinge numerator, while
+  quotient cancels it.  Far prime source is common determinant-line density before division, not
+  independent Gram atom.
+  `SuzukiWallFieldAntidiagonalGramLift` then resolves positivity-type obstruction.  Two-height
+  kernel `K_e(t,u)=omega_e(t)*conj(omega_e(u))` is stationary rank-one Hermitian Gram on every
+  finite height packet.  Its positive diagonal is exactly `Lambda(n)/sqrt(n)` and supplies sharp
+  `d^2` rooted midpoint completion; its FE-reflected anti-diagonal is exactly
+  `(Lambda(n)/sqrt(n))*exp(I*t*log n)`, hence complete far-hinge phase.  Complex wall square was
+  never supposed to be Gram diagonal: it is reflected anti-diagonal of one genuine PSD block.
+  `SuzukiWallFieldLightConeKernelCompletion` now extracts unique non-common FE/Xi-real split of
+  that block.  Reflected combinations
+  `ell_+=(omega(t)+I*omega(-t))/2` and `ell_-=(omega(t)-I*omega(-t))/2` have Gram kernels whose
+  difference is exact reflected far current and whose sum is FE-symmetrized wall Gram.  They
+  literally evaluate already fixed positive and negative weld light forms on
+  `(Re omega,Im omega)`, rather than adding fitted source.  Thus
+  `F_reflected+Gram(ell_-)=Gram(ell_+)`, and both light matrices remain PSD after arbitrary finite
+  prime-power and height assembly.  Off center this gives exact real delayed-hinge completion
+  `t^2*Re J_e+|ell_-|^2=|ell_+|^2`.  This closes wall-source realization of abstract light
+  channel, but not its occurrence in actual rectangular carrier.
+  Remaining RH-bearing source problem is now exact `SUZUKI-FE-REFLECTED-WALL-WARD-ASSEMBLY`:
+  prove actual division-free Robin/Gamma/holonomy trace equals or dominates forced
+  `Gram(ell_-)` channel, compensate nonsummable all-prime light mass before cofinal limit, and
+  prove remaining marked halfgap and holonomy Schur debts leave uniformly lower-semibounded
+  rectangular residual.
+  Ward-defect lower bound remains unproved.
 
 * The constrained-prolate/CCM branch has discharged the abstract secular-vector and Bessel
   algebra.  `ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed` still takes the two concrete
   prolate-to-Hermite coordinate limits; those limits are the current operator-asymptotic wall.
+  The separate critical-Mellin source branch now closes fixed-aperture filter phase:
+  `criticalMellinApertureAveragedMultiplier_one_eq` turns exponential aperture averaging into
+  `-1/(w+1)`, and `criticalMellinApertureCausalKernel_volterra_collapse` cancels the completed
+  Chebyshev Volterra memory exactly.  The remaining source theorem is a one-sided all-epsilon
+  subpower upper bound for
+  `X^(-1) * integral_0^X (psi(y)-y)/sqrt(y) dy`, plus its power-corrected Landau connector to RH.
+  Neither source-sector bound nor connector is asserted here.
 
 ## Positivity, Li, approximation, and explicit-formula routes
 

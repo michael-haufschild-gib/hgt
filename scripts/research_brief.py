@@ -10,6 +10,7 @@ from __future__ import annotations
 import dataclasses
 import itertools
 import json
+import os
 import re
 import subprocess
 import tempfile
@@ -80,12 +81,24 @@ class FrontierNode:
 
 
 @dataclasses.dataclass(frozen=True)
+class ReductionEvidence:
+    name: str
+    module: str
+    relpath: str = ""
+    line: int = 0
+    provenance: str = "declared"
+    witness: str | None = None
+
+
+@dataclasses.dataclass(frozen=True)
 class FrontierCut:
     nodes: tuple[FrontierNode, ...]
     via_reductions: tuple[str, ...]
     discharged: tuple[str, ...]
     distance_to_target: int
     unlock_count: int
+    reductions: tuple[ReductionEvidence, ...] = ()
+    proof_steps: int = 0
 
 
 @dataclasses.dataclass(frozen=True)
@@ -100,6 +113,8 @@ class ResearchBrief:
     retired_reductions: tuple[str, ...] = ()
     diagnostics: tuple[str, ...] = ()
     commit: str = ""
+    max_gaps: int = 0
+    total_cuts: int = 0
 
 
 @dataclasses.dataclass(frozen=True)
@@ -115,6 +130,9 @@ class _Solution:
     leaves: frozenset[str]
     path: tuple[str, ...]
     discharged: frozenset[str]
+    depth: int = 0
+    steps: int = 0
+    proof_nodes: frozenset[str] = frozenset()
 
 
 def canonical_area(area: str) -> str:
@@ -379,6 +397,31 @@ def frontier_export_candidates(
     return tuple(sorted(qualified))
 
 
+def corpus_theorem_candidates(declarations: Sequence[object]) -> tuple[str, ...]:
+    """Return source-indexed theorem names for Lean to validate against compiled corpus.
+
+    Source index is only a cheap name supplier. Missing, stale, and active-WIP names
+    are ignored by the Lean environment; no source file is compiled here.
+    """
+
+    qualified: set[str] = set()
+    for declaration in declarations:
+        if getattr(declaration, "kind", "") not in {"theorem", "lemma"}:
+            continue
+        raw_name = str(getattr(declaration, "name", ""))
+        if not raw_name:
+            continue
+        qualified.add(raw_name)
+        module_parts = str(getattr(declaration, "module", "")).split(".")
+        if len(module_parts) >= 2 and module_parts[0] == "GaloisForLFunctions":
+            area_namespace = module_parts[1]
+            if not raw_name.startswith(area_namespace + "."):
+                qualified.add(f"{area_namespace}.{raw_name}")
+            if not raw_name.startswith("GaloisForLFunctions."):
+                qualified.add(f"GaloisForLFunctions.{raw_name}")
+    return tuple(sorted(qualified))
+
+
 def _edges(export: LeanFrontierExport) -> tuple[tuple[_Edge, ...], tuple[str, ...], tuple[str, ...]]:
     edges: list[_Edge] = []
     refuted: set[str] = set()
@@ -479,6 +522,23 @@ def _prune_solutions(solutions: Iterable[_Solution], *, limit: int = 256) -> tup
         if len(kept) == limit:
             break
     return tuple(kept)
+
+
+def _reduction_evidence(
+    path: Sequence[str], reductions: Mapping[str, Reduction]
+) -> tuple[ReductionEvidence, ...]:
+    return tuple(
+        ReductionEvidence(
+            name=name,
+            module=reductions[name].module,
+            relpath=reductions[name].relpath,
+            line=reductions[name].line,
+            provenance=reductions[name].provenance,
+            witness=reductions[name].witness,
+        )
+        for name in path
+        if name in reductions
+    )
 
 
 def compute_frontier(export: LeanFrontierExport, *, limit: int = 12) -> ResearchBrief:
@@ -605,6 +665,7 @@ def compute_frontier(export: LeanFrontierExport, *, limit: int = 12) -> Research
                 discharged=tuple(sorted(solution.discharged)),
                 distance_to_target=len(solution.path),
                 unlock_count=len(set(solution.path)),
+                reductions=_reduction_evidence(solution.path, reduction_by_name),
             )
         )
     cuts.sort(
@@ -633,6 +694,287 @@ def compute_frontier(export: LeanFrontierExport, *, limit: int = 12) -> Research
         refuted_interfaces=refuted_display,
         retired_reductions=retired,
         commit=export.commit,
+        total_cuts=len(cuts),
+    )
+
+
+def _solution_preference(solution: _Solution) -> tuple[object, ...]:
+    """Canonical witness ordering for one exact cost state."""
+
+    return (solution.depth, solution.steps, solution.path)
+
+
+def _solution_state_key(
+    solution: _Solution,
+) -> tuple[frozenset[str], int, int]:
+    return (solution.leaves, solution.depth, solution.steps)
+
+
+def _dominates(left: _Solution, right: _Solution) -> bool:
+    """Safe compositional dominance for bounded hypergraph propagation."""
+
+    return (
+        left.leaves <= right.leaves
+        and left.depth <= right.depth
+        and left.steps <= right.steps
+    )
+
+
+def _insert_nondominated_solution(
+    table: dict[tuple[frozenset[str], int, int], _Solution],
+    candidate: _Solution,
+    *,
+    max_gaps: int,
+) -> bool:
+    """Insert one state without losing a cheaper useful superset witness."""
+
+    if len(candidate.leaves) > max_gaps:
+        return False
+    key = _solution_state_key(candidate)
+    current = table.get(key)
+    if current is not None:
+        if candidate.path < current.path:
+            table[key] = candidate
+            return True
+        return False
+    if any(_dominates(existing, candidate) for existing in table.values()):
+        return False
+    dominated = [
+        state_key
+        for state_key, existing in table.items()
+        if _dominates(candidate, existing)
+    ]
+    for state_key in dominated:
+        del table[state_key]
+    table[key] = candidate
+    return True
+
+
+def enumerate_frontier_chains(
+    export: LeanFrontierExport,
+    *,
+    max_gaps: int = 4,
+    limit: int | None = None,
+) -> ResearchBrief:
+    """Enumerate all subset-minimal target chains with at most ``max_gaps``.
+
+    This is an exact bounded fixed point over the theorem AND/OR hypergraph.
+    Each retained solution is identified by its unresolved proposition set;
+    cycles cannot manufacture solutions because they have no initial proof seed.
+    """
+
+    if max_gaps < 1:
+        raise ValueError("max_gaps must be at least 1")
+    if limit is not None and limit < 0:
+        raise ValueError("limit must be nonnegative or None")
+
+    edges, refuted_tuple, retired = _edges(export)
+    refuted = frozenset(refuted_tuple)
+    closed = _closed_propositions(edges, refuted)
+    target = export.target.key
+    target_scc = _target_scc(target, edges)
+    reduction_by_name = {item.name: item for item in export.reductions}
+    refs: dict[str, PropositionRef] = {target: export.target}
+    nodes = {target}
+    for reduction in export.reductions:
+        for ref in reduction.premises + reduction.conclusions:
+            refs.setdefault(ref.key, ref)
+            nodes.add(ref.key)
+
+    solutions: dict[
+        str, dict[tuple[frozenset[str], int, int], _Solution]
+    ] = {
+        node: {} for node in nodes
+    }
+    for node in sorted(nodes):
+        if node in refuted:
+            continue
+        if node not in closed and node != target and node not in target_scc:
+            leaves = frozenset({node})
+            seed = _Solution(
+                leaves,
+                (),
+                frozenset(),
+                depth=0,
+                steps=0,
+                proof_nodes=frozenset({node}),
+            )
+            solutions[node][_solution_state_key(seed)] = seed
+
+    changed = True
+    iterations = 0
+    ordered_edges = tuple(sorted(edges, key=lambda item: item.name))
+    while changed:
+        changed = False
+        iterations += 1
+        for edge in ordered_edges:
+            if any(premise in refuted for premise in edge.premises):
+                continue
+            per_premise = [tuple(solutions.get(premise, {}).values()) for premise in edge.premises]
+            if any(not choices for choices in per_premise):
+                continue
+            combinations = itertools.product(*per_premise) if per_premise else [()]
+            for combination in combinations:
+                leaves = frozenset().union(
+                    *(item.leaves for item in combination)
+                )
+                if len(leaves) > max_gaps:
+                    continue
+                path: list[str] = []
+                discharged: set[str] = set()
+                proof_nodes: set[str] = set()
+                for premise, item in zip(edge.premises, combination):
+                    if item.leaves:
+                        for name in item.path:
+                            if name not in path:
+                                path.append(name)
+                    discharged.update(item.discharged)
+                    proof_nodes.update(item.proof_nodes)
+                    if not item.leaves:
+                        discharged.add(premise)
+                if edge.name not in path:
+                    path.append(edge.name)
+                for conclusion in edge.conclusions:
+                    if conclusion in refuted or conclusion in proof_nodes:
+                        continue
+                    candidate = _Solution(
+                        leaves,
+                        tuple(path),
+                        frozenset(discharged),
+                        depth=1 + max((item.depth for item in combination), default=0),
+                        steps=1 + sum(item.steps for item in combination),
+                        proof_nodes=frozenset(proof_nodes | {conclusion}),
+                    )
+                    if _insert_nondominated_solution(
+                        solutions.setdefault(conclusion, {}),
+                        candidate,
+                        max_gaps=max_gaps,
+                    ):
+                        changed = True
+
+    target_states = tuple(solutions.get(target, {}).values())
+    target_solutions: tuple[_Solution, ...]
+    if target in closed or any(not solution.leaves for solution in target_states):
+        target_solutions = ()
+    else:
+        minimal_gap_sets = {
+            solution.leaves
+            for solution in target_states
+            if solution.leaves
+            and not any(
+                other.leaves < solution.leaves
+                for other in target_states
+                if other.leaves
+            )
+        }
+        target_solutions = tuple(
+            min(
+                (
+                    solution
+                    for solution in target_states
+                    if solution.leaves == leaves
+                ),
+                key=_solution_preference,
+            )
+            for leaves in minimal_gap_sets
+        )
+    cuts: list[FrontierCut] = []
+    for solution in target_solutions:
+        frontier_nodes: list[FrontierNode] = []
+        for key in sorted(solution.leaves):
+            ref = refs.get(key, PropositionRef(key, key, key))
+            source_reduction = next(
+                (
+                    reduction_by_name[name]
+                    for name in solution.path
+                    if name in reduction_by_name
+                    and any(
+                        premise.key == key
+                        for premise in reduction_by_name[name].premises
+                    )
+                ),
+                None,
+            )
+            frontier_nodes.append(
+                FrontierNode(
+                    key=key,
+                    expression=ref.expression,
+                    declaration=ref.declaration,
+                    via_reductions=solution.path,
+                    distance_to_target=solution.depth,
+                    relpath=source_reduction.relpath if source_reduction else "",
+                    line=source_reduction.line if source_reduction else 0,
+                )
+            )
+        cuts.append(
+            FrontierCut(
+                nodes=tuple(frontier_nodes),
+                via_reductions=solution.path,
+                discharged=tuple(sorted(solution.discharged)),
+                distance_to_target=solution.depth,
+                unlock_count=len(set(solution.path)),
+                reductions=_reduction_evidence(solution.path, reduction_by_name),
+                proof_steps=solution.steps,
+            )
+        )
+
+    cuts.sort(
+        key=lambda cut: (
+            len(cut.nodes),
+            cut.distance_to_target,
+            cut.proof_steps,
+            tuple(node.key for node in cut.nodes),
+            cut.via_reductions,
+        )
+    )
+    total_cuts = len(cuts)
+    selected = cuts if limit is None else cuts[:limit]
+    frontier: list[FrontierNode] = []
+    seen_frontier: set[str] = set()
+    for cut in selected:
+        for node in cut.nodes:
+            if node.key not in seen_frontier:
+                frontier.append(node)
+                seen_frontier.add(node.key)
+
+    equivalent = tuple(
+        sorted(
+            {
+                (refs.get(key).declaration if refs.get(key) else None) or key
+                for key in target_scc - {target}
+            }
+        )
+    )
+    refuted_display = tuple(
+        sorted(
+            {
+                (refs.get(key).declaration if refs.get(key) else None) or key
+                for key in refuted_tuple
+            }
+        )
+    )
+    counts = {
+        gap_count: sum(len(cut.nodes) == gap_count for cut in cuts)
+        for gap_count in range(1, max_gaps + 1)
+    }
+    diagnostics = (
+        f"exact bounded fixed point converged in {iterations} iterations",
+        "minimal cuts by gap count: "
+        + ", ".join(f"{gap_count}={counts[gap_count]}" for gap_count in counts),
+    )
+    return ResearchBrief(
+        area=export.area,
+        target=export.target,
+        target_proven=target in closed,
+        cuts=tuple(selected),
+        frontier=tuple(frontier),
+        equivalent_criteria=equivalent,
+        refuted_interfaces=refuted_display,
+        retired_reductions=retired,
+        diagnostics=diagnostics,
+        commit=export.commit,
+        max_gaps=max_gaps,
+        total_cuts=total_cuts,
     )
 
 
@@ -670,9 +1012,11 @@ def run_lean_frontier_export(
     theorem_names = frontier_export_candidates(root, declarations)
     if not theorem_names:
         raise ValueError("Lean frontier export received no corpus theorem declarations")
-    command = "\n#export_research_frontier [\n" + ",\n".join(
-        f"  {json.dumps(name)}" for name in theorem_names
-    ) + "\n]\n"
+    command = (
+        "\n#export_research_frontier_with_producers [\n"
+        + ",\n".join(f"  {json.dumps(name)}" for name in theorem_names)
+        + "\n] using []\n"
+    )
     template = exporter.read_text(encoding="utf-8")
     project_import = "import GaloisForLFunctions\n"
     if project_import not in template:
@@ -681,6 +1025,7 @@ def run_lean_frontier_export(
     with tempfile.TemporaryDirectory(prefix="hgt-frontier-") as temporary:
         generated = Path(temporary) / "ExportResearchFrontier.lean"
         generated.write_text(generated_source, encoding="utf-8")
+        timeout_seconds = int(os.environ.get("HGT_FRONTIER_TIMEOUT_SECONDS", "300"))
         try:
             process = subprocess.run(
                 ["lake", "env", "lean", str(generated)],
@@ -689,11 +1034,16 @@ def run_lean_frontier_export(
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 check=False,
-                timeout=300,
+                timeout=timeout_seconds,
             )
         except subprocess.TimeoutExpired as error:
+            output = error.stdout or error.stderr or ""
+            if isinstance(output, bytes):
+                output = output.decode("utf-8", errors="replace")
+            detail = output.strip()
             raise ValueError(
-                "Lean frontier export exceeded 300 seconds on compiled corpus snapshot"
+                f"Lean frontier export exceeded {timeout_seconds} seconds on compiled corpus snapshot"
+                + (f":\n{detail}" if detail else "")
             ) from error
     if process.returncode:
         detail = (process.stderr or process.stdout).strip()
@@ -715,7 +1065,10 @@ def run_lean_frontier_export(
     }
     enriched: list[Reduction] = []
     for reduction in export.reductions:
-        parts = reduction.name.split(".")
+        # Solver-generated edges have synthetic names; their kernel-checked
+        # witness is the declaration whose source location matters.
+        source_name = reduction.witness or reduction.name
+        parts = source_name.split(".")
         source = next(
             (
                 source_index[(reduction.module, ".".join(parts[index:]))]
@@ -762,6 +1115,38 @@ def build_research_brief(
     if export.area != expected:
         raise ValueError(f"graph area {export.area!r} does not match requested area {expected!r}")
     return compute_frontier(export, limit=limit)
+
+
+def build_frontier_chains(
+    *,
+    root: Path,
+    area: str,
+    graph_path: Path | None = None,
+    max_gaps: int = 4,
+    limit: int | None = None,
+    declarations: Sequence[object] | None = None,
+    refresh: bool = False,
+) -> ResearchBrief:
+    export = (
+        load_lean_frontier_export(graph_path)
+        if graph_path is not None
+        else run_lean_frontier_export(
+            root,
+            area=area,
+            declarations=declarations or (),
+            refresh=refresh,
+        )
+    )
+    expected = canonical_area(area)
+    if export.area != expected:
+        raise ValueError(
+            f"graph area {export.area!r} does not match requested area {expected!r}"
+        )
+    return enumerate_frontier_chains(
+        export,
+        max_gaps=max_gaps,
+        limit=limit,
+    )
 
 
 def render_research_brief(brief: ResearchBrief) -> str:
@@ -836,6 +1221,8 @@ def render_research_brief_json(brief: ResearchBrief) -> str:
                 "discharged": list(cut.discharged),
                 "distance_to_target": cut.distance_to_target,
                 "unlock_count": cut.unlock_count,
+                "gap_count": len(cut.nodes),
+                "reductions": [dataclasses.asdict(item) for item in cut.reductions],
             }
             for cut in brief.cuts
         ],
@@ -843,5 +1230,137 @@ def render_research_brief_json(brief: ResearchBrief) -> str:
         "refuted_interfaces": list(brief.refuted_interfaces),
         "retired_reductions": list(brief.retired_reductions),
         "diagnostics": list(brief.diagnostics),
+        "max_gaps": brief.max_gaps,
+        "total_cuts": brief.total_cuts,
     }
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
+
+
+def _report_slug(cut: FrontierCut) -> str:
+    labels = [node.declaration or node.key for node in cut.nodes]
+    raw = "-and-".join(labels)
+    slug = re.sub(r"[^a-z0-9]+", "-", raw.lower()).strip("-")
+    return (slug[:72].rstrip("-") or "unnamed-gap")
+
+
+def write_chain_reports(
+    brief: ResearchBrief,
+    output_dir: Path,
+    *,
+    limit: int = 20,
+) -> tuple[Path, ...]:
+    """Write deterministic Markdown reports for least-gap chains."""
+
+    if limit < 0:
+        raise ValueError("limit must be nonnegative")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    selected = brief.cuts[:limit]
+    report_paths: list[Path] = []
+    index_rows: list[str] = []
+
+    for index, cut in enumerate(selected, start=1):
+        filename = f"chain-{index:02d}-{_report_slug(cut)}.md"
+        path = output_dir / filename
+        gap_count = len(cut.nodes)
+        lines = [
+            f"# RH frontier chain {index:02d}",
+            "",
+            "Generated automatically from kernel-checked theorem types in the compiled Lean corpus snapshot.",
+            "Active uncompiled work-in-progress files, cards, prose, and model judgment are not inputs.",
+            "",
+            f"- Gap count: **{gap_count}**",
+            f"- Checked reductions: **{len(cut.reductions)}**",
+            f"- Search bound: `max_gaps={brief.max_gaps or 4}`",
+            f"- Corpus commit: `{brief.commit or 'not recorded'}`",
+            "",
+            "## Open gaps",
+            "",
+        ]
+        for gap_index, node in enumerate(cut.nodes, start=1):
+            label = node.declaration or node.key
+            lines.extend(
+                [
+                    f"### {gap_index}. `{label}`",
+                    "",
+                    f"- Exact proposition: `{node.expression}`",
+                ]
+            )
+            if node.relpath:
+                source = f"{node.relpath}:{node.line}" if node.line else node.relpath
+                lines.append(f"- Lean source: `{source}`")
+            lines.append("")
+
+        lines.extend(["## Kernel-checked route", ""])
+        for route_index, evidence in enumerate(cut.reductions, start=1):
+            source = evidence.relpath
+            if source and evidence.line:
+                source += f":{evidence.line}"
+            suffix = f" — `{source}`" if source else ""
+            lines.append(f"{route_index}. `{evidence.name}`{suffix}")
+            if evidence.provenance == "interface_solver":
+                lines.append(
+                    f"   - Semantic interface witness: `{evidence.witness or evidence.name}`"
+                )
+        if cut.discharged:
+            lines.extend(
+                [
+                    "",
+                    "## Already discharged interfaces",
+                    "",
+                    *[f"- `{name}`" for name in cut.discharged],
+                ]
+            )
+        lines.extend(
+            [
+                "",
+                "## Interpretation",
+                "",
+                "Proving every open gap above is sufficient to complete this checked route to `RiemannHypothesis`.",
+                "Absence of an automatic interface witness means only that bounded proof search found none; it is not a mathematical nonexistence claim.",
+                "",
+            ]
+        )
+        path.write_text("\n".join(lines), encoding="utf-8")
+        report_paths.append(path)
+        gap_labels = " + ".join(
+            f"`{node.declaration or node.key}`" for node in cut.nodes
+        )
+        index_rows.append(
+            f"| {index} | {gap_count} | {len(cut.reductions)} | {gap_labels} | [{filename}]({filename}) |"
+        )
+
+    index_path = output_dir / "index.md"
+    counts = {
+        gap_count: sum(len(cut.nodes) == gap_count for cut in brief.cuts)
+        for gap_count in range(1, (brief.max_gaps or 4) + 1)
+    }
+    index_lines = [
+        "# RH frontier chains",
+        "",
+        "Automatically generated from compiled Lean corpus snapshot and semantic interface witnesses.",
+        "",
+        f"- Total bounded minimal cuts: **{brief.total_cuts}**",
+        f"- Reports written: **{len(selected)}**",
+        f"- Search bound: `max_gaps={brief.max_gaps or 4}`",
+        f"- Corpus commit: `{brief.commit or 'not recorded'}`",
+        "- Cuts by gap count: "
+        + ", ".join(f"**{gap_count}**: {count}" for gap_count, count in counts.items()),
+        "",
+    ]
+    for gap_count in range(1, (brief.max_gaps or 4) + 1):
+        index_lines.extend(
+            [
+                f"## {gap_count}-gap chains",
+                "",
+                "| Rank | Gaps | Checked reductions | Open interfaces | Report |",
+                "|---:|---:|---:|---|---|",
+                *[
+                    row
+                    for row, cut in zip(index_rows, selected)
+                    if len(cut.nodes) == gap_count
+                ],
+                "",
+            ]
+        )
+    index_path.write_text("\n".join(index_lines), encoding="utf-8")
+    return (index_path, *report_paths)

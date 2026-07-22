@@ -140,6 +140,13 @@ theorem physicalState_quantumMasterConstraint_iff
     change quantumMasterConstraint C ψ = 0
     simp [quantumMasterConstraint, hC]
 
+/-- **Master-constraint kernel identity.**  Passing from a bounded constraint to its positive
+master effect preserves the complete physical subspace, not only pointwise physicality. -/
+theorem quantumMasterConstraint_ker_eq (C : E →L[𝕜] E) :
+    (quantumMasterConstraint C).toLinearMap.ker = C.toLinearMap.ker := by
+  ext ψ
+  exact physicalState_quantumMasterConstraint_iff C ψ
+
 /-- The positive effect `C†C` vanishes exactly when the underlying constraint channel vanishes.
 This is the operator-level nondegeneracy law behind Kraus effects and master constraints. -/
 theorem quantumMasterConstraint_eq_zero_iff (C : E →L[𝕜] E) :
@@ -396,6 +403,22 @@ theorem finiteCyclicGaugeAverage_idempotent
   exact (physicalState_iff_finiteCyclicGaugeAverage_fixed U N hN hperiod
     (finiteCyclicGaugeAverage U N ψ)).mp
       (finiteCyclicGaugeAverage_physical U N hperiod ψ)
+
+/-- **Exact physical-range classification.**  A nonempty finite-period orbit average has image
+exactly the kernel of its static clock constraint.  Thus no separate surjectivity onto the
+physical sector is required. -/
+theorem finiteCyclicGaugeAverage_range_eq_constraint_ker
+    (U : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) (hperiod : U ^ N = 1) :
+    (finiteCyclicGaugeAverage U N).toLinearMap.range =
+      LinearMap.ker (U - 1).toLinearMap := by
+  ext ψ
+  constructor
+  · rintro ⟨φ, rfl⟩
+    exact finiteCyclicGaugeAverage_physical U N hperiod φ
+  · intro hψ
+    refine ⟨ψ, ?_⟩
+    exact (physicalState_iff_finiteCyclicGaugeAverage_fixed
+      U N hN hperiod ψ).mp hψ
 
 /-! ### Heisenberg-picture observable twirling -/
 
@@ -797,6 +820,15 @@ section OrthogonalAverage
 
 variable {𝕜 E : Type*} [RCLike 𝕜]
   [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [CompleteSpace E]
+
+/-- Finite cyclic averaging also has image exactly the kernel of the positive master constraint
+of the clock defect.  The master-effect representation introduces no new physical vectors. -/
+theorem finiteCyclicGaugeAverage_range_eq_masterConstraint_ker
+    (U : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) (hperiod : U ^ N = 1) :
+    (finiteCyclicGaugeAverage U N).toLinearMap.range =
+      (quantumMasterConstraint (U - 1)).toLinearMap.ker := by
+  rw [quantumMasterConstraint_ker_eq]
+  exact finiteCyclicGaugeAverage_range_eq_constraint_ker U N hN hperiod
 
 /-- Averaging powers of a self-adjoint gauge step gives a self-adjoint orbit sum. -/
 theorem finiteCyclicGaugeSum_isSelfAdjoint
