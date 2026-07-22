@@ -155,12 +155,12 @@ theorem centralSoninProjection_inverseDilatedShell_tendsto
     Tendsto (fun n =>
       ‖centralSoninProjection a
           (dilation r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr))
-            (evenShellVector c d hc hcd n)) -
+            (evenShellVector c d hcd n)) -
         dilation r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr))
-          (evenShellVector c d hc hcd n)‖) atTop (𝓝 0) := by
+          (evenShellVector c d hcd n)‖) atTop (𝓝 0) := by
   let g : ℕ → SoninL2 := fun n =>
     dilation r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr))
-      (evenShellVector c d hc hcd n)
+      (evenShellVector c d hcd n)
   have hg : Orthonormal ℂ g := by
     have hbase := evenShellVector_orthonormal c d hc hcd
     have hmap := hbase.comp_linearIsometryEquiv
@@ -186,27 +186,27 @@ end RHTower
 namespace RHTower
 
  theorem centralPhysicalCutoff_evenShellVector_eq_self
-    (a c d : ℝ) (hc : 0 < c) (hcd : c < d) (hda : d < a) (n : ℕ) :
+    (a c d : ℝ) (hcd : c < d) (hda : d < a) (n : ℕ) :
     indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
-      (evenShellVector c d hc hcd n) = evenShellVector c d hc hcd n := by
+      (evenShellVector c d hcd n) = evenShellVector c d hcd n := by
   apply Lp.ext
   filter_upwards [
     indicatorCutoff_ae (centralInterval a) (measurableSet_centralInterval a)
-      (evenShellVector c d hc hcd n),
+      (evenShellVector c d hcd n),
     normalizedIndicator_ae (evenShellCell c d n)
       (measurableSet_evenShellCell c d n)
-      (evenShellCell_measure_ne_top hc hcd n)
+      (evenShellCell_measure_ne_top hcd n)
   ] with x hcut hshell
   rw [hcut]
   by_cases hx : x ∈ evenShellCell c d n
-  · have hxd : x ∈ Set.Icc (-d) d := evenShellCell_subset_Icc hc hcd n hx
+  · have hxd : x ∈ Set.Icc (-d) d := evenShellCell_subset_Icc hcd n hx
     have hxa : x ∈ centralInterval a := by
       rw [centralInterval]
       constructor <;> linarith [hxd.1, hxd.2]
     rw [Set.indicator_of_mem hxa]
-  · have hvzero : (evenShellVector c d hc hcd n : ℝ → ℂ) x = 0 := by
+  · have hvzero : (evenShellVector c d hcd n : ℝ → ℂ) x = 0 := by
       change normalizedIndicator (evenShellCell c d n)
-        (measurableSet_evenShellCell c d n) (evenShellCell_measure_ne_top hc hcd n) x = 0
+        (measurableSet_evenShellCell c d n) (evenShellCell_measure_ne_top hcd n) x = 0
       rw [hshell, Set.indicator_of_notMem hx]
       simp
     by_cases hxa : x ∈ centralInterval a
@@ -215,13 +215,13 @@ namespace RHTower
       exact hvzero.symm
 
  theorem evenShellVector_mem_centralPhysicalForbidden
-    (a c d : ℝ) (hc : 0 < c) (hcd : c < d) (hda : d < a) (n : ℕ) :
-    evenShellVector c d hc hcd n ∈ centralPhysicalForbidden a := by
+    (a c d : ℝ) (hcd : c < d) (hda : d < a) (n : ℕ) :
+    evenShellVector c d hcd n ∈ centralPhysicalForbidden a := by
   rw [centralPhysicalForbidden]
   apply (physicalForbidden (Set.Icc (-a) a) measurableSet_Icc).starProjection_eq_self_iff.mp
   rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
   simpa [centralInterval] using
-    centralPhysicalCutoff_evenShellVector_eq_self a c d hc hcd hda n
+    centralPhysicalCutoff_evenShellVector_eq_self a c d hcd hda n
 
 theorem centralSoninProjection_eq_zero_of_mem_physicalForbidden
     (a : ℝ) {f : SoninL2} (hf : f ∈ centralPhysicalForbidden a) :
@@ -239,12 +239,12 @@ namespace RHTower
 
 /-- Exterior shell vectors obtained by inverse dilation of one fixed interior shell. -/
 def inverseDilatedEvenShell
-    (c d r : ℝ) (hc : 0 < c) (hcd : c < d) (hr : 1 < r) (n : ℕ) : SoninL2 :=
-  dilation r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)) (evenShellVector c d hc hcd n)
+    (c d r : ℝ) (hcd : c < d) (hr : 1 < r) (n : ℕ) : SoninL2 :=
+  dilation r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)) (evenShellVector c d hcd n)
 
  theorem inverseDilatedEvenShell_orthonormal
     (c d r : ℝ) (hc : 0 < c) (hcd : c < d) (hr : 1 < r) :
-    Orthonormal ℂ (inverseDilatedEvenShell c d r hc hcd hr) := by
+    Orthonormal ℂ (inverseDilatedEvenShell c d r hcd hr) := by
   have hbase := evenShellVector_orthonormal c d hc hcd
   have hmap := hbase.comp_linearIsometryEquiv
     (dilationUnitary r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)))
@@ -254,8 +254,8 @@ def inverseDilatedEvenShell
     (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d) (hr : 1 < r)
     (harc : a < r * c) :
     Tendsto (fun n =>
-      ‖centralSoninProjection a (inverseDilatedEvenShell c d r hc hcd hr n) -
-        inverseDilatedEvenShell c d r hc hcd hr n‖) atTop (𝓝 0) := by
+      ‖centralSoninProjection a (inverseDilatedEvenShell c d r hcd hr n) -
+        inverseDilatedEvenShell c d r hcd hr n‖) atTop (𝓝 0) := by
   simpa [inverseDilatedEvenShell] using
     centralSoninProjection_inverseDilatedShell_tendsto a c d r ha hc hcd hr harc
 
@@ -265,13 +265,13 @@ def inverseDilatedEvenShell
     Tendsto (fun n =>
       ‖(crossBoundary (centralSoninProjection a) (dilationSum r hr) :
           SoninL2 →L[ℂ] SoninL2)
-          (centralSoninProjection a (inverseDilatedEvenShell c d r hc hcd hr n)) -
-        evenShellVector c d hc hcd n‖) atTop (𝓝 0) := by
+          (centralSoninProjection a (inverseDilatedEvenShell c d r hcd hr n)) -
+        evenShellVector c d hcd n‖) atTop (𝓝 0) := by
   let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
   let D : SoninL2 →L[ℂ] SoninL2 := dilationSum r hr
   let B : SoninL2 →L[ℂ] SoninL2 := 1 - Q
-  let v : ℕ → SoninL2 := evenShellVector c d hc hcd
-  let g : ℕ → SoninL2 := inverseDilatedEvenShell c d r hc hcd hr
+  let v : ℕ → SoninL2 := evenShellVector c d hcd
+  let g : ℕ → SoninL2 := inverseDilatedEvenShell c d r hcd hr
   let e : ℕ → SoninL2 := fun n => Q (g n)
   let w : ℕ → SoninL2 := fun n =>
     dilation (r * r)⁻¹ (inv_pos.mpr (mul_pos (zero_lt_one.trans hr) (zero_lt_one.trans hr)))
@@ -314,7 +314,7 @@ def inverseDilatedEvenShell
   have hQv : ∀ n, Q (v n) = 0 := by
     intro n
     exact centralSoninProjection_eq_zero_of_mem_physicalForbidden a
-      (evenShellVector_mem_centralPhysicalForbidden a c d hc hcd hda n)
+      (evenShellVector_mem_centralPhysicalForbidden a c d hcd hda n)
   have hDg : ∀ n, D (g n) = v n + w n := by
     intro n
     dsimp [D, g, v, w, inverseDilatedEvenShell]
@@ -578,18 +578,18 @@ namespace RHTower
 
 /-- The inverse-dilated shell sequence inside the even Hilbert carrier. -/
 def inverseDilatedEvenShellEven
-    (c d r : ℝ) (hc : 0 < c) (hcd : c < d) (hr : 1 < r) (n : ℕ) : evenSubspace :=
+    (c d r : ℝ) (hcd : c < d) (hr : 1 < r) (n : ℕ) : evenSubspace :=
   (evenDilationUnitary r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)))
-    (evenShellVectorEven c d hc hcd n)
+    (evenShellVectorEven c d hcd n)
 
 @[simp] theorem coe_inverseDilatedEvenShellEven
-    (c d r : ℝ) (hc : 0 < c) (hcd : c < d) (hr : 1 < r) (n : ℕ) :
-    ((inverseDilatedEvenShellEven c d r hc hcd hr n : evenSubspace) : SoninL2) =
-      inverseDilatedEvenShell c d r hc hcd hr n := rfl
+    (c d r : ℝ) (hcd : c < d) (hr : 1 < r) (n : ℕ) :
+    ((inverseDilatedEvenShellEven c d r hcd hr n : evenSubspace) : SoninL2) =
+      inverseDilatedEvenShell c d r hcd hr n := rfl
 
  theorem inverseDilatedEvenShellEven_orthonormal
     (c d r : ℝ) (hc : 0 < c) (hcd : c < d) (hr : 1 < r) :
-    Orthonormal ℂ (inverseDilatedEvenShellEven c d r hc hcd hr) := by
+    Orthonormal ℂ (inverseDilatedEvenShellEven c d r hcd hr) := by
   have hbase := evenShellVectorEven_orthonormal c d hc hcd
   have hmap := hbase.comp_linearIsometryEquiv
     (evenDilationUnitary r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)))
@@ -599,11 +599,11 @@ def inverseDilatedEvenShellEven
     (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d) (hr : 1 < r)
     (harc : a < r * c) :
     Tendsto (fun n =>
-      ‖evenCentralSoninProjection a (inverseDilatedEvenShellEven c d r hc hcd hr n) -
-        inverseDilatedEvenShellEven c d r hc hcd hr n‖) atTop (𝓝 0) := by
+      ‖evenCentralSoninProjection a (inverseDilatedEvenShellEven c d r hcd hr n) -
+        inverseDilatedEvenShellEven c d r hcd hr n‖) atTop (𝓝 0) := by
   change Tendsto (fun n =>
-    ‖centralSoninProjection a (inverseDilatedEvenShell c d r hc hcd hr n) -
-      inverseDilatedEvenShell c d r hc hcd hr n‖) atTop (𝓝 0)
+    ‖centralSoninProjection a (inverseDilatedEvenShell c d r hcd hr n) -
+      inverseDilatedEvenShell c d r hcd hr n‖) atTop (𝓝 0)
   exact centralSoninProjection_inverseDilatedEvenShell_tendsto
     a c d r ha hc hcd hr harc
 
@@ -613,13 +613,13 @@ def inverseDilatedEvenShellEven
     Tendsto (fun n =>
       ‖evenCentralSoninDilationCorner a r hr
           (evenCentralSoninProjection a
-            (inverseDilatedEvenShellEven c d r hc hcd hr n)) -
-        evenShellVectorEven c d hc hcd n‖) atTop (𝓝 0) := by
+            (inverseDilatedEvenShellEven c d r hcd hr n)) -
+        evenShellVectorEven c d hcd n‖) atTop (𝓝 0) := by
   change Tendsto (fun n =>
     ‖(crossBoundary (centralSoninProjection a) (dilationSum r hr) :
         SoninL2 →L[ℂ] SoninL2)
-        (centralSoninProjection a (inverseDilatedEvenShell c d r hc hcd hr n)) -
-      evenShellVector c d hc hcd n‖) atTop (𝓝 0)
+        (centralSoninProjection a (inverseDilatedEvenShell c d r hcd hr n)) -
+      evenShellVector c d hcd n‖) atTop (𝓝 0)
   exact centralSoninDilationCorner_inverseDilatedEvenShell_tendsto
     a c d r ha hc hcd hda hr harc
 
@@ -696,9 +696,9 @@ theorem one_le_norm_evenCentralSoninDilationCorner_sub_compact_of_shell
     (K : evenSubspace →L[ℂ] evenSubspace) (hK : IsCompactOperator K) :
     1 ≤ ‖evenCentralSoninDilationCorner a p hp - K‖ := by
   let Q : evenSubspace →L[ℂ] evenSubspace := evenCentralSoninProjection a
-  let g : ℕ → evenSubspace := inverseDilatedEvenShellEven c d p hc hcd hp
+  let g : ℕ → evenSubspace := inverseDilatedEvenShellEven c d p hcd hp
   let f : ℕ → evenSubspace := fun n => Q (g n)
-  let v : ℕ → evenSubspace := evenShellVectorEven c d hc hcd
+  let v : ℕ → evenSubspace := evenShellVectorEven c d hcd
   have hg : Orthonormal ℂ g := by
     simpa [g] using inverseDilatedEvenShellEven_orthonormal c d p hc hcd hp
   have hf_approx : Tendsto (fun n => ‖f n - g n‖) atTop (𝓝 0) := by
@@ -778,11 +778,11 @@ theorem one_le_norm_evenCentralSoninQuadraticCorner_sub_compact_of_shell
     (K : evenSubspace →L[ℂ] evenSubspace) (hK : IsCompactOperator K) :
     1 ≤ ‖evenCentralSoninQuadraticCorner a p q hp hq - K‖ := by
   let Q : evenSubspace →L[ℂ] evenSubspace := evenCentralSoninProjection a
-  let gp : ℕ → evenSubspace := inverseDilatedEvenShellEven c d p hc hcd hp
-  let gq : ℕ → evenSubspace := inverseDilatedEvenShellEven c d q hc hcd hq
+  let gp : ℕ → evenSubspace := inverseDilatedEvenShellEven c d p hcd hp
+  let gq : ℕ → evenSubspace := inverseDilatedEvenShellEven c d q hcd hq
   let fp : ℕ → evenSubspace := fun n => Q (gp n)
   let fq : ℕ → evenSubspace := fun n => Q (gq n)
-  let v : ℕ → evenSubspace := evenShellVectorEven c d hc hcd
+  let v : ℕ → evenSubspace := evenShellVectorEven c d hcd
   have hgp : Orthonormal ℂ gp := by
     simpa [gp] using inverseDilatedEvenShellEven_orthonormal c d p hc hcd hp
   have hgq : Orthonormal ℂ gq := by

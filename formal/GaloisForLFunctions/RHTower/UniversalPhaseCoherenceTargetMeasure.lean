@@ -241,7 +241,7 @@ theorem torusIndependentPivotPhaseEnergy_pivotDifferenceEquiv
 /-- Exact product factorization of the sheared pivot-energy Laplace
 transform.  One coordinate is free, hence the exponent `card d - 1`. -/
 theorem integral_exp_neg_torusIndependentPivotPhaseEnergy
-    {d : Type*} [Fintype d] [Nonempty d] (k : d) (lam : ℝ) :
+    {d : Type*} [Fintype d] (k : d) (lam : ℝ) :
     (∫ y : d → UnitAddCircle,
       Real.exp (-lam * torusIndependentPivotPhaseEnergy k y)) =
         circleChordExponentialMoment lam ^ (Fintype.card d - 1) := by
@@ -300,7 +300,7 @@ theorem integral_exp_neg_torusIndependentPivotPhaseEnergy
 
 /-- The unsheared pivot energy has the same exact product Laplace transform. -/
 theorem integral_exp_neg_torusPivotPhaseEnergy
-    {d : Type*} [Fintype d] [Nonempty d] (k : d) (lam : ℝ) :
+    {d : Type*} [Fintype d] (k : d) (lam : ℝ) :
     (∫ x : d → UnitAddCircle,
       Real.exp (-lam * torusPivotPhaseEnergy k x)) =
         circleChordExponentialMoment lam ^ (Fintype.card d - 1) := by
@@ -338,7 +338,7 @@ def torusPivotEnergyTarget {d : Type*} [Fintype d]
 
 /-- Chernoff bound for one pivot-energy target. -/
 theorem measureReal_torusPivotEnergyTarget_le
-    {d : Type*} [Fintype d] [Nonempty d]
+    {d : Type*} [Fintype d]
     (k : d) {η lam : ℝ} (hlam : 0 < lam) :
     volume.real (torusPivotEnergyTarget k η) ≤
       Real.exp (lam * (4 * η * (Fintype.card d : ℝ))) *
@@ -391,19 +391,19 @@ theorem measureReal_torusPivotEnergyTarget_le
 
 /-- The normalized Haar target of phase packets with coherence at least
 `1 - η`. -/
-def torusCoherenceTarget {d : Type*} [Fintype d] [Nonempty d]
+def torusCoherenceTarget {d : Type*} [Fintype d]
     (η : ℝ) : Set (d → UnitAddCircle) :=
   {x | 1 - η ≤ ‖equalPhaseAmplitude (fun j ↦ fourier 1 (x j))‖}
 
 theorem continuous_torusCoherenceAmplitude
-    {d : Type*} [Fintype d] [Nonempty d] :
+    {d : Type*} [Fintype d] :
     Continuous (fun x : d → UnitAddCircle ↦
       ‖equalPhaseAmplitude (fun j ↦ fourier 1 (x j))‖) := by
   unfold equalPhaseAmplitude GaloisForLFunctions.HilbertMetric.hilbertCentroid
   fun_prop
 
 theorem measurableSet_torusCoherenceTarget
-    {d : Type*} [Fintype d] [Nonempty d] (η : ℝ) :
+    {d : Type*} [Fintype d] (η : ℝ) :
     MeasurableSet (torusCoherenceTarget (d := d) η) := by
   rw [torusCoherenceTarget]
   exact measurableSet_le measurable_const
@@ -421,7 +421,7 @@ theorem measureReal_torus_univ
 
 theorem torusCoherenceTarget_subset_iUnion_pivotEnergyTarget
     {d : Type*} [Fintype d] [Nonempty d]
-    {η : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1) :
+    {η : ℝ} (hη1 : η ≤ 1) :
     torusCoherenceTarget (d := d) η ⊆
       ⋃ k, torusPivotEnergyTarget k η := by
   intro x hx
@@ -430,7 +430,7 @@ theorem torusCoherenceTarget_subset_iUnion_pivotEnergyTarget
     intro j
     rw [fourier_apply, Circle.norm_coe]
   obtain ⟨k, hk⟩ := exists_phasePivot_sum_norm_sub_sq_le
-    (fun j ↦ fourier 1 (x j)) hphase hη0 hη1 hx
+    (fun j ↦ fourier 1 (x j)) hphase hη1 hx
   rw [Set.mem_iUnion]
   refine ⟨k, ?_⟩
   rw [torusPivotEnergyTarget, Set.mem_setOf_eq, torusPivotPhaseEnergy]
@@ -441,7 +441,7 @@ theorem torusCoherenceTarget_subset_iUnion_pivotEnergyTarget
 one-circle chord moments. -/
 theorem measureReal_torusCoherenceTarget_le
     {d : Type*} [Fintype d] [Nonempty d]
-    {η lam : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1) (hlam : 0 < lam) :
+    {η lam : ℝ} (hη1 : η ≤ 1) (hlam : 0 < lam) :
     volume.real (torusCoherenceTarget (d := d) η) ≤
       (Fintype.card d : ℝ) *
         Real.exp (lam * (4 * η * (Fintype.card d : ℝ))) *
@@ -452,7 +452,7 @@ theorem measureReal_torusCoherenceTarget_le
     volume.real (torusCoherenceTarget (d := d) η) ≤
         volume.real (⋃ k, torusPivotEnergyTarget k η) :=
       measureReal_mono
-        (torusCoherenceTarget_subset_iUnion_pivotEnergyTarget hη0 hη1)
+        (torusCoherenceTarget_subset_iUnion_pivotEnergyTarget hη1)
     _ ≤ ∑ k : d, volume.real (torusPivotEnergyTarget k η) :=
       measureReal_iUnion_fintype_le _
     _ ≤ ∑ _k : d, B := by
@@ -475,13 +475,13 @@ theorem circleChordExponentialMoment_nonneg (lam : ℝ) :
 /-- Gaussian form of the finite coherence-target entropy bound. -/
 theorem measureReal_torusCoherenceTarget_le_gaussian
     {d : Type*} [Fintype d] [Nonempty d]
-    {η lam : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1) (hlam : 0 < lam) :
+    {η lam : ℝ} (hη1 : η ≤ 1) (hlam : 0 < lam) :
     volume.real (torusCoherenceTarget (d := d) η) ≤
       (Fintype.card d : ℝ) *
         Real.exp (lam * (4 * η * (Fintype.card d : ℝ))) *
           Real.sqrt (Real.pi / (16 * lam)) ^ (Fintype.card d - 1) := by
   have htarget := measureReal_torusCoherenceTarget_le
-    (d := d) (η := η) (lam := lam) hη0 hη1 hlam
+    (d := d) (η := η) (lam := lam) hη1 hlam
   have hmoment := circleChordExponentialMoment_le_gaussian hlam
   have hpow :
       circleChordExponentialMoment lam ^ (Fintype.card d - 1) ≤
@@ -509,7 +509,7 @@ theorem measureReal_torusCoherenceTarget_le_optimized
         Real.sqrt (Real.pi * η / 2) ^ (Fintype.card d - 1) := by
   have hlam : 0 < 1 / (8 * η) := by positivity
   have htarget := measureReal_torusCoherenceTarget_le_gaussian
-    (d := d) hη0.le hη1 hlam
+    (d := d) hη1 hlam
   have hexponent :
       (1 / (8 * η)) * (4 * η * (Fintype.card d : ℝ)) =
         (Fintype.card d : ℝ) / 2 := by

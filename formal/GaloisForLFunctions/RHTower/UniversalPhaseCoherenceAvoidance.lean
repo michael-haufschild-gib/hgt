@@ -18,7 +18,7 @@ namespace RHTower
 
 /-- The initial `N` orbit hits of the `1 - η` coherence target.  Index `k`
 represents the positive clock `k + 1`. -/
-def torusCoherenceHitUnion {d : Type*} [Fintype d] [Nonempty d]
+def torusCoherenceHitUnion {d : Type*} [Fintype d]
     (N : ℕ) (η : ℝ) : Set (d → UnitAddCircle) :=
   ⋃ k : Fin N,
     (fun x : d → UnitAddCircle ↦ ((k.1 + 1 : ℕ) : ℤ) • x) ⁻¹'
@@ -27,7 +27,7 @@ def torusCoherenceHitUnion {d : Type*} [Fintype d] [Nonempty d]
 /-- Every nonzero integer clock preserves the Haar volume of the coherence
 target on the full phase torus. -/
 theorem measureReal_torusCoherenceTarget_zsmul_preimage
-    {d : Type*} [Fintype d] [Nonempty d]
+    {d : Type*} [Fintype d]
     (η : ℝ) {n : ℤ} (hn : n ≠ 0) :
     volume.real ((fun x : d → UnitAddCircle ↦ n • x) ⁻¹'
         torusCoherenceTarget (d := d) η) =
@@ -40,7 +40,7 @@ theorem measureReal_torusCoherenceTarget_zsmul_preimage
 
 /-- Union bound for the first `N` coherence hits. -/
 theorem measureReal_torusCoherenceHitUnion_le
-    {d : Type*} [Fintype d] [Nonempty d]
+    {d : Type*} [Fintype d]
     (N : ℕ) (η : ℝ) :
     volume.real (torusCoherenceHitUnion (d := d) N η) ≤
       (N : ℝ) * volume.real (torusCoherenceTarget (d := d) η) := by

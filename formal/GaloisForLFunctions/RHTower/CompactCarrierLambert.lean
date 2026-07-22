@@ -211,7 +211,6 @@ theorem positiveLambertDerivative_compactFourierBorel
 Euler-unit tangent divided by `log p`. -/
 theorem compactLambertKernel_primeLog_apply
     (s : C(K, ℂ)) {p : ℕ} (hp : 2 ≤ p) (k : K)
-    (hs : 0 < (s k).re)
     (hq : ‖compactExponentialTest s (Real.log p)‖ < 1) :
     compactLambertKernel s (Real.log p) k =
       primeEulerUnitTangent p (s k) / (Real.log p : ℂ) := by
@@ -239,11 +238,10 @@ def compactPrimeEulerUnitTangent (s : C(K, ℂ)) (p : ℕ) : C(K, ℂ) :=
 @[simp]
 theorem compactPrimeEulerUnitTangent_apply
     (s : C(K, ℂ)) {p : ℕ} (hp : 2 ≤ p) (k : K)
-    (hs : 0 < (s k).re)
     (hq : ‖compactExponentialTest s (Real.log p)‖ < 1) :
     compactPrimeEulerUnitTangent s p k = primeEulerUnitTangent p (s k) := by
   rw [compactPrimeEulerUnitTangent, ContinuousMap.smul_apply,
-    compactLambertKernel_primeLog_apply s hp k hs hq]
+    compactLambertKernel_primeLog_apply s hp k hq]
   have hlog : (Real.log p : ℂ) ≠ 0 := by
     exact_mod_cast (Real.log_ne_zero_of_pos_of_ne_one (by positivity : (0 : ℝ) < p)
       (by exact_mod_cast (show p ≠ 1 by omega)))

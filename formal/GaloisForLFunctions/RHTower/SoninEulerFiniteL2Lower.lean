@@ -89,42 +89,42 @@ theorem exists_finiteScale_separatingShellUpper
 
 /-- The normalized inward image of the common exterior shell. -/
 def inwardDilatedEvenShell
-    (a b r : ℝ) (ha : 0 < a) (hab : a < b) (hr : 0 < r) (m : ℕ) : SoninL2 :=
-  dilation r hr (evenShellVector a b ha hab m)
+    (a b r : ℝ) (hab : a < b) (hr : 0 < r) (m : ℕ) : SoninL2 :=
+  dilation r hr (evenShellVector a b hab m)
 
 theorem norm_inwardDilatedEvenShell
     (a b r : ℝ) (ha : 0 < a) (hab : a < b) (hr : 0 < r) (m : ℕ) :
-    ‖inwardDilatedEvenShell a b r ha hab hr m‖ = 1 := by
+    ‖inwardDilatedEvenShell a b r hab hr m‖ = 1 := by
   rw [inwardDilatedEvenShell, (dilation r hr).norm_map,
     (evenShellVector_orthonormal a b ha hab).norm_eq_one m]
 
 theorem inner_inwardDilatedEvenShell_eq_zero_of_lt
     {a b p q : ℝ} (ha : 0 < a) (hab : a < b)
     (hp : 0 < p) (hq : 0 < q) (hsep : b * p < a * q) (m : ℕ) :
-    inner ℂ (inwardDilatedEvenShell a b p ha hab hp m)
-      (inwardDilatedEvenShell a b q ha hab hq m) = 0 := by
+    inner ℂ (inwardDilatedEvenShell a b p hab hp m)
+      (inwardDilatedEvenShell a b q hab hq m) = 0 := by
   let A : SoninL2 →L[ℂ] SoninL2 :=
     indicatorCutoff (scaledEvenShellBand p a b) (measurableSet_scaledEvenShellBand p a b)
-  have hself : A (inwardDilatedEvenShell a b p ha hab hp m) =
-      inwardDilatedEvenShell a b p ha hab hp m := by
+  have hself : A (inwardDilatedEvenShell a b p hab hp m) =
+      inwardDilatedEvenShell a b p hab hp m := by
     dsimp [A, inwardDilatedEvenShell, evenShellVector]
     apply indicatorCutoff_dilation_normalizedIndicator_eq_self
-    exact evenShellCell_preimage_subset_scaledEvenShellBand ha hab m
+    exact evenShellCell_preimage_subset_scaledEvenShellBand hab m
   have hbands : Disjoint (scaledEvenShellBand p a b) (scaledEvenShellBand q a b) :=
     scaledEvenShellBand_disjoint hp hq ha hsep
-  have hzero : A (inwardDilatedEvenShell a b q ha hab hq m) = 0 := by
+  have hzero : A (inwardDilatedEvenShell a b q hab hq m) = 0 := by
     dsimp [A, inwardDilatedEvenShell, evenShellVector]
     apply indicatorCutoff_dilation_normalizedIndicator_eq_zero
     exact hbands.mono_right
-      (evenShellCell_preimage_subset_scaledEvenShellBand ha hab m)
+      (evenShellCell_preimage_subset_scaledEvenShellBand hab m)
   have hsym := indicatorCutoff_symmetric
     (scaledEvenShellBand p a b) (measurableSet_scaledEvenShellBand p a b)
-    (inwardDilatedEvenShell a b p ha hab hp m)
-    (inwardDilatedEvenShell a b q ha hab hq m)
-  change inner ℂ (A (inwardDilatedEvenShell a b p ha hab hp m))
-      (inwardDilatedEvenShell a b q ha hab hq m) =
-    inner ℂ (inwardDilatedEvenShell a b p ha hab hp m)
-      (A (inwardDilatedEvenShell a b q ha hab hq m)) at hsym
+    (inwardDilatedEvenShell a b p hab hp m)
+    (inwardDilatedEvenShell a b q hab hq m)
+  change inner ℂ (A (inwardDilatedEvenShell a b p hab hp m))
+      (inwardDilatedEvenShell a b q hab hq m) =
+    inner ℂ (inwardDilatedEvenShell a b p hab hp m)
+      (A (inwardDilatedEvenShell a b q hab hq m)) at hsym
   rw [hself, hzero, inner_zero_right] at hsym
   exact hsym
 
@@ -135,7 +135,7 @@ theorem inwardDilatedEvenShell_orthonormal_scales
     (r : Fin n → ℝ) (hr : ∀ i, 1 < r i) (hinj : Function.Injective r)
     (hsep : ∀ i j, r i < r j → b * r i < a * r j) (m : ℕ) :
     Orthonormal ℂ (fun i =>
-      inwardDilatedEvenShell a b (r i) ha hab (zero_lt_one.trans (hr i)) m) := by
+      inwardDilatedEvenShell a b (r i) hab (zero_lt_one.trans (hr i)) m) := by
   constructor
   · intro i
     exact norm_inwardDilatedEvenShell a b (r i) ha hab
@@ -154,18 +154,18 @@ theorem centralPhysicalCutoff_inwardDilatedEvenShell_eq_self
     (a b r : ℝ) (ha : 0 < a) (hab : a < b) (hr : 0 < r)
     (hbr : b < r * a) (m : ℕ) :
     indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
-      (inwardDilatedEvenShell a b r ha hab hr m) =
-        inwardDilatedEvenShell a b r ha hab hr m := by
+      (inwardDilatedEvenShell a b r hab hr m) =
+        inwardDilatedEvenShell a b r hab hr m := by
   dsimp [inwardDilatedEvenShell, evenShellVector]
   apply indicatorCutoff_dilation_normalizedIndicator_eq_self
-  exact (evenShellCell_preimage_subset_scaledEvenShellBand ha hab m).trans
+  exact (evenShellCell_preimage_subset_scaledEvenShellBand hab m).trans
     (by simpa [centralInterval] using
       scaledEvenShellBand_subset_Icc hr ha hbr.le)
 
 theorem inwardDilatedEvenShell_mem_centralPhysicalForbidden
     (a b r : ℝ) (ha : 0 < a) (hab : a < b) (hr : 0 < r)
     (hbr : b < r * a) (m : ℕ) :
-    inwardDilatedEvenShell a b r ha hab hr m ∈ centralPhysicalForbidden a := by
+    inwardDilatedEvenShell a b r hab hr m ∈ centralPhysicalForbidden a := by
   rw [centralPhysicalForbidden]
   apply (physicalForbidden (Set.Icc (-a) a) measurableSet_Icc).starProjection_eq_self_iff.mp
   rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
@@ -180,15 +180,15 @@ theorem centralSoninDilationCorner_commonExteriorShell_tendsto
     Tendsto (fun m =>
       ‖(crossBoundary (centralSoninProjection a) (dilationSum r hr) :
           SoninL2 →L[ℂ] SoninL2)
-          (centralSoninProjection a (evenShellVector a b ha hab m)) -
-        inwardDilatedEvenShell a b r ha hab (zero_lt_one.trans hr) m‖)
+          (centralSoninProjection a (evenShellVector a b hab m)) -
+        inwardDilatedEvenShell a b r hab (zero_lt_one.trans hr) m‖)
       atTop (𝓝 0) := by
   let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
   let D : SoninL2 →L[ℂ] SoninL2 := dilationSum r hr
   let B : SoninL2 →L[ℂ] SoninL2 := 1 - Q
-  let g : ℕ → SoninL2 := evenShellVector a b ha hab
+  let g : ℕ → SoninL2 := evenShellVector a b hab
   let e : ℕ → SoninL2 := fun m => Q (g m)
-  let v : ℕ → SoninL2 := inwardDilatedEvenShell a b r ha hab (zero_lt_one.trans hr)
+  let v : ℕ → SoninL2 := inwardDilatedEvenShell a b r hab (zero_lt_one.trans hr)
   let w : ℕ → SoninL2 := fun m =>
     dilation r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)) (g m)
   have hgeNorm : Tendsto (fun m => ‖e m - g m‖) atTop (𝓝 0) := by
@@ -244,22 +244,22 @@ theorem centralSoninDilationCorner_commonExteriorShell_tendsto
 
 /-- The inward shell image, regarded in the even Hilbert carrier. -/
 def inwardDilatedEvenShellEven
-    (a b r : ℝ) (ha : 0 < a) (hab : a < b) (hr : 0 < r) (m : ℕ) : evenSubspace :=
-  (evenDilationUnitary r hr) (evenShellVectorEven a b ha hab m)
+    (a b r : ℝ) (hab : a < b) (hr : 0 < r) (m : ℕ) : evenSubspace :=
+  (evenDilationUnitary r hr) (evenShellVectorEven a b hab m)
 
 @[simp] theorem coe_inwardDilatedEvenShellEven
-    (a b r : ℝ) (ha : 0 < a) (hab : a < b) (hr : 0 < r) (m : ℕ) :
-    ((inwardDilatedEvenShellEven a b r ha hab hr m : evenSubspace) : SoninL2) =
-      inwardDilatedEvenShell a b r ha hab hr m := rfl
+    (a b r : ℝ) (hab : a < b) (hr : 0 < r) (m : ℕ) :
+    ((inwardDilatedEvenShellEven a b r hab hr m : evenSubspace) : SoninL2) =
+      inwardDilatedEvenShell a b r hab hr m := rfl
 
 theorem inwardDilatedEvenShellEven_orthonormal_scales
     {n : ℕ} (a b : ℝ) (ha : 0 < a) (hab : a < b)
     (r : Fin n → ℝ) (hr : ∀ i, 1 < r i) (hinj : Function.Injective r)
     (hsep : ∀ i j, r i < r j → b * r i < a * r j) (m : ℕ) :
     Orthonormal ℂ (fun i =>
-      inwardDilatedEvenShellEven a b (r i) ha hab (zero_lt_one.trans (hr i)) m) := by
+      inwardDilatedEvenShellEven a b (r i) hab (zero_lt_one.trans (hr i)) m) := by
   exact (inwardDilatedEvenShell_orthonormal_scales a b ha hab r hr hinj hsep m).codRestrict
-    evenSubspace (fun i => (inwardDilatedEvenShellEven a b (r i) ha hab
+    evenSubspace (fun i => (inwardDilatedEvenShellEven a b (r i) hab
       (zero_lt_one.trans (hr i)) m).2)
 
 /-- The Euclidean norm of a finite complex coefficient family. -/
@@ -290,14 +290,14 @@ theorem evenCentralSoninDilationCorner_commonExteriorShell_tendsto
     (hbr : b < r * a) :
     Tendsto (fun m =>
       ‖evenCentralSoninDilationCorner a r hr
-          (evenCentralSoninProjection a (evenShellVectorEven a b ha hab m)) -
-        inwardDilatedEvenShellEven a b r ha hab (zero_lt_one.trans hr) m‖)
+          (evenCentralSoninProjection a (evenShellVectorEven a b hab m)) -
+        inwardDilatedEvenShellEven a b r hab (zero_lt_one.trans hr) m‖)
       atTop (𝓝 0) := by
   change Tendsto (fun m =>
     ‖(crossBoundary (centralSoninProjection a) (dilationSum r hr) :
         SoninL2 →L[ℂ] SoninL2)
-        (centralSoninProjection a (evenShellVector a b ha hab m)) -
-      inwardDilatedEvenShell a b r ha hab (zero_lt_one.trans hr) m‖)
+          (centralSoninProjection a (evenShellVector a b hab m)) -
+      inwardDilatedEvenShell a b r hab (zero_lt_one.trans hr) m‖)
     atTop (𝓝 0)
   exact centralSoninDilationCorner_commonExteriorShell_tendsto a b r ha hab hr hbr
 
@@ -309,13 +309,13 @@ theorem finiteEvenDilationCorners_commonExteriorShell_tendsto
     (hbr : ∀ i, b < r i * a) :
     Tendsto (fun m =>
       ‖finiteEvenDilationCorners a r hr c
-          (evenCentralSoninProjection a (evenShellVectorEven a b ha hab m)) -
-        ∑ i, c i • inwardDilatedEvenShellEven a b (r i) ha hab
+          (evenCentralSoninProjection a (evenShellVectorEven a b hab m)) -
+        ∑ i, c i • inwardDilatedEvenShellEven a b (r i) hab
           (zero_lt_one.trans (hr i)) m‖) atTop (𝓝 0) := by
   let f : ℕ → evenSubspace := fun m =>
-    evenCentralSoninProjection a (evenShellVectorEven a b ha hab m)
+    evenCentralSoninProjection a (evenShellVectorEven a b hab m)
   let v : Fin n → ℕ → evenSubspace := fun i m =>
-    inwardDilatedEvenShellEven a b (r i) ha hab (zero_lt_one.trans (hr i)) m
+    inwardDilatedEvenShellEven a b (r i) hab (zero_lt_one.trans (hr i)) m
   have hi : ∀ i, Tendsto (fun m =>
       evenCentralSoninDilationCorner a (r i) (hr i) (f m) - v i m)
       atTop (𝓝 0) := by
@@ -349,18 +349,18 @@ theorem finiteCoefficientL2Norm_le_norm_finiteEvenDilationCorners_sub_compact_of
     (hsep : ∀ i j, r i < r j → b * r i < a * r j)
     (K : evenSubspace →L[ℂ] evenSubspace) (hK : IsCompactOperator K) :
     finiteCoefficientL2Norm c ≤ ‖finiteEvenDilationCorners a r hr c - K‖ := by
-  let g : ℕ → evenSubspace := evenShellVectorEven a b ha hab
+  let g : ℕ → evenSubspace := evenShellVectorEven a b hab
   let f : ℕ → evenSubspace := fun m => evenCentralSoninProjection a (g m)
   let v : ℕ → evenSubspace := fun m =>
-    ∑ i, c i • inwardDilatedEvenShellEven a b (r i) ha hab
+    ∑ i, c i • inwardDilatedEvenShellEven a b (r i) hab
       (zero_lt_one.trans (hr i)) m
   let T : evenSubspace →L[ℂ] evenSubspace := finiteEvenDilationCorners a r hr c
   have hg : Orthonormal ℂ g := by
     simpa [g] using evenShellVectorEven_orthonormal a b ha hab
   have hf_approx : Tendsto (fun m => ‖f m - g m‖) atTop (𝓝 0) := by
     change Tendsto (fun m =>
-      ‖centralSoninProjection a (evenShellVector a b ha hab m) -
-        evenShellVector a b ha hab m‖) atTop (𝓝 0)
+      ‖centralSoninProjection a (evenShellVector a b hab m) -
+        evenShellVector a b hab m‖) atTop (𝓝 0)
     exact centralSoninProjection_evenShellVector_tendsto_general a b ha hab
   have hf_weak : ∀ ℓ : evenSubspace →L[ℂ] ℂ,
       Tendsto (fun m => ℓ (f m)) atTop (𝓝 0) :=

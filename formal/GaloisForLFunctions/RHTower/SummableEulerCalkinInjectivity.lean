@@ -91,10 +91,10 @@ theorem scaledEvenShellCutoff_summableDilationCombination_apply
     (ha : 0 < a) (hab : a < b) (hba : b ≤ r k * a)
     (hsep : ∀ j, k < j → b * r k < a * r j) (m : ℕ) :
     scaledEvenShellCutoff (r k) a b
-        (summableDilationCombination r hr c (evenShellVector a b ha hab m)) =
+        (summableDilationCombination r hr c (evenShellVector a b hab m)) =
       c k • dilation (r k) (zero_lt_one.trans (hr k))
-        (evenShellVector a b ha hab m) := by
-  let g := evenShellVector a b ha hab m
+        (evenShellVector a b hab m) := by
+  let g := evenShellVector a b hab m
   let A := scaledEvenShellCutoff (r k) a b
   have hterms := summable_smul_dilationSum r hr c hc
   have heval : Summable fun j => (c j • dilationSum (r j) (hr j)) g :=
@@ -242,9 +242,9 @@ theorem summableEvenDilationCorner_not_isCompactOperator
     apply centralSoninCorner_not_isCompactOperator_of_scaledShell_norm
       ha hab (zero_lt_one.trans (hr k)) hba (norm_pos_iff.mpr hk) WEven
     intro m
-    have heven : evenProjection (evenShellVector a b ha hab m) =
-        evenShellVector a b ha hab m := by
-      rw [evenProjection_apply, l2Reflection_evenShellVector a b ha hab m]
+    have heven : evenProjection (evenShellVector a b hab m) =
+        evenShellVector a b hab m := by
+      rw [evenProjection_apply, l2Reflection_evenShellVector a b hab m]
       module
     dsimp only [WEven, ContinuousLinearMap.comp_apply, E, W]
     rw [heven]

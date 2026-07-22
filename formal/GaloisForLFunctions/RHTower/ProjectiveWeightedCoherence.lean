@@ -116,7 +116,7 @@ theorem exists_positiveWeight_projectiveWeightedPivotEnergy_le
     {d : ℕ} (w : Fin d → ℝ) (phase : Fin d → ℂ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
     (hphase : ∀ i, ‖phase i‖ = 1)
-    {η : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    {η : ℝ} (hη1 : η ≤ 1)
     (hcoh : 1 - η ≤ ‖projectiveWeightedPhaseAmplitude w phase‖) :
     ∃ k, 0 < w k ∧ projectiveWeightedPivotEnergy w phase k ≤ 4 * η := by
   have hsq : (1 - η) ^ 2 ≤
@@ -207,7 +207,7 @@ theorem continuousOn_projectiveWaterMass
 `η / d`, so the total mass is at most `η`. -/
 theorem projectiveWaterMass_card_div_le
     {d : ℕ} (hd : 0 < d) (w : Fin d → ℝ) (k : Fin d)
-    (hw : ∀ i, 0 ≤ w i) {η : ℝ} (hη : 0 < η) :
+    {η : ℝ} (hη : 0 < η) :
     projectiveWaterMass w k ((d : ℝ) / η) ≤ η := by
   have hlam : 0 < (d : ℝ) / η := by positivity
   rw [projectiveWaterMass]
@@ -247,7 +247,7 @@ theorem exists_projectiveWaterLevel
     rw [projectiveWaterMass_one w k hw hmass]
     exact hηtail.le
   have hhigh : projectiveWaterMass w k ((d : ℝ) / η) ≤ η :=
-    projectiveWaterMass_card_div_le hd w k hw hη
+    projectiveWaterMass_card_div_le hd w k hη
   have himage := intermediate_value_Icc' htop hcont ⟨hhigh, hlow⟩
   rcases himage with ⟨lam, hlam, hvalue⟩
   exact ⟨lam, hlam.1, hlam.2, hvalue⟩
@@ -479,7 +479,7 @@ def torusProjectiveWeightedCoherenceTarget {d : ℕ}
 theorem torusProjectiveWeightedCoherenceTarget_subset_iUnion_pivotTarget
     {d : ℕ} (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    {η : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1) :
+    {η : ℝ} (hη1 : η ≤ 1) :
     torusProjectiveWeightedCoherenceTarget w η ⊆
       ⋃ k, torusProjectiveWeightedPivotTarget w k η := by
   intro x hx
@@ -489,7 +489,7 @@ theorem torusProjectiveWeightedCoherenceTarget_subset_iUnion_pivotTarget
     rw [fourier_apply, Circle.norm_coe]
   obtain ⟨k, _hwk, hk⟩ :=
     exists_positiveWeight_projectiveWeightedPivotEnergy_le
-      w (fun j ↦ fourier 1 (x j)) hw hmass hphase hη0 hη1 hx
+      w (fun j ↦ fourier 1 (x j)) hw hmass hphase hη1 hx
   rw [Set.mem_iUnion]
   refine ⟨k, ?_⟩
   change (∑ j, w j *
@@ -503,7 +503,7 @@ positive Chernoff level. -/
 theorem measureReal_torusProjectiveWeightedCoherenceTarget_le
     {d : ℕ} (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    {η : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    {η : ℝ} (hη1 : η ≤ 1)
     (lam : Fin d → ℝ) (hlam : ∀ k, 0 < lam k) :
     volume.real (torusProjectiveWeightedCoherenceTarget w η) ≤
       ∑ k, Real.exp (4 * lam k * η) *
@@ -514,7 +514,7 @@ theorem measureReal_torusProjectiveWeightedCoherenceTarget_le
         volume.real (⋃ k, torusProjectiveWeightedPivotTarget w k η) :=
       measureReal_mono
         (torusProjectiveWeightedCoherenceTarget_subset_iUnion_pivotTarget
-          w hw hmass hη0 hη1)
+          w hw hmass hη1)
     _ ≤ ∑ k, volume.real (torusProjectiveWeightedPivotTarget w k η) :=
       measureReal_iUnion_fintype_le _
     _ ≤ ∑ k, Real.exp (4 * lam k * η) *

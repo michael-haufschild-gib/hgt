@@ -39,9 +39,6 @@ theorem exists_phaseClockPivot_halfEntropy_quantitative
     rw [show phase n i = Complex.exp
       (Complex.I * (((n : ℝ) * ω i : ℝ) : ℂ)) by rfl, Complex.norm_exp]
     simp
-  have hη0 : 0 ≤ η := by
-    dsimp only [η]
-    positivity
   have hden : (8 : ℝ) ≤ (Q + 1 : ℕ) := by
     exact_mod_cast (show 8 ≤ Q + 1 by omega)
   norm_num at hden
@@ -59,7 +56,7 @@ theorem exists_phaseClockPivot_halfEntropy_quantitative
     rw [← phaseClockAmplitude_eq_equalPhaseAmplitude ω n]
     exact hcoh
   obtain ⟨k, hk⟩ :=
-    exists_phasePivot_sum_norm_sub_sq_le (phase n) hphase hη0 hη1 hcoh'
+    exists_phasePivot_sum_norm_sub_sq_le (phase n) hphase hη1 hcoh'
   refine ⟨n, k, hnpos, hnQ, ?_⟩
   change (∑ j : Fin d, ‖phase n j - phase n k‖ ^ 2) ≤ _
   calc

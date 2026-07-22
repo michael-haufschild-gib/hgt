@@ -216,7 +216,7 @@ theorem exists_universalProjectiveWeightedCoherenceDeadline_entropySandwich
       w k x hw hmass hx
   refine ⟨T, hdeadline, ?_, ?_⟩
   · have hlower := projectiveWaterEntropy_sub_cost_lt_log_deadline
-      hd0 w hw hmass hη0.le hη1 lam
+      hd0 w hw hmass hη1 lam
       (fun j ↦ projectiveCanonicalWaterLevel_pos w j η)
       (fun j ↦ projectiveCanonicalWaterLevel_mul_eta_le_card_sub_one
         hd w j hη1)

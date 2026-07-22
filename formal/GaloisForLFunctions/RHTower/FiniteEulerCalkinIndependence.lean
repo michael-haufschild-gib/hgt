@@ -69,22 +69,22 @@ theorem scaledEvenShellBand_disjoint {p q a b : ℝ}
   nlinarith
 
 theorem evenShellCell_preimage_subset_scaledEvenShellBand
-    {r a b : ℝ} (ha : 0 < a) (hab : a < b) (n : ℕ) :
+    {r a b : ℝ} (hab : a < b) (n : ℕ) :
     (fun x : ℝ => r * x) ⁻¹' evenShellCell a b n ⊆
       scaledEvenShellBand r a b := by
   intro x hx
-  exact evenShellCell_subset_closedEvenShell ha hab n hx
+  exact evenShellCell_subset_closedEvenShell hab n hx
 
 theorem physicalCutoff_evenShellVector_general
-    (a b : ℝ) (ha : 0 < a) (hab : a < b) (n : ℕ) :
+    (a b : ℝ) (hab : a < b) (n : ℕ) :
     indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
-      (evenShellVector a b ha hab n) = 0 := by
+      (evenShellVector a b hab n) = 0 := by
   apply Lp.ext
   filter_upwards [indicatorCutoff_ae (Set.Icc (-a) a) measurableSet_Icc
-      (evenShellVector a b ha hab n),
+      (evenShellVector a b hab n),
     normalizedIndicator_ae (evenShellCell a b n)
       (measurableSet_evenShellCell a b n)
-      (evenShellCell_measure_ne_top ha hab n),
+      (evenShellCell_measure_ne_top hab n),
     Lp.coeFn_zero ℂ 2 volume] with x hcut hshell hzero
   rw [hcut]
   by_cases hxc : x ∈ Set.Icc (-a) a
@@ -96,27 +96,27 @@ theorem physicalCutoff_evenShellVector_general
     rw [Set.indicator_of_mem hxc]
     change normalizedIndicator (evenShellCell a b n)
       (measurableSet_evenShellCell a b n)
-      (evenShellCell_measure_ne_top ha hab n) x = (0 : SoninL2) x
+      (evenShellCell_measure_ne_top hab n) x = (0 : SoninL2) x
     rw [hshell, Set.indicator_of_notMem hxnot, hzero]
     simp
   · rw [Set.indicator_of_notMem hxc]
     exact hzero.symm
 
 theorem evenShellVector_mem_centralPhysicalForbidden_orthogonal_general
-    (a b : ℝ) (ha : 0 < a) (hab : a < b) (n : ℕ) :
-    evenShellVector a b ha hab n ∈ (centralPhysicalForbidden a)ᗮ := by
-  change evenShellVector a b ha hab n ∈
+    (a b : ℝ) (hab : a < b) (n : ℕ) :
+    evenShellVector a b hab n ∈ (centralPhysicalForbidden a)ᗮ := by
+  change evenShellVector a b hab n ∈
     (physicalForbidden (Set.Icc (-a) a) measurableSet_Icc)ᗮ
   apply (Submodule.starProjection_apply_eq_zero_iff
     (K := physicalForbidden (Set.Icc (-a) a) measurableSet_Icc)).mp
   rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
-  exact physicalCutoff_evenShellVector_general a b ha hab n
+  exact physicalCutoff_evenShellVector_general a b hab n
 
 theorem centralSoninProjection_evenShellVector_tendsto_general
     (a b : ℝ) (ha : 0 < a) (hab : a < b) :
     Tendsto (fun n =>
-      ‖centralSoninProjection a (evenShellVector a b ha hab n) -
-        evenShellVector a b ha hab n‖) atTop (𝓝 0) := by
+      ‖centralSoninProjection a (evenShellVector a b hab n) -
+        evenShellVector a b hab n‖) atTop (𝓝 0) := by
   let A : Submodule ℂ SoninL2 := centralPhysicalForbidden a
   let B : Submodule ℂ SoninL2 := centralFourierForbidden a
   letI : (Aᗮ ⊓ Bᗮ).HasOrthogonalProjection := by
@@ -124,16 +124,16 @@ theorem centralSoninProjection_evenShellVector_tendsto_general
     infer_instance
   have hblock : ‖soninAlternatingBlock A B‖ < 1 := by
     simpa [A, B] using norm_centralSoninAlternatingBlock_lt_one a ha
-  have hgA : ∀ n, evenShellVector a b ha hab n ∈ Aᗮ := by
+  have hgA : ∀ n, evenShellVector a b hab n ∈ Aᗮ := by
     intro n
     simpa [A] using
-      evenShellVector_mem_centralPhysicalForbidden_orthogonal_general a b ha hab n
+      evenShellVector_mem_centralPhysicalForbidden_orthogonal_general a b hab n
   have hBnull : Tendsto (fun n =>
-      ‖B.starProjection (evenShellVector a b ha hab n)‖) atTop (𝓝 0) := by
+      ‖B.starProjection (evenShellVector a b hab n)‖) atTop (𝓝 0) := by
     simpa [B, centralFourierForbidden] using
       fourierForbidden_starProjection_evenShellVector_tendsto_zero a b ha hab
   have h := soninIntersectionProjection_tendsto_shell A B hblock
-    (evenShellVector a b ha hab) hgA hBnull
+    (evenShellVector a b hab) hgA hBnull
   rw [centralSoninProjection_eq_soninIntersectionProjection]
   simpa [A, B] using h
 
@@ -145,19 +145,19 @@ def scaledEvenShellCutoff (r a b : ℝ) : SoninL2 →L[ℂ] SoninL2 :=
 theorem scaledEvenShellCutoff_target_inward
     {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hab : a < b) (n : ℕ) :
     scaledEvenShellCutoff r a b
-        (dilation r hr (evenShellVector a b ha hab n)) =
-      dilation r hr (evenShellVector a b ha hab n) := by
+        (dilation r hr (evenShellVector a b hab n)) =
+      dilation r hr (evenShellVector a b hab n) := by
   apply indicatorCutoff_dilation_normalizedIndicator_eq_self
-  exact evenShellCell_preimage_subset_scaledEvenShellBand ha hab n
+  exact evenShellCell_preimage_subset_scaledEvenShellBand hab n
 
 theorem scaledEvenShellCutoff_offtarget_inward
     {p q a b : ℝ} (hp : 0 < p) (hq : 0 < q) (ha : 0 < a) (hab : a < b)
     (hsep : b * p < a * q) (n : ℕ) :
     scaledEvenShellCutoff p a b
-        (dilation q hq (evenShellVector a b ha hab n)) = 0 := by
+        (dilation q hq (evenShellVector a b hab n)) = 0 := by
   apply indicatorCutoff_dilation_normalizedIndicator_eq_zero
   exact (scaledEvenShellBand_disjoint hp hq ha hsep).mono_right
-    (evenShellCell_preimage_subset_scaledEvenShellBand ha hab n)
+    (evenShellCell_preimage_subset_scaledEvenShellBand hab n)
 
 theorem outward_shell_preimage_disjoint_general
     (a b r : ℝ) (ha : 0 < a) (hab : a < b) (hr : 1 < r) (n : ℕ) :
@@ -183,7 +183,7 @@ theorem scaledEvenShellCutoff_outward
     (hba : b ≤ p * a) (n : ℕ) :
     scaledEvenShellCutoff p a b
         (dilation r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr))
-          (evenShellVector a b ha hab n)) = 0 := by
+          (evenShellVector a b hab n)) = 0 := by
   apply indicatorCutoff_dilation_normalizedIndicator_eq_zero
   exact (outward_shell_preimage_disjoint_general a b r ha hab hr n).mono_left
     (scaledEvenShellBand_subset_Icc hp ha hba)
@@ -234,12 +234,12 @@ theorem centralSoninCorner_not_isCompactOperator_of_scaledShell_norm
     {a b p c₀ : ℝ} (ha : 0 < a) (hab : a < b) (hp : 0 < p)
     (hba : b ≤ p * a) (hc₀ : 0 < c₀) (W : SoninL2 →L[ℂ] SoninL2)
     (hW : ∀ n, ‖scaledEvenShellCutoff p a b
-      (W (evenShellVector a b ha hab n))‖ = c₀) :
+      (W (evenShellVector a b hab n))‖ = c₀) :
     ¬ IsCompactOperator
       (crossBoundary (centralSoninProjection a) W : SoninL2 →L[ℂ] SoninL2) := by
   let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
   let A : SoninL2 →L[ℂ] SoninL2 := scaledEvenShellCutoff p a b
-  let g : ℕ → SoninL2 := evenShellVector a b ha hab
+  let g : ℕ → SoninL2 := evenShellVector a b hab
   let e : ℕ → SoninL2 := fun n => Q (g n)
   have hg : Orthonormal ℂ g := evenShellVector_orthonormal a b ha hab
   have heApprox : Tendsto (fun n => ‖e n - g n‖) atTop (𝓝 0) := by
@@ -297,11 +297,11 @@ theorem scaledEvenShellCutoff_finiteDilationCombination_apply
     (hba : b ≤ r k * a)
     (hsep : ∀ j, j ≠ k → c j ≠ 0 → b * r k < a * r j) (m : ℕ) :
     scaledEvenShellCutoff (r k) a b
-        (finiteDilationCombination r hr c (evenShellVector a b ha hab m)) =
+        (finiteDilationCombination r hr c (evenShellVector a b hab m)) =
       c k • dilation (r k) (zero_lt_one.trans (hr k))
-        (evenShellVector a b ha hab m) := by
+        (evenShellVector a b hab m) := by
   classical
-  let g := evenShellVector a b ha hab m
+  let g := evenShellVector a b hab m
   have hk0 : 0 < r k := zero_lt_one.trans (hr k)
   calc
     scaledEvenShellCutoff (r k) a b (finiteDilationCombination r hr c g) =
@@ -329,7 +329,7 @@ theorem norm_scaledEvenShellCutoff_finiteDilationCombination_apply
     (hba : b ≤ r k * a)
     (hsep : ∀ j, j ≠ k → c j ≠ 0 → b * r k < a * r j) (m : ℕ) :
     ‖scaledEvenShellCutoff (r k) a b
-        (finiteDilationCombination r hr c (evenShellVector a b ha hab m))‖ = ‖c k‖ := by
+        (finiteDilationCombination r hr c (evenShellVector a b hab m))‖ = ‖c k‖ := by
   rw [scaledEvenShellCutoff_finiteDilationCombination_apply r hr c k ha hab hba hsep]
   rw [norm_smul, (dilation (r k) (zero_lt_one.trans (hr k))).norm_map,
     (evenShellVector_orthonormal a b ha hab).norm_eq_one m, mul_one]
@@ -570,9 +570,9 @@ theorem finiteEvenDilationCorners_calkinIndependent
     apply centralSoninCorner_not_isCompactOperator_of_scaledShell_norm
       ha hab (zero_lt_one.trans (hr k)) hba (norm_pos_iff.mpr hck) WEven
     intro m
-    have heven : evenProjection (evenShellVector a b ha hab m) =
-        evenShellVector a b ha hab m := by
-      rw [evenProjection_apply, l2Reflection_evenShellVector a b ha hab m]
+    have heven : evenProjection (evenShellVector a b hab m) =
+        evenShellVector a b hab m := by
+      rw [evenProjection_apply, l2Reflection_evenShellVector a b hab m]
       module
     simpa [WEven, W, E, heven] using
       norm_scaledEvenShellCutoff_finiteDilationCombination_apply

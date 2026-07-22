@@ -1,7 +1,9 @@
-Exact rational-rank classification of every finite Nishizawa period tuple
+Nome rank exactly classifies every finite Nishizawa period tuple
 
-Rank two is differentially algebraic; all higher ranks are hypertranscendental
+All exceptional non-rational differentially algebraic tuples are identified
 
-A finite-family Ostrowski criterion detects joint differential dependence
+Shift defects and quotients form the pointed period-coset matroid
 
-Two elliptic translations and pole orbits force hypertranscendence
+Differential transcendence degree equals occupied nonzero period classes
+
+The rank-three obstruction propagates through every higher order

@@ -109,7 +109,7 @@ theorem binaryUniversalProjectiveWeightedCoherenceTime_entropySandwich
       simp only [H]
       linarith
   have hlower := projectiveWaterEntropy_sub_cost_lt_log_deadline
-    (d := 2) (T := Tmin) (by norm_num) w hw hmass heta0.le heta1
+    (d := 2) (T := Tmin) (by norm_num) w hw hmass heta1
     (fun _ ↦ eta⁻¹) (fun _ ↦ inv_pos.mpr heta0)
     (fun _ ↦ by simp [heta0.ne']) hentropy hdeadline
   have hlevel0 : projectiveWaterMass w 0 eta⁻¹ = eta := by

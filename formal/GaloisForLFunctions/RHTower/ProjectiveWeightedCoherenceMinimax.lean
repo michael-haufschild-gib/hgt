@@ -85,7 +85,7 @@ theorem universalProjectiveWeightedCoherenceTime_entropySandwich
     exact universalProjectiveWeightedCoherenceTime_isDeadline
       hd w hw hmass η hη0 hη1
   have hlower := projectiveWaterEntropy_sub_cost_lt_log_deadline
-    hd0 w hw hmass hη0.le hη1 lam
+    hd0 w hw hmass hη1 lam
     (fun k ↦ projectiveCanonicalWaterLevel_pos w k η)
     (fun k ↦ projectiveCanonicalWaterLevel_mul_eta_le_card_sub_one
       hd w k hη1)

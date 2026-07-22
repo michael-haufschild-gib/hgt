@@ -73,7 +73,7 @@ theorem criticalDisc_analytic_odd_mem_closedSpan_compl_finset
     intro N
     exact Submodule.smul_mem _ _
       (criticalDisc_fe_odd_polynomial_mem_closedSpan_compl_finset
-        hr₀ (hr01.trans hr1) S (P N))
+        (hr01.trans hr1) S (P N))
   have hqF : Tendsto q atTop (nhds F) := by
     apply Metric.tendsto_atTop.mpr
     intro ε hε

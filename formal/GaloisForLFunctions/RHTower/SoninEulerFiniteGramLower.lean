@@ -188,7 +188,7 @@ theorem inwardDilatedEvenShell_mem_centralPhysicalForbidden_of_upper
   rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
   dsimp [inwardDilatedEvenShell, evenShellVector]
   apply indicatorCutoff_dilation_normalizedIndicator_eq_self
-  exact (evenShellCell_preimage_subset_scaledEvenShellBand hc hcd m).trans
+  exact (evenShellCell_preimage_subset_scaledEvenShellBand hcd m).trans
     (scaledEvenShellBand_subset_Icc_of_upper hs hc hds.le)
 
 /-- If the acting scale is at least the preimage scale, the Sonin corner sends the corrected
@@ -206,7 +206,7 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_ratio_of_le
   let Q : SoninL2 →L[ℂ] SoninL2 := centralSoninProjection a
   let D : SoninL2 →L[ℂ] SoninL2 := dilationSum q hq
   let B : SoninL2 →L[ℂ] SoninL2 := 1 - Q
-  let v : ℕ → SoninL2 := evenShellVector c d hc hcd
+  let v : ℕ → SoninL2 := evenShellVector c d hcd
   let g : ℕ → SoninL2 := inverseDilatedEvenShell c d p hc hcd hp
   let e : ℕ → SoninL2 := fun m => Q (g m)
   let t : ℕ → SoninL2 := fun m =>

@@ -215,28 +215,35 @@ theorem quasiFreeSpectralCompressionAnisotropy_nonneg
       quasiFreeSpectralCoherenceDefect_nonneg v energy occupation hoccupation)
 
 /-- The trace-free compression anisotropy is literally support rank times a squared
-Hilbert--Schmidt distance from the scalar trace part. -/
+Hilbert--Schmidt distance from the scalar trace part, including the empty-support boundary. -/
 theorem quasiFreeSpectralCompressionAnisotropy_eq_card_mul_hilbertSchmidtSq
-    [Nonempty ι]
     (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ)
     (hoccupation : ∀ i, 0 ≤ occupation i) :
     quasiFreeSpectralCompressionAnisotropy v energy occupation =
       (Fintype.card ι : ℝ) *
         quasiFreeMeanBalancedCompressionHilbertSchmidtSq v energy occupation := by
-  have hcard : (Fintype.card ι : ℝ) ≠ 0 := by
-    exact_mod_cast Fintype.card_ne_zero
-  rw [quasiFreeMeanBalancedCompressionHilbertSchmidtSq,
-    quasiFreeBalancedCompressionHilbertSchmidtSq_eq_compressionDefect
-      v energy occupation hoccupation,
-    quasiFreeSpectralCompressionAnisotropy,
-    quasiFreeSpectralCompressionDefect]
-  field_simp [hcard]
-  ring
+  cases isEmpty_or_nonempty ι with
+  | inl hι =>
+      letI := hι
+      simp [quasiFreeSpectralCompressionAnisotropy,
+        quasiFreeMeanBalancedCompressionHilbertSchmidtSq,
+        quasiFreeBalancedCompressionHilbertSchmidtSq,
+        quasiFreeCompressedSpectralEnergy, quasiFreeSpectralMean]
+  | inr hι =>
+      letI := hι
+      have hcard : (Fintype.card ι : ℝ) ≠ 0 := by
+        exact_mod_cast Fintype.card_ne_zero
+      rw [quasiFreeMeanBalancedCompressionHilbertSchmidtSq,
+        quasiFreeBalancedCompressionHilbertSchmidtSq_eq_compressionDefect
+          v energy occupation hoccupation,
+        quasiFreeSpectralCompressionAnisotropy,
+        quasiFreeSpectralCompressionDefect]
+      field_simp [hcard]
+      ring
 
-/-- **Literal Hilbert--Schmidt two-defect law.**  For nonempty support, the discriminant is
-support rank times the sum of endpoint leakage and squared metric anisotropy. -/
+/-- **Literal Hilbert--Schmidt two-defect law.**  The discriminant is support rank times the sum
+of endpoint leakage and squared metric anisotropy, including the empty-support boundary. -/
 theorem quasiFreeSpectralRankVarianceDiscriminant_hilbertSchmidt_two_defect
-    [Nonempty ι]
     (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ)
     (hoccupation : ∀ i, 0 ≤ occupation i) (lower upper : ℝ) :
     quasiFreeSpectralRankVarianceDiscriminant
@@ -284,9 +291,8 @@ theorem quasiFreeSpectralVariance_rank_bhatiaDavis
   nlinarith
 
 /-- Equality in the rank--variance bound is exactly simultaneous vanishing of endpoint leakage
-and compression anisotropy, for nonempty support. -/
+and compression anisotropy, including the empty-support boundary. -/
 theorem quasiFreeSpectralRankVarianceDiscriminant_eq_zero_iff
-    [Nonempty ι]
     (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ)
     (hframe : IsOrthonormalCoordinateFrame v) (hoccupation : ∀ i, 0 ≤ occupation i)
     (lower upper : ℝ)
@@ -295,24 +301,33 @@ theorem quasiFreeSpectralRankVarianceDiscriminant_eq_zero_iff
         v energy occupation lower upper = 0 ↔
       quasiFreeSpectralSecantDefect v energy occupation lower upper = 0 ∧
         quasiFreeSpectralCompressionAnisotropy v energy occupation = 0 := by
-  have hcard : (0 : ℝ) < Fintype.card ι := by
-    exact_mod_cast Fintype.card_pos
-  have hedge := quasiFreeSpectralSecantDefect_nonneg
-    v energy occupation hframe hoccupation lower upper hlower hupper
-  have hanisotropy := quasiFreeSpectralCompressionAnisotropy_nonneg
-    v energy occupation hoccupation
-  rw [quasiFreeSpectralRankVarianceDiscriminant_two_defect]
-  constructor
-  · intro hzero
-    constructor <;> nlinarith
-  · rintro ⟨hedge0, hanisotropy0⟩
-    rw [hedge0, hanisotropy0]
-    ring
+  cases isEmpty_or_nonempty ι with
+  | inl hι =>
+      letI := hι
+      simp [quasiFreeSpectralRankVarianceDiscriminant,
+        quasiFreeSpectralBandBudget, quasiFreeSpectralSecantDefect,
+        quasiFreeSpectralCompressionAnisotropy,
+        quasiFreeSpectralMean, quasiFreeSpectralVariance,
+        quasiFreeCompressedSpectralEnergy]
+  | inr hι =>
+      letI := hι
+      have hcard : (0 : ℝ) < Fintype.card ι := by
+        exact_mod_cast Fintype.card_pos
+      have hedge := quasiFreeSpectralSecantDefect_nonneg
+        v energy occupation hframe hoccupation lower upper hlower hupper
+      have hanisotropy := quasiFreeSpectralCompressionAnisotropy_nonneg
+        v energy occupation hoccupation
+      rw [quasiFreeSpectralRankVarianceDiscriminant_two_defect]
+      constructor
+      · intro hzero
+        constructor <;> nlinarith
+      · rintro ⟨hedge0, hanisotropy0⟩
+        rw [hedge0, hanisotropy0]
+        ring
 
 /-- First two cumulants give a tomography-free lower certificate for support rank whenever the
 observable band budget is positive. -/
 theorem quasiFreeSpectral_support_rank_lower_bound
-    [Nonempty ι]
     (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ)
     (hframe : IsOrthonormalCoordinateFrame v) (hoccupation : ∀ i, 0 ≤ occupation i)
     (lower upper : ℝ)
@@ -321,16 +336,22 @@ theorem quasiFreeSpectral_support_rank_lower_bound
     quasiFreeSpectralMean v energy occupation ^ 2 /
         quasiFreeSpectralBandBudget v energy occupation lower upper ≤
       (Fintype.card ι : ℝ) := by
-  rw [div_le_iff₀ hbudget]
-  have h := quasiFreeSpectralRankVarianceDiscriminant_nonneg
-    v energy occupation hframe hoccupation lower upper hlower hupper
-  unfold quasiFreeSpectralRankVarianceDiscriminant at h
-  nlinarith
+  cases isEmpty_or_nonempty ι with
+  | inl hι =>
+      letI := hι
+      simp [quasiFreeSpectralBandBudget, quasiFreeSpectralMean,
+        quasiFreeSpectralVariance, quasiFreeCompressedSpectralEnergy] at hbudget
+  | inr hι =>
+      letI := hι
+      rw [div_le_iff₀ hbudget]
+      have h := quasiFreeSpectralRankVarianceDiscriminant_nonneg
+        v energy occupation hframe hoccupation lower upper hlower hupper
+      unfold quasiFreeSpectralRankVarianceDiscriminant at h
+      nlinarith
 
 /-- The rank--variance theorem strictly contains the earlier fixed-unit Fano floor: completing the
 remaining scalar square recovers the filling--bandwidth bound. -/
 theorem quasiFreeSpectralFanoMargin_lower_bound_of_rankVariance
-    [Nonempty ι]
     (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ)
     (hframe : IsOrthonormalCoordinateFrame v) (hoccupation : ∀ i, 0 ≤ occupation i)
     (lower upper : ℝ)
@@ -338,15 +359,22 @@ theorem quasiFreeSpectralFanoMargin_lower_bound_of_rankVariance
     lower * upper * (∑ i, occupation i) -
         (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4 ≤
       quasiFreeSpectralFanoMargin v energy occupation := by
-  have hrank := quasiFreeSpectralVariance_rank_bhatiaDavis
-    v energy occupation hframe hoccupation lower upper hlower hupper
-  have hcard : (0 : ℝ) < Fintype.card ι := by
-    exact_mod_cast Fintype.card_pos
-  have hsquare :
-      0 ≤ (2 * quasiFreeSpectralMean v energy occupation -
-        (Fintype.card ι : ℝ) * (lower + upper - 1)) ^ 2 := sq_nonneg _
-  unfold quasiFreeSpectralFanoMargin
-  nlinarith
+  cases isEmpty_or_nonempty ι with
+  | inl hι =>
+      letI := hι
+      simp [quasiFreeSpectralFanoMargin, quasiFreeSpectralMean,
+        quasiFreeSpectralVariance, quasiFreeCompressedSpectralEnergy]
+  | inr hι =>
+      letI := hι
+      have hrank := quasiFreeSpectralVariance_rank_bhatiaDavis
+        v energy occupation hframe hoccupation lower upper hlower hupper
+      have hcard : (0 : ℝ) < Fintype.card ι := by
+        exact_mod_cast Fintype.card_pos
+      have hsquare :
+          0 ≤ (2 * quasiFreeSpectralMean v energy occupation -
+            (Fintype.card ι : ℝ) * (lower + upper - 1)) ^ 2 := sq_nonneg _
+      unfold quasiFreeSpectralFanoMargin
+      nlinarith
 
 omit [Fintype ι] [DecidableEq ι] in
 /-- Scaling the one-particle energy scales each orbital spectral mean linearly. -/

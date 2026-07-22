@@ -2,10 +2,10 @@
 
 - **ID:** `multiple-elliptic-gamma-rational-rank-dichotomy`
 - **Stage:** 4-publication-ready
-- **Type:** THEOREM / COMPLETE CLASSIFICATION / THEOREM (Lean: new HT half)
+- **Type:** THEOREM / COMPLETE CLASSIFICATION / TRANSLATION-MATROID THEOREM
 - **Scientific status:** `[PROVED HERE] [NO OPEN PARAMETER CASES] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PRIORITY AUDIT PRELIMINARY]`
-- **Statement:** For every nonempty finite upper-half-plane period tuple, the Nishizawa multiple elliptic gamma function is differentially algebraic over `C(z)` exactly when the rational span of the periods together with `1` has dimension at most two; it is hypertranscendental exactly when that dimension is at least three.
-- **Lean certificate:** `formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaHypertranscendence.lean`
+- **Statement:** For every nonempty finite upper-half-plane period tuple, the Nishizawa multiple elliptic gamma function is differentially algebraic over `C(z)` exactly when the rational span of the periods together with `1` has dimension two; it is hypertranscendental exactly when that dimension is at least three. For the rationally independent elliptic-gamma seed, every finite defect or quotient packet has differential rank equal to the number of occupied nonzero translation classes modulo `Z + Z sigma + Z tau`.
+- **Lean certificates:** `formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaHypertranscendence.lean` and `formal/GaloisForLFunctions/HTGeometry/EllipticGammaTranslationCosetRankLaw.lean`
 
 ## Abstract
 
@@ -27,6 +27,11 @@ G_I(z;tau) is hypertranscendental over C(z)        iff  d_Q(tau)>=3.
 The same dichotomy holds for the logarithmic derivative `Psi_I=G_I'/G_I`. This resolves every
 finite upper-half-plane period tuple, including all partially dependent non-rational tuples left
 outside the previously known rational-ray and fully generic regimes.
+
+For the rank-three elliptic-gamma seed, the stronger translation-coset law computes the complete
+finite differential matroid of additive defects and multiplicative shift quotients: rank is exactly
+the number of distinct nonzero shift classes. The law holds on paper over both the paired elliptic
+compositum and `C(z)`, and strengthens the seed to hypertranscendence over its natural elliptic base.
 
 The DA direction combines an all-coordinate multiplication identity with Kato's rational-period
 theorem. The HT direction is new. Every rank-at-least-three period configuration contains a
@@ -350,6 +355,25 @@ hypertranscendentalOver_multipleEllipticGammaLogDerivMero_of_rankThreeMinor
 hypertranscendentalOver_multipleEllipticGammaMero_of_rankThreeMinor
 ```
 
+The strengthened translation-coset theorem is packaged in
+`formal/GaloisForLFunctions/HTGeometry/EllipticGammaTranslationCosetRankLaw.lean`. Its primary
+declarations are:
+
+```text
+ellipticGammaTranslationCoset_differentialMatroids
+ellipticGammaTranslationCoset_eRk
+ellipticGammaExternalQuotientFamily_differentialMatroid_eq_defectFamily_rationalBase
+ellipticGammaExternalQuotientFamily_differentialMatroid_eq_freeOn_rationalBase
+ellipticGammaSource_hypertranscendentalOver_ellipticCompositum
+```
+
+These prove the complete pointed defect/quotient matroids and arbitrary-subpacket rank law over the
+paired elliptic compositum, quotient/defect transport plus separated-family freeness over the
+embedded rational-coordinate base, and source hypertranscendence over the natural elliptic base.
+The paper's remaining base transfer for resonant rational-base packets uses the classical global
+generation of an elliptic function field by Weierstrass functions. It is a proved paper input, not
+a custom Lean axiom; current mathlib lacks the matching global generation interface.
+
 Verification performed on 2026-07-21:
 
 ```text
@@ -361,6 +385,20 @@ scripts/formal_tools.py lint
 All passed. `#print axioms` for both all-order theorems reports only Lean's standard
 `propext`, `Classical.choice`, and `Quot.sound`; there is no `sorry`, `admit`, custom axiom,
 `opaque`, or `unsafe` dependency.
+
+Verification performed on 2026-07-22 for the stronger capstone:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/EllipticGammaTranslationCosetRankLaw.lean
+lake build GaloisForLFunctions.HTGeometry.EllipticGammaTranslationCosetRankLaw
+```
+
+Both passed. `#print axioms` for all five capstone declarations reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Direct source scan found no `sorry`, `admit`, `axiom`,
+`opaque`, or `unsafe`. The repository-wide `scripts/formal_tools.py lint` run reached umbrella
+reachability and failed on unrelated concurrently added RHTower, HTGeometry, and HilbertMetric
+modules missing from their respective umbrellas; this capstone is imported by `HTGeometry.lean`.
+Those foreign dirty-tree files were not modified.
 
 The DA half uses Kato's published analytic theorem plus the explicit multiplication identity in
 Lemma 3.2. It is not inserted into Lean as an assumption. Formalizing Kato's analytic ADE would add
@@ -428,13 +466,19 @@ cannot apply to these observables.
 - [x] partially dependent non-rational tuples included
 - [x] actual special function used, not a formal surrogate
 - [x] new HT half formalized unconditionally in Lean
-- [x] targeted build, lint, and axiom audit passed
+- [x] stronger natural-base translation-coset matroid and rank law formalized unconditionally
+- [x] rational-base separated-family defect and quotient freeness formalized unconditionally
+- [x] targeted builds and axiom audits passed
 - [x] standalone proof written
 - [x] current literature searched through July 2026
 - [ ] independent specialist priority audit
+- [ ] classical elliptic-function-field generation bridge encoded in Lean for full rational-base upper structure
+- [ ] current dirty worktree restored to repository-wide lint cleanliness by owners of unrelated unimported modules
 
 ## Log
 
 - 2026-07-21 — Rank-three-minor HT theorem proved for every finite order and formalized in Lean.
 - 2026-07-21 — Combined with the rank-two multiplication/Kato reduction to close the exact rational-rank dichotomy for all finite upper-half-plane tuples.
 - 2026-07-21 — Standalone manuscript completed; no unresolved mathematical parameter case remains.
+- 2026-07-22 — Major-revision review acted on: proof gaps expanded, novelty corrected, nome-rank law added, and exact translation-coset defect/quotient matroid made a central theorem.
+- 2026-07-22 — Paper-facing Lean capstone added for the exact natural-base matroid/rank law, rational-base quotient transport and freeness, and natural-base source hypertranscendence.

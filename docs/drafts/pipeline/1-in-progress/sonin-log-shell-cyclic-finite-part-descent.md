@@ -1,8 +1,8 @@
 # Sonin log-shell cyclic finite-part descent
 
 - **ID:** `sonin-log-shell-cyclic-finite-part-descent`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / FRONTIER BRIDGE
+- **Stage:** 1-in-progress, paused 2026-07-22 after goal change
+- **Type:** PAUSED CONJECTURE / FRONTIER BRIDGE
 - **Source:** right-to-left from Connes finite-part source class to Sonin three-grade carrier
 - **Statement:** The physical/Fourier principal-shell algebra admits a canonical Fourier-symmetric
   semifinite trace whose cutoff-translation cocycle is logarithmic shell length.  The exact Sonin

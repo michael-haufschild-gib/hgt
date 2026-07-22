@@ -23,7 +23,7 @@ nonnegative real pairing with every point in a fixed right-half-plane
 rectangle. -/
 theorem sectorRoot_mul_re_nonnegative
     (w a : ℂ) (n : ℕ) (δ M : ℝ)
-    (hn : 0 < n) (hδ : 0 < δ) (hM : 0 ≤ M)
+    (hn : 0 < n) (hδ : 0 < δ)
     (hangle : Real.pi / (2 * (n : ℝ)) ≤ 1 / 2)
     (hslope : M * (Real.pi / (2 * (n : ℝ))) ≤ δ / 2)
     (hw : 0 < w.re) (hare : δ ≤ a.re) (haim : |a.im| ≤ M) :
@@ -98,7 +98,7 @@ theorem sectorRoot_mul_re_nonnegative
 
 /-- There is always an integer root order narrow enough for a prescribed
 right-half-plane rectangle. -/
-theorem exists_sectorRoot_order (δ M : ℝ) (hδ : 0 < δ) (hM : 0 ≤ M) :
+theorem exists_sectorRoot_order (δ M : ℝ) (hδ : 0 < δ) :
     ∃ n : ℕ, 0 < n ∧
       Real.pi / (2 * (n : ℝ)) ≤ 1 / 2 ∧
       M * (Real.pi / (2 * (n : ℝ))) ≤ δ / 2 := by
@@ -117,21 +117,22 @@ theorem exists_sectorRoot_order (δ M : ℝ) (hδ : 0 < δ) (hM : 0 ≤ M) :
       simpa [mul_comm] using (div_lt_iff₀ hδ).mp hnM
     nlinarith
 
-/-- Every compact carrier in a right-half-plane rectangle satisfies the
+omit [CompactSpace K] in
+/-- Every carrier in a right-half-plane rectangle satisfies the
 uniform translated-sector condition for some root order. -/
 theorem exists_uniformSectorCarrierPositive
-    (s : C(K, ℂ)) (δ M R₀ : ℝ) (hδ : 0 < δ) (hM : 0 ≤ M)
+    (s : C(K, ℂ)) (δ M R₀ : ℝ) (hδ : 0 < δ)
     (hR₀ : 0 < R₀)
     (hre : ∀ k : K, δ ≤ (s k).re)
     (him : ∀ k : K, |(s k).im| ≤ M) :
     ∃ n : ℕ, n ≠ 0 ∧ UniformSectorCarrierPositive s n R₀ := by
-  obtain ⟨n, hn, hangle, hslope⟩ := exists_sectorRoot_order δ M hδ hM
+  obtain ⟨n, hn, hangle, hslope⟩ := exists_sectorRoot_order δ M hδ
   refine ⟨n, hn.ne', ?_⟩
   intro R hR
   refine ⟨R * δ, mul_pos (hR₀.trans_le hR) hδ, fun z hz k => ?_⟩
   have hroot : 0 ≤
       (diskToRight z ^ ((n : ℂ)⁻¹) * s k).re :=
-    sectorRoot_mul_re_nonnegative (diskToRight z) (s k) n δ M hn hδ hM
+    sectorRoot_mul_re_nonnegative (diskToRight z) (s k) n δ M hn hδ
       hangle hslope (diskToRight_re_pos hz) (hre k) (him k)
   unfold sectorRootMap
   rw [add_mul, add_re]
@@ -145,14 +146,14 @@ annihilation forces the compact Fourier--Borel transform to vanish.  The
 sector order is constructed from the carrier bounds. -/
 theorem compactFourierBorel_eq_zero_of_tangent_annihilation_rightRectangle
     (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ))
-    (δ M R₀ : ℝ) (hδ : 0 < δ) (hM : 0 ≤ M) (hR₀ : 0 < R₀)
+    (δ M R₀ : ℝ) (hδ : 0 < δ) (hR₀ : 0 < R₀)
     (hre : ∀ k : K, δ ≤ (s k).re)
     (him : ∀ k : K, |(s k).im| ≤ M)
     (hann : ∀ p : Nat.Primes, R₀ + 1 < Real.log (p : ℝ) →
       L (compactPrimeEulerUnitTangent s (p : ℕ)) = 0) :
     ∀ z : ℂ, compactFourierBorel L s z = 0 := by
   obtain ⟨n, hn, hsector⟩ :=
-    exists_uniformSectorCarrierPositive s δ M R₀ hδ hM hR₀ hre him
+    exists_uniformSectorCarrierPositive s δ M R₀ hδ hR₀ hre him
   exact compactFourierBorel_eq_zero_of_tangent_annihilation
     L s hn hR₀.le hsector hann
 

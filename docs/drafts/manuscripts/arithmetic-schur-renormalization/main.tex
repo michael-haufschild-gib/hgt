@@ -1,0 +1,632 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\N}{\mathbb N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Pp}{\mathbb P}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cX}{\mathcal X}
+\newcommand{\ip}[2]{\langle #1,#2\rangle}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\ran}{\operatorname{ran}}
+\newcommand{\diag}{\operatorname{diag}}
+
+\title{The Arithmetic Schur Law:\\
+Gamma Elimination is Prime-Power Translation}
+\author{}
+\date{Draft of July 22, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We identify an exact renormalization law linking the archimedean Gamma channel to prime-power
+valuation.  Let $q_p=p^{-1}$ and
+\[
+ H_n(p)=\sqrt{q_p}(1-q_p)q_p^n.
+\]
+The covariance kernel selected by the normalized Gamma cyclic measure is the weighted Szeg\H{o}
+kernel
+\[
+ K_\Gamma(p,r)=\sum_{n\geq0}H_n(p)H_n(r).
+\]
+After a source-forced positive rational gauge, Schur elimination of the Gamma conductor, whose
+capacity is exactly $9/8$, removes $H_0$ and leaves
+\[
+ K_\Gamma(p,r)-H_0(p)H_0(r)=q_pq_rK_\Gamma(p,r).
+\]
+We prove that iteration is rigid and cofinal: every finite chain leaves a strictly positive
+translated residual, while the residual vanishes at infinite valuation depth.  Distinct primes
+are retained by every sufficiently long finite section through a weighted Vandermonde law.
+
+The local M\"obius--Bernoulli Schur derivative supplies the damped coordinates
+$\Delta B_p(n)=d_pH_n(p)$ with $d_p=\sqrt{q_p}/(1+q_p)$.  Although $d_p^{-1}$ is unbounded on
+ambient prime $\ell^2$, the kernel congruence
+\[
+ K_M(p,r)=d_pd_rK_\Gamma(p,r)
+\]
+makes this whitening exactly unitary between the intrinsic reproducing-kernel completions.  In
+short: ambient recovery is unbounded, intrinsic arithmetic recovery is lossless.
+
+The abstract Schur and reproducing-kernel ingredients are classical.  The proposed new content is
+their exact arithmetic conjunction: actual Gamma covariance, reciprocal-prime gauge, valuation
+translation, strict finite nonattainment, cofinal exhaustion, and M\"obius--Fisher intrinsic
+unitarity.  This does not prove the Riemann hypothesis.  It isolates one falsifiable remaining
+problem: construct a source-defined nonexpansive, shift-intertwining morphism from this canonical
+arithmetic Schur system to the Xi boundary-leakage system.  The source identities and their finite
+section consequences have been formalized in Lean~4 without additional axioms.
+\end{abstract}
+
+\paragraph{Status.}
+All statements labelled theorem below have complete proofs.  Conjecture~\ref{conj:transport} is
+open and is the only RH-bearing assertion in the paper.  No claim of an RH proof or of
+specialist-certified priority is made.
+
+\section{Introduction}
+
+The archimedean factor and the Euler factors are often compared only after their local
+contributions have been scalarized.  In the present setting that operation destroys the relevant
+geometry.  If independent prime channels are coupled to one scalar Gamma conductor, the Schur
+cost is asymptotic to
+\[
+ \frac{9}{8p};
+\]
+its sum over the primes diverges.  The scalar model therefore has no finite all-prime Gamma
+capacity.  This is not repaired by nonzero diagonal damping, because damping cancels from each
+scalar Schur quotient.
+
+The obstruction changes character when the prime covariance is retained.  The transverse
+valuation differences of the arithmetic source form a coherent kernel.  After an explicit
+rational correction, the actual normalized Gamma cross-coordinate is its first feature.  The
+Gamma Schur complement then does not pay a separate cost for every prime: it translates the
+entire coherent kernel by one valuation depth.
+
+The resulting identity is elementary once the correct coordinates are visible,
+\[
+ \frac{ab}{1-qr}-ab=qr\frac{ab}{1-qr}.                  \tag{1.1}
+\]
+The point of this paper is not to call (1.1) new.  The point is that the arithmetic source forces
+all entries in (1.1): $q=p^{-1}$, $a=\sqrt q(1-q)$, the Gamma cross-coordinate, and the conductor
+capacity $9/8$.  Iterating (1.1) produces the actual prime-power valuation tower, not an auxiliary
+basis introduced after the fact.
+
+We call this identification the \emph{arithmetic Schur law}:
+\[
+ \boxed{\text{Gamma Schur elimination}=\text{translation by one prime valuation depth}.}
+                                                               \tag{ASR}
+\]
+It has three consequences.
+\begin{enumerate}
+\item Every finite-depth approximation is a strict compression.  Exact completion is necessarily
+      cofinal.
+\item The valuation realization is rigid and minimal on each finite prime packet.
+\item The source's M\"obius--Fisher damping, although not invertible by a bounded diagonal map in
+      ambient prime $\ell^2$, becomes a canonical unitary in the intrinsic arithmetic metric.
+\end{enumerate}
+
+These conclusions matter for an RH route because they fix the source space, boundary vector,
+shift, finite sections, completion topology, and normalization before any Xi target is evaluated.
+They rule out a family of false source models while leaving one operator-theoretic question:
+whether this conservative arithmetic system admits the canonical contractive morphism into Xi
+boundary leakage.
+
+Classical Schur realizations, Szeg\H{o} kernels, and minimal Kolmogorov decompositions are standard;
+see, for example,~\cite{Aronszajn1950,DebnathSarkar2019}.  Arithmetic operator programs for zeta,
+including quasi-inner local factors and semilocal Sonin/prolate systems, provide a different body
+of structure~\cite{ConnesConsani2020,CCM2023}.  Section~\ref{sec:novelty} states precisely which
+parts of our result belong to those classical theories and which arithmetic conjunction is being
+advanced here.
+
+\section{Cofinal Schur exhaustion}
+\label{sec:universal}
+
+Let $X$ be a set.  Fix functions
+\[
+ q:X\longrightarrow(0,1),\qquad a:X\longrightarrow(0,\infty).
+\]
+For $n\in\N$ define
+\[
+ h_n(x)=a(x)q(x)^n,
+ \qquad
+ K(x,y)=\frac{a(x)a(y)}{1-q(x)q(y)}.                    \tag{2.1}
+\]
+The feature map $h(x)=(h_n(x))_{n\geq0}$ lies in $\ell^2(\N)$ and
+$K(x,y)=\ip{h(x)}{h(y)}$.
+
+\begin{theorem}[Cofinal Schur exhaustion]
+\label{thm:exhaustion}
+For every $N\in\N$,
+\begin{align}
+ K(x,y)
+ &=\sum_{n=0}^{N-1}h_n(x)h_n(y)+K_N(x,y),               \tag{2.2}\\
+ K_N(x,y)
+ &:=(q(x)q(y))^N K(x,y),                                \tag{2.3}\\
+ K_N(x,y)-h_N(x)h_N(y)&=K_{N+1}(x,y).                   \tag{2.4}
+\end{align}
+The prefix and residual in (2.2) are positive semidefinite kernels.  For every $x\in X$ and every
+finite $N$,
+\[
+ K_N(x,x)>0,                                             \tag{2.5}
+\]
+whereas $K_N(x,y)\to0$ as $N\to\infty$.  On every finite subset of $X$, this convergence holds in
+every matrix norm.
+\end{theorem}
+
+\begin{proof}
+Put $Q=q(x)q(y)$.  Since $0<Q<1$,
+\[
+ K_N-h_Nh_N
+ =Q^N\left(\frac{a(x)a(y)}{1-Q}-a(x)a(y)\right)
+ =Q^{N+1}\frac{a(x)a(y)}{1-Q}=K_{N+1}.
+\]
+Summing this identity for $0\leq n<N$ proves (2.2).  The prefix is a sum of rank-one kernels.  The
+residual is the Gram kernel of the tail feature
+\[
+ x\longmapsto (0,\ldots,0,h_N(x),h_{N+1}(x),\ldots),
+\]
+so it is positive semidefinite.  Its diagonal is
+\[
+ K_N(x,x)=q(x)^{2N}\frac{a(x)^2}{1-q(x)^2}>0.
+\]
+Finally, $(q(x)q(y))^N\to0$ pointwise.  Entrywise convergence of a finite matrix implies
+convergence in every matrix norm.
+\end{proof}
+
+\begin{corollary}[No finite shadow is complete]
+\label{cor:no-finite}
+No finite list of translated boundary coordinates realizes $K$.  The full valuation tower is an
+exact conservative realization, and every finite prefix is a strict compression.
+\end{corollary}
+
+This is the first structural boundary of the law: a proposed RH argument that closes the source at
+some fixed valuation depth cannot represent the kernel selected by (2.1).
+
+\section{Rigidity and minimality}
+
+The arithmetic law is not merely one possible geometric decomposition.  Its one-step fixed-point
+equation determines the whole kernel and its translation tower.
+
+\begin{theorem}[Schur fixed-point rigidity]
+\label{thm:rigidity}
+Let $L:X\times X\to\R$ and let $h_0:X\to\R$ be nonzero.  If
+\[
+ L(x,y)-h_0(x)h_0(y)=q(x)q(y)L(x,y),                    \tag{3.1}
+\]
+with $0<q(x)<1$, then necessarily
+\[
+ L(x,y)=\frac{h_0(x)h_0(y)}{1-q(x)q(y)}.                \tag{3.2}
+\]
+Consequently (3.1) forces the entire translated feature tower
+$h_n(x)=h_0(x)q(x)^n$.
+\end{theorem}
+
+\begin{proof}
+Rearranging (3.1) gives
+$(1-q(x)q(y))L(x,y)=h_0(x)h_0(y)$.  The coefficient on the left is positive, so division gives
+(3.2).  Theorem~\ref{thm:exhaustion} then gives the unique translated tower.
+\end{proof}
+
+\begin{theorem}[Finite-packet minimality]
+\label{thm:minimality}
+Let $x_1,\ldots,x_m\in X$.  Suppose the nodes $q(x_j)$ are pairwise distinct and
+$h_0(x_j)\ne0$.  Then the first $m$ translated features distinguish the packet.  More precisely,
+the observation matrix
+\[
+ V_{n,j}=h_0(x_j)q(x_j)^n,
+ \qquad 0\leq n<m,\ 1\leq j\leq m,                     \tag{3.3}
+\]
+has determinant
+\[
+ \det V=\left(\prod_{j=1}^m h_0(x_j)\right)
+          \prod_{1\leq i<j\leq m}(q(x_j)-q(x_i))\ne0.  \tag{3.4}
+\]
+Hence the Kolmogorov realization is minimal on every finite marked packet.  Any two minimal
+Hilbert realizations of the same fixed-point system are related by the unique unitary carrying
+corresponding feature vectors to one another.
+\end{theorem}
+
+\begin{proof}
+Matrix (3.3) is a Vandermonde matrix multiplied on the right by
+$\diag(h_0(x_1),\ldots,h_0(x_m))$, which gives (3.4).  Therefore its columns are linearly
+independent.  For the last statement, the linear map taking one family of kernel vectors to the
+other preserves inner products; minimality makes its initial and final spans dense, so it extends
+uniquely to a unitary.
+\end{proof}
+
+\section{The arithmetic specialization}
+\label{sec:arithmetic}
+
+Let $\Pp$ denote the rational primes and set
+\[
+ q_p=p^{-1},\qquad
+ H_n(p)=\sqrt{q_p}(1-q_p)q_p^n.                          \tag{4.1}
+\]
+The completed valuation kernel is
+\[
+ K_\Gamma(p,r)
+ :=\sum_{n\geq0}H_n(p)H_n(r)
+ =\frac{\sqrt{q_pq_r}(1-q_p)(1-q_r)}{1-q_pq_r}.         \tag{4.2}
+\]
+
+We now specify why the subscript $\Gamma$ is literal.  The normalized Fourier transform of the
+archimedean cyclic measure used here is
+\[
+ \phi(t)=(\cosh t)^{-1/2}.                               \tag{4.3}
+\]
+Its centered second-moment covariance against a Fourier mode is
+\[
+ C(t)=-\frac34\phi(t)\tanh^2t.                          \tag{4.4}
+\]
+For a prime $p$, let
+\begin{align}
+ A_p&=1-\phi(\log p)^2,                                  \tag{4.5}\\
+ u_p&=\frac{C(\log p)}{\sqrt{A_p}},                     \tag{4.6}\\
+ R_p&=\frac{(1+q_p^2)^2}{(1+q_p)^2}.                    \tag{4.7}
+\end{align}
+Thus $u_p$ is the prime-to-conductor cross-coordinate after normalization by the prime-mode
+standard deviation, while $R_p$ is a positive rational gauge.
+
+\begin{theorem}[Gamma--valuation identification]
+\label{thm:gamma-identification}
+For every prime $p$,
+\[
+ R_pu_p=-\frac{3\sqrt2}{4}H_0(p),
+ \qquad
+ \left(\frac{3\sqrt2}{4}\right)^2=\frac98.             \tag{4.8}
+\]
+Consequently the Schur complement of the corrected Gamma conductor of capacity $9/8$ is
+\[
+ K_\Gamma(p,r)-\frac{(R_pu_p)(R_ru_r)}{9/8}
+ =q_pq_rK_\Gamma(p,r).                                  \tag{4.9}
+\]
+\end{theorem}
+
+\begin{proof}
+At $t=\log p$ the elementary hyperbolic identities give
+\[
+ \phi(t)^2=\frac{2p}{p^2+1},
+ \qquad
+ \tanh t=\frac{p^2-1}{p^2+1},
+ \qquad
+ A_p=\frac{(p-1)^2}{p^2+1}.                             \tag{4.10}
+\]
+Substituting (4.10) into (4.4)--(4.7), using $p>1$, and simplifying gives
+\[
+ R_pu_p=-\frac{3\sqrt2}{4}\sqrt{p^{-1}}(1-p^{-1}),
+\]
+which is (4.8).  The scalar factor squares to $9/8$.  Therefore the middle term of (4.9) is
+$H_0(p)H_0(r)$, and (4.9) is the $N=0$ instance of (2.4).
+\end{proof}
+
+\begin{theorem}[Arithmetic Schur law]
+\label{thm:asr}
+For every $N\in\N$ and primes $p,r$,
+\[
+ K_\Gamma(p,r)
+ =\sum_{n=0}^{N-1}H_n(p)H_n(r)
+   +(q_pq_r)^N K_\Gamma(p,r).                           \tag{4.11}
+\]
+The final term is a positive semidefinite kernel, is strictly positive on every diagonal at each
+finite $N$, and converges to zero cofinally.  On every packet of $m$ distinct primes, the first
+$m$ valuation coordinates form a nonsingular weighted Vandermonde matrix.
+\end{theorem}
+
+\begin{proof}
+Apply Theorems~\ref{thm:exhaustion} and~\ref{thm:minimality} with
+$q(p)=p^{-1}$ and $a(p)=\sqrt{q_p}(1-q_p)$.  Reciprocal-prime nodes are distinct and all boundary
+amplitudes are positive.
+\end{proof}
+
+Theorem~\ref{thm:asr} is stronger than the one-step identity (4.9).  It says that repeated Gamma
+elimination reconstructs the entire prime-power valuation filtration and that exact elimination
+occurs only at its cofinal boundary.  No prime label is lost along finite sections.
+
+\section{M\"obius--Fisher intrinsic unitarity}
+\label{sec:whitening}
+
+The source also contains a local M\"obius--Bernoulli Schur factor.  At integer valuation depth put
+\[
+ B_p(e)=\frac{1-q_p^{e+1}}{1+q_p},
+ \qquad
+ \Delta B_p(e)=B_p(e+1)-B_p(e).                         \tag{5.1}
+\]
+Direct subtraction gives
+\[
+ \Delta B_p(e)=\frac{q_p^{e+1}(1-q_p)}{1+q_p}
+               =d_pH_e(p),
+ \qquad
+ d_p=\frac{\sqrt{q_p}}{1+q_p}.                          \tag{5.2}
+\]
+Moreover
+\[
+ d_p^2=\frac{q_p}{(1+q_p)^2},                            \tag{5.3}
+\]
+the local squarefree-parity Fisher variance.
+
+Define the completed M\"obius difference kernel
+\[
+ K_M(p,r)=\sum_{e\geq0}\Delta B_p(e)\Delta B_r(e).       \tag{5.4}
+\]
+
+\begin{theorem}[Intrinsic Fisher unitarity]
+\label{thm:unitarity}
+The arithmetic kernels obey the exact diagonal congruence
+\[
+ K_M(p,r)=d_pd_rK_\Gamma(p,r).                           \tag{5.5}
+\]
+Let $c_{00}(\Pp)$ be the finitely supported complex prime packets, equipped with the semidefinite
+forms
+\[
+ \norm{c}_{K_*}^2=\sum_{p,r\in\Pp}K_*(p,r)c_p\overline{c_r},
+ \qquad *=M,\Gamma.                                     \tag{5.6}
+\]
+Then
+\[
+ (Wc)_p=d_pc_p                                           \tag{5.7}
+\]
+maps the $K_M$ nullspace onto the $K_\Gamma$ nullspace and induces a unitary
+\[
+ \overline W:\cH_M\overset{\sim}{\longrightarrow}\cH_\Gamma             \tag{5.8}
+\]
+between the quotient Hilbert completions.  If $Q$ is the valuation shift multiplier
+$(Qc)_p=q_pc_p$, then
+\[
+ \overline WQ=Q\overline W.                             \tag{5.9}
+\]
+\end{theorem}
+
+\begin{proof}
+Equation (5.2) gives
+\[
+ K_M(p,r)=\sum_{e\geq0}d_pH_e(p)d_rH_e(r)
+          =d_pd_rK_\Gamma(p,r),
+\]
+proving (5.5).  Hence, for every finite packet,
+\[
+ \norm{c}_{K_M}^2=\norm{Wc}_{K_\Gamma}^2.               \tag{5.10}
+\]
+Each $d_p$ is positive, so $W$ is an algebraic bijection of $c_{00}(\Pp)$, with inverse given by
+finite-support multiplication by $d_p^{-1}$.  Identity (5.10) therefore carries one nullspace
+onto the other and descends to an isometric bijection of quotient pre-Hilbert spaces.  Completion
+gives (5.8).  Finally, $W$ and $Q$ are diagonal multipliers, so they commute on the dense quotient
+core and hence on their natural completed domains.
+\end{proof}
+
+\begin{proposition}[Ambient/intrinsic dichotomy]
+\label{prop:dichotomy}
+The inverse weights satisfy
+\[
+ d_p^{-2}=\frac{(1+q_p)^2}{q_p}\geq p,                  \tag{5.11}
+\]
+so coefficientwise inverse whitening is unbounded on ambient prime $\ell^2$.  Nevertheless its
+intrinsic realization $\overline W^{-1}:\cH_\Gamma\to\cH_M$ is unitary.
+\end{proposition}
+
+\begin{proof}
+Since $q_p=p^{-1}$, (5.11) is immediate.  The second claim is
+Theorem~\ref{thm:unitarity}.
+\end{proof}
+
+This dichotomy is the useful form of the result: the inverse source transport is not bounded after
+the arithmetic Gram metric has been forgotten, but it is lossless in the metric selected by the
+source itself.  No bounded inverse on ambient $\ell^2(\Pp)$ is asserted or needed.
+
+\section{The RH-facing endpoint}
+\label{sec:rh}
+
+We package the proved source data as
+\[
+ \cA=(\cH_M,\cH_\Gamma,\overline W,Q,[H_0],K_M,K_\Gamma),                \tag{6.1}
+\]
+where $[H_0]$ denotes the boundary class and $Q$ is reciprocal-prime valuation translation.  By
+Theorems~\ref{thm:asr} and~\ref{thm:unitarity}, $\cA$ is canonical up to unique unitary equivalence,
+minimal on finite prime packets, conservative only after cofinal completion, and independent of a
+prime exhaustion.
+
+The target-side Xi theory supplies a boundary-leakage system $\cX$ whose negative index detects
+off-critical zeros.  In that theory a normalized nonexpansive source realization controls the Xi
+boundary relative trace; the four-unit boundary threshold forces the negative index to vanish.
+The missing statement can therefore be posed without introducing another positivity criterion or
+another scalar estimate.
+
+\begin{conjecture}[Arithmetic-Schur-to-Xi morphism]
+\label{conj:transport}
+There is a morphism $T:\cA\to\cX$, constructed from the continued prime--Gamma source and not from
+the Xi zero divisor, with all of the following properties.
+\begin{enumerate}
+\item $T$ intertwines valuation translation with the canonical Xi boundary shift.
+\item On every finite mixed-prime packet, the target Pick matrix is dominated by the corresponding
+      arithmetic Schur Gram matrix.
+\item The finite maps are compatible with valuation depth and prime inclusion and are closable on
+      the intrinsic graph selected by $\overline W$.
+\item Their cofinal extension is nonexpansive and carries the normalized arithmetic boundary
+      channel to the Xi boundary-leakage channel.
+\end{enumerate}
+\end{conjecture}
+
+\begin{corollary}[Conditional RH consequence]
+\label{cor:rh}
+Conjecture~\ref{conj:transport}, together with the established Xi boundary relative-trace
+criterion, implies the Riemann hypothesis.
+\end{corollary}
+
+\begin{proof}
+Finite Pick domination and Theorem~\ref{thm:asr} pass to the cofinal intrinsic completion because
+the residual kernels converge to zero.  The nonexpansive extension therefore transfers the
+source boundary budget to Xi leakage.  The four-unit boundary relative-trace criterion gives zero
+negative index.  That index counts off-critical Xi zeros, so all nontrivial zeta zeros lie on the
+critical line.
+\end{proof}
+
+Corollary~\ref{cor:rh} records an interface, not a proof of its hypothesis.  Its purpose is to make
+the next problem hostile-testable.  A proposed $T$ fails immediately if one finite mixed-prime
+Pick matrix has a negative source-minus-target direction, if it uses zero locations in its
+definition, if it discards the graph of the unbounded ambient whitening, or if it is incompatible
+with one Schur step.
+
+\section{Why scalar and finite-depth alternatives fail}
+\label{sec:nogo}
+
+The law survives several obstructions that rule out nearby routes.  Table~\ref{tab:nogo} separates
+the failed model from the surviving object.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{0.34\textwidth}p{0.56\textwidth}}
+\toprule
+Closed alternative & Surviving arithmetic object \\
+\midrule
+Independent prime channels coupled to one scalar Gamma coordinate have divergent Schur cost.
+& Coherent valuation covariance absorbs the Gamma coordinate by the exact kernel translation
+  (4.9). \\
+Fixed finite cancellation depth leaves a nonzero defect.
+& The residual is explicit, positive, and vanishes only cofinally by (4.11). \\
+Ordinary all-place scalar local-ratio completion collapses.
+& The marked valuation feature tower retains every finite prime packet by (3.4). \\
+Channelwise inverse Fisher whitening is unbounded on prime $\ell^2$.
+& The same algebraic inverse is unitary between intrinsic kernel completions by (5.8). \\
+Unmarked finite-rank closure can forget the prime labels.
+& Reciprocal-prime nodes give an injective weighted Vandermonde observation matrix. \\
+\bottomrule
+\end{tabular}
+\caption{No-go boundary of the arithmetic Schur route.}
+\label{tab:nogo}
+\end{table}
+
+These are not reasons to regard Conjecture~\ref{conj:transport} as true.  They are reasons the
+conjecture is not one of the already falsified scalar, finite-depth, or ambient-inverse proposals.
+The conjecture must live on the cofinal intrinsic graph; moving it to an easier space changes the
+problem.
+
+\section{Formal verification}
+\label{sec:lean}
+
+The source theorems are formalized in the Lean~4 module
+\begin{center}
+\texttt{GaloisForLFunctions.RHTower.ArithmeticSchurRenormalizationLaw}.
+\end{center}
+The formal certificate includes:
+\begin{enumerate}
+\item exact finite-prefix exhaustion and one-step residual translation;
+\item fixed-point rigidity and strict positivity of every finite diagonal residual;
+\item cofinal convergence of the residual;
+\item weighted Vandermonde factorization and determinant nonvanishing;
+\item reciprocal-prime specialization to the actual Gamma--valuation kernel;
+\item exact M\"obius--Fisher kernel congruence and every finite quadratic-form isometry;
+\item commutation of the M\"obius forward difference with valuation translation.
+\end{enumerate}
+The module imports the previously formalized Gamma covariance and M\"obius depth identities and is
+itself imported by the RHTower umbrella.  It contains no \texttt{sorry}, \texttt{admit}, new
+mathematical axiom, unsafe declaration, or numerical computation.  The quotient-completion
+extension in Theorem~\ref{thm:unitarity} is a standard Hilbert-space consequence of the formalized
+finite quadratic-form identity; its specialized completion packaging is not yet a separate Lean
+declaration.  Conjecture~\ref{conj:transport} is deliberately absent from the theorem namespace.
+
+\section{Novelty boundary and comparison with literature}
+\label{sec:novelty}
+
+The following pieces are classical and are not claimed as contributions:
+\begin{itemize}
+\item summation of a geometric series;
+\item the Szeg\H{o} kernel and its Schur recursion;
+\item Vandermonde minimality;
+\item uniqueness of minimal Kolmogorov decompositions;
+\item the fact that a strictly positive diagonal congruence induces an isometry between the
+      corresponding intrinsic kernel spaces.
+\end{itemize}
+Schur-class colligations and their factorization theory are well established; a modern comparison
+point is~\cite{DebnathSarkar2019}.  Reproducing-kernel completion goes back at least to
+Aronszajn~\cite{Aronszajn1950}.
+
+The candidate contribution is the exact simultaneous arithmetic realization
+\[
+ \begin{gathered}
+ \text{Gamma second-moment covariance}
+ \xrightarrow{\ R_p\ }
+ -\frac{3\sqrt2}{4}H_0(p),\\
+ \text{Gamma Schur complement}
+ =\text{prime-power valuation successor},\\
+ \text{M\"obius depth derivative}
+ =\text{Fisher damping of the same valuation tower},\\
+ \text{ambient unbounded inverse}
+ =\text{intrinsic unitary recovery}.
+ \end{gathered}                                           \tag{9.1}
+\]
+Quasi-inner archimedean/local-factor pairings and semilocal Sonin systems appear in the work of
+Connes and collaborators~\cite{ConnesConsani2020,CCM2023}.  Those papers motivate the relevance of
+retaining the archimedean place and cofinal semilocal structure.  They do not, in the passages
+checked for this draft, state (9.1) with the rational gauge (4.7), the $9/8$ Schur capacity, exact
+valuation translation, and M\"obius--Fisher intrinsic unitary in one system.
+
+Targeted arXiv searches using combinations of ``Schur complement'', ``prime-power valuation'',
+``Gamma covariance'', ``Szeg\H{o} kernel'', and ``M\"obius Fisher'' found the classical Schur
+literature and the zeta operator literature separately, but no exact match for (9.1).  Failure to
+find a match is not proof of priority.  Before publication, the arithmetic identity and its
+interpretation require specialist review against the broader literature on local factors,
+de Branges/Schur systems, and noncommutative-geometric trace formulas.
+
+\section{Conclusion}
+
+The arithmetic Schur law replaces a divergent scalar Gamma budget with a rigid coherent
+translation system.  Its completion is neither finite-depth nor ambient: it is the cofinal
+prime-valuation RKHS, and the source's apparently unbounded Fisher recovery is exactly unitary
+there.  This yields a new endpoint from which to work backward toward RH:
+\[
+ \boxed{
+ \text{canonical arithmetic Schur system}
+ \longrightarrow
+ \text{one source-defined contractive Xi morphism}
+ \longrightarrow
+ \text{RH}.}
+\]
+The left object and its laws are proved.  The middle arrow is open.  Its finite falsifiers are
+explicit, and the scalar, finite-depth, and ambient-inverse substitutes have already been ruled
+out.  This is the precise sense in which the arithmetic Schur law opens a route rather than
+renaming the final RH positivity problem.
+
+\begin{thebibliography}{9}
+
+\bibitem{Aronszajn1950}
+N.~Aronszajn,
+\emph{Theory of Reproducing Kernels},
+Transactions of the American Mathematical Society \textbf{68} (1950), 337--404.
+
+\bibitem{DebnathSarkar2019}
+L.~Debnath and J.~Sarkar,
+\emph{Factorizations of Schur Functions},
+arXiv:1908.01850 (2019),
+\url{https://arxiv.org/abs/1908.01850}.
+
+\bibitem{ConnesConsani2020}
+A.~Connes and C.~Consani,
+\emph{Quasi-inner Functions and Local Factors},
+arXiv:2008.10974 (2020),
+\url{https://arxiv.org/abs/2008.10974}.
+
+\bibitem{CCM2023}
+A.~Connes, C.~Consani, and H.~Moscovici,
+\emph{Zeta Zeros and Prolate Wave Operators},
+arXiv:2310.18423 (2023; revised 2024),
+\url{https://arxiv.org/abs/2310.18423}.
+
+\end{thebibliography}
+
+\end{document}

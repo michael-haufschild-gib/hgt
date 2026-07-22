@@ -94,7 +94,7 @@ integer clocks. -/
 theorem measureReal_torusProjectiveWeightedCoherenceHitUnion_waterEntropy_le
     {d : ℕ} (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    (N : ℕ) {η H : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    (N : ℕ) {η H : ℝ} (hη1 : η ≤ 1)
     (lam : Fin d → ℝ) (hlam : ∀ k, 0 < lam k)
     (hscaleBudget : ∀ k, lam k * η ≤ (d - 1 : ℕ))
     (hentropy : ∀ k, H ≤ projectiveWaterEntropyAt w k (lam k)) :
@@ -110,7 +110,7 @@ theorem measureReal_torusProjectiveWeightedCoherenceHitUnion_waterEntropy_le
         (by
           simpa only [projectiveWaterTargetBudget] using
             measureReal_torusProjectiveWeightedCoherenceTarget_waterEntropy_le
-              w hw hmass hη0 hη1 lam hlam hscaleBudget hentropy)
+              w hw hmass hη1 lam hlam hscaleBudget hentropy)
         (Nat.cast_nonneg N)
 
 /-- Below the water-entropy budget, some torus packet avoids weighted
@@ -118,7 +118,7 @@ coherence at every positive clock through `N`. -/
 theorem exists_torus_phase_avoiding_projectiveWeightedCoherence_until
     {d : ℕ} (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    (N : ℕ) {η H : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    (N : ℕ) {η H : ℝ} (hη1 : η ≤ 1)
     (lam : Fin d → ℝ) (hlam : ∀ k, 0 < lam k)
     (hscaleBudget : ∀ k, lam k * η ≤ (d - 1 : ℕ))
     (hentropy : ∀ k, H ≤ projectiveWaterEntropyAt w k (lam k))
@@ -129,7 +129,7 @@ theorem exists_torus_phase_avoiding_projectiveWeightedCoherence_until
   have hhit :
       volume.real (torusProjectiveWeightedCoherenceHitUnion w N η) < 1 :=
     (measureReal_torusProjectiveWeightedCoherenceHitUnion_waterEntropy_le
-      w hw hmass N hη0 hη1 lam hlam hscaleBudget hentropy).trans_lt hbudget
+      w hw hmass N hη1 lam hlam hscaleBudget hentropy).trans_lt hbudget
   have hexists : ∃ x : Fin d → UnitAddCircle,
       x ∉ torusProjectiveWeightedCoherenceHitUnion w N η := by
     by_contra h
@@ -158,7 +158,7 @@ theorem exists_torus_phase_avoiding_projectiveWeightedCoherence_until
 theorem exists_real_frequency_avoiding_projectiveWeightedCoherence_until
     {d : ℕ} (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    (N : ℕ) {η H : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    (N : ℕ) {η H : ℝ} (hη1 : η ≤ 1)
     (lam : Fin d → ℝ) (hlam : ∀ k, 0 < lam k)
     (hscaleBudget : ∀ k, lam k * η ≤ (d - 1 : ℕ))
     (hentropy : ∀ k, H ≤ projectiveWaterEntropyAt w k (lam k))
@@ -168,7 +168,7 @@ theorem exists_real_frequency_avoiding_projectiveWeightedCoherence_until
         ((((n.1 + 1 : ℕ) : ℝ) * ω j : ℝ) : ℂ))‖ < 1 - η := by
   obtain ⟨x, hx⟩ :=
     exists_torus_phase_avoiding_projectiveWeightedCoherence_until
-      w hw hmass N hη0 hη1 lam hlam hscaleBudget hentropy hbudget
+      w hw hmass N hη1 lam hlam hscaleBudget hentropy hbudget
   refine ⟨fun j ↦ torusRealFrequency (x j), fun n ↦ ?_⟩
   simpa only [projectiveWeightedPhaseAmplitude,
     exp_torusRealFrequency_eq_fourier_zsmul] using hx n
@@ -194,7 +194,7 @@ deadline. -/
 theorem not_isUniversalProjectiveWeightedCoherenceDeadline_of_waterBudget
     {d N : ℕ} (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    {η H : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    {η H : ℝ} (hη1 : η ≤ 1)
     (lam : Fin d → ℝ) (hlam : ∀ k, 0 < lam k)
     (hscaleBudget : ∀ k, lam k * η ≤ (d - 1 : ℕ))
     (hentropy : ∀ k, H ≤ projectiveWaterEntropyAt w k (lam k))
@@ -202,7 +202,7 @@ theorem not_isUniversalProjectiveWeightedCoherenceDeadline_of_waterBudget
     ¬ IsUniversalProjectiveWeightedCoherenceDeadline w η N := by
   obtain ⟨ω, hω⟩ :=
     exists_real_frequency_avoiding_projectiveWeightedCoherence_until
-      w hw hmass N hη0 hη1 lam hlam hscaleBudget hentropy hbudget
+      w hw hmass N hη1 lam hlam hscaleBudget hentropy hbudget
   intro hdeadline
   obtain ⟨n, hn0, hnN, hncoh⟩ := hdeadline ω
   have hnlt : n - 1 < N := by omega
@@ -217,7 +217,7 @@ universal weighted deadline. -/
 theorem neg_log_two_mul_projectiveWaterTargetBudget_lt_log_deadline
     {d T : ℕ} (hd : 0 < d) (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    {η H : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    {η H : ℝ} (hη1 : η ≤ 1)
     (lam : Fin d → ℝ) (hlam : ∀ k, 0 < lam k)
     (hscaleBudget : ∀ k, lam k * η ≤ (d - 1 : ℕ))
     (hentropy : ∀ k, H ≤ projectiveWaterEntropyAt w k (lam k))
@@ -237,7 +237,7 @@ theorem neg_log_two_mul_projectiveWaterTargetBudget_lt_log_deadline
     linarith
   have hnot : ¬ IsUniversalProjectiveWeightedCoherenceDeadline w η N :=
     not_isUniversalProjectiveWeightedCoherenceDeadline_of_waterBudget
-      w hw hmass hη0 hη1 lam hlam hscaleBudget hentropy (by
+      w hw hmass hη1 lam hlam hscaleBudget hentropy (by
         simpa only [B] using hNB)
   have hNT : N < T := by
     by_contra hTN
@@ -279,7 +279,7 @@ Haar cost. -/
 theorem projectiveWaterEntropy_sub_cost_lt_log_deadline
     {d T : ℕ} (hd : 0 < d) (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    {η H : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    {η H : ℝ} (hη1 : η ≤ 1)
     (lam : Fin d → ℝ) (hlam : ∀ k, 0 < lam k)
     (hscaleBudget : ∀ k, lam k * η ≤ (d - 1 : ℕ))
     (hentropy : ∀ k, H ≤ projectiveWaterEntropyAt w k (lam k))
@@ -288,6 +288,6 @@ theorem projectiveWaterEntropy_sub_cost_lt_log_deadline
       Real.log (T : ℝ) := by
   rw [← neg_log_two_mul_projectiveWaterTargetBudget_eq hd H]
   exact neg_log_two_mul_projectiveWaterTargetBudget_lt_log_deadline
-    hd w hw hmass hη0 hη1 lam hlam hscaleBudget hentropy hdeadline
+    hd w hw hmass hη1 lam hlam hscaleBudget hentropy hdeadline
 
 end RHTower

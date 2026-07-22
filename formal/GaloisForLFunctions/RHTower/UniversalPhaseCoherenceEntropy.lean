@@ -18,7 +18,7 @@ namespace RHTower
 
 open GaloisForLFunctions.HilbertMetric
 
-variable {d : Type*} [Fintype d] [Nonempty d]
+variable {d : Type*} [Fintype d]
 
 /-- The normalized equal-weight phase amplitude. -/
 def equalPhaseAmplitude (phase : d → ℂ) : ℂ :=
@@ -36,10 +36,6 @@ theorem phasePairwiseSqEnergy_eq_two_card_sq_mul_fidelityDeficit
       2 * (Fintype.card d : ℝ) ^ 2 *
         (1 - ‖equalPhaseAmplitude phase‖ ^ 2) := by
   let D : ℝ := Fintype.card d
-  have hDpos : 0 < D := by
-    have hcard : 0 < Fintype.card d := Fintype.card_pos
-    dsimp only [D]
-    exact_mod_cast hcard
   have hcenter := sum_norm_sub_sq_eq_centered_add_card_mul phase (0 : ℂ)
   have hcentered :
       ∑ i, ‖phase i - hilbertCentroid phase‖ ^ 2 =
@@ -56,8 +52,9 @@ theorem phasePairwiseSqEnergy_eq_two_card_sq_mul_fidelityDeficit
 coherence at least `1 - η`, then some phase sees total squared distance at
 most `4 η d` from the whole packet. -/
 theorem exists_phasePivot_sum_norm_sub_sq_le
+    [Nonempty d]
     (phase : d → ℂ) (hphase : ∀ i, ‖phase i‖ = 1)
-    {η : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    {η : ℝ} (hη1 : η ≤ 1)
     (hcoh : 1 - η ≤ ‖equalPhaseAmplitude phase‖) :
     ∃ k, ∑ j, ‖phase j - phase k‖ ^ 2 ≤
       4 * η * (Fintype.card d : ℝ) := by
@@ -95,7 +92,7 @@ def phaseClockAmplitude {d : ℕ} (ω : Fin d → ℝ) (n : ℕ) : ℂ :=
 
 /-- The phase-clock amplitude is the Hilbert centroid of its unit phases. -/
 theorem phaseClockAmplitude_eq_equalPhaseAmplitude
-    {d : ℕ} [NeZero d] (ω : Fin d → ℝ) (n : ℕ) :
+    {d : ℕ} (ω : Fin d → ℝ) (n : ℕ) :
     phaseClockAmplitude ω n = equalPhaseAmplitude
       (fun i ↦ Complex.exp (Complex.I * (((n : ℝ) * ω i : ℝ) : ℂ))) := by
   rw [phaseClockAmplitude, equalPhaseAmplitude, hilbertCentroid]

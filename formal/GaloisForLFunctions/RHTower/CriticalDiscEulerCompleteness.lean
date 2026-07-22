@@ -69,7 +69,7 @@ theorem criticalDiscCoordinate_abs_im_le {r : ℝ} (z : CriticalClosedDisc r) :
 /-- Literal critical-disc polynomial completeness for the actual paired Euler
 tangents: every FE-odd coordinate monomial lies in their cofinite closed span. -/
 theorem criticalDisc_fe_odd_monomial_mem_closedSpan
-    {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1 / 2)
+    {r : ℝ} (hr : r < 1 / 2)
     (R₀ : ℝ) (hR₀ : 0 < R₀) (N : ℕ) :
     criticalDiscCoordinate r ^ N - (1 - criticalDiscCoordinate r) ^ N ∈
       (Submodule.span ℂ
@@ -82,7 +82,6 @@ theorem criticalDisc_fe_odd_monomial_mem_closedSpan
     (criticalDiscCoordinate_reflection r)
     (1 / 2 - r) r R₀
   · linarith
-  · exact hr0
   · exact hR₀
   · exact criticalDiscCoordinate_re_lower
   · exact criticalDiscCoordinate_abs_im_le
@@ -90,7 +89,7 @@ theorem criticalDisc_fe_odd_monomial_mem_closedSpan
 /-- Exact finite-exception form: deleting an arbitrary finite set of primes
 does not change critical-disc FE-odd polynomial completeness. -/
 theorem criticalDisc_fe_odd_monomial_mem_closedSpan_compl_finset
-    {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1 / 2)
+    {r : ℝ} (hr : r < 1 / 2)
     (S : Finset Nat.Primes) (N : ℕ) :
     criticalDiscCoordinate r ^ N - (1 - criticalDiscCoordinate r) ^ N ∈
       (Submodule.span ℂ
@@ -104,7 +103,7 @@ theorem criticalDisc_fe_odd_monomial_mem_closedSpan_compl_finset
     dsimp [B]
     positivity
   have hR₀ : 0 < R₀ := by dsimp [R₀]; linarith
-  have htail := criticalDisc_fe_odd_monomial_mem_closedSpan hr0 hr R₀ hR₀ N
+  have htail := criticalDisc_fe_odd_monomial_mem_closedSpan hr R₀ hR₀ N
   apply (Submodule.topologicalClosure_mono ?_) htail
   apply Submodule.span_mono
   rintro x ⟨p, rfl⟩
@@ -125,7 +124,7 @@ theorem criticalDisc_fe_odd_monomial_mem_closedSpan_compl_finset
 /-- Every FE-oddified scalar polynomial belongs to the cofinite actual paired
 Euler-tangent closed span on a critical disc. -/
 theorem criticalDisc_fe_odd_polynomial_mem_closedSpan_compl_finset
-    {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1 / 2)
+    {r : ℝ} (hr : r < 1 / 2)
     (S : Finset Nat.Primes) (P : Polynomial ℂ) :
     compactPolynomialEval (criticalDiscCoordinate r) P -
         compactPolynomialEval (1 - criticalDiscCoordinate r) P ∈
@@ -139,6 +138,6 @@ theorem criticalDisc_fe_odd_polynomial_mem_closedSpan_compl_finset
   intro n hn
   rw [← smul_sub]
   exact Submodule.smul_mem _ _
-    (criticalDisc_fe_odd_monomial_mem_closedSpan_compl_finset hr0 hr S n)
+    (criticalDisc_fe_odd_monomial_mem_closedSpan_compl_finset hr S n)
 
 end RHTower

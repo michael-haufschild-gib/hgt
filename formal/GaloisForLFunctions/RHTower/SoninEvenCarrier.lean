@@ -388,15 +388,15 @@ def evenCentralSoninDilationCorner (a p : ℝ) (hp : 1 < p) :
         SoninL2 →L[ℂ] SoninL2) f‖ := rfl
 
 theorem l2Reflection_evenShellVector
-    (a b : ℝ) (ha : 0 < a) (hab : a < b) (n : ℕ) :
-    l2Reflection (evenShellVector a b ha hab n) = evenShellVector a b ha hab n := by
+    (a b : ℝ) (hab : a < b) (n : ℕ) :
+    l2Reflection (evenShellVector a b hab n) = evenShellVector a b hab n := by
   apply Lp.ext
   let s := evenShellCell a b n
   let hs := measurableSet_evenShellCell a b n
-  let hfin := evenShellCell_measure_ne_top ha hab n
+  let hfin := evenShellCell_measure_ne_top hab n
   have hneg := (normalizedIndicator_ae s hs hfin).comp_tendsto
     (Measure.measurePreserving_neg (volume : Measure ℝ)).quasiMeasurePreserving.tendsto_ae
-  filter_upwards [l2Reflection_ae (evenShellVector a b ha hab n), hneg,
+  filter_upwards [l2Reflection_ae (evenShellVector a b hab n), hneg,
     normalizedIndicator_ae s hs hfin] with x href hnegx hx
   rw [href]
   change normalizedIndicator s hs hfin (-x) = normalizedIndicator s hs hfin x
@@ -412,27 +412,27 @@ theorem l2Reflection_evenShellVector
       Set.indicator_of_notMem (mt hmem.mp hxs)]
 
 theorem evenShellVector_mem_evenSubspace
-    (a b : ℝ) (ha : 0 < a) (hab : a < b) (n : ℕ) :
-    evenShellVector a b ha hab n ∈ evenSubspace :=
-  (mem_evenSubspace_iff _).mpr (l2Reflection_evenShellVector a b ha hab n)
+    (a b : ℝ) (hab : a < b) (n : ℕ) :
+    evenShellVector a b hab n ∈ evenSubspace :=
+  (mem_evenSubspace_iff _).mpr (l2Reflection_evenShellVector a b hab n)
 
 /-- Symmetric shell indicators, regarded as vectors in the even carrier. -/
-def evenShellVectorEven (a b : ℝ) (ha : 0 < a) (hab : a < b) (n : ℕ) : evenSubspace :=
-  ⟨evenShellVector a b ha hab n, evenShellVector_mem_evenSubspace a b ha hab n⟩
+def evenShellVectorEven (a b : ℝ) (hab : a < b) (n : ℕ) : evenSubspace :=
+  ⟨evenShellVector a b hab n, evenShellVector_mem_evenSubspace a b hab n⟩
 
 @[simp] theorem coe_evenShellVectorEven
-    (a b : ℝ) (ha : 0 < a) (hab : a < b) (n : ℕ) :
-    ((evenShellVectorEven a b ha hab n : evenSubspace) : SoninL2) =
-      evenShellVector a b ha hab n := rfl
+    (a b : ℝ) (hab : a < b) (n : ℕ) :
+    ((evenShellVectorEven a b hab n : evenSubspace) : SoninL2) =
+      evenShellVector a b hab n := rfl
 
 theorem evenShellVectorEven_orthonormal (a b : ℝ) (ha : 0 < a) (hab : a < b) :
-    Orthonormal ℂ (evenShellVectorEven a b ha hab) := by
+    Orthonormal ℂ (evenShellVectorEven a b hab) := by
   exact (evenShellVector_orthonormal a b ha hab).codRestrict evenSubspace
-    (evenShellVector_mem_evenSubspace a b ha hab)
+    (evenShellVector_mem_evenSubspace a b hab)
 
 /-- The even Sonin carrier is concretely nontrivial, witnessed by a normalized shell vector. -/
 theorem evenSubspace_nontrivial : Nontrivial evenSubspace := by
-  let x : evenSubspace := evenShellVectorEven 1 2 (by norm_num) (by norm_num) 0
+  let x : evenSubspace := evenShellVectorEven 1 2 (by norm_num) 0
   have hxnorm : ‖x‖ = 1 := by
     exact (evenShellVectorEven_orthonormal 1 2 (by norm_num) (by norm_num)).norm_eq_one 0
   have hx : x ≠ 0 := by
@@ -447,7 +447,7 @@ theorem evenSubspace_not_finiteDimensional : ¬ FiniteDimensional ℂ evenSubspa
   intro hfd
   letI : FiniteDimensional ℂ evenSubspace := hfd
   exact Module.Finite.not_linearIndependent_of_infinite
-    (evenShellVectorEven 1 2 (by norm_num) (by norm_num))
+    (evenShellVectorEven 1 2 (by norm_num))
     (evenShellVectorEven_orthonormal 1 2 (by norm_num) (by norm_num)).linearIndependent
 
 /-- The ambiently restricted dilation corner is the intrinsic lower corner of the restricted
@@ -471,7 +471,7 @@ theorem evenCentralSoninDilationCorner_not_isCompactOperator
   let W : evenSubspace →L[ℂ] evenSubspace := evenDilationSum p hp
   let A : evenSubspace →L[ℂ] evenSubspace := evenIndicatorCutoff a
   let g : ℕ → evenSubspace :=
-    evenShellVectorEven a (p * a) ha (by nlinarith)
+    evenShellVectorEven a (p * a) (by nlinarith)
   let e : ℕ → evenSubspace := fun n => Q (g n)
   have hg : Orthonormal ℂ g := by
     simpa [g] using evenShellVectorEven_orthonormal a (p * a) ha (by nlinarith)
@@ -521,7 +521,7 @@ theorem evenCentralSoninDilationCorner_not_isCompactOperator
       ‖indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
         (dilationSum p hp
           (centralSoninProjection a
-            (evenShellVector a (p * a) ha (by nlinarith) n)))‖) atTop (𝓝 1)
+            (evenShellVector a (p * a) (by nlinarith) n)))‖) atTop (𝓝 1)
     rw [indicatorCutoff_eq_physicalForbidden_starProjection]
     simpa [centralPhysicalForbidden, centralInterval] using
       centralPhysicalProjection_dilationSum_correctedShell_tendsto a p ha hp

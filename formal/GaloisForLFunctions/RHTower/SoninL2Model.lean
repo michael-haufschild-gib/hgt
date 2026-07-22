@@ -593,15 +593,15 @@ theorem shellCell_subset_evenShellCell {a b : ℝ} (ha : 0 < a) (hab : a < b) (n
   have hxpos : 0 < x := (shellLeft_pos ha hab n).trans hx.1
   simpa [abs_of_pos hxpos] using hx
 
-theorem evenShellCell_subset_Icc {a b : ℝ} (ha : 0 < a) (hab : a < b) (n : ℕ) :
+theorem evenShellCell_subset_Icc {a b : ℝ} (hab : a < b) (n : ℕ) :
     evenShellCell a b n ⊆ Set.Icc (-b) b := by
   intro x hx
   have habs : |x| < b := hx.2.trans_lt (shellRight_lt hab n)
   exact ⟨(abs_lt.mp habs).1.le, (abs_lt.mp habs).2.le⟩
 
-theorem evenShellCell_measure_ne_top {a b : ℝ} (ha : 0 < a) (hab : a < b) (n : ℕ) :
+theorem evenShellCell_measure_ne_top {a b : ℝ} (hab : a < b) (n : ℕ) :
     volume (evenShellCell a b n) ≠ ∞ :=
-  measure_ne_top_of_subset (evenShellCell_subset_Icc ha hab n) measure_Icc_lt_top.ne
+  measure_ne_top_of_subset (evenShellCell_subset_Icc hab n) measure_Icc_lt_top.ne
 
 theorem evenShellCell_measureReal_pos {a b : ℝ} (ha : 0 < a) (hab : a < b) (n : ℕ) :
     0 < volume.real (evenShellCell a b n) := by
@@ -615,16 +615,16 @@ theorem evenShellCell_measureReal_pos {a b : ℝ} (ha : 0 < a) (hab : a < b) (n 
     rw [hzero] at hle
     exact hcellpos (bot_unique hle)
   exact lt_of_le_of_ne measureReal_nonneg
-    ((measureReal_ne_zero_iff (evenShellCell_measure_ne_top ha hab n)).mpr hevenpos).symm
+    ((measureReal_ne_zero_iff (evenShellCell_measure_ne_top hab n)).mpr hevenpos).symm
 
-def evenShellVector (a b : ℝ) (ha : 0 < a) (hab : a < b) (n : ℕ) : SoninL2 :=
+def evenShellVector (a b : ℝ) (hab : a < b) (n : ℕ) : SoninL2 :=
   normalizedIndicator (evenShellCell a b n) (measurableSet_evenShellCell a b n)
-    (evenShellCell_measure_ne_top ha hab n)
+    (evenShellCell_measure_ne_top hab n)
 
 theorem evenShellVector_orthonormal (a b : ℝ) (ha : 0 < a) (hab : a < b) :
-    Orthonormal ℂ (evenShellVector a b ha hab) := by
+    Orthonormal ℂ (evenShellVector a b hab) := by
   exact orthonormal_normalizedIndicator (measurableSet_evenShellCell a b)
-    (evenShellCell_measure_ne_top ha hab) (evenShellCell_measureReal_pos ha hab)
+    (evenShellCell_measure_ne_top hab) (evenShellCell_measureReal_pos ha hab)
     (evenShellCell_pairwiseDisjoint hab)
 
 theorem indicatorCutoff_dilation_normalizedIndicator_eq_self
@@ -714,7 +714,7 @@ theorem physicalCutoff_evenShellCell_disjoint (a p : ℝ) (ha : 0 < a)
   exact (not_lt_of_ge hxabs) hshell
 
 theorem evenShellCell_subset_closedEvenShell
-    {a b : ℝ} (ha : 0 < a) (hab : a < b) (n : ℕ) :
+    {a b : ℝ} (hab : a < b) (n : ℕ) :
     evenShellCell a b n ⊆ closedEvenShell a b := by
   intro x hx
   have hlower : a < |x| := (lt_shellLeft hab n).trans hx.1
@@ -732,24 +732,24 @@ theorem evenShellCell_subset_closedEvenShell
     · have : a ≤ -x := by simpa only [abs_of_neg hxneg] using hlower.le
       linarith
 
-theorem shellCutoff_evenShellVector (a b : ℝ) (ha : 0 < a) (hab : a < b)
+theorem shellCutoff_evenShellVector (a b : ℝ) (hab : a < b)
     (n : ℕ) :
     indicatorCutoff (closedEvenShell a b) (measurableSet_closedEvenShell a b)
-      (evenShellVector a b ha hab n) = evenShellVector a b ha hab n := by
+      (evenShellVector a b hab n) = evenShellVector a b hab n := by
   ext1
   filter_upwards [
     indicatorCutoff_ae (closedEvenShell a b) (measurableSet_closedEvenShell a b)
-      (evenShellVector a b ha hab n),
+      (evenShellVector a b hab n),
     normalizedIndicator_ae (evenShellCell a b n)
       (measurableSet_evenShellCell a b n)
-      (evenShellCell_measure_ne_top ha hab n)
+      (evenShellCell_measure_ne_top hab n)
   ] with x hcut hshell
   rw [hcut]
   by_cases hx : x ∈ evenShellCell a b n
-  · rw [Set.indicator_of_mem (evenShellCell_subset_closedEvenShell ha hab n hx)]
-  · have hvzero : (evenShellVector a b ha hab n : ℝ → ℂ) x = 0 := by
+  · rw [Set.indicator_of_mem (evenShellCell_subset_closedEvenShell hab n hx)]
+  · have hvzero : (evenShellVector a b hab n : ℝ → ℂ) x = 0 := by
       change normalizedIndicator (evenShellCell a b n)
-        (measurableSet_evenShellCell a b n) (evenShellCell_measure_ne_top ha hab n) x = 0
+        (measurableSet_evenShellCell a b n) (evenShellCell_measure_ne_top hab n) x = 0
       rw [hshell, Set.indicator_of_notMem hx]
       simp
     by_cases hclosed : x ∈ closedEvenShell a b
@@ -760,13 +760,13 @@ theorem shellCutoff_evenShellVector (a b : ℝ) (ha : 0 < a) (hab : a < b)
 theorem physicalCutoff_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
     (n : ℕ) :
     indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
-      (evenShellVector a (p * a) ha (by nlinarith) n) = 0 := by
+      (evenShellVector a (p * a) (by nlinarith) n) = 0 := by
   ext1
   filter_upwards [indicatorCutoff_ae (Set.Icc (-a) a) measurableSet_Icc
-      (evenShellVector a (p * a) ha (by nlinarith) n),
+      (evenShellVector a (p * a) (by nlinarith) n),
     normalizedIndicator_ae (evenShellCell a (p * a) n)
       (measurableSet_evenShellCell a (p * a) n)
-      (evenShellCell_measure_ne_top ha (by nlinarith) n),
+      (evenShellCell_measure_ne_top (by nlinarith) n),
     Lp.coeFn_zero ℂ 2 volume] with x hcut hshell hzero
   rw [hcut]
   by_cases hxc : x ∈ Set.Icc (-a) a
@@ -775,7 +775,7 @@ theorem physicalCutoff_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
     rw [Set.indicator_of_mem hxc]
     change normalizedIndicator (evenShellCell a (p * a) n)
       (measurableSet_evenShellCell a (p * a) n)
-      (evenShellCell_measure_ne_top ha (by nlinarith) n) x = (0 : SoninL2) x
+      (evenShellCell_measure_ne_top (by nlinarith) n) x = (0 : SoninL2) x
     rw [hshell, Set.indicator_of_notMem hxnot, hzero]
     simp
   · rw [Set.indicator_of_notMem hxc]
@@ -783,7 +783,7 @@ theorem physicalCutoff_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
 
 theorem evenShellVector_mem_physicalForbidden_orthogonal
     (a p : ℝ) (ha : 0 < a) (hp : 1 < p) (n : ℕ) :
-    evenShellVector a (p * a) ha (by nlinarith) n ∈
+    evenShellVector a (p * a) (by nlinarith) n ∈
       (physicalForbidden (Set.Icc (-a) a) measurableSet_Icc)ᗮ := by
   apply (Submodule.starProjection_apply_eq_zero_iff
     (K := physicalForbidden (Set.Icc (-a) a) measurableSet_Icc)).mp
@@ -793,8 +793,8 @@ theorem evenShellVector_mem_physicalForbidden_orthogonal
 theorem physicalCutoff_inward_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
     (n : ℕ) :
     indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
-        (dilation p (zero_lt_one.trans hp) (evenShellVector a (p * a) ha (by nlinarith) n)) =
-      dilation p (zero_lt_one.trans hp) (evenShellVector a (p * a) ha (by nlinarith) n) := by
+        (dilation p (zero_lt_one.trans hp) (evenShellVector a (p * a) (by nlinarith) n)) =
+      dilation p (zero_lt_one.trans hp) (evenShellVector a (p * a) (by nlinarith) n) := by
   apply indicatorCutoff_dilation_normalizedIndicator_eq_self
   exact inward_shell_preimage_subset a p ha hp n
 
@@ -802,7 +802,7 @@ theorem physicalCutoff_outward_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 
     (n : ℕ) :
     indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
         (dilation p⁻¹ (inv_pos.mpr (zero_lt_one.trans hp))
-          (evenShellVector a (p * a) ha (by nlinarith) n)) = 0 := by
+          (evenShellVector a (p * a) (by nlinarith) n)) = 0 := by
   apply indicatorCutoff_dilation_normalizedIndicator_eq_zero
   exact outward_shell_preimage_disjoint a p ha hp n
 
@@ -818,20 +818,20 @@ def dilationSum (p : ℝ) (hp : 1 < p) : SoninL2 →L[ℂ] SoninL2 :=
 theorem physicalCutoff_dilationSum_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
     (n : ℕ) :
     indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
-        (dilationSum p hp (evenShellVector a (p * a) ha (by nlinarith) n)) =
-      dilation p (zero_lt_one.trans hp) (evenShellVector a (p * a) ha (by nlinarith) n) := by
+        (dilationSum p hp (evenShellVector a (p * a) (by nlinarith) n)) =
+      dilation p (zero_lt_one.trans hp) (evenShellVector a (p * a) (by nlinarith) n) := by
   rw [dilationSum_apply, map_add, physicalCutoff_inward_evenShellVector a p ha hp n,
     physicalCutoff_outward_evenShellVector a p ha hp n, add_zero]
 
 theorem norm_physicalCutoff_dilationSum_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
     (n : ℕ) :
     ‖indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
-        (dilationSum p hp (evenShellVector a (p * a) ha (by nlinarith) n))‖ = 1 := by
-  rw [physicalCutoff_dilationSum_evenShellVector]
+        (dilationSum p hp (evenShellVector a (p * a) (by nlinarith) n))‖ = 1 := by
+  rw [physicalCutoff_dilationSum_evenShellVector a p ha hp n]
   calc
     ‖dilation p (zero_lt_one.trans hp)
-        (evenShellVector a (p * a) ha (by nlinarith) n)‖ =
-        ‖evenShellVector a (p * a) ha (by nlinarith) n‖ :=
+        (evenShellVector a (p * a) (by nlinarith) n)‖ =
+        ‖evenShellVector a (p * a) (by nlinarith) n‖ :=
       (dilation p (zero_lt_one.trans hp)).norm_map _
     _ = 1 := (evenShellVector_orthonormal a (p * a) ha (by nlinarith)).norm_eq_one n
 

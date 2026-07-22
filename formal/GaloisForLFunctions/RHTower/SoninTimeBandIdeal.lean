@@ -637,10 +637,10 @@ theorem centralSoninDilationCornerResidual_ne_zero
       ‖(centralPhysicalForbidden a).starProjection
         (dilationSum p hp
           (centralSoninProjection a
-            (evenShellVector a (p * a) ha (by nlinarith) n)))‖ = 0 := by
+            (evenShellVector a (p * a) (by nlinarith) n)))‖ = 0 := by
     intro n
     have h := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 =>
-      T (evenShellVector a (p * a) ha (by nlinarith) n)) hPDQ
+      T (evenShellVector a (p * a) (by nlinarith) n)) hPDQ
     simpa only [P, D, Q, ContinuousLinearMap.mul_apply,
       ContinuousLinearMap.zero_apply, norm_zero] using congrArg norm h
   have ht := centralPhysicalProjection_dilationSum_correctedShell_tendsto a p ha hp
@@ -648,12 +648,12 @@ theorem centralSoninDilationCornerResidual_ne_zero
       ‖(centralPhysicalForbidden a).starProjection
         (dilationSum p hp
           (centralSoninProjection a
-            (evenShellVector a (p * a) ha (by nlinarith) n)))‖) atTop (𝓝 0) := by
+            (evenShellVector a (p * a) (by nlinarith) n)))‖) atTop (𝓝 0) := by
     have heq : (fun n : ℕ =>
         ‖(centralPhysicalForbidden a).starProjection
           (dilationSum p hp
             (centralSoninProjection a
-              (evenShellVector a (p * a) ha (by nlinarith) n)))‖) =
+              (evenShellVector a (p * a) (by nlinarith) n)))‖) =
         (fun _ : ℕ => (0 : ℝ)) := funext hzero
     rw [heq]
     exact tendsto_const_nhds

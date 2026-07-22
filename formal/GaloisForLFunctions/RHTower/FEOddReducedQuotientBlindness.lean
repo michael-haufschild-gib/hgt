@@ -13,7 +13,7 @@ def criticalDiscFETransverse (r : ℝ) : C(CriticalClosedDisc r, ℂ) :=
 /-- Deleting any finite set of primes does not remove the FE-transverse coordinate from the
 closed span of the remaining paired Euler-unit tangents. -/
 theorem criticalDiscFETransverse_mem_closedSpan_compl_finset
-    {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1 / 2)
+    {r : ℝ} (hr : r < 1 / 2)
     (S : Finset Nat.Primes) :
     criticalDiscFETransverse r ∈
       (Submodule.span ℂ
@@ -22,13 +22,13 @@ theorem criticalDiscFETransverse_mem_closedSpan_compl_finset
             (criticalDiscCoordinate r) (criticalDiscReflection r)
             (p : Nat.Primes))).topologicalClosure := by
   simpa [criticalDiscFETransverse] using
-    (criticalDisc_fe_odd_monomial_mem_closedSpan_compl_finset hr0 hr S 1)
+    (criticalDisc_fe_odd_monomial_mem_closedSpan_compl_finset hr S 1)
 
 /-- Every continuous scalar detector which kills the cofinite paired Euler family also kills the
 FE-transverse coordinate.  Thus no Hausdorff continuous quotient by the Euler range can retain
 this direction. -/
 theorem continuous_detector_kills_criticalDiscFETransverse
-    {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 1 / 2)
+    {r : ℝ} (hr : r < 1 / 2)
     (S : Finset Nat.Primes)
     (L : C(CriticalClosedDisc r, ℂ) →L[ℂ] ℂ)
     (hL : ∀ p : {p : Nat.Primes // p ∉ S},
@@ -48,7 +48,7 @@ theorem continuous_detector_kills_criticalDiscFETransverse
   have hclosure : (Submodule.span ℂ V).topologicalClosure ≤ L.ker :=
     Submodule.topologicalClosure_minimal _ hspan (ContinuousLinearMap.isClosed_ker L)
   exact hclosure
-    (criticalDiscFETransverse_mem_closedSpan_compl_finset hr0 hr S)
+    (criticalDiscFETransverse_mem_closedSpan_compl_finset hr S)
 
 def criticalDiscRightBoundaryPoint (r : ℝ) (hr0 : 0 ≤ r) : CriticalClosedDisc r :=
   ⟨((1 / 2 + r : ℝ) : ℂ), by

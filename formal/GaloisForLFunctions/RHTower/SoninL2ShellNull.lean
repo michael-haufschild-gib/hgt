@@ -100,7 +100,7 @@ theorem fourierForbidden_starProjection_evenShellVector_tendsto_zero
     (a b : ℝ) (ha : 0 < a) (hab : a < b) :
     Tendsto (fun n =>
       ‖(fourierForbidden (Set.Icc (-a) a) measurableSet_Icc).starProjection
-        (evenShellVector a b ha hab n)‖) atTop (𝓝 0) := by
+        (evenShellVector a b hab n)‖) atTop (𝓝 0) := by
   have hcompact : IsCompactOperator (shellCutoffFourierCutoff a b) :=
     isCompactOperator_shellCutoffFourierCutoff a b ha
   have hnull := IsCompactOperator.norm_apply_tendsto_zero_of_orthonormal
@@ -111,10 +111,10 @@ theorem fourierForbidden_starProjection_evenShellVector_tendsto_zero
     change ‖indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
         (fourierUnitary
           (indicatorCutoff (closedEvenShell a b) (measurableSet_closedEvenShell a b)
-            (evenShellVector a b ha hab n)))‖ =
+            (evenShellVector a b hab n)))‖ =
       ‖fourierUnitary.symm
         (indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
-          (fourierUnitary (evenShellVector a b ha hab n)))‖
-    rw [fourierUnitary.symm.norm_map, shellCutoff_evenShellVector]
+          (fourierUnitary (evenShellVector a b hab n)))‖
+    rw [fourierUnitary.symm.norm_map, shellCutoff_evenShellVector a b hab n]
 
 end RHTower

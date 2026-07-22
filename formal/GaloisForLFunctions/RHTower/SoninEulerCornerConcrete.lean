@@ -49,7 +49,7 @@ instance centralForbiddenOrthogonalInf_hasOrthogonalProjection (a : ℝ) :
 
 instance soninL2_nontrivial : Nontrivial SoninL2 := by
   apply nontrivial_of_ne
-    (evenShellVector 1 2 (by norm_num) (by norm_num) 0) 0
+    (evenShellVector 1 2 (by norm_num) 0) 0
   intro hzero
   have hnorm := (evenShellVector_orthonormal 1 2 (by norm_num) (by norm_num)).norm_eq_one 0
   rw [hzero, norm_zero] at hnorm
@@ -98,8 +98,8 @@ theorem centralSoninProjection_evenShellVector_tendsto
     (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
     Tendsto (fun n =>
       ‖centralSoninProjection a
-          (evenShellVector a (p * a) ha (by nlinarith) n) -
-        evenShellVector a (p * a) ha (by nlinarith) n‖) atTop (𝓝 0) := by
+          (evenShellVector a (p * a) (by nlinarith) n) -
+        evenShellVector a (p * a) (by nlinarith) n‖) atTop (𝓝 0) := by
   let A : Submodule ℂ SoninL2 := centralPhysicalForbidden a
   let B : Submodule ℂ SoninL2 := centralFourierForbidden a
   letI : (Aᗮ ⊓ Bᗮ).HasOrthogonalProjection := by
@@ -107,18 +107,18 @@ theorem centralSoninProjection_evenShellVector_tendsto
     infer_instance
   have hblock : ‖soninAlternatingBlock A B‖ < 1 := by
     simpa [A, B] using norm_centralSoninAlternatingBlock_lt_one a ha
-  have hgA : ∀ n, evenShellVector a (p * a) ha (by nlinarith) n ∈ Aᗮ := by
+  have hgA : ∀ n, evenShellVector a (p * a) (by nlinarith) n ∈ Aᗮ := by
     intro n
     simpa [A, centralPhysicalForbidden] using
       evenShellVector_mem_physicalForbidden_orthogonal a p ha hp n
   have hBnull : Tendsto (fun n =>
-      ‖B.starProjection (evenShellVector a (p * a) ha (by nlinarith) n)‖)
+      ‖B.starProjection (evenShellVector a (p * a) (by nlinarith) n)‖)
       atTop (𝓝 0) := by
     simpa [B, centralFourierForbidden] using
       fourierForbidden_starProjection_evenShellVector_tendsto_zero
         a (p * a) ha (by nlinarith)
   have h := soninIntersectionProjection_tendsto_shell A B hblock
-    (evenShellVector a (p * a) ha (by nlinarith)) hgA hBnull
+    (evenShellVector a (p * a) (by nlinarith)) hgA hBnull
   rw [centralSoninProjection_eq_soninIntersectionProjection]
   simpa [A, B] using h
 
@@ -130,10 +130,10 @@ theorem centralPhysicalProjection_dilationSum_correctedShell_tendsto
       ‖(centralPhysicalForbidden a).starProjection
         (dilationSum p hp
           (centralSoninProjection a
-            (evenShellVector a (p * a) ha (by nlinarith) n)))‖) atTop (𝓝 1) := by
+            (evenShellVector a (p * a) (by nlinarith) n)))‖) atTop (𝓝 1) := by
   let A : Submodule ℂ SoninL2 := centralPhysicalForbidden a
   let W : SoninL2 →L[ℂ] SoninL2 := dilationSum p hp
-  let g : ℕ → SoninL2 := evenShellVector a (p * a) ha (by nlinarith)
+  let g : ℕ → SoninL2 := evenShellVector a (p * a) (by nlinarith)
   have happroxNorm : Tendsto (fun n => ‖centralSoninProjection a (g n) - g n‖)
       atTop (𝓝 0) := by
     simpa [g] using centralSoninProjection_evenShellVector_tendsto a p ha hp
@@ -173,7 +173,7 @@ theorem centralSoninDilationCorner_not_isCompactOperator
   letI : (Aᗮ ⊓ Bᗮ).HasOrthogonalProjection := by
     dsimp [A, B]
     infer_instance
-  let g : ℕ → SoninL2 := evenShellVector a (p * a) ha (by nlinarith)
+  let g : ℕ → SoninL2 := evenShellVector a (p * a) (by nlinarith)
   have hblock : ‖soninAlternatingBlock A B‖ < 1 := by
     simpa [A, B] using norm_centralSoninAlternatingBlock_lt_one a ha
   have hg : Orthonormal ℂ g := by

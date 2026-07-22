@@ -156,14 +156,14 @@ equal-weight or active-support hypothesis is used. -/
 theorem measureReal_torusProjectiveWeightedCoherenceTarget_waterEntropy_le
     {d : ℕ} (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    {η H : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    {η H : ℝ} (hη1 : η ≤ 1)
     (lam : Fin d → ℝ) (hlam : ∀ k, 0 < lam k)
     (hbudget : ∀ k, lam k * η ≤ (d - 1 : ℕ))
     (hentropy : ∀ k, H ≤ projectiveWaterEntropyAt w k (lam k)) :
     volume.real (torusProjectiveWeightedCoherenceTarget w η) ≤
       (d : ℝ) * Real.exp ((Real.pi / 4) * (d - 1 : ℕ) - H) := by
   have hbase := measureReal_torusProjectiveWeightedCoherenceTarget_le
-    w hw hmass hη0 hη1 (fun k ↦ (Real.pi / 16) * lam k)
+    w hw hmass hη1 (fun k ↦ (Real.pi / 16) * lam k)
     (fun k ↦ mul_pos (div_pos Real.pi_pos (by norm_num)) (hlam k))
   have hterm : ∀ k : Fin d,
       Real.exp (4 * ((Real.pi / 16) * lam k) * η) *
@@ -213,14 +213,14 @@ budget used by the preceding Haar theorem. -/
 theorem measureReal_torusProjectiveWeightedCoherenceTarget_waterLevel_le
     {d : ℕ} (w : Fin d → ℝ)
     (hw : ∀ i, 0 ≤ w i) (hmass : ∑ i, w i = 1)
-    {η H : ℝ} (hη0 : 0 ≤ η) (hη1 : η ≤ 1)
+    {η H : ℝ} (hη1 : η ≤ 1)
     (lam : Fin d → ℝ) (hlam : ∀ k, 0 < lam k)
     (hlevel : ∀ k, projectiveWaterMass w k (lam k) = η)
     (hentropy : ∀ k, H ≤ projectiveWaterEntropyAt w k (lam k)) :
     volume.real (torusProjectiveWeightedCoherenceTarget w η) ≤
       (d : ℝ) * Real.exp ((Real.pi / 4) * (d - 1 : ℕ) - H) := by
   exact measureReal_torusProjectiveWeightedCoherenceTarget_waterEntropy_le
-    w hw hmass hη0 hη1 lam hlam
+    w hw hmass hη1 lam hlam
       (fun k ↦ waterLevel_mul_eta_le_card_sub_one
         w k (hlam k) (hlevel k)) hentropy
 

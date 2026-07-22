@@ -184,7 +184,7 @@ theorem criticalDisc_compactPrimeEulerUnitTangent_apply
     exact mul_le_mul_of_nonneg_left hk hlog.le
   exact compactPrimeEulerUnitTangent_apply
     (criticalDiscCoordinate r) p.prop.two_le z
-      (lt_of_lt_of_le hδ (criticalDiscCoordinate_re_lower z)) hq
+      hq
 
 /-- The compact paired Euler tangent is the literal FE-paired actual-source
 tangent pointwise. -/
@@ -214,7 +214,7 @@ theorem criticalSchwarzTransform_primeEulerUnitFETangent
     criticalDisc_compactPrimeEulerUnitFETangent_apply hr]
   change conj (primeEulerUnitFETangent (p : ℕ) (conj (z : ℂ))) =
     primeEulerUnitFETangent (p : ℕ) (z : ℂ)
-  rw [primeEulerUnitFETangent_conj p.prop.two_le]
+  rw [primeEulerUnitFETangent_conj]
   simp
 
 /-- The real-linear projection onto the Schwarz-fixed subspace. -/

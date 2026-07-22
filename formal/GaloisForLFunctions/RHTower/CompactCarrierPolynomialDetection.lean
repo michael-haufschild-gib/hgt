@@ -32,11 +32,11 @@ theorem compactExponentialSlope_tendsto (s : C(K, ℂ)) :
     (compactExponentialTest_hasDerivAt_zero s).tendsto_slope_zero
 
 /-- If a functional kills every compact exponential, it kills every power of
-the exponential difference quotient away from zero. -/
+the exponential difference quotient. -/
 theorem map_compactExponentialSlope_pow_eq_zero
     (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ))
     (hkill : ∀ z : ℂ, L (compactExponentialTest s z) = 0)
-    (N : ℕ) {t : ℂ} (ht : t ≠ 0) :
+    (N : ℕ) (t : ℂ) :
     L ((compactExponentialSlope s t) ^ N) = 0 := by
   let q : C(K, ℂ) := compactExponentialTest s t
   have hq0 : compactExponentialTest s 0 = 1 := by
@@ -79,8 +79,8 @@ theorem map_coordinate_pow_eq_zero_of_fourierBorel_zero
     (L.continuous.tendsto ((-s) ^ N)).comp hpow
   have heq : (fun t => L ((compactExponentialSlope s t) ^ N)) =ᶠ[
       nhdsWithin 0 ({0} : Set ℂ)ᶜ] (fun _ => 0) := by
-    filter_upwards [self_mem_nhdsWithin] with t ht
-    exact map_compactExponentialSlope_pow_eq_zero L s hkill N (by simpa using ht)
+    filter_upwards [self_mem_nhdsWithin] with t _ht
+    exact map_compactExponentialSlope_pow_eq_zero L s hkill N t
   have hzeroLim : Tendsto (fun t => L ((compactExponentialSlope s t) ^ N))
       (nhdsWithin 0 ({0} : Set ℂ)ᶜ) (nhds 0) :=
     tendsto_const_nhds.congr' heq.symm
@@ -99,7 +99,7 @@ theorem map_coordinate_pow_eq_zero_of_fourierBorel_zero
 in the closed span of the cofinite actual Euler-unit tangents. -/
 theorem coordinate_pow_mem_closedSpan_primeEulerTangents
     (s : C(K, ℂ)) (δ M R₀ : ℝ)
-    (hδ : 0 < δ) (hM : 0 ≤ M) (hR₀ : 0 < R₀)
+    (hδ : 0 < δ) (hR₀ : 0 < R₀)
     (hre : ∀ k : K, δ ≤ (s k).re)
     (him : ∀ k : K, |(s k).im| ≤ M)
     (N : ℕ) :
@@ -115,14 +115,14 @@ theorem coordinate_pow_mem_closedSpan_primeEulerTangents
     intro p hp
     exact hLv ⟨p, hp⟩
   have hF := compactFourierBorel_eq_zero_of_tangent_annihilation_rightRectangle
-    L s δ M R₀ hδ hM hR₀ hre him hann
+    L s δ M R₀ hδ hR₀ hre him hann
   exact map_coordinate_pow_eq_zero_of_fourierBorel_zero L s hF N
 
 /-- Deleting an arbitrary finite prime set does not change polynomial
 completeness on a right-half-plane compact carrier. -/
 theorem coordinate_pow_mem_closedSpan_primeEulerTangents_compl_finset
     (s : C(K, ℂ)) (δ M : ℝ)
-    (hδ : 0 < δ) (hM : 0 ≤ M)
+    (hδ : 0 < δ)
     (hre : ∀ k : K, δ ≤ (s k).re)
     (him : ∀ k : K, |(s k).im| ≤ M)
     (S : Finset Nat.Primes) (N : ℕ) :
@@ -136,7 +136,7 @@ theorem coordinate_pow_mem_closedSpan_primeEulerTangents_compl_finset
     positivity
   have hR₀ : 0 < R₀ := by dsimp [R₀]; linarith
   have htail := coordinate_pow_mem_closedSpan_primeEulerTangents
-    s δ M R₀ hδ hM hR₀ hre him N
+    s δ M R₀ hδ hR₀ hre him N
   apply (Submodule.topologicalClosure_mono ?_) htail
   apply Submodule.span_mono
   rintro x ⟨p, rfl⟩

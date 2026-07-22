@@ -33,7 +33,7 @@ theorem compactPrimeEulerUnitFETangent_apply
 cofinite paired actual Euler tangents. -/
 theorem odd_coordinate_pow_mem_closedSpan_primeEulerFETangents
     (s : C(K, ℂ)) (τ : C(K, K)) (δ M R₀ : ℝ)
-    (hδ : 0 < δ) (hM : 0 ≤ M) (hR₀ : 0 < R₀)
+    (hδ : 0 < δ) (hR₀ : 0 < R₀)
     (hre : ∀ k : K, δ ≤ (s k).re)
     (him : ∀ k : K, |(s k).im| ≤ M)
     (N : ℕ) :
@@ -55,7 +55,7 @@ theorem odd_coordinate_pow_mem_closedSpan_primeEulerFETangents
     have hv := hLv ⟨p, hp⟩
     simpa [v, Lodd, P, compactPrimeEulerUnitFETangent] using hv
   have hF := compactFourierBorel_eq_zero_of_tangent_annihilation_rightRectangle
-    Lodd s δ M R₀ hδ hM hR₀ hre him hann
+    Lodd s δ M R₀ hδ hR₀ hre him hann
   have hmono := map_coordinate_pow_eq_zero_of_fourierBorel_zero Lodd s hF N
   simpa [Lodd, P] using hmono
 
@@ -64,7 +64,7 @@ the literal functional-equation-odd polynomial form. -/
 theorem fe_odd_coordinate_pow_mem_closedSpan
     (s : C(K, ℂ)) (τ : C(K, K))
     (hreflect : ∀ k : K, s (τ k) = 1 - s k)
-    (δ M R₀ : ℝ) (hδ : 0 < δ) (hM : 0 ≤ M) (hR₀ : 0 < R₀)
+    (δ M R₀ : ℝ) (hδ : 0 < δ) (hR₀ : 0 < R₀)
     (hre : ∀ k : K, δ ≤ (s k).re)
     (him : ∀ k : K, |(s k).im| ≤ M)
     (N : ℕ) :
@@ -73,7 +73,7 @@ theorem fe_odd_coordinate_pow_mem_closedSpan
         (Set.range fun p : {p : Nat.Primes // R₀ + 1 < Real.log (p : ℝ)} =>
           compactPrimeEulerUnitFETangent s τ (p : Nat.Primes))).topologicalClosure := by
   have h := odd_coordinate_pow_mem_closedSpan_primeEulerFETangents
-    s τ δ M R₀ hδ hM hR₀ hre him N
+    s τ δ M R₀ hδ hR₀ hre him N
   convert h using 1
   ext k
   simp [hreflect]
@@ -82,16 +82,14 @@ theorem fe_odd_coordinate_pow_mem_closedSpan
 def compactPolynomialEval (s : C(K, ℂ)) (P : Polynomial ℂ) : C(K, ℂ) :=
   ∑ n ∈ P.support, P.coeff n • s ^ n
 
+omit [CompactSpace K] in
 @[simp]
 theorem compactPolynomialEval_apply
     (s : C(K, ℂ)) (P : Polynomial ℂ) (k : K) :
     compactPolynomialEval s P k = P.eval (s k) := by
   rw [compactPolynomialEval]
-  change (ContinuousMap.evalCLM ℂ k)
-    (∑ n ∈ P.support, P.coeff n • s ^ n) = P.eval (s k)
-  rw [map_sum]
-  simp only [map_smul, ContinuousMap.evalCLM_apply, ContinuousMap.pow_apply,
-    smul_eq_mul]
+  simp only [ContinuousMap.sum_apply, ContinuousMap.smul_apply,
+    ContinuousMap.pow_apply, smul_eq_mul]
   exact Polynomial.eval_eq_sum.symm
 
 /-- Every FE-oddified scalar polynomial belongs to the paired Euler-tangent
@@ -99,7 +97,7 @@ closed span. -/
 theorem fe_odd_polynomial_mem_closedSpan
     (s : C(K, ℂ)) (τ : C(K, K))
     (hreflect : ∀ k : K, s (τ k) = 1 - s k)
-    (δ M R₀ : ℝ) (hδ : 0 < δ) (hM : 0 ≤ M) (hR₀ : 0 < R₀)
+    (δ M R₀ : ℝ) (hδ : 0 < δ) (hR₀ : 0 < R₀)
     (hre : ∀ k : K, δ ≤ (s k).re)
     (him : ∀ k : K, |(s k).im| ≤ M)
     (P : Polynomial ℂ) :
@@ -114,6 +112,6 @@ theorem fe_odd_polynomial_mem_closedSpan
   rw [← smul_sub]
   exact Submodule.smul_mem _ _
     (fe_odd_coordinate_pow_mem_closedSpan s τ hreflect δ M R₀
-      hδ hM hR₀ hre him n)
+      hδ hR₀ hre him n)
 
 end RHTower

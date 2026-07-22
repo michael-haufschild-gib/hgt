@@ -2230,7 +2230,7 @@ theorem gaussianDimensionPowerLogDetSecond_classification
 
 section HilbertSpace
 
-variable {n : ℕ} {E : Type*} [NeZero n]
+variable {n : ℕ} {E : Type*}
 variable [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 /-- Linear span of a finite configuration after centering.  Its dimension is the affine
@@ -2255,7 +2255,6 @@ def gaussianCenteredSpanCoordinates (x : Fin n → E) :
       (Set.finite_range fun i => x i - hilbertCentroid x)
   exact orthonormalCoordinates (gaussianCenteredSpanPoint x)
 
-omit [NeZero n] in
 theorem gaussianCenteredSpanCoordinates_eq_orthonormalCoordinates
     (x : Fin n → E) : by
     letI : FiniteDimensional ℝ (gaussianCenteredSpan x) :=
@@ -2265,7 +2264,6 @@ theorem gaussianCenteredSpanCoordinates_eq_orthonormalCoordinates
       orthonormalCoordinates (gaussianCenteredSpanPoint x) := by
   rfl
 
-omit [NeZero n] in
 theorem gaussianCenteredSpanPoint_injective
     (x : Fin n → E) (hx : Function.Injective x) :
     Function.Injective (gaussianCenteredSpanPoint x) := by
@@ -2275,7 +2273,6 @@ theorem gaussianCenteredSpanPoint_injective
     congrArg Subtype.val hij
   exact sub_left_injective hval
 
-omit [NeZero n] in
 theorem gaussianCenteredSpanCoordinates_injective
     (x : Fin n → E) (hx : Function.Injective x) :
     Function.Injective (gaussianCenteredSpanCoordinates x) := by
@@ -2292,7 +2289,6 @@ theorem gaussianCenteredSpanCoordinates_injective
   unfold orthonormalCoordinates at hr
   simpa only [real_inner_comm] using hr
 
-omit [NeZero n] in
 /-- Two or more distinct Hilbert points have positive intrinsic affine dimension. -/
 theorem gaussianAffineDimension_pos_of_injective
     (x : Fin n → E) (hx : Function.Injective x) (hn : 1 < n) :
@@ -2322,7 +2318,6 @@ theorem gaussianAffineDimension_pos_of_injective
   apply hxij
   exact sub_left_injective (sub_eq_zero.mp hval)
 
-omit [NeZero n] in
 /-- The coherent log-scale coordinate Gram is the intrinsic centered Hilbert Gram. -/
 theorem gaussianCoherentLogScaleGram_centeredSpanCoordinates
     (x : Fin n → E) (s : ℝ) :
@@ -2356,7 +2351,6 @@ def gaussianCenteredSpanMetricScaleCoordinates (x : Fin n → E) :
     Fin n → Fin (gaussianAffineDimension x) → ℝ :=
   gaussianLogScaleRescaledConfiguration (gaussianCenteredSpanCoordinates x) (Real.log 2)
 
-omit [NeZero n] in
 theorem gaussianCenteredSpanMetricScaleCoordinates_injective
     (x : Fin n → E) (hx : Function.Injective x) :
     Function.Injective (gaussianCenteredSpanMetricScaleCoordinates x) := by
@@ -2364,7 +2358,6 @@ theorem gaussianCenteredSpanMetricScaleCoordinates_injective
     (gaussianCenteredSpanCoordinates x)
     (gaussianCenteredSpanCoordinates_injective x hx) (Real.log 2)
 
-omit [NeZero n] in
 /-- In metric normalization, the coherent logarithmic parameter is exactly the logarithm of the
 Gaussian inverse squared bandwidth, with no residual factor `2`. -/
 theorem gaussianCoherentLogScaleGram_centeredSpanMetricScaleCoordinates
@@ -2387,7 +2380,6 @@ def gaussianCorrectedDimensionPowerLogDet (x : Fin n → E) (u : ℝ) : ℝ :=
   gaussianCorrectedLogScale x
     (Real.log u / (gaussianAffineDimension x : ℝ))
 
-omit [NeZero n] in
 /-- On the positive half-line, the intrinsic power coordinate is literally
 `u ↦ log Z(u^(1/d))` for the corrected Gaussian determinant `Z`. -/
 theorem gaussianCorrectedDimensionPowerLogDet_eq_rpow
@@ -2400,7 +2392,6 @@ theorem gaussianCorrectedDimensionPowerLogDet_eq_rpow
   congr 3
   ring
 
-omit [NeZero n] in
 theorem gaussianCorrectedLogScale_eq_coordinateLogDet
     (x : Fin n → E) (s : ℝ) :
     gaussianCorrectedLogScale x s =
@@ -2414,7 +2405,6 @@ theorem gaussianCorrectedLogScale_eq_coordinateLogDet
   congr 1
   congr 1
 
-omit [NeZero n] in
 /-- **Universal Hilbert metric dimension sandwich.**  For every injective finite configuration in
 an arbitrary real Hilbert space with positive affine dimension, the centroid-corrected Gaussian
 log determinant is convex in logarithmic metric scale and concave in the affine-dimension power
@@ -2443,7 +2433,6 @@ theorem gaussianCorrectedLogScale_convex_and_dimensionPower_concave
     exact gaussianDimensionPowerLogDet_concaveOn
       (d := gaussianAffineDimension x) (n := n) y hy hd
 
-omit [NeZero n] in
 /-- Assumption-free nondegenerate form of the Hilbert metric dimension sandwich: pairwise
 distinctness and at least two points discharge positivity of the intrinsic affine dimension. -/
 theorem gaussianCorrectedLogScale_convex_and_dimensionPower_concave_of_card_gt_one

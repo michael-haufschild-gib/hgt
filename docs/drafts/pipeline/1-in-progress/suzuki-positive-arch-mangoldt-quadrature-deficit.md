@@ -164,3 +164,35 @@ another pointwise cell assignment and do not return to global prime estimates.
 - [ ] positive residual after prime assembly
 - [ ] `(Q)`
 - [ ] RH
+
+## Hypothesis-free paper gate (2026-07-22)
+
+No RH implication, literature capacity bound, abstract positivity premise, or paper-only operator
+identity may be presented as a proved application. Candidate paper theorem must:
+
+1. use only concrete Suzuki/Mangoldt objects whose prerequisites are already unconditional;
+2. prove its block surplus rather than assume it;
+3. receive a dependency-closed Lean proof with no `sorry`, `axiom`, `opaque`, or `unsafe` escape;
+4. pass an axiom audit showing only Lean/mathlib foundations;
+5. remain in Stage 1 if any source-to-operator connector is missing.
+
+The rejected boundary-phase manuscript does not meet this gate because its Suzuki specialization
+assumes RH and its unbounded-operator theorem is not Lean-complete.
+
+### Competing apex-block mechanisms
+
+- **B1: completed-kernel decreasing-rearrangement surplus.** Derive a sharp block-majorization
+  identity comparing source flank deficit from the unique apex with continuum target deficit.
+  This is viable only if the source-side flank term is proved nonnegative for actual Mangoldt
+  blocks; naming the difference is circular.
+- **B2: cumulative-mass bicausal splice.** Merge the future and past Haar cells at their unique
+  overlap and prove that unused completed-kernel mass dominates the merged block. All capacity and
+  multiplicity accounting must be exact.
+- **B3: restricted-Weil Robin current.** Derive the merged-block surplus as an actual boundary
+  norm/Schur complement from Suzuki's kernel. This remains preferred if B1/B2 reduce to the target
+  deficit.
+
+Immediate hostile test: integrate by parts against
+`delta(t)=t-2*sum_(2 log n<=t) Lambda(n)/n`. If proposed surplus is merely the signed pairing of
+`delta` with the derivative of the moving apex profile, then it is an equivalent reformulation of
+the RH-bearing deficit, not a producer theorem.

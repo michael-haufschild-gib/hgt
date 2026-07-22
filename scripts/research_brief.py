@@ -1062,7 +1062,7 @@ def run_lean_frontier_export(
     with tempfile.TemporaryDirectory(prefix="hgt-frontier-") as temporary:
         generated = Path(temporary) / "ExportResearchFrontier.lean"
         generated.write_text(generated_source, encoding="utf-8")
-        timeout_seconds = int(os.environ.get("HGT_FRONTIER_TIMEOUT_SECONDS", "300"))
+        timeout_seconds = int(os.environ.get("HGT_FRONTIER_TIMEOUT_SECONDS", "600"))
         try:
             process = subprocess.run(
                 ["lake", "env", "lean", str(generated)],

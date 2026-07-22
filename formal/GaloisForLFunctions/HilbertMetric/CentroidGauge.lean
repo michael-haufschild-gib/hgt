@@ -9,8 +9,9 @@ import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 This module proves the exact finite Hilbert-space variance identities needed to remove the
 arbitrary choice of origin from feature-kernel determinant formulas.  The centroid is defined for
-an arbitrary nonempty finite index type.  Its centered energy is both the unique translation
-minimum and a function of pairwise squared distances alone.
+an arbitrary finite index type, with the empty-family value fixed by the algebraic zero convention.
+Its centered energy is both the unique translation minimum and a function of pairwise squared
+distances alone.
 -/
 
 open scoped BigOperators RealInnerProductSpace
@@ -19,21 +20,27 @@ namespace GaloisForLFunctions.HilbertMetric
 
 noncomputable section
 
-variable {ι E : Type*} [Fintype ι] [Nonempty ι]
+variable {ι E : Type*} [Fintype ι]
 variable [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 local instance : DecidableEq ι := Classical.decEq ι
 
-/-- The equal-weight centroid of a nonempty finite Hilbert family. -/
+/-- The equal-weight centroid of a finite Hilbert family, equal to zero for an empty family. -/
 def hilbertCentroid (x : ι → E) : E :=
   (Fintype.card ι : ℝ)⁻¹ • ∑ i, x i
 
 /-- Multiplication by the cardinality cancels the centroid average. -/
 theorem card_smul_hilbertCentroid (x : ι → E) :
     (Fintype.card ι : ℝ) • hilbertCentroid x = ∑ i, x i := by
-  have hn : (Fintype.card ι : ℝ) ≠ 0 := by
-    exact_mod_cast Fintype.card_ne_zero
-  simp [hilbertCentroid, smul_smul, hn]
+  cases isEmpty_or_nonempty ι with
+  | inl hι =>
+      letI := hι
+      simp [hilbertCentroid]
+  | inr hι =>
+      letI := hι
+      have hn : (Fintype.card ι : ℝ) ≠ 0 := by
+        exact_mod_cast Fintype.card_ne_zero
+      simp [hilbertCentroid, smul_smul, hn]
 
 /-- Centered Hilbert vectors have zero total displacement. -/
 theorem sum_sub_hilbertCentroid (x : ι → E) :
@@ -137,7 +144,6 @@ def gaussianGaugeDiagonal (x : ι → E) (a : E) (t : ℝ) : Matrix ι ι ℝ :=
   classical
   exact Matrix.diagonal fun i => Real.exp (-t * ‖x i - a‖ ^ 2)
 
-omit [Nonempty ι] in
 /-- Exact diagonal factorization of a Gaussian distance matrix about any Hilbert-space origin. -/
 theorem gaussianDistanceMatrix_eq_diagonal_mul_inner_mul_diagonal
     (x : ι → E) (a : E) (t : ℝ) :
@@ -156,7 +162,7 @@ theorem gaussianDistanceMatrix_eq_diagonal_mul_inner_mul_diagonal
     real_inner_self_eq_norm_sq]
   ring_nf
 
-omit [Nonempty ι] [InnerProductSpace ℝ E] in
+omit [InnerProductSpace ℝ E] in
 /-- The product of the Gaussian diagonal gauge is the exponential of its total exponent. -/
 theorem prod_exp_neg_mul_norm_sub_sq
     (x : ι → E) (a : E) (t : ℝ) :
@@ -166,7 +172,6 @@ theorem prod_exp_neg_mul_norm_sub_sq
   congr 1
   rw [Finset.mul_sum]
 
-omit [Nonempty ι] in
 /-- Determinant form of the Gaussian diagonal factorization. -/
 theorem gaussianDistanceMatrix_det_eq_exp_mul_exponentialInnerMatrix_det
     (x : ι → E) (a : E) (t : ℝ) :
@@ -187,7 +192,6 @@ theorem gaussianDistanceMatrix_det_eq_exp_mul_exponentialInnerMatrix_det
       congr 2
       ring
 
-omit [Nonempty ι] in
 /-- **Corrected Gaussian determinant identity.**  Multiplication by the exact origin energy
 turns the metric Gaussian determinant into the exponential inner-product determinant. -/
 theorem exp_energy_mul_gaussianDistanceMatrix_det
@@ -235,7 +239,6 @@ def gaussianCorrectedDeterminant (x : ι → E) (t : ℝ) : ℝ := by
   exact Real.exp (2 * t * ∑ i, ‖x i - hilbertCentroid x‖ ^ 2) *
     (gaussianDistanceMatrix x t).det
 
-omit [Nonempty ι] in
 /-- The corrected metric determinant is exactly the exponential inner-product determinant of
 the centered configuration. -/
 theorem gaussianCorrectedDeterminant_eq_hilbertExponentialInnerMatrix_det
@@ -247,7 +250,6 @@ theorem gaussianCorrectedDeterminant_eq_hilbertExponentialInnerMatrix_det
   rw [exp_energy_mul_gaussianDistanceMatrix_det x (hilbertCentroid x) t]
   rfl
 
-omit [Nonempty ι] in
 /-- **Centroid-corrected Gaussian determinant law.**  The canonical metric determinant is
 multiplicatively midpoint log-convex at all nonnegative scales. -/
 theorem gaussianCorrectedDeterminant_mul_sq_le
@@ -262,7 +264,6 @@ theorem gaussianCorrectedDeterminant_mul_sq_le
   exact hilbertExponentialInnerMatrix_det_mul_sq_le
     (fun i => x i - hilbertCentroid x) a b ha hb
 
-omit [Nonempty ι] in
 /-- Expanded form of the canonical law, exposing the exact metric-energy correction. -/
 theorem exp_centroidEnergy_mul_gaussianDistanceMatrix_det_mul_sq_le
     (x : ι → E) (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
@@ -274,7 +275,6 @@ theorem exp_centroidEnergy_mul_gaussianDistanceMatrix_det_mul_sq_le
           (gaussianDistanceMatrix x (b ^ 2)).det) := by
   exact gaussianCorrectedDeterminant_mul_sq_le x a b ha hb
 
-omit [Nonempty ι] in
 /-- **Raw Gaussian three-scale law.**  Removing the centroid correction exposes the sharp
 universal energy defect `exp (2 * (a - b)^2 * E)`. -/
 theorem gaussianDistanceMatrix_det_mul_sq_le

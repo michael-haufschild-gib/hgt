@@ -1,0 +1,539 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1.15in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage[nameinlink,capitalise]{cleveref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\T}{\mathbb T}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\e}{\mathrm e}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\cl}{\operatorname{cl}}
+\newcommand{\Rel}{\mathcal R}
+
+% Supporting manuscript only; rejected as the flagship contribution on 2026-07-22.
+\title{Compact Hulls, Parity Obstructions, and Value Recurrence\\
+for Suzuki's Riemann Screw Function}
+\author{Draft for priority and specialist review}
+\date{22 July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\Psi$ be Suzuki's function associated with the Riemann xi-function.  Suzuki proved that the
+Riemann hypothesis is equivalent to boundedness of $\Psi$ and observed that, even under the
+hypothesis, its limit inferior and limit superior are difficult to determine.  The endpoints he
+displayed were obtained under the additional assumptions that the zeros are simple and their
+positive ordinates are linearly independent over $\mathbb Q$.
+
+We prove a compact-hull law for every absolutely summable positive cosine spectrum.  Its cofinal
+value set is a closed interval, every approximate value recurs with bounded gaps, every interior
+level is attained with bounded gaps, and its limiting value distribution is the pushforward of Haar
+measure on the frequency-relation hull.  No independence hypothesis is required.  The absolute
+upper endpoint is attained if and only if every finite integer relation among the frequencies has
+even total coefficient.  This parity criterion is necessary and sufficient and is strictly weaker
+than rational independence.
+
+Applied to Suzuki's exact zero expansion, the theorem proves under the Riemann hypothesis, without
+simplicity or linear independence, that $\liminf_{t\to\infty}\Psi(t)=0$, that every tail has the
+same interval of limit values, and that a compactly supported limiting value distribution exists
+with support equal to that interval.  It also yields the equivalence between the Riemann hypothesis
+and uniform Bohr almost periodicity of $\Psi$.  The theorem does not prove the Riemann hypothesis;
+it converts the remaining numerical $\limsup$ question into an explicit parity problem for integer
+relations among zero ordinates.
+\end{abstract}
+
+\section{Introduction}
+
+Write $\xi$ for the Riemann xi-function and enumerate, with multiplicity, the zeros $\gamma$ of
+$z\mapsto\xi(1/2-iz)$.  Suzuki introduced the continuous even function
+\begin{equation}\label{eq:suzuki-series}
+  \Psi(t)=\sum_{\gamma}\frac{1-\cos(\gamma t)}{\gamma^2},
+\end{equation}
+where the identity is unconditional and the series is interpreted with the symmetries of the xi
+divisor.  This function is the negative of Suzuki's Riemann screw function.  Among several exact
+criteria, Suzuki proved
+\begin{equation}\label{eq:suzuki-boundedness}
+  \mathrm{RH}\quad\Longleftrightarrow\quad \Psi(t)=O(1)
+  \qquad (t\geq 0)
+\end{equation}
+and, under RH, $\Psi(t)>0$ for $t\ne0$ \cite{Suzuki2023}.
+
+Under RH all frequencies in \eqref{eq:suzuki-series} are real, so the series is an absolutely and
+uniformly convergent positive cosine series.  Suzuki noted that its limit inferior and limit
+superior are nevertheless not easy to determine.  Assuming in addition simplicity and rational
+independence of the positive zero ordinates, he obtained
+\begin{equation}\label{eq:suzuki-LI-endpoints}
+ \liminf_{t\to\infty}\Psi(t)=0,
+ \qquad
+ \limsup_{t\to\infty}\Psi(t)=2\sum_\gamma\frac1{\gamma^2}.
+\end{equation}
+Later work of Matsumoto and Suzuki developed value-distribution and $M$-function results for
+related zero sums, again using a linear-independence condition to construct a density
+\cite{MatsumotoSuzuki2025}.  Suzuki's more recent finite-interval program instead studies the Weil
+quadratic form and a conjectural spectral limit of self-adjoint differential realizations
+\cite{Suzuki2026}.
+
+The purpose of this paper is to remove independence from the recurrence and measure-existence
+parts of the first problem.  The correct replacement for the full torus is the closed subgroup cut
+out by all integer relations among the frequencies.  Three features then become visible.
+
+First, the relation hull is connected because it is the closure of a one-parameter subgroup.
+Consequently a real continuous observable on it has interval image: there are no gaps in the
+cofinal value set.  Second, compact-group minimality upgrades subsequential recurrence to bounded-gap
+recurrence.  Third, the inhomogeneous phase $(-1,-1,\ldots)$ belongs to the relation hull exactly
+when every integer relation has even coefficient sum.  This is the precise obstruction to aligning
+all cosine modes at their individual maxima.
+
+Our universal theorem is stated in \cref{sec:universal}.  The full cofinal value and Haar laws are
+proved in \cref{sec:recurrence}.  The parity theorem is \cref{thm:parity}.  In
+\cref{sec:screw-hull} we identify the compact group as the intrinsic Hilbert hull of the associated
+screw line.  The application to $\Psi$ is given in \cref{sec:xi}.
+
+The harmonic-analysis ingredients are classical: compact abelian duality, Haar measure, and
+Kronecker--Bohr recurrence.  The new claim requiring priority review is their complete
+infinite-spectrum synthesis for Suzuki's exact screw series, including the no-independence
+$\liminf$, support, syndetic-level, and parity conclusions.  We make no claim that this proves RH or
+that it decides the integer-relation parity of the actual xi zeros.
+
+\section{The relation hull of a summable screw spectrum}\label{sec:universal}
+
+Let $I$ be a nonempty finite or countable set.  Fix distinct frequencies $\omega_i>0$ and weights
+$a_i>0$ such that
+\begin{equation}\label{eq:summable}
+ A:=\sum_{i\in I}a_i<\infty.
+\end{equation}
+Define
+\begin{equation}\label{eq:P-def}
+ P(t):=\sum_{i\in I}a_i\bigl(1-\cos(\omega_i t)\bigr).
+\end{equation}
+Let $\T=\{z\in\mathbb C:|z|=1\}$, and consider the continuous homomorphism
+\begin{equation}\label{eq:theta}
+ \Theta:\R\longrightarrow\T^I,
+ \qquad
+ \Theta(t)_i=\e^{i\omega_i t}.
+\end{equation}
+Its relation hull is
+\begin{equation}\label{eq:K-def}
+ K:=\cl\Theta(\R)\subset\T^I.
+\end{equation}
+The finitely supported integer-relation lattice is
+\begin{equation}\label{eq:relation-lattice}
+ \Rel_\omega:=
+ \left\{k\in\Z^{(I)}:\sum_{i\in I}k_i\omega_i=0\right\}.
+\end{equation}
+
+The positive observable on the hull is
+\begin{equation}\label{eq:F-def}
+ F(z):=\sum_{i\in I}a_i(1-\Re z_i).
+\end{equation}
+The Weierstrass test, with majorant $2a_i$, shows that \eqref{eq:P-def} and \eqref{eq:F-def}
+converge uniformly.  In particular $F$ is continuous and
+\begin{equation}\label{eq:P-factor}
+ P=F\circ\Theta.
+\end{equation}
+
+\begin{theorem}[Relation-hull law]\label{thm:relation-hull}
+The set $K$ is a compact connected abelian group, and
+\begin{equation}\label{eq:annihilator-description}
+ K=\left\{z\in\T^I:
+       \prod_{i\in I}z_i^{k_i}=1\text{ for every }k\in\Rel_\omega\right\}.
+\end{equation}
+For every $T_0\in\R$, the positive tail $\Theta([T_0,\infty))$ is dense in $K$.
+\end{theorem}
+
+\begin{proof}
+The product torus is compact and abelian.  Since $\Theta$ is a continuous homomorphism, $K$ is a
+compact subgroup.  The image $\Theta(\R)$ is connected, and closure preserves connectedness, so
+$K$ is connected.
+
+Every continuous character of $\T^I$ is a finite-coordinate monomial
+\[
+ \chi_k(z)=\prod_{i\in I}z_i^{k_i},\qquad k\in\Z^{(I)}.
+\]
+On the one-parameter subgroup,
+\[
+ \chi_k(\Theta(t))=
+ \exp\left(it\sum_{i\in I}k_i\omega_i\right).
+\]
+Thus $\chi_k$ is trivial on $K$ if and only if $k\in\Rel_\omega$.  A closed subgroup of a compact
+abelian group is the intersection of the kernels of the characters trivial on it.  This proves
+\eqref{eq:annihilator-description}.
+
+It remains to check the direction of time, which is important for cofinal statements.  Put
+\[
+ S:=\cl\Theta([0,\infty))\subset K.
+\]
+This is a compact subsemigroup.  We show that it is a group.  Let $x\in S$.  Compactness gives a
+subsequence $x^{n_j}$ converging to a point $y$.  After passing to a further subsequence,
+\[
+ x^{n_{j+1}-n_j}\longrightarrow 1.
+\]
+If the positive differences are eventually one, then $x=1$.  Otherwise take a subsequence on which
+they are at least two; then
+\[
+ x^{n_{j+1}-n_j-1}\longrightarrow x^{-1}.
+\]
+The powers on the left lie in $S$, so $x^{-1}\in S$.  Hence $S$ is a group.  It contains the
+nonnegative orbit and therefore its inverses, so it contains $\Theta(\R)$.  Thus $S=K$.
+Multiplication by $\Theta(T_0)$ shows that every tail has closure $K$.
+\end{proof}
+
+\begin{remark}
+The final paragraph is not cosmetic.  Two-sided density alone does not state that arbitrarily late
+values see the whole hull.  Compactness of the positive orbit closure supplies the missing
+semigroup-to-group step.
+\end{remark}
+
+\section{Cofinal values, bounded-gap recurrence, and Haar law}\label{sec:recurrence}
+
+\begin{theorem}[No-gap cofinal value law]\label{thm:no-gap}
+Let
+\begin{equation}\label{eq:M-def}
+ M:=\max_{z\in K}F(z).
+\end{equation}
+Then, for every $T_0\in\R$,
+\begin{equation}\label{eq:tail-closure}
+ \cl\{P(t):t\geq T_0\}=F(K)=[0,M].
+\end{equation}
+For every $y\in[0,M]$ and $\varepsilon>0$, the return set
+\begin{equation}\label{eq:approx-return}
+ \{t\geq0:|P(t)-y|<\varepsilon\}
+\end{equation}
+is relatively dense in $[0,\infty)$.  If $0<y<M$, then the exact level set
+\begin{equation}\label{eq:exact-level}
+ \{t\geq0:P(t)=y\}
+\end{equation}
+is relatively dense as well.
+\end{theorem}
+
+\begin{proof}
+By \cref{thm:relation-hull} every tail of $\Theta$ is dense in $K$, and by
+\eqref{eq:P-factor} its image has closure $F(K)$.  The latter is compact and connected, hence a
+closed interval.  Each summand of $F$ is nonnegative and $F(1)=0$, so the left endpoint is zero.
+Compactness gives the maximum $M$, proving \eqref{eq:tail-closure}.
+
+We use a standard compactness form of minimal recurrence.  Let $U\subset K$ be nonempty and open.
+For each $x\in K$, density of the positive orbit gives an $s_x\geq0$ such that
+$x\Theta(s_x)\in U$.  Therefore the family
+\[
+ \{U\Theta(-s):s\geq0\}
+\]
+covers $K$.  Choose a finite subcover with times $s_1,\dots,s_N$, and put
+$L=\max_j s_j$.  For any $\tau\geq0$, one has
+$\Theta(\tau)\in U\Theta(-s_j)$ for some $j$, and hence
+$\Theta(\tau+s_j)\in U$.  Every interval $[\tau,\tau+L]$ therefore contains a return to $U$.
+
+Taking $U=F^{-1}((y-\varepsilon,y+\varepsilon))$ proves relative density of
+\eqref{eq:approx-return}.  For $0<y<M$, choose nonempty open sets $U_-$ and $U_+$ on which,
+respectively, $F<y$ and $F>y$.  Starting at an arbitrary $\tau$, a return to $U_-$ and a subsequent
+return to $U_+$ occur within a uniformly bounded total time.  Continuity of $P$ produces a point
+between them with $P(t)=y$.  This proves the claim for \eqref{eq:exact-level}.
+\end{proof}
+
+\begin{theorem}[Haar value-distribution without independence]\label{thm:Haar-law}
+Let $m_K$ be normalized Haar measure on $K$ and set
+\begin{equation}\label{eq:nu-def}
+ \nu:=F_*m_K.
+\end{equation}
+For every bounded continuous $\varphi:\R\to\mathbb C$,
+\begin{equation}\label{eq:value-distribution}
+ \lim_{T\to\infty}\frac1T\int_0^T\varphi(P(t))\,dt
+ =\int_\R\varphi(x)\,d\nu(x).
+\end{equation}
+Moreover,
+\begin{equation}\label{eq:support}
+ \supp\nu=[0,M].
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Let $\chi$ be a character of $K$.  Its restriction to the dense one-parameter subgroup has the
+form
+\[
+ \chi(\Theta(t))=\e^{i\lambda_\chi t}.
+\]
+If $\chi$ is nontrivial, then $\lambda_\chi\ne0$, since otherwise $\chi$ would be one on a dense
+subgroup.  Hence
+\[
+ \lim_{T\to\infty}\frac1T\int_0^T\chi(\Theta(t))\,dt=0
+ =\int_K\chi\,dm_K.
+\]
+By Stone--Weierstrass, character polynomials are uniformly dense in $C(K)$.  Uniform approximation
+therefore gives Haar equidistribution of the flow for every continuous observable.  Apply this to
+$\varphi\circ F$ to obtain \eqref{eq:value-distribution}.
+
+The support of $\nu$ is contained in $F(K)$.  If an open interval $V$ meets $F(K)$, then
+$F^{-1}(V)$ is a nonempty open subset of $K$.  Every nonempty open subset of a compact group has
+positive Haar measure: finitely many translates cover $K$, which would be impossible if its
+measure were zero.  Thus $\nu(V)>0$.  Combining this with \cref{thm:no-gap} proves
+\eqref{eq:support}.
+\end{proof}
+
+The conclusion is deliberately stated for a probability measure rather than a density.  Rational
+independence makes $K$ the full product torus and enables product formulas and regularity arguments.
+Without independence, $\nu$ may reflect lower-dimensional or infinite-rank relation geometry.  Its
+existence and exact support, however, require no independence.
+
+\section{The parity obstruction to the absolute endpoint}
+
+The elementary bound $1-\Re z_i\leq2$ gives $M\leq2A$.  The issue is whether the phases can
+simultaneously approach $-1$.  The complete answer depends only on the parity of the relation
+lattice.
+
+\begin{theorem}[Universal parity law]\label{thm:parity}
+Under \eqref{eq:summable}, the following are equivalent:
+\begin{enumerate}
+ \item $M=2A$;
+ \item the point $(-1)_{i\in I}$ belongs to $K$;
+ \item every $k\in\Rel_\omega$ has even total coefficient:
+ \begin{equation}\label{eq:even-relation}
+    \sum_{i\in I}k_i\equiv0\pmod 2.
+ \end{equation}
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For $z\in K$,
+\begin{equation}\label{eq:ceiling-defect}
+ 2A-F(z)=\sum_{i\in I}a_i(1+\Re z_i)\geq0.
+\end{equation}
+Since all $a_i$ are positive, equality occurs if and only if $\Re z_i=-1$ for every $i$, or
+equivalently $z_i=-1$ for every $i$.  The maximum is attained on compact $K$, proving the
+equivalence of the first two statements.
+
+By \eqref{eq:annihilator-description}, the all-minus-one point lies in $K$ exactly when
+\[
+ \prod_i(-1)^{k_i}=(-1)^{\sum_i k_i}=1
+\]
+for every $k\in\Rel_\omega$.  This is precisely \eqref{eq:even-relation}.
+\end{proof}
+
+Rational independence implies $\Rel_\omega=\{0\}$ and hence the endpoint $2A$, but it is much
+stronger than necessary.  A relation
+\[
+ \omega_1+\omega_2=\omega_3+\omega_4
+\]
+has even total coefficient and creates no parity obstruction.  In contrast,
+$\omega_3=\omega_1+\omega_2$ has odd total coefficient and forces $M<2A$.  Thus
+\cref{thm:parity} separates relations that genuinely obstruct simultaneous antiphase alignment
+from those that do not.
+
+\section{The intrinsic Hilbert screw hull}\label{sec:screw-hull}
+
+The preceding compact group is not an auxiliary device; it is the completion of the associated
+screw line in its natural Hilbert metric.  Let $\ell^2(I)$ be the usual complex Hilbert space and
+define
+\begin{equation}\label{eq:S-map}
+ \mathcal S(z)_i:=\sqrt{\frac{a_i}{2}}(1-z_i),
+ \qquad z\in K.
+\end{equation}
+Summability makes this well defined.
+
+\begin{proposition}[Hilbert screw-hull law]\label{prop:Hilbert-hull}
+The map $\mathcal S:K\to\ell^2(I)$ is continuous and injective.  For $z,w\in K$,
+\begin{equation}\label{eq:hull-metric}
+ \|\mathcal S(z)-\mathcal S(w)\|^2
+ =F(z\overline w),
+\end{equation}
+where multiplication and conjugation are coordinatewise.  In particular,
+\begin{equation}\label{eq:screw-distance}
+ \|\mathcal S(\Theta(t))-\mathcal S(\Theta(u))\|^2=P(t-u).
+\end{equation}
+The closure of the screw line $t\mapsto\mathcal S(\Theta(t))$ is $\mathcal S(K)$, and the group law
+of $K$ transports to a compact connected monothetic group law on this Hilbert-space hull.
+\end{proposition}
+
+\begin{proof}
+Coordinatewise,
+\[
+ \frac{a_i}{2}|z_i-w_i|^2
+ =a_i\bigl(1-\Re(z_i\overline{w_i})\bigr).
+\]
+Summation proves \eqref{eq:hull-metric}; \eqref{eq:screw-distance} follows from
+\eqref{eq:P-factor}.  Uniform tail control by $2a_i$ proves continuity in the product topology, and
+positive weights prove injectivity.  Density of $\Theta(\R)$ gives the closure assertion.
+\end{proof}
+
+This gives a geometric reading of the universal results.  The interval $[0,M]$ is the complete
+cofinal squared-distance spectrum from the base point.  The parity condition says exactly when the
+screw hull contains the coordinatewise antipode.  The Haar law is the canonical value law of the
+minimal translation flow on this compact screw hull.
+
+\section{Application to the Riemann screw function}\label{sec:xi}
+
+Assume RH.  Let $\Gamma_+$ be the set of distinct positive ordinates of xi zeros, and let
+$m_\gamma$ denote the multiplicity of $\gamma\in\Gamma_+$.  Pairing the positive and negative
+zeros in \eqref{eq:suzuki-series} gives
+\begin{equation}\label{eq:Psi-positive}
+ \Psi(t)=\sum_{\gamma\in\Gamma_+}
+  \frac{2m_\gamma}{\gamma^2}\bigl(1-\cos(\gamma t)\bigr).
+\end{equation}
+The centered Hadamard product gives
+\begin{equation}\label{eq:zero-summability}
+ \sum_{\gamma\in\Gamma_+}\frac{2m_\gamma}{\gamma^2}<\infty.
+\end{equation}
+Therefore the universal theorem applies with
+$a_\gamma=2m_\gamma/\gamma^2$ and $\omega_\gamma=\gamma$.
+
+Let
+\begin{equation}\label{eq:Xi-relations}
+ \Rel_\Xi:=\left\{k\in\Z^{(\Gamma_+)}:
+        \sum_{\gamma\in\Gamma_+}k_\gamma\gamma=0\right\},
+\end{equation}
+let $K_\Xi$ be the subgroup of $\T^{\Gamma_+}$ annihilating these relations, and set
+\begin{equation}\label{eq:M-Xi}
+ M_\Xi:=\max_{z\in K_\Xi}
+ \sum_{\gamma\in\Gamma_+}\frac{2m_\gamma}{\gamma^2}(1-\Re z_\gamma).
+\end{equation}
+
+\begin{corollary}[Suzuki no-gap recurrence under RH]\label{cor:Suzuki-recurrence}
+Assume RH.  No simplicity or rational-independence hypothesis is needed for
+\begin{equation}\label{eq:Xi-endpoints}
+ \liminf_{t\to\infty}\Psi(t)=0,
+ \qquad
+ \limsup_{t\to\infty}\Psi(t)=M_\Xi.
+\end{equation}
+For every $T_0\in\R$,
+\begin{equation}\label{eq:Xi-tail-values}
+ \cl\{\Psi(t):t\geq T_0\}=[0,M_\Xi].
+\end{equation}
+Every approximate value in this interval recurs relatively densely, and every interior level is
+attained relatively densely.
+\end{corollary}
+
+In particular, \eqref{eq:Xi-endpoints} settles the limit-inferior conclusion in
+\eqref{eq:suzuki-LI-endpoints} without either of Suzuki's extra assumptions.  The stronger
+\eqref{eq:Xi-tail-values} shows that this is not a sparse subsequence phenomenon.
+
+\begin{corollary}[No-LI limiting value law]\label{cor:Suzuki-Haar}
+Assume RH.  There is a probability measure $\nu_\Xi$ such that
+\begin{equation}\label{eq:Xi-value-law}
+ \lim_{T\to\infty}\frac1T\int_0^T\varphi(\Psi(t))\,dt
+ =\int_\R\varphi(x)\,d\nu_\Xi(x)
+\end{equation}
+for every bounded continuous $\varphi$, and
+\begin{equation}\label{eq:Xi-measure-support}
+ \supp\nu_\Xi=[0,M_\Xi].
+\end{equation}
+Explicitly, $\nu_\Xi$ is the pushforward of Haar measure on $K_\Xi$ under the observable in
+\eqref{eq:M-Xi}.
+\end{corollary}
+
+This conclusion complements the $M$-function framework.  Under linear independence the relation
+hull is the full product torus, leading to product formulas and, in suitable settings, a continuous
+density.  \cref{cor:Suzuki-Haar} keeps existence and determines support for the actual, possibly
+relation-constrained zero spectrum.  It does not assert density or absolute continuity.
+
+\begin{corollary}[Parity classification of Suzuki's upper endpoint]\label{cor:Xi-parity}
+Assume RH.  Then
+\begin{equation}\label{eq:Xi-absolute-ceiling}
+ M_\Xi=2\sum_{\gamma}\frac1{\gamma^2}
+\end{equation}
+if and only if
+\begin{equation}\label{eq:Xi-even-relations}
+ \sum_{\gamma\in\Gamma_+}k_\gamma\equiv0\pmod2
+ \qquad\text{for every }k\in\Rel_\Xi.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+In the notation of \cref{thm:parity},
+\[
+ A=\sum_{\gamma\in\Gamma_+}\frac{2m_\gamma}{\gamma^2}
+  =\sum_\gamma\frac1{\gamma^2},
+\]
+where the last sum is over all positive and negative zeros with multiplicity.  Apply
+\cref{thm:parity}.
+\end{proof}
+
+The condition \eqref{eq:Xi-even-relations} is strictly weaker than linear independence.  It is also
+the exact remaining arithmetic obstruction: no generic independence assumption is needed, and no
+even-total relation changes Suzuki's absolute endpoint.  We do not know how to prove
+\eqref{eq:Xi-even-relations} for the xi zero ordinates.
+
+\begin{corollary}[Almost-periodic RH criterion]\label{cor:AP-RH}
+Suzuki's function satisfies
+\begin{equation}\label{eq:AP-RH}
+ \mathrm{RH}\quad\Longleftrightarrow\quad
+ \Psi\text{ is uniformly Bohr almost periodic on }\R.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Under RH, \eqref{eq:Psi-positive} converges uniformly and is a uniform limit of trigonometric
+polynomials, hence is uniformly Bohr almost periodic.  Conversely, every uniformly almost periodic
+function is bounded.  Suzuki's criterion \eqref{eq:suzuki-boundedness} then implies RH.
+\end{proof}
+
+\section{Scope and remaining problems}
+
+The compact-hull law answers one problem and isolates another.
+
+It answers the recurrence problem: under RH, zero is a cofinal value of $\Psi$ without simplicity or
+LI, indeed with bounded-gap $\varepsilon$-returns; every tail has the same full interval of limit
+values; every interior value is crossed with bounded gaps; and the limiting value distribution
+exists with exactly that interval as support.  These statements depend only on the summable screw
+spectrum and the reality of its frequencies.
+
+It isolates the upper-endpoint problem: Suzuki's displayed absolute endpoint is correct precisely
+when the positive xi ordinates have no odd-total integer relation.  Proving this parity assertion is
+an arithmetic problem about the zero spectrum and is not supplied by compact dynamics.  It is
+weaker than the usual LI conjecture and may therefore be a more accurately targeted conjecture for
+the $\limsup$ question.
+
+The results do not prove RH.  They also do not prove regularity of the no-LI limiting measure beyond
+its compact support, nor do they establish the cofinal finite-interval operator convergence proposed
+in Suzuki's 2026 spectral program.  A natural next question is whether the special positive weights
+$2m_\gamma/\gamma^2$ force non-atomicity or absolute continuity of the Haar pushforward under a
+relation-rank hypothesis weaker than LI.  A second is whether the compact screw hull can be recovered
+as a limit object of Suzuki's finite-aperture self-adjoint realizations.
+
+\begin{thebibliography}{99}
+
+\bibitem{Bohr}
+H.~Bohr,
+\emph{Almost Periodic Functions},
+Chelsea Publishing, New York, 1947.
+
+\bibitem{HewittRoss}
+E.~Hewitt and K.~A.~Ross,
+\emph{Abstract Harmonic Analysis, Vol.~I},
+Springer, Berlin, 1963.
+
+\bibitem{MatsumotoSuzuki2025}
+K.~Matsumoto and M.~Suzuki,
+\emph{$M$-functions and screw functions: applications to Goldbach's problem and zeros of the
+Riemann zeta-function},
+arXiv:2409.00888v2, 2025.
+
+\bibitem{Rudin}
+W.~Rudin,
+\emph{Fourier Analysis on Groups},
+Interscience, New York, 1962.
+
+\bibitem{Suzuki2023}
+M.~Suzuki,
+\emph{Aspects of the screw function corresponding to the Riemann zeta-function},
+J. London Math. Soc. \textbf{108} (2023), 1448--1487;
+arXiv:2206.03682.
+
+\bibitem{Suzuki2026}
+M.~Suzuki,
+\emph{Weil's quadratic form via the screw function},
+arXiv:2606.09096, 2026.
+
+\end{thebibliography}
+
+\end{document}

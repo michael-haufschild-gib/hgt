@@ -16,9 +16,9 @@ open Lean Elab Command Meta
 
 set_option maxHeartbeats 8000000
 
-private def interfaceSolverMaxDepth : Nat := 5
+private def interfaceSolverMaxDepth : Nat := 3
 private def interfaceSolverMaxCandidatesPerGoal : Nat := 512
-private def interfaceSolverMaxAttemptsPerInterface : Nat := 1000
+private def interfaceSolverMaxAttemptsPerInterface : Nat := 20
 
 private def projectPrefix : String := "GaloisForLFunctions."
 

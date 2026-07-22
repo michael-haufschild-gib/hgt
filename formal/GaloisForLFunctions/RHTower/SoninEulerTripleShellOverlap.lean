@@ -1072,22 +1072,22 @@ theorem indicatorCutoff_normalizedIndicator_of_disjoint
 
 /-- A physical cutoff at least the ceiling fixes every symmetric shell vector. -/
 theorem evenIndicatorCutoff_evenShellVectorEven_of_le
-    (s t t' : ℝ) (hs : 0 < s) (hst : s < t) (htt' : t ≤ t') (n : ℕ) :
-    evenIndicatorCutoff t' (evenShellVectorEven s t hs hst n) =
-      evenShellVectorEven s t hs hst n := by
+    (s t t' : ℝ) (hst : s < t) (htt' : t ≤ t') (n : ℕ) :
+    evenIndicatorCutoff t' (evenShellVectorEven s t hst n) =
+      evenShellVectorEven s t hst n := by
   apply Subtype.ext
   rw [coe_evenIndicatorCutoff_apply, coe_evenShellVectorEven]
   dsimp only [evenShellVector]
   apply indicatorCutoff_normalizedIndicator_of_subset
   intro x hx
-  have hmem := evenShellCell_subset_Icc hs hst n hx
+  have hmem := evenShellCell_subset_Icc hst n hx
   change x ∈ Set.Icc (-t') t'
   exact ⟨by linarith [hmem.1], by linarith [hmem.2]⟩
 
 /-- A physical cutoff at most the floor annihilates every symmetric shell vector. -/
 theorem evenIndicatorCutoff_evenShellVectorEven_eq_zero
-    (s t s' : ℝ) (hs : 0 < s) (hst : s < t) (hs' : s' ≤ s) (n : ℕ) :
-    evenIndicatorCutoff s' (evenShellVectorEven s t hs hst n) = 0 := by
+    (s t s' : ℝ) (hst : s < t) (hs' : s' ≤ s) (n : ℕ) :
+    evenIndicatorCutoff s' (evenShellVectorEven s t hst n) = 0 := by
   apply Subtype.ext
   rw [coe_evenIndicatorCutoff_apply, coe_evenShellVectorEven]
   dsimp only [evenShellVector]
@@ -1108,16 +1108,16 @@ theorem not_isCompactOperator_evenIndicatorShellDiff
     ¬ IsCompactOperator (evenIndicatorCutoff t - evenIndicatorCutoff s) := by
   intro hcpt
   have hfix : ∀ n, (evenIndicatorCutoff t - evenIndicatorCutoff s)
-      (evenShellVectorEven s t hs hst n) = evenShellVectorEven s t hs hst n := by
+      (evenShellVectorEven s t hst n) = evenShellVectorEven s t hst n := by
     intro n
-    have h1 := evenIndicatorCutoff_evenShellVectorEven_of_le s t t hs hst le_rfl n
-    have h0 := evenIndicatorCutoff_evenShellVectorEven_eq_zero s t s hs hst le_rfl n
+    have h1 := evenIndicatorCutoff_evenShellVectorEven_of_le s t t hst le_rfl n
+    have h0 := evenIndicatorCutoff_evenShellVectorEven_eq_zero s t s hst le_rfl n
     rw [ContinuousLinearMap.sub_apply, h1, h0, sub_zero]
   have hnull := IsCompactOperator.norm_apply_tendsto_zero_of_orthonormal
     (evenIndicatorCutoff t - evenIndicatorCutoff s) hcpt
     (evenShellVectorEven_orthonormal s t hs hst)
   have hone : (fun n => ‖(evenIndicatorCutoff t - evenIndicatorCutoff s)
-      (evenShellVectorEven s t hs hst n)‖) = fun _ => (1 : ℝ) := by
+      (evenShellVectorEven s t hst n)‖) = fun _ => (1 : ℝ) := by
     funext n
     rw [hfix n]
     exact (evenShellVectorEven_orthonormal s t hs hst).norm_eq_one n

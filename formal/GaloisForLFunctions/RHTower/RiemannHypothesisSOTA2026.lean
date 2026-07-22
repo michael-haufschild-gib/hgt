@@ -66,6 +66,7 @@ import GaloisForLFunctions.RHTower.SuzukiRectangularWallGramGate
 import GaloisForLFunctions.RHTower.SuzukiRectangularPositiveArchLagCompletion
 import GaloisForLFunctions.RHTower.SuzukiMangoldtLogHaarTransport
 import GaloisForLFunctions.RHTower.SuzukiMangoldtApexLock
+import GaloisForLFunctions.RHTower.SuzukiMangoldtApexRayIsolation
 import GaloisForLFunctions.RHTower.SuzukiCoherentCausalDepthFusion
 import GaloisForLFunctions.RHTower.SuzukiRectangularWardDefectBoundedness
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedLocalThreePoint
@@ -93,8 +94,10 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   isolated simple even ground state of a lower-bounded convolution operator.  Connes's 2026
   survey (`arXiv:2602.04022`) and the zeta-spectral-triple construction (`arXiv:2511.22755`) leave
   the actual ground-state convergence to Xi open.  The finite Caratheodory--Fejer/Cayley reality
-  connector is `finiteOPUCParaorthogonal_lineCayley_root_im_eq_zero`; the exact infinite wall is
-  `ConnesXiGroundStateLimitWall` below.
+  connector is `finiteOPUCParaorthogonal_lineCayley_root_im_eq_zero`.  The former unstructured
+  infinite wall `ConnesXiGroundStateLimitWall` is proved below to be exactly RH; the genuine open
+  theorem is source-locked comparison of the actual restricted-Weil ground state with the
+  already-convergent prolate seed.
 
 * Hedenmalm (`arXiv:2606.17494`) gives an explicit theta boundary-value problem whose spectral
   parameters are exactly Xi zeros.  `XiHedenmalmBoundaryValueProblem` formalizes that equivalence.
@@ -627,10 +630,12 @@ namespace RHTower
 
 noncomputable section
 
-/-- The exact remaining Connes / zeta-spectral-triple limit statement in function-theoretic form:
-there is a cofinal sequence of entire real-zero ground-state transforms converging locally
-uniformly to centered Xi.  Finite real-zero localization is already supplied by the
-Caratheodory--Fejer theorem; construction of this convergent sequence is the wall. -/
+/-- The unstructured locally-uniform real-zero approximation criterion for centered Xi.
+
+This proposition deliberately does not encode the concrete CCM Weil operators or their ground
+states.  The theorem `connesXiGroundStateLimitWall_iff_riemannHypothesis` below shows that, without
+that source lock, the criterion is exactly RH: under RH the constant sequence `F n = XiC` is a
+witness.  It is therefore a zero-transfer consumer, not the Connes source frontier. -/
 def ConnesXiGroundStateLimitWall : Prop :=
   ∃ F : ℕ → ℂ → ℂ,
     TendstoLocallyUniformly F XiC atTop ∧
@@ -644,6 +649,23 @@ theorem connesXiGroundStateLimitWall_implies_riemannHypothesis
   rcases h with ⟨F, hconv, hentire, hreal⟩
   exact riemannHypothesis_of_XiC_locally_uniform_real_zero_approximants
     hconv hentire hreal
+
+/-- **Anti-theatre closure for the unstructured Connes limit criterion.**  Existence of some
+locally-uniform real-zero entire approximants to `XiC` is equivalent to RH.  Any genuine Connes
+frontier statement must therefore name the source-defined CCM operator/ground-state family; an
+existential sequence of approximants alone contains no weaker producer theorem. -/
+theorem connesXiGroundStateLimitWall_iff_riemannHypothesis :
+    ConnesXiGroundStateLimitWall ↔ RiemannHypothesis := by
+  constructor
+  · exact connesXiGroundStateLimitWall_implies_riemannHypothesis
+  · intro hRH
+    refine ⟨fun _ => XiC, ?_, ?_, ?_⟩
+    · intro u hu x
+      refine ⟨Set.univ, Filter.univ_mem, Eventually.of_forall fun _ y _ => ?_⟩
+      exact refl_mem_uniformity hu
+    · exact Eventually.of_forall fun _ => XiC_differentiable
+    · exact Eventually.of_forall fun _ z hz =>
+        xiC_zero_im_eq_zero_of_riemannHypothesis hRH hz
 
 /-- The complete positive Xi Weil form singled out by the Hedenmalm/Weil spectral route. -/
 def HedenmalmXiPositiveFormWall : Prop :=
