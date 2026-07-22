@@ -12,6 +12,11 @@
 
 ## Formalized result
 
+> **One-sided coordinate note (2026-07-22).** Generic pencil is unchanged.  For physical positive
+> Carleman sheet, use `eta=-i lambda/2` and multiplier phase `i`; interval input in Xi-real exterior
+> algebra is `-iT_phys`.  Earlier `eta=-i lambda` identifies full-symbol projective coordinate,
+> not selected half-sheet.
+
 The module defines the exact boundary-free shift pencil
 
 ```text

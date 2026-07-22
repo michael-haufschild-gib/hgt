@@ -27,6 +27,11 @@ no-go for the false bilateral reading, and the upper-sheet RH criterion.  The ph
 identity identifying `TRight` and `TLeft` with the two convolution triangles is proved on paper;
 half-line Fourier--Carleman integration is not represented in the current Lean tree.
 
+Coordinate warning: abstract `M` can be Suzuki's physical multiplier.  The source-semantic
+specialization `suzukiShiftedXiMultiplier eta` instead uses the Xi-real normalized multiplier.
+`SuzukiCarlemanCoordinatePhase` proves that its interval argument is `-I` times the physical
+triangle and that exact real form shift maps to `eta=-I*lambda/2`.
+
 No estimate, numerical computation, RH assumption, or unproved positivity premise is used.
 -/
 

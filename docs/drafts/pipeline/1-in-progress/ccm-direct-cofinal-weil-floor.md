@@ -1,5 +1,11 @@
 # CCM direct cofinal Weil-floor theorem
 
+> **2026-07-22 derivative-domain correction.** Any occurrence below of
+> `ker(G_a:L2_0->L2_0)=0` as an RH-equivalent target is superseded by
+> `suzuki-completed-zero-mode-corona-seam-law.md`. The exact derivative target is injectivity of
+> the extension of `G_a` on `H(S_(a,mu))`; raw injectivity needs an additional corona regularity
+> lift. Statements phrased directly in terms of the restricted Weil operator `A_a` remain valid.
+
 - **ID:** `ccm-direct-cofinal-weil-floor`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE, `[OPEN RH CORE]`
@@ -299,10 +305,10 @@ source vector.
 
 There are now two exact, source-compatible versions of the next lemma.
 
-The aperture version is the injectivity law
+The completion-safe aperture version is the injectivity law
 
 ```text
-ker(G_a)=0 for every a>0.                                  (12a)
+ker(Gtilde_a:H(S_(a,mu))->H(S_(a,mu)))=0 for every a>0.    (12a)
 ```
 
 The Euler-resolvent version uses
@@ -1676,16 +1682,17 @@ det(M_a^*M_a)>0 for every aperture.
 The entries still contain the full logarithmic Dirichlet inverse; this is not a return to a raw
 finite-prime determinant. The proof is in `ccm-rational-residual-finite-evans-matrix-law.md`.
 
-Every original screw null vector has the required global transformed-trace regularity: its interior
-trace solves the characteristic ODE, while the logarithmic cross block controls the exterior.
-Therefore the finite determinant criterion is unconditional and
+Every original raw `L2` screw null vector has the required global transformed-trace regularity: its
+interior trace solves the characteristic ODE, while the logarithmic cross block controls the
+exterior. Therefore only the raw-kernel determinant criterion is unconditional:
 
 ```text
-RH iff for every a>0, det(M_a^*M_a)>0.
+ker(G_a:L2_0->L2_0)=0 iff det(M_a^*M_a)>0.
 ```
 
-This is proved in `ccm-screw-null-global-log-regularity-law.md`. The entire remaining burden is the
-strict cofinal positivity of this source-defined determinant family.
+This is proved in `ccm-screw-null-global-log-regularity-law.md`. Promoting it to RH requires the
+completion-corona regularity lift recorded at the head of this card. The completion-safe
+alternative is nonvanishing of the square eigenfunction-variable Evans section.
 
 The scalar Gram determinant is only the metric shadow of the prospective quantized carrier. Its
 square root is the norm of `wedge^(d_a)M_a`, but `M_a` is rectangular, so this is a Pluecker vector
@@ -1842,7 +1849,7 @@ target: converge to `T_0` while preserving the contraction bound. See
 - [x] collapse the cofinal shifts to one infinitesimal real Euler log-derivative kernel
 - [x] isolate the infinitesimal half-unit seam and exclude universal scalar Schur transport
 - [x] construct the canonical diagonal Fock carrier for the missing covariance
-- [x] RH reduced to compact screw injectivity at every aperture
+- [x] RH reduced to completed screw injectivity at every aperture
 - [x] complete two-channel Euler--Weil resolvent family constructed
 - [x] exact arithmetic-complement operator carrier `A_N` constructed
 - [x] three-grade principal--relative carrier forced by the formalized Sonin corpus

@@ -13,6 +13,19 @@
 
 ## Corpus frontier and falsified predecessor
 
+> **Coordinate correction (2026-07-22).** Throughout algebra below, `I_alpha,I_beta` are Xi-real
+> normalized right triangles `-iT_phys`, not physical triangles.  Exact one-sided source
+> parameters are `eta(lambda)=-i lambda/2`.  Common factor `-i/2` cancels from affine sewing, so
+> divisor, pair-independence, and RH criteria survive; source central phase uses corrected
+> connector in `suzuki-one-sided-coordinate-phase-normalization.md`.
+
+> **One-sided semantic correction (2026-07-21).**
+> `suzuki-one-sided-carleman-exterior-seam.md` proves that every identity in this card must be read
+> sheetwise.  The entire terms `I_alpha,I_beta` are the right convolution triangles, not full
+> interval transforms, and `E_eta` is the continued right Carleman sheet.  The affine algebra,
+> gauge descent, pair independence, pole order, and RH criterion remain valid under that reading.
+> A bilateral exterior sum is automatically pole-free and is not the observable constructed here.
+
 Suzuki constructs the finite-aperture Hilbert space at real form shift `lambda` only under
 
 ```text
@@ -272,8 +285,8 @@ longer used as an unconditional source schedule.
 This does not prove RH. It removes shift-floor control from the RH route. Honest remaining theorem:
 
 > For one pair of actual admissible Suzuki finite-aperture source channels, identify the sewn
-> observable `(16)` independently of the Xi quotient and prove its exterior continuation is
-> analytic at every nonreal point.
+> **right-sheet** observable `(16)` independently of the Xi quotient and continue it
+> holomorphically through the upper half-plane.
 
 By `(20)`, no special shift pair or convergence `lambda->0` is needed. By `(22)`--`(24)`, proving
 that continuation proves RH and cannot be achieved by gauge selection, pair selection,

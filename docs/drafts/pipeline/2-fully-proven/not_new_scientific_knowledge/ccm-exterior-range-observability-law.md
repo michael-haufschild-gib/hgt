@@ -1,5 +1,9 @@
 # CCM exterior range incidence is exactly a boundary-observability inequality
 
+> **2026-07-22 domain correction.** This observability law is a raw `L2` screw-kernel result. It
+> does not by itself exclude the completed zero modes in `H(S_(a,mu))`; see
+> `suzuki-completed-zero-mode-corona-seam-law.md`.
+
 - **ID:** `ccm-exterior-range-observability-law`
 - **Stage:** 2-fully-proven / not-new
 - **Type:** THEOREM (paper), `[BRIDGE]`

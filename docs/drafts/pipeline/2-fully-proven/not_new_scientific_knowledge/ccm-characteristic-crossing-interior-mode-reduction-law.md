@@ -1,5 +1,9 @@
 # CCM screw null vectors reduce locally to finitely many characteristic modes
 
+> **2026-07-22 domain correction.** This reduction applies to raw `L2` screw null vectors. The
+> RH-bearing derivative zero fiber also contains possible vectors in Suzuki's completion outside
+> raw `L2`; see `suzuki-completed-zero-mode-corona-seam-law.md`.
+
 - **ID:** `ccm-characteristic-crossing-interior-mode-reduction-law`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper), `[BRIDGE]`

@@ -42,6 +42,132 @@ the audit.
    when its reflection-normalized scaled alien character vanishes, and in the HT branch otherwise.
    This strictly joins arbitrary positive incommensurable scales with arbitrary orientation.
    Formalized in `HTGeometry/GammaOrientedAlienCharge.lean`.
+3. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Canonical Pluecker--Jordan curvature transition.**
+   Canonical four-rate Pluecker sewing converts the common-depth Gamma curvature transition into
+   `C(e) < -(8/3) S_Pl ↔ sqrt(F/D) < e+1/2`. Formalized in
+   `RHTower/GammaSewnFourRatePluckerJordanTransition.lean`.
+4. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Theta modular-seam strict fluctuation.** Exact modular
+   barycenter plus strict Hankel positivity forces
+   `sigma^2(1+m0)^2 < (2*pi)^2 m0*m2`. Formalized in
+   `RHTower/ThetaCuspLikelihoodModularFluctuation.lean`.
+5. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **SEM dyadic Weyl degeneracy.** On an actual SEM hole
+   packet, the completed depth-`k` Weyl equation is equivalent to zero wrap holonomy or vanishing
+   completed SEM contour charge modulo `2^k`. Formalized in
+   `RHTower/SEMDyadicWeylDegeneracyLaw.lean`.
+6. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Von Mangoldt--Gamma strict Hankel.** Every nonempty
+   finite von Mangoldt--Gamma bivariate moment row has positive-definite Hankel matrices and
+   positive determinants in every finite size. Formalized in
+   `RHTower/VonMangoldtGammaStrictHankelLaw.lean`.
+7. `[LEAN-PROVED] [LITERATURE AUDIT PENDING]` **Moving Gamma affine simple order.** An at-most-simple
+   moving Gamma profile has a simple pole at branch `m` exactly when its canonical affine Gamma
+   coefficient is nonzero at `-m`. Formalized in
+   `HTGeometry/GammaPoleAffineSimpleOrderLaw.lean`.
+8. `[LEAN-PROVED] [LITERATURE AUDIT PENDING]` **Gamma factorial jet-connection tensor.** Intrinsic
+   Gamma jet grade `j` carries the `j`th tensor power of the inverse factorial pole connection;
+   adjacent residue norms scale by `(m+1)^j`. Formalized in
+   `HTGeometry/GammaFactorialJetConnectionTensorLaw.lean`.
+9. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Universal phase-coherence half entropy.** Every
+   `d`-frequency packet has a clock `n≤(Q+1)^d` and phase pivot with total squared dispersion at
+   most `8*pi^2*d/(Q+1)^2`. Formalized in
+   `RHTower/UniversalPhaseCoherenceHalfEntropyLaw.lean`.
+10. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Completed prime--Gamma central-jet descent.** Completed
+    odd-log-derivative Hankel reflection and Schwarz equivariance force every central jet into its
+    exact real/imaginary parity line. Formalized in
+    `RHTower/CompletedPrimeGammaCentralJetDescentLaw.lean`.
+11. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Von Mangoldt--Gamma cofinal strict Bianchi.** Positive
+    displacement and injective depth labels make the cofinal analytic Gram strictly positive while
+    preserving its pointed Ward/Bianchi reconstruction. Formalized in
+    `RHTower/VonMangoldtGammaCofinalStrictBianchiLaw.lean`.
+12. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Xi Möbius continuous-aperture strict dyadic law.**
+    Positive dyadic refinement gives a weighted-Vandermonde all-prime innovation Gram, hence
+    positive definiteness and positive determinant. Formalized in
+    `RHTower/XiMobiusContinuousApertureStrictDyadicLaw.lean`.
+13. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Von Mangoldt Hardy eventual strictness.** Universal
+    positive-semidefiniteness plus eventual nonzero Hardy-boundary determinant yields eventual
+    positive definiteness and positive determinant. Formalized in
+    `RHTower/VonMangoldtHardyEventualStrictLaw.lean`.
+14. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Theta-cusp center-mixed strict two-node law.** Positive
+    critical aperture and nonzero displacement force strict two-node Bochner positivity; node
+    collision is the exact rank-loss boundary. Formalized in
+    `RHTower/ThetaCuspCenterMixedTwoNodeStrictLaw.lean`.
+15. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; CLOSE PRIOR ART]` **Degree-five Gaussian eventual
+    strictness.** Gaussian Fock positivity plus degree-five unisolvent determinant survival gives
+    eventual positive definiteness and positive determinant. Formalized in
+    `HilbertMetric/DegreeFiveGaussianEventualStrictLaw.lean`.
+16. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Von Mangoldt--Gamma two-boundary
+    Gram collapse.** The canonical `(+1/2,-1/2)` packet annihilates projection, affine, fixed-jet,
+    order-growing, and cofinal Grams identically. Formalized in
+    `RHTower/VonMangoldtGammaTwoBoundaryGramCollapseLaw.lean`.
+17. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Symmetric-Fock phase rigidity.**
+    Equality in the rank-sensitive transverse Fano bound is exactly simultaneous two-sided
+    level closure and channelwise phase balance; strictness is exactly a level defect or an
+    off-balance channel. Formalized in
+    `HilbertMetric/SymmetricFockPhaseRigidity.lean`.
+18. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi transverse spectral
+    universality.** At every positive transverse scale, Hedenmalm tail positivity synchronizes
+    18 analytic-source, power, exact/covering negative-channel, energy/abscissa/cumulative-mass,
+    projective, and thermal charts.
+    Formalized in `RHTower/XiTransverseSpectralUniversalityLaw.lean`.
+19. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi Hedenmalm simplicity
+    universality.** Xi simplicity synchronizes eight quotient, Hilbert, continuation, Jordan,
+    Bezoutian, and explicit theta-source charts; with RH, the same phase synchronizes prime--Gamma
+    sign, reciprocal self-adjointness, Hermitian blocks, conservative metric, and real theta
+    source. Formalized in `RHTower/XiHedenmalmSimplicityUniversalityLaw.lean`.
+20. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi prime--archimedean thermal
+    endpoint universality.** Every admissible critical prime--polar abscissa endpoint synchronizes
+    31 Hausdorff, Bernstein, finite-KMS, positive-atomic, orientation, resolvent, scattering,
+    projective, cold-partition, free-energy, and Born--Witten charts. Formalized in
+    `RHTower/XiPrimeArchThermalEndpointUniversalityLaw.lean`.
+21. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi--Hurwitz orientation
+    universality.** Zero trace-class Hurwitz orientation energy synchronizes 26 monodromy,
+    differential-circuit, rational-fibre, Hilbert/Hankel/Weil, continued-source, sharp-growth, and
+    tropical Sonin charts while preserving unconditional differential independence. Positive
+    energy synchronizes six explicit failure witnesses. Formalized in
+    `RHTower/XiHurwitzOrientationUniversalityLaw.lean`.
+22. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi prime-seam Calkin
+    universality.** Equality of only the prime-2 and prime-3 seam norms synchronizes thirteen
+    all-prime coherence, pair-energy, damping, and all-scale pairwise/aggregate/cofinal/fixed-packet/
+    higher-grade Calkin charts. Failure synchronizes energy blowup and five noncompact operator
+    witnesses. Formalized in `RHTower/XiPrimeSeamCalkinUniversalityLaw.lean`.
+23. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi reciprocal-square source
+    universality.** Squared reciprocal-Xi self-adjointness synchronizes nine unsquared, Clifford,
+    continued/rank-one/Gaussian-rational Cauchy, scalar-defect, centered-spectrum, and paired
+    prime--Gamma sector charts. Non-RH synchronizes six explicit operator, defect, spectral, and
+    sector witnesses. Formalized in
+    `RHTower/XiReciprocalSquareSourceUniversalityLaw.lean`.
+24. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi squared-Euler
+    diagonal-correlation universality.** Atomic charge-radical vanishing synchronizes eight
+    atom, finite-packet, finite-minor, orbitwise-diagonal, all-real-degree, integer-degree,
+    prime--Gamma source, and complete Weil charts. Failure synchronizes eight explicit witnesses.
+    Formalized in `RHTower/XiSquaredEulerDiagonalCorrelationUniversalityLaw.lean`.
+25. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi squared-seam Cassini--dyadic
+    universality.** Six unconditional entire-source, zero, multiplicity, pair-quotient, Jensen, and
+    radial-mass charts coexist with nine dyadic, every-cutoff shifted-Hankel, triangle-defect, and
+    prime--Gamma/Hermitian mass charts. Failure synchronizes seven strict scalar, dyadic, and
+    every-cutoff Hankel channels. Formalized in
+    `RHTower/XiSquaredSeamCassiniDyadicUniversalityLaw.lean`.
+26. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi local analytic-order phase
+    universality.** At every complex point, local order zero synchronizes seven algebraic,
+    quadratic-circle, irrational-rotation `K₀`, Weyl-determinant, Böttcher-Prüfer, prime-circle,
+    and actual completed-SEM charts. Nonzero order synchronizes six explicit failures. Formalized
+    in `RHTower/XiLocalAnalyticOrderPhaseUniversalityLaw.lean`.
+27. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi Hedenmalm orientation endpoint
+    universality.** RH synchronizes thirteen positive-temperature Gaussian, zero-width-tail,
+    Krein-orbit, Fourier-current, parameter-uniform canonical-orientation, moment/Bezoutian,
+    source/Weil Cauchy, and multiplicity-aware numerical-sector charts. Non-RH forces failure in
+    every exact analytic/sign chart and in at least one numerical collision factor. Formalized in
+    `RHTower/XiHedenmalmOrientationEndpointUniversalityLaw.lean`.
+28. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi dyadic descent level universality.** At each
+    depth, one divisor rung synchronizes sixteen localized-order, height, line-holography, finite-
+    window, half-plane/slit-plane/band-root, Euler-germ, circle-modulus, deck, and Schwarz-
+    equivariant charts. Under non-RH the whole phase survives exactly through `k ≤ sharpLevel` and
+    first fails at `sharpLevel + 1`. Formalized in
+    `RHTower/XiDyadicDescentLevelUniversalityLaw.lean`.
+29. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; NO PRIORITY CLAIM]` **Xi-zero local critical-phase universality.** At
+    every actual Xi zero, critical placement synchronizes eleven Born-temperature, reflection,
+    prime-clock, centered-prime-mark, Arakelov-unitary, Berry--Keating/Clifford, and HTGeometry
+    Gamma--Mertens finite-coboundary charts. Off-line placement forces simultaneous failure in all
+    eleven. Formalized in `RHTower/XiZeroLocalCriticalPhaseUniversalityLaw.lean`.
 
 ## Exhaustion matrix
 
@@ -484,3 +610,147 @@ new invariant remains. `NO POSITIVE SALVAGE FOUND` beyond existing masters for t
   curvature, and the exact valuation-depth threshold force the Pluecker--Jordan transition
   `C(e) < -(8/3) S_Pl <-> sqrt(F/D) < e+1/2`.  Paper proof and hostile literature search are
   complete; direct Lean verification is pending.
+- 2026-07-21 — reconciled theorem-first ledger through Law 16. Direct `lake env lean <file>` checks
+  pass for Laws 3--16; final module builds, lint, and remaining axiom audits are intentionally
+  deferred to the terminal audit.
+- 2026-07-21 — completed PSD/determinant/nullspace pass over all three owned folders. It produced
+  Laws 12--16. Existing finite-modal Hankel rank, Sonin moment Grams, endpoint parity,
+  additive-log-jet zero mode, and generic HTGeometry PSD constructions were classified against
+  their internal masters; none supplied another unoccupied consequence in that pass.
+- 2026-07-22 — sharp-bound/equality-classifier rescan produced Law 17 from two previously separate
+  SymmetricFock modules. Paper proof, hostile literature audit, and exact direct Lean check pass;
+  terminal build/lint/axiom audit remains deferred.
+- 2026-07-22 — post-Law-17 terminal equality-endpoint scan produced Law 18 by closing ten
+  quantitative Xi half-plane classifiers that had no common consumer. Paper proof, hostile
+  literature audit, and exact direct Lean check pass; terminal audit remains deferred.
+- 2026-07-22 — post-Law-18 scan found Law 18 omitted eight exact transverse classifiers and
+  strengthened it to 18 charts. The same scan then produced Law 19 by joining five terminal
+  simplicity families with explicit theta jets and independent RH/operator/metric classifiers.
+  Paper proofs, hostile literature audits, and exact direct Lean checks pass; exhaustion restarts.
+- 2026-07-22 — post-Law-19 endpoint scan produced Law 20 from 31 terminal realizations of the same
+  critical prime--polar/RH datum across Hausdorff, Bernstein, finite-KMS, orientation, endpoint
+  resolvent, projective thermodynamics, and Born--Witten source modules. Paper proof, hostile
+  literature audit, and exact direct Lean check pass; exhaustion restarts from the augmented corpus.
+- 2026-07-22 — post-Law-20 dependency scan produced Law 21 by joining the complete Xi--Hurwitz
+  orientation component: differential freedom, finite circuits/refinements, Hilbert/Hankel/Weil
+  positivity, continued-source sequences and passivity, all-width growth, and all-scale tropical
+  absorption. Both zero-energy and failure capstones are paper-proved, hostile-audited, and directly
+  Lean-checked; exhaustion restarts from the augmented corpus.
+- 2026-07-22 — post-Law-21 scan produced Law 22 from previously terminal prime-seam scalar,
+  pair-energy, damping, pairwise/aggregate/cofinal/fixed-packet, and higher-grade Calkin endpoints.
+  All-scale positive and explicit failure capstones are paper-proved, hostile-audited, and directly
+  Lean-checked; exhaustion restarts from the augmented corpus.
+- 2026-07-22 — post-Law-22 scan produced Law 23 from terminal reciprocal-square operator,
+  Clifford, continued/rank-one/Gaussian-rational Cauchy, scalar-defect, centered-coordinate, and
+  prime--Gamma sector endpoints. Positive and six-witness failure capstones are paper-proved,
+  hostile-audited, and directly Lean-checked; exhaustion restarts from the augmented corpus.
+- 2026-07-22 — post-Law-23 scan produced Law 24 from terminal squared-Euler atomic charge,
+  finite-packet boundary, central-minor, orbitwise diagonal, all-degree, source-Hankel, and Weil
+  endpoints. Positive and eight-witness failure capstones are paper-proved, hostile-audited, and
+  directly Lean-checked; exhaustion restarts from the augmented corpus.
+- 2026-07-22 — post-Law-24 terminal inventory produced Law 25 from the complete squared-seam
+  component: HTGeometry's even-entire square factor, Cassini zero/multiplicity/Jensen transport,
+  dyadic tails, every shifted-Hankel cutoff, and the power-64 prime--Gamma/Hermitian boundary.
+  Positive and seven-channel failure capstones are paper-proved, hostile-audited, and directly
+  Lean-checked; the named transverse-charge chart awaits final stale-cache refresh, and exhaustion
+  restarts from the augmented corpus.
+- 2026-07-22 — post-Law-25 algebraic/phase inventory rejected a patched conjunction of vacuous
+  right-half RH consumers, then produced Law 26 from their stronger pointwise common core. Local
+  Xi analytic order is now synchronized across seven independent phase/order mechanisms, with a
+  six-channel complementary law and RH corollary; paper proof, hostile audit, and first-run direct
+  Lean check pass. Exhaustion restarts from the augmented corpus.
+- 2026-07-22 — Law 27 joined thirteen positive-temperature Hedenmalm, orientation, endpoint,
+  moment, Cauchy, Jordan, and numerical RH charts with synchronized failure; direct Lean and
+  hostile literature checks pass. Exhaustion restarted.
+- 2026-07-22 — Law 28 replaced a rejected global RH bundle by a fixed-depth dyadic descent law:
+  sixteen ladder, holography, Kummer-root, monodromy, deck, and equivariant charts fail first at the
+  sharp level plus one. Direct Lean and hostile literature checks pass. Exhaustion restarted.
+- 2026-07-22 — Law 29 joined eleven pointwise Born, prime-clock, Arakelov, Clifford, and
+  Gamma--Mertens phases at each actual Xi zero, including synchronized off-line failure. Direct
+  Lean and hostile literature checks pass. Exhaustion restarted.
+- 2026-07-22 — post-Law-29 Suzuki scan rejected a conjunction of global RH analyticity criteria,
+  then produced Law 30 from the underlying local germs. Shifted target, cross/affine projective
+  exteriors, Weyl quotient, and Euler defect share order ladder `+1,-1,-1,-1,-2`; their new
+  cross-chart coefficient products are `1,1,-1`. Direct Lean and primary-source hostile checks
+  pass. Exhaustion restarts from the augmented corpus.
+- 2026-07-22 — post-Law-30 Hankel scan classified central trace/determinant endpoints as occupied
+  by Laws 21/24 and one fixed Eisenstein family as occupied by the cofinal temperature master. The
+  remaining closure produced Law 31: countable rational Hermite contours, central integer/limit
+  tests, every degree tail, every infinite exact-degree set, and all monic/2-Eisenstein sparse
+  families form one positive/failure phase. Direct Lean and hostile literature checks pass;
+  exhaustion restarts from the augmented corpus.
+- 2026-07-22 — post-Law-31 complete `CCM*.lean` scan exposed Law 32 below existing single-source
+  tomography capstones. At every right Xi divisor copy, translated critical Mellin,
+  inverse-tilted dyadic, sharp-prime dyadic, and cutoff-free rectangular observables have one
+  common pole coordinate, four simple orders, and four equal normalized residues recovering exact
+  Xi multiplicity. Thirteen-field certificate passed direct Lean first run; primary-source
+  collision audit passed. Exhaustion restarts from the augmented corpus.
+- 2026-07-22 — continuing the same source scan showed initial Law 32 was nonmaximal. It now joins
+  nine source mechanisms: critical Mellin, inverse tilted, shifted log derivative, dyadic sharp,
+  elementary prime, arbitrary noncensoring compact-BV, raw rectangular, admissible rectangular
+  tail, and cutoff-free rectangular. Twenty-eight fields prove nine simple poles, eight equal
+  normalized residues, and the elementary residue's exact opposition. Strengthened direct check
+  passes; exhaustion restarts from this maximal local source closure.
+- 2026-07-22 — remaining `CCMSonin*.lean` endpoints produced Law 33. Existing code classified one
+  path versus its endpoint edge but not arbitrary pairs. For any two finite Sonin scale paths with
+  common endpoints, their genuine Gram-word operators are equal modulo compacts iff their minimum
+  visited scales agree. The seven-field certificate places this classifier inside the faithful
+  inverse semigroup, with noncompactness, endpoint absorption, and tropical `min` concatenation.
+  Direct Lean and hostile literature checks pass; exhaustion restarts.
+- 2026-07-22 — remaining restricted-Weil floor endpoints produced Law 34. One continuous aperture
+  floor and its logarithmic samples now form an exact five-coordinate RH/seven-coordinate failure
+  growth phase. The new sampled logarithmic exponent zero criterion closes abscissa, subpower,
+  aperture type, subexponential, nonvanishing, and monotone exact-growth endpoints. Direct Lean
+  passed on first run and hostile literature search found no matching common law. Exhaustion
+  restarts from the augmented corpus.
+- 2026-07-22 — post-Law-34 scan included newly present Suzuki Lean modules and produced Law 35.
+  Herglotz positivity of an affine-sewn exterior with finite negative-Stieltjes source jets now
+  forces the exact chord-weighted mass needed to fill the edge/Xi-curvature gap, together with its
+  residue split, flux formula, threshold, and strict sign. Direct Lean and hostile literature
+  checks pass; exhaustion restarts from the augmented corpus.
+- 2026-07-22 — the same newly present Suzuki component produced Law 36. A positive-mass ground
+  edge above the half-curvature moment floor is incompatible with the central Herglotz threshold;
+  exact Robin compression gives the corresponding even-eigenmode boundary no-go. Both forms pass
+  direct Lean and hostile literature checks. Exhaustion restarts from the augmented corpus.
+- 2026-07-21 — post-Law-36 HilbertMetric/RHTower consumer audit produced Law 37. Uniform positive
+  definiteness at the center-mixed three-point coalescence corner and cofinal positive
+  semidefiniteness at large gap confine every possible failure to one bounded middle shell. The
+  same dichotomy yields an exact global-PSD iff shell-PSD reduction, strictly sharpening the old
+  bounded-square compact-core theorem. Paper proof, exact direct Lean check, and hostile literature
+  audit pass. Exhaustion restarts from the augmented corpus.
+- 2026-07-21 — post-Law-37 current-delta audit produced Law 38 from the unconsumed full-frequency
+  Neumann-holonomy formulas. Away from all degenerate factors, holonomy cancellation is exactly
+  projective alignment of endpoint characteristic jets; full shifted-jump cancellation has the
+  same locus, and finite resolvent updates reduce it to a two-by-two projective tangent
+  determinant. Paper proof, exact direct Lean check, and hostile literature audit pass.
+  Exhaustion restarts from the augmented corpus.
+- 2026-07-21 — current-delta audit found two newly formalized Arakelov--Hurwitz RH classifiers
+  omitted from Law 21. The existing orientation certificate is being strengthened from 26 to 28
+  charts with algebraic eigencharacter and determinant-one FE-trace dependence interfaces;
+  unconditional pointwise algebraicity was rejected as a patched conjunct. Exact direct Lean
+  recheck and targeted hostile literature audit pass. Exhaustion restarts.
+- 2026-07-21 — complete terminal import/declaration ledger (895 terminal modules, 7,216 theorem or
+  lemma declarations) exposed Law 39. Eight previously unconsumed terminal charts across Arakelov
+  power dynamics, Clifford models, Lee--Yang carriers, mirrored modulus slopes, and source-matroid
+  circuits form one positive/failure Xi phase. Paper proof, exact direct Lean check, and hostile
+  literature audit pass. Analytic/source terminal cluster remains under active audit.
+- 2026-07-21 — post-Law-39 terminal analytic/source cluster produced Law 40. Ten source modules and
+  fourteen exact endpoints now synchronize rectangular continuation, smooth Weil control, CCM
+  passivity, separated-source reconstruction, prime--archimedean collar/Hausdorff/local control,
+  coupled Sonin variance, finite-arithmetic Taylor-current control, and the positive-paired
+  exterior diagonal, including simultaneous failure. Paper proof, first-run direct Lean check, and
+  hostile literature audit pass. Spectral/thermal terminal cluster remains under active audit.
+- 2026-07-21 — post-Law-40 spectral/thermal audit rejected source-marked Gibbs free energy as
+  already consumed by Law 20 and rejected repackaging the existing thermal master spectrum. The
+  unconsumed remainder produced Law 41: ten Euclidean-measure, complex-Krylov, radial-Jensen,
+  Cassini-boundary, thermal, and anti-Hermitian operator charts share one positive/failure phase.
+  Paper proof, direct Lean check, and hostile literature audit pass. Exhaustion restarts from the
+  remaining terminal ledger.
+- 2026-07-21 — refreshed current import graph after Law 41: 3,867 modules, 857 terminal roots, and
+  6,962 terminal theorem/lemma declarations. One fresh non-law root,
+  `MobiusLaplaceBoundaryMultiplicity`, exposed Law 42. Exact Möbius half-decay transports boundary
+  zeta derivative nonvanishing through the archimedean factor and centered coordinate to global
+  `XiZerosSimple`, then discharges Law 19's full Hedenmalm RH-and-simplicity certificate. Core
+  source passes exact direct Lean; thin consumer awaits only final `.olean` refresh. Targeted
+  hostile literature audit found nearby but noncolliding 2026 Möbius--Laplace work. Exhaustion
+  restarts from the refreshed terminal ledger.

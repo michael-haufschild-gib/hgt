@@ -13,6 +13,12 @@
 
 ## Actual frontier, before this theorem
 
+> **Later one-sided correction (2026-07-21).**
+> The interval function classified below is the sum of the right and left convolution triangles.
+> It does not by itself identify either one-sided triangle.  The two-sheet theorem in
+> `suzuki-one-sided-carleman-exterior-seam.md` proves that bilateral Xi poles cancel identically and
+> replaces the exterior target by continuation of one right Carleman sheet.
+
 The corpus has removed source-shift selection, gauge, pair choice, and characteristic-divisor
 ambiguity.  Its remaining RH-bearing statement was:
 

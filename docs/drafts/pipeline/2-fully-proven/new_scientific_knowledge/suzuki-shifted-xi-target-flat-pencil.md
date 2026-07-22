@@ -13,6 +13,13 @@
 
 ## Frontier problem
 
+> **Later one-sided correction (2026-07-22).** Parameter `eta=-i lambda` below is boundary-free
+> full/bilateral inverse-Laplacian projective coordinate.  Selected positive Carleman half-sheet
+> receives only `1/(2z^2)` from `r_0=-|t|/2`, hence exact coordinate is `eta=-i lambda/2`;
+> physical multiplier also carries factor `i`.  Flat-pencil algebra is scale-covariant and remains
+> valid.  Source sheet/central-flux semantics are corrected in
+> `../../3-formalized/new_scientific_knowledge/suzuki-one-sided-coordinate-phase-normalization.md`.
+
 Suzuki derives the displayed boundary-free target only after setting the form shift to
 `lambda=0` under RH.  The project therefore treated convergence of an admissible finite-aperture
 shift to that distinguished value as part of the cofinal wall.  Section 8 contains more structure:

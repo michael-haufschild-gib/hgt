@@ -1,5 +1,10 @@
 # The exact CCM Evans Gram splits into even and odd boundary sectors
 
+> **2026-07-22 domain correction.** The parity split remains valid for the raw `L2` Evans map, but
+> that map is not alone RH-equivalent. Completed derivative zero modes require a regularity lift
+> or the completion-safe square Evans determinant; see
+> `suzuki-completed-zero-mode-corona-seam-law.md`.
+
 - **ID:** `ccm-parity-split-evans-gram-law`
 - **Stage:** 2-fully-proven / not-new
 - **Type:** THEOREM (paper), `[BRIDGE]`

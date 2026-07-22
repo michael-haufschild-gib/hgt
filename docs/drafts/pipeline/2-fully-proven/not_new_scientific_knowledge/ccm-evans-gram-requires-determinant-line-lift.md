@@ -1,5 +1,10 @@
 # The CCM Evans Gram requires a determinant-line lift to carry Morse charge
 
+> **2026-07-22 domain correction.** This card concerns the raw `L2` screw Evans complex. Its
+> determinant-line lift does not detect completion-corona zero modes without an additional
+> regularity theorem. The square eigenfunction-variable Evans line is completion-safe; see
+> `suzuki-completed-zero-mode-corona-seam-law.md`.
+
 - **ID:** `ccm-evans-gram-requires-determinant-line-lift`
 - **Stage:** 2-fully-proven / not-new
 - **Type:** THEOREM (paper), `[BRIDGE]`

@@ -17,7 +17,7 @@ how changing pole index acts on jet grade.
 - [x] 0 → 1 in-progress: theorem-first closure, exact source quantities, no conjectural input
 - [x] Complete paper proof with no open dependency
 - [x] Lean source passes direct `lake env lean <file>`
-- [ ] Hostile literature noncollision audit
+- [x] Hostile literature noncollision audit
 - [ ] Final module build, lint, and axiom audit
 
 ## Lean inputs
@@ -55,7 +55,23 @@ Thus intrinsic jet grade is precisely tensor-power exponent for pole-index trans
   - `norm_gammaPoleCovariantTopResidueValue_eq_factorial_pow_mul_factorial`
   - `norm_gammaPoleCovariantTopResidueValue_succ_eq_indexPow_mul`
 
+## Literature audit
+
+Hostile searches covered Laurent coefficients of Gamma at negative integers, higher Gamma and
+polygamma derivatives there, factorial pole residues, and jet/connection tensor-power language.
+Standard sources contain the scalar residue `(-1)^m/m!` and work on higher Laurent coefficients or
+regularized polygamma values. They do not identify factorial pole-index transport as a connection,
+nor state that intrinsic grade `j` is its inverse `j`th tensor power with adjacent multiplier
+`(m+1)^j`. No exact collision found.
+
+- NIST DLMF §5.2, scalar Gamma poles and residues: https://dlmf.nist.gov/5.2
+- Vieru, Laurent coefficients near negative Gamma poles: https://arxiv.org/abs/1302.3613
+- Özçağ--Ege, negative-integer polygamma regularization: https://arxiv.org/abs/1407.0349
+- Özçağ et al., *Estimating the polygamma functions for negative integers*:
+  https://doi.org/10.1186/1029-242X-2013-523
+
 ## Log
 
 - 2026-07-21 — Discovered by closing factorial-clock marker against covariant top-residue dependency.
 - 2026-07-21 — Complete proof formalized; direct Lean check passed.
+- 2026-07-21 — Hostile literature audit found scalar parents but no connection-tensor law.

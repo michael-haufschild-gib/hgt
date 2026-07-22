@@ -21,6 +21,42 @@ e^{-2\pi i s}=e^{-2\pi i t}.
 Thus an actual algebraic differential relation transfers the monodromy-character value. It is not
 necessary to postulate equality of the characters directly.
 
+## Determinant-one rank-two trace reformulation
+
+Pair Hurwitz functional-equation eigencharacters as
+
+\[
+q(s),\qquad q(s)^{-1}=q(1-s).
+\]
+
+Their determinant is identically `1`; define unlabelled characteristic-polynomial coefficient
+
+\[
+T(s)=q(s)+q(s)^{-1}.
+\]
+
+Lean proves exact algebraicity law
+
+\[
+T(s)\in\overline{\mathbb Q}
+\iff q(s)\in\overline{\mathbb Q}.
+\]
+
+Nontrivial direction is quadratic, not choice of square-root branch.  If `T` is algebraic, then
+
+\[
+(2q-T)^2=T^2-4;
+\]
+
+algebraicity of square forces `2q-T` algebraic, hence `q` algebraic.  This packages source target as
+algebraic trace of determinant-one rank-two character rather than selected eigenvalue.  Resulting
+global right-half predicate is proved exactly equivalent to original character predicate and hence
+exactly equivalent to RH.
+
+Hostile direction is explicit: if `w(s)` is algebraic and `s` is nonreal, then `T(s)` is
+transcendental.  Therefore trace packaging improves geometric source interface but supplies no
+unconditional algebraicity producer.
+
 ## Pair-anchor chain to RH
 
 Suppose every hypothetical right-half Xi divisor point `rho` has:
@@ -115,10 +151,61 @@ finite capture highly restrictive, and no algebraic Arakelov divisor model is cu
 Lean proves:
 
 - `continuedHurwitzPairDifferentiallyDependent_iff_monoScalar_eq`;
+- `hurwitzFECharacterTrace`;
+- `hurwitzFECharacterDet`;
+- `hurwitzFECharacterDet_eq_one`;
+- `hurwitzFECharacterTrace_isAlgebraic_iff_monoScalar_isAlgebraic`;
+- `hurwitzFECharacterTrace_transcendental_of_arakelovW_algebraic_of_im_ne_zero`;
 - `xiRightArakelovHurwitzAlgebraic_of_dependentOnAlgebraicCharacter`;
 - `riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter`;
 - `exists_anchor_monoScalar_eq_of_continuedHurwitzDependentOverAnchors`;
 - `monoScalar_isAlgebraic_of_continuedHurwitzDependentOverAlgebraicAnchors`;
-- `riemannHypothesis_of_xiRightArakelovAlgebraic_of_finiteHurwitzAnchorCapture`.
+- `riemannHypothesis_of_xiRightArakelovAlgebraic_of_finiteHurwitzAnchorCapture`;
+- `XiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace`;
+- `xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace_iff_character`;
+- `riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace`;
+- `xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace_iff_riemannHypothesis`.
 
 The module contains no new axiom or admitted proof.
+
+## Finite-anchor closure classification — 2026-07-22
+
+The finite-anchor result above initially recorded only the forward implication. Under the stated
+nonintegrality and monodromy-separation hypotheses, the intrinsic continued-Hurwitz differential
+matroid gives the exact equivalence
+
+\[
+\widetilde\zeta(s,\cdot)\text{ lies in the finite-anchor differential closure}
+\iff
+\exists i,\ q(s)=q(\tau_i).                                  \tag{F1}
+\]
+
+The forward direction is the existing finite matroid theorem. Conversely, if
+`q(s)=q(tau_i)`, then the augmented character map on `Option I` identifies `none` with `some i`.
+The intrinsic matroid law says differential independence is equivalent to injectivity of this
+character map, so the augmented family is dependent. This closes the proof of (F1).
+
+If every anchor character is algebraic while `arakelovW(s)` is algebraic and `Im(s) != 0`, (F1)
+cannot hold: capture makes `q(s)` equal an algebraic anchor character, while the
+Gelfond--Schneider collision makes `q(s)` transcendental. Therefore
+
+\[
+\operatorname{Im}s\ne0,\quad W(s)\in\overline{\mathbb Q}
+\quad\Longrightarrow\quad
+\widetilde\zeta(s,\cdot)\text{ is independent over every finite separated
+algebraic-character atlas}.                                  \tag{F2}
+\]
+
+Verdict: `[BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`. Equations (F1)–(F2) are exact positive
+classification/no-capture statements inside the project-specific Hurwitz matroid. They close the
+possibility that a noncanonical finite algebraic atlas evades the pair-anchor obstruction. Any
+surviving Xi source must abandon at least one of: finite separated atlas, algebraic anchor
+characters, algebraic Arakelov coordinate, or nonreal divisor point.
+
+Lean declarations added for this closure:
+
+- `continuedHurwitzDifferentiallyDependentOverAnchors_iff_exists_monoScalar_eq`;
+- `not_continuedHurwitzDependentOverAlgebraicAnchors_of_arakelovW_algebraic_of_im_ne_zero`.
+
+Direct source verification passes.  Both declarations use only `propext`, `Classical.choice`, and
+`Quot.sound` under `#print axioms`.

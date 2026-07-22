@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.TraceHankelConverse
 import GaloisForLFunctions.RHTower.XiShiftedReciprocalHankelDisproof
-import GaloisForLFunctions.RHTower.XiSquaredSeamPowerThirtyTwoAnnulus
+import GaloisForLFunctions.RHTower.XiSquaredSeamTailFromSixtyFour
 import GaloisForLFunctions.RHTower.PrimeArchShiftThirteenCircleCone
 import GaloisForLFunctions.RHTower.XiEndpointCentralMomentBoundaryValue
 import Mathlib.Algebra.Polynomial.OfFn
@@ -15,8 +15,8 @@ moments is multiplication of every polynomial test by `X^M`, which cannot hide a
 nonzero atom.
 
 At shift `y = 1` the translated reciprocal atom is exactly the fixed squared-Xi seam coordinate.
-Thus any one cofinal shifted Hankel cone discharges both the power-32 annulus and the dyadic tail
-from power 64 isolated by the right-to-left RH chain.
+Thus any one cofinal shifted Hankel cone discharges the sole remaining dyadic tail from power `64`.
+The separate power-32 annulus interface is redundant by the tail-from-64 phase collapse.
 -/
 
 open Complex Polynomial Filter Topology
@@ -510,6 +510,30 @@ theorem xiShiftedReciprocalSquare_one_eq_xiSquaredSeamOneCoordinate
       apply Complex.ext <;>
         simp [pow_two, Complex.mul_re, Complex.mul_im] <;> ring
 
+/-- A shifted Hankel tail directly supplies the sole remaining dyadic tail.  This connector uses
+the atomwise reality conclusion of the trace-Hankel converse and does not route through RH. -/
+theorem xiSquaredSeamDyadicTailFromSix_of_shiftedHankelTail
+    {M : ℕ} (h : XiShiftedReciprocalHankelTailNonnegative 1 M) :
+    XiSquaredSeamDyadicTailFromSix := by
+  intro q k _
+  have him := xiShiftedReciprocalSquare_real_of_hankelTailNonnegative
+    (y := 1) (by norm_num) h q
+  rw [xiShiftedReciprocalSquare_one_eq_xiSquaredSeamOneCoordinate] at him
+  have hdyadic :=
+    (GaloisForLFunctions.complexDyadicHalfPlane_iff_nonnegativeReal
+      (xiSquaredSeamOneCoordinate q)).mpr
+      ⟨him, (xiSquaredSeamOneCoordinate_re_pos q).le⟩
+  exact hdyadic k
+
+/-- The source-only negative-binomial tail supplies the dyadic tail through its exact shifted
+moment transport. -/
+theorem xiSquaredSeamDyadicTailFromSix_of_primeArchShiftedHankelTail
+    {M : ℕ} (h : PrimeArchShiftedReciprocalHankelTailNonnegative 1 M) :
+    XiSquaredSeamDyadicTailFromSix := by
+  apply xiSquaredSeamDyadicTailFromSix_of_shiftedHankelTail
+  exact (primeArchShiftedReciprocalHankelTailNonnegative_iff_xi
+    (y := 1) (by norm_num) (by norm_num) M).mp h
+
 /-- A fixed-shift Hankel tail discharges both rightmost dyadic interfaces. -/
 theorem xiSquaredSeamPowerThirtyTwoAnnulusEmpty_and_tailFromSix_of_shiftedHankelTail
     {M : ℕ} (h : XiShiftedReciprocalHankelTailNonnegative 1 M) :
@@ -524,6 +548,64 @@ theorem xiSquaredSeamPowerThirtyTwoAnnulusEmpty_and_tailFromSix_of_primeArchShif
     XiSquaredSeamPowerThirtyTwoAnnulusEmpty ∧ XiSquaredSeamDyadicTailFromSix := by
   apply xiSquaredSeamPowerThirtyTwoAnnulusEmpty_and_tailFromSix_iff_riemannHypothesis.mpr
   exact (primeArchShiftedReciprocalHankelTailNonnegative_one_iff_riemannHypothesis M).mp h
+
+/-! ## Absolute-Euler value of the first shift-one moment -/
+
+/-- At `z = -I`, the reciprocal-square resolvent atom is exactly the shift-one Möbius atom. -/
+theorem xiReciprocalSquareResolventTerm_neg_I_eq_shift_one (q : XiZeroCopy) :
+    xiReciprocalSquareResolventTerm (-I) q =
+      xiShiftedReciprocalSquare 1 q := by
+  simp only [xiReciprocalSquareResolventTerm, xiShiftedReciprocalSquare,
+    neg_sq, I_sq, neg_one_mul, sub_neg_eq_add, Complex.ofReal_one, one_mul]
+
+/-- **Right-half-plane predecessor identity.**  The first shift-one reciprocal moment is not
+merely a central Taylor coefficient: it is exactly the completed logarithmic derivative at the
+absolute-Euler point `s = 3/2`.  Reflection-pair multiplicity is already built into both sides. -/
+theorem xiShiftedReciprocalMoment_one_zero_eq_logDeriv_three_halves :
+    xiShiftedReciprocalMoment 1 0 = logDeriv xi (3 / 2) := by
+  have hXi : XiC (-I) ≠ 0 := by
+    apply XiC_ne_zero_of_abs_re_le_nine_halves
+    norm_num
+  have hpair := xiRelativeResolventTrace_eq_reciprocalSquareResolvent hXi
+  have hlog := logDeriv_XiC_eq_relativeResolventTrace hXi
+  rw [logDeriv_XiC_eq_mul_I_logDeriv_xi] at hlog
+  have hsum :
+      (∑' q : XiZeroCopy, xiReciprocalSquareResolventTerm (-I) q) =
+        xiShiftedReciprocalMoment 1 0 := by
+    rw [xiShiftedReciprocalMoment]
+    apply tsum_congr
+    intro q
+    rw [xiReciprocalSquareResolventTerm_neg_I_eq_shift_one]
+    simp
+  rw [hpair, hsum] at hlog
+  have hcoord : (1 / 2 : ℂ) + (-I) * I = 3 / 2 := by
+    rw [neg_mul, I_mul_I]
+    norm_num
+  rw [hcoord] at hlog
+  apply (mul_left_cancel₀ I_ne_zero)
+  simpa only [neg_neg] using hlog.symm
+
+/-- The source-defined first shift-one moment has the same absolute-Euler value. -/
+theorem primeArchShiftedReciprocalMoment_one_zero_eq_logDeriv_three_halves :
+    primeArchShiftedReciprocalMoment 1 0 = logDeriv xi (3 / 2) := by
+  rw [← xiShiftedReciprocalMoment_eq_primeArchShiftedReciprocalMoment
+    (y := 1) (by norm_num) (by norm_num) 0]
+  exact xiShiftedReciprocalMoment_one_zero_eq_logDeriv_three_halves
+
+/-- **Prime--Gamma evaluation.**  The same moment is an absolutely convergent von-Mangoldt value
+subtracted from the fixed archimedean logarithmic derivative at `3/2`. -/
+theorem primeArchShiftedReciprocalMoment_one_zero_eq_primeGammaValue :
+    primeArchShiftedReciprocalMoment 1 0 =
+      logDeriv archFactor (3 / 2) -
+        LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) (3 / 2) := by
+  rw [primeArchShiftedReciprocalMoment_one_zero_eq_logDeriv_three_halves]
+  have hs : 1 < ((3 / 2 : ℂ).re) := by norm_num
+  have hsplit := seamFluxCochain_eq_prime_add_archimedean_of_one_lt_re hs
+  rw [infinitePrimeFlux_eq_vonMangoldtLSeries hs] at hsplit
+  change -logDeriv xi (3 / 2) =
+    LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) (3 / 2) -
+      logDeriv archFactor (3 / 2) at hsplit
+  linear_combination -hsplit
 
 end
 

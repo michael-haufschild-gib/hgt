@@ -1,5 +1,9 @@
 # The reconstructed CCM rational residual has an exact finite Evans matrix
 
+> **2026-07-22 domain correction.** This finite Evans matrix detects only raw
+> `ker(G_a:L2_0->L2_0)`. Any statement below promoting its injectivity to RH requires the
+> completion-corona regularity lift in `suzuki-completed-zero-mode-corona-seam-law.md`.
+
 - **ID:** `ccm-rational-residual-finite-evans-matrix-law`
 - **Stage:** 2-fully-proven / not-new
 - **Type:** THEOREM (paper), `[BRIDGE]`

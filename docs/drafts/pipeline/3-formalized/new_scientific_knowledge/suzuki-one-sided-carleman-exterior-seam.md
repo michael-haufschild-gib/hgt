@@ -1,7 +1,7 @@
 # Suzuki's exterior multiplier is a one-sided Carleman sheet, not a bilateral Fourier transform
 
 - **ID:** `suzuki-one-sided-carleman-exterior-seam`
-- **Stage:** 2-fully-proven; Lean module written, final audit pending
+- **Stage:** 3-formalized
 - **Type:** SOURCE CORRECTION / CONJECTURE / FRONTIER REPLACEMENT
 - **Primary sources:** Suzuki 2023, arXiv:2206.03682v4, Theorem 1.1(1), equation (1.2),
   and Section 10; Suzuki 2026, arXiv:2606.09096v1, Section 8.3
@@ -11,6 +11,13 @@
 - **Computation used:** no
 
 ## Corpus frontier under audit
+
+> **Coordinate correction (2026-07-22).** Source-native `M` below is
+> `i*suzukiShiftedXiMultiplier 0` in corpus `XiC` coordinate.  Consequently Lean specialization
+> `G_eta W-I` represents `(-i)` times physical sheet and consumes `I=-iT_phys`; exact real form
+> shift is `eta=-i lambda/2`.  See `suzuki-one-sided-coordinate-phase-normalization.md`.  Sheet
+> splitting and RH criterion remain valid after uniform normalization; statements identifying
+> Lean interval input directly with physical triangle are superseded.
 
 The current Suzuki corpus treats
 
@@ -271,7 +278,8 @@ Fourier--Carleman integration is absent from current Lean libraries.
 - [x] prove triangular two-sheet decomposition
 - [x] prove exact bilateral cancellation and one-sheet pole law
 - [x] classify impact on prior exterior tomography and affine sewing
-- [x] formalize dependency-closed algebraic core in Lean; final audit pending
+- [x] formalize dependency-closed algebraic core in Lean; exact module build, SOTA check, lint,
+  and axiom audit passed
 - [ ] identify a source-marked seam-crossing theorem strong enough to prove RH
 
 ## Log
@@ -280,4 +288,4 @@ Fourier--Carleman integration is absent from current Lean libraries.
 - 2026-07-21 -- even-kernel/odd-multiplier and `q=1` parity falsifiers found.
 - 2026-07-21 -- exact Fubini triangles and opposite-sheet continuation proved.
 - 2026-07-21 -- bilateral sum proved pole-free; right-sheet upper-half-plane RH criterion proved.
-- 2026-07-21 -- dependency-closed Lean module directly checked; final audit pending.
+- 2026-07-21 -- dependency-closed Lean module, exact build, SOTA check, lint, and axiom audit pass.

@@ -1,3 +1,31 @@
+# Xi completed-density affine-pencil top-edge barrier — retired
+
+- **ID:** `xi-completed-density-affine-pencil-top-edge-barrier`
+- **Stage:** 5-failed
+- **Type:** `[RETIRED ROUTE] [LOCAL EJECTION OBSTRUCTION] [NO RH CLAIM]`
+- **Retired by:**
+  `../3-formalized/new_scientific_knowledge/xi-completed-density-affine-pencil-ejection-law.md`.
+
+## Retirement verdict
+
+This route fails before its proposed top-edge theorem is relevant.
+
+1. Its horizontal-escape premise was wrong: endpoint jets of the one-sided completed-density
+   channels survive, so the channels do not both converge to `-1/4` along the closed strip.
+2. More decisively, at a negative-slope positive simple real Xi zero, the exact implicit zero
+   branch of the pencil enters the upper half-plane for every sufficiently small positive
+   parameter.  The Lean theorem gives its velocity and actual nearby zeros.
+3. Simplicity is unnecessary on paper.  At the first downward Hardy sign change, odd-order
+   Rouche scaling reduces the pencil to `A*w^m+i*b` with `A<0,b>0`, which has an upper root.
+   Hence classical Hardy sign change unconditionally falsifies the zero-free homotopy without
+   numerical zero data.
+
+The sharp positive survivor is not another boundary estimate.  It is the real-tangent law:
+viable deformations must be Schwarz-real, or more generally have real zero velocity at every
+real simple target zero.  The actual Connes/Hedenmalm producer remains open.
+
+## Archived conjecture text
+
 # Xi completed-density affine-pencil top-edge barrier
 
 - **ID:** `xi-completed-density-affine-pencil-top-edge-barrier`
@@ -121,4 +149,5 @@ not separate absolute estimates.  First attack:
 - [ ] prove `(TA)` or the sharp `(TN)` from theta half-density source identities;
 - [ ] formalize uniform horizontal escape and affine-pencil argument-principle transfer;
 - [ ] close RH only after unconditional top-edge proof.
+
 

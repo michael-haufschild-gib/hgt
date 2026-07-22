@@ -1,5 +1,12 @@
 # Prime-shift unique continuation for the CCM screw null equation
 
+> **2026-07-22 domain correction.** This card's raw `L2` Evans construction detects exactly
+> `ker(G_a:L2_0->L2_0)`. It is not by itself equivalent to RH: Suzuki's RH-bearing zero fiber is
+> the kernel of the extension of `G_a` to `H(S_(a,mu))`, a space explicitly not contained in
+> `L2`. Statements below identifying raw injectivity with RH are superseded by
+> `suzuki-completed-zero-mode-corona-seam-law.md`. The square eigenfunction-variable Evans map
+> remains completion-safe.
+
 - **ID:** `ccm-prime-shift-screw-null-unique-continuation`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / DIRECT CCM RH CORE
@@ -7,8 +14,9 @@
 - **Source:** Suzuki's compact screw operator, the exact prime-power atomic kernel, and the CCM
   aperture Morse-index conservation law
 - **Statement:** Every compactly supported mean-zero solution of the anchored
-  archimedean-plus-prime shift null system is zero. Equivalently, the compact CCM screw operator is
-  injective at every aperture, which proves RH.
+  archimedean-plus-prime shift null system is zero. This proves raw screw injectivity. To prove RH
+  in the derivative variable one must additionally exclude zero modes in the Suzuki completion
+  outside raw `L2`, or use the completion-safe square Evans determinant.
 
 ## 1. Exact null equation
 
@@ -61,16 +69,16 @@ affine there. Since the screw kernel is continuous, these point values are defin
 conditions `(4a)` kill that affine function. Thus `(4)` plus `(4a)` is
 equivalent to `G_au=0`; `(4)` alone is only necessary.
 
-Suzuki--Yoshida and `ccm-aperture-morse-index-conservation-law.md` give
+For the raw compact operator, `(4)`--`(4a)` give only
 
 ```text
-RH
- iff ker G_a={0} for every a>0
+ker(G_a:L2_0->L2_0)={0} for every a>0
  iff the anchored system (4)--(4a) has no nonzero mean-zero
      compactly supported solution.                              (5)
 ```
 
-Thus `(4)` is the direct CCM core, not an auxiliary sufficient condition.
+The corrected RH core replaces raw `G_a` by its extension on `H(S_(a,mu))`. Thus `(4)` is the
+regular branch of the direct CCM core, not the whole completed zero fiber.
 
 ## 2. Why the equation is structurally different from a flow
 
@@ -352,15 +360,15 @@ in size but its entries retain the complete logarithmic Dirichlet reconstruction
 factorized category. Indeed `v=c_a(D)u` satisfies `p_a(D)v=0` on the aperture, hence is an
 exponential polynomial there; outside the aperture, the Carleman-bounded cross block places `v` in
 `L2`. Therefore `u` equals the unique logarithmic Dirichlet reconstruction of its characteristic
-trace. It follows unconditionally that
+trace. It follows unconditionally for the raw `L2` screw kernel that
 
 ```text
-ker G_a={0} iff det(M_a^*M_a)>0,
-RH iff for every a>0, det(M_a^*M_a)>0.
+ker(G_a:L2_0->L2_0)={0} iff det(M_a^*M_a)>0.
 ```
 
-This equivalence is proved in `ccm-screw-null-global-log-regularity-law.md`. The remaining theorem
-is the strict cofinal determinant bound, not another regularity or boundary-existence lemma.
+The second equivalence formerly written here was invalid without a regularity lift from the
+Suzuki completion to raw `L2`. The remaining RH theorem is instead square-Evans nonvanishing or
+completed-kernel injectivity; boundary-corona regularity is load-bearing.
 
 `[SOTA COMPARISON]` This determinant is not the conjectural finite spectral-triple determinant of
 Connes--Consani--Moscovici. Their 2025 proof obligation is normalized determinant convergence to
@@ -545,7 +553,7 @@ is proved non-quasi-analytic and the boundary-shell equations admit a free datum
 - [x] reconstructed residual reduced to an exact finite exponential-polynomial block
 - [x] exact finite Gram determinant retaining the infinite boundary state constructed
 - [x] global logarithmic regularity proved for every screw null vector
-- [x] exact cofinal Evans determinant criterion proved equivalent to RH
+- [x] exact raw-`L2` Evans determinant criterion proved for the raw screw kernel
 - [x] determinant-line lift from the rectangular Evans Gram isolated as the Morse-charge carrier
 - [x] exact even/odd Evans Gram factorization constructed
 - [x] shifted positive deficiency-line shortcut separated from the unshifted RH carrier
@@ -569,5 +577,6 @@ is proved non-quasi-analytic and the boundary-shell equations admit a free datum
 - [x] select a continuous explicit normalization chamber in aperture
 - [x] construct the source normalization separately at every aperture
 - [x] remove prime-cutoff jumps from the source normalization
-- [ ] prove `ker G_a=0` for every aperture
+- [ ] prove the extended screw kernel is zero on `H(S_(a,mu))` for every aperture, or prove square
+      Evans nonvanishing directly
 - [ ] RH

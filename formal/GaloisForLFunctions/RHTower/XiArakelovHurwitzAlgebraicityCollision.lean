@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiHurwitzConstraintOrientation
 import GaloisForLFunctions.RHTower.ArakelovW
 import GaloisForLFunctions.RHTower.GelfondSchneider
+import Mathlib.RingTheory.RootsOfUnity.Complex
 
 /-!
 # Arakelov--Hurwitz algebraicity collision
@@ -74,6 +75,38 @@ theorem exists_rat_eq_neg_two_mul_of_arakelovW_algebraic_of_monoScalar_algebraic
   apply htrans
   rw [← monoScalar_eq_negOne_cpow rho]
   exact hq
+
+/-- **Exact joint-algebraicity locus.**  The Arakelov coordinate `1 - 1/rho` and the continued
+Hurwitz monodromy character `exp(-2*pi*i*rho)` are both algebraic exactly at rational exponents. -/
+theorem arakelovW_monoScalar_jointly_algebraic_iff_exists_rat (rho : ℂ) :
+    (IsAlgebraic ℚ (arakelovW rho) ∧ IsAlgebraic ℚ (monoScalar rho)) ↔
+      ∃ r : ℚ, rho = (r : ℂ) := by
+  constructor
+  · rintro ⟨hw, hq⟩
+    obtain ⟨r, hr⟩ :=
+      exists_rat_eq_neg_two_mul_of_arakelovW_algebraic_of_monoScalar_algebraic hw hq
+    refine ⟨-r / 2, ?_⟩
+    calc
+      rho = (-1 / 2 : ℂ) * (-2 * rho) := by ring
+      _ = (-1 / 2 : ℂ) * (r : ℂ) := congrArg ((-1 / 2 : ℂ) * ·) hr
+      _ = ((-r / 2 : ℚ) : ℂ) := by push_cast; ring
+  · rintro ⟨r, rfl⟩
+    have hr : IsAlgebraic ℚ (r : ℂ) := by
+      simpa using
+        (isIntegral_algebraMap : IsIntegral ℚ (algebraMap ℚ ℂ r)).isAlgebraic
+    constructor
+    · have hone : IsAlgebraic ℚ (1 : ℂ) := by
+        simpa using
+          (isIntegral_algebraMap : IsIntegral ℚ (algebraMap ℚ ℂ 1)).isAlgebraic
+      simpa [arakelovW] using hone.sub hr.inv
+    · have hroot := Complex.isPrimitiveRoot_exp_rat (-r)
+      have hint : IsIntegral ℤ
+          (Complex.exp (2 * Real.pi * I * ((-r : ℚ) : ℂ))) :=
+        hroot.isIntegral (Rat.den_pos (-r))
+      have halg : IsAlgebraic ℚ
+          (Complex.exp (2 * Real.pi * I * ((-r : ℚ) : ℂ))) :=
+        (IsFractionRing.isAlgebraic_iff ℤ ℚ ℂ).mp hint.isAlgebraic
+      simpa [monoScalar] using halg
 
 /-- Positive constraint law: at a nonreal point, algebraicity of the Arakelov coordinate forces
 transcendence of the Hurwitz monodromy character. -/

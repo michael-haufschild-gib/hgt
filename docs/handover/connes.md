@@ -2190,3 +2190,1701 @@ Verification:
 - new source contains no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration;
 - whole-tree `scripts/formal_tools.py lint` passed (large-file warnings only);
 - no owned Lean or Lake process remained.
+
+## 41. Affine-homotopy ejection: top-edge route is false; frontier returns to source-real transport
+
+Section 40 is superseded.  Its affine pencil is algebraically correct, but its proposed
+zero-free transport is not.
+
+Write
+
+\[
+H_0(z)=2z^2\Xi_C(z),\qquad
+H_\tau(z)=\tau E(z)+(1-\tau)H_0(z),
+\qquad \tau=\frac c{1+c}.
+\]
+
+The correct incidence is
+
+\[
+\iota(z)=-\frac{H_0(z)}{E(z)}.
+\]
+
+A full signed phase advance of \(2\pi\), not merely an unsigned real-axis collision, forces
+\(\iota=c>0\) and therefore an actual pencil zero at \(\tau=c/(1+c)\in(0,1)\).  This signed
+winding connector is now formalized.
+
+### Exact critical-zero motion
+
+For a general analytic deformation
+
+\[
+H(g(c))+cK(g(c))=0,qquad H(z_0)=0,\quad H'(z_0)\ne0,
+\]
+
+the analytic implicit-function theorem gives
+
+\[
+g(0)=z_0,\qquad g'(0)=-\frac{K(z_0)}{H'(z_0)}.          \tag{41.1}
+\]
+
+This has been extracted as the reusable formal theorem
+`HTGeometry.exists_affineSimpleZero_branch`.  Its positive survivor is exact: if both
+\(H'(z_0)\) and \(K(z_0)\) are real, then \(\operatorname{Im}g'(0)=0\).  Divisor vanishing is
+unnecessarily strong; **real tangency** is the first-order condition a viable deformation must
+satisfy.
+
+At a positive real Xi zero \(t\), the completed-density source gives
+
+\[
+E(t)=i\,\operatorname{Im}E(t),\qquad \operatorname{Im}E(t)>0,
+\]
+
+while \(H_0'(t)=2t^2\Xi_C'(t)\).  Hence
+
+\[
+g'(0)=-\frac{E(t)}{2t^2\Xi_C'(t)}.                      \tag{41.2}
+\]
+
+If \(\operatorname{Re}\Xi_C'(t)<0\), then
+\(\operatorname{Im}g'(0)>0\).  Lean proves more than this infinitesimal sign: for every
+sufficiently small \(c>0\), the actual point \(g(c)\) lies in the open upper strip and satisfies
+
+\[
+H_{c/(1+c)}(g(c))=0.                                    \tag{41.3}
+\]
+
+Thus no top-edge estimate can make this asymmetric homotopy upper-zero-free; it already ejects a
+bottom-edge target zero into the forbidden region.
+
+### Simplicity is not needed on paper
+
+Let \(t>0\) be a downward sign-changing Xi zero of odd order \(m\).  Locally
+
+\[
+H_0(t+\delta)=A\delta^m+O(\delta^{m+1}),\qquad A<0,
+\]
+
+and write \(E(t)=ib\), \(b>0\).  With \(\delta=c^{1/m}w\), the normalized pencil converges
+uniformly on compact \(w\)-sets to
+
+\[
+Aw^m+ib.                                                 \tag{41.4}
+\]
+
+It has an upper root of argument \(\pi/(2m)\).  Rouche transfer gives an upper pencil zero for
+every sufficiently small positive \(c\).  Classical Hardy sign change supplies a downward odd
+critical-line crossing without any numerical zero certificate: \(\Xi_C(0)>0\), and the first
+transition to a negative sign interval is downward.  Therefore the affine zero-free homotopy is
+unconditionally false on paper.  The current Lean theorem is the complete simple-zero case; the
+odd-order Rouche upgrade remains a formalization task.
+
+### Actual corpus frontier
+
+The failed affine path does not alter the exact RH wall already identified by the corpus.  It
+removes a false shortcut to that wall.
+
+In the Hedenmalm coordinate, the unresolved producer remains
+
+\[
+J_a(b)=\partial_a\left|\Xi\!\left(\tfrac12+a+ib\right)\right|^2\ge0
+\quad(0<a<\tfrac12,\ b\in\mathbb R),                    \tag{41.5}
+\]
+
+equivalently the theta-specific two-ended phase-current domination inequality (40) in
+`hedenmalm-center-mixed-double-positivity-law.md`.  The corpus proves exterior apertures, a full
+central frequency band, finite positive-matrix chambers, and exact resolvent factorizations; it
+does not produce the nonperturbative modular-seam sign in (41.5).
+
+In the Connes coordinate, the unresolved producer is exactly
+`ConnesXiGroundStateLimitWall`: construct a source-defined cofinal sequence of entire functions
+with only real zeros which converges locally uniformly to \(\Xi_C\).  Finite self-adjointness and
+finite real-zero characteristic functions are already available; source/divisor-preserving
+convergence is not.
+
+### Replacement conjecture and scientific test
+
+**[CONJECTURE 41-A: anchored Donoghue--Carleman identification].**  Normalize the actual
+finite-aperture Suzuki ground-state characteristic functions at one nonzero real anchor.  Their
+canonical Donoghue functions form a normal Herglotz family.  After the already proved
+compactified-phase tightness and residual-overcrowding elimination, every subsequential limit is
+the same source-defined one-sided even Carleman quotient
+\(m_{\rm ext}=-C_R/W_1\).  On the unconditional Euler half-plane, the actual right-triangle
+source identity identifies this quotient before any divisor expansion.  Herglotz normality then
+continues it holomorphically through the upper half-plane.  The corpus already proves that every
+hypothetical nonreal Xi zero gives this quotient a universal nonzero pole germ, while the
+finite-interval clock has only real zeros.  Holomorphy therefore excludes every upper off-real Xi
+zero and proves RH.  This is the one-sided source-identification route; proving actual normalized
+characteristic convergence to \(\Xi_C\) remains the separate `ConnesXiGroundStateLimitWall`.
+
+This conjecture is not a new equivalent criterion.  It specifies the missing source theorem and
+how to test it:
+
+1. prove fixed-label Donoghue atom weights converge from the actual finite source, not from an Xi
+   divisor expansion;
+2. prove the one-sided even Carleman limit is independent of the chosen cofinal aperture sequence;
+3. identify it with the actual Euler--Gamma right-triangle quotient on their common unconditional
+   half-plane;
+4. use Herglotz normality for holomorphic continuation and the already formalized universal Xi
+   pole germ for the contradiction;
+5. falsify the conjecture if any nonzero compactified escape residual survives, if two cofinal
+   sequences yield different carriers, or if the high-half-plane source identity has an
+   uncancelled interval term.
+
+The real-tangent theorem is a mandatory design filter for this conjecture.  Actual finite
+self-adjoint characteristic functions are Schwarz-real and move their simple zeros horizontally;
+the completed-density channel \(E\) is not Schwarz-real on the boundary and fails this test.
+
+Formal modules:
+
+- `formal/GaloisForLFunctions/HTGeometry/AffineSimpleZeroMotion.lean`;
+- `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedDensityAffinePencilEjection.lean`.
+
+Pipeline:
+
+- retired route:
+  `docs/drafts/pipeline/5-failed/xi-completed-density-affine-pencil-top-edge-barrier.md`;
+- formalized survivor:
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/xi-completed-density-affine-pencil-ejection-law.md`;
+- actual Hedenmalm producer:
+  `docs/drafts/pipeline/1-in-progress/hedenmalm-center-mixed-double-positivity-law.md`;
+- actual Connes producer:
+  `docs/drafts/pipeline/1-in-progress/xi-approximant-prime-energy-source-close.md`.
+
+Status: substantial frontier correction and new formal motion law, **not an RH proof**.
+
+## 42. Euler-defect germ weld: fixed Donoghue equality is false; one source germ would prove RH
+
+Section 41's Conjecture 41-A is superseded in its literal form.  Current corpus proves that the
+actual admissible affine-sewn Carleman quotient
+
+\[
+m_{\rm ext}(z)=-\frac{C_{\rm odd}(z)}{P(z)}
+              =-\frac{E_R(z)-E_L(z)}{2P(z)}             \tag{42.1}
+\]
+
+and Suzuki's fixed finite-aperture Donoghue quotient have different pole divisors.  They cannot
+be the same meromorphic function.  Direct convergence of the functions also retains a possible
+linear Nevanlinna escape mode.  Therefore neither fixed-function identification nor an anchor by
+itself is the correct frontier theorem.
+
+Use instead the degree-one Euler defect
+
+\[
+\mathcal E[f](z)=z f'(z)-f(z).                          \tag{42.2}
+\]
+
+It kills every linear mode \(cz\), exactly removing compactified endpoint escape.  New theorem
+shows that this loss of information is harmless for the RH divisor.
+
+### Exact meromorphic pole law
+
+If \(f\) is meromorphic at \(z_0\ne0\) and
+
+\[
+\operatorname{ord}_{z_0}f=n<0,
+\]
+
+write \(f(w)=(w-z_0)^n g(w)\), where \(g\) is analytic and \(g(z_0)\ne0\).  Then
+
+\[
+\mathcal E[f](w)=(w-z_0)^{n-1}G(w),                    \tag{42.3}
+\]
+
+with
+
+\[
+G(w)=w\{n g(w)+(w-z_0)g'(w)\}-(w-z_0)g(w),
+\qquad G(z_0)=z_0n g(z_0)\ne0.                         \tag{42.4}
+\]
+
+Consequently
+
+\[
+\boxed{\operatorname{ord}_{z_0}\mathcal E[f]
+       =\operatorname{ord}_{z_0}f-1.}                  \tag{42.5}
+\]
+
+The exclusion of the origin is sharp because the Euler vector field vanishes there.  It causes
+no RH loss: every nonreal point is nonzero.
+
+For actual two-shift Suzuki data, \(P\) has only real zeros.  Existing exterior tomography and
+the new order theorem give, at every hypothetical nonreal Xi zero \(\rho\),
+
+\[
+\operatorname{ord}_{\rho}m_{\rm ext}=-1,
+\qquad
+\operatorname{ord}_{\rho}\mathcal E[m_{\rm ext}]=-2.  \tag{42.6}
+\]
+
+Thus Euler defect does not conceal an Xi pole; it upgrades it from simple to double while
+annihilating the unwanted linear endpoint mode.
+
+### One pointed source germ is enough
+
+There is a second new theorem.  Let \(U\) be preconnected, \(f\) meromorphic on \(U\), and
+\(D\) analytic on \(U\).  If at one point \(u\in U\)
+
+\[
+f=D\quad\text{as pointed germs at }u,                  \tag{42.7}
+\]
+
+then \(f-D\) has infinite meromorphic order at \(u\).  Infinite-order locus of a meromorphic
+function is clopen in its domain.  Hence it is all of \(U\), and
+
+\[
+\operatorname{ord}_z f\ge0\qquad(z\in U).              \tag{42.8}
+\]
+
+Apply this on upper half-plane with \(f=\mathcal E[m_{\rm ext}]\).  If source theory constructs
+one analytic function \(D_{\rm src}\) and proves only one high-half-plane pointed-germ identity
+
+\[
+\mathcal E[m_{\rm ext}]=D_{\rm src},                   \tag{42.9}
+\]
+
+then (42.8) contradicts exact double pole (42.6) at every hypothetical upper Xi zero.  Xi evenness
+excludes lower zeros.  Therefore (42.9) proves RH.  No global equality of finite and exterior
+quotients, no uniqueness of subsequential limits, no anchor reconstruction, and no assumed Pick
+positivity are needed.
+
+### Actual research-corpus frontier
+
+Finite Donoghue Euler kernels vanish at both compactified spectral endpoints.  Their probability
+measures therefore have natural subsequential analytic defect limits on compact upper-half-plane
+sets, with linear escape already erased.  Exact unresolved producer is now:
+
+> Construct one such \(D_{\rm src}\) from actual finite Suzuki deficiency measures and the
+> prime--Gamma screw source, then prove on one unconditional high-half-plane neighborhood that
+> its homogeneous common-gauge Euler--Wronskian equals the Euler defect of affine-sewn Carleman
+> sheet jump (42.1).
+
+This is not a positivity restatement.  Analyticity of \(D_{\rm src}\) comes before Xi
+identification from finite positive spectral measures; arithmetic work is local germ
+identification.  Falsifiers are concrete: nonlinear compactified residual, failure of the
+common-gauge Wronskian limit, or an uncancelled one-sided triangle term on initial half-plane.
+
+Formal module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanJumpEulerDefectWeld.lean`.
+
+Formal capstones:
+
+- `meromorphicOrderAt_suzukiEulerDefect_eq_sub_one`;
+- `meromorphicOrderAt_suzukiEulerDefect_affineSewnExteriorWeylQuotient_eq_neg_two`;
+- `meromorphicOrderAt_nonneg_of_analytic_source_germ_weld`;
+- `riemannHypothesis_of_suzukiAffineSewnExteriorWeylEulerDefect_source_germ_weld`.
+
+Pipeline:
+
+- formalized theorem:
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-carleman-jump-euler-defect-pole-rigidity.md`;
+- active source theorem:
+  `docs/drafts/pipeline/1-in-progress/suzuki-carleman-jump-euler-defect-weld.md`.
+
+Status: exact pole-amplification and one-germ RH discharge are unconditional and formalized.
+RH itself remains open precisely at source construction and high-half-plane Wronskian germ
+identity (42.9).
+
+## 43. Coordinate retraction: scalar positivity is open; centered Euler remains parallel
+
+Previous Section 43 mixed Suzuki's physical right triangle with centered Xi-real multiplier.
+Suzuki 2023 one-sided identity gives physical multiplier `iG_0`, not `G_0`.  Positive half-line of
+`r_0(t)=-|t|/2` has transform `1/(2z^2)`, so exact shifted coordinate is
+
+\[
+\eta(\lambda)=-i\lambda/2.                               \tag{43.1}
+\]
+
+Physical and canonically normalized sheets are
+
+\[
+E_{\rm phys}=iG_\eta W-T_{\rm phys},\qquad
+(-i)E_{\rm phys}=G_\eta W-(-iT_{\rm phys}).              \tag{43.2}
+\]
+
+Thus centered interval input is `-iT_phys`.  Source quadrature still proves
+`W_lambda'(0) in R` and `T_phys,lambda(0) in iR`, but normalized triangle value is real.  For
+physical and normalized affine central fluxes,
+
+\[
+\Phi_{\rm norm}=-i\Phi_{\rm phys},\qquad
+\operatorname{Re}\Phi_{\rm norm}
+=\operatorname{Im}\Phi_{\rm phys}.                      \tag{43.3}
+\]
+
+Therefore prior `Re Phi=0` argument applies only to mixed expression `G_eta W-T_phys`; it does not
+falsify actual scalar jump quotient.  Herglotz threshold is restored as
+
+\[
+\operatorname{Im}\Phi_{\rm phys}
+\le \Xi_C''(0)/\Xi_C(0)<0.                               \tag{43.4}
+\]
+
+Direct Neumann term remains linear and cancels under affine sewing.  In exact one-sided coordinate
+its normalized slope is `ia`, twice legacy full-symbol slope.
+
+Actual frontier now has two live, nonexclusive source attacks:
+
+1. construct positive prime--Gamma colligation whose normalized Weyl function is scalar sheet
+   jump and prove `(43.4)` plus full jump Pick kernel;
+2. construct analytic prime--Gamma source germ for centered Euler observable
+   `J[f]=z(zf'-f)`, whose existing pole theorem already discharges RH.
+
+Both must be built before Xi-divisor identification and fail on orbit-inserted countermodels.
+Neither theorem exists in corpus; RH is not claimed.
+
+Formal modules:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanCoordinatePhase.lean`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanJumpPhaseObstruction.lean`.
+
+Pipeline:
+
+- coordinate theorem:
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-one-sided-coordinate-phase-normalization.md`;
+- retracted no-go:
+  `docs/drafts/pipeline/5-failed/suzuki-scalar-jump-herglotz-phase-no-go.md`;
+- live centered-Euler source theorem:
+  `docs/drafts/pipeline/1-in-progress/suzuki-carleman-jump-euler-defect-weld.md`.
+
+## 44. Neumann-dominated shift cone: scalar positivity requires source-selected shifts
+
+Correct coordinate reopens scalar positivity, but hostile testing rules out arbitrary admissible
+shifts.  Fix aperture `a>0` and Suzuki deficiency vectors
+
+\[
+v_{\lambda,+}=(A_a-\lambda)^{-1}e^x,
+\qquad v_{\lambda,-}=(A_a-\lambda)^{-1}e^{-x}.
+\]
+
+Because `A_a` is self-adjoint and bounded below, spectral calculus gives
+
+\[
+(-\lambda)(A_a-\lambda)^{-1}\longrightarrow I
+\quad\text{strongly as }\lambda\to-\infty.             \tag{44.1}
+\]
+
+For phase one, including zero-extension endpoint atoms, effective compact source is
+
+\[
+\nu_\lambda=i(v'_{\lambda,+}-v_{\lambda,+}
+                   +v'_{\lambda,-}+v_{\lambda,-}).     \tag{44.2}
+\]
+
+Interior terms cancel in limiting exponentials.  Distributionally,
+
+\[
+(-\lambda)\nu_\lambda\longrightarrow
+i\,2\cosh(a)(\delta_{-a}-\delta_a).                    \tag{44.3}
+\]
+
+Direct characteristic calculation independently gives
+
+\[
+(-\lambda)W_\lambda(z)\to4\cosh(a)\sin(az),
+\qquad (-\lambda)W'_\lambda(0)\to4a\cosh(a).          \tag{44.4}
+\]
+
+Let `H_g(s)=integral_0^s g(t)dt`.  Pairing `(44.3)` with physical right-triangle test
+`H_g(a-y)`, dividing by `(44.4)`, and applying exact normalization
+`q_norm=-i q_phys` yields
+
+\[
+q^{EG}_{\mathrm{norm},\lambda}\longrightarrow
+\frac{H_g(2a)}{2a}.                                    \tag{44.5}
+\]
+
+Direct Neumann term `(a/2)lambda` cancels identically under affine sewing.  For admissible dyadic
+shifts `alpha_L=-2L`, `beta_L=-L`, zero-intercept is exactly
+
+\[
+\Phi_L=2q^{EG}_{\mathrm{norm},-L}
+          -q^{EG}_{\mathrm{norm},-2L}
+\longrightarrow\frac{H_g(2a)}{2a}.                    \tag{44.6}
+\]
+
+Suzuki screw kernel is continuous with `g(0)=0`, so right side tends to zero as `a` tends to zero.
+Corpus already proves fixed curvature
+
+\[
+c_\Xi=\operatorname{Re}\frac{\Xi_C''(0)}{\Xi_C(0)}<0. \tag{44.7}
+\]
+
+Choose `a` small enough that screw average exceeds `c_Xi`.  Then every sufficiently large `L`
+has `Phi_L>c_Xi`, opposite necessary Herglotz central-residue inequality.  Therefore normalized
+scalar jump quotient is **not** Herglotz uniformly over admissible shift pairs even in correct
+one-sided coordinate.
+
+This is new constraint, not RH proof.  Exact frontier is disjunctive:
+
+1. construct intrinsic source-selected nonescaping shift pair, plausibly tied to finite-aperture
+   spectral floor, then prove central threshold and full normalized jump Pick kernel; or
+2. construct analytic prime--Gamma germ `D_src=J[m_ext]` on one unconditional high-half-plane
+   neighborhood, where `J[f]=z(zf'-f)`; existing pole theorem then forces RH.
+
+Any shift law entering large-negative dyadic cone is falsified.  Any proposed positivity proof
+using only admissibility, direct Neumann channel, or gauge normalization cannot solve frontier.
+
+Paper proof:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-neumann-dominated-shift-cone-obstruction.md`.
+
+Lean algebraic consumer:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiLargeNegativeShiftCentralFlux.lean`.
+
+Lean proves dyadic affine identity, limit transfer, and eventual Xi-curvature violation from
+source-edge limit.  Concrete restricted-resolvent and distributional triangle instantiation
+remain paper-level.  RH remains open at source-selected nonescaping colligation or centered-Euler
+prime--Gamma germ identity.
+
+## 45. Monotone spectral ratio produces shift-Stieltjes law
+
+Section 44 forces source selection; chord-mass analysis reduces it to negative-Stieltjes structure
+of normalized Euler--Gamma shift jet.  Corpus source formula is ratio, not generic Weyl function:
+
+\[
+q(\lambda)=\frac{N(\lambda)}{D(\lambda)},\qquad
+N=\langle(A_a-\lambda)^{-1}e^x,h_a\rangle,
+\quad D=\langle(A_a-\lambda)^{-1}e^x,2(1+x)\rangle.     \tag{45.1}
+\]
+
+New theorem gives exact sufficient source law.  For nodes `t_j`, positive weights `w_j`, and
+responses `r_j` nondecreasing in `t_j`, put
+
+\[
+D(z)=\sum_j\frac{w_j}{t_j-z},\qquad
+N(z)=\sum_j\frac{w_jr_j}{t_j-z},\qquad q=N/D.           \tag{45.2}
+\]
+
+Direct symmetrization proves
+
+\[
+\frac{\operatorname{Im}q(z)}{\operatorname{Im}z}
+=-\frac{1}{2|D(z)|^2}
+\sum_{j,k}\frac{w_jw_k(r_j-r_k)(t_j-t_k)}
+ {|t_j-z|^2|t_k-z|^2}\le0.                             \tag{45.3}
+\]
+
+Thus `q` is anti-Herglotz in shift variable.  Rational partial fractions give exact negative
+Stieltjes representation
+
+\[
+q(z)=\ell-\sum_k\frac{\nu_k}{\sigma_k-z},
+\qquad \nu_k\ge0,                                     \tag{45.4}
+\]
+
+where `sigma_k` are uncancelled real zeros of `D`.  Measure version follows from same two-sample
+identity.  On real resolvent half-line it makes quotient-rule numerator nonpositive:
+
+\[
+N'D-ND'\le0.                                           \tag{45.5}
+\]
+
+This replaces all alternating shift-derivative checks by one monotone-likelihood condition.
+
+For actual restricted-Weil eigenpairs `A_a phi_j=t_j phi_j`, exact coefficients are
+
+\[
+w_j=\langle e^x,\phi_j\rangle\langle2(1+x),\phi_j\rangle,
+\qquad
+r_j=\frac{\langle h_a,\phi_j\rangle}
+          {\langle2(1+x),\phi_j\rangle}.               \tag{45.6}
+\]
+
+Therefore shift-Stieltjes conjecture is reduced to source-pure laws
+
+\[
+w_j\ge0,
+\qquad (r_j-r_k)(t_j-t_k)\ge0.                         \tag{45.7}
+\]
+
+One violating eigenpair kills route.  Ground-state positivity alone cannot prove `(45.7)`, and
+corpus already forbids assuming positivity-preserving resolvent at all apertures.
+
+Actual unresolved RH chain is now:
+
+1. prove `(45.7)` for one intrinsic aperture, or falsify monotone-ratio mechanism;
+2. prove resulting Stieltjes atoms fill exact chord gap `ell_a-c_Xi` for one nonescaping shift
+   pair;
+3. lift central inequality to full normalized jump Pick kernel;
+4. use existing pole tomography to force RH.
+
+Parallel centered-Euler germ route remains open.  RH is not proved.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-shift-spectral-monotone-likelihood-transfer.md`.
+
+Lean core:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiShiftSpectralMonotoneRatio.lean`.
+
+Lean proves exact squared-resolvent two-sample identity, integrated cross-Wronskian inequality,
+and quotient-rule nonpositivity using existing monotone-likelihood integration theorem.
+
+## 46. Ground-edge small-aperture exclusion and Robin boundary compression
+
+Section 45's all-mode monotone-likelihood law is optional for central selection because asymmetric
+shift escape retains one fixed value.  At a simple even floor this value tends to
+
+\[
+r_a=\frac{\langle\phi_a,g(a-x)\rangle}{\langle\phi_a,1\rangle}.
+\tag{46.1}
+\]
+
+Hostile audit now closes the only published positive-ground chamber.  Since Suzuki's explicit
+profile is continuous, `g(0)=0`, and corpus proves `c_Xi<0`, there is `a_0>0` such that
+
+\[
+g(a-x)>\frac{c_{\Xi}}2>c_{\Xi}
+\quad(0<a\le a_0,\ -a\le x\le a).                    \tag{46.2}
+\]
+
+Every nonzero nonnegative weight therefore has average strictly above `c_Xi`.  In particular,
+Suzuki's sufficiently-small positive simple even ground cannot produce required central sign.
+This strengthens Section 44: both far-negative dyadic edge and ground edge fail at small aperture.
+
+Positive survivor is exact and signed.  For any even eigenmode define
+
+\[
+U_a(x)=\int_{-a}^{a}g(x-y)\phi_a(y)\,dy,
+\qquad M_a=\int_{-a}^{a}\phi_a(y)\,dy.                 \tag{46.3}
+\]
+
+Restricted convolution eigen-equation is `-U_a''=lambda_a phi_a`.  Evenness gives
+
+\[
+-2U_a'(a)=\lambda_aM_a,
+\qquad
+r_a=\frac{U_a(a)}{M_a}
+=-\frac{\lambda_aU_a(a)}{2U_a'(a)}.                   \tag{46.4}
+\]
+
+After orienting `M_a>0`, ground-edge selector is equivalent to one boundary inequality
+
+\[
+U_a(a)<c_{\Xi}M_a.                                    \tag{46.5}
+\]
+
+This is new `SUZUKI-ROBIN-CROSSING` conjecture.  It must occur at non-small aperture, where corpus
+already rules out positivity-preserving semigroup.  Viable proof must use parity-separated
+spectral flow, square Evans determinant, or signed boundary transversality.  If `M_a=0`, ground
+pole cancels and next noncancelled even mode must be used.
+
+Actual unresolved RH chain:
+
+1. prove non-small-aperture Robin crossing `(46.5)` from explicit prime--Gamma operator;
+2. use asymmetric selector to obtain central-valid pair;
+3. prove full normalized jump Pick kernel, not merely its central residue;
+4. apply existing Euler-defect pole tomography to exclude nonreal Xi zeros.
+
+Paper theorem and conjecture:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-ground-edge-aperture-robin-obstruction.md`.
+
+Lean certificate:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeApertureObstruction.lean`.
+
+Lean proves uniform small-aperture exclusion, positive-mass average transfer, exact Robin-ratio
+algebra, and deficit/excess threshold equivalence.  Concrete distributional convolution producer
+remains paper-level.  RH is not proved.
+
+## 47. Central selector closed; full jump is exact Loewner growth gap
+
+Section 46's Robin route is superseded for central selection by new unconditional screw-Cesaro
+recurrence.  Curvature-centered primitive
+
+\[
+h(A)=\int_0^A(g(t)-c_\Xi)\,dt
+=\sum_\gamma\frac{\sin(\gamma A)}{\gamma^3}             \tag{47.1}
+\]
+
+changes sign cofinally in both directions by a Landau boundary theorem applied to its exact
+Laplace transform.  Hence arbitrarily large apertures satisfy
+
+\[
+\frac1{2a}\int_0^{2a}g(t)\,dt<c_\Xi.                  \tag{47.2}
+\]
+
+At each such aperture, sufficiently negative finite dyadic pairs meet mandatory central residue
+sign.  Central aperture and shift selection are no longer open.
+
+The remaining full-frequency frontier now has exact Loewner form.  For actual reflection-odd
+normalized right triangles
+
+\[
+q_\lambda(z)=\operatorname{Odd}_z\frac{R_\lambda(z)}{W_\lambda(z)},
+\]
+
+new theorem proves sewn exterior Weyl quotient is
+
+\[
+m_{\alpha,\beta}(z)
+=-M_0(z)+\frac{\beta q_\alpha(z)-\alpha q_\beta(z)}{\beta-\alpha}.
+\tag{47.3}
+\]
+
+Writing `H_lambda=K[q_lambda]` and `K_0=K[M_0]` for Pick kernels gives exact matrix identity
+
+\[
+K_{\rm jump}
+=-K_0+\frac{\beta H_\alpha-\alpha H_\beta}{\beta-\alpha}. \tag{47.4}
+\]
+
+For `alpha<beta<0`, positivity on every finite test vector is equivalent to
+
+\[
+(-\alpha)(H_\beta-H_\alpha)
+\succeq(\beta-\alpha)(K_0-H_\alpha).                  \tag{47.5}
+\]
+
+Left side is prime--Gamma source Loewner growth; right side is exact Xi-multiplier deficit.  This
+is full matrix analogue of scalar chord-mass gap.  Dyadic pair `(-2L,-L)` reduces it to
+
+\[
+2(H_{-L}-H_{-2L})\succeq K_0-H_{-2L}.                 \tag{47.6}
+\]
+
+Actual open conjecture is `SUZUKI-LOEWNER-GROWTH`: prove `(47.5)` for one recurrence-selected
+pair.  Strong square producer asks for exact resolvent factorization of left-minus-right in
+`(47.5)` as `B^*B`, before Xi-divisor identification.  One negative finite test vector falsifies
+producer.
+
+This is present RH chain:
+
+1. prove prime--Gamma Loewner growth `(47.5)` using restricted resolvent identity;
+2. conclude full jump Pick positivity by `(47.4)`;
+3. existing pole tomography excludes every nonreal Xi zero;
+4. RH.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-jump-kernel-loewner-growth-gap.md`.
+
+Active RH core:
+
+- `docs/drafts/pipeline/1-in-progress/suzuki-jump-kernel-loewner-growth.md`.
+
+Lean certificate:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiJumpKernelLoewnerGap.lean`.
+
+RH is not yet proved: inequality `(47.5)` remains source conjecture.
+
+## 48. Bare resolvent square fails: exact Krein defect and global/local weld debt (2026-07-22)
+
+Hostile test of Section 47's proposed resolvent square gives exact opposite conclusion.  Put
+
+\[
+R_\lambda(t)=\frac1{t-\lambda},\qquad
+E_{\alpha,\beta}(t)=
+\frac{\beta R_\alpha(t)-\alpha R_\beta(t)}{\beta-\alpha}.
+\]
+
+New unconditional theorem is
+
+\[
+D_{\alpha,\beta}(t):=R_0(t)-E_{\alpha,\beta}(t)
+=\frac{\alpha\beta}{t(t-\alpha)(t-\beta)}.             \tag{48.1}
+\]
+
+For source-relevant order `alpha<beta<0`, `beta<t`, `t!=0`, factors other than `t` are positive:
+
+\[
+D_{\alpha,\beta}(t)=\operatorname{sgn}(t)
+\frac{\alpha\beta}{|t|(t-\alpha)(t-\beta)}.           \tag{48.2}
+\]
+
+Ordinary resolvent affine gap is `-D`; negative-Stieltjes/anti-resolvent affine gap is `D`.
+Therefore correct source orientation is positive on positive restricted-Weil coordinates but
+strictly negative on negative coordinates.  Second resolvent identity gives a Krein square, not
+a Hilbert square.  In a minimal finite spectral realization, its negative index is exactly number
+of negative nodes.
+
+This does not kill Suzuki route.  It identifies missing contribution sharply.  Against arbitrary
+global target `g`, define local/global correction `C_g(t)=-R_0(t)-g(t)`.  Exact anti-resolvent gap
+is
+
+\[
+G_g(t)=D_{\alpha,\beta}(t)+C_g(t),\qquad
+G_g(t)\ge0\iff C_g(t)\ge-D_{\alpha,\beta}(t).          \tag{48.3}
+\]
+
+Every negative node creates strictly positive debt
+
+\[
+-D_{\alpha,\beta}(t)
+=\frac{\alpha\beta}{|t|(t-\alpha)(t-\beta)}>0.        \tag{48.4}
+\]
+
+Thus actual frontier corpus cannot solve is no longer generic `Loewner growth` or abstract
+`resolvent Bianchi square`.  It is source-specific:
+
+> **`SUZUKI-GLOBAL-LOCAL-KREIN-WELD`** — in one characteristic gauge, prove explicit coupled
+> reflected prime--Gamma exterior term and full-frequency Neumann projective holonomy cancel exact
+> negative piece `(48.4)`, leaving a source-built positive square while retaining global Xi
+> divisor.
+
+This conjecture is decisive and falsifiable on finite node sets.  One vector for which completion
+is smaller than negative spectral debt refutes it.  Proving it gives full jump Pick positivity,
+then existing pole tomography gives RH.  Replacing global `K_0` by local `R_0` would erase
+`(48.3)` and assume missing RH-bearing weld.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-affine-resolvent-krein-defect.md`.
+
+Formal certificate:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiAffineResolventKreinDefect.lean`.
+
+RH is not proved.  New progress is exact signed factorization, exact negative-index bridge, and
+sharp completion threshold which any successful source proof must meet.
+
+## 49. Full-frequency holonomy imposes an exact Schur tax (2026-07-22)
+
+Section 48's diagonal debt is necessary but not sufficient once projective Neumann holonomy mixes
+positive and negative channels.  For one positive channel of weight `a>0`, one negative debt
+`n>0`, direct completion `c`, and coupling `b`, exact quadratic form is
+
+\[
+Q(x,y)=a x^2+2bxy+(c-n)y^2
+=a\left(x+\frac ba y\right)^2
++\left(c-n-\frac{b^2}{a}\right)y^2.                    \tag{49.1}
+\]
+
+Hence
+
+\[
+Q\succeq0\iff c\ge n+\frac{b^2}{a}.                    \tag{49.2}
+\]
+
+Nonzero holonomy adds strict positive cost `b^2/a`.  A diagonal completion paying exactly `n`
+still has determinant `-b^2` and fails.  This corrects overly weak intuition that holonomy itself
+automatically compensates signed resolvent defect.
+
+At fixed aperture restricted-Weil operator has finite-dimensional negative spectral subspace.
+Write local signed block `diag(P,-N)` and actual source completion blocks `C`.  Since positive block
+`P+C_++` is invertible, block Gaussian congruence gives exact frontier
+
+\[
+C_{--}-N-C_{-+}(P+C_{++})^{-1}C_{+-}\succeq0.          \tag{49.3}
+\]
+
+Thus infinite Pick problem compresses to one finite negative-block Schur complement.  Direct term
+must pay both affine-resolvent debt `N` and projective cross-channel tax.  This is revised
+`SUZUKI-FINITE-NEGATIVE-BLOCK-WELD`.  Proving `(49.3)` from reflected prime--Gamma triangles and
+exact Neumann projective tangent gives jump Pick positivity and then RH.  One negative principal
+minor kills conjecture.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-krein-schur-holonomy-tax.md`.
+
+Lean scalar certificate remains in:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiAffineResolventKreinDefect.lean`.
+
+RH remains open at source inequality `(49.3)`.
+
+## 50. Unique coherent completion kernel: weighted negative spectral projector (2026-07-22)
+
+Local Xi-real/FE bipolarization fixes minimal negative-light square, but did not fix cross-node
+assembly.  Spectral calculus now does.  For restricted-Weil operator `A`, two negative shifts below
+spectrum, and `0` outside spectrum, affine defect operator is
+
+\[
+D_{\alpha,\beta}
+=\operatorname{sgn}(A)W_{\alpha,\beta},\qquad
+W_{\alpha,\beta}
+=\alpha\beta|A|^{-1}(A-\alpha)^{-1}(A-\beta)^{-1}\succeq0. \tag{50.1}
+\]
+
+Writing `P_-` for negative spectral projection,
+
+\[
+D=D_+-D_-,\qquad D_-=P_-W.                             \tag{50.2}
+\]
+
+`D_-` is unique Loewner-minimal positive correction among operators in functional calculus of
+`A`: `D+C>=0` iff `C` dominates `D_-` on negative spectrum.  For source evaluation vectors
+`Gamma(z)`, coherent finite-node completion is no longer arbitrary:
+
+\[
+K_-(z,w)
+=\langle W^{1/2}P_-\Gamma(w),W^{1/2}P_-\Gamma(z)\rangle. \tag{50.3}
+\]
+
+It is positive semidefinite on every node set and finite rank at every aperture.  Also
+`K_D+K_-=K_{D_+}>=0`.  This converts “coherent assembly” into one explicit source operator target.
+
+Strongest current conjecture is **`SUZUKI-NEGATIVE-PROJECTOR-TRIANGLE-IDENTITY`**: common-gauge
+reflected Euler--Gamma triangle plus exact Neumann projective holonomy, in fixed Xi-real/FE
+negative-light channel, equals `(50.3)` plus positive kernel.  If holonomy has positive/negative
+cross block, it must additionally pay Section 49 Schur tax.
+
+Proving this division-free triangle identity yields jump Pick positivity and RH.  Corpus cannot
+currently identify analytic triangle operator with weighted negative projector; this is actual
+remaining scientific frontier.
+
+Paper theorem/conjecture:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-negative-projector-coherent-completion.md`.
+
+RH is not yet proved.
+
+## 51. Actual triangle operator is Volterra phase, not admissible energy (2026-07-22)
+
+The projective correction identifies the right representation but still leaves its concrete
+source boundary map unnamed.  The physical triangle names it exactly.  For an even kernel `k` on
+`(-2a,2a)`, define
+
+\[
+(V_k u)(x)=\int_{-a}^x k(x-y)u(y)\,dy,
+\qquad H_k=-i(V_k-V_k^*),\qquad C_k=V_k+V_k^* .       \tag{51.1}
+\]
+
+Fubini gives the actual right triangle, not a model:
+
+\[
+T_{k,R}[u](z)=\widehat{V_k u}(z),\qquad
+-iT_{k,R}=\frac12\widehat{H_k u}-\frac i2\widehat{C_k u}. \tag{51.2}
+\]
+
+For Suzuki's odd phase-one source, reflection exchanges `V_k` and `V_k^*`.  Therefore
+
+\[
+\operatorname{Even}_z[-iT_{k,R}]=\frac12\widehat{H_k u},
+\qquad
+\operatorname{Odd}_z[-iT_{k,R}]=-\frac i2\widehat{C_k u}. \tag{51.3}
+\]
+
+This is decisive.  Admissibility `lambda<lambda_a` proves positivity of compressed symmetric
+pencil `C_lambda`, but `(51.3)` places it in already known sine-clock parity.  Entire RH-bearing
+even carrier is independent self-adjoint phase
+
+\[
+H_\lambda=H_g-\lambda H_{r_0},\qquad r_0(t)=-|t|/2.    \tag{51.4}
+\]
+
+Neumann phase is exactly rank one.  If `mu_j=integral y^j u(y)dy`, then
+
+\[
+(V_{r_0}-V_{r_0}^*)u(x)=-x\mu_0/2+\mu_1/2.
+\]
+
+On odd sources `mu_0=0`, so `H_(r_0)u=-i mu_1/2` is constant and
+
+\[
+\operatorname{Even}[-iT_{r_0,R}](z)
+=-\frac{W'(0)\sin(az)}{2z}.                            \tag{51.5}
+\]
+
+This recovers full-frequency projective holonomy exactly; there is no hidden Neumann positive
+completion left to extract.
+
+On a form-resolvent orbit `Au_lambda-lambda u_lambda=e`, phase pencil homogenizes as
+
+\[
+(H_g-\lambda H_{r_0})u_\lambda
+=(H_g-H_{r_0}A)u_\lambda+H_{r_0}e.                    \tag{51.6}
+\]
+
+Thus concrete operator acting on the homogeneous resolvent blade is relative causal phase defect
+
+\[
+\Omega=H_g-H_{r_0}A,                                  \tag{51.7}
+\]
+
+plus one rank-one homogeneous moment coordinate.  For product-resolvent state `v`, its exact
+division-free chord is
+
+\[
+\frac{\beta-\alpha}{2}
+\{D_z(\Omega v)D_z(Av)-D_z(\Omega Av)D_z(v)
+-D_z(H_{r_0}e)D_z(v)\}.                               \tag{51.8}
+\]
+
+Chord `(51.8)` is not complete affine-sewn carrier.  Put
+
+\[
+B_z=\tfrac12D_z\Omega,\quad c_z=\tfrac12D_z(H_{r_0}e),
+\quad x=B_zv,\ X=B_zAv,\ y=D_zv,\ Y=D_zAv.
+\]
+
+Actual weighted intercept has marked numerator
+
+\[
+Q_{\alpha,\beta}=(X+c_z)Y-(\alpha+\beta)xY+\alpha\beta xy, \tag{51.9}
+\]
+
+and denominator `(Y-beta y)(Y-alpha y)`.  Gauge `B_z -> B_z+delta D_z` fixes every
+Plucker minor but changes `(51.9)` by `delta` times denominator.  Thus phase operator is correct
+source input, while marked affine secant—not blade alone—is complete jump carrier.
+
+The Euler--Gamma phase is itself explicit source commutator.  Off diagonal, writing
+`q_g(t)=g(t)/|t|` and letting `Q_g` have kernel `q_g(x-y)`,
+
+\[
+H_g=-i[X,Q_g].                                         \tag{51.10}
+\]
+
+Actual frontier corpus cannot solve is now
+**`SUZUKI-MARKED-SECANT-CD-WELD`**: derive prime--Gamma Christoffel--Darboux/Green identity whose
+left side is Pick polarization of `(51.9)` coupled to global Xi multiplier and whose right side
+is positive source Gram.  One negative principal minor refutes it.  Proving it gives existing
+Loewner growth, jump Pick positivity, pole exclusion, and RH.
+
+This supersedes negative-projector and finite-Morse identities as canonical source producers.
+Those remain valid external majorants only if actual phase response independently dominates them.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-volterra-cartesian-phase-defect.md`;
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-projective-affine-secant-tensor-lift.md`.
+
+Lean certificate:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiVolterraCartesianPhaseDefect.lean`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiProjectiveAffineSecantTensor.lean`.
+
+RH remains open at exact source Green identity for causal commutator `(51.10)` in marked tensor
+`(51.9)`.
+
+## 52. Compound weld has one exact rooted halfgap debt (2026-07-22)
+
+Section 51's phrase “marked tensor plus Xi deficit” is now division-free and quantitative.  Form
+canonical local/global pair
+
+\[
+N=QT-SP,\qquad D=PT,
+\]
+
+where `(Q,P)` is marked Volterra secant pair and `(S,T)=(XiC',z^2XiC)`.  Existing compound theorem
+gives
+
+\[
+[N,D]_{z,w}=T_z\overline{T_w}[Q,P]_{z,w}
+-P_z\overline{P_w}[S,T]_{z,w}.                       \tag{52.1}
+\]
+
+Thus exact RH kernel is fixed across denominator zeros and common affine gauge cancels.
+
+New theorem resolves inertia.  Write
+
+\[
+\alpha=m-d,\quad\beta=m+d,\quad B_0=X+c,
+\quad U=B_0-mx,\quad V=Y-my,
+\quad F=B_0y-xY.
+\]
+
+Then unconditionally
+
+\[
+Q=UV-d^2xy+mF,\qquad P=V^2-d^2y^2,                  \tag{52.2}
+\]
+
+and compound numerator is exactly
+
+\[
+N=V(UT-SV)+d^2y(Sy-xT)+mFT.                          \tag{52.3}
+\]
+
+Symmetric coefficient form has diagonal
+
+\[
+\mathcal S(r,s)=(r-ms)^2-d^2s^2.                     \tag{52.4}
+\]
+
+Adding rooted rate `kappa*s^2` makes it nonnegative for every `(r,s)` iff
+`kappa>=d^2`; minimal completion is unique and equals one square.  For Suzuki dyadic pair
+`(-2L,-L)`, exact missing rate is
+
+\[
+d^2=L^2/4,                                            \tag{52.5}
+\]
+
+while pre-existing rooted coefficient is `alpha beta=2L^2`; completion raises it to
+`m^2=9L^2/4`.
+
+This is not abstract matrix bookkeeping.  On actual two-resolvent orbit,
+
+\[
+e=(A-m)^2v-d^2v,
+\]
+
+and relative causal phase obeys
+
+\[
+(H_g-H_{r_0}A)u_m+H_{r_0}e
+=H_gu_m-mH_{r_0}u_m-d^2H_{r_0}v.                     \tag{52.6}
+\]
+
+Exact debt lives in rooted Neumann phase of midpoint product-resolvent state.
+
+Hostile corpus audit rules out direct balanced-boundary producer: orthogonal, affine, every
+positive jet, growing jet, and cofinal von-Mangoldt--Gamma Grams all vanish on canonical packet
+`(+1/2,-1/2)`, while marked rank-one affine intercept remains arbitrary.  Root must remain before
+compression.
+
+Actual frontier corpus cannot solve is therefore
+**`SUZUKI-ROOTED-MIDPOINT-COMPOUND-GRAM`**:
+
+> derive atom-by-atom from explicit prime--Gamma source and pointed Ward identity that signed
+> global Xi term in `(52.1)` supplies exactly `d^2` times raw rooted Gamma--Bianchi Gram plus a
+> positive archimedean remainder, with common-prime Julia--Bianchi mixed block fixed by source.
+
+If identity holds, `(52.4)` completes to perfect joint square, `(52.1)` is positive Gram, existing
+Loewner/pole-tomography connector proves RH.  One prime-power coefficient mismatch or negative
+finite principal minor refutes conjecture.  No Herglotz premise, Xi-zero data, or fitted feature is
+allowed.
+
+Paper theorem/conjecture:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-marked-secant-midpoint-lorentz-completion.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-rooted-midpoint-compound-gram.md`.
+
+Lean certificate:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiMarkedSecantMidpointLorentzCompletion.lean`.
+
+RH is not yet proved.  Missing statement is now one source coefficient identity with exact amount,
+source coordinate, mixed block, and finite falsifiers.
+
+## 53. Atomwise rooted Gram is impossible; exact causal aperture-entry law (2026-07-22)
+
+Section 52's exact half-gap debt survives, but its proposed atomwise producer does not.  Suzuki's
+positive-half-line contribution of one prime power is delayed hinge
+
+\[
+g_n(t)=a_n(t-\ell_n)_+,
+\qquad a_n=\frac{\Lambda(n)}{\sqrt n},\quad \ell_n=\log n.       \tag{53.1}
+\]
+
+For source `v` on `[-a,a]`, define `W`, right triangle `T_(ell,a)`, and exterior
+`R_(ell,a)=M_ell W-T_(ell,a)`.  Direct Laplace integration gives
+
+\[
+M_\ell(z)=-\frac{e^{iz\ell}}{z^2}.                           \tag{53.2}
+\]
+
+For `0<=ell<=2a`, put `c=a-ell`,
+
+\[
+B_c=\int_{-a}^cv(y)dy,\qquad
+A_c=\int_{-a}^c(c-y)v(y)dy,\qquad
+W_{[c,a]}(z)=\int_c^av(y)e^{izy}dy.
+\]
+
+New exact cancellation-before-limit theorem is
+
+\[
+R_{\ell,a}(z)
+=-\frac{e^{iz\ell}}{z^2}W_{[c,a]}(z)
+-e^{iza}\left(\frac{A_c}{iz}+\frac{B_c}{z^2}\right).         \tag{53.3}
+\]
+
+At entry wall `ell=2a`, all boundary terms vanish and `(53.3)` joins continuously to pure global
+multiplier.  For every `ell>=2a`, local Volterra triangle is identically zero:
+
+\[
+T_{\ell,a}=0,\qquad R_{\ell,a}(z)=-e^{iz\ell}W(z)/z^2.        \tag{53.4}
+\]
+
+Thus every prime `n>e^(2a)` is invisible to finite local phase but remains in global Xi channel.
+Fixed finite common-prime carrier cannot equal complete compound source.
+
+Xi-real far-prime contribution to jump quotient is
+
+\[
+m_{n,a}(z)=-i\,a_n\frac{e^{iz\ell_n}}{z^2}.                   \tag{53.5}
+\]
+
+Its Pick diagonal changes sign inside upper half-plane.  At `z=i*pi/ell`, it is positive.  At
+phase-aligned point
+
+\[
+z=\frac{2\pi}{\ell}+i\frac{\pi}{\ell},
+\]
+
+one has `exp(iz ell)=exp(-pi)` and
+
+\[
+\operatorname{Im}m_{n,a}(z)
+=-a_ne^{-\pi}\frac{x^2-y^2}{(x^2+y^2)^2}<0.                 \tag{53.6}
+\]
+
+Since diagonal compound congruence multiplies by `|D(z)|^2`, every nonzero compound denominator
+preserves this strict negative sign.  Therefore no direct sum of positive prime-power atoms, and
+no atomwise Julia--Bianchi Gram plus separate positive archimedean remainder, can factor actual
+compound Bezoutian.
+
+Completed distribution confirms why separation is wrong.  With `lambda_k=2k+1/2`,
+
+\[
+-g''=e^{t/2}+e^{-t/2}-\sum_{k\ge0}e^{-\lambda_kt}
+-\sum_{n\ge2}\frac{\Lambda(n)}{\sqrt n}\delta_{\log n}.      \tag{53.7}
+\]
+
+Prime atoms and polar--Gamma source have opposite distributional signs before any positivity.
+Together with cofinal critical Bianchi divergence, `(53.6)` conclusively falsifies
+`SUZUKI-ROOTED-MIDPOINT-COMPOUND-GRAM` in atomwise/direct-sum form.  Exact `d^2` Lorentz debt is
+unchanged.
+
+Actual frontier corpus cannot solve is now
+**`SUZUKI-CAUSAL-APERTURE-ENTRY-COMPOUND-WELD`**:
+
+> Insert actual resolvent-dependent deficiency source into every finite-delay boundary law
+> `(53.3)`, retain complete far-prime tail `(53.4)` joined to exact polar--Gamma channel `(53.7)`,
+> assemble inside canonical compound Bezoutian before any Gram or cofinal limit, and prove
+> assembled kernel pays exact rooted half-gap debt `d^2` and is positive.
+
+This is collective, source-nonlinear Ward/CD identity.  Atomwise positivity is now a formal
+falsifier, not a permitted ansatz.  Proving collective weld yields compound Pick positivity and
+existing pole tomography gives RH.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-causal-hinge-boundary-tail-green-law.md`.
+
+Lean certificate:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCausalHingeBoundaryTailGreenLaw.lean`.
+
+Lean proves exact closed-form boundary cancellation, entry wall, both Pick signs, and compound
+denominator sign preservation.  Module build passed `9015/9015`; axiom audit is standard
+`propext`, `Classical.choice`, `Quot.sound`.  RH is not yet proved.
+
+## 54. Compound denominator converts screw exterior to Weil exterior plus Robin current
+
+Section 53 forced collective prime--Gamma assembly but left its canonical source coordinate
+unnamed.  New exact Green identity identifies it.
+
+Let `g` be Suzuki screw kernel, `K=-g''` completed Weil distribution, `v` compactly supported on
+`[-a,a]`,
+
+\[
+U(x)=\int_{-a}^a g(x-y)v(y)dy,
+\qquad W(z)=\int_{-a}^a v(y)e^{izy}dy,
+\]
+
+and let `R_g=M_gW-T_(g,R)` be physical right screw exterior.  Define causal Weil exterior
+
+\[
+E_K[v](z)=\int_{-a}^a v(y)e^{izy}
+ \int_{a-y}^{\infty}K(t)e^{izt}dt\,dy
+=\int_a^\infty(K*v)(x)e^{izx}dx.                     \tag{54.1}
+\]
+
+Two integrations by parts in source-native half-plane give unconditional identity
+
+\[
+\boxed{
+z^2R_g[v](z)
+=e^{iaz}\bigl(izU(a)-U'(a)\bigr)+E_K[v](z).}
+                                                                  \tag{54.2}
+\]
+
+Proof uses tail primitive
+
+\[
+\int_b^\infty g(t)e^{izt}dt
+=-\frac{e^{izb}g(b)}{iz}
++\frac{e^{izb}g'(b)}{(iz)^2}
+-\frac1{(iz)^2}\int_b^\infty K(t)e^{izt}dt.          \tag{54.3}
+\]
+
+Set `b=a-y`; boundary phases collapse to `e^(iaz)` and source integrals become `U(a),U'(a)`.
+Multiplying by `z^2` proves `(54.2)`.
+
+This is exactly matched to global projective denominator `T=z^2XiC`:
+
+\[
+(z^2\Xi_C)R_g
+=\Xi_C\left[e^{iaz}(izU(a)-U'(a))+E_K\right].         \tag{54.4}
+\]
+
+No division by Xi or characteristic is used.  Compound denominator `P*T` adds only factor `P`.
+
+Delayed hinge `g(t)=(t-ell)_+` has `K=-delta_ell`.  With Section 53 moments,
+
+\[
+U(a)=A_c,\quad U'(a)=B_c,\quad
+E_K=-e^{iz\ell}W_{[c,a]},                             \tag{54.5}
+\]
+
+so `(54.2)` reproduces boundary--tail law exactly:
+
+\[
+z^2R_{\ell,a}=e^{iaz}(izA_c-B_c)-e^{iz\ell}W_{[c,a]}.\tag{54.6}
+\]
+
+For form shift `k_lambda=g-lambda*r_0`, `-r_0''=delta_0`, hence
+
+\[
+-k_\lambda''=K-\lambda\delta_0.                      \tag{54.7}
+\]
+
+Outside compact source interval, `(delta_0*v)(x)=0`; direct shift delta contributes nothing to
+causal Weil exterior.  All shift dependence lives in resolvent state `v_lambda` and Robin current.
+Therefore exact midpoint `d^2` Neumann debt is a boundary current, not critical raw Bianchi bulk.
+
+Actual frontier corpus cannot solve is sharpened to
+**`SUZUKI-MARKED-WEIL-ROBIN-CD`**:
+
+> At one recurrence-selected aperture and admissible midpoint pair, insert actual two-resolvent
+> source into `(54.2)`, affine-sew marked Robin currents retaining exact `d^2` term, polarize causal
+> exterior of already-completed signed Weil distribution, and prove resulting compound
+> Bezoutian is positive Green Gram.
+
+Prime atoms may not be split (Section 53); Robin current may not be dropped (it contains `d^2`);
+signed Weil exterior may not be replaced by positive part (that is RH-equivalent).  Proving this
+single marked CD identity gives compound Pick positivity and existing pole tomography proves RH.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-causal-weil-robin-green-identity.md`.
+
+Lean module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCausalWeilRobinGreenIdentity.lean`.
+
+RH is not yet proved; missing sign is now localized to polarization of exact two-channel right
+side of `(54.2)`, not an unspecified prime--Gamma Gram.
+
+Formal audit: targeted SOTA build passed `9448/9448`; axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`; new module has no forbidden declarations.  Global lint is
+blocked only by unrelated concurrently added unreachable module
+`GaloisForLFunctions.RHTower.MobiusLaplaceCriticalDilationPrimeEscapeLaw`.
+
+## 55. Affine sewing cannot remove the universal far-prime channel
+
+Section 54 localized exact source to Robin boundary current plus completed Weil exterior, but one
+possible escape remained: perhaps two admissible shifts cancel far primes when affine-sewn.  Exact
+algebra rules this out.
+
+For deficiency characteristics `W_alpha,W_beta`, target `gamma`, define
+
+\[
+P(z)=(\beta-\alpha)W_\alpha(z)W_\beta(z),
+\]
+
+and affine sewn channel
+
+\[
+S_\gamma(C_\alpha,C_\beta)
+=(\beta-\gamma)W_\beta C_\alpha
+ -(\alpha-\gamma)W_\alpha C_\beta .                 \tag{55.1}
+\]
+
+Every common normalized channel obeys division-free identity
+
+\[
+\boxed{S_\gamma(mW_\alpha,mW_\beta)=mP.}             \tag{55.2}
+\]
+
+For a far prime-power delay `ell=log n>=2a`, its Weil exterior is
+
+\[
+E_\lambda(\ell,z)=-c_\ell e^{iz\ell}W_\lambda(z),
+\qquad c_\ell=\frac{\Lambda(n)}{\sqrt n}.
+\]
+
+Thus
+
+\[
+S_\gamma(E_\alpha(\ell),E_\beta(\ell))
+=-c_\ell e^{iz\ell}P(z),                             \tag{55.3}
+\]
+
+and, in the source-native convergence half-plane,
+
+\[
+S_\gamma(E_\alpha^{\rm far},E_\beta^{\rm far})
+=-P(z)\sum_{\log n\ge2a}\frac{\Lambda(n)}{\sqrt n}e^{iz\log n}. \tag{55.4}
+\]
+
+Normalized far von-Mangoldt tail is therefore universal: independent of shifts, deficiency
+states, and affine target.  This is not only noncancellation.  Common-factor Hermitian Bezoutian
+obeys
+
+\[
+[Pm,P]_{z,w}=P(z)\overline{P(w)}
+              \bigl(m(z)-\overline{m(w)}\bigr).       \tag{55.5}
+\]
+
+Affine sewing acts only by congruence.  For Xi-real atom
+`m_ell=-i c_ell e^(iz ell)/z^2`, its Pick diagonal is strictly negative at
+`z=2pi/ell+i*pi/ell`; `(55.5)` preserves that sign whenever `P(z) != 0`.  Hence two-shift sewing
+cannot turn far atoms into an atomwise/direct-sum Gram.
+
+Actual frontier corpus cannot solve is now **`SUZUKI-CAUSAL-ENTRY-SCHUR-WARD`**:
+
+> At one recurrence-selected aperture and admissible midpoint pair, form the complete
+> division-free channel from marked Robin current, near-prime aperture-entry terms, universal far
+> von-Mangoldt tail, and polar--Gamma exterior.  Construct a source operator `B_a` such that the
+> full compound kernel—not its prime summands—equals `B_a^*B_a`, paying exact midpoint `d^2` plus
+> holonomy Schur tax.
+
+Any successful `B_a` must mix prime delays with polar--Gamma channel; phase-aligned sign theorem
+falsifies diagonal prime coordinates.  One negative finite-node principal minor after complete
+assembly falsifies conjecture.  Proving identity gives compound Pick positivity, and existing pole
+tomography then gives RH.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-affine-sewn-weil-robin-far-tail-factorization.md`.
+
+Lean module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiAffineSewnWeilRobinFarTailFactorization.lean`.
+
+Formal audit: direct source check and targeted SOTA build `9450/9450` pass.  Axiom audit reports
+only `propext`, `Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean.  RH is
+not yet proved.
+
+## 56. Exact Suzuki isometry is overkill: semibounded Ward defect suffices
+
+Section 55 left exact positive Green-Gram identity as open core.  Corpus rectangular completeness
+allows a strictly weaker target.
+
+Fix `L>0` and put
+
+\[
+Q_L(n)=\Re\,\mathrm{xiScrewWindowCurvature}(L,\log n).
+\tag{56.1}
+\]
+
+Lean corpus already proves RH equivalent to eventual lower boundedness of `Q_L(n)` on admissible
+nodes `L<=log(n)/2`; under false RH, `Q_L` is cofinally unbounded below.
+
+Let `R_L(n)` be any explicit source vector, in particular the rectangular combination to be made
+from Suzuki's unconditional pole-cancelled `L^2` screw vectors and exact affine-sewn Weil--Robin
+channel.  Normalize source energy and defect by
+
+\[
+E_L(n)=\|R_L(n)\|^2\ge0,
+\qquad \Delta_L(n)=Q_L(n)-E_L(n).                         \tag{56.2}
+\]
+
+If constants `B,N0` satisfy
+
+\[
+B\le\Delta_L(n)
+\quad(n\ge N_0,\;L\le\log(n)/2),                         \tag{56.3}
+\]
+
+then
+
+\[
+B\le\Delta_L(n)\le\Delta_L(n)+E_L(n)=Q_L(n).            \tag{56.4}
+\]
+
+Thus `Q_L` is eventually bounded below and existing formal rectangular theorem proves RH.  Exact
+isometry `Delta_L=0`, orthogonality of zero fibers, and exact CD/Green Gram are unnecessary.
+
+Hostile converse is equally sharp.  If RH is false, then for every nonnegative energy `E` and
+every `B,N0`, some admissible `n>=N0` has `Q_L(n)<B`, hence
+
+\[
+Q_L(n)-E(n)\le Q_L(n)<B.                                 \tag{56.5}
+\]
+
+False RH forces Ward defect of every positive source square cofinally to `-infinity`; positive
+energy cannot conceal divisor obstruction inside semibounded error.
+
+Actual frontier corpus cannot solve is now
+**`SUZUKI-RECTANGULAR-WARD-DEFECT-SEMIBOUNDED`**:
+
+> For one fixed width, construct rectangular source vector from marked Robin current, near-entry
+> terms, universal far von-Mangoldt tail, and polar--Gamma exterior using Suzuki's unconditional
+> pole-cancelled source realization.  Prove only uniform lower bound `(56.3)` on logarithmic
+> aperture mesh.
+
+This admits nonzero completion error when its quadratic values on the logarithmic orbit are
+uniformly lower bounded; trace-class or finite-rank membership alone does not imply that bound.
+Target remains materially weaker than previous exact factorization.  Far atoms still cannot be
+diagonalized; source vector must mix them with Gamma channel.  One sequence with
+`Delta_L(n)->-infinity` falsifies conjecture and, by `(56.5)`, is exact signature of off-critical
+divisor.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-rectangular-ward-defect-semiboundedness.md`.
+
+Lean module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiRectangularWardDefectBoundedness.lean`.
+
+Direct source check and targeted SOTA build `9451/9451` pass.  Axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean.  RH is not
+yet proved: missing theorem is now one explicit uniform lower bound, not exact source isometry.
+
+## 57. Corpus correction: RH-bearing screw kernel lives on Suzuki completion
+
+Sections 48--56 derived valid algebraic consequences of proposed source identities, but none
+constructs the required source or proves an RH-bearing sign.  In particular, Section 56's
+semibounded-defect statement is a criterion: its missing lower bound is already strong enough to
+exclude the off-critical divisor.  It must not be reported as resolution of the frontier.
+
+A source audit of Suzuki's 2026 paper exposes a more immediate correctness issue in the older CCM
+kernel route.  Fix aperture `a` and `mu<lambda_a=inf spec(A_a)`.  Suzuki forms
+
+\[
+S_{a,\mu}=G_a-\mu(-\Delta_N)^{-1}
+\]
+
+and completes the smooth zero-mean derivative core in its positive norm.  The resulting space
+`H(S_(a,mu))` satisfies
+
+\[
+\overline D:H(A_a-\mu I)\overset{\sim}{\longrightarrow}H(S_{a,\mu}),
+\qquad
+A_a=\overline D^{*}\widetilde G_a\overline D,            \tag{57.1}
+\]
+
+where `Gtilde_a` is the bounded extension of the raw continuous-kernel screw operator.  Suzuki
+states explicitly
+
+\[
+H(S_{a,\mu})\not\subset L^2(-a,a).                       \tag{57.2}
+\]
+
+Therefore the generalized zero fiber is
+
+\[
+\ker A_a\cong\ker\bigl(\widetilde G_a:H(S_{a,\mu})
+                  \to H(S_{a,\mu})\bigr),                \tag{57.3}
+\]
+
+not automatically `ker(G_a:L2_0->L2_0)`.  Earlier handover statements that promoted raw screw
+injectivity to an RH equivalence are wrong without an additional regularity theorem.  The
+eigenfunction-variable square Evans determinant remains completion-safe because it starts with
+the original `L2` eigenfunction of `A_a`.
+
+### Exact completion-corona theorem
+
+Let
+
+\[
+j_a:L^2_0(-a,a)\hookrightarrow H(S_{a,\mu})
+\]
+
+be the canonical injection.  Strict positivity of `S_(a,mu)` makes it injective, and extension
+from the common core gives
+
+\[
+\widetilde G_a j_a=j_aG_a.                               \tag{57.4}
+\]
+
+Hence
+
+\[
+\boxed{
+j_a(\ker G_a)=\ker\widetilde G_a\cap j_a(L^2_0).}         \tag{57.5}
+\]
+
+Proof is two lines: `(57.4)` gives forward inclusion; reverse inclusion follows from injectivity
+of `j_a`. Combining `(57.5)` with `(57.1)` produces exact set partition of zero modes
+
+\[
+\ker A_a=Z_a^{\rm regular}\ \dot\cup\ Z_a^{\rm corona}, \tag{57.6}
+\]
+
+where regular means `Dbar v` lies in `j_a(L2_0)` and corona means it does not.  If RH is false,
+continuity of lowest aperture eigenvalue supplies a first `a_*` with nonzero completed kernel.  If
+raw `G_(a_*)` is injective, `(57.5)` forces every nonzero vector in that first zero fiber into
+corona. Thus raw unique continuation can succeed and RH can still fail; completion regularity is
+not optional.
+
+### New boundary indicial law
+
+The corona has a concrete analytic origin.  Put `r=dist(x,partial I)`, `L=-log r`, and
+`phi_tau(r)=L^(-tau)` near one endpoint.  For the principal one-dimensional logarithmic jump
+operator, exterior killing and interior tail have leading terms
+
+\[
+L^{1-\tau},
+\qquad
+-\frac{\tau}{1-\tau}L^{1-\tau},                          \tag{57.7}
+\]
+
+respectively.  Therefore
+
+\[
+L_{\log}\phi_\tau(r)
+=C_{\log}\frac{1-2\tau}{1-\tau}L^{1-\tau}
+ +o(L^{1-\tau}),\qquad C_{\log}>0.                       \tag{57.8}
+\]
+
+The unique leading indicial cancellation is
+
+\[
+\boxed{\tau=\tfrac12.}                                   \tag{57.9}
+\]
+
+This explains exact threshold in Chen--Weth barriers: their proved estimate gives
+`O(log^(-tau))` for every `tau<1/2`, and its leading barrier coefficient vanishes at `1/2`.
+Current logarithmic-Laplacian literature proves boundedness and zero boundary continuity but
+leaves optimal rate open.  Equation `(57.8)` predicts critical eigenmode layer
+
+\[
+v(a-r)=c_+L^{-1/2}+\cdots,
+\qquad
+v'(a-r)\sim\frac{c_+}{2rL^{3/2}},                        \tag{57.10}
+\]
+
+whose derivative is not in `L2`.  This is exactly the missing completion-corona channel, not a
+technical artifact.
+
+### Exact Volterra boundary normal form
+
+The half-log root comes from an exact identity. Let `u` vanish outside `(0,1)`, put
+
+\[
+(Ju)(r)=\int_{r-1}^{r+1}\frac{u(r)-u(y)}{|r-y|}\,dy,
+\qquad r=e^{-L},\qquad F(L)=u(e^{-L}).                   \tag{57.10a}
+\]
+
+Changing variables `y=r e^(-s)` below `r` and `y=r e^s` above `r` gives
+
+\[
+(Ju)(e^{-L})
+=2LF(L)-\int_0^L F(t)\,dt+(RF)(L)
+ -\log(1-e^{-L})F(L),                                    \tag{57.10b}
+\]
+
+where
+
+\[
+\begin{aligned}
+(RF)(L)
+={}&\int_0^\infty\frac{F(L)-F(L+s)}{e^s-1}\,ds\\
+ &+\int_0^L\frac{F(L)-F(L-s)}{e^s-1}\,ds .              \tag{57.10c}
+\end{aligned}
+\]
+
+This is an equality, not an estimate. For a cut-off `F(L)=L^(-tau)`, two integrals in
+`(57.10c)` combine into an exponentially weighted second difference, so
+
+\[
+(RF)(L)=O(L^{-\tau-2})+O(e^{-L/2}).                      \tag{57.10d}
+\]
+
+It therefore proves indicial law `(57.8)` directly. More importantly, with
+
+\[
+H(L)=\sqrt L\,F(L),
+\]
+
+the leading block obeys
+
+\[
+\frac d{dL}\left(2LF(L)-\int_0^L F(t)dt\right)
+=F(L)+2LF'(L)=2\sqrt L\,H'(L).                           \tag{57.10e}
+\]
+
+Thus an equation `(Ju)(e^-L)=Phi(L)` has exact trace equation
+
+\[
+2\sqrt L\,H'(L)
+=\Phi'(L)-(RF)'(L)
+ +\frac d{dL}\left[\log(1-e^{-L})F(L)\right].           \tag{57.10f}
+\]
+
+Whenever right side divided by `sqrt(L)` is integrable, canonical boundary trace
+
+\[
+\beta_+(u)=\lim_{L\to\infty}\sqrt L\,u(e^{-L})           \tag{57.10g}
+\]
+
+exists; reflection gives `beta_-`.  Exact Suzuki lower-order terms have favorable structure:
+zeroth-order multiplication loses one inverse-log order, finite translations sample other members
+of same finite seam family, and regular polar--Gamma convolution is endpoint-smooth.  Remaining
+boundary theorem is now finite simultaneous log-Dini bootstrap for translated germs, not discovery
+of boundary exponent or trace variable.
+
+### New source-specific conjecture
+
+Suzuki zero equation contains visible translations
+
+\[
+-\sum_{n\le e^{2a}}\frac{\Lambda(n)}{\sqrt n}
+  \bigl(v(x-\log n)+v(x+\log n)\bigr).                   \tag{57.11}
+\]
+
+Endpoint layer `(57.10)` is transported to interior seam `x=a-log n`.  Division by principal log
+symbol raises one-sided logarithmic exponent by one, predicting
+
+\[
+v(x)=C_a\frac{\Lambda(n)}{\sqrt n}c_+
+ \bigl(-\log|x-(a-\log n)|\bigr)^{-3/2}+\cdots .          \tag{57.12}
+\]
+
+The exponent shift in `(57.12)` is not merely heuristic. A one-sided log-conormal germ with
+
+\[
+\widehat h(\xi)
+=\frac{A e^{-ix_0\xi}}{i\xi}(\log|\xi|)^{-\alpha}
+ +o\!\left(|\xi|^{-1}(\log|\xi|)^{-\alpha}\right)
+\]
+
+divided by `c(xi)=kappa log|xi|+O(1)`, `kappa>0`, has leading transform
+
+\[
+\frac{A e^{-ix_0\xi}}{\kappa i\xi}
+(\log|\xi|)^{-(\alpha+1)}.
+\]
+
+The one-sided slowly varying Fourier Abelian law returns a spatial germ of exponent
+`alpha+1`. Thus inverse logarithmic ellipticity raises seam order by exactly one and direct
+coefficient is nonzero whenever `Lambda(n)c_+` is nonzero. Bounded oscillatory prime--Gamma terms
+enter only at later inverse-log orders.
+
+One resonance must be retained. Same-end seams are separated because `log n` is injective in
+`n`, but opposite-end direct seams collide precisely when
+
+\[
+a-\log n=-a+\log m
+\iff e^{2a}=mn.                                           \tag{57.12a}
+\]
+
+These discrete apertures do not create direct cancellation. The right-end layer transported by
+`v(x+log n)` occupies the left punctured side of collision point; left-end layer transported by
+`v(x-log m)` occupies right punctured side. Restricting to two half-neighborhoods recovers two
+coefficients separately, so parity cannot erase either oriented germ. Later iterated collisions
+still require audit by log order and exact Dirichlet convolution.
+
+This yields **`SUZUKI-COMPLETED-LOG-SEAM-NO-RETURN`**:
+
+> For actual polar--Gamma symbol and exact von-Mangoldt coefficients, logarithmic Dirichlet
+> reconstruction of every finite characteristic packet has full two-ended half-log expansion.
+> If square Evans residual vanishes, endpoint and propagated prime-seam coefficients satisfy a
+> triangular two-ended transport system, and that system has only zero solution.
+
+The decisive chain is
+
+\[
+\det N_{a,0}=0
+\Rightarrow\text{nonzero characteristic packet}
+\Rightarrow\text{half-log endpoint/seam state}
+\Rightarrow\text{two-ended transport contradiction}.    \tag{57.13}
+\]
+
+Generic logarithmic ellipticity cannot prove this: tuned log-order Dirichlet symbols can have
+special-aperture zero modes.  Proof must retain exact `Lambda(n)/sqrt(n)` shifts and polar--Gamma
+remainder.  Falsifiers are explicit: a flat boundary datum invisible to all half-log coefficients,
+vanishing direct seam coefficient, or a nonzero packet satisfying exact two-ended system.
+
+Research card:
+
+- `docs/drafts/pipeline/1-in-progress/suzuki-completed-zero-mode-corona-seam-law.md`.
+
+No Lean wrapper was added.  Formal tree lacks Suzuki completed form and logarithmic boundary
+calculus; abstractly formalizing `(57.5)` would not certify source factorization `(57.1)` or seam
+transport `(57.12)`.  RH is not proved.  Actual corpus frontier is now exact: prove full
+half-logarithmic boundary expansion, derive nonresonant and resonant prime-seam transport blocks,
+and prove their two-ended injectivity, equivalently `det N_(a,0)!=0` for every aperture.

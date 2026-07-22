@@ -88,6 +88,71 @@ theorem continuedHurwitzPairDifferentiallyDependent_iff_monoScalar_eq
       simpa [continuedHurwitzPairExponent] using hq
     simp at hfalseTrue
 
+/-! ## Rank-two functional-equation character -/
+
+/-- Trace of the determinant-one rank-two character obtained by pairing a Hurwitz monodromy
+eigencharacter with its inverse. -/
+def hurwitzFECharacterTrace (s : ℂ) : ℂ :=
+  monoScalar s + (monoScalar s)⁻¹
+
+/-- Determinant of the same paired character. -/
+def hurwitzFECharacterDet (s : ℂ) : ℂ :=
+  monoScalar s * (monoScalar s)⁻¹
+
+/-- The paired character has determinant one at every exponent. -/
+theorem hurwitzFECharacterDet_eq_one (s : ℂ) :
+    hurwitzFECharacterDet s = 1 := by
+  rw [hurwitzFECharacterDet, mul_inv_cancel₀]
+  dsimp [monoScalar]
+  exact Complex.exp_ne_zero _
+
+/-- Algebraicity of the determinant-one rank-two trace already forces algebraicity of each
+monodromy eigencharacter.  The converse follows by closure of algebraic numbers under inversion
+and addition. -/
+theorem hurwitzFECharacterTrace_isAlgebraic_iff_monoScalar_isAlgebraic (s : ℂ) :
+    IsAlgebraic ℚ (hurwitzFECharacterTrace s) ↔
+      IsAlgebraic ℚ (monoScalar s) := by
+  constructor
+  · intro htrace
+    let q : ℂ := monoScalar s
+    let T : ℂ := q + q⁻¹
+    have hq0 : q ≠ 0 := by
+      dsimp [q, monoScalar]
+      exact Complex.exp_ne_zero _
+    change IsAlgebraic ℚ T at htrace
+    have hfour : IsAlgebraic ℚ (4 : ℂ) := by
+      simpa using
+        (isIntegral_algebraMap : IsIntegral ℚ (algebraMap ℚ ℂ (4 : ℚ))).isAlgebraic
+    have hdisc : IsAlgebraic ℚ (T ^ 2 - 4) := htrace.pow 2 |>.sub hfour
+    have hid : (2 * q - T) ^ 2 = T ^ 2 - 4 := by
+      dsimp [T]
+      field_simp [hq0]
+      ring
+    have hrpow : IsAlgebraic ℚ ((2 * q - T) ^ 2) := by
+      rw [hid]
+      exact hdisc
+    have hr : IsAlgebraic ℚ (2 * q - T) :=
+      IsAlgebraic.of_pow (by norm_num) hrpow
+    have hhalf : IsAlgebraic ℚ (1 / 2 : ℂ) := by
+      simpa using
+        (isIntegral_algebraMap : IsIntegral ℚ
+          (algebraMap ℚ ℂ (1 / 2 : ℚ))).isAlgebraic
+    have hqeq : q = ((2 * q - T) + T) * (1 / 2 : ℂ) := by ring
+    change IsAlgebraic ℚ q
+    rw [hqeq]
+    exact (hr.add htrace).mul hhalf
+  · intro hq
+    exact hq.add hq.inv
+
+/-- Positive obstruction: at a nonreal algebraic Arakelov coordinate, even the unlabelled
+determinant-one rank-two trace is transcendental. -/
+theorem hurwitzFECharacterTrace_transcendental_of_arakelovW_algebraic_of_im_ne_zero
+    {s : ℂ} (hw : IsAlgebraic ℚ (arakelovW s)) (him : s.im ≠ 0) :
+    Transcendental ℚ (hurwitzFECharacterTrace s) := by
+  intro htrace
+  exact monoScalar_transcendental_of_arakelovW_algebraic_of_im_ne_zero hw him
+    ((hurwitzFECharacterTrace_isAlgebraic_iff_monoScalar_isAlgebraic s).mp htrace)
+
 /-- Source-value hypothesis: every hypothetical right-half Xi zero has algebraic Arakelov
 coordinate and its continued-Hurwitz function is differentially dependent with some nonintegral
 anchor whose monodromy character is algebraic. -/
@@ -122,6 +187,64 @@ theorem riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzDependentOnAlgebraic
     RiemannHypothesis :=
   riemannHypothesis_of_xiRightArakelovHurwitzAlgebraic
     (xiRightArakelovHurwitzAlgebraic_of_dependentOnAlgebraicCharacter h)
+
+/-- Under RH the right-half source predicate holds vacuously: divisor support contains no point in
+`Re s > 1/2`.  This identifies the predicate as an RH certificate, not a source construction. -/
+theorem xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    XiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter := by
+  intro rho hrho
+  exact False.elim ((rh_iff_xi_ne_zero_right.mp hRH)
+    (rho : ℂ) (mem_rightHalf.mpr hrho)
+    (xi_eq_zero_of_mem_divisor_support rho))
+
+/-- **Exact classification of the algebraic-character dependence interface.**  Its forward
+direction is the Arakelov--Hurwitz transcendence collision; its reverse direction is right-half
+vacuity under RH. -/
+theorem xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter_iff_riemannHypothesis :
+    XiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter,
+    xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter_of_riemannHypothesis⟩
+
+/-- Rank-two trace version of the source-value hypothesis.  This asks a source object to expose an
+algebraic characteristic-polynomial coefficient, rather than a chosen monodromy eigenvalue. -/
+def XiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace : Prop :=
+  ∀ rho : XiDivisorSupport, 1 / 2 < (rho : ℂ).re →
+    IsAlgebraic ℚ (arakelovW (rho : ℂ)) ∧
+      ∃ tau : ℂ,
+        (∀ m : ℤ, tau ≠ (m : ℂ)) ∧
+        IsAlgebraic ℚ (hurwitzFECharacterTrace tau) ∧
+        ContinuedHurwitzPairDifferentiallyDependent (rho : ℂ) tau
+
+/-- The determinant-one trace hypothesis is exactly the original algebraic-eigencharacter
+hypothesis. -/
+theorem xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace_iff_character :
+    XiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace ↔
+      XiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter := by
+  constructor
+  · intro h rho hrho
+    obtain ⟨hw, tau, htau, htrace, hdep⟩ := h rho hrho
+    exact ⟨hw, tau, htau,
+      (hurwitzFECharacterTrace_isAlgebraic_iff_monoScalar_isAlgebraic tau).mp htrace,
+      hdep⟩
+  · intro h rho hrho
+    obtain ⟨hw, tau, htau, hq, hdep⟩ := h rho hrho
+    exact ⟨hw, tau, htau,
+      (hurwitzFECharacterTrace_isAlgebraic_iff_monoScalar_isAlgebraic tau).mpr hq,
+      hdep⟩
+
+/-- Rank-two algebraic-character trace chain to RH. -/
+theorem riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace
+    (h : XiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter
+    (xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace_iff_character.mp h)
+
+/-- Exact classification of the determinant-one rank-two trace interface. -/
+theorem xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace_iff_riemannHypothesis :
+    XiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace ↔ RiemannHypothesis := by
+  rw [xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicFETrace_iff_character,
+    xiRightArakelovAlgebraicHurwitzDependentOnAlgebraicCharacter_iff_riemannHypothesis]
 
 /-- Add one exponent to a finite Hurwitz anchor family. -/
 def continuedHurwitzAugmentedExponent {I : Type*}
@@ -176,6 +299,37 @@ theorem exists_anchor_monoScalar_eq_of_continuedHurwitzDependentOverAnchors
     | none => exact hs m
     | some i => exact hanchor i m
 
+/-- Exact finite-closure classification: over a nonintegral monodromy-separated anchor family,
+adjoining one continued-Hurwitz exponent destroys differential independence exactly when its
+monodromy character repeats an anchor character. -/
+theorem continuedHurwitzDifferentiallyDependentOverAnchors_iff_exists_monoScalar_eq
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {s : ℂ} {anchor : I → ℂ}
+    (hs : ∀ m : ℤ, s ≠ (m : ℂ))
+    (hanchor : ∀ i m, anchor i ≠ (m : ℂ))
+    (hinj : Function.Injective (fun i => monoScalar (anchor i))) :
+    ContinuedHurwitzDifferentiallyDependentOverAnchors s anchor ↔
+      ∃ i, monoScalar s = monoScalar (anchor i) := by
+  constructor
+  · exact exists_anchor_monoScalar_eq_of_continuedHurwitzDependentOverAnchors
+      hs hanchor hinj
+  · rintro ⟨i, hi⟩ hDI
+    letI := isDomain_upperEndAnalyticSubring
+    letI : Algebra ℤ upperEndAnalyticSubring := Ring.toIntAlgebra _
+    letI : Algebra ℤ upperEndMeroField := Ring.toIntAlgebra _
+    letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
+    letI := upperEndMeroFieldDifferential
+    have hAugInj := (continued_hurwitz_intrinsic_residue_differentialMatroid_law
+      (continuedHurwitzAugmentedExponent s anchor) (by
+        intro o m
+        cases o with
+        | none => exact hs m
+        | some j => exact hanchor j m)).mp hDI
+    have hnoneSome : (none : Option I) = some i := by
+      apply hAugInj
+      simpa [continuedHurwitzAugmentedExponent] using hi
+    simp at hnoneSome
+
 /-- A finite differential-matroid closure relation over algebraic-character anchors transfers
 algebraicity to the captured monodromy character. -/
 theorem monoScalar_isAlgebraic_of_continuedHurwitzDependentOverAlgebraicAnchors
@@ -192,6 +346,23 @@ theorem monoScalar_isAlgebraic_of_continuedHurwitzDependentOverAlgebraicAnchors
       hs hanchor hinj hdep
   rw [hi]
   exact halg i
+
+/-- A nonreal point with algebraic Arakelov coordinate cannot lie in the differential closure of
+any finite nonintegral monodromy-separated algebraic-character anchor atlas. -/
+theorem not_continuedHurwitzDependentOverAlgebraicAnchors_of_arakelovW_algebraic_of_im_ne_zero
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {s : ℂ} {anchor : I → ℂ}
+    (hw : IsAlgebraic ℚ (arakelovW s))
+    (him : s.im ≠ 0)
+    (hs : ∀ m : ℤ, s ≠ (m : ℂ))
+    (hanchor : ∀ i m, anchor i ≠ (m : ℂ))
+    (hinj : Function.Injective (fun i => monoScalar (anchor i)))
+    (halg : ∀ i, IsAlgebraic ℚ (monoScalar (anchor i))) :
+    ¬ ContinuedHurwitzDifferentiallyDependentOverAnchors s anchor := by
+  intro hdep
+  exact monoScalar_transcendental_of_arakelovW_algebraic_of_im_ne_zero hw him
+    (monoScalar_isAlgebraic_of_continuedHurwitzDependentOverAlgebraicAnchors
+      hs hanchor hinj halg hdep)
 
 /-- **Finite-anchor value-relation chain to RH.** If every hypothetical right-half Xi-indexed
 Hurwitz function lies in the differential-matroid closure of one finite algebraic-character anchor

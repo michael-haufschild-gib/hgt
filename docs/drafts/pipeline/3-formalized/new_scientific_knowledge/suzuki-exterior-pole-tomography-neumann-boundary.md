@@ -10,6 +10,20 @@
 
 ## Result
 
+> **Coordinate correction (2026-07-22).** `G_eta` is Xi-real normalized multiplier, whereas
+> Suzuki's physical right multiplier is `iG_eta`.  Therefore interval input `I` in
+> `E_eta=G_eta W-I` is `-i` times physical right triangle, and exact one-sided form-shift map is
+> `eta=-i lambda/2`.  Pole order/tomography are invariant under this scalar; physical central-flux
+> phases are not.  See `suzuki-one-sided-coordinate-phase-normalization.md`.
+
+> **Transform-category correction (2026-07-21).**
+> `suzuki-one-sided-carleman-exterior-seam.md` proves that Suzuki's cited multiplier is a
+> positive-half-line Fourier--Carleman transform, not one bilateral Fourier transform of the even
+> screw kernel.  The pole-tomography algebra below remains correct for a selected **right
+> Carleman sheet**, with `I` interpreted as its entire right convolution triangle.  It is false to
+> interpret `E_eta,W,I` as the sum of both physical exterior half-lines: right and left Xi
+> multipliers are opposite and cancel identically in that bilateral sum.
+
 Suzuki's printed Section 8.3 factorization is algebraically self-referential: after defining
 `hhat_±=ghat vhat_±`, it places the original `vhat` bracket, rather than the `hhat` bracket, behind
 the factor `ghat^{-1}`. Correct substitution gives a division-free identity with the `h` channels.
@@ -55,7 +69,7 @@ V_q(z) = (z-i) vhat_+(z) + q(z+i) vhat_-(z),
 H_q(z) = (z-i) hhat_+(z) + q(z+i) hhat_-(z).
 ```
 
-The source has `hhat_±=ghat vhat_±`, with
+The source formally writes `hhat_±=ghat vhat_±`, with
 
 ```text
 ghat(z) = z^(-2) xi'(1/2-iz) / xi(1/2-iz).
@@ -76,8 +90,9 @@ V_q(z) = ghat(z)^(-1) H_q(z).                                 (C1)
 The printed v1 line instead keeps `V_q` on the right of `(C1)`, which would assert
 `V_q=ghat^{-1}V_q`. Thus `(C0)` is the only substitution-compatible reading.
 
-After centering and allowing the finite shift, `ghat` is `G_eta` up to the fixed source scalar.
-Consequently the global corrected `h` bracket is `G_eta W`, not `R_eta W`.
+After centering and allowing the finite shift, the **right one-sided Carleman multiplier** is
+`G_eta` up to the fixed source scalar.  Consequently the corrected right-sheet bracket is
+`G_eta W`; there is no single global bilateral multiplier bracket.
 
 ## 2. Finite Neumann multiplier obstruction
 
@@ -223,8 +238,8 @@ zero-locus criterion for RH finishes `(RH-E)`.
 
 The remaining theorem is concrete:
 
-> Construct Suzuki's actual exterior-supported `h` channel independently from the Xi quotient and
-> prove that its meromorphic continuation has no nonreal poles.
+> Construct Suzuki's actual right convolution triangle independently from the Xi quotient and
+> prove that its right Carleman sheet continues holomorphically through the upper half-plane.
 
 By `(RH-E)`, that theorem is equivalent to RH once source identification is complete. Large-aperture
 estimates of the known interior term cannot establish it; a genuine exterior continuation or
@@ -232,7 +247,8 @@ positive-operator cancellation law is required.
 
 ## No-go closure
 
-- **Killed route:** bare finite-interval `z^-2` multiplier and interior-clock convergence.
+- **Killed route:** bare finite-interval `z^-2` multiplier, interior-clock convergence, and the
+  later-falsified bilateral Fourier interpretation.
 - **Killing mechanism:** exact endpoint flux `(N1)` and global exterior gluing.
 - **Strongest survivor:** off-line Xi zeros are simple, multiplicity-weighted poles of the exterior
   channel, with coefficient `m W(z0)/z0^2`.

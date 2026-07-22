@@ -2415,3 +2415,2389 @@ Key declarations are `exists_nonzero_opposite_suzuki_shifts_below_iff`,
 `analyticAt_suzukiAffineSewnNormalizedExterior_pair_iff`,
 `riemannHypothesis_iff_suzukiAffineSewnNormalizedExterior_analytic_offReal`, and
 `meromorphicTrailingCoeffAt_suzukiAffineSewnNormalizedExterior`.
+
+## 29. One-sided Carleman seam correction and actual exterior frontier
+
+The multiplier used in Sections 24--28 requires a transform-category correction.  Suzuki's cited
+2023 theorem states explicitly
+
+```text
+integral_0^infinity g(t)e^(izt)dt
+ =z^(-2)xi'(1/2-iz)/xi(1/2-iz),       Im z>1/2,         (S29.1)
+```
+
+for the positive half-line after `g=-Psi`.  It is not a bilateral Fourier transform.  This is
+also forced by parity: `g` is real and even, while the meromorphic function in `(S29.1)` is odd.
+The 2026 Section 8.3 passage from the global convolution to `ghat*vhat` conflates these objects.
+
+For compact source `v` on `[-a,a]`, put `h=g*v` and let `V` be its entire transform.  Exact Fubini
+decomposition gives two entire convolution triangles `T_R,T_L` and
+
+```text
+M_+V=R+T_R,
+M_-V=L+T_L,
+T_R+T_L=I,                                              (S29.2)
+```
+
+where `R,L` are the physical right and left exterior transforms in their disjoint convergence
+half-planes and `I` is the compact interval transform.  Evenness and the Xi functional equation
+give the continuation law `M_-(z)=M_+(-z)=-M_+(z)`.  Hence
+
+```text
+R^c= MV-T_R,
+L^c=-MV-T_L,                                           (S29.3)
+
+R^c+L^c=-I,
+R^c-L^c=2MV-(T_R-T_L).                                 (S29.4)
+```
+
+Equation `(S29.4)` is the decisive new source law.  Every Xi pole cancels automatically in the
+bilateral exterior sum.  Therefore “prove the bilateral exterior continuation is holomorphic” is
+not RH; it targets an identically pole-free combination.  Nonreal Xi poles live with opposite
+residues on individual Carleman sheets.
+
+The projected phase-one result gives `I_1=2A sin(az)`.  It cannot be the global multiplier channel:
+the zero-shift multiplier and `W_1` are both odd, so their product is even, whereas a nonzero sine
+clock is odd.  Lean proves this parity no-go unconditionally.
+
+The corrected RH criterion is one-sided.  For one all-real Suzuki characteristic `W` and its
+entire right triangle `T_R`, define
+
+```text
+E_R(z)=M_eta(z)W(z)-T_R(z).                             (S29.5)
+```
+
+Then centered Xi evenness and pole tomography give
+
+```text
+RH
+ iff E_R is holomorphic for every Im z>0.               (S29.6)
+```
+
+Sections 27--28 survive after replacing every “global exterior remainder” by a selected right
+Carleman sheet and every interval term by its right triangle.  Their affine sewing and projective
+pole invariants are sheetwise algebra.  What does not survive is bilateral semantics.
+
+Actual source frontier is therefore
+
+```text
+actual admissible compact deficiency source
+ -> exact right convolution triangle T_R
+ -> right sheet identity in Im z>1/2
+ -> source-marked continuation through 0<Im z<=1/2
+ -> RH by (S29.6).                                      (S29.7)
+```
+
+Abstract finite-aperture positivity cannot supply last continuation: rational FE--Schwarz orbit
+insertion preserves that local shell while inserting a Carleman pole.  A proof must use the
+distinguished Euler--Gamma marking and fail on the orbit-inserted countermodel.
+
+Paper proof and hostile audit:
+
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-one-sided-carleman-exterior-seam.md`
+
+Exact Lean formalization:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiOneSidedCarlemanSeam.lean`
+
+Key declarations are `suzukiCarlemanSheet_sum`, `suzukiCarlemanSheet_difference`,
+`suzukiShiftedXiMultiplier_neg`,
+`suzukiZeroShiftBilateralMultiplierChannel_ne_projectedSineClock`, and
+`riemannHypothesis_iff_suzukiRightCarlemanExterior_analytic_upper`.
+
+## 30. Exact even-pole carrier of the phase-one right sheet
+
+The one-sided frontier admits one further exact source reduction.  For the phase-one source,
+Suzuki's interval-reflection involution exchanges the normalized deficiency lines.  After the
+first-order spectral bracket, the effective compact source is odd.  Since the screw kernel is
+even, its two physical convolution triangles obey
+
+```text
+T_L(z)=-T_R(-z).                                        (S30.1)
+```
+
+Together with `T_R+T_L=I_1` and the projected law `I_1(z)=2A sin(az)`, this gives
+
+```text
+(T_R)_odd(z)=(T_R(z)-T_R(-z))/2=A sin(az).              (S30.2)
+```
+
+At zero shift, both the one-sided Xi multiplier `M` and phase-one characteristic `W_1` are odd,
+so `MW_1` is even.  Define the even Volterra carrier
+
+```text
+C_R(z)=M(z)W_1(z)-(T_R(z)+T_R(-z))/2.                   (S30.3)
+```
+
+The selected physical right sheet then has the exact decomposition
+
+```text
+E_R(z)=C_R(z)-A sin(az),                                (S30.4)
+C_R(-z)=C_R(z).                                         (S30.5)
+```
+
+Thus the projected clock is not part of the unresolved Xi channel.  It is exactly the entire odd
+half of the right sheet, with the opposite sign.  Every possible Xi pole lies in `C_R`, and
+
+```text
+RH
+ iff C_R is holomorphic for every Im z>0.               (S30.6)
+```
+
+This reduces the unknown half of `T_R` from an arbitrary entire correction to its reflection-even
+Volterra component.  It also closes two false continuations of Section 29:
+
+1. Suzuki 2023 Section 10 proves unconditional mean-periodicity and a global Fourier--Carleman
+   quotient, but that quotient is the same meromorphic `z^(-2) xi'/xi`; its Xi poles remain.
+2. The projected sine clock controls only `(T_R)_odd`; it supplies no information about the even
+   pole carrier `(S30.3)`.
+
+The first Weyl producer fails a decisive parity test.  Since both `C_R` and `W_(-1)` are even and
+Schwarz-real, `C_R/W_(-1)` is even and cannot be a nonconstant Herglotz function: positivity at
+`z` and `-conjugate(z)` forces its imaginary part to vanish.  In particular it cannot have the
+Donoghue normalization `m(i)=i`.
+
+This no-go uniquely selects the odd phase-one denominator.  Define
+
+```text
+m_ext(z)=-C_R(z)/W_1(z)
+        =-M(z)+(T_R)_even(z)/W_1(z).                    (S30.7)
+```
+
+Now `m_ext` is odd, as required for an even-measure Weyl function.  The exact live producer is the
+source Gram identity
+
+```text
+K_ext(z,w)
+ =(W_1(z) conjugate(C_R(w))-C_R(z) conjugate(W_1(w)))
+   /(z-conjugate(w)) >= 0.                              (S30.8)
+```
+
+The nonvanishing `W_1` gauge turns `(S30.8)` exactly into the Pick kernel of `m_ext`.  Its Xi-pole
+orientation is already correct: at every real Xi zero `gamma!=0` not shared by `W_1`,
+
+```text
+Res_gamma m_ext=-ord_gamma(XiC)/gamma^2<0.              (S30.9)
+```
+
+At a simple real zero `x` of `W_1` away from the Xi divisor, the remaining source residue is
+`(T_R)_even(x)/W_1'(x)`.  Therefore exact next boundary theorem is the flux sign
+`(T_R)_even(x)/W_1'(x)<=0` for every odd-extension eigenvalue, followed by full Gram identity
+`(S30.8)`.  These statements are not assumed.  If proved from the restricted Euler--Gamma
+operator, they make `m_ext` Herglotz, exclude nonreal poles of `C_R`, and prove RH by `(S30.6)`.
+A rational FE--Schwarz orbit insertion preserves the local characteristic pair and sine clock but
+inserts a pole into `C_R`, so any successful proof must visibly use Euler prime atoms and
+Gamma/theta completion.
+
+Paper proof, hostile audit, competing conjectures, and falsifiers:
+
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-even-carleman-pole-carrier.md`
+
+Exact Lean formalization:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanEvenPoleCarrier.lean`
+
+Key declarations are `suzukiRightTriangle_oddPart_eq_half_interior`,
+`suzukiEvenCarlemanPoleCarrier_even`,
+`suzukiCarlemanRightSheet_eq_evenPoleCarrier_sub_halfInterior`,
+`suzukiZeroShiftPhaseOneRightSheet_eq_evenPoleCarrier_sub_sine`, and
+`riemannHypothesis_iff_suzukiEvenCarlemanPoleCarrier_analytic_upper`.  The Weyl-phase audit is
+formalized by `even_schwarz_value_I_ne_I`, `suzukiPhaseOneExteriorWeylQuotient_odd`,
+`suzukiExteriorWeylGram_eq_gauged_pick`, and
+`meromorphicTrailingCoeffAt_suzukiPhaseOneExteriorWeylQuotient_of_XiC_zero`.
+
+## 31. Admissible two-shift parity transfer and Carleman jump carrier
+
+Section 30's zero-shift phase-one carrier is algebraically correct but is not automatically an
+actual finite-aperture source: Suzuki requires every form shift to lie below the aperture spectral
+floor, and zero need not do so.  The unconditional producer uses the existing arbitrary admissible
+pair theorem.  Choose distinct `alpha,beta` below the floor and use their phase-one channels.  Each
+characteristic and effective compact source is odd:
+
+```text
+W_eta(-z)=-W_eta(z),
+L_eta(z)=-R_eta(-z).                                    (S31.1)
+```
+
+Sew to target zero:
+
+```text
+P=(beta-alpha)W_alpha W_beta,
+J_R=beta W_beta R_alpha-alpha W_alpha R_beta,
+J_L=beta W_beta L_alpha-alpha W_alpha L_beta.           (S31.2)
+```
+
+The two odd signs cancel inside each sewn term.  Consequently
+
+```text
+P(-z)=P(z),
+J_L(z)=J_R(-z).                                         (S31.3)
+```
+
+The effective sewn characteristic/source is even.  Sewing also commutes exactly with the physical
+triangle sum.  If the individual projected clocks are
+`R_eta+L_eta=2A_eta sin(az)`, then
+
+```text
+J_R+J_L
+ =2sin(az)[beta W_beta A_alpha-alpha W_alpha A_beta]
+ =2(J_R)_even.                                          (S31.4)
+```
+
+Since the zero-shift multiplier `M_0` is odd and `P` is even, every Xi pole belongs to the odd
+carrier
+
+```text
+C_odd=M_0P-(J_R)_odd.                                   (S31.5)
+```
+
+The actual admissible right sheet decomposes as
+
+```text
+E_R=M_0P-J_R=C_odd-(J_R+J_L)/2,                         (S31.6)
+```
+
+and the second term is entire.  Combining `(S31.6)` with the existing admissible affine-sewing
+criterion gives the unconditional exact frontier
+
+```text
+RH iff C_odd is analytic at every nonreal point.         (S31.7)
+```
+
+There is one parity-independent physical invariant.  For any right/left triangle pair put
+
+```text
+C_jump=MW-(R-L)/2.                                      (S31.8)
+```
+
+Then
+
+```text
+2C_jump=E_R-E_L.                                        (S31.9)
+```
+
+Odd one-source reflection makes `C_jump` the even carrier of Section 30; even sewn reflection
+makes it `C_odd`.  Thus the actual Weyl candidate is the normalized Carleman sheet jump
+
+```text
+m_ext=-C_odd/P=-(E_R-E_L)/(2P).                         (S31.10)
+```
+
+Away from the real characteristic divisor, `(S31.10)` is exactly minus the reflection-odd part of
+the projectively normalized affine exterior observable already constructed in Section 28.  It is
+odd.  At every Xi zero not shared by `P`, exact pole tomography gives
+
+```text
+TC_z(m_ext)=-ord_z(XiC)/z^2,                            (S31.11)
+```
+
+independently of both shifts, gauges, and triangles.  Real Xi poles therefore have the correct
+negative Herglotz orientation.
+
+Actual frontier corpus cannot solve is no longer source-shift selection, zero admissibility,
+projected clock identification, carrier parity, or pole orientation.  It is the source Gram law
+
+```text
+K_jump(z,w)
+ =(P(z)conj(C_odd(w))-C_odd(z)conj(P(w)))
+   /(z-conj(w)) >= 0.                                   (S31.12)
+```
+
+Proving `(S31.12)` is not to be avoided: a proof from an independently positive Euler--Gamma
+source colligation would prove RH by `(S31.7)`.  Its nonreal-pole exclusion closes the
+RH-equivalent analyticity problem; full positivity may additionally impose real source-divisor
+flux signs.  What would be circular is declaring `(S31.12)` positive after identifying it with
+`XiC'/XiC`.
+
+Canonical finite Donoghue positivity does not discharge `(S31.12)`.  Its poles lie on one finite
+self-adjoint-extension divisor, whereas `(S31.10)` additionally carries the Xi divisor by
+`(S31.11)`.  They are different fixed-aperture meromorphic functions.  Required new object is a
+positive prime--Gamma dilation whose Weyl compression is the physical sheet jump.  Abstract
+finite-aperture Hermite--Biehler data cannot produce it: functional-equation--Schwarz orbit
+insertion preserves that local shell while inserting a nonreal jump pole.
+
+**Active conjecture:** construct directly from Suzuki's prime-power and Gamma full-line screw
+kernel a manifestly positive self-adjoint boundary colligation with scalar Weyl function
+`m_ext`.  Its resolvent Gram identity would be `(S31.12)` and would finish RH.  Construction must
+fail for orbit-inserted countermodels and establish positivity before using the Xi divisor.
+
+Paper proof, hostile tests, and updated frontier:
+
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-even-carleman-pole-carrier.md`
+
+Exact Lean formalization remains in:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanEvenPoleCarrier.lean`
+
+New capstones include `suzukiAffineSewnTriangle_reflection_of_odd`,
+`suzukiAffineSewnRightTriangle_evenPart_eq_half_projectedSineClock`,
+`riemannHypothesis_iff_suzukiAffineSewnOddCarlemanPoleCarrier_analytic_offReal`,
+`two_mul_suzukiCarlemanJumpPoleCarrier_eq_sheet_difference`,
+`suzukiAffineSewnExteriorWeylQuotient_eq_neg_oddPart_normalizedExterior`, and
+`meromorphicTrailingCoeffAt_suzukiAffineSewnExteriorWeylQuotient_of_XiC_zero`.
+
+## 32. Mandatory central pole and exact source-flux threshold
+
+The jump-Pick conjecture has a decisive source-divisor test at the functional-equation fixed
+point.  It is stronger than the nonzero-Xi pole-orientation test in Section 31 and uses no
+estimate.  Assume the two actual odd source characteristics have simple central zeros.  Put
+
+```text
+a_alpha=W_alpha'(0),  a_beta=W_beta'(0),
+r_alpha=R_alpha(0),   r_beta=R_beta(0).                 (S32.1)
+```
+
+The sewn characteristic and odd right-triangle component then have exact central jets
+
+```text
+P(z)/z^2
+ -> (beta-alpha)a_alpha a_beta,                         (S32.2)
+
+(J_R)_odd(z)/z
+ -> beta a_beta r_alpha-alpha a_alpha r_beta.           (S32.3)
+```
+
+Define the source boundary flux
+
+```text
+Phi_(alpha,beta)
+ =(beta a_beta r_alpha-alpha a_alpha r_beta)
+   /((beta-alpha)a_alpha a_beta)
+ =1/(beta-alpha)
+   [beta r_alpha/a_alpha-alpha r_beta/a_beta].          (S32.4)
+```
+
+Since `XiC` is even and nonzero at zero,
+
+```text
+z M_0(z) -> XiC''(0)/XiC(0).                            (S32.5)
+```
+
+Substitution into the exact sheet-jump quotient gives the new residue split
+
+```text
+Res_0 m_ext
+ =-XiC''(0)/XiC(0)+Phi_(alpha,beta).                    (S32.6)
+```
+
+The theta-cusp source already proves unconditionally
+
+```text
+XiC''(0)/XiC(0)<0.                                     (S32.7)
+```
+
+Every Herglotz function has nonpositive real residue at a real pole.  Indeed, along
+`z=x+iy`, `Re[(z-x)m(z)]=-y Im m(z)<=0`, and the punctured residue limit preserves this closed
+inequality.  Therefore any positive realization of the actual jump quotient must satisfy
+
+```text
+Re Phi_(alpha,beta)
+ <= XiC''(0)/XiC(0) < 0.                               (S32.8)
+```
+
+This is the first exact source-flux threshold, not an RH-equivalent positivity declaration.  Its
+left side contains only finite-aperture source derivatives and physical right-triangle values.
+It says source flux must be strictly negative and must overcompensate the fixed positive term
+`-XiC''(0)/XiC(0)`.  A colligation candidate with zero, nonnegative, or insufficiently negative
+central flux is now killed locally before any global Gram argument.
+
+Corpus cannot currently prove `(S32.8)`.  Projected sine clock fixes the even part of `J_R`; its
+central first jet vanishes and says nothing about `(S32.3)`.  Canonical finite Donoghue positivity
+also does not discharge it: `-i W_1/W_(-1)` uses the opposite divisor and is not the jump quotient.
+Thus actual frontier has two ordered source tasks:
+
+```text
+prime-power/Gamma right-triangle construction
+ -> prove central flux threshold (S32.8)
+ -> prove full jump Gram kernel (S31.12)
+ -> RH through (S31.7).                                 (S32.9)
+```
+
+Exact Lean formalization:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanCentralFlux.lean`
+
+Key declarations are `residue_re_nonpos_of_upperHalfPlane_im_nonneg`,
+`tendsto_z_mul_suzukiZeroShiftMultiplier`,
+`tendsto_suzukiAffineSewnExteriorWeylQuotient`,
+`suzukiAffineSewnCentralSourceFlux_re_le_XiC_curvature_of_herglotz`,
+`XiC_secondDeriv_div_center_re_neg`, and
+`suzukiAffineSewnCentralSourceFlux_re_neg_of_herglotz`.
+
+## 33. Exact Neumann-channel cancellation: central frontier is purely Euler--Gamma
+
+Section 32 still left open whether positivity of Suzuki's finite Neumann comparison channel could
+force the source-flux threshold.  Exact triangle algebra now rules this out and removes that
+channel from the frontier.
+
+Let `nu_lambda` be the compact odd effective phase-one source with Fourier transform `W_lambda`,
+and put `mu_j(lambda)=<nu_lambda,y^j>`.  The argument is valid for an integrable source or for the
+compact distribution produced by the first-order spectral bracket.  Oddness and Fourier
+differentiation give
+
+```text
+mu_0(lambda)=mu_2(lambda)=0,
+W_lambda'(0)=i mu_1(lambda).                            (S33.1)
+```
+
+For the global Neumann representative `r_0(t)=-|t|/2`, the positive-half primitive is
+`H_0(s)=-s^2/4`.  Hence its right triangle at the center is exactly
+
+```text
+T_(r0,R,lambda)(0)
+ =-1/4 <nu_lambda,(a-y)^2>
+ =(a/2)mu_1(lambda).                                   (S33.2)
+```
+
+Write the physical shifted kernel as `k_lambda=g-lambda r_0` and normalize central right-triangle
+values by the characteristic jet:
+
+```text
+q_lambda=R_lambda(0)/W_lambda'(0),
+q_lambda^EG=R_(g,lambda)(0)/W_lambda'(0).
+```
+
+Equations `(S33.1)--(S33.2)` give, without a limit or estimate,
+
+```text
+q_lambda=q_lambda^EG+i(a/2)lambda.                     (S33.3)
+```
+
+The central sewn flux is the affine chord intercept at target shift zero,
+
+```text
+Phi_(alpha,beta)
+ =[beta q_alpha-alpha q_beta]/(beta-alpha).             (S33.4)
+```
+
+Affine interpolation annihilates every common linear-in-shift channel.  In particular the two
+explicit Neumann terms in `(S33.3)` cancel:
+
+```text
+Phi_(alpha,beta)
+ =[beta q_alpha^EG-alpha q_beta^EG]/(beta-alpha).       (S33.5)
+```
+
+This is a strict frontier advance.  Neumann positivity makes the two finite sources admissible,
+but contributes zero to the mandatory Herglotz residue correction.  The source vectors still
+depend on their shifts through the full restricted resolvent; only the direct comparison-kernel
+boundary channel disappears.  Therefore actual unresolved theorem is now
+
+```text
+prove Re [beta q_alpha^EG-alpha q_beta^EG]/(beta-alpha)
+        <= XiC''(0)/XiC(0)
+from prime-power/Gamma source structure
+ -> construct full Euler--Gamma jump Gram kernel (S31.12)
+ -> RH.                                                 (S33.6)
+```
+
+Abstract finite-aperture positivity cannot prove first arrow: its only explicit positive
+comparison channel is killed by `(S33.5)`.  A successful argument must expose a sign or Gram law
+inside the unshifted Euler--Gamma edge triangles themselves and must fail for the corpus's
+functional-equation--Schwarz orbit-inserted countermodels.
+
+Lean formalization in
+`formal/GaloisForLFunctions/RHTower/SuzukiCarlemanCentralFlux.lean` adds
+`suzukiNeumannRightTriangleCentralMoment_of_odd`,
+`suzukiNeumannRightTriangleCentralMoment_div_fourierFirstJet`,
+`suzukiAffineSewnCentralSourceFlux_eq_normalized_intercept`, and
+`suzukiAffineSewnCentralSourceFlux_linear_shift_channel_cancels`, with concrete specialization
+`suzukiAffineSewnCentralSourceFlux_neumann_channel_cancels`.
+
+## 34. One-sided coordinate phase reopens scalar jump positivity
+
+Section 33 and the first phase audit mixed two different normalizations.  Suzuki 2023 proves for
+`g=-Psi`
+
+```text
+int_0^infinity g(t)e^(izt)dt
+ =z^(-2) xi'(1/2-iz)/xi(1/2-iz).                       (S34.1)
+```
+
+Since `XiC(z)=xi(1/2+iz)` is even, chain rule and functional equation give
+
+```text
+xi'(1/2-iz)=i XiC'(z),
+M_phys,0(z)=i XiC'(z)/(z^2 XiC(z))=i G_0(z).           (S34.2)
+```
+
+This fixed `i` cannot be discarded while retaining physical triangle unchanged.  Real form shift
+adds a second correction.  For `r_0(t)=-|t|/2`, its positive-half-line branch is `-t/2` and
+
+```text
+int_0^infinity r_0(t)e^(izt)dt=1/(2z^2).               (S34.3)
+```
+
+Therefore shifted physical multiplier and exact one-sided centered parameter are
+
+```text
+M_phys,lambda=iG_0-lambda/(2z^2)=iG_eta,
+eta(lambda)=-i lambda/2.                               (S34.4)
+```
+
+Old `eta=-i lambda` is the full/bilateral projective symbol.  It is twice the right-sheet
+coordinate.  Divisor algebra survives this rescaling, but source identification and central
+phase do not.
+
+Let `T_phys,lambda` be actual right Volterra triangle.  Exact physical and Xi-real normalized
+sheets are
+
+```text
+E_phys,lambda=iG_eta W_lambda-T_phys,lambda,
+E_norm,lambda=(-i)E_phys,lambda
+             =G_eta W_lambda-I_norm,lambda,
+I_norm,lambda=-iT_phys,lambda.                         (S34.5)
+```
+
+Thus every existing theorem written as `G_eta W-I` consumes `I_norm`, not physical triangle.
+Source gauges scale `W` and `T_phys` together and cannot absorb relative phase in `(S34.5)`.
+
+This repairs decisive source hostile test.  For real reflected deficiency vectors,
+
+```text
+W_lambda'(0) in R,
+T_phys,lambda(0) in iR.                                (S34.6)
+```
+
+Physical normalized jet `q_phys=T_phys(0)/W'(0)` and its two-shift affine chord `Phi_phys` are
+purely imaginary.  But flux in Xi-real Weyl quotient is
+
+```text
+q_norm=-i q_phys in R,
+Phi_norm=-i Phi_phys,
+Re Phi_norm=Im Phi_phys.                               (S34.7)
+```
+
+Hence quadrature does **not** force `Re Phi_norm=0`; prior scalar Herglotz no-go is retracted.  It
+proved only that mixed expression `G_eta W-T_phys` is not Herglotz.  Correct Herglotz threshold is
+the non-vacuous physical condition
+
+```text
+Im Phi_phys
+ <= XiC''(0)/XiC(0)<0.                                (S34.8)
+```
+
+Neumann cancellation remains exact.  Section 33 physical law is still
+
+```text
+q_phys,lambda=q_phys,lambda^EG+i(a/2)lambda.           (S34.9)
+```
+
+After normalization,
+
+```text
+q_norm,lambda=q_norm,lambda^EG+(a/2)lambda.            (S34.10)
+```
+
+Affine chord annihilates this real linear term.  Expressed in exact one-sided coordinate
+`eta=-i lambda/2`, normalized Neumann slope is `i a`, not `i a/2`.
+
+Actual corpus frontier is reopened scalar source theorem:
+
+```text
+construct I_norm=-iT_phys directly from prime-power/Gamma half-line source
+ -> prove Im Phi_phys<=XiC''(0)/XiC(0)
+ -> prove normalized jump Pick kernel
+ -> exclude every nonreal Xi pole
+ -> RH.                                                (S34.11)
+```
+
+Positivity in `(S34.11)` is RH-bearing and is not to be avoided.  Circular move would be to infer
+it after identifying quotient with Xi logarithmic derivative.  Required proof must construct a
+positive prime--Gamma boundary colligation before divisor identification and must fail for
+functional-equation--Schwarz orbit-inserted countermodels.
+
+Centered Euler observable remains a parallel, unconditional RH detector:
+
+```text
+J[f](z)=z(zf'(z)-f(z)).                                (S34.12)
+```
+
+It removes central simple pole, preserves linear-escape invariance, and amplifies every nonzero
+Xi pole.  One analytic source germ for `J[m_ext]` still proves RH, but no phase no-go forces this
+route over restored scalar positivity.
+
+Paper proof, retraction, and active conjectures:
+
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-one-sided-coordinate-phase-normalization.md`
+- `docs/drafts/pipeline/5-failed/suzuki-scalar-jump-herglotz-phase-no-go.md`
+- `docs/drafts/pipeline/1-in-progress/suzuki-carleman-jump-euler-defect-weld.md`
+
+Exact Lean formalization:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanCoordinatePhase.lean`
+- `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanJumpPhaseObstruction.lean`
+
+Key new declarations are `suzukiOneSidedCenteredShiftParameter`,
+`suzukiPhysicalRightCarlemanMultiplier_eq`,
+`neg_I_mul_suzukiPhysicalRightCarlemanExterior`,
+`suzukiWeylNormalizedCentralSourceFlux_eq_neg_I_mul_physical`,
+`suzukiWeylNormalizedCentralSourceFlux_re_eq_physical_im`,
+`suzukiWeylNormalizedCentralSourceFlux_im_eq_zero_of_source_quadrature`, and
+`suzukiPhysicalCentralSourceFlux_im_le_XiC_curvature_of_normalized_herglotz`.
+
+## 35. Correct-coordinate large-negative-shift cone obstruction
+
+Coordinate repair does not rescue uniform scalar positivity.  Fix aperture `a>0`.  Suzuki's
+deficiency vectors obey universal bounded-below resolvent limit
+
+```text
+(-lambda)(A_a-lambda)^(-1) -> I strongly,
+lambda -> -infinity.                                  (S35.1)
+```
+
+For phase one, scaled effective source therefore tends distributionally to endpoint dipole
+
+```text
+(-lambda)nu_lambda
+ -> i*2*cosh(a)*(delta_(-a)-delta_a).                 (S35.2)
+```
+
+Direct characteristic calculation cross-checks this:
+
+```text
+(-lambda)W_lambda(z) -> 4*cosh(a)*sin(a z),
+(-lambda)W_lambda'(0) -> 4*a*cosh(a).                 (S35.3)
+```
+
+Writing `H_g(s)=integral_0^s g(t)dt`, physical triangle pairing and exact normalization
+`q_norm=-i q_phys` give
+
+```text
+q_norm,lambda^EG -> H_g(2a)/(2a).                    (S35.4)
+```
+
+Affine sewing kills direct Neumann term.  On dyadic admissible pair `(-2L,-L)`, normalized
+intercept is
+
+```text
+Phi_L=2*q_norm,-L^EG-q_norm,-2L^EG
+     -> H_g(2a)/(2a).                                 (S35.5)
+```
+
+Since Suzuki kernel is continuous with `g(0)=0`, limit in `(S35.5)` approaches zero at small
+aperture.  Corpus theorem gives `c_Xi=Re(XiC''(0)/XiC(0))<0`.  Thus sufficiently small `a` and
+sufficiently large `L` force `Phi_L>c_Xi`, contradicting necessary Herglotz central-residue sign.
+
+New theorem is correct-coordinate obstruction:
+
+```text
+uniform scalar jump positivity over all admissible shifts is false.
+```
+
+It does not kill source-selected scalar route.  It proves auxiliary shifts carry nonlinear source
+information after Neumann cancellation.  Exact scalar frontier is construction of intrinsic pair
+outside negative escape cone—likely in bounded window near spectral floor—followed by source-first
+central threshold and full Pick kernel.  Parallel frontier remains one analytic prime--Gamma germ
+for `J[m_ext]=z(z*m_ext'-m_ext)`, which existing exact pole law turns into RH.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-neumann-dominated-shift-cone-obstruction.md`.
+
+Lean module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiLargeNegativeShiftCentralFlux.lean`.
+
+Lean proves exact dyadic affine identity, convergence inheritance, and eventual Xi-curvature
+violation from edge-jet limit.  Actual restricted-resolvent/triangle limit remains paper-level.
+RH is not proved.
+
+## 36. Shift-spectral chord mass: exact nonescaping selector
+
+Section 35 kills uniform shift positivity but leaves an exact constructive question: what source
+quantity distinguishes a viable bounded pair from the far-negative escape cone?  Corrected
+one-sided phase makes normalized Euler--Gamma triangle jet real.  A candidate shift-variable
+Weyl law is
+
+```text
+q_norm,lambda^EG
+ =ell_a-integral 1/(t-lambda)dmu_a(t),
+ell_a=H_g(2a)/(2a),      mu_a>=0.                      (S36.1)
+```
+
+Constant `ell_a` is forced by `(S35.4)`.  Earlier trial with constant `c_Xi` is false and is not
+used.  For distinct shifts define
+
+```text
+K(t;alpha,beta)
+ =(t-alpha-beta)/((t-alpha)(t-beta)).                  (S36.2)
+```
+
+Exact common-denominator identity is
+
+```text
+[beta/(t-alpha)-alpha/(t-beta)]/(beta-alpha)
+ =K(t;alpha,beta).                                    (S36.3)
+```
+
+If `beta<0` and both shifts lie below `t`, then `K>0`, since
+`t-alpha-beta=(t-alpha)+(-beta)>0`.  Affine sewing annihilates every common linear term, including
+direct Neumann channel.  Thus finite positive shift-spectral colligation satisfies exactly
+
+```text
+Phi_norm(alpha,beta)
+ =ell_a-sum_j w_j K(t_j;alpha,beta),                  (S36.4)
+
+Phi_norm(alpha,beta)<=c_Xi
+ iff
+ell_a-c_Xi<=sum_j w_j K(t_j;alpha,beta).              (S36.5)
+```
+
+This is stronger than another necessary sign estimate: `(S36.5)` identifies complete missing
+source currency and exact amount needed.  It also reproduces Section 35.  For dyadic pair
+`(-2L,-L)`,
+
+```text
+K(t;-2L,-L)=(t+3L)/((t+2L)(t+L)) -> 0,               (S36.6)
+```
+
+so fixed spectral mass disappears and intercept returns to `ell_a>c_Xi`.  Viable selector must
+retain chord mass at least `ell_a-c_Xi`; admissibility alone cannot.
+
+Source conjecture `(S36.1)` is not imported from generic Donoghue theory.  Donoghue measure in
+corpus lives in spectral variable `z` for `-iW_1/W_(-1)` and has wrong divisor.  Shift-variable
+jet is ratio of cross resolvent matrix elements.  Put `R_lambda=(A_a-lambda)^(-1)` and
+
+```text
+h_a(x)=g(a-x)-H_g(a-x)+g(a+x)+H_g(a+x).               (S36.7)
+```
+
+Distributional integration by parts in actual compact phase-one source gives
+
+```text
+q_norm,lambda^EG=N_a(lambda)/D_a(lambda),
+N_a(lambda)=<R_lambda e^x,h_a>,
+D_a(lambda)=2<R_lambda e^x,1+x>.                      (S36.8)
+```
+
+Resolvent differentiation yields first exact falsifier for negative-Stieltjes conjecture:
+
+```text
+d q_norm,lambda^EG/dlambda
+ = [<R_lambda^2 e^x,h_a>D_a(lambda)
+    -N_a(lambda)2<R_lambda^2 e^x,1+x>]/D_a(lambda)^2. (S36.9)
+```
+
+Conjecture `(S36.1)` requires cross-Wronskian numerator in `(S36.9)` nonpositive and higher shift
+derivatives to alternate.  This is actual corpus frontier now:
+
+```text
+prove shift-resolvent cross-Wronskian sign from prime--Gamma operator
+ -> construct mu_a and source-selected pair satisfying chord-mass gap (S36.5)
+ -> prove full normalized jump Pick kernel
+ -> exclude nonreal Xi poles
+ -> RH.                                                (S36.10)
+```
+
+If `(S36.9)` has wrong sign, retire Stieltjes realization immediately; exact chord theorem remains
+the positive survivor and points to required signed/Krein replacement.  No zero-side positivity
+or Xi divisor data may enter source proof.
+
+Paper conjecture, derivation, and hostile audit:
+
+- `docs/drafts/pipeline/1-in-progress/suzuki-negative-stieltjes-central-flux-colligation.md`.
+
+Exact Lean formalization:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanStieltjesFlux.lean`.
+
+Key declarations are `suzukiStieltjesChordKernel_eq_resolvent_affine_intercept`,
+`suzukiStieltjesChordKernel_pos`,
+`suzukiFiniteNegativeStieltjesJet_affine_intercept`,
+`suzukiWeylNormalizedCentralSourceFlux_finiteNegativeStieltjes_eq`, and
+`suzukiWeylNormalizedCentralSourceFlux_re_le_XiC_curvature_iff_spectralMass_gap`.
+
+## 37. Spectral monotone-likelihood law produces negative-Stieltjes shift jet
+
+Section 36 left cross-Wronskian sign `(S36.9)` as infinite derivative-style test.  It can be
+replaced by one source-spectral order.  Let
+
+```text
+D(z)=sum_j w_j/(t_j-z),
+N(z)=sum_j w_j*r_j/(t_j-z),
+q(z)=N(z)/D(z),
+w_j>0,
+(r_j-r_k)*(t_j-t_k)>=0.                               (S37.1)
+```
+
+Because `D` is Herglotz, it has no upper-half-plane zero.  Exact symmetrization gives
+
+```text
+Im q(z)/Im z
+ =-[1/(2*|D(z)|^2)]
+   sum_(j,k) w_j*w_k*(r_j-r_k)*(t_j-t_k)
+   /(|t_j-z|^2*|t_k-z|^2)
+ <=0.                                                 (S37.2)
+```
+
+Hence `q` is anti-Pick in form-shift variable.  Its rational partial fractions are automatically
+
+```text
+q(z)=ell-sum_k nu_k/(sigma_k-z),
+nu_k>=0,                                              (S37.3)
+```
+
+which is precise negative-Stieltjes law `(S36.1)`.  Measure version uses existing corpus
+monotone-likelihood integration and exact identity
+
+```text
+K_lambda(x)^2*K_lambda(y)-K_lambda(y)^2*K_lambda(x)
+ =(t_y-t_x)/[(t_x-lambda)^2*(t_y-lambda)^2].          (S37.4)
+```
+
+For actual source quotient `(S36.8)`, real eigenbasis `A_a phi_j=t_j phi_j` gives
+
+```text
+w_j=<e^x,phi_j><2*(1+x),phi_j>,
+r_j=<h_a,phi_j>/<2*(1+x),phi_j>.                      (S37.5)
+```
+
+Thus entire shift-Weyl conjecture reduces to two concrete source laws
+
+```text
+w_j>=0,
+(r_j-r_k)*(t_j-t_k)>=0.                               (S37.6)
+```
+
+This is forward progress: `(S37.6)` implies all real cross-Wronskian signs and complex anti-Pick
+property at once.  It remains falsifiable mode by mode.  Ground-state positivity does not control
+excited coefficients, and positivity-preserving restricted-Weil resolvent cannot be assumed.
+
+Exact frontier:
+
+```text
+prove (S37.6) from prime--Gamma restricted operator
+ -> obtain negative-Stieltjes source measure
+ -> prove chord mass >=ell_a-c_Xi for selected pair
+ -> prove full normalized jump Pick kernel in spectral variable
+ -> RH.                                               (S37.7)
+```
+
+Failure of one coefficient sign retires monotone-ratio producer but leaves centered-Euler source
+germ route.  RH is not proved.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-shift-spectral-monotone-likelihood-transfer.md`.
+
+Lean module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiShiftSpectralMonotoneRatio.lean`.
+
+Formal declarations:
+`suzukiShiftResolventKernel_sq_cross_eq`,
+`suzukiShiftSpectralMonotoneRatio_crossWronskian_nonpos`, and
+`suzukiShiftSpectralMonotoneRatio_derivativeNumerator_nonpos`.
+
+## 38. Asymmetric shift selection reduces central sign to one ground-edge average
+
+Sections 35--37 still formulate central selection through a two-shift spectral mass gap.  Exact
+affine algebra yields a strictly smaller representation-free target.  Fix one admissible shift
+`beta` and send only other shift to `-L`.  For normalized Euler--Gamma jet `q`,
+
+```text
+Phi(-L,beta)
+ =[beta q(-L)+L q(beta)]/(beta+L)
+ =q(beta)+beta[q(-L)-q(beta)]/(beta+L).                (S38.1)
+```
+
+The source theorem `(S35.4)` gives finite limit `q(-L)->ell_a`, so
+
+```text
+Phi(-L,beta)->q(beta).                                (S38.2)
+```
+
+This is opposite of dyadic escape: pair `(-2L,-L)` loses source and tends to `ell_a`, while one
+fixed/one-escaping pair retains exactly fixed source value.  Therefore single strict inequality
+
+```text
+q(beta)<c_Xi,
+c_Xi=(XiC''(0)/XiC(0)).re,                            (S38.3)
+```
+
+implies `Phi(-L,beta)<c_Xi` for every sufficiently large `L`.  Central shift-selection problem is
+now one-source, not two-source.  Negative-Stieltjes/chord-mass program remains useful sufficient
+structure and likely relevant to full Pick kernel, but is no longer necessary to cross central
+residue gate.
+
+There is an exact source formula for fixed value.  With
+
+```text
+R_lambda=(A_a-lambda)^(-1),
+h_a(x)=g(a-x)-H_g(a-x)+g(a+x)+H_g(a+x),               (S38.4)
+
+q(lambda)
+ =<R_lambda e^x,h_a> / (2<R_lambda e^x,1+x>).         (S38.5)
+```
+
+Suppose `A_a` has simple even ground state `phi_0` at floor `lambda_a`, with nonzero source
+overlaps.  Resolvent pole dominance as `beta` approaches `lambda_a` from below gives
+
+```text
+q(beta)-><phi_0,h_a>/(2<phi_0,1+x>).                  (S38.6)
+```
+
+Parity removes both odd contributions: `<phi_0,x>=0`, and
+`-H_g(a-x)+H_g(a+x)` is odd.  Reflection equates two remaining `g` terms.  Hence
+
+```text
+q(beta)->r_a
+ :=<phi_0,g(a-x)>/<phi_0,1>.                          (S38.7)
+```
+
+For positive ground state, `r_a` is literal ground-state-weighted average of screw profile over
+`[0,2a]`.  New source theorem sufficient for central Herglotz sign is therefore
+
+```text
+exists aperture a with simple positive even ground state and
+<phi_0,g(a-x)>/<phi_0,1> < c_Xi.                      (S38.8)
+```
+
+Choose `beta` close enough to floor, then use `(S38.2)`.  At sufficiently small apertures,
+Section 35 rules out far-negative dyadic schedule, but does not decide ground-edge average.
+Every aperture remains testable through actual ground vector.  This is strictly more concrete
+than “find a good pair”: it is one ground-vector prime--Gamma integral.
+
+Result does not prove full jump Pick kernel or RH.  It removes Stieltjes representation from
+central gate and isolates next source attack:
+
+```text
+prove ground screw-average inequality (S38.8)
+ -> obtain central-valid asymmetric pairs by (S38.2)
+ -> prove full normalized jump Pick kernel
+ -> exclude every nonreal Xi pole
+ -> RH.                                                (S38.9)
+```
+
+Lean formalization in `SuzukiCarlemanStieltjesFlux.lean` proves `(S38.1)--(S38.3)` as
+`tendsto_suzukiRealAffineZeroIntercept_neg_atTop_fixed`,
+`eventually_suzukiRealAffineZeroIntercept_lt_of_fixed_lt`, and
+`eventually_suzukiRealAffineZeroIntercept_lt_XiC_curvature_of_fixed_lt`.
+Ground-edge instantiation `(S38.6)--(S38.8)` remains paper-level until concrete restricted-Weil
+operator and eigenvectors enter Lean.
+
+## 39. Small aperture cannot satisfy ground selector; source collapses to Robin boundary data
+
+Section 38 left every aperture nominally testable.  That is now corrected.  Suzuki's exact `g` is
+continuous with `g(0)=0`, while corpus theorem gives
+
+```text
+c_Xi=(XiC''(0)/XiC(0)).re<0.                           (S39.1)
+```
+
+Continuity gives `delta>0` with `g(t)>c_Xi/2` for `|t|<delta`.  If `0<a<=delta/4` and
+`x in [-a,a]`, then `0<=a-x<=2a<delta`; hence
+
+```text
+g(a-x)>c_Xi/2>c_Xi.                                   (S39.2)
+```
+
+Every nonzero nonnegative ground weight therefore satisfies
+
+```text
+<phi_0,g(a-x)>/<phi_0,1> > c_Xi.                      (S39.3)
+```
+
+Thus Section 38 target is impossible throughout all sufficiently small apertures, including only
+range where Suzuki 2026 proves a positive simple even ground.  Earlier claim that small-aperture
+ground edge remained open is superseded by `(S39.2)--(S39.3)`.
+
+For an even positive weight, define symmetric profile
+
+```text
+s_a(x)=[g(a-x)+g(a+x)]/2,       0<=x<=a.              (S39.4)
+```
+
+Exact feasibility boundary is
+
+```text
+min s_a<c_Xi.                                          (S39.5)
+```
+
+If `(S39.5)` fails, no positive-even weight can cross.  If it holds, continuous positive-even test
+weights can cross by localization, though actual ground mode still requires deficit-mass dominance.
+
+More important, positivity is unnecessary for pole selector.  Let an even eigenmode satisfy
+
+```text
+-U_a''=lambda_a phi_a,
+U_a(x)=integral_(-a)^a g(x-y)phi_a(y)dy,
+M_a=integral_(-a)^a phi_a(y)dy.                        (S39.6)
+```
+
+Integration and evenness give
+
+```text
+-2U_a'(a)=lambda_a M_a,
+r_a=U_a(a)/M_a=-lambda_a U_a(a)/(2U_a'(a)).            (S39.7)
+```
+
+After orientation `M_a>0`, required source theorem becomes one Robin crossing
+
+```text
+U_a(a)<c_Xi M_a.                                       (S39.8)
+```
+
+`[CONJECTURE: SUZUKI-ROBIN-CROSSING]` There exists a non-small aperture with simple even lowest
+mode, `lambda_a M_a!=0`, satisfying `(S39.8)`.  This is compatible with known large-aperture
+sign-indefinite geometry; it does not assume positivity-preserving resolvent.  Falsifiers are
+`M_a=0`, odd/multiple ground, no symmetric-profile crossing, or a Robin flow that stays above
+`c_Xi`.
+
+Current exact frontier:
+
+```text
+prime--Gamma parity spectral flow -> (S39.8)
+ -> asymmetric central-valid shift pair
+ -> full normalized jump Pick kernel
+ -> Euler-defect pole exclusion
+ -> RH.                                                (S39.9)
+```
+
+Paper proof:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-ground-edge-aperture-robin-obstruction.md`.
+
+Lean module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeApertureObstruction.lean`.
+
+Formal declarations include `exists_smallAperture_XiC_curvature_half_lt_suzukiGroundEdgeProfile`,
+`suzukiGroundEdgeAverage_gt_XiC_curvature_of_half_lowerMoment`,
+`suzukiGroundEdgeBoundaryRatio_eq_average_of_flux`, and
+`suzukiGroundEdgeBoundaryRatio_lt_iff_boundaryMoment_lt`.
+
+## 40. Unconditional screw-Cesaro curvature recurrence solves central shift selection
+
+Section 39 made a non-small-aperture Robin crossing the apparent central frontier.  That ground
+route is unnecessary.  Return to the far-negative dyadic selector, but choose aperture rather than
+holding it in the small forbidden chamber.
+
+Let `Psi` be Suzuki's unconditional screw profile, `g=-Psi`, and
+
+```text
+c_Xi=(XiC''(0)/XiC(0)).re.
+```
+
+Suzuki's multiplicity-exact zero expansion and centered Hadamard identity give
+
+```text
+Psi(t)=sum_gamma (1-cos(gamma t))/gamma^2,
+c_Xi=-sum_gamma 1/gamma^2.                              (S40.1)
+```
+
+Thus the curvature-centered primitive is exactly
+
+```text
+h(A):=integral_0^A(g(t)-c_Xi)dt
+     =sum_gamma sin(gamma A)/gamma^3.                   (S40.2)
+```
+
+`[PROVED HERE — LANDAU BOUNDARY OSCILLATION]` The function `h` changes sign in both directions
+cofinally:
+
+```text
+for every A0, exists A-,A+>A0 with h(A-)<0<h(A+).       (S40.3)
+```
+
+Proof is unconditional and does not assume RH, simplicity, or rational independence.  Put
+`F(s)=xi(1/2+s)` and `delta=sup_gamma |Im gamma|`.  Suzuki's one-sided transform gives
+
+```text
+Lh(s)
+ =-F'(s)/(s^3 F(s))-c_Xi/s^2
+ =sum_gamma 1/(gamma^2(s^2+gamma^2)).                   (S40.4)
+```
+
+The apparent singularity at zero is removable: `F` is even, the central Xi curvature ratio is
+real, and
+`(F'/F)'(0)=F''(0)/F(0)=-c_Xi`, so `F'/F+c_Xi s` vanishes to order at least three.  Reciprocal-cube
+summability bounds `h(A)` by `C exp(delta A)`.  If `h` were eventually nonnegative, its translated
+nonnegative tail would have Laplace convergence abscissa exactly `delta`: the upper bound follows
+from exponential type, while every smaller abscissa would put one genuine pole `s=+-i gamma`
+inside its holomorphy half-plane.  Yet `(S40.4)` is holomorphic at real `s=delta`, because
+`xi(1/2+delta)!=0` for `0<=delta<=1/2`; at `delta=0` use the removable singularity.  This
+contradicts Landau's nonnegative-Laplace boundary theorem.  Applying the same argument to `-h`
+proves `(S40.3)`.  Supremum attainment is never used.
+
+Dividing `(S40.3)` by positive aperture yields the new exact source theorem
+
+```text
+for arbitrarily large A,
+ (1/A)integral_0^A g(t)dt<c_Xi,
+and for arbitrarily large A,
+ c_Xi<(1/A)integral_0^A g(t)dt.                         (S40.5)
+```
+
+Choose one negative crossing with `A=2a`.  Section 35 source asymptotic then gives
+
+```text
+q_a(lambda)->ell_a:=(1/(2a))integral_0^(2a)g(t)dt<c_Xi,
+2q_a(-L)-q_a(-2L)->ell_a.                              (S40.6)
+```
+
+Consequently every sufficiently large finite `L` supplies two actual admissible shifts whose
+affine-sewn central source flux has the strict required Herglotz residue sign.  These shifts remain
+far from the spectral floor, so Section 37 Cayley-universality obstruction does not apply.  This
+is why a condition “whose positivity is RH itself” is not avoided: once a source identity proves
+that condition it is a valid RH proof.  What is avoided is assuming it.  Here central positivity
+is derived from independent divisor/Laplace structure.
+
+Central residue sign, aperture existence, and shift existence are therefore closed.  Actual
+frontier corpus cannot solve is now narrower and full-frequency:
+
+```text
+fix one aperture and finite dyadic pair supplied by (S40.6)
+ -> prove actual normalized Euler--Gamma jump quotient is Herglotz/Pick on C_+
+ -> its nonreal Xi poles are impossible by existing pole theorem
+ -> RH.                                                (S40.7)
+```
+
+Corpus has neither the required prime--Gamma Gram factorization nor a source counterexample for
+this selected pair.  More central estimates, ground-state inequalities, or shift searches are no
+longer frontier work.  Next experiment must attack the full Pick matrix, beginning with exact
+two-frequency determinant of the actual selected Euler--Gamma triangles and testing whether its
+defect factors through an already-positive restricted-Weil form.
+
+Paper proof and audit:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-screw-cesaro-curvature-recurrence.md`.
+
+Lean module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiScrewCesaroCurvatureRecurrence.lean`.
+
+Formal declarations include `suzukiCurvatureCenteredPrimitive_eq`,
+`suzukiScrewCesaroMean_lt_iff_centeredPrimitive_neg`,
+`cofinallyCrosses_suzukiScrewCesaroMean_iff_centeredPrimitive`,
+`eventually_suzukiDyadicNegativeShiftIntercept_lt`,
+`xiSuzukiScrewCesaroCrossing_selects_dyadicCentralFlux`, and
+`not_ae_nonneg_of_landau_complexMGF_nonintegrable`.
+
+Primary-source boundary: Suzuki 2023 supplies `(S40.1)` and one-sided transform but only discusses
+pointwise `liminf Psi` under RH plus simplicity and rational independence; Suzuki 2026 supplies the
+finite-aperture setting.  Targeted searches found no screw-Cesaro curvature recurrence parent.
+Priority remains unverified rather than claimed.
+
+## 41. Full jump Pick problem is an exact Loewner growth-versus-deficit law
+
+Section 40 closes central shift selection.  Full jump kernel can now be decomposed without further
+asymptotics.  For real `alpha<beta<0`, define actual reflection-odd source response
+
+```text
+q_lambda(z)=Odd_z[R_lambda(z)/W_lambda(z)].             (S41.1)
+```
+
+Direct expansion of sewn characteristic, triangle, and odd carrier proves
+
+```text
+m_ext(z)
+ =-M_0(z)+[beta q_alpha(z)-alpha q_beta(z)]/(beta-alpha). (S41.2)
+```
+
+For scalar Pick kernel `K_f(z,w)=[f(z)-conj(f(w))]/[z-conj(w)]`, real affinity gives
+
+```text
+K_jump
+ =-K_0+[beta H_alpha-alpha H_beta]/(beta-alpha),        (S41.3)
+H_lambda=K_(q_lambda),  K_0=K_(M_0).                   (S41.4)
+```
+
+Evaluate on arbitrary finite node/coefficient vector `v`.  Exact algebra yields
+
+```text
+v* K_jump v>=0
+iff
+(-alpha)[H_beta(v)-H_alpha(v)]
+ >=(beta-alpha)[K_0(v)-H_alpha(v)].                    (S41.5)
+```
+
+Therefore full Pick positivity is equivalent to Loewner inequality
+
+```text
+(-alpha)(H_beta-H_alpha)
+ >=_L (beta-alpha)(K_0-H_alpha).                       (S41.6)
+```
+
+This is not another estimate or sufficient abstraction.  It is exact matrix form of actual
+Carleman jump Gram law.  Negative shifts have extrapolation factor
+`-alpha/(beta-alpha)>1`; source growth must pay entire Xi-multiplier deficit.  At selected dyadic
+pair `alpha=-2L,beta=-L`, condition becomes
+
+```text
+2(H_(-L)-H_(-2L)) >=_L K_0-H_(-2L).                   (S41.7)
+```
+
+`[CONJECTURE: SUZUKI-LOEWNER-GROWTH]` One aperture/pair from Section 40 satisfies `(S41.6)` on
+all finite upper-half-plane node sets.  Proposed producer is source-before-divisor square
+
+```text
+(-alpha)(H_beta-H_alpha)-(beta-alpha)(K_0-H_alpha)
+ =B_(alpha,beta)^*B_(alpha,beta),                      (S41.8)
+```
+
+derived from restricted resolvent identity
+`R_beta-R_alpha=(beta-alpha)R_beta R_alpha` plus reflected prime-power/Gamma triangle.  Any
+negative two-frequency determinant kills square producer.  Finite Donoghue positivity cannot
+replace it because divisor is wrong; central sign tests only one asymptotic vector.
+
+Actual frontier corpus cannot solve is now exactly `(S41.6)`, not shift selection:
+
+```text
+prime--Gamma resolvent square -> SUZUKI-LOEWNER-GROWTH
+ -> full jump Pick kernel
+ -> nonreal Xi poles excluded
+ -> RH.                                                (S41.9)
+```
+
+Paper proof:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-jump-kernel-loewner-growth-gap.md`.
+
+Active conjecture:
+
+- `docs/drafts/pipeline/1-in-progress/suzuki-jump-kernel-loewner-growth.md`.
+
+Lean module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiJumpKernelLoewnerGap.lean`.
+
+Formal declarations include `suzukiAffineSewnExteriorWeylQuotient_eq_jumpWeylCandidate`,
+`suzukiScalarPickKernel_affineSewnExteriorWeylQuotient`, and
+`suzukiAffineKernelGap_nonneg_iff_loewnerGrowth`.
+
+## 42. Full-frequency Neumann cancellation is false; exact holonomy survives
+
+The first square producer after `(S41.8)` proposed discarding the direct Neumann comparison
+channel because Section 33 proves it cancels from central affine flux.  That extrapolation from one
+Laurent coefficient to the whole spectral function is false.
+
+Fix aperture `a` and an odd compact source distribution `nu`, with characteristic
+
+```text
+W(z)=<nu,e^(iz·)>.
+```
+
+For `r_0(t)=-|t|/2`, let `T_R,T_L` be the right/left compact triangles and put `I=-iT_R` in the
+canonical Xi-real coordinate.  Oddness gives zero source mass.  More importantly,
+
+```text
+sgn(x-y)r_0(x-y)=-(x-y)/2,                              (S42.1)
+```
+
+so the right-minus-left spatial response is the constant half first moment of `nu`.  Fourier
+transformation and `W'(0)=i<nu,y>` give the exact normalized reflection-odd response
+
+```text
+n_(a,W)(z):=Odd_z[I(z)/W(z)]
+ =-W'(0)sin(az)/(2zW(z)).                               (S42.2)
+```
+
+For each form shift split the full response into Euler--Gamma and explicit Neumann pieces,
+
+```text
+q_lambda=q_lambda^EG-lambda n_(a,W_lambda).             (S42.3)
+```
+
+Substitution into affine sewing proves
+
+```text
+[beta q_alpha-alpha q_beta]/(beta-alpha)
+ =[beta q_alpha^EG-alpha q_beta^EG]/(beta-alpha)
+  +N_(alpha,beta),                                      (S42.4)
+
+N_(alpha,beta)(z)
+ =alpha beta sin(az)/(2z(beta-alpha))
+   [W_alpha'(0)/W_alpha(z)-W_beta'(0)/W_beta(z)].       (S42.5)
+```
+
+Thus full cancellation would require equality of projectively normalized characteristics
+`W_alpha/W_alpha'(0)=W_beta/W_beta'(0)`.  Actual finite resolvent shift is projectively non-flat;
+the corpus already has its reflected-tangent certificate.
+
+There is no contradiction with the central theorem.  Every simple odd characteristic satisfies
+
+```text
+n_(a,W)(z)=-a/(2z)+O(z).                                (S42.6)
+```
+
+The universal pole cancels from `n_beta-n_alpha`, but its centered higher-frequency part does not.
+Writing `W(z)=dz+ez^3+O(z^5)`, the first survivor is
+
+```text
+N_(alpha,beta)(z)
+ =alpha beta a/[2(beta-alpha)]
+   [e_beta/d_beta-e_alpha/d_alpha]z+O(z^3).             (S42.7)
+```
+
+Normalized cubic characteristic curvature is therefore the first comparison-channel observable
+missed by central residue.
+
+The second resolvent identity makes the correction constructive rather than merely obstructive.
+In common gauge
+
+```text
+W_beta=W_alpha+(beta-alpha)J,
+W_beta'(0)=d_alpha+(beta-alpha)J'(0),                   (S42.8)
+```
+
+one has
+
+```text
+N_(alpha,beta)(z)
+ =alpha beta sin(az)/(2z)
+  [d_alpha J(z)-J'(0)W_alpha(z)]
+  /[W_alpha(z)W_beta(z)].                               (S42.9)
+```
+
+Bracket in `(S42.9)` is exact centered projective tangent.  It is the positive survivor of the
+failed prime--Gamma-only square.
+
+There is a second, stronger conclusion.  Put `epsilon=1/L` and normalize the far-negative
+phase-one characteristic by its central jet.  Strong source expansion gives
+
+```text
+What_epsilon=What_0+epsilon dotWhat_0+o(epsilon),
+What_0(z)=sin(az)/a.                                    (S42.9a)
+```
+
+The dyadic correction therefore has locally uniform meromorphic limit
+
+```text
+N_L(z)
+ =L sin(az)/z[1/What_(1/(2L))(z)-1/What_(1/L)(z)]
+
+ ->N_infty(z)
+ =a^2 dotWhat_0(z)/[2z sin(az)].                        (S42.9b)
+```
+
+This limit is not identically zero.  If the centered phase-one tangent vanished, then for a real
+constant `c`, the effective characteristic of `f=A_a e^x-c e^x` would vanish.  Inverse Fourier
+transformation forces `f_odd=(f_even)'`.  But Suzuki's exact finite-part endpoint law gives
+
+```text
+f_odd=-(1/2)sinh(x)log(a^2-x^2)+O(1),
+(f_even)'=f_odd+x cosh(x)/(a^2-x^2)+O(1),               (S42.9c)
+```
+
+which is impossible at `a-`.  Thus the large-negative lever arm converts an `O(1/L)` projective
+shift into a genuinely nonzero order-one full-frequency response.  Far-negative escape destroys
+only central Neumann information; it preserves the arithmetic projective tangent.
+
+Consequently current RH frontier is corrected to
+
+```text
+K_jump=K_(m_EG)+K_(N_(alpha,beta)),                    (S42.10)
+
+prove K_(m_EG)+K_(N_(alpha,beta))=B^*B
+ -> full jump Pick positivity
+ -> no nonreal Xi pole
+ -> RH.                                                (S42.11)
+```
+
+No sign is claimed for `K_(N)` separately.  New mechanism is compensation: Euler--Gamma
+resolvent curvature and Neumann projective holonomy must close together.  Any future derivation
+that drops `(S42.5)` is falsified even if its central residue is correct.
+
+Paper theorem and hostile audit:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-full-frequency-neumann-holonomy-survivor.md`.
+- `docs/drafts/pipeline/5-failed/suzuki-prime-gamma-only-jump-square.md`.
+
+Corrected active conjecture:
+
+- `docs/drafts/pipeline/1-in-progress/suzuki-jump-kernel-loewner-growth.md`.
+
+Lean module:
+
+- `formal/GaloisForLFunctions/RHTower/SuzukiFullFrequencyNeumannHolonomy.lean`.
+
+Formal declarations include `sign_mul_suzukiNeumannKernel`,
+`suzukiRealAffineSourceFunction_shiftedNeumann`,
+`suzukiNeumannHolonomyCorrection_eq_projectiveCross`,
+`suzukiNeumannHolonomyCorrection_finiteUpdate`, and
+`suzukiScalarPickKernel_jumpWeylCandidate_shiftedNeumann`.  It also proves
+`tendsto_suzukiDyadicReciprocalSecant`, the exact derivative limit that amplifies dyadic reciprocal
+motion with factor `1/2`.  Lean closes exact algebraic and Pick
+layers; compact-distribution triangle-to-response passage `(S42.1)--(S42.2)` remains paper-proved.
+
+## S43. Affine resolvent sewing has exact Krein sign, not positive-square sign (2026-07-22)
+
+The remaining claim that second resolvent identity itself produces compensated `B^*B` fails a
+direct finite spectral hostile test.  For
+
+```text
+R_lambda(t)=1/(t-lambda),
+E_(alpha,beta)(t)=[beta R_alpha(t)-alpha R_beta(t)]/(beta-alpha),
+```
+
+exact identity is
+
+```text
+R_0(t)-E_(alpha,beta)(t)
+=alpha beta/[t(t-alpha)(t-beta)].                       (S43.1)
+```
+
+When `alpha<beta<0<` spectral-shift denominators and `t!=0`, right side has sign `t`.  Hence
+negative-Stieltjes orientation yields signed diagonal form
+
+```text
+Q(c)=sum_(t_j>0)|c_j|^2 omega_j
+     -sum_(t_j<0)|c_j|^2 omega_j,   omega_j>0.          (S43.2)
+```
+
+Negative index is exact count of negative restricted-Weil spectral coordinates in minimal model.
+Bare resolvent algebra cannot yield universal Hilbert square when one negative node exists.
+
+Against global target `g`, local/global correction `C_g=-R_0-g` satisfies sharp identity
+
+```text
+G_g(t)=D_(alpha,beta)(t)+C_g(t),
+G_g(t)>=0 iff C_g(t)>=-D_(alpha,beta)(t).               (S43.3)
+```
+
+Thus every negative node imposes explicit positive completion debt `omega_j`.  Correct active
+conjecture is `SUZUKI-GLOBAL-LOCAL-KREIN-WELD`: coupled reflected Euler--Gamma triangles and exact
+Neumann projective holonomy must pay this negative part, source-before-divisor, while global Xi
+multiplier remains intact.  This is now exact frontier toward RH; it is not proved.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-affine-resolvent-krein-defect.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiAffineResolventKreinDefect.lean`.
+
+## S44. Xi-real/FE bipolarization fixes unique minimal Krein completion (2026-07-22)
+
+S43 left completion direction and amount unspecified.  Corpus already has two fixed operations on
+real weld-generator plane: Xi-real quarter-turn `J` and FE coefficient reflection `R`.  For weld
+area `Omega_theta`, define
+
+```text
+P_theta(x,y)=Omega_theta(x,Jy),
+K_theta(x,y)=Omega_theta(x,Ry),
+Q+_theta=(P_theta+K_theta)/2,
+Q-_theta=(P_theta-K_theta)/2.                          (S44.1)
+```
+
+Direct algebra gives
+
+```text
+Q+_theta(x,y)=theta/2 (x1+x2)(y1+y2),
+Q-_theta(x,y)=theta/2 (x1-x2)(y1-y2),
+K_theta=Q+_theta-Q-_theta,
+K_theta+Q-_theta=Q+_theta>=0.                          (S44.2)
+```
+
+Variable completion rate `kappa` has sharp law
+
+```text
+K_theta(x,x)+Q-_kappa(x,x)
+=theta/2 (x1+x2)^2+(kappa-theta)/2 (x1-x2)^2,
+
+[nonnegative for every x] iff theta>=0 and kappa>=theta. (S44.3)
+```
+
+Necessity follows by testing `(1,1)` and `(1,-1)`; sufficiency is literal square positivity.  At
+negative S43 node, unique minimal rate is
+
+```text
+theta(t)=-D_(alpha,beta)(t)>0.                         (S44.4)
+```
+
+No arbitrary `B_a` remains locally.  Completion amount is exact debt, direction is negative FE
+light line, and completed residual is positive light square.  Moreover
+
+```text
+J R=-R J,
+((J+R)/2)^2=0,
+((J-R)/2)^2=0.                                        (S44.5)
+```
+
+Thus both light squares are area twists by fixed rank-one square-zero operators, matching required
+algebraic shape of one-sided Carleman triangles.
+
+Actual unresolved RH-bearing statement is now
+`SUZUKI-XIREAL-FE-BIPOLARIZATION-WELD`: prove common-gauge reflected Euler--Gamma triangles plus
+full-frequency Neumann holonomy realize `(J-R)/2` completion channel with coefficient at least
+`-D(t)` coherently on every finite node set, without Xi-divisor insertion.  This source identity is
+strictly stronger and more falsifiable than saying whose positivity is RH: operators, direction,
+and exact threshold are fixed before any Xi zero is inspected.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-xireal-fe-bipolarization-completion.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiXiRealFEBipolarizationCompletion.lean`.
+
+## S44. Negative-block Schur reduction and holonomy tax (2026-07-22)
+
+Diagonal cancellation in S43 is insufficient when Neumann projective holonomy couples spectral
+sign sectors.  Exact two-channel completion law is
+
+```text
+a x^2+2bxy+(c-n)y^2>=0 for all x,y
+iff c>=n+b^2/a,                    a>0.                  (S44.1)
+```
+
+Here `n` is explicit negative affine-resolvent debt and `b^2/a` is strict Schur holonomy tax.
+Full block version at fixed aperture is
+
+```text
+C_---N-C_-+(P+C_++)^(-1)C_+- >=0.                       (S44.2)
+```
+
+Restricted-Weil negative subspace is finite-dimensional at every aperture, so full-frequency
+source problem reduces to finite Schur complement `(S44.2)`.  Correct conjecture is
+`SUZUKI-FINITE-NEGATIVE-BLOCK-WELD`: reflected Euler--Gamma diagonal completion must dominate both
+negative debt and projective cross tax.  Presence of holonomy alone does not help; purely
+off-diagonal holonomy worsens required completion.
+
+Paper theorem:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-krein-schur-holonomy-tax.md`.
+
+Scalar exact law is formalized in `SuzukiAffineResolventKreinDefect.lean`.  Source block inequality
+`(S44.2)` remains unproved and RH-bearing.
+
+## S45. Unique coherent negative-projector completion (2026-07-22)
+
+Cross-node assembly of local Xi-real/FE completion has canonical source-spectral solution.  For
+restricted-Weil operator `A` and two admissible negative shifts,
+
+```text
+D=sgn(A)W,
+W=alpha beta |A|^(-1)(A-alpha)^(-1)(A-beta)^(-1)>=0.    (S45.1)
+```
+
+Unique minimal commuting correction is `D_-=P_-W`.  For evaluation vectors `Gamma(z)` its complete
+finite-node kernel is
+
+```text
+K_-(z,w)=<W^(1/2)P_-Gamma(w),W^(1/2)P_-Gamma(z)>.       (S45.2)
+```
+
+This Gram kernel is positive and finite rank at fixed aperture; `K_D+K_-=K_(P_+W)>=0`.  Correct
+source conjecture is now `SUZUKI-NEGATIVE-PROJECTOR-TRIANGLE-IDENTITY`: actual reflected
+Euler--Gamma plus Neumann correction equals `(S45.2)` plus a positive kernel in fixed
+Xi-real/FE negative-light direction.  Any cross-sector holonomy must instead satisfy S44 Schur-tax
+inequality.
+
+Paper:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-negative-projector-coherent-completion.md`.
+
+Unproved step is analytic identification of concrete source triangle map with `(S45.2)`; proving
+it closes jump positivity and RH.
+
+## S46. Finite-Morse resolvent-jet completion replaces discontinuous projector (2026-07-22)
+
+S45 fixed minimal completion but left source representation as weighted spectral projector.  At
+fixed aperture `A_a` has finitely many distinct negative eigenvalues
+`lambda_1,...,lambda_k`.  Fix `rho<inf spec(A_a)` and set
+
+```text
+r_j=1/(lambda_j-rho),
+w_j=-D_(alpha,beta)(lambda_j)>0,
+ell_j(x)=(x/r_j) product_(m!=j)(x-r_m)/(r_j-r_m),
+p_a(x)=sum_j sqrt(w_j) ell_j(x).                       (S46.1)
+```
+
+Exact finite-Morse theorem gives
+
+```text
+p_a(0)=0,                  p_a(r_j)^2=w_j,
+D+p_a((A_a-rho I)^(-1))^2 >=0,
+p_a(R_rho)^2=D_-+P_+p_a(R_rho)^2 >=D_-.               (S46.2)
+```
+
+Completion is compact and source-native because it is finite jet of one admissible resolvent:
+
+```text
+p_a(R_rho)=sum_(n=1)^k c_n R_rho^n
+           =sum_(n=1)^k c_n/(n-1)! partial_rho^(n-1)R_rho. (S46.3)
+```
+
+This representation cannot be made exactly minimal by finite polynomial.  Positive eigenvalues
+give infinitely many distinct resolvent nodes accumulating at zero.  If polynomial square
+vanished on all of them, polynomial would be zero and could not pay any `w_j>0`.  Thus positive
+tail in `(S46.2)` is forced, not artifact.
+
+Actual frontier corpus still cannot solve is now the concrete source inequality
+`SUZUKI-FINITE-MORSE-RESOLVENT-JET-DOMINATION`:
+
+```text
+K_completion^src(z,w)
+-<p_a(R_rho)Gamma(w),p_a(R_rho)Gamma(z)> >=0           (S46.4)
+```
+
+for one recurrence-selected aperture and admissible negative shift pair, on every finite
+upper-half-plane node set in common characteristic gauge.  This is stronger than negative-block
+diagonal matching: full Loewner remainder in `(S46.4)` must absorb Neumann cross-sector Schur tax.
+It is source-before-divisor; coefficients use only explicit `A_a` spectrum, never Xi zeros.
+Rational FE--Schwarz orbit insertion preserves local spectral data but inserts global pole, so it
+must violate `(S46.4)` and prevents deriving it from abstract spectral calculus alone.
+
+If `(S46.4)` is proved, `(S46.2)` makes full sewn jump Pick kernel positive; existing pole
+tomography then excludes every nonreal Xi zero and proves RH.  RH is not proved here: missing step
+is actual reflected Euler--Gamma/Neumann mixed-node domination `(S46.4)`.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-finite-morse-resolvent-jet-completion.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseResolventJetCompletion.lean`.
+
+## S47. Actual quotient is homogeneous Plücker blade; linear projector producer fails (2026-07-22)
+
+S45--S46 solve a linear affine-resolvent completion problem, but actual Suzuki response is ratio
+of two boundary observations of same shifted source:
+
+```text
+q_lambda(z)=N_z(u_lambda)/D_z(u_lambda),
+u_lambda=(A-lambda)^(-1)e.
+```
+
+Rank-one hostile test is decisive.  On invariant spectral line, numerator and denominator acquire
+same factor `(t-lambda)^(-1)`, so Euler--Gamma quotient is shift-flat even when `t<0`.  Linear
+negative projector debt is nonzero there.  Hence weighted projector and finite-Morse square cannot
+be canonical correction of actual projective motion.
+
+For `v=(A-alpha)^(-1)(A-beta)^(-1)e`, exact replacement is
+
+```text
+U_beta wedge U_alpha
+=(beta-alpha)(v,0) wedge (Av,1).                       (S47.1)
+```
+
+`V wedge V` component is Euler--Gamma spectral-pair curvature; `V wedge 1` component is affine
+Neumann/projective holonomy.  On two spectral modes,
+
+```text
+[B,D](v,Av)
+=(t_j-t_i)v_i v_j(b_i d_j-b_j d_i).                   (S47.2)
+```
+
+Source sign lives on spectral-pair Plücker orientation, not sign of individual eigenvalue.
+Current representation is therefore homogeneous exterior square, not negative projector plus
+Schur tax.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-homogeneous-projective-resolvent-plucker-lift.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiProjectiveResolventPluckerLift.lean`.
+
+## S48. One-resolvent jets tomographically generate complete homogeneous blade space (2026-07-22)
+
+Let finite simple block have `Ae_i=t_i e_i` and cyclic source `e=sum_i a_i e_i`, `a_i!=0`.  Fix
+`rho` below spectrum and `R=(A-rho)^(-1)`.  Zero-constant cardinal polynomials
+
+```text
+q_i(x)=x/(a_i r_i) product_(m!=i)(x-r_m)/(r_i-r_m),
+r_i=(t_i-rho)^(-1),                                   (S48.1)
+```
+
+satisfy `q_i(R)e=e_i`.  Thus all filters are finite positive powers of one admissible resolvent,
+equivalently finite shift jets.
+
+For actual homogeneous carrier `H(v)=(v,0) wedge (Av,1)`, exact laws are
+
+```text
+H(e_i)=e_i wedge infinity,
+H(e_i+e_j)-H(e_i)-H(e_j)
+  =(t_j-t_i)e_i wedge e_j.                            (S48.2)
+```
+
+These `n+n(n-1)/2` source-generated blades form a basis of
+`wedge^2(V direct_sum R)`.  Rank one retains only Neumann homogeneous coordinate; every
+Euler--Gamma direction first occurs on spectral pair with exact gap.  Repeated eigenvalues and
+zero source coordinates are sharp tomography failures.
+
+Actual frontier research corpus cannot solve is now
+`SUZUKI-PLUCKER-CD-MATRIX-GRAM`: for one recurrence-selected aperture/shifts, derive division-free
+prime--Gamma Christoffel--Darboux/Green identity factoring full polarized boundary matrix on basis
+`(S48.2)` as positive Gram kernel.  Spanning alone does not prove positivity; it makes every bad
+direction observable.  One negative principal minor refutes universal producer.  Positive Gram
+factorization yields exact Loewner growth, jump Pick positivity, pole exclusion, and RH.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-resolvent-jet-homogeneous-plucker-tomography.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiResolventJetHomogeneousPluckerTomography.lean`.
+
+RH is not proved.  Exact unsolved scientific step is source boundary matrix factorization, not
+more affine-resolvent estimates or one-mode completion.
+
+## S49. Weighted affine sewing requires marked secant tensor, not Plücker chord alone (2026-07-22)
+
+S47 controls projective chord `q_beta-q_alpha`.  Actual jump response uses weighted affine
+intercept
+
+```text
+I_(alpha,beta)q=[beta q_alpha-alpha q_beta]/(beta-alpha). (S49.1)
+```
+
+Plücker-only producer fails exact gauge test.  Replace numerator boundary observation by
+`B_delta=B+delta D`.  Every minor `B wedge D` is unchanged, while each `q_lambda` and `(S49.1)`
+increase by `delta`.  Exterior blade forgets affine chart which jump sewing retains.
+
+Let
+
+```text
+u_alpha=Av-beta v,       u_beta=Av-alpha v,
+x=B(v), X=B(Av), y=D(v), Y=D(Av),
+n_lambda=B(u_lambda)+c.
+```
+
+Exact division-free theorem is
+
+```text
+beta n_alpha D(u_beta)-alpha n_beta D(u_alpha)
+=(beta-alpha)Q_(alpha,beta)(v),                        (S49.2)
+
+Q_(alpha,beta)(v)
+=(X+c)Y-(alpha+beta)xY+alpha beta xy.                 (S49.3)
+```
+
+Therefore, away from endpoint characteristic divisors,
+
+```text
+I_(alpha,beta)q
+=Q_(alpha,beta)(v)/[(Y-beta y)(Y-alpha y)].            (S49.4)
+```
+
+Spectral expansion of `Q` contains four sectors:
+
+1. diagonal terms `(t_i-alpha)(t_i-beta)b_i d_i v_i^2`;
+2. symmetric pair products `b_i d_j+b_j d_i`;
+3. alternating Plücker products `b_i d_j-b_j d_i`;
+4. homogeneous Neumann term `c sum_i t_i d_i v_i`.
+
+For opposite shifts `alpha=-beta`, alternating sector vanishes while diagonal and symmetric
+sectors survive.  Rank one recovers physical affine intercept `L(v)/D(v)` exactly; Plücker chord
+only knows slope.  Thus S47--S48 remain correct chord/tomography theorems but do not by themselves
+carry affine-sewn jump.
+
+Specializing to actual Volterra source uses
+
+```text
+B_z=(1/2)D_z Omega,      Omega=H_g-H_(r0)A,
+c_z=(1/2)D_z(H_(r0)e).                                 (S49.5)
+```
+
+Actual frontier corpus cannot solve is now `SUZUKI-MARKED-SECANT-CD-WELD`: derive division-free
+prime--Gamma Christoffel--Darboux/Green identity whose left side is Pick polarization of marked
+tensor `(S49.3)` plus exact global Xi deficit, and whose right side is positive source Gram.
+Finite jet filters can tomographically expose all four sectors.  One negative principal minor
+falsifies producer.  Proving identity gives exact Loewner gap, jump Pick positivity, pole
+tomography, and RH.
+
+Paper, failed route, and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-projective-affine-secant-tensor-lift.md`;
+- `docs/drafts/pipeline/5-failed/suzuki-plucker-only-affine-sewing-producer.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiProjectiveAffineSecantTensor.lean`.
+
+RH is not proved.  Open step is positive Gram factorization of actual marked Volterra tensor plus
+Xi deficit.  This is positivity whose proof would be RH; that is valid target, but no positivity
+has been assumed or renamed as proof.
+
+## S50. Volterra Cartesian split isolates actual RH-bearing source operator (2026-07-22)
+
+S47--S48 identify homogeneous Plucker geometry but not concrete triangle operator.  Exact Fubini
+now supplies it.  If
+
+```text
+(V_k u)(x)=integral_(-a)^x k(x-y)u(y)dy,
+C_k=V_k+V_k^*,        H_k=-i(V_k-V_k^*),               (S50.1)
+```
+
+then physical right triangle and Xi-real normalization are
+
+```text
+T_(k,R)[u]=Fourier[V_k u],
+-iT_(k,R)=1/2 Fourier[H_k u]-i/2 Fourier[C_k u].       (S50.2)
+```
+
+For odd phase-one source, `C_k u` is odd and `H_k u` is even.  Hence
+
+```text
+Even[-iT_(lambda,R)]=1/2 Fourier[H_lambda nu_lambda],
+Odd [-iT_(lambda,R)]=-i/2 Fourier[C_lambda nu_lambda]. (S50.3)
+```
+
+Compressed `C_lambda` is precisely positive admissible pencil
+`G_a-lambda(-Delta_N)^(-1)`.  Its positivity therefore controls known odd clock, not unresolved
+even pole carrier.  This falsifies direct inference from Volterra accretivity to jump Pick
+positivity.
+
+For `r_0=-|t|/2`, antisymmetric half has exact moment law
+
+```text
+(V_r0-V_r0^*)u=-x*mu_0/2+mu_1/2.                      (S50.4)
+```
+
+Odd source has `mu_0=0`, so `H_r0` is rank-one moment-to-constant map and `(S50.3)` gives
+
+```text
+Even[-iT_(r0,R)]=-W'(0)sin(az)/(2z).                  (S50.5)
+```
+
+This is exactly S42 Neumann projective holonomy.  All infinite-dimensional unresolved source
+content lies in `H_g`.
+
+On resolvent orbit `Au_lambda-lambda u_lambda=e`, phase homogenization is
+
+```text
+(H_g-lambda H_r0)u_lambda
+ =(H_g-H_r0*A)u_lambda+H_r0*e.                        (S50.6)
+```
+
+Thus source operator entering S49 marked secant is relative phase defect
+`Omega=H_g-H_r0*A`, plus one rank-one coordinate.  Explicitly
+
+```text
+(H_g u)(x)=-i integral sgn(x-y)g(x-y)u(y)dy,
+H_g=-i[X,Q_g],       Q_g kernel g(x-y)/|x-y|.          (S50.7)
+```
+
+This is precise source input, not estimate: positivity of symmetric pencil, negative projectors,
+and complete jet tomography do not determine independent causal phase.  Combined with S49, live
+frontier is `SUZUKI-MARKED-SECANT-CD-WELD`: prove positive prime--Gamma Green identity for marked
+tensor built from `Omega`, rank-one holonomy, and global Xi deficit.  Proving it gives jump Pick
+kernel and RH.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-volterra-cartesian-phase-defect.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiVolterraCartesianPhaseDefect.lean`.
+
+## S51. Canonical global-local compound Bezoutian weld (2026-07-22)
+
+S49--S50 identify actual marked Volterra numerator but leave "plus global Xi deficit" informal.
+Putting local marked pair `(Q,P)` and centered global pair
+
+```text
+S=XiC',              T=z^2 XiC
+```
+
+into one compound pair removes this ambiguity:
+
+```text
+N=Q*T-S*P,           D=P*T.                          (S51.1)
+```
+
+Away from explicit divisors,
+
+```text
+N/D=Q/P-S/T,                                           (S51.2)
+```
+
+exactly full jump response.  Core result is division-free.  Arbitrary common pointwise affine
+gauge cancels:
+
+```text
+Q -> Q+delta P,      S -> S+delta T  ==> N unchanged. (S51.3)
+```
+
+This weld is unique up to scale among bilinear forms: if
+`W=aQS+bQT+cPS+dPT` is common-gauge invariant and vanishes when `QT=SP`, then
+`a=d=0`, `c=-b`, hence `W=b(QT-SP)`.
+
+Define Hermitian cross-Bezoutian
+
+```text
+[F,G]_(z,w)=F(z)conj(G(w))-G(z)conj(F(w)).
+```
+
+Exact compound product rule is
+
+```text
+[N,D]=T(z)conj(T(w))[Q,P]-P(z)conj(P(w))[S,T].        (S51.4)
+```
+
+Equation `(S51.4)` is precise division-free meaning of "marked tensor plus Xi deficit".  It also
+sharpens S49 affine obstruction.  Independent gauges produce `N -> N+rD` and
+
+```text
+[N+rD,D]=[N,D]+D(z)conj(D(w))(r(z)-conj(r(w))).       (S51.5)
+```
+
+Common pointwise gauge has `r=0`; real constant relative gauge is Pick-invisible.  Actual chart
+obstruction is relative nonconstant/non-real curvature, not arbitrary affine normalization.
+
+Hostile audit survives:
+
+- opposite shifts retain diagonal/symmetric sectors through `Q`;
+- rank one need not vanish because determinant is between local and global pairs;
+- fake functional-equation orbit changes `(S,T)` and hence `N`, except genuine projective/gauge
+  degeneracy;
+- no division, zero-free region, Herglotz realization, positivity, or RH premise enters
+  `(S51.3)--(S51.5)`.
+
+Actual corpus frontier is now `SUZUKI-COMPOUND-BEZOUTIAN-GRAM`: specialize `Q` to marked Volterra
+tensor built from
+
+```text
+Omega=H_g-H_r0*A
+```
+
+and rank-one holonomy, then derive directly from prime--Gamma screw source a positive Green/Gram
+factorization of signed compound kernel `(S51.4)` on one nontrivial aperture.  Positivity is not
+avoided because it is RH-bearing; representation ambiguity has been removed so this is now one
+falsifiable source identity.  A negative principal minor refutes it.  A positive source
+factorization yields full jump Pick positivity and RH.
+
+Paper, certificate, and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-global-local-compound-bezoutian-weld.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-global-local-compound-bezoutian-weld.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiGlobalLocalCompoundBezoutianWeld.lean`.
+
+RH is not proved.  Exact remaining open statement is source Gram factorization of `(S51.4)`, not
+generic "positivity" or another estimate.
+
+## S52. Midpoint Lorentz completion fixes exact rooted debt (2026-07-22)
+
+Write marked shifts as `alpha=m-d`, `beta=m+d`, and centered boundary data
+
+```text
+U=B0-mx,      V=Y-my,      F=B0*y-x*Y.
+```
+
+Exact marked secant pair is
+
+```text
+Q=U*V-d^2*x*y+m*F,
+P=V^2-d^2*y^2.                                      (S52.1)
+```
+
+Symmetric coefficient form has Lorentz diagonal
+
+```text
+(r-m*s)^2-d^2*s^2.                                  (S52.2)
+```
+
+Adding rooted diagonal `kappa*s^2` is nonnegative for every `(r,s)` iff `d^2<=kappa`.
+At sharp value it is exactly square `(r-m*s)^2`.  Thus missing rooted mass is not free parameter:
+
+```text
+kappa_min=d^2=(beta-alpha)^2/4.                      (S52.3)
+```
+
+For dyadic Suzuki pair `(-2L,-L)`, debt is `L^2/4`.  Same `d^2` occurs in actual product-resolvent
+equation and relative Volterra phase as `-d^2*phaseNeumann(v)`.  Compound numerator splits into
+midpoint determinant, rooted debt, and centered Pluecker flux.  These are unconditional exact
+identities, now paper-proved and Lean-formalized.
+
+Paper, certificate, and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-marked-secant-midpoint-lorentz-completion.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-marked-secant-midpoint-lorentz-completion.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiMarkedSecantMidpointLorentzCompletion.lean`.
+
+This sharpened S51 frontier to exact rooted completion problem, but did not yet justify critical
+cofinal Hilbert limit.
+
+## S53. Critical rooted Bianchi cofinal no-go and scalar rigidity (2026-07-22)
+
+Corpus raw Gamma--Bianchi diagonal at prime `p` and displacement `x` is
+
+```text
+b_x(p)=Lambda(p)/p * exp(-x log p).                  (S53.1)
+```
+
+Suzuki critical screw weight forces `x=-1/2`, exactly
+
+```text
+b_(-1/2)(p)=Lambda(p)/sqrt(p).                       (S53.2)
+```
+
+This is not proxy normalization.  Existing unique complete Gamma-conormal renormalization has
+boundary coordinate `sqrt(b_x(p))`; new Lean connector identifies its `x=-1/2` specialization with
+critical rooted amplitude.
+
+For every prime,
+
+```text
+log(2)/p <= Lambda(p)/sqrt(p).                       (S53.3)
+```
+
+Euler prime-harmonic divergence therefore proves critical mass is not summable.  No PNT,
+asymptotic estimate, computation, RH premise, or zero data enters.  Consequently standalone raw
+rooted feature is not `ell^2` and cannot be passed cofinally as ordinary positive Hilbert Gram.
+
+Stronger scalar-renormalization rigidity is exact:
+
+```text
+Summable_p (c*sqrt(b_(-1/2)(p)))^2  <=>  c=0.         (S53.4)
+```
+
+Thus global scalar rescaling, finite border, or nonzero constant residual cannot repair route.
+Leading critical coordinate must cancel exactly prime-by-prime before square and limit.
+
+This falsifies original unrenormalized cofinal reading of
+`SUZUKI-ROOTED-MIDPOINT-COMPOUND-GRAM`, while preserving every finite-cutoff Gram.  Corrected RH
+frontier is
+
+```text
+SUZUKI-FINITE-APERTURE-RENORMALIZED-MIDPOINT-GRAM:
+
+R_M(p;z)=J_M(p;z)-m B_M(p)+L_M(p;z),
+[N_M,D_M](z,w)
+ = sum_(p^k in M) R_M(p^k;z)conj(R_M(p^k;w))
+   + <A_M(z),A_M(w)>.                                (S53.5)
+```
+
+Here `L_M` must be actual prime-dependent Volterra boundary leakage and `A_M` exact completed
+Gamma/polar feature.  No fitted remainder allowed.  Prove `(S53.5)` at finite aperture, establish
+exact leading cancellation forced by `(S53.4)`, then pass only combined residual cofinally.  This
+is actual corpus frontier: exact source intertwiner from Suzuki Volterra boundary atom to completed
+prime--Gamma--polar residual.  Corpus has no theorem determining `L_M` or proving `(S53.5)`.
+
+Paper, failed route, certificate, and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-rooted-bianchi-cofinal-no-go.md`;
+- `docs/drafts/pipeline/5-failed/suzuki-unrenormalized-cofinal-rooted-bianchi-gram.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-critical-rooted-bianchi-cofinal-no-go.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalRootedBianchiCofinalNoGo.lean`.
+
+RH is not proved.  Progress is structural and falsifiable: one previously proposed RH-producing
+limit is impossible, exact reason is formalized on actual source coordinate, and surviving route
+now has forced order of operations plus exact scalar cancellation law.
+
+Verification: direct new-module check and SOTA umbrella check passed; axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`; forbidden-token scan and repository formal lint
+passed; final targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passed (9443 jobs).  No Lean or
+Lake process from this work remains running.
+
+## S54. Causal Weil--Robin identity localizes actual collective frontier (2026-07-22)
+
+Delayed-hinge sign theorem forbids atomwise positive prime factorization.  Corpus now has stronger
+collective source identity.  For screw primitive `g`, `K=-g''`, compact aperture source `v`, and
+right screw exterior `R_g[v]`, two source integrations by parts give
+
+```text
+z^2 R_g[v](z)
+ = exp(i*a*z)(i*z*U(a)-U'(a)) + E_K[v](z).             (S54.1)
+```
+
+Thus canonical compound denominator removes universal `z^-2` primitive and leaves exactly Robin
+boundary current plus causal exterior of already-completed signed Weil distribution.  Delayed
+hinge specialization recovers prior boundary--tail law.  Direct form shift changes
+`K` by compact delta whose exterior vanishes, so exact midpoint debt `d^2` is localized in Robin
+current, not raw Bianchi bulk.
+
+Actual RH frontier is therefore
+
+```text
+SUZUKI-MARKED-WEIL-ROBIN-CD:
+affine-sew marked Robin currents + polarize complete causal Weil exterior
+ = positive Green Gram.                               (S54.2)
+```
+
+No positive part of signed Weil exterior may be assumed: that would import RH-equivalent content.
+One negative principal minor of full sewn kernel falsifies `(S54.2)`; success gives compound Pick
+positivity and RH through existing pole tomography.
+
+## S55. Triple-log repair fails; critical aperture has exact quarter-shift resolvent (2026-07-22)
+
+Midpoint polynomial `(w-alpha)(w-beta)=(w-m)^2-d^2` is also numerator of corpus's unique affine
+two-boundary Cauchy residual.  Canonical critical specialization is
+
+```text
+C(p)=-1/[4 log(p)(log(p)+1/2)(log(p)-1/2)].            (S55.1)
+```
+
+Weighting by actual critical mass gives
+
+```text
+M_aff(p)=Lambda(p)/sqrt(p)*C(p)^2,
+1/(6400000*p) <= M_aff(p).                            (S55.2)
+```
+
+Euler prime-harmonic divergence proves `M_aff` nonsummable.  Hence strongest existing
+two-boundary log-resolvent repair is impossible.  This is formalized with exact connector to
+existing affine residual; no PNT, computation, zero data, or RH premise occurs.
+
+Positive survivor comes from a corpus object not previously completed at critical displacement:
+finite Gamma--Euler aperture boundary current.  Pair uniquely renormalized critical boundary with
+cubically normalized true-aperture innovation before squaring.  For prime `p`, valuation depth
+`e`, positive aperture `h,a`, its actual atom satisfies
+
+```text
+T_(e+1)(h,a,t;p)=rho(h,a,t;p) T_e(h,a,t;p),
+rho=exp(-log(p)/4)*exp(i*t*log(p)/2)
+      *exp(-h*a*log(p)),
+|rho|<1,                                               (S55.3)
+sum_(e>=0) T_e = T_0/(1-rho).                         (S55.4)
+```
+
+Lean proves `(S55.3)--(S55.4)` on actual source definitions.  Transverse factor
+`q/(1+q)=1/(p+1)` moves prime current to `sqrt(log p)/p^(5/4)` scale, giving dependency-closed
+paper proof of absolute prime completion.  Critical boundary still has no standalone Hilbert
+vector; correct topology is distributional boundary paired with trace-class aperture innovation.
+
+This does not supersede `(S54.2)` or resurrect atomwise positivity.  It fixes Gamma/aperture
+component of Robin channel and removes former unspecified leakage `L_M`.  Exact unsolved frontier
+is now narrower: prove full marked Robin plus completed signed Weil exterior has positive Green
+Gram, with quarter-shift current forced as its critical Gamma/aperture subchannel.
+
+Paper, failed route, and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-affine-cauchy-residual-divergence.md`;
+- `docs/drafts/pipeline/5-failed/suzuki-critical-affine-cauchy-repair.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalAffineCauchyResidualDivergence.lean`;
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-aperture-quarter-shift-current.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalApertureQuarterShiftCurrent.lean`.
+
+RH is not proved.  Frontier progress is representation-level: canonical logarithmic repair is
+closed, first source-native power-scale critical pairing is exact, and remaining RH theorem has no
+free leakage coordinate.
+
+Verification: both new modules pass direct `lake env lean`; axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean.  Required targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passed `9450/9450`.  Repository
+formal lint reaches both modules but remains red on six unrelated concurrent unreachable modules.
+
+## S56. Prime entry is an endpoint-trace third-jet event (2026-07-22)
+
+Rectangular Ward frontier still contained unspecified “near-entry channel.”  Exact moving-boundary
+transport removes that freedom.  For delay `ell`, cut `c=a-ell`, truncated moments `A,B`, high
+Fourier window `H`, and completed near channel
+
+```text
+F_near=exp(i*a*z)(i*z*A-B)-exp(i*z*ell)H,
+```
+
+Leibniz transport gives
+
+```text
+F_near'  =-i*z[exp(i*a*z)B+exp(i*z*ell)H],
+F_near'' =z^2*exp(i*z*ell)H,
+F_near'''=i*z^3*exp(i*z*ell)H+z^2*exp(i*a*z)v(a-ell). (S56.1)
+```
+
+Point evaluations cancel twice because `ell+c=a`.  At prime-entry wall `ell=2a`, near and far
+channels agree through delay order two.  First defect is
+
+```text
+F_near'''(2a-)-F_far'''(2a+)
+ =z^2*exp(i*a*z)v(-a).                                (S56.2)
+```
+
+Thus no prime produces instantaneous positive value, slope, or curvature update.  Discrete entry
+reporter is endpoint trace of zero-extended deficiency source.  Under affine sewing it is
+
+```text
+z^2*exp(i*a*z)
+ *((beta-gamma)W_beta*tau_alpha
+   -(alpha-gamma)W_alpha*tau_beta),                   (S56.3)
+```
+
+a marked barycentric trace.  Common normalized trace survives rather than cancelling.
+
+Actual open problem remains `SUZUKI-RECTANGULAR-WARD-DEFECT-SEMIBOUNDED`: identify `(S56.3)` with
+critical quarter-shift Gamma/aperture current, reconstruct near-entry contribution by triple
+integration, and prove assembled rectangular Ward defect uniformly lower bounded.  Existing
+connector then proves RH; exact Green--Gram equality is unnecessary.  Corpus currently proves
+neither source identification nor lower bound, so RH is not proved.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-causal-entry-third-jet-boundary-law.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-causal-entry-third-jet-boundary-law.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryThirdJetBoundaryLaw.lean`.
+
+Verification: direct new-module check is diagnostic-free; axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`; final targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes `9452/9452`.  Repository
+formal lint reaches new module but remains red on unrelated concurrent unreachable HTGeometry
+module `CrossingConeSharpCommutativityPhaseLaw`.
+
+## S57. Entry Green transport forces critical quarter-shift phase (2026-07-22)
+
+The near-entry triple-integration problem has an exact source solution.  For completed near/far
+gap `G=F_near-F_far`, subtraction of known second and third jets gives throughout near region
+
+```text
+(d/dell-I*z)G''(ell,z)=z^2*exp(I*a*z)*tau(ell).         (S57.1)
+```
+
+At wall `ell=2a`, `G=G'=G''=0`; hence `(S57.1)` uniquely reconstructs full gap.  With entry depth
+`s=2a-ell` and `u(s)=v(-a+s)`, Green kernel is
+
+```text
+G(2a-s,z)=exp(I*a*z) integral_0^s
+  [exp(-I*z*(s-r))-1+I*z*(s-r)]u(r)dr.                (S57.2)
+```
+
+For prime `p`, valuation depth `e`, and `n=p^(e+1)`, wall aperture is
+
+```text
+a_(p,e)=log(n)/2,
+exp(I*t*a_(p,e))=exp(I*t*log(n)/2).                   (S57.3)
+```
+
+This is exactly conjugated critical Gamma-height phase; successive walls differ by
+`log(p)/2`, explaining half-log depth phase geometrically.  Keeping observer aperture `b`
+distinct from wall aperture, define source amplitude
+
+```text
+A_e(h,b;p)=sqrt(log(p)/n*exp(log(n)/2))*I_cubic(h,b;p,e).
+```
+
+Existing critical atom then factors exactly as
+
+```text
+T_e(h,b,t;p)=A_e(h,b;p)*exp(I*t*a_(p,e)),
+Delta_3(p,e;t)=t^2*T_e(h,b,t;p).                      (S57.4)
+```
+
+Therefore actual entry forcings inherit quarter-shift recursion and completion
+
+```text
+Delta_3(p,e+1;t)=rho(h,b,t;p)*Delta_3(p,e;t),
+sum_(e>=0) Delta_3(p,e;t)=t^2*T_0/(1-rho).            (S57.5)
+```
+
+Off `t=0`, coefficient `t^2*exp(I*t*a_(p,e))` is nonzero, so matching uniquely forces endpoint
+trace `A_e`.  Phase, normalization, and causal reconstruction are no longer free coordinates.
+
+Actual unresolved source statement is narrower: prove Suzuki's concrete restricted-Weil
+deficiency endpoint trace equals this calibrated amplitude after already fixed affine
+normalization, or prove mismatch residual contributes uniformly lower-bounded fixed-width
+rectangular form.  Then `SUZUKI-RECTANGULAR-WARD-DEFECT-SEMIBOUNDED` still requires assembled Ward
+defect lower bound.  Neither endpoint realization nor lower bound is in corpus; RH is not proved.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-entry-wall-quarter-shift-green-law.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-critical-entry-wall-quarter-shift-green-law.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalEntryWallQuarterShiftGreenLaw.lean`.
+
+Verification: direct new-module check is diagnostic-free; axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`; final targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes `9453/9453`.  Repository
+formal lint reaches new module but remains red on eight unrelated concurrent unreachable modules.
+
+## S58. One wall field is linear entry and quadratic far source (2026-07-22)
+
+Hostile source audit falsifies one semantic identification in S57.  Quantity
+
+```text
+A_e(h,b;p)=sqrt((log p/n)*exp(log n/2))*I_cubic(h,b;p,e)
+```
+
+depends on independently chosen observer aperture `b`; Suzuki deficiency endpoint
+`v_(a,lambda)(-a)` is fixed by restricted-Weil resolvent, shift, and wall aperture.  At depth zero,
+Lean proves `b -> A_0(h,b;p)` injective for `h,b>0`.  Hence it cannot be one observer-independent
+endpoint trace at two distinct observers.
+
+Positive survivor is stronger source compression.  For `n=p^(e+1)`, set
+
+```text
+b_e=sqrt((log p/n)*exp(log n/2)),
+omega_e(t)=conj(xiGammaEulerHeightBoundaryFeature(-1/2,t;(p,e))).
+```
+
+Exact algebra gives
+
+```text
+omega_e(t)=b_e*exp(I*t*log(n)/2),
+b_e^2=Lambda(n)/sqrt(n),
+omega_e(t)^2=(Lambda(n)/sqrt(n))*exp(I*t*log n).       (S58.1)
+```
+
+Thus Xi-real far delayed-hinge atom and entry jets are
+
+```text
+J_e(t)=-I*omega_e(t)^2/t^2,
+t^2*J_e(t)=-I*omega_e(t)^2                 (t != 0),
+DeltaBare_3=t^2*omega_e(t),
+DeltaObs_3=t^2*omega_e(t)*I_cubic(h,b;p,e).            (S58.2)
+```
+
+Square in `(S58.1)` is complex bilinear, not norm square; it retains delay phase and creates no
+atomwise positivity claim.  This is why existing negative far Pick diagonal remains valid.
+
+Scientific advance: universal far tail, bare entry reporter, and observed quarter-shift current
+are quadratic, linear, and observer-paired linear degrees of one wall field.  Separate far-channel
+matching is removed from RH frontier.  Correct producer is joint symmetric-square/observer block,
+not direct-sum positive prime Gram.
+
+Actual unresolved frontier is now exact and source-local:
+
+```text
+actual normalized restricted-Weil deficiency wall trace = b_e,
+```
+
+was next conjecture, but subsequent S59 resolvent audit rejects literal equality: `b_e` is source
+input, while deficiency endpoint depends on restricted-Weil resolvent and boundary observation.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-wall-field-square-root-weld.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-critical-wall-field-square-root-weld.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalWallFieldSquareRootWeld.lean`.
+
+Direct source check passes diagnostic-free; axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`; final targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes `9454/9454`.
+Repository formal lint reaches new module but remains red on eleven unrelated concurrent
+unreachable modules.  RH is not proved.
+
+## S59. Restricted-Weil resolvent dresses wall field and exposes exact negative-mode debt (2026-07-22)
+
+S58 bare wall amplitude is source coordinate, not deficiency endpoint response.  At one spectral
+level `s`, Suzuki state equation forces shifted resolvent dressing
+
+```text
+r_lambda(s)=1/(s-lambda),
+D_lambda(s;t)=r_lambda(s)omega_e(t).                    (S59.1)
+```
+
+For two distinct source shifts `alpha,beta`, affine zero-shift extrapolation obeys
+
+```text
+D_0-D_aff=K_(alpha,beta)(s)omega_e(t),
+K_(alpha,beta)(s)=alpha*beta/[s(s-alpha)(s-beta)].      (S59.2)
+```
+
+Self-pairing with same source field and applying S58 gives new closed residual law
+
+```text
+omega_e(t)(D_0-D_aff)
+ =K_(alpha,beta)(s)omega_e(t)^2
+ =K_(alpha,beta)(s)*Lambda(n)/sqrt(n)*exp(I*t*log n).  (S59.3)
+```
+
+For `alpha<beta<0`, `beta<s`, and `s!=0`, sign of `K` is sign of `s`.  At `t=0`, prime-power
+weight is strictly positive; therefore `(S59.3)` is strictly negative on every negative spectral
+level and strictly positive on every positive level.
+
+Scientific advance: endpoint residual is no longer free scalar and raw equality `endpoint=b_e`
+is falsified.  Source-symmetric affine mismatch is exact von-Mangoldt-weighted Krein debt.
+Two-shift entry block cannot be positive on negative restricted-Weil modes; marked Robin,
+polar--Gamma, or holonomy block must compensate exact term before any rectangular lower bound.
+
+Actual frontier is now `SUZUKI-RESOLVENT-DRESSED-WALL-WARD`:
+
+```text
+construct actual restricted-Weil spectral measure and boundary endpoint observation
+on D_lambda(s;t), then prove mixed compensation pays (S59.3) on every negative mode
+with uniformly lower-bounded fixed-width rectangular residual.
+```
+
+This is not positivity itself and does not prove RH.
+
+Paper and Lean:
+
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-wall-field-resolvent-dressing-law.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-critical-wall-field-resolvent-dressing-law.md`;
+- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalWallFieldResolventDressingLaw.lean`.
+
+Direct source check passes diagnostic-free; axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`; final targeted build
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passes `9455/9455`.
+Repository formal lint reaches new module but remains red on thirteen unrelated concurrent
+unreachable modules.  RH is not proved.

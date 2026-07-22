@@ -16,9 +16,9 @@ open Lean Elab Command Meta
 
 set_option maxHeartbeats 8000000
 
-private def interfaceSolverMaxDepth : Nat := 6
+private def interfaceSolverMaxDepth : Nat := 5
 private def interfaceSolverMaxCandidatesPerGoal : Nat := 512
-private def interfaceSolverMaxAttemptsPerInterface : Nat := 20000
+private def interfaceSolverMaxAttemptsPerInterface : Nat := 5000
 
 private def projectPrefix : String := "GaloisForLFunctions."
 
@@ -36,6 +36,7 @@ private structure InterfaceSpec where
 private structure InspectedTheorem where
   row : Json
   interfaces : Array InterfaceSpec
+  closedKeys : Array String
 
 private structure Producer where
   name : Name
@@ -189,7 +190,11 @@ private def inspectTheorem? (declName : Name) : MetaM (Option InspectedTheorem) 
       ("line", toJson (0 : Nat))
     ])
   ]
-  return some { row, interfaces }
+  let closedKeys :=
+    if relation == "implication" && propositionBinders.isEmpty then
+      conclusions.map (·.dbgToString)
+    else #[]
+  return some { row, interfaces, closedKeys }
 
 private def exprHeadKey (expr : Expr) : String :=
   match expr.getAppFn with
@@ -223,7 +228,7 @@ private def expressionHeadKeys (expr : Expr) : MetaM (Array String) := do
 
 private def buildProducers (names : Array Name) : MetaM (Array Producer) := do
   let mut producers := #[]
-  for name in names.qsort Name.quickLt do
+  for name in names.qsort (fun left right => left.toString < right.toString) do
     let info ← getConstInfo name
     let (_, result) := telescopeDomains info.type #[]
     producers := producers.push { name, heads := ← expressionHeadKeys result }
@@ -290,6 +295,7 @@ private partial def solveInterfaceGoal
     (attempts : IO.Ref Nat) : MetaM (Option (Array Name × Nat)) := do
   if depth == 0 then return none
   let goalType ← instantiateMVars (← goal.getType)
+  let goalIsNamedInterface := isNamedResearchProposition (← getEnv) goalType
   for ancestor in ancestors do
     if ← definitionallyEqualWithoutAssignment goalType ancestor then
       return none
@@ -309,7 +315,8 @@ private partial def solveInterfaceGoal
 
   for producer in matching do
     if usedOnPath.contains producer.name then continue
-    for mode in #[0, 1, 2, 3, 4] do
+    let modes := if goalIsNamedInterface then #[0, 1, 2, 3, 4] else #[0]
+    for mode in modes do
       let attempted ← attempts.get
       if attempted >= interfaceSolverMaxAttemptsPerInterface then return none
       attempts.set (attempted + 1)
@@ -323,7 +330,9 @@ private partial def solveInterfaceGoal
           if ← subgoal.isAssigned then continue
           let subgoalType ← instantiateMVars (← subgoal.getType)
           if ← isProp subgoalType then
-            let result? ← solveInterfaceGoal producers subgoal (depth - 1)
+            let childDepth :=
+              if isNamedResearchProposition (← getEnv) subgoalType then depth - 1 else 1
+            let result? ← solveInterfaceGoal producers subgoal childDepth
               (ancestors.push goalType) (usedOnPath.insert producer.name) attempts
             match result? with
             | some (childUsed, childDepth) =>
@@ -354,6 +363,9 @@ private def solveInterface
   let saved ← saveState
   try
     let target ← instantiateInterface spec
+    if ← definitionallyEqualWithoutAssignment target (mkConst ``RiemannHypothesis) then
+      restoreState saved
+      return none
     let goalExpr ← mkFreshExprSyntheticOpaqueMVar target
     let attempts ← IO.mkRef 0
     let result? ← solveInterfaceGoal producers goalExpr.mvarId! interfaceSolverMaxDepth #[] {} attempts
@@ -389,9 +401,12 @@ private def exportResearchFrontier (theoremNames : Array Name) : MetaM Json := d
   let mut reductions : Array Json := #[]
   let mut interfaces : Array InterfaceSpec := #[]
   let mut seenInterfaceKeys : Std.HashSet String := {}
-  for declName in candidateNames.qsort Name.quickLt do
+  let mut exactClosedKeys : Std.HashSet String := {}
+  for declName in candidateNames.qsort (fun left right => left.toString < right.toString) do
     if let some inspected ← inspectTheorem? declName then
       reductions := reductions.push inspected.row
+      for key in inspected.closedKeys do
+        exactClosedKeys := exactClosedKeys.insert key
       for spec in inspected.interfaces do
         if !seenInterfaceKeys.contains spec.key then
           seenInterfaceKeys := seenInterfaceKeys.insert spec.key
@@ -399,6 +414,7 @@ private def exportResearchFrontier (theoremNames : Array Name) : MetaM Json := d
 
   let mut solvedCount := 0
   for spec in interfaces do
+    if exactClosedKeys.contains spec.key then continue
     if let some solved ← solveInterface producers spec then
       let some rootTheorem := solved.usedTheorems[0]? | continue
       let mut axioms : Array Name := #[]

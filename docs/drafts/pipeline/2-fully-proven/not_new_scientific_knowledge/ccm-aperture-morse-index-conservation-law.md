@@ -8,8 +8,14 @@
   and compact generalized-eigenvalue formulations
 - **Statement:** The negative Morse index of the exact restricted Weil form is a finite,
   nondecreasing integer under aperture enlargement. It starts at zero, and RH is exactly the law
-  that this aperture charge remains zero. Equivalently, the compact screw operator is injective at
-  every finite aperture.
+  that this aperture charge remains zero. In the derivative variable, the equivalent kernel is
+  that of the screw operator extended to Suzuki's completed space, not automatically the raw
+  compact operator on `L2_0`.
+
+> **2026-07-22 domain correction.** The original version silently replaced Suzuki's completed
+> derivative space `H(S_(a,mu))` by `L2_0(-a,a)`. Suzuki explicitly states that the former is not
+> contained in the latter. All raw-`L2` equivalences below are corrected accordingly; see
+> `suzuki-completed-zero-mode-corona-seam-law.md` for the exact intersection theorem.
 
 ## Exact aperture charge
 
@@ -76,10 +82,11 @@ The following are equivalent:
 (ii)  kappa(a)=0 for every a>0;
 (iii) QW_a>=0 for every a>0;
 (iv)  QW_a is nondegenerate for every a>0;
-(v)   ker(G_a)=0 on L2_0(-a,a) for every a>0.                  (7)
+(v)   ker(Gtilde_a)=0 on H(S_(a,mu)) for every a>0.             (7)
 ```
 
-Here `G_a=P_a G P_a` is Suzuki's compact continuous-kernel screw operator.
+Here `mu<inf spec(A_a)` and `Gtilde_a` is Suzuki's bounded extension of the raw compact
+continuous-kernel screw operator to `H(S_(a,mu))`.
 
 ### Proof
 
@@ -92,7 +99,18 @@ QW_a(v,v)=<G_a u,u>.                                         (8)
 ```
 
 His generalized eigenvalue formulation identifies a zero eigenvalue of the restricted Weil
-operator with a nonzero kernel vector of `G_a`, giving `(iv)<->(v)`.
+operator with a nonzero kernel vector of `Gtilde_a` on the completed derivative space, giving
+`(iv)<->(v)`.
+
+For the canonical injection `j_a:L2_0->H(S_(a,mu))`, one only has
+
+```text
+j_a(ker G_a)=ker(Gtilde_a) intersect j_a(L2_0).             (7a)
+```
+
+Thus RH implies raw screw injectivity at every aperture, but the converse additionally requires
+the regularity statement `ker(Gtilde_a) subset j_a(L2_0)` or a direct exclusion of the completion
+corona.
 
 There is also a direct first-crossing proof of the nontrivial direction. Let `lambda_0(a)` be the
 lowest eigenvalue. It is positive for small `a` and continuous in `a`. If RH is false, localized
@@ -102,8 +120,10 @@ Weil positivity fails, so `lambda_0(b)<0` for some `b`. Continuity forces an ape
 lambda_0(a_*)=0,                                             (9)
 ```
 
-which is precisely a nonzero vector in `ker(G_(a_*))`. Hence excluding a finite-aperture zero mode
-for every `a` prevents the first negative spectral birth and proves RH.
+which is precisely a nonzero vector in `ker(Gtilde_(a_*))` on the Suzuki completion. Hence
+excluding a completed finite-aperture zero mode for every `a` prevents the first negative spectral
+birth and proves RH. Excluding only raw `L2` screw null vectors does not address a possible corona
+mode.
 
 ## Positive CCM reformulation
 
@@ -111,17 +131,18 @@ The exact global CCM route is therefore
 
 ```text
 weighted all-prime incidence + archimedean completion
-  -> ker(G_a)=0 for every finite aperture a
+  -> ker(Gtilde_a)=0 on H(S_(a,mu)) for every finite aperture a
   -> kappa(a)=0 is conserved
   -> QW_a>=0 for every a
   -> RH.                                                     (10)
 ```
 
 This is stronger operationally than asking an error term to vanish. The carrier is the integer
-`kappa(a)`, and the load-bearing theorem is a source-defined injectivity law for a compact integral
-operator with continuous kernel. The logarithmic boundary layer cannot blur this charge: a negative
-eigenvalue of arbitrarily small magnitude still changes `kappa` by an integer and then persists at
-all larger apertures.
+`kappa(a)`, and the load-bearing theorem is injectivity of the completed extension of a
+source-defined continuous-kernel operator. The raw integral operator is compact on `L2`; its
+extension acts on the larger Suzuki space. The logarithmic boundary layer cannot blur the Morse
+charge: a negative eigenvalue of arbitrarily small magnitude still changes `kappa` by an integer
+and then persists at all larger apertures.
 
 The same theorem also says exactly what a cofinal finite-prime implementation must transport. It
 must preserve the inertia of the **true** restricted form, or equivalently prove that the Fredholm
@@ -137,8 +158,8 @@ specialization:
 
 ```text
 seam negative index          <-> abstract divisor charge,
-kappa(a)                     <-> finite-aperture analytic charge,
-ker(G_a)=0 for every a       <-> charge conservation through the aperture filtration. (11)
+kappa(a)                          <-> finite-aperture analytic charge,
+ker(Gtilde_a)=0 for every a       <-> charge conservation through the aperture filtration. (11)
 ```
 
 `euler-pick-inertia-offline-zero-count.md` supplies a second exact realization of the transverse
@@ -184,7 +205,8 @@ represented in Lean. An abstract wrapper would not certify the theorem, so no Le
 - [x] finiteness proved from compact resolvent
 - [x] aperture monotonicity proved
 - [x] small-aperture anchor recorded
-- [x] RH, charge conservation, nondegeneracy, and screw injectivity identified
+- [x] RH, charge conservation, nondegeneracy, and completed screw injectivity identified
 - [x] first-zero-mode crossing isolated
 - [x] cofinal aperture charge identified with the full Hardy off-line model-space index
-- [ ] construct a source-defined proof of `ker(G_a)=0` for every `a`
+- [x] raw-`L2`/completed-space mismatch corrected
+- [ ] construct a source-defined proof of `ker(Gtilde_a)=0` for every `a`

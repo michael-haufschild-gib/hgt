@@ -1,5 +1,10 @@
 # Every CCM screw null vector has global logarithmic transformed-trace regularity
 
+> **2026-07-22 domain correction.** This theorem and its matrix detect the raw kernel
+> `ker(G_a:L2_0->L2_0)` only. Suzuki's zero-eigenvalue problem lives on the extension of `G_a` to
+> `H(S_(a,mu))`, which is not contained in raw `L2`. The former equation `(13)` claiming an RH
+> equivalence is retracted; see `suzuki-completed-zero-mode-corona-seam-law.md`.
+
 - **ID:** `ccm-screw-null-global-log-regularity-law`
 - **Stage:** 2-fully-proven / not-new
 - **Type:** THEOREM (paper), `[BRIDGE]`
@@ -107,15 +112,20 @@ ker G_a={0}
 If the characteristic set is empty, equation `(7)` reads `v=0` on `I`; the zero-forcing Dirichlet
 uniqueness gives `u=0`, so the same statement holds with the empty determinant interpreted as one.
 
-Using the CCM/Suzuki aperture criterion gives the exact global reformulation
+The former global reformulation
 
 ```text
-RH iff for every a>0, det(M_a^*M_a)>0.                   (13)
+RETRACTED: RH <-> for every a>0, det(M_a^*M_a)>0         (13)
 ```
 
-Equation `(13)` is not an RH proof: the strict determinant bound is the remaining RH-bearing
-statement. It is, however, unconditional as an equivalence and contains no unresolved regularity or
-boundary-existence hypothesis.
+is invalid without the additional regularity lift
+
+```text
+ker(Gtilde_a:H(S_(a,mu))->H(S_(a,mu))) subset j_a(L2_0).
+```
+
+What remains unconditional is `(12)`. A completion-safe RH reformulation uses the
+eigenfunction-variable square Evans determinant instead.
 
 ## Positive CCM carrier law
 
