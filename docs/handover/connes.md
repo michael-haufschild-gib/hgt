@@ -5734,3 +5734,117 @@ Formal source:
 
 - `formal/GaloisForLFunctions/RHTower/CCMFirstClockHalfWaveReflection.lean`;
 - `docs/drafts/pipeline/1-in-progress/ccm-first-clock-landau-completeness-law.md`.
+
+## 83. Actual Euler current selects the essential cusp; Abel phase is positive
+
+Essential cusp from §80 is now identified with actual CCM source at full critical clock response.
+For normalized boundary-layer energy, canonical coordinate `x=2t/u` has exact finite-scale CDF
+
+```text
+Prob_u(X<=x)
+ =(1-exp(-x))/(1-exp(-2/u)),       0<=x<=2/u.             (83.1)
+```
+
+Hence it is `Exp(1)` conditioned on `x<=2/u`. Its full complex response is
+
+```text
+H_u(t)
+ =[1-exp(-(1-it)2/u)]/[(1-it)(1-exp(-2/u))]
+ ->(1-it)^(-1).                                          (83.2)
+```
+
+This profile is selected directly by actual positive von Mangoldt fixed current. Put
+
+```text
+A(s)=-zeta'(s)/zeta(s),
+s_(sigma,t)=sigma-i t(sigma-1).
+```
+
+In `sigma>1`, Lean proves literal Euler identity
+
+```text
+A(s_(sigma,t))/A(sigma)
+ =[sum Lambda(n)n^(-s_(sigma,t))]/
+   [sum Lambda(n)n^(-sigma)].                             (83.3)
+```
+
+Residue `1` of `A` at `s=1` gives
+
+```text
+A(s_(sigma,t))/A(sigma)->(1-it)^(-1),                    (83.4)
+
+A(s_(sigma,t))/A(sigma)-H_u(t)->0                        (83.5)
+```
+
+under independent `sigma->1+`, `u->0+`. Its sine orientation is therefore unconditional:
+
+```text
+Im A(s_(sigma,t))/A(sigma)->t/(1+t^2)>0,   t>0,          (83.6)
+```
+
+including first CCM phase `t=2*pi`.
+
+This is not RH. It closes a frontier ambiguity: essential Hilbert cusp is source-selected at
+clock/Fisher/complex-response level, and positive phase already holds in safe Euler/Abel region.
+Remaining RH-complete operation is singular half-weight hard de-Abelization from
+`Lambda(n)n^(-sigma)` to literal `Lambda(n)/sqrt(n)` first aperture, retaining Gamma--polar
+midpoint-reflection budget. C32--C39 exclude bounded scalar, fixed holomorphic, meromorphic, and
+regular cusp transports; `(82.3)` proves successful source-preserving hard transport is exactly RH.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/CCMEulerEssentialBoundaryLayerCorrespondence.lean`;
+- `formal/GaloisForLFunctions/RHTower/EulerSquarefreeAffineFisherCutoffWard.lean`;
+- `docs/drafts/pipeline/1-in-progress/ccm-euler-essential-boundary-layer-correspondence.md`.
+
+## 84. Half-weight de-Abelization increases the bad first-clock odds
+
+The remaining half-weight seam has an unconditional direction.  For `sigma>=1/2`, define the
+first-aperture prime half-wave masses using literal weights `Lambda(n)n^(-sigma)`:
+
+```text
+P_plus(sigma,L)
+ =sum_(2<=n<=exp L) Lambda(n)n^(-sigma)
+    max(sin(2*pi*log(n)/L),0),
+
+P_minus(sigma,L)
+ =sum_(2<=n<=exp L) Lambda(n)n^(-sigma)
+    max(-sin(2*pi*log(n)/L),0).
+```
+
+Lean proves the source-specific total-positivity law
+
+```text
+P_minus(1/2,L) P_plus(sigma,L)
+ >= P_minus(sigma,L) P_plus(1/2,L).                      (84.1)
+```
+
+More generally, for any finite positive source separated by one cut, increasing exponential tilt
+in the support coordinate increases the division-free outer/inner odds.  Expanding both sides as
+a double sum reduces each term to
+
+```text
+theta_2*x+theta_1*y >= theta_1*x+theta_2*y
+```
+
+for outer `x` and inner `y`, so `(84.1)` is exact and uses no prime estimate.
+
+This directly answers why §83's positive safe Euler phase does not de-Abelize to RH: the critical
+half-weight tilt is directionally hostile.  It shifts relative mass toward the counter-phased
+outer half-wave.  Positive diagonal reweighting of the same atoms therefore cannot be the missing
+CCM transport.
+
+Exact remaining frontier is narrower:
+
+> construct a genuinely non-diagonal, Gamma-sewn source operation whose continuous
+> midpoint-reflection budget absorbs the explicit odds inflation in `(84.1)`, uniformly for every
+> `L>=pi/2`; or prove no source-faithful CCM operation can do so.
+
+By `(82.3)`, successful absorption proves RH.  Equation `(84.1)` does not prove RH and does not
+kill every CCM transport; it kills the direct positive diagonal bridge from the actual Abel
+current.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockExponentialTiltOdds.lean`;
+- `docs/drafts/pipeline/1-in-progress/ccm-first-clock-exponential-tilt-odds-law.md`.

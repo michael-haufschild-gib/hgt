@@ -1737,3 +1737,49 @@ Formal sources:
 
 - `formal/GaloisForLFunctions/RHTower/CCMEssentialCuspBoundaryLayer.lean`;
 - `docs/drafts/pipeline/3-formalized/needs-audit/ccm-essential-cusp-boundary-layer-sharpness.md`.
+
+## C40 source selection of the essential cusp and positive Abel phase `[LEAN-FORMALIZED]`
+
+C39's essential cusp is now source-relevant at full critical clock response, not merely a generic
+Hilbert counterexample. Normalize its energy and set `x=2t/u`. Lean proves its exact finite-scale
+law is `Exp(1)` conditioned on `x<=2/u`, with characteristic response
+
+```text
+H_u(t)
+ =[1-exp(-(1-it)2/u)]/[(1-it)(1-exp(-2/u))].
+```
+
+The actual positive von Mangoldt fixed current has normalized response
+
+```text
+A(sigma-i t(sigma-1))/A(sigma),
+A(s)=-zeta'(s)/zeta(s),
+```
+
+equal on `sigma>1` to literal ratio of convergent prime-power Dirichlet series. Residue-one law at
+`s=1` gives unconditionally
+
+```text
+A(sigma-i t(sigma-1))/A(sigma)->(1-it)^(-1),
+H_u(t)->(1-it)^(-1),
+source response - cusp response ->0.                    (C40.1)
+```
+
+Thus actual von Mangoldt current, physical affine Euler clock, and essential boundary layer select
+same `Exp(1)` clock, full complex response, and four-unit Fisher normalization. In particular
+
+```text
+Im A(sigma-i t(sigma-1))/A(sigma)->t/(1+t^2)>0
+```
+
+for every `t>0`, including first phase `2π`.
+
+C40 does not prove RH. It proves positive orientation already holds on safe Euler/Abel side and
+rules out excluding essential cusp with clock, first-two-moment, Fisher, or fixed-phase data.
+Exact survivor is narrower: singular non-diagonal transport across invariant half-weight seam to
+literal `Lambda(n)/sqrt(n)` hard first aperture, preserving Gamma--polar reflection budget. By
+first-clock completeness theorem this hard half-weight de-Abelization is RH-complete.
+
+Formal source:
+
+- `formal/GaloisForLFunctions/RHTower/CCMEulerEssentialBoundaryLayerCorrespondence.lean`.

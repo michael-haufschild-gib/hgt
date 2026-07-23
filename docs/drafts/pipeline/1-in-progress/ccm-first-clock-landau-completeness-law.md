@@ -688,6 +688,77 @@ prime-power measure to the sum of the inner prime-power measure and the continuo
 reflection budget, with cost `sin(2*pi*h/L)`, uniformly for every `L>=pi/2`; or prove that no
 CCM-native source morphism can realize such a transport.  By `(HW6)`, the first outcome proves RH.
 
+### Euler-current Abel orientation and exact surviving half-weight seam `[LEAN-FORMALIZED]`
+
+`CCMEulerEssentialBoundaryLayerCorrespondence.lean` proves the actual positive von Mangoldt
+fixed-current law, not a squarefree surrogate. With
+
+```text
+A(s)=-zeta'(s)/zeta(s),
+s_(sigma,t)=sigma-i t(sigma-1),
+```
+
+the Euler-region identity and pole residue give
+
+```text
+A(s_(sigma,t))/A(sigma)
+ =[sum Lambda(n)n^(-s_(sigma,t))]/[sum Lambda(n)n^(-sigma)]
+ ->(1-it)^(-1).                                         (HW7)
+```
+
+Hence
+
+```text
+Im A(s_(sigma,t))/A(sigma)->t/(1+t^2)>0,   t>0,          (HW8)
+```
+
+and actual positive current is eventually aligned at first phase `t=2*pi`. Same full complex
+response is realized by essential cusp boundary layer:
+
+```text
+H_u(t)
+ =[1-exp(-(1-it)2/u)]/[(1-it)(1-exp(-2/u))],
+H_u(t)->(1-it)^(-1).                                    (HW9)
+```
+
+This does not prove `(HW6)`. It sharpens open operation: orientation is already positive on safe
+Euler/Abel side. Remaining RH-complete transport must cross invariant half-weight seam to literal
+`Lambda(n)/sqrt(n)` hard aperture while retaining Gamma--polar reflection budget. A bounded scalar
+shift cannot do this by C32--C38; surviving transport is singular, non-diagonal, and phase-bearing.
+
+Do not retry proving positive critical Euler-current sine orientation; `(HW8)` closes it exactly.
+
+### Half-weight de-Abelization is odds-hostile `[LEAN-FORMALIZED]`
+
+The surviving half-weight seam has a source-specific direction.  For exponent `sigma>=1/2`,
+let `P_plus(sigma,L)` and `P_minus(sigma,L)` be the aligned and counter-phased first-aperture
+von Mangoldt masses with weights `Lambda(n)n^(-sigma)`.  Lean proves
+
+```text
+P_minus(1/2,L) P_plus(sigma,L)
+ >= P_minus(sigma,L) P_plus(1/2,L).                      (HW10)
+```
+
+This is the division-free monotone-likelihood-ratio law for the exact prime source.  Its proof
+expands the cross-product over an outer atom `x>=L/2` and inner atom `y<=L/2`; outward tilt gains
+the factor
+
+```text
+exp((sigma-1/2)(x-y)) >= 1.
+```
+
+Consequently diagonal positive de-Abelization from any safe Euler exponent `sigma>1` moves
+counter/aligned odds in the wrong direction.  Abel positivity cannot cross `(HW6)` by reweighting
+the same atoms.  Remaining live attack must be non-diagonal and Gamma-sewn: it must use the strict
+continuous budget to absorb the exact odds inflation or create arithmetic coupling between
+different prime-power atoms.
+
+Lean source:
+
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockExponentialTiltOdds.lean`
+- `finiteExponentialTilt_separatedOdds_mono`
+- `ccmFirstClockPrime_critical_counterAlignedOdds_ge_safe`
+
 Audit: direct `lake env lean` check and final targeted
 `lake build GaloisForLFunctions.RHTower.CCMFirstClockHalfWaveReflection` pass (`9075/9075`).
 The capstone, strict-budget, and oriented-source theorems use only `propext`,

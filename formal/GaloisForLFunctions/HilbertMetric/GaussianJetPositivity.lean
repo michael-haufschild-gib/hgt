@@ -2361,6 +2361,100 @@ theorem gaussianAffineDimension_pos_of_injective
   apply hxij
   exact sub_left_injective (sub_eq_zero.mp hval)
 
+/-- A constant finite Hilbert configuration has affine dimension zero, including the empty
+configuration. -/
+theorem gaussianAffineDimension_const (c : E) :
+    gaussianAffineDimension (fun _ : Fin n => c) = 0 := by
+  cases n with
+  | zero =>
+      unfold gaussianAffineDimension gaussianCenteredSpan
+      rw [show Set.range
+          (fun i : Fin 0 => c - hilbertCentroid (fun _ : Fin 0 => c)) = ∅ by
+        exact Set.range_eq_empty_iff.mpr inferInstance]
+      rw [Submodule.span_empty]
+      simp
+  | succ n =>
+      have hcentroid :
+          hilbertCentroid (fun _ : Fin (n + 1) => c) = c := by
+        unfold hilbertCentroid
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin]
+        rw [← Nat.cast_smul_eq_nsmul ℝ]
+        rw [smul_smul]
+        have hne : ((n + 1 : ℕ) : ℝ) ≠ 0 := by positivity
+        rw [inv_mul_cancel₀ hne]
+        simp
+      unfold gaussianAffineDimension gaussianCenteredSpan
+      rw [hcentroid]
+      rw [Submodule.span_eq_bot.mpr]
+      · simp
+      · intro _ hmem
+        obtain ⟨i, rfl⟩ := hmem
+        simp
+
+/-- Any two distinct points force positive intrinsic affine dimension, without requiring the
+whole configuration to be injective. -/
+theorem gaussianAffineDimension_pos_of_exists_pair_ne
+    (x : Fin n → E) (hpair : ∃ i j, x i ≠ x j) :
+    0 < gaussianAffineDimension x := by
+  letI : FiniteDimensional ℝ (gaussianCenteredSpan x) :=
+    FiniteDimensional.span_of_finite ℝ
+      (Set.finite_range fun i => x i - hilbertCentroid x)
+  obtain ⟨i, j, hij⟩ := hpair
+  let v : gaussianCenteredSpan x :=
+    ⟨(x i - hilbertCentroid x) - (x j - hilbertCentroid x),
+      Submodule.sub_mem (gaussianCenteredSpan x)
+        (Submodule.subset_span (Set.mem_range_self i))
+        (Submodule.subset_span (Set.mem_range_self j))⟩
+  apply Module.finrank_pos_iff_exists_ne_zero.mpr
+  refine ⟨v, ?_⟩
+  intro hv
+  apply hij
+  have hval := congrArg Subtype.val hv
+  change (x i - hilbertCentroid x) - (x j - hilbertCentroid x) = 0 at hval
+  exact sub_left_injective (sub_eq_zero.mp hval)
+
+/-- Exact zero-dimensional classification for an arbitrary finite Hilbert configuration. -/
+theorem gaussianAffineDimension_eq_zero_iff (x : Fin n → E) :
+    gaussianAffineDimension x = 0 ↔ ∀ i j, x i = x j := by
+  constructor
+  · intro hzero i j
+    by_contra hij
+    have hpos : 0 < gaussianAffineDimension x :=
+      gaussianAffineDimension_pos_of_exists_pair_ne x ⟨i, j, hij⟩
+    omega
+  · intro hconstant
+    cases isEmpty_or_nonempty (Fin n) with
+    | inl h =>
+        letI := h
+        have hx : x = fun _ : Fin n => (0 : E) := by
+          funext i
+          exact isEmptyElim i
+        rw [hx]
+        exact gaussianAffineDimension_const 0
+    | inr h =>
+        letI := h
+        let i : Fin n := Classical.choice inferInstance
+        have hx : x = fun _ => x i := by
+          funext j
+          exact hconstant j i
+        rw [hx]
+        exact gaussianAffineDimension_const (x i)
+
+/-- Intrinsic affine dimension is positive exactly when the finite configuration contains two
+distinct points. -/
+theorem gaussianAffineDimension_pos_iff_exists_pair_ne (x : Fin n → E) :
+    0 < gaussianAffineDimension x ↔ ∃ i j, x i ≠ x j := by
+  constructor
+  · intro hpos
+    by_contra hpair
+    have hconstant : ∀ i j, x i = x j := by
+      intro i j
+      by_contra hij
+      exact hpair ⟨i, j, hij⟩
+    exact (Nat.ne_of_gt hpos)
+      ((gaussianAffineDimension_eq_zero_iff x).2 hconstant)
+  · exact gaussianAffineDimension_pos_of_exists_pair_ne x
+
 /-- The coherent log-scale coordinate Gram is the intrinsic centered Hilbert Gram. -/
 theorem gaussianCoherentLogScaleGram_centeredSpanCoordinates
     (x : Fin n → E) (s : ℝ) :

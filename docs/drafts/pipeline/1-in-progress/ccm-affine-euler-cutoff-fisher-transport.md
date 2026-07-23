@@ -3,7 +3,7 @@
 - **ID:** `ccm-affine-euler-cutoff-fisher-transport`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM / FOUR-UNIT CCM SOURCE BRIDGE
-- **Scientific status:** `[PAPER PROOF CLOSED] [LEAN OPEN] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[PAPER PROOF CLOSED] [CORE SOURCE LAW LEAN-FORMALIZED] [RANK-TWO OPERATOR REALIZATION OPEN] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
   - `../2-fully-proven/not_new_scientific_knowledge/dyadic-squarefree-euler-fock-source-factorization.md`
   - `../3-formalized/mobius-incidence-clock-gini-fisher-four-unit-law.md`
@@ -180,12 +180,20 @@ proved boundary density proves `(A5)`.
 
 ## Lean gates
 
-- [ ] global squarefree-times-square probability equivalence
-- [ ] residual critical clock tends to zero in `L2`
-- [ ] affine cutoff state mismatch tends to zero
+- [x] global squarefree-times-square probability equivalence
+- [x] residual critical clock tends to zero in `L2`
+- [x] affine cutoff state mismatch tends to zero
 - [ ] affine cutoff centered-tangent mismatch tends to zero
 - [ ] rank-two contact commutator transport
-- [ ] connector to `tendsto_squarefreeMobiusCriticalFisherCutoffCommutatorEnergy`
-- [ ] connector to four-unit boundary density
-- [ ] umbrella import and axiom audit
+- [x] scalar Ward-profile connector to squarefree Fisher cutoff energy
+- [x] connector to four-unit boundary density
+- [x] umbrella import and axiom audit
 
+Formal source:
+
+- `formal/GaloisForLFunctions/RHTower/EulerSquarefreeAffineFisherCutoffWard.lean`
+
+Scope correction: Lean closes physical affine law through literal cut moments, CDF displacement,
+variance addition, Fisher energy, scalar Ward Gram profile, and four-unit boundary density. It
+does not yet realize `(A4)` as equality of concrete rank-two operators on Euler index Hilbert
+space; that operator-level wording remains open and must not be inferred from scalar Ward theorem.

@@ -81,6 +81,15 @@ def xiTransversePrimeValuationRankOneGaussianSimilarity
       (fun j => (shift j : ℝ)) (2 * t))
     (rankOneLabelDiagonal (fun j => (shift j : ℝ)))
 
+/-- Collision freedom is the minimal premise needed for the first transverse valuation feature
+to provide an injective Gaussian background. -/
+theorem xiTransversePrimeFirstValuationGaussianFeature_injective_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) :
+    Function.Injective
+      (fun j => xiTransversePrimeFirstValuationGaussianFeature (shift j) p) :=
+  (xiTransversePrimeFirstValuationGaussianFeature_injective p).comp hinjective
+
 /-- Exact cofinite reconstruction supplies the injective Euclidean background required by the
 Gaussian curvature law. -/
 theorem
@@ -89,18 +98,16 @@ theorem
     (hrec : XiTransversePrimeJetApertureCofiniteHilbertReconstruction shift m) :
     Function.Injective
       (fun j => xiTransversePrimeFirstValuationGaussianFeature (shift j) p) :=
-  (xiTransversePrimeFirstValuationGaussianFeature_injective p).comp
+  xiTransversePrimeFirstValuationGaussianFeature_injective_of_injective shift p
     ((xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
       shift m).1 hrec).1
 
-/-- **Exact reconstruction/commutator curvature identity.**  Cofinite Hilbert reconstruction
-discharges the only injectivity premise in the universal HilbertMetric identity: transverse
-Gaussian curvature is exactly minus twice the self-commutator energy. -/
+/-- **Minimal commutator curvature identity.**  Collision freedom alone discharges the universal
+HilbertMetric injective-background premise; zero is an ordinary Gaussian label. -/
 theorem
-    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_selfCommutatorEnergy_of_cofiniteHilbertReconstruction
-    {N : ℕ} (shift : Fin N → ℕ) (m : ℕ) (p : Nat.Primes)
-    (hrec : XiTransversePrimeJetApertureCofiniteHilbertReconstruction shift m)
-    (t : ℝ) (ht : 0 ≤ t) :
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_selfCommutatorEnergy_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) (t : ℝ) (ht : 0 ≤ t) :
     deriv (deriv (fun s =>
       Real.log
         (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t =
@@ -124,9 +131,30 @@ theorem
   exact gaussianMetricRankOneExtension_logDet_secondDerivative_eq
     (fun j => xiTransversePrimeFirstValuationGaussianFeature (shift j) p)
     (fun j => (shift j : ℝ))
-    (xiTransversePrimeFirstValuationGaussianFeature_injective_of_cofiniteHilbertReconstruction
-      shift m p hrec)
+    (xiTransversePrimeFirstValuationGaussianFeature_injective_of_injective
+      shift p hinjective)
     t ht
+
+/-- **Exact reconstruction/commutator curvature identity.**  Cofinite Hilbert reconstruction
+discharges the only injectivity premise in the universal HilbertMetric identity: transverse
+Gaussian curvature is exactly minus twice the self-commutator energy. -/
+theorem
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_selfCommutatorEnergy_of_cofiniteHilbertReconstruction
+    {N : ℕ} (shift : Fin N → ℕ) (m : ℕ) (p : Nat.Primes)
+    (hrec : XiTransversePrimeJetApertureCofiniteHilbertReconstruction shift m)
+    (t : ℝ) (ht : 0 ≤ t) :
+    deriv (deriv (fun s =>
+      Real.log
+        (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t =
+      -2 * matrixHilbertSchmidtEnergy
+        (matrixSelfCommutator
+          (xiTransversePrimeValuationRankOneGaussianSimilarity shift p t)) := by
+  exact
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_selfCommutatorEnergy_of_injective
+      shift p
+        ((xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
+          shift m).1 hrec).1
+      t ht
 
 /-- For an injective integral shift packet, its real-valued shift feature is constant exactly
 when the packet has at most one element. -/
@@ -148,6 +176,29 @@ theorem xiTransversePrimeShift_cast_constant_iff_of_injective
     have hij : i = j := Fin.ext (by omega)
     exact congrArg (fun k : Fin N => (shift k : ℝ)) hij
 
+/-- **Minimal flatness law.**  For a collision-free integral shift packet, transverse Gaussian
+log-volume curvature vanishes exactly for packet size at most one. -/
+theorem
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) (t : ℝ) (ht : 0 ≤ t) :
+    deriv (deriv (fun s =>
+      Real.log
+        (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t = 0 ↔
+      N ≤ 1 := by
+  change deriv (deriv (fun s =>
+    Real.log
+      (gaussianMetricRankOneExtensionGram
+        (fun j => xiTransversePrimeFirstValuationGaussianFeature (shift j) p)
+        (fun j => (shift j : ℝ)) s).det)) t = 0 ↔ N ≤ 1
+  rw [gaussianMetricRankOneExtension_logDet_secondDerivative_eq_zero_iff_constant
+    (fun j => xiTransversePrimeFirstValuationGaussianFeature (shift j) p)
+    (fun j => (shift j : ℝ))
+    (xiTransversePrimeFirstValuationGaussianFeature_injective_of_injective
+      shift p hinjective)
+    t ht]
+  exact xiTransversePrimeShift_cast_constant_iff_of_injective shift hinjective
+
 /-- **Reconstruction-discharge flatness law.**  Once exact cofinite prime-jet recovery is known,
 Gaussian log-volume curvature vanishes exactly for empty and singleton shift packets. -/
 theorem
@@ -159,36 +210,27 @@ theorem
       Real.log
         (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t = 0 ↔
       N ≤ 1 := by
-  have hcondition :=
-    (xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
-      shift m).1 hrec
-  change deriv (deriv (fun s =>
-    Real.log
-      (gaussianMetricRankOneExtensionGram
-        (fun j => xiTransversePrimeFirstValuationGaussianFeature (shift j) p)
-        (fun j => (shift j : ℝ)) s).det)) t = 0 ↔ N ≤ 1
-  rw [gaussianMetricRankOneExtension_logDet_secondDerivative_eq_zero_iff_constant
-    (fun j => xiTransversePrimeFirstValuationGaussianFeature (shift j) p)
-    (fun j => (shift j : ℝ))
-    (xiTransversePrimeFirstValuationGaussianFeature_injective_of_cofiniteHilbertReconstruction
-      shift m p hrec)
-    t ht]
-  exact xiTransversePrimeShift_cast_constant_iff_of_injective shift hcondition.1
+  exact
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_of_injective
+      shift p
+        ((xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
+          shift m).1 hrec).1
+      t ht
 
-/-- Flat transverse Gaussian curvature is exactly real normality of its square-root similarity. -/
+/-- Flat transverse Gaussian curvature is exactly normality of its square-root similarity under
+the minimal collision-free premise. -/
 theorem
-    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_normal_of_cofiniteHilbertReconstruction
-    {N : ℕ} (shift : Fin N → ℕ) (m : ℕ) (p : Nat.Primes)
-    (hrec : XiTransversePrimeJetApertureCofiniteHilbertReconstruction shift m)
-    (t : ℝ) (ht : 0 ≤ t) :
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_normal_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) (t : ℝ) (ht : 0 ≤ t) :
     deriv (deriv (fun s =>
       Real.log
         (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t = 0 ↔
       matrixSelfCommutator
         (xiTransversePrimeValuationRankOneGaussianSimilarity shift p t) = 0 := by
   have hcurvature :=
-    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_selfCommutatorEnergy_of_cofiniteHilbertReconstruction
-      shift m p hrec t ht
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_selfCommutatorEnergy_of_injective
+      shift p hinjective t ht
   constructor
   · intro hflat
     have henergy :
@@ -202,6 +244,40 @@ theorem
     rw [hcurvature, hnormal]
     simp [matrixHilbertSchmidtEnergy]
 
+/-- Flat transverse Gaussian curvature is exactly real normality of its square-root similarity. -/
+theorem
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_normal_of_cofiniteHilbertReconstruction
+    {N : ℕ} (shift : Fin N → ℕ) (m : ℕ) (p : Nat.Primes)
+    (hrec : XiTransversePrimeJetApertureCofiniteHilbertReconstruction shift m)
+    (t : ℝ) (ht : 0 ≤ t) :
+    deriv (deriv (fun s =>
+      Real.log
+        (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t = 0 ↔
+      matrixSelfCommutator
+        (xiTransversePrimeValuationRankOneGaussianSimilarity shift p t) = 0 := by
+  exact
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_normal_of_injective
+      shift p
+        ((xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
+          shift m).1 hrec).1
+      t ht
+
+/-- Under collision freedom, the transverse valuation Gaussian similarity is normal exactly for
+empty and singleton packets. -/
+theorem
+    xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_eq_zero_iff_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) (t : ℝ) (ht : 0 ≤ t) :
+    matrixSelfCommutator
+        (xiTransversePrimeValuationRankOneGaussianSimilarity shift p t) = 0 ↔
+      N ≤ 1 := by
+  rw [←
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_normal_of_injective
+      shift p hinjective t ht]
+  exact
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_of_injective
+      shift p hinjective t ht
+
 /-- **Reconstruction-discharge normality classification.**  The transverse valuation Gaussian
 similarity is normal exactly for empty and singleton shift packets. -/
 theorem
@@ -212,12 +288,26 @@ theorem
     matrixSelfCommutator
         (xiTransversePrimeValuationRankOneGaussianSimilarity shift p t) = 0 ↔
       N ≤ 1 := by
-  rw [←
-    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_normal_of_cofiniteHilbertReconstruction
-      shift m p hrec t ht]
   exact
-    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_of_cofiniteHilbertReconstruction
-      shift m p hrec t ht
+    xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_eq_zero_iff_of_injective
+      shift p
+        ((xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
+          shift m).1 hrec).1
+      t ht
+
+/-- The transverse valuation Gaussian similarity is nonnormal exactly from packet rank two onward
+under the minimal collision-free premise. -/
+theorem
+    xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_ne_zero_iff_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) (t : ℝ) (ht : 0 ≤ t) :
+    matrixSelfCommutator
+        (xiTransversePrimeValuationRankOneGaussianSimilarity shift p t) ≠ 0 ↔
+      2 ≤ N := by
+  rw [ne_eq,
+    xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_eq_zero_iff_of_injective
+      shift p hinjective t ht]
+  omega
 
 /-- The transverse valuation Gaussian similarity is nonnormal exactly from packet rank two
 onward. -/
@@ -229,10 +319,51 @@ theorem
     matrixSelfCommutator
         (xiTransversePrimeValuationRankOneGaussianSimilarity shift p t) ≠ 0 ↔
       2 ≤ N := by
-  rw [ne_eq,
-    xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_eq_zero_iff_of_cofiniteHilbertReconstruction
-      shift m p hrec t ht]
-  omega
+  exact
+    xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_ne_zero_iff_of_injective
+      shift p
+        ((xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
+          shift m).1 hrec).1
+      t ht
+
+/-- **Minimal strict-curvature law.**  For every collision-free integral shift packet, Gaussian
+log-volume curvature is strictly negative exactly from packet rank two onward. -/
+theorem
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) (t : ℝ) (ht : 0 ≤ t) :
+    deriv (deriv (fun s =>
+      Real.log
+        (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t < 0 ↔
+      2 ≤ N := by
+  constructor
+  · intro hnegative
+    by_contra hN
+    have hNle : N ≤ 1 := by omega
+    have hzero :=
+      (xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_of_injective
+        shift p hinjective t ht).2 hNle
+    linarith
+  · intro htwo
+    let i : Fin N := ⟨0, by omega⟩
+    let j : Fin N := ⟨1, by omega⟩
+    have hij : i ≠ j := by
+      intro h
+      have hval := congrArg Fin.val h
+      simp [i, j] at hval
+    have hshift : shift i ≠ shift j := fun h => hij (hinjective h)
+    change deriv (deriv (fun s =>
+      Real.log
+        (gaussianMetricRankOneExtensionGram
+          (fun k => xiTransversePrimeFirstValuationGaussianFeature (shift k) p)
+          (fun k => (shift k : ℝ)) s).det)) t < 0
+    apply gaussianMetricRankOneExtension_logDet_secondDerivative_lt_zero
+      (fun k => xiTransversePrimeFirstValuationGaussianFeature (shift k) p)
+      (fun k => (shift k : ℝ))
+      (xiTransversePrimeFirstValuationGaussianFeature_injective_of_injective
+        shift p hinjective)
+      t ht
+    exact ⟨i, j, fun hcast => hshift (by exact_mod_cast hcast)⟩
 
 /-- **Reconstruction-discharge strict-curvature law.**  Inside the exact cofinite Hilbert phase,
 Gaussian log-volume curvature is strictly negative exactly from packet rank two onward. -/
@@ -245,37 +376,29 @@ theorem
       Real.log
         (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t < 0 ↔
       2 ≤ N := by
-  have hcondition :=
-    (xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
-      shift m).1 hrec
-  constructor
-  · intro hnegative
-    by_contra hN
-    have hNle : N ≤ 1 := by omega
-    have hzero :=
-      (xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_eq_zero_iff_of_cofiniteHilbertReconstruction
-        shift m p hrec t ht).2 hNle
-    linarith
-  · intro htwo
-    let i : Fin N := ⟨0, by omega⟩
-    let j : Fin N := ⟨1, by omega⟩
-    have hij : i ≠ j := by
-      intro h
-      have hval := congrArg Fin.val h
-      simp [i, j] at hval
-    have hshift : shift i ≠ shift j := fun h => hij (hcondition.1 h)
-    change deriv (deriv (fun s =>
-      Real.log
-        (gaussianMetricRankOneExtensionGram
-          (fun k => xiTransversePrimeFirstValuationGaussianFeature (shift k) p)
-          (fun k => (shift k : ℝ)) s).det)) t < 0
-    apply gaussianMetricRankOneExtension_logDet_secondDerivative_lt_zero
-      (fun k => xiTransversePrimeFirstValuationGaussianFeature (shift k) p)
-      (fun k => (shift k : ℝ))
-      (xiTransversePrimeFirstValuationGaussianFeature_injective_of_cofiniteHilbertReconstruction
-        shift m p hrec)
+  exact
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_of_injective
+      shift p
+        ((xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
+          shift m).1 hrec).1
       t ht
-    exact ⟨i, j, fun hcast => hshift (by exact_mod_cast hcast)⟩
+
+/-- Strict transverse Gaussian curvature is exactly nonnormality under collision freedom; no
+zero-exclusion or reconstruction premise is needed. -/
+theorem
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_nonnormal_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) (t : ℝ) (ht : 0 ≤ t) :
+    deriv (deriv (fun s =>
+      Real.log
+        (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t < 0 ↔
+      matrixSelfCommutator
+        (xiTransversePrimeValuationRankOneGaussianSimilarity shift p t) ≠ 0 := by
+  rw [
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_of_injective
+      shift p hinjective t ht,
+    xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_ne_zero_iff_of_injective
+      shift p hinjective t ht]
 
 /-- Strict transverse Gaussian curvature is exactly nonnormality of the reconstruction-induced
 square-root similarity. -/
@@ -289,11 +412,27 @@ theorem
         (xiTransversePrimeValuationRankOneGaussianMetricGram shift p s).det)) t < 0 ↔
       matrixSelfCommutator
         (xiTransversePrimeValuationRankOneGaussianSimilarity shift p t) ≠ 0 := by
-  rw [
-    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_of_cofiniteHilbertReconstruction
-      shift m p hrec t ht,
-    xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_ne_zero_iff_of_cofiniteHilbertReconstruction
-      shift m p hrec t ht]
+  exact
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_nonnormal_of_injective
+      shift p
+        ((xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
+          shift m).1 hrec).1
+      t ht
+
+/-- Every collision-free transverse valuation packet has globally concave Gaussian log-volume on
+the complete nonnegative metric ray. -/
+theorem xiTransversePrimeValuationRankOneGaussianMetric_logDet_concaveOn_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) :
+    ConcaveOn ℝ (Set.Ici 0) (fun t =>
+      Real.log
+        (xiTransversePrimeValuationRankOneGaussianMetricGram shift p t).det) := by
+  simpa only [xiTransversePrimeValuationRankOneGaussianMetricGram] using
+    gaussianMetricRankOneExtension_logDet_concaveOn
+      (fun j => xiTransversePrimeFirstValuationGaussianFeature (shift j) p)
+      (fun j => (shift j : ℝ))
+      (xiTransversePrimeFirstValuationGaussianFeature_injective_of_injective
+        shift p hinjective)
 
 /-- Exact cofinite recovery makes the transverse valuation Gaussian log-volume globally concave
 on the complete nonnegative metric ray. -/
@@ -303,12 +442,11 @@ theorem xiTransversePrimeValuationRankOneGaussianMetric_logDet_concaveOn_of_cofi
     ConcaveOn ℝ (Set.Ici 0) (fun t =>
       Real.log
         (xiTransversePrimeValuationRankOneGaussianMetricGram shift p t).det) := by
-  simpa only [xiTransversePrimeValuationRankOneGaussianMetricGram] using
-    gaussianMetricRankOneExtension_logDet_concaveOn
-      (fun j => xiTransversePrimeFirstValuationGaussianFeature (shift j) p)
-      (fun j => (shift j : ℝ))
-      (xiTransversePrimeFirstValuationGaussianFeature_injective_of_cofiniteHilbertReconstruction
-        shift m p hrec)
+  exact
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_concaveOn_of_injective
+      shift p
+        ((xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
+          shift m).1 hrec).1
 
 /-- Exact cofinite recovery together with strict transverse Gaussian metric curvature. -/
 def XiTransversePrimeJetApertureGaussianCurvaturePhase

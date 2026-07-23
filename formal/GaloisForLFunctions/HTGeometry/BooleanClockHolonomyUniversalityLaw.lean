@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CoherenceFlatness
 import GaloisForLFunctions.HTGeometry.ClockCalibrationHolonomy
+import GaloisForLFunctions.HTGeometry.ThermodynamicCycleAffinity
 
 /-!
 # Boolean clock-holonomy universality
@@ -110,6 +111,51 @@ theorem exists_booleanOrientation_iff_clockCalibrationExact
       ClockCalibrationExact G (booleanClockCalibration c) := by
   exact (booleanEdgeField_coboundary_iff_flat hG c hsymm).trans
     (clockCalibrationExact_booleanClockCalibration_iff_flat hG c hsymm).symm
+
+/-! ### Product clock and thermodynamic phase -/
+
+/-- Exactness of a product-valued calibration is exactly simultaneous exactness of its two
+coordinate clocks. -/
+theorem clockCalibrationExact_prod_iff
+    {V A B : Type*} {G : SimpleGraph V} [Group A] [Group B]
+    (cA : V → V → A) (cB : V → V → B) :
+    ClockCalibrationExact G (fun u v => (cA u v, cB u v)) ↔
+      ClockCalibrationExact G cA ∧ ClockCalibrationExact G cB := by
+  constructor
+  · rintro ⟨g, hg⟩
+    constructor
+    · refine ⟨fun v => (g v).1, ?_⟩
+      intro u v huv
+      exact congrArg Prod.fst (hg huv)
+    · refine ⟨fun v => (g v).2, ?_⟩
+      intro u v huv
+      exact congrArg Prod.snd (hg huv)
+  · rintro ⟨⟨gA, hA⟩, ⟨gB, hB⟩⟩
+    refine ⟨fun v => (gA v, gB v), ?_⟩
+    intro u v huv
+    apply Prod.ext
+    · exact hA huv
+    · exact hB huv
+
+/-- **Boolean--thermodynamic product-clock universality law.**  On a connected graph, a
+symmetric Boolean edge field admits one global XOR orientation and a positive rate field has zero
+affinity on every closed walk exactly when their product-valued clock admits one global product
+potential. -/
+theorem booleanThermodynamic_productClockExact_iff
+    {V : Type*} {G : SimpleGraph V} (hG : G.Connected)
+    (c : V → V → Bool) (hsymm : BooleanEdgeFieldSymmetric G c)
+    (rate : V → V → ℝ) (hrate : ∀ u w, 0 < rate u w) :
+    ((∃ ε : V → Bool, ∀ ⦃u v⦄, G.Adj u v →
+        c u v = Bool.xor (ε u) (ε v)) ∧
+      ∀ (u : V) (p : G.Walk u u),
+        thermodynamicWalkAffinity rate p = 0) ↔
+      ClockCalibrationExact G (fun u v =>
+        (booleanClockCalibration c u v,
+          rateRatioCalibration rate (fun a b => (hrate a b).ne') u v)) := by
+  rw [clockCalibrationExact_prod_iff]
+  exact and_congr
+    (exists_booleanOrientation_iff_clockCalibrationExact hG c hsymm)
+    (rateRatioCalibration_exact_iff_closedWalkAffinity_zero hG rate hrate).symm
 
 end
 

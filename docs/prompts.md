@@ -289,10 +289,9 @@ Goal is met when every law / rule that can be found for the topic is tested if i
 
 ## Revert
 
-Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research this:
-- Walk backwards from any RH endpoint we know in our corpus
-- Try to find extensions of the chain to create the longest possible proof chain on the right side of a possible RH proof 
-- Example:  x1 -> x2 -> RH where you try to find x1
+Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research this any possibility to close a proof chain to prove or disprove RH. CCM is already investigated, look for alternatives. 
+
+Mandatory: Do not assume a proof chain and then look for building blocks. Let the lean code speak. We have much more knowledge encoded there than the literature or your training data contain. Check the lean code, see what chains could be possible, identify the gaps and attack the gaps using the hgt-fields-medalist skill, bold conjecturing and the scientific method.
 
 lean rules:
 1. You work independent from other agents and can run 1 build process in the foreground at a time yourself, parallel to builds of other agents.
@@ -306,7 +305,7 @@ folders:
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 - formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
 
-**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
+Always use  lake env lean <file>  and only lake build <module> for the final audit. Wire everything into the right umbrella.
 make sure you don't leave stale lean processes running - clean up after yourself
 
 Goal is met when there is a full RH proof chain start to finish.
@@ -322,7 +321,7 @@ lean rules:
 4. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
 5. no computations.
 
-folders:
+folders to check for already existing research:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 - formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
@@ -331,3 +330,26 @@ folders:
 make sure you don't leave stale lean processes running - clean up after yourself
 
 Goal is met when after honest scan of the whole lean body no such universal law can be found.
+
+
+
+Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research and add new scientific knowledge not known to our corpus or literature for these open frontiers towards an rh proof:
+
+1. **Xi Arakelov–Hurwitz dependence**
+   Prove the right-half Xi/Arakelov-Hurwitz object depends on an algebraic character. Lean converts this to algebraicity, then RH.
+   [Lean interface](</Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/XiArakelovHurwitzDependenceCollision.lean:104>)
+
+2. **Möbius–Laplace control**
+   Prove either half-plane decay of the discrete Laplace transform or its Mellin-continuation wall. The decay-to-continuation bridge is already proved.
+   [Lean interfaces](</Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MobiusLaplaceCriterionFrontier.lean:323>)
+
+
+lean rules:
+1. You work independent from other agents and can run 1 build process in the foreground at a time yourself, parallel to builds of other agents.
+2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
+3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
+4. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
+5. no computations.
+
+Always use  lake env lean <file>  and only lake build <module> for the final audit.
+goal is met when rh is proven.

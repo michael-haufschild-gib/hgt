@@ -59,6 +59,46 @@ local instance xiGaussianMatroidAllValuationFieldDifferentialAlgebra :
       ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
     rfl
 
+/-- **Xi valuation-base matroid universality.**  Adjoining every scalar prime-valuation layer
+preserves the complete differential matroid of an arbitrary transverse integral-shift family,
+including all zero loops and collision parallel classes. -/
+theorem xiTransverseShiftUpperEndCarrier_differentialMatroid_base_eq_allValuation
+    {A : Type*} (shift : A → ℕ) :
+    differentialFamilyMatroid
+        (F := upperEndRationalCoordinateField)
+        (fun a => xiTransverseShiftUpperEndCarrier (shift a)) =
+      differentialFamilyMatroid
+        (F := analyticScalarValuationLayerDifferentialField)
+        (fun a => xiTransverseShiftUpperEndCarrier (shift a)) := by
+  rw [
+    xiTransverseShiftUpperEndCarrier_differentialMatroid_eq_pointedCollision,
+    xiTransverseShiftUpperEndCarrier_allValuation_differentialMatroid_eq_pointedCollision]
+
+/-- Every selected transverse shift packet is differentially independent over the
+rational-coordinate base exactly when it remains so after all scalar valuation layers are
+adjoined. -/
+theorem xiTransverseShiftUpperEndCarrier_subfamily_differentialIndependent_base_iff_allValuation
+    {A : Type*} (shift : A → ℕ) (I : Set A) :
+    DifferentialIndependent upperEndRationalCoordinateField
+        (fun i : I => xiTransverseShiftUpperEndCarrier (shift i)) ↔
+      DifferentialIndependent analyticScalarValuationLayerDifferentialField
+        (fun i : I => xiTransverseShiftUpperEndCarrier (shift i)) := by
+  rw [
+    xiTransverseShiftUpperEndCarrier_differentialIndependent_iff,
+    xiTransverseShiftUpperEndCarrier_allValuation_differentialIndependent_iff]
+
+/-- Every selected transverse shift packet has the same differential rank before and after all
+scalar prime-valuation layers are adjoined. -/
+theorem xiTransverseShiftUpperEndCarrier_differentialRank_base_eq_allValuation
+    {A : Type*} (shift : A → ℕ) (I : Set A) :
+    (differentialFamilyMatroid
+        (F := upperEndRationalCoordinateField)
+        (fun a => xiTransverseShiftUpperEndCarrier (shift a))).eRk I =
+      (differentialFamilyMatroid
+        (F := analyticScalarValuationLayerDifferentialField)
+        (fun a => xiTransverseShiftUpperEndCarrier (shift a))).eRk I := by
+  rw [xiTransverseShiftUpperEndCarrier_differentialMatroid_base_eq_allValuation]
+
 /-- Gaussian principal Gram selected by a finite packet of shift indices. -/
 def xiTransversePrimeFirstValuationGaussianPrincipalGramMatrix
     {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes) (t : ℝ)

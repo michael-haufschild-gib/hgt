@@ -29,8 +29,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2478 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2313 | `formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean` |
+| 2263 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
-| 2227 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 2208 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
 | 2202 | `formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean` |
 | 2173 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean` |

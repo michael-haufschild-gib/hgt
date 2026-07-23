@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.BoundaryCarrierTranslationFreeness
 import GaloisForLFunctions.HTGeometry.CarrierHerglotzPresentationFree
+import GaloisForLFunctions.HTGeometry.CauchyHerglotzLocalGlobalHypertranscendenceUniversalityLaw
 import GaloisForLFunctions.HTGeometry.NevanlinnaPositiveCarrierCapstone
 
 /-!
@@ -182,6 +183,79 @@ theorem singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_dens
     exact not_differentiallyAlgebraicOn_herglotzPresentation_upperHalfPlane
       carrier M hcauchy
   exact ⟨hmaximal, hcauchy, hpresentation⟩
+
+/-- **Residual singular-continuous global Cauchy--Herglotz universality law.**  Every point of
+the residual maximal-freeness phase has a globally hypertranscendental Cauchy transform, and every
+normalized Herglotz presentation of the same carrier is globally hypertranscendental as well. -/
+theorem
+    singularContinuousCarrier_cauchyHerglotz_globalHypertranscendence_of_mem_universalPhase
+    {ιf : Type} [Fintype ιf] [DecidableEq ιf]
+    (hCmin : HasMinimalExponentialType F.c)
+    (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
+    {p0 : ℂ} (hCp : F.c p0 = 0) {c0 : ℂ} (hCc : F.c c0 ≠ 0)
+    (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
+    (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
+    (nf : ιf → ℕ)
+    (eta : ProbabilityMeasure (OnePoint ℝ))
+    (hetaInfinite : (eta : Measure (OnePoint ℝ)).support.Infinite)
+    (hetaSC : eta ∈ projectiveSingularContinuousProbabilityLaws)
+    (hnull : ∀ E : Set (OnePoint ℝ), MeasurableSet E →
+      (projectiveLebesgueProbability : Measure (OnePoint ℝ)) E = 0 →
+      (volume : Measure ℝ)
+        (F.base.toBoundaryFamily.matrix.projectiveLabel ⁻¹' E) = 0) :
+    let mu : Measure (OnePoint ℝ) := eta
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => F.quotient (zf i)) nf mu hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    let positiveChart : Set S := Metric.ball 0 1
+    let universalPhase : Set positiveChart := {w | ∀
+      (p : FiniteDifferentialPattern Unit)
+      (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
+      (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
+      F.weightedBoundaryCarrierExpandedPatternRelationHolds
+        (row := CarrierPatternRow p) mu (linftyOne mu + w.1.1)
+          p.coefficientDegree p.orders (carrierPatternExponent p) shift coeff →
+        ∀ col, coeff col = 0} ∩
+      {w | ¬ DifferentiallyAlgebraicOn
+        (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
+          (linftyOne mu + w.1.1))) upperHalfPlane}
+    ∀ w : positiveChart, w ∈ universalPhase →
+      let density := linftyOne mu + w.1.1
+      let carrier := weightedBoundaryCarrier F.base.toBoundaryFamily mu density
+      Hypertranscendental (cauchyTransform carrier) ∧
+        ∀ M : ℂ, Hypertranscendental
+          (fun z => z * M + (1 + z ^ 2) * cauchyTransform carrier z) := by
+  dsimp only
+  let mu : Measure (OnePoint ℝ) := eta
+  let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+    (fun i => F.quotient (zf i)) nf mu hupperf
+  let S := LinearMap.ker frozen.toLinearMap
+  let positiveChart : Set S := Metric.ball 0 1
+  let universalPhase : Set positiveChart := {w | ∀
+    (p : FiniteDifferentialPattern Unit)
+    (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
+    (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
+    F.weightedBoundaryCarrierExpandedPatternRelationHolds
+      (row := CarrierPatternRow p) mu (linftyOne mu + w.1.1)
+        p.coefficientDegree p.orders (carrierPatternExponent p) shift coeff →
+      ∀ col, coeff col = 0} ∩
+    {w | ¬ DifferentiallyAlgebraicOn
+      (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
+        (linftyOne mu + w.1.1))) upperHalfPlane}
+  obtain ⟨_hdense, _hresidual, hall⟩ :=
+    F.singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_denseResidual
+      hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta
+        hetaInfinite hetaSC hnull
+  intro w hw
+  let density := linftyOne mu + w.1.1
+  let carrier := weightedBoundaryCarrier F.base.toBoundaryFamily mu density
+  obtain ⟨_hpositive, _hintegral, hprobability, _hnoAtoms, _hsingular,
+      _hmoments, hphase⟩ := hall w
+  obtain ⟨_hmaximal, hcauchy, _hherglotz⟩ := hphase hw
+  letI : IsProbabilityMeasure carrier := hprobability
+  exact cauchyHerglotz_upperHalfPlane_globalHypertranscendence carrier hcauchy
 
 end ClassicalAnalyticNevanlinnaCarrierFamily
 

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HomogeneousMultipleEllipticGammaScaleReflectionUniversalityLaw
+import GaloisForLFunctions.HTGeometry.EllipticGammaTwoTierExternalFreenessUniversalityLaw
 
 /-!
 # Homogeneous multiple elliptic-Gamma logarithmic-derivative reflection universality
@@ -189,6 +190,194 @@ theorem homogeneousMultipleEllipticGamma_logDerivativeScaleReflectionUniversalit
   · intro z hzF hzB
     exact logDeriv_homogeneousMultipleEllipticGammaProduct_reflection
       ω₀ ω hω z hzF hzB
+
+/-- **Homogeneous multiple elliptic-Gamma product/log-derivative Ward universality law.**  One
+rank-three normalized period minor simultaneously forces hypertranscendence, product parity
+covariance under every common scale, zero radial Ward jets on both reflection branches,
+logarithmic weight `-1`, and logarithmic parity reflection. -/
+theorem homogeneousMultipleEllipticGamma_productLogDerivativeWardUniversality
+    [DecidableEq ι] (ω₀ : ℂ) (hω₀ : ω₀ ≠ 0) (ω : ι → ℂ)
+    (hω : ∀ i, 0 < (ω i / ω₀).im)
+    (hminor : MultipleEllipticGammaHasRankThreeMinor (fun i => ω i / ω₀)) :
+    HypertranscendentalOver meromorphicRationalCoordinateField
+        (multipleEllipticGammaMero (fun i => ω i / ω₀) hω) ∧
+      HypertranscendentalOver meromorphicRationalCoordinateField
+        (multipleEllipticGammaLogDerivMero (fun i => ω i / ω₀) hω) ∧
+      (∀ (c : ℂ), c ≠ 0 → ∀ z : ℂ,
+        homogeneousMultipleEllipticGammaProduct
+            (c * ω₀) (fun i => c * ω i) (c * ((∑ i, ω i) - z)) =
+          if Even (Fintype.card ι) then
+            (homogeneousMultipleEllipticGammaProduct
+              (c * ω₀) (fun i => c * ω i) (c * z))⁻¹
+          else
+            homogeneousMultipleEllipticGammaProduct
+              (c * ω₀) (fun i => c * ω i) (c * z)) ∧
+      (∀ z : ℂ,
+        HasDerivAt
+            (fun c : ℂ => homogeneousMultipleEllipticGammaProduct
+              (c * ω₀) (fun i => c * ω i) (c * z))
+            0 1 ∧
+          HasDerivAt
+            (fun c : ℂ => homogeneousMultipleEllipticGammaProduct
+              (c * ω₀) (fun i => c * ω i) (c * ((∑ i, ω i) - z)))
+            0 1) ∧
+      (∀ (c : ℂ), c ≠ 0 → ∀ z : ℂ,
+        multipleEllipticGammaBackwardProduct
+            (fun i => ω i / ω₀) (z / ω₀) ≠ 0 →
+        logDeriv
+            (homogeneousMultipleEllipticGammaProduct
+              (c * ω₀) (fun i => c * ω i))
+            (c * z) =
+          c⁻¹ * logDeriv
+            (homogeneousMultipleEllipticGammaProduct ω₀ ω) z) ∧
+      ∀ z : ℂ,
+        multipleEllipticGammaForwardProduct
+            (fun i => ω i / ω₀) (z / ω₀) ≠ 0 →
+        multipleEllipticGammaBackwardProduct
+            (fun i => ω i / ω₀) (z / ω₀) ≠ 0 →
+        logDeriv (homogeneousMultipleEllipticGammaProduct ω₀ ω)
+            ((∑ i, ω i) - z) =
+          multipleEllipticGammaLogSign ι *
+            logDeriv (homogeneousMultipleEllipticGammaProduct ω₀ ω) z := by
+  have hproduct :=
+    homogeneousMultipleEllipticGamma_scaleReflectionHypertranscendenceUniversality
+      ω₀ ω hω hminor
+  have hlog :=
+    homogeneousMultipleEllipticGamma_logDerivativeScaleReflectionUniversality
+      ω₀ hω₀ ω hω hminor
+  exact ⟨hproduct.1, hproduct.2.1, hproduct.2.2.1, hproduct.2.2.2,
+    hlog.2.2.1, hlog.2.2.2⟩
+
+/-- The normalized rank-two period family attached to an elliptic-Gamma pair remains in the
+upper half-plane. -/
+theorem ellipticGamma_rankTwoNormalizedPeriods_upperHalfPlane
+    (sigma tau : ℂ) (hsigma : 0 < sigma.im) (htau : 0 < tau.im) :
+    ∀ i : Fin 2, 0 < (![sigma, tau] i / 1).im := by
+  intro i
+  fin_cases i
+  · simpa using hsigma
+  · simpa using htau
+
+/-- A single independent elliptic-Gamma period triple simultaneously certifies external-shift
+freeness and the full rank-two homogeneous product/log-derivative Ward phase. -/
+structure EllipticGammaSharedPeriodExternalWardCertificate
+    {κ : Type*} [DecidableEq κ]
+    (s : Finset κ) (h : κ → ℂ) (sigma tau : ℂ)
+    (hsigma : 0 < sigma.im) (htau : 0 < tau.im) : Prop where
+  externalQuotientMatroidFree :
+    differentialFamilyMatroid (F := meromorphicRationalCoordinateField)
+        (ellipticGammaExternalQuotientFamily h sigma tau hsigma htau) =
+      Matroid.freeOn Set.univ
+  externalDefectDifferentialAtomic :
+    ∀ (L : κ → Polynomial ℂ),
+      (∃ i ∈ s, L i ≠ 0) →
+      ∀ {a b : Bottcher.analyticSubring (Set.univ : Set ℂ)}, b ≠ 0 →
+      ∀ {f g : ℂ → ℂ}, AnalyticOnNhd ℂ f Set.univ →
+      AnalyticOnNhd ℂ g Set.univ →
+      Filter.Germ.coeRingHom (Filter.principal Set.univ) f =
+        (a : Filter.Germ (Filter.principal Set.univ) ℂ) →
+      Filter.Germ.coeRingHom (Filter.principal Set.univ) g =
+        (b : Filter.Germ (Filter.principal Set.univ) ℂ) →
+      Function.Periodic (fun z ↦ f z / g z) 1 →
+      Function.Periodic (fun z ↦ f z / g z) tau →
+      ellipticGammaExternalDifferentialFamilySum
+          s L h sigma tau hsigma htau ≠
+        algebraMap (Bottcher.analyticSubring Set.univ)
+            (Bottcher.meroField Set.univ) a /
+          algebraMap (Bottcher.analyticSubring Set.univ)
+            (Bottcher.meroField Set.univ) b
+  productHypertranscendental :
+    HypertranscendentalOver meromorphicRationalCoordinateField
+      (multipleEllipticGammaMero
+        (fun i : Fin 2 => ![sigma, tau] i / 1)
+        (ellipticGamma_rankTwoNormalizedPeriods_upperHalfPlane
+          sigma tau hsigma htau))
+  logDerivativeHypertranscendental :
+    HypertranscendentalOver meromorphicRationalCoordinateField
+      (multipleEllipticGammaLogDerivMero
+        (fun i : Fin 2 => ![sigma, tau] i / 1)
+        (ellipticGamma_rankTwoNormalizedPeriods_upperHalfPlane
+          sigma tau hsigma htau))
+  productScaleReflection :
+    ∀ (c : ℂ), c ≠ 0 → ∀ z : ℂ,
+      homogeneousMultipleEllipticGammaProduct
+          (c * 1) (fun i : Fin 2 => c * ![sigma, tau] i)
+          (c * ((∑ i : Fin 2, ![sigma, tau] i) - z)) =
+        if Even (Fintype.card (Fin 2)) then
+          (homogeneousMultipleEllipticGammaProduct
+            (c * 1) (fun i : Fin 2 => c * ![sigma, tau] i) (c * z))⁻¹
+        else
+          homogeneousMultipleEllipticGammaProduct
+            (c * 1) (fun i : Fin 2 => c * ![sigma, tau] i) (c * z)
+  radialWardJets :
+    ∀ z : ℂ,
+      HasDerivAt
+          (fun c : ℂ => homogeneousMultipleEllipticGammaProduct
+            (c * 1) (fun i : Fin 2 => c * ![sigma, tau] i) (c * z))
+          0 1 ∧
+        HasDerivAt
+          (fun c : ℂ => homogeneousMultipleEllipticGammaProduct
+            (c * 1) (fun i : Fin 2 => c * ![sigma, tau] i)
+            (c * ((∑ i : Fin 2, ![sigma, tau] i) - z)))
+          0 1
+  logDerivativeScaleWeight :
+    ∀ (c : ℂ), c ≠ 0 → ∀ z : ℂ,
+      multipleEllipticGammaBackwardProduct
+          (fun i : Fin 2 => ![sigma, tau] i / 1) (z / 1) ≠ 0 →
+      logDeriv
+          (homogeneousMultipleEllipticGammaProduct
+            (c * 1) (fun i : Fin 2 => c * ![sigma, tau] i))
+          (c * z) =
+        c⁻¹ * logDeriv
+          (homogeneousMultipleEllipticGammaProduct 1 ![sigma, tau]) z
+  logDerivativeReflection :
+    ∀ z : ℂ,
+      multipleEllipticGammaForwardProduct
+          (fun i : Fin 2 => ![sigma, tau] i / 1) (z / 1) ≠ 0 →
+      multipleEllipticGammaBackwardProduct
+          (fun i : Fin 2 => ![sigma, tau] i / 1) (z / 1) ≠ 0 →
+      logDeriv (homogeneousMultipleEllipticGammaProduct 1 ![sigma, tau])
+          ((∑ i : Fin 2, ![sigma, tau] i) - z) =
+        multipleEllipticGammaLogSign (Fin 2) *
+          logDeriv (homogeneousMultipleEllipticGammaProduct 1 ![sigma, tau]) z
+
+/-- **Shared-period external/Ward universality law.**  For every separated external shift family,
+the same rational independence of `(1, sigma, tau)` simultaneously forces rational-base quotient
+matroid freeness, elliptic-base defect differential atomicity, rank-two product and logarithmic
+derivative hypertranscendence, product scale/reflection covariance, both zero radial Ward jets,
+logarithmic scale weight `-1`, and logarithmic parity reflection. -/
+theorem ellipticGamma_sharedPeriodExternalWardUniversality
+    {κ : Type*} [DecidableEq κ]
+    (s : Finset κ) (h : κ → ℂ) (sigma tau : ℂ)
+    (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
+    (hindependent : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
+    (hnonres : ∀ j, ThetaTranslationNonresonant tau sigma (h j))
+    (hsep : ∀ i j, j ≠ i →
+      ThetaTranslationNonresonant tau sigma (h j - h i)) :
+    EllipticGammaSharedPeriodExternalWardCertificate
+      s h sigma tau hsigma htau := by
+  have hexternal :=
+    ellipticGamma_twoTierExternalFreenessUniversality
+      s h sigma tau hsigma htau hindependent hnonres hsep
+  have hperiods :=
+    ellipticGamma_rankTwoNormalizedPeriods_upperHalfPlane
+      sigma tau hsigma htau
+  have hminor : MultipleEllipticGammaHasRankThreeMinor
+      (fun i : Fin 2 => ![sigma, tau] i / 1) := by
+    refine ⟨0, 1, Fin.zero_ne_one, ?_⟩
+    simpa using hindependent
+  have hward :=
+    homogeneousMultipleEllipticGamma_productLogDerivativeWardUniversality
+      (ι := Fin 2) 1 one_ne_zero ![sigma, tau] hperiods hminor
+  exact
+    { externalQuotientMatroidFree := hexternal.1
+      externalDefectDifferentialAtomic := hexternal.2
+      productHypertranscendental := hward.1
+      logDerivativeHypertranscendental := hward.2.1
+      productScaleReflection := hward.2.2.1
+      radialWardJets := hward.2.2.2.1
+      logDerivativeScaleWeight := hward.2.2.2.2.1
+      logDerivativeReflection := hward.2.2.2.2.2 }
 
 end
 
