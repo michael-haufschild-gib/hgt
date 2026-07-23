@@ -162,16 +162,27 @@ and finite-support coefficient reconstructions do not count as progress.
     mixed block. Whole fixed jet matrix converges cofinally to universal Hankel kernel
     `R(r,s)=rho_(r+s+2)`. Mixed block cancels successor Hankel-shift defect at every finite order.
     Do not reopen matrix-entry renormalization or claim divergent diagonal Grams prevent signed
-    limit. New obstruction is object type: `R` is jet kernel after prime contraction, while
+    limit.
+24. **The signed current has exact, unbounded negative index.**
+    `VonMangoldtSuccessorTransportInertia.lean` factors every full aperture section as a
+    square Vandermonde congruence of the endpoint-divergence masses and counts all positive,
+    negative, and null directions exactly. The left endpoint is always negative. Every prime
+    `p>3`, `p=3 mod 4`, contributes another negative direction because `p-1` is not a prime
+    power; Dirichlet's theorem makes negative index unbounded. Therefore no positive completion
+    and no fixed-index Pontryagin completion can contain all jet compressions. Do not propose
+    Hilbert or finite-index repair. Only genuinely infinite-index Krein coupling survives.
+    Remaining obstruction is object type: `R` is jet kernel after prime contraction, while
     coherent odd Gamma--Jacobi residual is prime kernel after Jacobi contraction. Separate direct
-    sum is no source connector. Remaining producer problem is inclusion-compatible bivariate
-    prime--jet completion realizing both marginals and completed Euler trace.
+    sum is no source connector. Remaining producer problem is source-canonical, inclusion-compatible
+    infinite-index bivariate prime--jet completion realizing both marginals and completed Euler
+    trace.
 
 ## Single live edge
 
 `SUZUKI-COPOISSON-FIBRE-ORIENTATION`
 
-Item 23 and source-ledger `SR-41` are active producer subproblem for this terminal edge, not a
+Items 23--24 and source-ledger `SR-41`--`SR-42` are active producer subproblem for this terminal
+edge, not a
 second endpoint: completed cofinal weld must feed the fibre-pointed Berezin orientation below.
 Finite Hankel positivity alone does not imply that orientation.
 
@@ -400,3 +411,9 @@ Before each new action, answer in this file's log:
   This does not close critical half-weight. It exposes sharper `SR-41` type mismatch: proved jet
   current and proved prime/Jacobi residual are separate marginals. Live source problem is joint
   inclusion-compatible prime--jet completion with completed Euler trace, not another direct sum.
+- **2026-07-23 successor-transport inertia advance.** Full `SR-40` aperture sections are
+  Vandermonde-congruent to explicit endpoint-divergence masses. Their inertia is counted exactly,
+  left endpoint is always negative, and primes `p>3`, `p=3 mod 4` force unbounded negative index.
+  This formally excludes positive and every fixed-index Pontryagin realization. Live `SR-41`
+  connector is now forced into genuinely infinite-index Krein geometry before completed Euler
+  trace and fibre orientation.

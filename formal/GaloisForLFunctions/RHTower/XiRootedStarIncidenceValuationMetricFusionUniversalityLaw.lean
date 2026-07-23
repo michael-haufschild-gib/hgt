@@ -65,6 +65,18 @@ structure XiRootedStarIncidenceValuationMetricFusionCertificate
               (xiShiftRootedStarTail e) = q then weight e else 0) →
         ∀ e, weight e = 0
 
+/-- Exact upgrade of the rooted-star fusion certificate.  Besides every existing metric,
+incidence, volume, and rigidity component, it records deletion-robust dual recovery of the full
+reparametrized prime-jet dictionary. -/
+structure XiRootedStarIncidenceValuationExactMetricFusionCertificate
+    {d : ℕ} (grade : Fin d → ℕ) (embed : ℕ → ℕ)
+    (p : Nat.Primes) (m : ℕ) : Prop where
+  metricFusion :
+    XiRootedStarIncidenceValuationMetricFusionCertificate grade embed p m
+  cofinitePrimeJetExactRecovery :
+    XiTransversePrimeJetApertureCofiniteHilbertReconstruction
+      (embed ∘ grade) m
+
 /-- **Rooted-star incidence/valuation metric-fusion law.**  Raw Xi defect reconstruction is
 equivalent to the simultaneous validity of every canonical incidence, valuation, Gaussian,
 Szegő, and cofinite prime-jet Hilbert certificate after arbitrary injective zero-preserving
@@ -114,6 +126,30 @@ theorem xiRootedStar_incidenceValuationMetricFusion_reparam_iff
       ⟨h.correctedRootedStar, h.canonicalValuation, h.valuationGram,
         h.completedSzegoGram, h.firstValuationGaussian,
         h.cofinitePrimeJetApertures⟩
+
+/-- **Exact rooted-star fusion law.**  Raw Xi defect reconstruction is equivalent to the full
+incidence/valuation/Gaussian/Szegő fusion certificate together with exact dual reconstruction of
+the reparametrized prime-jet dictionary after every finite prime deletion. -/
+theorem xiRootedStar_incidenceValuationExactMetricFusion_reparam_iff
+    {d : ℕ} (grade : Fin d → ℕ) (embed : ℕ → ℕ)
+    (hinj : Function.Injective embed) (hzero : embed 0 = 0)
+    (p : Nat.Primes) (m : ℕ) :
+    XiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction grade ↔
+      XiRootedStarIncidenceValuationExactMetricFusionCertificate
+        grade embed p m := by
+  constructor
+  · intro hraw
+    exact {
+      metricFusion :=
+        (xiRootedStar_incidenceValuationMetricFusion_reparam_iff
+          grade embed hinj hzero p m).1 hraw
+      cofinitePrimeJetExactRecovery :=
+        (xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_iff_cofiniteApertureHilbertReconstructionReparam
+          grade embed hinj hzero m).1 hraw }
+  · intro h
+    exact
+      (xiRootedStar_incidenceValuationMetricFusion_reparam_iff
+        grade embed hinj hzero p m).2 h.metricFusion
 
 end
 

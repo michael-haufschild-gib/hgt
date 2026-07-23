@@ -5599,3 +5599,77 @@ Formal sources:
 
 - `formal/GaloisForLFunctions/RHTower/CCMEssentialCuspBoundaryLayer.lean`;
 - `docs/drafts/pipeline/3-formalized/needs-audit/ccm-essential-cusp-boundary-layer-sharpness.md`.
+
+## 81. First published CCM clock is an exact RH-complete source coordinate
+
+The unresolved first-clock sign from §§70--73 is now proved to be sufficient for RH.  Put
+
+```text
+B_1(L)=ccmPublishedSourceSineCoefficient(L/2,2*pi/L),
+Q(L)=ccmFirstClockXiRationalDivisor(L).
+```
+
+The literal source dictionary gives
+
+```text
+B_1(L)=(2/L)Q(L),                    L>=pi/2.             (81.1)
+```
+
+The complete first-clock divisor and Xi screw satisfy the fixed dilation law
+
+```text
+Q(L)=S(L)+integral_0^1
+  2*pi*sin(2*pi*x) S(Lx) dx.                              (81.2)
+```
+
+Assume only `B_1(L)>=0` for every `L>=pi/2`.  A positive-tail continuous Landau argument,
+using the branch-free cubic continuation inside the source-defined Xi cone, propagates every
+positive exponential moment of `Q`.  The dilation kernel has the strict Mellin-tail contraction
+
+```text
+integral_(15/16)^1 |2*pi*sin(2*pi*x)|/x dx
+  <=2/15<1.                                               (81.3)
+```
+
+Truncated weighted `L1` absorption and exhaustion in `(81.2)` therefore propagate the
+unconditional screw seed above abscissa `1/2` down to every positive abscissa.  The exact screw
+Laplace/logarithmic-derivative identity then excludes every off-critical Xi zero.  Lean proves
+
+```text
+CCMFirstClockPublishedSourceNonnegative
+  <-> RiemannHypothesis.                                  (81.4)
+```
+
+No finite-rank, simple-evenness, determinant convergence, rightmost zero, numerical zero
+verification, or auxiliary analytic hypothesis occurs.  This closes the analytic transfer that
+had separated the published source from the RH endpoint.
+
+This is not an RH proof: `(81.4)` identifies the remaining source arithmetic exactly.  Frontier
+is no longer a CCM transfer problem.  It is the unconditional sign of the explicit
+von-Mangoldt--Gamma functional
+
+```text
+B_1(L)
+ =1/pi * integral_(0,L] sin(2*pi*h/L) rho_infinity(h) dh
+  +1/pi * integral_(0,L] E_crit(h) (2*pi/L)
+      cos(2*pi*h/L) dh.                                   (81.5)
+```
+
+Proving `(81.5)>=0` for all `L>=pi/2` proves RH; one negative value disproves RH.  Generic theta
+positivity cannot orient this clock: its compact Fourier density is proportional to
+`-sin(2*pi*|u|)` and changes sign at half aperture.  Any next proof must supply a genuinely
+arithmetic inner/outer half-wave transport or a source-specific positive factorization.  Do not
+return to Volterra estimates, normal convergence, finite clocks, or simple-evenness; those
+interfaces are closed.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauTransform.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauHead.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauDivisor.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauCarrier.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauDescent.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauHalving.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauDyadic.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterraReflection.lean`;
+- `docs/drafts/pipeline/1-in-progress/ccm-first-clock-landau-completeness-law.md`.

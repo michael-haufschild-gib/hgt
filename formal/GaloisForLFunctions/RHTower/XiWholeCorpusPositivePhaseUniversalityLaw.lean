@@ -14,6 +14,7 @@ import GaloisForLFunctions.RHTower.XiSquaredSeamCassiniDyadicUniversalityLaw
 import GaloisForLFunctions.RHTower.XiTerminalAnalyticSourceUniversalityLaw
 import GaloisForLFunctions.RHTower.XiTerminalGeometricPhaseUniversalityLaw
 import GaloisForLFunctions.RHTower.XiZeroLocalCriticalPhaseUniversalityLaw
+import GaloisForLFunctions.RHTower.PrimeArchHankelDeterminantCriterion
 
 /-!
 # Whole-corpus Xi positive-phase universality
@@ -40,6 +41,8 @@ structure XiWholeCorpusPositivePhaseUniversalCertificate
       Lrect N eta Lsmooth P D degreeSet
   geometricPhase : XiTerminalGeometricPhaseUniversalCertificate
   countableHankelTestSets : XiCountableHankelTestSetUniversalCertificate
+  primeArchHankelExactReconstruction :
+    PrimeArchSourceMomentHankelExactReconstructionPhase
   allDyadicDescentLevels :
     ∀ k : ℕ, XiDyadicDescentLevelUniversalCertificate k
   euclideanKrylovJensenReflection :
@@ -66,7 +69,7 @@ structure XiWholeCorpusPositivePhaseUniversalCertificate
 
 /-- **Whole-corpus Xi positive-phase universality law.**  Under only the parameter admissibility
 needed by the analytic-source and thermal capstones, RH is equivalent to simultaneous realization
-of all sixteen currently terminal certificate families.  These include global certificates,
+of all seventeen currently terminal certificate families.  These include global certificates,
 every dyadic depth, every right-half zero, and every actual zero with every admissible prime-mark
 base and Clifford weight. -/
 theorem riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
@@ -91,6 +94,8 @@ theorem riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
         riemannHypothesis_iff_terminalGeometricPhaseUniversalCertificate.1 hRH
       countableHankelTestSets :=
         riemannHypothesis_iff_countableHankelTestSetUniversalCertificate.1 hRH
+      primeArchHankelExactReconstruction :=
+        primeArchSourceMomentHankelExactReconstructionPhase_iff_riemannHypothesis.2 hRH
       allDyadicDescentLevels :=
         riemannHypothesis_iff_forall_dyadicDescentLevelUniversalCertificate.1 hRH
       euclideanKrylovJensenReflection :=
@@ -145,6 +150,8 @@ structure XiWholeCorpusFailurePhaseUniversalCertificate
       Lrect N eta Lsmooth P D degreeSet
   geometricPhaseFailure : XiTerminalGeometricPhaseFailureUniversalCertificate
   countableHankelFailure : XiCountableHankelTestSetFailureUniversalCertificate
+  primeArchHankelExactReconstructionFails :
+    ¬PrimeArchSourceMomentHankelExactReconstructionPhase
   someDyadicDescentLevelFails :
     ∃ k : ℕ, ¬XiDyadicDescentLevelUniversalCertificate k
   euclideanKrylovJensenFailure :
@@ -197,6 +204,10 @@ theorem not_riemannHypothesis_iff_wholeCorpusFailurePhaseUniversalCertificate
         not_riemannHypothesis_iff_terminalGeometricPhaseFailureUniversalCertificate.1 hnotRH
       countableHankelFailure :=
         not_riemannHypothesis_iff_countableHankelTestSetFailureUniversalCertificate.1 hnotRH
+      primeArchHankelExactReconstructionFails := fun hexact =>
+        hnotRH
+          (primeArchSourceMomentHankelExactReconstructionPhase_iff_riemannHypothesis.1
+            hexact)
       someDyadicDescentLevelFails := by
         by_contra hnoFailure
         apply hnotRH

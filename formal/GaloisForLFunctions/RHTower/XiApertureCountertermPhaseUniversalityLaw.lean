@@ -56,6 +56,76 @@ theorem summable_xiAperturePrimeFusedResponseGainSq_sub_boundary_sub_c_mul_iff
     · rintro rfl
       simpa using hgain
 
+/-- **Exact-recovery/counterterm packet phase.** Exact cofinite prime-jet reconstruction supplies
+the positivity needed by the scalar counterterm law in every channel. Thus an entire finite
+aperture packet is exactly recoverable and canonically renormalizable precisely when its labels
+are injective, nonzero, and every channel uses its unique boundary counterterm. -/
+theorem
+    xiTransversePrimeJetApertureCofiniteHilbertReconstruction_and_countertermPhase_iff
+    {N : ℕ} (shift : Fin N → ℕ) (m : ℕ) (c : Fin N → ℝ) :
+    XiTransversePrimeJetApertureCofiniteHilbertReconstruction shift m ∧
+        (∀ j, Summable (fun p : Nat.Primes ↦
+          xiAperturePrimeFusedResponseGainSq (shift j) p -
+            (if shift j = 1 then 1 else 0) -
+            c j * xiTransversePrimeApertureDiskNode 1 p)) ↔
+      Function.Injective shift ∧
+        ∀ j, shift j ≠ 0 ∧
+          c j = xiAperturePrimeFusedResponseBoundaryCounterterm (shift j) := by
+  rw [
+    xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero]
+  constructor
+  · rintro ⟨⟨hinjective, hnonzero⟩, hsummable⟩
+    refine ⟨hinjective, fun j => ⟨hnonzero j, ?_⟩⟩
+    exact
+      (summable_xiAperturePrimeFusedResponseGainSq_sub_boundary_sub_c_mul_iff
+        (Nat.pos_of_ne_zero (hnonzero j)) (c j)).1 (hsummable j)
+  · rintro ⟨hinjective, hphase⟩
+    exact ⟨⟨hinjective, fun j => (hphase j).1⟩, fun j =>
+      (summable_xiAperturePrimeFusedResponseGainSq_sub_boundary_sub_c_mul_iff
+        (Nat.pos_of_ne_zero (hphase j).1) (c j)).2 (hphase j).2⟩
+
+/-- **Exact trace-class packets have zero counterterm.** Adding unsubtracted trace-class gain to
+the exact-recovery/counterterm packet phase removes the unit-aperture boundary. Consequently the
+labels are injective and at least two, and the unique counterterm vanishes in every channel. -/
+theorem
+    xiTransversePrimeJetApertureCofiniteHilbertReconstruction_and_traceClassGain_and_countertermPhase_iff
+    {N : ℕ} (shift : Fin N → ℕ) (m : ℕ) (c : Fin N → ℝ) :
+    XiTransversePrimeJetApertureCofiniteHilbertReconstruction shift m ∧
+        (∀ j, Summable (xiAperturePrimeFusedResponseGainSq (shift j))) ∧
+        (∀ j, Summable (fun p : Nat.Primes ↦
+          xiAperturePrimeFusedResponseGainSq (shift j) p -
+            (if shift j = 1 then 1 else 0) -
+            c j * xiTransversePrimeApertureDiskNode 1 p)) ↔
+      Function.Injective shift ∧ ∀ j, 2 ≤ shift j ∧ c j = 0 := by
+  constructor
+  · rintro ⟨hreconstruct, hgain, hrenormalized⟩
+    have htrace :=
+      (xiTransversePrimeJetApertureCofiniteHilbertReconstruction_and_traceClassGain_iff
+        shift m).1 ⟨hreconstruct, hgain⟩
+    have hcounterterm :=
+      (xiTransversePrimeJetApertureCofiniteHilbertReconstruction_and_countertermPhase_iff
+        shift m c).1 ⟨hreconstruct, hrenormalized⟩
+    refine ⟨htrace.1, fun j => ⟨htrace.2 j, ?_⟩⟩
+    have hne_one : shift j ≠ 1 :=
+      Nat.ne_of_gt (lt_of_lt_of_le (by decide : 1 < 2) (htrace.2 j))
+    simpa [xiAperturePrimeFusedResponseBoundaryCounterterm, hne_one] using
+      (hcounterterm.2 j).2
+  · rintro ⟨hinjective, hphase⟩
+    have hrecoverGain :=
+      (xiTransversePrimeJetApertureCofiniteHilbertReconstruction_and_traceClassGain_iff
+        shift m).2 ⟨hinjective, fun j => (hphase j).1⟩
+    have hrecoverCounterterm :=
+      (xiTransversePrimeJetApertureCofiniteHilbertReconstruction_and_countertermPhase_iff
+        shift m c).2 ⟨hinjective, fun j => by
+          have hne_zero : shift j ≠ 0 :=
+            Nat.ne_of_gt (lt_of_lt_of_le (by decide : 0 < 2) (hphase j).1)
+          have hne_one : shift j ≠ 1 :=
+            Nat.ne_of_gt (lt_of_lt_of_le (by decide : 1 < 2) (hphase j).1)
+          exact ⟨hne_zero, by
+            simpa [xiAperturePrimeFusedResponseBoundaryCounterterm, hne_one] using
+              (hphase j).2⟩⟩
+    exact ⟨hrecoverGain.1, hrecoverGain.2, hrecoverCounterterm.2⟩
+
 end
 
 end RHTower

@@ -72,6 +72,26 @@ theorem prescribedEvaluationDualReconstruction_iff_det_ne_zero
         rw [hdelta q r]
       _ = a q := by simp
 
+/-- **Exact recovery upgrades weak evaluation geometry to strict geometry.** For an arbitrary
+prescribed square packet, positive semidefiniteness together with exact dual coefficient recovery
+is equivalent to positive definiteness. Reconstruction supplies exactly the missing determinant
+nondegeneracy. -/
+theorem evaluationMatrix_posSemidef_and_dualReconstruction_iff_posDef
+    (φ : κ → X → ℝ) (nodes : κ → X) :
+    (evaluationMatrix φ nodes).PosSemidef ∧
+        PrescribedEvaluationDualReconstruction φ nodes ↔
+      (evaluationMatrix φ nodes).PosDef := by
+  constructor
+  · rintro ⟨hsemidef, hreconstruct⟩
+    apply hsemidef.posDef_iff_det_ne_zero.mpr
+    exact
+      (prescribedEvaluationDualReconstruction_iff_det_ne_zero φ nodes).mp
+        hreconstruct
+  · intro hpos
+    exact ⟨hpos.posSemidef,
+      (prescribedEvaluationDualReconstruction_iff_det_ne_zero φ nodes).mpr
+        hpos.det_pos.ne'⟩
+
 end
 
 end GaloisForLFunctions.HilbertMetric

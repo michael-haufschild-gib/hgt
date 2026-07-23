@@ -95,6 +95,28 @@ theorem
       xiTransversePrimeValuationCanonicalReconstruction_iff_cofiniteApertureGram
         (embed ∘ grade) p m
 
+/-- **Raw-Xi/exact prime-aperture connector.**  After any injective zero-preserving shift
+reparametrization, raw defect reconstruction is equivalent to exact dual recovery of every
+prime-jet coefficient after every finite prime deletion.  The auxiliary prime used by canonical
+valuation recovery is discharged internally. -/
+theorem
+    xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_iff_cofiniteApertureHilbertReconstructionReparam
+    {d : ℕ} (grade : Fin d → ℕ) (embed : ℕ → ℕ)
+    (hinj : Function.Injective embed) (hzero : embed 0 = 0)
+    (m : ℕ) :
+    XiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction grade ↔
+      XiTransversePrimeJetApertureCofiniteHilbertReconstruction
+        (embed ∘ grade) m := by
+  let p : Nat.Primes := ⟨2, Nat.prime_two⟩
+  calc
+    _ ↔ XiTransversePrimeValuationCanonicalReconstruction
+        (embed ∘ grade) p :=
+      xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_iff_canonicalValuationReparam
+        grade embed hinj hzero p
+    _ ↔ _ :=
+      xiTransversePrimeValuationCanonicalReconstruction_iff_cofiniteApertureHilbertReconstruction
+        (embed ∘ grade) p m
+
 /-- **Raw-Xi/Gaussian Hilbert connector.** Raw cofinite reconstruction is exactly nonlinear
 Gaussian separation of the first valuation coordinate together with exclusion of the zero grade.
 The Gaussian metric discharges every collision hypothesis. -/

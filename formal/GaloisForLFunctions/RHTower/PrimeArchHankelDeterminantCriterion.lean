@@ -1,8 +1,10 @@
+import GaloisForLFunctions.HilbertMetric.PrescribedEvaluationReconstruction
 import GaloisForLFunctions.RHTower.XiCentralHankelDeterminantCriterion
 import GaloisForLFunctions.RHTower.PrimeArchThetaAllOrderCumulant
 
 open Complex Set Polynomial Filter Topology
 open scoped BigOperators
+open GaloisForLFunctions.HilbertMetric
 
 namespace RHTower
 
@@ -75,6 +77,68 @@ theorem primeArchSourceMomentHankelDeterminantsPositive_iff_riemannHypothesis :
     PrimeArchSourceMomentHankelDeterminantsPositive ↔ RiemannHypothesis := by
   rw [primeArchSourceMomentHankelDeterminantsPositive_iff_xi,
     xiCentralMomentHankelDeterminantsPositive_iff_riemannHypothesis]
+
+/-! ## Exact prescribed reconstruction criterion -/
+
+/-- The fixed finite feature packet whose literal evaluation matrix is the leading
+prime--archimedean source Hankel matrix. Rows are consecutive moment samples and columns are
+consecutive translated moment features. -/
+def primeArchSourceMomentHankelFeature
+    (n : ℕ) (j i : Fin n) : ℝ :=
+  primeArchSourceMomentHankelMatrix n i j
+
+/-- The prescribed consecutive-node evaluation matrix is definitionally the source Hankel
+matrix. -/
+theorem evaluationMatrix_primeArchSourceMomentHankelFeature (n : ℕ) :
+    evaluationMatrix (primeArchSourceMomentHankelFeature n)
+        (id : Fin n → Fin n) =
+      primeArchSourceMomentHankelMatrix n := by
+  rfl
+
+/-- **Weak positivity plus exact recovery is strict positivity.** On each fixed source moment
+packet, positive semidefiniteness supplies the weak cone condition while Hilbert dual
+reconstruction supplies precisely the missing determinant nondegeneracy. -/
+theorem
+    primeArchSourceMomentHankel_posSemidef_and_exactReconstruction_iff_posDef
+    (n : ℕ) :
+    (primeArchSourceMomentHankelMatrix n).PosSemidef ∧
+        PrescribedEvaluationDualReconstruction
+          (primeArchSourceMomentHankelFeature n)
+          (id : Fin n → Fin n) ↔
+      (primeArchSourceMomentHankelMatrix n).PosDef := by
+  simpa only [evaluationMatrix_primeArchSourceMomentHankelFeature] using
+    (evaluationMatrix_posSemidef_and_dualReconstruction_iff_posDef
+      (primeArchSourceMomentHankelFeature n) (id : Fin n → Fin n))
+
+/-- Every fixed consecutive source-moment packet lies in the weak Hankel cone and admits exact
+dual coefficient reconstruction. -/
+def PrimeArchSourceMomentHankelExactReconstructionPhase : Prop :=
+  ∀ n : ℕ,
+    (primeArchSourceMomentHankelMatrix n).PosSemidef ∧
+      PrescribedEvaluationDualReconstruction
+        (primeArchSourceMomentHankelFeature n)
+        (id : Fin n → Fin n)
+
+/-- **Exact prescribed-reconstruction criterion for RH.** RH is equivalent to weak positivity
+of every finite prime--archimedean source Hankel packet together with exact dual recovery on its
+fixed consecutive moment nodes. Exact recovery replaces the strict-determinant hypothesis by an
+operational coefficient-reconstruction certificate. -/
+theorem primeArchSourceMomentHankelExactReconstructionPhase_iff_riemannHypothesis :
+    PrimeArchSourceMomentHankelExactReconstructionPhase ↔
+      RiemannHypothesis := by
+  constructor
+  · intro hphase
+    apply xiCentralMomentHankelPosDef_iff_riemannHypothesis.mp
+    intro n
+    rw [← primeArchSourceMomentHankelMatrix_eq_xiCentralMomentHankelMatrix]
+    exact
+      (primeArchSourceMomentHankel_posSemidef_and_exactReconstruction_iff_posDef n).mp
+        (hphase n)
+  · intro hRH n
+    apply
+      (primeArchSourceMomentHankel_posSemidef_and_exactReconstruction_iff_posDef n).mpr
+    rw [primeArchSourceMomentHankelMatrix_eq_xiCentralMomentHankelMatrix]
+    exact (xiCentralMomentHankelPosDef_iff_riemannHypothesis.mpr hRH) n
 
 end
 

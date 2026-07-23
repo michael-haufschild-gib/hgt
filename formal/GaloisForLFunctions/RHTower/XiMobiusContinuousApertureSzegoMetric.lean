@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HilbertMetric.PrescribedEvaluationReconstruction
 import GaloisForLFunctions.RHTower.XiMobiusSchurValuationIntertwiner
 import GaloisForLFunctions.RHTower.ArcsineZetaTransform
 import GaloisForLFunctions.RHTower.ArithmeticSchurRenormalizationLaw
@@ -23,6 +24,8 @@ does not assert the still-missing contractive map to the Xi boundary response.
 namespace RHTower
 
 noncomputable section
+
+open GaloisForLFunctions.HilbertMetric
 
 open scoped BigOperators InnerProduct
 open Filter Matrix
@@ -384,6 +387,29 @@ def xiMobiusPrimeContinuousApertureSamplingMatrix
     {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) : Matrix (Fin N) (Fin N) ℝ :=
   fun e j => xiMobiusPrimeSchurContinuousForwardDifference (aperture j) p e
 
+/-- Real feature family formed from the canonical first `N` continuous valuation-depth
+differences. -/
+def xiMobiusPrimeContinuousApertureCanonicalFeature
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    Fin N → Fin N → ℝ :=
+  fun j e => xiMobiusPrimeSchurContinuousForwardDifference (aperture j) p e
+
+/-- Exact dual isolation and coefficient recovery from the canonical first `N` continuous
+valuation depths. -/
+def XiMobiusPrimeContinuousApertureCanonicalReconstruction
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) : Prop :=
+  PrescribedEvaluationDualReconstruction
+    (xiMobiusPrimeContinuousApertureCanonicalFeature aperture p) id
+
+/-- The prescribed evaluation matrix of the continuous canonical features is exactly the existing
+finite source sampler. -/
+theorem xiMobiusPrimeContinuousApertureCanonicalEvaluationMatrix_eq_samplingMatrix
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    evaluationMatrix
+        (xiMobiusPrimeContinuousApertureCanonicalFeature aperture p) id =
+      xiMobiusPrimeContinuousApertureSamplingMatrix aperture p := by
+  rfl
+
 /-- The actual source-difference matrix is a weighted real-aperture Vandermonde. -/
 theorem xiMobiusPrimeContinuousApertureSamplingMatrix_factorization
     {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
@@ -443,6 +469,19 @@ theorem xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero_iff_injective_
         apply xiMobiusContinuousApertureDiskNode_injective p
         simpa [xiMobiusContinuousApertureDiskNode] using hr
       exact mul_ne_zero hq (sub_ne_zero.mpr (Ne.symm hr))
+
+/-- **Continuous canonical reconstruction classification.** The fixed first `N` valuation depths
+recover every real-aperture coefficient vector exactly iff the apertures are distinct and avoid
+zero. No positivity-chamber hypothesis remains at finite depth. -/
+theorem
+    xiMobiusPrimeContinuousApertureCanonicalReconstruction_iff_injective_ne_zero
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    XiMobiusPrimeContinuousApertureCanonicalReconstruction aperture p ↔
+      Function.Injective aperture ∧ ∀ j, aperture j ≠ 0 := by
+  rw [XiMobiusPrimeContinuousApertureCanonicalReconstruction,
+    prescribedEvaluationDualReconstruction_iff_det_ne_zero,
+    xiMobiusPrimeContinuousApertureCanonicalEvaluationMatrix_eq_samplingMatrix,
+    xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero_iff_injective_ne_zero]
 
 /-- Every finite injective packet of positive real apertures is separated by one prime tower. -/
 theorem xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero
@@ -623,6 +662,16 @@ theorem xiMobiusPrimeContinuousApertureFiniteGramMatrix_posDef_iff_injective_ne_
       isUnit_iff_ne_zero]
     exact hdet
 
+/-- Canonical continuous-aperture coefficient recovery and strict finite source geometry have
+exactly the same phase. -/
+theorem
+    xiMobiusPrimeContinuousApertureCanonicalReconstruction_iff_finiteGram_posDef
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    XiMobiusPrimeContinuousApertureCanonicalReconstruction aperture p ↔
+      (xiMobiusPrimeContinuousApertureFiniteGramMatrix aperture p).PosDef := by
+  rw [xiMobiusPrimeContinuousApertureCanonicalReconstruction_iff_injective_ne_zero,
+    xiMobiusPrimeContinuousApertureFiniteGramMatrix_posDef_iff_injective_ne_zero]
+
 /-- **Finite/completed gap theorem.** Completion adds exactly the positive-chamber condition to
 finite source nondegeneracy; finite sampling alone cannot detect aperture orientation. -/
 theorem xiMobiusPrimeContinuousApertureSzegoGramMatrix_posDef_iff_finiteGram_posDef_and_pos
@@ -637,6 +686,19 @@ theorem xiMobiusPrimeContinuousApertureSzegoGramMatrix_posDef_iff_finiteGram_pos
     exact ⟨⟨hinj, fun j => (hpos j).ne'⟩, hpos⟩
   · rintro ⟨⟨hinj, _hne⟩, hpos⟩
     exact ⟨hinj, hpos⟩
+
+/-- **Exact-recovery/completed-metric phase.** Completed continuous Szegő geometry is strict
+exactly when the canonical finite valuation packet recovers every coefficient and all apertures
+lie in the positive chamber. Thus completion adds orientation, while exact recovery supplies all
+finite nondegeneracy. -/
+theorem
+    xiMobiusPrimeContinuousApertureSzegoGramMatrix_posDef_iff_canonicalReconstruction_and_pos
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    (xiMobiusPrimeContinuousApertureSzegoGramMatrix aperture p).PosDef ↔
+      XiMobiusPrimeContinuousApertureCanonicalReconstruction aperture p ∧
+        ∀ j, 0 < aperture j := by
+  rw [xiMobiusPrimeContinuousApertureSzegoGramMatrix_posDef_iff_finiteGram_posDef_and_pos,
+    ← xiMobiusPrimeContinuousApertureCanonicalReconstruction_iff_finiteGram_posDef]
 
 /-- The closed diagonal formula, extended to the boundary aperture `a=0`. -/
 def xiMobiusPrimeContinuousApertureDiagonal (a : ℝ) (p : Nat.Primes) : ℝ :=

@@ -12,6 +12,7 @@
 - **Intended formal modules:**
   - `GaloisForLFunctions.RHTower.CCMFirstClockZeroDictionary`
   - `GaloisForLFunctions.RHTower.CCMFirstClockLandauCompleteness`
+  - `GaloisForLFunctions.RHTower.CCMFirstClockVolterraReflection`
 
 ## Exact conjecture
 
@@ -441,9 +442,10 @@ equation cannot vanish: comparing the lowest nonzero Taylor order at a hypotheti
 order `m-1` on the left and at least `m` on the right.  Hence Xi has no upper-half-plane zero;
 conjugation gives no lower-half-plane zero, which is RH.
 
-The exact remaining formal frontier is now narrow and named: normal convergence of `(AC)`,
-tail-measure Landau iteration, and the weighted-`L1` dilation reflection.  The obsolete
-rightmost-zero contour audit is no longer a dependency.
+The branch-free converse for pointwise first-clock source nonnegativity is now formalized.
+Normal convergence of `(AC)`, tail-measure Landau iteration, and weighted-`L1` dilation
+reflection are closed in Lean.  The obsolete rightmost-zero contour audit is no longer a
+dependency.
 
 1. **Moving denominator.** Resolved algebraically by `(V)` and analytically by fixed compact
    kernel `(K)`. Remaining work is formal local continuation of `(L)`, not an estimate on the
@@ -457,6 +459,49 @@ rightmost-zero contour audit is no longer a dependency.
    must use the genuine off-line divisor poles and unconditional low-height gap.
 5. **Source connector required.** Formula `(D)` must be proved for the literal
    `ccmPublishedSourceSineCoefficient`, not only for an abstract zero-side polarization.
+
+## Formal first-clock completeness theorem `[PROVED IN LEAN]`
+
+Define the literal source assertion
+
+```text
+CCMFirstClockPublishedSourceNonnegative :=
+  for every L>=pi/2,
+    ccmPublishedSourceSineCoefficient(L/2,2*pi/L)>=0.
+```
+
+Lean now proves, without RH or an auxiliary analytic hypothesis,
+
+```text
+CCMFirstClockPublishedSourceNonnegative <-> RiemannHypothesis.       (FC)
+```
+
+The hard implication is not a wrapper around a prior RH criterion.  Its dependency chain is:
+
+```text
+literal source sign
+ -> positive first-clock tail measure
+ -> Landau half-radius continuation iterated to every positive moment of Q
+ -> exact dilation Volterra reflection with ratio 15/16
+ -> every positive exponential moment of the complete Xi screw
+ -> the existing screw/logarithmic-derivative pole endpoint
+ -> RH.
+```
+
+The Mellin tail of the fixed dilation kernel is bounded in Lean by
+
+```text
+integral_(15/16)^1 |2*pi*sin(2*pi*x)|/x dx <= 2/15 < 1,
+```
+
+so truncation absorption is strict and no integrability at the target exponent is assumed.
+An unconditional reciprocal-square divisor envelope supplies the initial screw moment for every
+abscissa above `1/2`; iteration reaches every positive abscissa.
+
+This closes the source-to-RH direction.  It does **not** prove the source sign.  Equation `(FC)`
+shows that the remaining arithmetic statement is RH itself in one literal CCM coordinate:
+prove the explicit von-Mangoldt--Gamma first-clock functional nonnegative for every
+`L>=pi/2`, or produce one negative value and disprove RH.
 
 ## Significance
 
@@ -484,11 +529,13 @@ the explicit arithmetic reason already visible in its first moving clock edge.
 - [x] rightmost-zero/contour route removed by branch-free positive-axis cone
 - [x] universal dilation--Volterra reflection dependency-closed on paper
 - [x] rational screw-pole dictionary formalized unconditionally in Lean
-- [ ] first-clock continuation normal convergence dependency-closed in Lean
-- [ ] tail-measure Landau iteration and weighted-`L1` reflection formalized
+- [x] first-clock continuation normal convergence dependency-closed in Lean
+- [x] tail-measure Landau iteration and weighted-`L1` reflection formalized
 - [ ] false-RH cofinal unboundedness `(C2)` proved
-- [ ] Lean formalization
-- [ ] direct Lean checks, targeted build, and axiom audit
+- [x] pointwise first-clock completeness theorem `(FC)` formalized
+- [x] direct Lean checks and axiom audit
+- [ ] final targeted module build
+- [ ] unconditional published-source sign, RH, disproof, or scoped CCM death theorem
 
 ## Log
 
@@ -522,3 +569,11 @@ the explicit arithmetic reason already visible in its first moving clock edge.
   the exact multiplicity-complete logarithmic-derivative pole dictionary in
   `CCMFirstClockLandauCompleteness.lean`.  Remaining formal core is `(AC)` normal convergence,
   Landau iteration, and weighted-`L1` reflection.
+- 2026-07-23 -- Closed the entire branch-free pointwise converse in Lean.  New modules prove
+  normal convergence of the cubic first-clock continuation, exact positive-tail Landau descent
+  through all dyadic abscissas, the dilation Volterra law, strict Mellin-tail contraction at
+  ratio `15/16`, truncation absorption, exhaustion, and reflection from first-clock moments to
+  screw moments.  `CCMFirstClockVolterraReflection.lean` proves
+  `ccmFirstClockPublishedSourceNonnegative_iff_rh`.  Direct Lean check passes; capstone axiom
+  audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Remaining open core is no
+  longer analytic transfer: it is exactly the literal published von-Mangoldt--Gamma source sign.

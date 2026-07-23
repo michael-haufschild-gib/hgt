@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiApertureResponseGainPrimeRenormalization
+import GaloisForLFunctions.RHTower.XiTransversePrimeSourceHilbertMetric
 
 /-!
 # Full-aperture Hilbert transport and its compactness phase
@@ -232,6 +233,29 @@ theorem summable_poissonPrimeValuationFusedHalfDensity_nat_sq
         exact mul_le_of_le_one_right
           (xiAperturePrimeFusedResponseGainSq_pos ha p).le hmetricOne)
       hgain
+
+/-- **Exact-recovery/trace-class packet phase.**  A finite integral aperture packet has complete
+prime-jet dual recovery after every finite prime deletion and trace-class squared transport gain
+in every channel exactly when its labels are collision-free and all lie beyond the unique
+noncompact unit-aperture boundary. -/
+theorem
+    xiTransversePrimeJetApertureCofiniteHilbertReconstruction_and_traceClassGain_iff
+    {N : ℕ} (shift : Fin N → ℕ) (m : ℕ) :
+    XiTransversePrimeJetApertureCofiniteHilbertReconstruction shift m ∧
+        (∀ j, Summable (xiAperturePrimeFusedResponseGainSq (shift j))) ↔
+      Function.Injective shift ∧ ∀ j, 2 ≤ shift j := by
+  rw [
+    xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero]
+  constructor
+  · rintro ⟨⟨hinjective, hnonzero⟩, hsummable⟩
+    refine ⟨hinjective, fun j => ?_⟩
+    exact
+      (summable_xiAperturePrimeFusedResponseGainSq_iff
+        (Nat.pos_of_ne_zero (hnonzero j))).1 (hsummable j)
+  · rintro ⟨hinjective, htwo⟩
+    exact ⟨⟨hinjective, fun j =>
+      Nat.ne_of_gt (lt_of_lt_of_le (by decide : 0 < 2) (htwo j))⟩,
+      fun j => summable_xiAperturePrimeFusedResponseGainSq_of_two_le (htwo j)⟩
 
 end
 

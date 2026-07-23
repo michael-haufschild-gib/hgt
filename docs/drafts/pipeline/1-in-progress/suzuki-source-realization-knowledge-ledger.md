@@ -78,9 +78,10 @@ they are not novel scientific knowledge.
 | `SR-38` | `ADVANCE` | Least primewise ranks can be zero-padded in the common absolute odd-Jacobi coordinate. The resulting cross-prime residual is positive semidefinite on every finite packet, its diagonal is exactly the `SR-37` tail, and its Gamma-conductor-weighted diagonal is summable. Thus odd capacity and cutoff/inclusion coherence are closed without a common rank. Generic Gram/capacity lemma is only `FORMAL-CLOSURE`; source connector is advance. | Coherent positive kernel is not yet the singular/local finite incidence or completed trace required by Suzuki. | `GammaOddJacobiCoherentCapacity.lean`; `AdaptiveMercerCapacity.lean` |
 | `SR-39` | `ADVANCE` | Successor Dirichlet Gram has an exact all-order strictly negative Hankel-curvature density. Hence every additive ordinary Hankel boundary is class-completely incapable of repairing it. Placing the actual pointed Gamma--Bianchi raw feature in the same finite von Mangoldt coordinates instead gives the exact endpoint weld `difference + tail = head`; its forced mixed block has the exact opposite positive curvature, and the coupled Gram is a positive moment-Hankel matrix for every finite aperture and jet size. | Raw pointed boundary has no ordinary cofinal Hilbert limit. Finite Hankel welding does not incorporate odd Gamma-Jacobi capacity, completed Euler trace, or critical normalization. | `von-mangoldt-successor-bianchi-hankel-curvature-weld.md`; `ConservativeHankelRigidity.lean`; `VonMangoldtAdditiveLogJetHankelCurvature.lean`; `VonMangoldtSuccessorBianchiHankelWeld.lean` |
 | `SR-40` | `ADVANCE` | Source-fixed principal subtraction of the exact finite weld is absolutely summable at every jet order. It retains exactly `Successor+Cross`, converges in every finite matrix topology to universal kernel `R(r,s)=rho_(r+s+2)`, and obeys all-order Hankel shift. Forced mixed curvature therefore survives and cancels successor defect at every aperture and order. | Signed jet current is not yet a positive/Krein source realization; coherent odd Gamma--Jacobi kernel lives on prime coordinates and cannot be added to jet matrix without a proved bivariate connector. Completed Euler trace and critical orientation remain open. | `von-mangoldt-successor-principal-relative-hankel-current.md`; `VonMangoldtSuccessorPrincipalRelativeHankel.lean` |
-| `SR-41` | `LIVE-SOURCE` | Construct or class-completely refute an inclusion-compatible bivariate prime--jet completion whose jet compression is `SR-40` principal-relative Hankel current, whose prime/Jacobi compression is `SR-38` coherent odd Gamma residual, and whose cyclic source reader gives completed Euler multiplication/trace before Xi character or target moment is read. | Abstract finite matrix completion, separate direct sum of two marginals, target-fitted cross block, or generic Krein spectral decomposition does not connect source objects and does not count. | Exact post-`SR-40` operator-realization core below |
+| `SR-41` | `LIVE-SOURCE` | Construct or class-completely refute an inclusion-compatible bivariate prime--jet completion whose jet compression is `SR-40` principal-relative Hankel current, whose prime/Jacobi compression is `SR-38` coherent odd Gamma residual, and whose cyclic source reader gives completed Euler multiplication/trace before Xi character or target moment is read. | By `SR-42`, positive and every fixed-index Pontryagin completion are impossible. Abstract finite matrix completion, separate direct sum of two marginals, target-fitted cross block, or generic Krein spectral decomposition does not connect source objects and does not count. | Exact post-`SR-40` operator-realization core below |
+| `SR-42` | `ADVANCE` / `FAILED-CLASS` | Every full `SR-40` aperture section is a square Vandermonde congruence of explicit endpoint-divergence masses, so its positive, negative, and null indices are exact sign counts. Left endpoint is always negative. Primes `p>3`, `p=3 mod 4`, force distinct negative masses; negative index is unbounded. | No positive or fixed-index Pontryagin bivariate completion can realize all jet compressions. Surviving `SR-41` object must be genuinely infinite-index Krein, source-canonical, restriction-compatible, and still realize `SR-38` marginal plus completed Euler trace. | `von-mangoldt-successor-transport-inertia-law.md`; `SignedAtomicMomentInertia.lean`; `VonMangoldtSuccessorTransportInertia.lean` |
 
-## Level lift forced by `SR-35`--`SR-40`: bivariate prime--jet source completion
+## Level lift forced by `SR-35`--`SR-42`: bivariate prime--jet source completion
 
 Current source problem belongs to more general problem of **source-renormalized covariant
 Dirichlet forms relative to a resolved abelian channel algebra**.
@@ -98,11 +99,14 @@ cofinally. `SR-36` kills every reflection-even growing boundary. `SR-37`--`SR-38
 opposite-sector odd Gamma--Jacobi ladder and coherent summable residual. `SR-39` solves finite
 placement: successor and pointed Bianchi boundary must share source coordinates, and forced mixed
 block restores Hankel balance. `SR-40` solves signed cofinal jet current: source principal
-subtraction retains that mixed block, converges, and is Hankel at every order. Capacity, packet
-coherence, finite cross-term placement, and matrix-entry cofinal renormalization are no longer
-open. Remaining issue is object-level coupling: `SR-40` is a jet kernel after prime contraction,
+subtraction retains that mixed block, converges, and is Hankel at every order. `SR-42` computes
+its exact finite-section inertia and proves negative index unbounded, excluding Hilbert and every
+fixed-index Pontryagin realization. Capacity, packet coherence, finite cross-term placement,
+matrix-entry cofinal renormalization, and finite-index completion are no longer open. Remaining
+issue is object-level coupling: `SR-40` is a jet kernel after prime contraction,
 whereas `SR-38` is a prime kernel after Jacobi contraction. Adding them is ill-typed. One bivariate
-prime--jet source object must realize both marginals and Euler trace.
+prime--jet source object must realize both marginals and Euler trace in infinite-index Krein
+geometry.
 
 Scientific-method question is now:
 
@@ -136,9 +140,11 @@ This formulation makes predictions rather than renaming target sign:
    and its source-coordinate inclusion law are fixed by `SR-37`--`SR-38`.
 3. Dropping `X_F` is impossible by strict all-order curvature law in `SR-39`; `SR-40` proves exact
    source principal subtraction retains it and yields universal cofinal Hankel current.
-4. Inclusion `F subset G` must preserve common-coordinate weld, relative current, and odd Jacobi
+4. Positive and every fixed-index Pontryagin completion are impossible by `SR-42`; negative index
+   must grow without bound along full-jet apertures.
+5. Inclusion `F subset G` must preserve common-coordinate weld, relative current, and odd Jacobi
    absolute mode labels before target moments are read.
-5. Finite part must retain off-diagonal Euler covariance; projecting to diagonal channels recreates
+6. Finite part must retain off-diagonal Euler covariance; projecting to diagonal channels recreates
    nonsummable positive-log energy.
 
 Positive control is canonical full Gamma covariance already in corpus: it supplies finite positive
@@ -149,7 +155,8 @@ uniformly Ward-bounded resolved packet family.
 `(SR41)` is falsified if no source-defined bivariate connector can have both fixed marginals, if
 restriction destroys one marginal, if any connector must be fitted from Xi/zero data, if cyclic
 reader fails Euler shift compatibility, or if finite part kills meromorphic principal component.
-Corpus and `SR-40` supply both marginals separately but no such joint source object.
+Corpus and `SR-40` supply both marginals separately; `SR-42` fixes required infinite-index
+signature class, but no joint source object exists yet.
 
 ## Level lift: general problem containing current Suzuki frontier
 
@@ -416,3 +423,10 @@ Before claiming progress, record all answers:
   `FORMAL-CLOSURE`, source connector `ADVANCE`, external novelty provisional. New `SR-41` is not
   “add odd residual”: that is ill-typed. It asks for one bivariate prime--jet object realizing
   proved jet and prime/Jacobi marginals plus completed Euler trace.
+- **2026-07-23 — successor transport inertia (`SR-42`).** Exact endpoint atomization gives
+  `R_M=V_M^T diag(d_M)V_M`; distinct logarithmic nodes make full finite-section inertia equal
+  sign counts of `d_M`. Left endpoint is strictly negative. Every prime `p>3`, `p=3 mod 4`,
+  contributes another negative mass because `p-1` is not a prime power, so negative index is
+  unbounded. Generic signed-atomic inertia is parent theory; source composition is the advance.
+  Positive and fixed-index Pontryagin `SR-41` realizations are now failed classes. Only
+  source-canonical, inclusion-compatible infinite-index Krein coupling remains live.

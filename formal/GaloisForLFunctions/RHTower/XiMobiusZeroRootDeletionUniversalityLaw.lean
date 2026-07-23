@@ -17,7 +17,42 @@ noncomputable section
 
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
-open scoped Differential
+open scoped ComplexOrder Differential
+
+local instance xiMobiusZeroRootUpperEndDomain : IsDomain upperEndAnalyticSubring :=
+  isDomain_upperEndAnalyticSubring
+
+local instance xiMobiusZeroRootUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
+  upperEndComplexToMero.toAlgebra
+
+local instance xiMobiusZeroRootUpperEndCharZero : CharZero upperEndMeroField :=
+  charZero_of_injective_ringHom upperEndComplexToMero.injective
+
+local instance xiMobiusZeroRootUpperEndDifferential : Differential upperEndMeroField :=
+  upperEndMeroFieldDifferential
+
+local instance xiMobiusZeroRootCoordinateDifferential :
+    Differential upperEndRationalCoordinateField :=
+  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
+
+local instance xiMobiusZeroRootCoordinateDifferentialAlgebra :
+    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
+  deriv_algebraMap c := by
+    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
+    rfl
+
+local instance xiMobiusZeroRootAllValuationDifferential :
+    Differential analyticScalarValuationLayerDifferentialField :=
+  derivationClosedDifferential _
+    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
+      (Set.range analyticScalarValuationLayerCarrier))
+
+local instance xiMobiusZeroRootAllValuationDifferentialAlgebra :
+    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
+  deriv_algebraMap c := by
+    change (c.1)′ =
+      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
+    rfl
 
 /-- **Xi--Möbius zero-root deletion universality law.**  A single distinguished zero shift is an
 unavoidable loop for the full dyadic innovation, while its deletion leaves a complete positive
@@ -70,6 +105,81 @@ theorem xiMobius_zeroRootDeletion_dyadicSingular_gaussianGraphic
       root shift hroot tail head m p).2 hgraphic
   exact ⟨hdyadic, hcofinite, hgaussian,
     hgraphic.2.1, hgraphic.2.2.1, hgraphic.2.2.2⟩
+
+/-- **Exact Xi--Möbius zero-root deletion boundary.** The zero root forces singularity of the
+full dyadic innovation, cofinite dyadic-depth recovery, and both finite canonical recovery
+interfaces. Deleting it restores both cofinite dyadic-depth and exact prime-jet dual recovery,
+full Gaussian positivity, both rooted differential matroids, and valuation-base invariance. -/
+theorem xiMobius_zeroRootDeletion_dyadicSingular_exactHilbert_gaussianGraphic
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    (root : Fin N) (shift : Fin N → ℕ) (hroot : shift root = 0)
+    (hinjective : Function.Injective shift)
+    (tail head : E → Fin N) (m : ℕ) (p : Nat.Primes)
+    {t : ℝ} (ht : 0 < t) :
+    ¬ (xiMobiusContinuousApertureDyadicInnovationGram 2
+        (fun j => (shift j : ℝ))).PosDef ∧
+      ¬ XiMobiusPrimeContinuousApertureDyadicCofiniteHilbertReconstruction
+        2 (fun j => (shift j : ℝ)) p ∧
+      ¬ XiMobiusPrimeIntegralApertureCanonicalReconstruction shift p ∧
+      ¬ XiTransversePrimeValuationCanonicalReconstruction shift p ∧
+      XiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction
+        root shift p ∧
+      XiTransverseRootDeletedPrimeJetApertureCofiniteHilbertReconstruction
+        root shift m ∧
+      (xiTransversePrimeFirstValuationGaussianGramMatrixAt shift p t).PosDef ∧
+      differentialFamilyMatroid
+          (F := upperEndRationalCoordinateField)
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head) =
+        rootedIncidenceMatroid
+          (C := upperEndRationalCoordinateField) root tail head ∧
+      differentialFamilyMatroid
+          (F := analyticScalarValuationLayerDifferentialField)
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head) =
+        rootedIncidenceMatroid
+          (C := analyticScalarValuationLayerDifferentialField) root tail head ∧
+      differentialFamilyMatroid
+          (F := upperEndRationalCoordinateField)
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head) =
+        differentialFamilyMatroid
+          (F := analyticScalarValuationLayerDifferentialField)
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head) := by
+  have hbase :=
+    xiMobius_zeroRootDeletion_dyadicSingular_gaussianGraphic
+      root shift hroot hinjective tail head m p ht
+  have hexact :
+      XiTransverseRootDeletedPrimeJetApertureCofiniteHilbertReconstruction
+        root shift m :=
+    (xiTransverseRootDeletedPrimeJetApertureCofiniteHilbertReconstruction_iff_injective
+      root shift hroot m).2 hinjective
+  have hcontinuousFail :
+      ¬ XiMobiusPrimeIntegralApertureCanonicalReconstruction shift p := by
+    intro hreconstruct
+    have hnonzero :=
+      (xiMobiusPrimeIntegralApertureCanonicalReconstruction_iff_injective_ne_zero
+        shift p).1 hreconstruct |>.2
+    exact hnonzero root hroot
+  have htransverseFail :
+      ¬ XiTransversePrimeValuationCanonicalReconstruction shift p := by
+    intro hreconstruct
+    exact hcontinuousFail
+      ((xiMobiusPrimeIntegralApertureCanonicalReconstruction_iff_transverseValuationCanonicalReconstruction
+        shift p).2 hreconstruct)
+  have hdyadicFail :
+      ¬ XiMobiusPrimeContinuousApertureDyadicCofiniteHilbertReconstruction
+        2 (fun j => (shift j : ℝ)) p := by
+    intro hreconstruct
+    have hnonzero :=
+      (xiMobiusPrimeIntegralApertureDyadicCofiniteHilbertReconstruction_iff_injective_ne_zero
+        shift p).1 hreconstruct |>.2
+    exact hnonzero root hroot
+  have hdyadicDeleted :
+      XiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction
+        root shift p :=
+    (xiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction_iff_injective
+      root shift hroot p).2 hinjective
+  exact ⟨hbase.1, hdyadicFail, hcontinuousFail, htransverseFail,
+    hdyadicDeleted, hexact, hbase.2.2.1, hbase.2.2.2.1,
+    hbase.2.2.2.2.1, hbase.2.2.2.2.2⟩
 
 end
 
