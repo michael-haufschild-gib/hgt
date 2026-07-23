@@ -64,37 +64,48 @@ this proves `Re R'_1(b-ia)<0`.
 
   Lean proves `b>B4(a)` implies ground horizontal derivative direction
   `Re R'_1(b-ia)<0`.
+- Lean proves exact fourth-coefficient and remainder geometry. The shifted quartic has exactly two
+  roots and sign pattern `+,-,+`; a strict cubic--quartic Wronskian makes the remainder root phase
+  strictly increasing; consequently `4f'''+x f''''` also has exactly two roots with sign pattern
+  `+,-,+`.
+- For `H=3f''+x f'''`, Lean proves exact total variation
+
+  ```text
+  integral |4f'''+x f''''| = 2H(sigma1)-2H(sigma2)-H(0).
+  ```
+
+- Exact symbolic rational bounds at `(a,x)=(1/4,1/5)` prove
+
+  ```text
+  218/25 < B4(1/4).
+  ```
+
+  Therefore uniform absolute budget `(B4)` is false.
 
 ## Current attack
 
-Primary target is now nonoscillatory uniform budget
+Primary target returns to signed oscillatory cancellation:
 
 ```text
-forall 0<a<1/2, B4(a) <= 218/25.                        (B4)
+forall 0<a<1/2, forall b>218/25,
+  0 < integral_(0,infinity) -f'''(x) K3(bx) dx.         (GC3D)
 ```
 
-Use exact ground coefficient
+Absolute variation is no longer admissible: Lean proves it exceeds target cutoff at `a=1/4`.
+Next proof must exploit phase. Available exact structures are:
 
-```text
-f'''(x)/f(x)
-  = s(x)^3 - 6 q(x) s(x) - 4 q(x),
-s(x)=a+5/2-q(x),
-q(x)=2 pi exp(2x).
-```
-
-`(B4)` can be attacked through sign changes of
-`4f'''+x f''''`, or by a direct polynomial-Gaussian majorant after `q=2*pi*exp(2x)`.
-If `(B4)` is too crude, return to exact one-transition kernel comparison. Current directions:
-
-1. classify zeros of `4f'''+x f''''` and evaluate its total variation from boundary/extremum data;
-2. bound polynomial-Gaussian absolute integral uniformly in `0<a<1/2`;
-3. combine third-order compact split with rotation-density split at `x=1/3`, retaining exact
-   exponential score rather than absolute estimates.
+1. `f'''` has exactly one transition `tau`; compare negative head and positive tail interval by
+   interval using monotonicity of `K3(bx)`;
+2. use exact identities for signed zeroth and first masses to cancel the affine part of `K3`;
+3. retain the bounded oscillatory residual `u cos u-3 sin u` rather than majorizing it absolutely;
+4. combine third-order transition with the two-transition fourth remainder to control variation
+   on each phase cell.
 
 ## Falsifiers
 
 - An admissible `(a,b)` for which exact ground first sine moment is nonpositive.
 - A symbolic inequality forced by exact coefficient showing compact head dominates positive tail.
+- Uniform `B4(a)≤218/25` is now a proved falsified mechanism, not an open falsifier.
 
 No numerical test is accepted as proof or disproof.
 
@@ -112,5 +123,7 @@ renaming.
 - [x] unique transition and exact signed head/tail in Lean
 - [x] exact total-variation identities in Lean
 - [x] ground derivative theorem above explicit `B4(a)` in Lean
-- [ ] prove uniform `B4(a) ≤ 218/25`, or replace with sharper signed-kernel bound
+- [x] classify fourth remainder roots and exact total variation in Lean
+- [x] disprove uniform `B4(a) ≤ 218/25` in Lean at `a=1/4`
+- [ ] prove sharper signed-kernel bound
 - [ ] use in actual reflected current

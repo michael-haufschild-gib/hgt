@@ -443,3 +443,17 @@ Before claiming progress, record all answers:
   prime/Jacobi marginal coexist with consecutive jet marginals. Ordinary normal partial trace is
   now a failed class. The positive survivor is a singular, weighted/renormalized cyclic reader
   which carries this exact positive trace flux explicitly.
+- **2026-07-23 — true Xi Wiener--Hopf complement (`SR-44`).** Recent Hardy transport's
+  complementary factor was totalized quotient `P_Xi/P_right`, hence zero at every strict-right
+  zero instead of removable nonzero value. Universal arbitrary-predicate genus-one product split
+  and actual Xi complement are now entire and exact without enumeration. Old quotient and source
+  are entire iff RH; under false RH identity continuation contradicts their wrong divisor values.
+  Changed live row: infinite Hardy continuation is repaired, while totalized-quotient analyticity
+  is classified as RH-equivalent and may not be reused as unconditional input. Exact source
+  formula before character specialization is `XiC=P_right*G_comp`, with `G_comp` entire and
+  nonzero on strict-right divisor; full Xi multiplicity stays in `P_right`. Hostile controls
+  (subtype nonmultipliability, multiplicity loss, shared selected/complement divisor, vanishing
+  Hadamard unit, accidental divisor equality) all fail in Lean. Status: universal split
+  `FORMAL-CLOSURE`; Xi divisor repair and removability equivalence `ADVANCE`, external novelty
+  provisional. This does not reduce critical half-weight or prove compound Bezoutian positivity.
+  New live core remains `SUZUKI-COMPOUND-BEZOUTIAN-GRAM` using genuine factors only.

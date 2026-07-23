@@ -1,8 +1,8 @@
 # Theta-cusp single-atom reflected Riccati contraction
 
 - **ID:** `theta-cusp-single-atom-reflected-riccati-contraction`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Date:** 2026-07-23
 - **Scientific status:** `[PROVED HERE] [SOURCE-PURE] [NO COMPUTATION] [NOT RH]
   [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
@@ -44,8 +44,8 @@ cancellation.
 
 - [x] 0 → 1 in-progress: exact source statement and parent audit
 - [x] 1 → 2 fully-proven: dependency-complete symbolic proof, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: exact Lean source theorem, narrow build, axiom audit, generated index, and
-  lint green
+- [x] 2 → 3 formalized: exact Lean source theorem, literal derivative chain, narrow elaboration,
+  axiom audit, umbrella wiring, and lint green
 - [ ] 3 → 4 publication-ready: standalone theorem, proof, Lean certificate, and priority review
 
 ## Exact atom normal form
@@ -244,11 +244,18 @@ Castano--Paksoy--Zhang, arXiv:1407.2800.  Searches of Hedenmalm's theta-source p
 log-concavity work, finite-order Pólya-frequency results, and correlation-angle literature found
 no atomwise reflected Riccati contraction of the form `(RC1)`.  Novelty remains provisional.
 
-## Lean target
+## Lean realization
 
-Formalize the exact normal form `(1)`, margin identity `(3)`--`(4)`, and positivity proof in
-`RHTower/ThetaCuspSingleAtomReflectedRiccatiContraction.lean`.  Connect it directly to
-`thetaCuspSourceTerm`; do not leave only an abstract algebraic helper.
+`RHTower/ThetaCuspSingleAtomReflectedRiccatiContraction.lean` formalizes:
+
+- the exact source atom normal form and normalized reflected product;
+- the reflected action as the negative logarithm of that model;
+- literal first, second, and third derivative identities for the displayed jets;
+- the exact Riccati-margin factorization and rational two-chamber positivity proof;
+- the unconditional source capstone
+  `thetaCuspSourceTerm_reflectedRiccatiMargin_pos`.
+
+The module is imported by `RHTower/RiemannHypothesisSOTA2026.lean`.
 
 ## Log
 
@@ -256,3 +263,6 @@ Formalize the exact normal form `(1)`, margin identity `(3)`--`(4)`, and positiv
   The exact polynomial--Gaussian normal form produced a two-case symbolic proof.  Promoted to
   Stage 2 because all dependencies are closed and no computation, RH hypothesis, matrix
   positivity, or completed-source sign is assumed.
+- 2026-07-23 — formalized exact source theorem, source/model connector, derivative chain, margin
+  identity, and strict positivity.  Promoted to Stage 3 and wired into the RHTower frontier
+  umbrella.

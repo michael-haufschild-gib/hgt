@@ -2,7 +2,8 @@
 
 ## Status
 
-In progress. Source-pure, infinite, non-diagonal analytic repair.
+Formalized unconditionally in Lean 4. Internal corpus novelty established;
+external priority requires specialist audit.
 
 ## Frontier
 
@@ -21,7 +22,7 @@ the removable analytic quotient. Consequently current “Wiener–Hopf
 factorization” cannot be differentiated across its own divisor and cannot
 support a global Schur, Pick, or Julia argument.
 
-## Conjecture C-WH-COMPLEMENT
+## Theorem WH-COMPLEMENT
 
 For every genus-one indexed canonical product with reciprocal-square summable,
 nonzero spectral points, and every predicate on its multiplicity index:
@@ -48,8 +49,8 @@ totalized-division source factor is zero.
 - Old totalized quotient might accidentally agree with true complement at the
   divisor.
 
-Each falsifier must be discharged in Lean without axioms, finite exhaustions, or
-numerical evaluation.
+Lean discharges every falsifier without axioms, finite exhaustions, or numerical
+evaluation.
 
 ## Scientific value if proved
 
@@ -58,3 +59,39 @@ infinite continuation wall and supplies the first valid global factor on which
 the unresolved compound-Bezoutian positivity question can be posed. The
 predicate-splitting theorem is universal and prevents the same totalized
 division error for arbitrary canonical-product Wiener–Hopf decompositions.
+
+## Sharp Xi removability law
+
+Lean proves both equivalences
+
+```text
+RiemannHypothesis
+  ↔ AnalyticOnNhd ℂ xiNonrightCanonicalProduct univ
+
+RiemannHypothesis
+  ↔ AnalyticOnNhd ℂ xiNonrightSourceFactor univ.
+```
+
+Reason: old quotient and genuine complement agree near zero. If old quotient
+were entire, identity continuation would force global equality. At every
+strict-right zero old totalized quotient is zero while genuine complement is
+nonzero, contradiction. Under RH strict-right divisor is empty, right factor
+is identically one, and old source equals `XiC`.
+
+Thus prior claim that old pointwise factorization is a global analytic
+Wiener–Hopf split is false unless RH has already been proved. Replacement
+factor is entire unconditionally and preserves full Xi analytic multiplicity
+in strict-right factor.
+
+## Formal artifacts
+
+- `formal/GaloisForLFunctions/RHTower/CanonicalProductPredicateSplit.lean`
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiTrueWienerHopfFactorization.lean`
+
+Direct `lake env lean` checks pass. Targeted cached build
+`lake build GaloisForLFunctions.RHTower.GammaSewnMobiusXiTrueWienerHopfFactorization`
+passes `8850/8850`, building only two new leaves after cached replay. Six
+capstone axiom surfaces use only `propext`, `Classical.choice`, and
+`Quot.sound`; forbidden-declaration scan is clean. Global lint reaches an
+unrelated concurrent umbrella error:
+`HTGeometry.LagrangeRemainder` is not imported by `HTGeometry`.

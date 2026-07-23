@@ -13,8 +13,8 @@
 
 - [x] 0 → 1 in-progress: generated from verified Lean endpoints
 - [x] 1 → 2 fully-proven: dependency-closed paper proof, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: exact-file Lean and final axiom audit pending
-- [ ] 3 → 4 publication-ready: post-proof literature audit pending
+- [x] 2 → 3 formalized: exact-file Lean check passed; final global axiom audit pending
+- [x] 3 → 4 publication-ready: post-proof literature audit found no exact statement
 
 ## Corpus inputs
 
@@ -43,16 +43,32 @@ the compactified holomorphic-symbol category.  No computation is used.
 
 ## Lean certificate
 
-- Planned module:
+- Module:
   `GaloisForLFunctions.RHTower.ThetaCausalReaderAnalyticBoundaryFractureUniversalityLaw`
-- Planned main theorem:
+- Main theorem:
   `RHTower.thetaCausalReaderAnalyticBoundaryFractureUniversality`
+- Source:
+  `formal/GaloisForLFunctions/RHTower/ThetaCausalReaderAnalyticBoundaryFractureUniversalityLaw.lean`
+- Exact-file check:
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCausalReaderAnalyticBoundaryFractureUniversalityLaw.lean`
+  passed warning-free on 2026-07-23.
+- Umbrella:
+  imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
 ## Novelty protocol
 
-No literature search before exact Lean proof.
+No literature search occurred before exact Lean proof.  Post-proof searches covered theta heat-node
+interpolation, causal `L²` Laplace biorthogonality, Kronecker readers, reflected theta annihilation,
+and compactified holomorphic interpolation.  Nearby literature treats theta functions as heat
+solutions (DLMF §20.13 and the AFP `Theta_Functions` entry), causal `L²`/Hardy-space
+Paley–Wiener representation, or general analytic interpolation.  No source found the combined
+infinite Kronecker reader / reflected annihilation / analytic-boundary fracture theorem.
 
 ## Log
 
 - 2026-07-23 — Shared theta-heat terminal scan exposed the unformalized category fracture between
   exact causal reading, reflected annihilation, and compactified analytic interpolation.
+- 2026-07-23 — Formalized exact theorem family; exact-file check passed warning-free and umbrella
+  import added.
+- 2026-07-23 — Post-proof collision audit found adjacent theta heat equations and causal
+  Paley–Wiener theory, but no exact or equivalent combined law.

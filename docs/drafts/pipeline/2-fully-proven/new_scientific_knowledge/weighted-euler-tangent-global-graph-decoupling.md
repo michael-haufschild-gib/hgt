@@ -624,3 +624,194 @@ in another corona still only records their real part and remains circular.
   `map_coordinate_pow_eq_zero_of_fourierBorel_zero` gives (16).  Remaining big blocks after
   that: 4b interpolation stability, 4c short-interval primes, 4d oversampling assembly,
   5c joint closures (3)/(18)/(19).
+- **[DONE 2026-07-23] Step 5b(iii) — carrier separation (15)–(16), corpus instance.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerCarrierSeparation.lean`
+  (umbrella-registered, `lake build` clean, standard axioms, index regenerated).
+  `compactFourierBorel_eq_zero_of_ray_decay`: a compactly carried functional with carrier real
+  parts `≤ β` whose Fourier–Borel transform decays at rate `σ₀ > β` on the positive ray has
+  `F ≡ 0` — via `g = F·e^{cz}`, `c = (σ₀+β)/2`, and the Paley–Wiener two-ray vanishing theorem.
+  `map_coordinate_pow_eq_zero_of_ray_decay`: hence `L(s^N) = 0` for every `N` (through the corpus
+  `map_coordinate_pow_eq_zero_of_fourierBorel_zero`).  This is (16) with the ray decay (14) as
+  its one explicit hypothesis.
+- **Status roll-up.**  Formalized so far (12 modules, all unconditional, standard axioms):
+  coefficient layers + strictness (steps 1), ray-norm equivalence (2), dual reduction (3),
+  Cauchy derivative bound (4a), Möbius decay transfer (5a), two-ray PL bound (5b-i),
+  strip-Fourier analyticity (5b-ii-a), contour shift + high-frequency vanishing (5b-ii-b),
+  Paley–Wiener two-ray vanishing capstone (5b-ii-c), carrier separation instance (5b-iii).
+  **The remaining open chain to discharge (14) unconditionally:** 4b Chebyshev–Lobatto
+  interpolation stability (11)–(11b); 4c primes in `[X, X+X/(log X)^B]` (elementary PNT with
+  power-log error — the deep block); 4d assembly of the oversampling lemma (8a); then 5c the
+  Hahn–Banach joint closures (3)/(18)/(19).
+- **Step 4b redesign (2026-07-23).**  The card's Chebyshev–Lobatto + Markov + `O(log N)`
+  Lebesgue-constant machinery (11)–(11b) is NOT needed for (8a).  Since (8a) is a `limsup`
+  statement and the node count `N = ⌈cR⌉` carries a free parameter `c`, an exponential
+  Lebesgue bound `Λ ≤ e^{C''cR}` suffices: it contributes `+C''c` to the limsup, and letting
+  `c → 0` AFTER `R → ∞` removes the loss.  The crude bound for `η`-separated nodes in a unit
+  interval (`|l_i| ≤ 2^N/(η^N N!)`, from `i!(N−i)! ≥ N!/2^N`) is exponential with constant
+  `∝ c` when `η ≈ 1/(2N)`, so near-EQUISPACED prime-log nodes at resolution `R^{−B}` work and
+  the entire sharp-interpolation layer collapses to: (4b-1) the Lagrange remainder theorem via
+  iterated Rolle (missing from mathlib; `Mathlib.LinearAlgebra.Lagrange` has only the algebra);
+  (4b-2) the crude separated-node Lagrange bound (elementary products).  The prime input (4c)
+  is unchanged: primes within `R^{−B}` of the equispaced grid = primes in
+  `[X, X+X/(log X)^B]`-type windows.  4b-1/2 are generic real analysis → build in `HTGeometry`.
+- **[DONE 2026-07-23] Step 4b-1 — iterated Rolle.**
+  `formal/GaloisForLFunctions/HTGeometry/IteratedRolleVanishing.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  `exists_iteratedDeriv_eq_zero_of_zeros`: a real function with continuous iterated derivatives
+  vanishing at `k+1` strictly increasing points has `f^{(k)}(ξ) = 0` in their closed span.
+  Missing from mathlib; the mean-value engine for the Lagrange remainder.
+- **NEXT (step 4b-2):** Lagrange interpolation remainder: for smooth `f`, interpolant `P` at
+  `n+1` sorted nodes (mathlib `Lagrange.interpolate`), `|f(x) − P(x)| ≤
+  sup|f^{(n+1)}|/(n+1)!·∏|x−x_i|` — apply iterated Rolle to `f − P − λW`.  Needs the polynomial
+  facts `iteratedDeriv (n+1) (P.eval) = 0` (deg ≤ n) and `iteratedDeriv (n+1) (W.eval) = (n+1)!`
+  (monic nodal `W`) — check `Polynomial.iterate_derivative_*` API.  Then 4b-3: crude
+  `η`-separated Lagrange-basis bound `|l_i(x)| ≤ 2^N/(η^N·N!)`.
+- **[DONE 2026-07-23] Step 4b-2 (foundations) — Lagrange remainder infrastructure.**
+  `formal/GaloisForLFunctions/HTGeometry/LagrangeRemainder.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).  Proven:
+  `iteratedDeriv_polynomial_eval` (analytic iterated derivatives of polynomial evaluation are
+  algebraic iterated derivatives); `contDiff_polynomial_eval`; the Finset form
+  `exists_iteratedDeriv_eq_zero_of_finset_zeros` of iterated Rolle (via `Finset.orderIsoOfFin`);
+  `iterate_derivative_add'`; and `iterate_derivative_nodal`
+  (`derivative^[n+1] (nodal s id) = C (n+1)!` via `eraseLead` decomposition).
+- **NEXT (step 4b-2 finale):** assemble the remainder theorem
+  `|f x − (Lagrange.interpolate s id f).eval x| ≤ M/(n+1)!·∏_{t∈s}|x−t|` for
+  `ContDiff ℝ ⊤` f with `|f^{(n+1)}| ≤ M` on `[a,b] ⊇ s ∪ {x}`: φ := f − P.eval − λ·W.eval
+  vanishes on `insert x s` (card n+2), Finset Rolle at order n+1, then
+  `iteratedDeriv_sub`/`iteratedDeriv_const_smul` (ContDiffAt hypotheses) + the two polynomial
+  derivative facts solve for λ.  Then 4b-3: crude η-separated Lagrange-basis bound.
+- **[DONE 2026-07-23] Step 4b-2 (complete) — the Lagrange interpolation remainder.**
+  Appended to `formal/GaloisForLFunctions/HTGeometry/LagrangeRemainder.lean` (`lake build`
+  clean, standard axioms, index regenerated).  `iteratedDeriv_sub_polynomial_eval` (pointwise
+  splitting of `f − Q.eval` under iterated derivatives) and the classical
+  **`abs_sub_eval_interpolate_le`**: for `ContDiff ℝ ⊤` `f`, nodes `s ⊆ [a,b]` with
+  `|s| = n+1`, and `x ∈ [a,b]`,
+  `|f x − (Lagrange.interpolate s id f).eval x| ≤ M/(n+1)!·∏_{t∈s}|x−t|`
+  where `M` bounds `|f^{(n+1)}|` on `[a,b]`.  Missing from mathlib.
+- **NEXT (step 4b-3):** crude separated-node Lagrange-basis bound: for `η`-separated nodes in a
+  unit interval, `|ℓ_i(x)| ≤ 2^N/(η^N·N!)` (via `∏_{j≠i}|x_i−x_j| ≥ η^N·i!(N−i)!` and
+  `i!(N−i)! ≥ N!/2^N`), giving the interpolant sup bound
+  `|P(x)| ≤ (N+1)·2^N/(η^N N!)·max_i|f(x_i)|`.  With 4b-2 this yields the abstract
+  oversampling estimate; 4c (short-interval primes) then discharges the node hypothesis.
+- **[DONE 2026-07-23] Step 4b-3 (part 1) — separated-node product estimates.**
+  `formal/GaloisForLFunctions/HTGeometry/SeparatedNodeProducts.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).  `gap_telescope` + `sep_sub_le` +
+  `sep_mul_index_dist_le` (consecutive gaps `≥ η` ⇒ `η·|i−j| ≤ |pts i − pts j|`);
+  `prod_range_sub_eq_factorial` (`∏_{j<n}(n−j) = n!` over ℝ); `factorial_div_two_pow_le`
+  (`n!/2^n ≤ i!·(n−i)!`).
+- **NEXT (step 4b-3 part 2):** assemble the Lagrange denominator bound
+  `∏_{j≠i}|pts i − pts j| ≥ η^N·N!/2^N` (reindex `univ.erase i` products through the ordered
+  enumeration; split into below/above `i` and use the two product identities), then the basis and
+  interpolant sup bounds.  After that only 4c (short-interval primes) and 4d (assembly) remain
+  for the oversampling lemma (8a).
+- **[DONE 2026-07-23] Step 4b-3 (part 2) — the crude Lagrange denominator bound.**
+  Appended to `formal/GaloisForLFunctions/HTGeometry/SeparatedNodeProducts.lean` (`lake build`
+  clean, standard axioms, index regenerated).  `prod_erase_enum` (erase-products reindex through
+  the ordered enumeration), `prod_erase_index_dist`
+  (`∏_{j≠i}|i−j| = i!·(N−i)!` by below/above splitting), and the capstone
+  **`prod_erase_abs_sub_ge`**: for pairwise `η`-separated nodes,
+  `∏_{u≠t}|t−u| ≥ η^N·N!/2^N`.  With `abs_sub_eval_interpolate_le` (4b-2) this pins both halves
+  of the interpolation estimate.
+- **NEXT (step 4b-3 part 3):** the Lagrange basis/interpolant sup bound: from the numerator
+  `∏_{u ∈ s.erase t}|x−u| ≤ 1` (unit interval) and the denominator bound,
+  `|ℓ_t(x)| ≤ 2^N/(η^N·N!)`, hence
+  `|P(x)| ≤ (N+1)·2^N/(η^N·N!)·max_t|f(t)|` (mathlib `Lagrange.interpolate` as
+  `∑ C (f t) * basis`, `Lagrange.eval_basis`).  Then 4c (short-interval primes), 4d (assembly).
+- **[DONE 2026-07-23] Step 4b-3 (complete) — interpolant sup bound.**
+  `formal/GaloisForLFunctions/HTGeometry/SeparatedNodeInterpolantBound.lean` (HTGeometry
+  umbrella, `lake build` clean, standard axioms, index regenerated).
+  `abs_eval_basis_le` (`|ℓ_t(x)| ≤ 2^N/(η^N·N!)` over `η`-separated nodes in a unit window) and
+  **`abs_eval_interpolate_le_of_separated`**
+  (`|P(x)| ≤ (N+1)·2^N/(η^N·N!)·B`).  **Step 4b is now fully formalized**: remainder
+  (`abs_sub_eval_interpolate_le`) + sup bound, sufficient for the limsup oversampling argument
+  with `η ≈ 1/(2N)` nodes.
+- **NEXT (step 4d skeleton):** the abstract oversampling estimate: for `H` with the Cauchy
+  derivative bound (`norm_iteratedDeriv_compactCarrierLambertTransform_le`, applied to Re/Im on
+  `[R, R+1]`) and `N+1` `η`-separated sample points where `|H| ≤ ε_R`, combine 4b-2 + 4b-3:
+  `|H(x)| ≤ (N+1)·2^N/(η^N N!)·ε_R + 4‖L‖e^{−δR/2}/(N+1)!` on `[R, R+1]`.  State it for real
+  parts of a ℂ-valued `H` with hypothesis-supplied nodes; 4c will then produce the prime-log
+  nodes (deep block: elementary PNT with power-log error).
+- **[DONE 2026-07-23] Step 4d (part 1) — the abstract sampled-smallness estimate.**
+  `formal/GaloisForLFunctions/HTGeometry/SampledSmallInterpolation.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  **`abs_le_of_sampled_small`**: smooth `f` small (`≤ ε₀`) on `N+1` `η`-separated samples of a
+  unit interval with `|f^{(N+1)}| ≤ M` there satisfies
+  `|f x| ≤ (N+1)·2^N/(η^N·N!)·ε₀ + M/(N+1)!` on the whole interval.  This is the analytic core
+  of the oversampling lemma (8a) in the redesigned (limsup) form; steps 4a + 4b feed it exactly.
+- **Remaining open chain for the card:** 4d-2 (ℂ-valued bridge: apply the estimate to Re/Im of
+  the Lambert transform along `[R, R+1]`, connecting real `iteratedDeriv` of `H∘ofReal` to the
+  complex `iteratedDeriv` bound from `norm_iteratedDeriv_compactCarrierLambertTransform_le` —
+  plumbing via `HasDerivAt.comp_ofReal`); 4c (prime-log `η`-separated node supply near
+  equispaced grids = primes in `[X, X+X/(log X)^B]`, elementary PNT with power-log error — the
+  single deep block); 4d-3 (limsup assembly of (8a) with `c → 0`); 5c (joint closures
+  (3)/(18)/(19): Hahn–Banach + the formalized dual reduction/carrier separation).
+- **[DONE 2026-07-23] Step 4d-2 — the ℂ-valued sampled-smallness bridge.**
+  `formal/GaloisForLFunctions/HTGeometry/SampledSmallComplex.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  `differentiable_deriv_of_entire`; `iteratedDeriv_comp_ofReal` (real iterated derivatives along
+  ℝ = complex iterated derivatives, for entire functions); `iteratedDeriv_clm_comp` (projection
+  commutation); `contDiff_comp_ofReal`; and
+  **`norm_le_of_sampled_small_complex`**: an entire `H` small at `N+1` `η`-separated real
+  samples of a unit window with `‖H^{(N+1)}‖ ≤ M` there obeys
+  `‖H(x)‖ ≤ 2·((N+1)·2^N/(η^N·N!)·ε₀ + M/(N+1)!)` on the window — Re/Im interpolated
+  separately, exactly the card's "no complex Rolle" remark.
+- **Remaining for (8a):** 4c (the prime-log node supply: `η ≈ 1/(2N)`-separated prime logs in
+  every `[R, R+1]` — needs elementary PNT with power-log error, THE deep block) and 4d-3 (the
+  limsup assembly: feed `norm_iteratedDeriv_compactCarrierLambertTransform_le` (4a) and the
+  sampled decay (7) into `norm_le_of_sampled_small_complex`, then `R → ∞`, `c → 0`).  Then 5c.
+- **[DONE 2026-07-23] Step 4d-3 (part 1) — explicit factorial growth bounds.**
+  `formal/GaloisForLFunctions/HTGeometry/FactorialGrowthBounds.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  `pow_mul_exp_neg_le_factorial` (`n^n e^{−n} ≤ n!`, from the exponential series);
+  `succ_div_pow_le_exp_one` (`((n+1)/n)^n ≤ e`); `two_le_exp_one`; and
+  **`interpolation_constant_le`**: at node separation `η = 1/(4(N+1))` the sampled-smallness
+  sup constant obeys `(N+1)·2^N/(η^N·N!) ≤ e^{6(N+1)}` — the explicit exponential constant
+  for the limsup assembly.
+- **NEXT (step 4d-3 part 2):** the window decay bound: for entire `H` with the 4a derivative
+  bound and `N_R+1 = ⌊cR⌋+1` nodes at separation `1/(4(N_R+1))` in `[R, R+1]` where
+  `‖H‖ ≤ Ce^{−σR}`, `norm_le_of_sampled_small_complex` + `interpolation_constant_le` +
+  `pow_mul_exp_neg_le_factorial` give
+  `‖H(x)‖ ≤ 2C·e^{6(N_R+2)}e^{−σR} + 2K·e^{−δR}e^{−(N_R+1)(log(N_R+1)−1)}` on `[R, R+1]`;
+  then the rate transfer: ∀ σ' < σ with `6c < σ − σ'` and `c log(cR) → ∞` beats `σ'`,
+  conclude `∃ C', ‖H(x)‖ ≤ C'e^{−σ'x}` for large `x` — the (8a)-consumer form.  Then 4c.
+- **[DONE 2026-07-23] Step 4d-3 (part 2) — the explicit window decay bound.**
+  `formal/GaloisForLFunctions/HTGeometry/SampledWindowDecay.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  `one_div_factorial_le_superexp` (`1/n! ≤ e^{−n(log n −1)}`) and
+  **`norm_le_window_of_sampled`**: at the canonical separation `1/(4(N+1))`,
+  `‖H(x)‖ ≤ 2e^{6(N+1)}·ε₀ + 2M/(N+1)!` on the unit window.  All analytic constants of the
+  oversampling lemma are now explicit.
+- **NEXT (step 4d-3 part 3, the (8a) rate transfer):** for entire `H` with (i) the 4a
+  derivative bound `M_R = K e^{−δR}` valid for orders `≤ δR/(4M)`, (ii) node families with
+  `N_R := ⌊cR⌋` (`c ≤ δ/(8M)` so `N_R + 1 ≤` the 4a order ceiling for large `R`), and (iii)
+  sample decay `ε₀ = Ce^{−σR}`: conclude for every `σ' < σ − 12c` an eventual bound
+  `‖H(x)‖ ≤ C'e^{−σ'x}` on `x ≥ R₁` (windows tile the ray; `e^{6(N_R+2)} ≤ e^{12cR}` for
+  `cR ≥ 1`; remainder term `2Ke^{−δR}e^{−(N_R+1)(log(N_R+1)−1)} ≤ e^{−σ'R}` eventually since
+  `c log(cR) → ∞`).  Interface hypothesis for 4c: the node families.  Then 4c itself.
+- **[DONE 2026-07-23] Step 4d-3 (part 3) — the ray rate-transfer theorem.**
+  `formal/GaloisForLFunctions/HTGeometry/SampledRayRateTransfer.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  **`norm_le_ray_of_sampled_decay`**: for entire `H` with window derivative bounds
+  `‖H^{(⌊cR⌋+1)}‖ ≤ Ke^{−δR}` and `⌊cR⌋+1` separated samples per window where
+  `‖H‖ ≤ Ce^{−σR}`, one gets `‖H(x)‖ ≤ C′e^{−σ′x}` for all large `x`, for EVERY
+  `σ′ ≤ σ − 6c` — all thresholds explicit, no asymptotic filters.  This IS the oversampling
+  lemma (8a) modulo two instantiations: (α) the derivative hypothesis, discharged by 4a
+  (`norm_iteratedDeriv_compactCarrierLambertTransform_le`) once `c ≤ δ/(8M)`-type consistency
+  is checked; (β) the node hypothesis = prime logs at separation `1/(4(⌊cR⌋+1))` in `[R,R+1]`
+  with the sampled decay from the dual reduction (7) — THE remaining deep block (4c: elementary
+  PNT with power-log error).
+- **The card's analytic program is now complete**; what remains is arithmetic (4c), two
+  instantiation lemmas, and 5c (joint closures).
+- **[DONE 2026-07-23] Instantiation (α) — Lambert window derivative bounds.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerLambertWindowDerivatives.lean`
+  (umbrella-registered, `lake build` clean, standard axioms, index regenerated).
+  **`lambert_derivative_window_bound`**: for carrier constants `δ ≤ M` and any node density
+  `0 < c ≤ δ/(8M)`, the order-`⌊cR⌋+1` derivative of `compactCarrierLambertTransform` is
+  `≤ 4‖L‖e^{−(δ/2)R}` on `[R, R+1]` for `R ≥ max(8M/δ, 2log2/δ)` — exactly the `hder`
+  hypothesis of `norm_le_ray_of_sampled_decay` with `K = 4‖L‖`, rate `δ/2`.
+  **The oversampling lemma (8a) is now reduced to a single hypothesis**: the prime-log node
+  supply (4c).  Chain: nodes ⇒ `norm_le_ray_of_sampled_decay` (with the dual-reduction sample
+  decay (7)) ⇒ ray decay (8a) ⇒ Möbius transfer (14) ⇒ carrier separation (16) — all other
+  links formalized.
+- **NEXT:** 4c (primes in short intervals — elementary PNT with power-log error) OR 5c (joint
+  Hahn–Banach closures (3)/(18)/(19), independent of 4c).  rng-pick next iteration.

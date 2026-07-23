@@ -6864,3 +6864,72 @@ only two new leaves and replaying one cached dependency with pre-existing linter
 lint passes with large-file warnings only. Six capstone axiom surfaces use only `propext`,
 `Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean. No stale Lean/lake
 process remains.
+
+## S88. True infinite Xi Wiener--Hopf split and RH-equivalent removability law (2026-07-23)
+
+Audit of recent non-diagonal Hardy transport found an exact analytic defect at divisor. Its
+“complementary factor” was defined by totalized division
+
+```text
+P_nonright(z)=P_Xi(z)/P_right(z).                       (S88.1)
+```
+
+At every strict-right Xi zero, numerator and denominator both vanish and Lean assigns `(S88.1)`
+value zero. Genuine removable complement is generally nonzero there. Existing pointwise identity
+`P_Xi=P_right P_nonright` therefore reduces to `0=0*0` on divisor and does not provide analytic
+continuation, differentiation, or global Julia/Schur transport.
+
+Universal infinite repair is now proved. For any nonzero reciprocal-square-summable indexed
+genus-one divisor `a_i` and any predicate `p` on multiplicity indices,
+
+```text
+P_a(z)=P_(a|p)(z) P_(a|not p)(z),                       (S88.2)
+```
+
+with both factors entire and nonzero away from selected divisors. Proof uses independent
+multipliability and exact `sumCompl` partition; no enumeration, cutoff, numerical evaluation, or
+quotient cancellation occurs.
+
+Specializing `p` to strict-right Xi copies gives genuine entire complement `P_comp` and source
+factor
+
+```text
+G_comp=Q_Hadamard P_comp,
+XiC=P_right G_comp,                                    (S88.3)
+G_comp(lambda_q) != 0  for every strict-right q.
+```
+
+Hence strict-right factor retains exact Xi analytic multiplicity at every such zero. Lean also
+proves old quotient and old source vanish there and differ strictly from genuine factors.
+
+Sharp frontier theorem:
+
+```text
+RH ↔ P_nonright is entire
+   ↔ old nonright source factor is entire.              (S88.4)
+```
+
+Old and genuine factors agree near zero. If old factor were entire, identity continuation would
+force global equality, contradicting their divisor values under false RH. Under RH strict-right
+divisor is empty and old source equals `XiC`.
+
+This is significant correction, not RH proof. It proves claimed old global Wiener--Hopf
+continuation is RH-equivalent, and supplies unconditional analytic replacement. Strongest live
+Suzuki obstacle remains source-derived positive Green/Gram factorization of full compound
+Xi Bezoutian on recurrence-selected aperture (`SUZUKI-COMPOUND-BEZOUTIAN-GRAM`). That positivity,
+not divisor factor analyticity, must now be attacked; using old factor analyticity would assume
+endpoint.
+
+Artifacts:
+
+- `formal/GaloisForLFunctions/RHTower/CanonicalProductPredicateSplit.lean`;
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiTrueWienerHopfFactorization.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/xi-true-wiener-hopf-complement-factorization.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-source-realization-knowledge-ledger.md`.
+
+Internal corpus novelty: no prior arbitrary-predicate exact canonical split or RH-equivalent
+totalized-removability law found. External priority remains provisional. Direct Lean checks and
+targeted cached build pass `8850/8850`. Six capstone axiom surfaces use only `propext`,
+`Classical.choice`, and `Quot.sound`; forbidden-declaration scan is clean. Global lint is blocked
+only by unrelated concurrent umbrella omission: `HTGeometry.LagrangeRemainder` is unreachable from
+`HTGeometry`.

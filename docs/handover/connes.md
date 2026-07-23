@@ -6011,3 +6011,44 @@ convolution.  But the cofinal unrenormalized meet over all `q>=2` contains only 
 sequences, hence is zero in `ell^2(N)`.  Lean proves both the LCM law and the universal constant
 collapse.  Any live block transport must therefore be a critically renormalized relative defect
 taken before the zero strong limit; an ordinary alternating-projection exhaustion is dead.
+
+## 87. Complete Xi Ward transport is a non-diagonal four-unit Hardy contraction
+
+The constructed Schwarz-paired Xi Ward phase now has unconditional operator-level, not merely
+pointwise, contractivity. For every finite right-half-plane packet `w`, real `alpha>=0`, and
+
+```text
+G_ij=1/(w_i+conj(w_j)),
+Phi_i=xiRightWardBoundarySourcePhaseCrossRatio(i*w_i,alpha),
+V_i=mobiusGammaXiAntiCausalWardTransportV(w_i,alpha)=1-Phi_i,
+```
+
+Lean proves
+
+```text
+[(1-Phi_i conj(Phi_j))/(w_i+conj(w_j))]_ij >= 0,
+G-diag(V/2)Gdiag(V/2)^* >= 0,
+4G-diag(V)Gdiag(V)^* >= 0.                              (87.1)
+```
+
+For one Cayley divisor factor the Pick defect is exactly a positive rank-one Gram plus a positive
+diagonal congruence of `G`. Pick defects close under products, and entrywise matrix limits preserve
+positive semidefiniteness, so the proof reaches the actual unconditional infinite Xi product.
+Affine Schur closure `f |-> (1-f)/2` gives the two `V` inequalities.
+
+This closes finite-aperture Hardy nonexpansiveness of the requested `V`. It does not close the
+RH-bearing tangent step: `(87.1)` contains `diag(V)Gdiag(V)^*`, while the Ward consumer contains
+the outer product `r_P r_P^*` of the aperture derivative at zero. Existing boundary-ramification
+theorems already show that a nonzero four-unit relative-trace density must be square-root singular,
+so differentiating the smooth finite-aperture contraction cannot produce that outer product.
+
+Do not repeat pointwise phase bounds, finite products, smooth Schur contraction, or entrywise Pick
+positivity as the missing step. Exact survivor is a source-defined singular/cofinal Julia boundary
+lift with column `r_P` and boundary diagonal `4`, or a proof that no CCM-admissible lift can have
+those data.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardHardyContraction.lean`;
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardHardyNonexpansive.lean`;
+- `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/xi-ward-hardy-nondiagonal-nonexpansiveness.md`.

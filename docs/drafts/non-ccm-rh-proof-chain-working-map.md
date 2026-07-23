@@ -759,14 +759,50 @@ Lean proves `b>B4(a)` implies `Re R'_1(b-ia)<0`. The active quantitative theorem
 forall 0<a<1/2, B4(a) <= 218/25.                        (28)
 ```
 
-Unlike prior oscillatory compact-head conjecture, `(28)` is a real `L1` inequality with no
-frequency variable. It is sufficient, not yet proved necessary; failure of this particular bound
-would require returning to cancellation in `(25)`.
+Lean now decides `(28)`: it is false. The exact fourth derivative is a shifted quartic in
+
+```text
+r = 2*pi*exp(2x) - (a+5/2).
+```
+
+The quartic has exactly two roots and sign pattern `+,-,+`. More strongly, the Wronskian between
+the shifted cubic and quartic is strictly positive for every `5/2<c<3`, `r>3`. Therefore the
+root phase
+
+```text
+2x + 8*C3(x)/C4(x)
+```
+
+is strictly increasing away from quartic roots. This proves the boundary remainder
+`4f'''+x f''''` has exactly two roots `sigma1<sigma2`, with global sign pattern `+,-,+`.
+For
+
+```text
+H(x)=3f''(x)+x f'''(x)
+```
+
+Lean proves the exact total variation identity
+
+```text
+integral_(0,infinity) |4f'''+x f''''|
+  = 2H(sigma1)-2H(sigma2)-H(0).                         (28a)
+```
+
+Exact rational exponential and pi enclosures at the symbolic witness `(a,x)=(1/4,1/5)` give
+
+```text
+218/25 < B4(1/4).                                        (28b)
+```
+
+Thus taking absolute value of the fourth-order remainder destroys too much cancellation to reach
+the verified central-band cutoff. This disproves only that sufficient criterion. It does not
+disprove ground horizontal orientation or close the Hedenmalm route.
 
 **Exact open core:** prove actual current nonnegativity for `0<a<1/2`, `|b|>218/25`. Current
 unchecked analytic data are:
 
-1. uniform fourth-order budget `(28)` (or a sharper direct proof of signed domination in `(25)`);
+1. signed ground-shell cancellation in `(25)` or `(27)`, without replacing the oscillatory
+   remainder by total variation; the uniform absolute budget `(28)` is formally impossible;
 2. transverse derivatives, now exactly
    `Im R'_n(b-ia)=2 integral x f_(a,n)(x) cos(bx) dx`, and reflected analogue;
 3. cofinal reflected product-fibre compensation after all endpoint orders cancel.
