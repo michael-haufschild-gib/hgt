@@ -523,7 +523,7 @@ def rectangularGammaCancellationNumerator (L a t : ℝ) : ℝ :=
 def rectangularGammaCancellationKernel (L a t : ℝ) : ℝ :=
   rectangularGammaCancellationNumerator L a t / (1 - Real.exp (-t))
 
-theorem half_mul_le_one_sub_exp_neg
+theorem rectangularGamma_half_mul_le_one_sub_exp_neg
     {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
     t / 2 ≤ 1 - Real.exp (-t) := by
   have hden : 0 < 1 + t := by linarith
@@ -600,7 +600,7 @@ theorem abs_rectangularGammaCancellationNumerator_le_near_zero
 theorem abs_rectangularGammaCancellationKernel_le_near_zero
     {L a t : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (ht0 : 0 < t) (ht1 : t ≤ 1) :
     |rectangularGammaCancellationKernel L a t| ≤ 8 * L + 3 := by
-  have hhalf := half_mul_le_one_sub_exp_neg ht0.le ht1
+  have hhalf := rectangularGamma_half_mul_le_one_sub_exp_neg ht0.le ht1
   have hden : 0 < 1 - Real.exp (-t) :=
     sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith))
   have hC : 0 ≤ 8 * L + 3 := by positivity

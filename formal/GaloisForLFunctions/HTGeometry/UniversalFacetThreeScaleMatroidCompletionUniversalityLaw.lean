@@ -19,6 +19,27 @@ open scoped Differential
 
 noncomputable section
 
+local instance threeScaleUpperEndDomain : IsDomain upperEndAnalyticSubring :=
+  isDomain_upperEndAnalyticSubring
+
+local instance threeScaleComplexAlgebra : Algebra ℂ upperEndMeroField :=
+  upperEndComplexToMero.toAlgebra
+
+local instance threeScaleCharZero : CharZero upperEndMeroField :=
+  charZero_of_injective_ringHom upperEndComplexToMero.injective
+
+local instance threeScaleComplexDifferential : Differential ℂ := ⟨0⟩
+
+local instance threeScaleUpperEndDifferential : Differential upperEndMeroField :=
+  upperEndMeroFieldDifferential
+
+local instance threeScaleDifferentialAlgebra :
+    DifferentialAlgebra ℂ upperEndMeroField where
+  deriv_algebraMap c := by
+    rw [upperEndMero_deriv_complexConstant c]
+    change (0 : upperEndMeroField) = algebraMap ℂ upperEndMeroField 0
+    rw [map_zero]
+
 /-- **Universal facet three-scale matroid/completion universality law.**  Any universal facet source
 realizes the exact structural matroid at both countable point-finite and finite localized Laurent
 resolution, while any two sources and any two prime orientations have the same completed ring. -/
@@ -39,6 +60,7 @@ theorem UniversalFacetSource.countable_finiteLocalized_completed_threeScale
      let e := countableUniversalFacetOrbitEmbedding (PointFiniteFacetIndex facetsC)
      letI := isDomain_upperEndAnalyticSubring
      letI : Algebra ℂ upperEndMeroField := upperEndComplexToMero.toAlgebra
+     letI : Differential ℂ := ⟨0⟩
      letI := upperEndMeroFieldDifferential
      let source : FinsuppOperatorRowIndex Q → upperEndMeroField := fun q =>
        boundedGaugeTranslatedPrimeLogUpperEnd universalFacetOrbitShift u.1 (e q.1)
@@ -48,6 +70,10 @@ theorem UniversalFacetSource.countable_finiteLocalized_completed_threeScale
          (fun i => Ideal.Quotient.mk
            (setStanleyReisnerIdeal (Polynomial ℂ) facetsC) (P i))) ∧
     (let e := finiteVertexNatEmbedding αf
+     letI := isDomain_upperEndAnalyticSubring
+     letI : Algebra ℂ upperEndMeroField := upperEndComplexToMero.toAlgebra
+     letI : Differential ℂ := ⟨0⟩
+     letI := upperEndMeroFieldDifferential
      let source : FiniteFinsuppRowIndex (stanleyReisnerLaurentRows d facetsF N) →
          upperEndMeroField := fun q =>
        boundedGaugeTranslatedPrimeLogUpperEnd universalFacetOrbitShift

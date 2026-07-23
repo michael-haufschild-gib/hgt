@@ -26,13 +26,17 @@ theorem exists_finiteSoninSemilocalRelativeTrace_ne_everyHilbertSchmidtLogShellG
           f.sum (fun pk w =>
             w * opTrace
               (normalizedHilbertSchmidtCentralTangentCarrier C
-                (soninPrimePowerLogShellTraceDensity pk))) := by
+                soninPrimePowerLogShellTraceDensity pk)) := by
   obtain ⟨f, hf⟩ :=
     exists_finiteSoninSemilocalRelativeTrace_ne_everyHilbertSchmidtCyclicSourceGenerator
   refine ⟨f, ?_⟩
   intro H _ _ _ C hC hCne
-  simpa only [soninPrimePowerLogShellTraceDensity_eq_fluxCoefficient] using
-    hf C hC hCne
+  have hdensity :
+      soninPrimePowerLogShellTraceDensity = soninSemilocalPrimeFluxCoefficient := by
+    funext pk
+    exact soninPrimePowerLogShellTraceDensity_eq_fluxCoefficient pk
+  rw [hdensity]
+  exact hf C hC hCne
 
 end
 

@@ -52,7 +52,7 @@ theorem one_add_four_mul_primeCounting_div_le_primesBelow_phaseDistortion
     fun p hp => Nat.prime_of_mem_primesBelow hp
   have hsum := primeCounting_div_le_primesBelow_primeHarmonicSum X hX
   have hdist := one_add_four_mul_primeHarmonicSum_le_phaseDistortion hprime
-  exact (add_le_add_left (mul_le_mul_of_nonneg_left hsum (by norm_num)) 1).trans hdist
+  nlinarith
 
 /-- **Prime-log rank/Möbius-distortion universality law.**  Every cutoff `X ≥ 2` carries an
 integer-linearly independent prime-log phase family of exact prime-counting cardinality, while

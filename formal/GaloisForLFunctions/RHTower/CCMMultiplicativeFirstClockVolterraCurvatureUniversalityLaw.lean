@@ -61,7 +61,8 @@ theorem xiWeilPolarization_rectangular_log_mul_sq_eq_firstClockVolterraCurvature
   change ccmFirstClockXiRationalDivisor (Real.log m) =
       xiScrewDivisor (Real.log m) + ccmFirstClockXiVolterraMemory (Real.log m) at hvolM
   rw [xiWeilPolarization_rectangular_log_mul_sq_eq_screwCurvature hm hn]
-  linear_combination 2 * hvolM2N + 2 * hvolN - 4 * hvolMN + 4 * hvolM
+  rw [hvolM2N, hvolN, hvolMN, hvolM]
+  ring
 
 end
 

@@ -27,7 +27,7 @@ theorem exists_finiteSoninSemilocalRelativeTrace_ne_everyHilbertSchmidtCyclicSou
   refine ⟨f, ?_⟩
   intro H _ _ _ C hC hCne
   have hself : hsInner C C ≠ 0 := by
-    rw [GaloisForLFunctions.HTGeometry.hsInner_self_eq_ofReal_hsNormSq hC]
+    rw [HTGeometry.hsInner_self_eq_ofReal_hsNormSq hC]
     exact Complex.ofReal_ne_zero.mpr
       (fun hzero => hCne ((hsNormSq_eq_zero_iff hC).mp hzero))
   intro heq

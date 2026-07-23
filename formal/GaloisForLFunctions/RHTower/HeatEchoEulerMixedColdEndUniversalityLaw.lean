@@ -32,22 +32,23 @@ theorem heatApertureEulerMixedMoment_eq_eulerFisherMoment
         (RHTower.eulerPrimePowerWeight
           (1 - sigma + (q : ℝ) + (k : ℝ)))
         RHTower.eulerPrimePowerEnergy m := by
+  rw [heatApertureEulerMixedMoment, RHTower.fisherWeightedTsumMoment]
   apply tsum_congr
   intro z
   have hN : 0 < (RHTower.eulerPrimePowerNat z : ℝ) := by
     exact_mod_cast (show 0 < RHTower.eulerPrimePowerNat z by
       dsimp [RHTower.eulerPrimePowerNat]
       exact pow_pos z.1.property.pos _)
-  rw [heatApertureEulerMixedMoment, heatAperturePrimePowerBaseWeight,
-    heatAperturePrimePowerNode, RHTower.fisherWeightedTsumMoment,
+  rw [heatAperturePrimePowerBaseWeight, heatAperturePrimePowerNode,
     RHTower.eulerPrimePowerWeight]
   have hexp : -(1 - sigma + (q : ℝ) + (k : ℝ)) =
       -(1 - sigma + (q : ℝ)) + -(k : ℝ) := by ring
+  rw [RHTower.eulerPrimePowerWeight]
   rw [hexp, Real.rpow_add hN]
   have hkpow : (RHTower.eulerPrimePowerNat z : ℝ) ^ (-(k : ℝ)) =
       (RHTower.eulerPrimePowerNat z : ℝ)⁻¹ ^ k := by
     rw [Real.rpow_neg hN.le, Real.rpow_natCast, inv_pow]
-  rw [hkpow, RHTower.eulerPrimePowerWeight]
+  rw [hkpow]
   ring
 
 /-- The zeroth logarithmic member is exactly the real heat-aperture log echo. -/
@@ -75,6 +76,7 @@ theorem tendsto_heatApertureEulerMixedMoment_dyadicScaled
   refine h.congr' ?_
   filter_upwards with k
   rw [heatApertureEulerMixedMoment_eq_eulerFisherMoment]
+  rfl
 
 /-- In particular, the raw real heat echo has exact prime-two ground normalization. -/
 theorem tendsto_heatApertureRealLogEchoValue_dyadicScaled
@@ -87,7 +89,6 @@ theorem tendsto_heatApertureRealLogEchoValue_dyadicScaled
   refine h.congr' ?_
   filter_upwards with k
   rw [heatApertureEulerMixedMoment_zero_eq_realLogEcho hbeta]
-  simp
 
 end
 

@@ -27,8 +27,9 @@ theorem thetaCuspTailSecondDensityAtomMoment_zero_eq_endpoint (m : ℕ) :
     thetaCuspTailSecondDensityAtomPhase_eq_arithmeticEndpoint_sub_sq_potential
       (n := m + 1) (by omega) (z := 0) (by simp)
   rw [thetaCuspTailSecondDensityAtomPhase_zero m] at hphase
+  simp only [pow_two, mul_zero, zero_mul, add_zero, sub_zero] at hphase
   have hre := congrArg Complex.re hphase
-  simpa using hre
+  simpa only [Complex.ofReal_re, Nat.cast_add, Nat.cast_one, Nat.cast_pow, pow_two] using hre
 
 /-- The first moment of every positive square-index density atom is four times its Gaussian
 endpoint weight. -/
@@ -39,8 +40,16 @@ theorem thetaCuspTailSecondDensityAtomMoment_one_eq_endpoint (m : ℕ) :
     thetaCuspTailSecondDensityAtomPhaseDerivative_eq_arithmeticEndpoint_sub_sq_potential
       (n := m + 1) (by omega) (z := 0) (by simp)
   rw [thetaCuspTailSecondDensityAtomPhaseDerivative_zero m] at hphase
-  have him := congrArg Complex.im hphase
-  simpa using him
+  simp only [pow_two, mul_zero, zero_mul, sub_zero] at hphase
+  have hcancel :
+      (thetaCuspTailSecondDensityAtomMoment (m + 1) 1 : ℂ) =
+        (4 : ℂ) * (Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2) : ℂ) := by
+    apply mul_left_cancel₀ Complex.I_ne_zero
+    calc
+      I * (thetaCuspTailSecondDensityAtomMoment (m + 1) 1 : ℂ) = _ := hphase
+      _ = I * ((4 : ℂ) *
+          (Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2) : ℂ)) := by ring
+  exact_mod_cast hcancel
 
 /-- Every product-fibre current at the reflection fixed point is an explicit finite product of
 the two arithmetic endpoint weights. -/

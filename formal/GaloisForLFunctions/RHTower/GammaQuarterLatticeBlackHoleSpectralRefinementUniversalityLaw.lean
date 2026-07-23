@@ -48,9 +48,9 @@ theorem gammaBoseMoment_latticeRefinement
     intro k hk
     have harg : 0 < (s + (k : ℝ)) / (n : ℝ) := by positivity
     have hvalue := HTGeometry.iteratedDeriv_digamma_eq_gammaBoseMoment harg m
-  convert hvalue using 1
-  all_goals push_cast
-  all_goals ring
+    convert hvalue using 1
+    all_goals push_cast
+    all_goals ring
   have hright :
       (n : ℂ) ^ (m + 2) * iteratedDeriv (m + 1) Complex.digamma (s : ℂ) =
         C * ((n : ℂ) ^ (m + 2) *

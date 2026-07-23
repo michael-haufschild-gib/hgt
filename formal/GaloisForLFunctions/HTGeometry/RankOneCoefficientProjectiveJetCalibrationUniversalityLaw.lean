@@ -68,7 +68,10 @@ theorem rankOneCoefficientPairedBoundaryCurrent_projectiveJetCalibration
       c n k hck source boundary hfactor
   refine ⟨lambda, ⟨hlambda.1, hlambda.2.1, hlambda.2.2, ?_⟩, ?_⟩
   · intro j
-    rw [hlambda.2.1, rankOneCoefficientIncomingCovector_single]
+    change source (Pi.single j 1) =
+      lambda * ((n + 1).choose (j : ℕ) * c (n + 1 - (j : ℕ)))
+    rw [congrFun hlambda.2.1 (Pi.single j 1),
+      rankOneCoefficientIncomingCovector_single]
   · intro mu hmu
     exact hunique mu ⟨hmu.1, hmu.2.1, hmu.2.2.1⟩
 

@@ -56,8 +56,8 @@ theorem primeArchAdjoinedStrictHankelMixedClock_posDef_of_riemannHypothesis
     have hbetaZero : beta = 0 := by linarith
     have hgammaZero : gamma = 0 := by linarith
     have hdeltaPos : 0 < delta := by linarith
-    simp [halphaZero, hbetaZero, hgammaZero]
-    exact (hq n).smul hdeltaPos
+    simpa [momentHankelMatrix_primeArchBlackHoleReciprocalMixedClock,
+      halphaZero, hbetaZero, hgammaZero] using (hq n).smul hdeltaPos
 
 /-- **Universal strict-Hankel-ray adjoining law.**  For every moment ray already strict at all
 finite depths, RH is equivalent to strict positivity of every nonzero nonnegative mixture after
@@ -81,7 +81,7 @@ theorem riemannHypothesis_iff_primeArch_adjoin_any_strictHankelRay
     intro scaleLog alpha beta gamma halpha hbeta hgamma hnonzero n
     have h := hcone scaleLog alpha beta gamma 0
       halpha hbeta hgamma (by norm_num) (by simpa) n
-    simpa [primeArchAdjoinedStrictHankelMixedClock] using h
+    simpa [momentHankelMatrix_primeArchAdjoinedStrictHankelMixedClock] using h
 
 /-- Geometric Källén--Lehmann moments supply a concrete self-similar ray satisfying the universal
 strictness premise. -/

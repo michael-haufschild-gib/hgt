@@ -25,7 +25,7 @@ theorem tendsto_gammaFactorialScaledPolygamma_even_finiteTail_eq_neg_covariantRe
       ((gammaFactorialScaledPolygamma (2 * r + 2) n x -
           (-(((2 * r + 2).factorial : ℂ) / x ^ (2 * r + 3)))) /
         reciprocalGammaFactorialScale n ^ (2 * r + 3)))) atTop
-      (𝒩 (-(‖gammaPoleCovariantTopResidueValue 0 (2 * r + 1)
+      (𝓝 (-(‖gammaPoleCovariantTopResidueValue 0 (2 * r + 1)
           (Fin.last (2 * r + 1))‖ : ℂ))) := by
   have h := tendsto_gammaFactorialScaledPolygamma_even_finiteTail r hx
   convert h using 1

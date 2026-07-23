@@ -86,11 +86,11 @@ theorem soninCoupledRelativeDeterminant_sectorConfinedPhaseUniversalCertificate
     apply tendsto_div_pow_of_le_two_add_two
       (hone.trans hr)
       (fun n => bernsteinCoefficientPurity_nonneg _ n)
-  · intro n
-    rw [← soninCoupledEndpointBernsteinMismatch_eq_relativeDeterminantPurity a n]
-    exact
-      soninCoupledEndpointBernsteinMismatch_le_two_add_two_primeArchEndpointPurity_quantum a n
-  · exact tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt hr
+    · intro n
+      rw [← soninCoupledEndpointBernsteinMismatch_eq_relativeDeterminantPurity a n]
+      exact
+        soninCoupledEndpointBernsteinMismatch_le_two_add_two_primeArchEndpointPurity_quantum a n
+    · exact tendsto_primeArchEndpointBernsteinPurity_div_pow_of_sectorBase_sq_lt hr
   · intro hRH
     obtain ⟨r, hr, hrbase, hnot⟩ :=
       exists_strict_sectorConfined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis

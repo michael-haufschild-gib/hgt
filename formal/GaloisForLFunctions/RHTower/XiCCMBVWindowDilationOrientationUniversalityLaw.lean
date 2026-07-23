@@ -11,7 +11,7 @@ norm orientation is strictly positive at every right Xi divisor copy, and its so
 exact square-index decimation law before continuation.
 -/
 
-open Complex Filter Function Set WithTop
+open Complex Filter Function Set Topology WithTop
 
 namespace RHTower
 
