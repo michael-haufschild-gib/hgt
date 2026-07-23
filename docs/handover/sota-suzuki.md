@@ -6491,7 +6491,192 @@ Formal lint passes with large-file warnings only. Six capstone axiom surfaces us
 `Classical.choice`, and `Quot.sound`; forbidden declaration scan is clean. No stale Lean/lake
 process remains.
 
-## S83. Parity-protected Schur floor kills growing even Gamma/Jacobi capacity (2026-07-22)
+## S86. Source principal subtraction preserves full mixed block cofinally (2026-07-22)
+
+S84 left exact decision problem, not estimate problem. Coupled successor--Bianchi head Gram and
+pointed tail Gram each diverge, so ordinary Hilbert limit fails. Question was whether canonical
+source principal subtraction loses forced cross term or retains it. Define, for every order `q`,
+
+```text
+rho_q=sum_(n>=2) Lambda(n)/n
+  *((log(n+1))^q-(log n)^q).                           (S86.1)
+```
+
+Lean proves source majorant
+
+```text
+|term_q(n)|
+ <=4*q*|log(n+1)|^q*(n+1)^(-2),                       (S86.2)
+```
+
+hence `(S86.1)` is absolutely summable at every order. This is enough to form canonical relative
+current but is not novelty by itself.
+
+Let `W_M`, `B_M`, `S_M`, and `X_M` be finite coupled weld, actual pointed Bianchi tail, successor
+Gram, and forced symmetrized cross block. Exact source algebra gives universal finite law
+
+```text
+R_M:=W_M-B_M=S_M+X_M,                                  (S86.3)
+(R_M)_(i,j)=sum_(n=2)^(M+1) Lambda(n)/n
+  *((log(n+1))^(i+j+2)-(log n)^(i+j+2)).               (S86.4)
+```
+
+Therefore, for every fixed jet size, whole matrix converges—not merely individual selected
+entries—to
+
+```text
+R_(i,j)=rho_(i+j+2).                                   (S86.5)
+```
+
+This is universal all-order Hankel current:
+
+```text
+R(r+1,s)=R(r,s+1).                                     (S86.6)
+```
+
+More strongly, cancellation happens before limit at every aperture and admissible depth:
+
+```text
+X_M(i+1,j)-X_M(i,j+1)
+ =-(S_M(i+1,j)-S_M(i,j+1)).                            (S86.7)
+```
+
+Thus hostile possibility “principal subtraction discards mixed block” is false. Raw diagonal
+Grams may diverge while their source-fixed relative current is canonical, inclusion-compatible in
+aperture, convergent, and exactly Hankel. This closes matrix-entry/cofinal-renormalization part of
+`SR-40`.
+
+Sharper frontier is object-level and recorded as `SR-41`. S83 residual is prime kernel after
+Jacobi-mode contraction; `(S86.5)` is jet kernel after prime contraction. Adding them is ill-typed
+and separate direct sum recreates missing-connector problem. Required new object is one
+source-fixed bivariate prime--jet completion whose two marginals are these proved kernels and whose
+cyclic reader yields completed Euler multiplication/trace before Xi character or target moment is
+read. Generic finite matrix completion or generic Krein decomposition does not count.
+
+This is not RH and not whole-lane no-go. It is source advance: one previously open cofinal
+obstruction is resolved exactly and replaced by narrower typed connector. Corpus collision search
+across `HTGeometry`, `RHTower`, `HilbertMetric`, proven/formalized/failed cards, and support log
+found generic summability and moment-Hankel closure but no von Mangoldt successor relative current
+or preservation laws `(S86.3)--(S86.7)`. External priority remains provisional.
+
+Artifacts:
+
+- `formal/GaloisForLFunctions/RHTower/VonMangoldtSuccessorPrincipalRelativeHankel.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/von-mangoldt-successor-principal-relative-hankel-current.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-source-realization-knowledge-ledger.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-terminal-frontier-ledger.md`.
+
+Direct `lake env lean` check passes. Final targeted build, formal lint, and axiom/forbidden scan are
+pending together with S83--S84 audit.
+
+## S83. Actual odd Gamma--Jacobi capacity exhausts growing odd-sector floor coherently (2026-07-22)
+
+S82 left growing Gamma boundary capacity as an escape. Its odd/parity-mixing sector now exists
+source-canonically.
+For actual odd Jacobi coefficient
+
+```text
+a_k(t)=(-1)^k c_(2k+1) phi(t) tanh(t)^(2k+1),
+```
+
+Lean proves literal integral formula and exact Mercer expansion
+
+```text
+int J_(2k+1)(s) sin(ts) dmu_Gamma(s)=a_k(t),
+O(t,u)=sum_(k>=0) a_k(t)a_k(u).                        (S83.1)
+```
+
+Deleting first `K` modes leaves exactly positive series tail, tending to zero on every source
+frequency. For each prime `p`, choose least source rank `K(p)` with
+
+```text
+R_p * tail_(K(p))(log p,log p)<=p^(-2).                (S83.2)
+```
+
+Then weighted all-prime residual is summable. Prime-dependent ranks do not break coherence:
+zero-padding in common absolute odd-Jacobi index gives one cross-prime positive kernel on every
+finite packet whose diagonal is exactly `(S83.2)`.
+
+This closes parity capacity and cutoff inclusion. Generic adaptive Mercer/Gram lemma is formal
+closure; source advance is exact Gamma coefficient law composed with least primewise schedule and
+common-coordinate kernel. It does not place kernel inside completed Green--Schur incidence.
+
+Artifacts:
+
+- `formal/GaloisForLFunctions/HTGeometry/AdaptiveMercerCapacity.lean`;
+- `formal/GaloisForLFunctions/RHTower/GammaOddJacobiCapacity.lean`;
+- `formal/GaloisForLFunctions/RHTower/GammaOddJacobiCoherentCapacity.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/gamma-odd-jacobi-capacity-saturation-law.md`.
+
+Direct Lean checks pass. Final targeted build/axiom audit is grouped with S84.
+
+## S84. All-order successor curvature and exact finite successor--Bianchi Hankel weld (2026-07-22)
+
+S83 left operator placement. Corpus had successor Dirichlet Gram and pointed Bianchi raw Gram, and
+warned their direct sum loses mixed terms. Exact obstruction and positive weld are now proved.
+
+Universal conservative--Hankel rigidity says a shift-balanced kernel with zero zeroth row is zero.
+For actual successor source put
+
+```text
+v_r(n)=sqrt(Lambda(n)/n)*((log(n+1))^r-(log n)^r),
+K(r,s)=sum_n v_r(n)v_s(n),
+C_s(n)=Lambda(n)/n*(log(n+1)-log n)^2
+       *(log(n+1)log n)^s.                             (S84.1)
+```
+
+Lean proves at every order
+
+```text
+C_s(n)>=0,
+C_s(2)>0,
+sum_n C_s(n)<infinity,
+K(s+2,s)-K(s+1,s+1)=-sum_n C_s(n)<0.                  (S84.2)
+```
+
+Thus no additive ordinary Hankel boundary can repair successor carrier. This is class-complete
+for additive Hankel corrections, stronger than prior zero-row mismatch.
+
+Positive survivor uses common source coordinate. On finite aperture and positive jet depth,
+
+```text
+d_r(n)=sqrt(c_n)(x_(n+1)^r-x_n^r),
+b_r(n)=sqrt(c_n)x_n^r,
+h_r(n)=sqrt(c_n)x_(n+1)^r,
+d_r+b_r=h_r.                                           (S84.3)
+```
+
+`b_r` is exactly actual `x=0` pointed Gamma--Bianchi raw feature. If `X` is forced symmetrized
+cross block, Lean proves simultaneously for every finite aperture and jet size
+
+```text
+Gram(d+b)=Gram(d)+Gram(b)+X,
+Gram(d+b)_(i,j)=sum_n c_n*(log(n+1))^(i+j+2),          (S84.4)
+X(2,0)-X(1,1)=-(Gram(d)(2,0)-Gram(d)(1,1))>0.          (S84.5)
+```
+
+So finite coupled object is exactly positive moment-Hankel Gram, and mixed block cancels strict
+successor curvature. Finite cross-term placement is solved rather than renamed.
+
+Not RH: raw pointed boundary has no ordinary cofinal Hilbert limit. S86 subsequently solves signed
+principal-relative matrix completion preserving forced mixed block. Remaining frontier `SR-41` is
+joint prime--jet source realization with coherent odd Gamma--Jacobi marginal and completed Euler
+trace. Direct-sum or diagonal-only limits are formally excluded.
+
+Artifacts:
+
+- `formal/GaloisForLFunctions/HTGeometry/ConservativeHankelRigidity.lean`;
+- `formal/GaloisForLFunctions/RHTower/VonMangoldtAdditiveLogJetHankelCurvature.lean`;
+- `formal/GaloisForLFunctions/RHTower/VonMangoldtSuccessorBianchiHankelWeld.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/von-mangoldt-successor-bianchi-hankel-curvature-weld.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-source-realization-knowledge-ledger.md`.
+
+Three-tree/pipeline audit found no prior all-order source curvature law or successor--Bianchi
+endpoint weld. Generic algebra is not novelty; source composition is `ADVANCE`, with external
+priority provisional. Direct Lean checks pass. Final targeted build, lint, and axiom audit remain
+pending.
+
+## S85. Parity-protected Schur floor kills growing even Gamma/Jacobi capacity (2026-07-22)
 
 S82 proved that fixed scalar Gamma capacity cannot pay cofinally divergent resolved Ward cost, but
 left growing Gamma/polar boundary capacity as one escape. Corpus audit found two pieces already
@@ -6511,33 +6696,33 @@ projection, optimality, or rank bound is assumed. Lean proves exact universal la
 
 ```text
 ||sum_i z_i ((e_i+o_i)-b_i)||^2
- =||sum_i z_i (e_i-b_i)||^2+||sum_i z_i o_i||^2.       (S83.1)
+ =||sum_i z_i (e_i-b_i)||^2+||sum_i z_i o_i||^2.       (S85.1)
 ```
 
 Hence every even correction has same capacity-independent odd floor:
 
 ```text
 ||sum_i z_i o_i||^2
- <=||sum_i z_i ((e_i+o_i)-b_i)||^2.                    (S83.2)
+ <=||sum_i z_i ((e_i+o_i)-b_i)||^2.                    (S85.2)
 ```
 
 Proof is forced by parity. Self-adjointness gives
 `<e_i-b_i,o_j>=<J(e_i-b_i),o_j>=<e_i-b_i,J o_j>=-<e_i-b_i,o_j>`, so even residual and odd packet
-are orthogonal; Pythagoras gives `(S83.1)`.
+are orthogonal; Pythagoras gives `(S85.1)`.
 
 For actual normalized archimedean Gamma measure, Lean proves literal sine Gram identity
 
 ```text
 O(t,u):=int sin(ts)sin(us)dmu_Gamma(s)
        =(phi(t-u)-phi(t+u))/2,
-phi(t)=(cosh t)^(-1/2).                                (S83.3)
+phi(t)=(cosh t)^(-1/2).                                (S85.3)
 ```
 
 For `t,u>0`, this is strictly positive. On prime-log diagonal,
 
 ```text
 O(log p,log p)=(1-phi(2 log p))/2
- >=c_Gamma:=(1-sqrt(2)/2)/2>0.                        (S83.4)
+ >=c_Gamma:=(1-sqrt(2)/2)/2>0.                        (S85.4)
 ```
 
 Let `R_p` be actual one-prime Gamma conductor Schur cost from S82. Since `R_p` is nonsummable,
@@ -6553,25 +6738,25 @@ satisfies
 E_p>=c_Gamma R_p,
 not Summable_p E_p,
 for every M exists finite prime packet F with
-  M<sum_(p in F)E_p.                                   (S83.5)
+  M<sum_(p in F)E_p.                                   (S85.5)
 ```
 
 This closes growing reflection-even Gamma/Jacobi boundary capacity as source class, regardless of
 dimension. It materially narrows S82 before any zeta zero, Xi character, or desired completed
 moment is read.
 
-This is not full Suzuki no-go and not RH. Two exact survivors remain:
-
-1. source-derived odd or parity-mixing boundary channel, which can touch protected floor;
-2. signed principal-relative finite part, which is not positive Hilbert-space Schur correction.
+This is not full Suzuki no-go and not RH. S83 constructs source-derived odd/parity-mixing survivor,
+S84 places pointed finite boundary with forced mixed block, and S86 constructs signed cofinal
+principal-relative matrix current. Remaining escape is joint prime--jet realization feeding
+completed Euler trace; ordinary positive even-sector correction is closed.
 
 General topic exposed is symmetry-protected residual energy in renormalized Schur complements:
 counterterms confined to one isotypic sector cannot affect opposite sector, so arithmetic
 summability of protected sector becomes decisive source test. Here actual Gamma Schur weights fail
 that test.
 
-Collision control is explicit. `(S83.3)` alone and all-even Jacobi tower were corpus-known; only
-arbitrary-capacity law `(S83.1)` composed with actual prime divergence `(S83.5)` counts as advance.
+Collision control is explicit. `(S85.3)` alone and all-even Jacobi tower were corpus-known; only
+arbitrary-capacity law `(S85.1)` composed with actual prime divergence `(S85.5)` counts as advance.
 Current primary-source audit of Connes--Consani--Moscovici's Gamma/Jacobi framework and Suzuki's
 parity-split localized Weil framework found no such composed theorem; novelty remains provisional
 pending specialist review.

@@ -174,6 +174,145 @@ theorem gammaSewnFourRatePluckerJordan_curvature_transition_iff
     have hdom := htransition.mpr hscale
     nlinarith
 
+/-! ## Unconditional actual-prime Pluecker--Jordan package -/
+
+/-- For four distinct actual primes at the canonical physical aperture, the canonical Pluecker
+sewing mass is exactly `3/2` of corrected Fisher charge for every valuation-depth profile. -/
+theorem gammaSewnFourPrimeLogCanonicalPluckerSewingMass_eq_three_halves_correctedFisher
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    gammaSewnFourRateCanonicalPluckerSewingMass
+        (gammaSewnFourPrimeLogHarmonicAperture prime)
+        (gammaSewnFourPrimeLogRate prime)
+        (gammaSewnFourPrimeCell prime depth) =
+      (3 / 2 : ℝ) * gammaSewnFourRateSchurCorrectedFisher
+        (gammaSewnFourPrimeLogHarmonicAperture prime)
+        (gammaSewnFourPrimeLogRate prime)
+        (gammaSewnFourPrimeCell prime depth) := by
+  exact
+    gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher_of_nondegenerate
+      (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+      (gammaSewnFourPrimeLogRate_injective prime)
+      (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+
+/-- Exact Pluecker--Jordan curvature decomposition for four distinct actual primes, with source
+nondegeneracy, rate injectivity, and boundary avoidance discharged by the prime embedding and the
+canonical physical aperture. -/
+theorem gammaSewnFourPrimeLogSchurBoundaryLogCurvature_eq_canonicalPluckerJordan
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    gammaSewnFourRateSchurBoundaryLogCurvature
+        (gammaSewnFourPrimeLogHarmonicAperture prime)
+        (gammaSewnFourPrimeLogRate prime)
+        (gammaSewnFourPrimeCell prime depth) =
+      -(4 / 3 : ℝ) * gammaSewnFourRateCanonicalPluckerSewingMass
+        (gammaSewnFourPrimeLogHarmonicAperture prime)
+        (gammaSewnFourPrimeLogRate prime)
+        (gammaSewnFourPrimeCell prime depth) -
+      2 * normalizedFinitePairDispersion
+        (gammaSewnFourRateCanonicalPluckerProbability
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourPrimeCell prime depth))
+        (gammaSewnFourRateSelectedHeight
+          (gammaSewnFourPrimeCell prime depth)) := by
+  exact gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPluckerJordan
+    (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+    (gammaSewnFourPrimeLogRate_injective prime)
+    (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+
+/-- **Actual-prime Pluecker--Jordan transition.**  For four distinct primes, curvature crosses
+`-8/3` times canonical sewing mass exactly when common valuation half-depth crosses the explicit
+prime-log Rees scale.  No auxiliary nondegeneracy proposition remains. -/
+theorem gammaSewnFourPrimeLogPluckerJordan_curvature_transition_iff
+    (prime : Fin 4 ↪ Nat.Primes) (e : ℕ) :
+    gammaSewnFourRateSchurBoundaryLogCurvature
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourRateCommonDepthCell prime e) <
+        -(8 / 3 : ℝ) * gammaSewnFourRateCanonicalPluckerSewingMass
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourRateCommonDepthCell prime e) ↔
+      Real.sqrt
+          (gammaSewnFourRateBoundaryComplementaryFisherMass
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime) prime /
+            gammaSewnFourRateBoundaryPrimeLogDispersion
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime) prime) <
+        (e : ℝ) + 1 / 2 := by
+  exact gammaSewnFourRatePluckerJordan_curvature_transition_iff e
+    (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+    (gammaSewnFourPrimeLogRate_injective prime)
+    (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+    prime.injective
+
+/-- Every four-prime packet eventually enters the strict Pluecker--Jordan curvature regime at a
+common valuation depth.  This packages the Archimedean depth witness with all actual-prime source
+conditions discharged. -/
+theorem exists_gammaSewnFourPrimeLogPluckerJordan_curvature_crossing
+    (prime : Fin 4 ↪ Nat.Primes) :
+    ∃ e : ℕ,
+      gammaSewnFourRateSchurBoundaryLogCurvature
+            (gammaSewnFourPrimeLogHarmonicAperture prime)
+            (gammaSewnFourPrimeLogRate prime)
+            (gammaSewnFourRateCommonDepthCell prime e) <
+          -(8 / 3 : ℝ) * gammaSewnFourRateCanonicalPluckerSewingMass
+            (gammaSewnFourPrimeLogHarmonicAperture prime)
+            (gammaSewnFourPrimeLogRate prime)
+            (gammaSewnFourRateCommonDepthCell prime e) := by
+  obtain ⟨e, he⟩ := exists_nat_gt
+    (Real.sqrt
+      (gammaSewnFourRateBoundaryComplementaryFisherMass
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime) prime /
+        gammaSewnFourRateBoundaryPrimeLogDispersion
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime) prime))
+  refine ⟨e, (gammaSewnFourPrimeLogPluckerJordan_curvature_transition_iff prime e).2 ?_⟩
+  exact he.trans (by norm_num)
+
+/-- There is one common valuation depth where the smaller literal-Euler height dispersion already
+dominates corrected Fisher charge and, consequently, Schur curvature lies strictly beyond the
+canonical Pluecker--Jordan threshold.  This joins the Euler calibration and curvature-transition
+branches with no source proposition left exposed. -/
+theorem exists_gammaSewnFourPrimeLogEulerDominatedPluckerJordan_curvature_crossing
+    (prime : Fin 4 ↪ Nat.Primes) :
+    ∃ e : ℕ,
+      gammaSewnFourRateSchurCorrectedFisher
+            (gammaSewnFourPrimeLogHarmonicAperture prime)
+            (gammaSewnFourPrimeLogRate prime)
+            (gammaSewnFourRateCommonDepthCell prime e) <
+          normalizedFinitePairDispersion
+            (gammaSewnFourRateBoundaryPairProbability
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime)
+              (gammaSewnFourRateCommonDepthCell prime e))
+            (gammaSewnFourRateSelectedEulerHeight prime e) ∧
+        gammaSewnFourRateSchurBoundaryLogCurvature
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime)
+              (gammaSewnFourRateCommonDepthCell prime e) <
+            -(8 / 3 : ℝ) * gammaSewnFourRateCanonicalPluckerSewingMass
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime)
+              (gammaSewnFourRateCommonDepthCell prime e) := by
+  obtain ⟨e, heuler⟩ :=
+    exists_gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion
+      (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+      (gammaSewnFourPrimeLogRate_injective prime)
+      (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+      prime.injective
+  refine ⟨e, heuler, ?_⟩
+  apply (gammaSewnFourPrimeLogPluckerJordan_curvature_transition_iff prime e).2
+  have heulerScale :=
+    (gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion_iff e
+      (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+      (gammaSewnFourPrimeLogRate_injective prime)
+      (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+      prime.injective).1 heuler
+  have he_nonneg : 0 ≤ (e : ℝ) := by positivity
+  nlinarith
+
 end
 
 end RHTower

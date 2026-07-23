@@ -3,7 +3,7 @@
 - **ID:** `gamma-sewn-mobius-quadratic-contact-pick-obstruction`
 - **Stage:** 1-in-progress
 - **Type:** THEOREM / `[CCM SOURCE NO-GO WITH POSITIVE SURVIVOR]`
-- **Scientific status:** `[PAPER PROOF CLOSED] [LEAN IN PROGRESS] [NOT RH]`
+- **Scientific status:** `[PAPER PROOF CLOSED] [LEAN FORMALIZED] [AUDIT PASSED] [NOT RH]`
 - **Source:** `GammaSewnMobiusValuationContraction.lean`
 
 ## Frontier question
@@ -108,10 +108,10 @@ depths, or Gamma boundary coordinates before scalar trace.
 - [x] corpus search found no existing quadratic-contact Pick obstruction
 - [x] universal two-point theorem proved on paper
 - [x] actual fixed-prime Gamma-sewn instantiation proved on paper
-- [ ] universal theorem formalized in `HTGeometry`
-- [ ] source instantiation formalized in `RHTower`
-- [ ] targeted Lean check, module build, axiom audit, and lint
-- [ ] move paper and formal certificates to stages 2 and 3
+- [x] universal theorem formalized in `HTGeometry`
+- [x] source instantiation formalized in `RHTower`
+- [x] targeted Lean check, module build, axiom audit, and lint
+- [x] paper and formal certificates recorded in stages 2 and 3
 
 ## No-repeat rule
 
@@ -119,3 +119,16 @@ Do not infer aperture-packet contractivity from
 `gammaSewnMobiusValuationContractionMultiplier_lt_one`.  The quadratic lossless-boundary contact
 forces a negative two-point Pick determinant.  Future Gamma-sewn CCM work must be non-diagonal
 before completion.
+
+## Novelty audit
+
+The universal boundary-contact obstruction is a specialization of the classical
+Julia--Caratheodory principle and is not claimed as new general complex analysis. A July 2026
+search of the current CCM/Weil-positivity literature found no fixed-prime Gamma-sewn Möbius
+aperture formulation, no exact multiplier above, and no two-aperture source-Gram obstruction.
+The source-specific instantiation is therefore a novelty candidate, not a priority claim.
+
+The parent CCM literature continues to state convergence/positivity as open. Consequently this
+card is retained in stage 1 as a live route card even though its closed theorem has paper and Lean
+certificates: the theorem kills one scalar completion and redirects the still-open infinite
+non-diagonal completion.

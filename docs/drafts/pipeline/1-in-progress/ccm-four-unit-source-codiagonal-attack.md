@@ -1149,3 +1149,591 @@ insert those two already-closed connectors into the all-radial polar--prime law.
 After that source law, the ultimate CCM/RH frontier is still independent: prove or refute the
 true restricted-Weil no-negative-birth theorem for every aperture. No source regularity argument
 can be counted as that spectral-floor theorem.
+
+## C26 scalar Gamma sewing fails complete aperture passivity `[LEAN-FORMALIZED]`
+
+`GammaSewnMobiusValuationContraction.lean` already proves that the fixed-prime Gamma-sewing
+multiplier is pointwise strictly contractive and has exact quadratic contact with its lossless
+boundary value. That fact does **not** lift to packet contractivity. The universal theorem in
+`QuadraticContactPickObstruction.lean` proves that every scalar multiplier whose normalized
+diagonal loss tends to zero at a lossless boundary has an eventually negative two-point Pick
+determinant against every fixed strict interior point.
+
+`GammaSewnMobiusPickObstruction.lean` instantiates this theorem at every prime and every fixed
+positive aperture. It also proves the exact positive-factor identity relating the normalized Pick
+determinant to the determinant of the actual fixed-prime Möbius aperture Gram loss. Consequently,
+for all sufficiently small second apertures, the actual two-aperture Gamma-sewn loss matrix has
+negative determinant.
+
+Do not re-open the inference from pointwise `c_x < 1` to complete aperture passivity: it is false.
+Any surviving CCM source completion must mix primes, valuation depths, or Gamma boundary channels
+non-diagonally before taking a scalar trace. This theorem does not prove RH or kill CCM as a whole;
+the exact surviving endpoint remains the infinite non-diagonal source-passivity/restricted-Weil
+no-negative-birth theorem.
+
+## C27 unchanged Gamma marginals forbid even infinite off-diagonal Pick repair `[LEAN-FORMALIZED]`
+
+C26 left “non-diagonal mixing” too broad. `BasiswiseBoundaryPickRigidity.lean` now proves a
+dimension-free boundary-charge law on an arbitrary real Hilbert space: if a moving operator family
+converges strongly to the identity on each Hilbert-basis vector, every basiswise normalized
+diagonal loss tends to zero, and the operator Pick Cauchy--Schwarz inequalities hold against one
+fixed interior operator, then that interior operator is the identity. No finite dimension,
+finite-rank, compactness, trace-class, separability, or uniform-in-basis convergence enters.
+
+`GammaSewnBasiswisePickMixingNoGo.lean` proves that actual Gamma-sewn prime marginals have the
+required zero common-aperture boundary charge and derives the unconditional no-existence theorem:
+there is no arbitrary-dimensional operator family which
+
+```text
+converges strongly to the identity on every prime basis vector,
+preserves ||T_x e_p||=c_p(x) for every actual Gamma multiplier,
+and is operator-Pick-positive for the common aperture node exp(-x).
+```
+
+Indeed boundary Pick rigidity forces `T_x=I`, while `c_p(x)<1` at every positive aperture. The
+theorem also supplies an operator-norm-continuous corollary, but the strongest form needs only
+basiswise strong convergence.
+
+Do not retry infinite off-diagonal mixing with unchanged scalar Gamma marginals inside one
+common-aperture Pick space. The surviving source transport must change at least one structural
+datum: create nonzero first-order marginal boundary loss, use a singular/cofinal topology that
+does not converge strongly on prime basis vectors, leave common-aperture Pick positivity, or alter
+prime marginals before scalar trace. Arithmetic valuation-depth Schur transport remains alive
+because it changes the carrier and shift variable before scalar aperture comparison.
+
+This is not RH and does not prove the four-unit Xi graph contraction. It removes one entire
+infinite-dimensional repair class and fixes the next attack at the genuinely singular/cofinal
+arithmetic-Schur-to-Xi seam.
+
+## C28 quotient determinant is an explicit source-pencil coefficient `[LEAN-FORMALIZED]`
+
+Finite CCM determinant work previously retained a selected radical/ground vector `c` inside every
+completed clock. That representation obscured whether cofinal determinant convergence required a
+separate eigenvector approximation theorem. It does not.
+
+`RadicalQuotientEvansCoefficient.lean` proves a universal split-quotient identity over every
+commutative ring. If `T=L B`, `B A(I-RB)=0`, `C=B A R`, and `m<=n`, then
+
+```text
+[X^(n-m)] charpoly(T(A-zI))
+  = det(C-zI) [X^(n-m)] charpoly(T).
+```
+
+Whenever `T A=T D+S`, the left side is exactly
+
+```text
+[X^(n-m)] charpoly(T(D-zI)+S).
+```
+
+`CCMSourcePencilRadicalEvans.lean` proves the CCM source identity
+
+```text
+T(D-|Dc><alpha|)=T D+|beta><alpha|,
+```
+
+proves metric adjointness preserves the full split radical, and proves the denominator coefficient
+is nonzero for every split Gram frame `T=B^*B`. Reflection then gives a branch-free dichotomy:
+
+```text
+source numerator   = [X^(n-m)] charpoly(T(D-zI)+|beta><eta|),
+response numerator = [X^(n-m)] charpoly(T(D-zI)-|eta><beta|).
+```
+
+Exactly one normalized numerator equals the quotient determinant. Neither numerator contains the
+radical vector or quotient inverse. The concrete connector discharges displacement, Hermitian
+clock, and reflection conditions for actual scalar-shifted CCM divided-difference matrices.
+
+This is not a finite-rank endpoint. It is a finite-section invariant for the infinite/cofinal CCM
+family. It changes the determinant frontier from
+
+```text
+approximate an unknown ground vector at divisor-tight rate
+```
+
+to
+
+```text
+prove divisor-tight locally-uniform convergence/nonvanishing of one explicit source-pencil
+coefficient ratio built only from T, D, eta, and beta.                         (C28)
+```
+
+Do not re-open simple-evenness, kernel-basis selection, or ground-vector insertion as necessary
+ingredients of the finite determinant. They are eliminated from the numerator. Also do not count
+the rectangular `AB/BA` identity itself as novel; its CCM source/response assembly is candidate
+new knowledge, with external priority still open.
+
+Exact surviving task is to derive `(C28)` directly from Euler/Gamma source structure or prove a
+category-wide obstruction. Existing quotient-determinant transfer says convergence itself remains
+RH-complete; this theorem has not proved RH or CCM death.
+
+Formal card:
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-source-pencil-radical-evans-coefficient-law.md`.
+
+## C29 singular-Loewner descent forces a quotient pole `[LEAN-FORMALIZED]`
+
+C28 exposed the exact active-even quotient determinant but did not give a source-native way to
+falsify its cofinal convergence. A first attempt claimed that the common quotient source was
+automatically cyclic and that every clock node was a regular rational-Herglotz interpolation node.
+That claim is false for arbitrary radical dimension: selected radical coordinates can vanish and a
+clock node can itself be a quotient eigenvalue.
+
+`HermitianLoewnerPoleForcing.lean` proves the correct inverse-free universal theorem. If one real
+symmetric operator `C` has two columns
+
+```text
+C v=x v-u,   C w=y w-u,   x<y,
+```
+
+then
+
+```text
+<v,w><0  ->  spec(C) intersects [x,y].                    (C29.1)
+```
+
+The proof expands both columns in the same eigenbasis. If `[x,y]` avoided the spectrum, every
+coordinate product would be nonnegative; Parseval would give `<v,w>>=0`.
+
+`CCMSingularLoewnerPoleForcing.lean` instantiates `(C29.1)` with the actual active-even CCM
+completion and arbitrary full radical quotient. For clock/source nodes,
+
+```text
+C v_i=x_i v_i-u,
+<v_i,v_j>=(b_i-b_j)/(x_i-x_j).
+```
+
+Hence every strict source descent forces a real zero of the actual quotient characteristic
+polynomial in the corresponding interval. Combining this with Xi's unconditional zero-free disk
+of radius four proves the cofinal law
+
+```text
+normalized active-even CCM quotient determinants -> Xi locally uniformly
+  -> every moving source pair in [-4,4] is eventually order-preserving.       (C29.2)
+```
+
+Dimensions, radical dimensions, scalar normalizations, and moving node pairs are unrestricted.
+No estimates, resolvent inverses, cyclicity, simple-evenness, or RH assumption enter.
+
+Do not retry the withdrawn cyclic rational-realization claim. Exact surviving source decision is
+now:
+
+```text
+prove actual von-Mangoldt--Gamma source order in every Xi-zero-free interval,
+or prove one persistent actual descent inside [-4,4].                         (C29.3)
+```
+
+The second alternative kills divisor-faithful active-even CCM determinant convergence. The first
+is a new arithmetic regularity obligation and does not by itself prove convergence. C29 is a
+significant non-estimate frontier reduction, but RH and CCM death remain unproved until `(C29.3)`
+is decided.
+
+Formal card:
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-singular-loewner-central-slab-order-law.md`.
+
+## C30 actual published source coefficient connector `[LEAN-FORMALIZED]`
+
+C29's remaining `b_n` is no longer an unnamed distributional transform. For `L=2a` and physical
+frequency `t_n=pi*n/a`, `CCMPublishedSourceSineCoefficient.lean` proves
+
+```text
+b_n
+ = (1/pi) integral_(0,L] sin(t_n h)
+       exp(h/2)/(exp(h)-exp(-h)) dh
+   +(1/pi) integral_(0,L] E_crit(h)t_n cos(t_n h) dh,      (C30.1)
+```
+
+where `E_crit` is the exact completed von-Mangoldt--polar cumulative error. The second term is
+literally unchanged after replacing `E_crit` by its normalized Chebyshev Volterra potential.
+`CCMSingularLoewnerPoleForcing.lean` now consumes `(C30.1)` directly:
+
+```text
+b_n<0, 0<t_n<=4 -> quotient charpoly zero in [0,t_n],
+quotient charpolys -> Xi locally uniformly -> eventually b_n>=0. (C30.2)
+```
+
+This closes source identification, not source sign. Sole active arithmetic problem is persistent
+negativity versus cofinal nonnegativity of `(C30.1)`. Do not repeat prime/polar leading-term
+separation: their square-root terms cancel exactly inside `E_crit`, and separate absolute bounds
+destroy the question.
+
+## C31 physical aperture character completeness `[LEAN-FORMALIZED]`
+
+The common-source endpoint energy in `(52)` has no hidden Hilbert component.  For a finite prime
+packet `P`, positive aperture `A`, and its coherent centered clipped-interval carrier, define the
+physical character amplitude
+
+```text
+c_n(P,A;m,k)
+ =sum_(p in P) w_p integral_(I_p(A;m,k)) exp(2*pi*i*n*u/A) du.
+```
+
+The zero character vanishes because the carrier is centered.  The complete nonzero character
+family is orthogonal and Lean proves the exact identity
+
+```text
+sum_(n in Z, n!=0) |c_n(P,A;m,k)|^2
+ =A * E_fusion(P,A;m,k).                                  (C31.1)
+```
+
+For a bulk/edge partition `P=B union E`, every amplitude splits exactly as
+
+```text
+c_n(P)
+ =exp(k*r_n) rectangularWindowAmplitude(k-m,r_n)
+    *sum_(p in B) w_p exp(-log(p)*r_n)
+  +c_n(E),                                                (C31.2)
+```
+
+and substituting `(C31.2)` into `(C31.1)` leaves no residual term.  Thus character truncation,
+bulk/edge allocation, or cancellation between unobserved Hilbert directions cannot prove `(52)`.
+Any proof must control the complete displayed arithmetic character family at the critical scale.
+
+This is an exact completeness law, not the missing decay estimate and not RH.  It closes the
+last geometric ambiguity in `(52)` but does not alter C30's separate published-source sign
+decision.  Do not present Parseval or Bessel bounds alone as progress across the remaining
+arithmetic wall.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMPhysicalPrimeApertureCharacterTomography.lean`.
+
+## C32 fixed-shift exponential-spectrum rigidity `[LEAN-FORMALIZED]`
+
+The exact shift-two operation suggested by the published source has now been followed through the
+finite aperture. Its physical multiplier is `w_q(h)=1-exp(-q h)`. For `q=2`, it removes the Gamma
+singularity exactly:
+
+```text
+(1-exp(-2h))*rho_infinity(h)=exp(-h/2).
+```
+
+At every physical clock mode the filtered Gamma channel is an explicit strictly positive
+rational-exponential term, and all possible negativity is exactly one completed-error derivative
+moment. This gives a sharp source threshold rather than a new estimate.
+
+The decisive tail audit is negative. Lean proves the universal rate-spectrum law: if an
+eventually nonnegative carrier `eta` is multiplied by any scalar weight eventually satisfying
+`0<c<=w<=C`, then, for every `epsilon`,
+
+```text
+w(h)eta(h)=O(exp(epsilon*h)) iff eta(h)=O(exp(epsilon*h)).
+```
+
+Since every fixed positive shift coboundary tends to one, shift-two preserves every exponential
+upper-bound rate of `|E_crit|`, including zero exponential type. It cannot improve the
+RH-equivalent critical-Mellin abscissa. This kills fixed-shift scalar regularization as a closing
+mechanism and prevents re-running Euler-anchor positivity or Gamma desingularization as though it
+crossed the infinite-aperture seam.
+
+The no-go covers every finite polynomial in a fixed shift. For physical multiplier
+`|P(exp(-q h))|`, a nonzero constant term preserves every rate. Any genuine rate improvement
+forces `P(0)=0`; if `P=X^m Q` with `Q(0) != 0`, every rate moves by exactly `q*m`. Hence the only
+exponent-changing finite filters are augmentation-ideal elements, and their boundary inverse is
+necessarily singular. For every nonzero `P`, Lean proves the complete intrinsic formula: the rate
+translation is exactly `q*rootMultiplicity(0,P)` and is independent of all other coefficients.
+
+The result does not prove RH or kill all CCM. A viable construction must be asymptotically
+singular/noninvertible at the boundary or operator-valued and orbit-sensitive before
+scalarization. Exact open endpoint remains four-unit Xi graph contraction / source-normalized
+Evans nonvanishing.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/CCMPublishedSourceEvenShiftSieve.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMEvenShiftExponentialTypeRigidity.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/ccm-even-shift-exponential-spectrum-rigidity.md`.
+
+## C33 holomorphic fixed-shift spectrum quantization `[LEAN-FORMALIZED]`
+
+The finite polynomial no-go of C32 extends to every norm-analytic germ in one fixed shift
+coordinate, valued in an arbitrary complex normed space. For `q>0`, set `z(h)=exp(-q h)` and let
+`F` be analytic at the augmentation point `z=0`. Lean proves the complete dichotomy.
+
+If `F` is locally zero, `|F(z(h))|` is eventually zero and annihilates every carrier. Otherwise
+its vanishing order is a finite natural `m`, and for every eventually nonnegative `eta` and every
+real `epsilon`,
+
+```text
+|F(exp(-q h))| eta(h)=O(exp(epsilon h))
+  iff eta(h)=O(exp((epsilon+q m)h)).                       (C33.1)
+```
+
+Thus the first nonzero Taylor coefficient supplies all aperture-exponent information; every
+higher coefficient is invisible. A holomorphic unit (`F(0)!=0`) preserves every rate and zero
+exponential type. A zero of order `m` can only discard the finite exponent slab `q m`; it cannot
+create a reversible proof of the original carrier's frontier behavior.
+
+The theorem is dimension-, rank-, compactness-, and scalarization-free: replace absolute value by
+the norm of a vector-, bounded-operator-, or Schatten-valued analytic family and `(C33.1)` is
+unchanged. For the published CCM source, Lean specializes `(C33.1)` directly to `|E_crit|`.
+Therefore no norm-convergent operator-valued power series in a single fixed spectral shift can
+solve the source-sign/Evans endpoint. This closes norm-holomorphic fixed-shift calculus, not the
+whole CCM lane.
+
+Surviving frontier is now forced outside analytic one-coordinate norm geometry: singular boundary
+germs, cofinal order growth, genuinely joint orbit geometry, or non-norm-holomorphic closed graph
+relations. Next attack must derive one of those structures from the four-unit Xi graph; another
+fixed-shift operator series is a closed route.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMAnalyticShiftSpectrumRigidity.lean`.
+
+## C34 four-unit square-root boundary regularity `[LEAN-FORMALIZED, NOT NEW]`
+
+For a normed-space boundary curve `F`, define
+
+```text
+delta_F(u)=||F(u)||^2/(1-exp(-u)),
+a_F(u)=||F(u)||/sqrt(1-exp(-u)).
+```
+
+Lean proves the exact universal law
+
+```text
+delta_F(u)->ell  ->  a_F(u)->sqrt(ell).                 (C34.1)
+```
+
+If `F(0)=0` and `F` is norm-differentiable at zero, then `delta_F(u)->0`. Therefore any curve
+carrying the exact four-unit CCM normalization has `a_F(u)->2` and cannot be norm-differentiable
+at the boundary. This is valid in arbitrary Hilbert, Hilbert--Schmidt, operator-norm, or normed
+targets, without rank or dimension assumptions.
+
+Corpus audit classifies C34 as not new: the relative-trace card already contains the square-root
+Hilbert--Schmidt scale, and C10--C11 already require singular boundary transport. Keep C34 as a
+formal no-repeat theorem, not as a claimed RH advance. It closes smooth/norm-holomorphic boundary
+curves but leaves the genuine singular/cofinal source-to-`Q_u D_Xi` transport untouched.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/HTGeometry/BoundaryTraceRamification.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMBoundaryTraceRamification.lean`;
+- `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-four-unit-boundary-square-root-ramification.md`.
+
+## C35 dimension-free holomorphic-orbit spectrum law `[LEAN-FORMALIZED]`
+
+C33's one-coordinate theorem extends without any finiteness assumption. Let `A,E` be arbitrary
+complex normed spaces, `gamma:C->A` an analytic orbit germ with `gamma(0)=0`, and `F:A->E` an
+analytic filter. For `q>0`, define
+
+```text
+M(h)=||F(gamma(exp(-q h)))||.
+```
+
+If the composite germ `G=F circle gamma` is locally zero, `M` is eventually zero. Otherwise its
+order `m=ord_0(G)` is finite and Lean proves, for every eventually nonnegative `eta` and every
+real `epsilon`,
+
+```text
+M(h)eta(h)=O(exp(epsilon h))
+  iff eta(h)=O(exp((epsilon+q m)h)).                     (C35.1)
+```
+
+This is dimension-, coordinate-cardinality-, rank-, compactness-, and scalarization-free. It
+therefore includes infinite-coordinate Banach orbits and operator/Schatten ideals, provided the
+orbit and readout are norm-holomorphic. No finite-rank or finite-shift premise remains.
+
+For finitely many commensurate shifts `k_i q`, the explicit orbit `gamma(z)=(z^(k_i))_i` gives a
+joint-calculus corollary. Every cross-shift cancellation is absorbed into the exact composite order
+
+```text
+ord_0(z |-> F((z^(k_i))_i)).                             (C35.2)
+```
+
+and no other Taylor data affects aperture exponents. The same theorem is connected directly to
+`|E_crit|`.
+
+C35 is a real scope advance over C33: fixed norm-holomorphic infinite/joint operator orbits are no
+longer survivors. It is not RH and not whole-lane death. Remaining CCM transport must be
+non-norm-holomorphic/ramified, cofinal with no fixed germ, or genuinely graph-topological before
+the four-unit relative trace. The analytic core is classical composition plus order factorization;
+external novelty of the CCM classification remains open.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/CCMAnalyticOrbitSpectrumRigidity.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMCommensurateJointShiftSpectrumRigidity.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/ccm-dimension-free-holomorphic-orbit-spectrum-law.md`.
+
+## C36 ramification-density monodromy selection law `[LEAN-FORMALIZED]`
+
+C35's ramified analytic survivor is now classified at arbitrary positive exponential rate. For an
+analytic germ `F:C->E` into any complex normed space, define
+
+```text
+Delta_(q,F)(h)=||F(exp(-qh))||^2/(1-exp(-exp(-h))),  q>0.
+```
+
+If `Delta_(q,F)(h)->ell>0`, Lean proves that `m=ord_0(F)` is automatically finite and positive and
+
+```text
+2 q m=1.                                               (C36.1)
+```
+
+If the germ descends under any scalar deck generator `zeta`, then its leading charge also obeys
+
+```text
+zeta^m=1.                                              (C36.2)
+```
+
+Thus every nontorsion scalar deck symmetry is impossible. For a primitive finite `r`-sheeted branch
+with `q=1/r`, `(C36.1)` gives `2m=r`; `r` is even and the leading deck character is `zeta^m=-1`.
+Full deck descent instead requires `zeta^m=1`, so no finite-sheeted deck-invariant norm-holomorphic
+branch carries any positive finite density. Exact four-unit CCM corollaries are formalized.
+
+This is universal in target dimension and includes infinite-order scalar deck symmetry; it is not
+RH or whole-CCM death. It leaves logarithmic/nonanalytic covers, non-scalar monodromy, cofinal
+families with no fixed germ, and closed-graph source geometry. Exact endpoint remains four-unit Xi
+graph contraction / source-normalized Evans nonvanishing. Do not retry fixed norm-holomorphic
+scalar ramification, finite or nontorsion-infinite, as a CCM closing mechanism.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/CCMFiniteRamifiedBoundaryNoGo.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/ccm-ramification-density-monodromy-selection-law.md`.
+
+## C37 logarithmic-cusp period--density quantization `[LEAN-FORMALIZED]`
+
+The bounded holomorphic logarithmic-cover survivor left by C36 is now closed in arbitrary complete
+complex normed targets. Let `f:C->E` be `h`-periodic, eventually holomorphic, and bounded as
+`Im(z)->+infinity`. Its central-ray density is
+
+```text
+Lambda_f(t)=||f(it)||^2/(1-exp(-exp(-t))).
+```
+
+Periodicity defines a vector-valued cusp function `F_h` through
+`q_h(z)=exp(2π i z/h)`. Lean proves the removable value of `F_h` is analytic at zero. If
+`Lambda_f(t)->ell>0`, then C36 at rate `2π/h` gives the universal charge law
+
+```text
+h=4π ord_0(F_h).                                       (C37.1)
+```
+
+For ordinary logarithmic deck period `h=2π`, `(C37.1)` would make `1` twice a natural number.
+Therefore no bounded holomorphic `2π`-periodic logarithmic branch carries any positive finite
+density, including the exact CCM value `ell=4`. The construction also proves the vector-valued
+periodic cusp gap `f(z)=O(exp(-2π Im(z)/h))` whenever `f` tends to zero at the cusp.
+
+C37 is unconditional Lean. Its `q`-expansion ingredients are classical; external novelty of the
+combined target-universal CCM law remains open. It is not RH or whole-CCM death. The surviving
+frontier is now genuinely graph-singular: an unbounded/nonanalytic cusp, a cofinal family with no
+fixed periodic map, non-scalar monodromy, or closed-graph source geometry invisible to ambient
+norm. Exact endpoint remains four-unit Xi graph contraction / source-normalized Evans
+nonvanishing. Do not retry bounded holomorphic logarithmic descent.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/HTGeometry/PeriodicCuspBoundaryGap.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCMLogarithmicCuspBoundaryNoGo.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/ccm-logarithmic-cusp-period-density-quantization-law.md`.
+
+## C38 meromorphic-cusp Laurent charge law `[LEAN-FORMALIZED]`
+
+C37's boundedness and removable-singularity premises are no longer needed for any fixed finite-order
+cusp. Let `E` be an arbitrary complex normed space, let `q>0`, and let `F:C->E` be meromorphic at
+zero. If
+
+```text
+||F(exp(-q t))||^2/(1-exp(-exp(-t))) -> ell > 0,
+```
+
+then Lean proves that the meromorphic order is automatically a finite positive integer `n` and
+
+```text
+2 q n = 1.                                               (C38.1)
+```
+
+This includes all Laurent orders, positive or negative; no boundedness, completeness,
+finite-dimensionality, rank, or nonzero-germ assumption occurs. A locally-zero germ makes the
+density eventually zero. Otherwise Laurent normal form gives `F(z)=z^n G(z)` with `G(0)!=0`, so
+the density is `exp((1-2qn)t) U(t)` with `U(t)->||G(0)||^2>0`; finite positive convergence forces
+`(C38.1)`.
+
+For an `h`-periodic logarithmic branch whose descended cusp germ `F_h` is merely meromorphic,
+central-ray density at rate `q=2π/h` therefore forces
+
+```text
+ord_0^mero(F_h)=n>0,   h=4π n.                           (C38.2)
+```
+
+Period `h=2π` would require `1=2n`, impossible. Hence no `2π`-periodic meromorphic cusp in any
+complex normed target carries any positive finite thermal density, including the CCM value `4`.
+This closes unbounded poles and every finite Laurent principal part left open by C37.
+
+C38 is not RH and not whole-CCM death. It provides a sharp category boundary: any surviving
+one-loop four-unit cusp is necessarily nonmeromorphic/essential at the cusp, cofinal with no fixed
+germ, non-scalar-monodromic, or graph-topological. Exact frontier remains source-rigged
+capacity-to-Hardy nonexpansivity
+
+```text
+limsup_(u->0+) ||Q_u D_Xi||_(S2,ext)^2 /
+                (4(1-exp(-u))) <= 1,
+```
+
+or a theorem excluding every remaining essential/graph-singular transport. Do not retry finite
+Laurent or meromorphic cusp models.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/CCMMeromorphicCuspBoundaryNoGo.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/ccm-meromorphic-cusp-laurent-charge-law.md`.
+
+## C39 essential Hilbert cusp sharpness and boundary concentration `[LEAN-FORMALIZED]`
+
+C38's essential/nonmeromorphic survivor is not an empty technical remainder.  In the
+infinite-dimensional Hilbert space `H=L2((0,1))`, define on the logarithmic cover
+
+```text
+f(z)(t)=2 sqrt(2) exp(-t exp(-i z)).
+```
+
+Lean proves simultaneously that `f` is entire, `2π`-periodic, and has exact CCM density
+
+```text
+||f(iy)||^2/(1-exp(-exp(-y))) -> 4.                     (C39.1)
+```
+
+Writing `u=exp(-y)`, its energy is exactly
+
+```text
+E(u)=integral_(0,1] 8 exp(-2t/u) dt
+    =4u(1-exp(-2/u)).                                    (C39.2)
+```
+
+For every `0<δ<=1`, the energy outside the endpoint layer obeys
+
+```text
+E_δ(u)=integral_(δ,1] 8 exp(-2t/u) dt
+      =4u(exp(-2δ/u)-exp(-2/u)),
+
+E_δ(u)/(1-exp(-u)) -> 0.                                (C39.3)
+```
+
+Thus all four normalized units concentrate at `t=0`.  C38 then proves the descended punctured-disk
+cusp is not meromorphic: otherwise one-loop density would require an integer `n` with `2n=1`.
+The packaged existence theorem
+`exists_entire_twoPi_periodic_fourUnit_essential_Hilbert_cusp` formalizes the full conjunction.
+
+C39 is a sharp frontier correction.  Entire log-holomorphy, ordinary one-loop periodicity,
+Hilbert target structure, and exact four-unit density cannot kill the essential category.  Any
+decisive CCM theorem must now use actual von-Mangoldt--Gamma source structure, non-scalar
+monodromy, cofinal dependence, or graph topology.  The construction is not identified with the
+published CCM source and therefore proves neither RH nor CCM death.
+
+Exact active endpoint remains either:
+
+```text
+derive the source-defined transport into Q_u D_Xi and prove the four-unit bound,
+```
+
+or:
+
+```text
+use a source-specific invariant to exclude every essential/cofinal/graph-singular transport.
+```
+
+Do not again attempt to kill the whole survivor using only norm-holomorphy on the logarithmic
+cover, `2π` periodicity, and thermal density; C39 is an unconditional counterexample.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/CCMEssentialCuspBoundaryLayer.lean`;
+- `docs/drafts/pipeline/3-formalized/needs-audit/ccm-essential-cusp-boundary-layer-sharpness.md`.

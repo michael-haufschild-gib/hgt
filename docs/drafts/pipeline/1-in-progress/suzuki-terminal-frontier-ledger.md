@@ -144,10 +144,36 @@ and finite-support coefficient reconstructions do not count as progress.
     mistake generic Gram positivity for novelty. Sole source-realization gap is placement of this
     fixed boundary kernel in an actual singular/local Green--Schur incidence preserving completed
     Euler multiplication; a signed principal-relative alternative remains possible.
+22. **Finite successor--Bianchi placement is solved; additive Hankel boundary is dead.**
+    `ConservativeHankelRigidity.lean` proves any Hankel-balanced kernel with zero unit row is zero.
+    `VonMangoldtAdditiveLogJetHankelCurvature.lean` strengthens the prior zero-row observation to an
+    exact all-order source law: every adjacent successor curvature is a strictly negative
+    summable von Mangoldt edge density. Therefore no additive ordinary Hankel boundary can repair
+    successor carrier. `VonMangoldtSuccessorBianchiHankelWeld.lean` supplies positive survivor:
+    actual pointed Bianchi tail feature shares same finite prime coordinate as successor edge;
+    `difference + tail = head` exactly. Forced mixed block has exact opposite positive curvature,
+    and coupled Gram is positive shifted moment-Hankel matrix at every finite aperture and jet
+    size. Do not reopen finite cross-term placement or take orthogonal direct sum. Sole remaining
+    source-realization gap is cofinal singular/principal-relative completion retaining forced mixed
+    block while incorporating coherent odd Gamma--Jacobi residual and completed Euler trace.
+23. **Signed principal-relative cofinal Hankel current is solved.**
+    `VonMangoldtSuccessorPrincipalRelativeHankel.lean` proves every source-relative log moment is
+    absolutely summable and that pointed-tail subtraction retains exactly successor plus forced
+    mixed block. Whole fixed jet matrix converges cofinally to universal Hankel kernel
+    `R(r,s)=rho_(r+s+2)`. Mixed block cancels successor Hankel-shift defect at every finite order.
+    Do not reopen matrix-entry renormalization or claim divergent diagonal Grams prevent signed
+    limit. New obstruction is object type: `R` is jet kernel after prime contraction, while
+    coherent odd Gamma--Jacobi residual is prime kernel after Jacobi contraction. Separate direct
+    sum is no source connector. Remaining producer problem is inclusion-compatible bivariate
+    prime--jet completion realizing both marginals and completed Euler trace.
 
 ## Single live edge
 
 `SUZUKI-COPOISSON-FIBRE-ORIENTATION`
+
+Item 23 and source-ledger `SR-41` are active producer subproblem for this terminal edge, not a
+second endpoint: completed cofinal weld must feed the fibre-pointed Berezin orientation below.
+Finite Hankel positivity alone does not imply that orientation.
 
 Let `E_b` be orthogonal projection onto Burnol's source-defined co-Poisson quotient and let
 `k_w^b` be continuous completed-Mellin evaluation kernel. For bilateral aperture holonomy
@@ -358,3 +384,19 @@ Before each new action, answer in this file's log:
   remains explicit: odd/parity-mixing channels can remove the floor, and signed principal-relative
   subtraction is not a Hilbert projection. Next arrow is construction or class-complete refutation
   of one of those two source-derived survivors.
+- **2026-07-22 odd-capacity and finite-weld advance.** Actual odd Gamma--Jacobi ladder now exhausts
+  protected floor with least primewise ranks, common absolute-mode zero padding, positive packet
+  coherence, and summable weighted residual. Separately, successor Dirichlet kernel has strict
+  negative Hankel curvature at every adjacent order. This kills every additive Hankel repair.
+  Actual pointed Bianchi feature supplies exact positive survivor only when placed in same prime
+  coordinate: forced cross block cancels curvature and yields exact finite all-order Hankel Gram.
+  Falsifiers all failed in Lean. Finite placement and cross terms are closed. Terminal source
+  subproblem is now `SR-40`: cofinal singular/principal-relative completion preserving cross block,
+  odd Jacobi residual, and completed Euler trace before feeding fibre orientation.
+- **2026-07-22 principal-relative cofinal advance.** `SR-40` matrix-current question is solved:
+  `Head_M-Tail_M=Successor_M+Cross_M` exactly, entries are absolutely convergent von Mangoldt
+  successor differences, fixed jet blocks converge, and both finite and limiting kernels obey
+  all-order Hankel shift. Hostile control “principal subtraction loses cross block” is false.
+  This does not close critical half-weight. It exposes sharper `SR-41` type mismatch: proved jet
+  current and proved prime/Jacobi residual are separate marginals. Live source problem is joint
+  inclusion-compatible prime--jet completion with completed Euler trace, not another direct sum.

@@ -372,6 +372,23 @@ theorem affinePointedCollisionMatroid_eRk {Λ Frame : Type*}
     (I := {q | q ≠ loopFrame}) (E := Set.univ)
     (X := frame '' I) (Set.subset_univ _)).eRk_eq_encard
 
+/-- On a finite packet, pointed collision rank is the number of distinct labels after deleting
+the distinguished loop label. -/
+theorem affinePointedCollisionMatroid_eRk_finset
+    {Λ Frame : Type*} [DecidableEq Frame]
+    (frame : Λ → Frame) (loopFrame : Frame) (E : Finset Λ) :
+    (affinePointedCollisionMatroid frame loopFrame).eRk (↑E : Set Λ) =
+      ((E.image frame).erase loopFrame).card := by
+  rw [affinePointedCollisionMatroid_eRk]
+  calc
+    ((frame '' (↑E : Set Λ)) ∩ {q | q ≠ loopFrame}).encard =
+        (↑((E.image frame).erase loopFrame) : Set Frame).encard := by
+      congr 1
+      ext x
+      simp
+    _ = ((E.image frame).erase loopFrame).card :=
+      Set.encard_coe_eq_coe_finsetCard _
+
 /-- **Pointed differential collision-matroid law.** If injective nonloop subfamilies are
 differentially independent, the loop label gives DA entries, and repeated labels give DA
 differences, then the represented differential matroid is the pointed collision matroid. -/

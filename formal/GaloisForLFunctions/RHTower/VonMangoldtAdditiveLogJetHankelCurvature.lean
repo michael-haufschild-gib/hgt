@@ -114,6 +114,161 @@ theorem vonMangoldtAdditiveLogJetGram_add_momentHankel_ne_momentHankel
   · simp [HTGeometry.momentHankelMatrix]
   · simp [HTGeometry.momentHankelMatrix]
 
+/-! ### All-order strict anti-Hankel curvature -/
+
+/-- Infinite successor Gram kernel without a finite jet-index wrapper. -/
+def vonMangoldtAdditiveLogJetKernel (r s : ℕ) : ℝ :=
+  ∑' n, vonMangoldtAdditiveLogJetFeature r n *
+    vonMangoldtAdditiveLogJetFeature s n
+
+/-- Positive density whose total is the magnitude of adjacent Hankel curvature at order `s`. -/
+def vonMangoldtAdditiveLogJetAdjacentHankelCost (s n : ℕ) : ℝ :=
+  finiteVonMangoldtRealWeight n *
+    (Real.log (n + 1 : ℝ) - Real.log (n : ℝ)) ^ 2 *
+      (Real.log (n + 1 : ℝ) * Real.log (n : ℝ)) ^ s
+
+theorem vonMangoldtAdditiveLogJetAdjacentHankelCost_nonneg (s n : ℕ) :
+    0 ≤ vonMangoldtAdditiveLogJetAdjacentHankelCost s n := by
+  rcases n with _ | n
+  · simp [vonMangoldtAdditiveLogJetAdjacentHankelCost]
+  · apply mul_nonneg (mul_nonneg (finiteVonMangoldtRealWeight_nonneg _)
+      (sq_nonneg _))
+    apply pow_nonneg
+    apply mul_nonneg
+    · exact Real.log_nonneg (by exact_mod_cast (show 1 ≤ n + 1 + 1 by omega))
+    · exact Real.log_nonneg (by exact_mod_cast (show 1 ≤ n + 1 by omega))
+
+/-- The prime atom `2` makes every order of the curvature density strict. -/
+theorem vonMangoldtAdditiveLogJetAdjacentHankelCost_two_pos (s : ℕ) :
+    0 < vonMangoldtAdditiveLogJetAdjacentHankelCost s 2 := by
+  unfold vonMangoldtAdditiveLogJetAdjacentHankelCost
+  have hdiff : 0 < Real.log (2 + 1 : ℝ) - Real.log (2 : ℝ) := by
+    norm_num
+    exact Real.strictMonoOn_log
+      (by norm_num : (2 : ℝ) ∈ Set.Ioi 0)
+      (by norm_num : (3 : ℝ) ∈ Set.Ioi 0)
+      (by norm_num : (2 : ℝ) < 3)
+  exact mul_pos
+    (mul_pos finiteVonMangoldtRealWeight_two_pos (sq_pos_of_pos hdiff))
+    (pow_pos (mul_pos (Real.log_pos (by norm_num)) (Real.log_pos (by norm_num))) s)
+
+/-- Exact local all-order curvature law. -/
+theorem vonMangoldtAdditiveLogJetFeature_adjacentHankelCurvature_eq
+    (s n : ℕ) :
+    vonMangoldtAdditiveLogJetFeature (s + 2) n *
+          vonMangoldtAdditiveLogJetFeature s n -
+        vonMangoldtAdditiveLogJetFeature (s + 1) n ^ 2 =
+      -vonMangoldtAdditiveLogJetAdjacentHankelCost s n := by
+  unfold vonMangoldtAdditiveLogJetFeature
+  calc
+    (Real.sqrt (finiteVonMangoldtRealWeight n) *
+          vonMangoldtAdditiveLogJetDifference (s + 2) n) *
+        (Real.sqrt (finiteVonMangoldtRealWeight n) *
+          vonMangoldtAdditiveLogJetDifference s n) -
+        (Real.sqrt (finiteVonMangoldtRealWeight n) *
+          vonMangoldtAdditiveLogJetDifference (s + 1) n) ^ 2 =
+        (Real.sqrt (finiteVonMangoldtRealWeight n) *
+          Real.sqrt (finiteVonMangoldtRealWeight n)) *
+        (vonMangoldtAdditiveLogJetDifference (s + 2) n *
+          vonMangoldtAdditiveLogJetDifference s n -
+          vonMangoldtAdditiveLogJetDifference (s + 1) n ^ 2) := by ring
+    _ = finiteVonMangoldtRealWeight n *
+        (vonMangoldtAdditiveLogJetDifference (s + 2) n *
+          vonMangoldtAdditiveLogJetDifference s n -
+          vonMangoldtAdditiveLogJetDifference (s + 1) n ^ 2) := by
+      rw [Real.mul_self_sqrt (finiteVonMangoldtRealWeight_nonneg n)]
+    _ = -vonMangoldtAdditiveLogJetAdjacentHankelCost s n := by
+      unfold vonMangoldtAdditiveLogJetDifference vonMangoldtAdditiveLogJet
+      simp only [Nat.cast_add, Nat.cast_one]
+      rw [HTGeometry.monomialEdge_adjacent_hankelCurvature_eq
+        (Real.log (n + 1 : ℝ)) (Real.log (n : ℝ)) s]
+      unfold vonMangoldtAdditiveLogJetAdjacentHankelCost
+      ring
+
+/-- Every adjacent curvature density is summable, despite its strict source sign. -/
+theorem summable_vonMangoldtAdditiveLogJetAdjacentHankelCost (s : ℕ) :
+    Summable (vonMangoldtAdditiveLogJetAdjacentHankelCost s) := by
+  have hleft := summable_vonMangoldtAdditiveLogJetFeature_mul (s + 2) s
+  have hright := summable_sq_vonMangoldtAdditiveLogJetFeature (s + 1)
+  have hdiff := hleft.sub hright
+  apply hdiff.neg.congr
+  intro n
+  have hcurv := vonMangoldtAdditiveLogJetFeature_adjacentHankelCurvature_eq s n
+  linarith
+
+theorem tsum_vonMangoldtAdditiveLogJetAdjacentHankelCost_pos (s : ℕ) :
+    0 < ∑' n, vonMangoldtAdditiveLogJetAdjacentHankelCost s n := by
+  exact (summable_vonMangoldtAdditiveLogJetAdjacentHankelCost s).tsum_pos
+    (vonMangoldtAdditiveLogJetAdjacentHankelCost_nonneg s) 2
+    (vonMangoldtAdditiveLogJetAdjacentHankelCost_two_pos s)
+
+/-- **All-order exact anti-Hankel law.** Adjacent shift curvature is the negative of an explicit
+strictly positive source sum at every order. -/
+theorem vonMangoldtAdditiveLogJetKernel_adjacentHankelCurvature_eq (s : ℕ) :
+    vonMangoldtAdditiveLogJetKernel (s + 2) s -
+        vonMangoldtAdditiveLogJetKernel (s + 1) (s + 1) =
+      -(∑' n, vonMangoldtAdditiveLogJetAdjacentHankelCost s n) := by
+  rw [vonMangoldtAdditiveLogJetKernel, vonMangoldtAdditiveLogJetKernel,
+    ← (summable_vonMangoldtAdditiveLogJetFeature_mul (s + 2) s).tsum_sub
+      (summable_vonMangoldtAdditiveLogJetFeature_mul (s + 1) (s + 1))]
+  rw [← tsum_neg]
+  apply tsum_congr
+  intro n
+  calc
+    vonMangoldtAdditiveLogJetFeature (s + 2) n *
+          vonMangoldtAdditiveLogJetFeature s n -
+        vonMangoldtAdditiveLogJetFeature (s + 1) n *
+          vonMangoldtAdditiveLogJetFeature (s + 1) n =
+        vonMangoldtAdditiveLogJetFeature (s + 2) n *
+          vonMangoldtAdditiveLogJetFeature s n -
+        vonMangoldtAdditiveLogJetFeature (s + 1) n ^ 2 := by ring
+    _ = -vonMangoldtAdditiveLogJetAdjacentHankelCost s n :=
+      vonMangoldtAdditiveLogJetFeature_adjacentHankelCurvature_eq s n
+
+/-- The anti-Hankel curvature is strict at every adjacent order. -/
+theorem vonMangoldtAdditiveLogJetKernel_adjacentHankelCurvature_neg (s : ℕ) :
+    vonMangoldtAdditiveLogJetKernel (s + 2) s -
+        vonMangoldtAdditiveLogJetKernel (s + 1) (s + 1) < 0 := by
+  rw [vonMangoldtAdditiveLogJetKernel_adjacentHankelCurvature_eq]
+  exact neg_neg_of_pos (tsum_vonMangoldtAdditiveLogJetAdjacentHankelCost_pos s)
+
+/-- Positive-depth successor Gram, aligned with the admissible positive depths of the pointed
+Gamma--Bianchi reconstruction. -/
+def vonMangoldtAdditivePositiveLogJetGram (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
+  Matrix.gram ℝ (fun i : Fin N =>
+    vonMangoldtAdditiveLogJetVector ((i : ℕ) + 1))
+
+theorem vonMangoldtAdditivePositiveLogJetGram_apply
+    (N : ℕ) (i j : Fin N) :
+    vonMangoldtAdditivePositiveLogJetGram N i j =
+      vonMangoldtAdditiveLogJetKernel ((i : ℕ) + 1) ((j : ℕ) + 1) := by
+  rw [vonMangoldtAdditivePositiveLogJetGram, Matrix.gram_apply, lp.inner_eq_tsum]
+  simp [vonMangoldtAdditiveLogJetVector, vonMangoldtAdditiveLogJetKernel, mul_comm]
+
+theorem vonMangoldtAdditivePositiveLogJetGram_posSemidef (N : ℕ) :
+    (vonMangoldtAdditivePositiveLogJetGram N).PosSemidef :=
+  Matrix.posSemidef_gram ℝ _
+
+theorem vonMangoldtAdditivePositiveLogJetGram_firstHankelCurvature_neg :
+    vonMangoldtAdditivePositiveLogJetGram 3 2 0 -
+        vonMangoldtAdditivePositiveLogJetGram 3 1 1 < 0 := by
+  rw [vonMangoldtAdditivePositiveLogJetGram_apply,
+    vonMangoldtAdditivePositiveLogJetGram_apply]
+  norm_num
+  exact sub_neg.mp (vonMangoldtAdditiveLogJetKernel_adjacentHankelCurvature_neg 1)
+
+/-- An aligned ordinary Hankel boundary also cannot repair the positive-depth successor tower. -/
+theorem vonMangoldtAdditivePositiveLogJetGram_add_hankelCorrection_ne_hankelTarget
+    (B T : Matrix (Fin 3) (Fin 3) ℝ)
+    (hB : B 2 0 = B 1 1) (hT : T 2 0 = T 1 1) :
+    vonMangoldtAdditivePositiveLogJetGram 3 + B ≠ T := by
+  intro h
+  have h20 := congrFun (congrFun h (2 : Fin 3)) (0 : Fin 3)
+  have h11 := congrFun (congrFun h (1 : Fin 3)) (1 : Fin 3)
+  have hneg := vonMangoldtAdditivePositiveLogJetGram_firstHankelCurvature_neg
+  simp only [Matrix.add_apply] at h20 h11
+  linarith [hB, hT]
+
 /-! ### The actual pointed Ward/Bianchi boundary is in the excluded additive class -/
 
 /-- Positive jet depth used to extract a `3 x 3` pointed Bianchi boundary block. -/
@@ -151,23 +306,23 @@ theorem finiteVonMangoldtGammaPointedBianchiHankelBoundary_firstShift
 /-- **Direct-sum Bianchi no-go.** Adding the actual positive pointed Ward/Bianchi boundary to the
 positive successor carrier still cannot produce any moment-Hankel target.  The missing data are
 necessarily non-Hankel coupling/cross terms. -/
-theorem vonMangoldtAdditiveLogJetGram_add_pointedBianchiBoundary_ne_momentHankel
+theorem vonMangoldtAdditivePositiveLogJetGram_add_pointedBianchiBoundary_ne_momentHankel
     (M : ℕ) (x : ℝ) (target : ℕ → ℝ) :
-    vonMangoldtAdditiveLogJetGram 3 +
+    vonMangoldtAdditivePositiveLogJetGram 3 +
         finiteVonMangoldtGammaPointedBianchiHankelBoundary M x ≠
       HTGeometry.momentHankelMatrix target 3 := by
-  apply vonMangoldtAdditiveLogJetGram_add_hankelCorrection_ne_hankelTarget
+  apply vonMangoldtAdditivePositiveLogJetGram_add_hankelCorrection_ne_hankelTarget
   · exact finiteVonMangoldtGammaPointedBianchiHankelBoundary_firstShift M x
   · simp [HTGeometry.momentHankelMatrix]
 
 /-- In particular, the direct sum of the two proved positive source legs is not the normalized
 prime--archimedean Hankel section. -/
-theorem vonMangoldtAdditiveLogJetGram_add_pointedBianchiBoundary_ne_primeArchSourceMomentHankel
+theorem vonMangoldtAdditivePositiveLogJetGram_add_pointedBianchiBoundary_ne_primeArchSourceMomentHankel
     (M : ℕ) (x : ℝ) :
-    vonMangoldtAdditiveLogJetGram 3 +
+    vonMangoldtAdditivePositiveLogJetGram 3 +
         finiteVonMangoldtGammaPointedBianchiHankelBoundary M x ≠
       primeArchSourceMomentHankelMatrix 3 := by
-  apply vonMangoldtAdditiveLogJetGram_add_hankelCorrection_ne_hankelTarget
+  apply vonMangoldtAdditivePositiveLogJetGram_add_hankelCorrection_ne_hankelTarget
   · exact finiteVonMangoldtGammaPointedBianchiHankelBoundary_firstShift M x
   · rw [primeArchSourceMomentHankelMatrix_apply,
       primeArchSourceMomentHankelMatrix_apply]

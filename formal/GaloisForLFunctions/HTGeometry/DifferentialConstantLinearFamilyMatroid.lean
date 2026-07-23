@@ -80,6 +80,27 @@ theorem rootedIncidenceMatroid_indep_iff
         (fun e : I ↦ rootedIncidenceMatrix (C := C) root tail head e) := by
   exact linearFamilyMatroid_indep_iff _ I
 
+/-- Full-ground independence of a rooted incidence matroid is exactly linear independence of its
+complete incidence-row family, without a subtype-of-`Set.univ` interface. -/
+theorem rootedIncidenceMatroid_univ_indep_iff_linearIndependent
+    {C V E : Type u} [Field C] [Fintype V] [Fintype E]
+    [DecidableEq V] [DecidableEq E]
+    (root : V) (tail head : E → V) :
+    (rootedIncidenceMatroid (C := C) root tail head).Indep Set.univ ↔
+      LinearIndependent C
+        (rootedIncidenceMatrix (C := C) root tail head) := by
+  constructor
+  · intro hind
+    have hsub := (rootedIncidenceMatroid_indep_iff
+      root tail head Set.univ).1 hind
+    exact hsub.comp
+      (fun e : E => ⟨e, Set.mem_univ e⟩)
+      (fun _ _ hij => congrArg Subtype.val hij)
+  · intro hlin
+    apply (rootedIncidenceMatroid_indep_iff
+      root tail head Set.univ).2
+    exact hlin.comp (fun e : (Set.univ : Set E) => e.1) Subtype.val_injective
+
 /-- Exact incidence rank of every finite edge packet. -/
 theorem rootedIncidenceMatroid_eRk_finset
     {C V E : Type u} [Field C] [Fintype V] [Fintype E]
@@ -200,6 +221,36 @@ theorem rootedIncidenceMatroid_indep_iff_vertex_conservation
           ∀ e, weight e = 0 := by
   rw [rootedIncidenceMatroid_indep_iff_no_nonzero_circulation]
   simp_rw [isRootedIncidenceCirculation_iff_vertex_conservation]
+
+/-- **Full-ground Kirchhoff interface.** Complete rooted-incidence independence is equivalent to
+triviality of every conserved coefficient flow on the original edge type, with no
+subtype-of-`Finset.univ` indexing left in the statement. -/
+theorem rootedIncidenceMatroid_univ_indep_iff_vertex_conservation
+    {C V E : Type u} [Field C] [Fintype V] [Fintype E]
+    [DecidableEq V] [DecidableEq E]
+    (root : V) (tail head : E → V) :
+    (rootedIncidenceMatroid (C := C) root tail head).Indep Set.univ ↔
+      ∀ weight : E → C,
+        (∀ v : V,
+          (∑ e, if head e = v then weight e else 0) =
+            ∑ e, if tail e = v then weight e else 0) →
+          ∀ e, weight e = 0 := by
+  rw [rootedIncidenceMatroid_univ_indep_iff_linearIndependent,
+    Fintype.linearIndependent_iff]
+  simp only [funext_iff, Pi.zero_apply, Finset.sum_apply, Pi.smul_apply,
+    smul_eq_mul]
+  constructor
+  · intro h weight hconservation
+    apply h weight
+    exact
+      (isRootedIncidenceCirculation_iff_vertex_conservation
+        root tail head id weight).2 hconservation
+  · intro h weight hlinear
+    apply h weight
+    apply
+      (isRootedIncidenceCirculation_iff_vertex_conservation
+        root tail head id weight).1
+    exact hlinear
 
 /-- **Pairwise common-mode decomposition.** An arbitrary family generates exactly the same
 differential field as one anchor value together with all ordered pairwise differences. Thus the

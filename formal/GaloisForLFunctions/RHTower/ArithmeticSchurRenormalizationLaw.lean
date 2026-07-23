@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiMobiusSchurValuationIntertwiner
+import Mathlib.Analysis.InnerProductSpace.l2Space
 
 /-!
 # Arithmetic Schur renormalization
@@ -20,10 +21,51 @@ namespace RHTower
 
 noncomputable section
 
-open scoped BigOperators
+open scoped BigOperators ENNReal NNReal
 open Matrix
 
 /-! ## Universal Schur system -/
+
+/-- Real Hardy space carrying the completed geometric Schur coordinates. -/
+abbrev PrimeHardy := lp (fun _ : ℕ => ℝ) 2
+
+theorem memlp_two_geometric {q : ℝ} (hq : |q| < 1) :
+    Memℓp (fun m : ℕ => q ^ m) 2 := by
+  apply memℓp_gen
+  have hs : Summable (fun n : ℕ => (|q| ^ 2) ^ n) :=
+    summable_geometric_of_norm_lt_one (show ‖|q| ^ 2‖ < 1 by
+      rw [norm_pow, Real.norm_eq_abs, abs_of_nonneg (abs_nonneg q)]
+      nlinarith [abs_nonneg q])
+  refine hs.congr (fun n => ?_)
+  simp only [ENNReal.toReal_ofNat, Real.rpow_two, Real.norm_eq_abs, abs_pow]
+  rw [← pow_mul, ← pow_mul, Nat.mul_comm]
+
+/-- Completed geometric Schur coordinate vector at disk node `q`. -/
+def hardyKernel (q : ℝ) (hq : |q| < 1) : PrimeHardy :=
+  ⟨fun m => q ^ m, memlp_two_geometric hq⟩
+
+@[simp] theorem hardyKernel_apply (q : ℝ) (hq : |q| < 1) (m : ℕ) :
+    hardyKernel q hq m = q ^ m := rfl
+
+/-- Inner product of two real Hardy coherent kernels is the Szegő kernel. -/
+theorem inner_hardyKernel (q r : ℝ) (hq : |q| < 1) (hr : |r| < 1) :
+    inner ℝ (hardyKernel q hq) (hardyKernel r hr) =
+      1 / (1 - q * r) := by
+  rw [lp.inner_eq_tsum]
+  simp only [RCLike.inner_apply, conj_trivial, hardyKernel_apply]
+  have hprod : |q * r| < 1 := by
+    rw [abs_mul]
+    exact mul_lt_one_of_nonneg_of_lt_one_left (abs_nonneg q) hq hr.le
+  calc
+    (∑' x : ℕ, r ^ x * q ^ x) = ∑' x : ℕ, (q * r) ^ x := by
+      apply tsum_congr
+      intro x
+      rw [mul_pow]
+      ring
+    _ = (1 - q * r)⁻¹ := by
+      rw [tsum_geometric_of_norm_lt_one]
+      simpa [Real.norm_eq_abs] using hprod
+    _ = 1 / (1 - q * r) := by ring
 
 /-- Depth-`n` coordinate of a geometric Schur system with disk node `q` and boundary amplitude
 `a`. -/

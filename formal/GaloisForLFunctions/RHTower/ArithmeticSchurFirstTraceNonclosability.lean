@@ -28,25 +28,6 @@ namespace RHTower
 
 noncomputable section
 
-abbrev PrimeHardy := lp (fun _ : ℕ => ℝ) 2
-
-theorem memlp_two_geometric {q : ℝ} (hq : |q| < 1) :
-    Memℓp (fun m : ℕ => q ^ m) 2 := by
-  apply memℓp_gen
-  have hs : Summable (fun n : ℕ => (|q| ^ 2) ^ n) :=
-    summable_geometric_of_norm_lt_one (show ‖|q| ^ 2‖ < 1 by
-      rw [norm_pow, Real.norm_eq_abs, abs_of_nonneg (abs_nonneg q)]
-      nlinarith [abs_nonneg q])
-  refine hs.congr (fun n => ?_)
-  simp only [ENNReal.toReal_ofNat, Real.rpow_two, Real.norm_eq_abs, abs_pow]
-  rw [← pow_mul, ← pow_mul, Nat.mul_comm]
-
-def hardyKernel (q : ℝ) (hq : |q| < 1) : PrimeHardy :=
-  ⟨fun m => q ^ m, memlp_two_geometric hq⟩
-
-@[simp] theorem hardyKernel_apply (q : ℝ) (hq : |q| < 1) (m : ℕ) :
-    hardyKernel q hq m = q ^ m := rfl
-
 def hardyVacuum : PrimeHardy := lp.single 2 0 1
 
 def hardyFirstTail (q : ℝ) (hq : |q| < 1) : PrimeHardy :=
@@ -259,25 +240,8 @@ def primeHardyTail (p : Nat.Primes) : PrimeHardy :=
 theorem inner_primeHardyKernel (p r : Nat.Primes) :
     inner ℝ (primeHardyKernel p) (primeHardyKernel r) =
       1 / (1 - primeReciprocal p * primeReciprocal r) := by
-  rw [lp.inner_eq_tsum]
-  simp only [RCLike.inner_apply, conj_trivial, primeHardyKernel, hardyKernel_apply]
-  have hprod0 : 0 ≤ primeReciprocal p * primeReciprocal r :=
-    mul_nonneg (primeReciprocal_pos p).le (primeReciprocal_pos r).le
-  have hprod1 : primeReciprocal p * primeReciprocal r < 1 :=
-    mul_lt_one_of_nonneg_of_lt_one_left (primeReciprocal_pos p).le
-      (primeReciprocal_lt_one p) (primeReciprocal_lt_one r).le
-  calc
-    (∑' x : ℕ, primeReciprocal r ^ x * primeReciprocal p ^ x) =
-        ∑' x : ℕ, (primeReciprocal p * primeReciprocal r) ^ x := by
-          apply tsum_congr
-          intro x
-          rw [mul_pow]
-          ring
-    _ = (1 - primeReciprocal p * primeReciprocal r)⁻¹ := by
-          rw [tsum_geometric_of_norm_lt_one]
-          simpa [Real.norm_eq_abs, abs_of_pos (primeReciprocal_pos p),
-            abs_of_pos (primeReciprocal_pos r)] using hprod1
-    _ = 1 / (1 - primeReciprocal p * primeReciprocal r) := by ring
+  exact inner_hardyKernel _ _
+    (primeReciprocal_abs_lt_one p) (primeReciprocal_abs_lt_one r)
 
 /-- The normalized reciprocal-prime Hardy kernels are exactly the intrinsic carrier of the
 arithmetic Gamma--valuation Schur kernel; the source amplitudes are only nonzero diagonal

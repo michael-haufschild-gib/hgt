@@ -4,6 +4,7 @@ import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.Data.Real.Basic
+import Mathlib.Analysis.InnerProductSpace.GramMatrix
 
 /-!
 # Unisolvent evaluation bases
@@ -92,6 +93,102 @@ theorem exists_injective_nodes_delta_moments (φ : κ → X → ℝ)
   intro q r
   have hsum := congrFun (b.sum_equivFun (Pi.single q 1)) r
   simpa [coefficient, b, evaluationRow, Pi.smul_apply, Pi.single_apply, eq_comm] using hsum
+
+/-- **Exact reconstruction from an unisolvent packet.** Independent real features admit pairwise
+distinct nodes and dual weights that both isolate individual features and recover every coefficient
+vector from its finite packet of literal evaluations. -/
+theorem exists_injective_nodes_dual_reconstruction (φ : κ → X → ℝ)
+    (hφ : LinearIndependent ℝ φ) :
+    ∃ (nodes : κ → X) (dual : κ → κ → ℝ), Function.Injective nodes ∧
+      (∀ q r, ∑ i, dual q i * φ r (nodes i) = if q = r then 1 else 0) ∧
+      ∀ (a : κ → ℝ) q,
+        ∑ i, dual q i * (∑ r, a r * φ r (nodes i)) = a q := by
+  obtain ⟨nodes, dual, hinj, hdelta⟩ :=
+    exists_injective_nodes_delta_moments φ hφ
+  refine ⟨nodes, dual, hinj, hdelta, ?_⟩
+  intro a q
+  calc
+    ∑ i, dual q i * (∑ r, a r * φ r (nodes i)) =
+        ∑ i, ∑ r, dual q i * (a r * φ r (nodes i)) := by
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [Finset.mul_sum]
+    _ = ∑ r, ∑ i, dual q i * (a r * φ r (nodes i)) :=
+      Finset.sum_comm
+    _ = ∑ r, a r * (∑ i, dual q i * φ r (nodes i)) := by
+      apply Finset.sum_congr rfl
+      intro r _
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro i _
+      ac_rfl
+    _ = ∑ r, a r * (if q = r then 1 else 0) := by
+      apply Finset.sum_congr rfl
+      intro r _
+      rw [hdelta q r]
+    _ = a q := by simp
+
+omit [DecidableEq κ] in
+/-- Exact coefficient recovery on any finite evaluation packet forces the underlying feature
+family to be linearly independent.  No injectivity, Gram, or determinant hypothesis is needed for
+this converse. -/
+theorem linearIndependent_of_dual_reconstruction
+    (φ : κ → X → ℝ) (nodes : κ → X) (dual : κ → κ → ℝ)
+    (hrecovery : ∀ (a : κ → ℝ) q,
+      ∑ i, dual q i * (∑ r, a r * φ r (nodes i)) = a q) :
+    LinearIndependent ℝ φ := by
+  classical
+  rw [Fintype.linearIndependent_iff]
+  intro a ha q
+  have hzero : ∀ i, ∑ r, a r * φ r (nodes i) = 0 := by
+    intro i
+    have hi := congrFun ha (nodes i)
+    simpa [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using hi
+  calc
+    a q = ∑ i, dual q i * (∑ r, a r * φ r (nodes i)) :=
+      (hrecovery a q).symm
+    _ = 0 := by simp [hzero]
+
+/-- Evaluation column of one real feature on a square sampling packet. -/
+def realEvaluationColumn (φ : κ → X → ℝ) (nodes : κ → X) (j : κ) :
+    EuclideanSpace ℝ κ :=
+  WithLp.toLp 2 fun row => φ j (nodes row)
+
+/-- Real Hilbert Gram of a finite feature family on a square sampling packet. -/
+def realEvaluationGram (φ : κ → X → ℝ) (nodes : κ → X) :
+    Matrix κ κ ℝ :=
+  Matrix.gram ℝ (realEvaluationColumn φ nodes)
+
+/-- **Finite real Hilbert reconstruction.** Independent real features admit one pairwise-distinct
+sampling packet with exact dual recovery, a positive-definite evaluation Gram, and positive
+Hilbert volume. -/
+theorem exists_injective_realEvaluationHilbertReconstruction
+    (φ : κ → X → ℝ) (hφ : LinearIndependent ℝ φ) :
+    ∃ (nodes : κ → X) (dual : κ → κ → ℝ),
+      Function.Injective nodes ∧
+      (∀ q r, ∑ i, dual q i * φ r (nodes i) = if q = r then 1 else 0) ∧
+      (∀ (a : κ → ℝ) q,
+        ∑ i, dual q i * (∑ r, a r * φ r (nodes i)) = a q) ∧
+      (realEvaluationGram φ nodes).PosDef ∧
+      0 < (realEvaluationGram φ nodes).det := by
+  classical
+  obtain ⟨nodes, dual, hinj, hdelta, hrecovery⟩ :=
+    exists_injective_nodes_dual_reconstruction φ hφ
+  have hcols : LinearIndependent ℝ (realEvaluationColumn φ nodes) := by
+    rw [Fintype.linearIndependent_iff]
+    intro c hc q
+    have hrow : ∀ i, ∑ r, c r * φ r (nodes i) = 0 := by
+      intro i
+      have hi := congrArg (fun v : EuclideanSpace ℝ κ => v i) hc
+      simpa [realEvaluationColumn, Finset.sum_apply,
+        Pi.smul_apply, smul_eq_mul] using hi
+    calc
+      c q = ∑ i, dual q i * (∑ r, c r * φ r (nodes i)) :=
+        (hrecovery c q).symm
+      _ = 0 := by simp [hrow]
+  have hgram : (realEvaluationGram φ nodes).PosDef :=
+    Matrix.posDef_gram_of_linearIndependent hcols
+  exact ⟨nodes, dual, hinj, hdelta, hrecovery, hgram, hgram.det_pos⟩
 
 /-- Linear independence of evaluation rows forces the literal evaluation determinant
 to be nonzero. -/

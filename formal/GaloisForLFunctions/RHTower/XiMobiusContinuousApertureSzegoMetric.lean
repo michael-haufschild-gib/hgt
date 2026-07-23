@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiMobiusSchurValuationIntertwiner
 import GaloisForLFunctions.RHTower.ArcsineZetaTransform
+import GaloisForLFunctions.RHTower.ArithmeticSchurRenormalizationLaw
 
 /-!
 # The continuous Möbius--Szegő true-aperture metric
@@ -23,7 +24,7 @@ namespace RHTower
 
 noncomputable section
 
-open scoped BigOperators
+open scoped BigOperators InnerProduct
 open Filter Matrix
 
 /-- The real disk node `p⁻ᵃ` for a real observation aperture. -/
@@ -179,6 +180,71 @@ theorem xiMobiusPrimeContinuousApertureSzegoMetric_self
     show xiMobiusContinuousApertureDiskNode a p = r by rfl,
     show 1 - r * r = (1 - r) * (1 + r) by ring]
   field_simp [hplus, hminus]
+
+/-- The closed diagonal formula holds on both nonzero real aperture chambers. -/
+theorem xiMobiusPrimeContinuousApertureSzegoMetric_self_eq_of_ne_zero
+    {a : ℝ} (ha : a ≠ 0) (p : Nat.Primes) :
+    xiMobiusPrimeContinuousApertureSzegoMetric a a p =
+      (xiTransversePrimeApertureDiskNode 1 p /
+          (1 + xiTransversePrimeApertureDiskNode 1 p)) ^ 2 *
+        ((1 - xiMobiusContinuousApertureDiskNode a p) /
+          (1 + xiMobiusContinuousApertureDiskNode a p)) := by
+  let q := xiTransversePrimeApertureDiskNode 1 p
+  let r := xiMobiusContinuousApertureDiskNode a p
+  have hqpos : 0 < q := xiTransversePrimeApertureDiskNode_pos 1 p
+  have hrpos : 0 < r := xiMobiusContinuousApertureDiskNode_pos a p
+  have hrne : r ≠ 1 := by
+    intro hr
+    apply ha
+    apply xiMobiusContinuousApertureDiskNode_injective p
+    simpa [r, xiMobiusContinuousApertureDiskNode] using hr
+  have hminus : 1 - r ≠ 0 := sub_ne_zero.mpr (Ne.symm hrne)
+  have hplus : 1 + r ≠ 0 := by positivity
+  have hqplus : 1 + q ≠ 0 := by positivity
+  simp only [xiMobiusPrimeContinuousApertureSzegoMetric]
+  change (q / (1 + q)) ^ 2 * (1 - r) * (1 - r) / (1 - r * r) =
+    (q / (1 + q)) ^ 2 * ((1 - r) / (1 + r))
+  rw [show 1 - r * r = (1 - r) * (1 + r) by ring]
+  field_simp [hminus, hplus, hqplus]
+
+/-- **Scalar chamber classification.** The completed local Szegő self-metric is strictly positive
+exactly on the positive real aperture chamber. It vanishes at the boundary and is negative on the
+opposite chamber. -/
+theorem xiMobiusPrimeContinuousApertureSzegoMetric_self_pos_iff
+    (a : ℝ) (p : Nat.Primes) :
+    0 < xiMobiusPrimeContinuousApertureSzegoMetric a a p ↔ 0 < a := by
+  constructor
+  · intro hmetric
+    by_contra hapos
+    have hale : a ≤ 0 := le_of_not_gt hapos
+    by_cases ha0 : a = 0
+    · subst a
+      simp [xiMobiusPrimeContinuousApertureSzegoMetric,
+        xiMobiusContinuousApertureDiskNode] at hmetric
+    · have haneg : a < 0 := lt_of_le_of_ne hale ha0
+      let q := xiTransversePrimeApertureDiskNode 1 p
+      let r := xiMobiusContinuousApertureDiskNode a p
+      have hqpos : 0 < q := xiTransversePrimeApertureDiskNode_pos 1 p
+      have hrgt : 1 < r := by
+        dsimp [r, xiMobiusContinuousApertureDiskNode]
+        rw [← Real.exp_zero]
+        apply Real.exp_lt_exp.mpr
+        have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.one_lt
+        have hlog : 0 < Real.log (p : ℝ) := Real.log_pos hp
+        nlinarith
+      rw [xiMobiusPrimeContinuousApertureSzegoMetric_self_eq_of_ne_zero ha0 p] at hmetric
+      have hratio : (1 - r) / (1 + r) < 0 :=
+        div_neg_of_neg_of_pos (by linarith) (by linarith)
+      have hfactor : 0 < (q / (1 + q)) ^ 2 := by positivity
+      change 0 < (q / (1 + q)) ^ 2 * ((1 - r) / (1 + r)) at hmetric
+      exact (not_lt_of_ge
+        (mul_nonpos_of_nonneg_of_nonpos hfactor.le hratio.le)) hmetric
+  · intro ha
+    rw [xiMobiusPrimeContinuousApertureSzegoMetric_self ha p]
+    have hq := xiTransversePrimeApertureDiskNode_pos 1 p
+    have hr0 := xiMobiusContinuousApertureDiskNode_pos a p
+    have hr1 := xiMobiusContinuousApertureDiskNode_lt_one ha p
+    positivity
 
 theorem xiMobiusPrimeContinuousApertureSzegoMetric_self_nonneg
     {a : ℝ} (ha : 0 < a) (p : Nat.Primes) :
@@ -336,32 +402,73 @@ theorem xiMobiusPrimeContinuousApertureSamplingMatrix_factorization
   simp [Matrix.vandermonde]
   ring
 
+/-- **Exact finite nondegeneracy classification.** A real-aperture packet gives an invertible
+finite source sampler exactly when its apertures are distinct and avoid the boundary value zero.
+No positivity chamber is needed at finite depth. -/
+theorem xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero_iff_injective_ne_zero
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    (xiMobiusPrimeContinuousApertureSamplingMatrix aperture p).det ≠ 0 ↔
+      Function.Injective aperture ∧ ∀ j, aperture j ≠ 0 := by
+  rw [xiMobiusPrimeContinuousApertureSamplingMatrix_factorization,
+    Matrix.det_mul, Matrix.det_transpose]
+  constructor
+  · intro hdet
+    obtain ⟨hvandermonde, hdiagonal⟩ := mul_ne_zero_iff.mp hdet
+    have hnodes : Function.Injective
+        (fun j => xiMobiusContinuousApertureDiskNode (aperture j) p) :=
+      Matrix.det_vandermonde_ne_zero_iff.mp hvandermonde
+    rw [Matrix.det_diagonal, Finset.prod_ne_zero_iff] at hdiagonal
+    constructor
+    · intro i j hij
+      apply hnodes
+      exact congrArg (fun a => xiMobiusContinuousApertureDiskNode a p) hij
+    · intro j hj
+      have hentry := hdiagonal j (Finset.mem_univ j)
+      simp [hj, xiMobiusContinuousApertureDiskNode] at hentry
+  · rintro ⟨hinjective, hne⟩
+    apply mul_ne_zero
+    · apply Matrix.det_vandermonde_ne_zero_iff.mpr
+      exact (xiMobiusContinuousApertureDiskNode_injective p).comp hinjective
+    · rw [Matrix.det_diagonal, Finset.prod_ne_zero_iff]
+      intro j _
+      have hq : xiTransversePrimeApertureDiskNode 1 p /
+          (1 + xiTransversePrimeApertureDiskNode 1 p) ≠ 0 := by
+        exact div_ne_zero (xiTransversePrimeApertureDiskNode_pos 1 p).ne'
+          (ne_of_gt (by
+            have hqpos := xiTransversePrimeApertureDiskNode_pos 1 p
+            linarith))
+      have hr : xiMobiusContinuousApertureDiskNode (aperture j) p ≠ 1 := by
+        intro hr
+        apply hne j
+        apply xiMobiusContinuousApertureDiskNode_injective p
+        simpa [xiMobiusContinuousApertureDiskNode] using hr
+      exact mul_ne_zero hq (sub_ne_zero.mpr (Ne.symm hr))
+
 /-- Every finite injective packet of positive real apertures is separated by one prime tower. -/
 theorem xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero
     {N : ℕ} {aperture : Fin N → ℝ} (haperture : Function.Injective aperture)
     (hpos : ∀ j, 0 < aperture j) (p : Nat.Primes) :
     (xiMobiusPrimeContinuousApertureSamplingMatrix aperture p).det ≠ 0 := by
-  let r : Fin N → ℝ :=
-    fun j => xiMobiusContinuousApertureDiskNode (aperture j) p
-  let d : Fin N → ℝ := fun j =>
-    (xiTransversePrimeApertureDiskNode 1 p /
-      (1 + xiTransversePrimeApertureDiskNode 1 p)) * (1 - r j)
-  have hr : Function.Injective r :=
-    (xiMobiusContinuousApertureDiskNode_injective p).comp haperture
-  have hd : ∀ j, d j ≠ 0 := by
-    intro j
-    have hq0 : 0 < xiTransversePrimeApertureDiskNode 1 p :=
-      xiTransversePrimeApertureDiskNode_pos 1 p
-    have hr1 : r j < 1 :=
-      xiMobiusContinuousApertureDiskNode_lt_one (hpos j) p
-    dsimp only [d]
-    positivity
-  rw [xiMobiusPrimeContinuousApertureSamplingMatrix_factorization,
-    Matrix.det_mul, Matrix.det_transpose]
-  apply mul_ne_zero
-  · exact Matrix.det_vandermonde_ne_zero_iff.mpr hr
-  · rw [Matrix.det_diagonal, Finset.prod_ne_zero_iff]
-    exact fun j _ => hd j
+  exact
+    (xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero_iff_injective_ne_zero
+      aperture p).2 ⟨haperture, fun j => (hpos j).ne'⟩
+
+/-- Finite congruence invariance needs only exact source nondegeneracy, not positivity of the real
+apertures. -/
+theorem xiMobiusPrimeContinuousAperture_congruence_posSemidef_iff_of_injective_ne_zero
+    {N : ℕ} {aperture : Fin N → ℝ} (haperture : Function.Injective aperture)
+    (hne : ∀ j, aperture j ≠ 0) (p : Nat.Primes)
+    (X : Matrix (Fin N) (Fin N) ℝ) :
+    ((xiMobiusPrimeContinuousApertureSamplingMatrix aperture p)ᴴ * X *
+        xiMobiusPrimeContinuousApertureSamplingMatrix aperture p).PosSemidef ↔
+      X.PosSemidef := by
+  have hunit : IsUnit (xiMobiusPrimeContinuousApertureSamplingMatrix aperture p) := by
+    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+    exact
+      (xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero_iff_injective_ne_zero
+        aperture p).2 ⟨haperture, hne⟩
+  simpa only [star_eq_conjTranspose] using
+    hunit.posSemidef_star_left_conjugate_iff (x := X)
 
 /-- **Finite-aperture congruence no-go and positive survivor.**  Since the actual source sampling
 matrix is invertible, dressing an arbitrary response Gram by the finite true-aperture coordinates
@@ -375,11 +482,161 @@ theorem xiMobiusPrimeContinuousAperture_congruence_posSemidef_iff
     ((xiMobiusPrimeContinuousApertureSamplingMatrix aperture p)ᴴ * X *
         xiMobiusPrimeContinuousApertureSamplingMatrix aperture p).PosSemidef ↔
       X.PosSemidef := by
-  have hunit : IsUnit (xiMobiusPrimeContinuousApertureSamplingMatrix aperture p) := by
-    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
-    exact xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero haperture hpos p
-  simpa only [star_eq_conjTranspose] using
-    hunit.posSemidef_star_left_conjugate_iff (x := X)
+  exact xiMobiusPrimeContinuousAperture_congruence_posSemidef_iff_of_injective_ne_zero
+    haperture (fun j => (hpos j).ne') p X
+
+/-! ## Exact finite/completed positivity classification -/
+
+/-- Hardy-space realization of one positive real aperture at one prime. -/
+def xiMobiusPrimeContinuousApertureHardyFeature
+    (a : ℝ) (p : Nat.Primes) (ha : 0 < a) : PrimeHardy :=
+  let q := xiTransversePrimeApertureDiskNode 1 p
+  let r := xiMobiusContinuousApertureDiskNode a p
+  (q / (1 + q) * (1 - r)) • hardyKernel r (by
+    rw [abs_of_pos (xiMobiusContinuousApertureDiskNode_pos a p)]
+    exact xiMobiusContinuousApertureDiskNode_lt_one ha p)
+
+/-- Completed local Szegő Gram matrix of a finite real-aperture packet. -/
+def xiMobiusPrimeContinuousApertureSzegoGramMatrix
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    Matrix (Fin N) (Fin N) ℝ :=
+  fun i j => xiMobiusPrimeContinuousApertureSzegoMetric
+    (aperture i) (aperture j) p
+
+/-- On the positive aperture chamber, the completed matrix is literally the Gram matrix of the
+Hardy-space aperture features. -/
+theorem xiMobiusPrimeContinuousApertureSzegoGramMatrix_eq_gram
+    {N : ℕ} (aperture : Fin N → ℝ) (hpos : ∀ j, 0 < aperture j)
+    (p : Nat.Primes) :
+    xiMobiusPrimeContinuousApertureSzegoGramMatrix aperture p =
+      Matrix.gram ℝ (fun j => xiMobiusPrimeContinuousApertureHardyFeature
+        (aperture j) p (hpos j)) := by
+  ext i j
+  let q := xiTransversePrimeApertureDiskNode 1 p
+  let r := xiMobiusContinuousApertureDiskNode (aperture i) p
+  let s := xiMobiusContinuousApertureDiskNode (aperture j) p
+  let hr : |r| < 1 := by
+    simpa [r, abs_of_pos (xiMobiusContinuousApertureDiskNode_pos (aperture i) p)] using
+      xiMobiusContinuousApertureDiskNode_lt_one (hpos i) p
+  let hs : |s| < 1 := by
+    simpa [s, abs_of_pos (xiMobiusContinuousApertureDiskNode_pos (aperture j) p)] using
+      xiMobiusContinuousApertureDiskNode_lt_one (hpos j) p
+  change xiMobiusPrimeContinuousApertureSzegoMetric (aperture i) (aperture j) p =
+    inner ℝ ((q / (1 + q) * (1 - r)) • hardyKernel r hr)
+      ((q / (1 + q) * (1 - s)) • hardyKernel s hs)
+  rw [real_inner_smul_left, real_inner_smul_right, inner_hardyKernel]
+  simp only [xiMobiusPrimeContinuousApertureSzegoMetric, q, r, s]
+  ring
+
+/-- Distinct positive apertures give linearly independent completed Hardy features. -/
+theorem linearIndependent_xiMobiusPrimeContinuousApertureHardyFeature
+    {N : ℕ} (aperture : Fin N → ℝ) (hinj : Function.Injective aperture)
+    (hpos : ∀ j, 0 < aperture j) (p : Nat.Primes) :
+    LinearIndependent ℝ (fun j => xiMobiusPrimeContinuousApertureHardyFeature
+      (aperture j) p (hpos j)) := by
+  have hdet :=
+    (xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero_iff_injective_ne_zero
+      aperture p).2 ⟨hinj, fun j => (hpos j).ne'⟩
+  have hmulVec : Function.Injective
+      (xiMobiusPrimeContinuousApertureSamplingMatrix aperture p).mulVec := by
+    rw [Matrix.mulVec_injective_iff_isUnit, Matrix.isUnit_iff_isUnit_det,
+      isUnit_iff_ne_zero]
+    exact hdet
+  rw [Fintype.linearIndependent_iff]
+  intro c hc
+  have hc0 : c = 0 := hmulVec (by
+    funext e
+    have hcfn := congrArg (fun x : PrimeHardy => (x : ℕ → ℝ)) hc
+    have hsum :
+        (⇑(∑ x, c x • xiMobiusPrimeContinuousApertureHardyFeature
+            (aperture x) p (hpos x)) : ℕ → ℝ) =
+          ∑ x, (⇑(c x • xiMobiusPrimeContinuousApertureHardyFeature
+            (aperture x) p (hpos x)) : ℕ → ℝ) := by
+      simpa using (lp.coeFn_sum
+        (fun x => c x • xiMobiusPrimeContinuousApertureHardyFeature
+          (aperture x) p (hpos x)) Finset.univ)
+    change
+      (⇑(∑ x, c x • xiMobiusPrimeContinuousApertureHardyFeature
+          (aperture x) p (hpos x)) : ℕ → ℝ) =
+        (⇑(0 : PrimeHardy) : ℕ → ℝ) at hcfn
+    rw [hsum] at hcfn
+    have he := congrFun hcfn e
+    simp only [Finset.sum_apply, lp.coeFn_smul, Pi.smul_apply, smul_eq_mul,
+      lp.coeFn_zero, Pi.zero_apply] at he
+    simpa [xiMobiusPrimeContinuousApertureHardyFeature,
+      xiMobiusPrimeContinuousApertureSamplingMatrix,
+      xiMobiusPrimeSchurContinuousForwardDifference_eq_geometric,
+      Matrix.mulVec, dotProduct, mul_comm, mul_left_comm, mul_assoc] using he)
+  exact fun i => congrFun hc0 i
+
+/-- **Completed chamber classification.** The completed Szegő matrix is positive definite exactly
+for a distinct packet lying entirely in the positive aperture chamber. -/
+theorem xiMobiusPrimeContinuousApertureSzegoGramMatrix_posDef_iff_injective_pos
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    (xiMobiusPrimeContinuousApertureSzegoGramMatrix aperture p).PosDef ↔
+      Function.Injective aperture ∧ ∀ j, 0 < aperture j := by
+  constructor
+  · intro hgram
+    constructor
+    · intro i j hij
+      by_contra hne
+      have hrows : xiMobiusPrimeContinuousApertureSzegoGramMatrix aperture p i =
+          xiMobiusPrimeContinuousApertureSzegoGramMatrix aperture p j := by
+        funext k
+        simp [xiMobiusPrimeContinuousApertureSzegoGramMatrix, hij]
+      have hdetZero := Matrix.det_zero_of_row_eq hne hrows
+      exact hgram.det_pos.ne' hdetZero
+    · intro j
+      apply (xiMobiusPrimeContinuousApertureSzegoMetric_self_pos_iff
+        (aperture j) p).mp
+      simpa [xiMobiusPrimeContinuousApertureSzegoGramMatrix] using
+        hgram.diag_pos (i := j)
+  · rintro ⟨hinj, hpos⟩
+    rw [xiMobiusPrimeContinuousApertureSzegoGramMatrix_eq_gram aperture hpos p]
+    exact Matrix.posDef_gram_of_linearIndependent
+      (linearIndependent_xiMobiusPrimeContinuousApertureHardyFeature
+        aperture hinj hpos p)
+
+/-- Finite-depth source Gram matrix of a real-aperture packet. -/
+def xiMobiusPrimeContinuousApertureFiniteGramMatrix
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    Matrix (Fin N) (Fin N) ℝ :=
+  (xiMobiusPrimeContinuousApertureSamplingMatrix aperture p)ᴴ *
+    xiMobiusPrimeContinuousApertureSamplingMatrix aperture p
+
+/-- The finite source Gram is positive definite exactly for distinct nonzero apertures. -/
+theorem xiMobiusPrimeContinuousApertureFiniteGramMatrix_posDef_iff_injective_ne_zero
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    (xiMobiusPrimeContinuousApertureFiniteGramMatrix aperture p).PosDef ↔
+      Function.Injective aperture ∧ ∀ j, aperture j ≠ 0 := by
+  rw [← xiMobiusPrimeContinuousApertureSamplingMatrix_det_ne_zero_iff_injective_ne_zero
+    aperture p]
+  constructor
+  · intro hgram hzero
+    apply hgram.det_pos.ne'
+    rw [xiMobiusPrimeContinuousApertureFiniteGramMatrix, Matrix.det_mul,
+      hzero, mul_zero]
+  · intro hdet
+    rw [xiMobiusPrimeContinuousApertureFiniteGramMatrix]
+    apply Matrix.PosDef.conjTranspose_mul_self
+    rw [Matrix.mulVec_injective_iff_isUnit, Matrix.isUnit_iff_isUnit_det,
+      isUnit_iff_ne_zero]
+    exact hdet
+
+/-- **Finite/completed gap theorem.** Completion adds exactly the positive-chamber condition to
+finite source nondegeneracy; finite sampling alone cannot detect aperture orientation. -/
+theorem xiMobiusPrimeContinuousApertureSzegoGramMatrix_posDef_iff_finiteGram_posDef_and_pos
+    {N : ℕ} (aperture : Fin N → ℝ) (p : Nat.Primes) :
+    (xiMobiusPrimeContinuousApertureSzegoGramMatrix aperture p).PosDef ↔
+      (xiMobiusPrimeContinuousApertureFiniteGramMatrix aperture p).PosDef ∧
+        ∀ j, 0 < aperture j := by
+  rw [xiMobiusPrimeContinuousApertureSzegoGramMatrix_posDef_iff_injective_pos,
+    xiMobiusPrimeContinuousApertureFiniteGramMatrix_posDef_iff_injective_ne_zero]
+  constructor
+  · rintro ⟨hinj, hpos⟩
+    exact ⟨⟨hinj, fun j => (hpos j).ne'⟩, hpos⟩
+  · rintro ⟨⟨hinj, _hne⟩, hpos⟩
+    exact ⟨hinj, hpos⟩
 
 /-- The closed diagonal formula, extended to the boundary aperture `a=0`. -/
 def xiMobiusPrimeContinuousApertureDiagonal (a : ℝ) (p : Nat.Primes) : ℝ :=

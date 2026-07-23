@@ -211,6 +211,40 @@ theorem xiTransversePrimeValuationGramMatrix_posDef
     isUnit_iff_ne_zero]
   exact xiTransversePrimeValuationSamplingMatrix_det_ne_zero hshift hpos p
 
+/-- **Exact fixed-prime aperture classification.** At any chosen prime, the first `N` valuation
+increments give a strictly positive `N`-aperture Gram exactly when the integral shifts have no
+zero or collision. Thus one prime detects both literal defects, not only collision-free packets. -/
+theorem xiTransversePrimeValuationGramMatrix_posDef_iff_injective_ne_zero
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes) :
+    (xiTransversePrimeValuationGramMatrix shift p).PosDef ↔
+      Function.Injective shift ∧ ∀ j, shift j ≠ 0 := by
+  constructor
+  · intro hgram
+    have hgramDet : (xiTransversePrimeValuationGramMatrix shift p).det ≠ 0 :=
+      hgram.det_pos.ne'
+    have hsampling : (xiTransversePrimeValuationSamplingMatrix shift p).det ≠ 0 := by
+      intro hzero
+      apply hgramDet
+      rw [xiTransversePrimeValuationGramMatrix, Matrix.det_mul, hzero, mul_zero]
+    rw [xiTransversePrimeValuationSamplingMatrix_factorization,
+      Matrix.det_mul, Matrix.det_transpose] at hsampling
+    obtain ⟨hvandermonde, hdiagonal⟩ := mul_ne_zero_iff.mp hsampling
+    rw [Matrix.det_diagonal, Finset.prod_ne_zero_iff] at hdiagonal
+    constructor
+    · intro i j hij
+      have hnodes : Function.Injective
+          (fun k : Fin N =>
+            (xiTransversePrimeApertureDiskNode (shift k) p : ℂ)) :=
+        Matrix.det_vandermonde_ne_zero_iff.mp hvandermonde
+      exact hnodes (congrArg
+        (fun a : ℕ => (xiTransversePrimeApertureDiskNode a p : ℂ)) hij)
+    · intro j hzero
+      have hj := hdiagonal j (Finset.mem_univ j)
+      simp [hzero, xiTransversePrimeApertureDiskNode] at hj
+  · rintro ⟨hinjective, hnonzero⟩
+    exact xiTransversePrimeValuationGramMatrix_posDef hinjective
+      (fun j => Nat.pos_of_ne_zero (hnonzero j)) p
+
 /-- The completed one-prime valuation Gram: a diagonally weighted Szego kernel. -/
 def xiTransversePrimeValuationSzegoMetric
     (a b : ℕ) (p : Nat.Primes) : ℝ :=

@@ -1965,3 +1965,19 @@ now the exact descent of this fixed class to the Sonin three-grade principal--re
 followed by preservation of its finite part and the completed lower-floor comparison.  A new
 relative scalar with merely matching formal coefficients is insufficient, and the bounded
 projection-correction pairing is formally excluded as the full image.
+
+## Scalar Gamma sewing removed from live carrier class
+
+The exact Gamma-sewn fixed-prime multiplier has quadratic contact with its lossless aperture
+boundary. `QuadraticContactPickObstruction.lean` proves universally that vanishing normalized
+diagonal loss at such a boundary forces the two-point Pick determinant against every strict
+interior point to converge to a negative square. `GammaSewnMobiusPickObstruction.lean` proves that
+this applies at every prime and identifies the normalized determinant, by an exact strictly
+positive factor, with the determinant of the actual fixed-prime Möbius aperture Gram loss.
+
+Therefore pointwise scalar Gamma sewing is no longer a live candidate for the nonexpansive
+prime--Gamma transport required by `(12z27)`: it fails complete aperture passivity before any Xi
+divisor or cofinal limit. This does not remove channel-resolved Gamma Cauchy covariance,
+higher-subset Fock lifts, or an orbit-sensitive infinite non-diagonal transport. Those are the
+only surviving carrier class. Do not infer packet contractivity from pointwise multiplier bounds
+again.

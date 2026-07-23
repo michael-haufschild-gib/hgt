@@ -679,6 +679,66 @@ theorem xiTangentFourRateDetail_nonneg
     exact (gammaSewnFourRateBoundaryPairProbability_pos ha hrate hboundary s).le
   · exact gammaSewnXiShiftEndpointUnitTangentKernel_le_one
 
+/-! ## Unconditional transfer on four distinct actual primes -/
+
+/-- A four-prime embedding automatically supplies the aligned cross-prime witness required for
+strict father--detail transfer.  This removes the last ad hoc combinatorial proposition from the
+actual-prime interface. -/
+theorem gammaSewnFourPrimeCell_exists_aligned_crossPrime
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    ∃ s t : Fin 6,
+      ((gammaSewnFourPrimeCell prime depth)
+          (fourRatePairComplementLeft s)).1 ≠
+          ((gammaSewnFourPrimeCell prime depth)
+            (fourRatePairComplementLeft t)).1 ∨
+        ((gammaSewnFourPrimeCell prime depth)
+          (fourRatePairComplementRight s)).1 ≠
+          ((gammaSewnFourPrimeCell prime depth)
+            (fourRatePairComplementRight t)).1 := by
+  refine ⟨0, 1, Or.inl ?_⟩
+  simp only [gammaSewnFourPrimeCell, fourRatePairComplementLeft,
+    Matrix.cons_val_zero, Matrix.cons_val_one]
+  exact prime.injective.ne (Fin.ne_of_val_ne (Nat.succ_ne_self 1))
+
+/-- **Strict actual-prime father--detail transfer.**  At the canonical physical aperture, every
+four-distinct-prime packet transfers a strictly positive response-gap mass from Xi detail to the
+joined-Gamma father channel, for every valuation-depth profile.  Source nondegeneracy and the
+cross-prime witness are both discharged by existing actual-prime geometry. -/
+theorem gammaJordanXiFourPrimeLog_strict_father_detail_transfer
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    0 < gammaJordanXiFourRateGapTransfer
+        (gammaSewnFourPrimeLogHarmonicAperture prime)
+        (gammaSewnFourPrimeLogRate prime)
+        (gammaSewnFourPrimeCell prime depth) ∧
+      gammaJordanFourRateJoinedDetailEnergy
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourPrimeCell prime depth) <
+        xiTangentFourRateDetailEnergy
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourPrimeCell prime depth) ∧
+      xiTangentFourRateFatherEnergy
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourPrimeCell prime depth) <
+        gammaJordanFourRateJoinedFatherEnergy
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourPrimeCell prime depth) := by
+  have hcross := gammaSewnFourPrimeCell_exists_aligned_crossPrime prime depth
+  have ha := (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+  have hrate := gammaSewnFourPrimeLogRate_injective prime
+  have hboundary := gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime
+  constructor
+  · exact gammaJordanXiFourRateGapTransfer_pos_of_aligned_crossPrime
+      ha hrate hboundary hcross
+  constructor
+  · exact gammaJordanFourRateJoinedDetail_lt_tangentDetail_of_aligned_crossPrime
+      ha hrate hboundary hcross
+  · exact xiTangentFourRateFather_lt_joinedFather_of_aligned_crossPrime
+      ha hrate hboundary hcross
+
 /-! ## Same-prime fibre: the exact common-mode obstruction -/
 
 /-- Four arbitrary valuation depths supported at one prime. -/

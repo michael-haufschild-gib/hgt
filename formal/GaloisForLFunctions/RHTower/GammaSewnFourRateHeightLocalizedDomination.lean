@@ -425,6 +425,157 @@ theorem exists_gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion
     gammaSewnFourRateCommonDepth_eulerDispersion_eq]
   exact hdom
 
+/-! ## Exact comparison of Rees and literal-Euler height channels -/
+
+/-- **Universal Rees--Euler calibration gap.**  At common valuation depth, Rees midpoint-height
+dispersion exceeds literal-Euler dispersion by the exact factor `e(3e+2)/4` times the underlying
+prime-log dispersion.  This identity has no source nondegeneracy premise. -/
+theorem gammaSewnFourRateCommonDepth_dispersion_sub_eulerDispersion_eq
+    (a : ℝ) (rate : Fin 4 → ℝ) (prime : Fin 4 → Nat.Primes) (e : ℕ) :
+    normalizedFinitePairDispersion
+          (gammaSewnFourRateBoundaryPairProbability a rate
+            (gammaSewnFourRateCommonDepthCell prime e))
+          (gammaSewnFourRateSelectedHeight
+            (gammaSewnFourRateCommonDepthCell prime e)) -
+        normalizedFinitePairDispersion
+          (gammaSewnFourRateBoundaryPairProbability a rate
+            (gammaSewnFourRateCommonDepthCell prime e))
+          (gammaSewnFourRateSelectedEulerHeight prime e) =
+      ((e : ℝ) * (3 * (e : ℝ) + 2) / 4) *
+        gammaSewnFourRateBoundaryPrimeLogDispersion a rate prime := by
+  rw [gammaSewnFourRateCommonDepth_dispersion_eq,
+    gammaSewnFourRateCommonDepth_eulerDispersion_eq]
+  ring
+
+/-- **Sharp actual-prime Rees--Euler comparison.**  For four distinct actual primes, literal-Euler
+dispersion never exceeds Rees midpoint-height dispersion.  They agree exactly at depth zero and
+the inequality is strict exactly at positive depth.  All positivity and nondegeneracy inputs are
+discharged by the prime embedding and canonical physical aperture. -/
+theorem gammaSewnFourPrimeLogCommonDepth_eulerDispersion_comparison
+    (prime : Fin 4 ↪ Nat.Primes) (e : ℕ) :
+    normalizedFinitePairDispersion
+          (gammaSewnFourRateBoundaryPairProbability
+            (gammaSewnFourPrimeLogHarmonicAperture prime)
+            (gammaSewnFourPrimeLogRate prime)
+            (gammaSewnFourRateCommonDepthCell prime e))
+          (gammaSewnFourRateSelectedEulerHeight prime e) ≤
+        normalizedFinitePairDispersion
+          (gammaSewnFourRateBoundaryPairProbability
+            (gammaSewnFourPrimeLogHarmonicAperture prime)
+            (gammaSewnFourPrimeLogRate prime)
+            (gammaSewnFourRateCommonDepthCell prime e))
+          (gammaSewnFourRateSelectedHeight
+            (gammaSewnFourRateCommonDepthCell prime e)) ∧
+      (normalizedFinitePairDispersion
+            (gammaSewnFourRateBoundaryPairProbability
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime)
+              (gammaSewnFourRateCommonDepthCell prime e))
+            (gammaSewnFourRateSelectedEulerHeight prime e) =
+          normalizedFinitePairDispersion
+            (gammaSewnFourRateBoundaryPairProbability
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime)
+              (gammaSewnFourRateCommonDepthCell prime e))
+            (gammaSewnFourRateSelectedHeight
+              (gammaSewnFourRateCommonDepthCell prime e)) ↔ e = 0) ∧
+      (normalizedFinitePairDispersion
+            (gammaSewnFourRateBoundaryPairProbability
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime)
+              (gammaSewnFourRateCommonDepthCell prime e))
+            (gammaSewnFourRateSelectedEulerHeight prime e) <
+          normalizedFinitePairDispersion
+            (gammaSewnFourRateBoundaryPairProbability
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime)
+              (gammaSewnFourRateCommonDepthCell prime e))
+            (gammaSewnFourRateSelectedHeight
+              (gammaSewnFourRateCommonDepthCell prime e)) ↔ 0 < e) := by
+  let E := normalizedFinitePairDispersion
+    (gammaSewnFourRateBoundaryPairProbability
+      (gammaSewnFourPrimeLogHarmonicAperture prime)
+      (gammaSewnFourPrimeLogRate prime)
+      (gammaSewnFourRateCommonDepthCell prime e))
+    (gammaSewnFourRateSelectedEulerHeight prime e)
+  let R := normalizedFinitePairDispersion
+    (gammaSewnFourRateBoundaryPairProbability
+      (gammaSewnFourPrimeLogHarmonicAperture prime)
+      (gammaSewnFourPrimeLogRate prime)
+      (gammaSewnFourRateCommonDepthCell prime e))
+    (gammaSewnFourRateSelectedHeight
+      (gammaSewnFourRateCommonDepthCell prime e))
+  let D := gammaSewnFourRateBoundaryPrimeLogDispersion
+    (gammaSewnFourPrimeLogHarmonicAperture prime)
+    (gammaSewnFourPrimeLogRate prime) prime
+  have hD : 0 < D := gammaSewnFourRateBoundaryPrimeLogDispersion_pos
+    (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+    (gammaSewnFourPrimeLogRate_injective prime)
+    (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+    prime.injective
+  have hgap : R - E = ((e : ℝ) * (3 * (e : ℝ) + 2) / 4) * D := by
+    exact gammaSewnFourRateCommonDepth_dispersion_sub_eulerDispersion_eq
+      (gammaSewnFourPrimeLogHarmonicAperture prime)
+      (gammaSewnFourPrimeLogRate prime) prime e
+  have hcoeff_nonneg : 0 ≤ (e : ℝ) * (3 * (e : ℝ) + 2) / 4 := by positivity
+  have hle : E ≤ R := by nlinarith [mul_nonneg hcoeff_nonneg hD.le]
+  change E ≤ R ∧ (E = R ↔ e = 0) ∧ (E < R ↔ 0 < e)
+  refine ⟨hle, ?_, ?_⟩
+  · constructor
+    · intro heq
+      by_contra he0
+      have hepos : 0 < e := Nat.pos_of_ne_zero he0
+      have hcoeff_pos : 0 < (e : ℝ) * (3 * (e : ℝ) + 2) / 4 := by positivity
+      nlinarith [mul_pos hcoeff_pos hD]
+    · intro he0
+      subst e
+      nlinarith [hgap]
+  · constructor
+    · intro hlt
+      exact Nat.pos_of_ne_zero (by
+        intro he0
+        subst e
+        nlinarith [hgap])
+    · intro hepos
+      have hcoeff_pos : 0 < (e : ℝ) * (3 * (e : ℝ) + 2) / 4 := by positivity
+      nlinarith [mul_pos hcoeff_pos hD]
+
+/-- Every four-distinct-prime packet admits one common valuation depth where corrected Fisher
+charge is dominated simultaneously by the smaller literal-Euler dispersion and by Rees
+midpoint-height dispersion.  This joins the two previously separate existence theorems. -/
+theorem exists_gammaSewnFourPrimeLogCommonDepth_correctedFisher_lt_eulerDispersion_and_dispersion
+    (prime : Fin 4 ↪ Nat.Primes) :
+    ∃ e : ℕ,
+      gammaSewnFourRateSchurCorrectedFisher
+            (gammaSewnFourPrimeLogHarmonicAperture prime)
+            (gammaSewnFourPrimeLogRate prime)
+            (gammaSewnFourRateCommonDepthCell prime e) <
+          normalizedFinitePairDispersion
+            (gammaSewnFourRateBoundaryPairProbability
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime)
+              (gammaSewnFourRateCommonDepthCell prime e))
+            (gammaSewnFourRateSelectedEulerHeight prime e) ∧
+        gammaSewnFourRateSchurCorrectedFisher
+            (gammaSewnFourPrimeLogHarmonicAperture prime)
+            (gammaSewnFourPrimeLogRate prime)
+            (gammaSewnFourRateCommonDepthCell prime e) <
+          normalizedFinitePairDispersion
+            (gammaSewnFourRateBoundaryPairProbability
+              (gammaSewnFourPrimeLogHarmonicAperture prime)
+              (gammaSewnFourPrimeLogRate prime)
+              (gammaSewnFourRateCommonDepthCell prime e))
+            (gammaSewnFourRateSelectedHeight
+              (gammaSewnFourRateCommonDepthCell prime e)) := by
+  obtain ⟨e, heuler⟩ :=
+    exists_gammaSewnFourRateCommonDepth_correctedFisher_lt_eulerDispersion
+      (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+      (gammaSewnFourPrimeLogRate_injective prime)
+      (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+      prime.injective
+  refine ⟨e, heuler,
+    heuler.trans_le (gammaSewnFourPrimeLogCommonDepth_eulerDispersion_comparison prime e).1⟩
+
 end
 
 end RHTower

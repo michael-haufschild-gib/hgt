@@ -754,3 +754,65 @@ new invariant remains. `NO POSITIVE SALVAGE FOUND` beyond existing masters for t
   source passes exact direct Lean; thin consumer awaits only final `.olean` refresh. Targeted
   hostile literature audit found nearby but noncolliding 2026 Möbius--Laplace work. Exhaustion
   restarts from the refreshed terminal ledger.
+
+## Post-Law-173 continuation checkpoint
+
+- Laws 174--188 were generated theorem-first from multiplier/Atiyah kernels, Xi rooted-star
+  incidence, Hermite/secular quasi-free phase, reporter data processing, universal finite
+  constraints, mixed-power prime mass, inverse-limit torsion, Suzuki finite-Stieltjes exclusion,
+  elliptic-Gamma reflection, dimensional-QED Gamma gauge, physical holomorphic periods,
+  differential-shift covariance, Gamma affine pole exclusion, reporter isometry, and integer-orbit
+  multiphysics intensity. Exact checks passed where parent artifacts existed; missing-parent cases
+  are source-complete and reserved for final module builds.
+- Law 189 (`PolynomialMagnitudeMechanismNonidentifiabilityUniversalityLaw`) exact-checks. One
+  private-prime rational profile and almost every rough polynomial profile have equivalent value,
+  first-difference, and second-difference magnitudes while carrying deterministic algebraic-phase
+  versus almost-everywhere real-phase hypertranscendence. Two-jet magnitude cannot identify the
+  confinement mechanism.
+- Law 190 (`GammaScaleSeparatedAffineOrderEnergyUniversalityLaw`) is source-complete; its
+  coefficient-extension core exact-checks independently. Coefficientwise constant base change
+  turns a complex degree-at-most-one scale-separated Gamma source into a moving simple-pole
+  horizon, with exact simple order equivalent to unbounded approaching-line `L²` energy.
+- Law 191 (`XiCCMBVWindowDilationOrientationUniversalityLaw`) is source-complete. One
+  noncensoring compact-BV window and every integer dilation produce two complete nine-observable
+  Xi tomography packets, opposite raw Mellin characters, strict residue orientation, and exact
+  square-index decimation of window/polar coefficients.
+- Law 192 (`LeadingSymbolDegeneracyMagnitudeSurvivalUniversalityLaw`) exact-checks. An explicit
+  nonzero class-`(4,4)` differential polynomial has identically zero balanced falling-factorial
+  symbol yet survives on every eventually log-superlacunary entire Taylor-magnitude source.
+- Law 193 (`ThetaPrimeCubeCrossedPhaseRadialFactorizationUniversalityLaw`) exact-checks. Reflection
+  factors both crossed phase packet families through one common prime-cube radial cosine
+  polynomial whose even coefficients are the exact outer/inner two-radius moments.
+- Law 194 (`SoninCoupledRelativeDeterminantSectorConfinedPhaseUniversalityLaw`) is source-complete;
+  its generic affine energy-transfer core exact-checks independently. Every nondegenerate coupled
+  Sonin relative determinant inherits the exact `251001/250000` phase ceiling, unconditional decay
+  above it, and a surviving sub-ceiling exponential phase under failure of RH.
+- Law 195 (`SEMDyadicWeylQuadraticIrreducibilityUniversalityLaw`) exact-checks. Every positive-depth,
+  nonzero-wrap completed SEM boundary Weyl packet is dimension-divisible, square-incidence-selected
+  for both jet and Xi order, and has no common character line.
+- Law 196 (`PrimeFirstTraceExactGraphClosureUniversalityLaw`) exact-checks. The actual-prime
+  first-trace graph closure is exactly every Hardy source paired with every zero-vacuum Hardy
+  response; this upgrades one graph-null witness to a complete codimension-one closure
+  classification.
+
+## Current rejection ledger
+
+- 143--151: Gale/conic, Gibbs/thermal, Möbius/common-clock, rapid/rough, Cholesky/Herglotz,
+  Gamma-pair, Xi-reporter, Cassini/Markov, and finite-quantum/Fermat comparisons were distinct
+  carriers, already consumed, or mere patched conjunctions.
+- 152--160: symmetric Gamma intensity produced Law 188; Hybrid-observable/Xi-Hurwitz,
+  projective-QFI/RHTower Fisher, theta-cusp/Kummer, Möbius-Landau/Mellin energy, Suzuki
+  finite-Stieltjes/normal-form, shape-charge/soft-multiplicative, and CCM raw-defect/Bessel-clock
+  joins had no unused common conclusion. BV dilation survived as Law 191.
+- 161--163: evaluation-fibre/projective-active-row dimension was generic localization bookkeeping;
+  degree-homogeneous/magnitude/weight-polynomial survived as Law 192; theta prime-cube crossed
+  phase survived as Law 193.
+- 164: edge-scale no-go, depth-two carrier rigidity, and whole-loop closure share only generic
+  strip/incidence vocabulary; hypotheses and carriers do not identify, so no transport exists.
+- 165: Xi-Hurwitz Hardy anchors and zeta-carrier domination use unrelated `hsupply` premises; no
+  theorem maps finite critical-line moment data to local off-line carrier closeness/parity.
+- 166: Möbius strict-right energy and Liouville square-dilation wall already close through the
+  existing analytic-unit invariance theorem; bundling RH and both walls adds no conclusion.
+
+Exhaustion remains active. Deferred source-complete laws await final dependency builds only; no
+`lake build` has been used during discovery.

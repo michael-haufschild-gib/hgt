@@ -253,6 +253,36 @@ theorem norm_sq_gaussEven_sub_cut_le {a : ℝ} (ha : 0 < a) :
 
 /-! ## The ground leakage bound for the true operator -/
 
+/-- Every positive aperture retains a nonzero Gaussian trial vector. This discharges the
+nonvanishing premise of the one-dimensional Courant--Fischer bound on the complete physical
+aperture ray. -/
+theorem evenIndicatorCutoff_gaussEven_ne_zero {a : ℝ} (ha : 0 < a) :
+    evenIndicatorCutoff a gaussEven ≠ 0 := by
+  intro hzero
+  have hcutzero : indicatorCutoff (centralInterval a)
+      (measurableSet_centralInterval a) gaussL2 = 0 := by
+    have h := congrArg (fun v : evenSubspace => (v : SoninL2)) hzero
+    simpa using h
+  have hzeroae :
+      ((indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
+        gaussL2 : SoninL2) : ℝ → ℂ) =ᵐ[volume] 0 := by
+    rw [hcutzero]
+    exact Lp.coeFn_zero _ _ _
+  have hnotmem : ∀ᵐ x : ℝ ∂volume, x ∉ centralInterval a := by
+    filter_upwards [indicatorCutoff_ae (centralInterval a)
+        (measurableSet_centralInterval a) gaussL2,
+      gaussL2_coeFn, hzeroae] with x hcut hgauss hzeroPoint
+    intro hx
+    have hz : (GaloisForLFunctions.gaussReal x : ℂ) = 0 := by
+      rw [hcut, Set.indicator_of_mem hx, hgauss] at hzeroPoint
+      exact hzeroPoint
+    exact (Complex.ofReal_ne_zero.mpr
+      (GaloisForLFunctions.gaussReal_pos x).ne') hz
+  have hpositive : (volume : Measure ℝ) (centralInterval a) ≠ 0 := by
+    rw [centralInterval, Real.volume_Icc, ENNReal.ofReal_ne_zero_iff]
+    linarith
+  exact hpositive (measure_eq_zero_iff_ae_notMem.mpr hnotmem)
+
 /-- **The true ground leakage is bounded by the Gaussian truncation deficit.**  The truncated
 Gaussian spans a one-dimensional trial space, so Courant–Fischer caps the zeroth leakage of the
 actual compressed Fourier block by `4θ²`, where `θ` is the relative truncation error of the
@@ -274,6 +304,30 @@ theorem evenProlateLeakageValue_zero_le (a : ℝ) {θ : ℝ}
     have := gaussEven_span_concentration a hθ f hf
     have hrw : (1 : ℝ) - 4 * θ ^ 2 = 1 - 4 * θ ^ 2 := rfl
     linarith [this]
+
+/-- Positive aperture alone discharges the nonzero-trial hypothesis in the Gaussian leakage
+bound. -/
+theorem evenProlateLeakageValue_zero_le_of_pos
+    {a : ℝ} (ha : 0 < a) {θ : ℝ}
+    (hθ : ‖gaussEven - evenIndicatorCutoff a gaussEven‖
+      ≤ θ * ‖evenIndicatorCutoff a gaussEven‖) :
+    evenProlateLeakageValue a 0 ≤ 4 * θ ^ 2 := by
+  exact evenProlateLeakageValue_zero_le a
+    (evenIndicatorCutoff_gaussEven_ne_zero ha) hθ
+
+/-- **Unconditional Gaussian relative-tail bound.** At every positive aperture, true ground
+leakage is at most four times the squared relative Gaussian truncation error. No separate
+nonvanishing or calibration witness is required. -/
+theorem evenProlateLeakageValue_zero_le_gaussianRelativeTail
+    {a : ℝ} (ha : 0 < a) :
+    evenProlateLeakageValue a 0 ≤
+      4 * (‖gaussEven - evenIndicatorCutoff a gaussEven‖ /
+        ‖evenIndicatorCutoff a gaussEven‖) ^ 2 := by
+  have hne := evenIndicatorCutoff_gaussEven_ne_zero ha
+  have hnorm : ‖evenIndicatorCutoff a gaussEven‖ ≠ 0 :=
+    norm_ne_zero_iff.mpr hne
+  apply evenProlateLeakageValue_zero_le_of_pos ha
+  rw [div_mul_cancel₀ _ hnorm]
 
 /-! ## The true ground leakage vanishes as the aperture grows -/
 
@@ -330,25 +384,8 @@ theorem evenProlateLeakageValue_zero_tendsto_zero :
   · filter_upwards [hhalf, Filter.eventually_gt_atTop (0 : ℝ)] with a hlt ha
     set τ := ‖gaussEven - evenIndicatorCutoff a gaussEven‖ ^ 2 with hτ
     have hcut : ‖evenIndicatorCutoff a gaussEven‖ ^ 2 = K - τ := norm_sq_cut_gaussEven a
-    have hcutpos : (0 : ℝ) < ‖evenIndicatorCutoff a gaussEven‖ ^ 2 := by
-      rw [hcut]; linarith
-    have hne : evenIndicatorCutoff a gaussEven ≠ 0 := by
-      intro h
-      rw [h] at hcutpos
-      simp at hcutpos
-    set θ := Real.sqrt (τ / ‖evenIndicatorCutoff a gaussEven‖ ^ 2) with hθdef
-    have hPne : ‖evenIndicatorCutoff a gaussEven‖ ≠ 0 := norm_ne_zero_iff.mpr hne
-    have hθ : ‖gaussEven - evenIndicatorCutoff a gaussEven‖
-        ≤ θ * ‖evenIndicatorCutoff a gaussEven‖ := by
-      have hrw : τ / ‖evenIndicatorCutoff a gaussEven‖ ^ 2
-          = (‖gaussEven - evenIndicatorCutoff a gaussEven‖
-            / ‖evenIndicatorCutoff a gaussEven‖) ^ 2 := by
-        rw [div_pow, hτ]
-      rw [hθdef, hrw, Real.sqrt_sq (by positivity), div_mul_cancel₀ _ hPne]
-    have hmain := evenProlateLeakageValue_zero_le a hne hθ
-    have hθsq : θ ^ 2 = τ / ‖evenIndicatorCutoff a gaussEven‖ ^ 2 := by
-      rw [hθdef, Real.sq_sqrt (by positivity)]
-    rw [hθsq, hcut] at hmain
+    have hmain := evenProlateLeakageValue_zero_le_gaussianRelativeTail ha
+    rw [div_pow, ← hτ, hcut] at hmain
     have hmono : τ / (K - τ) ≤ τ / (K / 2) := by
       apply div_le_div_of_nonneg_left (sq_nonneg _) (by linarith) (by linarith)
     linarith
@@ -370,22 +407,8 @@ theorem evenProlateLeakageValue_zero_le_exp :
   filter_upwards [hhalf, Filter.eventually_gt_atTop (0 : ℝ)] with a hlt ha
   set τ := ‖gaussEven - evenIndicatorCutoff a gaussEven‖ ^ 2 with hτ
   have hcut : ‖evenIndicatorCutoff a gaussEven‖ ^ 2 = K - τ := norm_sq_cut_gaussEven a
-  have hcutpos : (0 : ℝ) < ‖evenIndicatorCutoff a gaussEven‖ ^ 2 := by rw [hcut]; linarith
-  have hne : evenIndicatorCutoff a gaussEven ≠ 0 := by
-    intro h; rw [h] at hcutpos; simp at hcutpos
-  have hPne : ‖evenIndicatorCutoff a gaussEven‖ ≠ 0 := norm_ne_zero_iff.mpr hne
-  set θ := Real.sqrt (τ / ‖evenIndicatorCutoff a gaussEven‖ ^ 2) with hθdef
-  have hθ : ‖gaussEven - evenIndicatorCutoff a gaussEven‖
-      ≤ θ * ‖evenIndicatorCutoff a gaussEven‖ := by
-    have hrw : τ / ‖evenIndicatorCutoff a gaussEven‖ ^ 2
-        = (‖gaussEven - evenIndicatorCutoff a gaussEven‖
-          / ‖evenIndicatorCutoff a gaussEven‖) ^ 2 := by
-      rw [div_pow, hτ]
-    rw [hθdef, hrw, Real.sqrt_sq (by positivity), div_mul_cancel₀ _ hPne]
-  have hmain := evenProlateLeakageValue_zero_le a hne hθ
-  have hθsq : θ ^ 2 = τ / ‖evenIndicatorCutoff a gaussEven‖ ^ 2 := by
-    rw [hθdef, Real.sq_sqrt (by positivity)]
-  rw [hθsq, hcut] at hmain
+  have hmain := evenProlateLeakageValue_zero_le_gaussianRelativeTail ha
+  rw [div_pow, ← hτ, hcut] at hmain
   have hstep : τ / (K - τ) ≤ τ / (K / 2) :=
     div_le_div_of_nonneg_left (sq_nonneg _) (by linarith) (by linarith)
   have htail := norm_sq_gaussEven_sub_cut_le ha

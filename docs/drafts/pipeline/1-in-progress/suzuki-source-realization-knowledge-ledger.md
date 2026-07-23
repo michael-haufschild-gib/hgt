@@ -76,9 +76,11 @@ they are not novel scientific knowledge.
 | `SR-36` | `ADVANCE` | For an arbitrary self-adjoint parity, every correction family in its even sector leaves the exact odd packet Gram as a capacity-independent Pythagorean floor. For the actual Gamma measure this floor is `O(t,u)=(phi(t-u)-phi(t+u))/2`; at every prime log, `O(log p,log p)>=(1-sqrt(2)/2)/2`. Weighted by the actual nonsummable Gamma conductor Schur costs, the protected residual is nonsummable and cofinally exceeds every finite budget. Thus growing reflection-even Gamma/Jacobi boundary capacity is class-completely dead. | Odd/parity-mixing boundary modes and signed principal-relative finite parts are not even-sector Hilbert corrections and remain possible. | `gamma-even-boundary-parity-floor-no-go.md`; `ParityProtectedSchurFloor.lean`; `GammaEvenBoundaryParityNoGo.lean` |
 | `SR-37` | `ADVANCE` | Actual odd Gamma-Jacobi coefficients satisfy the exact Mercer law `O(t,u)=sum_k a_k(t)a_k(u)`. Finite odd capacity leaves precisely the positive tail, and the least source rank at each prime making its actual Gamma-conductor-weighted diagonal at most `p^-2` yields a summable all-prime residual. | Pointwise ranks alone do not place this boundary inside Suzuki's completed Green--Schur incidence or prove Euler-source compatibility. | `gamma-odd-jacobi-capacity-saturation-law.md`; `GammaOddJacobiCapacity.lean` |
 | `SR-38` | `ADVANCE` | Least primewise ranks can be zero-padded in the common absolute odd-Jacobi coordinate. The resulting cross-prime residual is positive semidefinite on every finite packet, its diagonal is exactly the `SR-37` tail, and its Gamma-conductor-weighted diagonal is summable. Thus odd capacity and cutoff/inclusion coherence are closed without a common rank. Generic Gram/capacity lemma is only `FORMAL-CLOSURE`; source connector is advance. | Coherent positive kernel is not yet the singular/local finite incidence or completed trace required by Suzuki. | `GammaOddJacobiCoherentCapacity.lean`; `AdaptiveMercerCapacity.lean` |
-| `SR-39` | `LIVE-SOURCE` | Construct or refute a source-defined placement of the coherent odd Gamma-Jacobi kernel inside the actual singular/locally finite prime incidence, with Gamma/polar Green boundary and completed Euler multiplication/trace fixed before any Xi character or target moment is read. Signed principal-relative alternative remains admissible. | Positivity, trace-summable diagonal, a generic Schur complement, or declaring the target Hankel identity does not construct this placement. | Successor of `SR-33` after `SR-35`--`SR-38`; exact operator-placement core below |
+| `SR-39` | `ADVANCE` | Successor Dirichlet Gram has an exact all-order strictly negative Hankel-curvature density. Hence every additive ordinary Hankel boundary is class-completely incapable of repairing it. Placing the actual pointed Gamma--Bianchi raw feature in the same finite von Mangoldt coordinates instead gives the exact endpoint weld `difference + tail = head`; its forced mixed block has the exact opposite positive curvature, and the coupled Gram is a positive moment-Hankel matrix for every finite aperture and jet size. | Raw pointed boundary has no ordinary cofinal Hilbert limit. Finite Hankel welding does not incorporate odd Gamma-Jacobi capacity, completed Euler trace, or critical normalization. | `von-mangoldt-successor-bianchi-hankel-curvature-weld.md`; `ConservativeHankelRigidity.lean`; `VonMangoldtAdditiveLogJetHankelCurvature.lean`; `VonMangoldtSuccessorBianchiHankelWeld.lean` |
+| `SR-40` | `ADVANCE` | Source-fixed principal subtraction of the exact finite weld is absolutely summable at every jet order. It retains exactly `Successor+Cross`, converges in every finite matrix topology to universal kernel `R(r,s)=rho_(r+s+2)`, and obeys all-order Hankel shift. Forced mixed curvature therefore survives and cancels successor defect at every aperture and order. | Signed jet current is not yet a positive/Krein source realization; coherent odd Gamma--Jacobi kernel lives on prime coordinates and cannot be added to jet matrix without a proved bivariate connector. Completed Euler trace and critical orientation remain open. | `von-mangoldt-successor-principal-relative-hankel-current.md`; `VonMangoldtSuccessorPrincipalRelativeHankel.lean` |
+| `SR-41` | `LIVE-SOURCE` | Construct or class-completely refute an inclusion-compatible bivariate prime--jet completion whose jet compression is `SR-40` principal-relative Hankel current, whose prime/Jacobi compression is `SR-38` coherent odd Gamma residual, and whose cyclic source reader gives completed Euler multiplication/trace before Xi character or target moment is read. | Abstract finite matrix completion, separate direct sum of two marginals, target-fitted cross block, or generic Krein spectral decomposition does not connect source objects and does not count. | Exact post-`SR-40` operator-realization core below |
 
-## Level lift forced by `SR-35`--`SR-38`: source-functorial covariant Dirichlet completion
+## Level lift forced by `SR-35`--`SR-40`: bivariate prime--jet source completion
 
 Current source problem belongs to more general problem of **source-renormalized covariant
 Dirichlet forms relative to a resolved abelian channel algebra**.
@@ -92,38 +94,51 @@ Gamma_F(T)=sum_(i in F)||delta_i(T_F)||_F^2.
 
 `SR-34` proves flat connection `delta_i=0` is diagonal and cannot realize positive-log source.
 `SR-35` proves fixed scalar Gamma capacity forces `Gamma_F(T)` to exceed every finite threshold
-cofinally. `SR-36` proves that allowing arbitrarily many reflection-even Gamma/Jacobi boundary
-modes still leaves a nonsummable odd floor. `SR-37`--`SR-38` now construct the exact opposite-sector
-source ladder, exhaust that floor, and assemble the least primewise cutoffs into one coherent
-positive kernel with summable weighted diagonal. Therefore capacity and packet coherence are no
-longer open. The remaining issue is functorial placement: one source map must simultaneously carry
-the incidence, boundary kernel, and Euler product/trace law.
+cofinally. `SR-36` kills every reflection-even growing boundary. `SR-37`--`SR-38` construct the
+opposite-sector odd Gamma--Jacobi ladder and coherent summable residual. `SR-39` solves finite
+placement: successor and pointed Bianchi boundary must share source coordinates, and forced mixed
+block restores Hankel balance. `SR-40` solves signed cofinal jet current: source principal
+subtraction retains that mixed block, converges, and is Hankel at every order. Capacity, packet
+coherence, finite cross-term placement, and matrix-entry cofinal renormalization are no longer
+open. Remaining issue is object-level coupling: `SR-40` is a jet kernel after prime contraction,
+whereas `SR-38` is a prime kernel after Jacobi contraction. Adding them is ill-typed. One bivariate
+prime--jet source object must realize both marginals and Euler trace.
 
 Scientific-method question is now:
 
-> Can the proved coherent odd Gamma-Jacobi boundary be realized as the forced boundary of one
-> singular/locally finite prime incidence whose completed Green--Schur trace preserves Euler
-> multiplication, before completed moments or Xi characters are read?
+> Does there exist a source-fixed, inclusion-compatible bivariate prime--jet completion whose jet
+> marginal is the proved principal-relative Hankel current and whose prime marginal is the proved
+> coherent odd Gamma--Jacobi residual, with completed Euler multiplication encoded by one cyclic
+> reader before completed moments or Xi characters are read?
 
 Required data and conjectural identity are
 
 ```text
-T_F                    source incidence on finite prime packet,
-B_F                    proved coherent odd Gamma-Jacobi boundary channel,
-FP_F                   cyclic principal-relative reader fixed by source algebra,
+P_F                    resolved finite prime carrier,
+V_N                    positive logarithmic jet carrier,
+A_F                    common absolute odd-Jacobi carrier,
+R_(F,N)                proved principal-relative jet form `Successor+Cross`,
+J_F                    proved coherent odd Gamma-Jacobi prime form,
+C_(F,N)                sought source bivariate coupling on `P_F x V_N x A_F`,
+tau_(F,N)              sought cyclic reader fixed by Euler source algebra,
 
-FP_F((1/2) Gamma_F(T)-boundaryEnergy(B_F))
-  = completed Euler trace defect on F.                  (SR39)
+jetCompression(C_(F,N))=R_(F,N),
+primeCompression(C_(F,N))=J_F,
+tau_(F,N)(C_(F,N))=completed Euler trace packet,        (SR41)
+
+with restriction-compatible `C_(F,N)` and cofinal reader.
 ```
 
 This formulation makes predictions rather than renaming target sign:
 
 1. `Gamma_F(T)` must diverge for every fixed scalar conductor realization by `SR-35`.
-2. Merely growing a reflection-even boundary is impossible by `SR-36`; the required positive
-   odd/parity-mixing kernel and its source-coordinate inclusion law are now fixed by `SR-37`--`SR-38`.
-3. Inclusion `F subset G` must preserve that fixed kernel and give a cocycle law for any remaining
-   principal subtraction before target moments are evaluated.
-4. Finite part must retain off-diagonal Euler covariance; projecting to diagonal channels recreates
+2. Merely growing a reflection-even boundary is impossible by `SR-36`; odd/parity-mixing residual
+   and its source-coordinate inclusion law are fixed by `SR-37`--`SR-38`.
+3. Dropping `X_F` is impossible by strict all-order curvature law in `SR-39`; `SR-40` proves exact
+   source principal subtraction retains it and yields universal cofinal Hankel current.
+4. Inclusion `F subset G` must preserve common-coordinate weld, relative current, and odd Jacobi
+   absolute mode labels before target moments are read.
+5. Finite part must retain off-diagonal Euler covariance; projecting to diagonal channels recreates
    nonsummable positive-log energy.
 
 Positive control is canonical full Gamma covariance already in corpus: it supplies finite positive
@@ -131,10 +146,10 @@ blocks with coherent cross-prime concentration and fixed scalar conductor only b
 block is non-diagonal. Negative controls are diagonal repair, fixed-rank Gamma conductor, and any
 uniformly Ward-bounded resolved packet family.
 
-`(SR39)` is falsified if the coherent odd kernel cannot be the boundary trace of the proposed
-incidence, if principal subtraction depends on target moment/divisor, if the Green identity fails
-Euler shift compatibility, or if finite part kills the meromorphic principal component. No claim
-of truth is made. Corpus supplies no such source-fixed functorial placement.
+`(SR41)` is falsified if no source-defined bivariate connector can have both fixed marginals, if
+restriction destroys one marginal, if any connector must be fitted from Xi/zero data, if cyclic
+reader fails Euler shift compatibility, or if finite part kills meromorphic principal component.
+Corpus and `SR-40` supply both marginals separately but no such joint source object.
 
 ## Level lift: general problem containing current Suzuki frontier
 
@@ -372,3 +387,32 @@ Before claiming progress, record all answers:
   theorem. Fixed scalar conductor capacity forces cofinally unbounded projection-commutator energy.
   `SR-33` is narrowed to singular/growing-capacity principal-relative connection; generic bounded
   off-diagonal mixing is no longer admissible.
+- **2026-07-22 — parity-capacity closure.** `SR-36` proves every reflection-even correction leaves
+  exact odd Gamma floor and cannot meet cofinal budget. `SR-37` proves actual odd Jacobi ladder
+  exhausts floor and selects least primewise rank with summable residual. `SR-38` proves those
+  cutoffs are restrictions of one zero-padded common-coordinate positive kernel. Generic Mercer,
+  Gram, and adaptive-capacity lemmas remain `FORMAL-CLOSURE`; actual Gamma composition is source
+  advance. Capacity and inclusion coherence are not to be reopened.
+- **2026-07-22 — successor--Bianchi Hankel weld (`SR-39`).** Changed live row: finite
+  Green-boundary placement. Exact pre-character formulas are
+  `K(s+2,s)-K(s+1,s+1)=-sum_n C_s(n)<0` at every order and, on every finite aperture,
+  `d_r+b_r=h_r` on common von Mangoldt coordinates. Consequently coupled Gram is exactly shifted
+  head-moment Hankel Gram and forced mixed block has exact opposite positive curvature. Hostile
+  direct-sum control fails because its cross block is zero and strict anti-Hankel curvature
+  survives. Falsifiers were zero/nonnegative curvature, failure of actual raw-feature endpoint
+  identity, non-Hankel coupled output, or nonpositive cross curvature; Lean rejects all four.
+  Three-tree/pipeline and primary-source synonym searches found no collision, but external novelty
+  remains provisional. Status: universal rigidity `FORMAL-CLOSURE`; additive-Hankel mechanism
+  `FAILED-CLASS`; actual all-order source law and common-coordinate finite weld `ADVANCE`. This does
+  not close critical half-weight: new `SR-40` is cofinal singular/principal-relative preservation
+  of mixed block plus odd Gamma--Jacobi residual and completed Euler trace.
+- **2026-07-22 — principal-relative Hankel current (`SR-40`).** Changed live row: cofinal signed
+  matrix completion. Exact pre-character laws are `Head_M-Tail_M=Successor_M+Cross_M` and
+  `R_M(i,j)=sum_n Lambda(n)/n*(log(n+1)^(i+j+2)-log(n)^(i+j+2))`. Every order is absolutely
+  summable; fixed jet matrices converge; finite and limiting shift defects vanish; mixed curvature
+  cancels successor curvature at every order. Falsifiers were nonsummability, loss of cross block,
+  failure of matrix convergence, or non-Hankel limit; Lean rejects all four. Collision audit found
+  generic summation/moment closure but no source composition. Status: generic layers
+  `FORMAL-CLOSURE`, source connector `ADVANCE`, external novelty provisional. New `SR-41` is not
+  “add odd residual”: that is ill-typed. It asks for one bivariate prime--jet object realizing
+  proved jet and prime/Jacobi marginals plus completed Euler trace.

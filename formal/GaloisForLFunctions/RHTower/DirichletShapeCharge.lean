@@ -249,11 +249,87 @@ theorem not_forcesRHParity_completedDirichletShape :
   rw [forcesRHParity_iff_categorical]
   exact fun hcat => hcat carriesOffLineCharge_completedDirichletShape
 
+/-! ### §8 Integral multiplicativity does not repair the shape class -/
+
+/-- Ordinary integral multiplicativity for a real Dirichlet coefficient sequence.  The value at
+zero is immaterial to `LSeries`; multiplicativity is imposed on every coprime pair. -/
+def IntegralMultiplicativeDirichletCoefficient (a : ℕ → ℝ) : Prop :=
+  (∀ n, ∃ z : ℤ, a n = z) ∧
+    a 1 = 1 ∧
+      ∀ ⦃m n : ℕ⦄, m.Coprime n → a (m * n) = a m * a n
+
+/-- Completed Dirichlet shape with one and the same coefficient sequence both integral and
+multiplicative.  No functional equation is included. -/
+def CompletedIntegralMultiplicativeDirichletShape (f : ℂ → ℂ) : Prop :=
+  ∃ (a : ℕ → ℝ) (σ₀ : ℝ), IntegralMultiplicativeDirichletCoefficient a ∧
+    ∀ s : ℂ, σ₀ < s.re →
+      f s = archFactor s * LSeries (fun n => ((a n : ℝ) : ℂ)) s
+
+/-- Alternating eta coefficients, now exposed as an integral multiplicative sequence. -/
+def alternatingDirichletCoefficient (n : ℕ) : ℝ := (-1 : ℝ) ^ (n + 1)
+
+theorem alternatingDirichletCoefficient_integralMultiplicative :
+    IntegralMultiplicativeDirichletCoefficient alternatingDirichletCoefficient := by
+  refine ⟨fun n => ⟨(-1 : ℤ) ^ (n + 1), ?_⟩, ?_, ?_⟩
+  · simp [alternatingDirichletCoefficient]
+  · norm_num [alternatingDirichletCoefficient]
+  · intro m n hcop
+    rcases Nat.even_or_odd m with hm | hm <;>
+      rcases Nat.even_or_odd n with hn | hn
+    · exfalso
+      have htwo : 2 ∣ Nat.gcd m n := Nat.dvd_gcd hm.two_dvd hn.two_dvd
+      rw [hcop.gcd_eq_one] at htwo
+      norm_num at htwo
+    · simp only [alternatingDirichletCoefficient]
+      rw [(hm.mul_right n).add_one.neg_one_pow,
+        hm.add_one.neg_one_pow, hn.add_one.neg_one_pow]
+      ring
+    · simp only [alternatingDirichletCoefficient]
+      rw [(hn.mul_left m).add_one.neg_one_pow,
+        hm.add_one.neg_one_pow, hn.add_one.neg_one_pow]
+      ring
+    · simp only [alternatingDirichletCoefficient]
+      rw [(hm.mul hn).add_one.neg_one_pow,
+        hm.add_one.neg_one_pow, hn.add_one.neg_one_pow]
+      ring
+
+/-- The eta completion belongs to the strictly smaller class whose actual Dirichlet coefficients
+are simultaneously integral and multiplicative. -/
+theorem etaCompletion_completedIntegralMultiplicativeDirichletShape :
+    CompletedIntegralMultiplicativeDirichletShape etaCompletion := by
+  refine ⟨alternatingDirichletCoefficient, 1,
+    alternatingDirichletCoefficient_integralMultiplicative, fun s hs => ?_⟩
+  have hspos : 0 < s.re := by linarith
+  have h0 : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at hspos; exact lt_irrefl 0 hspos
+  have h1 : s ≠ 1 := fun h => by rw [h, Complex.one_re] at hs; exact lt_irrefl 1 hs
+  have hG : Gammaℝ s ≠ 0 := Gammaℝ_ne_zero_of_re_pos hspos
+  unfold etaCompletion
+  simp only [alternatingDirichletCoefficient]
+  rw [xi_eq_archFactor_mul_zeta h0 h1 hG, lseries_alt_eq s hs]
+  ring
+
+/-- **Completed integral-multiplicative shape blindness law.**  Even after integrality and
+multiplicativity are imposed on the very coefficients in the completed Dirichlet presentation,
+the class carries a simple off-line charge and cannot force RH-grade parity. -/
+theorem completedIntegralMultiplicativeDirichletShape_blindnessUniversality :
+    CarriesOffLineCharge CompletedIntegralMultiplicativeDirichletShape ∧
+      ¬ ForcesRHParity CompletedIntegralMultiplicativeDirichletShape := by
+  have hcharge : CarriesChargeAt CompletedIntegralMultiplicativeDirichletShape s₀ := by
+    refine ⟨etaCompletion,
+      etaCompletion_completedIntegralMultiplicativeDirichletShape, ?_⟩
+    rw [carrierCharge_one_eq_neg_one_pow, etaCompletion_order_s₀, ENat.toNat_one]
+    norm_num
+  have hoff : CarriesOffLineCharge CompletedIntegralMultiplicativeDirichletShape :=
+    ⟨s₀, by rw [s₀_re]; norm_num, hcharge⟩
+  refine ⟨hoff, ?_⟩
+  rw [forcesRHParity_iff_categorical]
+  exact fun hcat => hcat hoff
+
 /-- **The Euler contrast: multiplicativity empties all charge beyond the wall.**  ξ — whose
 Dirichlet coefficients carry the Euler product — is zero-free on `re ≥ 1`, so every window beyond
 the wall is vacuum and carries zero deck charge at every level, while the η-completion, a member
-of the same shape class WITHOUT multiplicative coefficients, carries charge `−1` at a point ON the
-wall.  The first seam coupling of the arithmetic constraint: it kills charge wherever it applies;
+of the same completed integral-multiplicative shape class but WITHOUT a functional equation,
+carries charge `−1` at a point ON the wall.  The Euler product kills charge wherever it applies;
 the open frontier is the reach of that kill across the strip. -/
 theorem xi_chargeFree_beyond_wall (k : ℕ) {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
     (hball : ∀ z ∈ Metric.closedBall c r, 1 ≤ z.re) :

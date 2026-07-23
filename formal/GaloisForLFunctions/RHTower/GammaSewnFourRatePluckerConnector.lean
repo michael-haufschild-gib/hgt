@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.PrimeLogHerglotz
 import GaloisForLFunctions.RHTower.GammaSewnFourRateSchurFisherCurvature
 import GaloisForLFunctions.HilbertMetric.GradedPartition
 import GaloisForLFunctions.HilbertMetric.GramCurvaturePersistence
@@ -20,6 +21,7 @@ open scoped BigOperators
 
 namespace RHTower
 
+open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HilbertMetric
 
 noncomputable section
@@ -268,6 +270,199 @@ theorem gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker
   exact gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker_of_volume_ne_zero
     (gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
       (cell := cell) ha hrate hboundary).ne'
+
+/-! ## Actual four-prime logarithmic metric -/
+
+/-- Actual prime-log rate packet, with distinctness carried by the embedding rather than exposed
+as a theorem hypothesis. -/
+def gammaSewnFourPrimeLogRate (prime : Fin 4 ↪ Nat.Primes) : Fin 4 → ℝ :=
+  fun i => primeLogSupport (prime i)
+
+/-- Gamma cells over an arbitrary valuation-depth profile on four distinct actual primes. -/
+def gammaSewnFourPrimeCell
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    Fin 4 → Nat.Primes × ℕ :=
+  fun i => (prime i, depth i)
+
+/-- Canonical physical aperture below every rate in an actual four-prime packet.  The reciprocal
+sum makes the choice symmetric in the packet and removes any minimum-selection data. -/
+def gammaSewnFourPrimeLogHarmonicAperture (prime : Fin 4 ↪ Nat.Primes) : ℝ :=
+  (1 + ∑ i, (gammaSewnFourPrimeLogRate prime i)⁻¹)⁻¹
+
+/-- Every actual prime-log rate is positive. -/
+theorem gammaSewnFourPrimeLogRate_pos
+    (prime : Fin 4 ↪ Nat.Primes) (i : Fin 4) :
+    0 < gammaSewnFourPrimeLogRate prime i :=
+  primeLogSupport_pos (prime i)
+
+/-- Distinct actual primes have distinct logarithmic rates. -/
+theorem gammaSewnFourPrimeLogRate_injective (prime : Fin 4 ↪ Nat.Primes) :
+    Function.Injective (gammaSewnFourPrimeLogRate prime) :=
+  primeLogSupport_injective.comp prime.injective
+
+/-- The canonical reciprocal-sum aperture is strictly positive. -/
+theorem gammaSewnFourPrimeLogHarmonicAperture_pos
+    (prime : Fin 4 ↪ Nat.Primes) :
+    0 < gammaSewnFourPrimeLogHarmonicAperture prime := by
+  unfold gammaSewnFourPrimeLogHarmonicAperture
+  apply inv_pos.mpr
+  exact add_pos_of_pos_of_nonneg zero_lt_one
+    (Finset.sum_nonneg fun i _ =>
+      (inv_pos.mpr (gammaSewnFourPrimeLogRate_pos prime i)).le)
+
+/-- The canonical aperture lies strictly below every actual prime-log rate. -/
+theorem gammaSewnFourPrimeLogHarmonicAperture_lt_rate
+    (prime : Fin 4 ↪ Nat.Primes) (i : Fin 4) :
+    gammaSewnFourPrimeLogHarmonicAperture prime <
+      gammaSewnFourPrimeLogRate prime i := by
+  have hrate : 0 < gammaSewnFourPrimeLogRate prime i :=
+    gammaSewnFourPrimeLogRate_pos prime i
+  have hle : (gammaSewnFourPrimeLogRate prime i)⁻¹ ≤
+      ∑ j, (gammaSewnFourPrimeLogRate prime j)⁻¹ := by
+    exact Finset.single_le_sum
+      (fun j _ => (inv_pos.mpr (gammaSewnFourPrimeLogRate_pos prime j)).le)
+      (Finset.mem_univ i)
+  have hden : 0 < 1 + ∑ j, (gammaSewnFourPrimeLogRate prime j)⁻¹ := by
+    exact add_pos_of_pos_of_nonneg zero_lt_one
+      (Finset.sum_nonneg fun j _ =>
+        (inv_pos.mpr (gammaSewnFourPrimeLogRate_pos prime j)).le)
+  have hlt : (gammaSewnFourPrimeLogRate prime i)⁻¹ <
+      1 + ∑ j, (gammaSewnFourPrimeLogRate prime j)⁻¹ := by
+    linarith
+  unfold gammaSewnFourPrimeLogHarmonicAperture
+  rw [← inv_inv (gammaSewnFourPrimeLogRate prime i)]
+  exact (inv_lt_inv₀ hden (inv_pos.mpr hrate)).2 hlt
+
+/-- No actual prime-log rate meets the canonical aperture boundary. -/
+theorem gammaSewnFourPrimeLogHarmonicAperture_boundary_ne
+    (prime : Fin 4 ↪ Nat.Primes) (i : Fin 4) :
+    gammaSewnFourPrimeLogRate prime i ^ 2 -
+        gammaSewnFourPrimeLogHarmonicAperture prime ^ 2 ≠ 0 := by
+  apply sub_ne_zero.mpr
+  exact ne_of_gt ((sq_lt_sq₀
+    (gammaSewnFourPrimeLogHarmonicAperture_pos prime).le
+    (gammaSewnFourPrimeLogRate_pos prime i).le).2
+      (gammaSewnFourPrimeLogHarmonicAperture_lt_rate prime i))
+
+/-- Euclidean realization of the actual four-prime rational Pluecker feature. -/
+def gammaSewnFourPrimeLogBoundaryHilbertFeature
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    Fin 2 → EuclideanSpace ℝ (Fin 4) :=
+  fun i => WithLp.toLp 2
+    (gammaSewnFourRateBoundaryPluckerFeature
+      (gammaSewnFourPrimeLogHarmonicAperture prime)
+      (gammaSewnFourPrimeLogRate prime)
+      (gammaSewnFourPrimeCell prime depth) i)
+
+/-- The actual four-prime feature matrix is literally the Gram of its Euclidean realization. -/
+theorem gammaSewnFourPrimeLogBoundaryStandardGram_eq_gram
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    standardFeatureGram
+        (gammaSewnFourRateBoundaryPluckerFeature
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourPrimeCell prime depth)) =
+      Matrix.gram ℝ (gammaSewnFourPrimeLogBoundaryHilbertFeature prime depth) := by
+  ext i j
+  rw [Matrix.gram_apply, PiLp.inner_apply]
+  simp only [gammaSewnFourPrimeLogBoundaryHilbertFeature,
+    RCLike.inner_apply, conj_trivial]
+  simp [standardFeatureGram, mul_comm]
+
+/-- **Unconditional actual-prime Hilbert metric.**  Every four-prime embedding and every valuation
+depth profile gives a strictly positive-definite Gamma boundary Gram at the canonical physical
+aperture; no rate-injectivity or boundary-avoidance proposition remains. -/
+theorem gammaSewnFourPrimeLogBoundaryStandardGram_posDef
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    (standardFeatureGram
+      (gammaSewnFourRateBoundaryPluckerFeature
+        (gammaSewnFourPrimeLogHarmonicAperture prime)
+        (gammaSewnFourPrimeLogRate prime)
+        (gammaSewnFourPrimeCell prime depth))).PosDef := by
+  have hdet := (gammaSewnFourRateBoundaryFeature_gramDet_pos
+    (cell := gammaSewnFourPrimeCell prime depth)
+    (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+    (gammaSewnFourPrimeLogRate_injective prime)
+    (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)).ne'
+  rw [gammaSewnFourPrimeLogBoundaryStandardGram_eq_gram prime depth] at hdet ⊢
+  exact (Matrix.posSemidef_gram ℝ
+    (gammaSewnFourPrimeLogBoundaryHilbertFeature prime depth)).posDef_iff_det_ne_zero.mpr hdet
+
+/-- The same actual four-prime packet has strictly positive canonical Pluecker volume. -/
+theorem gammaSewnFourPrimeLogBoundaryCanonicalFeatureVolume_pos
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    0 < canonicalFeatureVolume
+      (gammaSewnFourRateBoundaryPluckerFeature
+        (gammaSewnFourPrimeLogHarmonicAperture prime)
+        (gammaSewnFourPrimeLogRate prime)
+        (gammaSewnFourPrimeCell prime depth))
+      (fun _ => 1) (fun _ => 0) 1 := by
+  exact gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
+    (cell := gammaSewnFourPrimeCell prime depth)
+    (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+    (gammaSewnFourPrimeLogRate_injective prime)
+    (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+
+/-- **Exact actual-prime Pluecker curvature decomposition.**  At the canonical physical aperture,
+the four-prime Schur curvature is the sum of the complementary Fisher expectation and the height
+dispersion, with no nonvanishing, rate-injectivity, or boundary-avoidance premise. -/
+theorem gammaSewnFourPrimeLogSchurBoundaryLogCurvature_eq_canonicalPlucker
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    gammaSewnFourRateSchurBoundaryLogCurvature
+        (gammaSewnFourPrimeLogHarmonicAperture prime)
+        (gammaSewnFourPrimeLogRate prime)
+        (gammaSewnFourPrimeCell prime depth) =
+      -2 * complementaryFisherMean
+        (gammaSewnFourRateCanonicalPluckerProbability
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourPrimeCell prime depth))
+        (gammaSewnFourRateComplementaryFisher
+          (gammaSewnFourPrimeCell prime depth)) -
+      2 * normalizedFinitePairDispersion
+        (gammaSewnFourRateCanonicalPluckerProbability
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourPrimeCell prime depth))
+        (gammaSewnFourRateSelectedHeight
+          (gammaSewnFourPrimeCell prime depth)) := by
+  exact gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPlucker
+    (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+    (gammaSewnFourPrimeLogRate_injective prime)
+    (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+
+/-- **Unconditional actual-prime curvature law.**  Every four-prime packet is strictly
+log-concave at its canonical physical aperture, for every valuation-depth profile. -/
+theorem gammaSewnFourPrimeLogSchurBoundaryLogCurvature_neg
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    gammaSewnFourRateSchurBoundaryLogCurvature
+      (gammaSewnFourPrimeLogHarmonicAperture prime)
+      (gammaSewnFourPrimeLogRate prime)
+      (gammaSewnFourPrimeCell prime depth) < 0 := by
+  exact gammaSewnFourRateSchurBoundaryLogCurvature_neg
+    (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+    (gammaSewnFourPrimeLogRate_injective prime)
+    (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
+
+/-- At the canonical actual-prime aperture, the corrected Schur channel is exactly the canonical
+Pluecker expectation of the complementary prime Fisher clock, with no normalization premise. -/
+theorem gammaSewnFourPrimeLogSchurCorrectedFisher_eq_canonicalPlucker
+    (prime : Fin 4 ↪ Nat.Primes) (depth : Fin 4 → ℕ) :
+    gammaSewnFourRateSchurCorrectedFisher
+        (gammaSewnFourPrimeLogHarmonicAperture prime)
+        (gammaSewnFourPrimeLogRate prime)
+        (gammaSewnFourPrimeCell prime depth) =
+      complementaryFisherMean
+        (gammaSewnFourRateCanonicalPluckerProbability
+          (gammaSewnFourPrimeLogHarmonicAperture prime)
+          (gammaSewnFourPrimeLogRate prime)
+          (gammaSewnFourPrimeCell prime depth))
+        (gammaSewnFourRateComplementaryFisher
+          (gammaSewnFourPrimeCell prime depth)) := by
+  exact gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker
+    (gammaSewnFourPrimeLogHarmonicAperture_pos prime).ne'
+    (gammaSewnFourPrimeLogRate_injective prime)
+    (gammaSewnFourPrimeLogHarmonicAperture_boundary_ne prime)
 
 end
 
