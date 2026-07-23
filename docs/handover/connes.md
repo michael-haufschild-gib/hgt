@@ -5673,3 +5673,64 @@ Formal sources:
 - `formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauDyadic.lean`;
 - `formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterraReflection.lean`;
 - `docs/drafts/pipeline/1-in-progress/ccm-first-clock-landau-completeness-law.md`.
+
+## 82. First-clock midpoint reflection isolates the RH-complete prime transport
+
+The literal source in `(81.5)` now has an unconditional positive-mass normal form.  For
+`xi*L=2*pi`, define
+
+```text
+g(h)=rho_infinity(h)-2*cosh(h/2),
+Delta_L g(h)=g(h)-g(h+L/2),
+
+C(L,xi)=integral_0^(L/2) sin(xi*h) Delta_L g(h) dh.
+```
+
+The sine cancels the removable Gamma pole at zero.  Midpoint translation negates one complete
+sine period, while `rho_infinity` is strictly decreasing and `cosh` strictly increasing on the
+positive axis.  Lean therefore proves
+
+```text
+C(L,xi)>0.                                                (82.1)
+```
+
+For the finite prime-power sine mass, let
+
+```text
+P_plus =sum Lambda(k)/sqrt(k) max(sin(xi log k),0),
+P_minus=sum Lambda(k)/sqrt(k) max(-sin(xi log k),0).
+```
+
+Both are nonnegative, and the complete literal source law is
+
+```text
+pi*ccmPublishedSourceSineCoefficient(L/2,xi)
+  =C(L,xi)+P_plus(L,xi)-P_minus(L,xi).                    (82.2)
+```
+
+At `xi=2*pi/L`, `P_plus` and `P_minus` are respectively the inner and outer logarithmic
+half-wave masses.  Combining `(82.2)` with `(81.4)` gives
+
+```text
+RiemannHypothesis
+  <->
+for every L>=pi/2,
+  P_minus(L)<=C(L)+P_plus(L).                             (82.3)
+```
+
+This is a source-only positive-mass criterion, not an RH proof.  It closes Gamma orientation:
+the continuous term is strictly favorable at every aperture, so every possible sign failure is
+exactly an outer prime-power excess.  Do not re-open Gamma monotonicity, removable-singularity
+integrability, or signed-prime decomposition.
+
+The remaining frontier is concrete: build an unconditional source-preserving transport from the
+reflected outer prime-power measure to the inner prime-power measure plus the Gamma--polar
+continuous budget, at sine cost, uniformly in `L`; or prove a CCM-native obstruction to every
+such transport.  Atomwise reflection cannot do this because `log k -> L-log k` does not preserve
+prime-power logarithms, and summing powers of one prime cannot repair an outer prime whose higher
+powers lie beyond the aperture.
+
+Formal source:
+
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockHalfWaveReflection.lean`;
+- `docs/drafts/pipeline/1-in-progress/ccm-first-clock-landau-completeness-law.md`.

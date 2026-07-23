@@ -5,7 +5,6 @@ import GaloisForLFunctions.RHTower.XiEuclideanKrylovJensenReflectionUniversality
 import GaloisForLFunctions.RHTower.XiHedenmalmOrientationEndpointUniversalityLaw
 import GaloisForLFunctions.RHTower.XiHurwitzOrientationUniversalityLaw
 import GaloisForLFunctions.RHTower.XiLocalAnalyticOrderPhaseUniversalityLaw
-import GaloisForLFunctions.RHTower.XiPrimeArchThermalEndpointUniversalityLaw
 import GaloisForLFunctions.RHTower.XiPrimeSeamCalkinUniversalityLaw
 import GaloisForLFunctions.RHTower.XiReciprocalFixedCauchyKrylovSourceUniversalityLaw
 import GaloisForLFunctions.RHTower.XiReciprocalSquareSourceUniversalityLaw
@@ -13,8 +12,9 @@ import GaloisForLFunctions.RHTower.XiSquaredEulerDiagonalCorrelationUniversality
 import GaloisForLFunctions.RHTower.XiSquaredSeamCassiniDyadicUniversalityLaw
 import GaloisForLFunctions.RHTower.XiTerminalAnalyticSourceUniversalityLaw
 import GaloisForLFunctions.RHTower.XiTerminalGeometricPhaseUniversalityLaw
+import GaloisForLFunctions.RHTower.XiThermalSoninSingleApertureCollapseUniversalityLaw
 import GaloisForLFunctions.RHTower.XiZeroLocalCriticalPhaseUniversalityLaw
-import GaloisForLFunctions.RHTower.PrimeArchHankelDeterminantCriterion
+import GaloisForLFunctions.RHTower.PrimeArchExactReconstructionStrictHankelRayUniversalityLaw
 
 /-!
 # Whole-corpus Xi positive-phase universality
@@ -43,6 +43,8 @@ structure XiWholeCorpusPositivePhaseUniversalCertificate
   countableHankelTestSets : XiCountableHankelTestSetUniversalCertificate
   primeArchHankelExactReconstruction :
     PrimeArchSourceMomentHankelExactReconstructionPhase
+  allStrictHankelRayAdjoining :
+    PrimeArchAllStrictHankelRayAdjoiningPhase
   allDyadicDescentLevels :
     ∀ k : ℕ, XiDyadicDescentLevelUniversalCertificate k
   euclideanKrylovJensenReflection :
@@ -60,7 +62,8 @@ structure XiWholeCorpusPositivePhaseUniversalCertificate
     XiCassiniThetaReciprocalSourceUniversalCertificate
   squaredSeamCassiniDyadic : XiSquaredSeamCassiniDyadicUniversalCertificate
   hurwitzOrientation : XiHurwitzOrientationUniversalCertificate
-  primeArchThermalEndpoint : XiPrimeArchThermalEndpointUniversalCertificate
+  primeArchThermalSoninEndpoint :
+    XiPrimeArchThermalSoninEndpointUniversalCertificate
   fixedCauchyKrylovSaturation :
     XiReciprocalSquareFixedCauchyKrylovSourceContrastSaturation
   everyZeroLocalCriticalPhase :
@@ -69,9 +72,10 @@ structure XiWholeCorpusPositivePhaseUniversalCertificate
 
 /-- **Whole-corpus Xi positive-phase universality law.**  Under only the parameter admissibility
 needed by the analytic-source and thermal capstones, RH is equivalent to simultaneous realization
-of all seventeen currently terminal certificate families.  These include global certificates,
-every dyadic depth, every right-half zero, and every actual zero with every admissible prime-mark
-base and Clifford weight. -/
+of all eighteen currently terminal certificate families.  These include the complete thermal
+endpoint with every nondegenerate coupled-Sonin determinant collar, every dyadic depth, every
+right-half zero, every strict auxiliary `HTGeometry` Hankel ray, and every actual zero with every
+admissible prime-mark base and Clifford weight. -/
 theorem riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
     {Lrect : ℝ} (hLrect : 0 < Lrect) {N : ℕ}
     (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ Lrect ≤ Real.log n / 2)
@@ -96,6 +100,8 @@ theorem riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
         riemannHypothesis_iff_countableHankelTestSetUniversalCertificate.1 hRH
       primeArchHankelExactReconstruction :=
         primeArchSourceMomentHankelExactReconstructionPhase_iff_riemannHypothesis.2 hRH
+      allStrictHankelRayAdjoining :=
+        primeArchAllStrictHankelRayAdjoiningPhase_iff_riemannHypothesis.2 hRH
       allDyadicDescentLevels :=
         riemannHypothesis_iff_forall_dyadicDescentLevelUniversalCertificate.1 hRH
       euclideanKrylovJensenReflection :=
@@ -123,11 +129,9 @@ theorem riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
       hurwitzOrientation :=
         (riemannHypothesis_iff_xiHurwitzOrientationEnergy_eq_zero.trans
           xiHurwitzOrientationEnergy_eq_zero_iff_universalCertificate).1 hRH
-      primeArchThermalEndpoint :=
-        ((riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_one
-            hLrect hN).trans
-          (rectangularPrimePolarSource_negativeAbscissa_le_one_iff_endpointUniversalCertificate
-            hLrect hN)).1 hRH
+      primeArchThermalSoninEndpoint :=
+        (riemannHypothesis_iff_XiPrimeArchThermalSoninEndpointUniversalCertificate
+          hLrect hN).1 hRH
       fixedCauchyKrylovSaturation :=
         xiReciprocalSquareFixedCauchyKrylovSourceContrastSaturation_iff_riemannHypothesis.2 hRH
       everyZeroLocalCriticalPhase := by
@@ -137,6 +141,45 @@ theorem riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
   · intro hcertificate
     exact riemannHypothesis_iff_terminalGeometricPhaseUniversalCertificate.2
       hcertificate.geometricPhase
+
+/-- **Whole-corpus/all-strict-ray collapse.**  The complete terminal Xi phase is exactly closure
+of the prime--archimedean cone under every strict `HTGeometry` Hankel ray. -/
+theorem wholeCorpusPositivePhaseUniversalCertificate_iff_allStrictHankelRayAdjoiningPhase
+    {Lrect : ℝ} (hLrect : 0 < Lrect) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ Lrect ≤ Real.log n / 2)
+    {eta Lsmooth : ℝ} (heta : 0 < eta) (hwindow : eta < Lsmooth - eta)
+    (P : ℕ → XiSeparatedContinuedCauchyPacket)
+    (hP : IsRectangularSeparatedSourceSection Lrect P)
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    {degreeSet : Set ℕ} (hdegreeSet : degreeSet.Infinite)
+    (prime : Nat.Primes) {q : ℕ} (hq : q ≠ 0) :
+    XiWholeCorpusPositivePhaseUniversalCertificate
+        Lrect N eta Lsmooth P D degreeSet prime q ↔
+      PrimeArchAllStrictHankelRayAdjoiningPhase :=
+  (riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
+    hLrect hN heta hwindow P hP hD hdegreeSet prime hq).symm.trans
+      primeArchAllStrictHankelRayAdjoiningPhase_iff_riemannHypothesis.symm
+
+/-- **Whole-corpus/single-Sonin collapse.** At every nondegenerate coupled-Sonin aperture, one
+relative determinant collar detects the complete eighteen-family Xi positive phase. -/
+theorem wholeCorpusPositivePhaseUniversalCertificate_iff_singleSoninAperture
+    {Lrect : ℝ} (hLrect : 0 < Lrect) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ Lrect ≤ Real.log n / 2)
+    {eta Lsmooth : ℝ} (heta : 0 < eta) (hwindow : eta < Lsmooth - eta)
+    (P : ℕ → XiSeparatedContinuedCauchyPacket)
+    (hP : IsRectangularSeparatedSourceSection Lrect P)
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    {degreeSet : Set ℕ} (hdegreeSet : degreeSet.Infinite)
+    (prime : Nat.Primes) {q : ℕ} (hq : q ≠ 0)
+    (a : SoninCoupledNondegenerateAperture) :
+    XiWholeCorpusPositivePhaseUniversalCertificate
+        Lrect N eta Lsmooth P D degreeSet prime q ↔
+      UnitCollarExponentialEnvelope (fun n =>
+        bernsteinCoefficientPurity
+          (soninCoupledRelativeNormalizedSpectralLogDerivativeMoment a) n) :=
+  (riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
+    hLrect hN heta hwindow P hP hD hdegreeSet prime hq).symm.trans
+      (riemannHypothesis_iff_soninCoupledRelativeDeterminant_unitCollar a)
 
 /-- Simultaneous negative realization in all terminal certificate families possessing a global
 failure chart, together with explicit failure of the remaining positive-only capstones. -/
@@ -152,6 +195,8 @@ structure XiWholeCorpusFailurePhaseUniversalCertificate
   countableHankelFailure : XiCountableHankelTestSetFailureUniversalCertificate
   primeArchHankelExactReconstructionFails :
     ¬PrimeArchSourceMomentHankelExactReconstructionPhase
+  allStrictHankelRayAdjoiningFailure :
+    PrimeArchAllStrictHankelRayAdjoiningFailurePhase
   someDyadicDescentLevelFails :
     ∃ k : ℕ, ¬XiDyadicDescentLevelUniversalCertificate k
   euclideanKrylovJensenFailure :
@@ -172,8 +217,8 @@ structure XiWholeCorpusFailurePhaseUniversalCertificate
   squaredSeamCassiniDyadicFailure :
     XiSquaredSeamCassiniDyadicFailureUniversalCertificate
   hurwitzOrientationFailure : XiHurwitzOrientationFailureUniversalCertificate
-  primeArchThermalEndpointFails :
-    ¬XiPrimeArchThermalEndpointUniversalCertificate
+  primeArchThermalSoninEndpointFails :
+    ¬XiPrimeArchThermalSoninEndpointUniversalCertificate
   fixedCauchyKrylovPositiveFailure :
     XiReciprocalSquareFixedCauchyKrylovSourceContrastPositiveFailure
 
@@ -208,6 +253,9 @@ theorem not_riemannHypothesis_iff_wholeCorpusFailurePhaseUniversalCertificate
         hnotRH
           (primeArchSourceMomentHankelExactReconstructionPhase_iff_riemannHypothesis.1
             hexact)
+      allStrictHankelRayAdjoiningFailure :=
+        not_riemannHypothesis_iff_primeArchAllStrictHankelRayAdjoiningFailurePhase.1
+          hnotRH
       someDyadicDescentLevelFails := by
         by_contra hnoFailure
         apply hnotRH
@@ -244,19 +292,60 @@ theorem not_riemannHypothesis_iff_wholeCorpusFailurePhaseUniversalCertificate
       hurwitzOrientationFailure :=
         (xiHurwitzOrientationEnergy_pos_iff_not_riemannHypothesis.symm.trans
           xiHurwitzOrientationEnergy_pos_iff_failureUniversalCertificate).1 hnotRH
-      primeArchThermalEndpointFails := by
+      primeArchThermalSoninEndpointFails := by
         intro hthermal
         apply hnotRH
-        exact ((riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_one
-            hLrect hN).trans
-          (rectangularPrimePolarSource_negativeAbscissa_le_one_iff_endpointUniversalCertificate
-            hLrect hN)).2 hthermal
+        exact
+          (riemannHypothesis_iff_XiPrimeArchThermalSoninEndpointUniversalCertificate
+            hLrect hN).2 hthermal
       fixedCauchyKrylovPositiveFailure :=
         xiReciprocalSquareFixedCauchyKrylovSourceContrastPositiveFailure_iff_not_riemannHypothesis.2
           hnotRH }
   · intro hcertificate
     exact not_riemannHypothesis_iff_terminalGeometricPhaseFailureUniversalCertificate.2
       hcertificate.geometricPhaseFailure
+
+/-- **Whole-corpus/all-strict-ray failure collapse.**  The complete negative Xi phase is exactly
+the synchronized statement that no strict auxiliary Hankel ray repairs the enlarged cone. -/
+theorem
+    wholeCorpusFailurePhaseUniversalCertificate_iff_allStrictHankelRayAdjoiningFailurePhase
+    {Lrect : ℝ} (hLrect : 0 < Lrect) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ Lrect ≤ Real.log n / 2)
+    {eta Lsmooth : ℝ} (heta : 0 < eta) (hwindow : eta < Lsmooth - eta)
+    (P : ℕ → XiSeparatedContinuedCauchyPacket)
+    (hP : IsRectangularSeparatedSourceSection Lrect P)
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    {degreeSet : Set ℕ} (hdegreeSet : degreeSet.Infinite)
+    (prime : Nat.Primes) {q : ℕ} (hq : q ≠ 0)
+    {aperture : ℝ} (haperture : 0 < aperture) :
+    XiWholeCorpusFailurePhaseUniversalCertificate
+        Lrect N eta Lsmooth P D degreeSet prime q aperture ↔
+      PrimeArchAllStrictHankelRayAdjoiningFailurePhase :=
+  (not_riemannHypothesis_iff_wholeCorpusFailurePhaseUniversalCertificate
+    hLrect hN heta hwindow P hP hD hdegreeSet prime hq haperture).symm.trans
+      not_riemannHypothesis_iff_primeArchAllStrictHankelRayAdjoiningFailurePhase
+
+/-- **Whole-corpus failure/single-Sonin collapse.** Failure of the complete Xi phase is exactly
+failure of the determinant collar at any chosen nondegenerate coupled-Sonin aperture. -/
+theorem wholeCorpusFailurePhaseUniversalCertificate_iff_not_singleSoninAperture
+    {Lrect : ℝ} (hLrect : 0 < Lrect) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ Lrect ≤ Real.log n / 2)
+    {eta Lsmooth : ℝ} (heta : 0 < eta) (hwindow : eta < Lsmooth - eta)
+    (P : ℕ → XiSeparatedContinuedCauchyPacket)
+    (hP : IsRectangularSeparatedSourceSection Lrect P)
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    {degreeSet : Set ℕ} (hdegreeSet : degreeSet.Infinite)
+    (prime : Nat.Primes) {q : ℕ} (hq : q ≠ 0)
+    {aperture : ℝ} (haperture : 0 < aperture)
+    (a : SoninCoupledNondegenerateAperture) :
+    XiWholeCorpusFailurePhaseUniversalCertificate
+        Lrect N eta Lsmooth P D degreeSet prime q aperture ↔
+      ¬UnitCollarExponentialEnvelope (fun n =>
+        bernsteinCoefficientPurity
+          (soninCoupledRelativeNormalizedSpectralLogDerivativeMoment a) n) :=
+  (not_riemannHypothesis_iff_wholeCorpusFailurePhaseUniversalCertificate
+    hLrect hN heta hwindow P hP hD hdegreeSet prime hq haperture).symm.trans
+      (not_congr (riemannHypothesis_iff_soninCoupledRelativeDeterminant_unitCollar a))
 
 /-- Positive and negative whole-corpus phases are exact complements. -/
 theorem not_wholeCorpusPositivePhase_iff_wholeCorpusFailurePhase

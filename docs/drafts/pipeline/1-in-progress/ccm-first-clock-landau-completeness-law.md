@@ -534,7 +534,7 @@ the explicit arithmetic reason already visible in its first moving clock edge.
 - [ ] false-RH cofinal unboundedness `(C2)` proved
 - [x] pointwise first-clock completeness theorem `(FC)` formalized
 - [x] direct Lean checks and axiom audit
-- [ ] final targeted module build
+- [x] final targeted module build
 - [ ] unconditional published-source sign, RH, disproof, or scoped CCM death theorem
 
 ## Log
@@ -577,3 +577,121 @@ the explicit arithmetic reason already visible in its first moving clock edge.
   `ccmFirstClockPublishedSourceNonnegative_iff_rh`.  Direct Lean check passes; capstone axiom
   audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Remaining open core is no
   longer analytic transfer: it is exactly the literal published von-Mangoldt--Gamma source sign.
+- 2026-07-23 -- Wired `CCMFirstClockVolterraReflection` into the `RHTower` umbrella.  Final
+  cached audit `lake build GaloisForLFunctions.RHTower.CCMFirstClockVolterraReflection` completes
+  successfully (`9074/9074`); dependency warnings are pre-existing linter warnings.
+
+## Midpoint-reflection positive-mass law `[PROVED IN LEAN]`
+
+The literal source has a stronger source-side normal form than `(81.5)`.  For `L>0`,
+`xi*L=2*pi`, write
+
+```text
+g(h)=rho_infinity(h)-2*cosh(h/2),
+Delta_L g(h)=g(h)-g(h+L/2),
+
+P(L,xi)=sum_(2<=k<=exp L) Lambda(k)/sqrt(k) sin(xi log k).
+```
+
+The physical sine removes the apparent `rho_infinity(h)~1/(2h)` singularity.  Midpoint
+translation changes its sign exactly, so
+
+```text
+pi B(L,xi)
+ = C(L,xi)+P(L,xi),                                      (HW1)
+
+C(L,xi)
+ = integral_0^(L/2) sin(xi h) Delta_L g(h) dh.           (HW2)
+```
+
+Both pieces of `Delta_L g` have strict orientation on `0<h<L/2`:
+
+```text
+rho_infinity(h)>rho_infinity(h+L/2),
+cosh((h+L/2)/2)>cosh(h/2).
+```
+
+Therefore
+
+```text
+C(L,xi)>0.                                                (HW3)
+```
+
+Split the prime mass by its phase, not by an auxiliary truncation:
+
+```text
+P_plus(L,xi)
+ =sum Lambda(k)/sqrt(k) max(sin(xi log k),0),
+
+P_minus(L,xi)
+ =sum Lambda(k)/sqrt(k) max(-sin(xi log k),0).
+```
+
+These are unconditionally nonnegative and
+
+```text
+P=P_plus-P_minus,
+
+pi B=C+P_plus-P_minus.                                    (HW4)
+```
+
+At the first physical clock `xi=2*pi/L`, `P_plus` is the inner logarithmic half-wave and
+`P_minus` is the reflected outer half-wave.  Hence
+
+```text
+B_1(L)>=0
+  <-> P_minus(L)<=C(L)+P_plus(L).                         (HW5)
+```
+
+Combining `(HW5)` with the formal first-clock completeness theorem gives the unconditional
+positive-mass criterion
+
+```text
+RiemannHypothesis
+  <-> for every L>=pi/2,
+      P_minus(L)<=C(L)+P_plus(L).                         (HW6)
+```
+
+This is not an RH proof: `(HW6)` proves that the sole unsolved arithmetic content is an
+inner/outer prime-power transport inequality between explicitly nonnegative quantities.
+It rules out further attempts to extract the sign from Gamma monotonicity alone: Gamma supplies
+the strict budget `C`, but the counter-phased prime mass remains an independent RH-complete
+excess.
+
+Lean source:
+
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockHalfWaveReflection.lean`
+- `pi_mul_ccmPublishedSourceSineCoefficient_eq_budget_add_aligned_sub_counter`
+- `ccmFirstClockContinuousHalfWaveBudget_pos`
+- `ccmFirstClockPrimeHalfWaveDominance_iff_rh`
+
+Targeted literature searches found explicit-formula sine transforms and CCM restricted-Weil
+source formulas, but no prior statement of `(HW1)`--`(HW6)`.  Novelty claim is limited to this
+exact midpoint-reflection/positive-Jordan normal form and its formal RH equivalence.
+
+### Mechanism audit after `(HW6)`
+
+1. **Gamma-only orientation fails.** `(HW3)` is already the strongest possible Gamma statement;
+   it cannot compare an atomic outer excess with inner prime mass.
+2. **Individual prime-power reflection fails.** Reflection sends `log k` to `L-log k`, usually
+   not the logarithm of an integer or prime power.  No source-preserving atomwise involution exists.
+3. **Prime-power tower summation does not repair the prime layer.** An outer prime
+   `exp(L/2)<p<=exp L` has only its first power inside the aperture and contributes with the wrong
+   sign; higher powers lie outside.  Any proof must therefore couple different primes or use a
+   completed nonlocal source law.
+4. **Selberg/Riccati rewriting remains circular.** It replaces the counter mass by a signed
+   prime-product convolution whose required orientation is the same missing multiplicative
+   cancellation already isolated in the CCM corpus.
+
+`[OPEN CORE]` Construct an unconditional, source-preserving transport from the reflected outer
+prime-power measure to the sum of the inner prime-power measure and the continuous Gamma--polar
+reflection budget, with cost `sin(2*pi*h/L)`, uniformly for every `L>=pi/2`; or prove that no
+CCM-native source morphism can realize such a transport.  By `(HW6)`, the first outcome proves RH.
+
+Audit: direct `lake env lean` check and final targeted
+`lake build GaloisForLFunctions.RHTower.CCMFirstClockHalfWaveReflection` pass (`9075/9075`).
+The capstone, strict-budget, and oriented-source theorems use only `propext`,
+`Classical.choice`, and `Quot.sound`.  Global formal lint was concurrently blocked by the
+unrelated unwired module
+`GaloisForLFunctions.RHTower.PrimeArchExactReconstructionStrictHankelRayUniversalityLaw`;
+the half-wave module itself contains no forbidden declaration and is wired into `RHTower.lean`.

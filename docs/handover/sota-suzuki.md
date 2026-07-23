@@ -5568,6 +5568,96 @@ unreachable; global lint remains red on 21 unrelated concurrent modules.  Render
 is `output/pdf/suzuki-mangoldt-macroscopic-prime-block-surplus.pdf`.  No stale owned Lean/lake
 process remains.
 
+## S87. Bivariate marginal trace lock excludes ordinary prime--jet partial trace at every index (2026-07-23)
+
+S86 constructs the signed `SR-40` principal-relative jet current. `SR-42` then proves its negative
+index is unbounded, excluding Hilbert and every fixed-index Pontryagin realization. That still
+left a seemingly standard infinite-index construction: place one kernel on a product
+prime--jet carrier and recover the `SR-40` and `SR-38` blocks as its two coordinate partial
+traces. This entire class is impossible.
+
+For a finite kernel `C` on `P × J`, define
+
+```text
+Jet(C)(i,j) = sum_p C((p,i),(p,j)),
+Src(C)(p,q) = sum_i C((p,i),(q,i)).
+```
+
+Finite-sum commutation gives the universal trace-lock law
+
+```text
+tr Jet(C)
+ = sum_i sum_p C((p,i),(p,i))
+ = sum_p sum_i C((p,i),(p,i))
+ = tr Src(C).                                          (S87.1)
+```
+
+No positivity, Hermitian symmetry, nondegeneracy, inclusion law, or finite-index assumption is
+used. Arbitrary mixed entries cannot alter `(S87.1)`.
+
+For the actual aperture-`M` principal-relative current
+
+```text
+rho_M(q)
+ = sum_(n=2)^(M+1) Lambda(n)/n
+     (log(n+1)^q-log(n)^q),
+R_(M,N)(i,j)=rho_M(i+j+2).
+```
+
+Lean proves, for every `M>0` and `q>0`,
+
+```text
+rho_M(q)>0.                                            (S87.2)
+```
+
+All summands are nonnegative; source atom `n=2` is strict because
+`Lambda(2)/2>0` and `log(2)^q<log(3)^q`. Splitting the diagonal trace at its final jet coordinate
+then gives exact flux law
+
+```text
+tr R_(M,N+1)=tr R_(M,N)+rho_M(2N+2)
+             >tr R_(M,N).                              (S87.3)
+```
+
+Suppose two product kernels at jet sizes `N` and `N+1` had these jet marginals and same source
+marginal `B`. Equation `(S87.1)` would force
+
+```text
+tr R_(M,N)=tr B=tr R_(M,N+1),
+```
+
+contradicting `(S87.3)`. Since `B` is arbitrary, Lean specializes directly to every finite
+pullback of actual coherent odd Gamma--Jacobi residual
+`gammaOddJacobiPrimeCoherentResidualKernel`. Thus ordinary partial trace cannot realize
+`SR-40` and `SR-38` simultaneously even with arbitrary real kernels, arbitrary mixed block, and
+arbitrary negative index.
+
+This is not RH and does not kill every infinite-index Krein connector. It changes exact survivor:
+`SR-41` must use a singular, weighted/renormalized, non-trace-preserving cyclic reader or vary its
+source marginal with jet cutoff. Such reader must expose positive opening flux
+`rho_M(2N+2)` as a boundary channel. It cannot hide flux in mixed block. Ordinary normal partial
+trace is now class-completely dead.
+
+Universal law `(S87.1)` is elementary finite-dimensional partial-trace algebra and is not claimed
+as externally novel. Corpus search found no prior composition with source flux `(S87.3)`. Exact
+von Mangoldt flux, its `SR-38` specialization, and resulting all-index Suzuki completion no-go are
+provisional scientific advance pending external specialist novelty audit.
+
+Artifacts:
+
+- `formal/GaloisForLFunctions/HTGeometry/BivariateMarginalTraceLock.lean`;
+- `formal/GaloisForLFunctions/RHTower/VonMangoldtBivariateMarginalTraceLock.lean`;
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/von-mangoldt-bivariate-marginal-trace-lock-no-go.md`;
+- `docs/drafts/pipeline/3-formalized/von-mangoldt-bivariate-marginal-trace-lock-no-go.md`;
+- `docs/drafts/pipeline/1-in-progress/suzuki-source-realization-knowledge-ledger.md`.
+
+Formal audit: direct `lake env lean` checks pass for both new leaves. Targeted cached final build
+`lake build GaloisForLFunctions.RHTower.VonMangoldtBivariateMarginalTraceLock` passes
+`8868/8868`; output contains only pre-existing replayed linter warnings. Repository formal lint
+passes with large-file warnings only. Six capstone axiom surfaces use only `propext`,
+`Classical.choice`, and `Quot.sound`; forbidden-declaration scan is clean. No stale Lean/lake
+process remains.
+
 ## S70--S72. Scalar positive transport closes as a no-go; operator source remains (2026-07-22)
 
 S69 proved an unbounded apex-relative prime-block surplus but did not prove that this surplus was

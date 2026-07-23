@@ -176,12 +176,22 @@ and finite-support coefficient reconstructions do not count as progress.
     sum is no source connector. Remaining producer problem is source-canonical, inclusion-compatible
     infinite-index bivariate prime--jet completion realizing both marginals and completed Euler
     trace.
+25. **Ordinary bivariate partial trace is impossible at every Krein index.**
+    `BivariateMarginalTraceLock.lean` proves both coordinate partial traces of an arbitrary finite
+    product kernel have equal total trace, without positivity or symmetry.
+    `VonMangoldtBivariateMarginalTraceLock.lean` proves the exact source law
+    `tr R_(M,N+1)=tr R_(M,N)+rho_M(2N+2)` and `rho_M(2N+2)>0` for every nonempty aperture.
+    Consequently no fixed source marginal, including the actual coherent odd Gamma--Jacobi
+    marginal, can coexist with two consecutive `SR-40` jet sections through coordinate partial
+    traces. Mixed entries and infinite negative index do not change this obstruction. Surviving
+    connector must use a singular, weighted/renormalized, non-trace-preserving cyclic reader that
+    carries the explicit positive opening flux.
 
 ## Single live edge
 
 `SUZUKI-COPOISSON-FIBRE-ORIENTATION`
 
-Items 23--24 and source-ledger `SR-41`--`SR-42` are active producer subproblem for this terminal
+Items 23--25 and source-ledger `SR-41`--`SR-43` are active producer subproblem for this terminal
 edge, not a
 second endpoint: completed cofinal weld must feed the fibre-pointed Berezin orientation below.
 Finite Hankel positivity alone does not imply that orientation.
@@ -417,3 +427,9 @@ Before each new action, answer in this file's log:
   This formally excludes positive and every fixed-index Pontryagin realization. Live `SR-41`
   connector is now forced into genuinely infinite-index Krein geometry before completed Euler
   trace and fibre orientation.
+- **2026-07-23 bivariate marginal trace-lock advance.** Arbitrary finite product kernels have
+  trace-locked coordinate marginals. Actual `SR-40` jet trace strictly increases by the exact
+  positive source moment `rho_M(2N+2)` when one jet opens, while the prescribed `SR-38` prime
+  marginal is fixed. Thus even an arbitrary infinite-index mixed Krein block cannot realize both
+  via ordinary partial trace. Live `SR-41` is narrowed to a singular or non-trace-preserving cyclic
+  reader carrying that source flux before completed Euler trace and fibre orientation.

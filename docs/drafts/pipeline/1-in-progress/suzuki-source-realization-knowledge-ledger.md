@@ -78,10 +78,11 @@ they are not novel scientific knowledge.
 | `SR-38` | `ADVANCE` | Least primewise ranks can be zero-padded in the common absolute odd-Jacobi coordinate. The resulting cross-prime residual is positive semidefinite on every finite packet, its diagonal is exactly the `SR-37` tail, and its Gamma-conductor-weighted diagonal is summable. Thus odd capacity and cutoff/inclusion coherence are closed without a common rank. Generic Gram/capacity lemma is only `FORMAL-CLOSURE`; source connector is advance. | Coherent positive kernel is not yet the singular/local finite incidence or completed trace required by Suzuki. | `GammaOddJacobiCoherentCapacity.lean`; `AdaptiveMercerCapacity.lean` |
 | `SR-39` | `ADVANCE` | Successor Dirichlet Gram has an exact all-order strictly negative Hankel-curvature density. Hence every additive ordinary Hankel boundary is class-completely incapable of repairing it. Placing the actual pointed Gamma--Bianchi raw feature in the same finite von Mangoldt coordinates instead gives the exact endpoint weld `difference + tail = head`; its forced mixed block has the exact opposite positive curvature, and the coupled Gram is a positive moment-Hankel matrix for every finite aperture and jet size. | Raw pointed boundary has no ordinary cofinal Hilbert limit. Finite Hankel welding does not incorporate odd Gamma-Jacobi capacity, completed Euler trace, or critical normalization. | `von-mangoldt-successor-bianchi-hankel-curvature-weld.md`; `ConservativeHankelRigidity.lean`; `VonMangoldtAdditiveLogJetHankelCurvature.lean`; `VonMangoldtSuccessorBianchiHankelWeld.lean` |
 | `SR-40` | `ADVANCE` | Source-fixed principal subtraction of the exact finite weld is absolutely summable at every jet order. It retains exactly `Successor+Cross`, converges in every finite matrix topology to universal kernel `R(r,s)=rho_(r+s+2)`, and obeys all-order Hankel shift. Forced mixed curvature therefore survives and cancels successor defect at every aperture and order. | Signed jet current is not yet a positive/Krein source realization; coherent odd Gamma--Jacobi kernel lives on prime coordinates and cannot be added to jet matrix without a proved bivariate connector. Completed Euler trace and critical orientation remain open. | `von-mangoldt-successor-principal-relative-hankel-current.md`; `VonMangoldtSuccessorPrincipalRelativeHankel.lean` |
-| `SR-41` | `LIVE-SOURCE` | Construct or class-completely refute an inclusion-compatible bivariate prime--jet completion whose jet compression is `SR-40` principal-relative Hankel current, whose prime/Jacobi compression is `SR-38` coherent odd Gamma residual, and whose cyclic source reader gives completed Euler multiplication/trace before Xi character or target moment is read. | By `SR-42`, positive and every fixed-index Pontryagin completion are impossible. Abstract finite matrix completion, separate direct sum of two marginals, target-fitted cross block, or generic Krein spectral decomposition does not connect source objects and does not count. | Exact post-`SR-40` operator-realization core below |
+| `SR-41` | `LIVE-SOURCE` | Construct or class-completely refute an inclusion-compatible bivariate prime--jet completion whose jet compression is `SR-40` principal-relative Hankel current, whose prime/Jacobi compression is `SR-38` coherent odd Gamma residual, and whose cyclic source reader gives completed Euler multiplication/trace before Xi character or target moment is read. | By `SR-42`, positive and every fixed-index Pontryagin completion are impossible. By `SR-43`, ordinary coordinate partial trace is impossible at every index. Abstract finite matrix completion, separate direct sum, target-fitted cross block, generic Krein spectral decomposition, or trace-preserving marginalization does not count. | Exact post-`SR-40` operator-realization core below |
 | `SR-42` | `ADVANCE` / `FAILED-CLASS` | Every full `SR-40` aperture section is a square Vandermonde congruence of explicit endpoint-divergence masses, so its positive, negative, and null indices are exact sign counts. Left endpoint is always negative. Primes `p>3`, `p=3 mod 4`, force distinct negative masses; negative index is unbounded. | No positive or fixed-index Pontryagin bivariate completion can realize all jet compressions. Surviving `SR-41` object must be genuinely infinite-index Krein, source-canonical, restriction-compatible, and still realize `SR-38` marginal plus completed Euler trace. | `von-mangoldt-successor-transport-inertia-law.md`; `SignedAtomicMomentInertia.lean`; `VonMangoldtSuccessorTransportInertia.lean` |
+| `SR-43` | `ADVANCE` / `FAILED-CLASS` | Every finite bivariate coordinate-partial-trace realization has equal total traces on its jet and source marginals. Actual `SR-40` trace obeys exact opening law `tr R_(M,N+1)=tr R_(M,N)+rho_M(2N+2)` with strictly positive source flux at every nonempty aperture. Hence no fixed source marginal—specifically no finite `SR-38` coherent odd Gamma--Jacobi marginal—can coexist with two consecutive `SR-40` jet marginals, for arbitrary real kernels, arbitrary mixed block, and arbitrary Krein index. | Ordinary normal partial trace is class-completely dead. Surviving `SR-41` connector must vary source marginal with jet cutoff or use a singular, weighted/renormalized, non-trace-preserving cyclic reader carrying the explicit positive flux. | `von-mangoldt-bivariate-marginal-trace-lock-no-go.md`; `BivariateMarginalTraceLock.lean`; `VonMangoldtBivariateMarginalTraceLock.lean` |
 
-## Level lift forced by `SR-35`--`SR-42`: bivariate prime--jet source completion
+## Level lift forced by `SR-35`--`SR-43`: bivariate prime--jet source completion
 
 Current source problem belongs to more general problem of **source-renormalized covariant
 Dirichlet forms relative to a resolved abelian channel algebra**.
@@ -101,12 +102,16 @@ placement: successor and pointed Bianchi boundary must share source coordinates,
 block restores Hankel balance. `SR-40` solves signed cofinal jet current: source principal
 subtraction retains that mixed block, converges, and is Hankel at every order. `SR-42` computes
 its exact finite-section inertia and proves negative index unbounded, excluding Hilbert and every
-fixed-index Pontryagin realization. Capacity, packet coherence, finite cross-term placement,
-matrix-entry cofinal renormalization, and finite-index completion are no longer open. Remaining
-issue is object-level coupling: `SR-40` is a jet kernel after prime contraction,
+fixed-index Pontryagin realization. `SR-43` then excludes coordinate partial trace at arbitrary
+index: the two marginal traces must agree, but every new `SR-40` jet opens a strictly positive
+source flux while the `SR-38` marginal is fixed. Capacity, packet coherence, finite cross-term
+placement, matrix-entry cofinal renormalization, finite-index completion, and ordinary normal
+partial trace are no longer open. Remaining issue is object-level coupling: `SR-40` is a jet
+kernel after prime contraction,
 whereas `SR-38` is a prime kernel after Jacobi contraction. Adding them is ill-typed. One bivariate
 prime--jet source object must realize both marginals and Euler trace in infinite-index Krein
-geometry.
+geometry through a singular or non-trace-preserving reader that exposes the exact jet-opening
+flux.
 
 Scientific-method question is now:
 
@@ -430,3 +435,11 @@ Before claiming progress, record all answers:
   unbounded. Generic signed-atomic inertia is parent theory; source composition is the advance.
   Positive and fixed-index Pontryagin `SR-41` realizations are now failed classes. Only
   source-canonical, inclusion-compatible infinite-index Krein coupling remains live.
+- **2026-07-23 — bivariate marginal trace lock (`SR-43`).** Finite coordinate partial traces of
+  any product kernel have equal total trace, without positivity, symmetry, or index assumptions.
+  Actual `SR-40` sections instead satisfy
+  `tr R_(M,N+1)=tr R_(M,N)+rho_M(2N+2)` with `rho_M(2N+2)>0` at every nonempty aperture.
+  Therefore arbitrary mixed coupling and infinite negative index cannot make a fixed `SR-38`
+  prime/Jacobi marginal coexist with consecutive jet marginals. Ordinary normal partial trace is
+  now a failed class. The positive survivor is a singular, weighted/renormalized cyclic reader
+  which carries this exact positive trace flux explicitly.
