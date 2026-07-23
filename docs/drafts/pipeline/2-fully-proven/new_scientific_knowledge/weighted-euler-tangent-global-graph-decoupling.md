@@ -469,3 +469,112 @@ continuous coefficient datum is `[one] in Q_log`.  The all-grade corona reductio
 higher prime-power rays add no second quotient coordinate.  The next construction must therefore
 derive a nonseparable pairing of `[one]` with the global divisor; merely placing exponent characters
 in another corona still only records their real part and remains circular.
+
+## Formalization progress (Lean)
+
+- **Session start:** 2026-07-23, seed 775516966441434641.
+- **Target module chain (RHTower/):**
+  1. `WeightedEulerCoefficientSpaces.lean` — spaces `T_1` (critical summable), `M_log`
+     (logarithmic Marcinkiewicz), vanishing-tail layer `M_0` via truncation tails; exact
+     coordinate norm `(4a)`; unit field in `M_log` but not `T_1`; `T_1 ⊆ M_0`;
+     witness `1/log p ∈ M_0 \ T_1`.  [IN PROGRESS this session]
+  2. Ray-norm equivalence `(1)` (A_{>1} ↔ T_{>1} comparison, geometric-derivative series).
+  3. Dual reduction `(4)–(5)` on compact carriers (reuse `CompactCarrier*`,
+     `EulerUnitTangent`, `PrimeLambertMobiusInversion`).
+  4. Oversampling lemma `(8a)` — Chebyshev–Lobatto + Markov + short-interval primes
+     (biggest gap; needs new interpolation infrastructure; check
+     `SectorPrimeZeroUniqueness` PNT-free route as possible substitute input).
+  5. Carrier separation `(13)–(16)` and joint closure `(3)`, `(18)`, `(19)`.
+- **Existing corpus connectors found:** `RHTower.Mertens.mertens_first_prime`
+  (`MertensFirst.lean`, explicit constant), `CompactCarrierFourierBorel/Lambert/
+  SectorUniqueness/FECompleteness`, `PrimeLambertMobiusInversion`, `EulerUnitTangent`,
+  `PrimeLogExponentialTypeUniqueness`, `PrimeBarycentricCoefficientDivergence` (scope
+  note 6), mathlib `not_summable_one_div_on_primes`.
+- **[DONE 2026-07-23] Step 1 — coefficient-space layer.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerCoefficientSpaces.lean` (registered in the
+  `RHTower` umbrella; `lake build` clean; `#print axioms` = standard three on all ten theorems).
+  Proves unconditionally: `T_1 ⊆ M_0 ⊆ M_log` (`memVanishingTailLayer_of_memCriticalSummableLayer`,
+  `memMarcinkiewiczLogLayer_of_memVanishingTailLayer`); exact coordinate norm `(4a)` as
+  `isGreatest_marcinkiewiczLogQuotient_coordinate` (greatest quotient value `1/p`, attained at
+  `X = p`); unit field in `M_log` with explicit bound `1 + C/log 2`
+  (`unitField_memMarcinkiewiczLogLayer`, `C = mertensPrimeConstant`); unit field not in `T_1`
+  (`unitField_not_memCriticalSummableLayer`, Mertens divergence) and not in `M_0`
+  (`unitField_not_memVanishingTailLayer` — tail quotients exceed `1/4` cofinally, via two-sided
+  Mertens); strictness witnesses `invLogField = 1/log · ∈ M_0 \ T_1`.
+  `M_0` is formalized by uniform vanishing of truncation tails in the Marcinkiewicz quotient
+  (equivalent to closure of finite support once the normed space is built — deferred).
+- **[DONE 2026-07-23] Step 2 — ray-norm equivalence (card eq. (1)).**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerRayNormEquivalence.lean` (umbrella-registered,
+  `lake build` clean, standard axioms).  Unconditional: closed form
+  `primePowerRayMass_eq` (`Σ_m m log p |b_p| p^{-mσ} = log p |b_p|·p^{-σ}/(1-p^{-σ})²`); two-sided
+  `p`-uniform comparison `le_primePowerRayMass` (constant 1) and `primePowerRayMass_le`
+  (constant `(1-2^{-σ})⁻²`); level-`σ` summability equivalence
+  `summable_indicator_primePowerRayMass_iff` for every `σ > 0`; boundary connector at `σ = 1` to
+  `MemCriticalSummableLayer` (`T_1`).
+- **NEXT (step 3):** dual reduction (4)–(5): joint-graph annihilator ⇒ coefficient-dual decay and
+  Lambert relation on compact carriers; reuse `CompactCarrierFourierBorel/Lambert`,
+  `EulerUnitTangent`, `PrimeLambertMobiusInversion`.
+- **[DONE 2026-07-23] Step 3 — dual reduction (4)–(7).**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerDualReduction.lean` (umbrella-registered,
+  `lake build` clean, standard axioms).  Unconditional against the existing compact-carrier
+  Lambert infrastructure: `criticalNorm_coordinate` (`‖e_p‖_{T_1} = log p / p`, eq. (4) at
+  `σ₀ = 1`); `map_compactPrimeEulerUnitTangent_eq_logMul_lambert`
+  (`ℓ(u_p) = (log p)·H(log p)`); `norm_lambert_primeLog_le_of_graph_annihilation`
+  (graph relation + weighted dual bound ⇒ `‖H(log p)‖ ≤ C p^{-σ₀}`, eq. (7)); critical instance
+  `..._critical` (`≤ C/p`).
+- **NEXT (step 4, the open engine):** prime-log oversampling lemma (8a): exponentially small
+  prime-log samples of a compact-carrier Lambert transform force negative exponential indicator.
+  Needed inputs to build: derivative bound (8) from the carrier (differentiate
+  `compactCarrierLambertTransform` in the corpus normalisation), Chebyshev–Lobatto interpolation
+  with `O(log N)` Lebesgue constant + Markov `O(N²)` bound (11)–(11b) (not in mathlib — build),
+  primes in `[X, X + X/(log X)^B]` (needs dlVP-strength PNT — check `PrimeNumberTheoremAnd`-style
+  in-tree resources or the corpus PNT-free `SectorPrimeZeroUniqueness` route as a substitute).
+- **Step 4 design note (2026-07-23).**  The derivative bound (8)–(10) will be formalized via
+  Cauchy estimates instead of term-by-term differentiation: the corpus already proves
+  `compactCarrierLambertTransform` analytic wherever the exponential test is contracting; on the
+  disc `|z − x| ≤ c₀x`, `c₀ = δ/(2(δ+M))` (`δ` = carrier real-part floor, `M` = carrier sup norm),
+  one has `Re(zs) ≥ δ₂x`, hence `|H| ≤ ‖L‖ e^{−δ₂x}(1−e^{−δ₂R₀})^{−2}` there, and Cauchy gives
+  `|H^{(N)}(x)| ≤ N! (c₀x)^{−N} · sup` — with `N = ⌊cx⌋`, `c` small, this is `≤ C e^{−δ₁x}`,
+  which is exactly (10).  Same conclusion, no `M^N` bookkeeping.  The PNT-strength input
+  (primes in `[X, X+X/(log X)^B]`) remains the deep block: neither mathlib nor the deps carry it;
+  plan is elementary-PNT-with-power-log-error (Bombieri–Wirsing style) or await upstream, building
+  the interpolation stability layer (11)–(11b) in the meantime — it is independent of the prime
+  input.
+- **[DONE 2026-07-23] Step 4a — derivative bound (10).**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerLambertDerivativeBound.lean`
+  (umbrella-registered, `lake build` clean, standard axioms).  Unconditional Cauchy-estimate
+  form of card display (10): `re_mul_carrier_ge_on_closedBall` (sector-disc real-part floor),
+  `norm_compactCarrierLambertTransform_le_on_closedBall` (`‖H‖ ≤ 4‖L‖e^{−δx/2}` on the disc
+  `|z−x| ≤ δx/(2M)`), and `norm_iteratedDeriv_compactCarrierLambertTransform_le`
+  (`‖H^{(N)}(x)‖ ≤ 4‖L‖e^{−δx/2}` for every `N ≤ δx/(4M)` — factorial absorbed via
+  `N! ≤ N^N ≤ (r/2)^N`, so the bound is uniform in the derivative order).
+- **NEXT (step 4b):** interpolation stability layer (11)–(11b): Chebyshev–Lobatto nodes,
+  `O(log N)` Lebesgue constant, Markov `‖l_j'‖ = O(N² log N)` row bound, perturbed-node
+  invertibility `‖A − I‖ = o(1)`.  Independent of the prime-gap input.  Then step 4c: primes in
+  `[X, X + X/(log X)^B]` (elementary PNT with power-log error — the deep block), and step 4d:
+  assembly of (8a).
+- **[DONE 2026-07-23] Step 5a — Möbius decay transfer (13)–(14), discrete form.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerMobiusDecayTransfer.lean`
+  (umbrella-registered, `lake build` clean, standard axioms).  Reuses the corpus
+  `weightedLambertMobius_inversion` + `weightedLambertMobiusPair_summable_of_geometric`.
+  New: `tsum_pnat_coe_mul_geometric_le` (`Σ_{ℕ+} n ρⁿ ≤ ρ/(1-ρ)²`) and
+  `norm_first_le_of_weightedLambert_decay`: geometric coefficients + `‖H(n)‖ ≤ D ρⁿ`, `ρ ≤ 1/2`
+  ⇒ `‖a 1‖ ≤ 4 D ρ`.  Applied at `a_x(k) = F_A(kx) − e^{−kx}F_A(−kx)`, `ρ = e^{−σ'x}`, this is
+  the card's (8a) ⇒ (14) step.
+- **Remaining for the card:** 4b interpolation stability (11)–(11b); 4c short-interval primes
+  (deep); 4d assembly of (8a); 5b carrier separation (15)–(16) (conjugate-indicator/minimal
+  carrier — check `ExponentialTypeZeroDensity`, `CompactCarrierWedgeGeometry` for inputs);
+  5c Hahn–Banach joint closure (3) and group/affine closures (18)–(19).
+- **[DONE 2026-07-23] Step 5b(i) — two-ray Phragmén–Lindelöf bound.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerTwoRayPhragmenLindelof.lean`
+  (umbrella-registered, `lake build` clean, standard axioms).
+  `norm_le_exp_of_two_ray_exponential_decay`: entire `g` with `‖g z‖ ≤ A e^{τ‖z‖}` and two-sided
+  real-ray decay `‖g(±x)‖ ≤ C e^{−εx}` obeys `‖g z‖ ≤ max C A · e^{−ε|Re z| + τ|Im z|}` globally
+  (four mathlib PL quadrant applications with multipliers `e^{(±ε±τi)z}`).  This is the
+  quantitative `h(0)+h(π) ≥ 0` input for carrier separation (15)–(16).
+- **NEXT (step 5b(ii)):** Paley–Wiener vanishing: from the global bound, the Fourier transform
+  `Φ(w) = ∫ g(x)e^{−iwx}dx` is analytic on the strip `|Im w| < ε`, vanishes for `|w| > τ` by
+  rectangle contour shift (`Complex.integral_boundary_rect_eq_zero_of_differentiableOn` + side
+  decay), hence `Φ ≡ 0` (identity theorem), hence `g|ℝ = 0` (mathlib Fourier inversion), hence
+  `g ≡ 0`.  Then 5b(iii): instance `g = F_B·e^{cz}` for strip-carried `B` with ray decay from
+  (14) ⇒ `F_B ≡ 0` ⇒ corpus `map_coordinate_pow_eq_zero_of_fourierBorel_zero` finishes (16).

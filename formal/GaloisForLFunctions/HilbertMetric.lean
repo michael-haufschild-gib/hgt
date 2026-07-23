@@ -40,6 +40,7 @@ import GaloisForLFunctions.HilbertMetric.UniformCoalescedThreePointSquare
 import GaloisForLFunctions.HilbertMetric.GaussianMetricRankOneFracture
 import GaloisForLFunctions.HilbertMetric.DenseClosedScalarRigidity
 import GaloisForLFunctions.HilbertMetric.PrescribedEvaluationReconstruction
+import GaloisForLFunctions.HilbertMetric.ComplexPrescribedEvaluationReconstruction
 
 /-!
 # Hilbert-metric theorem area

@@ -334,27 +334,28 @@ theorem
       htwo t ht s
 
 /-- Minimal collision-only certificate for Gaussian sign duality.  Strict negative distance
-curvature records nontrivial rank, while coherent Gram positivity records collision freedom.
-Global coherent-curvature inequalities are derived below instead of stored as redundant Prop
-data.  Unlike exact reconstruction, this phase permits zero as a shift label. -/
+curvature records nontrivial rank, while injectivity records collision freedom.  Coherent Gram
+positivity and global coherent-curvature inequalities are derived below instead of storing an
+infinite family of redundant Prop data.  Unlike exact reconstruction, this phase permits zero as
+a shift label. -/
 structure XiTransversePrimeValuationGaussianCollisionSignDualityCertificate
     {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes) (t : ℝ) : Prop where
+  injective : Function.Injective shift
   rankOneLogDetCurvatureNegative :
     deriv (deriv (fun u => Real.log
       (xiTransversePrimeValuationRankOneGaussianMetricGram shift p u).det)) t < 0
-  coherentGramPositive :
-    ∀ s, (xiTransversePrimeValuationCoherentLogScaleGram shift p s).PosDef
 
 namespace XiTransversePrimeValuationGaussianCollisionSignDualityCertificate
 
-/-- Coherent positivity discharges collision freedom from the minimal collision certificate. -/
-theorem injective
+/-- Collision freedom supplies coherent Gram positivity at every logarithmic scale. -/
+theorem coherentGramPositive
     {N : ℕ} {shift : Fin N → ℕ} {p : Nat.Primes} {t : ℝ}
     (hcertificate :
       XiTransversePrimeValuationGaussianCollisionSignDualityCertificate shift p t) :
-    Function.Injective shift :=
-  (xiTransversePrimeValuationCoherentLogScaleGram_posDef_iff_injective
-    shift p 0).1 (hcertificate.coherentGramPositive 0)
+    ∀ s, (xiTransversePrimeValuationCoherentLogScaleGram shift p s).PosDef :=
+  fun s =>
+    (xiTransversePrimeValuationCoherentLogScaleGram_posDef_iff_injective
+      shift p s).2 hcertificate.injective
 
 /-- Nonnegative coherent log-determinant curvature is forced by coherent positivity. -/
 theorem coherentLogDetCurvatureNonnegative
@@ -406,13 +407,10 @@ theorem
   constructor
   · rintro ⟨hinjective, htwo⟩
     exact {
+      injective := hinjective
       rankOneLogDetCurvatureNegative :=
         (xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_of_injective
-          shift p hinjective t ht).2 htwo
-      coherentGramPositive :=
-        fun s =>
-          (xiTransversePrimeValuationCoherentLogScaleGram_posDef_iff_injective
-            shift p s).2 hinjective }
+          shift p hinjective t ht).2 htwo }
   · intro hcertificate
     exact ⟨hcertificate.injective, hcertificate.rankTwo ht⟩
 
@@ -681,9 +679,9 @@ theorem collisionCertificate
     (hcertificate :
       XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate shift m p t) :
     XiTransversePrimeValuationGaussianCollisionSignDualityCertificate shift p t where
+  injective := hcertificate.injective
   rankOneLogDetCurvatureNegative :=
     hcertificate.rankOneLogDetCurvatureNegative
-  coherentGramPositive := hcertificate.coherentGramPositive
 
 /-- Coherent log-determinant curvature is nonnegative, derived rather than stored. -/
 theorem coherentLogDetCurvatureNonnegative
@@ -716,6 +714,24 @@ theorem rankTwo
   hcertificate.collisionCertificate.rankTwo ht
 
 end XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+
+/-- **Curvature-phase interface discharge.**  The cofinite Gaussian-curvature phase and the
+reconstruction sign-duality certificate contain exactly the same reconstruction and strict
+curvature data.  Their equivalence is unconditional in the metric scale. -/
+theorem
+    xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_gaussianCurvatureSignDualityCertificate
+    {N : ℕ} (shift : Fin N → ℕ) (m : ℕ) (p : Nat.Primes) (t : ℝ) :
+    XiTransversePrimeJetApertureGaussianCurvaturePhase shift m p t ↔
+      XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+        shift m p t := by
+  constructor
+  · rintro ⟨hreconstruction, hcurvature⟩
+    exact {
+      cofiniteReconstruction := hreconstruction
+      rankOneLogDetCurvatureNegative := hcurvature }
+  · intro hcertificate
+    exact ⟨hcertificate.cofiniteReconstruction,
+      hcertificate.rankOneLogDetCurvatureNegative⟩
 
 /-- **Reconstruction/metric phase separation.**  The original reconstruction certificate is
 exactly cofinite reconstruction together with the collision-only Gaussian sign-duality
@@ -815,6 +831,30 @@ theorem
     exact
       (xiTransversePrimeValuationGaussianCurvatureSignDualityCertificate_iff
         shift sourceDepth p 0 le_rfl).2 hcertificate
+
+/-- **Universal curvature-phase/sign-duality law.**  One Gaussian-curvature phase at a
+nonnegative source scale is exactly reconstruction sign duality at every depth, prime, and
+nonnegative target scale. -/
+theorem
+    xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_every_gaussianCurvatureSignDualityCertificate
+    {N : ℕ} (shift : Fin N → ℕ)
+    (sourceDepth : ℕ) (sourcePrime : Nat.Primes)
+    (sourceScale : ℝ) (hsourceScale : 0 ≤ sourceScale) :
+    XiTransversePrimeJetApertureGaussianCurvaturePhase
+        shift sourceDepth sourcePrime sourceScale ↔
+      ∀ (m : ℕ) (p : Nat.Primes) (t : ℝ), 0 ≤ t →
+        XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+          shift m p t := by
+  calc
+    _ ↔
+        XiTransversePrimeJetApertureCofiniteHilbertReconstruction
+            shift sourceDepth ∧
+          2 ≤ N :=
+      xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_reconstruction_and_two_le
+        shift sourceDepth sourcePrime sourceScale hsourceScale
+    _ ↔ _ :=
+      xiTransversePrimeJetApertureCofiniteHilbertReconstruction_and_two_le_iff_every_gaussianCurvatureSignDualityCertificate
+        shift sourceDepth
 
 end
 

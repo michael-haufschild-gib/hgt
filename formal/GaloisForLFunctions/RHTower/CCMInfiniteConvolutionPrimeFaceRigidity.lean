@@ -15,9 +15,10 @@ clock, its complete prime layer is multiplied by one aperture-independent scalar
 convolution may alter composite and higher prime-power layers, but it cannot implement the
 required non-diagonal transport of irreducible outer primes into inner primes plus Gamma mass.
 
-No convergence, RH, zero-location, finiteness, or numerical hypothesis is used.  At a prime all
-but the displayed first-order coefficient vanish identically, so the coefficientwise series is
-automatically reduced to its prime derivative.
+No RH, zero-location, finiteness, or numerical hypothesis is used.  At a prime every convolution
+power is exactly its first differential in the prime direction, so the coefficientwise `tsum`
+identity reduces to the displayed prime derivative.  Ordinary convergent analytic series are an
+immediate specialization.
 -/
 
 open ArithmeticFunction Finset

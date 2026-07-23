@@ -273,6 +273,230 @@ theorem
     ← Finset.coe_univ,
     xiTransverseGaussianCollisionMatroid_eRk_eq_allValuationDifferential_eRk_add_zero]
 
+/-- Under collision freedom, intrinsic affine dimension one is exactly packet rank at least two.
+This is the converse completion of the existing dimension-one construction. -/
+theorem
+    xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration_gaussianAffineDimension_eq_one_iff_two_le_of_injective
+    {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes)
+    (hinjective : Function.Injective shift) :
+    gaussianAffineDimension
+        (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration shift p) = 1 ↔
+      2 ≤ N := by
+  rw [
+    xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration_gaussianAffineDimension_eq_one_iff_image_card,
+    Finset.card_image_of_injective _ hinjective,
+    Finset.card_univ,
+    Fintype.card_fin]
+
+/-- Cross-prime equivalence chain joining strict Gaussian curvature, operator nonnormality,
+intrinsic affine dimension, and zero-augmented differential rank over both coefficient fields. -/
+def XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+    {N : ℕ} (shift : Fin N → ℕ)
+    (curvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    (curvatureScale operatorScale : ℝ) : Prop :=
+  (deriv (deriv (fun s =>
+      Real.log
+        (xiTransversePrimeValuationRankOneGaussianMetricGram
+          shift curvaturePrime s).det)) curvatureScale < 0 ↔
+    matrixSelfCommutator
+      (xiTransversePrimeValuationRankOneGaussianSimilarity
+        shift operatorPrime operatorScale) ≠ 0) ∧
+  (matrixSelfCommutator
+      (xiTransversePrimeValuationRankOneGaussianSimilarity
+        shift operatorPrime operatorScale) ≠ 0 ↔
+    gaussianAffineDimension
+      (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration
+        shift intrinsicPrime) = 1) ∧
+  (gaussianAffineDimension
+      (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration
+        shift intrinsicPrime) = 1 ↔
+    (2 : ℕ∞) ≤
+      (differentialFamilyMatroid
+        (F := upperEndRationalCoordinateField)
+        (fun i => xiTransverseShiftUpperEndCarrier (shift i))).eRk Set.univ +
+          if 0 ∈ Finset.univ.image shift then 1 else 0) ∧
+  (((2 : ℕ∞) ≤
+      ((differentialFamilyMatroid
+        (F := upperEndRationalCoordinateField)
+        (fun i => xiTransverseShiftUpperEndCarrier (shift i))).eRk Set.univ +
+          (if 0 ∈ Finset.univ.image shift then 1 else 0))) ↔
+    ((2 : ℕ∞) ≤
+      ((differentialFamilyMatroid
+        (F := analyticScalarValuationLayerDifferentialField)
+        (fun i => xiTransverseShiftUpperEndCarrier (shift i))).eRk Set.univ +
+          (if 0 ∈ Finset.univ.image shift then 1 else 0))))
+
+/-- **Cross-prime Gaussian/HTGeometry phase universality.**  For a collision-free packet,
+strict curvature and nonnormality at independently chosen primes and nonnegative scales are
+equivalent; nonnormality is exactly intrinsic dimension one at any third prime; and intrinsic
+dimension is exactly the zero-augmented differential rank threshold over both coefficient
+fields. -/
+theorem
+    xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_injective
+    {N : ℕ} (shift : Fin N → ℕ)
+    (curvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    (curvatureScale operatorScale : ℝ)
+    (hcurvatureScale : 0 ≤ curvatureScale)
+    (hoperatorScale : 0 ≤ operatorScale)
+    (hinjective : Function.Injective shift) :
+    XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+      shift curvaturePrime operatorPrime intrinsicPrime
+        curvatureScale operatorScale := by
+  unfold
+    XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+  have hcurvature :=
+    xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_of_injective
+      shift curvaturePrime hinjective curvatureScale hcurvatureScale
+  have hnonnormal :=
+    xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_ne_zero_iff_of_injective
+      shift operatorPrime hinjective operatorScale hoperatorScale
+  have hdimension :=
+    xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration_gaussianAffineDimension_eq_one_iff_two_le_of_injective
+      shift intrinsicPrime hinjective
+  have hbase :=
+    xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration_gaussianAffineDimension_eq_one_iff_baseDifferentialRankWithZero_two_le
+      shift intrinsicPrime
+  have hall :=
+    xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration_gaussianAffineDimension_eq_one_iff_allValuationDifferentialRankWithZero_two_le
+      shift intrinsicPrime
+  exact ⟨
+    hcurvature.trans hnonnormal.symm,
+    hnonnormal.trans hdimension.symm,
+    hbase,
+    hbase.symm.trans hall⟩
+
+/-- One positive coherent Gram at an arbitrary prime and logarithmic scale discharges the
+collision-freedom premise in the full cross-prime curvature/operator/intrinsic/differential
+universality chain. -/
+theorem
+    xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_coherentGram_posDef
+    {N : ℕ} (shift : Fin N → ℕ)
+    (coherentPrime curvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    (coherentScale curvatureScale operatorScale : ℝ)
+    (hcurvatureScale : 0 ≤ curvatureScale)
+    (hoperatorScale : 0 ≤ operatorScale)
+    (hcoherent :
+      (xiTransversePrimeValuationCoherentLogScaleGram
+        shift coherentPrime coherentScale).PosDef) :
+    XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+      shift curvaturePrime operatorPrime intrinsicPrime
+        curvatureScale operatorScale :=
+  xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_injective
+    shift curvaturePrime operatorPrime intrinsicPrime
+    curvatureScale operatorScale hcurvatureScale hoperatorScale
+    ((xiTransversePrimeValuationCoherentLogScaleGram_posDef_iff_injective
+      shift coherentPrime coherentScale).1 hcoherent)
+
+/-- One positive-bandwidth first-valuation Gaussian Gram at an arbitrary prime discharges the
+entire cross-prime universality chain, with zero retained as an ordinary separated label. -/
+theorem
+    xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_firstValuationGaussianGram_posDef
+    {N : ℕ} (shift : Fin N → ℕ)
+    (gramPrime curvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    {bandwidth : ℝ} (hbandwidth : 0 < bandwidth)
+    (curvatureScale operatorScale : ℝ)
+    (hcurvatureScale : 0 ≤ curvatureScale)
+    (hoperatorScale : 0 ≤ operatorScale)
+    (hGram :
+      (xiTransversePrimeFirstValuationGaussianGramMatrixAt
+        shift gramPrime bandwidth).PosDef) :
+    XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+      shift curvaturePrime operatorPrime intrinsicPrime
+        curvatureScale operatorScale :=
+  xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_injective
+    shift curvaturePrime operatorPrime intrinsicPrime
+    curvatureScale operatorScale hcurvatureScale hoperatorScale
+    ((xiTransversePrimeFirstValuationGaussianGramMatrixAt_posDef_iff_injective
+      shift gramPrime hbandwidth).1 hGram)
+
+/-- Whole-packet independence in the HTGeometry collision matroid also discharges the complete
+cross-prime Gaussian/intrinsic/differential universality chain. -/
+theorem
+    xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_collisionMatroid_indep
+    {N : ℕ} (shift : Fin N → ℕ)
+    (curvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    (curvatureScale operatorScale : ℝ)
+    (hcurvatureScale : 0 ≤ curvatureScale)
+    (hoperatorScale : 0 ≤ operatorScale)
+    (hcollision :
+      (affineCollisionMatroid shift).Indep Set.univ) :
+    XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+      shift curvaturePrime operatorPrime intrinsicPrime
+        curvatureScale operatorScale := by
+  apply
+    xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_injective
+      shift curvaturePrime operatorPrime intrinsicPrime
+      curvatureScale operatorScale hcurvatureScale hoperatorScale
+  have hinjOn : Set.InjOn shift Set.univ :=
+    (affineCollisionMatroid_indep_iff shift Set.univ).1 hcollision
+  intro i j hij
+  exact hinjOn (Set.mem_univ i) (Set.mem_univ j) hij
+
+/-- Collision sign duality at one prime proves the full equivalence chain at every independently
+chosen operator and intrinsic prime. -/
+theorem
+    xiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase_of_collisionSignDualityCertificate
+    {N : ℕ} (shift : Fin N → ℕ)
+    (curvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    (curvatureScale operatorScale : ℝ)
+    (hcurvatureScale : 0 ≤ curvatureScale)
+    (hoperatorScale : 0 ≤ operatorScale)
+    (hcertificate :
+      XiTransversePrimeValuationGaussianCollisionSignDualityCertificate
+        shift curvaturePrime curvatureScale) :
+    XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+      shift curvaturePrime operatorPrime intrinsicPrime
+        curvatureScale operatorScale :=
+  xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_injective
+    shift curvaturePrime operatorPrime intrinsicPrime
+    curvatureScale operatorScale hcurvatureScale hoperatorScale
+    hcertificate.injective
+
+/-- **Active cross-prime consequences of sign duality.**  A collision sign-duality certificate
+forces nonnormality at every independently chosen nonnegative operator scale, intrinsic dimension
+one at every prime, and both zero-augmented differential-rank thresholds. -/
+theorem
+    xiTransversePrimeValuationGaussian_nonnormal_intrinsicDimension_differentialRanks_of_collisionSignDualityCertificate
+    {N : ℕ} (shift : Fin N → ℕ)
+    (curvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    (curvatureScale operatorScale : ℝ)
+    (hcurvatureScale : 0 ≤ curvatureScale)
+    (hoperatorScale : 0 ≤ operatorScale)
+    (hcertificate :
+      XiTransversePrimeValuationGaussianCollisionSignDualityCertificate
+        shift curvaturePrime curvatureScale) :
+    matrixSelfCommutator
+        (xiTransversePrimeValuationRankOneGaussianSimilarity
+          shift operatorPrime operatorScale) ≠ 0 ∧
+      gaussianAffineDimension
+        (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration
+          shift intrinsicPrime) = 1 ∧
+      ((2 : ℕ∞) ≤
+        (differentialFamilyMatroid
+          (F := upperEndRationalCoordinateField)
+          (fun i => xiTransverseShiftUpperEndCarrier (shift i))).eRk Set.univ +
+            (if 0 ∈ Finset.univ.image shift then 1 else 0)) ∧
+      ((2 : ℕ∞) ≤
+        (differentialFamilyMatroid
+          (F := analyticScalarValuationLayerDifferentialField)
+          (fun i => xiTransverseShiftUpperEndCarrier (shift i))).eRk Set.univ +
+            (if 0 ∈ Finset.univ.image shift then 1 else 0)) := by
+  have htwo : 2 ≤ N := hcertificate.rankTwo hcurvatureScale
+  have hdimension :
+      gaussianAffineDimension
+          (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration
+            shift intrinsicPrime) = 1 :=
+    (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration_gaussianAffineDimension_eq_one_iff_two_le_of_injective
+      shift intrinsicPrime hcertificate.injective).2 htwo
+  exact ⟨
+    (xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_ne_zero_iff_of_injective
+      shift operatorPrime hcertificate.injective operatorScale hoperatorScale).2 htwo,
+    hdimension,
+    (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration_gaussianAffineDimension_eq_one_iff_baseDifferentialRankWithZero_two_le
+      shift intrinsicPrime).1 hdimension,
+    (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration_gaussianAffineDimension_eq_one_iff_allValuationDifferentialRankWithZero_two_le
+      shift intrinsicPrime).1 hdimension⟩
+
 /-- **Exact intrinsic dimension.**  A collision-free transverse valuation packet with at least
 two entries has affine dimension exactly one at every prime. -/
 theorem
@@ -348,28 +572,28 @@ theorem xiTransversePrimeValuationCorrectedGaussianBandwidthLogDet_concaveOn_of_
     xiTransversePrimeValuationCorrectedGaussianDimensionPowerLogDet_eq_bandwidthLogDet
       shift p hinjective htwo hu
 
-/-- Minimal certificate for complete intrinsic one-dimensional Gaussian geometry.  Coherent Gram
-positivity supplies collision freedom, while affine dimension one supplies nontrivial packet
-rank; every convexity, concavity, and coordinate-collapse law is derived below rather than stored
-as redundant Prop data. -/
+/-- Minimal certificate for complete intrinsic one-dimensional Gaussian geometry.  Injectivity
+records collision freedom, while affine dimension one supplies nontrivial packet rank.  Coherent
+Gram positivity, convexity, concavity, and coordinate-collapse laws are derived below rather than
+storing an infinite family of redundant Prop data. -/
 structure XiTransversePrimeValuationGaussianIntrinsicDimensionCertificate
     {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes) : Prop where
-  coherentGramPositive :
-    ∀ s, (xiTransversePrimeValuationCoherentLogScaleGram shift p s).PosDef
+  injective : Function.Injective shift
   affineDimensionOne :
     gaussianAffineDimension
       (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration shift p) = 1
 
 namespace XiTransversePrimeValuationGaussianIntrinsicDimensionCertificate
 
-/-- Coherent positivity discharges collision freedom from the minimal intrinsic certificate. -/
-theorem injective
+/-- Collision freedom supplies coherent Gram positivity at every logarithmic scale. -/
+theorem coherentGramPositive
     {N : ℕ} {shift : Fin N → ℕ} {p : Nat.Primes}
     (hcertificate :
       XiTransversePrimeValuationGaussianIntrinsicDimensionCertificate shift p) :
-    Function.Injective shift :=
-  (xiTransversePrimeValuationCoherentLogScaleGram_posDef_iff_injective
-    shift p 0).1 (hcertificate.coherentGramPositive 0)
+    ∀ s, (xiTransversePrimeValuationCoherentLogScaleGram shift p s).PosDef :=
+  fun s =>
+    (xiTransversePrimeValuationCoherentLogScaleGram_posDef_iff_injective
+      shift p s).2 hcertificate.injective
 
 /-- Affine dimension one discharges the former explicit packet-rank field. -/
 theorem rankTwo
@@ -470,10 +694,7 @@ theorem
   constructor
   · rintro ⟨hinjective, htwo⟩
     exact {
-      coherentGramPositive :=
-        fun s =>
-          (xiTransversePrimeValuationCoherentLogScaleGram_posDef_iff_injective
-            shift p s).2 hinjective
+      injective := hinjective
       affineDimensionOne :=
         xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration_gaussianAffineDimension_eq_one
           shift p hinjective htwo }

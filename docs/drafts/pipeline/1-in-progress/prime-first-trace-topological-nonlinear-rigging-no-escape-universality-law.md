@@ -2,7 +2,7 @@
 
 ## Status
 
-`[LEAN CANDIDATE — NO LITERATURE SEARCH BEFORE PROOF]`
+`[LEAN PROVED — LITERATURE AUDITED]`
 
 ## Lean-derived conjecture
 
@@ -43,3 +43,32 @@ No literature search before exact Lean proof.
 ## Lean target
 
 `formal/GaloisForLFunctions/RHTower/PrimeFirstTraceTopologicalNonlinearRiggingNoEscapeUniversalityLaw.lean`
+
+## Exact Lean verification
+
+From `formal/`:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/PrimeFirstTraceTopologicalNonlinearRiggingNoEscapeUniversalityLaw.lean
+```
+
+completed with zero diagnostics.
+
+## Post-proof literature audit
+
+Nearest general operator-theoretic literature:
+
+- Y. Shi, G. Xu, G. Ren, *Boundedness and closedness of linear relations*,
+  [arXiv:1604.07979](https://arxiv.org/abs/1604.07979), characterizes closedness and
+  closability for multivalued linear relations.
+- M. L. Arias, M. Contino, A. Maestripieri, S. Marcantognini,
+  *Semiclosed multivalued projections*,
+  [arXiv:2308.10816](https://arxiv.org/abs/2308.10816), studies semiclosed
+  multivalued projections and their decomposability.
+
+These works cover general multivalued linear-relation closure theory. They do not state the
+arithmetic first-trace theorem proved here: one explicit actual-prime graph-null sequence
+simultaneously determines the intrinsic graph closure and rules out single-valued closed
+relations, everywhere-defined nonlinear closed-graph extensions, every topology-preserving
+interpolant, and every complete exact-source/response-norm linear rigging. No exact match was
+found.

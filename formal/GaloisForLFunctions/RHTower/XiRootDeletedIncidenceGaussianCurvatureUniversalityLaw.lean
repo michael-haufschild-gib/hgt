@@ -103,6 +103,113 @@ theorem xiMobiusRootDeletedIncidenceGram_det_eq_one_and_two_le_iff_gaussianCurva
       xiMobiusRootDeletedDyadic_and_two_le_iff_gaussianCurvaturePhase
         root shift hroot sourcePrime metricPrime m t ht
 
+/-- **Root-deleted dyadic/sign-duality connector.**  One nonroot dyadic reconstruction and the
+sharp retained-rank threshold are exactly reconstruction sign duality at any independently
+chosen depth, prime, and nonnegative scale. -/
+theorem xiMobiusRootDeletedDyadic_and_two_le_iff_curvatureSignDuality
+    {N : ℕ} (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (hroot : shift root = 0) (sourcePrime : Nat.Primes)
+    (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    (XiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction
+        root shift sourcePrime ∧
+      2 ≤ N) ↔
+      XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+        (xiTransverseRootDeletedShift root shift)
+        jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        XiTransversePrimeJetApertureGaussianCurvaturePhase
+          (xiTransverseRootDeletedShift root shift)
+          jetDepth valuationPrime valuationScale :=
+      xiMobiusRootDeletedDyadic_and_two_le_iff_gaussianCurvaturePhase
+        root shift hroot sourcePrime valuationPrime
+        jetDepth valuationScale hvaluationScale
+    _ ↔ _ :=
+      xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_gaussianCurvatureSignDualityCertificate
+        (xiTransverseRootDeletedShift root shift)
+        jetDepth valuationPrime valuationScale
+
+/-- **Universal root-deleted dyadic/sign-duality law.**  One nonroot dyadic reconstruction and
+retained rank two are exactly reconstruction sign duality at every depth, prime, and
+nonnegative scale. -/
+theorem xiMobiusRootDeletedDyadic_and_two_le_iff_every_curvatureSignDuality
+    {N : ℕ} (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (hroot : shift root = 0) (sourcePrime : Nat.Primes) :
+    (XiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction
+        root shift sourcePrime ∧
+      2 ≤ N) ↔
+      ∀ (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+        (valuationScale : ℝ), 0 ≤ valuationScale →
+          XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+            (xiTransverseRootDeletedShift root shift)
+            jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        XiTransversePrimeJetApertureGaussianCurvaturePhase
+          (xiTransverseRootDeletedShift root shift) 0 sourcePrime 0 :=
+      xiMobiusRootDeletedDyadic_and_two_le_iff_gaussianCurvaturePhase
+        root shift hroot sourcePrime sourcePrime 0 0 le_rfl
+    _ ↔ _ :=
+      xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_every_gaussianCurvatureSignDualityCertificate
+        (xiTransverseRootDeletedShift root shift) 0 sourcePrime 0 le_rfl
+
+/-- **Incidence-volume/sign-duality law.**  Canonical nonroot incidence volume one and retained
+rank two are exactly reconstruction sign duality at any independently chosen target. -/
+theorem
+    xiMobiusRootDeletedIncidenceGram_det_eq_one_and_two_le_iff_curvatureSignDuality
+    {N : ℕ} (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (hroot : shift root = 0) (sourcePrime : Nat.Primes)
+    (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    ((pointedCollisionIncidenceGram
+          (xiShiftRootedStarLabel
+            (xiTransverseRootDeletedShift root shift))
+          0 xiShiftRootedStarTail xiShiftRootedStarHead).det = 1 ∧
+      2 ≤ N) ↔
+      XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+        (xiTransverseRootDeletedShift root shift)
+        jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        XiTransversePrimeJetApertureGaussianCurvaturePhase
+          (xiTransverseRootDeletedShift root shift)
+          jetDepth valuationPrime valuationScale :=
+      xiMobiusRootDeletedIncidenceGram_det_eq_one_and_two_le_iff_gaussianCurvaturePhase
+        root shift hroot sourcePrime valuationPrime
+        jetDepth valuationScale hvaluationScale
+    _ ↔ _ :=
+      xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_gaussianCurvatureSignDualityCertificate
+        (xiTransverseRootDeletedShift root shift)
+        jetDepth valuationPrime valuationScale
+
+/-- **Universal incidence-volume/sign-duality law.**  Canonical nonroot incidence volume one
+and retained rank two are exactly reconstruction sign duality at every depth, prime, and
+nonnegative scale. -/
+theorem
+    xiMobiusRootDeletedIncidenceGram_det_eq_one_and_two_le_iff_every_curvatureSignDuality
+    {N : ℕ} (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (hroot : shift root = 0) (sourcePrime : Nat.Primes) :
+    ((pointedCollisionIncidenceGram
+          (xiShiftRootedStarLabel
+            (xiTransverseRootDeletedShift root shift))
+          0 xiShiftRootedStarTail xiShiftRootedStarHead).det = 1 ∧
+      2 ≤ N) ↔
+      ∀ (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+        (valuationScale : ℝ), 0 ≤ valuationScale →
+          XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+            (xiTransverseRootDeletedShift root shift)
+            jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        XiTransversePrimeJetApertureGaussianCurvaturePhase
+          (xiTransverseRootDeletedShift root shift) 0 sourcePrime 0 :=
+      xiMobiusRootDeletedIncidenceGram_det_eq_one_and_two_le_iff_gaussianCurvaturePhase
+        root shift hroot sourcePrime sourcePrime 0 0 le_rfl
+    _ ↔ _ :=
+      xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_every_gaussianCurvatureSignDualityCertificate
+        (xiTransverseRootDeletedShift root shift) 0 sourcePrime 0 le_rfl
+
 /-- **Sharp curvature-failure boundary.**  Strict nonroot Gaussian curvature fails exactly for
 zero canonical incidence volume or a retained packet of size at most one. -/
 theorem

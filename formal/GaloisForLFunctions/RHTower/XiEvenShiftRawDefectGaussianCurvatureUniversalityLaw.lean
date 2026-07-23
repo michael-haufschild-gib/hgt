@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiEvenShiftRawDefectCofiniteHilbertReconstruction
 import GaloisForLFunctions.RHTower.XiMobiusDyadicGaussianCurvatureUniversalityLaw
+import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianIntrinsicDimensionUniversalityLaw
 
 /-!
 # Raw even-shift Xi defects and Gaussian curvature
@@ -95,25 +96,221 @@ theorem
       (xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_reconstruction_and_two_le
         (fun i => 2 * grade i) m p t ht).symm
 
-/-- Literal raw-defect Hilbert and differential data together with complete doubled-aperture
-Gaussian geometry. -/
+/-- **Raw-defect/sign-duality connector.**  Literal raw-Xi cofinite reconstruction and packet
+rank two are exactly doubled-aperture reconstruction sign duality at any chosen depth, prime,
+and nonnegative scale. -/
+theorem
+    xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_and_two_le_iff_curvatureSignDuality
+    {d : ℕ} (grade : Fin d → ℕ)
+    (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    (XiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction grade ∧
+        2 ≤ d) ↔
+      XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+        (fun i => 2 * grade i) jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        XiTransversePrimeJetApertureGaussianCurvaturePhase
+          (fun i => 2 * grade i)
+          jetDepth valuationPrime valuationScale :=
+      xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_and_two_le_iff_gaussianCurvaturePhase
+        grade jetDepth valuationPrime valuationScale hvaluationScale
+    _ ↔ _ :=
+      xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_gaussianCurvatureSignDualityCertificate
+        (fun i => 2 * grade i)
+        jetDepth valuationPrime valuationScale
+
+/-- **Universal raw-defect/sign-duality law.**  Literal raw-Xi cofinite reconstruction and
+packet rank two are exactly doubled-aperture reconstruction sign duality at every depth, prime,
+and nonnegative scale. -/
+theorem
+    xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_and_two_le_iff_every_curvatureSignDuality
+    {d : ℕ} (grade : Fin d → ℕ) :
+    (XiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction grade ∧
+        2 ≤ d) ↔
+      ∀ (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+        (valuationScale : ℝ), 0 ≤ valuationScale →
+          XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+            (fun i => 2 * grade i)
+            jetDepth valuationPrime valuationScale := by
+  let p : Nat.Primes := ⟨2, Nat.prime_two⟩
+  calc
+    _ ↔
+        XiTransversePrimeJetApertureGaussianCurvaturePhase
+          (fun i => 2 * grade i) 0 p 0 :=
+      xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_and_two_le_iff_gaussianCurvaturePhase
+        grade 0 p 0 le_rfl
+    _ ↔ _ :=
+      xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_every_gaussianCurvatureSignDualityCertificate
+        (fun i => 2 * grade i) 0 p 0 le_rfl
+
+/-- Minimal raw-defect/doubled-aperture Gaussian certificate.  Doubled-aperture exact-Hilbert
+curvature already forces the pointed collision-free grade condition, hence literal and corrected
+raw reconstruction, differential independence, and cross-prime intrinsic geometry. -/
 structure XiEvenShiftRawDefectGaussianCurvatureCertificate
     {d : ℕ} (grade : Fin d → ℕ)
     (sourcePrime metricPrime : Nat.Primes) (m : ℕ) (t : ℝ) : Prop where
-  rawCofiniteReconstruction :
-    XiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction grade
-  correctedCofiniteReconstruction :
-    XiTransverseShiftPrimeDefectCofiniteHilbertReconstruction
-      (fun i => 2 * grade i)
-  rawRationalDifferentialIndependent :
-    DifferentialIndependent upperEndRationalCoordinateField
-      (fun i => xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade i))
-  rawAllValuationDifferentialIndependent :
-    DifferentialIndependent analyticScalarValuationLayerDifferentialField
-      (fun i => xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade i))
   doubledApertureExactHilbertCurvature :
     XiMobiusDyadicGaussianCurvatureExactHilbertCertificate
       (fun i => 2 * grade i) sourcePrime metricPrime m t
+
+namespace XiEvenShiftRawDefectGaussianCurvatureCertificate
+
+/-- Doubled exact-Hilbert curvature supplies its complete pointed collision condition. -/
+theorem doubledApertureInjectiveAndNeZero
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t) :
+    Function.Injective (fun i => 2 * grade i) ∧
+      ∀ i, 2 * grade i ≠ 0 :=
+  hcertificate.doubledApertureExactHilbertCurvature.injectiveAndNeZero
+
+/-- Doubled exact-Hilbert curvature discharges the pointed collision-free grade condition. -/
+theorem gradeInjectiveAndNeZero
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t) :
+    Function.Injective grade ∧ ∀ i, grade i ≠ 0 :=
+  (injective_two_mul_and_ne_zero_iff grade).1
+    hcertificate.doubledApertureInjectiveAndNeZero
+
+/-- Literal raw reconstruction is derived from doubled exact-Hilbert curvature. -/
+theorem rawCofiniteReconstruction
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t) :
+    XiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction grade :=
+  (xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_iff grade).2
+    hcertificate.gradeInjectiveAndNeZero
+
+/-- Raw reconstruction already contains the full corrected/raw Hilbert-differential phase. -/
+theorem rawCofiniteHilbertPhase
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t) :
+    XiTransverseShiftPrimeDefectCofiniteHilbertReconstruction
+        (fun i => 2 * grade i) ∧
+      DifferentialIndependent upperEndRationalCoordinateField
+        (fun i => xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade i)) ∧
+      DifferentialIndependent analyticScalarValuationLayerDifferentialField
+        (fun i => xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade i)) :=
+  (xiEvenShiftRawLogDerivDefectCofiniteHilbertPhase_iff grade).1
+    hcertificate.rawCofiniteReconstruction
+
+/-- Corrected doubled-grade recovery is derived from literal raw recovery. -/
+theorem correctedCofiniteReconstruction
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t) :
+    XiTransverseShiftPrimeDefectCofiniteHilbertReconstruction
+      (fun i => 2 * grade i) :=
+  hcertificate.rawCofiniteHilbertPhase.1
+
+/-- Rational-base raw differential independence is derived from literal raw recovery. -/
+theorem rawRationalDifferentialIndependent
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t) :
+    DifferentialIndependent upperEndRationalCoordinateField
+      (fun i => xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade i)) :=
+  hcertificate.rawCofiniteHilbertPhase.2.1
+
+/-- All-valuation raw differential independence is derived from literal raw recovery. -/
+theorem rawAllValuationDifferentialIndependent
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t) :
+    DifferentialIndependent analyticScalarValuationLayerDifferentialField
+      (fun i => xiEvenShiftRawLogDerivDefectUpperEndCarrier (grade i)) :=
+  hcertificate.rawCofiniteHilbertPhase.2.2
+
+/-- The stored strict-curvature package discharges packet rank at its nonnegative scale. -/
+theorem rankTwo
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t)
+    (ht : 0 ≤ t) :
+    2 ≤ d :=
+  ((xiMobiusIntegralAperture_dyadicGaussianCurvatureExactHilbertCertificate_iff
+    (fun i => 2 * grade i) sourcePrime metricPrime m t ht).2
+      hcertificate.doubledApertureExactHilbertCurvature).2
+
+/-- At a nonnegative stored scale, the raw certificate supplies intrinsic one-dimensional
+Gaussian geometry at every independently chosen prime. -/
+theorem doubledApertureIntrinsicDimensionCertificate
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t)
+    (ht : 0 ≤ t) (intrinsicPrime : Nat.Primes) :
+    XiTransversePrimeValuationGaussianIntrinsicDimensionCertificate
+      (fun i => 2 * grade i) intrinsicPrime :=
+  (xiTransversePrimeValuationGaussianIntrinsicDimensionCertificate_iff
+    (fun i => 2 * grade i) intrinsicPrime).1
+      ⟨hcertificate.doubledApertureInjectiveAndNeZero.1,
+        hcertificate.rankTwo ht⟩
+
+/-- The raw certificate forces doubled-aperture collision sign duality at every independently
+chosen valuation prime and nonnegative scale. -/
+theorem doubledApertureCollisionSignDualityCertificate
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t)
+    (ht : 0 ≤ t)
+    (valuationPrime intrinsicPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    XiTransversePrimeValuationGaussianCollisionSignDualityCertificate
+      (fun i => 2 * grade i) valuationPrime valuationScale :=
+  (xiTransversePrimeValuationGaussianCollisionSignDualityCertificate_iff_intrinsicDimensionCertificate
+    (fun i => 2 * grade i) valuationPrime intrinsicPrime
+    valuationScale hvaluationScale).2
+      (hcertificate.doubledApertureIntrinsicDimensionCertificate ht intrinsicPrime)
+
+/-- **Raw-Xi/valuation universality connector.**  Literal raw reconstruction already forces the
+full curvature, nonnormality, intrinsic-dimension, and differential-rank equivalence chain for
+the doubled aperture at arbitrary primes and nonnegative scales.  No sign condition on the scale
+stored in the raw certificate is needed. -/
+theorem doubledApertureValuationUniversalityPhase
+    {d : ℕ} {grade : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t)
+    (valuationCurvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    (valuationCurvatureScale operatorScale : ℝ)
+    (hvaluationCurvatureScale : 0 ≤ valuationCurvatureScale)
+    (hoperatorScale : 0 ≤ operatorScale) :
+    XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+      (fun i => 2 * grade i)
+      valuationCurvaturePrime operatorPrime intrinsicPrime
+      valuationCurvatureScale operatorScale :=
+  xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_injective
+    (fun i => 2 * grade i)
+    valuationCurvaturePrime operatorPrime intrinsicPrime
+    valuationCurvatureScale operatorScale
+    hvaluationCurvatureScale hoperatorScale
+    hcertificate.doubledApertureInjectiveAndNeZero.1
+
+end XiEvenShiftRawDefectGaussianCurvatureCertificate
 
 /-- **Raw-defect curvature-enhanced Hilbert universality.**  The existing literal raw-Xi Hilbert
 phase and rank at least two are equivalent to the full corrected, differential, Möbius,
@@ -128,8 +325,6 @@ theorem xiEvenShiftRawLogDerivDefect_gaussianCurvatureCertificate_iff
         grade sourcePrime metricPrime m t := by
   constructor
   · rintro ⟨hraw, htwo⟩
-    have hrawPhase :=
-      (xiEvenShiftRawLogDerivDefectCofiniteHilbertPhase_iff grade).1 hraw
     have hcondition :=
       (xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_iff grade).1 hraw
     have hdoubledCondition :=
@@ -138,10 +333,6 @@ theorem xiEvenShiftRawLogDerivDefect_gaussianCurvatureCertificate_iff
       (xiMobiusIntegralApertureDyadicInnovationGram_posDef_iff_injective_ne_zero
         (fun i => 2 * grade i)).2 hdoubledCondition
     exact {
-      rawCofiniteReconstruction := hraw
-      correctedCofiniteReconstruction := hrawPhase.1
-      rawRationalDifferentialIndependent := hrawPhase.2.1
-      rawAllValuationDifferentialIndependent := hrawPhase.2.2
       doubledApertureExactHilbertCurvature :=
         (xiMobiusIntegralAperture_dyadicGaussianCurvatureExactHilbertCertificate_iff
           (fun i => 2 * grade i) sourcePrime metricPrime m t ht).1
@@ -196,6 +387,62 @@ theorem
     exact
       (xiEvenShiftRawDefect_gaussianCurvatureCertificate_iff_injective_ne_zero_two_le
         grade p p 0 0 le_rfl).2 hcertificate
+
+/-- **Exact raw-defect/sign-duality connector.**  One raw-defect curvature certificate is
+exactly reconstruction sign duality for the doubled aperture at any independently chosen
+depth, prime, and nonnegative scale. -/
+theorem
+    xiEvenShiftRawDefect_gaussianCurvatureCertificate_iff_curvatureSignDuality
+    {d : ℕ} (grade : Fin d → ℕ)
+    (sourcePrime metricPrime : Nat.Primes) (m : ℕ)
+    (t : ℝ) (ht : 0 ≤ t)
+    (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t ↔
+      XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+        (fun i => 2 * grade i) jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        XiMobiusDyadicGaussianCurvatureExactHilbertCertificate
+          (fun i => 2 * grade i) sourcePrime metricPrime m t := by
+      constructor
+      · exact fun hcertificate =>
+          hcertificate.doubledApertureExactHilbertCurvature
+      · exact fun hcertificate =>
+          ⟨hcertificate⟩
+    _ ↔ _ :=
+      xiMobius_dyadicGaussianCurvatureExactHilbertCertificate_iff_curvatureSignDuality
+        (fun i => 2 * grade i) sourcePrime metricPrime m t ht
+        jetDepth valuationPrime valuationScale hvaluationScale
+
+/-- **Universal raw-defect/sign-duality law.**  One raw-defect curvature certificate at a
+nonnegative stored scale is exactly doubled-aperture reconstruction sign duality at every
+target depth, prime, and nonnegative scale. -/
+theorem
+    xiEvenShiftRawDefect_gaussianCurvatureCertificate_iff_every_curvatureSignDuality
+    {d : ℕ} (grade : Fin d → ℕ)
+    (sourcePrime metricPrime : Nat.Primes) (m : ℕ)
+    (t : ℝ) (ht : 0 ≤ t) :
+    XiEvenShiftRawDefectGaussianCurvatureCertificate
+        grade sourcePrime metricPrime m t ↔
+      ∀ (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+        (valuationScale : ℝ), 0 ≤ valuationScale →
+          XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+            (fun i => 2 * grade i)
+            jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        XiMobiusDyadicGaussianCurvatureExactHilbertCertificate
+          (fun i => 2 * grade i) sourcePrime metricPrime m t := by
+      constructor
+      · exact fun hcertificate =>
+          hcertificate.doubledApertureExactHilbertCurvature
+      · exact fun hcertificate =>
+          ⟨hcertificate⟩
+    _ ↔ _ :=
+      xiMobius_dyadicGaussianCurvatureExactHilbertCertificate_iff_every_curvatureSignDuality
+        (fun i => 2 * grade i) sourcePrime metricPrime m t ht
 
 end
 

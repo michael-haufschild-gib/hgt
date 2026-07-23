@@ -99,21 +99,112 @@ theorem
       (xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_reconstruction_and_two_le
         (xiDerivativeOrderSuccessorAperture order) m p t ht).symm
 
-/-- Complete complex/real arbitrary-jet reconstruction package together with the full
-successor-aperture Möbius dyadic Gaussian geometry. -/
+/-- Minimal successor-aperture Gaussian certificate.  Its dyadic innovation field already forces
+derivative-order injectivity, hence every complex and real-channel reconstruction interface;
+those interfaces are exposed below as derived dot APIs. -/
 structure XiDerivativeOrderSuccessorGaussianCurvatureCertificate
     {d : ℕ} (order : Fin d → ℕ)
     (sourcePrime metricPrime : Nat.Primes) (m : ℕ) (t : ℝ) : Prop where
-  complexCofiniteReconstruction :
-    CofiniteEvaluationHilbertReconstruction (xiDerivativeOrderFamily order)
-  realChannelCofiniteReconstruction :
-    XiDerivativeOrderRealChannelCofiniteHilbertReconstruction order
-  complexCoefficientRealChannelCofiniteReconstruction :
-    XiDerivativeOrderComplexCoefficientRealChannelCofiniteHilbertReconstruction order
   successorApertureExactHilbertCurvature :
     XiMobiusDyadicGaussianCurvatureExactHilbertCertificate
       (xiDerivativeOrderSuccessorAperture order)
       sourcePrime metricPrime m t
+
+namespace XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+
+/-- Successor innovation positivity recovers injectivity of the original derivative orders. -/
+theorem orderInjective
+    {d : ℕ} {order : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+        order sourcePrime metricPrime m t) :
+    Function.Injective order :=
+  (xiDerivativeOrderSuccessorAperture_injective_iff order).1
+    hcertificate.successorApertureExactHilbertCurvature.injectiveAndNeZero.1
+
+/-- Complex arbitrary-jet cofinite reconstruction is derived from collision freedom. -/
+theorem complexCofiniteReconstruction
+    {d : ℕ} {order : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+        order sourcePrime metricPrime m t) :
+    CofiniteEvaluationHilbertReconstruction (xiDerivativeOrderFamily order) :=
+  (xiDerivativeOrderCofiniteHilbertReconstruction_iff_injective order).2
+    hcertificate.orderInjective
+
+/-- Real-channel arbitrary-jet cofinite reconstruction is derived from collision freedom. -/
+theorem realChannelCofiniteReconstruction
+    {d : ℕ} {order : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+        order sourcePrime metricPrime m t) :
+    XiDerivativeOrderRealChannelCofiniteHilbertReconstruction order :=
+  (xiDerivativeOrderRealChannelCofiniteHilbertReconstruction_iff_injective
+    order).2 hcertificate.orderInjective
+
+/-- Full complex-coefficient real-channel reconstruction is also derived. -/
+theorem complexCoefficientRealChannelCofiniteReconstruction
+    {d : ℕ} {order : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+        order sourcePrime metricPrime m t) :
+    XiDerivativeOrderComplexCoefficientRealChannelCofiniteHilbertReconstruction order :=
+  (xiDerivativeOrderComplexCoefficientRealChannelCofiniteHilbertReconstruction_iff_injective
+    order).2 hcertificate.orderInjective
+
+/-- The arbitrary-jet certificate inherits intrinsic Gaussian dimension at every prime. -/
+theorem successorApertureIntrinsicDimensionCertificate
+    {d : ℕ} {order : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+        order sourcePrime metricPrime m t)
+    (ht : 0 ≤ t) (intrinsicPrime : Nat.Primes) :
+    XiTransversePrimeValuationGaussianIntrinsicDimensionCertificate
+      (xiDerivativeOrderSuccessorAperture order) intrinsicPrime :=
+  hcertificate.successorApertureExactHilbertCurvature.intrinsicDimensionCertificate
+    ht intrinsicPrime
+
+/-- Arbitrary jets inherit full reconstruction sign duality at independently chosen parameters. -/
+theorem successorApertureCurvatureSignDualityCertificate
+    {d : ℕ} {order : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+        order sourcePrime metricPrime m t)
+    (ht : 0 ≤ t) (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+      (xiDerivativeOrderSuccessorAperture order)
+      jetDepth valuationPrime valuationScale :=
+  hcertificate.successorApertureExactHilbertCurvature.curvatureSignDualityCertificate
+    ht jetDepth valuationPrime valuationScale hvaluationScale
+
+/-- Arbitrary jets inherit the full cross-prime valuation universality chain. -/
+theorem successorApertureValuationUniversalityPhase
+    {d : ℕ} {order : Fin d → ℕ}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+        order sourcePrime metricPrime m t)
+    (valuationCurvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    (valuationCurvatureScale operatorScale : ℝ)
+    (hvaluationCurvatureScale : 0 ≤ valuationCurvatureScale)
+    (hoperatorScale : 0 ≤ operatorScale) :
+    XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+      (xiDerivativeOrderSuccessorAperture order)
+      valuationCurvaturePrime operatorPrime intrinsicPrime
+      valuationCurvatureScale operatorScale :=
+  hcertificate.successorApertureExactHilbertCurvature.valuationUniversalityPhase
+    valuationCurvaturePrime operatorPrime intrinsicPrime
+    valuationCurvatureScale operatorScale
+    hvaluationCurvatureScale hoperatorScale
+
+end XiDerivativeOrderSuccessorGaussianCurvatureCertificate
 
 /-- **Arbitrary-jet successor-curvature universality.**  Distinct derivative orders and rank at
 least two are equivalent to simultaneous complex, real-channel, and full complex-coefficient
@@ -134,14 +225,6 @@ theorem xiDerivativeOrder_successorGaussianCurvatureCertificate_iff
         (xiDerivativeOrderSuccessorAperture order)).2
           ⟨hsuccessor, xiDerivativeOrderSuccessorAperture_ne_zero order⟩
     exact {
-      complexCofiniteReconstruction :=
-        (xiDerivativeOrderCofiniteHilbertReconstruction_iff_injective order).2 horder
-      realChannelCofiniteReconstruction :=
-        (xiDerivativeOrderRealChannelCofiniteHilbertReconstruction_iff_injective
-          order).2 horder
-      complexCoefficientRealChannelCofiniteReconstruction :=
-        (xiDerivativeOrderComplexCoefficientRealChannelCofiniteHilbertReconstruction_iff_injective
-          order).2 horder
       successorApertureExactHilbertCurvature :=
         (xiMobiusIntegralAperture_dyadicGaussianCurvatureExactHilbertCertificate_iff
           (xiDerivativeOrderSuccessorAperture order)
@@ -153,8 +236,7 @@ theorem xiDerivativeOrder_successorGaussianCurvatureCertificate_iff
         sourcePrime metricPrime m t ht).2
           hcertificate.successorApertureExactHilbertCurvature
     exact
-      ⟨(xiDerivativeOrderCofiniteHilbertReconstruction_iff_injective order).1
-          hcertificate.complexCofiniteReconstruction,
+      ⟨hcertificate.orderInjective,
         hdyadicRank.2⟩
 
 /-- The original complex cofinite-reconstruction interface itself can be used as the complete
@@ -198,6 +280,67 @@ theorem
     exact
       (xiDerivativeOrder_successorGaussianCurvatureCertificate_iff
         order p p 0 0 le_rfl).2 hcertificate
+
+/-- **Exact arbitrary-jet successor/sign-duality connector.**  One successor-curvature
+certificate is exactly reconstruction sign duality for the successor aperture at any
+independently chosen depth, prime, and nonnegative scale. -/
+theorem
+    xiDerivativeOrder_successorGaussianCurvatureCertificate_iff_curvatureSignDuality
+    {d : ℕ} (order : Fin d → ℕ)
+    (sourcePrime metricPrime : Nat.Primes) (m : ℕ)
+    (t : ℝ) (ht : 0 ≤ t)
+    (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+        order sourcePrime metricPrime m t ↔
+      XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+        (xiDerivativeOrderSuccessorAperture order)
+        jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        XiMobiusDyadicGaussianCurvatureExactHilbertCertificate
+          (xiDerivativeOrderSuccessorAperture order)
+          sourcePrime metricPrime m t := by
+      constructor
+      · exact fun hcertificate =>
+          hcertificate.successorApertureExactHilbertCurvature
+      · exact fun hcertificate =>
+          ⟨hcertificate⟩
+    _ ↔ _ :=
+      xiMobius_dyadicGaussianCurvatureExactHilbertCertificate_iff_curvatureSignDuality
+        (xiDerivativeOrderSuccessorAperture order)
+        sourcePrime metricPrime m t ht
+        jetDepth valuationPrime valuationScale hvaluationScale
+
+/-- **Universal arbitrary-jet successor/sign-duality law.**  One successor-curvature
+certificate at a nonnegative stored scale is exactly reconstruction sign duality for the
+successor aperture at every target depth, prime, and nonnegative scale. -/
+theorem
+    xiDerivativeOrder_successorGaussianCurvatureCertificate_iff_every_curvatureSignDuality
+    {d : ℕ} (order : Fin d → ℕ)
+    (sourcePrime metricPrime : Nat.Primes) (m : ℕ)
+    (t : ℝ) (ht : 0 ≤ t) :
+    XiDerivativeOrderSuccessorGaussianCurvatureCertificate
+        order sourcePrime metricPrime m t ↔
+      ∀ (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+        (valuationScale : ℝ), 0 ≤ valuationScale →
+          XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+            (xiDerivativeOrderSuccessorAperture order)
+            jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        XiMobiusDyadicGaussianCurvatureExactHilbertCertificate
+          (xiDerivativeOrderSuccessorAperture order)
+          sourcePrime metricPrime m t := by
+      constructor
+      · exact fun hcertificate =>
+          hcertificate.successorApertureExactHilbertCurvature
+      · exact fun hcertificate =>
+          ⟨hcertificate⟩
+    _ ↔ _ :=
+      xiMobius_dyadicGaussianCurvatureExactHilbertCertificate_iff_every_curvatureSignDuality
+        (xiDerivativeOrderSuccessorAperture order)
+        sourcePrime metricPrime m t ht
 
 end
 

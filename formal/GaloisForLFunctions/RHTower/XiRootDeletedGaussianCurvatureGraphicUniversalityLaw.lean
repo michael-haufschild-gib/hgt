@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiRootDeletedCanonicalReconstructionGraphicConnector
 import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianCurvatureHilbertPhase
+import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianIntrinsicDimensionUniversalityLaw
 
 /-!
 # Root-deleted Xi Gaussian curvature and graphic universality
@@ -89,31 +90,202 @@ def XiTransverseRootDeletedGraphicNetworkUniversality
         (F := analyticScalarValuationLayerDifferentialField)
         (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head)
 
-/-- Curvature-enhanced root-deleted reconstruction and graphic-network certificate. -/
+/-- Minimal curvature-enhanced root-deleted reconstruction and graphic-network certificate.
+Root-zero canonical recovery and one strict-curvature fact derive full Gaussian positivity,
+cofinite recovery, graphic universality, rank two, and operator nonnormality below. -/
 structure XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
     {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
     (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
     (tail head : E → Fin (N + 1))
     (sourcePrime metricPrime : Nat.Primes) (m : ℕ) (t : ℝ) : Prop where
+  rootIsZero : shift root = 0
   canonicalReconstruction :
     XiTransverseRootDeletedPrimeValuationCanonicalReconstruction
       root shift sourcePrime
-  cofiniteNonrootExactRecovery :
-    XiTransversePrimeJetApertureCofiniteHilbertReconstruction
-      (xiTransverseRootDeletedShift root shift) m
-  fullGaussianGram :
-    (xiTransversePrimeFirstValuationGaussianGramMatrix shift metricPrime).PosDef
-  graphicNetworkUniversality :
-    XiTransverseRootDeletedGraphicNetworkUniversality root shift tail head
   strictNonrootGaussianCurvature :
     deriv (deriv (fun s =>
       Real.log
         (xiTransversePrimeValuationRankOneGaussianMetricGram
           (xiTransverseRootDeletedShift root shift) metricPrime s).det)) t < 0
-  nonrootGaussianSimilarityNonnormal :
+
+namespace XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+
+/-- Root-zero canonical recovery supplies full Gaussian collision separation at the stored metric
+prime. -/
+theorem fullGaussianGram
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t) :
+    (xiTransversePrimeFirstValuationGaussianGramMatrix shift metricPrime).PosDef :=
+  (xiTransverseRootDeletedPrimeValuationCanonicalReconstruction_iff_fullGaussianGram_posDef
+    root shift hcertificate.rootIsZero sourcePrime metricPrime).1
+      hcertificate.canonicalReconstruction
+
+/-- Root-zero canonical recovery supplies complete differential graphic-network universality. -/
+theorem graphicNetworkUniversality
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t) :
+    XiTransverseRootDeletedGraphicNetworkUniversality root shift tail head :=
+  (xiTransverseRootDeletedPrimeValuationCanonicalReconstruction_iff_graphicNetworkUniversality
+    root shift hcertificate.rootIsZero tail head sourcePrime).1
+      hcertificate.canonicalReconstruction
+
+/-- Canonical recovery discharges cofinite nonroot recovery at every independently chosen jet
+depth, not only the depth carried by the certificate. -/
+theorem cofiniteNonrootExactRecoveryAt
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t)
+    (jetDepth : ℕ) :
+    XiTransversePrimeJetApertureCofiniteHilbertReconstruction
+      (xiTransverseRootDeletedShift root shift) jetDepth := by
+  apply
+    (xiTransversePrimeValuationCanonicalReconstruction_iff_cofiniteApertureHilbertReconstruction
+      (xiTransverseRootDeletedShift root shift) sourcePrime jetDepth).1
+  exact hcertificate.canonicalReconstruction
+
+/-- Stored-depth cofinite recovery remains available as a derived dot API. -/
+theorem cofiniteNonrootExactRecovery
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t) :
+    XiTransversePrimeJetApertureCofiniteHilbertReconstruction
+      (xiTransverseRootDeletedShift root shift) m :=
+  hcertificate.cofiniteNonrootExactRecoveryAt m
+
+/-- Canonical nonroot recovery discharges injectivity and exclusion of zero. -/
+theorem nonrootShiftInjectiveAndNeZero
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t) :
+    Function.Injective (xiTransverseRootDeletedShift root shift) ∧
+      ∀ j, xiTransverseRootDeletedShift root shift j ≠ 0 :=
+  (xiTransversePrimeJetApertureCofiniteHilbertReconstruction_iff_injective_ne_zero
+    (xiTransverseRootDeletedShift root shift) m).1
+      hcertificate.cofiniteNonrootExactRecovery
+
+/-- Strict stored curvature discharges the former explicit nonroot rank-two premise. -/
+theorem rankTwo
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t)
+    (ht : 0 ≤ t) :
+    2 ≤ N :=
+  (xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_of_cofiniteHilbertReconstruction
+    (xiTransverseRootDeletedShift root shift) m metricPrime
+    hcertificate.cofiniteNonrootExactRecovery t ht).1
+      hcertificate.strictNonrootGaussianCurvature
+
+/-- Cofinite recovery and derived rank two force operator nonnormality at the stored target. -/
+theorem nonrootGaussianSimilarityNonnormal
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t)
+    (ht : 0 ≤ t) :
     matrixSelfCommutator
       (xiTransversePrimeValuationRankOneGaussianSimilarity
-        (xiTransverseRootDeletedShift root shift) metricPrime t) ≠ 0
+        (xiTransverseRootDeletedShift root shift) metricPrime t) ≠ 0 :=
+  (xiTransversePrimeValuationRankOneGaussianSimilarity_selfCommutator_ne_zero_iff_of_cofiniteHilbertReconstruction
+    (xiTransverseRootDeletedShift root shift) m metricPrime
+    hcertificate.cofiniteNonrootExactRecovery t ht).2
+      (hcertificate.rankTwo ht)
+
+/-- At a nonnegative stored scale, the root-deleted certificate supplies intrinsic
+one-dimensional Gaussian geometry at every independently chosen prime. -/
+theorem nonrootIntrinsicDimensionCertificate
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t)
+    (ht : 0 ≤ t) (intrinsicPrime : Nat.Primes) :
+    XiTransversePrimeValuationGaussianIntrinsicDimensionCertificate
+      (xiTransverseRootDeletedShift root shift) intrinsicPrime :=
+  (xiTransversePrimeValuationGaussianIntrinsicDimensionCertificate_iff
+    (xiTransverseRootDeletedShift root shift) intrinsicPrime).1
+      ⟨hcertificate.nonrootShiftInjectiveAndNeZero.1,
+        hcertificate.rankTwo ht⟩
+
+/-- **Root-deleted full sign-duality discharge.**  Canonical recovery and one stored strict
+curvature certificate force reconstruction sign duality at every independently chosen jet depth,
+valuation prime, and nonnegative scale. -/
+theorem nonrootCurvatureSignDualityCertificate
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t)
+    (ht : 0 ≤ t) (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+      (xiTransverseRootDeletedShift root shift)
+      jetDepth valuationPrime valuationScale :=
+  (xiTransversePrimeValuationGaussianCurvatureSignDualityCertificate_iff
+    (xiTransverseRootDeletedShift root shift)
+    jetDepth valuationPrime valuationScale hvaluationScale).1
+      ⟨hcertificate.cofiniteNonrootExactRecoveryAt jetDepth,
+        hcertificate.rankTwo ht⟩
+
+/-- **Root-deleted valuation universality connector.**  Canonical recovery alone supplies enough
+collision freedom for the full curvature, nonnormality, intrinsic-dimension, and
+differential-rank equivalence chain at independently chosen primes and nonnegative scales. -/
+theorem nonrootValuationUniversalityPhase
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    {root : Fin (N + 1)} {shift : Fin (N + 1) → ℕ}
+    {tail head : E → Fin (N + 1)}
+    {sourcePrime metricPrime : Nat.Primes} {m : ℕ} {t : ℝ}
+    (hcertificate :
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t)
+    (valuationCurvaturePrime operatorPrime intrinsicPrime : Nat.Primes)
+    (valuationCurvatureScale operatorScale : ℝ)
+    (hvaluationCurvatureScale : 0 ≤ valuationCurvatureScale)
+    (hoperatorScale : 0 ≤ operatorScale) :
+    XiTransversePrimeValuationGaussianCurvatureIntrinsicDifferentialUniversalityPhase
+      (xiTransverseRootDeletedShift root shift)
+      valuationCurvaturePrime operatorPrime intrinsicPrime
+      valuationCurvatureScale operatorScale :=
+  xiTransversePrimeValuationGaussian_curvature_nonnormal_intrinsicDimension_differentialRank_universality_of_injective
+    (xiTransverseRootDeletedShift root shift)
+    valuationCurvaturePrime operatorPrime intrinsicPrime
+    valuationCurvatureScale operatorScale
+    hvaluationCurvatureScale hoperatorScale
+    hcertificate.nonrootShiftInjectiveAndNeZero.1
+
+end XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
 
 /-- **Canonical root-deletion/curvature connector.**  Exact recovery on the canonically
 enumerated nonroot packet, together with two retained vertices, is exactly its Gaussian curvature
@@ -167,10 +339,36 @@ theorem
       xiTransverseRootDeletedCanonicalReconstruction_and_two_le_iff_gaussianCurvaturePhase
         root shift sourcePrime metricPrime m t ht
 
-/-- **Curvature-enhanced root-deleted graphic universality law.**  Canonical nonroot recovery and
-the rank-two threshold are equivalent to simultaneous full Gaussian separation, exact cofinite
-recovery, differential graphic-network universality, strict curvature, and operator
-nonnormality. -/
+/-- **Unconditional curvature-enhanced root-deleted graphic universality law.**  The root
+equation, canonical nonroot recovery, and rank-two threshold are exactly the minimal certificate;
+full Gaussian separation, cofinite recovery, differential graphic universality, and nonnormality
+are derived consequences. -/
+theorem
+    xiTransverseRootDeleted_zeroRoot_and_canonical_and_two_le_iff_gaussianCurvatureGraphicCertificate
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (tail head : E → Fin (N + 1))
+    (sourcePrime metricPrime : Nat.Primes) (m : ℕ) (t : ℝ) (ht : 0 ≤ t) :
+    (shift root = 0 ∧
+      XiTransverseRootDeletedPrimeValuationCanonicalReconstruction
+        root shift sourcePrime ∧
+      2 ≤ N) ↔
+      XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t := by
+  constructor
+  · rintro ⟨hroot, hcanonical, htwo⟩
+    have hphase :=
+      (xiTransverseRootDeletedCanonicalReconstruction_and_two_le_iff_gaussianCurvaturePhase
+        root shift sourcePrime metricPrime m t ht).1
+          ⟨hcanonical, htwo⟩
+    exact {
+      rootIsZero := hroot
+      canonicalReconstruction := hcanonical
+      strictNonrootGaussianCurvature := hphase.2 }
+  · intro h
+    exact ⟨h.rootIsZero, h.canonicalReconstruction, h.rankTwo ht⟩
+
+/-- Root-zero specialization preserving the original two-conjunct interface. -/
 theorem xiTransverseRootDeleted_gaussianCurvatureGraphicCertificate_iff
     {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
     (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
@@ -183,31 +381,94 @@ theorem xiTransverseRootDeleted_gaussianCurvatureGraphicCertificate_iff
         root shift tail head sourcePrime metricPrime m t := by
   constructor
   · rintro ⟨hcanonical, htwo⟩
-    have hphase :=
-      (xiTransverseRootDeletedCanonicalReconstruction_and_two_le_iff_gaussianCurvaturePhase
-        root shift sourcePrime metricPrime m t ht).1
-          ⟨hcanonical, htwo⟩
-    have hnonnormal :=
-      (xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_reconstruction_and_nonnormal
-        (xiTransverseRootDeletedShift root shift) m metricPrime t ht).1 hphase
-    exact {
-      canonicalReconstruction := hcanonical
-      cofiniteNonrootExactRecovery := hphase.1
-      fullGaussianGram :=
-        (xiTransverseRootDeletedPrimeValuationCanonicalReconstruction_iff_fullGaussianGram_posDef
-          root shift hroot sourcePrime metricPrime).1 hcanonical
-      graphicNetworkUniversality :=
-        (xiTransverseRootDeletedPrimeValuationCanonicalReconstruction_iff_graphicNetworkUniversality
-          root shift hroot tail head sourcePrime).1 hcanonical
-      strictNonrootGaussianCurvature := hphase.2
-      nonrootGaussianSimilarityNonnormal := hnonnormal.2 }
+    exact
+      (xiTransverseRootDeleted_zeroRoot_and_canonical_and_two_le_iff_gaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t ht).1
+          ⟨hroot, hcanonical, htwo⟩
   · intro h
-    have htwo :=
-      (xiTransversePrimeValuationRankOneGaussianMetric_logDet_secondDerivative_lt_zero_iff_of_cofiniteHilbertReconstruction
-        (xiTransverseRootDeletedShift root shift) m metricPrime
-        h.cofiniteNonrootExactRecovery t ht).1
-          h.strictNonrootGaussianCurvature
-    exact ⟨h.canonicalReconstruction, htwo⟩
+    exact ⟨h.canonicalReconstruction, h.rankTwo ht⟩
+
+/-- **Exact root-deleted graphic/sign-duality connector.**  At nonnegative stored and target
+scales, the complete root-deleted curvature/graphic certificate is exactly the root equation
+together with reconstruction sign duality at any independently chosen depth and valuation
+prime. -/
+theorem
+    xiTransverseRootDeleted_gaussianCurvatureGraphicCertificate_iff_zeroRoot_and_curvatureSignDuality
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (tail head : E → Fin (N + 1))
+    (sourcePrime metricPrime : Nat.Primes) (m : ℕ) (t : ℝ) (ht : 0 ≤ t)
+    (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t ↔
+      shift root = 0 ∧
+        XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+          (xiTransverseRootDeletedShift root shift)
+          jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        shift root = 0 ∧
+          XiTransverseRootDeletedPrimeValuationCanonicalReconstruction
+              root shift sourcePrime ∧
+            2 ≤ N :=
+      (xiTransverseRootDeleted_zeroRoot_and_canonical_and_two_le_iff_gaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t ht).symm
+    _ ↔
+        shift root = 0 ∧
+          XiTransversePrimeJetApertureCofiniteHilbertReconstruction
+              (xiTransverseRootDeletedShift root shift) jetDepth ∧
+            2 ≤ N :=
+      and_congr Iff.rfl
+        (and_congr
+          (xiTransversePrimeValuationCanonicalReconstruction_iff_cofiniteApertureHilbertReconstruction
+            (xiTransverseRootDeletedShift root shift) sourcePrime jetDepth)
+          Iff.rfl)
+    _ ↔ _ :=
+      and_congr Iff.rfl
+        (xiTransversePrimeValuationGaussianCurvatureSignDualityCertificate_iff
+          (xiTransverseRootDeletedShift root shift)
+          jetDepth valuationPrime valuationScale hvaluationScale)
+
+/-- **Universal root-deleted graphic/sign-duality law.**  One root-deleted graphic certificate
+at one metric target is exactly the zero-root phase carrying reconstruction sign duality at every
+jet depth, valuation prime, and nonnegative scale. -/
+theorem
+    xiTransverseRootDeleted_gaussianCurvatureGraphicCertificate_iff_zeroRoot_and_every_curvatureSignDuality
+    {N : ℕ} {E : Type} [Fintype E] [DecidableEq E]
+    (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (tail head : E → Fin (N + 1))
+    (sourcePrime metricPrime : Nat.Primes) (m : ℕ) (t : ℝ) (ht : 0 ≤ t) :
+    XiTransverseRootDeletedGaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t ↔
+      shift root = 0 ∧
+        ∀ (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+          (valuationScale : ℝ), 0 ≤ valuationScale →
+            XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+              (xiTransverseRootDeletedShift root shift)
+              jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        shift root = 0 ∧
+          XiTransverseRootDeletedPrimeValuationCanonicalReconstruction
+              root shift sourcePrime ∧
+            2 ≤ N :=
+      (xiTransverseRootDeleted_zeroRoot_and_canonical_and_two_le_iff_gaussianCurvatureGraphicCertificate
+        root shift tail head sourcePrime metricPrime m t ht).symm
+    _ ↔
+        shift root = 0 ∧
+          XiTransversePrimeJetApertureCofiniteHilbertReconstruction
+              (xiTransverseRootDeletedShift root shift) m ∧
+            2 ≤ N :=
+      and_congr Iff.rfl
+        (and_congr
+          (xiTransversePrimeValuationCanonicalReconstruction_iff_cofiniteApertureHilbertReconstruction
+            (xiTransverseRootDeletedShift root shift) sourcePrime m)
+          Iff.rfl)
+    _ ↔ _ :=
+      and_congr Iff.rfl
+        (xiTransversePrimeJetApertureCofiniteHilbertReconstruction_and_two_le_iff_every_gaussianCurvatureSignDualityCertificate
+          (xiTransverseRootDeletedShift root shift) m)
 
 /-- **Universal root-deleted curvature law.**  One canonical reconstruction phase and the
 rank-two condition hold exactly when every metric prime, jet depth, and nonnegative scale lies in

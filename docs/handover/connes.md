@@ -5848,3 +5848,166 @@ Formal sources:
 
 - `formal/GaloisForLFunctions/RHTower/CCMFirstClockExponentialTiltOdds.lean`;
 - `docs/drafts/pipeline/1-in-progress/ccm-first-clock-exponential-tilt-odds-law.md`.
+
+## 85. Infinite convolution nonlinearities are scalar on the irreducible prime face
+
+The first exact non-diagonal candidate after §84 was Möbius/Dirichlet convolution: a composite
+outer atom can split into factor pairs, and every product below the aperture has at least one
+factor in the inner half. The mechanism fails universally at irreducible primes.
+
+For arithmetic functions with values in any semiring, Lean proves
+
+```text
+(f*g)(p)=f(1)g(p)+f(p)g(1)                              (85.1)
+```
+
+at every prime `p`. Consequently the `n`th convolution power obeys the full noncommutative
+prime-face chain rule
+
+```text
+(f^n)(p)
+ =sum_(i=0)^(n-1) f(1)^i f(p) f(1)^(n-1-i).             (85.2)
+```
+
+This is not finite-rank or scalar. For every complete real normed algebra, including
+infinite-dimensional noncommutative operator algebras, an arbitrary coefficientwise infinite
+convolution series
+
+```text
+Phi_c(f)=sum_(n>=0)c_n f^n
+```
+
+satisfies
+
+```text
+Phi_c(f)(p)
+ =sum_(n>=0)c_n sum_(i=0)^(n-1)
+    f(1)^i f(p) f(1)^(n-1-i).                           (85.3)
+```
+
+The same derivative map acts at every prime and no term contains another prime coefficient
+`f(q)`. Hence no scalar- or operator-valued infinite Dirichlet-convolution functional can mix
+distinct irreducible prime faces.
+
+For scalar Gamma/unit sewing
+
+```text
+f_a=a*delta_1+Lambda,
+```
+
+equation `(85.3)` becomes
+
+```text
+Phi_c(f_a)(p)=Phi_c'(a) log p.                           (85.4)
+```
+
+At the literal physical first clock this gives the atomwise and summed laws
+
+```text
+transformedPrimeAtom(p,L)
+ =Phi_c'(a) criticalMellinAtomWeight(p)
+    sin(2*pi*log(p)/L),                                  (85.5)
+
+transformed irreducible-prime mass
+ =Phi_c'(a) original irreducible-prime mass.             (85.6)
+```
+
+The scalar is independent of prime and aperture. Thus Möbius inversion, Selberg/Dirichlet
+convolution, Euler-product powers, convolution-generated Fock lifts, arbitrary scalar Gamma
+shifts, and their coefficientwise infinite operator-valued power series cannot implement the
+outer-prime-to-inner-plus-Gamma transport required by `(82.3)`. They may change composites and
+higher prime powers, but irreducible outer primes are only rescaled or erased.
+
+This is unconditional Lean and a candidate new universal package. Prime divisor
+indecomposability and convolution Leibniz rules are classical; novelty is restricted to the
+noncommutative infinite-series law plus the exact RH-complete CCM prime-face connector. External
+priority remains provisional. It is not RH and not death of whole CCM.
+
+Exact survivor is now sharper: a successful CCM operation must be genuinely cross-prime, not
+generated endogenously by Dirichlet convolution, and must sew the continuous Gamma budget while
+preserving the literal source. By `(82.3)`, constructing that operation proves RH; excluding every
+CCM-admissible cross-prime operation kills the lane.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/CCMInfiniteConvolutionPrimeFaceRigidity.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-infinite-convolution-prime-face-rigidity.md`.
+
+## 86. Ax+b subdivision and infinite block--Gamma defect carrier
+
+The surviving non-diagonal first-clock attack now has one exact source carrier.  On successor-edge
+sequences define
+
+```text
+(A_q u)(n)=q^(-1/2) sum_(0<=a<q)u(qn+a).
+```
+
+For every multiplicative `F`, exact block telescoping gives
+
+```text
+A_q d_F=q^(-1/2)F(q)d_F,
+d_F(n)=F(n+1)-F(n).
+```
+
+For `F_t(n)=n^(it)`, the first coordinate of
+`sum_(q<=exp L)Lambda(q)A_q d_(F_t)` has imaginary part equal to the literal hard-cutoff CCM
+prime sine mass.  This preserves physical scale and avoids the fixed-fibre error that killed
+future-product dressing.
+
+More importantly, the same block algebra contains the exact infinite Gamma carrier.  Initial
+normalized block seeds satisfy
+
+```text
+<V_m e_0,V_n e_0>=exp(-|log m-log n|/2),  V_q=A_q^*.
+```
+
+The complete tensor degrees `1 mod 4` obey
+
+```text
+sum_(j>=0)<V_m e_0,V_n e_0>^(4j+1)
+ =ccmPublishedArchimedeanDensity(|log(m/n)|).
+```
+
+Polar completion cancels the degree-one decaying sector exactly:
+
+```text
+ccmFirstClockContinuousSourceDensity(h)
+ =sum_(j>=1)exp(-(2j+1/2)h)-exp(h/2).
+```
+
+Hence continuous reflection is the higher `5,9,13,...` block-Fock tail plus the reflected polar
+boundary.  Meanwhile the critical prime radial weight is the universal shift defect
+
+```text
+r/(1-r^4)-r^5/(1-r^4)=r,  r=q^(-1/2).
+```
+
+The published prime clock is therefore exactly the phase-weighted von Mangoldt relative-defect
+trace of the same infinite block-Fock ladder.  These laws are unconditional and Lean-formalized
+in:
+
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockBlockSubdivisionTransfer.lean`;
+- `docs/drafts/pipeline/1-in-progress/ccm-first-clock-direct-positive-factorization-attack.md`.
+
+This is not RH.  It removes the former representational ambiguity—Gamma and hard prime clock now
+live in one source-defined infinite algebra—and identifies the actual endpoint:
+
+> Prove that the singular, cross-prime four-grade codiagonal makes the phase-weighted relative
+> defect trace plus the reflected polar boundary nonnegative at `t=2*pi/L` for every
+> `L>=pi/2`; or prove every source-admissible closure retains a negative vertical innovation.
+
+A grade-preserving Fock lift cannot work because the degree-one Gamma sector cancels.  Ordinary
+contraction proves only the unphased defect positive and does not control the counter-half-wave
+sine.  Bounded/scalar completions are already excluded by the codiagonal saturation corpus.
+
+The finite cross-prime geometry is also exact:
+
+```text
+BlockConst(lcm(m,n)) <-> BlockConst(m) and BlockConst(n).
+```
+
+Thus finite noncommuting block meets recover the physical causal LCM ridge without scalar
+convolution.  But the cofinal unrenormalized meet over all `q>=2` contains only constant
+sequences, hence is zero in `ell^2(N)`.  Lean proves both the LCM law and the universal constant
+collapse.  Any live block transport must therefore be a critically renormalized relative defect
+taken before the zero strong limit; an ordinary alternating-projection exhaustion is dead.

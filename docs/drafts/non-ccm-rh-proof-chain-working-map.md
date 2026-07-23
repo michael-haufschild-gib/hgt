@@ -61,6 +61,138 @@ Route-level retirement requires substantially more:
 The last three retire only the named mechanism. They do not retire other possible proofs of `P`.
 All route statuses below use this distinction.
 
+## Current producer-strength ranking
+
+This ranking measures how much of a candidate starts from an unconditional, source-defined Lean
+object. It does not measure logical strength: every exact target below is RH-strength.
+
+1. **Theta--Cassini boundary/Markov route.** Actual positive theta carrier, exact nonlinear
+   response, analytic continuation, and unique entire source are unconditional. Missing step is a
+   fixed positive source representation or the equivalent boundary-saturation inequality.
+2. **Möbius--Laplace/Gamma--Hankel route.** Actual Möbius finite sections, their exact
+   Mellin--Plancherel limit, and the diagonal/off-diagonal energy split are unconditional. Missing
+   step is only arbitrarily large bounded returns of the upper-signed off-diagonal covariance at
+   exponents cofinal above one. The additive-triangle formulation exposes the same source at a
+   less localized scale.
+3. **Hedenmalm center-mixed route.** Actual positive center-mixed density, large sign chambers,
+   exact completed-source product-fibre current, all-order cofinal seam cancellation, and a
+   universal incomplete-Gamma shell coordinate are unconditional. Existing shell derivatives and
+   ordered current terms are rewritten exactly in that coordinate. For every higher shell, Lean
+   proves both remainder quadrants and both reflected horizontal derivative directions. Ground
+   derivative failure is confined to an explicit compact head with strictly positive tail.
+   Missing steps are compact ground domination, transverse derivative control, and cofinal
+   reflected product-fibre orientation.
+4. **Xi prime-seam route.** Actual Euler coefficient energy, prime-pair asymptotic, and coercivity
+   are unconditional. Missing step is a source-built all-prime/Sonin operator estimate on Xi
+   fibres.
+5. **Prime--Gamma Hankel, Taylor-current, and bounded-source targets.** Exact source formulas and
+   sharp target reductions exist, but no independent global positivity/dissipation producer has
+   yet emerged.
+6. **Hurwitz--Arakelov and power-orbit targets.** Consumers are exact, but the required
+   Xi-fibre algebraicity, capture, or divisor-preserving operation has no unconditional producer.
+
+## Open route: Möbius--Laplace bounded-return covariance
+
+**Route status:** `[OPEN CORE; EXACT FINITE ARITHMETIC SOURCE]`.
+
+Lean starts from the actual Möbius coefficients, not a zero-indexed surrogate:
+
+```lean
+mobiusDiscreteLaplaceFiniteSection N x
+  = finiteMobiusLaplacePencil N x.
+```
+
+For every finite aperture and `sigma > 0`, its logarithmic Mellin-line energy is exactly
+
+```text
+Gamma(2 sigma) *
+  sum_(m,n <= N) mu(m) mu(n) / (m+n)^(2 sigma).
+```
+
+Lean splits this positive full energy into diagonal mass plus the signed quantity
+
+```lean
+finiteMobiusGammaHankelOffDiagonalCovariance N (2 * sigma).
+```
+
+For `sigma > 1/2`, the diagonal has an aperture-independent summable ceiling and positivity gives
+an aperture-independent lower floor for the off-diagonal term. Therefore only its **upper**
+behavior is open. Uniform control at every aperture is unnecessary. The weakest finite source
+target presently exposed is
+
+```lean
+def MobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded : Prop :=
+  ∀ ε > 0, ∃ sigma C,
+    1 / 2 < sigma ∧ sigma < 1 / 2 + ε ∧
+      ∃ᶠ N in atTop,
+        finiteMobiusGammaHankelOffDiagonalCovariance N (2 * sigma) ≤ C.
+```
+
+Lean proves this target implies finite logarithmic source energy on cofinally many strict-right
+lines, propagates that energy to the whole strict-right half-plane, obtains Mellin continuation,
+and concludes RH:
+
+```lean
+mobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded_implies_riemannHypothesis
+```
+
+A hypothetical zeta zero on or right of one such line forces this covariance to tend to
+`+∞`; sparse bounded returns cannot survive it. This implication validates bounded return as a
+complete proof target. It does not close the route.
+
+The additive formulation is exact but coarser. Lean proves
+
+```text
+MöbiusLaplace(x)^2
+  = (1 - exp(-x)) * sum_N mobiusAdditiveTriangle(N) exp(-x N),
+```
+
+so a one-sided linear upper bound for the cumulative additive triangle gives critical half-decay
+and RH (with simple critical zeros in the sharper endpoint theorem). After one more Cesàro
+integration,
+
+```text
+mobiusAdditiveTriangleSecondCesaro(N)
+  = sum_(a+b=N) M(a) M(b),
+```
+
+and the all-`ε` bound `O(N^(2+ε))` implies RH. Given the classical Littlewood converse, this
+second-Cesàro target is RH-equivalent. The equivalence again makes it an exact target; it does not
+retire it.
+
+**Killed mechanisms, not killed route:**
+
+- fixed-order Gowers uniformity yields only logarithmic savings from the natural cubic
+  antidiagonal scale, not the missing full power;
+- one-prime Euler removal gives a positive tent, but every attempted second fixed-prime removal
+  has a proved negative lobe;
+- exact ternary insertion through Dirichlet inversion uniquely pays divisor weights of too much
+  mass;
+- Lambert ternary lifting either collapses coefficientwise back to the binary source or loses two
+  powers when fibres are separated;
+- blockwise LCM/cubical positivity is impossible because positive semiprime blocks alone have
+  cubic-over-logarithmic mass.
+
+**Positive survivors:**
+
+- the saturated LCM bulk is harmless and all source difficulty is localized to the supercritical
+  LCM boundary;
+- the Gamma--Hankel form removes every diagonal and lower-sign obligation;
+- bounded returns, rather than a uniform all-aperture estimate, are enough.
+
+**Exact open core:** prove cofinal bounded returns of the actual upper-signed Möbius
+Gamma--Hankel covariance using a nonlocal, all-prime cancellation law. This is sharper than
+restating full binary Chowla-scale cancellation, but no unconditional producer for those returns
+is yet present.
+
+Sources:
+
+- `formal/GaloisForLFunctions/RHTower/MobiusLaplaceMellinPlancherelBridge.lean`
+- `formal/GaloisForLFunctions/RHTower/MobiusLaplaceGammaHankelWall.lean`
+- `formal/GaloisForLFunctions/RHTower/MobiusAdditiveTriangleSourceUniversalityLaw.lean`
+- `formal/GaloisForLFunctions/RHTower/MobiusMertensSelfConvolutionCriterion.lean`
+- `docs/drafts/pipeline/1-in-progress/mobius-additive-frontier-research-ledger.md`
+
 ## Open route: Taylor-tail raw current
 
 **Route status:** `[OPEN CORE]`.
@@ -186,6 +318,122 @@ Do not reattempt: using low theta moments to portray the degree-two or cofinal-d
 smaller gap. Live target is an independent source proof of positivity on one cofinal test family.
 The tail carrying full RH information is expected, not disqualifying.
 
+## Active open route: theta--Cassini boundary saturation
+
+**Route status:** `[OPEN CORE; STRONGEST UNCONDITIONAL SOURCE PRODUCER]`.
+
+Lean constructs one aperture-independent positive half-line carrier
+
+```lean
+thetaCuspCassiniLikelihoodBaseDensity x
+```
+
+and proves, for every `x > 0`, both strict positivity and strict positive definiteness of every
+latent spectral moment Hankel block. For every `0 < t < 1`, the genuine inward Cassini response is
+the exact nonlinear ratio
+
+```text
+thetaCuspCassiniInwardCoordinateResponse (1 - t^2)
+  = thetaCuspCassiniLikelihoodFlux t
+      / (t * thetaCuspCassiniLikelihoodPartition t).
+```
+
+This is not a formal analogue: the proof body identifies the carrier with twice the actual theta
+source on the positive half-line and rewrites its flux and partition integrals.
+
+The response has a unique analytic germ at the Euler-safe Cassini point. Lean proves that any
+normalized entire function with this one-sided logarithmic derivative is the canonical entire
+Cassini source. Thus the source-to-divisor continuation step is already unconditional.
+
+The exact complete target is
+
+```lean
+thetaCuspCassiniInwardBoundarySaturated_iff_riemannHypothesis :
+  ThetaCuspCassiniInwardBoundarySaturated ↔ RiemannHypothesis
+```
+
+where saturation compares the global power-64 Jensen mass of that same entire source with the
+normalized degree-63 jet of its inward response. Proving this inequality from independent theta
+structure would be a full RH proof.
+
+Lean also exposes a compact positive Markov route:
+
+```text
+local fixed compact positive measure at the theta boundary
+  -> analytic transport along the zero-free Cassini segment
+  -> centered completed-seam moment representation
+  -> RH.
+```
+
+The transport and RH consumer are closed. The source measure is not.
+
+**Killed mechanisms, not killed target:**
+
+- The raw reciprocal square-gap pushforward of the seam likelihood carrier cannot be the fixed
+  Markov measure. Its mass is strictly greater than one, while analytic transport forces the
+  canonical zeroth source moment, which is strictly less than one.
+- Deleting the origin atom and scalar-calibrating the genuine higher-tail reciprocal pushforward
+  repairs degree zero but fails strictly at degree one.  If `mu_1` is that calibrated carrier,
+  the corpus-derived paper theorem gives
+
+  ```text
+  normalizedPrimeArchMoment 1
+    + (19413/160000) * normalizedPrimeArchMoment 0
+      < integral x dmu_1(x).
+  ```
+
+  Hence `ThetaCuspCassiniCalibratedReciprocalPositiveMomentMatching` is false already at `k=1`.
+  This kills the fixed reciprocal map `t ↦ t⁻¹`, not compact Markov representation itself.
+- The original normalized seam likelihood law is not infinitely divisible: it has an atom at
+  square gap `3` but none at `6 = 3 + 3`. Hence a one-particle compound-Poisson/Thorin
+  identification of that carrier is impossible.
+
+**Positive survivors:**
+
+- Let `nu` be the genuine higher-tail seam measure and
+
+  ```text
+  F(alpha) = integral t^(-alpha) dnu(t) / nu(R).
+  ```
+
+  Corpus bounds give
+
+  ```text
+  0 < m1/m0 < 29/1250 < 37/256 < F(1).
+  ```
+
+  Support `t ≥ 3` makes `F` continuous, strictly decreasing, and convergent to zero.  Therefore
+  there is a unique source-selected `alpha_* > 1` with `F(alpha_*) = m1/m0`.  The calibrated
+  pushforward through `t ↦ t^(-alpha_*)` is positive, supported strictly below `1/3`, and matches
+  source moments of degrees zero and one exactly.  Its first honest open test is degree two.
+- The old fixed-exponent interface
+
+  ```lean
+  ThetaCuspCassiniCalibratedReciprocalPositiveMomentMatching
+  ```
+
+  still implies RH as a logical connector, but its concrete `alpha=1` producer is now disproved.
+- The self-convolution of the seam carrier has a nonzero atom at `6`; a two-particle completion
+  repairs the exact additive-support defect that kills the one-particle infinitely-divisible
+  model. No theorem yet identifies its transform with the Cassini response.
+
+**Exact open core:** first test the unique two-moment-calibrated power-reciprocal carrier at degree
+two.  If it survives, continue the moment tower; if it fails, its signed degree-two defect becomes
+the next source constraint.  Independently, construct one fixed positive compact measure from the
+coupled theta completion whose shifted Markov transform equals the actual nonlinear Cassini
+response near the Euler-safe boundary, or prove the boundary-saturation Jensen/jet inequality
+directly. Positivity of the moving Gibbs measure or latent raw moment Hankel blocks alone does not
+discharge this: normalized prime--Gamma moments are logarithmic cumulants, not those raw moments.
+
+Sources:
+
+- `formal/GaloisForLFunctions/RHTower/ThetaCuspCassiniHyperbolicSourceLaw.lean`
+- `formal/GaloisForLFunctions/RHTower/ThetaCuspCassiniMarkovBoundaryTransport.lean`
+- `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`
+- `formal/GaloisForLFunctions/RHTower/XiSquaredSeamCassiniResolventSourceLaw.lean`
+- `formal/GaloisForLFunctions/RHTower/PrimeArchThetaAllOrderCumulant.lean`
+- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/theta-cusp-calibrated-power-reciprocal-first-moment-law.md`
+
 ## Open route: Hedenmalm center-mixed Fourier positivity
 
 **Route status:** `[OPEN CORE]`.
@@ -233,10 +481,299 @@ Mechanisms already ruled out, without retiring the target:
 - positivity of the ambient rank-two pure-state tangent, whose inertia is exactly `(1, 1)`;
 - automatic inward perturbation from the boundary, because available boundary positivity has no
   uniform margin at frequency infinity.
+- diagonal-shell positivity and every fixed finite canonical shell truncation. Lean now proves
+  the exact seam law
+
+  ```text
+  phi_n'(0) < 0                       for n >= 2,
+  sum_(n>=1) phi_n'(0) = 0,
+  (sum_(1<=n<=N) phi_n)'(0) > 0       for every N >= 1.
+  ```
+
+  Thus no finite prefix is even. After even reflection, its nonzero cusp coefficient gives a
+  strictly negative high-frequency Hedenmalm current. The full source removes this coefficient
+  only through the infinite negative-slope tail.
 
 Paper-level reduction still open: a Poisson/resolvent decomposition leaves one phase-current
 inequality for the actual theta source. Its proof must use exact modular/prime completion; generic
 shape information cannot prove it.
+
+Lean now completes the source-faithful cofinal regrouping:
+
+```lean
+thetaCuspCenterMixedFourierCurrent_eq_tsum_sourceProductFiber
+```
+
+The current is an absolutely convergent sum of actual completed-source product fibres. This is not
+the previously formalized auxiliary `4T''` density. If `d_r(n)=phi_n^(2r+1)(0)` and
+
+```text
+C_(r,s)(k)=sum_(mn=k) d_r(m)d_s(n),
+```
+
+then Lean proves
+
+```text
+sum_k C_(r,s)(k)=0
+```
+
+for every `r,s`. The first coefficient has `C_(0,0)(1)>0`, every prime coefficient is negative,
+and their complete sum is zero. Paper-level fixed-fibre integration by parts makes the
+high-frequency current coefficient `-16 C_(0,0)(k)`. Thus the ground fibre is eventually
+negative, prime fibres are eventually positive, and every algebraic endpoint order cancels only
+cofinally. No finite-order endpoint asymptotic can determine the completed current.
+
+Lean also proves the exact nonperturbative coordinate. For each positive shell,
+
+```text
+t=n^2 exp(2x)
+```
+
+turns its phase transform into one universal incomplete-Gamma tail cut at `n^2`, multiplied by
+the Dirichlet prefactor
+
+```text
+exp(-log(n)/2) * spectralTranslationPhase(-log(n), z).
+```
+
+On a product fibre `mn=k`, the two cuts multiply to `k^2`. The universal tail amplitude is
+positive above every shell cut, and its norm and the prefactor norm are independent of `Re z`.
+The high-frequency mechanism is therefore a complex incomplete-Gamma saddle/cut transition, not
+a real stationary point of the Gaussian damping phase.
+
+Lean further removes the source polynomial by an exact integrated Gamma recurrence. Every positive
+branch is
+
+```text
+2*pi*n^2*exp(-pi*n^2) + pi*(i*z-1/2)*R_n(z),
+```
+
+where the first term is real and independent of `z`; Mellin amplitude and shell character cancel
+exactly at the moving cut. Actual even shell values are two such boundaries plus the reflected
+remainders. The base remainder satisfies the uniform absolute estimate
+
+```text
+|R_n(z)| <= exp((Im(z)-1/2)*log n) * exp(-2*n^2)/2
+```
+
+for `|Im z|<1`, independent of `Re z`. Absolute far-shell control is therefore closed.
+
+The spectral-derivative connector is now closed in Lean. Differentiation under the universal tail
+gives the literal logarithmic insertion
+
+```text
+d/dz H_z(N)
+  = integral_(N,infinity) i*log(t)/2 * G_z(t) dt,
+```
+
+and shell-character differentiation combines with it as
+
+```text
+R'_n(z)
+  = prefactor_n(z) *
+      integral_(n^2,infinity) i*log(t/n^2)/2 * G_z(t) dt.
+```
+
+Lean proves that pre-existing corpus object
+`thetaCuspShellEvenPhaseSpectralDerivativeValue` is actual derivative of pre-existing shell value,
+then proves its exact Gamma formula
+
+```text
+D_n(z)
+  = pi * (i R_n(z) + (iz-1/2) R'_n(z))
+    - pi * (i R_n(-z) + (i(-z)-1/2) R'_n(-z)).
+```
+
+Consequently every ordered term of actual Hedenmalm current has a checked formula using only
+positive Gaussian boundary, `R_n`, and `R'_n`. No assumed analyticity or placeholder `deriv`
+remains between incomplete-Gamma analysis and RH-equivalent current.
+
+The recurrence has a second, positive-density form. Define
+
+```text
+W_n(z) = integral_(0,infinity)
+           thetaCuspWardGibbsAtom(n,x) * exp(i*x*z) dx.
+```
+
+Lean proves, away from the noncritical zero of the recurrence coefficient,
+
+```text
+R_n(z) = 2 W_n(z).
+```
+
+For `z=b-ia`, put
+
+```text
+f_(a,n)(x) = exp(a*x) * thetaCuspWardGibbsAtom(n,x).
+```
+
+Its exact logarithmic score is
+
+```text
+f'_(a,n)(x) / f_(a,n)(x)
+  = a + 5/2 - 2*pi*n^2*exp(2x) < 0
+```
+
+when `a<1/2`, `n>=1`, and `x>=0`. Integration by parts against `1-cos(bx)` then gives
+
+```text
+b * integral_(0,infinity) f_(a,n)(x) sin(bx) dx
+  = integral_(0,infinity) (-f'_(a,n)(x)) (1-cos(bx)) dx > 0.
+```
+
+Therefore Lean proves the new uniform sector law
+
+```text
+Im R_n(b-ia) > 0
+```
+
+for every `0<a<1/2`, `b>0`, and positive shell `n`. This closes one component of the previously
+open phase problem without asymptotics and uniformly through the moving-cut transition.
+
+The sector law is holomorphic, not merely pointwise. After the exact shift
+
+```text
+u = b + i(1/2-a),
+```
+
+the map `u ↦ R_n(u-i/2)` sends a full first-quadrant neighborhood into the upper half-plane.
+Applying the Cayley transform and Schwarz lemma on its maximal vertical ball gives the checked
+Ward--Schwarz derivative cone
+
+```text
+(1/2-a) |R'_n(b-ia)| <= 2 Im R_n(b-ia)                (WS)
+```
+
+whenever `b>1/2-a`. In particular `(WS)` holds automatically throughout the unresolved region
+`b>218/25`, uniformly in `n`. This is the first quantitative joint `R_n,R'_n` theorem that
+survives the moving-cut transition and all shell numbers.
+
+Lean also computes exact normalized second derivative of tilted Ward density:
+
+```text
+f''_(a,n)(x) / f_(a,n)(x)
+  = (a+5/2-2*pi*n^2*exp(2x))^2
+      -4*pi*n^2*exp(2x).
+```
+
+For every `a<1/2`, `x>=0`, and `n>=2`, this curvature is strictly positive. Consequently all
+higher-shell tilted Ward densities are strictly convex on positive half-line. Ground shell `n=1`
+is unique possible curvature defect. A second integration by parts now turns this curvature into
+the exact cosine identity
+
+```text
+b^2 * integral_(0,infinity) f_(a,n)(x) cos(bx) dx
+  = integral_(0,infinity) f''_(a,n)(x) (1-cos(bx)) dx > 0      (n >= 2).
+```
+
+Lean therefore proves the genuinely stronger phase law
+
+```text
+Re R_n(b-ia) > 0  and  Im R_n(b-ia) > 0                       (n >= 2).
+```
+
+Thus every higher-shell Gamma remainder lies in the strict first quadrant at every positive
+frequency. This is source-specific new knowledge forced by exact theta curvature, not a generic
+positive-density principle. Ground shell `n=1` is now the only shell whose remainder can leave
+that quadrant.
+
+Higher-shell derivative rotation is now closed. Lean proves the universal positive kernel
+
+```text
+K3(u) = u(2+cos u)-3 sin u > 0                         (u>0)
+```
+
+and the exact identity, now exported for every positive shell,
+
+```text
+b^4 integral_(0,infinity) x f_(a,n)(x) sin(bx) dx
+  = -integral_(0,infinity) f'''_(a,n)(x) K3(bx) dx.     (21)
+```
+
+For `n>=2`, exact score algebra gives `f'''_(a,n)<0` on the whole positive half-line. Hence
+
+```text
+Re R'_n(b-ia) < 0                                      (n>=2).  (22)
+```
+
+The reflected branch has the opposite horizontal derivative direction. At `z=b-ia`, every higher
+shell therefore satisfies the checked four-direction cone
+
+```text
+Re R_n(z)>0,  Im R_n(z)>0,  Re R'_n(z)<0,
+Re R_n(-z)>0, Im R_n(-z)<0, Re R'_n(-z)>0.             (23)
+```
+
+Lean also expands both real components of the actual reflected even-shell derivative. Those
+formulas show precisely what `(23)` does not sign: the two transverse components
+`Im R'_n(z)` and `Im R'_n(-z)`.
+
+Ground-shell failure of the same proof has now been classified exactly. For every
+`0<a<1/2`, Lean proves a unique transition `tau(a) in (0,1/2)` such that
+
+```text
+f'''_(a,1)(x)>0 for 0<=x<tau(a),
+f'''_(a,1)(tau(a))=0,
+f'''_(a,1)(x)<0 for x>tau(a).                           (24)
+```
+
+Thus third-order identity has exactly one negative compact head and one positive cofinal tail:
+
+```text
+b^4 integral x f_(a,n)(x) sin(bx) dx
+  = integral_(0,tau] -f'''_(a,1)(x)K3(bx) dx
+    + integral_(tau,infinity) -f'''_(a,1)(x)K3(bx) dx,
+
+first term < 0, second term > 0.                         (25)
+```
+
+Lean also evaluates signed masses and total variations exactly from boundary data at `tau`.
+Writing `f=f_(a,1)`:
+
+```text
+integral_(tau,infinity) f'''       = -f''(tau),
+integral_(0,tau] f'''              = f''(tau)-f''(0),
+integral_(tau,infinity) x f'''     = -tau f''(tau)+f'(tau),
+integral_(0,tau] x f'''            = f'(0)+tau f''(tau)-f'(tau),
+integral_(0,infinity) |f'''|       = 2f''(tau)-f''(0),
+integral_(0,infinity) x|f'''|      = f'(0)+2tau f''(tau)-2f'(tau).  (26)
+```
+
+One further exact integration by parts isolates actual high-frequency main term:
+
+```text
+b^4 integral_(0,infinity) x f(x) sin(bx) dx
+  = -2b f'(0) + integral_(0,infinity) (4f'''(x)+x f''''(x)) sin(bx) dx.  (27)
+```
+
+Since `f'(0)<0`, define nonoscillatory threshold
+
+```text
+B4(a) =
+  integral |4f'''+x f''''| / (-2f'(0)).
+```
+
+Lean proves `b>B4(a)` implies `Re R'_1(b-ia)<0`. The active quantitative theorem is now
+
+```text
+forall 0<a<1/2, B4(a) <= 218/25.                        (28)
+```
+
+Unlike prior oscillatory compact-head conjecture, `(28)` is a real `L1` inequality with no
+frequency variable. It is sufficient, not yet proved necessary; failure of this particular bound
+would require returning to cancellation in `(25)`.
+
+**Exact open core:** prove actual current nonnegativity for `0<a<1/2`, `|b|>218/25`. Current
+unchecked analytic data are:
+
+1. uniform fourth-order budget `(28)` (or a sharper direct proof of signed domination in `(25)`);
+2. transverse derivatives, now exactly
+   `Im R'_n(b-ia)=2 integral x f_(a,n)(x) cos(bx) dx`, and reflected analogue;
+3. cofinal reflected product-fibre compensation after all endpoint orders cancel.
+
+Higher-shell value quadrants, horizontal derivative directions, reflected directions, derivative
+magnitude, analyticity, and far-shell absolute convergence are closed. They do not by themselves
+sign the ordered-current sum.
 
 Sources:
 
@@ -246,6 +783,12 @@ Sources:
 - `formal/GaloisForLFunctions/RHTower/HedenmalmExteriorGaussianHankel.lean`
 - `formal/GaloisForLFunctions/RHTower/HedenmalmCentralBandGaussianHankel.lean`
 - `formal/GaloisForLFunctions/RHTower/HedenmalmLocalFrameObstruction.lean`
+- `formal/GaloisForLFunctions/RHTower/ThetaCuspFiniteShellSeamCancellation.lean`
+- `formal/GaloisForLFunctions/RHTower/ThetaCuspShellHedenmalmCurrent.lean`
+- `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean`
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/theta-cusp-finite-shell-seam-cancellation.md`
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/theta-cusp-source-product-fibre-seam-spectrum.md`
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/theta-cusp-shell-incomplete-gamma-coordinate.md`
 
 ## Open route: Xi prime-seam submass
 

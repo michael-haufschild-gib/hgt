@@ -194,6 +194,140 @@ theorem
         root shift hroot sourcePrime metricPrime tail head 0 0 (by norm_num)).2
           hphase
 
+/-- **Corrected edge/sign-duality factorization.**  Root-deleted dyadic vertex recovery,
+corrected edge recovery, and retained rank two are exactly rooted-incidence independence
+together with nonroot reconstruction sign duality at any independently chosen target. -/
+theorem
+    xiMobiusRootDeletedDyadicPairDifference_and_two_le_iff_rootedIncidence_and_curvatureSignDuality
+    {N d : ℕ}
+    (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (hroot : shift root = 0) (sourcePrime : Nat.Primes)
+    (tail head : Fin d → Fin (N + 1))
+    (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    (XiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction
+          root shift sourcePrime ∧
+        XiTransverseShiftPairDifferenceCofiniteHilbertReconstruction
+          shift tail head ∧
+        2 ≤ N) ↔
+      (rootedIncidenceMatroid (C := ℂ) root tail head).Indep Set.univ ∧
+        XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+          (xiTransverseRootDeletedShift root shift)
+          jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        (rootedIncidenceMatroid (C := ℂ) root tail head).Indep Set.univ ∧
+          XiTransversePrimeJetApertureGaussianCurvaturePhase
+            (xiTransverseRootDeletedShift root shift)
+            jetDepth valuationPrime valuationScale :=
+      xiMobiusRootDeletedDyadicPairDifference_and_two_le_iff_rootedIncidence_and_gaussianCurvature
+        root shift hroot sourcePrime valuationPrime tail head
+        jetDepth valuationScale hvaluationScale
+    _ ↔ _ :=
+      and_congr Iff.rfl
+        (xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_gaussianCurvatureSignDualityCertificate
+          (xiTransverseRootDeletedShift root shift)
+          jetDepth valuationPrime valuationScale)
+
+/-- **Universal corrected edge/sign-duality factorization.**  The same vertex/edge recovery
+phase is exactly rooted-incidence independence together with nonroot sign duality at every
+depth, prime, and nonnegative scale. -/
+theorem
+    xiMobiusRootDeletedDyadicPairDifference_and_two_le_iff_rootedIncidence_and_every_curvatureSignDuality
+    {N d : ℕ}
+    (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (hroot : shift root = 0) (sourcePrime : Nat.Primes)
+    (tail head : Fin d → Fin (N + 1)) :
+    (XiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction
+          root shift sourcePrime ∧
+        XiTransverseShiftPairDifferenceCofiniteHilbertReconstruction
+          shift tail head ∧
+        2 ≤ N) ↔
+      (rootedIncidenceMatroid (C := ℂ) root tail head).Indep Set.univ ∧
+        ∀ (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+          (valuationScale : ℝ), 0 ≤ valuationScale →
+            XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+              (xiTransverseRootDeletedShift root shift)
+              jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        (rootedIncidenceMatroid (C := ℂ) root tail head).Indep Set.univ ∧
+          XiTransversePrimeJetApertureGaussianCurvaturePhase
+            (xiTransverseRootDeletedShift root shift) 0 sourcePrime 0 :=
+      xiMobiusRootDeletedDyadicPairDifference_and_two_le_iff_rootedIncidence_and_gaussianCurvature
+        root shift hroot sourcePrime sourcePrime tail head 0 0 le_rfl
+    _ ↔ _ :=
+      and_congr Iff.rfl
+        (xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_every_gaussianCurvatureSignDualityCertificate
+          (xiTransverseRootDeletedShift root shift) 0 sourcePrime 0 le_rfl)
+
+/-- **Raw edge/sign-duality factorization.**  Root-deleted dyadic vertex recovery, literal raw
+edge recovery, and retained rank two are exactly rooted-incidence independence together with
+nonroot reconstruction sign duality at any independently chosen target. -/
+theorem
+    xiMobiusRootDeletedDyadicRawPairDifference_and_two_le_iff_rootedIncidence_and_curvatureSignDuality
+    {N d : ℕ}
+    (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (hroot : shift root = 0) (sourcePrime : Nat.Primes)
+    (tail head : Fin d → Fin (N + 1))
+    (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+    (valuationScale : ℝ) (hvaluationScale : 0 ≤ valuationScale) :
+    (XiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction
+          root shift sourcePrime ∧
+        XiEvenShiftRawPairDifferenceCofiniteHilbertReconstruction
+          shift tail head ∧
+        2 ≤ N) ↔
+      (rootedIncidenceMatroid (C := ℂ) root tail head).Indep Set.univ ∧
+        XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+          (xiTransverseRootDeletedShift root shift)
+          jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        (rootedIncidenceMatroid (C := ℂ) root tail head).Indep Set.univ ∧
+          XiTransversePrimeJetApertureGaussianCurvaturePhase
+            (xiTransverseRootDeletedShift root shift)
+            jetDepth valuationPrime valuationScale :=
+      xiMobiusRootDeletedDyadicRawPairDifference_and_two_le_iff_rootedIncidence_and_gaussianCurvature
+        root shift hroot sourcePrime valuationPrime tail head
+        jetDepth valuationScale hvaluationScale
+    _ ↔ _ :=
+      and_congr Iff.rfl
+        (xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_gaussianCurvatureSignDualityCertificate
+          (xiTransverseRootDeletedShift root shift)
+          jetDepth valuationPrime valuationScale)
+
+/-- **Universal raw edge/sign-duality factorization.**  The literal raw vertex/edge recovery
+phase is exactly rooted-incidence independence together with nonroot sign duality at every
+depth, prime, and nonnegative scale. -/
+theorem
+    xiMobiusRootDeletedDyadicRawPairDifference_and_two_le_iff_rootedIncidence_and_every_curvatureSignDuality
+    {N d : ℕ}
+    (root : Fin (N + 1)) (shift : Fin (N + 1) → ℕ)
+    (hroot : shift root = 0) (sourcePrime : Nat.Primes)
+    (tail head : Fin d → Fin (N + 1)) :
+    (XiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction
+          root shift sourcePrime ∧
+        XiEvenShiftRawPairDifferenceCofiniteHilbertReconstruction
+          shift tail head ∧
+        2 ≤ N) ↔
+      (rootedIncidenceMatroid (C := ℂ) root tail head).Indep Set.univ ∧
+        ∀ (jetDepth : ℕ) (valuationPrime : Nat.Primes)
+          (valuationScale : ℝ), 0 ≤ valuationScale →
+            XiTransversePrimeValuationGaussianCurvatureSignDualityCertificate
+              (xiTransverseRootDeletedShift root shift)
+              jetDepth valuationPrime valuationScale := by
+  calc
+    _ ↔
+        (rootedIncidenceMatroid (C := ℂ) root tail head).Indep Set.univ ∧
+          XiTransversePrimeJetApertureGaussianCurvaturePhase
+            (xiTransverseRootDeletedShift root shift) 0 sourcePrime 0 :=
+      xiMobiusRootDeletedDyadicRawPairDifference_and_two_le_iff_rootedIncidence_and_gaussianCurvature
+        root shift hroot sourcePrime sourcePrime tail head 0 0 le_rfl
+    _ ↔ _ :=
+      and_congr Iff.rfl
+        (xiTransversePrimeJetApertureGaussianCurvaturePhase_iff_every_gaussianCurvatureSignDualityCertificate
+          (xiTransverseRootDeletedShift root shift) 0 sourcePrime 0 le_rfl)
+
 end
 
 end RHTower
