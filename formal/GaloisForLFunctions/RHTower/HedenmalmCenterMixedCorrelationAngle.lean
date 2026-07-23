@@ -2,6 +2,8 @@ import GaloisForLFunctions.HilbertMetric.ThreePointCorrelationAngle
 import GaloisForLFunctions.HTGeometry.PSDMatrixSpectralHankel
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedThreePoint
 import GaloisForLFunctions.RHTower.ThetaCuspReflectedRiccatiAngle
+import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodGapCumulantRiccati
+import GaloisForLFunctions.RHTower.ThetaCuspAtomLikelihoodCrossDomination
 
 /-!
 # Correlation-angle producer for Hedenmalm three-point positivity
@@ -249,6 +251,40 @@ theorem thetaCuspReflectedSourceCorrelationAngle_subadditive_of_cumulantCorrecti
       thetaCuspFullSource_reflectedCorrelationAngle_subadditive_of_cumulantCorrection
         hx hy hxyu hcorrection
 
+/-- The exact domination of the negative atom--likelihood cross channel by the two unconditional
+positive component margins discharges the same-half-line source angle law. -/
+theorem thetaCuspReflectedSourceCorrelationAngle_subadditive_of_crossDomination
+    {u x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hxyu : x + y ≤ u)
+    (hdomination : ∀ t ∈ Icc 0 (x + y),
+      -thetaCuspReflectedAtomLikelihoodRiccatiCross u t ≤
+        thetaCuspSingleAtomReflectedRiccatiMargin
+            (thetaCuspSingleAtomReflectionScale 1 u)
+            (thetaCuspSingleAtomReflectionDefect t)
+            (2 * Real.sinh (2 * t)) +
+          thetaCuspReflectedLikelihoodCumulantRiccatiMargin u t) :
+    thetaCuspReflectedSourceCorrelationAngle u (x + y) ≤
+      thetaCuspReflectedSourceCorrelationAngle u x +
+        thetaCuspReflectedSourceCorrelationAngle u y := by
+  apply
+    thetaCuspReflectedSourceCorrelationAngle_subadditive_of_cumulantCorrection
+      hx hy hxyu
+  intro t ht
+  rw [thetaCuspReflectedLikelihoodCumulantCorrection_eq_margin_add_cross]
+  have h := hdomination t ht
+  linarith
+
+/-- **Unconditional same-half-line source angle law.**  The atom margin strictly absorbs the
+negative atom--likelihood interference, so no cumulant or domination interface remains. -/
+theorem thetaCuspReflectedSourceCorrelationAngle_subadditive
+    {u x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hxyu : x + y ≤ u) :
+    thetaCuspReflectedSourceCorrelationAngle u (x + y) ≤
+      thetaCuspReflectedSourceCorrelationAngle u x +
+        thetaCuspReflectedSourceCorrelationAngle u y := by
+  simpa [thetaCuspReflectedSourceCorrelationAngle,
+    thetaCuspReflectedSourceCorrelation,
+    thetaCuspReflectedSourceProduct, pow_two] using
+      thetaCuspFullSource_reflectedCorrelationAngle_subadditive hx hy hxyu
+
 /-- **Seam-localized wall connector.**  The global source angle interface splits exactly into a
 same-half-line cumulant inequality and a bounded seam-crossing angle inequality. -/
 theorem thetaCuspCenterMixedNearCenterThreePointWall_of_cumulantCorrection_and_seamAngle
@@ -276,6 +312,71 @@ theorem thetaCuspCenterMixedNearCenterThreePointWall_of_cumulantCorrection_and_s
     · exact
         thetaCuspReflectedSourceCorrelationAngle_subadditive_of_cumulantCorrection
           hx.le hy.le hxyv (hcorrection v x y hx.le hy.le hxyv)
+    · exact hseam v x y hv (lt_of_not_ge hxyv) hx hy
+  rcases le_total 0 u with hu | hu
+  · simpa only [v, abs_of_nonneg hu] using hangleV
+  · have habs : v = -u := by
+      simp only [v, abs_of_nonpos hu]
+    rw [habs] at hangleV
+    simpa only [thetaCuspReflectedSourceCorrelationAngle_neg_center] using hangleV
+
+/-- **Reduced seam-localized wall connector.**  Low cumulant signs and both component Riccati
+margins are unconditional.  The only same-half-line input retained here is exact domination of
+the strictly negative atom--likelihood cross channel; the other input is the seam-crossing angle
+law. -/
+theorem thetaCuspCenterMixedNearCenterThreePointWall_of_crossDomination_and_seamAngle
+    (hdomination : ∀ u x y : ℝ, 0 ≤ x → 0 ≤ y → x + y ≤ u →
+      ∀ t ∈ Icc 0 (x + y),
+        -thetaCuspReflectedAtomLikelihoodRiccatiCross u t ≤
+          thetaCuspSingleAtomReflectedRiccatiMargin
+              (thetaCuspSingleAtomReflectionScale 1 u)
+              (thetaCuspSingleAtomReflectionDefect t)
+              (2 * Real.sinh (2 * t)) +
+            thetaCuspReflectedLikelihoodCumulantRiccatiMargin u t)
+    (hseam : ∀ u x y : ℝ, 0 ≤ u → u < x + y → 0 < x → 0 < y →
+      thetaCuspReflectedSourceCorrelationAngle u (x + y) ≤
+        thetaCuspReflectedSourceCorrelationAngle u x +
+          thetaCuspReflectedSourceCorrelationAngle u y) :
+    ThetaCuspCenterMixedNearCenterThreePointWall := by
+  apply thetaCuspCenterMixedNearCenterThreePointWall_of_sourceAngle_subadditive
+  intro u x y hx hy
+  let v := |u|
+  have hv : 0 ≤ v := abs_nonneg u
+  have hangleV :
+      thetaCuspReflectedSourceCorrelationAngle v (x + y) ≤
+        thetaCuspReflectedSourceCorrelationAngle v x +
+          thetaCuspReflectedSourceCorrelationAngle v y := by
+    by_cases hxyv : x + y ≤ v
+    · exact
+        thetaCuspReflectedSourceCorrelationAngle_subadditive_of_crossDomination
+          hx.le hy.le hxyv (hdomination v x y hx.le hy.le hxyv)
+    · exact hseam v x y hv (lt_of_not_ge hxyv) hx hy
+  rcases le_total 0 u with hu | hu
+  · simpa only [v, abs_of_nonneg hu] using hangleV
+  · have habs : v = -u := by
+      simp only [v, abs_of_nonpos hu]
+    rw [habs] at hangleV
+    simpa only [thetaCuspReflectedSourceCorrelationAngle_neg_center] using hangleV
+
+/-- **Seam-only wall connector.**  Same-half-line angle subadditivity is unconditional; the sole
+remaining input is the genuinely seam-crossing source angle law. -/
+theorem thetaCuspCenterMixedNearCenterThreePointWall_of_seamAngle
+    (hseam : ∀ u x y : ℝ, 0 ≤ u → u < x + y → 0 < x → 0 < y →
+      thetaCuspReflectedSourceCorrelationAngle u (x + y) ≤
+        thetaCuspReflectedSourceCorrelationAngle u x +
+          thetaCuspReflectedSourceCorrelationAngle u y) :
+    ThetaCuspCenterMixedNearCenterThreePointWall := by
+  apply thetaCuspCenterMixedNearCenterThreePointWall_of_sourceAngle_subadditive
+  intro u x y hx hy
+  let v := |u|
+  have hv : 0 ≤ v := abs_nonneg u
+  have hangleV :
+      thetaCuspReflectedSourceCorrelationAngle v (x + y) ≤
+        thetaCuspReflectedSourceCorrelationAngle v x +
+          thetaCuspReflectedSourceCorrelationAngle v y := by
+    by_cases hxyv : x + y ≤ v
+    · exact thetaCuspReflectedSourceCorrelationAngle_subadditive
+        hx.le hy.le hxyv
     · exact hseam v x y hv (lt_of_not_ge hxyv) hx hy
   rcases le_total 0 u with hu | hu
   · simpa only [v, abs_of_nonneg hu] using hangleV

@@ -9747,6 +9747,8 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
       (thetaCuspSourceProductFiberHedenmalmCurrent k
         ((b : ℂ) - (a : ℂ) * I)) a := by
   let z : ℂ := (b : ℂ) - (a : ℂ) * I
+  let V : ℕ → ℂ := fun n =>
+    thetaCuspShellEvenPhaseValue z (n + 1)
   let D : ℕ → ℂ := fun n =>
     thetaCuspShellEvenPhaseSpectralDerivativeValue z (n + 1)
   have hz : |z.im| < 1 := by
@@ -9757,7 +9759,7 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
       HasDerivAt
         (fun α : ℝ => (b : ℂ) - (α : ℂ) * I) (-I) a := by
     have hreal := Complex.ofRealCLM.hasDerivAt (x := a)
-    convert (hreal.mul_const I).const_sub (b : ℂ) using 1 <;> ring
+    simpa using (hreal.mul_const I).const_sub (b : ℂ)
   have hterm (q : ℕ × ℕ) :
       HasDerivAt
         (fun α : ℝ =>
@@ -9766,7 +9768,8 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
             (starRingEnd ℂ)
               (thetaCuspShellEvenPhaseValue
                 ((b : ℂ) - (α : ℂ) * I) (q.2 + 1))).re)
-        ((D q.1).im + (D q.2).im) a := by
+        ((D q.1 * (starRingEnd ℂ) (V q.2)).im +
+          (D q.2 * (starRingEnd ℂ) (V q.1)).im) a := by
     have hleft0 :=
       hasDerivAt_thetaCuspShellEvenPhaseValue hz (Nat.succ_pos q.1)
     have hright0 :=
@@ -9796,11 +9799,13 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
     have hprod := hleft.mul hconj
     have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt a hprod
     convert hre using 1
-    · rfl
-    · simp only [mul_re, mul_im, conj_re, conj_im, neg_re, neg_im,
-        I_re, I_im]
-      dsimp only [D]
-      ring
+    change
+      (D q.1 * (starRingEnd ℂ) (V q.2)).im +
+          (D q.2 * (starRingEnd ℂ) (V q.1)).im =
+        (D q.1 * -I * (starRingEnd ℂ) (V q.2) +
+          V q.1 * (starRingEnd ℂ) (D q.2 * -I)).re
+    simp [Complex.mul_re, Complex.mul_im]
+    ring
   have hsum :
       HasDerivAt
         (fun α : ℝ =>
@@ -9811,15 +9816,33 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
                 (thetaCuspShellEvenPhaseValue
                   ((b : ℂ) - (α : ℂ) * I) (q.2 + 1))).re)
         (∑ q ∈ thetaPositiveFactorPairs k,
-          ((D q.1).im + (D q.2).im)) a := by
-    exact HasDerivAt.sum (fun q _hq => hterm q)
+          ((D q.1 * (starRingEnd ℂ) (V q.2)).im +
+            (D q.2 * (starRingEnd ℂ) (V q.1)).im)) a := by
+    convert HasDerivAt.sum
+      (u := thetaPositiveFactorPairs k)
+      (A := fun q (α : ℝ) =>
+        (thetaCuspShellEvenPhaseValue
+            ((b : ℂ) - (α : ℂ) * I) (q.1 + 1) *
+          (starRingEnd ℂ)
+            (thetaCuspShellEvenPhaseValue
+              ((b : ℂ) - (α : ℂ) * I) (q.2 + 1))).re)
+      (A' := fun q =>
+        (D q.1 * (starRingEnd ℂ) (V q.2)).im +
+          (D q.2 * (starRingEnd ℂ) (V q.1)).im)
+      (fun q _hq => hterm q) using 1
+    funext α
+    simp
   have hswap :
-      (∑ q ∈ thetaPositiveFactorPairs k, (D q.2).im) =
-        ∑ q ∈ thetaPositiveFactorPairs k, (D q.1).im := by
+      (∑ q ∈ thetaPositiveFactorPairs k,
+        (D q.2 * (starRingEnd ℂ) (V q.1)).im) =
+      ∑ q ∈ thetaPositiveFactorPairs k,
+        (D q.1 * (starRingEnd ℂ) (V q.2)).im := by
     let s := thetaPositiveFactorPairs k
     have h :
-        (∑ q ∈ s, (D q.2).im) =
-          ∑ q ∈ s, (D q.swap.2).im := by
+        (∑ q ∈ s,
+          (D q.2 * (starRingEnd ℂ) (V q.1)).im) =
+        ∑ q ∈ s,
+          (D q.swap.2 * (starRingEnd ℂ) (V q.swap.1)).im := by
       refine Finset.sum_bij' (fun q _ => q.swap) (fun q _ => q.swap)
         ?_ ?_ ?_ ?_ ?_
       · intro q hq
@@ -9834,16 +9857,147 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
         rw [Prod.swap_swap]
     simpa only [s, Prod.swap_prod_mk] using h
   convert hsum using 1
-  · rfl
-  · unfold thetaCuspSourceProductFiberHedenmalmCurrent
-      thetaCuspPositiveShellPairHedenmalmCurrent
-      thetaCuspShellPairHedenmalmCurrent
-    dsimp only [D]
-    rw [Finset.sum_add_distrib, hswap]
-    apply Finset.sum_congr rfl
-    intro q _hq
-    simp only [mul_im, conj_re, conj_im]
+  unfold thetaCuspSourceProductFiberHedenmalmCurrent
+    thetaCuspPositiveShellPairHedenmalmCurrent
+    thetaCuspShellPairHedenmalmCurrent
+  dsimp only [V, D, z]
+  rw [Finset.sum_add_distrib, hswap]
+  rw [← Finset.mul_sum]
+  ring
+
+/-- Product-fibre Hermitian energies remain absolutely summable after the complete source-shell
+packet is regrouped by positive products. -/
+theorem summable_thetaCuspSourceProductFiberHermitianEnergy
+    {z : ℂ} (hz : |z.im| < 1) :
+    Summable (fun k : ℕ =>
+      thetaCuspSourceProductFiberHermitianEnergy k z) := by
+  let V : ℕ → ℂ := fun n =>
+    thetaCuspShellEvenPhaseValue z (n + 1)
+  let C : ℕ × ℕ → ℂ := fun q =>
+    V q.1 * (starRingEnd ℂ) (V q.2)
+  have hV : Summable V := by
+    exact (summable_nat_add_iff 1).mpr
+      (hasSum_thetaCuspShellEvenPhaseValue hz).summable
+  have hstar : Summable (fun n : ℕ =>
+      ‖(starRingEnd ℂ) (V n)‖) := by
+    simpa only [Complex.norm_conj] using hV.norm
+  have hC : Summable C := by
+    simpa only [C] using
+      (summable_mul_of_summable_norm hV.norm hstar)
+  have hCre : Summable (fun q : ℕ × ℕ => (C q).re) := by
+    simpa only [Function.comp_apply] using
+      hC.map Complex.reCLM Complex.reCLM.continuous
+  have hfiber := hCre.hasSum.tsum_fiberwise thetaPositivePairProduct
+  apply Summable.congr hfiber.summable
+  intro k
+  unfold thetaCuspSourceProductFiberHermitianEnergy
+  rw [thetaPositivePairProduct_fiber]
+  simpa only [C, V] using
+    (Finset.tsum_subtype' (thetaPositiveFactorPairs k)
+      (fun q => (C q).re))
+
+/-- **Cofinal Hermitian-energy collapse.** The complete sum of the actual product-fibre energies
+is exactly the squared modulus of completed Xi. This is the value-level companion to the current
+reassembly theorem and keeps all divisor cancellations inside one convergent identity. -/
+theorem tsum_thetaCuspSourceProductFiberHermitianEnergy_eq_normSq_XiC
+    {z : ℂ} (hz : |z.im| < 1) :
+    (∑' k : ℕ, thetaCuspSourceProductFiberHermitianEnergy k z) =
+      Complex.normSq (XiC z) := by
+  let V : ℕ → ℂ := fun n =>
+    thetaCuspShellEvenPhaseValue z (n + 1)
+  let C : ℕ × ℕ → ℂ := fun q =>
+    V q.1 * (starRingEnd ℂ) (V q.2)
+  have hAll :=
+    hasSum_thetaCuspShellEvenPhaseValue hz
+  have hV : Summable V := by
+    exact (summable_nat_add_iff 1).mpr hAll.summable
+  have hVsum : (∑' n : ℕ, V n) = XiC z := by
+    have hsplit := hAll.summable.sum_add_tsum_nat_add 1
+    rw [hAll.tsum_eq] at hsplit
+    simpa only [Finset.sum_range_one,
+      thetaCuspShellEvenPhaseValue,
+      thetaCuspShellHalfLineTransform_zero, zero_add, V] using hsplit
+  have hstar : Summable (fun n : ℕ =>
+      ‖(starRingEnd ℂ) (V n)‖) := by
+    simpa only [Complex.norm_conj] using hV.norm
+  have hC : Summable C := by
+    simpa only [C] using
+      (summable_mul_of_summable_norm hV.norm hstar)
+  have hCre : Summable (fun q : ℕ × ℕ => (C q).re) := by
+    simpa only [Function.comp_apply] using
+      hC.map Complex.reCLM Complex.reCLM.continuous
+  change
+    (∑' k : ℕ, ∑ q ∈ thetaPositiveFactorPairs k, (C q).re) =
+      Complex.normSq (XiC z)
+  rw [← tsum_eq_tsum_thetaPositiveFactorPairs
+      (fun q : ℕ × ℕ => (C q).re) hCre,
+    ← Complex.re_tsum hC]
+  rw [show (∑' q : ℕ × ℕ, C q) =
+      (∑' n : ℕ, V n) *
+        (starRingEnd ℂ) (∑' n : ℕ, V n) by
+    rw [Complex.conj_tsum,
+      tsum_mul_tsum_of_summable_norm hV.norm hstar],
+    hVsum]
+  rw [Complex.normSq_apply]
+  simp only [Complex.mul_re, Complex.conj_re, Complex.conj_im]
+  ring
+
+/-- **Full coupled transverse-energy law.** The complete Hedenmalm current is the transverse
+derivative of `‖XiC‖²`. Together with the cofinal energy collapse, this identifies the frontier
+sign as monotonicity of the convergent sum of all divisor-fibre Hermitian energies, without
+differentiating or estimating fibres separately. -/
+theorem hasDerivAt_normSq_XiC_transverse_eq_centerMixedFourierCurrent
+    {a b : ℝ} (ha : |a| < 1) :
+    HasDerivAt
+      (fun α : ℝ =>
+        Complex.normSq (XiC ((b : ℂ) - (α : ℂ) * I)))
+      (thetaCuspCenterMixedFourierCurrent a ha b) a := by
+  let z : ℂ := (b : ℂ) - (a : ℂ) * I
+  have hz : |z.im| < 1 := by
+    dsimp only [z]
+    simpa only [sub_im, ofReal_im, mul_im, I_re, I_im, ofReal_re,
+      zero_mul, mul_one, zero_sub, add_zero, abs_neg] using ha
+  have hline :
+      HasDerivAt
+        (fun α : ℝ => (b : ℂ) - (α : ℂ) * I) (-I) a := by
+    have hreal := Complex.ofRealCLM.hasDerivAt (x := a)
+    simpa using (hreal.mul_const I).const_sub (b : ℂ)
+  have hXiBase : HasDerivAt XiC (deriv XiC z) z :=
+    (XiC_analytic z (Set.mem_univ z)).differentiableAt.hasDerivAt
+  have hXi :
+      HasDerivAt
+        (fun α : ℝ => XiC ((b : ℂ) - (α : ℂ) * I))
+        (deriv XiC z * (-I)) a := by
+    simpa only [z] using hXiBase.comp a hline
+  have hXiRe :
+      HasDerivAt
+        (fun α : ℝ =>
+          (XiC ((b : ℂ) - (α : ℂ) * I)).re)
+        (deriv XiC z * (-I)).re a :=
+    Complex.reCLM.hasFDerivAt.comp_hasDerivAt a hXi
+  have hXiIm :
+      HasDerivAt
+        (fun α : ℝ =>
+          (XiC ((b : ℂ) - (α : ℂ) * I)).im)
+        (deriv XiC z * (-I)).im a :=
+    Complex.imCLM.hasFDerivAt.comp_hasDerivAt a hXi
+  have hnorm :=
+    (hXiRe.mul hXiRe).add (hXiIm.mul hXiIm)
+  have hcurrent :
+      thetaCuspCenterMixedFourierCurrent a ha b =
+        2 * (deriv XiC z * (starRingEnd ℂ) (XiC z)).im := by
+    rw [thetaCuspCenterMixedFourierCurrent_eq_tsum_shellPair ha b,
+      ← xiCHorizontalCurrent_eq_tsum_thetaCuspShellPairHedenmalmCurrent hz]
+    dsimp only [z]
+    simp only [Complex.mul_re, Complex.mul_im, Complex.conj_re,
+      Complex.conj_im, Complex.neg_re, Complex.neg_im, I_re, I_im]
     ring
+  rw [hcurrent]
+  convert hnorm using 1
+  dsimp only [z]
+  simp only [Complex.mul_re, Complex.mul_im, Complex.conj_re,
+    Complex.conj_im, Complex.neg_re, Complex.neg_im, I_re, I_im]
+  ring
 
 end
 

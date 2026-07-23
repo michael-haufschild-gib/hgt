@@ -815,3 +815,95 @@ in another corona still only records their real part and remains circular.
   links formalized.
 - **NEXT:** 4c (primes in short intervals — elementary PNT with power-log error) OR 5c (joint
   Hahn–Banach closures (3)/(18)/(19), independent of 4c).  rng-pick next iteration.
+- **[DONE 2026-07-23] Step 5c(i) — quantitative Möbius ray recovery.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerMobiusRayRecovery.lean`
+  (umbrella-registered, `lake build` clean, standard axioms, index regenerated).
+  `norm_fourierBorel_le_of_lambert_ray_decay` (geometric ray decay + Lambert samples `≤ Dρⁿ`,
+  `ρ ≤ 1/2` ⇒ `‖F x‖ ≤ 4Dρ`, via the 5a transfer and the corpus
+  `weightedLambertTransform_ray_eq`), and its compact-carrier form
+  `norm_compactFourierBorel_le_of_sampled_lambert_decay` (through the corpus
+  `positiveLambertDerivative_compactFourierBorel`).  This converts oversampled Lambert decay
+  (the rate-transfer output) into Fourier–Borel decay — the (14) link — feeding
+  `compactFourierBorel_eq_zero_of_ray_decay` (5b-iii).
+- **Full-chain status.**  Formalized links: (4)–(5) dual reduction ⇒ Lambert sample decay (7);
+  4a+α window derivative bounds; 4b+4d interpolation/rate transfer (8a modulo nodes); 5c(i)
+  Möbius recovery (14); 5b carrier separation (15)–(16) ⇒ coordinate-power vanishing.  Open:
+  4c prime-log nodes (deep); FE-pairing bookkeeping (the card works with the FE-odd difference
+  `B = A − R_*A`: assemble the reflected-carrier functional in the corpus FE framework,
+  cf. `CompactCarrierFECompleteness`); 5c(ii) Hahn–Banach joint closure statements (3)/(18)/(19).
+- **[DONE 2026-07-23] FE-pairing carrier separation (the `B = A − R_*A` form of (15)–(16)).**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerFECarrierSeparation.lean`
+  (umbrella-registered, `lake build` clean, standard axioms, index regenerated).
+  `norm_compactFourierBorel_le_exp`, `norm_compactFourierBorel_neg_ray_le`, and
+  **`compactFourierBorel_sub_eq_zero_of_ray_decay`**: for two compactly carried functionals with
+  all carrier real parts `≤ β`, positive-ray decay of the transform difference at any rate
+  `σ₀ > β` forces the transforms to agree identically — the two-carrier Paley–Wiener separation
+  matching the card's reflected pair (`A` on `K`, `R_*A` on the reflected carrier, both real
+  parts `< 1` inside the strip).
+- **4c status note:** verified this mathlib snapshot has neither PNT nor Wiener–Ikehara (only
+  Chebyshev bounds/Bertrand, and ζ nonvanishing on `Re = 1` in `LSeries/Nonvanishing`).  The
+  prime-node supply therefore requires building PNT-with-power-log-error — a multi-session
+  sub-project (candidate: analytic route via the mathlib ζ framework + a formalized
+  Perron/Tauberian step, or elementary Bombieri–Wirsing).  It is the ONLY remaining input to
+  (8a); worth spinning off as its own reusable infrastructure effort.
+- **Remaining:** 4c (above); 5c(ii) Hahn–Banach joint closure statements (3)/(18)/(19).
+- **[DONE 2026-07-23] Step 5c(ii-a) — the Hahn–Banach density criterion.**
+  `formal/GaloisForLFunctions/HTGeometry/DenseOfVanishingDual.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  `exists_dual_vanishing_of_notMem_closed_submodule` (geometric HB: a point outside a closed
+  submodule is separated by a functional VANISHING on the submodule — the boundedness-on-a-
+  subspace-implies-vanishing scaling argument) and
+  **`topologicalClosure_eq_top_of_forall_dual_eq_zero`**: a submodule of a real normed space
+  annihilated only by the zero functional is dense.  This is the closure engine for (3):
+  the joint-graph annihilator computation (dual reduction ⇒ oversampling ⇒ Möbius ⇒ carrier
+  separation, all formalized) plugs into this criterion.
+- **NEXT (step 5c(ii-b)):** the joint-space model: coefficient side as `lp 1` over `Nat.Primes`
+  (dictionary `b ↦ (log p/p)·b_p`), product with `C(K, ℂ)` (sup norm), the finite joint graph as
+  a `Submodule.span` of `{(e_p, u_p)}`, and the capstone density statement assembling the
+  annihilator chain — conditional only on the 4c node interface.  Then 4c (PNT sub-project) and
+  the (18)/(19) group/affine corollaries.
+- **[DONE 2026-07-23] Step 5c(ii-b, part 1) — coordinate span density in ℓ¹.**
+  `formal/GaloisForLFunctions/HTGeometry/LpSingleSpanDense.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  **`span_lp_single_dense`**: the span of unit coordinate vectors is dense in
+  `lp (fun _ : α => ℝ) 1` (via `lp.hasSum_single`).  In the rescaled dictionary
+  `b ↦ ((log p/p)·b_p)_p`, this is the card's "finite-support fields are dense in `T_1`",
+  the coefficient half of the joint closure (3).
+- **NEXT:** 5c(ii-b, part 2): the product-space joint graph
+  (`lp 1 × C(K,ℂ)` with `Submodule.span {((log p/p)·δ_p, u_p)}`) and the capstone density via
+  `topologicalClosure_eq_top_of_forall_dual_eq_zero` + the formalized annihilator chain, with
+  the 4c node interface as the one hypothesis.  Also open: (17) nonlinear repetition limit,
+  (18)/(19) corollaries, and 4c (PNT sub-project).
+- **[DONE 2026-07-23] Step (17) part A — the quadratic power-linearization bound.**
+  `formal/GaloisForLFunctions/HTGeometry/PowerLinearizationBound.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  `choose_le_pow_div_factorial` (`C(n,j) ≤ n^j/j!`), `sum_Ico_pow_div_factorial_le`
+  (`Σ_{2≤j≤n} x^j/j! ≤ x²e^x`), and **`abs_pow_sub_one_sub_le`**
+  (`|(1+b)^m − 1 − mb| ≤ (m|b|)²e^{m|b|}`) — the tangency estimate behind the card's
+  repetition display (17).
+- **NEXT (step (17) part B):** the weighted repetition limit: with `b := t/N`, the scaled
+  increment satisfies `Σ_m |N((1+t/N)^m −1) − tm|·p^{−mσ} ≤ (t²/N)·Σ m²(p^{−σ/2})^m → 0`
+  for `N ≥ 2|t|/(σ log p)` — the coefficient-side convergence
+  `N·Δ_{p,t/N} → t·d_{e_p}` in every level-σ ray norm.  Then remaining: 5c(ii-b) part 2 joint
+  capstone; (18)/(19); 4c (PNT sub-project).
+- **[DONE 2026-07-23] Step (17) part B — the weighted repetition limit.**
+  `formal/GaloisForLFunctions/HTGeometry/ScaledPowerIncrementLimit.lean` (HTGeometry umbrella,
+  `lake build` clean, standard axioms, index regenerated).
+  **`tendsto_scaled_power_increment_ray`**: for every ratio `0 < r < 1` and parameter `t`,
+  `Σ_m |n((1+t/n)^m −1) − tm|·r^m → 0` as `n → ∞` — termwise quadratic linearization dominated
+  by `(t²/n)·Σ m²(√r)^m` once `e^{|t|/n} ≤ 1/√r`.  At `r = p^{−σ}` this is the card's (17)
+  coefficient-side convergence `N·Δ_{p,t/N} → t·d_{e_p}` in every level-`σ` ray topology.
+- **Remaining:** 5c(ii-b) part 2 (joint product-space capstone); (18)/(19) corollaries;
+  4c (PNT-with-power-log-error sub-project — the single deep block gating unconditional (8a)).
+- **[DONE 2026-07-23] Step 4c (combinatorial half) — prime-log node assembly.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerPrimeNodeAssembly.lean`
+  (umbrella-registered, `lake build` clean, standard axioms, index regenerated).
+  **`exists_separated_primeLog_nodes`**: one prime logarithm per `η`-window at the `4η`-spaced
+  targets `y_i = R + 4η·i` (`η = 1/(4(N+1))`, `i ≤ N`) yields exactly the node-family interface
+  of `norm_le_ray_of_sampled_decay`: `N+1` prime logs in `[R, R+1]`, pairwise `η`-separated,
+  each a genuine `log p`.  **4c is now reduced to its pure arithmetic core**: a prime in every
+  window `[y, y + 1/(4(⌊ce^y⌋-ish))]` — i.e. primes in multiplicative gaps
+  `[X, X(1 + Θ(1/(c·log X)))]`, PNT-with-power-log-error strength.  That analytic core is the
+  single remaining input for the whole card (everything else is formalized end-to-end) and
+  should proceed as its own reusable sub-project (Selberg symmetry formula → elementary PNT
+  with error, or mathlib-ζ analytic route).

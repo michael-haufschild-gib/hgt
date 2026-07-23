@@ -14,8 +14,8 @@
 
 - [x] 0 → 1 in-progress: generated from verified Lean endpoints
 - [x] 1 → 2 fully-proven: dependency-closed paper proof, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: exact-file Lean check pending
-- [ ] 3 → 4 publication-ready: post-proof literature audit pending
+- [x] 2 → 3 formalized: exact-file Lean check passed; final global axiom audit pending
+- [x] 3 → 4 publication-ready: post-proof literature audit found no exact collision
 
 ## Corpus inputs
 
@@ -44,17 +44,32 @@ affine orbits of both archimedean sources, while retaining zeta and Xi at the sa
 
 ## Lean certificate
 
-- Planned module:
+- Module:
   `GaloisForLFunctions.RHTower.AffineGammaDigammaZetaXiArbitraryWindowEscapeUniversalityLaw`
-- Planned main theorem:
+- Main theorem:
   `exists_synchronized_affine_gamma_digamma_zeta_xi_jet_escape_in_finset`
+- Source:
+  `formal/GaloisForLFunctions/RHTower/AffineGammaDigammaZetaXiArbitraryWindowEscapeUniversalityLaw.lean`
+- Exact-file check:
+  `lake env lean GaloisForLFunctions/RHTower/AffineGammaDigammaZetaXiArbitraryWindowEscapeUniversalityLaw.lean`
+  passed warning-free on 2026-07-23.
+- Umbrella:
+  imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
 ## Novelty protocol
 
-No literature search occurred before the dependency-closed proof.  External collision search
-starts only after exact Lean verification.
+No literature search occurred before the dependency-closed proof.  After an initial search-service
+error, a post-proof exact-phrase search for Gamma, digamma, Riemann zeta, Xi, finite-dimensional
+dictionaries, and common derivative orders found adjacent literature on Gamma/digamma/Hurwitz-zeta
+derivative identities, but no common-order escape theorem, no four-source capacity bound, and no
+independent affine-orbit form.  Closest inspected publication:
+
+- G. A. Kalugin and D. J. Jeffrey, *Pseudo-differential operators on the circle, Bernoulli
+  polynomials*, <https://doi.org/10.1007/s40509-024-00316-9>.
 
 ## Log
 
 - 2026-07-23 — Terminal cross-folder scan exposed the affine-source/synchronized-window seam.
 - 2026-07-23 — Dependency-closed proof completed from existing Lean endpoints.
+- 2026-07-23 — Exact theorem checked warning-free and wired into the RHTower umbrella.
+- 2026-07-23 — Post-proof collision audit found no exact literature match.

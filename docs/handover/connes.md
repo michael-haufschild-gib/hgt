@@ -6052,3 +6052,57 @@ Formal sources:
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardHardyContraction.lean`;
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardHardyNonexpansive.lean`;
 - `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/xi-ward-hardy-nondiagonal-nonexpansiveness.md`.
+
+## 88. Zero-adapted sampling classifies the four-unit Julia boundary lift
+
+The exact augmented object requested after Section 87 is now defined:
+
+```text
+W_P=[[G_P,r_P],[r_P^*,4]],
+S_P=4G_P-r_Pr_P^*.
+```
+
+A new zero-adapted mechanism removes the possible cancellation from the complete infinite Xi
+divisor. Let `q` be any upper representative of a strict-right Schwarz pair, write
+`lambda=xiRightCenteredZero(q)` and `a=Re(lambda)`, and sample at `w_q=conj(lambda)`. Every
+Schwarz-pair response has positive real part on the right half-plane. The selected pair contributes
+
+```text
+Re(2/(w_q+lambda))=1/a
+```
+
+and its conjugate term is strictly positive. Absolute summability therefore gives
+
+```text
+Re r_P(w_q)>1/a,
+|r_P(w_q)|^2>2/a=4G_P(w_q,w_q).                         (88.1)
+```
+
+The strict strip bound `0<a<1/2` is exactly what makes the four-unit threshold fail. Thus one
+strict-right Xi pair produces a one-node negative diagonal of `S_P`; no tail cancellation or
+finite truncation can repair it.
+
+Lean proves the block Schur equivalence and the exact endpoint law
+
+```text
+RH
+<->
+for every finite right-half-plane packet P, S_P is PSD
+<->
+for every finite right-half-plane packet P, W_P is PSD. (88.2)
+```
+
+This is not RH: the forward construction arm of `(88.2)` remains open. It does close the exact
+target classification and supplies a canonical falsifier for every possible strict-right zero.
+Any source proof of the requested lift now has no remaining target-side analytic gap: positivity
+of the displayed source-defined block is itself the RH-complete operation.
+
+Do not return to generic Schur realization, diagonal multiplier contractivity, or cancellation
+estimates for `r_P`. The live source-side problem is to derive positivity of `W_P` from the
+singular/cofinal Möbius--Gamma source without inserting a target Gram factorization or assuming a
+bounded/norm-holomorphic boundary map.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardCofinalBoundaryLift.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/xi-ward-zero-adapted-four-unit-boundary-charge-law.md`.

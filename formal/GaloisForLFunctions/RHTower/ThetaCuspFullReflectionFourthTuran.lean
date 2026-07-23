@@ -1097,7 +1097,8 @@ def thetaCuspHigherLikelihoodLogJetThree (x : ℝ) : ℝ :=
     3 * thetaCuspHigherLikelihoodJetOne x * thetaCuspHigherLikelihoodJetTwo x / s ^ 2 +
     2 * thetaCuspHigherLikelihoodJetOne x ^ 3 / s ^ 3
 
-private theorem hasDerivAt_thetaCuspHigherLikelihoodLog
+/-- Exact first derivative of the complete higher likelihood log-factor. -/
+theorem hasDerivAt_thetaCuspHigherLikelihoodLog
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspHigherLikelihoodLog
       (thetaCuspHigherLikelihoodLogJetOne x) x := by
@@ -1109,7 +1110,8 @@ private theorem hasDerivAt_thetaCuspHigherLikelihoodLog
   simpa only [thetaCuspHigherLikelihoodLog, thetaCuspHigherLikelihoodLogJetOne] using
     hs.log hspos.ne'
 
-private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetOne
+/-- Exact second derivative of the complete higher likelihood log-factor. -/
+theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetOne
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspHigherLikelihoodLogJetOne
       (thetaCuspHigherLikelihoodLogJetTwo x) x := by
@@ -1124,7 +1126,8 @@ private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetOne
   unfold thetaCuspHigherLikelihoodLogJetTwo
   field_simp [hspos.ne']
 
-private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetTwo
+/-- Exact third derivative of the complete higher likelihood log-factor. -/
+theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetTwo
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspHigherLikelihoodLogJetTwo
       (thetaCuspHigherLikelihoodLogJetThree x) x := by
@@ -1143,7 +1146,8 @@ private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetTwo
   field_simp [hspos.ne']
   ring
 
-private theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetThree
+/-- Exact fourth derivative of the complete higher likelihood log-factor. -/
+theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetThree
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspHigherLikelihoodLogJetThree
       (thetaCuspHigherLikelihoodLogJetFour x) x := by

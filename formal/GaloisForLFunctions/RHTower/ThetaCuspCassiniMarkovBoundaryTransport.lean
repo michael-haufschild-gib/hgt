@@ -267,7 +267,8 @@ private theorem ae_three_le_thetaCuspAtomLikelihoodSpectralMeasure
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
     exact hgap.trans hr.le
 
-private theorem ae_three_le_thetaCuspHigherLikelihoodSpectralMeasure :
+/-- The higher likelihood spectral measure has the sharp lower support edge `3`. -/
+theorem ae_three_le_thetaCuspHigherLikelihoodSpectralMeasure :
     ∀ᵐ r ∂thetaCuspHigherLikelihoodSpectralMeasure, 3 ≤ r := by
   rw [thetaCuspHigherLikelihoodSpectralMeasure, Measure.ae_sum_iff]
   intro k
