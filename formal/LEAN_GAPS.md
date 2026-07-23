@@ -13,7 +13,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 5221 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
-| 4816 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
+| 4783 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
 | 3982 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3802 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
@@ -25,17 +25,17 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2635 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean` |
 | 2627 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
+| 2492 | `formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean` |
 | 2478 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
-| 2449 | `formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean` |
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
+| 2313 | `formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
+| 2227 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 2208 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
 | 2202 | `formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean` |
 | 2173 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean` |
-| 2011 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 2004 | `formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean` |
 | 1912 | `formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean` |
-| 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
 
 ## Gap Markers
 
