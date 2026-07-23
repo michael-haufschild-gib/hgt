@@ -32,7 +32,7 @@ theorem rankOneCoefficientPairedBoundaryCurrent_factorization_unique_up_to_scale
     · exact_mod_cast Nat.choose_ne_zero (Nat.le_of_lt k.isLt)
     · exact hck
   have hboundary : gammaClockBoundaryVector (n + 1) (Fin.last n) ≠ 0 := by
-    simp [gammaClockBoundaryVector, Nat.factorial_ne_zero]
+    simp [gammaClockBoundaryVector]
   apply sharedClockObservation_factorization_unique_up_to_scale
     (rankOneCoefficientIncomingCovector c n) source
     (gammaClockBoundaryVector (n + 1)) boundary
@@ -68,8 +68,6 @@ theorem rankOneCoefficientPairedBoundaryCurrent_projectiveJetCalibration
       c n k hck source boundary hfactor
   refine ⟨lambda, ⟨hlambda.1, hlambda.2.1, hlambda.2.2, ?_⟩, ?_⟩
   · intro j
-    change source (Pi.single j 1) =
-      lambda * ((n + 1).choose (j : ℕ) * c (n + 1 - (j : ℕ)))
     rw [congrFun hlambda.2.1 (Pi.single j 1),
       rankOneCoefficientIncomingCovector_single]
   · intro mu hmu
