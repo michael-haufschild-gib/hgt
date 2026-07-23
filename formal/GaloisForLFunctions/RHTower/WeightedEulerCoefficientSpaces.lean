@@ -4,9 +4,8 @@ import Mathlib.NumberTheory.SumPrimeReciprocals
 /-!
 # Weighted Euler coefficient spaces: critical summable and Marcinkiewicz layers
 
-Coefficient-space layer of the joint graph-decoupling theorem
-(card `weighted-euler-tangent-global-graph-decoupling`).  This file builds the
-three prime coefficient topologies of that theorem and proves the exact
+This file builds three prime coefficient topologies for the weighted Euler
+tangent and proves the exact
 boundary facts the decoupling argument consumes:
 
 * the critical summable layer `T_1` with norm `∑_p (log p / p)·|b_p|`;
@@ -15,7 +14,7 @@ boundary facts the decoupling argument consumes:
 * the vanishing-tail layer `M_0`, stated by uniform vanishing of truncation
   tails in the Marcinkiewicz quotient;
 * the exact coordinate value: the quotient family of `e_p` has greatest value
-  `1/p`, attained at the cutoff `X = p` (card equation (4a));
+  `1/p`, attained at the cutoff `X = p`;
 * the actual unit field `b ≡ 1` lies in `M_log` (Mertens' first theorem) but
   neither in `T_1` (Mertens divergence) nor in `M_0` (its tail quotients stay
   above `1/4` at arbitrarily late cutoffs);
@@ -229,7 +228,7 @@ theorem unitField_memMarcinkiewiczLogLayer :
   linarith
 
 /-- **The actual unit field is not critically summable**: `∑_p log p / p`
-diverges (Mertens divergence, card equation (1a) boundary). -/
+diverges (Mertens divergence, Mertens boundary). -/
 theorem unitField_not_memCriticalSummableLayer :
     ¬ MemCriticalSummableLayer (fun _ => (1:ℝ)) := by
   intro h
@@ -256,7 +255,7 @@ theorem unitField_not_memCriticalSummableLayer :
       Set.indicator_of_notMem (show n ∉ {p : ℕ | p.Prime} from hn)]
     simp
 
-/-! ## Exact coordinate norm (card equation (4a)) -/
+/-! ## Exact coordinate norm -/
 
 /-- The coordinate field `e_p`. -/
 def primeCoordinateField (p : ℕ) : ℕ → ℝ := fun n => if n = p then 1 else 0
@@ -286,7 +285,7 @@ theorem primeLogMass_coordinate_of_lt {p X : ℕ} (hXp : X < p) :
   have : n ≠ p := by omega
   simp [primeCoordinateField, this]
 
-/-- **Exact coordinate norm** (card equation (4a)): the Marcinkiewicz quotient
+/-- **Exact coordinate norm**: the Marcinkiewicz quotient
 family of the coordinate field `e_p` has greatest value exactly `1/p`,
 attained at the cutoff `X = p`. -/
 theorem isGreatest_marcinkiewiczLogQuotient_coordinate {p : ℕ} (hp : p.Prime) :
@@ -394,7 +393,7 @@ theorem primeCoordinateField_memCriticalSummableLayer {p : ℕ} :
 /-! ## Strictness witnesses -/
 
 /-- **The unit field has non-vanishing tails**: it lies in `M_log \ M_0`.
-This is the Mertens corona exclusion of the card. -/
+This is the Mertens corona exclusion. -/
 theorem unitField_not_memVanishingTailLayer :
     ¬ MemVanishingTailLayer (fun _ => (1:ℝ)) := by
   intro h

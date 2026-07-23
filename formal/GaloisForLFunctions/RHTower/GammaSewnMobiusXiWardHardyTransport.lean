@@ -118,6 +118,29 @@ theorem xiCanonicalProduct_eq_right_mul_nonright (z : ℂ) :
   · rw [xiNonrightCanonicalProduct]
     field_simp [hright]
 
+/-- Complementary source factor, including the nonvanishing Hadamard quotient. -/
+def xiNonrightSourceFactor (z : ℂ) : ℂ :=
+  xiHadamardQuotient z * xiNonrightCanonicalProduct z
+
+/-- Exact source-level Wiener--Hopf factorization.  The strict-right factor used by the transport
+is a genuine factor of the completed Xi source, not an independently prescribed response
+function. -/
+theorem xiRightCanonicalProduct_mul_nonrightSourceFactor
+    (z : ℂ) :
+    xiRightCanonicalProduct z * xiNonrightSourceFactor z = XiC z := by
+  have hsource := congrFun xiHadamardQuotient_mul_canonicalProduct z
+  rw [Pi.mul_apply] at hsource
+  calc
+    xiRightCanonicalProduct z * xiNonrightSourceFactor z =
+        xiHadamardQuotient z *
+          (xiRightCanonicalProduct z *
+            xiNonrightCanonicalProduct z) := by
+      rw [xiNonrightSourceFactor]
+      ring
+    _ = xiHadamardQuotient z * xiCanonicalProduct z := by
+      rw [← xiCanonicalProduct_eq_right_mul_nonright z]
+    _ = XiC z := hsource
+
 /-! ## The centered strict-right relative trace -/
 
 /-- One centered strict-right genus-one resolvent term. -/
@@ -440,8 +463,8 @@ def xiAntiCausalWardSchwarzPairResponse
     (w + xiRightCenteredZero
       (xiRightZeroCopyConjEquiv q.1))⁻¹)
 
-/-- The strict-right centered trace splits canonically into complete Schwarz-pair responses. -/
 set_option maxHeartbeats 800000 in
+/-- The strict-right centered trace splits canonically into complete Schwarz-pair responses. -/
 theorem continuedXiCenteredAntiCausalWardResponse_eq_tsum_schwarzPairs
     {w : ℂ} (hw : 0 < w.re) :
     continuedXiCenteredAntiCausalWardResponse w =
@@ -564,6 +587,28 @@ def continuedXiAntiCausalWardColumn {n : ℕ}
 def xiRightWardSourcePhase (z alpha : ℂ) : ℂ :=
   xiRightCanonicalProduct (z - alpha * I) /
     xiRightCanonicalProduct (z + alpha * I)
+
+/-- Complementary phase in the exact source factorization. -/
+def xiNonrightWardSourcePhase (z alpha : ℂ) : ℂ :=
+  xiNonrightSourceFactor (z - alpha * I) /
+    xiNonrightSourceFactor (z + alpha * I)
+
+/-- The completed-Xi source phase splits exactly into the strict-right phase transported below
+and its complementary source phase. -/
+theorem xiWardSourcePhase_eq_right_mul_nonrightSourcePhase
+    {z alpha : ℂ}
+    (hright : xiRightCanonicalProduct (z + alpha * I) ≠ 0)
+    (hnonright : xiNonrightSourceFactor (z + alpha * I) ≠ 0) :
+    xiWardSourcePhase z alpha =
+      xiRightWardSourcePhase z alpha *
+        xiNonrightWardSourcePhase z alpha := by
+  rw [xiWardSourcePhase, xiRightWardSourcePhase,
+    xiNonrightWardSourcePhase,
+    ← xiRightCanonicalProduct_mul_nonrightSourceFactor
+      (z - alpha * I),
+    ← xiRightCanonicalProduct_mul_nonrightSourceFactor
+      (z + alpha * I)]
+  field_simp [hright, hnonright]
 
 @[simp] theorem xiRightWardSourcePhase_zero
     {z : ℂ} (hz : xiRightCanonicalProduct z ≠ 0) :
@@ -694,6 +739,107 @@ theorem hasDerivAt_xiRightWardAnchoredSourceTransportV_zero
   field_simp [hz0]
   ring
 
+/-! ## Schwarz boundary phase inside the Julia cell -/
+
+/-- Source-fixed boundary phase.  Its infinitesimal generator is the Schwarz-paired boundary
+self-symbol; placing it in the denominator makes the contact part of the same multiplicative
+transport as the strict-right Xi phase. -/
+def xiAntiCausalWardBoundarySourcePhase (alpha : ℂ) : ℂ :=
+  Complex.exp (alpha * xiAntiCausalWardBoundarySelfSymbol)
+
+@[simp] theorem xiAntiCausalWardBoundarySourcePhase_zero :
+    xiAntiCausalWardBoundarySourcePhase 0 = 1 := by
+  simp [xiAntiCausalWardBoundarySourcePhase]
+
+theorem hasDerivAt_xiAntiCausalWardBoundarySourcePhase_zero :
+    HasDerivAt xiAntiCausalWardBoundarySourcePhase
+      xiAntiCausalWardBoundarySelfSymbol 0 := by
+  have hlinear :
+      HasDerivAt
+        (fun alpha : ℂ =>
+          alpha * xiAntiCausalWardBoundarySelfSymbol)
+        xiAntiCausalWardBoundarySelfSymbol 0 := by
+    simpa using
+      (hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const
+        xiAntiCausalWardBoundarySelfSymbol
+  simpa only [xiAntiCausalWardBoundarySourcePhase, zero_mul,
+    Complex.exp_zero, one_mul] using
+    (Complex.hasDerivAt_exp
+      (0 * xiAntiCausalWardBoundarySelfSymbol)).comp 0 hlinear
+
+/-- Two-channel source phase: strict-right Xi channel divided by the independently transported
+Schwarz boundary channel. -/
+def xiRightWardBoundarySourcePhaseCrossRatio
+    (z alpha : ℂ) : ℂ :=
+  xiRightWardSourcePhase z alpha /
+    xiAntiCausalWardBoundarySourcePhase alpha
+
+/-- Non-diagonal Julia defect coupling a strict-right spectral node to the boundary self-symbol
+channel. -/
+def xiRightWardBoundaryJuliaCrossDefect
+    (z alpha : ℂ) : ℂ :=
+  (xiRightWardBoundarySourcePhaseCrossRatio z alpha - 1) /
+    (2 * I * z)
+
+/-- Exact two-channel Julia identity.  The left side is not an appended scalar correction: it is
+transported boundary-to-spectral Cauchy Gram minus the original cross-Gram. -/
+theorem xiRightWardBoundaryJuliaCrossDefect_eq_transport_sub_gram
+    (z alpha : ℂ) :
+    xiRightWardBoundaryJuliaCrossDefect z alpha =
+      xiRightWardBoundarySourcePhaseCrossRatio z alpha *
+          xiWardCauchyGramCell z 0 -
+        xiWardCauchyGramCell z 0 := by
+  simp only [xiRightWardBoundaryJuliaCrossDefect,
+    xiWardCauchyGramCell, map_zero, sub_zero]
+  ring
+
+theorem hasDerivAt_xiRightWardBoundarySourcePhaseCrossRatio_zero
+    {z : ℂ} (hz : xiRightCanonicalProduct z ≠ 0) :
+    HasDerivAt (xiRightWardBoundarySourcePhaseCrossRatio z)
+      (-2 * I * logDeriv xiRightCanonicalProduct z -
+        xiAntiCausalWardBoundarySelfSymbol) 0 := by
+  have hzphase := hasDerivAt_xiRightWardSourcePhase_zero hz
+  have hboundary :=
+    hasDerivAt_xiAntiCausalWardBoundarySourcePhase_zero
+  have hboundaryZero :
+      xiAntiCausalWardBoundarySourcePhase 0 ≠ 0 := by simp
+  have hquot := hzphase.div hboundary hboundaryZero
+  rw [xiRightWardSourcePhase_zero hz,
+    xiAntiCausalWardBoundarySourcePhase_zero] at hquot
+  simpa only [xiRightWardBoundarySourcePhaseCrossRatio, one_pow,
+    mul_one, one_mul, div_one] using hquot.congr_deriv (by ring)
+
+theorem hasDerivAt_xiRightWardBoundaryJuliaCrossDefect_zero
+    {z : ℂ} (hz : xiRightCanonicalProduct z ≠ 0) :
+    HasDerivAt (xiRightWardBoundaryJuliaCrossDefect z)
+      ((-2 * I * xiRightRelativeResolventTrace z -
+          xiAntiCausalWardBoundarySelfSymbol) /
+        (2 * I * z)) 0 := by
+  have hcross :=
+    hasDerivAt_xiRightWardBoundarySourcePhaseCrossRatio_zero hz
+  have h :=
+    (hcross.sub_const 1).div_const (2 * I * z)
+  rw [logDeriv_xiRightCanonicalProduct_eq_relativeResolventTrace hz] at h
+  simpa only [xiRightWardBoundaryJuliaCrossDefect] using h
+
+/-- Boundary-anchored non-diagonal source transport before the spectral-to-Laplace rotation. -/
+def xiRightWardBoundaryAnchoredSourceTransportV
+    (z alpha : ℂ) : ℂ :=
+  -z * xiRightWardBoundaryJuliaCrossDefect z alpha
+
+/-- The boundary-channel Julia tangent is the centered strict-right trace plus exactly the
+Schwarz contact required by the raw Ward normalization. -/
+theorem hasDerivAt_xiRightWardBoundaryAnchoredSourceTransportV_zero
+    {z : ℂ} (hz : xiRightCanonicalProduct z ≠ 0) (hz0 : z ≠ 0) :
+    HasDerivAt (xiRightWardBoundaryAnchoredSourceTransportV z)
+      (xiRightRelativeResolventTrace z +
+        xiAntiCausalWardBoundarySelfSymbol / (2 * I)) 0 := by
+  have h :=
+    hasDerivAt_xiRightWardBoundaryJuliaCrossDefect_zero hz
+  apply (h.const_mul (-z)).congr_deriv
+  field_simp [I_ne_zero, hz0]
+  ring
+
 /-- Center-anchored non-diagonal source transport. -/
 def mobiusGammaXiCenteredAntiCausalWardTransportV (w alpha : ℂ) : ℂ :=
   2 * I * xiRightWardAnchoredSourceTransportV (I * w) alpha
@@ -724,12 +870,12 @@ theorem hasDerivAt_mobiusGammaXiCenteredAntiCausalWardTransportV_zero
     hasDerivAt_xiRightWardAnchoredSourceTransportV_zero hprod hw0
   exact (h.const_mul (2 * I)).congr_deriv rfl
 
-/-- **Requested transport `V`.**  The Julia cross-defect supplies the centered infinite response;
-the Schwarz-paired boundary self-symbol restores the raw positive-time Hardy normalization.  Both
-terms are fixed by the Xi source before the Ward column is evaluated. -/
+/-- **Requested transport `V`.**  One multiplicative Julia cell couples the strict-right Xi phase
+to the Schwarz boundary phase.  Thus both centered infinite response and raw boundary contact are
+inside the non-diagonal source transport before the Ward column is evaluated. -/
 def mobiusGammaXiAntiCausalWardTransportV (w alpha : ℂ) : ℂ :=
-  mobiusGammaXiCenteredAntiCausalWardTransportV w alpha +
-    alpha * xiAntiCausalWardBoundarySelfSymbol
+  2 * I *
+    xiRightWardBoundaryAnchoredSourceTransportV (I * w) alpha
 
 /-- Exact Julia/defect output law: the first aperture tangent of `V` is the paper anti-causal Xi
 Ward response, not the full Xi trace and not only its centered relative version. -/
@@ -737,17 +883,168 @@ theorem hasDerivAt_mobiusGammaXiAntiCausalWardTransportV_zero
     {w : ℂ} (hw : 0 < w.re) :
     HasDerivAt (mobiusGammaXiAntiCausalWardTransportV w)
       (continuedXiAntiCausalWardResponse w) 0 := by
-  have hcenter :=
-    hasDerivAt_mobiusGammaXiCenteredAntiCausalWardTransportV_zero hw
-  have hboundary :
-      HasDerivAt
-        (fun alpha : ℂ => alpha * xiAntiCausalWardBoundarySelfSymbol)
-        xiAntiCausalWardBoundarySelfSymbol 0 := by
-    simpa using
-      (hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const
-        xiAntiCausalWardBoundarySelfSymbol
-  simpa only [mobiusGammaXiAntiCausalWardTransportV,
-    continuedXiAntiCausalWardResponse] using hcenter.add hboundary
+  have hproduct : xiRightCanonicalProduct (I * w) ≠ 0 := by
+    intro hzero
+    obtain ⟨q, hq⟩ :=
+      (xiRightCanonicalProduct_eq_zero_iff_exists (I * w)).mp hzero
+    have hright := q.2
+    change xiSpectralPoint q.1 = I * w at hq
+    rw [hq] at hright
+    have hIIw : I * (I * w) = -w := by
+      rw [← mul_assoc, I_mul_I, neg_one_mul]
+    rw [hIIw] at hright
+    simp only [neg_re] at hright
+    linarith
+  have hw0 : I * w ≠ 0 := by
+    exact mul_ne_zero I_ne_zero (by
+      intro hwzero
+      rw [hwzero] at hw
+      simp at hw)
+  have h :=
+    hasDerivAt_xiRightWardBoundaryAnchoredSourceTransportV_zero
+      hproduct hw0
+  apply (h.const_mul (2 * I)).congr_deriv
+  rw [continuedXiAntiCausalWardResponse,
+    continuedXiCenteredAntiCausalWardResponse]
+  field_simp [I_ne_zero]
+
+/-- Fully expanded output law: the same Julia tangent is the absolutely convergent raw
+Schwarz-paired Ward response, with no centered counterterm left in the statement. -/
+theorem hasDerivAt_mobiusGammaXiAntiCausalWardTransportV_zero_eq_raw
+    {w : ℂ} (hw : 0 < w.re) :
+    HasDerivAt (mobiusGammaXiAntiCausalWardTransportV w)
+      (∑' q : XiRightUpperZeroCopy,
+        xiAntiCausalWardSchwarzPairResponse q w) 0 := by
+  rw [← continuedXiAntiCausalWardResponse_eq_tsum_schwarzPairs hw]
+  exact hasDerivAt_mobiusGammaXiAntiCausalWardTransportV_zero hw
+
+/-! ## Non-scalar augmented Julia transport -/
+
+/-- Packet nodes together with the distinguished Schwarz boundary channel. -/
+abbrev XiWardBoundaryAugmentedIndex (n : ℕ) :=
+  Fin n ⊕ Unit
+
+/-- Spectral coordinate of the augmented packet; the boundary channel is centered at zero. -/
+def xiWardBoundaryAugmentedCoordinate {n : ℕ}
+    (node : Fin n → ℂ) : XiWardBoundaryAugmentedIndex n → ℂ
+  | Sum.inl i => I * node i
+  | Sum.inr _ => 0
+
+/-- Left phase vector of the augmented source packet. -/
+def xiWardBoundaryAugmentedLeftPhase {n : ℕ}
+    (node : Fin n → ℂ) (alpha : ℂ) :
+    XiWardBoundaryAugmentedIndex n → ℂ
+  | Sum.inl i => xiRightWardSourcePhase (I * node i) alpha
+  | Sum.inr _ => xiAntiCausalWardBoundarySourcePhase alpha
+
+/-- Sharp right phase vector.  Spectral nodes use the reflected coordinate; the boundary
+self-symbol is its own distinguished channel. -/
+def xiWardBoundaryAugmentedRightPhase {n : ℕ}
+    (node : Fin n → ℂ) (alpha : ℂ) :
+    XiWardBoundaryAugmentedIndex n → ℂ
+  | Sum.inl j =>
+      xiRightWardSourcePhase
+        ((starRingEnd ℂ) (I * node j)) alpha
+  | Sum.inr _ => xiAntiCausalWardBoundarySourcePhase alpha
+
+/-- Full non-scalar sharp phase-ratio matrix. -/
+def xiWardBoundaryAugmentedCrossRatioMatrix {n : ℕ}
+    (node : Fin n → ℂ) (alpha : ℂ) :
+    Matrix (XiWardBoundaryAugmentedIndex n)
+      (XiWardBoundaryAugmentedIndex n) ℂ :=
+  fun i j =>
+    xiWardBoundaryAugmentedLeftPhase node alpha i /
+      xiWardBoundaryAugmentedRightPhase node alpha j
+
+/-- Augmented two-channel Cauchy cross-Gram. -/
+def xiWardBoundaryAugmentedCauchyGram {n : ℕ}
+    (node : Fin n → ℂ) :
+    Matrix (XiWardBoundaryAugmentedIndex n)
+      (XiWardBoundaryAugmentedIndex n) ℂ :=
+  fun i j =>
+    xiWardCauchyGramCell
+      (xiWardBoundaryAugmentedCoordinate node i)
+      (xiWardBoundaryAugmentedCoordinate node j)
+
+/-- Source-phase transported augmented cross-Gram. -/
+def xiWardBoundaryAugmentedTransportedGram {n : ℕ}
+    (node : Fin n → ℂ) (alpha : ℂ) :
+    Matrix (XiWardBoundaryAugmentedIndex n)
+      (XiWardBoundaryAugmentedIndex n) ℂ :=
+  fun i j =>
+    xiWardBoundaryAugmentedCrossRatioMatrix node alpha i j *
+      xiWardBoundaryAugmentedCauchyGram node i j
+
+/-- Full augmented Julia defect matrix.  Its node--node block carries cross-node divided
+differences; its boundary column carries the continued Ward response. -/
+def xiWardBoundaryAugmentedJuliaDefectMatrix {n : ℕ}
+    (node : Fin n → ℂ) (alpha : ℂ) :
+    Matrix (XiWardBoundaryAugmentedIndex n)
+      (XiWardBoundaryAugmentedIndex n) ℂ :=
+  xiWardBoundaryAugmentedTransportedGram node alpha -
+    xiWardBoundaryAugmentedCauchyGram node
+
+/-- **Non-scalar transport `V`.**  Row calibration converts the full augmented Julia defect into
+the spectral-to-Laplace normalization.  No coordinatewise definition of its boundary column is
+used. -/
+def mobiusGammaXiAntiCausalWardMatrixTransportV {n : ℕ}
+    (node : Fin n → ℂ) (alpha : ℂ) :
+    Matrix (XiWardBoundaryAugmentedIndex n)
+      (XiWardBoundaryAugmentedIndex n) ℂ :=
+  fun i j =>
+    2 * I * (-xiWardBoundaryAugmentedCoordinate node i) *
+      xiWardBoundaryAugmentedJuliaDefectMatrix node alpha i j
+
+/-- Exact matrix Julia/defect identity for `V`. -/
+theorem mobiusGammaXiAntiCausalWardMatrixTransportV_eq_juliaDefect
+    {n : ℕ} (node : Fin n → ℂ) (alpha : ℂ)
+    (i j : XiWardBoundaryAugmentedIndex n) :
+    mobiusGammaXiAntiCausalWardMatrixTransportV node alpha i j =
+      2 * I * (-xiWardBoundaryAugmentedCoordinate node i) *
+        (xiWardBoundaryAugmentedTransportedGram node alpha i j -
+          xiWardBoundaryAugmentedCauchyGram node i j) :=
+  rfl
+
+/-- Every off-diagonal node--node entry is the genuine two-spectral-node Julia cross-defect. -/
+theorem mobiusGammaXiAntiCausalWardMatrixTransportV_nodeNode
+    {n : ℕ} (node : Fin n → ℂ) (alpha : ℂ) (i j : Fin n) :
+    mobiusGammaXiAntiCausalWardMatrixTransportV node alpha
+        (Sum.inl i) (Sum.inl j) =
+      2 * I * (-(I * node i)) *
+        xiRightWardJuliaCrossDefect
+          (I * node i) (I * node j) alpha := by
+  simp only [mobiusGammaXiAntiCausalWardMatrixTransportV,
+    xiWardBoundaryAugmentedJuliaDefectMatrix, Matrix.sub_apply,
+    xiWardBoundaryAugmentedTransportedGram,
+    xiWardBoundaryAugmentedCrossRatioMatrix,
+    xiWardBoundaryAugmentedCauchyGram,
+    xiWardBoundaryAugmentedCoordinate,
+    xiWardBoundaryAugmentedLeftPhase,
+    xiWardBoundaryAugmentedRightPhase,
+    xiRightWardJuliaCrossDefect_eq_transport_sub_gram,
+    xiRightWardSourcePhaseCrossRatio]
+
+/-- The distinguished off-diagonal boundary column of matrix `V` is the scalar entry transport
+constructed above. -/
+theorem mobiusGammaXiAntiCausalWardMatrixTransportV_boundaryColumn
+    {n : ℕ} (node : Fin n → ℂ) (alpha : ℂ) (i : Fin n) :
+    mobiusGammaXiAntiCausalWardMatrixTransportV node alpha
+        (Sum.inl i) (Sum.inr ()) =
+      mobiusGammaXiAntiCausalWardTransportV (node i) alpha := by
+  simp only [mobiusGammaXiAntiCausalWardMatrixTransportV,
+    xiWardBoundaryAugmentedJuliaDefectMatrix, Matrix.sub_apply,
+    xiWardBoundaryAugmentedTransportedGram,
+    xiWardBoundaryAugmentedCrossRatioMatrix,
+    xiWardBoundaryAugmentedCauchyGram,
+    xiWardBoundaryAugmentedCoordinate,
+    xiWardBoundaryAugmentedLeftPhase,
+    xiWardBoundaryAugmentedRightPhase,
+    mobiusGammaXiAntiCausalWardTransportV,
+    xiRightWardBoundaryAnchoredSourceTransportV,
+    xiRightWardBoundaryJuliaCrossDefect,
+    xiRightWardBoundarySourcePhaseCrossRatio,
+    xiWardCauchyGramCell, map_zero, sub_zero]
+  ring
 
 /-- Centered packet transport, retained to expose the two independently verified legs. -/
 def mobiusGammaXiCenteredAntiCausalWardPacketTransportV {n : ℕ}
@@ -767,7 +1064,9 @@ theorem hasDerivAt_mobiusGammaXiCenteredAntiCausalWardPacketTransportV_zero
 continued Xi Ward column. -/
 def mobiusGammaXiAntiCausalWardPacketTransportV {n : ℕ}
     (node : Fin n → ℂ) (alpha : ℂ) : Fin n → ℂ :=
-  fun i => mobiusGammaXiAntiCausalWardTransportV (node i) alpha
+  fun i =>
+    mobiusGammaXiAntiCausalWardMatrixTransportV node alpha
+      (Sum.inl i) (Sum.inr ())
 
 theorem hasDerivAt_mobiusGammaXiAntiCausalWardPacketTransportV_zero
     {n : ℕ} {node : Fin n → ℂ} (hnode : ∀ i, 0 < (node i).re)
@@ -776,7 +1075,10 @@ theorem hasDerivAt_mobiusGammaXiAntiCausalWardPacketTransportV_zero
       (fun alpha =>
         mobiusGammaXiAntiCausalWardPacketTransportV node alpha i)
       (continuedXiAntiCausalWardColumn node i) 0 :=
-  hasDerivAt_mobiusGammaXiAntiCausalWardTransportV_zero (hnode i)
+  by
+    simpa only [mobiusGammaXiAntiCausalWardPacketTransportV,
+      mobiusGammaXiAntiCausalWardMatrixTransportV_boundaryColumn] using
+      hasDerivAt_mobiusGammaXiAntiCausalWardTransportV_zero (hnode i)
 
 /-- Complete source-transport package.  The same actual Möbius Fisher tangent has the four-unit
 critical norm and reconstructs the completed Xi source current; the canonical strict-right
@@ -793,6 +1095,16 @@ theorem mobiusGammaFourUnitTangent_to_continuedXiAntiCausalWardColumn :
           (infiniteMobiusCriticalDampedSignedWeightLp sigma u hsigma hu) =
         GaloisForLFunctions.squarefreeFisherScore
           (sigma : ℂ) ((sigma - 1 : ℝ) : ℂ) (u : ℂ)) ∧
+    (∀ ⦃sigma u : ℝ⦄ (_hsigma : 1 < sigma) (_hu : 0 ≤ u),
+      squarefreeMobiusGammaXiWardTransportV
+          (sigma : ℂ) ((sigma - 1 : ℝ) : ℂ)
+          (fun v =>
+            GaloisForLFunctions.squarefreeFisherScore
+              (sigma : ℂ) ((sigma - 1 : ℝ) : ℂ) v)
+          (u : ℂ) =
+        continuedPrimeArchSourceRelativeTrace
+          (xiWardCenteredCoordinate
+            (mobiusCriticalBoundaryParameter sigma u : ℂ))) ∧
     (∀ ⦃n : ℕ⦄ ⦃node : Fin n → ℂ⦄ (_hnode : ∀ i, 0 < (node i).re)
         (i : Fin n),
       HasDerivAt
@@ -802,6 +1114,8 @@ theorem mobiusGammaFourUnitTangent_to_continuedXiAntiCausalWardColumn :
   exact ⟨tendsto_norm_infiniteMobiusCriticalFisherTangentLp_sq,
     fun {_ _} hsigma hu =>
       inner_fisherTangent_damped_eq_squarefreeFisherScore hsigma hu,
+    fun {_ _} hsigma hu =>
+      squarefreeMobiusGammaXiWardTransportV_actualTangent hsigma hu,
     fun {_} {_} hnode i =>
       hasDerivAt_mobiusGammaXiAntiCausalWardPacketTransportV_zero hnode i⟩
 

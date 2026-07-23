@@ -3,8 +3,7 @@ import GaloisForLFunctions.RHTower.WeightedEulerCoefficientSpaces
 /-!
 # Ray-norm equivalence for the weighted Euler coefficient tangent
 
-Card `weighted-euler-tangent-global-graph-decoupling`, equation (1): the
-scalar `b_p` produces the whole prime-power ray `d_b(p^m) = m (log p) b_p`,
+The scalar `b_p` produces the whole prime-power ray `d_b(p^m) = m (log p) b_p`,
 and its full `A_{>σ}` ray mass
 
 `∑_{m ≥ 1} m (log p) |b_p| p^{-mσ} = (log p) |b_p| · p^{-σ}/(1-p^{-σ})²`
@@ -60,7 +59,7 @@ theorem prime_rpow_neg_le_two_rpow_neg (hp : 2 ≤ p) (hσ : 0 < σ) :
   rw [inv_le_inv₀ (Real.rpow_pos_of_pos hp0 σ) (Real.rpow_pos_of_pos two_pos σ)]
   exact Real.rpow_le_rpow (by norm_num) (by exact_mod_cast hp) hσ.le
 
-/-- **Closed form of the ray mass** (card display below equation (1)). -/
+/-- **Closed form of the ray mass**. -/
 theorem primePowerRayMass_eq (hp : 2 ≤ p) (hσ : 0 < σ) (bp : ℝ) :
     primePowerRayMass p bp σ
       = Real.log p * |bp| *
@@ -104,7 +103,7 @@ theorem le_primePowerRayMass (hp : 2 ≤ p) (hσ : 0 < σ) (bp : ℝ) :
     (mul_nonneg (Real.log_natCast_nonneg p) (abs_nonneg _))
 
 /-- **Upper ray comparison** with the `p`-uniform constant `(1-2^{-σ})^{-2}`
-(card equation (1) remark: "bounded above and below uniformly in `p`"). -/
+(bounded above and below uniformly in `p`). -/
 theorem primePowerRayMass_le (hp : 2 ≤ p) (hσ : 0 < σ) (bp : ℝ) :
     primePowerRayMass p bp σ
       ≤ ((1 - (2 : ℝ) ^ (-σ))⁻¹) ^ 2
@@ -133,7 +132,7 @@ end Ratio
 
 /-! ## Topological equivalence of the ray and single-weight topologies -/
 
-/-- **Ray-norm equivalence** (card equation (1)): at every level `σ > 0`, a
+/-- **Ray-norm equivalence**: at every level `σ > 0`, a
 coefficient field has summable prime-power ray masses iff it has summable
 single prime weights.  The constants are uniform in the prime. -/
 theorem summable_indicator_primePowerRayMass_iff {σ : ℝ} (hσ : 0 < σ)

@@ -2886,6 +2886,1159 @@ theorem exists_two_thetaCuspGroundFourthOrderRemainderCoefficient_zeros
       by simpa only [F] using hsigma₁Zero,
       by simpa only [F] using hsigma₂Zero⟩
 
+/-- Ground third-derivative coefficient in the shifted Gamma coordinate
+`r = 2π exp(2x) - (a + 5/2)`. -/
+def thetaCuspGroundThirdShiftPolynomial (c r : ℝ) : ℝ :=
+  -r ^ 3 + 6 * r ^ 2 + (6 * c - 4) * r - 4 * c
+
+/-- Ground fourth-derivative coefficient in the same shifted Gamma coordinate. -/
+def thetaCuspGroundFourthShiftPolynomial (c r : ℝ) : ℝ :=
+  r ^ 4 - 12 * r ^ 3 + (28 - 12 * c) * r ^ 2 +
+    (40 * c - 8) * r + 12 * c ^ 2 - 8 * c
+
+/-- Derivative in `r` of the ground third shifted polynomial. -/
+def thetaCuspGroundThirdShiftPolynomialDerivative (c r : ℝ) : ℝ :=
+  -3 * r ^ 2 + 12 * r + 6 * c - 4
+
+/-- Derivative in `r` of the ground fourth shifted polynomial. -/
+def thetaCuspGroundFourthShiftPolynomialDerivative (c r : ℝ) : ℝ :=
+  4 * r ^ 3 - 36 * r ^ 2 + (56 - 24 * c) * r + 40 * c - 8
+
+theorem thetaCuspTiltedWardThirdDerivativeCoefficient_ground_eq_shiftPolynomial
+    (a x : ℝ) :
+    thetaCuspTiltedWardThirdDerivativeCoefficient a 1 x =
+      thetaCuspGroundThirdShiftPolynomial
+        (a + 5 / 2)
+        (2 * Real.pi * Real.exp (2 * x) - (a + 5 / 2)) := by
+  unfold thetaCuspTiltedWardThirdDerivativeCoefficient
+    thetaCuspTiltedWardScore thetaCuspGroundThirdShiftPolynomial
+  norm_num
+  ring
+
+theorem thetaCuspTiltedWardFourthDerivativeCoefficient_ground_eq_shiftPolynomial
+    (a x : ℝ) :
+    thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x =
+      thetaCuspGroundFourthShiftPolynomial
+        (a + 5 / 2)
+        (2 * Real.pi * Real.exp (2 * x) - (a + 5 / 2)) := by
+  unfold thetaCuspTiltedWardFourthDerivativeCoefficient
+    thetaCuspTiltedWardThirdDerivativeCoefficient
+    thetaCuspTiltedWardScore thetaCuspGroundFourthShiftPolynomial
+  norm_num
+  ring
+
+/-- **Ground fourth-order Turán law.**  The Wronskian controlling the derivative of
+`8 C₃/C₄ + 2x` is strictly positive throughout the physical shifted chamber
+`5/2 < c < 3`, `r > 3`. -/
+theorem thetaCuspGroundFourthShiftWronskian_pos
+    {c r : ℝ} (hc0 : 5 / 2 < c) (hc1 : c < 3) (hr : 3 < r) :
+    0 <
+      thetaCuspGroundFourthShiftPolynomial c r ^ 2 +
+        8 * (r + c) *
+          (thetaCuspGroundThirdShiftPolynomialDerivative c r *
+              thetaCuspGroundFourthShiftPolynomial c r -
+            thetaCuspGroundThirdShiftPolynomial c r *
+              thetaCuspGroundFourthShiftPolynomialDerivative c r) := by
+  let u : ℝ := r - 3
+  let v : ℝ := c - 5 / 2
+  have hu : 0 < u := by
+    dsimp only [u]
+    linarith
+  have hv0 : 0 < v := by
+    dsimp only [v]
+    linarith
+  have hv1 : v < 1 / 2 := by
+    dsimp only [v]
+    linarith
+  have hidentity :
+      thetaCuspGroundFourthShiftPolynomial c r ^ 2 +
+          8 * (r + c) *
+            (thetaCuspGroundThirdShiftPolynomialDerivative c r *
+                thetaCuspGroundFourthShiftPolynomial c r -
+              thetaCuspGroundThirdShiftPolynomial c r *
+                thetaCuspGroundFourthShiftPolynomialDerivative c r) =
+        365700 +
+          u * 274480 + u * v * 166080 + u * v ^ 2 * 31904 +
+          u * v ^ 3 * 1920 +
+          u ^ 2 * 110088 + u ^ 2 * v * 50592 +
+          u ^ 2 * v ^ 2 * 5680 +
+          u ^ 3 * 28944 + u ^ 3 * v * 11616 +
+          u ^ 3 * v ^ 2 * 1120 +
+          u ^ 4 * 3676 + u ^ 4 * v * 1240 +
+          u ^ 4 * v ^ 2 * 120 -
+          u ^ 5 * 40 - u ^ 5 * v * 64 -
+          u ^ 6 * 20 - u ^ 6 * v * 16 +
+          u ^ 7 * 8 + u ^ 8 +
+          v * 303536 + v ^ 2 * 94576 +
+          v ^ 3 * 13280 + v ^ 4 * 720 := by
+    unfold thetaCuspGroundFourthShiftPolynomial
+      thetaCuspGroundThirdShiftPolynomialDerivative
+      thetaCuspGroundThirdShiftPolynomial
+      thetaCuspGroundFourthShiftPolynomialDerivative
+    dsimp only [u, v]
+    ring
+  rw [hidentity]
+  by_cases hu4 : u ≤ 4
+  · have hu5 : u ^ 5 ≤ (4 : ℝ) ^ 5 :=
+      pow_le_pow_left₀ hu.le hu4 5
+    have hu6 : u ^ 6 ≤ (4 : ℝ) ^ 6 :=
+      pow_le_pow_left₀ hu.le hu4 6
+    have hcoef5 : 40 + 64 * v < 72 := by linarith
+    have hcoef6 : 20 + 16 * v < 28 := by linarith
+    have hbound5 :
+        (40 + 64 * v) * u ^ 5 ≤ 72 * u ^ 5 :=
+      mul_le_mul_of_nonneg_right hcoef5.le (pow_nonneg hu.le 5)
+    have hbound6 :
+        (20 + 16 * v) * u ^ 6 ≤ 28 * u ^ 6 :=
+      mul_le_mul_of_nonneg_right hcoef6.le (pow_nonneg hu.le 6)
+    have hcore :
+        0 <
+          365700 - (40 + 64 * v) * u ^ 5 -
+            (20 + 16 * v) * u ^ 6 := by
+      norm_num at hu5 hu6
+      nlinarith
+    have hpositive :
+        0 ≤
+          u * 274480 + u * v * 166080 + u * v ^ 2 * 31904 +
+          u * v ^ 3 * 1920 +
+          u ^ 2 * 110088 + u ^ 2 * v * 50592 +
+          u ^ 2 * v ^ 2 * 5680 +
+          u ^ 3 * 28944 + u ^ 3 * v * 11616 +
+          u ^ 3 * v ^ 2 * 1120 +
+          u ^ 4 * 3676 + u ^ 4 * v * 1240 +
+          u ^ 4 * v ^ 2 * 120 +
+          u ^ 7 * 8 + u ^ 8 +
+          v * 303536 + v ^ 2 * 94576 +
+          v ^ 3 * 13280 + v ^ 4 * 720 := by
+      positivity
+    nlinarith
+  · have hu4' : 4 < u := lt_of_not_ge hu4
+    have hbracket :
+        0 < u ^ 3 + 8 * u ^ 2 - 28 * u - 72 := by
+      have hid :
+          u ^ 3 + 8 * u ^ 2 - 28 * u - 72 =
+            (u - 4) * (u ^ 2 + 12 * u + 20) + 8 := by
+        ring
+      rw [hid]
+      positivity
+    have hbase :
+        0 <
+          u ^ 8 + 8 * u ^ 7 - 72 * u ^ 5 - 28 * u ^ 6 := by
+      have hid :
+          u ^ 8 + 8 * u ^ 7 - 72 * u ^ 5 - 28 * u ^ 6 =
+            u ^ 5 * (u ^ 3 + 8 * u ^ 2 - 28 * u - 72) := by
+        ring
+      rw [hid]
+      positivity
+    have hcoef5 : 40 + 64 * v < 72 := by linarith
+    have hcoef6 : 20 + 16 * v < 28 := by linarith
+    have hbound5 :
+        (40 + 64 * v) * u ^ 5 < 72 * u ^ 5 :=
+      mul_lt_mul_of_pos_right hcoef5 (pow_pos hu 5)
+    have hbound6 :
+        (20 + 16 * v) * u ^ 6 < 28 * u ^ 6 :=
+      mul_lt_mul_of_pos_right hcoef6 (pow_pos hu 6)
+    have hcore :
+        0 <
+          u ^ 8 + 8 * u ^ 7 -
+            (40 + 64 * v) * u ^ 5 -
+            (20 + 16 * v) * u ^ 6 := by
+      linarith
+    have hpositive :
+        0 ≤
+          365700 +
+          u * 274480 + u * v * 166080 + u * v ^ 2 * 31904 +
+          u * v ^ 3 * 1920 +
+          u ^ 2 * 110088 + u ^ 2 * v * 50592 +
+          u ^ 2 * v ^ 2 * 5680 +
+          u ^ 3 * 28944 + u ^ 3 * v * 11616 +
+          u ^ 3 * v ^ 2 * 1120 +
+          u ^ 4 * 3676 + u ^ 4 * v * 1240 +
+          u ^ 4 * v ^ 2 * 120 +
+          v * 303536 + v ^ 2 * 94576 +
+          v ^ 3 * 13280 + v ^ 4 * 720 := by
+      positivity
+    nlinarith
+
+theorem hasDerivAt_thetaCuspGroundThirdShiftPolynomial_comp
+    {u : ℝ → ℝ} {u' c x : ℝ}
+    (hu : HasDerivAt u u' x) :
+    HasDerivAt
+      (fun y => thetaCuspGroundThirdShiftPolynomial c (u y))
+      (u' * thetaCuspGroundThirdShiftPolynomialDerivative c (u x)) x := by
+  have h :=
+    (((hu.pow 3).neg.add ((hu.pow 2).const_mul 6)).add
+      (hu.const_mul (6 * c - 4))).sub_const (4 * c)
+  convert h using 1
+  unfold thetaCuspGroundThirdShiftPolynomialDerivative
+  ring
+
+theorem hasDerivAt_thetaCuspGroundFourthShiftPolynomial_comp
+    {u : ℝ → ℝ} {u' c x : ℝ}
+    (hu : HasDerivAt u u' x) :
+    HasDerivAt
+      (fun y => thetaCuspGroundFourthShiftPolynomial c (u y))
+      (u' * thetaCuspGroundFourthShiftPolynomialDerivative c (u x)) x := by
+  have h :=
+    (((((hu.pow 4).sub ((hu.pow 3).const_mul 12)).add
+      ((hu.pow 2).const_mul (28 - 12 * c))).add
+      (hu.const_mul (40 * c - 8))).add_const (12 * c ^ 2)).sub_const (8 * c)
+  convert h using 1
+  unfold thetaCuspGroundFourthShiftPolynomialDerivative
+  ring
+
+/-- Root phase for the fourth-order boundary remainder.  Away from `C₄ = 0`, its zeros
+are exactly the zeros of `4 C₃ + x C₄`. -/
+def thetaCuspGroundFourthOrderRootPhase (a x : ℝ) : ℝ :=
+  2 * x +
+    8 * thetaCuspTiltedWardThirdDerivativeCoefficient a 1 x /
+      thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x
+
+/-- The fourth-order root phase is strictly increasing on every component where `C₄ ≠ 0`.
+The proof is the positive shifted Turán--Wronskian law above, not an assumed zero count. -/
+theorem deriv_thetaCuspGroundFourthOrderRootPhase_pos
+    {a x : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) (hx : 0 ≤ x)
+    (hfourth :
+      thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x ≠ 0) :
+    0 < deriv (thetaCuspGroundFourthOrderRootPhase a) x := by
+  let c : ℝ := a + 5 / 2
+  let rfun : ℝ → ℝ := fun y =>
+    2 * Real.pi * Real.exp (2 * y) - c
+  let r : ℝ := rfun x
+  have hc0 : 5 / 2 < c := by
+    dsimp only [c]
+    linarith
+  have hc1 : c < 3 := by
+    dsimp only [c]
+    linarith
+  have hexp : 1 ≤ Real.exp (2 * x) := by
+    rw [← Real.exp_zero]
+    exact Real.exp_le_exp.mpr (by linarith)
+  have hq6 :
+      6 < 2 * Real.pi * Real.exp (2 * x) := by
+    nlinarith [Real.pi_gt_three, Real.exp_pos (2 * x)]
+  have hr3 : 3 < r := by
+    dsimp only [r, rfun]
+    linarith
+  have hrfun : HasDerivAt rfun
+      (2 * (r + c)) x := by
+    have hraw :=
+      ((Real.hasDerivAt_exp (2 * x)).comp x
+        ((hasDerivAt_id x).const_mul 2)
+      |>.const_mul (2 * Real.pi))
+      |>.sub_const c
+    convert hraw using 1
+    dsimp only [r, rfun]
+    ring
+  have hthirdShift :=
+    hasDerivAt_thetaCuspGroundThirdShiftPolynomial_comp
+      (c := c) hrfun
+  have hthird : HasDerivAt
+      (thetaCuspTiltedWardThirdDerivativeCoefficient a 1)
+      (2 * (r + c) *
+        thetaCuspGroundThirdShiftPolynomialDerivative c r) x := by
+    convert hthirdShift using 1
+    funext y
+    dsimp only [c, rfun]
+    exact
+      thetaCuspTiltedWardThirdDerivativeCoefficient_ground_eq_shiftPolynomial
+        a y
+  have hfourthShift :=
+    hasDerivAt_thetaCuspGroundFourthShiftPolynomial_comp
+      (c := c) hrfun
+  have hfourthDeriv : HasDerivAt
+      (thetaCuspTiltedWardFourthDerivativeCoefficient a 1)
+      (2 * (r + c) *
+        thetaCuspGroundFourthShiftPolynomialDerivative c r) x := by
+    convert hfourthShift using 1
+    funext y
+    dsimp only [c, rfun]
+    exact
+      thetaCuspTiltedWardFourthDerivativeCoefficient_ground_eq_shiftPolynomial
+        a y
+  have hphase :=
+    ((hasDerivAt_id x).const_mul 2).add
+      ((hthird.div hfourthDeriv hfourth).const_mul 8)
+  have hphase' : HasDerivAt
+      (thetaCuspGroundFourthOrderRootPhase a)
+      (2 +
+        8 *
+          ((2 * (r + c) *
+                thetaCuspGroundThirdShiftPolynomialDerivative c r) *
+              thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x -
+            thetaCuspTiltedWardThirdDerivativeCoefficient a 1 x *
+              (2 * (r + c) *
+                thetaCuspGroundFourthShiftPolynomialDerivative c r)) /
+            thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x ^ 2) x := by
+    convert hphase using 1
+    · funext y
+      simp only [thetaCuspGroundFourthOrderRootPhase,
+        Pi.add_apply, Pi.mul_apply, Pi.div_apply, id_eq]
+      ring
+    · ring
+  rw [hphase'.deriv]
+  have hthirdValue :
+      thetaCuspTiltedWardThirdDerivativeCoefficient a 1 x =
+        thetaCuspGroundThirdShiftPolynomial c r := by
+    dsimp only [c, r, rfun]
+    exact
+      thetaCuspTiltedWardThirdDerivativeCoefficient_ground_eq_shiftPolynomial
+        a x
+  have hfourthValue :
+      thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x =
+        thetaCuspGroundFourthShiftPolynomial c r := by
+    dsimp only [c, r, rfun]
+    exact
+      thetaCuspTiltedWardFourthDerivativeCoefficient_ground_eq_shiftPolynomial
+        a x
+  have hBne :
+      thetaCuspGroundFourthShiftPolynomial c r ≠ 0 := by
+    rw [← hfourthValue]
+    exact hfourth
+  have hW :=
+    thetaCuspGroundFourthShiftWronskian_pos hc0 hc1 hr3
+  rw [hthirdValue, hfourthValue]
+  have hidentity :
+      2 +
+          8 *
+            ((2 * (r + c) *
+                  thetaCuspGroundThirdShiftPolynomialDerivative c r) *
+                thetaCuspGroundFourthShiftPolynomial c r -
+              thetaCuspGroundThirdShiftPolynomial c r *
+                (2 * (r + c) *
+                  thetaCuspGroundFourthShiftPolynomialDerivative c r)) /
+              thetaCuspGroundFourthShiftPolynomial c r ^ 2 =
+        2 *
+          (thetaCuspGroundFourthShiftPolynomial c r ^ 2 +
+            8 * (r + c) *
+              (thetaCuspGroundThirdShiftPolynomialDerivative c r *
+                  thetaCuspGroundFourthShiftPolynomial c r -
+                thetaCuspGroundThirdShiftPolynomial c r *
+                  thetaCuspGroundFourthShiftPolynomialDerivative c r)) /
+            thetaCuspGroundFourthShiftPolynomial c r ^ 2 := by
+    field_simp [hBne]
+  rw [hidentity]
+  exact div_pos (mul_pos (by norm_num) hW) (sq_pos_of_ne_zero hBne)
+
+theorem thetaCuspGroundFourthShiftPolynomialDerivative_strictMonoOn_four
+    {c : ℝ} (hc0 : 5 / 2 < c) (hc1 : c < 3) :
+    StrictMonoOn
+      (fun u => thetaCuspGroundFourthShiftPolynomialDerivative c (3 + u))
+      (Ici 4) := by
+  intro u hu v hv huv
+  let w : ℝ := c - 5 / 2
+  have hw0 : 0 < w := by
+    dsimp only [w]
+    linarith
+  have hw1 : w < 1 / 2 := by
+    dsimp only [w]
+    linarith
+  have hu4 : 4 ≤ u := hu
+  have hv4 : 4 ≤ v := hv
+  have hu0 : 0 < u := by linarith
+  have hv0 : 0 < v := by linarith
+  have huvPos : 0 < v - u := sub_pos.mpr huv
+  have huSq : 16 ≤ u ^ 2 := by
+    nlinarith [mul_nonneg (by linarith : 0 ≤ u - 4) (by linarith : 0 ≤ u + 4)]
+  have hvSq : 16 ≤ v ^ 2 := by
+    nlinarith [mul_nonneg (by linarith : 0 ≤ v - 4) (by linarith : 0 ≤ v + 4)]
+  have huvMul : 16 ≤ u * v := by
+    nlinarith [mul_nonneg (by linarith : 0 ≤ u - 4) (by linarith : 0 ≤ v - 4)]
+  have hbracket :
+      0 <
+        4 * (v ^ 2 + u * v + u ^ 2) -
+          (112 + 24 * w) := by
+    nlinarith
+  have hdiff :
+      thetaCuspGroundFourthShiftPolynomialDerivative c (3 + v) -
+          thetaCuspGroundFourthShiftPolynomialDerivative c (3 + u) =
+        (v - u) *
+          (4 * (v ^ 2 + u * v + u ^ 2) -
+            (112 + 24 * w)) := by
+    unfold thetaCuspGroundFourthShiftPolynomialDerivative
+    dsimp only [w]
+    ring
+  nlinarith [mul_pos huvPos hbracket]
+
+theorem thetaCuspGroundFourthShiftPolynomialDerivative_neg_of_nonneg_of_le_four
+    {c u : ℝ} (hc0 : 5 / 2 < c) (hc1 : c < 3)
+    (hu0 : 0 ≤ u) (hu4 : u ≤ 4) :
+    thetaCuspGroundFourthShiftPolynomialDerivative c (3 + u) < 0 := by
+  let w : ℝ := c - 5 / 2
+  have hw0 : 0 < w := by
+    dsimp only [w]
+    linarith
+  have huSq : u ^ 2 ≤ (4 : ℝ) ^ 2 :=
+    pow_le_pow_left₀ hu0 hu4 2
+  have huCube : u ^ 3 ≤ 16 * u := by
+    have hmul :=
+      mul_le_mul_of_nonneg_right huSq hu0
+    norm_num at hmul
+    nlinarith
+  unfold thetaCuspGroundFourthShiftPolynomialDerivative
+  dsimp only [w] at hw0
+  nlinarith
+
+theorem existsUnique_thetaCuspGroundFourthShiftPolynomialDerivative_zero
+    {c : ℝ} (hc0 : 5 / 2 < c) (hc1 : c < 3) :
+    ∃! delta : ℝ,
+      delta ∈ Ioo 4 7 ∧
+        thetaCuspGroundFourthShiftPolynomialDerivative c (3 + delta) = 0 := by
+  let D : ℝ → ℝ := fun u =>
+    thetaCuspGroundFourthShiftPolynomialDerivative c (3 + u)
+  have hD4 : D 4 < 0 := by
+    dsimp only [D]
+    unfold thetaCuspGroundFourthShiftPolynomialDerivative
+    nlinarith
+  have hD7 : 0 < D 7 := by
+    dsimp only [D]
+    unfold thetaCuspGroundFourthShiftPolynomialDerivative
+    nlinarith
+  have hcont : ContinuousOn D (Icc 4 7) := by
+    have : Continuous D := by
+      dsimp only [D]
+      unfold thetaCuspGroundFourthShiftPolynomialDerivative
+      fun_prop
+    exact this.continuousOn
+  obtain ⟨delta, hdelta, hdeltaZero⟩ :=
+    intermediate_value_Ioo (by norm_num : (4 : ℝ) ≤ 7) hcont
+      (show (0 : ℝ) ∈ Ioo (D 4) (D 7) from ⟨hD4, hD7⟩)
+  refine ⟨delta, ⟨hdelta, hdeltaZero⟩, ?_⟩
+  intro y hy
+  have hstrict :=
+    thetaCuspGroundFourthShiftPolynomialDerivative_strictMonoOn_four
+      hc0 hc1
+  by_contra hne
+  rcases lt_or_gt_of_ne hne with hyDelta | hdeltaY
+  · have hlt :=
+      hstrict (show y ∈ Ici (4 : ℝ) from hy.1.1.le)
+        (show delta ∈ Ici (4 : ℝ) from hdelta.1.le) hyDelta
+    dsimp only [D] at hdeltaZero
+    linarith [hy.2]
+  · have hlt :=
+      hstrict (show delta ∈ Ici (4 : ℝ) from hdelta.1.le)
+        (show y ∈ Ici (4 : ℝ) from hy.1.1.le) hdeltaY
+    dsimp only [D] at hdeltaZero
+    linarith [hy.2]
+
+theorem thetaCuspGroundFourthShiftPolynomialDerivative_sign_around_zero
+    {c delta : ℝ} (hc0 : 5 / 2 < c) (hc1 : c < 3)
+    (hdelta : delta ∈ Ioo 4 7)
+    (hdeltaZero :
+      thetaCuspGroundFourthShiftPolynomialDerivative c (3 + delta) = 0) :
+    (∀ {u : ℝ}, 0 ≤ u → u < delta →
+      thetaCuspGroundFourthShiftPolynomialDerivative c (3 + u) < 0) ∧
+    (∀ {u : ℝ}, delta < u →
+      0 < thetaCuspGroundFourthShiftPolynomialDerivative c (3 + u)) := by
+  have hstrict :=
+    thetaCuspGroundFourthShiftPolynomialDerivative_strictMonoOn_four
+      hc0 hc1
+  constructor
+  · intro u hu0 huDelta
+    by_cases hu4 : u ≤ 4
+    · exact
+        thetaCuspGroundFourthShiftPolynomialDerivative_neg_of_nonneg_of_le_four
+          hc0 hc1 hu0 hu4
+    · have hlt :=
+        hstrict (show u ∈ Ici (4 : ℝ) from le_of_not_ge hu4)
+          (show delta ∈ Ici (4 : ℝ) from hdelta.1.le) huDelta
+      linarith
+  · intro u hdeltaU
+    have hlt :=
+      hstrict (show delta ∈ Ici (4 : ℝ) from hdelta.1.le)
+        (show u ∈ Ici (4 : ℝ) from le_trans hdelta.1.le hdeltaU.le)
+        hdeltaU
+    linarith
+
+theorem thetaCuspGroundFourthShiftPolynomial_strictAntiOn_to_critical
+    {c delta : ℝ} (hc0 : 5 / 2 < c) (hc1 : c < 3)
+    (hdelta : delta ∈ Ioo 4 7)
+    (hdeltaZero :
+      thetaCuspGroundFourthShiftPolynomialDerivative c (3 + delta) = 0) :
+    StrictAntiOn
+      (fun u => thetaCuspGroundFourthShiftPolynomial c (3 + u))
+      (Icc 0 delta) := by
+  have hsign :=
+    thetaCuspGroundFourthShiftPolynomialDerivative_sign_around_zero
+      hc0 hc1 hdelta hdeltaZero
+  apply strictAntiOn_of_deriv_neg (convex_Icc 0 delta)
+  · have hcont : Continuous
+        (fun u => thetaCuspGroundFourthShiftPolynomial c (3 + u)) := by
+      unfold thetaCuspGroundFourthShiftPolynomial
+      fun_prop
+    exact hcont.continuousOn
+  · intro u hu
+    rw [interior_Icc] at hu
+    have hlinear : HasDerivAt (fun y : ℝ => 3 + y) 1 u := by
+      convert (hasDerivAt_const u (3 : ℝ)).add (hasDerivAt_id u) using 1 <;> ring
+    have hderiv :=
+      hasDerivAt_thetaCuspGroundFourthShiftPolynomial_comp
+        (c := c) hlinear
+    rw [hderiv.deriv]
+    simpa only [one_mul] using hsign.1 hu.1.le hu.2
+
+theorem thetaCuspGroundFourthShiftPolynomial_strictMonoOn_from_critical
+    {c delta : ℝ} (hc0 : 5 / 2 < c) (hc1 : c < 3)
+    (hdelta : delta ∈ Ioo 4 7)
+    (hdeltaZero :
+      thetaCuspGroundFourthShiftPolynomialDerivative c (3 + delta) = 0) :
+    StrictMonoOn
+      (fun u => thetaCuspGroundFourthShiftPolynomial c (3 + u))
+      (Ici delta) := by
+  have hsign :=
+    thetaCuspGroundFourthShiftPolynomialDerivative_sign_around_zero
+      hc0 hc1 hdelta hdeltaZero
+  apply strictMonoOn_of_deriv_pos (convex_Ici delta)
+  · have hcont : Continuous
+        (fun u => thetaCuspGroundFourthShiftPolynomial c (3 + u)) := by
+      unfold thetaCuspGroundFourthShiftPolynomial
+      fun_prop
+    exact hcont.continuousOn
+  · intro u hu
+    rw [interior_Ici] at hu
+    have hlinear : HasDerivAt (fun y : ℝ => 3 + y) 1 u := by
+      convert (hasDerivAt_const u (3 : ℝ)).add (hasDerivAt_id u) using 1 <;> ring
+    have hderiv :=
+      hasDerivAt_thetaCuspGroundFourthShiftPolynomial_comp
+        (c := c) hlinear
+    rw [hderiv.deriv]
+    simpa only [one_mul] using hsign.2 hu
+
+/-- The normalized ground fourth derivative has exactly two shifted sign transitions.  They
+bracket its unique critical point and give the global `+,-,+` chamber decomposition on `u ≥ 0`. -/
+theorem exists_two_thetaCuspGroundFourthShiftPolynomial_zeros_and_signs
+    {c delta : ℝ} (hc0 : 5 / 2 < c) (hc1 : c < 3)
+    (hdelta : delta ∈ Ioo 4 7)
+    (hdeltaZero :
+      thetaCuspGroundFourthShiftPolynomialDerivative c (3 + delta) = 0) :
+    ∃ beta₁ beta₂ : ℝ,
+      beta₁ ∈ Ioo 0 delta ∧
+      beta₂ ∈ Ioo delta 12 ∧
+      thetaCuspGroundFourthShiftPolynomial c (3 + beta₁) = 0 ∧
+      thetaCuspGroundFourthShiftPolynomial c (3 + beta₂) = 0 ∧
+      (∀ {u : ℝ}, 0 ≤ u → u < beta₁ →
+        0 < thetaCuspGroundFourthShiftPolynomial c (3 + u)) ∧
+      (∀ {u : ℝ}, beta₁ < u → u < beta₂ →
+        thetaCuspGroundFourthShiftPolynomial c (3 + u) < 0) ∧
+      (∀ {u : ℝ}, beta₂ < u →
+        0 < thetaCuspGroundFourthShiftPolynomial c (3 + u)) := by
+  let B : ℝ → ℝ := fun u =>
+    thetaCuspGroundFourthShiftPolynomial c (3 + u)
+  let w : ℝ := c - 5 / 2
+  have hw0 : 0 < w := by
+    dsimp only [w]
+    linarith
+  have hw1 : w < 1 / 2 := by
+    dsimp only [w]
+    linarith
+  have hB0 : 0 < B 0 := by
+    have hid :
+        B 0 = 70 + 64 * w + 12 * w ^ 2 := by
+      dsimp only [B, w]
+      unfold thetaCuspGroundFourthShiftPolynomial
+      ring
+    rw [hid]
+    positivity
+  have hB4 : B 4 < 0 := by
+    have hid :
+        B 4 = -1114 - 256 * w + 12 * w ^ 2 := by
+      dsimp only [B, w]
+      unfold thetaCuspGroundFourthShiftPolynomial
+      ring
+    have hsmall : w ^ 2 < (1 / 2 : ℝ) * w := by
+      nlinarith [mul_pos hw0 (sub_pos.mpr hw1)]
+    rw [hid]
+    nlinarith
+  have hB12 : 0 < B 12 := by
+    have hid :
+        B 12 = 11110 - 2048 * w + 12 * w ^ 2 := by
+      dsimp only [B, w]
+      unfold thetaCuspGroundFourthShiftPolynomial
+      ring
+    rw [hid]
+    nlinarith [sq_nonneg w]
+  have hanti :=
+    thetaCuspGroundFourthShiftPolynomial_strictAntiOn_to_critical
+      hc0 hc1 hdelta hdeltaZero
+  have hmono :=
+    thetaCuspGroundFourthShiftPolynomial_strictMonoOn_from_critical
+      hc0 hc1 hdelta hdeltaZero
+  have hBdelta : B delta < 0 := by
+    have hlt :=
+      hanti
+        (show (4 : ℝ) ∈ Icc 0 delta from ⟨by norm_num, hdelta.1.le⟩)
+        (show delta ∈ Icc (0 : ℝ) delta from
+          ⟨le_trans (by norm_num) hdelta.1.le, le_rfl⟩)
+        hdelta.1
+    linarith
+  have hcont : Continuous B := by
+    dsimp only [B]
+    unfold thetaCuspGroundFourthShiftPolynomial
+    fun_prop
+  obtain ⟨beta₁, hbeta₁, hbeta₁Zero⟩ :=
+    intermediate_value_Ioo' (show (0 : ℝ) ≤ delta from
+        le_trans (by norm_num) hdelta.1.le)
+      hcont.continuousOn
+      (show (0 : ℝ) ∈ Ioo (B delta) (B 0) from
+        ⟨hBdelta, hB0⟩)
+  obtain ⟨beta₂, hbeta₂, hbeta₂Zero⟩ :=
+    intermediate_value_Ioo (show delta ≤ (12 : ℝ) by linarith [hdelta.2])
+      hcont.continuousOn
+      (show (0 : ℝ) ∈ Ioo (B delta) (B 12) from
+        ⟨hBdelta, hB12⟩)
+  have hleftSign :
+      ∀ {u : ℝ}, 0 ≤ u → u < beta₁ → 0 < B u := by
+    intro u hu0 huBeta
+    have hlt :=
+      hanti
+        (show u ∈ Icc (0 : ℝ) delta from
+          ⟨hu0, le_trans huBeta.le hbeta₁.2.le⟩)
+        (show beta₁ ∈ Icc (0 : ℝ) delta from
+          ⟨hbeta₁.1.le, hbeta₁.2.le⟩)
+        huBeta
+    linarith
+  have hmiddleSign :
+      ∀ {u : ℝ}, beta₁ < u → u < beta₂ → B u < 0 := by
+    intro u hBeta₁u huBeta₂
+    by_cases huDelta : u ≤ delta
+    · have hlt :=
+        hanti
+          (show beta₁ ∈ Icc (0 : ℝ) delta from
+            ⟨hbeta₁.1.le, hbeta₁.2.le⟩)
+          (show u ∈ Icc (0 : ℝ) delta from
+            ⟨le_trans hbeta₁.1.le hBeta₁u.le, huDelta⟩)
+          hBeta₁u
+      linarith
+    · have hlt :=
+        hmono
+          (show u ∈ Ici delta from le_of_not_ge huDelta)
+          (show beta₂ ∈ Ici delta from hbeta₂.1.le)
+          huBeta₂
+      linarith
+  have hrightSign :
+      ∀ {u : ℝ}, beta₂ < u → 0 < B u := by
+    intro u hBeta₂u
+    have hlt :=
+      hmono
+        (show beta₂ ∈ Ici delta from hbeta₂.1.le)
+        (show u ∈ Ici delta from le_trans hbeta₂.1.le hBeta₂u.le)
+        hBeta₂u
+    linarith
+  exact
+    ⟨beta₁, beta₂, hbeta₁, hbeta₂,
+      by simpa only [B] using hbeta₁Zero,
+      by simpa only [B] using hbeta₂Zero,
+      by
+        intro u hu0 huBeta
+        simpa only [B] using hleftSign (u := u) hu0 huBeta,
+      by
+        intro u hBeta₁u huBeta₂
+        simpa only [B] using
+          hmiddleSign (u := u) hBeta₁u huBeta₂,
+      by
+        intro u hBeta₂u
+        simpa only [B] using hrightSign (u := u) hBeta₂u⟩
+
+theorem thetaCuspGroundFourthOrderRootPhase_eq_zero_of_remainder_zero
+    {a x : ℝ} (hthird :
+      thetaCuspTiltedWardThirdDerivativeCoefficient a 1 x ≠ 0)
+    (hremainder :
+      thetaCuspGroundFourthOrderRemainderCoefficient a x = 0) :
+    thetaCuspGroundFourthOrderRootPhase a x = 0 := by
+  have hfourth :
+      thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x ≠ 0 := by
+    intro hzero
+    unfold thetaCuspGroundFourthOrderRemainderCoefficient at hremainder
+    rw [hzero, mul_zero, add_zero] at hremainder
+    exact hthird (by linarith)
+  unfold thetaCuspGroundFourthOrderRootPhase
+  unfold thetaCuspGroundFourthOrderRemainderCoefficient at hremainder
+  field_simp [hfourth]
+  nlinarith
+
+theorem thetaCuspGroundFourthOrderRootPhase_strictMonoOn
+    {a left right : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2)
+    (hleft : 0 ≤ left)
+    (hfourth : ∀ x ∈ Icc left right,
+      thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x ≠ 0) :
+    StrictMonoOn
+      (thetaCuspGroundFourthOrderRootPhase a)
+      (Icc left right) := by
+  have hthirdCont : Continuous
+      (thetaCuspTiltedWardThirdDerivativeCoefficient a 1) := by
+    unfold thetaCuspTiltedWardThirdDerivativeCoefficient
+      thetaCuspTiltedWardScore
+    fun_prop
+  have hfourthCont : Continuous
+      (thetaCuspTiltedWardFourthDerivativeCoefficient a 1) := by
+    unfold thetaCuspTiltedWardFourthDerivativeCoefficient
+      thetaCuspTiltedWardThirdDerivativeCoefficient
+      thetaCuspTiltedWardScore
+    fun_prop
+  have hcont : ContinuousOn
+      (thetaCuspGroundFourthOrderRootPhase a)
+      (Icc left right) := by
+    unfold thetaCuspGroundFourthOrderRootPhase
+    exact
+      ((continuous_const.mul continuous_id).continuousOn).add
+        (((continuous_const.mul hthirdCont).continuousOn).div
+          hfourthCont.continuousOn hfourth)
+  apply strictMonoOn_of_deriv_pos (convex_Icc left right) hcont
+  intro x hx
+  rw [interior_Icc] at hx
+  exact
+    deriv_thetaCuspGroundFourthOrderRootPhase_pos
+      ha0 ha (le_trans hleft hx.1.le)
+      (hfourth x ⟨hx.1.le, hx.2.le⟩)
+
+/-- **Exact two-transition law for the fourth-order boundary remainder.**  Its two
+existence roots are unique: one lies before the unique `C₃` transition and one after it.
+Thus no untracked oscillatory sign chamber remains in the fourth-order `L¹` budget. -/
+theorem existsUnique_two_thetaCuspGroundFourthOrderRemainderCoefficient_zeros
+    {a tau : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2)
+    (htau : tau ∈ Ioo 0 (1 / 2))
+    (htauZero :
+      thetaCuspTiltedWardThirdDerivativeCoefficient a 1 tau = 0) :
+    (∃! sigma₁ : ℝ,
+      sigma₁ ∈ Ioo 0 tau ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a sigma₁ = 0) ∧
+    (∃! sigma₂ : ℝ,
+      sigma₂ ∈ Ioo tau 2 ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a sigma₂ = 0) := by
+  obtain ⟨sigma₁, sigma₂, hsigma₁, hsigma₂,
+      hsigma₁Zero, hsigma₂Zero⟩ :=
+    exists_two_thetaCuspGroundFourthOrderRemainderCoefficient_zeros
+      ha0 ha htau htauZero
+  let c : ℝ := a + 5 / 2
+  have hc0 : 5 / 2 < c := by
+    dsimp only [c]
+    linarith
+  have hc1 : c < 3 := by
+    dsimp only [c]
+    linarith
+  obtain ⟨delta, hdelta⟩ :=
+    (existsUnique_thetaCuspGroundFourthShiftPolynomialDerivative_zero
+      hc0 hc1).exists
+  obtain ⟨beta₁, beta₂, hbeta₁, hbeta₂,
+      hbeta₁Zero, hbeta₂Zero,
+      hleftSign, hmiddleSign, hrightSign⟩ :=
+    exists_two_thetaCuspGroundFourthShiftPolynomial_zeros_and_signs
+      hc0 hc1 hdelta.1 hdelta.2
+  let u : ℝ → ℝ := fun x =>
+    2 * Real.pi * Real.exp (2 * x) - c - 3
+  have huStrict : StrictMono u := by
+    intro x y hxy
+    dsimp only [u]
+    have hexp : Real.exp (2 * x) < Real.exp (2 * y) :=
+      Real.exp_lt_exp.mpr (by linarith)
+    have hscale :
+        2 * Real.pi * Real.exp (2 * x) <
+          2 * Real.pi * Real.exp (2 * y) :=
+      mul_lt_mul_of_pos_left hexp (by positivity)
+    linarith
+  have huNonneg : ∀ {x : ℝ}, 0 ≤ x → 0 ≤ u x := by
+    intro x hx
+    have hexp : 1 ≤ Real.exp (2 * x) := by
+      rw [← Real.exp_zero]
+      exact Real.exp_le_exp.mpr (by linarith)
+    have hq6 : 6 < 2 * Real.pi * Real.exp (2 * x) := by
+      nlinarith [Real.pi_gt_three, Real.exp_pos (2 * x)]
+    dsimp only [u]
+    linarith
+  have hfourthEq : ∀ x : ℝ,
+      thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x =
+        thetaCuspGroundFourthShiftPolynomial c (3 + u x) := by
+    intro x
+    rw [thetaCuspTiltedWardFourthDerivativeCoefficient_ground_eq_shiftPolynomial]
+    dsimp only [c, u]
+    congr 2
+    ring
+  have hnegativeMem : ∀ {t : ℝ}, 0 ≤ t →
+      thetaCuspGroundFourthShiftPolynomial c (3 + t) < 0 →
+      beta₁ < t ∧ t < beta₂ := by
+    intro t ht0 hneg
+    constructor
+    · by_contra hnot
+      have htBeta : t ≤ beta₁ := le_of_not_gt hnot
+      rcases lt_or_eq_of_le htBeta with hlt | heq
+      · linarith [hleftSign ht0 hlt]
+      · rw [heq, hbeta₁Zero] at hneg
+        linarith
+    · by_contra hnot
+      have hBetaT : beta₂ ≤ t := le_of_not_gt hnot
+      rcases lt_or_eq_of_le hBetaT with hlt | heq
+      · linarith [hrightSign hlt]
+      · rw [← heq, hbeta₂Zero] at hneg
+        linarith
+  have htauFourthNeg :
+      thetaCuspTiltedWardFourthDerivativeCoefficient a 1 tau < 0 :=
+    thetaCuspTiltedWardFourthDerivativeCoefficient_ground_neg_at_transition
+      ha0 ha htau htauZero
+  have huTauMem : beta₁ < u tau ∧ u tau < beta₂ := by
+    apply hnegativeMem (huNonneg htau.1.le)
+    rwa [← hfourthEq tau]
+  have hpositiveRight : ∀ {t : ℝ}, u tau < t →
+      0 < thetaCuspGroundFourthShiftPolynomial c (3 + t) →
+      beta₂ < t := by
+    intro t huTauT hpos
+    have hBeta₁T : beta₁ < t := lt_trans huTauMem.1 huTauT
+    by_contra hnot
+    have htBeta₂ : t ≤ beta₂ := le_of_not_gt hnot
+    rcases lt_or_eq_of_le htBeta₂ with hlt | heq
+    · linarith [hmiddleSign hBeta₁T hlt]
+    · rw [heq, hbeta₂Zero] at hpos
+      linarith
+  have hthirdSigns :=
+    thetaCuspTiltedWardThirdDerivativeCoefficient_ground_sign_around_zero
+      ha0 ha htau htauZero
+  have hpreFourthNeg : ∀ {x : ℝ},
+      x ∈ Ioo 0 tau →
+      thetaCuspGroundFourthOrderRemainderCoefficient a x = 0 →
+      thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x < 0 := by
+    intro x hx hzero
+    have hthird : 0 <
+        thetaCuspTiltedWardThirdDerivativeCoefficient a 1 x :=
+      hthirdSigns.1 hx.1.le hx.2
+    by_contra hnot
+    have hfourthNonneg := le_of_not_gt hnot
+    have hxmul : 0 ≤
+        x * thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x :=
+      mul_nonneg hx.1.le hfourthNonneg
+    unfold thetaCuspGroundFourthOrderRemainderCoefficient at hzero
+    nlinarith
+  have hpostFourthPos : ∀ {x : ℝ},
+      x ∈ Ioo tau 2 →
+      thetaCuspGroundFourthOrderRemainderCoefficient a x = 0 →
+      0 < thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x := by
+    intro x hx hzero
+    have hthird :
+        thetaCuspTiltedWardThirdDerivativeCoefficient a 1 x < 0 :=
+      hthirdSigns.2 hx.1
+    have hx0 : 0 < x := lt_trans htau.1 hx.1
+    by_contra hnot
+    have hfourthNonpos := le_of_not_gt hnot
+    have hxmul :
+        x * thetaCuspTiltedWardFourthDerivativeCoefficient a 1 x ≤ 0 :=
+      mul_nonpos_of_nonneg_of_nonpos hx0.le hfourthNonpos
+    unfold thetaCuspGroundFourthOrderRemainderCoefficient at hzero
+    nlinarith
+  have hpreOrdered : ∀ {x y : ℝ},
+      (x ∈ Ioo 0 tau ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a x = 0) →
+      (y ∈ Ioo 0 tau ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a y = 0) →
+      x < y → False := by
+    intro x y hx hy hxy
+    have hfourthX := hpreFourthNeg hx.1 hx.2
+    have hfourthY := hpreFourthNeg hy.1 hy.2
+    have huXMem : beta₁ < u x ∧ u x < beta₂ := by
+      apply hnegativeMem (huNonneg hx.1.1.le)
+      rwa [← hfourthEq x]
+    have huYMem : beta₁ < u y ∧ u y < beta₂ := by
+      apply hnegativeMem (huNonneg hy.1.1.le)
+      rwa [← hfourthEq y]
+    have hnonzero : ∀ z ∈ Icc x y,
+        thetaCuspTiltedWardFourthDerivativeCoefficient a 1 z ≠ 0 := by
+      intro z hz
+      have huzLower : u x ≤ u z := huStrict.monotone hz.1
+      have huzUpper : u z ≤ u y := huStrict.monotone hz.2
+      have hneg :
+          thetaCuspGroundFourthShiftPolynomial c (3 + u z) < 0 :=
+        hmiddleSign (lt_of_lt_of_le huXMem.1 huzLower)
+          (lt_of_le_of_lt huzUpper huYMem.2)
+      rw [hfourthEq z]
+      exact hneg.ne
+    have hphaseMono :=
+      thetaCuspGroundFourthOrderRootPhase_strictMonoOn
+        ha0 ha hx.1.1.le hnonzero
+    have hphaseX :
+        thetaCuspGroundFourthOrderRootPhase a x = 0 :=
+      thetaCuspGroundFourthOrderRootPhase_eq_zero_of_remainder_zero
+        (hthirdSigns.1 hx.1.1.le hx.1.2).ne' hx.2
+    have hphaseY :
+        thetaCuspGroundFourthOrderRootPhase a y = 0 :=
+      thetaCuspGroundFourthOrderRootPhase_eq_zero_of_remainder_zero
+        (hthirdSigns.1 hy.1.1.le hy.1.2).ne' hy.2
+    have hlt :=
+      hphaseMono
+        (show x ∈ Icc x y from ⟨le_rfl, hxy.le⟩)
+        (show y ∈ Icc x y from ⟨hxy.le, le_rfl⟩)
+        hxy
+    linarith
+  have hpostOrdered : ∀ {x y : ℝ},
+      (x ∈ Ioo tau 2 ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a x = 0) →
+      (y ∈ Ioo tau 2 ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a y = 0) →
+      x < y → False := by
+    intro x y hx hy hxy
+    have hfourthX := hpostFourthPos hx.1 hx.2
+    have hfourthY := hpostFourthPos hy.1 hy.2
+    have huTauX : u tau < u x := huStrict hx.1.1
+    have huTauY : u tau < u y := huStrict hy.1.1
+    have huXRight : beta₂ < u x := by
+      apply hpositiveRight huTauX
+      rwa [← hfourthEq x]
+    have huYRight : beta₂ < u y := by
+      apply hpositiveRight huTauY
+      rwa [← hfourthEq y]
+    have hnonzero : ∀ z ∈ Icc x y,
+        thetaCuspTiltedWardFourthDerivativeCoefficient a 1 z ≠ 0 := by
+      intro z hz
+      have huzLower : u x ≤ u z := huStrict.monotone hz.1
+      have hpos :
+          0 < thetaCuspGroundFourthShiftPolynomial c (3 + u z) :=
+        hrightSign (lt_of_lt_of_le huXRight huzLower)
+      rw [hfourthEq z]
+      exact hpos.ne'
+    have hphaseMono :=
+      thetaCuspGroundFourthOrderRootPhase_strictMonoOn
+        ha0 ha (le_trans htau.1.le hx.1.1.le) hnonzero
+    have hphaseX :
+        thetaCuspGroundFourthOrderRootPhase a x = 0 :=
+      thetaCuspGroundFourthOrderRootPhase_eq_zero_of_remainder_zero
+        (hthirdSigns.2 hx.1.1).ne hx.2
+    have hphaseY :
+        thetaCuspGroundFourthOrderRootPhase a y = 0 :=
+      thetaCuspGroundFourthOrderRootPhase_eq_zero_of_remainder_zero
+        (hthirdSigns.2 hy.1.1).ne hy.2
+    have hlt :=
+      hphaseMono
+        (show x ∈ Icc x y from ⟨le_rfl, hxy.le⟩)
+        (show y ∈ Icc x y from ⟨hxy.le, le_rfl⟩)
+        hxy
+    linarith
+  have hpreUnique : ∀ {x y : ℝ},
+      (x ∈ Ioo 0 tau ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a x = 0) →
+      (y ∈ Ioo 0 tau ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a y = 0) →
+      x = y := by
+    intro x y hx hy
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with hxy | hyx
+    · exact hpreOrdered hx hy hxy
+    · exact hpreOrdered hy hx hyx
+  have hpostUnique : ∀ {x y : ℝ},
+      (x ∈ Ioo tau 2 ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a x = 0) →
+      (y ∈ Ioo tau 2 ∧
+        thetaCuspGroundFourthOrderRemainderCoefficient a y = 0) →
+      x = y := by
+    intro x y hx hy
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with hxy | hyx
+    · exact hpostOrdered hx hy hxy
+    · exact hpostOrdered hy hx hyx
+  constructor
+  · refine ⟨sigma₁, ⟨hsigma₁, hsigma₁Zero⟩, ?_⟩
+    intro y hy
+    exact hpreUnique hy ⟨hsigma₁, hsigma₁Zero⟩
+  · refine ⟨sigma₂, ⟨hsigma₂, hsigma₂Zero⟩, ?_⟩
+    intro y hy
+    exact hpostUnique hy ⟨hsigma₂, hsigma₂Zero⟩
+
+theorem continuous_unique_zero_signs
+    {F : ℝ → ℝ} {left zero right : ℝ}
+    (hcont : ContinuousOn F (Icc left right))
+    (hzeroMem : zero ∈ Ioo left right)
+    (hleft : 0 < F left) (hzero : F zero = 0) (hright : F right < 0)
+    (hunique : ∀ {x : ℝ}, x ∈ Ioo left right → F x = 0 → x = zero) :
+    (∀ {x : ℝ}, left ≤ x → x < zero → 0 < F x) ∧
+    (∀ {x : ℝ}, zero < x → x ≤ right → F x < 0) := by
+  constructor
+  · intro x hleftX hxZero
+    by_contra hnot
+    have hxNonpos : F x ≤ 0 := le_of_not_gt hnot
+    rcases hxNonpos.eq_or_lt with hxEq | hxNeg
+    · have hxMem : x ∈ Ioo left right :=
+        ⟨lt_of_le_of_ne hleftX (by
+            intro heq
+            subst x
+            linarith), lt_trans hxZero hzeroMem.2⟩
+      exact (ne_of_lt hxZero) (hunique hxMem hxEq)
+    · have hleftLtX : left < x := by
+        by_contra hnotLeft
+        have hxle : x ≤ left := le_of_not_gt hnotLeft
+        have : x = left := le_antisymm hxle hleftX
+        subst x
+        linarith
+      have hcontSub : ContinuousOn F (Icc left x) :=
+        hcont.mono (by
+          intro y hy
+          exact ⟨hy.1, le_trans hy.2 (le_trans hxZero.le hzeroMem.2.le)⟩)
+      obtain ⟨y, hy, hyZero⟩ :=
+        intermediate_value_Ioo' hleftX hcontSub
+          (show (0 : ℝ) ∈ Ioo (F x) (F left) from
+            ⟨hxNeg, hleft⟩)
+      have hyMem : y ∈ Ioo left right :=
+        ⟨hy.1, lt_trans hy.2 (lt_trans hxZero hzeroMem.2)⟩
+      have hyEq := hunique hyMem hyZero
+      rw [hyEq] at hy
+      exact (not_lt_of_ge hxZero.le) hy.2
+  · intro x hzeroX hxRight
+    by_contra hnot
+    have hxNonneg : 0 ≤ F x := le_of_not_gt hnot
+    rcases hxNonneg.eq_or_lt with hxEq | hxPos
+    · have hxMem : x ∈ Ioo left right :=
+        ⟨lt_trans hzeroMem.1 hzeroX, lt_of_le_of_ne hxRight (by
+            intro heq
+            subst x
+            linarith)⟩
+      exact (ne_of_gt hzeroX) (hunique hxMem hxEq.symm)
+    · have hxLtRight : x < right := by
+        by_contra hnotRight
+        have hrightLe : right ≤ x := le_of_not_gt hnotRight
+        have : x = right := le_antisymm hxRight hrightLe
+        subst x
+        linarith
+      have hcontSub : ContinuousOn F (Icc x right) :=
+        hcont.mono (by
+          intro y hy
+          exact ⟨le_trans hzeroMem.1.le (le_trans hzeroX.le hy.1), hy.2⟩)
+      obtain ⟨y, hy, hyZero⟩ :=
+        intermediate_value_Ioo' hxRight hcontSub
+          (show (0 : ℝ) ∈ Ioo (F right) (F x) from
+            ⟨hright, hxPos⟩)
+      have hyMem : y ∈ Ioo left right :=
+        ⟨lt_trans (lt_trans hzeroMem.1 hzeroX) hy.1, hy.2⟩
+      have hyEq := hunique hyMem hyZero
+      rw [hyEq] at hy
+      exact (not_lt_of_ge hzeroX.le) hy.1
+
+/-- Global `+,-,+` sign classification of the exact fourth-order boundary remainder. -/
+theorem exists_two_thetaCuspGroundFourthOrderRemainderCoefficient_zeros_and_signs
+    {a tau : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2)
+    (htau : tau ∈ Ioo 0 (1 / 2))
+    (htauZero :
+      thetaCuspTiltedWardThirdDerivativeCoefficient a 1 tau = 0) :
+    ∃ sigma₁ sigma₂ : ℝ,
+      sigma₁ ∈ Ioo 0 tau ∧
+      sigma₂ ∈ Ioo tau 2 ∧
+      thetaCuspGroundFourthOrderRemainderCoefficient a sigma₁ = 0 ∧
+      thetaCuspGroundFourthOrderRemainderCoefficient a sigma₂ = 0 ∧
+      (∀ {x : ℝ}, 0 ≤ x → x < sigma₁ →
+        0 < thetaCuspGroundFourthOrderRemainderCoefficient a x) ∧
+      (∀ {x : ℝ}, sigma₁ < x → x < sigma₂ →
+        thetaCuspGroundFourthOrderRemainderCoefficient a x < 0) ∧
+      (∀ {x : ℝ}, sigma₂ < x →
+        0 < thetaCuspGroundFourthOrderRemainderCoefficient a x) := by
+  rcases
+      existsUnique_two_thetaCuspGroundFourthOrderRemainderCoefficient_zeros
+        ha0 ha htau htauZero with
+    ⟨⟨sigma₁, ⟨hsigma₁, hsigma₁Zero⟩, hsigma₁Unique⟩,
+      ⟨sigma₂, ⟨hsigma₂, hsigma₂Zero⟩, hsigma₂Unique⟩⟩
+  let F : ℝ → ℝ :=
+    thetaCuspGroundFourthOrderRemainderCoefficient a
+  have hcont : Continuous F := by
+    dsimp only [F]
+    unfold thetaCuspGroundFourthOrderRemainderCoefficient
+      thetaCuspTiltedWardFourthDerivativeCoefficient
+      thetaCuspTiltedWardThirdDerivativeCoefficient
+      thetaCuspTiltedWardScore
+    fun_prop
+  have hzeroPos : 0 < F 0 := by
+    simpa only [F] using
+      thetaCuspGroundFourthOrderRemainderCoefficient_zero_pos ha0 ha
+  have htauNeg : F tau < 0 := by
+    simpa only [F] using
+      thetaCuspGroundFourthOrderRemainderCoefficient_neg_at_transition
+        ha0 ha htau htauZero
+  have htwoPos : 0 < F 2 := by
+    simpa only [F] using
+      thetaCuspGroundFourthOrderRemainderCoefficient_pos_of_two_le
+        ha0 ha (by norm_num)
+  have hfirst :=
+    continuous_unique_zero_signs
+      (F := F) hcont.continuousOn hsigma₁
+      hzeroPos (by simpa only [F] using hsigma₁Zero) htauNeg
+      (by
+        intro x hx hxZero
+        exact hsigma₁Unique x ⟨hx, by simpa only [F] using hxZero⟩)
+  have hsecondNeg :=
+    continuous_unique_zero_signs
+      (F := fun x => -F x) hcont.neg.continuousOn hsigma₂
+      (by linarith) (by simp only [hsigma₂Zero, F, neg_zero])
+      (by linarith)
+      (by
+        intro x hx hxZero
+        exact hsigma₂Unique x
+          ⟨hx, by
+            dsimp only at hxZero
+            have : F x = 0 := by linarith
+            simpa only [F] using this⟩)
+  have hleftSign :
+      ∀ {x : ℝ}, 0 ≤ x → x < sigma₁ → 0 < F x :=
+    hfirst.1
+  have hmiddleSign :
+      ∀ {x : ℝ}, sigma₁ < x → x < sigma₂ → F x < 0 := by
+    intro x hsigma₁X hxSigma₂
+    rcases lt_trichotomy x tau with hxTau | hxTau | hTauX
+    · exact hfirst.2 hsigma₁X hxTau.le
+    · subst x
+      exact htauNeg
+    · have hnegNeg := hsecondNeg.1 hTauX.le hxSigma₂
+      linarith
+  have hrightSign :
+      ∀ {x : ℝ}, sigma₂ < x → 0 < F x := by
+    intro x hsigma₂X
+    by_cases hxTwo : x ≤ 2
+    · have hnegNeg := hsecondNeg.2 hsigma₂X hxTwo
+      linarith
+    · exact
+        thetaCuspGroundFourthOrderRemainderCoefficient_pos_of_two_le
+          ha0 ha (le_of_not_ge hxTwo)
+  exact
+    ⟨sigma₁, sigma₂, hsigma₁, hsigma₂, hsigma₁Zero, hsigma₂Zero,
+      by
+        intro x hx0 hxSigma₁
+        simpa only [F] using hleftSign hx0 hxSigma₁,
+      by
+        intro x hsigma₁X hxSigma₂
+        simpa only [F] using hmiddleSign hsigma₁X hxSigma₂,
+      by
+        intro x hsigma₂X
+        simpa only [F] using hrightSign hsigma₂X⟩
+
+/-- Primitive whose derivative is the fourth-order boundary remainder:
+`H = 3 f'' + x f'''`, hence `H' = 4 f''' + x f''''`. -/
+def thetaCuspGroundFourthOrderPrimitive (a x : ℝ) : ℝ :=
+  3 *
+      (thetaCuspTiltedWardCurvature a 1 x *
+        thetaCuspTiltedWardDensity a 1 x) +
+    x *
+      (thetaCuspTiltedWardThirdDerivativeCoefficient a 1 x *
+        thetaCuspTiltedWardDensity a 1 x)
+
+theorem hasDerivAt_thetaCuspGroundFourthOrderPrimitive
+    (a x : ℝ) :
+    HasDerivAt (thetaCuspGroundFourthOrderPrimitive a)
+      (thetaCuspGroundFourthOrderRemainderCoefficient a x *
+        thetaCuspTiltedWardDensity a 1 x) x := by
+  let f₂ : ℝ → ℝ := fun y =>
+    thetaCuspTiltedWardCurvature a 1 y *
+      thetaCuspTiltedWardDensity a 1 y
+  let f₃ : ℝ → ℝ := fun y =>
+    thetaCuspTiltedWardThirdDerivativeCoefficient a 1 y *
+      thetaCuspTiltedWardDensity a 1 y
+  let f₄ : ℝ → ℝ :=
+    thetaCuspTiltedWardDensityFourthDerivative a 1
+  have hf₂ : HasDerivAt f₂ (f₃ x) x := by
+    simpa only [f₂, f₃] using
+      hasDerivAt_thetaCuspTiltedWardDensitySecondDerivative a 1 x
+  have hf₃ : HasDerivAt f₃ (f₄ x) x := by
+    simpa only [f₃, f₄] using
+      hasDerivAt_thetaCuspTiltedWardDensityThirdDerivative a 1 x
+  have hraw :=
+    (hf₂.const_mul 3).add ((hasDerivAt_id x).mul hf₃)
+  convert hraw using 1
+  · funext y
+    simp only [thetaCuspGroundFourthOrderPrimitive, f₂, f₃,
+      Pi.add_apply, Pi.mul_apply, id_eq]
+  · rw [← thetaCuspGroundFourthOrderRemainder_eq_coefficient]
+    dsimp only [f₃, f₄]
+    ring
+
 theorem integrableOn_thetaCuspTiltedWardDensitySecondDerivative
     {a : ℝ} (ha : a < 1) {n : ℕ} (hn : 0 < n) :
     IntegrableOn

@@ -1,12 +1,12 @@
 import GaloisForLFunctions.RHTower.WeightedEulerTwoRayPhragmenLindelof
 import Mathlib.MeasureTheory.Integral.ExpDecay
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
+import Mathlib.Analysis.Calculus.ParametricIntegral
 
 /-!
 # Strip Fourier transform of a two-ray decaying entire function
 
-Card `weighted-euler-tangent-global-graph-decoupling`, carrier separation
-(15)–(16), Paley–Wiener step, part (ii-a): for an entire function `g`
+For an entire function `g`
 satisfying the two-ray Phragmén–Lindelöf bound
 `‖g z‖ ≤ K e^{-ε|Re z| + τ|Im z|}` (as produced by
 `norm_le_exp_of_two_ray_exponential_decay`), the complexified Fourier
@@ -19,7 +19,7 @@ is well defined and analytic on the horizontal strip `|Im w| < ε`.
 The follow-up module shifts the integration contour to prove `Φ(w) = 0` for
 `|w| > τ`, and concludes `Φ ≡ 0` by the identity theorem, then `g ≡ 0` by
 Fourier inversion — the vanishing form of the classical indicator inequality
-that drives the card's carrier separation.  Everything here is unconditional.
+that drives the carrier separation.  Everything here is unconditional.
 -/
 
 noncomputable section
@@ -32,39 +32,41 @@ open Complex MeasureTheory Set
 theorem integrable_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
     Integrable fun x : ℝ => Real.exp (-(c * |x|)) := by
   rw [← integrableOn_univ, ← Set.Iic_union_Ioi (a := (0 : ℝ))]
-  have hIoi : IntegrableOn (fun x : ℝ => Real.exp (-(c * x))) (Ioi 0) :=
+  have hIoi : IntegrableOn (fun x : ℝ => Real.exp (-c * x)) (Ioi 0) :=
     exp_neg_integrableOn_Ioi 0 hc
   apply IntegrableOn.union
-  · have hIci : IntegrableOn (fun x : ℝ => Real.exp (-(c * x))) (Ici 0) :=
-      integrableOn_Ici_iff_integrableOn_Ioi.2 hIoi
+  · have hIci : IntegrableOn (fun x : ℝ => Real.exp (-c * x)) (Ici (-(0:ℝ))) := by
+      rw [neg_zero, integrableOn_Ici_iff_integrableOn_Ioi]
+      exact hIoi
     have hIic := hIci.comp_neg_Iic
-    rw [neg_zero] at hIic
     apply hIic.congr_fun _ measurableSet_Iic
     intro x hx
     rw [mem_Iic] at hx
     simp only [abs_of_nonpos hx]
-    ring_nf
+    congr 1
+    ring
   · apply hIoi.congr_fun _ measurableSet_Ioi
     intro x hx
     rw [mem_Ioi] at hx
-    rw [abs_of_pos hx]
+    simp only [abs_of_pos hx]
+    congr 1
+    ring
 
 /-- The linear weight is absorbed by halving the exponential rate. -/
 theorem integrable_abs_mul_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
     Integrable fun x : ℝ => |x| * Real.exp (-(c * |x|)) := by
-  have hhalf : 0 < c / 2 := by positivity
+  have hhalf : (0:ℝ) < c / 2 := by positivity
   apply Integrable.mono' ((integrable_exp_neg_mul_abs hhalf).const_mul (2 / c))
-  · exact ((continuous_abs.mul
-      ((continuous_const.mul continuous_abs).neg.rexp)).aestronglyMeasurable)
+  · exact (continuous_abs.mul
+      ((continuous_const.mul continuous_abs).neg.rexp)).aestronglyMeasurable
   · refine ae_of_all _ fun x => ?_
     rw [Real.norm_of_nonneg (mul_nonneg (abs_nonneg x) (Real.exp_nonneg _))]
     have hxle : |x| ≤ 2 / c * Real.exp (c / 2 * |x|) := by
-      have h1 : c / 2 * |x| ≤ Real.exp (c / 2 * |x|) :=
-        le_trans (by linarith [Real.add_one_le_exp (c / 2 * |x|)])
-          le_rfl
+      have h1 : c / 2 * |x| ≤ Real.exp (c / 2 * |x|) := by
+        linarith [Real.add_one_le_exp (c / 2 * |x|)]
       calc |x| = 2 / c * (c / 2 * |x|) := by field_simp
-        _ ≤ 2 / c * Real.exp (c / 2 * |x|) := by
-            apply mul_le_mul_of_nonneg_left h1 (by positivity)
+        _ ≤ 2 / c * Real.exp (c / 2 * |x|) :=
+            mul_le_mul_of_nonneg_left h1 (by positivity)
     calc |x| * Real.exp (-(c * |x|))
         ≤ (2 / c * Real.exp (c / 2 * |x|)) * Real.exp (-(c * |x|)) :=
           mul_le_mul_of_nonneg_right hxle (Real.exp_nonneg _)
@@ -104,17 +106,10 @@ theorem integrable_stripFourier_kernel {g : ℂ → ℂ} (hgc : Continuous g)
             le_trans (norm_nonneg (g 0)) (by simpa using hbound 0)
           apply mul_le_mul_of_nonneg_left _ hK0
           apply Real.exp_le_exp.2
-          have : w.im * x ≤ |w.im| * |x| :=
-            le_trans (le_abs_self _) (by rw [abs_mul])
+          have h2 : w.im * x ≤ |w.im| * |x| := by
+            calc w.im * x ≤ |w.im * x| := le_abs_self _
+              _ = |w.im| * |x| := abs_mul _ _
           nlinarith [abs_nonneg x]
-
-/-- The differentiated strip Fourier kernel is integrable in the strip. -/
-theorem integrable_stripFourier_deriv_kernel {g : ℂ → ℂ} (hgc : Continuous g)
-    {K ε τ : ℝ}
-    (hbound : ∀ z : ℂ, ‖g z‖ ≤ K * Real.exp (-(ε * |z.re|) + τ * |z.im|))
-    {b : ℝ} (hb : b < ε) :
-    Integrable fun x : ℝ => K * (|x| * Real.exp (-((ε - b) * |x|))) :=
-  (integrable_abs_mul_exp_neg_mul_abs (by linarith)).const_mul K
 
 /-- The strip Fourier transform. -/
 def stripFourier (g : ℂ → ℂ) (w : ℂ) : ℂ :=
@@ -133,13 +128,12 @@ theorem hasDerivAt_stripFourier {g : ℂ → ℂ} (hg : Differentiable ℂ g)
   have hK0 : 0 ≤ K := le_trans (norm_nonneg (g 0)) (by simpa using hbound 0)
   set r : ℝ := (ε - |w₀.im|) / 2 with hr
   have hr0 : 0 < r := by rw [hr]; linarith
-  have hmain := hasDerivAt_integral_of_dominated_loc_of_deriv_le
+  refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (F := fun (w : ℂ) (x : ℝ) => g x * Complex.exp (-(I * w * x)))
-    (F' := fun (w : ℂ) (x : ℝ) => g x * (-(I * x)) * Complex.exp (-(I * w * x)))
-    (x₀ := w₀)
+    (F' := fun (w : ℂ) (x : ℝ) =>
+      g x * (-(I * x)) * Complex.exp (-(I * w * x)))
     (bound := fun x : ℝ => K * (|x| * Real.exp (-(r * |x|))))
-    hr0 ?_ ?_ ?_ ?_ ?_ ?_
-  · exact hmain.2
+    (Metric.ball_mem_nhds w₀ hr0) ?_ ?_ ?_ ?_ ?_ ?_).2
   · filter_upwards with w
     exact ((hgc.comp Complex.continuous_ofReal).mul
       (Complex.continuous_exp.comp (by fun_prop))).aestronglyMeasurable
@@ -154,10 +148,10 @@ theorem hasDerivAt_stripFourier {g : ℂ → ℂ} (hg : Differentiable ℂ g)
         rw [← Complex.sub_im]
         exact Complex.abs_im_le_norm _
       calc |w.im| = |w₀.im + (w.im - w₀.im)| := by ring_nf
-        _ ≤ |w₀.im| + |w.im - w₀.im| := abs_add _ _
+        _ ≤ |w₀.im| + |w.im - w₀.im| := abs_add_le _ _
         _ ≤ |w₀.im| + r := by
-            have := le_of_lt hwball
-            nlinarith [h1]
+            have h2 := le_of_lt hwball
+            linarith
     rw [norm_mul, norm_mul, Complex.norm_exp, re_neg_I_mul_mul_ofReal]
     have hb := hbound (x : ℂ)
     rw [Complex.ofReal_re, Complex.ofReal_im, abs_zero, mul_zero, add_zero] at hb
@@ -177,7 +171,11 @@ theorem hasDerivAt_stripFourier {g : ℂ → ℂ} (hg : Differentiable ℂ g)
             (Real.exp_nonneg _)
           positivity
       _ = K * (|x| * Real.exp (-(ε * |x|) + (|w₀.im| + r) * |x|)) := by
-          rw [← Real.exp_add]; ring
+          rw [show K * Real.exp (-(ε * |x|)) * |x| *
+              Real.exp ((|w₀.im| + r) * |x|)
+              = K * (|x| * (Real.exp (-(ε * |x|)) *
+                Real.exp ((|w₀.im| + r) * |x|))) from by ring,
+            ← Real.exp_add]
       _ ≤ K * (|x| * Real.exp (-(r * |x|))) := by
           apply mul_le_mul_of_nonneg_left _ hK0
           apply mul_le_mul_of_nonneg_left _ (abs_nonneg x)

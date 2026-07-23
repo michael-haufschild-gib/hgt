@@ -3,8 +3,7 @@ import Mathlib.Analysis.Complex.PhragmenLindelof
 /-!
 # Two-ray Phragmén–Lindelöf bound for exponential-type functions
 
-Card `weighted-euler-tangent-global-graph-decoupling`, carrier-separation step
-(15)–(16), analytic input: an entire function of exponential type `τ` that
+An entire function of exponential type `τ` that
 decays like `e^{-ε|x|}` on **both** real rays satisfies the global bound
 
 `‖g z‖ ≤ K · e^{-ε|Re z| + τ|Im z|}`.
@@ -13,7 +12,7 @@ This is the quantitative half of the classical indicator inequality
 `h(0) + h(π) ≥ 0`: it will feed the Paley–Wiener contour-shift argument that
 forces such a function to vanish identically, which — applied to the
 Fourier–Borel transform of `B = A - R_*A` with the ray decay supplied by the
-oversampling lemma and Möbius transfer (14) — is exactly the card's carrier
+oversampling lemma and Möbius transfer — is exactly the carrier
 separation `B = 0`.
 
 The proof multiplies `g` by the exponential `e^{mz}` adapted to each

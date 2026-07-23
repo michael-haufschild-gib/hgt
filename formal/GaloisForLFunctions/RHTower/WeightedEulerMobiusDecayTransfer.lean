@@ -3,7 +3,6 @@ import GaloisForLFunctions.RHTower.PrimeLambertMobiusInversion
 /-!
 # Möbius decay transfer for the weighted Lambert transform
 
-Card `weighted-euler-tangent-global-graph-decoupling`, equations (13)–(14):
 Möbius inversion of the FE Lambert transform,
 
 `G(z) = Σ_{n ≥ 1} μ(n) n H(nz)`,
@@ -18,8 +17,7 @@ value obeys `‖H(n)‖ ≤ D ρⁿ` with `ρ ≤ 1/2`, then
 `‖a 1‖ ≤ 4 D ρ`.
 
 Applied at `a_x(k) = F_A(kx) − e^{-kx}F_A(-kx)` with `ρ = e^{-σ'x}`, this is
-exactly the card's step from the oversampled bound (8a) to the Fourier–Borel
-decay (14).  Everything is unconditional.
+the transfer from oversampled Lambert decay to Fourier–Borel decay.  Everything is unconditional.
 -/
 
 noncomputable section
@@ -47,7 +45,7 @@ theorem tsum_pnat_coe_mul_geometric_le {ρ : ℝ} (hρ0 : 0 ≤ ρ) (hρ1 : ρ <
   rw [tsum_coe_mul_geometric_of_norm_lt_one hnorm] at hle
   exact hle
 
-/-- **Möbius decay transfer** (card equations (13)–(14), discrete form): a
+/-- **Möbius decay transfer**: a
 geometrically decaying coefficient sequence whose weighted Lambert transform
 is exponentially small has an exponentially small first coefficient, with the
 explicit constant `4`. -/

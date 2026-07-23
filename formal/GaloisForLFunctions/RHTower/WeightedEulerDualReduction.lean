@@ -4,14 +4,13 @@ import GaloisForLFunctions.RHTower.CompactCarrierLambert
 /-!
 # Dual reduction for the weighted Euler joint graph
 
-Card `weighted-euler-tangent-global-graph-decoupling`, equations (4)–(7): a
-continuous functional pair `(λ, ℓ)` annihilating the joint graph
+A continuous functional pair `(λ, ℓ)` annihilating the joint graph
 `{(b, Σ_p b_p u_p)}` satisfies the graph relation `λ(e_p) + ℓ(u_p) = 0`, and
 continuity of the coefficient side bounds `|λ(e_p)|` by the exact coordinate
 norm `C (log p) p^{-σ₀}`.  Through the compact-carrier Lambert normalisation
 `ℓ(u_p) = (log p)·H(log p)` this forces the super-source sampling decay
 
-`‖H(log p)‖ ≤ C p^{-σ₀}`    (card equation (7)).
+`‖H(log p)‖ ≤ C p^{-σ₀}`   .
 
 This file proves that reduction unconditionally against the existing
 compact-carrier infrastructure (`CompactCarrierLambert`): the flux functional
@@ -19,10 +18,10 @@ is a continuous functional `L` on `C(K, ℂ)` for a compact carrier `K`, the
 Euler tangent is `compactPrimeEulerUnitTangent`, and `H` is
 `compactCarrierLambertTransform L s`.  The critical-boundary instance
 `σ₀ = 1` is fed by the exact `T_1` coordinate norm, proved here as
-`criticalNorm_coordinate` (card equation (4) with `σ₀ = 1`).
+`criticalNorm_coordinate`.
 
 The decisive upgrade of (7) to a carrier statement is the prime-log
-oversampling lemma (card §oversampling), formalized separately.
+prime-log oversampling lemma, formalized separately.
 -/
 
 noncomputable section
@@ -35,7 +34,7 @@ open Complex Set
 def criticalNorm (b : ℕ → ℝ) : ℝ :=
   ∑' n : ℕ, ({p : ℕ | p.Prime}.indicator fun n => Real.log n / n * |b n|) n
 
-/-- **Exact coordinate norm in `T_1`** (card equation (4) at `σ₀ = 1`):
+/-- **Exact coordinate norm in `T_1`** (the critical coordinate norm):
 `‖e_p‖_{T_1} = (log p)/p`. -/
 theorem criticalNorm_coordinate {p : ℕ} (hp : p.Prime) :
     criticalNorm (primeCoordinateField p) = Real.log p / p := by
@@ -52,7 +51,7 @@ theorem criticalNorm_coordinate {p : ℕ} (hp : p.Prime) :
 variable {K : Type*} [TopologicalSpace K] [CompactSpace K]
 
 /-- The flux value of the compact Euler tangent is the prime-log Lambert
-sample times `log p` (card display `A(u_p) = (log p) H_A(log p)`). -/
+sample times `log p`: `A(u_p) = (log p)·H_A(log p)`. -/
 theorem map_compactPrimeEulerUnitTangent_eq_logMul_lambert
     (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ)) (p : ℕ) :
     L (compactPrimeEulerUnitTangent s p)
@@ -60,7 +59,7 @@ theorem map_compactPrimeEulerUnitTangent_eq_logMul_lambert
   unfold compactPrimeEulerUnitTangent compactCarrierLambertTransform
   rw [map_smul, smul_eq_mul]
 
-/-- **Dual reduction with decay** (card equations (5) + (4) ⇒ (7)): if the
+/-- **Dual reduction with decay**: if the
 joint-graph relation `λ_p + L(u_p) = 0` holds and the coefficient dual value
 obeys the weighted bound `‖λ_p‖ ≤ C (log p) p^{-σ₀}`, then the prime-log
 Lambert sample decays like `C p^{-σ₀}` — exponentially small in `log p`. -/
@@ -96,7 +95,7 @@ theorem norm_lambert_primeLog_le_of_graph_annihilation
   exact le_of_mul_le_mul_left hkey hlogpos
 
 /-- **Critical-boundary dual reduction** (`σ₀ = 1`, the `T_1`/`M_0` case of
-the card): the dual bound is exactly `C` times the `T_1` coordinate norm, and
+case): the dual bound is exactly `C` times the `T_1` coordinate norm, and
 the Lambert samples decay like `C/p`. -/
 theorem norm_lambert_primeLog_le_of_graph_annihilation_critical
     (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ)) {p : ℕ} (hp : p.Prime)

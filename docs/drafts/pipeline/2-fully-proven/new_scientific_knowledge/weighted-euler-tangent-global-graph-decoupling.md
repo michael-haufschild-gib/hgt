@@ -578,3 +578,49 @@ in another corona still only records their real part and remains circular.
   decay), hence `Φ ≡ 0` (identity theorem), hence `g|ℝ = 0` (mathlib Fourier inversion), hence
   `g ≡ 0`.  Then 5b(iii): instance `g = F_B·e^{cz}` for strip-carried `B` with ray decay from
   (14) ⇒ `F_B ≡ 0` ⇒ corpus `map_coordinate_pow_eq_zero_of_fourierBorel_zero` finishes (16).
+- **[DONE 2026-07-23] Step 5b(ii-a) — strip Fourier transform analyticity.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerStripFourierAnalytic.lean`
+  (umbrella-registered, `lake build` clean, standard axioms).  For `g` with the two-ray bound
+  of 5b(i): `integrable_exp_neg_mul_abs` and `integrable_abs_mul_exp_neg_mul_abs` (line
+  integrability of `e^{−c|x|}` and `|x|e^{−c|x|}`, missing from mathlib);
+  `integrable_stripFourier_kernel`; `stripFourier g w = ∫ g(x)e^{−iwx}dx`;
+  `hasDerivAt_stripFourier` (differentiation under the integral, dominated-convergence);
+  `analyticOnNhd_stripFourier` on `{|Im w| < ε}`.
+- **NEXT (step 5b(ii-b)):** contour shift: `stripFourier g w = 0` for real `|w| > τ` (rectangle
+  Cauchy + vanishing sides using the two-ray bound), identity theorem on the connected strip
+  (`AnalyticOnNhd.eqOn_zero_of_preconnected_of_frequently_eq_zero`), Fourier inversion
+  (`Continuous.fourierInv_fourier_eq`, note `𝓕 g ξ = stripFourier g (2πξ)`), then `g ≡ 0`,
+  and the carrier-separation instance for `F_B e^{cz}`.
+- **[DONE 2026-07-23] Step 5b(ii-b) — contour shift and high-frequency vanishing.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerStripFourierContourShift.lean`
+  (umbrella-registered, `lake build` clean, `formal_tools.py lint` passes, indexes regenerated,
+  standard axioms).  `stripFourierShifted_eq`: rectangle contour shift with exponentially
+  vanishing sides (mathlib `integral_boundary_rect_eq_zero_of_differentiableOn` + interval-integral
+  limits); `stripFourier_eq_zero_of_abs_gt`: for entire `g` with the two-ray bound,
+  `stripFourier g w = 0` for every real `|w| > τ` (shift the line to `∓∞`).
+- **NEXT (step 5b(ii-c), the Paley–Wiener finale):** identity theorem on the strip
+  (`AnalyticOnNhd.eqOn_zero_of_preconnected_of_frequently_eq_zero`, strip is convex ⇒
+  preconnected, zeros accumulate at `w = τ+1`), `𝓕 g ξ = stripFourier g (2πξ)` ⇒ `𝓕 g ≡ 0` ⇒
+  `g|ℝ = 0` (mathlib `Continuous.fourierInv_fourier_eq`) ⇒ `g ≡ 0` (identity theorem on ℂ).
+  Then the carrier instance for `F_B e^{cz}`.  ALSO: sanitize module docstrings per
+  `formal/CLAUDE.md` (no card references — state the mathematics only) across the six
+  WeightedEuler* modules.
+- **[DONE 2026-07-23] Step 5b(ii-c) — Paley–Wiener finale: the two-ray vanishing theorem.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerPaleyWienerVanishing.lean`
+  (umbrella-registered, `lake build` clean, standard axioms).  Chain complete:
+  `stripFourier_eqOn_zero` (identity theorem on the convex strip, zeros accumulating from the
+  contour-shift vanishing), `eq_zero_on_real_of_strip_bound` (Fourier inversion:
+  `𝓕 g ξ = stripFourier g (2πξ)`), `eq_zero_of_strip_bound`, and the capstone
+  **`eq_zero_of_two_ray_exponential_decay`**: an entire function of exponential type decaying
+  exponentially on both real rays vanishes identically — the vanishing form of `h(0)+h(π) ≥ 0`
+  used by the card's carrier separation (15)–(16).  Also DONE: docstring sanitization pass over
+  all eight WeightedEuler* modules per `formal/CLAUDE.md` (mathematics only, no card references),
+  indexes regenerated.
+- **NEXT (step 5b(iii)):** carrier-separation instance: apply the vanishing theorem to
+  `g(z) = F_B(z)·e^{cz}` where `F_B = compactFourierBorel` of the FE-odd difference functional on
+  a compact carrier in `{Re s < 1}` — growth from `‖L‖`/carrier bounds (corpus
+  `CompactCarrierFourierBorel`), plus-ray decay from the assembled (14), minus-ray growth from
+  the carrier — concluding `F_B ≡ 0`, then the corpus
+  `map_coordinate_pow_eq_zero_of_fourierBorel_zero` gives (16).  Remaining big blocks after
+  that: 4b interpolation stability, 4c short-interval primes, 4d oversampling assembly,
+  5c joint closures (3)/(18)/(19).

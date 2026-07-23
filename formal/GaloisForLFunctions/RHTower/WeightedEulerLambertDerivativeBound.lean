@@ -3,20 +3,19 @@ import GaloisForLFunctions.RHTower.CompactCarrierLambert
 /-!
 # Derivative bounds for the compact-carrier Lambert transform
 
-Card `weighted-euler-tangent-global-graph-decoupling`, oversampling lemma,
-displays (8)–(10): the Lambert transform `H` of a functional carried by a
+The Lambert transform `H` of a functional carried by a
 compact set with real part `≥ δ > 0` and norm `≤ M` satisfies, at every point
 `x` of the positive ray and every derivative order `N ≤ δx/(4M)`,
 
 `‖H^{(N)}(x)‖ ≤ 4 ‖L‖ e^{-δx/2}`.
 
-The proof replaces the card's term-by-term differentiation and `M^N`
-absorption (8)–(9) by a Cauchy estimate on the disc `|z - x| ≤ δx/(2M)`: on
+The proof replaces term-by-term differentiation and `M^N`
+absorption by a Cauchy estimate on the disc `|z - x| ≤ δx/(2M)`: on
 that disc `Re(z·s) ≥ δx/2`, so the exponential test contracts at rate
 `e^{-δx/2}`, the kernel majorant is geometric, and Cauchy's inequality
 converts the sup bound into all scale-linear derivative bounds at once — the
-factorial is absorbed by `N! ≤ N^N ≤ (r/2)^N`.  This is display (10) with
-`δ₁ = δ/2`, the analytic input to the prime-log oversampling lemma.
+factorial is absorbed by `N! ≤ N^N ≤ (r/2)^N`.  This is the derivative bound with `δ₁ = δ/2`, the analytic input to the
+prime-log oversampling lemma.
 
 Everything is unconditional.
 -/
@@ -99,7 +98,7 @@ theorem norm_compactCarrierLambertTransform_le_on_closedBall
         exact le_trans hker (le_of_eq hgeom |>.trans hmajor)
     _ = 4 * ‖L‖ * ρ := by ring
 
-/-- **Cauchy derivative bound** (card display (10)): every derivative of the
+/-- **Cauchy derivative bound**: every derivative of the
 compact-carrier Lambert transform up to the scale-linear order `δx/(4M)`
 decays at the fixed exponential rate `δ/2` along the positive ray. -/
 theorem norm_iteratedDeriv_compactCarrierLambertTransform_le
