@@ -1942,3 +1942,4 @@ import GaloisForLFunctions.HTGeometry.GraphCoboundaryRank
 import GaloisForLFunctions.HTGeometry.ReducedH1FirstBetti
 import GaloisForLFunctions.HTGeometry.ReducedEulerCharacteristic
 import GaloisForLFunctions.HTGeometry.IsolatedKoszulCocycle
+import GaloisForLFunctions.HTGeometry.IsolatedKoszulCoeffOne

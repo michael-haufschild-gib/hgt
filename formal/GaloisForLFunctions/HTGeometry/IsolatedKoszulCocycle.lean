@@ -42,6 +42,24 @@ theorem isolatedKoszulRelation_eq_zero_iff (a : Fin (n + 2) → isolatedBoundary
   rw [Pi.zero_apply, isolatedKoszulRelation_val_apply, mul_eq_zero,
     or_iff_left Polynomial.X_ne_zero]
 
+/-- The Koszul boundary reads off on axis `k` at position `i` as an oriented `(c ??)ₖ · X`. -/
+theorem isolatedKoszulBoundary_val_apply
+    (c : Fin (n + 2) → Fin (n + 2) → isolatedBoundarySubring F n) (i k : Fin (n + 2)) :
+    (isolatedKoszulBoundary c i : Fin (n + 2) → Polynomial F) k
+      = if i < k then -((c i k : Fin (n + 2) → Polynomial F) k) * Polynomial.X
+        else if k < i then ((c k i : Fin (n + 2) → Polynomial F) k) * Polynomial.X else 0 := by
+  simp only [isolatedKoszulBoundary, AddSubmonoidClass.coe_finsetSum, Finset.sum_apply]
+  rw [Finset.sum_eq_single k]
+  · by_cases h1 : i < k
+    · simp [h1, isolatedBoundaryX_apply, MulMemClass.coe_mul, Pi.mul_apply]
+    · by_cases h2 : k < i
+      · simp [h1, h2, isolatedBoundaryX_apply, MulMemClass.coe_mul, Pi.mul_apply]
+      · simp [h1, h2]
+  · intro j _ hjk
+    simp [isolatedBoundaryX_apply, MulMemClass.coe_mul, Pi.mul_apply, Ne.symm hjk,
+      apply_ite (fun x : isolatedBoundarySubring F n => (x : Fin (n + 2) → Polynomial F) k)]
+  · intro h; exact absurd (Finset.mem_univ k) h
+
 end
 
 end GaloisForLFunctions
