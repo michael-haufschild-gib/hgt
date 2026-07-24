@@ -7,7 +7,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 32299 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 32302 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
 | `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 21286 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
@@ -3890,6 +3890,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `stirling_le_sum_log` | `GaloisForLFunctions.RHTower.ChebyshevPsiLogSummatory` | `formal/GaloisForLFunctions/RHTower/ChebyshevPsiLogSummatory.lean:65` | Stirling lower bound**: `k·log k − k + 1 ≤ ∑_{m ≤ k} log m`. |
 | theorem | `floorSummatory_chebyshevPsi` | `GaloisForLFunctions.RHTower.ChebyshevPsiLogSummatory` | `formal/GaloisForLFunctions/RHTower/ChebyshevPsiLogSummatory.lean:105` | The `ψ` floor summatory**: `∑_{d ≤ N} ψ(⌊N/d⌋) = ∑_{m ≤ N} log m`. |
 | theorem | `exists_chebyshevPsi_power_log` | `GaloisForLFunctions.RHTower.ChebyshevPsiPowerLogPNT` | `formal/GaloisForLFunctions/RHTower/ChebyshevPsiPowerLogPNT.lean:23` | The power-log PNT for Chebyshev's `ψ`.** |
+| theorem | `psi_eq_chebyshevPsi_floor` | `GaloisForLFunctions.RHTower.ChebyshevThetaPowerLog` | `formal/GaloisForLFunctions/RHTower/ChebyshevThetaPowerLog.lean:23` | Mathlib's `ψ` at a real point is the project `ψ` at its floor. |
+| theorem | `sqrt_log_le_power_log_decay` | `GaloisForLFunctions.RHTower.ChebyshevThetaPowerLog` | `formal/GaloisForLFunctions/RHTower/ChebyshevThetaPowerLog.lean:31` | The prime-power defect is beaten by the power-log decay: `2√x·log x ≤ x·e^{-c(log x)^{1/10}}` for large `x`. |
+| theorem | `exists_chebyshev_theta_power_log` | `GaloisForLFunctions.RHTower.ChebyshevThetaPowerLog` | `formal/GaloisForLFunctions/RHTower/ChebyshevThetaPowerLog.lean:109` | The power-log PNT for `θ`**: `|θ(x) − x| ≤ C·x·e^{-c(log x)^{1/10}}` for all large `x`. |
 | theorem | `pow_dvd_finrank_of_anticomm` | `GaloisForLFunctions.RHTower.CliffordMultiplicity` | `formal/GaloisForLFunctions/RHTower/CliffordMultiplicity.lean:175` | Clifford dimension divisibility**, packaged: `2k` anticommuting complex structures force `2^k ∣ dim`. |
 | theorem | `pow_dvd_finrank_maxGenEigenspace_of_anticomm` | `GaloisForLFunctions.RHTower.CliffordMultiplicity` | `formal/GaloisForLFunctions/RHTower/CliffordMultiplicity.lean:183` | The Clifford multiplicity mechanism.** If `2k` anticommuting complex structures commute with `K`, they preserve every generalized eigenspace of `K`, so every algebraic multiplicity |
 | structure | `CliffordModel` | `GaloisForLFunctions.RHTower.CliffordMultiplicity` | `formal/GaloisForLFunctions/RHTower/CliffordMultiplicity.lean:217` | A Clifford window model at level `k` and point `ρ`: an endomorphism of a finite-dimensional space, commuting with `2k` anticommuting complex structures, whose algebraic multiplicit |

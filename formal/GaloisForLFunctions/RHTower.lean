@@ -2543,3 +2543,4 @@ import GaloisForLFunctions.RHTower.PerronPolyExpAbsorb
 import GaloisForLFunctions.RHTower.PerronPowerLogPNT
 import GaloisForLFunctions.RHTower.PerronUnsmoothingStep
 import GaloisForLFunctions.RHTower.ChebyshevPsiPowerLogPNT
+import GaloisForLFunctions.RHTower.ChebyshevThetaPowerLog
