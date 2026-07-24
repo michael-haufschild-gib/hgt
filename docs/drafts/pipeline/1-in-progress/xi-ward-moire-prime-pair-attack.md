@@ -2356,3 +2356,25 @@ prime-domination problem.
 a growth bound on `Im logDeriv XiC` as `Re z → ±∞` inside the strip; the corpus already carries
 Borel–Carathéodory machinery (`ArgumentVariation.borel_caratheodory`) and the certified `Λ₀` strip
 bounds of 9bd, which are exactly the ingredients such an argument consumes.
+
+### 9bl addendum — from a sign to a BOUND
+
+`exists_im_logDeriv_gt_of_rightHalf_zero`: an off-critical zero yields, for EVERY level `C`, a point
+inside the open upper half strip with `Im logDeriv XiC > C` (the ray below the conjugate copy, with
+the pole term `m/t` unbounded and the analytic remainder continuous). Two criteria drop out:
+
+**[THEOREM] `riemannHypothesis_of_im_logDeriv_bddAbove`** — if `Im logDeriv XiC ≤ C` on the open
+half strip `{0 < Im z < ½}` for ANY constant `C`, then RH.
+
+So RH is now equivalent to a ONE-SIDED BOUND, not a sign: **`Im logDeriv Ξ` bounded above on the
+open half strip**. Nothing but a pole can break it, and a pole is an off-critical zero. Combined
+with 9bl's two certified boundary facts (`≤ 0` on `Im z = ½`, `= 0` on `ℝ` by Schwarz reality) and
+harmonicity in between, this is the exact hypothesis a Phragmén–Lindelöf argument consumes: on a
+strip, a harmonic function bounded above with boundary values `≤ 0` and subexponential growth in
+`|Re z|` is `≤ 0` throughout. The only missing input is that growth control.
+
+**Novelty gate.** The Herglotz/Nevanlinna reformulation of RH is classical in spirit (`ξ′/ξ` maps the
+upper half plane to the lower iff all zeros are real is the standard Hermite–Biehler picture, and de
+Branges' programme lives here). Corpus-new: the exact reflection-paired trace identity that removes
+the genus-one term, the machine-checked equivalence in both directions, and the reduction from a
+sign to a one-sided bound with certified boundary data on both edges of the half strip.

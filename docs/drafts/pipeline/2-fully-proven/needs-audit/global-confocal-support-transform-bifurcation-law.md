@@ -460,3 +460,15 @@ formal verification.
   `q.2 ≤ G_S(R)`.  **Remaining for (13):** the reverse inclusion `K_G(S) ⊆ K_h(S)` (needs the
   projective surjectivity of `ρ_S` onto the radius half-line, with the `h_S(0)=0` radical case), and
   the reverse of the faithfulness (12).
+- 2026-07-24 — **Reverse hull inclusion `K_G(S) ⊆ K_h(S)`, core recovery formalized** in
+  `HTGeometry/ConfocalGlobalSupportFaithfulness.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`): `confocalNullFunctional_le_nullSupport_of_mem_hull` — for every strictly-interior
+  projective direction `λ ∈ (0,1)` with `h_S(λ) > 0`, a point `q` of the all-radius confocal hull has
+  `nullFunc q λ ≤ h_S(λ)`.  Proof: at `R = ρ_S(λ)` the realized defect equals `h_S(λ)` (projective
+  graph inversion via `confocalPositiveFixedPoint_eq_envelopeDefect_global` +
+  `confocalProjectiveParameter_radiusFromProjective`), so the interior sublevel form transports the
+  branch bound `b_q(R) ≤ G_S(R)` to the null constraint.  This is the mathematical core of the reverse
+  inclusion.  **Remaining for `K_G ⊆ K_h` (hence `K_G = K_h`, (13)):** extend to the boundary
+  directions `λ ∈ {0,1}` by continuity of `h_S` (`confocalNullSupport_lipschitz`) and the affine null
+  functional, plus the degenerate `h_S(1) = 0 ⇒ S ⊆ {0}` case.  With `K_G = K_h` the reverse
+  faithfulness (12) follows (`h_S` is the null support function of `K_h(S)`).

@@ -218,15 +218,14 @@ theorem im_logDeriv_XiC_nonpos_of_rh (hRH : RiemannHypothesis) {z : ℂ}
     linarith
   nlinarith [htsum]
 
-/-- **The Herglotz criterion.**  If the imaginary part of `logDeriv XiC` is
-nonpositive throughout the upper half plane, then the Riemann Hypothesis holds:
-a zero off the real axis would create a simple pole whose residue drives the
-imaginary part to `+∞` immediately below it. -/
-theorem riemannHypothesis_of_im_logDeriv_nonpos
-    (hsign : ∀ z : ℂ, 0 < z.im → XiC z ≠ 0 → (logDeriv XiC z).im ≤ 0) :
-    RiemannHypothesis := by
-  rw [rh_iff_xi_ne_zero_right]
-  intro s hs hzero
+/-- **The pole drives the imaginary part above any level.**  An off-critical
+zero of `ξ` produces points arbitrarily close below its conjugate copy at which
+`Im (logDeriv XiC)` exceeds any prescribed bound, while staying inside the open
+upper half strip. -/
+theorem exists_im_logDeriv_gt_of_rightHalf_zero {s : ℂ} (hs : s ∈ rightHalf)
+    (hzero : xi s = 0) (C : ℝ) :
+    ∃ z : ℂ, 0 < z.im ∧ z.im < 1 / 2 ∧ XiC z ≠ 0 ∧
+      C < (logDeriv XiC z).im := by
   -- the centred coordinate of the off-critical zero
   set pt₁ : ℂ := -Complex.I * (s - 1 / 2) with hpt
   have hre : 1 / 2 < s.re := hs
@@ -331,12 +330,46 @@ theorem riemannHypothesis_of_im_logDeriv_nonpos
         (𝓝 (logDeriv g pt₀).im) :=
       (Complex.continuous_im.tendsto _).comp (hlogg.tendsto.comp hrayt)
     exact h1.atTop_add h2
-  obtain ⟨t, hft, hbt, hXt, hut⟩ :=
-    (hform.and ((hlim.eventually (eventually_gt_atTop 0)).and
-      (hXne.and hupper))).exists
-  have hcontra := hsign (ray t) hut hXt
-  rw [hft] at hcontra
-  linarith [hcontra, hbt]
+  have hb : pt₀.im < 1 / 2 := by
+    obtain ⟨q, hq⟩ := (XiC_eq_zero_iff_exists_xiZeroCopy pt₀).mp hX0
+    have hv := abs_lt.mp (abs_im_xiSpectralPoint_lt_half q)
+    rw [hq] at hv
+    exact hv.2
+  have hlow : ∀ᶠ t : ℝ in 𝓝[>] 0, (ray t).im < 1 / 2 := by
+    have hc : Tendsto (fun t : ℝ => (ray t).im) (𝓝[>] 0) (𝓝 pt₀.im) :=
+      (Complex.continuous_im.tendsto pt₀).comp hrayt
+    exact hc.eventually (eventually_lt_nhds hb)
+  obtain ⟨t, hft, hbt, hXt, hut, hlt⟩ :=
+    (hform.and ((hlim.eventually (eventually_gt_atTop C)).and
+      (hXne.and (hupper.and hlow)))).exists
+  exact ⟨ray t, hut, hlt, hXt, by rw [hft]; exact hbt⟩
+
+
+/-- **The Herglotz criterion.**  If `Im (logDeriv XiC)` is nonpositive on the
+upper half plane, the Riemann Hypothesis holds. -/
+theorem riemannHypothesis_of_im_logDeriv_nonpos
+    (hsign : ∀ z : ℂ, 0 < z.im → XiC z ≠ 0 → (logDeriv XiC z).im ≤ 0) :
+    RiemannHypothesis := by
+  rw [rh_iff_xi_ne_zero_right]
+  intro s hs hzero
+  obtain ⟨z, hzim, -, hXz, hgt⟩ :=
+    exists_im_logDeriv_gt_of_rightHalf_zero hs hzero 0
+  linarith [hsign z hzim hXz]
+
+/-- **The boundedness criterion.**  If `Im (logDeriv XiC)` is bounded above by
+any constant on the open upper half strip, then the Riemann Hypothesis holds.
+Only a pole — an off-critical zero — can violate a one-sided bound there, so RH
+is equivalent to local boundedness above of a single harmonic function on a
+strip whose two boundary behaviours are already certified. -/
+theorem riemannHypothesis_of_im_logDeriv_bddAbove {C : ℝ}
+    (hbd : ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 → XiC z ≠ 0 →
+      (logDeriv XiC z).im ≤ C) :
+    RiemannHypothesis := by
+  rw [rh_iff_xi_ne_zero_right]
+  intro s hs hzero
+  obtain ⟨z, hzim, hzhalf, hXz, hgt⟩ :=
+    exists_im_logDeriv_gt_of_rightHalf_zero hs hzero C
+  linarith [hbd z hzim hzhalf hXz]
 
 end
 

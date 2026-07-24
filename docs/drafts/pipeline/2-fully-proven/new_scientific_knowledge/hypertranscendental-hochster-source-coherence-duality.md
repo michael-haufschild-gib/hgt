@@ -433,3 +433,16 @@ Now BOTH axis-component computations of the isolated Koszul complex are formaliz
 the coherent algebraic foundation for the exact first-Koszul-cohomology structure (the `X`-linear/coeff-1
 graded piece where the `n+1` Hochster classes live), toward the degree-0 Hochster identity matching the
 combinatorial reduced `H̃⁰`. REMAINING: assemble these into the exact rank via the coeff-1 graded exactness.
+
+### Lean progress 10 — ALGEBRAIC side: linear part of the Koszul boundary is antisymmetric
+`HTGeometry/IsolatedKoszulCoeffOne.lean` [PROVED HERE], standard axioms, builds clean, my-cone lint clean.
+- `isolatedKoszulBoundary_coeff_one` : `((isolatedKoszulBoundary c i)ₖ).coeff 1 = if i<k then
+  -(c i k)ₖ.coeff 0 else if k<i then (c k i)ₖ.coeff 0 else 0` — the `X`-linear part of a Koszul boundary
+  is an ANTISYMMETRIC matrix in the position/axis indices `(i,k)`.
+
+Algebraic foundations now assembled: cocycles = diagonal-free (progress 8), boundary axis-components
+(progress 9), boundary linear part antisymmetric (progress 10). NOTE (multigraded insight): the exact
+first-Koszul-cohomology rank is MULTIGRADED — the `n+1` Hochster classes live at a specific multidegree
+(the reduced `H̃⁰` of the full complex), not the whole `coeff 1` piece (whose naive dimension is
+`(n+2)(n+1)/2`, a lower-bound-only count). Completing the degree-0 Hochster identity therefore needs the
+multigraded (per-vertex-subset) restriction, which is the deep remaining algebraic work.
