@@ -473,3 +473,36 @@ ancestry is audited.
   **Remaining for gate `formalize the Hilbert--Lorentz master theorem`:** the all-directions causal
   support function and normalized-direction coverage, and the field/support/hull equivalence in `E`
   (each a further transfer of the scalar faithfulness + hull results through the axial lift).
+- 2026-07-24 — **Master theorem part A (global causal-contact selection) formalized for general
+  Lorentz sources** in `HTGeometry/HilbertLorentzConfocalReconstruction.lean` (axioms `[propext,
+  Classical.choice, Quot.sound]`).  The card's actual setup — a bounded source `S ⊆ L(V) = {(y,a) :
+  ‖y‖ ≤ a}` with branch `b_q(e,R) = a + sqrt(R² - 2R⟪e,y⟫ + a²)` — is handled by the scalar axial
+  projection `(y,a) ↦ (⟪e,y⟫, a)`:
+  * `lorentzAxialProjection`, `lorentzAxialProjection_mem_confocalLorentzCone` (`‖e‖=1, ‖y‖≤a ⇒`
+    projection lands in the scalar cone), `liftedConfocalBranch_lorentzAxialProjection` (the branch
+    `b_q(e,R)` is exactly the scalar lifted branch of the projection).
+  * `lorentzAxialEnvelope` / `lorentzAxialDefect` — the all-radius confocal envelope/defect along a
+    unit direction.
+  * `lorentzAxialDefect_eq_nullSupport_fixedPoint` — the **causal-contact master equation (8)/(9)**:
+    the realized defect is a nonnegative fixed point of the one-dimensional null-support operator, at
+    every positive radius, in any dimension.
+  * `lorentzAxialDefect_isGreatest_fixedPoint` — the greatest-root selection, dimension-free.
+  (The earlier `axialGlobal*` theorems are the `a = ‖z‖` null-boundary specialization for sources
+  lifted from `E`.)  **Remaining for the master theorem:** the causal support function `H_S` and the
+  `h_{S,e}` identity (4), normalized-direction coverage, projective graph (10) per direction, and the
+  field/support/hull equivalence (0) with `K_H(S) = K_G(S)` in `L(V)` — each a further transfer of the
+  scalar faithfulness/hull results through the axial projection.
+- 2026-07-24 — **Master theorem representation (0) formalized per direction** in
+  `HTGeometry/HilbertLorentzConfocalReconstruction.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`):
+  * `lorentzAxialSupport` — the causal support function `h_{S,e}(λ)` as the scalar null support of the
+    axial projection, with `confocalNullFunctional_lorentzAxialProjection` giving its explicit causal
+    linear form `(a − ⟪e,y⟫) + λ(a + ⟪e,y⟫)` (equation (4)).
+  * `lorentzAxialDefect_eqOn_iff_axialSupport_eqOn` — **field ↔ causal support** along a unit
+    direction: equal all-radius defect fields iff equal `h_{·,e}` on `[0,1]`.
+  * `lorentzAxial_confocalHull_eq_nullSupportHull` — **field ↔ maximal hull** along a unit direction:
+    the all-radius confocal hull of the axial projection equals its causal null-support hull.
+  These are the three representations (0) fixed one axis at a time.  **Remaining:** the all-directions
+  integration — normalized-direction coverage of the full causal cone and the global
+  `K_H(S) = K_G(S)` over all `(z,t) ∈ L(V)` (assembling the per-direction equivalences across the unit
+  sphere of `V`).

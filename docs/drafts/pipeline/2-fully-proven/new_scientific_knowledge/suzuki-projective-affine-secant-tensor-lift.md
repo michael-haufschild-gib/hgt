@@ -257,3 +257,17 @@ full finite spectral sum remain paper/source-level, so card remains Stage 2.
   rank-one physical check proved.  Plücker-only producer retired; tensor survivor promoted.
 - 2026-07-22 — Core algebra, gauge no-go, two-mode split, and rank-one check formalized in Lean;
   SOTA targeted build and axiom audit pass.
+
+### Lean progress — finite spectral sum FORMALIZED
+`RHTower/SuzukiAffineSecantSpectralSum.lean` [PROVED HERE], standard axioms [propext, Classical.choice,
+Quot.sound], builds clean, formal lint passed. Registered in the RHTower umbrella.
+- `suzukiProjectiveAffineSecant_finite_spectral_sum` : with resolvent coordinates given by finite spectral
+  sums `x=Σbᵢvᵢ, X=Σtᵢbᵢvᵢ, y=Σdᵢvᵢ, Y=Σtᵢdᵢvᵢ`, the marked affine-secant tensor equals
+  `Σᵢ Σⱼ vᵢvⱼbᵢdⱼ(tᵢtⱼ−(α+β)tⱼ+αβ) + c·Σⱼtⱼdⱼvⱼ` — the double sum of per-mode-pair two-mode kernels plus
+  the homogeneous c-channel. Generalizes the single-pair split `..._twoMode_pair_decomposition` to the
+  whole finite spectrum (proof: `sum_mul_sum` bilinear expansion + per-term `ring`).
+
+This discharges the "full finite spectral sum remain paper/source-level" item (card §Lean status): the
+marked tensor's boundary-source reconstruction over the finite eigenmode decomposition is now formalized.
+(Remaining out-of-scope items: the Volterra boundary factorization is analytic, and the ultimate RH
+positivity goal is open.)

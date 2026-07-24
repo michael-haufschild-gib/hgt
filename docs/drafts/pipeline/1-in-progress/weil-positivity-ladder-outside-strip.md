@@ -163,3 +163,23 @@ off the divisor (locally uniform convergence via Cauchy–Schwarz against the `O
 (c) the identity-theorem step (mathlib
 `AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero`, already used elsewhere in the
 corpus); (d) `Sᗮᗮ = S` to conclude membership in the closed span. No new mathematics in any of them.
+
+### Gate 5 progress — step (a) continuity LANDED
+
+**`xiWeilL2Form_sub_norm_le`**: `‖Q a − Q b‖ ≤ ‖a−b‖·‖a‖ + ‖b‖·‖a−b‖` on `XiDivisorL2`.
+Ingredients, all now certified: the reindexing isometry `xiLineConjVec` along the divisor's
+conjugation involution (`xiLineConjVec_norm` — a bijection preserves the `lp` norm, via
+`lp.norm_eq_tsum_rpow` and `Equiv.tsum_eq`), Hölder on `ℓ²` (`tsum_norm_mul_le`, from mathlib's
+`lp.tsum_mul_le_mul_norm` at the conjugate pair `(2,2)`), and the pointwise split
+`a·conj(a∘σ) − b·conj(b∘σ) = (a−b)·conj(a∘σ) + b·conj((a−b)∘σ)`.
+
+This is the transport mechanism of the rung-0 proof: a value of the Weil form at ONE test function
+now provably controls its value at any test function approximating it in `ℓ²(divisor)`. With
+`xiWeilL2Form_kernelVec` (the form on a kernel vector IS the Weil polarization), the rank-one
+detection theorem 9bh is now a statement about a vector of `XiDivisorL2` that transports.
+
+**Remaining for rung 0's Gate 5:** (b) analyticity of `φ(z) = Σ_q conj(a_q)·K z (pt_q)` off the
+divisor — locally uniform convergence by Cauchy–Schwarz against the `O(1/‖pt‖²)` bound, the same
+two ingredients already certified here; (c) the identity theorem (mathlib, already used in the
+corpus); (d) `Sᗮᗮ = S`. Then rung 0 is `[LEAN-PROVED]` and the criterion is stated on convergent
+prime data.

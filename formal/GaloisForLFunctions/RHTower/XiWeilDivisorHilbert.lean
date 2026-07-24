@@ -122,6 +122,109 @@ theorem xiWeilL2Form_kernelVec {z : ℂ} (hz : XiC z ≠ 0) :
   rw [xiKernelVec_apply, xiKernelVec_apply, xiWeilSharp,
     xiSpectralPoint_lineConj]
 
+/-! ## §3 Continuity of the form -/
+
+/-- Reindexing an `ℓ²` sequence along the conjugation involution of the
+divisor. -/
+def xiLineConjVec (a : XiDivisorL2) : XiDivisorL2 :=
+  ⟨fun q => a (xiZeroCopyLineConjEquiv q),
+    (memℓp_gen_iff (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal)).mpr
+      (summable_sq_lineConj a)⟩
+
+@[simp] theorem xiLineConjVec_apply (a : XiDivisorL2) (q : XiZeroCopy) :
+    xiLineConjVec a q = a (xiZeroCopyLineConjEquiv q) := rfl
+
+/-- Reindexing is an isometry: the divisor conjugation is a bijection. -/
+theorem xiLineConjVec_norm (a : XiDivisorL2) : ‖xiLineConjVec a‖ = ‖a‖ := by
+  rw [lp.norm_eq_tsum_rpow (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal),
+    lp.norm_eq_tsum_rpow (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal)]
+  congr 1
+  exact xiZeroCopyLineConjEquiv.tsum_eq
+    (fun q => ‖a q‖ ^ (2 : ENNReal).toReal)
+
+theorem xiLineConjVec_sub (a b : XiDivisorL2) :
+    xiLineConjVec (a - b) = xiLineConjVec a - xiLineConjVec b := by
+  ext q
+  show (a - b) (xiZeroCopyLineConjEquiv q) =
+    (xiLineConjVec a - xiLineConjVec b) q
+  rw [lp.coeFn_sub, lp.coeFn_sub]
+  rfl
+
+/-- Hölder on the divisor Hilbert space. -/
+theorem tsum_norm_mul_le (a b : XiDivisorL2) :
+    ∑' q : XiZeroCopy, ‖a q‖ * ‖b q‖ ≤ ‖a‖ * ‖b‖ :=
+  (lp.tsum_mul_le_mul_norm
+    (by simpa using Real.HolderConjugate.two_two) a b).2
+
+theorem summable_norm_mul (a b : XiDivisorL2) :
+    Summable (fun q : XiZeroCopy => ‖a q‖ * ‖b q‖) :=
+  (lp.tsum_mul_le_mul_norm
+    (by simpa using Real.HolderConjugate.two_two) a b).1
+
+/-- **The Weil form is Lipschitz on bounded sets.**  This is what transports a
+value of the form from one test function to any test function approximating it
+in the divisor Hilbert space. -/
+theorem xiWeilL2Form_sub_norm_le (a b : XiDivisorL2) :
+    ‖xiWeilL2Form a - xiWeilL2Form b‖ ≤ ‖a - b‖ * ‖a‖ + ‖b‖ * ‖a - b‖ := by
+  have hsa := summable_weilL2Summand a
+  have hsb := summable_weilL2Summand b
+  have hg : Summable (fun q : XiZeroCopy =>
+      (a q - b q) * (starRingEnd ℂ) (a (xiZeroCopyLineConjEquiv q)) +
+        b q * (starRingEnd ℂ)
+          (a (xiZeroCopyLineConjEquiv q) - b (xiZeroCopyLineConjEquiv q))) := by
+    apply (hsa.sub hsb).congr
+    intro q
+    rw [map_sub]
+    ring
+  have hsplit : xiWeilL2Form a - xiWeilL2Form b =
+      ∑' q : XiZeroCopy,
+        ((a q - b q) * (starRingEnd ℂ) (a (xiZeroCopyLineConjEquiv q)) +
+          b q * (starRingEnd ℂ)
+            (a (xiZeroCopyLineConjEquiv q) -
+              b (xiZeroCopyLineConjEquiv q))) := by
+    rw [xiWeilL2Form, xiWeilL2Form, ← hsa.tsum_sub hsb]
+    refine tsum_congr fun q => ?_
+    rw [map_sub]
+    ring
+  have hmaj : Summable (fun q : XiZeroCopy =>
+      ‖(a - b) q‖ * ‖xiLineConjVec a q‖ +
+        ‖b q‖ * ‖(xiLineConjVec a - xiLineConjVec b) q‖) :=
+    (summable_norm_mul (a - b) (xiLineConjVec a)).add
+      (summable_norm_mul b (xiLineConjVec a - xiLineConjVec b))
+  have hpoint : ∀ q : XiZeroCopy,
+      ‖(a q - b q) * (starRingEnd ℂ) (a (xiZeroCopyLineConjEquiv q)) +
+        b q * (starRingEnd ℂ)
+          (a (xiZeroCopyLineConjEquiv q) -
+            b (xiZeroCopyLineConjEquiv q))‖ ≤
+      ‖(a - b) q‖ * ‖xiLineConjVec a q‖ +
+        ‖b q‖ * ‖(xiLineConjVec a - xiLineConjVec b) q‖ := by
+    intro q
+    refine le_trans (norm_add_le _ _) ?_
+    rw [norm_mul, norm_mul, RCLike.norm_conj, RCLike.norm_conj]
+    have h1 : ‖a q - b q‖ = ‖(a - b) q‖ := by
+      rw [lp.coeFn_sub]
+      rfl
+    have h2 : ‖a (xiZeroCopyLineConjEquiv q)‖ = ‖xiLineConjVec a q‖ := rfl
+    have h3 : ‖a (xiZeroCopyLineConjEquiv q) -
+        b (xiZeroCopyLineConjEquiv q)‖ =
+        ‖(xiLineConjVec a - xiLineConjVec b) q‖ := by
+      rw [lp.coeFn_sub]
+      rfl
+    rw [h1, h2, h3]
+  rw [hsplit]
+  refine le_trans (norm_tsum_le_tsum_norm (summable_norm_iff.mpr hg)) ?_
+  refine le_trans
+    (Summable.tsum_mono (summable_norm_iff.mpr hg) hmaj hpoint) ?_
+  rw [Summable.tsum_add (summable_norm_mul (a - b) (xiLineConjVec a))
+    (summable_norm_mul b (xiLineConjVec a - xiLineConjVec b))]
+  have hb1 := tsum_norm_mul_le (a - b) (xiLineConjVec a)
+  have hb2 := tsum_norm_mul_le b (xiLineConjVec a - xiLineConjVec b)
+  rw [xiLineConjVec_norm] at hb1
+  have hnorm : ‖xiLineConjVec a - xiLineConjVec b‖ = ‖a - b‖ := by
+    rw [← xiLineConjVec_sub, xiLineConjVec_norm]
+  rw [hnorm] at hb2
+  linarith
+
 end
 
 end RHTower
