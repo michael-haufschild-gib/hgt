@@ -2311,3 +2311,48 @@ quantitative form to prove: for an `n`-point family based at `z₀` off the stri
 difference annihilates the on-line contributions to order `h^n` while the off-line block retains a
 term of order `v²`; choosing `h` and `n` with `h^n ≪ v²` produces the negative eigenvalue. That is
 the next brick, and it is a concrete estimate rather than a new idea.
+
+## Step 9bl — the Herglotz criterion: RH as the sign of ONE harmonic function [PROVED]
+
+User steer: reason, don't estimate. Acting on it produced a criterion far simpler than the Weil form.
+
+**[PROVED HERE] The paired trace formula** (`logDeriv_XiC_eq_half_tsum_pair`). Reindexing the
+relative resolvent trace along the functional-equation reflection and averaging cancels the
+genus-one centring term EXACTLY:
+  `logDeriv XiC z = ½ · Σ'_q ((z − pt_q)⁻¹ + (z + pt_q)⁻¹)`.
+No estimate anywhere — the cancellation is an identity, from `xiSpectralPoint_reflect` plus
+`Equiv.tsum_eq`. This is what the corpus's per-term sign lemma could not do (it needed
+`pt.im ≥ 0`, covering only half the copies, precisely because the `pt⁻¹` term has no sign).
+
+**[THEOREM] `im_logDeriv_XiC_nonpos_of_half_lt_im`** — unconditionally, `Im logDeriv XiC ≤ 0` on
+`{Im z > ½}`. Each paired summand has `Im = −(Im z − v)/‖·‖² − (Im z + v)/‖·‖² < 0` since
+`|v| < ½ < Im z`: the strip confinement of the divisor IS the statement that `−logDeriv XiC` is a
+**Herglotz function** above the strip.
+
+**[THEOREM] `im_logDeriv_XiC_nonpos_of_rh`** — under RH the same sign holds on the whole upper half
+plane (all `pt` real ⟹ both paired terms have `Im = −Im z/‖·‖² < 0`).
+
+**[THEOREM] `riemannHypothesis_of_im_logDeriv_nonpos`** — the converse: if
+`Im (logDeriv XiC z) ≤ 0` for every `z` in the upper half plane off the divisor, then RH.
+A zero off the real axis (pass to its conjugate copy so `Im pt₀ > 0`) is a simple pole of positive
+integer residue `m`; approaching along `z = pt₀ − it` gives `Im logDeriv XiC = m/t + O(1) → +∞`.
+
+**So: RH ⟺ `Im logDeriv XiC ≤ 0` on the upper half plane.** The quadratic Weil form is replaced by
+the sign of ONE harmonic function. Three structural facts now hold simultaneously, all certified:
+1. `Im logDeriv XiC ≤ 0` on `{Im z > ½}` (above);
+2. `Im logDeriv XiC = 0` on the real axis away from poles (Schwarz reality, `logDeriv_XiC_conj`);
+3. `Im logDeriv XiC` is HARMONIC on the open half strip `{0 < Im z < ½}` minus the poles.
+
+**Why this is the strongest position yet.** The residual region is the open half strip, and on it
+the object is harmonic with known boundary signs on BOTH edges (≤ 0 on top, = 0 on the bottom). The
+maximum principle applies verbatim — the ONLY obstruction to concluding `Im ≤ 0` inside, hence RH,
+is the possible presence of poles inside the half strip, and a pole is exactly an off-critical zero.
+So RH is now equivalent to: **`Im logDeriv XiC` is bounded above on the open half strip** (a pole
+forces `+∞`, and nothing else can). That is a one-sided local boundedness statement about a harmonic
+function with controlled boundary data — a Phragmén–Lindelöf-shaped problem rather than a
+prime-domination problem.
+
+**Next:** attack the half strip by harmonic-measure/Phragmén–Lindelöf reasoning. The needed input is
+a growth bound on `Im logDeriv XiC` as `Re z → ±∞` inside the strip; the corpus already carries
+Borel–Carathéodory machinery (`ArgumentVariation.borel_caratheodory`) and the certified `Λ₀` strip
+bounds of 9bd, which are exactly the ingredients such an argument consumes.

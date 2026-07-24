@@ -449,3 +449,14 @@ formal verification.
   inverting the projective graph, with the `h_S(0)=0` radical case) and the all-radius maximal-hull
   identity (13) `K_G(S) = K_h(S)` (removing the exterior `R > M` restriction present in the
   corpus's `mem_confocalHullOfField_add_defect_iff_nullFunctional_le`).
+- 2026-07-24 — **Maximal-hull identity (13), forward inclusion `K_h(S) ⊆ K_G(S)` formalized** in
+  `HTGeometry/ConfocalGlobalSupportFaithfulness.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`): `confocalNullSupportHull` (def of `K_h(S)`) and
+  `confocalNullSupportHull_subset_confocalHullOfField` — a point whose null functionals are dominated
+  by the source support field on `[0,1]` lies in the all-radius confocal hull.  The proof uses the
+  **interior** sublevel form (`liftedConfocalBranch_le_add_iff_nullFunctional_le_of_snd_le_add`, valid
+  without any exterior `R > M` restriction) at the actual defect together with the fixed-point identity
+  `D_S(R) = h_S(λ_R(D_S(R)))`; the `λ = 1` support constraint supplies the height bound
+  `q.2 ≤ G_S(R)`.  **Remaining for (13):** the reverse inclusion `K_G(S) ⊆ K_h(S)` (needs the
+  projective surjectivity of `ρ_S` onto the radius half-line, with the `h_S(0)=0` radical case), and
+  the reverse of the faithfulness (12).

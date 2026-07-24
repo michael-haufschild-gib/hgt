@@ -409,3 +409,27 @@ reflection-removes-one-layer, discrete/connected extremes. All axiom-clean.
 CARD COMPLETION still requires the deep algebraic **Hochster isomorphism**: Koszul-strand ↔ reduced-cochain
 chain equivalence for general finite complexes (all degrees) + algebraic exact-rank match. That lives in
 the KoszulCohomology (algebraic) cone; it is the remaining multi-session build, NOT more combinatorial lemmas.
+
+### Lean progress 8 — ALGEBRAIC side: isolated Koszul cocycles = diagonal-free vectors
+`HTGeometry/IsolatedKoszulCocycle.lean` [PROVED HERE], standard axioms, builds clean, my-cone lint clean.
+(First step on the ALGEBRAIC direction per the discipline note — not more combinatorial lemmas.)
+- `isolatedKoszulRelation_val_apply` : the Koszul relation reads off on axis `k` as `(a k)ₖ · X`
+  (off-diagonal isolated axes multiply to zero, `isolatedBoundaryX_mul_eq_zero`);
+- `isolatedKoszulRelation_eq_zero_iff` : **`Σ aᵢ xᵢ = 0 ↔ ∀ k, (a k)ₖ = 0`** — the isolated Koszul
+  cocycle space is exactly the diagonal-free coefficient vectors.
+
+This characterizes the cocycle space, the algebraic input for computing the EXACT first Koszul
+cohomology rank (`H¹ = n+1`), which would match the combinatorial reduced `H̃⁰ = |V|−1 = n+1` (Lean
+progress 3) — the degree-0 Hochster identity. REMAINING toward that: (i) cocycle-with-all-detectors-zero
+⟹ boundary (exactness/spanning), giving `H¹ = n+1` exactly; (ii) the general-complex chain equivalence.
+
+### Lean progress 9 — ALGEBRAIC side: isolated Koszul boundary axis-components
+`HTGeometry/IsolatedKoszulCocycle.lean` (extended) [PROVED HERE], standard axioms, builds clean, my-cone lint clean.
+- `isolatedKoszulBoundary_val_apply` : `(isolatedKoszulBoundary c i)ₖ = if i<k then -(c i k)ₖ·X else if
+  k<i then (c k i)ₖ·X else 0` — the boundary map reads off on each axis as an oriented `(c ??)ₖ·X`.
+
+Now BOTH axis-component computations of the isolated Koszul complex are formalized: relation/cocycle
+(`isolatedKoszulRelation_val_apply`, progress 8) and boundary (`isolatedKoszulBoundary_val_apply`). This is
+the coherent algebraic foundation for the exact first-Koszul-cohomology structure (the `X`-linear/coeff-1
+graded piece where the `n+1` Hochster classes live), toward the degree-0 Hochster identity matching the
+combinatorial reduced `H̃⁰`. REMAINING: assemble these into the exact rank via the coeff-1 graded exactness.

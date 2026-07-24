@@ -459,4 +459,58 @@ theorem eulerPositiveLogMoment_two_eq_affine
     eulerSquareResidualLogMoment_zero hsigma]
   ring
 
+/-- The variance computed in the direct positive-integer chart is exactly
+the variance of the independent affine squarefree--square clock. -/
+theorem eulerPositiveCriticalClockVariance_eq_affine
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    (sigma - 1) ^ 2 *
+        (eulerPositiveLogMoment 2 sigma -
+          eulerPositiveLogMoment 1 sigma ^ 2) =
+      eulerSquarefreeAffineCriticalClockVariance sigma := by
+  rw [eulerPositiveLogMoment_one_eq_affine hsigma,
+    eulerPositiveLogMoment_two_eq_affine hsigma]
+  unfold eulerSquarefreeAffineCriticalClockVariance
+    eulerSquarefreeAffineCriticalClockSecondMoment
+    eulerSquarefreeAffineCriticalClockMean
+  rw [eulerSquareResidualCriticalClockMoment_eq 1 sigma,
+    eulerSquareResidualCriticalClockMoment_eq 2 sigma]
+  ring
+
+/-- The direct full-Euler projective Fisher energy and the affine
+squarefree--square projective Fisher energy are identical throughout the
+strict Euler half-plane. -/
+theorem eulerPositiveCriticalProjectiveFisherEnergy_eq_affine
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    eulerPositiveCriticalProjectiveFisherEnergy sigma =
+      eulerSquarefreeAffineCriticalProjectiveFisherEnergy sigma := by
+  unfold eulerPositiveCriticalProjectiveFisherEnergy
+    eulerSquarefreeAffineCriticalProjectiveFisherEnergy
+  rw [show
+    4 * (sigma - 1) ^ 2 *
+        (eulerPositiveLogMoment 2 sigma -
+          eulerPositiveLogMoment 1 sigma ^ 2) =
+      4 * ((sigma - 1) ^ 2 *
+        (eulerPositiveLogMoment 2 sigma -
+          eulerPositiveLogMoment 1 sigma ^ 2)) by ring]
+  rw [eulerPositiveCriticalClockVariance_eq_affine hsigma]
+
+/-- The actual normalized `ℓ²(ℕ+)` Fisher tangent carries precisely the
+affine Euler energy, pointwise before taking the critical limit. -/
+theorem norm_eulerPositiveCriticalFisherTangentLp_sq_eq_affine
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    ‖eulerPositiveCriticalFisherTangentLp sigma hsigma‖ ^ 2 =
+      eulerSquarefreeAffineCriticalProjectiveFisherEnergy sigma := by
+  rw [norm_eulerPositiveCriticalFisherTangentLp_sq hsigma,
+    eulerPositiveCriticalProjectiveFisherEnergy_eq_affine hsigma]
+
+/-- **Direct full-Euler four-unit law.**  The projective Fisher energy of the
+actual positive-integer Hilbert state tends unconditionally to four. -/
+theorem tendsto_eulerPositiveCriticalProjectiveFisherEnergy :
+    Tendsto eulerPositiveCriticalProjectiveFisherEnergy
+      (nhdsWithin 1 (Ioi 1)) (nhds 4) := by
+  apply tendsto_eulerSquarefreeAffineCriticalProjectiveFisherEnergy.congr'
+  filter_upwards [self_mem_nhdsWithin] with sigma hsigma
+  change 1 < sigma at hsigma
+  exact (eulerPositiveCriticalProjectiveFisherEnergy_eq_affine hsigma).symm
+
 end RHTower

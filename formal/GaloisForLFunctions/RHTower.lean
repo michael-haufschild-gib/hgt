@@ -2595,3 +2595,4 @@ import GaloisForLFunctions.RHTower.XiWeilResolventGram
 import GaloisForLFunctions.RHTower.XiWeilCriterionConverse
 import GaloisForLFunctions.RHTower.XiWeilPositivityBand
 import GaloisForLFunctions.RHTower.XiWeilGramStructure
+import GaloisForLFunctions.RHTower.XiHerglotzCriterion
