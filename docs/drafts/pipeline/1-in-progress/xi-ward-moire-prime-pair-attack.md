@@ -2378,3 +2378,38 @@ upper half plane to the lower iff all zeros are real is the standard Hermite–B
 Branges' programme lives here). Corpus-new: the exact reflection-paired trace identity that removes
 the genus-one term, the machine-checked equivalence in both directions, and the reduction from a
 sign to a one-sided bound with certified boundary data on both edges of the half strip.
+
+## Step 9bm — Phragmén–Lindelöf is circular; the criterion becomes vertical monotonicity [PROVED]
+
+**[NO-GO, by reasoning]** The PL plan of 9bl cannot work as stated. Phragmén–Lindelöf propagates
+boundary bounds for functions HARMONIC on the whole strip; `Im logDeriv XiC` is harmonic on the half
+strip only AWAY from its poles, and a pole is exactly the off-critical zero we are trying to exclude.
+Near a pole the function takes both `+∞` and `−∞`, so it is not even subharmonic across it. Hence
+"apply PL to get boundedness" presupposes the absence of poles — i.e. presupposes RH. Any growth
+input would have to be established for a function not yet known to be harmonic there. Recording this
+so the route is not re-attempted.
+
+**[POSITIVE STATEMENT from the no-go]** The same object has an elementary reading. Along a vertical
+line `∂_y log‖XiC(x+iy)‖ = −Im logDeriv XiC(x+iy)`, so the Herglotz sign condition of 9bl says
+precisely that `y ↦ ‖XiC(x+iy)‖` never decreases. That turns the criterion from an analytic sign
+into a GEOMETRIC monotonicity, and one direction becomes elementary:
+
+**[THEOREM] `riemannHypothesis_of_norm_XiC_vertical_monotone`** — if for every real `x` the modulus
+`y ↦ ‖XiC(x+iy)‖` is non-decreasing on `[0,∞)`, then RH. Proof: an off-critical zero (conjugated
+into the upper half plane) sits at `x₀ + iy₀`, `y₀ > 0`, where the modulus is `0`, while
+`exists_pos_norm_below_zero` (from the peel: zeros are isolated) gives `0 < y < y₀` with the modulus
+POSITIVE. Monotonicity along that ray is then impossible.
+
+Under RH the monotonicity is transparent: `‖Ξ(x+iy)‖` is a product of the distances
+`√((x−tₙ)² + y²)` to the real zeros times a nonvanishing factor, and each distance increases in `y`.
+
+**Why this matters.** The criterion is now a statement with no arithmetic and no analysis in it —
+just: *the modulus of one entire function increases as you move up off the real axis.* Every earlier
+formulation (Ward energy, Weil PSD, Herglotz sign, boundedness) has collapsed into this. It is also
+the exact point where the classical de Branges/Hermite–Biehler programme lives, so the corpus is now
+positioned on that frontier with machine-checked equivalences rather than informal ones.
+
+**Next:** the converse direction (`RH ⟹ monotone`) via the identity
+`d/dy ‖XiC(x+iy)‖² = −2‖XiC(x+iy)‖²·Im logDeriv XiC(x+iy)`, which needs the `y`-derivative of
+`normSq ∘ XiC` — pure chain-rule work, no estimates — and would complete a two-sided
+**RH ⟺ vertical monotonicity of `|Ξ|`**.

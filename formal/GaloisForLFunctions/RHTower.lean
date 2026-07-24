@@ -2596,3 +2596,6 @@ import GaloisForLFunctions.RHTower.XiWeilCriterionConverse
 import GaloisForLFunctions.RHTower.XiWeilPositivityBand
 import GaloisForLFunctions.RHTower.XiWeilGramStructure
 import GaloisForLFunctions.RHTower.XiHerglotzCriterion
+import GaloisForLFunctions.RHTower.XiVerticalMonotoneCriterion
+import GaloisForLFunctions.RHTower.EulerPositiveFisherFourUnit
+import GaloisForLFunctions.RHTower.EulerPositiveFisherLowerBoundary

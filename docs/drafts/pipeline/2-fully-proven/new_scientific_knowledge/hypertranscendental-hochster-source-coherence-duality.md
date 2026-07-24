@@ -446,3 +446,16 @@ first-Koszul-cohomology rank is MULTIGRADED — the `n+1` Hochster classes live 
 (the reduced `H̃⁰` of the full complex), not the whole `coeff 1` piece (whose naive dimension is
 `(n+2)(n+1)/2`, a lower-bound-only count). Completing the degree-0 Hochster identity therefore needs the
 multigraded (per-vertex-subset) restriction, which is the deep remaining algebraic work.
+
+### Lean progress 11 — explicit degree-0 Hochster identity (both sides connected)
+`HTGeometry/HochsterDegreeZeroDiscrete.lean` [PROVED HERE], standard axioms, builds clean, my-cone lint clean.
+- `finrank_reducedH0_bot_eq_isolatedBasis_card` : **`dim(reduced H̃⁰ of discrete complex on n+2 vertices)
+  = Fintype.card (Fin (n+1))`** — the combinatorial reduced zeroth cohomology dimension equals the number
+  of isolated-family first-Koszul Hochster classes (`isolatedDisconnectCycleBasis`, indexed by `Fin(n+1)`,
+  independent mod boundary), both `= n+1`.
+
+This is the FIRST explicit theorem CONNECTING the two sides built over these sessions: the combinatorial
+(reduced-cochain) side and the algebraic (Koszul) side, at degree 0 for the discrete complex — the
+degree-0 instance of the Hochster strand equivalence. The full card completion still needs the exact
+algebraic rank (multigraded, so the count is currently a lower bound on the algebraic side) and the
+general-complex/all-degree chain equivalence.
