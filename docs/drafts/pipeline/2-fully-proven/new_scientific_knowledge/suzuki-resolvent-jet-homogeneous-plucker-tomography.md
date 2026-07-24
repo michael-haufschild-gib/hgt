@@ -216,3 +216,19 @@ means exterior tomography is one sector rather than whole jump carrier.  Card st
   exterior-basis theorem proved on paper.  Promoted theorem layer to Stage 2.
 - 2026-07-22 — Finite interpolation and one/pair isolation core formalized and built; subsequent
   affine gauge audit restricts Plücker tomography to alternating sector of marked tensor.
+
+### Lean progress — exterior-basis dimension argument FORMALIZED
+`RHTower/SuzukiHomogeneousBladeDimension.lean` [PROVED HERE], standard axioms [propext, Classical.choice,
+Quot.sound], builds clean (my-cone lint clean; unrelated parallel-agent RHTower unreachable + large-file
+warnings only). Registered in the RHTower umbrella.
+- `suzukiHomogeneousBlade_finrank` : `Module.finrank ℝ (⋀²(Fin (n+1) → ℝ)) = n + Nat.choose n 2` — the
+  homogeneous Plücker blade space `⋀²(V ⊕ F)` (`V=ℝⁿ`, `F=ℝ`) has dimension `n + C(n,2)`, exactly the
+  `n` one-mode (Neumann, `eᵢ∧∞`) + `C(n,2)` two-mode (spectral-pair, `eᵢ∧eⱼ`) tomography coordinates.
+  Via mathlib `exteriorPower.finrank_eq` (`= C(finrank M, k)`) + `finrank_pi` + Pascal `C(n+1,2)=n+C(n,2)`.
+
+This discharges the "Full exterior-basis dimension argument remains paper-level" item (card §Lean status):
+combined with the coordinate-realization tomography theorems already formalized
+(`suzukiCyclicResolventFilter_realizes_target_fun`, `suzukiHomogeneousBlade_twoModeDifference_isolates_pair`),
+the isolated one-mode + two-mode blades span a space of the matching dimension, hence form a basis of the
+homogeneous exterior square. (The card's remaining non-tractable items — the affine-tensor one-sector
+correction and the ultimate RH positivity conjecture — are separate and out of scope for this finite piece.)

@@ -109,6 +109,74 @@ theorem not_mobiusGammaXiWardBaseSourceMap_nonexpansive
     (norm_mobiusGammaXiWardBaseSourceMap_source_sub_zero_gt_one
       hsigma hsigmaUpper)
 
+/-! ## Normal-cone blow-up does not repair source gain -/
+
+/-- Euler-normal blow-up of the fixed base-aperture source graph.  The
+subtraction-free definition is intentional: affine constants disappear when
+testing Lipschitz gain. -/
+def mobiusGammaXiWardNormalConeBaseSourceMap
+    (sigma : ℝ) (hsigma : 1 < sigma)
+    (x : lp (fun _ : ℕ => ℂ) 2) : ℂ :=
+  mobiusGammaXiWardBaseSourceMap sigma
+      ((sigma - 1 : ℝ) : ℂ) hsigma x /
+    ((sigma - 1 : ℝ) : ℂ)
+
+/-- **Normal-cone gain-squaring law.**  Blowing up the scalar source graph
+by its Euler normal parameter changes the exact physical Lipschitz gain from
+`1 / (2 (sigma - 1))` to `1 / (2 (sigma - 1)^2)`.  Analytic removal of the
+base zero therefore amplifies, rather than absorbs, the source-norm defect. -/
+theorem mobiusGammaXiWardNormalConeBaseSourceMap_source_sub_zero
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    mobiusGammaXiWardNormalConeBaseSourceMap sigma hsigma
+          (infiniteMobiusSignedWeightLp sigma hsigma) -
+        mobiusGammaXiWardNormalConeBaseSourceMap sigma hsigma 0 =
+      I / (2 * (((sigma - 1 : ℝ) : ℂ) ^ 2)) := by
+  have hepsilon : (((sigma - 1 : ℝ) : ℂ)) ≠ 0 := by
+    exact_mod_cast sub_ne_zero.mpr hsigma.ne'
+  simp only [mobiusGammaXiWardNormalConeBaseSourceMap]
+  rw [← sub_div,
+    mobiusGammaXiWardBaseSourceMap_source_sub_zero hsigma hepsilon]
+  field_simp [hepsilon]
+
+/-- On the physical critical ray, the normal-cone source graph is strictly
+expansive on the same explicit unit source vector. -/
+theorem norm_mobiusGammaXiWardNormalConeBaseSourceMap_source_sub_zero_gt_one
+    {sigma : ℝ} (hsigma : 1 < sigma) (hsigmaUpper : sigma < 3 / 2) :
+    1 <
+      ‖mobiusGammaXiWardNormalConeBaseSourceMap sigma hsigma
+            (infiniteMobiusSignedWeightLp sigma hsigma) -
+          mobiusGammaXiWardNormalConeBaseSourceMap sigma hsigma 0‖ := by
+  rw [mobiusGammaXiWardNormalConeBaseSourceMap_source_sub_zero hsigma,
+    norm_div, norm_I, norm_mul, Complex.norm_ofNat, norm_pow,
+    Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (sub_pos.mpr hsigma)]
+  norm_num
+  have heps : 0 < sigma - 1 := sub_pos.mpr hsigma
+  have hepsHalf : sigma - 1 < 1 / 2 := by linarith
+  have hsq : 2 * (sigma - 1) ^ 2 < 1 := by
+    nlinarith [sq_nonneg (sigma - 1), mul_self_lt_mul_self heps.le hepsHalf]
+  rw [show ((sigma - 1) ^ 2)⁻¹ * (1 / 2 : ℝ) =
+      1 / (2 * (sigma - 1) ^ 2) by field_simp]
+  exact (one_lt_div₀ (by positivity)).2 hsq
+
+/-- **Normal-cone nonexpansiveness no-go.**  The analytic Euler blow-up of
+the fixed scalar graph is not a contraction in the physical source norm.
+Thus normal-cone regularity alone cannot supply the missing CCM source
+transport. -/
+theorem not_mobiusGammaXiWardNormalConeBaseSourceMap_nonexpansive
+    {sigma : ℝ} (hsigma : 1 < sigma) (hsigmaUpper : sigma < 3 / 2) :
+    ¬ ∀ x y : lp (fun _ : ℕ => ℂ) 2,
+        ‖mobiusGammaXiWardNormalConeBaseSourceMap sigma hsigma x -
+            mobiusGammaXiWardNormalConeBaseSourceMap sigma hsigma y‖ ≤
+          ‖x - y‖ := by
+  intro hnonexpansive
+  have hle := hnonexpansive
+    (infiniteMobiusSignedWeightLp sigma hsigma) 0
+  rw [sub_zero, norm_infiniteMobiusSignedWeightLp hsigma] at hle
+  exact (not_lt_of_ge hle)
+    (norm_mobiusGammaXiWardNormalConeBaseSourceMap_source_sub_zero_gt_one
+      hsigma hsigmaUpper)
+
 end
 
 end RHTower

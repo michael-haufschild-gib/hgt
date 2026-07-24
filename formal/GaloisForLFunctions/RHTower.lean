@@ -2599,3 +2599,5 @@ import GaloisForLFunctions.RHTower.XiHerglotzCriterion
 import GaloisForLFunctions.RHTower.XiVerticalMonotoneCriterion
 import GaloisForLFunctions.RHTower.EulerPositiveFisherFourUnit
 import GaloisForLFunctions.RHTower.EulerPositiveFisherLowerBoundary
+import GaloisForLFunctions.RHTower.SuzukiHomogeneousBladeDimension
+import GaloisForLFunctions.RHTower.XiWeilDivisorHilbert

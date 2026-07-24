@@ -135,3 +135,31 @@ The numerics of 9bj played no role and remain a sanity check only.
   `Σ_n Λ(n) n^{−1/2}·W_n(c)` has a definite sign, and prove positivity there. Design constraint from
   the 2026 literature: candidate positivity statements at large support have been explicitly
   disproved, so rung 1 must identify WHICH support ranges survive, not assume all do.
+
+## Gate 5 progress — rung 0 foundation LANDED
+
+`XiWeilDivisorHilbert.lean`, clean, sorry-free, axioms standard. This is step (1)–(2) of the rung-0
+paper proof, formalized:
+
+- **`XiDivisorL2 := lp (fun _ : XiZeroCopy => ℂ) 2`** — the divisor Hilbert space, the carrier the
+  paper proof needs. mathlib supplies `InnerProductSpace`, `CompleteSpace`, and the orthogonal
+  machinery (`Submodule.orthogonal_orthogonal`) on it.
+- **`memℓp_kernel_restriction`** — every regularized Cauchy kernel restricts into `ℓ²(divisor)`.
+  Proof route (no estimate): the relative resolvent trace is absolutely summable (genus-one), an
+  absolutely summable family is bounded by its own total, and `‖f q‖² ≤ M‖f q‖` then transfers
+  summability from the first power to the square (`summable_sq_of_summable_norm`).
+- **`xiKernelVec`** — the kernel as a vector of that space.
+- **`summable_weilL2Summand`** — the Weil summand `a q · conj(a (lineConj q))` is absolutely summable
+  for EVERY `ℓ²` sequence, by `|xy| ≤ ½(x²+y²)` against the two square-summable families (the second
+  obtained by reindexing along the conjugation involution, `summable_sq_lineConj`).
+- **`xiWeilL2Form`** and **`xiWeilL2Form_kernelVec`** — the intrinsic form on the Hilbert space, and
+  the identification that on a kernel vector it computes the Weil polarization of that kernel. This
+  is the bridge that lets the rank-one detection theorem (9bh) be read as a statement about a vector
+  of `XiDivisorL2`.
+
+**Remaining for rung 0's Gate 5:** (a) continuity of `xiWeilL2Form` (the `‖a−b‖(‖a‖+‖b‖)` bound —
+same AM–GM ingredient, already present); (b) analyticity of `φ(z) = Σ_q conj(a_q)·K z (pt_q)` in `z`
+off the divisor (locally uniform convergence via Cauchy–Schwarz against the `O(1/‖pt‖²)` bound);
+(c) the identity-theorem step (mathlib
+`AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero`, already used elsewhere in the
+corpus); (d) `Sᗮᗮ = S` to conclude membership in the closed span. No new mathematics in any of them.

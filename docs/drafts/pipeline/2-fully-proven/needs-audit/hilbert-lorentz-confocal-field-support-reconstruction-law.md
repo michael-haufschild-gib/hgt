@@ -436,7 +436,7 @@ ancestry is audited.
 - [x] first external parent-theory audit completed
 - [x] final hostile source-level proof audit
 - [x] 1 -> 2 fully-proven: dependency-closed paper proof
-- [ ] formalize the exact scalar global theorem
+- [x] formalize the exact scalar global theorem (`ConfocalGlobalSupportTransform.lean` + `ConfocalGlobalSupportFaithfulness.lean`: greatest-root, projective graph, radical bifurcation, transform faithfulness, maximal-hull identity)
 - [ ] formalize the Hilbert--Lorentz master theorem
 - [ ] narrow source checks and final module builds
 - [ ] axiom audit
@@ -449,3 +449,27 @@ ancestry is audited.
   yields the exact quadratic causal-contact equation, a dimension-free field/support/hull inverse
   theorem, and a unique null-ray fold.  The scalar theorem is now the fiber lemma rather than the
   paper headline.
+
+## Lean progress
+
+- 2026-07-24 — **Scalar global theorem formalized** (gate `formalize the exact scalar global
+  theorem`): the all-radius scalar confocal transform is complete in
+  `HTGeometry/ConfocalGlobalSupportTransform.lean` (defect fixed point, greatest/unique selection,
+  projective graph equality, radical extinction-bifurcation) and
+  `HTGeometry/ConfocalGlobalSupportFaithfulness.lean` (support↔defect faithfulness both directions,
+  the maximal-hull identity `K_G = K_h` unconditionally, `globalDefect_eqOn_iff_nullSupport_eqOn`).
+- 2026-07-24 — **Dimension-free master theorem core** (`HTGeometry/HilbertLorentzConfocalReconstruction.lean`,
+  axioms `[propext, Classical.choice, Quot.sound]`): the scalar theory transfers to any real
+  inner-product space through the canonical axial Lorentz lift `z ↦ (⟪z, axis⟫, ‖z‖)`, exactly because
+  the axial distance-sum branch equals the lifted Lorentz branch
+  (`liftedConfocalBranch_axialLorentzLift`):
+  * `axialGlobalEnvelope` / `axialGlobalDefect` — the all-radius axial confocal envelope and defect
+    along a unit direction, with bridges `axialGlobalEnvelope_eq_confocalGlobalEnvelope`,
+    `axialGlobalDefect_eq_confocalGlobalDefect`.
+  * `axialGlobalDefect_eq_nullSupport_fixedPoint` — the **causal-contact master equation**: the
+    realized axial defect is a nonnegative fixed point of the one-dimensional null-support operator,
+    at every positive radius, in any dimension.
+  * `axialGlobalDefect_isGreatest_fixedPoint` — the greatest-root selection, dimension-free.
+  **Remaining for gate `formalize the Hilbert--Lorentz master theorem`:** the all-directions causal
+  support function and normalized-direction coverage, and the field/support/hull equivalence in `E`
+  (each a further transfer of the scalar faithfulness + hull results through the axial lift).

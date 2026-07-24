@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerPositiveFisherFourUnit
+import GaloisForLFunctions.HTGeometry.InfiniteFisherOneCornerCodiagonalContraction
 
 /-!
 # Physical full-Euler Fisher lower boundary
@@ -109,5 +110,35 @@ theorem hsNormSq_dyadicSquarefree_eulerPositiveFisherLowerBoundary
   exact hsNormSq_dyadicSquarefreeAffine_fisherLowerBoundary T
     (eulerPositiveStateLp sigma hsigma)
     (eulerPositiveCriticalFisherTangentLp sigma hsigma)
+
+/-- **Physical infinite source-codiagonal contraction.**  Every contraction
+on the full positive-integer Euler Hilbert space produces a joined lower-corner
+reporter whose pairing with the actual Euler Fisher source costs at most half
+of that source corner's Hilbert--Schmidt energy.  The contraction may mix both
+sharp-cutoff sectors; no commutation, finite-rank, or compactness hypothesis is
+used. -/
+theorem norm_sq_hsInner_eulerPositiveFisherLowerBoundary_joinedReporter_le_half
+    {sigma T : ℝ} (hsigma : 1 < sigma)
+    (D : EulerPositiveL2 →L[ℂ] EulerPositiveL2)
+    (hD : ‖D‖ ≤ 1) :
+    ‖hsInner
+        (eulerPositiveFisherLowerBoundary sigma T hsigma)
+        (infiniteFisherOneCornerJoinedReporter
+          (lpCoordinateProjection (eulerPositiveLogCutoffSet T))
+          D
+          (eulerPositiveStateLp sigma hsigma))‖ ^ 2 ≤
+      (1 / 2 : ℝ) *
+        hsNormSq (eulerPositiveFisherLowerBoundary sigma T hsigma) := by
+  apply norm_sq_hsInner_infiniteFisherOneCornerJoinedReporter_le_half
+  · exact
+      ((pointedFisherConnection_isHilbertSchmidt
+          (eulerPositiveStateLp sigma hsigma)
+          (eulerPositiveCriticalFisherTangentLp sigma hsigma)).comp_right
+        (lpCoordinateProjection (eulerPositiveLogCutoffSet T))).comp_left
+        (1 - lpCoordinateProjection (eulerPositiveLogCutoffSet T))
+  · exact lpCoordinateProjection_idempotent _
+  · exact lpCoordinateProjection_selfAdjoint _
+  · exact norm_eulerPositiveStateLp hsigma
+  · exact hD
 
 end RHTower
