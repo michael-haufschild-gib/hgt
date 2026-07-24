@@ -301,3 +301,33 @@ families whose prime-side weight `Σ_n Λ(n) n^{−1/2} W_n(c)` has a definite s
 `Λ(n) ≥ 0` enters as a primitive rather than as a derived scalar. Design constraint (9bn): the 2026
 literature reports candidate positivity statements at large support explicitly DISPROVED, so rung 1
 must determine which support ranges survive rather than assume all do.
+
+## Rung 1 — the arithmetic Gram entry [LEAN-PROVED, first brick]
+
+`XiWeilArithmeticGram.lean`, clean, sorry-free, axioms standard.
+
+**`xiWeilGramEntry_arithmetic`** — for base points BELOW the strip (`Im z < −1/2`, hence
+`Re(1/2 + zi) > 1`), every Gram entry of the rung-0 criterion equals
+
+  `M₁ − (z'/(z(z−z')))·[s⁻¹ + (s−1)⁻¹ + logDeriv Γ_ℝ(s) − L(Λ,s)]·I`
+      `+ (z/(z'(z−z')))·[same at s']·I`,  `s = 1/2 + zi`,
+
+with `L(Λ,s) = Σ Λ(n) n^{−s}` absolutely convergent
+(`lseries_vonMangoldt_summable_of_im_lt_neg_half`). Supporting:
+`one_lt_re_of_im_lt_neg_half`, `XiC_ne_zero_of_im_lt_neg_half`, and
+`logDeriv_XiC_eq_arithmetic_of_im_lt_neg_half` (the centered logarithmic derivative is `I` times the
+prime–archimedean expression, via the corpus's `logDeriv_xi_eq_arithmetic`).
+
+**Status of the criterion.** Combining with rung 0: RH holds iff a Hermitian form built from
+`M₁`, two pole terms, two `Γ_ℝ` terms and two von Mangoldt series is positive semidefinite over
+finite families of below-strip base points. The zeros have disappeared from the statement entirely;
+the only arithmetic input is `Λ(n) ≥ 0`.
+
+**[OPEN CORE — rung 1 proper]** The prime side enters as `Σ_n Λ(n) n^{−1/2}·W_n(c)` for an explicit
+weight `W_n` determined by the base points and coefficients. Positivity of the whole form is now the
+question of whether the archimedean + pole + `M₁` part dominates that series. Two facts constrain
+any attack: (i) `W_n` oscillates (it carries `n^{−iz}` factors), so `Λ(n) ≥ 0` alone gives no sign —
+the 3-4-1 mechanism is the classical way to force one, and the corpus already carries the 3-4-1
+inequality in `ZetaThreeFourOne.lean`; (ii) 9bn: candidate positivity statements at large support
+are documented as DISPROVED in the 2026 literature, so the live question is which coefficient
+families survive, not whether all do.

@@ -222,3 +222,15 @@ the analytic radial-derivative identity (4)/(5), which requires the differentiab
   `_eq_zero_of_lt`), connecting the recurrence-defined `squaredRadialJetWeight` to its closed form.
   Axioms clean; module builds. Remaining Lean gaps: the analytic identity (4)/(5) (needs
   `xiLogDeriv` analyticity on `Re(s)>1`) and the `[OPEN CORE]` `Q_14(w)<0`.
+- 2026-07-24 — **Analytic core of the radial-derivative identity (4) formalized** (toward gate
+  `Formalize the analytic radial-derivative identity (4)/(5)`), in
+  `RHTower/SquaredXiRadialJetIdentity.lean` (unconditional, axioms `[propext, Classical.choice,
+  Quot.sound]`), for an arbitrary smooth `L` (no `xiLogDeriv` analyticity needed — the calculus
+  identity holds for any `ContDiff ℝ ⊤ L`):
+  * `radialOp` / `radialProfile` — the operator `D f = f'/(2w)` and profile `F(w) = L(1/2+w)/w`.
+  * `deriv_iteratedDeriv_shift` — chain rule `d/dw[L^(j)(c+w)] = L^(j+1)(c+w)`.
+  * `deriv_pow_mul_iteratedDeriv_shift` — **equation (6) core**: `d/dw[w^m·L^(j)(1/2+w)] =
+    m·w^(m-1)·L^(j)(1/2+w) + w^m·L^(j+1)(1/2+w)` (via `HasDerivAt` product rule + the shift chain rule).
+  **Remaining for (4)/(5):** the induction on `n` assembling this single-term derivative over the
+  `Finset.range (n+1)` sum with the `squaredRadialJetWeight` recurrence and the `/(2^n w^(2n+1))`
+  radial scale (the `[OPEN CORE]` `Q_14(w) < 0` and the RH-wiring gates remain non-Lean/RH-level).
