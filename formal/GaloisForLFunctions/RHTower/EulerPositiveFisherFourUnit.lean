@@ -245,4 +245,218 @@ theorem eulerSquareResidualLogMoment_zero
   unfold eulerSquareResidualLogMoment
   simpa using tsum_eulerSquareResidualProbability hsigma
 
+/-- First logarithmic moment of the direct positive-integer Euler law is
+exactly the sum of the independent squarefree and doubled-square moments. -/
+theorem eulerPositiveLogMoment_one_eq_affine
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    eulerPositiveLogMoment 1 sigma =
+      squarefreeMobiusLogMoment 1 sigma +
+        2 * eulerSquareResidualLogMoment 1 sigma := by
+  rw [eulerPositiveLogMoment_eq_dyadicAffine 1 hsigma]
+  simp only [pow_one]
+  have ha0 :=
+    summable_squarefreePNat_probability_log_pow 0 hsigma
+  have ha1 :=
+    summable_squarefreePNat_probability_log_pow 1 hsigma
+  have hb0 :=
+    summable_pnat_eulerSquareResidualProbability_log_pow 0 hsigma
+  have hb1 :=
+    summable_pnat_eulerSquareResidualProbability_log_pow 1 hsigma
+  have h10 : Summable (fun q : SquarefreePNat × ℕ+ =>
+      (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+        Real.log (q.1.1 : ℕ)) *
+      (eulerSquareResidualProbability sigma (q.2 : ℕ))) :=
+    by
+      simpa only [pow_one, pow_zero, mul_one] using
+        ha1.mul_of_nonneg hb0
+          (fun d => by
+            simpa only [pow_one] using
+              squarefreePNat_probability_log_pow_nonneg 1 hsigma d)
+          (fun m => by
+            simpa only [pow_zero, mul_one] using
+              pnat_eulerSquareResidualProbability_log_pow_nonneg 0 hsigma m)
+  have h01 : Summable (fun q : SquarefreePNat × ℕ+ =>
+      squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+      (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+        Real.log (q.2 : ℕ))) :=
+    by
+      simpa only [pow_one, pow_zero, mul_one] using
+        ha0.mul_of_nonneg hb1
+          (fun d => by
+            simpa only [pow_zero, mul_one] using
+              squarefreePNat_probability_log_pow_nonneg 0 hsigma d)
+          (fun m => by
+            simpa only [pow_one] using
+              pnat_eulerSquareResidualProbability_log_pow_nonneg 1 hsigma m)
+  have h10raw : Summable (fun q : SquarefreePNat × ℕ+ =>
+      (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+        Real.log (q.1.1 : ℕ) ^ 1) *
+      (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+        Real.log (q.2 : ℕ) ^ 0)) := by
+    simpa only [pow_one, pow_zero, mul_one] using h10
+  have h01raw : Summable (fun q : SquarefreePNat × ℕ+ =>
+      (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+        Real.log (q.1.1 : ℕ) ^ 0) *
+      (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+        Real.log (q.2 : ℕ) ^ 1)) := by
+    simpa only [pow_one, pow_zero, mul_one] using h01
+  have hsum10 :
+      (∑' d : SquarefreePNat,
+          squarefreeMobiusProbability sigma (d.1 : ℕ) *
+            Real.log (d.1 : ℕ)) *
+        (∑' m : ℕ+,
+          eulerSquareResidualProbability sigma (m : ℕ)) =
+      ∑' q : SquarefreePNat × ℕ+,
+        (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+          Real.log (q.1.1 : ℕ)) *
+            eulerSquareResidualProbability sigma (q.2 : ℕ) := by
+    simpa only [pow_one, pow_zero, mul_one] using
+      ha1.tsum_mul_tsum hb0 h10raw
+  have hsum01 :
+      (∑' d : SquarefreePNat,
+          squarefreeMobiusProbability sigma (d.1 : ℕ)) *
+        (∑' m : ℕ+,
+          eulerSquareResidualProbability sigma (m : ℕ) *
+            Real.log (m : ℕ)) =
+      ∑' q : SquarefreePNat × ℕ+,
+        squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+          (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+            Real.log (q.2 : ℕ)) := by
+    simpa only [pow_one, pow_zero, mul_one] using
+      ha0.tsum_mul_tsum hb1 h01raw
+  rw [show (fun q : SquarefreePNat × ℕ+ =>
+      (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+        eulerSquareResidualProbability sigma (q.2 : ℕ)) *
+      (Real.log (q.1.1 : ℕ) + 2 * Real.log (q.2 : ℕ))) =
+    fun q =>
+      (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+        Real.log (q.1.1 : ℕ)) *
+          eulerSquareResidualProbability sigma (q.2 : ℕ) +
+      2 * (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+        (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+          Real.log (q.2 : ℕ))) by
+    funext q
+    ring]
+  rw [Summable.tsum_add h10 (h01.mul_left 2)]
+  rw [tsum_mul_left]
+  rw [← hsum10, ← hsum01]
+  have hA0 :
+      (∑' d : SquarefreePNat,
+        squarefreeMobiusProbability sigma (d.1 : ℕ)) =
+        squarefreeMobiusLogMoment 0 sigma := by
+    simpa only [pow_zero, mul_one] using
+      tsum_squarefreePNat_probability_log_pow 0 sigma
+  have hA1 :
+      (∑' d : SquarefreePNat,
+        squarefreeMobiusProbability sigma (d.1 : ℕ) *
+          Real.log (d.1 : ℕ)) =
+        squarefreeMobiusLogMoment 1 sigma := by
+    simpa only [pow_one] using
+      tsum_squarefreePNat_probability_log_pow 1 sigma
+  have hB0 :
+      (∑' m : ℕ+,
+        eulerSquareResidualProbability sigma (m : ℕ)) =
+        eulerSquareResidualLogMoment 0 sigma := by
+    simpa only [pow_zero, mul_one] using
+      tsum_pnat_eulerSquareResidualProbability_log_pow 0 hsigma
+  have hB1 :
+      (∑' m : ℕ+,
+        eulerSquareResidualProbability sigma (m : ℕ) *
+          Real.log (m : ℕ)) =
+        eulerSquareResidualLogMoment 1 sigma := by
+    simpa only [pow_one] using
+      tsum_pnat_eulerSquareResidualProbability_log_pow 1 hsigma
+  rw [hA0, hA1, hB0, hB1,
+    squarefreeMobiusLogMoment_zero hsigma,
+    eulerSquareResidualLogMoment_zero hsigma]
+  ring
+
+private theorem summable_dyadic_probability_log_pow_product
+    (j k : ℕ) {sigma : ℝ} (hsigma : 1 < sigma) :
+    Summable (fun q : SquarefreePNat × ℕ+ =>
+      (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+        Real.log (q.1.1 : ℕ) ^ j) *
+      (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+        Real.log (q.2 : ℕ) ^ k)) := by
+  exact
+    (summable_squarefreePNat_probability_log_pow j hsigma).mul_of_nonneg
+      (summable_pnat_eulerSquareResidualProbability_log_pow k hsigma)
+      (squarefreePNat_probability_log_pow_nonneg j hsigma)
+      (pnat_eulerSquareResidualProbability_log_pow_nonneg k hsigma)
+
+/-- Every mixed logarithmic moment of the reindexed Euler law factors
+exactly. -/
+theorem tsum_dyadic_probability_log_pow_product
+    (j k : ℕ) {sigma : ℝ} (hsigma : 1 < sigma) :
+    (∑' q : SquarefreePNat × ℕ+,
+      (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+        Real.log (q.1.1 : ℕ) ^ j) *
+      (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+        Real.log (q.2 : ℕ) ^ k)) =
+      squarefreeMobiusLogMoment j sigma *
+        eulerSquareResidualLogMoment k sigma := by
+  have ha :=
+    summable_squarefreePNat_probability_log_pow j hsigma
+  have hb :=
+    summable_pnat_eulerSquareResidualProbability_log_pow k hsigma
+  have hab :=
+    summable_dyadic_probability_log_pow_product j k hsigma
+  calc
+    _ = (∑' d : SquarefreePNat,
+          squarefreeMobiusProbability sigma (d.1 : ℕ) *
+            Real.log (d.1 : ℕ) ^ j) *
+        (∑' m : ℕ+,
+          eulerSquareResidualProbability sigma (m : ℕ) *
+            Real.log (m : ℕ) ^ k) :=
+      (ha.tsum_mul_tsum hb hab).symm
+    _ = _ := by
+      rw [tsum_squarefreePNat_probability_log_pow,
+        tsum_pnat_eulerSquareResidualProbability_log_pow k hsigma]
+
+/-- Second logarithmic moment of the direct Euler law has the exact affine
+independent-sum formula. -/
+theorem eulerPositiveLogMoment_two_eq_affine
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    eulerPositiveLogMoment 2 sigma =
+      squarefreeMobiusLogMoment 2 sigma +
+        4 * squarefreeMobiusLogMoment 1 sigma *
+          eulerSquareResidualLogMoment 1 sigma +
+        4 * eulerSquareResidualLogMoment 2 sigma := by
+  rw [eulerPositiveLogMoment_eq_dyadicAffine 2 hsigma]
+  have h20 :=
+    summable_dyadic_probability_log_pow_product 2 0 hsigma
+  have h11 :=
+    summable_dyadic_probability_log_pow_product 1 1 hsigma
+  have h02 :=
+    summable_dyadic_probability_log_pow_product 0 2 hsigma
+  rw [show (fun q : SquarefreePNat × ℕ+ =>
+      (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+        eulerSquareResidualProbability sigma (q.2 : ℕ)) *
+      (Real.log (q.1.1 : ℕ) + 2 * Real.log (q.2 : ℕ)) ^ 2) =
+    fun q =>
+      ((squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+          Real.log (q.1.1 : ℕ) ^ 2) *
+        (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+          Real.log (q.2 : ℕ) ^ 0) +
+      4 * ((squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+          Real.log (q.1.1 : ℕ) ^ 1) *
+        (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+          Real.log (q.2 : ℕ) ^ 1))) +
+      4 * ((squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
+          Real.log (q.1.1 : ℕ) ^ 0) *
+        (eulerSquareResidualProbability sigma (q.2 : ℕ) *
+          Real.log (q.2 : ℕ) ^ 2)) by
+    funext q
+    ring]
+  rw [Summable.tsum_add (h20.add (h11.mul_left 4))
+    (h02.mul_left 4)]
+  rw [Summable.tsum_add h20 (h11.mul_left 4)]
+  rw [tsum_mul_left, tsum_mul_left]
+  rw [tsum_dyadic_probability_log_pow_product 2 0 hsigma,
+    tsum_dyadic_probability_log_pow_product 1 1 hsigma,
+    tsum_dyadic_probability_log_pow_product 0 2 hsigma,
+    squarefreeMobiusLogMoment_zero hsigma,
+    eulerSquareResidualLogMoment_zero hsigma]
+  ring
+
 end RHTower

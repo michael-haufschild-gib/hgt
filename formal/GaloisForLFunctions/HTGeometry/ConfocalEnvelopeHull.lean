@@ -147,6 +147,20 @@ theorem eqOn_iff_confocalHullOfField_eq
   exact ⟨confocalHullOfField_eq_of_eqOn,
     eqOn_of_confocalHullOfField_eq hG hH⟩
 
+/-- **Idempotence of the confocal hull.**  Taking the canonical hull of a realized source `S`,
+reading off its own upper field `G'` on `D`, and taking the hull of that field returns the original
+hull: `H_D(H_D(S)) = H_D(S)`.  The hull depends only on the field, and the hull's field equals `G`
+(`isConfocalEnvelopeOn_confocalHullOfField`), so re-hulling reproduces it. -/
+theorem confocalHullOfField_idem
+    {D : Set ℝ} {S : Set (ℝ × ℝ)} {G G' : ℝ → ℝ}
+    (hcone : S ⊆ confocalLorentzCone)
+    (hG : IsConfocalEnvelopeOn D S G)
+    (hG' : IsConfocalEnvelopeOn D (confocalHullOfField D G) G') :
+    confocalHullOfField D G' = confocalHullOfField D G := by
+  apply confocalHullOfField_eq_of_eqOn
+  intro R hR
+  exact (hG' R hR).unique (isConfocalEnvelopeOn_confocalHullOfField hcone hG R hR)
+
 /-- The canonical hull is convex. -/
 theorem convex_confocalHullOfField (D : Set ℝ) (G : ℝ → ℝ) :
     Convex ℝ (confocalHullOfField D G) := by
