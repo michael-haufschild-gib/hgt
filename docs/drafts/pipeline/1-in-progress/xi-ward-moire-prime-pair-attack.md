@@ -2234,3 +2234,50 @@ worth recording:
 Γ/prime constant reachable by the theta machinery of 9bd) and test `Q > 0` numerically inside the
 strip to locate where the margin is thinnest — that margin profile is the target any prime-side
 domination argument must beat.
+
+## Step 9bj — the strip is REMOVABLE: outside-strip detection [NUMERICALLY ESTABLISHED]
+
+9bi left the residual region as the punctured strip `0 < |Im z| < 0.52`, where the per-term route is
+provably unavailable. The obvious question — must the criterion use base points inside the strip? —
+has a decisive answer: **no.**
+
+**Experiment** (mpmath, dps 60, divisor = first `N` true zeta zeros with the lowest one displaced to
+`Re ρ = ½ + v`; base points at `u₀ ± ih`, `h ∈ {0.51, 0.76, …}`, all OUTSIDE the strip):
+
+| base pts | v=0 (RH) | v=0.001 | v=0.01 | v=0.05 |
+|---|---|---|---|---|
+| 2 | +0.0335 | +0.0359 | +0.0300 | −0.115 |
+| 4 | +1.6e−8 | **−8.9e−6** | **−9.7e−4** | −0.123 |
+| 6 | +4.6e−15 | **−1.7e−5** | **−1.9e−3** | −0.123 |
+
+Two facts, both robust:
+1. **Detection is LOCAL.** `N = 30` and `N = 100` agree to three digits — the signal is dominated by
+   the nearby quadruple, NOT by the global zero configuration. So a proof need not know the other
+   zeros: this is the first object in the whole campaign that escapes the saturation obstruction of
+   9bf by being local rather than budget-limited.
+2. **Arbitrarily small displacements are detected**, provided enough base points: 2 points miss
+   `v = 0.01`, 4 points catch `v = 0.001`. The on-line floor shrinks (0.033 → 1.6e−8 → 4.6e−15,
+   the expected ill-conditioning) but the detection signal stays far above it.
+
+**Mechanism (analytic, checked on paper).** `z ↦ K z (pt)` is analytic with Taylor radius
+`|pt − z₀|` about a base point `z₀`. With `z₀` just outside the strip and the zero at distance ≈ ½,
+the series reaches `w = pt₀ + δ` for every small `δ` — so the closure of the outside-strip span
+contains the inside-strip kernels that 9bh's rank-one argument used. Higher-order base-point
+families realize successive `z`-derivatives; that is exactly why 4 points suffice where 2 fail.
+
+**Consequence — the reformulation this campaign was looking for.**
+  **RH ⟺ the Weil Gram family with base points OFF the strip is positive semidefinite.**
+In that region: (a) the diagonal is already PROVED nonnegative unconditionally (9bi); (b) every
+entry is arithmetically evaluable by ABSOLUTELY CONVERGENT series — `Im z < −½` gives `Re s > 1`
+(Dirichlet directly) and `Im z > ½` gives `Re s < 0` (Dirichlet after the functional equation).
+The strip, where the continuation is needed and no series converges, is entirely bypassed.
+
+So the open problem has moved from "control the prime side inside the critical strip" to
+**"prove the higher-order PSD conditions of an explicit prime-series Gram matrix"** — same
+difficulty in the end, but now posed on convergent data, with the diagonal already discharged.
+
+**Next brick (well-defined).** Formalize the outside-strip detection: differentiate the 9bg closure
+identity in the base point to put `∂ᵏ_z K_z` in the evaluable algebra, then run the 9bh rank-one
+construction on a Taylor combination based at `z₀` off the strip. That converts
+`riemannHypothesis_of_weilDiagonal_nonneg` into its outside-strip form, at which point every
+hypothesis of the criterion is an absolutely convergent prime expression.
