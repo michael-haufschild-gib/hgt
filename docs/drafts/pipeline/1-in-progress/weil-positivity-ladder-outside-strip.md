@@ -228,3 +228,23 @@ identity theorem consumes.
 domain is `ℂ` minus a discrete set, hence preconnected); (e) `Sᗮᗮ = S` to convert the annihilator
 statement into membership in the closed span; then the transport by `xiWeilL2Form_sub_norm_le`
 closes rung 0.
+
+### Gate 5 progress — the identity-theorem domain LANDED
+
+The identity theorem needs its domain open and preconnected. Both are now certified for the divisor
+complement, reusing the corpus rather than rebuilding:
+
+- **`XiC_zeroSet_countable`** — the zero set of `XiC` is countable: it is the RANGE of
+  `xiSpectralPoint` over `XiZeroCopy` (`XiC_eq_zero_iff_exists_xiZeroCopy`), and `XiZeroCopy` is
+  countable via the corpus's `xiDivisorSupport_univ_countable` (extracted there from mathlib's
+  locally finite divisor plus σ-compactness of the plane). Reusing the corpus theorem avoided
+  redoing the local-finiteness argument entirely.
+- **`isPreconnected_XiC_ne_zero`** — removing a countable set from the plane leaves a path-connected
+  set (`Set.Countable.isPathConnected_compl_of_one_lt_rank`, `rank ℝ ℂ = 2`).
+- **`isOpen_XiC_ne_zero`** — continuity of `XiC`.
+
+With `differentiableAt_annihilator`, the annihilator `φ_a` is analytic on an OPEN PRECONNECTED set,
+so vanishing on any nonempty open subset forces `φ_a ≡ 0`. That is the mathematical content of rung
+0's step (d). What remains: invoke the identity theorem on these hypotheses, then convert
+`a ⊥ every outside kernel ⟹ a ⊥ K_w` into membership in the closed span via `Sᗮᗮ = S`, after which
+`xiWeilL2Form_sub_norm_le` transports the rank-one negativity and rung 0 closes.

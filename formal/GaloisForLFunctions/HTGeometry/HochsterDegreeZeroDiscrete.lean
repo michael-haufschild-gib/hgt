@@ -39,6 +39,7 @@ theorem finrank_reducedH0_bot_eq_isolatedBasis_card :
       = Fintype.card (Fin (n + 1)) := by
   haveI : Nonempty (Fin (n + 2)) := ⟨0⟩
   rw [finrank_reducedH0_bot, Fintype.card_fin, Fintype.card_fin]
+  omega
 
 end
 

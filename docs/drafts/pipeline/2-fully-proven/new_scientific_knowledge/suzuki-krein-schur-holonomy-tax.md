@@ -136,3 +136,27 @@ No claim is made that `(5)` currently holds for actual source.  That is exact RH
 Lean proves scalar completed-square identity `(2)`, equivalence `(3)`, strict positivity of
 nonzero coupling tax, and specialization to exact negative-node affine-resolvent debt.  General
 finite-dimensional block congruence remains paper-proved.
+
+### Lean progress — general finite block congruence formalized
+
+The §7 gap "general finite-dimensional block congruence remains paper-proved" is now closed
+unconditionally in `formal/GaloisForLFunctions/RHTower/SuzukiKreinSchurBlockCongruence.lean`:
+
+- `suzukiSignedKreinMetric P N`, `suzukiKreinCompletion Cpp Cpm Cmm` — the signed Krein metric
+  `S = diag(P,−N)` and self-adjoint source completion `C = [[C₊₊,C₊₋],[C₊₋ᴴ,C₋₋]]`.
+- `suzukiSignedKreinMetric_add_completion` — the completed weld is the block matrix
+  `[[P+C₊₊, C₊₋],[C₊₋ᴴ, C₋₋−N]]`.
+- `suzukiKreinWeld_posSemidef_iff_schurComplement` — **equation (4)**: with `A = P+C₊₊` positive
+  definite, `(S+C) ⪰ 0 ↔ (C₋₋−N) − C₊₋ᴴ(P+C₊₊)⁻¹C₊₋ ⪰ 0`, the block Gaussian congruence
+  (via mathlib `Matrix.PosDef.fromBlocks₁₁`).
+- `suzukiKreinScalarSchurComplement_posSemidef_iff` — the `1×1` Schur complement is PSD iff
+  `n + b²/a ≤ c` (single entry `c−n−b²/a`).
+- `suzukiKreinScalarWeld_posSemidef_iff_twoChannelForm` — **equation (3) as the `Fin 1`
+  specialization of (4)**: the scalar two-channel form `Q(x,y) = a x² + 2bxy + (c−n)y²` is
+  nonnegative for all `x,y` iff the `1×1` block weld is PSD, both equal to the scalar Schur
+  threshold, routed through the general congruence and the existing scalar law
+  `suzukiTwoChannelKreinCompletionForm_nonneg_iff_schurDebt`.
+
+All four depend only on `[propext, Classical.choice, Quot.sound]`; `lake build` of the RHTower
+umbrella is green; `formal lint passed`.  The RH-bearing inequality (5) and the analytic
+Pontryagin-realization conjecture `SUZUKI-FINITE-NEGATIVE-BLOCK-WELD` remain the open frontier.

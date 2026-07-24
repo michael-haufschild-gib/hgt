@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilPositivityBand
+import GaloisForLFunctions.RHTower.XiSchwartzMetricSupport
 
 /-!
 # The divisor Hilbert space carrying the Weil form
@@ -361,6 +362,37 @@ theorem differentiableAt_annihilator (a : XiDivisorL2) {s : ℂ}
       _ = C * (‖a q‖ * ‖xiInvVec q‖) := by ring
   have hdiff := differentiableOn_tsum_of_summable_norm hmaj hterm hUopen hbound
   exact hdiff.differentiableAt (hUopen.mem_nhds hsU)
+
+/-! ## §5 The identity theorem on the divisor complement -/
+
+noncomputable local instance : Countable XiDivisorSupport :=
+  Set.countable_univ_iff.mp xiDivisorSupport_univ_countable
+
+noncomputable local instance : Countable XiZeroCopy := inferInstance
+
+/-- The zero set of the centered completed zeta is countable: it is the range of
+the spectral-point map on a countable index. -/
+theorem XiC_zeroSet_countable : {z : ℂ | XiC z = 0}.Countable := by
+  apply (Set.countable_range xiSpectralPoint).mono
+  intro z hz
+  obtain ⟨q, hq⟩ := (XiC_eq_zero_iff_exists_xiZeroCopy z).mp hz
+  exact ⟨q, hq⟩
+
+/-- The complement of the divisor is preconnected: removing a countable set from
+the plane leaves a path-connected set. -/
+theorem isPreconnected_XiC_ne_zero :
+    IsPreconnected {z : ℂ | XiC z ≠ 0} := by
+  have hpath : IsPathConnected {z : ℂ | XiC z = 0}ᶜ := by
+    apply Set.Countable.isPathConnected_compl_of_one_lt_rank _ XiC_zeroSet_countable
+    rw [Complex.rank_real_complex]
+    norm_num
+  have hset : {z : ℂ | XiC z = 0}ᶜ = {z : ℂ | XiC z ≠ 0} := rfl
+  rw [hset] at hpath
+  exact hpath.isConnected.isPreconnected
+
+theorem isOpen_XiC_ne_zero : IsOpen {z : ℂ | XiC z ≠ 0} := by
+  have hcont : Continuous XiC := continuousOn_univ.mp XiC_analytic.continuousOn
+  exact isOpen_compl_singleton.preimage hcont
 
 end
 
