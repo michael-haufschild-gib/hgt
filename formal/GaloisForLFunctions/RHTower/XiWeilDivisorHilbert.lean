@@ -431,6 +431,227 @@ theorem annihilator_eq_zero_of_vanishing_open (a : XiDivisorL2) {Ω : Set ℂ}
     isPreconnected_XiC_ne_zero (hΩsub hz₀) hev
   exact heq hw
 
+/-! ## §6 Outside-strip detection -/
+
+/-- Base points off the closed strip avoid the divisor. -/
+theorem XiC_ne_zero_of_half_le_abs_im {z : ℂ} (hz : 1 / 2 ≤ |z.im|) :
+    XiC z ≠ 0 := by
+  intro h
+  obtain ⟨q, hq⟩ := (XiC_eq_zero_iff_exists_xiZeroCopy z).mp h
+  have hlt := abs_im_xiSpectralPoint_lt_half q
+  rw [hq] at hlt
+  linarith
+
+/-- The kernels based off the strip. -/
+def outsideKernelSet : Set XiDivisorL2 :=
+  {v | ∃ (z : ℂ) (hz : XiC z ≠ 0), 1 / 2 < |z.im| ∧ v = xiKernelVec hz}
+
+/-- **Every kernel is approximated by outside-strip kernels.**  A vector
+orthogonal to all outside-strip kernels is, by the identity theorem, orthogonal
+to every kernel; so no kernel escapes the closed span. -/
+theorem kernelVec_mem_closure_span {w : ℂ} (hw : XiC w ≠ 0) :
+    xiKernelVec hw ∈
+      (Submodule.span ℂ outsideKernelSet).topologicalClosure := by
+  set S := (Submodule.span ℂ outsideKernelSet).topologicalClosure with hS
+  have hmem : xiKernelVec hw ∈ Sᗮᗮ := by
+    intro a ha
+    have hvan : ∀ z ∈ {z : ℂ | 1 / 2 < |z.im|},
+        (∑' q : XiZeroCopy, (starRingEnd ℂ) (a q) *
+          xiCauchyRegularizedKernel z (xiSpectralPoint q)) = 0 := by
+      intro z hz
+      have hz' : XiC z ≠ 0 := XiC_ne_zero_of_half_le_abs_im (le_of_lt hz)
+      have hin : xiKernelVec hz' ∈ S := by
+        apply Submodule.le_topologicalClosure
+        exact Submodule.subset_span ⟨z, hz', hz, rfl⟩
+      have := ha _ hin
+      rw [← inner_kernelVec_eq a hz']
+      simpa [inner_conj_symm] using congrArg (starRingEnd ℂ) this
+    have hopen : IsOpen {z : ℂ | 1 / 2 < |z.im|} :=
+      isOpen_lt continuous_const (continuous_abs.comp Complex.continuous_im)
+    have hz₀ : (Complex.I : ℂ) ∈ {z : ℂ | 1 / 2 < |z.im| } := by
+      simp
+      norm_num
+    have hsub : {z : ℂ | 1 / 2 < |z.im|} ⊆ {z : ℂ | XiC z ≠ 0} := by
+      intro z hz
+      exact XiC_ne_zero_of_half_le_abs_im (le_of_lt hz)
+    have hkey := annihilator_eq_zero_of_vanishing_open a hopen hz₀ hsub hvan hw
+    rw [inner_kernelVec_eq a hw] at *
+    simpa [inner_conj_symm] using congrArg (starRingEnd ℂ) hkey
+  rwa [Submodule.orthogonal_orthogonal] at hmem
+
+/-- **Rung 0.**  An off-critical zero makes the Weil form negative at a FINITE
+combination of kernels whose base points all lie off the critical strip. -/
+theorem exists_neg_weilL2Form_outsideStrip {s : ℂ} (hs : s ∈ rightHalf)
+    (hzero : xi s = 0) :
+    ∃ F : XiDivisorL2, F ∈ Submodule.span ℂ outsideKernelSet ∧
+      (xiWeilL2Form F).re < 0 := by
+  obtain ⟨w, hXw, hXwc, hw0, hwim, hneg⟩ :=
+    exists_neg_weilDiagonal_of_offAxis_zero
+      (by
+        set pt₁ : ℂ := -Complex.I * (s - 1 / 2) with hpt
+        have hre : 1 / 2 < s.re := hs
+        have hXpt : XiC pt₁ = 0 := by
+          show xi ((1 / 2 : ℂ) + pt₁ * Complex.I) = 0
+          have harg : (1 / 2 : ℂ) + pt₁ * Complex.I = s := by
+            rw [hpt, show (-Complex.I * (s - 1 / 2) * Complex.I) =
+              -(Complex.I * Complex.I) * (s - 1 / 2) from by ring,
+              Complex.I_mul_I]
+            ring
+          rw [harg]
+          exact hzero
+        exact (by rw [XiC_conj', hXpt, map_zero] :
+          XiC ((starRingEnd ℂ) pt₁) = 0))
+      (by
+        set pt₁ : ℂ := -Complex.I * (s - 1 / 2) with hpt
+        have hre : 1 / 2 < s.re := hs
+        have hval : pt₁.im = -(s.re - 1 / 2) := by
+          rw [hpt]
+          simp [Complex.mul_im, Complex.sub_re]
+        have : ((starRingEnd ℂ) pt₁).im = s.re - 1 / 2 := by
+          simp [hval]
+        rw [this]
+        linarith)
+      (by
+        set pt₁ : ℂ := -Complex.I * (s - 1 / 2) with hpt
+        have hre : 1 / 2 < s.re := hs
+        have hval : pt₁.im = -(s.re - 1 / 2) := by
+          rw [hpt]
+          simp [Complex.mul_im, Complex.sub_re]
+        intro hcon
+        have him0 : ((starRingEnd ℂ) pt₁).im = 0 := by rw [hcon]; simp
+        rw [show ((starRingEnd ℂ) pt₁).im = -pt₁.im from by simp, hval] at him0
+        simp at him0
+        linarith)
+  -- the kernel vector at `w` already has negative form
+  have hQw : (xiWeilL2Form (xiKernelVec hXw)).re < 0 := by
+    rw [xiWeilL2Form_kernelVec]
+    exact hneg
+  -- transport to the closed span, then to a finite combination
+  set K := xiKernelVec hXw with hK
+  set c : ℝ := -(xiWeilL2Form K).re with hc
+  have hcpos : 0 < c := by rw [hc]; linarith
+  set M : ℝ := ‖K‖ with hM
+  have hMnn : 0 ≤ M := norm_nonneg _
+  set ε : ℝ := min 1 (c / (2 * M + 2)) with hε
+  have hεpos : 0 < ε := lt_min one_pos (div_pos hcpos (by linarith))
+  obtain ⟨F, hFmem, hFdist⟩ :=
+    Metric.mem_closure_iff.mp (kernelVec_mem_closure_span hXw) ε hεpos
+  refine ⟨F, hFmem, ?_⟩
+  have hd : ‖F - K‖ < ε := by
+    rw [dist_comm, dist_eq_norm] at hFdist
+    exact hFdist
+  have hFnorm : ‖F‖ ≤ M + 1 := by
+    have h1 : ‖F‖ ≤ ‖F - K‖ + ‖K‖ := by
+      simpa using norm_le_norm_sub_add _ _
+    have h2 : ε ≤ 1 := min_le_left _ _
+    linarith
+  have hlip := xiWeilL2Form_sub_norm_le F K
+  have hεle : ε ≤ c / (2 * M + 2) := min_le_right _ _
+  have hbound : ‖xiWeilL2Form F - xiWeilL2Form K‖ < c := by
+    have h1 : ‖F - K‖ * ‖F‖ + ‖K‖ * ‖F - K‖ ≤ ε * (M + 1) + M * ε := by
+      have hA : ‖F - K‖ * ‖F‖ ≤ ε * (M + 1) :=
+        mul_le_mul (le_of_lt hd) hFnorm (norm_nonneg _) (le_of_lt hεpos)
+      have hB : ‖K‖ * ‖F - K‖ ≤ M * ε :=
+        mul_le_mul_of_nonneg_left (le_of_lt hd) hMnn
+      linarith
+    have h2 : ε * (M + 1) + M * ε < c := by
+      have hpos : (0 : ℝ) < 2 * M + 2 := by linarith
+      have : ε * (2 * M + 1) < c := by
+        calc ε * (2 * M + 1) ≤ (c / (2 * M + 2)) * (2 * M + 1) :=
+              mul_le_mul_of_nonneg_right hεle (by linarith)
+          _ < c := by
+              rw [div_mul_eq_mul_div, div_lt_iff₀ hpos]
+              nlinarith [hcpos]
+      linarith
+    linarith [hlip, h1, h2]
+  have hre : (xiWeilL2Form F).re ≤ (xiWeilL2Form K).re +
+      ‖xiWeilL2Form F - xiWeilL2Form K‖ := by
+    have := Complex.re_le_norm (xiWeilL2Form F - xiWeilL2Form K)
+    rw [Complex.sub_re] at this
+    linarith
+  rw [hc] at hcpos
+  linarith [hre, hbound]
+
+/-! ## §7 The criterion -/
+
+/-- A divisor sequence that depends only on the spectral point.  Test functions
+have this property; general `ℓ²` sequences do not. -/
+def FactorsThroughSpectral (a : XiDivisorL2) : Prop :=
+  ∀ q q' : XiZeroCopy, xiSpectralPoint q = xiSpectralPoint q' → a q = a q'
+
+theorem factorsThroughSpectral_kernelVec {z : ℂ} (hz : XiC z ≠ 0) :
+    FactorsThroughSpectral (xiKernelVec hz) := by
+  intro q q' hqq
+  rw [xiKernelVec_apply, xiKernelVec_apply, hqq]
+
+/-- Membership in the span preserves factoring through the spectral point. -/
+theorem factorsThroughSpectral_of_mem_span {a : XiDivisorL2}
+    (ha : a ∈ Submodule.span ℂ outsideKernelSet) :
+    FactorsThroughSpectral a := by
+  induction ha using Submodule.span_induction with
+  | mem x hx =>
+      obtain ⟨z, hz, -, rfl⟩ := hx
+      exact factorsThroughSpectral_kernelVec hz
+  | zero =>
+      intro q q' _
+      rw [lp.coeFn_zero]
+      rfl
+  | add x y _ _ hx hy =>
+      intro q q' h
+      rw [lp.coeFn_add]
+      simp only [Pi.add_apply]
+      rw [hx q q' h, hy q q' h]
+  | smul c x _ hx =>
+      intro q q' h
+      rw [lp.coeFn_smul]
+      simp only [Pi.smul_apply]
+      rw [hx q q' h]
+
+/-- **Under RH the form is nonnegative on test functions.**  All spectral points
+are real, so conjugation fixes them and the form becomes a sum of squares. -/
+theorem xiWeilL2Form_re_nonneg_of_rh (hRH : RiemannHypothesis) {a : XiDivisorL2}
+    (ha : FactorsThroughSpectral a) : 0 ≤ (xiWeilL2Form a).re := by
+  have hfix : ∀ q : XiZeroCopy, a (xiZeroCopyLineConjEquiv q) = a q := by
+    intro q
+    apply ha
+    rw [xiSpectralPoint_lineConj]
+    obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
+    rw [ht, Complex.conj_ofReal]
+  have hsum := summable_weilL2Summand a
+  have hcongr : xiWeilL2Form a =
+      ∑' q : XiZeroCopy, ((Complex.normSq (a q) : ℝ) : ℂ) := by
+    rw [xiWeilL2Form]
+    refine tsum_congr fun q => ?_
+    rw [hfix q, Complex.mul_conj]
+  rw [hcongr]
+  have hsum' : Summable (fun q : XiZeroCopy =>
+      ((Complex.normSq (a q) : ℝ) : ℂ)) := by
+    apply hsum.congr
+    intro q
+    rw [hfix q, Complex.mul_conj]
+  rw [Complex.re_tsum hsum']
+  apply tsum_nonneg
+  intro q
+  simp only [Complex.ofReal_re]
+  exact Complex.normSq_nonneg _
+
+/-- **RH is equivalent to positivity of the Weil form on kernels based off the
+critical strip.**  Every entry of that family is an absolutely convergent prime
+expression, since the base points avoid the strip in which no Dirichlet series
+converges. -/
+theorem riemannHypothesis_iff_outsideStrip_nonneg :
+    RiemannHypothesis ↔
+      ∀ F ∈ Submodule.span ℂ outsideKernelSet, 0 ≤ (xiWeilL2Form F).re := by
+  constructor
+  · intro hRH F hF
+    refine xiWeilL2Form_re_nonneg_of_rh hRH ?_
+    exact factorsThroughSpectral_of_mem_span hF
+  · intro hpos
+    rw [rh_iff_xi_ne_zero_right]
+    intro s hs hzero
+    obtain ⟨F, hFmem, hFneg⟩ := exists_neg_weilL2Form_outsideStrip hs hzero
+    linarith [hpos F hFmem]
+
 end
 
 end RHTower

@@ -270,3 +270,34 @@ theorem does not care about radii at all.
 **Remaining for rung 0:** assembly only — `Sᗮ ⊆ {K_w}ᗮ` (immediate from the two theorems above),
 hence `K_w ∈ Sᗮᗮ = S̄` (mathlib `Submodule.orthogonal_orthogonal`), then transport the rank-one
 negativity along `xiWeilL2Form_sub_norm_le`. No further analysis.
+
+## RUNG 0 CLOSED — [LEAN-PROVED]
+
+**`riemannHypothesis_iff_outsideStrip_nonneg`** (axioms standard, sorry-free, lint clean):
+
+> `RiemannHypothesis ↔ ∀ F ∈ Submodule.span ℂ outsideKernelSet, 0 ≤ (xiWeilL2Form F).re`
+
+where `outsideKernelSet` is the set of regularized Cauchy kernels whose base point satisfies
+`1/2 < |Im z|` — entirely off the critical strip.
+
+Both directions:
+- **(⟸)** `exists_neg_weilL2Form_outsideStrip`: an off-critical zero yields a FINITE outside-strip
+  combination with negative form. Chain: rank-one detection at an inside point (9bh) →
+  `kernelVec_mem_closure_span` (a vector orthogonal to all outside kernels is orthogonal to every
+  kernel, by analyticity + the identity theorem on the preconnected divisor complement, then
+  `Sᗮᗮ = S`) → transport by the Lipschitz bound `xiWeilL2Form_sub_norm_le` with an explicit ε.
+- **(⟹)** `xiWeilL2Form_re_nonneg_of_rh`: under RH every spectral point is real, so conjugation
+  fixes it; vectors in the span factor through the spectral point
+  (`factorsThroughSpectral_of_mem_span`), hence the form collapses to `Σ normSq`, manifestly ≥ 0.
+
+**Why this is the right carrier.** The strip is where detection must happen (a displaced zero is
+inside it) but where no Dirichlet series converges; outside the strip every Gram entry is absolutely
+convergent (`Im z < −½` gives `Re s > 1`; `Im z > ½` gives `Re(1−s) > 1` via the functional
+equation). Rung 0 removes that mismatch: detection is now performed by base points that never enter
+the strip.
+
+**Rung 1** is now the live claim: with the criterion on convergent prime data, find coefficient
+families whose prime-side weight `Σ_n Λ(n) n^{−1/2} W_n(c)` has a definite sign — the point where
+`Λ(n) ≥ 0` enters as a primitive rather than as a derived scalar. Design constraint (9bn): the 2026
+literature reports candidate positivity statements at large support explicitly DISPROVED, so rung 1
+must determine which support ranges survive rather than assume all do.

@@ -179,3 +179,17 @@ continuum equality and supplies no positive sign by itself.
 Correction and positive survivor:
 `suzuki-bicausal-no-free-splice-classification.md`.  Failed inference:
 `../../5-failed/suzuki-continuum-two-flank-surplus-pays-bicausal-seam.md`.
+
+## Lean status (verified 2026-07-24)
+
+All three proven theorems are formalized unconditionally and committed (axiom-clean, in the built umbrella):
+- **Theorem A** (eq. 1–2): `GaloisForLFunctions.HTGeometry.BicausalDisplacementOverlap` —
+  `bicausalLeftTarget_inter_rightTarget`, `bicausalLeftTarget_union_rightTarget`,
+  `volume_bicausalSeam`, `bicausal_intervalIntegral_conservation`.
+- **Theorem B** (eq. 3–4): `GaloisForLFunctions.HTGeometry.TiltedTentTwoFlankSurplus` —
+  `integral_tiltedTentFullProfile`, `tiltedTentTwoFlankSurplus_eq`.
+- **Theorem C** (eq. 5): same module — `tiltedTentTwoFlankSurplus_critical_eq`,
+  `cosh_one_lt_seven_div_four`, `tiltedTentTwoFlankSurplus_critical_gt_two`.
+
+The `[LEAN PENDING]` header tag is superseded. The only open item (actual-Mangoldt weak-convergence
+realization) is classical, explicitly not counted as a proved-here obligation.

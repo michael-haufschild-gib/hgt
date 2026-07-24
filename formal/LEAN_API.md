@@ -7,7 +7,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 33116 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 33125 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
 | `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 21538 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
@@ -32685,6 +32685,15 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `isOpen_XiC_ne_zero` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:393` |  |
 | theorem | `inner_kernelVec_eq` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:398` | The annihilator function is the inner product against the kernel vector. |
 | theorem | `annihilator_eq_zero_of_vanishing_open` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:412` | The identity theorem for the annihilator.** If the annihilator vanishes on a nonempty open set of admissible base points, it vanishes at every point off the divisor: an analytic fu |
+| theorem | `XiC_ne_zero_of_half_le_abs_im` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:437` | Base points off the closed strip avoid the divisor. |
+| def | `outsideKernelSet` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:446` | The kernels based off the strip. |
+| theorem | `kernelVec_mem_closure_span` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:452` | Every kernel is approximated by outside-strip kernels.** A vector orthogonal to all outside-strip kernels is, by the identity theorem, orthogonal to every kernel; so no kernel esca |
+| theorem | `exists_neg_weilL2Form_outsideStrip` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:484` | Rung 0.** An off-critical zero makes the Weil form negative at a FINITE combination of kernels whose base points all lie off the critical strip. |
+| def | `FactorsThroughSpectral` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:579` | A divisor sequence that depends only on the spectral point. Test functions have this property; general `ℓ²` sequences do not. |
+| theorem | `factorsThroughSpectral_kernelVec` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:582` |  |
+| theorem | `factorsThroughSpectral_of_mem_span` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:588` | Membership in the span preserves factoring through the spectral point. |
+| theorem | `xiWeilL2Form_re_nonneg_of_rh` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:612` | Under RH the form is nonnegative on test functions.** All spectral points are real, so conjugation fixes them and the form becomes a sum of squares. |
+| theorem | `riemannHypothesis_iff_outsideStrip_nonneg` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:642` | RH is equivalent to positivity of the Weil form on kernels based off the critical strip.** Every entry of that family is an absolutely convergent prime expression, since the base p |
 | theorem | `xiCauchyRegularizedKernel_conj_of_real` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:30` | At a real argument the conjugate-base-point kernel is the conjugate kernel. |
 | theorem | `weilGram_real_copy_contribution_eq_normSq` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:41` | On-line copies only add.** For every finite family of base points and every coefficient vector, a copy with real centered coordinate contributes the squared modulus of the superpos |
 | theorem | `weilGram_real_copy_contribution_re_nonneg` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:63` | The contribution of an on-line copy to the Weil Gram form is nonnegative. |
