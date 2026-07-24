@@ -221,3 +221,16 @@ claim is made.
   **both Theorem 1 and Theorem 2 are now formalized** — the card's full no-go mechanism (one channel
   fine, two channels reverse the sign) is unconditional.  The remaining open gate is the analytic
   asymptotic transport formula `(4)` (the `lim exp((r/2+1)u)·(D…φ_r)(u)` limit), still paper-level.
+- 2026-07-24 — **Asymptotic transport formula `(4)` formalized for one channel** (gate `formalize
+  asymptotic formula (4)`, `k = 1` case), in `RHTower/GammaEulerAsymptoticTransport.lean`
+  (unconditional, axioms `[propext, Classical.choice, Quot.sound]`):
+  * `cosh_half_rpow_factor` — the exact factorisation
+    `cosh(v/2)^{-r} = 2^r · exp(-rv/2) · (1 + exp(-v))^{-r}` (reusable).
+  * `gammaEulerOneDifference_asymptotic` — `exp((r/2+1)u)·D_{r,h}φ_r(u) → gammaEulerOneDifferenceNextCoefficient r h`
+    as `u → ∞`, for the Gamma characteristic `φ_r(u) = cosh(u/2)^{-r}`.  The exact identity
+    `D_{r,h}φ_r(u) = 2^r exp(-ru/2)·F(exp(-u))` (with `F 0 = 0`, `F'(0) = -r·d_{r,h}(r/2+1)`) reduces the
+    limit to the boundary slope `F(e)/e → F'(0)` (leading `exp(-ru/2)` mode annihilated).
+  This connects the continuous characteristic to the corpus coefficient `gammaEulerOneDifferenceNextCoefficient`.
+  Remaining for gate `(4)`: the general `k`-channel asymptotic (iterating the difference on the
+  characteristic profile), i.e. connecting `exp((r/2+1)u)·(D…φ_r)(u)` to
+  `gammaEulerManyDifferenceNextCoefficient` for arbitrary finite blocks.

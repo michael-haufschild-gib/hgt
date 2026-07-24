@@ -295,3 +295,23 @@ equivalence for arbitrary finite complexes remains open, so this card stays in s
 - [ ] obtain specialist novelty and significance review
 - [ ] construct one active polarized analytic sheaf realization
 - [ ] prove full faithfulness in a nontrivial HT class
+
+### Lean progress (combinatorial reduced-H⁰ target of the strand equivalence)
+`HTGeometry/ReducedH0Components.lean` [PROVED HERE], standard axioms [propext, Classical.choice,
+Quot.sound], builds clean, formal lint passed.
+
+Delivered — the combinatorial (reduced simplicial cohomology) side of the Hochster strand equivalence at
+degree 0, for the 1-skeleton of a finite complex (a `SimpleGraph` on a Fintype over a field `F`):
+- `componentConstant G F` : the submodule of 0-cochains constant on connected components (= ker of the
+  graph coboundary);
+- `componentConstantEquiv` : `componentConstant ≃ₗ[F] (ConnectedComponent → F)` (component-constant
+  cochains are exactly functions on components), via `ConnectedComponent.lift`/`.ind`/`.sound`;
+- `finrank_componentConstant` : `dim (ker coboundary) = card (components)`;
+- `finrank_reducedH0` : reduced `H̃⁰ = componentConstant/⟨1⟩` has `dim = card(components) − 1`.
+
+This is the H⁰ combinatorial target that the isolated (fully discrete) Koszul `H¹`-rank in
+`KoszulCohomology.lean` (`isolatedDisconnectCycleBasis_independent_mod_koszulBoundary`, giving `n+1`
+classes for `n+2` discrete vertices) must equal: for the discrete complex, `card(components)=|V|`, so
+reduced `H̃⁰ = |V|−1 = n+1`, matching. REMAINING for the general strand equivalence: (i) the algebraic
+squarefree-Koszul-strand ↔ reduced-cochain chain map for arbitrary induced subcomplexes and all degrees,
+(ii) matching the exact ranks (Koszul-side spanning/upper bound) — the deep general Hochster identity.

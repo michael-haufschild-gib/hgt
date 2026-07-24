@@ -1925,3 +1925,171 @@ engine — the open core moves from "central blindness" to the high-tail b → �
 **Next generative move after landing:** T-shifted budgets — probe at s = 4 + iT gives per-copy
 positive LOCAL masses near height T with budget Re logDeriv xi(4+iT) (uniformly bounded via the
 certified Λ₀ strip machinery?) → height-uniform floors → attack the tail.
+
+## Step 9bd — the strip-edge budget: unconditional off-line height floor 8 [LANDED]
+
+Two modules, lint-clean, `#print axioms` = {propext, Classical.choice, Quot.sound}.
+
+**[PROVED HERE] The probe-family sum rule** (`XiWardCriticalBudgetProbe.lean`). For real `c`
+with `ξ(½+c) ≠ 0`, probing the centered resolvent trace at the pair `±(−ci)` cancels the per-copy
+regularization and gives, over the COMPLETE multiplicity-exact divisor,
+  `Σ'_q P_c(q) = 2·Re logDeriv ξ(½+c)`,  `P_c(q) = (c−v)/(u²+(c−v)²) + (c+v)/(u²+(c+v)²)`
+(`u+iv = pt_q`, strip `|v| < ½`). For `c ≥ ½` every mass is positive with floor `2c/(u²+(c+½)²)`
+(`xiBudgetMassAt_ge`), and the Klein four-group of divisor symmetries (reflect × conjugate) embeds
+four copies of each strict-right pair into the budget (`tsum_pairs_four_mul_massAt_le`, reusing the
+`xiWardQuadrupleEmbed` injectivity from 9bc). General floor: `height² ≥ 8c/B − (c+½)²`.
+
+**[PROVED HERE] The budget collapses at the strip edge.** At `c = ½` (probe `s = 1`) the pole
+factor kills the `Λ₀′` term: `ξ(1) = ½`, `ξ′(1) = Λ₀(1)/2`, so **`logDeriv ξ(1) = Λ₀(1)`** —
+the entire budget is ONE special value, no arithmetic chain, no `γ`/`log π`/von-Mangoldt ledger.
+
+**[PROVED HERE] `‖Λ₀(1)‖ ≤ 3/100`** via the theta representation at the critical exponent
+`Λ₀(1) = ½·mellin f_modif(½)`, split at `t = 1`:
+- kernel sharpened from the corpus constant 3 to `23/11` — the corpus lemma was refactored to
+  `evenKernel_zero_sub_one_le_of_le` (ratio `r` a free parameter, constant `2/(1−r)`), instantiated
+  at `r = e^{−π} ≤ 1/23` (certified via `e^π ≥ e³·e^{0.14} ≥ 20.08·1.1498 > 23`);
+- outer piece: `t^{−1/2} ≤ 1`, `∫₁^∞ e^{−πt} = e^{−π}/π` (FTC);
+- inner piece: exact norm identities `norm_f_modif_eq_of_one_lt/_of_lt_one` make the integrand
+  `t^{−1}·K(1/t)`, and the INVERSION `t ↦ t⁻¹` (`integral_image_eq_integral_abs_deriv_smul`) carries
+  it to `∫₁^∞ e^{−πx}/x dx ≤ e^{−π}/π` — the singular endpoint disappears, no power-bound loss
+  (the corpus `24/x⁴` route was 4× too lossy here and would have LOWERED the floor).
+Total: `Λ₀(1) ≤ (23/11)(e^{−π}/π) ≤ 1/(11π) ≤ 3/100`, budget `B = 2Λ₀(1) ≤ 3/50`.
+
+**[THEOREM] `xiWard_offlinePair_height_sq_gt_sixtyfive`**: every strict-right Schwarz pair has
+`(Im λ)² > 65`; `xiWard_offlinePair_abs_im_gt_eight`: **no off-critical zero of ξ below height 8**.
+Supersedes 9bc's 47.25 (s=4 probe) and the J-ladder's 3/4 — a 87× strengthening of the corpus's
+explicit floor; the only prior corpus statement of this kind was existential (`∃ η > 0`).
+
+**Novelty gate (hostile).** The sum rule is the classical Hadamard/de-la-Vallée-Poussin trace
+`Σ_ρ Re 1/(s−ρ)`, and `Σ_ρ 1/(ρ(1−ρ)) = 2+γ−log 4π` is textbook — a literature search yields both.
+Corpus-new as artifacts: (i) the whole chain is COMPUTATION-FREE (classical low-height zero-freeness
+is verified numerically; here the constant comes from two exponential integrals), (ii) the
+quadruple-counting refinement that makes off-line zeros cost 4× while on-line cost 2×, (iii) the
+`logDeriv ξ(1) = Λ₀(1)` collapse making the budget a single certified special value.
+
+**[OPEN CORE — structural, proved by desk analysis, worth formalizing]** The linear budget cannot
+be pushed past the first zero. Two independent reasons, both established this round:
+1. *Degeneracy*: `P_c(u,v) → P_c(u,0)` as `v → 0`, so the off-line/on-line discrimination is `O(v²)`;
+   no inequality with slack can exclude a zero at `½+ε`.
+2. *Saturation*: the budget is consumed by the actual (on-line) zeros. With mass `~2c/u²` per copy,
+   the floor from budget `B` is `u ≥ √(8c/B − (c+½)²)`, and since `B ≥ 2·(first-zero mass)`, the
+   floor is capped at `t₁·2^{1/2k}`-type values — i.e. ~14, never ∞.
+   Concavity refinement: writing `f(x) = x/(u²+x²)`, `P_c = f(c−v)+f(c+v)` vs on-line `2f(c)`;
+   `f'' < 0` for `c < √3·u`, so at heights `u > c/√3` an off-line zero costs LESS per copy than an
+   on-line one — the discrimination window is exactly `u < c/√3`.
+**Next generative move**: the moment ladder. `logDeriv XiC(z) = −Σ_k M_k z^{2k−1}` with
+`M_k = Σ_q pt_q^{−2k}`, and the floor from moment `k` is `u ≥ (4/M_k)^{1/2k}` (desk: `M_2 ≈ 7.2e−5`
+gives ~15.3, ABOVE `t₁` — the 4-vs-2 multiplicity beats the per-copy loss). `M_k` is computable from
+the Taylor coefficients `b_{2j}` of Ξ at 0, which are MOMENTS of the positive Pólya kernel
+(`f_modif_nonneg`, already certified) — so the ladder is reachable with the same theta machinery,
+via Newton's identities. That is the next brick.
+
+## Step 9be — the discrimination window: why the budget family stops at ~15 [PROVED]
+
+The vague "saturation wall" of 9bd is now an exact theorem (same module, axioms clean).
+
+**[PROVED HERE] `offline_sub_online_mass`** — closed form for the per-copy penalty. With
+`f(x) = x/(u²+x²)`, an off-line copy costs `f(c−v)+f(c+v)` and an on-line copy at the same height
+costs `2f(c)`; the difference is EXACTLY
+  `f(c−v)+f(c+v) − 2f(c) = 2c·v²·(c² − 3u² − v²) / [(u²+c²)(u²+(c−v)²)(u²+(c+v)²)]`.
+Numerator sign = sign of `c² − 3u² − v²`; denominator always positive. Hence the exact dichotomy
+(`offline_mass_lt_online`, `online_mass_lt_offline`):
+  `3u² + v² < c²` ⟹ off-line costs MORE;  `3u² + v² > c²` ⟹ off-line costs LESS.
+
+**[PROVED HERE] `offline_mass_lt_online_at_edge`** — at the strip-edge probe `c = ½`, the certified
+floor `(Im λ)² > 65` puts every off-critical copy strictly ABOVE the threshold. So the sum rule
+charges a displaced copy strictly LESS than an on-line copy at the same height: **the entire force
+of the height floor is the fourfold multiplicity (4 copies vs 2), not the displacement.**
+
+**Consequence (why the family is capped).** Since displacement is never penalised above height
+`c/√3`, the only lever is the 4-vs-2 count, so the floor from budget `B` can never exceed the height
+at which `4·(mass) = B` — and `B` is itself saturated by the real zeros. Quantitatively the ceiling
+of the whole probe/moment family is `≈ t₁·2^{1/2k}`, i.e. ~15, never ∞. Raising `c` does not help:
+it raises the threshold `c/√3` but raises `B` faster.
+
+**[REVISION of 9bd's "next brick"]** The moment ladder is NOT cheaply reachable: `M₂ = M₁²/2 − 4c₄`
+is a cancellation of two ~1e−3 quantities down to ~7e−5, so it needs ~1% two-sided accuracy on
+`∫₁^∞ K(t)t^{−3/4}(log t)^n dt` — integrands with no elementary antiderivative, i.e. certified
+numerical quadrature (excluded by the no-computation rule and heavy in Lean). The linear-budget line
+is therefore essentially exhausted at floor ≈ 9.3 (currently 8.06; the residual gap is only the
+kernel constant 23/11 vs 2 and the `t^{−1/2}` saving in the two exponential integrals).
+
+**What this rules out, precisely.** Every functional of the divisor that is (i) a positive linear
+statistic and (ii) evaluated by a resolvent/trace identity, hits the same wall: its budget is
+consumed by the on-line zeros, and subtracting them requires locating them. That is the sharp form
+of the central-blindness obstruction — and it says any proof must break the linearity: the
+discriminating quantity has to be second-order in the displacement `v` AND simultaneously pinned by
+an exact evaluation. `v²` appears explicitly in the numerator above, which is the shape to exploit.
+
+**Next**: the `v²`-coefficient object. Differentiating the exact identity in `c` at fixed `u,v`
+isolates the displacement term; the resulting family `Σ_q v_q²·w(u_q)` with certified weight `w` is
+the first statistic that vanishes identically iff RH and is not saturated by on-line zeros (they
+contribute 0, not mass). Whether it admits a trace evaluation is the open question to attack next.
+
+## Step 9bf — the universal floor: an unconditional zero-free strip for ζ [PROVED]
+
+The strip-edge budget bounds EVERY zero, not only off-critical ones: reflection `pt ↦ −pt` is
+fixed-point-free on the divisor (`xiZeroCopy_ne_reflect`, since `pt = 0` is excluded), so every copy
+is charged twice — `two_mul_massAt_le_tsum`. Same budget `B ≤ 3/50`, one factor of 2 instead of 4:
+
+**[THEOREM] `xiSpectral_re_sq_gt_thirtytwo`** — every copy of the ξ-divisor has squared ordinate > 32.
+**[THEOREM] `xi_ne_zero_of_im_sq_le`** — ξ has no zero with `(Im s)² ≤ 32`.
+**[THEOREM] `riemannZeta_ne_zero_of_im_sq_le`** — for `s ≠ 0,1`, `Re s > 0`, `(Im s)² ≤ 32`:
+  `ζ(s) ≠ 0`. **A zero-free horizontal strip |Im s| ≤ 5.65, with no zero located numerically.**
+(The `Re s > 0` hypothesis is sharp: the trivial zero at `s = −2` has ordinate 0.)
+
+**[THEOREM] `card_le_of_height_le_certified`** — any finite family of divisor copies of height ≤ T
+has cardinality ≤ `3(T²+1)/50`: an unconditional, computation-free low-lying zero count
+(weak vs Riemann–von Mangoldt asymptotically, but requires no zero search).
+
+**Optimality of the probe (desk, decisive).** The all-zeros floor is `4c/B(c) − (c+½)²` with
+`B(c) = Σ_{t_n} 4c/(t_n²+c²)`. Evaluating: `c = ½ → 42.3`, `c = 1 → 41.1`, `c → 0⁺ → 43.05` but
+`c ≥ ½` is FORCED (mass positivity needs `c > |v|`, and only `|v| < ½` is known). So **c = ½ is the
+optimum of the whole family**, and with a perfect budget certificate the ceilings are
+all-zeros `u² ≤ 42.3` (height 6.5) and off-line `u² ≤ 85.6` (height 9.25).
+Current certified: 32 and 65 — i.e. **87% of the intrinsic ceiling already attained**; the residual
+25% budget slack is kernel constant 23/11 vs 2 (4.5%), `t^{−1/2} ≤ 1` in the outer integral (14%),
+`1/x ≤ 1` in the inner (30% of that piece). Sharpening all three would give ~6.4 / ~9.1 — bounded.
+
+**Status of the line of attack.** The linear-budget family is now exhausted and its ceiling is
+proved intrinsic (9be + the optimality computation above). Its exhaustion is not a wall in the
+problem, only in this instrument: it says the discriminating quantity must be second-order in the
+displacement `v` and simultaneously pinned by an exact evaluation. Two facts constrain what can
+work, both established here:
+- (identity theorem) no nonzero ANALYTIC weight vanishes on the real axis, so every analytic linear
+  statistic `Σ h(pt_q)` is charged by the on-line zeros — saturation is structural, not accidental;
+- (9be) above height `c/√3` displacement is never penalised, so within linear statistics only
+  multiplicity discriminates, and multiplicity is bounded by 4/2.
+Hence the next instrument must be QUADRATIC in the divisor. The corpus already has exactly one such
+certified object with the right vanishing property: the edge energy `E = Σ'_{(q,q')} G(q,q')` with
+`E ∈ {0} ∪ (8π,∞]`, `E = 0 ⟺ RH`. Its missing half is an independent evaluation. That is now the
+single named open core of this campaign:
+**[OPEN CORE] evaluate (or bound below 8π) the edge energy without locating zeros.**
+The available handle: `E` is an `L²` norm of the strict-right Ward response, and the response's
+right/nonright Wiener–Hopf split is the only non-computable ingredient — the split is governed by a
+winding/argument-principle count, for which the corpus HAS machinery (WindingNumber, WindingFull,
+WindingXi, ArgumentVariation, UPlaneWinding — mathlib has none of this). Next brick: express the
+strict-right factor's logarithmic derivative as a winding-weighted contour integral of the FULL
+logDeriv ξ, so that `E` becomes a functional of computable boundary data.
+
+### 9bf amendment — where the contour handle actually lands (checked before spending Lean on it)
+
+The winding representation of the strict-right trace is
+  `Σ_{λ ∈ Ω} f(λ) = (1/2πi) ∮_{∂Ω} f · logDeriv ξ`,
+with `Ω` the strict-right half-strip. Its boundary is the critical line — i.e. **exactly where the
+zeros sit if RH holds**, so the contour integral is not well defined without prior knowledge of
+boundary zeros. The standard repair (take `Ω = {σ₀ < Re s < 1}`, `σ₀ > ½`) turns the object into the
+zero-density counter `N(σ₀,T)`, and `N(σ,T) = 0` for all `σ > ½` IS RH. So this handle is the
+classical zero-density route: real mathematics, but a known-hard one, not a shortcut. Recording it
+so the route is not re-derived.
+
+**Map of the campaign's exits, as now understood.**
+- linear budget statistics — EXHAUSTED, ceiling proved intrinsic (9be, 9bf);
+- disc/Jensen methods — exhausted at radius ~1 (9ay, 9bb);
+- contour/winding split — reduces to zero-density estimates (above);
+- edge-energy quadratic form — the one object with the right vanishing property, missing an
+  independent evaluation; evaluating a related quadratic form `∫|logDeriv ξ(σ+it)|²w(t)dt` for
+  `σ > 1` IS possible (Dirichlet-series mean value), and reduces to controlling the prime sum
+  against the archimedean term — i.e. Weil positivity.
+Everything funnels to the same genuine open core: **dominate the prime side.** That is where the
+missing discovery has to be made; the certified stack above is the instrument that will register it.

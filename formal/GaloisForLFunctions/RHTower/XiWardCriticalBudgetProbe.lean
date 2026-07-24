@@ -739,6 +739,246 @@ theorem xiWard_offlinePair_abs_im_gt_eight (q : XiRightUpperZeroCopy) :
   have habs := sq_abs ((xiRightCenteredZero q.1).im)
   nlinarith [abs_nonneg ((xiRightCenteredZero q.1).im), habs]
 
+/-! ## §6 The discrimination window -/
+
+/-- **Exact discrimination identity.**  The difference between the spectral
+mass of an off-line copy at height `u` with transverse displacement `v` and the
+mass of an on-line copy at the same height is a single rational expression
+whose sign is carried entirely by `c² − 3u² − v²`. -/
+theorem offline_sub_online_mass (c u v : ℝ)
+    (h1 : 0 < u ^ 2 + (c - v) ^ 2) (h2 : 0 < u ^ 2 + (c + v) ^ 2)
+    (h3 : 0 < u ^ 2 + c ^ 2) :
+    ((c - v) / (u ^ 2 + (c - v) ^ 2) + (c + v) / (u ^ 2 + (c + v) ^ 2)) -
+        2 * c / (u ^ 2 + c ^ 2) =
+      2 * c * v ^ 2 * (c ^ 2 - 3 * u ^ 2 - v ^ 2) /
+        ((u ^ 2 + c ^ 2) *
+          ((u ^ 2 + (c - v) ^ 2) * (u ^ 2 + (c + v) ^ 2))) := by
+  field_simp
+  ring
+
+/-- **Above the discrimination threshold an off-line copy is cheaper.**  For
+`3u² + v² > c²` a transversely displaced copy deposits strictly less spectral
+mass than an on-line copy at the same height: past height `c/√3` the sum rule
+penalises off-line zeros only through their fourfold multiplicity, never
+through their displacement. -/
+theorem offline_mass_lt_online (c u v : ℝ) (hc : 0 < c) (hv : v ≠ 0)
+    (hvc : |v| < c) (hthr : c ^ 2 < 3 * u ^ 2 + v ^ 2) :
+    (c - v) / (u ^ 2 + (c - v) ^ 2) + (c + v) / (u ^ 2 + (c + v) ^ 2) <
+      2 * c / (u ^ 2 + c ^ 2) := by
+  obtain ⟨hv1, hv2⟩ := abs_lt.mp hvc
+  have hcv1 : 0 < c - v := by linarith
+  have hcv2 : 0 < c + v := by linarith
+  have h1 : 0 < u ^ 2 + (c - v) ^ 2 := by positivity
+  have h2 : 0 < u ^ 2 + (c + v) ^ 2 := by positivity
+  have h3 : 0 < u ^ 2 + c ^ 2 := by positivity
+  have hid := offline_sub_online_mass c u v h1 h2 h3
+  have hvsq : 0 < v ^ 2 := by positivity
+  have hnum : 2 * c * v ^ 2 * (c ^ 2 - 3 * u ^ 2 - v ^ 2) < 0 := by
+    have hfac : c ^ 2 - 3 * u ^ 2 - v ^ 2 < 0 := by linarith
+    have hpos : 0 < 2 * c * v ^ 2 := by positivity
+    exact mul_neg_of_pos_of_neg hpos hfac
+  have hden : 0 < (u ^ 2 + c ^ 2) *
+      ((u ^ 2 + (c - v) ^ 2) * (u ^ 2 + (c + v) ^ 2)) := by positivity
+  have hquot : 2 * c * v ^ 2 * (c ^ 2 - 3 * u ^ 2 - v ^ 2) /
+      ((u ^ 2 + c ^ 2) *
+        ((u ^ 2 + (c - v) ^ 2) * (u ^ 2 + (c + v) ^ 2))) < 0 :=
+    div_neg_of_neg_of_pos hnum hden
+  linarith [hid, hquot]
+
+/-- **Below the threshold the displacement itself is penalised.**  For
+`3u² + v² < c²` an off-line copy deposits strictly more mass than an on-line
+copy at the same height. -/
+theorem online_mass_lt_offline (c u v : ℝ) (hc : 0 < c) (hv : v ≠ 0)
+    (hvc : |v| < c) (hthr : 3 * u ^ 2 + v ^ 2 < c ^ 2) :
+    2 * c / (u ^ 2 + c ^ 2) <
+      (c - v) / (u ^ 2 + (c - v) ^ 2) + (c + v) / (u ^ 2 + (c + v) ^ 2) := by
+  obtain ⟨hv1, hv2⟩ := abs_lt.mp hvc
+  have hcv1 : 0 < c - v := by linarith
+  have hcv2 : 0 < c + v := by linarith
+  have h1 : 0 < u ^ 2 + (c - v) ^ 2 := by positivity
+  have h2 : 0 < u ^ 2 + (c + v) ^ 2 := by positivity
+  have h3 : 0 < u ^ 2 + c ^ 2 := by positivity
+  have hid := offline_sub_online_mass c u v h1 h2 h3
+  have hvsq : 0 < v ^ 2 := by positivity
+  have hnum : 0 < 2 * c * v ^ 2 * (c ^ 2 - 3 * u ^ 2 - v ^ 2) := by
+    have hfac : 0 < c ^ 2 - 3 * u ^ 2 - v ^ 2 := by linarith
+    have hpos : 0 < 2 * c * v ^ 2 := by positivity
+    exact mul_pos hpos hfac
+  have hden : 0 < (u ^ 2 + c ^ 2) *
+      ((u ^ 2 + (c - v) ^ 2) * (u ^ 2 + (c + v) ^ 2)) := by positivity
+  have hquot : 0 < 2 * c * v ^ 2 * (c ^ 2 - 3 * u ^ 2 - v ^ 2) /
+      ((u ^ 2 + c ^ 2) *
+        ((u ^ 2 + (c - v) ^ 2) * (u ^ 2 + (c + v) ^ 2))) :=
+    div_pos hnum hden
+  linarith [hid, hquot]
+
+/-- **The discrimination window of the ξ-divisor.**  Every off-critical copy
+sits above the threshold at the strip-edge probe: the certified height floor
+makes `3u² + v² > c²` automatic at `c = 1/2`, so the strip-edge sum rule
+charges an off-line copy strictly less than an on-line copy at the same
+height.  The entire force of the floor is the fourfold multiplicity. -/
+theorem offline_mass_lt_online_at_edge (q : XiRightUpperZeroCopy)
+    (hv : (xiSpectralPoint q.1.1).im ≠ 0) :
+    xiBudgetMassAt (1 / 2) q.1.1 <
+      2 * (1 / 2) / ((xiSpectralPoint q.1.1).re ^ 2 + (1 / 2) ^ 2) := by
+  have hfloor := xiWard_offlinePair_height_sq_gt_sixtyfive q
+  rw [xiRightCenteredZero_im_eq_spectral_reAt] at hfloor
+  have hvlt := abs_im_xiSpectralPoint_lt_half q.1.1
+  have hthr : (1 / 2 : ℝ) ^ 2 <
+      3 * (xiSpectralPoint q.1.1).re ^ 2 + (xiSpectralPoint q.1.1).im ^ 2 := by
+    nlinarith [sq_nonneg ((xiSpectralPoint q.1.1).im), hfloor]
+  exact offline_mass_lt_online (1 / 2) _ _ (by norm_num) hv hvlt hthr
+
+/-! ## §7 The universal height floor -/
+
+/-- No divisor copy is its own functional-equation reflection: that would force
+the centered spectral coordinate to vanish. -/
+theorem xiZeroCopy_ne_reflect (q : XiZeroCopy) :
+    q ≠ xiZeroCopyReflectEquiv q := by
+  intro h
+  have hs := congrArg xiSpectralPoint h
+  rw [xiSpectralPoint_reflect] at hs
+  have hzero : xiSpectralPoint q = 0 := by linear_combination hs / 2
+  exact xiSpectralPoint_ne_zero q hzero
+
+/-- **Every zero is charged twice.**  Reflection pairs each divisor copy with a
+distinct copy of equal mass, so twice any single mass fits inside the budget. -/
+theorem two_mul_massAt_le_tsum {c : ℝ} (hc : 1 / 2 ≤ c)
+    (hne : XiC (xiBudgetProbeAt c) ≠ 0) (q : XiZeroCopy) :
+    2 * xiBudgetMassAt c q ≤ ∑' d : XiZeroCopy, xiBudgetMassAt c d := by
+  classical
+  have hsum := summable_xiBudgetMassAt hne
+  have hpair : ∑ d ∈ ({q, xiZeroCopyReflectEquiv q} : Finset XiZeroCopy),
+      xiBudgetMassAt c d = 2 * xiBudgetMassAt c q := by
+    rw [Finset.sum_pair (xiZeroCopy_ne_reflect q), massAt_reflect]
+    ring
+  have hle := hsum.sum_le_tsum
+    ({q, xiZeroCopyReflectEquiv q} : Finset XiZeroCopy)
+    (fun d _ => xiBudgetMassAt_nonneg hc d)
+  linarith [hpair ▸ hle]
+
+/-- **The universal floor.**  Every copy of the `ξ`-divisor — on the critical
+line or not — has squared height at least `4c/B − (c+1/2)²`. -/
+theorem xiSpectral_re_sq_ge_of_budget {c B : ℝ} (hc : 1 / 2 ≤ c) (hB : 0 < B)
+    (hne : XiC (xiBudgetProbeAt c) ≠ 0)
+    (hbud : ∑' d : XiZeroCopy, xiBudgetMassAt c d ≤ B) (q : XiZeroCopy) :
+    4 * c / B - (c + 1 / 2) ^ 2 ≤ (xiSpectralPoint q).re ^ 2 := by
+  have h1 := two_mul_massAt_le_tsum hc hne q
+  have h4 := xiBudgetMassAt_ge hc q
+  set u := (xiSpectralPoint q).re
+  have hden : (0 : ℝ) < u ^ 2 + (c + 1 / 2) ^ 2 := by positivity
+  have hcpos : (0 : ℝ) < c := by linarith
+  have hchain : 4 * c / (u ^ 2 + (c + 1 / 2) ^ 2) ≤ B := by
+    have hstep : 2 * (2 * c / (u ^ 2 + (c + 1 / 2) ^ 2)) ≤
+        2 * xiBudgetMassAt c q := by linarith
+    calc 4 * c / (u ^ 2 + (c + 1 / 2) ^ 2)
+        = 2 * (2 * c / (u ^ 2 + (c + 1 / 2) ^ 2)) := by ring
+      _ ≤ 2 * xiBudgetMassAt c q := hstep
+      _ ≤ ∑' d : XiZeroCopy, xiBudgetMassAt c d := h1
+      _ ≤ B := hbud
+  rw [div_le_iff₀ hden] at hchain
+  rw [sub_le_iff_le_add, div_le_iff₀ hB]
+  nlinarith [hchain]
+
+/-- **Certified universal floor**: every zero of `ξ` has squared ordinate
+above `32`. -/
+theorem xiSpectral_re_sq_gt_thirtytwo (q : XiZeroCopy) :
+    (32 : ℝ) < (xiSpectralPoint q).re ^ 2 := by
+  have h := xiSpectral_re_sq_ge_of_budget (c := 1 / 2) (B := 3 / 50)
+    (by norm_num) (by norm_num) xi_probe_half_ne_zero tsum_massAt_half_le q
+  have hnum : (32 : ℝ) < 4 * (1 / 2) / (3 / 50) - ((1 / 2) + 1 / 2) ^ 2 := by
+    norm_num
+  linarith
+
+/-- **A zero-free horizontal strip for `ξ`**, unconditional and free of any
+numerical zero search: `ξ` has no zero of ordinate at most `√32 > 5.6`. -/
+theorem xi_ne_zero_of_im_sq_le {s : ℂ} (him : s.im ^ 2 ≤ 32) : xi s ≠ 0 := by
+  intro hzero
+  have hXiC : XiC (-Complex.I * (s - 1 / 2)) = 0 := by
+    show xi ((1 / 2 : ℂ) + (-Complex.I * (s - 1 / 2)) * Complex.I) = 0
+    have harg : (1 / 2 : ℂ) + -Complex.I * (s - 1 / 2) * Complex.I = s := by
+      rw [show (-Complex.I * (s - 1 / 2) * Complex.I) =
+        -(Complex.I * Complex.I) * (s - 1 / 2) from by ring, Complex.I_mul_I]
+      ring
+    rw [harg]
+    exact hzero
+  obtain ⟨q, hq⟩ := (XiC_eq_zero_iff_exists_xiZeroCopy _).mp hXiC
+  have hre : (-Complex.I * (s - 1 / 2)).re = s.im := by
+    simp [Complex.mul_re, Complex.sub_im]
+  have hfloor := xiSpectral_re_sq_gt_thirtytwo q
+  rw [hq, hre] at hfloor
+  linarith
+
+/-- **A zero-free horizontal strip for `ζ`.**  In the right half plane the
+Riemann zeta function has no zero of ordinate at most `√32 > 5.6`.  The bound
+is certified from the theta representation alone: no zero of `ζ` is located
+numerically anywhere in the argument. -/
+theorem riemannZeta_ne_zero_of_im_sq_le {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
+    (hre : 0 < s.re) (him : s.im ^ 2 ≤ 32) : riemannZeta s ≠ 0 := by
+  intro hzero
+  have hΛ : completedRiemannZeta s = 0 := by
+    have hζ := riemannZeta_def_of_ne_zero hs0
+    rw [hzero] at hζ
+    have hG : Complex.Gammaℝ s ≠ 0 :=
+      Complex.Gammaℝ_ne_zero_of_re_pos hre
+    have h := hζ.symm
+    rw [div_eq_zero_iff] at h
+    rcases h with h | h
+    · exact h
+    · exact absurd h hG
+  have hxi : xi s = 0 := by
+    rw [xi_eq_half_mul hs0 hs1, hΛ, mul_zero]
+  exact xi_ne_zero_of_im_sq_le him hxi
+
+/-! ## §8 The low-lying counting bound -/
+
+/-- **Spectral capacity of a height window.**  Any finite family of divisor
+copies of height at most `T` is bounded in size by the budget divided by the
+mass a single copy at height `T` deposits. -/
+theorem card_mul_mass_le_of_height_le {c B T : ℝ} (hc : 1 / 2 ≤ c)
+    (hne : XiC (xiBudgetProbeAt c) ≠ 0)
+    (hbud : ∑' d : XiZeroCopy, xiBudgetMassAt c d ≤ B)
+    (S : Finset XiZeroCopy)
+    (hS : ∀ q ∈ S, (xiSpectralPoint q).re ^ 2 ≤ T ^ 2) :
+    (S.card : ℝ) * (2 * c / (T ^ 2 + (c + 1 / 2) ^ 2)) ≤ B := by
+  have hsum := summable_xiBudgetMassAt hne
+  have hlow : ∀ q ∈ S, 2 * c / (T ^ 2 + (c + 1 / 2) ^ 2) ≤
+      xiBudgetMassAt c q := by
+    intro q hq
+    refine le_trans ?_ (xiBudgetMassAt_ge hc q)
+    have hden : (0 : ℝ) < (xiSpectralPoint q).re ^ 2 + (c + 1 / 2) ^ 2 := by
+      positivity
+    have hT : (0 : ℝ) < T ^ 2 + (c + 1 / 2) ^ 2 := by
+      have := hS q hq
+      have hsq : (0 : ℝ) ≤ (xiSpectralPoint q).re ^ 2 := sq_nonneg _
+      nlinarith
+    exact div_le_div_of_nonneg_left (by linarith) hden
+      (by linarith [hS q hq])
+  have hcard := Finset.card_nsmul_le_sum S (xiBudgetMassAt c)
+    (2 * c / (T ^ 2 + (c + 1 / 2) ^ 2)) hlow
+  rw [nsmul_eq_mul] at hcard
+  have hpart : ∑ q ∈ S, xiBudgetMassAt c q ≤
+      ∑' d : XiZeroCopy, xiBudgetMassAt c d :=
+    hsum.sum_le_tsum S (fun d _ => xiBudgetMassAt_nonneg hc d)
+  linarith
+
+/-- **Unconditional low-lying zero count.**  At most `3(T²+1)/50` divisor
+copies of `ξ` have height at most `T`; no numerical zero search enters the
+bound. -/
+theorem card_le_of_height_le_certified {T : ℝ} (S : Finset XiZeroCopy)
+    (hS : ∀ q ∈ S, (xiSpectralPoint q).re ^ 2 ≤ T ^ 2) :
+    (S.card : ℝ) ≤ 3 * (T ^ 2 + 1) / 50 := by
+  have h := card_mul_mass_le_of_height_le (c := 1 / 2) (B := 3 / 50)
+    (by norm_num) xi_probe_half_ne_zero tsum_massAt_half_le S hS
+  have hT : (0 : ℝ) < T ^ 2 + ((1 : ℝ) / 2 + 1 / 2) ^ 2 := by positivity
+  have hval : 2 * (1 / 2 : ℝ) / (T ^ 2 + ((1 : ℝ) / 2 + 1 / 2) ^ 2) =
+      1 / (T ^ 2 + 1) := by
+    norm_num
+  rw [hval] at h
+  have hT1 : (0 : ℝ) < T ^ 2 + 1 := by positivity
+  rw [mul_one_div, div_le_iff₀ hT1] at h
+  linarith
+
 end
 
 end RHTower
