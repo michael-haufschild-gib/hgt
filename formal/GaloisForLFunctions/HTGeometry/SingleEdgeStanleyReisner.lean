@@ -153,6 +153,185 @@ theorem singleEdgeKoszulRelation_disconnectCycle {F : Type*} [Field F] {n : ℕ}
   · intro h
     exact absurd (Finset.mem_univ _) h
 
+/-- The isolated-axis-`k` entry of a vertex coordinate: `X` exactly on the isolated vertex `k`. -/
+theorem singleEdgeVertexX_coe_snd {F : Type*} [Field F] {n : ℕ}
+    (j : Fin 2 ⊕ Fin n) (k : Fin n) :
+    ((singleEdgeVertexX (F := F) j :
+        MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).2) k
+      = if j = Sum.inr k then Polynomial.X else 0 := by
+  cases j with
+  | inl b => simp [singleEdgeVertexX]
+  | inr m =>
+    simp only [singleEdgeVertexX, Sum.elim_inr, singleEdgeIsoX_val]
+    by_cases h : k = m
+    · subst h; simp
+    · rw [if_neg h, if_neg (by simpa [Sum.inr.injEq] using fun hc => h hc.symm)]
+
+/-- The edge-block part of a vertex coordinate: `X b` on edge vertex `b`, zero on isolated
+vertices. -/
+theorem singleEdgeVertexX_coe_fst {F : Type*} [Field F] {n : ℕ} (j : Fin 2 ⊕ Fin n) :
+    (singleEdgeVertexX (F := F) j :
+        MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).1
+      = Sum.elim (fun b => (MvPolynomial.X b : MvPolynomial (Fin 2) F)) (fun _ => 0) j := by
+  cases j with
+  | inl b => simp [singleEdgeVertexX]
+  | inr m => simp [singleEdgeVertexX]
+
+/-- Multiplying a ring element by a vertex coordinate and reading the isolated-axis-`k` linear
+coefficient selects the constant coefficient exactly on the isolated vertex `k`. -/
+theorem singleEdge_mul_vertexX_snd_coeff_one {F : Type*} [Field F] {n : ℕ}
+    (r : singleEdgeBoundarySubring F n) (j : Fin 2 ⊕ Fin n) (k : Fin n) :
+    (((r * singleEdgeVertexX j :
+        singleEdgeBoundarySubring F n) :
+        MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).2 k).coeff 1
+      = if j = Sum.inr k
+          then ((r : MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).2 k).coeff 0 else 0 := by
+  rw [Subalgebra.coe_mul, Prod.snd_mul, Pi.mul_apply, singleEdgeVertexX_coe_snd]
+  by_cases h : j = Sum.inr k
+  · rw [if_pos h, if_pos h, Polynomial.coeff_mul_X]
+  · rw [if_neg h, if_neg h, mul_zero, Polynomial.coeff_zero]
+
+/-- Multiplying a ring element by a vertex coordinate and reading the `x₀` edge coefficient selects
+the constant coefficient exactly on the base edge vertex `0`. -/
+theorem singleEdge_mul_vertexX_fst_coeff {F : Type*} [Field F] {n : ℕ}
+    (r : singleEdgeBoundarySubring F n) (j : Fin 2 ⊕ Fin n) :
+    MvPolynomial.coeff (Finsupp.single 0 1)
+        ((r * singleEdgeVertexX j :
+          singleEdgeBoundarySubring F n) :
+          MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).1
+      = if j = Sum.inl 0
+          then MvPolynomial.constantCoeff
+            (r : MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).1 else 0 := by
+  rw [Subalgebra.coe_mul, Prod.fst_mul, singleEdgeVertexX_coe_fst]
+  cases j with
+  | inl b =>
+    rw [Sum.elim_inl]
+    by_cases hb : b = 0
+    · subst hb
+      rw [if_pos rfl, show (Finsupp.single (0 : Fin 2) 1) = 0 + Finsupp.single 0 1 by simp,
+        MvPolynomial.coeff_mul_X]
+      rfl
+    · rw [if_neg (show (Sum.inl b : Fin 2 ⊕ Fin n) ≠ Sum.inl 0 by simp [hb]),
+        MvPolynomial.coeff_mul_X',
+        if_neg (by rw [Finsupp.mem_support_single]; rintro ⟨h, -⟩; exact hb h)]
+  | inr m => simp
+
+/-- The first Koszul boundary submodule (trivial syzygies), written order-free via the
+antisymmetrization of an arbitrary coefficient field `c`. -/
+def singleEdgeKoszulBoundary {F : Type*} [Field F] {n : ℕ}
+    (c : (Fin 2 ⊕ Fin n) → (Fin 2 ⊕ Fin n) → singleEdgeBoundarySubring F n)
+    (i : Fin 2 ⊕ Fin n) : singleEdgeBoundarySubring F n :=
+  ∑ j, (c i j - c j i) * singleEdgeVertexX j
+
+/-- The reduced-`H⁰` coefficient detector attached to the non-base isolated component `k`: it reads
+the isolated-axis-`k` linear coefficient at the base edge vertex, plus the symmetric `x₀` edge
+coefficient at the isolated vertex `k`. -/
+def singleEdgeH0DetectorAt {F : Type*} [Field F] {n : ℕ} (k : Fin n) :
+    ((Fin 2 ⊕ Fin n) → singleEdgeBoundarySubring F n) →ₗ[F] F where
+  toFun a :=
+    (((a (Sum.inl 0) : singleEdgeBoundarySubring F n) :
+        MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).2 k).coeff 1
+      + MvPolynomial.coeff (Finsupp.single 0 1)
+          ((a (Sum.inr k) : singleEdgeBoundarySubring F n) :
+            MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).1
+  map_add' a b := by
+    simp only [Pi.add_apply, Subalgebra.coe_add, Prod.fst_add, Prod.snd_add, Pi.add_apply,
+      Polynomial.coeff_add, MvPolynomial.coeff_add]
+    ring
+  map_smul' c a := by
+    simp only [Pi.smul_apply, Subalgebra.coe_smul, Prod.smul_fst, Prod.smul_snd, Pi.smul_apply,
+      Polynomial.coeff_smul, MvPolynomial.coeff_smul, smul_eq_mul, RingHom.id_apply]
+    ring
+
+/-- **Kronecker duality.**  The component detectors form the dual family to the base-to-isolated
+disconnect cycles. -/
+@[simp]
+theorem singleEdgeH0DetectorAt_disconnectCycle {F : Type*} [Field F] {n : ℕ} (k l : Fin n) :
+    singleEdgeH0DetectorAt (F := F) k (singleEdgeDisconnectCycle l)
+      = if k = l then 1 else 0 := by
+  by_cases h : k = l
+  · subst h
+    simp [singleEdgeH0DetectorAt, singleEdgeDisconnectCycle, singleEdgeIsoX]
+  · rw [if_neg h]
+    simp [singleEdgeH0DetectorAt, singleEdgeDisconnectCycle, singleEdgeIsoX, h]
+
+/-- **Boundary annihilation.**  Every first Koszul boundary vanishes under every component detector:
+the symmetric detector cancels the antisymmetric syzygy. -/
+@[simp]
+theorem singleEdgeH0DetectorAt_boundary {F : Type*} [Field F] {n : ℕ} (k : Fin n)
+    (c : (Fin 2 ⊕ Fin n) → (Fin 2 ⊕ Fin n) → singleEdgeBoundarySubring F n) :
+    singleEdgeH0DetectorAt (F := F) k (singleEdgeKoszulBoundary c) = 0 := by
+  classical
+  have hsnd : ∀ i : Fin 2 ⊕ Fin n,
+      (((singleEdgeKoszulBoundary c i :
+          singleEdgeBoundarySubring F n) :
+          MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).2 k).coeff 1
+        = MvPolynomial.constantCoeff
+            ((c i (Sum.inr k) - c (Sum.inr k) i :
+              singleEdgeBoundarySubring F n) :
+              MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).1 := by
+    intro i
+    rw [singleEdgeKoszulBoundary, AddSubmonoidClass.coe_finsetSum, Prod.snd_sum,
+      Finset.sum_apply, Polynomial.finsetSum_coeff]
+    rw [Finset.sum_eq_single (Sum.inr k)]
+    · rw [singleEdge_mul_vertexX_snd_coeff_one, if_pos rfl]
+      exact (c i (Sum.inr k) - c (Sum.inr k) i).2 k
+    · intro j _ hj
+      rw [singleEdge_mul_vertexX_snd_coeff_one, if_neg hj]
+    · intro h; exact absurd (Finset.mem_univ _) h
+  have hfst : ∀ i : Fin 2 ⊕ Fin n,
+      MvPolynomial.coeff (Finsupp.single 0 1)
+          ((singleEdgeKoszulBoundary c i :
+            singleEdgeBoundarySubring F n) :
+            MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).1
+        = MvPolynomial.constantCoeff
+            ((c i (Sum.inl 0) - c (Sum.inl 0) i :
+              singleEdgeBoundarySubring F n) :
+              MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).1 := by
+    intro i
+    rw [singleEdgeKoszulBoundary, AddSubmonoidClass.coe_finsetSum, Prod.fst_sum,
+      MvPolynomial.coeff_sum]
+    rw [Finset.sum_eq_single (Sum.inl 0)]
+    · rw [singleEdge_mul_vertexX_fst_coeff, if_pos rfl]
+    · intro j _ hj
+      rw [singleEdge_mul_vertexX_fst_coeff, if_neg hj]
+    · intro h; exact absurd (Finset.mem_univ _) h
+  show (((singleEdgeKoszulBoundary c (Sum.inl 0) :
+      singleEdgeBoundarySubring F n) :
+      MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).2 k).coeff 1
+      + MvPolynomial.coeff (Finsupp.single 0 1)
+          ((singleEdgeKoszulBoundary c (Sum.inr k) :
+            singleEdgeBoundarySubring F n) :
+            MvPolynomial (Fin 2) F × (Fin n → Polynomial F)).1 = 0
+  rw [hsnd (Sum.inl 0), hfst (Sum.inr k), Subalgebra.coe_sub, Subalgebra.coe_sub,
+    Prod.fst_sub, Prod.fst_sub, map_sub, map_sub]
+  ring
+
+/-- **Single-edge Hochster class.**  The base-to-isolated disconnect cycle for component `k` is a
+first Koszul cycle that is not a boundary: the single-edge complex carries a nonzero first Koszul
+class for every isolated component. -/
+theorem singleEdgeDisconnectCycle_not_koszulBoundary {F : Type*} [Field F] {n : ℕ} (k : Fin n) :
+    ¬ ∃ c : (Fin 2 ⊕ Fin n) → (Fin 2 ⊕ Fin n) → singleEdgeBoundarySubring F n,
+      singleEdgeKoszulBoundary c = singleEdgeDisconnectCycle k := by
+  rintro ⟨c, hc⟩
+  have h := congrArg (singleEdgeH0DetectorAt (F := F) k) hc
+  rw [singleEdgeH0DetectorAt_boundary, singleEdgeH0DetectorAt_disconnectCycle, if_pos rfl] at h
+  exact one_ne_zero h.symm
+
+/-- **Full single-edge reduced-`H⁰` family.**  The `n` base-to-isolated disconnect cycles are
+linearly independent modulo first Koszul boundaries, so the first Koszul quotient of the single-edge
+complex contains the full reduced-`H̃⁰` rank `n`. -/
+theorem singleEdgeDisconnectCycle_independent_mod_koszulBoundary {F : Type*} [Field F] {n : ℕ}
+    (a : Fin n → F)
+    (c : (Fin 2 ⊕ Fin n) → (Fin 2 ⊕ Fin n) → singleEdgeBoundarySubring F n)
+    (h : singleEdgeKoszulBoundary c = ∑ l, a l • singleEdgeDisconnectCycle l) :
+    ∀ l, a l = 0 := by
+  intro l
+  have hdet := congrArg (singleEdgeH0DetectorAt (F := F) l) h
+  simp only [singleEdgeH0DetectorAt_boundary, map_sum, map_smul,
+    singleEdgeH0DetectorAt_disconnectCycle, smul_eq_mul] at hdet
+  simpa using hdet.symm
+
 end
 
 end GaloisForLFunctions

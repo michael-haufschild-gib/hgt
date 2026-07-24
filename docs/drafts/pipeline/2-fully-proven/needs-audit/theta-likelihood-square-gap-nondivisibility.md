@@ -212,3 +212,23 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
 
 - 2026-07-21 — derived exact square-gap obstruction; completed paper proof; formalized
   theta-specific atom-support theorem.
+
+## Lean progress
+
+- 2026-07-25 — **Correction + reusable-lemma extraction.**  The theta-specific atom content of this
+  card was **already** fully formalized in `RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`
+  (`thetaCuspLikelihoodSeamTiltedMeasure` = `P_B`, its singleton masses at `0,3,6`,
+  `not_additivelyClosedAtomSupport_...` on the actual measure, and
+  `thetaCuspLikelihoodSeamTiltedMeasure_selfConv_singleton_six_ne_zero`).  An abstract-atom-set
+  restatement I had briefly added (`ThetaSquareGapAtomNonClosure.lean`) duplicated that weaker and was
+  **removed**.  Net kept contribution: the one genuinely reusable general lemma, now placed in the
+  existing module and used to simplify its self-convolution proof (axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `measure_singleton_le_conv` — **atoms add under convolution**: `μ{a}·ν{b} ≤ (μ ∗ ν){a+b}` for any
+    measures on an additive monoid (`Measure.conv = map (+) (μ.prod ν)`, `Measure.prod_prod`,
+    singleton-`⊆`-preimage monotonicity).  `thetaCuspLikelihoodSeamTiltedMeasure_selfConv_singleton_six_ne_zero`
+    now discharges via `measure_singleton_le_conv μ μ 3 3` (step 3) instead of an inline argument.
+  **Still open for gate `2 → 3`** (unchanged): the classical parent "an infinitely divisible law on
+  `[0,∞)` with an atom at `0` is compound Poisson, whose atom support is additively closed"
+  (Steutel--van Harn Ch. III Thm 4.15) is absent from mathlib.  The theta-specific premise is Lean-done;
+  only this general probability parent remains.

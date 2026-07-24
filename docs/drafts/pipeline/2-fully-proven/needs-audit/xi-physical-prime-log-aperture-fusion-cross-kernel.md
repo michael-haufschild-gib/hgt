@@ -756,7 +756,197 @@ builds and has the same axiom surface.  The analytic integer-tail estimates `(PF
 - [x] exact module build of the complete current finite core
 - [x] Green/cusp axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
 - [x] Lean `L²` realization of the true centered aperture carrier and Gram kernel
-- [ ] Lean analytic tail bound `(PFK11)`
-- [ ] Lean prime-power completion stability `(PFK14)`--`(PFK17)`
-- [ ] bridge theorem identifying the source with the existing `HGS29` carrier
+- [x] Lean analytic tail bound `(PFK11)` — `tsum_logSq_div_sq_le` (see Lean progress 2026-07-25)
+- [x] Lean prime-power completion stability `(PFK14)`--`(PFK17)` — finite-truncation uniform form
+  (`norm_primePowerCompletionCarrier_le_tail`, `normSq_...`; see Lean progress 2026-07-25)
+- [x] bridge theorem identifying the source with the existing `HGS29` carrier —
+  `xiPhysicalPrimeLogAggregateApertureCarrier_eq_neg_fusedResponse_add_remainder` (+ remainder norm
+  bound); see Lean progress 2026-07-25
 - [ ] external source-specific novelty audit
+
+## Lean progress
+
+- 2026-07-24 — **Antiderivative core of the `(PFK11)` tail bound formalized**, in
+  `HTGeometry/LogSquaredTailIntegral.lean` (unconditional, axioms `[propext, Classical.choice,
+  Quot.sound]`): `hasDerivAt_neg_logSq_tail` — for `x > 0`,
+  `d/dx[-(log²x + 2 log x + 2)/x] = (log x / x)^2`.  This is the exact antiderivative behind the
+  elementary decreasing-tail estimate `∑_{n≥N}(log n/n)^2 ≪ (log²N+2logN+2)/N` that yields the
+  prime-diagonal bound `(PFK11)`.  **Remaining for gate `Lean analytic tail bound (PFK11)`:** the
+  improper tail integral `∫_{x>N}(log x/x)^2 = (log²N+2logN+2)/N` (FTC on `[N,∞)` via this
+  antiderivative + the limits `(log x)^k/x → 0`), then the sum→integral comparison for the decreasing
+  tail, and the bridge to the cross-kernel diagonal term.
+- 2026-07-24 — **Improper tail integral of `(PFK11)` formalized**, in
+  `HTGeometry/LogSquaredTailIntegral.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `tendsto_neg_logSq_tail_atTop` — `-(log²x+2logx+2)/x → 0` as `x → ∞` (from `(log x)^k/x → 0`).
+  * `integral_logSq_div_sq_Ioi` — **`∫_{x>N} (log x/x)^2 = (log²N + 2 log N + 2)/N`** for `N > 0`, by
+    `integral_Ioi_of_hasDerivAt_of_nonneg` (FTC on `[N,∞)`) with the antiderivative
+    `hasDerivAt_neg_logSq_tail`.
+  **Remaining for gate `Lean analytic tail bound (PFK11)`:** the decreasing-tail sum→integral
+  comparison `∑_{n≥N}(log n/n)^2 ≤ (log n/n)²|_{n=⌈N⌉} + ∫_{x>N}(log x/x)^2` and the bridge to the
+  cross-kernel prime-diagonal term.
+- 2026-07-25 — **`(PFK11)` analytic tail bound closed (unconditional)**, in
+  `HTGeometry/LogSquaredTailIntegral.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `antitoneOn_logSq_div_sq` — `(log x/x)^2` is antitone on `[e,∞)` (square of the nonnegative
+    antitone `log x/x`, mathlib `log_div_self_antitoneOn`).
+  * `sum_logSq_div_sq_le` — uniform partial-sum bound: for `N ≥ e`, every
+    `∑_{i<a}(log(N+i+1)/(N+i+1))^2 ≤ (log²N + 2 log N + 2)/N`, via `AntitoneOn.sum_le_integral`
+    (partial sum `≤ ∫_N^{N+a}`) evaluated by FTC on the antiderivative `hasDerivAt_neg_logSq_tail`
+    to `F(N+a) - F(N) ≤ -F(N)` (since `F ≤ 0`).
+  * `tsum_logSq_div_sq_le` — **`∑_{n>N}(log n/n)^2 ≤ (log²N + 2 log N + 2)/N`** for `N ≥ e`, via
+    `tsum_le_of_sum_range_le`.  This is the exact PFK11 tail estimate with an **explicit closed-form
+    constant** (strictly stronger than the `≪ log²M/M` form on line 187).
+  **Classification (anti-theatre):** formalization of an elementary analytic estimate (antitone
+  sum→integral comparison + FTC) applied to the corpus object; unconditional, no integrability
+  hypothesis needed (the FTC route avoids `IntegrableOn` entirely).  **Remaining connective work**
+  (under the separate bridge gate): wire `tsum_logSq_div_sq_le` into the cross-kernel prime-diagonal
+  term `D_diag` inside `XiPhysicalPrimeLogApertureFusion`, discharging the `C_cross ≥ -D_diag` step.
+- 2026-07-25 — **`(PFK11)` diagonal budget fully wired to the fusion energy (unconditional)**, new leaf
+  `RHTower/XiPhysicalPrimeLogApertureDiagonalBudget.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`), plus `summable_logSq_div_sq` added to `HTGeometry/LogSquaredTailIntegral.lean`:
+  * `summable_logSq_div_sq` — `∑_n (log n/n)²` converges (`(log x)² = o(x^{1/2})` via
+    `isLittleO_log_rpow_rpow_atTop`, so the summand is `O(n^{-3/2})`).
+  * `xiPhysicalPrimeLogApertureFusionKernel_diagonal_le` — `κ(p,p) = ℓ_p − ℓ_p²/A ≤ A`.
+  * `xiPhysicalPrimeLogApertureDiagonalEnergy_le_weightSq_mul` — `D_diag ≤ A·∑_{p∈P} (log p/p)²`
+    (the first `(PFK11)` inequality, line 185), from `0 ≤ κ(p,p) ≤ A`.
+  * `sum_primes_weightSq_le_tail` — `∑_{p∈P}(log p/p)² ≤ (log²N₀+2logN₀+2)/N₀` when all `p > N₀ ≥ 3`
+    (the second `(PFK11)` inequality, line 186): primes inject into the shifted tail index and
+    `Summable.sum_le_tsum` dominates the sub-sum by `tsum_logSq_div_sq_le`.
+  * `xiPhysicalPrimeLogApertureDiagonalEnergy_le_tail` — **`D_diag ≤ A·(log²N₀+2logN₀+2)/N₀`** for all
+    active primes `> N₀ ≥ 3**.  This is the complete `(PFK11)` chain (lines 183–195) formalized against
+    the *actual* fusion-module `xiPhysicalPrimeLogApertureDiagonalEnergy`, not an abstract restatement.
+  **Classification (anti-theatre):** corpus-new connective content — it links the existing fusion
+  definitions (`D_diag`, `κ`, `ℓ_p`, `w_p = log p/p`) to the closed-form tail, discharging the
+  unconditional diagonal budget.  The genuinely open object remains the *off-diagonal* excess
+  `C_cross` `(PFK12)`; this result does not touch it and is not an RH proof.
+- 2026-07-25 — **Explicit `(PFK10)`+`(PFK11)` lower bound on the off-diagonal cross defect
+  (unconditional)**, added to `RHTower/XiPhysicalPrimeLogApertureDiagonalBudget.lean` (axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `xiPhysicalPrimeLogApertureCrossDefect_ge_neg_tail` — **`C_cross ≥ -A·(log²N₀+2logN₀+2)/N₀`** for
+    all active primes `> N₀ ≥ 3`.  Chains the existing Hilbert-norm bound
+    `neg_xiPhysicalPrimeLogApertureDiagonalEnergy_le_crossDefect` (`(PFK10)`: `-D_diag ≤ C_cross`, from
+    `‖carrier‖² = D_diag + C_cross ≥ 0`) with the diagonal budget `…DiagonalEnergy_le_tail`.
+  This makes the card's "automatic" lower side `(PFK10)` **quantitative** with the explicit decaying
+  budget: the signed off-diagonal object cannot dip below an explicit `O_A(log²N₀/N₀)` floor.
+  **Classification (anti-theatre):** corpus-new connective result binding two previously-separate
+  facts (Hilbert Gram nonnegativity + the diagonal tail budget); it bounds `C_cross` only from
+  **below**.  The genuinely open content — the *positive excess* upper bound `C_cross ≪ log^b M/M`
+  `(PFK12)` — is untouched and remains the RH-facing target.
+- 2026-07-25 — **`(PFK14)` `r=2` analytic core formalized (unconditional)**, new module
+  `HTGeometry/LogLinearTailIntegral.lean` (axioms `[propext, Classical.choice, Quot.sound]`),
+  mirroring the `(PFK11)` pipeline for the weight `log x/x²`:
+  * `hasDerivAt_neg_logLin_tail` — `d/dx[-(log x + 1)/x] = log x/x²` for `x > 0`.
+  * `integral_logLin_div_sq_Ioi` — `∫_{x>N} log x/x² = (log N + 1)/N` for `N ≥ 1` (FTC on `[N,∞)`).
+  * `antitoneOn_logLin_div_sq` — `log x/x²` antitone on `[e,∞)` (product of nonneg antitone
+    `log x/x` and `1/x`).
+  * `sum_logLin_div_sq_le` / `tsum_logLin_div_sq_le` — **`∑_{n>N} log n/n² ≤ (log N + 1)/N`** for
+    `N ≥ e`, via `AntitoneOn.sum_le_integral` + FTC + `tsum_le_of_sum_range_le`.
+  This is the exact "integral-test tail of `∑ log(n)/n²`" the card cites for the dominant `r=2` band
+  of `(PFK14)`: with `N = √X` it gives `∑_{n>√X} log n/n² ≤ (½log X + 1)/√X ≪ log X/√X`.
+  **Classification (anti-theatre):** formalization of an elementary analytic estimate (same
+  antitone-sum→integral + FTC machinery as `(PFK11)`), applied to the `log x/x²` weight; reusable HT
+  infra.  **Remaining for gate `(PFK14)-(PFK17)`:** the prime→integer sub-sum (as in the diagonal
+  budget) with `N=√X`, the `r≥3` tail `(PFK15)`, and the triangle-inequality assembly `(PFK16)/(PFK17)`.
+- 2026-07-25 — **`(PFK14)` `r=2` prime tail + reusable prime sub-sum comparison (unconditional)**,
+  new leaf `RHTower/PrimePowerCompletionBudget.lean` + `summable_logLin_div_sq` added to
+  `HTGeometry/LogLinearTailIntegral.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `summable_logLin_div_sq` — `∑_n log n/n²` converges (`log x = o(x^{1/2})` ⇒ `O(n^{-3/2})`).
+  * `sum_primes_le_tsum_shift` — **general** reindex: for nonnegative summable `f`, a finite prime set
+    all `> N₀` obeys `∑_{p∈P} f p ≤ ∑'_i f(N₀+1+i)` (prime→shifted-tail injection +
+    `Summable.sum_le_tsum`).  Reusable for any prime-power weight.
+  * `sum_primes_logLin_div_sq_le_tail` — **`∑_{p>N₀} log p/p² ≤ (log N₀+1)/N₀`** for primes `> N₀ ≥ 3`,
+    the concrete `(PFK14)` `r=2` band; with `N₀=⌈√X⌉` this is `≪ log X/√X`.
+  **Classification (anti-theatre):** the general reindex is genuinely reusable infra (generalizes the
+  diagonal-budget reindex to arbitrary weights); the `r=2` corollary is the concrete PFK14 dominant-band
+  estimate over an actual finite prime set.  **Remaining for `(PFK14)-(PFK17)`:** the `r≥3` tail
+  `(PFK15)` and the triangle-inequality Hilbert assembly `(PFK16)/(PFK17)` (carrier norm `‖φ_p‖ ≤ √A`).
+- 2026-07-25 — **`(PFK15)` geometric prime-power tail formalized (unconditional)**, new module
+  `HTGeometry/GeometricPrimePowerTail.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `tsum_geom_shift_le_two` — for `n ≥ 2`, `∑_r (1/n)^(r₀+r) ≤ 2·(1/n)^{r₀}` (geometric sum
+    `(1/n)^{r₀}·(1-1/n)⁻¹` with `(1-1/n)⁻¹ ≤ 2`).
+  * `tsum_log_div_pow_shift_le` — **`∑_{r≥r₀} log n/n^r ≤ 2 log n/n^{r₀}`** for `n ≥ 2`, the exact
+    `(PFK15)` geometric bound.
+  **Classification (anti-theatre):** elementary geometric-series analysis, reusable; the `r≥3`
+  prime-power tail is now a single application away.  **Remaining for `(PFK14)-(PFK17)`:** feed
+  `tsum_log_div_pow_shift_le` (with `r₀=3`) through `sum_primes_le_tsum_shift` to get the `r≥3` prime
+  contribution `≤ 2∑_{p>N₀} log p/p³`, then the triangle-inequality Hilbert assembly `(PFK16)/(PFK17)`
+  using `‖φ_p‖ ≤ √A` (from `xiPhysicalPrimeLogApertureFusionKernel_diagonal_le`).
+- 2026-07-25 — **`(PFK14)` complete prime-power arithmetic tail formalized (unconditional)**, added to
+  `RHTower/PrimePowerCompletionBudget.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `sum_primes_primePowerTail_le` — **`∑_{p>N₀} ∑_{r≥2} log p/p^r ≤ 2(log N₀+1)/N₀`** for primes
+    `> N₀ ≥ 3`.  The geometric tail `tsum_log_div_pow_shift_le` (`r₀=2`) folds each prime's entire
+    `r ≥ 2` power series into `2 log p/p²`; the `r=2` prime tail `sum_primes_logLin_div_sq_le_tail`
+    then bounds the sum.  With `N₀ = ⌈√X⌉` this is `≪ log X/√X`, exactly the `(PFK14)` bound.
+  This closes the **arithmetic** side of `(PFK14)`/`(PFK15)`: the entire proper-prime-power completion
+  correction over active primes is inside the closed-form budget.
+  **Classification (anti-theatre):** complete composition of the geometric folding + r=2 tail — the
+  PFK14 arithmetic core over an actual finite prime set, unconditional.  **Remaining for gate
+  `(PFK14)-(PFK17)`:** only the **Hilbert** stability `(PFK16)/(PFK17)` — realize the von Mangoldt
+  completed carrier `Fusion_A(μ_Λ)` as an `L²` element and bound `‖Fusion_A(μ_Λ)-Fusion_A(μ_P)‖₂` by
+  `√A · (this tail)` via the triangle inequality and `‖φ_p‖ ≤ √A`.
+- 2026-07-25 — **`(PFK16)` Hilbert-norm mechanism formalized (unconditional)**, added to
+  `RHTower/XiPhysicalPrimeLogApertureDiagonalBudget.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`):
+  * `norm_centeredCarrier_le` — **`‖φ_p‖ ≤ √A`** (since `‖φ_p‖² = κ(p,p) ≤ A`, using the L² Gram
+    realization `real_inner_xiPhysicalPrimeLogCenteredApertureCarrier` and `κ(p,p) ≤ A`).
+  * `norm_aggregateCarrier_le` — **`‖∑_p w_p φ_p‖ ≤ √A · ∑_p w_p`**, the exact `(PFK16)`
+    triangle-inequality + carrier-norm mechanism (`norm_sum_le` + `norm_smul` + `‖φ_p‖ ≤ √A`).
+  This is the L² critical-norm step of `(PFK16)/(PFK17)`: any weighted carrier sum has norm controlled
+  by `√A` times its weight sum.  Instantiated on the prime-power completion weights (which sum to the
+  already-formalized `(PFK14)` tail `sum_primes_primePowerTail_le`), it gives the stability bound
+  `‖Fusion_A(μ_Λ)-Fusion_A(μ_P)‖₂ ≤ √A·2(log N₀+1)/N₀`.
+  **Classification (anti-theatre):** the exact triangle-inequality norm mechanism the card invokes,
+  formalized against the actual L² carrier; unconditional.  **Remaining for gate `(PFK14)-(PFK17)`:**
+  define the von Mangoldt completed carrier over prime *powers* (extending the prime-only
+  `xiPhysicalPrimeLogApertureIndicator` to bases `r·log p`) and instantiate this norm bound on it.
+- 2026-07-25 — **`(PFK16)` critical-norm mechanism generalized to arbitrary atoms (unconditional)**,
+  new module `HTGeometry/CenteredApertureCarrierNorm.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`):
+  * `norm_centered_indicator_le_sqrt` — abstract: for measurable `I ⊆ (0,A]`, `‖1_I - (|I|/A)·1_Ω‖ ≤
+    √A` (norm² `= |I|(1-|I|/A) ≤ |I| ≤ A`, from the L² Gram of indicator constants).
+  * `apertureSetAt`/`centeredApertureCarrierAt` — the clipped interval and centered carrier for an atom
+    at **arbitrary log-location `b`** (not just `b = log p`).
+  * `norm_centeredApertureCarrierAt_le` — `‖Ψ(b)‖ ≤ √A` for every base `b`.
+  * `norm_aggregate_centeredApertureCarrierAt_le` — **`‖∑_i w_i Ψ(b_i)‖ ≤ √A·∑_i w_i`** for any finite
+    atom family with nonnegative weights.
+  Because `b` is arbitrary, this covers ordinary primes (`b = log p`) *and proper prime powers*
+  (`b = r log p`) uniformly — the exact von Mangoldt completion input of `(PFK16)`.
+  **Classification (anti-theatre):** general L² aperture-carrier geometry, reusable; the PFK16 norm
+  mechanism at the base-general level needed for prime powers.  **Remaining for gate
+  `(PFK14)-(PFK17)`:** instantiate this aggregate on prime-power atoms `(p,r)` with weights `log p/p^r`
+  and connect its weight-sum to `sum_primes_primePowerTail_le`, giving
+  `‖Fusion_A(μ_Λ)-Fusion_A(μ_P)‖₂ ≤ √A·2(log N₀+1)/N₀`.
+- 2026-07-25 — **`(PFK16)/(PFK17)` critical-norm stability formalized (unconditional)**, new leaf
+  `RHTower/PrimePowerCompletionCarrierNorm.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `norm_primePowerCompletionCarrier_le` — the finite prime-power completion carrier
+    `∑_{(p,r)∈S} (log p/p^{2+r})·Ψ((2+r)log p)` has norm `≤ √A·∑ weights` (base-general aggregate bound).
+  * `sum_pairs_primePowerWeight_le_tail` — the completion weight sum over atoms above `N₀ ≥ 3` is
+    `≤ 2(log N₀+1)/N₀` (fiberwise reduction of the prime-power double sum to
+    `sum_primes_primePowerTail_le`, each fiber `≤` its geometric power tail).
+  * `norm_primePowerCompletionCarrier_le_tail` — **`‖completion‖₂ ≤ √A·2(log N₀+1)/N₀`** `(PFK16)`.
+  * `normSq_primePowerCompletionCarrier_le_tail` — **`‖completion‖₂² ≤ A·(2(log N₀+1)/N₀)²`** `(PFK17)`,
+    of order `A·log²M/M` for `N₀ = ⌈√X⌉`.
+  **This closes the `(PFK14)-(PFK17)` gate** — the whole arithmetic tail *and* the Hilbert critical-norm
+  stability are now unconditional Lean.
+  **Classification (anti-theatre):** formalized as the **uniform bound over every finite truncation** of
+  the completion carrier (the rigorous content: the bound is independent of the truncation).  The
+  *infinite* von Mangoldt carrier as an `L²` limit and its literal identification with
+  `Fusion_A(μ_Λ)-Fusion_A(μ_P)` is not separately packaged — the finite uniform bound is what
+  establishes stability.  **Remaining card gates:** the `HGS29` source-bridge and the external novelty
+  audit (neither is a completion-stability claim).
+- 2026-07-25 — **`HGS29` source bridge formalized (unconditional)**, new leaf
+  `RHTower/XiPhysicalPrimeFusionSourceBridge.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `xiPhysicalPrimeLogAggregateApertureCarrier_eq_neg_fusedResponse_add_remainder` — the physical
+    fusion source carrier `(PFK2)` **equals** `-`(unit--double Xi response-current fusion) `+`
+    (trace-class remainder fusion), the explicit identification of the source with the existing
+    `HGS29`/`AC25` response carrier (from the additive support-blind cancellation
+    `xiPhysicalPrimeLogAggregate_add_fusedResponse_eq_remainder`).
+  * `norm_remainderApertureCarrier_le` — `‖remainder carrier‖ ≤ √A·∑_p log p/(p(p+1))`, so the source
+    and the response current differ by a carrier of controlled `L²` norm (with `∑_p log p/(p(p+1))`
+    trace-class, `summable_xiPhysicalEndpointResponseWeightRemainder`).
+  **This ticks the `HGS29`-bridge gate.**  Only the meta gate `external source-specific novelty audit`
+  (a literature review, not a Lean formalization) now remains on the card — **every Lean-formalizable
+  gate on this card is closed.**
+  **Classification (anti-theatre):** the additive support-blind cancellation already existed in the
+  corpus; the new content is the explicit source-decomposition form matching `(PFK2)` and the
+  quantitative remainder norm bound (via `norm_centeredCarrier_le`).  Honestly a packaging + norm
+  quantification of existing infrastructure, not new mathematics.

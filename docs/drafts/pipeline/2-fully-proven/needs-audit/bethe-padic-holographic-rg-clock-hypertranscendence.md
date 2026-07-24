@@ -363,6 +363,21 @@ conjugacy `(17)` remains a formal target.
 - [x] Formula-level novelty search completed with neighboring literatures separated.
 - [ ] Citation-graph and specialist priority audit completed.
 - [x] Unconditional rational-family algebra and critical cubic anchor formalized in HTGeometry.
-- [ ] Zero-temperature Möbius conjugacy formalized in HTGeometry.
+- [x] Zero-temperature Möbius conjugacy formalized in HTGeometry (`BetheZeroTemperatureMobiusConjugacy.lean`).
 - [ ] Transfer-channel universality theorem proved.
 - [ ] Continuum QFT/holographic observable inheritance proved.
+
+## Lean progress
+
+- 2026-07-24 — **Zero-temperature Möbius conjugacy (17) formalized** (gate `Zero-temperature Möbius
+  conjugacy formalized in HTGeometry`), in `HTGeometry/BetheZeroTemperatureMobiusConjugacy.lean`
+  (unconditional, axioms `[propext, Classical.choice, Quot.sound]`):
+  * `betheMobiusM`, `betheMobiusMinv` — the Cayley chart `M(w)=(w-1)/(w+1)` and its inverse
+    `M⁻¹(w)=(1+w)/(1-w)`, with `betheMobiusM_betheMobiusMinv : M(M⁻¹ y) = y` (`y ≠ 1`).
+  * `betheMobius_conjugacy` — **equation (17)**: `M((M⁻¹ y)^p) = ((1+y)^p - (1-y)^p)/((1+y)^p + (1-y)^p)`,
+    i.e. the `p`-th power map conjugated by `M` is exactly the zero-temperature Bethe RG rational map.
+  * `betheHolographicIsingRG_one_eq_mobius_conjugacy` — connects it to the corpus RG map at `a=1`:
+    `F_{p,1}(y) = betheHolographicIsingNumerator p 1).eval y / (betheHolographicIsingDenominator p 1).eval y
+    = M((M⁻¹ y)^p)`.
+  This realizes the Ritt-integrable zero-temperature endpoint `F_{p,1} = M ∘ (·^p) ∘ M⁻¹`.  Remaining
+  gates (transfer-channel universality, continuum QFT inheritance, citation audit) are non-Lean/paper.

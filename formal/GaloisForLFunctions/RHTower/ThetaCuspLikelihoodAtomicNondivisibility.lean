@@ -176,6 +176,19 @@ theorem not_additivelyClosedAtomSupport_smul_thetaCuspLikelihoodSeamTiltedMeasur
   norm_num at h6
   exact h6.2 (thetaCuspLikelihoodSeamTiltedMeasure_singleton_six B)
 
+/-- **Atoms add under convolution.**  For measures `μ, ν` on an additive monoid, the convolution
+puts at least mass `μ{a}·ν{b}` on `a + b`.  Reusable primitive behind two-particle atom creation. -/
+theorem measure_singleton_le_conv {M : Type*} [AddMonoid M] [MeasurableSpace M]
+    [MeasurableAdd₂ M] [MeasurableSingletonClass M] (μ ν : Measure M) [SFinite ν] (a b : M) :
+    μ {a} * ν {b} ≤ (μ ∗ ν) {a + b} := by
+  rw [Measure.conv, Measure.map_apply (by fun_prop) (measurableSet_singleton _)]
+  calc μ {a} * ν {b} = (μ.prod ν) ({a} ×ˢ {b}) := (Measure.prod_prod _ _).symm
+    _ ≤ (μ.prod ν) ((fun x => x.1 + x.2) ⁻¹' {a + b}) := by
+        apply measure_mono
+        rintro ⟨x, y⟩ hxy
+        simp only [Set.mem_prod, Set.mem_singleton_iff] at hxy
+        simp only [Set.mem_preimage, Set.mem_singleton_iff, hxy.1, hxy.2]
+
 /-! ### Positive survivor: birth of a two-particle atom -/
 
 /-- **Two-particle square-gap birth.** Although the one-particle tilted carrier has no atom at
@@ -191,20 +204,12 @@ theorem thetaCuspLikelihoodSeamTiltedMeasure_selfConv_singleton_six_ne_zero (B :
       thetaCuspHigherLikelihoodSpectralMeasure,
       thetaCuspAtomLikelihoodSpectralMeasure]
     infer_instance
-  have hpreimage : ({((3 : ℝ), (3 : ℝ))} : Set (ℝ × ℝ)) ⊆
-      (fun p : ℝ × ℝ => p.1 + p.2) ⁻¹' ({6} : Set ℝ) := by
-    rintro p rfl
-    norm_num
-  have hmono : μ.prod μ {((3 : ℝ), (3 : ℝ))} ≤
-      μ.prod μ ((fun p : ℝ × ℝ => p.1 + p.2) ⁻¹' ({6} : Set ℝ)) :=
-    measure_mono hpreimage
-  have hprod : μ.prod μ {((3 : ℝ), (3 : ℝ))} = μ {3} * μ {3} := by
-    rw [← singleton_prod_singleton, Measure.prod_prod]
-  rw [Measure.conv, Measure.map_apply (by fun_prop) (measurableSet_singleton (6 : ℝ))]
+  have hbound : μ {3} * μ {3} ≤ (μ ∗ μ) {6} := by
+    have := measure_singleton_le_conv μ μ (3 : ℝ) 3
+    norm_num at this
+    exact this
   intro hzero
-  have hleft : μ.prod μ {((3 : ℝ), (3 : ℝ))} = 0 :=
-    nonpos_iff_eq_zero.mp (hmono.trans_eq hzero)
-  rw [hprod] at hleft
+  have hleft : μ {3} * μ {3} = 0 := nonpos_iff_eq_zero.mp (hbound.trans_eq hzero)
   exact mul_ne_zero
     (thetaCuspLikelihoodSeamTiltedMeasure_singleton_three_ne_zero B)
     (thetaCuspLikelihoodSeamTiltedMeasure_singleton_three_ne_zero B) hleft

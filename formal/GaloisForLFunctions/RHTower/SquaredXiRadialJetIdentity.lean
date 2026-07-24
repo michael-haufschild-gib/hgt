@@ -122,4 +122,127 @@ theorem jetCoeff_succ_mid (n i : ℕ) (hi : i < n) :
   push_cast [hcast]
   ring
 
+/-- **Signed-coefficient sum recurrence (combinatorial core of identity (4)).**  Assembles the
+pointwise `jetCoeff` recurrences: `∑_{j≤n} jetCoeff n j·(j·t j + t(j+1)) − (2n+1)·∑_{j≤n} jetCoeff n j·t j
+= ∑_{j≤n+1} jetCoeff (n+1) j·t j`, for any sequence `t`. -/
+theorem jetCoeff_sum_recurrence (n : ℕ) (t : ℕ → ℝ) :
+    (∑ j ∈ Finset.range (n + 1), jetCoeff n j * ((j : ℝ) * t j + t (j + 1)))
+      - (2 * (n : ℝ) + 1) * (∑ j ∈ Finset.range (n + 1), jetCoeff n j * t j)
+      = ∑ j ∈ Finset.range (n + 2), jetCoeff (n + 1) j * t j := by
+  have hL : (∑ j ∈ Finset.range (n + 1), jetCoeff n j * ((j : ℝ) * t j + t (j + 1)))
+        - (2 * (n : ℝ) + 1) * (∑ j ∈ Finset.range (n + 1), jetCoeff n j * t j)
+      = (∑ j ∈ Finset.range (n + 1), jetCoeff n j * ((j : ℝ) - (2 * n + 1)) * t j)
+        + (∑ j ∈ Finset.range (n + 1), jetCoeff n j * t (j + 1)) := by
+    rw [Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl (fun j _ => by ring)
+  rw [hL, Finset.sum_range_succ' (fun j => jetCoeff n j * ((j : ℝ) - (2 * n + 1)) * t j) n,
+    Finset.sum_range_succ (fun j => jetCoeff n j * t (j + 1)) n,
+    Finset.sum_range_succ' (fun j => jetCoeff (n + 1) j * t j) (n + 1),
+    Finset.sum_range_succ (fun i => jetCoeff (n + 1) (i + 1) * t (i + 1)) n]
+  -- boundary rewrites
+  have hz : jetCoeff n 0 * ((0 : ℝ) - (2 * n + 1)) * t 0 = jetCoeff (n + 1) 0 * t 0 := by
+    rw [jetCoeff_succ_zero]; ring
+  have htop : jetCoeff n n * t (n + 1) = jetCoeff (n + 1) (n + 1) * t (n + 1) := by
+    rw [jetCoeff_succ_top]
+  -- interior sums equal
+  have hmid : ∑ i ∈ Finset.range n, (jetCoeff n (i + 1) * ((i + 1 : ℝ) - (2 * n + 1)) * t (i + 1)
+        + jetCoeff n i * t (i + 1))
+      = ∑ i ∈ Finset.range n, jetCoeff (n + 1) (i + 1) * t (i + 1) := by
+    refine Finset.sum_congr rfl (fun i hi => ?_)
+    have hi' : i < n := Finset.mem_range.mp hi
+    rw [← jetCoeff_succ_mid n i hi']
+    ring
+  rw [Finset.sum_add_distrib] at hmid
+  push_cast at hz hmid ⊢
+  linarith [hz, htop, hmid]
+
+/-- **Calculus connection.**  Multiplying the jet-sum derivative by `w` clears the power shift:
+`w·(jetSum L c n)′(w) = ∑_{j≤n} c j·(j·w^j·L^(j)(1/2+w) + w^(j+1)·L^(j+1)(1/2+w))`. -/
+theorem w_mul_deriv_jetSum
+    {L : ℝ → ℝ} (hL : ContDiff ℝ (⊤ : WithTop ℕ∞) L) (c : ℕ → ℝ) (n : ℕ) (w : ℝ) :
+    w * deriv (fun v => jetSum L c n v) w =
+      ∑ j ∈ Finset.range (n + 1), c j *
+        ((j : ℝ) * (w ^ j * iteratedDeriv j L (1 / 2 + w)) +
+          w ^ (j + 1) * iteratedDeriv (j + 1) L (1 / 2 + w)) := by
+  rw [(hasDerivAt_jetSum hL c n w).deriv, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  have hbridge : w * ((j : ℝ) * w ^ (j - 1)) = (j : ℝ) * w ^ j := by
+    rcases j with _ | k
+    · simp
+    · rw [Nat.add_sub_cancel, pow_succ]; ring
+  rw [pow_succ]
+  linear_combination (c j * iteratedDeriv j L (1 / 2 + w)) * hbridge
+
+/-- **Radial-jet recurrence.**  `w·(jetSum_n)′(w) − (2n+1)·jetSum_n(w) = jetSum_{n+1}(w)`, connecting
+the radial operator step to the coefficient recurrence (with `jetSum_n = jetSum L (jetCoeff n) n`). -/
+theorem jetSum_recurrence
+    {L : ℝ → ℝ} (hL : ContDiff ℝ (⊤ : WithTop ℕ∞) L) (n : ℕ) (w : ℝ) :
+    w * deriv (fun v => jetSum L (jetCoeff n) n v) w
+        - (2 * (n : ℝ) + 1) * jetSum L (jetCoeff n) n w
+      = jetSum L (jetCoeff (n + 1)) (n + 1) w := by
+  rw [w_mul_deriv_jetSum hL (jetCoeff n) n w]
+  simp only [jetSum]
+  exact jetCoeff_sum_recurrence n (fun j => w ^ j * iteratedDeriv j L (1 / 2 + w))
+
+open Filter Topology
+
+/-- **Radial-derivative identity (equation (4)).**  For a smooth `L`, iterating the radial
+operator `D = (1/(2w)) d/dw` on `F(w) = L(1/2+w)/w` gives, for `w > 0`,
+`D^n F(w) = jetSum_n(w) / (2^n w^(2n+1))`. -/
+theorem radialOp_iterate_eq
+    {L : ℝ → ℝ} (hL : ContDiff ℝ (⊤ : WithTop ℕ∞) L) (n : ℕ) :
+    ∀ w : ℝ, 0 < w →
+      (radialOp)^[n] (radialProfile L) w =
+        jetSum L (jetCoeff n) n w / ((2 : ℝ) ^ n * w ^ (2 * n + 1)) := by
+  induction n with
+  | zero =>
+    intro w hw
+    simp [Function.iterate_zero, radialProfile, jetSum, jetCoeff,
+      iteratedDeriv_zero, squaredRadialJetWeight_zero_zero]
+  | succ n ih =>
+    intro w hw
+    have hw0 : w ≠ 0 := ne_of_gt hw
+    rw [Function.iterate_succ_apply', radialOp]
+    have heq : (radialOp)^[n] (radialProfile L) =ᶠ[𝓝 w]
+        (fun v => jetSum L (jetCoeff n) n v / ((2 : ℝ) ^ n * v ^ (2 * n + 1))) := by
+      filter_upwards [Ioi_mem_nhds hw] with v hv using ih v hv
+    rw [heq.deriv_eq]
+    have hnum := hasDerivAt_jetSum hL (jetCoeff n) n w
+    have hden : HasDerivAt (fun v => (2 : ℝ) ^ n * v ^ (2 * n + 1))
+        ((2 : ℝ) ^ n * ((2 * n + 1 : ℕ) * w ^ (2 * n + 1 - 1))) w :=
+      (hasDerivAt_pow (2 * n + 1) w).const_mul ((2 : ℝ) ^ n)
+    have hdne : (2 : ℝ) ^ n * w ^ (2 * n + 1) ≠ 0 := by positivity
+    have hrec := jetSum_recurrence hL n w
+    rw [show deriv (fun v => jetSum L (jetCoeff n) n v / ((2 : ℝ) ^ n * v ^ (2 * n + 1))) w
+          = (deriv (fun v => jetSum L (jetCoeff n) n v) w * ((2 : ℝ) ^ n * w ^ (2 * n + 1))
+              - jetSum L (jetCoeff n) n w * deriv (fun v => (2 : ℝ) ^ n * v ^ (2 * n + 1)) w)
+            / ((2 : ℝ) ^ n * w ^ (2 * n + 1)) ^ 2
+        from deriv_div hnum.differentiableAt hden.differentiableAt hdne,
+      hden.deriv, show 2 * n + 1 - 1 = 2 * n from by omega, ← hrec, pow_succ (2 : ℝ) n,
+      show 2 * (n + 1) + 1 = 2 * n + 1 + 2 from by ring, pow_add w (2 * n + 1) 2]
+    field_simp
+    push_cast
+    ring
+
+/-- **Positive rescaling (equation (5)).**  `(-1)^n·2^n·w^(2n+1)·D^n F(w) =
+∑_{j≤n} (-1)^j·b_{n,j}·w^j·L^(j)(1/2+w)`, the RH-compatible alternating-sign form. -/
+theorem radialJet_positive_rescaling
+    {L : ℝ → ℝ} (hL : ContDiff ℝ (⊤ : WithTop ℕ∞) L) (n : ℕ) (w : ℝ) (hw : 0 < w) :
+    (-1 : ℝ) ^ n * (2 : ℝ) ^ n * w ^ (2 * n + 1) * (radialOp)^[n] (radialProfile L) w
+      = ∑ j ∈ Finset.range (n + 1),
+        (-1 : ℝ) ^ j * (squaredRadialJetWeight n j : ℝ) * w ^ j * iteratedDeriv j L (1 / 2 + w) := by
+  have hne : (2 : ℝ) ^ n * w ^ (2 * n + 1) ≠ 0 := by positivity
+  rw [radialOp_iterate_eq hL n w hw,
+    show (-1 : ℝ) ^ n * 2 ^ n * w ^ (2 * n + 1) *
+        (jetSum L (jetCoeff n) n w / (2 ^ n * w ^ (2 * n + 1)))
+      = (-1 : ℝ) ^ n * jetSum L (jetCoeff n) n w by field_simp,
+    jetSum, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun j hj => ?_)
+  have hj' : j ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
+  have hsign : (-1 : ℝ) ^ n * (-1) ^ (n - j) = (-1) ^ j := by
+    rw [← pow_add, show n + (n - j) = 2 * (n - j) + j from by omega, pow_add, pow_mul]
+    norm_num
+  rw [jetCoeff, ← hsign]
+  ring
+
 end RHTower

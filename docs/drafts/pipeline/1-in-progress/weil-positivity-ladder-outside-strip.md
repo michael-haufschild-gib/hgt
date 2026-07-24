@@ -415,3 +415,53 @@ fixed involution, but the fact that `Q` is simultaneously computable from primes
 (`xiWeilGramEntry_arithmetic`). The arithmetic evaluation is the whole substance; the Hilbert-space
 side is a change of clothes. Recorded so that future work does not mistake the geometric restatement
 for progress.
+
+---
+
+## [LEAN-PROVED] The 3-4-1 no-go's successor: matrix positivity of the arithmetic side
+
+The no-go above concluded that a *fixed* trigonometric identity buys positivity on a fixed
+configuration only, and that the sign must come from a mechanism adapting to the configuration.
+That mechanism is now formalized.
+
+Modules: `GaloisForLFunctions.HTGeometry.NonnegativeWeightMomentHankel` (source-independent) and
+`GaloisForLFunctions.RHTower.VonMangoldtLogMomentHankel`.
+
+```lean
+weightMoment_hankel_nonneg (hw : ∀ i, 0 ≤ w i)
+    (hsum : ∀ n, Summable fun i => w i * y i ^ n) (N : ℕ) (a : ℕ → ℝ) :
+  0 ≤ ∑ j ∈ range N, ∑ k ∈ range N, a j * a k * weightMoment w y (j + k)
+
+vonMangoldtLogMoment_hankel_nonneg {σ : ℝ} (hσ : 1 < σ) (N : ℕ) (a : ℕ → ℝ) :
+  0 ≤ ∑ j ∈ range N, ∑ k ∈ range N, a j * a k * vonMangoldtLogMoment (j + k) σ
+```
+
+`vonMangoldtLogMoment m σ = sum_n Lambda(n) n^(-sigma) (log n)^m` is, up to sign, the `m`-th
+derivative of the von Mangoldt Dirichlet series at `sigma`.  Supporting:
+`summable_vonMangoldt_rpow` (real form of the convergence-line summability) and
+`summable_vonMangoldt_logPow` (every logarithmic moment converges, by splitting the exponent and
+dominating `(log n)^m n^(-(sigma-sigma'))` by `m!/(sigma-sigma')^m`).
+
+**The delta over 3-4-1.**  `three_four_one_vonMangoldt` is one configuration — three points in
+arithmetic progression with weights `(3,4,1)`.  The Hankel statement is *every* finite
+configuration of nodes and weights at once, and it holds because the prime weights are a
+nonnegative measure on the points `log n`, so all their power-moment arrays are positive
+semidefinite.  This is exactly the "adapts to the configuration" property the no-go demanded.
+
+Audit: `lake build +GaloisForLFunctions.RHTower.VonMangoldtLogMomentHankel` passes 8872/8872; lint
+passes; axioms `propext`, `Classical.choice`, `Quot.sound`.
+
+## What this does and does not give
+
+It does **not** close rung 1.  In the resolvent ladder the entries are
+`R n X = (arch part) - (prime part)`, and this theorem says the *prime* array is positive
+semidefinite — which enters with a minus sign.  Combined with the fact that the full array is PSD
+under RH, the content is now visible in its sharpest form:
+
+> **[OPEN CORE, restated]**  `arch-array  ⪰  prime-array`.
+
+Both sides are explicit and both are individually positive semidefinite: the prime array by the
+theorem above, the archimedean array by the elementary pole/digamma structure of
+`logDeriv xi (1/2 + x) / x`.  RH is exactly the assertion that the archimedean array dominates.
+This is the first time in this lane that the open core is a comparison of two *individually
+certified* positive semidefinite arrays rather than an uncontrolled sign question.

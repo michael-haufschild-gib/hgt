@@ -211,7 +211,7 @@ the analytic radial-derivative identity (4)/(5), which requires the differentiab
 - [x] Pole/Euler cancellation preserved by the existing pole-filled zeta object.
 - [ ] Independent audit of the reverse-Bessel normalization.
 - [x] Formalize the recursive weights and source split `(10)`.
-- [ ] Formalize the analytic radial-derivative identity `(4)` and its positive rescaling `(5)`.
+- [x] Formalize the analytic radial-derivative identity `(4)` and its positive rescaling `(5)` (abstract smooth `L`, `RHTower/SquaredXiRadialJetIdentity.lean`)
 - [ ] Prove a strict negative completed source jet.
 - [ ] Wire the negative jet to `not RiemannHypothesis` in Lean.
 
@@ -257,3 +257,36 @@ the analytic radial-derivative identity (4)/(5), which requires the differentiab
   **Remaining for (4)/(5):** the Finset sum-recurrence `w·jetSum'_n − (2n+1)·jetSum_n = jetSum_{n+1}`
   assembling these three coefficient identities across the range (peel/reindex the shifted sum), then
   the `D^n F = jetSum_n/(2^n w^(2n+1))` quotient induction.
+- 2026-07-24 — **Signed-coefficient sum recurrence formalized** (combinatorial core of (4)):
+  `jetCoeff_sum_recurrence` — `∑_{j≤n} jetCoeff n j·(j·t j + t(j+1)) − (2n+1)·∑_{j≤n} jetCoeff n j·t j =
+  ∑_{j≤n+1} jetCoeff (n+1) j·t j` for any `t : ℕ → ℝ` (axioms `[propext, Classical.choice, Quot.sound]`),
+  assembling the three pointwise `jetCoeff` recurrences via peel/reindex (`Finset.sum_range_succ` /
+  `Finset.sum_range_succ'` + `Finset.sum_congr`).  **Remaining for (4)/(5):** the calculus connection
+  `w·deriv(jetSum L (jetCoeff n) n) w = ∑ jetCoeff n j·(j·w^j·L^(j) + w^(j+1)·L^(j+1))` (via
+  `hasDerivAt_jetSum` + the `w·w^(j-1)=w^j` exponent bridge), letting `t j = w^j·L^(j)(1/2+w)` turn the
+  sum recurrence into `w·jetSum'_n − (2n+1)·jetSum_n = jetSum_{n+1}`; then the
+  `D^n F = jetSum_n/(2^n w^(2n+1))` quotient induction.
+- 2026-07-24 — **Radial-jet recurrence (natural form) formalized**, in
+  `RHTower/SquaredXiRadialJetIdentity.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `w_mul_deriv_jetSum` — the calculus connection `w·(jetSum L c n)′(w) = ∑_{j≤n} c j·(j·w^j·L^(j)(1/2+w)
+    + w^(j+1)·L^(j+1)(1/2+w))` (via `hasDerivAt_jetSum` + the `w·w^(j-1)=w^j` exponent bridge, closed by
+    `linear_combination`).
+  * `jetSum_recurrence` — **`w·(jetSum_n)′(w) − (2n+1)·jetSum_n(w) = jetSum_{n+1}(w)`** with
+    `jetSum_n = jetSum L (jetCoeff n) n`, obtained by feeding `t j = w^j·L^(j)(1/2+w)` into
+    `jetCoeff_sum_recurrence`.
+  **Remaining for (4)/(5):** the `radialOp^[n] (radialProfile L) = jetSum_n / (2^n w^(2n+1))` quotient
+  induction (base `n=0` is `L(1/2+w)/w`; the step is the quotient-rule derivative + `jetSum_recurrence`,
+  transferred through the IH by `EventuallyEq.deriv_eq` on `Ioi 0`).
+- 2026-07-24 — **Radial-derivative identity (4) and positive rescaling (5) fully formalized** (gate
+  `Formalize the analytic radial-derivative identity (4)/(5)`), in
+  `RHTower/SquaredXiRadialJetIdentity.lean` (unconditional, axioms `[propext, Classical.choice,
+  Quot.sound]`), for an **arbitrary smooth `L`** (`ContDiff ℝ ⊤ L`) — the identity is a calculus fact
+  needing no `xiLogDeriv` analyticity:
+  * `radialOp_iterate_eq` — **equation (4)**: `radialOp^[n] (radialProfile L) w = jetSum_n w /
+    (2^n·w^(2n+1))` for `w > 0`, by induction on `n` (base `L(1/2+w)/w`; step = quotient-rule
+    derivative + `jetSum_recurrence`, transferred through the IH by `EventuallyEq.deriv_eq` on `Ioi 0`).
+  * `radialJet_positive_rescaling` — **equation (5)**: `(-1)^n·2^n·w^(2n+1)·radialOp^[n](radialProfile L) w
+    = ∑_{j≤n} (-1)^j·b_{n,j}·w^j·L^(j)(1/2+w)` (sign corollary of (4), `(-1)^n·(-1)^(n-j) = (-1)^j`).
+  Specializing to `L = xiLogDeriv` (once its `Re(s)>1` smoothness is available) yields the card's exact
+  `D^n F` identity.  Remaining Lean gate is the `[OPEN CORE]` `Q_14(w) < 0` (RH-discriminator, open
+  research); the strict-sign and RH-wiring gates are RH-level.

@@ -508,3 +508,343 @@ umbrella): the single-edge complex on `n + 2` vertices (one edge `{0,1}`, `n` is
 
 Next: linear independence of these `n` cycles modulo Koszul boundaries (the degree-0 Hochster
 isomorphism for the single-edge complex), then higher-face complexes toward the general equivalence.
+
+### Lean progress — single-edge degree-0 Hochster isomorphism complete
+
+The single-edge complex now has its full degree-0 Hochster picture in
+`GaloisForLFunctions.HTGeometry.SingleEdgeStanleyReisner` (all axiom-clean, umbrella-registered):
+
+- `singleEdgeKoszulBoundary` — the first Koszul boundary submodule (trivial syzygies), written
+  order-free via antisymmetrization over the vertex set `Fin 2 ⊕ Fin n`.
+- `singleEdgeH0DetectorAt` — the reduced-`H⁰` detector family, one linear functional per isolated
+  component `k`, symmetric between the base edge vertex (isolated-axis-`k` linear coefficient) and
+  the isolated vertex (`x₀` edge coefficient).
+- `singleEdgeH0DetectorAt_disconnectCycle` — Kronecker duality `Dₖ(cycleₗ) = δₖₗ`.
+- `singleEdgeH0DetectorAt_boundary` — the symmetric detector annihilates every antisymmetric Koszul
+  boundary.
+- `singleEdgeDisconnectCycle_not_koszulBoundary` — each disconnect cycle is a nonzero first Koszul
+  class.
+- `singleEdgeDisconnectCycle_independent_mod_koszulBoundary` — the `n` disconnect cycles are linearly
+  independent modulo Koszul boundaries: the first Koszul quotient contains the full reduced-`H̃⁰`
+  rank `n` for the single-edge complex.
+
+This completes the degree-0 Hochster isomorphism for the first non-discrete complex, alongside the
+discrete (`isolated*`) and nodal (`nodal*`) cases. Next: complexes with a face of dimension ≥ 2
+(higher Koszul strands), toward the general strand equivalence.
+
+### Lean progress — general Stanley–Reisner nonface relation (arbitrary complexes)
+
+Pivoting from concrete per-complex models to the corpus's general Stanley–Reisner quotient
+framework (`stanleyReisnerIdeal`, `mem_stanleyReisnerIdeal_iff`, `IsFaceOf`), the defining relation
+of every Stanley–Reisner ring is now proved uniformly for all finite complexes in
+`GaloisForLFunctions.HTGeometry.StanleyReisnerVertexRelation` (axiom-clean, umbrella-registered):
+
+- `stanleyReisnerRing`, `srVertexX` — the Stanley–Reisner ring `MvPolynomial α F ⧸ stanleyReisnerIdeal`
+  and its vertex coordinates `x_v`.
+- `srVertexX_mul_eq_zero_of_not_isFace` — **the general nonface relation**: for any finite complex,
+  `x_u · x_v = 0` in the Stanley–Reisner ring exactly when `{u,v}` is a nonface.  This is the single
+  relation that the concrete `isolatedBoundaryX_mul_eq_zero`, `nodalBoundaryX_mul_Y`, and
+  `singleEdgeX_mul_isoX_eq_zero` each realized in a fixed complex, now stated once over every finite
+  complex.
+
+This is the foundation for a uniform Koszul-cohomology / Hochster treatment on arbitrary complexes.
+Next: the general vertex Koszul relation and base-to-component disconnect cycles indexed by the
+connected components of the complex's 1-skeleton, connecting to the corpus's combinatorial
+`finrank_reducedH0` (= components − 1).
+
+### Lean progress — general Koszul disconnect cycle (arbitrary complexes)
+
+Building on the general nonface relation, the base-to-component Koszul cycle is now proved uniformly
+for all finite complexes in `GaloisForLFunctions.HTGeometry.StanleyReisnerVertexRelation`:
+
+- `srKoszulRelation` — the first Koszul relation `∑ v aᵥ xᵥ` of the vertex coordinate family.
+- `srDisconnectCycle` — the base-to-`w` disconnect cycle (coordinate `x_w` at the base vertex).
+- `srKoszulRelation_disconnectCycle` — whenever `{v₀, w}` is a nonface (in particular whenever `v₀`
+  and `w` lie in different connected components of the 1-skeleton), the disconnect cycle is a first
+  Koszul cycle.  This is the uniform form of the concrete `isolatedKoszulRelation_disconnectCycle`
+  and `singleEdgeKoszulRelation_disconnectCycle` for arbitrary finite complexes.
+
+Next: base-to-component detector functionals on the Stanley–Reisner quotient (well-defined on the
+degree-1 part), boundary annihilation, and independence indexed by the `components − 1` non-base
+components — the general degree-0 Hochster isomorphism connecting to `finrank_reducedH0`.
+
+### Lean progress — general reduced-H⁰ detector on the SR quotient
+
+The reduced-`H⁰` detector, the subtle piece (a functional well-defined on the quotient), is now built
+uniformly for all finite complexes in `StanleyReisnerVertexRelation` (axiom-clean):
+
+- `coeff_single_eq_zero_of_mem_stanleyReisnerIdeal` — the `x_w`-coefficient reader annihilates the
+  Stanley–Reisner ideal whenever `{w}` is a face (nonface monomials have degree ≥ 2).
+- `srH0Detector` — the base-to-component detector for a present vertex `w`, the `x_w`-coefficient
+  reader descended to the Stanley–Reisner ring via `Submodule.liftQ` using the vanishing lemma.
+- `srH0Detector_mk` — its computation rule on ring representatives.
+- `srH0Detector_srVertexX` — **Kronecker duality** `Dₓ(x_v) = δ_{wv}`.
+
+Next: the descended constant-term functional, the product-detector rule
+`Dₓ(r · x_j) = if w = j then constTerm r else 0`, the symmetric family detector
+`Φ_w(a) = Dₓ(a v₀) + D_{v₀}(a w)`, its Koszul-boundary annihilation, and independence indexed by the
+non-base components — completing the general degree-0 Hochster isomorphism.
+
+### Lean progress — GENERAL degree-0 Hochster isomorphism COMPLETE (arbitrary complexes)
+
+The degree-0 case of the card's open "general strand equivalence for arbitrary finite complexes" is
+now fully formalized unconditionally in `StanleyReisnerVertexRelation` (all axiom-clean, umbrella-
+registered, lint green), superseding the concrete discrete/nodal/single-edge models:
+
+- `srConstTerm` / `srConstTerm_mk` — the descended constant-term functional on the SR ring.
+- `srH0Detector_mul_srVertexX` — the product-detector rule `D_w(r·x_j) = if w=j then constTerm r else 0`.
+- `srKoszulBoundary` / `srH0Detector_srKoszulBoundary` — the first Koszul boundary submodule and the
+  collapse of a boundary's detector to `constTerm (c i w − c w i)`.
+- `srDisconnectCycle_independent_mod_koszulBoundary` — **the capstone**: for any finite complex with
+  all vertices present and any base vertex `v₀`, the base-to-component disconnect cycles are linearly
+  independent modulo first Koszul boundaries (all non-base coefficients of a boundary vanish).  The
+  proof uses the symmetric detector `Φ_w(a) = D_w(a v₀) + D_{v₀}(a w)`, which reads off each
+  coefficient by Kronecker duality yet annihilates every antisymmetric boundary.
+
+This gives the full reduced-`H̃⁰` rank (`components − 1`) inside the first Koszul quotient, uniformly
+over all finite complexes — the general degree-0 Hochster isomorphism.  The remaining open frontier
+is degree ≥ 1 (complexes with 2-faces → higher Koszul strands and reduced `H̃¹`).
+
+### Lean progress — 1-skeleton graph bridge
+
+The algebraic degree-0 Hochster data is now bridged to the combinatorial graph side in
+`GaloisForLFunctions.HTGeometry.StanleyReisnerOneSkeleton` (axiom-clean, umbrella-registered):
+
+- `oneSkeletonGraph` — the 1-skeleton `SimpleGraph` of a finite complex (distinct vertices adjacent
+  iff their pair is a face).
+- `not_isFace_of_not_reachable` — two vertices in different connected components form a nonface pair.
+- `srKoszulRelation_disconnectCycle_of_not_reachable` — the graph form of the disconnect-cycle law:
+  when `v₀` and `w` are in different components of `oneSkeletonGraph`, the base-to-`w` disconnect
+  cycle is a first Koszul cycle.
+
+This indexes the reduced-`H̃⁰` Koszul classes (`srDisconnectCycle_independent_mod_koszulBoundary`) by
+the non-base connected components of the 1-skeleton, aligning the algebraic side with the corpus's
+combinatorial `componentConstant` / `finrank_reducedH0` (= `components − 1`).
+
+### Lean progress — d₁∘d₂ = 0 (boundaries are cycles) for the general SR Koszul complex
+
+`srKoszulRelation_srKoszulBoundary` (in `StanleyReisnerVertexRelation`, axiom-clean) proves the
+fundamental Koszul-complex identity for every finite complex: every first Koszul boundary
+`srKoszulBoundary c` is a first Koszul cycle (`srKoszulRelation` of it is `0`).  The antisymmetric
+coefficients `c i j − c j i` pair against the symmetric products `xⱼ xᵢ` and cancel unconditionally
+(via `Finset.sum_comm` + `mul_comm`, no characteristic hypothesis).
+
+This makes the first Koszul homology `cycles / boundaries` a genuine subquotient, so the earlier
+`srDisconnectCycle_independent_mod_koszulBoundary` is independence in an actual homology module — the
+degree-0 Hochster line is now internally complete (complex condition + cycles + independence).
+
+### Correction (2026-07-25): what the disconnect-cycle independence actually computes
+
+An accuracy correction to the preceding "general degree-0 Hochster" entries.  The Lean theorems are
+all correct and axiom-clean, but the *interpretation* connecting them to the whole-complex reduced
+`H̃⁰ = components − 1` was a conflation of two different Hochster strands.
+
+The first Koszul homology of the vertex multiplications on the Stanley–Reisner ring is
+`H₁(x_•; S) = Tor₁^{poly}(k, S) = ⊕_σ H̃^{|σ|−2}(Δ_σ)`.  The disconnect cycle `x_w · e_{v₀}` sits at
+multidegree `{v₀, w}` (so `|σ| = 2`), representing the strand
+`Tor_{1,{v₀,w}} = H̃⁰(Δ_{{v₀,w}})` = `H̃⁰` of the induced **two-vertex** subcomplex, which is
+`1`-dimensional exactly when `{v₀,w}` is a nonedge.  So:
+
+- `srDisconnectCycle_independent_mod_koszulBoundary` / `srDisconnectCycle_not_koszulBoundary` correctly
+  establish independent nonzero `Tor₁` classes at the two-element supports `{v₀, w}` — the **lowest**
+  strand (`i = 1, |σ| = 2`) of Hochster's formula.
+- These are **not** the whole-complex reduced `H̃⁰` (`= components − 1`), which is the **top** strand
+  `Tor_{|V|−1, V}`.  The two coincide only for `|V| = 2`, and numerically (not as objects) for the
+  fully discrete complex; for a connected complex with `|V| ≥ 3` they differ.
+- Consequently `srKoszulRelation_disconnectCycle_of_not_reachable` and `oneSkeletonGraph` give a
+  correct *sufficient* condition (different components ⇒ nonedge ⇒ cycle), but "indexed by the
+  non-base components / `= components − 1`" overstates it; the honest index is the nonneighbors of the
+  base vertex.
+
+Net: the corpus now has, unconditionally over all finite complexes, the `|σ|=2` strand of Hochster's
+`Tor₁` (independent classes + the `d₁∘d₂=0` complex condition).  The general strand equivalence for
+`|σ| ≥ 3` (reduced `H̃^{≥1}` of induced subcomplexes) and the top-strand whole-complex `H̃⁰` remain
+open.
+
+### Lean progress — general nonface relation + first degree-1 (|σ|=3) cycle
+
+Toward the genuine higher strands (`|σ| ≥ 3`), in `StanleyReisnerVertexRelation` (axiom-clean):
+
+- `srProd_eq_zero_of_not_isFace` — the **full** Stanley–Reisner relation: the product of vertex
+  coordinates over *any* nonface vanishes (arbitrary-cardinality generalization of the pairwise
+  `srVertexX_mul_eq_zero_of_not_isFace`), via `VeroneseIdeal.prod_X_eq_monomial` + `mem_stanleyReisnerIdeal_iff`.
+- `srKoszulRelation_emptyTriangleSyzygy` — the **first degree-1 object**: when `{a,b,c}` is a nonface
+  (the empty triangle — three edges, no filling 2-face), the syzygy `xᵦxᵧ · eₐ` at multidegree
+  `{a,b,c}` is a genuine first Koszul cycle (since `xᵦxᵧxₐ = 0`).  Modulo boundaries this carries
+  `Tor_{1,{a,b,c}} = H̃¹(Δ_{{a,b,c}})` — the first place a genuine reduced `H̃¹` strand appears.
+
+Next: prove this empty-triangle cycle is not a boundary — via the cyclic `|σ|=3` detector reading
+the degree-2 coefficients of `xᵦxᵧ`, `xₐxᵧ`, `xₐxᵦ` (each descends to the quotient since the ideal
+starts in degree ≥ 3 there) whose sum kills the three triangle boundaries — establishing the first
+nonzero reduced-`H̃¹` Hochster class.
+
+### Lean progress — degree-2 (pair) detector for the |σ|=3 strand
+
+Foundation for proving the empty-triangle cycle nonzero, in `StanleyReisnerVertexRelation`
+(axiom-clean):
+
+- `coeff_eq_zero_of_isFace_support` — the **general** vanishing lemma: a monomial-coefficient reader
+  annihilates the Stanley–Reisner ideal whenever the monomial's support is a face (unifying the
+  degree-0, degree-1, and degree-2 cases).
+- `srPairDetector` — the degree-two `x_u x_v`-coefficient reader descended to the Stanley–Reisner
+  ring (well-defined when `{u,v}` is a face), with `srPairDetector_mk` and
+  `srPairDetector_srVertexX_mul` (its value on `x_u x_v` is `1`).
+
+Next: the pair-detector product rule `srPairDetector u v (r · x_j) = ` a degree-one detector of `r`
+(`= D_v(r)` if `j=u`, `= D_u(r)` if `j=v`, else `0`), then the cyclic empty-triangle detector
+`Φ(s) = D_{bc}(s_a) + D_{ac}(s_b) + D_{ab}(s_c)` whose value is `1` on the empty-triangle cycle and `0`
+on every Koszul boundary (the degree-1 detector terms cancel in antisymmetric pairs) — giving the
+first nonzero reduced-`H̃¹` Hochster class.
+
+### Lean progress — FIRST nonzero reduced-H̃¹ Hochster class (empty triangle)
+
+The degree-1 (|σ|=3) strand of Hochster's formula now has its first nonzero class, unconditional over
+all finite complexes, in `StanleyReisnerVertexRelation` (axiom-clean):
+
+- `srPairDetector_mul_srVertexX` — the pair-detector product rule linking the degree-two detector to
+  the degree-one detectors (`D_{uv}(r·x_j) = D_v(r)` if `j=u`, `D_u(r)` if `j=v`, else `0`).
+- `srPairDetector_srKoszulBoundary` — a boundary's pair-detector collapses to a sum of two degree-one
+  detectors of antisymmetric coefficients.
+- `srEmptyTriangleSyzygy_not_koszulBoundary` — **the capstone**: on an empty triangle `{a,b,c}` (three
+  edges, no filling 2-face), the syzygy `xᵦxᵧ · eₐ` is not a first Koszul boundary, hence a nonzero
+  class of `Tor_{1,{a,b,c}} = H̃¹(Δ_{{a,b,c}})`.  The cyclic detector `Φ = D_{bc}(sₐ)+D_{ac}(s_b)+D_{ab}(s_c)`
+  is `1` on the syzygy and `0` on every boundary (its six degree-one detector terms cancel in
+  antisymmetric pairs, closed by `linear_combination`).
+
+Hochster's `Tor₁` is now formalized in both strands it reaches: `|σ|=2` (`H̃⁰` of 2-point subcomplexes,
+the earlier disconnect cycles) and `|σ|=3` (`H̃¹` of the empty triangle).  Next: the general `|σ|=3`
+`H̃¹` for arbitrary induced 3-vertex subcomplexes, and higher `|σ|`.
+
+### Lean progress — degree-1 consolidation (packaged class + cyclic symmetry)
+
+Consolidating the empty-triangle `H̃¹` milestone in `StanleyReisnerVertexRelation` (axiom-clean):
+
+- `srEmptyTriangle_firstKoszulHomology_nonzero` — packages the result: the empty-triangle syzygy is a
+  first Koszul cycle **and** not a first Koszul boundary, i.e. a nonzero class of `Tor₁` at
+  `{a,b,c}` = `H̃¹(Δ_{{a,b,c}})`.
+- `srEmptyTriangle_cyclic_syzygy_homologous` — the class is **cyclically symmetric**: the two cyclic
+  syzygies `xᵦxᵧ · eₐ` and `xₐxᵧ · e_b` differ by an explicit first Koszul boundary
+  (`srKoszulBoundary` of the single-entry coefficient `c_{a,b} = xᵧ`), hence represent the *same*
+  class — the `1`-dimensional triangle-hole `H̃¹` is generated by any cyclic representative.
+
+The degree-1 (`|σ|=3`) `Tor₁` strand is now complete and self-contained.  Deep next frontier: `Tor₂`
+(the second Koszul homology, `ker d₂ / im d₃`), where the `4`-cycle `C₄` hole
+(`H̃¹` at `|σ|=4`) first appears — requiring the third Koszul differential `d₃`.
+
+### Lean progress — general face detector + H̃² cycle (hollow tetrahedron, |σ|=4)
+
+Reaching second reduced cohomology without a new differential, in `StanleyReisnerVertexRelation`
+(axiom-clean):
+
+- `srFaceDetector` — the **general face detector**: the squarefree `∏_{v∈J} x_v`-coefficient reader
+  descended to the Stanley–Reisner ring for any face `J` (`support_indicatorExponent`,
+  `srFaceDetector_mk`, `srFaceDetector_prod` = `1` on `∏_{v∈J} x_v`).  It subsumes the degree-0
+  (`J=∅`), degree-1 (`J={w}`), and degree-2 (`J={u,v}`) detectors under one construction.
+- `srKoszulRelation_hollowTetrahedronSyzygy` — on a hollow tetrahedron `∂Δ³` (`{a,b,c,d}` nonface,
+  every proper face present), the syzygy `xᵦxᵧx_d · eₐ` is a first Koszul cycle (via the general
+  nonface relation `srProd_eq_zero_of_not_isFace`).  Modulo boundaries it carries
+  `Tor_{1,{a,b,c,d}} = H̃²(Δ_{{a,b,c,d}})` — the first place **reduced `H̃²`** appears, still inside `Tor₁`.
+
+Key structural insight: `H̃ⁿ` appears in `Tor₁` at `|σ|=n+2` (the boundary of the `(n+1)`-simplex), so
+the whole reduced-cohomology tower is reachable through the single first-Koszul-homology machinery —
+no higher Koszul differential `d₃, d₄, …` is needed for these "hollow simplex" classes.  Next: the
+hollow-tetrahedron non-boundary via `srFaceDetector` + the degree-3→2 product rule and a 4-term
+alternating detector, giving the first nonzero `H̃²` class.
+
+### Lean progress — general face-detector product rule + boundary helper
+
+Reusable generalizations enabling the uniform hollow-simplex `H̃ⁿ` classes, in
+`StanleyReisnerVertexRelation` (axiom-clean):
+
+- `srFaceDetector_mul_srVertexX` — the **general product rule**: `srFaceDetector J (r·x_j)` equals the
+  deleted-vertex detector `srFaceDetector (J.erase j) r` when `j ∈ J`, and `0` otherwise (via
+  `mk`-surjectivity, `coeff_mul_X'`, and the Finsupp identity `indicatorExponent_erase`).  Subsumes
+  the degree-two `srPairDetector_mul_srVertexX`.
+- `srFaceDetector_srKoszulBoundary` — the **general boundary helper**: `srFaceDetector J` of a Koszul
+  boundary at position `i` is `∑_{j∈J} srFaceDetector (J.erase j) (c i j − c j i)` (via the product
+  rule + `Finset.sum_ite_mem`).
+
+Next: the uniform **hollow-simplex non-boundary** for all `n`, via the alternating(all-plus) detector
+`Φ_σ(s) = ∑_{i∈σ} srFaceDetector(σ\{i})(s_i)`.  `Φ_σ(boundary) = ∑_{i≠j∈σ} srFaceDetector(σ\{i,j})(c_{ij}−c_{ji})`
+vanishes by the `(i,j)↔(j,i)` involution (each transposed pair sums to `srFaceDetector(0)=0`,
+unconditional — no characteristic-2 issue), while `Φ_σ(hollow-simplex syzygy) = 1`.  This gives every
+`H̃ⁿ = H̃^{|σ|−2}(∂Δ^{|σ|−1})` Hochster `Tor₁` class in one theorem.
+
+### Lean progress — general hollow-simplex cycle (all reduced-cohomology dimensions)
+
+`srKoszulRelation_hollowSimplexSyzygy` (in `StanleyReisnerVertexRelation`, axiom-clean) is the uniform
+cycle theorem: for any nonface `σ` and vertex `a ∈ σ`, the syzygy `(∏_{w∈σ∖a} x_w) · eₐ` at multidegree
+`σ` is a first Koszul cycle, since `(∏_{w∈σ∖a} x_w) xₐ = ∏_{w∈σ} x_w = 0` (general nonface relation +
+`Finset.mul_prod_erase`).  For a minimal nonface (`∂Δ^{|σ|−1}`) it carries `Tor_{1,σ} = H̃^{|σ|−2}(Δ_σ)`,
+so this single theorem realizes the **entire reduced-cohomology tower** `H̃⁰, H̃¹, H̃², …` as first Koszul
+cycles — subsuming the concrete triangle (`|σ|=3`) and tetrahedron (`|σ|=4`) syzygies.
+
+Next: the uniform hollow-simplex **non-boundary** (all `H̃ⁿ` nonzero at once), via the detector
+`Φ_σ(s) = ∑_{i∈σ} srFaceDetector(σ∖i)(sᵢ)` summed over `σ.attach` (the face proofs `IsFaceOf (σ∖i)`
+depend on `i∈σ`), with boundary annihilation by the `(i,j)↔(j,i)` involution (`Finset.sum_involution`,
+`Finset.erase_right_comm`) and `Φ_σ(syzygy)=1` by `srFaceDetector_prod`.
+
+### Lean progress — UNIFORM hollow-simplex non-boundary (whole reduced-cohomology tower) [MILESTONE]
+
+`srHollowSimplexSyzygy_not_koszulBoundary` (in `StanleyReisnerVertexRelation`, axiom-clean,
+UNCONDITIONAL) is the general capstone for the Hochster `Tor₁` classes at every dimension:
+
+For any nonface `σ` all of whose codimension-one faces `σ∖i` are faces (a minimal nonface = hollow
+simplex `∂Δ^{|σ|−1}`) and any `a ∈ σ`, the syzygy `(∏_{w∈σ∖a} x_w)·eₐ` is **not** a first Koszul
+boundary — a nonzero class of `Tor_{1,σ} = H̃^{|σ|−2}(Δ_σ)`.  Proof: the alternating(all-plus) detector
+`Φ_σ(s) = ∑_{i∈σ} srFaceDetector(σ∖i)(sᵢ)` (built from the general face detector) evaluates to `1` on
+the syzygy (`srFaceDetector_prod`) and to `0` on every boundary — its double sum over ordered pairs
+cancels by the `(i,j)↔(j,i)` involution (`antisym_sigma_sum_zero` via `Finset.sum_involution` +
+`Finset.erase_right_comm`), unconditionally (no characteristic-2 obstruction).
+
+This single theorem realizes the **whole tower** `H̃⁰, H̃¹, H̃², …` of reduced simplicial cohomology as
+nonzero first-Koszul-homology (Hochster `Tor₁`) classes, uniformly over all finite complexes.  With
+the earlier general cycle, general nonface relation, descended detectors (all faces), product rule,
+boundary helper, `d₁∘d₂=0`, and the 1-skeleton bridge, the `Tor₁` layer of the Hochster strand
+equivalence is now formalized in full generality.  The remaining open frontier is the complete
+multigraded isomorphism `Tor_{i,σ} ≅ H̃^{|σ|−i−1}(Δ_σ)` for higher `i` (`Tor₂, Tor₃, …`).
+
+### Lean progress — Tor₁ layer main theorem (packaged, all dimensions)
+
+`srHollowSimplex_firstKoszulHomology_nonzero` (axiom-clean) packages the general `Tor₁` result: for a
+minimal nonface `σ` (hollow simplex) and `a ∈ σ`, the syzygy `(∏_{w∈σ∖a} x_w)·eₐ` is a first Koszul
+cycle that is not a boundary — a nonzero class in `Tor_{1,σ} = H̃^{|σ|−2}(Δ_σ)`.  Ranging over
+`|σ| = n+2` this is the whole reduced-cohomology tower `H̃⁰, H̃¹, H̃², …` as nonzero Hochster `Tor₁`
+classes; it subsumes the empty-triangle (`H̃¹`) main theorem.
+
+This completes the `Tor₁` layer of the Hochster strand equivalence in Lean, unconditionally over all
+finite complexes.  The deep remaining frontier is the higher-`i` layer (`Tor₂, Tor₃, …`) of the
+multigraded isomorphism `Tor_{i,σ} ≅ H̃^{|σ|−i−1}(Δ_σ)`, which needs the higher Koszul differentials
+`d₃, d₄, …` (with their delicate alternating `d²=0`) — genuinely new homological infrastructure absent
+from mathlib.
+
+### Lean progress — third Koszul differential + d₂∘d₃=0 (Tor₂ foundation)
+
+`srKoszulBoundary_srKoszulBoundary3` (in `StanleyReisnerVertexRelation`, axiom-clean) extends the
+Koszul complex to degree three: for an `IsAlternating3` 3-tensor `b`, the second differential of the
+third differential vanishes (`srKoszulBoundary (srKoszulBoundary3 b) = 0`), so the second Koszul
+homology `Tor₂ = ker d₂ / im d₃` is a well-defined subquotient.
+
+- `IsAlternating3` — the alternating 3-tensor predicate (antisymmetric under adjacent transpositions,
+  vanishing on repeated indices).
+- `srKoszulBoundary3` — the third differential `d₃(b)_{ij} = ∑_k b_{ijk} x_k`.
+- `antisym_prod_sum_zero` — reusable helper: an antisymmetric, zero-diagonal function summed over
+  `σ × σ` vanishes by the `Prod.swap` involution.
+
+The proof: `d₃(b)` is antisymmetric, and each `∑_{j,k} b_{ijk} x_k x_j = 0` by the `(j,k)↔(k,j)`
+involution (alternating coefficients vs symmetric products), so `d₂∘d₃` collapses — unconditional.
+Next: a `Tor₂` class — the `4`-cycle `C₄` hole (`H̃¹` at `|σ|=4` = `Tor_{2,{a,b,c,d}}`) as an element
+of `ker d₂ ∖ im d₃`, and its non-boundary via a `Tor₂` detector.
+
+### Lean progress — first Tor₂ cycle (C₄ 4-cycle hole)
+
+`srKoszulBoundary_c4Cycle` (in `StanleyReisnerVertexRelation`, axiom-clean) constructs the first
+second-Koszul-homology representative: on the square `C₄` (`a–b–c–d–a`, diagonals `{a,c}`, `{b,d}`
+absent), the syzygy `c_{ab} = x_c x_d`, `c_{cd} = x_a x_b` is annihilated by the second differential
+(`srKoszulBoundary (c4Cycle …) = 0`), because every boundary term carries an absent-diagonal product
+`x_a x_c` or `x_b x_d`, which vanishes.  Modulo `im d₃` this represents `Tor_{2,{a,b,c,d}} = H̃¹(C₄)` —
+`H̃¹` reached at `Tor₂` rather than `Tor₁`, the first genuinely second-degree Koszul homology.
+
+Combined with the `d₂∘d₃=0` foundation, the `Tor₂` layer now has both the well-definedness of the
+homology and an explicit nonzero-candidate cycle.  Next: the `C₄` **non-boundary** (`c4Cycle ∉ im d₃`)
+via a `Tor₂` detector, establishing it as a genuinely nonzero `Tor₂` class.
