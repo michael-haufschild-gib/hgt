@@ -331,3 +331,30 @@ the 3-4-1 mechanism is the classical way to force one, and the corpus already ca
 inequality in `ZetaThreeFourOne.lean`; (ii) 9bn: candidate positivity statements at large support
 are documented as DISPROVED in the 2026 literature, so the live question is which coefficient
 families survive, not whether all do.
+
+## Rung 1 — the arithmetic primitive [LEAN-PROVED]
+
+`VonMangoldtThreeFourOneSeries.lean`, clean, sorry-free, axioms standard.
+
+**`three_four_one_vonMangoldt`** — for `σ > 1` and every real `τ`,
+  `0 ≤ 3·Re L(Λ,σ) + 4·Re L(Λ,σ+iτ) + Re L(Λ,σ+2iτ)`.
+Each prime power contributes `Λ(n)·n^{−σ}·(3 + 4cos(τ log n) + cos(2τ log n))`, and the bracket is
+`2(1 + cos θ)² ≥ 0` (`three_four_one_cos`). Supporting: `re_natCast_cpow_neg` (real part of a natural
+cpow: `n^{−σ}cos(τ log n)`), `re_lseries_term_vonMangoldt` and its real-point case.
+
+This is the corpus's first SERIES-form 3-4-1: `ZetaThreeFourOne.lean` carries only the PRODUCT
+inequality `1 ≤ ‖ζ(1+x)³ζ(1+x+iy)⁴ζ(1+x+2iy)‖`. The series form is what a positivity argument on the
+Gram can consume, since the Gram entries carry `L(Λ,s)` linearly, not `ζ` multiplicatively.
+
+**Position.** Rung 0 (`riemannHypothesis_iff_outsideStrip_nonneg`) reduces RH to positivity of a
+Hermitian form whose entries are, by `xiWeilGramEntry_arithmetic`, explicit in `M₁`, pole terms,
+`Γ_ℝ` terms and `L(Λ,s)`. `three_four_one_vonMangoldt` supplies the only known way to force a sign on
+the `L(Λ,s)` part: a three-point configuration in arithmetic progression with weights `(3,4,1)`.
+
+**[OPEN CORE]** Whether that configuration can be realised INSIDE the Gram form. Two obstructions,
+both concrete: (i) the Gram's prime weight `W_n(c)` is determined by the kernel algebra
+(`z'/(z(z−z'))` coefficients), not free — so matching it to `(3,4,1)` is a constraint, not a choice;
+(ii) the Gram couples `L` at `z` with `L` at `conj z'`, i.e. at points on OPPOSITE sides of the
+strip, whereas 3-4-1 needs three points on ONE horizontal line. Reconciling those is the next
+question; a negative answer would be a genuine no-go about this Gram and would send the card to the
+failed lane with the exact obstruction.

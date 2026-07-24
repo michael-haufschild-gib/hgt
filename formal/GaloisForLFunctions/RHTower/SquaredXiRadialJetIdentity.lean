@@ -55,4 +55,41 @@ theorem deriv_pow_mul_iteratedDeriv_shift
     convert h using 1
   exact hmul.deriv
 
+/-- HasDerivAt form of the single-term radial derivative. -/
+theorem hasDerivAt_pow_mul_iteratedDeriv_shift
+    {L : ℝ → ℝ} (hL : ContDiff ℝ (⊤ : WithTop ℕ∞) L) (m j : ℕ) (w : ℝ) :
+    HasDerivAt (fun v => v ^ m * iteratedDeriv j L (1 / 2 + v))
+      ((m : ℝ) * w ^ (m - 1) * iteratedDeriv j L (1 / 2 + w) +
+        w ^ m * iteratedDeriv (j + 1) L (1 / 2 + w)) w := by
+  have hd : DifferentiableAt ℝ (iteratedDeriv j L) (1 / 2 + w) :=
+    (hL.differentiable_iteratedDeriv j (by exact_mod_cast WithTop.coe_lt_top _)).differentiableAt
+  have hg : DifferentiableAt ℝ (fun v => iteratedDeriv j L (1 / 2 + v)) w :=
+    hd.comp w (by fun_prop)
+  have hpow : HasDerivAt (fun v : ℝ => v ^ m) ((m : ℝ) * w ^ (m - 1)) w := by
+    simpa using hasDerivAt_pow m w
+  have hshift : HasDerivAt (fun v => iteratedDeriv j L (1 / 2 + v))
+      (iteratedDeriv (j + 1) L (1 / 2 + w)) w := by
+    have h := hg.hasDerivAt
+    rwa [deriv_iteratedDeriv_shift hL j (1 / 2) w] at h
+  have h := hpow.mul hshift
+  convert h using 1
+
+/-- Radial jet sum with abstract real coefficients (for a fixed order): `∑_{j≤N} c j·w^j·L^(j)(1/2+w)`. -/
+noncomputable def jetSum (L : ℝ → ℝ) (c : ℕ → ℝ) (N : ℕ) (w : ℝ) : ℝ :=
+  ∑ j ∈ Finset.range (N + 1), c j * (w ^ j * iteratedDeriv j L (1 / 2 + w))
+
+/-- The derivative of the radial jet sum is the coefficientwise single-term derivative. -/
+theorem hasDerivAt_jetSum
+    {L : ℝ → ℝ} (hL : ContDiff ℝ (⊤ : WithTop ℕ∞) L) (c : ℕ → ℝ) (N : ℕ) (w : ℝ) :
+    HasDerivAt (fun v => jetSum L c N v)
+      (∑ j ∈ Finset.range (N + 1), c j *
+        ((j : ℝ) * w ^ (j - 1) * iteratedDeriv j L (1 / 2 + w) +
+          w ^ j * iteratedDeriv (j + 1) L (1 / 2 + w))) w := by
+  have h := HasDerivAt.sum (fun j (_ : j ∈ Finset.range (N + 1)) =>
+    (hasDerivAt_pow_mul_iteratedDeriv_shift hL j j w).const_mul (c j))
+  have hfe : (∑ j ∈ Finset.range (N + 1),
+      fun v => c j * (v ^ j * iteratedDeriv j L (1 / 2 + v))) = fun v => jetSum L c N v := by
+    funext v; simp only [jetSum, Finset.sum_apply]
+  rwa [hfe] at h
+
 end RHTower

@@ -2606,3 +2606,4 @@ import GaloisForLFunctions.RHTower.XiWeilDivisorHilbert
 import GaloisForLFunctions.RHTower.SuzukiAffineSecantSpectralSum
 import GaloisForLFunctions.RHTower.SuzukiKreinSchurBlockCongruence
 import GaloisForLFunctions.RHTower.XiWeilArithmeticGram
+import GaloisForLFunctions.RHTower.VonMangoldtThreeFourOneSeries
