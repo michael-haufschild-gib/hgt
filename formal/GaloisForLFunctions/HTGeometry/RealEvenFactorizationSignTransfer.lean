@@ -79,4 +79,30 @@ theorem nonneg_left_of_realEvenFactorizationOn_of_right_pos {f : ℝ → ℝ} {a
   rw [hfa]
   exact mul_nonneg hPa hua.le
 
+/-- Negating the nowhere-zero cofactor preserves an even-root factorization. -/
+theorem RealEvenFactorizationOn.neg {f : ℝ → ℝ} {a b : ℝ}
+    (hfac : RealEvenFactorizationOn f a b) :
+    RealEvenFactorizationOn (-f) a b := by
+  obtain ⟨zs, m, u, hzs, hu, hune, hfact, heven⟩ := hfac
+  refine ⟨zs, m, fun x => -u x, hzs, hu.neg, ?_, ?_, heven⟩
+  · intro x hx
+    exact neg_ne_zero.mpr (hune x hx)
+  · intro x hx
+    rw [Pi.neg_apply, hfact x hx]
+    ring
+
+/-- A finite even-root factorization cannot cross strictly from positive to negative between its
+ordered endpoints. -/
+theorem not_realEvenFactorizationOn_of_left_pos_of_right_neg
+    {f : ℝ → ℝ} {a b : ℝ}
+    (hab : a < b) (hleft : 0 < f a) (hright : f b < 0) :
+    ¬ RealEvenFactorizationOn f a b := by
+  intro hfac
+  have hnonneg :
+      0 ≤ (-f) a :=
+    nonneg_left_of_realEvenFactorizationOn_of_right_pos
+      hab hfac.neg (by simpa using neg_pos.mpr hright)
+  simp only [Pi.neg_apply, neg_nonneg] at hnonneg
+  exact (not_le_of_gt hleft) hnonneg
+
 end HTGeometry

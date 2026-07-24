@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCuspCenterMixedThreePointLocalizationLaw
 import GaloisForLFunctions.RHTower.ThetaCuspCenterMixedTwoNodeStrictLaw
+import GaloisForLFunctions.RHTower.HedenmalmCenterMixedCorrelationAngle
 
 /-!
 # Pairwise-strict ternary localization for the theta-cusp packet
@@ -62,6 +63,25 @@ theorem thetaCusp_pairwiseStrict_ternaryLocalizationUniversality
     thetaCuspCenterMixedTwoNodeMatrix_posDef ha0 ha hx.ne',
     thetaCuspCenterMixedTwoNodeMatrix_posDef ha0 ha hy.ne',
     thetaCuspCenterMixedTwoNodeMatrix_posDef ha0 ha hxy.ne', hdet⟩
+
+/-- **Empty failure shell.**  Global source-angle positivity shows that the localized ternary
+failure set is empty at every admissible aperture. -/
+theorem thetaCusp_pairwiseStrict_ternaryLocalization_no_failure
+    {a : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) :
+    ¬ ∃ x y : ℝ, 0 < x ∧ 0 < y ∧
+      ¬ Matrix.PosSemidef (thetaCuspCenterMixedThreePointMatrix a x y) := by
+  rintro ⟨x, y, hx, hy, hfailure⟩
+  exact hfailure
+    (thetaCuspCenterMixedThreePointMatrix_posSemidef ha0 ha hx.le hy.le)
+
+/-- No admissible positive-gap packet has a negative center-mixed cubic determinant. -/
+theorem thetaCusp_pairwiseStrict_ternaryLocalization_no_negativeDeterminant
+    {a : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) :
+    ¬ ∃ x y : ℝ, 0 < x ∧ 0 < y ∧
+      thetaCuspCenterMixedThreePointDeterminant a x y < 0 := by
+  rintro ⟨x, y, hx, hy, hnegative⟩
+  exact (not_lt_of_ge
+    (thetaCuspCenterMixedThreePointDeterminant_nonneg ha0 ha hx.le hy.le)) hnegative
 
 end
 

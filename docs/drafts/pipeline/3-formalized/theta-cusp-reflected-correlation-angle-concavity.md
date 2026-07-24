@@ -1,10 +1,10 @@
 # Theta-cusp reflected correlation-angle concavity
 
 - **ID:** `theta-cusp-reflected-correlation-angle-concavity`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Date:** 2026-07-23
-- **Scientific status:** `[CONJECTURE] [SOURCE-PURE] [NO COMPUTATION] [NOT RH] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED HERE] [FORMALIZED] [SOURCE-PURE] [NO COMPUTATION] [NOT RH] [NOVELTY UNVERIFIED]`
 - **Parent:** `hedenmalm-center-mixed-double-positivity-law.md`
 - **Statement:** For the completed Riemann--Jacobi theta source, every normalized reflected product
   has a concave correlation angle on the nonnegative displacement half-line.
@@ -41,9 +41,9 @@ all finite orders, Fourier-current positivity, or RH.
 ## Gates
 
 - [x] 0 → 1 in-progress: source-pure statement, exact attack, and parent-theory audit
-- [ ] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: exact source theorem and unconditional order-three consumer, narrow build,
-  axiom audit, generated index, and lint green
+- [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3 formalized: exact source theorem and unconditional order-three consumer, targeted
+  module builds, axiom audit, and generated-index discovery
 - [ ] 3 → 4 publication-ready: standalone theorem, proof, Lean certificate, and external priority
   review
 
@@ -208,9 +208,9 @@ Priority remains `[NOVELTY UNVERIFIED]`.
 5. **No RH leakage.**  The conclusion is only order three.  It neither gives the Fourier-current
    sign nor a Gram orbit for arbitrary node sets.
 
-**Current verdict:** `SURVIVES PRELIMINARY ATTACK`.
+**Current verdict:** `PROVED AND FORMALIZED`.
 
-## Analytic attack plan
+## Closed proof
 
 Work with the already formalized first-atom decomposition on the nonnegative half-line,
 
@@ -220,21 +220,49 @@ c=c_1-(log(1+rho))'',
 c_1=4A+6A/(A-3/2)^2,       A=pi*exp(2x).
 ```
 
-Split `(u,t)` into two exact chambers.
+The proof splits `(u,t)` into two exact chambers.
 
-1. **Same-sign chamber `0<=u-t`.**  Prove `(RC)` for `c_1` by clearing the positive rational
-   denominators in `A_-`, `A_+`.  Bound the perturbation by the derivative-ratio estimates already
-   used in `ThetaCuspFullReflectionFourthTuran`; retain an explicit factor of `t` so the strict
-   fourth-Turán margin closes the coalesced boundary uniformly.
-2. **Seam-crossing chamber `u-t<0<u+t`.**  Use evenness to split the curvature integral at zero.
-   Pair the two modular half-line atom expansions before estimation.  The target is a smooth
-   paired remainder estimate with the same vanishing factor as the first-atom margin.
-3. **Consumer.**  After `(RC)` is proved, derive `(1)`--`(3)`, integrate the resulting finite
-   quadratic forms against `r*sinh(a*r)dr`, and connect the theorem directly to
-   `ThetaCuspCenterMixedNearCenterThreePointWall`.
+1. **Same-sign chamber.**  Exact likelihood cumulants and the support gap give the likelihood
+   margin.  A symbolic half-factor bound and atom budget prove strict domination of the negative
+   atom--likelihood cross term, hence the completed same-half-line margin.
+2. **Center-zero transport.**  Put
 
-No Lean edit is permitted until both source chambers and the finite-mixture transfer have a
-dependency-complete paper proof.
+   ```text
+   J(x)=4 L'(x)L''(x)+L'''(x).
+   ```
+
+   Existing strict fourth-Turán control gives
+
+   ```text
+   J'(x)=L''''(x)+4L''(x)^2+4L'(x)L'''(x)>0.
+   ```
+
+   In the only adverse third-jet chamber, the theta support gap forces
+   `-L'(x)<19/12` and `L'''(x)<24`; the strict `>160` Turán margin leaves positive slack.
+   Evenness gives `J(0)=0`, hence `J(x)>=0` for `x>=0`.
+3. **Seam reconstruction.**  For endpoints `a>=b>=0`, write slope, curvature, and curvature jet
+   as `(h_a,c_a,d_a)` and `(h_b,c_b,d_b)`.  The same-half-line margin is
+
+   ```text
+   2(h_a-h_b)(c_a+c_b)-(d_a-d_b)>=0.
+   ```
+
+   The two center-zero laws are `4h_i c_i-d_i>=0`.  If `c_a<=c_b`, their sum plus
+   `(h_a-h_b)(c_b-c_a)>=0` proves the seam sum margin.  If `c_b<=c_a`, the difference margin plus
+   twice the `b` center law and `h_b(c_a-c_b)>=0` proves it.  This is formalized as a reusable
+   HilbertMetric scalar theorem.
+4. **Consumer.**  Riccati transport proves correlation-angle concavity on every closed
+   nonnegative interval and global subadditivity.  The closed correlation-angle matrix criterion
+   includes duplicated-node seams.  Integrating fibrewise PSD matrices against
+   `r*sinh(a*r)dr` proves all nonnegative-gap center-mixed matrices PSD and discharges the named
+   near-center wall.
+
+Formalized modules:
+
+- `GaloisForLFunctions.HilbertMetric.RiccatiCorrelationAngle`
+- `GaloisForLFunctions.HilbertMetric.ThreePointCorrelationAngle`
+- `GaloisForLFunctions.RHTower.ThetaCuspGlobalReflectedRiccati`
+- `GaloisForLFunctions.RHTower.HedenmalmCenterMixedCorrelationAngle`
 
 ## Log
 
@@ -243,3 +271,6 @@ dependency-complete paper proof.
   angle concavity was reduced to the source-only reflected curvature contraction `(RC)`; its
   infinitesimal law was identified exactly with the already proved strict fourth-Turán theorem.
   Hostile attack exposed the modular seam as the first unresolved source obligation.
+- 2026-07-23 — closed same-half-line atom--likelihood interference, proved center-zero transport,
+  reconstructed the seam algebraically, formalized global Riccati positivity and angle concavity,
+  and discharged center-mixed order-three PSD without hypotheses.

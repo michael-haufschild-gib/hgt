@@ -95,10 +95,13 @@ import GaloisForLFunctions.RHTower.ThetaCuspReflectedRiccatiAngle
 import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodStrictCooling
 import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodGapCumulantRiccati
 import GaloisForLFunctions.RHTower.ThetaCuspAtomLikelihoodCrossDomination
+import GaloisForLFunctions.RHTower.ThetaCuspGlobalReflectedRiccati
 import GaloisForLFunctions.RHTower.CCMCriticalMellinApertureResolvent
 import GaloisForLFunctions.RHTower.CCMCriticalMellinRieszMobiusRenewal
 import GaloisForLFunctions.RHTower.CCMUnitRieszMarkovDensity
 import GaloisForLFunctions.RHTower.CCMUnitRieszMobiusCausalVirial
+import GaloisForLFunctions.RHTower.CCMBlockFockCommonCarrierSquareObstruction
+import GaloisForLFunctions.RHTower.CCMBlockFockPowerDilationTrichotomy
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
@@ -146,11 +149,13 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   ray through the corner eventually enters the strict chamber.  The mixed sixth-jet Hessian law
   strengthens this again to `exists_thetaCuspCenterMixed_uniformCoalescedSquare_posDef`: one
   radius works for both positive gaps and hence closes the entire small--small corner, uniformly
-  even as the aspect ratio tends to either axis.  The exact remaining order-three wall lies in
-  the bounded noncoalesced annulus between that square and the far chamber, inside the compact
-  two-gap core from
-  `exists_thetaCuspCenterMixedThreePointMatrix_compactCore_iff`, outside the proved far chamber
-  and uniform coalesced square.  All-node positive-definiteness remains the RH-equivalent wall.
+  even as the aspect ratio tends to either axis.  The later source-level Riccati closure
+  `thetaCuspReflectedLogRiccatiMargin_nonneg` joins the same-half-line atom--likelihood theorem to
+  the modular seam through the center-zero fourth-Turán transport.  It proves global reflected
+  correlation-angle concavity and subadditivity.  Fibrewise order-three PSD then survives the
+  positive Hedenmalm center mixture, so
+  `thetaCuspCenterMixedThreePointMatrices_posSemidef` closes the former bounded noncoalesced
+  annulus as well.  All-node positive-definiteness remains the RH-equivalent wall.
 
 * Suzuki (`arXiv:2606.09096`) constructs finite-interval self-adjoint extensions and entire
   characteristic functions with only real zeros.  `SuzukiFiniteApertureHermiteBiehler` extracts
@@ -577,7 +582,31 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   virial collapse to the logarithmic Möbius defect.  These are known-derived identities, not RH
   progress.  Paper-level Landau analysis reduces the branch to one source theorem: the
   all-epsilon half-unit lower bound for the Markov average of that exact logarithmic defect.
-  This source bound is not asserted here.
+  This source bound is not asserted here.  The independent first-clock backward chain ends at
+  `ccmFirstClockPrimeHalfWaveDominance_iff_rh`.  Its former common block--Fock carrier proposal
+  is now classified exactly rather than left as a viable positivity heuristic.  The already-known
+  codiagonal closure obstruction rules out the radial graph after collapse; the stronger
+  `ccmBlockFockCommonCarrierSquareCountertermMatrix_posSemidef_iff` acts before that collapse.
+  On every square pair `q,q²`, positivity holds exactly when the second-diagonal counterterm is at
+  least `D(q)-D(q²)`, and `ccmNaturalBlockRadialEnergy_square_lt` proves this capacity debt is
+  strictly positive.  The literal natural-radial/Gamma-cross matrix is therefore indefinite at
+  every scale.  The von-Mangoldt source audit now closes rather than assumes the counterterm:
+  `ccmBlockFock_squareCapacity_source_fracture` decomposes the marked debt exactly into critical
+  Mellin and higher-Fock square innovations.  After normalization by the nonzero source mark this
+  is precisely the minimal counterterm, and
+  `ccmBlockFock_normalizedSquareInnovations_repair_det` proves determinant zero.  Thus the square
+  source reaches positivity but supplies no rank-two Schur innovation.  Cubic dilation behaves
+  differently.  It preserves the same von-Mangoldt mark, while
+  `ccmBlockFockCommonCarrierCubeMatrix_posDef` proves the natural `q,q³` carrier strictly positive;
+  its determinant is the explicit positive four-grade surplus
+  `r⁸(1-r⁴)/((1-r⁸)²(1-r¹²))`. This strictness is only a local specialization of general
+  multiplicative graded-partition log-convexity already formalized by
+  `gradedPartition_mul_sq_le`; it is not a new positivity mechanism or RH predecessor.
+  Cubing stays inside one prime-power tower, misses exponent-one prime atoms, and transports
+  neither hard aperture nor first-clock sine sign. Formerly proposed triadic phase assembly
+  would have to insert exactly those missing source data and is therefore retired. Live wall
+  remains a source-complete coefficientwise source/response intertwiner whose compression is
+  proved to be first-clock half-wave dominance.
 
 ## Positivity, Li, approximation, and explicit-formula routes
 

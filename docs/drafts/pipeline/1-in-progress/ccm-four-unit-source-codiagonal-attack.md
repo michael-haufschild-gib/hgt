@@ -1783,3 +1783,232 @@ first-clock completeness theorem this hard half-weight de-Abelization is RH-comp
 Formal source:
 
 - `formal/GaloisForLFunctions/RHTower/CCMEulerEssentialBoundaryLayerCorrespondence.lean`.
+
+## C41 doubled-parity Hardy father/detail source `[LEAN-FORMALIZED; TARGET TRANSPORT OPEN]`
+
+The one-carrier critical Möbius likelihood family has Hardy Cauchy Gram
+
+```text
+<d_(sigma,u),d_(sigma,v)> -> 1/(1+u+v),
+```
+
+but its Fisher tangent has the already-known soft column `2u/(1+u)^2`.  A bounded operator fixing
+all father likelihoods therefore cannot assign an independent continued-Xi Ward column.
+
+The first source construction that removes this totality obstruction is the parity double
+
+```text
+F_(sigma,u)=2^(-1/2)(d_(sigma,u),p_(sigma,u)),
+D_sigma     =2^(-1/2)(chi_sigma,-p chi_sigma).
+```
+
+Here `p` is Möbius parity and `chi_sigma` is the completed critical Fisher tangent.  Möbius parity
+is isometric on squarefree support.  Lean now proves, before any limit,
+
+```text
+<F_(sigma,u),F_(sigma,v)>
+  =squarefreeMobiusBoundaryLayerLaplace sigma (u+v),
+<D_sigma,F_(sigma,u)>=0,
+||D_sigma||^2=||chi_sigma||^2.                          (C41.1)
+```
+
+For every finite aperture packet, the actual augmented packet
+`(F_(sigma,u_i))_i,D_sigma` has a positive-semidefinite Gram.  Entrywise at the critical boundary
+its father block is the right-half-plane Hardy Cauchy Gram, its detail column is zero, and its
+detail diagonal is four:
+
+```text
+Gram(F_i,D_sigma) -> [[G_P,0],[0,4]].                   (C41.2)
+```
+
+This is not the requested `W_P`: parity doubling creates transverse four-unit capacity but does
+not itself create `r_P`.  It does, however, eliminate the prior one-carrier rigidity without
+changing the Hardy father block.
+
+The exact remaining operation is no longer ambiguous:
+
+```text
+singular squarefree-overlap graph division
+ -> Gamma completion
+ -> strict-right Wiener--Hopf/anti-causal projection
+```
+
+must act on the clock-odd detail and produce `r_P` while transporting the positive cofinal Gram to
+
+```text
+W_P=[[G_P,r_P],[r_P^*,4]].                              (C41.3)
+```
+
+Ordinary Hardy multiplier contractivity does not prove `(C41.3)`: the corpus proves the actual
+strict-right phase is strictly contractive when RH is false and saturated exactly under RH.
+The missing statement is source-rigged nonexpansiveness of the singular graph on the doubled
+clock-odd sector.  The adapted-zero theorem remains its hostile test: one strict-right zero makes
+`(C41.3)` non-PSD.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/MobiusParityLikelihoodHardyGram.lean`;
+- `formal/GaloisForLFunctions/RHTower/MobiusDoubledParityHardyTransverseGram.lean`.
+
+## C42 target-Hardy contraction is not source contraction `[LEAN-FORMALIZED]`
+
+The fixed transport `squarefreeMobiusGammaXiWardTransportV` is affine in its source score.  At base
+aperture the squarefree overlap is exactly one, so for arbitrary source vectors `x,y`
+
+```text
+V_(sigma,epsilon)(x)-V_(sigma,epsilon)(y)
+ = i/(2 epsilon)
+   * [<x,psi_sigma>-<y,psi_sigma>].                    (C42.1)
+```
+
+The normalized signed source satisfies `||psi_sigma||=1`.  Taking `x=psi_sigma`, `y=0`, and the
+physical `epsilon=sigma-1` gives the exact gain
+
+```text
+||V(x)-V(0)||=1/[2(sigma-1)]>1
+whenever 1<sigma<3/2.                                  (C42.2)
+```
+
+Hence the fixed Möbius--Gamma/Xi graph is not one-Lipschitz on its ambient Hilbert source, even
+though its target-variable phase and normalized Hardy multiplier are contractive.  These are
+different assertions.  The target contractivity theorem cannot transport the positive Gram
+`(C41.2)` into `W_P`.
+
+This does not kill the source-conditioned clock-odd relation.  It proves that the overlap division
+must be absorbed by a singular graph topology before any nonexpansive statement is possible.  A
+successful next theorem must therefore:
+
+1. define the closed graph norm on the doubled clock-odd domain;
+2. keep `D_sigma` at asymptotic squared norm four in that graph norm;
+3. map its Gamma/anti-causal image to `r_P`;
+4. prove graph-to-Hardy nonexpansiveness.
+
+Dropping item 2 makes contractivity vacuous by putting the `1/(sigma-1)` blow-up into the source
+norm.  Retaining the ambient norm contradicts `(C42.2)`.
+
+Formal source:
+
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardSourceNonexpansiveNoGo.lean`.
+
+## C43 cofinal four-unit saturation freezes the zero source column `[LEAN-FORMALIZED]`
+
+C42 left open whether overlap division could be absorbed into a singular graph norm while the
+doubled Möbius detail retained its asymptotic four-unit energy. A universal Hilbert-space law now
+closes the bounded-contraction version of that proposal.
+
+For every contraction `T`,
+
+```text
+||T* T d-d||^2 <= ||d||^2-||T d||^2,
+
+|<T x,T d>-<x,d>|
+ <= ||x|| sqrt(||d||^2-||T d||^2).                    (C43.1)
+```
+
+Hence exact saturation of `d` freezes its full codiagonal. More importantly, for arbitrary
+infinite-dimensional source and target spaces and arbitrary cofinal contraction sequences,
+
+```text
+<x_n,d_n>=0,
+sup_n ||x_n||<infinity,
+||d_n||^2-||T_n d_n||^2 ->0
+
+-> <T_n x_n,T_n d_n> ->0.                             (C43.2)
+```
+
+Applying `(C43.2)` to the actual C41 father/detail pair proves that no bounded cofinal contraction
+can create the continued Xi Ward column from its zero source column while retaining boundary
+diagonal four. This is not a finite-rank obstruction.
+
+There is one precise escape. If a moving target detail is
+
+```text
+e_n=T_n d_n+c_n,
+```
+
+then every limiting codiagonal is carried entirely by the connection:
+
+```text
+<T_n x_n,e_n> -> r  ->  <T_n x_n,c_n> -> r.           (C43.3)
+```
+
+Lean proves the resulting exact classification:
+
+```text
+RH
+<->
+cofinal four-unit contraction realization of r_P
+from the doubled Mobius parity source.                 (C43.4)
+```
+
+Thus graph-norm absorption without a moving-operator connection is closed. The active construction
+is no longer “transport `D_sigma` nonexpansively.” It is:
+
+```text
+differentiate the source-defined Gamma/Wiener--Hopf operator itself,
+identify its connection term c_sigma,
+prove ||T_sigma D_sigma+c_sigma||^2 <= 4 cofinally,
+and prove its father codiagonal tends to r_P.
+```
+
+The first and last identities are partly encoded by the existing non-diagonal Julia derivative.
+The unresolved RH-bearing statement is the four-unit norm bound for that exact connection-augmented
+detail. Ordinary target multiplier contractivity does not supply it.
+
+Formal source:
+
+- `formal/GaloisForLFunctions/RHTower/MobiusDoubledParityContractionSaturationRigidity.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-four-unit-cofinal-contraction-saturation-rigidity.md`.
+
+## C44 singular/cofinal connection escape is closed `[LEAN-FORMALIZED]`
+
+C43 correctly proves that, in a decomposition
+
+```text
+e_n=T_n d_n+c_n,
+```
+
+the connection carries the limiting nonzero Ward codiagonal. It incorrectly
+left open the possibility that destructive interference between `T_n d_n`
+and `c_n` could keep the total diagonal at four.
+
+Let `q` be a strict-right upper Xi zero, `a=Re(lambda_q)`, and evaluate at the
+adapted node `conj(lambda_q)`. The existing target theorem gives
+
+```text
+2/a < |r(conj(lambda_q))|^2.                            (C44.1)
+```
+
+The new universal Hilbert law proves
+
+```text
+||f||^2 <= 1/(2a),
+<f,e>=r(conj(lambda_q))
+
+-> 4 < ||e||^2.                                        (C44.2)
+```
+
+Thus if the directly transported detail stays father-orthogonal and the
+connection carries the Ward column, then the total detail itself satisfies
+the hypotheses of `(C44.2)`. No orthogonality between direct and connection
+terms is needed. Their destructive interference cannot save the four-unit
+bound.
+
+The cofinal theorem is stronger: no sequences in any complex Hilbert space
+can satisfy
+
+```text
+||f_n||^2 -> 1/(2a),
+<f_n,e_n> -> r(conj(lambda_q)),
+||e_n||^2 <= 4.                                        (C44.3)
+```
+
+It assumes no bounded transport, finite rank, vector convergence, or
+direct/connection decomposition. Hence a singular moving connection is not a
+remaining mechanism distinct from source positivity of fixed `W_P`.
+Producing `(C44.3)` from the Möbius--Gamma source is already the RH proof.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardConnectionOverspend.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-cofinal-connection-escape-closure.md`.

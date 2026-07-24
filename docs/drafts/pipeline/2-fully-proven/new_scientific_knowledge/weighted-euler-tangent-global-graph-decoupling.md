@@ -907,3 +907,233 @@ in another corona still only records their real part and remains circular.
   single remaining input for the whole card (everything else is formalized end-to-end) and
   should proceed as its own reusable sub-project (Selberg symmetry formula → elementary PNT
   with error, or mathlib-ζ analytic route).
+
+- **[DONE 2026-07-24] Step 4c COMPLETE + (8a) UNCONDITIONAL — the prime-log
+  oversampling lemma is discharged end-to-end.**
+  The 4c sub-project (card `elementary-pnt-power-log-error-infrastructure`,
+  now in 3-formalized) delivered the full elementary Erdős–Selberg chain:
+  `RHTower.psiRemainder_eventually_le` (**ψ(N) = N + o(N), unconditional,
+  standard axioms**), θ-form `chebyshevTheta_remainder_eventually_le`,
+  window supply `exists_prime_log_window` (∀η>0, primes in every
+  multiplicative window `[e^y, e^{y+η}]` past an explicit threshold), and
+  `exists_separated_primeLog_nodes_unconditional` (∀N ∃R₀: N+1 separated
+  prime logs in every unit window past R₀) — discharging the hwin
+  hypothesis of `exists_separated_primeLog_nodes`.
+  **Route resolution for (8a):** the growing-order transfer
+  (`norm_le_ray_of_sampled_decay`, count ⌊cR⌋+1) needs shrinking windows
+  `[X, X(1+Θ(1/log X))]` — power-log PNT strength, NOT delivered by ψ~x.
+  Instead: NEW **fixed-order transfer**
+  `HTGeometry.norm_le_ray_of_sampled_decay_fixed`
+  (`SampledRayRateTransferFixed.lean`): N+1 nodes per window at canonical
+  separation 1/(4(N+1)) + order-(N+1) derivative decay `Ke^{−δR}` ⟹ ray
+  decay at rate **min σ δ** with explicit constant
+  `2e^{6(N+1)}Ce^σ + 2Ke^δ/(N+1)!` — no 6c loss, reuses the banked
+  count-generic `norm_le_window_of_sampled` verbatim. Fixed-N node
+  demand matches the fixed-N prime supply exactly.
+  **`RHTower.norm_le_ray_of_primeLog_sampled_decay`**
+  (`WeightedEulerPrimeOversampling.lean`): H entire + window derivative
+  bounds + sampled decay `‖H(log p)‖ ≤ C·p^{−σ}` at ALL primes ⟹
+  `‖H(x)‖ ≤ C′e^{−(min σ δ)x}` for x large. UNCONDITIONAL (8a). Both
+  first-compile clean, standard axioms, builds 2706/8539 jobs, index
+  regenerated.
+  **Downstream consequence:** the α-instantiation
+  (`lambert_derivative_window_bound`, order ⌊cR⌋+1) needs its fixed-order
+  companion: order-(N+1) Lambert window derivative bound
+  `≤ K_N·e^{−δR}` (elementary: term-by-term differentiation gives
+  `Σ|c_k|λ_k^{N+1}e^{−λ_k R} ≤ M^{N+1}‖L‖e^{−δR}` — check the existing
+  proof's structure and restate at fixed order). Then the (8a)→(14)→(16)
+  chain runs at rate min(σ, δ) > β as required by
+  `compactFourierBorel_eq_zero_of_ray_decay` whenever the carrier depth
+  δ exceeds the carrier bound β — verify this consistency when wiring.
+- **NEXT:** (i) fixed-order α-instantiation (Lambert window derivative
+  bound at order N+1); (ii) wire (8a)+(α)+(7) into the vanishing theorem
+  (5b-iii instance); (iii) 5c(ii-b) part 2 joint product-space capstone;
+  (iv) (18)/(19) corollaries.
+
+- **[DONE 2026-07-24] Fixed-order α-instantiation.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerLambertWindowDerivativesFixed.lean`
+  (umbrella-registered, build clean 8618 jobs, standard axioms, index
+  regenerated, first-compile clean).
+  **`lambert_derivative_window_bound_fixed`**: for carrier constants
+  `δ ≤ M` and ANY fixed order `N+1`, the order-(N+1) derivative of
+  `compactCarrierLambertTransform` is `≤ 4‖L‖e^{−(δ/2)R}` on `[R,R+1]`
+  for all `R ≥ max(4M(N+1)/δ, 2log2/δ)` — the `hder` input of the
+  fixed-order transfer with `K = 4‖L‖`, rate `δ/2`. No node-density
+  parameter `c` at all.
+- **[INTERFACE FINDING 2026-07-24] The (ii)-wiring blocker: global vs
+  half-plane analyticity.** `norm_le_ray_of_sampled_decay_fixed` (and
+  the whole SampledSmallComplex chain) hypothesizes `Differentiable ℂ H`
+  GLOBALLY, but `compactCarrierLambertTransform` is analytic only where
+  `‖compactExponentialTest‖ < 1` (a right half-plane). Inspection of
+  `norm_le_of_sampled_small_complex` shows global analyticity is used
+  ONLY through (a) `contDiff_comp_ofReal` (smoothness of the real
+  restriction) and (b) `iteratedDeriv_comp_ofReal` (real=complex
+  derivative identification on ℝ) — the interpolation core
+  `abs_le_of_sampled_small` is a REAL lemma. REFACTOR PLAN (next):
+  (R1) check `abs_le_of_sampled_small`'s smoothness hypothesis; localize
+  to `ContDiffOn ℝ (N+1) (Icc a (a+1))` if global (Taylor remainder is
+  interval-local).
+  (R2) `norm_le_of_sampled_small_smooth`: version for g : ℝ → ℂ with
+  real smoothness + real iteratedDeriv bounds (complex-free core;
+  the hkey/re-im projection argument works verbatim).
+  (R3) window + fixed-ray-transfer variants over the real interface.
+  (R4) Lambert instance: half-plane `AnalyticAt` ⟹ restriction
+  smoothness on (T₀,∞) + local derivative identification (induction
+  as in `iteratedDeriv_comp_ofReal` but at analytic points), then
+  wire (8a): sampled-at-primes Lambert decay ⟹ ray decay at
+  `min σ (δ/2)`, nodes from the PNT supply.
+- **NEXT:** (R1)–(R4) above; then 5b-iii vanishing instance; then
+  5c(ii-b) part 2 capstone; (18)/(19).
+
+- **[DONE 2026-07-24] (R1) — localized sampled-smallness via bump extension.**
+  `formal/GaloisForLFunctions/HTGeometry/SampledSmallLocalization.lean`
+  (HTGeometry umbrella, build clean, standard axioms, index regenerated).
+  **`abs_le_of_sampled_small_of_contDiffOn`**: the interpolation estimate
+  with smoothness only on an open interval `(c, d) ⊇ [a, a+1]`. Mechanism:
+  NOT a refactor of the iterated-Rolle engine (which needs global
+  continuity of all iterated derivatives) — instead a `ContDiffBump`
+  multiplication: bump `≡ 1` on `[a−ε/4, a+1+ε/4]`, supported in
+  `ball(a+1/2, 1/2+3ε/4) ⊂ (c,d)` (`ε := min(a−c, d−(a+1))`); the bumped
+  function is globally smooth (product on `dist < 1/2+ε`, locally zero
+  on `dist > 1/2+7ε/8`), agrees with `f` near the window, so
+  `Filter.EventuallyEq.iteratedDeriv_eq` transports the derivative
+  bounds and the estimate verbatim. Lean notes: `bump.rIn/rOut`
+  projections need explicit `rfl` bridges for linarith; bump instance
+  needs `Mathlib.Analysis.Calculus.BumpFunction.InnerProduct` import.
+- **NEXT (R2–R4):** (R2) complex layer: `norm_le_of_sampled_small_complex`
+  variant with `hH : ∀ t ∈ Ioo c d ×ℝ-segment, AnalyticAt ℂ H t`-style
+  hypothesis — needs the LOCAL `iteratedDeriv_comp_ofReal` (restriction
+  derivative identification at points where H is analytic on a ℂ-nbhd;
+  mirror the global induction in SampledSmallComplex). (R3) window +
+  fixed-order transfer over the local interface. (R4) Lambert instance
+  (analytic on the contractivity half-plane) + prime nodes ⟹
+  unconditional (8a) for the actual transform, rate min(σ, δ/2).
+
+- **[DONE 2026-07-24] (R2) — smooth-curve window estimate + half-plane
+  restriction bridge.**
+  `formal/GaloisForLFunctions/HTGeometry/SampledSmallSmooth.lean`
+  (HTGeometry umbrella, build clean 2704 jobs, standard axioms, index
+  regenerated; only fix round was an unused-hypothesis lint rename).
+  Three lemmas:
+  1. **`norm_le_of_sampled_small_smooth`**: the complex window estimate
+     for an arbitrary globally smooth curve `g : ℝ → ℂ` with REAL
+     iterated-derivative bounds — the re/im projection argument never
+     needed analyticity, only `iteratedDeriv_clm_comp` (global smooth).
+  2. **`contDiffOn_comp_ofReal_of_analyticAt`**: `H` analytic on
+     `{Re > T}` ⟹ restriction `t ↦ H(t)` is `ContDiffOn ℝ ⊤ (Ioi T)`
+     (AnalyticAt.contDiffAt + restrict_scalars + ofReal comp).
+  3. **`iteratedDeriv_comp_ofReal_of_analyticAt`**: on `Ioi T`, real
+     iterated derivatives of the restriction = complex iterated
+     derivatives — the LOCAL form of the entire-function identification,
+     by the same induction with `Filter.EventuallyEq.iteratedDeriv_eq`
+     over `Ioi_mem_nhds` and `AnalyticAt.deriv` for the inductive step.
+- **NEXT (R3+R4 — the assembled Lambert (8a))**: per window `[R, R+1]`
+  (`R > T+1`), define `g_R := bump_R · (H∘ofReal)` (R1-pattern bump,
+  globally smooth via lemma 2, `=ᶠ H∘ofReal` near the window):
+  `norm_le_of_sampled_small_smooth` + lemma 3 transports the complex
+  derivative bounds (fixed-order α) and prime-node samples; assemble the
+  fixed-order ray transfer over these window instances (mirror
+  `norm_le_ray_of_sampled_decay_fixed`'s outer loop, replacing
+  `norm_le_window_of_sampled` by the bumped-window instance); instantiate
+  H := compactCarrierLambertTransform (analytic where the exponential
+  test is contractive — check the corpus lemma giving `‖test‖ < 1` for
+  `Re z` large: rg compactExponentialTest bounds) + prime nodes ⟹
+  unconditional (8a) for the transform at rate min(σ, δ/2). Then 5b-iii
+  vanishing instance; 5c(ii-b) capstone; (18)/(19).
+
+- **[DONE 2026-07-24] (R3) — real-axis-analytic window estimate + ray
+  transfer.**
+  `formal/GaloisForLFunctions/HTGeometry/SampledRayRateTransferHalfplane.lean`
+  (HTGeometry umbrella, first-compile clean, build 2718 jobs, standard
+  axioms, index regenerated).
+  **`norm_le_window_of_sampled_halfplane`** and
+  **`norm_le_ray_of_sampled_decay_fixed_halfplane`**: the fixed-order
+  window estimate and ray transfer with entirety weakened to
+  `hH : ∀ t : ℝ, T < t → AnalyticAt ℂ H t` — analyticity AT REAL POINTS
+  only (each AnalyticAt carries its own ℂ-neighborhood). Mechanism:
+  per-window ℂ-valued bump curve `g = bump • (H∘ofReal)` (R1 pattern,
+  `smul` smoothness), R2's smooth window estimate + local derivative
+  identification, then the fixed-transfer outer loop verbatim.
+  IMPORTANT ROUTE CORRECTION discovered en route: the Lambert transform
+  is NOT analytic on a full half-plane — the contractivity region
+  `‖compactExponentialTest‖ < 1` is conical (`(z·s k).re ≥ δ·Re z −
+  M·|Im z|`). The R2/R3 hypotheses were therefore weakened from
+  half-plane to real-axis analyticity (a mechanical sed patch — the
+  proofs only ever evaluate hH at real points), which the transform DOES
+  satisfy: at real t > 0, `(t·s k).re = t·(s k).re ≥ tδ > 0`, so
+  `norm_compactExponentialTest_lt_one_of_re_pos` (banked in
+  CompactCarrierLambert) supplies AnalyticAt via
+  `compactCarrierLambertTransform_analyticAt`.
+- **NEXT (R4 — the assembled unconditional Lambert (8a))**: instantiate
+  `norm_le_ray_of_sampled_decay_fixed_halfplane` with
+  H := compactCarrierLambertTransform L s, T := 0:
+  hH from analyticAt + test-contractivity at real t > 0 (check the
+  `d`-hypothesis shape of `norm_compactExponentialTest_lt_one_of_re_pos`:
+  needs ∀k, d ≤ (z·s k).re with d > 0 — at z = t: d := t·δ ✓);
+  hder from `lambert_derivative_window_bound_fixed` (K = 4‖L‖, rate δ/2,
+  R₀ ≥ max(4M(N+1)/δ, 2log2/δ, 1));
+  hnodes from `exists_separated_primeLog_nodes_unconditional` + Lambert
+  sampled decay hypothesis at prime logs (the (7) interface) ⟹
+  `‖transform(x)‖ ≤ C′e^{−min(σ, δ/2)x}` unconditionally. Then 5b-iii
+  vanishing instance; 5c(ii-b) capstone; (18)/(19).
+
+- **[DONE 2026-07-24] (R4) — ★ THE UNCONDITIONAL LAMBERT OVERSAMPLING
+  (8a) IS COMPLETE ★.**
+  `formal/GaloisForLFunctions/RHTower/WeightedEulerLambertOversampling.lean`
+  (umbrella-registered, FIRST-COMPILE CLEAN, build clean, standard
+  axioms, index regenerated).
+  **`norm_le_ray_of_primeLog_sampled_lambert`**: for a compact carrier
+  with real-part floor `δ`, norm ceiling `M`, any fixed order `N+1`, and
+  sampled decay `‖Λ_L(log p)‖ ≤ C·p^{−σ}` at ALL primes:
+  `‖Λ_L(x)‖ ≤ C′·e^{−min(σ, δ/2)·x}` for all `x` past the explicit
+  threshold `max(4M(N+1)/δ, 2log2/δ, Rn, 1) + 1` — NO analytic
+  hypotheses remain; the prime nodes come from the formalized elementary
+  PNT. Assembly: real-axis analyticity via
+  `norm_compactExponentialTest_lt_one_of_re_pos` at `d := tδ`
+  (`(↑t·s k).re = t·(s k).re` by `Complex.mul_re` simp); hder from the
+  fixed-order α; hnodes from
+  `exists_separated_primeLog_nodes_unconditional` with `p^{−σ} ≤ e^{−σR}`
+  at nodes ≥ R; outer transfer =
+  `norm_le_ray_of_sampled_decay_fixed_halfplane` at `T = 0`.
+  **Chain now closed end-to-end:** dual reduction (7) ⟹ [THIS] ⟹
+  Möbius recovery (14) (`norm_fourierBorel_le_of_lambert_ray_decay`) ⟹
+  carrier separation (15)–(16)
+  (`compactFourierBorel_sub_eq_zero_of_ray_decay`) — every link
+  unconditional, standard axioms.
+- **NEXT:** wire the closed (8a)→(14)→(16) chain into the 5b-iii
+  vanishing instance with the dual-reduction sample decay (7) as input
+  (check rate consistency min(σ, δ/2) > carrier bound β — the (7)
+  interface fixes σ; choose the carrier so δ/2 > β); then 5c(ii-b)
+  part 2 joint product-space capstone
+  (`topologicalClosure_eq_top_of_forall_dual_eq_zero` + annihilator
+  chain); then (18)/(19) corollaries — after which THIS CARD is fully
+  formalized.
+
+- **[ROUTE RE-EVALUATION 2026-07-24 — the fixed-order (8a) is NOT
+  sufficient for (16); power-log PNT is genuinely required.]**
+  Rate audit of the closed chain: the FE-vanishing
+  (`compactFourierBorel_sub_eq_zero_of_ray_decay`) needs ray decay at
+  σ₀ > β (carrier Re-ceiling). The fixed-order (8a)
+  (`norm_le_ray_of_primeLog_sampled_lambert`) caps at min(σ, δ/2) with
+  δ the carrier Re-FLOOR — and δ ≤ β always, so min(σ, δ/2) < β
+  unconditionally: the cap is intrinsic (Lambert derivative bounds decay
+  at rate δ — Cauchy over sector discs — and a FIXED-order interpolation
+  remainder inherits that rate). Only the growing-order transfer
+  (`norm_le_ray_of_sampled_decay`, order ⌊cR⌋+1, superexponential
+  remainder) delivers σ′ = σ − 6c > β. Its node demand: ⌊cR⌋+1 separated
+  prime logs per unit window — VERIFIED not obtainable from o(x)-PNT
+  even via free (non-grid) separated-node selection: o(x) forces primes
+  only in fixed-relative-width windows, giving O(1) separated nodes.
+  ⟹ THE remaining deep input: **ψ(x) = x + O(x/log^B x) (B ≥ 2)** —
+  spun off as new card
+  `1-in-progress/pnt-power-log-error-quantitative-selberg.md`
+  (elementary route: quantitative Selberg/Wirsing—Bombieri iteration on
+  top of the formalized symmetry+recursion corpus).
+  The fixed-order chain artifacts remain valid and reusable theorems
+  (and the α/R1–R4 localization machinery is exactly what the
+  growing-order Lambert instantiation will need too — the growing-order
+  transfer has the SAME global-entirety defect, to be fixed by the same
+  bump route: `norm_le_window_of_sampled` count-generic + halfplane
+  wrapper generalizes verbatim to order ⌊cR⌋+1).
+  Meanwhile INDEPENDENT of (8a): 5c(ii-b) part 2 joint capstone and
+  (18)/(19) corollaries — proceed in parallel.

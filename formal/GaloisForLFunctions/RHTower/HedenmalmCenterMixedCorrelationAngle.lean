@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.HedenmalmCenterMixedThreePoint
 import GaloisForLFunctions.RHTower.ThetaCuspReflectedRiccatiAngle
 import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodGapCumulantRiccati
 import GaloisForLFunctions.RHTower.ThetaCuspAtomLikelihoodCrossDomination
+import GaloisForLFunctions.RHTower.ThetaCuspGlobalReflectedRiccati
 
 /-!
 # Correlation-angle producer for Hedenmalm three-point positivity
@@ -32,6 +33,19 @@ def thetaCuspReflectedSourceCorrelation (u t : ℝ) : ℝ :=
 def thetaCuspReflectedSourceCorrelationAngle (u t : ℝ) : ℝ :=
   Real.arccos (thetaCuspReflectedSourceCorrelation u t)
 
+/-- **Unconditional global source angle law.**  Every completed-source reflected fibre obeys
+the correlation-angle triangle inequality, including packets crossing the modular seam. -/
+theorem thetaCuspReflectedSourceCorrelationAngle_subadditive_global
+    {u x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
+    thetaCuspReflectedSourceCorrelationAngle u (x + y) ≤
+      thetaCuspReflectedSourceCorrelationAngle u x +
+        thetaCuspReflectedSourceCorrelationAngle u y := by
+  simpa [thetaCuspReflectedSourceCorrelationAngle,
+    thetaCuspReflectedSourceCorrelation,
+    thetaCuspReflectedSourceProduct, pow_two] using
+      thetaCuspFullSource_reflectedCorrelationAngle_subadditive_global
+        (u := u) hx hy
+
 /-- Ordered three-node matrix of one unnormalized reflected source fibre. -/
 def thetaCuspReflectedSourceThreePointMatrix
     (u x y : ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
@@ -43,7 +57,7 @@ def thetaCuspReflectedSourceThreePointMatrix
 
 /-- Correlation-angle subadditivity makes each completed-source fibre positive semidefinite. -/
 theorem thetaCuspReflectedSourceThreePointMatrix_posSemidef_of_angle_subadditive
-    {u x y : ℝ} (hx : 0 < x) (hy : 0 < y)
+    {u x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y)
     (hangle :
       thetaCuspReflectedSourceCorrelationAngle u (x + y) ≤
         thetaCuspReflectedSourceCorrelationAngle u x +
@@ -59,39 +73,39 @@ theorem thetaCuspReflectedSourceThreePointMatrix_posSemidef_of_angle_subadditive
   have hprodPos (t : ℝ) : 0 < thetaCuspReflectedSourceProduct u t := by
     unfold thetaCuspReflectedSourceProduct
     exact mul_pos (thetaCuspFullSource_pos_all _) (thetaCuspFullSource_pos_all _)
-  have hxlt :
-      thetaCuspReflectedSourceProduct u x <
+  have hxle :
+      thetaCuspReflectedSourceProduct u x ≤
         thetaCuspReflectedSourceProduct u 0 := by
-    exact strictAntiOn_thetaCuspFullSource_mul_reflect u
-      (by simp) hx.le hx
-  have hylt :
-      thetaCuspReflectedSourceProduct u y <
+    exact (strictAntiOn_thetaCuspFullSource_mul_reflect u).antitoneOn
+      (by simp) hx hx
+  have hyle :
+      thetaCuspReflectedSourceProduct u y ≤
         thetaCuspReflectedSourceProduct u 0 := by
-    exact strictAntiOn_thetaCuspFullSource_mul_reflect u
-      (by simp) hy.le hy
-  have hxy : 0 < x + y := add_pos hx hy
+    exact (strictAntiOn_thetaCuspFullSource_mul_reflect u).antitoneOn
+      (by simp) hy hy
+  have hxy : 0 ≤ x + y := add_nonneg hx hy
   have hrpRaw :
       thetaCuspReflectedSourceProduct u (x + y) ≤
         thetaCuspReflectedSourceProduct u x := by
     exact (strictAntiOn_thetaCuspFullSource_mul_reflect u).antitoneOn
-      hx.le hxy.le (by linarith)
+      hx hxy (by linarith)
   have hrqRaw :
       thetaCuspReflectedSourceProduct u (x + y) ≤
         thetaCuspReflectedSourceProduct u y := by
     exact (strictAntiOn_thetaCuspFullSource_mul_reflect u).antitoneOn
-      hy.le hxy.le (by linarith)
+      hy hxy (by linarith)
   have hp0 : 0 ≤ p := by
     dsimp [p, thetaCuspReflectedSourceCorrelation]
     exact (div_pos (hprodPos x) hd).le
-  have hp1 : p < 1 := by
+  have hp1 : p ≤ 1 := by
     dsimp [p, thetaCuspReflectedSourceCorrelation]
-    exact (div_lt_one hd).mpr hxlt
+    exact (div_le_one hd).mpr hxle
   have hq0 : 0 ≤ q := by
     dsimp [q, thetaCuspReflectedSourceCorrelation]
     exact (div_pos (hprodPos y) hd).le
   have hq1 : q ≤ 1 := by
     dsimp [q, thetaCuspReflectedSourceCorrelation]
-    exact (div_le_one hd).mpr hylt.le
+    exact (div_le_one hd).mpr hyle
   have hr0 : 0 ≤ r := by
     dsimp [r, thetaCuspReflectedSourceCorrelation]
     exact (div_pos (hprodPos (x + y)) hd).le
@@ -104,7 +118,8 @@ theorem thetaCuspReflectedSourceThreePointMatrix_posSemidef_of_angle_subadditive
   have hnormalized :
       Matrix.PosSemidef
         (HilbertMetric.threePointCorrelationMatrix 1 p q r) := by
-    apply HilbertMetric.threePointCorrelationMatrix_posSemidef_of_arccos_subadditive
+    apply
+      HilbertMetric.threePointCorrelationMatrix_posSemidef_of_arccos_subadditive_closed
       hp0 hp1 hq0 hq1 hr0 hrp hrq
     simpa only [thetaCuspReflectedSourceCorrelationAngle, p, q, r] using hangle
   have hscale (t : ℝ) :
@@ -126,6 +141,15 @@ theorem thetaCuspReflectedSourceThreePointMatrix_posSemidef_of_angle_subadditive
     all_goals rfl
   rw [hmatrix]
   exact hnormalized.smul hd.le
+
+/-- Every positive-gap reflected completed-source fibre has a positive-semidefinite ordered
+three-point matrix. -/
+theorem thetaCuspReflectedSourceThreePointMatrix_posSemidef
+    {u x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
+    Matrix.PosSemidef (thetaCuspReflectedSourceThreePointMatrix u x y) :=
+  thetaCuspReflectedSourceThreePointMatrix_posSemidef_of_angle_subadditive
+    hx hy
+      (thetaCuspReflectedSourceCorrelationAngle_subadditive_global hx hy)
 
 /-- Positive matrix kernel whose integral is the center-mixed three-point matrix. -/
 def thetaCuspCenterMixedThreePointSourceKernel
@@ -152,7 +176,7 @@ theorem integral_thetaCuspCenterMixedThreePointSourceKernel
 mixture. -/
 theorem thetaCuspCenterMixedThreePointMatrix_posSemidef_of_sourceAngle_subadditive
     {a x y : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2)
-    (hx : 0 < x) (hy : 0 < y)
+    (hx : 0 ≤ x) (hy : 0 ≤ y)
     (hangle : ∀ u : ℝ,
       thetaCuspReflectedSourceCorrelationAngle u (x + y) ≤
         thetaCuspReflectedSourceCorrelationAngle u x +
@@ -190,6 +214,43 @@ theorem thetaCuspCenterMixedThreePointMatrix_posSemidef_of_sourceAngle_subadditi
       integral_thetaCuspCenterMixedThreePointSourceKernel a x y] at hintegral
   exact hintegral
 
+/-- **Theta-specific center-mixed kernel positivity from source data.**  Every admissible
+Hedenmalm center mixture has a positive-semidefinite ordered three-point matrix. -/
+theorem thetaCuspCenterMixedThreePointMatrix_posSemidef
+    {a x y : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2)
+    (hx : 0 ≤ x) (hy : 0 ≤ y) :
+    Matrix.PosSemidef (thetaCuspCenterMixedThreePointMatrix a x y) :=
+  thetaCuspCenterMixedThreePointMatrix_posSemidef_of_sourceAngle_subadditive
+    ha0 ha hx hy fun _ =>
+      thetaCuspReflectedSourceCorrelationAngle_subadditive_global hx hy
+
+/-- All admissible nonnegative-gap Hedenmalm center-mixed matrices are positive semidefinite. -/
+theorem thetaCuspCenterMixedThreePointMatrices_posSemidef :
+    ∀ a x y : ℝ, 0 < a → a < 1 / 2 → 0 ≤ x → 0 ≤ y →
+      Matrix.PosSemidef (thetaCuspCenterMixedThreePointMatrix a x y) :=
+  fun _ _ _ ha0 ha hx hy =>
+    thetaCuspCenterMixedThreePointMatrix_posSemidef ha0 ha hx hy
+
+/-- The center-mixed three-point determinant is nonnegative for every admissible nonnegative-gap
+packet. -/
+theorem thetaCuspCenterMixedThreePointDeterminant_nonneg
+    {a x y : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2)
+    (hx : 0 ≤ x) (hy : 0 ≤ y) :
+    0 ≤ thetaCuspCenterMixedThreePointDeterminant a x y := by
+  have hdet :=
+    (thetaCuspCenterMixedThreePointMatrix_posSemidef ha0 ha hx hy).det_nonneg
+  have heq :
+      (thetaCuspCenterMixedThreePointMatrix a x y).det =
+        thetaCuspCenterMixedThreePointDeterminant a x y := by
+    simp [thetaCuspCenterMixedThreePointMatrix,
+      thetaCuspCenterMixedThreePointDeterminant,
+      HilbertMetric.threePointCorrelationMatrix,
+      HilbertMetric.threePointCorrelationDeterminant,
+      Matrix.det_fin_three]
+    ring
+  rw [heq] at hdet
+  exact hdet
+
 /-- A global source correlation-angle triangle law discharges the named near-center
 three-point wall. -/
 theorem thetaCuspCenterMixedNearCenterThreePointWall_of_sourceAngle_subadditive
@@ -202,7 +263,16 @@ theorem thetaCuspCenterMixedNearCenterThreePointWall_of_sourceAngle_subadditive
     thetaCuspCenterMixedThreePointMatrices_posSemidef_iff_nearCenterWall.mp
   intro a x y ha0 ha hx hy
   exact thetaCuspCenterMixedThreePointMatrix_posSemidef_of_sourceAngle_subadditive
-    ha0 ha hx hy (fun u => hangle u x y hx hy)
+    ha0 ha hx.le hy.le (fun u => hangle u x y hx hy)
+
+/-- **Unconditional near-center wall.**  Source-derived global Riccati positivity discharges
+the last theta center-mixed three-point proposition interface. -/
+theorem thetaCuspCenterMixedNearCenterThreePointWall :
+    ThetaCuspCenterMixedNearCenterThreePointWall :=
+  thetaCuspCenterMixedThreePointMatrices_posSemidef_iff_nearCenterWall.mp
+    fun a x y ha0 ha hx hy =>
+      thetaCuspCenterMixedThreePointMatrices_posSemidef
+        a x y ha0 ha hx.le hy.le
 
 /-- Reflected completed-source correlations are even in their center coordinate. -/
 theorem thetaCuspReflectedSourceCorrelation_neg_center
@@ -285,8 +355,8 @@ theorem thetaCuspReflectedSourceCorrelationAngle_subadditive
     thetaCuspReflectedSourceProduct, pow_two] using
       thetaCuspFullSource_reflectedCorrelationAngle_subadditive hx hy hxyu
 
-/-- **Seam-localized wall connector.**  The global source angle interface splits exactly into a
-same-half-line cumulant inequality and a bounded seam-crossing angle inequality. -/
+/-- **Legacy seam-localized connector.**  This exact chamber decomposition is retained for API
+compatibility; the unconditional global theorem above now discharges both premises. -/
 theorem thetaCuspCenterMixedNearCenterThreePointWall_of_cumulantCorrection_and_seamAngle
     (hcorrection : ∀ u x y : ℝ, 0 ≤ x → 0 ≤ y → x + y ≤ u →
       ∀ t ∈ Icc 0 (x + y),
@@ -320,10 +390,8 @@ theorem thetaCuspCenterMixedNearCenterThreePointWall_of_cumulantCorrection_and_s
     rw [habs] at hangleV
     simpa only [thetaCuspReflectedSourceCorrelationAngle_neg_center] using hangleV
 
-/-- **Reduced seam-localized wall connector.**  Low cumulant signs and both component Riccati
-margins are unconditional.  The only same-half-line input retained here is exact domination of
-the strictly negative atom--likelihood cross channel; the other input is the seam-crossing angle
-law. -/
+/-- **Legacy reduced seam connector.**  This isolates cross domination and seam angle as
+independent sufficient inputs; both are now supplied by unconditional source theorems. -/
 theorem thetaCuspCenterMixedNearCenterThreePointWall_of_crossDomination_and_seamAngle
     (hdomination : ∀ u x y : ℝ, 0 ≤ x → 0 ≤ y → x + y ≤ u →
       ∀ t ∈ Icc 0 (x + y),
@@ -358,8 +426,8 @@ theorem thetaCuspCenterMixedNearCenterThreePointWall_of_crossDomination_and_seam
     rw [habs] at hangleV
     simpa only [thetaCuspReflectedSourceCorrelationAngle_neg_center] using hangleV
 
-/-- **Seam-only wall connector.**  Same-half-line angle subadditivity is unconditional; the sole
-remaining input is the genuinely seam-crossing source angle law. -/
+/-- **Legacy seam-only connector.**  Same-half-line and seam-crossing angle laws are now both
+unconditional; this theorem remains as a compatibility interface. -/
 theorem thetaCuspCenterMixedNearCenterThreePointWall_of_seamAngle
     (hseam : ∀ u x y : ℝ, 0 ≤ u → u < x + y → 0 < x → 0 < y →
       thetaCuspReflectedSourceCorrelationAngle u (x + y) ≤

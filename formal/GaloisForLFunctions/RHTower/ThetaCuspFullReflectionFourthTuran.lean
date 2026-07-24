@@ -1298,6 +1298,15 @@ private theorem iteratedDeriv_one_thetaCuspLogSource_eq_factor
   exact (hasDerivAt_thetaCuspFullLogFactorZero hx |>.congr_of_eventuallyEq
     (thetaCuspLogSource_eventuallyEq_fullLogFactorZero hx)).deriv
 
+/-- Exact first logarithmic jet of the completed theta source on the positive half-line. -/
+theorem iteratedDeriv_one_thetaCuspLogSource_eq_full_jets
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 1 thetaCuspLogSource x =
+      thetaCuspFirstAtomLogJetOne x +
+        thetaCuspHigherLikelihoodLogJetOne x := by
+  simpa only [thetaCuspFullLogFactorOne] using
+    iteratedDeriv_one_thetaCuspLogSource_eq_factor hx
+
 /-- The actual logarithmic source curvature is the first-atom curvature plus the exact complete
 higher-tail correction. -/
 theorem iteratedDeriv_two_thetaCuspLogSource_eq_factor
@@ -1322,6 +1331,15 @@ private theorem iteratedDeriv_three_thetaCuspLogSource_eq_factor
     simpa only [thetaCuspFullLogFactorTwo, thetaCuspFirstAtomLogJetTwo] using h
   rw [iteratedDeriv_succ]
   exact (hasDerivAt_thetaCuspFullLogFactorTwo hx |>.congr_of_eventuallyEq heq).deriv
+
+/-- Exact third logarithmic jet of the completed theta source on the positive half-line. -/
+theorem iteratedDeriv_three_thetaCuspLogSource_eq_full_jets
+    {x : ℝ} (hx : 0 < x) :
+    iteratedDeriv 3 thetaCuspLogSource x =
+      thetaCuspFirstAtomLogJetThree x +
+        thetaCuspHigherLikelihoodLogJetThree x := by
+  simpa only [thetaCuspFullLogFactorThree] using
+    iteratedDeriv_three_thetaCuspLogSource_eq_factor hx
 
 /-- Exact fourth logarithmic derivative of the actual complete theta source. -/
 theorem iteratedDeriv_four_thetaCuspLogSource_eq_factor

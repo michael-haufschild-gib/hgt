@@ -174,6 +174,46 @@ theorem soninCoupledPrimeArchVacuumProjectiveFisherUpperBound_of_robertson
         ring
   exact (mul_le_mul_iff_of_pos_left normalizedPrimeArchMoment_zero_pos).mp hscaled
 
+/-- The projective Fisher comparison also gives its quotient-free Robertson form.  The only
+change is the positive target-vacuum rescaling of the error tolerance. -/
+theorem soninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound_of_fisher
+    (h : SoninCoupledPrimeArchVacuumProjectiveFisherUpperBound) :
+    SoninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound := by
+  intro q hq ε hε
+  have hε' : 0 < ε / normalizedPrimeArchMoment 0 :=
+    div_pos hε normalizedPrimeArchMoment_zero_pos
+  obtain ⟨a, ha⟩ := h q hq
+    (ε / normalizedPrimeArchMoment 0) hε'
+  refine ⟨a, ?_⟩
+  have hscaled := mul_le_mul_of_nonneg_left ha
+    normalizedPrimeArchMoment_zero_pos.le
+  calc
+    normalizedPrimeArchMoment 0 ^ 2 *
+          soninAllPrimeCoupledProjectiveTangentEnergy a.1
+            (q.map (Int.castRingHom ℝ)) =
+        normalizedPrimeArchMoment 0 *
+          (normalizedPrimeArchMoment 0 *
+            soninAllPrimeCoupledProjectiveTangentEnergy a.1
+              (q.map (Int.castRingHom ℝ))) := by ring
+    _ ≤ normalizedPrimeArchMoment 0 *
+        ((HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
+            (q.map (Int.castRingHom ℝ)) +
+              ε / normalizedPrimeArchMoment 0) *
+          (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2) := hscaled
+    _ = (HTGeometry.momentVacuumRobertsonDeterminant normalizedPrimeArchMoment
+            (q.map (Int.castRingHom ℝ)) + ε) *
+          (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2 := by
+      rw [HTGeometry.momentVacuumRobertsonDeterminant_eq_mul_feshbach
+        normalizedPrimeArchMoment normalizedPrimeArchMoment_zero_pos.ne']
+      field_simp [normalizedPrimeArchMoment_zero_pos.ne']
+
+/-- Projective Fisher and quotient-free Robertson comparisons are the same source condition. -/
+theorem soninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound_iff_fisher :
+    SoninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound ↔
+      SoninCoupledPrimeArchVacuumProjectiveFisherUpperBound :=
+  ⟨soninCoupledPrimeArchVacuumProjectiveFisherUpperBound_of_robertson,
+    soninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound_of_fisher⟩
+
 /-- Quotient-free projective Robertson comparison also proves RH. -/
 theorem riemannHypothesis_of_soninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound
     (h : SoninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound) :

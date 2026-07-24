@@ -227,6 +227,19 @@ theorem compactMarkovKernelMoment_zero_node
     compactMarkovKernelMoment μ k 0 = ∫ x : ℝ, (x : ℂ) ^ k ∂μ := by
   simp [compactMarkovKernelMoment]
 
+/-- A finite compactly supported measure has an analytic Markov transform at the origin. -/
+theorem analyticAt_compactMarkovTransform
+    (μ : Measure ℝ) [IsFiniteMeasure μ]
+    {B : ℝ} (hB : 0 < B) (hbound : ∀ᵐ x : ℝ ∂μ, |x| ≤ B) :
+    AnalyticAt ℂ (compactMarkovTransform μ) 0 := by
+  rw [Complex.analyticAt_iff_eventually_differentiableAt]
+  have hdisk : ∀ᶠ z : ℂ in 𝓝 0, ‖z‖ < 1 / (2 * B) :=
+    (isOpen_lt continuous_norm continuous_const).mem_nhds
+      (by simpa using (show (0 : ℝ) < 1 / (2 * B) by positivity))
+  filter_upwards [hdisk] with z hz
+  simpa only [compactMarkovTransform] using
+    (hasDerivAt_compactMarkovKernelMoment μ hB hbound 0 hz).differentiableAt
+
 /-- Ordinary (non-interleaved) generating series of the completed source moments. -/
 def completedSeamMomentPowerSeries : FormalMultilinearSeries ℂ ℂ ℂ :=
   FormalMultilinearSeries.ofScalars ℂ

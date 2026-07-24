@@ -1,0 +1,451 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{problem}[theorem]{Open problem}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\LambdaVM}{\Lambda}
+\newcommand{\psd}{\succeq 0}
+\newcommand{\pd}{\succ 0}
+
+\title{Withdrawn route note: Square Saturation and Cubic Escape\\
+in a Prime-Marked Block--Fock Carrier}
+\author{}
+\date{July 24, 2026 --- route claim withdrawn}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We isolate a dilation phase transition in the block--Fock geometry of a finite-aperture
+Weil source.  Let
+\[
+ F(r)=\sum_{j\geq0}r^{4j+1}=\frac{r}{1-r^4},
+ \qquad 0<r<1.
+\]
+The normalized overlap of aligned integer blocks at scales $q$ and $q^a$ is $r^{a-1}$,
+where $r=q^{-1/2}$, while their natural radial energies are $F(r)$ and $F(r^a)$.
+At the square pair $q,q^2$, the resulting $2\times2$ matrix is indefinite.  We prove
+that the von Mangoldt source supplies exactly the missing diagonal capacity, but the repaired
+matrix saturates Cauchy--Schwarz and has rank one.  At the cubic pair $q,q^3$, no repair is
+needed: the natural matrix is positive definite and
+\[
+ \det
+ \begin{pmatrix}
+ F(r)&F(r^2)\\ F(r^2)&F(r^3)
+ \end{pmatrix}
+ =
+ \frac{r^8(1-r^4)}{(1-r^8)^2(1-r^{12})}>0.
+\]
+Both power maps preserve the von Mangoldt mark.  Hence the rank jump is geometric rather than
+an artifact of arithmetic reweighting.
+
+This calculation does not identify a predecessor for finite-aperture Weil positivity.
+Multiplicative log-convexity of nonnegative graded partition functions already implies the
+underlying positivity mechanism. More decisively, cubic dilation remains inside one prime-power
+tower and cannot generate exponent-one prime atoms, transport hard aperture, or determine
+first-clock sine signs. Earlier versions incorrectly advertised a triadic Riemann-hypothesis
+route. That claim is withdrawn. Result is retained only as a local capacity audit.
+\end{abstract}
+
+\section{Introduction}
+
+Weil's criterion converts the Riemann hypothesis into positivity of an explicit quadratic
+form~\cite{Weil1952,ConnesConsani2020,Suzuki2026}.  Recent finite-aperture programs seek operator
+models in which the prime contribution, the archimedean contribution, and the aperture boundary
+are represented on one positive carrier~\cite{CCM2025,ConnesVanSuijlekom2025}.  The difficult
+step is not writing the separate scalar identities.  It is proving that their proposed
+off-diagonal sewing is compatible with the diagonal capacities required by positivity.
+
+This article studies that compatibility at the first nontrivial power dilations.  The starting
+point is the odd block--Fock resolvent
+\[
+ F(r)=r+r^5+r^9+\cdots=\frac{r}{1-r^4}.                 \tag{1.1}
+\]
+The exponent class $1\bmod4$ is forced by the finite-aperture Gamma channel.  Normalized aligned
+blocks at integer scales $m,n$ have overlap
+\[
+ c(m,n)=\sqrt{\frac{\min(m,n)}{\max(m,n)}}.             \tag{1.2}
+\]
+The sewn off-diagonal is therefore $F(c(m,n))$.  Independently, the natural radial vector at
+scale $q$ has energy
+\[
+ D(q)=F(q^{-1/2}).                                      \tag{1.3}
+\]
+
+Equations (1.2)--(1.3) are individually positive constructions.  They need not be restrictions
+of one positive kernel.  Testing that question on $q,q^a$ gives
+\[
+ C_a(r)=
+ \begin{pmatrix}
+ F(r)&F(r^{a-1})\\
+ F(r^{a-1})&F(r^a)
+ \end{pmatrix},
+ \qquad r=q^{-1/2}.                                    \tag{1.4}
+\]
+Our main result is the sharp change between $a=2$ and $a=3$.
+
+\begin{theorem}[Square saturation and cubic escape]
+\label{thm:main}
+Let $0<r<1$.
+\begin{enumerate}
+\item The natural square carrier
+\[
+ C_2(r)=
+ \begin{pmatrix}F(r)&F(r)\\F(r)&F(r^2)\end{pmatrix}
+\]
+is indefinite.
+\item Adding $\delta$ to its second diagonal makes it positive semidefinite exactly when
+\[
+ \delta\geq F(r)-F(r^2).                               \tag{1.5}
+\]
+At equality, the repaired matrix has rank one.
+\item The natural cubic carrier
+\[
+ C_3(r)=
+ \begin{pmatrix}F(r)&F(r^2)\\F(r^2)&F(r^3)\end{pmatrix}
+\]
+is positive definite, with
+\[
+ \det C_3(r)=
+ \frac{r^8(1-r^4)}{(1-r^8)^2(1-r^{12})}.              \tag{1.6}
+\]
+\end{enumerate}
+\end{theorem}
+
+For an integer source atom, squaring and cubing preserve the von Mangoldt coefficient:
+\[
+ \LambdaVM(q^2)=\LambdaVM(q)=\LambdaVM(q^3).           \tag{1.7}
+\]
+We prove below that the square counterterm in (1.5) is not fitted.  It decomposes canonically
+into two positive source losses.  Their sum is exactly the threshold, so source repair closes the
+square positivity gap but cannot create rank.
+
+The cubic determinant (1.6) is a strict common-carrier surplus in this local power hierarchy.
+It does not justify replacing binary completion by triadic valuation-residue completion.
+A rank-one repaired square block has zero Schur innovation and positive cubic determinant has a
+nonzero local one, but neither statement connects that innovation to full arithmetic source.
+Section~\ref{sec:rhroute} records precise obstruction and withdrawal of former route.
+
+\section{Block overlaps and radial capacities}
+
+Let $e_q$ be the normalized indicator of an aligned block of length $q$.  Direct intersection
+counting gives
+\[
+ \langle e_m,e_n\rangle
+ =\frac{\min(m,n)}{\sqrt{mn}}
+ =c(m,n).                                               \tag{2.1}
+\]
+Passing to tensor degrees $1,5,9,\ldots$ gives the complete overlap $F(c(m,n))$.
+For $n=q^a$ and $r=q^{-1/2}$,
+\[
+ c(q,q^a)=q^{(1-a)/2}=r^{a-1}.                         \tag{2.2}
+\]
+The natural radial energy at the second scale is
+\[
+ D(q^a)=F((q^a)^{-1/2})=F(r^a).                        \tag{2.3}
+\]
+Equations (2.2)--(2.3) prove (1.4).
+
+\begin{lemma}[Strict radial monotonicity]
+\label{lem:mono}
+$F$ is strictly increasing on $(0,1)$.
+\end{lemma}
+
+\begin{proof}
+Differentiation of (1.1) gives
+\[
+ F'(r)=\frac{1+3r^4}{(1-r^4)^2}>0.
+\]
+\end{proof}
+
+\section{The square capacity law}
+
+At $a=2$, equations (2.2)--(2.3) give
+\[
+ C_2(r)=
+ \begin{pmatrix}
+ F(r)&F(r)\\
+ F(r)&F(r^2)
+ \end{pmatrix}.                                       \tag{3.1}
+\]
+Since $0<r^2<r<1$, Lemma~\ref{lem:mono} gives $F(r^2)<F(r)$.  Hence
+\[
+ (1,-1)C_2(r)(1,-1)^{\mathsf T}=F(r^2)-F(r)<0,         \tag{3.2}
+\]
+which proves Theorem~\ref{thm:main}(1).
+
+Consider the repaired matrix
+\[
+ C_2(r;\delta)=
+ \begin{pmatrix}
+ F(r)&F(r)\\
+ F(r)&F(r^2)+\delta
+ \end{pmatrix}.                                       \tag{3.3}
+\]
+Because $F(r)>0$, the $2\times2$ principal-minor criterion yields
+\begin{align}
+ C_2(r;\delta)\psd
+ &\Longleftrightarrow
+ F(r)\bigl(F(r^2)+\delta\bigr)-F(r)^2\geq0 \notag\\
+ &\Longleftrightarrow
+ \delta\geq F(r)-F(r^2).                               \tag{3.4}
+\end{align}
+At equality,
+\[
+ C_2\bigl(r;F(r)-F(r^2)\bigr)
+ =
+ F(r)\begin{pmatrix}1&1\\1&1\end{pmatrix},             \tag{3.5}
+\]
+so the repaired carrier is positive semidefinite of rank one.  More generally,
+\[
+ \det C_2(r;\delta)
+ =F(r)\bigl(\delta-[F(r)-F(r^2)]\bigr).                \tag{3.6}
+\]
+Strict two-dimensional positivity is therefore equivalent to strict surplus above the
+square-capacity debt.
+
+\section{The von Mangoldt source closes the debt exactly}
+
+Write
+\[
+ T(r)=F(r)-r=\frac{r^5}{1-r^4}                         \tag{4.1}
+\]
+for the higher odd block--Fock tail, and
+\[
+ w(q)=\LambdaVM(q)q^{-1/2}.                            \tag{4.2}
+\]
+The identity $\LambdaVM(q^2)=\LambdaVM(q)$ holds both on and off prime-power support.
+
+\begin{theorem}[Source-fracture law]
+\label{thm:fracture}
+For every positive integer $q$, with $r=q^{-1/2}$,
+\[
+ \LambdaVM(q)\,[F(r)-F(r^2)]
+ =
+ [w(q)-w(q^2)]
+ +\LambdaVM(q)\,[T(r)-T(r^2)].                         \tag{4.3}
+\]
+For $q\geq2$, both terms on the right are nonnegative.  If
+$\LambdaVM(q)\neq0$, their sum divided by $\LambdaVM(q)$ is exactly the minimum counterterm
+in \emph{(3.4)}.
+\end{theorem}
+
+\begin{proof}
+Since $F(r)=r+T(r)$ and
+\[
+ w(q^2)=\LambdaVM(q^2)(q^2)^{-1/2}
+       =\LambdaVM(q)r^2,
+\]
+expanding the right side of (4.3) gives its left side.  For $q\geq2$,
+$0<r^2<r<1$.  Both $r$ and $T(r)=r^5/(1-r^4)$ are increasing on $(0,1)$, while
+$\LambdaVM(q)\geq0$.  This proves nonnegativity.  Division by a nonzero von Mangoldt mark and
+(3.4) prove the final assertion.
+\end{proof}
+
+\begin{corollary}[Canonical square saturation]
+\label{cor:saturation}
+On every von Mangoldt source atom, the canonical critical-plus-tail square innovation makes the
+common carrier positive semidefinite, but its determinant is zero.
+\end{corollary}
+
+This is the decisive negative conclusion for the square route.  The missing capacity was real,
+and the arithmetic source does supply it, but only at the Cauchy--Schwarz boundary.  No
+two-dimensional Schur complement can be extracted from (3.5).
+
+Iterated squaring also obeys a conservation law.  If $q_0=q$ and $q_{j+1}=q_j^2$, then
+\[
+ \sum_{j=0}^{N-1}[w(q_j)-w(q_{j+1})]
+ =w(q)-w(q_N).                                         \tag{4.4}
+\]
+Thus square innovation is transported down one marked orbit without creating additional mass.
+Equation (3.5) shows the parallel absence of geometric rank creation.
+
+\section{Cubic escape}
+
+At $a=3$, the common carrier is
+\[
+ C_3(r)=
+ \begin{pmatrix}
+ F(r)&F(r^2)\\
+ F(r^2)&F(r^3)
+ \end{pmatrix}.                                       \tag{5.1}
+\]
+Substitution of $F(s)=s/(1-s^4)$ gives
+\begin{align}
+ \det C_3(r)
+ &=
+ \frac{r^4}{(1-r^4)(1-r^{12})}
+ -\frac{r^4}{(1-r^8)^2}.                              \tag{5.2}
+\end{align}
+Put $x=r^4$.  Clearing the positive denominators in (5.2) exposes the factorization
+\[
+ (1-x^2)^2-(1-x)(1-x^3)=x(1-x)^2.                     \tag{5.3}
+\]
+Cancelling one factor $1-x$ proves (1.6).  Since every factor in (1.6) is positive for
+$0<r<1$, the determinant is positive.  Its first diagonal $F(r)$ is also positive, so
+$C_3(r)\pd$.
+
+The corresponding cubic Schur innovation is
+\[
+ \mathcal I_3(r)
+ :=F(r^3)-\frac{F(r^2)^2}{F(r)}
+ =\frac{\det C_3(r)}{F(r)}>0.                          \tag{5.4}
+\]
+No counterterm enters (5.4).  Moreover
+\[
+ \LambdaVM(q^3)=\LambdaVM(q),                          \tag{5.5}
+\]
+so the strict innovation is compatible with the same source mark as the square law.
+
+\begin{corollary}[Source-marked rank transition]
+For every integer $q\geq2$ with $\LambdaVM(q)\neq0$, the canonical source-repaired carrier at
+$q,q^2$ has rank one, whereas the natural carrier at $q,q^3$ is positive definite.
+\end{corollary}
+
+Its three entries are fixed by aligned block overlap and natural odd-Fock radial energy.
+Equality at square threshold and strict factor $r^8(1-r^4)$ at cube are useful normalization
+checks, but underlying positivity is standard multiplicative log-convexity.
+
+\section{Why cubic dilation is not a first-clock predecessor}
+\label{sec:rhroute}
+
+For logarithmic aperture $L>0$, the first physical sine clock is
+\[
+ \xi_L=\frac{2\pi}{L}.                                 \tag{6.1}
+\]
+The finite prime part of the source is
+\[
+ P_L=
+ \sum_{2\leq q\leq e^L}
+ \LambdaVM(q)q^{-1/2}\sin(\xi_L\log q).                \tag{6.2}
+\]
+Midpoint reflection decomposes the complete source coefficient as
+\[
+ \pi B_1(L)=A_L+P_L,                                   \tag{6.3}
+\]
+where $A_L>0$ is the continuous Gamma--polar reflection budget.  Equivalently,
+\[
+ B_1(L)\geq0
+ \quad\Longleftrightarrow\quad
+ P_L^{-}\leq A_L+P_L^{+},                              \tag{6.4}
+\]
+with $P_L^\pm$ the two nonnegative Jordan half-wave masses.  Positivity of
+$B_1(L)$ for every physical aperture in the required range is an exact
+Riemann-hypothesis criterion.
+
+The square carrier does not advance (6.4). Corollary~\ref{cor:saturation} says that its
+source-derived Schur innovation vanishes identically. Cubic dilation supplies local strictness:
+\[
+ \sin(\xi_L\log(q^3))=\sin(3\xi_L\log q).              \tag{6.5}
+\]
+Prime-power valuations split formally into three affine classes
+\[
+ 3e,\qquad 3e+1,\qquad 3e+2.                           \tag{6.6}
+\]
+The local carrier (5.1) controls only homogeneous map $p^e\mapsto p^{3e}$ inside each fixed-prime
+tower. This loses exactly data required by (6.2):
+\begin{enumerate}
+\item exponent-one atoms $p$ are not images of positive integral exponents under $e\mapsto3e$;
+\item affine sectors $3e+1$ and $3e+2$ require independent initial data rather than consequences
+of homogeneous cubic carrier;
+\item hard cutoff $p^e\leq e^L$ is not transported by fixed towerwise Gram inequality; and
+\item positivity of radial kernel contains no information determining sign of
+$\sin(\xi_L e\log p)$.
+\end{enumerate}
+Therefore no coefficientwise implication from (5.1) to (6.4) has been established. Adding
+off-sector maps with required atom, cutoff, and sign data would insert missing first-clock
+source theorem rather than derive it. Former ``triadic assembly problem'' is consequently
+invalid as a backward RH interface and is withdrawn.
+
+\section{Relation to existing operator programs}
+
+Semigroup Toeplitz and $ax+b$ operator algebras provide general dilation and covariance
+frameworks~\cite{BrownloweEtAl2010,LacaSehnem2022}.  They do not determine the diagonal
+normalization (1.3), the odd-Fock resolvent (1.1), or the source mark (1.7).  The present rank
+transition occurs only when those data are imposed simultaneously.
+
+Connes--Consani and Connes--Consani--Moscovici place finite-aperture Weil forms inside scaling and
+spectral-triple constructions~\cite{ConnesConsani2020,CCM2025}.  Connes--van Suijlekom establish
+real-zero consequences for suitable lower-bounded finite-interval convolution
+operators~\cite{ConnesVanSuijlekom2025}.  Suzuki recasts Weil positivity through screw functions
+and nonlocal finite-interval operators~\cite{Suzuki2026}. These works motivate search for a
+single positive source carrier.
+
+Algebraic identity (5.3) is an elementary specialization of multiplicative log-convexity for
+nonnegative graded partitions. Function $F(r)=\sum_{j\geq0}r^{4j+1}$ is such a partition.
+Square threshold is standard $2\times2$ positive-semidefinite completion, while source fracture
+uses only $F(r)=r+T(r)$ and $\Lambda(q^2)=\Lambda(q)$. Exact normalization audit is useful, but
+does not support scientific priority claim.
+
+\section{Conclusion}
+
+First two source-mark-preserving power dilations lie on opposite sides of local carrier-rank
+boundary. Squaring requires exact source debt and stops at rank one; cubing requires no repair and
+produces determinant (1.6). This rejects square-chain Schur innovation but does not promote cubic
+valuation geometry to RH predecessor.
+
+Former triadic route confused local radial log-convexity with coefficientwise assembly of actual
+arithmetic source. Since latter contains independent prime atoms, hard cutoff, and oscillatory
+signs absent from cubic carrier, route claim is withdrawn. Rightmost problem remains construction
+of a source-complete carrier whose compression is proved, not postulated, to equal first-clock
+dominance.
+
+\begin{thebibliography}{99}
+
+\bibitem{BrownloweEtAl2010}
+N.~Brownlowe, A.~an Huef, M.~Laca, and I.~Raeburn,
+\emph{Boundary quotients of the Toeplitz algebra of the affine semigroup over the natural
+numbers},
+Ergodic Theory Dynam.\ Systems \textbf{32} (2012), 35--62;
+\href{https://arxiv.org/abs/1009.3678}{arXiv:1009.3678}.
+
+\bibitem{CCM2025}
+A.~Connes, C.~Consani, and H.~Moscovici,
+\emph{Zeta spectral triples},
+\href{https://arxiv.org/abs/2511.22755}{arXiv:2511.22755}, 2025.
+
+\bibitem{ConnesConsani2020}
+A.~Connes and C.~Consani,
+\emph{The scaling Hamiltonian},
+J.\ Operator Theory \textbf{85} (2021), 103--131;
+\href{https://arxiv.org/abs/1910.14368}{arXiv:1910.14368}.
+
+\bibitem{ConnesVanSuijlekom2025}
+A.~Connes and W.~D.~van Suijlekom,
+\emph{Quadratic forms, real zeros and echoes of the spectral action},
+\href{https://arxiv.org/abs/2511.23257}{arXiv:2511.23257}, 2025.
+
+\bibitem{LacaSehnem2022}
+M.~Laca and C.~F.~Sehnem,
+\emph{Toeplitz algebras of semigroups},
+J.\ Funct.\ Anal.\ \textbf{283} (2022), 109429;
+\href{https://arxiv.org/abs/2101.06822}{arXiv:2101.06822}.
+
+\bibitem{Suzuki2026}
+M.~Suzuki,
+\emph{Weil's quadratic form via the screw function},
+\href{https://arxiv.org/abs/2606.09096}{arXiv:2606.09096}, 2026.
+
+\bibitem{Weil1952}
+A.~Weil,
+\emph{Sur les ``formules explicites'' de la th\'eorie des nombres premiers},
+Comm.\ S\'em.\ Math.\ Univ.\ Lund (1952), 252--265.
+
+\end{thebibliography}
+
+\end{document}

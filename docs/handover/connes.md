@@ -6106,3 +6106,366 @@ Formal sources:
 
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardCofinalBoundaryLift.lean`;
 - `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/xi-ward-zero-adapted-four-unit-boundary-charge-law.md`.
+
+## 89. Cofinal factorial/Beta reflection has two negative directions
+
+The remaining canonical “reflect the positive raw source, then attach one boundary channel”
+candidate is now decisively excluded. On Borel orders `0,1,2,3`, let
+
+```text
+A_x(i,j)=m_(i+j+1)(x)/(i+j+1)!.
+```
+
+After scaling by `2^(x+1)`, first-prime dominance gives
+
+```text
+A_x(i,j) -> (log 2)^(i+j+2)/(i+j+1)!.
+```
+
+With `ell=log 2`, the explicit columns
+
+```text
+u=(-1/2, 1/ell, 0, 0),
+v=(-1/120, 1/(10 ell), -1/(2 ell^2), 1/ell^3)
+```
+
+compress this limit exactly to
+
+```text
+ell^2 diag(-1/12,-1/100800).                            (89.1)
+```
+
+Hence the actual cofinal factorial/Beta-reflected source is negative definite on the fixed
+complex plane `span_C{u,v}` for every sufficiently large displacement. Its negative index is at
+least two. The complex Krein--Langer rank bound then yields the universal law
+
+```text
+for every b, A_x+b b* is not PSD eventually.            (89.2)
+```
+
+So one positive boundary channel, including any scalar four-unit channel after rescaling, cannot
+repair this reflected source. This is stronger than the earlier `2 x 2` determinant fracture,
+which exposed only one negative direction and did not settle rank-one repair.
+
+Do not retry factorial/Beta reflection plus one boundary vector. The surviving CCM construction
+must change the reflected source kernel itself or use a genuinely multi-channel non-diagonal
+Julia completion before taking the singular cofinal boundary. This does not prove RH or kill all
+CCM transports.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/VonMangoldtGammaBetaReflectionRankOneRepairNoGo.lean`;
+- `docs/drafts/pipeline/3-formalized/von-mangoldt-gamma-beta-reflection-rank-one-repair-no-go.md`.
+
+## 90. Half-order repair-rank law closes every fixed finite-channel Beta completion
+
+The four-order plane in Section 89 is the first slice of an all-order flag law. For
+
+```text
+H_n(i,j)=1/(i+j+1)!,
+```
+
+let column `j` of `Q_n` be the last inverse column of the leading `(j+1) x (j+1)` block, extended
+by zero. Lean proves `Q_n` invertible and the exact congruence
+
+```text
+Q_n^T H_n Q_n = diag(d_0,...,d_(n-1)),
+d_j=(H_(j+1)^(-1))_(j,j),
+j odd -> d_j<0.                                        (90.1)
+```
+
+Therefore the order-`2m` block has an explicit injective `m`-column negative frame. Negative
+inertia is unbounded along the reciprocal-factorial tower.
+
+The actual first-prime limit is
+
+```text
+L_n=(log 2)^2 D_n H_n D_n,  D_n(i,i)=(log 2)^i.
+```
+
+Undoing `D_n` and selecting the odd flag columns compresses `L_(2m)` to
+
+```text
+(log 2)^2 diag(d_1,d_3,...,d_(2m-1)) < 0.              (90.2)
+```
+
+Entrywise first-prime convergence transfers this fixed negative `m`-plane to the actual cofinal
+von Mangoldt--Gamma factorial/Beta source. Krein--Langer then yields the quantitative law
+
+```text
+k < m
+->
+eventually, for every v_0,...,v_(k-1),
+A_x + sum_(a<k) v_a v_a^* is not PSD on order 2m.       (90.3)
+```
+
+Thus repair rank must be at least half the Borel order. Every fixed finite number of positive
+boundary channels fails cofinally. Do not retry factorial/Beta reflection with any fixed finite
+multi-channel completion.
+
+This still does not kill a singular completion whose internal channel rank grows without bound,
+and it does not identify every imaginable CCM source transport with the canonical Beta reflection.
+Exact surviving frontier is now the unbounded-rank singular lift: either prove every
+CCM-admissible lift is cofinally finite-rank approximable (then `(90.3)` kills it), or derive a
+direct contradiction for the genuinely infinite-rank lift. No weaker finite-order repair question
+remains.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/HTGeometry/ReciprocalFactorialHankelInertia.lean`;
+- `formal/GaloisForLFunctions/RHTower/VonMangoldtGammaBetaReflectionFiniteRankRepairNoGo.lean`;
+- `docs/drafts/pipeline/3-formalized/von-mangoldt-gamma-beta-reflection-half-order-rank-law.md`.
+
+## 91. Doubled Möbius parity supplies the missing transverse four-unit source channel
+
+The exact CCM endpoint remains
+
+```text
+W_P=[[G_P,r_P],[r_P^*,4]].
+```
+
+A new infinite source construction now separates the Hardy father space from the four-unit Fisher
+detail.  For the damped signed likelihood `d_(sigma,u)`, its Möbius-parity transform
+`p_(sigma,u)`, the Fisher tangent `chi_sigma`, and its parity transform `p chi_sigma`, define
+
+```text
+F_(sigma,u)=2^(-1/2)(d_(sigma,u),p_(sigma,u)),
+D_sigma     =2^(-1/2)(chi_sigma,-p chi_sigma).
+```
+
+Lean proves unconditionally
+
+```text
+<F_(sigma,u),F_(sigma,v)>
+  =squarefreeMobiusBoundaryLayerLaplace sigma (u+v),
+<D_sigma,F_(sigma,u)>=0,
+||D_sigma||^2=||chi_sigma||^2 -> 4.                    (91.1)
+```
+
+Thus every finite augmented source packet has an actual PSD Gram and converges entrywise to
+
+```text
+[[G_P,0],[0,4]].                                       (91.2)
+```
+
+This is real progress over the one-carrier likelihood: exponentials are total there, forcing the
+soft Fisher column; the doubled clock-odd sector is an independent transverse channel with exactly
+the required four-unit capacity.
+
+Do not mistake `(91.2)` for source-side positivity of fixed `W_P`.  The sole live map is now the
+singular squarefree-overlap graph division, Gamma completion, and strict-right anti-causal
+projection acting on `D_sigma`.  It must turn the zero transverse column into `r_P` while
+preserving cofinal Gram positivity.  Ordinary phase/Hardy contractivity cannot do this: existing
+Lean proves strict phase contraction under false RH and unitary saturation exactly under RH.
+Source-rigged nonexpansiveness on the doubled detail is the exact open core.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/MobiusParityLikelihoodHardyGram.lean`;
+- `formal/GaloisForLFunctions/RHTower/MobiusDoubledParityHardyTransverseGram.lean`.
+
+## 92. Fixed Ward graph is expansive in source norm
+
+Do not reuse target Hardy multiplier contractivity as source-side nonexpansiveness.  The complete
+fixed graph transport depends affinely on a source score, and at base aperture Lean proves
+
+```text
+V_(sigma,epsilon)(x)-V_(sigma,epsilon)(y)
+ =i/(2 epsilon)
+  [<x,psi_sigma>-<y,psi_sigma>].                       (92.1)
+```
+
+Because `||psi_sigma||=1`, the explicit pair `x=psi_sigma`, `y=0` on the physical critical ray
+`epsilon=sigma-1` has gain
+
+```text
+1/[2(sigma-1)]>1,  1<sigma<3/2.                       (92.2)
+```
+
+Thus existing `squarefreeMobiusGammaXiWardTransportV` is not nonexpansive on ambient source
+Hilbert space.  Its target phase remains contractive; no contradiction exists because graph
+division and target multiplier act in different variables and norms.
+
+Combined with §91, exact surviving task is a source-conditioned closed graph on doubled clock-odd
+detail.  Its graph norm must absorb overlap division without changing asymptotic detail energy
+four.  Merely weighting graph norm by `1/(sigma-1)` destroys four-unit normalization and cannot
+prove `W_P`.  This is now the sole norm-compatible transport question; do not retry ambient
+source contractivity.
+
+Formal source:
+
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardSourceNonexpansiveNoGo.lean`.
+
+## 93. Cofinal saturation rigidity forces the Ward column into a connection term
+
+The graph-norm escape left by §92 is now sharply classified. For every contraction between
+arbitrary complex Hilbert spaces, Lean proves
+
+\[
+\|T^*Td-d\|^2\le \|d\|^2-\|Td\|^2,
+\]
+
+and therefore
+
+\[
+|\langle Tx,Td\rangle-\langle x,d\rangle|
+\le \|x\|\sqrt{\|d\|^2-\|Td\|^2}.                     \tag{93.1}
+\]
+
+Exact saturation of one detail vector freezes every inner product against it. The cofinal theorem
+does not assume finite dimension or finite rank:
+
+\[
+\begin{aligned}
+\langle x_n,d_n\rangle&=0,\\
+\sup_n\|x_n\|&<\infty,\\
+\|d_n\|^2-\|T_nd_n\|^2&\to0
+\end{aligned}
+\quad\Longrightarrow\quad
+\langle T_nx_n,T_nd_n\rangle\to0.                     \tag{93.2}
+\]
+
+The C41 source satisfies the first condition exactly, its father vectors at fixed aperture are
+bounded, and both source and desired target detail diagonals tend to four. Hence no bounded
+cofinal contraction can create \(r_P\) by directly transporting \(D_{\sigma_n}\). This closes the
+infinite/cofinal bounded-operator version of §92, not merely finite-rank repairs.
+
+A moving target detail can still have a connection term
+
+\[
+e_n=T_nd_n+c_n.
+\]
+
+But `(93.2)` then gives an exact conservation law:
+
+\[
+\langle T_nx_n,e_n\rangle\to r
+\quad\Longrightarrow\quad
+\langle T_nx_n,c_n\rangle\to r.                       \tag{93.3}
+\]
+
+Thus all of the nonzero continued Xi Ward column must come from differentiating the
+Gamma/Wiener--Hopf operator itself. It cannot come from the transported four-unit Möbius detail.
+
+Lean proves the complete classification of the now-retired proposal:
+
+\[
+\mathrm{RH}
+\Longleftrightarrow
+\text{cofinal four-unit contraction realization of \(r_P\) from the doubled Möbius source}.
+\tag{93.4}
+\]
+
+Under RH the column vanishes and the identity contraction realizes it along
+\(\sigma_n=1+1/(n+1)\). Conversely, cofinal saturation forces the column to vanish, and the
+zero-adapted one-node theorem yields RH.
+
+This is not an RH proof. It prevents another return to “put the division in a graph norm.” Exact
+remaining construction is the covariant derivative
+
+\[
+c_\sigma=(\partial_\sigma T_\sigma)F_{\sigma,u}
+\]
+
+for the source-defined Gamma/true-Wiener--Hopf family, together with the unconditional estimate
+
+\[
+\|T_\sigma D_\sigma+c_\sigma\|^2\longrightarrow\le4
+\]
+
+and its packet codiagonal limit \(r_P\). The existing non-diagonal Julia derivative identifies the
+required output column, but no corpus theorem supplies this connection-augmented four-unit norm.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/MobiusDoubledParityContractionSaturationRigidity.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-four-unit-cofinal-contraction-saturation-rigidity.md`.
+
+## 94. Singular/cofinal connection escape is impossible at an adapted zero
+
+Section 93 identified a moving-operator connection as the only term that
+could carry the nonzero Ward codiagonal. That bookkeeping statement is
+correct, but the proposed connection escape is now closed once the complete
+target detail is tested.
+
+For a strict-right Xi pair with centered zero `lambda`, put
+`a=Re(lambda)>0` and sample at `w=conj(lambda)`. The adapted response obeys
+
+\[
+2/a<|r(w)|^2.
+\]
+
+In every complex Hilbert space, Cauchy--Schwarz now gives
+
+\[
+\|f\|^2\le\frac1{2a},\qquad \langle f,e\rangle=r(w)
+\quad\Longrightarrow\quad
+4<\|e\|^2.                                             \tag{94.1}
+\]
+
+If `e=Td+c`, the direct detail remains father-orthogonal, and the connection
+carries `r(w)`, then the total `e` has the same codiagonal. Interference
+between `Td` and `c` is irrelevant to `(94.1)`: no connection-augmented
+four-unit lift exists at that node.
+
+Lean also proves the singular/cofinal version. There are no sequences
+`f_n,e_n` satisfying
+
+\[
+\|f_n\|^2\to\frac1{2a},\qquad
+\langle f_n,e_n\rangle\to r(w),\qquad
+\|e_n\|^2\le4\quad\text{for every }n.                  \tag{94.2}
+\]
+
+No boundedness of a transport or connection, finite-rank approximation,
+vector convergence, or common decomposition is assumed. Only the three Gram
+entries of the requested Julia lift occur.
+
+This corrects the final paragraph of Section 93: differentiating the
+Gamma/true-Wiener--Hopf operator is not a separate norm-compatible escape.
+Any source theorem producing its claimed Hardy father limit, Ward
+codiagonal, and four-unit total diagonal already excludes every strict-right
+zero and therefore proves RH. The remaining task is exactly unconditional
+source positivity of fixed `W_P`; it cannot be replaced by connection
+bookkeeping.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardConnectionOverspend.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-cofinal-connection-escape-closure.md`.
+
+## 95. Fixed Euler-edge scalar completeness removes packet geometry
+
+The four-unit endpoint can now be tested on one fixed vertical line. Let
+`lambda=a+ib` be any strict-right centered Xi zero, with `0<a<1/2`, and use
+
+```text
+w=1/2-ib.
+```
+
+The selected Schwarz-pair term has real part `2/(a+1/2)`. Every other
+absolutely summable Schwarz-pair term has positive real part. Therefore
+
+\[
+\Re r(w)>\frac{2}{a+1/2}>2,\qquad |r(w)|^2>4.          \tag{95.1}
+\]
+
+At this node `G(w,w)=1`, so `(95.1)` is exactly a negative diagonal of
+`4G-r r^*`. Lean proves both exact laws
+
+```text
+RH <-> for every t in R, |r(1/2+i t)|^2 <= 4,
+
+RH <-> W_P is PSD for every finite packet P contained in Re(w)=1/2.
+```
+
+Thus the remaining CCM source theorem no longer needs positivity on all
+right-half-plane packets, a cofinal packet exhaustion, or an interior-node
+estimate. It must prove the scalar two-unit bound on the Euler edge directly
+from the completed squarefree overlap graph. This is still RH-complete and
+is not yet proved.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardEulerEdgeCompleteness.lean`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/xi-ward-euler-edge-scalar-completeness-law.md`.

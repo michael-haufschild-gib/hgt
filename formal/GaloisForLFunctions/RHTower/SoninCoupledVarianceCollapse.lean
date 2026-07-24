@@ -321,11 +321,60 @@ theorem soninCoupledPrimeArchNormalizedVarianceCollapseToZero :
           mul_assoc, mul_left_comm, mul_comm] using hv
     _ ≤ δ := hbound
 
+/-- With source collapse discharged, the normalized Sonin comparison is exactly target
+vacuum-Feshbach nonnegativity. -/
+theorem soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_targetNonnegative :
+    SoninCoupledPrimeArchNormalizedVarianceUpperBound ↔
+      PrimeArchVacuumFeshbachIntNonnegative :=
+  soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_targetNonnegative_of_collapse
+    soninCoupledPrimeArchNormalizedVarianceCollapseToZero
+
 /-- With source collapse discharged, the normalized Sonin comparison is exactly RH. -/
 theorem soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_riemannHypothesis :
     SoninCoupledPrimeArchNormalizedVarianceUpperBound ↔ RiemannHypothesis :=
   soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_riemannHypothesis_of_collapse
     soninCoupledPrimeArchNormalizedVarianceCollapseToZero
+
+/-- Small-aperture collapse classifies the moment-Feshbach source comparison exactly as RH. -/
+theorem soninCoupledPrimeArchVacuumSourceFeshbachUpperBound_iff_riemannHypothesis :
+    SoninCoupledPrimeArchVacuumSourceFeshbachUpperBound ↔ RiemannHypothesis :=
+  soninCoupledPrimeArchPureStateQuantumFisherUpperBound_iff_sourceFeshbach.symm.trans
+    (soninCoupledPrimeArchPureStateQuantumFisherUpperBound_iff_normalizedVariance.trans
+      soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_riemannHypothesis)
+
+/-- Small-aperture collapse classifies pure-state quantum-Fisher comparison exactly as RH. -/
+theorem soninCoupledPrimeArchPureStateQuantumFisherUpperBound_iff_riemannHypothesis :
+    SoninCoupledPrimeArchPureStateQuantumFisherUpperBound ↔ RiemannHypothesis :=
+  soninCoupledPrimeArchPureStateQuantumFisherUpperBound_iff_normalizedVariance.trans
+    soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_riemannHypothesis
+
+/-- Small-aperture collapse classifies counterterm-free projective Fisher comparison exactly as
+RH. -/
+theorem soninCoupledPrimeArchVacuumProjectiveFisherUpperBound_iff_riemannHypothesis :
+    SoninCoupledPrimeArchVacuumProjectiveFisherUpperBound ↔ RiemannHypothesis :=
+  soninCoupledPrimeArchVacuumProjectiveFisherUpperBound_iff_sourceFeshbach.trans
+    soninCoupledPrimeArchVacuumSourceFeshbachUpperBound_iff_riemannHypothesis
+
+/-- Small-aperture collapse classifies quotient-free projective Robertson comparison exactly as
+RH. -/
+theorem soninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound_iff_riemannHypothesis :
+    SoninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound ↔ RiemannHypothesis :=
+  soninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound_iff_fisher.trans
+    soninCoupledPrimeArchVacuumProjectiveFisherUpperBound_iff_riemannHypothesis
+
+/-- Small-aperture collapse classifies the aperture-plus-counterterm variance comparison exactly
+as RH. -/
+theorem soninCoupledPrimeArchVacuumVarianceRayleighUpperBound_iff_riemannHypothesis :
+    SoninCoupledPrimeArchVacuumVarianceRayleighUpperBound ↔ RiemannHypothesis :=
+  soninCoupledPrimeArchVacuumSourceFeshbachUpperBound_iff_variance.symm.trans
+    soninCoupledPrimeArchVacuumSourceFeshbachUpperBound_iff_riemannHypothesis
+
+/-- Small-aperture collapse classifies quotient-free Robertson Rayleigh comparison exactly as
+RH. -/
+theorem soninCoupledPrimeArchVacuumRobertsonRayleighUpperBound_iff_riemannHypothesis :
+    SoninCoupledPrimeArchVacuumRobertsonRayleighUpperBound ↔ RiemannHypothesis :=
+  soninCoupledPrimeArchVacuumRobertsonRayleighUpperBound_iff_variance.trans
+    soninCoupledPrimeArchVacuumVarianceRayleighUpperBound_iff_riemannHypothesis
 
 /-- On any infinite degree set, even the structured centered `2`-Eisenstein Sonin comparison is
 exactly RH; its source-smallness component is now unconditional. -/
@@ -339,6 +388,19 @@ theorem soninCoupledPrimeArchCenteredTwoEisensteinResidualUpper_iff_riemannHypot
     exact (soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_riemannHypothesis.mpr hRH)
       (HTGeometry.polynomialVacuumTail P)
       (HTGeometry.polynomialVacuumTail_coeff_zero P) ε hε
+
+/-- Small-aperture collapse also classifies the comparison restricted to the strict complement
+of the unconditional centered analytic-tail cone. -/
+theorem soninCoupledPrimeArchCenteredResidualNormalizedVarianceUpperBound_iff_riemannHypothesis :
+    SoninCoupledPrimeArchCenteredResidualNormalizedVarianceUpperBound ↔
+      RiemannHypothesis := by
+  constructor
+  · exact
+      riemannHypothesis_of_soninCoupledPrimeArchCenteredResidualNormalizedVarianceUpperBound
+  · intro hRH q hq _hres ε hε
+    exact
+      (soninCoupledPrimeArchNormalizedVarianceUpperBound_iff_riemannHypothesis.mpr hRH)
+        q hq ε hε
 
 end
 

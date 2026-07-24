@@ -279,13 +279,45 @@ theorem completedOddLogDerivMomentFarRightAsymptotic :
     rw [Complex.mul_re, hrePow, himPow]
     ring
 
+/-- The moving-polynomial far-right positivity interface follows unconditionally from the
+completed-source moment asymptotic. -/
+theorem completedOddLogDerivPolynomialFarRightPositive :
+    CompletedOddLogDerivPolynomialFarRightPositive :=
+  completedOddLogDerivPolynomialFarRightPositive_of_momentAsymptotic
+    completedOddLogDerivMomentFarRightAsymptotic
+
+/-- Every moving polynomial has the exact far-right leading asymptotic, with no asymptotic
+interface left to supply. -/
+theorem tendsto_scaled_completedOddLogDerivPolynomial_sum_unconditional
+    (q : Polynomial ℝ) :
+    Tendsto
+      (fun x : ℝ =>
+        x ^ (2 * q.natTrailingDegree + 1) *
+          (∑ k ∈ Finset.range (q.natDegree + 1),
+            q.coeff k * (completedOddLogDerivMoment (x : ℂ) k).re))
+      atTop
+      (nhds
+        (q.trailingCoeff *
+          ((-1 : ℝ) ^ q.natTrailingDegree /
+            (2 * (2 * q.natTrailingDegree + 1))))) :=
+  tendsto_scaled_completedOddLogDerivPolynomial_sum
+    completedOddLogDerivMomentFarRightAsymptotic q
+
+/-- Once right-even factorization is given, the complete prime--Gamma source cone follows without
+a separate far-right positivity premise. -/
+theorem primeArchSourceTraceHankelIntNonnegative_of_completedPolynomial_evenFactorization
+    (heven : CompletedOddLogDerivPolynomialRightEvenFactorization) :
+    PrimeArchSourceTraceHankelIntNonnegative :=
+  primeArchSourceTraceHankelIntNonnegative_of_movingPolynomialFarRight_evenFactorization
+    completedOddLogDerivPolynomialFarRightPositive heven
+
 /-- **Top-down capstone.**  The completed-source far-right input is unconditional; even real
 factorization of every moving polynomial test is the sole remaining hypothesis in this chain. -/
 theorem riemannHypothesis_of_completedPolynomial_evenFactorization
     (heven : CompletedOddLogDerivPolynomialRightEvenFactorization) :
     RiemannHypothesis :=
-  riemannHypothesis_of_momentAsymptotic_movingPolynomial_evenFactorization
-    completedOddLogDerivMomentFarRightAsymptotic heven
+  riemannHypothesis_of_primeArchSourceTraceHankelIntNonnegative
+    (primeArchSourceTraceHankelIntNonnegative_of_completedPolynomial_evenFactorization heven)
 
 end
 

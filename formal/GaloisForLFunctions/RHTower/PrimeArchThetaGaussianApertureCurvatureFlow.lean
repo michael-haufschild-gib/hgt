@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaGaussianApertureCompositeWindow
 import GaloisForLFunctions.RHTower.PrimeArchThetaLiouvilleWard
+import GaloisForLFunctions.RHTower.PrimeArchThetaModularDifferentialClosure
 import GaloisForLFunctions.HTGeometry.AffineGammaMomentCurvature
 
 /-!
@@ -43,7 +44,7 @@ private theorem thetaCuspSourceTerm_zero_nonneg_for_cold_seam (n : ℕ) :
         nlinarith [Real.pi_gt_three]
       simpa [thetaCuspSourceTerm] using hseed.le
 
-private theorem thetaCuspFullSource_zero_pos_for_cold_seam :
+theorem thetaCuspFullSource_zero_pos_for_cold_seam :
     0 < thetaCuspFullSource 0 := by
   rw [thetaCuspFullSource]
   exact (summable_thetaCuspSourceTerm 0).tsum_pos
@@ -94,6 +95,19 @@ theorem thetaCuspGaussianApertureColdRatioCorrectionThree_secondDiff
   field_simp [hf0]
   push_cast
   ring
+
+/-- The first non-Gaussian cold-aperture curvature coefficient is strictly positive in every
+fixed moment degree. -/
+theorem thetaCuspGaussianApertureColdRatioCorrectionThree_secondDiff_pos
+    (j : ℕ) :
+    0 <
+      thetaCuspGaussianApertureColdRatioCorrectionThree j -
+        2 * thetaCuspGaussianApertureColdRatioCorrectionThree (j + 1) +
+        thetaCuspGaussianApertureColdRatioCorrectionThree (j + 2) := by
+  rw [thetaCuspGaussianApertureColdRatioCorrectionThree_secondDiff]
+  exact div_pos thetaCuspGaussianApertureSixthSeamNumerator_pos
+    (mul_pos (by norm_num)
+      (pow_pos thetaCuspFullSource_zero_pos_for_cold_seam 3))
 
 /-! ### The large-degree theta saddle -/
 

@@ -291,6 +291,24 @@ theorem riccatiCorrelationAngle_subadditive_of_margin_nonneg
   · exact hy
   · exact hxyT
 
+/-- **Seam reconstruction.**  Difference-chamber Riccati control and the two center-zero
+margins force the sum-chamber margin.  This scalar law is independent of any particular
+correlation model. -/
+theorem sumRiccatiMargin_nonneg_of_difference_and_center
+    {hₐ hᵦ cₐ cᵦ dₐ dᵦ : ℝ}
+    (hh : hᵦ ≤ hₐ) (hᵦ0 : 0 ≤ hᵦ)
+    (hdifference :
+      0 ≤ 2 * (hₐ - hᵦ) * (cₐ + cᵦ) - (dₐ - dᵦ))
+    (hcenterₐ : 0 ≤ 4 * hₐ * cₐ - dₐ)
+    (hcenterᵦ : 0 ≤ 4 * hᵦ * cᵦ - dᵦ) :
+    0 ≤ 2 * (hₐ + hᵦ) * (cₐ + cᵦ) - (dₐ + dᵦ) := by
+  by_cases hc : cₐ ≤ cᵦ
+  · nlinarith [
+      mul_nonneg (sub_nonneg.mpr hh) (sub_nonneg.mpr hc)]
+  · have hc' : cᵦ ≤ cₐ := (le_of_lt (lt_of_not_ge hc))
+    nlinarith [
+      mul_nonneg hᵦ0 (sub_nonneg.mpr hc')]
+
 end
 
 end HilbertMetric

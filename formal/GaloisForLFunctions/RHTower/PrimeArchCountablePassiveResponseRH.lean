@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchExactOffLineQuartetAccretivity
 import GaloisForLFunctions.RHTower.PrimeArchPassiveResponseRH
+import GaloisForLFunctions.RHTower.CCMCompletedPrimeGammaAccretivityCriterion
 
 open Filter Topology Set Metric
 
@@ -97,6 +98,15 @@ theorem completedPrimeGammaPositiveFrequencyAbove_of_gaussianRat
   have hqnonneg := hrat q hq.1.1.1.1 hq.1.1.1.2 hq.1.1.2 hq.1.2
   exact (not_lt_of_ge hqnonneg) hq.2
 
+/-- RH supplies every Gaussian-rational positive-frequency restriction. -/
+theorem completedPrimeGammaGaussianRatPositiveFrequencyAbove_of_riemannHypothesis
+    (R : ℝ) (hRH : RiemannHypothesis) :
+    CompletedPrimeGammaGaussianRatPositiveFrequencyAbove R := by
+  have hfull : CompletedPrimeGammaLeftHalfAccretive :=
+    completedPrimeGammaLeftHalfAccretive_iff_riemannHypothesis.mpr hRH
+  intro q hqpos hqhalf _hqhigh hqzeta
+  exact hfull (gaussianRatPoint q) hqpos hqhalf hqzeta
+
 /-- Original-coordinate completed accretivity above `R` supplies the centered passive-response
 condition above the same frequency. -/
 theorem continuedPrimeArchPositiveFrequencyAbove_of_completedPrimeGamma
@@ -118,6 +128,22 @@ theorem continuedPrimeArchPositiveFrequencyAbove_of_completedPrimeGamma
     Complex.I_im, neg_mul, one_mul]
   dsimp only [completedPrimeGammaFlux] at haccS
   linarith
+
+/-- At the exact quartet threshold, the countable positive-frequency source interface is RH. -/
+theorem
+    completedPrimeGammaGaussianRatPositiveFrequencyAbove_twoHundredEighteen_twentyFifths_iff_rh :
+    CompletedPrimeGammaGaussianRatPositiveFrequencyAbove (218 / 25) ↔
+      RiemannHypothesis := by
+  constructor
+  · intro hrat
+    apply
+      continuedPrimeArchPositiveFrequencyAbove_twoHundredEighteen_twentyFifths_iff_rh.mp
+    exact continuedPrimeArchPositiveFrequencyAbove_of_completedPrimeGamma
+      (218 / 25)
+      (completedPrimeGammaPositiveFrequencyAbove_of_gaussianRat (218 / 25) hrat)
+  · exact
+      completedPrimeGammaGaussianRatPositiveFrequencyAbove_of_riemannHypothesis
+        (218 / 25)
 
 /-- **Countable dissipative cluster-value RH capstone.**  Fix one growing family of finite
 KMS/Wightman systems.  It is enough that, at every Gaussian-rational point of the open left

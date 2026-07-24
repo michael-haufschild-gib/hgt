@@ -52,6 +52,7 @@ theorem sum_Icc_mul_apply (f g : ArithmeticFunction ℝ) (N : ℕ) :
     obtain ⟨hprod, hn0⟩ := hdm
     dsimp only at hprod hn0 hn ⊢
     rw [Finset.mem_sigma, Finset.mem_Icc, Finset.mem_Icc]
+    dsimp only
     have hd0 : d ≠ 0 := by
       intro h
       rw [h, zero_mul] at hprod
@@ -72,6 +73,7 @@ theorem sum_Icc_mul_apply (f g : ArithmeticFunction ℝ) (N : ℕ) :
     obtain ⟨hd, hm⟩ := hy
     dsimp only at hd hm ⊢
     rw [Finset.mem_sigma, Finset.mem_Icc, Nat.mem_divisorsAntidiagonal]
+    dsimp only
     have hdm : d * m ≤ N := by
       calc d * m ≤ d * (N / d) :=
             Nat.mul_le_mul_left d hm.2

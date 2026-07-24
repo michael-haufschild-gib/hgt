@@ -13,8 +13,8 @@
 
 - [x] 0 → 1 in-progress: generated from verified Lean endpoints
 - [x] 1 → 2 fully-proven: dependency-closed paper proof, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: exact-file Lean check pending
-- [ ] 3 → 4 publication-ready: post-proof literature audit pending
+- [x] 2 → 3 formalized: exact-file Lean check passed; final global axiom audit pending
+- [x] 3 → 4 publication-ready: post-proof literature audit found no exact collision
 
 ## Corpus inputs
 
@@ -49,17 +49,29 @@ all-layer null-mode horizon, despite the null vectors themselves being allowed t
   `matrixPrincipalLowerLaw_differentialDependent_iff_everyLayer_nontrivialNullMode`
 - Source:
   `formal/GaloisForLFunctions/HTGeometry/MatrixPrincipalDifferentialNullModeHolographyUniversalityLaw.lean`
-- Exact-file check: pending.
+- Exact-file check:
+  `lake env lean GaloisForLFunctions/HTGeometry/MatrixPrincipalDifferentialNullModeHolographyUniversalityLaw.lean`
+  passed warning-free on 2026-07-23.
 - Umbrella:
-  pending import by `formal/GaloisForLFunctions/HTGeometry.lean`.
+  imported by `formal/GaloisForLFunctions/HTGeometry.lean`.
 
 ## Novelty protocol
 
-No literature search occurred before the dependency-closed proof.  Post-proof collision audit
-pending.
+No literature search occurred before the dependency-closed proof.  Post-proof searches for
+differential-algebraic dependence, flat principal-symbol spectra, and filtration-wide null modes
+found no exact collision.  Closest inspected primary sources treat Fox-derivative criteria for
+differential dependence and constant-rank differential-operator annihilators, but not conserved
+normalized characteristic polynomials of differential-law filtrations:
+
+- B. Duisengalieva and U. Umirbaev, *Differential algebraic dependence and Novikov dependence*,
+  <https://arxiv.org/abs/2001.00383>.
+- F. Gmeineder and S. Schiffer, *Natural annihilators and operators of constant rank over
+  ℂ*, <https://arxiv.org/abs/2203.10355>.
 
 ## Log
 
 - 2026-07-23 — Cross-folder terminal scan exposed flat spectral holography versus the DSS
   determinant/kernel certificate.
 - 2026-07-23 — Dependency-closed proof completed and scratch-checked.
+- 2026-07-23 — Exact theorem checked warning-free and wired into the HTGeometry umbrella.
+- 2026-07-23 — Post-proof collision audit found no exact literature match.

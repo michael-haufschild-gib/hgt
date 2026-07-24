@@ -2,8 +2,8 @@
 
 ## Status
 
-- Pipeline stage: fully proven on paper
-- Lean status: in progress
+- Pipeline stage: formalized
+- Lean status: complete; direct Lean check passed
 - Scope: unconditional same-half-line completed-source theorem; no RH claim
 
 ## Inputs already in the corpus
@@ -168,10 +168,12 @@ which unconditionally proves correlation-angle subadditivity there.
 - No numerical evaluation is used.
 - Tail estimate \(13/10\) is reused from the existing symbolic Gaussian majorant.
 - Strict domination is proved by atom margin alone; likelihood margin positivity is extra slack.
-- Seam-crossing packets \(u<x+y\) are not covered and remain a separate geometric problem.
+- Seam-crossing packets are outside this theorem's scope; they are now closed by
+  `ThetaCuspGlobalReflectedRiccati`.
 
 ## Formal target
 
-Formalize the half-factor law, atom algebra inequality, likelihood mean-value bounds, strict cross
-domination, unconditional completed same-half-line angle law, and the resulting seam-only
-Hedenmalm wall interface.
+Formalized in
+`GaloisForLFunctions.RHTower.ThetaCuspAtomLikelihoodCrossDomination`, including the half-factor
+law, atom algebra inequality, likelihood mean-value bounds, strict cross domination, completed
+same-half-line Riccati margin, and unconditional same-half-line angle law.

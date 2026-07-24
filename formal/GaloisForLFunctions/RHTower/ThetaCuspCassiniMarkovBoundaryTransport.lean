@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CompletedSeamCompactThorinExponentCapstone
+import GaloisForLFunctions.RHTower.CompletedSeamCompactThorinMarkovEquivalence
 import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodAtomicNondivisibility
 import GaloisForLFunctions.RHTower.XiOrderFourteenCornerSourceExclusion
 import Mathlib.Analysis.Normed.Module.Convex
@@ -180,6 +180,13 @@ theorem primeArchCompactMarkovGermRepresentation_of_thetaBoundary
   refine ⟨μ, B, hfinite, hB, hsupport, ?_⟩
   exact completedSeamMomentGerm_eventuallyEq_compactMarkovTransform_of_thetaBoundary
     hfinite hB hBhalf hsupport hboundary
+
+/-- Euler-boundary Markov data also produce the normalized compact Thorin exponent. -/
+theorem primeArchCompactThorinExponentRepresentation_of_thetaBoundary
+    (hrep : ThetaCuspCassiniCompactMarkovBoundaryRepresentation) :
+    PrimeArchCompactThorinExponentRepresentation :=
+  primeArchCompactThorinExponentRepresentation_of_compactMarkovGerm
+    (primeArchCompactMarkovGermRepresentation_of_thetaBoundary hrep)
 
 /-- Zeroth-order extraction retains the concrete witness: a centered Markov germ has total real
 mass equal to the canonical zeroth prime--archimedean moment. -/

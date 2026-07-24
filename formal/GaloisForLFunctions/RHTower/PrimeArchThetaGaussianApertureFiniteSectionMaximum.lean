@@ -87,6 +87,89 @@ theorem thetaCuspGaussianApertureBalance_nonnegative_of_finiteSection
     (thetaCuspGaussianApertureRatioCurvature_finiteSection_nonnegative
       hab hb J hinit hboundary 0 (Nat.zero_le J) lambda hlambda)
 
+/-- If a finite section loses nonnegativity while its initial data are nonnegative, its outgoing
+curvature channel must be negative somewhere on the same aperture interval. -/
+theorem exists_thetaCuspGaussianApertureRatioCurvature_boundary_neg_of_finiteSection_failure
+    {a b : ℝ} (hab : a ≤ b) (hb : b < 0) (J : ℕ)
+    (hinit : ∀ j, j ≤ J →
+      0 ≤ thetaCuspGaussianApertureRatioCurvature a j)
+    {j : ℕ} (hj : j ≤ J) {lambda : ℝ} (hlambda : lambda ∈ Icc a b)
+    (hneg : thetaCuspGaussianApertureRatioCurvature lambda j < 0) :
+    ∃ eta ∈ Icc a b,
+      thetaCuspGaussianApertureRatioCurvature eta (J + 1) < 0 := by
+  by_contra hboundaryNeg
+  have hboundary : ∀ eta ∈ Icc a b,
+      0 ≤ thetaCuspGaussianApertureRatioCurvature eta (J + 1) := by
+    intro eta heta
+    by_contra hnot
+    exact hboundaryNeg ⟨eta, heta, lt_of_not_ge hnot⟩
+  have hsection :=
+    thetaCuspGaussianApertureRatioCurvature_finiteSection_nonnegative
+      hab hb J hinit hboundary j hj lambda hlambda
+  exact (not_lt_of_ge hsection) hneg
+
+/-- **Failure escapes to arbitrarily high degree.**  Starting from globally nonnegative initial
+curvature, one negative value at any finite degree forces a negative outgoing channel beyond every
+larger finite cutoff. -/
+theorem forall_exists_thetaCuspGaussianApertureRatioCurvature_highDegree_neg_of_failure
+    {a b : ℝ} (hab : a ≤ b) (hb : b < 0)
+    (hinit : ∀ j, 0 ≤ thetaCuspGaussianApertureRatioCurvature a j)
+    {j : ℕ} {lambda : ℝ} (hlambda : lambda ∈ Icc a b)
+    (hneg : thetaCuspGaussianApertureRatioCurvature lambda j < 0) :
+    ∀ J, j ≤ J → ∃ eta ∈ Icc a b,
+      thetaCuspGaussianApertureRatioCurvature eta (J + 1) < 0 := by
+  intro J hj
+  exact
+    exists_thetaCuspGaussianApertureRatioCurvature_boundary_neg_of_finiteSection_failure
+      hab hb J (fun k _hk => hinit k) hj hlambda hneg
+
+/-- A cofinal family of nonnegative outgoing channels discharges every finite boundary hypothesis
+in the curvature maximum principle. -/
+theorem thetaCuspGaussianApertureRatioCurvature_nonnegative_of_cofinalBoundary
+    {a b : ℝ} (hab : a ≤ b) (hb : b < 0)
+    (hinit : ∀ j, 0 ≤ thetaCuspGaussianApertureRatioCurvature a j)
+    (hboundary : ∀ j, ∃ J, j ≤ J ∧
+      ∀ lambda ∈ Icc a b,
+        0 ≤ thetaCuspGaussianApertureRatioCurvature lambda (J + 1)) :
+    ∀ j, ∀ lambda ∈ Icc a b,
+      0 ≤ thetaCuspGaussianApertureRatioCurvature lambda j := by
+  intro j lambda hlambda
+  obtain ⟨J, hj, hJ⟩ := hboundary j
+  exact
+    thetaCuspGaussianApertureRatioCurvature_finiteSection_nonnegative
+      hab hb J (fun k _hk => hinit k) hJ j hj lambda hlambda
+
+/-- Under globally nonnegative initial curvature, the cofinal outgoing-boundary condition is
+exactly equivalent to global curvature preservation on the aperture interval. -/
+theorem thetaCuspGaussianApertureRatioCurvature_nonnegative_iff_cofinalBoundary
+    {a b : ℝ} (hab : a ≤ b) (hb : b < 0)
+    (hinit : ∀ j, 0 ≤ thetaCuspGaussianApertureRatioCurvature a j) :
+    (∀ j, ∀ lambda ∈ Icc a b,
+        0 ≤ thetaCuspGaussianApertureRatioCurvature lambda j) ↔
+      ∀ j, ∃ J, j ≤ J ∧
+        ∀ lambda ∈ Icc a b,
+          0 ≤ thetaCuspGaussianApertureRatioCurvature lambda (J + 1) := by
+  constructor
+  · intro hglobal j
+    exact ⟨j, le_rfl, hglobal (j + 1)⟩
+  · exact
+      thetaCuspGaussianApertureRatioCurvature_nonnegative_of_cofinalBoundary
+        hab hb hinit
+
+/-- The physical Gaussian-aperture balance inherits the cofinal-boundary discharge. -/
+theorem thetaCuspGaussianApertureBalance_nonnegative_of_cofinalBoundary
+    {a b : ℝ} (hab : a ≤ b) (hb : b < 0)
+    (hinit : ∀ j, 0 ≤ thetaCuspGaussianApertureRatioCurvature a j)
+    (hboundary : ∀ j, ∃ J, j ≤ J ∧
+      ∀ lambda ∈ Icc a b,
+        0 ≤ thetaCuspGaussianApertureRatioCurvature lambda (J + 1))
+    {lambda : ℝ} (hlambda : lambda ∈ Icc a b) :
+    0 ≤ thetaCuspGaussianApertureBalance lambda := by
+  rw [thetaCuspGaussianApertureBalance_eq_ratioCurvature]
+  exact mul_nonneg (by norm_num)
+    (thetaCuspGaussianApertureRatioCurvature_nonnegative_of_cofinalBoundary
+      hab hb hinit hboundary 0 lambda hlambda)
+
 /-- **Curvature-transport and dominant-channel localization capstone.**  The completed theta
 Gaussian flow simultaneously has finite-section cone preservation, exact response-centered
 leading-channel concentration, and a resolution-safe contraction of the entire higher-atom tail
