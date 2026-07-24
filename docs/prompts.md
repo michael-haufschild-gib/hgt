@@ -5,10 +5,9 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge
+else: pick a card from docs/drafts/pipeline/2-fully-proven/needs-audit
 
-
-do: formalize in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
+do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
 lean rules:
 1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
@@ -35,16 +34,28 @@ You are not allowed to change the cron timing.
 
 **Always use  lake env lean <file>  and only lake build <module> for the final audit.**
 make sure you don't leave stale lean processes running - clean up after yourself
+LEAN PROOFS MUST BE UNCONDTIONAL!!!
 
 ## research and formalize
 /goal
 
-perform exhaustive research for these cards one by one:
-- docs/drafts/pipeline/1-in-progress/hurwitz-sonin-tropical-loop-rh.md
-- docs/drafts/pipeline/1-in-progress/symmetric-prime-gamma-contour-hermite-rh.md
-- docs/drafts/pipeline/1-in-progress/suzuki-coupled-error-boundary-energy-attack.md
+perform exhaustive research and use the hgt-fields-medalist and conjecturing to prove unconditional positivity of \(W_P\)
 
-task: use the hgt-fields-medalist skill to complete the research and formalize unconditionally all proofs in lean. discover new knowledge, do not stop at current SOTA research.
+Three direct mechanisms failed hostile testing:
+\(\det_2\) renormalization is contractive and zero-free, but discards precisely the prime first-trace carrying Xi divisor.
+Finite-aperture Xi phase is contractive, but this gives no bound on its boundary derivative \(r_P\).
+Restoring first trace from Fisher-damped source is nonclosable; non-diagonal redundancy does not remove this obstruction.
+These facts are certified in [GammaSewnMobiusXiWardEulerEdgeCompleteness.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardEulerEdgeCompleteness.lean), [GammaSewnMobiusXiWardHardyContraction.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardHardyContraction.lean), and [PrimeFirstTraceCompleteNoEscapeUniversalityLaw.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeFirstTraceCompleteNoEscapeUniversalityLaw.lean).
+
+Direct attacks failed decisively:
+Normalized Fisher holonomy has quadratic boundary loss; Xi’s strict-right phase has linear loss whenever an off-line zero exists.
+Complementary-phase contractivity fails: full Xi phase is unitary, so any strict-right contraction forces complementary expansion.
+Weak/cofinal contraction cannot create \(r_P\) while retaining four-unit saturation.
+Aligned-block prime–Gamma square factorization fails at its natural two-scale Gram; canonical repair is rank-one and does not orient the signed first clock.
+Current CCM literature also leaves the required infinite source convergence unresolved. Zeta Spectral Triples
+
+
+
 
 rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.

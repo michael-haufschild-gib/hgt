@@ -30,19 +30,16 @@ theorem exp_neg_three_le : Real.exp (-3 : ℝ) ≤ 1 / 3 := by
   rw [one_div]
   exact hinv
 
-/-- **Explicit theta decay**: `evenKernel 0 t − 1 ≤ 3e^{−πt}` for
-`t ≥ 1`. -/
-theorem evenKernel_zero_sub_one_le {t : ℝ} (ht : 1 ≤ t) :
-    evenKernel 0 t - 1 ≤ 3 * Real.exp (-π * t) := by
+/-- **Explicit theta decay**: summing the theta series against the geometric
+majorant with ratio bound `r` gives `evenKernel 0 t − 1 ≤ 2e^{−πt}/(1−r)` for
+`t ≥ 1`.  The ratio bound is a free parameter: as `r → 0` the constant
+approaches the exact leading coefficient `2`. -/
+theorem evenKernel_zero_sub_one_le_of_le {t r : ℝ} (ht : 1 ≤ t)
+    (hrr : Real.exp (-π * t) ≤ r) (hr1' : r < 1) :
+    evenKernel 0 t - 1 ≤ 2 * Real.exp (-π * t) / (1 - r) := by
   have ht0 : (0 : ℝ) < t := by linarith
   have hr0 : 0 < Real.exp (-π * t) := Real.exp_pos _
-  have hr3 : Real.exp (-π * t) ≤ 1 / 3 := by
-    have h1 : Real.exp (-π * t) ≤ Real.exp (-3) := by
-      apply Real.exp_le_exp.mpr
-      have hπ3 := Real.pi_gt_three
-      nlinarith
-    exact h1.trans exp_neg_three_le
-  have hr1 : Real.exp (-π * t) < 1 := by linarith
+  have hr1 : Real.exp (-π * t) < 1 := lt_of_le_of_lt hrr hr1'
   have h1mr : 0 < 1 - Real.exp (-π * t) := by linarith
   have hker' : HasSum (fun n : ℤ => if n = 0 then 0 else
       Real.exp (-π * (n : ℝ) ^ 2 * t)) (evenKernel 0 t - 1) := by
@@ -112,7 +109,8 @@ theorem evenKernel_zero_sub_one_le {t : ℝ} (ht : 1 ≤ t) :
       nlinarith [hA2]
   have hmain := hasSum_le hterm hker' hcomp
   have hfinal : ((1 - Real.exp (-π * t))⁻¹ - 1) +
-      ((1 - Real.exp (-π * t))⁻¹ - 1) ≤ 3 * Real.exp (-π * t) := by
+      ((1 - Real.exp (-π * t))⁻¹ - 1) ≤
+        2 * Real.exp (-π * t) / (1 - r) := by
     have hkey : (1 - Real.exp (-π * t))⁻¹ - 1 =
         Real.exp (-π * t) / (1 - Real.exp (-π * t)) := by
       have hne := h1mr.ne'
@@ -129,9 +127,24 @@ theorem evenKernel_zero_sub_one_le {t : ℝ} (ht : 1 ≤ t) :
         Real.exp (-π * t) / (1 - Real.exp (-π * t)) =
         2 * Real.exp (-π * t) / (1 - Real.exp (-π * t)) := by
       ring
-    rw [h2, div_le_iff₀ h1mr]
-    nlinarith [hr0, hr3]
+    rw [h2]
+    exact div_le_div_of_nonneg_left (by positivity) (by linarith)
+      (by linarith)
   linarith [hmain, hfinal]
+
+/-- The theta decay with the concrete ratio bound `1/3`. -/
+theorem evenKernel_zero_sub_one_le {t : ℝ} (ht : 1 ≤ t) :
+    evenKernel 0 t - 1 ≤ 3 * Real.exp (-π * t) := by
+  have hr3 : Real.exp (-π * t) ≤ 1 / 3 := by
+    have ht0 : (0 : ℝ) < t := by linarith
+    have h1 : Real.exp (-π * t) ≤ Real.exp (-3) := by
+      apply Real.exp_le_exp.mpr
+      have hπ3 := Real.pi_gt_three
+      nlinarith
+    exact h1.trans exp_neg_three_le
+  have h := evenKernel_zero_sub_one_le_of_le ht hr3 (by norm_num)
+  calc evenKernel 0 t - 1 ≤ 2 * Real.exp (-π * t) / (1 - 1 / 3) := h
+    _ = 3 * Real.exp (-π * t) := by ring
 
 /-- The even kernel dominates its constant term. -/
 theorem one_le_evenKernel_zero {t : ℝ} (ht : 0 < t) :
@@ -837,6 +850,78 @@ theorem f_modif_nonneg {t : ℝ} (ht : 0 < t) :
       linarith
     · simp only [Complex.sub_im, Complex.ofReal_im, Complex.one_im]
       ring
+
+/-- Exact outer norm of the modified kernel: for `t > 1` it is the centered
+theta kernel itself. -/
+theorem norm_f_modif_eq_of_one_lt {t : ℝ} (ht : 1 < t) :
+    ‖(hurwitzEvenFEPair 0).f_modif t‖ = evenKernel 0 t - 1 := by
+  have hmem : t ∈ Set.Ioi (1 : ℝ) := ht
+  have hnot : t ∉ Set.Ioo (0 : ℝ) 1 := by
+    intro h
+    exact absurd h.2 (by linarith)
+  rw [WeakFEPair.f_modif, Pi.add_apply, Set.indicator_of_mem hmem,
+    Set.indicator_of_notMem hnot, add_zero]
+  have hf : (hurwitzEvenFEPair 0).f t = ((evenKernel 0 t : ℝ) : ℂ) := rfl
+  have hf₀ : (hurwitzEvenFEPair 0).f₀ = 1 := by
+    simp [hurwitzEvenFEPair]
+  rw [hf, hf₀]
+  have hcast : ((evenKernel 0 t : ℝ) : ℂ) - 1 =
+      (((evenKernel 0 t - 1 : ℝ)) : ℂ) := by
+    push_cast
+    ring
+  have htpos : (0 : ℝ) < t := by linarith
+  have hknn : (0 : ℝ) ≤ evenKernel 0 t - 1 := by
+    linarith [one_le_evenKernel_zero htpos]
+  rw [hcast, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hknn]
+
+/-- Exact inner norm of the modified kernel: for `0 < t < 1` the theta
+functional equation reflects it to the centered kernel at `1/t`. -/
+theorem norm_f_modif_eq_of_lt_one {t : ℝ} (ht0 : 0 < t) (ht : t < 1) :
+    ‖(hurwitzEvenFEPair 0).f_modif t‖ =
+      t ^ (-(1 / 2) : ℝ) * (evenKernel 0 (1 / t) - 1) := by
+  have hx1 : 1 < 1 / t := by
+    rw [lt_div_iff₀ ht0]
+    linarith
+  have hxpos : 0 < 1 / t := by positivity
+  have hFE := (hurwitzEvenFEPair 0).hf_modif_FE (1 / t) hxpos
+  have harg : (1 : ℝ) / (1 / t) = t := by
+    field_simp
+  rw [harg] at hFE
+  rw [hFE]
+  have hg : (hurwitzEvenFEPair 0).g_modif (1 / t) =
+      ((evenKernel 0 (1 / t) - 1 : ℝ) : ℂ) := by
+    have hmem : (1 / t) ∈ Set.Ioi (1 : ℝ) := hx1
+    have hnot : (1 / t) ∉ Set.Ioo (0 : ℝ) 1 := by
+      intro h
+      exact absurd h.2 (by linarith)
+    rw [WeakFEPair.g_modif, Pi.add_apply, Set.indicator_of_mem hmem,
+      Set.indicator_of_notMem hnot, add_zero]
+    have hgval : (hurwitzEvenFEPair 0).g (1 / t) =
+        ((cosKernel 0 (1 / t) : ℝ) : ℂ) := rfl
+    have hg₀ : (hurwitzEvenFEPair 0).g₀ = 1 := rfl
+    rw [hgval, hg₀, ← evenKernel_eq_cosKernel_of_zero]
+    push_cast
+    ring
+  rw [hg]
+  have hε : (hurwitzEvenFEPair 0).ε = 1 := rfl
+  have hk : (hurwitzEvenFEPair 0).k = 1 / 2 := rfl
+  rw [hε, hk]
+  rw [norm_smul]
+  have hker_nonneg : 0 ≤ evenKernel 0 (1 / t) - 1 := by
+    linarith [one_le_evenKernel_zero hxpos]
+  have hnorm2 : ‖(((evenKernel 0 (1 / t) - 1 : ℝ)) : ℂ)‖ =
+      evenKernel 0 (1 / t) - 1 := by
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hker_nonneg]
+  rw [hnorm2]
+  have hnorm1 : ‖(1 : ℂ) * (((1 / t) ^ ((1 : ℝ) / 2) : ℝ) : ℂ)‖ =
+      (1 / t) ^ ((1 : ℝ) / 2) := by
+    rw [one_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (Real.rpow_nonneg hxpos.le _)]
+  rw [hnorm1]
+  have hpow : (1 / t) ^ ((1 : ℝ) / 2) = t ^ (-(1 / 2) : ℝ) := by
+    rw [one_div, ← Real.rpow_neg_one t, ← Real.rpow_mul ht0.le]
+    norm_num
+  rw [hpow]
 
 end
 

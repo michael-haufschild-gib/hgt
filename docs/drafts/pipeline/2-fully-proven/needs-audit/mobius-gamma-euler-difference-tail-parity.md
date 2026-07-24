@@ -203,17 +203,21 @@ claim is made.
 
 ## Log
 
-- 2026-07-24 — Formalized **Theorem 2's general-`k` iterated tail-parity** (eq (4)), generalizing the
-  corpus's `k = 1, 2` cases (`RHTower/GammaEulerIteratedTailParity.lean`, unconditional, axioms
-  `[propext, Classical.choice, Quot.sound]`):
-  * `gammaEulerIteratedNextCoefficient` — the next Gamma-tail coefficient after `k` commuting Euler
-    differences: `-r * 2^r * ∏_j d_{r,h_j}(r/2+1)`.
-  * `gammaEulerIteratedNextCoefficient_sign` — `0 < (-1)^(k+1) * (next coefficient)` for positive
-    scales: odd `k` ⟹ eventually positive correlation tail, even `k` ⟹ eventually negative (the
-    two-channel sign reversal is the `k = 2` instance).
-  * `gammaEulerIteratedNextCoefficient_eq` — the exact cosh-bracket product form of eq (4);
-    `gammaEulerIteratedNextCoefficient_two` — specialisation to the corpus two-channel coefficient.
-  This upgrades the `[ALGEBRAIC CORE LEAN-PROVED]` status: the full iterated tail-parity sign law (the
-  no-go mechanism for prime-by-prime Gamma energy contraction) is now formalized for every `k`.  The
-  continuous Theorem 1 (`D_{r,h} φ_r > 0`, the `sech^r` convexity inequality) remains as the analytic
-  companion.
+- 2026-07-24 — Correction: a `Fin k` iterated-tail-parity module was briefly added, then removed as a
+  duplicate — the general finite-block parity is already in the corpus as
+  `MobiusGammaEulerDifferenceTailParity.gammaEulerManyDifferenceNextCoefficient_signed_pos` (over an
+  arbitrary `Finset`, sign `(-1)^(card S + 1)`), which strictly subsumes the `Fin k` restatement.
+- 2026-07-24 — **Theorem 1 formalized** (`RHTower/GammaEulerCharacteristicPositivity.lean`,
+  unconditional, axioms `[propext, Classical.choice, Quot.sound]`), completing the card's analytic
+  companion to the tail-parity:
+  * `euler_ratio_core` — for `0 < s < c`, `r > 0`, the even symmetric sum
+    `(c+sT)^{-r} + (c-sT)^{-r}` is strictly below its endpoint `(c+s)^{-r}+(c-s)^{-r}` whenever
+    `|T| < 1` (strict monotonicity of the sum in `|T|`, via positive derivative on `(0,1)`).
+  * `gammaEulerCentralDifference_cosh_rpow_pos` — `0 < D_{r,h} φ_r(u)` for the Gamma characteristic
+    `φ_r(u) = cosh(u/2)^{-r}`, every `r,h>0`, `u`: one Euler channel preserves the correlation sign
+    (eq (3)).  The factorisation `cosh((u±h)/2) = cosh(u/2)(cosh(h/2) ± sinh(h/2) tanh(u/2))` reduces
+    it to `euler_ratio_core` at `T = tanh(u/2)`, with endpoint `(c+s)^{-r}+(c-s)^{-r} = 2 cosh(rh/2)`.
+  With the corpus's finite-block tail parity (`gammaEulerManyDifferenceNextCoefficient_signed_pos`),
+  **both Theorem 1 and Theorem 2 are now formalized** — the card's full no-go mechanism (one channel
+  fine, two channels reverse the sign) is unconditional.  The remaining open gate is the analytic
+  asymptotic transport formula `(4)` (the `lim exp((r/2+1)u)·(D…φ_r)(u)` limit), still paper-level.

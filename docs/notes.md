@@ -11,3 +11,15 @@ Proved unconditionally in Lean:
 
 
 Current frontier is exact and Lean-certified: prove the half-wave transport \(P_-(L)\le C(L)+P_+(L)\) for every \(L\ge \pi/2\), or derive a contradiction from its failure. Local positivity, parity compression, same-prime pairing, and single-product Selberg fibres are already closed. I’m now testing the corpus’s sole surviving nonlocal mechanism: Type-II transport coupling different semiprime products across the moving CCM aperture.
+
+----
+Corpus audit identifies actual strongest CCM frontier:
+\[
+\limsup_{u\to0^+}
+\frac{\|Q_uD_\Xi\|_{\mathrm{HS,ext}}^2}
+     {4(1-e^{-u})}\le1.
+\]Source side: Möbius–Gamma Fisher contact has exact energy \(4\).
+False RH: every right-half Xi divisor forces target energy \(>4\).
+Therefore this inequality proves RH.
+Missing theorem: source-defined, nonexpansive all-prime-plus-Gamma continuation from finite Möbius contractions to \(Q_uD_\Xi\).
+Universal Hilbert, analytic, meromorphic, periodic, Type-II, and scalar-shift constructions are already refuted by corpus. Only source-specific essential/cofinal graph transport survives.
