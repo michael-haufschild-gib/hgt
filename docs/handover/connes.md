@@ -1,5 +1,8 @@
 # Connes / Hedenmalm RH route — complete research handover
 
+> **Current compact frontier:** [`connes-frontier-ledger.md`](connes-frontier-ledger.md).
+> This long handover is historical; use the ledger to avoid repeating closed attacks.
+
 **Last updated:** 2026-07-22
 **Repository:** `/Users/Spare/Documents/code/riemann/publications/hgt`  
 **Active research card:**

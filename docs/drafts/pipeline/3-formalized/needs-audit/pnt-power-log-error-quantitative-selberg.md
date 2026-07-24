@@ -685,3 +685,50 @@ CHAIN COMPLETE (Z5a–Z5d): truncated rep → growth → 3-4-1 zero-free → str
 
 NEXT (Z6 — consume for the parent card): window-prime corollary for growing-order oversampling nodes:
 `exists_window_prime_nodes` : from `exists_chebyshevPsi_power_log`: ∀ B, ψ(X(1+1/log X)) − ψ(X) = X/log X·(1+o(1)) > 0 for X large — gives ≥ cX/log²X prime powers (hence prime-log nodes) in every window [X, X(1+1/log X)]; formalize the count needed by the parent card's growing-order transfer (order ⌊cR⌋+1 needs ~R separated nodes in [T, 2T]-type windows — spec from parent card at `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/weighted-euler-tangent-global-graph-decoupling.md` (8a)/(16)); then instantiate `norm_le_window_of_sampled` (count-generic, banked) at the growing order; then 5b-iii vanishing wiring; then 5c(ii-b) capstone; then (18)/(19).
+
+### (Z6-1) DONE — power-log PNT for θ
+`RHTower/ChebyshevThetaPowerLog.lean` [PROVED HERE], standard axioms, built:
+- `psi_eq_chebyshevPsi_floor` : mathlib `Chebyshev.psi x = chebyshevPsi ⌊x⌋₊` (via banked `chebyshevPsi_eq_psi` + `Nat.floor_natCast`) — connects the new PNT to mathlib's real-argument ψ/θ.
+- `sqrt_log_le_power_log_decay` : 2√x·log x ≤ x·e^{−c(log x)^{1/10}} for x ≥ exp(max 28 ((4c)^{10/9})) — exp-space with `Real.sqrt_eq_rpow + rpow_def_of_pos`, rpow-exponent splitting L = L^{9/10}·L^{1/10}, cube Taylor term for 2L ≤ e^{L/4}.
+- **`exists_chebyshev_theta_power_log`** : |θ(x) − x| ≤ C·x·e^{−c(log x)^{1/10}} for x large — mathlib `Chebyshev.psi_sub_theta_le` (2√x log x) + `theta_le_psi`.
+
+NEXT (Z6-2 — shrinking-window prime supply): mirror `exists_prime_log_window` (PrimeWindowSupply, proof pattern lines 67–168: ceil/floor window endpoints m := ⌈e^y⌉−1, b := ⌊e^{y+η}⌋, positive θ-mass via quantitative bounds instead of ε-PNT, `theta_window_eq` + `Finset.filter Nat.Prime` nonempty extraction). Statement:
+`exists_prime_log_in_shrinking_window : ∃ c₂ K y₀ : ℝ, 0 < c₂ ∧ 0 < K ∧ 3 ≤ y₀ ∧ ∀ y η, y₀ ≤ y → 0 < η → η ≤ 1 → K·Real.exp (−(c₂·y^{(1:ℝ)/10})) ≤ η → ∃ p : ℕ, p.Prime ∧ y ≤ Real.log p ∧ Real.log p ≤ y + η`.
+Key quantitative replacements: θ-bounds at m and b via `exists_chebyshev_theta_power_log` with E(t) ≤ exp(−(c/2)·y^{1/10}) for t ∈ [e^y/2, e^{y+1}·2] (log t ≥ y − 1 ≥ y/2 for y ≥ 2 → (log t)^{1/10} ≥ (y/2)^{1/10} ≥ y^{1/10}/2 — same transfer pattern as hEx' in ChebyshevPsiPowerLogPNT); window mass (b−m) ≥ e^y·η/2 (uses e^η − 1 ≥ η and the ±1 ceil/floor slack absorbed by e^y·η ≥ 2 ⟸ η ≥ K e^{−c₂y^{1/10}} ≥ 4e^{−y}·… ensure K-threshold also enforces e^y·η ≥ 4: since η ≥ K·e^{−c₂ y^{1/10}} and e^y·e^{−c₂y^{1/10}} → ∞, add y₀ condition e^{y/2} ≥ 4/K i.e. y ≥ 2 log(4/K)); positivity: (b − m) − Cbig·(E-terms)·(b + m) > 0 ⟸ e^yη/2 > C'·e^{−(c/2)y^{1/10}}·4e^{y+1} ⟸ η ≥ 16eC'·e^{−(c/2)y^{1/10}}: choose c₂ := c/2, K := 16·e·(C+1)+4. Then (Z6-3): growing node assembly via banked `exists_separated_primeLog_nodes` (WeightedEulerPrimeNodeAssembly:27 — check exact hypothesis shape) at N := ⌊c₁R⌋₊, η := 1/(4(N+1)): condition K·e^{−c₂R^{1/10}} ≤ 1/(8c₁R+8)-ish ⟸ polynomial-vs-stretched-exp threshold lemma (reuse pow_le_factorial_mul_exp_half pattern at n=1 in y-space… (8c₁R+8)·K ≤ e^{c₂R^{1/10}}: R·e^{−c₂R^{1/10}} → 0: R = (R^{1/10})^{10}: u^{10}·K' ≤ e^{c₂u} via pow_le_factorial_mul_exp_half (b := 2c₂?) gives u^{10} ≤ 10!(2/c₂·…)^{10}e^{c₂u/2}·… fine).
+
+### (Z6-2) DONE — primes in stretched-exponentially shrinking windows
+`RHTower/ShrinkingWindowPrimeSupply.lean` [PROVED HERE], axioms [propext, Classical.choice, Quot.sound], `lake build` clean (my file no warnings; lint gate's 2 "unreachable module" errors are OTHER agents' untracked XiEdge/XiWard files, not mine — all 20 of my chain files verified reachable from the RHTower umbrella).
+- **`exists_prime_log_in_shrinking_window`** : ∃ c₂ K y₀ (c₂ = c/2, K = 40(C+1)e+4), ∀ y ≥ y₀, ∀ η ∈ (0,1] with η ≥ K·e^{−c₂·y^{1/10}}: ∃ prime p, log p ∈ [y, y+η]. Unconditional; windows shrink at stretched-exponential rate.
+- Mirrors banked `exists_prime_log_window` (ceil/floor endpoints, `theta_window_eq`, prime-filter nonempty) with ε-θ-PNT REPLACED by `exists_chebyshev_theta_power_log`.
+
+### CORPUS REUSE AUDIT (Z6-3 target — before writing)
+Checked `formal_tools.py research` + rg: NO pre-existing growing-order node family. Banked options: (a) `exists_separated_primeLog_nodes_unconditional` (PrimeWindowSupply:173) — fixed N, fixed-η supply → CANNOT grow (η fixed); (b) `exists_separated_primeLog_nodes` (WeightedEulerPrimeNodeAssembly:27) — COUNT-GENERIC assembly, hypothesis `∀ i : Fin (N+1), ∃ prime p, R+4η·i ≤ log p ≤ R+4η·i+η` with η = 1/(4(N+1)). REUSE (b): feed the per-window prime from `exists_prime_log_in_shrinking_window` (my Z6-2) at η = 1/(4(N+1)), N = ⌊c₁R⌋₊. Only NEW work: the threshold check η ≥ K·e^{−c₂·(R+…)^{1/10}} i.e. stretched-exp beats 1/(4(N+1)) — polynomial-vs-stretched-exp lemma (u^{10}·K' ≤ e^{c₂u} via banked `pow_le_factorial_mul_exp_half`).
+
+### (Z6-3) DONE — growing-order separated prime-log node families
+`RHTower/GrowingOrderPrimeLogNodes.lean` [PROVED HERE], axioms [propext, Classical.choice, Quot.sound], `lake build` clean:
+- `exists_linear_le_exp_rpow` : for a,b > 0, a·(R+1) ≤ exp(b·R^{1/10}) eventually — via banked `pow_le_factorial_mul_exp_half` (u^{10} ≤ 10!(2/b)^{10}e^{bu/2}) + M ≤ e^{bu/2} threshold; rpow identities via `Real.pow_rpow_inv_natCast`/`Real.rpow_inv_natCast_pow` (NOT manual rpow_mul — order-of-mul traps).
+- **`exists_separated_primeLog_nodes_growing`** {c₁ > 0} : ∃ R₀, ∀ R ≥ R₀, ∃ Finset ℝ of card ⌊c₁R⌋₊+1, ⊆ Icc R (R+1), pairwise-sep 1/(4(⌊c₁R⌋₊+1)), each = log of a prime. THE growing-order node supply the parent card demands ("⌊cR⌋+1 separated prime logs per unit window").
+- REUSE: banked `exists_separated_primeLog_nodes` (count-generic assembly) fed by `exists_prime_log_in_shrinking_window` (Z6-2) at η = 1/(4(N+1)), N = ⌊c₁R⌋₊; threshold 4K(c₁R+1) ≤ e^{c₂R^{1/10}} closes the shrinking-window supply condition.
+- GOTCHAS: `field_simp` fully closes b·((2/b)·logM)=2·logM (orphan `ring` → No goals); `Nat.cast_nonneg N` needs explicit ℝ target (else IsOrderedRing metavar stuck).
+
+CHAIN STATUS: power-log PNT (ψ,θ) → shrinking windows → GROWING-ORDER NODES all formalized & unconditional. This DISCHARGES the parent card's "remaining deep input" (ψ(x)=x+O(x/log^B x)) AND its node-supply consumer.
+
+NEXT (Z7 — parent-card handoff): the growing-order Lambert instantiation. Parent card (weighted-euler-tangent-global-graph-decoupling) §route-resolution-8a: `norm_le_ray_of_sampled_decay` (order ⌊cR⌋+1, σ′=σ−6c>β) needs (i) node supply = `exists_separated_primeLog_nodes_growing` ✓ NOW AVAILABLE; (ii) same bump-route global-entirety fix as R1–R4 (`norm_le_window_of_sampled` count-generic + halfplane wrapper — parent says "generalizes verbatim to order ⌊cR⌋+1"). Check parent corpus: `norm_le_ray_of_primeLog_sampled_lambert` (fixed-order, banked), `norm_le_window_of_sampled`, `SampledRayRateTransferHalfplane`, `WeightedEulerLambertOversampling`. VERIFY what growing-order transfer lemma already exists before writing.
+
+### (Z7) DONE — growing-order prime-log oversampling (parent (8a) route CLOSED)
+`RHTower/WeightedEulerGrowingPrimeOversampling.lean` [PROVED HERE], axioms [propext, Classical.choice, Quot.sound], `lake build` clean, FIRST-TRY compile:
+- **`norm_le_ray_of_primeLog_sampled_decay_growing`** : H entire + window-derivative decay `‖iteratedDeriv (⌊cR⌋₊+1) H‖ ≤ K·e^{−δR}` + prime-sampled decay `‖H(log p)‖ ≤ C·p^{−σ}` ⟹ ∃ C' R₁, ∀ x ≥ R₁: `‖H(x)‖ ≤ C'·e^{−σ'x}` for ANY σ' with σ'+6c ≤ σ.
+- PURE REUSE: banked `HTGeometry.norm_le_ray_of_sampled_decay` (growing transfer, already in corpus) fed by my `exists_separated_primeLog_nodes_growing` (Z6-3); node→decay conversion mirrors the fixed-order `norm_le_ray_of_primeLog_sampled_decay` (log p ≥ R on [R,R+1]). R₀ := max R₀ Rn reconciles the two thresholds.
+- This is the σ′ = σ−6c > β transfer the parent card names as the ONLY route past the fixed-order min(σ,δ/2) cap. Its previously-missing node demand (⌊cR⌋+1 separated prime logs per window) is now DISCHARGED.
+
+## ═══ CARD COMPLETE ═══
+Target `ψ(x) = x + O(x/log^B x)` (any B): ACHIEVED as the STRONGER power-log form
+`|ψ(⌊x⌋)−x|, |θ(x)−x| ≤ C·x·exp(−c·(log x)^{1/10})` — `exists_chebyshevPsi_power_log`,
+`exists_chebyshev_theta_power_log`. Full de la Vallée Poussin chain formalized UNCONDITIONALLY
+(24 new files, all [propext, Classical.choice, Quot.sound]) via the analytic-dlVP route:
+truncated ζ-rep → growth → 3-4-1 zero-free → strip bounds → Fourier/Perron kernel → Λ-swap →
+low-height margin → pole split → rectangle residue → tails/edges/dictionary → contour assembly →
+master bound → optimization → unsmoothing → ψ/θ-PNT → shrinking windows → growing nodes →
+growing-order oversampling. Parent card (8a) growing-order route CLOSED at the transfer level.
+Remaining parent-card work (weighted-Euler H instantiation of `norm_le_ray_of_primeLog_sampled_decay_growing`,
+bump-route entirety fix, 5b-iii, capstone) belongs to `weighted-euler-tangent-global-graph-decoupling`.

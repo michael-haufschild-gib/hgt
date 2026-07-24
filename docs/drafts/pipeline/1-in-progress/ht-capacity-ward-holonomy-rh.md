@@ -1141,3 +1141,355 @@ That enlargement is the positive successor demanded by a no-go; it is not an RH 
 - [ ] prove its capacity metric is the one-particle Hardy metric
 - [ ] prove the finite Green--Ward factorization `(24)` and pass compatibly to `(21)`
 - [ ] finish `(22)`
+
+## Zero-free margin, budget slack, and prime-log sampled completeness `[PROVED AND LEAN-FORMALIZED]`
+
+The finite Ward matrices `(5)` need no longer be controlled at every edge node.
+Three unconditional laws, certified in
+`formal/GaloisForLFunctions/RHTower/XiWardZeroFreeMarginPrimeLogSampling.lean`
+(standard axioms; first module bridging the formalized dlVP/PNT lane into this
+Ward lane):
+
+1. **Margin transport.**  With `m(y)=c'/log^9(|y|+9)`,
+   `c'=min(zetaZeroFreeC, delta_low)`, every strict-right centered Xi zero obeys
+   `Re lambda <= 1/2 - m(Im lambda)`.
+2. **Detection window.**  Any edge sample `t` with
+   `(t+Im lambda)^2 <= m(Im lambda)/2` already gives `|r(1/2+it)|^2 > 4`: the
+   four-unit failure occupies a polylog-width window, not a point.
+3. **Budget slack.**  `RH <-> forall t: |r(1/2+it)|^2 <= 4 + 8 m(t)`.  The
+   four-unit wall has unconditional thickness; every future `W_P` mechanism may
+   target the relaxed budget.
+4. **Sampled completeness.**  For every detection cover `S`
+   (`forall y exists t in S, (t+y)^2 <= m(y)/2`):
+   `RH <-> forall t in S: |r(1/2+it)|^2 <= 4`.  Instantiation: past an explicit
+   cutoff, `S(Y) = {+-log p} union (one finite grid)` is a cover, by the
+   shrinking-window prime supply (prime-log gaps stretched-exponential,
+   detection radii polylog).  `S(Y)` is locally finite, so this is a strictly
+   discrete, arithmetically indexed RH-complete criterion: the primes are a
+   sufficient jury for the Ward law.  Byproduct: standalone Herglotz law
+   `Re r >= 0` on `Re w > 0`.
+
+Hostile referee pass (fields-medalist role): all items SOUND; no circularity
+(margin/cover/`S(Y)` RH-free); non-trivial (without the margin the window
+`(a+1/2)(1/2-a)` degenerates as `a -> 1/2`, so no fixed locally finite sample
+set could be certified; density transfer is foreclosed by local finiteness).
+Scoped negative: prime-logs-only (gridless) sampling is unreachable from the
+current unconditional inputs at low heights.
+
+Card: `../3-formalized/needs-audit/xi-ward-zero-free-margin-prime-log-sampling-law.md`.
+
+### Gate update
+
+- [x] first quantitative consumption of unconditional ANT (dlVP + low-height + power-log PNT prime supply) in the Ward lane
+- [x] RH-complete relaxed budget `4 + 8 m(t)` (strictly weaker target than the exact four-unit law)
+- [x] RH-complete discrete prime-log sampling of the scalar law
+- [ ] merged slack sampling: `RH <-> sampled law at budget 4 + m(t)` on `S(Y)` (robust discrete criterion)
+- [ ] edge mass quantization: `integral Re r` counts off-line pairs; Burnol-style aperture-uniform defect for the Schur complement `4 G_P - r_P r_P^*`
+- [ ] log-rational grid: sample set entirely inside `log Q_+` (multiplicative reformulation of the edge law)
+
+### Log continuation
+
+- 2026-07-24 — Proved and formalized the zero-free margin transport, detection
+  window, relaxed-budget completeness, and prime-log sampled completeness of the
+  Euler-edge four-unit law.  Resolved the cross-cone duplicate
+  `pow_mul_exp_neg_le` (Perron copy renamed `pow_mul_exp_neg_le_absorb_half`),
+  unblocking all future Ward x PNT bridges.  Next attack: merged slack sampling
+  (robustness), then the edge mass quantization of `Re r` as the entry to an
+  aperture-uniform defect estimate for `W_P` itself.
+
+### Merged slack sampling `[PROVED AND LEAN-FORMALIZED]`
+
+Gate "merged slack sampling" is closed by
+`formal/GaloisForLFunctions/RHTower/XiWardMergedSlackPrimeLogSampling.lean`:
+inside every detection window `|r|^2 > 4 + 2 m(b)`, the margin varies
+log-slowly (`m(t) <= 2 m(b)` for `|t + b| <= 1`), and therefore
+
+```text
+RH <-> forall t in S : |r(1/2+it)|^2 <= 4 + m(t)
+```
+
+for every detection cover `S`, in particular the prime-log family.  Slack and
+sampling compose; the discrete criterion tolerates a margin-sized evaluation
+error at each node.  Standard axioms; lint clean.
+
+- [x] merged slack sampling: `RH <-> sampled law at budget 4 + m(t)` on `S(Y)`
+
+Next: edge mass quantization of `Re r` (Lorentzian masses -> off-line pair
+count; Burnol-style aperture-uniform defect for `4 G_P - r_P r_P^*`), then the
+log-rational grid reformulation over `Q_+`.
+
+### Sampled `W_P` completeness `[PROVED AND LEAN-FORMALIZED]`
+
+`formal/GaloisForLFunctions/RHTower/XiWardPrimeLogSampledGramLaw.lean` lifts
+the sampled scalar law to the matrices `(5)` themselves: on every detection
+cover of the positive heights (one-sided suffices: off-line pairs have upper
+representatives),
+
+```text
+RH <-> every finite Ward matrix W_P with nodes drawn from the cover is PSD,
+```
+
+and in particular with nodes drawn from the prime-log family past an explicit
+cutoff.  The exact open theorem `(13)` therefore needs only packets of signed
+prime logarithms plus one finite grid.  Standard axioms; lint clean.
+
+- [x] sampled `W_P` completeness on upper detection covers and on the prime-log family
+
+### Edge mass quantization `[PROVED AND LEAN-FORMALIZED]`
+
+`formal/GaloisForLFunctions/RHTower/XiWardEdgeMassQuantization.lean`: on the
+Euler edge each strict-right Schwarz pair is two Lorentzians of half-width
+`Re λ + 1/2`; each pair carries edge mass exactly `4π` regardless of height or
+transverse displacement, and
+
+```text
+∫⁻ t, ofReal(Re r(1/2+it)) = Σ' (upper pairs), ofReal(4π),
+RH <-> this edge mass is zero.
+```
+
+The Ward edge current is a charge-quantized counting measure for the off-line
+divisor — the first distance-blind global invariant in this lane.  Standard
+axioms; lint clean.
+
+- [x] edge mass quantization: `∫ Re r` counts off-line pairs with universal charge `4π`
+
+Next: windowed mass lower bounds to fuse counting with the sampled laws, and
+the aperture-uniform defect estimate for `4G_P - r_P r_P^*`.
+
+### Integer-window mass criterion `[PROVED AND LEAN-FORMALIZED]`
+
+`formal/GaloisForLFunctions/RHTower/XiWardIntegerWindowMassCriterion.lean`:
+every strict-right pair deposits mass `>= 4·arctan(1/2)` in the unit window at
+the integer nearest its reflected height, and
+
+```text
+RH <-> forall k : Z, integer-window edge mass at k = 0.
+```
+
+Countable, cutoff-free, choice-free.  Standard axioms; lint clean.
+
+- [x] windowed mass lower bound and integer-indexed countable mass criterion
+
+Next: fuse local mass with the prime-log sampled laws (a window that contains
+no sampled violation must have small mass — a two-sided pinch), and the
+aperture-uniform defect estimate for `4G_P - r_P r_P^*`.
+
+### Ward edge measure and quantitative defect `[PROVED AND LEAN-FORMALIZED]`
+
+`XiWardEdgeMeasureDefect.lean`: the positive measure
+`xiWardEdgeMeasure = volume.withDensity (Re r)` satisfies
+
+```text
+RH <-> xiWardEdgeMeasure = 0,
+total mass = 4π per strict-right pair,
+window masses = the integer detectors,
+one-node Schur defect at an adapted node < -8·margin.
+```
+
+The lane's target is now a single positive measure whose vanishing is RH,
+whose mass is quantized, and whose PSD-failure is margin-quantitative.
+Corpus duplication check run and clean (see needs-audit card, addendum 5).
+
+- [x] Ward edge measure packaging and quantitative Schur defect law
+
+Next: pair `xiWardEdgeMeasure` against test functions (Weil-style pairing on
+the Ward side) toward the aperture-uniform defect for `4G_P - r_P r_P^*`, and
+the log-rational grid reformulation.
+
+### Edge evenness and nonpositive half-criterion `[PROVED AND LEAN-FORMALIZED]`
+
+`XiWardEdgeSymmetryHalfCriterion.lean`: each Schwarz pair has an even
+Euler-edge profile, hence the full edge density is even in the height
+(`re_continuedXiAntiCausalWardResponse_eulerEdge_even`); and every detection
+window sits at a nonpositive integer, so
+
+```text
+RH <-> forall k : Z, k <= 0 -> integer-window mass at k = 0.
+```
+
+Standard axioms; lint clean; corpus duplication check run (no prior edge
+evenness/symmetry result).  The measure `xiWardEdgeMeasure` is thereby even;
+all criteria of the family are height-reversal symmetric and one-sided.
+
+### Direct-core conjecture round (strengthen / cartography / weaving) `[ROUND LOG]`
+
+Entropy: move = strengthen; domains = cartography, weaving-looms.  Three
+candidates generated and killed at the desk (recorded to prevent re-derivation):
+
+1. **Landau cocycle** `[KILLED — reduces to known]`: det₂ chart is zero-free,
+   so the whole divisor lives in the continuation of `exp(P)`, `P = Σ p^{-s}`,
+   positive coefficients; Landau's theorem forces the abscissa singularity to
+   be real.  But ζ has no real zeros in (0,1), so this only re-proves
+   `σ_c(P) = 1`; below σ_c the SERIES diverges — continuation is not the
+   series.  The classical Landau trap; no cocycle rigidity survives it.
+2. **Local prime–zero weave pairing** `[KILLED — reduces to known]`: the
+   sampled Gram law couples each hypothetical zero to a prime thread through
+   its detection window, but prime and zero threads are Fourier-dual, not
+   pointwise-paired; a skipped shed is visible only in the dual asymptotics
+   (Landau–Ingham oscillation), i.e. exactly the open C15 endpoint
+   `‖P_M‖² = O(M^{-1} polylog)`.
+3. **Purely-atomic boundary strengthening** `[OPEN AS REFORMULATION — WALL
+   NAMED]`: μ_all := boundary measure of ξ'/ξ on the edge = π·Σ atoms at
+   on-line ordinates + a.c. part with density `Re r`; RH ⟺ μ_all purely
+   atomic.  Fuses the new edge measure μ_W into the full Herglotz boundary
+   theory (μ_W = the a.c. part, unconditionally).  The arithmetic evaluation
+   of the a.c. density is the S(T) problem — named wall, not retired: the
+   μ_W machinery makes this the natural home for any future S(T)-side input.
+
+### Direct-core attack report (hgt-fields-medalist round) `[OBSTRUCTED — TWO NO-GO THEOREMS + THRESHOLD-8 RESIDUE]`
+
+Four strengthened candidates generated (corona cocycle rigidity; local
+prime–zero weave inequality; finite-packet representing measure; AFE zero
+transport), hostile-tested against the killed list, C39 arithmetic-necessity,
+and the Beurling counterfeit (Diamond–Montgomery–Vorhauer: generalized primes
+with BETTER PNT error and near-dlVP zeros — any candidate consuming only
+ψ-error-class + window supply is counterfeited).  AFE killed (circular
+repulsion input).  Cartography and weaving driven to exact obstructions:
+
+- **A† Chart–Region Exchange `[PAPER-PROVED]`**: arithmetic single-valued
+  chart supply on Re s > σ₀ is EQUIVALENT to the zero-free region Re s > σ₀;
+  cocycle triviality cannot be forced by chart refinement (H¹-vanishing supply
+  = the theorem); finite Euler stages have zero winding (Hurwitz), so the
+  winding carrier cannot be an exponential/character object — it must be a
+  finite-stage QUADRATIC (Ward matrices / Bombieri truncation eigenvalues).
+- **B† Margin–Supply Legendre Neutrality `[PAPER-PROVED]`**: the loop
+  [margin exponent A → ψ-error θ = 1/(A+1) → window supply → adapted Weil
+  test → output margin] is the IDENTITY on exponents for every A — the corpus
+  pair (9, 1/10) is exactly Legendre-critical — and strictly contractive on
+  constants (K ≤ 0.09; closing needs transfer constant > 1.384, all norm-type
+  transfers have k < 1).  No iteration of norm-type explicit-formula arguments
+  escapes its input class; RH lives in the power-savings class.  Sole
+  surviving currency: multi-node positivity (sign, not size).
+- **Edge blindness `[PAPER-PROVED]`**: Re ξ'/ξ(1/2+it) ≡ 0 by quadruple
+  cancellation — the full log-derivative cannot see off-line pairs on the
+  edge; only relative (Weil/Ward) positivity detects the divisor split.
+
+**Threshold-8 residue `[PAPER-PROVED, FORMALIZING NOW]`**: per-pair H² cost
+‖T_q‖² = 4[1/a + a/(a²+b²)] > 4/a > 8 (a < 1/2), all cross-Gram real parts
+positive, so ‖r‖² ∈ {0} ∪ (8, ∞]: the corner-c Ward law is RH-complete for
+EVERY c < 8 (sharp at 8 — a lone near-line high pair evades c > 8).  Twice
+the budget + merged-slack tolerance is now the demanded certificate.
+
+**Next object (moiré/contact-juggling)**: the 2×2 moiré functional M(p,q) at
+nodes (log p, log q) — sampled Schur defect = pole + arch + Λ-correlation at
+shift log(p/q) via a two-frequency Guinand–Weil identity; prime-insertion
+(not node-insertion) no-crossing certificate for λ_min, margin-tolerant by
+merged slack.  Also formalize A†/B†/edge-blindness as no-go cards.
+
+### Threshold-8: exact Lean build plan `[PAPER-PROVED — BUILD FIRST NEXT SESSION]`
+
+Module `XiWardThresholdEightCompleteness.lean` (import only
+`GammaSewnMobiusXiWardEulerEdgeCompleteness`).  Objects:
+
+```text
+cornerDefect c node i j := (c:C)*G(node i, node j) - r(node i)*star r(node j)
+CornerLiftLaw c := forall interior packets, (cornerDefect c node).PosSemidef
+pairEnergy lam := 4*(1/a + a/(a^2+b^2)),   a = Re lam, b = Im lam.
+```
+
+Theorem chain (all steps verified on paper this session):
+1. `8 < pairEnergy lam` from `0 < a < 1/2` (corpus bounds; nlinarith).
+2. Self-spend identity: `(T_q lam).re + (T_q (conj lam)).re = pairEnergy/2`
+   via `T_q(lam) = 1/lam + 1/a`, `T_q(conj lam) = 1/a + 1/conj lam`;
+   compute re of `(2*lam)^{-1}` etc. with `Complex.inv_re, normSq_apply`,
+   explicit re/im of `2*lam`, then `field_simp` (denominators `a != 0`,
+   `a^2+b^2 != 0` in context) and `ring`.  NOT bare `ring` (inverse atoms).
+3. Cross-nonnegativity: `0 <= (T_p lam).re + (T_p (conj lam)).re` for every
+   pair p (`re_xiAntiCausalWardSchwarzPairResponse_pos` at both nodes;
+   `Re(conj lam) = a > 0`).
+4. Energy floor: `pairEnergy <= 2*(Re r(lam) + Re r(conj lam))` via
+   tsum expansion at both nodes, `Complex.re_tsum`, `tsum_add`,
+   `Summable.sum_le_tsum {q}` with steps 2-3 (mirrors the EulerEdge pattern).
+5. Violation: for `c < 8`, `cornerDefect c` on packet `![lam, conj lam]`
+   is not PosSemidef.  Use `h.2 ![2, 2]`:
+   `Q = 4*(S00+S01+S10+S11)` (simp: dotProduct, mulVec, Fin.sum_univ_two,
+   cons_val, Pi.star_apply); split `Sij = c*Gij - r_i * star r_j`;
+   `sum r_i star r_j = R * star R = normSq R` with `R = r(lam)+r(conj lam)`;
+   `Re(sum G) = g := pairEnergy/4` entrywise: `G00 = G11 = ((2a:R):C)^{-1}`
+   (re `= 1/(2a)`), `G01 = (2*lam)^{-1}`, `G10 = (2*conj lam)^{-1}`
+   (each re `= a/(2(a^2+b^2))`).  Then `0 <= Q.re = 4*(c*g - normSq R)`,
+   `normSq R >= (Re R)^2 >= (2g)^2` (step 4: `Re R >= 2g > 0`;
+   `Complex.re_sq_le_normSq`), so `c >= 4g = pairEnergy > 8`, contradiction.
+6. RH direction: `r = 0` (corpus), defect `= (c:C) • G`, PSD by
+   `rightHalfPlaneHardyCauchyGram_posSemidef` + `.smul` (cast `0 <= c`).
+7. Capstone: `forall c, 0 <= c -> c < 8 ->
+   (RiemannHypothesis <-> CornerLiftLaw c)`.
+
+Consequence: every future supply mechanism funds budget `< 8`, not `4`;
+composes with merged-slack sampling.  Sharpness at 8 (lone pair `a -> 1/2`,
+`b -> infinity` has energy `-> 8`) is meta-level; do not formalize.
+
+Also queued from the attack report: no-go cards for A† (Chart-Region
+Exchange) and B† (Legendre Neutrality of the margin-supply loop; corpus pair
+(9, 1/10) exactly critical), the edge-blindness identity
+`Re xi'/xi(1/2+it) = 0`, and the 2x2 moire functional M(p,q) at prime-log
+nodes (two-frequency Guinand-Weil identity; prime-insertion no-crossing
+certificate for lambda_min).
+
+### Threshold-8 build plan: DISCHARGED `[PROVED HERE — Lean, axiom-clean]`
+
+Module `formal/GaloisForLFunctions/RHTower/XiWardThresholdEightCompleteness.lean`
+(sole import: `GammaSewnMobiusXiWardEulerEdgeCompleteness`; umbrella import appended).
+All seven card items built exactly as planned; no step weakened.
+
+- `continuedXiWardCornerDefect` / `ContinuedXiWardCornerLiftLaw` / `xiWardPairEnergy` — defs.
+- `eight_lt_xiWardPairEnergy`, `eight_lt_xiWardPairEnergy_xiRightCenteredZero` — item 1.
+- `re_two_mul_inv_pair_self_add_conj`, `re_xiAntiCausalWardSchwarzPairResponse_self_add_conj`
+  — item 2 (self-spend `= E/2`); kernel-re helpers `re_inv_self_add_conj`,
+  `re_inv_conj_add_self`, `re_inv_self_add_self`, `re_inv_conj_add_conj`.
+- `re_xiAntiCausalWardSchwarzPairResponse_conjPair_nonneg` — item 3.
+- `xiWardPairEnergy_le_two_mul_re_continuedResponses` — item 4 (energy floor via tsum).
+- `xiWardCornerBudget_violation_core`,
+  `continuedXiWardCornerDefect_conjPair_not_posSemidef` — item 5 ((2,2)-direction violation
+  for c < 8 on packet `![lam, conj lam]`; PosSemidef access via `dotProduct_mulVec_nonneg`,
+  this toolchain's `PosSemidef.2` is Finsupp-shaped).
+- `continuedXiWardCornerLiftLaw_of_riemannHypothesis` — item 6 (smul of Cauchy Gram).
+- `riemannHypothesis_of_continuedXiWardCornerLiftLaw`,
+  `riemannHypothesis_iff_continuedXiWardCornerLiftLaw` — item 7 capstone:
+  for every fixed `0 ≤ c < 8`, RH ↔ CornerLiftLaw c.
+
+Axiom audit (capstone, violation, floor, energy bound): `[propext, Classical.choice,
+Quot.sound]` only. Module compiles warning-free; index regenerated.
+
+Springboard opened: the budget dial `c` is now a formal object. Next generative moves —
+(a) two-pair packets: does a *joint* packet of two distinct Schwarz pairs push the sharp
+threshold below 8 (interference of the two rank-one spends against the joint Gram)?
+(b) formalize the merged-slack composition: CornerLiftLaw c for c in (4, 8) as the funding
+target for the shrinking-window prime supply, replacing the four-unit budget everywhere
+downstream.
+
+Corpus search (mandate): `formal_tools.py research` + `rg` before writing — no prior
+corner-defect/budget-threshold/pair-energy declarations; no name collisions
+(`xiWardPairEnergy`, `continuedXiWardCornerDefect`, `ContinuedXiWardCornerLiftLaw`,
+`re_inv_*` helpers all fresh). Consumed corpus API exactly as listed on this card.
+
+### Threshold-8 and edge blindness `[PROVED AND LEAN-FORMALIZED]`
+
+The Threshold-8 build plan is discharged:
+`XiWardThresholdEightCompleteness.lean` proves, on standard axioms
+(`riemannHypothesis_iff_continuedXiWardCornerLiftLaw`):
+
+```text
+for every c with 0 <= c < 8:   RH  <->  corner-c Ward lift law
+                               (c*G_P - r_P r_P^* PSD on interior packets),
+```
+
+via the pair-energy floor `8 < 4(1/a + a/(a^2+b^2))` spent on the adapted
+two-node packet `(lambda, conj lambda)` in the `(2,2)` direction.  The
+four-unit corner was never the completeness threshold; every future supply
+mechanism funds `< 8` — two full quanta — with merged-slack tolerance.
+This activates the joint two-quantum transport conjecture
+(`xi-ward-moire-prime-pair-attack.md`, step 1b): the doubled parity source's
+total energy `4 + 4` exactly matches the budget, and the C41-C44 no-gos all
+assumed detail-only spending.
+
+`XiEdgeLogDerivativeBlindness.lean` certifies the edge-blindness law
+(`re_logDeriv_xi_criticalLine`): `Re(xi'/xi) = 0` identically on the critical
+line (with the reusable Schwarz-reflection derivative lemma
+`deriv_conj_reflect` and `deriv_xi_conj`, `deriv_xi_one_sub`).  The complete
+divisor current has no real edge signal; relative positivity is the only
+detector — now a theorem, not a heuristic.
+
+Both modules: lint clean, axioms `[propext, Classical.choice, Quot.sound]`.
+Cross-agent note: the parallel agent's `XiWardInfinitesimalDefectIndexQuantization`
+and `GrowingOrderPrimeLogNodes` build downstream of this session's modules.

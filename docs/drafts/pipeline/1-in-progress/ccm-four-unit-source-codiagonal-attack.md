@@ -2012,3 +2012,151 @@ Formal sources:
 
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardConnectionOverspend.lean`;
 - `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm-cofinal-connection-escape-closure.md`.
+
+## C45 complex-aperture Schwarz--Pick escape has no open parameter domain `[LEAN-FORMALIZED]`
+
+The unconditional real-aperture contractivity of the fixed Xi phase suggested
+complexifying aperture and applying Schwarz--Pick to bound its derivative at
+zero.  One Cayley cell already kills this proposal exactly.
+
+For `a, alpha in C`, `Re(a)>0`, put
+
+```text
+c_a(alpha)=(a-alpha)/(a+alpha).
+```
+
+Whenever the denominator is nonzero,
+
+```text
+|a+alpha|^2-|a-alpha|^2=4 Re(a conjugate(alpha)).       (C45.1)
+```
+
+Consequently `|c_a(alpha)|<=1` holds exactly on the closed
+`a`-dependent half-space
+
+```text
+Re(a conjugate(alpha))>=0.                              (C45.2)
+```
+
+There is no common complex neighborhood for the physical aperture direction.
+Indeed, if `(C45.2)` holds for every `a` with `Re(a)>0`, then
+`Im(alpha)=0`: otherwise choose the imaginary part of `a` with opposite
+unbounded sign.  The remaining condition is precisely `Re(alpha)>=0`.
+Thus
+
+```text
+intersection_(Re(a)>0) {alpha: |c_a(alpha)|<=1}
+  =[0,infinity) subset C.                               (C45.3)
+```
+
+The common contractive aperture set has empty complex interior.  In
+particular, the proved real-ray Schur multiplier law cannot be upgraded to a
+holomorphic one-variable Schur map around `alpha=0`; Schwarz--Pick and
+Julia--Caratheodory derivative estimates in aperture do not apply.
+
+This obstruction is stronger than the observation that a bounded scalar
+curve can have arbitrarily large derivative: it classifies the maximal common
+contractivity set of every right-half-plane Cayley divisor cell.  The killing
+mechanism uses one cell and therefore survives arbitrary products, cofinal
+limits, and the Gamma boundary normalization.
+
+**Positive survivor.**  Any complex-geometric derivative bound must
+complexify a genuine source coordinate together with aperture.  Aperture
+alone supplies only a real accretive-operator ray.  The remaining candidate
+must therefore be a source-global two-variable positive kernel or a
+source-global arithmetic factorization; it cannot be another scalar
+aperture estimate.
+
+**Status.**  Dependency-closed proof formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardComplexApertureNoGo.lean`,
+including the exact common-contractivity classification and an explicit
+expansive cell for every aperture with nonzero imaginary part.  This section
+proves no part of `W_P>=0`.
+
+## C46 zero-free margin gives the four-unit target unconditional thickness `[PROVED AND LEAN-FORMALIZED]`
+
+The scalar endpoint of this lane (Euler-edge four-unit law, C41--C44) is now
+RH-complete in two strictly weaker forms, certified in
+`formal/GaloisForLFunctions/RHTower/XiWardZeroFreeMarginPrimeLogSampling.lean`:
+
+```text
+RH <-> forall t : |r(1/2+it)|^2 <= 4 + 8 m(t),   m(t)=c'/log^9(|t|+9);
+RH <-> the exact four-unit law sampled only on {+-log p} + one finite grid.
+```
+
+Consequences for this card's frontier: any source mechanism (singular graph
+norm, connection-augmented detail, C43-style cofinal realization) no longer has
+to reach the exact four-unit bound -- polylog room `8 m(t)` is enough; and the
+target quantifier is a locally finite arithmetic node family, opening
+prime-indexed induction as an attack shape.  C39's essential cusp achieved the
+budget exactly; the relaxed target is strictly easier than what that
+counterexample calibrates.  Do not re-derive the margin: consume
+`xiWardZeroFreeMargin` and its cover machinery directly.
+
+## C46 threshold-8: the four-unit corner was not the completeness threshold `[PROVED AND LEAN-FORMALIZED]`
+
+`XiWardThresholdEightCompleteness.lean`
+(`riemannHypothesis_iff_continuedXiWardCornerLiftLaw`, standard axioms):
+for every `0 <= c < 8`, RH is equivalent to the corner-`c` lift law
+`c·G_P − r_P r_P^* ⪰ 0` on interior packets — one strict-right pair spends
+`4(1/a + a/(a²+b²)) > 8` on the adapted packet `(λ, λ̄)` in the `(2,2)`
+direction.  Consequences for THIS card's frozen frontier: C41–C44 killed
+budget-4 detail-only transports; a JOINT father+detail spend under two full
+quanta (`8 = 4 + 4`, exactly the doubled parity source's total energy) is
+outside every existing no-go (desk clause-check logged on
+`xi-ward-moire-prime-pair-attack.md`, step 1c).  The lane's open core `(52)` /
+`T_Hardy <= 4` gains the same doubling: `T_Hardy < 8` suffices.  Do not
+re-attack budget-4 transport; the live object is the two-quantum energy law.
+
+## C47 closed threshold eight and native commutator lift `[LEAN-FORMALIZED ENDPOINT; INCIDENCE OPEN]`
+
+The strict inequality in the paired Cauchy energy is against the geometric
+strip endpoint, not against the chosen corner budget.  Hence the preceding
+threshold statement closes at eight:
+
+```text
+0 <= c <= 8
+-> (ContinuedXiWardCornerLiftLaw c <-> RH).             (C47.1)
+```
+
+In particular no artificial strict loss is required from a doubled source:
+
+```text
+ContinuedXiWardCornerLiftLaw 8 <-> RH.                  (C47.2)
+```
+
+This is proved in
+`formal/GaloisForLFunctions/RHTower/XiWardThresholdEightClosedCompleteness.lean`
+and wired into the `RHTower` umbrella.
+
+The source already has one exact, non-scalar eight-unit object: the
+self-adjoint Möbius Fisher cutoff commutator.  Its unconditional critical
+profile obeys
+
+```text
+0 <= E_W(u) <= 8(1-exp(-u)),
+E_W(u)/(1-exp(-u)) -> 8.                                (C47.3)
+```
+
+Therefore the next conjecture is not another scalar four-unit estimate.
+
+**C47-NCL (native commutator lift).** Before one-sided scalarization, Gamma
+completion and strict-right Hardy projection send the two adjoint boundary
+orientations of the source Fisher commutator to one joint finite-packet
+column equal to `r_P`, and the associated Schur defect is exactly
+
+```text
+8 G_P-r_P r_P^*.                                       (C47.4)
+```
+
+If `(C47.4)` is obtained as a positive source Gram, `(C47.2)` proves RH and
+then the original four-unit matrix `W_P` is positive because `r_P=0`.
+
+Homogeneous tensor/power amplification is not a route to `(C47.4)`.
+`XiHomogeneousChargeGateSaturation.lean` proves that every common positive
+power, and more generally every strictly increasing reparameterization, has
+exactly the same height content.  The only live operation is the actual
+two-sided commutator incidence.  Its falsifier is exact: a construction that
+first factors through the one-sided scalar graph is already excluded by
+C42--C44; a construction that merely appends an orthogonal four-unit copy
+still has zero Ward column.

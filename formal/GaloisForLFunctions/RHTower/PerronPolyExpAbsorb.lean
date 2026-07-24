@@ -33,7 +33,7 @@ theorem pow_le_factorial_mul_exp_half {b u : ℝ} (hb : 0 < b)
         ring
 
 /-- **Exponential-rate absorption**: `u^n·e^{-bu} ≤ n!·(2/b)^n·e^{-bu/2}`. -/
-theorem pow_mul_exp_neg_le {b u : ℝ} (hb : 0 < b) (hu : 0 ≤ u)
+theorem pow_mul_exp_neg_le_absorb_half {b u : ℝ} (hb : 0 < b) (hu : 0 ≤ u)
     (n : ℕ) :
     u ^ n * Real.exp (-(b * u))
       ≤ (n.factorial : ℝ) * (2 / b) ^ n * Real.exp (-(b * u / 2)) := by

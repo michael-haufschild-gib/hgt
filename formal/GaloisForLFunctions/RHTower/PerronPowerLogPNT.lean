@@ -255,7 +255,7 @@ theorem exists_smoothed_chebyshev_power_log :
           * Real.exp (-(zetaLowerA / 4 * u)) := by
       have h1 : u ^ (20 : ℕ) ≤ u ^ (21 : ℕ) :=
         pow_le_pow_right₀ hu1 (by norm_num)
-      have h2 := pow_mul_exp_neg_le one_pos hu0.le 21
+      have h2 := pow_mul_exp_neg_le_absorb_half one_pos hu0.le 21
       rw [show (1 : ℝ) * u = u from one_mul u] at h2
       have h3 : ((2 : ℝ) / 1) ^ (21 : ℕ) = 2 ^ 21 := by norm_num
       rw [h3] at h2
@@ -270,7 +270,7 @@ theorem exists_smoothed_chebyshev_power_log :
     have habs2 : u ^ (9 : ℕ) * Real.exp (-(zetaLowerA * u / 2))
         ≤ (Nat.factorial 9 : ℝ) * (4 / zetaLowerA) ^ 9
           * Real.exp (-(zetaLowerA / 4 * u)) := by
-      have h2 := pow_mul_exp_neg_le
+      have h2 := pow_mul_exp_neg_le_absorb_half
         (b := zetaLowerA / 2) (by positivity) hu0.le 9
       rw [show zetaLowerA / 2 * u = zetaLowerA * u / 2 from by ring,
         show (2 : ℝ) / (zetaLowerA / 2) = 4 / zetaLowerA from by
@@ -284,7 +284,7 @@ theorem exists_smoothed_chebyshev_power_log :
       have h1 : Real.exp (-(2 * u)) ≤ Real.exp (-u) := by
         apply Real.exp_le_exp.2
         linarith
-      have h2 := pow_mul_exp_neg_le one_pos hu0.le 9
+      have h2 := pow_mul_exp_neg_le_absorb_half one_pos hu0.le 9
       rw [show (1 : ℝ) * u = u from one_mul u] at h2
       have h3 : ((2 : ℝ) / 1) ^ (9 : ℕ) = 2 ^ 9 := by norm_num
       rw [h3] at h2

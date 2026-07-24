@@ -312,3 +312,120 @@ differential current-field reconstruction, so the card remains at stage 2.  No a
   reconstruction law.
 - 2026-07-17 -- formalized the faithful rational-coordinate scalar action and both sides of its
   finite/infinite holonomy fixed-field dichotomy.
+
+---
+
+## Lean formalization progress (in-progress, multi-session)
+
+**Route:** analytic-differential-algebra. Target = the full three-phase clock-character
+classification `T=C<q>, ρ_λ(q)=λ^k q, Φ(q)=A(q)` with `A∈PGL_2(C)`; charge `k≥0`; `k>0 ⟹ Φ(q)=aq`.
+
+### Already banked in corpus (REUSE — do not re-derive)
+- `HTGeometry.StableDifferentialCore`: `stableRangeCore`, `stableRangeCoreAlgEquiv` (Φ is an
+  automorphism of the core), `mem_stableRangeCore_iff`, `algebraMap_eigenvector_mem_stableRangeCore`,
+  `adjoin_le_stableRangeCore_of_algebraMap_eigenvector` (eigen-current tail inclusion),
+  `derivationClosed_stableRangeCore`.
+- `HTGeometry.StableCoreFunctoriality`: `map_stableRangeCore_eq_of_commuting_algEquiv` (clock
+  preserves the core — proof step §2), `stableRangeCoreDifferentialAlgEquiv`,
+  `algHom_preserves_character_of_commuting`, `logDeriv_fixed_of_eigenvector` (charged current is
+  Φ-fixed), `logDeriv_unit_character_of_semilinear` (clock weight of `Dq/q` is 1 — proof step §3 tail),
+  `pow_fixed_of_eigenvector`, `deriv_pow_fixed_of_eigenvector`, `deriv_fixed_of_translation`.
+
+### DONE this session
+`HTGeometry/ClockChargeProjectiveLinearization.lean` [PROVED HERE], axioms
+[propext, Classical.choice, Quot.sound], `lake build` clean, lint clean — the **charged-phase
+projective-drift no-go** (§4 "positive charge linearizes the constraint", the crux the card brackets
+as "classical transformation-group theory classifies cocharacters of PGL_2"):
+- `mobius_scaling_coeffs` : coefficient no-go — Möbius matrix `(a b;c d)`, `ad−bc≠0`, intertwining a
+  scaling by `μ≠0,1,−1` (the q²/q¹/q⁰ relations) ⟹ `c=0 ∧ b=0`. Pure field algebra
+  (linear_combination on the three relations; `q²`→ac=0, `q¹`→bc=0, `q⁰`→bd=0; invertibility+bc=0 ⟹
+  diagonal nonzero ⟹ c=b=0).
+- `mobius_commuting_scaling_forces_diagonal` : the field-level version — intertwining identity
+  `A(μq)=μA(q)` at `q` with `{1,q,q²}` linearly independent over `K` (= transcendence of the Lüroth
+  generator, the honest hypothesis) ⟹ `c=0 ∧ b=0`. Coefficient extraction via
+  `simp [map_*]` + `linear_combination hcomm`, then `mobius_scaling_coeffs`.
+- `mobius_diagonal_eq_scaling` : diagonal Möbius = pure scaling `x↦(a/d)x` (holds unconditionally,
+  even d=0, via junk-value `mul_div_right_comm`).
+
+### REMAINING (next sessions) — two mathlib-gap cores
+1. **Differential Lüroth / order-zero rigidity** (proof §1): an order-zero differential-rational
+   automorphism of `C<q>` is a Möbius map of `q` — bridges the abstract `Φ|_T`/`ρ_λ` (algHom on the
+   core) to the concrete `(a,b,c,d)` Möbius coefficients that `mobius_commuting_scaling_forces_diagonal`
+   consumes. Needs: differential-order additivity (is `ord`/`differential transcendence degree`
+   formalized? search `KolchinExchangeGaugeObstruction`, `ord`, `differentialOrder`) + Lüroth for the
+   order-zero subfield. This is the connector that makes the no-go apply to the actual constraint.
+2. **PGL_2 cocharacter classification** (proof §3): every algebraic homomorphism `G_m→PGL_2` is
+   conjugate to `λ↦diag(1,λ^k)`, yielding the integer charge `k` and (with the diagonalizing
+   conjugation) putting `ρ_λ` in the pure-scaling form that `mobius_commuting_scaling_forces_diagonal`
+   requires (`ρ_λ(q)=λ^k q`). Concrete finite algebra (Jordan form over alg-closed C + commutation),
+   not in mathlib.
+
+### Assembly (final session)
+`k=0` neutral branch (A∈PGL_2 arbitrary) vs `k>0` charged branch: feed the diagonalized clock
+(`ρ_λ q = λ^k q`, `μ:=λ^k` ranges over `C^*∖{0,±1}` for suitable λ since k>0) + `Φ` commuting into
+`mobius_commuting_scaling_forces_diagonal` ⟹ `Φ` diagonal ⟹ `mobius_diagonal_eq_scaling` ⟹ `Φ(q)=aq`;
+uniqueness of `a` from `q≠0`. Then `logDeriv_fixed_of_eigenvector` + `logDeriv_unit_character_of_semilinear`
+(banked) give the exact eigen-current invariant statement. NEXT concrete step: probe corpus for
+differential-order / transcendence-degree infrastructure (`differentialOrder`, Kolchin) to start core #1.
+
+### Session 2 progress
+Corpus recheck (per reuse mandate) found §1 order-zero rigidity is ALREADY banked:
+`HTGeometry.ScalarDifferentialRationalOrder.differentialAlgEquiv_generator_mem_adjoin_singleton`
+(a differential automorphism σ of the scalar free field sends the generator into the ordinary
+rational subfield `C(y)` in both directions — i.e. `σ y, σ⁻¹ y ∈ C(y)`), built on
+`differentialAlgEquiv_generator_order_zero` + `hasScalarDifferentialOrder_zero_iff`. So proof §1
+(`Φ(q₀)=A₀(q₀)`, `A₀` rational) is DONE up to "rational generator ⟹ Möbius", which is ordinary
+Lüroth — confirmed NOT in mathlib (no `Luroth`, no fractional-linear RatFunc automorphism theory).
+
+DONE this session — `HTGeometry/ClockChargeProjectiveLinearization.lean` extended, axioms
+[propext, Classical.choice, Quot.sound], build+lint clean:
+- **`charged_clock_forces_multiplicative`** : `C`-algebra endos `Φ, ρ` of `E`, `ρ q = μ q`
+  (`μ ≠ 0,1,-1`), `Φ` acting by the Möbius relation `Φ q·(cq+d) = aq+b` (`ad−bc≠0`), commuting
+  `Φ(ρq)=ρ(Φq)`, and `{1,q,q²}` `C`-linearly independent ⟹ `Φ q = (a/d)·q`. This is the card's
+  §4/eq(4) headline (positive charge ⟹ multiplication by one constant), assembled from the no-go.
+  Key step: the abstract commutation `Φρ=ρΦ` yields the cross-multiplied intertwining identity
+  `(aμq+b)(cq+d) = μ(aq+b)(cμq+d)` with NO denominators (apply ρ to the Möbius relation, use
+  `ρ(Φq)=μΦq`, then `linear_combination` eliminating `Φq`), which `mobius_commuting_scaling_forces_diagonal`
+  collapses to `c=b=0`, then `mobius_diagonal_eq_scaling`.
+
+Discharge status of the §-structure:
+- §1 order-zero: banked (mem_adjoin_singleton) — gap: ordinary Lüroth `C(y)`-generator ⟹ Möbius (a,b,c,d∈C).
+- §4 charged linearization crux: DONE (no-go + charged_clock_forces_multiplicative), Möbius/scaling as hyps.
+- §3 cocharacter `ρ_λ q = λ^k q`, integer charge k: PGL₂-cocharacter classification (finite algebra, mathlib gap).
+- §2 clock preserves core: banked (`map_stableRangeCore_eq_of_commuting_algEquiv`).
+
+NEXT concrete step (session 3): ordinary Lüroth bridge — `z ∈ C(y)` with `C(z)=C(y)` ⟹ `∃ a b c d ∈ C,
+ad−bc≠0, z=(ay+b)/(cy+d)`. This feeds hΦq of `charged_clock_forces_multiplicative` from the banked
+`σy ∈ C(y)`. Needs mathlib RatFunc degree theory: `z` generates `C(y)` ⟹ `[C(y):C(z)]=1` ⟹ the minimal
+polynomial of `y` over `C(z)` has degree 1 ⟹ Möbius. Probe `Mathlib.FieldTheory.RatFunc.*`,
+`IntermediateField.adjoin`, `Polynomial.degree`, transcendence-degree. This is the classical piece; build it
+as `HTGeometry/OrdinaryLuroth.lean` (reusable, general). Then PGL₂ cocharacter as `HTGeometry/Pgl2Cocharacter.lean`.
+
+### Session 3 progress — ordinary Lüroth (mathlib-gap fill)
+Corpus recheck: mathlib HAS `Mathlib.FieldTheory.RatFunc.Luroth` (Lüroth's theorem) +
+`RatFunc.finrank_eq_max_natDegree` (`[K⟮X⟯:K⟮f⟯] = max(deg num, deg denom)`) + `RatFunc.Degree`
+(intDegree). My earlier `#check @Luroth` failed only because I used the wrong name.
+
+DONE — `HTGeometry/OrdinaryLuroth.lean` [PROVED HERE], axioms [propext, Classical.choice, Quot.sound],
+build+lint clean:
+- `ratFunc_generator_max_natDegree_eq_one` : `f` generates `K⟮X⟯` (`adjoin K {f} = ⊤`) ⟹
+  `max(deg num, deg denom) = 1` — via `finrank_eq_max_natDegree` + `IntermediateField.finrank_top`.
+- **`ratFunc_generator_mobius`** : `f` generates `K⟮X⟯` ⟹ `∃ a b c d : K, ad−bc≠0 ∧
+  f·(C c·X + C d) = C a·X + C b`. The degree-1 Lüroth / "generating rational function is Möbius"
+  fact (NOT in mathlib as a corollary). num,denom linear from max-deg-1; `ad−bc≠0` by ruling out
+  `f` constant (else `f ∈ ⊥`, contradicting `adjoin K {f}=⊤` via `intDegree X = 1 ≠ 0 = intDegree (C e)`).
+
+Core #1 status: order-zero rigidity (banked `differentialAlgEquiv_generator_mem_adjoin_singleton`,
+gives `σy ∈ C(y)`) + rational-generator-⟹-Möbius (DONE this session, in RatFunc). REMAINING for core #1:
+the TRANSPORT bridge — the abstract differential subfield `C(y) = IntermediateField.adjoin C {y} ⊆ E`
+(y hypertranscendent, so transcendental) is `C`-algebra-isomorphic to `RatFunc C` via `y ↦ X`; under
+it `σy ∈ C(y)` generating ⟺ its `RatFunc C` image generates, so `ratFunc_generator_mobius` yields the
+Möbius coefficients `a,b,c,d ∈ C` and the relation `σy·(c·y+d)=a·y+b` in `E`. This is what feeds
+`charged_clock_forces_multiplicative`'s `hΦq`. 
+
+NEXT concrete step (session 4): the transport. Probe mathlib for `simple transcendental extension ≅
+RatFunc`: `IntermediateField.adjoin` of a transcendental element, `Transcendental`,
+`IsFractionRing`, `Polynomial.aeval`/`RatFunc` evaluation iso. Likely `IntermediateField.adjoin C {y}`
+with `Transcendental C y` gives an `AlgEquiv` to `RatFunc C` (search `Transcendental.aevalEquiv` /
+`IsTranscendenceBasis` / `RatFunc`-adjoin). Then push `ratFunc_generator_mobius` across it. Then §3
+PGL₂ cocharacter remains for the clock's `ρ_λ q = λ^k q` diagonalization.
