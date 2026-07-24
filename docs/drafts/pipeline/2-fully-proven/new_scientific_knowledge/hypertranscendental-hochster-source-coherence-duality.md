@@ -459,3 +459,21 @@ This is the FIRST explicit theorem CONNECTING the two sides built over these ses
 degree-0 instance of the Hochster strand equivalence. The full card completion still needs the exact
 algebraic rank (multigraded, so the count is currently a lower bound on the algebraic side) and the
 general-complex/all-degree chain equivalence.
+
+### Lean progress 12 — basis cycles diagonal-free + KEY structural analysis of the exact rank
+`HTGeometry/IsolatedKoszulBasis.lean` [PROVED HERE], standard axioms, builds clean, formal lint passed.
+- `isolatedDisconnectCycleBasis_diagonal_free` : each base-to-component basis cycle `(basis j)ₖ` has zero
+  `k`-th component; `isolatedKoszulRelation_disconnectCycleBasis_of_diagonal_free` re-derives that they are
+  cocycles via the diagonal-free characterization (progress 8), checking the characterization on the basis.
+
+KEY STRUCTURAL ANALYSIS (recorded to guide the remaining capstone, from this session's derivation using
+progress 8/9/10): the ISOLATED model `isolatedBoundarySubring ≅ F[x_0..x_{n+1}]/(x_i x_j : i≠j)` (discrete
+SR ring). At the LINEAR (coeff-1) level: cocycles = zero-diagonal matrices `C_{ik}=((a_i)_k).coeff 1`
+(dim `(n+2)(n+1)`); boundaries = ANTISYMMETRIC matrices (dim `C(n+2,2)`, progress 10 + free c-coefficients);
+so the linear first Koszul cohomology `= zero-diagonal / antisymmetric ≅ SYMMETRIC-off-diagonal`, dim
+`C(n+2,2)` — NOT `n+1`. Hence the `n+1` Hochster classes (matching reduced `H̃⁰`) are a specific
+`n+1`-dim STRUCTURAL SUBSPACE (the star from vertex 0: `{x_{j+1} e_0}`) of the full `C(n+2,2)`-dim linear
+`H₁`. The degree-0 Hochster identity (progress 11) therefore connects reduced `H̃⁰` to that subspace, and
+the full card capstone requires the PRECISE MULTIGRADED Tor/Betti correspondence (β_{i,σ} = reduced
+H̃^{|σ|-i-1}(Δ_σ)) selecting the right piece — the deep remaining homological-algebra work, now precisely
+characterized.

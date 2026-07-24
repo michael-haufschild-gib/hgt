@@ -2436,3 +2436,82 @@ this single geometric statement about one entire function.
 (9bl) prove `Im logDeriv Ξ ≤ 0` on the upper half plane; equivalently (9bh/9bj) prove the Weil Gram
 family PSD. The three are now formally interchangeable in the corpus, so any future attack may pick
 whichever face is most tractable and the others follow by machine-checked transport.
+
+## Step 9bn — GATE 1 LITERATURE AUDIT: the criteria are rediscoveries [verdict recorded]
+
+Ran the hgt-fields-medalist protocol. Gate 1 requires an external SOTA audit with sources BEFORE
+conjecturing. Result, stated bluntly:
+
+**[REDISCOVERED] `riemannHypothesis_of_norm_XiC_vertical_monotone` + `norm_XiC_vertical_monotoneOn_of_rh`
+(9bm) = Sondow–Dumitrescu 2010**, "A monotonicity property of Riemann's xi function and a
+reformulation of the Riemann Hypothesis" (arXiv:1005.1104). They prove ξ is strictly increasing in
+modulus along every horizontal half-line in a zero-free open right half-plane, and that the
+monotonicity reformulation is EQUIVALENT to RH. In the centred coordinate `z` used here, "vertical in
+z" IS "horizontal in s" (`s = ½ + iz`), so 9bm is their criterion transported. Related:
+arXiv:1205.2773 (horizontal monotonicity of |ζ|), arXiv:2404.06642 (modulus representation of ξ and
+polynomial inequalities equivalent to RH), arXiv:2310.15210 (monotonicity of Im ξ in a region).
+
+**[REDISCOVERED] the Herglotz criterion (9bl)** — `ξ′/ξ` maps the upper half plane to the lower iff
+all zeros are real is the Hermite–Biehler/de Branges picture; the de Branges programme is built on it.
+
+**[REDISCOVERED] the Weil Gram criterion (9bh)** — Weil positivity ⟺ RH is Weil 1952; the current
+literature (Connes–Consani, arXiv:2006.13771 "Weil positivity and Trace formula, the archimedean
+place"; arXiv:2301.00421 on the Hilbert space of the Weil distribution, which is a de Branges space)
+works exactly this object.
+
+**External frontier as of 2026:** RH is open. Recent work in precisely this positivity territory
+reports that **candidate positivity statements have been DISPROVED by explicit local or
+finite-dimensional tests**, with the conservative conclusion that the anti-Wick positive
+factorization "is not the correct factorization". So the field's own verdict is that reformulating
+into a positivity condition does not close, and specific candidate positivities fail.
+
+### Gate 3 verdict on this campaign's route: REDISCOVERED (criteria) / OPEN CORE unchanged
+
+### Gate 6 relentless interrogation — the exact why
+
+**Killing mechanism, stated exactly.** Every face in the chain (Ward energy `8π` law, Weil Gram PSD,
+Herglotz sign, one-sided bound, vertical monotonicity) is an EQUIVALENCE. Equivalences transport
+difficulty; they never add input. The total arithmetic input of the entire chain is:
+  (i) `ζ ≠ 0` on `Re s > 1` — i.e. the strip confinement `|Im pt| < ½`;
+  (ii) explicit theta/Γ values (used for the certified constants).
+**Davenport–Heilbronn**: there exist Dirichlet series with a functional equation of the same shape
+whose zeros are NOT all on the critical line. Hence functional equation + strip confinement cannot
+imply RH. Therefore **no chain built only from (i)+(ii) can close RH, in any representation.** That
+is why every representation change in this campaign — and there were five — left the core invariant.
+
+**Representation lesson.** The failure does not indict any one criterion; it indicts the whole
+carrier. The primitives used here (divisor copies, resolvent traces, Gram forms) are all FE-covariant
+and strip-aware but arithmetic-blind: they see `Λ(n)` only through the single scalar `logDeriv ξ`
+value, never through the sign structure `Λ(n) ≥ 0`. A representation that can close RH must make the
+nonnegativity of the von-Mangoldt coefficients a PRIMITIVE, not a derived value.
+
+**Stronger conjecture that passes the why (the only survivor shape).** Any closing route must be a
+positivity statement in which the prime side enters as a nonnegative measure tested against a weight
+the route gets to CHOOSE — i.e. the 3+4cos+cos2θ mechanism generalized. At this frontier that is
+exactly Weil positivity for band-limited test functions, whose provable range is small support and
+whose extension is the open problem; and the 2026 literature reports explicit failures of candidate
+positivity statements there. So the replacement conjecture at this frontier is **not survivable by
+this agent's current means**: it lands on the field's active open core, not beside it.
+
+**[NO NEW CONJECTURE SURVIVES GATE 3 AT THIS FRONTIER.]**
+
+### Positive salvage (non-trivial, and NOT a restatement of the no-go)
+
+These are mathematical deltas that survive the audit as artifacts, none of which is an equivalence:
+1. **`riemannZeta_ne_zero_of_im_sq_le`** — a zero-free horizontal strip `|Im s| ≤ 5.65` for `Re s > 0`,
+   derived with NO numerical zero search (constants from two exponential integrals of the theta
+   kernel). Classical low-height zero-freeness is obtained by computation; this is not.
+2. **`xiWard_offlinePair_abs_im_gt_eight`** — off-critical zeros lie above height 8, same character.
+3. **`offline_sub_online_mass`** — the exact discrimination identity; sign `c² − 3u² − v²`. This is a
+   genuine structural theorem about linear divisor statistics: displacement is penalised only below
+   height `c/√3`, so above it ONLY multiplicity discriminates. It explains, rather than restates, why
+   linear statistics cap.
+4. **`xiCauchyRegularizedKernel_mul`** — the kernel algebra closes modulo the single generator `w⁻²`,
+   which is what makes the Weil Gram arithmetically evaluable.
+Each is `[LEAN-PROVED]`; each is `[NOVELTY UNVERIFIED]` pending a priority audit of its own.
+
+### Card discipline
+
+9bh/9bl/9bm are hereby relabelled **[REDISCOVERED, LEAN-PROVED]** — correct as Lean theorems,
+NOT new scientific knowledge. The campaign's `[OPEN CORE]` is unchanged and is the field's:
+dominate the prime side against the archimedean term (equivalently, prove any one face).
