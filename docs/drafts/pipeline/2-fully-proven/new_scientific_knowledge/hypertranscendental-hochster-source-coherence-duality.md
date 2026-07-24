@@ -396,3 +396,16 @@ rank (progress 5), reflection-removes-one-layer (progress 2), discrete/connected
 REMAINING for card completion (deep, algebraic cone): the Koszul-strand ↔ reduced-cochain chain
 equivalence in all degrees (general finite complexes) + algebraic exact-rank match — the full Hochster
 isomorphism.
+
+### Lean progress 7 — reduced Euler–Poincaré (combinatorial reduced-cohomology package COMPLETE)
+`HTGeometry/ReducedEulerCharacteristic.lean` [PROVED HERE], standard axioms, builds clean, my-cone lint clean.
+- `reduced_euler_poincare` : `dim H̃⁰ + |E| + 1 = dim H̃¹ + |V|` (both `= |E| + components`), i.e.
+  `χ̃ = dim H̃⁰ − dim H̃¹ = |V| − |E| − 1`.
+
+COMBINATORIAL SIDE FOR GRAPHS NOW A COMPLETE COHERENT UNIT (7 modules): reduced simplicial cohomology
+of a finite 1-skeleton over a field — `H̃⁰=components−1`, `H̃¹=|E|−|V|+components` (first Betti),
+Euler–Poincaré; with coboundary δ⁰ (`ker=componentConstant`), coboundary rank `|V|−components`,
+reflection-removes-one-layer, discrete/connected extremes. All axiom-clean.
+CARD COMPLETION still requires the deep algebraic **Hochster isomorphism**: Koszul-strand ↔ reduced-cochain
+chain equivalence for general finite complexes (all degrees) + algebraic exact-rank match. That lives in
+the KoszulCohomology (algebraic) cone; it is the remaining multi-session build, NOT more combinatorial lemmas.

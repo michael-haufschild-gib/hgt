@@ -2281,3 +2281,33 @@ identity in the base point to put `∂ᵏ_z K_z` in the evaluable algebra, then 
 construction on a Taylor combination based at `z₀` off the strip. That converts
 `riemannHypothesis_of_weilDiagonal_nonneg` into its outside-strip form, at which point every
 hypothesis of the criterion is an absolutely convergent prime expression.
+
+## Step 9bk — the Gram sign structure: on-line copies only add [PROVED]
+
+`XiWeilGramStructure.lean`, clean, sorry-free, axioms standard. The structural counterpart of the
+9bh detection theorem, and the substrate for the outside-strip programme of 9bj.
+
+**[PROVED HERE] `weilGram_real_copy_contribution_eq_normSq`** — for ANY finite family of base points
+`z i` and ANY coefficients `c i`, a copy whose centered coordinate `pt` is REAL contributes exactly
+  `∑ᵢ∑ⱼ cᵢ conj(cⱼ) K(zᵢ)(pt) K(conj zⱼ)(pt) = ‖∑ᵢ cᵢ K(zᵢ)(pt)‖²`.
+The mechanism is `xiCauchyRegularizedKernel_conj_of_real`: at a real argument the conjugate-base-point
+kernel IS the conjugate kernel, so the double sum collapses to a modulus square.
+
+**Consequences certified**: `weilGram_form_re_nonneg_of_all_real` (all copies real ⟹ every finite
+Gram form is nonnegative, base points UNRESTRICTED) and `weilGram_form_re_nonneg_of_rh`.
+
+**Why this matters for 9bj.** It closes one of the two halves the outside-strip reformulation needs:
+no configuration of on-line copies can ever produce a negative value for the off-line copies to hide
+behind — the on-line part of the Gram is a sum of PSD rank-ones, for every base-point family. So the
+sign of the Weil Gram form is decided ENTIRELY by the displaced copies, and the search for a
+violation may be conducted anywhere in the base-point plane, in particular off the strip where 9bi
+proves the diagonal nonneg and where every entry is an absolutely convergent prime series.
+
+**The remaining half, stated exactly.** For an off-line quadruple, its Gram block must be shown
+non-PSD strongly enough to survive addition of the on-line PSD part. 9bj's numerics show this is
+true and, decisively, LOCAL (N=30 vs N=100 agree to 3 digits) — the on-line part is nearly singular
+in the high-order finite-difference directions that the displaced copy does not annihilate. The
+quantitative form to prove: for an `n`-point family based at `z₀` off the strip, the `n`-th order
+difference annihilates the on-line contributions to order `h^n` while the off-line block retains a
+term of order `v²`; choosing `h` and `n` with `h^n ≪ v²` produces the negative eigenvalue. That is
+the next brick, and it is a concrete estimate rather than a new idea.

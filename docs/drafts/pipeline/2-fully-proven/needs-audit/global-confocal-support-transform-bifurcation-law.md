@@ -422,3 +422,30 @@ formal verification.
   as the greatest root.  The only extra root occurs on the positive null radical and undergoes an
   exact extinction at the maximal axial radius.  This yields a global field/support/hull transform
   rather than an exterior estimate with exceptions.
+
+## Lean progress
+
+- 2026-07-24 — **Parts 1–4 already formalized** (corpus audit) in
+  `formal/GaloisForLFunctions/HTGeometry/ConfocalGlobalSupportTransform.lean` (axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * pointwise projective identity (17) and nonneg defect (15): `le_liftedConfocalBranch`,
+    `liftedConfocalBranch_sub_eq_nullFunctional_projective_global`;
+  * all-radius fixed-point law (5)/(6) and greatest/unique selection (part 1):
+    `confocalGlobalDefect_eq_nullSupport_fixedPoint`, `confocalGlobalDefect_isGreatest_fixedPoint`,
+    `confocalNullSupport_positive_fixedPoint_unique_global`;
+  * projective graph equality (7) (part 2):
+    `confocalGlobalPositiveDefectGraph_eq_fullProjectiveSupportGraph`;
+  * strict projective radius order (part 3): `confocalProjectiveParameter_strictMono`,
+    `confocalNullSupportRadius_strictAnti_of_support_pos`;
+  * exact radical extinction-bifurcation law (11) (part 4):
+    `confocalNullSupport_zero_iff_positiveNullRay_global`,
+    `confocalGlobalDefect_eq_two_mul_max_radicalHeight_sub`.
+- 2026-07-24 — **Part 5 (transform faithfulness), forward direction formalized** in
+  `HTGeometry/ConfocalGlobalSupportFaithfulness.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`): `confocalGlobalDefect_eqOn_of_nullSupport_eqOn` — equal null support fields on
+  `[0,1]` force equal all-radius defects on `(0,∞)` (`h_S = h_T ⟹ D_S = D_T`, the `h ↦ D` half of
+  (12)), since the defect is the greatest nonnegative fixed point of the support-driven operator.
+  **Remaining for full closure:** the reverse direction of (12) (`D_S = D_T ⟹ h_S = h_T`, by
+  inverting the projective graph, with the `h_S(0)=0` radical case) and the all-radius maximal-hull
+  identity (13) `K_G(S) = K_h(S)` (removing the exterior `R > M` restriction present in the
+  corpus's `mem_confocalHullOfField_add_defect_iff_nullFunctional_le`).
