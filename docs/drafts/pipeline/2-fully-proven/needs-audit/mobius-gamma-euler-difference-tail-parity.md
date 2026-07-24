@@ -165,7 +165,10 @@ Direct verification:
 lake env lean GaloisForLFunctions/RHTower/MobiusGammaEulerDifferenceTailParity.lean
 ```
 
-The analytic asymptotic transport `(4)` remains paper-level.
+The analytic asymptotic transport `(4)` is formalized for arbitrary finite blocks in
+`RHTower/GammaEulerTwoChannelAsymptotic.lean` (`gammaEulerDifferenceList_asymptotic`, with the
+even-block no-go `gammaEulerDifferenceList_eventually_neg`); Theorem 1 in
+`RHTower/GammaEulerCharacteristicPositivity.lean`.
 
 ## Literature boundary
 
@@ -192,7 +195,7 @@ claim is made.
 - [x] general finite tail parity proved
 - [x] two-to-third-channel contraction reversal proved
 - [x] exact eigenmode algebra and arbitrary finite-block coefficient parity formalized in Lean
-- [ ] formalize asymptotic formula `(4)`
+- [x] formalize asymptotic formula `(4)` (arbitrary finite block, `RHTower/GammaEulerTwoChannelAsymptotic.lean`)
 - [ ] specialist novelty audit
 - [ ] replace failed local induction by a block/global source inequality
 
@@ -234,3 +237,48 @@ claim is made.
   Remaining for gate `(4)`: the general `k`-channel asymptotic (iterating the difference on the
   characteristic profile), i.e. connecting `exp((r/2+1)u)·(D…φ_r)(u)` to
   `gammaEulerManyDifferenceNextCoefficient` for arbitrary finite blocks.
+- 2026-07-24 — **Two-channel asymptotic transport `(4)` (`k = 2`) + the headline no-go `(99)`
+  formalized**, in `RHTower/GammaEulerTwoChannelAsymptotic.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  Reusable profile-operator core, then the two-channel
+  limit and its sign consequence:
+  * `gammaEulerProfileStep` / `gammaEulerCentralDifference_profile` — writing
+    `g(u) = 2^r exp(-ru/2) H(exp(-u))`, the difference `D_{r,h}` acts on the profile `H` by the
+    linear operator `gammaEulerProfileStep r h H` (`H` at scaled arguments `e·exp(∓h)`).
+  * `gammaEulerProfileStep_zero` — the profile operator kills the value at `0` (any `H`): the exact
+    annihilation of the leading `exp(-ru/2)` tail mode.
+  * `gammaEulerProfileStep_hasDerivAt` — it scales the derivative at `0` by the next-mode eigenvalue
+    `d_{r,h}(r/2+1)`.  Iterating over two channels multiplies the next coefficient `-r·2^r` by the
+    two (negative) eigenvalues.
+  * `gammaEulerTwoDifference_asymptotic` — `exp((r/2+1)u)·(D_{r,h₁} D_{r,h₂} φ_r)(u) →
+    gammaEulerTwoDifferenceNextCoefficient r h₁ h₂` for `φ_r(u) = cosh(u/2)^{-r}`, via the boundary
+    slope `K(e)/e → K'(0)` (`K = gammaEulerProfileStep r h₁ (gammaEulerProfileStep r h₂ H₀)`,
+    `H₀ = (1+·)^{-r}`).
+  * `gammaEulerTwoDifference_eventually_neg` — since the limit is strictly negative
+    (`gammaEulerTwoDifferenceNextCoefficient_neg`), `(D_{r,h₁} D_{r,h₂} φ_r)(u) < 0` for all large
+    `u`: the card's headline equation `(99)`, now unconditional at the continuous level.
+  Gate `formalize asymptotic formula (4)`: the `k = 1` and `k = 2` cases are formalized (with the
+  reusable profile-operator core); the general arbitrary-`k` block asymptotic remains (iterate
+  `gammaEulerProfileStep` over a finite list, connecting to `gammaEulerManyDifferenceNextCoefficient`).
+- 2026-07-24 — **Asymptotic formula `(4)` fully formalized for arbitrary finite blocks** (gate
+  `formalize asymptotic formula (4)` closed), in `RHTower/GammaEulerTwoChannelAsymptotic.lean`
+  (unconditional, axioms `[propext, Classical.choice, Quot.sound]`).  Iterating the profile operator
+  over a finite list of scales:
+  * `gammaEulerDifferenceList` / `gammaEulerProfileList` — the iterated difference `D_{r,h₁}⋯D_{r,h_k}`
+    and its profile counterpart as right folds over a `List ℝ` of scales.
+  * `gammaEulerDifferenceList_profile` — the iterated difference acts on the rescaled profile by the
+    iterated profile operator (induction over the list, one `gammaEulerCentralDifference_profile` per step).
+  * `gammaEulerProfileList_zero` / `gammaEulerProfileList_hasDerivAt` — a nonempty iterated operator
+    kills the value at `0`, and scales the derivative at `0` by the **product** of the next-mode
+    eigenvalues `∏_{h∈L} d_{r,h}(r/2+1)` (induction over the list).
+  * `gammaEulerDifferenceList_asymptotic` — for nonempty `L`,
+    `exp((r/2+1)u)·(D_{r,h₁}⋯D_{r,h_k} φ_r)(u) → -r·2^r·∏_{h∈L} d_{r,h}(r/2+1)`, i.e. equation (4) for
+    an arbitrary finite block (the product mirrors `gammaEulerManyDifferenceNextCoefficient`).
+  * `gammaEulerEigenvalueList_prod_sign` — the eigenvalue product is positive for even-length blocks,
+    negative for odd (each factor strictly negative), the continuous analogue of the corpus signed sign.
+  * `gammaEulerDifferenceList_eventually_neg` — **general no-go**: for any nonempty even-length list of
+    positive scales, `(D_{r,h₁}⋯D_{r,h_{2m}} φ_r)(u) < 0` for all large `u`.  Any even number of Euler
+    channels reverses the correlation-sign tail, generalizing the two-channel headline `(99)`.
+  With Theorem 1 (`GammaEulerCharacteristicPositivity`) and Theorem 2 (corpus finite-block coefficient
+  parity + this asymptotic transport), the card's full analytic no-go mechanism is now unconditional
+  in Lean.  Remaining gates are non-Lean: specialist novelty audit; replacing the failed local
+  induction by a block/global source inequality.

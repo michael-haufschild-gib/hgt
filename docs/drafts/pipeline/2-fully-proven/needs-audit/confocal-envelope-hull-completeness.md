@@ -15,7 +15,8 @@ moment observable to the confocal field, not a hypothesis of envelope reconstruc
 
 - [x] 0 → 1 in-progress: exact statement and hostile attack recorded
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: exact Lean theorem(s), narrow leaf build, axiom audit
+- [x] 2 → 3 formalized: exact Lean theorem(s), narrow leaf build, axiom audit
+  (`HTGeometry/ConfocalEnvelopeHull.lean`, axioms `[propext, Classical.choice, Quot.sound]`)
 - [ ] 3 → 4 publication-ready: integrated into the single master theorem of the paper
 
 ## Exact claim
@@ -226,3 +227,38 @@ finite on `D`; bounded sources are the principal case.
 `[PAPER-PROVED]`.  The proof is dependency-closed.  The mechanism is classical half-space/support-
 function geometry, but the exact confocal closure and maximal orbit-identifiability classification
 remain `[NOVELTY UNVERIFIED]` pending specialist priority review.
+
+## Lean certificate
+
+Module: `formal/GaloisForLFunctions/HTGeometry/ConfocalEnvelopeHull.lean` (unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`).  Each part of the exact claim is a named theorem.
+
+- **Algebraic engine** (`g_R(x,a) ≤ L ⇔ a ≤ L ∧ Rx−La ≥ (R²−L²)/2` on `|x|≤a`):
+  `liftedConfocalBranch_le_iff_halfspace` (radicand nonnegativity: `liftedConfocalRadicand_nonneg`).
+- **(1) `S ⊆ H_D(S)`:** `subset_confocalHullOfField_of_isEnvelope`.
+- **(2) closed, convex, largest source with `G_T ≤ G_S`:** `isClosed_confocalHullOfField`,
+  `convex_confocalHullOfField`, `subset_confocalHullOfField_of_envelope_le`.
+- **(3) `G_{H_D(S)} = G_S`:** `isConfocalEnvelopeOn_confocalHullOfField`.
+- **(4) idempotence `H_D(H_D(S)) = H_D(S)`:** `confocalHullOfField_idem`.
+- **(5) `G_S = G_T on D ⇔ H_D(S) = H_D(T)`:** `eqOn_iff_confocalHullOfField_eq`
+  (both directions: `confocalHullOfField_eq_of_eqOn`, `eqOn_of_confocalHullOfField_eq`).
+- **(6) exposed face `F_R` and singleton orbit recovery:** `confocalExposedFace`,
+  `mem_confocalExposedFace_iff_halfspace_eq`, `active_point_eq_of_singleton_confocalExposedFace`,
+  with conjugation-orbit recovery `abs_im_eq_sqrt_lorentzLift`.
+- **(7) optimality (adjoining any hull point leaves the field unchanged):**
+  `isConfocalEnvelopeOn_insert_of_mem_hull`.
+- **Complex-source realization** (the intrinsic amplitude field is the confocal envelope of the
+  Lorentz-lifted source on every positive radius domain): `confocalLorentzLift`,
+  `liftedConfocalBranch_confocalLorentzLift`, `isConfocalEnvelopeOn_confocalLorentzLift_image`.
+
+Direct verification: `lake build GaloisForLFunctions.HTGeometry.ConfocalEnvelopeHull`.
+
+## Log
+
+- 2026-07-24 — **Lean gate `2 → 3` closed.**  Corpus audit found the confocal hull already formalized
+  in `HTGeometry/ConfocalEnvelopeHull.lean` (the algebraic engine and parts (1),(2),(3),(5),(6),(7),
+  plus the complex-source realization).  The one missing part was idempotence (4); added
+  `confocalHullOfField_idem` (the hull depends only on its field, and the hull's field is `G` by
+  `isConfocalEnvelopeOn_confocalHullOfField`, so re-hulling reproduces it).  Module builds; axioms
+  `[propext, Classical.choice, Quot.sound]`; every part of the exact claim is now a named
+  unconditional theorem (mapping above).

@@ -2093,3 +2093,103 @@ so the route is not re-derived.
   against the archimedean term — i.e. Weil positivity.
 Everything funnels to the same genuine open core: **dominate the prime side.** That is where the
 missing discovery has to be made; the certified stack above is the instrument that will register it.
+
+## Step 9bg — the Weil Gram matrix becomes arithmetically evaluable [PROVED]
+
+9bf named the requirement: a QUADRATIC instrument, because linear statistics are saturated
+(identity theorem) and displacement is unpenalised above height c/√3 (9be). The corpus already had
+both halves of the frame — `xiWeilPolarization F G = Σ'_q F(pt)·(sharp G)(pt)` with RH ⟹ diagonal
+nonneg (XiWeilPolarization), and the Guinand–Weil explicit formula on the regularized-Cauchy test
+algebra (XiGuinandWeilExplicitFormula) — but nothing connecting them, because the Weil form is
+quadratic while the explicit formula is linear. New module `XiWeilResolventGram.lean` supplies the
+bridge.
+
+**[PROVED HERE] The product closure.** With `K z w = w⁻¹ − (w−z)⁻¹` (equivalently `−z/(w(w−z))`),
+for distinct nonzero base points and `w` off the poles:
+  `K z · K z' = w⁻¹·w⁻¹ − (z'/(z(z−z')))·K z + (z/(z'(z−z')))·K z'`.
+The 1/w-coefficients cancel exactly (they must: the product is O(w⁻⁴)), so **the test algebra closes
+under multiplication modulo the single new generator `w ↦ w⁻²`.** Verified in mpmath at real and
+complex points before formalizing; the Lean proof is `field_simp; ring`.
+
+**[PROVED HERE] Consequences.**
+- `xiWeilGramEntry_eq_logDeriv` — every Gram entry equals
+  `M₁ − (z'/(z(z−z')))·logDeriv XiC z + (z/(z'(z−z')))·logDeriv XiC z'`,
+  where `M₁ = Σ'_q pt_q⁻²` is one absolute constant (summable via the corpus genus-one bound).
+- `xiWeilSharp_cauchyKernel` — sharp maps `K z ↦ K (conj z)`, so the Weil pairing of two kernels is
+  the Gram entry at the conjugated second point (`xiWeilPolarization_cauchyKernel`).
+- `xiWeilPolarization_cauchyKernel_eq` / `_diagonal` — **the Weil form on the resolvent algebra is a
+  functional of `logDeriv XiC` alone: no zero location enters.** Composing with the corpus explicit
+  formula, `logDeriv XiC` at admissible points IS the prime (−ζ′/ζ) minus archimedean source. So the
+  Weil quadratic form is now evaluable from arithmetic data.
+
+**Why this is the escape from 9bf's saturation.** The saturation argument applies to LINEAR
+statistics `Σ h(pt)` with h analytic. The Weil form is `Σ (F·F^#)(pt)` — linear in the PRODUCT, and
+the product `F·F^#` is exactly what fails to be a modulus at off-line points: for real pt,
+`F(pt)·F^#(pt) = |F(pt)|² ≥ 0` termwise, while an off-line conjugate pair contributes
+`2Re[F(pt)·conj F(conj pt)]`, of either sign. So on-line zeros can only ADD, and indefiniteness
+detects displacement — with no threshold and no multiplicity accounting.
+
+**[OPEN CORE, now sharp and rank-one] the criterion's hard direction.** RH ⟹ PSD is the corpus's
+`xiWeilPolarization_diagonal_nonneg_of_riemannHypothesis`. The converse needs: an off-line zero
+produces a NEGATIVE diagonal value. Desk-verified construction (to formalize next): put
+`δ = z − pt₀`, and use the pole of `logDeriv XiC` at the zero, `logDeriv XiC z ~ m/δ`. With
+`γ := conj(pt₀)/(pt₀(pt₀−conj pt₀))` (nonzero, since `pt₀ ≠ 0` and `pt₀ ≠ conj pt₀` off-line), the
+diagonal formula above gives
+  `xiWeilPolarization (K z) (K z) ≈ −2·Re(γ·m/δ) + O(1)`,
+so choosing `δ = t·γ·m` with `t → 0⁺` sends it to `−∞`. **A single base point suffices — the
+criterion is rank-one detectable.** What has to be certified: the `O(1)` remainder is genuinely
+bounded as `z → pt₀`, i.e. continuity of `M₁` (a constant) and of `logDeriv XiC` at `conj pt₀`
+away from its own pole — the two poles are at distinct points precisely because the zero is
+off-line, which is where the hypothesis enters.
+
+Landing that gives a machine-checked **RH ⟺ positivity of an explicitly arithmetic Hermitian
+matrix** — the `W_P ⪰ 0` shape of the campaign goal, but with every entry written in primes and
+Γ-factors rather than in unknown zeros. Then the remaining mathematics is exactly the classical open
+problem: dominate the prime side. That is the honest frontier this campaign has reached.
+
+## Step 9bh — the Weil criterion closes: RH from positivity, rank-one [PROVED]
+
+`XiWeilCriterionConverse.lean`, axioms clean, lint-clean, no sorry. This lands the direction 9bg
+named as its open core, and it turned out to be RANK-ONE — one base point suffices.
+
+**[PROVED HERE] Pole splitting.** `XiC_peel_ball` (mirrors the corpus `xi_peel_ball` for the
+centered coordinate) + `XiC_order_toNat_pos` give, on a punctured ball around a zero `pt₀`,
+  `logDeriv XiC z = m/(z − pt₀) + logDeriv g z`, `m = ord_{pt₀} > 0`, `g` analytic nonvanishing.
+
+**[PROVED HERE] The diagonal is real and explicit.** Schwarz reality
+`logDeriv XiC (conj z) = conj (logDeriv XiC z)` — proved here by REINDEXING the relative resolvent
+trace along `xiZeroCopyLineConjEquiv` (`Complex.conj_tsum` + `xiSpectralPoint_lineConj`), avoiding
+the heavier Hedenmalm import cone — turns the Gram diagonal of 9bg into
+  `Q z = M₁ − 2·Re(A z · logDeriv XiC z)`,  `A z = conj z/(z(z − conj z))`.
+So the diagonal is a REAL quantity: one constant minus twice a real part.
+
+**[THEOREM] `exists_neg_weilDiagonal_of_offAxis_zero`** — if `XiC pt₀ = 0` with `pt₀` off the real
+axis, some single admissible base point makes `Q` negative. Mechanism: along the ray
+`z_t = pt₀ + t·A(pt₀)·m`, the pole contributes `A(z_t)/(t·A(pt₀))`, whose real part is `~1/t`, while
+`A` and `logDeriv g` stay continuous; so `Q(z_t) → −∞` and a witness is extracted from the filter.
+`A(pt₀) ≠ 0` requires exactly `pt₀ ≠ 0` and `pt₀ ≠ conj pt₀` — the second IS the off-line hypothesis.
+
+**[THEOREM] `riemannHypothesis_of_weilDiagonal_nonneg`** —
+  **if `0 ≤ Re Q(z)` for every admissible base point off the real axis, then RH.**
+Composed with the corpus's `xiWeilPolarization_diagonal_nonneg_of_riemannHypothesis` (the easy
+direction), the Weil form on the resolvent test algebra is a genuine two-sided criterion, and by
+9bg every value of that form is an explicit combination of `M₁ = Σ' pt⁻²` and two values of
+`logDeriv XiC` — i.e. of `−ζ′/ζ` and `Γ_ℝ′/Γ_ℝ` through the corpus explicit formula.
+
+**Novelty gate.** Weil positivity ⟺ RH is classical (Weil 1952; Bombieri's exposition), and a
+literature search yields it. Corpus-new as artifacts: (i) the machine-checked converse, and its
+RANK-ONE form — the classical treatments phrase indefiniteness through test-function classes, not
+through a single Cauchy kernel driven at a zero; (ii) the product-closure identity of 9bg making
+every entry arithmetic; (iii) the whole chain unconditional and sorry-free.
+
+**Where the open problem now sits, exactly.** The criterion is discharged; what remains is to decide
+the SIGN of `M₁ − 2Re(A z · logDeriv XiC z)` for all admissible `z`, where `logDeriv XiC` is the
+prime-plus-archimedean source. That is dominating the prime side — the classical open problem, now
+posed against a fully certified instrument rather than against unknown zeros. Concretely the next
+experiments this enables:
+1. evaluate `M₁` in closed form (it is `−(logDeriv XiC)′(0)`, an explicit Γ/prime constant) and
+   bound it two-sidedly with the theta machinery of 9bd;
+2. for `z` in the Dirichlet region (`Re(1/2 + z i) > 1`), `logDeriv XiC z` is an absolutely
+   convergent prime series, so `Q z ≥ 0` there becomes a concrete prime-sum inequality — test
+   whether it is provable in a band, mirroring the band-limited Weil positivity ladder;
+3. the failure locus of any such band result localizes exactly where off-line zeros could hide.

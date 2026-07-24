@@ -315,3 +315,58 @@ classes for `n+2` discrete vertices) must equal: for the discrete complex, `card
 reduced `H̃⁰ = |V|−1 = n+1`, matching. REMAINING for the general strand equivalence: (i) the algebraic
 squarefree-Koszul-strand ↔ reduced-cochain chain map for arbitrary induced subcomplexes and all degrees,
 (ii) matching the exact ranks (Koszul-side spanning/upper bound) — the deep general Hochster identity.
+
+### Lean progress 2 — "reflection removes one layer" at degree 0
+`HTGeometry/ReflectionRemovesLayer.lean` [PROVED HERE], standard axioms [propext, Classical.choice,
+Quot.sound], builds clean, my-cone lint clean (only unrelated parallel-agent RHTower XiWeilResolventGram
+unreachable + Hurwitz large-file warning).
+
+Delivered — the card's title mechanism ("Reflection removes exactly one face layer") formalized at the
+reduced-H⁰/degree-0 combinatorial level, via a DIMENSION argument (no component-bijection needed):
+- `componentIndicator G F a` : the component-constant 0-cochain that is 1 on `a`'s component, 0 elsewhere;
+- `diffFunctional G F a b` : the reflection functional `f ↦ f a − f b` on `componentConstant G F`;
+- `finrank_diffFunctional_ker` : if `a,b` lie in DIFFERENT components (`¬ G.Reachable a b`), the kernel
+  `{f | f a = f b}` (= component-constant cochains of the edge-augmented complex) has dimension
+  `card(components) − 1` — exactly one less than `componentConstant G F` (whose dim is `card(components)`
+  by last session's `finrank_componentConstant`). Proof: the functional is surjective (via `componentIndicator`
+  hitting 1), so rank-nullity drops the kernel dimension by exactly 1.
+
+This is the degree-0 shadow of the general Hochster "one face layer per reflection" mechanism, now
+combinatorially exact. REMAINING (deep, general): the algebraic Koszul-strand ↔ reduced-cochain chain
+equivalence for arbitrary induced subcomplexes in all degrees, and the exact-rank match.
+
+### Lean progress 3 — degree-0 reduced-H⁰ at extreme complexes
+`HTGeometry/ReducedH0DiscreteComplex.lean` [PROVED HERE], standard axioms [propext, Classical.choice,
+Quot.sound], builds clean, my-cone lint clean (only unrelated parallel-agent RHTower unreachable errors).
+
+Delivered — the two boundary values of reduced `H̃⁰`, pinning the degree-0 combinatorial side against the
+algebraic Koszul computation:
+- `card_connectedComponent_bot` : the discrete complex (empty graph `⊥`) has `card V` components;
+- `finrank_reducedH0_bot` : **discrete-complex reduced `H̃⁰ = card V − 1`** — the exact value the isolated
+  (fully discrete) Koszul `H¹`-family computes on the algebraic side (`n+1` classes for `n+2` vertices).
+  This is the degree-0 discrete Hochster identity, both sides now equal to `|V|−1`;
+- `finrank_reducedH0_of_connected` : a connected complex has reduced `H̃⁰ = 0`.
+
+Combinatorial degree-0 side is now complete (general `= components−1`, reflection-removes-one-layer,
+discrete/connected extremes). REMAINING (deep): the general Koszul-strand ↔ reduced-cochain chain
+equivalence in all degrees + the algebraic-side exact-rank (spanning) match.
+
+### Lean progress 4 — reduced H̃⁰ is genuine simplicial cohomology (coboundary kernel)
+`HTGeometry/GraphCoboundary.lean` [PROVED HERE], axioms [propext, Quot.sound], builds clean, my-cone
+lint clean (only unrelated parallel-agent RHTower unreachable errors).
+
+Delivered — the explicit degree-0 simplicial coboundary, tightening the combinatorial side to honest
+simplicial cohomology:
+- `graphCoboundary G F` : the `F`-linear coboundary `(δ⁰ f)(u,v) = f v − f u` on edges, `0` off edges;
+- `graphCoboundary_ker` : `ker δ⁰ = componentConstant G F`. Hence `H⁰ = ker δ⁰` is exactly the
+  component-constant space, so `reduced H̃⁰ = ker δ⁰ / ⟨1⟩` (Lean progress 1) is genuine reduced
+  simplicial cohomology, not an ad-hoc definition.
+
+COMBINATORIAL DEGREE-0 SIDE NOW A COHERENT COMPLETE PACKAGE: coboundary δ⁰ + ker δ⁰ = componentConstant
+(H⁰); reduced H̃⁰ = components−1 (Lean progress 1); reflection removes one layer (Lean progress 2);
+discrete/connected extremes (Lean progress 3). All axiom-clean, matching the algebraic Koszul side
+numerically at the discrete case.
+REMAINING for card completion (deep, largely in the algebraic/KoszulCohomology cone): the general
+Koszul-strand ↔ reduced-cochain chain equivalence in all degrees + the algebraic-side exact-rank
+(spanning) match — the full Hochster isomorphism. Degree-1 combinatorial side (reduced H̃¹ = first Betti,
+needs edge orientation) is the next non-colliding combinatorial extension if continued.
