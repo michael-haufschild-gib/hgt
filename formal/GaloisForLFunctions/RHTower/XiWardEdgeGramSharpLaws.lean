@@ -121,15 +121,16 @@ theorem card_nsmul_eightPi_le_xiWardEdgeQuadEnergy
   have h1 : ∑ q ∈ F, ENNReal.ofReal (xiPairGramTerm q q) ≤
       ∑' p : XiRightUpperZeroCopy × XiRightUpperZeroCopy,
         ENNReal.ofReal (xiPairGramTerm p.1 p.2) := by
-    have hinjF : ∀ a ∈ F, ∀ b ∈ F,
-        (fun q : XiRightUpperZeroCopy => (q, q)) a =
-          (fun q : XiRightUpperZeroCopy => (q, q)) b → a = b := by
+    have hinjF : Set.InjOn
+        (fun q : XiRightUpperZeroCopy => (q, q)) ↑F := by
       intro a _ b _ h
       exact congrArg Prod.fst h
     calc ∑ q ∈ F, ENNReal.ofReal (xiPairGramTerm q q)
         = ∑ p ∈ F.image (fun q : XiRightUpperZeroCopy => (q, q)),
             ENNReal.ofReal (xiPairGramTerm p.1 p.2) :=
-          (Finset.sum_image hinjF).symm
+          (Finset.sum_image
+            (f := fun p : XiRightUpperZeroCopy × XiRightUpperZeroCopy =>
+              ENNReal.ofReal (xiPairGramTerm p.1 p.2)) hinjF).symm
       _ ≤ ∑' p : XiRightUpperZeroCopy × XiRightUpperZeroCopy,
             ENNReal.ofReal (xiPairGramTerm p.1 p.2) :=
           ENNReal.sum_le_tsum _
@@ -198,6 +199,153 @@ theorem height_lt_abs_im_of_xiWardEdgeQuadEnergy_le_eightPi {T : ℝ}
     rw [he]
     nlinarith [h4]
   linarith
+
+/-- The Gram matrix is symmetric. -/
+theorem xiPairGramTerm_symm (q q' : XiRightUpperZeroCopy) :
+    xiPairGramTerm q' q = xiPairGramTerm q q' := by
+  unfold xiPairGramTerm
+  ring
+
+/-- **Two-pair floor with cross bonus**: two distinct strict-right pairs
+deposit both diagonal Gram entries and twice their positive cross entry. -/
+theorem twoPair_gram_floor_le_xiWardEdgeQuadEnergy
+    {q q' : XiRightUpperZeroCopy} (hne : q ≠ q') :
+    ENNReal.ofReal (xiPairGramTerm q q) +
+      ENNReal.ofReal (xiPairGramTerm q' q') +
+      2 * ENNReal.ofReal (xiPairGramTerm q q') ≤
+    xiWardEdgeQuadEnergy := by
+  classical
+  rw [xiWardEdgeQuadEnergy_eq_tsum_gram]
+  have hle := ENNReal.sum_le_tsum
+    (f := fun p : XiRightUpperZeroCopy × XiRightUpperZeroCopy =>
+      ENNReal.ofReal (xiPairGramTerm p.1 p.2))
+    ({(q, q), (q, q'), (q', q), (q', q')} :
+      Finset (XiRightUpperZeroCopy × XiRightUpperZeroCopy))
+  refine le_trans (le_of_eq ?_) hle
+  have h1 : ((q, q) : XiRightUpperZeroCopy × XiRightUpperZeroCopy) ∉
+      ({(q, q'), (q', q), (q', q')} :
+        Finset (XiRightUpperZeroCopy × XiRightUpperZeroCopy)) := by
+    simp [Prod.ext_iff, hne]
+  have h2 : ((q, q') : XiRightUpperZeroCopy × XiRightUpperZeroCopy) ∉
+      ({(q', q), (q', q')} :
+        Finset (XiRightUpperZeroCopy × XiRightUpperZeroCopy)) := by
+    simp [Prod.ext_iff, hne]
+  have h3 : ((q', q) : XiRightUpperZeroCopy × XiRightUpperZeroCopy) ∉
+      ({(q', q')} :
+        Finset (XiRightUpperZeroCopy × XiRightUpperZeroCopy)) := by
+    simp [Prod.ext_iff, hne]
+  rw [Finset.sum_insert h1, Finset.sum_insert h2, Finset.sum_insert h3,
+    Finset.sum_singleton]
+  dsimp only
+  rw [xiPairGramTerm_symm q' q]
+  ring
+
+/-- **Clustering penalty**: two distinct pairs whose heights are within `δ`
+force edge energy strictly above `16π + 32π/(4+δ²)`. -/
+theorem cluster_penalty_lt_xiWardEdgeQuadEnergy
+    {q q' : XiRightUpperZeroCopy} (hne : q ≠ q') {δ : ℝ}
+    (hδ : |(xiRightCenteredZero q.1).im -
+      (xiRightCenteredZero q'.1).im| ≤ δ) :
+    ENNReal.ofReal (16 * π + 32 * π / (4 + δ ^ 2)) <
+      xiWardEdgeQuadEnergy := by
+  have hre := xiRightCenteredZero_re_pos q.1
+  have hre' := xiRightCenteredZero_re_pos q'.1
+  have hlt := (abs_lt.mp (abs_xiRightCenteredZero_re_lt_half q.1)).2
+  have hlt' := (abs_lt.mp (abs_xiRightCenteredZero_re_lt_half q'.1)).2
+  have hx : 0 < (xiRightCenteredZero q.1).re + 1 / 2 := by linarith
+  have hx' : 0 < (xiRightCenteredZero q'.1).re + 1 / 2 := by linarith
+  have hδ0 : 0 ≤ δ := le_trans (abs_nonneg _) hδ
+  have hd2 : ((xiRightCenteredZero q.1).im -
+      (xiRightCenteredZero q'.1).im) ^ 2 ≤ δ ^ 2 := by
+    rw [← sq_abs]
+    exact pow_le_pow_left₀ (abs_nonneg _) hδ 2
+  have hcross : 32 * π / (4 + δ ^ 2) ≤ 2 * xiPairGramTerm q q' := by
+    unfold xiPairGramTerm
+    have hs1 : (1 : ℝ) ≤ ((xiRightCenteredZero q.1).re + 1 / 2) +
+        ((xiRightCenteredZero q'.1).re + 1 / 2) := by linarith
+    have hs2 : ((xiRightCenteredZero q.1).re + 1 / 2) +
+        ((xiRightCenteredZero q'.1).re + 1 / 2) ≤ 2 := by linarith
+    have h4δ : (0 : ℝ) < 4 + δ ^ 2 := by positivity
+    have hA : (0 : ℝ) < (((xiRightCenteredZero q.1).re + 1 / 2) +
+        ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
+        ((xiRightCenteredZero q.1).im -
+          (xiRightCenteredZero q'.1).im) ^ 2 := by positivity
+    have hfrac : 1 / (4 + δ ^ 2) ≤
+        (((xiRightCenteredZero q.1).re + 1 / 2) +
+          ((xiRightCenteredZero q'.1).re + 1 / 2)) /
+        ((((xiRightCenteredZero q.1).re + 1 / 2) +
+            ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
+          ((xiRightCenteredZero q.1).im -
+            (xiRightCenteredZero q'.1).im) ^ 2) := by
+      rw [div_le_div_iff₀ h4δ hA]
+      nlinarith [hs1, hs2, hd2]
+    have hgoal_eq : 2 * (16 * π * (((xiRightCenteredZero q.1).re + 1 / 2) +
+        (((xiRightCenteredZero q'.1).re + 1 / 2))) *
+        (1 / (((((xiRightCenteredZero q.1).re + 1 / 2) +
+              (((xiRightCenteredZero q'.1).re + 1 / 2)))) ^ 2 +
+            ((xiRightCenteredZero q.1).im -
+              (xiRightCenteredZero q'.1).im) ^ 2) +
+          1 / (((((xiRightCenteredZero q.1).re + 1 / 2) +
+              (((xiRightCenteredZero q'.1).re + 1 / 2)))) ^ 2 +
+            ((xiRightCenteredZero q.1).im +
+              (xiRightCenteredZero q'.1).im) ^ 2))) =
+        32 * π * ((((xiRightCenteredZero q.1).re + 1 / 2) +
+            ((xiRightCenteredZero q'.1).re + 1 / 2)) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2) +
+              ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
+            ((xiRightCenteredZero q.1).im -
+              (xiRightCenteredZero q'.1).im) ^ 2)) +
+        32 * π * ((((xiRightCenteredZero q.1).re + 1 / 2) +
+            ((xiRightCenteredZero q'.1).re + 1 / 2)) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2) +
+              ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
+            ((xiRightCenteredZero q.1).im +
+              (xiRightCenteredZero q'.1).im) ^ 2)) := by
+      ring
+    rw [hgoal_eq]
+    have ha := mul_le_mul_of_nonneg_left hfrac
+      (show (0 : ℝ) ≤ 32 * π by positivity)
+    have hb : (0 : ℝ) ≤ 32 * π *
+        ((((xiRightCenteredZero q.1).re + 1 / 2) +
+            ((xiRightCenteredZero q'.1).re + 1 / 2)) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2) +
+              ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
+            ((xiRightCenteredZero q.1).im +
+              (xiRightCenteredZero q'.1).im) ^ 2)) := by positivity
+    have hc : 32 * π / (4 + δ ^ 2) = 32 * π * (1 / (4 + δ ^ 2)) := by
+      ring
+    linarith [ha, hb, hc]
+  have hstrict : 8 * π < xiPairGramTerm q q :=
+    lt_of_lt_of_le (by
+      rw [lt_div_iff₀ hx]
+      nlinarith [pi_pos]) (eightPi_div_le_xiPairGramTerm_diag q)
+  have hstrict' : 8 * π < xiPairGramTerm q' q' :=
+    lt_of_lt_of_le (by
+      rw [lt_div_iff₀ hx']
+      nlinarith [pi_pos]) (eightPi_div_le_xiPairGramTerm_diag q')
+  have hsum : 16 * π + 32 * π / (4 + δ ^ 2) <
+      xiPairGramTerm q q + xiPairGramTerm q' q' +
+        2 * xiPairGramTerm q q' := by
+    linarith [hstrict, hstrict', hcross]
+  calc ENNReal.ofReal (16 * π + 32 * π / (4 + δ ^ 2))
+      < ENNReal.ofReal (xiPairGramTerm q q + xiPairGramTerm q' q' +
+          2 * xiPairGramTerm q q') := by
+        rw [ENNReal.ofReal_lt_ofReal_iff
+          (lt_of_le_of_lt (by positivity) hsum)]
+        exact hsum
+    _ = ENNReal.ofReal (xiPairGramTerm q q) +
+          ENNReal.ofReal (xiPairGramTerm q' q') +
+          2 * ENNReal.ofReal (xiPairGramTerm q q') := by
+        rw [ENNReal.ofReal_add
+          (add_nonneg (xiPairGramTerm_nonneg q q)
+            (xiPairGramTerm_nonneg q' q'))
+          (mul_nonneg (by norm_num) (xiPairGramTerm_nonneg q q')),
+          ENNReal.ofReal_add (xiPairGramTerm_nonneg q q)
+            (xiPairGramTerm_nonneg q' q'),
+          ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2)]
+        norm_num
+    _ ≤ xiWardEdgeQuadEnergy :=
+        twoPair_gram_floor_le_xiWardEdgeQuadEnergy hne
 
 end
 

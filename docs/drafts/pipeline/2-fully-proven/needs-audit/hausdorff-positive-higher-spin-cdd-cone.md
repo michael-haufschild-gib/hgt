@@ -364,7 +364,16 @@ The new load-bearing content is the analytic measure-to-QFT germ, its global-com
 and the physical identification of the cone.  A finite-difference identity alone would be
 mechanical infrastructure and would not formalize the source theorem.
 
-No Lean edit, build, scratch compilation, lint, axiom check, or numerical computation was run.
+Formalized (this mechanical infrastructure only, **not** the load-bearing analytic content):
+`formal/GaloisForLFunctions/HTGeometry/HausdorffPositiveCddCone.lean` proves the **necessity
+direction** — the CDD couplings `b_m = ∑_j w_j r_j^{2m}` (`w_j ≥ 0`, shell radii `r_j ∈ [0,1]`) are
+completely monotone, `(-1)^k (Δ^k b)_m ≥ 0` for all `m,k` (`cddCoupling_completelyMonotone`, with the
+general `geometricCombination_completelyMonotone` and the exact iterated finite-difference identity
+`fwdDiff_iter_geometricCombination : Δ^k (∑_j w_j y_j^·)_m = ∑_j w_j (y_j-1)^k y_j^m`).  Axioms clean;
+`lake build` green.  Honest classification: this is the elementary/mechanical *necessity* half (the
+positivity inequalities (7),(10)), reusable and absent from mathlib, but **not** the card's novel
+content — the Hausdorff converse (completely monotone ⇒ representing measure) is a classical result
+absent from mathlib and unformalized, and the analytic measure-to-QFT germ remains paper-level.
 
 ## Primary literature
 
@@ -399,3 +408,12 @@ No Lean edit, build, scratch compilation, lint, axiom check, or numerical comput
 - [ ] explicit exponentially quasilocal density and compact-local QFT flow on a nontrivial
   measure subcone
 - [ ] universality theorem deriving the cone from locality and unitarity rather than shell input
+
+## Log
+
+- 2026-07-24 — formalized the necessity direction only (mechanical infrastructure the card itself
+  flagged as non-load-bearing): CDD couplings are completely monotone
+  (`GaloisForLFunctions.HTGeometry.cddCoupling_completelyMonotone` /
+  `geometricCombination_completelyMonotone` / `fwdDiff_iter_geometricCombination`). Reusable and
+  absent from mathlib; axioms clean; build green. The Hausdorff converse and the analytic
+  measure-to-QFT germ (the actual novel content) remain unformalized. Card stays in 2-fully-proven.

@@ -2165,7 +2165,7 @@ still has zero Ward column.
 
 C47 retained both adjoint cutoff orientations and therefore promoted the
 source target from four to eight.  That promotion is unnecessary.  For the
-self-adjoint Fisher connection `F_sigma` and orthogonal affine cutoff
+squarefree self-adjoint Fisher connection `F_sigma` and its diagonal clock cutoff
 `Q_(sigma,u)`, put
 
 ```text
@@ -2196,7 +2196,12 @@ This is formalized in
 `formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherLowerBoundaryBudget.lean`
 and wired into the `RHTower` umbrella.  It is an actual non-diagonal
 operator theorem: `L_(sigma,u)` is the sum of the two rank-one terms already
-given by `pointedFisherConnection_lowerBoundary`.
+given by `pointedFisherConnection_lowerBoundary`.  It is **not** yet the
+physical affine-Euler operator: `EulerSquarefreeAffineFisherCutoffWard.lean`
+proves probability and scalar Fisher/Ward laws only.  Corpus search found no
+global dyadic Fock isometry, affine joint cutoff projection, or conjugation
+law transporting this lower corner.  Earlier wording silently conflated
+those scalar and operator layers.
 
 Consequently C47-NCL is no longer the minimal live conjecture.  The exact
 frontier is the **one-corner incidence**
@@ -2226,3 +2231,86 @@ complete critical coarea field.  Hence Gamma/Sonin/Hardy completion may leave
 no nonzero causal, polar, or denominator-model-space remainder on a set of
 positive cutoff measure.  This equality condition is the immediate hostile
 test for `(C48.3)`.
+
+## C49 critical escape forces a prelimit cofinal incidence `[CORPUS THEOREM; FRONTIER SHARPENED]`
+
+C48.2 is a scalar-energy limit, not a strong critical source vector.  The
+already-formalized theorems
+
+```text
+mobiusCriticalShiftChannel_weakly_tendsto_zero
+mobiusCriticalShiftChannel_not_strongly_tendsto_zero
+IsCompactOperator.tendsto_norm_apply_mobiusCriticalShiftChannel_zero
+```
+
+show that the normalized critical Möbius channel loses every fixed finite
+divisor window while retaining nonzero total norm.  Every fixed compact
+synthesis therefore annihilates it.  Consequently `(C48.3)` cannot mean
+"take a critical source vector and then apply one fixed compact
+Gamma/Sonin operator."  No such source vector survives strongly.
+
+The only live producer theorem has the following prelimit form.  Construct a
+source-defined moving family `C_sigma`, acting on the actual finite-`sigma`
+one-corner field before the critical limit, such that
+
+```text
+sup_(sigma>1) ||C_sigma|| <= 1,                         (C49.1)
+LaplaceColumn(C_sigma L_sigma)(w) -> r_P(w),            (C49.2)
+integral ||C_sigma L_sigma(u)||^2 du <=
+  integral ||L_sigma(u)||_HS^2 du.                      (C49.3)
+```
+
+The family must be cofinal and noncompact in the escaping divisor coordinate.
+If `C_sigma` factors uniformly through one fixed compact operator, `(C49.2)`
+has zero limit and cannot be the claimed incidence.  This is now the first
+falsifier to run on every Gamma/Sonin proposal.
+
+Novelty audit:
+
+- half-line Laplace/Cauchy Gram realization and represented-column positivity
+  are classical Paley--Wiener/RKHS facts;
+- hard-cut Laplace transform equals an exponential divided difference is a
+  classical semigroup/double-operator-integral mechanism;
+- finite layer-cake/Gini coarea already exists in this corpus;
+- `FisherOneCornerCoareaTransform.lean` adds exact Lean connectors, not a
+  literature-new RH theorem.
+
+No literature or corpus theorem found supplies `(C49.1)--(C49.3)` for the
+Möbius lower corner and the continued Xi Ward column.  That arithmetic
+incidence—not the classical Hilbert completion surrounding it—is the
+candidate new scientific theorem.
+
+## C50 anti-theatre audit of three apparent continuations `[REJECTED AS NEW KNOWLEDGE]`
+
+Three immediate continuations of C49 were checked against the corpus before
+promotion.
+
+1. Differentiating the already-proved real-aperture Pick defect at aperture
+   zero yields the classical Herglotz kernel
+
+   ```text
+   (r(w)+conj(r(v)))/(w+conj(v)) >= 0.
+   ```
+
+   This is only first-order Pick positivity.  It gives no upper bound for the
+   derivative `r`; the corpus already contains the corresponding edge-mass
+   quantization.  It does not prove `(C48.4)`.
+
+2. Factoring the charged graph as `A/B` and differentiating a domain vector
+   `B O` into `B' O+B O'` is standard model-space/Julia theory.  Cancellation
+   of the `B' O` term is useful only if an Euler--Gamma identity, stated
+   before the divisor factorization, proves that the resulting `K(B)`
+   component vanishes.  Assuming `B H²` membership, full domain, or zero
+   model-space pairing is exactly the RH-bearing conclusion and is rejected
+   as circular.
+
+3. The absolute-Euler Cauchy--Laplace observability form, its tail-shift
+   identity, and the stationary de-Poissonized Weil form already occur in
+   `critical-logderivative-euler-safe-cauchy-loss-law.md` and
+   `critical-logderivative-euler-safe-depoissonized-weil-stationarity.md`.
+   Recasting C49 as that inequality is a corpus duplicate; its sign remains
+   precisely the open completed Weil positivity.
+
+Therefore none of these three calculations is new scientific knowledge.
+The live theorem remains the explicit finite-`sigma`, pre-divisor,
+noncompact incidence `(C49.1)--(C49.3)`.

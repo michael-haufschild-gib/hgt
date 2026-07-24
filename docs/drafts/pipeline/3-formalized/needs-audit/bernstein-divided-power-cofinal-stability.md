@@ -15,7 +15,7 @@ whose constant is independent of the Bernstein degree `N`.
 
 - [x] 0 → 1 in-progress: exact statement and hostile attack recorded
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: exact Lean theorem(s), narrow leaf build, axiom audit
+- [x] 2 → 3 formalized: exact Lean theorem(s), narrow leaf build, axiom audit
 - [ ] 3 → 4 publication-ready: integrated into the single master theorem of the paper
 
 ## Exact claim
@@ -232,3 +232,19 @@ along `R -> infinity`, with both constants expressed by the same source bounds `
 `[PAPER-PROVED]`.  Every estimate follows from finite identities, the exponential series, and the
 existing dependency-closed confocal collar.  The exact formal statement must include `N>=1`,
 `mu>0`, `0<=theta<1`, nonnegative `A,M,rho`, and the displayed moment bounds.
+
+- 2026-07-24 — **Formalization gate `(2 -> 3)` complete** (found already fully formalized on audit,
+  unconditional, axioms `[propext, Classical.choice, Quot.sound]`).  Module
+  `RHTower/ScaleCovariantBernsteinDividedPowerStability.lean` (reachable via
+  `PositiveFieldBicompletionLaw`):
+  * `coeff_bernsteinPolynomial_closed` — coefficient formula `(1)`.
+  * `sum_choose_mul_choose_eq_choose_add` — the Vandermonde collapse `sum_k C(a,k)C(b,k)=C(a+b,a)`.
+  * `coeff_bernsteinScalePurityPolynomial_closed` — the coefficient identity `(2)`.
+  * `bernsteinDividedPowerRoot` / `coeff_bernsteinDividedPowerRoot` and
+    `bernsteinScalePurityPolynomial_coeff_dividedPower_square` — the exact divided-power square law `(3)`.
+  * `moment_prefix_eq_of_bernsteinDividedPowerRoot_sq_eq`,
+    `bernsteinScalePurityPolynomial_eq_iff_moment_prefix_eq` — positive square-root inversion / moment recovery.
+  * `bernsteinDividedPowerTailNorm`, `bernsteinDividedPowerChart_sub_mass_le_tailNorm`,
+    `positive_squareRoot_chamber_stability`, `bernsteinDividedPowerChart_stability` — the uniform tail
+    bound `(4)` and the cofinal, degree-independent stability constant.
+  Moved to `3-formalized/needs-audit`.

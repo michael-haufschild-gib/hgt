@@ -288,3 +288,28 @@ heights ≤ T); sharp per-pair and pair-pair deposits in closed form; pairwise c
 equipartition; xiWardEdgeQuadEnergy_eq_tsum_gram (the FULL quadratic explicit formula,
 finite/infinite dichotomy, no Fubini); riemannHypothesis_iff_tsum_gram_le (RH as a
 lattice-sum inequality ≤ 4π with every diagonal entry > 8π).
+
+## Addendum 9 — interior program + J-ladder modules (steps 9x–9az)
+
+[PROVED HERE] New modules, all compiling clean on propext/Classical.choice/Quot.sound,
+umbrella wired, indexed:
+- XiWardInteriorTraceSplit.lean — interior trace splitting; Ward-response interior
+  decomposition; quotient-constancy kill; functional-equation rotation;
+  logDeriv xi = 1/s + 1/(s−1) + logDeriv Γℝ − L(Λ,·) on Re s > 1 (THE ARITHMETIC
+  RESPONSE IDENTITY); the interior spectral discard (per-term + tsum);
+  re_continuedXiAntiCausalWardResponse_le_arithmetic (UNCONDITIONAL arithmetic upper
+  bound); interior_pair_quantum + xiWard_window_clearing (THE CLEARING ENGINE);
+  xiWard_centralWindow_clearing (boundary-conditional central clearing at certified
+  margin 0.599 < 0.600); Γℝ–digamma split; von Mangoldt real-series machinery with
+  certified floor 0.414; log π > 1.1, log 5 > 1.6, γ ∈ (½,⅔) numeric chains.
+- XiThetaExplicitBounds.lean (minimal cone) — explicit theta decay 3e^{−πt};
+  two-piece FE-modified kernel bounds; quartic exponential floor; exact outer moment
+  (1/π+1/π²)e^{−π}; both Mellin piece bounds + integrabilities; THE CERTIFIED STRIP
+  BOUND ‖Λ₀(s)‖ ≤ 2/5 on Re s ∈ [−3/2, 5/2] (norm_completedRiemannZeta₀_le +
+  stripConstant_le_two_fifths).
+- XiCentralDiscBound.lean — ‖XiC‖ ≤ 7/4 on ‖z‖ ≤ 2; ‖XiC 0‖ ≥ 9/20;
+  **XiC_ne_zero_of_norm_le_one** (Jensen + evenness, margin 35 < 36);
+  **xiRightUpper_height_sq_gt** (unconditional off-critical height floor 3/4);
+  **riemannZeta_ne_zero_of_dist_le_one** (unconditional central zero-free disc for ζ).
+Named obstructions recorded on the campaign card: central blindness (9aj); J5 counting
+capacity (9ay).

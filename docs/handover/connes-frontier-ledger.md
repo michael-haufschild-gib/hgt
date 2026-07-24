@@ -45,10 +45,11 @@ No criterion equivalent to RH counts as completion.
   half-waves.
 - Half-density localization and Selberg regrouping have no cancellation inside one semiprime
   product fibre. Cancellation, if it exists, must couple distinct products.
-- The squarefree-to-Euler map is no longer missing.  The dyadic Fock isometry
-  `U f(d,m)=mu(d)f(dm^2)` sends the pointed squarefree state to the Euler state and transports the
-  centered Fisher connection with vanishing cofinal defect.  Its sharp Euler cutoff becomes the
-  non-product affine projection `log d+2 log m<T`.
+- The local parity--residual Euler factorization and the full affine-Euler **probability/Fisher
+  scalar laws** are proved.  Corpus search found no Lean declaration of the claimed global
+  Hilbert-space isometry `U f(d,m)=mu(d)f(dm^2)`, no affine joint cutoff projection on that carrier,
+  and no conjugation theorem transporting the centered Fisher connection.  Those operator claims
+  were previously overstated in this ledger and must not be treated as available.
 - The canonical Xi-pointed charged graph is no longer missing.  Coprime inner factorization gives
   the closed isometric graph with domain `B_omega H2`.  Its orthogonal domain defect
   `K(B_omega)` is exactly the off-line divisor model space.  Full domain, not graph construction or
@@ -192,10 +193,21 @@ one-sided incidence.
 - `[PROVED, INSUFFICIENT]` The actual Xi phase is a contractive Hardy multiplier on every finite
   packet, and `V=1-phase` obeys target four-unit nonexpansiveness at every nonnegative aperture.
   This bounds multiplier **values**, not the aperture tangent `r_P`.
-- `[PROVED, SOURCE-COMPLETE]` The physical affine Euler cutoff, its Fisher overlap and energy,
-  its squarefree critical limit, and the exact one-corner conservation law
-  `integral E_lower=4` are already formalized.  No further source calibration,
-  cutoff integration, or factor-of-two repair is needed.
+- `[PROVED, SCALAR-ENERGY COMPLETE; NOT A CRITICAL SOURCE VECTOR]` The physical affine Euler
+  cutoff, its Fisher overlap and energy, its squarefree critical limit, and the exact one-corner
+  conservation law `integral E_lower=4` are already formalized.  No further scalar calibration,
+  cutoff integration, or factor-of-two repair is needed.  This does **not** produce a strong
+  critical vector in one fixed source Hilbert space: `MobiusChannelCriticalMassEscape.lean`
+  proves that the normalized critical Möbius channel is weakly null but not strongly null and
+  that every fixed compact synthesis sends it to zero.
+- `[CLASSICAL ANALYSIS; LEAN CONNECTOR ONLY]` The half-line Laplace feature
+  `u ↦ exp(-wu)`, its Cauchy Gram `1/(w+conj z)`, represented-column Gram positivity, and the
+  hard-cut/soft-semigroup divided-difference identity are classical Paley--Wiener/RKHS and
+  double-operator-integral mechanisms.  Their formalization in
+  `FisherOneCornerCoareaTransform.lean` is useful plumbing, not a literature-new theorem.
+- `[CORPUS-NEW CONNECTOR; CLASSICAL LAYER-CAKE CORE]` The finite Fisher one-corner coarea formula
+  refines the already-formalized Gini/layer-cake laws by retaining the Fisher pair amplitude.
+  Do not advertise it as the missing CCM theorem.
 - `[KILLED]` Aperture-only Schwarz--Pick differentiation: the common contractive aperture set of
   all right-half-plane Cayley cells is exactly the real ray `[0,∞)` and has empty complex
   interior (`C45`).
@@ -205,12 +217,30 @@ one-sided incidence.
   cannot create the Ward column from an orthogonal four-unit detail (`C43`--`C44`).
 - `[PROVED, NOT A SOURCE PRODUCER]` Fable's edge-`L²` master kernel identity gives a route to
   another RH-complete detector.  It supplies no unconditional source bound for that detector.
+- `[REDISCOVERED; REJECTED]` Differentiating the real-aperture Schur/Pick defect at aperture zero
+  gives the classical Herglotz kernel
+  `(r(w)+conj(r(v)))/(w+conj(v)) >= 0`.  It controls the sign of the infinitesimal Pick defect,
+  not the size of `r`; the corpus already quantizes this positive edge mass.  It cannot imply the
+  four-unit bound.
+- `[REDISCOVERED; REJECTED]` Writing a charged quotient as `A/B` and differentiating
+  `B O` into `B' O + B O'` is standard model-space/Julia operator theory.  A claimed
+  “covariant cancellation” is admissible only if a pre-divisor Euler--Gamma identity proves that
+  the resulting `K(B)` component vanishes.  If the cancellation assumes membership in `B H²`,
+  full domain, or zero model-space pairing, it is RH itself.
+- `[CORPUS DUPLICATE; REJECTED]` The absolute-Euler Cauchy--Laplace loss, its tail-shift
+  representation, the factor `exp(-2a min(y,z))`, and the stationary de-Poissonized Weil form are
+  already proved on paper in
+  `critical-logderivative-euler-safe-cauchy-loss-law.md` and
+  `critical-logderivative-euler-safe-depoissonized-weil-stationarity.md`.  Recasting the fixed
+  `W_P` problem as that observability inequality is not new knowledge and does not supply its
+  missing sign.
 
 ## One live conjecture
 
 `[CONJECTURE — ONE-CORNER GAMMA/SONIN INCIDENCE]`
 
-Under the proved dyadic Fock isometry, the Euler cutoff is the affine joint projection
+The candidate global dyadic reindexing would turn the Euler cutoff into the affine joint
+projection
 
 ```text
 Q_T(d,m)=1_(log d+2 log m<T).
@@ -240,30 +270,36 @@ Adding the adjoint corner first is unnecessary and loses the exact one-sided tar
 
 ## Exact open calculation
 
-Squarefree-to-Euler isometry, physical affine cutoff, lower-corner rank-one decomposition,
-four-unit one-corner budget, scalar Möbius--Gamma current weld, Julia transport, and canonical
-charged graph are all constructed.  The only uncomputed composition is the **operator** lower
-corner through Gamma/Sonin completion.  Test that transform on `L_T` before quotient evaluation:
+Local squarefree--Euler parity factorization, physical affine **scalar** cutoff law, squarefree
+lower-corner rank-one decomposition, four-unit one-corner budget, scalar Möbius--Gamma current
+weld, Julia transport, and canonical charged graph are constructed.  The global dyadic Hilbert
+reindexing and its affine projection still require operator-level construction; after that, the
+decisive uncomputed composition is the **operator** lower corner through Gamma/Sonin completion.
+Test that transform on `L_T` before quotient evaluation:
 
-1. retain both rank-one summands inside the one lower corner; they are the tangent and moving-base
+1. work at finite `sigma` on a moving/cofinal carrier.  A fixed compact synthesis after the
+   critical limit is impossible by `MobiusChannelCriticalMassEscape.lean`;
+2. retain both rank-one summands inside the one lower corner; they are the tangent and moving-base
    connection terms and neither may be scalarized separately;
-2. prove cancellation of the Euler-pole `1/(sigma-1)` terms inside their joint completed image;
-3. identify the cofinal image with the one-sided anti-causal boundary operator on a source-defined
+3. prove cancellation of the Euler-pole `1/(sigma-1)` terms inside their joint completed image;
+4. identify the cofinal image with the one-sided anti-causal boundary operator on a source-defined
    graph core;
-4. identify its finite packet column with the existing
+5. identify its finite packet column with the existing
    `continuedXiAntiCausalWardColumn`;
-5. prove the completed map is contractive in the native four-unit lower-corner norm.
+6. prove a uniform finite-`sigma` contraction before taking the cofinal limit.
 
 Exact falsifier: if any model-space pairing is an unconstrained residue coordinate, if the sum
 retains an uncancelled `1/(sigma-1)` gain, or if the calculation reduces to the existing Berezin
 sign/full-domain assertion, then no new source law has been obtained and this formulation must be
 retired.
 
-The global equality `integral E_lower=4` strengthens the hostile test.  Any contractive completed
-incidence producing a target column of norm four must be isometric on the entire critical coarea
-field.  Thus no positive-measure cutoff component may be discarded by Gamma completion, Sonin
-compression, Hardy projection, or graph closure.  A nonzero causal, Gamma-polar, or denominator
-model-space remainder kills equality and therefore kills this proposed incidence.
+The global equality `integral E_lower=4` strengthens the hostile test only after a legitimate
+finite-`sigma` cofinal realization has been constructed.  If its limiting target column spends
+four units, the uniformly contractive completion must be asymptotically isometric on the escaping
+coarea field.  Thus no positive-measure cutoff component may be discarded by Gamma completion,
+Sonin compression, Hardy projection, or graph closure.  A fixed compact factor is already excluded;
+a nonzero causal, Gamma-polar, or denominator model-space remainder kills equality and therefore
+kills this proposed incidence.
 
 The first-clock cross-product Type-II Stokes proposal remains a separate fallback.  It is not the
 current `W_P` attack.

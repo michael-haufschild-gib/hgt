@@ -994,3 +994,59 @@ An active conjecture is selected only after:
 4. prior failed/formalized cards are read;
 5. remaining implication is stated as one falsifiable `[OPEN CORE]`;
 6. external literature audit is completed for that exact statement.
+
+## Active frontier: fully coupled Hedenmalm cone current
+
+**Status:** `[OPEN CORE] [EXACT LEAN NORMAL FORM COMPILED]`.
+
+Lean now proves, for `0 ≤ a < 1/2` and every real `b`,
+
+```text
+thetaCuspCenterMixedFourierCurrent a b
+  = 16 * ∫_{u>t>0}
+      thetaCuspFullSource (u+t) * thetaCuspFullSource (u-t)
+      * (
+          u*sinh(2*a*u)*cos(2*b*t)
+        + t*sinh(2*a*t)*cos(2*b*u)
+        ).
+```
+
+The ambient measure is
+`(volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0))`; the strict cone is
+`thetaCuspPositiveLowerCone = {p | p.2 < p.1}`.
+
+Compiled connectors in
+`ThetaCuspWignerProductFiberNormalForm.lean`:
+
+```text
+thetaCuspCenterMixedFourierCurrent_eq_cosine
+thetaCuspCenterMixedFourierCurrent_eq_positiveQuadrant
+thetaCuspCenterMixedFourierCurrent_eq_sixteen_mul_positiveQuadrantCoupled
+thetaCuspPositiveQuadrantCoupledKernel_add_swap
+thetaCuspCenterMixedFourierCurrent_eq_sixteen_mul_coupledCone
+```
+
+What is known now:
+
+- product-fibre/divisor summation is completed before sign inspection;
+- transverse conjugates are combined before sign inspection;
+- radial substitution `r = 2u` and all constants are Lean-checked;
+- diagonal has zero product measure and upper/lower triangles are exchanged by the exact swap
+  map;
+- pointwise positivity is false: the cofinal cone kernel has a strict negative interior witness
+  for every `a,b>0`;
+- therefore the remaining statement is genuinely integrated source-mass cancellation.
+
+Theater audit:
+
+- this normal form is infrastructure, not new scientific knowledge;
+- rewriting it as an aperture derivative of `|Xi|²` returns the RH-equivalent current and produces
+  no sign;
+- generic log-concavity, finite moment inequalities, or fixed local derivative orders cannot be
+  relabeled as a solution;
+- any novelty claim now requires a Lean-proved source-specific inequality for this exact coupled
+  integral, or a rigorous counterexample to a proposed source-specific mechanism.
+
+Current attack: derive and test a source-specific cofinal summation law strong enough to control
+the two oscillatory transverse terms jointly.  Shellwise sign is not the target; higher shells
+must be allowed to cancel the exceptional ground-shell defect before the sign is read.

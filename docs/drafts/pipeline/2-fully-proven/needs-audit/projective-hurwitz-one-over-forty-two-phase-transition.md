@@ -184,7 +184,12 @@ Hurwitz `1/42` gap** itself — previously an exposed classical input — uncond
 - `hurwitz_euler_defect_ge : 1/42 ≤ 1 − (1/p+1/q+1/r)` — the equivalent orbifold Euler-defect form,
   i.e. the gap `ε ≥ 1/42`;
 - `hurwitz_signature_237_sum`, `hurwitz_signature_237_defect` — the `(2,3,7)` equalities
-  `1/2+1/3+1/7 = 41/42` and defect `= 1/42`, so the bound is sharp.
+  `1/2+1/3+1/7 = 41/42` and defect `= 1/42`, so the bound is sharp;
+- `hurwitz_triple_sum_le_symm` — the same bound for *unordered* positive triples (via sorting), the
+  form needed for "least density over all signatures";
+- `hurwitz_ordered_eq_237` / `hurwitz_ordered_sum_eq_iff` — the **uniqueness of the minimizer**:
+  on a hyperbolic ordered signature, `1/p+1/q+1/r = 41/42 ↔ (p,q,r) = (2,3,7)`, formalizing the
+  card's "equality only at signature `(2,3,7)`".
 
 `#print axioms`: `propext`, `Classical.choice`, `Quot.sound` only.  Still an exposed input: the
 geometric correspondence between hyperbolic sphere orbifolds and integer signatures (Riemann--Hurwitz
@@ -209,3 +214,7 @@ and surface existence), which the `HurwitzProjectiveSurvivalWitness` continues t
   bound `1/p+1/q+1/r ≤ 41/42` that was previously an exposed classical input. Axioms clean; module
   builds and is wired into the HTGeometry umbrella. Remaining exposed input: the geometric
   orbifold-to-signature correspondence carried by `HurwitzProjectiveSurvivalWitness`.
+- 2026-07-24 -- Extended the arithmetic Hurwitz result to its full form: the symmetric (unordered)
+  bound `hurwitz_triple_sum_le_symm` and the minimizer uniqueness
+  `hurwitz_ordered_eq_237` / `hurwitz_ordered_sum_eq_iff` (`1/p+1/q+1/r = 41/42 ↔ (2,3,7)`),
+  formalizing "equality only at (2,3,7)". Axioms clean; module builds.

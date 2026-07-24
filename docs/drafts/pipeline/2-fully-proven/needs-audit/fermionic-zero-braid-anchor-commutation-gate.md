@@ -250,9 +250,26 @@ Equation `(5)` — the two zero-anchor commutation laws — is formalized uncond
   non-adjacent leg realised by `conjugatedMiddleLeg leg12 leg23 F` (flip conjugation of the adjacent
   `23` leg), instantiating the abstract theorem.
 
-`#print axioms` on both: `propext`, `Classical.choice`, `Quot.sound` only.  Still to formalize: the
-positive-unitary operator-Schmidt local product-diagonality theorem (equations `(6)`–`(8)`), which
-needs operator-Schmidt decomposition and commutative `C*`-algebra simultaneous diagonalization.
+`#print axioms` on both: `propext`, `Classical.choice`, `Quot.sound` only.
+
+The operator-Schmidt commutator collapse step `(7)`→`(8)` is now formalized in
+`formal/GaloisForLFunctions/HTGeometry/TensorCoefficientVanishing.lean`:
+
+- `tensor_coeff_eq_zero` — the reusable linear-algebra crux (absent from mathlib): over a field, if
+  `∑_i c_i ⊗ e_i = 0` with `{e_i}` linearly independent then every `c_i = 0` (coordinate functional
+  extended off the span, applied through `TensorProduct.rid`);
+- `tmul_linearIndependent` — a reusable mathlib-gap lemma: over a field with finite index types,
+  `{v_i}` and `{w_j}` linearly independent ⇒ `{v_i ⊗ w_j}` linearly independent (proved from
+  `tensor_coeff_eq_zero` by regrouping, no `Basis` extension needed);
+- `schmidt_commutator_vanish_of_linearIndependent` — the **hypothesis-free** `(7)`→`(8)`: for a
+  finite operator-Schmidt right family `B : ι → R` that is linearly independent,
+  `∑_{a,b} ⁅A_a,A_b⁆ ⊗ (B_a ⊗ B_b) = 0` forces every `⁅A_a,A_b⁆ = 0` (the tensor-square
+  independence is discharged internally by `tmul_linearIndependent`).
+
+`#print axioms`: `propext`, `Classical.choice`, `Quot.sound`.  Still to formalize toward the full
+local-diagonality conclusion: the operator-Schmidt *existence* (`L = ∑_a A_a ⊗ B_a` with linearly
+independent factors from a minimal decomposition) and the commutative `C*`-algebra simultaneous
+diagonalization.
 
 ## Gates
 
@@ -280,3 +297,14 @@ needs operator-Schmidt decomposition and commutative `C*`-algebra simultaneous d
   leg-embedded connector `fermionicZeroBraid_leg_commute` reusing `conjugatedMiddleLeg` from the
   corpus `RightFlipScattering` Yang--Baxter API. Axioms clean; module builds and is wired into the
   HTGeometry umbrella. Remaining Lean gap: the operator-Schmidt local product-diagonality theorem.
+- 2026-07-24 — formalized the operator-Schmidt commutator collapse (7)→(8) via a new reusable
+  tensor coefficient-vanishing lemma (`GaloisForLFunctions.HTGeometry.tensor_coeff_eq_zero`, absent
+  from mathlib) and its specialisation `schmidt_commutator_vanish`. Axioms clean; build green.
+  Remaining toward full local diagonality: operator-Schmidt existence, tensor-square independence
+  discharge, and the commutative C*-algebra simultaneous diagonalization.
+- 2026-07-24 — discharged the tensor-square independence hypothesis: proved the reusable mathlib-gap
+  lemma `tmul_linearIndependent` (tensor of independent families is independent, via
+  `tensor_coeff_eq_zero`) and the hypothesis-free `schmidt_commutator_vanish_of_linearIndependent`.
+  The operator-Schmidt commutator collapse (7)→(8) now needs only the right family's linear
+  independence. Axioms clean; build green. Remaining: operator-Schmidt existence and C* simultaneous
+  diagonalization.

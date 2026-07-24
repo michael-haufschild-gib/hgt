@@ -288,6 +288,128 @@ theorem mertensTwoPrimeUnitTransferKernel_two_three :
     mertensTwoPrimeUnitTransferKernel 2 3 5 = -2 := by
   norm_num [mertensTwoPrimeUnitTransferKernel, mertensWindowHinge]
 
+/-- Antidiagonal count of a doubly half-lined lattice equals a window hinge:
+`∑_{a+b=N} 1_{α≤a} 1_{β≤b} = (N + 1 - (α + β))₊`. -/
+private theorem antidiagonalHalfLineCount (N α β : ℕ) :
+    (∑ ab ∈ Finset.antidiagonal N,
+      (if α ≤ ab.1 then (1 : ℤ) else 0) * (if β ≤ ab.2 then 1 else 0))
+      = mertensWindowHinge (N + 1) (α + β) := by
+  rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
+  have hcongr : ∀ a ∈ Finset.range (N + 1),
+      (if α ≤ a then (1 : ℤ) else 0) * (if β ≤ N - a then 1 else 0)
+        = if α ≤ a ∧ a + β ≤ N then 1 else 0 := by
+    intro a ha
+    simp only [Finset.mem_range] at ha
+    by_cases h1 : α ≤ a
+    · by_cases h2 : a + β ≤ N
+      · rw [if_pos h1, if_pos (show β ≤ N - a by omega), one_mul, if_pos ⟨h1, h2⟩]
+      · rw [if_pos h1, if_neg (show ¬ β ≤ N - a by omega), mul_zero,
+          if_neg (by rintro ⟨_, h⟩; exact h2 h)]
+    · rw [if_neg h1, zero_mul, if_neg (by rintro ⟨h, _⟩; exact h1 h)]
+  rw [Finset.sum_congr rfl hcongr, Finset.sum_ite, Finset.sum_const_zero, add_zero,
+    Finset.sum_const, nsmul_eq_mul, mul_one]
+  have hfilter : Finset.filter (fun a => α ≤ a ∧ a + β ≤ N) (Finset.range (N + 1))
+      = Finset.Ico α (N + 1 - β) := by
+    ext a; simp only [Finset.mem_filter, Finset.mem_range, Finset.mem_Ico]; omega
+  rw [hfilter, Nat.card_Ico]
+  simp only [mertensWindowHinge]; omega
+
+/-- A two-sided window indicator splits into a difference of two half-line indicators. -/
+private theorem twoSidedWindowIndicator {p : ℕ} (hp : 1 ≤ p) (x c : ℕ) :
+    (if c ≤ x ∧ x < p * c then (1 : ℤ) else 0)
+      = (if c ≤ x then 1 else 0) - (if p * c ≤ x then 1 else 0) := by
+  by_cases h1 : c ≤ x
+  · by_cases h2 : p * c ≤ x
+    · rw [if_pos h1, if_pos h2, if_neg (by rintro ⟨_, h⟩; omega)]; ring
+    · rw [if_pos h1, if_neg h2, if_pos ⟨h1, by omega⟩]; ring
+  · have hc : c ≤ p * c := Nat.le_mul_of_pos_left c (by omega)
+    rw [if_neg h1, if_neg (show ¬ p * c ≤ x by omega), if_neg (by rintro ⟨h, _⟩; exact h1 h)]
+    ring
+
+/-- The antidiagonal count of the two paired window indicators is exactly the one-prime transfer
+kernel, by inclusion–exclusion over the four half-line counts. -/
+private theorem antidiagonalWindowKernelCount {p : ℕ} (hp : 1 ≤ p) (N r s : ℕ) :
+    (∑ ab ∈ Finset.antidiagonal N,
+      (if r ≤ ab.1 ∧ ab.1 < p * r then (1 : ℤ) else 0)
+        * (if s ≤ ab.2 ∧ ab.2 < p * s then 1 else 0))
+      = mertensOnePrimeTransferKernel p (N + 1) r s := by
+  rw [mertensOnePrimeTransferKernel_eq_four_hinges hp]
+  have expand : ∀ ab : ℕ × ℕ,
+      (if r ≤ ab.1 ∧ ab.1 < p * r then (1 : ℤ) else 0)
+        * (if s ≤ ab.2 ∧ ab.2 < p * s then 1 else 0)
+      = (if r ≤ ab.1 then 1 else 0) * (if s ≤ ab.2 then 1 else 0)
+        - (if r ≤ ab.1 then 1 else 0) * (if p * s ≤ ab.2 then 1 else 0)
+        - (if p * r ≤ ab.1 then 1 else 0) * (if s ≤ ab.2 then 1 else 0)
+        + (if p * r ≤ ab.1 then 1 else 0) * (if p * s ≤ ab.2 then 1 else 0) := by
+    intro ab
+    rw [twoSidedWindowIndicator hp ab.1 r, twoSidedWindowIndicator hp ab.2 s]; ring
+  rw [Finset.sum_congr rfl (fun ab _ => expand ab), Finset.sum_add_distrib,
+    Finset.sum_sub_distrib, Finset.sum_sub_distrib,
+    antidiagonalHalfLineCount, antidiagonalHalfLineCount, antidiagonalHalfLineCount,
+    antidiagonalHalfLineCount]
+  ring
+
+/-- Complex form of the window-kernel count. -/
+private theorem antidiagonalWindowKernelCount_complex {p : ℕ} (hp : 1 ≤ p) (N r s : ℕ) :
+    (∑ ab ∈ Finset.antidiagonal N,
+      (if r ≤ ab.1 ∧ ab.1 < p * r then (1 : ℂ) else 0)
+        * (if s ≤ ab.2 ∧ ab.2 < p * s then 1 else 0))
+      = ((mertensOnePrimeTransferKernel p (N + 1) r s : ℤ) : ℂ) := by
+  rw [← antidiagonalWindowKernelCount hp N r s]
+  push_cast
+  apply Finset.sum_congr rfl
+  intro ab _
+  split_ifs <;> simp
+
+/-- Prime-free Mertens window as a full-range weighted window indicator sum. -/
+private theorem primeWindowPartialSum_flat {p : ℕ} (hp : p.Prime) (N a : ℕ) (ha : a ≤ N) :
+    mobiusPrimeWindowPartialSum p a
+      = ∑ r ∈ Finset.range (N + 1),
+          (if r ≤ a ∧ a < p * r then (1 : ℂ) else 0) * mobiusPrimeFreeCoefficient p r := by
+  have hstep : (∑ r ∈ Finset.range (N + 1),
+      (if r ≤ a ∧ a < p * r then (1 : ℂ) else 0) * mobiusPrimeFreeCoefficient p r)
+      = ∑ r ∈ Finset.range (N + 1),
+          if r ≤ a ∧ a < p * r then mobiusPrimeFreeCoefficient p r else 0 := by
+    apply Finset.sum_congr rfl; intro r _; split_ifs <;> simp
+  rw [hstep, ← Finset.sum_filter]
+  unfold mobiusPrimeWindowPartialSum
+  apply Finset.sum_congr _ (fun _ _ => rfl)
+  ext r
+  simp only [Finset.mem_Ico, Finset.mem_filter, Finset.mem_range]
+  have hdiv : a < p * r ↔ a / p + 1 ≤ r := by
+    rw [Nat.add_one_le_iff, Nat.div_lt_iff_lt_mul hp.pos, Nat.mul_comm]
+  omega
+
+/-- **Flattened one-prime tent double-sum law (equation (4)).**  For every prime `p`, the signed
+Mertens antidiagonal `U(N)` is the exact finite prime-free double sum weighted by the one-prime
+transfer kernel:
+`U(N) = ∑_{r,s} μ⁽ᵖ⁾(r) μ⁽ᵖ⁾(s) K_{p,N}(r,s)`. -/
+theorem mobiusMertensSelfConvolution_eq_primeKernelDoubleSum {p : ℕ} (hp : p.Prime) (N : ℕ) :
+    mobiusMertensSelfConvolution N
+      = ∑ r ∈ Finset.range (N + 1), ∑ s ∈ Finset.range (N + 1),
+          mobiusPrimeFreeCoefficient p r * mobiusPrimeFreeCoefficient p s
+            * ((mertensOnePrimeTransferKernel p (N + 1) r s : ℤ) : ℂ) := by
+  rw [mobiusMertensSelfConvolution_eq_primeWindow hp, mobiusPrimeWindowSelfConvolution]
+  have hexp : ∀ ab ∈ Finset.antidiagonal N,
+      mobiusPrimeWindowPartialSum p ab.1 * mobiusPrimeWindowPartialSum p ab.2
+      = ∑ r ∈ Finset.range (N + 1), ∑ s ∈ Finset.range (N + 1),
+          ((if r ≤ ab.1 ∧ ab.1 < p * r then (1 : ℂ) else 0) * mobiusPrimeFreeCoefficient p r)
+            * ((if s ≤ ab.2 ∧ ab.2 < p * s then (1 : ℂ) else 0) * mobiusPrimeFreeCoefficient p s) := by
+    intro ab hab
+    rw [Finset.mem_antidiagonal] at hab
+    rw [primeWindowPartialSum_flat hp N ab.1 (by omega),
+      primeWindowPartialSum_flat hp N ab.2 (by omega), Finset.sum_mul_sum]
+  rw [Finset.sum_congr rfl hexp, Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro r _
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro s _
+  rw [← antidiagonalWindowKernelCount_complex hp.pos N r s, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro ab _
+  ring
+
 end
 
 end RHTower

@@ -1,5 +1,9 @@
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
+import Mathlib.Analysis.InnerProductSpace.GramMatrix
+import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.MeasureTheory.Integral.Bochner.Set
+import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.Tactic
 
@@ -17,7 +21,7 @@ non-diagonal operator field.
 -/
 
 open Complex MeasureTheory Set
-open scoped BigOperators
+open scoped BigOperators ComplexOrder
 
 noncomputable section
 
@@ -229,5 +233,217 @@ theorem orientedCutoffLaplaceKernel_eq_dividedDifference
       semigroupDividedDifferenceCoefficient
         (h j) (h i) (K i j) w :=
   orientedCutoffLaplaceCoefficient_eq_dividedDifference hw
+
+/-! ## Exact four-unit Laplace completion -/
+
+/-- Augment an arbitrary finite Hilbert Gram by one represented boundary
+column and the fixed diagonal budget four. -/
+def finiteFourUnitBoundaryGram
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    {n : ℕ} (feature : Fin n → H) (source : H) :
+    Matrix (Fin n ⊕ Unit) (Fin n ⊕ Unit) ℂ :=
+  Matrix.fromBlocks
+    (Matrix.gram ℂ feature)
+    (fun i _ => inner ℂ (feature i) source)
+    (fun _ j => star (inner ℂ (feature j) source))
+    (Matrix.of fun _ _ : Unit => (4 : ℂ))
+
+/-- **Four-unit represented-column law.**  Every Hilbert source of squared
+norm at most four gives a positive augmented Gram.  The proof realizes the
+unused budget as one orthogonal slack coordinate, so no invertibility or
+finite-rank hypothesis is hidden in the statement. -/
+theorem finiteFourUnitBoundaryGram_posSemidef_of_norm_sq_le
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    {n : ℕ} (feature : Fin n → H) (source : H)
+    (hsource : ‖source‖ ^ 2 ≤ 4) :
+    (finiteFourUnitBoundaryGram feature source).PosSemidef := by
+  let slack : ℝ := Real.sqrt (4 - ‖source‖ ^ 2)
+  let augmentedFeature :
+      (Fin n ⊕ Unit) → WithLp 2 (H × ℂ)
+    | Sum.inl i => WithLp.toLp 2 (feature i, 0)
+    | Sum.inr _ => WithLp.toLp 2 (source, (slack : ℂ))
+  have hslackNonneg : 0 ≤ 4 - ‖source‖ ^ 2 :=
+    sub_nonneg.mpr hsource
+  have hslack : slack ^ 2 = 4 - ‖source‖ ^ 2 := by
+    dsimp only [slack]
+    exact Real.sq_sqrt hslackNonneg
+  have hgram :
+      Matrix.gram ℂ augmentedFeature =
+        finiteFourUnitBoundaryGram feature source := by
+    ext a b
+    rcases a with i | u <;> rcases b with j | z
+    · simp [augmentedFeature, finiteFourUnitBoundaryGram, Matrix.gram_apply]
+    · simp [augmentedFeature, finiteFourUnitBoundaryGram, Matrix.gram_apply]
+    · simp [augmentedFeature, finiteFourUnitBoundaryGram, Matrix.gram_apply,
+        inner_conj_symm]
+    · have huz : u = z := Subsingleton.elim _ _
+      subst z
+      simp only [Matrix.gram_apply, augmentedFeature,
+        finiteFourUnitBoundaryGram, Matrix.fromBlocks_apply₂₂,
+        Matrix.of_apply]
+      rw [WithLp.prod_inner_apply, inner_self_eq_norm_sq_to_K]
+      simp only [RCLike.inner_apply, conj_ofReal]
+      calc
+        (‖source‖ : ℂ) ^ 2 +
+              (slack : ℂ) * (slack : ℂ) =
+            ((‖source‖ ^ 2 + slack ^ 2 : ℝ) : ℂ) := by
+              push_cast
+              ring
+        _ = (4 : ℂ) := by
+          rw [hslack]
+          push_cast
+          ring
+  rw [← hgram]
+  exact Matrix.posSemidef_gram ℂ augmentedFeature
+
+/-- Lebesgue measure on the positive half-line, used as the native Hardy
+source carrier. -/
+def halfLineLaplaceMeasure : Measure ℝ :=
+  volume.restrict (Ioi 0)
+
+/-- Raw conjugate exponential feature whose Hilbert Gram is the
+right-half-plane Cauchy kernel. -/
+def halfLineLaplaceFeatureRaw (w : ℂ) (u : ℝ) : ℂ :=
+  Complex.exp (-(star w) * (u : ℂ))
+
+theorem halfLineLaplaceFeatureRaw_memLp
+    {w : ℂ} (hw : 0 < w.re) :
+    MemLp (halfLineLaplaceFeatureRaw w) 2
+      halfLineLaplaceMeasure := by
+  have hmeas :
+      AEStronglyMeasurable (halfLineLaplaceFeatureRaw w)
+        halfLineLaplaceMeasure :=
+    (by
+      unfold halfLineLaplaceFeatureRaw
+      fun_prop : Continuous (halfLineLaplaceFeatureRaw w))
+      |>.aestronglyMeasurable.mono_measure Measure.restrict_le_self
+  apply (memLp_two_iff_integrable_sq_norm hmeas).2
+  have hint :
+      IntegrableOn
+        (fun u : ℝ => Real.exp ((-2 * w.re) * u)) (Ioi 0) :=
+    integrableOn_exp_mul_Ioi (by linarith) 0
+  apply hint.congr
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
+  simp only [halfLineLaplaceFeatureRaw, norm_exp, neg_re, mul_re,
+    RCLike.star_def, Complex.conj_re, ofReal_re, ofReal_im, mul_zero,
+    sub_zero]
+  rw [← Real.exp_nat_mul]
+  congr 1
+  ring
+
+/-- Normalized Hilbert feature at a right-half-plane Cauchy node. -/
+def halfLineLaplaceFeature (w : ℂ) (hw : 0 < w.re) :
+    Lp ℂ 2 halfLineLaplaceMeasure :=
+  (halfLineLaplaceFeatureRaw_memLp hw).toLp
+    (halfLineLaplaceFeatureRaw w)
+
+/-- Exact Cauchy Gram of the half-line Laplace features. -/
+theorem inner_halfLineLaplaceFeature
+    {w z : ℂ} (hw : 0 < w.re) (hz : 0 < z.re) :
+    inner ℂ (halfLineLaplaceFeature w hw)
+        (halfLineLaplaceFeature z hz) =
+      1 / (w + star z) := by
+  rw [L2.inner_def]
+  change
+    (∫ u : ℝ,
+      inner ℂ (halfLineLaplaceFeature w hw u)
+        (halfLineLaplaceFeature z hz u)
+      ∂halfLineLaplaceMeasure) = _
+  have hwmem := halfLineLaplaceFeatureRaw_memLp hw
+  have hzmem := halfLineLaplaceFeatureRaw_memLp hz
+  rw [MeasureTheory.integral_congr_ae
+    (show
+      (fun u : ℝ =>
+        inner ℂ (halfLineLaplaceFeature w hw u)
+          (halfLineLaplaceFeature z hz u)) =ᵐ[halfLineLaplaceMeasure]
+        fun u => Complex.exp (-(w + star z) * (u : ℂ)) by
+      filter_upwards [hwmem.coeFn_toLp, hzmem.coeFn_toLp] with u hwu hzu
+      simp only [halfLineLaplaceFeature] at hwu hzu ⊢
+      rw [hwu, hzu]
+      simp only [halfLineLaplaceFeatureRaw, RCLike.inner_apply]
+      rw [← Complex.exp_conj, ← Complex.exp_add]
+      congr 1
+      simp only [map_neg, map_mul, RCLike.star_def,
+        Complex.conj_conj, Complex.conj_ofReal]
+      ring)]
+  change
+    (∫ u : ℝ in Ioi 0,
+      Complex.exp (-(w + star z) * (u : ℂ))) = _
+  rw [integral_exp_mul_complex_Ioi
+    (a := -(w + star z)) (by
+      simp only [neg_re, add_re, RCLike.star_def, Complex.conj_re]
+      linarith) 0]
+  simp only [ofReal_zero, mul_zero, Complex.exp_zero, neg_div]
+  simp [neg_inv]
+
+/-- Half-line Laplace transform of an actual `L²` source, defined as its
+evaluation against the Cauchy feature. -/
+def halfLineLaplaceTransform
+    (source : Lp ℂ 2 halfLineLaplaceMeasure)
+    (w : ℂ) (hw : 0 < w.re) : ℂ :=
+  inner ℂ (halfLineLaplaceFeature w hw) source
+
+/-- Integral presentation of the represented Laplace column. -/
+theorem halfLineLaplaceTransform_eq_integral
+    (source : Lp ℂ 2 halfLineLaplaceMeasure)
+    (w : ℂ) (hw : 0 < w.re) :
+    halfLineLaplaceTransform source w hw =
+      ∫ u : ℝ, Complex.exp (-w * (u : ℂ)) * source u
+        ∂halfLineLaplaceMeasure := by
+  rw [halfLineLaplaceTransform, L2.inner_def]
+  apply MeasureTheory.integral_congr_ae
+  have hwmem := halfLineLaplaceFeatureRaw_memLp hw
+  filter_upwards [hwmem.coeFn_toLp] with u hwu
+  simp only [halfLineLaplaceFeature] at hwu ⊢
+  rw [hwu]
+  simp only [halfLineLaplaceFeatureRaw, RCLike.inner_apply]
+  rw [← Complex.exp_conj]
+  simp only [map_neg, map_mul, RCLike.star_def,
+    Complex.conj_conj, Complex.conj_ofReal]
+  ring
+
+/-- Augmented Cauchy Gram generated by one concrete half-line source. -/
+def halfLineLaplaceFourUnitBoundaryGram
+    {n : ℕ} (node : Fin n → ℂ)
+    (hnode : ∀ i, 0 < (node i).re)
+    (source : Lp ℂ 2 halfLineLaplaceMeasure) :
+    Matrix (Fin n ⊕ Unit) (Fin n ⊕ Unit) ℂ :=
+  finiteFourUnitBoundaryGram
+    (fun i => halfLineLaplaceFeature (node i) (hnode i)) source
+
+/-- **Universal four-unit Laplace boundary law.**  Squared source energy at
+most four implies positivity of every finite augmented Cauchy packet.  This
+is exactly the operator inequality needed after a source incidence identifies
+the represented Laplace column with the continued Xi Ward column. -/
+theorem halfLineLaplaceFourUnitBoundaryGram_posSemidef
+    {n : ℕ} (node : Fin n → ℂ)
+    (hnode : ∀ i, 0 < (node i).re)
+    (source : Lp ℂ 2 halfLineLaplaceMeasure)
+    (hsource : ‖source‖ ^ 2 ≤ 4) :
+    (halfLineLaplaceFourUnitBoundaryGram
+      node hnode source).PosSemidef :=
+  finiteFourUnitBoundaryGram_posSemidef_of_norm_sq_le
+    (fun i => halfLineLaplaceFeature (node i) (hnode i))
+    source hsource
+
+theorem halfLineLaplaceFourUnitBoundaryGram_topLeft
+    {n : ℕ} (node : Fin n → ℂ)
+    (hnode : ∀ i, 0 < (node i).re)
+    (source : Lp ℂ 2 halfLineLaplaceMeasure) (i j : Fin n) :
+    halfLineLaplaceFourUnitBoundaryGram node hnode source
+        (Sum.inl i) (Sum.inl j) =
+      1 / (node i + star (node j)) := by
+  rw [halfLineLaplaceFourUnitBoundaryGram, finiteFourUnitBoundaryGram,
+    Matrix.fromBlocks_apply₁₁, Matrix.gram_apply,
+    inner_halfLineLaplaceFeature]
+
+theorem halfLineLaplaceFourUnitBoundaryGram_boundaryColumn
+    {n : ℕ} (node : Fin n → ℂ)
+    (hnode : ∀ i, 0 < (node i).re)
+    (source : Lp ℂ 2 halfLineLaplaceMeasure) (i : Fin n) :
+    halfLineLaplaceFourUnitBoundaryGram node hnode source
+        (Sum.inl i) (Sum.inr ()) =
+      halfLineLaplaceTransform source (node i) (hnode i) :=
+  rfl
 
 end GaloisForLFunctions.HTGeometry

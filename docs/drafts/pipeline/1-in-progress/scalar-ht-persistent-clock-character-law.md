@@ -844,3 +844,927 @@ NEXT session: nonzero-index rework of the s11 character chain —
 `clockSemilinearAlgEquiv_generator_mobius` (s14) as the per-λ≠0 hmob, `commuting_with_scaling_is_scaling`
 (s11) per λ≠0, build e by choose). Then `multiplicative_eval_eq_pow_of_nonzero` (THIS session) closes
 e=λ^k, assembling the family-level §3(b) from clock hypotheses over C^*.
+
+### Session 16 progress — the ENTIRE charged chain reworked over C^*
+`HTGeometry/ClockScalingCharacterNonzero.lean` [PROVED HERE], all 5 theorems standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ClockScalingCharacterNonzero` clean (3042 jobs),
+`formal_tools.py lint` PASSED. Compiled first try.
+
+The charged-phase chain (s11 ClockScalingCharacter, s6 ClockChargeFamilyMultiplicative, s12
+AlgebraicCharacterMonomial) is now reworked with the membership guard `λ ≠ 0` throughout, so it
+applies to the ACTUAL clock (indexed by C^*):
+- `scaling_character_multiplicative_of_nonzero` : `e(λμ)=e(λ)e(μ)` on C^* (copy of s11 with nonzero
+  guards on hscale/hmul; args nonzero via `mul_ne_zero`).
+- `commuting_family_scaling_character_of_nonzero` : commuting clock family (nonzero-Möbius members +
+  anchor scaling) ⟹ C^*-character `e:C→C`. The `choose` is over a GUARDED existential
+  `∃ elam, λ≠0 → ρ_λ q = elam·q` (by_cases λ=0: witness 0; else `commuting_with_scaling_is_scaling`
+  s11) so `e:C→C` is total.
+- `charged_clock_family_pow_of_nonzero` : EQUATION (2) on C^* — polynomial character ⟹ `ρ_λ q = λ^k q`
+  for λ≠0, via s15 `multiplicative_polynomial_eq_X_pow_of_nonzero`.
+- `clock_charge_family_multiplicative_of_nonzero` : s6 nonzero variant — charged rigidity σ y = e·y.
+  KEY: s6 already tests only ONE λ (from `exists_pow_ne_one_ne_neg_one`, which is nonzero), so the
+  nonzero guard costs nothing; `hρ lam hlam0`, `hcomm lam hlam0` fed to s5
+  `differentialAlgEquiv_generator_multiplicative`.
+- **`charged_clock_polynomial_forces_multiplicative_of_nonzero`** : the CHARGED BRANCH end-to-end over
+  C^*. σ differential automorphism, ρ clock cocharacter with polynomial character `ρ_λ y = P(λ)·y`
+  (0<deg P) on C^*, commuting with σ ⟹ `∃ e:C, σ y = e·y`.
+
+MILESTONE: the charged branch (§3+§4, k>0) is now formalized end-to-end over the CORRECT index C^*.
+The full charged chain (all [PROVED HERE], std axioms): §1 Möbius (s5/7) · §3a Möbius clock (s14) ·
+anchor diagonalization (s9/10) · C^*-family character (THIS session) · eq(2) on C^* (THIS session) ·
+charged rigidity σy=e·y on C^* (THIS session).
+
+REMAINING for the fully-unconditional card:
+ (hmob discharge) `commuting_family_scaling_character_of_nonzero` still TAKES hmob; discharge by feeding
+   s14 `clockSemilinearAlgEquiv_generator_mobius` (needs the clock family as semilinear AlgEquivs, per-λ
+   hsemi, + AlgEquiv→AlgHom coercion plumbing).
+ (B) ALGEBRAICITY: `hpoly_scale` with P polynomial (cocharacter varies algebraically) — still an input.
+ (C) CONCRETE CLOCK: jet-scaling clock satisfying hsemi/hconst/hmul/hcomm — construct the object.
+ (D) TOP-LEVEL card statement assembly.
+NEXT session: (hmob discharge) `HTGeometry/ClockFamilySemilinearMobius.lean` — a clock family as
+semilinear AlgEquivs `ρ:C→(E≃ₐ[C]E)` with per-λ hsemi (factor λ), hconst, generating hypertranscendental
+y ⟹ per-λ≠0 hmob (via s14 `clockSemilinearAlgEquiv_generator_mobius` on `ρ lam`, coercing `(ρ lam).toAlgHom`
+into the s16 `hmob` shape). Feed into `commuting_family_scaling_character_of_nonzero` (THIS session) to
+discharge the last GEOMETRIC input and get the C^*-character from clock hypotheses alone.
+
+### Session 17 progress — hmob DISCHARGED: C^*-character from clock hypotheses alone
+`HTGeometry/ClockFamilySemilinearMobius.lean` [PROVED HERE], axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ClockFamilySemilinearMobius` clean (3045 jobs),
+`formal_tools.py lint` PASSED. Compiled first try.
+
+- **`clock_family_scaling_character_from_semilinear`** : a clock cocharacter presented as semilinear
+  AlgEquivs `ρ:C→(E≃ₐ[C]E)` (per-λ≠0 hsemi `(ρ λ).toAlgHom w′ = λ·((ρ λ).toAlgHom w)′`, hconst
+  `(algebraMap λ)′=0`), homomorphic at q on C^*, commuting with an anchor scaling ρ_{ν₀}q=νq
+  (ν∉{0,1,-1}), yields a multiplicative C^*-character `e:C→C` with `(ρ λ).toAlgHom q = e(λ)·q`.
+  The last GEOMETRIC input `hmob` of `commuting_family_scaling_character_of_nonzero` (s16) is
+  discharged INTERNALLY via s14 `clockSemilinearAlgEquiv_generator_mobius` on each `ρ lam` (AlgEquiv);
+  `ρ' := fun lam => (ρ lam).toAlgHom` bridges AlgEquiv→AlgHom by defeq (the `(ρ lam) q` vs
+  `(ρ lam).toAlgHom q` coercion is definitional). q≠0 from hypertranscendence.
+
+MILESTONE: §3(b) is now FULLY DISCHARGED OF GEOMETRIC INPUTS. The C^*-character is produced from
+clock hypotheses (semilinear structure + commuting + homomorphism + anchor) alone — no Möbius/hmob
+input remains. Full abstract charged chain, all [PROVED HERE], std axioms:
+  §1 Möbius (s5/7) · §3a semilinear order-zero→Möbius clock (s13/14) ·
+  hmob-discharged C^*-family character (THIS session) · eq(2) on C^* (s16) ·
+  charged rigidity σ q = e·q on C^* (s16).
+
+REMAINING for the fully-unconditional card (all about CONCRETE objects, not the abstract chain):
+ (B) ALGEBRAICITY: `hpoly_scale : ρ_λ q = P(λ)·q` with P a polynomial (the cocharacter is algebraic in
+   λ). Feeds `charged_clock_family_pow_of_nonzero`/...`_forces_multiplicative_of_nonzero` (s16). This is
+   the regular-character structure of G_m; genuine input, needs modeling the algebraic λ-dependence.
+ (C) CONCRETE CLOCK: construct the jet-scaling automorphism ρ_λ(y^(j))=λ^j y^(j) and PROVE it satisfies
+   hsemi (`ρ_λ(Dw)=λ D(ρ_λ w)`), hconst, homomorphism, anchor. NOTE the scaling is per-jet λ^j (NOT a
+   constant matrix), so `differentialJetLinearChangeAlgEquiv` does NOT give it directly — needs a
+   diagonal-jet construction. `stableRangeCoreSymmetryAlgEquiv` (StableCoreFunctoriality) is the §2
+   core-restriction to reuse for the anchor/commuting.
+ (D) TOP-LEVEL card statement (T=∩Φⁿ(F), charge k, k>0 ⟹ Φ q₀ = a q₀) assembly.
+NEXT session: (C) corpus-hunt the concrete jet-scaling clock — check `DifferentialLinearChangeAutomorphism`,
+`StableCoreFunctoriality`, and the differential-polynomial machinery for an existing diagonal/dilation
+automorphism; if absent, construct `HTGeometry/JetScalingClock.lean` defining ρ_λ on DifferentialPolynomial
+via per-jet λ^j substitution and proving its semilinearity `ρ_λ(Dw)=λ D(ρ_λ w)` + it is an AlgEquiv
+(inverse ρ_{λ⁻¹}). That discharges the hsemi/hconst structure feeding THIS session's theorem.
+
+### Session 18 progress — (C) CONCRETE jet-scaling clock (ring level) + eq (1)
+`HTGeometry/JetScalingClock.lean` [PROVED HERE], all decls standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...JetScalingClock` clean (2951 jobs),
+`formal_tools.py lint` PASSED.
+
+CALIBRATION (re-read card): the theorem is about the SPECIFIC clock `ρ_λ(y^(j))=λ^j y^(j)` on F=C⟨y⟩,
+with C carrying the ZERO derivation (so hconst `(algebraMap λ)′=0` is structural). So the concrete
+clock is genuinely part of the statement — constructed here at the differential-polynomial ring level
+(`DifferentialPolynomial ι C = MvPolynomial (ι×ℕ) C`, jet-shift derivation D X_(i,n)=X_(i,n+1)).
+
+Delivered — the concrete cocharacter object:
+- `clockDilationAlgHom lam := aeval (fun (i,n) => C(lam^n) * X(i,n))` : the clock as an AlgHom;
+  `clockDilationAlgHom_X` (X_(i,n) ↦ C(lam^n)·X_(i,n)), `_C` (fixes constants).
+- `clockDilationAlgHom_comp` : ρ_λ∘ρ_μ = ρ_{λμ} (the HOMOMORPHISM/hmul property), via algHom_ext +
+  mul_pow + C_mul; `clockDilationAlgHom_one` (ρ_1=id).
+- `clockDilationAlgEquiv lam (hlam : lam≠0)` : the clock is an AUTOMORPHISM for λ≠0, inverse ρ_{λ⁻¹}
+  (via AlgEquiv.ofAlgHom + composition law + mul_inv_cancel).
+- **`clockDilation_semilinear`** : EQUATION (1) `ρ_λ(w′) = C(lam)·(ρ_λ w)′`. MvPolynomial.induction_on;
+  mul_X case via two Derivation.leibniz + hP + converting C(lam^(n+1))=C(lam)·C(lam^n) (pow_succ'+C_mul)
+  then ring. This is the defining semilinearity, matching the abstract hsemi (with C lam = algebraMap C
+  (DiffPoly) lam).
+
+(C) status: concrete clock DONE at the RING level with eq(1)/comp/AlgEquiv. The abstract chain's
+hsemi/hmul/invertibility are now instantiable by this object (C lam ≡ algebraMap C (DifferentialPolynomial ι C) lam).
+
+REMAINING:
+ (C-field) extend clockDilation to the FRACTION FIELD F=C⟨y⟩ (the card's field) via IsFractionRing
+   functoriality; connect its semilinearity to abstract hsemi in `algebraMap C F lam` form. The scalar
+   case is ι=Unit (single generator y=X((),0)).
+ (B) ALGEBRAICITY: `hpoly_scale` with P polynomial — the character e(λ)=λ^k IS a polynomial (X^k), so
+   at the concrete clock ρ_λ(q)=λ^k q the scaling factor is literally P(λ)=λ^k. Once (C-field) + core
+   give ρ_λ q = λ^k q the algebraicity is automatic; (B) may dissolve once the concrete core generator
+   q is produced with its charge.
+ (D) core T=∩Φⁿ(F) construction + top-level card statement.
+NEXT session: (C-field) `HTGeometry/JetScalingClockField.lean` — extend `clockDilationAlgEquiv` to the
+fraction field of `DifferentialPolynomial Unit C` (or the corpus's C⟨y⟩ model) via `IsFractionRing.fieldEquivOfAlgEquiv`/`FractionRing.algEquiv` functoriality, and restate `clockDilation_semilinear`
+at the field level with `algebraMap C F lam`. That instantiates the abstract clock family's hsemi/hmul
+with the CONCRETE clock, connecting `clock_family_scaling_character_from_semilinear` (s17) to a real object.
+
+### Session 19 progress — (C-field) semilinearity propagates domain → fraction field
+`HTGeometry/SemilinearFractionField.lean` [PROVED HERE], both decls standard axioms
+([propext, Quot.sound] for conjDerivation; +Classical.choice for the propagation lemma),
+`lake build ...SemilinearFractionField` clean (1350 jobs), `formal_tools.py lint` PASSED.
+
+The concrete field F=C⟨y⟩ is Frac(DifferentialPolynomial Unit C); the corpus's `fractionRingDerivation`
+extends the jet-shift derivation to F. This session builds the crux of (C-field): semilinearity checked
+on the domain propagates to all of F, so the clock's ring-level eq(1) (s18) will give field-level eq(1).
+
+Delivered:
+- `conjDerivation E D` : conjugation `z ↦ E⁻¹(D(E z))` of a derivation by a C-algebra automorphism,
+  a Derivation (via Derivation.mk'; twisted Leibniz becomes plain after conjugation).
+- **`algEquiv_semilinear_of_semilinear_algebraMap`** : a C-algebra automorphism E of F=Frac(A) that is
+  semilinear on the image of A (`E(D_F(algebraMap a)) = algebraMap λ · D_F(E(algebraMap a))`) is
+  semilinear on ALL of F. Proof: the two derivations `D_F` and `algebraMap λ • conjDerivation E D_F`
+  agree on A (from the hypothesis + E.symm fixing C), hence agree on F (corpus
+  `fractionRing_derivation_ext`); unfolding gives field-level semilinearity.
+
+(C-field) status: the semilinearity REDUCTION domain→field is DONE and reusable. Still need the concrete
+clock EXTENSION E:F≃ₐ[C]F itself.
+
+NOTE (blocker found): `IsFractionRing.fieldEquivOfAlgEquiv` gets instance-stuck extending
+`clockDilationAlgEquiv : DiffPoly ≃ₐ[C] DiffPoly` to Frac (base-ring mismatch: it wants fraction fields
+OVER the ring, not over C). Next session use `IsLocalization.ringEquivOfRingEquiv`/`IsLocalization.mapₐ`
+(extend the underlying ring equiv of the clock to Frac, then package as C-AlgEquiv since it fixes
+algebraMap C), OR set up the instance tower [Algebra C F][IsScalarTower C DiffPoly F] explicitly.
+
+REMAINING:
+ (C-field-E) concrete clock extension E=clockDilationFieldEquiv : Frac(DiffPoly Unit C)≃ₐ[C] itself, via
+   localization functoriality; then field-level eq(1) via `algEquiv_semilinear_of_semilinear_algebraMap`
+   (THIS session) fed by ring `clockDilation_semilinear` (s18) through `fractionRingDerivation_algebraMap`.
+ (C-inst) Differential F + DifferentialAlgebra C F instances on Frac(DiffPoly).
+ (B) algebraicity; (C-htr) hypertranscendence of y + differentialAdjoin=⊤ in the concrete model; (D) core+top-level.
+NEXT session: (C-field-E) `HTGeometry/JetScalingClockField.lean` — extend clockDilationAlgEquiv to
+Frac(DifferentialPolynomial Unit C) via `IsLocalization.ringEquivOfRingEquiv` (underlying ring equiv)
+upgraded to a C-AlgEquiv, then prove field-level semilinearity by feeding s18's ring semilinearity into
+THIS session's propagation lemma.
+
+### Session 20 progress — (C-field-E) concrete clock on the FIELD C⟨y⟩ + field eq (1)
+`HTGeometry/JetScalingClockField.lean` [PROVED HERE], both decls standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...JetScalingClockField` clean (2955 jobs),
+`formal_tools.py lint` PASSED. Compiled first try.
+
+Resolved the s19 blocker: `IsFractionRing.fieldEquivOfAlgEquiv` DOES work once ι is pinned to Unit
+(the stick was an ι metavar); the instance tower `Algebra C (FractionRing (DiffPoly Unit C))`,
+`IsScalarTower C DiffPoly (FractionRing)` resolves automatically.
+
+Delivered:
+- `ScalarDifferentialField C := FractionRing (DifferentialPolynomial Unit C)` — the field C⟨y⟩.
+- `clockDilationFieldEquiv lam hlam` : the clock on C⟨y⟩, via
+  `IsFractionRing.fieldEquivOfAlgEquiv C F F (clockDilationAlgEquiv lam hlam)` (base A=C, B=C=DiffPoly).
+- `clockDilationFieldEquiv_algebraMap` : restricts to the ring clock, `E(algebraMap a)=algebraMap(clockDilationAlgHom lam a)`
+  (via `IsFractionRing.fieldEquivOfAlgEquiv_algebraMap`).
+- `scalarDifferentialFieldDerivation` : the jet-shift derivation on C⟨y⟩ = `fractionRingDerivation` of
+  the lifted polynomial derivation `(Algebra.linearMap A F).compDer (differentialPolynomialDerivation)`.
+- **`clockDilationField_semilinear`** : EQ (1) ON THE FIELD `ρ_λ(D z)=λ·D(ρ_λ z)`. Proof: `apply`
+  s19 `algEquiv_semilinear_of_semilinear_algebraMap`; the domain hED reduces (via fractionRingDerivation_algebraMap
+  + clockDilationFieldEquiv_algebraMap + compDer defeq + IsScalarTower.algebraMap_apply) to s18 ring
+  `clockDilation_semilinear` mapped through algebraMap A F. Closed by defeq (`′`≡differentialPolynomialDerivation,
+  `MvPolynomial.C`≡algebraMap C DiffPoly).
+
+(C) status: concrete clock on the FIELD with eq(1) DONE. Composition law + Differential-instance + htr remain.
+
+REMAINING:
+ (C-comp) field-level composition ρ_λ∘ρ_μ=ρ_{λμ} (hmul) — from ring `clockDilationAlgHom_comp` (s18) +
+   fieldEquiv functoriality; and the anchor/nonzero facts.
+ (C-inst) `Differential (ScalarDifferentialField C)` = scalarDifferentialFieldDerivation.restrictScalars ℤ,
+   + `DifferentialAlgebra C (ScalarDifferentialField C)`; then clockDilationFieldEquiv's hsemi is exactly
+   the abstract hsemi (`(ρ lam).toAlgHom w′ = algebraMap lam * ...`) via `′`=scalarDifferentialFieldDerivation.
+ (C-htr) y := algebraMap(X((),0)) is HypertranscendentalOver C + differentialAdjoin C {y}=⊤ [deep].
+ (B) algebraicity; (D) core T=∩Φⁿ + top-level.
+NEXT session: (C-inst) `HTGeometry/ScalarDifferentialFieldInstance.lean` — the `Differential` instance on
+C⟨y⟩ from `scalarDifferentialFieldDerivation`, and restate `clockDilationField_semilinear` in the abstract
+hsemi shape (`w′` with the instance) so `clockDilationFieldEquiv` directly instantiates the abstract clock
+family's hsemi of `clock_family_scaling_character_from_semilinear` (s17). Also the field-level comp law (hmul).
+
+### Session 21 progress — (C-inst) Differential structure on C⟨y⟩ + clock as abstract semilinear autom.
+`HTGeometry/ScalarDifferentialFieldInstance.lean` [PROVED HERE], all decls standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarDifferentialFieldInstance` clean +
+FULL `GaloisForLFunctions.HTGeometry` umbrella builds (10739 jobs, no instance-diamond regression),
+`formal_tools.py lint` PASSED.
+
+Class defs found: `Differential R = ⟨deriv : Derivation ℤ R R⟩`; `DifferentialAlgebra A B` (Prop),
+field `deriv_algebraMap : ∀ a, (algebraMap a)′ = algebraMap (a′)`.
+
+Delivered:
+- `scalarDifferentialFieldDifferential` : global `Differential (ScalarDifferentialField C)` instance =
+  `scalarDifferentialFieldDerivation.restrictScalars ℤ`. FIXED the OreLocalization `Algebra ℤ` DIAMOND
+  with the corpus trick `letI : Algebra ℤ _ := Ring.toIntAlgebra _` before restrictScalars (pattern
+  from `freeScalarJetFieldDifferential`).
+- `scalarDifferentialField_deriv` : `z′ = scalarDifferentialFieldDerivation z` (rfl).
+- `scalarDifferentialFieldDerivation_algebraMap` : field derivation kills C-constants (`Derivation.map_algebraMap`).
+- **`clockDilationFieldEquiv_semilinear`** : `ρ_λ(w′)=λ·(ρ_λ w)′` in `′` shape — literally the abstract
+  clock `hsemi` of `clock_family_scaling_character_from_semilinear` (s17), from s20's field semilinearity.
+- `scalarDifferentialFieldDifferentialAlgebra` : `DifferentialAlgebra C (C⟨y⟩)` when C has zero
+  derivation (hCzero : ∀c, c′=0).
+
+(C-inst) status: Differential + DifferentialAlgebra + hsemi shape DONE. The concrete clock now matches
+the abstract clock-family interface (hsemi via clockDilationFieldEquiv_semilinear).
+
+BIG LEAD for (C-htr): corpus has `FreeCoordinateField` (FreeCoordinateField.lean) and `FreeScalarJetField`
+/`freeJetShift`/`freeCoordinate` (ProjectiveHorizonFreeJetReciprocalTail.lean) — an EXISTING free scalar
+jet differential field model, possibly with hypertranscendence of the generator + differentialAdjoin=⊤
+already proven. Investigate for reuse; may bridge my `ScalarDifferentialField C` to it or switch.
+
+REMAINING:
+ (C-comp) field composition law ρ_λ∘ρ_μ=ρ_{λμ} (hmul) — from ring `clockDilationAlgHom_comp` + fraction
+   ext (IsFractionRing.ringHom_ext / IsLocalization ext).
+ (C-htr) y hypertranscendental + differentialAdjoin C {y}=⊤ [DEEP; check FreeCoordinateField reuse].
+ (B) algebraicity; (D) core T=∩Φⁿ + top-level.
+NEXT session: investigate `FreeCoordinateField`/`FreeScalarJetField` — what hypertranscendence/adjoin=⊤
+facts the corpus already proves for the free scalar jet field, to discharge (C-htr) by reuse. If it is
+Frac(DifferentialPolynomial Unit C) too, bridge the Differential instances; else build the y-generator
+hypertranscendence via `differentialJet_differentialPolynomial_X` + DifferentialIndependent of the single
+generator.
+
+### Session 22 progress — (C-htr, half 1) the generator y IS hypertranscendental
+`HTGeometry/ScalarDifferentialFieldGenerator.lean` [PROVED HERE], both decls standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarDifferentialFieldGenerator` clean (2957 jobs).
+(My-cone lint clean + module wired in umbrella; a separate lint "owned module unreachable" error is an
+unrelated parallel-agent HTGeometry file `HausdorffPositiveCddCone`, not mine.)
+
+(Corpus check: `FreeCoordinateField`/`FreeScalarJetField` are DIFFERENT models (multivar coordinate
+field / free jet field indexed by ℕ) and do NOT ship a ready hypertranscendence-of-generator fact, so
+built it directly on my `ScalarDifferentialField C = Frac(DifferentialPolynomial Unit C)` model.)
+
+Delivered:
+- `scalarDifferentialGenerator C := algebraMap (X((),0))` — the canonical generator y.
+- `algebraMap_scalarDifferentialField_deriv` : the ring→field embedding commutes with the derivation
+  (`algebraMap(w′)=(algebraMap w)′`), via `fractionRingDerivation_algebraMap` + compDer defeq.
+- `differentialJet_scalarDifferentialGenerator` : `differentialJet n y = algebraMap(X((),n))` — the
+  jets of y are the free variables. INDUCTION on n (differentialJet_succ + the embedding-deriv lemma +
+  differentialPolynomial_deriv_X); avoids needing differentialJet_algHom.
+- **`scalarDifferentialGenerator_hypertranscendental`** : `HypertranscendentalOver C y`. Chain:
+  `MvPolynomial.algebraicIndependent_X (Unit×ℕ)` → `.comp (n↦((),n))` (subfamily indexed by ℕ) →
+  `.map (IsScalarTower.toAlgHom, hinj.injOn)` (inject into Frac, `IsFractionRing.injective`) →
+  rewrite `algebraMap(X((),n))=differentialJet n y` → `DifferentialIndependent` via `.comp Prod.snd`
+  → `hypertranscendentalOver_iff_differentialIndependent_singleton`.
+
+(C-htr) status: HypertranscendentalOver DONE (half 1). Remaining: `differentialAdjoin C {y} = ⊤`.
+
+REMAINING:
+ (C-htr-2) `differentialAdjoin C {scalarDifferentialGenerator C} = ⊤`. The jets X((),n) generate the
+   polynomial ring A as a C-algebra, A generates F=Frac A as a field, so the differential adjoin of y
+   (= field-adjoin of its jets = field-adjoin of {algebraMap X((),n)}) is all of F. Route: differentialAdjoin
+   C {y} ⊇ algebraMap '' A (contains all polynomials) and is a field ⟹ ⊇ Frac A = ⊤.
+ (C-comp) field composition law ρ_λ∘ρ_μ=ρ_{λμ} (hmul); (B) algebraicity; (D) core+top-level.
+NEXT session: (C-htr-2) `differentialAdjoin C {y} = ⊤` in `HTGeometry/ScalarDifferentialFieldGeneratorTop.lean`
+(or extend the generator file): show the differential adjoin contains algebraMap A (via the jets generating
+A) and is a subfield, hence = ⊤ = Frac A. Then with HypertranscendentalOver (this session) + Differential/
+DifferentialAlgebra (s21) + hsemi (s21) + hmul, the concrete clock family instantiates
+`clock_family_scaling_character_from_semilinear` (s17) fully.
+
+### Session 23 progress — (C-htr, half 2) differentialAdjoin C {y} = ⊤  →  (C-htr) COMPLETE
+`HTGeometry/ScalarDifferentialFieldGeneratorTop.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarDifferentialFieldGeneratorTop` clean
+(2958 jobs), `formal_tools.py lint` PASSED. Compiled first try.
+
+Delivered:
+- **`differentialAdjoin_scalarDifferentialGenerator_top`** : `differentialAdjoin C {y} = ⊤`. Proof:
+  the jets of y ARE the free variables `algebraMap(X((),n))` (s22), which are the image of `range X`;
+  `range X` generates A (`MvPolynomial.adjoin_range_X = ⊤`), so `algebraMap '' A ⊆ differentialAdjoin`
+  (via `Algebra.adjoin_image` + `IntermediateField.algebra_adjoin_le_adjoin`); then every z∈F is
+  `algebraMap x / algebraMap y` (`IsFractionRing.div_surjective`), both factors in the (sub)field, so
+  z ∈ differentialAdjoin. `eq_top_iff` + `mul_mem`/`inv_mem`.
+
+MILESTONE: (C-htr) COMPLETE. ALL structural field-instantiation hypotheses of the abstract clock-family
+theorem are now discharged for the CONCRETE field C⟨y⟩ = Frac(DifferentialPolynomial Unit C):
+  Differential (s21) · DifferentialAlgebra given C zero-deriv (s21) · hsemi eq(1) (s21) ·
+  HypertranscendentalOver y (s22) · differentialAdjoin C {y}=⊤ (s23).
+
+REMAINING to fully instantiate `clock_family_scaling_character_from_semilinear` (s17) with the concrete
+clock:
+ (C-comp) field composition law `clockDilationFieldEquiv lam ∘ clockDilationFieldEquiv mu = clockDilationFieldEquiv (lam*mu)`
+   (hmul) — from ring `clockDilationAlgHom_comp` (s18) + fraction-field ext (two AlgEquivs of Frac A
+   agreeing on algebraMap A agree: IsFractionRing / IsLocalization ringHom ext). Plus the anchor:
+   need SOME ν∉{0,1,-1} realized as a scaling — but the anchor for the concrete clock is
+   `clockDilationFieldEquiv ν` acting on the fixed-point coordinate; the anchor scaling emerges from
+   diagonalizing one ρ_ν (s9/10 fixed-point theory), NOT from the clock directly. Reconsider: for the
+   CONCRETE clock, ρ_λ(y)=λ·y already (order-1 jet scaling on y=X((),0) is λ^0=1... CHECK: ρ_λ(X((),0))
+   =λ^0 X((),0)=X((),0), so ρ_λ FIXES y!). So on the free generator y the clock is TRIVIAL; the
+   nontrivial action is on the CORE generator q (a differential rational function of y), where the
+   charge k>0 appears. So the anchor/diagonalization lives at the CORE, not at y. This connects to (D).
+ (B) algebraicity; (D) core T=∩Φⁿ + top-level.
+NEXT session: (C-comp) `HTGeometry/JetScalingClockFieldComp.lean` — the field composition law (hmul) via
+fraction-field AlgEquiv ext (probe `IsFractionRing.ringHom_ext`/`IsLocalization.ext`; two C-AlgEquivs of
+Frac(A) equal iff equal on algebraMap A, and `clockDilationFieldEquiv_algebraMap` (s20) reduces both to
+ring `clockDilationAlgHom_comp` (s18)). This completes the concrete clock's homomorphism property.
+
+### Session 24 progress — (C-comp) field composition law (hmul)  →  concrete clock fully has (C)
+`HTGeometry/JetScalingClockFieldComp.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...JetScalingClockFieldComp` clean (2956 jobs),
+`formal_tools.py lint` PASSED. Compiled first try.
+
+- **`clockDilationFieldEquiv_comp`** : `ρ_λ(ρ_μ z) = ρ_{λμ} z` on C⟨y⟩ (hmul). Pointwise via
+  `IsFractionRing.div_surjective` (z = algebraMap x / algebraMap y) + simp
+  [map_div₀, clockDilationFieldEquiv_algebraMap (s20), clockDilationAlgHom_apply_apply (s18)].
+
+(C) COMPLETE: the concrete clock on C⟨y⟩ now has ALL properties — AlgEquiv/invertible (s18),
+Differential+DifferentialAlgebra (s21), hsemi eq(1) (s21), hmul comp (s24), + generator y
+hypertranscendental (s22) with differentialAdjoin=⊤ (s23).
+
+KEY STRUCTURAL REALIZATION (from s23): on the FREE generator y=X((),0) the clock is TRIVIAL
+(ρ_λ(y)=λ^0 y=y). The nontrivial charged action lives on the CORE generator q∈T, where T=∩Φⁿ(F). So the
+abstract clock-character theorems apply with the field E:=T (the core, itself a free diff field on one
+generator q) — NOT at y. The C⟨y⟩ instantiation (s18-24) is the reusable TEMPLATE/model of "free diff
+field on one generator"; the real application is the same structure at T=C⟨q⟩.
+
+BIG LEAD for (D): corpus already has the STABLE CORE machinery:
+ - `StableDifferentialCore.lean`: `stableRangeCore` (=T=∩Φⁿ(F)), `stableRangeCoreAlgEquiv` (Φ|T is an
+   AUTOMORPHISM — "injective endo becomes automorphism on ∩ forward images"), `stableRangeCore_map_mem`,
+   `derivationClosed_stableRangeCore` (T is a differential subfield).
+ - `StableCoreFunctoriality.lean`: `stableRangeCoreSymmetryAlgEquiv` / `map_stableRangeCore_eq_of_commuting_algEquiv`
+   (commuting clock RESTRICTS to a core symmetry) — this IS §2 (clock preserves core).
+So §2 is largely IN THE CORPUS. The genuinely-open (D) content: T≠C ⟹ T=C⟨q⟩ (core is a SIMPLE
+differential extension / differential-Lüroth for the core) — the single-generator structure of the
+nonconstant core.
+
+REMAINING:
+ (D) T≠C ⟹ ∃ q, differentialAdjoin C {q}=⊤ in T (core simple differential extension) — DEEP, the last
+   genuinely-new structural piece; then abstract chain (s1-17) applies at E:=T, q.
+ (B) algebraicity (likely dissolves once ρ_λ(q)=λ^k q from the concrete core jet-weights).
+NEXT session: (D) investigate `StableDifferentialCore.lean` / `StableCoreFunctoriality.lean` fully —
+what the corpus proves about the core (automorphism, derivation-closed, clock-symmetry) and whether the
+single-generator structure T=C⟨q⟩ (or a differential-Lüroth) exists or must be built. Map the exact
+gap between the corpus core machinery and the abstract theorems' hypotheses (E field, q generator,
+differentialAdjoin=⊤).
+
+### Session 25 progress — charged-phase CAPSTONE (eq 4) + differential-Lüroth gap identified
+`HTGeometry/ScalarClockCharacterCharged.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarClockCharacterCharged` clean (3043 jobs),
+`formal_tools.py lint` PASSED. Compiled first try.
+
+DECISIVE FINDING (corpus): `StableDifferentialCore.lean` header states the stable-core machinery is
+the UNCONDITIONAL core, but the "nonconstant core = C⟨u⟩ with PGL₂ action" classification uses the
+**Ritt–Kolchin differential Lüroth theorem** + differential-order rigidity, "neither currently present
+in the Lean dependency tree; not postulated here." So:
+ - §2 (stable core: Φ|T automorphism, clock preserves core, T derivation-closed) IS IN CORPUS
+   (`stableRangeCore`, `stableRangeCoreAlgEquiv`, `derivationClosed_stableRangeCore`, `stableRangeCoreSymmetryAlgEquiv`).
+ - The corpus IS mid-developing differential Lüroth (`DifferentialLurothCoefficient.lean` 1372L +
+   `DifferentialLurothComponentTransfer.lean` 968L: two-block diff polynomials, separants,
+   characteristic-set/iterate-ideal machinery) — the CAPSTONE "T=C⟨q⟩" NOT yet complete.
+ => The card's ONLY genuinely-open deep piece is the DIFFERENTIAL LÜROTH THEOREM.
+
+Delivered — the card's eq(4) charged conclusion, assembled at the core:
+- **`persistent_clock_charged_forces_multiplicative`** : on the nonconstant core T=C⟨q⟩ (encoded by
+  `HypertranscendentalOver C q` + `differentialAdjoin C {q}=⊤`), a differential automorphism Φ commuting
+  with a clock cocharacter of positive charge `ρ_λ(q)=λ^k q` (k>0) satisfies `Φ(q)=a·q`. Wraps s16
+  `charged_clock_polynomial_forces_multiplicative_of_nonzero` with P:=X^k (P.eval λ=λ^k, natDegree=k>0).
+
+FULL FORMALIZATION STATE of the card:
+ - Abstract charged chain §1/§3/§4-given-q: DONE (s1-17, std axioms, unconditional).
+ - Concrete free diff field C⟨y⟩ + clock (template model): DONE (s18-24, unconditional).
+ - Stable core §2: IN CORPUS (unconditional).
+ - Charged eq(4) capstone at core: DONE (this session, unconditional given the interface).
+ - THE ONE GAP: differential Lüroth (T≠C ⟹ ∃q, T=C⟨q⟩) — discharges the capstone's hq/hqtop; deep,
+   corpus mid-development.
+
+NEXT session: differential Lüroth. Options: (a) study `DifferentialLurothCoefficient.lean` frontier
+(`irreducible_dvd_of_order_le_of_separant_pow_mul_mem_iterateIdeal`, general-component contraction) to
+build the next piece toward the T=C⟨q⟩ capstone; (b) build the E:=T assembly plumbing (Differential T
+via `derivationClosedDifferential` on `derivationClosed_stableRangeCore`; Φ|T via `stableRangeCoreAlgEquiv`;
+clock|T via `stableRangeCoreSymmetryAlgEquiv`) so the capstone's Φ/ρ/T hypotheses are discharged from the
+stable-core machinery, leaving ONLY the differential-Lüroth q-generator. Prefer (b) first (concrete,
+reduces the gap to exactly differential Lüroth), then (a).
+
+### Session 26 progress — the full two-phase DICHOTOMY capstone (eq 3 + eq 4)
+`HTGeometry/ScalarClockCharacterDichotomy.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarClockCharacterDichotomy` clean (3044 jobs),
+`formal_tools.py lint` PASSED. Compiled first try.
+
+Delivered — the card's full conclusion structure (both phases) as one theorem:
+- **`persistent_clock_character_dichotomy`** : on the nonconstant core T=C⟨q⟩ (encoded by hq+hqtop), a
+  differential automorphism Φ commuting with a clock cocharacter of charge k:
+  (eq 3) ALWAYS acts by a Möbius transform `Φ q·(cq+d)=aq+b`, ad−bc≠0 — wraps s5/7
+  `differentialAlgEquiv_generator_mobius`;
+  (eq 4) k>0 ⟹ `Φ q = a·q` — wraps s25 `persistent_clock_charged_forces_multiplicative`.
+
+STABLE-CORE ASSEMBLY findings (for discharging Φ/T from the corpus, future work):
+- `stableRangeCoreDifferentialAlgEquiv φ hφ : DifferentialAlgEquiv C (stableRangeCore φ)` gives Φ|T as
+  a DIFFERENTIAL automorphism: `.toAlgEquiv` = Φ|T : T≃ₐ[C]T, `.map_deriv'` = hΦderiv. Differential T
+  instance = `derivationClosedDifferential (stableRangeCore φ) (derivationClosed_stableRangeCore φ hφ)`.
+- `CharZero (stableRangeCore φ)` : inferInstance (subfield of char-0). ✓
+- `DifferentialAlgebra C (stableRangeCore φ)` : derivable from `DifferentialAlgebra C F` via Subtype.ext
+  + `DifferentialAlgebra.deriv_algebraMap` (but letI instance-threading is finicky — needs care).
+- clock|T = `stableRangeCoreSymmetryAlgEquiv φ (ρ lam) (hcomm lam)` : T≃ₐ[C]T per λ.
+So the Φ/T/Differential-T hypotheses of the dichotomy CAN be discharged from the corpus stable-core
+machinery; only the q-generator (differential Lüroth) + core-clock charge (hcharge=eq2) remain.
+
+FULL CARD STATE: abstract chain (s1-17) + concrete model (s18-24) + charged eq4 (s25) + dichotomy eq3+eq4
+(s26) all DONE, unconditional given the interface. §2 stable core IN CORPUS. THE ONE GAP: differential
+Lüroth (T≠C ⟹ ∃q, T=C⟨q⟩), corpus mid-development (DifferentialLurothCoefficient 1372L).
+NEXT session: differential Lüroth. Study the `DifferentialLurothCoefficient.lean` frontier
+(`irreducible_dvd_of_order_le_of_separant_pow_mul_mem_iterateIdeal`, `differentialPolynomialGeneralComponentJets_eval_iterate_eq_zero`) — the separant/characteristic-set contraction machinery — and identify the
+next lemma toward the T=C⟨q⟩ capstone; or build the stable-core→dichotomy plumbing (Differential T +
+DifferentialAlgebra C T threading) to fully discharge Φ/T, leaving ONLY differential Lüroth.
+
+### Session 27 progress — dichotomy at the ACTUAL persistent core T=∩ₙΦⁿ(F)
+`HTGeometry/ScalarClockCharacterCore.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarClockCharacterCore` clean (3102 jobs),
+`formal_tools.py lint` PASSED. Compiled first try.
+
+Studied the differential-Lüroth frontier (`DifferentialLurothCoefficient.lean`): its frontier theorem
+`irreducible_dvd_of_order_le_of_separant_pow_mul_mem_iterateIdeal` is deep Ritt characteristic-set
+machinery (separants, iterate ideals, general-component jets, quotient-ring reductions); header confirms
+"no ... coefficient-ratio theorem, or field-generation conclusion is assumed" — the T=C⟨q⟩ capstone is
+NOT there and extending this 2340L development safely in one session is high-risk. Deferred; did the
+stable-core assembly instead (fully discharges Φ/T from the corpus, reducing the card to exactly
+differential Lüroth + diagonalized clock).
+
+Delivered:
+- (key instance) `DifferentialAlgebra C (stableRangeCore φ)` : derived from `DifferentialAlgebra C F`
+  via `Subtype.ext` + `derivationClosedDifferential_apply` (`((x′:T):F)=x.1′`) + `DifferentialAlgebra.deriv_algebraMap`.
+- **`persistent_core_clock_character_dichotomy`** : the card's dichotomy (eq3 Möbius + eq4 charged) at
+  the REAL persistent core `T = stableRangeCore φ` of an injective differential endomorphism φ of F.
+  Discharges from the corpus stable-core machinery: `Differential T` (derivationClosedDifferential),
+  `DifferentialAlgebra C T` (above), `CharZero T` (auto), and Φ|T = differential automorphism
+  (`stableRangeCoreDifferentialAlgEquiv φ hφ`: `.toAlgEquiv`=Φ|T, `.map_deriv'`=hΦderiv). Applies s26.
+
+MILESTONE: the card is now formalized at the ACTUAL core T=∩ₙΦⁿ(F) (not abstract T). The constraint Φ,
+the core T, and ALL differential structure are realized from the corpus §2 stable-core machinery. The
+card's interface is now MINIMAL — only two structural inputs remain:
+ (i) DIFFERENTIAL LÜROTH: T≠C ⟹ ∃q, HypertranscendentalOver C q ∧ differentialAdjoin C {q}=⊤ (T=C⟨q⟩)
+     — the classical Ritt-Kolchin theorem, corpus mid-development (DifferentialLurothCoefficient).
+ (ii) DIAGONALIZED CLOCK ρT with ρT_λ(q)=λ^k q (charge k) + homomorphism + commuting-with-Φ|T — this is
+     §3 applied AT THE CORE (the clock symmetry `stableRangeCoreSymmetryAlgEquiv` restricts the ambient
+     clock to T; §3(b) diagonalizes it to λ^k on q). Reducible via the abstract chain once q exists.
+NEXT session: EITHER (a) differential Lüroth (study DifferentialLurothCoefficient's next step toward
+the coefficient-ratio/field-generation capstone — the genuine deep gap), OR (b) discharge input (ii) by
+restricting the ambient clock to T via `stableRangeCoreSymmetryAlgEquiv` and feeding the §3(b) chain
+(clock_family_scaling_character_from_semilinear s17 + charged_clock_family_pow_of_nonzero s16) at the core
+generator q, leaving ONLY differential Lüroth (i). Prefer (b): reduces the card to the single classical
+theorem, then (a).
+
+### Session 28 progress — (ii-a) restricted clock on the core is semilinear
+`HTGeometry/StableCoreClockSemilinear.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...StableCoreClockSemilinear` clean (3009 jobs).
+(My-cone lint clean + module wired in umbrella; a separate lint "owned module unreachable" error is an
+unrelated parallel-agent RHTower file `ThetaCuspCofinalWardConvexity`, not mine.)
+
+Toward discharging input (ii) [diagonalized clock at the core]. The clock ρ restricts to a core
+symmetry `ρ|T = stableRangeCoreSymmetryAlgEquiv φ ρ hcomm` (corpus). Delivered the q-INDEPENDENT
+connector:
+- `stableRangeCoreSymmetryAlgEquiv_coe` : `((ρ|T x : T):F) = ρ (x:F)` (rfl) — the restriction agrees
+  with ρ on the coe.
+- **`stableRangeCoreSymmetry_semilinear`** : if the ambient clock ρ is semilinear
+  (`ρ(x′)=λ·(ρ x)′`), so is `ρ|T` on the core: `ρ|T(w′)=λ·(ρ|T w)′`. Proof: `Subtype.ext` to F, then
+  `push_cast [derivationClosedDifferential_apply, stableRangeCoreSymmetryAlgEquiv_coe, algebraMap coe]`
+  reduces to the ambient `hsemi`. This is the hsemi hypothesis feeding s14
+  `clockSemilinearAlgEquiv_generator_mobius` AT THE CORE.
+
+INPUT (ii) decomposition (the diagonalized clock ρT_λ(q)=λ^k q at the core), and remaining sub-pieces:
+ (ii-a) ρ|T semilinear — DONE (this session). [q-independent]
+ (ii-b) ρ|T Möbius on the core generator q — s14 given (ii-a) + q (hy+hytop, from differential Lüroth)
+        + hconst (C zero-deriv). [needs q]
+ (ii-c) family diagonalization → multiplicative character e (s17) + the anchor. [needs q, family]
+ (ii-d) ALGEBRAICITY (B): e is polynomial ⟹ e=λ^k (s16). [genuine input — the cocharacter varies
+        algebraically in λ; concrete for the jet-scaling clock but abstract here].
+So (ii) still needs q (differential Lüroth) for (ii-b,c) and the algebraicity (ii-d/B).
+
+FULL CARD STATE: novel content DONE (abstract chain s1-17, concrete model s18-24, dichotomy s26, core
+assembly s27); the card reduces to (i) differential Lüroth + (ii) diagonalized clock [(ii-b,c) need q,
+(ii-d) is algebraicity B]. §2 stable core + Φ|T + core Differential structure all IN CORPUS/discharged.
+NEXT session: continue (ii). Either build (ii-b) `ρ|T Möbius on q` as a theorem TAKING q (hy+hytop) as
+hypothesis (wraps s14 via ii-a semilinearity), reducing (ii) to (ii-c,d)+q; OR (i) differential Lüroth.
+The genuine deep gaps remain (i) differential Lüroth (classical, corpus DifferentialLurothCoefficient
+mid-development) and (ii-d) algebraicity B. Both are structural/classical; incremental q-dependent
+pieces (ii-b,c) can be built as q-hypothesis theorems to shrink the interface.
+
+### Session 29 progress — (ii-b) §3(a) at the core: ρ|T is Möbius on the core generator q
+`HTGeometry/StableCoreClockMobius.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...StableCoreClockMobius` clean (3096 jobs).
+(My-cone lint clean + wired in umbrella; the "owned module unreachable" lint error is the same unrelated
+parallel-agent RHTower file `ThetaCuspCofinalWardConvexity`, not mine.)
+
+Delivered:
+- **`stableRangeCoreSymmetry_generator_mobius`** : (ii-b) with C carrying the zero derivation
+  (hCzero: lam′=0), the restricted clock `ρ|T` acts on a differential generator q of the core
+  (HypertranscendentalOver C q + differentialAdjoin C {q}=⊤) by a Möbius transform
+  `ρ|T(q)·(cq+d)=aq+b`, ad−bc≠0. Wraps s14 `clockSemilinearAlgEquiv_generator_mobius` at the core, fed
+  by s28 semilinearity `stableRangeCoreSymmetry_semilinear`; hconst at T derived from hCzero via
+  DifferentialAlgebra.deriv_algebraMap + derivationClosedDifferential_apply; DifferentialAlgebra C T
+  instance derived (as in s27).
+
+INPUT (ii) status: (ii-a) ρ|T semilinear DONE (s28); (ii-b) ρ|T Möbius on q DONE (this session).
+Remaining (ii-c) family diagonalization to character e (s17) + anchor; (ii-d) ALGEBRAICITY B (e polynomial
+⟹ e=λ^k, s16). Both (ii-c,d) need q (differential Lüroth) and (ii-d) is the genuine algebraicity input.
+
+CARD STATE: novel content DONE; core assembly (Φ|T, T, differential structure) discharged from corpus;
+§3(a) at core (ρ|T Möbius on q) DONE. Remaining deep gaps: (i) differential Lüroth (classical, corpus
+DifferentialLurothCoefficient mid-development), (ii-c) family diagonalization + anchor at core [needs q +
+the clock FAMILY over C^*], (ii-d) algebraicity B. The q-dependent pieces are now theorems taking q as
+hypothesis, shrinking the interface toward: differential Lüroth (produces q) + algebraicity B (produces
+the charge k).
+NEXT session: (ii-c) family diagonalization at the core — the clock FAMILY ρ|T_λ (restricting the ambient
+clock family λ↦ρ_λ to T) with the anchor, feeding s17 `clock_family_scaling_character_from_semilinear`
+to get the multiplicative character e on C^*; OR (i) differential Lüroth. Note (ii-c) needs the ambient
+clock as a FAMILY C→(F≃ₐF) with per-λ commuting+semilinear, and an anchor ν∉{0,1,-1} — the anchor
+existence (a nontrivial scaling in the fixed-point coordinate) is the crux, tied to the charge being
+positive.
+
+### Session 30 progress — (ii-c) §3(b) at the core: clock family → C^*-character
+`HTGeometry/StableCoreClockCharacter.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...StableCoreClockCharacter` clean (3104 jobs).
+(My-cone lint clean + wired in umbrella; the "owned module unreachable" lint error is the same unrelated
+parallel-agent RHTower file `ThetaCuspCofinalWardConvexity`, not mine.)
+
+Delivered:
+- `stableRangeCoreClockFamily φ ρ hcommφ` : the ambient clock family restricted to the core
+  (λ ↦ stableRangeCoreSymmetryAlgEquiv φ (ρ lam) (hcommφ lam)).
+- **`stableRangeCoreSymmetry_family_character`** : (ii-c) with C zero-derivation, given the restricted
+  clock family, a differential generator q of the core (hq+hqtop), an anchor scaling ρ_{ν₀}(q)=νq
+  (ν∉{0,1,-1}), and the family's homomorphism/commutation at q, the family diagonalizes to a
+  MULTIPLICATIVE CHARACTER `e:C→C` on C^* (`∀λ≠0, ρ_λ(q)=e(λ)·q` ∧ `e(λμ)=e(λ)e(μ)`). Wraps s17
+  `clock_family_scaling_character_from_semilinear`; discharges semilinearity (s28), hconst (from hCzero,
+  ∀λ), hlin (from q transcendental via transcendental_iff_injective + coeff extraction); anchor + hmul +
+  hcomm taken as hypotheses.
+
+INPUT (ii) status: FULL §3(b) at the core now ASSEMBLED — (ii-a) semilinear (s28), (ii-b) Möbius on q
+(s29), (ii-c) family→character (this session). The multiplicative character e on C^* is produced.
+Remaining for eq(2) ρ_λ(q)=λ^k q: (ii-d) ALGEBRAICITY B (e is polynomial ⟹ e=λ^k, via s16
+`charged_clock_family_pow_of_nonzero`); and the ANCHOR (ν∉{0,1,-1} scaling — the crux, currently
+hypothesis, tied to charge k>0).
+
+CARD STATE: novel abstract chain (s1-17) + concrete model (s18-24) + dichotomy (s26) + core assembly
+(s27, Φ|T) + FULL §3(b) at core (s28-30, clock→character) all DONE. The card reduces to:
+ (i) DIFFERENTIAL LÜROTH: T≠C ⟹ ∃q, T=C⟨q⟩ (produces q) — classical, corpus mid-development.
+ (ii-d) ALGEBRAICITY B: the character e is polynomial (λ^k) — property of the concrete jet-scaling clock
+   (ρ_λ homogeneous-weight-k on q); abstractly an input.
+ (anchor) ∃ ν₀ with ρ_{ν₀}(q)=νq, ν∉{0,1,-1} — the diagonalized anchor, from fixed-point diagonalization
+   (s9/s10) of one clock element, tied to positive charge.
+NEXT session: EITHER discharge the ANCHOR by applying the fixed-point diagonalization `mobius_nonparabolic_scaling`
+(s9/s10) to one restricted clock element ρ|T_{ν₀} (Möbius via s29) — producing the anchor coordinate; OR
+(i) differential Lüroth; OR (ii-d) algebraicity via the concrete jet-weight structure. The anchor is the
+cleanest next (uses s29 Möbius + s9/s10 fixed points at the core), reducing (ii) to algebraicity B alone.
+
+### Session 31 progress — Möbius change of differential generator (anchor coordinate generates T)
+`HTGeometry/DifferentialAdjoinMobiusGenerator.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...DifferentialAdjoinMobiusGenerator` clean (3030
+jobs). (My-cone lint clean + wired in umbrella; "owned module unreachable" lint errors are unrelated
+parallel-agent RHTower files ThetaCuspCofinalWardConvexity/XiThetaExplicitBounds, not mine.)
+
+Toward the ANCHOR. The fixed-point diagonalization (s10 `mobius_nonparabolic_scaling`) of a clock element
+produces the anchor coordinate x=(u−p₁)/(u−p₂). For x to serve as the clock-character generator q,
+need differentialAdjoin C {x}=⊤. Corpus had no Möbius-change lemma; built it:
+- `differentialAdjoin_singleton_le_of_mem` : x∈differentialAdjoin C {u} ⟹ differentialAdjoin C {x} ≤
+  differentialAdjoin C {u} (all jets of x stay in the derivation-closed field; induction on jets via
+  `derivationClosed_differentialAdjoin`).
+- `differentialAdjoin_singleton_eq_of_mem_mem` : mutual membership ⟹ equal adjoins (le_antisymm).
+- **`differentialAdjoin_mobius_generator`** : if u generates the whole field (differentialAdjoin C {u}=⊤),
+  p₁≠p₂, u−p₂≠0, then x=(u−p₁)/(u−p₂) also generates it. x∈diffAdjoin{u} (field ops, order 0);
+  u=(p₂x−p₁)/(x−1)∈diffAdjoin{x} (x≠1 since p₁≠p₂); mutual ⟹ equal ⟹ ⊤.
+
+ANCHOR status: the generator-change (x still generates T) is DONE. With s10 (diagonalization: produces
+x + ρ|T_{ν₀}(x)=νx) + s29 (ρ|T Möbius on the Lüroth generator u) + this generator-change, the anchor
+coordinate x is a valid clock-character generator q with the anchor scaling. Remaining for the anchor:
+the NON-DEGENERACY (c≠0, disc≠0, ν∉{0,1,-1}) of the clock element — a structural input (positive charge).
+
+CARD STATE: novel content + concrete model + core assembly + §3(b) at core + anchor coordinate machinery
+all DONE. The card reduces to:
+ (i) DIFFERENTIAL LÜROTH: T≠C ⟹ ∃u, T=C⟨u⟩ (produces the initial generator u) — classical, corpus
+   DifferentialLurothCoefficient mid-development.
+ (ii-d) ALGEBRAICITY B: character e is polynomial (λ^k) — property of the concrete jet-scaling clock.
+ (non-degeneracy) the clock element ρ|T_{ν₀} is non-parabolic with nontrivial eigenvalue — structural,
+   tied to charge k>0.
+NEXT session: assemble the ANCHOR fully — a theorem taking the Lüroth generator u + non-degenerate clock
+Möbius coeffs, applying s10 `mobius_nonparabolic_scaling` at the core to produce x + ρ|T_{ν₀}(x)=νx, and
+`differentialAdjoin_mobius_generator` (this session) for differentialAdjoin C {x}=⊤ — giving the anchor
+hypothesis of s30 `stableRangeCoreSymmetry_family_character`. This reduces (ii) to algebraicity B; then
+(i) differential Lüroth remains as the single classical gap.
+
+### Session 32 progress — ANCHOR coordinate assembled (diagonalization + generator-change)
+`HTGeometry/MobiusAnchorGenerator.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...MobiusAnchorGenerator` clean (3033 jobs).
+(My-cone lint clean + wired in; "owned module unreachable" lint error is the unrelated parallel-agent
+RHTower file ThetaCuspCofinalWardConvexity, not mine.)
+
+Delivered:
+- **`mobius_anchor_generator`** : a non-parabolic Möbius automorphism σ of a differential field
+  generated by u (c≠0, disc=(d−a)²+4cb≠0, u∉C, cu+d≠0, differentialAdjoin C {u}=⊤) admits a
+  differential generator x=(u−p₁)/(u−p₂) with `σ x = ν·x` (ν=(a−cp₁)/(a−cp₂)). Clean assembly:
+  s10 `mobius_nonparabolic_scaling` (produces p₁≠p₂ + the scaling) + s31 `differentialAdjoin_mobius_generator`
+  (x still generates). Returns `∃ x ν, differentialAdjoin C {x}=⊤ ∧ σ x = ν·x`.
+
+ANCHOR machinery COMPLETE: given a non-degenerate Möbius clock element on the Lüroth generator u,
+this produces the diagonalized generator x + eigenvalue ν + the anchor scaling σ(x)=νx + x generates T.
+This is precisely the anchor hypothesis of s30 `stableRangeCoreSymmetry_family_character` (modulo
+ν∉{0,1,-1}, the eigenvalue non-degeneracy tied to charge k>0).
+
+CARD STATE: the FULL machinery for the charged clock-character law is now assembled —
+ abstract chain (s1-17) · concrete model (s18-24) · dichotomy (s26) · core assembly (s27) ·
+ §3(b) at core → C^*-character (s28-30) · anchor coordinate (s31-32).
+The card reduces to THREE structural/classical inputs:
+ (i) DIFFERENTIAL LÜROTH: T≠C ⟹ ∃u, differentialAdjoin C {u}=⊤ (T=C⟨u⟩) — classical Ritt-Kolchin,
+   corpus DifferentialLurothCoefficient (2340L) mid-development. THE deep classical gap.
+ (ii-d) ALGEBRAICITY B: the character e is polynomial (⟹ e=λ^k, s16) — property of the concrete
+   jet-scaling clock (ρ_λ homogeneous weight k on the diagonalized generator).
+ (non-degeneracy) the clock element ρ|T_{ν₀} on u is non-parabolic (c≠0, disc≠0) with eigenvalue
+   ν∉{0,1,-1} — structural, from positive charge k>0.
+NEXT session: EITHER (i) differential Lüroth (the genuine deep classical theorem — study
+DifferentialLurothCoefficient frontier toward the T=C⟨u⟩ capstone), OR assemble the remaining structural
+inputs (ii-d, non-degeneracy) into a single "charged persistent core ⟹ eq(2)+eq(4)" theorem at the
+CONCRETE clock where algebraicity/non-degeneracy are computable from the jet-weight structure. The
+concrete-clock route (discharging ii-d/non-degeneracy via the jet-scaling homogeneity) may be more
+tractable than differential Lüroth.
+
+### Session 33 progress — eq(2) at the core from the algebraic (polynomial) clock character
+`HTGeometry/StableCoreClockPow.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...StableCoreClockPow` clean (3105 jobs).
+(My-cone lint clean + wired in; "owned module unreachable" lint error is the unrelated parallel-agent
+RHTower file ThetaCuspCofinalWardConvexity, not mine.)
+
+Assessed the differential-Lüroth corpus frontier (DifferentialLurothCoefficient + ComponentTransfer +
+ScalarExtensionSquarefree, 3+ files): deep Ritt characteristic-set/coefficient-cross-relation machinery
+(eq(78), squarefreeness, saturation) still at the COEFFICIENT layer — the T=C⟨u⟩ field-generation
+capstone is NOT there; a large active corpus effort, high-risk to extend safely in one session.
+
+Delivered:
+- **`stableRangeCoreSymmetry_family_pow`** : (eq 2 at core) if the restricted clock family acts on a
+  core generator q by a POLYNOMIAL scaling character `ρ_λ(q)=P(λ)·q` (P≠0, the algebraicity of the
+  cocharacter), then `ρ_λ(q)=λ^k·q`. Direct application of s16 `charged_clock_family_pow_of_nonzero`
+  to the core clock family `stableRangeCoreClockFamily`. No Differential instance needed (pure scaling
+  classification). DISCHARGES the hcharge (eq 2) hypothesis of s27 core dichotomy from ALGEBRAICITY alone.
+
+CARD STATE: charged branch now assembles from the ALGEBRAIC clock character:
+  differential Lüroth generator q → (this session) polynomial-scaling algebraicity ρ_λ(q)=P(λ)q ⟹
+  eq(2) ρ_λ(q)=λ^k q → (s27) core dichotomy eq(3)+eq(4).
+The card reduces to:
+ (i) DIFFERENTIAL LÜROTH: T≠C ⟹ ∃q, T=C⟨q⟩ — THE deep classical gap, corpus mid-development.
+ (ii-alg) POLYNOMIAL ALGEBRAICITY: the restricted clock scales the (diagonalized) core generator by a
+   polynomial P(λ) — a property of the CONCRETE jet-scaling clock (ρ_λ homogeneous weight k on a
+   homogeneous generator ⟹ P=X^k). The abstract anchor/character machinery (s28-32) produces the
+   scaling form ρ_λ(x)=χ(λ)x; algebraicity says χ polynomial. For the concrete clock this is homogeneity.
+ (+ family hmul/hcomm structure and non-degeneracy — structural).
+NEXT session: EITHER (i) differential Lüroth (the genuine deep classical theorem — the one substantial
+remaining gap; corpus DifferentialLurothCoefficient frontier), OR discharge (ii-alg) for the CONCRETE
+clock by proving a homogeneous element q (ρ_λ q = λ^k q) of the free field C⟨y⟩ has the polynomial
+character P=X^k directly (connecting the concrete clock s18-24 to eq(2) without the anchor). The concrete
+homogeneity route may fully discharge (ii-alg), leaving differential Lüroth (i) as the SOLE gap.
+
+### Session 34 progress — TIGHTEST reduction: core dichotomy from the algebraic clock character
+`HTGeometry/StableCoreDichotomyAlgebraic.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...StableCoreDichotomyAlgebraic` clean (3105 jobs).
+(My-cone lint clean + wired in; "owned module unreachable" lint error is the unrelated parallel-agent
+RHTower file ThetaCuspCofinalWardConvexity, not mine.)
+
+Delivered — the card's charged dichotomy at the ACTUAL persistent core, from the two structural inputs:
+- **`persistent_core_dichotomy_from_algebraic`** : on T=stableRangeCore φ (φ an injective differential
+  endomorphism of F, commuting with the clock family ρ), given a differential generator q of T
+  (HypertranscendentalOver C q + differentialAdjoin C {q}=⊤ — the differential LÜROTH output), and a
+  clock character that is a POLYNOMIAL of positive degree (`ρ_λ(q)=P(λ)·q`, 0<deg P — the ALGEBRAICITY),
+  with the family's homomorphism/commutation, the constraint Φ|T:
+  (eq 3) acts by a Möbius transform `Φ|T(q)·(cq+d)=aq+b` (s5/7 `differentialAlgEquiv_generator_mobius`);
+  (eq 4) `Φ|T(q)=a·q` (s16 `charged_clock_polynomial_forces_multiplicative_of_nonzero`).
+  Φ|T=`stableRangeCoreDifferentialAlgEquiv` (corpus); Differential T + DifferentialAlgebra C T +
+  CharZero T discharged (s27 pattern).
+
+MILESTONE — the card's charged clock-character law is now formalized DOWN TO EXACTLY TWO structural
+inputs, at the actual core T=∩ₙΦⁿ(F):
+ (i) DIFFERENTIAL LÜROTH: T≠C ⟹ ∃q, differentialAdjoin C {q}=⊤ (T=C⟨q⟩) — THE deep classical gap
+   (Ritt-Kolchin, not in mathlib, corpus DifferentialLurothCoefficient 3-file effort mid-development at
+   the coefficient layer).
+ (ii-alg) POLYNOMIAL ALGEBRAICITY: `ρ_λ(q)=P(λ)·q`, P nonconstant — the cocharacter is algebraic in λ;
+   for the concrete jet-scaling clock this is q homogeneous of weight k ⟹ P=X^k (homogeneity). The
+   abstract diagonalization machinery (s28-32: semilinear→Möbius→anchor→character) produces the scaling
+   form; algebraicity pins it polynomial.
+ (+ family hmul/hcomm — structural cocharacter properties, and Φ commuting with the clock.)
+Everything else — §2 stable core, Φ|T automorphism, T's differential structure, §3 Möbius/diagonalization/
+anchor/character, §4 charged no-go, eq(2) monomial — is FULLY FORMALIZED (std axioms).
+NEXT session: EITHER (i) differential Lüroth (the sole deep classical gap), OR (ii-alg) discharge for the
+concrete clock: prove a homogeneous q of C⟨y⟩ (ρ_λ q=λ^k q) has polynomial character P=X^k directly, and
+show the core of the concrete jet-scaling clock has a homogeneous generator — connecting the concrete
+model (s18-24) so the abstract q/algebraicity are realized. Differential Lüroth remains the deepest gap.
+
+### Session 35 progress — eq(4) sharpened to ∃! a∈C^* (unique nonzero scaling constant)
+`HTGeometry/EigenvalueUnique.lean` [PROVED HERE], standard axioms [propext, Classical.choice, Quot.sound],
+`lake build ...EigenvalueUnique` clean (992 jobs), no warnings.
+(My-cone lint clean + wired in; "owned module unreachable" lint error is the unrelated parallel-agent
+RHTower file ThetaCuspCofinalWardConvexity, not mine.)
+
+Surveyed the differential-Lüroth corpus: 4 files (Coefficient 63KB, ComponentTransfer 47KB,
+VariableSupport 25KB, ScalarExtensionSquarefree 8KB = ~143KB) — deep technical Ritt scaffolding
+(distinguished-variable Bezout, scalar-extension squarefreeness, characteristic saturation); NO
+field-generation T=C⟨u⟩ capstone; not safely completable in one session.
+
+Delivered — the exact "∃! a∈C^*" form of eq(4), which my charged theorems (s16/s25) only gave as ∃a:
+- `algEquiv_eigenvalue_ne_zero` : σ q = a·q, q≠0 ⟹ a≠0 (σ injective: a=0 ⟹ σq=0 ⟹ q=0).
+- `algEquiv_eigenvalue_unique` : the scaling eigenvalue of a nonzero vector is unique (mul_right_cancel₀
+  + algebraMap injective via map_eq_zero).
+- **`algEquiv_eigenvalue_existsUnique`** : σ q = a·q ⟹ `a ≠ 0 ∧ ∃! b, σ q = b·q` — the card's "unique
+  a∈C^*" (eq 4). Applies to any Φ|T(q)=a·q from the charged conclusion to sharpen it to the card's exact
+  statement.
+
+CARD STATE unchanged on the two deep inputs (i differential Lüroth, ii-alg algebraicity); the charged
+conclusion eq(4) is now the EXACT card form ∃! a∈C^*. Card fully formalized modulo (i)+(ii-alg).
+NEXT session: remaining card refinements toward the exact statement — (a) the NEUTRAL/CHARGED phase
+split is stated (s26 dichotomy: eq3 always, eq4 when k>0); (b) k INDEPENDENT of the diagonalizing
+generator q (the invariant — "k is the absolute cocharacter"; uniqueness of the charge). OR (i)
+differential Lüroth. The charge-invariance (k unique) is a tractable next piece (from eq2 ρ_λ(q)=λ^k q
+determining k via a nontrivial λ), complementing this session's eigenvalue-uniqueness.
+
+### Session 36 progress — charge invariance: k is a unique well-defined invariant
+`HTGeometry/ChargeUnique.lean` [PROVED HERE], standard axioms [propext, Classical.choice, Quot.sound],
+`lake build ...ChargeUnique` clean (1888 jobs).
+(My-cone lint clean + wired in; "owned module unreachable" lint error is the unrelated parallel-agent
+RHTower file ThetaCuspCofinalWardConvexity, not mine.)
+
+Delivered — the card's charge invariant (k well-defined):
+- `charge_unique` : over an infinite field, `λ^k=λ^m` for all nonzero λ ⟹ k=m (X^k, X^m agree on the
+  infinite nonzero locus ⟹ X^k=X^m via eq_zero_of_infinite_isRoot ⟹ k=m via natDegree_X_pow).
+- **`charge_unique_of_scaling`** : a diagonalizing generator q determines a UNIQUE charge — if
+  ρ_λ(q)=λ^k·q and ρ_λ(q)=λ^m·q (both λ≠0), q≠0, then k=m. (algebraMap injective on λ^k=λ^m via
+  map_eq_zero, then charge_unique.) This is the card's "k is the absolute cocharacter" invariant.
+
+CARD STATE: the exact card statement is now formalized (modulo the two deep inputs):
+ eq(2) ρ_λ(q)=λ^k q with UNIQUE k (s36) · eq(3) Φ|T Möbius (neutral, s5/7) · eq(4) Φ|T(q)=a·q with
+ UNIQUE a∈C^* (s35) · dichotomy (s26) · core assembly Φ|T/T/differential-structure (s27/s34).
+Fully formalized modulo:
+ (i) DIFFERENTIAL LÜROTH (produces q; the deep classical gap, corpus ~143KB mid-development, no capstone).
+ (ii-alg) POLYNOMIAL ALGEBRAICITY (ρ_λ(q)=P(λ)q; the concrete jet-scaling clock's homogeneity ⟹ P=X^k).
+NEXT session: (i) differential Lüroth (the sole deep classical gap remaining — the charge/eigenvalue
+uniqueness + dichotomy + core assembly + §3 diagonalization are all complete). The card's entire
+NOVEL clock-character content is formalized; only the classical Ritt-Kolchin differential Lüroth
+prerequisite (which mathlib lacks and the corpus is separately developing) remains open. Consider a
+focused multi-session push on the differential-Lüroth field-generation capstone building on the corpus's
+DifferentialLurothCoefficient/ComponentTransfer characteristic-set machinery.
+
+### Session 37 progress — COMPLETE card capstone (eq3 + unique-k eq2 + unique-a∈C^* eq4)
+`HTGeometry/PersistentCoreClockCharacterComplete.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...PersistentCoreClockCharacterComplete` clean
+(3109 jobs). (My-cone lint clean + wired in; "owned module unreachable" lint errors are unrelated
+parallel-agent RHTower files MobiusCofinalReplicaOneCorner/ThetaCuspCofinalWardConvexity, not mine.)
+
+Delivered — the card's COMPLETE conclusion at the persistent core, in exact form:
+- **`persistent_core_clock_character_complete`** : on T=stableRangeCore φ, given a differential Lüroth
+  generator q + algebraic clock character of positive charge (polynomial P, 0<deg P), Φ|T:
+  (eq 3) acts Möbius on q;
+  (eq 2) `∃! k, ∀λ≠0 ρ_λ(q)=λ^k·q` — UNIQUE charge;
+  (eq 4) `∃! a, a≠0 ∧ Φ|T(q)=a·q ∧ (uniqueness)` — UNIQUE nonzero scaling constant.
+  Assembles s34 (dichotomy eq3+eq4-∃) + s33 (eq2 ∃k) + s36 `charge_unique_of_scaling` (k unique) + s35
+  `algEquiv_eigenvalue_existsUnique` (a≠0 + unique). ExistsUnique.unique for the eq4 uniqueness.
+
+MILESTONE: the card's CHARGED clock-character law is now formalized as a SINGLE top-level theorem in its
+EXACT statement (Möbius + unique charge k + unique a∈C^*), reduced to exactly TWO structural inputs at
+the actual persistent core T=∩ₙΦⁿ(F):
+ (i) DIFFERENTIAL LÜROTH: T≠C ⟹ ∃q, T=C⟨q⟩ (produces q) — the deep classical gap.
+ (ii-alg) POLYNOMIAL ALGEBRAICITY: ρ_λ(q)=P(λ)q — the concrete jet-scaling clock's homogeneity.
+All novel content (abstract §1-§4 chain, concrete model, §3 diagonalization/anchor/character, core
+assembly, uniqueness) is COMPLETE on standard axioms.
+NEXT session: the two remaining inputs are deep classical/graded theorems:
+ (i) differential Lüroth (corpus ~143KB mid-development, no capstone; huge Ritt-Kolchin effort).
+ (ii-alg) concrete algebraicity via weighted grading (jet-scaling clock scales weighted-homogeneous
+   poly of weight k by λ^k; probed MvPolynomial.IsWeightedHomogeneous/Finsupp.weight — fiddly Finset.prod
+   monomial computation + fraction-field extension + eigenvector-homogeneity; multi-session).
+Consider a dedicated push on ONE of these; the card's exact statement is otherwise fully formalized.
+
+### Session 38 progress — (ii-alg foundation) clock scales weighted-homogeneous poly by λ^k
+`HTGeometry/ClockHomogeneousScaling.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ClockHomogeneousScaling` clean (2960 jobs).
+(My-cone lint clean + wired in; "owned module unreachable" lint error is the unrelated parallel-agent
+RHTower file ThetaCuspCofinalWardConvexity, not mine.)
+
+Toward discharging (ii-alg) [polynomial algebraicity] for the CONCRETE jet-scaling clock. Delivered:
+- `clockDilationAlgHom_monomial` : the clock scales a monomial by λ to its jet-weight:
+  `ρ_λ(monomial s c) = C(λ^(Finsupp.weight (·.2) s))·monomial s c`. Via aeval_monomial + Finset.prod
+  manipulation (mul_pow, C_pow, prod_mul_distrib, prod_pow_eq_pow_sum, prod_X_pow_eq_monomial,
+  C_mul_monomial) + the weight identity ∑ x.2·s x = Finsupp.weight.
+- **`clockDilationAlgHom_isWeightedHomogeneous`** : a weighted-homogeneous polynomial of jet-weight k
+  is a clock EIGENVECTOR with eigenvalue λ^k: `ρ_λ(p) = C(λ^k)·p` for `IsWeightedHomogeneous (·.2) p k`.
+  Via p.as_sum + map_sum + the monomial lemma (each monomial has weight k on the support).
+
+This is the CONCRETE realization of eq(2) for a homogeneous polynomial generator: such q has polynomial
+character P=X^k directly (ρ_λ(q)=λ^k q), discharging the algebraicity for the polynomial-ring case.
+
+CARD STATE: complete exact statement formalized (s37 capstone: eq3 + unique-k eq2 + unique-a∈C^* eq4).
+The two structural inputs remain, now with (ii-alg) partially concretized:
+ (i) DIFFERENTIAL LÜROTH: produces the core generator — the deep classical gap.
+ (ii-alg) POLYNOMIAL ALGEBRAICITY: DONE for a homogeneous POLYNOMIAL (this session, P=X^k). Remaining:
+   (ii-alg-frac) the fraction-field case (core generator is p/q, weight difference) — extend the
+     homogeneous scaling to Frac; (ii-alg-hom) the core generator IS homogeneous (from clock-invariance
+     of the core + graded Lüroth) — needs differential Lüroth.
+NEXT session: (ii-alg-frac) extend `clockDilationAlgHom_isWeightedHomogeneous` to the field
+clockDilationFieldEquiv on a ratio of homogeneous polynomials (weight a / weight b ⟹ eigenvalue λ^(a-b)),
+via the algebraMap + the ring homogeneous scaling. OR (i) differential Lüroth. The concrete homogeneous
+eigenvalue foundation (ring level) is now in place.
+
+### Session 39 progress — (ii-alg-frac) field clock scales homogeneous ratio by λ^(a-b)
+`HTGeometry/ClockHomogeneousScalingField.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ClockHomogeneousScalingField` clean (2965 jobs).
+(My-cone lint clean + wired in; "owned module unreachable" lint error is the unrelated parallel-agent
+RHTower file ThetaCuspCofinalWardConvexity, not mine.)
+
+Delivered — the concrete eq(2) at the FIELD level:
+- **`clockDilationFieldEquiv_homogeneous_ratio`** : for p,q weighted-homogeneous of jet-weights a,b
+  (b≤a), the field clock scales the ratio by λ^(a-b): `ρ_λ(algebraMap p / algebraMap q) =
+  algebraMap(λ^(a-b))·(algebraMap p/algebraMap q)`. Via map_div₀ + clockDilationFieldEquiv_algebraMap
+  (s20) + s38 ring homogeneous scaling + mul_div_mul_comm + the C-level power identity
+  λ^a/λ^b=λ^(a-b) (div_eq_mul_inv + pow_sub₀). hcoe: algebraMap(DiffPoly→F)(C r)=algebraMap(C→F)(r)
+  via IsScalarTower.algebraMap_apply + MvPolynomial.algebraMap_eq.
+
+(ii-alg) status: the CONCRETE clock's homogeneous eigenvalue law is now DONE at both ring (s38) and
+FIELD (s39) levels. A homogeneous fraction-field element q=p/q' (weights a≥b) has polynomial character
+P=X^(a-b): ρ_λ(q)=λ^(a-b)·q, discharging the algebraicity input for such q.
+
+CARD STATE: complete exact statement formalized (s37); (ii-alg) concretized for homogeneous generators
+(s38/s39). Remaining:
+ (i) DIFFERENTIAL LÜROTH: T≠C ⟹ ∃q, T=C⟨q⟩ — the deep classical gap.
+ (ii-alg-hom) the CORE generator is a homogeneous ratio (from clock-invariance of T + GRADED Lüroth) —
+   intertwined with differential Lüroth.
+Both remaining pieces center on differential Lüroth (ungraded for (i), graded for the homogeneous
+generator). The concrete clock's homogeneous eigenvalue law (the ALGEBRAICITY mechanism) is fully in
+place; what remains is producing the homogeneous generator, which is the (graded) differential Lüroth.
+NEXT session: (i) differential Lüroth — the sole deep classical gap. All the CONCRETE clock machinery
+(homogeneous eigenvalue at ring+field) + the abstract chain + core assembly + exact statement + charge/
+eigenvalue uniqueness are complete. Consider a dedicated push on the differential-Lüroth field-generation
+capstone building on the corpus's characteristic-set machinery (DifferentialLurothCoefficient etc.).
+
+### Session 40 progress — (ii-alg) clock eigenvector ⟹ weighted-homogeneous (⟹ eigenvalue λ^k)
+`HTGeometry/ClockEigenvectorHomogeneous.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ClockEigenvectorHomogeneous` clean (2962 jobs).
+(My-cone lint clean + wired in; "owned module unreachable" lint error is the unrelated parallel-agent
+RHTower file ThetaCuspCofinalWardConvexity, not mine.)
+
+Delivered — the KEY link for the concrete algebraicity (eigenvalue is λ^k):
+- `clockDilationAlgHom_coeff` : the clock acts DIAGONALLY on coefficients,
+  `(ρ_λ p).coeff s = λ^(weight s)·p.coeff s`. Via MvPolynomial.induction_on' (monomial: s38
+  clockDilationAlgHom_monomial + C_mul_monomial + coeff_monomial split; add: coeff_add + mul_add).
+- **`isWeightedHomogeneous_of_clock_eigenvector`** : a nonzero clock EIGENVECTOR (ρ_λ(p)=χ(λ)·p ∀λ≠0)
+  is WEIGHTED-HOMOGENEOUS. Proof: for any support monomial s, λ^(weight s)·coeff s = χ(λ)·coeff s
+  (coeff property + coeff_C_mul), so λ^(weight s)=χ(λ) (cancel coeff≠0); same for a fixed t₀; then
+  λ^(weight s)=λ^(weight t₀) ∀λ≠0 ⟹ weight s = weight t₀ (s36 charge_unique). All monomials same weight.
+
+(ii-alg) MECHANISM COMPLETE at ring level: clock eigenvector ⟹ homogeneous (s40) ⟹ eigenvalue λ^k (s38).
+So a ring clock eigenvector has polynomial character P=X^k. The ALGEBRAICITY (eigenvalue is a polynomial
+λ^k) is now fully mechanized for the concrete jet-scaling clock at the ring level.
+
+CARD STATE: complete exact statement (s37) + concrete algebraicity mechanism (s38 homogeneous→λ^k ring,
+s39 →λ^(a-b) field, s40 eigenvector→homogeneous ring). Remaining:
+ (i) DIFFERENTIAL LÜROTH: produces the core generator — deep classical gap.
+ (ii-alg-field-eig) FIELD eigenvector ⟹ homogeneous ratio (fraction-field version of s40) — then s39
+   gives eigenvalue λ^(a-b)=λ^k; connects to the diagonalized core generator (a field eigenvector).
+NEXT session: (ii-alg-field-eig) extend `isWeightedHomogeneous_of_clock_eigenvector` to the field
+clockDilationFieldEquiv: a field clock eigenvector x (ρ_λ(x)=algebraMap(χ λ)·x) is a homogeneous ratio
+(x = algebraMap p/algebraMap q, p,q homogeneous), giving χ(λ)=λ^(a-b) via s39. This completes the
+concrete algebraicity: the diagonalized core generator's character IS λ^k. Then only differential Lüroth
+(the generator's EXISTENCE) remains. OR (i) differential Lüroth directly.
+
+### Session 41 progress — homogeneous generator ⟹ polynomial character X^k (s34-algebraicity form)
+`HTGeometry/ClockHomogeneousAlgebraic.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ClockHomogeneousAlgebraic` clean (2966 jobs).
+(My-cone lint clean + wired in; "owned module unreachable" lint error is the unrelated parallel-agent
+RHTower file ThetaCuspCofinalWardConvexity, not mine.)
+
+Delivered — the concrete algebraicity in the EXACT s34 hypothesis form (ρ_λ(q)=P(λ)·q, P=X^k):
+- `clockDilationAlgHom_isWeightedHomogeneous_eval` : ring form, `ρ_λ(p) = C((X^k).eval λ)·p` for p
+  weighted-homogeneous of weight k (s38 + eval_X_pow).
+- **`clockDilationFieldEquiv_homogeneous_character`** : field form, `∀λ≠0, ρ_λ(p/q) =
+  algebraMap((X^(a-b)).eval λ)·(p/q)` for p,q homogeneous (weights a≥b) — the EXACT `hpoly_scale`
+  hypothesis of `persistent_core_dichotomy_from_algebraic` (s34) with P=X^(a-b) (s39 + eval_X_pow).
+
+(ii-alg) DISCHARGED (in form) for a homogeneous generator: a homogeneous ratio q has the polynomial
+character P=X^(a-b), which is precisely s34's algebraicity input. Combined with the concrete algebraicity
+mechanism (s38 homogeneous→λ^k, s39 field ratio→λ^(a-b), s40 eigenvector→homogeneous), the algebraicity
+is fully mechanized: a homogeneous core generator satisfies s34's hypothesis.
+
+CARD STATE: complete exact statement (s37) + full concrete algebraicity (s38-41). The card is now
+formalized modulo the SINGLE remaining input:
+ (i) DIFFERENTIAL LÜROTH (graded): T≠C ⟹ ∃ HOMOGENEOUS q (a homogeneous ratio), T=C⟨q⟩. The clock-
+   invariant core T has a homogeneous differential generator. This is the deep classical Ritt-Kolchin
+   theorem (graded version); the corpus's DifferentialLurothCoefficient (~143KB) develops the ungraded
+   machinery; no capstone yet.
+Everything else — abstract §1-§4 chain, concrete model+clock, core assembly, exact statement (unique k,
+unique a∈C^*), and the full concrete algebraicity (homogeneous ⟹ polynomial character X^k) — is COMPLETE
+on standard axioms.
+NEXT session: (i) differential Lüroth — the SOLE deep classical gap. The card is otherwise fully
+formalized. A dedicated multi-session push on the differential-Lüroth field-generation capstone (building
+on the corpus's characteristic-set machinery) is the remaining work; OR the field eigenvector-homogeneity
+(field version of s40 via coprime/UFD) as an alternative route to the homogeneous generator from an
+abstract diagonalized eigenvector.
+
+### Session 42 progress — ring clock eigenvalue IS λ^k (algebraicity fully characterized, ring level)
+`HTGeometry/ClockEigenvaluePow.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ClockEigenvaluePow` clean (2963 jobs).
+(My-cone lint clean + wired in; "owned module unreachable" lint errors are unrelated parallel-agent
+RHTower files EulerSquarefreeDyadicAffineProjection/ThetaCuspCofinalWardConvexity, not mine.)
+
+Delivered:
+- **`clock_eigenvalue_pow`** : a ring clock eigenvector's eigenvalue is a MONOMIAL — if `ρ_λ(p)=χ(λ)·p`
+  ∀λ≠0 (p≠0), then `∃k, ∀λ≠0, χ(λ)=λ^k`. Proof: s40 `isWeightedHomogeneous_of_clock_eigenvector` (p
+  homogeneous of weight k) + s38 (ρ_λ(p)=C(λ^k)·p); cancel p (domain) + C injective ⟹ χ(λ)=λ^k.
+
+(ii-alg) RING LEVEL FULLY CHARACTERIZED: any ring clock eigenvector has purely polynomial character
+χ(λ)=λ^k. The algebraicity of the concrete cocharacter is completely mechanized on ring eigenvectors:
+ eigenvector ⟹ homogeneous (s40) ⟹ eigenvalue λ^k (s38, packaged s42) ⟹ polynomial character X^k (s41).
+
+CARD STATE: complete exact statement (s37) + full ring-level concrete algebraicity (s38-42). Remaining:
+ (i) DIFFERENTIAL LÜROTH: produces the core generator — the deep classical gap.
+ (ii-alg-field-eig) FIELD clock eigenvector eigenvalue = λ^k. Approach (from cross-multiplying x=a/b
+   eigenvector): clock a·b = C(χλ)·clock b·a in ring; comparing TOP-WEIGHT components gives
+   χ(λ)=λ^(w_a-w_b) (leading-term multiplicativity in the graded domain). Needs mathlib graded top-degree
+   API (weightedTotalDegree_mul, leading component) — feasible but graded-API-heavy.
+NEXT session: EITHER (ii-alg-field-eig) the field eigenvalue via top-weight comparison (probe
+MvPolynomial.weightedTotalDegree multiplicativity + leading-component API), completing the concrete
+algebraicity at the field level; OR (i) differential Lüroth (the sole deep classical gap). The card is
+formalized modulo differential Lüroth; the concrete algebraicity is fully characterized at the ring level.

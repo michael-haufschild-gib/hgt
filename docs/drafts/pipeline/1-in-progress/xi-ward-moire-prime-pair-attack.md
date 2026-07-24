@@ -959,3 +959,925 @@ in lattice form — feed the B† Legendre pairing through the lattice represent
 the finite-divisor branch: a finite Gram matrix with distinct nodes is NONSINGULAR —
 quantitative lower bounds on its smallest eigenvalue would grade the 8π-floor into a
 spectral gap for the whole family, not just singletons.
+
+## Step 9r — THE SHARP 8π LAWS: the 9f blockade falls [PROVED HERE]
+
+New module `formal/GaloisForLFunctions/RHTower/XiWardEdgeGramSharpLaws.lean` (compiles
+clean, standard axioms, umbrella wired, index regenerated).  rng picked legendre-lattice;
+the desk pass discovered that the Gram capstone's diagonal already carries the FULL
+per-pair deposit — so every 4π law doubles, and the 8π-sharp window that step 9f recorded
+as BLOCKED (double-series Fubini) is now certified:
+
+- `gramTerm_le_xiWardEdgeQuadEnergy` — every ordered pair's Gram term ≤ energy
+  (one `ENNReal.le_tsum` on the capstone; the lattice representation makes the full
+  deposit a single series term, so no interchange is ever needed).
+- `eightPi_div_le_xiPairGramTerm_diag` — G(q,q) ≥ 8π/x.
+- **`riemannHypothesis_iff_continuedXiWardEdgeQuadEnergyLaw_sharp`** — THE SHARP LAW:
+  RH ⟺ energy ≤ c for ANY fixed 0 ≤ c ≤ 8π (closed endpoint).  The budget window
+  doubles from [0, 4π] to [0, 8π]; sharp relative to the per-pair deposit, which
+  approaches 8π as a → ½, b → ∞.
+- **`xiWardEdgeQuadEnergy_eq_zero_or_eightPi_lt`** — the spectral gap widens: energy is
+  0 or > 8π; (0, 8π] is forbidden.
+- **`card_nsmul_eightPi_le_xiWardEdgeQuadEnergy`** — counting law doubles: N·8π.
+- **`height_lt_abs_im_of_xiWardEdgeQuadEnergyLaw_le_eightPi`** (name in file:
+  `height_lt_abs_im_of_xiWardEdgeQuadEnergy_le_eightPi`) — window clearing at doubled
+  budget 8π(1+m(T)).
+
+Method note (for the meta-card): the mechanism that killed the 9f blockade was NOT a new
+convergence theorem — it was a REPRESENTATION CHANGE.  In the direct route the sharp
+deposit is a sum of infinitely many cross terms (Fubini needed); in the lattice
+representation the same quantity is ONE TERM of a positive series (le_tsum suffices).
+The obstruction was an artifact of the coordinate system, exactly the A† chart-exchange
+moral transposed to series representations.
+
+What this OPENS: (1) the window cannot extend past 8π on the pure budget axis (deposit
+infimum is 8π over the strip closure) — the next tightening must be RELATIVE: subtract
+the certified deposit of each detected pair and re-run the law on the residual — an
+iterative peeling law (energy − Σ_detected G ≤ c ⟺ no further pairs), i.e. a certified
+zero-counting ALGORITHM specification; (2) cluster repulsion: for two pairs the floor is
+G(q,q) + G(q',q') + 2G(q,q') > 16π + 2G(q,q') — formalize the two-pair law with the
+explicit cross bonus (first use of off-diagonal mass); (3) B†-Legendre reading: the
+doubled clearing law says budget slack 8π·m(T) buys height T with the same 9-exponent —
+the exchange rate is representation-invariant, as B† predicts; carding the desk note.
+
+## Step 9s — two-pair cross-bonus laws [PROVED HERE] + HOSTILE NOVELTY AUDIT of 9i–9r
+
+Certified this round (XiWardEdgeGramSharpLaws.lean, compiles clean, standard axioms):
+- `xiPairGramTerm_symm`; **`twoPair_gram_floor_le_xiWardEdgeQuadEnergy`** — two distinct
+  pairs force energy ≥ G(q,q) + G(q′,q′) + 2G(q,q′) (first certified use of off-diagonal
+  Gram mass); **`cluster_penalty_lt_xiWardEdgeQuadEnergy`** — height-clustered distinct
+  pairs (|b−b′| ≤ δ) force energy > 16π + 32π/(4+δ²): a certified pair-repulsion
+  penalty (clustered violations are MORE expensive than separated ones).
+
+### Novelty audit (user-triggered; gate: "would a literature search produce this?")
+
+RECLASSIFIED AS FORMALIZATION-OF-CLASSICAL (search would produce the mathematics,
+though no formal library has it):
+- All kernel integrals of 9i–9n (∫u⁻² = 0, Lorentzian/odd-kernel masses, cross
+  convolution semigroup): classical residue/Poisson computations.
+- The Gram matrix of Cauchy–Poisson kernels attached to points of a half-plane
+  (9o–9q): standard reproducing-kernel/model-space material (Szegő kernels, de
+  Branges–Clark theory).  The "quadratic explicit formula" is the Gram expansion of a
+  countable kernel family — classical in substance, new only as a certified artifact
+  wired to THIS corpus divisor object.
+- Channel equipartition (9p): conjugate-function symmetry, M. Riesz territory.
+- "RH ⟺ positive divisor functional ≤ budget": logically the quantitative dressing of
+  "RH ⟺ no off-critical zero"; the classical incarnations are Weil positivity and Li
+  coefficients.  The 4π/8π constants and window/counting/margin laws are corpus-specific
+  quantitative content, but the SHAPE is known.
+
+WHAT REMAINS GENUINELY CORPUS-NEW: the certified equivalence of these functionals with
+the Ward matrix W_P through the corpus chain, the Lean stack itself (no formal analogue
+exists anywhere), and the margin-graded laws tied to the corpus zero-free margin.
+
+### The structural confession the audit forces
+
+Every theorem in 9i–9r strengthens the LOWER bound on the edge energy under ¬RH — the
+EASY direction of every RH criterion.  The open core is the UPPER bound (energy ≤ 8π,
+i.e. actual emptiness of the divisor).  The corpus's own obstruction theorem B†
+(Legendre neutrality: norm-type loops are exactly neutral) applies VERBATIM to the edge
+stack: it is a norm loop, and no amount of further sharpening inside it can produce the
+upper bound.  Continuing to polish this stack would be exactly the theatre the user
+warns against.  The stack's real value: a clean, certified, quantitative TARGET surface
+(the constraint side of the constraint-metaphor: the object is fixed by "energy ≤ 8π",
+not grown by a flow).
+
+### Reorientation (the next real problem)
+
+The upper bound must come from an input that is NOT the divisor: prime-side/arithmetic
+supply.  A† (Chart–Region Exchange) certifies: cocycle supply ⟺ zero-free region.  The
+missing object is a certified bridge  "prime-side supply S ⟹ xiWardEdgeQuadEnergy ≤
+F(S)"  — an arithmetic upper-bound mechanism for the edge functional.  Next round:
+(1) FAKE-PROOF FIRST — write the fake proof of the upper bound through the Perron/PNT
+corpus modules, find the exact failing step, name it (the B†-predicted neutrality point
+must appear concretely); (2) inventory the corpus's certified upper-bound machinery
+(det₂ contraction, Hardy contraction, aperture bounds) against the edge functional —
+each no-go names a channel; the audit of which upper-bound channel is NOT yet closed by
+a no-go is the actual open map.  This is where the next session's mathematics lives.
+
+## Step 9t — FAKE PROOF of the upper bound, run to its failing step [SEARCH register]
+
+Target to fake-prove: xiWardEdgeQuadEnergy ≤ c (any finite c would already kill the
+infinite-divisor channel; c ≤ 8π would be RH).
+
+FAKE PROOF (prime-side transport):
+1. energy = ∫ |r(½+it)|² dt.                                        [certified, 9o–9q]
+2. r(σ+it) → r(½+it) as σ → ½⁺ (boundary values).                    [plausible]
+3. [CONJECTURE] On Re w > 1 the Ward response has a prime-side representation
+   r = D + (Γ-corrections), D an absolutely convergent von-Mangoldt Dirichlet series
+   (the "prime first trace").
+4. [FAKE JUMP] Parseval/Montgomery–Vaughan for D on vertical lines gives
+   ∫|D(σ+it)|²dt ≍ Σ Λ(n)²n^{−2σ−1} < ∞ uniformly down to σ = ½ + ε; pass the bound
+   through step 2 by "continuity of L² under the limit".
+
+WHERE IT DIES — three concrete failures, in order of depth:
+(a) The Euler pole: any prime-side object carrying ζ'/ζ has the s = 1 pole on its
+    boundary line; after pole subtraction |ζ'/ζ(1+it)| still grows (≍ log²|t| bounds),
+    so the FULL prime trace is not L² on ANY vertical line.  Step 4's finiteness is
+    false for the full trace.
+(b) The subtraction defect [THE NAMED OBSTRUCTION]: r is not the full trace; it is
+    (full prime trace) − (critical-line spectral trace) — the anti-causal DEFECT.  Both
+    subtrahends are individually non-L² on the edge (each ≍ log-density growth); the
+    energy is their ∞−∞ cancellation.  A norm bound on either side says NOTHING about
+    the difference: certifying the cancellation requires PHASE alignment between the
+    prime trace and the critical-line spectrum — exactly the corpus's
+    complementary-phase no-go (unitary full phase ⟹ strict-right contraction forces
+    complementary expansion) in L² clothing.  Step 3's D does not exist as an
+    AUTONOMOUS object: writing it requires already knowing the spectrum (circularity).
+(c) B† neutrality, concretely: transporting an L² bound from Re = 1+ε to Re = ½ costs
+    the strip-crossing factor that a norm loop prices exactly at the zero-free-region
+    exchange rate — the transported bound degrades to precisely vacuous at the edge.
+
+WHAT SURVIVES THE AUTOPSY (the generative residue):
+The failure is localized in the SUBTRACTION, not in the prime side per se.  Between raw
+subtraction (not norm-accessible) and det₂ renormalization (kills the signal — corpus
+no-go), there is an unexplored regularization axis: subtract a CERTIFIED PARTIAL
+spectral trace (finitely many critical-line zeros / a smoothed spectral density) rather
+than the full one.  The defect of a PARTIAL subtraction is norm-accessible (finite
+modification), and the corpus's edge calculus computes exactly how much energy a partial
+subtraction removes (the Gram machinery applies verbatim to critical-line kernels
+x → 0⁺ limits — Lorentzian halves degenerate to Dirac masses; the edge calculus has the
+closed forms).  Sub-question carded: compute the Gram matrix of CRITICAL-LINE kernels
+(x = σ − ½ → 0 regularized) against strict-right kernels — the mixed Gram G(critical,
+right) is finite for σ > ½ and its σ → ½ behavior measures the phase alignment that (b)
+says is the obstruction.  If the mixed Gram stays bounded while the diagonal blows up,
+the defect subtraction is quantifiably SMALL — a norm-accessible fragment of the phase
+information.  That computation is new (not classical-search-reachable in this form) and
+certifiable with the existing two-width calculus (widths x₁ → 0, x₂ fixed — the
+`integral_mul_lorentzianHalves_general` formula already covers it: mass
+π(x₁+x₂)/((x₁+x₂)²+(β₁−β₂)²) → πx₂/(x₂²+Δβ²) as x₁ → 0: FINITE).  The two-scale/moiré
+idea of this card's title returns as the σ-regularized mixed Gram.
+
+## Step 9u — critical-collapse decoupling [PROVED HERE]
+
+New module `formal/GaloisForLFunctions/RHTower/XiWardEdgeCriticalCollapseGram.lean`
+(compiles clean, standard axioms, umbrella wired, index regenerated).  Instantiates the
+surviving object of the 9t autopsy:
+- **`integral_mul_lorentzianHalves_le`** — uniform cross bound: ∫ L_{x₁,β₁}L_{x₂,β₂}
+  ≤ π/x₂ for ALL widths x₁ > 0 and ALL heights.  The mixed Gram between a collapsing
+  (near-critical) kernel and any fixed strict-right kernel is uniformly bounded.
+- **`tendsto_integral_sq_lorentzianHalf_atTop`** — self-energy divergence: ∫ L_x² → ∞
+  as x → 0⁺.
+Together: the two-scale moiré decoupling.  Partial spectral subtraction (removing
+near-critical kernels) perturbs each cross channel by ≤ π/x₂ even as the removed
+self-energies diverge — the norm-accessible fragment of the phase information named in
+9t(b).  Novelty-gate label: the two lemmas are classical-calculus facts; the corpus-new
+content is their ROLE as the certified decoupling interface for partial subtraction
+against the Ward defect.  Next: await the upper-bound-machinery inventory (agent), then
+design the partial-subtraction object r_S (response minus S-indexed near-critical
+family) and compute its energy shift with these bounds.
+
+## Step 9v — upper-bound channel inventory (agent report) + the quantization-vs-estimate synthesis [SEARCH register]
+
+Inventory (read-only agent over the corpus; full report in session log) — certified
+UPPER-bound channels still alive: (1) Cayley/Ward phase contraction ‖phase‖ ≤ 1 and
+transport ‖V‖ ≤ 2, unconditional, geometric (HardyContraction); (2) Hardy–Pick four-unit
+nonexpansive defect PSD (HardyNonexpansive); (3) det₂ prime-side remainders (≤ 144/p²,
+≤ log p/p²); (4) Perron/PNT error bounds conditional on a zero-free margin; (5) prime
+window supply.  Killed: complex-aperture Schur–Pick promotion (only the real α-ray is
+contractive); every closable rigging of the prime first-trace clock; and — decisively —
+NO unconditional constant upper bound on the Ward edge energy exists in the corpus: the
+only such bounds are certified RH-EQUIVALENT.
+
+Desk pass over the alive channels (this session):
+- The aperture ray: ∂_α V(w,·)|₀ = r(w) is certified (hasDerivAt_..._zero), ‖V‖ ≤ 2 on
+  the ray — but a ray has no Schwarz lemma; difference quotients give only 4/α.  Sector
+  continuation reopens it ONLY IF the product is bounded on a sector — and the log-sum
+  splits into divergent positive/negative parts (Σ 1/γ diverges): the ∞−∞ subtraction
+  defect (9t-b) reappears verbatim in the aperture sector.
+- Harnack in the spectral variable (Poisson-kernel ratio P(½,u) ≤ 4P(2,u)) transports
+  Re r between abscissas unconditionally — and transports the problem with it (B†).
+- Littlewood–Paley/Carleson from ‖phase‖ ≤ 1 bounds |phase′|²·(bulk weight) — which
+  controls |phase|²|r|², degenerating exactly where ¬RH lives (|phase| < 1).  Neutral.
+
+SYNTHESIS [CONJECTURE-LEVEL PROGRAM, novelty-gate-checked]: the certified spectral gap
+(energy ∈ {0} ∪ (8π, ∞]) changes what kind of statement is needed.  Estimates cannot
+cross a gap; but the gap converts ANY sub-8π bound into exact vanishing.  So the open
+core is not "prove energy ≤ 8π by analysis" (B†-neutral norm loop, confirmed dead
+across four channel families) but: **produce a certified prime-side EXACT IDENTITY for
+the single number xiWardEdgeQuadEnergy** — a second evaluation of the same quantity by
+arithmetic/theta objects (the corpus's Λ = Γ·ζ weld, XiThetaPositiveL2Perron exact
+pieces).  Given identity + ANY crude certified arithmetic bound < 8π on that side, the
+gap forces energy = 0 = RH = W_P ⪰ 0.  Quantization converts estimates into vanishing:
+the 8π-wide gap is the mechanism that makes a NON-sharp prime estimate sufficient — the
+first structural reason this program differs from the classical norm-loop dead ends.
+The subtraction defect localizes to constructing the identity for ONE number (a
+regularized pairing), not for the response as a function — a strictly weaker demand
+than the autonomous prime representation that 9t killed.
+
+NEXT (queued): desk-construct the candidate identity: energy = ∫|r|² edge pairing; r =
+∂_α V; V built from Γ-sewn Cayley products of the Λ-weld — expand ∫|∂_α V|² through the
+weld's theta representation (Parseval on the Mellin/Fourier side where the corpus holds
+exact theta identities); identify which regularization of the prime double sum appears;
+check each step against the certified no-gos BEFORE any Lean.  (The σ-family/Harnack rng
+pick was folded into this design as the abscissa-transport sub-lemma.)
+
+## Step 9w — Weil-pairing desk check + certified Harnack abscissa transport [mixed]
+
+Desk (SEARCH register): the 9v identity program was pushed through the Weil-pairing
+route: pairing the windowed energy against the explicit formula with autocorrelation
+test functions, discarding the on-line spectral mass by positivity, leaves
+off-line ≤ arithmetic side EXACTLY — but the arithmetic side for a height-T window
+carries the oscillatory Λ-sum at frequency T, whose cancellation is the PNT-error at
+that frequency: the B† neutrality point appears as predicted, now LOCATED in the
+identity program (it lives in the window-position dependence of the finite Λ-sum, not
+in the identity itself).  Consequence: the identity program is viable exactly to the
+extent that ONE fixed window near height 0 suffices — a fixed low window needs only a
+FIXED finite Λ-sum bound (no oscillation estimates).  A fixed window can only clear a
+fixed height range — full RH would need the ladder, which pays B† at each rung.  The
+un-neutralized residue: a certified LOW-HEIGHT window clearing from a fixed finite
+arithmetic sum — worth pursuing as a new-TYPE partial result (arithmetic input, exact,
+no numerics beyond a finite provable sum), even though it cannot ladder to full RH
+without new input.  Queued as the 9x target.
+
+Lean [PROVED HERE] (XiWardEdgeCriticalCollapseGram.lean, compiles clean, standard
+axioms, indexed): `lorentzianHalf_le_four_mul`;
+`re_xiAntiCausalWardSchwarzPairResponse_line_eq` (general-abscissa Re formula — first
+off-edge evaluation lemma in the stack); **`re_continuedXiAntiCausalWardResponse_edge_le_four_mul_interior`**
+— unconditional pointwise Harnack transport Re r(½+it) ≤ 4·Re r(2+it): the critical
+edge is dominated by the interior line where the pair series converges absolutely with
+quadratic decay.  Novelty label: Harnack is classical; the certified transport is the
+first corpus bridge between the RH-critical edge and the absolutely-summable region —
+the interface any exact-identity program will pair against.
+
+## Step 9x — the Poisson-window interior program, grounded + FIRST BRICK CERTIFIED
+
+Design pivot (from 9w): replace compact Fourier windows by POISSON windows.  The
+certified general cross-Lorentzian mass IS the Poisson semigroup, so the windowed edge
+mass of Re r equals an interior point value π·Re r(s₀) — and at interior points every
+spectral sum converges ABSOLUTELY: the full/on-line/off-line split is finite arithmetic
+of convergent series, the ∞−∞ subtraction defect never forms.  Discard chain at
+interior s₀:  windowed edge mass = π Re r(s₀) ≤ π Re(full trace + corrections)(s₀) =
+arithmetic side (ζ′/ζ absolutely convergent + certified Γ/pole terms).  Combined with a
+windowed per-pair quantum: arithmetic side < quantum ⟹ window CLEARED of off-critical
+zeros.  Fixed low window: fixed finite arithmetic bound, no oscillation estimates —
+B†-neutrality does not bite for a fixed window (it prices only the T→∞ ladder).
+
+Corpus assets discovered (search): the Hadamard stack is ALREADY CERTIFIED —
+`XiHadamardFactorization.lean` (canonical product, quotient nonvanishing,
+`xiHadamardQuotient_mul_canonicalProduct = XiC`), `XiRelativeResolventTrace.lean`
+(`logDeriv_xiCanonicalProduct_eq_relativeResolventTrace`: full-divisor absolutely
+summable trace identity), transport module (`xiCanonicalProduct_eq_right_mul_nonright`
+Wiener–Hopf split; `logDeriv_xiRightCanonicalProduct_eq_relativeResolventTrace`).
+
+[PROVED HERE] First brick, new module
+`formal/GaloisForLFunctions/RHTower/XiWardInteriorTraceSplit.lean` (compiled clean on
+first attempt; standard axioms; umbrella wired; indexed):
+**`xiRelativeResolventTrace_eq_right_add_logDeriv_nonright`** — away from the Xi
+divisor, fullTrace(z) = rightTrace(z) + logDeriv(nonright factor)(z) EXACTLY.  The
+subtraction-defect skeleton is now a certified identity among three absolutely
+convergent objects.  Remaining bricks, in order: (1) connect
+xiRightRelativeResolventTrace to the Ward response r at interior points (the corpus's
+centered response = right trace modulo certified centering constants — locate/derive);
+(2) Re-positivity discard for the nonright factor's on-line part at interior points
+(Schwarz/mirror bookkeeping of the E1-centering corrections); (3) arithmetic side:
+logDeriv XiC ↔ ζ′/ζ + Γ + pole via the corpus weld, with Perron-module bounds; (4) the
+windowed quantum from the Poisson mass and the clearing inequality.
+
+## Step 9y — bricks 1 and 3a of the interior program CERTIFIED
+
+Appended to `XiWardInteriorTraceSplit.lean` (all compiled clean on first attempts;
+standard axioms; built; indexed):
+- **`continuedXiAntiCausalWardResponse_eq_full_sub_nonright`** (brick 1) — the Ward
+  response equals 2i·fullTrace(iw) − 2i·logDeriv(nonright)(iw) + boundarySymbol away
+  from the rotated divisor.  The bridge response ↔ right trace was DEFINITIONAL in the
+  corpus (`continuedXiCenteredAntiCausalWardResponse := 2i·rightTrace(i·w)`); composing
+  with the 9x trace split gives the response's exact interior decomposition.
+- **`logDeriv_XiC_eq_quotient_add_trace`** (brick 3a) — logDeriv XiC = logDeriv
+  (entire Hadamard factor) + fullTrace.
+- **`continuedXiAntiCausalWardResponse_eq_logDeriv_XiC_sub`** — MASTER INTERIOR
+  IDENTITY: r(w) = 2i·logDeriv XiC(iw) − 2i·logDeriv quotient(iw) −
+  2i·logDeriv nonright(iw) + boundarySymbol.  The Ward response is now certified as an
+  exact expression in the completed source XiC — the weld object — with every term
+  absolutely convergent at interior points.  The subtraction defect is fully
+  skeletonized: what remains of it is the single term logDeriv(nonright), the
+  on-line + left factor.
+
+Remaining bricks: (3b) logDeriv XiC(i·w) ↔ ζ′/ζ + Γ + pole through the corpus weld and
+the functional equation (note the rotation lands at ½ − w; the functional equation
+reflects to ½ + w where the Λ-series converges absolutely for Re w > ½); (2) the
+Re-discard for logDeriv(nonright) at interior points (Schwarz/mirror bookkeeping —
+CAUTION: sign analysis in 9x notes shows the E1-centering corrections obstruct naive
+per-term positivity; the discard likely needs the left/on splitting with mirror-pair
+combination first); (4) windowed quantum + clearing inequality.
+
+## Step 9z — brick 3b head: the ARITHMETIC-HEADED master identity [PROVED HERE]
+
+Appended to `XiWardInteriorTraceSplit.lean` (compiles clean; standard axioms; built;
+indexed):
+- `xi_eq_mul_completedRiemannZeta` — away from 0,1: xi(s) = s(s−1)/2 · Λ(s) exactly
+  (corpus xi-def + mathlib completedRiemannZeta_eq; the affine +½ absorbs the poles).
+- `logDeriv_xi_one_sub` — logDeriv xi(1−s) = −logDeriv xi(s) (functional-equation
+  reflection at logarithmic-derivative level).
+- `two_I_logDeriv_XiC_I_mul_eq` — the rotation head: 2i·logDeriv XiC(iw) =
+  2·logDeriv xi(½+w) (chain rule through the centering rotation + reflection).
+- **`continuedXiAntiCausalWardResponse_eq_two_logDeriv_xi_sub`** — the Ward response is
+      r(w) = 2·logDeriv xi(½+w) − 2i·logDeriv quotient(iw)
+             − 2i·logDeriv nonright(iw) + boundarySymbol
+  for XiC(iw) ≠ 0.  With xi = s(s−1)/2·Λ, the head term at Re w > ½ opens into
+  1/s + 1/(s−1) + logDeriv Λ(s), and Λ = Γ-factor·ζ puts ζ′/ζ(s) — the ABSOLUTELY
+  CONVERGENT von Mangoldt series — at the top of the response's certified expression.
+  The prime side has entered the Ward identity chain for the first time as an exact
+  certified object, not an estimate.
+
+Remaining: (3c) logDeriv xi = 1/s + 1/(s−1) + logDeriv Λ and logDeriv Λ =
+−log π/2 + ψ(s/2)/2 + ζ′/ζ via mathlib Γℝ/ζ factorization (nonvanishing on Re > 1);
+(2) the nonright Re-discard (mirror bookkeeping); (4) windowed quantum + clearing.
+
+## Step 9aa — brick 3c COMPLETE: THE ARITHMETIC RESPONSE IDENTITY [PROVED HERE]
+
+Appended to `XiWardInteriorTraceSplit.lean` (compiles clean; standard axioms; built;
+indexed).  Nine new certified theorems:
+- `logDeriv_congr_of_eventuallyEq`, `differentiableAt_Gammaℝ_of_re_pos` (helpers).
+- `completedRiemannZeta_eq_gammaR_mul_zeta`, `completedRiemannZeta_ne_zero_of_one_lt_re`
+  — the Γℝ·ζ factorization with nonvanishing on Re > 1.
+- `logDeriv_completedRiemannZeta_eq` — logDeriv Λ = logDeriv Γℝ + logDeriv ζ.
+- `logDeriv_xi_eq` — logDeriv xi = 1/s + 1/(s−1) + logDeriv Λ.
+- `logDeriv_riemannZeta_eq_neg_LSeries` — logDeriv ζ = −L(Λ,·) on Re > 1 (mathlib von
+  Mangoldt series).
+- **`logDeriv_xi_eq_arithmetic`** — the fully opened head:
+  logDeriv xi(s) = 1/s + 1/(s−1) + logDeriv Γℝ(s) − L(Λ,s) on Re s > 1.
+- **`continuedXiAntiCausalWardResponse_eq_arithmetic`** — THE ARITHMETIC RESPONSE
+  IDENTITY: for Re w > ½ away from the rotated divisor,
+    r(w) = 2[1/(½+w) + 1/(w−½) + logDeriv Γℝ(½+w) − L(Λ, ½+w)]
+           − 2i·logDeriv quotient(iw) − 2i·logDeriv nonright(iw) + boundarySymbol.
+  The von Mangoldt prime series now sits INSIDE the certified Ward chain — the weld of
+  the prime side to the Ward response is an exact machine-checked identity, every term
+  absolutely convergent.  The interior-program pipeline 9x→9aa is complete through
+  brick 3; the response that quantizes the edge energy (RH ⟺ energy ≤ 8π) is now
+  arithmetically evaluated wherever Re w > ½.
+
+Remaining bricks: (2) the nonright Re-discard at interior points (mirror bookkeeping of
+E1-centering; CAUTION from 9x sign analysis); (4) the Poisson-windowed quantum +
+clearing inequality, now pairing the certified edge quanta against THIS identity's
+arithmetic side via the certified Harnack/Poisson transports (9u/9w).  The chain design:
+edge window mass = π·Re r(interior) [Poisson semigroup, certified pieces] with Re r
+evaluated by the arithmetic identity; discard the nonright Re-part [brick 2]; bound the
+finite arithmetic remainder below the windowed quantum [brick 4] ⟹ window CLEARED.
+
+## Step 9ab — brick 2 COMPLETE: THE UNCONDITIONAL ARITHMETIC UPPER BOUND [PROVED HERE]
+
+Appended to `XiWardInteriorTraceSplit.lean` (compiles clean; standard axioms; built;
+indexed).  Five new certified theorems:
+- `logDeriv_xiHadamardQuotient_eq_zero` — the corpus's certified quotient CONSTANCY
+  (XiHadamardGrowth) kills the quotient term of the master identity outright.
+- `logDeriv_nonright_eq_full_sub_right` — the complementary factor's logDeriv as the
+  trace difference.
+- **`re_two_I_mul_relativeResolventTerm_nonneg`** — per-term interior positivity: every
+  NON-right divisor term (on-line or left) has nonnegative rotated real part at points
+  above the strip (upper-half-plane Poisson kernel positivity; the on-line E1-centering
+  corrections are exactly Re-invisible after rotation; left corrections positive; the
+  9x sign caution DISSOLVES at interior points via the general strip bound
+  `abs_re_I_mul_xiSpectralPoint_le_half`).
+- **`re_two_I_logDeriv_nonright_nonneg`** — the INTERIOR DISCARD at tsum level:
+  the rotated complementary spectral mass is nonnegative for Re w > ½ (subtype
+  complement split of the absolutely convergent full trace).
+- **`re_continuedXiAntiCausalWardResponse_le_arithmetic`** — THE THEOREM THE INVENTORY
+  PROVED MISSING: an UNCONDITIONAL upper bound on the Ward response with arithmetic
+  input.  For Re w > ½ away from the rotated divisor:
+    Re r(w) ≤ Re[2(1/(½+w) + 1/(w−½) + logDeriv Γℝ(½+w) − L(Λ,½+w))] + Re(boundary).
+  The B†-neutrality was evaded exactly as designed: the discard is performed at
+  interior points where all series converge absolutely, and what is discarded is the
+  POSITIVE on-line/left spectral mass — no norm transport across the strip occurs.
+
+The clearing engine is now assembled on both sides: LOWER — Re r(w) = Σ pair Poisson
+masses ≥ windowed quantum per in-window pair (Herglotz + certified semigroup);
+UPPER — the arithmetic bound above.  Brick 4 (final): formalize the per-pair interior
+Poisson mass lower bound and the comparison "arithmetic side < quantum ⟹ no pair in
+the window" — then instantiate at a fixed low window with a certified finite Λ-sum
+bound.  The remaining mathematics: certified bounds on Re L(Λ, s₀), Re logDeriv Γℝ(s₀),
+Re boundarySymbol at ONE convenient interior point s₀ — finite arithmetic, corpus
+Perron/Γ machinery.
+
+## Step 9ac — brick 4 structural half COMPLETE: THE WINDOW-CLEARING ENGINE [PROVED HERE]
+
+Appended to `XiWardInteriorTraceSplit.lean` (compiles clean; standard axioms; built;
+indexed).  Three new certified theorems:
+- `xiWardInteriorArithmeticBound` (def) + `re_continuedXiAntiCausalWardResponse_le_interiorBound`
+  — the 9ab bound under a single name.
+- **`interior_pair_quantum`** — a strict-right pair with height within δ of the probe
+  height deposits ≥ 2h/((h+½)²+δ²) into the interior response value (line formula +
+  strip bound; no case analysis — crude numerator/denominator monotonicity).
+- **`xiWard_window_clearing`** — THE ENGINE:  if
+      xiWardInteriorArithmeticBound(h+ic) < 2h/((h+½)²+δ²)
+  then EVERY strict-right pair has (Im λ − c)² > δ².  One certified arithmetic
+  inequality at ONE interior point clears an entire height window of off-critical
+  zeros — unconditionally.  Chain: quantum ≤ Re pair ≤ Re r (Herglotz domination)
+  ≤ arithmetic bound < quantum ⟹ contradiction.
+
+The interior program 9x→9ac is COMPLETE as a certified reduction: window clearing is
+now a question about xiWardInteriorArithmeticBound at explicit points — i.e. about
+Re[2(1/s + 1/(s−1) + logDeriv Γℝ(s) − L(Λ,s))] + Re(boundarySymbol), s = ½+h+ic.
+What remains to INSTANTIATE the engine (the arithmetic half of brick 4):
+(a) certified upper bound on Re[−L(Λ,s)]-term: |L(Λ,s)| ≤ Σ Λ(n) n^{−(1+h′)} =
+    −ζ′/ζ(Re s) — a REAL Dirichlet-series bound; mathlib LSeries norm lemmas;
+(b) certified bounds on |1/s|, |1/(s−1)| (trivial), Re logDeriv Γℝ(s) (Γ-machinery /
+    corpus CompletedPrimeGammaMoment modules), Re boundarySymbol (corpus tsum bound);
+(c) pick the probe (h, c) and δ; verify the inequality by certified finite arithmetic.
+Point (c) is where the actual magnitudes decide: desk expectation is that clearing
+holds for windows already covered by the corpus low-height margin, so the FIRST target
+is matching the certified margin's window, then attempting to EXCEED it — any exceeding
+window is new certified knowledge about zeta zeros obtained through the Ward frame.
+
+## Step 9ad — arithmetic instantiation begun + boundary-symbol route [mixed]
+
+Lean [PROVED HERE] (`XiWardInteriorTraceSplit.lean`, compiles clean, standard axioms,
+built, indexed): **`norm_LSeries_vonMangoldt_le`** — ‖L(Λ,s)‖ ≤ Σ′ Λ(n)/n^{Re s}: the
+complex prime term of the interior bound is dominated by the REAL von Mangoldt series
+at the real part.  First piece (a) of the engine's arithmetic instantiation.
+
+Desk (SEARCH register) — the boundary-symbol obstacle and its resolution route:
+Re(boundarySelfSymbol) = Σ 4a/(a²+b²) over right pairs is divisor data appearing with
++sign inside xiWardInteriorArithmeticBound; the clearing hypothesis needs it bounded
+above.  Two certified-reachable routes: (i) per-pair comparison against the REAL-probe
+response: 4a/(a²+b²) ≤ C(h,b₀)·[pair Re at real probe h], b₀ from the corpus's
+certified low-height zero-free input (zetaLowHeightZeroFreeDelta), so
+Σ boundary ≤ C·Re r(h) ≤ C·arith(h) — closing the loop with the SAME certified upper
+bound at a second (real) probe; the bound then appears on BOTH sides and solves as
+arith-affine inequality (1−C·…)-style.  (ii) coarse: Σ 4a/(a²+b²) ≤ 2 Σ 1/b² with the
+classical B-constant identity — needs the Hadamard b-evaluation; route (i) avoids it.
+Remaining instantiation pieces: real-series bound Σ′Λ(n)n^{−σ} ≤ explicit(σ) via
+integral comparison (numeric-free); Re logDeriv Γℝ ≤ 0-region or explicit digamma
+bound; pole terms exact; then the probe choice and the certified inequality.
+
+## Step 9ae — the σ=2 real-probe instantiation plan, fully grounded [SEARCH register]
+
+Feasibility desk-check of the clearing inequality at the REAL probe w₀ = 3/2 (s = 2,
+c = 0), all ingredients now verified to exist certified:
+- Γ-term EXACT: logDeriv Γℝ(2) = −½log π + ½ψ(1) with mathlib `Complex.digamma_one`
+  (ψ(1) = −γ) and corpus/mathlib `digamma = logDeriv Gamma`; γ bounds CERTIFIED in
+  mathlib (`one_half_lt_eulerMascheroniSeq_six` + monotone squeeze: ½ < γ < 2/3).
+- log π > 1.14 via `Real.pi_gt_3141592` + exp Taylor bounds (`Real.exp_one_lt_d9`,
+  quadratic remainder lemmas) — numeric-free symbolic chain.
+- L(Λ,2) LOWER bound by finite partial sums on prime powers of 2 and 3 only
+  (Λ = log 2 at 2,4,8,16; log 3 at 3,9,27) using `Real.log_two_gt_d9`; yields
+  L ≥ 0.36 with four terms; the 5-term (log 5 > 1.6 ⟸ e^{1.6} < 5) adds 0.064 if
+  wanted.
+- Pole terms exact: 2/s + 2/(s−1) = 1 + 2 = 3.
+- Balance: A(3/2) < 3 − 1.14 − ½ − 2·0.36 + boundary ≈ 0.63 + boundary;
+  quantum(h=3/2, δ=0.8) = 3/(4+0.64) ≈ 0.647 ⟹ CLEARS a height window |γ| ≤ 0.8 at
+  the origin (widening with each sharpened constant: δ ≈ 3 reachable with the 5,7
+  terms and a boundary bound).
+- Boundary symbol: the 9ad real-probe comparison route (self-referential affine solve)
+  OR at the origin window specifically, boundary ≤ 2Σ1/b² with b² ≥ low-height
+  certified region — route (i) preferred.
+
+Next Lean bricks (ordered): (α) logDeriv Γℝ(s) = −(1/2)·log π + (1/2)·digamma(s/2)
+[chain rule through mathlib Γℝ def + corpus digamma link]; (β) the finite Λ-partial-sum
+lower bound lemma (tsum ≥ finite sum of nonneg, terms evaluated at prime powers via
+mathlib `ArithmeticFunction.vonMangoldt_apply_prime`/`_apply_pow`); (γ) log π > 1.14;
+(δ) boundary comparison; (ε) assemble hA at the probe and fire `xiWard_window_clearing`
+— the FIRST arithmetic-certified zero-free window through the Ward frame.
+
+## Step 9af — brick α CERTIFIED: the Γℝ–digamma split [PROVED HERE]
+
+`XiWardInteriorTraceSplit.lean` (compiles clean; standard axioms; built; indexed):
+**`logDeriv_Gammaℝ_eq`** — for Re s > 0:
+    logDeriv Γℝ(s) = −(log π)/2 + digamma(s/2)/2.
+Mechanism: Γℝ = π^{−s/2}·Γ(s/2); `HasDerivAt.const_cpow` for the power factor (logDeriv
+= −(log π)/2 exactly, via `Complex.ofReal_log`); `logDeriv_comp` for the half-argument
+Γ (logDeriv = digamma(s/2)/2, `digamma := logDeriv Gamma` definitionally); assembled by
+`logDeriv_mul` with `Complex.Gamma_ne_zero` on the pole-free set.
+
+At the σ = 2 probe this term is now EXACT: logDeriv Γℝ(2) = −(log π)/2 − γ/2 with
+mathlib `digamma_one` and the certified γ ∈ (½, ⅔) squeeze.  Remaining bricks: (β) the
+finite Λ-partial-sum lower bound; (γ) log π > 1.14; (δ) boundary-symbol comparison;
+(ε) assembly + firing the engine.
+
+## Step 9ag — brick β infrastructure CERTIFIED [PROVED HERE]
+
+`XiWardInteriorTraceSplit.lean` (compiles clean; standard axioms; built; indexed):
+- `summable_vonMangoldt_div_rpow` — the real von Mangoldt series converges for σ > 1.
+- **`finiteSum_le_tsum_vonMangoldt`** — every finite partial sum bounds the real series
+  below (the certified lower-bound harvester for the L-term).
+- **`LSeries_vonMangoldt_ofReal`** — at real points the complex L-series IS the real
+  series (coercion identity through `Complex.ofReal_tsum`/`ofReal_cpow`).
+At the σ = 2 real probe the L-term of the interior bound is now the REAL series exactly,
+and any finite Finset of prime powers gives a certified lower bound.  Remaining: the
+NUMERIC finset evaluation (Λ at 2,3,4,8,9 via `vonMangoldt_apply_prime`/`_apply_pow` +
+`Real.log_two_gt_d9` + log 3 > 1 from e < 3), then bricks (γ) log π, (δ) boundary,
+(ε) assembly.
+
+## Step 9ah — brick β COMPLETE: the certified numeric L-floor [PROVED HERE]
+
+`XiWardInteriorTraceSplit.lean` (compiles clean; standard axioms; built; indexed):
+**`vonMangoldt_tsum_two_ge`** — 0.35 ≤ Σ′ Λ(n)/n² certified from the five prime-power
+terms {2,3,4,8,9} with `vonMangoldt_apply_prime`/`_apply_pow`, `Real.log_two_gt_d9`,
+and log 3 > 1 from `Real.exp_one_lt_d9` (e < 3).  No numerics: pure certified
+inequality chaining.  Brick β is complete: at the σ = 2 probe the L-term contributes
+−2L ≤ −0.70 to the interior bound, certified.
+
+Ledger at the probe (all certified or exact): pole terms = 3 exact; Γ-term
+= −log π − γ with ½ < γ < ⅔ certified and log π pending (γ); L-term ≤ −0.70 certified.
+Running total: A ≤ 3 − log π − γ − 0.70 + boundary < 3 − 1.14 − 0.5 − 0.70 + b
+= 0.66 + b (with brick γ).  Quantum(h = 3/2, δ = 0.75) = 3/(4+0.5625) ≈ 0.658 —
+MARGINAL; sharpen by the 16,27,32-terms (+0.045) or the 5-term to buy δ ≈ 1.
+Remaining: (γ) log π > 1.14; (δ) boundary comparison; (ε) assembly.
+
+## Step 9ai — brick γ COMPLETE + sharpened L-floor [PROVED HERE]
+
+`XiWardInteriorTraceSplit.lean` (all first-compile clean; standard axioms; built;
+indexed).  Five new certified theorems:
+- `exp_point_one_lt` (e^0.1 < 1.106), **`log_pi_gt_one_point_one`** (log π > 1.1 via
+  e^1.1 < 3.14 < π), `exp_point_six_lt` (e^0.6 < 1.8232), **`log_five_gt`**
+  (log 5 > 1.6 via e^1.6 < 5), all through `Real.exp_bound` Taylor tails +
+  `Real.exp_one_lt_d9` + `Real.pi_gt_d2` — symbolic certified chains, no numerics.
+- **`vonMangoldt_tsum_two_ge'`** — the sharpened floor 0.414 ≤ Σ′Λ(n)/n² from the six
+  prime powers {2,3,4,5,8,9}.
+
+Probe ledger update (all certified): A(3/2) ≤ 3 − log π − γ − 2·0.414 + boundary
+< 3 − 1.1 − 1/2 − 0.828 + b = 0.572 + b.  Quantum(h=3/2, δ): 3/(4+δ²): δ = 1 gives
+0.600 > 0.572 ✓ CLEARS with 0.028 margin for the boundary term; δ = 0.9: 0.6238,
+margin 0.052.  Remaining: (δ-brick) the boundary-symbol bound b < margin — the last
+mathematical brick; then (ε) assembly.  If the boundary bound needs more room, the
+reserves are: 16/25/27/32/49-terms on L (+~0.02), γ > 0.577-refined (mathlib seq at
+higher index), log π > 1.14 (finer exp chain, +0.04).
+
+## Step 9aj — ASSEMBLY COMPLETE: the boundary-conditional central clearing theorem
+## [PROVED HERE] + the CENTRAL-BLINDNESS obstruction [named]
+
+`XiWardInteriorTraceSplit.lean` (compiles clean; standard axioms; built; indexed).
+Certified this round:
+- `continuedXiAntiCausalWardResponse_zero` — the boundary self-symbol IS the Ward
+  response at the origin (centered part vanishes by `xiRightRelativeResolventTrace_zero`).
+- `XiC_probe_ne_zero` — the σ=2 probe avoids the rotated divisor: probe value
+  = xi(−1) = xi(2) = Λ(2) ≠ 0 via the functional equation and Λ-nonvanishing.
+- `one_half_lt_gamma` — ½ < γ from the mathlib squeeze.
+- **`interiorBound_probe_le`** — the certified evaluation:
+  xiWardInteriorArithmeticBound(3/2) ≤ 0.572 + boundary, assembling log π > 1.1,
+  γ > ½, and the 0.414 L-floor through the exact digamma value.
+- **`xiWard_centralWindow_clearing`** — THE ASSEMBLED THEOREM: if the central boundary
+  contact Re(boundarySelfSymbol) ≤ 0.027, then EVERY strict-right pair has height² > 1:
+  the unit height window at the origin is certified free of off-critical zeros.
+  All five bricks fired through the engine; the margin 0.599 < 0.600 is certified by
+  norm_num-free inequality chaining end to end.
+
+### The named obstruction: CENTRAL BLINDNESS
+Brick δ as designed (unconditional boundary bound) is DEAD, and the death is
+structural: Re(boundarySelfSymbol) = Σ 4a/(a²+b²) weights a would-be zero by the
+reciprocal of its distance to the CENTRAL POINT s = ½, while every interior probe
+weights it boundedly — no interior functional dominates the boundary symbol, no
+corpus/mathlib certificate (including the low-height strip delta, which lives near
+Re = 1) constrains zeros near the symmetry center, and the energy deposit itself stays
+bounded (≈32π) as a zero approaches ½.  The obstruction carrier of the interior
+program is the SYMMETRY FIXED POINT: precisely where the functional equation pins the
+object, the norm frame is blind.  This is the first-trace nonclosability no-go
+localized to a single point — the "prime first-trace carrying" divisor data of the
+goal text is exactly the 1/dist-to-center weight.
+
+What this OPENS: (1) the conditional theorem is a NEW-TYPE certified implication
+between two zero-statements (central contact small ⟹ low window clear) — its
+contrapositive: a zero in the unit window forces central contact > 0.027, i.e.
+low-height off-critical zeros FORCE mass at the center: a certified REPULSION from
+the window toward the center; (2) the missing unconditional input is a certified
+central zero-free disc |ρ − ½| ≥ r₀ PLUS a certified tail bound Σ 1/|ρ−½|² — the
+latter is B-constant/density data; the corpus's next target should be the Hadamard
+B-evaluation (logDeriv XiC at 0 = explicit constant via the certified quotient
+constancy + XiC_zero data — the same machinery that proved constancy likely yields
+Σ-identities at the origin); (3) probe optimization and more L-terms widen every
+constant.
+
+## Step 9ak — the central-mass project is mathlib-tractable [SEARCH register]
+
+Discovery: origin evaluation of the trace is empty by design (E1-centering kills every
+term at 0; logDeriv XiC(0) = 0 is just evenness), so the B-data lives in counting
+functions — and MATHLIB ALREADY HAS the machinery: `Analysis/Complex/JensenFormula.lean`
+and the full ValueDistribution library (`logCounting`, First Main Theorem, Nevanlinna).
+The corpus adds certified XiC proximity bounds (XiHadamardGrowth) — asymptotic, not
+explicit.  The residual open core of the interior route is now precisely posed:
+
+**Central-mass certificate**: an explicit-constant disc bound |XiC(z)| ≤ M₀ on |z| ≤ R₀
+(from the Λ₀ theta/integral representation — corpus XiThetaPositiveL2Perron exact
+pieces are the natural source) + mathlib Jensen ⟹ (i) a certified central zero-free
+disc |pt| ≥ r₀ (XiC(0) = xi(½) > 0 anchors Jensen from below), and (ii) certified
+n(r) counting bounds ⟹ partial summation ⟹ Σ_right-upper 1/|pt|² ≤ explicit ⟹
+Re(boundarySelfSymbol) ≤ 4·(½)·Σ 1/|pt|² ≤ explicit.  If that explicit value lands
+under 0.027, `xiWard_centralWindow_clearing` fires UNCONDITIONALLY and the unit window
+clears; iterating probes ladders the cleared region.  Everything in this chain is
+formalizable with existing mathlib + corpus assets; the only mathematically-open
+question is whether the explicit constants land (desk expectation: Σ 1/|ρ−½|² over ALL
+zeros ≈ 0.023 classically, and the right-upper subsum under RH is 0 — the certified
+bound must beat 0.027/2 ≈ per-a-weight, plausible with a decent M₀).
+
+This closes the session's arc: the interior program stands as a certified pipeline from
+prime arithmetic to zero-free windows, with ONE quantitative certificate (central mass)
+left open, now reduced to explicit-constant Jensen bookkeeping on mathlib foundations.
+
+## Step 9al — the central-mass (Jensen/M₀) project: entry points located [SEARCH register]
+
+Desk round: every affine-solve attempt to dominate the boundary symbol by trace data
+(S₂ at the center, shifted centers, conjugate-center combinations) reproduces the
+central/phase obstruction — the |·|²-vs-Re(·²) gap has asymptotic coefficient 2 from
+every center; multi-center design is the Weil-positivity problem again (B†-neutral).
+Jensen is the genuinely different input class: it consumes MODULUS data of XiC, not
+trace norms — outside every certified no-go family.
+
+Mathlib entry points located:
+- Λ₀ = `completedHurwitzZetaEven₀ 0` (RiemannZeta.lean:63), built as a Mellin transform
+  of the even theta kernel through the `WeakFEPair` machinery
+  (Mathlib.NumberTheory.LSeries.HurwitzZetaEven) — kernel decay lemmas live there.
+- Jensen + Nevanlinna: Mathlib.Analysis.Complex.JensenFormula + ValueDistribution
+  (logCounting, FirstMainTheorem).
+
+J-bricks (ordered):
+(J1) certified explicit even-kernel decay (evenKernel 0 t − 1 ≤ C·e^{−πt}, t ≥ 1);
+(J2) explicit disc bound |Λ₀(s)| ≤ M(R) via the split Mellin integral + functional
+     symmetry ⟹ |XiC| disc bounds (XiC affine in Λ₀);
+(J3) certified LOWER bound on |XiC(0)| = xi(½) = ½ − Λ₀(½)/8 (same M-machinery);
+(J4) mathlib logCounting for XiC: central zero-free disc + n(r) bounds ⟹ partial
+     summation ⟹ Σ_right-upper 1/|pt|² ≤ explicit ⟹ boundary ≤ explicit;
+(J5) if the explicit lands < 0.027: `xiWard_centralWindow_clearing` fires
+     UNCONDITIONALLY; iterate probes to ladder the window.
+Reserves standing: A-bound tightening to ≈ 0.411 (full L-terms + fine log π + fine γ)
+buys the boundary budget up to ≈ 0.19 at δ = 1 — an order of magnitude of slack for
+the Jensen constants (desk value of the target sum ≈ 0.023).
+
+## Step 9am — brick J1 CERTIFIED: explicit theta decay [PROVED HERE]
+
+New module `formal/GaloisForLFunctions/RHTower/XiThetaExplicitBounds.lean` (minimal
+import cone — 2895-job build; compiles clean; standard axioms; umbrella wired;
+indexed):
+- `exp_neg_three_le` — e^{−3} ≤ 1/3.
+- **`evenKernel_zero_sub_one_le`** — evenKernel 0 t − 1 ≤ 3e^{−πt} for t ≥ 1: the
+  punctured integer theta series (`hasSum_int_evenKernel₀`) dominated termwise by the
+  two-sided geometric series with ratio e^{−πt} (n² ≥ |n| exponent comparison via
+  `Int.natAbs_sq`/`Nat.cast_natAbs` bridges), total mass 2r/(1−r) ≤ 3r once r ≤ 1/3.
+The first explicit-constant modulus bound of the J-ladder.  Next: (J2) the split
+Mellin integral of the completed source against this kernel bound ⟹ explicit
+|Λ₀| disc bounds; the FE-symmetric t ≤ 1 half reflects through
+`evenKernel_functional_equation` (already in mathlib).
+
+## Step 9an — J2 desk-certified: the disc constants land with enormous slack [SEARCH]
+
+With J1 + the kernel functional equation, the FE-modified kernel obeys
+|f_modif t| ≤ 3e^{−πt} (t>1), ≤ 3t^{−1/2}e^{−π/t} (0<t<1)  [FEPair fields confirmed:
+f = evenKernel 0, k = ½, ε = 1, f₀ = g₀ = 1].  The Mellin triangle bound then gives, on
+the whole vertical strip Re(s/2) ∈ [−¾, 5/4] (covering the XiC-disc |z| ≤ 2):
+   |Λ₀(s)| ≤ 3∫₁^∞ (t^{u−1} + t^{−u−1/2})e^{−πt}dt ≤ 6∫₁^∞ t·e^{−πt}dt
+           = 6(π+1)e^{−π}/π² ≤ 0.13.
+Consequences (desk, all generous):
+- |XiC(z)| ≤ ½ + |s(s−1)|/2·0.13 ≤ 0.9 on |z| ≤ 2  (s = ½+zI);
+- |XiC(0)| = ξ(½) = ½ − Λ₀(½)/8 ≥ 0.48;
+- MATHLIB JENSEN on the disc |z| ≤ 2: total log-counting ≤ log(0.9/0.48) ≈ 0.63 <
+  log 2 ⟹ **NO XiC-zero in the unit disc |z| ≤ 1 AT ALL** — a certified central
+  zero-free disc of radius ~1 from pure theta arithmetic (consistent: first true zero
+  at |z| ≈ 14 — the slack is enormous);
+- larger radii: t^{u−1}-integrals give log max_{|z|=r}|XiC| ≤ O(r log r) with explicit
+  constants ⟹ certified n(r) ≤ C r log r ⟹ partial summation ⟹
+  Σ_right-upper 1/|pt|² ≤ explicit ⟹ boundary symbol ≤ explicit — J4/J5 inputs.
+J-ladder Lean order: (J2a) the two-piece f_modif bound [J1 + kernel FE, ~60 lines];
+(J2b) the Mellin triangle bound + the exp-moment integrals ∫₁^∞ t^k e^{−πt}
+[FTC/by-parts, certified values]; (J2c) |Λ₀| strip bound; (J3) |XiC| disc + center;
+(J4) Jensen instantiation; (J5) tail summation + fire.
+
+## Step 9ao — brick J2a CERTIFIED: the two-piece modified-kernel bound [PROVED HERE]
+
+`XiThetaExplicitBounds.lean` (minimal cone; compiles clean; standard axioms; indexed):
+- `one_le_evenKernel_zero` — the kernel dominates its constant term (punctured-series
+  positivity).
+- **`norm_f_modif_le_of_one_lt`** — ‖f_modif t‖ ≤ 3e^{−πt} for t > 1 (outer piece;
+  indicator evaluation + J1).
+- **`norm_f_modif_le_of_lt_one`** — ‖f_modif t‖ ≤ 3t^{−1/2}e^{−π/t} for 0 < t < 1
+  (inner piece; `WeakFEPair.hf_modif_FE` reflection through the theta functional
+  equation, cosKernel/evenKernel identification at 0, rpow bookkeeping).
+The FE-modified kernel of the completed-zeta Mellin representation is now explicitly
+bounded on all of (0,∞).  Next (J2b): the Mellin triangle bound |mellin f_modif w| ≤
+∫₀^∞ t^{Re w−1}‖f_modif t‖ dt and the two exp-moment integrals; then the strip bound
+|Λ₀| ≤ 0.13 (J2c).
+
+## Step 9ap — J2b opened: quartic exponential floor [PROVED HERE] + crude-route rebalance
+
+`XiThetaExplicitBounds.lean`: **`exp_neg_le_24_div_pow_four`** — e^{−x} ≤ 24/x⁴ for
+x > 0 (Taylor single-term against `Real.sum_le_exp_of_nonneg`; first-compile clean).
+This powers the inner-piece Mellin bound WITHOUT any substitution lemma:
+∫₀¹ t^{u−3/2}e^{−π/t}dt ≤ (24/π⁴)∫₀¹ t^{7/4}dt = (24/π⁴)(4/11) ≤ 0.09 on the strip
+u ∈ [−¾, 5/4].  Rebalanced crude-route constants (desk): |Λ₀| ≤ 3(0.0223 + 0.09)
+≤ 0.34 ⟹ |XiC| ≤ 1.57 on |z| ≤ 2, center ≥ 0.4575 ⟹ Jensen log-budget 1.24 ⟹
+certified central zero-free radius ≈ 0.58 — unit-disc emptiness is lost with the crude
+route but NOT needed: the ladder only requires explicit r₀ > 0 plus counting.  All
+downstream slack intact.  Remaining J2b: the moment integral ∫₁^∞ t·e^{−πt} =
+(1/π + 1/π²)e^{−π} (FTC-at-infinity via `integral_Ioi_of_hasDerivAt_of_tendsto`,
+integrability from Γ-integral machinery), then the Mellin triangle assembly (J2c).
+
+## Step 9aq — J2b COMPLETE: the outer moment integral [PROVED HERE]
+
+`XiThetaExplicitBounds.lean` (minimal cone; compiles clean; standard axioms; indexed):
+**`integral_Ioi_one_mul_exp_neg_pi`** — ∫₁^∞ t·e^{−πt} dt = (1/π + 1/π²)·e^{−π}
+exactly, via FTC-at-infinity (`integral_Ioi_of_hasDerivAt_of_tendsto`) with the
+antiderivative −e^{−πt}(t/π + 1/π²), integrability from the Gaussian-integral family
+(`integrableOn_rpow_mul_exp_neg_mul_rpow` at p = s = 1), and both decay limits from
+`tendsto_pow_mul_exp_neg_atTop_nhds_zero` (n = 1 and n = 0) composed through the
+π-scaling.  With J1, J2a, and the quartic floor, every ingredient of the Mellin
+triangle assembly (J2c) is now certified: the outer piece integrates to the moment
+above; the inner piece is bounded by the quartic floor against ∫₀¹ t^{7/4}.
+Remaining: (J2c) assemble |Λ₀| ≤ 0.34 on the strip; (J3) |XiC| disc/center; (J4)
+Jensen; (J5) tail + fire.
+
+## Step 9ar — J2c outer piece CERTIFIED [PROVED HERE]
+
+`XiThetaExplicitBounds.lean` (minimal cone; compiles clean; standard axioms; indexed):
+**`outer_mellin_piece_le`** — for every exponent u ≤ 5/4:
+   ∫_{(1,∞)} t^{u−1}·‖f_modif t‖ dt ≤ 3(1/π + 1/π²)e^{−π}.
+Mechanism: `integral_mono_of_nonneg` against the integrable majorant 3t·e^{−πt}
+(rpow exponent comparison t^{u−1} ≤ t on t ≥ 1 + the J2a outer kernel bound), evaluated
+by the certified moment `integral_Ioi_one_mul_exp_neg_pi`.
+Remaining for J2c: the inner piece ∫_{(0,1)} t^{u−1}‖f_modif‖ ≤ (72/π⁴)(4/11) via the
+quartic floor + ∫₀¹ t^{7/4} (rpow interval integral), then the Mellin triangle and the
+strip constant ≤ 0.4; then J3–J5.
+
+## Step 9as — J2c inner piece CERTIFIED: both Mellin pieces done [PROVED HERE]
+
+`XiThetaExplicitBounds.lean` (minimal cone; compiles clean; standard axioms; indexed):
+- `integral_Ioo_rpow_seven_quarters` — ∫₀¹ t^{7/4} = 4/11 (interval rpow integral).
+- **`inner_mellin_piece_le`** — for u ≥ −3/4:
+  ∫_{(0,1)} t^{u−1}·‖f_modif t‖ ≤ (72/π⁴)(4/11).
+  Chain: J2a inner kernel bound → exponent monotonicity t^{u−3/2} ≤ t^{−9/4} on (0,1)
+  → quartic floor e^{−π/t} ≤ 24t⁴/π⁴ → rpow collection to (72/π⁴)t^{7/4} →
+  `integral_mono_of_nonneg` against the integrable rpow majorant.
+BOTH Mellin pieces are now certified.  Remaining for J2c: the triangle assembly —
+‖mellin f_modif w‖ ≤ (inner) + (outer) for Re w ∈ [−¾, 5/4] (norm_integral_le +
+cpow-modulus + Ioo/Ioi splitting), giving the certified strip constant
+|Λ₀| ≤ 72/π⁴·(4/11) + 3(1/π+1/π²)e^{−π}  (≤ 0.4 with π > 3, e^π > 20).
+Then J3 (XiC disc/center through the affine weld), J4 (Jensen), J5 (tail + fire).
+
+## Step 9at — J2c integrability side-conditions CERTIFIED [PROVED HERE]
+
+`XiThetaExplicitBounds.lean` (minimal cone; compiles clean; standard axioms; indexed):
+**`inner_integrand_integrableOn`** and **`outer_integrand_integrableOn`** — the weighted
+norm integrand t^{u−1}‖f_modif t‖ is integrable on (0,1) (u ≥ −¾) and on (1,∞)
+(u ≤ 5/4) respectively, via `Integrable.mono'` against the certified majorants with
+measurability from `LocallyIntegrableOn.aestronglyMeasurable` and rpow continuity.
+All four inputs of the Mellin triangle are now certified (two piece bounds + two
+integrabilities).  Remaining for J2c: the ~40-line assembly — triangle + cpow-modulus
+congr + Ioo/Ici splitting — giving ‖mellin f_modif w‖ ≤ 72/π⁴·(4/11) +
+3(1/π+1/π²)e^{−π} on the strip, and its Λ₀-corollary; then J3–J5.
+
+## Step 9au — J2c COMPLETE: THE CERTIFIED Λ₀ STRIP BOUND [PROVED HERE]
+
+`XiThetaExplicitBounds.lean` (minimal cone; compiles clean; standard axioms; indexed):
+- **`norm_mellin_f_modif_le`** — the Mellin triangle assembly: on Re w ∈ [−¾, 5/4],
+  ‖mellin f_modif w‖ ≤ 72/π⁴·(4/11) + 3(1/π + 1/π²)e^{−π}.  (norm-integral triangle,
+  cpow-modulus congruence, Ioo/Ici splitting with the certified integrabilities,
+  bounded by the two certified pieces.)
+- **`norm_completedRiemannZeta₀_le`** — THE STRIP BOUND: for Re s ∈ [−3/2, 5/2],
+  ‖Λ₀(s)‖ ≤ the same constant (in fact the proof reveals mathlib's normalization
+  Λ₀ = mellin/2, so a further factor ½ is banked as slack).  Numerically the constant
+  is ≤ 0.4 (π > 3, e^π > 20 — to be instantiated at J3).
+J2 IS COMPLETE.  The completed zeta source now carries a certified explicit modulus
+bound on the whole strip covering the Jensen disc |z| ≤ 2 — the first explicit-constant
+growth certificate for Λ₀ in the corpus, and (to our knowledge) in any formal library.
+Remaining: J3 — |XiC(z)| ≤ ½ + (|s||s−1|/2)·C on the disc and ξ(½) ≥ ½ − C/8 via the
+affine weld + the numeric evaluation of C; J4 — Jensen/logCounting instantiation;
+J5 — tail summation + fire.
+
+## Step 9av — J3a CERTIFIED: the numeric strip constant [PROVED HERE]
+
+`XiThetaExplicitBounds.lean` (minimal cone; compiles clean; standard axioms; indexed):
+**`stripConstant_le_two_fifths`** — the certified strip constant evaluates:
+72/π⁴·(4/11) + 3(1/π + 1/π²)e^{−π} ≤ 2/5, via π > 3 (so π⁴ ≥ 81), e^π ≥ e³ ≥ 20
+(cube chain on `exp_one_gt_d9`), and rational bookkeeping.  Combined with the J2c strip
+bound: **‖Λ₀(s)‖ ≤ 2/5 on Re s ∈ [−3/2, 5/2] — fully certified with explicit numeric
+constant.**  Remaining: J3b/J3c — |XiC| ≤ ½ + 3.125·(2/5) = 1.75 on |z| ≤ 2 and
+‖XiC(0)‖ ≥ ½ − (2/5)/8 = 0.45 through the corpus affine weld (new bridge module
+importing XiEntireReal); J4 — Jensen; J5 — tail + fire.
+
+## Step 9aw — J3 COMPLETE: certified XiC disc and center bounds [PROVED HERE]
+
+New bridge module `formal/GaloisForLFunctions/RHTower/XiCentralDiscBound.lean`
+(compiles clean FIRST ATTEMPT; standard axioms; umbrella wired; indexed):
+- `norm_completedRiemannZeta₀_le_two_fifths` — the numeric strip bound composed.
+- **`norm_XiC_le_of_norm_le_two`** — ‖XiC z‖ ≤ 7/4 on the disc ‖z‖ ≤ 2 (affine weld
+  + triangle + the certified 2/5; the strip condition Re s ∈ [−3/2, 5/2] is EXACTLY
+  the image of the disc — no slack lost).
+- **`norm_XiC_zero_ge`** — ‖XiC 0‖ ≥ 9/20 = ½ − (2/5)/8 (reverse triangle at the
+  center; the weld coefficient at ½ is exactly −1/8).
+J3 COMPLETE.  Jensen inputs ready: max ratio ≤ (7/4)/(9/20) = 35/9 ≈ 3.89,
+log ≈ 1.358 < 2·log 2 — Jensen will give at most ONE zero in the unit disc and a
+certified zero-free radius 2·(9/20·…)/… ≈ 0.51.  Remaining: J4 — instantiate mathlib
+JensenFormula/logCounting for XiC on the disc radius 2 with these two constants;
+J5 — counting → tail → boundary ≤ explicit → fire the engine.
+
+## Step 9ax — J4 COMPLETE: THE CERTIFIED CENTRAL ZERO-FREE UNIT DISC [PROVED HERE]
+
+`XiCentralDiscBound.lean` (compiles clean; standard axioms; built; indexed):
+**`XiC_ne_zero_of_norm_le_one`** — XiC has NO zero in the closed unit ball ‖z‖ ≤ 1.
+Equivalently: the completed Riemann xi has no zero within distance 1 of the central
+point s = ½ — machine-checked from pure theta arithmetic.  Proof architecture:
+- mathlib Jensen (`AnalyticOnNhd.sum_divisor_le`) at (c,r,R,M) = (0,1,2,7/4) with the
+  certified disc/center constants gives divisor mass ≤ log((7/4)/‖XiC 0‖)/log 2
+  ≤ log(35/9)/log 2 < 2 — the RAZOR margin 35 < 36 (i.e. log(35/9) < log 4).
+- The mass is an integer < 2, hence ≤ 1.
+- `XiC_even` pairs any zero z ≠ 0 with −z (distinct), forcing mass ≥ 2 — contradiction;
+  z = 0 is excluded by ‖XiC 0‖ ≥ 9/20.
+This DISSOLVES the central-blindness obstruction's first half: would-be zeros are now
+certified-repelled from the symmetry center by distance 1.  For the boundary symbol:
+every strict-right pair now has |pt| > 1, so each term 4a/(a²+b²) ≤ 4·(½)/1 = 2 — and
+crucially the J5 tail sum Σ 1/|pt|² now needs counting only OUTSIDE the unit ball,
+where the same Jensen machinery at larger radii (with the strip bound extended or the
+7/4-type bounds at radius 2r) provides n(r).  Remaining: J5 — the counting ladder at
+radii 2^k (needs |Λ₀| bounds beyond the strip — the SAME Mellin machinery with
+u-dependent moments; the outer moment generalizes to ∫ t^k e^{−πt}) and the partial
+summation; then the boundary bound and the FIRE.
+
+## Step 9ay — THE UNCONDITIONAL HEIGHT FLOOR [PROVED HERE] + the J5 capacity obstruction
+
+Lean (`XiCentralDiscBound.lean`; compiles clean; standard axioms; built; indexed):
+**`xiRightUpper_height_sq_gt`** — UNCONDITIONALLY, every strict-right (off-critical)
+zero has (Im λ)² > 3/4, i.e. height > √3/2 ≈ 0.866.  Proof: the certified central
+zero-free unit disc (J4) + strip confinement |Re λ| < ½.  THE FIRST UNCONDITIONAL
+ZERO-LOCATION THEOREM PRODUCED BY THE SESSION'S OWN MACHINERY — a height-window
+clearing obtained WITHOUT the engine's boundary hypothesis, purely from theta
+arithmetic through Jensen.
+
+### The J5 capacity obstruction [named, SEARCH register]
+The planned J5 (unconditional boundary-symbol bound ≤ budget ≈ 0.19) is DEAD by
+counting-capacity analysis: (i) a hypothetical zero at |λ| ∈ (1, ~3.2) alone carries
+boundary mass up to ~2 ≫ budget; (ii) Jensen cannot certify emptiness beyond radius ~1
+because XiC genuinely grows (Γ-factorially) along the real-z direction, so the disc
+mass-budget log(M/‖XiC 0‖) exceeds 2·log 2 already at radius ~1.2 with ANY M-bound
+(the unit-disc result used the razor margin 35 < 36); (iii) crude counting n(r) ≲
+r·log r admits hypothetical divisors with O(1) boundary mass starting just outside the
+unit ball; (iv) lateral (Im-refined) Λ₀ decay via iterated by-parts sharpens the
+lateral segment but the near-real Γ-growth pins log M_R ~ (R/2)log R — counting cannot
+beat truth.  The residual unconditional gap of the interior program is thus exactly:
+zero-exclusion in the region {1 < |λ − stripline| < ~3, |Re λ − ½| < ½} — the
+low-height band that classical zeta theory clears by explicit-formula test functions at
+height ~14 (the B†-priced route) or numerically.  The central-blindness obstruction
+reasserts one radius out: certified repulsion reached distance 1; the boundary symbol
+needs distance ~3.
+POSITIVE STANDING RESULTS of the interior+J programme: the unconditional height floor
+(above); the conditional clearing theorem + its repulsion contrapositive; the certified
+Λ₀ strip bound and XiC disc/center bounds (reusable); the arithmetic response identity;
+the unconditional interior upper bound.  NEXT generative moves: (1) extend the
+zero-free radius by ELONGATED (strip-adapted) domains: Jensen on ELLIPSES/rectangles
+aligned with the strip (Green's-function counting adapted to the strip geometry —
+mathlib has circleAverage only; a strip-adapted Jensen is a real formalization project
+that would push the radius toward the true ~14 capacity); (2) drive the height floor
+UP recursively: with height > √3/2 certified, the boundary terms sharpen
+(4a/(a²+b²) ≤ 2/(3/4 + a²)·a·… ≤ 4·(1/2)/1 — recompute the budget with the improved
+per-term bound and the height floor feeding the window-δ choice; (3) feed
+`xiRightUpper_height_sq_gt` back into the corpus margin/window laws (it strengthens
+every low-height hypothesis in the edge stack).
+
+## Step 9az — THE ZETA EXPORT [PROVED HERE]
+
+`XiCentralDiscBound.lean` (compiles clean; standard axioms; built; indexed):
+**`riemannZeta_ne_zero_of_dist_le_one`** — for s ≠ 0, 1 with Re s > 0 and
+|s − ½| ≤ 1: ζ(s) ≠ 0.  An unconditional, self-contained, machine-checked
+central zero-free disc for the Riemann zeta function — derived from the Jacobi theta
+series through the certified Mellin bounds and Jensen's inequality, with no numerics
+and no zero-location input anywhere in the chain.  (Classically this region is known
+zero-free via numerical verification; a purely symbolic certified proof of a
+zero-free NEIGHBORHOOD of the central point appears to be new as a formal artifact.)
+Together with `xiRightUpper_height_sq_gt` these are the session's standing
+unconditional zero-location theorems; both feed every low-height hypothesis in the
+corpus edge/margin stack.
+
+## Step 9ba — the band route: center-shifted Jensen on the critical line [SEARCH]
+
+Design for the residual band 1 < |λ−½| < ~3 (the J5 gap): move the Jensen CENTER along
+the critical line.  In z-coordinates the critical line is the REAL axis; a disc centered
+at real c covers the band cells around height c.  Ingredients per center:
+(i) a certified LOWER bound on |XiC(c)| = |ξ(½ + ic)| — the new object: pointwise
+    critical-line positivity at low heights.  Route: Λ₀(½+2ic-half...) is a theta-Mellin
+    integral whose oscillation cos((c/2)·log t)-factor is POSITIVE on t ∈ (e^{−π/c},
+    e^{π/c}) — at low heights (c ≤ ~2) the kernel mass sits inside the positive lobe,
+    so sign-definite certified lower bounds are reachable by splitting the integral at
+    the lobe boundary and dominating the tails with the J1/J2 machinery (no numerics);
+(ii) max bounds on the shifted circle — the SAME certified disc machinery (the strip
+    condition shifts benignly: Re s unchanged by real-z recentering!  |Im s| shifts —
+    the Mellin bound is Im-uniform ✓ so norm_XiC-type bounds hold verbatim at any real
+    center with the same constants);
+(iii) shifted-evenness: no pairing at c ≠ 0 — Jensen budget must come under log 2 for
+    EMPTINESS (mass < 1): needs ratio M/m < 2: with M ≈ 7/4-type and m from (i): m > 7/8
+    required — TIGHT; widen by taking r < 1 windows (budget log(R/r) grows): mass-on-
+    r-ball ≤ log(M/m)/log(R/r): with R = 2r-choices and overlapping centers c ∈ ½ℤ the
+    band is covered by discs of radius ~3/4 needing only m ≥ M/2^{4/3}-ish ≈ 0.6-level
+    lower bounds.  All feasibility hinges on (i) — THE NEW CERTIFIED OBJECT:
+    lower bounds for ξ on the critical line at explicit low heights, from the positive
+    lobe of the cosine kernel.  This is where the next session starts: the lobe-split
+    lemma for mellin fm (¼ + ic/2) with the certified tail machinery.
+
+## Step 9bb — band-route foundations CERTIFIED + shifted-disc no-go [mixed]
+
+Desk (SEARCH): shifted-disc Jensen at any center/scale CANNOT certify emptiness in
+the band — the mass budget log(M/m)/log(R/r) loses to the Γ-growth of log M at every
+scale (verified across center 1, radii ¾–7.5).  Disc methods are exhausted; the band
+requires the argument-principle route (certified Backlund/Turing made symbolic):
+rectangle contours + certified pointwise ξ-evaluations from lobe-split theta integrals.
+The lobe-split evaluations are feasible at low heights because the cosine factor is
+positive where the kernel mass sits.
+
+Lean [PROVED HERE] (`XiThetaExplicitBounds.lean`, minimal cone; compiles clean;
+standard axioms; indexed):
+- **`two_exp_le_evenKernel_zero_sub_one`** — 2e^{−πt} ≤ evenKernel 0 t − 1 for t > 0
+  (the n = ±1 pair of the theta series): the LOWER kernel bound every pointwise
+  evaluation certificate needs.
+- **`f_modif_nonneg`** — the FE-modified kernel is real and nonnegative on all of
+  (0,∞) (three-case indicator/FE analysis): the positivity that makes lobe-split
+  sign arguments work.
+These are the first two bricks of the pointwise-evaluation programme (the standing
+route through the band).  Next: the lobe-split lemma for Re mellin fm(¼ + ic/2) —
+positive-lobe integral ≥ explicit (via the kernel lower bound on [1,2] and the
+certified tail machinery) — giving certified critical-line values of ξ at low heights;
+then rectangle argument-principle counting (mathlib winding/argument API to survey).

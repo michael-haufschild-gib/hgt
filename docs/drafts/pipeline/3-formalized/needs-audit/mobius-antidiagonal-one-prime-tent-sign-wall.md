@@ -24,7 +24,9 @@ classification, the remaining open core is global signed cancellation among the 
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, targeted `lake build` green, axiom/lint audit PASS
+- [x] 2 → 3  formalized: the flattened double-sum (4) is now the named theorem
+  `RHTower.mobiusMertensSelfConvolution_eq_primeKernelDoubleSum`; targeted `lake build` green;
+  standard-axiom audit PASS (`propext`, `Classical.choice`, `Quot.sound`)
 - [ ] 3 → 4  publication-ready: standalone theorem, proof, Lean certificate, priority audit
 
 ## Definitions
@@ -202,7 +204,8 @@ barrier and does not prove `OPEN-SOURCE-001`.
 - **New insight:** local Euler stripping has positivity depth exactly one. Further progress must
   control global signed prime interactions rather than add another positive local comparison.
 - **Status:** dependency-closed paper proof; Lean coefficient/window connector and kernel/sign-wall
-  core audited; flattened double-sum identity (4) remains paper-level; external priority audit open.
+  core audited; flattened double-sum identity (4) now formalized
+  (`mobiusMertensSelfConvolution_eq_primeKernelDoubleSum`); external priority audit open.
 
 ## Lean status
 
@@ -215,9 +218,16 @@ barrier and does not prove `OPEN-SOURCE-001`.
 - prime-2 pointwise minimality;
 - the universal two-factor negative lobe and the exact `(2,3)` value `-2`.
 
+- the flattened finite double-sum law (4) `U(N) = ∑_{r,s} μ⁽ᵖ⁾(r) μ⁽ᵖ⁾(s) K_{p,N}(r,s)`, as the
+  named theorem `mobiusMertensSelfConvolution_eq_primeKernelDoubleSum` — proved by expanding each
+  prime-free window as a full-range weighted window-indicator sum, reorganizing the antidiagonal
+  double convolution, and identifying the resulting four-half-line lattice count with the four-hinge
+  transfer kernel (`antidiagonalHalfLineCount`, `twoSidedWindowIndicator`,
+  `antidiagonalWindowKernelCount`).
+
 Direct `lake env lean`, formal lint, standard-axiom audit, and targeted cached `lake build` pass.
-The stage remains 2 until the flattened finite double-sum statement (4) itself is a named Lean
-theorem and the external novelty audit closes.
+The Lean formalization of Theorems A and B is now complete, including the flattened double-sum (4);
+the remaining open gate is the external novelty/priority audit (3 → 4).
 
 ## Log
 
@@ -225,3 +235,7 @@ theorem and the external novelty audit closes.
   two-prime negative lobe; moved directly to 2-fully-proven/needs-audit.
 - 2026-07-22 — formalized coefficient removal, Mertens windows, RH-source connector, tent core,
   minimality, and sign wall; targeted build and axiom/lint audits passed.
+- 2026-07-24 — formalized the flattened one-prime tent double-sum law (4) as the named theorem
+  `RHTower.mobiusMertensSelfConvolution_eq_primeKernelDoubleSum` (with helpers
+  `antidiagonalHalfLineCount`, `twoSidedWindowIndicator`, `antidiagonalWindowKernelCount`); this was
+  the exact remaining Lean gate. Axioms clean, build green; promoted to 3-formalized/needs-audit.

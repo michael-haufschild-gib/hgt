@@ -23,7 +23,7 @@ degree infinity.
 
 - [x] 0 -> 1 in-progress: exact universal statement, source application, and hostile boundary
 - [x] 1 -> 2 fully-proven: dependency-closed paper proof with no RH or positivity premise
-- [ ] 2 -> 3 formalized: weighted polynomial-density infrastructure and exact Lean capstones
+- [x] 2 -> 3 formalized: weighted polynomial-density infrastructure and exact Lean capstones
 - [ ] 3 -> 4 publication-ready: independent priority audit and source-focused manuscript
 
 ## Universal theorem
@@ -275,3 +275,77 @@ a different moment coordinate.
 - 2026-07-20 -- Replaced it by the Gaussian-window complete-cone invariance and defect-recession
   theorem.  Completed the polynomial separation, finite-section scaling, source specialization,
   and hostile audit on paper; promoted to Stage 2 with novelty still unverified.
+- 2026-07-24 -- Lean audit of the formalization gate. Corpus already carries plan steps 1--3: the
+  Gaussian window `gaussianWindowMeasure` with its finite / open-positive / entire-exponential-moment
+  instances (`GaussianWindowPolynomialDensity`, `HedenmalmGaussianHankelRH`), and the full universal
+  `(A)`--`(C)` equivalence for any bounded continuous density
+  (`CompleteHankelSignCone.completeHankelCone_weightedMoment_iff`, with the algebraic
+  square-cone/Hankel bridge `completeHankelCone_iff_momentFunctional_square_nonnegative` and the
+  moment-form/Hankel-PD bridge `MomentInnerProduct.positiveMomentForm_iff_momentHankelMatrix_posDef`).
+  Formalized this cycle the **positive-definite input** for the cooling law `(D)`: strict
+  positive-definiteness of the complete Gaussian-windowed Hankel tower for a nonnegative continuous
+  density that is strictly positive at one point
+  (`RHTower/GaussianWindowHankelPositiveDefinite.lean`:
+  `gaussianWindow_positiveMomentForm_of_nonneg`, `gaussianWindow_momentHankelMatrix_posDef_of_nonneg`).
+  This is exactly `G_d` positive definite (the `J = 1` special case, `∫ p(x)^2 exp(-tau x^2) dx > 0`
+  for `p != 0`), generalized to arbitrary nonnegative densities positive somewhere; it strengthens the
+  corpus PSD<=>(J>=0 a.e.) law to strict PD via `∫ p^2 J dmu > 0` from open-set charging of the
+  window and finiteness of a nonzero polynomial's zero set. Unconditional; axioms
+  `[propext, Classical.choice, Quot.sound]`. Remaining for `(D)`/`(E)`: the diagonal rescaling
+  congruence `(1)`, the entrywise dominated-convergence limit `K_tau -> J(0) G_d` `(2)`, openness of
+  the finite PD cone giving eventual PD, and the choice-free least-defect-degree cofinal recession `(E)`.
+- 2026-07-24 -- Formalized the two exact scalar laws driving the cooling recession `(D)`/`(E)`, in
+  `RHTower/GaussianWindowMomentRescaling.lean` (all unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `weightedMoment_gaussianWindow_rescale` -- the diagonal-congruence factor `(1)` at scalar level:
+    the change of variables `x = y / sqrt tau` gives
+    `weightedMoment (gaussianWindowMeasure tau) J m = (sqrt tau)⁻¹^(m+1) * ∫ y^m exp(-y^2) J(y/sqrt tau) dy`
+    (`withDensity` unfolding + `Measure.integral_comp_mul_left`; holds for every density `J`).
+  * `tendsto_gaussianCooledMoment` -- the entrywise Hankel limit `(2)` `K_tau -> J(0) G` at scalar
+    level: for bounded continuous `J`, `∫ y^m exp(-y^2) J(y/sqrt tau) dy -> J(0) * ∫ y^m exp(-y^2) dy`
+    as `tau -> infinity` (dominated convergence, dominating function `C * ‖y^m exp(-y^2)‖`).
+  * supporting `integrable_pow_mul_exp_neg_sq`: every monomial is integrable against `exp(-y^2)`.
+  Combined with last cycle's `G_d` positive-definiteness
+  (`gaussianWindow_momentHankelMatrix_posDef_of_nonneg`, the `J=1, tau=1` case), the remaining `(D)`
+  step is purely finite-matrix: assemble the quadratic form `v^T H_(J,tau,d) v = tau^(-1/2) * w^T K_tau w`
+  with `w_i = v_i (sqrt tau)^(-i)`, use the entrywise limit `K_tau -> J(0) G_d` and openness of the
+  finite positive-definite cone to get eventual PD; then `(E)` is the choice-free least-defect degree.
+- 2026-07-24 -- Built the reusable finite-matrix stability infrastructure for the cooling law `(D)`
+  in `HTGeometry/PositiveDefiniteMatrixLimit.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `posDef_coercive` -- a real positive-definite matrix `M` has `∃ μ>0, ∀ x, μ*(x ⬝ᵥ x) ≤ x ⬝ᵥ M *ᵥ x`
+    (minimise the continuous quadratic form over the compact unit sphere `{x | x ⬝ᵥ x = 1}` and rescale).
+  * `abs_dotProduct_mulVec_le` -- entrywise perturbation control: `|N p q| ≤ ε` gives
+    `|x ⬝ᵥ N *ᵥ x| ≤ n*ε*(x ⬝ᵥ x)` (triangle inequality + Cauchy--Schwarz).
+  * `posDef_eventually_of_tendsto` -- **positive-definiteness is open under entrywise convergence**:
+    a family of Hermitian matrices whose entries converge to those of a positive-definite `M₀` is
+    eventually positive definite.  This is exactly the "positive-definite cone is open" step of the
+    paper proof of `(D)`.
+  These are mathlib gaps (no `PosDef` coercivity or entrywise-limit stability lemma exists upstream).
+  Remaining for `(D)`: the matrix-level rescaling congruence `H_(J,tau,d) = (sqrt tau)⁻¹ • (Dτ Kτ Dτ)`
+  from `weightedMoment_gaussianWindow_rescale`, the entrywise limit of the cooled Hankel `Kτ -> J(0) G_d`
+  from `tendsto_gaussianCooledMoment`, then apply `posDef_eventually_of_tendsto` with
+  `M₀ = J(0) • G_d` (positive definite via `gaussianWindow_momentHankelMatrix_posDef_of_nonneg` and
+  `Matrix.PosDef.smul`) plus congruence-invariance of PD; then `(E)` is the choice-free least-defect degree.
+- 2026-07-24 -- **Formalization gate `(2 -> 3)` complete.**  The whole universal theorem `(A)`--`(E)` and
+  its source application are now in Lean, unconditional, axioms `[propext, Classical.choice, Quot.sound]`:
+  * `(A)<=>(B)<=>(C)` for any bounded continuous density on the Gaussian window: the corpus generic
+    equivalence `CompleteHankelSignCone.completeHankelCone_weightedMoment_iff` instantiated at
+    `gaussianWindowMeasure tau` (finite / open-positive / entire-exponential-moment instances all present),
+    with the algebraic square-cone/Hankel bridge `completeHankelCone_iff_momentFunctional_square_nonnegative`.
+  * Strict positive-definiteness of a nonnegative density's Gaussian Hankel tower
+    (`RHTower/GaussianWindowHankelPositiveDefinite.lean`).
+  * The two scalar cooling laws -- diagonal-congruence factor `(1)` and entrywise limit `(2)`
+    (`RHTower/GaussianWindowMomentRescaling.lean`).
+  * Finite-matrix stability -- coercivity and openness of positive-definiteness under entrywise
+    convergence (`HTGeometry/PositiveDefiniteMatrixLimit.lean`).
+  * Recession law `(D)` `gaussianWindow_momentHankelMatrix_posDef_eventually` and its least-defect-degree
+    corollary `(E)` `gaussianWindow_momentHankelMatrix_posDef_eventually_forall_le`
+    (`RHTower/GaussianWindowHankelRecession.lean`): for bounded continuous `J` with `J 0 > 0`, every fixed
+    finite Gaussian Hankel section is eventually positive definite as `tau -> infinity`, so every finite
+    family of sections is eventually simultaneously positive definite (the least defect degree exceeds
+    any prescribed `d` cofinally).  `(E)` is stated in the equivalent "all sections up to `d` eventually
+    positive definite" form rather than via an explicit choice of least-defect-degree function.
+  * The Hedenmalm--theta specialization and its identification with RH were already formalized in the
+    corpus (`HedenmalmGaussianHankelRH`, `HedenmalmGaussianHankelApertureWidthSpectrum`).
+  Moved to `3-formalized/needs-audit`.

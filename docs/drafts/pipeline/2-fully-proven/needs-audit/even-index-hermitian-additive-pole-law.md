@@ -432,9 +432,13 @@ now proves:
 - `add_pos_neg_hermitianAbel_eq_two_mul_tsum_evenIndex`, the exact projector `(4)` before taking
   real parts;
 - `re_tsum_evenIndex_mixedAdditiveConvolutionPower_nonneg`, the formal nonnegative parity surface;
-- `hermitian_dyadic_parallelogram`, the complex algebra behind dyadic Gram law `(20)`.
+- `hermitian_dyadic_parallelogram`, the complex algebra behind dyadic Gram law `(20)`;
+- `tsum_evenIndex_binary_eq_evenOddGram`, the exact **binary parity Gram decomposition `(13)`**
+  `∑_q R₁(2q) r^{2q} = |E(r²)|² + r²|O(r²)|²`, via the even/odd generating-function split
+  `generatingFunction_even_odd_split` (`A(x) = E(x²) + x·O(x²)`) fed into the already-formalized
+  projector `(4)` at `k = 1`.
 
-The analytic pole and zeta specializations remain paper-level. Direct cached verification passed:
+The analytic pole and zeta specializations, and the orbit classification `(25)`, remain paper-level. Direct cached verification passed:
 
 ```text
 lake env lean GaloisForLFunctions/RHTower/DirichletLMixedAdditiveEvenIndexLaw.lean
@@ -468,3 +472,37 @@ theorems. No broad rebuild was run.
 - 2026-07-22 — strengthened exact law to the completely multiplicative dyadic Gram identity;
   formalized the even-index projector, nonnegative parity surface, and Gram parallelogram in a
   standalone Lean module. Direct `lake env lean` verification passed.
+- 2026-07-24 — formalized the binary parity Gram decomposition `(13)`
+  (`RHTower.tsum_evenIndex_binary_eq_evenOddGram`) via a new even/odd generating-function split
+  lemma, connected to the already-formalized even-index projector `(4)` at `k = 1`. Axioms clean;
+  module builds. The tsum even/odd split required keeping the summand folded to avoid a defeq
+  blow-up in `tsum_even_add_odd`.
+
+## Log
+
+- 2026-07-24 — Formalization progress. The exact parity law `(4)` is already formalized
+  (`RHTower/DirichletLMixedAdditiveEvenIndexLaw.lean`:
+  `add_pos_neg_hermitianAbel_eq_two_mul_tsum_evenIndex`,
+  `re_tsum_evenIndex_mixedAdditiveConvolutionPower_nonneg`).  Formalized the **coefficient-recurrence
+  engine of the infinitely-often statement `(9)`** as reusable infrastructure
+  (`HTGeometry/PowerSeriesEventualSignRecurrence.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `tsum_mul_pow_le_sum_range_abs_of_eventually_nonpos` — a real power series with coefficients
+    eventually `<= 0` is capped on `[0,1)` by the sum of absolute values of its earlier coefficients.
+  * `frequently_pos_of_forall_exists_tsum_gt` — contrapositive: if the Abel sum exceeds every finite
+    prefix bound as the radius approaches `1`, the coefficients are positive infinitely often
+    (`∃ᶠ q in atTop, 0 < c q`).
+  Combined with the parity law `P_k(u) = (|A(sqrt u)|^(2k)+|A(-sqrt u)|^(2k))/2 >= |A(sqrt u)|^(2k)/2`,
+  statement `(9)` reduces to the single analytic input "`|A(sqrt u)|` is unbounded as `u -> 1^-`"
+  (the Mellin/Abelian pole-frontier step `(6)`--`(8)`), which remains to be formalized unconditionally.
+- 2026-07-24 — Formalized the radial Hermitian upper bound underlying statement `(5)`
+  (`RHTower/EvenIndexHermitianAbelBound.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `summable_evenIndex_mixedAdditive` — the even-index Abel subseries is summable.
+  * `norm_pow_sq_le_two_mul_tsum_evenIndex_re` —
+    `‖(∑' a_N r^N)^k‖^2 ≤ 2 * ∑' q (R_k(2q)).re * r^(2q)`, obtained from the parity law by discarding
+    the nonnegative `-r` square.  Since `(R_k(2q)).re ≤ max((R_k(2q)).re, 0)`, this is *sharper* than
+    the paper's positive-part inequality `(5)` and implies it directly.
+  Together with last cycle's `frequently_pos_of_forall_exists_tsum_gt`, statement `(9)` now reduces to
+  the single analytic input "the left-hand side is radially unbounded as `r -> 1^-`" (the Mellin
+  pole-frontier step `(6)`--`(8)`), which is the remaining piece to formalize unconditionally.

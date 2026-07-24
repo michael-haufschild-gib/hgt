@@ -125,6 +125,52 @@ theorem hermitian_dyadic_parallelogram (x c z : ℂ) :
   simp only [map_sub, map_mul, map_ofNat]
   ring
 
+/-- Even/odd generating-function split: `A(x) = E(x²) + x·O(x²)`, where `E` and `O` are the
+even- and odd-index Abel series.  The summand is kept folded so the even/odd tsum split unifies
+cheaply. -/
+private theorem generatingFunction_even_odd_split (a : ℕ → ℂ) (x : ℂ)
+    (hx : Summable (fun N : ℕ => ‖a N * x ^ N‖)) :
+    (∑' N : ℕ, a N * x ^ N)
+      = (∑' q : ℕ, a (2 * q) * (x ^ 2) ^ q)
+        + x * ∑' q : ℕ, a (2 * q + 1) * (x ^ 2) ^ q := by
+  set f : ℕ → ℂ := fun N => a N * x ^ N with hf
+  have hs : Summable f := hx.of_norm
+  have hE : Summable (fun q : ℕ => f (2 * q)) :=
+    hs.comp_injective (by intro p q h; exact Nat.mul_left_cancel (by norm_num) h)
+  have hO : Summable (fun q : ℕ => f (2 * q + 1)) :=
+    hs.comp_injective (by
+      intro p q h
+      exact Nat.mul_left_cancel (by norm_num) (Nat.add_right_cancel h))
+  rw [← tsum_even_add_odd hE hO]
+  congr 1
+  · apply tsum_congr; intro q; rw [hf]; simp only []; rw [pow_mul]
+  · rw [← tsum_mul_left]; apply tsum_congr; intro q; rw [hf]; simp only []
+    rw [pow_succ, pow_mul]; ring
+
+/-- **Binary even-index parity Gram decomposition (equation (13)).**  For `k = 1` the even-index
+Hermitian Abel series is the exact sum of two adjacent parity squares:
+`∑_q R₁(2q) r^{2q} = |E(r²)|² + r²·|O(r²)|²`, with `E`, `O` the even/odd Abel series.  Sharper than
+mere radial nonnegativity: the even channel is an exact parity Gram decomposition. -/
+theorem tsum_evenIndex_binary_eq_evenOddGram (a : ℕ → ℂ) (r : ℝ)
+    (ha : Summable (fun N : ℕ => ‖a N * (r : ℂ) ^ N‖)) :
+    (∑' q : ℕ, mixedAdditiveConvolutionPower a 1 (2 * q) * (r : ℂ) ^ (2 * q))
+      = (∑' q : ℕ, a (2 * q) * ((r : ℂ) ^ 2) ^ q)
+          * (starRingEnd ℂ) (∑' q : ℕ, a (2 * q) * ((r : ℂ) ^ 2) ^ q)
+        + (r : ℂ) ^ 2 * ((∑' q : ℕ, a (2 * q + 1) * ((r : ℂ) ^ 2) ^ q)
+          * (starRingEnd ℂ) (∑' q : ℕ, a (2 * q + 1) * ((r : ℂ) ^ 2) ^ q)) := by
+  have haNeg : Summable (fun N : ℕ => ‖a N * (-(r : ℂ)) ^ N‖) := by
+    convert ha using 1; funext N
+    simp only [norm_mul, norm_pow, norm_neg]
+  have hAr := generatingFunction_even_odd_split a (r : ℂ) ha
+  have hAnegr := generatingFunction_even_odd_split a (-(r : ℂ)) haNeg
+  rw [show (-(r : ℂ)) ^ 2 = (r : ℂ) ^ 2 from by ring] at hAnegr
+  have hproj := add_pos_neg_hermitianAbel_eq_two_mul_tsum_evenIndex a r ha 1
+  simp only [pow_one] at hproj
+  rw [hAr, hAnegr] at hproj
+  have hconj : (starRingEnd ℂ) (r : ℂ) = (r : ℂ) := Complex.conj_ofReal r
+  simp only [map_add, map_mul, map_neg, hconj] at hproj
+  linear_combination -hproj / 2
+
 end
 
 end RHTower
