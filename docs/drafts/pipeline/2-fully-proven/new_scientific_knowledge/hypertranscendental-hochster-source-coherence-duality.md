@@ -485,3 +485,26 @@ Companion to progress 10 (boundary coeff-1 = antisymmetric). In the coeff-1 matr
 cocycles ⊆ zero-diagonal, boundaries = antisymmetric — the structural data of the linear first Koszul
 cohomology (`= zero-diagonal/antisymmetric ≅ symmetric-off-diagonal`, dim `C(n+2,2)`; the Hochster `n+1`
 is the specific structural subspace, needing the multigraded restriction).
+
+### Lean progress — first non-discrete complex (single-edge Stanley–Reisner)
+
+Toward the open "general strand equivalence for arbitrary finite complexes", the first complex type
+beyond the discrete (all-isolated) and nodal (2-vertex) cases is now formalized unconditionally in
+`GaloisForLFunctions.HTGeometry.SingleEdgeStanleyReisner` (axiom-clean, in the built HTGeometry
+umbrella): the single-edge complex on `n + 2` vertices (one edge `{0,1}`, `n` isolated vertices).
+
+- `singleEdgeBoundarySubring` — its Stanley–Reisner ring, realized concretely as the subalgebra of
+  `MvPolynomial (Fin 2) F × (Fin n → Polynomial F)` glued at the common constant term (free
+  two-variable edge block + `n` isolated one-variable axes).
+- `singleEdgeX`, `singleEdgeIsoX` — the edge-vertex and isolated-vertex coordinates.
+- `singleEdgeX_mul_edgeX_ne_zero` — the edge `{0,1}` is a face: `x₀x₁ ≠ 0` (the surviving product
+  that distinguishes it from the discrete complex).
+- `singleEdgeX_mul_isoX_eq_zero`, `singleEdgeIsoX_mul_isoX_eq_zero` — every nonedge product vanishes.
+- `singleEdgeVertexX`, `singleEdgeKoszulRelation` — the vertex coordinate family (indexed
+  `Fin 2 ⊕ Fin n`) and its first Koszul relation.
+- `singleEdgeKoszulRelation_disconnectCycle` — the `n` base-to-isolated disconnect cycles are first
+  Koszul cycles, i.e. the `n` reduced-`H⁰` Hochster classes, matching the `n + 1` connected
+  components (reduced `H̃⁰` dimension `n`).
+
+Next: linear independence of these `n` cycles modulo Koszul boundaries (the degree-0 Hochster
+isomorphism for the single-edge complex), then higher-face complexes toward the general equivalence.

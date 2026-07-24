@@ -244,3 +244,16 @@ the analytic radial-derivative identity (4)/(5), which requires the differentiab
   **Remaining for (4)/(5):** the combinatorial recurrence `w·jetSum'_n − (2n+1)·jetSum_n = jetSum_{n+1}`
   (specializing `c j = (-1)^(n-j)·squaredRadialJetWeight n j`, reindexing the shifted sum, and applying
   the `squaredRadialJetWeight` recurrence), then the `D^n F = jetSum_n / (2^n w^(2n+1))` induction.
+- 2026-07-24 — **Signed-coefficient recurrence (combinatorial core of (4))** added to
+  `RHTower/SquaredXiRadialJetIdentity.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `jetCoeff n j = (-1)^(n-j)·squaredRadialJetWeight n j` — the signed radial-jet coefficient.
+  * `jetCoeff_succ_zero` — `jetCoeff (n+1) 0 = -(2n+1)·jetCoeff n 0` (the `t 0` boundary coefficient).
+  * `jetCoeff_succ_top` — `jetCoeff (n+1)(n+1) = jetCoeff n n` (the `t(n+1)` boundary, using
+    `squaredRadialJetWeight_eq_zero_of_lt`).
+  * `jetCoeff_succ_mid` — for `i < n`, `jetCoeff n (i+1)·((i+1)-(2n+1)) + jetCoeff n i =
+    jetCoeff (n+1)(i+1)` (the interior coefficient, from `squaredRadialJetWeight_succ_succ` + the sign
+    normalization `(-1)^(n-i) = -(-1)^(n-(i+1))`).
+  These are the exact `b`-recurrence content matching the operator step (6) index-by-index.
+  **Remaining for (4)/(5):** the Finset sum-recurrence `w·jetSum'_n − (2n+1)·jetSum_n = jetSum_{n+1}`
+  assembling these three coefficient identities across the range (peel/reindex the shifted sum), then
+  the `D^n F = jetSum_n/(2^n w^(2n+1))` quotient induction.

@@ -682,6 +682,23 @@ theorem xiWeilL2Form_eq_normSq_of_lineConj_eq {a : XiDivisorL2}
   rw [xiWeilL2Form_eq_inner, ha, inner_self_eq_norm_sq_to_K]
   norm_cast
 
+/-- Under RH every test function is fixed by divisor conjugation. -/
+theorem xiLineConjVec_eq_self_of_rh (hRH : RiemannHypothesis) {a : XiDivisorL2}
+    (ha : FactorsThroughSpectral a) : xiLineConjVec a = a := by
+  ext q
+  show a (xiZeroCopyLineConjEquiv q) = a q
+  apply ha
+  rw [xiSpectralPoint_lineConj]
+  obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
+  rw [ht, Complex.conj_ofReal]
+
+/-- **Under RH the form is exactly the squared norm on test functions**, the
+extreme value of the range allowed by the unitary-involution bound. -/
+theorem xiWeilL2Form_eq_normSq_of_rh (hRH : RiemannHypothesis) {a : XiDivisorL2}
+    (ha : FactorsThroughSpectral a) :
+    xiWeilL2Form a = ((‖a‖ ^ 2 : ℝ) : ℂ) :=
+  xiWeilL2Form_eq_normSq_of_lineConj_eq (xiLineConjVec_eq_self_of_rh hRH ha)
+
 end
 
 end RHTower

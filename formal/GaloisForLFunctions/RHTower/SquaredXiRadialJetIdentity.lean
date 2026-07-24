@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.RHTower.SquaredXiRadialJetSourceAlignment
 
 /-!
 # Radial-derivative identity for squared-Xi jets: analytic core
@@ -91,5 +92,34 @@ theorem hasDerivAt_jetSum
       fun v => c j * (v ^ j * iteratedDeriv j L (1 / 2 + v))) = fun v => jetSum L c N v := by
     funext v; simp only [jetSum, Finset.sum_apply]
   rwa [hfe] at h
+
+/-- Signed radial-jet coefficient `(-1)^(n-j)·b_{n,j}`. -/
+noncomputable def jetCoeff (n j : ℕ) : ℝ :=
+  (-1) ^ (n - j) * (squaredRadialJetWeight n j : ℝ)
+
+theorem jetCoeff_succ_zero (n : ℕ) :
+    jetCoeff (n + 1) 0 = -(2 * (n : ℝ) + 1) * jetCoeff n 0 := by
+  rw [jetCoeff, jetCoeff, Nat.sub_zero, Nat.sub_zero, squaredRadialJetWeight_succ_zero, pow_succ]
+  push_cast
+  ring
+
+theorem jetCoeff_succ_top (n : ℕ) :
+    jetCoeff (n + 1) (n + 1) = jetCoeff n n := by
+  have hz : squaredRadialJetWeight n (n + 1) = 0 :=
+    squaredRadialJetWeight_eq_zero_of_lt n (n + 1) (by omega)
+  simp only [jetCoeff, Nat.sub_self, pow_zero, one_mul, squaredRadialJetWeight_succ_succ, hz,
+    mul_zero, zero_add]
+
+theorem jetCoeff_succ_mid (n i : ℕ) (hi : i < n) :
+    jetCoeff n (i + 1) * ((i + 1 : ℝ) - (2 * n + 1)) + jetCoeff n i = jetCoeff (n + 1) (i + 1) := by
+  have h2 : i ≤ 2 * n := by omega
+  have hcast : ((2 * n - i : ℕ) : ℝ) = 2 * (n : ℝ) - i := by
+    rw [Nat.cast_sub h2]; push_cast; ring
+  have he1 : n - i = (n - (i + 1)) + 1 := by omega
+  have he2 : (n + 1) - (i + 1) = (n - (i + 1)) + 1 := by omega
+  rw [jetCoeff, jetCoeff, jetCoeff, squaredRadialJetWeight_succ_succ, he1, he2]
+  simp only [pow_succ]
+  push_cast [hcast]
+  ring
 
 end RHTower
