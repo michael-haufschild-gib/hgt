@@ -248,3 +248,25 @@ so vanishing on any nonempty open subset forces `φ_a ≡ 0`. That is the mathem
 0's step (d). What remains: invoke the identity theorem on these hypotheses, then convert
 `a ⊥ every outside kernel ⟹ a ⊥ K_w` into membership in the closed span via `Sᗮᗮ = S`, after which
 `xiWeilL2Form_sub_norm_le` transports the rank-one negativity and rung 0 closes.
+
+### Gate 5 progress — step (d) IDENTITY THEOREM LANDED
+
+**`inner_kernelVec_eq`** — the annihilator function IS the inner product against the kernel vector:
+`⟪a, K z⟫ = Σ'_q conj(a q)·K z (pt q)`. This bridges the Hilbert-space statement (orthogonality) and
+the analytic statement (a function of the base point).
+
+**`annihilator_eq_zero_of_vanishing_open`** — if the annihilator vanishes on ANY nonempty open set of
+admissible base points, it vanishes at EVERY point off the divisor. Proof: `differentiableAt_annihilator`
+gives `DifferentiableOn` on `{XiC ≠ 0}`, hence `AnalyticOnNhd`; vanishing on an open subset gives
+eventual vanishing at an interior point; and
+`AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero` applies because
+`isPreconnected_XiC_ne_zero` and `isOpen_XiC_ne_zero` are certified.
+
+**This is the mathematical core of rung 0.** In Hilbert-space terms: a vector orthogonal to every
+outside-strip kernel is orthogonal to EVERY kernel, including the inside ones where detection
+happens. The Taylor route died because radii vary per copy (FALSIFIED entry above); the identity
+theorem does not care about radii at all.
+
+**Remaining for rung 0:** assembly only — `Sᗮ ⊆ {K_w}ᗮ` (immediate from the two theorems above),
+hence `K_w ∈ Sᗮᗮ = S̄` (mathlib `Submodule.orthogonal_orthogonal`), then transport the rank-one
+negativity along `xiWeilL2Form_sub_norm_le`. No further analysis.

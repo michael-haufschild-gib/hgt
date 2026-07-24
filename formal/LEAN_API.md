@@ -7,8 +7,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 33114 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
-| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 21537 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 33116 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 21538 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 5391 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
@@ -32683,6 +32683,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `XiC_zeroSet_countable` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:375` | The zero set of the centered completed zeta is countable: it is the range of the spectral-point map on a countable index. |
 | theorem | `isPreconnected_XiC_ne_zero` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:383` | The complement of the divisor is preconnected: removing a countable set from the plane leaves a path-connected set. |
 | theorem | `isOpen_XiC_ne_zero` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:393` |  |
+| theorem | `inner_kernelVec_eq` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:398` | The annihilator function is the inner product against the kernel vector. |
+| theorem | `annihilator_eq_zero_of_vanishing_open` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:412` | The identity theorem for the annihilator.** If the annihilator vanishes on a nonempty open set of admissible base points, it vanishes at every point off the divisor: an analytic fu |
 | theorem | `xiCauchyRegularizedKernel_conj_of_real` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:30` | At a real argument the conjugate-base-point kernel is the conjugate kernel. |
 | theorem | `weilGram_real_copy_contribution_eq_normSq` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:41` | On-line copies only add.** For every finite family of base points and every coefficient vector, a copy with real centered coordinate contributes the squared modulus of the superpos |
 | theorem | `weilGram_real_copy_contribution_re_nonneg` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:63` | The contribution of an on-line copy to the Weil Gram form is nonnegative. |
@@ -43121,6 +43123,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | def | `lorentzConfocalFieldHull` | `GaloisForLFunctions.HTGeometry.HilbertLorentzConfocalReconstruction` | `formal/GaloisForLFunctions/HTGeometry/HilbertLorentzConfocalReconstruction.lean:316` | The all-directions confocal field hull `K_G(S)`: cone points whose confocal branch stays below the envelope along every unit direction and radius. |
 | def | `lorentzDualSupportHull` | `GaloisForLFunctions.HTGeometry.HilbertLorentzConfocalReconstruction` | `formal/GaloisForLFunctions/HTGeometry/HilbertLorentzConfocalReconstruction.lean:323` | The dual causal-support hull `K_H(S)`: cone points dominated by the causal support over the whole dual Lorentz cone. |
 | theorem | `lorentzConfocalFieldHull_eq_dualSupportHull` | `GaloisForLFunctions.HTGeometry.HilbertLorentzConfocalReconstruction` | `formal/GaloisForLFunctions/HTGeometry/HilbertLorentzConfocalReconstruction.lean:330` | Master theorem, field/hull equivalence (representation (0), all directions).** For a nonempty bounded Lorentz source in any nonzero real inner-product space, the all-directions con |
+| theorem | `lorentzAxial_positiveDefectGraph_eq` | `GaloisForLFunctions.HTGeometry.HilbertLorentzConfocalReconstruction` | `formal/GaloisForLFunctions/HTGeometry/HilbertLorentzConfocalReconstruction.lean:373` | Master theorem part B (projective graph, per direction).** Along any unit direction, the positive all-radius confocal defect graph of a general Lorentz source equals the rational p |
 | def | `IsHS` | `GaloisForLFunctions.HTGeometry.HilbertSchmidt` | `formal/GaloisForLFunctions/HTGeometry/HilbertSchmidt.lean:62` | A **Hilbert–Schmidt kernel**: a matrix of coefficients `K : ι × ι → ℂ` with square-summable entries, `∑ ‖K p‖² < ∞`. These represent the Hilbert–Schmidt operators on `ℓ²(ι)`. |
 | theorem | `isHS_of_support_subset` | `GaloisForLFunctions.HTGeometry.HilbertSchmidt` | `formal/GaloisForLFunctions/HTGeometry/HilbertSchmidt.lean:72` | A kernel supported on a finite set is Hilbert–Schmidt. |
 | theorem | `hsNormSq_nonneg` | `GaloisForLFunctions.HTGeometry.HilbertSchmidt` | `formal/GaloisForLFunctions/HTGeometry/HilbertSchmidt.lean:78` | The Hilbert–Schmidt norm is nonnegative. |

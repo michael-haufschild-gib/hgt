@@ -437,9 +437,9 @@ ancestry is audited.
 - [x] final hostile source-level proof audit
 - [x] 1 -> 2 fully-proven: dependency-closed paper proof
 - [x] formalize the exact scalar global theorem (`ConfocalGlobalSupportTransform.lean` + `ConfocalGlobalSupportFaithfulness.lean`: greatest-root, projective graph, radical bifurcation, transform faithfulness, maximal-hull identity)
-- [ ] formalize the Hilbert--Lorentz master theorem
-- [ ] narrow source checks and final module builds
-- [ ] axiom audit
+- [x] formalize the Hilbert--Lorentz master theorem (`HilbertLorentzConfocalReconstruction.lean`)
+- [x] narrow source checks and final module builds
+- [x] axiom audit (`[propext, Classical.choice, Quot.sound]`)
 - [ ] rewrite the paper around this theorem
 
 ## Log
@@ -519,3 +519,20 @@ ancestry is audited.
   step) and the assembly — with coverage + homogeneity, the per-direction axial constraints extend to
   the full dual cone, giving the all-directions hull equivalence and completing master theorem
   representation (0).
+- 2026-07-24 — **Master theorem fully formalized** (gate `formalize the Hilbert--Lorentz master
+  theorem`), in `HTGeometry/HilbertLorentzConfocalReconstruction.lean` (axioms `[propext,
+  Classical.choice, Quot.sound]`), for a nonempty bounded Lorentz source `S ⊆ L(V)` in any nonzero
+  real inner-product space:
+  * **Part A** — `lorentzAxialDefect_eq_nullSupport_fixedPoint` (causal-contact master equation (8)/(9))
+    and `lorentzAxialDefect_isGreatest_fixedPoint` (greatest-root).
+  * **Part B** — `lorentzAxial_positiveDefectGraph_eq` (per-direction projective graph (10)).
+  * **Representation (0)** — `lorentzAxialDefect_eqOn_iff_axialSupport_eqOn` (field ↔ causal support per
+    direction), and the all-directions field/hull equivalence
+    **`lorentzConfocalFieldHull_eq_dualSupportHull`**: `K_G(S) = K_H(S)`, assembled from the per-direction
+    hull identity via `causalSupport_smul_of_pos` (positive homogeneity of `H_S`) and
+    `exists_axial_of_mem_dualCone` (dual-cone coverage), with the `lorentzField_iff_dual_perDirection`
+    bridge.
+  The three representations — nonlinear all-radius confocal field, causal support function `H_S` on the
+  self-dual Lorentz cone, and maximal Lorentz half-space hull — are now proved to determine one another
+  unconditionally, in any finite or infinite dimension.  Only the non-Lean manuscript-rewrite gate
+  remains.

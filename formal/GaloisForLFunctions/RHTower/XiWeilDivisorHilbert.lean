@@ -394,6 +394,43 @@ theorem isOpen_XiC_ne_zero : IsOpen {z : ℂ | XiC z ≠ 0} := by
   have hcont : Continuous XiC := continuousOn_univ.mp XiC_analytic.continuousOn
   exact isOpen_compl_singleton.preimage hcont
 
+/-- The annihilator function is the inner product against the kernel vector. -/
+theorem inner_kernelVec_eq (a : XiDivisorL2) {z : ℂ} (hz : XiC z ≠ 0) :
+    (inner ℂ a (xiKernelVec hz) : ℂ) =
+      ∑' q : XiZeroCopy, (starRingEnd ℂ) (a q) *
+        xiCauchyRegularizedKernel z (xiSpectralPoint q) := by
+  rw [lp.inner_eq_tsum]
+  refine tsum_congr fun q => ?_
+  rw [xiKernelVec_apply]
+  simp only [RCLike.inner_apply]
+  ring
+
+/-- **The identity theorem for the annihilator.**  If the annihilator vanishes on
+a nonempty open set of admissible base points, it vanishes at every point off the
+divisor: an analytic function on a preconnected domain that vanishes on an open
+subset vanishes identically. -/
+theorem annihilator_eq_zero_of_vanishing_open (a : XiDivisorL2) {Ω : Set ℂ}
+    (hΩopen : IsOpen Ω) {z₀ : ℂ} (hz₀ : z₀ ∈ Ω)
+    (hΩsub : Ω ⊆ {z : ℂ | XiC z ≠ 0})
+    (hvanish : ∀ z ∈ Ω, (∑' q : XiZeroCopy, (starRingEnd ℂ) (a q) *
+      xiCauchyRegularizedKernel z (xiSpectralPoint q)) = 0)
+    {w : ℂ} (hw : XiC w ≠ 0) :
+    (∑' q : XiZeroCopy, (starRingEnd ℂ) (a q) *
+      xiCauchyRegularizedKernel w (xiSpectralPoint q)) = 0 := by
+  set φ : ℂ → ℂ := fun z => ∑' q : XiZeroCopy, (starRingEnd ℂ) (a q) *
+    xiCauchyRegularizedKernel z (xiSpectralPoint q) with hφ
+  have hdiff : DifferentiableOn ℂ φ {z : ℂ | XiC z ≠ 0} := by
+    intro z hz
+    exact (differentiableAt_annihilator a hz).differentiableWithinAt
+  have han : AnalyticOnNhd ℂ φ {z : ℂ | XiC z ≠ 0} :=
+    hdiff.analyticOnNhd isOpen_XiC_ne_zero
+  have hev : φ =ᶠ[nhds z₀] 0 := by
+    filter_upwards [hΩopen.mem_nhds hz₀] with y hy
+    exact hvanish y hy
+  have heq := han.eqOn_zero_of_preconnected_of_eventuallyEq_zero
+    isPreconnected_XiC_ne_zero (hΩsub hz₀) hev
+  exact heq hw
+
 end
 
 end RHTower
