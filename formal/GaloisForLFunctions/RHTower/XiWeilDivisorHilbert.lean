@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiWeilCriterionConverse
+import GaloisForLFunctions.RHTower.XiWeilPositivityBand
 
 /-!
 # The divisor Hilbert space carrying the Weil form
@@ -224,6 +224,79 @@ theorem xiWeilL2Form_sub_norm_le (a b : XiDivisorL2) :
     rw [← xiLineConjVec_sub, xiLineConjVec_norm]
   rw [hnorm] at hb2
   linarith
+
+/-! ## §4 Analyticity of the annihilator function -/
+
+/-- The reciprocals of the centered divisor points form an `ℓ²` vector: this is
+the genus-one bound. -/
+def xiInvVec : XiDivisorL2 :=
+  ⟨fun q => (xiSpectralPoint q)⁻¹,
+    (memℓp_gen_iff (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal)).mpr (by
+      refine xiSpectralPoint_inv_sq_summable.congr fun q => ?_
+      have hpos : 0 < ‖xiSpectralPoint q‖ :=
+        norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
+      rw [norm_inv, show ((2 : ENNReal).toReal) = ((2 : ℕ) : ℝ) by norm_num,
+        Real.rpow_natCast]
+      field_simp)⟩
+
+@[simp] theorem xiInvVec_apply (q : XiZeroCopy) :
+    xiInvVec q = (xiSpectralPoint q)⁻¹ := rfl
+
+/-- **Pointwise kernel bound on a divisor-free ball.**  If the centered zeta does
+not vanish on a ball, every kernel with base point in the half-ball is dominated
+there by a fixed multiple of the reciprocal divisor point. -/
+theorem norm_kernel_le_of_ball {s : ℂ} {r₀ : ℝ} (hr₀ : 0 < r₀)
+    (hfree : ∀ y ∈ Metric.ball s r₀, XiC y ≠ 0)
+    {z : ℂ} (hz : z ∈ Metric.ball s (r₀ / 2)) (q : XiZeroCopy) :
+    ‖xiCauchyRegularizedKernel z (xiSpectralPoint q)‖ ≤
+      (2 * (‖s‖ + r₀) / r₀) * ‖(xiSpectralPoint q)⁻¹‖ := by
+  have hpne : xiSpectralPoint q ≠ 0 := xiSpectralPoint_ne_zero q
+  have hpnorm : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr hpne
+  -- the divisor avoids the ball, so it is far from every point of the half-ball
+  have hfar : r₀ / 2 ≤ ‖xiSpectralPoint q - z‖ := by
+    by_contra hcon
+    push Not at hcon
+    have hin : xiSpectralPoint q ∈ Metric.ball s r₀ := by
+      rw [Metric.mem_ball, dist_eq_norm]
+      have hzs : ‖z - s‖ < r₀ / 2 := by
+        simpa [dist_eq_norm] using Metric.mem_ball.mp hz
+      calc ‖xiSpectralPoint q - s‖
+          ≤ ‖xiSpectralPoint q - z‖ + ‖z - s‖ := by
+            simpa using norm_sub_le_norm_sub_add_norm_sub
+              (xiSpectralPoint q) z s
+        _ < r₀ / 2 + r₀ / 2 := by linarith
+        _ = r₀ := by ring
+    exact hfree _ hin ((XiC_eq_zero_iff_exists_xiZeroCopy _).mpr ⟨q, rfl⟩)
+  have hznorm : ‖z‖ ≤ ‖s‖ + r₀ := by
+    have hzs : ‖z - s‖ < r₀ / 2 := by
+      simpa [dist_eq_norm] using Metric.mem_ball.mp hz
+    calc ‖z‖ ≤ ‖z - s‖ + ‖s‖ := by simpa using norm_le_norm_sub_add _ _
+      _ ≤ r₀ / 2 + ‖s‖ := by linarith
+      _ ≤ ‖s‖ + r₀ := by linarith
+  have hzne : xiSpectralPoint q ≠ z := by
+    intro hcon
+    rw [hcon, sub_self, norm_zero] at hfar
+    linarith
+  have hCpos : (0 : ℝ) < 2 * (‖s‖ + r₀) / r₀ := by
+    have : (0 : ℝ) < ‖s‖ + r₀ := by
+      have := norm_nonneg s
+      linarith
+    positivity
+  rw [xiCauchyRegularizedKernel_eq_div hpne hzne, norm_div, norm_neg, norm_mul,
+    norm_inv, div_le_iff₀ (mul_pos hpnorm
+      (norm_pos_iff.mpr (sub_ne_zero.mpr hzne)))]
+  have hsimp : (2 * (‖s‖ + r₀) / r₀) * ‖xiSpectralPoint q‖⁻¹ *
+      (‖xiSpectralPoint q‖ * ‖xiSpectralPoint q - z‖) =
+      (2 * (‖s‖ + r₀) / r₀) * ‖xiSpectralPoint q - z‖ := by
+    field_simp
+  rw [hsimp]
+  have hstep : (2 * (‖s‖ + r₀) / r₀) * (r₀ / 2) ≤
+      (2 * (‖s‖ + r₀) / r₀) * ‖xiSpectralPoint q - z‖ :=
+    mul_le_mul_of_nonneg_left hfar (le_of_lt hCpos)
+  have hval : (2 * (‖s‖ + r₀) / r₀) * (r₀ / 2) = ‖s‖ + r₀ := by
+    field_simp
+  rw [hval] at hstep
+  linarith [hznorm, hstep]
 
 end
 

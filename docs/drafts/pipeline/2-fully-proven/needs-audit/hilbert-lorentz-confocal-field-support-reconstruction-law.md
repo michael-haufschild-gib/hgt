@@ -506,3 +506,16 @@ ancestry is audited.
   integration — normalized-direction coverage of the full causal cone and the global
   `K_H(S) = K_G(S)` over all `(z,t) ∈ L(V)` (assembling the per-direction equivalences across the unit
   sphere of `V`).
+- 2026-07-24 — **Global causal support + dual-cone coverage** toward the all-directions equivalence,
+  in `HTGeometry/HilbertLorentzConfocalReconstruction.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`):
+  * `causalSupport` — the global causal support function `H_S(z,t) = sup_{(y,a)∈S}(⟪z,y⟫ + t·a)` on the
+    dual Lorentz cone (equation (3)).
+  * `lorentzAxialSupport_eq_causalSupport` — **equation (4)**: the per-direction causal support
+    `h_{S,e}(λ)` equals `H_S(-(1-λ)e, 1+λ)`, tying the per-axis support to the global one.
+  * `exists_axial_of_mem_dualCone` — **dual-cone coverage**: every `(z,t)` with `‖z‖ ≤ t`, `t > 0` is
+    a positive multiple of an axial dual point `(-(1-λ)e, 1+λ)` (`‖e‖=1`, `λ∈[0,1]`).
+  **Remaining for the global `K_H(S) = K_G(S)`:** the positive-homogeneity of `H_S` (a `sSup`-scaling
+  step) and the assembly — with coverage + homogeneity, the per-direction axial constraints extend to
+  the full dual cone, giving the all-directions hull equivalence and completing master theorem
+  representation (0).

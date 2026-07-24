@@ -183,3 +183,25 @@ divisor — locally uniform convergence by Cauchy–Schwarz against the `O(1/‖
 two ingredients already certified here; (c) the identity theorem (mathlib, already used in the
 corpus); (d) `Sᗮᗮ = S`. Then rung 0 is `[LEAN-PROVED]` and the criterion is stated on convergent
 prime data.
+
+### Gate 5 progress — step (b) domination LANDED
+
+The analyticity of the annihilator `φ(z) = Σ_q conj(a_q)·K z (pt_q)` needs a summable majorant
+uniform on a ball. Both halves are now certified:
+
+- **`xiInvVec`** — the reciprocals `q ↦ pt_q⁻¹` form an `ℓ²` vector on the divisor. Immediate from
+  the genus-one bound `xiSpectralPoint_inv_sq_summable`; no floor or estimate required.
+- **`norm_kernel_le_of_ball`** — if `XiC` does not vanish on `ball s r₀`, then for every base point
+  `z` in the HALF ball and every copy,
+  `‖K z (pt_q)‖ ≤ (2(‖s‖+r₀)/r₀)·‖pt_q⁻¹‖`.
+  The mechanism is that non-vanishing on the ball forces `‖pt_q − z‖ ≥ r₀/2` for EVERY copy — a
+  uniform separation obtained from continuity alone, with no appeal to local finiteness of the
+  divisor. Combined with `‖z‖ ≤ ‖s‖ + r₀` the kernel bound follows by one division.
+
+Consequence: on the half ball, `‖conj(a_q)·K z (pt_q)‖ ≤ ‖a_q‖·C·‖xiInvVec q‖`, whose summability is
+`summable_norm_mul a xiInvVec` (Hölder, already certified in §3). That is exactly the hypothesis of
+the corpus's locally-normal-convergence template (`SummableLocallyUniformlyOn`, as used in
+`ArcsineZetaAnalyticFamily.lean`) and of mathlib's `differentiableOn_tsum_of_summable_norm`.
+
+**Remaining for rung 0:** assemble those two into `DifferentiableOn ℂ φ {z | XiC z ≠ 0}`; then the
+identity theorem on that connected open set; then `Sᗮᗮ = S`. No new mathematics.
