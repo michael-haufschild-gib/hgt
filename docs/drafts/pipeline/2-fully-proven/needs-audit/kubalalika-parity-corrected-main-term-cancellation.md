@@ -131,3 +131,11 @@ the claimed nonzero main term vanishes.
 
 - 2026-07-17 -- Proved during a line-by-line audit of the 2026 preprint. The parity omission is
   fatal: it converts the sawtooth to a square wave and forces exact main-term cancellation.
+- 2026-07-24 -- Formalization assessed and deferred. The self-contained quantitative core is the
+  exact evaluation `∫_1^∞ sgn(sin x)/x² dx = 1 − (2/π)·log 2` (Section 4). It needs two pieces of
+  infrastructure absent from mathlib: (i) the grouped alternating-harmonic value
+  `∑_{k≥1}(1/(2k−1) − 1/(2k)) = log 2` — mathlib's `HasSum` is unconditional convergence, so this
+  requires an Abel/Euler–Mascheroni construction; (ii) the decomposition of the improper integral
+  over `[1,∞)` into the countable disjoint family `((2k−1)π, 2kπ)`. Tractable but a large build; the
+  PNT-asymptotic Sections 1–3 are tied to the preprint's contour machinery not in the corpus. Left
+  for a session that first builds the alternating-harmonic infrastructure in `HTGeometry`.

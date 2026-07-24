@@ -185,9 +185,27 @@ The formal prime polynomial has no alternating coefficient.  The module is wired
 only `propext`, `Classical.choice`, and `Quot.sound`.  The repository-wide lint still reports
 unrelated concurrent modules absent from their umbrellas, but no error for this module.
 
+The exact coefficient theory of equation (1) is now formalized unconditionally in the same module:
+
+- `squaredRadialJetWeightClosedForm n j = (2n−j)! / (2^{n−j} (n−j)! j!)` (in `ℚ`);
+- `squaredRadialJetWeight_eq_closedForm (n j) (hj : j ≤ n) :`
+  `(squaredRadialJetWeight n j : ℚ) = squaredRadialJetWeightClosedForm n j` — the recurrence-defined
+  magnitudes equal the reverse-Bessel closed form on the triangular range, proved by induction on
+  `n` (the `n = m + k + 1` substitution eliminates every truncated subtraction so the recurrence
+  step is a pure `field_simp; ring` factorial identity);
+- `squaredRadialJetWeight_pos (n j) (hj : j ≤ n) : 0 < squaredRadialJetWeight n j` — every magnitude
+  is a positive integer (equation (1)'s positivity), read off from the closed form;
+- `squaredRadialJetWeight_eq_zero_of_lt (n j) (h : n < j) : squaredRadialJetWeight n j = 0` — the
+  triangular support.
+
+`#print axioms` on all three: `propext`, `Classical.choice`, `Quot.sound` only.  Still open in Lean:
+the analytic radial-derivative identity (4)/(5), which requires the differentiability/analyticity of
+`xiLogDeriv` on `Re(s) > 1` and the iterated-derivative shift; and the `[OPEN CORE]` `Q_14(w) < 0`.
+
 ## Gates
 
-- [x] Exact radial-jet coefficients and recurrence proved.
+- [x] Exact radial-jet coefficients and recurrence proved (closed form + positivity now formalized:
+  `RHTower.squaredRadialJetWeight_eq_closedForm`, `squaredRadialJetWeight_pos`).
 - [x] Alternating sign normalization connected to the squared-Xi derivative.
 - [x] All von Mangoldt jets sign-aligned into one positive reverse-Bessel polynomial.
 - [x] Pole/Euler cancellation preserved by the existing pole-filled zeta object.
@@ -196,3 +214,11 @@ unrelated concurrent modules absent from their umbrellas, but no error for this 
 - [ ] Formalize the analytic radial-derivative identity `(4)` and its positive rescaling `(5)`.
 - [ ] Prove a strict negative completed source jet.
 - [ ] Wire the negative jet to `not RiemannHypothesis` in Lean.
+
+## Log
+
+- 2026-07-24 -- Formalized the exact reverse-Bessel closed form (1) and positivity of the radial-jet
+  magnitudes in `RHTower.squaredRadialJetWeight_eq_closedForm` / `_pos` (plus the triangular support
+  `_eq_zero_of_lt`), connecting the recurrence-defined `squaredRadialJetWeight` to its closed form.
+  Axioms clean; module builds. Remaining Lean gaps: the analytic identity (4)/(5) (needs
+  `xiLogDeriv` analyticity on `Re(s)>1`) and the `[OPEN CORE]` `Q_14(w)<0`.

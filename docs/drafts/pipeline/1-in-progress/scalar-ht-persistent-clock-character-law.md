@@ -550,3 +550,297 @@ NOT banked; verified by search):
    equation ⟹ monomial), the cleanest self-contained piece; then (3a) clock definition.
 
 Charged branch fully formalized modulo eq (2) [sessions 2,5,6]; §1 engine + interface complete [session 7].
+
+### Session 8 progress — (3b-iii) algebraic character is a monomial
+`HTGeometry/MultiplicativeMonomial.lean` [PROVED HERE], axioms [propext, Classical.choice, Quot.sound],
+build+lint clean:
+- **`multiplicative_polynomial_eq_X_pow`** : over `[IsAlgClosed C]`, a nonzero polynomial `P` with
+  `P(xy) = P(x)P(y)` equals `X^(deg P)`. This is the positive-charge case of "algebraic character of
+  `G_m` is `λ^k`" — the eigenvalue of a diagonalized PGL₂ cocharacter (§3). Proof: `P(1)=1` (from
+  `P(1)=P(1)²` + `zero_of_eval_zero`); every root is 0 (a nonzero root `r` forces `P≡0` since
+  `P(r·s)=P(r)P(s)=0` on all of `C`); `P` splits (`IsAlgClosed.splits`), roots-all-0 ⟹
+  `P = C(lead)·X^n` (`Splits.eq_prod_roots` + `Multiset.map_const'`/`prod_replicate` +
+  `splits_iff_card_roots`); `lead = P(1) = 1`.
+
+§3 sub-piece status: (3b-iii) monomial character DONE. Connects to `exists_pow_ne_one_ne_neg_one`
+(session 6): `P = X^k` with `k>0` ⟹ `∃λ, P.eval λ = λ^k ∉ {0,1,−1}` — the exact value feeding
+`clock_charge_family_multiplicative`. 
+
+REMAINING §3 pieces: (3b-i,ii) the DIAGONALIZATION — from the clock's commuting Möbius family
+`{M_λ}` (`M_λ M_ν = M_{λν}`) extract a common eigenvector/fixed point `q₀` on which `ρ_λ q₀ = χ(λ) q₀`
+(pure scaling), with χ the algebraic character (then `multiplicative_polynomial_eq_X_pow` ⟹ `χ=λ^k`).
+This is PGL₂ fixed-point theory: a non-identity Möbius map has fixed points (roots of `c q² +
+(d−a) q − b = 0` over alg-closed C), the commuting family shares them, conjugating to {0,∞}
+diagonalizes. NEXT session: (3a) the semilinear-clock Möbius form (define clock ρ_λ + jet-preservation
++ semilinear order-zero) OR (3b-i) the Möbius fixed-point / common-eigenvector lemma. Both are
+substantial mathlib gaps; (3b-i) fixed-point analysis is likely the cleaner self-contained next piece
+(`HTGeometry/MobiusFixedPoint.lean`: a Möbius map `≠ id` over alg-closed C has a fixed point).
+
+### Session 9 progress — the diagonalization payoff (Möbius with 2 fixed points is a scaling)
+`HTGeometry/MobiusDiagonalization.lean` [PROVED HERE], axioms [propext, Classical.choice, Quot.sound],
+build+lint clean:
+- `mobius_fixed_point_difference` : a fixed point `p` (root of `c p²+(d−a)p−b=0`) of the Möbius map
+  `σq·(cq+d)=aq+b` gives `σ(q−p)·(cq+d) = (a−cp)·(q−p)` — the map sends the fixed-point difference
+  to a scalar multiple. (Key algebra: `b − p·d = −p(a−cp)` from the fixed-point quadratic.)
+- **`mobius_two_fixed_points_scaling`** : with two fixed points `p₁, p₂`, in the fixed-point
+  coordinate `x = (q−p₁)/(q−p₂)` the map is a PURE SCALING `σ x = ((a−cp₁)/(a−cp₂))·x`. This is the
+  diagonalization step of §3(b): once the clock's Möbius family shares a fixed-point pair, each ρ_λ
+  acts diagonally `ρ_λ x = χ(λ)·x`, and `multiplicative_polynomial_eq_X_pow` (session 8) ⟹ `χ(λ)=λ^k`,
+  giving eq (2). (`a−cp₂≠0` derived from `σ(q−p₂)≠0`+`cq+d≠0`; ratio via `div_div_div_cancel_right₀`.)
+
+§3(b) status: monomial character (session 8) + diagonalization payoff (this session) DONE. The
+diagonalized `ρ_λ x = χ(λ) x` now assembles: χ multiplicative (from ρ_λρ_μ=ρ_{λμ}) + algebraic ⟹
+(monomial lemma) χ=λ^k ⟹ (family theorem, session 6) σ x = e·x.
+
+REMAINING §3 pieces:
+ (3b-i) COMMON FIXED POINTS existence: the clock family {M_λ} shares a fixed-point pair p₁≠p₂. Route:
+   fixed-point quadratic `c_λ p²+(d_λ−a_λ)p−b_λ` has roots over alg-closed C (a non-parabolic M_λ has 2
+   distinct roots); commuting family preserves the root set; C* divisible ⟹ no swap ⟹ common. Needs
+   the torus/non-parabolic property (M_λ diagonalizable since G_m-cocharacter).
+ (3a) SEMILINEAR CLOCK Möbius form: `ρ_λ q₀ ∈ C(q₀)` (feeds `algEquiv_generator_mobius_of_mem`,
+   session 7) via jet-order preservation (`ρ_λ y^(j)=λ^j y^(j)`). Needs clock definition + semilinear
+   order-zero.
+NEXT session: (3b-i) fixed-point existence (`HTGeometry/MobiusFixedPoint.lean`: fixed-point quadratic
+has a root over alg-closed C; then the commuting-family common-fixed-point argument). This + the
+diagonalization + monomial completes the pure §3(b) chain (modulo (3a) getting the Möbius family).
+
+### Session 10 progress — fixed-point existence + non-parabolic⟹scaling connector
+`HTGeometry/MobiusFixedPoint.lean` [PROVED HERE], both theorems axioms
+[propext, Classical.choice, Quot.sound], `lake build GaloisForLFunctions.HTGeometry.MobiusFixedPoint`
+clean (1919 jobs), lint passed:
+- **`mobius_two_distinct_fixed_points`** : over an alg-closed field of char 0, if `c ≠ 0` and the
+  discriminant `(d−a)²+4cb ≠ 0`, the Möbius fixed-point quadratic `c p²+(d−a)p−b` has TWO DISTINCT
+  roots. Explicit quadratic formula: square root `δ` of the discriminant from
+  `IsAlgClosed.exists_pow_nat_eq (·) (n:=2)`, roots `(−(d−a)±δ)/(2c)`; distinctness from `δ≠0`
+  (⟸ disc≠0); each root verified via `field_simp` + `linear_combination hδ` (the `c` cancels in the
+  common denominator `4c`, so coefficient is 1 not c). Char-0 needed for `2c ≠ 0`.
+- **`mobius_nonparabolic_scaling`** : the CONNECTOR — composes `mobius_two_distinct_fixed_points` with
+  session-9 `mobius_two_fixed_points_scaling`. A `C`-algebra automorphism `σ` acting on `q` by a
+  Möbius transform with `c≠0`, nonzero discriminant, both denominators nonzero (`q` outside `C`) is a
+  PURE SCALING in the fixed-point coordinate `x=(q−p₁)/(q−p₂)`: `σ x = ((a−cp₁)/(a−cp₂))·x`, with the
+  two distinct fixed points produced internally. The two §3(b) modules are now wired end-to-end.
+
+§3(b) status: single-map chain COMPLETE for the non-parabolic case — Möbius (§1) + non-parabolic
+fixed-point existence (this session) + diagonalization (session 9) ⟹ each ρ_λ is a scaling
+`ρ_λ x = χ(λ)·x`; then monomial (session 8) ⟹ χ=λ^k; then family theorem (session 6) ⟹ σ x = e·x.
+
+REMAINING §3 pieces:
+ (3b-i-common) COMMON fixed points across the family: `mobius_nonparabolic_scaling` diagonalizes ONE
+   ρ_λ. For the family to share a SINGLE coordinate `x`, the fixed-point PAIR must be common to all
+   ρ_λ. Route: commuting maps permute each other's fixed-point sets; C* divisible / connected torus ⟹
+   the permutation is trivial (no swap) ⟹ common pair. Next module `HTGeometry/MobiusCommonFixedPoint.lean`:
+   two commuting non-parabolic Möbius maps with the SAME fixed-point pair (or: a commuting map fixes
+   the other's fixed points setwise, and no-swap ⟹ pointwise). Formalize "commuting ⟹ shared fixed set".
+ (3b-nonparabolic) the clock ρ_λ (λ≠1) IS non-parabolic (disc≠0): a G_m-cocharacter is semisimple.
+   Currently an input hypothesis to `mobius_nonparabolic_scaling`; discharge from the torus structure.
+ (3a) SEMILINEAR CLOCK Möbius form: `ρ_λ q₀ ∈ C(q₀)` (feeds `algEquiv_generator_mobius_of_mem`,
+   session 7) via jet-order preservation. Needs clock definition + semilinear order-zero.
+NEXT session: (3b-i-common) `HTGeometry/MobiusCommonFixedPoint.lean` — two commuting Möbius maps share
+a fixed-point pair (fixed set is preserved by a commuting map; no-swap from divisibility). This closes
+the "common coordinate" gap so the whole family diagonalizes in ONE `x`, completing §3(b) end-to-end.
+
+### Session 11 progress — §3(b) capstone: the clock family is a multiplicative scaling character
+`HTGeometry/ClockScalingCharacter.lean` [PROVED HERE], all three theorems axioms
+[propext, Classical.choice, Quot.sound], `lake build GaloisForLFunctions.HTGeometry.ClockScalingCharacter`
+clean + full `GaloisForLFunctions.HTGeometry` umbrella builds (10726 jobs). (My-cone lint clean; a
+separate lint "owned module unreachable" error is an unrelated parallel-agent RHTower file
+`ReverseBesselFixedFrequencyBlindness.lean`, not mine — left untouched per independence rule.)
+
+KEY REALIZATION (corpus check): the (3b-i) "common fixed point / shared coordinate" step needs NO new
+Möbius machinery — session 2's `charged_clock_forces_multiplicative` IS it. With `Φ := ρ_λ` (another
+clock member, Möbius on the generator) and `ρ := ρ_{ν₀}` (the anchor scaling from sessions 9-10), it
+forces `ρ_λ q = e_λ q` in the SAME coordinate. So the whole commuting family diagonalizes
+simultaneously — no separate permutation/no-swap argument at the coordinate level.
+
+Delivered:
+- `commuting_with_scaling_is_scaling` : ∃-form packaging — a Möbius endo `Ψ` commuting with an anchor
+  scaling `ρ₀ q = ν q` (ν∉{0,1,-1}) is a scaling `∃ e, Ψ q = e·q`. Thin wrapper of
+  `charged_clock_forces_multiplicative` (witness `a/d`), the reusable common-coordinate interface.
+- **`scaling_character_multiplicative`** : if `ρ_λ q = e(λ) q` for all λ and the family is a
+  homomorphism at q (`ρ_{λμ} q = ρ_λ(ρ_μ q)`), then `e(λμ) = e(λ)e(μ)`. Proof pushes `ρ_λ` through the
+  scaling `ρ_μ q = e(μ)q` via `map_mul`+`AlgHom.commutes`, cancels `q≠0` (`mul_right_cancel₀`) and the
+  injective `algebraMap` (`map_eq_zero` in the narrow cone; `FaithfulSMul`/`RingHom.injective` NOT in cone).
+- **`commuting_family_scaling_character`** : the §3(b) CAPSTONE — a clock family that is a homomorphism
+  at q, each member Möbius on the generator + commuting with an anchor scaling ρ_{ν₀} q = ν q
+  (ν∉{0,1,-1}), with 1,q,q² independent, yields `∃ e:C→C, (∀λ, ρ_λ q = e(λ)·q) ∧ (∀λμ, e(λμ)=e(λ)e(μ))`.
+  Builds `e` by `choose` over `commuting_with_scaling_is_scaling`, multiplicativity from
+  `scaling_character_multiplicative`. The whole cocharacter is now a SINGLE multiplicative character.
+
+§3(b) chain status: §1 Möbius → anchor diagonalization (sessions 9,10) → simultaneous family
+diagonalization + multiplicative character `e:C→C` (this session) → [GAP: e is POLYNOMIAL] → monomial
+lemma (session 8) e(λ)=λ^k → family theorem (session 6) σ y = e·y. The output shape here
+(`∀λ, ρ_λ q = e(λ)q`) already matches the `hρ` interface of `clock_charge_family_multiplicative`
+(session 6) MODULO identifying e(λ)=λ^k.
+
+REMAINING (the one genuine analytic/algebraic gap left in §3(b)):
+ (3b-poly) BRIDGE `e:C→C` multiplicative-and-ALGEBRAIC ⟹ e is a POLYNOMIAL character (then session 8's
+   `multiplicative_polynomial_eq_X_pow` gives e=X^k, i.e. e(λ)=λ^k). This is the classification of
+   algebraic characters of G_m. e is algebraic because ρ_λ depends algebraically on λ (the cocharacter
+   is a morphism of varieties). Formalize: a multiplicative `e:C→C` that agrees with a rational/poly
+   map ⟹ monomial. Candidate next module `HTGeometry/AlgebraicCharacterMonomial.lean`.
+ (3a) SEMILINEAR CLOCK Möbius form (`ρ_λ q₀ ∈ C(q₀)`) — still open, feeds `hmob` above.
+NEXT session: (3b-poly) `HTGeometry/AlgebraicCharacterMonomial.lean` — multiplicative + polynomial
+character of C* is X^k. Start from `multiplicative_polynomial_eq_X_pow` (session 8, already done) and
+add the bridge from a multiplicative FUNCTION e:C→C that IS given by a polynomial to the eval-form
+`P(xy)=P(x)P(y)` hypothesis, discharging `commuting_family_scaling_character`'s `e` into `e(λ)=λ^k`.
+
+### Session 12 progress — (3b-poly) bridge + CHARGED BRANCH end-to-end
+`HTGeometry/AlgebraicCharacterMonomial.lean` [PROVED HERE], all three theorems axioms
+[propext, Classical.choice, Quot.sound], `lake build GaloisForLFunctions.HTGeometry.AlgebraicCharacterMonomial`
+clean (3041 jobs), `formal_tools.py lint` PASSED (RHTower unreachable-module error from session 11 now
+resolved upstream; only pre-existing large-file warnings remain).
+
+Delivered:
+- `multiplicative_eval_eq_pow` : over alg-closed C, a multiplicative `e:C→C` GIVEN BY a nonzero
+  polynomial (`e(λ)=P(λ)`) is `e(λ)=λ^k`, k=deg P. Direct bridge: e mult ⟹ P mult
+  (`P(xy)=P(x)P(y)`) ⟹ (session 8 `multiplicative_polynomial_eq_X_pow`) P=X^deg ⟹ eval = λ^deg.
+- **`charged_clock_family_pow`** : EQUATION (2). A clock family scaling `q` by a nonzero polynomial
+  character `ρ_λ q = P(λ)·q` and homomorphic at q gives `ρ_λ q = λ^k·q` (k=deg P). Multiplicativity of
+  P.eval from session 11 `scaling_character_multiplicative`, monomial from session 8. This is exactly
+  the `hρ` interface of session 6 `clock_charge_family_multiplicative`.
+- **`charged_clock_polynomial_forces_multiplicative`** : the CHARGED BRANCH, END-TO-END. σ differential
+  automorphism, ρ clock cocharacter homomorphic at y with polynomial character `ρ_λ y = P(λ)·y`
+  (0<deg P = positive charge), commuting with σ ⟹ `∃ e:C, σ y = e·y`. Chains eq(2) into session 6.
+  (y≠0 from `hypertranscendentalOver_jet_transcendental hy 0` + `isAlgebraic_zero`; hcomm matches
+  session 6's `σ.toAlgHom` form verbatim.)
+
+MILESTONE: the CHARGED PHASE (§4, k>0) of the clock-character law is now formalized end-to-end from a
+polynomial-character input. Full charged chain, all [PROVED HERE], all standard axioms:
+  §1 Möbius (`differentialAlgEquiv_generator_mobius`, s5/7)
+  → anchor diagonalization (`mobius_nonparabolic_scaling`, s9/10)
+  → simultaneous family diagonalization + multiplicative character (`commuting_family_scaling_character`, s11)
+  → polynomial character ⟹ λ^k = eq(2) (`charged_clock_family_pow`, THIS session)
+  → charged rigidity σ y = e·y (`clock_charge_family_multiplicative`, s6;
+    assembled as `charged_clock_polynomial_forces_multiplicative`, THIS session).
+
+REMAINING GAPS (the inputs still hypothesized, to discharge for the fully-unconditional card):
+ (A) §3a: `ρ_λ q ∈ C(q)` — the clock acts Möbius on the generator (feeds `hmob` of
+   `commuting_family_scaling_character`). Via semilinear jet-order-zero + Lüroth, PARALLEL to §1's
+   `differentialAlgEquiv_generator_mobius` but for the clock endomorphism ρ_λ. Needs the clock/
+   semilinear-order definition in the differential framework.
+ (B) The "character is polynomial" hypothesis (`hpoly_scale : ρ_λ y = P(λ)·y` with P a polynomial):
+   this is the ALGEBRAICITY of the cocharacter (ρ_λ depends algebraically on λ, a morphism of
+   varieties). Currently an input; discharge requires modeling the algebraic family structure.
+ (C) The anchor `ν∉{0,1,-1}` existence for a nontrivial cocharacter (session 6's
+   `exists_pow_ne_one_ne_neg_one` already gives it ONCE k is known; before that it is the
+   nondegeneracy of positive charge).
+NEXT session: (A) §3a — `HTGeometry/ClockSemilinearMobius.lean`: the clock endomorphism ρ_λ acts by a
+Möbius transform on the generator, mirroring `differentialAlgEquiv_generator_mobius` (s5/7) but for a
+semilinear (jet-scaling) clock. Reuse `algEquiv_generator_mobius_of_mem` (s7) if ρ_λ is invertible on
+C(q); else build the endomorphism analogue. This discharges `hmob`, the last GEOMETRIC input to §3(b).
+
+### Session 13 progress — (A) §3a foundation: semilinear jet covariance + order rigidity
+`HTGeometry/SemilinearJetCovariance.lean` [PROVED HERE], all theorems standard axioms
+([propext, Quot.sound] for the jet law; +Classical.choice for the field/order ones),
+`lake build GaloisForLFunctions.HTGeometry.SemilinearJetCovariance` clean (3030 jobs). (My-cone lint
+clean; a separate lint "owned module unreachable" error is an unrelated parallel-agent RHTower file
+`XiWardEdgeImChannelGram`, not mine.)
+
+REALIZATION: the clock ρ_λ is SEMILINEAR (`ρ_λ(w′) = λ·(ρ_λ w)′`), NOT a differential automorphism,
+so `differentialAlgEquiv_generator_order_zero` (which needs exact D-commutation `hderiv`) does NOT
+apply. But the semilinear map STILL preserves scalar differential order: the n-th jet transforms with
+weight λ^n, and since λ^n∈C* are nonzero constants they are absorbed into field generation. So the
+whole covariance/order machinery goes through with the semilinear map — this is the missing engine.
+(`DifferentialLinearChangeAutomorphism` is the MATRIX change that commutes with D — a different object,
+not the clock.)
+
+Delivered (semilinear analogues of `differentialJet_algHom` / `jetObservableField_map_algHom` /
+`HasScalarDifferentialOrder.map`):
+- `differentialJet_semilinear` : `e(differentialJet n z) = algebraMap C E (λ^n) · differentialJet n (e z)`
+  for a semilinear `e` (`e w′ = algebraMap λ · (e w)′`, λ a differential constant `(algebraMap λ)′=0`).
+  Induction on n; Leibniz `Derivation.leibniz` + `(algebraMap(λ^n))′=0` (private helper
+  `algebraMap_pow_deriv_zero`); pow_succ' to fold λ·λ^n.
+- **`jetObservableField_map_semilinear`** : `(jetObservableField C x N).map e = jetObservableField C (e x) N`.
+  The λ^n weights are absorbed via mutual `adjoin_le_iff` inclusion (each generator differs by a nonzero
+  C-scalar, invertible since λ≠0). This is the KEY lemma — identical CONCLUSION to the differential
+  `jetObservableField_map_algHom`, so it drops straight into the order argument.
+- **`HasScalarDifferentialOrder.map_semilinear`** : a semilinear clock preserves exact order,
+  `HasScalarDifferentialOrder C y z n → HasScalarDifferentialOrder C (e y) (e z) n`. Verbatim copy of
+  `.map`'s proof with the semilinear field lemma substituted.
+
+§3a status: with order-preservation for the semilinear clock now in hand, the order-zero reduction
+(`ρ_λ q₀ ∈ C(q₀)`) is a near-copy of `differentialAlgEquiv_generator_order_zero` (s?) using
+`.map_semilinear` in place of `.map`. That + `algEquiv_generator_mobius_of_mem` (s7) gives §3a Möbius.
+
+NEXT session: (A) §3a completion — `HTGeometry/ClockSemilinearOrderZeroMobius.lean`: prove the clock
+ρ_λ (an AlgEquiv, semilinear, with `hsemi`, hconst, λ≠0, and generating hypertranscendental y) sends
+the generator by an order-zero rational function (`HasScalarDifferentialOrder C y (ρ_λ y) 0` both
+directions) — copy `differentialAlgEquiv_generator_order_zero` swapping `.map`→`.map_semilinear`,
+`hderiv`→`hsemi` (the `hm.map σ.toAlgHom hderiv` step becomes `hm.map_semilinear ... hsemi`) — then feed
+`algEquiv_generator_mobius_of_mem` to get `ρ_λ y` Möbius, discharging `hmob` of
+`commuting_family_scaling_character` (s11). That closes the last GEOMETRIC input to §3(b).
+
+### Session 14 progress — (A) §3a COMPLETE: clock is Möbius on the generator
+`HTGeometry/ClockSemilinearOrderZeroMobius.lean` [PROVED HERE], both theorems axioms
+[propext, Classical.choice, Quot.sound], `lake build GaloisForLFunctions.HTGeometry.ClockSemilinearOrderZeroMobius`
+clean (3037 jobs). (My-cone lint clean + my module reachable in umbrella; a separate lint
+"owned module unreachable" error is an unrelated parallel-agent HTGeometry file
+`FisherOneCornerCoareaTransform`, not mine — left untouched per independence rule.)
+
+Delivered (the payoff of session 13's semilinear covariance):
+- `clockSemilinearAlgEquiv_generator_order_zero` : a semilinear clock dilation σ (`σ w′ = λ·(σ w)′`,
+  λ≠0, `(algebraMap λ)′=0`) of a scalar free differential field sends the generator, both directions,
+  by order-zero rational functions: `HasScalarDifferentialOrder C y (σ y) 0 ∧ ...(σ.symm y)... 0`.
+  VERBATIM copy of `differentialAlgEquiv_generator_order_zero` with the single map step
+  `hm.map σ.toAlgHom hderiv` → `hm.map_semilinear σ.toAlgHom hlam hconst hsemi` (session 13). Compiled
+  first try — confirms the semilinear order machinery drops in exactly where the differential one sat.
+- **`clockSemilinearAlgEquiv_generator_mobius`** : §3(a). The clock σ acts Möbius on the generator,
+  `σ y·(c y+d) = a y+b`, ad−bc≠0, a,b,c,d∈C. Order-zero ⟹ `σ y, σ⁻¹ y ∈ C(y)`
+  (`hasScalarDifferentialOrder_zero_iff`) ⟹ `algEquiv_generator_mobius_of_mem` (s7). This is the exact
+  analogue of §1 (`differentialAlgEquiv_generator_mobius`) for the CLOCK. It discharges `hmob` of
+  `commuting_family_scaling_character` (s11): each clock element is Möbius on the generator.
+
+§3(b) GEOMETRIC/ALGEBRAIC CHAIN now COMPLETE as hypothesis-fed theorems (all [PROVED HERE], std axioms):
+  §1 Möbius (constraint, s5/7) · §3a Möbius (clock, THIS session, discharges hmob)
+  · anchor diagonalization (s9/10) · family diagonalization+multiplicative character (s11)
+  · polynomial character ⟹ λ^k = eq(2) (s12) · charged rigidity σ y = e·y (s6, assembled s12).
+
+REMAINING for the FULLY-unconditional card (all about the CONCRETE clock/cocharacter object, not the
+abstract chain):
+ (B) ALGEBRAICITY: `hpoly_scale : ρ_λ y = P(λ)·y` with P a polynomial (the cocharacter varies
+   algebraically in λ). Still an input to `charged_clock_family_pow` (s12).
+ (C) CONCRETE CLOCK: the framework's jet-scaling clock actually satisfies hsemi (`σ w′ = λ (σ w)′`),
+   hconst (`(algebraMap λ)′=0`, λ∈C constant), λ≠0, and commutes with the constraint — currently
+   hypotheses. Needs the concrete semilinear-clock automorphism (jet-dilation) defined + its
+   semilinearity proven. `stableRangeCoreSymmetryAlgEquiv` (StableCoreFunctoriality) is the §2
+   core-restriction to reuse.
+ (D) TOP-LEVEL ASSEMBLY into the card's main statement (k charge, k>0 ⟹ Φ q₀ = a q₀).
+NEXT session: assemble §3a into s11 — `HTGeometry/ClockFamilyScalingCharacterFromSemilinear.lean`:
+a commuting semilinear clock FAMILY (each ρ_λ an AlgEquiv, hsemi with factor λ, homomorphic at y,
+anchor ρ_{ν₀} a scaling with ν∉{0,1,-1}) yields the multiplicative scaling character `e:C→C`, by
+feeding `clockSemilinearAlgEquiv_generator_mobius` (THIS session) as `hmob` into
+`commuting_family_scaling_character` (s11). This discharges the last GEOMETRIC input and assembles the
+family-level §3(b) from clock hypotheses alone.
+
+### Session 15 progress — nonzero-index monomial bridge (clock is indexed by C^*)
+`HTGeometry/MultiplicativeMonomialNonzero.lean` [PROVED HERE], both theorems axioms
+[propext, Classical.choice, Quot.sound], `lake build ...MultiplicativeMonomialNonzero` clean (1919 jobs),
+`formal_tools.py lint` PASSED.
+
+REALIZATION (blocking the naive family assembly): the clock is genuinely indexed by C^* — a
+factor-0 semilinear map `σ w′ = 0·(σ w)′ = 0` annihilates every derivative, impossible for an
+injective AlgEquiv. So the clock's scaling/Möbius (§3a) and hence its character are defined only for
+λ≠0, and multiplicativity holds only on C^*. But s11's `hmob`/`hmul` and s8's monomial lemma quantify
+over ALL of C. This session builds the precise C^*-index bridge at the monomial step.
+
+Delivered (nonzero-index analogues of s8 `multiplicative_polynomial_eq_X_pow` / s12
+`multiplicative_eval_eq_pow`):
+- **`multiplicative_polynomial_eq_X_pow_of_nonzero`** : over alg-closed C, a nonzero P with
+  `P(xy)=P(x)P(y)` for all NONZERO x,y is `P = X^(deg P)`. Adapts s8's proof; the two spots that used a
+  possibly-zero argument (the `P.eval 1=0` branch and the root-killing step) are rescued by the private
+  helper `eq_zero_of_eval_zero_on_nonzero` (a polynomial vanishing on the infinite nonzero locus is 0,
+  via `eq_zero_of_infinite_isRoot` + `(finite_singleton 0).infinite_compl`).
+- **`multiplicative_eval_eq_pow_of_nonzero`** : `e:C→C` given by a nonzero polynomial and
+  multiplicative on C^* is `e(λ)=λ^k` for EVERY λ (incl. 0, since e=P.eval is total). Direct clock
+  bridge feeding a nonzero-variant of `charged_clock_family_pow`.
+
+§3(b) status unchanged (chain complete as hypothesis-fed theorems); this session removes the
+index-mismatch obstruction to assembling the clock family, which lives on C^*.
+
+NEXT session: nonzero-index rework of the s11 character chain —
+`HTGeometry/ClockScalingCharacterNonzero.lean`: `scaling_character_multiplicative_of_nonzero`
+(∀ λμ≠0, e(λμ)=e(λ)e(μ) — copy s11's `scaling_character_multiplicative` with nonzero hypotheses on
+`hscale`/`hmul`) and `commuting_family_scaling_character_of_nonzero` (feed
+`clockSemilinearAlgEquiv_generator_mobius` (s14) as the per-λ≠0 hmob, `commuting_with_scaling_is_scaling`
+(s11) per λ≠0, build e by choose). Then `multiplicative_eval_eq_pow_of_nonzero` (THIS session) closes
+e=λ^k, assembling the family-level §3(b) from clock hypotheses over C^*.

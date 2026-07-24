@@ -53,6 +53,14 @@ No criterion equivalent to RH counts as completion.
   the closed isometric graph with domain `B_omega H2`.  Its orthogonal domain defect
   `K(B_omega)` is exactly the off-line divisor model space.  Full domain, not graph construction or
   graph closedness, is the RH-bearing property.
+- The real Euler-response kernel
+  `J(x,y)=(Q(x)+Q(y))/(x+y)` is unconditionally positive on every one- and two-node packet.
+  This is already proved on paper and promoted through the full Xi divisor in Lean.  A transverse
+  single-zero orbit first becomes negative on exactly three distinct nodes; for the full Xi sum,
+  cross-orbit masking is the remaining exterior-cubic obstruction.
+- The normalized all-valuation transverse prime coefficient is already the Laplace sample of the
+  Brownian interval vector `1_[0,a]`; its aperture Gram is `min(a,b)`.  Brownian/Monge positivity
+  alone was tested and fails to orient the arithmetic response masks.
 
 ## Mechanisms tested in current attack
 
@@ -136,6 +144,9 @@ in `heat-echo-superselection-descent-is-rh.md`.
 - co-Poisson zeta cancellation without a proof of the quotient Berezin sign;
 - a complex/polarized Cayley aperture law: arbitrary fake divisors satisfy it;
 - prime CAR/CCR sector gluing without a source-derived normal intertwiner.
+- one- or two-node Euler-response estimates: these packets are already strictly positive
+  unconditionally; the first possible response obstruction is exterior degree three.
+- Brownian/Monge/total-positivity arguments that do not transport the arithmetic Boolean mask.
 
 ## Fixed `W_P` frontier
 
@@ -153,8 +164,25 @@ It also proves the closed budget-eight version
 ```
 
 The doubled Möbius parity source has a father Gram tending to `G_P`, a transverse Fisher detail
-of squared norm four, and the native cutoff commutator has two adjoint boundary orientations with
-total critical Ward density eight.  This is the only live source budget.
+of squared norm four.  More importantly, the native Fisher cutoff commutator already splits into
+two adjoint non-diagonal boundary orientations.  The lower corner
+
+```text
+L_(sigma,u)=(1-Q_(sigma,u)) F_sigma Q_(sigma,u)
+```
+
+has exactly half the two-sided commutator energy.  Hence its unconditional critical limit obeys
+
+```text
+0 <= E_lower(u) <= 4(1-exp(-u)),
+E_lower(u)/u -> 4,
+integral_(0,infinity) E_lower(u) du = 4.
+```
+
+This is formalized in `MobiusCriticalFisherLowerBoundaryBudget.lean`.  Therefore budget eight is
+not the live source target: one native corner already has the exact four-unit budget required by
+`W_P`, globally over the complete physical cutoff ray.  The open theorem is its completed
+one-sided incidence.
 
 ### Results that must not be mistaken for the missing source theorem
 
@@ -164,6 +192,10 @@ total critical Ward density eight.  This is the only live source budget.
 - `[PROVED, INSUFFICIENT]` The actual Xi phase is a contractive Hardy multiplier on every finite
   packet, and `V=1-phase` obeys target four-unit nonexpansiveness at every nonnegative aperture.
   This bounds multiplier **values**, not the aperture tangent `r_P`.
+- `[PROVED, SOURCE-COMPLETE]` The physical affine Euler cutoff, its Fisher overlap and energy,
+  its squarefree critical limit, and the exact one-corner conservation law
+  `integral E_lower=4` are already formalized.  No further source calibration,
+  cutoff integration, or factor-of-two repair is needed.
 - `[KILLED]` Aperture-only Schwarz--Pick differentiation: the common contractive aperture set of
   all right-half-plane Cayley cells is exactly the real ray `[0,∞)` and has empty complex
   interior (`C45`).
@@ -176,7 +208,7 @@ total critical Ward density eight.  This is the only live source budget.
 
 ## One live conjecture
 
-`[CONJECTURE — AFFINE DYADIC FISHER-TO-GRAPH INCIDENCE]`
+`[CONJECTURE — ONE-CORNER GAMMA/SONIN INCIDENCE]`
 
 Under the proved dyadic Fock isometry, the Euler cutoff is the affine joint projection
 
@@ -184,47 +216,54 @@ Under the proved dyadic Fock isometry, the Euler cutoff is the affine joint proj
 Q_T(d,m)=1_(log d+2 log m<T).
 ```
 
-Gamma/Sonin completion must act jointly, before scalar quotient evaluation, on the two adjoint
-boundary corners
+The actual source object is the single lower boundary corner
 
 ```text
-C_T^+=(1-Q_T)F_sigma Q_T,
-C_T^-=Q_T F_sigma(1-Q_T).
+L_T=(1-Q_T)F_sigma Q_T.
 ```
 
-The conjectured source identity says their cofinal image lies in the full domain of the canonical
-Xi-pointed graph, has mixed packet column `r_P`, and has joint defect
-`8 G_P-r_P r_P*`.  Equivalently, the completed image has no component in the denominator model
-space `K(B_omega)`.
+Gamma completion and strict-right anti-causal projection must act on `L_T` before any scalar
+overlap quotient.  The conjectured identity says its cofinal image is the one-sided Xi boundary
+operator, its finite Cauchy packet column is `r_P`, and its contraction defect is exactly
 
-This must be an operator-valued, two-sided affine-cutoff theorem.  Treating either corner through
-the scalar Möbius--Gamma graph first is falsified by `C42`; using only the graph's already-proved
+```text
+4 G_P-r_P r_P*.
+```
+
+Equivalently, the completed one-corner image has no excess denominator-model-space component
+beyond the packet column represented by the target boundary operator.
+
+This must be an operator-valued affine-cutoff theorem.  Treating `L_T` through the scalar
+Möbius--Gamma graph first is falsified by `C42`; using only the charged graph's already-proved
 isometry silently restricts the domain to `B_omega H2` and assumes the desired conclusion.
+Adding the adjoint corner first is unnecessary and loses the exact one-sided target.
 
 ## Exact open calculation
 
-The squarefree-to-Euler isometry and the canonical charged graph are both constructed.  The only
-uncomputed composition is the affine cutoff boundary through Gamma/Sonin completion.  For the
-centered Fisher connection, compute
+Squarefree-to-Euler isometry, physical affine cutoff, lower-corner rank-one decomposition,
+four-unit one-corner budget, scalar Möbius--Gamma current weld, Julia transport, and canonical
+charged graph are all constructed.  The only uncomputed composition is the **operator** lower
+corner through Gamma/Sonin completion.  Test that transform on `L_T` before quotient evaluation:
 
-```text
-C_T=C_T^++C_T^-=[Q_T,F_sigma].
-```
-
-Test the completed transform on `C_T` **before** quotient evaluation:
-
-1. compute both affine boundary faces `log d+2 log m=T` and retain their orientation;
-2. prove cancellation of the critical scalar gain only after the two adjoint faces are added;
-3. pair the result against the Cauchy derivative jets spanning `K(B_omega)` and prove every
-   model-space component vanishes;
-4. identify the surviving finite packet column with the existing
+1. retain both rank-one summands inside the one lower corner; they are the tangent and moving-base
+   connection terms and neither may be scalarized separately;
+2. prove cancellation of the Euler-pole `1/(sigma-1)` terms inside their joint completed image;
+3. identify the cofinal image with the one-sided anti-causal boundary operator on a source-defined
+   graph core;
+4. identify its finite packet column with the existing
    `continuedXiAntiCausalWardColumn`;
-5. prove the joint map is contractive in the native eight-unit commutator norm.
+5. prove the completed map is contractive in the native four-unit lower-corner norm.
 
 Exact falsifier: if any model-space pairing is an unconstrained residue coordinate, if the sum
 retains an uncancelled `1/(sigma-1)` gain, or if the calculation reduces to the existing Berezin
 sign/full-domain assertion, then no new source law has been obtained and this formulation must be
 retired.
+
+The global equality `integral E_lower=4` strengthens the hostile test.  Any contractive completed
+incidence producing a target column of norm four must be isometric on the entire critical coarea
+field.  Thus no positive-measure cutoff component may be discarded by Gamma completion, Sonin
+compression, Hardy projection, or graph closure.  A nonzero causal, Gamma-polar, or denominator
+model-space remainder kills equality and therefore kills this proposed incidence.
 
 The first-clock cross-product Type-II Stokes proposal remains a separate fallback.  It is not the
 current `W_P` attack.

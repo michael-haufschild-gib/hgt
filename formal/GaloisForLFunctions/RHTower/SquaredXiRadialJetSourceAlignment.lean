@@ -112,4 +112,114 @@ theorem squaredXiAlternatingJetPolynomial_eq_rationalGamma_sub_prime
           rw [hsign]
           ring
 
+/-- The exact reverse-Bessel closed form for the radial-jet magnitudes, equation (1):
+`b(n,j) = (2n − j)! / (2^{n−j} (n−j)! j!)`. -/
+def squaredRadialJetWeightClosedForm (n j : ℕ) : ℚ :=
+  (Nat.factorial (2 * n - j) : ℚ) / (2 ^ (n - j) * Nat.factorial (n - j) * Nat.factorial j)
+
+private theorem closedForm_diag (n : ℕ) : squaredRadialJetWeightClosedForm n n = 1 := by
+  unfold squaredRadialJetWeightClosedForm
+  rw [show 2 * n - n = n by omega, show n - n = 0 by omega, pow_zero, Nat.factorial_zero]
+  have : (n.factorial : ℚ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero n
+  push_cast
+  field_simp
+
+private theorem closedForm_zero_step (n : ℕ) :
+    ((2 * n + 1 : ℕ) : ℚ) * squaredRadialJetWeightClosedForm n 0
+      = squaredRadialJetWeightClosedForm (n + 1) 0 := by
+  unfold squaredRadialJetWeightClosedForm
+  rw [show 2 * n - 0 = 2 * n by omega, show n - 0 = n by omega,
+      show 2 * (n + 1) - 0 = 2 * n + 2 by omega, show (n + 1) - 0 = n + 1 by omega,
+      Nat.factorial_zero,
+      show (2 * n + 2).factorial = (2 * n + 2) * ((2 * n + 1) * (2 * n).factorial) from by
+        rw [show 2 * n + 2 = (2 * n + 1) + 1 from rfl, Nat.factorial_succ,
+            show 2 * n + 1 = (2 * n) + 1 from rfl, Nat.factorial_succ],
+      show (n + 1).factorial = (n + 1) * n.factorial from Nat.factorial_succ n]
+  have hn : (n.factorial : ℚ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero n
+  have h2n : ((2 * n).factorial : ℚ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
+  push_cast
+  field_simp
+  ring
+
+private theorem closedForm_interior_step (m k : ℕ) :
+    ((2 * (m + k + 1) - k : ℕ) : ℚ) * squaredRadialJetWeightClosedForm (m + k + 1) (k + 1)
+      + squaredRadialJetWeightClosedForm (m + k + 1) k
+      = squaredRadialJetWeightClosedForm (m + k + 1 + 1) (k + 1) := by
+  unfold squaredRadialJetWeightClosedForm
+  have e1 : 2 * (m + k + 1) - (k + 1) = 2 * m + k + 1 := by omega
+  have e2 : (m + k + 1) - (k + 1) = m := by omega
+  have e3 : 2 * (m + k + 1) - k = 2 * m + k + 2 := by omega
+  have e4 : (m + k + 1) - k = m + 1 := by omega
+  have e5 : 2 * (m + k + 1 + 1) - (k + 1) = 2 * m + k + 3 := by omega
+  have e6 : (m + k + 1 + 1) - (k + 1) = m + 1 := by omega
+  rw [e1, e2, e3, e4, e5, e6]
+  push_cast
+  rw [show (2 * m + k + 2).factorial = (2 * m + k + 2) * (2 * m + k + 1).factorial from by
+        rw [show 2 * m + k + 2 = (2 * m + k + 1) + 1 from rfl, Nat.factorial_succ],
+      show (2 * m + k + 3).factorial
+          = (2 * m + k + 3) * ((2 * m + k + 2) * (2 * m + k + 1).factorial) from by
+        rw [show 2 * m + k + 3 = (2 * m + k + 2) + 1 from rfl, Nat.factorial_succ,
+            show 2 * m + k + 2 = (2 * m + k + 1) + 1 from rfl, Nat.factorial_succ],
+      show (m + 1).factorial = (m + 1) * m.factorial from Nat.factorial_succ m,
+      show (k + 1).factorial = (k + 1) * k.factorial from Nat.factorial_succ k]
+  have hm : (m.factorial : ℚ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero m
+  have hk : (k.factorial : ℚ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero k
+  have hf : ((2 * m + k + 1).factorial : ℚ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
+  push_cast
+  field_simp
+  ring
+
+/-- Outside the triangular range the magnitudes vanish. -/
+theorem squaredRadialJetWeight_eq_zero_of_lt : ∀ n j : ℕ, n < j → squaredRadialJetWeight n j = 0 := by
+  intro n
+  induction n with
+  | zero =>
+      intro j hj
+      rcases j with _ | p
+      · omega
+      · simp
+  | succ n ih =>
+      intro j hj
+      rcases j with _ | p
+      · omega
+      · rw [squaredRadialJetWeight_succ_succ, ih (p + 1) (by omega), ih p (by omega)]; simp
+
+/-- **Exact reverse-Bessel closed form**, equation (1).  The recursively-defined radial-jet
+magnitudes equal the factorial closed form on the triangular range. -/
+theorem squaredRadialJetWeight_eq_closedForm (n : ℕ) :
+    ∀ j, j ≤ n → (squaredRadialJetWeight n j : ℚ) = squaredRadialJetWeightClosedForm n j := by
+  induction n with
+  | zero =>
+      intro j hj
+      interval_cases j
+      simp [squaredRadialJetWeightClosedForm]
+  | succ n ih =>
+      intro j hj
+      rcases j with _ | k
+      · rw [squaredRadialJetWeight_succ_zero, Nat.cast_mul, ih 0 (Nat.zero_le n)]
+        exact closedForm_zero_step n
+      · have hkn : k ≤ n := by omega
+        rcases Nat.lt_or_ge k n with hlt | hge
+        · rw [squaredRadialJetWeight_succ_succ, Nat.cast_add, Nat.cast_mul,
+              ih (k + 1) hlt, ih k hkn]
+          obtain ⟨m, rfl⟩ : ∃ m, n = m + k + 1 := ⟨n - k - 1, by omega⟩
+          exact closedForm_interior_step m k
+        · have hkeq : k = n := le_antisymm hkn hge
+          rw [squaredRadialJetWeight_succ_succ, hkeq,
+              squaredRadialJetWeight_eq_zero_of_lt n (n + 1) (Nat.lt_succ_self n)]
+          rw [mul_zero, zero_add, ih n (le_refl n), closedForm_diag n, closedForm_diag (n + 1)]
+
+/-- **Positivity**: every radial-jet magnitude on the triangular range is a positive integer. -/
+theorem squaredRadialJetWeight_pos (n j : ℕ) (hj : j ≤ n) : 0 < squaredRadialJetWeight n j := by
+  have h := squaredRadialJetWeight_eq_closedForm n j hj
+  have hpos : 0 < squaredRadialJetWeightClosedForm n j := by
+    unfold squaredRadialJetWeightClosedForm
+    apply div_pos
+    · exact_mod_cast Nat.factorial_pos _
+    · have h1 : (0 : ℚ) < (Nat.factorial (n - j) : ℚ) := by exact_mod_cast Nat.factorial_pos _
+      have h2 : (0 : ℚ) < (Nat.factorial j : ℚ) := by exact_mod_cast Nat.factorial_pos _
+      positivity
+  have hq : (0 : ℚ) < (squaredRadialJetWeight n j : ℚ) := by rw [h]; exact hpos
+  exact_mod_cast hq
+
 end RHTower

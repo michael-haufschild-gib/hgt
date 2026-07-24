@@ -975,10 +975,6 @@ theorem integral_sq_rightKernel_inv {x : ℝ} (hx : 0 < x) (β : ℝ) :
   have hFTC' := hlim.congr hFTC
   exact tendsto_nhds_unique hFTC' hdecay
 
-end
-
-end RHTower
-
 /-- Squared Lorentzian-half mass: `∫ (x/(x²+(t+β)²))² dt = π/(2x)`.
 Mechanism: with `w = (x + i(t+β))⁻¹` the pointwise identity
 `(Re w)² = (Re (w²) + |w|²)/2` splits the square into the vanishing
@@ -1065,3 +1061,417 @@ theorem integral_sq_lorentzianHalf {x : ℝ} (hx : 0 < x) (β : ℝ) :
     MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
     hre0, hlorint]
   ring
+
+/-- The squared Lorentzian half is integrable: it is dominated by `x⁻¹`
+times the Lorentzian half. -/
+theorem integrable_sq_lorentzianHalf {x : ℝ} (hx : 0 < x) (β : ℝ) :
+    Integrable fun t : ℝ => (x / (x ^ 2 + (t + β) ^ 2)) ^ 2 := by
+  apply Integrable.mono' ((lorentzianHalf_integrable hx β).const_mul (1 / x))
+  · apply Continuous.aestronglyMeasurable
+    apply Continuous.pow
+    exact continuous_const.div
+      (continuous_const.add ((continuous_id.add continuous_const).pow 2))
+      (fun t => by positivity)
+  · filter_upwards with t
+    have hD : (0 : ℝ) < x ^ 2 + (t + β) ^ 2 := by positivity
+    have hL : 0 ≤ x / (x ^ 2 + (t + β) ^ 2) := by positivity
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    have hle : x / (x ^ 2 + (t + β) ^ 2) ≤ 1 / x := by
+      rw [div_le_div_iff₀ hD hx]
+      nlinarith [sq_nonneg (t + β)]
+    calc (x / (x ^ 2 + (t + β) ^ 2)) ^ 2
+        = (x / (x ^ 2 + (t + β) ^ 2)) * (x / (x ^ 2 + (t + β) ^ 2)) := by
+          ring
+      _ ≤ (1 / x) * (x / (x ^ 2 + (t + β) ^ 2)) :=
+          mul_le_mul_of_nonneg_right hle hL
+
+/-- Dropping the positive cross term: the squared edge real part of one
+Schwarz pair dominates four times the sum of its two squared Lorentzian
+halves. -/
+theorem sq_re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_ge
+    (q : XiRightUpperZeroCopy) (t : ℝ) :
+    4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + (xiRightCenteredZero q.1).im) ^ 2)) ^ 2 +
+      4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2 ≤
+    ((xiAntiCausalWardSchwarzPairResponse q
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 := by
+  rw [re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]
+  have hre := xiRightCenteredZero_re_pos q.1
+  have hx : 0 < (xiRightCenteredZero q.1).re + 1 / 2 := by linarith
+  have hD1 : 0 < ((xiRightCenteredZero q.1).re + 1 / 2) ^ 2 +
+      (t + (xiRightCenteredZero q.1).im) ^ 2 := by positivity
+  have hD2 : 0 < ((xiRightCenteredZero q.1).re + 1 / 2) ^ 2 +
+      (t + -(xiRightCenteredZero q.1).im) ^ 2 := by positivity
+  have hL1 : 0 ≤ ((xiRightCenteredZero q.1).re + 1 / 2) /
+      (((xiRightCenteredZero q.1).re + 1 / 2) ^ 2 +
+        (t + (xiRightCenteredZero q.1).im) ^ 2) := by positivity
+  have hL2 : 0 ≤ ((xiRightCenteredZero q.1).re + 1 / 2) /
+      (((xiRightCenteredZero q.1).re + 1 / 2) ^ 2 +
+        (t + -(xiRightCenteredZero q.1).im) ^ 2) := by positivity
+  have hkey : (2 * ((xiRightCenteredZero q.1).re + 1 / 2) /
+        (((xiRightCenteredZero q.1).re + 1 / 2) ^ 2 +
+          (t + (xiRightCenteredZero q.1).im) ^ 2) +
+      2 * ((xiRightCenteredZero q.1).re + 1 / 2) /
+        (((xiRightCenteredZero q.1).re + 1 / 2) ^ 2 +
+          (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2
+      = 4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+            ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+              (t + (xiRightCenteredZero q.1).im) ^ 2)) ^ 2 +
+          4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+            ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+              (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2 +
+          8 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
+            ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+              (t + (xiRightCenteredZero q.1).im) ^ 2)) *
+            (((xiRightCenteredZero q.1).re + 1 / 2) /
+            ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+              (t + -(xiRightCenteredZero q.1).im) ^ 2))) := by
+    ring
+  rw [hkey]
+  linarith [mul_nonneg hL1 hL2]
+
+/-- Each strict-right pair forces edge quadratic energy at least
+`4π/(Re λ + 1/2) > 4π` on the continued Ward response. -/
+theorem lintegral_normSq_continuedXiAntiCausalWardResponse_edge_lower
+    (q : XiRightUpperZeroCopy) :
+    ENNReal.ofReal (4 * π / ((xiRightCenteredZero q.1).re + 1 / 2)) ≤
+      ∫⁻ t : ℝ, ENNReal.ofReal (Complex.normSq
+        (continuedXiAntiCausalWardResponse
+          ((1 / 2 : ℂ) + I * (t : ℂ)))) := by
+  have hre := xiRightCenteredZero_re_pos q.1
+  have hx : 0 < (xiRightCenteredZero q.1).re + 1 / 2 := by linarith
+  have h4a : Integrable (fun t : ℝ =>
+      4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + (xiRightCenteredZero q.1).im) ^ 2)) ^ 2) volume :=
+    (integrable_sq_lorentzianHalf hx
+      ((xiRightCenteredZero q.1).im)).const_mul 4
+  have h4b : Integrable (fun t : ℝ =>
+      4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2) volume :=
+    (integrable_sq_lorentzianHalf hx
+      (-(xiRightCenteredZero q.1).im)).const_mul 4
+  have hint : Integrable (fun t : ℝ =>
+      4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + (xiRightCenteredZero q.1).im) ^ 2)) ^ 2 +
+        4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2) volume :=
+    h4a.add h4b
+  have hgint : (∫ t : ℝ,
+      (4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + (xiRightCenteredZero q.1).im) ^ 2)) ^ 2 +
+        4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2)) =
+      4 * π / ((xiRightCenteredZero q.1).re + 1 / 2) := by
+    rw [MeasureTheory.integral_add h4a h4b,
+      MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
+      integral_sq_lorentzianHalf hx ((xiRightCenteredZero q.1).im),
+      integral_sq_lorentzianHalf hx (-(xiRightCenteredZero q.1).im)]
+    field_simp
+    ring
+  calc ENNReal.ofReal (4 * π / ((xiRightCenteredZero q.1).re + 1 / 2))
+      = ∫⁻ t : ℝ, ENNReal.ofReal
+          (4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+              ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+                (t + (xiRightCenteredZero q.1).im) ^ 2)) ^ 2 +
+            4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+              ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+                (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2) := by
+        rw [← hgint]
+        exact MeasureTheory.ofReal_integral_eq_lintegral_ofReal hint
+          (Filter.Eventually.of_forall fun t => by positivity)
+    _ ≤ ∫⁻ t : ℝ, ENNReal.ofReal (Complex.normSq
+          (continuedXiAntiCausalWardResponse
+            ((1 / 2 : ℂ) + I * (t : ℂ)))) := by
+        apply MeasureTheory.lintegral_mono
+        intro t
+        apply ENNReal.ofReal_le_ofReal
+        have hw : (0 : ℝ) < ((1 / 2 : ℂ) + I * (t : ℂ)).re := by
+          norm_num [Complex.add_re, Complex.mul_re]
+        have h1 := sq_re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_ge q t
+        have h2 := re_xiAntiCausalWardSchwarzPairResponse_le_continued q hw
+        have h2' : ((xiAntiCausalWardSchwarzPairResponse q
+              ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
+            ((continuedXiAntiCausalWardResponse
+              ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 :=
+          pow_le_pow_left₀
+            (re_xiAntiCausalWardSchwarzPairResponse_pos q hw).le h2 2
+        have h3 : ((continuedXiAntiCausalWardResponse
+              ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
+            Complex.normSq (continuedXiAntiCausalWardResponse
+              ((1 / 2 : ℂ) + I * (t : ℂ))) := by
+          rw [Complex.normSq_apply]
+          nlinarith [sq_nonneg (continuedXiAntiCausalWardResponse
+            ((1 / 2 : ℂ) + I * (t : ℂ))).im]
+        linarith
+
+/-- Edge quadratic-energy law at budget `c`: the total squared edge modulus
+of the continued Ward response is at most `c`. -/
+def ContinuedXiWardEdgeQuadEnergyLaw (c : ℝ) : Prop :=
+  ∫⁻ t : ℝ, ENNReal.ofReal (Complex.normSq
+      (continuedXiAntiCausalWardResponse ((1 / 2 : ℂ) + I * (t : ℂ)))) ≤
+    ENNReal.ofReal c
+
+/-- **Four-pi edge completeness law, closed budget.**  For any fixed budget
+`0 ≤ c ≤ 4π` the Riemann Hypothesis is equivalent to the edge
+quadratic-energy law at budget `c`: under RH the response vanishes
+identically, while a single off-critical pair already deposits edge energy
+`4π/(Re λ + 1/2)` strictly above `4π` because `Re λ + 1/2 < 1` strictly. -/
+theorem riemannHypothesis_iff_continuedXiWardEdgeQuadEnergyLaw
+    {c : ℝ} (hc0 : 0 ≤ c) (hc : c ≤ 4 * π) :
+    RiemannHypothesis ↔ ContinuedXiWardEdgeQuadEnergyLaw c := by
+  constructor
+  · intro hRH
+    letI : IsEmpty XiRightZeroCopy := by
+      constructor
+      intro p
+      obtain ⟨s, hs⟩ := xiSpectralPoint_real_of_rh hRH p.1
+      have hpos := p.2
+      rw [hs] at hpos
+      simp at hpos
+    letI : IsEmpty XiRightUpperZeroCopy := ⟨fun p => isEmptyElim p.1⟩
+    have hzero : ∀ t : ℝ,
+        continuedXiAntiCausalWardResponse ((1 / 2 : ℂ) + I * (t : ℂ)) =
+          0 := by
+      intro t
+      have hw : (0 : ℝ) < ((1 / 2 : ℂ) + I * (t : ℂ)).re := by
+        norm_num [Complex.add_re, Complex.mul_re]
+      rw [continuedXiAntiCausalWardResponse_eq_tsum_schwarzPairs hw,
+        tsum_empty]
+    unfold ContinuedXiWardEdgeQuadEnergyLaw
+    rw [show (fun t : ℝ => ENNReal.ofReal (Complex.normSq
+        (continuedXiAntiCausalWardResponse ((1 / 2 : ℂ) + I * (t : ℂ)))))
+        = fun _ : ℝ => (0 : ENNReal) from funext fun t => by
+      rw [hzero t]; simp]
+    rw [lintegral_zero]
+    exact zero_le'
+
+  · intro hlaw
+    by_contra hRH
+    obtain ⟨q⟩ := nonempty_xiRightUpperZeroCopy_for_boundaryLift hRH
+    have hre := xiRightCenteredZero_re_pos q.1
+    have hlt := (abs_lt.mp (abs_xiRightCenteredZero_re_lt_half q.1)).2
+    have hx : 0 < (xiRightCenteredZero q.1).re + 1 / 2 := by linarith
+    have hx1 : (xiRightCenteredZero q.1).re + 1 / 2 < 1 := by linarith
+    have hchain :=
+      (lintegral_normSq_continuedXiAntiCausalWardResponse_edge_lower q).trans
+        hlaw
+    rw [ENNReal.ofReal_le_ofReal_iff hc0] at hchain
+    have hgt : 4 * π < 4 * π /
+        ((xiRightCenteredZero q.1).re + 1 / 2) := by
+      rw [lt_div_iff₀ hx]
+      nlinarith [pi_pos]
+    linarith
+
+/-- Diagonal quadratic edge minorant of one Schwarz pair: four times the sum
+of its two squared Lorentzian halves. -/
+def xiWardPairEdgeQuadMinorant (q : XiRightUpperZeroCopy) (t : ℝ) : ℝ :=
+  4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+      ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+        (t + (xiRightCenteredZero q.1).im) ^ 2)) ^ 2 +
+    4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+      ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+        (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2
+
+theorem xiWardPairEdgeQuadMinorant_nonneg (q : XiRightUpperZeroCopy)
+    (t : ℝ) : 0 ≤ xiWardPairEdgeQuadMinorant q t := by
+  have hre := xiRightCenteredZero_re_pos q.1
+  unfold xiWardPairEdgeQuadMinorant
+  positivity
+
+theorem xiWardPairEdgeQuadMinorant_le_sq_re (q : XiRightUpperZeroCopy)
+    (t : ℝ) :
+    xiWardPairEdgeQuadMinorant q t ≤
+      ((xiAntiCausalWardSchwarzPairResponse q
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 := by
+  unfold xiWardPairEdgeQuadMinorant
+  exact sq_re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_ge q t
+
+theorem integrable_xiWardPairEdgeQuadMinorant (q : XiRightUpperZeroCopy) :
+    Integrable (fun t : ℝ => xiWardPairEdgeQuadMinorant q t) volume := by
+  have hre := xiRightCenteredZero_re_pos q.1
+  have hx : 0 < (xiRightCenteredZero q.1).re + 1 / 2 := by linarith
+  have h4a : Integrable (fun t : ℝ =>
+      4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + (xiRightCenteredZero q.1).im) ^ 2)) ^ 2) volume :=
+    (integrable_sq_lorentzianHalf hx
+      ((xiRightCenteredZero q.1).im)).const_mul 4
+  have h4b : Integrable (fun t : ℝ =>
+      4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2) volume :=
+    (integrable_sq_lorentzianHalf hx
+      (-(xiRightCenteredZero q.1).im)).const_mul 4
+  have h := h4a.add h4b
+  apply h.congr
+  filter_upwards with t
+  simp [xiWardPairEdgeQuadMinorant, Pi.add_apply]
+
+/-- Each pair minorant carries total mass `4π/(Re λ + 1/2)`. -/
+theorem integral_xiWardPairEdgeQuadMinorant (q : XiRightUpperZeroCopy) :
+    ∫ t : ℝ, xiWardPairEdgeQuadMinorant q t =
+      4 * π / ((xiRightCenteredZero q.1).re + 1 / 2) := by
+  have hre := xiRightCenteredZero_re_pos q.1
+  have hx : 0 < (xiRightCenteredZero q.1).re + 1 / 2 := by linarith
+  have h4a : Integrable (fun t : ℝ =>
+      4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + (xiRightCenteredZero q.1).im) ^ 2)) ^ 2) volume :=
+    (integrable_sq_lorentzianHalf hx
+      ((xiRightCenteredZero q.1).im)).const_mul 4
+  have h4b : Integrable (fun t : ℝ =>
+      4 * (((xiRightCenteredZero q.1).re + 1 / 2) /
+          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
+            (t + -(xiRightCenteredZero q.1).im) ^ 2)) ^ 2) volume :=
+    (integrable_sq_lorentzianHalf hx
+      (-(xiRightCenteredZero q.1).im)).const_mul 4
+  unfold xiWardPairEdgeQuadMinorant
+  rw [MeasureTheory.integral_add h4a h4b,
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
+    integral_sq_lorentzianHalf hx ((xiRightCenteredZero q.1).im),
+    integral_sq_lorentzianHalf hx (-(xiRightCenteredZero q.1).im)]
+  field_simp
+  ring
+
+/-- Superadditive pointwise floor: over any finite family of strict-right
+pairs, the sum of the pair minorants is dominated by the squared edge
+modulus of the continued Ward response.  Cross terms are dropped, not
+interchanged: no double-series rearrangement enters. -/
+theorem sum_xiWardPairEdgeQuadMinorant_le_normSq
+    (F : Finset XiRightUpperZeroCopy) (t : ℝ) :
+    ∑ q ∈ F, xiWardPairEdgeQuadMinorant q t ≤
+      Complex.normSq (continuedXiAntiCausalWardResponse
+        ((1 / 2 : ℂ) + I * (t : ℂ))) := by
+  have hw : (0 : ℝ) < ((1 / 2 : ℂ) + I * (t : ℂ)).re := by
+    norm_num [Complex.add_re, Complex.mul_re]
+  have hsum := summable_xiAntiCausalWardSchwarzPairResponse hw
+  have hsumre : Summable fun p : XiRightUpperZeroCopy =>
+      (xiAntiCausalWardSchwarzPairResponse p
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re :=
+    (Complex.hasSum_re hsum.hasSum).summable
+  have h1 : ∑ q ∈ F, xiWardPairEdgeQuadMinorant q t ≤
+      ∑ q ∈ F, ((xiAntiCausalWardSchwarzPairResponse q
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 :=
+    Finset.sum_le_sum fun q _ => xiWardPairEdgeQuadMinorant_le_sq_re q t
+  have h2 : ∑ q ∈ F, ((xiAntiCausalWardSchwarzPairResponse q
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
+      (∑ q ∈ F, (xiAntiCausalWardSchwarzPairResponse q
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 :=
+    Finset.sum_sq_le_sq_sum_of_nonneg fun q _ =>
+      (re_xiAntiCausalWardSchwarzPairResponse_pos q hw).le
+  have h3 : (∑ q ∈ F, (xiAntiCausalWardSchwarzPairResponse q
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ≤
+      (continuedXiAntiCausalWardResponse
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re := by
+    rw [continuedXiAntiCausalWardResponse_eq_tsum_schwarzPairs hw,
+      Complex.re_tsum hsum]
+    exact hsumre.sum_le_tsum F fun q _ =>
+      (re_xiAntiCausalWardSchwarzPairResponse_pos q hw).le
+  have h3' : (∑ q ∈ F, (xiAntiCausalWardSchwarzPairResponse q
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
+      ((continuedXiAntiCausalWardResponse
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 :=
+    pow_le_pow_left₀
+      (Finset.sum_nonneg fun q _ =>
+        (re_xiAntiCausalWardSchwarzPairResponse_pos q hw).le) h3 2
+  have h4 : ((continuedXiAntiCausalWardResponse
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
+      Complex.normSq (continuedXiAntiCausalWardResponse
+        ((1 / 2 : ℂ) + I * (t : ℂ))) := by
+    rw [Complex.normSq_apply]
+    nlinarith [sq_nonneg (continuedXiAntiCausalWardResponse
+      ((1 / 2 : ℂ) + I * (t : ℂ))).im]
+  linarith
+
+/-- Total edge quadratic energy of the continued Ward response. -/
+def xiWardEdgeQuadEnergy : ENNReal :=
+  ∫⁻ t : ℝ, ENNReal.ofReal (Complex.normSq
+    (continuedXiAntiCausalWardResponse ((1 / 2 : ℂ) + I * (t : ℂ))))
+
+/-- **Edge energy counts the divisor**: any `N` distinct strict-right pairs
+force edge quadratic energy at least `N·4π`. -/
+theorem card_nsmul_le_xiWardEdgeQuadEnergy
+    (F : Finset XiRightUpperZeroCopy) :
+    ENNReal.ofReal (4 * π * F.card) ≤ xiWardEdgeQuadEnergy := by
+  have hintF : Integrable (fun t : ℝ =>
+      ∑ q ∈ F, xiWardPairEdgeQuadMinorant q t) volume :=
+    integrable_finsetSum F fun q _ => integrable_xiWardPairEdgeQuadMinorant q
+  have hval : (∫ t : ℝ, ∑ q ∈ F, xiWardPairEdgeQuadMinorant q t)
+      = ∑ q ∈ F, 4 * π / ((xiRightCenteredZero q.1).re + 1 / 2) := by
+    rw [MeasureTheory.integral_finsetSum F fun q _ =>
+      integrable_xiWardPairEdgeQuadMinorant q]
+    exact Finset.sum_congr rfl fun q _ =>
+      integral_xiWardPairEdgeQuadMinorant q
+  have hper : ∀ q ∈ F, (4 * π : ℝ) ≤
+      4 * π / ((xiRightCenteredZero q.1).re + 1 / 2) := by
+    intro q _
+    have hre := xiRightCenteredZero_re_pos q.1
+    have hlt := (abs_lt.mp (abs_xiRightCenteredZero_re_lt_half q.1)).2
+    have hx : 0 < (xiRightCenteredZero q.1).re + 1 / 2 := by linarith
+    rw [le_div_iff₀ hx]
+    nlinarith [pi_pos]
+  have hcard := Finset.card_nsmul_le_sum F _ _ hper
+  rw [nsmul_eq_mul] at hcard
+  unfold xiWardEdgeQuadEnergy
+  calc ENNReal.ofReal (4 * π * F.card)
+      ≤ ENNReal.ofReal (∑ q ∈ F,
+          4 * π / ((xiRightCenteredZero q.1).re + 1 / 2)) := by
+        apply ENNReal.ofReal_le_ofReal
+        calc (4 * π * F.card : ℝ) = F.card * (4 * π) := by ring
+          _ ≤ _ := hcard
+    _ = (∫⁻ t : ℝ, ENNReal.ofReal
+          (∑ q ∈ F, xiWardPairEdgeQuadMinorant q t)) := by
+        rw [← hval]
+        exact MeasureTheory.ofReal_integral_eq_lintegral_ofReal hintF
+          (Filter.Eventually.of_forall fun t =>
+            Finset.sum_nonneg fun q _ =>
+              xiWardPairEdgeQuadMinorant_nonneg q t)
+    _ ≤ (∫⁻ t : ℝ, ENNReal.ofReal (Complex.normSq
+          (continuedXiAntiCausalWardResponse
+            ((1 / 2 : ℂ) + I * (t : ℂ))))) := by
+        apply MeasureTheory.lintegral_mono
+        intro t
+        exact ENNReal.ofReal_le_ofReal
+          (sum_xiWardPairEdgeQuadMinorant_le_normSq F t)
+
+/-- Zero-counting bound: an edge energy budget `c` caps every finite family
+of strict-right pairs at `c/(4π)` members. -/
+theorem card_le_of_xiWardEdgeQuadEnergy_le {c : ℝ} (hc0 : 0 ≤ c)
+    (hlaw : xiWardEdgeQuadEnergy ≤ ENNReal.ofReal c)
+    (F : Finset XiRightUpperZeroCopy) :
+    4 * π * F.card ≤ c := by
+  have h := (card_nsmul_le_xiWardEdgeQuadEnergy F).trans hlaw
+  rwa [ENNReal.ofReal_le_ofReal_iff hc0] at h
+
+/-- **Finiteness law**: finite edge quadratic energy forces a finite
+strict-right divisor. -/
+theorem finite_xiRightUpperZeroCopy_of_xiWardEdgeQuadEnergy_ne_top
+    (h : xiWardEdgeQuadEnergy ≠ ⊤) : Finite XiRightUpperZeroCopy := by
+  by_contra hinf
+  rw [not_finite_iff_infinite] at hinf
+  obtain ⟨n, hn⟩ := exists_nat_gt (xiWardEdgeQuadEnergy.toReal / (4 * π))
+  obtain ⟨F, hF⟩ := Infinite.exists_subset_card_eq XiRightUpperZeroCopy n
+  have hlow := card_nsmul_le_xiWardEdgeQuadEnergy F
+  rw [hF] at hlow
+  have hle := (ENNReal.ofReal_le_iff_le_toReal h).mp hlow
+  have h4 : (0 : ℝ) < 4 * π := by positivity
+  have hgt : xiWardEdgeQuadEnergy.toReal < 4 * π * n := by
+    calc xiWardEdgeQuadEnergy.toReal
+        = xiWardEdgeQuadEnergy.toReal / (4 * π) * (4 * π) := by
+          field_simp
+      _ < n * (4 * π) := mul_lt_mul_of_pos_right hn h4
+      _ = 4 * π * n := by ring
+  linarith
+
+end
+
+end RHTower

@@ -58,6 +58,7 @@ theorem multiplicative_polynomial_eq_X_pow {C : Type*} [Field C] [IsAlgClosed C]
   have hlead : P.leadingCoeff = 1 := by
     have he : P.eval 1 = P.leadingCoeff := by rw [hprod]; simp
     rw [hev1] at he; exact he.symm
-  rw [hprod, hlead, map_one, one_mul]
+  rw [hlead, map_one, one_mul] at hprod
+  exact hprod
 
 end GaloisForLFunctions.HTGeometry

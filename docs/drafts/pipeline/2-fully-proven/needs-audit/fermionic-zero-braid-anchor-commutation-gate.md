@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM / QFT CONVENTION OBSTRUCTION / RECONSTRUCTION GATE
 - **Scientific status:** `[PROVED ON PAPER] [SOURCE-CONVENTION CONFLICT IDENTIFIED]`
-  `[NOVELTY UNVERIFIED]`
+  `[NOVELTY UNVERIFIED] [LEAN: EQ (5) FORMALIZED]`
 - **Scope:** finite-dimensional matrix factorizing scattering; no RH or distinguished
   special-function input
 - **Parents:** `projective-wigner-smith-nonabelian-ht-separation.md` and
@@ -233,6 +233,27 @@ proof would admit genuine physical projective-HT mixing.
 - A. B. Zamolodchikov and Al. B. Zamolodchikov, *Relativistic factorized S-matrix in two
   dimensions having `O(N)` isotopic symmetry*, Nuclear Physics B 133 (1978), 525--535.
 
+## Lean formalization
+
+Equation `(5)` — the two zero-anchor commutation laws — is formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/FermionicZeroBraidAnchorCommutation.lean`
+(namespace `GaloisForLFunctions.HTGeometry`), reusing the corpus Yang--Baxter API in
+`RightFlipScattering.lean`:
+
+- `braidZeroAnchor_commute` — in any `ℂ`-algebra `T`, three leg families `L₁₂, L₁₃, L₂₃ : X → T`
+  (`X` an additive monoid) solving the quantum Yang--Baxter equation
+  `L₁₂(y)·L₁₃(x+y)·L₂₃(x) = L₂₃(x)·L₁₃(x+y)·L₁₂(y)` with scalar zero anchors `L₁₂(0) = c·1`,
+  `L₂₃(0) = c·1`, `c ≠ 0`, satisfy `[L₁₃(x),L₂₃(x)] = 0` and `[L₁₂(x),L₁₃(x)] = 0`.  Proof: set
+  `y = 0` / `x = 0`, factor out the scalar anchor, and cancel `c` (`smul_right_injective`).  No
+  analyticity, classification, or dimension-two input, exactly as on paper.
+- `fermionicZeroBraid_leg_commute` — the specialisation to the corpus leg embeddings with the
+  non-adjacent leg realised by `conjugatedMiddleLeg leg12 leg23 F` (flip conjugation of the adjacent
+  `23` leg), instantiating the abstract theorem.
+
+`#print axioms` on both: `propext`, `Classical.choice`, `Quot.sound` only.  Still to formalize: the
+positive-unitary operator-Schmidt local product-diagonality theorem (equations `(6)`–`(8)`), which
+needs operator-Schmidt decomposition and commutative `C*`-algebra simultaneous diagonalization.
+
 ## Gates
 
 - [x] adjacent braid-to-quantum conversion derived
@@ -247,5 +268,15 @@ proof would admit genuine physical projective-HT mixing.
 - [x] crossing transport and right-flip scattering-reconstruction theorem
 - [x] identity-zero fixed-particle holomorphic frame
 - [ ] identity-zero all-particle uniformly `exp(O(n))`-conditioned intertwiner
-- [ ] unconditional Lean formalization
+- [~] unconditional Lean formalization — equation `(5)` done
+  (`GaloisForLFunctions.HTGeometry.braidZeroAnchor_commute`); operator-Schmidt local-diagonality
+  `(6)`–`(8)` still open
 - [ ] physical intrinsically mixing projective-HT compact-local model
+
+## Log
+
+- 2026-07-24 -- Formalized equation `(5)`, the two zero-anchor leg commutation laws, unconditionally
+  in `GaloisForLFunctions.HTGeometry.braidZeroAnchor_commute` (abstract `ℂ`-algebra form) with a
+  leg-embedded connector `fermionicZeroBraid_leg_commute` reusing `conjugatedMiddleLeg` from the
+  corpus `RightFlipScattering` Yang--Baxter API. Axioms clean; module builds and is wired into the
+  HTGeometry umbrella. Remaining Lean gap: the operator-Schmidt local product-diagonality theorem.

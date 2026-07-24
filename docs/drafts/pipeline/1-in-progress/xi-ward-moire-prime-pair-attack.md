@@ -620,3 +620,342 @@ identity's closed form), the tsum layer (lintegral/Countable pattern from
 `XiWardEdgeMassQuantization`), and the completeness iff (RH direction: r ≡ 0;
 ¬RH direction: one pair's floor beats any budget `c < 8π` through positive
 cross terms).
+
+## Step 9i — the 4π closed-budget edge completeness law [PROVED HERE]
+
+Module `formal/GaloisForLFunctions/RHTower/XiWardEdgeL2CrossKernel.lean` (1275 lines,
+compiles clean, all results on `propext, Classical.choice, Quot.sound` only; lint clean;
+umbrella wired; index regenerated).
+
+New certified layers (this round):
+- `integral_sq_rightKernel_inv` — ∫_ℝ (x+i(t+β))⁻² dt = 0.  Complex FTC with antiderivative
+  i·u⁻¹ (composition `hasDerivAt_inv` ∘ affine via `HasDerivAt.scomp`), boundary decay by
+  ‖u⁻¹‖ ≤ (x²+s²)^{-1/2} squeeze.  The holomorphic square drops all its mass at infinity.
+- `integral_sq_lorentzianHalf` — ∫ (x/(x²+(t+β)²))² dt = π/(2x) via the pointwise split
+  (Re w)² = ½(Re(w²) + |w|²), w = (x+i(t+β))⁻¹: the w² part vanishes by the FTC lemma,
+  the |w|² part is half the Lorentzian mass.  No interval-integral asymptotics needed.
+- `integrable_sq_lorentzianHalf` — domination by x⁻¹·(Lorentzian half).
+- `sq_re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_ge` — (Re pair)² ≥ 4L̃₁² + 4L̃₂²
+  (cross term 8L̃₁L̃₂ ≥ 0 dropped by explicit ring identity).
+- `lintegral_normSq_continuedXiAntiCausalWardResponse_edge_lower` — every strict-right pair
+  q forces ∫⁻_t normSq r(½+it) ≥ ofReal(4π/x), x = Re λ + ½.  Chain: Herglotz domination
+  Re r ≥ Re pair (corpus `re_xiAntiCausalWardSchwarzPairResponse_le_continued`, found in
+  `GammaSewnMobiusXiWardEulerEdgeCompleteness` — corpus search fired AFTER a name collision;
+  reminder reinforced), square monotone on nonnegatives, normSq ≥ re².
+- **`riemannHypothesis_iff_continuedXiWardEdgeQuadEnergyLaw`** — for ANY fixed budget
+  0 ≤ c ≤ 4π (CLOSED endpoint):  RH  ⟺  ∫⁻_t ofReal(normSq r(½+it)) dt ≤ ofReal c.
+  Forward: RH ⟹ divisor empty ⟹ r ≡ 0 ⟹ integral 0.  Backward: one pair deposits
+  4π/x > 4π strictly since x < 1 strictly.  The closed endpoint c = 4π is admissible —
+  the integrated criterion needs NO margin slack, mirroring the closed c = 8 corner law.
+
+Desk ledger for the sharp per-pair Re-part deposit (not yet formalized):
+∫(Re pair)² = 4π/x + 8∫L̃₁L̃₂ = 4π/x + 4πx/(x²+b²) = 4π(1/x + x/(x²+b²)) — exactly half
+the normSq deposit 8π(1/x + x/(x²+b²)); the imaginary part carries the other half.  The
+cross-Lorentzian ∫L̃₁L̃₂ = πx/(2(x²+b²)) is reachable from the certified master identity
+`integral_edgeCrossKernel_eq` + `integral_shiftDiffPiece_zero` (same-side pair kills by the
+log-limit FTC piece; NO new Fubini needed for a single pair).
+
+What this OPENS (next generative moves, in order):
+1. **Multi-pair superadditivity**: Re r = Σ_q Re pair_q with every summand pointwise ≥ 0,
+   so ∫(Re r)² ≥ Σ_q ∫(Re pair_q)² + nonneg cross terms.  Each summand ≥ 4π.  A second
+   off-critical pair pushes the floor past 8π WITHOUT the double-series Fubini obstacle —
+   cross terms are dropped, not interchanged.  Target: a certified law
+   "N distinct pairs ⟹ floor N·4π", i.e. the integrated criterion COUNTS the divisor.
+2. **Margin-quantified floor**: x ≤ 1 − m(b) (zero-free margin) gives per-pair floor
+   4π/(1−m(b)) ≥ 4π(1+m(b)) — the integrated law carries the 9-log-power margin as a
+   quantitative excess; connects the edge-L² capacity dial to the B† Legendre-neutrality
+   exponent pairing (9, 1/10).  New dial for the Chart–Region Exchange: what PNT exponent
+   does an integrated-capacity loop demand?
+3. **Sharp Re-part single-pair law**: formalize ∫(Re pair)² = 4π(1/x + x/(x²+b²)) from the
+   certified cross-kernel pieces; near-critical pairs (a → 0) deposit → 8π in the Re part
+   alone — the deposit GRADES the violation distance.
+
+## Step 9j — the divisor-counting and finiteness laws [PROVED HERE]
+
+Same module, next layer (compiles clean, standard axioms, index regenerated):
+- `xiWardPairEdgeQuadMinorant` + nonneg/le/integrable/integral lemmas — per-pair diagonal
+  quadratic minorant with exact mass 4π/x_q.
+- `sum_xiWardPairEdgeQuadMinorant_le_normSq` — superadditive pointwise floor over ANY finite
+  family F: Σ_F minorant ≤ normSq r on the edge.  Mechanism: Σ_F Re pair ≤ Re r (finite
+  subsum ≤ tsum of nonnegatives), Cauchy diagonal Σ a² ≤ (Σ a)² for nonneg a
+  (`Finset.sum_sq_le_sq_sum_of_nonneg`), normSq ≥ re².  Cross terms DROPPED, never
+  interchanged — the double-series Fubini obstacle from the 8π-sharp attempt never enters.
+- `xiWardEdgeQuadEnergy : ENNReal` — the total edge quadratic energy, now a named object.
+- **`card_nsmul_le_xiWardEdgeQuadEnergy`** — ofReal(4π·|F|) ≤ energy for every finite F:
+  the edge L² functional COUNTS strict-right pairs, 4π per pair.
+- **`card_le_of_xiWardEdgeQuadEnergy_le`** — an energy budget c caps every finite family at
+  c/(4π) pairs: a quantitative zero-counting bound from a single integrated inequality.
+- **`finite_xiRightUpperZeroCopy_of_xiWardEdgeQuadEnergy_ne_top`** — finite edge quadratic
+  energy ⟹ the strict-right divisor is FINITE.  Contrapositive: an infinite off-critical
+  divisor forces infinite edge energy.  Together with the closed 4π law: the energy is
+  either 0 (RH) or > 4π (≥ one pair) or ∞ (infinitely many pairs) — the intermediate
+  regime (finite, > 4π) is occupied exactly by ¬RH with a finite nonempty divisor.
+
+What this OPENS: the trichotomy above splits ¬RH into two channels with different
+obstruction profiles.  (i) The infinite-divisor channel is now killed by ANY finite energy
+certificate — no sharp constant needed at all; an upper bound of the form
+∫⁻ normSq r < ∞ suffices against it.  (ii) The finite-divisor channel is where the whole
+4π/8π budget battle lives — and a FINITE divisor is an algebraic object: finitely many
+poles, a rational Ward response, a FINITE-RANK Hankel/Toeplitz defect.  Next generative
+move: attack channel (ii) with the finite-rank structure — for a finite divisor the
+two-quantum witness comparison becomes a finite-dimensional eigenvalue problem (Nehari for
+rational symbols), where the 4-vs-8 threshold may close by linear algebra instead of
+infinite-dimensional operator theory.  Sub-question to card: does the corpus already hold a
+finite-rank Nehari/AAK piece to collide with `finite_xiRightUpperZeroCopy_of_...`?
+
+## Step 9k — margin floors, energy dichotomy, height-window clearing [PROVED HERE]
+
+New leaf module `formal/GaloisForLFunctions/RHTower/XiWardEdgeEnergyMarginWindow.lean`
+(compiles clean, standard axioms, umbrella wired, lint clean, index regenerated).
+rng pick chose this track over finite-rank-nehari / sharp-re-deposit / weil-pairing.
+
+- `margin_floor_le_xiWardEdgeQuadEnergy` — per-pair floor sharpened by the zero-free
+  margin: ofReal(4π/(1 − m(b_q))) ≤ energy (from a ≤ ½ − m(b), denominator antitone).
+- `fourPi_margin_budget_lt_floor` — 4π(1+m) < 4π/(1−m) strictly (the (1−m²)-gap).
+- **`xiWardEdgeQuadEnergy_eq_zero_or_fourPi_lt`** — UNCONDITIONAL dichotomy: the edge
+  quadratic energy is exactly 0 or strictly above 4π; the open interval (0, 4π] is
+  forbidden.  Case split on the divisor type, no RH input.
+- **`height_lt_abs_im_of_xiWardEdgeQuadEnergy_le`** — height-window clearing: an energy
+  certificate ≤ 4π(1 + m(T)) forces every strict-right pair above height T.  The
+  integrated criterion now supports PARTIAL verification: finite budgets clear finite
+  height windows, with the 9-log-power margin as the exchange rate (B† dial: the window
+  grows like exp(c/slack^{1/9}) per unit of budget slack — the Legendre pairing surfaces
+  in the integrated criterion exactly as in the pointwise one).
+
+What this OPENS: the forbidden zone (0, 4π] is a SPECTRAL GAP of the edge functional.
+Three live continuations: (1) formalize ∫(Re pair)² = 4π(1/x + x/(x²+b²)) (sharp
+Re-deposit; near-critical pairs → 8π) so the gap widens to (0, 8π) on the Re-channel;
+(2) the finite-rank channel: `finite_xiRightUpperZeroCopy_of_xiWardEdgeQuadEnergy_ne_top`
++ corpus `FiniteModalHankelRank` (Vandermonde mode-count certificates, found this round)
+— collide the finite-divisor rational response with the Hankel mode-count machinery;
+(3) counting + margin fusion: N pairs below height T force energy ≥ N·4π(1+m(T)) — a
+graded zero-density bound from one integral.
+
+## Step 9l — sharp real-channel deposit and edge equipartition [PROVED HERE]
+
+New module `formal/GaloisForLFunctions/RHTower/XiWardEdgeReChannelDeposit.lean`
+(compiles clean, standard axioms, umbrella wired, index regenerated).  rng pick chose
+sharp-re-deposit over finite-rank-collision / counting-margin-fusion / cross-terms / wild.
+
+- `integrable_sameSideKernelMul` — same-side kernel product has the cross-kernel modulus
+  (conjugation norm identity), hence integrable.
+- **`integral_sameSideKernelMul_zero`** — ∫ (x+i(t+β₁))⁻¹(x+i(t+β₂))⁻¹ dt = 0 for
+  β₁ ≠ β₂: both poles in one half-plane.  Mechanism: constant-difference partial fraction
+  (u₁u₂)⁻¹ = (i(β₂−β₁))⁻¹(u₁⁻¹ − u₂⁻¹); real parts of the difference each carry π and
+  cancel; imaginary parts are the certified shift-difference log-limit piece.  Together
+  with `integral_sq_rightKernel_inv` (β₁ = β₂) the same-side calculus is COMPLETE: every
+  same-side second-order product integrates to zero.
+- **`integral_mul_lorentzianHalves`** — cross-Lorentzian mass 2πx/(4x²+(β₁−β₂)²), one
+  formula for both the confluent (β₁=β₂, = π/(2x)) and separated cases.  All mass flows
+  through the anti-causal/causal pairing (the certified master cross-kernel).
+- **`integral_sq_re_xiAntiCausalWardSchwarzPairResponse_eulerEdge`** — the sharp deposit:
+  ∫(Re pair)² dt = 4π(1/x + x/(x²+b²)) EXACTLY, x = Re λ + ½, b = Im λ.
+- **`integral_sq_re_eq_half_integral_normSq_xiPairEdge`** — EDGE EQUIPARTITION: the real
+  channel carries exactly half the pair's modulus-squared deposit; Re and Im split 50/50.
+
+Reading the sharp formula: 4π(1/x + x/(x²+b²)) ranges over (4π, 8π); → 8π iff x → 1 AND
+b → 0, i.e. iff the zero approaches the EULER POINT s = 1 (not the critical line! a → ½
+means ρ = ½+a+ib → 1+ib, then b → 0).  A near-Euler zero maximizes real-channel edge
+energy; a deep zero near the critical line (a → 0) gives x → ½: deposit → 4π(2 + ...)
+≥ 8π when b² ≤ ... check: x = ½: 4π(2 + (½)/(¼+b²)) > 8π ALWAYS.  Recompute: 1/x = 2 at
+a = 0 — the deposit 4π(1/x + x/(x²+b²)) > 4π·1/x → 8π as a → 0 for ANY b.  So BOTH
+near-critical (a→0) and near-Euler (a→½, b→0) pairs deposit ≈ 8π in the real channel;
+minimum over the strip is strictly above 4π·(1/x) ≥ 4π·1 — worst case a → ½, b → ∞
+gives ↓ 4π.  The Re-channel counting law upgrade is therefore: each pair deposits
+4π(1/x_q + x_q/(x_q²+b_q²)) — graded by position, exceeding the flat 4π everywhere.
+
+What this OPENS: (1) upgrade `card_nsmul_le_xiWardEdgeQuadEnergy` to the GRADED counting
+law Σ_q 4π(1/x_q + x_q/(x_q²+b_q²)) ≤ energy — a Weil-type explicit-formula inequality
+for the edge functional (each zero weighted by its position); (2) the equipartition
+suggests the Im-channel identity ∫(Im pair)² = same value — then the FULL normSq per-pair
+double-counted split may give an 8π-window law on the Re+Im diagonal against SINGLE pairs:
+∫(Re r)² + ∫(Im r)² = ∫normSq r ≥ pair-normSq-deposit > 8π for one pair IF cross-pair
+normSq terms were controllable — they are NOT pointwise, but ∫(Im r)² ≥ ... the Im parts
+are NOT one-signed, so superadditivity fails there; the Re channel remains the honest
+counting channel.  (3) The near-Euler blow-up (deposit → 8π at ρ → 1) is a NEW spectral
+statement: the edge functional weights the Euler point as heavily as the critical line —
+collide this with the Euler-locality kill (step 8): the diagonal chart was divisor-blind,
+but the EDGE functional is Euler-point-sensitive.  The pair (edge functional, diagonal
+chart) sees (Euler point, nothing) — a complementarity worth a fake-proof round.
+
+## Step 9m — graded counting law and the TSUM LAYER, Fubini-free [PROVED HERE]
+
+Appended to `XiWardEdgeReChannelDeposit.lean` (compiles clean, standard axioms, index
+regenerated):
+- `integrable_sq_re_xiAntiCausalWardSchwarzPairResponse_eulerEdge`.
+- `sum_sq_re_xiAntiCausalWardSchwarzPairResponse_le_normSq` — Σ_F (Re pair)² ≤ normSq r
+  pointwise (Cauchy diagonal + Herglotz subsum + normSq ≥ re²).
+- **`sum_sharp_le_xiWardEdgeQuadEnergy`** — graded finite counting law: every finite
+  family deposits Σ_F 4π(1/x_q + x_q/(x_q²+b_q²)) into the energy.
+- **`tsum_sharp_le_xiWardEdgeQuadEnergy`** — THE TSUM LAYER: the FULL series over the
+  entire strict-right divisor Σ′_q ofReal(4π(1/x_q + x_q/(x_q²+b_q²))) ≤ energy.  In
+  ℝ≥0∞ the tsum IS the iSup of finite partial sums, so the layer that blocked the
+  8π-sharp route (double-series Fubini for infinite divisors, step 9f) NEVER APPEARS.
+  The inequality direction costs nothing; only the equality direction needed Fubini.
+
+This is a machine-checked one-sided EXPLICIT FORMULA for the edge functional: a
+Weil-flavored positivity statement pairing the full off-critical divisor (each zero
+weighted by its position-graded deposit 4π(1/x + x/(x²+b²)) ∈ (4π, 8π]) against a single
+integrated capacity.  RH ⟺ both sides vanish (the 4π closed law).  ¬RH ⟹ the left side
+counts every violation with weight > 4π.
+
+What this OPENS: the missing half of the explicit formula is the upper bound
+(energy ≤ tsum of deposits + cross-pair energy) — the cross-pair Re-products
+∫(Re p)(Re p′) are POSITIVE cross-kernel masses 2π-computable pairwise from
+`integral_mul_lorentzianHalves` (four cross-Lorentzians per pair-pair).  The full
+∫(Re r)² would then be the complete double series — the Fubini gate returns ONLY for the
+equality, but now with all terms positive: TONELLI (lintegral_tsum, no integrability
+side-conditions in ℝ≥0∞) may close the equality where Fubini could not.  Next move:
+∫⁻ (Re r)² as an ℝ≥0∞ double series via lintegral_tsum over the countable divisor —
+if it closes, the Re-channel edge energy is EXACTLY the double series
+Σ_{q,q′} 4·2πx̄/(4x̄²+…) and the 8π-window question becomes a pure lattice-sum estimate.
+
+## Step 9n — two-width same-side calculus, general cross-Lorentzian mass [PROVED HERE]
+
+Appended to `XiWardEdgeReChannelDeposit.lean` (compiles clean, standard axioms):
+- `integrable_sameSideKernelMul_general`, **`integral_sameSideKernelMul_general_zero`** —
+  ∫ (x₁+i(t+β₁))⁻¹(x₂+i(t+β₂))⁻¹ dt = 0 whenever (x₁,β₁) ≠ (x₂,β₂) as a complex
+  constant (partial fraction by the constant kernel difference; Re: π−π; Im: certified
+  shift-difference + width-difference odd pieces).  With `integral_sq_rightKernel_inv`
+  the same-side second-order calculus is closed under ALL width/shift combinations.
+- `integral_re_edgeCrossKernel_general` — Re ∫ cross-kernel = 2π(x₁+x₂)/((x₁+x₂)²+(β₁−β₂)²).
+- **`integral_mul_lorentzianHalves_general`** — the general two-width cross-Lorentzian
+  mass π(x₁+x₂)/((x₁+x₂)²+(β₁−β₂)²), one closed formula for all cases (the Lorentzian
+  convolution semigroup law, derived spectrally with zero convolution theory).
+
+This completes the FULL bilinear edge calculus: every product of two Lorentzian halves —
+any widths, any shifts — now has a certified closed-form mass.  Ingredient list for the
+Tonelli lattice sum (Batch B, next): pair-pair Re-deposit = 4-term M-sum, then
+∫⁻(Re r)² = Σ′_{q,q′} (4-term M-sum) via ENNReal Tonelli (lintegral_tsum) — no Fubini
+side conditions.  The Re-channel edge energy becomes an explicit positive lattice sum
+over ordered pairs of strict-right zeros: a complete quadratic explicit formula.
+
+## Step 9o — THE QUADRATIC EXPLICIT FORMULA, real channel [PROVED HERE]
+
+Appended to `XiWardEdgeReChannelDeposit.lean` (1036 lines; compiles clean; standard
+axioms; index regenerated):
+- countability block (private divisor countability + local instances, mass-module pattern).
+- `ennreal_tsum_mul_tsum` — ℝ≥0∞ series product distributes over the product index
+  (tsum_prod' + tsum_mul_left/right; no summability hypotheses).
+- `integrable_mul_re_xiPairs`, **`integral_mul_re_xiPairs`** — the pair-pair Re deposit in
+  closed form: 8π(x+x′)[1/((x+x′)²+(b−b′)²) + 1/((x+x′)²+(b+b′)²)].
+- **`lintegral_sq_re_continuedXiAntiCausalWardResponse_eq_tsum`** — the QUADRATIC EXPLICIT
+  FORMULA: ∫⁻ (Re r(½+it))² dt = Σ′_{(q,q′)} ofReal(8π(x_q+x_{q′})[…]) over ALL ordered
+  pairs of strict-right zeros.  EQUALITY, unconditional.  The pointwise square of the
+  Herglotz tsum expands through `ennreal_tsum_mul_tsum`; Tonelli (`lintegral_tsum`)
+  interchanges with no side conditions.  The Fubini gate that killed the 8π-sharp route
+  is fully bypassed: ℝ≥0∞ Tonelli is the mechanism the CCM literature left unresolved
+  ("infinite source convergence") — in the edge-L² representation it is simply free.
+- `lintegral_sq_re_le_xiWardEdgeQuadEnergy`, `tsum_pairPair_le_xiWardEdgeQuadEnergy` —
+  the lattice sum sits under the full edge energy.
+
+Structural readout: the Re-channel edge energy is a POSITIVE DEFINITE lattice sum — the
+Gram matrix of the family {Re pair_q} in L²(ℝ) with explicit entries
+G(q,q′) = 8π(x+x′)[…] > 0.  RH ⟺ this Gram family is empty.  ¬RH ⟹ the energy is the
+full quadratic form value at the all-ones vector — and every entry is positive, so the
+form value ≥ Σ diagonal = Σ_q 4π(1/x_q + x_q/(x_q²+b_q²)) (recovering 9m) PLUS the
+off-diagonal mass Σ_{q≠q′} G(q,q′) — the first certified quantitative use of cross-pair
+attraction (all deposits reinforce; no screening/cancellation is possible in this channel).
+
+What this OPENS: (1) the Gram-matrix view invites the FINITE-RANK collision (card 9j/9k
+finiteness law + FiniteModalHankelRank): for a finite divisor the energy is a finite
+positive-definite quadratic form with EXPLICIT entries — eigenvalue bounds are linear
+algebra; (2) the diagonal-vs-total comparison G(q,q) vs Σ_{q′} G(q,q′) measures zero
+clustering — a certified route toward zero-repulsion statements (pair correlation from
+the edge functional); (3) same machinery for the Im channel: Im pair is ODD in a sign
+pattern — its lattice sum has SIGNED cross terms (the screening channel) — computing it
+would give the exact normSq lattice sum = Re-sum + Im-sum and the full ∫normSq r as an
+explicit double series, closing the 8π equality question by lattice arithmetic.
+
+## Step 9p — imaginary channel, pairwise equipartition, THE PAIR GRAM MATRIX [PROVED HERE]
+
+New module `formal/GaloisForLFunctions/RHTower/XiWardEdgeImChannelGram.lean` (compiles
+clean, standard axioms, umbrella wired, index regenerated).  rng pick chose
+im-channel-lattice over finite-rank-gram / zero-repulsion / fake-proof-audit / wild.
+
+- `integrable_sq_oddKernel`, `integrable_mul_oddKernels_general` (AM–GM domination).
+- **`integral_mul_oddKernels_general`** — the odd-kernel cross mass EQUALS the Lorentzian
+  one: ∫ O₁O₂ = π(x₁+x₂)/((x₁+x₂)²+(β₁−β₂)²).  Same mechanism: same-side products
+  vanish, all mass through the causal/anti-causal pairing — now for the ODD parts.
+- `im_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq` — Im pair = −2O(b) − 2O(−b).
+- **`integral_mul_im_xiPairs`** — pair-pair imaginary deposit, closed form identical to
+  the real channel.
+- **`integral_mul_im_eq_integral_mul_re_xiPairs`** — PAIRWISE CHANNEL EQUIPARTITION:
+  ∫(Im p)(Im p′) = ∫(Re p)(Re p′) for EVERY ordered pair (q,q′), not only diagonally.
+  The screening channel does not screen: the imaginary parts reinforce exactly as much
+  as the real parts.  (Desk expectation of "signed cross terms" in step 9o was WRONG —
+  the odd-kernel masses are positive too.  Recorded as a self-correction.)
+- **`integral_inner_xiPairs`** — THE PAIR GRAM MATRIX: real L² inner products
+  G(q,q′) = 16π(x+x′)(1/((x+x′)²+(b−b′)²) + 1/((x+x′)²+(b+b′)²)) > 0.
+
+Consequence unlocked: normSq r = (Re r)² + (Im r)² pointwise, both channels have
+IDENTICAL positive lattice sums, so the FULL edge energy satisfies
+xiWardEdgeQuadEnergy = 2·Σ′_{(q,q′)} ofReal(8π(x+x′)[…]) — provided the Im-channel
+Tonelli expansion also holds.  The Re-channel proof (9o) used positivity of Re pair
+pointwise; Im pair is NOT pointwise one-signed, so the ℝ≥0∞ product expansion of
+(Σ Im pair)² needs the signed Cauchy-product route (absolute summability from hsum) —
+this is the ONE remaining lemma between here and the exact identity
+   xiWardEdgeQuadEnergy = Σ′ ofReal(16π(x+x′)[…])  [the FULL quadratic explicit formula].
+With it, the closed 4π law + dichotomy + counting all become statements about an explicit
+positive bilinear lattice form: W_P positivity ⟺ this lattice form has no support.
+
+Next unit: the signed expansion ∫⁻ ofReal((Im r)²) = Σ′ pair-pair Im deposits.  Route:
+(Im r)² = (Σ′ Im pair)² with Σ′ absolutely convergent (Summable.abs from hsum); write
+(Σ′ a)² = Σ′_{prod} a_q a_{q′} in ℝ (Cauchy product, tsum_mul_tsum_of_summable_norm);
+then ofReal + lintegral of the SIGNED double series: split each a_q a_{q′} into positive
+part bound |a_q||a_{q′}|, dominate by the |O|-lattice (all masses computed), use
+dominated convergence / integrable tsum machinery (MeasureTheory.integrable_tsum?) for
+the Bochner-side interchange instead of lintegral_tsum.  The domination budget is finite
+per finite family but the FULL |O|-series needs Σ′ ∫|O_q O_q′|-type bounds — carded as
+the open ingredient: absolute lattice summability ⟺ finite energy (consistent with the
+finiteness law: infinite divisor → infinite energy → nothing to prove there; finite
+divisor → finite sums → interchange trivial by finiteness!).  CASE SPLIT KILLS IT: the
+signed interchange is only needed when the divisor is FINITE (else both sides are ⊤ or
+the law is vacuous) — and for finite divisors tsum = finite sum and every interchange is
+`integral_finsetSum`.  The full quadratic explicit formula may thus be provable by the
+finite/infinite dichotomy WITHOUT any new convergence lemma.  That is the next theorem.
+
+## Step 9q — THE FULL QUADRATIC EXPLICIT FORMULA and RH as lattice arithmetic [PROVED HERE]
+
+Capstone appended to `XiWardEdgeImChannelGram.lean` (646 lines; compiles clean; standard
+axioms propext/Classical.choice/Quot.sound; umbrella wired; index regenerated):
+
+- `xiPairGramTerm (q q′)` = 16π(x+x′)(1/((x+x′)²+(b−b′)²) + 1/((x+x′)²+(b+b′)²)) with
+  nonneg + `eightPi_le_xiPairGramTerm_diag` (every diagonal entry > 8π).
+- **`xiWardEdgeQuadEnergy_eq_tsum_gram`** — the FULL quadratic explicit formula:
+      xiWardEdgeQuadEnergy = Σ′_{(q,q′) ∈ X×X} ofReal(G(q,q′))
+  UNCONDITIONAL EQUALITY.  Proof by the finite/infinite dichotomy: infinite divisor →
+  both sides ⊤ (finiteness law + diagonal 8π-floor + injective diagonal comparison +
+  constant-series divergence); finite divisor → every interchange is `integral_finsetSum`
+  and the pointwise expansion is Finset algebra (`Finset.sum_mul_sum` on re/im parts).
+  NO convergence lemma, NO Fubini, NO Tonelli was needed at the capstone level — the
+  dichotomy killed the last analytic gate, exactly as predicted at 9p.
+- **`riemannHypothesis_iff_tsum_gram_le`** — RH AS LATTICE ARITHMETIC: for any budget
+  0 ≤ c ≤ 4π,
+      RH  ⟺  Σ′_{(q,q′)} ofReal(G(q,q′)) ≤ ofReal(c).
+  Combined with the corpus chain (W_P ⪰ 0 ⟺ RH), Ward positivity is now certified
+  equivalent to a single inequality about an explicit positive lattice sum over ordered
+  pairs of would-be off-critical zeros.  The analytic content is fully discharged; what
+  remains of RH in this representation is: "the Gram lattice of the strict-right divisor
+  cannot fit under 4π" — which holds vacuously iff the divisor is empty, since one
+  diagonal term already spends 8π.
+
+The 9-step edge-L² programme (9i–9q) is complete as a certified reduction stack:
+  W_P ⪰ 0 ⟺ RH ⟺ energy ≤ c (c ≤ 4π, closed) ⟺ Gram lattice sum ≤ c;
+  energy ∈ {0} ∪ (4π, ∞]; energy counts pairs (≥ N·4π, graded, margin-sharpened);
+  finite energy ⟹ finite divisor; per-pair and pair-pair deposits all in closed form;
+  channels equipartition pairwise.
+
+What this OPENS (next generative moves): (1) the lattice form is a POSITIVE-DEFINITE
+kernel on the half-strip 0 < a < ½, b > 0 — study G as a reproducing kernel: which
+measures μ on the strip satisfy ∬ G dμdμ ≤ 4π?  Only μ = 0 among counting measures of
+conjugate-closed divisors — but among ALL positive measures the constraint region is a
+CONVEX BODY; RH says the divisor's counting measure lies in it, i.e. AT ITS UNIQUE
+EXTREME POINT 0.  Attack: show the only atomic measures in the body with atoms ≥ 1 are
+empty — pure convex geometry on an explicit kernel.  (2) Collide with A† Chart–Region
+Exchange: the Gram kernel's diagonal blow-up 8π/x as x→0 is the zero-free-region wall
+in lattice form — feed the B† Legendre pairing through the lattice representation.
+(3) The Hankel/Vandermonde mode-count corpus (FiniteModalHankelRank) applies verbatim to
+the finite-divisor branch: a finite Gram matrix with distinct nodes is NONSINGULAR —
+quantitative lower bounds on its smallest eigenvalue would grade the 8π-floor into a
+spectral gap for the whole family, not just singletons.

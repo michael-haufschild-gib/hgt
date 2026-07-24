@@ -3,7 +3,7 @@
 - **ID:** `projective-hurwitz-one-over-forty-two-phase-transition`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (Lean 4; classical geometric inputs exposed explicitly)
-- **Scientific status:** `[PAPER PROOF COMPLETE; HURWITZ EXISTENCE INPUT NOT YET FORMALIZED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER PROOF COMPLETE] [HURWITZ ARITHMETIC 1/42 GAP FORMALIZED; GEOMETRIC EXISTENCE STILL WITNESSED] [NOVELTY UNVERIFIED]`
 - **Depends on:** `projective-constraint-topological-capacity-phase-law`
 - **Statement:** The least topology density capable of supporting an integral hyperbolic
   projective constraint is exactly `1/42`.  Below that density projective rank is impossible.  At
@@ -175,6 +175,21 @@ arithmetic commensurator, and Kummer-minimality parents are represented without 
 `HurwitzProjectiveSurvivalWitness`; Lean then proves exact `1/42` storage, strict degree/genus
 ordering, unbounded genus, and persistent irreducibility in the combined phase-separation theorem.
 
+`formal/GaloisForLFunctions/HTGeometry/HurwitzTriangleSumBound.lean` now formalizes the **arithmetic
+Hurwitz `1/42` gap** itself — previously an exposed classical input — unconditionally:
+
+- `hurwitz_triple_sum_le (hp : 1 ≤ p) (hpq : p ≤ q) (hqr : q ≤ r) (hsum : 1/p+1/q+1/r < 1) :`
+  `1/p+1/q+1/r ≤ 41/42` — the sharp reciprocal-sum bound for hyperbolic ordered signatures, by
+  finite reduction to `p ∈ {2,3}`, then `q`, then `r` bounded by the hyperbolic hypothesis;
+- `hurwitz_euler_defect_ge : 1/42 ≤ 1 − (1/p+1/q+1/r)` — the equivalent orbifold Euler-defect form,
+  i.e. the gap `ε ≥ 1/42`;
+- `hurwitz_signature_237_sum`, `hurwitz_signature_237_defect` — the `(2,3,7)` equalities
+  `1/2+1/3+1/7 = 41/42` and defect `= 1/42`, so the bound is sharp.
+
+`#print axioms`: `propext`, `Classical.choice`, `Quot.sound` only.  Still an exposed input: the
+geometric correspondence between hyperbolic sphere orbifolds and integer signatures (Riemann--Hurwitz
+and surface existence), which the `HurwitzProjectiveSurvivalWitness` continues to carry.
+
 ## Gates
 
 - [x] universal lower-density theorem proved
@@ -185,3 +200,12 @@ ordering, unbounded genus, and persistent irreducibility in the combined phase-s
 - [x] complete Hurwitz survival implication formalized from explicit classical-input witnesses
 - [ ] broad specialist parent audit
 - [ ] internal construction of triangle groups, covers, and Kummer minimality
+
+## Log
+
+- 2026-07-24 -- Formalized the arithmetic Hurwitz `1/42` gap unconditionally in
+  `GaloisForLFunctions.HTGeometry.HurwitzTriangleSumBound` (`hurwitz_triple_sum_le`,
+  `hurwitz_euler_defect_ge`, and the `(2,3,7)` sharpness witnesses), discharging the reciprocal-sum
+  bound `1/p+1/q+1/r ≤ 41/42` that was previously an exposed classical input. Axioms clean; module
+  builds and is wired into the HTGeometry umbrella. Remaining exposed input: the geometric
+  orbifold-to-signature correspondence carried by `HurwitzProjectiveSurvivalWitness`.

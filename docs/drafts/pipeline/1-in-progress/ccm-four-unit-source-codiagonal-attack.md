@@ -2160,3 +2160,69 @@ two-sided commutator incidence.  Its falsifier is exact: a construction that
 first factors through the one-sided scalar graph is already excluded by
 C42--C44; a construction that merely appends an orthogonal four-unit copy
 still has zero Ward column.
+
+## C48 one-corner factor-two correction `[PROVED AND LEAN-FORMALIZED; INCIDENCE OPEN]`
+
+C47 retained both adjoint cutoff orientations and therefore promoted the
+source target from four to eight.  That promotion is unnecessary.  For the
+self-adjoint Fisher connection `F_sigma` and orthogonal affine cutoff
+`Q_(sigma,u)`, put
+
+```text
+L_(sigma,u)=(1-Q_(sigma,u)) F_sigma Q_(sigma,u).
+```
+
+The general rank-two cutoff law gives the exact finite-parameter identity
+
+```text
+||[Q_(sigma,u),F_sigma]||_HS^2
+  =2 ||L_(sigma,u)||_HS^2.                              (C48.1)
+```
+
+Combining `(C48.1)` with the already-proved two-sided critical profile yields
+the unconditional one-sided law
+
+```text
+E_lower(u)
+ :=lim_(sigma->1+) ||L_(sigma,u)||_HS^2
+ =E_W(u)/2,
+
+0<=E_lower(u)<=4(1-exp(-u)),
+E_lower(u)/u ->4,
+integral_(0,infinity) E_lower(u) du=4.                 (C48.2)
+```
+
+This is formalized in
+`formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherLowerBoundaryBudget.lean`
+and wired into the `RHTower` umbrella.  It is an actual non-diagonal
+operator theorem: `L_(sigma,u)` is the sum of the two rank-one terms already
+given by `pointedFisherConnection_lowerBoundary`.
+
+Consequently C47-NCL is no longer the minimal live conjecture.  The exact
+frontier is the **one-corner incidence**
+
+```text
+completed Gamma/Sonin image of L_(sigma,u)
+  -> Q_u D_Xi                                            (C48.3)
+```
+
+on one source-defined graph core, without increase of Hilbert--Schmidt
+energy.  Its packet column is then `r_P`, and `(C48.2)` gives the original
+four-unit defect
+
+```text
+4 G_P-r_P r_P^*.                                       (C48.4)
+```
+
+The two rank-one summands inside `L_(sigma,u)` must remain joined through
+completion: they are the Fisher-tangent and moving-base connection terms.
+Scalarizing either term first reintroduces the exact
+`1/[2(sigma-1)]` gain of C42.  Adding the adjoint upper corner first merely
+doubles the source and obscures the one-sided target.
+
+The integral identity makes the remaining conjecture rigid.  A contractive
+completed incidence whose output spends four units must be isometric on the
+complete critical coarea field.  Hence Gamma/Sonin/Hardy completion may leave
+no nonzero causal, polar, or denominator-model-space remainder on a set of
+positive cutoff measure.  This equality condition is the immediate hostile
+test for `(C48.3)`.

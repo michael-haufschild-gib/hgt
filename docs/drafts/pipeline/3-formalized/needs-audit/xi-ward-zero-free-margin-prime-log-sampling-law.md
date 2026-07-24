@@ -264,3 +264,27 @@ scale-increment signature lane.  No duplication.
 
 Both lint-clean on standard axioms.  Successor campaign: the two-quantum
 energy law (`xi-ward-moire-prime-pair-attack.md`).
+
+## Addendum 7 — closed-budget 4π integrated edge law (XiWardEdgeL2CrossKernel.lean)
+
+[PROVED HERE] `riemannHypothesis_iff_continuedXiWardEdgeQuadEnergyLaw {c} (hc0 : 0 ≤ c)
+(hc : c ≤ 4*π) : RiemannHypothesis ↔ ContinuedXiWardEdgeQuadEnergyLaw c` — RH is equivalent
+to the single integrated inequality ∫⁻_t ofReal(normSq r(½+it)) dt ≤ ofReal c for ANY fixed
+budget in the CLOSED window [0, 4π].  Supporting certified layers: ∫(x+i(t+β))⁻² dt = 0
+(complex FTC), ∫(x/(x²+(t+β)²))² dt = π/(2x), per-pair lintegral floor ofReal(4π/x) with
+x = Re λ + ½ < 1.  Axioms: propext, Classical.choice, Quot.sound.  Module compiles clean,
+lint clean, umbrella wired.
+
+## Addendum 8 — edge-L² lattice stack (steps 9i–9q), capstone
+
+[PROVED HERE] Modules XiWardEdgeL2CrossKernel.lean, XiWardEdgeEnergyMarginWindow.lean,
+XiWardEdgeReChannelDeposit.lean, XiWardEdgeImChannelGram.lean (all compile clean, all
+results on propext/Classical.choice/Quot.sound, umbrella wired, lint clean).
+Headline theorems: riemannHypothesis_iff_continuedXiWardEdgeQuadEnergyLaw (RH ⟺ edge
+energy ≤ c, any 0 ≤ c ≤ 4π, closed endpoint); xiWardEdgeQuadEnergy_eq_zero_or_fourPi_lt
+(unconditional spectral-gap dichotomy); card_nsmul_le / card_le / finiteness laws
+(energy counts the divisor); height-window clearing (margin-budget certificate clears
+heights ≤ T); sharp per-pair and pair-pair deposits in closed form; pairwise channel
+equipartition; xiWardEdgeQuadEnergy_eq_tsum_gram (the FULL quadratic explicit formula,
+finite/infinite dichotomy, no Fubini); riemannHypothesis_iff_tsum_gram_le (RH as a
+lattice-sum inequality ≤ 4π with every diagonal entry > 8π).

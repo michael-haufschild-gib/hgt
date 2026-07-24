@@ -3,7 +3,7 @@
 - **ID:** `squared-xi-logderivative-three-point-orbit-positivity`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / exact protected chamber for a finite RH-disproof test
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [SIGNIFICANT ROUTE KILL] [NOT FORMALIZED]`
+- **Scientific status:** `[PROVED HERE] [FORMALIZED] [NOVELTY UNAUDITED] [SIGNIFICANT ROUTE KILL]`
 - **Sources:** Riemann's theta-integral representation of `xi`; the genus-zero canonical product
   in the squared centered variable; the critical-strip theorem
 - **Statement:** Let
@@ -147,6 +147,31 @@ diameter-two point set is protected unconditionally by the critical strip and th
 low-height zero-free rectangle. A successful finite-kernel disproof must leave this protected
 geometry or use a higher-order source packet.
 
+## Lean formalization
+
+The exact three-point algebra of Section 3 — the self-contained, unconditional heart of the route
+kill — is formalized in
+`formal/GaloisForLFunctions/RHTower/SquaredXiThreePointOrbitPositivity.lean` (namespace `RHTower`).
+
+- `orbitH t q y = (t + y)/((t + y)² + q)` is the paired-zero response `H_{t,q}(y)`; `orbitP` is the
+  numerator polynomial `P(t,q)` of equation (12); `orbitMatrix t q = !![a,b,c; b,a,b; c,b,a]` with
+  `a = orbitH t q 0, b = orbitH t q 1, c = orbitH t q 4`.
+- `orbitP_pos (ht : 2 < t) (hq0 : 0 ≤ q) (hq : q ≤ t + 1/4) : 0 < orbitP t q` — proved by the exact
+  monotone-in-`q` factorization down to `q = t + 1/4` (all coefficients verified by `ring`), where
+  `64 · P(t, t+1/4)` equals the strictly positive `u = t − 2` expansion of equation (13).
+- `orbitMatrix_posDef (ht : 2 < t) (hq0 : 0 ≤ q) (hq : q ≤ t + 1/4) : Matrix.PosDef (orbitMatrix t q)`
+  — the full positive-definiteness. The orbit matrix is `rfl`-equal to
+  `HilbertMetric.threePointCorrelationMatrix a b b c`, so positive definiteness is discharged by the
+  reusable corpus criterion `HilbertMetric.threePointCorrelationMatrix_posDef_iff` (PosDef ↔ det > 0
+  on the nondegenerate chamber). The determinant is `(a − c)(a(a+c) − 2b²)`; the exact identity
+  `(a(a+c) − 2b²)·Den = 2 P(t,q)` with `Den > 0` reduces its sign to `orbitP_pos`.
+- `orbitMatrix_det_pos … : 0 < (orbitMatrix t q).det` — the headline `det G > 0`.
+
+`#print axioms` on all three: `[propext, Classical.choice, Quot.sound]` only. `formal lint passed`.
+(Sections 1, 2, 4 — the low-height zero-free rectangle, the `(t,q)` chamber conversion from the
+theta integral, and the genus-zero canonical-product assembly that supplies `t > 2, 0 ≤ q ≤ t+1/4`
+— remain paper analysis feeding the formalized algebraic core.)
+
 ## Gates
 
 - [x] Low-height Xi zero-free rectangle proved without zero computation.
@@ -158,9 +183,12 @@ geometry or use a higher-order source packet.
 - [x] Candidate negative determinant refuted strictly.
 - [ ] Independent analytic audit of the theta-integral normalization and canonical-product
   multiplicity bookkeeping.
-- [ ] Lean formalization if this protected-chamber lemma is reused in the next disproof search.
+- [x] Lean formalization of the exact protected-chamber orbit positivity (`RHTower.orbitMatrix_posDef`).
 
 ## Log
 
 - 2026-07-17 -- Proved while replacing an unsourced three-point sign conjecture by an exact orbit
   audit. No numerical zero information or floating-point evaluation was used.
+- 2026-07-24 -- Formalized Section 3 unconditionally in Lean (`RHTower.orbitMatrix_posDef`,
+  `orbitMatrix_det_pos`, `orbitP_pos`), reusing `HilbertMetric.threePointCorrelationMatrix_posDef_iff`
+  for the positive-definiteness step; axioms clean, lint passed; promoted to `3-formalized/needs-audit`.
