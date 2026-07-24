@@ -1881,3 +1881,47 @@ route through the band).  Next: the lobe-split lemma for Re mellin fm(¼ + ic/2)
 positive-lobe integral ≥ explicit (via the kernel lower bound on [1,2] and the
 certified tail machinery) — giving certified critical-line values of ξ at low heights;
 then rectangle argument-principle counting (mathlib winding/argument API to survey).
+
+## Step 9bc — the linear spectral-budget sum rule (probe s = 4) [PLAN → building]
+
+Session redirect: user pointed to the corpus winding stack (WindingNumber/WindingFull/WindingXi/
+ArgumentVariation — full argument principle, Rouché deformation, Backlund phase laws; mathlib has
+NONE of this per survey). While mapping it, found the decisive object instead — a **linear global
+budget** the J5 capacity obstruction said was missing:
+
+**[SUM RULE, to certify]** For z₄ = −(7/2)i (probe s = 4, XiC(z₄) = xi(4) ≠ 0):
+  2·logDeriv XiC z₄ = Σ'_{q:XiZeroCopy} [(pt+z₄)⁻¹ − (pt−z₄)⁻¹]   (difference of full traces;
+  pt⁻¹ cancels per copy — no involution needed for the identity). Taking Im:
+  Σ' P(q) = 2·Re logDeriv xi(4),  P(q) = (7/2−v)/(u²+(7/2−v)²) + (7/2+v)/(u²+(7/2+v)²) > 0
+  per copy (strip |v| ≤ ½), P ≥ 7/(u²+16), u = height. Circularity-free: the plain Hadamard
+  trace of xi carries NO Wiener–Hopf boundary constant (unlike the Ward response).
+
+**Numeric (mpmath-certified plan, exact rationals):** Re logDeriv xi 4 = 7/12 − ½logπ + (1−γ)/2
+− L(Λ,4) ≤ 7/12 − 11/20 + 1/4 − 31/500 = 83/375 [uses existing log_pi_gt_one_point_one,
+one_half_lt_gamma, digamma(2) = 1−γ via Γ(z+1) = zΓ(z) (digamma_add_one NOT in mathlib — derive),
+new vonMangoldt_tsum_four_ge ≥ 62/1000 over {2,3,4,5,8,9} with existing log 2/3/5 bounds].
+True value 0.1534 — slack 0.068.
+
+**Quadruple counting:** all four involutions EXIST (xiZeroCopyReflectEquiv/ConjEquiv/LineConjEquiv,
+XiWeilPolarization + XiHadamardFactorization) with spectral-point laws; P invariant under all four;
+images of a right-upper pair hit the four open quadrants (u>0, v<0 strict) → Fin 4 × Pairs ↪ Copies
+injective → Σ_pairs 4P ≤ budget.
+
+**Cascade (all unconditional):**
+1. HEIGHT FLOOR: every strict-right pair has (Im λ)² ≥ 3922/83 > 47 (λ = centered zero; height
+   ≥ 6.87). Subsumes J-ladder ¾-floor and the conditional unit window; J5 band 1<|λ|<3 CLEARED.
+2. SYMBOL CAP: Re boundarySelfSymbol ≤ (375/3922)·(166/375) = 83/1961 < 0.0424
+   (per-pair 4a/(a²+b²) ≤ 2/b² ≤ κ·4P at b² ≥ 3922/83, κ = 375/3922 — tight at the floor).
+3. ENGINE DISCHARGE: new probe bound ≤ 3 − 11/10 − ½ − 2·(0.4338) + S ≤ 0.5324 + 0.0424 < 3/5
+   → xiWard central window fires UNCONDITIONALLY (new vonMangoldt_tsum_two partial ≥ 0.4338,
+   logs 2/3/5 only). The standing hB-conditional theorem's content is now unconditional.
+
+**Novelty gate:** mechanism = classical B-constant/trace positivity (a literature search yields the
+s-plane analog; the low-height analytic floor is a known-flavor textbook exercise, classically done
+by COMPUTATION beyond ~6.5). Corpus-new as artifacts: computation-free certified off-line height
+floor 6.87, unconditional symbol cap, unconditional central window; and the budget FEEDS the Ward
+engine — the open core moves from "central blindness" to the high-tail b → ∞ only.
+
+**Next generative move after landing:** T-shifted budgets — probe at s = 4 + iT gives per-copy
+positive LOCAL masses near height T with budget Re logDeriv xi(4+iT) (uniformly bounded via the
+certified Λ₀ strip machinery?) → height-uniform floors → attack the tail.

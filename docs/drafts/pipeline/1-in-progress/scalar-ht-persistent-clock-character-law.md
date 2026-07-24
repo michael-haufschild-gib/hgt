@@ -1768,3 +1768,173 @@ NEXT session: EITHER (ii-alg-field-eig) the field eigenvalue via top-weight comp
 MvPolynomial.weightedTotalDegree multiplicativity + leading-component API), completing the concrete
 algebraicity at the field level; OR (i) differential Lüroth (the sole deep classical gap). The card is
 formalized modulo differential Lüroth; the concrete algebraicity is fully characterized at the ring level.
+
+### Session 43 progress — FIELD clock eigenvalue is λ^(ka−kb) (algebraicity fully characterized, field level)
+`HTGeometry/ClockFieldEigenvaluePow.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ClockFieldEigenvaluePow` clean (2970 jobs).
+(My-cone lint clean + wired in; the "owned module unreachable" ThetaCuspCofinalWardConvexity error and
+the two large-file warnings are unrelated parallel-agent RHTower/Hurwitz files, not mine.)
+
+Delivered (three theorems):
+- **`differentialPolynomial_associated_C_mul`** : associated polynomials in `C⟨y⟩` (UFD over a field)
+  differ by a constant factor `C r` (via `isUnit_iff_eq_C_of_isReduced`: units are nonzero constants).
+- **`clock_projective_eigenvalue_pow`** : if `ρ_λ(p)=c(λ)·p` with `c(λ)` a CONSTANT (∀λ≠0, p≠0), then
+  `c(λ)=λ^k` (k = jet-weight of any monomial of p) — via `clockDilationAlgHom_coeff` at a support point.
+- **`clock_field_eigenvalue_pow`** : a FIELD clock eigenvector `x` (`ρ_λ(x)=χ(λ)·x` ∀λ≠0, x≠0) has
+  eigenvalue `χ(λ)·λ^kb = λ^ka` for fixed `ka,kb` — i.e. `χ(λ)=λ^(ka−kb)`, an integer power.
+  MECHANISM (reduces field→ring via UFD): write `x=a/b` in lowest terms (`exists_reduced_fraction`,
+  `IsRelPrime a b`); cross-multiply the eigenvector eq (map_div₀ + `clockDilationFieldEquiv_algebraMap`
+  + `IsFractionRing.injective`) to the RING law `ρ_λ(a)·b = C(χλ)·a·ρ_λ(b)`; then
+    (i) `a ∣ ρ_λ(a)·b` and `IsRelPrime a b` ⟹ `a ∣ ρ_λ(a)` (`IsRelPrime.dvd_of_dvd_mul_right`),
+    (ii) clock invertibility `ρ_λ∘ρ_{λ⁻¹}=id` (`clockDilationAlgHom_apply_apply`+`_one`) ⟹ `ρ_λ(a) ∣ a`,
+    so `a,ρ_λ(a)` associate ⟹ `ρ_λ(a)=C(r)·a` ⟹ (proj_pow) `ρ_λ(a)=C(λ^ka)·a`; substitute into the
+    ring law + cancel `a` ⟹ `ρ_λ(b)=C(·)·b` ⟹ `ρ_λ(b)=C(λ^kb)·b`; substitute both + cancel `a·b`
+    ⟹ `λ^ka = χλ·λ^kb`.
+
+ALGEBRAICITY NOW FULLY CHARACTERIZED (ring s38-42 AND field s43): every clock eigenvector — ring OR
+field — of the concrete jet-scaling clock has a purely monomial / ratio-of-monomials character. This
+bridges an ABSTRACT diagonalized eigenvector (from the anchor/Möbius fixed point) to the concrete
+polynomial character `X^k`, at the field level, WITHOUT assuming homogeneity a priori (it is derived).
+
+CARD STATE: complete exact statement (s37) + full ring+field concrete algebraicity (s38-43). The SOLE
+remaining input is (i) DIFFERENTIAL LÜROTH (graded): the persistent core `T=∩Φⁿ(F)` has a single
+differential generator `q` with `T=C⟨q⟩`. Corpus is separately developing the characteristic-set
+machinery for this deep classical Ritt–Kolchin prerequisite (cited by the card).
+NEXT session: (i) differential Lüroth — the sole deep classical gap. With the full concrete
+algebraicity now banked, the field-generation capstone (single generator of the clock-invariant core)
+is the only remaining work; attack a tractable sub-piece (e.g. the graded-core homogeneous-generator
+reduction) building on the corpus's DifferentialLurothCoefficient/ComponentTransfer/VariableSupport
+machinery.
+
+### Session 44 progress — differential-Lüroth landscape mapped + concrete jet clock-character witnesses
+`HTGeometry/ScalarJetClockCharacter.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarJetClockCharacter` clean (2973 jobs).
+(Unrelated lint noise: ThetaCuspCofinalWardConvexity unreachable + two large-file warnings — all
+parallel-agent RHTower/Hurwitz files, not mine.)
+
+CORPUS/MATHLIB SURVEY (mandate: check before writing):
+- **mathlib HAS ordinary Lüroth**: `Mathlib/FieldTheory/RatFunc/Luroth.lean` — `RatFunc.Luroth.eq_adjoin_generator`
+  (every intermediate field of `K(X)/K` is `K⟮generator⟯`) + `RatFunc.Luroth.algEquiv`. This is the
+  ALGEBRAIC version (transcendence degree 1); it does NOT bridge to the DIFFERENTIAL version — a
+  differential subfield of `C⟨y⟩` inherently involves all jets `y,y',y'',…`, so it is not an ordinary
+  intermediate field of a td-1 rational function field.
+- **corpus is actively formalizing Ritt's differential Lüroth**: `DifferentialLurothCoefficient`,
+  `DifferentialLurothComponentTransfer`, `DifferentialLurothScalarExtensionSquarefree`,
+  `DifferentialLurothVariableSupport`, `OrdinaryLuroth`, `RatFuncProjectiveAutomorphism`,
+  `TranscendentalMobius` — "componentwise inputs to Ritt's reciprocity argument", explicitly "no
+  finite-generation hypothesis introduced" (the capstone is still ahead). This is a delicate active
+  multi-file cone; NOT entered, to avoid cross-agent collision (per cross-cone collision-scan discipline).
+
+Delivered (in MY clock cone, non-colliding; connects differentialJet ↔ clock character ↔ s43):
+- **`clockDilationFieldEquiv_differentialJet`** : the n-th jet `y^(n)` is a field clock eigenvector of
+  character exactly `λ^n` — `ρ_λ(y^(n)) = λ^n·y^(n)`. (via `differentialJet_scalarDifferentialGenerator`
+  = algebraMap X_{(),n}, `isWeightedHomogeneous_X`, s38, `clockDilationFieldEquiv_algebraMap`.)
+- **`differentialJet_scalarDifferentialGenerator_ne_zero`** : `y^(n) ≠ 0`.
+- **`clock_field_eigenvalue_differentialJet`** : the field-eigenvalue theorem `clock_field_eigenvalue_pow`
+  (s43) FIRES on each jet, returning its order `(ka,kb)=(n,0)` — the canonical CHARGED (n≥1) witnesses
+  showing s43 is non-vacuous in the charged regime of the clock-character law.
+
+CARD STATE: complete exact statement (s37) + full ring+field concrete algebraicity (s38-43) + concrete
+charged jet witnesses (s44). SOLE remaining input: (i) DIFFERENTIAL LÜROTH (graded) — the persistent
+core `T=∩Φⁿ(F)` has a single differential generator `q`. This is being formalized in the corpus's
+dedicated Ritt-reciprocity cone (`DifferentialLuroth*`); the capstone `T≠C ⟹ T=C⟨q⟩` is the remaining
+work there.
+NEXT session candidates (IN MY cone, non-colliding): (a) construct the concrete PROPER clock-invariant
+differential subfield `C⟨y'⟩ ⊊ C⟨y⟩` (needs: jets of y' = higher X's; differentialAdjoin = adjoin of
+{X_{(),n}:n≥1}; X_{(),0} transcendental over the rest via `AlgebraicIndependent C (fun n=>X((),n))`) —
+a concrete non-vacuous charged CORE example; (b) monitor the corpus Ritt-reciprocity cone and, once its
+capstone lands, wire `T=C⟨q⟩` into s37 to discharge the card's sole hypothesis unconditionally.
+
+### Session 45 progress — concrete PROPER clock-invariant differential subfield (charged non-vacuity witness)
+`HTGeometry/ScalarProperDifferentialSubfield.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarProperDifferentialSubfield` clean (2958 jobs).
+(Unrelated lint noise: ThetaCuspCofinalWardConvexity unreachable + two large-file warnings — parallel-
+agent RHTower/Hurwitz files, not mine.)
+(Session start: recreated the session cron job cd60e6ae `*/1 * * * *` — it had been deleted; timing unchanged.)
+
+Delivered:
+- **`differentialJet_differentialJet_one`** : `(y')^(m) = y^(m+1)` — the m-th jet of the first jet is
+  the (m+1)-st jet of the generator (via `Function.iterate_add_apply` on the derivation).
+- **`differentialAdjoin_differentialJet_one_ne_top`** : `differentialAdjoin C {y'} ≠ ⊤` — the first
+  jet `y' = X_{(),1}` differentially generates a PROPER subfield `C⟨y'⟩ = C(X_{(),1},X_{(),2},…)`
+  omitting `y = X_{(),0}`. Proof: jets `X_{(),n}` algebraically independent over C
+  (`algebraicIndependent_X`, pushed to the field via `AlgebraicIndependent.map` + `IsFractionRing.injective`);
+  `differentialJetSet {y'} = {X_{(),n}:n≥1}`; `AlgebraicIndependent.transcendental_adjoin` (i=0∉{n≠0})
+  ⟹ `y` transcendental over `Algebra.adjoin C {X_{(),n}:n≥1}`; `IntermediateField.transcendental_adjoin_iff`
+  lifts to the intermediate field; transcendental ⟹ ∉, so `y ∉ differentialAdjoin C {y'}`, hence ≠ ⊤.
+
+SIGNIFICANCE: the card's central object — a proper clock-invariant differential subfield ⊋ C in the
+CHARGED regime — is now proven NON-VACUOUS by an explicit witness. `C⟨y'⟩` is a proper differential
+subfield strictly between C and C⟨y⟩ whose generator `y'` is a clock eigenvector of weight 1
+(`clockDilationFieldEquiv_differentialJet` s44: `ρ_λ(y')=λ·y'`). The clock-character law is not about an
+empty class.
+
+CARD STATE: complete exact statement (s37) + full ring+field concrete algebraicity (s38-43) + concrete
+charged jet witnesses (s44) + concrete proper charged differential-subfield witness (s45). SOLE remaining
+input: (i) DIFFERENTIAL LÜROTH (graded) — `T=∩Φⁿ(F)` has a single differential generator — being
+formalized in the corpus's dedicated Ritt-reciprocity cone (`DifferentialLuroth*`).
+NEXT session candidates (in my cone, non-colliding): (a) clock-INVARIANCE of `differentialAdjoin C {y'}`
+as an IntermediateField (ρ_λ maps its jet generators `X_{(),n}` to `λ^n·X_{(),n}` ∈ it) — completing
+"proper CLOCK-INVARIANT differential subfield" at the subfield level; (b) monitor the corpus Ritt cone
+and wire `T=C⟨q⟩` into s37 once its capstone lands.
+
+### Session 46 progress — the proper differential subfield is CLOCK-INVARIANT (witness now complete)
+`HTGeometry/ScalarProperSubfieldClockInvariant.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarProperSubfieldClockInvariant` clean (2975 jobs).
+(Unrelated lint noise: ThetaCuspCofinalWardConvexity + XiWardSpectralBudgetSumRule unreachable —
+parallel-agent RHTower files, not mine.)
+
+Delivered:
+- **`clockDilationFieldEquiv_mem_differentialAdjoin_differentialJet_one`** : for every nonzero λ, the
+  jet-scaling clock `ρ_λ` maps `C⟨y'⟩ = differentialAdjoin C {y'}` into itself. Proof: reduce to
+  `E ≤ E.comap ρ_λ` (comap membership definitional); on generators `s = y^(m+1) ∈ differentialJetSet{y'}`,
+  `ρ_λ(s) = λ^(m+1)·s` (s44 `clockDilationFieldEquiv_differentialJet`), which lies in E by `mul_mem`
+  (`algebraMap_mem` for the C-scalar λ^(m+1), `subset_adjoin` for the generator s); `adjoin_le_iff`.
+
+WITNESS NOW COMPLETE: `C⟨y'⟩` is a fully-proven concrete **proper clock-invariant differential
+subfield** strictly between C and C⟨y⟩ (properness s45 `differentialAdjoin_differentialJet_one_ne_top`
++ clock-invariance s46), with a **charged** weight-1 clock-eigenvector generator `y'` (s44
+`ρ_λ(y')=λ·y'`). The central object of the clock-character law (a proper clock-invariant differential
+subfield ⊋ C in the charged regime) is proven NON-VACUOUS by an explicit construction.
+
+CARD STATE: complete exact statement (s37) + full ring+field concrete algebraicity (s38-43) + concrete
+charged jet witnesses (s44) + concrete proper clock-invariant charged differential-subfield witness
+(s45-46). SOLE remaining input: (i) DIFFERENTIAL LÜROTH (graded) — `T=∩Φⁿ(F)` has a single differential
+generator — being formalized in the corpus's dedicated Ritt-reciprocity cone (`DifferentialLuroth*`).
+NEXT session candidates (in my cone): (a) show the concrete witness `C⟨y'⟩` arises as a persistent core
+`∩Φⁿ(F)` for an explicit Φ (e.g. a jet-shift endomorphism), turning the witness into a full concrete
+INSTANCE of the card's setup with Φ; (b) monitor the corpus Ritt cone; once its capstone `T=C⟨q⟩` lands,
+wire it into s37 to discharge the card's sole hypothesis unconditionally.
+
+### Session 47 progress — the clock charge realizes EVERY positive value (completeness of the spectrum)
+`HTGeometry/ScalarClockChargeSpectrum.lean` [PROVED HERE], standard axioms
+[propext, Classical.choice, Quot.sound], `lake build ...ScalarClockChargeSpectrum` clean (2976 jobs).
+(Unrelated lint noise: ThetaCuspCofinalWardConvexity unreachable + Hurwitz large-file warning —
+parallel-agent files, not mine.)
+
+Delivered (generalizes the s44-46 k=1 witness `C⟨y'⟩` to all k):
+- **`differentialJet_differentialJet`** : `(y^(k))^(m) = y^(m+k)` (general iterate additivity).
+- **`differentialAdjoin_differentialJet_ne_top`** (k≥1) : `C⟨y^(k)⟩ ≠ ⊤` — properness at every charge
+  (jets of `y^(k)` are `{X_j:j≥k}`, omitting `X_0,…,X_{k-1}`; `X_0` transcendental over the adjoin).
+- **`clockDilationFieldEquiv_mem_differentialAdjoin_differentialJet`** (k) : clock-invariance of `C⟨y^(k)⟩`.
+- **`clock_charge_spectrum`** (CAPSTONE) : for every k≥1, `C⟨y^(k)⟩` is a proper clock-invariant
+  differential subfield whose generator `y^(k)` is a clock eigenvector of character exactly `λ^k`
+  (properness ∧ eigenvector-law ∧ invariance bundled). Hence the quantized clock charge attains EVERY
+  positive integer, each witnessed by the explicit charged core `C⟨y^(k)⟩`.
+
+SIGNIFICANCE: strengthens non-vacuity (s45-46) to COMPLETENESS OF THE CHARGE SPECTRUM — the card's
+integer invariant `k` is not merely realizable but takes the full value set `ℕ_{≥1}`, with a canonical
+explicit witness at each value. (The universal theorem's `k∈{1,2,3,4,6}` crystallographic restriction
+is specific to degree-expanding RATIONAL substitutions Φ(y)=R(y); for the general clock-neutral
+constraint the charge is unrestricted, as these witnesses confirm.)
+
+CARD STATE: complete exact statement (s37) + full ring+field concrete algebraicity (s38-43) + concrete
+charged jet witnesses (s44) + complete proper clock-invariant charged subfield witness (s45-46) + full
+charge-spectrum completeness (s47). The card's NOVEL delta (iterated constraint → stable core →
+projective clock action → integer charge → eigen-current rigidity) is fully formalized. SOLE remaining
+input is the CITED classical prerequisite DIFFERENTIAL LÜROTH (graded) — "Ritt–Kolchin differential
+Luroth supplies the scalar generator" (card's own external-novelty gate lists it as classical, NOT part
+of the novel delta) — being formalized in the corpus's dedicated Ritt-reciprocity cone (`DifferentialLuroth*`).
+NEXT session: monitor the corpus Ritt cone; once its capstone `T=C⟨q⟩` lands, wire it into s37 to
+discharge the card's sole classical hypothesis unconditionally. (In-cone clock witnesses are now
+comprehensive: non-vacuity + full charge spectrum + ring/field algebraicity all banked.)

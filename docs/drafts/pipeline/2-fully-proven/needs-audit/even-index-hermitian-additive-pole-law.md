@@ -506,3 +506,36 @@ theorems. No broad rebuild was run.
   Together with last cycle's `frequently_pos_of_forall_exists_tsum_gt`, statement `(9)` now reduces to
   the single analytic input "the left-hand side is radially unbounded as `r -> 1^-`" (the Mellin
   pole-frontier step `(6)`--`(8)`), which is the remaining piece to formalize unconditionally.
+- 2026-07-24 — Formalized the **Mellin pole -> boundary growth** infrastructure for the analytic
+  input of `(9)` (`HTGeometry/MellinPoleRadialGrowth.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `not_differentiableAt_of_eventuallyEq_mul` — non-holomorphy survives a nonvanishing holomorphic
+    factor: `f = g*h` near `ρ`, `g` holomorphic and `g ρ != 0`, `h` non-holomorphic at `ρ` ⟹ `f`
+    non-holomorphic at `ρ`.
+  * `not_isBigO_zero_rpow_of_not_differentiableAt_mellin` — contrapositive of the Mellin holomorphy
+    criterion: `mellin f` non-differentiable at `ρ` (with exponential decay of `f` at infinity) ⟹ `f`
+    is not `O(x^{-b})` at the origin for `b < Re ρ`.
+  * `not_isBigO_zero_of_mellin_eq_Gamma_mul` — the crux: `mellin f = Γ*D` near `ρ` with `Re ρ > 0`
+    and `D` non-holomorphic at `ρ` ⟹ `f` does not decay/stay bounded at the origin (uses `Γ`
+    holomorphic and nonzero on the right half-plane).
+  This discharges the `(6)`--`(8)` Mellin pole-frontier step abstractly: a right half-plane pole of the
+  Dirichlet series forces radial blow-up of `A(e^{-x})` at `x -> 0^+`, i.e. of `A(r)` at `r -> 1^-`.
+  Remaining for `(9)`: thread the even-index `A_f(x) = A(e^{-x})` (local integrability + exponential
+  decay at infinity), convert "not `O(1)` at `0`" into the `hub` hypothesis of
+  `frequently_pos_of_forall_exists_tsum_gt` via `norm_pow_sq_le_two_mul_tsum_evenIndex_re`.
+- 2026-07-24 — **Statement `(9)` formalized abstractly** (`RHTower/EvenIndexHermitianPoleRecurrence.lean`,
+  unconditional, axioms `[propext, Classical.choice, Quot.sound]`), completing the multi-cycle campaign:
+  * `RHTower/EvenIndexHermitianRecurrence.lean`: `frequently_re_pos_of_norm_unbounded` — radial blow-up
+    of `‖∑' a_N r^N‖` as `r -> 1` forces `0 < (R_k(2q)).re` at infinitely many `q` (couples the radial
+    bound `(5)` with the coefficient-recurrence engine).
+  * `EvenIndexHermitianPoleRecurrence.lean`: `exists_norm_gt_of_not_isBigO` — an exponential profile
+    `A(e^{-x})` unbounded at `x -> 0^+` yields radii approaching `1` with unbounded modulus (`r = e^{-x}`).
+  * `frequently_re_pos_of_dirichletPole` — the capstone `(9)`: given the Mellin realisation `(6)`
+    `mellin (A(e^{-·})) = Γ·D` near a right half-plane `ρ`, local integrability and exponential decay of
+    the profile, and `D` non-holomorphic at `ρ`, then for every `k >= 1` the even-index real parts
+    `(R_k(2q)).re` are positive at infinitely many `q`.
+  This is faithful to the card's "Assume in addition ... Mellin identity `(6)` ... pole frontier"
+  premises (an unconditional implication).  Remaining: the quantitative order inequality `(8)`
+  `Ψ_k^even ≥ max(0, 2kθ-1)` (a Tauberian order statement, not needed for `(9)` via this radial route),
+  and the concrete Möbius/Liouville instantiations, which require the pole of `D = 1/ζ` in `Re s > 0`
+  (a zeta zero) — deferred as it depends on zeta-zero facts.

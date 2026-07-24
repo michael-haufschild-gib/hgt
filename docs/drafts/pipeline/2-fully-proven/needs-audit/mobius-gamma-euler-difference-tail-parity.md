@@ -200,3 +200,20 @@ claim is made.
 
 - 2026-07-22 — primewise diagonal-dominance attack initiated and killed; Gamma--Euler tail-parity
   survivor proved without computation; exact eigenmode core added to Lean.
+
+## Log
+
+- 2026-07-24 — Formalized **Theorem 2's general-`k` iterated tail-parity** (eq (4)), generalizing the
+  corpus's `k = 1, 2` cases (`RHTower/GammaEulerIteratedTailParity.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `gammaEulerIteratedNextCoefficient` — the next Gamma-tail coefficient after `k` commuting Euler
+    differences: `-r * 2^r * ∏_j d_{r,h_j}(r/2+1)`.
+  * `gammaEulerIteratedNextCoefficient_sign` — `0 < (-1)^(k+1) * (next coefficient)` for positive
+    scales: odd `k` ⟹ eventually positive correlation tail, even `k` ⟹ eventually negative (the
+    two-channel sign reversal is the `k = 2` instance).
+  * `gammaEulerIteratedNextCoefficient_eq` — the exact cosh-bracket product form of eq (4);
+    `gammaEulerIteratedNextCoefficient_two` — specialisation to the corpus two-channel coefficient.
+  This upgrades the `[ALGEBRAIC CORE LEAN-PROVED]` status: the full iterated tail-parity sign law (the
+  no-go mechanism for prime-by-prime Gamma energy contraction) is now formalized for every `k`.  The
+  continuous Theorem 1 (`D_{r,h} φ_r > 0`, the `sech^r` convexity inequality) remains as the analytic
+  companion.

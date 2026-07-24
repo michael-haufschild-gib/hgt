@@ -267,3 +267,33 @@ paper-level.  No duplicate Lean wrapper is warranted.
   binary endpoint positive recurrence; audited closest 2015, 2025, and 2026 literature.
 - 2026-07-22 -- superseded as publication headline by `PARITY-RAW-001`, which proves the same
   lower edge and recurrence on even output indices and contains a dyadic Gram refinement.
+
+## Log
+
+- 2026-07-24 — Formalization audit + capstone. The convolution-power norm bounds underlying the `(R3)`
+  upper bound `Ψ_{χ,k} ≤ 2k-1` are already in the corpus (`RHTower/MobiusMertensEvenConvolutionOrderLaw.lean`:
+  `additiveConvolutionPower_one`, `norm_additiveConvolutionPower_succ_le`; and the one-sided order
+  comparisons `norm_pow_even_mobiusDiscreteLaplaceTransform_le_of_evenConvolutionUpper` /
+  `...SubpowerUpperBound`).  Formalized the reusable analytic **capstone** for the `Ψ ≤ d` order shape
+  (`HTGeometry/LogOrderLimsupBound.lean`, unconditional, axioms `[propext, Classical.choice, Quot.sound]`):
+  * `limsup_log_one_add_div_log_le` — for `0 ≤ f N ≤ C·(N+1)^d`,
+    `limsup_N log(1 + f N)/log(N+1) ≤ d`.
+  With `f N = max(R_{χ,k}(N), 0)` bounded by the binomial term count `~ N^{2k-1}` (via the existing norm
+  bounds), this yields the `(R3)` upper bound `Ψ_{χ,k} ≤ 2k-1`.  The lower bound `2kΘ_χ - 1 ≤ Ψ` and the
+  positivity `(R4)` remain the analytic/`L`-zero direction (the abstract `(9)` route is formalized in
+  `even-index-hermitian-additive-pole-law` via `frequently_re_pos_of_dirichletPole`; the concrete claim
+  needs a pole of `1/L(s,χ)` in `Re s > 0`, i.e. an `L`-function zero).
+- 2026-07-24 — **`(R3)` upper bound `Ψ_{χ,k} ≤ 2k-1` formalized** abstractly
+  (`RHTower/EvenIndexHermitianOrderUpperBound.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`), for any unit-bounded coefficient sequence
+  (`∀ n, ‖a n‖ ≤ 1`):
+  * `norm_additiveConvolutionPower_succ_le_pow` — `‖C_{j+1}(N)‖ ≤ (N+1)^j` (the corpus convolution
+    estimate at `A = 1`, `α = 0`).
+  * `norm_mixedAdditiveConvolutionPower_le_pow` — `‖R_{j+1}(N)‖ ≤ (N+1)^{2j+1}` (antidiagonal sum of
+    the leg bounds; the composition count).
+  * `limsup_log_mixedAdditiveConvolutionPower_re_le` —
+    `limsup_N log(1 + max(Re R_{j+1}(N), 0))/log(N+1) ≤ 2j+1`, i.e. `Ψ_{χ,j+1} ≤ 2(j+1)-1`, via the
+    log-order limsup capstone `HTGeometry.limsup_log_one_add_div_log_le`.
+  The lower bound `2kΘ_χ - 1 ≤ Ψ` and the positivity `(R4)` remain the analytic `L`-zero direction
+  (the abstract `(9)`/`(R4)` route is formalized in `even-index-hermitian-additive-pole-law` via
+  `frequently_re_pos_of_dirichletPole`; the concrete claim needs a pole of `1/L(s,χ)` in `Re s > 0`).
