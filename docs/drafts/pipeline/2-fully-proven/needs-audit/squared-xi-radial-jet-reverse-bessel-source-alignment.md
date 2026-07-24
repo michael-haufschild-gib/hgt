@@ -234,3 +234,13 @@ the analytic radial-derivative identity (4)/(5), which requires the differentiab
   **Remaining for (4)/(5):** the induction on `n` assembling this single-term derivative over the
   `Finset.range (n+1)` sum with the `squaredRadialJetWeight` recurrence and the `/(2^n w^(2n+1))`
   radial scale (the `[OPEN CORE]` `Q_14(w) < 0` and the RH-wiring gates remain non-Lean/RH-level).
+- 2026-07-24 — **Radial-jet-sum derivative infrastructure** (toward identity (4)), added to
+  `RHTower/SquaredXiRadialJetIdentity.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `hasDerivAt_pow_mul_iteratedDeriv_shift` — `HasDerivAt` form of equation (6) core.
+  * `jetSum L c N` — the abstract-coefficient radial jet sum `∑_{j≤N} c j·w^j·L^(j)(1/2+w)`.
+  * `hasDerivAt_jetSum` — its derivative is the coefficientwise single-term derivative
+    `∑_{j≤N} c j·(j·w^(j-1)·L^(j)(1/2+w) + w^j·L^(j+1)(1/2+w))` (via `HasDerivAt.sum` + the step lemma,
+    bridged to the `fun v => ∑ …` form through `Finset.sum_apply`).
+  **Remaining for (4)/(5):** the combinatorial recurrence `w·jetSum'_n − (2n+1)·jetSum_n = jetSum_{n+1}`
+  (specializing `c j = (-1)^(n-j)·squaredRadialJetWeight n j`, reindexing the shifted sum, and applying
+  the `squaredRadialJetWeight` recurrence), then the `D^n F = jetSum_n / (2^n w^(2n+1))` induction.

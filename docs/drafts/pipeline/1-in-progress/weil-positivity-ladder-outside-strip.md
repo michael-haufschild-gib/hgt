@@ -358,3 +358,41 @@ both concrete: (i) the Gram's prime weight `W_n(c)` is determined by the kernel 
 strip, whereas 3-4-1 needs three points on ONE horizontal line. Reconciling those is the next
 question; a negative answer would be a genuine no-go about this Gram and would send the card to the
 failed lane with the exact obstruction.
+
+## Rung 1 — interrogation of the 3-4-1 plan [NO-GO, with salvage]
+
+Worked the compatibility question on paper. Result: **the 3-4-1 configuration CAN be realised in the
+Gram, and that does not help.**
+
+**Realisability (positive).** Writing the Gram's `L`-dependence by collecting coefficients,
+  `Q(c) = |Σc|²·M₁ − Σ_i α_i L(z_i) + Σ_j β_j L(conj z_j)`,
+and using Schwarz reality `L(conj z) = conj(L(z))` (corpus `logDeriv_XiC_conj`) to fold the
+above-strip points back to the below-strip ones, the prime part of `Re Q` is
+  `Σ_n Λ(n)·W_n`,  `W_n = Σ_i n^{−σ_i}(Im γ_i·cos(τ_i log n) − Re γ_i·sin(τ_i log n))`,
+with `γ_i = α_i − conj(β_i)` and `s_i = σ_i + iτ_i`. So the two obstructions feared earlier both
+dissolve: the opposite-side coupling is only a conjugation, and the `(3,4,1)` pattern is achievable
+by solving `Im γ = (3,4,1)λ`, `Re γ₂ = Re γ₃ = 0` — four real constraints against six free real
+coefficients plus the base points.
+
+**Why it does not close (the exact why).** The criterion demands positivity for EVERY finite
+configuration. Making the prime side nonnegative for a SPECIAL family proves positivity only for
+that family. The hard configurations are exactly those whose prime weight is negative and must be
+dominated — 3-4-1 says nothing about them. Classically this is the same fact: 3-4-1 yields a
+zero-free REGION, never RH.
+
+**[NO-GO]** `three_four_one_vonMangoldt` cannot close rung 1 by itself, for a reason that is not a
+gap in execution: special-configuration positivity is strictly weaker than all-configuration
+positivity, and the gap between them is the whole problem.
+
+**Positive salvage (non-trivial).** The criterion used CONTRAPOSITIVELY is exactly a zero-free
+region generator: a zero forces some configuration negative (rung 0), while 3-4-1 forces certain
+configurations nonnegative; a zero therefore cannot sit where those configurations detect. This
+recovers de la Vallée Poussin-type regions from the Gram, and — unlike the classical derivation — it
+does so from a criterion that is EQUIVALENT to RH, so the quality of the region is limited only by
+how large a family 3-4-1 can certify. That is a well-posed quantitative question and the natural
+rung-1′.
+
+**Representation lesson.** Every route that injects `Λ(n) ≥ 0` through a FIXED trigonometric
+identity buys positivity on a fixed family. To reach all families the sign must come from a
+mechanism that adapts to the configuration — i.e. from the archimedean side dominating uniformly,
+which is Weil positivity itself. Recording so the 3-4-1 family is not re-attempted at higher rungs.
