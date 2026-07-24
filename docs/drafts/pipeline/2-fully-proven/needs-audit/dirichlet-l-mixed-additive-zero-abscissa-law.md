@@ -303,7 +303,8 @@ on the truth of GRH unless an unconditional source bound is later proved.
 - [x] initial external collision search
 - [ ] specialist priority review
 - [x] formalize generic mixed complex Abel law
-- [ ] connect the zeta specialization to the existing all-even-order Lean module
+- [x] connect the zeta specialization to the existing all-even-order Lean module
+  (`mixedAdditiveConvolutionPower_eq_additiveConvolutionPower_two_mul_of_real`)
 - [ ] prove the GRH-value source unconditionally
 - [ ] Dirichlet GRH
 - [ ] RH
@@ -359,3 +360,22 @@ identity `(D3)` remain paper-level.
   cleared the closest Everlove and Misra--Saha--Sharma collisions, and completed hostile audit.
 - 2026-07-22 -- formalized generic complex Hermitian mixed-convolution coefficients, realness,
   summability, and exact Abel evaluation; direct Lean check and axiom audit pass.
+
+- 2026-07-24 — **Zeta-specialization connector formalized** (gate `connect the zeta specialization to
+  the existing all-even-order Lean module`), in
+  `RHTower/DirichletLMixedAdditiveZeroAbscissaLaw.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `additiveConvolutionPower_eq_coeff_pow` — the `k`-fold additive convolution power is the `N`-th
+    coefficient of `(∑ a(n) Xⁿ)^k` (generating-power-series identification).
+  * `additiveConvolutionPower_add` — the convolution **semigroup law**
+    `conv_{m+n}(N) = ∑_{ab} conv_m(ab.1)·conv_n(ab.2)`, immediate from `pow_add` and the power-series
+    coefficient product (reusable infrastructure for the whole even-order framework).
+  * `mixedAdditiveConvolutionPower_eq_additiveConvolutionPower_two_mul_of_real` — for a **real**
+    reciprocal-coefficient sequence (the conductor-one/zeta case, `(a N).im = 0`), the Hermitian
+    mixed `2k`-convolution equals the plain `2k`-fold even additive convolution
+    `additiveConvolutionPower a (2*k)`.  This is the exact zeta specialization: the complex Dirichlet
+    mixed law of this module coincides with the real all-even-order law of
+    `MobiusMertensEvenConvolutionOrderLaw` on real sequences (via
+    `additiveConvolutionPower_im_eq_zero` and the semigroup law).
+  Remaining gates are non-formalizable or GRH-level (`prove the GRH-value source unconditionally`,
+  `Dirichlet GRH`, `RH`) plus the non-Lean specialist priority review.

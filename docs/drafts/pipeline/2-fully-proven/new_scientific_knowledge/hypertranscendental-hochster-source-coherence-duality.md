@@ -370,3 +370,29 @@ REMAINING for card completion (deep, largely in the algebraic/KoszulCohomology c
 Koszul-strand ↔ reduced-cochain chain equivalence in all degrees + the algebraic-side exact-rank
 (spanning) match — the full Hochster isomorphism. Degree-1 combinatorial side (reduced H̃¹ = first Betti,
 needs edge orientation) is the next non-colliding combinatorial extension if continued.
+
+### Lean progress 5 — coboundary rank = |V| − components
+`HTGeometry/GraphCoboundaryRank.lean` [PROVED HERE], standard axioms, builds clean, my-cone lint clean.
+- `finrank_graphCoboundary_range` : `rank δ⁰ = |V| − (number of components)` (cut-space dimension), via
+  rank–nullity + `graphCoboundary_ker` + `finrank_componentConstant`;
+- `finrank_graphCoboundary_range_of_connected` : connected ⟹ `rank δ⁰ = |V| − 1` (spanning-tree edge count).
+This is the coboundary-rank input to reduced `H̃¹ = |E| − rank δ⁰ = |E| − |V| + components` (first Betti).
+NEXT combinatorial: define `C¹` (oriented edge cochains, dim `|E|`) and `H̃¹` as `C¹/range δ⁰`; then the
+deep card capstone remains the algebraic Koszul-strand ↔ reduced-cochain equivalence (KoszulCohomology cone).
+
+### Lean progress 6 — reduced H̃¹ = first Betti number (combinatorial side COMPLETE for graphs)
+`HTGeometry/ReducedH1FirstBetti.lean` [PROVED HERE], standard axioms, builds clean, my-cone lint clean.
+- `orientedEdges G` (adjacent pairs `u<v` via a `LinearOrder V`), `orientedCoboundary` (degree-1
+  coboundary `(δ⁰ f)(u,v)=f v−f u`), `orientedCoboundary_ker = componentConstant`;
+- `finrank_orientedCoboundary_range = |V| − components`;
+- `finrank_reducedH1` : **reduced `H̃¹ = (oriented edges → F)/im δ⁰` has dimension
+  `|E| − (|V| − components) = |E| − |V| + components`** (the first Betti / cyclomatic number).
+
+MILESTONE: with `H̃⁰ = components − 1` (progress 1) and `H̃¹ = |E| − |V| + components` (progress 6), the
+FULL reduced simplicial cohomology of a finite graph (1-skeleton) over a field is now formalized — the
+complete combinatorial (reduced-cochain) side of the Hochster strand equivalence for the 1-skeleton,
+in every degree a graph has. Supporting: coboundary `δ⁰`+`ker=componentConstant` (progress 4), coboundary
+rank (progress 5), reflection-removes-one-layer (progress 2), discrete/connected extremes (progress 3).
+REMAINING for card completion (deep, algebraic cone): the Koszul-strand ↔ reduced-cochain chain
+equivalence in all degrees (general finite complexes) + algebraic exact-rank match — the full Hochster
+isomorphism.

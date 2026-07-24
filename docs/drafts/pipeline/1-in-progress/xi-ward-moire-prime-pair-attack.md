@@ -2193,3 +2193,44 @@ experiments this enables:
    convergent prime series, so `Q z ≥ 0` there becomes a concrete prime-sum inequality — test
    whether it is provable in a band, mirroring the band-limited Weil positivity ladder;
 3. the failure locus of any such band result localizes exactly where off-line zeros could hide.
+
+## Step 9bi — deciding the sign: positivity proved off the strip [PROVED]
+
+User directive: decide the sign of `Q z = M₁ − 2Re(A z · logDeriv Ξ z)` for all admissible `z`.
+Partial answer landed: **the sign is decided, positive, on the whole complement of a thin strip.**
+
+**Mechanism (found by inspecting the Gram term rather than the arithmetic side).** Every term is
+  `K z(pt)·K(conj z)(pt) = normSq z / D`,  `D = pt²·((pt − x)² + y²)`,  `z = x+iy`,
+so the term's sign is `sign(Re D)` with
+  `Re D = (u² − v²)((u − x)² + y² − v²) − 4uv²(u − x)`,  `pt = u+iv`.
+The only way a term can go negative is through `y² − v²`. The divisor satisfies `|v| < 1/2`
+(strip), so **`|y| > 1/2` makes every bracket positive**, and the certified floor `u² > 32` (9bf)
+makes the leading product dominate the correction `4uv²(u−x)`: multiplying by `(u²−v²) > 0` and
+completing the square gives
+  `(u²−v²)·Re D = ((u²−v²)(u−x) − 2uv²)² − 4u²v⁴ + (u²−v²)²(y²−v²)`,
+and `(u²−v²)²(y²−v²) ≥ (u²−1/4)²/50 > u²/4 ≥ 4u²v⁴` exactly when `u² > 13` — comfortably true.
+
+**[THEOREM] `weilDiagonal_re_nonneg_of_im_sq_ge`** — for every base point with `(Im z)² ≥ 27/100`,
+`0 ≤ Re Q(z)`. Unconditional, no hypothesis on zero locations, sorry-free, axioms clean.
+Supporting: `weilGram_denom_re_pos` (the polynomial sign condition, nlinarith with the completed
+square), `weilGram_term_eq_div` (closed form of a Gram term), `XiC_ne_zero_of_im_sq_ge`.
+
+**Numerically pre-certified before formalizing** (mandated by CLAUDE.md): the minimum of `Re D` over
+the certified region at `|Im z| = 0.51` is `+0.075`; at `|Im z| = 0.505` it is `−0.088`. So the
+threshold is sharp at the strip half-width — the constant `27/100` is not an artifact of the proof.
+
+**What remains, exactly.** The criterion (9bh) needs positivity for ALL admissible `z`. It is now
+proved outside `|Im z| < 0.52`, so **the residual region is the punctured strip `0 < |Im z| < 0.52`**
+— precisely where the divisor lives (`|Im pt| < 1/2`), which is why no per-term argument can reach
+it: inside the strip a single copy can have `v² > y²` and flip its own term's sign. Two consequences
+worth recording:
+- the residual region is now COMPACT in the relevant sense: combined with 9bf's floor, positivity
+  inside the strip is only at risk near `|Re z| > 5.65`, i.e. near the zeros' heights;
+- inside the strip the term-by-term route is provably unavailable, so the arithmetic evaluation of
+  9bg/9bh (`M₁` and two values of `logDeriv Ξ`, i.e. the prime side) is the only remaining handle —
+  which is the classical "dominate the prime side" problem in its exact final position.
+
+**Next:** evaluate `M₁ = Σ' pt⁻²` two-sidedly (it equals `−(logDeriv XiC)′(0)`, an explicit
+Γ/prime constant reachable by the theta machinery of 9bd) and test `Q > 0` numerically inside the
+strip to locate where the margin is thinnest — that margin profile is the target any prime-side
+domination argument must beat.

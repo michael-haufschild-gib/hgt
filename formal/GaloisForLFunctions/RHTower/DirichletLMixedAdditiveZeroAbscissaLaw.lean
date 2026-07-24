@@ -197,6 +197,44 @@ theorem mixedAdditiveConvolutionPower_one
         a ab.1 * (starRingEnd ℂ) (a ab.2) := by
   simp only [mixedAdditiveConvolutionPower, additiveConvolutionPower_one]
 
+/-- The `k`-fold additive convolution power is the `N`-th coefficient of the `k`-th power of the
+generating power series `∑ a(n) Xⁿ`. -/
+theorem additiveConvolutionPower_eq_coeff_pow (a : ℕ → ℂ) (k N : ℕ) :
+    additiveConvolutionPower a k N = (PowerSeries.coeff (R := ℂ) N) ((PowerSeries.mk a) ^ k) := by
+  induction k generalizing N with
+  | zero =>
+    rw [pow_zero, PowerSeries.coeff_one]
+    simp only [additiveConvolutionPower]
+  | succ k ih =>
+    rw [additiveConvolutionPower, pow_succ, PowerSeries.coeff_mul]
+    refine Finset.sum_congr rfl (fun ab _ => ?_)
+    rw [ih ab.1, PowerSeries.coeff_mk]
+
+/-- **Convolution semigroup law.**  The `(m+n)`-fold additive convolution power is the antidiagonal
+convolution of the `m`-fold and `n`-fold powers.  Immediate from `pow_add` on the generating
+series and the power-series coefficient product. -/
+theorem additiveConvolutionPower_add (a : ℕ → ℂ) (m n N : ℕ) :
+    additiveConvolutionPower a (m + n) N
+      = ∑ ab ∈ Finset.antidiagonal N,
+          additiveConvolutionPower a m ab.1 * additiveConvolutionPower a n ab.2 := by
+  rw [additiveConvolutionPower_eq_coeff_pow, pow_add, PowerSeries.coeff_mul]
+  refine Finset.sum_congr rfl (fun ab _ => ?_)
+  rw [additiveConvolutionPower_eq_coeff_pow, additiveConvolutionPower_eq_coeff_pow]
+
+/-- **Zeta specialization: the complex mixed law reduces to the real even law.**  For a real
+reciprocal-coefficient sequence (`(a N).im = 0`, the conductor-one/zeta case where the twisted
+Mertens function is real), the Hermitian mixed `2k`-convolution equals the plain `2k`-fold even
+additive convolution `additiveConvolutionPower a (2 * k)`.  This connects the complex Dirichlet
+mixed module to the all-even-order framework of `MobiusMertensEvenConvolutionOrderLaw`: the two
+laws coincide exactly on real sequences. -/
+theorem mixedAdditiveConvolutionPower_eq_additiveConvolutionPower_two_mul_of_real
+    (a : ℕ → ℂ) (ha : ∀ N : ℕ, (a N).im = 0) (k N : ℕ) :
+    mixedAdditiveConvolutionPower a k N = additiveConvolutionPower a (2 * k) N := by
+  rw [mixedAdditiveConvolutionPower, two_mul, additiveConvolutionPower_add]
+  refine Finset.sum_congr rfl (fun ab _ => ?_)
+  congr 1
+  exact Complex.conj_eq_iff_im.mpr (additiveConvolutionPower_im_eq_zero a ha k ab.2)
+
 end
 
 end RHTower

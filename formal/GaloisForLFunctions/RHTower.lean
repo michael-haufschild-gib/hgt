@@ -2591,3 +2591,6 @@ import GaloisForLFunctions.RHTower.XiCentralDiscBound
 import GaloisForLFunctions.RHTower.XiWardSpectralBudgetSumRule
 import GaloisForLFunctions.RHTower.XiWardCriticalBudgetProbe
 import GaloisForLFunctions.RHTower.ThetaCuspCofinalWardConvexity
+import GaloisForLFunctions.RHTower.XiWeilResolventGram
+import GaloisForLFunctions.RHTower.XiWeilCriterionConverse
+import GaloisForLFunctions.RHTower.XiWeilPositivityBand
