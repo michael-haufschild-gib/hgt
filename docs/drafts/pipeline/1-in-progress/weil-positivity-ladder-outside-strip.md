@@ -72,3 +72,66 @@ copies nearest `z₀`, harmless for far ones. Ordinary complex analysis, not yet
 ## Status
 
 `[CONJECTURE]` rung 0 stated exactly; `[OPEN CORE]` named; paper proof NOT closed; no Lean written.
+
+---
+
+## Rung 0 — PAPER PROOF CLOSED (Gate 4)
+
+The Taylor route above is **dead**, and the reason is sharp and worth recording.
+
+**[FALSIFIED — the Taylor transport]** Expanding `z ↦ K z (p)` about an outside base point `z₀` has
+radius exactly `|p − z₀|`, which DEPENDS ON THE COPY. Approaching `pt₀` from below (the only
+direction where the rank-one form goes to `−∞`: the direction is forced to be `δ ∝ A(pt₀)·m ≈ −i`,
+since `cos 2·arg pt₀ ≈ 1` makes the from-above approach send `Q → +∞`) puts the target inside the
+disc for `pt₀` when `z₀` is BELOW the strip — but then the conjugate copy `conj pt₀` has the SMALLER
+radius `h − v₀`, and the target lies outside ITS disc, so the partial sums blow up there like
+`((h+v₀−ε)/(h−v₀))ⁿ`. No single expansion centre serves both members of a conjugate pair.
+
+**Representation lesson:** approximation of the inside kernel is not a Taylor problem at all. It is a
+DENSITY problem, and density is decided by the identity theorem, not by radii.
+
+### The proof
+
+Work in `ℓ²(divisor)`; a test function enters the Weil form only through its restriction to the
+divisor.
+
+1. **The form is bounded.** `Q(F) = Σ'_q F(pt_q)·F^#(pt_q)` with `F^#(w) = conj F(conj w)`. The
+   divisor is conjugation-stable, so `‖F^#|_div‖ = ‖F|_div‖` and `|Q(F)| ≤ ‖F|_div‖²`. Moreover
+   `|Q(F) − Q(G)| ≤ ‖F−G‖(‖F‖+‖G‖)`: **`Q` is continuous on `ℓ²(divisor)`.**
+2. **Kernels are in `ℓ²`.** `K z (p) = −z/(p(p−z))`, so `|K z (p)| ≤ C_z/|p|²` for all but finitely
+   many copies, and `Σ 1/‖pt‖² < ∞` (corpus `xiSpectralPoint_inv_sq_summable`). Hence
+   `K z|_div ∈ ℓ²(divisor)`.
+3. **Density by the identity theorem.** Let `a ∈ ℓ²(divisor)` annihilate every `K z|_div` for `z` in
+   the open outside-strip region `Ω`. Put `φ(z) := Σ_q conj(a_q)·K z (pt_q)`. The bound in (2) is
+   locally uniform in `z`, so by Cauchy–Schwarz the series converges locally uniformly on
+   `ℂ ∖ divisor`; hence **`φ` is analytic there**. `ℂ` minus a discrete set is connected, and `φ ≡ 0`
+   on the open set `Ω`, so `φ ≡ 0` — in particular `φ(w) = 0` for the inside point `w`. So `a ⊥ K w`.
+   By Hahn–Banach, **`K w` lies in the closed span of the outside-strip kernels.**
+4. **Transfer.** Choose `w = pt₀ + δ` as in the rank-one theorem, so `Q(K w) < 0` (corpus
+   `exists_neg_weilDiagonal_of_offAxis_zero`, 9bh). Take finite combinations `F_n → K w` in
+   `ℓ²(divisor)` from (3). By (1), `Q(F_n) → Q(K w) < 0`, so `Q(F_n) < 0` for large `n`. ∎
+
+**[PAPER-PROVED] rung 0.** Combined with `weilGram_form_re_nonneg_of_all_real` (9bk: on-line copies
+contribute only PSD rank-ones, base points unrestricted), this yields the target criterion:
+
+> **RH ⟺ the Weil Gram family with base points confined OUTSIDE the strip is positive semidefinite.**
+
+Every entry of that family is an absolutely convergent prime expression (`Im z < −½` gives `Re s > 1`
+directly; `Im z > ½` gives `Re s < 0`, hence `Re(1−s) > 1`, after the functional equation). **The
+critical strip, where no Dirichlet series converges, is bypassed entirely** — which is exactly the
+mismatch that defeated the previous campaign.
+
+Note the proof consumes NO estimate: boundedness, analyticity, the identity theorem, Hahn–Banach.
+The numerics of 9bj played no role and remain a sanity check only.
+
+## Next
+
+- **Gate 5 for rung 0:** formalize. Needed: `ℓ²(divisor)` as an inner-product space, continuity of
+  `Q`, local-uniform analyticity of `φ`, the identity theorem (mathlib has
+  `AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero`, already used in the corpus), and
+  Hahn–Banach (mathlib). No new mathematics required.
+- **Rung 1 (the first arithmetic rung, where `Λ ≥ 0` finally enters as a primitive):** with the
+  criterion now stated on convergent prime data, find coefficient families whose prime-side weight
+  `Σ_n Λ(n) n^{−1/2}·W_n(c)` has a definite sign, and prove positivity there. Design constraint from
+  the 2026 literature: candidate positivity statements at large support have been explicitly
+  disproved, so rung 1 must identify WHICH support ranges survive, not assume all do.
