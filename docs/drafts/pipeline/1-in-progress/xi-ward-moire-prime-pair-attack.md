@@ -2413,3 +2413,26 @@ positioned on that frontier with machine-checked equivalences rather than inform
 `d/dy ‖XiC(x+iy)‖² = −2‖XiC(x+iy)‖²·Im logDeriv XiC(x+iy)`, which needs the `y`-derivative of
 `normSq ∘ XiC` — pure chain-rule work, no estimates — and would complete a two-sided
 **RH ⟺ vertical monotonicity of `|Ξ|`**.
+
+### 9bm addendum — the equivalence is now two-sided
+
+**[PROVED HERE] `hasDerivAt_normSq_vertical`** — off the divisor,
+  `d/dy ‖XiC(x+iy)‖² = −2‖XiC(x+iy)‖² · Im logDeriv XiC(x+iy)`.
+Pure chain rule: the vertical path has derivative `I`, so the composite has derivative
+`I·(logDeriv XiC)·XiC`, and `2(w.re·u.re + w.im·u.im) = 2Re(conj w · u)` collapses to
+`−2 normSq(w)·Im logDeriv XiC` because `conj w · w` is real. No estimate enters.
+
+**[THEOREM] `norm_XiC_vertical_monotoneOn_of_rh`** — under RH, `y ↦ ‖XiC(x+iy)‖²` is monotone on
+`[0,∞)` for every `x`. Under RH there are no zeros off the real axis, so the identity applies on
+all of `(0,∞)`, and the certified Herglotz sign (9bl) makes the derivative nonnegative.
+
+**So the equivalence is closed in both directions:**
+  **RH ⟺ for every `x`, `y ↦ ‖Ξ(x+iy)‖` is non-decreasing on `[0,∞)`.**
+Machine-checked, unconditional, sorry-free. The whole campaign — Ward edge energy, the `8π`
+quantization, the Weil Gram PSD family, the Herglotz sign, the one-sided bound — now terminates in
+this single geometric statement about one entire function.
+
+**Open core, unchanged in substance but minimal in form:** prove the monotonicity. Equivalently
+(9bl) prove `Im logDeriv Ξ ≤ 0` on the upper half plane; equivalently (9bh/9bj) prove the Weil Gram
+family PSD. The three are now formally interchangeable in the corpus, so any future attack may pick
+whichever face is most tractable and the others follow by machine-checked transport.

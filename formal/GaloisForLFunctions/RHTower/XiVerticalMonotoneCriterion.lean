@@ -106,6 +106,119 @@ theorem riemannHypothesis_of_norm_XiC_vertical_monotone
   rw [hzero_at, norm_zero] at hstep
   exact hyne (norm_eq_zero.mp (le_antisymm hstep (norm_nonneg _)))
 
+/-! ## §2 The converse: RH forces vertical monotonicity -/
+
+/-- Real-part derivative of a complex path. -/
+private theorem hasDerivAt_re {f : ℝ → ℂ} {f' : ℂ} {y : ℝ}
+    (h : HasDerivAt f f' y) : HasDerivAt (fun t => (f t).re) f'.re y := by
+  simpa using (Complex.reCLM.hasFDerivAt.comp_hasDerivAt y h)
+
+/-- Imaginary-part derivative of a complex path. -/
+private theorem hasDerivAt_im {f : ℝ → ℂ} {f' : ℂ} {y : ℝ}
+    (h : HasDerivAt f f' y) : HasDerivAt (fun t => (f t).im) f'.im y := by
+  simpa using (Complex.imCLM.hasFDerivAt.comp_hasDerivAt y h)
+
+/-- The vertical path and its derivative. -/
+private theorem hasDerivAt_verticalPath (x y : ℝ) :
+    HasDerivAt (fun t : ℝ => (x : ℂ) + (t : ℂ) * Complex.I) Complex.I y := by
+  have h : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 y :=
+    Complex.ofRealCLM.hasDerivAt
+  simpa using ((h.mul_const Complex.I).const_add ((x : ℂ)))
+
+/-- **The vertical derivative identity.**  Off the divisor,
+`d/dy ‖XiC(x+iy)‖² = −2‖XiC(x+iy)‖² · Im (logDeriv XiC (x+iy))`: the growth of
+the modulus along a vertical line is governed by the Herglotz sign. -/
+theorem hasDerivAt_normSq_vertical {x y : ℝ}
+    (hne : XiC ((x : ℂ) + (y : ℂ) * Complex.I) ≠ 0) :
+    HasDerivAt (fun t : ℝ => Complex.normSq (XiC ((x : ℂ) + (t : ℂ) * Complex.I)))
+      (-2 * Complex.normSq (XiC ((x : ℂ) + (y : ℂ) * Complex.I)) *
+        (logDeriv XiC ((x : ℂ) + (y : ℂ) * Complex.I)).im) y := by
+  set z : ℂ := (x : ℂ) + (y : ℂ) * Complex.I with hz
+  set w : ℂ := XiC z with hw
+  have hXan : HasDerivAt XiC (deriv XiC z) z :=
+    ((XiC_analytic z (Set.mem_univ z)).differentiableAt).hasDerivAt
+  have hpath := hasDerivAt_verticalPath x y
+  have hcomp : HasDerivAt (fun t : ℝ => XiC ((x : ℂ) + (t : ℂ) * Complex.I))
+      (Complex.I • deriv XiC z) y := by
+    have := hXan.scomp y hpath
+    simpa [Function.comp] using this
+  have hd : Complex.I • deriv XiC z = Complex.I * (logDeriv XiC z * w) := by
+    rw [smul_eq_mul]
+    congr 1
+    rw [logDeriv, Pi.div_apply, div_mul_cancel₀ _ hne]
+  rw [hd] at hcomp
+  have hre := hasDerivAt_re hcomp
+  have him := hasDerivAt_im hcomp
+  have hsq : HasDerivAt
+      (fun t : ℝ => Complex.normSq (XiC ((x : ℂ) + (t : ℂ) * Complex.I)))
+      (2 * w.re * (Complex.I * (logDeriv XiC z * w)).re +
+        2 * w.im * (Complex.I * (logDeriv XiC z * w)).im) y := by
+    have hform : (fun t : ℝ =>
+        Complex.normSq (XiC ((x : ℂ) + (t : ℂ) * Complex.I))) =
+        fun t : ℝ => (XiC ((x : ℂ) + (t : ℂ) * Complex.I)).re *
+            (XiC ((x : ℂ) + (t : ℂ) * Complex.I)).re +
+          (XiC ((x : ℂ) + (t : ℂ) * Complex.I)).im *
+            (XiC ((x : ℂ) + (t : ℂ) * Complex.I)).im := by
+      funext t
+      rw [Complex.normSq_apply]
+    rw [hform]
+    have h1 := hre.mul hre
+    have h2 := him.mul him
+    have h := h1.add h2
+    convert h using 1
+    ring
+  convert hsq using 1
+  have hkey : 2 * w.re * (Complex.I * (logDeriv XiC z * w)).re +
+      2 * w.im * (Complex.I * (logDeriv XiC z * w)).im =
+      -2 * Complex.normSq w * (logDeriv XiC z).im := by
+    simp only [Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
+      Complex.normSq_apply]
+    ring
+  rw [← hkey]
+
+/-- **RH forces vertical monotonicity.**  Under the Riemann Hypothesis the
+modulus `y ↦ ‖XiC (x + iy)‖` is monotone on `[0, ∞)` for every abscissa: off the
+real axis there are no zeros, and the derivative identity turns the certified
+Herglotz sign into a nonnegative derivative. -/
+theorem norm_XiC_vertical_monotoneOn_of_rh (hRH : RiemannHypothesis) (x : ℝ) :
+    MonotoneOn (fun y : ℝ =>
+      Complex.normSq (XiC ((x : ℂ) + (y : ℂ) * Complex.I))) (Set.Ici 0) := by
+  have hne : ∀ y : ℝ, 0 < y → XiC ((x : ℂ) + (y : ℂ) * Complex.I) ≠ 0 := by
+    intro y hy hcon
+    obtain ⟨q, hq⟩ := (XiC_eq_zero_iff_exists_xiZeroCopy _).mp hcon
+    obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
+    rw [ht] at hq
+    have him := congrArg Complex.im hq
+    simp only [Complex.ofReal_im, Complex.add_im, Complex.mul_im,
+      Complex.I_re, Complex.I_im, Complex.ofReal_re] at him
+    linarith
+  have hcont : ContinuousOn (fun y : ℝ =>
+      Complex.normSq (XiC ((x : ℂ) + (y : ℂ) * Complex.I))) (Set.Ici 0) := by
+    apply Continuous.continuousOn
+    have hpath : Continuous fun t : ℝ => (x : ℂ) + (t : ℂ) * Complex.I := by
+      fun_prop
+    exact (Complex.continuous_normSq.comp
+      ((XiC_analytic.continuousOn).comp_continuous hpath
+        (fun t => Set.mem_univ _)))
+  apply monotoneOn_of_deriv_nonneg (convex_Ici 0) hcont
+  · intro y hy
+    have hy0 : 0 < y := by
+      rw [interior_Ici] at hy
+      exact hy
+    exact ((hasDerivAt_normSq_vertical (hne y hy0)).differentiableAt).differentiableWithinAt
+  · intro y hy
+    have hy0 : 0 < y := by
+      rw [interior_Ici] at hy
+      exact hy
+    have hd := hasDerivAt_normSq_vertical (hne y hy0)
+    rw [hd.deriv]
+    have hsign : (logDeriv XiC ((x : ℂ) + (y : ℂ) * Complex.I)).im ≤ 0 := by
+      apply im_logDeriv_XiC_nonpos_of_rh hRH _ (hne y hy0)
+      simp [Complex.add_im, Complex.mul_im, hy0]
+    have hns : 0 ≤ Complex.normSq (XiC ((x : ℂ) + (y : ℂ) * Complex.I)) :=
+      Complex.normSq_nonneg _
+    nlinarith [hsign, hns]
+
 end
 
 end RHTower

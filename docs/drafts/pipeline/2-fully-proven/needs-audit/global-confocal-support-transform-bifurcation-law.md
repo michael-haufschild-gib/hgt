@@ -472,3 +472,17 @@ formal verification.
   directions `λ ∈ {0,1}` by continuity of `h_S` (`confocalNullSupport_lipschitz`) and the affine null
   functional, plus the degenerate `h_S(1) = 0 ⇒ S ⊆ {0}` case.  With `K_G = K_h` the reverse
   faithfulness (12) follows (`h_S` is the null support function of `K_h(S)`).
+- 2026-07-24 — **Maximal-hull identity (13) closed for the non-degenerate case** (`h_S(1) > 0`), in
+  `HTGeometry/ConfocalGlobalSupportFaithfulness.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`):
+  * `confocalHullOfField_subset_confocalNullSupportHull_of_pos` — `K_G(S) ⊆ K_h(S)`: on `(0,1)` the
+    null support is positive (a positive `h_S(1)` forces a source point of positive height, keeping
+    every interior support value positive), so the core recovery applies; the boundary directions
+    `λ ∈ {0,1}` follow by continuity of `h_S` (`confocalNullSupport_lipschitz`) and the affine null
+    functional (`squeeze_zero_norm'` + `le_of_tendsto_of_tendsto`).
+  * `confocalHullOfField_eq_confocalNullSupportHull_of_pos` — **`K_G(S) = K_h(S)`** by antisymmetry
+    with `confocalNullSupportHull_subset_confocalHullOfField`, the all-radius maximal-hull identity
+    (13) with the exterior `R > M` restriction removed.
+  **Remaining:** the degenerate `h_S(1) = 0 ⇒ S ⊆ {0}` edge case (then `G_S(R)=R`, `h_S ≡ 0`, and a
+  hull point is forced to the origin) to make (13) unconditional; the reverse faithfulness (12) then
+  follows since `h_S` is the null support function of `K_h(S)`.
