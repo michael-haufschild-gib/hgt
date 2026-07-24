@@ -2,8 +2,8 @@
 
 - **ID:** `PROGRESSION-POS-RIGID-001`
 - **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM (paper), Lean connector pending
-- **Status:** `[PROVED HERE] [UNIVERSAL CLASSIFICATION] [CANDIDATE NEW APPLICATION] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Type:** THEOREM (paper + Lean, unconditional)
+- **Status:** `[PROVED HERE] [FORMALIZED] [UNIVERSAL CLASSIFICATION] [CANDIDATE NEW APPLICATION] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Source:** failed attempted extension of `PARITY-RAW-001` from modulus `2` to arbitrary modulus
 - **Statement:** Divisibility projection of a Hermitian additive convolution is nonnegative for every complex coefficient sequence exactly for moduli `1` and `2`.
 
@@ -121,6 +121,27 @@ whose two indices are congruent modulo `q`; it does not select additive totals d
   classification and its role as the sharp boundary of the Möbius/Liouville recurrence law, not
   the filtering identity.
 
+## Lean formalization
+
+Unconditional, in `formal/GaloisForLFunctions/RHTower/ProgressionPositiveProjectorRigidity.lean`
+(namespace `RHTower`). Finite complex sequences are modelled as coefficient sequences of
+`A : ℂ[X]`; the Hermitian additive self-convolution `H_a(N) = ∑_{m+n=N} a_m conj(a_n)` is the
+coefficient sequence of `hermConv A = A · (A.map conj)`, and the divisibility-progression projector
+`P_{q,a}(r) = ∑_{q ∣ N} H_a(N) rᴺ` is `progProjector q A r` (built from the additive functional
+`divProj`). Allowing a nonzero constant term makes the polynomial statement a strict generalization
+of the `n ≥ 1` sequences of the card.
+
+- `progProjector_one : progProjector 1 A r = ↑(normSq (A.eval r))` and `progProjector_one_nonneg`.
+- `progProjector_two : progProjector 2 A r = ↑(normSq (A.eval r))/2 + ↑(normSq (A.eval (-r)))/2`
+  and `progProjector_two_nonneg`.
+- `progProjector_witness (hq : 3 ≤ q) : progProjector q (X - X^(q-1)) r = -2 * (r:ℂ)^q` — the exact
+  negative witness for every modulus `q ≥ 3`.
+- `progressionPositiveProjectorRigidity (hq : 1 ≤ q) :`
+  `(∀ A r, 0 < r → 0 ≤ progProjector q A r) ↔ (q = 1 ∨ q = 2)` — the full equivalence, with `0 ≤`
+  the `ComplexOrder` (nonnegative real) partial order.
+
+`#print axioms` on all four: `[propext, Classical.choice, Quot.sound]` only. `formal lint passed`.
+
 ## Gates
 
 - [x] well-posed source-pure theorem
@@ -129,7 +150,7 @@ whose two indices are congruent modulo `q`; it does not select additive totals d
 - [x] repository collision audit
 - [x] targeted primary-literature search
 - [ ] specialist / MathSciNet / zbMATH priority audit
-- [ ] exact Lean witness and positive endpoint connector
+- [x] exact Lean witness and positive endpoint connector
 - [ ] publication-ready integration
 - [ ] recognized major open problem solved
 - [ ] RH
@@ -139,3 +160,6 @@ whose two indices are congruent modulo `q`; it does not select additive totals d
 - 2026-07-22 — conjectured arbitrary-modulus positive projection from the parity law.
 - 2026-07-22 — falsified it by phase-conjugation audit; extracted and proved exact `q=1,2`
   classification with witness `z-z^(q-1)` for every `q>=3`.
+- 2026-07-24 — formalized unconditionally in Lean
+  (`RHTower.progressionPositiveProjectorRigidity` + the `q=1,2` closed forms and the `q≥3`
+  witness); axioms clean; lint passed; promoted to `3-formalized/needs-audit`.

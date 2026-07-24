@@ -45,6 +45,14 @@ No criterion equivalent to RH counts as completion.
   half-waves.
 - Half-density localization and Selberg regrouping have no cancellation inside one semiprime
   product fibre. Cancellation, if it exists, must couple distinct products.
+- The squarefree-to-Euler map is no longer missing.  The dyadic Fock isometry
+  `U f(d,m)=mu(d)f(dm^2)` sends the pointed squarefree state to the Euler state and transports the
+  centered Fisher connection with vanishing cofinal defect.  Its sharp Euler cutoff becomes the
+  non-product affine projection `log d+2 log m<T`.
+- The canonical Xi-pointed charged graph is no longer missing.  Coprime inner factorization gives
+  the closed isometric graph with domain `B_omega H2`.  Its orthogonal domain defect
+  `K(B_omega)` is exactly the off-line divisor model space.  Full domain, not graph construction or
+  graph closedness, is the RH-bearing property.
 
 ## Mechanisms tested in current attack
 
@@ -81,6 +89,42 @@ Parallel Fable work has formalized the cross-kernel algebra for the proposed edg
 Completing its `8π` law would yield another RH-equivalent detector. It does not prove the
 first-clock source inequality unless a source identity bounds that integral.
 
+### Projective co-Poisson cancellation
+
+**Verdict:** rejected as rediscovery of the existing quotient wall.
+
+Multiplication of the normalized Möbius Mellin vector by zeta cancels the reciprocal Euler factor.
+After quotienting, however, contractivity is exactly the previously isolated co-Poisson critical
+boundary dissipation/Berezin-order sign.  The cancellation supplies no new source positivity.
+
+### Polarized complex aperture
+
+**Verdict:** rejected by a counterfeit off-line divisor.
+
+For `Re a>0` and `Re u>=0`,
+
+```text
+f_u(a)=(a-u)/(a+conj(u)),
+|a+conj(u)|^2-|a-u|^2=4 Re(a) Re(u).
+```
+
+Its packet Pick defect has the same positive rank-one-plus-Cauchy factorization as the real
+aperture law.  But the proof works for every arbitrary strict-right fake divisor packet, including
+packets violating the budget-eight Ward inequality.  It is analytic phase positivity with no
+arithmetic source incidence.
+
+### Critical prime-CAR parity
+
+**Verdict:** rejected by the already-formalized critical superselection obstruction.
+
+Replacing scalar Möbius parity by a CAR parity automorphism retains algebraic parity but does not
+retain the pointed and antipodal squarefree product vectors in one uniformly comparable critical
+Hilbert sector.  `CriticalPrimePoissonGCDMobiusVacuum.lean` proves their finite-aperture distortion
+grows at least on the prime-harmonic `log log` scale, while `PrimeClockShaleDiagonal.lean` proves
+that reflected infinite prime sectors meet only on the critical line.  A normal CAR incidence from
+a zero to that common sector is therefore the same missing zero-to-sector descent already retired
+in `heat-echo-superselection-descent-is-rh.md`.
+
 ## Do not repeat
 
 - finite-rank, diagonal, scalar, same-prime, one-product, or radial-Fock positivity;
@@ -89,46 +133,98 @@ first-clock source inequality unless a source identity bounds that integral.
 - an ordinary bounded contraction of the saturated four-unit detail;
 - “Gamma chart is asymptotically isometric” as a global Xi-weld argument;
 - product-fibre Selberg averaging: one ordinary semiprime fibre has only one real cosine mode.
+- co-Poisson zeta cancellation without a proof of the quotient Berezin sign;
+- a complex/polarized Cayley aperture law: arbitrary fake divisors satisfy it;
+- prime CAR/CCR sector gluing without a source-derived normal intertwiner.
 
-## Live conjecture: cross-product Type-II Stokes transport
+## Fixed `W_P` frontier
 
-Let
-
-```text
-S_L = Σ_(n≤e^L) Λ(n)n^(-1/2) sin(2π log n/L).
-```
-
-Use the exact half-density second jet `e''₀ = Λ*Λ`, but do **not** group by a single product
-`R=mn`. Instead retain two independent products `R=mn` and `R'=m'n'` in the full aligned-block
-incidence algebra before radialization.
-
-The required new identity must produce a source-defined antisymmetric cross-product current
-`J_L(R,R')` satisfying all three clauses:
+For every finite right-half-plane packet `P`, corpus defines
 
 ```text
-Σ_(R,R') J_L(R,R') = CΓ(L) + S_L,
-J_L(R,R') = |K_L(R,R')|² or a positive Gram quadratic form,
-K_L is defined from aligned block/LCM incidence and Gamma-polar sewing before first-clock
-scalarization.
+W_P = [[G_P,r_P],[r_P*,4]],
+W_P >= 0 for every P  <->  RH.
 ```
 
-Falsifiers:
-
-1. diagonal `R=R'` reduction reproduces the known one-fibre covariance;
-2. summing one index first collapses to the flat inverse convolution;
-3. Gamma completion enters only as a fitted scalar;
-4. radialization occurs before the cross-product Schur complement;
-5. the identity assumes the target first-clock sign.
-
-## Immediate work
-
-Derive the two-product incidence coefficient from the aligned block projections
-`P_q=A_q* A_q`, using
+It also proves the closed budget-eight version
 
 ```text
-Ran(P_m) ∩ Ran(P_n) = Ran(P_lcm(m,n)),
+8 G_P-r_P r_P* >= 0 for every P  <->  RH.
 ```
 
-and test whether its Möbius inclusion-exclusion is a genuine positive Laplacian on the divisibility
-lattice or collapses to the already-failed one-product Selberg fibre. Formalize only the surviving
-exact identity or decisive falsifier.
+The doubled Möbius parity source has a father Gram tending to `G_P`, a transverse Fisher detail
+of squared norm four, and the native cutoff commutator has two adjoint boundary orientations with
+total critical Ward density eight.  This is the only live source budget.
+
+### Results that must not be mistaken for the missing source theorem
+
+- `[REDISCOVERED]` Projection/reflection and Lüders identities already occur in
+  `SoninProjectionQuantumWalk`, `SoninLudersPinching`, and the pointed/finite-rank Burnol Ward
+  modules.
+- `[PROVED, INSUFFICIENT]` The actual Xi phase is a contractive Hardy multiplier on every finite
+  packet, and `V=1-phase` obeys target four-unit nonexpansiveness at every nonnegative aperture.
+  This bounds multiplier **values**, not the aperture tangent `r_P`.
+- `[KILLED]` Aperture-only Schwarz--Pick differentiation: the common contractive aperture set of
+  all right-half-plane Cayley cells is exactly the real ray `[0,∞)` and has empty complex
+  interior (`C45`).
+- `[KILLED]` One-sided Möbius--Gamma scalar graph: its exact source gain on the critical ray is
+  `1/[2(σ-1)]` (`C42`).
+- `[KILLED AT BUDGET 4]` Saturated bounded cofinal contractions and their moving-connection escape
+  cannot create the Ward column from an orthogonal four-unit detail (`C43`--`C44`).
+- `[PROVED, NOT A SOURCE PRODUCER]` Fable's edge-`L²` master kernel identity gives a route to
+  another RH-complete detector.  It supplies no unconditional source bound for that detector.
+
+## One live conjecture
+
+`[CONJECTURE — AFFINE DYADIC FISHER-TO-GRAPH INCIDENCE]`
+
+Under the proved dyadic Fock isometry, the Euler cutoff is the affine joint projection
+
+```text
+Q_T(d,m)=1_(log d+2 log m<T).
+```
+
+Gamma/Sonin completion must act jointly, before scalar quotient evaluation, on the two adjoint
+boundary corners
+
+```text
+C_T^+=(1-Q_T)F_sigma Q_T,
+C_T^-=Q_T F_sigma(1-Q_T).
+```
+
+The conjectured source identity says their cofinal image lies in the full domain of the canonical
+Xi-pointed graph, has mixed packet column `r_P`, and has joint defect
+`8 G_P-r_P r_P*`.  Equivalently, the completed image has no component in the denominator model
+space `K(B_omega)`.
+
+This must be an operator-valued, two-sided affine-cutoff theorem.  Treating either corner through
+the scalar Möbius--Gamma graph first is falsified by `C42`; using only the graph's already-proved
+isometry silently restricts the domain to `B_omega H2` and assumes the desired conclusion.
+
+## Exact open calculation
+
+The squarefree-to-Euler isometry and the canonical charged graph are both constructed.  The only
+uncomputed composition is the affine cutoff boundary through Gamma/Sonin completion.  For the
+centered Fisher connection, compute
+
+```text
+C_T=C_T^++C_T^-=[Q_T,F_sigma].
+```
+
+Test the completed transform on `C_T` **before** quotient evaluation:
+
+1. compute both affine boundary faces `log d+2 log m=T` and retain their orientation;
+2. prove cancellation of the critical scalar gain only after the two adjoint faces are added;
+3. pair the result against the Cauchy derivative jets spanning `K(B_omega)` and prove every
+   model-space component vanishes;
+4. identify the surviving finite packet column with the existing
+   `continuedXiAntiCausalWardColumn`;
+5. prove the joint map is contractive in the native eight-unit commutator norm.
+
+Exact falsifier: if any model-space pairing is an unconstrained residue coordinate, if the sum
+retains an uncancelled `1/(sigma-1)` gain, or if the calculation reduces to the existing Berezin
+sign/full-domain assertion, then no new source law has been obtained and this formulation must be
+retired.
+
+The first-clock cross-product Type-II Stokes proposal remains a separate fallback.  It is not the
+current `W_P` attack.

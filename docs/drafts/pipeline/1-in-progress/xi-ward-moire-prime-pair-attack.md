@@ -536,3 +536,87 @@ FTC-log shift difference); (ii) `|pair|²` expansion into four cross kernels;
 (iii) per-pair deposit `= 2π·4(1/x + x/(x²+b²)) > 8π` (floor is `1/x > 1`);
 (iv) cross-pair positivity from `Re(2π/K) > 0`; (v) the tsum layer
 (mass-quantization pattern) and the completeness iff.
+
+## Step-9d: master-evaluation layer, part 1 `[LEAN-FORMALIZED]`
+
+Appended to `XiWardEdgeL2CrossKernel.lean` (build clean, standard axioms):
+
+- `lorentzianHalf_integrable` / `integral_lorentzianHalf`: the shifted
+  Lorentzian half `x/(x²+(t+β)²)` is integrable with total mass `π`.
+- `integral_oddWidthPiece_zero`: the centered width-difference is odd with
+  vanishing integral (`integral_neg_eq_self`).
+- `hasDerivAt_halfLogShift` + `integral_shiftDiffPiece_zero`: the
+  shift-difference of Lorentzian tilts vanishes by the FTC log-limit
+  (interval FTC + `intervalIntegral_tendsto_integral` + the log-ratio → 1
+  tendsto chain).
+
+Remaining: im-sum assembly (integrability transfers via `Integrable.im` and
+subtraction), `∫(u⁻¹+v⁻¹) = 2π` via `Complex.ext` with
+`reCLM/imCLM.integral_comp_comm`, the master `∫ edgeCrossKernel = 2π·K⁻¹`,
+then pair expansion, deposit floor, cross positivity, tsum layer,
+completeness iff.
+
+## Step-9e: odd-piece layer `[LEAN-FORMALIZED]`
+
+`integrable_oddPieceShifted` (conjugation-symmetric domination through the
+cross kernel — no new estimate needed) and `integral_oddPieceShifted_zero`
+(shift reduction + odd symmetry) are certified.  The imaginary-sum
+cancellation now has both of its pieces: this odd layer and the FTC log-limit
+shift layer (step 9d).  Final assembly unit remaining for the master
+identity: im-total = shiftDiff + oddShifted (integrability by subtraction),
+`∫(u⁻¹+v⁻¹) = 2π` by `Complex.ext` through `reCLM/imCLM.integral_comp_comm`,
+and `∫ edgeCrossKernel = 2π·K⁻¹`; then pair expansion → deposit floor →
+cross positivity → tsum layer → the 8π completeness iff.
+
+## Step-9f: THE MASTER IDENTITY `[LEAN-FORMALIZED]`
+
+`integral_edgeCrossKernel_eq` is certified (standard axioms, build clean):
+
+```text
+∫_ℝ dt / [(x₁ + i(t+β₁))·(x₂ − i(t+β₂))] = 2π / K,
+K = (x₁+x₂) + i(β₁−β₂),
+```
+
+via `integral_kernelSum = 2π` (real part: two Lorentzian halves at π each;
+imaginary part: FTC log-limit shift piece + odd width piece, both vanishing;
+assembly by `integral_re_add_im`).  This is the single integral from which
+every edge-L² pairing of pair responses follows: `|pair|²` expands into four
+cross kernels, cross-pair pairings are sums of eight, all with
+`Re(2π/K) > 0`.  Remaining for the 8π completeness law: the expansion
+plumbing, the deposit identity `2π·4(1/x + x/(x²+b²))` with its floor
+(`1/x > 1`), the tsum layer (mass-quantization pattern), and the iff.
+
+## Step-9g: pair expansion `[LEAN-FORMALIZED]`
+
+`xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq_kernels` (the full complex
+kernel identity at the edge, upgrading the earlier real-part version) and
+`normSq_xiPairEdge_eq_four_sum` (the squared edge modulus of one pair equals
+`4·Σ` of four cross-kernel real parts) are certified — zero warnings.
+With the master identity, each of the four integrates in closed form:
+diagonal terms `Re(2π/(2x)) = π/x`, off-diagonal `Re(2π/(2x±2ib)) =
+πx/(x²+b²)`.  Next unit: the deposit theorem
+`∫ normSq(pair-edge) = 2π·4(1/x + x/(x²+b²)) > 8π` (integrate the four-sum,
+floor from `1/x > 1`), then cross-pair positivity, the tsum layer, and the
+8π completeness iff.
+
+## Step-9h: THE DEPOSIT THEOREM AND ITS FLOOR `[LEAN-FORMALIZED]`
+
+Certified (standard axioms, zero warnings):
+
+- `integral_re_edgeCrossKernel`: closed form
+  `∫ Re(eck) = 2π·2x/((2x)² + (β−β')²)` from the master identity.
+- `integral_normSq_xiPairEdge`: **the per-pair edge deposit**
+
+  ```text
+  ∫_ℝ |pair(1/2+it)|² dt = 2π·4(1/x + x/(x²+b²)),  x = Re λ + 1/2, b = Im λ.
+  ```
+
+- `eightPi_lt_integral_normSq_xiPairEdge`: **the 8π floor** — every
+  strict-right pair deposits strictly more than `8π` (from `1/x > 1`).
+
+Remaining for the 8π completeness law: cross-pair positivity (each of the
+eight cross integrals has `Re(2π/K) > 0` — immediate from the master
+identity's closed form), the tsum layer (lintegral/Countable pattern from
+`XiWardEdgeMassQuantization`), and the completeness iff (RH direction: r ≡ 0;
+¬RH direction: one pair's floor beats any budget `c < 8π` through positive
+cross terms).

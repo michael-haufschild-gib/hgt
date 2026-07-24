@@ -429,3 +429,124 @@ RatFunc`: `IntermediateField.adjoin` of a transcendental element, `Transcendenta
 with `Transcendental C y` gives an `AlgEquiv` to `RatFunc C` (search `Transcendental.aevalEquiv` /
 `IsTranscendenceBasis` / `RatFunc`-adjoin). Then push `ratFunc_generator_mobius` across it. Then §3
 PGL₂ cocharacter remains for the clock's `ρ_λ q = λ^k q` diagonalization.
+
+### Session 4 progress — the transport bridge (core #1 essentially COMPLETE)
+Corpus recheck: mathlib HAS `RatFunc.algEquivOfTranscendental (y) (h : Transcendental C y) :
+RatFunc C ≃ₐ[C] C⟮y⟯` with `_X : φ X = y` — exactly the transcendental-extension iso.
+
+DONE — `HTGeometry/TranscendentalMobius.lean` [PROVED HERE], axioms
+[propext, Classical.choice, Quot.sound], build+lint clean:
+- `ratFuncEval (y) (hy : Transcendental C y) : RatFunc C →ₐ[C] E` := `(adjoin C {y}).val ∘ φ` —
+  evaluation at `y`; `ratFuncEval_injective`, `ratFuncEval_X` (`↦ y`), `ratFuncEval_C` (`↦ algebraMap`).
+- **`adjoin_generator_mobius`** : `y` transcendental over `C`, `z ∈ C(y)`, `y ∈ C(z)` ⟹
+  `∃ a b c d : C, ad−bc≠0 ∧ z·(algebraMap c·y + algebraMap d) = algebraMap a·y + algebraMap b`.
+  The abstract-field degree-1 Lüroth. Generation transported at the E-level (NO subfield gymnastics):
+  `g := φ.symm ⟨z,hz⟩` generates `RatFunc C` because `X ∈ adjoin C {g} ⟺ y ∈ adjoin C {z}` via
+  `ratFuncEval` injective + `IntermediateField.adjoin_map` + `mem_map`; then `ratFunc_generator_mobius g`
+  and push the relation through `ratFuncEval` (`X↦y`, `C c↦algebraMap c`).
+
+**CORE #1 COMPLETE (modulo trivial wiring):** the banked
+`differentialAlgEquiv_generator_mem_adjoin_singleton σ …` gives `σy ∈ C(y)` and `σ⁻¹y ∈ C(y)`; the
+latter, hit with σ (AlgEquiv preserves adjoin), gives `y ∈ C(σy)`. Feeding `z:=σy`, these two
+memberships into `adjoin_generator_mobius` yields the §1 Möbius relation `Φ(q₀)=A₀(q₀)` in E with
+`a,b,c,d ∈ C`, `ad−bc≠0` — the `hΦq` hypothesis of `charged_clock_forces_multiplicative` (session 2).
+So the §1→§4 charged path is fully assembled from banked+new lemmas, modulo the `Transcendental C y`
+extraction (banked `hypertranscendentalOver_jet_transcendental`) and forming the σ-commutation.
+
+REMAINING: §3 PGL₂ cocharacter — the clock `ρ_λ` gives `ρ_λ q₀ = M_λ(q₀)` (another
+`adjoin_generator_mobius` application, ρ_λ semilinear but adjoin-preserving), and classifying the
+1-parameter family `λ ↦ M_λ` as `diag(1,λ^k)` (integer charge k). NEXT session: assemble the §1→§4
+charged theorem end-to-end (wire banked σ-result + adjoin_generator_mobius + charged_clock_forces_multiplicative)
+as `clock_charge_charged_multiplicative` in the differential framework; then tackle §3 cocharacter.
+
+### Session 5 progress — §1 wired end-to-end + §1→§4 charged assembly
+`HTGeometry/ClockCharacterSigmaMobius.lean` [PROVED HERE], axioms [propext, Classical.choice, Quot.sound],
+build+lint clean, both theorems first-try:
+- **`differentialAlgEquiv_generator_mobius`** (§1 fully wired): a differential automorphism `σ` of the
+  scalar free field `C⟨y⟩` acts on the generator by a Möbius transform — `∃ a b c d : C, ad−bc≠0 ∧
+  σy·(algebraMap c·y+algebraMap d) = algebraMap a·y+algebraMap b`. Reuses banked
+  `differentialAlgEquiv_generator_mem_adjoin_singleton` (σy, σ⁻¹y ∈ C(y)) + `adjoin_generator_mobius`
+  (session 4). `y ∈ C(σy)` from `σ⁻¹y ∈ C(y)` via `IntermediateField.adjoin_map` + `mem_map`;
+  `Transcendental C y` via banked `hypertranscendentalOver_jet_transcendental hy 0`.
+- **`differentialAlgEquiv_generator_multiplicative`** (§1→§4 charged, modulo §3): `σ` differential
+  automorphism + clock `ρ` with `ρ y = μ y` (μ≠0,1,−1, the §3-diagonalized cocharacter) commuting
+  with σ ⟹ `∃ e : C, σ y = algebraMap e · y` — the card's headline §4/eq(4) conclusion in the
+  differential framework. Assembles `differentialAlgEquiv_generator_mobius` (hΦq) +
+  `charged_clock_forces_multiplicative` (session 2). `hlin` ({1,y,y²} lin indep) derived from
+  `transcendental_iff_injective` + coeff extraction.
+
+Card §-structure discharge: §1 (DONE), §2 (banked), §4 charged linearization (DONE session 2),
+§1→§4 charged assembly (DONE this session, modulo §3 pure-scaling hyp). 
+
+REMAINING — §3 PGL₂ cocharacter (the LAST mathlib-gap core): produce `ρ_λ q₀ = λ^k q₀` (the `hρy`
+hypothesis of `differentialAlgEquiv_generator_multiplicative`) with integer charge k. The clock
+`ρ_λ` (semilinear, jet-order-preserving) acts on the core generator q₀ by a Möbius `M_λ` (another
+degree-1 Lüroth application — but ρ_λ is semilinear not differential, so needs a semilinear
+order-zero variant OR the jet-filtration-preservation argument: ρ_λ maps jetObservableField n to
+itself since ρ_λ(y^(j))=λ^j y^(j)); then `λ ↦ M_λ` is a 1-parameter algebraic subgroup of PGL₂,
+classified (Jordan form over alg-closed C + commutation) as conjugate to `diag(1,λ^k)`, and choosing
+q₀ as the diagonalizing generator gives ρ_λ q₀ = λ^k q₀. NEXT session: the finite PGL₂ cocharacter
+algebra — a 1-param subgroup `μ ↦ Möbius M_μ` of PGL₂(C) (M_μ M_ν = M_{μν}, algebraic) is conjugate
+to a pure scaling; build as `HTGeometry/Pgl2Cocharacter.lean` (finite matrix/Möbius algebra, mathlib gap).
+
+### Session 6 progress — the §3→§4 interface (eq (2) family form)
+`HTGeometry/ClockChargeFamilyMultiplicative.lean` [PROVED HERE], axioms
+[propext, Classical.choice, Quot.sound], build+lint clean:
+- `exists_pow_ne_one_ne_neg_one` : over `[IsAlgClosed C]`, for `k>0`, `∃ λ≠0, λ^k≠1 ∧ λ^k≠−1` — the
+  `k`-th power map isn't confined to `{1,−1}` (bad set = finite root sets of `X^k∓1` ∪ {0}, and
+  `IsAlgClosed C ⟹ Infinite C ⟹` complement nonempty). Reusable.
+- **`clock_charge_family_multiplicative`** : the card's exact §3-output interface — clock family
+  `ρ_λ y = λ^k y` (k>0, the eq (2) cocharacter) with each `ρ_λ` commuting with `σ` ⟹ `∃ e, σ y = e·y`
+  (§4). Picks a single `λ` with `λ^k ∉ {0,1,−1}` (the card's "λ^k exhaust C*" step) and applies
+  `differentialAlgEquiv_generator_multiplicative` (session 5).
+
+Card §-structure: §1 (done), §2 (banked), §4 charged linearization (session 2), §1→§4 charged
+assembly (session 5), §3→§4 eq(2)-interface (this session). The charged branch is now FULLY
+formalized GIVEN eq (2) `ρ_λ q₀ = λ^k q₀`.
+
+REMAINING — the single genuine deep core: PRODUCING eq (2), i.e. the PGL₂-cocharacter diagonalization.
+Input: the clock family {ρ_λ} acting on the core C(q) by Möbius maps `M_λ` with `M_λ M_ν = M_{λν}`,
+`M_1 = id`, algebraic in λ. Output: a Möbius change of generator `q₀ = A(q)` and integer `k≥0` with
+`ρ_λ q₀ = λ^k q₀`. Sub-pieces for next sessions:
+ (3a) ρ_λ acts on C(q) by a Möbius `M_λ`: ρ_λ is SEMILINEAR (not differential), but jet-order-preserving
+   (ρ_λ(y^(j))=λ^j y^(j) maps jetObservableField n→n), so `σy`-style order-zero rigidity has a
+   semilinear analog — OR derive directly that ρ_λ preserves C(q₀) (banked `map_stableRangeCore_eq_of_commuting_algEquiv`
+   already gives ρ_λ(T)=T) then `adjoin_generator_mobius` gives the Möbius form (needs ρ_λ q, ρ_λ⁻¹ q ∈ C(q)).
+ (3b) the diagonalization: a commuting algebraic 1-param family of Möbius maps has a common eigenvector
+   (fixed point on P¹); at it the family is a character χ:C*→C*; χ algebraic (Laurent monomial) ⟹ χ(λ)=λ^k.
+   This is the PGL₂-torus-cocharacter classification (mathlib gap — matrices/fixed points). Build as
+   `HTGeometry/Pgl2Cocharacter.lean`. Start with the field-formulation: `μ ↦ (a(μ),b(μ),c(μ),d(μ))` Möbius
+   coeffs rational in μ, homomorphism law, extract common eigenvector.
+
+### Session 7 progress — the automorphism-level Möbius engine (enables §1 and §3a)
+`HTGeometry/TranscendentalMobius.lean` extended + `ClockCharacterSigmaMobius.lean` refactored;
+axioms [propext, Classical.choice, Quot.sound], build+lint clean:
+- **`algEquiv_generator_mobius_of_mem`** : ANY `C`-algebra automorphism `σ` of `E` with
+  `σ y ∈ C(y)` and `σ.symm y ∈ C(y)` (i.e. `σ` preserves the ordinary rational subfield `C(y)`),
+  `y` transcendental ⟹ `σ y` is Möbius in `y`. This is the automorphism-level engine underlying
+  BOTH the differential constraint (§1) and the semilinear clock (§3a): the ONLY input is
+  preservation of `C(y)` — no differential/semilinear structure. `differentialAlgEquiv_generator_mobius`
+  (§1) now routes through it (memberships from banked order-zero rigidity).
+
+REMAINING — two deep cores (both genuine mathlib/corpus gaps, clock-dilation ρ_λ + jet-preservation
+NOT banked; verified by search):
+ (3a) **semilinear clock Möbius form**: need `ρ_λ q₀ ∈ C(q₀)` and `ρ_λ.symm q₀ ∈ C(q₀)` to feed
+   `algEquiv_generator_mobius_of_mem`. Route: ρ_λ (clock-dilation, `ρ_λ y^(j) = λ^j y^(j)`) is a
+   C-algebra field automorphism (fixes C) that is SEMILINEAR for D (`ρ_λ(Da)=λ D(ρ_λ a)`), hence
+   PRESERVES the jet filtration `jetObservableField C y n` (it scales each jet `y^(j)↦λ^j y^(j)`, and
+   `λ^j` are units so `adjoin C {y,...,y^(n)}` is preserved) ⟹ order-preserving ⟹ `ρ_λ` maps the
+   order-0 generator `q₀` to an order-0 element ∈ `C(q₀)`. Needs: (i) DEFINE the clock ρ_λ (a
+   `C ≃* (E ≃ₐ[C] E)` family, or per-λ automorphism with `ρ_λ y^(j)=λ^j y^(j)` — NOT banked, build
+   it); (ii) `ρ_λ (jetObservableField C y n) = jetObservableField C y n`; (iii) semilinear analog of
+   banked `HasScalarDifferentialOrder.map` (the banked one assumes differential `hderiv`; adapt to
+   `ρ(Da)=λ D(ρ a)`). Then §3a done via the engine.
+ (3b) **PGL₂ cocharacter classification** (the diagonalization producing eq (2)): from ρ_λ Möbius
+   `M_λ` with `M_λ M_ν = M_{λν}`, `M_1=id`, algebraic in λ ⟹ ∃ Möbius change `q₀↦A(q₀)` and integer k
+   with `ρ_λ (A q₀) = λ^k (A q₀)`. Core sub-facts: (i) the commuting Möbius family has a common
+   eigenvector/fixed point on P¹ (over alg-closed C); (ii) at it the eigenvalue is a character
+   χ:C*→C*; (iii) an ALGEBRAIC character χ (rational-function `χ(μν)=χ(μ)χ(ν)`) is `χ(μ)=μ^k` (the
+   "multiplicative rational function is a monomial" fact — self-contained, reusable, mathlib gap).
+   NEXT session: start (3b-iii) as `HTGeometry/MultiplicativeMonomial.lean` (RatFunc functional
+   equation ⟹ monomial), the cleanest self-contained piece; then (3a) clock definition.
+
+Charged branch fully formalized modulo eq (2) [sessions 2,5,6]; §1 engine + interface complete [session 7].
