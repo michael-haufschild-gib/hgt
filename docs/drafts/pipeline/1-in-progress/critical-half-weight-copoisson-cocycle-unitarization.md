@@ -32,7 +32,9 @@ proves RH.
 - [x] finite source operator exists as `trueApertureMuntzMap`; do not reconstruct it
 - [x] exact finite Möbius reconstruction and local frame law exist; do not reconstruct them
 - [x] reject finite-adjoint/Stieltjes insertion: source domains do not match
-- [ ] construct or refute BV-prime-window to co-Poisson singular graph connector
+- [x] refute ordinary analytic BV-prime-window graph by peripheral-spectrum countability
+- [ ] construct genuinely singular BV-to-co-Poisson quotient connector with covariance modulo
+  completed multiplier ideal
 - [ ] derive exact common-interior/two-boundary-strip block decomposition
 - [ ] identify Hermitian boundary defect before introducing a zero or annihilator
 - [ ] prove negative-square-plus-multiplier-ideal factorization, or prove exact positive obstruction
@@ -136,3 +138,9 @@ truth is made until source-fixed synthesis vector and uniform norm are proved.
   off-diagonal Green--Schur/Euler identity. This card claims neither that general problem nor its
   finite packets as new; it tests only whether Burnol's explicit co-Poisson quotient realizes the
   missing singular graph.
+- **2026-07-24 — analytic graph refuted.** A separable contractive RKHS cannot carry nonzero
+  ordinary evaluations throughout a critical-line interval with exact BV character covariance:
+  their Riesz vectors would be an uncountable injective family of peripheral eigenvectors, whereas
+  such families are countable. The surviving connector must keep covariance only modulo the
+  completed multiplier ideal and activate exact eigencharacters only on its annihilator fibres.
+  See `../3-formalized/not_new_scientific_knowledge/bv-copoisson-analytic-graph-peripheral-spectrum-no-go.md`.

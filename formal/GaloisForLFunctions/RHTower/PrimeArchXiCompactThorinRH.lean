@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CompletedSeamCompactThorinMarkovEquivalence
 import GaloisForLFunctions.RHTower.PrimeArchEuclideanSpectralRH
+import GaloisForLFunctions.RHTower.PrimeArchEndpointCalibratedHausdorffRH
 import GaloisForLFunctions.RHTower.PrimeArchHausdorffBernsteinKMSRH
 import GaloisForLFunctions.RHTower.XiHedenmalmMomentDeterminacy
 
@@ -60,6 +61,25 @@ theorem ae_primeArchXiCompactMomentMeasure_mem_zero_one :
     by
       rw [abs_of_pos (xiThermalNode_pos _)]
       exact (xiThermalNode_lt_one _).le⟩
+
+/-- The source endpoint height bound places the canonical Xi measure in the much smaller interval
+`[0, 2/41]`.  This is the support aperture needed to transport its Markov transform between the
+completed seam center and the Cassini theta boundary. -/
+theorem ae_primeArchXiCompactMomentMeasure_mem_zero_two_over_fortyOne :
+    ∀ᵐ x : ℝ ∂primeArchXiCompactMomentMeasure,
+      0 ≤ x ∧ |x| ≤ 2 / 41 := by
+  rw [primeArchXiCompactMomentMeasure, Measure.ae_sum_iff]
+  intro j
+  apply Measure.ae_smul_measure
+  rw [ae_dirac_iff (by
+    exact measurableSet_Ici.inter
+      (measurableSet_le measurable_id.abs measurable_const) :
+      MeasurableSet {x : ℝ | 0 ≤ x ∧ |x| ≤ 2 / 41})]
+  have hpos := xiThermalNode_pos (xiThermalEnumeration j)
+  refine ⟨hpos.le, ?_⟩
+  rw [abs_of_pos hpos]
+  exact (xiThermalNode_le_primeArchEndpointHausdorffRadius _).trans
+    primeArchEndpointHausdorffRadius_lt_two_over_fortyOne.le
 
 /-- Under RH, all moments of the canonical compact Xi measure are the normalized source moments. -/
 theorem integral_primeArchXiCompactMomentMeasure_eq_of_riemannHypothesis

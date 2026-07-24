@@ -1874,3 +1874,4 @@ import GaloisForLFunctions.HTGeometry.SampledRayRateTransferFixed
 import GaloisForLFunctions.HTGeometry.SampledSmallLocalization
 import GaloisForLFunctions.HTGeometry.SampledSmallSmooth
 import GaloisForLFunctions.HTGeometry.SampledRayRateTransferHalfplane
+import GaloisForLFunctions.HTGeometry.PeripheralContractionPointSpectrum

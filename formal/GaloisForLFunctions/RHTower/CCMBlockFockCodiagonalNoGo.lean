@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMFirstClockBlockSubdivisionTransfer
 import GaloisForLFunctions.RHTower.ArithmeticLogClockFiniteJetSaturation
+import GaloisForLFunctions.RHTower.PrimeFirstTraceExactGraphClosureUniversalityLaw
 
 /-!
 # The CCM block--Fock codiagonal has maximally multivalued closure
@@ -198,6 +199,31 @@ theorem ccmPrimeOddBlockFockTailClock_graphClosure_eq_top :
       _ = 0 := hp
   exact (mul_eq_zero.mp hfactor).resolve_left
     (ccmPrimeOddBlockScale_pos p).ne'
+
+/-- **First-trace/block--Fock strict closure-jump universality.**  On their common prime Hardy
+product, the first-trace graph loses exactly the vacuum response channel, whereas the shifted-tail
+block--Fock graph is dense in the entire product.  Thus the latter closure strictly contains the
+former. -/
+theorem primeFirstTraceClock_graphClosure_lt_blockFockTailClock_graphClosure :
+    (realLinearGraphSubmodule primeHardyKernelMap
+        primeFirstTraceClock).topologicalClosure <
+      (realLinearGraphSubmodule ccmPrimeOddBlockFockSourceMap
+        ccmPrimeOddBlockFockTailClock).topologicalClosure := by
+  rw [ccmPrimeOddBlockFockTailClock_graphClosure_eq_top]
+  refine lt_top_iff_ne_top.mpr ?_
+  intro htop
+  let e₀ : PrimeHardy := lp.single 2 0 1
+  have hmem :
+      WithLp.toLp 2 ((0 : PrimeHardy), e₀) ∈
+        (realLinearGraphSubmodule primeHardyKernelMap
+          primeFirstTraceClock).topologicalClosure := by
+    rw [htop]
+    trivial
+  have hvacuum :=
+    (primeFirstTraceClock_pair_mem_graphClosure_iff 0 e₀).1 hmem
+  have hone : e₀ 0 = 1 := by
+    simp [e₀]
+  linarith
 
 /-- Every closed linear relation extending the literal block--Fock source/tail clock contains
 every vertical response. -/

@@ -114,6 +114,20 @@ theorem xiSquaredSeamPowerSixtyFourSourceDominated_iff_cassiniDyadicUniversalCer
     apply xiSquaredSeamPowerSixtyFourSourceDominated_iff_riemannHypothesis.2
     exact xiSquaredSeamDyadicHalfPlane_iff_riemannHypothesis.1 hcertificate.2.1
 
+/-- The complete dyadic-moment package itself is exactly RH; the unconditional Cassini source
+component is not needed in the statement once the package is projected from the universality law. -/
+theorem xiSquaredSeamDyadicMomentUniversalCertificate_iff_riemannHypothesis :
+    XiSquaredSeamDyadicMomentUniversalCertificate ↔ RiemannHypothesis := by
+  constructor
+  · intro hcertificate
+    exact xiSquaredSeamDyadicHalfPlane_iff_riemannHypothesis.1 hcertificate.1
+  · intro hRH
+    have hdom : XiSquaredSeamPowerSixtyFourSourceDominated :=
+      xiSquaredSeamPowerSixtyFourSourceDominated_iff_riemannHypothesis.2 hRH
+    exact
+      (xiSquaredSeamPowerSixtyFourSourceDominated_iff_cassiniDyadicUniversalCertificate.1
+        hdom).2
+
 /-- Simultaneous strict scalar, dyadic-rung, and every-cutoff shifted-Hankel witnesses. -/
 def XiSquaredSeamCassiniDyadicFailureUniversalCertificate : Prop :=
   0 < xiSquaredSeamPowerSixtyFourDefectEnergy ∧

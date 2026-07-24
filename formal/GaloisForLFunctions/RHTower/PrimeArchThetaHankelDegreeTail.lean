@@ -130,6 +130,14 @@ determinant in every size at least three. -/
 def PrimeArchSourceMomentHankelDeterminantTailFromThreePositive : Prop :=
   ∀ n : ℕ, 3 ≤ n → 0 < (primeArchSourceMomentHankelMatrix n).det
 
+/-- RH discharges the complete scalar determinant tail from size three onward. -/
+theorem primeArchSourceMomentHankelDeterminantTailFromThreePositive_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    PrimeArchSourceMomentHankelDeterminantTailFromThreePositive := by
+  intro n _
+  exact
+    (primeArchSourceMomentHankelDeterminantsPositive_iff_riemannHypothesis.2 hRH) n
+
 /-- **Scalar determinant-tail chain to RH.**  The strict two-ratio low block discharges sizes
 `0`, `1`, and `2`; only one scalar leading determinant in each size `n >= 3` remains. -/
 theorem riemannHypothesis_of_strictThetaCuspRatioSplit_of_primeArchDeterminantTailFromThree

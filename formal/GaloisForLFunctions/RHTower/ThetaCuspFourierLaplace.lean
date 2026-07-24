@@ -29,7 +29,7 @@ def thetaCuspFourierLaplaceIntegrand (w : ℂ) (x : ℝ) : ℂ :=
 def thetaCuspFourierLaplace (w : ℂ) : ℂ :=
   ∫ x : ℝ, thetaCuspFourierLaplaceIntegrand w x
 
-theorem integrable_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
+private theorem integrable_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
     Integrable (fun x : ℝ => Real.exp (-c * |x|)) := by
   have hpos : IntegrableOn (fun x : ℝ => Real.exp (-c * |x|)) (Ioi 0) := by
     have h := integrableOn_exp_mul_Ioi (a := -c) (neg_lt_zero.mpr hc) 0
@@ -191,7 +191,7 @@ theorem integrable_abs_pow_mul_exp_neg_mul_abs (k : ℕ) {c : ℝ} (hc : 0 < c) 
           rw [Real.norm_eq_abs, abs_of_nonneg hnon]
     · exact mul_nonneg (pow_nonneg (abs_nonneg x) k) (Real.exp_pos _).le
 
-theorem integrable_abs_mul_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
+private theorem integrable_abs_mul_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
     Integrable (fun x : ℝ => |x| * Real.exp (-c * |x|)) := by
   simpa only [pow_one] using integrable_abs_pow_mul_exp_neg_mul_abs 1 hc
 

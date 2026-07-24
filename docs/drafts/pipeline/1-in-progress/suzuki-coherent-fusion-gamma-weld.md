@@ -159,6 +159,8 @@ not bounded restricted-Weil response followed by bounded trace functional.
 - [x] all-prime `ell^1` majorant proved on paper
 - [x] cofinal cross-prime Gram expansion and faithful global cap proved on paper
 - [x] Gamma conductor Schur payment identified as an actual covariance projection
+- [x] centered Gamma-conductor projection proved strictly faithful on every finite packet of
+  distinct actual causal prime-depth coordinates
 - [x] formalize all-prime coherent fusion and global cap
 - [x] bounded/frame-preserving sharp-source recovery formally ruled out
 - [ ] identify `(7)` with concrete Robin--Gamma rectangular trace
@@ -183,3 +185,10 @@ not bounded restricted-Weil response followed by bounded trace functional.
 - 2026-07-22 — bounded intertwiner interpretation killed: causal fused response/sharp-source gain
   is at most `C_h/(p+1)` on exact moving-wall cells. Surviving source-to-response morphism must be
   unbounded and cutoff-relative; coherent covariance existence alone cannot supply trace weld.
+- 2026-07-24 — finite Gamma-projection collapse eliminated.  Exact Jacobi deletion law shows mean
+  and centered conductor remove only degrees zero and two; the surviving consecutive tail makes
+  the Schur kernel strictly positive definite on every finite packet of distinct positive
+  frequencies.  Unique factorization and actual geometric wall amplitudes transfer this to every
+  finite Suzuki prime-depth packet.  Open core is unchanged at its rightmost live interface:
+  identify this faithful covariance with concrete unbounded Robin--Gamma rectangular trace, then
+  pay marked-halfgap and holonomy graph debts.

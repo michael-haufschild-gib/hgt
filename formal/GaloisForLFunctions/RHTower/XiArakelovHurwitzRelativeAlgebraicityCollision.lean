@@ -60,6 +60,16 @@ def XiRightHurwitzCharacterAlgebraicOverArakelov : Prop :=
     IsAlgebraic (arakelovCoordinateField (arakelovW (rho : ℂ)))
       (xiHurwitzMonodromyCharacter rho)
 
+/-- RH discharges relative Hurwitz-character algebraicity by emptying the hypothetical right-half
+Xi fibre. -/
+theorem xiRightHurwitzCharacterAlgebraicOverArakelov_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    XiRightHurwitzCharacterAlgebraicOverArakelov := by
+  intro rho hrho
+  exact False.elim
+    ((rh_iff_xi_ne_zero_right.1 hRH (rho : ℂ)
+      (mem_rightHalf.2 hrho)) (xi_eq_zero_of_mem_divisor_support rho))
+
 /-- Integral Arakelov coordinates and the mixed relative-algebraicity constraint imply the
 absolute Arakelov--Hurwitz algebraicity collision on every hypothetical right-half Xi zero. -/
 theorem xiRightArakelovHurwitzAlgebraic_of_integral_of_relativeAlgebraic

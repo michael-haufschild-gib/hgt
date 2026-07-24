@@ -21,7 +21,7 @@ namespace RHTower
 open ArithmeticFunction Finset
 
 /-- `log k! = ∑_{m ≤ k} log m`. -/
-theorem log_factorial_eq (k : ℕ) :
+private theorem log_factorial_eq (k : ℕ) :
     Real.log ((k.factorial : ℕ) : ℝ) = ∑ m ∈ Finset.Icc 1 k, Real.log m := by
   rw [Nat.factorial_eq_prod_range_add_one]
   push_cast

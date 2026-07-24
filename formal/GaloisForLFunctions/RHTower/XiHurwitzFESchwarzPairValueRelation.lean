@@ -65,6 +65,18 @@ theorem xiHurwitzFESchwarzPairCircuit_iff_orientationEnergy_zero :
   xiHurwitzFESchwarzPairCircuit_iff_firstPrimeSeamChargesVanish.trans
     xiFirstPrimeSeamChargesVanish_iff_orientationEnergy_zero
 
+/-- Vanishing of every first-prime seam charge is exactly RH. -/
+theorem xiFirstPrimeSeamChargesVanish_iff_riemannHypothesis :
+    XiFirstPrimeSeamChargesVanish ↔ RiemannHypothesis :=
+  xiHurwitzFESchwarzPairCircuit_iff_firstPrimeSeamChargesVanish.symm.trans
+    xiHurwitzFESchwarzPairCircuit_iff_riemannHypothesis
+
+/-- Vanishing of every normalized prime-two Hurwitz anchor seam is exactly RH. -/
+theorem xiHurwitzAnchorPrimeTwoSeamsVanish_iff_riemannHypothesis :
+    XiHurwitzAnchorPrimeTwoSeamsVanish ↔ RiemannHypothesis :=
+  xiHurwitzAnchorPrimeTwoSeamsVanish_iff_firstPrimeSeamChargesVanish.trans
+    xiFirstPrimeSeamChargesVanish_iff_riemannHypothesis
+
 end
 
 end RHTower

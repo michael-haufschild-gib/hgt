@@ -2,6 +2,10 @@ import GaloisForLFunctions.RHTower.XiHedenmalmKummerCollision
 import GaloisForLFunctions.RHTower.HedenmalmGaussianHankelApertureWidthSpectrum
 import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 import GaloisForLFunctions.RHTower.CentralReciprocalMoments
+import GaloisForLFunctions.RHTower.XiHurwitzHardyAnchor
+import GaloisForLFunctions.RHTower.XiZerosInfinite
+import GaloisForLFunctions.RHTower.XiDerivativeKummerCollision
+import GaloisForLFunctions.RHTower.ThetaFourierLaplaceLocalKummerCollision
 
 /-!
 # RH supplies Hedenmalm Kummer roots
@@ -177,6 +181,58 @@ theorem rhLadder_one_and_xiHedenmalmESquareRootUpperHalf_iff_rh :
   · intro hRH
     exact ⟨(rh_iff_forall_ladder.mp hRH) 1,
       xiHedenmalmESquareRootUpperHalf_of_rh hRH⟩
+
+/-- **Xi Hedenmalm-Kummer/Hurwitz-anchor reality universality law.** For every nontrivial
+Kummer degree, common analytic roots of `XiC` and its Hedenmalm source on the centered upper
+half-plane are equivalent to existence of one critical-line Xi-divisor anchor together with
+reality of every two-node Hurwitz separator at every critical anchor. -/
+theorem xiHedenmalmKummerRoot_iff_hurwitzCriticalAnchorRealityUniversality
+    {d : ℕ} (hd : 1 < d) :
+    XiHedenmalmCommonKummerRootUpperHalf d ↔
+      (∃ τ : XiDivisorSupport, (τ : ℂ).re = 1 / 2) ∧
+        XiHurwitzEveryCriticalAnchorPairVandermondeReal := by
+  constructor
+  · intro hroot
+    have hRH :=
+      riemannHypothesis_of_xiHedenmalmCommonKummerRootUpperHalf hd hroot
+    letI : Infinite XiDivisorSupport :=
+      Set.infinite_coe_iff.mpr xiDivisorSupport_infinite
+    let τ : XiDivisorSupport :=
+      Classical.choice (inferInstance : Nonempty XiDivisorSupport)
+    refine ⟨⟨τ, xi_divisor_support_re_eq_half_of_rh hRH τ⟩, ?_⟩
+    intro anchor _hanchor
+    exact xiHurwitzAnchoredPairVandermondeReal_of_rh hRH anchor
+  · rintro ⟨⟨τ, hτ⟩, hreal⟩
+    have hRH : RiemannHypothesis :=
+      (riemannHypothesis_iff_xiHurwitzAnchoredPairVandermondeReal
+        τ hτ).mpr (hreal τ hτ)
+    exact xiHedenmalmCommonKummerRootUpperHalf_of_rh
+      (Nat.ne_of_gt (lt_trans Nat.zero_lt_one hd)) hRH
+
+/-- Any nontrivial Kummer collision among the differentiated Xi, Hedenmalm, or differentiated
+theta source pairs forces common Hedenmalm covers of every nontrivial degree. This is the
+Hedenmalm-source half of the three-source all-degree closure law. -/
+theorem anyKummerCollision_allHedenmalmSourceCoversUniversality
+    {dXi dH dTheta : ℕ}
+    (hdXi : 1 < dXi) (hdH : 1 < dH) (hdTheta : 1 < dTheta)
+    (hsource :
+      XiDerivativeCommonKummerRootRightHalf dXi ∨
+        XiHedenmalmCommonKummerRootUpperHalf dH ∨
+          ThetaCuspDerivativeCommonKummerRootRightZeroBand dTheta) :
+    ∀ e : ℕ, 1 < e →
+      XiHedenmalmCommonKummerRootUpperHalf e := by
+  have hRH : RiemannHypothesis := by
+    rcases hsource with hXi | hH | hTheta
+    · exact riemannHypothesis_of_xiDerivativeCommonKummerRootRightHalf
+        hdXi hXi
+    · exact riemannHypothesis_of_xiHedenmalmCommonKummerRootUpperHalf
+        hdH hH
+    · exact
+        riemannHypothesis_of_thetaCuspDerivativeCommonKummerRootRightZeroBand
+          hdTheta hTheta
+  intro e he
+  exact xiHedenmalmCommonKummerRootUpperHalf_of_rh
+    (Nat.ne_of_gt (lt_trans Nat.zero_lt_one he)) hRH
 
 end
 

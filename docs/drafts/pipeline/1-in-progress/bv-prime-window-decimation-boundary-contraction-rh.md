@@ -186,28 +186,39 @@ positivity or contraction is already the RH orientation condition.
 **Positive requirement:** `G` must be obtained from the finite coefficient identity `(12)` or an
 equivalent prime/Gamma boundary formula before the divisor is read.
 
-## 6. Candidate analytic provider
+## 6. Analytic-provider no-go and singular survivor
 
-The most concrete remaining provider is a pole-cancelled value graph.  The live corpus already
-proves for the dyadic source that multiplication by the shifted regularized zeta converts the
-meromorphic source into a holomorphic cancelled source and lowers the zero order by exactly one.
-Locally, the leading `(m_rho-1)`-jet of that cancelled source is the ordinary analytic value which
-encodes the Laurent residue at a zero of multiplicity `m_rho`.
-
-A viable construction would therefore combine:
+Pole cancellation does expose the Laurent residue as an ordinary analytic jet, but an ordinary
+analytic RKHS graph is impossible here. If critical-line point evaluation were continuous and
+nonzero throughout an interval and exact decimation covariance held globally, every Riesz kernel
+would be a peripheral eigenvector of the adjoint contraction:
 
 ```text
-renormalized coefficient Gram satisfying (12)
-  -> holomorphic cancelled-source graph
-  -> bounded ordinary jet evaluation
-  -> bounded Laurent functional ell_rho
-  -> contraction endpoint (8)--(9)
-  -> RH.                                                  (15)
+D_q^* k_(1/2+it)=conj(r^(2it)) k_(1/2+it).              (15)
 ```
 
-The missing theorem is the first arrow together with its norm compatibility.  Holomorphic
-cancellation alone does not prove that the coefficient decimation is contractive in the target
-graph.
+On a subinterval shorter than one character period, the eigenvalues in `(15)` are distinct.
+Peripheral eigenvectors of a contraction are orthogonal, so separability permits only countably
+many of them. The interval is uncountable. The formal theorem is
+`HTGeometry.countable_of_injective_peripheral_eigenvector_family`; its route application is
+recorded in
+`../3-formalized/not_new_scientific_knowledge/bv-copoisson-analytic-graph-peripheral-spectrum-no-go.md`.
+
+Thus the viable construction must be singular:
+
+```text
+finite coefficient Stein positivity
+  -> contractive source quotient with covariance modulo (Lambda)
+  -> exact eigencharacter only on co-Poisson annihilator fibres
+  -> bounded nonzero Laurent/conormal functional on those fibres
+  -> contraction endpoint (8)--(9)
+  -> RH.                                                  (16)
+```
+
+The multiplier-ideal defect is mandatory. It must absorb ordinary critical-line evaluations,
+otherwise the continuum peripheral-spectrum contradiction returns. The exact open theorem is now
+construction of this divisor-blind quotient norm and proof that its countable annihilator fibres
+retain the Laurent principal part.
 
 ## 7. Literature calibration
 
@@ -245,9 +256,11 @@ graph.
 - [x] ordinary Dirichlet--Hardy completion excluded
 - [x] polynomial-weight route separated from the active subpower route
 - [x] inflation/coisometry shortcut excluded by the off-multiple residue
-- [x] pole-cancelled jet graph isolated as the closest analytic provider
+- [x] pole-cancelled ordinary analytic RKHS provider excluded by peripheral-spectrum countability
+- [x] singular multiplier-ideal quotient classified as the strongest surviving provider
 - [ ] construct the canonical scale-zero Gram renormalization
-- [ ] prove Laurent/jet evaluation continuity in that norm
+- [ ] construct contractive covariance modulo the co-Poisson multiplier ideal
+- [ ] prove Laurent/conormal evaluation continuity only on annihilator fibres
 - [ ] verify source purity without divisor-selected weights
 - [ ] formalize only after the analytic construction exists on paper
 - [ ] compose an unconditional proof of RH

@@ -50,4 +50,10 @@ theorem rhLadder_one_iff_twinFactorization : RHLadder 1 ↔ TwinFactorization :=
     rw [h1, ← hord ρ hρ, h2, ← two_mul]
     exact dvd_mul_right 2 _
 
+/-- RH discharges the twin-factorization interface on the open right half-plane. -/
+theorem twinFactorization_of_riemannHypothesis
+    (hRH : RiemannHypothesis) : TwinFactorization :=
+  rhLadder_one_iff_twinFactorization.1
+    ((rh_iff_forall_ladder.1 hRH) 1)
+
 end RHTower

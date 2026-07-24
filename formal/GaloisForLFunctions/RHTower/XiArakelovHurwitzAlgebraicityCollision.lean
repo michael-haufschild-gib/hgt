@@ -169,6 +169,17 @@ theorem riemannHypothesis_of_xiRightArakelovHurwitzAlgebraic
   exact xi_ne_zero_of_openCriticalStrip_of_arakelovW_algebraic_of_monoScalar_algebraic
     (xi_divisor_support_re_mem_open_unit support) halg.1 halg.2 hzero
 
+/-- The static Arakelov--Hurwitz algebraicity interface is exactly RH: RH empties its hypothetical
+right-half fibre, while the arithmetic collision excludes every point in that fibre. -/
+theorem xiRightArakelovHurwitzAlgebraic_iff_riemannHypothesis :
+    XiRightArakelovHurwitzAlgebraic ↔ RiemannHypothesis := by
+  constructor
+  · exact riemannHypothesis_of_xiRightArakelovHurwitzAlgebraic
+  · intro hRH rho hrho
+    exact False.elim
+      ((rh_iff_xi_ne_zero_right.1 hRH (rho : ℂ)
+        (mem_rightHalf.2 hrho)) (xi_eq_zero_of_mem_divisor_support rho))
+
 end
 
 end RHTower

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMFirstClockVolterra
 import GaloisForLFunctions.RHTower.XiEndpointCentralMomentDyadicBridge
+import GaloisForLFunctions.RHTower.CompletedPrimeGammaSecondMomentCenterPositive
 
 /-!
 # Xi centered reciprocal-Laurent parity and source universality
@@ -131,6 +132,21 @@ theorem xi_completeCenteredReciprocalLaurentParitySourceUniversality
     heven, ?_, ?_⟩
   · exact heven.trans (primeArchSourceMoment_eq_xiCentralReciprocalMoment m).symm
   · exact heven.trans (xiCentralReciprocalMoment_eq_rawDyadicTraces m)
+
+/-- **Low Laurent positive-even/vacuum-odd phase.**  At each of the first three folded depths,
+the signed centered reciprocal trace has a strictly positive even channel and an exactly vanishing
+adjacent odd channel. -/
+theorem xiCenteredReciprocalLaurentTrace_lowEvenPos_oddZero
+    (m : ℕ) (hm : m ≤ 2) :
+    0 < (xiCenteredReciprocalLaurentTrace (2 * m + 2)).re ∧
+      xiCenteredReciprocalLaurentTrace (2 * m + 3) = 0 := by
+  refine ⟨?_, xiCenteredReciprocalLaurentTrace_odd_eq_zero m⟩
+  rw [xiCenteredReciprocalLaurentTrace_even_eq_centralMoment,
+    ← normalizedPrimeArchMoment_eq_re_xiCentralReciprocalMoment]
+  interval_cases m
+  · exact normalizedPrimeArchMoment_zero_pos
+  · exact normalizedPrimeArchMoment_one_pos
+  · exact normalizedPrimeArchMoment_two_pos
 
 end
 

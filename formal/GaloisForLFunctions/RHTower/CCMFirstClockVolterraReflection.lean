@@ -1687,13 +1687,12 @@ theorem ccmFirstClockReflectionThreshold_succ_div (n : ℕ) :
   rw [pow_succ]
   field_simp [ccmFirstClockReflectionRatio_pos.ne']
 
-theorem integrableOn_exp_mul_xiScrewDivisor_reflectionThreshold
-    (hsource : CCMFirstClockPublishedSourceNonnegative) :
+theorem integrableOn_exp_mul_xiScrewDivisor_reflectionThreshold_of_firstClockMoments
+    (hQall : CCMFirstClockXiAllExponentialMoments) :
     ∀ n : ℕ, IntegrableOn (fun L : ℝ =>
       Complex.exp
         (-(ccmFirstClockReflectionThreshold n : ℂ) * (L : ℂ)) *
           xiScrewDivisor L) (Ioi 0) := by
-  have hQall := ccmFirstClockXi_all_exponential_moments hsource
   intro n
   induction n with
   | zero =>
@@ -1715,10 +1714,21 @@ theorem integrableOn_exp_mul_xiScrewDivisor_reflectionThreshold
       exact integrableOn_exp_mul_xiScrewDivisor_reflect
         ha hseed hQ
 
-/-- **Complete CCM Volterra reflection law.** Published-source nonnegativity forces
-every positive exponential moment of the literal infinite CCM screw. -/
-theorem ccmXiScrew_all_exponential_moments_of_firstClockSource
+/-- The published first-clock source theorem supplies the reflection-threshold moments. -/
+theorem integrableOn_exp_mul_xiScrewDivisor_reflectionThreshold
     (hsource : CCMFirstClockPublishedSourceNonnegative) :
+    ∀ n : ℕ, IntegrableOn (fun L : ℝ =>
+      Complex.exp
+        (-(ccmFirstClockReflectionThreshold n : ℂ) * (L : ℂ)) *
+          xiScrewDivisor L) (Ioi 0) :=
+  integrableOn_exp_mul_xiScrewDivisor_reflectionThreshold_of_firstClockMoments
+    (ccmFirstClockXi_all_exponential_moments hsource)
+
+/-- **Complete CCM Volterra reflection law from its exact moment interface.** Every positive
+first-clock exponential moment forces every positive exponential moment of the literal infinite
+CCM screw. -/
+theorem ccmXiScrew_all_exponential_moments_of_firstClockMoments
+    (hQall : CCMFirstClockXiAllExponentialMoments) :
     CCMXiScrewAllExponentialMoments := by
   intro a ha
   obtain ⟨n, hn⟩ : ∃ n : ℕ,
@@ -1726,14 +1736,29 @@ theorem ccmXiScrew_all_exponential_moments_of_firstClockSource
     exists_pow_lt_of_lt_one ha
       ccmFirstClockReflectionRatio_lt_one
   have hthreshold :=
-    integrableOn_exp_mul_xiScrewDivisor_reflectionThreshold
-      hsource n
+    integrableOn_exp_mul_xiScrewDivisor_reflectionThreshold_of_firstClockMoments
+      hQall n
   exact integrableOn_exp_mul_xiScrewDivisor_mono
     (ccmFirstClockReflectionThreshold_pos n)
     (by
       unfold ccmFirstClockReflectionThreshold
       exact hn.le)
     hthreshold
+
+/-- Published-source nonnegativity discharges the complete first-clock moment interface. -/
+theorem ccmXiScrew_all_exponential_moments_of_firstClockSource
+    (hsource : CCMFirstClockPublishedSourceNonnegative) :
+    CCMXiScrewAllExponentialMoments :=
+  ccmXiScrew_all_exponential_moments_of_firstClockMoments
+    (ccmFirstClockXi_all_exponential_moments hsource)
+
+/-- The first-clock moment interface alone implies RH; source nonnegativity is not needed after
+the moments have been established. -/
+theorem riemannHypothesis_of_ccmFirstClockXiAllExponentialMoments
+    (hQall : CCMFirstClockXiAllExponentialMoments) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_ccmXiScrew_all_exponential_moments
+    (ccmXiScrew_all_exponential_moments_of_firstClockMoments hQall)
 
 /-- Published first-clock nonnegativity implies RH, with no truncation or
 auxiliary analytic hypothesis. -/
@@ -1753,6 +1778,26 @@ theorem ccmFirstClockPublishedSourceNonnegative_iff_rh :
   · intro hRH L hL
     exact ccmPublishedSourceSineCoefficient_firstClock_nonneg_of_rh
       hRH hL
+
+/-- **First-clock moment completeness.** Existence of every positive exponential moment of the
+literal first-clock rational divisor is exactly RH. -/
+theorem ccmFirstClockXiAllExponentialMoments_iff_rh :
+    CCMFirstClockXiAllExponentialMoments ↔ RiemannHypothesis := by
+  constructor
+  · exact riemannHypothesis_of_ccmFirstClockXiAllExponentialMoments
+  · intro hRH
+    exact ccmFirstClockXi_all_exponential_moments
+      (ccmFirstClockPublishedSourceNonnegative_iff_rh.2 hRH)
+
+/-- **Global CCM moment completeness.** Existence of every positive exponential moment of the
+literal infinite CCM screw is exactly RH. -/
+theorem ccmXiScrewAllExponentialMoments_iff_rh :
+    CCMXiScrewAllExponentialMoments ↔ RiemannHypothesis := by
+  constructor
+  · exact riemannHypothesis_of_ccmXiScrew_all_exponential_moments
+  · intro hRH
+    exact ccmXiScrew_all_exponential_moments_of_firstClockSource
+      (ccmFirstClockPublishedSourceNonnegative_iff_rh.2 hRH)
 
 end
 

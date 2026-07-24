@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.ThetaFourierLaplaceLocalKummerCollision
 import GaloisForLFunctions.RHTower.XiLaguerrePolya
 import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
 import GaloisForLFunctions.RHTower.XiZerosInfinite
+import GaloisForLFunctions.RHTower.XiHedenmalmKummerCollision
 import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 
 /-!
@@ -375,6 +376,34 @@ theorem rhLadder_one_and_thetaCuspDerivativeSquareRootRightZeroBand_iff_rh :
   · intro hRH
     exact ⟨(rh_iff_forall_ladder.mp hRH) 1,
       thetaCuspDerivativeSquareRootRightZeroBand_of_rh hRH⟩
+
+/-- Any nontrivial Kummer collision among the differentiated Xi, Hedenmalm, or differentiated
+theta source pairs forces common covers of every nontrivial degree for both differentiated source
+geometries. This is the differentiated-source half of the three-source all-degree closure law. -/
+theorem anyKummerCollision_allDifferentiatedSourceCoversUniversality
+    {dXi dH dTheta : ℕ}
+    (hdXi : 1 < dXi) (hdH : 1 < dH) (hdTheta : 1 < dTheta)
+    (hsource :
+      XiDerivativeCommonKummerRootRightHalf dXi ∨
+        XiHedenmalmCommonKummerRootUpperHalf dH ∨
+          ThetaCuspDerivativeCommonKummerRootRightZeroBand dTheta) :
+    ∀ e : ℕ, 1 < e →
+      XiDerivativeCommonKummerRootRightHalf e ∧
+        ThetaCuspDerivativeCommonKummerRootRightZeroBand e := by
+  have hRH : RiemannHypothesis := by
+    rcases hsource with hXi | hH | hTheta
+    · exact riemannHypothesis_of_xiDerivativeCommonKummerRootRightHalf
+        hdXi hXi
+    · exact riemannHypothesis_of_xiHedenmalmCommonKummerRootUpperHalf
+        hdH hH
+    · exact
+        riemannHypothesis_of_thetaCuspDerivativeCommonKummerRootRightZeroBand
+          hdTheta hTheta
+  intro e he
+  have he0 : e ≠ 0 :=
+    Nat.ne_of_gt (lt_trans Nat.zero_lt_one he)
+  exact ⟨xiDerivativeCommonKummerRootRightHalf_of_rh he0 hRH,
+    thetaCuspDerivativeCommonKummerRootRightZeroBand_of_rh he0 hRH⟩
 
 end
 

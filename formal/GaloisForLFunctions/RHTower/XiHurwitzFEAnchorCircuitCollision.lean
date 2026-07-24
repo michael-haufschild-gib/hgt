@@ -400,6 +400,17 @@ theorem riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzFEAnchorCircuit
     exact xi_ne_zero_of_openCriticalStrip_of_arakelovW_algebraic_of_monoScalar_algebraic
       hstrip hw hqrho hzero
 
+/-- The moving FE-anchor circuit interface is exactly RH: under RH its hypothetical right-half
+input fibre is empty, while any realization of the interface already excludes that fibre. -/
+theorem xiRightArakelovAlgebraicHurwitzFEAnchorCircuit_iff_riemannHypothesis :
+    XiRightArakelovAlgebraicHurwitzFEAnchorCircuit ↔ RiemannHypothesis := by
+  constructor
+  · exact riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzFEAnchorCircuit
+  · intro hRH rho hrho
+    exact False.elim
+      ((rh_iff_xi_ne_zero_right.1 hRH (rho : ℂ)
+        (mem_rightHalf.2 hrho)) (xi_eq_zero_of_mem_divisor_support rho))
+
 /-- The canonical half-exponent anchor has character `-1`. -/
 theorem monoScalar_half_eq_neg_one :
     monoScalar (1 / 2 : ℂ) = -1 := by
@@ -474,6 +485,16 @@ theorem riemannHypothesis_of_xiRightHurwitzHalfFEAnchorCircuit
     (xi_divisor_support_re_mem_open_unit support) hzero
     (h support (mem_rightHalf.mp hrho))
 
+/-- The algebraicity-free half-anchor circuit interface is exactly RH. -/
+theorem xiRightHurwitzHalfFEAnchorCircuit_iff_riemannHypothesis :
+    XiRightHurwitzHalfFEAnchorCircuit ↔ RiemannHypothesis := by
+  constructor
+  · exact riemannHypothesis_of_xiRightHurwitzHalfFEAnchorCircuit
+  · intro hRH rho hrho
+    exact False.elim
+      ((rh_iff_xi_ne_zero_right.1 hRH (rho : ℂ)
+        (mem_rightHalf.2 hrho)) (xi_eq_zero_of_mem_divisor_support rho))
+
 /-- **Canonical fixed-circuit chain to RH.**  It is enough to use the one anchor exponent `1/2`;
 the Arakelov algebraicity component is now discharged by the algebraicity-free circuit theorem. -/
 theorem riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit
@@ -482,6 +503,16 @@ theorem riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit
   apply riemannHypothesis_of_xiRightHurwitzHalfFEAnchorCircuit
   intro rho hrho
   exact (h rho hrho).2
+
+/-- The Arakelov-decorated half-anchor circuit interface is exactly RH. -/
+theorem xiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit_iff_riemannHypothesis :
+    XiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit ↔ RiemannHypothesis := by
+  constructor
+  · exact riemannHypothesis_of_xiRightArakelovAlgebraicHurwitzHalfFEAnchorCircuit
+  · intro hRH rho hrho
+    exact False.elim
+      ((rh_iff_xi_ne_zero_right.1 hRH (rho : ℂ)
+        (mem_rightHalf.2 hrho)) (xi_eq_zero_of_mem_divisor_support rho))
 
 end
 

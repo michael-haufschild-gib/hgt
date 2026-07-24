@@ -283,6 +283,17 @@ theorem completedPrimeGammaGaussianRatLeftHalfBoundedBelow_iff_riemannHypothesis
   ⟨riemannHypothesis_of_completedPrimeGammaGaussianRatLeftHalfBoundedBelow,
     completedPrimeGammaGaussianRatLeftHalfBoundedBelow_of_riemannHypothesis⟩
 
+/-- A finite lower bound on the full left half-strip is exactly RH. -/
+theorem completedPrimeGammaLeftHalfBoundedBelow_iff_riemannHypothesis :
+    CompletedPrimeGammaLeftHalfBoundedBelow ↔ RiemannHypothesis := by
+  constructor
+  · intro hfull
+    exact riemannHypothesis_of_continuedPrimeArchUpperImBoundedAbove
+      (continuedPrimeArchUpperImBoundedAbove_of_completedPrimeGammaLeftHalfBoundedBelow hfull)
+  · intro hRH
+    exact completedPrimeGammaLeftHalfBoundedBelow_of_gaussianRat
+      (completedPrimeGammaGaussianRatLeftHalfBoundedBelow_of_riemannHypothesis hRH)
+
 end
 
 end RHTower

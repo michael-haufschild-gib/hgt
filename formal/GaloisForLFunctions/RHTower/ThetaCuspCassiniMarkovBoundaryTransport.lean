@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CompletedSeamCompactThorinMarkovEquivalence
+import GaloisForLFunctions.RHTower.PrimeArchXiCompactThorinRH
 import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodAtomicNondivisibility
 import GaloisForLFunctions.RHTower.XiOrderFourteenCornerSourceExclusion
 import Mathlib.Analysis.Normed.Module.Convex
@@ -172,6 +173,102 @@ theorem completedSeamMomentGerm_eventuallyEq_compactMarkovTransform_of_thetaBoun
     simpa only [F, add_sub_cancel_left] using hz
   exact completedSeamMomentGerm_eventuallyEq_negTwoCassiniShiftLogDeriv.trans hshift
 
+/-- Center-to-boundary converse of the Cassini transport law.  A compact Markov realization of
+the completed seam germ, with support radius below `1/2`, analytically continues backward along
+the zero-free Cassini segment and recovers the genuine inward theta response. -/
+theorem thetaCuspCassiniBoundary_eventuallyEq_compactMarkovTransform_of_completedSeam
+    {μ : Measure ℝ} {B : ℝ}
+    (hfinite : IsFiniteMeasure μ)
+    (hB : 0 < B) (hBhalf : B < 1 / 2)
+    (hsupport : ∀ᵐ x : ℝ ∂μ, 0 ≤ x ∧ |x| ≤ B)
+    (hgerm :
+      completedSeamMomentGerm =ᶠ[nhds 0] compactMarkovTransform μ) :
+    (fun u : ℝ => compactMarkovTransform μ ((u : ℂ) - 1)) =ᶠ[
+      nhdsWithin 0 (Ioi 0)] thetaCuspCassiniInwardCoordinateResponse := by
+  letI : IsFiniteMeasure μ := hfinite
+  have hbound : ∀ᵐ x : ℝ ∂μ, |x| ≤ B := hsupport.mono fun _ hx => hx.2
+  let radius : ℝ := 1 / (2 * B)
+  have hradius : 1 < radius := by
+    dsimp only [radius]
+    rw [lt_div_iff₀ (by positivity : 0 < 2 * B)]
+    nlinarith
+  let S : Set ℂ := segment ℝ (0 : ℂ) 1
+  let W : Set ℂ :=
+    {u : ℂ | xiSquaredSeamCassiniSource u ≠ 0} ∩ Metric.ball 1 radius
+  have hWopen : IsOpen W := by
+    apply IsOpen.inter
+    · change IsOpen (xiSquaredSeamCassiniSource ⁻¹' {0}ᶜ)
+      exact isOpen_ne.preimage differentiable_xiSquaredSeamCassiniSource.continuous
+    · exact Metric.isOpen_ball
+  have hScompact : IsCompact S := isCompact_segment_zero_one
+  have hSW : S ⊆ W := by
+    intro u hu
+    refine ⟨xiSquaredSeamCassiniSource_ne_zero_of_mem_segment_zero_one hu, ?_⟩
+    rw [Metric.mem_ball]
+    have hclosed := segment_subset_closedBall_right (0 : ℂ) 1 hu
+    rw [Metric.mem_closedBall] at hclosed
+    have hdist : dist (0 : ℂ) 1 = 1 := by norm_num
+    rw [hdist] at hclosed
+    exact hclosed.trans_lt hradius
+  obtain ⟨δ, hδ, hδW⟩ := hScompact.exists_cthickening_subset_open hWopen hSW
+  let V : Set ℂ := Metric.thickening δ S
+  have hVW : V ⊆ W :=
+    (Metric.thickening_subset_cthickening δ S).trans hδW
+  have hVopen : IsOpen V := Metric.isOpen_thickening
+  have hVconvex : Convex ℝ V := (convex_segment (0 : ℂ) 1).thickening δ
+  have hzeroS : (0 : ℂ) ∈ S := left_mem_segment ℝ 0 1
+  have honeS : (1 : ℂ) ∈ S := right_mem_segment ℝ 0 1
+  have hzeroV : (0 : ℂ) ∈ V := Metric.self_subset_thickening hδ S hzeroS
+  have honeV : (1 : ℂ) ∈ V := Metric.self_subset_thickening hδ S honeS
+  let F : ℂ → ℂ := fun u => compactMarkovTransform μ (u - 1)
+  let H : ℂ → ℂ := fun u => -2 * logDeriv xiSquaredSeamCassiniSource u
+  have hFanalytic : AnalyticOnNhd ℂ F V := by
+    apply (analyticOnNhd_shifted_compactMarkovTransform μ hB hbound).mono
+    intro u hu
+    exact (hVW hu).2
+  have hHanalytic : AnalyticOnNhd ℂ H V := by
+    apply analyticOnNhd_negTwoCassiniLogDeriv.mono
+    intro u hu
+    exact (hVW hu).1
+  have hcenterShift :
+      (fun z : ℂ => H (1 + z)) =ᶠ[nhds 0]
+        compactMarkovTransform μ := by
+    simpa only [H] using
+      completedSeamMomentGerm_eventuallyEq_negTwoCassiniShiftLogDeriv.symm.trans
+        hgerm
+  have hsubTendsto : Tendsto (fun u : ℂ => u - 1) (nhds 1) (nhds 0) := by
+    have h : Tendsto (fun u : ℂ => u - 1) (nhds 1)
+        (nhds ((1 : ℂ) - 1)) :=
+      (continuousAt_id.sub continuousAt_const :
+        ContinuousAt (fun u : ℂ => u - 1) 1)
+    norm_num at h
+    exact h
+  have hnearOne : H =ᶠ[nhds 1] F := by
+    filter_upwards [hsubTendsto.eventually hcenterShift] with u hu
+    simpa [F] using hu
+  have hglobal : Set.EqOn H F V :=
+    hHanalytic.eqOn_of_preconnected_of_eventuallyEq hFanalytic
+      hVconvex.isPreconnected honeV hnearOne
+  have hnearZero : H =ᶠ[nhds 0] F :=
+    hglobal.eventuallyEq_of_mem (hVopen.mem_nhds hzeroV)
+  have hofReal : Tendsto (fun u : ℝ => (u : ℂ))
+      (nhdsWithin 0 (Ioi 0)) (nhds 0) :=
+    Complex.continuous_ofReal.continuousAt.tendsto.mono_left inf_le_left
+  have hHF :
+      (fun u : ℝ => H (u : ℂ)) =ᶠ[nhdsWithin 0 (Ioi 0)]
+        fun u : ℝ => F (u : ℂ) :=
+    hofReal.eventually hnearZero
+  have hlt : ∀ᶠ u : ℝ in nhdsWithin 0 (Ioi 0), u < 1 :=
+    eventually_nhdsWithin_of_eventually_nhds (Iio_mem_nhds zero_lt_one)
+  have hpos : ∀ᶠ u : ℝ in nhdsWithin 0 (Ioi 0), 0 < u :=
+    self_mem_nhdsWithin
+  have htheta :
+      thetaCuspCassiniInwardCoordinateResponse =ᶠ[nhdsWithin 0 (Ioi 0)]
+        fun u : ℝ => H (u : ℂ) := by
+    filter_upwards [hpos, hlt] with u hu0 hu1
+    exact thetaCuspCassiniInwardCoordinateResponse_eq_cassiniLogDeriv hu0 hu1
+  exact hHF.symm.trans htheta.symm
+
 /-- Existential wrapper around the measure-preserving boundary transport theorem. -/
 theorem primeArchCompactMarkovGermRepresentation_of_thetaBoundary
     (hrep : ThetaCuspCassiniCompactMarkovBoundaryRepresentation) :
@@ -213,6 +310,26 @@ theorem riemannHypothesis_of_thetaCuspCassiniCompactMarkovBoundaryRepresentation
     RiemannHypothesis :=
   riemannHypothesis_of_primeArchCompactMarkovGermRepresentation
     (primeArchCompactMarkovGermRepresentation_of_thetaBoundary hrep)
+
+/-- RH supplies a compact Markov representation at the genuine Cassini theta boundary using the
+canonical Xi measure and its source-derived endpoint support radius. -/
+theorem thetaCuspCassiniCompactMarkovBoundaryRepresentation_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    ThetaCuspCassiniCompactMarkovBoundaryRepresentation := by
+  refine ⟨primeArchXiCompactMomentMeasure, 2 / 41,
+    primeArchXiCompactMomentMeasure_finite, by norm_num, by norm_num,
+    ae_primeArchXiCompactMomentMeasure_mem_zero_two_over_fortyOne, ?_⟩
+  exact
+    thetaCuspCassiniBoundary_eventuallyEq_compactMarkovTransform_of_completedSeam
+      primeArchXiCompactMomentMeasure_finite (by norm_num) (by norm_num)
+      ae_primeArchXiCompactMomentMeasure_mem_zero_two_over_fortyOne
+      (completedSeamMomentGerm_eventuallyEq_primeArchXiCompactMarkovTransform_of_rh hRH)
+
+/-- Compact positive Markov realization at the genuine theta boundary is exactly RH. -/
+theorem thetaCuspCassiniCompactMarkovBoundaryRepresentation_iff_riemannHypothesis :
+    ThetaCuspCassiniCompactMarkovBoundaryRepresentation ↔ RiemannHypothesis :=
+  ⟨riemannHypothesis_of_thetaCuspCassiniCompactMarkovBoundaryRepresentation,
+    thetaCuspCassiniCompactMarkovBoundaryRepresentation_of_riemannHypothesis⟩
 
 /-! ## Explicit reciprocal-likelihood candidate -/
 
