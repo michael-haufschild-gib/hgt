@@ -652,6 +652,36 @@ theorem riemannHypothesis_iff_outsideStrip_nonneg :
     obtain ⟨F, hFmem, hFneg⟩ := exists_neg_weilL2Form_outsideStrip hs hzero
     linarith [hpos F hFmem]
 
+/-! ## §8 The form as a unitary involution pairing -/
+
+/-- The Weil form is the pairing of a vector with its conjugation-reindexed
+partner: `Q a = ⟪σ a, a⟫` for the reindexing `σ` along divisor conjugation. -/
+theorem xiWeilL2Form_eq_inner (a : XiDivisorL2) :
+    xiWeilL2Form a = (inner ℂ (xiLineConjVec a) a : ℂ) := by
+  rw [lp.inner_eq_tsum, xiWeilL2Form]
+  refine tsum_congr fun q => ?_
+  rw [xiLineConjVec_apply]
+  simp only [RCLike.inner_apply]
+
+/-- **Sharp two-sided bound.**  Reindexing is an isometry, so the Weil form of a
+vector never exceeds its squared norm in absolute value.  The criterion asks
+which end of this range the test-function span occupies: `‖a‖²` exactly when the
+vector is fixed by divisor conjugation, which under RH every test function is. -/
+theorem norm_xiWeilL2Form_le (a : XiDivisorL2) :
+    ‖xiWeilL2Form a‖ ≤ ‖a‖ ^ 2 := by
+  rw [xiWeilL2Form_eq_inner]
+  calc ‖(inner ℂ (xiLineConjVec a) a : ℂ)‖
+      ≤ ‖xiLineConjVec a‖ * ‖a‖ := norm_inner_le_norm _ _
+    _ = ‖a‖ * ‖a‖ := by rw [xiLineConjVec_norm]
+    _ = ‖a‖ ^ 2 := (sq ‖a‖).symm
+
+/-- A vector fixed by divisor conjugation has form equal to its squared norm. -/
+theorem xiWeilL2Form_eq_normSq_of_lineConj_eq {a : XiDivisorL2}
+    (ha : xiLineConjVec a = a) :
+    xiWeilL2Form a = ((‖a‖ ^ 2 : ℝ) : ℂ) := by
+  rw [xiWeilL2Form_eq_inner, ha, inner_self_eq_norm_sq_to_K]
+  norm_cast
+
 end
 
 end RHTower

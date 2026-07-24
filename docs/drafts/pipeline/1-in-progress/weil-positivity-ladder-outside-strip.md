@@ -396,3 +396,22 @@ rung-1′.
 identity buys positivity on a fixed family. To reach all families the sign must come from a
 mechanism that adapts to the configuration — i.e. from the archimedean side dominating uniformly,
 which is Weil positivity itself. Recording so the 3-4-1 family is not re-attempted at higher rungs.
+
+## Structural view — the form is a unitary-involution pairing [LEAN-PROVED]
+
+**`xiWeilL2Form_eq_inner`**: `Q a = ⟪σ a, a⟫`, where `σ` is the reindexing of the divisor along
+conjugation. Since `σ` is an ISOMETRY (`xiLineConjVec_norm`), two consequences are immediate:
+**`norm_xiWeilL2Form_le`** (`‖Q a‖ ≤ ‖a‖²`, sharp) and
+**`xiWeilL2Form_eq_normSq_of_lineConj_eq`** (`Q a = ‖a‖²` exactly when `σ a = a`).
+
+So the criterion has a geometric reading: `Q` ranges over `[−‖a‖², ‖a‖²]`, attaining the top exactly
+on conjugation-fixed vectors, and RH asks that the test-function span sit on the nonnegative side.
+Under RH every test function IS conjugation-fixed (spectral points are real, span elements factor
+through them), so the span sits AT the top — `Q a = ‖a‖²`.
+
+**Honest reading of this.** It makes visible how much of the criterion is bookkeeping: the content is
+not the inequality `Q ≥ 0` per se, which is a statement about where one subspace sits relative to a
+fixed involution, but the fact that `Q` is simultaneously computable from primes
+(`xiWeilGramEntry_arithmetic`). The arithmetic evaluation is the whole substance; the Hilbert-space
+side is a change of clothes. Recorded so that future work does not mistake the geometric restatement
+for progress.

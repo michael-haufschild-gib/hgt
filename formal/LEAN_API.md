@@ -7,7 +7,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 33140 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 33143 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
 | `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 21538 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
@@ -32709,6 +32709,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `factorsThroughSpectral_of_mem_span` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:588` | Membership in the span preserves factoring through the spectral point. |
 | theorem | `xiWeilL2Form_re_nonneg_of_rh` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:612` | Under RH the form is nonnegative on test functions.** All spectral points are real, so conjugation fixes them and the form becomes a sum of squares. |
 | theorem | `riemannHypothesis_iff_outsideStrip_nonneg` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:642` | RH is equivalent to positivity of the Weil form on kernels based off the critical strip.** Every entry of that family is an absolutely convergent prime expression, since the base p |
+| theorem | `xiWeilL2Form_eq_inner` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:659` | The Weil form is the pairing of a vector with its conjugation-reindexed partner: `Q a = ⟪σ a, a⟫` for the reindexing `σ` along divisor conjugation. |
+| theorem | `norm_xiWeilL2Form_le` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:670` | Sharp two-sided bound.** Reindexing is an isometry, so the Weil form of a vector never exceeds its squared norm in absolute value. The criterion asks which end of this range the te |
+| theorem | `xiWeilL2Form_eq_normSq_of_lineConj_eq` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:679` | A vector fixed by divisor conjugation has form equal to its squared norm. |
 | theorem | `xiCauchyRegularizedKernel_conj_of_real` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:30` | At a real argument the conjugate-base-point kernel is the conjugate kernel. |
 | theorem | `weilGram_real_copy_contribution_eq_normSq` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:41` | On-line copies only add.** For every finite family of base points and every coefficient vector, a copy with real centered coordinate contributes the squared modulus of the superpos |
 | theorem | `weilGram_real_copy_contribution_re_nonneg` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:63` | The contribution of an on-line copy to the Weil Gram form is nonnegative. |
