@@ -477,3 +477,11 @@ so the linear first Koszul cohomology `= zero-diagonal / antisymmetric ≅ SYMME
 the full card capstone requires the PRECISE MULTIGRADED Tor/Betti correspondence (β_{i,σ} = reduced
 H̃^{|σ|-i-1}(Δ_σ)) selecting the right piece — the deep remaining homological-algebra work, now precisely
 characterized.
+
+### Lean progress 13 — cocycle coeff-1 diagonal vanishes (coeff-1 structural pair complete)
+`HTGeometry/IsolatedKoszulCocycleCoeffOne.lean` [PROVED HERE], standard axioms, builds clean, formal lint passed.
+- `isolatedKoszulRelation_eq_zero_coeff_one_diag` : a first Koszul cocycle has zero `coeff-1` diagonal.
+Companion to progress 10 (boundary coeff-1 = antisymmetric). In the coeff-1 matrix `M_{ik}=((a i)_k).coeff 1`:
+cocycles ⊆ zero-diagonal, boundaries = antisymmetric — the structural data of the linear first Koszul
+cohomology (`= zero-diagonal/antisymmetric ≅ symmetric-off-diagonal`, dim `C(n+2,2)`; the Hochster `n+1`
+is the specific structural subspace, needing the multigraded restriction).

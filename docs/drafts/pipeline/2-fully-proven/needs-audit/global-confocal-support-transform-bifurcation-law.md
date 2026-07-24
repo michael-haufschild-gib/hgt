@@ -410,9 +410,9 @@ formal verification.
 - [x] preliminary parent-theory and exact-formula search completed
 - [x] final hostile source-level proof audit
 - [x] move to Stage 2 as `[PAPER-PROVED]`
-- [ ] formalize the exact theorem and all missing general-radius lemmas
-- [ ] run one narrow source check and final module build
-- [ ] axiom audit
+- [x] formalize the exact theorem and all missing general-radius lemmas (`ConfocalGlobalSupportTransform.lean` + `ConfocalGlobalSupportFaithfulness.lean`)
+- [x] run one narrow source check and final module build
+- [x] axiom audit (`[propext, Classical.choice, Quot.sound]`)
 - [ ] incorporate the strengthened single theorem into the manuscript
 
 ## Log
@@ -486,3 +486,20 @@ formal verification.
   **Remaining:** the degenerate `h_S(1) = 0 ⇒ S ⊆ {0}` edge case (then `G_S(R)=R`, `h_S ≡ 0`, and a
   hull point is forced to the origin) to make (13) unconditional; the reverse faithfulness (12) then
   follows since `h_S` is the null support function of `K_h(S)`.
+- 2026-07-24 — **Part 5 complete → entire theorem formalized.**  Added, in
+  `HTGeometry/ConfocalGlobalSupportFaithfulness.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`):
+  * `confocalHullOfField_subset_confocalNullSupportHull` — the reverse inclusion `K_G(S) ⊆ K_h(S)`
+    unconditionally (non-degenerate case via continuity of `h_S`; degenerate `h_S(1)=0` case via the
+    envelope collapsing to the radius and the origin argument).
+  * `confocalHullOfField_eq_confocalNullSupportHull` — **`K_G(S) = K_h(S)`**, the maximal-hull
+    identity (13), unconditional, exterior `R > M` restriction removed.
+  * `confocalNullSupport_eq_sSup_nullSupportHull` — the null support is the support function of the
+    null-support hull.
+  * `nullSupport_eqOn_of_globalDefect_eqOn` and `globalDefect_eqOn_iff_nullSupport_eqOn` — the reverse
+    direction and the full equivalence of the transform faithfulness (12): `D_S = D_T on (0,∞) ↔
+    h_S = h_T on [0,1]`.
+  With parts 1–4 in `ConfocalGlobalSupportTransform.lean` (defect fixed point, greatest/unique,
+  projective graph equality, radical bifurcation) and forward faithfulness
+  `confocalGlobalDefect_eqOn_of_nullSupport_eqOn`, **all five parts of the main theorem are now
+  formalized unconditionally**.  Only the non-Lean manuscript-integration gate remains.
