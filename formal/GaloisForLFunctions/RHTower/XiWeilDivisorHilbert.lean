@@ -242,6 +242,27 @@ def xiInvVec : XiDivisorL2 :=
 @[simp] theorem xiInvVec_apply (q : XiZeroCopy) :
     xiInvVec q = (xiSpectralPoint q)⁻¹ := rfl
 
+/-- **Uniform separation.**  If the centered zeta does not vanish on a ball,
+every divisor copy stays at distance at least `r₀/2` from the half ball.  This
+uses only continuity, not local finiteness of the divisor. -/
+theorem half_le_norm_sub_of_ball {s : ℂ} {r₀ : ℝ}
+    (hfree : ∀ y ∈ Metric.ball s r₀, XiC y ≠ 0)
+    {z : ℂ} (hz : z ∈ Metric.ball s (r₀ / 2)) (q : XiZeroCopy) :
+    r₀ / 2 ≤ ‖xiSpectralPoint q - z‖ := by
+  by_contra hcon
+  push Not at hcon
+  have hzs : ‖z - s‖ < r₀ / 2 := by
+    simpa [dist_eq_norm] using Metric.mem_ball.mp hz
+  have hin : xiSpectralPoint q ∈ Metric.ball s r₀ := by
+    rw [Metric.mem_ball, dist_eq_norm]
+    calc ‖xiSpectralPoint q - s‖
+        ≤ ‖xiSpectralPoint q - z‖ + ‖z - s‖ := by
+          simpa using norm_sub_le_norm_sub_add_norm_sub
+            (xiSpectralPoint q) z s
+      _ < r₀ / 2 + r₀ / 2 := by linarith
+      _ = r₀ := by ring
+  exact hfree _ hin ((XiC_eq_zero_iff_exists_xiZeroCopy _).mpr ⟨q, rfl⟩)
+
 /-- **Pointwise kernel bound on a divisor-free ball.**  If the centered zeta does
 not vanish on a ball, every kernel with base point in the half-ball is dominated
 there by a fixed multiple of the reciprocal divisor point. -/
@@ -253,20 +274,8 @@ theorem norm_kernel_le_of_ball {s : ℂ} {r₀ : ℝ} (hr₀ : 0 < r₀)
   have hpne : xiSpectralPoint q ≠ 0 := xiSpectralPoint_ne_zero q
   have hpnorm : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr hpne
   -- the divisor avoids the ball, so it is far from every point of the half-ball
-  have hfar : r₀ / 2 ≤ ‖xiSpectralPoint q - z‖ := by
-    by_contra hcon
-    push Not at hcon
-    have hin : xiSpectralPoint q ∈ Metric.ball s r₀ := by
-      rw [Metric.mem_ball, dist_eq_norm]
-      have hzs : ‖z - s‖ < r₀ / 2 := by
-        simpa [dist_eq_norm] using Metric.mem_ball.mp hz
-      calc ‖xiSpectralPoint q - s‖
-          ≤ ‖xiSpectralPoint q - z‖ + ‖z - s‖ := by
-            simpa using norm_sub_le_norm_sub_add_norm_sub
-              (xiSpectralPoint q) z s
-        _ < r₀ / 2 + r₀ / 2 := by linarith
-        _ = r₀ := by ring
-    exact hfree _ hin ((XiC_eq_zero_iff_exists_xiZeroCopy _).mpr ⟨q, rfl⟩)
+  have hfar : r₀ / 2 ≤ ‖xiSpectralPoint q - z‖ :=
+    half_le_norm_sub_of_ball hfree hz q
   have hznorm : ‖z‖ ≤ ‖s‖ + r₀ := by
     have hzs : ‖z - s‖ < r₀ / 2 := by
       simpa [dist_eq_norm] using Metric.mem_ball.mp hz
@@ -297,6 +306,61 @@ theorem norm_kernel_le_of_ball {s : ℂ} {r₀ : ℝ} (hr₀ : 0 < r₀)
     field_simp
   rw [hval] at hstep
   linarith [hznorm, hstep]
+
+/-- **The annihilator function is analytic off the divisor.**  For an `ℓ²`
+sequence on the divisor, the superposition of kernels against it is
+differentiable at every point where the centered zeta does not vanish: the
+uniform separation dominates the terms by a summable majorant on a half ball,
+which is exactly locally normal convergence. -/
+theorem differentiableAt_annihilator (a : XiDivisorL2) {s : ℂ}
+    (hs : XiC s ≠ 0) :
+    DifferentiableAt ℂ (fun z : ℂ => ∑' q : XiZeroCopy,
+      (starRingEnd ℂ) (a q) *
+        xiCauchyRegularizedKernel z (xiSpectralPoint q)) s := by
+  have hcont : ContinuousAt XiC s :=
+    (XiC_analytic s (Set.mem_univ s)).continuousAt
+  obtain ⟨r₀, hr₀, hball⟩ :=
+    Metric.eventually_nhds_iff.mp (hcont.eventually_ne hs)
+  have hfree : ∀ y ∈ Metric.ball s r₀, XiC y ≠ 0 := by
+    intro y hy
+    exact hball (by rwa [Metric.mem_ball] at hy)
+  set U : Set ℂ := Metric.ball s (r₀ / 2) with hU
+  have hUopen : IsOpen U := Metric.isOpen_ball
+  have hsU : s ∈ U := Metric.mem_ball_self (by linarith)
+  set C : ℝ := 2 * (‖s‖ + r₀) / r₀ with hC
+  have hmaj : Summable (fun q : XiZeroCopy => C * (‖a q‖ * ‖xiInvVec q‖)) :=
+    (summable_norm_mul a xiInvVec).mul_left C
+  have hterm : ∀ q : XiZeroCopy, DifferentiableOn ℂ
+      (fun z : ℂ => (starRingEnd ℂ) (a q) *
+        xiCauchyRegularizedKernel z (xiSpectralPoint q)) U := by
+    intro q
+    apply DifferentiableOn.const_mul
+    intro z hz
+    have hne : xiSpectralPoint q - z ≠ 0 := by
+      intro hcon
+      have hsep := half_le_norm_sub_of_ball hfree hz q
+      rw [hcon, norm_zero] at hsep
+      linarith
+    have hd : DifferentiableAt ℂ
+        (fun z : ℂ => xiCauchyRegularizedKernel z (xiSpectralPoint q)) z := by
+      unfold xiCauchyRegularizedKernel
+      exact (differentiableAt_const _).sub
+        (((differentiableAt_const _).sub differentiableAt_id).inv hne)
+    exact hd.differentiableWithinAt
+  have hbound : ∀ (q : XiZeroCopy) (w : ℂ), w ∈ U →
+      ‖(starRingEnd ℂ) (a q) *
+        xiCauchyRegularizedKernel w (xiSpectralPoint q)‖ ≤
+        C * (‖a q‖ * ‖xiInvVec q‖) := by
+    intro q w hw
+    rw [norm_mul, RCLike.norm_conj]
+    have hk := norm_kernel_le_of_ball hr₀ hfree hw q
+    have hnn : 0 ≤ ‖a q‖ := norm_nonneg _
+    calc ‖a q‖ * ‖xiCauchyRegularizedKernel w (xiSpectralPoint q)‖
+        ≤ ‖a q‖ * (C * ‖xiInvVec q‖) :=
+          mul_le_mul_of_nonneg_left hk hnn
+      _ = C * (‖a q‖ * ‖xiInvVec q‖) := by ring
+  have hdiff := differentiableOn_tsum_of_summable_norm hmaj hterm hUopen hbound
+  exact hdiff.differentiableAt (hUopen.mem_nhds hsU)
 
 end
 

@@ -205,3 +205,26 @@ the corpus's locally-normal-convergence template (`SummableLocallyUniformlyOn`, 
 
 **Remaining for rung 0:** assemble those two into `DifferentiableOn ℂ φ {z | XiC z ≠ 0}`; then the
 identity theorem on that connected open set; then `Sᗮᗮ = S`. No new mathematics.
+
+### Gate 5 progress — step (c) ANALYTICITY LANDED
+
+**`differentiableAt_annihilator`**: for every `a ∈ ℓ²(divisor)`, the annihilator function
+  `φ_a(z) = Σ'_q conj(a q) · K z (pt_q)`
+is differentiable at every `z` with `XiC z ≠ 0`.
+
+Assembly, all pieces certified here: continuity of `XiC` gives a ball on which it does not vanish;
+`half_le_norm_sub_of_ball` turns that into a UNIFORM separation `‖pt_q − z‖ ≥ r₀/2` over the whole
+divisor on the half ball (continuity only — no local finiteness); `norm_kernel_le_of_ball` converts
+the separation into the domination `‖conj(a q)·K z (pt_q)‖ ≤ C·‖a q‖·‖xiInvVec q‖`; Hölder
+(`summable_norm_mul`) makes that majorant summable; each term is differentiable because the pole
+`pt_q` is outside the half ball. Then locally normal convergence gives differentiability of the sum.
+
+So `φ_a` is analytic on the connected open set `{z | XiC z ≠ 0}` — exactly the hypothesis the
+identity theorem consumes.
+
+**Remaining for rung 0:** (d) the identity theorem — `φ_a ≡ 0` on the outside-strip region forces
+`φ_a(w) = 0` at the inside detection point (mathlib
+`AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero`, used elsewhere in the corpus; the
+domain is `ℂ` minus a discrete set, hence preconnected); (e) `Sᗮᗮ = S` to convert the annihilator
+statement into membership in the closed span; then the transport by `xiWeilL2Form_sub_norm_le`
+closes rung 0.

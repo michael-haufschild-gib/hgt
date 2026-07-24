@@ -7,7 +7,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 33103 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 33105 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
 | `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 21530 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
@@ -32671,7 +32671,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `summable_norm_mul` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:159` |  |
 | theorem | `xiWeilL2Form_sub_norm_le` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:167` | The Weil form is Lipschitz on bounded sets.** This is what transports a value of the form from one test function to any test function approximating it in the divisor Hilbert space. |
 | def | `xiInvVec` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:232` | The reciprocals of the centered divisor points form an `ℓ²` vector: this is the genus-one bound. |
-| theorem | `norm_kernel_le_of_ball` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:248` | Pointwise kernel bound on a divisor-free ball.** If the centered zeta does not vanish on a ball, every kernel with base point in the half-ball is dominated there by a fixed multipl |
+| theorem | `half_le_norm_sub_of_ball` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:248` | Uniform separation.** If the centered zeta does not vanish on a ball, every divisor copy stays at distance at least `r₀/2` from the half ball. This uses only continuity, not local  |
+| theorem | `norm_kernel_le_of_ball` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:269` | Pointwise kernel bound on a divisor-free ball.** If the centered zeta does not vanish on a ball, every kernel with base point in the half-ball is dominated there by a fixed multipl |
+| theorem | `differentiableAt_annihilator` | `GaloisForLFunctions.RHTower.XiWeilDivisorHilbert` | `formal/GaloisForLFunctions/RHTower/XiWeilDivisorHilbert.lean:315` | The annihilator function is analytic off the divisor.** For an `ℓ²` sequence on the divisor, the superposition of kernels against it is differentiable at every point where the cent |
 | theorem | `xiCauchyRegularizedKernel_conj_of_real` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:30` | At a real argument the conjugate-base-point kernel is the conjugate kernel. |
 | theorem | `weilGram_real_copy_contribution_eq_normSq` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:41` | On-line copies only add.** For every finite family of base points and every coefficient vector, a copy with real centered coordinate contributes the squared modulus of the superpos |
 | theorem | `weilGram_real_copy_contribution_re_nonneg` | `GaloisForLFunctions.RHTower.XiWeilGramStructure` | `formal/GaloisForLFunctions/RHTower/XiWeilGramStructure.lean:63` | The contribution of an on-line copy to the Weil Gram form is nonnegative. |
