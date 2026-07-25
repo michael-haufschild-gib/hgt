@@ -19,6 +19,7 @@ line into a single entire function.
 -/
 import GaloisForLFunctions.RHTower.HardyTitchmarshSemilocalSquare
 import Mathlib.Analysis.MellinTransform
+import GaloisForLFunctions.RHTower.GammaRealHalfPlane
 
 noncomputable section
 
@@ -348,31 +349,6 @@ theorem soninMellinIntegral_differentiableAt {a : ℝ} (ha : 0 < a) {f : SoninL2
 /-- The completed archimedean transform of the Sonin carrier. -/
 def soninDeBrangesTransform (f : SoninL2) (z : ℂ) : ℂ :=
   2 * Complex.Gammaℝ z * soninMellinIntegral f z
-
-theorem differentiableAt_Gammaℝ_of_re_pos {z : ℂ} (hz : 0 < z.re) :
-    DifferentiableAt ℂ Complex.Gammaℝ z := by
-  have heq : Complex.Gammaℝ = fun w : ℂ =>
-      (Real.pi : ℂ) ^ (-w / 2) * Complex.Gamma (w / 2) := funext Complex.Gammaℝ_def
-  rw [heq]
-  apply DifferentiableAt.mul
-  · apply DifferentiableAt.const_cpow
-    · fun_prop
-    · exact Or.inl (by exact_mod_cast Real.pi_ne_zero)
-  · have hne : ∀ m : ℕ, z / 2 ≠ -m := by
-      intro m hcon
-      have h2 : z = ((-(2 * (m : ℝ)) : ℝ) : ℂ) := by
-        have hmul := congrArg (fun w : ℂ => 2 * w) hcon
-        simp only at hmul
-        rw [mul_div_cancel₀ z two_ne_zero] at hmul
-        rw [hmul]
-        push_cast
-        ring
-      have hre : z.re = -(2 * (m : ℝ)) := by
-        rw [h2, Complex.ofReal_re]
-      have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-      linarith
-    exact (Complex.differentiableAt_Gamma _ hne).comp z
-      (differentiableAt_id.div_const 2)
 
 /-- **The physical half-plane brick.** For a function vanishing on the physical cutoff, the
 completed transform is holomorphic on `Re z > 1/2`. -/

@@ -8,7 +8,7 @@ The resolvent ladder's entries are `R n X = sum_q (w q + X)^(-(n+1))`, and `R 0 
 Euler-ray response `logDeriv xi (1/2 + x) / x`.  On the convergence half-plane the completed
 logarithmic derivative splits into an archimedean part and the von Mangoldt series, so
 
-`R 0 (x^2) = (arch part) / x - (vonMangoldtLogMoment 0 (1/2 + x)) / x`.
+`R 0 (x^2) = (arch part) / x - (vonMangoldtWeightLogMoment 0 (1/2 + x)) / x`.
 
 The subtracted term is the order-zero entry of the arithmetic moment array, which
 `VonMangoldtLogMomentHankel` proves positive semidefinite.  So the prime contribution to the ladder
@@ -27,7 +27,7 @@ noncomputable section
 order-zero logarithmic moment. -/
 theorem lseries_vonMangoldt_ofReal {σ : ℝ} (hσ : 1 < σ) :
     LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) (σ : ℂ) =
-      ((vonMangoldtLogMoment 0 σ : ℝ) : ℂ) := by
+      ((vonMangoldtWeightLogMoment 0 σ : ℝ) : ℂ) := by
   have hre : ((σ : ℂ)).re = σ := Complex.ofReal_re σ
   have hc := ArithmeticFunction.LSeriesSummable_vonMangoldt (s := (σ : ℂ))
     (by rw [hre]; exact hσ)
@@ -45,7 +45,7 @@ theorem lseries_vonMangoldt_ofReal {σ : ℝ} (hσ : 1 < σ) :
         rw [← Complex.ofReal_natCast, ← Complex.ofReal_neg,
           ← Complex.ofReal_cpow (Nat.cast_nonneg n)]
       rw [hcpow, ← Complex.ofReal_mul]
-  rw [LSeries, tsum_congr hterm, vonMangoldtLogMoment,
+  rw [LSeries, tsum_congr hterm, vonMangoldtWeightLogMoment,
     GaloisForLFunctions.HTGeometry.weightMoment]
   have hsum : Summable (fun n : ℕ =>
       (ArithmeticFunction.vonMangoldt n : ℝ) * (n : ℝ) ^ (-σ)) :=
@@ -60,7 +60,7 @@ theorem xiResolventMoment_zero_eq_arch_sub_prime {x : ℝ} (hx : 1 / 2 < x) :
     xiResolventMoment 0 (x ^ 2) =
       (((1 / 2 : ℂ) + (x : ℂ))⁻¹ + ((1 / 2 : ℂ) + (x : ℂ) - 1)⁻¹ +
           logDeriv Complex.Gammaℝ ((1 / 2 : ℂ) + (x : ℂ))) / (x : ℂ) -
-        ((vonMangoldtLogMoment 0 (1 / 2 + x) : ℝ) : ℂ) / (x : ℂ) := by
+        ((vonMangoldtWeightLogMoment 0 (1 / 2 + x) : ℝ) : ℂ) / (x : ℂ) := by
   have hxpos : 0 < x := lt_trans (by norm_num) hx
   have hre : ((1 / 2 : ℂ) + (x : ℂ)).re = 1 / 2 + x := by
     simp [Complex.add_re]
@@ -70,16 +70,16 @@ theorem xiResolventMoment_zero_eq_arch_sub_prime {x : ℝ} (hx : 1 / 2 < x) :
     push_cast
     ring
   have hprime : LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
-      ((1 / 2 : ℂ) + (x : ℂ)) = ((vonMangoldtLogMoment 0 (1 / 2 + x) : ℝ) : ℂ) := by
+      ((1 / 2 : ℂ) + (x : ℂ)) = ((vonMangoldtWeightLogMoment 0 (1 / 2 + x) : ℝ) : ℂ) := by
     rw [hcast]
     exact lseries_vonMangoldt_ofReal (by linarith)
   rw [xiResolventMoment_zero_eq_logDeriv hxpos, harith, hprime, sub_div]
 
 
 /-- The order-zero logarithmic moment of the von Mangoldt weight is nonnegative. -/
-theorem vonMangoldtLogMoment_zero_nonneg (σ : ℝ) :
-    0 ≤ vonMangoldtLogMoment 0 σ := by
-  rw [vonMangoldtLogMoment, GaloisForLFunctions.HTGeometry.weightMoment]
+theorem vonMangoldtWeightLogMoment_zero_nonneg (σ : ℝ) :
+    0 ≤ vonMangoldtWeightLogMoment 0 σ := by
+  rw [vonMangoldtWeightLogMoment, GaloisForLFunctions.HTGeometry.weightMoment]
   refine tsum_nonneg fun n => ?_
   have h1 : 0 ≤ (ArithmeticFunction.vonMangoldt n : ℝ) :=
     ArithmeticFunction.vonMangoldt_nonneg
@@ -96,18 +96,18 @@ theorem re_xiResolventMoment_zero_le_arch {x : ℝ} (hx : 1 / 2 < x) :
         logDeriv Complex.Gammaℝ ((1 / 2 : ℂ) + (x : ℂ))) / (x : ℂ)).re := by
   have hxpos : 0 < x := lt_trans (by norm_num) hx
   have hsplit := xiResolventMoment_zero_eq_arch_sub_prime hx
-  have hprime : (((vonMangoldtLogMoment 0 (1 / 2 + x) : ℝ) : ℂ) / (x : ℂ)).re =
-      vonMangoldtLogMoment 0 (1 / 2 + x) / x := by
+  have hprime : (((vonMangoldtWeightLogMoment 0 (1 / 2 + x) : ℝ) : ℂ) / (x : ℂ)).re =
+      vonMangoldtWeightLogMoment 0 (1 / 2 + x) / x := by
     rw [← Complex.ofReal_div, Complex.ofReal_re]
-  have hnn : 0 ≤ vonMangoldtLogMoment 0 (1 / 2 + x) / x :=
-    div_nonneg (vonMangoldtLogMoment_zero_nonneg (1 / 2 + x)) hxpos.le
+  have hnn : 0 ≤ vonMangoldtWeightLogMoment 0 (1 / 2 + x) / x :=
+    div_nonneg (vonMangoldtWeightLogMoment_zero_nonneg (1 / 2 + x)) hxpos.le
   rw [hsplit, Complex.sub_re, hprime]
   linarith
 
 
 /-- The order-zero logarithmic moment is at least its prime-two atom. -/
 theorem log_two_rpow_le_vonMangoldtLogMoment_zero {σ : ℝ} (hσ : 1 < σ) :
-    Real.log 2 * (2 : ℝ) ^ (-σ) ≤ vonMangoldtLogMoment 0 σ := by
+    Real.log 2 * (2 : ℝ) ^ (-σ) ≤ vonMangoldtWeightLogMoment 0 σ := by
   have hsum : Summable (fun n : ℕ =>
       (ArithmeticFunction.vonMangoldt n : ℝ) * (n : ℝ) ^ (-σ) * Real.log n ^ 0) := by
     simpa using summable_vonMangoldt_logPow hσ 0
@@ -119,7 +119,7 @@ theorem log_two_rpow_le_vonMangoldtLogMoment_zero {σ : ℝ} (hσ : 1 < σ) :
     have h2 : 0 ≤ ((j : ℝ) ^ (-σ)) := Real.rpow_nonneg (Nat.cast_nonneg j) _
     positivity
   have hle := hsum.le_tsum 2 hnn
-  rw [vonMangoldtLogMoment, GaloisForLFunctions.HTGeometry.weightMoment]
+  rw [vonMangoldtWeightLogMoment, GaloisForLFunctions.HTGeometry.weightMoment]
   refine le_trans (le_of_eq ?_) hle
   rw [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
   norm_num
@@ -133,11 +133,11 @@ theorem re_xiResolventMoment_zero_add_primeTwo_le_arch {x : ℝ} (hx : 1 / 2 < x
         logDeriv Complex.Gammaℝ ((1 / 2 : ℂ) + (x : ℂ))) / (x : ℂ)).re := by
   have hxpos : 0 < x := lt_trans (by norm_num) hx
   have hsplit := xiResolventMoment_zero_eq_arch_sub_prime hx
-  have hprime : (((vonMangoldtLogMoment 0 (1 / 2 + x) : ℝ) : ℂ) / (x : ℂ)).re =
-      vonMangoldtLogMoment 0 (1 / 2 + x) / x := by
+  have hprime : (((vonMangoldtWeightLogMoment 0 (1 / 2 + x) : ℝ) : ℂ) / (x : ℂ)).re =
+      vonMangoldtWeightLogMoment 0 (1 / 2 + x) / x := by
     rw [← Complex.ofReal_div, Complex.ofReal_re]
   have hatom : Real.log 2 * (2 : ℝ) ^ (-(1 / 2 + x)) / x ≤
-      vonMangoldtLogMoment 0 (1 / 2 + x) / x :=
+      vonMangoldtWeightLogMoment 0 (1 / 2 + x) / x :=
     div_le_div_of_nonneg_right
       (log_two_rpow_le_vonMangoldtLogMoment_zero (by linarith)) hxpos.le
   rw [hsplit, Complex.sub_re, hprime]

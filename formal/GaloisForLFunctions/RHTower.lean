@@ -2664,3 +2664,4 @@ import GaloisForLFunctions.RHTower.VonMangoldtLogMomentHankel
 import GaloisForLFunctions.RHTower.VonMangoldtThreeFourOneSeries
 import GaloisForLFunctions.RHTower.SoninCofinalGlobalEulerCarrier
 import GaloisForLFunctions.RHTower.SoninCofinalMobiusGammaXiIncidence
+import GaloisForLFunctions.RHTower.MarkusConjecture

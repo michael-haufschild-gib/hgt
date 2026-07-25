@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiRelativeResolventTrace
 import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardHardyTransport
 import GaloisForLFunctions.RHTower.XiWardEdgeCriticalCollapseGram
+import GaloisForLFunctions.RHTower.GammaRealHalfPlane
 
 /-!
 # Interior spectral-trace splitting
@@ -205,32 +206,6 @@ theorem logDeriv_congr_of_eventuallyEq {f g : ℂ → ℂ} {s : ℂ}
   rw [logDeriv, logDeriv]
   simp only [Pi.div_apply]
   rw [h.deriv_eq, h.eq_of_nhds]
-
-/-- `Γℝ` is differentiable on the right half-plane. -/
-theorem differentiableAt_Gammaℝ_of_re_pos {s : ℂ} (hs : 0 < s.re) :
-    DifferentiableAt ℂ Complex.Gammaℝ s := by
-  have hfun : Complex.Gammaℝ = fun z : ℂ =>
-      (Real.pi : ℂ) ^ (-z / 2) * Complex.Gamma (z / 2) :=
-    funext fun z => Complex.Gammaℝ_def z
-  rw [hfun]
-  apply DifferentiableAt.mul
-  · apply DifferentiableAt.const_cpow
-    · exact differentiableAt_id.neg.div_const 2
-    · exact Or.inl (by
-        exact_mod_cast (Real.pi_ne_zero : Real.pi ≠ 0))
-  · have hnon : ∀ m : ℕ, s / 2 ≠ -(m : ℂ) := by
-      intro m h
-      have hre := congrArg Complex.re h
-      have hdiv : (s / 2).re = s.re / 2 := by
-        rw [Complex.div_re]
-        simp
-        ring
-      rw [hdiv] at hre
-      simp only [Complex.neg_re, Complex.natCast_re] at hre
-      have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-      linarith
-    exact (Complex.differentiableAt_Gamma _ hnon).comp s
-      (differentiableAt_id.div_const 2)
 
 /-- On `Re s > 1` the completed source factors as `Γℝ · ζ`. -/
 theorem completedRiemannZeta_eq_gammaR_mul_zeta {s : ℂ} (hs : 1 < s.re) :

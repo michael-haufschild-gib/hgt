@@ -5985,3 +5985,668 @@ The concrete next task, in order:
    `Φ` is controlled, the sign of the defect is decided by a *pointwise* comparison rather than by an
    estimate — the first mechanism in this branch that is not self-referential and not
    precision-limited.
+
+## §98 — The Entire-Part Obstruction
+
+A conjecture, its one-line falsification, and the principle the falsification exposes. The principle
+is the actual result of §§90–97: it explains, structurally rather than case by case, why every route
+tried there returned an equivalence or a precision floor, and it says what kind of functional can
+possibly do better.
+
+### 98.1 The conjecture
+
+[CONJECTURE — Singular-Data Rigidity] Let `𝒵` be a multiset in `0 < Re s < 1`, stable under
+`s ↦ s̄` and `s ↦ 1-s`, with `N(T) ≪ T log T`, and set `W_𝒵(w) := Σ_{s ∈ 𝒵, Im s > 0} e^{ws}`
+(convergent for `Im w > 0`). Suppose `W_𝒵` continues meromorphically to `ℂ` with only simple poles at
+`w ∈ ±{log p^k}`, residues `-Λ(p^k)/2π`, and a logarithmic branch point at `0`. Then
+`𝒵 ⊂ {Re s = 1/2}`.
+
+This is the natural "the arithmetic singular data forces the critical line" statement, and it is the
+statement that every explicit-formula route implicitly hopes for. It is the right conjecture to
+make: it is exact, falsifiable, implies RH, and is bold enough to be false.
+
+### 98.2 [FALSIFIED]
+
+Move one quadruple `{ρ₀, ρ̄₀, 1-ρ₀, 1-ρ̄₀}` off the critical line. `W_𝒵` changes by
+
+  `e^{wρ₀} + e^{wρ̄₀} + e^{w(1-ρ₀)} + e^{w(1-ρ̄₀)} - (the four unmoved terms)`,
+
+a finite sum of exponentials — an **entire** function of `w`. Every pole, every residue, the entire
+principal part at every singularity, and the branch point at `0` are unchanged. A divisor with an
+off-line quadruple has exactly the same singular data as one without. The conjecture fails, and it
+fails for a reason that has nothing to do with zeta.
+
+### 98.3 The principle
+
+[PRINCIPLE — Entire-Part Obstruction] *Every functional of a spectral trace that depends only on the
+singular data of its analytic continuation is invariant under finite perturbation of the spectrum.
+The Riemann Hypothesis is not such a functional. Hence no finite combination of residue identities —
+no explicit formula, no Landau-type sum rule, no contour evaluation — can separate a divisor with
+off-line zeros from one without.*
+
+[LEAN-PROVED] `HTGeometry/AbstractSpectralFamily.lean`, axioms `propext, Classical.choice,
+Quot.sound`:
+
+```lean
+theorem traceC_sub_eq_finset_sum {ι : Type*} (F G : AbstractSpectralFamily ι) (s : Finset ι)
+    (h : ∀ i ∉ s, F.pt i = G.pt i) {τ : ℂ} (hτ : 0 < τ.re) :
+    F.traceC τ - G.traceC τ = ∑ i ∈ s, (F.term τ i - G.term τ i)
+theorem differentiable_term_sub {ι : Type*} (F G : AbstractSpectralFamily ι) (s : Finset ι) :
+    Differentiable ℂ fun τ : ℂ => ∑ i ∈ s, (F.term τ i - G.term τ i)
+```
+
+Two admissible families agreeing outside a finite set have traces differing by an entire function.
+
+### 98.4 What it explains, retroactively and exactly
+
+Each obstruction met in §§90–97 is now one corollary:
+
+- **§92.1** `D` is not a Weil pairing because its summand vanishes at `δ = 0`. Corollary: a Weil
+  pairing is a residue functional; `D` is an entire-part functional; the two classes are disjoint on
+  the nose.
+- **§93.3 / §95.2** the precision floor. The archimedean main terms of both sides of `D` are singular
+  data (they come from poles and branch points); `D` itself lives in the entire part. Comparing the
+  two sides is comparing a singular functional against an entire one, so the difference is *all* of
+  the error term. That is why the required relative precision was `σ²` and the available floor was
+  `σ log(1/σ)`: the floor is not an artefact of the contour, it is the size of the entire part.
+- **§95.1** the two prime series differ by `n^{3/2}`. Corollary: the residues (weight `n^{-2}`) are
+  singular data; `S(T)`'s prime expansion (weight `n^{-1/2}`) is not a residue expansion at all — it
+  is an asymptotic one. The weights differ because the two sides live on opposite sides of the
+  divide.
+- **§96.1** self-reference. The defect is finite-perturbation-sensitive, so any bound on one point by
+  the whole trace must retain that point's own contribution: gain `≥ 1` is the entire-part functional
+  refusing to be estimated by a singular one.
+- **§97.1** the functional equation acts trivially in the Poisson coordinate. Corollary: symmetries
+  are automorphisms of the singular data; they cannot see the entire part either.
+
+The branch has been consistent all along: `D`, the defect, is precisely an **entire-part functional**
+— it is exactly the part of the trace that the explicit formula does not determine — and every tool
+applied to it was a singular-data tool.
+
+### 98.5 What the principle predicts, and the next object
+
+The principle is not only a no-go; it is a specification. A functional that can prove RH must be
+**sensitive to finite perturbation**, i.e. must depend on the entire part of the trace. Three
+invariants of an entire function are available, and only three: its **order and type**, its **indicator
+diagram**, and its **global growth along rays**. The defect is a value; the correct object is the
+*growth* of the entire part.
+
+[CONJECTURE — Entire-Part Type] Write `W = P + E` with `P` the (arithmetically determined) sum of
+principal parts and `E` entire. Then the indicator function of `E` along the positive real axis is
+
+  `h_E(0) := limsup_{u → +∞} (log |E(u)|)/u = 1/2 + λ`,   `λ := sup_ρ |Re ρ - 1/2|`,
+
+so **RH ⟺ `h_E(0) = 1/2`**, and more generally the indicator diagram of `E` is the convex hull of the
+set `{Re ρ}`. The content is that the *singular* part `P` is arithmetic and known while the *type* of
+the complementary entire part is precisely the zero-free-strip width — the two halves of the trace
+carry exactly complementary information, and RH is the statement that the entire half is as small as
+the singular half permits.
+
+Why this is the right next object rather than another equivalence: `P` is explicitly computable from
+`Λ`, so `E = W - P` is computable wherever `W` is; and the indicator of an entire function is *not* a
+residue functional — it is exactly the kind of quantity the principle says is required. The first
+finite task is to compute `h_{E}(θ)` for `θ` in the upper half plane, where `W` is given by its
+convergent series and `P` by its explicit sum, and check the predicted equality
+`h_E(π/2) = 0` against the known `Σ e^{-σγ}` asymptotics — a consistency test that can falsify the
+conjecture cheaply before any effort is spent proving it.
+
+## §99 — Correction to §98.5, and what the Lean corpus says the target actually is
+
+### 99.1 §98.5 was ill-posed. [RETRACTED]
+
+The promised cheap test killed it. `W = P + E` is not a canonical decomposition: `P`, a sum of
+principal parts, is defined only modulo entire functions (and the naive `Σ_n` over all poles does not
+even converge — `Σ Λ(n)` diverges; the contour form `Σ_n Λ(n) n^{-c} e^{c w}/(w - log n)` converges
+but is not a pure principal-part sum). Since `E` is defined only modulo entire functions, its
+indicator `h_E` is not an invariant of `W`. The conjecture has no content as stated.
+
+The well-posed replacement is the indicator of `W` itself in the upper half `w`-plane, and it is
+computable: for `θ ∈ (0, π)`,
+
+  `h_W(θ) = sup_ρ (β_ρ cos θ - γ_ρ sin θ)`,
+
+the support function of the divisor. So the indicator diagram of `W` is the closed convex hull of the
+divisor, and "RH ⟺ that hull is a vertical half-line" — a restatement, not a route. Worse, at
+`θ → 0+` the limit is `1` unconditionally, driven by the classical zero-free region's shape at large
+height, so the indicator is not even sensitive to `sup β` at bounded height. The Entire-Part
+Obstruction of §98.3 stands; the specific object I proposed to exploit it does not.
+
+[LEAN-PROVED] What survived from the attempt, and it is the right shape — a *finite-perturbation
+sensitive* extraction, in `HTGeometry/AbstractSpectralShell.lean` (axioms `propext,
+Classical.choice, Quot.sound`):
+
+```lean
+theorem tendsto_exp_mul_traceC_sub_bottomShell :
+    Filter.Tendsto
+      (fun σ : ℝ => Real.exp (σ * F.bottomHeight) * F.traceC (σ : ℂ)
+          - ∑ i ∈ F.bottomShell, Complex.exp (-(σ : ℂ) * (F.pt i - (F.bottomHeight : ℂ))))
+      Filter.atTop (nhds 0)
+```
+
+The trace determines its extreme shell exactly in the limit. Moving one least-height point moves the
+limit — unlike every residue functional.
+
+### 99.2 The corpus already holds a different characterisation of the critical line
+
+Following the corpus rather than my own route: `RHTower/XiHurwitzFEAnchorCircuitCollision.lean`
+contains, all with axioms `propext, Classical.choice, Quot.sound`:
+
+```lean
+theorem continuedHurwitzFESchwarzPairDifferentiallyDependent_iff_re_eq_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
+    ContinuedHurwitzPairDifferentiallyDependent (1 - rho) ((starRingEnd ℂ) rho) ↔ rho.re = 1 / 2
+theorem xiHurwitzFESchwarzPairCircuit_iff_riemannHypothesis :
+    XiHurwitzFESchwarzPairCircuit ↔ RiemannHypothesis
+theorem xiZero_continuedHurwitzHalfFEAnchorTriple_independent
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) (hzero : xi rho = 0) :
+    ¬ ContinuedHurwitzFEAnchorTripleDependent rho (1 / 2 : ℂ)
+```
+
+The critical line is the locus where the functional-equation partner and the Schwarz partner of a
+zero become **differentially dependent** as Hurwitz functions, and the third theorem shows the method
+has teeth: it proves an *unconditional* independence at every Xi zero for the anchor `1/2`.
+
+This branch is on the correct side of §98.3: it is pointwise and value-type, never a sum over zeros.
+My §§90–98 analytic branch and this one are disjoint, and the obstruction proved in §98 applies to
+mine, not to this one.
+
+### 99.3 What the mechanism actually says, and the reframing it forces
+
+Reading the proof rather than the statement: dependence is decided by the Hurwitz monodromy character
+through `monoScalar_eq_monoScalar_iff_integerDifference` — two exponents carry the same character
+exactly when they differ by an **integer**. For the FE/Schwarz pair,
+
+  `(1 - rho) - conj rho = 1 - 2 Re rho`,
+
+so the critical line is the locus where that number is an integer, and the open strip confines it to
+`(-1, 1)` where the only integer is `0`. Equivalently `monoScalar rho = e^{2πi rho}`, and `Re rho = 1/2`
+is exactly the condition that this character be a *negative real*.
+
+[LEAN-PROVED] `RHTower/XiCriticalLineIntegrality.lean`, same axioms:
+
+```lean
+theorem riemannHypothesis_iff_forall_exists_int_one_sub_two_re :
+    RiemannHypothesis ↔
+      ∀ rho : XiDivisorSupport, ∃ m : ℤ, 1 - 2 * (rho : ℂ).re = (m : ℝ)
+```
+
+**The Riemann Hypothesis is an integrality statement.** Not an estimate, not a positivity, not a
+bound: every Xi zero must place the single real number `1 - 2 Re rho` in `Z`. The strip supplies the
+width; integrality supplies the location.
+
+This is what the corpus was saying and what the analytic branch could not see. It also retro-explains
+§98 once more: an integrality condition is manifestly finite-perturbation sensitive (move one zero and
+it fails at that zero), so no residue functional can reach it — consistent with the Entire-Part
+Obstruction, and now with a positive statement of what must be proved instead.
+
+### 99.4 Next
+
+Integrality statements are not proved by estimates. The methods that prove them, none of which this
+project has used, are:
+
+1. **Monodromy finiteness / quasi-unipotence.** `1 - 2 Re rho ∈ Z` is the resonance condition for the
+   local exponents of a connection. If the Hurwitz family over the exponent line carries a connection
+   whose monodromy at the Xi divisor is quasi-unipotent, integrality is automatic. The object to
+   construct: the connection, and the statement that the Xi divisor is its resonant locus.
+2. **Rationality/period arguments.** `monoScalar rho = e^{2πi rho}` is a period-type invariant; RH
+   says it is real at every zero. Real periods come from Galois-descent or from a real structure on
+   the underlying motive-like object. The object to construct: the real structure whose fixed locus
+   is the critical line.
+3. **`p`-adic integrality.** `1 - 2 Re rho ∈ Z` at every zero is exactly the kind of statement a
+   `p`-adic valuation argument settles, if a `p`-adic avatar of the divisor exists.
+
+Immediate finite task, in the corpus's own language: `xiZero_continuedHurwitzHalfFEAnchorTriple_independent`
+proves independence for the anchor `1/2` unconditionally; `xiHurwitzFESchwarzPairCircuit` requires
+*dependence* for the Schwarz anchor. Both are statements about the same three-function differential
+matroid at the same point. Determine the exact matroid of `{H_rho, H_{1-rho}, H_{conj rho}, H_{1/2}}`
+at a hypothetical off-line zero — a rank computation over a differential field, entirely finite — and
+see which rank patterns are consistent with the unconditional theorem. A contradiction there is a
+proof; an admissible pattern is an explicit description of what an off-line zero would have to look
+like differential-algebraically, which is the first concrete portrait of the enemy this project has
+had.
+
+## §100 — The differential matroid computed: no contradiction, and what it leaves
+
+### 100.1 The rank computation
+
+The corpus decides differential dependence of a Hurwitz family through `monoScalar`, and
+`monoScalar_eq_monoScalar_iff_integerDifference` makes character equality *integer difference*. So the
+matroid on any finite set of exponents is: **partition by residue class mod `Z`; a set is dependent
+exactly when two members share a class.**
+
+At a hypothetical off-line zero `rho = beta + i gamma` (`gamma ≠ 0`, `delta := beta - 1/2 ≠ 0`) the
+four exponents `rho`, `1-rho`, `conj rho`, `1/2` have pairwise differences
+
+  `2 delta + 2 i gamma`, `2 i gamma`, `delta + i gamma`, `-2 delta`, `1/2 - delta - i gamma`,
+  `delta - i gamma`.
+
+Four of these have nonzero imaginary part `±gamma` or `±2 gamma`, hence are not integers; and
+`-2 delta` is not an integer precisely because `0 < |2 delta| < 1`. **All four exponents lie in
+distinct classes mod `Z`: the quadruple is differentially independent.**
+
+[NO-GO] No contradiction. The rank pattern at an off-line zero is the generic one, fully consistent
+with `xiZero_continuedHurwitzHalfFEAnchorTriple_independent`. The differential-algebraic encoding is
+*faithful* — it detects the critical line exactly — but it carries **no information beyond the
+integrality of `1 - 2 Re rho`**, because the character map `s ↦ e^{2 pi i s}` is injective modulo `Z`.
+So `XiHurwitzFESchwarzPairCircuit` cannot be attacked through the matroid: proving the circuit *is*
+proving the integrality, with no intermediate structure to exploit.
+
+This is worth recording precisely because the route looked richer than it is. The Hurwitz functions
+are a faithful coordinate for the critical line, not a source of leverage on it.
+
+### 100.2 What the computation leaves: an involution with no free orbits
+
+Strip the encoding away and the statement that remains is geometric.
+
+[LEAN-PROVED] `RHTower/XiCriticalLineIntegrality.lean`, axioms `propext, Classical.choice,
+Quot.sound`:
+
+```lean
+theorem riemannHypothesis_iff_forall_exists_int_one_sub_two_re :
+    RiemannHypothesis ↔ ∀ rho : XiDivisorSupport, ∃ m : ℤ, 1 - 2 * (rho : ℂ).re = (m : ℝ)
+theorem riemannHypothesis_iff_forall_add_conj_eq_one :
+    RiemannHypothesis ↔ ∀ rho : XiDivisorSupport, (rho : ℂ) + (starRingEnd ℂ) (rho : ℂ) = 1
+```
+
+The map `sigma(rho) = 1 - conj rho` is the functional equation composed with Schwarz reflection. It is
+an anti-holomorphic **involution**; the Xi divisor is `sigma`-invariant; its fixed locus is exactly
+the critical line. So:
+
+> **RH ⟺ `sigma` acts on the Xi divisor with no free orbits.**
+
+A free orbit is a pair `{rho, 1 - conj rho}` with `beta ≠ 1/2`. Nothing in the analytic theory
+forbids free orbits; the whole content of RH is that there are none.
+
+This is also, exactly, the `inv` field of the abstract interface: `conj_stable` is `sigma`-equivariance
+and `im = 0` is being fixed. §96.2 noticed that the interface supplies only a sign-reversing
+*bijection*; for the Xi divisor it is a genuine involution, which is the axiom the interface is
+missing and the reason parity arguments are available for zeta but not for a general admissible
+family.
+
+### 100.3 Why this is the right frame, and the next object
+
+"An involution acts with no free orbits" is not an estimate, not a positivity, and not an integrality
+in disguise — it is an **equivariant counting statement**, and equivariant counting statements are
+settled by index theory: a Lefschetz number, an equivariant Euler characteristic, a signature.
+
+The precedent is exact rather than analogical. Over function fields the Riemann Hypothesis is a
+theorem, and Weil's proof is of this type: the Frobenius eigenvalues satisfy `|alpha| = q^{1/2}`
+because the **Hodge index theorem** on `C x C` forces a signature, which is precisely a statement that
+an involution-like pairing has no room for the analogue of a free orbit. The number-field obstruction
+has always been the absence of the surface. What §§99–100 add is that one no longer needs the surface
+to *state* the target: the target is the vanishing of a free-orbit count for one explicit
+anti-holomorphic involution on one explicit discrete set.
+
+Concrete next object, and it is constructible rather than hypothetical:
+
+> Build the `sigma`-equivariant pairing on the divisor directly. For each free orbit
+> `{rho, 1 - conj rho}` the two points have `Re` summing to `1`; for a fixed point the single value is
+> `1/2`. Define on finitely supported divisor classes the quadratic form
+> `Q(D) = Σ_{rho, rho' ∈ D} K(rho, sigma rho')` with `K` the Weil/Guinand kernel, and ask for its
+> **signature**. Weil positivity says `Q ≥ 0` on a subspace iff RH; the index-theoretic question is
+> whether `Q`'s signature is computable equivariantly — by localisation at the fixed locus, where the
+> only contributions are archimedean and prime, both explicit.
+
+That is the first formulation in this card in which RH is a *signature* rather than a bound, and
+signatures localise. The immediate finite task is to write `Q` on the Xi divisor in the corpus's
+existing Weil-Gram language (`XiWeilArithmeticGram`, `ConstrainedProlateWeilToeplitzSchur`) and
+compute its restriction to a single free orbit — a `2 x 2` determinant, entirely finite, whose sign
+decides whether free orbits are compatible with positivity at all.
+
+## §101 — The orbit block: each free orbit is a hyperbolic plane
+
+### 101.1 The 2×2 computation
+
+Take a Weil test function in polarised form `h(z) = f(z) f#(z)` with `f#(z) = conj f(conj z)` -- the
+involution the corpus already carries as `xiWeilSharp`. At a zero `rho = 1/2 + delta + i gamma` the
+centred spectral points of the `sigma`-orbit are `gamma - i delta` and `gamma + i delta`. Put
+
+  `u := f(gamma - i delta)`,  `v := f(gamma + i delta)`.
+
+Then `f#(gamma - i delta) = conj v` and `f#(gamma + i delta) = conj u`, so the orbit contributes
+
+  `h(gamma - i delta) + h(gamma + i delta) = u conj v + v conj u = 2 Re(u conj v)`.
+
+**A fixed point** (`delta = 0`) has `u = v` and contributes `|u|²`: a positive definite rank-one
+block. **A free orbit** contributes the form with matrix `[[0,1],[1,0]]` in the basis `(u,v)`:
+determinant `-1`, **signature `(1,1)` -- a hyperbolic plane.**
+
+[COMPUTED] The Weil quadratic form on the Xi divisor decomposes, orbit by orbit, as
+
+  `(positive definite)^{#fixed points}  ⊕  (hyperbolic plane)^{#free orbits}`,
+
+so its **negative index equals the number of free `sigma`-orbits**, and
+
+> **RH ⟺ the Weil form has negative index zero.**
+
+This is why Weil positivity is the correct criterion and also why it is hard in exactly the way it
+is: positivity is not a delicate inequality about a single quantity, it is the vanishing of an
+index, and each off-line orbit contributes exactly one hyperbolic plane -- no more, no less. The
+failure of RH would be quantised: negative index `= ` number of free orbits, an integer.
+
+### 101.2 The involution, formalised
+
+[LEAN-PROVED] `RHTower/XiCriticalLineIntegrality.lean`, axioms `propext, Classical.choice,
+Quot.sound`:
+
+```lean
+def xiZeroLineConjEquiv : XiDivisorSupport ≃ XiDivisorSupport :=
+  xiZeroConjEquiv.trans xiZeroReflectEquiv
+theorem xiZeroLineConjEquiv_apply (rho : XiDivisorSupport) :
+    ((xiZeroLineConjEquiv rho : XiDivisorSupport) : ℂ) = 1 - (starRingEnd ℂ) (rho : ℂ) := rfl
+theorem xiZeroLineConjEquiv_involutive : Function.Involutive xiZeroLineConjEquiv
+theorem riemannHypothesis_iff_xiZeroLineConj_fixed :
+    RiemannHypothesis ↔ ∀ rho : XiDivisorSupport, xiZeroLineConjEquiv rho = rho
+```
+
+`sigma` is now an explicit involution of the divisor in the corpus, so "free orbit" is a formal
+notion and "no free orbits" is a formal statement equivalent to RH. Note this is the same map the
+abstract interface carries as `inv`: `conj_stable` is `sigma`-equivariance and `im = 0` is being
+fixed. §96.2's missing axiom is exactly `xiZeroLineConjEquiv_involutive`, and it is a theorem for
+zeta while being false in general for an abstract admissible family.
+
+### 101.3 Where this puts the problem
+
+Three statements, all now proved equivalent to RH in the corpus, in increasing structure:
+
+1. `riemannHypothesis_iff_forall_exists_int_one_sub_two_re` — an **integrality**: `1 - 2 Re rho ∈ Z`.
+2. `riemannHypothesis_iff_xiZeroLineConj_fixed` — a **fixed-point property**: `sigma` has no free
+   orbit.
+3. §101.1 — an **index**: the Weil form's negative index is zero.
+
+These are the same statement in three categories, and the third is the one with a proof technology.
+Negative indices of quadratic forms attached to a variety with an involution are computed by
+localisation to the fixed locus; that is the content of the Hodge index theorem, which is exactly how
+the function-field Riemann Hypothesis is proved. The number-field difficulty has always been stated
+as "there is no surface". §§99–101 sharpen that: one does not need the surface to state the target,
+only to compute the index. What is missing is not a criterion but a **localisation formula** for the
+negative index of the Weil form.
+
+### 101.4 Next
+
+The finite next step is to write the localisation candidate and test it on the one case where both
+sides are computable:
+
+> The Weil form's arithmetic expression is `archimedean - prime`. Its negative index, if it localises,
+> should be expressible as a sum of local contributions at the fixed locus (the critical line) plus a
+> defect from the primes. Compute both sides for the truncated form on a finite-dimensional test
+> space -- the corpus already carries such truncations (`ConstrainedProlateWeilToeplitzSchur`,
+> `XiWeilArithmeticGram`) -- and check whether the negative eigenvalue count of the truncated Gram
+> matrix matches the free-orbit count of the zeros inside the corresponding window.
+
+That comparison is a finite linear-algebra statement about matrices the corpus already defines, it is
+falsifiable, and a match would be the first evidence that the index localises. A mismatch would say
+the Weil form's negative index is *not* the free-orbit count at finite truncation, which would itself
+locate the error term that any index formula must carry.
+
+## §102 — The index is finite for a structural reason, and what still blocks the formula
+
+### 102.1 Why the truncation is finite (no numerics needed)
+
+The comparison proposed in §101.4 was a numerical eigenvalue count, which this project's rules
+exclude as evidence. The mathematical content behind it is available directly.
+
+For a test function of exponential type at most `Delta`, the autocorrelation `g` is supported in
+`[-Delta, Delta]`, so `g(log n) = 0` for `n > e^Delta`: **only the prime powers below `e^Delta` enter
+the Weil functional at all.** On that space
+
+  `Q = (archimedean part, nonnegative)  -  (prime part, vanishing outside finitely many n)`.
+
+A nonnegative form cannot be negative, so every direction on which `Q` is negative must be seen by
+the prime part. That is the whole argument, and it is structural rather than estimative.
+
+[LEAN-PROVED] `HTGeometry/NegativeIndexRankBound.lean`, axioms `propext, Classical.choice,
+Quot.sound`:
+
+```lean
+theorem negativeSubspace_inf_radical_eq_bot
+    (P R : V → ℝ) (hP : ∀ v, 0 ≤ P v)
+    (K : Submodule ℝ V) (hK : ∀ v ∈ K, R v = 0)
+    (W : Submodule ℝ V) (hW : ∀ v ∈ W, v ≠ 0 → P v - R v < 0) :
+    W ⊓ K = ⊥
+theorem finrank_negativeSubspace_add_finrank_le [FiniteDimensional ℝ V] ... :
+    Module.finrank ℝ W + Module.finrank ℝ K ≤ Module.finrank ℝ V
+```
+
+A negative-definite subspace of `P - R` meets the radical of `R` trivially, hence has dimension at
+most the corank of that radical. Applied to the Weil functional on band-limited test functions: the
+**negative index is bounded by the number of prime powers below `e^Delta`** -- the primes are not
+merely the source of the negativity, they bound how much of it there can be.
+
+### 102.2 What this gives and what it does not
+
+Combined with §101.1 -- each free `sigma`-orbit contributes exactly one hyperbolic plane -- the shape
+of an index formula is now visible:
+
+  `#{free orbits resolved at scale Delta}  =  neg-index Q_Delta  ≤  #{prime powers ≤ e^Delta}`.
+
+The left equality is §101.1 *provided* the evaluation map from test functions to orbit values is
+surjective onto the resolved orbits; the right inequality is §102.1 and is unconditional. So the
+missing ingredient is precisely:
+
+[OPEN CORE, named exactly] **Resolution.** For test functions of exponential type `Delta`, which
+`sigma`-orbits can be independently prescribed? Equivalently: what is the rank of the evaluation map
+`f ↦ (f(gamma_rho))_rho` restricted to zeros with `|gamma| ≤ T`? Beurling--Selberg theory answers the
+analogous one-sided extremal question; the two-sided interpolation question at *complex* nodes
+`gamma - i delta` is what an index formula needs and is not classical.
+
+Note what the two bounds would say if the resolution count grows like the zero count `T log T` while
+the prime bound grows like `e^Delta / Delta`: for the inequality to be consistent, the number of
+*free* orbits below the resolution height must stay below the prime count. That is not a proof of RH
+-- the resolution dictionary between `Delta` and `T` is exactly the unproved ingredient, and getting
+it wrong is how one manufactures a false theorem here -- but it identifies the single quantitative
+comparison on which an index proof would turn.
+
+### 102.3 Status of the three equivalent forms
+
+All three remain equivalent to RH and all three are in the corpus:
+
+1. integrality: `1 - 2 Re rho ∈ Z` (`riemannHypothesis_iff_forall_exists_int_one_sub_two_re`);
+2. no free orbits for `sigma rho = 1 - conj rho` (`riemannHypothesis_iff_xiZeroLineConj_fixed`);
+3. vanishing negative index of the Weil form (§101.1, computed; the per-orbit block is hyperbolic).
+
+The gain of §102 is that form 3 now has an unconditional *upper* bound on the index from the prime
+side, which forms 1 and 2 do not admit at all. RH remains unproved: the index is bounded, not shown
+to vanish.
+
+### 102.4 Next
+
+The resolution question of §102.2 is the whole of it, and it is a concrete problem in entire-function
+theory rather than in number theory:
+
+> Given `Delta > 0` and a finite set of nodes `z_1, ..., z_N` in the strip `|Im z| < 1/2`, when can an
+> entire function of exponential type `≤ Delta`, real on `R`, take prescribed values at the `z_j` and
+> at their conjugates independently?
+
+For real nodes this is classical cardinal interpolation with the Nyquist threshold `N ≈ Delta T / pi`.
+For complex nodes the conjugate-pair constraint couples the values, and the coupling is exactly the
+hyperbolic block of §101.1. Determining the interpolation rank in the presence of that coupling is a
+finite, self-contained question whose answer converts §102.2's inequality into an index formula. That
+question -- not another criterion for RH -- is the next object to construct.
+
+## §103 — Two corrections: the rank bound does not apply, and resolution was a red herring
+
+### 103.1 [RETRACTED] §102.2's inequality
+
+`neg-index Q_Delta ≤ #{prime powers ≤ e^Delta}` is **false**, and the error is instructive.
+
+The abstract lemma of §102.1 is correct and proved: a negative-definite subspace of `P - R` meets the
+radical of `R` trivially. Its application to the Weil functional is not. The prime part is
+
+  `R(phi) = Σ_{n ≤ e^Delta} c_n ∫ phi(u) conj(phi(u - log n)) du + c.c.`,
+
+a **quadratic** form in `phi`, whose associated Hermitian operator is `Σ_n c_n (S_{log n} + S_{log n}^*)`
+with `S_t` the truncated shift on `L²[-Delta, Delta]`. A truncated shift has infinite rank. So `R` is
+a finite sum of *shifts*, not a finite-rank operator: only finitely many prime **frequencies** appear,
+which is not the same as finitely many **dimensions**. The set `{phi : R(phi) = 0}` is a quadric, not
+a subspace, and has infinite codimension in no useful sense.
+
+The retraction is necessary rather than pedantic. The false inequality, combined with §103.2 below,
+would have forced the number of zeros with `|Re rho - 1/2| ≥ eta` to be finite for every `eta > 0` --
+a quasi-RH statement far beyond any known zero-density theorem. Deriving that from two easy lemmas is
+itself the signal that one of them was misapplied.
+
+What is true, and is the correct replacement: `R` is a Toeplitz-type operator whose symbol is the
+generalized trigonometric polynomial `Σ_{n ≤ e^Delta} c_n · 2 cos(xi log n)`. By Szegő asymptotics its
+negative eigenvalue count grows **linearly in `Delta`**, with density the measure of the set where the
+total symbol is negative. So the index does not stay bounded; it has a density, and
+
+  `neg-index Q_Delta ≈ (Delta / 2 pi) · |{xi : Omega(xi) < 0}|`,
+
+with `Omega` the Riemann--Weil symbol. RH is the vanishing of that density -- i.e. `Omega ≥ 0` almost
+everywhere, which is the statement that the Riemann--Weil distribution is a positive measure. The
+index formula of §101--102 is therefore a **Szegő limit theorem**, not a finite-rank count.
+
+### 103.2 The Resolution question, answered -- and it was the wrong question
+
+§102.4 asked when an entire function of exponential type `≤ Delta`, real on `R`, can take prescribed
+values at finitely many nodes `z_j` in the strip and at their conjugates independently. The answer is:
+**always, for every `Delta > 0`.**
+
+Evaluation at `z` on `PW_Delta` is `f(z) = ∫_{-Delta}^{Delta} phi(u) e^{i z u} du = ⟨phi, e_z⟩` with
+`e_z(u) = e^{-i conj(z) u}`. The family attached to the nodes and their conjugates is
+`{e^{-i conj(z_j) u}, e^{-i z_j u}}`, a set of exponentials with **pairwise distinct frequencies**
+(distinct because the `z_j` are distinct and non-real). Exponentials with distinct frequencies are
+linearly independent on any interval of positive length -- vanishing of a finite combination on
+`[-Delta, Delta]` propagates to all of `R` by analyticity, where Dedekind independence of characters
+applies. Hence the evaluation map onto the `2N` values is surjective.
+
+So there is **no Nyquist obstruction and no resolution threshold** for finitely many nodes. §102.2's
+"resolution" open core does not exist.
+
+[CORRECTION to §101.1] This exposes the real gap, which resolution was masking. The Weil form is
+
+  `Q(f) = Σ_{fixed} |f(gamma)|²  +  Σ_{free orbits} 2 Re( f(gamma - i delta) · conj f(gamma + i delta) )`,
+
+and the free-orbit block is hyperbolic *as a form on that orbit's two values*. But `Q` on test
+functions is the **pullback** of that form along the evaluation map into the full (infinite) value
+space, and the pullback of an indefinite form can be positive semidefinite when its image lies in a
+positive cone. Prescribing `u = 1, v = -1` on one orbit does not make `Q` negative: it makes one
+summand equal `-2`, which must still beat `Σ_{all other zeros} |f(gamma_rho)|² ≥ 0`. So
+
+> **"negative index = number of free orbits" is not proved and, as stated in §101.1, is false as an
+> identity.** What holds is `neg-index ≥ 1` once a single orbit's negative contribution dominates the
+> rest, which is exactly the classical easy direction of Weil's criterion, and it needs `Delta` large
+> enough that `e^{Delta·delta}` beats the accumulated positive mass.
+
+### 103.3 What stands
+
+Unaffected, and still proved: §101.2's involution (`riemannHypothesis_iff_xiZeroLineConj_fixed`),
+§99.3's integrality (`riemannHypothesis_iff_forall_exists_int_one_sub_two_re`), §98.3's Entire-Part
+Obstruction, and the abstract lemma `negativeSubspace_inf_radical_eq_bot` itself. Withdrawn: the
+prime-count index bound and the resolution open core.
+
+The corrected picture: the index is not a finite count bounded by primes; it is a **density**, and
+the free-orbit/hyperbolic decomposition describes the form on the value space rather than on the test
+space. The competition between one orbit's hyperbolic block and the positive mass of every other zero
+is the actual content, and `Delta` -- the exponential type -- is the parameter that controls it.
+
+### 103.4 Next
+
+The corrected object is sharp and is a single inequality about entire functions:
+
+> For an off-line orbit at height `gamma` with displacement `delta`, and `f ∈ PW_Delta` normalised by
+> `‖f‖_{L²(R)} = 1`, how large can
+> `|f(gamma - i delta) · f(gamma + i delta)|` be relative to `Σ_{rho ≠ orbit} |f(gamma_rho)|²`?
+> The first quantity is at most `e^{2 Delta delta}` by Phragmén--Lindelöf; the second is a
+> Plancherel-type mass controlled by the zero density near `gamma`, which is `≈ log gamma / 2 pi` per
+> unit height.
+
+So the competition is `e^{2 Delta delta}` against `log gamma`, and a negative direction exists as soon
+as `Delta delta ≳ log log gamma`. That is a *usable* dictionary: it says an off-line zero at height
+`gamma` is detected by type `Delta ≈ log log gamma / delta`. Making this precise -- with the correct
+constant and with the positive mass estimated rather than guessed -- converts the classical easy
+direction of Weil's criterion into a quantitative detection theorem, and a quantitative detection
+theorem is what any Szegő-density argument needs as input. That estimate, not another criterion, is
+the next object.
+
+## §104 — Anti-theatre audit of §§90–103
+
+Session seed `4196616358529678506`. Every result of §§90–103 put through the novelty gate: *would a
+competent literature search have produced this?* Verdicts are blunt on purpose.
+
+| § | Claim | Verdict |
+|---|---|---|
+| 90 | Index-free rigidity: trace bounded on one vertical line ⟹ spectrum real | **REDUCES-TO-KNOWN.** This is the indicator/abscissa theory of Dirichlet series with complex frequencies. A search on "Dirichlet series, complex exponents, Phragmén--Lindelöf indicator" returns it. |
+| 91 | `RH ⟺ D(σ) = Σ e^{-σ|γ|}(1-cos σδ) = 0` | **INSIGNIFICANT.** One member of an infinite family of constructible "vanishes iff RH" functionals. Constructing one is an exercise. |
+| 92--96 | Why `D` resists (not a Weil pairing; precision floor; self-reference) | **INSIGNIFICANT as science.** These are facts about my own construction, not about zeta. Lab notes. |
+| 97 | FE acts trivially in the Poisson coordinate | **INSIGNIFICANT.** A fact about a coordinate I chose. |
+| 98 | "Entire-Part Obstruction" | **REDISCOVERED.** That the explicit formula does not determine the real parts is exactly why Weil positivity, not the explicit formula, is the criterion. Standard folklore. I oversold it as "the actual result of §§90--97". |
+| 99 | `RH ⟺ 1 - 2 Re rho ∈ Z` | **INSIGNIFICANT.** The strip has width 1, so the only available integer is 0. Calling this "RH is an integrality statement" is rhetoric, not mathematics. |
+| 100 | `RH ⟺ sigma(rho) = 1 - conj rho` has no free orbit | **REDISCOVERED.** This is the definition of the critical line together with the standard symmetry of the divisor. |
+| 101 | Each free orbit contributes a hyperbolic block | **REDISCOVERED and partly FALSE.** The block computation is how the easy direction of Weil's criterion is proved (Bombieri, *Remarks on Weil's quadratic functional*); and I stated it as an identity for the negative index, which §103.2 had to retract. |
+| 102 | `neg-index ≤ #{prime powers ≤ e^Delta}` | **FALSE.** Retracted in §103.1. |
+| 103 | The two corrections | Honest, but correcting my own errors is not new knowledge. |
+
+**Net: §§90--103 produced no new scientific knowledge.** The Lean is correct and the corpus grew by
+roughly twenty machine-checked declarations, but every one of them formalises either a standard fact,
+a trivial equivalence, or an observation about my own construction. This is the outcome the novelty
+gate exists to catch, and I did not apply it as I went.
+
+### 104.1 The exact why
+
+Every object built in §§90--103 was a **functional of the zero set**: the trace, the defect, the
+energy, the indicator, the Weil form on the divisor. A functional of the zero set can only encode
+properties of the zero set. The space of functionals vanishing exactly when RH holds is
+infinite-dimensional and free -- exhibiting one costs nothing and proves nothing. Every "criterion"
+in §§90--103 is a point in that space.
+
+That is the structural trap, and it is worth naming because it is invisible from inside: each step
+felt like progress because each step was a *correct new theorem*. Correctness is not the gate;
+distance from the known corpus is.
+
+**Constraint for anything further:** a statement is worth pursuing only if it is *upstream* of the
+zeros -- about the object that produces them -- and only if it is **not equivalent to RH**, so that it
+could be decided independently and RH would follow. Any new "RH ⟺ X" is disqualified on sight.
+
+### 104.2 What the entropy draw produced, and its attack
+
+`minimal-counterexample` × `watermarks` × `immune-system`.
+
+*Immune system.* A repertoire is shaped not by a rule that builds correct members but by **two
+opposing deletions**: negative selection removes strong self-binders, positive selection removes
+non-binders. The surviving set is a two-sided window. Applied: do not look for a rule producing
+`beta = 1/2`; look for two independent pressures whose window closes to a point.
+
+Zeta has exactly one such pressure and its mirror. The Euler product forbids zeros for `beta > 1`;
+positivity of `Λ` transports that inward (`3-4-1`) and saturates at `beta = 1 - c/log t`. The
+functional equation then reflects it to `beta > c/log t`. **The two pressures are the same pressure
+seen twice.** Self-duality is why every zero-free region yields a *band* of width `1 - 2 c/log t` and
+never a line: closing the band requires the single available pressure to travel the full distance
+`1/2` on its own.
+
+*Watermarks.* A watermark is imposed at formation, not printed afterwards, and is revealed only under
+changed illumination -- so it cannot be forged by post-processing. The formation constraint here is
+Poisson summation on `Z ⊂ R` (the theta transformation), which is exactly the functional equation.
+§98 already shows an off-line divisor does not violate it: the watermark is *compatible* with free
+orbits. So the only formation constraint available is self-dual and blind to RH.
+
+*Minimal counterexample.* A minimal off-line zero has a partner at the **same ordinate**, so
+`RH ⟺ rho ↦ Im rho` is injective on the zero set. This puts RH in the category of a
+transversality/generic-position statement rather than an estimate -- but genericity arguments say
+nothing about the single point `zeta`, which is the classical objection, and the counting version
+(`N(T) - N_0(T) ≥ 2·#off-line pairs`) is Levinson's territory and known.
+
+[ATTACKED AND DROPPED] A conjecture that off-line displacement `delta` forces a sign-change gap of `Z`
+of length `≫ delta` is refuted by configuration: on-line zeros at `gamma ± epsilon` with an off-line
+pair at ordinate `gamma` is not excluded by anything, and `epsilon` is unrelated to `delta`.
+
+### 104.3 Honest position
+
+Every conjecture I could generate this turn reduced, on attack, to a known target (Levinson
+saturation, `LI`, zero-density, Weil positivity). That is itself the finding: **at this frontier the
+reachable statements are known, and the unreachable ones are unreachable because zeta supplies only
+one non-self-dual input -- the Euler product -- whose transport range is `c/log t`.**
+
+So the next real question is not another criterion but:
+
+> **What is a second, independent, non-self-dual arithmetic input?**
+
+Not the functional equation (self-dual, §104.2). Not the explicit formula (residue-only, §98). Not
+positivity of `Λ` alone (saturates at `1 - c/log t`). Candidates worth a genuine literature audit
+before any further construction: the pair-correlation/moment structure of `zeta` (independent of both
+FE and Euler), the `Λ`-values' multiplicative *independence* across primes rather than their
+positivity, and the second-order structure of `Φ` (Pólya's kernel), which is a formation-level object
+not yet used anywhere in this card.
+
+This card's analytic branch is closed. Continuing it would produce more correct, worthless theorems.

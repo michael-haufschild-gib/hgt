@@ -107,7 +107,7 @@ theorem summable_vonMangoldt_logPow {σ : ℝ} (hσ : 1 < σ) (m : ℕ) :
 
 /-- The `m`-th logarithmic moment of the von Mangoldt weight on a convergence line: up to sign,
 the `m`-th derivative of the von Mangoldt Dirichlet series at `sigma`. -/
-def vonMangoldtLogMoment (m : ℕ) (σ : ℝ) : ℝ :=
+def vonMangoldtWeightLogMoment (m : ℕ) (σ : ℝ) : ℝ :=
   GaloisForLFunctions.HTGeometry.weightMoment
     (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℝ) * (n : ℝ) ^ (-σ))
     (fun n : ℕ => Real.log n) m
@@ -115,9 +115,9 @@ def vonMangoldtLogMoment (m : ℕ) (σ : ℝ) : ℝ :=
 /-- **The arithmetic side supplies matrix positivity.**  For every convergence line and every
 finite configuration of real weights, the von Mangoldt logarithmic moment array is positive
 semidefinite — the configuration-adaptive successor of the fixed `(3,4,1)` instance. -/
-theorem vonMangoldtLogMoment_hankel_nonneg {σ : ℝ} (hσ : 1 < σ) (N : ℕ) (a : ℕ → ℝ) :
+theorem vonMangoldtWeightLogMoment_hankel_nonneg {σ : ℝ} (hσ : 1 < σ) (N : ℕ) (a : ℕ → ℝ) :
     0 ≤ ∑ j ∈ Finset.range N, ∑ k ∈ Finset.range N,
-      a j * a k * vonMangoldtLogMoment (j + k) σ := by
+      a j * a k * vonMangoldtWeightLogMoment (j + k) σ := by
   refine GaloisForLFunctions.HTGeometry.weightMoment_hankel_nonneg ?_ ?_ N a
   · intro n
     have h1 : 0 ≤ (ArithmeticFunction.vonMangoldt n : ℝ) :=

@@ -363,6 +363,111 @@ theorem hochster_C6_realization (F : Type*) [Field F] :
     (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide)
     c6_df_not_face
 
+/-- **Uniform concrete Hochster realization for `C₄`.**  The same `both-nonzero` statement as
+`hochster_C4_realization`, but using the concrete `Tor₂` module class `srSquareEdgeTorClass` — the same
+`(chains) ⧸ (boundaries)` framework as `hochster_C5_realization`/`hochster_C6_realization`, rather than
+the general `Fin`-indexed `koszulTor` class.  So `C₄`, `C₅`, `C₆` now realize `H̃¹` through one uniform
+family of concrete `Tor_{n−2}` module classes. -/
+theorem hochster_C4_concrete_realization (F : Type*) [Field F] :
+    Nontrivial ((orientedEdges (cycleGraph 4) → F)
+        ⧸ LinearMap.range (orientedCoboundary (cycleGraph 4) F))
+      ∧ srSquareEdgeTorClass F c4Facets 0 1 2 3 ≠ 0 :=
+  ⟨reducedH1_cycleGraph4_nontrivial F,
+    srSquareEdgeTorClass_ne_zero F c4Facets
+      (by decide) (by decide) (by decide) (by decide) (by decide) (by decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      c4_ac_not_face c4_bd_not_face⟩
+
+/-- **Concrete `C₄` `Tor₂` direct summand + topological finrank.**  The topological reduced first
+cohomology `H̃¹(C₄)` is one-dimensional, and (algebraic side) the descended edge detector is a retraction
+`Tor₂ → F` that is `1` on the square class — so `F` is an explicit direct summand of the concrete second
+Koszul homology.  The degree-2 analogue of `hochster_C3_direct_summand`. -/
+theorem hochster_C4_concrete_direct_summand (F : Type*) [Field F] :
+    Module.finrank F ((orientedEdges (cycleGraph 4) → F)
+        ⧸ LinearMap.range (orientedCoboundary (cycleGraph 4) F)) = 1
+      ∧ ∃ ρ : ((Fin 4 → Fin 4 → stanleyReisnerRing F c4Facets)
+          ⧸ srSquareEdgeBoundaries F c4Facets) →ₗ[F] F,
+        ρ (srSquareEdgeTorClass F c4Facets 0 1 2 3) = 1 :=
+  ⟨finrank_reducedH1_cycleGraph4 F, _,
+    srSquareEdgeDetectorTor_class F c4Facets
+      (by decide) (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide) (by decide)⟩
+
+/-- **Concrete `C₅` `Tor₃` direct summand + topological finrank.**  `H̃¹(C₅)` is one-dimensional, and the
+descended pentagon detector is a retraction `Tor₃ → F` that is `1` on the class — so `F` is an explicit
+direct summand of the third Koszul homology. -/
+theorem hochster_C5_concrete_direct_summand (F : Type*) [Field F] :
+    Module.finrank F ((orientedEdges (cycleGraph 5) → F)
+        ⧸ LinearMap.range (orientedCoboundary (cycleGraph 5) F)) = 1
+      ∧ ∃ ρ : ((Fin 5 → Fin 5 → Fin 5 → stanleyReisnerRing F c5Facets)
+          ⧸ srPentTripleBoundaries F c5Facets) →ₗ[F] F,
+        ρ (srPentTripleTorClass F c5Facets 0 1 2 3 4) = 1 :=
+  ⟨finrank_reducedH1_cycleGraph5 F, _,
+    srPentTripleDetectorTor_class F c5Facets
+      (by decide) (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c5Facets, Finset.mem_coe]; decide)
+      (by decide) (by decide) (by decide)⟩
+
+/-- **Concrete `C₆` `Tor₄` direct summand + topological finrank.**  `H̃¹(C₆)` is one-dimensional, and the
+descended hexagon detector is a retraction `Tor₄ → F` that is `1` on the class — so `F` is an explicit
+direct summand of the fourth Koszul homology. -/
+theorem hochster_C6_concrete_direct_summand (F : Type*) [Field F] :
+    Module.finrank F ((orientedEdges (cycleGraph 6) → F)
+        ⧸ LinearMap.range (orientedCoboundary (cycleGraph 6) F)) = 1
+      ∧ ∃ ρ : ((Fin 6 → Fin 6 → Fin 6 → Fin 6 → stanleyReisnerRing F c6Facets)
+          ⧸ srHexTupleBoundaries F c6Facets) →ₗ[F] F,
+        ρ (srHexTupleTorClass F c6Facets 0 1 2 3 4 5) = 1 :=
+  ⟨finrank_reducedH1_cycleGraph6 F, _,
+    srHexTupleDetectorTor_class F c6Facets
+      (by decide) (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide) (by decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide)
+      (by simp only [IsFaceOf, c6Facets, Finset.mem_coe]; decide)
+      (by decide) (by decide) (by decide) (by decide)⟩
+
+/-- **Independence of boundary dimension and source-coherence amplitude.**  Each cycle complex `C₄`,
+`C₅`, `C₆` is one-dimensional — every facet is an edge (`card = 2`) — yet carries a nonzero
+source-coherence (`Tor`) class in degree `2`, `3`, `4` respectively.  So one fixed thin reduced support
+(boundary dimension `1`) realizes strictly growing derived coherence amplitude: the classical boundary
+dimension and the derived source-coherence amplitude are independent invariants, a thin support carrying
+arbitrarily deep coherence. -/
+theorem hochster_thin_support_deep_coherence (F : Type*) [Field F] :
+    ((∀ s ∈ c4Facets, s.card = 2) ∧ srSquareEdgeTorClass F c4Facets 0 1 2 3 ≠ 0)
+      ∧ ((∀ s ∈ c5Facets, s.card = 2) ∧ srPentTripleTorClass F c5Facets 0 1 2 3 4 ≠ 0)
+      ∧ ((∀ s ∈ c6Facets, s.card = 2) ∧ srHexTupleTorClass F c6Facets 0 1 2 3 4 5 ≠ 0) :=
+  ⟨⟨by decide, (hochster_C4_concrete_realization F).2⟩,
+    ⟨by decide, (hochster_C5_realization F).2⟩,
+    ⟨by decide, (hochster_C6_realization F).2⟩⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

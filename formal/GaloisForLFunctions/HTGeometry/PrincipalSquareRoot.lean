@@ -75,6 +75,41 @@ theorem csqrtIm_eq_zero_iff {z : ℂ} (hz : 0 < z.re) : csqrtIm z = 0 ↔ z.im =
   · intro h
     exact Or.inl h
 
+/-- The square of the imaginary part, in closed form. -/
+theorem sq_csqrtIm {z : ℂ} (hz : 0 < z.re) : csqrtIm z ^ 2 = (‖z‖ - z.re) / 2 := by
+  have hp : 0 < csqrtRe z := csqrtRe_pos hz
+  have hsq : csqrtRe z ^ 2 = (‖z‖ + z.re) / 2 := sq_csqrtRe hz
+  have hnorm : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]; ring
+  have hden : 0 < ‖z‖ + z.re := by
+    have := Complex.re_le_norm z; linarith
+  rw [csqrtIm, div_pow, show (2 * csqrtRe z) ^ 2 = 4 * csqrtRe z ^ 2 by ring, hsq]
+  field_simp
+  nlinarith [hnorm]
+
+/-- **`csqrt` is a square root on the right half-plane.**  The two closed forms for the squares of
+the real and imaginary parts differ by exactly `Re z`, and their product doubles to `Im z`. -/
+theorem csqrt_sq {z : ℂ} (hz : 0 < z.re) : csqrt z ^ 2 = z := by
+  have hp : 0 < csqrtRe z := csqrtRe_pos hz
+  apply Complex.ext
+  · rw [pow_two, Complex.mul_re, csqrt_re, csqrt_im]
+    have h1 : csqrtRe z * csqrtRe z = (‖z‖ + z.re) / 2 := by
+      rw [← pow_two]; exact sq_csqrtRe hz
+    have h2 : csqrtIm z * csqrtIm z = (‖z‖ - z.re) / 2 := by
+      rw [← pow_two]; exact sq_csqrtIm hz
+    rw [h1, h2]; ring
+  · rw [pow_two, Complex.mul_im, csqrt_re, csqrt_im, csqrtIm]
+    field_simp
+    ring
+
+/-- The product of the two parts is half the imaginary part of the argument.  This is the
+division-free form of the displacement law. -/
+theorem csqrtIm_mul_csqrtRe {z : ℂ} (hz : 0 < z.re) :
+    csqrtIm z * csqrtRe z = z.im / 2 := by
+  have hp : 0 < csqrtRe z := csqrtRe_pos hz
+  rw [csqrtIm]
+  field_simp
+
 theorem csqrt_conj (z : ℂ) : csqrt ((starRingEnd ℂ) z) = (starRingEnd ℂ) (csqrt z) := by
   have hre : ((starRingEnd ℂ) z).re = z.re := Complex.conj_re z
   have him : ((starRingEnd ℂ) z).im = -z.im := Complex.conj_im z

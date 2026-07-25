@@ -1610,3 +1610,238 @@ Infrastructure built (both degrees): `IsAlternating4_add/zero`, `IsAlternating5_
 So each `Cₙ` (`n = 4,5,6`) class spans a free rank-one `F`-module in `Tor_{n-2}` — the degree-1 embedding
 replayed at degrees 2, 3, 4.  Next: the higher exact ranks (whole `Tor_i` at the cycle multidegree `≅ F`,
 the multigraded exhaust one degree up, needing `d_{n+1}`).
+
+### Lean progress — Hochster realization for C₅ (Tor₃) and C₆ (Tor₄)
+
+`HochsterCycleRealization.lean` (axiom-clean) now connects the new algebraic `Tor` embeddings to the
+topological reduced first cohomology for the whole cycle family:
+
+- `finrank_reducedH1_cycleGraph5` / `finrank_reducedH1_cycleGraph6` — `dim H̃¹(Cₙ) = 1` (`= n − (n−1)`).
+- `reducedH1_cycleGraph5_nontrivial` / `reducedH1_cycleGraph6_nontrivial`.
+- `hochster_C5_both_nonzero` / `hochster_C6_both_nonzero` — for any complex realizing the pentagon/hexagon,
+  the algebraic `srPentTripleTorClass` (`Tor₃`) / `srHexTupleTorClass` (`Tor₄`) and the topological
+  `H̃¹(Cₙ)` are simultaneously nonzero — the `i = n−2`, `|W| = n` instances of
+  `Torᵢ(k[Δ],k)_W ≅ H̃^{|W|−i−1}(Δ|W)`.
+- `c5Facets` / `c6Facets` + `hochster_C5_realization` / `hochster_C6_realization` — fully unconditional at
+  the concrete pentagon/hexagon complexes (all hypotheses discharged by `decide`).
+
+Together with the existing `C₃` (`Tor₁`) and `C₄` (`Tor₂`) realizations, the Hochster iso is now realized
+(both sides nonzero, unconditionally) across the cycle family `C₃…C₆`, i.e. `Tor₁…Tor₄`.  Next: upgrade
+`both_nonzero` to `both_dimension_1` (exact rank) for `C₄…C₆` as done for `C₃` (`hochster_C3_exact_rank`).
+
+### Lean progress — concrete C₄ Tor₂ module class: cycle family now uniform
+
+`HigherCycleTorsionFree.lean` now carries the square (`C₄`) `Tor₂` class in the *same* concrete
+`(chains) ⧸ (d-boundaries)` framework as `C₅`/`C₆` (the general `koszulTor` `C₄` class lives in a
+different `Fin`-indexed module):
+
+- `IsAlternating3_add/zero/smul`, `alternating3Submodule`, `srKoszulBoundary3ₗ` (`d₃` as an `R`-linear
+  map), `srSquareEdgeBoundaries` (`d₃(alt³)`).
+- `srSquareEdgeTorClass` / `srSquareEdgeTorClass_ne_zero` / `srSquareEdgeTorEquiv` — `F ≃ₗ[F] F·[C₄]` in
+  `(α→α→S) ⧸ d₃(alt³)`, nonzero via `srSquareEdge_secondKoszulHomology_nonzero`.
+- `hochster_C4_concrete_realization` (in `HochsterCycleRealization.lean`) — the uniform both-nonzero
+  statement at `c4Facets` using this concrete class.
+
+So `C₄`, `C₅`, `C₆` now realize `H̃¹` through **one uniform family** of concrete `Tor_{n−2}` module classes
+`srSquareEdgeTorClass` / `srPentTripleTorClass` / `srHexTupleTorClass`, each a free rank-one `F`-line, each
+paired with the topological `H̃¹(Cₙ)`.  Next: the exact ranks (both-dimension-`1`) for `C₄…C₆`; the card's
+open gate remains the general finite-complex bridge `(5)–(3)`.
+
+### Lean progress — C₄ Tor₂ explicit direct summand (detector retraction)
+
+`HigherCycleTorsionFree.lean` now upgrades the concrete `C₄` embedding to an explicit direct summand,
+the degree-2 analogue of `hochster_C3_direct_summand`:
+
+- `srEval2ₗ` — evaluation of a `2`-tensor at a fixed index pair, as an `R`-linear map.
+- `srSquareEdgeDetectorₗ` — the alternating edge detector `+{cd}∘c_{ab} − {ad}∘c_{bc} + {ab}∘c_{cd} −
+  {bc}∘c_{da}` as an `R`-linear map `(α→α→S) →ₗ R`.
+- `srSquareEdgeDetectorₗ_srSquareEdgeCycle` — it is `1` on the square cycle.
+- `srSquareEdgeDetectorₗ_srKoszulBoundary3` — it annihilates every `d₃`-boundary of an alternating
+  `3`-tensor.
+- `srSquareEdgeDetectorTor` — the detector descended through the `d₃`-boundary quotient, a retraction
+  `Tor₂ → R`; `srSquareEdgeDetectorTor_class` proves it is `1` on the `Tor₂` class.
+- `hochster_C4_concrete_direct_summand` (in `HochsterCycleRealization.lean`) — packages `dim H̃¹(C₄) = 1`
+  with the explicit retraction `∃ ρ : Tor₂ → F, ρ[C₄] = 1`, so `F` is a genuine (not merely
+  vector-space-generic) direct summand of the concrete second Koszul homology.
+
+Now `C₃` (`Tor₁`) and `C₄` (`Tor₂`) both carry the explicit-retraction direct summand.  Next: the same
+detector retraction for `C₅`/`C₆` (`Tor₃`/`Tor₄`), then the exact ranks (`both_dimension_1`).
+
+### Lean progress — C₅/C₆ detector retractions: direct summand across the whole family
+
+Completing the explicit-retraction direct summand up the tower (`HigherCycleTorsionFree.lean`,
+axiom-clean):
+
+- `srEval3ₗ` / `srEval4ₗ` — `3`- and `4`-tensor evaluation as `R`-linear maps.
+- `srPentTripleDetectorₗ` / `srHexTupleDetectorₗ` — the alternating pentagon/hexagon detectors as
+  `R`-linear maps, `1` on their cycle (`_srPentTripleCycle` / `_srHexTupleCycle`) and `0` on every
+  `d₄`- / `d₅`-boundary of an alternating tensor (`_srKoszulBoundary4` / `_srKoszulBoundary5`).
+- `srPentTripleDetectorTor` / `srHexTupleDetectorTor` — descended retractions `Tor₃ → R`, `Tor₄ → R`;
+  `_class` lemmas prove each is `1` on its `Tor` class.
+- `hochster_C5_concrete_direct_summand` / `hochster_C6_concrete_direct_summand`
+  (`HochsterCycleRealization.lean`) — `dim H̃¹(Cₙ) = 1` with `∃ ρ, ρ[Cₙ] = 1`.
+
+**The whole cycle family `C₃…C₆` (`Tor₁…Tor₄`) now carries the explicit-retraction direct summand:**
+`F` is a genuine (not vector-space-generic) direct summand of `Tor_{n−2}`, matched with the topological
+`dim H̃¹(Cₙ) = 1`.  The retraction `ρ` is the surjective half of every exact rank; the remaining half is
+its injectivity on the multidegree strand (every cycle with `ρ = 0` is a boundary) — the degree-`(n−2)`
+multigraded exhaust.
+
+### Lean progress — §3.1 thesis: boundary dimension ⊥ coherence amplitude
+
+`hochster_thin_support_deep_coherence` (`HochsterCycleRealization.lean`, axiom-clean) formalizes the
+card's central structural consequence (§3.1).  It packages the cycle family into the independence
+statement: each of `C₄`, `C₅`, `C₆` is one-dimensional (every facet an edge, `card = 2`, by `decide`)
+yet carries a nonzero source-coherence `Tor` class in degree `2`, `3`, `4` respectively (via the
+concrete realizations).  So one fixed thin reduced support (boundary dimension `1`) realizes strictly
+growing derived coherence amplitude — the classical boundary dimension and the derived source-coherence
+amplitude are independent invariants, a thin support carrying arbitrarily deep coherence.
+
+This lifts the whole `C₃…C₆` cycle-family infrastructure (embeddings, realizations, explicit-retraction
+direct summands) into the card's headline thesis as a single proven Lean theorem.  Next: the exact ranks
+(`both_dimension_1`) via the degree-`(n−2)` multigraded exhaust, and the general finite-complex bridge.
+
+### Lean progress — rank-2 reduced H̃¹ source coherence (independent Tor₁ classes)
+
+`WedgeBettiRank.lean` (axiom-clean) gives the degree-1 analogue of the reduced-H⁰ independent-class family
+(`isolatedDisconnectCycleBasis_independent_mod_koszulBoundary`): a single **connected** complex realizing
+coherence rank `> 1` at reduced cohomological degree `1`.
+
+- `srPairDetector_srVertexX_mul_eq_zero` — the pair detector of a product at a *different* squarefree
+  multidegree is `0` (the cross-term, via `coeff_monomial` + `if_neg`).
+- `srEmptyTriangleDetector_koszulBoundary_zero` — reusable form of the empty-triangle detector vanishing
+  on every first Koszul boundary.
+- `wedgeFacets` — the wedge of two empty triangles `{0,1,2}`, `{0,3,4}` at the shared apex `0`: a
+  connected one-dimensional complex with `H̃¹ = F²`.
+- `hochster_wedge_classes_independent` — the two triangle-hole first Koszul classes `x₁x₂·e₀` and
+  `x₃x₄·e₀` are **linearly independent** modulo Koszul boundaries (any boundary equal to their
+  combination forces both scalars to `0`), each triangle detector separating its own class from the
+  other's multidegree and killing boundaries.
+
+So the multigraded Betti profile of one connected HT source can carry **rank-≥2** source coherence at
+degree `1` — the card's "complete multigraded Betti profile `{H̃^j(Δ|W)}`" realized with a nontrivial
+rank.  Next: the topological finrank `H̃¹(wedge) = 2` (custom graph), and higher-rank realizations.
+
+### Lean progress — unbounded source-coherence rank at fixed reduced degree 1
+
+`bouquet_classes_independent` (`WedgeBettiRank.lean`, axiom-clean) generalizes the rank-2 wedge to
+arbitrary `k`: a bouquet of `k` empty triangles sharing one apex (petal pairs `(p i, q i)` of pairwise
+distinct squarefree multidegree) carries `k` **linearly independent** first Koszul homology classes
+`x_{p i} x_{q i}·e_apex`.  Any first Koszul boundary equal to a combination `∑ c i · classᵢ` forces every
+`c i = 0`, read off by the `i`-th triangle detector — `1` on `classᵢ`, `0` on every other class (via the
+cross-term `srPairDetector_srVertexX_mul_eq_zero`), vanishing on boundaries
+(`srEmptyTriangleDetector_koszulBoundary_zero`), collapsed by `Finset.sum_eq_single_of_mem`.
+
+So the degree-`1` Hochster source coherence of one connected HT source has **arbitrarily large rank `k`**
+at fixed reduced cohomological degree — the rank analogue of the §3.1 amplitude independence (which fixed
+topology and grew the `Tor` degree; this fixes the degree and grows the coherence rank).  The concrete
+wedge (`hochster_wedge_classes_independent`) is the `k = 2` witness.  Next: a fully concrete unconditional
+bouquet on `Fin (2k+1)` (discharging the structural hypotheses), and the exact ranks.
+
+### Lean progress — concrete unconditional bouquet: rank k realized for every k
+
+`bouquet_concrete_independent` (`WedgeBettiRank.lean`, axiom-clean) instantiates the abstract bouquet at
+an explicit complex, discharging every structural hypothesis:
+
+- `bqVtx k := Option (Fin k × Bool)` — vertices: `none` = apex, `some (i, b)` = the `b`-petal of triangle
+  `i` (clean injectivity for the distinctness/multidegree facts).
+- `bqFacets k` — the `k`-triangle bouquet as a `Finset.biUnion` of the 3 edges per triangle, with
+  membership lemmas `bqFacets_{ap,aq,pq}_mem`.
+- `bouquet_concrete_independent` — for every field `F` and every `k`, the `k` first Koszul classes on the
+  concrete bouquet are linearly independent modulo boundaries, **with no remaining hypotheses**.
+
+So "the degree-`1` Hochster source coherence of a connected HT source has rank exactly `k`" is now an
+unconditional theorem for every `k` — unbounded coherence rank at fixed reduced degree, matching the
+card's realization standard.  Next: a bouquet of hollow `n`-simplices (rank *and* dimension free
+simultaneously), and the exact ranks.
+
+### Lean progress — hollow-simplex bouquet: rank AND dimension free simultaneously
+
+`HollowSimplexBouquet.lean` (axiom-clean) unifies the two independence axes into one theorem:
+
+- `srHollowDetectorₗ_base` — the hollow-simplex detector is `1` on its own base syzygy.
+- `srHollowDetectorₗ_disjoint` — it vanishes on a syzygy supported on a *disjoint* simplex (the class is
+  supported off `σ`, so every detector term is `srFaceDetector _ 0 = 0` — the cross-term is trivial via
+  disjointness, no coefficient lemma needed).
+- `hollow_bouquet_independent` — for `k` pairwise disjoint hollow simplices, the `k` base first Koszul
+  homology classes are linearly independent modulo boundaries (any boundary equal to `∑ c m · classₘ`
+  forces every `c m = 0`), via `srHollowDetectorₗ_apply_boundary` + the two facts + `Finset.sum_eq_single`.
+
+Taking all `σ_m` of size `n+1` realizes `H̃ⁿ⁻¹` at rank `k` — an **arbitrary `(dimension, rank)` cell** of
+the multigraded Betti profile of one HT source, unifying §3.1's dimension-free axis (hollow simplices at
+rank 1) with the bouquet's rank-free axis (triangles at degree 1).  Next: a concrete unconditional
+disjoint-`∂Δⁿ` instantiation, and the exact ranks.
+
+### Lean progress — concrete unconditional (dimension, rank) realizer for every (n, k)
+
+`hollow_bouquet_concrete_independent` (`HollowSimplexBouquet.lean`, axiom-clean) instantiates the abstract
+hollow-simplex bouquet at an explicit complex, discharging every hypothesis:
+
+- `hbSigma k n m := {m} ×ˢ univ` on vertex type `Fin k × Fin (n+1)` — the `m`-th hollow `n`-simplex.
+- `hbFacets k n` — the disjoint-`∂Δⁿ` bouquet: the codimension-one faces of each simplex (so each
+  `hbSigma m` has all proper faces present and the simplex itself absent), with `hbFacets_erase_mem`.
+- `hbSigma_disjoint` — distinct simplices are disjoint (first-coordinate argument on `{m} ×ˢ univ`).
+- `hollow_bouquet_concrete_independent` — for every field `F` and every `(n, k)`, the `k` base first
+  Koszul classes (each at reduced degree `n−1`) are linearly independent modulo boundaries, **with no
+  remaining hypotheses**.
+
+So **every `(dimension, rank) = (n−1, k)` cell of the multigraded Betti profile is realized by an explicit
+finite Stanley–Reisner complex** — the concrete backbone of the §3.2 universality claim along the whole
+hollow-simplex strand.  Next: the exact ranks (still gated on a Koszul-homology-of-regular-sequence bridge
+absent from mathlib), or the §3.2 universality packaging.
+
+### Lean progress — rank k as `LinearIndependent` in the Koszul homology module
+
+`hollow_bouquet_concrete_linearIndependent` (`HollowSimplexBouquet.lean`, axiom-clean) gives the rank
+realization its canonical module-theoretic form: the `k` base first Koszul homology classes of the
+concrete disjoint-`∂Δⁿ` bouquet are `F`-**linearly independent** (mathlib `LinearIndependent`) in the
+Koszul homology module `(V → S) ⧸ srKoszulBoundaries`.  So the degree-`(n−1)` source coherence of one HT
+source has `F`-dimension `≥ k`, connecting the rank realization to mathlib's rank/dimension theory.
+
+Proof: `Fintype.linearIndependent_iff` reduces to `∑ c m • [classₘ] = 0 → c = 0`; the vanishing sum
+pushes through `Submodule.mkQ` to `∑ c m · classₘ ∈ srKoszulBoundaries = range srKoszulBoundaryₗ`, giving
+an explicit boundary `cc`, and `hollow_bouquet_concrete_independent` closes it.
+
+**Exact-rank status:** the `Tor_{n−2} ≅ F` upgrade (the one deep open target) needs a
+Koszul-homology-of-regular-sequence bridge — probed and confirmed absent from mathlib (`Tor` there is only
+the abstract categorical derived functor; no `koszulComplex`).  So the exact rank requires either a
+mathlib-scale commutative-algebra contribution (Koszul resolution of a regular sequence → `Tor₂ = k`) or
+a self-contained multidegree-strand computation; both remain genuinely open.
+
+### Lean progress — §3.2 universality in canonical form (arbitrary Betti pattern, LinearIndependent)
+
+`hollow_bouquet_linearIndependent` (`HollowSimplexBouquet.lean`, axiom-clean) states the card's positive
+universality (§3.2) in mathlib's rank language: for **any** finite family of pairwise disjoint hollow
+simplices — arbitrary sizes, hence an arbitrary reduced-cohomology-dimension pattern — the base first
+Koszul homology classes are `F`-linearly independent in the Koszul homology module.  So the source
+coherence of one HT source realizes any finite `(dimension, rank)` Betti pattern as a genuine independent
+family.  `hollow_bouquet_concrete_linearIndependent` is now the one-line concrete instance at the explicit
+disjoint-`∂Δⁿ` complex.
+
+This closes the realization/universality side of the source-coherence duality: every finite Betti pattern
+is realized (abstract, arbitrary; concrete, unconditional for `∂Δⁿ`), each with its `LinearIndependent`
+witness.  The two remaining deep targets — the exact ranks (gated on a mathlib-absent Koszul-homology-of-
+regular-sequence bridge) and the general finite-complex chain equivalence (needs the general simplicial
+cochain complex, whose `d²=0` requires a `Fin.succAbove` simplicial identity not readily in mathlib) —
+are mathlib-scale constructions.
+
+### Lean progress — arbitrary Betti pattern realized (mixed-dimension bouquet)
+
+`mixed_bouquet_concrete_linearIndependent` (`HollowSimplexBouquet.lean`, axiom-clean) is the full concrete
+§3.2 positive universality: for **any** dimension assignment `s : Fin k → ℕ`, the mixed-dimension bouquet
+(block `m` a hollow `(s m)`-simplex, vertex type `Σ m, Fin (s m + 1)`) carries `k` linearly independent
+base first Koszul homology classes, the `m`-th at reduced degree `s m − 1`.
+
+- `mbVtx s := Σ m : Fin k, Fin (s m + 1)`, `mbSigma s m := univ.image (Sigma.mk m)` (the `m`-th fiber),
+  `mbFacets s` the codim-1 faces of each block, with `mbFacets_erase_mem` and `mbSigma_disjoint`
+  (distinct blocks disjoint, by `Sigma.fst`).
+- A one-line instance of `hollow_bouquet_linearIndependent`.
+
+So one explicit HT source realizes **any finite multiset of reduced-cohomology dimensions** as an
+independent source-coherence family — the realization/universality side of the source-coherence duality
+is now complete both abstractly and concretely, for arbitrary patterns.
+
+The two remaining deep targets (exact ranks; general finite-complex chain equivalence) stay gated on
+mathlib-scale infrastructure absent from mathlib (Koszul-homology-of-regular-sequence; the general
+simplicial cochain `d²=0`, whose `Fin.succAbove` commutation identity is not available by name —
+`Fin.succAbove_succAbove` does not exist; only `Fin.succAbove_succAbove_predAbove`).

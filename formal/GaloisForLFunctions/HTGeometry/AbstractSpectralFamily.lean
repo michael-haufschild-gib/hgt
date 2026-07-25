@@ -189,6 +189,38 @@ theorem analyticOnNhd_traceC : AnalyticOnNhd ℂ F.traceC {t : ℂ | 0 < t.re} :
   intro t ht
   exact (F.differentiableAt_traceC ht).differentiableWithinAt
 
+/-- **Finite perturbation changes the trace by an entire function.**  Two admissible families that
+agree outside a finite set have traces differing by a finite sum of exponentials, hence by a function
+entire in the time variable.
+
+Consequence: every analytic invariant of the trace that depends only on its *singular* data --
+poles, residues, principal parts, the position and strength of the singularities of its
+continuation -- is blind to any finite change of the spectrum.  In particular no residue identity,
+and so no explicit formula, can distinguish a family with non-real points from one without. -/
+theorem traceC_sub_eq_finset_sum {ι : Type*} (F G : AbstractSpectralFamily ι) (s : Finset ι)
+    (h : ∀ i ∉ s, F.pt i = G.pt i) {τ : ℂ} (hτ : 0 < τ.re) :
+    F.traceC τ - G.traceC τ = ∑ i ∈ s, (F.term τ i - G.term τ i) := by
+  classical
+  have hFsum : Summable fun i : ι => F.term τ i := (F.summable_norm_term hτ).of_norm
+  have hGsum : Summable fun i : ι => G.term τ i := (G.summable_norm_term hτ).of_norm
+  have hFsplit := hFsum.sum_add_tsum_compl (s := s)
+  have hGsplit := hGsum.sum_add_tsum_compl (s := s)
+  have hcompl : (∑' i : ((s : Set ι)ᶜ : Set ι), F.term τ (i : ι))
+      = ∑' i : ((s : Set ι)ᶜ : Set ι), G.term τ (i : ι) := by
+    refine tsum_congr fun i => ?_
+    have hi : (i : ι) ∉ s := by
+      have := i.2
+      simpa only [Set.mem_compl_iff, Finset.mem_coe] using this
+    rw [term, term, h _ hi]
+  rw [traceC, traceC, ← hFsplit, ← hGsplit, hcompl, Finset.sum_sub_distrib]
+  ring
+
+/-- The perturbation is entire in the time variable: each term is. -/
+theorem differentiable_term_sub {ι : Type*} (F G : AbstractSpectralFamily ι) (s : Finset ι) :
+    Differentiable ℂ fun τ : ℂ => ∑ i ∈ s, (F.term τ i - G.term τ i) := by
+  unfold term
+  fun_prop
+
 end AbstractSpectralFamily
 
 end

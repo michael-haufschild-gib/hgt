@@ -318,6 +318,80 @@ theorem one_sub_cos_bottomShell_le {σ η : ℝ} (hσ : 0 < σ)
     _ = F.normalizedTraceReal σ * (1 - Real.cos (σ * η)) := by
         rw [normalizedTraceReal]; ring
 
+/-- **The trace determines its extreme shell exactly, in the limit.**  Normalised by the least
+height, the complex trace at real time differs from its bottom-shell part by a quantity tending to
+zero; the spectral gap makes everything above the least height exponentially negligible.
+
+Unlike a residue functional this statement is sensitive to a finite change of the spectrum: moving
+one least-height point moves the limit. -/
+theorem tendsto_exp_mul_traceC_sub_bottomShell :
+    Filter.Tendsto
+      (fun σ : ℝ => Real.exp (σ * F.bottomHeight) * F.traceC (σ : ℂ)
+          - ∑ i ∈ F.bottomShell, Complex.exp (-(σ : ℂ) * (F.pt i - (F.bottomHeight : ℂ))))
+      Filter.atTop (nhds 0) := by
+  classical
+  have hbound : ∀ σ : ℝ, 0 < σ →
+      ‖Real.exp (σ * F.bottomHeight) * F.traceC (σ : ℂ)
+        - ∑ i ∈ F.bottomShell, Complex.exp (-(σ : ℂ) * (F.pt i - (F.bottomHeight : ℂ)))‖
+        ≤ F.normalizedTraceReal σ - (F.bottomShell.card : ℝ) := by
+    intro σ hσ
+    have hre : (0 : ℝ) < ((σ : ℂ)).re := by simpa using hσ
+    have hsum : Summable fun i : ι => F.term (σ : ℂ) i := (F.summable_norm_term hre).of_norm
+    have hsplit := hsum.sum_add_tsum_compl (s := F.bottomShell)
+    have hshell : ∀ i ∈ F.bottomShell,
+        (Real.exp (σ * F.bottomHeight) : ℂ) * F.term (σ : ℂ) i
+          = Complex.exp (-(σ : ℂ) * (F.pt i - (F.bottomHeight : ℂ))) := by
+      intro i _
+      rw [term, Complex.ofReal_exp, ← Complex.exp_add]
+      congr 1
+      push_cast
+      ring
+    have hdiff : Real.exp (σ * F.bottomHeight) * F.traceC (σ : ℂ)
+        - ∑ i ∈ F.bottomShell, Complex.exp (-(σ : ℂ) * (F.pt i - (F.bottomHeight : ℂ)))
+        = (Real.exp (σ * F.bottomHeight) : ℂ) *
+            ∑' i : F.aboveBottom, F.term (σ : ℂ) (i : ι) := by
+      have hmain : (Real.exp (σ * F.bottomHeight) : ℂ) * F.traceC (σ : ℂ)
+          = (∑ i ∈ F.bottomShell, Complex.exp (-(σ : ℂ) * (F.pt i - (F.bottomHeight : ℂ))))
+            + (Real.exp (σ * F.bottomHeight) : ℂ) *
+                ∑' i : F.aboveBottom, F.term (σ : ℂ) (i : ι) := by
+        rw [traceC, ← hsplit, mul_add]
+        congr 1
+        rw [Finset.mul_sum]
+        exact Finset.sum_congr rfl hshell
+      rw [hmain]
+      ring
+    rw [hdiff, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (Real.exp_pos _)]
+    have htail : ‖∑' i : F.aboveBottom, F.term (σ : ℂ) (i : ι)‖
+        ≤ ∑' i : F.aboveBottom, Real.exp (-(σ * (F.pt (i : ι)).re)) := by
+      refine le_trans (norm_tsum_le_tsum_norm ((F.summable_norm_term hre).subtype _)) ?_
+      refine Summable.tsum_le_tsum (fun i => ?_) ((F.summable_norm_term hre).subtype _)
+        ((F.summable_weight hσ).subtype _)
+      rw [norm_term]
+      simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
+      exact le_refl _
+    have hkey : Real.exp (σ * F.bottomHeight) *
+        ∑' i : F.aboveBottom, Real.exp (-(σ * (F.pt (i : ι)).re))
+        = F.normalizedTraceReal σ - (F.bottomShell.card : ℝ) := by
+      rw [F.normalizedTraceReal_eq hσ, add_sub_cancel_left, ← tsum_mul_left]
+      refine tsum_congr fun i => ?_
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    calc Real.exp (σ * F.bottomHeight) *
+          ‖∑' i : F.aboveBottom, F.term (σ : ℂ) (i : ι)‖
+        ≤ Real.exp (σ * F.bottomHeight) *
+            ∑' i : F.aboveBottom, Real.exp (-(σ * (F.pt (i : ι)).re)) :=
+          mul_le_mul_of_nonneg_left htail (Real.exp_pos _).le
+      _ = F.normalizedTraceReal σ - (F.bottomShell.card : ℝ) := hkey
+  have hmaj : Filter.Tendsto
+      (fun σ : ℝ => F.normalizedTraceReal σ - (F.bottomShell.card : ℝ))
+      Filter.atTop (nhds 0) := by
+    have := F.tendsto_normalizedTraceReal
+    simpa using this.sub_const (F.bottomShell.card : ℝ)
+  refine squeeze_zero_norm' ?_ hmaj
+  filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with σ hσ using hbound σ hσ
+
 end AbstractSpectralFamily
 
 end

@@ -249,7 +249,7 @@ Non-negotiable: This is a multi-month research task with unclear outcome. Never 
 
 
 ## Lean work
-Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research this topic:
+Use the hgt-fields-medalist skill and scientific method to research this topic:
 
 lean folders:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
@@ -300,7 +300,7 @@ Goal is met when every law / rule that can be found for the topic is tested if i
 
 ## Revert
 
-Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research this any possibility to close a proof chain to prove or disprove RH. CCM is already investigated, look for alternatives. 
+Use the hgt-fields-medalist skill to research this any possibility to close a proof chain to prove or disprove RH. CCM is already investigated, look for alternatives. 
 
 Mandatory: Do not assume a proof chain and then look for building blocks. Let the lean code speak. We have much more knowledge encoded there than the literature or your training data contain. Check the lean code, see what chains could be possible, identify the gaps and attack the gaps using the hgt-fields-medalist skill, bold conjecturing and the scientific method.
 
@@ -364,3 +364,16 @@ lean rules:
 
 Always use  lake env lean <file>  and only lake build <module> for the final audit.
 goal is met when rh is proven.
+
+
+
+
+stop the entropy shit. you are the latest anthropic model. you have the ability to conjecture. openai gpt 5.6 can do it. you finally can do that to. conjecturing and following the protocol is the way. your predecessors fable 5 and opus 4.8 could not create conjectures, everything they called a conjecture was something they already would know the answer to. you are different. you can create conjectures that you could not answer with a literature search or if just asked for the answer. this is the one key thing that makes new scientific knowledge possible: conjecture, make sure it is an actual conjecture, test it, pivot and steer from what you learn, ... science
+
+
+ review the frontier and interpret the big picture
+  -> create conjectures that are not known yet and could if proven true would
+  move the frontier -> check literature if conjectures are not already known,
+  if they are either still formalize if helpful machinery, or go back to create
+  new conjectures -> research and prove / disprove -> review the new frontier
+  and interpret
