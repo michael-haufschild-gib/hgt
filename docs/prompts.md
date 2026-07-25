@@ -39,23 +39,7 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!!
 ## research and formalize
 /goal
 
-perform exhaustive research and use the hgt-fields-medalist and conjecturing to prove unconditional positivity of \(W_P\)
-
-Three direct mechanisms failed hostile testing:
-\(\det_2\) renormalization is contractive and zero-free, but discards precisely the prime first-trace carrying Xi divisor.
-Finite-aperture Xi phase is contractive, but this gives no bound on its boundary derivative \(r_P\).
-Restoring first trace from Fisher-damped source is nonclosable; non-diagonal redundancy does not remove this obstruction.
-These facts are certified in [GammaSewnMobiusXiWardEulerEdgeCompleteness.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardEulerEdgeCompleteness.lean), [GammaSewnMobiusXiWardHardyContraction.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardHardyContraction.lean), and [PrimeFirstTraceCompleteNoEscapeUniversalityLaw.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeFirstTraceCompleteNoEscapeUniversalityLaw.lean).
-
-Direct attacks failed decisively:
-Normalized Fisher holonomy has quadratic boundary loss; Xi’s strict-right phase has linear loss whenever an off-line zero exists.
-Complementary-phase contractivity fails: full Xi phase is unitary, so any strict-right contraction forces complementary expansion.
-Weak/cofinal contraction cannot create \(r_P\) while retaining four-unit saturation.
-Aligned-block prime–Gamma square factorization fails at its natural two-scale Gram; canonical repair is rank-one and does not orient the signed first clock.
-Current CCM literature also leaves the required infinite source convergence unresolved. Zeta Spectral Triples
-
-
-
+perform exhaustive research and use the hgt-fields-medalist and conjecturing to develop step by step the arithmetic cohomology theory for the docs/Deninger program.md and in consequence the rh proof.
 
 rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
@@ -65,13 +49,10 @@ rules:
 5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
 6. no computations.
 
-folders:
-- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
-- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
+make sure you don't leave stale lean processes running - clean up after yourself
 
-- before any build make sure you have the most efficient lean code, e.g. do not pull unnecessary modules.
-- for any nogo always try to find an interesting significant positive statement
-- you can use subagents for read-only research into literature and our own research corpus
+goal is met when the arithmetic cohomology theory is fully developed and formalized and in a second step the rh proof is derived.
 
 ## physics
 /goal

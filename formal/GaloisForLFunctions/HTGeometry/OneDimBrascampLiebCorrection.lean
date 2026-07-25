@@ -158,6 +158,60 @@ theorem correctedQuadraticCertificate_strictlyImproves
   have hcorrection : 0 < 16 * c ^ 2 * a₀ * C := by positivity
   linarith
 
+/-! ### Orientation of the first Popescu remainder -/
+
+/-- The two-term Popescu truncation is a lower bound whenever its resolvent remainder is
+nonnegative.  This is the scalar orientation of the even truncation in Popescu's alternating
+resolvent expansion. -/
+theorem firstPopescuTruncation_le_variance_of_expansion
+    {variance leading correction remainder : ℝ}
+    (hexpansion : variance = leading - correction + remainder)
+    (hremainder : 0 ≤ remainder) :
+    leading - correction ≤ variance := by
+  linarith
+
+/-- Under the exact first-correction expansion, using the same two-term truncation as an upper
+bound is equivalent to asserting that the resolvent remainder is nonpositive. -/
+theorem variance_le_firstPopescuTruncation_iff_remainder_nonpos
+    {variance leading correction remainder : ℝ}
+    (hexpansion : variance = leading - correction + remainder) :
+    variance ≤ leading - correction ↔ remainder ≤ 0 := by
+  rw [hexpansion]
+  constructor <;> intro h <;> linarith
+
+/-- With the analytic nonnegativity of the resolvent remainder, a forward first-correction bound
+can hold only in the equality case where that remainder vanishes. -/
+theorem variance_le_firstPopescuTruncation_iff_remainder_eq_zero
+    {variance leading correction remainder : ℝ}
+    (hexpansion : variance = leading - correction + remainder)
+    (hremainder : 0 ≤ remainder) :
+    variance ≤ leading - correction ↔ remainder = 0 := by
+  rw [variance_le_firstPopescuTruncation_iff_remainder_nonpos hexpansion]
+  exact ⟨fun h => le_antisymm h hremainder, fun h => h.le⟩
+
+/-- A strictly positive Popescu resolvent remainder rules out the forward inequality required to
+subtract the first correction from an upper variance bound. -/
+theorem not_variance_le_firstPopescuTruncation_of_remainder_pos
+    {variance leading correction remainder : ℝ}
+    (hexpansion : variance = leading - correction + remainder)
+    (hremainder : 0 < remainder) :
+    ¬ variance ≤ leading - correction := by
+  rw [variance_le_firstPopescuTruncation_iff_remainder_nonpos hexpansion]
+  exact not_le_of_gt hremainder
+
+/-- The variance premise consumed by `correctedQuadraticBrascampLiebCertificate` is therefore
+equivalent to vanishing of the first Popescu resolvent remainder, once the analytic expansion and
+remainder nonnegativity are available. -/
+theorem correctedQuadraticVarianceUpper_iff_popescuRemainder_eq_zero
+    {a₀ a₁ a₂ J C remainder : ℝ}
+    (hexpansion :
+      a₀ * a₂ - a₁ ^ 2 = 4 * a₀ * J - a₀ * C + remainder)
+    (hremainder : 0 ≤ remainder) :
+    (a₀ * a₂ - a₁ ^ 2 ≤ 4 * a₀ * J - a₀ * C) ↔
+      remainder = 0 :=
+  variance_le_firstPopescuTruncation_iff_remainder_eq_zero
+    hexpansion hremainder
+
 end
 
 end HTGeometry

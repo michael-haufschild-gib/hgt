@@ -129,6 +129,41 @@ theorem dirichletChar_mul {e m : ℕ} (he : 0 < e) (hm : 0 < m) (t : ℝ) :
   push_cast
   ring
 
+/-- **`ℓ^∞ → ℓ¹` operator-norm bound implies Montgomery's large-value bound.**
+
+Here the `ℓ^∞` normalisation sits on *both* sides: the hypothesis bounds
+`max_{‖c‖_∞ ≤ 1} ∑_t ‖∑_n c n · M n t‖` — the `∞→1` norm of `M` — by `C·√|κ|`.  A uniform lower
+bound `V` on the values of one such Dirichlet polynomial then forces `|κ|·V² ≤ C²`.  With
+`C = N^{1+ε}` this is `|κ| ≤ N^{2+2ε}/V²`.
+
+Unlike the `∞→2` version, the converse also holds (by a layer-cake decomposition), so the `∞→1`
+norm is the exact quantity governing the large-value problem under `ℓ^∞` normalisation. -/
+theorem montgomery_of_infty_one
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (M : ι → κ → ℂ) (b : ι → ℂ) (hb : ∀ n, ‖b n‖ ≤ 1)
+    (C V : ℝ) (hV : 0 ≤ V) (hC : 0 ≤ C)
+    (hnorm : ∀ c : ι → ℂ, (∀ n, ‖c n‖ ≤ 1) →
+        ∑ t : κ, ‖∑ n : ι, c n * M n t‖ ≤ C * Real.sqrt (Fintype.card κ))
+    (hlarge : ∀ t : κ, V ≤ ‖∑ n : ι, b n * M n t‖) :
+    (Fintype.card κ : ℝ) * V ^ 2 ≤ C ^ 2 := by
+  classical
+  set s : ℝ := Real.sqrt (Fintype.card κ) with hs
+  have hs0 : 0 ≤ s := Real.sqrt_nonneg _
+  have hs2 : s ^ 2 = (Fintype.card κ : ℝ) := Real.sq_sqrt (Nat.cast_nonneg _)
+  have h1 : (Fintype.card κ : ℝ) * V ≤ ∑ t : κ, ‖∑ n : ι, b n * M n t‖ := by
+    calc (Fintype.card κ : ℝ) * V = ∑ _t : κ, V := by
+          simp [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+      _ ≤ _ := Finset.sum_le_sum fun t _ => hlarge t
+  have h2 := hnorm b hb
+  have h3 : s ^ 2 * V ≤ C * s := by rw [hs2]; exact h1.trans h2
+  rcases eq_or_lt_of_le hs0 with h | h
+  · have hz : (Fintype.card κ : ℝ) = 0 := by rw [← hs2, ← h]; ring
+    rw [hz]
+    nlinarith [sq_nonneg C]
+  · have hstep : (s * V) * s ≤ C * s := by nlinarith [h3]
+    have hsV : s * V ≤ C := le_of_mul_le_mul_right hstep h
+    nlinarith [hsV, hs0, hV, hs2]
+
 end UZLS
 end RHTower
 end GaloisForLFunctions

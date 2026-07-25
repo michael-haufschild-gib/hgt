@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.CCMSoninResolventCommutator
 import GaloisForLFunctions.RHTower.SoninEssentialNormExtensions
 import GaloisForLFunctions.HTGeometry.FiniteConstraintGroupAverage
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
 import GaloisForLFunctions.HTGeometry.TwoOutcomePinchingKadison
 
@@ -759,6 +760,35 @@ theorem isCompactOperator_centralSoninCommutator_sub_ludersDressed_of_cutoffComm
   exact isCompactOperator_soninCommutator_sub_ludersDressed_of_cutoffCommutator
     (centralPhysicalForbidden a) (centralFourierForbidden a)
     (norm_centralSoninAlternatingBlock_lt_one a ha) X hcomm
+
+/-- **Hilbert--Schmidt central Sonin/Calkin law.**  A Hilbert--Schmidt observable automatically
+commutes modulo compact operators with every bounded cutoff.  Thus the central Lüders formula
+requires no separate cutoff-commutator premise on this operator class. -/
+theorem isCompactOperator_centralSoninCommutator_sub_ludersDressed_of_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a)
+    (X : SoninL2 →L[ℂ] SoninL2)
+    (hX : ContinuousLinearMap.IsHilbertSchmidt X) :
+    let hT := norm_centralSoninAlternatingBlock_lt_one a ha
+    let X₀ := ludersPinching (centralPhysicalForbidden a).starProjection X
+    let E := (centralPhysicalForbidden a).orthogonal.starProjection
+    let V := soninProjectionResolvent
+      (centralPhysicalForbidden a) (centralFourierForbidden a) hT
+    IsCompactOperator
+      (ccmCommutator X (centralSoninProjection a) -
+        (-E * V *
+          (ccmCommutator X₀ (centralFourierForbidden a).starProjection *
+                (centralPhysicalForbidden a).starProjection *
+                (centralFourierForbidden a).starProjection * V *
+                (centralFourierForbidden a).starProjection +
+            (centralFourierForbidden a).starProjection *
+                (centralPhysicalForbidden a).starProjection *
+                ccmCommutator X₀ (centralFourierForbidden a).starProjection * V *
+                (centralFourierForbidden a).starProjection +
+            ccmCommutator X₀ (centralFourierForbidden a).starProjection) * E) :
+        SoninL2 →L[ℂ] SoninL2) := by
+  apply isCompactOperator_centralSoninCommutator_sub_ludersDressed_of_cutoffCommutator a ha X
+  exact isCompactOperator_ccmCommutator_of_leftCompact
+    X (centralPhysicalForbidden a).starProjection hX.isCompactOperator
 
 /-- **Concrete central measurement-disturbance law.**  For a positive central time-frequency
 cutoff, compactness of the part erased by the physical Lüders measurement is the sole operator

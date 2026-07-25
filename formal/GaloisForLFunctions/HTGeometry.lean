@@ -2022,3 +2022,7 @@ import GaloisForLFunctions.HTGeometry.CenterMixedAssembly
 import GaloisForLFunctions.HTGeometry.MomentNeutralityLaw
 import GaloisForLFunctions.HTGeometry.MomentChordPivot
 import GaloisForLFunctions.HTGeometry.ShiftAverageTransfer
+import GaloisForLFunctions.HTGeometry.MomentResolutionFloor
+import GaloisForLFunctions.HTGeometry.GeneralizedDirichletMeanValue
+import GaloisForLFunctions.HTGeometry.LindelofMethodCeilings
+import GaloisForLFunctions.HTGeometry.ResidueJumpLowerBound
