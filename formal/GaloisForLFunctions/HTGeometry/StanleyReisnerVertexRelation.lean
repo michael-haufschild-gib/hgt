@@ -763,47 +763,127 @@ theorem srKoszulBoundary3_antisymm (facets : Finset (Finset α))
   refine Finset.sum_eq_zero (fun k _ => ?_)
   rw [hb.antisym12 j i k]; ring
 
-/-- The `4`-cycle (`C₄`) second Koszul cycle: `c_{ab} = x_c x_d`, `c_{cd} = x_a x_b`.  On the square
-`a–b–c–d–a` (diagonals `{a,c}`, `{b,d}` absent) this is a degree-2 syzygy at multidegree
-`{a,b,c,d}`. -/
-def c4Cycle (R : Type*) [CommRing R] (facets : Finset (Finset α)) (a b c d : α) :
-    α → α → stanleyReisnerRing R facets := fun i j =>
-  if i = a ∧ j = b then srVertexX R facets c * srVertexX R facets d
-  else if i = c ∧ j = d then srVertexX R facets a * srVertexX R facets b
-  else 0
+/-- An alternating 4-tensor: antisymmetric under adjacent transpositions and vanishing whenever two
+indices coincide — the coefficient shape of the degree-four Koszul term. -/
+structure IsAlternating4 {M : Type*} [AddCommGroup M] (b : α → α → α → α → M) : Prop where
+  antisym12 : ∀ i j k l, b i j k l = - b j i k l
+  antisym23 : ∀ i j k l, b i j k l = - b i k j l
+  antisym34 : ∀ i j k l, b i j k l = - b i j l k
+  alt : ∀ i j k l, i = j ∨ j = k ∨ k = l ∨ i = k ∨ j = l ∨ i = l → b i j k l = 0
 
-/-- **`C₄` hole is a second Koszul cycle (`Tor₂` at `|σ|=4`).**  The `4`-cycle syzygy is annihilated by
-the second differential: every boundary term carries an absent diagonal product `x_a x_c` or
-`x_b x_d`, which vanishes.  Modulo `im d₃` this represents `Tor_{2,{a,b,c,d}} = H̃¹(C₄)` — a genuine
-degree-two Koszul homology (`H̃¹` reached at `Tor₂`, not `Tor₁`). -/
-theorem srKoszulBoundary_c4Cycle (facets : Finset (Finset α)) {a b c d : α}
-    (hab : a ≠ b) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c) (hbd : b ≠ d) (hcd : c ≠ d)
-    (hac_nf : ¬ IsFaceOf (↑facets : Set (Finset α)) {a, c})
-    (hbd_nf : ¬ IsFaceOf (↑facets : Set (Finset α)) {b, d}) :
-    srKoszulBoundary facets (c4Cycle R facets a b c d) = 0 := by
-  have hac0 : srVertexX R facets a * srVertexX R facets c = 0 :=
-    srVertexX_mul_eq_zero_of_not_isFace facets hac hac_nf
-  have hbd0 : srVertexX R facets b * srVertexX R facets d = 0 :=
-    srVertexX_mul_eq_zero_of_not_isFace facets hbd hbd_nf
-  have p1 : srVertexX R facets c * srVertexX R facets d * srVertexX R facets b = 0 := by
-    rw [mul_assoc, mul_comm (srVertexX R facets d) (srVertexX R facets b), hbd0, mul_zero]
-  have p2 : srVertexX R facets a * srVertexX R facets b * srVertexX R facets d = 0 := by
-    rw [mul_assoc, hbd0, mul_zero]
-  have p3 : srVertexX R facets c * srVertexX R facets d * srVertexX R facets a = 0 := by
-    rw [mul_comm (srVertexX R facets c) (srVertexX R facets d), mul_assoc,
-      mul_comm (srVertexX R facets c) (srVertexX R facets a), hac0, mul_zero]
-  have p4 : srVertexX R facets a * srVertexX R facets b * srVertexX R facets c = 0 := by
-    rw [mul_comm (srVertexX R facets a) (srVertexX R facets b), mul_assoc, hac0, mul_zero]
-  have p3n : -(srVertexX R facets c * srVertexX R facets d) * srVertexX R facets a = 0 := by
-    linear_combination -p3
-  have p4n : -(srVertexX R facets a * srVertexX R facets b) * srVertexX R facets c = 0 := by
-    linear_combination -p4
-  funext i
-  simp only [Pi.zero_apply, srKoszulBoundary]
-  refine Finset.sum_eq_zero (fun j _ => ?_)
-  simp only [c4Cycle]
-  split_ifs with h1 h2 h3 h4 h5 h6 <;>
-    simp_all [sub_mul, sub_zero, zero_sub, zero_mul]
+/-- The fourth Koszul differential `d₄` (degree 4 → 3): `d₄(b)_{ijk} = ∑_l b_{ijkl} x_l`. -/
+def srKoszulBoundary4 (facets : Finset (Finset α))
+    (b : α → α → α → α → stanleyReisnerRing R facets) (i j k : α) : stanleyReisnerRing R facets :=
+  ∑ l, b i j k l * srVertexX R facets l
+
+omit [DecidableEq α] in
+/-- **`d₃ ∘ d₄ = 0`.**  The Koszul complex extends to degree four: applying the third differential to
+`d₄` of an alternating 4-tensor gives zero, so the third Koszul homology `Tor₃` is a well-defined
+subquotient.  The composite is `∑_{k,l} b_{ijkl} xₗxₖ`, which cancels by the `(k,l)↔(l,k)` involution
+against the symmetric products, unconditionally. -/
+theorem srKoszulBoundary3_srKoszulBoundary4 (facets : Finset (Finset α))
+    {b : α → α → α → α → stanleyReisnerRing R facets} (hb : IsAlternating4 b) :
+    srKoszulBoundary3 facets (srKoszulBoundary4 facets b) = 0 := by
+  funext i j
+  simp only [Pi.zero_apply, srKoszulBoundary3, srKoszulBoundary4, Finset.sum_mul]
+  rw [← Finset.sum_product']
+  exact antisym_prod_sum_zero
+    (fun k l => b i j k l * srVertexX R facets l * srVertexX R facets k)
+    (fun k l => by
+      show b i j k l * srVertexX R facets l * srVertexX R facets k
+        + b i j l k * srVertexX R facets k * srVertexX R facets l = 0
+      rw [hb.antisym34 i j l k]; ring)
+    (fun k => by
+      show b i j k k * srVertexX R facets k * srVertexX R facets k = 0
+      rw [hb.alt i j k k (Or.inr (Or.inr (Or.inl rfl)))]; ring)
+
+omit [DecidableEq α] in
+/-- **Fourth-differential boundaries are alternating 3-tensors.**  `d₄` of an alternating 4-tensor is
+an alternating 3-tensor, so `im d₄` lands in the alternating part `K₃` of the Koszul complex — the
+correct home for `Tor₃` representatives.  This completes the `Tor₃` foundation alongside `d₃∘d₄=0`. -/
+theorem srKoszulBoundary4_alternating (facets : Finset (Finset α))
+    {b : α → α → α → α → stanleyReisnerRing R facets} (hb : IsAlternating4 b) :
+    IsAlternating3 (srKoszulBoundary4 facets b) := by
+  refine ⟨fun i j k => ?_, fun i j k => ?_, fun i j k h => ?_⟩
+  · refine eq_neg_of_add_eq_zero_left ?_
+    rw [srKoszulBoundary4, srKoszulBoundary4, ← Finset.sum_add_distrib]
+    exact Finset.sum_eq_zero fun l _ => by rw [hb.antisym12 i j k l]; ring
+  · refine eq_neg_of_add_eq_zero_left ?_
+    rw [srKoszulBoundary4, srKoszulBoundary4, ← Finset.sum_add_distrib]
+    exact Finset.sum_eq_zero fun l _ => by rw [hb.antisym23 i j k l]; ring
+  · rw [srKoszulBoundary4]
+    refine Finset.sum_eq_zero fun l _ => ?_
+    have hz : b i j k l = 0 := by
+      rcases h with h | h | h
+      · exact hb.alt i j k l (Or.inl h)
+      · exact hb.alt i j k l (Or.inr (Or.inl h))
+      · exact hb.alt i j k l (Or.inr (Or.inr (Or.inr (Or.inl h))))
+    rw [hz, zero_mul]
+
+/-- An alternating 5-tensor: antisymmetric under adjacent transpositions and vanishing whenever two
+indices coincide — the coefficient shape of the degree-five Koszul term. -/
+structure IsAlternating5 {M : Type*} [AddCommGroup M] (b : α → α → α → α → α → M) : Prop where
+  antisym12 : ∀ i j k l m, b i j k l m = - b j i k l m
+  antisym23 : ∀ i j k l m, b i j k l m = - b i k j l m
+  antisym34 : ∀ i j k l m, b i j k l m = - b i j l k m
+  antisym45 : ∀ i j k l m, b i j k l m = - b i j k m l
+  alt : ∀ i j k l m, i = j ∨ j = k ∨ k = l ∨ l = m ∨ i = k ∨ i = l ∨ i = m ∨ j = l ∨ j = m ∨ k = m →
+    b i j k l m = 0
+
+/-- The fifth Koszul differential `d₅` (degree 5 → 4): `d₅(b)_{ijkl} = ∑_m b_{ijklm} x_m`. -/
+def srKoszulBoundary5 (facets : Finset (Finset α))
+    (b : α → α → α → α → α → stanleyReisnerRing R facets) (i j k l : α) :
+    stanleyReisnerRing R facets :=
+  ∑ m, b i j k l m * srVertexX R facets m
+
+omit [DecidableEq α] in
+/-- **`d₄ ∘ d₅ = 0`.**  The Koszul complex extends to degree five: the fourth differential of `d₅` of
+an alternating 5-tensor vanishes, so the fourth Koszul homology `Tor₄` is a well-defined subquotient.
+The composite `∑_{l,m} b_{ijklm} xₘxₗ` cancels by the `(l,m)↔(m,l)` involution, unconditionally. -/
+theorem srKoszulBoundary4_srKoszulBoundary5 (facets : Finset (Finset α))
+    {b : α → α → α → α → α → stanleyReisnerRing R facets} (hb : IsAlternating5 b) :
+    srKoszulBoundary4 facets (srKoszulBoundary5 facets b) = 0 := by
+  funext i j k
+  simp only [Pi.zero_apply, srKoszulBoundary4, srKoszulBoundary5, Finset.sum_mul]
+  rw [← Finset.sum_product']
+  exact antisym_prod_sum_zero
+    (fun l m => b i j k l m * srVertexX R facets m * srVertexX R facets l)
+    (fun l m => by
+      show b i j k l m * srVertexX R facets m * srVertexX R facets l
+        + b i j k m l * srVertexX R facets l * srVertexX R facets m = 0
+      rw [hb.antisym45 i j k m l]; ring)
+    (fun l => by
+      show b i j k l l * srVertexX R facets l * srVertexX R facets l = 0
+      rw [hb.alt i j k l l (Or.inr (Or.inr (Or.inr (Or.inl rfl))))]; ring)
+
+omit [DecidableEq α] in
+/-- **Fifth-differential boundaries are alternating 4-tensors.**  `d₅` of an alternating 5-tensor is an
+alternating 4-tensor, so `im d₅` lands in the alternating part `K₄` — the correct home for `Tor₄`
+representatives.  This completes the `Tor₄` foundation alongside `d₄∘d₅=0`. -/
+theorem srKoszulBoundary5_alternating (facets : Finset (Finset α))
+    {b : α → α → α → α → α → stanleyReisnerRing R facets} (hb : IsAlternating5 b) :
+    IsAlternating4 (srKoszulBoundary5 facets b) := by
+  refine ⟨fun i j k l => ?_, fun i j k l => ?_, fun i j k l => ?_, fun i j k l h => ?_⟩
+  · refine eq_neg_of_add_eq_zero_left ?_
+    rw [srKoszulBoundary5, srKoszulBoundary5, ← Finset.sum_add_distrib]
+    exact Finset.sum_eq_zero fun m _ => by rw [hb.antisym12 i j k l m]; ring
+  · refine eq_neg_of_add_eq_zero_left ?_
+    rw [srKoszulBoundary5, srKoszulBoundary5, ← Finset.sum_add_distrib]
+    exact Finset.sum_eq_zero fun m _ => by rw [hb.antisym23 i j k l m]; ring
+  · refine eq_neg_of_add_eq_zero_left ?_
+    rw [srKoszulBoundary5, srKoszulBoundary5, ← Finset.sum_add_distrib]
+    exact Finset.sum_eq_zero fun m _ => by rw [hb.antisym34 i j k l m]; ring
+  · rw [srKoszulBoundary5]
+    refine Finset.sum_eq_zero fun m _ => ?_
+    have hz : b i j k l m = 0 := by
+      rcases h with h | h | h | h | h | h
+      · exact hb.alt i j k l m (Or.inl h)
+      · exact hb.alt i j k l m (Or.inr (Or.inl h))
+      · exact hb.alt i j k l m (Or.inr (Or.inr (Or.inl h)))
+      · exact hb.alt i j k l m (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h)))))
+      · exact hb.alt i j k l m (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h))))))))
+      · exact hb.alt i j k l m (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h))))))
+    rw [hz, zero_mul]
 
 end
 

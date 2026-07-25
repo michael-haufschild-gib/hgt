@@ -6472,3 +6472,64 @@ Formal sources:
 
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusXiWardEulerEdgeCompleteness.lean`;
 - `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/xi-ward-euler-edge-scalar-completeness-law.md`.
+
+## 96. Synchronized recovery is all-support contractive and first-jet invisible
+
+For
+
+\[
+f(t)=\frac{1-e^{-t}}t,\qquad f(0)=1,
+\]
+
+Lean proves the universal law
+
+\[
+f(a)f(b)\le f(a+b)\qquad(a,b\ge0).
+\]
+
+After exact Rees-factor cancellation, every finite squarefree support \(P\)
+therefore has recovered/physical ratio
+
+\[
+R_P(x)=
+\frac{\prod_{p\in P}c_x(p)f(x\log p)}
+     {f(x\sum_{p\in P}\log p)}
+\in(0,1],
+\]
+
+strictly below one for \(x>0\) and \(P\ne\varnothing\). The signed amplitude
+\[
+A_P(x)=(-1)^{|P|}\sqrt{R_P(x)}
+\]
+defines a contraction on the full infinite squarefree-support \(\ell^2\)
+space. More sharply, local Gamma sewing has zero linear defect and the chord
+jets cancel across every support:
+
+\[
+\frac{R_P(x)-1}{x}\to0,\qquad
+\frac{A_P(x)-(-1)^{|P|}}x\to0.
+\]
+
+Consequently multiplying the genuine non-diagonal anti-causal Julia transport
+by \(A_P(x)\) preserves its fixed Ward-column tangent:
+
+\[
+\frac{A_P(x)V_w(x)}x
+\longrightarrow
+(-1)^{|P|}r(w).
+\]
+
+At every positive aperture this recovered transport still obeys the scalar
+two-unit bound and the full finite-packet Hardy Pick defect remains PSD.
+These are unconditional all-support theorems, not singleton estimates.
+
+Mechanism verdict: synchronized recovery solves signed source-holonomy
+nonexpansiveness and exact Ward first-jet compatibility, but its first-jet
+invisibility means it does **not** supply the missing order-\(x\) damping
+needed to make \(V_w(x)/x\) contractive. Thus it does not by itself imply
+fixed \(W_P\succeq0\). Exact live endpoint remains Section 95's
+source-side Euler-edge bound \(|r(1/2+it)|\le2\).
+
+Formal source:
+
+- `formal/GaloisForLFunctions/RHTower/GammaSewnSynchronizedRecoveryContraction.lean`.

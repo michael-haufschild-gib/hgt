@@ -232,3 +232,203 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
   `[0,∞)` with an atom at `0` is compound Poisson, whose atom support is additively closed"
   (Steutel--van Harn Ch. III Thm 4.15) is absent from mathlib.  The theta-specific premise is Lean-done;
   only this general probability parent remains.
+- 2026-07-25 — **`n`-fold convolution atom bound formalized (unconditional, reusable)**, new general
+  module `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext, Classical.choice, Quot.sound]`);
+  `measure_singleton_le_conv` was **moved here** from the theta module (now imported, no duplication):
+  * `convPow μ n` — the `n`-fold self-convolution `μ^{∗n}` (with `μ^{∗0} = δ₀`), `SFinite`-preserving
+    (`sFinite_convPow`).
+  * `prod_measure_singleton_le_convPow` — **atoms add under `n`-fold convolution**: if each `a i` is an
+    atom of `μ`, then `∑ a i` is an atom of `μ^{∗n}` with mass `≥ ∏ μ{a i}` (induction on the binary
+    `measure_singleton_le_conv`).
+  This is exactly the "iterate ... writes `x` as a sum of `m` atoms" primitive of the card's step-3
+  compound-Poisson atom-support closure — the general-probability parent that the open `2 → 3` gate
+  still needs (its remaining piece is packaging the compound-Poisson series `e^{-λ}∑ λ^m/m! Q^{*m}`
+  around this convolution-power atom bound, then the Steutel--van Harn ID ⟹ compound-Poisson step).
+- 2026-07-25 — **Convolution-power atom semigroup formalized (unconditional)**, appended to
+  `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `convPow_add` — `μ^{∗(m+n)} = μ^{∗m} ∗ μ^{∗n}` (convolution associativity + `δ₀` identity).
+  * `convPow_singleton_add_ne_zero` — **atoms of convolution powers form an additive sub-semigroup**:
+    `x` an atom of `μ^{∗m}` and `y` an atom of `μ^{∗n}` ⟹ `x+y` an atom of `μ^{∗(m+n)}`.
+  This is exactly the card's step-3 "concatenate the two atom tuples to get `Q^{*(m+n)}{x+y} > 0`"
+  conclusion, now fully general and unconditional.  With this, the compound-Poisson atom-support
+  closure reduces to a single wrapping: `P = e^{-λ}∑_m (λ^m/m!) Q^{*m}` positive ⟹ some
+  `Q^{*m}{x} > 0`, then `convPow_singleton_add_ne_zero`.  Only the `P` series-measure definition and
+  the Steutel--van Harn `ID ⟹ compound Poisson` classification then remain for the `2 → 3` gate.
+- 2026-07-25 — **Compound-Poisson atom-support closure formalized (unconditional)**, appended to
+  `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `convPowMixture c μ` — a nonnegative-weighted mixture `∑_m c_m·μ^{∗m}` (`= Measure.sum`); with
+    `c_m = e^{-λ}λ^m/m!` this is the compound Poisson law with jump distribution `μ`.
+  * `convPowMixture_singleton` — `(∑_m c_m·μ^{∗m}){x} = ∑'_m c_m·μ^{∗m}{x}`.
+  * `convPowMixture_singleton_add_ne_zero` — **step-3 in full: the atom support of every
+    positive-weighted convolution-power mixture is additively closed** (`x, y` atoms ⟹ `x+y` atom):
+    a positive tsum yields `m, n` with `μ^{∗m}{x}, μ^{∗n}{y} ≠ 0`, then
+    `convPow_singleton_add_ne_zero` gives `μ^{∗(m+n)}{x+y} ≠ 0`, which bounds the `x+y` tsum below.
+  **This completes the compound-Poisson side of the card's paper proof** (step 3, general form).  The
+  only remaining input for the `2 → 3` gate is the classical Steutel--van Harn direction
+  `ID + atom at 0 ⟹ compound Poisson` (still absent from mathlib).
+- 2026-07-25 — **`P_B` is not a compound Poisson — connector formalized (unconditional)**, appended to
+  `RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`):
+  * `thetaCuspLikelihoodSeamTiltedMeasure_not_convPowMixture` — **`P_B ≠ convPowMixture c Q`** for
+    every positive-weight `c` and jump law `Q`: a compound-Poisson mixture has additively closed atom
+    support (`convPowMixture_singleton_add_ne_zero`), but `P_B` does not
+    (`not_additivelyClosedAtomSupport_...`).
+  This connects the general compound-Poisson machinery to the specific theta carrier: **`P_B` is not a
+  compound Poisson**, unconditionally.  The full `2 → 3` non-divisibility is now literally one step
+  away — `P_B` infinitely divisible ⟹ (Steutel--van Harn, `ID + atom at 0 ⟹ compound Poisson`)
+  ⟹ `P_B` is a compound Poisson ⟹ contradiction with this theorem.  Only the Steutel--van Harn
+  classification (mathlib-absent) remains unformalized.
+- 2026-07-25 — **`(2→3)` argument fully packaged; reusable ID infrastructure added (unconditional
+  where noted)**.  New reusable infrastructure in `HTGeometry/ConvolutionAtomBounds.lean` (axioms
+  `[propext, Classical.choice, Quot.sound]`; `InfinitelyDivisible` confirmed absent from mathlib):
+  * `isProbabilityMeasure_convPow` — `μ^{∗n}` is a probability measure when `μ` is.
+  * `InfinitelyDivisible μ := ∀ n>0, ∃ ν prob, μ = ν^{∗n}` — the infinite-divisibility predicate.
+  * `IsCompoundPoissonMixture μ := ∃ c Q, (∀m, c m ≠ 0) ∧ SFinite Q ∧ μ = convPowMixture c Q`, with
+    `IsCompoundPoissonMixture.singleton_add_ne_zero` (its atom support is additively closed).
+  In `RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`:
+  * `thetaCuspLikelihoodSeamTiltedMeasure_not_compoundPoisson` — **`¬ IsCompoundPoissonMixture P_B`,
+    unconditional** (existential form: `P_B` is not any compound Poisson mixture).
+  * `thetaCuspLikelihoodSeamTiltedMeasure_not_infinitelyDivisible` — **`¬ InfinitelyDivisible P_B`
+    given the Steutel--van Harn interface** `svh : InfinitelyDivisible P_B → IsCompoundPoissonMixture P_B`.
+  This formalizes the card's `(2→3)` argument in full, with the *only* classical input — Steutel--van
+  Harn `ID + atom at 0 ⟹ compound Poisson` — isolated as the explicit `svh` hypothesis (still absent
+  from mathlib).  Everything else (`P_B` not compound Poisson) is unconditional Lean.
+- 2026-07-25 — **Convolution distributes over `Measure.sum` (reusable, mathlib-gap)**, appended to
+  `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `sum_conv` — `(∑_i f i) ∗ ν = ∑_i (f i ∗ ν)`.
+  * `conv_sum` — `μ ∗ (∑_i f i) = ∑_i (μ ∗ f i)` (for `Countable ι`).
+  These (from `Measure.prod_sum_left/right` + `Measure.map_sum`) are the interchange primitives absent
+  from mathlib that a compound-Poisson **convolution semigroup** `compoundPoisson(λ₁)∗compoundPoisson(λ₂)
+  = compoundPoisson(λ₁+λ₂)` needs (Cauchy product over the two Poisson series), hence the still-open
+  *easy* half `compound Poisson ⟹ ID`.  They complete the reusable convolution-distributivity layer of
+  the ID/compound-Poisson nucleus in `ConvolutionAtomBounds`.
+- 2026-07-25 — **Convolution of convolution-power mixtures formalized (reusable)**, appended to
+  `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext, Classical.choice, Quot.sound]`; also
+  promoted `sFinite_convPow` to an instance so mixture `SFinite` inference works):
+  * `convPowMixture_conv` — **`(∑_m c₁_m Q^{∗m}) ∗ (∑_k c₂_k Q^{∗k}) = ∑_m ∑_k (c₁_m·c₂_k) Q^{∗(m+k)}`**
+    (via `sum_conv` + `conv_sum` + scalar bilinearity `conv_smul_left/right` + `convPow_add`).
+  This is the structural core of the compound-Poisson **convolution semigroup**: the resulting
+  coefficient double sum is the Cauchy product of `c₁, c₂`.  For the Poisson weights the Cauchy product
+  is the binomial `∑_{m+k=j}(e^{-a}a^m/m!)(e^{-b}b^k/k!) = e^{-(a+b)}(a+b)^j/j!`, giving
+  `compoundPoisson(a) ∗ compoundPoisson(b) = compoundPoisson(a+b)` and hence `compound Poisson ⟹ ID`.
+  Remaining for that easy half: the double-sum → antidiagonal Cauchy reindex of `Measure.sum` and the
+  Poisson binomial identity.  (The card's actual gate still needs the hard Steutel--van Harn converse.)
+- 2026-07-25 — **Poisson/exponential coefficient Cauchy product formalized (reusable)**, appended to
+  `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `poisson_cauchy` — **`∑_{(m,k)∈antidiag j} (a^m/m!)(b^k/k!) = (a+b)^j/j!`** (the exponential
+    generating-function product identity, via `add_pow` + `Nat.choose_mul_factorial_mul_factorial`).
+  This is the **scalar** half of the compound-Poisson convolution semigroup — with the measure-level
+  double sum `convPowMixture_conv`, it gives `compoundPoisson(a) ∗ compoundPoisson(b) =
+  compoundPoisson(a+b)`, hence `compound Poisson ⟹ ID`.  The only remaining bridge is the measure-level
+  antidiagonal Cauchy reindex of `Measure.sum` (mathlib lacks `sigmaAntidiagonalEquivProd`/`sum_sigma`,
+  so it must be built from `Measure.sum_sum` + `Measure.sum_comp_equiv` + `Measure.sum_coe_finset`).
+- 2026-07-25 — **Measure Cauchy-product primitives + full mixture convolution formula (reusable,
+  mathlib-gap)**, appended to `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext,
+  Classical.choice, Quot.sound]`):
+  * `measure_sum_sigma` — `Measure.sum` over a sigma type is the iterated sum (`Measure.sum_apply`
+    + `ENNReal.tsum_sigma'`) — genuinely absent from mathlib.
+  * `sigmaAntidiagEquiv` / `measure_sum_antidiagonal` — the antidiagonal Cauchy reindex for
+    `Measure.sum`: `∑_{p:ℕ×ℕ} g p = ∑_j ∑_{p∈antidiag j} g p`.
+  * `convPowMixture_conv_antidiagonal` — **`(∑_m c₁_m Q^{∗m}) ∗ (∑_k c₂_k Q^{∗k}) =
+    ∑_j (∑_{p∈antidiag j} c₁_{p.1}·c₂_{p.2}) Q^{∗j}`**: the convolution of two mixtures is a mixture
+    whose coefficient sequence is the Cauchy product — the complete compound-Poisson
+    convolution-semigroup structural formula.
+  With `poisson_cauchy` (the Poisson coefficient Cauchy identity), this gives
+  `compoundPoisson(a) ∗ compoundPoisson(b) = compoundPoisson(a+b)` once the coefficients are cast to
+  `ℝ≥0∞`, hence `compound Poisson ⟹ ID` (the easy half of the ID/compound-Poisson equivalence).
+- 2026-07-25 — **Compound Poisson convolution semigroup formalized (unconditional)**, appended to
+  `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `compoundPoisson lam Q := convPowMixture (fun m => ofReal(e^{-lam} lam^m/m!)) Q` — the compound
+    Poisson law with intensity `lam` and jump law `Q`.
+  * `compoundPoisson_coeff_cauchy` — the `ℝ≥0∞` coefficient Cauchy identity (from `poisson_cauchy`
+    + `exp(-a)exp(-b)=exp(-(a+b))` + `ENNReal.ofReal_mul/ofReal_sum`).
+  * `compoundPoisson_conv` — **`compoundPoisson(a) ∗ compoundPoisson(b) = compoundPoisson(a+b)`** for
+    `a, b ≥ 0`, via `convPowMixture_conv_antidiagonal` + the coefficient identity.
+  This is the compound-Poisson **convolution semigroup**, unconditional.  The immediate corollary
+  `compound Poisson ⟹ ID` follows by iterating: `compoundPoisson(lam) = compoundPoisson(lam/n)^{∗n}`
+  (`n`-fold semigroup), with `compoundPoisson(lam/n)` a probability measure.  This validates the entire
+  ID/compound-Poisson nucleus (`ConvolutionAtomBounds` is now a self-contained Lévy-atom theory).
+- 2026-07-25 — **`compound Poisson ⟹ infinitely divisible` fully formalized (unconditional)** — the
+  easy half of the ID/compound-Poisson equivalence — in `HTGeometry/ConvolutionAtomBounds.lean`
+  (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `compoundPoisson_zero` — `compoundPoisson 0 Q = δ₀`.
+  * `convPow_compoundPoisson` — **`(compoundPoisson lam Q)^{∗n} = compoundPoisson (n·lam) Q`** (n-fold
+    semigroup, induction on `compoundPoisson_conv`).
+  * `isProbabilityMeasure_compoundPoisson` — `compoundPoisson lam Q` is a probability measure for
+    `lam ≥ 0` (its Poisson weights sum to `1` via the exponential series `∑ lam^m/m! = exp lam`).
+  * `infinitelyDivisible_compoundPoisson` — **`InfinitelyDivisible (compoundPoisson lam Q)`**: for each
+    `n`, `compoundPoisson lam Q = (compoundPoisson (lam/n) Q)^{∗n}` with `compoundPoisson (lam/n) Q` a
+    probability measure.
+  The whole ID/compound-Poisson nucleus (`ConvolutionAtomBounds`) is now demonstrably non-vacuous and
+  correct.  The theta card's `2 → 3` gate still needs the *converse* (Steutel--van Harn: `ID + atom at
+  0 ⟹ compound Poisson`), but the framework it plugs into is fully validated end to end.
+- 2026-07-25 — **Infinite-divisibility closure + `δ₀` example (reusable ID-theory)**, appended to
+  `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `convPow_conv` — `(μ ∗ ν)^{∗n} = μ^{∗n} ∗ ν^{∗n}` on a commutative monoid (via `conv_comm` +
+    `conv_assoc`).
+  * `InfinitelyDivisible.conv` — **infinite divisibility is closed under convolution**.
+  * `convPow_dirac_zero` / `infinitelyDivisible_dirac_zero` — `δ₀^{∗n} = δ₀`, so `δ₀` is ID.
+  These round out the reusable ID-theory library.  The whole `ConvolutionAtomBounds` module is now a
+  self-contained Lévy/infinite-divisibility contribution (absent from mathlib): convolution
+  powers/mixtures, atom-support closure, the ID and compound-Poisson-mixture predicates, convolution
+  distributivity, the measure Cauchy product, the compound-Poisson semigroup, `compound Poisson ⟹ ID`,
+  and now ID closure under convolution.  The theta `2 → 3` gate awaits only the hard Steutel--van Harn
+  converse (Lévy--Khintchine level).
+- 2026-07-25 — **Generating-function calculus for convolutions (reusable Laplace/MGF layer)**,
+  appended to `HTGeometry/ConvolutionAtomBounds.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `lintegral_conv_of_multiplicative` — for any measurable multiplicative kernel
+    `f (x+y) = f x · f y` (Laplace `exp(-s·)`, MGF, character), `∫⁻ f d(μ ∗ ν) = ∫⁻f dμ · ∫⁻f dν`.
+  * `lintegral_convPow_of_multiplicative` — `∫⁻ f d(μ^{∗n}) = (∫⁻ f dμ)^n` (transform of the
+    `n`-th convolution power is the `n`-th power).
+  This is exactly the transform layer a Laplace-transform proof of the Steutel--van Harn converse
+  (`ID + atom at 0 ⟹ compound Poisson`, the theta `2 → 3` gate) is built on: the ID hypothesis gives
+  `Laplace(P) = Laplace(Q_n)^n`, and Bernstein-function structure of `-log Laplace` finishes it.  The
+  transform multiplicativity is now unconditional Lean; the remaining input is the Bernstein/Lévy–
+  Khintchine representation.
+- 2026-07-25 — **Laplace transform of a measure + convolution law** (new module
+  `HTGeometry/LaplaceTransformConvolution.lean`, axioms `[propext, Classical.choice, Quot.sound]`):
+  * `laplace μ s := ∫⁻ x, exp(-(s x)) dμ` — the Laplace–Stieltjes transform, valued in `ℝ≥0∞`.
+  * `laplace_conv` — `laplace (μ ∗ ν) s = laplace μ s · laplace ν s` (convolution ↦ product), a
+    direct specialization of the abstract multiplicative-kernel lemma to the exponential kernel.
+  * `laplace_convPow` — `laplace (μ^{∗n}) s = (laplace μ s)^n`.
+  * `laplace_dirac_zero` — `laplace δ₀ s = 1`.
+  * `InfinitelyDivisible.exists_laplace_root` — **ID forces the Laplace transform to be a perfect
+    `n`-th power at every `s` and every order `n`** (`∃ r, laplace μ s = r^n`), the transform-side
+    skeleton of the Steutel–van Harn / Lévy–Khintchine analysis for the theta `2 → 3` gate.
+  The transform layer is now a concrete Laplace transform (not just an abstract kernel), tying
+  `InfinitelyDivisible` directly to a perfect-`n`-th-power structure on `ℝ≥0∞`.  Remaining input for
+  the gate: the Bernstein-function representation of `-log laplace` (Lévy–Khintchine on `[0,∞)`).
+- 2026-07-25 — **Laplace-transform domain lemmas** (appended to
+  `HTGeometry/LaplaceTransformConvolution.lean`, axioms `[propext, Classical.choice, Quot.sound]`):
+  `laplace_dirac` (`laplace δₐ s = exp(-(s a))`), `laplace_zero` (`laplace μ 0 = μ univ`),
+  `laplace_zero_prob` (`= 1`), `laplace_le_one` (probability measure on `[0,∞)`, `s ≥ 0 ⟹ ≤ 1`),
+  `laplace_antitone` (antitone in `s` on the half line), `laplace_pos` (strictly positive at every
+  argument — the everywhere-positive exponential kernel).  These are the boundedness/monotonicity/
+  positivity constraints that pin the `n`-th roots produced by `InfinitelyDivisible.exists_laplace_root`
+  into `(0,1]` and let one pass to `-log laplace` — the domain backbone for the Bernstein-function
+  (Lévy–Khintchine) step of the theta `2 → 3` gate.
+- 2026-07-25 — **Cumulant (log-Laplace) layer** (appended to
+  `HTGeometry/LaplaceTransformConvolution.lean`, axioms `[propext, Classical.choice, Quot.sound]`):
+  `logLaplace μ s := -log (laplace μ s).toReal`, the additive/cumulant picture.
+  * `logLaplace_zero_prob` (`= 0` at `s=0`), `logLaplace_nonneg` (`≥ 0` on `[0,∞)`, `s ≥ 0`).
+  * `logLaplace_conv` — **additive under convolution** (probability measures, finite transform).
+  * `InfinitelyDivisible.exists_logLaplace_root` — **ID makes the cumulant divisible by every `n`**:
+    `∃ c, logLaplace μ s = n·c`, the additive Lévy shadow of `exists_laplace_root`, unconditional
+    (via `-log(rⁿ) = n·(-log r)`).
+  The cumulant is now a nonnegative, convolution-additive, infinitely-`n`-divisible function
+  vanishing at `0` — precisely the shape of a Bernstein-function candidate.  Remaining input for the
+  theta `2 → 3` gate: complete monotonicity of `s ↦ logLaplace μ s` (Bernstein/Lévy–Khintchine on `[0,∞)`).
+- 2026-07-25 — **Compound Poisson cumulant computed in closed form — easy direction end-to-end on
+  the transform side** (appended to `HTGeometry/LaplaceTransformConvolution.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `laplace_convPowMixture` — `laplace(∑ₘ cₘ·Q^{∗m}) s = ∑ₘ cₘ·(laplace Q s)ᵐ` (reusable).
+  * `tsum_ofReal_poisson_scaled` — the scaled real exp-series `∑ₘ e^{-λ}aᵐ/m!` lifted through
+    `ENNReal.ofReal` equals `e^{-λ}·eᵃ`.
+  * `laplace_compoundPoisson` — **`laplace(compoundPoisson λ Q) s = exp(λ·((laplace Q s)−1))`**.
+  * `logLaplace_compoundPoisson` — **`logLaplace(compoundPoisson λ Q) s = λ·(1 − (laplace Q s))`**,
+    the explicit closed-form compound-Poisson cumulant (a concrete Bernstein-type form: `λ` times
+    `1 −` a completely monotone transform).
+  * `logLaplace_compoundPoisson_nonneg` — that cumulant is `≥ 0` on the half line.
+  This closes the **easy** half of the Steutel–van Harn equivalence entirely on the transform side:
+  compound Poisson ⟹ explicit cumulant `λ(1−L̂)`.  The hard converse (ID + atom at 0 ⟹ that cumulant
+  form, i.e. `−logLaplace` is Bernstein) remains the theta `2 → 3` analytic input.

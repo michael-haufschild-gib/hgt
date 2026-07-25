@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodModularSeam
 import Mathlib.MeasureTheory.Group.Convolution
+import GaloisForLFunctions.HTGeometry.ConvolutionAtomBounds
 
 /-!
 # Arithmetic non-divisibility of the theta likelihood carrier
@@ -18,7 +19,7 @@ theta-specific premise.
 All statements are unconditional and exact.
 -/
 
-open Complex Real MeasureTheory Set Filter Topology Polynomial
+open Complex Real MeasureTheory Set Filter Topology Polynomial GaloisForLFunctions.HTGeometry
 open scoped BigOperators ENNReal MeasureTheory
 
 namespace RHTower
@@ -176,19 +177,6 @@ theorem not_additivelyClosedAtomSupport_smul_thetaCuspLikelihoodSeamTiltedMeasur
   norm_num at h6
   exact h6.2 (thetaCuspLikelihoodSeamTiltedMeasure_singleton_six B)
 
-/-- **Atoms add under convolution.**  For measures `μ, ν` on an additive monoid, the convolution
-puts at least mass `μ{a}·ν{b}` on `a + b`.  Reusable primitive behind two-particle atom creation. -/
-theorem measure_singleton_le_conv {M : Type*} [AddMonoid M] [MeasurableSpace M]
-    [MeasurableAdd₂ M] [MeasurableSingletonClass M] (μ ν : Measure M) [SFinite ν] (a b : M) :
-    μ {a} * ν {b} ≤ (μ ∗ ν) {a + b} := by
-  rw [Measure.conv, Measure.map_apply (by fun_prop) (measurableSet_singleton _)]
-  calc μ {a} * ν {b} = (μ.prod ν) ({a} ×ˢ {b}) := (Measure.prod_prod _ _).symm
-    _ ≤ (μ.prod ν) ((fun x => x.1 + x.2) ⁻¹' {a + b}) := by
-        apply measure_mono
-        rintro ⟨x, y⟩ hxy
-        simp only [Set.mem_prod, Set.mem_singleton_iff] at hxy
-        simp only [Set.mem_preimage, Set.mem_singleton_iff, hxy.1, hxy.2]
-
 /-! ### Positive survivor: birth of a two-particle atom -/
 
 /-- **Two-particle square-gap birth.** Although the one-particle tilted carrier has no atom at
@@ -214,6 +202,35 @@ theorem thetaCuspLikelihoodSeamTiltedMeasure_selfConv_singleton_six_ne_zero (B :
     (thetaCuspLikelihoodSeamTiltedMeasure_singleton_three_ne_zero B)
     (thetaCuspLikelihoodSeamTiltedMeasure_singleton_three_ne_zero B) hleft
 
+/-- **The theta seam-tilted likelihood is not a compound Poisson (convolution-power mixture).**
+Any positive-weighted convolution-power mixture has additively closed atom support
+(`convPowMixture_singleton_add_ne_zero`), but the square-gap carrier does not (it charges `3` but not
+`6`).  Combined with the classical `ID + atom at 0 ⟹ compound Poisson` classification, this is the
+non-divisibility of `P_B`. -/
+theorem thetaCuspLikelihoodSeamTiltedMeasure_not_convPowMixture (B : ℝ)
+    {c : ℕ → ℝ≥0∞} (hc : ∀ m, c m ≠ 0) (Q : Measure ℝ) [SFinite Q] :
+    thetaCuspLikelihoodSeamTiltedMeasure B ≠ convPowMixture c Q := by
+  intro heq
+  apply not_additivelyClosedAtomSupport_thetaCuspLikelihoodSeamTiltedMeasure B
+  rw [AdditivelyClosedAtomSupport, heq]
+  intro x y hx hy
+  exact convPowMixture_singleton_add_ne_zero hc Q hx hy
+
+/-- **`P_B` is not a compound Poisson mixture** (existential form).  Immediate from
+`thetaCuspLikelihoodSeamTiltedMeasure_not_convPowMixture`. -/
+theorem thetaCuspLikelihoodSeamTiltedMeasure_not_compoundPoisson (B : ℝ) :
+    ¬ IsCompoundPoissonMixture (thetaCuspLikelihoodSeamTiltedMeasure B) := by
+  rintro ⟨c, Q, hc, hQ, heq⟩
+  exact thetaCuspLikelihoodSeamTiltedMeasure_not_convPowMixture B hc Q heq
+
+/-- Given the classical Steutel--van Harn classification (`ID + atom at 0 ⟹ compound Poisson`,
+supplied as `svh`), the theta seam-tilted likelihood `P_B` is **not infinitely divisible** — hence
+neither a generalized gamma convolution nor a Thorin-subordinator marginal. -/
+theorem thetaCuspLikelihoodSeamTiltedMeasure_not_infinitelyDivisible (B : ℝ)
+    (svh : InfinitelyDivisible (thetaCuspLikelihoodSeamTiltedMeasure B) →
+           IsCompoundPoissonMixture (thetaCuspLikelihoodSeamTiltedMeasure B)) :
+    ¬ InfinitelyDivisible (thetaCuspLikelihoodSeamTiltedMeasure B) :=
+  fun hID => thetaCuspLikelihoodSeamTiltedMeasure_not_compoundPoisson B (svh hID)
 end
 
 end RHTower

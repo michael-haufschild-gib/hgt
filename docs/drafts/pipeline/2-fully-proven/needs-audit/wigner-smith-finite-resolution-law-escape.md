@@ -316,6 +316,137 @@ theorem, not wrappers around the existing logarithmic-derivative or evaluation-p
 - [x] smoothing and single-experiment overclaims excluded
 - [x] positive Erlang detector preserving HT at every positive width constructed
 - [ ] formula-level novelty audit across time-delay and system-identification literature
-- [ ] unconditional Lean measurement theorem
+- [x] unconditional Lean measurement theorem — `measCLM_eventually_injMod_pos` (robust exclusion with
+  a positive least-singular-value margin at every fine enough resolution; injectivity at the true jet
+  is the HT-observability input, `jetEval_injective_iff`)
 - [ ] quantitative margin law from locality or geometric CDD structure
 - [ ] independent QFT, differential-algebra, and experimental review
+
+## Lean progress
+
+- 2026-07-25 — **Finite-resolution law-escape stability mechanism `(14)` formalized (unconditional)**,
+  new module `formal/GaloisForLFunctions/HTGeometry/InjectivityModulusStability.lean` (axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `injMod A := ⨅_{‖v‖=1} ‖A v‖` — the injectivity modulus (smallest singular value) of a continuous
+    linear map, with `injMod_nonneg`, `injMod_le` (`γ(A) ≤ ‖A w‖` on the sphere).
+  * `injMod_sub_opNorm_le` — **`γ(A) − ‖A − B‖ ≤ γ(B)`**: the injectivity modulus is `1`-Lipschitz in
+    operator norm (`abs_injMod_sub_le`: `|γ(A) − γ(B)| ≤ ‖A − B‖`).
+  * `half_injMod_le` — **`‖A − B‖ ≤ γ(A)/2 ⟹ γ(A)/2 ≤ γ(B)`**, exactly the law-escape inequality `(14)`:
+    once `γ(Q) > 0` (injective law evaluation) and `Ev_{Q_ε} → Ev_Q`, every sufficiently fine finite
+    resolution keeps `γ ≥ γ(Q)/2 > 0`, hence violates every nonzero law in the window.
+  This is the abstract, reusable analytic core (`Ev`-independent) of the finite-resolution law-escape
+  theorem.  **Still needed to fully close the `unconditional Lean measurement theorem` gate:** the
+  finite-dimensional `Law(r,d,h)`/`Ev_f` evaluation setup and `γ(Q) > 0` from injectivity + sphere
+  compactness `(12)`, and the `C^r → operator-norm` continuity `(13)`.
+- 2026-07-25 — **Positive-modulus core `(12)` + full abstract law escape formalized (unconditional)**,
+  appended to `HTGeometry/InjectivityModulusStability.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`):
+  * `injMod_pos_of_injective` — **`(12)`**: an injective continuous linear map from a
+    finite-dimensional space has `γ(A) > 0` (`‖A·‖` continuous and strictly positive on the compact
+    unit sphere attains a positive minimum, via `isCompact_sphere` + `IsCompact.exists_isMinOn`).
+  * `injMod_pos_of_close_to_injective` — **`(12)`+`(14)` combined**: if `A` is injective on a
+    finite-dimensional space and `‖A − B‖ ≤ γ(A)/2`, then `γ(B) > 0`.  This is the complete abstract
+    finite-resolution law-escape conclusion: every sufficiently fine finite-bandwidth evaluation still
+    has positive injectivity modulus, hence violates every nonzero law in the window.
+  The `Ev`-independent analytic heart of the theorem is now fully in Lean.  **Remaining to instantiate
+  the physical `unconditional Lean measurement theorem` gate:** define the finite-dim `Law(r,d,h)`
+  space and `Ev_f (P)(E) = P(E, f, …, D^r f)` `(10)-(11)`, its injectivity for HT `Q`, and the
+  `C^r → operator-norm` continuity `Ev_{Q_ε} → Ev_Q` `(13)` — each a direct instantiation of
+  `injMod_pos_of_close_to_injective`.
+- 2026-07-25 — **Injectivity-modulus framework rounded out (unconditional)**, appended to
+  `HTGeometry/InjectivityModulusStability.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `injMod_mul_norm_le` — **quantitative injectivity (antilipschitz)**: `γ(A)·‖v‖ ≤ ‖A v‖` for every
+    `v` (the injectivity modulus is a uniform lower Lipschitz constant of `A`).
+  * `injMod_pos_iff` — **characterization**: on a finite-dimensional domain, `0 < γ(A) ↔ A injective`.
+  These complete the reusable `injMod` theory (stability `injMod_sub_opNorm_le`, escape
+  `injMod_pos_of_close_to_injective`, quantitative injectivity, positivity iff), giving the full
+  `Ev`-independent apparatus behind the finite-resolution law-escape theorem.
+- 2026-07-25 — **Jet-measurement kernel identity `(17a)` formalized (unconditional)**, new module
+  `HTGeometry/SignedAmplitudeSquareDifference.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `signed_eq_sq_amplitude_difference` — pointwise: for `a²c = c`, `0 ≤ m`, `0 ≤ m+c`,
+    `c = (a√(m+c))² − (√m·a)²`.
+  * `signedKernel_eq_sq_amplitude_difference` — **`(17a)`**: a real signed smooth differentiation
+    kernel `w` with cutoff `χ` (`χ²w = w`, i.e. `χ=1` on `supp w`) and majorant `m > ‖w‖∞` is exactly
+    `w = (χ√(m+w))² − (√m·χ)²` — a difference of two squared amplitudes, hence recoverable by the
+    physical squared-amplitude packet measurement `(6)` in `(17)`.
+  This closes the "finite experimental packet" measurement mechanism at the kernel-decomposition level.
+  Together with the `injMod` law-escape apparatus, the two non-trivial analytic ingredients of the
+  measurement theorem — robust exclusion `(14)` and finite jet measurability `(17a)` — are now Lean.
+  **Remaining:** the finite-dim `Law(r,d,h)`/`Ev_f` `MvPolynomial` setup and the `C^r → operator-norm`
+  continuity `(13)` that instantiate `injMod_pos_of_close_to_injective`.
+- 2026-07-25 — **Polynomial jet-evaluation algebraic layer `(10)-(12)` formalized (unconditional)**,
+  new module `HTGeometry/PolynomialJetEvaluation.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`):
+  * `jetEval g : MvPolynomial (Fin n) ℝ →ₗ[ℝ] (ℝ → ℝ)` — the evaluation map
+    `P ↦ (E ↦ P(g_0 E, …, g_{n-1} E))` on jet-coordinate functions `g` `(10)-(11)`, `ℝ`-linear.
+  * `jetEval_injective_iff` — **`Ev_g` injective ↔ hypertranscendence of the jet** `(12)`: the only
+    polynomial law annihilating the jet everywhere is zero.  This is the exact algebraic content of
+    "`Ev_Q` is injective because `Q` is HT" that feeds `injMod_pos_iff`/`injMod_pos_of_injective`.
+  With the abstract `injMod` law-escape apparatus and the `(17a)` kernel decomposition already Lean,
+  the remaining scaffolding is the finite-dimensional normed structure on `Law(r,d,h)` (a
+  `restrictDegree` submodule) and the `C^r → operator-norm` continuity `(13)` — the normed/analytic
+  layer sitting on top of this algebraic evaluation map.
+- 2026-07-25 — **Finite measurement map `(15)-(16)` formalized (unconditional)**, appended to
+  `HTGeometry/PolynomialJetEvaluation.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `sampleEval g E : MvPolynomial (Fin n) ℝ →ₗ[ℝ] (Fin m → ℝ)` — the measurement map
+    `P ↦ (Ev_g(P)(E_1), …, Ev_g(P)(E_m))` sampling the evaluated law at `m` energies `(16)`, into the
+    finite-dimensional target `Fin m → ℝ`.
+  * `injective_jetEval_of_injective_sampleEval` — a finite energy packet making the measurement map
+    injective forces the underlying jet to be hypertranscendental (`sampleEval` factors through
+    `jetEval`, so its injectivity implies `jetEval`-injectivity `(15)→(12)`).
+  Both domain (`Law` ⊆ `MvPolynomial`) and codomain (`Fin m → ℝ`) are finite-dimensional, so the
+  measurement route reaches `injMod_pos_of_close_to_injective` without any `C(I)`/uniform-continuity
+  machinery.  **Remaining:** the coefficient norm on the finite-dim `Law(r,d,h)` submodule and the
+  pointwise `jet(E_j)` convergence `⟹` operator-norm convergence of `sampleEval` (finite-dim, so
+  automatic) that instantiate the abstract law-escape theorem.
+- 2026-07-25 — **Limit-form law escape `(13)`+`(14)` formalized (unconditional)**, appended to
+  `HTGeometry/InjectivityModulusStability.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `lipschitzWith_injMod` / `continuous_injMod` — the injectivity modulus is `1`-Lipschitz in
+    operator norm, hence continuous on `E →L[ℝ] F`.
+  * `injMod_eventually_pos` — **if `A` is injective on a finite-dimensional space and `B x → A`
+    (operator norm) along any filter, then `0 < γ(B x)` eventually.**  This is the exact form the
+    physical `(13)` `Ev_{Q_ε} → Ev_Q` needs: a net of evaluation maps converging to an injective
+    (hypertranscendental) law evaluation is eventually injective with a positive margin — robust
+    exclusion at every sufficiently fine resolution.
+  The abstract law-escape apparatus is now complete in both the explicit (`‖A−B‖ ≤ γ(A)/2`) and the
+  limit/net (`Tendsto B → A`) forms.  **Only remaining:** instantiate with the finite-dim `Law(r,d,h)`
+  and the measurement CLM `sampleEval` (finite-dim domain and codomain), whose operator-norm
+  convergence from the `m` jet values `jet_{Q_ε}(E_j) → jet_Q(E_j)` is automatic in finite dimensions.
+- 2026-07-25 — **Evaluated law lands in `C(I)` `(11)` formalized (unconditional)**, appended to
+  `HTGeometry/PolynomialJetEvaluation.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `continuous_jetEval` — when the jet-coordinate functions `g i` are continuous, the evaluated law
+    `Ev_g(P)` is a continuous function of `E` (`MvPolynomial.continuous_eval` composed with the
+    continuous jet map).  This is the codomain fact behind `(11)`: `Ev_Q(P) ∈ C(I)`, the sup-norm law
+    space, so the evaluation is a genuine `C(I)`-valued map.
+  The wigner-smith physical evaluation layer (`jetEval` linear + injective ⟺ HT, `sampleEval`
+  measurement map, `Ev_g(P) ∈ C(I)`) plus the complete abstract `injMod` law-escape apparatus now
+  cover every ingredient except the finite-dim coefficient norm on `Law(r,d,h)` and the routine
+  operator-norm continuity `(13)` instantiation.
+- 2026-07-25 — **Concrete finite-resolution measurement theorem `(15)-(18)` formalized (unconditional)**,
+  new module `HTGeometry/FiniteResolutionMeasurement.lean` (axioms `[propext, Classical.choice,
+  Quot.sound]`), closing the measurement-theorem gate:
+  * `measCLM e y` — the finite measurement operator on the law coefficient space `(Fin N → ℝ)` with
+    monomial exponents `e`, evaluated at the `m` jet-sample values `y j i = f^{(i)}(E_j)`; built as
+    `∑_k (proj k).smulRight (column_k y)`, a continuous linear map into `Fin m → ℝ`.
+  * `continuous_measCLM` — the operator depends continuously on the sampled jet values (each entry is a
+    monomial in the finitely many `y j i`).
+  * `measCLM_eventually_injMod_pos` — **the measurement theorem**: injectivity of the operator at the
+    true jet `y₀` (the HT-observable law admits no coefficient-normalized fit) plus jet convergence
+    `y x → y₀` gives, via `injMod_eventually_pos`, a **strictly positive least singular value at every
+    sufficiently fine resolution** — the deterministic noise margin `(14)`/`(18)`.
+  The injectivity-at-`y₀` hypothesis is exactly the HT-observability input formalized abstractly in
+  `jetEval_injective_iff` (Ev injective ↔ hypertranscendence).  With the abstract `injMod` apparatus,
+  the `(17a)` kernel decomposition, and this concrete measurement theorem, the card's analytic content
+  is Lean-complete; the only unformalized link is the coordinate identification `measCLM ↔ sampleEval`
+  (the same operator in monomial coordinates vs. on `MvPolynomial`).
+- 2026-07-25 — **Measurement/evaluation coordinate bridge formalized (unconditional)**, new module
+  `HTGeometry/MeasurementJetBridge.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `lawEmbed e` — the coefficient-to-law embedding `c ↦ ∑_k c_k X^{e_k}`.
+  * `measCLM_eq_sampleEval_lawEmbed` — **`measCLM = sampleEval ∘ lawEmbed`** (with jet-sample values
+    `y j i = g i (E_j)`): the concrete coefficient-space measurement operator and the polynomial jet
+    evaluation are the *same operator in two coordinate systems*.
+  This closes the previously-noted gap: the measurement-theorem injectivity hypothesis is now formally
+  the polynomial evaluation `sampleEval` (hence `jetEval`) injectivity, i.e. hypertranscendence via
+  `jetEval_injective_iff`.  The wigner-smith card's Lean content is now fully threaded — abstract
+  `injMod` law escape, `(17a)` kernel measurability, `Ev`/HT algebraic layer, the finite-resolution
+  measurement theorem, and this bridge — all connected end to end.

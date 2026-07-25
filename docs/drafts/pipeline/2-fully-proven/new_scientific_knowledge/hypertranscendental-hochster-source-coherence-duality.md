@@ -848,3 +848,334 @@ absent), the syzygy `c_{ab} = x_c x_d`, `c_{cd} = x_a x_b` is annihilated by the
 Combined with the `d₂∘d₃=0` foundation, the `Tor₂` layer now has both the well-definedness of the
 homology and an explicit nonzero-candidate cycle.  Next: the `C₄` **non-boundary** (`c4Cycle ∉ im d₃`)
 via a `Tor₂` detector, establishing it as a genuinely nonzero `Tor₂` class.
+
+### Lean progress — Tor₂ antisymmetry + char-2 correction + unconditional representative
+
+Two additions to `StanleyReisnerVertexRelation` (both axiom-clean):
+
+1. `srKoszulBoundary3_antisymm` — `d₃` of an alternating 3-tensor is an antisymmetric 2-tensor, so
+   `im d₃` lands in the alternating part `K₂` (the correct home for `Tor₂` representatives).
+
+2. `srSquareEdgeCycle` + `srKoszulBoundary_srSquareEdgeCycle` — the single-edge syzygy
+   `c_{ab} = x_c x_d` (all other entries zero) is a `d₂`-cycle in every characteristic.
+
+**Char-2 correction (honesty).**  The earlier two-edge representative `c4Cycle` `(1,0,1,0)` is a
+`d₂`-cycle unconditionally, but its `Tor₂` *class* is nonzero only away from characteristic two: solving
+`(1,0,1,0) ∈ im d₃` over the edge basis forces `2 = 0`, so it is a boundary in char 2 (verified
+numerically: in `im d₃` over `GF(2)`, not over `GF(3)`).  The **single edge** `(1,0,0,0)` instead forces
+`0 = 1` in *every* field, so `srSquareEdgeCycle` is the unconditional `Tor₂` representative.  The
+`c4Cycle` docstring is corrected accordingly.
+
+Next: the unconditional non-boundary `srSquareEdgeCycle ∉ im d₃` via the alternating detector
+`Φ = +{cd}∘c_{ab} − {ad}∘c_{bc} + {ab}∘c_{cd} − {bc}∘c_{da}` (`Φ(single edge) = 1`, `Φ(d₃ b) = 0`).
+
+### Lean progress — MILESTONE: nonzero Tor₂ class (C₄ hole), unconditional
+
+The `Tor₂` layer of the Hochster strand equivalence now has a genuine nonzero class, formalized
+unconditionally (all axiom-clean, in `StanleyReisnerVertexRelation`):
+
+- `srPairDetector_srKoszulBoundary3` — the degree-two detector of a `d₃`-entry collapses to two
+  degree-one detectors (`srH0Det_v(b_{iju}) + srH0Det_u(b_{ijv})`) by the pair-product rule.
+- `srSquareEdgeCycle_not_koszulBoundary3` — **the single-edge `C₄` cycle is not a `d₃`-boundary of any
+  alternating 3-tensor, in every characteristic.**  The alternating detector `Φ = +{cd}∘t_{ab} −
+  {ad}∘t_{bc} + {ab}∘t_{cd} − {bc}∘t_{da}` gives `Φ(cycle) = 1`, while `Φ(d₃ b) = 0`: the eight
+  degree-one detector terms pair off by the cyclic (even-permutation) invariance of the alternating
+  coefficient (`b_{bca} = b_{abc}`, `b_{dab} = b_{abd}`, `b_{cdb} = b_{bcd}`, `b_{dac} = b_{cda}`).  A
+  boundary would force `1 = 0`.
+- `srSquareEdge_secondKoszulHomology_nonzero` — packaged capstone: cycle (`d₂` kills it) ∧ non-boundary
+  (`∉ im d₃`), so `srSquareEdgeCycle` represents a nonzero class in `Tor_{2,{a,b,c,d}} = H̃¹(C₄)`.
+
+This is the first genuinely second-degree Hochster homology in the corpus, and it closes the char-2 gap
+found last fire (the unconditional single-edge representative, not the char-2-vanishing two-edge sum).
+Next: `Tor₃` (the tetrahedron-boundary `S²` class via the fourth Koszul differential `d₄`, `d₃∘d₄=0`),
+or the general strand equivalence `Tor_{i,σ} ≅ H̃^{|σ|−i−1}` for arbitrary `i`.
+
+### Lean progress — fourth Koszul differential + d₃∘d₄=0 (Tor₃ foundation)
+
+`srKoszulBoundary3_srKoszulBoundary4` (in `StanleyReisnerVertexRelation`, axiom-clean) extends the
+Koszul complex to degree four: for an `IsAlternating4` 4-tensor `b`, the third differential of the
+fourth differential vanishes (`srKoszulBoundary3 (srKoszulBoundary4 b) = 0`), so the third Koszul
+homology `Tor₃ = ker d₃ / im d₄` is a well-defined subquotient.
+
+- `IsAlternating4` — the alternating 4-tensor predicate (antisymmetric under adjacent transpositions,
+  vanishing on repeated indices).
+- `srKoszulBoundary4` — the fourth differential `d₄(b)_{ijk} = ∑_l b_{ijkl} x_l`.
+
+The composite is `∑_{k,l} b_{ijkl} xₗxₖ`, killed by the same `(k,l)↔(l,k)` involution
+(`antisym_prod_sum_zero`) as `d₂∘d₃` — and cleaner, since `d₃` needs no internal antisymmetrization.
+The pattern `d_{p-1}∘d_p = 0` now holds concretely for `p = 2, 3, 4` via one uniform involution.
+
+Next: a `Tor₃` class — the pentagon `C₅` (`H̃¹` at `|σ|=5` = `Tor_{3}`) as a 3-cycle `∉ im d₄`, via a
+degree-three alternating detector (the `Tor₂` construction one level up); or the general
+`d_{p-1}∘d_p=0` unification over `Fin p → α` tensors.
+
+### Lean progress — Tor₃ foundation complete (im d₄ ⊆ K₃)
+
+`srKoszulBoundary4_alternating` (in `StanleyReisnerVertexRelation`, axiom-clean): `d₄` of an
+alternating 4-tensor is an alternating 3-tensor (`IsAlternating3 (srKoszulBoundary4 b)`), so `im d₄`
+lands in the alternating part `K₃` of the Koszul complex — the correct home for `Tor₃` representatives.
+Each of the three alternation fields reduces to the corresponding field of the 4-tensor termwise
+(`antisym12`/`antisym23` via `eq_neg_of_add_eq_zero_left` + `Finset.sum_add_distrib`; `alt` via
+`Finset.sum_eq_zero` with the repeat pushed into the summand).
+
+Together with `d₃∘d₄=0` this completes the `Tor₃` **foundation**, exactly parallel to the `Tor₂`
+foundation (`d₂∘d₃=0` + `srKoszulBoundary3_antisymm`).
+
+Next: a `Tor₃` class — the pentagon `C₅` (`H̃¹` at `|σ|=5`) or a disconnected 4-vertex complex (`H̃⁰`
+at `|σ|=4`, the top strand) as a 3-cycle `∉ im d₄`, via a degree-three detector; or the general
+`d_{p-1}∘d_p=0` over `Fin p → α` tensors (the `Fin.snoc` swap identity is the crux — heavy, deferred).
+
+### Lean progress — MILESTONE: nonzero Tor₃ class (C₅ pentagon hole), unconditional
+
+The `Tor₃` layer now has a genuine nonzero class, formalized unconditionally (all axiom-clean, in
+`StanleyReisnerVertexRelation`):
+
+- `srKoszulBoundary3_srPentTripleCycle` — the single-entry pentagon syzygy `c_{abc} = x_d x_e` is a
+  third Koszul cycle (its only boundary term `x_c x_d x_e` hits the absent diagonal `{c,e}`).
+- `srPairDetector_srKoszulBoundary4` — the degree-two detector of a `d₄`-entry collapses to two
+  degree-one detectors.
+- `srPentTripleCycle_not_koszulBoundary4` — **the single-entry `C₅` cycle is not a `d₄`-boundary of any
+  alternating 4-tensor, in every characteristic.**  The **all-ones** edge detector `Φ = ∑_{5 edges}
+  {opposite pair}∘t_{triple}` (odd cycle → unsigned, unlike `C₄`'s alternating detector) gives
+  `Φ(cycle) = 1`, `Φ(d₄ b) = 0`: the ten degree-one detector terms pair off by the odd-permutation
+  antisymmetry of the alternating coefficient (`b_{cdeb} = −b_{bcde}`, …, each a 1–5 step transposition
+  chain).  A boundary would force `1 = 0`.  (Numerically pre-certified non-boundary over `GF(2,3,5,7)`.)
+- `srPentTriple_thirdKoszulHomology_nonzero` — packaged capstone: cycle ∧ non-boundary, so
+  `srPentTripleCycle` represents a nonzero class in `Tor_{3,{a,b,c,d,e}} = H̃¹(C₅)`.
+
+This is the first third-degree Hochster homology in the corpus.  The cycle family `C_n → Tor_{n−2}`
+(`H̃¹` at `|σ|=n`) is now formalized for `n = 4` (`Tor₂`) and `n = 5` (`Tor₃`).
+
+Next: `Tor₄` (`C₆ → H̃¹`) via `d₅`, `d₄∘d₅=0`, and a degree-four detector; or the general
+`C_n → Tor_{n−2}` family / general strand equivalence.
+
+### Lean progress — Tor₄ foundation (d₄∘d₅=0 + im d₅ ⊆ K₄)
+
+Two additions to `StanleyReisnerVertexRelation` (both axiom-clean), extending the vertex Koszul complex
+to degree five:
+
+- `IsAlternating5` / `srKoszulBoundary5` — the alternating 5-tensor predicate and the fifth
+  differential `d₅(b)_{ijkl} = ∑_m b_{ijklm} x_m`.
+- `srKoszulBoundary4_srKoszulBoundary5` — **`d₄∘d₅=0`**: the composite `∑_{l,m} b_{ijklm} xₘxₗ` cancels
+  by the `(l,m)↔(m,l)` involution, so `Tor₄` is a well-defined subquotient.
+- `srKoszulBoundary5_alternating` — **`im d₅ ⊆ K₄`**: `d₅` of an alternating 5-tensor is alternating.
+
+The vertex Koszul complex is now `K₀ ← K₁ ← K₂ ← K₃ ← K₄ ← K₅`, with `d_{p-1}∘d_p = 0` verified for
+`p = 2,3,4,5` (one uniform involution) and `im d_p ⊆ K_{p-1}` at every level.  This completes the `Tor₄`
+foundation, ready for the hexagon `C₆` class (`H̃¹` at `|σ|=6`).
+
+Next: the `Tor₄` class — `C₆` single-entry 4-tensor cycle `∉ im d₅` via a degree-four detector
+(even cycle → alternating detector, matching `C₄`; numerically pre-certify first).  The module is at
+1200 lines, so a split by Tor-degree is the housekeeping step to take alongside the next class.
+
+### Lean progress — module split + C₆ Tor₄ cycle
+
+Housekeeping + progress:
+
+- **Module split.**  `StanleyReisnerVertexRelation.lean` (was 1200 lines) split into infrastructure +
+  `Tor₁` (890 lines) and a new `StanleyReisnerCycleClasses.lean` (383 lines) holding the concrete
+  cycle-graph classes (`C₄` `Tor₂`, `C₅` `Tor₃`, `C₆` cycle).  Both build green, axiom-clean; the split
+  is behaviour-preserving (no external references to the moved declarations).
+- `srPairDetector_srKoszulBoundary5` — the `d₅` detector pushthrough (degree-two detector of a
+  `d₅`-entry → two degree-one detectors), the helper for the `C₆` non-boundary.
+- `srKoszulBoundary4_srHexTupleCycle` — the single-entry hexagon syzygy `c_{abcd} = x_e x_f` is a fourth
+  Koszul cycle (its only boundary term `x_d x_e x_f` hits the absent diagonal `{d,f}`).  Modulo `im d₅`
+  this represents `Tor_{4,{a,b,c,d,e,f}} = H̃¹(C₆)`.
+
+Next: the `C₆` **non-boundary** (`srHexTupleCycle ∉ im d₅`) via the degree-four detector — even cycle,
+so an **alternating** edge detector (matching `C₄`, unlike `C₅`'s all-ones); numerically pre-certify
+the representative and detector signs first.
+
+### Lean progress — MILESTONE: nonzero Tor₄ class (C₆ hexagon hole), unconditional
+
+The `Tor₄` layer now has a genuine nonzero class (all axiom-clean, in `StanleyReisnerCycleClasses`):
+
+- `srHexTupleCycle_not_koszulBoundary5` — **the single-entry `C₆` cycle is not a `d₅`-boundary of any
+  alternating 5-tensor, in every characteristic.**  Detector `Φ = +ab+bc+cd+de+ef−fa` (even cycle: a
+  single sign flip on `fa`, forced by the two 5-cycle pairings among the twelve degree-one detector
+  terms; the other four pairings are transpositions).  `Φ(cycle)=1`, `Φ(d₅ b)=0` via six permutation
+  relations (`b_{cdefb}=b_{bcdef}`, `b_{adefc}=−b_{cdefa}`, … chains of 1–7 adjacent transpositions),
+  then `simp[map_neg]; abel`.  Numerically pre-certified over `GF(2,3,5,7)`.
+- `srHexTuple_fourthKoszulHomology_nonzero` — packaged capstone: cycle ∧ non-boundary, a nonzero class
+  in `Tor_{4,{a,b,c,d,e,f}} = H̃¹(C₆)`.
+
+The cycle family `C_n → Tor_{n−2}` (`H̃¹` at `|σ|=n`) is now formalized for `n = 4,5,6` — `Tor₂,Tor₃,Tor₄`
+— with the detector-sign pattern (`C₄` alternating, `C₅` all-ones, `C₆` one-flip) understood via the
+5-cycle-vs-transposition parity of the pairings.
+
+Next: the general `C_n → Tor_{n−2}` family in one uniform theorem (over `Fin p → α` tensors), or `Tor₅`
+via `C₇`; the vertex Koszul complex now runs `K₀ ← … ← K₅` with `d²=0` throughout.
+
+### Lean progress — GENERAL d²=0 (degree-uniform Koszul backbone)
+
+`GeneralKoszulComplex.lean` (new, axiom-clean) gives the Koszul complex `d²=0` at **every** degree in a
+single theorem, no longer degree by degree:
+
+- `cons_cons_comp_swap` — the leading-pair swap identity `k ∷ l ∷ u = (l ∷ k ∷ u) ∘ swap 0 1` (the
+  previously-blocking `Fin` lemma, cracked with `Fin.cases` on positions `0,1` and `swap_apply_*`).
+- `koszulD` — the general Koszul differential of an arbitrary commuting family `x : α → S` in any
+  commutative ring, on index-tensors `(Fin p → α) → S`, prepending the contracted index:
+  `d(b)(w) = ∑_k b(k ∷ w) x_k`.
+- `koszulD_koszulD_eq_zero` — **`d² = 0`** for any tensor antisymmetric under, and vanishing on, an
+  equal leading pair: the composite `∑_{k,l} b(l ∷ k ∷ u) x_l x_k` cancels by the same `(k,l)↔(l,k)`
+  involution (`antisym_prod_sum_zero`) used at each concrete degree, the swap identity supplying the
+  sign.  Unconditional, all characteristics, all `p`.
+
+This is the degree-uniform backbone behind `srKoszulBoundary,…,srKoszulBoundary5` and their pairwise
+`d²=0` laws — the whole vertex Koszul complex is a chain complex at every degree in one statement, over
+any commuting family (not just Stanley–Reisner vertex coordinates).
+
+Next: connect the concrete curried differentials to `koszulD` (a representation bridge), or the general
+`C_n → Tor_{n−2}` family; the full Hochster iso `Tor_i ≅ H̃^{|W|−i−1}` remains the deep capstone.
+
+### Lean progress — general single-entry Koszul cycle criterion
+
+`koszulD_koszulSingleEntry_eq_zero` (in `GeneralKoszulComplex`, axiom-clean) gives the degree-uniform
+cycle criterion complementing the general `d²=0`:
+
+- `koszulSingleEntry v₀ r` — the one-entry index-tensor (value `r` at tuple `v₀`, zero elsewhere).
+- `koszulD_koszulSingleEntry_eq_zero` — **a single-entry tensor is a Koszul cycle exactly when
+  `r · x_{v₀ 0} = 0`**: every boundary term sits at the truncated tuple `Fin.tail v₀` and reads off
+  `r · x_{v₀ 0}` (via `Fin.cons_self_tail` / `Fin.tail_cons`), so the differential vanishes iff that
+  single product does.
+
+This is the general form of the concrete cycles `srSquareEdgeCycle, srPentTripleCycle, srHexTupleCycle`
+(where `r` is a two-vertex product and `r · x_{v₀ 0}` is an absent-diagonal monomial of the cycle
+graph) — the "easy direction" of every `C_n → Tor_{n−2}` class now proved once, for all degrees, over
+any commuting family.
+
+Next: the general non-boundary is the remaining piece, but its detector signs are `n`-parity dependent
+(`C₄` alternating, `C₅` all-ones, `C₆` one-flip), so a uniform statement needs the sign law; or the
+full Hochster iso.
+
+### Lean progress — general Koszul complex is a chain complex on alternating tensors
+
+`GeneralKoszulComplex.lean` now exhibits the vertex Koszul complex as a bona-fide chain complex on
+alternating index-tensors (all axiom-clean):
+
+- `cons_comp_swap` — prepend-shift of a transposition: `k ∷ (v ∘ swap i j) = (k ∷ v) ∘ swap i⁺ j⁺`
+  (via mathlib `Function.Injective.map_swap`).
+- `IsAltTensor` — alternating index-tensor: sign-reversing under every positional transposition and
+  vanishing on non-injective tuples.
+- `koszulD_isAltTensor` — **`koszulD` preserves alternation**: prepending conjugates each transposition
+  (transporting the sign) and a repeated index survives the prepend (transporting the vanishing).
+- `koszulD_koszulD_eq_zero_of_isAltTensor` — **`d²=0` on the alternating complex**: for alternating `b`
+  the leading-pair hypotheses hold automatically, so the differential squares to zero.
+
+So the general vertex Koszul complex (over any commuting family, any commutative ring, all degrees, all
+characteristics) is a genuine chain complex on alternating tensors — `Tor` is well-defined at every
+degree in a single uniform statement, no longer degree by degree.
+
+Next: define the general homology `Tor = ker/im` and connect to the concrete classes, or the full
+Hochster iso `Tor_i ≅ H̃^{|W|−i−1}`.
+
+### Lean progress — module/map layer for general Koszul homology
+
+`GeneralKoszulComplex.lean` now carries the linear-algebra layer needed to take `Tor` (all axiom-clean):
+
+- `koszulDₗ` — the Koszul differential packaged as an `S`-linear map `((Fin (p+1)→α)→S) →ₗ[S]
+  ((Fin p→α)→S)`.
+- `koszulAltTensors p` — the alternating index-tensors as an `S`-submodule of all `p`-tensors (closed
+  under `+`, `•`, `0` via the `IsAltTensor` fields).
+- `koszulDₗ_mem_koszulAltTensors` — `koszulDₗ` carries the alternating submodule into the alternating
+  submodule, so it restricts to a differential `koszulAltTensors (p+1) → koszulAltTensors p`.
+
+Together with `koszulD_koszulD_eq_zero_of_isAltTensor` (`d²=0` on the alternating complex), the pieces
+for the homology `Tor_p := ker ⧸ im` are now in place as genuine `S`-modules and `S`-linear maps.
+
+Next: assemble the restricted differential and the `Tor = ker/im` quotient module (the homological-
+algebra API needs care — `LinearMap.restrict` on these submodules stalled instance resolution this
+fire), or the full Hochster iso `Tor_i ≅ H̃^{|W|−i−1}`.
+
+### Lean progress — general Koszul homology Tor as an S-module
+
+`GeneralKoszulComplex.lean` now defines the general vertex-Koszul `Tor` and characterizes nonzero
+classes (all axiom-clean):
+
+- `koszulCycles` / `koszulBoundaries` — degree-`(p+1)` cycles (`ker koszulDₗ ⊓` alternating) and
+  boundaries (`Submodule.map koszulDₗ` of the alternating `(p+2)`-tensors), as `S`-submodules.
+- `koszulBoundaries_le_koszulCycles` — **boundaries are cycles** (`d²=0` + `koszulD_isAltTensor`), so
+  the homology is a well-defined subquotient.
+- `koszulTor` — the degree-`(p+1)` Koszul homology `koszulCycles ⧸ koszulBoundaries` as an `S`-module —
+  the general vertex-Koszul `Tor` whose graded pieces Hochster's formula identifies with `H̃`.
+- `koszulTor_mk_ne_zero` — **a cycle's `Tor` class is nonzero iff it is not a boundary** — the exact
+  module statement behind every concrete non-boundary theorem (`srSquareEdgeCycle_not_…`, etc.).
+
+So the card's object `Tor_i^R(M_Δ,k)` now exists as a genuine Lean `S`-module (in the general vertex
+Koszul representation), with the homology well-defined and its nonzero classes characterized.
+
+Next: the representation bridge, so the concrete `Tor₁–₄` non-boundaries populate `koszulTor` with
+explicit nonzero classes; or the Hochster iso `koszulTor ≅ H̃` (the deep capstone).
+
+### Lean progress — degree-1 bridge: general koszulD recovers the concrete SR Koszul relation
+
+`koszulD_srVertexX_eq_srKoszulRelation` (in `GeneralKoszulComplex`, axiom-clean) connects the general
+vertex-Koszul framework to the concrete Stanley–Reisner differentials: over the SR ring, with the
+vertex coordinates as the commuting family, the general Koszul differential `koszulD` in degree one is
+exactly the concrete first Koszul relation `srKoszulRelation` (`∑_v a_v x_v`).
+
+The two conventions coincide in degree one because there are no index pairs to antisymmetrize — the
+general `koszulD` (prepend/alternating) and the concrete `srKoszulBoundary` family (append/antisymmetrize)
+agree there, though they differ by a characteristic-sensitive factor at higher degree.  So the general
+`koszulTor` at degree 1, over the SR ring, IS the concrete first Koszul homology (`Tor₁`), now linked
+by an explicit identity rather than by analogy.
+
+Next: higher-degree bridges need the convention reconciliation (a reindexing/sign map); or the full
+Hochster iso `koszulTor ≅ H̃^{|W|−i−1}` (the deep capstone).
+
+### Lean progress — general koszulTor populated with a concrete nonzero class
+
+`GeneralKoszulComplex.lean` now proves the general vertex-Koszul homology is genuinely nontrivial over
+the Stanley–Reisner ring (all axiom-clean):
+
+- `srDisconnectKoszulCycle` — the degree-one disconnect cycle (single-entry `x_w` at the tuple `(v₀)`).
+- `srDisconnectKoszulCycle_mem_koszulCycles` — it is a Koszul cycle (`x_w x_{v₀}=0` on a nonface pair;
+  alternation vacuous in degree one).
+- `srDisconnectKoszulCycle_not_mem_koszulBoundaries` — it is not a boundary: the two-point detector
+  `Φ(t)=srH0Det_w(t(v₀))+srH0Det_{v₀}(t(w))` reads the cycle as `1` and every `koszulD`-boundary as `0`
+  (the two constant-term readings `srConstTerm(b_{w,v₀})` and `srConstTerm(b_{v₀,w})=−srConstTerm(b_{w,v₀})`
+  cancel by alternation).
+- `srDisconnectKoszulTor_ne_zero` — **the disconnect cycle represents a nonzero class in `koszulTor`** —
+  the abstract homology module is populated with an explicit nonzero element, realizing `H̃⁰` of a
+  disconnected pair as an actual general-`Tor` class.
+
+So `koszulTor` is not just defined but proven non-vacuous, connected to a concrete cycle via
+`koszulTor_mk_ne_zero`.  The general vertex-Koszul side — complex, homology module, characterization,
+and a concrete nonzero class — is complete.
+
+Next: higher-degree nonzero `koszulTor` classes (the `C_n` cycles via the general framework), or the
+full Hochster iso `koszulTor ≅ H̃^{|W|−i−1}`.
+
+### Lean progress — general antisymmetrization operator
+
+`GeneralKoszulComplex.lean` now carries the reusable tool for producing alternating tensors at any
+degree (axiom-clean):
+
+- `koszulAlt t = ∑_σ sign(σ) • t(· ∘ σ)` — the antisymmetrization of an index-tensor over the
+  permutation group `Perm (Fin p)`.
+- `koszulAlt_isAltTensor` — **`koszulAlt t` is always alternating**: sign reversal follows from
+  reindexing the permutation sum by a transposition (`Fintype.sum_bijective` on `σ ↦ (i j)·σ` +
+  `sign_swap`), and vanishing on a repeated index from the fixed-point-free involution `σ ↦ (i j)·σ`
+  pairing off equal-magnitude opposite-sign contributions (`Finset.sum_involution`).
+
+This turns *any* tensor into an alternating one — the uniform source of alternating Koszul cycles at
+every degree, so higher-degree `koszulTor` classes can be built as `koszulAlt` of a single-entry tensor
+rather than by bespoke case analysis.
+
+Next: use `koszulAlt (koszulSingleEntry …)` to lift the `C_n` cycles into `koszulTor` at degrees ≥ 2,
+giving higher-degree nonzero classes; or the Hochster iso.
+
+### Lean progress — degree-2 antisymmetrization formula
+
+`koszulAlt_two_apply` (in `GeneralKoszulComplex`, axiom-clean): over `Perm (Fin 2) = {1, (0 1)}`, the
+antisymmetrization reduces to the two-term form `koszulAlt t = t − t(· ∘ (0 1))` (the permutation sum
+enumerated via `decide` + `Finset.sum_pair`).
+
+This makes `koszulAlt (koszulSingleEntry ![a,b] r)` computable as the explicit two-entry alternating
+tensor (`r` at `![a,b]`, `−r` at `![b,a]`), the `C₄` `Tor₂` cycle in the general framework — with its
+alternation supplied for free by `koszulAlt_isAltTensor`.
+
+Next: assemble the degree-2 `C₄` `koszulTor` class — `koszulAlt (koszulSingleEntry ![a,b] (x_c x_d))`
+as a cycle (`koszulD = 0` via the two-term form + `koszulD_koszulSingleEntry_eq_zero` on each entry)
+and non-boundary (degree-2 detector), giving the first higher-degree nonzero `koszulTor` class; the
+`Fin 2` tuple-swap helpers (`![a,b] ∘ (0 1) = ![b,a]`) are the remaining plumbing.
