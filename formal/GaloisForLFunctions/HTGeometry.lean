@@ -1990,3 +1990,5 @@ import GaloisForLFunctions.HTGeometry.JetTowerFreeness
 import GaloisForLFunctions.HTGeometry.ShiftRationalBase
 import GaloisForLFunctions.HTGeometry.UpperEndDirichletCoordinate
 import GaloisForLFunctions.HTGeometry.ZetaUpperEndHypertranscendence
+import GaloisForLFunctions.HTGeometry.DirichletUniqueness
+import GaloisForLFunctions.HTGeometry.PolynomialForwardDifference

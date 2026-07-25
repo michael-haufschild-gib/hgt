@@ -1557,3 +1557,120 @@ Together with the arbitrary-shift lemmas `no_rational_shift_antiderivative_gen` 
 `shift_invariant_rational_constant_gen`, every ingredient of the `psi` side is now available in the
 `I`-shift convention; the remaining step is to repeat the germ/jet/base constructions of
 `UpperEndDigammaShift.lean` with `1` replaced by `I` and `1/z` by `I/z`.
+
+---
+
+## Cycle 10: closed. `[LEAN-PROVED]`
+
+`GaloisForLFunctions/RHTower/MarkusConjecture.lean`:
+
+```text
+theorem markus_conjecture : HypertranscendentalOver gammaBase zetaUpperEndMero
+```
+
+with `gammaBase = differentialAdjoin upperEndRationalCoordinateField {rotGammaMero}` — the
+differential field generated over the genuine embedded `C(s)` by the germ of `z -> Gamma(-I z)` —
+and `zetaUpperEndMero` the finite-abscissa realisation of the all-ones coefficient stream, i.e. the
+germ of `z -> zeta(-I z)` (`zetaUpperEndGerm_eq`).
+
+Unconditional: axioms `propext, Classical.choice, Quot.sound`; no `sorry`, `admit`, `axiom`,
+`opaque`, `unsafe`.
+
+### The seven modules
+
+| module | content |
+|---|---|
+| `HTGeometry/ShiftRationalBase.lean` | the unit-shift rational base: for any `C`-automorphism `sigma` of a field over `C` and transcendental `x` with `sigma x = x + 1`, `C(x)` is `sigma`-stable, its invariants are the constants, its shift defects with poles only at the origin vanish, and defects `c n` with `c n * x^(n+1)` a nonzero constant are linearly independent. `coordBase_jetTower_transcendental` packages the four hypotheses of the jet tower. |
+| `HTGeometry/UpperEndDirichletCoordinate.lean` | `dirCoordMero` = germ of `-I z`; `sigma_I(dirCoordMero) = dirCoordMero + 1`; the rotated defect jets `delta^n (I/z)` in closed form with `rotDefectJetMero n * dirCoordMero^(n+1) = rotDefectConst n != 0`. Hölder's theorem in the Dirichlet coordinate. |
+| `HTGeometry/JetTowerFreeness.lean` | tower transcendence is algebraic independence; transcendence and algebraic independence descend from an intermediate field to any subalgebra it contains. |
+| `HTGeometry/DirichletRealizationLead.lean` | `dirRealize : FAPoly ->+* upperEndMeroField`, injective, intertwining the coefficient-side unit shift `f_n -> f_n/n`, `s -> s+1` with translation by `I`; the coefficient inclusion into `DirPoly` intertwining the leading-term interface. |
+| `HTGeometry/DigammaOverDirichletBase.lean` | `dirZetaBase` = `C` with `s` and every finite-abscissa Dirichlet germ adjoined. Every element is a ratio of realized Dirichlet polynomials; the base is translation stable; its invariants are the constants (Lemma A); it has no nonzero rational shift defect (Lemma B). Hence `rotDigamma_hypertranscendentalOver_dirZetaBase`. |
+| `HTGeometry/ZetaUpperEndHypertranscendence.lean` | the von Mangoldt source is prime-power supported with nonzero prime coefficients, so the leading-echelon law plus the finite-abscissa transfer make its carrier hypertranscendental over `C(s)`; `Lambda * zeta = log` realizes as `L(Lambda) = -I * (Z'/Z)`, so `zetaUpperEndMero_hypertranscendentalOver`. |
+| `RHTower/MarkusConjecture.lean` | the rotated `Gamma` germ, `Gamma' = -I psiTilde Gamma`, joint freeness of the two jet families, and the base change. |
+
+### The argument
+
+1. **Hölder in the Dirichlet coordinate.** `psiTilde(z) = psi(-I z)` satisfies
+   `psiTilde(z + I) = psiTilde(z) + I/z`, so all its jets inherit the shift with rational defects.
+2. **The base is the fraction field of realized Dirichlet polynomials.** `dirZetaBase` elements are
+   `dirRealize P / dirRealize Q`; translation by `I` acts as `faSigmaPoly`, and `dirRealize` is
+   injective, so every analytic identity becomes a polynomial identity over the finite-abscissa
+   coefficient ring, then over `Polynomial (ArithmeticFunction C)`.
+3. **The leading-term theory settles the two base hypotheses.** `eq_const_mul_of_sigma_fixed` gives
+   the invariants; `no_pole_defect` — least-index comparison plus the extremal shift-orbit pole
+   obstruction — kills the defects. **No asymptotic analysis appears anywhere.**
+4. **Jet tower.** `jetTower_transcendental` then makes every `psiTilde` jet transcendental over
+   `dirZetaBase` and its predecessors, so the jets are algebraically independent over `dirZetaBase`.
+5. **Zeta over `C(s)`.** The von Mangoldt echelon plus the log-derivative identity.
+6. **Joint freeness.** `AlgebraicIndependent.sumElim_iff` with the zeta jets first gives joint
+   independence of `{psiTilde jets} u {zeta jets}` over `C(s)`; reading it with the digamma jets
+   first gives `zeta` hypertranscendental over `C(s)<psi>`.
+7. **Base change.** `Gamma' = -I psiTilde Gamma` is first-order affine over `C(s)<psi>`, so
+   `hypertranscendentalOver_differentialAdjoinSingleton_iff` adds `Gamma` for free, and narrowing
+   the base to `C(s)<Gamma>` gives Markus.
+
+### What this opened
+
+- The `psi` result is **stronger than Markus needs**: `psi` is hypertranscendental over `C(s)` with
+  *every* convergent Dirichlet series adjoined — all Dirichlet `L`-functions, all their derivatives,
+  all Euler products with finite abscissa. Markus is the `zeta` corollary.
+- `ShiftRationalBase` + `ShiftJetTower` + `DirichletLeadingTerm` is a reusable engine: any germ with
+  a unit-shift difference equation whose defect is a constant multiple of an inverse power of the
+  coordinate is hypertranscendental over any shift-stable Dirichlet base. The next objects to feed
+  it are the Barnes `G`, the double gamma, and the Lerch transcendent.
+
+---
+
+## Priority audit (2026-07-25): `[REDISCOVERED]`
+
+**The theorem was already proved in the literature.** Markus's conjecture is settled — in a strictly
+more general form — by
+
+> Feng Lü, *A further study on Markus's conjecture*, Bull. London Math. Soc. **57** (2025),
+> no. 11, 3586–3596. DOI `10.1112/blms.70171`, published 12 August 2025.
+
+Abstract (reconstructed from the OpenAlex record; the Wiley text is paywalled):
+
+> "The paper concerns the algebraic differential independence of meromorphic solutions of
+> difference equation [`y(z+1) = α(z) y(z)`], where [`α`] is a rational function with a certain
+> condition. Based on ideas by Bank and Kaufman and Wang and Yao, we confirm that Markus's
+> conjecture holds in a more general form. Meanwhile, an example is given to show that the
+> condition is necessary."
+
+`Γ(z+1) = z Γ(z)` is the case `α(z) = z`, so Markus is a corollary of Lü's theorem.
+
+Preceding partial results, all by Nevanlinna value-distribution methods:
+
+| result | scope |
+|---|---|
+| Markus (J. Dynam. Differential Equations, 2007) | `Γ` and `ζ(sin 2πz)` |
+| Li–Ye | coefficients in `Γ, Γ', Γ''` |
+| Q. Han, J. Liu, *Algebraic differential independence regarding the Riemann ζ-function and the Euler Γ-function*, J. Number Theory (2020), arXiv:1811.04188 | coefficients in `Γ, Γ^(n), Γ^(ℓn)` |
+| Q. Wang, M. Liu, N. Li, arXiv:2005.02707 | coefficients in `Γ, Γ^(n), Γ^(l)`, `l > n ≥ 1` |
+| Q. Han, J. Liu, arXiv:1811.09336 | families continuous in `ζ`, polynomial in `Γ` |
+| W. Chen, Q. Wang, *Algebraic differential independence concerning the Euler Γ-function and Dirichlet series*, Acta Math. Sci. **40** (2020) | `Γ` against a class of Dirichlet series |
+| **Feng Lü, Bull. LMS 57 (2025)** | **full conjecture, generalized to all `y(z+1) = α y`** |
+
+### What survives the audit
+
+1. **A machine-checked proof.** No formalization of Markus's conjecture appears in the literature or
+   in mathlib. `RHTower.markus_conjecture` is unconditional in Lean 4: axioms
+   `propext, Classical.choice, Quot.sound`, no `sorry`/`admit`/`axiom`/`opaque`/`unsafe`. This is a
+   verification contribution, not new mathematics.
+2. **A different mechanism.** The published route is Nevanlinna theory (`T(r,f)` growth comparison,
+   Bank–Kaufman, Wang–Yao). The route here is a shift/jet-tower descent: least-index and
+   leading-coefficient algebra for Dirichlet series (`DirichletLead`) plus the extremal shift-orbit
+   pole obstruction, with **no asymptotic analysis anywhere**. Whether the mechanism itself is new is
+   `[NOVELTY UNVERIFIED]`.
+3. **A wider coefficient field, unverified.** The `psi` statement proved here —
+   `rotDigamma_hypertranscendentalOver_dirZetaBase` — is hypertranscendence of `psi` over `C(s)`
+   with *every* finite-abscissa Dirichlet series adjoined simultaneously, not just `ζ`. Chen–Wang
+   (Acta Math. Sci. 2020) is in exactly this direction, so this must be checked against that paper
+   before any novelty claim. `[NOVELTY UNVERIFIED]`
+
+### Process lesson
+
+The external-SOTA gate was run against "Markus conjecture" phrasing that surfaced only the 2007
+source and the partial results; the 2025 BLMS resolution was missed because it is indexed under
+*difference equations* rather than *zeta/Gamma*. Search the **generalisation** ("meromorphic
+solutions of `y(z+1) = α(z) y(z)`"), not only the named conjecture.
