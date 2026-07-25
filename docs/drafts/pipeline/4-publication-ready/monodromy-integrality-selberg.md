@@ -105,3 +105,144 @@ Lean 4 / Mathlib, all unconditional, `#print axioms` = `[propext, Classical.choi
 
 MI itself; (P1); (P2). Under MI, Conjecture A and (by Kaczorowski–Perelli) the generalized prime
 number theorem for `S` follow.
+
+## 6. Later additions (cycles 29–47)
+
+**Theorem 6 (explicit Rankin–Selberg object).** For `F ∈ S` set
+`𝔏_F(w) := Σ_p Σ_{k≥1} k |b_F(p^k)|² p^{−kw}` and `ℛ_F := exp(𝔏_F)`. Then `𝔏_F` and `ℛ_F` have
+non-negative coefficients; `𝔏_F(w) = Σ_p|a_F(p)|²p^{−w} + (holomorphic on Re w > max(1/2,θ))`;
+`σ_a(ℛ_F) ≤ 1`; `ℛ_F` differs from `R_{F,F}` by a factor holomorphic and non-vanishing on
+`Re w > 1/2 + θ`; and `ℛ_F = L(w, π × \tildeπ)` when `F` is automorphic with a polynomial Euler
+product. The identity behind it is `Σ_i α_i^k = k·b_F(p^k)`, so the object is written from the
+Euler-product axiom alone. Consequently **MI ⟺ `ℛ_F` is meromorphic at `w=1`**, and the Mertens
+`3–4–1` inequality holds unconditionally for `ℛ_F`.
+
+**Theorem 7 (log-coefficient transfer; machine-checked).** If `A 0 = 1`,
+`n·A_n = Σ_{j<n}(n−j)·B_{n−j}·A_j` and `‖A_n‖ ≤ C R^n` with `C,R ≥ 1`, then `‖B_n‖ ≤ (4CR)^n`.
+Applied with `A_k = a_F(p^k)`, `B_k = k b_F(p^k)`, `R = p^ε` this gives `|b_F(p^k)| ≪ (4C_ε)^k p^{kε}`
+from Ramanujan alone — the bound that puts the `k ≥ 2` part of every quadratic prime sum to the right
+of `1/2`. Lean: `HTGeometry.log_coeff_bound`.
+
+**Theorem 8 (linear integrality).** (a) If `a_F(p) = m + O(p^{−δ})` then `m ∈ Z`, via
+single-valuedness of `ζ(s)^m = F(s)e^{−D(s)}` near `s=1`. (b) If `Σ_{p≤x}(a_F(p)−m)/p = O(1)` then
+`m = m_F`, the pole order, hence `m ∈ Z_{≥0}`. Both are proved by applying Selberg's axiom (2) to `F`
+itself; Conjecture A is the same statement one level up, where the object needing axiom (2) is
+`R_{F,F}` — which is exactly MI.
+
+**Theorem 9 (RH does not suffice).** RH for `F` makes `log F` single-valued on `C` minus the critical
+line and makes Carlson's theorem available for `σ > 1/2`, but the resulting identity holds only where
+`𝔏'_F` already converges; RH places every zero on `σ = 1/2`, i.e. exactly on the boundary that must be
+crossed. Hence `RH(F) ⇏ MI ⇏` no zero-location hypothesis can replace MI.
+
+**Remark (Estermann/Kurokawa lens).** `R_{F,F} = ∏_p R_p(p^{−w})` is an Euler product, and such
+products do not generically continue past their abscissa: for fixed `P`, `∏_p P(p^{−s})` continues
+iff `P` is a product of cyclotomics. So MI is not a missing estimate but the assertion that the
+Rankin–Selberg local factors are of `L`-function type — the functoriality structure.
+
+**Narrowing of counterexamples.** Any `F` violating Conjecture A must have prime coefficients of
+constant modulus with genuinely oscillating phase, in degree `≥ 2` with `q_F > 1` or degree `≥ 3`
+(degree 1 and degree 2/conductor 1 are classified; `a_F(p) = c + O(p^{−δ})` forces `c ∈ Z`;
+`a_F(p) = c p^{−iθ}` forces `c = 0`).
+
+## 7. Later additions (cycles 52–67)
+
+**Theorem 10 (Energy Gap, partial).** For `F ∈ S` and `θ ∈ R`, with `ν = |ord_{s=1+iθ}F|`,
+`n_F ≥ ν²`. Hence `n_F ≥ 1` whenever `F` has a pole at `s=1` or a zero anywhere on `Re s = 1`; the
+**Energy Gap conjecture** (`n_F = 0` or `n_F ≥ 1`) therefore holds for every `F ∈ S` except those
+entire and non-vanishing on the whole line `Re s = 1`. Proof: `|Σ_p a_F(p)p^{−σ−iθ}| = ν log(1/(σ−1))
++ O(1)` from meromorphy, against weighted Cauchy–Schwarz. (Lean: `weighted_cauchy_schwarz`.)
+
+**Theorem 11 (`n_F` is not archimedean).** `n_F` is not a function of `(d_F,q_F,γ_F)`: for `χ₁≠χ₂`
+primitive even mod `q`, `F = L(·,χ₁)L(·,χ₂)` and `G = L(·,χ₁)²` share degree, conductor and gamma
+factor, but `n_F = 2`, `n_G = 4`. Hence the functional equation alone cannot compute the prime
+energy — the rigorous form of the fact that over `Q` the functional equation is archimedean, whereas
+over `F_q` it *is* the local Frobenius data.
+
+**Theorem 12 (meromorphic parent).** `G(s) := (F'/F)(s)·(\bar F'/\bar F)(s)` is meromorphic on `C`
+and has `c(p²) = |a_F(p)|² log²p`. It is the **only** meromorphic function built from `F` carrying
+conjugated quadratic coefficient data: `F(s±a)`, `F(as)`, `F'`, `F''`, products and quotients are
+linear in `a_F(p)`; `F·log F` is quadratic but multivalued; `(F'/F)²` is meromorphic but
+unconjugated.
+
+**Theorem 13 (contour extractor).** For `Re w > 2`, `1 < c < Re w − 1`,
+`𝔐_F(w) = lim_T (π/T)(2πi)^{−1}∫_{c−iT}^{c+iT}(F'/F)(s)(\bar F'/\bar F)(w−s)ds`, and each finite-`T`
+integral is holomorphic in `w` off an explicit union of segments. With a smoothed weight and
+**Baker's theorem on linear forms in two logarithms**, the off-diagonal is *effectively* removable:
+`|k log q − j log p| ≫ (log X)^{−C}` for `d,e ≤ X`, so `𝔐_F(w) = δ·J(w;φ_δ) + O(X^{−(c−1)})` with
+`δ = (log X)^{−C}`. (Lean: `exists_gap_of_injOn`, `diagonal_isolation`.)
+
+**Theorem 14 (conservation law).** In the extractor the two arguments satisfy
+`Re s + Re(w−s) = Re w`, invariant under contour deformation. So for `Re w < 2` at least one argument
+lies left of `Re = 1`, and for `Re w` near `1` both lie near `1/2`: the pinching by the poles of
+`F'/F` and `\bar F'/\bar F` in the critical strip **cannot** be evaded by any deformation.
+
+**Structure theorem (cycle 67).** In the Hadamard expansion of `F'/F` the archimedean term
+`−(d/2)log|t|` and the zero term `Σ_γ δ/(δ²+(t−γ)²) ≈ (d/2)log|t|` cancel exactly. Hence
+`Re (F'/F)(σ+it)` is the fluctuation of the zero-counting measure smoothed at scale `δ = σ−1/2`, and
+`n_F` governs its variance. Scale matching forces `δ ≍ 1/log T`, the mean zero spacing.
+
+**Consolidated open core.** All formulations of MI produced here — meromorphy of `R_{F,F}`, `ℛ_F`,
+`𝔏'_F`, `𝔐_F`; the contour extractor; the autocorrelation of `F'/F` — reduce to the variance of the
+`δ`-smoothed zero-counting fluctuation at `δ ≍ 1/log T`, i.e. to Montgomery-type pair correlation.
+
+**Theorem 16 (Real Gram expansion; the energy functional is blind to imaginary Gram entries).**
+Let `⟪v,w⟫ = Σ_p v_p \bar w_p / p` and `E(v) = Re⟪v,v⟫`. For all `a,b,c,d ∈ Z`,
+```
+E(a v + b w + c \bar v + d \bar w)
+  = (a²+c²)E(v) + (b²+d²)E(w) + 2ac Re⟪v,\bar v⟫ + 2bd Re⟪w,\bar w⟫
+    + 2(ab+cd) Re⟪v,w⟫ + 2(ad+bc) Re⟪v,\bar w⟫ .
+```
+Since on prime coefficients multiplication in `S` is addition and conjugation is coefficientwise
+conjugation, the vectors of the monoid generated by `F, G, \bar F, \bar G` form exactly the
+conjugate-closed integral span of `v_F, v_G`. Hence **no combination of prime energies `n_H` over
+that monoid determines `Im Σ_p a_F(p)\overline{a_G(p)}/p`**: the full strength of Selberg's
+orthogonality conjecture for a pair cannot be obtained from monoid structure plus the energy
+functional, only from the analytic axioms. (Lean: `intComb_sq_re`, `wEnergy_intComb`,
+`wEnergy_intComb_congr`.)
+
+**Theorem 17 (logarithmic Sato–Tate ⟹ MI).** If the Satake data of `F` is equidistributed in
+*logarithmic* density against Haar measure on a compact group `K` with `a_F(p) = χ_ρ(θ_p)`, then
+`n_F = ⟨χ_ρ,χ_ρ⟩ = Σ_i m_i² ∈ Z_{≥0}`. The hypothesis requires only `Σ_p χ_λ(θ_p)/p = O(1)` for
+each non-trivial irreducible `λ` — strictly weaker than automorphy, and strictly weaker than natural
+Sato–Tate.
+
+**Critical scale, second derivation.** Splitting the second moment of `F` by the approximate
+functional equation gives a diagonal term `T·R_F(w)` and a dual term of order
+`T^{1+d(1−w)/2}(log T)^{n_F−1}/(w−1)`. At `w = 1+2δ` with `δ = c/log T` both are `≍ T(log T)^{n_F}`.
+This reproduces the scale `δ ≍ 1/log T` of the structure theorem by an independent route. The dual
+term is a divergent partial sum, not `R_F(2−w)`, so no reflection phase `e^{iπn_F}` arises: the
+`w ↦ 2−w` route to integrality is closed.
+
+**Theorem 19 (the Selberg symplectic form).** With `c_{F,G}` the logarithmic prime density of
+`a_F(p)\overline{a_G(p)}` and `ω(F,G) := Im c_{F,G}`: `ω` is `Z`-bilinear on the multiplicative
+monoid of `S`, alternating, satisfies `ω(\bar F,\bar G) = −ω(F,G)` — so conjugation acts by `−1` on
+`ω` and by `+1` on every energy — and vanishes on pairs of self-dual elements. Consequently
+Selberg's Conjecture B splits as (symmetric part `= δ_{F,G}`) ∧ (`ω ≡ 0`), and by Theorem 16 the
+second half is unreachable from the first by any energy identity. (Lean: `wIP_swap`, `wOmega_swap`,
+`wOmega_self`, `wOmega_conj`, `wOmega_eq_zero_of_real`.)
+
+**Theorem 21–22 (the zero energy).** Define `E_F := d_F·lim_T (Σ_ρ m_ρ²)/N_F(T)`, the
+multiplicity-weighted zero energy. Under RH for `F` this is `d_F` times the large-`α` limit of
+Montgomery's pair-correlation function. Unconditionally `Σ_ρ m_ρ² ≥ N_F(T)`, so `E_F ≥ d_F`, with
+equality **iff all zeros of `F` are simple** (Lean: `sum_le_sum_sq`, `sum_sq_eq_sum_iff`,
+`sum_sq_div_sum_ge_one`). For the primitive factorisation `F = ∏F_i^{e_i}`, `E_F = Σ_i e_i² d_i`,
+whereas `n_F = Σ_i e_i²`: the zero energy and the prime energy are different invariants, agreeing
+only when every primitive factor has degree one. Consequently the fine-scale end of the pair
+correlation is blind to the factorisation, and the prime energy `n_F` is visible only in the
+bounded-`α` (Montgomery) regime.
+
+**Theorem 23–24 (complex-shift regularisation).** For `F,G ∈ S` of degree `d ≥ 1`, `b > 0`, `σ ∈ R`,
+```
+lim_{A→∞}(1/2A)∫_{−A}^{A} Φ_F(σ,a−ib)\overline{Φ_G(σ,a−ib)} da
+   = Σ_n a_F(n)\overline{a_G(n)} e^{−4πb n^{1/d}} n^{−2σ} = R_b^{F,G}(2σ),
+```
+where `Φ_F(s,α)=Σ_n a_F(n)e(−αn^{1/d})n^{−s}` is entire in `s` for `Im α < 0`. `R_b` is entire in `w`
+and is the Mellin–Barnes smoothing of the Rankin–Selberg series. Consequently
+```
+n_F = lim_{b→0+} log[ lim_{A→∞}(1/2A)∫_{−A}^{A}|Φ_F(1/2,a−ib)|² da ] / log log(1/b) :
+```
+`n_F` is the logarithmic divergence rate of the regularised `L²`-mean of the standard twist of `F`
+**on the critical line**. This supplies the regularisation scheme that the naive real-`α` pairing
+lacks (the real-`α` integral diverges exactly on `Spec(F)`). Formalised in finite form:
+`genPoly_meanValue`, `oscInt_norm_le` (`‖oscInt δ T U‖ ≤ 2/|δ|`, uniform in the interval length),
+`genPoly_meanValue_error`.

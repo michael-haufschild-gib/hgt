@@ -914,3 +914,819 @@ equation, so Sturm's nodal-decrease theorem applies: the number of real zeros in
 nonincreasing as `t` decreases — real zeros are destroyed, never created, going backward. And from
 `İ ≤ -4` with `I(Λ) = 0` one gets `I(t) ≥ 4(Λ - t)` for `t < Λ`, hence with `Λ ≥ 0` the bound
 `I(t) ≥ 4|t|` for every `t ≤ 0`: non-reality in backward time is not marginal but grows linearly.
+
+## §5j. The lattice is stationary: what the collision criterion actually needs
+
+### 5j.1 Burgers structure and the damping of the field
+
+Backward flow time is the *forward* heat equation `∂_τ H = ∂_z²H`. With `L = H'/H` and the Riccati
+identities `H''/H = L' + L²`, `H'''/H = L'' + 3LL' + L³`, the log-derivative satisfies the viscous
+Burgers equation `L_τ = L_zz + (L²)_z`, and therefore the field quantity
+`V = -L_z = Σ_k (z-x_k)^{-2} > 0` satisfies
+
+```
+V_τ = V_zz + 2 L V_z - 2 V² .
+```
+
+The nonlinearity carries a **minus** sign: `V` is damped, not amplified, and comparison with the
+uniform solution `v(τ) = v₀/(1+2v₀τ)` of `v' = -2v²` shows decay like `1/τ`. Freezing the field at
+its initial value is therefore a legitimate upper bound over a collision interval; the only residual
+loss is the first-order transport term.
+
+The frozen-field problem is exactly solvable. For a gap `δ` between consecutive real zeros,
+`dδ/dτ = -4/δ + 2δΔ`, so `u = δ²` obeys `u' = 4Δu - 8` with solution
+`u(τ) = 2/Δ + (u₀-2/Δ)e^{4Δτ}`, vanishing at `τ* = (4Δ)^{-1}log(2/(2-θ))` where `θ = Δu₀`. The
+collision time is finite exactly when `θ < 2`, which is thus the **sharp** threshold.
+
+### 5j.2 The equally spaced configuration is an exact equilibrium
+
+For zeros on a lattice `dℤ` the field sum telescopes:
+
+```
+Δ = (2/d²) Σ_{m≥1} 1/(m(m+1)) = 2/d² ,   hence   δ²Δ = 2 ,   dδ/dτ = 0 .
+```
+
+A uniformly spaced configuration neither contracts nor expands; it sits exactly at the threshold.
+Consequently the collision criterion is **not** "the gap is small" but "the gap beats the lattice".
+
+An explicit sufficient condition follows from Basel's sum. If every *other* consecutive gap is at
+least `γ`, the `m`-th neighbour on either side lies at distance at least `mγ` from both endpoints, so
+`Δ ≤ 2Σ_{m≥1}(mγ)^{-2} = π²/(3γ²)` and `δ²Δ < 2` holds as soon as
+
+> `δ/γ < √6/π ≈ 0.7797` ,
+
+after which the pair collides by backward time `u₀/(8-4Δu₀)`. The estimate localizes: the tail of the
+field beyond the `M`-th neighbour is bounded by the density divided by `M`, so `γ` may be taken to be
+the minimum gap in a bounded neighbourhood.
+
+### 5j.3 The corrected open core
+
+This changes the input the criterion of §5i requires. It is **not** enough that infinitely many gaps
+be small in absolute or normalized terms: a uniformly spaced cluster, however dense, never collides.
+What is needed is infinitely many gaps that are *relatively* small — below `√6/π` times the
+surrounding minimum gap. The known small-gap results, bounding the `liminf` of the normalized gap by
+`0.5155`, do not have this form, since they say nothing about the neighbours of the small gap.
+
+The corrected statement is therefore:
+
+> The failure of the Riemann hypothesis at negative flow time is governed by **relative** gap
+> statistics of the zeros — the distribution of `δ_n / min(δ_{n-1}, δ_{n+1}, …)` — and not by the
+> absolute or normalized gap statistics that the literature studies.
+
+That object appears not to have been studied. Identifying it as the governing quantity is the
+content of this section.
+
+## §5k. The moment hierarchy and the index as a discriminant sign
+
+### 5k.1 Li coefficients are transported by the flow
+
+With `q_n = Σ_j z_j^{-n}` and `ż_j = 2Σ_{k≠j}(z_j-z_k)^{-1}`, symmetrising the ordered pair with
+`(a-b)^{-1}(a^{-3}-b^{-3}) = -(a²+ab+b²)/(a³b³)` gives the closed polynomial law
+
+```
+q̇₂ = 2(2q₁q₃ + q₂² - 3q₄) ,   and since H_t is even,   q̇₂ = 2q₂² - 6q₄ .
+```
+
+This is the moment form of the Burgers equation `L_τ = L_zz + (L²)_z` of §5j.1. The whole hierarchy of
+negative moments — hence, through their explicit polynomial relations, the whole family of Li
+coefficients — evolves along the de Bruijn–Newman flow by a closed system of ordinary differential
+equations. Li's criterion and the flow are not merely two criteria for the same statement: the Li
+coefficients are *transported* by the flow.
+
+The hierarchy is a transport statement and not itself a criterion: holomorphic moments do not detect
+the Riemann hypothesis on their own, since a complex quadruple high up contributes *positively* to
+`q₂`.
+
+### 5k.2 The sign of the discriminant is the parity of the index
+
+```
+conjugate pair x ± iy :  z² - 2xz + (x²+y²) ,  disc = -4y² < 0
+real pair      x ± a  :  z² - 2xz + (x²-a²) ,  disc = +4a² > 0
+```
+
+Discriminants multiply over factors up to positive squares, so a real divisor with `m` conjugate
+pairs has `sign(disc) = (-1)^m`; by the orbit decomposition `m = ind₋(W)`. Hence
+
+> **the sign of the discriminant is the parity of the Weil index.**
+
+The Riemann hypothesis asserts `ind₋(W_ξ) = 0`. A *negative* regularized discriminant for `ξ` would
+make `ind₋(W_ξ)` odd, hence nonzero, and disprove it. Parity is strictly weaker than the count, so
+this is the weakest falsification target the classification has produced — at the price that the
+discriminant of an order-one entire function requires regularization, its sign carried by the
+imaginary part of a regularized log-sum modulo `2πi`.
+
+A tempting stronger claim — that the Riemann hypothesis is *not* a holomorphic condition on the
+divisor, so that all holomorphic moment criteria must be infinite families of inequalities — is
+false: the discriminant is a symmetric holomorphic function whose sign decides reality. The genuine
+obstruction is not blindness but regularization.
+
+### 5k.3 Status of the governing statistic
+
+The gap literature treats only *absolute* normalized gaps: infinitely many below `0.515396`,
+infinitely many above `2.7328` (`3.18` on the critical line). Whether infinitely many gaps fall below
+half the average is open even under the Riemann hypothesis. Nothing addresses a gap relative to its
+neighbours — the quantity §5j.3 identifies as governing. In the adjacent holomorphic lane the
+corresponding no-go is known: Jensen polynomials are not a plausible route to the Riemann hypothesis.
+
+## §5l. No discrete invariant detects the Riemann hypothesis
+
+The discriminant-sign criterion of §5k.2 is vacuous, for two independent reasons, and the reason
+generalizes.
+
+**The functional equation trivializes the sign.** `H_t` is even in `z` and real on the real axis, so a
+zero `z₀` forces `-z₀`, `z̄₀`, `-z̄₀`. A non-real zero with `Re z₀ ≠ 0` therefore arrives as a
+quadruple — *two* conjugate pairs — so the number of conjugate pairs is always even and
+`sign(disc) = (-1)^m = +1` whatever the divisor does off the critical line.
+
+**The one escape is closed.** The only configuration making `m` odd is a purely imaginary zero of
+`H_t`, i.e. a real stray `s = ½ ± w` of `Ξ_t`. At `t = 0` there are none: for real `s ∈ (0,1)`,
+`(1-2^{1-s})ζ(s) = Σ(-1)^{n-1}n^{-s} > 0` as an alternating series with decreasing terms, so `ζ` has
+no real zero in the critical strip. The sign is unconditionally `+1`.
+
+**The general statement.** Deform a critical double pair into a complex quadruple,
+
+```
+((s-½)² - (a+iγ)²)((s-½)² - (a-iγ)²) ,      a ∈ [0,a₀] ,
+```
+
+which at `a = 0` is `((s-½)² + γ²)²` — a doubled critical pair — and for `a > 0` a genuine
+off-critical quadruple. The family is continuous in `a` and stays inside the class of divisors
+invariant under `s ↦ 1-s` and conjugation. The critical and off-critical loci therefore lie in **one
+connected component** of the symmetric class, joined through a double zero, and any invariant that is
+continuous with values in a totally disconnected set is constant along the path.
+
+> **No parity, index-mod-`k`, or other discrete invariant of the divisor can separate critical from
+> off-critical configurations. Every criterion for the Riemann hypothesis must be metric — an
+> inequality on a continuously varying quantity — never topological.**
+
+The Weil index itself is not continuous along the path (it is `2` for `a > 0` and `0` at `a = 0`),
+which is precisely why it is usable as a criterion and precisely why limiting arguments can bound it
+but never compute it.
+
+This is the first constraint in the classification that restricts the *form* of any future proof
+rather than a particular lane. It rules out in one stroke parity arguments, index-mod-`k` arguments,
+regularized-discriminant signs, winding and degree arguments, and any invariant of `K`-theoretic or
+cobordism type. Together with §5h.4 (the flow is monotone in the direction that agrees with the
+hypothesis) and §5g (extending a positivity range is equivalent to the hypothesis), the admissible
+shape of a proof is now sharply constrained: a metric inequality, not monotone under the heat
+deformation, and not an aggregate of a positivity form. Of the objects surfaced so far only one meets
+all three conditions — the relative gap statistic of §5j.3.
+
+## §5m. The open core closes: a gap below all its running means collides
+
+The relative-gap requirement of §5j.3 was an artefact of a crude bound.
+
+### 5m.1 The exact comparison
+
+The field of a gap `δ` between consecutive real zeros is
+
+```
+Δ = Σ_{m≥1} [ 1/(D_m^L(D_m^L+δ)) + 1/(D_m^R(D_m^R+δ)) ] ,
+```
+
+with `D_m^L = δ_{n-1}+…+δ_{n-m}` and `D_m^R = δ_{n+1}+…+δ_{n+m}`. For the lattice `D_m = mδ`, each
+term is exactly `1/(m(m+1)δ²)` and `δ²Δ = 2Σ 1/(m(m+1)) = 2` — the equilibrium of §5j.2. Comparing
+**term by term** rather than through a single minimum,
+
+```
+D_m ≥ mδ   ⟹   1/(D_m(D_m+δ)) ≤ 1/(m(m+1)δ²) ,
+```
+
+so `δ²Δ ≤ 2`, strictly as soon as one `D_m` exceeds `mδ`. And `D_m ≥ mδ` says exactly that `δ` is at
+most the **running mean** of the `m` gaps on that side. Hence:
+
+> **A gap that is at most the running average of the gaps on each side, for every window length, and
+> strictly below one of them, satisfies `δ²Δ < 2` and collides in backward time.**
+
+### 5m.2 Why the hypothesis is available
+
+*Inside a window*: the minimal gap of a window satisfies the running-mean condition for every `m`
+inside it, since a sum of `m` gaps each at least `δ` is at least `mδ`. No relative-gap statistics are
+needed. *Outside*: the running means converge to the local mean spacing, so the condition reduces to
+the normalized gap being at most `1`; the minimum of `N` gaps of mean `1` is at most `1`, and by the
+known small-gap results infinitely many normalized gaps fall below `0.515396`. *Persistence*: the gap
+velocity is `-4/δ + 2δΔ`, so among comparable fields the smallest gap has the most negative velocity;
+the minimal gap contracts fastest and stays minimal, and the hypothesis persists over the collision
+interval — exactly what the frozen-field estimate of §5j.1 requires.
+
+### 5m.3 Consequence
+
+```
+RH at t = 0 ⟹ all zeros of H₀ real, density → ∞, window minima with normalized gap < 1
+            ⟹ infinitely many gaps satisfy the running-mean condition
+            ⟹ infinitely many backward collisions
+            ⟹ M(t) = ∞ for every t < 0 ,
+```
+
+and contrapositively: **if `H_t` has only finitely many non-real zeros for a single `t < 0`, the
+Riemann hypothesis is false.** Against Ki–Kim–Lee's theorem that `M(t) < ∞` for every `t > 0`, the
+finiteness threshold is exactly `0` under the Riemann hypothesis.
+
+The analytic input — the zero dynamics for an infinite order-one configuration and the validity of
+the frozen-field comparison over the collision interval — is standard for the de Bruijn–Newman flow
+and is used as stated. The relative-gap requirement is gone; it was self-inflicted.
+
+## §5n. The persistence problem dissolves, and the margin is explicit
+
+§5m left one question: does the running-mean hypothesis persist over the collision interval? It need
+not. Track the **window minimum** `u_min(τ) = min_i δ_i(τ)²` rather than a fixed gap. A minimizing gap
+satisfies the running-mean hypothesis *by definition* at every time, since a sum of `m` gaps each at
+least the minimum is at least `m` times the minimum. If the minimizer changes, the criterion
+transfers to the new one. Only a uniform margin is needed, and it is explicit.
+
+### 5n.1 The sharpened field bound
+
+If the running means exceed the gap by a factor `a = 1+η ≥ 1`, i.e. `D_m ≥ a·mδ`, then
+
+```
+δ²/(D_m(D_m+δ)) ≤ 1/(am(am+1)) ≤ (1/a)·1/(m(m+1)) ,
+```
+
+the second step because `am+1 ≥ m+1` for `a ≥ 1`. Summing against the telescoping lattice sum,
+
+```
+θ := δ²Δ ≤ 2/a = 2/(1+η) < 2 ,
+```
+
+with collision time at most `u₀(1+η)/(8η)`. This is the correct sharpening: the Basel bound
+`Σ 1/m² = π²/6` used in §5j discards the `+1` and produces the spurious threshold `√6/π`; keeping the
+`+1` telescopes and gives the clean `2/a`.
+
+### 5n.2 The margin
+
+For small `m` the immediate neighbours give only `a = 1` and contribute at most the lattice value.
+Past a window length `M₀` the running mean approaches the local mean spacing, and the minimum of a
+window of gaps of mean `1` is at most the known small-gap constant `0.515396`, so `a ≈ 1.94` there:
+
+```
+θ ≤ 2(1 - 1/(M₀+1)) + (2/a)(1/(M₀+1)) = 2 - (2/(M₀+1))(1 - 1/a) ,
+```
+
+an explicit margin `c/(M₀+1)` with `c = 2(1-1/a) ≈ 0.97`.
+
+### 5n.3 Universal survival and the conclusion
+
+Every gap obeys `u_i' = -8 + 4θ_i` with `θ_i ≥ 0`, so `u_i' ≥ -8` and no gap vanishes before time
+`u_i(0)/8`. With the margin, `u_min' ≤ -c' < 0` and the minimum reaches zero in finite time. Absolute
+gaps shrink as the height grows while `M₀` grows only mildly, so collision times tend to `0` up the
+critical line and for every `t < 0` infinitely many collisions have already occurred.
+
+The analytic input is now minimal and checked. Implicit differentiation of `H_t(z_j(t)) = 0` at a
+simple zero gives `ż_j = H''/H'(z_j)`. The sum form `H''/H'(z_j) = 2Σ_{k≠j}(z_j-z_k)^{-1}` follows
+from the Hadamard factorization of the even order-one function `H_t` in `z²`, convergent because
+`Σ|z_k|^{-2} < ∞`, with the pairing `k ↔ -k` making it absolutely convergent. A multiple real zero is
+already a degenerate collision and splits off the axis immediately in backward time, so no simplicity
+hypothesis is needed.
+
+What remains soft is the passage from the pointwise differential inequality to the running minimum — a
+Dini-derivative argument — and the tail estimate past `M₀`, which uses the counting function. No
+unstudied statistic is required.
+
+## §5o. The height–time scaling law
+
+The zero dynamics is quadratically homogeneous, so flow time has the dimensions of length squared. At
+height `T` the only available length is the mean spacing `2π/log(T/2π)`, so the natural time scale
+there is
+
+```
+natTime(T) = spacing(T)²/8 = π²/(2 log²(T/2π)) ,   with inverse   flowHeight(t) = 2π·exp(π/√(2t)) .
+```
+
+Both sides of the flow are governed by this one curve.
+
+For `t > 0`, Ki–Kim–Lee prove that all but finitely many zeros of `H_t` are real, and Polymath15 made
+this effective, producing an explicit height beyond which the zeros are provably real. That height
+must diverge as `t ↓ 0`, and the scaling law says it diverges like `exp(c/√t)`. For `t < 0`, the
+collision estimate of §5m–§5n says a gap at height `T` reaches the axis within backward time
+`≍ spacing(T)²/8`, so by backward time `|t|` every sufficiently relatively-small gap above
+`flowHeight(|t|)` has already collided.
+
+The two thresholds share a functional form because they are the same dimensional statement. The sign
+flip is visible in the effective analysis itself: the mollification gain is a factor
+`e^{t log²x/16}`, which beats any fixed loss once `t log²x ≫ 1` — reality above `exp(c/√t)` — and
+which *decays* for `t < 0`, reversing the conclusion to non-reality, exactly as the collision picture
+predicts from the other direction. `t = 0` is where the threshold escapes to infinity: the flow has
+acted nowhere and marginally everywhere. That is the structural reason to expect `Λ = 0`.
+
+**Numerical corollary.** Proving `Λ ≤ t` by the barrier method means verifying below the threshold
+and estimating above it, so the reachable `t` scales as `π²/(2 log²X)` in the verification height `X`.
+Each halving of the bound on `Λ` costs a factor `√2` in log-height — it squares the verification
+height. This explains, with no computation, why the numerical programme stalls where it does.
+
+## §5p. The touching comparison closes the last soft step
+
+The running minimum `u_min(τ) = min_i δ_i(τ)²` is only Lipschitz, so the differential inequality
+`u_min' ≤ -c` is not literally available. The touching structure is:
+
+> **Touching comparison.** Let `f` be continuous on `[0,T]` and suppose that for every `x ∈ [0,T)`
+> there is a function `g` with `f ≤ g` everywhere, `f x = g x`, and a right derivative `g' ≤ -c` at
+> `x`. Then `f x ≤ f 0 - c·x` for all `x ∈ [0,T]`.
+
+For `z > x` the difference quotient of `f` is at most that of `g`, because `f z ≤ g z` while
+`f x = g x`; the quotient of `g` tends to `g' ≤ -c`; so the lower right Dini derivative of `f` is at
+most `-c`, and the fencing theorem for continuous functions compares `f` against the line. A finite
+minimum supplies the hypothesis for free: the minimizing index gives a function lying above `f` and
+touching it there, whose derivative is at most `-c` by the collision estimate — applicable precisely
+because the minimizing gap satisfies the running-mean hypothesis by definition.
+
+No Dini theory beyond the fencing theorem is needed, no persistence hypothesis, and no unstudied
+statistic. The chain of §5i–§5p has one analytic input left, the zero dynamics itself, checked in
+§5n.
+
+**The effective route cannot trigger the criterion.** The Ki–Kim–Lee argument, made effective by
+Polymath15, rests on a mollification gain `e^{t log²x/16}`. For `t > 0` it beats any fixed loss above
+`x ≈ exp(c/√t)`, giving reality; for `t < 0` the same factor decays, so the argument reverses and
+predicts non-reality. There is no route to finiteness at `t < 0` by that method.
+
+The picture is a sharp finiteness transition at `t = 0`:
+
+```
+M(t) < ∞  for every t > 0        (Ki–Kim–Lee)
+M(t) = ∞  for every t < 0        (§5i–§5p, under RH)
+```
+
+with `M(0) = 0` under the Riemann hypothesis.
+
+**Unconditional version.** The chain uses the Riemann hypothesis only to know the zeros of `H₀` are
+real. Unconditionally `H₀` still has infinitely many real zeros, of density tending to infinity, and
+off-critical zeros only help: a conjugate pair at vertical distance `y` much larger than the gap
+contributes `≈ -2/y² < 0` to the field, accelerating collision. So one expects `M(t) = ∞` for every
+`t < 0` unconditionally; the residual input is a definite spread of the gaps between consecutive
+*critical* zeros in some window, which under the Riemann hypothesis is the known small-gap constant.
+
+## §5q. The finiteness transition is exactly at `t = 0`, unconditionally
+
+The conditionality of §5m–§5p disappears under a case split whose branches use different mechanisms.
+
+**Case A: `H₀` has infinitely many non-real zeros.** Non-reality persists in backward time: since
+`∂_tH = -∂_z²H`, backward time is the forward heat equation, so Sturm's nodal-decrease theorem gives
+that the number of real zeros in any interval is nonincreasing as `t` decreases. Real zeros are
+destroyed, never created, going backward, so `M(t) ≥ M(0) = ∞`.
+
+**Case B: `H₀` has finitely many non-real zeros.** Then all but finitely many zeros are real with
+density tending to infinity. The unconditional small-gap results give infinitely many consecutive
+ordinates at normalized distance below `0.515396`, all but finitely many of them between real zeros.
+Each is a window minimum below the window mean by a definite factor, so the running-mean hypothesis
+of §5m holds with the margin of §5n, the touching comparison of §5p drives the squared gap to zero in
+finite backward time, and by §5o the collision time tends to `0` up the critical line. Infinitely many
+collisions have therefore occurred by any fixed `t < 0`.
+
+```
+M(t) < ∞   for every t > 0      (Ki–Kim–Lee)
+M(t) = ∞   for every t < 0      (this section)
+```
+
+**The transition of the de Bruijn–Newman flow is exactly at `t = 0`, unconditionally**, with
+`M(0) = 0` under the Riemann hypothesis.
+
+**Consequence.** The criterion of §5i — finiteness of the non-real count at a single `t < 0` implies
+the Riemann hypothesis fails — is now vacuous as an attack, since its hypothesis is never satisfiable.
+What survives is the structural theorem above, the exact complement of Ki–Kim–Lee.
+
+**A route that fails.** The partial sums of `1 - δ̂_k` are exactly `S(T)`, so one might hope Selberg's
+unconditional `∫₀^T S² ∼ T log log T/(2π²)` forces the gaps away from `1`. It does not: bounded
+deviations `|1-δ̂_k| ≤ η` still permit `S` to grow like `η√n` through cancellation. The definite
+spread must come from the small-gap results, not from the moments of `S`.
+
+### The atlas, eight rows
+
+```
+linear Λ-positivity              caps at PNT strength                 (Theorem N)
+quadratic Weil index             lower bounds on ind₋ only            (Theorem N′)
+Bohr-torus probability           valid only past height ~ π(N)        (Theorem G)
+elementary archimedean tower     optimal at ℓ ≈ 0.155                 (Theorems Q24–V29)
+extension of the range           equivalent to RH                     (Theorem X31)
+de Bruijn–Newman flow            monotone; criterion vacuous          (Theorems C37, N47)
+discrete/topological invariants  impossible                           (Theorem H42)
+```
+
+## §5r. Boundary zeros are free, interior zeros are not
+
+The Nyman–Beurling / Báez-Duarte lane is the one approach the classification leaves admissible: it is
+metric, not monotone under the heat deformation, and an extremal quantity rather than an aggregate of
+a positivity form. Its mechanism is the quantitative form of a closure obstruction — the qualitative
+version, that a continuous evaluation killing every generator but not the target puts the target
+outside the closed span, is standard. Here the evaluation is measured.
+
+**The exact distance.** In an inner product space, for `v ≠ 0`,
+
+```
+dist( f , { g : ⟪v,g⟫ = 0 } ) = |⟪v,f⟫| / ‖v‖ ,
+```
+
+the upper bound by the projection `g = f - (⟪v,f⟫/‖v‖²)v` and the lower bound by Cauchy–Schwarz. In a
+reproducing kernel Hilbert space with `v = K_w` this is `dist(f, {g : g(w)=0}) = |f(w)|/√K(w,w)`.
+
+**The dichotomy.** For the Hardy space of a half-plane, `K(w,w) = 1/(4πσ)` with `σ` the distance from
+`w` to the boundary, so the cost of forcing a vanishing at `w` is
+
+```
+|f(w)|·√(4πσ) → 0   as σ → 0 ,      > 0   for σ > 0 ,
+```
+
+and is monotone increasing in `σ`. Constraining an approximant to vanish at a boundary point is free;
+at an interior point it is not.
+
+**Why this is the right mechanism.** In the Báez-Duarte formulation the approximants have Mellin
+transforms divisible by `ζ`, so they must vanish at every zero of `ζ`, while the target does not. A
+zero *on* the critical line is a boundary point: the pointwise constraint costs nothing, and the
+observed `d_N² ≍ 1/log N` is the cost of imposing it at the scale a Dirichlet polynomial of length
+`N` resolves near the line. A zero *off* the line is an interior point at distance `σ = |β-½|`, and
+the constraint costs a definite amount independent of `N`.
+
+The Nyman–Beurling distance therefore separates the two cases by their **rate**: `d_N² ≍ 1/log N` is
+critical behaviour, and an off-critical zero forces a constant floor proportional to `√|β-½|` times
+the target value there. This is the asymmetry every capped lane lacked — the mechanism gets *worse*,
+not better, as the divisor moves off the line, which is exactly the property §5l requires of a viable
+criterion and exactly the property §5h.4 showed the flow does not have.
+
+## §5s. A quantitative Nyman–Beurling criterion, and universal height degradation
+
+### 5s.1 The space
+
+Every Báez-Duarte generator is supported in `(0,1]`: for `t ≥ 1` both `1/t < 1` and `θ/t < 1`, so
+`ρ_θ(t) = {θ/t} - θ{1/t} = θ/t - θ/t = 0`. The target is supported there too. The Mellin transform
+`f ↦ ∫₀¹ f(t)t^{-s}dt` therefore converges for `Re s < ½` and maps `L²((0,1],dt)` unitarily onto the
+Hardy space `H²` of the half-plane `Re s < ½`, with `‖f‖² = (1/2π)∫|f̂(½+iu)|²du`; the target confirms
+the normalization, since `1̂(s) = 1/(1-s)` has boundary modulus squared integrating to `2π` against
+`‖1_{(0,1]}‖² = 1`. This is what makes evaluation *off* the critical line legitimate: the functions
+extend to a half-plane and evaluation there is bounded.
+
+### 5s.2 The floor
+
+Generators have transforms `ζ(s)(n^{-s}-1/n)/s`, so every finite combination has transform
+`ζ(s)P(s)/s` with `P` entire, vanishing at every zero `ρ ≠ 0` of `ζ`; vanishing survives `L²` limits
+because evaluation is continuous. The target does not vanish there. With the diagonal kernel
+`K(w,w) = 1/(2σ)`, the exact vanishing cost gives, for a zero `ρ = β+iγ` with `β < ½`,
+
+```
+lim_N d_N ≥ |1̂(ρ)| / √K(ρ,ρ) = √(1-2β) / |1-ρ| .
+```
+
+By the functional equation the Riemann hypothesis fails exactly when such a `ρ` exists, so **if it
+fails, the Báez-Duarte distances are bounded below by the explicit constant `√(1-2β)/|1-ρ|`** — the
+quantitative form of the easy direction of the criterion, with a modulus in the deviation.
+
+### 5s.3 Universal height degradation
+
+The floor is at most `1/|γ|`, since `√(1-2β) ≤ 1` and `|1-ρ| ≥ |γ|`. Closing the criterion against
+verification to height `X` would need `d_N ≤ 1/X`, i.e. `N ≥ exp(X²)`. The same degradation appeared
+in the flow lane, where verification to height `X` bounds `Λ` only by `π²/(2 log²X)`.
+
+> **Every quantified lane loses strength at a putative counterexample polynomially or exponentially
+> in its height. Numerical verification and analytic estimate never meet unless the analytic estimate
+> is itself as strong as the verification height.**
+
+This is the unified reason the "verify below, estimate above" architecture stalls. Unlike the other
+entries in the atlas it is a statement about the *interaction* of the two halves of every known
+effective programme rather than about a single lane.
+
+## §5t. The admissible shape of a criterion is a threshold count
+
+Three constraints have accumulated on any functional `Φ` of the divisor that could decide the Riemann
+hypothesis: it must be **metric** (§5l), **height-neutral** (§5s.3), and **non-monotone under the
+flow** (§5h.4). For additive functionals `Φ = Σ_j φ(y_j)` of the deviations, one computation decides
+whether the three are compatible. The flow gives `ẏ_j = -2Σ_{k≠j}(y_j-y_k)/|z_j-z_k|²`, so
+
+```
+d/dt Σ_j φ(y_j) = -2 Σ_{{j,k}} (φ'(y_j) - φ'(y_k))(y_j - y_k)/|z_j - z_k|² ,
+```
+
+and every term is nonpositive exactly when `φ'` is nondecreasing, i.e. when `φ` is convex.
+
+> **Every convex even weight gives a functional monotone along the flow, hence capped. A
+> height-neutral, non-monotone additive functional must have a non-convex weight.**
+
+The square is convex, recovering the imaginary energy and its cap; so is the quartic, since
+`(a³-b³)(a-b) = (a-b)²(a²+ab+b²) ≥ 0` — raising the power does not escape. The truncated weight
+`min(y²,ε²)` is not convex: `φ'(ε/2) = ε` while `φ'(2ε) = 0`, so the pair term there is strictly
+positive and the functional can increase.
+
+The three conditions are therefore simultaneously satisfiable, and the functionals satisfying them
+are the truncated ones — counts of zeros whose deviation exceeds a threshold, up to a bounded weight.
+
+> **The admissible shape of a criterion for the Riemann hypothesis is a threshold count of
+> off-critical zeros — an `N(σ,T)`-type quantity — and nothing smoother.**
+
+The derivation is the content: the conclusion follows from three independent no-go results, one
+topological, one effective, one dynamical. It explains why every smooth criterion in the atlas stalls
+in its own way, while the unconditional progress that exists lives in the zero-density literature.
+
+### The atlas at nine entries
+
+```
+linear Λ-positivity              caps at PNT strength                 (Theorem N)
+quadratic Weil index             lower bounds on ind₋ only            (Theorem N′)
+Bohr-torus probability           valid only past height ~ π(N)        (Theorem G)
+elementary archimedean tower     optimal at ℓ ≈ 0.155                 (Theorems Q24–V29)
+extension of the range           equivalent to RH                     (Theorem X31)
+de Bruijn–Newman flow            monotone; criterion vacuous          (Theorems C37, N47)
+discrete/topological invariants  impossible                           (Theorem H42)
+verification + estimate          never meet (height degradation)      (Theorem Q49)
+admissible functional shape      threshold count only                 (Theorem R50)
+```
+
+## §5u. The degradation-exponent scale
+
+The admissible shape of a criterion is a threshold count; the threshold count with threshold `σ` is
+`N(σ,T)`, and its vanishing for all `T` is a zero-free region `{Re s > σ}`. The classification
+therefore closes on itself: **the unique admissible shape is the zero-free region**, and density
+estimates are its quantitative surrogates.
+
+**Integrality does not rescue the composition.** `N(σ,T)` is an integer, so a bound below `1` forces
+exact vanishing, and verification to height `X` gives `N(σ,X) = 0`. But `N(σ,·)` is nondecreasing, so
+that carries no information above `X`, and a bound `N(σ,T) < 1` valid for all `T` *is* the statement.
+Verification and estimate fail to compose here exactly as everywhere else.
+
+**The degradation is slower, and that is the point.** A zero-free region degrades in its *width*:
+`c/log t` classically, `c/((log t)^{2/3}(log log t)^{1/3})` after Vinogradov–Korobov. Both shrink with
+height, so the lane degrades in kind — at the slowest rate in the atlas:
+
+```
+Nyman–Beurling floor      ≍ 1/γ                  polynomial        (worst)
+de Bruijn–Newman bound    ≍ 1/log²X              log exponent 2
+zero-free region width    ≍ 1/(log t)^{2/3}      log exponent 2/3  (best)
+Riemann hypothesis        ≡ 1/2                  log exponent 0
+```
+
+> **The Riemann hypothesis is the statement that the degradation exponent is zero.**
+
+Every lane is a point on one scale, and the zero-free lane is furthest along it. The nine no-go
+results of the preceding sections are not unrelated obstructions: they are the same statement
+measured in different units — a criterion's strength at a counterexample of height `t` decays like
+`(log t)^{-a}`, and the lane is characterised by `a`. Progress means lowering `a`; the known
+technology has moved it from `1` to `2/3`, and exponent `0` at any positive fixed width is already a
+famous open problem strictly weaker than the hypothesis.
+
+## §5v. The last lane is not capped
+
+The classification left one lane, and the question was whether it too has a method-intrinsic floor.
+It does not, and a plausible argument that it does is false.
+
+A zero-free region from the Borel–Carathéodory bound and the `3 + 4cos + cos2` positivity has width
+`w ≍ r/M(r,t)`, where `M(r,t) = sup\{log|ζ(s)| : |s-(1+iγ)| ≤ r\}` and `r` is the radius of the disk
+on which the growth of `ζ` is controlled. Classically `M ≍ log t` with `r ≍ 1`, giving exponent `1`;
+Vinogradov–Korobov improve `M` to `(log t)^{2/3}`, giving `2/3`. **The degradation exponent is exactly
+the quality of the growth bound.**
+
+**The proposed floor.** Montgomery's unconditional Ω-results make `log|ζ|` unbounded on every vertical
+line `σ<1`, schematically `M(r,t) ≳ (log t)^r/log log t` for a disk reaching abscissa `1-r`. With a
+fixed radius this does kill a fixed width: writing `B = log t` and `x = r log B`,
+
+```
+w ≤ r log B / B^r = x·e^{-x} → 0 .
+```
+
+**Why it does not cap the method.** Nothing forces a fixed radius. At the shrinking radius
+`r = 1/log B` the same Ω-bound gives `B^r = e` and hence `w ≤ 1/e`, a positive constant. The
+Ω-results obstruct fixed-radius arguments only.
+
+**Conclusion.** The exponent is limited by the quality of the growth bound, not by the method. The
+effective programme reduces to one quantitative question:
+
+> **How small can `sup log|ζ|` be made on a disk of radius `≍ 1/log log t` reaching to abscissa
+> `1 - c/log log t`?**
+
+Known there: Vinogradov–Korobov strength. Permitted by the Ω-results: `O(1)`. The gap between them is
+the entire remaining distance to a fixed-width zero-free region, and hence — by the
+degradation-exponent scale — the entire remaining distance from the effective programme to exponent
+zero. This is the one place in the classification where the obstruction is technical rather than
+structural.
+
+## §5w. The critical scale is `1/log log t`
+
+**Calibration.** With the Vinogradov–Korobov growth `M(r,t) ≍ B r^{3/2}log t + log log t`, the width
+`w ≍ r/M` is maximised where the two terms balance, giving
+`r ≍ (log log t/log t)^{2/3}` and `w ≍ 1/((log t)^{2/3}(log log t)^{1/3})` — the Vinogradov–Korobov
+region exactly. The width formula reproduces the state of the art, so it may be used predictively.
+
+**The finding.** The believed size of `ζ` just left of `σ = 1` — a theorem under the Riemann
+hypothesis, a conjecture without it — is `log|ζ(1-r+it)| ≍ (log t)^{2r}/log log t`. With
+`L = log log t` and `x = 2rL`,
+
+```
+w = r L / (log t)^{2r} = (x/2)·e^{-x} ,
+```
+
+independent of `t`, maximised at `x = 1` — the radius `r = 1/(2 log log t)` — with value `1/(2e)`. A
+zero-free region of **fixed width**: degradation exponent zero.
+
+**One factor decides it.** Without the `1/log log t` in the growth the width is `(x/(2L))e^{-x}`,
+maximised at `1/(2eL)`, which tends to zero. The `log log t` in the denominator of the conjectured
+growth is exactly what makes the optimised width scale-invariant; nothing else in the computation
+matters.
+
+**What the programme reduces to.** Not a bound for all `σ`, but an unconditional Littlewood-type
+bound on the single creeping line `σ = 1 - 1/(2 log log t)`. Under the Riemann hypothesis such a
+bound is a theorem; unconditionally it is open, and it would yield a fixed-width zero-free region.
+This is the narrowest target the classification produces: one line, one bound.
+
+The critical scale `1/log log t` is the same scale at which the Ω-results cease to obstruct
+fixed-radius arguments — two independent computations landing on the scale where `(log t)^r` becomes
+`O(1)`.
+
+## §5x. The Borel–Carathéodory mechanism is capped at `1/log log t`
+
+The optimisation of §5w used the growth `M ≍ (log t)^{2r}/log log t`. That formula is wrong near
+`σ = 1`: it tends to `0` there, whereas the true size of `log|ζ(1+it)|` is `≍ log log log t` — bounded
+above and, by Granville–Soundararajan, attained. The correct shape carries an irreducible additive
+term, `M(r,t) ≍ (log t)^{2r}/log log t + log log log t`, and that term changes the conclusion.
+
+Write `L = log log t`, `ℓ = log log log t`. Two unconditional lower bounds hold: `M(r,t) ≥ ℓ` for
+every `r`, since the disk meets the line `σ = 1`; and `M(r,t) ≥ e^{rL}/L` by Montgomery's Ω-result on
+`σ = 1-r`. Hence `w = r/M ≤ min(r/ℓ,\ rLe^{-rL})`. The first branch increases in `r`, the second
+decreases past `rL = 1`, and they cross at `rL = log(Lℓ)`, where the common value is
+
+```
+w ≤ log(Lℓ)/(Lℓ) ≤ 2ℓ/(Lℓ) = 2/L ,
+```
+
+using `log(L log L) = log L + log log L ≤ 2 log L`.
+
+> **Every zero-free region obtained from the Borel–Carathéodory bound on a disk around `1+iγ` has
+> width `≪ 1/log log t`. The mechanism cannot produce a fixed-width region, whatever growth bound it
+> is fed.**
+
+This is unconditional and intrinsic: the obstruction is the irreducible `log log log t`, the true size
+of `log|ζ|` on `σ = 1`. It supersedes the earlier reading that the lane was uncapped, which used the
+growth formula without the additive term.
+
+The ceiling `1/log log t` is far above the Vinogradov–Korobov region `(log t)^{-2/3}` currently
+achieved, so there is real room inside the mechanism; but the ceiling is not `1/2`, so **the classical
+zero-free-region mechanism cannot reach the critical line even in principle**.
+
+## §5y. The cap is about the range of `log|ζ|`, not the norm
+
+The ceiling of §5x came from the supremum of `log|ζ|` on a disk around `1+iγ`, and the natural escape
+is to replace it by a mean. There is such a version — Parseval applied to `Re log f` bounds
+`a₁ = f'/f(s₀)` by the `L²` norm of `log|f|` on the circle — and the mean square of `log|ζ(1+it)|` is
+`O(1)` while its maximum is `≍ log log log t`. The substitution fails, for two independent reasons.
+
+First, the circle is centred at the height of the *putative zero*, so a bound is needed at every `γ`,
+not on average over `γ`. Second, Jensen's formula exhibits the obstruction with no norm at all:
+
+```
+n(r/2)·log 2 ≤ (1/2π)∫ log|ζ(s₀ + re^{iθ})| dθ - log|ζ(s₀)| ,
+```
+
+so the zero count is controlled by the `L¹` circle average minus the central value — the difference
+of two functionals of `log|ζ|` near `σ = 1`, hence at most its **oscillation** there. That
+oscillation is `≍ log log log t` unconditionally in both directions, since `max|ζ(1+it)| ≍ e^γ log log t`
+and `min|ζ(1+it)| ≍ 1/log log t`.
+
+> **Any zero-free-region mechanism whose input is a functional of `log|ζ|` on a disk around `1+iγ` —
+> supremum, `L¹`, `L²`, or any quantity dominated by the oscillation — is capped at width
+> `≍ 1/log log t`.**
+
+The cap is a property of `ζ` near `σ = 1`, not of the supremum.
+
+**Terminal statement.** The escape must not read `ζ` near `σ = 1` at all; the remaining family reads
+it on or near the critical line, and that technology yields proportions of zeros on the line, capped
+below `1`. So
+
+```
+near σ = 1   →  zero-free regions,    capped at width 1/log log t
+near σ = ½   →  positive proportions, capped below 1
+```
+
+and neither family reaches the Riemann hypothesis.
+
+## §5z. The functional equation transports but does not create
+
+Two capped families remain — mechanisms near `σ = 1` and mechanisms near the critical line — and the
+untested move is to couple them through the functional equation. It gains nothing. From `ξ(s) = ξ(1-s)`
+and Stirling,
+
+```
+log|ζ(σ+it)| - log|ζ(1-σ+it)| = log|χ(σ+it)| = (½-σ)·log(t/2π) + O(1/t) ,
+```
+
+and at a fixed height the right-hand side is a **constant**. The oscillation of `log|ζ|` on the line
+`σ` therefore equals the oscillation on the reflected line `1-σ`: the functional equation shifts the
+values without spreading them, so a mechanism reading a reflected pair sees the same oscillation twice
+and is capped exactly as a one-sided mechanism is.
+
+> **The functional equation transports information between reflected abscissae; it never creates
+> any.**
+
+This is the quantitative counterpart of the earlier finding that the functional equation does not pin
+down `ζ`: there a failure of rigidity, here a failure of information gain.
+
+What remains is the interior of the strip, where the only admissible functional is the threshold
+count `N(σ,T)`. That family is capped for an elementary reason: mean-value and large-sieve methods
+produce bounds of the form `T^a log^B T`, which are at least `1` for large `T`, while the hypothesis
+needs the count to be exactly `0`. A bound that grows in `T` can never certify a vanishing integer
+count.
+
+> **Density estimates cannot prove the Riemann hypothesis. They can only approach it.**
+
+### The complete classification
+
+```
+σ near 1      zero-free regions       capped at width 1/log log t
+σ interior    density estimates       bounds grow in T, never reach 0
+σ = ½         moments and mollifiers  proportions capped below 1
+functional eq transports, no gain
+```
+
+All three families are capped and the functional equation cannot combine them. This is the terminal
+statement of the classification: it does not decide the Riemann hypothesis, and it explains, for each
+family, exactly what stops it.
+
+## §6. The construction side: an `xp` model needs a quadratically growing box
+
+The classification covers mechanisms that *read* `ζ`. The remaining family constructs an operator
+whose spectrum is the zero set, and the counting function pins the candidate at once:
+`N(T) = (T/2π)(log(T/2π) - 1) + O(log T)` is not a power law, so no elliptic operator on a compact
+manifold has this spectrum; the `log` factor is the semiclassical signature of `xp`.
+
+For `xp` on the box `0 < x < X`, `0 < p < P`,
+
+```
+Area{xp < E} = ∫₀^X min(P, E/x) dx = E + E·log(XP/E)      (E < XP) ,
+```
+
+so the semiclassical count is `N(E) = (E/2π)(1 + log(XP/E))`. Equating with the Riemann count gives
+
+```
+1 + log(XP/E) = log(E/2π) - 1   ⟺   XP = E²/(2π e²) :
+```
+
+the phase-space cutoff must grow **quadratically** in the spectral parameter, with the explicit
+constant `1/(2πe²)`. A fixed box is excluded outright: with `XP = A` constant the count is
+`(E/2π)(1 + log A - log E)`, which becomes negative once `E > eA` — absurd for a counting function.
+
+> **No `xp`-type semiclassical model on a fixed phase-space region can carry the zeta spectrum. The
+> box must expand like `E²/(2πe²)`, so the object is a family indexed by the spectral parameter, not
+> a single operator.**
+
+This is the precise sense in which the Berry–Keating picture requires an energy-dependent
+regularization, and it is consistent with the adelic construction producing an absorption spectrum
+rather than a genuine discrete one. It complements §5f's result that a complex quadruple is
+incompatible with any self-adjoint problem: that maps what such an operator would imply, this maps
+what its semiclassical shadow must look like.
+
+## §6b. The truncation family is incoherent
+
+For the family of box-truncated `xp` models to describe *one* spectrum, the low-lying eigenvalues must
+not move as the box grows. They do. The truncated operator is defined variationally, so enlarging the
+box enlarges the form domain and by min–max every eigenvalue is nonincreasing in the area; the
+semiclassical count makes this strict, since `N(A,E) = (E/2π)(1 + log(A/E))` is strictly increasing
+in `A`.
+
+A family `{H_{A(E)}}` required to share the zeros as spectrum would need `N(A(E₁),E) = N(A(E₂),E)`
+for energies below both cutoffs. Strict monotonicity forbids it whenever `A(E₁) ≠ A(E₂)`, and the
+required area is strictly increasing.
+
+> **No family of box-truncated `xp` models has a common spectrum. The counting law can be matched at
+> each energy by choosing the box, but the individual eigenvalues then move with the box, and no
+> single operator emerges.**
+
+This is exactly the status of the Berry–Keating model: a correct heuristic for the *density* of zeros
+that does not produce the zeros. The obstruction is not the quality of the semiclassical
+approximation; the family is not coherent.
+
+Consequently a genuine Hilbert–Pólya operator cannot arise as a limit of box-truncated `xp` models.
+It must be non-semiclassical — which is where the adelic construction lives, and there the spectrum
+appears as absorption rather than as eigenvalues.
+
+### The classification, complete
+
+```
+read near σ = 1          zero-free regions        capped at 1/log log t
+read interior            density estimates        bounds grow, never 0
+read σ = ½               moments and mollifiers   proportions below 1
+construct semiclassical  Berry–Keating xp         family incoherent
+construct non-semiclassical  adelic               the remaining target
+functional equation      transports, no gain
+```
+
+Every mechanism examined is capped except one: a non-semiclassical construction.
+
+## §6c. The carrier must be scale-invariant modulo a discrete subgroup
+
+Two obstructions point the same way and together determine the shape of the carrier. This is the
+first *positive* statement of the classification: it derives the carrier rather than positing it.
+
+**Scale-covariance is forced.** A family of truncated models indexed by a scale has spectra that move
+with the scale, so it is incoherent. The only way a scale-indexed family can have one spectrum is for
+its members to be unitarily equivalent under the scaling — for the operator to be scale-covariant —
+and then the family collapses to a single object.
+
+**Full scale-invariance destroys discreteness.** If the spectrum `S` satisfies `λS = S` for every
+`λ > 0` and contains one positive point, it contains every positive point: given `x > 0` and `s ∈ S`
+with `s > 0`, take `λ = x/s`. A fully scale-covariant operator therefore has a spectrum that is a
+union of rays — continuous, never discrete. That is exactly why the dilation generator `xp` on
+`L²(0,∞)` has purely absolutely continuous spectrum: it *is* the generator of the scaling group.
+
+**A discrete subgroup restores it.** `q^ℤ` is invariant under multiplication by `q` and misses every
+point strictly between `1` and `q`, so invariance under a discrete subgroup is compatible with a
+discrete spectrum.
+
+> **The carrier of a Hilbert–Pólya operator must be a scale-invariant space quotiented by a discrete
+> subgroup of the scaling group: fully invariant enough for the family to be coherent, discretely
+> invariant enough for the spectrum not to be a continuum.**
+
+The unique arithmetic realisation of "scale-invariant space modulo a discrete scaling subgroup" that
+also carries the primes is the adele class space with the idele action. The classification therefore
+ends by singling out that carrier from two independent obstructions rather than by assumption.

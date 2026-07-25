@@ -115,3 +115,105 @@ functional-equation estimate may enter as a hypothesis of the final declaration.
   elementary specialization. `[OPEN CORE]` The exact declaration
   `HasLogExponentPair (13/84) (55/84)` still requires formalizing that
   decoupling/spacing chain. No stronger corpus theorem currently supplies it.
+- 2026-07-25 — `[BRIDGE] [LEAN-PROVED]` the smooth symmetric AFE contour
+  chain now includes exact zeta contour shifts, both pole residues,
+  functional-equation reflection, dual Dirichlet expansion, right-half-plane
+  `χ` bounds, contour limits, and cutoff localization in the
+  `SmoothAFEZeta*.lean` and `SmoothAFECutoffBounds.lean` modules. These target
+  builds are unconditional; the final conductor-uniform Gamma-ratio
+  localization and assembly into the zeta theorem remain open.
+- 2026-07-25 — `[ARITHMETIC CORE] [LEAN-PROVED]` parabola triple fibers were
+  reduced to representations by `u²+3v²`. A Euclidean-domain construction for
+  the Eisenstein integers, finite-unit classification, injection into scalar
+  divisors, and a direct `Oε(N(z)^ε)` Eisenstein divisor bound now prove
+  `card_bourgainParabolaTripleMoment_fiber_subpower`. No divisor estimate is
+  assumed.
+- 2026-07-25 — `[DECOUPLING INPUT] [LEAN-PROVED]`
+  `BourgainFiniteFourierParseval.lean`,
+  `BourgainParabolaTorusL6.lean`, and
+  `BourgainParabolaTwoTorusL6.lean` turn the fiber theorem into exact
+  one- and two-torus polynomial Parseval identities and the literal weighted
+  discrete-parabola estimate
+  `∫_{T²}|Σaₙe(nu+n²v)|⁶ ≪ε H^ε(Σ|aₙ|²)³`.
+  `BourgainParabolaTwoTorusL12.lean` also records the unconditional
+  `H^(9+ε)` unit-coefficient twelfth-moment baseline.
+  `[OPEN CORE]` Bourgain Theorem 1/Section 2 must supply the non-periodic
+  localization, wave-packet/multiplier control, bilinear-to-linear induction,
+  and resulting three-power improvement from `H^(9+ε)` to `H^(6+ε)`.
+- 2026-07-25 — `[SECTION 2 INTERFACES] [LEAN-PROVED]`
+  `BourgainUnitIntervalTorus.lean` identifies normalized circle averages with
+  literal `[0,1]` Fourier integrals.
+  `BourgainA6TorusBaseline.lean` formalizes Bourgain's exact
+  `n,n²,N^(1/2)n^(3/2),N^(1/2)n^(1/2)` phase, proves equality between its
+  four nested integrals and the internal torus model, and establishes the
+  unconditional `N^(9+ε)` baseline.
+  `BourgainPlanarBilinearL6.lean` proves exact four-torus Fubini
+  factorization for the two independent parabola factors in (2.7) and its
+  sharp subpower `L⁶×L⁶` estimate.  Together with the compiled separated
+  pointwise/integrated decomposition and contracting recurrence, this closes
+  the algebraic skeleton of (2.7), (2.25), and (2.27).
+  `[OPEN CORE]` The genuine three-power gain still requires Theorem 1's
+  non-periodic wave-packet localization, the Taylor remainder multiplier in
+  (1.21)--(1.25), and the two successive scale changes leading to (2.10).
+- 2026-07-25 — `[SMOOTH AFE] [LEAN-PROVED]`
+  `SmoothAFEZetaChiPowerBound.lean` derives an explicit fixed-strip
+  `|χ(1/2+δ+it)| ≪δ max(1,|t|)^(-δ)` estimate from the corpus's quantitative
+  digamma bounds. `SmoothAFEZetaDualWeightConductor.lean` inserts that estimate
+  into the exact negative Mellin contour and proves the conductor-uniform
+  localization
+  `‖Wτ(Y)-1‖ ≤ Cδ Y^δ / max(1,|τ|)^δ`.
+  No Stirling estimate or approximate functional equation is assumed.
+- 2026-07-25 — `[SECTION 2 GEOMETRY] [LEAN-PROVED]`
+  `BourgainPolynomialCurveNondegenerate.lean` proves Bourgain's exact monomial
+  Wronskian condition (1.1): the determinant for `(t,t²,t³,t⁴)` is `288`,
+  uniformly when the four derivative columns are evaluated at independent
+  points. It also proves the separated determinant in (2.11) equals `144` for
+  `(t³,t⁴)` and remains at least `90` in absolute value throughout an explicit
+  unit `C⁴`-jet neighborhood. `[OPEN CORE]` The normalized square-root Taylor
+  remainders from (2.18)--(2.19) must now be proved to lie in this neighborhood;
+  the decoupling theorem and multiplier/localization argument remain open.
+- 2026-07-25 — `[SECTION 2 TAYLOR CONNECTOR] [LEAN-PROVED]`
+  `BourgainTaylorRemainders.lean` replaces the paper's asymptotic notation
+  `φ₃(t)∼t³`, `φ₄(t)∼t⁴` by exact normalized definitions. It proves the two
+  fractional-power Taylor identities corresponding to (2.18)--(2.19),
+  computes all third/fourth jets, and obtains the closed determinant
+  `144(1+qs)^(-5/2)(1+qt)^(-7/2)(1+(5/2)qs-(3/2)qt)`.
+  Consequently the actual normalized phases satisfy (2.11) pointwise for
+  `0<q≤1/2`, `s,t∈[0,1]`. `[OPEN CORE]` Remaining Section-2 gap is now the
+  quantitative curve-decoupling/localization theorem itself, not the Taylor
+  nondegeneracy assertion.
+- 2026-07-25 — `[SECTION 1/2 FULL WRONSKIAN] [LEAN-PROVED]`
+  `BourgainTaylorScaling.lean` proves the literal physical-scale formulas
+  (2.18)--(2.19), including every coefficient and power of `M/N₀`.
+  `BourgainTaylorWronskian.lean` factors the full independent-point Wronskian
+  for `(t,t²,φ₃,φ₄)` through the separated higher-jet determinant and proves
+  the uniform lower bound `9/16` required by (1.1).  The corresponding
+  separated determinant is uniformly at least `9/32`.
+- 2026-07-25 — `[SECTION 1 LOCALIZATION] [LEAN-PROVED]`
+  `BourgainQuadraticTaylorControl.lean` proves the Banach-valued quadratic
+  Taylor remainder from a uniform third-derivative bound, propagates it
+  through an arbitrary bounded frequency functional, and specializes the
+  interval length `K^(-1/2)` to the exact phase-error scale `N K^(-3/2)` in
+  (1.21)--(1.22). `[OPEN CORE]` The weighted Fourier multiplier estimate that
+  absorbs this bounded phase perturbation, the lower-dimensional decoupling
+  input (1.5), and Bourgain's scale induction remain to be formalized.
+- 2026-07-25 — `[SECTION 1 MULTIPLIER/GEOMETRY] [LEAN-PROVED]`
+  `BourgainPhasePerturbation.lean` replaces “the multiplier may be ignored”
+  by explicit one-Lipschitz phase bounds for weighted finite sums and
+  extension integrals, and composes them with the Taylor theorem at error
+  `N C K^(-3/2)/2`.
+  `BourgainSquareRootOsculatingGeometry.lean` identifies the literal
+  first/second derivative matrix for
+  `(t,t²,t^(3/2),t^(1/2))`, proves its determinant is exactly
+  `3(b-a)^4/(8a³b³)` at parameters `a²,b²`, constructs the resulting linear
+  and continuous-linear equivalences, and proves the exact Lebesgue Jacobian
+  formula. Thus the nondegenerate change of variables in (1.23)--(1.24) is
+  unconditional for the curve used in the application.
+- 2026-07-25 — `[SECTION 1 BOOTSTRAP] [LEAN-PROVED]`
+  `BourgainPowerScaleBootstrap.lean` formalizes the actual multiplicative
+  power-scale recurrence `b(N)≲N^δb(N^(2/3))`, proves its exact finite
+  iteration, and bounds the accumulated geometric exponent by `3δ`.
+  `[OPEN CORE]` Sharp planar `L⁶` decoupling (1.5), weighted cube
+  localization, and the analytic inequality producing the recurrence remain
+  missing; `BourgainScaleContraction.lean` concerns a different additive
+  dyadic recurrence and cannot discharge this step.

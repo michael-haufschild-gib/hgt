@@ -134,11 +134,6 @@ theorem coeff_bourgainParabolaTriplePolynomial
         bourgainTripleWeight a h := by
   classical
   rw [bourgainParabolaTriplePolynomial]
-  change
-    ((∑ h ∈ (Finset.univ : Finset (Fin 3 → Fin H)),
-        Polynomial.monomial
-          (bourgainParabolaMomentCode H (bourgainParabolaTripleMoment h))
-          (bourgainTripleWeight a h)) : ℂ[X]).coeff m = _
   rw [Polynomial.finsetSum_coeff]
   rw [Finset.sum_filter]
   apply Finset.sum_congr rfl

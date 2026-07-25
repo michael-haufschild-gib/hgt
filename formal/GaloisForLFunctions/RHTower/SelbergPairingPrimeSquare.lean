@@ -212,6 +212,38 @@ theorem int_eq_zero_or_one_or_neg_one_of_sq_le_one {k : ℤ} (h : k ^ 2 ≤ 1) :
   have h2 : k ≤ 1 := by nlinarith [sq_nonneg (k - 1)]
   omega
 
+
+/-- **Weighted Cauchy–Schwarz with arbitrary non-negative weights.**  Taking `w p = 1/p` and
+`a = a_F` this is the step bounding a linear prime sum by the square root of the prime energy times
+the square root of `∑ 1/p`; it is what converts a pole or zero of `F` on the line `Re s = 1` into
+the lower bound `n_F ≥ (order)²` for the prime energy. -/
+theorem weighted_cauchy_schwarz (a : ℕ → ℂ) (w : ℕ → ℝ) (P : Finset ℕ)
+    (hw : ∀ p ∈ P, 0 ≤ w p) :
+    ‖∑ p ∈ P, a p * (w p : ℂ)‖ ^ 2
+      ≤ (∑ p ∈ P, ‖a p‖ ^ 2 * w p) * (∑ p ∈ P, w p) := by
+  set u : ℕ → ℝ := fun p => ‖a p‖ * Real.sqrt (w p) with hu
+  set v : ℕ → ℝ := fun p => Real.sqrt (w p) with hv
+  have huv : ∀ p ∈ P, u p * v p = ‖a p‖ * w p := by
+    intro p hp
+    simp only [hu, hv]
+    rw [mul_assoc, Real.mul_self_sqrt (hw p hp)]
+  have hu2 : ∀ p ∈ P, u p ^ 2 = ‖a p‖ ^ 2 * w p := by
+    intro p hp
+    simp only [hu, mul_pow, Real.sq_sqrt (hw p hp)]
+  have hv2 : ∀ p ∈ P, v p ^ 2 = w p := by
+    intro p hp
+    simp only [hv, Real.sq_sqrt (hw p hp)]
+  have hnorm : ‖∑ p ∈ P, a p * (w p : ℂ)‖ ≤ ∑ p ∈ P, u p * v p := by
+    refine (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun p hp => ?_))
+    rw [huv p hp, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hw p hp)]
+  calc ‖∑ p ∈ P, a p * (w p : ℂ)‖ ^ 2
+      ≤ (∑ p ∈ P, u p * v p) ^ 2 := by
+        rw [pow_two, pow_two]
+        exact mul_self_le_mul_self (norm_nonneg _) hnorm
+    _ ≤ (∑ p ∈ P, u p ^ 2) * (∑ p ∈ P, v p ^ 2) := Finset.sum_mul_sq_le_sq_mul_sq P u v
+    _ = (∑ p ∈ P, ‖a p‖ ^ 2 * w p) * (∑ p ∈ P, w p) := by
+        rw [Finset.sum_congr rfl hu2, Finset.sum_congr rfl hv2]
+
 end
 
 end RHTower

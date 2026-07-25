@@ -338,7 +338,8 @@ odd \(K_{\mathbb R}\)-degree.
 The fixed-point law and involutivity are algebraic and dependency-closed. Remaining
 `[OPEN CORE]`:
 
-1. bornological continuity and trace-class closure of the source twist;
+1. bornological continuity, pointwise trace-class closure, and preservation of the exact CCM
+   diagonal-trace decay submodule;
 2. extension of the proved monomial multiplicativity law to every cyclic operator and the
    completed morphism \(\rho^\natural\);
 3. construction of twisted cyclic \(\operatorname{Tor}\) over the quaternionic Brauer bundle;
@@ -367,6 +368,19 @@ The following source/categorical foundations are now formalized unconditionally:
 - `RHTower.KRealGradedAdjoint`: graded-adjoint square and quantized-form parity;
 - `RHTower.CCMRationalQuaternionicMoritaFiber`: rational sign-reflection, scaling covariance,
   monomial support, and operator involutivity;
+- `RHTower.CCMRationalMoritaHilbertQuaternionic`: the same sign-reflection on the actual
+  \(\ell^2(\mathbb Q^\times)\) CCM Morita Hilbert fiber, packaged as a conjugate-linear
+  isometric equivalence with square \(-1\), without doubling;
+- `RHTower.CCMRationalHilbertOperatorRealStructure`: isometric Real algebra involution on
+  bounded operators, fixed bounded quaternionic-linear algebra, Hilbert--Schmidt and
+  trace-class/Schatten-\(1\) invariance, exact approximation-number and trace-norm invariance,
+  and trace conjugacy;
+- `RHTower.CCMRationalWeightedShiftReal`: actual bounded weighted-shift representation of
+  rational CCM monomials, rational scaling unitarity, norm bound, and operator-level Real
+  equivariance;
+- `RHTower.CCMRationalWeightedShiftTraceClass`: an \(\ell^1(\mathbb Q^\times)\) orbit
+  coefficient factors its weighted shift as a product of two Hilbert--Schmidt operators and
+  therefore gives an actual trace-class CCM target operator;
 - `RHTower.CCMRationalRealCrossedProduct`: full finite-support crossed-product Real structure,
   including conjugate-linearity, involutivity, unit, and multiplication;
 - `RHTower.CCMRationalKRealBrauerBridge`: odd \(K_{\mathbb R}\)-structure on the
@@ -381,12 +395,30 @@ The following source/categorical foundations are now formalized unconditionally:
   degeneracies, and cyclic rotation.
 - `RHTower.CCMRationalArchimedeanSchwartzReal`: continuous sign-reflection on
   \(\mathcal S(\mathbb R,\mathbb C)\), formalized in the actual Schwartz topology.
+- `RHTower.CCMRationalArchimedeanSchwartzLattice`: absolute summability of every
+  archimedean Schwartz function on every nonzero real integer lattice.
 - `RHTower.KRealCompactlySupportedLocallyConstant` and
   `RHTower.CCMRationalFiniteBruhatReal`: compact-support-preserving sign-reflection on the
   finite local Bruhat factor, instantiated on mathlib's rational finite adele ring.
+- `RHTower.CCMRationalFiniteAdeleDenominator`: every compact subset of the actual rational
+  finite adele ring has a common nonzero integer denominator, so its diagonal rational points
+  lie in one fractional integer lattice.
 - `RHTower.KRealTensorProduct` and `RHTower.CCMRationalAdelicBruhatSimpleTensorReal`:
   semilinearly balanced even Real structure on the complex tensor product of rational
   archimedean Schwartz and finite Bruhat factors.
+- `RHTower.CCMRationalAdelicBruhatSimpleTensorTraceClass`: fixed-base
+  \(\ell^1(\mathbb Q^\times)\) orbit summability for every element of that full algebraic
+  tensor product and trace class of the associated actual CCM weighted shift.
+- `RHTower.CCMRationalArchimedeanSchwartzPoisson`: exact scaled Poisson identity for the
+  basic integer-lattice diagonal trace and explicit arbitrary-power decay at both
+  multiplicative ends after the evaluation and integral cancellations.
+
+CCM Definition 4.9 imposes no strong-Schwartz condition on the operator trace norm. Its target
+consists of continuous pointwise trace-class fields whose cyclic main-diagonal scalar trace
+\(\operatorname{Tr}(T_0\cdots T_n)\) lies in
+\({\bf S}(C_{\mathbb Q})\). Thus fixed-base absolute orbit summability closes the pointwise
+operator ideal problem. The remaining analytic theorem is the signed Poisson/cancellation
+statement for the cyclic diagonal trace, together with trace-norm continuity and LF completion.
 
 No Lean file yet defines the analytic CCM cyclic cokernel, its bornology, the full Real-Brauer
 source twist, or twisted cyclic \(\operatorname{Tor}\). Those are not represented by axioms.
@@ -434,3 +466,36 @@ evidence of novelty, not proof of novelty.
 - 2026-07-25 - Created after audit of Deninger 2023, CCM 2007, Loday quaternionic homology,
   Real/quaternionic THH, existing metaplectic moonshot, and the three requested Lean trees.
   No numerical evidence and no Lean build used.
+- 2026-07-25 - Realized the quaternionic sign-reflection on the actual CCM
+  \(\ell^2(\mathbb Q^\times)\) fiber. Minimal Lean check, cached leaf build, and foundational
+  axiom audit passed.
+- 2026-07-25 - Lifted sign-reflection to the actual bounded-operator and trace-class target.
+  Formalized isometric Real algebra involution, quaternionic fixed algebra, ideal preservation,
+  and \(\operatorname{Tr}(\alpha T)=\overline{\operatorname{Tr}(T)}\).
+- 2026-07-25 - Closed target trace-norm gap: conjugate-semilinear realification preserves
+  complex finrank, so quaternionic conjugation preserves every approximation number and the
+  trace norm exactly.
+- 2026-07-25 - Upgraded rational monomial kernel equivariance to equality of actual bounded
+  weighted-shift operators on \(\ell^2(\mathbb Q^\times)\). Remaining analytic restriction gap
+  is pointwise trace class plus the distinct strong-Schwartz diagonal-trace theorem.
+- 2026-07-25 - Proved and formalized the exact trace-class bridge: absolute summability of the
+  rational orbit coefficient implies trace class. This isolates the remaining analytic core as
+  adelic Bruhat--Schwartz orbit summability and, separately, signed Poisson decay of cyclic
+  diagonal traces in the idele-class base parameter.
+- 2026-07-25 - Proved and formalized the archimedean lattice half of orbit summability. The
+  remaining fixed-base step is now the finite-adele theorem that compact Bruhat support confines
+  supported rationals to one fractional integer lattice.
+- 2026-07-25 - Proved and formalized finite-adele common-denominator confinement. Fixed-base
+  orbit summability is now reduced to combining this theorem with the archimedean lattice bound
+  and global boundedness of a compactly supported locally constant factor.
+- 2026-07-25 - Completed and formalized that combination for the full algebraic adelic Bruhat
+  tensor core. Every fixed-base rational orbit is \(\ell^1\), and its actual CCM weighted shift
+  is trace class. Remaining analytic gap is trace-norm continuity, signed strong-Schwartz
+  diagonal-trace control, and LF completion.
+- 2026-07-25 - Re-read CCM Proposition 4.8 and Definition 4.9. Corrected the target: rapid
+  decay is required only of \(\operatorname{Tr}(T_0\cdots T_n)\) on the cyclic diagonal, not
+  of the operator trace norm. The next conjecture must encode the two source cancellations and
+  Poisson summation rather than an impossible absolute-value estimate.
+- 2026-07-25 - Formalized the first exact signed-Poisson sector. For
+  \(f_\infty\otimes1_{\widehat{\mathbb Z}}\), scaled Poisson duality plus
+  \(f_\infty(0)=\int f_\infty=0\) gives explicit arbitrary-power bounds at both ends.

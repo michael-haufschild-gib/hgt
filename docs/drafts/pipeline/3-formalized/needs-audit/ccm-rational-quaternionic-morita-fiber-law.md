@@ -210,11 +210,16 @@ pending expert review.
 Lean modules:
 
 - `GaloisForLFunctions.RHTower.CCMRationalQuaternionicMoritaFiber`;
+- `GaloisForLFunctions.RHTower.CCMRationalMoritaHilbertQuaternionic`;
 - `GaloisForLFunctions.RHTower.CCMRationalRealCrossedProduct`;
 - `GaloisForLFunctions.RHTower.CCMRationalKRealBrauerBridge`.
 
 Formal capstones:
 
+- `ccmRationalMoritaHilbertReflectionFunction_memℓp`;
+- `ccmRationalMoritaHilbertReflection_sq`;
+- `ccmRationalMoritaHilbertReflection_norm`;
+- `ccmRationalMoritaHilbertQuaternionicIsometry`;
 - `ccmRationalQuaternionicReflection_sq`;
 - `ccmRationalQuaternionicReflection_leftScale`;
 - `ccmRationalKernelRealStructure_sq`;
@@ -266,3 +271,8 @@ Formal capstones:
   \(K_{\mathbb R}\) interface in `CCMRationalKRealBrauerBridge.lean`. Minimal Lean check and
   cached leaf build passed; capstone axiom audit contains only `propext`,
   `Classical.choice`, and `Quot.sound`.
+- 2026-07-25 — upgraded the algebraic function-space reflection to the actual CCM Hilbert
+  fiber `lp (fun _ : CCMRationalUnit => ℂ) 2`. Formalized square \(-1\), norm preservation,
+  and the resulting conjugate-linear isometric equivalence without adding a second fiber.
+  Minimal `lake env lean` and final cached leaf `lake build` passed; all five audited
+  capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.

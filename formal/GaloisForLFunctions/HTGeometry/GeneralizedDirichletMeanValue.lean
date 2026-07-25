@@ -108,6 +108,61 @@ theorem genPoly_meanValue (a : ℕ → ℂ) (lam : ℕ → ℝ) (s : Finset ℕ)
   congr 1
   exact Finset.sum_congr rfl fun n _ => by ring
 
+/-- Closed form of the oscillatory integral at a non-zero frequency. -/
+theorem oscInt_eq (δ T U : ℝ) (hδ : δ ≠ 0) :
+    oscInt δ T U
+      = (Complex.exp (Complex.I * (δ : ℂ) * ((T + U : ℝ) : ℂ))
+          - Complex.exp (Complex.I * (δ : ℂ) * (T : ℂ))) / (Complex.I * (δ : ℂ)) := by
+  have hc : Complex.I * (δ : ℂ) ≠ 0 := by
+    simp [Complex.I_ne_zero, hδ]
+  have := integral_exp_mul_complex (a := T) (b := T + U) hc
+  rw [oscInt]
+  rw [show (fun t : ℝ => Complex.exp (Complex.I * ((δ : ℂ) * t)))
+      = (fun t : ℝ => Complex.exp (Complex.I * (δ : ℂ) * t)) from by
+    funext t; ring_nf]
+  rw [this]
+
+/-- **Uniform bound on the oscillatory integral.**  At a non-zero frequency the integral is bounded
+by `2/|δ|` *independently of the length of the interval*: only the diagonal accumulates. -/
+theorem oscInt_norm_le (δ T U : ℝ) (hδ : δ ≠ 0) : ‖oscInt δ T U‖ ≤ 2 / |δ| := by
+  rw [oscInt_eq δ T U hδ, norm_div]
+  have h1 : ‖Complex.exp (Complex.I * (δ : ℂ) * ((T + U : ℝ) : ℂ))‖ = 1 := by
+    rw [show Complex.I * (δ : ℂ) * ((T + U : ℝ) : ℂ)
+        = ((δ * (T + U) : ℝ) : ℂ) * Complex.I from by push_cast; ring]
+    exact Complex.norm_exp_ofReal_mul_I _
+  have h2 : ‖Complex.exp (Complex.I * (δ : ℂ) * (T : ℂ))‖ = 1 := by
+    rw [show Complex.I * (δ : ℂ) * (T : ℂ) = ((δ * T : ℝ) : ℂ) * Complex.I from by
+      push_cast; ring]
+    exact Complex.norm_exp_ofReal_mul_I _
+  have hden : ‖Complex.I * (δ : ℂ)‖ = |δ| := by
+    simp [Complex.norm_I]
+  have hnum : ‖Complex.exp (Complex.I * (δ : ℂ) * ((T + U : ℝ) : ℂ))
+      - Complex.exp (Complex.I * (δ : ℂ) * (T : ℂ))‖ ≤ 2 := by
+    calc _ ≤ ‖Complex.exp (Complex.I * (δ : ℂ) * ((T + U : ℝ) : ℂ))‖
+            + ‖Complex.exp (Complex.I * (δ : ℂ) * (T : ℂ))‖ := norm_sub_le _ _
+      _ = 2 := by rw [h1, h2]; norm_num
+  have hpos : 0 < |δ| := abs_pos.2 hδ
+  rw [hden]
+  gcongr
+
+/-- **Bohr–Parseval with an explicit interval-independent error.**  For a generalized Dirichlet
+polynomial with pairwise distinct frequencies, the mean square over `[T, T+U]` differs from `U`
+times the diagonal energy by an amount bounded independently of `T` and `U`.  Dividing by `U` and
+letting `U → ∞` therefore isolates the diagonal exactly: this is the mechanism that extracts the
+Rankin–Selberg diagonal from a horizontal mean of an exponential twist. -/
+theorem genPoly_meanValue_error (a : ℕ → ℂ) (lam : ℕ → ℝ) (s : Finset ℕ) (T U : ℝ)
+    (hlam : ∀ n ∈ s, ∀ m ∈ s, m ≠ n → lam m - lam n ≠ 0) :
+    ‖(∫ t in T..(T + U), genPoly a lam s t * (starRingEnd ℂ) (genPoly a lam s t))
+        - (U : ℂ) * (∑ n ∈ s, a n * (starRingEnd ℂ) (a n))‖
+      ≤ ∑ n ∈ s, ∑ m ∈ s.erase n, ‖a m‖ * ‖a n‖ * (2 / |lam m - lam n|) := by
+  rw [genPoly_meanValue a lam s T U, add_sub_cancel_left]
+  refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun n hn => ?_)
+  refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun m hm => ?_)
+  have hne : lam m - lam n ≠ 0 :=
+    hlam n hn m (Finset.mem_of_mem_erase hm) (Finset.ne_of_mem_erase hm)
+  rw [norm_mul, norm_mul, RCLike.norm_conj]
+  exact mul_le_mul_of_nonneg_left (oscInt_norm_le _ T U hne) (by positivity)
+
 end
 
 end HTGeometry

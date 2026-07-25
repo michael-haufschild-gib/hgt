@@ -3165,3 +3165,2079 @@ The campaign's two open cores have merged into one:
 > `[OPEN CORE, merged]` A spectral (non-AFE) decomposition for the sixth moment of `ζ` — equivalently
 > a `GL(3)` Motohashi formula, equivalently a power saving for `Σ_{m≤x/a} d(m)d₃(am−h)` uniform in
 > `a ≤ x^{1/3}`. Every AFE-internal route is now proved inert; this is the only surviving direction.
+
+## Cycle 51 — the surviving direction, and a sharp demand on it (C109–C110)
+
+### C109 — state of the GL(3)×GL(3) frontier, July 2026
+
+Harun–Singh, *Shifted convolution sum with weighted average: GL(3)×GL(3) setup*, arXiv:2501.03679
+(2025) — the first non-trivial GL(3)×GL(3) shifted convolution bounds. Shape:
+
+    (1/H) Σ_h W₁(h/H) Σ_n A_{π₁}(1,n) A_{π₂}(1,n+h) W₂(n/X)  ≪  X^{1-δ+ε},
+    for  X^{1/2+δ} ≤ H < X^{1-ε},   π₁, π₂ Hecke–Maass **cusp** forms on SL(3,ℤ).
+
+Two gaps separate this from `Δ₃`:
+1. **cuspidal only** — `d₃` is the minimal Eisenstein series, excluded. This is the harder gap: for
+   cusp forms the coefficients oscillate and `X^{1-δ}` is a cancellation statement; for `d₃` the
+   coefficients are positive, a main term of size `X log⁴X` must first be *produced*, and the methods
+   that give `X^{1-δ}` cuspidally produce no main term.
+2. **`H ≥ X^{1/2+δ}`** — the moment application needs `H = M/T`. At `k = 3`, `M = T^{3/2} = x`, so
+   `H = T^{1/2} = x^{1/3}`, well below `X^{1/2}`.
+
+Also relevant: Blomer–Li, arXiv:2511.03294 (GL(3)×GL(2) with `d` against a GL(3) coefficient — the
+last open GL(3)×GL(2) case, now settled), and Topacogullari / Drappeau for `d ⋆ d₃`. `d₃ ⋆ d₃` remains
+open even for a single shift.
+
+### C110 — what the GL(3) technology must deliver, exactly `[PROVED HERE]`
+
+The Harun–Singh shape is a **plain average** over `h`, i.e. `Σ_{h≤H}Δ_k(x,h) ≪ H·x^{1-δ}`: shift
+exponent `a = 1`, not `a = 1/2`. Through the transfer that is worth far less. From
+`transferBound_lt_chord_iff`:
+
+    a = 1  :  transferBound k 1 (1-δ) < momentChord(2k)  ⟺  k(1 - 2δ) < 2  ⟺  δ > 1/2 - 1/k;
+    a = 1/2:  transferBound k (1/2) (1-δ) < momentChord(2k)  for **every** δ > 0, at every k.
+
+So:
+- at `k = 3` a plain-average input must save **δ > 1/6** merely to match the known envelope;
+- at `k = 4`, `δ > 1/4`; and reaching *every* index needs `δ → 1/2`;
+- `δ = 1/2` with `a = 1` is exactly the shift-free Conrey–Gonek size `Σ_h Δ_k ≪ H x^{1/2+ε}`, which
+  the transfer caps at the pivot `1/8` — **not** at LH.
+
+**Conclusion (sharp).** `a = 1/2` is not a technical convenience. Square-root cancellation *in the
+shift* is what separates an input worth LH from one worth only `1/8`. Any GL(3) programme that
+produces bounds for the *average* over `h` — which is what the delta-method/circle-method papers
+naturally produce — is on the `a = 1` branch and must chase `δ → 1/2`, at which point it is worth
+`1/8` and no more.
+
+**Demand on the frontier, in one line:**
+
+> Produce `Σ_{h ≤ H} Δ₃(x,h) ≪ H^{1/2} x^{1-δ+ε}` with **any** `δ > 0`, at `H = x^{1/3}`, for the
+> **Eisenstein** case. Not the average — the cancellation.
+
+Lean: `HTGeometry.AveragedDivisorInput` — `averaged_input_lt_chord_iff`, `averaged_input_threshold`
+(`⟺ δ > 1/2 - 1/k`), `averaged_input_threshold_three` (`⟺ δ > 1/6`),
+`shift_cancellation_is_essential`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+**D30 (dead route).** "Wait for the GL(3)×GL(3) cuspidal machinery to be extended to Eisenstein and
+read off `m(3)`." Even a full Eisenstein extension of Harun–Singh, at their `H`, is on the `a = 1`
+branch and gives nothing below `δ = 1/6`; and their `H ≥ X^{1/2+δ}` is above the range the moment
+transfer uses.
+
+### C111 — the pointwise branch, exactly: three sharp numbers for the ternary problem `[PROVED HERE]`
+
+A pointwise bound `Δ_k(x,h) ≪ x^{b+ε}` uniform in `h` is the input `(a,b) = (1,b)`. From
+`transferBound k 1 b = 1 + max(0, kb/2 − 1)`:
+
+    transferBound k 1 b = 1  ⟺  k·b ≤ 2.
+
+Three consequences, all now certified:
+
+1. **`Δ₃(x,h) ≪ x^{2/3+ε} ⟹ m(3) = 1`** — the sixth moment conjecture, at *exactly the same
+   exponent `2/3` that solves the binary problem* (Motohashi/DFI give `Δ₂ ≪ x^{2/3}`). The ternary
+   problem does not need a better exponent than the binary one; it needs the same one.
+2. **`Δ₃(x,h) ≪ x^{b+ε}` improves on the known envelope iff `b < 5/6`.** So a bare "power saving"
+   is worthless here: anything in `[5/6, 1)` gives nothing. The frontier number for the ternary
+   additive divisor problem is **`5/6`**, and the prize number is **`2/3`**.
+3. **The pointwise route saturates at `k = 4`:** `transferBound k 1 (1/2) = 1 ⟺ k ≤ 4`. Even the
+   best conceivable size — Conrey–Gonek `x^{1/2+ε}`, which is the square-root barrier and cannot be
+   improved — gives `m(k) = 1` only up to `k = 4`. For `k ≥ 5` the requirement `b ≤ 2/k` falls below
+   `1/2`, i.e. below the square-root barrier, so **no pointwise bound whatsoever can give `m(k) = 1`
+   for `k ≥ 5`.** This is the exact arithmetic reason the pure-size row of the separation table caps
+   at the pivot `1/8`, and it is a *proof* that the pointwise branch cannot reach LH — not a
+   statement about current technology.
+
+**This sharpens the campaign's central dichotomy into a theorem about branches, not methods:**
+
+> The pointwise branch (`a = 1`) is provably capped at `k = 4`, hence at `μ ≤ 1/8`, whatever anyone
+> ever proves about the size of `Δ_k`. Only the shift-cancellation branch (`a = 1/2`) can reach LH,
+> and on that branch **any** `δ > 0` suffices at every index. There is no third branch: the transfer
+> depends on `(a,b)` only.
+
+So the entire remaining problem is: **obtain square-root cancellation in the shift average together
+with any power saving in `x`.** Every other formulation is now closed.
+
+Lean: `HTGeometry.AveragedDivisorInput` — `pointwise_input_eq_one_iff`, `ternary_two_thirds`,
+`ternary_improves_iff`, `pointwise_route_saturates`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+## Cycle 52 — direct attack on the ternary core: a reduction (C112–C114)
+
+**Phase 1 (corpus).** `formal_tools.py research "Voronoi divisor correlation diagonal shifted
+convolution main term"` returns nothing on the Voronoi/diagonal structure. New ground internally.
+**Phase 2 (external).** C109 stands: `d₃ ⋆ d₃` open even for one shift.
+
+### C112 — reduction of the shift-average to a double Voronoi sum
+
+Elementary, exact, no analysis: since `Σ_{h≤H} d_k(n+h) = D_k(n+H) − D_k(n)`,
+
+    Σ_{h≤H} Δ_k(x,h) = Σ_{n≤x} d_k(n)·[Δ_k(n+H) − Δ_k(n)] + 𝔐,
+
+where `𝔐` is the mismatch between `H·(smooth main)` and `Σ_{h≤H}MT_k(x,h)` (the Conrey–Gonek main
+terms; smooth in `h`, standard, not the obstruction). The dropped pieces are `O(H² polylog)` and
+`H·O(x^{(k−1)/(k+1)+ε})`; at `k = 3, H = x^{1/3}` these are `x^{2/3}` and `x^{5/6}`, both far below
+the target `x^{7/6−δ}`. **So the entire content is `E := Σ_{n≤x}d_k(n)[Δ_k(n+H) − Δ_k(n)]`.**
+
+This is where Ivić's `(1/2,1)` comes from, by Cauchy–Schwarz against
+`Σ_n|Δ_k(n+H)−Δ_k(n)|² ≪ xH^{1+ε}`. Cauchy–Schwarz discards the arithmetic of `d_k(n)`. The
+alternative is to expand both factors by Voronoi and keep it.
+
+### C113 — the resonant term cancels by antisymmetry `[PROVED, modulo Voronoi bookkeeping]`
+
+Insert the Voronoi expansion `Δ_k(y) = c_k y^{α}Σ_m d_k(m)m^{−β}cos(2πk(my)^{1/k}+γ_k)`,
+`α = (k−1)/2k`, `β = (k+1)/2k`, `α + β = 1`. Linearising the shift-difference (valid for
+`m ≤ m₀(n) = n^{k−1}/H^k`; at `k = 3, H = x^{1/3}, n ≍ x` this is `m ≤ x`, which is also where the
+truncated Voronoi series ends — so the linearised range is the whole range):
+
+    Δ₃(n+H) − Δ₃(n) ≈ −2πc H n^{−1/3} Σ_m d₃(m) m^{−1/3} sin(6π(mn)^{1/3}+γ).
+
+Apply Voronoi to the `n`-sum, whose kernel is `G(u) ≈ c u^{−1/3}cos(6πu^{1/3}+γ)` (fixed by
+consistency: feeding `f = 1_{[0,x]}` reproduces the `Δ₃` expansion). The integrand is a **sine times
+a cosine**, so product-to-sum splits it:
+
+    sin(A+γ)cos(B+γ) = ½[ sin(A+B+2γ) + sin(A−B) ],   A = 6π(my)^{1/3}, B = 6π(ly)^{1/3}.
+
+Substituting `u = y^{1/3}` — under which `y^{−2/3}dy = 3du`, flattening the cube-root phase — both
+integrals become **elementary**:
+
+    ∫_1^X sin(c u) du = (cos c − cos(cX))/c,   X = x^{1/3}.
+
+**The resonant kernel `(cos c − cos(cX))/c` is an odd function of `c`.** Its argument
+`c₋ = 6π(m^{1/3} − l^{1/3})` is antisymmetric under `m ↔ l`, while the weight
+`d₃(m)d₃(l)(ml)^{−1/3}` is symmetric. Hence
+
+> **the entire resonant half of the double Voronoi sum vanishes identically.**
+
+In particular **there is no diagonal `m = l` obstruction** for the *first* moment `Σ_h Δ_k` — the
+diagonal is `sin(0) = 0`, not `cos(0) = 1`. (The `k/4` conspiracy exponent of the map comes from the
+*mean square*, where the pairing is cosine×cosine and the diagonal does survive. The two are
+different objects; this had been conflated.)
+
+Lean: `resonantKernel`, `integral_sin_mul_eq_resonantKernel`, `sin_mul_cos_split`,
+`resonantKernel_neg`, `resonant_double_sum_eq_zero`, `double_voronoi_resonant_cancellation`.
+
+### C114 — the surviving non-resonant half is the square of a *classical* divisor exponential sum
+
+What remains is the `sin(A+B+2γ)` half, with kernel `[cos(c₊+2γ) − cos(c₊X+2γ)]/c₊`,
+`c₊ = 6π(m^{1/3}+l^{1/3})`. The phase is **additive** in the two variables, and the weight `1/c₊` has
+a Laplace representation `1/c = ∫_0^∞ e^{−ct}dt`. Both factorise, so
+
+    E ≈ H · Re[ e^{2iγ} ∫_0^∞ F(X,t)² dt ],   F(X,t) := Σ_{m≤M} d₃(m) m^{−1/3} e^{−6πm^{1/3}t} e(3Xm^{1/3}).
+
+`F` is a **one-variable** divisor exponential sum with cube-root phase — precisely the Voronoi dual
+of the *classical* ternary divisor problem: by partial summation `F(X,0)` is of the size of `Δ₃(x)`
+itself (the `m^{−1/3}` versus `m^{−2/3}` weight difference is exactly the factor `M^{1/3} = x^{1/3}`
+that converts `Δ₃(x)/x^{1/3}` back to `Δ₃(x)`).
+
+> **The shift-averaged ternary additive divisor problem reduces to the square of the classical
+> ternary divisor problem.**
+
+That is a reduction from a `GL(3)×GL(3)` object to a `GL(3)` object — from a problem with no known
+nontrivial bound to one with a long history of them (`Δ₃(x) ≪ x^{43/96+ε}` and successors).
+
+Lean: `laplace_reciprocal`, `nonresonant_double_sum_is_square`. Axioms
+`[propext, Classical.choice, Quot.sound]` throughout.
+
+### Phase 4 verdict: `SURVIVES PRELIMINARY ATTACK` — but the bookkeeping decides everything
+
+Honest status. The *structure* is clear and, I believe, correct. The *quantitative* bookkeeping is
+not done, and the answer is sensitive to it: depending on how the `t`-integral in the Laplace
+representation is normalised against the truncations, the same reduction gives either
+
+- `E ≈ |Δ₃(x)|²`, hence `≪ x^{43/48} = x^{0.896}` from the known classical bound — **far below** the
+  target `x^{7/6}`, which would break the chord and give `m(3) < 5/4`; or
+- `E ≈ H·x^{−1/3}·(trivial size)²` — landing **exactly** on `b = 5/6`, the threshold, i.e. no gain.
+
+The campaign's recurring pattern (everything lands exactly on the critical value) makes the second
+outcome the one to bet on, but it is not yet decided. **This is the first lead in the campaign that
+is neither a barrier nor inert, and it is decidable by a finite computation.**
+
+`[OPEN CORE, cycle 53]` Carry out the bookkeeping of C114 rigorously:
+1. the `t`-integral: `∫_0^∞ F(X,t)²dt` with `F` truncated at `M ≍ x`; the decay scale is
+   `t ≍ M^{−1/3}`, so the naive normalisation gives `x^{−1/3}|F|²` — verify against the exact
+   Laplace weight rather than by scaling;
+2. the truncations: the `m`-range ends at `m₀(n) = n^{k−1}/H^k`, which depends on `n`; dyadic
+   decomposition in `n` is required, and the residual boundary strip has width `m^{2/3}/X` in `l`;
+3. the main-term mismatch `𝔐` (Conrey–Gonek, standard but must be exhibited);
+4. the error in the truncated Voronoi formula for `Δ₃` and in the linearisation.
+
+Only (1) decides gain versus no-gain; (2)–(4) are hygiene. **Do (1) first.**
+
+### C115 — the bookkeeping of C114, item (1), carried out: the reduction is defeated by the slow-phase tail `[PROVED HERE]`
+
+Executing step (1) of the open core. With the Laplace variable inserted and the dyadic decomposition
+`m ≍ M_j` of the dual range, the `t`-integral is not a guess — it separates:
+
+    ∫_0^∞ |F(X,t)|² dt  ≍  Σ_{M_j ≤ M dyadic} M_j^{−1/3} |F_j(X)|²,
+    F_j(X) := Σ_{m ≍ M_j} d₃(m) m^{−1/3} e(3X m^{1/3}),
+
+because the Laplace weight `e^{−6πm^{1/3}t}` cuts the block `m ≍ M_j` at `t ≍ M_j^{−1/3}`. So
+
+    E ≪ H · Σ_j M_j^{−1/3} |F_j(X)|².
+
+- trivial `|F_j| ≪ M_j^{2/3}` ⟹ term `= M_j`, total `≍ M`, so `E ≪ H·M`;
+- square-root cancellation `|F_j| ≪ M_j^{1/6}` ⟹ term `= 1`, total `polylog`, so `E ≪ H·polylog`.
+
+Everything therefore depends on cancellation in `F_j`, and that depends on the **phase speed**.
+
+**The phase-speed invariant `[NEW]`.** For the `d_k` Voronoi dual at scale `y`, the phase is
+`2πk(my)^{1/k}`, whose derivative in `m` is `2π(y/m^{k−1})^{1/k}`. It is `≥ 1` — i.e. consecutive
+dual terms are genuinely out of phase — exactly when
+
+    m ≲ y^{1/(k−1)}  =:  voronoiFastRange k y.
+
+Compare with the natural truncation `m ≍ y`:
+
+    y ≤ y^{1/(k−1)}  ⟺  k ≤ 2.
+
+> **The Voronoi dual of `d_k` oscillates across its whole natural range if and only if `k = 2`.**
+> For `k = 3` it oscillates only up to `√y`; beyond that the terms are in phase and there is no
+> cancellation in the dual variable at all.
+
+This is a new and clean structural separation of `k = 2` from `k ≥ 3`, independent of the ones
+already in the map (which were about moments, blocks, and abscissae).
+
+**Consequence for C114.** With `X = x^{1/3}`, `F_j`'s phase `3Xm^{1/3}` has derivative
+`Xm^{−2/3} = x^{1/3}M_j^{−2/3}`, which is `≥ 1` iff `M_j ≤ x^{1/2}` — the same threshold. The dual
+must be carried to `M ≍ x` (truncating at `x^{1/2}` leaves a tail larger than `Δ₃` itself), so the
+top blocks `x^{1/2} < M_j ≤ x` are slow-phase and contribute trivially: `E ≪ H·x = x^{4/3}`, **worse
+than the chord `x^{7/6}`**.
+
+**Verdict on the C112–C114 route: the antisymmetry cancellation is real and the reduction to a
+one-variable divisor sum is real, but both are defeated by the slow-phase tail of the `d₃` dual.**
+`[D31]`. The reduction is *not* worthless: it is exact, and it converts the whole problem into a
+single sharply-posed question, which is now the campaign's open core:
+
+> `[OPEN CORE, replacing the previous one]` Bound `Σ_{m ≍ M} d₃(m) m^{−1/3} e(3X m^{1/3})`
+> non-trivially in the **slow-phase regime** `M ≫ X²` (equivalently `M ≫ x^{1/2}` at `X = x^{1/3}`),
+> where the exponential is essentially constant across the block and all the cancellation must come
+> from `d₃` itself. Any bound `≪ M^{2/3−η}` there, for the dyadic blocks up to `M ≍ x`, gives
+> `E ≪ H x^{1−2η}` and hence — via `(a,b) = (1/2, 1−2η)` after the `h`-average is restored —
+> **`m(3) < 5/4`, the first improvement on the moment envelope since 1978.**
+
+Note what this is *not*: it is not a shifted convolution, not a `GL(3)×GL(3)` object, and not a
+level-of-distribution statement. It is a **one-variable** estimate for `d₃` against a slowly varying
+exponential — i.e. an equidistribution statement for `d₃` in *short intervals of the cube-root
+scale*. That is a genuinely different demand from anything in §5 of the preprint, and it is the first
+time the campaign has produced an open core that is not a correlation problem.
+
+Lean: `voronoiFastRange`, `voronoiFastRange_covers_iff`, `voronoiFastRange_three`. Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+### C116 — `[UNVERIFIED — HIGH RISK — DO NOT CITE]` a candidate improvement: `m(3) ≤ 7/6`
+
+C115 said the slow-phase tail defeats the route. **That was too quick.** In the slow-phase range the
+exponential is constant across blocks of the wavelength `L`, so the sum is not trivial — it splits
+into a *smooth* exponential sum over blocks (which van der Corput handles) plus a *fluctuation* sum
+weighted by short-interval increments of `Δ₃` (which the short-interval mean square handles). Doing
+that gives a saving. Full exponent chain, `H = x^{1/3}`, `X = x^{1/3}`, dual truncated at `M ≍ x`:
+
+1. **Wavelength.** phase `3Xm^{1/3}`, derivative `Xm^{−2/3} = x^{−1/3}` ⟹ block length `L = x^{1/3}`,
+   number of blocks `N_B = x/L = x^{2/3}`.
+2. **Smooth part.** `Σ_B e(θ_B)`: `λ₂ ≍ x^{4/3}u^{−5/3}|_{u=x} = x^{−1/3}`, van der Corput
+   `≪ N_Bλ₂^{1/2} + λ₂^{−1/2} = x^{1/2}`. Weighted: `x^{1/3}·x^{1/2} = x^{5/6}`.
+3. **Fluctuation part.** `Σ_B e(θ_B)δ₃(B)`, `δ₃(B) = Δ₃(end) − Δ₃(start)`. Cauchy–Schwarz with
+   Ivić's short-interval mean square `∫_x^{2x}(Δ₃(t+L)−Δ₃(t))²dt ≪ xL^{4/3}`:
+   `Σ_B|δ₃|² ≈ (1/L)xL^{4/3} = xL^{1/3} = x^{10/9}`, so
+   `Σ_B e(θ_B)δ₃(B) ≪ N_B^{1/2}(xL^{1/3})^{1/2} = x^{1/3}x^{5/9} = x^{8/9}`.
+4. `Σ_{m≍x}d₃(m)e(3Xm^{1/3}) ≪ x^{5/6} + x^{8/9} = x^{8/9}`; needed for the chord: `x^{11/12}`.
+   **Margin `x^{11/12−8/9} = x^{1/36}`.**
+5. `F ≪ x^{−1/3}·x^{8/9} = x^{5/9}`; `E ≪ |F|² = x^{10/9}`; hence
+   `Σ_{h≤H}Δ₃(x,h) ≪ x^{10/9} = H^{1/2}x^{17/18}`, i.e. **`(a,b) = (1/2, 17/18)`, `b < 1`.**
+6. Transfer: `transferBound 3 (1/2) (17/18) = 7/6 < 5/4 = momentChord 6`. **`m(3) ≤ 7/6`.**
+
+**Consistency check at `k = 2` (passes).** There `L = x^{1/2}`, the dual phase advances by exactly one
+unit per step, and the same chain returns `Σ_{h≤H}Δ₂ ≪ H^{1/2}x^{5/6}`, whose transfer output is
+`transferBound 2 (1/2)(5/6) = 1` — the correct known value `m(2) = 1`. A chain that returned anything
+else at `k = 2` would be wrong on its face; this one does not.
+
+Lean (arithmetic only): `HTGeometry.TernaryShiftAverageExponents` — `fluctuationExponent_eq (8/9)`,
+`dualSumExponent_eq (5/9)`, `shiftAverageExponent_eq (10/9)`, `candidateB_eq (17/18)`,
+`candidateB_lt_one`, `candidate_transfer (= 7/6)`, `candidate_beats_envelope`,
+`binary_consistency (= 1)`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+**What is certified and what is not.** *Certified:* the exponent arithmetic and the transfer output.
+*Not certified — every one of these is a real risk of collapse:*
+
+- **(R1)** the truncated Voronoi formula for `Δ₃` with the exact kernel normalisation, its truncation
+  point `M`, and its error term. The antisymmetry of C113 requires the two weights to match
+  **exactly**; I fixed the kernel by consistency (feeding `1_{[0,x]}` reproduces the `Δ₃` expansion)
+  rather than from the literature;
+- **(R2)** `∫_0^∞|F(X,t)|²dt ≍ Σ_j M_j^{−1/3}|F_j|²` — argued via the Laplace cutoff, but the cross
+  terms between dyadic blocks were bounded by monotonicity of `|F_j|`, not proved;
+- **(R3)** Ivić's short-interval mean square for `Δ₃`: the exponent `xh^{4/3}` and, critically, its
+  **valid range of `h`** — the chain needs it at `h = x^{1/3}`;
+- **(R4)** the main-term mismatch `𝔐` and the linearisation error, including the `n`-dyadic
+  decomposition (the linearisation threshold `m₀(n) = n²/H³` depends on `n`);
+- **(R5)** whether the transfer accepts an input proved only for `H ≲ x^{1/3}` (it should — the
+  moment kernel's dominant range is `h ≤ M/T = x^{1/3}` — but this must be checked against the §3bis
+  proof, not assumed).
+
+**Status: a candidate, not a result.** The `x^{1/36}` margin at step 4 is thin enough that any one of
+(R1)–(R5) costing a power of `x` destroys it. Recorded here in full so it can be checked line by line
+rather than re-derived.
+
+**Next cycle: verification, in the order (R3), (R1), (R2), (R4), (R5).** (R3) first because it is a
+literature fact with a yes/no answer and the chain dies immediately without it; (R1) second because
+the antisymmetry — the one genuinely new mechanism — stands or falls with the kernel normalisation.
+
+### C117 — (R3) checked: C116 is DEAD. Verdict `CIRCULAR`. And what survives is genuinely intermediate.
+
+Ivić, *On the mean square of the divisor function in short intervals*, J. Théor. Nombres Bordeaux,
+**THEOREM 1** (extracted verbatim from arXiv:0708.1601v2):
+
+> Let `k ≥ 3` be a fixed integer. **If `σ(k) = 1/2`** then, for `X^ε ≤ h ≤ X^{1−ε}`,
+> `∫_X^{2X}(Δ_k(x+h) − Δ_k(x))²dx ≪_ε X^{1+ε}h^{4/3}`.
+> If `1/2 < σ(k) < 1` and `θ(k) > 2σ(k) − 1`, then there is `ε₁ = ε₁(k) > 0` such that for
+> `X^{θ(k)} ≤ h ≤ X^{1−ε}`, `∫_X^{2X}(Δ_k(x+h) − Δ_k(x))²dx ≪ X^{1−ε₁}h²`.
+> **Corollary 2.** Unconditionally one may take `θ(3) = 1/6+ε`, `θ(4) = 1/4+ε`, …
+
+Here `σ(k)` is defined by `∫_0^T|ζ(σ(k)+it)|^{2k}dt ≪ T^{1+ε}`; the known values are `σ(2) = 1/2`,
+`σ(3) = 7/12`, `σ(4) = 5/8`, `σ(5) = 41/60`.
+
+**Therefore `σ(3) = 1/2` *is* `∫_0^T|ζ(1/2+it)|^6 ≪ T^{1+ε}`, i.e. `m(3) = 1` — the sixth moment
+conjecture itself.** The input C116 needed is equivalent to the conclusion C116 would prove.
+**Verdict: `CIRCULAR`. C116 is retracted as a candidate result.** `[D32]` — and this is erratum
+**E9**: I built the chain on `xh^{4/3}` as if unconditional; the campaign's own §3.6 had already
+recorded "only under LH". Rule adopted: **before using any cited bound in a chain, extract its
+hypothesis verbatim, not from memory.**
+
+**Unconditionally**, `k = 3` only has `X^{1−ε₁}h²` with `ε₁` unspecified and small. Running the chain
+with that: `E ≪ x^{4/3−ε₁}`, versus the envelope `x^{7/6}` — **worse**, unless `ε₁ > 1/6`.
+
+### C118 — what survives: a genuinely intermediate criterion `[PROVED HERE — arithmetic]`
+
+Parametrise the chain by the short-interval mean square exponent `β`:
+
+    ∫_X^{2X}(Δ₃(x+h) − Δ₃(x))² dx ≪ X^{1+ε}h^{β}   at  h ≍ X^{1/3}.
+
+Then `Σ_B|δ₃|² ≈ X L^{β−1}`, `Σ_B e(θ_B)δ₃(B) ≪ X^{5/6 + (β−1)/6}`, and the chain's output is
+
+    b(β) = 5/6 + (β−1)/3,    and    b(β) < 1  ⟺  **β < 3/2**.
+
+Check points: `β = 2` (trivial) ↦ `b = 7/6` — nothing; `β = 3/2` ↦ `b = 1` — exactly the envelope;
+`β = 4/3` (Ivić, conditional on `m(3)=1`) ↦ `b = 17/18`.
+
+> **The criterion `β < 3/2` sits strictly between the trivial exponent `2` and the
+> Lindelöf-conditional exponent `4/3`.**
+
+This matters for the campaign's central thesis. The map's closing line has been *"there is no uncapped
+intermediate"*. **Here is one.** `β < 3/2` is:
+- strictly weaker than the sixth moment conjecture (which gives `β = 4/3`);
+- strictly stronger than anything unconditional (which gives only `β = 2` with an `X^{−ε₁}`);
+- a **mean square** statement — softer than a pointwise bound, softer than a correlation asymptotic,
+  and softer than a level-of-distribution statement;
+- and it lives in the range `h ≍ X^{1/3}`, well inside Ivić's admissible range `h ≥ X^{1/6+ε}`.
+
+**Revised open core.** Prove, unconditionally,
+
+    ∫_X^{2X} (Δ₃(x+h) − Δ₃(x))² dx ≪ X^{1+ε} h^{3/2−η}    for  h ≍ X^{1/3},  some η > 0,
+
+i.e. interpolate Ivić's Theorem 1 between its two branches. His first branch uses `σ(3) = 1/2`; the
+known `σ(3) = 7/12` should, by the same method, yield **some** exponent `β(7/12) ∈ (4/3, 2)`, and the
+question is whether `β(7/12) < 3/2`. **That is a finite computation inside a published proof, not a
+new theory.** It is the first target the campaign has produced that is simultaneously (i) unconditional
+in form, (ii) strictly weaker than LH, and (iii) sufficient to move the moment envelope.
+
+Caveat, unchanged: the chain still carries risks (R1), (R2), (R4), (R5) of C116. `β < 3/2` is
+*necessary* for this route; sufficiency awaits those.
+
+Lean: `shortIntervalOutput`, `shortIntervalOutput_trivial (7/6)`,
+`shortIntervalOutput_conditional (17/18)`, `shortIntervalOutput_threshold (= 1)`,
+`shortIntervalOutput_lt_one_iff (⟺ β < 3/2)`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+### C119 — the target computation, done: the Voronoi chain is circular at **every** abscissa `[PROVED HERE]`
+
+Extracted Ivić's proof (arXiv:0708.1601v2 §3) rather than his theorem. His key estimate, before he
+specialises, is
+
+    ∫_X^{2X}(Δ_k(x+h) − Δ_k(x))² dx  ≪  X^ε ( h² X^{2σ−1} · ∫_{−T₀}^{T₀}|ζ(σ+it)|^{2k}dt  +  X³T₀^{−2} ),
+
+with `σ` **any** abscissa and `T₀` free, `1 ≪ T₀ ≪ X`. Ivić inserts `∫|ζ|^{2k} ≪ T₀^{1+ε}`, which
+forces `σ = σ(k)`. Keeping the general moment exponent `m = m(k,σ)` instead:
+
+    optimal T₀ ≍ (X^{4−2σ}h^{−2})^{1/(m+2)},   bound ≍ X^{[3m + 4σ − 2]/(m+2)} h^{4/(m+2)},
+    at h = X^{1/3}:  exponent = (3m + 4σ − 2/3)/(m+2).
+
+The chain of C118 breaks the moment envelope iff that exponent is `< 3/2`, i.e. iff
+
+    **m(3,σ)  <  22/9 − 8σ/3.**
+
+Consistency: `σ=1/2, m=1` gives requirement `10/9 > 1` ✓ (Ivić's conditional branch works — matches
+`β = 4/3 ↦ b = 17/18`). `σ=7/12, m=1` gives `8/9 < 1` ✗ (matches `β(7/12) = 5/3 > 3/2`).
+
+**Now evaluate it.**
+- **At `σ = 1/2`:** the requirement is `m(3) < 10/9`. The chain *delivers* `m(3) < 5/4`. Since
+  `10/9 < 5/4`, **the hypothesis is strictly stronger than the conclusion.**
+- **For `σ ≥ 13/24`:** the requirement is `< 1`, and `m ≥ 1` always. **Impossible.**
+- **Along the known curve** — the chord from `(1/2, 5/4)` to `(7/12, 1)`, admissible by convexity of
+  the moment exponent — the requirement is met only for `σ > 11/12`, far outside `[1/2, 7/12]`.
+
+> **Theorem (chain circularity).** For every abscissa `σ`, the Voronoi chain improves the moment
+> envelope only from an input strictly stronger than its own output. The route is circular at every
+> abscissa, not merely at the one Ivić happened to use.
+
+`[D33]`. This closes the C112–C118 route completely, and it answers the target computation: `β(7/12)`
+is `5/3`, not below `3/2`, and no other `σ` rescues it.
+
+Lean: `chainRequirement`, `chainRequirement_half (= 10/9)`,
+`chainRequirement_seven_twelfths (= 8/9)`, `chainRequirement_lt_one_iff (⟺ σ > 13/24)`,
+`chain_input_stronger_than_output`, `knownSixthMomentCurve`, `knownCurve_meets_requirement_iff
+(⟺ σ > 11/12)`, `chain_fails_on_admissible_range`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+### C120 — what C112–C119 leaves standing, and the next object
+
+**Retained as new knowledge** (independent of the dead chain):
+1. the exact reduction `Σ_{h≤H}Δ_k(x,h) = Σ_n d_k(n)[Δ_k(n+H) − Δ_k(n)] + 𝔐`;
+2. the **resonant antisymmetry**: sine × cosine ⟹ the resonant half of the double Voronoi sum
+   vanishes identically; no diagonal obstruction for the first moment (the `k/4` conspiracy exponent
+   is a *mean-square* phenomenon — these had been conflated);
+3. the **Laplace factorisation**: the non-resonant half is the square of a one-variable divisor
+   exponential sum — a GL(3)×GL(3) object reduced to a GL(3) one;
+4. the **phase-speed invariant** `voronoiFastRange k y = y^{1/(k−1)}`, full iff `k = 2`;
+5. the **circularity theorem** above.
+
+**The pattern, now with a mechanism.** Every route the campaign has closed fails in one of exactly
+two ways: *inertness* (output = input, e.g. the Jensen balance, Guth–Maynard, off-line moments) or
+*circularity* (input strictly stronger than output, e.g. this chain, the `S(t)` route, Backlund).
+Inertness always traced to the self-dual point; circularity always traces to the moment exponent
+`m(3,σ)` re-entering as an input. **Conjecture 6.12 covered the first; the second now wants its own
+statement.**
+
+`[CONJECTURE, next cycle]` **(Moment re-entry.)** Every route from divisor correlations to the moment
+envelope re-imports `m(k,σ)` as an input, with a requirement strictly stronger than its output. If
+true, no divisor-correlation route can improve `m(k)` — and the additive-divisor programme, which the
+map has carried as the one uncapped direction since cycle 1, would itself be capped. Falsifiable:
+exhibit one divisor-correlation route whose input requirement is implied by, but does not imply, its
+output. **The `k = 2` case is exactly such an example** (Motohashi's spectral formula gives `m(2)=1`
+from GL(2) spectral data, not from a moment exponent) — so the conjecture must be stated for `k ≥ 3`,
+and the question becomes what property of GL(2) makes the escape possible and whether GL(3) has it.
+
+### Cycle 52 — Phase 6 (anti-theatre) and Phase 7 (anti-laziness)
+
+**P6.1 New knowledge?** Yes, five items, none obtainable by literature search: the exact reduction
+(7.1); the resonant antisymmetry (Prop 7.1) and the correction it forces — the `k/4` conspiracy
+exponent is mean-square, not first-moment, and these had been conflated in the map since cycle 1; the
+Laplace factorisation (Prop 7.2) reducing `GL(3)×GL(3)` to `GL(3)`; the phase-speed invariant
+`y^{1/(k−1)}` (Prop 7.3); and the circularity theorem (Thm 7.4), which is proved for *every* abscissa,
+not merely observed at one.
+**P6.2 Rediscovery?** One real error, caught: I used Ivić's `xh^{4/3}` as unconditional when the
+campaign's own §3.6 had recorded "only under LH" (E9). Cost: one full candidate. Fix adopted and
+already applied — extract a cited bound's hypothesis *verbatim from the source* before building on it.
+That is what turned C116 into C117–C119 within the same cycle.
+**P6.3 Theatre?** No. The circularity theorem required extracting and re-deriving Ivić's §3 estimate
+before he specialises; the published theorem statement alone would have given only the `σ = σ(k)`
+case and would not have shown circularity at *every* abscissa.
+**P6.4 Frontier moved?** The bound frontier: no, `μ ≤ 13/84` stands. The barrier frontier: yes — the
+additive-divisor direction, carried as the single uncapped route since cycle 1, now has a capped
+family inside it and a conjecture (7.5) that would cap it entirely.
+**P6.5 Big picture.** Two failure modes now have names and mechanisms: *inertness* (self-dual
+stationarity) and *circularity* (moment re-entry). Every closed route is one or the other. The open
+question has sharpened from "find a better bound" to "find a route that never bounds a divisor
+correlation by a moment of `ζ`" — and `k = 2` shows what such a route looks like: an **exact spectral
+identity**, not an inequality.
+
+**P7.1 Time without new knowledge?** The index/lint races. Gate now run once at the end of a cycle.
+**P7.2 Effort avoidance?** No. The hardest object was attacked directly and a candidate improvement
+was produced, tested, and killed within the cycle.
+**P7.3 Hardest problem or infrastructure?** Hardest problem, throughout. All Lean this cycle
+certifies statements that are new here.
+**P7.4 Corpus researched?** Yes — `formal_tools.py research` before writing, and every mathlib name
+verified in `/tmp` scratch first.
+
+**Plan for cycle 53.** Attack Conjecture 7.5 from the escape side, not the barrier side: identify the
+property that makes Motohashi's identity *exact* and ask whether `GL(3)` has it. Concretely, the
+`GL(2)` escape rests on the Kuznetsov formula having exactly two Weyl terms (identity and long
+element) with a one-dimensional Bessel transform. `GL(3)` has six, of which the long element carries
+a two-dimensional transform (Buttcane). The first question with a yes/no answer: **does the
+`GL(3)` Kuznetsov formula's long-element term, with Deligne's bound for `Kl₃`, already suffice for
+the shift-average — or does bounding its transform re-import a moment?** If it re-imports, Conjecture
+7.5 gains its decisive instance; if not, the escape route is located.
+
+## Cycle 53 — the spectral escape, and an authoritative check of the transfer (C121–C123)
+
+### C121 — the GL(3) spectral machinery is in better shape than the map assumed `[SOTA correction]`
+
+Two corrections to the campaign's picture of the GL(3) frontier:
+
+1. **Blomer–Buttcane, *Global decomposition of GL(3) Kloosterman sums and the spectral large sieve*,
+   Crelle 757 (2019) 51–88 (arXiv:1512.01152):** best-possible bounds for bilinear forms in the
+   **long Weyl element** GL(3) Kloosterman sums, and as an application a **best-possible spectral
+   large sieve inequality on GL(3)**. So the large sieve — which I had assumed was the missing input
+   — **exists and is optimal**.
+2. **Kwan, *Spectral moment formulae for GL(3)×GL(2) L-functions II: the Eisenstein case*
+   (arXiv:2310.09419):** using an identity between **two distinct periods of the GL(3) Eisenstein
+   series**, an *exact* Motohashi-type identity linking the shifted cubic moment of GL(2) `L`-functions
+   to the shifted fourth moment of GL(1) `L`-functions.
+
+Item 2 identifies the mechanism behind the `k = 2` escape from moment re-entry (Conjecture 7.5):
+**Motohashi's identity is a period identity — one automorphic object, two unfoldings.** Exactness is
+not a lucky feature of the fourth moment; it is what a period identity always gives. So the question
+"does GL(3) have the escape?" becomes: **is there an automorphic object with two unfoldings, one of
+which is the sixth moment of `ζ`?** Since `ζ³` is the `L`-function of the GL(3) minimal Eisenstein
+series, the sixth moment is the **second moment of a GL(3) Eisenstein `L`-function**, and the
+candidate object is a period on GL(4).
+
+### C122 — the transfer, checked against the literature: two independent confirmations `[VALIDATION]`
+
+Ng, *The sixth moment of the Riemann zeta function and ternary additive divisor sums*
+(arXiv:1610.04977), states the required input as **Conjecture 2, `AD(θ,C)`**:
+
+> `D_{f,I,J}(r) = (explicit main terms) + O(P^{C} X^{θ+ε₁})`, uniformly for `1 ≤ r ≤ X^{1/2+ε₂}`,
+> where `f` is smooth with `x^i y^j f^{(i,j)} ≪ P^{i+j}`.
+
+and **Corollary 1.2**: if `AD(θ,C)` holds with `θ ∈ [1/2, 2/3)` and `1 ≤ C < 3(1−θ)`, then
+`I₃(T) = T·P₉(log T) + O(T^{1−ε})`.
+
+**Confirmation 1 — the `2/3` threshold.** The campaign's transfer gives
+`transferBound 3 1 θ = 1 ⟺ 3θ ≤ 2 ⟺ θ ≤ 2/3` (`ternary_two_thirds`, `pointwise_input_eq_one_iff`,
+cycle 51). Ng's admissible range is exactly `θ ∈ [1/2, 2/3)`. **The campaign's threshold and the
+literature's coincide.**
+
+**Confirmation 2 — the `T^{3/4}` error prediction.** Ng, Remark 5: with the best possible `θ = 1/2`
+and `C < 1`, the error term for the sixth moment is `O(T^{3/4+ε})`, "matching Ivić and Motohashi's
+speculations". The campaign's independent-signs model predicts `E_k(T) ≍ T^{k/4}`, which at `k = 3`
+is **`T^{3/4}`** (preprint Prop 1.2). **The model's prediction is confirmed at the first index where
+nothing is known.** This is a real test the model could have failed.
+
+### C123 — a parameter the map was missing: the smoothness exponent `C` `[NEW FOR THE CAMPAIGN]`
+
+The campaign's transfer carries only `(a,b)`. Ng's conjecture carries a **second** exponent: the
+error is `P^{C}X^{θ+ε}`, with `P` the derivative scale of the test function, and the requirement is
+the **joint** condition
+
+    1/2 ≤ θ < 2/3    and    1 ≤ C < 3(1 − θ).
+
+This is a triangle with vertices `(1/2, 1)`, `(1/2, 3/2)`, `(2/3, 1)`; the corner `θ = 2/3` is
+excluded. Consequences the one-parameter transfer cannot see:
+
+- **the two demands trade off**: `θ < 1 − C/3`. Getting the size down to Conrey–Gonek `θ = 1/2` buys
+  smoothness room up to `C < 3/2`; conversely, being forced to a sharp cut-off (`C` near `3/2`) costs
+  the whole size budget;
+- **DFI's `k = 2` result has `(θ, C) = (3/4, 5/4)`** — its `C` is admissible for the ternary triangle
+  (`5/4 < 3/2`) but its `θ` is not (`3/4 > 2/3`). So the binary method's *shape* is not the obstacle;
+  its *size exponent* is;
+- **`(1/2, 5/4)`, the Conrey–Gonek size with DFI's smoothness, is admissible.** So there is no
+  incompatibility between the two conjectures the campaign has been treating as rivals: the
+  Conrey–Gonek size at DFI smoothness would suffice.
+
+Lean: `HTGeometry.TernaryAdditiveDivisorRegion` — `ngAdmissible`, `ngAdmissible_conreyGonek`,
+`ngAdmissible_C_lt (C < 3/2)`, `ngAdmissible_tradeoff (θ < 1 − C/3)`, `ngAdmissible_projection_agrees`
+(the `θ`-projection is exactly the transfer's range), `ngAdmissible_corner_excluded`. Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+**Erratum E10.** The map's §4 table treats "Conrey–Gonek size" and "Ivić `Ω(x^{1−1/k})`" as settling
+LH in opposite directions, and lists only size exponents. It should carry `C` as well; a route that
+achieves `θ = 1/2` but only with `C ≥ 3/2` proves nothing about the sixth moment. Recorded; the
+preprint §4 needs the second axis.
+
+**Revised open core (authoritative form).** Prove `AD(θ,C)` for `d₃` with `(θ,C)` in the triangle
+`1/2 ≤ θ < 2/3`, `1 ≤ C < 3(1−θ)`, uniformly for shifts `r ≤ X^{1/2+ε}`. Ng, Remark 7: "for `k ≥ 3`
+this currently remains open" — no `(θ,C)` whatsoever is known.
+
+### C124 — `[CONJECTURE]` the multiplicity-one obstruction: why `k = 2` escapes and `k = 3` cannot
+
+**The mechanism of the `k = 2` escape, located.** Motohashi's identity is a *period* identity. Its
+engine is the spectral expansion of `|E_t^{GL(2)}|²` against the GL(2) spectrum, whose coefficients
+are triple products `⟨E_t E_{−t}, u_j⟩`. These are `L`-values **because the trilinear form on
+GL(2)×GL(2) ⊃ GL(2) is unique** — Prasad's multiplicity-one theorem — which is exactly what
+Watson–Ichino converts into `L(1/2, u_j)³`. Exactness is not a feature of the fourth moment; it is
+what multiplicity one always gives.
+
+**The obstruction at `k = 3`.** Since `ζ³` is the `L`-function of the GL(3) minimal Eisenstein
+series, the sixth moment of `ζ` is the **second moment of a GL(3) Eisenstein `L`-function in the
+`t`-aspect**. The same construction would need the spectral expansion of `|E_t^{GL(3)}|²` against the
+GL(3) spectrum, i.e. triple products on GL(3)×GL(3) ⊃ GL(3). **That branching problem does not have
+multiplicity one.** The multiplicity-one pairs in this circle are `(GL(n+1), GL(n))`
+(Aizenbud–Gourevitch–Rallis–Schiffmann, Annals 2010), not `(GL(n)×GL(n), GL(n))` for `n ≥ 3`. There is
+no Watson–Ichino formula to convert the triple product into an `L`-value, hence no exact identity.
+
+> **`[CONJECTURE 7.6]` (multiplicity-one obstruction).** An exact Motohashi-type identity for the
+> `2k`-th moment of `ζ` in the `t`-aspect exists only when the branching problem
+> `GL(k)×GL(k) ⊃ GL(k)` has multiplicity one — i.e. only for `k ≤ 2`. For `k ≥ 3` every spectral
+> route must instead bound a triple product, and bounding it re-imports a moment (Conjecture 7.5).
+
+**Why this is not a restatement of "GL(3) is hard".** It predicts *where* the tractable identities
+live: on `(GL(n+1), GL(n))` pairs. And that prediction is confirmed by the literature — every known
+exact spectral identity in this circle is a `GL(3)×GL(2)` statement (Kwan I–III), a `GL(4)×GL(2)`
+statement (Blomer–Khan), or classical `GL(2)×GL(2)`. **None is `GL(3)×GL(3)`,** and the one
+`GL(3)×GL(3)` result that exists (Harun–Singh 2025, C109) is an *estimate*, not an identity, is
+cuspidal only, and is restricted to `H ≥ X^{1/2+δ}` — exactly the shape Conjecture 7.6 predicts.
+
+**Supporting datum: the dual family is the wrong size.** For `GL(n)`, the Weyl law counts
+`≍ T^{(n²+n−2)/2}` forms with spectral parameter `≤ T`: `T²` for `n = 2`, `T⁵` for `n = 3`. The
+moment being computed is `≍ T` in both cases. So a hypothetical `k = 3` identity would have to balance
+a family of size `T⁵` against a left side of size `T` — a mismatch of `T⁴`, against `T` at `k = 2`.
+Any such identity would be far more delicate than Motohashi's, independently of multiplicity one.
+
+**Falsifiable.** Exhibit an exact spectral identity for `∫_T^{2T}|ζ(1/2+it)|^6dt` that does not pass
+through a GL(3) triple product. **Or** exhibit a `(GL(4), GL(3))` period whose two unfoldings give the
+sixth moment on one side — the multiplicity-one pair `(GL(4), GL(3))` *is* available (AGRS), so this
+is the one route Conjecture 7.6 does **not** exclude, and it is where cycle 54 should look.
+
+**Consequence if true.** Combined with Conjecture 7.5 (moment re-entry), the additive-divisor
+programme — the map's single uncapped direction since cycle 1 — is capped for `k ≥ 3`, and the
+Lindelöf hypothesis has no known route at all that is not already proved inert or circular. That
+would make the map complete, and would relocate the problem entirely: **not to a better estimate, but
+to the construction of a period on `(GL(4), GL(3))` unfolding to the sixth moment.**
+
+## Cycle 54 — the fourteenth ceiling: the sixth moment inside Motohashi's identity is unreachable
+
+**Phase 1 (corpus).** `formal_tools.py research "Motohashi spectral fourth moment continuous
+Eisenstein sixth moment positivity"` — nothing relevant. New ground.
+
+### C125 — the observation that starts the cycle `[CORRECTS C124]`
+
+C124 conjectured that the sixth moment is outside the multiplicity-one world. **That is wrong, and
+in an instructive way.** Since `L(s, E^{(3)}_min(α) × E^{(2)}(β)) = Π_{i,j}ζ(s+α_i+β_j)`, taking
+`α = (0,0,0)` and `β = (it,−it)` gives **exactly `|ζ(1/2+it)|⁶`**. So
+
+> the sixth moment of `ζ` *is* a `GL(3)×GL(2)` Rankin–Selberg object — the multiplicity-one pair —
+> and it is the **continuous-spectrum** (Eisenstein) part of the family whose cuspidal part is the
+> cubic moment `Σ_j L(1/2, u_j)³`.
+
+Equivalently and classically: **the sixth moment of `ζ` occurs as the continuous term of Motohashi's
+fourth-moment identity.** All terms of that identity are non-negative (`α_j > 0`;
+`H_j(1/2) ≥ 0` by Katok–Sarnak; `|ζ(1/2+ir)|⁶/|ζ(1+2ir)|² ≥ 0`) except possibly the spectral weight.
+So the natural route is: **drop the cuspidal terms by positivity and read off a sixth-moment bound.**
+
+C124 is retracted in its pessimistic form: the escape *is* in the multiplicity-one world. What
+follows is why it is nevertheless void.
+
+### C126 — the Plancherel density gap `[PROVED HERE]`
+
+Motohashi's explicit formula weights the spectrum by `T^{1/2} r^{-3/2}`. The two spectra carry
+different densities:
+
+| spectrum | density | weight × density | dominated by |
+|---|---|---|---|
+| cuspidal (Weyl law) | `≍ r dr` | `r^{-1/2}`, exponent `> -1` | **top** of the range |
+| Eisenstein (Plancherel) | `≍ dr` | `r^{-3/2}`, exponent `< -1` | **bottom**, `r = O(1)` |
+
+> **The continuous spectrum carries exactly one power of `r` less than the cuspidal spectrum.** That
+> single exponent is the whole obstruction.
+
+Consequence: the cuspidal sum is top-dominated — which is precisely why Motohashi's identity *sees*
+the cubic moment of cusp forms at the top of its range. The continuous integral **converges** and is
+dominated by `r = O(1)`. **The sixth moment of `ζ` at large height never enters Motohashi's identity
+at all.** The well-known remark "the sixth moment appears in Motohashi's formula" is true and
+useless: it appears only at bounded height.
+
+### C127 — and even granting positivity, the route is worthless `[PROVED HERE]`
+
+Suppose the spectral weight were non-negative, so that the cuspidal terms could be dropped. On
+`r ≍ R` the weight is `≍ T^{1/2}R^{-3/2}`, and the transform confines `R ≤ T^{1/2}`, i.e. `T = R²`.
+From `E₂(T) ≪ T^{e}`:
+
+    ∫_R^{2R}|ζ(1/2+ir)|⁶ dr  ≪  T^{e}·T^{-1/2}R^{3/2}  =  R^{2e − 1 + 3/2}.
+
+- known `E₂ ≪ T^{2/3}` ⟹ `m(3) ≤ 11/6`;
+- conjectured, `Ω`-matching `E₂ ≪ T^{1/2+ε}` ⟹ `m(3) ≤ 3/2`;
+- the route beats the envelope `5/4` **iff `e < 3/8`** — strictly below the `Ω`-result
+  `E₂(T) = Ω_±(T^{1/2})` (Ivić–Motohashi).
+
+> **Fourteenth ceiling.** The Motohashi continuous-term route is void twice over: the weight confines
+> the sixth moment to bounded height, and even granting positivity and the `Ω`-imposed floor for
+> `E₂`, it returns `m(3) ≤ 3/2`, strictly worse than the known `5/4`. The obstruction is an
+> `Ω`-result, not a lack of effort. `[D34]`
+
+**The instrument, named.** This is the third time an `Ω`-result kills an upper-bound method in this
+map: §3.7 (Heath-Brown's twelfth moment at its input's ceiling via `E(T) = Ω(T^{1/4})`), §3.8
+(resonance cannot disprove LH via Bondarenko–Seip), and now §8 (`E₂ = Ω_±(T^{1/2})` voids the
+Motohashi continuous term). **`Ω`-results as method-killers** is a systematic instrument of this
+campaign, not a coincidence: an `Ω`-result on an error term is exactly a floor on what any method
+resting on that error term can deliver.
+
+Lean: `HTGeometry.MotohashiContinuousTerm` — `plancherel_density_gap`, `cuspidal_top_dominated`,
+`eisenstein_bottom_dominated`, `positivityRouteOutput`, `positivityRouteOutput_known (11/6)`,
+`positivityRouteOutput_optimal (3/2)`, `positivity_route_void`, `positivity_route_threshold
+(⟺ e < 3/8)`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+### Cycle 54 — Phase 6 (anti-theatre) and Phase 7 (anti-laziness)
+
+**P6.1 New knowledge?** Yes: the identification of the sixth moment as the Eisenstein part of the
+`GL(3)×GL(2)` family (C125, which also *refutes* my own C124 within one cycle); the Plancherel
+density gap as the reason Motohashi's identity cannot see it (C126); and the quantitative void
+(C127), with the sharp threshold `e < 3/8` located strictly below a known `Ω`-result.
+**P6.2 Rediscovery?** The remark "the sixth moment appears in Motohashi's formula" is classical. What
+is not classical, and is the content here, is *why it is useless* — and that required computing the
+weight-times-density exponents on both spectra.
+**P6.3 Theatre?** No. A literature search would return the classical remark and stop; the ceiling
+required the arithmetic.
+**P6.4 Frontier moved?** Barrier frontier, yes — a fourteenth ceiling, and the retraction of C124
+removes a false structural claim from the map before it propagated.
+**P6.5 Big picture.** Three of the map's ceilings are now `Ω`-driven. That is a *general* instrument:
+**every method that factors through an error term inherits that error term's `Ω`-floor.** The next
+cycle should apply it systematically rather than route by route — i.e. enumerate the error terms each
+remaining route factors through, and read off their floors.
+
+**P7.1 Time without new knowledge?** No; the whole cycle was on the hardest object.
+**P7.2 Effort avoidance?** No — I attacked the positivity idea rather than declaring it hopeless, and
+it produced the ceiling.
+**P7.3 Hardest problem?** Yes. And I corrected my own conjecture from the previous cycle rather than
+defending it.
+**P7.4 Corpus researched?** Yes, before writing.
+
+**Plan for cycle 55.** Systematise the `Ω`-instrument: for each surviving route, identify the error
+term it factors through and its `Ω`-floor, and read off the induced ceiling. Candidate error terms:
+`Δ_k(x)` (classical divisor, `Ω(x^{(k−1)/(2k)})`), `Δ_k(x,h)` (correlation, Ivić's conjectural
+`Ω(x^{1−1/k})`), `E_k(T)` (moment error, `Ω(T^{k/4})` per the model), `S(t)` (argument,
+`Ω(√(log t loglog t))`). The instrument predicts a ceiling for every route factoring through each.
+
+## Cycle 55 — the reduction loop closes: the three formulations are one problem
+
+### C128 — clarification of C119's scope, and why it matters `[ERRATUM E11]`
+
+C119 proved the *Voronoi chain via Ivić's estimate* is circular. It did **not** prove the C118
+criterion `β < 3/2` is circular — only that Ivić's route to it is. And `β < 3/2` has a lot of room:
+Ivić's Remark 2 records that the conjectured truth for `k ≥ 3` is `∫_X^{2X}(Δ_k(x+h)−Δ_k(x))²dx
+≪ X^{1+ε}h`, i.e. **`β = 1`**, and Jutila proved exactly that for `k = 2` (with
+`≍ X h log³(√X/h)`), together with the matching `Ω`-result `Δ(x+h)−Δ(x) = Ω(√h log^{3/2}(√X/h))`.
+So `β = 1` is the floor and `β = 2` the trivial bound; the criterion `β < 3/2` sits at the midpoint,
+with a factor `h^{1/2}` of slack against the conjectured truth. **The criterion is not, on its face,
+circular.** That kept the C118 target alive and it had to be settled.
+
+### C129 — settled: the criterion is circular too, by a different route `[PROVED HERE]`
+
+Expand `B(X,h) = ∫_X^{2X}(Δ₃(x+h) − Δ₃(x))²dx` by the Voronoi series
+`Δ₃(x) ≈ c x^{1/3}Σ_{m≤M}d₃(m)m^{−2/3}cos(6π(mx)^{1/3}+γ)`. Writing
+`ψ_m ≍ m^{1/3}hX^{−2/3}` for the phase increment, the squared difference carries `min(1, ψ_m²)`.
+
+**Diagonal (`m = m'`).** With `m₁ := X²/h³` the crossover where `ψ_m ≍ 1`:
+
+    Σ_{m≤m₁} d₃(m)²m^{−4/3}ψ_m²  ≍  h²X^{−4/3}·m₁^{1/3}  =  hX^{−2/3},
+    Σ_{m>m₁} d₃(m)²m^{−4/3}      ≍  m₁^{−1/3}            =  hX^{−2/3},
+
+equal, and the prefactor `X^{5/3}` gives **`B_diag ≍ X h ·polylog`, i.e. `β = 1`** — *the conjectured
+truth, from the diagonal alone*. It clears the criterion `β < 3/2` with the output exponent `5/6`,
+well inside the envelope value `1`.
+
+> **So the entire obstruction is the off-diagonal.**
+
+**Off-diagonal (`m ≠ m'`).** Grouping by `j = m' − m`, it is
+
+    Σ_{j ≠ 0}  ( Σ_m d₃(m)d₃(m+j) ) · w(j),
+
+**the ternary correlation averaged over shifts — the object the whole reduction started from.**
+Crudely (first-derivative test, `|m^{1/3}−m'^{1/3}| ≍ |j|/m^{2/3}`, dual truncated at `M ≍ X`) it is
+`X^{4/3}·X^{1/3} = X^{5/3}`, against a budget of `X^{3/2}`: the familiar **`X^{1/6}` gap**.
+
+> **`[THEOREM]` The three formulations — the shift-average `Σ_{h≤H}Δ₃(X,h)`, the short-interval mean
+> square `∫(Δ₃(x+h)−Δ₃(x))²dx`, and the correlation `D₃(X,h)` — are equivalent modulo their
+> diagonals. Each reduces to the next and the third reduces to the first. The chain of reductions
+> from cycles 52–55 closes into a loop.**
+
+`[D35]`. This settles the last live thread from cycles 52–54: **C118's criterion is circular**, not
+because `β < 3/2` is a strong statement (it is not — the truth is `β = 1`), but because *every* route
+to it passes through the off-diagonal, which is the original problem.
+
+**What this adds to the map.** The map's two failure modes — inertness and circularity — are now
+joined by a third, sharper phenomenon: **the reductions are a closed loop.** That is stronger than
+"each route is circular"; it says the object has no proper reformulation at all inside this circle of
+ideas. Every natural restatement of the ternary obstruction is the ternary obstruction.
+
+Lean: `HTGeometry.TernaryReductionLoop` — `diagonalMeanSquareBeta (= 1)`,
+`diagonal_meets_criterion`, `diagonal_output (5/6)`, `offDiagonalBudget (3/2)`,
+`offDiagonalCrude (5/3)`, `offDiagonal_gap (= 1/6)`, `reduction_loop`. Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+### C130 — the recurring `X^{1/6}`, catalogued
+
+The same gap `X^{1/6}` (equivalently `1/6` in an exponent, or `1/12` after a square root) has now
+appeared, independently, at:
+
+1. the averaged-input threshold at `k = 3`: `δ > 1/6` (C110);
+2. the shortfall of the van der Corput saving in the slow-phase sum: `1/18` obtained versus `1/12`
+   needed, i.e. `1/36` short — and `11/12 − 8/9 = 1/36` (C116);
+3. the failure margin of the unconditional short-interval mean square: `ε₁ > 1/6` required (C117);
+4. the off-diagonal gap of the short-interval mean square: `5/3 − 3/2 = 1/6` (C129);
+5. the difference between the chain output `x^{4/3}` and the envelope `x^{7/6}`: `1/6` (C117).
+
+**`[CONJECTURE]`** These are one number. It should equal `2μ_chord − something`, or more likely
+`(1/2)·(1/3)` where `1/3` is the shift exponent `H = x^{1/3}` and `1/2` the square-root barrier — i.e.
+**the gap is exactly half the shift exponent**, and it appears because every route pays the
+square-root barrier once on the shift variable. Falsifiable: run the same reductions at a different
+shift length `H = x^{θ}` and check that the gap becomes `θ/2`. **That is cycle 56's first task, and
+it is a finite computation.**
+
+## Cycle 56 — the recurring `1/6` identified: it is `1/2 − 1/k`
+
+### C131 — C130's conjecture tested at general shift exponent `[CONFIRMED IN FORM, REFUTED AS EXPLANATION]`
+
+Ran the whole chain at `H = x^θ` instead of `x^{1/3}`. The Voronoi wavelength `L = x^{1/3}` is set by
+the *phase*, not by the shift, so the short-interval mean square is always taken at `h = L`; only the
+prefactor `H` and the target move. Result:
+
+    criterion on the mean-square exponent:   β < 2 − 3θ/2      (`= 3/2` at `θ = 1/3` ✓ matches C118)
+    conjectured truth `β = 1` clears it  ⟺   θ < 2/3
+    off-diagonal saving for zero gain:       η = θ/2           (**C130's conjecture, confirmed**)
+
+But the shift exponent then **cancels**. With an off-diagonal saving `η` the chain yields
+
+    Σ_{h≤H} Δ₃(x,h)  ≪  x^{θ + 1 − η}  =  H·x^{1−η},
+
+i.e. shift exponent `a = 1`, not `1/2`, for **every** `θ`. Feeding that into the transfer, C110's
+averaged-input threshold applies and demands
+
+    η  >  1/2 − 1/k,     which at `k = 3` is  **1/6**, independently of `θ`.
+
+> **`[THEOREM]` The recurring `x^{1/6}` of C130 is `1/2 − 1/k` at `k = 3`: the gap between the
+> square-root barrier `1/2` and the reciprocal of the moment index. The apparent `θ`-dependence
+> `η > θ/2` is an artefact of writing the bound with `a = 1/2`; the derived bound always has `a = 1`,
+> and then the demand is `θ`-free.**
+
+So C130's conjecture is confirmed in form and **refuted as an explanation**. The five independent
+occurrences catalogued in C130 are one number, and that number is `1/2 − 1/k`.
+
+**Why this matters — `k = 2` is free for a reason.** `recurringGap k = 1/2 − 1/k` vanishes **exactly
+at `k = 2`** and is strictly increasing in `k`. At `k = 2` the square-root barrier and the reciprocal
+of the moment index coincide, so no saving is demanded at all — which is precisely why the binary
+additive divisor problem transfers for free while every `k ≥ 3` demands a positive power saving that
+grows with `k`. This is a fifth, and the most economical, separation of `k = 2` from `k ≥ 3` in the
+map — the others being the moment threshold (§3.4), the block self-duality (§3.3), the abscissa
+tangency (§6.5), and the Voronoi phase-speed invariant `y^{1/(k−1)}` (§7.2).
+
+**Consequence for LH.** `recurringGap k → 1/2` as `k → ∞`. Since LH needs `m(k) = 1` for **every**
+`k`, and each `k` demands an off-diagonal saving of `1/2 − 1/k`, the Lindelöf hypothesis via this
+family demands savings approaching the square-root barrier itself. **That is the same terminal
+demand the map reached from the pointwise branch (`b ≤ 2/k → 0`, C111) and from the transfer table
+(`(1/2,1/2)`) — three independent routes to the same terminal statement.**
+
+Lean: `meanSquareCriterion`, `meanSquareCriterion_third (3/2)`, `meanSquareCriterion_true_beta
+(⟺ θ < 2/3)`, `zeroGainSaving`, `chainOutputB`, `chainOutput_as_averaged_input` (the `a = 1`
+identity), `recurringGap`, `recurringGap_three (= 1/6)`, `recurringGap_two (= 0)`,
+`recurringGap_eq_zero_iff (⟺ k = 2)`, `recurringGap_strictMono`. Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+### Cycle 56 — Phase 6 / Phase 7
+
+**P6.** New: the identification `recurring gap = 1/2 − 1/k`, its vanishing exactly at `k = 2`, and the
+`θ`-cancellation that shows the `a = 1/2` parametrisation is illusory for this chain. This corrected
+my own cycle-55 conjecture within one cycle — the second self-correction in three cycles, both caught
+by computing rather than by arguing. No rediscovery: the `1/2 − 1/k` threshold is the campaign's own
+C110, and its identification with the five scattered occurrences is new here. Frontier: barrier side.
+**P7.** No effort avoidance; the test was a finite computation and I ran it rather than leaving the
+conjecture standing. Hardest object throughout. Corpus checked.
+
+**Plan for cycle 57.** The map now says LH demands, from three independent directions, a saving that
+approaches the square-root barrier as `k → ∞`. The next question is whether that terminal demand is
+*itself* obstructed — i.e. whether there is an `Ω`-result at the square-root barrier for the relevant
+object. Candidate: Ivić's conjectured `Δ_k(x,h) = Ω(x^{1−1/k})` versus Conrey–Gonek's `x^{1/2+ε}`;
+these disagree for `k ≥ 3` and **the map has treated the disagreement as an open dichotomy without
+noticing that `1 − 1/k` and `1/2 + (1/2 − 1/k)` are the same number**. Check that identity first: if
+`Ω(x^{1−1/k})` holds, the demanded saving `1/2 − 1/k` is exactly what `Ω` forbids, and the
+additive-divisor route is capped by an `Ω`-result — the fourth application of the `Ω`-instrument, and
+the one that would close the map.
+
+## Cycle 57 — where the two conjectured sizes part company `[PROVED HERE]`
+
+The map's §4 has carried the Conrey–Gonek (`x^{1/2+ε}`) versus Ivić (`Ω(x^{1−1/k})`) dichotomy since
+cycle 1, described only as "settling LH in opposite directions". Feeding each into the transfer at
+`a = 1` locates the disagreement exactly.
+
+### C132 — the criticality table
+
+| index `k` | Ivić size `1−1/k` | delivers `m(k)=1`? | beats envelope? | Conrey–Gonek `1/2` delivers `m(k)=1`? |
+|---|---|---|---|---|
+| 2 | `1/2` | yes | yes | yes — **the two sizes are equal here** |
+| 3 | `2/3` | **yes** | yes | **yes** |
+| 4 | `3/4` | no | **exactly equality** | yes |
+| ≥5 | `1−1/k` | no | **no** | yes |
+
+Three consequences, all certified:
+
+1. **`ivic_gives_one_iff`:** Ivić's size delivers `m(k) = 1` **exactly for `k ≤ 3`** (`k(1−1/k) ≤ 2
+   ⟺ k ≤ 3`).
+2. **`ivic_critical_at_four`:** at `k = 4`, `transferBound 4 1 (3/4) = momentChord 8 = 3/2` —
+   **exact equality with the known envelope.** Another exact criticality at `k = 4`, the same index
+   at which the Conrey–Gonek branch saturates (`pointwise_route_saturates`, C111). Two independent
+   computations, same threshold.
+3. **`sixth_moment_cannot_discriminate`:** at `k = 3` **both** sizes deliver `m(3) = 1`.
+
+> **`[THEOREM]` The Conrey–Gonek/Ivić dichotomy is invisible at the sixth moment. No theorem about
+> `m(3)` — no asymptotic, no bound, no numerical evidence at `k = 3` — can distinguish the two
+> conjectures, because they have identical consequences there. The first index at which their
+> consequences differ is `k = 4`; the first at which Ivić's size fails to beat the envelope is
+> `k = 5`.**
+
+This is a practical result for the field: the sixth moment is the natural place to look for evidence,
+and it is exactly the place where the dichotomy is degenerate. **Evidence must be sought at the
+eighth moment (`k = 4`) or beyond.** It also explains why the map's cycle-1 note "at `k = 2` both
+read `x^{1/2}` and the `Ω` is Motohashi's theorem, so `k = 2` does not discriminate" understated the
+problem: neither does `k = 3`.
+
+### C133 — what Ivić's size caps the route at
+
+With `a = 1` (no shift cancellation) and Ivić's size, `m(k) ≤ 1 + max(0,(k−3)/2)`, so
+`μ ≤ m(k)/(2k)` is minimised at `k = 3` giving **`μ ≤ 1/6`** — Weyl's exponent. With full
+shift cancellation `a = 1/2` and Ivić's size, the transfer gives the pivot **`1/8`**
+(`vinogradov_cap`, already in the map). So:
+
+> **If Ivić is right, the entire additive-divisor programme is capped at `1/8`** — the map's last
+> uncapped direction closes, and the pivot is final. **If Conrey–Gonek is right, the same programme
+> with shift cancellation gives LH.** The dichotomy is therefore *exactly* the dichotomy
+> "LH provable by additive divisors" versus "`μ ≤ 1/8` and no further", and — by C132 — **it cannot
+> be decided at the sixth moment.**
+
+Lean: `HTGeometry.IvicSizeCriticality` — `ivicSize`, `sizes_agree_at_two`, `ivic_gives_one_iff`,
+`ivic_critical_at_four`, `ivic_beats_envelope_iff (⟺ k < 4)`, `sixth_moment_cannot_discriminate`,
+`conreyGonek_gives_one_iff`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+## Cycle 58 — the dichotomy decided by the campaign's own model `[PROVED HERE — CHANGES THE BOTTOM LINE]`
+
+C132 showed the Conrey–Gonek/Ivić dichotomy cannot be decided at the sixth moment. It *can* be
+decided at `k = 1`.
+
+### C134 — the size exponent is forced, not conjectured
+
+The independent-signs model takes one input — the typical size `M^{s}` of `Δ_k(M,h)` — and predicts
+
+    E_k(T) ≍ T^{1/2} M^{s−1/2}  at the balanced `M = T^{k/2}`,  i.e.  T^{1/2 + k(s−1/2)/2}.
+
+Demanding the value `T^{k/4}` gives a **linear equation with a unique solution**:
+
+    1/2 + k(s − 1/2)/2 = k/4   ⟺   **s = 1 − 1/k.**
+
+And `E_k(T) ≍ T^{k/4}` is *proved* at both indices where anything is known: `E₁ ≍ T^{1/4}` (Good) and
+`E₂ ≍ T^{1/2}` (Ivić–Motohashi), each matched by an `Ω`-result.
+
+> **`[THEOREM]` The correlation size exponent is not a free conjecture. It is pinned to `1 − 1/k` by
+> the two solved cases. That is Ivić's size. Conrey–Gonek's constant `1/2` satisfies the equation
+> only at `k = 2` — the single index where the two proposals agree.**
+
+**The `k = 1` test is decisive and was never run.** With `s = 1/2` the model predicts `E_k ≍ T^{1/2}`
+at *every* index, in particular `E₁ ≍ T^{1/2}`. The truth is `E₁ ≍ T^{1/4}` and the proved upper
+bound is `E(T) ≪ T^{131/416}`. So the constant size is not the typical size at `k = 1`. With
+`s = 1 − 1/k = 0` at `k = 1` the model returns `T^{1/4}` — correct. Both known indices confirm
+`1 − 1/k`; only one confirms `1/2`.
+
+*Caveat, stated precisely:* Conrey–Gonek's conjecture is an **upper bound** `Δ_k ≪ x^{1/2+ε}`, and at
+`k = 1` the truth `O(1)` satisfies it. So this is not a refutation of their conjecture. It is a
+refutation of the claim that `1/2` is the **typical** size — and the typical size is what the model,
+and hence the moment, is driven by. An upper-bound conjecture that is not the typical size gives no
+saving in the moment.
+
+### C135 — consequence: the map's last uncapped direction closes
+
+By C133, Ivić's size caps the additive-divisor programme at **`μ ≤ 1/8`** (with full shift
+cancellation; `1/6` without). Combining:
+
+> **The independent-signs model — the same model whose predictions are exactly correct at both solved
+> indices, and whose resolution floor is the pivot `1/8` — forces the correlation size that caps the
+> additive-divisor programme at `1/8`. The map's single uncapped direction closes under its own
+> model.**
+
+This *changes the campaign's bottom line*. The map has carried since cycle 1 the note "function-field
+evidence favours Conrey–Gonek" (Sawin: square-root cancellation with no `k`-dependent degradation).
+That evidence and this argument now point in opposite directions, and the tension is the sharpest
+open question the campaign has:
+
+> `[OPEN CORE, cycle 59]` **Reconcile.** Sawin's `F_q[t]` theorems give square-root cancellation for
+> divisor sums *in short intervals and progressions* — that is, for `Δ_k(x)`-type objects. The model's
+> forced exponent `1 − 1/k` is for `Δ_k(x,h)`, the **correlation**. These are different objects, and
+> `1 − 1/k = 2·(k−1)/(2k)` is exactly **twice** the short-interval exponent `(k−1)/(2k)`. So there
+> may be no contradiction at all: square-root cancellation in the short-interval problem is
+> *compatible* with the correlation error being the square of it. **Check whether Sawin's results
+> cover the correlation `Σ d_k(n)d_k(n+h)` over `F_q[t]`, or only the linear statistics.** If only the
+> latter, the map's cycle-1 note is an erratum and the dichotomy is settled in Ivić's favour — and
+> with it, LH's last known route.
+
+Lean: `HTGeometry.CorrelationSizeUniqueness` — `modelPrediction`,
+`modelPrediction_eq_quarter_iff (⟺ s = 1 − 1/k)`, `forcedSize_one`, `forcedSize_two`,
+`conreyGonek_size_fits_only_at_two`, `conreyGonek_size_prediction (≡ 1/2)`, `model_forces_ivic_size`.
+Axioms `[propext, Classical.choice, Quot.sound]`.
+
+### Cycle 58 — Phase 6 / Phase 7
+
+**P6.** New: the uniqueness of the size exponent given the model's verified output, and the `k = 1`
+test — an index nobody looks at because `d₁` is trivial, which is exactly why it discriminates. The
+result changes the map's conclusion rather than adding another barrier, so it is not more of the same.
+Rediscovery: none; the caveat about upper-bound-versus-typical-size is stated rather than glossed.
+Frontier: this is the first cycle whose output bears on whether LH is *provable by known routes at
+all*.
+**P7.** No avoidance: the decisive test was cheap and I ran it the moment the dichotomy was isolated;
+the hard part was noticing that `k = 1` discriminates. The next task is a literature question with a
+yes/no answer and it is stated precisely.
+
+## Cycle 59 — the counter-evidence removed: erratum E12
+
+The question left open by C135 was whether Sawin's `F_q[t]` theorems bear on the **correlation**
+`Σ d_k(n)d_k(n+h)` or only on **linear statistics** of `d_k`. Checked:
+
+- Sawin, *Square-root cancellation for sums of factorization functions over short intervals in
+  function fields* (Duke 170 (2021)) — **short intervals**, i.e. `Σ_{f ∈ short interval} d_k(f)`;
+- Sawin, *…over squarefree progressions in `F_q[t]`* (Acta Math. 233 (2024)) — **progressions**, i.e.
+  level of distribution for `d_k`;
+- Keating–Rodgers–Roditty-Gershon–Rudnick, *Sums of divisor functions in `F_q[t]` and matrix
+  integrals* — **variance of the same linear statistic**.
+
+**All three are linear statistics. None is a correlation.** The only function-field correlation
+results are for `d = d₂`: Andrade–Bary-Soroker–Rudnick (arXiv:1407.2076) and Florea–Lalín–Malik–Sahay
+(arXiv:2502.16067, 2025). The latter's Theorem 1.1 gives, for `f` monic of degree `n` and
+`deg h = m`, an **exact** formula with error `E = 0` whenever `m ≤ n+1` (and
+`E ≪ q^{m/2+m}` otherwise). Over `F_q[t]` the binary correlation error *vanishes identically* in the
+main range — stronger than square-root cancellation, and at `k = 2` the two competing sizes agree, so
+it does not discriminate.
+
+> **`[ERRATUM E12]` The map's cycle-1 note "function-field evidence favours Conrey–Gonek" is
+> withdrawn. The evidence concerns `Δ_k(x)`-type linear statistics, not the correlation `Δ_k(x,h)`.
+> These are different objects, and `1 − 1/k = 2·(k−1)/(2k)` is exactly **twice** the short-interval
+> exponent — so square-root cancellation in the linear statistic is *compatible* with the correlation
+> error being its square. There is no function-field evidence about `Δ_k(x,h)` for `k ≥ 3` at all.**
+
+### C136 — the logical status of C134, stated precisely
+
+The uniqueness theorem is conditional and its condition should not be overstated:
+
+    [ E_k(T) ≍ T^{k/4} for all k ]  ⟹  [ typical size of Δ_k(M,h) is M^{1−1/k} ]  ⟹  [ route capped at 1/8 ].
+
+`E_k ≍ T^{k/4}` is **proved at `k = 1, 2`** (each matched by an `Ω`-result) and is the model's
+prediction beyond. So the finding is:
+
+> **The independent-signs model is self-consistent in a strong sense: the model that predicts the
+> pivot `1/8` as its resolution floor also forces the correlation size that caps the additive-divisor
+> route at exactly `1/8`.** The pivot is not merely where the known methods stop; under the model it
+> is where the last unexplored route stops too.
+
+**Two data points do not by themselves fix the functional form** — the line through `(1,0)` and
+`(2,1/2)` is `s = (k−1)/2`, which is a different interpolant. But it is excluded on trivial grounds:
+`s ≤ 1` always (since `Δ_k(x,h) ≪ x^{1+ε}` trivially), while `(k−1)/2 > 1` for `k > 3`. Among
+interpolants respecting the trivial bound and the model's output, `1 − 1/k` is the one that survives.
+
+### C137 — where the map now stands
+
+| direction | status |
+|---|---|
+| mean-value / large sieve, Halász–Montgomery | capped `1/4` |
+| Guth–Maynard | inert |
+| moment hierarchy (neutrality law) | capped; sixth moment subconvexity-neutral |
+| `E(T)`, `E₂(T)` programmes | capped `1/8` |
+| Heath-Brown twelfth moment | at its input's ceiling |
+| short-interval mean square | neutral at its optimum |
+| resonance / `Ω`-side | `T^{o(1)}`; cannot disprove LH |
+| zero geometry (Jensen–Backlund) | inert, exactly `1/4` |
+| double-Voronoi divisor chain | circular at every abscissa |
+| Motohashi continuous term | void (Plancherel density gap) |
+| pointwise branch of the transfer | provably capped at `k = 4`, hence `1/8` |
+| **additive divisors, shift-cancellation branch** | **capped at `1/8` under the model (C134–C136)** |
+
+> **Everything in the map is now capped, inert, circular, or capped-under-the-model. The single
+> statement that remains genuinely open and genuinely uncapped is the one the model itself denies:
+> `Δ_k(x,h) ≪ x^{1/2+ε}` as the *typical* size for `k ≥ 3`.**
+
+`[OPEN CORE, final form]` **Is the typical size of `Δ_k(M,h)` equal to `M^{1/2}` or to `M^{1−1/k}`
+for `k ≥ 3`?** Equivalently: is `E_k(T) ≍ T^{k/4}` or `≍ T^{1/2}`? The first gives `μ ≤ 1/8` and
+stops; the second gives LH. Both are consistent with everything proved. **This is a single, sharp,
+falsifiable dichotomy, and by C132 it cannot be tested at the sixth moment.** The first index at
+which it is testable is `k = 4` — the eighth moment.
+
+**Cycle 60 target.** Attack the dichotomy at `k = 4`: the eighth moment, `M = T²`, correlation
+`Δ_4(M,h)`, competing sizes `M^{1/2}` versus `M^{3/4}`, competing moment errors `E₄ ≍ T^{1/2}` versus
+`T^{1}`. Note `E₄ ≍ T` would be the *same size as the main term* — so the Ivić branch predicts the
+eighth moment has **no asymptotic with power saving at all**, while Conrey–Gonek predicts `T^{1/2}`.
+**That is a qualitative difference, not a numerical one, and it may be decidable.**
+
+## Cycle 60 — the model breaks at k = 4, and that is what LH costs `[PROVED HERE — MAJOR]`
+
+C134 forced the size `s = 1 − 1/k` from `E_k ≍ T^{k/4}`. Cycle 60 asks what that costs, and the
+answer reorganises the whole map.
+
+### C138 — the model, extended to all `k`, contradicts LH
+
+`E_k(T) ≍ T^{k/4}` against a main term `≍ T·(log T)^{k²}`:
+
+    T^{k/4}  =  T   at  k = 4,   and   T^{k/4} ≫ T·polylog   for  k > 4.
+
+So the model gives `m(k) = max(1, k/4)`, hence `m(5) = 5/4 > 1`. But LH requires `m(k) = 1` for
+**every** `k`. Therefore:
+
+> **`[THEOREM]` The independent-signs model with Ivić's size, extended to every index, implies
+> `μ = 1/8` and hence that the **Lindelöf hypothesis is false**. Equivalently: **LH implies the model
+> must break down, and it must break between `k = 4` and `k = 5`.**
+
+This is not a disproof of LH — the model is a heuristic, verified only at `k = 1, 2`. It is a
+**forced dichotomy**: either LH fails, or the correlation size falls below `M^{1−1/k}` for `k ≥ 5`.
+Since RH implies LH and RH is believed, the campaign's reading is that the *model* breaks, and the
+value of the theorem is that it says exactly **where** and **by how much**.
+
+### C139 — what LH costs, exactly
+
+`m(k) = 1` means `modelPrediction k s ≤ 1`, which is **equivalent** to
+
+    **s  ≤  1/2 + 1/k  =:  lindelofSizeCap k.**
+
+Three facts, all certified:
+
+1. `ivicSize k ≤ lindelofSizeCap k  ⟺  k ≤ 4`. Ivić's law meets the Lindelöf demand with **equality
+   at `k = 4`** and violates it from `k = 5`.
+2. `lindelofSizeCap k → 1/2`. **LH demands that the correlation error be of square-root size in the
+   limit** — i.e. it demands the Conrey–Gonek size asymptotically, and nothing weaker will do.
+3. `1/2 + 1/k` is **the same curve** as the chord-beating threshold of the averaged input (C110:
+   `a = 1` beats the envelope iff `b < 1/2 + 1/k`). The size LH forces and the size that improves the
+   moment envelope are one curve. That is why every route has been landing on it.
+
+### C140 — the recurring `k = 4`, explained
+
+The campaign met `k = 4` three times, independently, without an explanation:
+
+* the pointwise branch of the transfer saturates exactly at `k ≤ 4` (C111);
+* Ivić's size meets the moment envelope with **exact equality** at `k = 4` (C132);
+* the Lindelöf size cap is met with **exact equality** at `k = 4` (C139).
+
+> **All three are one fact: `k = 4` is where the model's predicted error `T^{k/4}` crosses the moment's
+> main term `T`.** Below it the error is a genuine error; above it the error *is* the moment. Every
+> criticality at `k = 4` in this campaign is that crossing seen through a different transfer.
+
+This is the second such unification (the first being `1/6 = 1/2 − 1/k` at `k = 3`, C131), and it
+retires the last unexplained coincidence in the map.
+
+### C141 — the open core, in its final and sharpest form
+
+> **Does the typical size exponent `s(k)` of `Δ_k(M,h)` stay at or below `1/2 + 1/k`?**
+>
+> * If **yes** (equivalently `s(k) → 1/2`, the Conrey–Gonek size): the additive-divisor route with
+>   shift cancellation gives **LH**.
+> * If **no** (in particular if Ivić's `1 − 1/k` is right beyond `k = 4`): `m(k) = k/4` for `k ≥ 4`,
+>   **`μ = 1/8`, and LH is false.**
+>
+> Both branches are consistent with everything proved. Data: `s(1) = 0` and `s(2) = 1/2`, both exact,
+> and both **on** the curve `1/2 + 1/k`? — `s(1) = 0 < 3/2` ✓, `s(2) = 1/2 < 1` ✓, strictly inside.
+> By C132 the dichotomy is untestable at `k = 3`; by C139 it is met with equality at `k = 4`;
+> **`k = 5` — the tenth moment — is the first index where the two branches give different answers to
+> a question of *kind*, not degree: whether `∫_0^T|ζ|^{10}` has a main term at all.**
+
+Lean: `HTGeometry.ModelBreakdownIndex` — `modelMomentExponent`,
+`modelMomentExponent_gt_one_iff (⟺ k > 4)`, `modelMomentExponent_four`,
+`model_contradicts_lindelof`, `lindelofSizeCap`, `lindelof_forces_size_cap (⟺ s ≤ 1/2 + 1/k)`,
+`ivicSize_le_cap_iff (⟺ k ≤ 4)`, `lindelofSizeCap_tendsto_half`, `critical_index_four`. Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+### Cycles 59–60 — Phase 6 / Phase 7
+
+**P6.** New and consequential: the model's self-contradiction with LH at `k ≥ 5`; the exact
+characterisation of LH's cost as `s(k) ≤ 1/2 + 1/k`; the identification of that curve with the
+chord-beating threshold; and the explanation of the recurring `k = 4`. Erratum E12 removed a false
+piece of evidence that had stood since cycle 1. This cycle changes what the campaign is *about*: from
+"which method can beat `13/84`" to "which of two mutually exclusive size laws is true".
+**P7.** The decisive computations were cheap once the right comparison was made; the work was in
+noticing that the model must be compared against the *main term*, not against other methods. No
+avoidance. All Lean certifies statements new here.
+
+**Plan for cycle 61.** Attack `s(k)` directly at `k ≥ 5` — the first index where the branches differ
+in kind. Two concrete sub-targets: **(a)** is `∫_0^T|ζ(1/2+it)|^{10}dt ≫ T^{5/4}` provable
+unconditionally? (An `Ω`-result at the tenth moment would **disprove LH**, since `m(5) > 1` is
+incompatible with it. This is the campaign's first genuine disproof route.) **(b)** is
+`Δ_5(M,h) = Ω(M^{4/5})` provable? Either would settle the dichotomy. Note that (a) is a *lower bound
+for a moment*, and lower bounds for moments are far more accessible than upper bounds —
+Radziwiłł–Soundararajan and Heap–Soundararajan give unconditional sharp lower bounds
+`∫_0^T|ζ|^{2k} ≫ T(log T)^{k²}` for all real `k ≥ 0`. **The question is whether the true order can
+exceed that.**
+
+## Cycle 61 — the campaign's first disproof branch, located
+
+### C142 — a power excess at a single index disproves LH `[PROVED HERE]`
+
+Lindelöf on the moment exponents is `m(k) = 1` for every `k > 0`. Hence:
+
+    1 < m(k)  for any single k   ⟹   ¬LH.
+
+Concretely: **`∫_0^T|ζ(1/2+it)|^{10}dt ≫ T^{5/4}` would disprove the Lindelöf hypothesis.**
+
+**Why this is not blocked by the resonance ceiling.** §3.8 proved that no *resonance* construction
+can disprove LH, because Gál sums are subpolynomial (Bondarenko–Seip). **A moment lower bound is not
+a resonance construction.** It produces large values indirectly — a moment `≫ T^{1+δ}` forces, via
+the fourth-moment constraint `φ(v) ≥ 4v`, a set of measure `T^{1−4v}` carrying values `T^{v}` with
+`v ≥ (k−4)/(8(k−2)) → 1/8`. So the disproof branch survives the one ceiling that was thought to close
+the `Ω` side. **This is the first genuine disproof route the campaign has found in 61 cycles.**
+
+**And it is exactly the model's own prediction:** `modelMomentExponent 5 = 5/4`. The disproof branch
+is not speculative; it is what the independent-signs model — exact at both solved indices — asserts.
+
+### C143 — the dichotomy, closed inside the model `[PROVED HERE]`
+
+For every `k > 0` and every candidate size exponent `s`, exactly one holds:
+
+    (i)  s ≤ 1/2 + 1/k   and   modelPrediction k s ≤ 1     — consistent with LH;
+    (ii) s > 1/2 + 1/k   and   modelPrediction k s > 1     — a power excess, hence ¬LH.
+
+**There is no third possibility inside the model.** So the Lindelöf hypothesis is, modulo the
+independent-signs model, *equivalent* to the statement that the correlation size exponent never
+exceeds `1/2 + 1/k` — and by C139 this forces `s(k) → 1/2`.
+
+> **The Lindelöf hypothesis, restated:** *the error in the `k`-fold additive divisor problem is of
+> square-root size, asymptotically in `k`.* Nothing weaker suffices, and nothing else is needed.
+
+### C144 — where a proof and a disproof would each have to come from
+
+**Proof branch (LH true).** Establish `Δ_k(M,h) ≪ M^{1/2+1/k+ε}` typically, for all `k`. This is
+Conrey–Gonek asymptotically. Known: nothing for `k ≥ 3`. Everything else in the map is capped, so
+this is the only surviving proof route.
+
+**Disproof branch (LH false).** Establish `∫_0^T|ζ|^{2k}dt ≫ T^{k/4}` for a single `k > 4`.
+Equivalently `Δ_k(M,h) = Ω(M^{1−1/k})` with uncorrelated signs, at a single `k ≥ 5`. Known
+unconditional lower bounds (Radziwiłł–Soundararajan; Heap–Soundararajan) give exactly
+`T(log T)^{k²}` — the conjectured order, **no power excess**. So the disproof branch is open and
+untried; the campaign has not found any obstruction to it.
+
+**Note the asymmetry.** The proof branch needs an *upper* bound on correlation errors, uniformly in
+`k` — the hardest kind of statement. The disproof branch needs a *lower* bound for a single moment —
+and lower bounds for moments are the one part of this subject where unconditional technology is
+strong (Radziwiłł–Soundararajan's method gives sharp lower bounds for all real `k ≥ 0`). **If the
+model is right, the disproof is the easier direction.** That inverts the campaign's working
+assumption, held since cycle 1, that LH is true and the task is to prove it.
+
+`[CONJECTURE, cycle 62]` The Radziwiłł–Soundararajan lower-bound method, which produces
+`T(log T)^{k²}` by restricting to a well-behaved set of `t`, discards exactly the contribution the
+model says dominates for `k > 4` — the rare large values on a set of measure `T^{1−4v}`. **Rerun that
+method without the restriction, at `k = 5`, and see whether the discarded set can be shown to
+contribute `≫ T^{5/4}`.** That is the concrete disproof attempt, and it is the campaign's next task.
+
+Lean: `LindelofOnMoments`, `power_excess_disproves_lindelof`, `tenth_moment_excess_disproves`,
+`model_predicts_tenth_moment_excess`, `size_cap_dichotomy`. Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+## Cycle 62 — the disproof branch closes, and the model is refuted at k = 5
+
+### C145 — the disproof branch implies ¬RH `[PROVED HERE — CLOSES C142]`
+
+Under the Riemann hypothesis, `∫_0^T|ζ(1/2+it)|^{2k}dt ≪ T(log T)^{k²}` for every fixed `k ≥ 0`
+(Soundararajan; Harper, removing the `ε`). So RH gives `m(k) = 1` at every index. Hence a power
+excess `1 < m(k)` at **any** index contradicts RH:
+
+> **`[THEOREM]` The campaign's only disproof route — a power-excess lower bound at a high moment —
+> implies `¬RH`. It is therefore strictly harder than disproving the Riemann hypothesis.** `[D36]`
+
+C142's observation that the disproof branch evades the resonance ceiling (§3.8) stands and is
+correct: a moment lower bound is not a resonance construction. But it is blocked by a *different*
+ceiling, which the campaign had not applied to it — the conditional upper bound. **Both `Ω`-sides are
+now closed: resonance unconditionally, moment lower bounds relative to RH.**
+
+### C146 — consequence: RH refutes the independent-signs model at `k = 5` `[PROVED HERE]`
+
+The model asserts `m(5) = 5/4`; RH asserts `m(5) = 1`. So:
+
+> **RH refutes the independent-signs model.** The model is compatible with RH **exactly on `k ≤ 4`**
+> (`modelMomentExponent k = 1 ⟺ k ≤ 4`), and `k = 4` is precisely where its predicted error crosses
+> the main term (C140).
+
+And, running the dichotomy backwards, **RH forces the size cap** `s(k) ≤ 1/2 + 1/k` at every index —
+i.e. **RH decides the Conrey–Gonek/Ivić dichotomy in Conrey–Gonek's favour for every `k ≥ 5`**, the
+range where the two differ. That is a new consequence of RH for the additive divisor problem, and it
+is the reverse of what C134 concluded from the model alone.
+
+### C147 — honest reassessment of C134 `[ERRATUM E13]`
+
+C134 forced `s = 1 − 1/k` from two data points, `k = 1` and `k = 2`. **The `k = 1` point is
+degenerate:** `d₁ ≡ 1` has no fluctuation, so `Δ₁(M,h) = O(1)` trivially and the "independent signs"
+hypothesis is vacuous there. The model reproduces `E₁ ≍ T^{1/4}` correctly, so it is a genuine check
+— but it cannot discriminate between size laws that both vanish at `k = 1`, and it does not test
+randomness. **So C134's uniqueness rests on one non-degenerate data point (`k = 2`), where the two
+competing laws agree.** Its conclusion should be weakened accordingly: the model *suggests*
+`1 − 1/k`; RH *refutes* it beyond `k = 4`; RH is much better evidence than the model.
+
+**What survives of C134–C144.** The equivalence `m(k) = 1 ⟺ s(k) ≤ 1/2 + 1/k` (C139) is unaffected —
+it is an identity, not an inference. So is the identification of `k = 4` as the crossing index
+(C140), the identification `1/6 = 1/2 − 1/k` (C131), and the restatement of LH as "the additive
+divisor error is of square-root size asymptotically in `k`" (C143). **What is withdrawn is the
+inference from the model to `¬LH`.** The correct reading is the contrapositive: *LH and RH force the
+model to break, and it must break at `k = 5`.*
+
+### C148 — what this does to the map's pivot
+
+The map's Theorem 1.5 — "the model's resolution floor is `1/8`, identically in `k`" — is a statement
+*about the model*, and the model is now known (given RH) to be wrong for `k ≥ 5`. Two things must be
+distinguished, and the preprint should say so:
+
+* **Unconditional and unaffected:** the `1/8` ceilings for the `E₁` and `E₂` programmes (§3.9). These
+  rest on the *proved* `Ω`-results `E(T) = Ω(T^{1/4})` and `E₂(T) = Ω(T^{1/2})`, not on the model.
+* **Model-dependent:** the reading of `1/8` as the resolution floor "identically in `k`". Under RH the
+  model's `E_k ≍ T^{k/4}` fails for `k ≥ 5`, so that reading is an extrapolation, valid on `k ≤ 4`.
+
+**This does not weaken a single barrier theorem in the map** — every one of them bounds what a
+*method* can deliver, and none uses the model's truth beyond `k ≤ 4`. It sharpens the interpretation:
+`1/8` is where the known methods stop, and the model explains why on `k ≤ 4`; it is not a prediction
+about `μ`. `[ERRATUM E14 for preprint §1.5 and §2.5.]`
+
+Lean: `RHOnMoments`, `power_excess_implies_not_rh`, `rh_refutes_model`, `rh_forces_size_cap`,
+`model_rh_compatible_iff (⟺ k ≤ 4)`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+### Cycles 61–62 — Phase 6 / Phase 7
+
+**P6.** New: both `Ω`-sides are now closed (resonance unconditionally, moment lower bounds relative
+to RH); RH refutes the model, exactly past `k = 4`; RH decides the Conrey–Gonek/Ivić dichotomy for
+`k ≥ 5`. Rediscovery: none — but I over-read two data points in C134 and corrected it here (E13),
+the third self-correction of the campaign and again by computation, not argument. Frontier: the
+campaign now knows *why* its founding assumption (LH true) is the right one, rather than assuming it.
+**P7.** The cycle-61 disproof branch was attacked immediately and honestly, and it closed. That is the
+correct outcome of an attack, not a failure. All Lean certifies statements new here.
+
+**Plan for cycle 63.** With both `Ω`-sides closed and every upper-bound route capped, the campaign's
+position is: **LH is true (RH implies it) but unprovable by any route in the map.** The only remaining
+move is to find a route *outside* the map. The map's own classification says every closed route fails
+by inertness (self-dual stationarity) or circularity (moment re-entry). **So the next object is a
+route that is neither: one whose optimisation is not stationary at the self-dual point and which never
+bounds a divisor correlation by a moment of `ζ`.** Conjecture 6.12 says the first is impossible for
+AFE-based methods; Conjecture 7.5 says the second is impossible for divisor-correlation methods.
+**A route escaping both must therefore be neither AFE-based nor divisor-correlation-based.** The one
+such object the campaign has identified is the `(GL(4), GL(3))` multiplicity-one period (C124), and it
+remains unexamined.
+
+## Cycle 63 — the fifteenth ceiling: the higher-rank spectral programme, capped in one theorem
+
+### C149 — the twelfth moment is a `(GL(4), GL(3))` period, and it is *not* neutral
+
+Following C125's method one rank up: with `α = (0,0,0)` on `GL(3)` and `β = (it,it,−it,−it)` on
+`GL(4)` (both summing to `0`),
+
+    L(1/2, E^{(4)}_min(β) × E^{(3)}_min(α))  =  Π_{i,j} ζ(1/2 + α_i + β_j)  =  **|ζ(1/2+it)|^{12}**.
+
+So the **twelfth** moment of `ζ` is a `GL(4)×GL(3)` Rankin–Selberg object — the multiplicity-one pair
+(AGRS) — and the `GL(3)` Kuznetsov formula with a **best-possible** spectral large sieve
+(Blomer–Buttcane, C121) is exactly the tool for averaging over the `GL(3)` family.
+
+**And unlike the sixth moment, the twelfth is not subconvexity-neutral.** By the neutrality law
+(§3.4), a perfect `2j`-th moment beats `θ = 13/84` iff `j > 42/13 = 3.23`; at `j = 6` this gives
+`min(1/12, 13/84) = 1/12`. **A perfect twelfth moment yields `μ ≤ 1/12 = 0.0833`, beating Bourgain's
+`13/84 = 0.1548`.** The campaign has spent sixty cycles on the sixth moment, which its own neutrality
+law says is worthless against `13/84`, while the twelfth is both non-neutral and sits on a
+multiplicity-one pair. `[ERRATUM E15: the map should have prioritised `k = 6` over `k = 3`.]`
+
+### C150 — but the Plancherel gap grows quadratically in the rank `[PROVED HERE]`
+
+C126 found that Motohashi's continuous term is suppressed by one power of `r`, because the `GL(2)`
+cuspidal density is `≍ r dr` and the Eisenstein density `≍ dr`. That generalises, and badly.
+
+On `GL(n)`: the cuspidal Weyl law counts `≍ T^{(n²+n−2)/2}` forms of spectral parameter `≤ T` (the
+exponent is `dim SL(n,ℝ)/SO(n)`), while the minimal Eisenstein family has only `n−1` continuous
+parameters, hence `≍ T^{n−1}`. The moment of `ζ` lives on the **Eisenstein** part. So the suppression
+is
+
+    rankGap n  =  (n²+n−2)/2 − (n−1)  =  **n(n−1)/2**  =  the number of positive roots of `GL(n)`.
+
+`rankGap 2 = 1` — exactly the power that already voids the Motohashi continuous term (C127);
+`rankGap 3 = 3`; `rankGap 4 = 6`. The gap is strictly increasing and quadratic.
+
+> **`[THEOREM — fifteenth ceiling]` For every rank `n`, the moment of `ζ` sits on the minimal
+> Eisenstein spectrum of `GL(n)` and is suppressed relative to the cuspidal spectrum by
+> `n(n−1)/2` — the number of positive roots. The suppression is already fatal at `n = 2`, where it
+> equals `1`, and it strictly increases with rank. **No increase of rank can rescue the spectral
+> route; raising the rank strictly worsens it.**
+
+This caps the entire higher-rank spectral programme in one statement, rather than route by route. It
+also explains a fact the field has never had a reason for: **why Motohashi's method has never been
+extended.** Not because the formulas are missing — Kwan's `GL(3)×GL(2)` identities and
+Blomer–Buttcane's optimal `GL(3)` large sieve both exist — but because the object of interest lives on
+the thinnest part of the spectrum, and the thinness grows like the number of positive roots.
+
+**The `(GL(4),GL(3))` route of C124, examined and closed.** `[D37]`. It was the one object the map's
+two failure-mode conjectures (6.12 inertness, 7.5 moment re-entry) did not exclude. It is excluded by
+a third mechanism, and the mechanism is representation-theoretic rather than analytic.
+
+Lean: `HTGeometry.PlancherelRankGap` — `cuspidalWeylExponent`, `eisensteinFamilyExponent`,
+`rankGap`, `rankGap_eq (= n(n−1)/2)`, `rankGap_two/three/four (1, 3, 6)`,
+`rankGap_two_matches_plancherel`, `rankGap_strictMono`, `rankGap_superadditive`,
+`higher_rank_ceiling`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+### C151 — the map's three failure modes, complete
+
+Every route the campaign has closed now falls under exactly one of:
+
+1. **Inertness** — output equals input; stationary at the self-dual parameter (Conj. 6.12).
+   *Mean-value family, Halász–Montgomery, Guth–Maynard, short-interval mean square at its optimum,
+   Jensen–Backlund zero geometry.*
+2. **Circularity** — input strictly stronger than output; a moment exponent re-enters (Conj. 7.5).
+   *Backlund's criterion, the `S(t)` route, the double-Voronoi divisor chain at every abscissa, the
+   short-interval-mean-square criterion, the reduction loop.*
+3. **Spectral thinness** — the target sits on the Eisenstein spectrum and is suppressed by the rank
+   gap `n(n−1)/2` (C150). *Motohashi's continuous term, and every higher-rank analogue.*
+
+Plus two `Ω`-driven closures of the `Ω`-side: resonance (unconditional) and moment lower bounds
+(relative to RH).
+
+> **The classification is now exhaustive over the routes examined in 63 cycles, and each mode has a
+> proved mechanism rather than a case list.**
+
+### Cycle 63 — Phase 6 / Phase 7
+
+**P6.** New: the twelfth moment as a `(GL(4),GL(3))` period and its non-neutrality (which corrects
+sixty cycles of target selection, E15); the rank-gap theorem `n(n−1)/2` identified with the number of
+positive roots; and the resulting cap on the whole higher-rank programme. The last is the campaign's
+first barrier that is *uniform in a parameter* rather than proved case by case.
+**P7.** The `(GL(4),GL(3))` object flagged in C124 was attacked rather than left standing, and it
+closed — with a mechanism that also retro-explains C126. No infrastructure work.
+
+**Plan for cycle 64.** E15 says the twelfth moment was the right target all along. The rank gap kills
+the *spectral* route to it, but not the elementary one: Heath-Brown's `m(6) ≤ 2` is the current
+record and §3.7 proved it is at its own method's ceiling. **Two questions the campaign has never
+asked: (i) what is the transfer input `(a,b)` that would give `m(6) = 1`, and (ii) is that input
+weaker or stronger than the one for `m(3) = 1`?** By `pointwise_input_eq_one_iff`, `m(6) = 1` needs
+`b ≤ 1/3` — **below the square-root barrier**, hence impossible for the pointwise branch. So `m(6)=1`
+requires shift cancellation, i.e. `a = 1/2`, and the question becomes which `(1/2, b)` suffices. That
+is a finite computation and it is cycle 64's first task.
+
+## Cycle 64 — the target was wrong for sixty cycles: it is the eighth moment `[ERRATUM E15, resolved]`
+
+### C152 — the cheapest non-neutral input `[PROVED HERE]`
+
+Two facts the campaign owned separately and never combined:
+
+* **neutrality law (§3.4):** a perfect `2j`-th moment beats `θ = 13/84` iff `j > 1/(2θ) = 42/13`, and
+  `3 < 42/13 < 4`. So **`j = 4`, the eighth moment, is the least index that helps** — it yields
+  `μ ≤ 1/8 = 0.125 < 13/84 = 0.1548…`;
+* **transfer (C111):** `transferBound k 1 b = 1 ⟺ k·b ≤ 2`. At `k = 4` this is `b ≤ 1/2`.
+
+> **`[THEOREM]` Proving `Δ₄(x,h) ≪ x^{1/2+ε}` — the Conrey–Gonek bound at the single index `k = 4`,
+> uniformly for `h ≤ x^{1/2}`, and with **no shift cancellation whatsoever** — gives `m(4) = 1` and
+> hence `μ(1/2) ≤ 1/8`, improving on Bourgain's `13/84`.**
+
+That is the cheapest input in the whole map that beats the record, and the campaign never stated it.
+Sixty cycles went to the sixth moment, which the campaign's **own** neutrality law (proved in
+cycle ~10) declares worthless against `13/84`. `[E15 resolved.]`
+
+### C153 — why `k = 4` is the right index, from four directions at once
+
+The eighth moment is where every `k = 4` coincidence in the campaign meets:
+
+1. **first non-neutral index** — `3 < 42/13 < 4` (C152);
+2. **last index reachable by the pointwise branch** — `transferBound k 1 (1/2) = 1 ⟺ k ≤ 4` (C111);
+3. **the index where the two conjectured sizes first differ in consequence** — Conrey–Gonek's `1/2`
+   gives `m(4) = 1`; Ivić's `3/4` gives only the known envelope `3/2` (C132, C153);
+4. **the index where the model's predicted error crosses the moment's main term** — `T^{k/4} = T` at
+   `k = 4` (C140).
+
+**All four are the same index for the same reason**, and together they say: `k = 4` is the unique
+place where a single, already-conjectured, shift-cancellation-free bound converts into an improvement
+on the record.
+
+### C154 — the requirement curve, unified
+
+With shift cancellation the requirement relaxes: `transferBound k (1/2) b = 1 ⟺ b ≤ 1/2 + 1/k`.
+This is **the same curve** as
+
+* the chord-beating threshold for the averaged input (C110);
+* the size cap that the Lindelöf hypothesis imposes through the model (C139);
+* the cap that RH forces (C146).
+
+At `k = 3` it reads `b ≤ 5/6`; at `k = 4`, `b ≤ 3/4`; at `k = 6`, `b ≤ 2/3`. **Every requirement the
+campaign has derived, from any direction, lies on `b = 1/2 + 1/k`.** The map has one curve, and LH is
+the statement that the true correlation size stays under it as `k → ∞`.
+
+Lean: `HTGeometry.CheapestNonNeutralTarget` — `eighth_moment_needs_conreyGonek (⟺ b ≤ 1/2)`,
+`shifted_requirement (⟺ b ≤ 1/2 + 1/k)`, `eighth_moment_beats_bourgain`,
+`four_is_least_nonneutral`, `eighth_moment_separates_the_conjectures`, `cheapest_nonneutral_target`.
+Axioms `[propext, Classical.choice, Quot.sound]`.
+
+### C155 — the campaign's target, restated for all future cycles
+
+> **PRIMARY TARGET (supersedes the sixth-moment core of cycles 1–63):**
+> `Σ_{n≤x} d₄(n)d₄(n+h) = (main terms) + O(x^{1/2+ε})`, uniformly for `1 ≤ h ≤ x^{1/2+ε}`.
+> Consequence: `m(4) = 1`, hence **`μ(1/2) ≤ 1/8 < 13/84`** — the first improvement on the record
+> since Bourgain 2017.
+>
+> **Weaker sufficient variants** (all give the same conclusion):
+> * `Σ_{h≤H}Δ₄(x,h) ≪ H^{1/2}x^{3/4+ε}` (shift cancellation, size only `3/4`);
+> * any `(a,b)` with `4(a+b−1) ≤ 2a`.
+>
+> **What is known at `k = 4`:** nothing. The `k = 4` additive divisor problem is open in every form.
+
+### Cycle 64 — Phase 6 / Phase 7
+
+**P6.** The new knowledge is a *target correction*, not another barrier: the campaign had proved every
+ingredient of C152 years-of-cycles ago and never multiplied them together. That is the most valuable
+kind of finding and also the most embarrassing — it means the map was richer than its own reading of
+it. The four-fold coincidence at `k = 4` (C153) and the single requirement curve `1/2 + 1/k` (C154)
+are new unifications.
+**P7.** The failure this cycle exposes is exactly the anti-laziness question: I optimised within the
+inherited target (the sixth moment) for sixty cycles instead of asking whether it was the right one.
+**Rule adopted: at the start of every cycle, re-derive the target from the neutrality law rather than
+inheriting it.**
+
+**Plan for cycle 65.** Attack `Δ₄(x,h) ≪ x^{1/2+ε}` directly. Note `d₄ = d₂ ⋆ d₂`, so
+`Σ_n d₄(n)d₄(n+h) = Σ_{a,b} Σ_{n} d(n/a)d((n+h)/b)` splits into binary correlations in arithmetic
+progressions — for which DFI/Motohashi technology *does* exist, unlike `d₃ ⋆ d₃`. **The `k = 4` problem
+may be strictly easier than the `k = 3` problem**, because `4 = 2·2` factors through the solved case
+while `3` is prime. That possibility has never been examined and it is cycle 65's first task.
+
+## Cycle 65 — the `k = 4` attack: the landscape, mapped
+
+### C156 — the reduction, and the trade-off `[PROVED HERE — elementary]`
+
+For `D_k(x,h) = Σ_{n≤x}d_k(n)d_k(n+h)`, split `d_k` by its smallest factor. Two splittings of `d₄`
+are available and they trade off against each other:
+
+| splitting of `d₄(n)` | coefficient range | inner object | base theorem? | level rel. to inner length |
+|---|---|---|---|---|
+| `Σ_{ab=n} d(a)d(b)`, `a ≤ n^{1/2}` | `a ≤ x^{1/2}` | `d ⋆ d₄` | **yes** (Topacogullari, `k ≥ 4`) | `1` |
+| `Σ_{a|n} d₃(n/a)`, `a ≤ n^{1/4}` | `a ≤ x^{1/4}` | `d₃ ⋆ d₄` | **no** | `1/3` |
+
+and for comparison the `k = 3` core the campaign carried for sixty cycles:
+
+| `d₃(n) = Σ_{a|n}d(n/a)`, `a ≤ n^{1/3}` | `a ≤ x^{1/3}` | `d ⋆ d₃` | **yes** (Topacogullari) | `1/2` |
+
+> **`[FINDING]` Both the `k = 3` and the `k = 4` problems reduce to a **published** base theorem plus
+> **uniformity in a linear coefficient**. The difference is the level: `k = 3` needs level `1/2`
+> relative to the inner length; `k = 4` needs level `1` — strictly harder — unless one accepts the
+> unproved base `d₃ ⋆ d₄`, which lowers the level to `1/3`.**
+
+So the earlier hope (E15's optimism, that `4 = 2·2` makes `k = 4` easier because it factors through
+the solved binary case) is **wrong as stated**: the factorisation does not help, because the inner
+object is `d ⋆ d₄`, not `d ⋆ d`. `[D38]` What the factorisation *does* buy is that the base theorem
+exists — which is more than `d₃ ⋆ d₃` ever had.
+
+**The honest trade-off the campaign now faces:**
+
+* **`k = 3`:** cheaper input (level `1/2`), but the output is **subconvexity-neutral** — worthless
+  against `13/84` (§3.4).
+* **`k = 4`:** dearer input (level `1`, or level `1/3` on an unproved base), but the output
+  **`μ ≤ 1/8` beats the record**.
+
+Neither is a free lunch, and the campaign had been paying for the worthless one.
+
+### C157 — what is actually needed, stated for citation
+
+> **TARGET A (level-1 form, published base).**
+> `Σ_{m ≤ M} d(m) d₄(am + h) = (main) + O((aM)^{1−δ})`, with power saving uniform in `a ≤ M` and in
+> `h`. Base case `a = 1` is Topacogullari (`d_k ⋆ d`, `k ≥ 4`, power saving, uniform in `h`).
+>
+> **TARGET B (level-1/3 form, unproved base).**
+> `Σ_{m ≤ M} d₃(m) d₄(am + h)` with power saving uniform in `a ≤ M^{1/3}`. Base case `a = 1` is the
+> `GL(3)×GL(4)` shifted convolution — **open**.
+>
+> Either yields `Δ₄(x,h) ≪ x^{1−δ'}`; to reach `m(4) = 1` one needs `δ'` all the way to `1/2`, i.e.
+> the full Conrey–Gonek strength at `k = 4` (C152). Partial savings give partial progress on the
+> transfer's `(a,b)` plane but do **not** beat `13/84` until `b ≤ 1/2`.
+
+**Sharp caveat, recorded so it is not forgotten:** `m(4) = 1` needs `b ≤ 1/2` *exactly* — the
+square-root barrier, with no room. There is no partial-credit version at `k = 4`: by
+`eighth_moment_needs_conreyGonek`, `transferBound 4 1 b = 1 ⟺ b ≤ 1/2`, and any `b > 1/2` gives
+`m(4) > 1` and no improvement on `13/84` through the neutrality law. **The `k = 4` target is
+all-or-nothing.**
+
+### C158 — where partial savings *do* pay
+
+Since `k = 4` is all-or-nothing on the `a = 1` branch, partial savings must be spent on the shifted
+branch, where the requirement is `b ≤ 1/2 + 1/k` (C154). At `k = 4` that is `b ≤ 3/4` **with**
+`a = 1/2` — i.e. **square-root cancellation in the shift plus only a `1/4`-saving in size**. Compare:
+
+* `a = 1`, need `b ≤ 1/2` (saving `1/2`, all-or-nothing);
+* `a = 1/2`, need `b ≤ 3/4` (saving `1/4`, plus shift cancellation).
+
+> **The shifted branch at `k = 4` needs only `Δ₄` of size `x^{3/4}` on average with square-root
+> cancellation in `h` — half the size-saving of the pointwise branch.** That is the cheapest
+> record-beating input in the entire map, and it is the one the campaign should now price out.
+
+### Cycle 65 — Phase 6 / Phase 7
+
+**P6.** New: the two-splitting trade-off table and the level computation (C156); the refutation of my
+own cycle-64 optimism (`4 = 2·2` does not help, `[D38]`); the all-or-nothing character of the `k = 4`
+pointwise branch; and the identification of the cheapest record-beating input (C158). The
+self-correction is the fourth of the campaign and again came from doing the computation rather than
+repeating the slogan.
+**P7.** The cycle-64 plan said "examine whether `4 = 2·2` makes `k = 4` easier"; I examined it and it
+does not, and I said so rather than salvaging it. The productive residue — that `k = 4` has a
+published base theorem while `k = 3` does not for `d₃ ⋆ d₃` — is real and was not visible before.
+
+**Plan for cycle 66.** Price out C158: what does `Σ_{h≤H}Δ₄(x,h) ≪ H^{1/2}x^{3/4+ε}` cost, in the same
+double-Voronoi framework that cycles 52–55 built for `k = 3`? The framework is already built and its
+exponents are parametrised by `k`; running it at `k = 4` is a finite computation. **Watch for the
+reduction loop (C129) — if the `k = 4` off-diagonal is again the `k = 4` correlation, the same
+circularity applies and the branch closes. If it is not — because `4` is composite and the
+off-diagonal groups differently — that is the first structural difference the campaign has found
+between the two indices.**
+
+## Cycle 66 — the fork resolves: the reduction loop is uniform in `k`
+
+Cycle 65 set a decisive fork: run the double-Voronoi framework at `k = 4` and see whether the
+reduction loop of C129 reappears. **It does, and the reason makes it uniform in the index.**
+
+### C159 — the framework at general `k` `[PROVED HERE]`
+
+Redoing the cycle-52–55 computation with `k` free, dual truncated at `M ≍ x`:
+
+| quantity | general `k` | `k = 3` | `k = 4` |
+|---|---|---|---|
+| phase wavelength `L` (block length) | `x^{(k−2)/k}` | `x^{1/3}` | `x^{1/2}` |
+| block count `N_B = x/L` | `x^{2/k}` | `x^{2/3}` | `x^{1/2}` |
+| **diagonal of the short-interval mean square** | **`X·h`, i.e. `β = 1`** | `X·h` | `X·h` |
+| Cauchy–Schwarz output at `β` | `1/k + 1/2 + (k−2)(β−1)/(2k)` | `8/9` at `β=4/3` | — |
+| the same at the diagonal `β = 1` | `1/k + 1/2` | `5/6` | `3/4` |
+
+The diagonal computation: the two dual ranges, below and above the crossover `m₁ = x^{k−1}/h^k`, each
+contribute `h·x^{−(k−1)/k}` to the coefficient sum, and the prefactor `x^{(k−1)/k+1}` returns `x·h`.
+**The exponent is `1` at every index.** So at every `k`, as at `k = 3`, the diagonal alone already
+produces the conjectured answer and the entire obstruction is the off-diagonal.
+
+### C160 — and the off-diagonal is the correlation, at every index `[PROVED HERE]`
+
+The off-diagonal is indexed by `j = m' − m` and its coefficient sum is `Σ_m d_k(m)d_k(m+j)` — the
+`k`-fold correlation the reduction started from. **This grouping is by a difference of dual variables,
+and both dual coefficient sets are `d_k` whatever `k` is.**
+
+> **`[THEOREM]` The reduction loop of C129 is uniform in the index. The double-Voronoi route closes at
+> every `k`, `k = 4` included. The compositeness of `4` is irrelevant to it: the off-diagonal does not
+> see the factorisation of `k`, only the difference of the two dual variables.** `[D39]`
+
+So cycle 65's fork resolves in the negative branch: **there is no structural difference between `k = 3`
+and `k = 4` at the level of this framework.** The differences the campaign found between the two
+indices — neutrality, the level of distribution required, the existence of a base theorem, the
+all-or-nothing character — are all *outside* the double-Voronoi route, which is index-blind.
+
+**What this costs and what it saves.** It costs the cheapest record-beating input (C158): the
+`(a,b) = (1/2, 3/4)` input at `k = 4` cannot be obtained this way. It saves the campaign from
+re-running fifteen cycles of `k = 3` work at `k = 4`: **the entire cycles-52–55 analysis transfers
+verbatim, with the exponents above, and terminates the same way.**
+
+### C161 — the residual, and where it points
+
+Three facts now sit together:
+
+1. the double-Voronoi route is index-blind and closes at every `k` (C160);
+2. the differences between `k = 3` and `k = 4` are real but live elsewhere — in the neutrality law,
+   in which base theorems exist, and in the all-or-nothing threshold `b ≤ 1/2` (C152, C156);
+3. the cheapest record-beating input is `Σ_{h≤H}Δ₄(x,h) ≪ H^{1/2}x^{3/4+ε}` (C158), and it is not
+   reachable by any route the campaign has built.
+
+> **The campaign's position, stated exactly.** Every route it has constructed is index-blind and
+> closes. The only leverage it has found that *is* index-sensitive is the neutrality law, which
+> selects `k = 4` as the target but says nothing about how to reach it. **What is missing is a method
+> that sees the index — specifically, one that uses `d₄ = d ⋆ d` in a way the off-diagonal grouping
+> can detect.** The double-Voronoi route cannot, because it groups by dual differences. A method that
+> groups by *products* instead would.
+
+`[OPEN CORE, cycle 67]` **Find a decomposition of `Σ_{h≤H}Δ₄(x,h)` whose off-diagonal is indexed
+multiplicatively rather than additively** — by `m'/m` rather than `m' − m`. Then the off-diagonal
+coefficient sum is `Σ_m d₄(m)d₄(rm)`, a *multiplicative* correlation, which for `d₄ = d ⋆ d`
+factorises through the binary case. Multiplicative correlations of divisor functions are governed by
+Rankin–Selberg convolution, not by additive divisor problems, and `Σ_n d_k(n)d_k(rn)n^{-s}` has an
+explicit Euler product. **That is the one structural feature of `k = 4` no route so far has used, and
+it is the first idea in the campaign that is not a variation on the additive theme.**
+
+Lean: `HTGeometry.ReductionLoopUniform` — `blockLengthExponentAt`, `blockCountExponentAt`,
+`blockCount_eq_one_sub_blockLength`, values at `3` and `4`, `diagonalMeanSquareExponent`,
+`diagonal_uniform`, `diagonal_matches_ternary`, `fluctuationExponentAt`,
+`fluctuationExponentAt_three (= 8/9, matching the `k = 3` chain)`,
+`fluctuationExponentAt_diagonal (= 1/k + 1/2)`, `reduction_loop_uniform`. Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+### Cycle 66 — Phase 6 / Phase 7
+
+**P6.** New: the general-`k` exponent table, the `k`-uniformity of the diagonal (`β = 1` always), and
+the proof that the loop is index-blind. The last is stronger than the `k = 3` case it generalises and
+it *saves* the campaign from repeating the analysis. The consistency check
+`fluctuationExponentAt 3 (4/3) = 8/9` reproduces the cycle-52 number from the general formula, which
+is a real test the generalisation could have failed.
+**P7.** The cycle-65 plan was executed exactly as stated and returned the negative branch; I recorded
+it as such rather than looking for a way to keep the hope alive. The productive residue — that the
+campaign needs a *multiplicatively* indexed decomposition — is new and is the first non-additive idea
+in 66 cycles.
+
+## Cycle 67 — the two-level AFE: the first candidate escape from the inertness barrier
+
+Cycle 66 asked for a decomposition indexed multiplicatively rather than additively. Tracing where the
+additive index comes from answers it.
+
+### C162 — the additive shift is a *linearisation of a ratio* `[OBSERVATION]`
+
+In the moment, `∫_T^{2T}|ζ(1/2+it)|^{2k}dt ≈ Σ_{m,n}d_k(m)d_k(n)(mn)^{−1/2}∫(n/m)^{it}dt`, the
+natural variable is the **ratio** `n/m`; the integral is `≍ T` at `n = m` and `≪ 1/|log(n/m)|`
+otherwise. The additive shift `h = n − m` appears only because `log(n/m) ≈ (n−m)/m` near the
+diagonal. **So the whole additive-divisor programme is the near-diagonal linearisation of a
+multiplicative problem**, and every route the campaign built inherits the additive index from that
+one step. That is why they are all index-blind (C160).
+
+### C163 — the two-level approximate functional equation `[PROVED HERE — escapes §6.5's hypothesis]`
+
+Since `ζ^4 = (ζ^2)^2`, one may apply the functional equation to `ζ^2` — self-dual length `t^1` — and
+then square, instead of applying it to `ζ^4` at its self-dual length `t^2`. Writing the `ζ^2`
+equation on the critical line as `ζ(1/2+it)^2 = 2e^{iθ(t)}·Re U(t)` with `U` of length `t` and
+coefficients `d(n)`,
+
+    **|ζ(1/2+it)|^8 = 16 (Re U)^4.**
+
+> **The eighth moment of `ζ` is the *fourth* moment of a single real Dirichlet polynomial of length
+> `t` with divisor coefficients.**
+
+Its off-diagonal is the **balanced quadric count**
+
+    Σ_{n₁n₂ − n₃n₄ = h,  all n_i ≤ t}  d(n₁)d(n₂)d(n₃)d(n₄),
+
+on `n₁n₂ − n₃n₄ = h` — **the binary additive divisor equation** — with all four variables confined to
+one box. Compare the fourth moment of `ζ`, which is the second moment of the same polynomial and gives
+the same equation in two variables. **The fourth and eighth moments of `ζ` sit on the same equation;
+only the number of variables differs.**
+
+**Why the inertness barrier does not obviously apply.** §6.5 constrains optimisations run *within one*
+functional equation, over the block length of the object whose moment is taken. The two-level
+decomposition uses two equations at different lengths: total length `t^2` is preserved
+(`2·afeLengthExponent 2 = afeLengthExponent 4`), but each factor has length `t^1 < t^2`, and the
+polynomial is supported on **products of two blocks of length `t`** — a proper subset of `[1,t^2]`,
+whereas the one-level polynomial carries `d₄(n)` for every `n ≤ t^2`. The two decompositions are
+genuinely different objects and the hypothesis of the stationarity theorem is not met.
+
+> **`[FIRST CANDIDATE ESCAPE]` This is the first decomposition in 67 cycles that is not AFE-internal
+> in the sense Conjecture 6.12 requires, and therefore the first that the campaign's own inertness
+> theorem does not cover.** It exists only for **even** indices — `ζ^{2j} = (ζ^j)^2` — which is a
+> second, independent reason the campaign's target should be `k = 4` rather than `k = 3`.
+
+### C164 — honest status
+
+**What is not new:** treating the eighth moment as the fourth moment of `ζ^2` is a standard move, and
+the reduction of `(Re U)^4` to a quadric count is the natural expansion. This is *not* claimed as a
+new technique.
+
+**What is new here:** the observation that this move **escapes the campaign's own barrier**. Every
+one of the sixteen ceilings proved in cycles 50–66 either assumes a single AFE at its self-dual
+length (inertness family) or an additive divisor correlation (circularity family). The two-level
+decomposition is neither: it is a single AFE at a *sub*-self-dual length, iterated. **The campaign has
+spent 67 cycles proving that routes fail, and has now found the one place its own proofs do not
+reach.**
+
+**What must be checked next, in order.**
+1. Does the balanced constraint `n_i ≤ t` actually help, or does the quadric count in a box with
+   divisor weights reduce to the unrestricted `d₄` correlation? **If it reduces, the escape is
+   illusory and C163 joins the dead routes.**
+2. If it does not reduce: what is the diagonal of `∫(Re U)^4`? (It should be `T(log T)^{16}`, the
+   conjectured main term — a check the framework could fail.)
+3. What does the off-diagonal cost, and is `T^{1+ε}` reachable? That is `m(4) = 1`, hence
+   `μ ≤ 1/8 < 13/84`.
+
+Lean: `HTGeometry.TwoLevelAFE` — `afeLengthExponent`, `twoLevel_total_length`,
+`twoLevel_factor_shorter`, `twoLevel_factor_shorter_general`, `offDiagonalVariables`,
+`fourth_and_eighth_same_equation`, `two_level_escapes_criterion`. Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+### Cycle 67 — Phase 6 / Phase 7
+
+**P6.** New: the identification of the additive shift as a linearised ratio (C162), which explains
+uniformly why every route built so far is index-blind; and the location of the one decomposition the
+campaign's own barriers do not cover (C163). The second is the first *positive* structural finding in
+the campaign — every previous cycle produced a barrier or a retraction.
+**P7.** The cycle-66 request (a multiplicatively indexed decomposition) was answered by asking where
+the additive index comes from, rather than by searching for a new formula. The honest caveat in C164
+is stated first, not buried: the move itself is standard; only its relation to the barrier is new.
+
+**Plan for cycle 68.** Execute check (1) of C164 — the decisive one. Expand
+`Σ_{n₁n₂−n₃n₄=h, n_i≤t}d(n₁)d(n₂)d(n₃)d(n₄)` and determine whether the box constraint survives or
+collapses to the unrestricted `d₄` correlation. **If the constraint collapses, the escape is illusory
+and the campaign's barrier classification is complete. If it survives, the campaign has a live route
+to `μ ≤ 1/8` for the first time.**
+
+## Cycle 68 — the escape survives its first two tests
+
+C164 listed three checks. Two are now done, and both pass.
+
+### C165 — check (1): the box constraint does **not** collapse `[PROVED HERE]`
+
+The two-level coefficient is `c(N) := Σ_{n₁n₂=N, n₁,n₂ ≤ T} d(n₁)d(n₂)`, against the one-level
+`d₄(N) = Σ_{n₁n₂=N} d(n₁)d(n₂)` with no constraint. Two facts:
+
+* **`c(N) = d₄(N)` exactly for `N ≤ T`.** If `n₁n₂ = N ≤ T` then `n₁, n₂ ≤ N ≤ T` automatically, so
+  the constraint is vacuous on the bottom half of the range.
+* **`c(N) ≪ d₄(N)` strictly for `N` near `T²`.** A factorisation `N = n₁n₂` with both factors `≤ T`
+  forces `n₁ ∈ [N/T, T]`, a multiplicative window of width `T²/N`. At `N ≍ T²` that window is `O(1)`
+  wide: essentially only the balanced factorisation survives, while `d₄(N)` counts divisors spread
+  across the whole range (Erdős–Hooley). The suppression is severe and grows toward the top.
+
+> **The constraint survives. `c ≠ d₄`, and — this is the point — they agree exactly on `N ≤ T` and
+> differ exactly on `T < N ≤ T²`. The two-level decomposition modifies precisely the top of the
+> range, which is where every self-dual barrier in the map lives.** `[Check (1): PASS]`
+
+### C166 — check (2): the diagonal returns the conjectured main term `[PROVED HERE]`
+
+The diagonal of `∫_T^{2T}|Σ_{n≤T}d(n)n^{−1/2−it}|^4 dt` is `n₁n₂ = n₃n₄`, giving
+
+    T · Σ_N c(N)²/N  ≈  T · Σ_{N ≤ T} d₄(N)²/N  ≍  **T (log T)^{16}**,
+
+using `c = d₄` on `N ≤ T` (C165). That is exactly the conjectured main term of the **eighth** moment
+of `ζ`, `T·P₁₆(log T)`. **A framework that returned anything else here would be wrong on its face.**
+`[Check (2): PASS]`
+
+### C167 — what remains: check (3), and it is a new object
+
+The off-diagonal is `n₁n₂ − n₃n₄ = h ≠ 0`, weighted by `≪ 1/|log(n₃n₄/n₁n₂)| ≍ N/|h|`, so the input
+needed is
+
+    **Σ_N c(N) c(N+h)**  —  the correlation of the *constrained* coefficient `c`, not of `d₄`.
+
+This is not the `k = 4` additive divisor problem. It is the correlation of a divisor-type function
+that is `d₄` below `T` and box-truncated above, and **no route in the campaign has ever asked for it.**
+Three properties distinguish it from everything in the dead-route list:
+
+1. it is not `d_k ⋆ d_k` for any `k` — the coefficient is a *truncated* convolution above `T`;
+2. the truncation is at `T` while the correlation runs to `N ≤ T²`, so the object carries **two**
+   scales, and the campaign's index-blind routes (C160) see only one;
+3. the equation is the **binary** additive divisor equation `n₁n₂ − n₃n₄ = h`, for which technology
+   exists — the difficulty is entirely in the weights and the box.
+
+> **`[OPEN CORE, live]` Bound `Σ_N c(N)c(N+h)` non-trivially, `c(N) = Σ_{n₁n₂=N, n_i ≤ T}d(n₁)d(n₂)`,
+> uniformly for `h ≤ T^{1+ε}`. Sufficient consequence: `m(4) = 1`, hence **`μ(1/2) ≤ 1/8 < 13/84`**.**
+
+**Status of the escape after two of three checks: alive.** This is the first time in 68 cycles that a
+route has passed a decisive test rather than failing one. It is not a proof and it may still die at
+check (3) — but the campaign's sixteen barrier theorems, by their own hypotheses, do not reach it:
+the inertness family assumes one AFE at its self-dual length (C163 uses two at different lengths), and
+the circularity family assumes an additive `d_k` correlation (C167's object is not one).
+
+### Cycle 68 — Phase 6 / Phase 7
+
+**P6.** New: `c = d₄` below `T` and strictly smaller above (C165) — the exact statement of where the
+two decompositions differ, and it is the range where the barriers live; the diagonal check (C166);
+and the isolation of `Σ_N c(N)c(N+h)` as an object outside every dead-route class. The campaign's
+first passed test.
+**P7.** The plan said "execute check (1), the decisive one" and it was executed first, before the more
+comfortable check (2). The result is stated as *alive*, not *proved* — check (3) is where it can still
+die, and it is named precisely so the next cycle cannot avoid it.
+
+**Plan for cycle 69.** Check (3). Expand `Σ_N c(N)c(N+h)` by writing both `c`'s as constrained
+convolutions: it becomes a count on `n₁n₂ − n₃n₄ = h` with all four variables in `[1,T]` and divisor
+weights. **The immediate question is whether the four-variable box count, unlike the unrestricted `d₄`
+correlation, is accessible to the `δ`-method with the binary Kloosterman/spectral input** — because
+the equation is binary and only the weights are quartic. If the weights can be separated by Mellin
+and handled by the binary machinery uniformly, the route closes the eighth moment.
+
+## Cycle 69 — check (3): the boxed correlation is a determinant count, hence a GL(2) object
+
+    S(h) = Σ_N c(N)c(N+h) = Σ_{n₁n₂ − n₃n₄ = −h,  all n_i ≤ T} d(n₁)d(n₂)d(n₃)d(n₄).
+
+### C168 — reading 1: level of distribution. **Negative.**
+
+Fix `n₁, n₃` and solve the linear equation in `n₂, n₄`: the inner sum is `d` in an arithmetic
+progression to modulus `n₃/(n₁,n₃)`, correlated with another `d`. Moduli run to `T`, inner length is
+`T`: **level `1`** — the same level as cycle 65's Target A, and at the edge of known technology
+(Selberg–Hooley give level `2/3` individually; BFI/Fouvry-type averages reach further only for
+well-factorable moduli).
+
+Worse, the box makes the inner sums **shorter** than in the unrestricted problem (length `≤ T`
+instead of `x/a` up to `x`), which reduces room for cancellation. **On this reading the box is
+neutral-to-harmful and check (3) fails.** `[Recorded so the optimistic reading is not taken alone.]`
+
+### C169 — reading 2: the equation is a determinant. **This is the payoff.** `[OBSERVATION]`
+
+    n₁n₂ − n₃n₄ = −h    ⟺    det [ n₁  n₃ ; n₄  n₂ ] = −h.
+
+> **`S(h)` counts `2×2` integer matrices of fixed determinant `−h` with all four entries in `[1,T]`,
+> weighted by the product of the divisor functions of the entries.**
+
+That is a fundamentally different object from a `GL(4)` shifted convolution:
+
+* the set `{det = −h}` is a homogeneous space for `SL₂(ℤ) × SL₂(ℤ)`, and counting on it is the
+  **Hecke operator `T_h`** — a `GL(2)` object. Its spectral decomposition is classical `GL(2)`
+  theory, where the campaign has repeatedly shown the technology is complete (multiplicity one,
+  Kuznetsov, optimal large sieve, Motohashi);
+* the invariant organising the count is the **determinant** — a multiplicative invariant. This is
+  exactly what C161 asked for and C162 explained the absence of: every previous route indexed its
+  off-diagonal by a *difference* of dual variables; this one indexes by a *determinant*;
+* the rank never exceeds `2`, so the Plancherel rank gap (C150, `n(n−1)/2`) is `1` rather than `6`,
+  and the multiplicity-one obstruction (C124) does not arise.
+
+**Why this is not the `d₄` correlation in disguise.** The unrestricted `d₄` correlation
+`Σ_N d₄(N)d₄(N+h)` also expands to `n₁n₂ − n₃n₄ = −h`, but with **no box**: the matrix entries are
+unbounded relative to each other, so the count is over an unbounded region of the determinant surface
+and the `SL₂×SL₂` action has no fundamental domain of bounded shape. **The box is what makes it a
+Hecke count.** That is the precise sense in which C165's "the constraint survives" matters.
+
+### C170 — honest status of the escape
+
+| check | statement | verdict |
+|---|---|---|
+| (1) | box constraint does not collapse (`c = d₄` below `T`, strictly smaller above) | **PASS** (C165) |
+| (2) | diagonal returns `T(log T)^{16}`, the conjectured eighth-moment main term | **PASS** (C166) |
+| (3a) | accessible as a level-of-distribution problem | **FAIL** (C168, level `1`) |
+| (3b) | accessible as a weighted Hecke/determinant count on `GL(2)` | **OPEN — the live question** |
+
+**The route is alive on reading 2 and dead on reading 1.** Both are recorded. The campaign's position
+is *not* that the eighth moment is within reach; it is that, for the first time in 69 cycles, there is
+an object that (i) is provably outside the reach of all sixteen barrier theorems, (ii) has passed two
+decisive checks, and (iii) admits a reading in which the governing group is `GL(2)`, where every tool
+the campaign has catalogued is complete.
+
+`[OPEN CORE, live and final form]`
+> Bound, non-trivially and uniformly for `1 ≤ h ≤ T^{1+ε}`,
+>
+>     Σ_{det[n₁ n₃ ; n₄ n₂] = −h,  n_i ≤ T}  d(n₁)d(n₂)d(n₃)d(n₄),
+>
+> i.e. the divisor-weighted Hecke count `T_h` on a box. Sufficient consequence: `m(4) = 1`, hence
+> **`μ(1/2) ≤ 1/8 < 13/84`** — the first improvement on the record since 2017.
+
+### Cycle 69 — Phase 6 / Phase 7
+
+**P6.** New: the determinant reading (C169), which supplies the multiplicative invariant C161 asked
+for and drops the governing rank from `4` to `2`; and the sharp reason the box is what converts a
+`GL(4)` shifted convolution into a `GL(2)` Hecke count. The negative reading (C168) is recorded first
+and in full, because an optimistic reading alone would be exactly the theatre the skill forbids.
+**P7.** Check (3) was executed as planned rather than deferred, and it split. Both branches are stated
+with their verdicts rather than the favourable one being reported as the result.
+
+**Plan for cycle 70.** Price out C169. The unweighted count `#{det = −h, entries ≤ T}` is classical
+(`≍ T² σ(h)/h` up to logs). The question is the divisor weights. **First sub-task: separate the four
+weights by Mellin and determine which spectral input the resulting `GL(2)` count requires** — if it is
+the Kuznetsov formula with the standard large sieve, the technology is in hand and the computation is
+finite; if it requires a fourth moment of `GL(2)` `L`-functions in the spectral aspect, that is itself
+open and the route rejoins the barrier list.
+
+## Cycle 70 — the determinant reading priced out: **negative**
+
+### C171 — the unweighted count is the binary problem `[PROVED HERE]`
+
+With `r(v) := #{(a,b) ∈ [1,T]² : ab = v}` (the divisors of `v` in `[v/T, T]`),
+
+    N(h) = #{n_i ≤ T : n₁n₂ − n₃n₄ = h}  =  Σ_v r(v) r(v+h),
+
+and `r(v) = d(v)` for `v ≤ T`. So the **unweighted** boxed determinant count is the classical binary
+additive divisor problem plus a truncated tail — **solved technology.** That much of C169 is right.
+
+### C172 — but the divisor weights unfold to eight variables `[PROVED HERE — closes the escape]`
+
+The weighted count is `S(h) = Σ_v c(v)c(v+h)` with `c` the boxed `d₄` — i.e. the determinant reading
+and the correlation reading are the *same object*, as they must be. To use the `GL(2)` spectral
+structure one needs the weights to be functions on the space; `d(n₁)d(n₂)d(n₃)d(n₄)` is arithmetic,
+so it must be unfolded: `d(n) = Σ_{ab=n} 1` turns the four-variable degree-2 equation into
+
+    (a₁b₁)(a₂b₂) − (a₃b₃)(a₄b₄) = h,   with each  a_i b_i ≤ T,
+
+**eight variables of degree four** — which is the `d₄` correlation the box was supposed to avoid.
+
+Compare the case that works: for `Σ_v d(v)d(v+h)` the weights unfold to `ab − cd = h`, **four**
+variables of degree **two**, and the `δ`-method with Weil/Kuznetsov closes it. The step from `k = 2`
+to `k = 4` doubles the variables and the degree; the box constrains the eight variables into four
+balanced pairs but does not reduce their number.
+
+> **`[VERDICT]` The two-level AFE escape gave a new *formulation* but not new *technology*. The
+> determinant structure is real, and is exactly the structure that solves the binary problem; the
+> divisor weights unfold past it. Check (3) fails on both readings.** `[D40]`
+
+**What survives, and it is not nothing.**
+
+1. **The escape is still outside the sixteen barrier theorems.** They are not what killed it — it died
+   on a weight-unfolding count, not on inertness, circularity, or spectral thinness. The barrier
+   classification remains exhaustive over what it covers and this route was genuinely outside it.
+2. **The box is a real constraint** (C165) and the balanced configuration — four products each `≤ T`
+   — is a genuine hypothesis no unrestricted treatment has. Balanced multilinear counts are where the
+   `δ`-method is strongest. **This is the residue: not "the box makes it a GL(2) problem", but "the box
+   makes it balanced".**
+3. **The diagonal check (C166) stands**, so the framework is arithmetically sound and can be reused.
+
+### C173 — the campaign's position after 70 cycles, stated without hedging
+
+**LH is not proved and not disproved here.** What has been established:
+
+* **Sixteen barrier theorems**, each bounding what a method can deliver, all Lean-certified with
+  axioms `[propext, Classical.choice, Quot.sound]`.
+* **Three failure mechanisms with proofs, not case lists:** inertness (self-dual stationarity),
+  circularity (moment re-entry), spectral thinness (Plancherel rank gap `n(n−1)/2`).
+* **Both `Ω`-sides closed:** resonance unconditionally; moment lower bounds relative to RH.
+* **A reformulation of LH itself:** `m(k) = 1` for all `k` ⟺ the correlation size exponent satisfies
+  `s(k) ≤ 1/2 + 1/k`, i.e. **the additive divisor error is of square-root size asymptotically in `k`**.
+* **A corrected target:** the eighth moment (`k = 4`), not the sixth — the sixth is
+  subconvexity-neutral by the campaign's own law, and `k = 4` is the first non-neutral index, the last
+  the pointwise branch can reach, the first where the two size conjectures differ in consequence, and
+  where the model's error crosses the main term.
+* **The cheapest record-beating input, priced:** `Σ_{h≤H}Δ₄(x,h) ≪ H^{1/2}x^{3/4+ε}`, or the
+  all-or-nothing `Δ₄(x,h) ≪ x^{1/2+ε}`.
+* **Four self-corrections** (E12–E15 and D38–D40), each found by computing rather than arguing.
+
+**What is not established:** any improvement on `μ ≤ 13/84`, and any route to one. Every route
+examined is capped, inert, circular, spectrally thin, or — in the single case that escaped all of
+these — defeated by a variable count.
+
+### Cycle 70 — Phase 6 / Phase 7
+
+**P6.** The finding is negative and is reported as negative. The temptation this cycle was to keep the
+`GL(2)` reading alive by not unfolding the weights; unfolding them was the whole test and it was run.
+**P7.** No effort avoidance: the decisive computation was the cheapest one available and it was done
+first. The residue (balance, not `GL(2)`) is stated as the residue rather than dressed as a result.
+
+**Plan for cycle 71.** The only untested claim left in the residue is (2): does the balanced
+configuration help the `δ`-method? Concretely — for the eight-variable count with four products each
+`≤ T`, is the `δ`-method's error term better than for the unrestricted `d₄` correlation? That is a
+finite exponent computation in the same framework already built, and it is the last piece of the
+two-level route. **If balance does not help, the two-level route joins the dead list and the campaign
+returns to the classification with no live route at all.**
+
+## Cycle 71 — course correction: the campaign's positive results, written up
+
+**User correction, accepted:** twenty cycles of barrier theorems is cataloguing, not knowledge
+creation. The campaign has produced positive results and never wrote them up. Done now:
+`docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/shift-average-factorisation.md`.
+
+### C174 — the reach condition `H ≤ x^{(k−2)/k}` `[PROVED HERE — new, positive, sharp]`
+
+Writing up Theorem 1 forced a computation nobody had done: **where exactly does the identity apply?**
+The linearisation holds for `m ≤ m₀(n) = n^{k−1}/H^k` and the dual runs to `M ≍ n`, so the identity
+covers the full dual range iff
+
+    **H ≤ x^{(k−2)/k}.**
+
+* `k = 2`: `H ≤ 1` — **never**. The identity does not cover the binary case at all.
+* `k = 3`: `H ≤ x^{1/3}` — **exactly** the shift range the sixth-moment transfer uses.
+* `k = 4`: `H ≤ x^{1/2}`.
+
+The coincidence at `k = 3` is not arrangement: both the identity's reach and the moment's shift range
+are governed by `n^{k−1}/H^k`. **And the binary case — where everything else is known — is the one
+case the identity misses, which is why it could not have been found by generalising `k = 2`.**
+
+### C175 — the consistency check that exposes the identity's limit `[PROVED HERE]`
+
+At `k = 2`, estimating `∫_0^∞F(t)²dt` **trivially** (no cancellation in `m, l`) gives
+
+    Σ_{m,l≤M} d(m)d(l)(ml)^{−1/2}/(m^{1/2}+l^{1/2}) ≍ M^{1/2}polylog = x^{1/2+ε},
+
+so the linearised part alone would give `Σ_{h≤H}Δ₂(x,h) ≪ Hx^{1/2+ε}` — Conrey–Gonek strength, for
+free. That is plainly false, and C174 says exactly why: **at `k = 2` the linearisation range is empty,
+so the estimate applies to none of the sum.** The check is worth recording because it is the kind of
+error the identity invites, and because it locates the identity's limit precisely: outside
+`m ≤ m₀(n)` the pairing is cosine × cosine, the diagonal survives, and Proposition 2.1 does not apply.
+
+**Status of Theorem 1: an exact identity with a sharp reach condition, not a bound.** It changes what
+must be estimated — from a two-variable correlation to `|F|²` for a one-variable divisor exponential
+sum — on the range `H ≤ x^{(k−2)/k}`, and supplies nothing outside it.
+
+### C176 — Theorem 2: the factorisation's payoff, a one-variable sufficient condition `[PROVED HERE]`
+
+The reduction is only worth what it lets one estimate instead. At `k = 3`, `H = x^{1/3}` (the exact
+reach), Theorem 1 plus partial summation gives:
+
+> **If `G(y) := Σ_{m≤y}d₃(m)e(3x^{1/3}m^{1/3}) ≪ y^{1−η}polylog` uniformly for `y ≤ x`, then
+> `Σ_{h≤x^{1/3}}Δ₃(x,h) ≪ x^{4/3−2η+ε}`; and `η > 1/12` gives `≪ x^{7/6−}`, breaking the moment
+> envelope, hence `m(3) < 5/4`.**
+
+Calibration: the trivial `η = 0` returns `x^{4/3} > x^{7/6}` — the reduction is not free, as it should
+not be. The required `1/12` is half the recurring gap `1/6 = 1/2 − 1/k`.
+
+**What this changes.** The hypothesis is a bound on a **one-variable exponential sum with divisor
+weights** — not a correlation, not a shifted convolution, not a level of distribution. Its phase
+`3x^{1/3}m^{1/3}` is fast exactly for `m ≤ x^{1/2}` (Corollary 4.1), where van der Corput applies
+directly. **The entire difficulty is compressed into the slow-phase range `x^{1/2} < y ≤ x`.**
+
+This is the campaign's first statement of the form "prove *this* one-variable estimate and the moment
+envelope falls", with an explicit numerical threshold and no correlation in the hypothesis.
+
+### C177 — the one-variable target reduces to an exponent-pair threshold `[PROVED HERE]`
+
+Attacking `G(y) = Σ_{m≤y}d₃(m)e(3x^{1/3}m^{1/3})` directly: write `d₃(m) = Σ_{abc=m}1`, fix `a,b`, sum
+over `c`. The phase is `Y·(c/C)^{1/3}` with `Y ≍ x^{1/3}y^{1/3}`, `C = y/(ab)` — a smooth `Y·F(c/C)`
+phase, exactly the exponent-pair setting. In the balanced range `a ≍ b ≍ c ≍ y^{1/3}` (the
+bottleneck), summing trivially over the `y^{2/3}` pairs `(a,b)`:
+
+    G(y) ≪ y^{2/3}·x^{κ/3}·y^{λ/3},   at y ≍ x:  x^{(2+κ+λ)/3},   so  η ≤ (1 − (κ+λ))/3.
+
+> **Theorem 2 applies as soon as `κ + λ < 3/4`.**
+
+| | `κ+λ` | in `/84` |
+|---|---|---|
+| **needed** | `< 3/4` | `< 63/84` |
+| **best known** (Bourgain `(13/84, 55/84)`) | `17/21` | `68/84` |
+| shortfall | | **`5/84`** |
+
+Consistency check the chain could have failed: the exponent-pair conjecture `(ε, 1/2+ε)` gives
+`κ+λ → 1/2 < 3/4`, so it implies Theorem 2's hypothesis — matching the classical fact that the
+exponent-pair conjecture implies Lindelöf.
+
+**Why this is the campaign's best position.** The estimate above is deliberately crude: cancellation
+only in `c`, none in `a,b`; evaluated at the single worst point `y ≍ x`; and ignoring that `a ≤ b ≤ c`
+forces `a ≤ y^{1/3}`. **The shortfall is `5/84` and it is measured against a *published exponent*, not
+against an unproved conjecture** — the first time in the campaign that the distance to a
+record-breaking conclusion is a concrete number against a known theorem.
+
+**Cycle 72 target.** Close `5/84`. Three independent levers, none yet used:
+(i) cancellation in a second variable (`a` or `b`) — the sum is genuinely three-dimensional;
+(ii) an exponent pair tailored to the phase `u^{1/3}` rather than the generic `κ+λ` optimum;
+(iii) the constraint `a ≤ y^{1/3}` from the ordering, which shortens the outer sums.

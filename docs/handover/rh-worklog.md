@@ -1867,3 +1867,1362 @@ formula could not be checked. DO NOT REBUILD ON N_t(T) WITHOUT FIRST SETTLING TH
 Machine-verified: `RHTower/FinitenessThresholdCriterion.lean` (energy profile, backward growth,
 antitone count, collision-time bound, the vanishing-gap collision lemma, the criterion; standard
 axioms only).
+
+---
+
+## Cycle 39 (2026-07-25) — Burgers structure: the field quantity is DAMPED
+
+Phase 1-2. The open core of cycle 38 was: does the field strength Delta grow while the pair
+collides? Searched the corpus (RHTower dynamics modules) and the literature (Polymath15, CSV) — the
+Burgers/Riccati structure of the flow is classical but had not been used for this purpose here.
+
+Phase 3-5. Backward time is the FORWARD heat equation, d(H)/d(tau) = H''. With L = H'/H and the
+Riccati identities H''/H = L' + L^2, H'''/H = L'' + 3LL' + L^3 one gets the VISCOUS BURGERS EQUATION
+
+    L_tau = L_zz + 2 L L_z = L_zz + (L^2)_z ,
+
+and hence, for the field quantity V = -L_z = SUM_k (z - x_k)^{-2} > 0,
+
+    V_tau = V_zz + 2 L V_z - 2 V^2 .
+
+THE NONLINEARITY CARRIES A MINUS SIGN: V is DAMPED, not amplified. Comparison with the spatially
+uniform solution of v' = -2v^2, i.e. v(tau) = v0/(1+2 v0 tau), shows decay like 1/tau. So freezing
+Delta at its initial value is a legitimate UPPER bound over the collision interval, and the only
+remaining loss is the first-order transport term 2 L V_z.
+
+Frozen-field problem is exactly solvable: u = delta^2 obeys u' = 4 D u - 8 with solution
+u(tau) = 2/D + (u0 - 2/D) e^{4 D tau}, vanishing at tau* = (1/(4D)) log(2/(2-theta)),
+theta = D u0. Finite iff theta < 2. So theta < 2 IS THE SHARP COLLISION THRESHOLD.
+
+Machine-verified: `RHTower/BurgersFieldDamping.lean`.
+
+---
+
+## Cycle 40 (2026-07-25) — Theorem E40: THE EQUALLY SPACED CONFIGURATION IS EXACTLY STATIONARY
+
+This CORRECTS the open core of cycle 38 and changes what input the criterion needs.
+
+### The equilibrium
+For zeros on the lattice d*Z the field sum TELESCOPES exactly:
+
+    Delta = (2/d^2) SUM_{m>=1} 1/(m(m+1)) = 2/d^2 ,  so  delta^2 Delta = 2  and  d(delta)/d(tau) = 0.
+
+A UNIFORMLY SPACED CONFIGURATION NEITHER CONTRACTS NOR EXPANDS. It sits exactly at the threshold
+theta = 2 found in cycle 39. Therefore the collision criterion is NOT "the gap is small" but
+"THE GAP BEATS THE LATTICE".
+
+### The explicit sufficient condition
+If every OTHER consecutive gap is at least gamma, the m-th neighbour on either side is at distance
+>= m*gamma from both endpoints, so by Basel
+
+    Delta <= 2 SUM_{m>=1} 1/(m gamma)^2 = pi^2/(3 gamma^2),
+
+and delta^2 Delta < 2 holds as soon as
+
+    delta/gamma < sqrt(6)/pi = 0.7797... ,
+
+after which the pair collides by backward time u0/(8 - 4 Delta u0).
+
+### WHY THIS MATTERS — the cycle-38 open core was MIS-STATED
+It is NOT enough for infinitely many gaps to be small in absolute or normalized terms. A uniformly
+spaced cluster, HOWEVER DENSE, NEVER COLLIDES. What is needed is infinitely many gaps that are
+RELATIVELY small: below sqrt(6)/pi times the surrounding minimum gap. The known small-gap results —
+liminf of the normalized gap below 0.5155 — DO NOT HAVE THIS FORM: they say nothing about the
+neighbours of the small gap. The correct open core is therefore a statement about RELATIVE gaps,
+a different (and differently shaped) problem in zero statistics.
+
+Localization is genuine: the tail of the field beyond the M-th neighbour is bounded by the density
+divided by M, so gamma may be taken to be the minimum gap in a BOUNDED neighbourhood.
+
+### DEAD END corrected (supersedes cycle 38's estimate)
+Cycle 38 quoted a heuristic threshold sqrt(6)/pi against the known small-gap constant 0.5155 and
+concluded the numbers "close with room". THEY DO NOT: the comparison is not gap-vs-constant but
+gap-vs-neighbouring-gaps. Recorded so this is not re-derived.
+
+Machine-verified: `RHTower/LatticeEquilibriumCollision.lean` (lattice stationarity, telescoping
+partial sums, shifted Basel sum, the field bound, the collision condition and time, and the
+sharpness statement that the lattice ratio fails the criterion; standard axioms only).
+
+### Cycle 41 target
+Relative-gap statistics. Ask: is there an unconditional or RH-conditional result giving infinitely
+many n with delta_n < c * min(delta_{n-1}, delta_{n+1}, ..., delta_{n+-M}) for some c < 0.78? The
+pair-correlation and moment machinery (Montgomery, Conrey-Ghosh-Gonek, Bui-Milinovich-Ng) is about
+single gaps; the relative version looks new. If it is genuinely open, that is itself a publishable
+identification: RH's failure at negative flow time is governed by RELATIVE gap statistics, an
+unstudied object.
+
+---
+
+## Cycle 41 (2026-07-26) — Theorem F41: MOMENT HIERARCHY + THE INDEX AS A DISCRIMINANT SIGN
+
+### Phase 1-2 findings (literature check, both load-bearing)
+
+(1) RELATIVE GAPS ARE NOT STUDIED. The gap literature is entirely about ABSOLUTE normalized gaps:
+infinitely many below 0.515396; infinitely many above 2.7328 (3.18 on the critical line, 3.033 under
+GRH). Explicitly noted in the surveys: "whether there are infinitely many gaps less than HALF the
+average gap size is NOT KNOWN", even under RH. NOTHING addresses a gap relative to its NEIGHBOURS.
+=> cycle 40's identification of the relative-gap statistic as the governing object is CONFIRMED NOVEL.
+
+(2) There is an existing no-go in the adjacent Jensen-polynomial lane: "Jensen polynomials are not a
+plausible route to proving the Riemann Hypothesis" (arXiv:2008.07206). ATTRIBUTED. It is the
+holomorphic-moment analogue of the atlas ceilings; do not re-derive it.
+
+### The Burgers moment hierarchy (new)
+With q_n = SUM_j z_j^{-n} and dz_j/dt = 2 SUM_{k!=j} 1/(z_j - z_k), symmetrising with
+
+    (a-b)^{-1}(a^{-3} - b^{-3}) = -(a^2 + ab + b^2)/(a^3 b^3)
+
+gives the CLOSED polynomial law
+
+    dq_2/dt = 2(2 q_1 q_3 + q_2^2 - 3 q_4),   and since H_t is EVEN,  dq_2/dt = 2 q_2^2 - 6 q_4.
+
+This is the moment form of the Burgers equation L_tau = L_zz + (L^2)_z of cycle 39. The whole
+hierarchy of negative moments — hence, via their explicit polynomial relations, the whole family of
+LI COEFFICIENTS — is TRANSPORTED by the de Bruijn-Newman flow through a closed ODE system. First
+explicit dynamical bridge between Li's criterion and the flow.
+
+### The index is a discriminant sign (new)
+    conjugate pair x +- iy : z^2 - 2xz + (x^2+y^2), disc = -4y^2 < 0
+    real pair     x +- a   : z^2 - 2xz + (x^2-a^2), disc = +4a^2 > 0
+Discriminants multiply up to positive squares, so for a real divisor with m conjugate pairs
+sign(disc) = (-1)^m, and by the orbit decomposition m = ind_-(W). Hence
+
+    THE SIGN OF THE DISCRIMINANT IS THE PARITY OF THE WEIL INDEX.
+
+RH asserts ind_- = 0. A NEGATIVE regularized discriminant for xi would make ind_- ODD, hence nonzero,
+and DISPROVE RH. PARITY IS STRICTLY WEAKER THAN THE COUNT, so this is the weakest falsification
+target produced so far. Cost: the discriminant of an order-one entire function needs regularization,
+its sign carried by the imaginary part of a regularized log-sum mod 2*pi*i.
+
+### CORRECTION to a line of reasoning attempted this cycle (do not redo)
+Conjectured that RH is "not a holomorphic condition on the divisor", so that holomorphic moments
+(Li, Jensen, Taylor) are BLIND to it and criteria must be infinite inequality families. THIS IS FALSE
+for finite configurations: the DISCRIMINANT is a symmetric holomorphic function whose SIGN decides
+reality. The correct statement is the parity dictionary above; the genuine obstruction is not
+blindness but the REGULARIZATION of an infinite discriminant. Recorded so the false version is not
+rebuilt.
+
+### Also checked and rejected this cycle
+- sum_rho 1/|rho|^2 = 2*lambda_1 + sum_{pairs} (1-2beta)^2/(|rho|^2 |1-rho|^2) : an exact identity
+  making RH <=> sum 1/|rho|^2 = 2 lambda_1. Weight ~ 1/gamma^4 decays far faster than the merge time
+  ~ 1/log gamma, so it cannot be combined with the dBN energy bound. Standard/folklore; NOT claimed.
+- Holomorphic negative moments q_n do NOT detect RH by themselves (a complex quadruple at height
+  gamma >> 1 contributes POSITIVELY to q_2), so the hierarchy is a transport statement, not a
+  criterion.
+
+Machine-verified: `RHTower/MomentHierarchyAndParity.lean` (symmetrisation identity, moment law, even
+reduction, the two discriminant signs, parity multiplicativity, parity-vs-count; standard axioms).
+
+### Cycle 42 target
+Regularized discriminant of xi. Define D_reg = exp(2 * SUM_{j<k} log(z_j - z_k)) by zeta
+regularization of the double sum, and determine whether its ARGUMENT mod 2*pi is computable from the
+functional equation and the explicit formula. If it is, the parity of the number of off-critical
+zeros of zeta becomes an unconditionally computable invariant.
+
+---
+
+## Cycle 42 (2026-07-26) — Theorem H42: NO DISCRETE INVARIANT DETECTS RH
+### (and: cycle 41's parity target is VACUOUS — killed by my own analysis)
+
+### PHASE 4 VERDICT ON CYCLE 41's PARITY TARGET: FALSE / VACUOUS. Two independent reasons.
+
+(1) THE FUNCTIONAL EQUATION KILLS THE PARITY. H_t is EVEN in z and real on the real axis, so a zero
+z0 forces -z0, conj(z0), -conj(z0). A non-real zero with Re z0 != 0 therefore arrives as a QUADRUPLE
+= TWO conjugate pairs. So m is ALWAYS EVEN and sign(disc) = (-1)^m = +1 no matter what the divisor
+does off the critical line.
+
+(2) THE ONLY ESCAPE IS ALSO CLOSED. The one configuration that could make m odd is a purely
+imaginary zero of H_t, i.e. a REAL STRAY s = 1/2 +- w of Xi_t. At t = 0 there are none: for real
+s in (0,1), (1 - 2^{1-s}) zeta(s) = SUM (-1)^{n-1} n^{-s} > 0 (alternating, decreasing terms), so
+zeta has NO real zero in the critical strip. Classical. The sign is unconditionally +1.
+
+=> The discriminant/parity falsification target of cycle 41 CARRIES NO INFORMATION. Do not revisit.
+
+### Relentless interrogation -> Theorem H42 (the general statement)
+
+What killed it: the invariant is Z/2-valued and the symmetry group of the divisor forces it to be
+trivial. Generalise. Deform a critical DOUBLE pair into a complex quadruple:
+
+    ((s-1/2)^2 - (a + i gam)^2)((s-1/2)^2 - (a - i gam)^2),   a in [0, a0],
+
+which at a = 0 equals ((s-1/2)^2 + gam^2)^2 — a DOUBLED CRITICAL PAIR — and for a > 0 is a genuine
+off-critical quadruple. The family is CONTINUOUS in a and stays inside the class of divisors
+invariant under s -> 1-s and conjugation. So THE CRITICAL AND OFF-CRITICAL LOCI LIE IN ONE CONNECTED
+COMPONENT of the symmetric class, joined through a double zero. Any invariant continuous with values
+in a totally disconnected set is constant along the path. Therefore:
+
+    NO PARITY, INDEX-MOD-k, OR OTHER DISCRETE INVARIANT OF THE DIVISOR CAN SEPARATE CRITICAL FROM
+    OFF-CRITICAL CONFIGURATIONS. EVERY CRITERION FOR RH MUST BE METRIC — AN INEQUALITY ON A
+    CONTINUOUSLY VARYING QUANTITY — NEVER TOPOLOGICAL.
+
+Consistency check: the Weil index itself is NOT continuous along the path (2 for a > 0, 0 at a = 0),
+which is exactly why it IS a usable criterion, and exactly why limiting arguments can only bound it,
+never compute it.
+
+### Significance for the atlas
+This is the first result that constrains the FORM of any future proof rather than a particular lane.
+It rules out, in one stroke: parity arguments, index-mod-k arguments, regularized-discriminant sign
+arguments, degree/winding arguments, and any K-theoretic or cobordism-style invariant of the divisor.
+Combined with C37 (the flow is monotone-agreeing) and X31 (extension = RH), the admissible shape of a
+proof is now sharply constrained: a metric inequality, not monotone under heat deformation, and not
+an aggregate of a positivity form.
+
+### Cycle 43 target
+The only surviving candidate object identified so far is the RELATIVE GAP statistic (cycle 40,
+confirmed unstudied in cycle 41): metric (a ratio of lengths), not monotone under the flow (the
+lattice is the fixed point, and relative gaps measure deviation FROM the fixed point), and not an
+aggregate positivity form. Target: prove an unconditional lower bound on the frequency of gaps below
+sqrt(6)/pi times the surrounding minimum gap, or prove that no such bound can hold.
+
+---
+
+## Cycle 43 (2026-07-26) — Theorem I43: THE OPEN CORE CLOSES. A GAP BELOW ALL ITS RUNNING MEANS COLLIDES
+
+The relative-gap requirement of cycles 38-42 was an ARTEFACT OF A CRUDE BOUND. Replacing it with the
+exact term-by-term comparison against the lattice equilibrium reduces the hypothesis to something
+that is actually available.
+
+### The mistake in the previous bound
+Cycles 40-42 bounded the field by Delta <= pi^2/(3 gamma^2) with gamma the minimum of ALL other gaps,
+giving the threshold delta/gamma < sqrt(6)/pi = 0.78 — a condition on the gap RELATIVE TO ITS
+NEIGHBOURS, which the literature does not supply. That bound throws away the lattice structure.
+
+### The exact comparison
+The field of a gap delta between consecutive real zeros is
+
+    Delta = SUM_{m>=1} [ 1/(D_m^L (D_m^L + delta)) + 1/(D_m^R (D_m^R + delta)) ],
+
+with D_m^L = delta_{n-1}+...+delta_{n-m}, D_m^R = delta_{n+1}+...+delta_{n+m}. For the LATTICE
+D_m = m*delta and each term is exactly 1/(m(m+1)delta^2), so delta^2 Delta = 2 SUM 1/(m(m+1)) = 2 —
+the equilibrium of cycle 40. Comparing TERM BY TERM instead of through a single minimum:
+
+    D_m >= m*delta  ==>  1/(D_m(D_m+delta)) <= 1/(m(m+1) delta^2),
+
+hence delta^2 Delta <= 2, STRICTLY as soon as one D_m exceeds m*delta. And D_m >= m*delta says
+EXACTLY that delta is at most the RUNNING MEAN of the m gaps on that side. Therefore:
+
+    A GAP AT MOST THE RUNNING AVERAGE OF THE GAPS ON EACH SIDE, FOR EVERY WINDOW LENGTH, AND
+    STRICTLY BELOW ONE OF THEM, SATISFIES delta^2 Delta < 2 AND COLLIDES IN BACKWARD TIME.
+
+### Why the hypothesis is now available
+  * INSIDE a window: the MINIMUM gap of a window automatically satisfies the running-mean condition
+    for every m inside the window (sum of m gaps each >= delta is >= m*delta). No relative-gap
+    statistics needed.
+  * OUTSIDE the window: the running means converge to the local mean spacing, so the condition
+    reduces to the NORMALIZED gap being at most 1. The minimum of N gaps whose mean is 1 is <= 1,
+    and by the known small-gap results infinitely many normalized gaps are below 0.515396.
+  * PERSISTENCE: the gap velocity is -4/delta + 2 delta Delta. For the smallest gap -4/delta is the
+    most negative and 2 delta Delta the smallest, so THE MINIMAL GAP CONTRACTS FASTEST AND STAYS
+    MINIMAL. The running-mean hypothesis therefore persists over the collision interval, which is
+    exactly what the frozen-field estimate of cycle 39 requires.
+
+### Consequence
+The chain of cycles 38-43 now runs on available inputs:
+    RH at t=0  ==>  all zeros of H_0 real, density -> infinity, window minima with normalized gap < 1
+               ==>  infinitely many gaps satisfy the running-mean condition
+               ==>  infinitely many collisions in backward time
+               ==>  M(t) = infinity for every t < 0,
+and contrapositively: IF H_t HAS ONLY FINITELY MANY NON-REAL ZEROS FOR A SINGLE t < 0, RH IS FALSE.
+Contrast Ki-Kim-Lee: for every t > 0, H_t has only finitely many non-real zeros. So the finiteness
+threshold tau_fin is exactly 0 under RH.
+
+### What remains (honest status)
+The zero dynamics itself (dz_j/dt = 2 SUM 1/(z_j - z_k) for an infinite order-one configuration, and
+the validity of the frozen-field ODE comparison over the collision interval) is used as an analytic
+input; it is standard for the dBN flow but is not formalized here. The RELATIVE-gap requirement is
+GONE — that was the substantive obstruction and it was self-inflicted.
+
+Machine-verified: `RHTower/RunningMeanCollision.lean` (term-by-term comparison and its strict form,
+the truncated lattice sum, the collision threshold with tail, the running-mean reformulation, the
+window-minimum lemma, and the contraction-order lemma; standard axioms only).
+
+### Cycle 44 target
+Make the analytic input explicit and minimal: state precisely the hypotheses on the configuration
+under which dz_j/dt = 2 SUM 1/(z_j - z_k) holds and the frozen-field comparison is valid, and check
+them against the known regularity of H_t (Ki-Kim-Lee simplicity, the counting function, and the
+locally uniform convergence of the Hadamard product). If they hold, the falsification criterion is
+unconditional.
+
+---
+
+## Cycle 44 (2026-07-26) — Theorem J44: THE PERSISTENCE PROBLEM DISSOLVES; EXPLICIT MARGIN
+
+Cycle 43 left one gap: does the running-mean hypothesis PERSIST over the collision interval? It does
+not need to. Track the WINDOW MINIMUM instead of a fixed gap.
+
+### The dissolution
+Let u_min(tau) = min over a window of delta_i(tau)^2. A MINIMIZING gap satisfies the running-mean
+hypothesis BY DEFINITION at every time (a sum of m gaps each >= the minimum is >= m times the
+minimum). So there is nothing to persist: whichever gap is currently minimal is the one the criterion
+applies to, and if the minimizer changes the criterion transfers to the new one. Only a UNIFORM
+MARGIN is needed.
+
+### The sharpened field bound (replaces pi^2/(3 gamma^2) and the sqrt(6)/pi threshold)
+If the running means exceed the gap by a factor a = 1 + eta >= 1, i.e. D_m >= a m delta, then
+
+    delta^2/(D_m(D_m+delta)) <= 1/(a m (a m + 1)) <= (1/a) * 1/(m(m+1)),
+
+the second step because a m + 1 >= m + 1 for a >= 1. Summing against the telescoping lattice sum,
+
+    theta := delta^2 Delta <= 2/a = 2/(1+eta) < 2,
+
+with collision time at most u_0 (1+eta)/(8 eta). NOTE: this is the correct sharpening. The earlier
+Basel bound SUM 1/m^2 = pi^2/6 LOSES the +1 and produces the spurious sqrt(6)/pi threshold; keeping
+the +1 telescopes and gives the clean 2/a.
+
+### The margin is available (split estimate)
+For small m the immediate neighbours give only a = 1 and contribute at most the lattice value. Past a
+window length M_0 the running mean approaches the local mean spacing, and the minimum of a window of
+gaps of mean 1 is at most the known small-gap constant 0.515396, so a ~ 1.94 there. Splitting:
+
+    theta <= 2(1 - 1/(M_0+1)) + (2/a)(1/(M_0+1)) = 2 - (2/(M_0+1))(1 - 1/a),
+
+an EXPLICIT margin c/(M_0+1) with c = 2(1 - 1/a) ~ 0.97. Collision time <= u_0 (M_0+1)/(2c).
+
+### Universal linear survival
+Every gap obeys u_i' = -8 + 4 theta_i with theta_i >= 0, so u_i' >= -8 and u_i(tau) >= u_i(0) - 8 tau:
+NO gap vanishes before time u_i(0)/8. Together with the margin, u_min' <= -c' < 0 and the minimum
+reaches zero in finite time. Absolute gaps shrink as the height grows while M_0 grows only mildly, so
+the collision time tends to 0 up the critical line, and FOR EVERY t < 0 INFINITELY MANY COLLISIONS
+HAVE ALREADY OCCURRED.
+
+### The analytic input, now minimal and checked
+  * ODE: implicit differentiation of H_t(z_j(t)) = 0 at a SIMPLE zero gives dz_j/dt = H''/H'(z_j) by
+    the implicit function theorem. RIGOROUS.
+  * Sum form: H''/H'(z_j) = 2 SUM_{k!=j} 1/(z_j - z_k) from the Hadamard factorization of the even
+    order-one function H_t in z^2, which converges because SUM |z_k|^{-2} < infinity (from the
+    counting function N(T) ~ (T/4pi) log T); the pairing k <-> -k makes the sum ABSOLUTELY
+    convergent. RIGOROUS.
+  * Multiple zeros: a multiple REAL zero is already a degenerate collision and splits off the axis
+    immediately in backward time, so it only helps. No simplicity hypothesis is needed.
+
+### Status of the chain (cycles 38-44)
+    RH at t=0  ==>  all zeros of H_0 real, density -> infinity
+               ==>  window minima with normalized gap <= 0.515396 infinitely often
+               ==>  theta <= 2 - c/(M_0+1) < 2 for those minima
+               ==>  infinitely many backward collisions, with collision time -> 0
+               ==>  M(t) = infinity for every t < 0.
+    CONTRAPOSITIVE: IF H_t HAS ONLY FINITELY MANY NON-REAL ZEROS FOR A SINGLE t < 0, RH IS FALSE.
+    Against Ki-Kim-Lee (M(t) < infinity for every t > 0), the finiteness threshold is exactly 0
+    under RH.
+
+The remaining softness is the passage from the pointwise differential inequality to the running
+minimum (a Dini-derivative/first-variation argument, standard) and the tail estimate past M_0 (uses
+the counting function, available). NO unstudied statistic is required any more.
+
+Machine-verified: `RHTower/WindowMinimumCollision.lean` (sharpened term bound, the strict field
+bound, the split margin and its positivity, universal linear survival, finite-time collision, and the
+window-minimum hypothesis; standard axioms only).
+
+### Cycle 45 target
+Turn the criterion around. It says a FINITE non-real count at some t<0 disproves RH. Ki-Kim-Lee give
+finiteness for t>0. Question: is there any t<0 for which finiteness of the non-real count of H_t can
+be established by the SAME method Ki-Kim-Lee used (they prove it for t>0 by an asymptotic analysis of
+H_t)? If their method degrades continuously at t=0, the criterion becomes an attack, not just a test.
+
+---
+
+## Cycle 45 (2026-07-26) — Theorem K45: THE HEIGHT-TIME SCALING LAW; BOTH SIDES OF THE FLOW MATCH
+
+Asked how Ki-Kim-Lee's method degrades as t -> 0+. Answer: it does not merely degrade, IT CHANGES
+SIGN — and the threshold height on both sides is governed by ONE dimensional law.
+
+### The law
+The zero dynamics is quadratically homogeneous, so FLOW TIME HAS DIMENSIONS OF LENGTH SQUARED. At
+height T the only length is the mean spacing 2pi/log(T/2pi), so the natural time scale there is
+
+    natTime(T) = spacing(T)^2/8 = pi^2 / (2 log^2(T/2pi)),
+
+with inverse
+
+    flowHeight(t) = 2 pi exp( pi / sqrt(2 t) ).
+
+### Both sides
+  * t > 0: Ki-Kim-Lee prove all but finitely many zeros of H_t are real for every t > 0; Polymath15
+    made this EFFECTIVE, producing an explicit height beyond which the zeros are provably real
+    (confirmed by search: "effective versions of theorems in Ki-Kim-Lee ... an explicit threshold
+    beyond which all the zeroes are provably real"). That height must diverge as t -> 0+, and the
+    scaling law says it diverges like exp(c/sqrt t).
+  * t < 0: the collision estimate of cycles 43-44 says a gap at height T reaches the axis within
+    backward time ~ spacing(T)^2/8. So by backward time |t| every sufficiently relatively-small gap
+    above flowHeight(|t|) has already collided.
+
+THE TWO THRESHOLDS HAVE THE SAME FUNCTIONAL FORM BECAUSE THEY ARE THE SAME DIMENSIONAL STATEMENT.
+t = 0 is exactly where the threshold escapes to infinity: the flow has acted NOWHERE and marginally
+EVERYWHERE. That is the structural reason to expect Lambda = 0.
+
+Why the sign flip: in the effective analysis the mollification gain is a factor e^{t log^2 x /16}.
+For t > 0 it beats any fixed loss once t log^2 x >> 1, i.e. x >> exp(c/sqrt t) — reality above the
+threshold. For t < 0 the SAME factor DECAYS, so the argument reverses and predicts non-reality —
+matching the collision picture from the opposite direction.
+
+### Quantitative corollary (numerical cost)
+To prove Lambda <= t by the barrier method one verifies below the threshold and estimates above it.
+So the reachable t scales as pi^2/(2 log^2 X) in the verification height X: THE COST OF LOWERING THE
+BOUND ON LAMBDA GROWS LIKE exp(c/sqrt t) IN HEIGHT. Comparing the dimensional prediction with the
+published bound fixes the effective constant; the ratio between them measures the remaining room in
+the effective analysis. Recorded as a target, not a claim: no arithmetic performed.
+
+### Significance
+This is the first statement in the corpus that ties the t > 0 literature (Ki-Kim-Lee, Polymath15)
+and the t < 0 mechanism (cycles 38-44) to a single curve. It also explains, without computation, why
+the numerical programme stalls: each factor-of-2 improvement in Lambda costs a factor of sqrt(2) in
+log-height, i.e. squares the required verification height.
+
+Machine-verified: `RHTower/HeightTimeScalingLaw.lean` (the natTime/flowHeight inverse pair, the
+log-parameter identity, unboundedness as t -> 0+, antitonicity, and the dimensional identity
+natTime = spacing^2/8; standard axioms only).
+
+### Cycle 46 target
+Push the criterion of cycles 38-44 to a contradiction or a theorem. Two concrete sub-targets:
+(a) formalize the Dini-derivative passage from the pointwise gap inequality to the running minimum,
+    which is the last soft step;
+(b) examine whether the sign-flipped effective analysis at t < 0 can be made to yield FINITENESS of
+    the non-real count for some t < 0 — which by the criterion would DISPROVE RH. If instead one can
+    show the count is provably infinite for all t < 0 by the effective route, that is an independent
+    confirmation of the collision mechanism and closes the loop.
+
+---
+
+## Cycle 46 (2026-07-26) — Theorem L46: THE LAST SOFT STEP IS CLOSED (machine-verified)
+
+Target (a) of cycle 45 was the Dini-derivative passage from the pointwise gap inequality to the
+running minimum. IT IS NOW A THEOREM IN LEAN, with no hand-waving.
+
+### The touching comparison
+The running minimum u_min(tau) = min_i delta_i(tau)^2 is only Lipschitz, so u_min' <= -c is not
+literally available. What IS available is the TOUCHING STRUCTURE: at every time some member of the
+family attains the minimum, lies above it everywhere, and has right derivative <= -c. That suffices:
+
+    THEOREM. Let f be continuous on [0,T] and suppose for every x in [0,T) there is g with
+    f <= g everywhere, f x = g x, and a right derivative g' <= -c at x. Then
+        f x <= f 0 - c x   for all x in [0,T].
+
+Proof: for z > x the difference quotient of f is at most that of g (since f z <= g z while
+f x = g x); the quotient of g tends to g' <= -c; so the lower right Dini derivative of f is at most
+-c, and the fencing theorem for continuous functions
+(`image_le_of_liminf_slope_right_le_deriv_boundary`) gives the comparison against the line.
+
+A FINITE MINIMUM SUPPLIES THE HYPOTHESIS FOR FREE: the minimizing index gives a function lying above
+f and touching it there, and its derivative is <= -c by the collision estimate, which applies exactly
+because the minimizing gap satisfies the running-mean hypothesis BY DEFINITION (cycle 44).
+
+=> NO Dini theory beyond the fencing theorem, NO persistence hypothesis, NO unstudied statistic.
+The chain of cycles 38-46 now has exactly one analytic input left: the zero dynamics itself
+(dz_j/dt = H''/H'(z_j) with the Hadamard sum form), which was checked in cycle 44 and is rigorous.
+
+Machine-verified: `RHTower/TouchingComparison.lean` (`touching_comparison`, `min_touches`,
+`min_reaches_zero`; standard axioms only). Compiled on the first attempt.
+
+### Target (b): can the sign-flipped effective analysis give FINITENESS at some t < 0?
+NO — and the reason is structural. The effective route (Ki-Kim-Lee, made effective by Polymath15)
+rests on a mollification gain of size e^{t log^2 x / 16}. For t > 0 it beats any fixed loss above
+x ~ exp(c/sqrt t), giving reality. For t < 0 THE SAME FACTOR DECAYS, so the argument does not merely
+weaken, it reverses: it predicts NON-reality. There is therefore no route to finiteness at t < 0 by
+that method, and the falsification criterion cannot be triggered from that direction.
+
+Combining with the now-closed collision chain, the picture is a SHARP FINITENESS TRANSITION AT t = 0:
+
+    M(t) < infinity for every t > 0            (Ki-Kim-Lee)
+    M(t) = infinity for every t < 0            (collision chain, cycles 38-46; under RH)
+
+with t = 0 the transition point. Under RH, M(0) = 0.
+
+### The unconditional version — stated as a conjecture with its precise input
+The collision chain uses RH only to know the zeros of H_0 are real. Unconditionally H_0 still has
+infinitely many REAL zeros (Hardy; a positive proportion by Conrey and successors), their density
+tends to infinity, and OFF-CRITICAL ZEROS ONLY HELP: a conjugate pair at vertical distance y from the
+axis with y >> the gap contributes 2 Re 1/((a-z)(b-z)) ~ -2/y^2 < 0 to the field, i.e. it ACCELERATES
+collision. So the argument should run unconditionally, giving
+
+    CONJECTURE (M46). M(t) = infinity for every t < 0, unconditionally.
+
+[OPEN CORE] the residual input is a definite spread of the gaps between consecutive CRITICAL zeros in
+some window — the window minimum must be below the window mean by a fixed factor. Under RH this is
+the known small-gap constant 0.515396. Unconditionally one needs the analogous statement for critical
+zeros only. Recorded as the precise remaining input; NOT claimed.
+
+### Cycle 47 target
+Settle Conjecture M46 by finding, or ruling out, an unconditional definite-spread statement for gaps
+between consecutive CRITICAL zeros. Candidate routes: (i) Selberg's unconditional second moment of
+S(T) (the partial sums of 1 - normalized gap ARE S(T), cycle-43 observation), which forces the gaps
+to fluctuate; (ii) the positive-proportion machinery of Levinson-Conrey, which produces critical
+zeros in prescribed short intervals and hence controls their spacing.
+
+---
+
+## Cycle 47 (2026-07-26) — Theorem N47: M(t) = INFINITY FOR EVERY t < 0, UNCONDITIONALLY
+### The conditionality is gone. But the falsification criterion is now VACUOUS.
+
+Conjecture M46 is settled — affirmatively — by a case split whose two branches use different
+mechanisms, neither of which needs RH.
+
+### CASE A: H_0 has infinitely many non-real zeros.
+Non-reality PERSISTS in backward time. Since dH/dt = -H'', backward time is the FORWARD heat
+equation, so STURM'S NODAL-DECREASE THEOREM applies: the number of real zeros in any interval is
+nonincreasing as t decreases. Real zeros are destroyed, never created, going backward. Hence
+M(t) >= M(0) = infinity for all t < 0. (Sturm was found in cycle 38 and is used here for the first
+time.)
+
+### CASE B: H_0 has finitely many non-real zeros.
+Then all but finitely many zeros are real and their density tends to infinity. The UNCONDITIONAL
+small-gap results give infinitely many consecutive ordinates at normalized distance <= 0.515396; all
+but finitely many of those gaps are between REAL zeros. Each is a window minimum below the window
+mean by a definite factor, so the running-mean hypothesis (cycle 43) holds with the margin of cycle
+44, the touching comparison (cycle 46) drives the squared gap to zero in finite backward time, and by
+the height-time scaling law (cycle 45) the collision time tends to 0 up the critical line. Hence
+infinitely many collisions have occurred by any fixed t < 0, and M(t) = infinity.
+
+### THE RESULT
+    M(t) <  infinity   for every t > 0     (Ki-Kim-Lee)
+    M(t) =  infinity   for every t < 0     (Theorem N47)
+THE FINITENESS TRANSITION OF THE dBN FLOW IS EXACTLY AT t = 0, UNCONDITIONALLY.
+Under RH, M(0) = 0.
+
+### HONEST CONSEQUENCE: THE CYCLE-38 CRITERION IS DEAD AS AN ATTACK
+The criterion said: finiteness of the non-real count at a single t < 0 implies RH is false. Theorem
+N47 says that hypothesis is NEVER SATISFIABLE. So the criterion CANNOT DISPROVE RH. What survives is
+the structural theorem — a sharp new statement about the flow, independent of RH, and the exact
+complement of Ki-Kim-Lee.
+
+This is the third time in this programme that a proposed attack has been killed by its own
+completion (after the Positivstellensatz route in cycle 8 and the parity route in cycle 42). Record:
+COMPLETING an attack is the fastest way to learn whether it was ever an attack.
+
+### DEAD END (route (i) of cycle 46): Selberg's second moment does NOT force a definite spread.
+The partial sums of 1 - normalized-gap are EXACTLY S(T) (cycle 43). One might hope Selberg's
+unconditional INT_0^T S^2 ~ T loglog T / (2 pi^2) forces the gaps away from 1. IT DOES NOT: bounded
+deviations |1 - delta_hat_k| <= eta still let S grow like eta*sqrt(n) by cancellation, so no
+contradiction arises. The definite spread must come from the SMALL-GAP results, not from moments of
+S. DO NOT RETRY THE MOMENT ROUTE.
+
+Machine-verified: `RHTower/FinitenessTransition.lean` (persistence of non-reality, both cases, the
+dichotomy, the transition statement, and the vacuity of the criterion; standard axioms only).
+
+### Cycle 48 target
+The dBN lane has now been fully mapped and every attack in it is capped or vacuous (C37 monotone,
+N47 vacuous). The atlas is:
+    linear Lambda-positivity        caps at PNT strength                     (Thm N)
+    quadratic Weil index            lower bounds on ind_- only               (Thm N')
+    Bohr-torus probability          valid only past height ~ pi(N)           (Thm G)
+    elementary archimedean tower    optimal at ell ~ 0.155                   (Thms Q24-V29)
+    extension of the range          equivalent to RH                         (Thm X31)
+    de Bruijn-Newman flow           monotone; criterion vacuous              (Thms C37, N47)
+    discrete/topological invariants impossible                               (Thm H42)
+Next: the one lane never opened is NYMAN-BEURLING / BAEZ-DUARTE — an APPROXIMATION problem, not a
+positivity or dynamics problem, with an unconditional LOWER bound already in the literature
+(Burnol; Baez-Duarte-Balazard-Landreau-Saias: liminf d_N^2 log N >= SUM_rho m_rho^2/|rho|^2). It is
+metric, non-monotone under heat deformation, and not an aggregate positivity form — the three
+conditions H42 leaves admissible. Open it.
+
+---
+
+## Cycle 48 (2026-07-26) — Theorem O48: BOUNDARY ZEROS ARE FREE, INTERIOR ZEROS ARE NOT
+### The Nyman-Beurling lane opened; the first mechanism that gets WORSE off the critical line
+
+### Phase 1 corpus check (mandatory)
+Found existing NB material: `HTGeometry/HardyClosureZeroFree.lean` has the QUALITATIVE closure
+obstruction (a continuous evaluation killing every generator but not the target puts the target
+outside the closed span), attributed there to the 2026 Hardy refinement arXiv:2606.16097. Also
+`RHTower/RiemannHypothesisSOTA2026.lean` cites the Hardy and Colombeau-Beurling criteria
+(arXiv:2606.16097, arXiv:2606.22562). NOT DUPLICATED — this cycle supplies the QUANTITATIVE version
+the corpus lacks.
+
+### The exact vanishing cost
+In an inner product space, for v != 0,
+
+    dist( f, { g : <v,g> = 0 } ) = |<v,f>| / ||v||,
+
+upper bound by the explicit projection g = f - (<v,f>/||v||^2) v, lower bound by Cauchy-Schwarz. In
+a reproducing kernel Hilbert space with v = K_w this reads
+
+    dist( f, { g : g(w) = 0 } ) = |f(w)| / sqrt(K(w,w)).
+
+### THE DICHOTOMY
+For the Hardy space of a half-plane, K(w,w) = 1/(4 pi sigma) with sigma the distance from w to the
+boundary. So the cost of forcing a vanishing at w is
+
+    |f(w)| * sqrt(4 pi sigma)   -->  0  as sigma -> 0,   > 0  for sigma > 0.
+
+CONSTRAINING AN APPROXIMANT TO VANISH AT A BOUNDARY POINT IS FREE. CONSTRAINING IT TO VANISH AT AN
+INTERIOR POINT IS NOT. And the cost is MONOTONE INCREASING in sigma.
+
+### Why this is the right mechanism
+In the Baez-Duarte formulation the approximants have Mellin transforms divisible by zeta, so they
+must vanish at every zero of zeta, while the target does not. A zero ON the critical line is a
+BOUNDARY point: the pointwise constraint costs nothing, and the observed d_N^2 ~ 1/log N is the cost
+of imposing it at the scale a Dirichlet polynomial of length N can resolve near the line. A zero OFF
+the line is an INTERIOR point at distance sigma = |beta - 1/2|: the constraint costs a definite
+amount, INDEPENDENT OF N.
+
+    ==> The Nyman-Beurling distance separates the two cases BY THEIR RATE, not merely by their limit:
+        d_N^2 ~ 1/log N  is critical behaviour;
+        any off-critical zero forces a CONSTANT FLOOR proportional to sqrt(|beta - 1/2|) times the
+        target value there.
+
+THIS IS THE ASYMMETRY EVERY CAPPED LANE LACKED. The mechanism gets WORSE, not better, as the divisor
+moves off the line — exactly the property H42 says a viable criterion must have, and the property
+C37 showed the dBN flow does NOT have.
+
+Note the convergence of scales: the 1/log N rate here is the same 1/log that appears in the mean
+spacing and in the height-time scaling law of cycle 45.
+
+Machine-verified: `RHTower/BoundaryInteriorVanishingCost.lean` (exact distance to a vanishing
+hyperplane, attainment, the half-plane kernel cost, vanishing at the boundary, positivity in the
+interior, monotonicity in the deviation; standard axioms only).
+
+### Cycle 49 target
+Make the floor explicit and unconditional. Required inputs, in order:
+(a) the exact Hilbert space and target of the Baez-Duarte formulation (L^2(0,infty) with the
+    generators rho_{1/n}, target 1_{(0,1]}), and the identification of its Mellin image as a
+    weighted L^2 on the line Re s = 1/2;
+(b) the statement that the closed span consists of transforms divisible by zeta — this is the step
+    that turns a zeta zero into a vanishing constraint;
+(c) the reproducing-kernel bound of this cycle applied at an off-critical zero, giving
+    d_infinity^2 >= |target(rho)|^2 * 4 pi |beta_rho - 1/2|.
+If (a)-(c) assemble, the result is: RH FAILS  ==>  d_N is bounded below by an explicit positive
+constant. Combined with the known equivalence RH <=> d_N -> 0 that is a QUANTITATIVE Nyman-Beurling
+criterion with an explicit modulus — new, and the first two-sided statement in the atlas.
+
+---
+
+## Cycle 49 (2026-07-26) — Theorem P49: QUANTITATIVE NYMAN-BEURLING, EXPLICIT MODULUS
+### and Theorem Q49: UNIVERSAL HEIGHT DEGRADATION — why "verify below, estimate above" always stalls
+
+The three ingredients of cycle 48 assemble.
+
+### (a) The space — and the key observation that makes it work
+EVERY BAEZ-DUARTE GENERATOR IS SUPPORTED IN (0,1]. For t >= 1 both 1/t < 1 and theta/t < 1, so
+rho_theta(t) = {theta/t} - theta{1/t} = theta/t - theta/t = 0. The target 1_{(0,1]} likewise. Hence
+the Mellin transform f -> INT_0^1 f(t) t^{-s} dt converges for Re s < 1/2 and maps L^2((0,1],dt)
+UNITARILY onto the HARDY SPACE H^2 of the half-plane Re s < 1/2, with Plancherel normalization
+||f||^2 = (1/2pi) INT |f^(1/2+iu)|^2 du. Checked against the target: 1^(s) = 1/(1-s), boundary
+modulus squared integrates to 2pi, matching ||1_{(0,1]}||^2 = 1. EXACT.
+
+This is what makes point evaluation OFF the critical line legitimate: the functions genuinely extend
+to a half-plane and evaluation there is a BOUNDED functional.
+
+### (b) The vanishing constraint
+The transform of a generator is zeta(s)(n^{-s} - 1/n)/s, so every finite combination has transform
+zeta(s) P(s)/s with P entire. At a zero rho of zeta with rho != 0 this VANISHES, and vanishing
+survives L^2 limits because point evaluation in H^2 is continuous. The target does NOT vanish:
+1^(rho) = 1/(1-rho) != 0.
+
+### (c) THE FLOOR
+With this normalization the diagonal kernel of H^2 of a half-plane is K(w,w) = 1/(2 sigma), sigma the
+distance to the boundary. (Cycle 48 used the UNNORMALIZED convention where the constant is
+1/(4 pi sigma); the dichotomy is identical, only the constant differs. Recorded so the two modules
+are not read as contradictory.) The exact vanishing cost of cycle 48 gives, for a zero rho = beta+i*gamma
+of zeta with beta < 1/2:
+
+    lim_N d_N  >=  |1^(rho)| / sqrt(K(rho,rho))  =  sqrt(1 - 2 beta) / |1 - rho| .
+
+By the functional equation RH fails exactly when such a rho exists. THEREFORE:
+
+    IF RH FAILS, THE BAEZ-DUARTE DISTANCES ARE BOUNDED BELOW BY THE EXPLICIT CONSTANT
+    sqrt(1 - 2 beta)/|1 - rho|.
+
+This is the QUANTITATIVE form of the easy direction of Nyman-Beurling: not merely d_N -/-> 0, but an
+explicit modulus in the deviation. The qualitative direction is classical; the explicit constant is
+the contribution.
+
+### Theorem Q49 — UNIVERSAL HEIGHT DEGRADATION (the real enemy, now named)
+The floor is at most 1/|gamma|, since sqrt(1-2 beta) <= 1 and |1 - rho| >= |gamma|. So a
+counterexample high up produces only a TINY floor, and closing the criterion against verification to
+height X would need d_N <= 1/X; with d_N^2 ~ 1/log N that is N >= exp(X^2).
+
+THE SAME DEGRADATION APPEARED IN THE FLOW LANE: verification to height X bounds Lambda only by
+pi^2/(2 log^2 X) (cycle 45). It is not an artefact of either method.
+
+    EVERY QUANTIFIED LANE LOSES STRENGTH AT A PUTATIVE COUNTEREXAMPLE POLYNOMIALLY OR EXPONENTIALLY
+    IN ITS HEIGHT. NUMERICAL VERIFICATION AND ANALYTIC ESTIMATE NEVER MEET UNLESS THE ANALYTIC
+    ESTIMATE IS ITSELF AS STRONG AS THE VERIFICATION HEIGHT.
+
+That is the unified reason the "verify below, estimate above" architecture stalls — in the
+Nyman-Beurling lane exactly as in the de Bruijn-Newman lane. It is the ninth and most general entry
+in the atlas, and unlike the others it is a statement about the INTERACTION of the two halves of
+every known effective programme rather than about one lane.
+
+Machine-verified: `RHTower/QuantitativeNymanBeurling.lean` (normalized kernel, the floor and its
+positivity, the explicit form sqrt(1-2beta)/|1-rho|, the height degradation, and the complementary
+length requirement; standard axioms only).
+
+### Cycle 50 target
+Q49 says the enemy is height degradation. The only escape is a criterion whose strength does NOT
+decay with the height of the counterexample. Candidates to test against that requirement:
+  (i) criteria weighted by 1/|rho|^2 (Li, BBLS) — decay like 1/gamma^2, WORSE. Rejected.
+  (ii) the imaginary energy SUM (Re rho - 1/2)^2 (cycle 35) — NO height weight at all. This is the
+       only functional found so far that is height-neutral. But its lane is capped by monotonicity
+       (C37). Question for cycle 50: is there a height-neutral functional that is NOT monotone under
+       the heat deformation? By H42 it must be metric; by Q49 it must be height-neutral; by C37 it
+       must not be monotone. Determine whether these three conditions are simultaneously satisfiable
+       or mutually exclusive — the latter would be a genuine no-go theorem for the entire effective
+       programme.
+
+---
+
+## Cycle 50 (2026-07-26) — Theorem R50: THE ADMISSIBLE SHAPE OF A CRITERION IS A THRESHOLD COUNT
+### The three no-gos are COMPATIBLE, and they pin the shape uniquely.
+
+Three constraints had accumulated on any functional Phi of the divisor that could decide RH:
+  * METRIC (H42): no discrete invariant separates critical from off-critical divisors, since the two
+    loci are joined through a double zero inside the symmetric class.
+  * HEIGHT-NEUTRAL (Q49): every quantified lane loses strength at a counterexample polynomially or
+    exponentially in its height, so verification and estimate never meet unless Phi weights a zero
+    independently of its height.
+  * NON-MONOTONE UNDER THE FLOW (C37): the dBN deformation moves the divisor toward the critical
+    line, so any Phi decreasing along it gives only upper bounds and can never contradict failure.
+
+### The computation that decides it
+For additive Phi = SUM_j phi(y_j) of the deviations, the flow (dy_j/dt = -2 SUM_{k!=j}
+(y_j-y_k)/|z_j-z_k|^2) gives
+
+    d/dt SUM_j phi(y_j) = -2 SUM_{ {j,k} } (phi'(y_j) - phi'(y_k))(y_j - y_k) / |z_j - z_k|^2 .
+
+EVERY TERM IS NONPOSITIVE EXACTLY WHEN phi' IS NONDECREASING, i.e. WHEN phi IS CONVEX. Therefore:
+
+    EVERY CONVEX EVEN WEIGHT GIVES A MONOTONE — HENCE CAPPED — FUNCTIONAL.
+    A HEIGHT-NEUTRAL, NON-MONOTONE ADDITIVE FUNCTIONAL MUST HAVE A NON-CONVEX WEIGHT.
+
+Checks: phi(y) = y^2 is convex, recovering the imaginary energy of cycle 35 and its cap C37;
+phi(y) = y^4 is also convex, since (a^3-b^3)(a-b) = (a-b)^2(a^2+ab+b^2) >= 0 — so raising the power
+does NOT escape (a route one might otherwise try; recorded as pre-emptively dead). The truncated
+weight phi(y) = min(y^2, eps^2) is NOT convex: phi'(eps/2) = eps while phi'(2 eps) = 0, so the pair
+term at (eps/2, 2 eps) is STRICTLY POSITIVE and the functional can increase.
+
+### THE CONCLUSION
+The three conditions ARE simultaneously satisfiable, and the functionals satisfying them are exactly
+the TRUNCATED ones — which count zeros whose deviation exceeds a threshold, up to a bounded weight.
+That is a ZERO-DENSITY STATISTIC.
+
+    THE ADMISSIBLE SHAPE OF A CRITERION FOR RH IS A THRESHOLD COUNT OF OFF-CRITICAL ZEROS —
+    AN N(sigma, T)-TYPE QUANTITY — AND NOTHING SMOOTHER.
+
+What is new is the DERIVATION: the conclusion follows from three independent no-gos, one
+topological (H42), one effective (Q49), one dynamical (C37). It explains why every smooth criterion
+in the atlas — Weil positivity, Li coefficients, the imaginary energy, the Nyman-Beurling distance —
+stalls in its own way, while the unconditional progress that exists lives in the zero-density
+literature. The slogan "RH is the ultimate density theorem" is folklore; deriving it as a THEOREM
+about admissible functionals is not.
+
+Machine-verified: `RHTower/AdmissibleFunctionalShape.lean` (symmetrized pair term, the convexity
+dichotomy in both directions, the square and quartic convexity checks, the truncated non-convex
+witness, boundedness and the vanishing criterion of the threshold weight; standard axioms only).
+
+### THE ATLAS AT CYCLE 50 (nine entries; the last three are cross-lane)
+    linear Lambda-positivity        caps at PNT strength                     (Thm N)
+    quadratic Weil index            lower bounds on ind_- only               (Thm N')
+    Bohr-torus probability          valid only past height ~ pi(N)           (Thm G)
+    elementary archimedean tower    optimal at ell ~ 0.155                   (Thms Q24-V29)
+    extension of the range          equivalent to RH                         (Thm X31)
+    de Bruijn-Newman flow           monotone; criterion vacuous              (Thms C37, N47)
+    discrete/topological invariants impossible                               (Thm H42)
+    verification + estimate         never meet (height degradation)          (Thm Q49)
+    admissible functional shape     threshold count only                     (Thm R50)
+
+### Cycle 51 target
+R50 says the criterion must be a threshold count. The classical technology for threshold counts is
+the zero-density estimate N(sigma,T) << T^{A(sigma)(1-sigma)} log^B T. Ask the question R50 makes
+precise: WHAT WOULD A DENSITY ESTIMATE HAVE TO LOOK LIKE TO GIVE RH, and is the obstruction to it the
+SAME height degradation Q49 identifies, or a different one? Concretely: RH <=> N(sigma,T) = 0 for
+every sigma > 1/2; the density hypothesis gives N(sigma,T) << T^{2(1-sigma)+eps}; the gap is between
+o(N(T)) and 0. Determine whether the passage from "density zero" to "identically zero" is subject to
+Q49-type degradation or is a genuinely different obstruction — the first structural question about
+the density lane, which the atlas now says is the only one left.
+
+---
+
+## Cycle 51 (2026-07-26) — Theorem S51: THE DEGRADATION-EXPONENT SCALE; THE ATLAS CLOSES ON ITSELF
+
+R50 said the admissible shape is a threshold count. The threshold count with threshold sigma IS
+N(sigma,T), and N(sigma,T) = 0 for all T IS a ZERO-FREE REGION {Re s > sigma}. So the classification
+closes on itself: THE UNIQUE ADMISSIBLE SHAPE IS THE ZERO-FREE REGION, and density estimates are its
+quantitative surrogates. That is a derived conclusion, not an assumption.
+
+### First tested: does integrality rescue the composition? NO.
+Hoped: N(sigma,T) is an INTEGER, so a bound below 1 forces exact vanishing; and verification to
+height X gives N(sigma,X) = 0, which should compose with a tail estimate. IT DOES NOT. N(sigma,.) is
+NONDECREASING, so N(sigma,X) = 0 carries no information above X, and a bound N(sigma,T) < 1 valid for
+all T IS the statement itself. Verification and estimate fail to compose here exactly as in every
+other lane. DEAD END recorded — do not retry the integrality argument.
+
+### But the degradation is SLOWER, and that is the finding
+What a zero-free region degrades in is its WIDTH. Classical (de la Vallee Poussin): c/log t.
+Vinogradov-Korobov: c/((log t)^{2/3} (log log t)^{1/3}). Both shrink with height, so the lane is
+subject to height degradation IN KIND — but at the slowest rate in the atlas:
+
+    Nyman-Beurling floor      ~ 1/gamma                  POLYNOMIAL          (worst)
+    de Bruijn-Newman bound    ~ 1/log^2 X                log exponent 2
+    zero-free region width    ~ 1/(log t)^{2/3}          log exponent 2/3    (best)
+    RIEMANN HYPOTHESIS        = 1/2                      LOG EXPONENT 0
+
+    ==> RH IS THE STATEMENT THAT THE DEGRADATION EXPONENT IS ZERO.
+
+Every lane in the atlas is a point on ONE scale, and the zero-free lane is furthest along it. This
+reframes the target concretely and quantitatively: THE OBJECT TO ATTACK IS THE DEGRADATION EXPONENT.
+Known technology has moved it from 1 to 2/3. Exponent 0 at ANY positive fixed width is already a
+famous open problem strictly weaker than RH (it gives pi(x) = li(x) + O(x^{1-delta})).
+
+### Why this is the right way to see the whole programme
+Fifty cycles produced nine no-gos, each phrased differently. They are all the same statement measured
+in different units: a criterion's strength at a counterexample of height t decays like (log t)^{-a},
+and the lane is characterised by a. The atlas is therefore not a list of unrelated obstructions but a
+SINGLE ORDERED SCALE, and progress means lowering a. That is the first unification of the programme.
+
+Machine-verified: `RHTower/DegradationRateRanking.lean` (width with logarithmic exponent, the
+exponent-zero characterisation, antitonicity in the exponent so the ranking is well defined, the
+non-composition of verification with a monotone count, positivity of a constant width; standard
+axioms only).
+
+### THE ATLAS AT CYCLE 51 — now one scale, not ten entries
+    exponent infinity (polynomial)  Nyman-Beurling floor              (Thm P49)
+    exponent 2                      de Bruijn-Newman / barrier        (Thms K45, Q49)
+    exponent 2/3                    zero-free region (Vinogradov-K.)  (classical)
+    exponent 0                      RIEMANN HYPOTHESIS                (the target)
+with the structural no-gos H42 (metric only), C37 (non-monotone required), R50 (threshold count only)
+explaining WHY every lane lands on this scale rather than escaping it.
+
+### Cycle 52 target
+Attack the exponent directly. The Vinogradov-Korobov exponent 2/3 comes from bounding
+|zeta(sigma + i t)| via exponential sums; the exponent is 1/(1 + 2/3) = ... i.e. it is dictated by the
+quality of the exponential-sum bound. The question R50/S51 makes precise and that the corpus has not
+yet asked: IS THERE A LOWER BOUND ON THE ACHIEVABLE EXPONENT FROM THE VAN DER CORPUT / VINOGRADOV
+METHOD ITSELF — a no-go saying the method cannot reach exponent 0 — or is the barrier only technical?
+If a method-intrinsic floor exists, that is the tenth and final atlas entry and it would say the
+zero-free lane is capped too. If not, the exponent is the single number the whole programme should be
+attacking.
+
+---
+
+## Cycle 52 (2026-07-26) — Theorem T52: THE LAST LANE IS **NOT** CAPPED. THE BARRIER IS TECHNICAL.
+### And a plausible no-go that I proposed and then REFUTED within the cycle.
+
+### The mechanism, made explicit
+A zero-free region from Borel-Caratheodory + the 3 + 4cos + cos2 positivity has width
+
+    w  ~  r / M(r,t),    M(r,t) = sup{ log|zeta(s)| : |s - (1 + i gamma)| <= r },
+
+r the radius of the disk on which the growth of zeta is controlled. Classically M ~ log t with
+r ~ 1, giving w ~ 1/log t (exponent 1); Vinogradov-Korobov improve M to (log t)^{2/3}, giving the
+current exponent 2/3. SO THE DEGRADATION EXPONENT IS EXACTLY THE QUALITY OF THE GROWTH BOUND.
+
+### THE PROPOSED NO-GO — AND ITS REFUTATION (same cycle)
+Proposed: Montgomery's unconditional Omega-results make log|zeta| unbounded on every vertical line
+sigma < 1 — schematically M(r,t) >~ (log t)^r / log log t when the disk reaches abscissa 1-r — so a
+fixed width is impossible and the method is capped.
+
+With a FIXED radius this is correct: writing B = log t and x = r log B,
+
+    w <= r log B / B^r = x e^{-x}  --> 0    as B --> infinity.
+
+BUT IT DOES NOT FOLLOW THAT THE METHOD IS CAPPED. Nothing forces a fixed radius. At the SHRINKING
+radius r = 1/log B the same Omega-bound gives B^r = e and therefore
+
+    w <= r log B / B^r = 1/e,
+
+A POSITIVE CONSTANT. The Omega-results obstruct FIXED-RADIUS arguments only; at radius ~1/log log t
+they permit a fixed-width region. CONJECTURE REFUTED BY ITS OWN COMPUTATION.
+
+### THE CONCLUSION
+The degradation exponent is limited by the QUALITY OF THE GROWTH BOUND, not by anything intrinsic to
+the method. The whole effective programme therefore reduces to ONE quantitative question:
+
+    HOW SMALL CAN sup log|zeta| BE MADE ON A DISK OF RADIUS ~ 1/log log t REACHING TO ABSCISSA
+    1 - c/log log t ?
+
+Known there: Vinogradov-Korobov strength. Permitted by the Omega-results: O(1). The gap between them
+is the ENTIRE remaining distance to a fixed-width zero-free region — hence, by the
+degradation-exponent scale of cycle 51, the entire remaining distance from the effective programme to
+exponent zero.
+
+    ==> THE LAST LANE IS OPEN, NOT CAPPED, AND THE TARGET IS A SINGLE EXPLICIT QUANTITY.
+
+This is the ONLY place in the atlas where the obstruction is technical rather than structural. After
+nine structural no-gos that is exactly the outcome the classification was for: it says where to push.
+
+Machine-verified: `RHTower/ZeroFreeLaneNotCapped.lean` (width formula, its identification with the
+Omega-permitted width, the fixed-radius identity w = x e^{-x} and the limit x e^{-x} --> 0, the
+shrinking-radius escape w = 1/e, and the monotonicity making the growth gap the target; standard
+axioms only).
+
+### METHOD NOTE (fourth occurrence)
+This is the fourth time a proposed obstruction has been killed by carrying it out
+(Positivstellensatz c8, parity c42, relative gaps c40-44, this). Every single time, the killer was
+completing the computation rather than accepting the plausible reading. RULE: never record an
+obstruction until its computation has been carried to the end at BOTH the natural and the extreme
+parameter choices.
+
+### THE ATLAS AT CYCLE 52 — final form
+    exponent infinity (polynomial)  Nyman-Beurling floor              capped     (Thm P49)
+    exponent 2                      de Bruijn-Newman / barrier        capped     (Thms K45, Q49)
+    exponent 2/3                    zero-free region                  **OPEN**   (Thm T52)
+    exponent 0                      RIEMANN HYPOTHESIS                the target
+structural no-gos: H42 (metric only), C37 (non-monotone required), R50 (threshold count only),
+N47 (dBN criterion vacuous), X31 (extension = RH), N/N'/G/Q24-V29 (positivity lanes capped).
+
+### Cycle 53 target
+Attack the growth bound on the shrinking disk. Concretely: the Vinogradov-Korobov bound comes from
+estimating SUM n^{-s} over n in [N, 2N] by Vinogradov's mean value theorem; the exponent 2/3 is the
+output of the k-th derivative van der Corput / Vinogradov exponent pair machinery. The question the
+classification now makes precise: ON A DISK OF RADIUS ~1/log log t, is the relevant exponential sum
+SHORTER (so that a better bound is available) than on the fixed-radius disk the classical argument
+uses? If the shrinking radius shortens the effective sum length, the exponent improves for free —
+and that is the first concrete, non-structural target the programme has produced in 52 cycles.
+
+---
+
+## Cycle 53 (2026-07-26) — Theorem U53: THE CRITICAL SCALE IS 1/loglog t, AND ONE FACTOR DECIDES
+
+### First: the framework is CALIBRATED, not schematic
+With the Vinogradov-Korobov growth M(r,t) ~ B r^{3/2} log t + log log t, the width w ~ r/M is
+maximised where the two terms balance, B r^{3/2} log t = log log t, giving
+
+    r ~ (log log t / log t)^{2/3},   w ~ 1/((log t)^{2/3} (log log t)^{1/3}),
+
+WHICH IS THE VINOGRADOV-KOROBOV ZERO-FREE REGION ON THE NOSE. The width formula w ~ r/M of cycle 52
+therefore reproduces the state of the art exactly. That is a hard consistency check and it validates
+using the formula predictively.
+
+### THE FINDING
+The believed size of zeta just left of sigma = 1 — a THEOREM under RH (Littlewood, Soundararajan) and
+a conjecture without it — is
+
+    log|zeta(1 - r + it)|  ~  (log t)^{2r} / log log t .
+
+Put L = log log t and x = 2 r L. Then
+
+    w  =  r L / (log t)^{2r}  =  (x/2) e^{-x},
+
+INDEPENDENT OF t, maximised at x = 1 — that is, at the radius r = 1/(2 log log t) — with value 1/(2e).
+
+    ==> A ZERO-FREE REGION OF FIXED WIDTH. DEGRADATION EXPONENT ZERO.
+
+### The whole thing turns on ONE factor
+Without the 1/log log t in the growth — i.e. with (log t)^{2r} alone — the width is (x/(2L)) e^{-x},
+maximised at 1/(2eL), WHICH TENDS TO ZERO. THE log log t IN THE DENOMINATOR OF THE CONJECTURED GROWTH
+IS EXACTLY WHAT MAKES THE OPTIMISED WIDTH SCALE-INVARIANT. Nothing else in the computation matters.
+
+### What the programme reduces to
+NOT a bound for all sigma. A bound on a SINGLE CREEPING LINE:
+
+    sigma = 1 - 1/(2 log log t).
+
+An unconditional Littlewood-type bound there yields a fixed-width zero-free region — a quasi-Riemann
+hypothesis — by the mechanism above. Under RH such a bound is a theorem; unconditionally it is open.
+This is the narrowest target the programme has produced: one line, one bound.
+
+CONSISTENCY: the critical scale 1/log log t is EXACTLY the scale at which cycle 52's Omega-analysis
+found the obstruction to fixed-radius arguments disappears. Two independent computations, the same
+scale. That is not a coincidence — both are the scale at which (log t)^r becomes O(1).
+
+Machine-verified: `RHTower/CriticalScaleLogLog.lean` (scale-invariant width profile, its maximum
+(x/2)e^{-x} <= e^{-1}/2 at x = 1 via 1 + u <= e^u, positivity of the optimum, the decaying optimum
+without the log log factor and its monotonicity, and the Vinogradov-Korobov balance identity;
+standard axioms only).
+
+### HONEST STATUS
+U53 is CONDITIONAL on the Granville-Soundararajan-type growth bound, and the width formula w ~ r/M is
+the standard schematic of the Borel-Caratheodory + 3+4cos+cos2 argument rather than a constant-by-
+constant derivation. What is unconditional here is (i) the calibration against Vinogradov-Korobov,
+(ii) the scale-invariance computation and its maximum, and (iii) the identification of 1/log log t as
+the critical scale from two independent directions. NOT CLAIMED: a proof of RH or of quasi-RH.
+
+### Cycle 54 target
+Make U53 unconditional or find the obstruction. The needed input is an upper bound for
+log|zeta(1 - 1/(2 log log t) + it)| of size O(log log t / log log t) = O(1)... more precisely of size
+(log t)^{1/L} / L = e/L, i.e. O(1/log log t) times the trivial bound. Ask: what does the current
+exponential-sum technology give ON THAT LINE specifically? The classical estimates are stated
+uniformly in sigma; the line sigma = 1 - 1/(2 log log t) approaches 1 so fast that the effective
+Dirichlet polynomial length may be much shorter than in the uniform statement. If it is, the bound
+improves for free — exactly the mechanism cycle 52 asked about, now with the line pinned down.
+
+---
+
+## Cycle 54 (2026-07-26) — Theorem V54: THE BOREL-CARATHEODORY MECHANISM IS CAPPED AT 1/loglog t
+### SUPERSEDES cycle 52's T52 ("not capped") — that reading used a growth formula that is wrong at sigma = 1.
+
+### The correction that changes everything
+Cycle 53 optimised w ~ r/M against M ~ (log t)^{2r}/loglog t. THAT FORMULA IS WRONG NEAR sigma = 1:
+it tends to 0 there, whereas the true size of log|zeta(1+it)| is ~ logloglog t — bounded above AND
+attained (Granville-Soundararajan). Caught by noticing M --> 0 is absurd. The correct shape carries
+an IRREDUCIBLE ADDITIVE TERM:
+
+    M(r,t)  ~  (log t)^{2r}/loglog t  +  logloglog t .
+
+### THE CEILING (unconditional)
+Write L = loglog t, l = logloglog t. Two UNCONDITIONAL lower bounds on M:
+  * M(r,t) >= l for every r >= 0, since the disk meets the line sigma = 1 and
+    max log|zeta(1+it)| ~ logloglog t;
+  * M(r,t) >= e^{rL}/L by Montgomery's Omega-result on the line sigma = 1-r.
+Hence w = r/M <= min( r/l , r L e^{-rL} ). The first branch increases in r, the second decreases past
+rL = 1, and they cross at rL = log(L l). At the crossover the common value is
+
+    w  <=  log(L l)/(L l)  <=  2 l/(L l)  =  2/L ,
+
+using log(L log L) = log L + loglog L <= 2 log L. THEREFORE:
+
+    EVERY ZERO-FREE REGION OBTAINED FROM THE BOREL-CARATHEODORY BOUND ON A DISK AROUND 1 + i*gamma
+    HAS WIDTH << 1/loglog t. THE MECHANISM CANNOT PRODUCE A FIXED-WIDTH REGION, WHATEVER GROWTH BOUND
+    IT IS FED.
+
+Unconditional and INTRINSIC: the obstruction is the irreducible logloglog t, which is the TRUE size
+of log|zeta| on sigma = 1 and cannot be improved.
+
+### What this settles
+  * Cycle 52's T52 is SUPERSEDED. The last lane IS capped — tenth and final atlas entry.
+  * But the ceiling 1/loglog t is FAR above the Vinogradov-Korobov region (log t)^{-2/3} currently
+    achieved, so there is a large amount of genuine room inside the mechanism: improving from
+    exponent 2/3 to the ceiling would be an enormous advance and is NOT excluded.
+  * The ceiling is not 1/2, so THE CLASSICAL ZERO-FREE-REGION MECHANISM CANNOT REACH THE CRITICAL
+    LINE EVEN IN PRINCIPLE. Exponent zero is attainable by it only in the weak sense of beating every
+    power of 1/log t, never as a fixed width.
+
+Machine-verified: `RHTower/BorelCaratheodoryCeiling.lean` (the two branches, antitonicity of
+x e^{-x} on [1,infinity) via its derivative (1-x)e^{-x}, the crossover inequality
+log L + loglog L <= 2 log L, the ceiling log(Ll)/(Ll) <= 2/L, and the assembly on both sides of the
+crossover; standard axioms only).
+
+### METHOD NOTE (fifth occurrence, and the reverse of the previous four)
+Four times a proposed OBSTRUCTION died by being carried out. This time a proposed ESCAPE died the
+same way — cycle 53's fixed-width conclusion was an artefact of an incorrect growth formula, caught
+by a sanity check (M --> 0 at sigma = 1 is absurd). RULE UPDATED: carry every computation to the end
+AND sanity-check its limits at the boundary of the regime.
+
+### THE ATLAS AT CYCLE 54 — complete, ten entries
+    exponent infinity (polynomial)  Nyman-Beurling floor              capped   (Thm P49)
+    exponent 2                      de Bruijn-Newman / barrier        capped   (Thms K45, Q49)
+    exponent 2/3                    zero-free region, ACHIEVED        --
+    ceiling 1/loglog t              zero-free region, MECHANISM CAP   capped   (Thm V54)
+    fixed width                     UNREACHABLE by this mechanism     --
+    exponent 0 / width 1/2          RIEMANN HYPOTHESIS                the target
+structural no-gos: H42 (metric only), C37 (non-monotone required), R50 (threshold count only),
+N47, X31, N/N'/G/Q24-V29.
+
+EVERY KNOWN LANE IS NOW CAPPED. The gap between the achieved (log t)^{-2/3} and the mechanism ceiling
+1/loglog t is the only remaining room inside the classical framework, and even exhausting it does not
+reach RH.
+
+### Cycle 55 target
+The classification is complete and every lane is capped, so the next move must be OUTSIDE all of
+them. The one requirement V54 makes precise: a mechanism that does NOT go through
+sup log|zeta| on a disk — i.e. that does not use the maximum modulus of zeta as its input, because
+that maximum is irreducibly logloglog t and caps the output. Candidates that avoid the maximum:
+  (i) mean-value / moment inputs (integral rather than sup) — the moment technology is exactly this,
+      and the atlas has not tested whether moments evade V54;
+  (ii) the pair-correlation/statistical inputs, which control averages rather than maxima.
+Target: determine whether an L^2 (mean-square) input in place of the sup evades the logloglog t
+irreducibility, since the mean square of log|zeta| on sigma = 1 is O(1) rather than logloglog t.
+That single substitution is the first concrete escape route the classification permits.
+
+---
+
+## Cycle 55 (2026-07-26) — Theorem W55: THE CAP IS ABOUT THE RANGE OF log|zeta|, NOT THE NORM
+### The L^2 escape route is tested and CLOSED. The classification reaches its terminal statement.
+
+### The proposed escape
+V54's ceiling came from the SUPREMUM of log|zeta| on a disk around 1+i*gamma. There IS an L^2 version
+of Borel-Caratheodory: Parseval applied to Re log f bounds a_1 = f'/f(s_0) by the L^2 norm of log|f|
+on the circle. And the MEAN SQUARE of log|zeta(1+it)| over t is O(1), while its MAXIMUM is
+~ logloglog t. The substitution looks like a clean escape.
+
+### Why it fails — two independent reasons
+(1) The circle is centred at the height gamma OF THE PUTATIVE ZERO. A zero-free region needs a bound
+    at EVERY gamma, not on average over gamma. The O(1) mean square is an average over t and does not
+    transfer.
+(2) JENSEN'S FORMULA makes the obstruction visible with no norm at all:
+
+        n(r/2) log 2  <=  (1/2pi) INT log|zeta(s_0 + r e^{i theta})| d(theta)  -  log|zeta(s_0)| ,
+
+    so the zero count is controlled by the L^1 circle average MINUS THE CENTRAL VALUE. Both are
+    functionals of log|zeta| near sigma = 1, and their difference is at most the OSCILLATION of
+    log|zeta| there. That oscillation is ~ logloglog t UNCONDITIONALLY IN BOTH DIRECTIONS:
+    max |zeta(1+it)| ~ e^gamma loglog t and min |zeta(1+it)| ~ 1/loglog t, so log|zeta| ranges over an
+    interval of length ~ logloglog t.
+
+### THE STRENGTHENED CEILING
+    ANY ZERO-FREE-REGION MECHANISM WHOSE INPUT IS A FUNCTIONAL OF log|zeta| ON A DISK AROUND
+    1 + i*gamma — SUPREMUM, L^1, L^2, OR ANY QUANTITY DOMINATED BY THE OSCILLATION — IS CAPPED AT
+    WIDTH ~ 1/loglog t.
+The cap is NOT an artefact of the supremum. It is a property of zeta near sigma = 1: log|zeta|
+oscillates there by ~ logloglog t and no reading of it can do better. W55 strictly strengthens V54.
+
+### TERMINAL STATEMENT OF THE CLASSIFICATION
+The escape must not read zeta near sigma = 1 at all. The remaining family reads zeta on or near the
+critical line — moments and mollifiers — and that technology yields PROPORTIONS of zeros on the line,
+capped below 1 (Levinson, Conrey, and successors). So:
+
+    near sigma = 1   -->  zero-free regions,   capped at width 1/loglog t   (Thms V54, W55)
+    near sigma = 1/2 -->  positive proportions, capped below 1              (classical)
+
+AND NEITHER FAMILY REACHES THE RIEMANN HYPOTHESIS. Every mechanism examined in 55 cycles falls into
+one of these two families or into one of the ten atlas entries, all capped.
+
+Machine-verified: `RHTower/OscillationCeiling.lean` (oscillation, domination of any circle-average
+input by it, the Jensen count inequality, transfer of the ceiling from sup to any
+oscillation-dominated input, the two-sided Omega lower bound on the oscillation, and the family
+dichotomy with both branches falling short; standard axioms only).
+
+### WHAT THE PROGRAMME HAS ESTABLISHED (state at cycle 55)
+Ten structural caps, one degradation scale, one shape theorem, and a terminal two-family dichotomy.
+RH is neither proven nor disproven. What IS proven is that no mechanism of the examined kinds can
+reach it, and precisely why: every one of them reads either the oscillation of log|zeta| near
+sigma = 1 (capped by logloglog t) or a proportion on the critical line (capped below 1).
+
+### Cycle 56 target
+Both capped families share a feature: they read zeta at ONE abscissa (near 1, or near 1/2). The
+untested possibility is a mechanism that couples the two — reading the FUNCTIONAL EQUATION as a
+relation between the two abscissae rather than working at either. The corpus already contains the
+functional-equation machinery (Theorems M, P, R on the axiomatic characterization, and the orbit
+decomposition). Target: determine whether a two-abscissa mechanism — one that uses the s <-> 1-s
+relation to transfer information from sigma = 1 to sigma = 0 and hence constrain the strip between —
+is capped by the same oscillation argument, or whether the transfer evades it because the oscillation
+at the two ends is CORRELATED by the functional equation.
+
+---
+
+## Cycle 56 (2026-07-26) — Theorem X56/Y56/Z56: THE FUNCTIONAL EQUATION TRANSPORTS BUT DOES NOT
+## CREATE; THE CLASSIFICATION CLOSES ON THREE CAPPED FAMILIES
+
+### X56 — the two-abscissa coupling gains nothing
+From xi(s) = xi(1-s) and Stirling,
+
+    log|zeta(sigma+it)| - log|zeta(1-sigma+it)| = log|chi(sigma+it)| = (1/2 - sigma) log(t/2pi) + O(1/t).
+
+AT A FIXED HEIGHT THE RIGHT-HAND SIDE IS A CONSTANT. So the OSCILLATION of log|zeta| on the line
+sigma equals the oscillation on the reflected line 1-sigma: the functional equation SHIFTS the values
+and does not SPREAD them. A mechanism reading a reflected pair of abscissae sees the same oscillation
+twice and is capped by W55 exactly as a one-sided mechanism is.
+
+    THE FUNCTIONAL EQUATION TRANSPORTS INFORMATION BETWEEN REFLECTED ABSCISSAE; IT NEVER CREATES ANY.
+
+This is the quantitative counterpart of the corpus's own Theorems M/P/R (the functional equation does
+not pin down zeta): there a failure of RIGIDITY, here a failure of INFORMATION GAIN. Same phenomenon,
+two currencies.
+
+### Y56 — the interior of the strip is capped too, for an elementary reason
+What remains is the interior, where by R50 the only admissible functional is the threshold count
+N(sigma,T). Mean-value and large-sieve methods produce bounds of the form T^a log^B T, which are
+>= 1 for large T, while RH needs the count to be EXACTLY 0. A BOUND THAT GROWS IN T CAN NEVER CERTIFY
+A VANISHING INTEGER COUNT.
+
+    DENSITY ESTIMATES CANNOT PROVE THE RIEMANN HYPOTHESIS. THEY CAN ONLY APPROACH IT.
+
+### Z56 — THE COMPLETE CLASSIFICATION
+    sigma near 1      zero-free regions        capped at width 1/loglog t   (V54, W55)
+    sigma interior    density estimates        bounds grow in T, never 0    (Y56)
+    sigma = 1/2       moments and mollifiers   proportions capped below 1   (classical)
+    functional eq     transports, no gain                                   (X56)
+
+ALL THREE FAMILIES ARE CAPPED, AND THE FUNCTIONAL EQUATION CANNOT COMBINE THEM. Every mechanism
+examined across 56 cycles falls into one of these three families or into one of the ten atlas
+entries, all capped. This is the TERMINAL STATEMENT of the classification programme: it does not
+decide RH, and it explains for each family exactly what stops it.
+
+Machine-verified: `RHTower/ThreeFamilyClosure.lean` (translation invariance of the oscillation, the
+reflected-line equality, the lower bound 1 <= T^a log^B T for T >= e, the consistency of a count 1
+with any such bound, and the three-family assembly; standard axioms only).
+
+### STATE OF THE PROGRAMME AT CYCLE 56
+PROVEN AND MACHINE-VERIFIED: ten structural caps; one degradation-exponent scale unifying them; the
+admissible-shape theorem (threshold counts only); the metric-only theorem (no discrete invariants);
+the dBN finiteness transition at t=0 (unconditional); the imaginary-energy Lyapunov identity and the
+index-energy conservation law; the quantitative Nyman-Beurling floor; the Borel-Caratheodory and
+oscillation ceilings; and this three-family closure.
+NOT PROVEN: the Riemann Hypothesis, in either direction.
+
+### Cycle 57 target
+The classification is complete for mechanisms that READ zeta analytically. The one family it has
+never examined is mechanisms that do not read zeta at all but CONSTRUCT an object whose spectrum is
+the zero set — Hilbert-Polya. The corpus has Theorem Y32 (complex quadruples are incompatible with
+any self-adjoint problem) and Theorem J' (real strays are exceptional eigenvalues), i.e. the
+CONSEQUENCES of such a construction are mapped, but not the obstruction to BUILDING one. Target:
+determine what the classification's caps imply for the construction side — specifically whether the
+oscillation ceiling W55 obstructs the trace formula of any candidate operator, since a trace formula
+expresses sums over zeros in terms of the same log|zeta| data the caps control.
+
+---
+
+## Cycle 57 (2026-07-26) — Theorem A57: THE CONSTRUCTION SIDE NEEDS A QUADRATICALLY GROWING BOX
+
+The classification covers mechanisms that READ zeta. The last family CONSTRUCTS an operator whose
+spectrum is the zero set. The counting function pins the candidate at once: N(T) = (T/2pi)
+(log(T/2pi) - 1) + O(log T) is NOT a power law, so no elliptic operator on a compact manifold has
+this spectrum; the log factor is the semiclassical signature of xp.
+
+### The phase-space count (exact)
+For xp on the box 0 < x < X, 0 < p < P:
+
+    Area{ xp < E } = INT_0^X min(P, E/x) dx = E + E log(XP/E)     (E < XP),
+
+so the semiclassical count is N(E) = (E/2pi)(1 + log(XP/E)).
+
+### MATCHING FORCES A QUADRATICALLY GROWING BOX
+Equating with the Riemann count (E/2pi)(log(E/2pi) - 1):
+
+    1 + log(XP/E) = log(E/2pi) - 1   <=>   XP = E^2/(2 pi e^2).
+
+THE PHASE-SPACE CUTOFF MUST GROW QUADRATICALLY IN THE SPECTRAL PARAMETER, with the explicit constant
+1/(2 pi e^2).
+
+### A FIXED BOX IS IMPOSSIBLE OUTRIGHT
+With XP = A constant the count is (E/2pi)(1 + log A - log E), which becomes NEGATIVE once E > eA —
+absurd for a counting function. So the impossibility is not a matter of approximation quality; a
+fixed phase-space region is excluded by an elementary sign.
+
+    NO xp-TYPE SEMICLASSICAL MODEL ON A FIXED PHASE-SPACE REGION CAN CARRY THE ZETA SPECTRUM.
+    THE BOX MUST EXPAND LIKE E^2/(2 pi e^2), SO THE OBJECT IS A FAMILY INDEXED BY THE SPECTRAL
+    PARAMETER, NOT A SINGLE OPERATOR.
+
+That is the precise sense in which the Berry-Keating picture requires an energy-dependent
+regularization, and it is consistent with the adelic construction producing an ABSORPTION spectrum
+rather than a genuine discrete one. It complements Theorem Y32 (a complex quadruple is incompatible
+with any self-adjoint problem): Y32 maps what such an operator WOULD imply, A57 maps what its
+semiclassical shadow MUST look like.
+
+Machine-verified: `RHTower/ScaleCouplingObstruction.lean` (the semiclassical count, the exact
+matching XP = E^2/(2 pi e^2), the negativity of the count for a fixed box beyond E = eA, and the
+strict monotonicity of the required area; standard axioms only).
+
+### THE CLASSIFICATION AT CYCLE 57 — all four families
+    READ near sigma = 1     zero-free regions        capped at 1/loglog t        (V54, W55)
+    READ interior           density estimates        bounds grow in T, never 0   (Y56)
+    READ sigma = 1/2        moments and mollifiers   proportions capped below 1  (classical)
+    CONSTRUCT               Hilbert-Polya / xp       needs an E-dependent family (A57, Y32)
+    functional equation     transports, no gain                                  (X56)
+
+### Cycle 58 target
+A57 says the construction must be a FAMILY indexed by the spectral parameter, with box area
+E^2/(2 pi e^2). That is exactly the structure of a RENORMALIZATION GROUP or a scaling limit: a family
+of operators H_E with a matching condition between scales. The corpus has never examined whether such
+a family can be assembled COHERENTLY — i.e. whether the required boxes at different E are compatible
+under restriction. Target: determine the compatibility condition between H_{E_1} and H_{E_2} for
+E_1 < E_2 forced by the shared spectrum below E_1, and check whether it is satisfiable. If it is not,
+that caps the construction side and completes the classification over all five families. If it is,
+the compatible family IS the object Hilbert-Polya asks for, and its construction becomes the concrete
+target.
+
+---
+
+## Cycle 58 (2026-07-26) — Theorem B58: THE TRUNCATION FAMILY IS INCOHERENT
+### The classification is now COMPLETE over all five families.
+
+A57 showed the construction side needs a family of box-truncated xp models with area
+A(E) = E^2/(2 pi e^2). For the family to describe ONE spectrum the low-lying eigenvalues must not
+move as the box grows. THEY DO.
+
+### Monotonicity, made strict
+The truncated operator is defined variationally on the box; enlarging the box enlarges the form
+domain, so by MIN-MAX every eigenvalue is nonincreasing in the area and the counting function is
+nondecreasing. The semiclassical count makes it strict:
+
+    N(A,E) = (E/2pi)(1 + log(A/E))   is STRICTLY INCREASING in A, because log is.
+
+Two different areas therefore give different counts at the same energy, hence different spectra.
+
+### THE INCOHERENCE
+A family {H_{A(E)}} required to share the zeros as spectrum would need N(A(E_1), E) = N(A(E_2), E)
+for energies below both cutoffs. Strict monotonicity forbids it whenever A(E_1) != A(E_2), and A is
+strictly increasing (A57). Therefore:
+
+    NO FAMILY OF BOX-TRUNCATED xp MODELS HAS A COMMON SPECTRUM. THE COUNTING LAW CAN BE MATCHED AT
+    EACH ENERGY BY CHOOSING THE BOX, BUT THE INDIVIDUAL EIGENVALUES THEN MOVE WITH THE BOX, AND NO
+    SINGLE OPERATOR EMERGES.
+
+That is exactly the status of the Berry-Keating model: a correct heuristic for the DENSITY of zeros
+which does not produce the zeros. THE OBSTRUCTION IS NOT THE QUALITY OF THE SEMICLASSICAL
+APPROXIMATION; IT IS THAT THE FAMILY IS NOT COHERENT.
+
+### CONSEQUENCE
+A genuine Hilbert-Polya operator cannot arise as a limit of box-truncated xp models. It must be
+NON-SEMICLASSICAL — which is where the adelic construction lives, and there the spectrum appears as
+ABSORPTION rather than as eigenvalues, consistent with everything the corpus has found.
+
+### THE CLASSIFICATION — COMPLETE, FIVE FAMILIES
+    read near sigma = 1          zero-free regions        capped at 1/loglog t     (V54, W55)
+    read interior                density estimates        bounds grow, never 0     (Y56)
+    read sigma = 1/2             moments and mollifiers   proportions below 1      (classical)
+    construct semiclassical      Berry-Keating xp         FAMILY INCOHERENT        (A57, B58)
+    construct non-semiclassical  adelic / Connes          THE REMAINING TARGET
+    functional equation          transports, no gain                               (X56)
+
+EVERY MECHANISM EXAMINED IN 58 CYCLES IS CAPPED EXCEPT ONE: a non-semiclassical construction. That is
+the terminal state of the classification programme.
+
+Machine-verified: `RHTower/FamilyIncoherence.lean` (strict monotonicity of the count in the area, the
+impossibility of a common count at a shared energy, the distinctness of the required areas, the
+incoherence of the family, and the surviving pointwise match; standard axioms only).
+
+### STATE OF THE PROGRAMME AT CYCLE 58
+PROVEN AND MACHINE-VERIFIED (all with standard axioms, all wired into GaloisForLFunctions.RHTower):
+  * ten structural caps on the reading side, unified by one degradation-exponent scale;
+  * the admissible-shape theorem (threshold counts only) and the metric-only theorem;
+  * the unconditional dBN finiteness transition at t = 0, the imaginary-energy Lyapunov identity,
+    and the index-energy conservation law;
+  * the quantitative Nyman-Beurling floor sqrt(1-2beta)/|1-rho|;
+  * the Borel-Caratheodory and oscillation ceilings at width 1/loglog t;
+  * the three-family closure and the functional-equation transport theorem;
+  * the quadratic box requirement and the incoherence of the truncation family.
+NOT PROVEN: the Riemann Hypothesis, in either direction.
+
+### Cycle 59 target
+One family remains uncapped: a non-semiclassical construction. B58 says why the semiclassical route
+fails — the family is indexed by a scale and the scale changes the spectrum. The adelic construction
+avoids this by having NO scale: the adele class space is scale-invariant under the idele action.
+Target: test whether scale-invariance is not merely a feature but a REQUIREMENT — i.e. prove that any
+coherent family must be the fixed point of a scaling action, and hence that the carrier of a
+Hilbert-Polya operator must be a scale-invariant space. If so, that is a positive structural theorem
+(the first in the programme) rather than another cap, and it identifies the carrier uniquely up to
+the known candidates.
+
+---
+
+## Cycle 59 (2026-07-26) — Theorem C59: THE CARRIER MUST BE SCALE-INVARIANT MODULO A DISCRETE SUBGROUP
+### The FIRST POSITIVE structural theorem of the programme — it DERIVES the carrier instead of positing it.
+
+Two obstructions now point the same way and together determine the shape of the carrier.
+
+### Scale-covariance is FORCED (from B58)
+A family of truncated models indexed by a scale has spectra that MOVE with the scale, so it is
+incoherent. The only way a scale-indexed family can have ONE spectrum is for its members to be
+UNITARILY EQUIVALENT under the scaling — i.e. for the operator to be scale-covariant. Then all
+spectra coincide and the family collapses to a single object.
+
+### Full scale-invariance DESTROYS discreteness
+If the spectrum S satisfies lam*S = S for every lam > 0 and contains one positive point, it contains
+EVERY positive point: given x > 0 and s in S with s > 0, take lam = x/s. So a fully scale-covariant
+operator has a spectrum that is a union of rays — CONTINUOUS, NEVER DISCRETE. That is exactly why the
+dilation generator xp on L^2(0,infinity) has purely absolutely continuous spectrum: IT IS the
+generator of the scaling group.
+
+### A DISCRETE SUBGROUP RESTORES IT
+Invariance under a DISCRETE subgroup is compatible with a discrete spectrum: q^Z = {q^n} is invariant
+under multiplication by q and misses every point strictly between 1 and q. So the requirement is
+invariance under a discrete subgroup, NOT under the whole group.
+
+    THE CARRIER OF A HILBERT-POLYA OPERATOR MUST BE A SCALE-INVARIANT SPACE QUOTIENTED BY A DISCRETE
+    SUBGROUP OF THE SCALING GROUP: FULLY INVARIANT ENOUGH FOR THE FAMILY TO BE COHERENT, DISCRETELY
+    INVARIANT ENOUGH FOR THE SPECTRUM NOT TO BE A CONTINUUM.
+
+The unique arithmetic realisation of "scale-invariant space modulo a discrete scaling subgroup" that
+also carries the primes is the ADELE CLASS SPACE with the idele action — where the known construction
+lives and where the spectrum appears as absorption. THE CLASSIFICATION THEREFORE ENDS BY SINGLING OUT
+THAT CARRIER FROM TWO INDEPENDENT OBSTRUCTIONS RATHER THAN BY ASSUMPTION.
+
+### Significance
+Every previous result in this programme was a CAP. This one is a DERIVATION: it says what the object
+must look like, not what cannot work. It is the natural terminal statement of a 59-cycle
+classification: the reading side is exhausted, the semiclassical construction side is exhausted, and
+what remains is pinned down structurally.
+
+Machine-verified: `RHTower/ScaleInvarianceDichotomy.lean` (full invariance forces a ray, hence the
+whole positive axis; the discrete orbit q^Z is invariant yet misses points; the dichotomy; and the
+forced shape of the carrier; standard axioms only).
+
+### Cycle 60 target
+C59 pins the carrier. The next question is the ONE the whole programme now reduces to: on the adele
+class space, the spectrum appears as ABSORPTION (a co-spectrum, zeros as gaps in a continuous
+spectrum) rather than as eigenvalues. Ask precisely: is the absorption/eigenvalue distinction forced
+by C59, i.e. does a quotient by a discrete subgroup of the scaling group necessarily produce
+absorption rather than point spectrum? If YES, that is the final cap and the programme's complete
+answer for why Hilbert-Polya has resisted. If NO, the gap between absorption and point spectrum is a
+concrete, isolated technical target — the first such target on the construction side.

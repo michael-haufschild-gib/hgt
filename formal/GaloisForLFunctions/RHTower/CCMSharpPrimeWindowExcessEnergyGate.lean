@@ -846,22 +846,13 @@ private theorem dyadicWeightedPrimeWindowPositiveExcess_le_exceptionalMajorant
       rw [dyadicWeightedPrimeWindowPositiveExcess, posPart_def]
       exact max_le (by linarith) hpow
 
-/-- **Sparse-exception sharp-window criterion.**  The pointwise inequality may fail on an
-arbitrary exceptional set, provided the actual positive excess carried there has finite
-Dirichlet energy. -/
-theorem riemannHypothesis_of_dyadicWeightedPrimeWindowSubpowerUpperOff
+/-- Sparse-exception subpower control and the exact exceptional energy together supply the
+global positive-excess energy. -/
+theorem dyadicWeightedPrimeWindowPositiveExcessEnergy_of_subpowerUpperOff
     (E : Set ℕ)
-    (hE : ∀ epsilon : ℝ, 0 < epsilon →
-      LSeriesSummable
-        (fun n => ((dyadicSharpExceptionalPositiveExcess E n : ℝ) : ℂ))
-        (((1 + epsilon : ℝ) : ℂ)))
-    (hupper : ∀ delta : ℝ, 0 < delta →
-      ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, n ≠ 0 → n ∉ E →
-        dyadicWeightedPrimeWindow n ≤
-          2 * (1 - (Real.sqrt 2)⁻¹) * Real.sqrt n +
-            C * powerCorrectionCoefficient delta n) :
-    RiemannHypothesis := by
-  apply riemannHypothesis_of_dyadicWeightedPrimeWindowPositiveExcessEnergy
+    (hE : DyadicSharpExceptionalPositiveExcessEnergy E)
+    (hupper : DyadicWeightedPrimeWindowSubpowerUpperOff E) :
+    DyadicWeightedPrimeWindowPositiveExcessEnergy := by
   intro epsilon hepsilon
   let delta := epsilon / 2
   have hdelta : 0 < delta := by dsimp only [delta]; linarith
@@ -875,6 +866,66 @@ theorem riemannHypothesis_of_dyadicWeightedPrimeWindowSubpowerUpperOff
     E hE hepsilon
   dsimp only [delta]
   linarith
+
+/-- **Sparse-exception sharp-window criterion.**  The pointwise inequality may fail on an
+arbitrary exceptional set, provided the actual positive excess carried there has finite
+Dirichlet energy. -/
+theorem riemannHypothesis_of_dyadicWeightedPrimeWindowSubpowerUpperOff
+    (E : Set ℕ)
+    (hE : DyadicSharpExceptionalPositiveExcessEnergy E)
+    (hupper : DyadicWeightedPrimeWindowSubpowerUpperOff E) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_dyadicWeightedPrimeWindowPositiveExcessEnergy
+    (dyadicWeightedPrimeWindowPositiveExcessEnergy_of_subpowerUpperOff E hE hupper)
+
+/-- The positive excess supported on an initial aperture segment has finite Dirichlet energy. -/
+theorem dyadicSharpExceptionalPositiveExcessEnergy_Iio (N : ℕ) :
+    DyadicSharpExceptionalPositiveExcessEnergy (Set.Iio N) := by
+  intro epsilon _hepsilon
+  change Summable
+    (LSeries.term
+      (fun n => ((dyadicSharpExceptionalPositiveExcess (Set.Iio N) n : ℝ) : ℂ))
+      (((1 + epsilon : ℝ) : ℂ)))
+  apply summable_of_hasFiniteSupport
+  apply (Set.finite_Iio N).subset
+  intro n hn
+  by_contra hnIio
+  apply hn
+  rw [LSeries.term_def]
+  split_ifs
+  · rfl
+  · rw [dyadicSharpExceptionalPositiveExcess,
+      Set.indicator_of_notMem hnIio]
+    simp
+
+/-- Eventual sharp-window subpower control is exactly sparse control off its initial segment. -/
+theorem dyadicWeightedPrimeWindowSubpowerUpper_iff_off_Iio (N : ℕ) :
+    DyadicWeightedPrimeWindowSubpowerUpper N ↔
+      DyadicWeightedPrimeWindowSubpowerUpperOff (Set.Iio N) := by
+  constructor
+  · intro hwindow delta hdelta
+    obtain ⟨C, hC, htail⟩ := hwindow delta hdelta
+    refine ⟨C, hC, fun n hn0 hnIio => ?_⟩
+    rw [powerCorrectionCoefficient, if_neg hn0]
+    exact htail n (not_lt.mp hnIio)
+  · intro hoff delta hdelta
+    obtain ⟨C, hC, htail⟩ := hoff delta hdelta
+    refine ⟨C, hC, fun n hnN => ?_⟩
+    rcases n.eq_zero_or_pos with rfl | hn
+    · norm_num [dyadicWeightedPrimeWindow]
+      exact mul_nonneg hC (Real.rpow_nonneg le_rfl delta)
+    · simpa [powerCorrectionCoefficient, hn.ne'] using
+        htail n hn.ne' (not_lt.mpr hnN)
+
+/-- Every eventual sharp-window subpower estimate has global positive-excess Dirichlet energy:
+its finite prefix is the entire exceptional-energy cost. -/
+theorem dyadicWeightedPrimeWindowPositiveExcessEnergy_of_subpowerUpper
+    {N : ℕ} (hwindow : DyadicWeightedPrimeWindowSubpowerUpper N) :
+    DyadicWeightedPrimeWindowPositiveExcessEnergy :=
+  dyadicWeightedPrimeWindowPositiveExcessEnergy_of_subpowerUpperOff
+    (Set.Iio N)
+    (dyadicSharpExceptionalPositiveExcessEnergy_Iio N)
+    ((dyadicWeightedPrimeWindowSubpowerUpper_iff_off_Iio N).mp hwindow)
 
 /-- **Half-power-thin exception criterion.**  The pointwise prime-window estimate may be left
 completely uncontrolled on any set whose square-root aperture majorant has finite Dirichlet

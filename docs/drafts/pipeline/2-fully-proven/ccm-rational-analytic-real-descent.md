@@ -3,7 +3,7 @@
 - **Status:** Fully proven on paper
 - **Claim type:** THEOREM
 - **Date:** 2026-07-25
-- **Role:** Analytic completion of the algebraic rational CCM Real involution
+- **Role:** Real descent through the exact CCM trace-class cyclic target
 
 ## Statement
 
@@ -57,6 +57,19 @@ Then:
 This theorem constructs the even Real operator object required as input to quaternionic Real
 Morita parity shift. It does not yet identify the Morita intertwiner realization with CCM's
 single complex cyclic realization.
+
+Here “strongly-Schwartz operator-valued target” is shorthand only. Precisely, CCM Definition
+4.9 defines \(\mathcal B_{\mathbb Q}\) as the cyclic submodule of continuous trace-class
+operator fields for which
+\[
+  b\longmapsto\operatorname{Tr}(T_0(b)\cdots T_n(b))
+\]
+on the main cyclic diagonal belongs to
+\({\bf S}(C_{\mathbb Q})=\bigcap_{\beta\in\mathbb R}
+\mu^\beta\mathcal S(C_{\mathbb Q})\). It does **not** require the trace norm of the operator
+field itself to be strongly Schwartz. This distinction is essential: the fixed-base
+trace-class estimate is an absolute-value statement, whereas the rapid decay of the signed
+diagonal trace uses \(\ker\varepsilon_0\cap\ker\varepsilon_1\) and Poisson summation.
 
 ## Proof
 
@@ -202,13 +215,35 @@ Already formalized:
 
 - algebraic source involution and its multiplicativity;
 - target quaternionic kernel conjugation and monomial equivariance;
+- actual antiunitary on the single CCM Hilbert fiber;
+- bounded-operator Real isometry, quaternionic fixed algebra, exact approximation-number,
+  Hilbert--Schmidt-norm and trace-norm invariance, trace-class/Schatten-\(1\) stability, and
+  \(\operatorname{Tr}(\alpha T)=\overline{\operatorname{Tr}(T)}\);
+- actual bounded weighted-shift representation of rational CCM monomials and operator-level
+  Real equivariance;
+- the unconditional trace-class criterion for a weighted shift whose rational orbit
+  coefficient is in \(\ell^1(\mathbb Q^\times)\);
+- absolute summability of every archimedean Schwartz function on every nonzero real integer
+  lattice;
+- common integer-denominator confinement for compact subsets of the actual rational finite
+  adele ring and for diagonal support of finite Bruhat functions;
+- fixed-base \(\ell^1(\mathbb Q^\times)\) orbit summability and actual trace-class weighted
+  shifts for every element of the full algebraic adelic Bruhat tensor core;
+- exact scaled Poisson duality and arbitrary-power two-ended scalar trace bounds in the
+  \(1_{\widehat{\mathbb Z}}\) finite-adele sector, with the two CCM cancellations represented
+  as \(f(0)=0\) and \(\int f=0\);
 - closed equivariant cokernel descent;
 - represented-algebra Real Morita parity shift.
 
 Not yet represented in Lean:
 
-- Bruhat--Schwartz adele spaces and their bornology;
-- trace-class continuous fields;
+- the full Bruhat--Schwartz adele LF space/bornology and trace-norm continuity of the
+  pointwise trace-class field;
+- the two source functionals \(\varepsilon_0,\varepsilon_1\), their cyclic kernels, and the
+  signed Poisson theorem proving that the cyclic diagonal trace—not the operator trace
+  norm—belongs to \({\bf S}(C_{\mathbb Q})\);
+- continuous trace-class fields and proof that the completed CCM image lands in the exact
+  cyclic submodule of CCM Definition 4.9;
 - cyclic category, cyclic modules, and CCM's completed restriction map.
 
 These analytic and categorical definitions must be built before formalizing the whole theorem;
@@ -217,7 +252,8 @@ they are not replaced by axioms.
 ## Gates
 
 - [x] Exact source and target formulas fixed
-- [x] Dependency-closed analytic proof
+- [x] Source-faithful Real-stability proof, conditional only on CCM's established analytic
+      landing theorem
 - [x] Hostile continuity, cyclic-degree, no-doubling, and circularity audit
 - [ ] Formalized in Lean
 - [ ] Real Morita comparison with single CCM realization
@@ -235,3 +271,9 @@ they are not replaced by axioms.
 - 2026-07-25 — extracted exact CCM source, target, strong-Schwartz, and closed-cokernel
   definitions. Completed proof from rational monomial Real identity; no numerical evidence or
   RH assumption used.
+- 2026-07-25 — hostile source re-audit corrected a material shorthand: CCM Definition 4.9
+  imposes strong-Schwartz decay only after cyclic diagonal trace. Pointwise trace class is
+  separate. Removed the false prospective requirement of strong-Schwartz trace-norm decay and
+  isolated the correct remaining Poisson/cancellation theorem.
+- 2026-07-25 — formalized first signed-Poisson sector: exact scaling identity plus explicit
+  two-ended arbitrary-power value bounds from the evaluation and integral cancellations.

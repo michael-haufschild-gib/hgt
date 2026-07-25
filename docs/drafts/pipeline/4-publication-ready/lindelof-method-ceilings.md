@@ -1,8 +1,8 @@
 # Method ceilings for the Lindelöf hypothesis:
-# twelve barrier theorems, and why they all meet at 1/8
+# thirteen barrier theorems, and why they all meet at 1/8
 
 **Abstract.** Let `μ = μ(1/2)` be the Lindelöf exponent of the Riemann zeta function, so that the
-Lindelöf hypothesis (LH) asserts `μ = 0`. We prove ceiling theorems for twelve independent routes to
+Lindelöf hypothesis (LH) asserts `μ = 0`. We prove ceiling theorems for thirteen independent routes to
 `μ`, and show that each ceiling is `1/4`, `1/6` or `1/8`. The recurrence of `1/8` is explained: it is
 the *resolution floor* of the independent-signs model for divisor-correlation errors, a model whose
 prediction `E_k(T) ≍ T^{k/4}` for the `2k`-th moment error term is **exactly correct in both cases
@@ -19,14 +19,19 @@ pushes the zeros aside" — is *identically inert*: fed the true exponent it ret
 convexity bound `1/4` at every radius, and iterating it drives any subconvex input back **up** to
 `1/4`; and **(vi)** *self-dual stationarity* — at the convexity bound the large-value optimisation is
 exactly tied across the whole critical strip, and every subconvexity input breaks the tie in the same
-direction, back to the critical line and the fourth moment. We further show that the additive-divisor
+direction, back to the critical line and the fourth moment; and **(vii)** a natural family inside the
+additive-divisor route — expanding the shift-average by Voronoi summation twice, where the resonant
+half cancels *identically* by antisymmetry and the rest reduces a `GL(3)×GL(3)` object to a `GL(3)`
+one — is nevertheless **circular at every abscissa**, its input requirement `m(3,σ) < 22/9 − 8σ/3`
+being strictly stronger than its output. We further show that the additive-divisor
 route separates into two independent halves — a pointwise size and a
 shift-cancellation — each worth exactly `1/8` alone and jointly worth LH, and that the two competing
 conjectured sizes (Conrey–Gonek `x^{1/2+ε}`, Ivić `Ω(x^{1-1/k})`) settle LH in opposite directions.
 The exponent arithmetic of all the quantitative results is certified in Lean 4 with no axioms beyond
 `propext`, `Classical.choice`, `Quot.sound` (modules `HTGeometry.MomentNeutralityLaw`,
 `MomentChordPivot`, `ShiftAverageTransfer`, `MomentResolutionFloor`, `ShiftPartialSummation`,
-`SpikeSobolev`, `JensenZeroGeometry`, `LindelofMethodCeilings`).
+`SpikeSobolev`, `JensenZeroGeometry`, `AveragedDivisorInput`, `TernaryVoronoiAntisymmetry`,
+`TernaryShiftAverageExponents`, `LindelofMethodCeilings`).
 
 **Status.** This paper proves no new bound on `μ(1/2)`. Its content is negative and structural: it
 delimits what each known method can deliver, and it locates the single remaining gap.
@@ -86,7 +91,7 @@ particular the two moments with known asymptotics have resolution floor exactly 
 
 *Lean (item 4):* `HTGeometry.pivotGain_momentChord`, `HTGeometry.pivotGain_le_half`.
 
-## 3. Eleven analytic ceilings (a twelfth, geometric, is in §6)
+## 3. Eleven analytic ceilings (a twelfth, geometric, is in §6; a thirteenth in §7)
 
 **Theorem 3.1 (mean-value criticality).** `∫_0^T|ζ(σ+it)|^{2k} ≪ T^{1+ε}` holds exactly for
 `σ ≥ 1-1/k`, and the resulting pointwise bound `1/(2k)` equals `(1-σ)/2` there. The whole family
@@ -538,6 +543,108 @@ point, and the iterate formula `(2J)^n(θ₀−¼)`; and `rhOutput J θ₀ = 2J�
 self-duality of the critical block), `afe_plateau_identity` (the exact cancellation `R/π + ½(2θ₀ −
 2R/π) = θ₀`), `gain_derivative`, `no_gain_of_half_lipschitz`, and the capstone `afe_slope_barrier`.
 Axioms `[propext, Classical.choice, Quot.sound]`.
+
+## 7. The thirteenth ceiling: divisor-correlation routes re-import their own conclusion
+
+§4 left the additive-divisor route as the one direction the map did not cap. This section caps a
+concrete and natural family inside it, and isolates the mechanism.
+
+### 7.1 An exact reduction, and a cancellation
+
+Since `Σ_{h≤H} d_k(n+h) = D_k(n+H) − D_k(n)`, the shift-average is **exactly**
+
+    Σ_{h≤H} Δ_k(x,h) = Σ_{n≤x} d_k(n)·[Δ_k(n+H) − Δ_k(n)] + 𝔐,                        (7.1)
+
+`𝔐` the mismatch between `H·(smooth main)` and `Σ_{h≤H}MT_k(x,h)`. Ivić's input `(a,b) = (1/2,1)`
+(Theorem 3.6) is Cauchy–Schwarz applied to (7.1), which discards the arithmetic of `d_k(n)`. Keeping
+it means expanding **both** factors by Voronoi.
+
+Doing so, one factor enters as a sine — it comes from differencing a cosine along the shift — and the
+other as a cosine, the Voronoi kernel. Product-to-sum splits the double sum into a part carrying the
+phase `φ(m)+φ(l)` and a part carrying `φ(m)−φ(l)`. After the substitution `y = u^k`, under which
+`y^{−(k−1)/k}dy = k\,du`, the second integral is elementary:
+
+    ∫_1^X sin(cu)du = (cos c − cos cX)/c,    c = 2πk(m^{1/k} − l^{1/k}).
+
+**Proposition 7.1.** *That kernel is an odd function of `c`. Its argument is antisymmetric under
+`m ↔ l` and the accompanying weight `d_k(m)d_k(l)(ml)^{−1/k}` is symmetric. Hence the resonant half
+of the double Voronoi sum vanishes identically.*
+
+In particular there is **no diagonal obstruction** for the first moment `Σ_h Δ_k`: the diagonal is
+`sin 0 = 0`, not `cos 0 = 1`. The conspiracy exponent `k/4` of §1 is a *mean-square* phenomenon,
+where the pairing is cosine × cosine; the two had been conflated.
+
+**Proposition 7.2.** *The surviving half factors. The phase `φ(m)+φ(l)` is additive and the weight
+`1/(φ(m)+φ(l))` has the Laplace representation `1/c = ∫_0^∞ e^{−ct}dt`, so*
+
+    Σ_{h≤H}Δ_k(x,h) ≍ H·Re[ e^{2iγ}∫_0^∞ F(X,t)²dt ],   F(X,t) = Σ_{m≤M}d_k(m)m^{−1/k}e^{−φ(m)t}e(kX m^{1/k}).
+
+*`F` is a **one-variable** divisor exponential sum: a `GL(k)×GL(k)` object has been reduced to a
+`GL(k)` one.*
+
+### 7.2 A phase-speed invariant that separates `k = 2`
+
+**Proposition 7.3.** *The dual phase `2πk(my)^{1/k}` has `m`-derivative `2π(y/m^{k−1})^{1/k}`, which
+is `≥ 1` exactly for `m ≲ y^{1/(k−1)}`. Comparing with the natural truncation `m ≍ y`:*
+
+    y ≤ y^{1/(k−1)}  ⟺  k ≤ 2.
+
+*So the Voronoi dual of `d_k` oscillates across its whole range if and only if `k = 2`. For `k = 3`
+it oscillates only to `√y`; beyond that consecutive dual terms are in phase.*
+
+This is a separation of `k = 2` from `k ≥ 3` independent of those in §§1–3, which were about moments,
+blocks and abscissae. Lean: `HTGeometry.voronoiFastRange_covers_iff`.
+
+### 7.3 The ceiling: circularity at every abscissa
+
+Estimating `F` in the slow-phase range splits it at the wavelength of its phase into a smooth
+exponential sum (van der Corput) and a fluctuation sum weighted by short-interval increments of
+`Δ_k`. The second needs a short-interval mean square. Ivić's estimate, **before** he specialises, is
+
+    ∫_X^{2X}(Δ_k(x+h)−Δ_k(x))²dx ≪ X^ε( h²X^{2σ−1}∫_{−T₀}^{T₀}|ζ(σ+it)|^{2k}dt + X³T₀^{−2} ),
+
+with `σ` any abscissa and `T₀` free. Writing `m(k,σ)` for the exponent of the moment, optimising
+`T₀`, and evaluating at `h = X^{1/3}`, the chain improves the envelope at `k = 3` iff
+
+    m(3,σ) < 22/9 − 8σ/3.                                                              (7.2)
+
+**Theorem 7.4 (chain circularity).**
+**(i)** *At `σ = 1/2`, (7.2) reads `m(3) < 10/9`, while the chain delivers only `m(3) < 5/4`. Since
+`10/9 < 5/4`, the hypothesis is strictly stronger than the conclusion.*
+**(ii)** *For `σ ≥ 13/24` the requirement is `< 1`, which no moment exponent can meet.*
+**(iii)** *Along the known curve — the chord from `(1/2, 5/4)` to `(7/12, 1)`, admissible by
+convexity — (7.2) holds only for `σ > 11/12`, outside the admissible range `[1/2, 7/12]`.*
+*Hence the route is circular at every abscissa.*
+
+Ivić's own specialisation is the case `m = 1`, which forces `σ = σ(k)`, the abscissa of the `2k`-th
+moment; his resulting bound `X^{1+ε}h^{4/3}` therefore requires `σ(3) = 1/2`, i.e.
+`∫_0^T|ζ(½+it)|^6dt ≪ T^{1+ε}` — **the sixth moment conjecture itself**. This is the same circularity
+seen at the outermost layer.
+
+*Lean:* `HTGeometry.TernaryVoronoiAntisymmetry`, `HTGeometry.TernaryShiftAverageExponents` —
+`resonant_double_sum_eq_zero`, `laplace_reciprocal`, `voronoiFastRange_covers_iff`,
+`chainRequirement`, `chain_input_stronger_than_output`, `chain_fails_on_admissible_range`.
+
+### 7.4 Two failure modes, and a conjecture
+
+Every route this paper closes fails in exactly one of two ways.
+
+* **Inertness** — the output equals the input: the mean-value family (§3.1), Halász–Montgomery
+  (§3.2), Guth–Maynard (§3.3), the short-interval mean square at its optimum (§3.7), the Jensen
+  balance (§6.3). In every case the stationary point is the self-dual parameter, and it is the
+  optimum precisely because `μ < ¼` (§6.5).
+* **Circularity** — the input is strictly stronger than the output: Backlund's criterion, the `S(t)`
+  route, and now the divisor-correlation chain (§7.3). In every case the re-imported quantity is a
+  moment exponent of `ζ`.
+
+**Conjecture 7.5 (moment re-entry).** *For `k ≥ 3`, every route from divisor correlations to the
+moment envelope re-imports `m(k,σ)` as an input with a requirement strictly stronger than its output.*
+
+If true, the additive-divisor programme — carried in §4 as the one uncapped direction — is itself
+capped, and the only escape is a route that never bounds a divisor correlation by a moment of `ζ`.
+**`k = 2` is exactly such an escape**: Motohashi's formula is an *exact spectral identity*, not an
+inequality, so no moment re-enters. The conjecture therefore sharpens the open problem to: *what
+property of `GL(2)` makes an exact spectral identity available, and does `GL(3)` possess it?*
 
 ## References (as used)
 
