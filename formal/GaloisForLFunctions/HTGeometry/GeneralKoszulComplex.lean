@@ -281,6 +281,210 @@ theorem koszulAlt_two_apply (t : (Fin 2 → α) → S) (v : Fin 2 → α) :
     Equiv.Perm.sign_swap (show (0 : Fin 2) ≠ 1 by decide)]
   simp [sub_eq_add_neg]
 
+omit [DecidableEq α] [Fintype α] in
+/-- **Alternating tensors transform by the sign under any permutation.**  `b(v ∘ σ) = sign(σ) • b(v)`
+for every permutation `σ`, by induction on `σ` as a product of transpositions (`swap_neg`). -/
+theorem IsAltTensor.comp_perm {p : ℕ} {b : (Fin p → α) → S} (hb : IsAltTensor b)
+    (σ : Equiv.Perm (Fin p)) (v : Fin p → α) :
+    b (v ∘ ⇑σ) = (Equiv.Perm.sign σ : ℤ) • b v := by
+  revert v
+  refine Equiv.Perm.swap_induction_on σ (fun v => by simp) (fun f x y hxy ih v => ?_)
+  rw [Equiv.Perm.coe_mul, ← Function.comp_assoc, ih (v ∘ ⇑(Equiv.swap x y)), hb.swap_neg v x y hxy,
+    Equiv.Perm.sign_mul, Equiv.Perm.sign_swap hxy]
+  push_cast
+  rw [smul_neg, neg_one_mul, neg_smul]
+
+section SRC4
+
+variable {R : Type*} [CommRing R]
+
+/-- The degree-two `C₄` cycle over the Stanley–Reisner ring: the antisymmetrized single edge
+`koszulAlt (koszulSingleEntry ![a,b] (x_c x_d))`, alternating for free by `koszulAlt_isAltTensor`. -/
+noncomputable def srC4KoszulCycle (facets : Finset (Finset α)) (a b c d : α) :
+    (Fin 2 → α) → stanleyReisnerRing R facets :=
+  koszulAlt (koszulSingleEntry ![a, b] (srVertexX R facets c * srVertexX R facets d))
+
+omit [Fintype α] in
+/-- The antisymmetrized single edge is the two-entry alternating tensor `x_c x_d` at `![a,b]`,
+`−x_c x_d` at `![b,a]` (degree-two antisymmetrization + the leading-pair swap of the tuple). -/
+theorem srC4KoszulCycle_eq (facets : Finset (Finset α)) {a b c d : α} :
+    srC4KoszulCycle facets a b c d
+      = koszulSingleEntry ![a, b] (srVertexX R facets c * srVertexX R facets d)
+        - koszulSingleEntry ![b, a] (srVertexX R facets c * srVertexX R facets d) := by
+  funext v
+  have hab_swap : (![a, b] : Fin 2 → α) ∘ ⇑(Equiv.swap (0 : Fin 2) 1) = ![b, a] := by
+    funext i; fin_cases i <;> simp [Equiv.swap_apply_left, Equiv.swap_apply_right]
+  have hba_swap : (![b, a] : Fin 2 → α) ∘ ⇑(Equiv.swap (0 : Fin 2) 1) = ![a, b] := by
+    funext i; fin_cases i <;> simp [Equiv.swap_apply_left, Equiv.swap_apply_right]
+  have h2 : (v ∘ ⇑(Equiv.swap (0 : Fin 2) 1)) ∘ ⇑(Equiv.swap 0 1) = v := by
+    rw [Function.comp_assoc, ← Equiv.Perm.coe_mul, Equiv.swap_mul_self, Equiv.Perm.coe_one,
+      Function.comp_id]
+  rw [srC4KoszulCycle, koszulAlt_two_apply, Pi.sub_apply]
+  congr 1
+  simp only [koszulSingleEntry]
+  refine if_congr ⟨fun h => ?_, fun h => ?_⟩ rfl rfl
+  · calc v = (v ∘ ⇑(Equiv.swap (0 : Fin 2) 1)) ∘ ⇑(Equiv.swap 0 1) := h2.symm
+      _ = ![a, b] ∘ ⇑(Equiv.swap 0 1) := by rw [h]
+      _ = ![b, a] := hab_swap
+  · rw [h]; exact hba_swap
+
+/-- **The `C₄` edge cycle is a Koszul cycle.**  Its two boundary terms carry the absent diagonals
+`x_a x_c` (from the `![a,b]` entry) and `x_b x_d` (from the `![b,a]` entry), both zero. -/
+theorem koszulD_srC4KoszulCycle (facets : Finset (Finset α)) {a b c d : α}
+    (hac : a ≠ c) (hac_nf : ¬ IsFaceOf (↑facets : Set (Finset α)) {a, c})
+    (hbd : b ≠ d) (hbd_nf : ¬ IsFaceOf (↑facets : Set (Finset α)) {b, d}) :
+    koszulD (srVertexX R facets) (srC4KoszulCycle facets a b c d) = 0 := by
+  have hab0 : srVertexX R facets c * srVertexX R facets d * srVertexX R facets a = 0 := by
+    linear_combination srVertexX R facets d *
+      srVertexX_mul_eq_zero_of_not_isFace (R := R) facets hac hac_nf
+  have hba0 : srVertexX R facets c * srVertexX R facets d * srVertexX R facets b = 0 := by
+    linear_combination srVertexX R facets c *
+      srVertexX_mul_eq_zero_of_not_isFace (R := R) facets hbd hbd_nf
+  have e1 : koszulD (srVertexX R facets)
+      (koszulSingleEntry ![a, b] (srVertexX R facets c * srVertexX R facets d)) = 0 :=
+    koszulD_koszulSingleEntry_eq_zero (srVertexX R facets) ![a, b] _ hab0
+  have e2 : koszulD (srVertexX R facets)
+      (koszulSingleEntry ![b, a] (srVertexX R facets c * srVertexX R facets d)) = 0 :=
+    koszulD_koszulSingleEntry_eq_zero (srVertexX R facets) ![b, a] _ hba0
+  rw [srC4KoszulCycle_eq]
+  show koszulDₗ (srVertexX R facets) (_ - _) = 0
+  rw [map_sub]
+  show koszulD (srVertexX R facets) _ - koszulD (srVertexX R facets) _ = 0
+  rw [e1, e2, sub_zero]
+
+/-- The `C₄` edge cycle lies in the degree-two Koszul cycles: alternating (`koszulAlt_isAltTensor`) and
+killed by the differential. -/
+theorem srC4KoszulCycle_mem_koszulCycles (facets : Finset (Finset α)) {a b c d : α}
+    (hac : a ≠ c) (hac_nf : ¬ IsFaceOf (↑facets : Set (Finset α)) {a, c})
+    (hbd : b ≠ d) (hbd_nf : ¬ IsFaceOf (↑facets : Set (Finset α)) {b, d}) :
+    srC4KoszulCycle facets a b c d ∈ koszulCycles (srVertexX R facets) :=
+  ⟨koszulD_srC4KoszulCycle facets hac hac_nf hbd hbd_nf, koszulAlt_isAltTensor _⟩
+
+/-- **Pair detector of a `koszulD`-entry over the Stanley–Reisner ring.**  Reading the `x_u x_v`
+coefficient of `koszulD(b)(w) = ∑_k b(k ∷ w) x_k` collapses to the two degree-one detectors of the
+prepended slots. -/
+theorem srPairDetector_koszulD {p : ℕ} (facets : Finset (Finset α)) {u v : α} (huv : u ≠ v)
+    (hf : IsFaceOf (↑facets : Set (Finset α)) {u, v})
+    (hu : IsFaceOf (↑facets : Set (Finset α)) {u}) (hv : IsFaceOf (↑facets : Set (Finset α)) {v})
+    (b : (Fin (p + 1) → α) → stanleyReisnerRing R facets) (w : Fin p → α) :
+    srPairDetector R facets u v huv hf (koszulD (srVertexX R facets) b w)
+      = srH0Detector R facets v hv (b (Fin.cons u w))
+        + srH0Detector R facets u hu (b (Fin.cons v w)) := by
+  rw [koszulD, map_sum,
+    Finset.sum_congr rfl (fun k _ =>
+      srPairDetector_mul_srVertexX facets huv hf hu hv (b (Fin.cons k w))),
+    Finset.sum_congr rfl (fun k _ => show
+      (if k = u then srH0Detector R facets v hv (b (Fin.cons k w))
+        else if k = v then srH0Detector R facets u hu (b (Fin.cons k w)) else 0)
+      = (if k = u then srH0Detector R facets v hv (b (Fin.cons k w)) else 0)
+        + (if k = v then srH0Detector R facets u hu (b (Fin.cons k w)) else 0) from by
+      by_cases hku : k = u
+      · subst hku; simp [huv]
+      · by_cases hkv : k = v
+        · subst hkv; simp [hku]
+        · simp [hku, hkv]),
+    Finset.sum_add_distrib, Finset.sum_ite_eq' Finset.univ u, Finset.sum_ite_eq' Finset.univ v]
+  simp
+
+/-- **The `C₄` edge cycle is a nonzero `Tor₂` class in the general framework.**  `srC4KoszulCycle` is
+not a `koszulD`-boundary of any alternating 3-tensor, in every characteristic.  The edge detector
+`Φ(t) = +{cd}∘t_{ab} − {ad}∘t_{bc} + {ab}∘t_{cd} − {bc}∘t_{da}` reads the cycle as `1` (from
+`srC4KoszulCycle_eq`) and every boundary as `0`: the eight degree-one detector terms pair off by the
+even-`3`-cycle permutation invariance of the alternating coefficient (`comp_perm`). -/
+theorem srC4KoszulCycle_not_mem_koszulBoundaries [Nontrivial R] (facets : Finset (Finset α))
+    {a b c d : α} (hab : a ≠ b) (hbc : b ≠ c) (hcd : c ≠ d) (had : a ≠ d) (hac : a ≠ c) (hbd : b ≠ d)
+    (ha : IsFaceOf (↑facets : Set (Finset α)) {a}) (hb : IsFaceOf (↑facets : Set (Finset α)) {b})
+    (hc : IsFaceOf (↑facets : Set (Finset α)) {c}) (hd : IsFaceOf (↑facets : Set (Finset α)) {d})
+    (hab_f : IsFaceOf (↑facets : Set (Finset α)) {a, b})
+    (hbc_f : IsFaceOf (↑facets : Set (Finset α)) {b, c})
+    (hcd_f : IsFaceOf (↑facets : Set (Finset α)) {c, d})
+    (had_f : IsFaceOf (↑facets : Set (Finset α)) {a, d}) :
+    srC4KoszulCycle facets a b c d ∉ koszulBoundaries (srVertexX R facets) := by
+  rintro ⟨b3, hb3, heq⟩
+  have heq' : koszulD (srVertexX R facets) b3 = srC4KoszulCycle facets a b c d := heq
+  set Φ : ((Fin 2 → α) → stanleyReisnerRing R facets) → R := fun t =>
+    srPairDetector R facets c d hcd hcd_f (t ![a, b])
+      - srPairDetector R facets a d had had_f (t ![b, c])
+      + srPairDetector R facets a b hab hab_f (t ![c, d])
+      - srPairDetector R facets b c hbc hbc_f (t ![d, a]) with hΦ
+  have hone : Φ (srC4KoszulCycle facets a b c d) = 1 := by
+    have e0 : srC4KoszulCycle facets a b c d ![a, b]
+        = srVertexX R facets c * srVertexX R facets d := by
+      rw [srC4KoszulCycle_eq]; simp only [Pi.sub_apply, koszulSingleEntry, if_true]
+      rw [if_neg fun h => hab (congrFun h 0), sub_zero]
+    have e1 : srC4KoszulCycle facets a b c d ![b, c] = (0 : stanleyReisnerRing R facets) := by
+      rw [srC4KoszulCycle_eq]; simp only [Pi.sub_apply, koszulSingleEntry]
+      rw [if_neg fun h => hab (congrFun h 0).symm, if_neg fun h => hac (congrFun h 1).symm, sub_zero]
+    have e2 : srC4KoszulCycle facets a b c d ![c, d] = (0 : stanleyReisnerRing R facets) := by
+      rw [srC4KoszulCycle_eq]; simp only [Pi.sub_apply, koszulSingleEntry]
+      rw [if_neg fun h => hac (congrFun h 0).symm, if_neg fun h => hbc (congrFun h 0).symm, sub_zero]
+    have e3 : srC4KoszulCycle facets a b c d ![d, a] = (0 : stanleyReisnerRing R facets) := by
+      rw [srC4KoszulCycle_eq]; simp only [Pi.sub_apply, koszulSingleEntry]
+      rw [if_neg fun h => had (congrFun h 0).symm, if_neg fun h => hbd (congrFun h 0).symm, sub_zero]
+    simp only [hΦ, e0, e1, e2, e3, map_zero, sub_zero, add_zero]
+    rw [srPairDetector_srVertexX_mul facets hcd hcd_f]
+  have hzero : Φ (koszulD (srVertexX R facets) b3) = 0 := by
+    have r1 : b3 (Fin.cons c ![a, b]) = b3 (Fin.cons a ![b, c]) := by
+      rw [show (Fin.cons c ![a, b] : Fin 3 → α)
+          = Fin.cons a ![b, c] ∘ ⇑(Equiv.swap (0 : Fin 3) 1 * Equiv.swap (0 : Fin 3) 2) from by
+        funext i; fin_cases i <;>
+          simp [Equiv.Perm.coe_mul, Function.comp, Equiv.swap_apply_left, Equiv.swap_apply_right,
+            Equiv.swap_apply_of_ne_of_ne, Fin.cons_zero], hb3.comp_perm]
+      simp [show Equiv.Perm.sign (Equiv.swap (0 : Fin 3) 1 * Equiv.swap (0 : Fin 3) 2) = 1 from by decide]
+    have r2 : b3 (Fin.cons b ![d, a]) = b3 (Fin.cons d ![a, b]) := by
+      rw [show (Fin.cons b ![d, a] : Fin 3 → α)
+          = Fin.cons d ![a, b] ∘ ⇑(Equiv.swap (0 : Fin 3) 1 * Equiv.swap (0 : Fin 3) 2) from by
+        funext i; fin_cases i <;>
+          simp [Equiv.Perm.coe_mul, Function.comp, Equiv.swap_apply_left, Equiv.swap_apply_right,
+            Equiv.swap_apply_of_ne_of_ne, Fin.cons_zero], hb3.comp_perm]
+      simp [show Equiv.Perm.sign (Equiv.swap (0 : Fin 3) 1 * Equiv.swap (0 : Fin 3) 2) = 1 from by decide]
+    have r3 : b3 (Fin.cons d ![b, c]) = b3 (Fin.cons b ![c, d]) := by
+      rw [show (Fin.cons d ![b, c] : Fin 3 → α)
+          = Fin.cons b ![c, d] ∘ ⇑(Equiv.swap (0 : Fin 3) 1 * Equiv.swap (0 : Fin 3) 2) from by
+        funext i; fin_cases i <;>
+          simp [Equiv.Perm.coe_mul, Function.comp, Equiv.swap_apply_left, Equiv.swap_apply_right,
+            Equiv.swap_apply_of_ne_of_ne, Fin.cons_zero], hb3.comp_perm]
+      simp [show Equiv.Perm.sign (Equiv.swap (0 : Fin 3) 1 * Equiv.swap (0 : Fin 3) 2) = 1 from by decide]
+    have r4 : b3 (Fin.cons c ![d, a]) = b3 (Fin.cons a ![c, d]) := by
+      rw [show (Fin.cons c ![d, a] : Fin 3 → α)
+          = Fin.cons a ![c, d] ∘ ⇑(Equiv.swap (0 : Fin 3) 2 * Equiv.swap (0 : Fin 3) 1) from by
+        funext i; fin_cases i <;>
+          simp [Equiv.Perm.coe_mul, Function.comp, Equiv.swap_apply_left, Equiv.swap_apply_right,
+            Equiv.swap_apply_of_ne_of_ne, Fin.cons_zero], hb3.comp_perm]
+      simp [show Equiv.Perm.sign (Equiv.swap (0 : Fin 3) 2 * Equiv.swap (0 : Fin 3) 1) = 1 from by decide]
+    simp only [hΦ]
+    rw [srPairDetector_koszulD facets hcd hcd_f hc hd b3 ![a, b],
+        srPairDetector_koszulD facets had had_f ha hd b3 ![b, c],
+        srPairDetector_koszulD facets hab hab_f ha hb b3 ![c, d],
+        srPairDetector_koszulD facets hbc hbc_f hb hc b3 ![d, a]]
+    rw [r1, r2, r3, r4]
+    abel
+  rw [heq'] at hzero
+  rw [hone] at hzero
+  exact one_ne_zero hzero
+
+/-- **Nonzero degree-two Koszul homology of `C₄` in the general framework.**  The `C₄` edge cycle
+represents a nonzero class in `koszulTor` over the Stanley–Reisner ring — the first higher-degree
+nonzero class of the general vertex-Koszul homology, realizing `H̃¹(C₄) = Tor₂`. -/
+theorem srC4KoszulTor_ne_zero [Nontrivial R] (facets : Finset (Finset α)) {a b c d : α}
+    (hab : a ≠ b) (hbc : b ≠ c) (hcd : c ≠ d) (had : a ≠ d) (hac : a ≠ c) (hbd : b ≠ d)
+    (ha : IsFaceOf (↑facets : Set (Finset α)) {a}) (hb : IsFaceOf (↑facets : Set (Finset α)) {b})
+    (hc : IsFaceOf (↑facets : Set (Finset α)) {c}) (hd : IsFaceOf (↑facets : Set (Finset α)) {d})
+    (hab_f : IsFaceOf (↑facets : Set (Finset α)) {a, b})
+    (hbc_f : IsFaceOf (↑facets : Set (Finset α)) {b, c})
+    (hcd_f : IsFaceOf (↑facets : Set (Finset α)) {c, d})
+    (had_f : IsFaceOf (↑facets : Set (Finset α)) {a, d})
+    (hac_nf : ¬ IsFaceOf (↑facets : Set (Finset α)) {a, c})
+    (hbd_nf : ¬ IsFaceOf (↑facets : Set (Finset α)) {b, d}) :
+    Submodule.Quotient.mk (⟨srC4KoszulCycle facets a b c d,
+        srC4KoszulCycle_mem_koszulCycles facets hac hac_nf hbd hbd_nf⟩ :
+        koszulCycles (srVertexX R facets)) ≠ (0 : koszulTor (srVertexX R facets)) :=
+  koszulTor_mk_ne_zero (srVertexX R facets) _
+    (srC4KoszulCycle_not_mem_koszulBoundaries facets hab hbc hcd had hac hbd
+      ha hb hc hd hab_f hbc_f hcd_f had_f)
+
+end SRC4
+
 section SRDisconnect
 
 variable {R : Type*} [CommRing R]

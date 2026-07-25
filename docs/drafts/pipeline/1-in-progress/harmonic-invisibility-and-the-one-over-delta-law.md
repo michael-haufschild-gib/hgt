@@ -3138,3 +3138,2850 @@ disjoint union of `xiShellClass l`, `xiShellClass (-l)` and the rest; the rest c
 with `|Im alpha^| < |l|`, hence `‖alpha^‖ < sqrt(g_1^2 + l^2)` -- strict, because on a shell the
 modulus is a strictly increasing function of `|Im alpha^|`.  Feeding
 `exists_ge_re_sum_exp_le_of_split` and then `not_forall_mul_pow_le_pow` closes the shell.
+
+---
+
+## §56 The three-way split, formalized
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiPoissonShellSplit.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+xiPoissonBottomHeight_pos                 0 < g_1
+norm_xiPoissonPoint_of_mem_bottomShell    ‖alpha^‖ = sqrt (g_1^2 + (Im alpha^)^2) on the shell
+xiShellRest l                             the shell minus the classes at +- l
+xiPoissonBottomShell_split
+  sum over the shell  =  class l  +  class (-l)  +  rest        (for any summand)
+norm_lt_of_mem_xiShellRest
+  if |l| is maximal on the shell, every remaining copy has ‖alpha^‖ < sqrt (g_1^2 + l^2)
+```
+
+`xiPoissonBottomHeight_pos` comes from the same two facts that run the whole route:
+`‖alpha^‖ = ‖alpha‖ > 4` and `‖alpha^‖ <= Re alpha^ + 1/2`.  The bottom height is not merely
+nonnegative but bounded away from zero, which is what makes the geometric ratio
+`sqrt(g_1^2+l^2) / g_1` finite and the dominance argument non-degenerate.
+
+`norm_lt_of_mem_xiShellRest` is the strictness the dominance needs, and it is where the shell
+structure pays for the last time: because all heights on a shell agree, the modulus is a strictly
+increasing function of `|Im alpha^|`, so "not one of the two extreme displacements" upgrades directly
+to "strictly smaller modulus".
+
+### Ledger
+
+```text
+[LEAN-PROVED]  all abstract ingredients                              §46-§54
+[LEAN-PROVED]  Xi-side class structure                               §55
+[LEAN-PROVED]  Xi-side three-way split and strict modulus gap        §56
+[to formalize] the final contradiction and the minimal-counterexample wrapper
+[OPEN CORE]    eventual nonnegativity of the moment traces
+```
+
+Every structural fact the real-variable converse needs is now proved.  The remaining Lean work is a
+single chain: pick the maximal displacement, apply `xiPoissonBottomShell_split` and
+`exists_ge_re_sum_exp_le_of_split`, transfer through the asymptotic identity (§51) and the tail (§47),
+let the error tend to zero, and apply `not_forall_mul_pow_le_pow` with
+
+```text
+c = sqrt(g_1^2 + l^2),   d = max modulus on the rest (< c by §56),
+m = 2 * (class size)  >  0,   K = card of the rest.
+```
+
+### Next
+
+That chain.  Its only remaining subtlety is the order of quantifiers: the tail bound is uniform in
+`n` only after `t` is chosen, so the argument fixes `n`, then `epsilon`, then `t`, and the family of
+inequalities indexed by `n` is assembled at the end -- which is exactly the shape
+`not_forall_mul_pow_le_pow` consumes.
+
+---
+
+## §57 The real-variable converse closes on the bottom shell
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiPoissonShellClosure.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+xiPoissonShellPoly_eq          the shell polynomial in the phase-selection normal form
+exists_tail_bound              the weighted above-bottom tail is uniformly small beyond some time
+xiPoissonPoint_im_eq_zero_of_forall_moment_nonneg
+  (∀ n, ∀ t > 0, 0 <= Re (moment trace n t))  ->  every bottom-shell copy has zero displacement
+```
+
+The proof is the chain §45 predicted, now checked:
+
+```text
+pick l maximizing |Im alpha^| on the shell                    Finset.exists_max_image
+split shell = class l + class (-l) + rest                     §56
+align the class at arbitrarily large t                        §54
+   -> Re (shell polynomial)  <=  -2 ‖A‖ + (rest moduli)
+transfer via the asymptotic identity                          §51
+   exp(g_1 t) Re(moment trace) = Re(shell poly) + Re(tail)
+kill the tail                                                 §47, this file
+let epsilon -> 0                                              le_of_forall_pos_le_add
+   -> 2 (class size) M^n  <=  (rest card) d^n   for every n
+d < M by strict modulus monotonicity on a shell               §56
+   -> contradiction                                           §50
+```
+
+Nothing in the chain is assumed.  The hypothesis is exactly the positivity of the moment traces --
+the `[OPEN CORE]` -- and the conclusion is a statement about zero locations.
+
+### What is now proved, end to end
+
+```text
+[LEAN-PROVED]  RH  ->  every moment trace is nonnegative                          §49
+[LEAN-PROVED]  every moment trace nonnegative  ->  bottom shell on the line       §57
+[LEAN-PROVED]  Theta bounded on a vertical line  ->  bottom shell on the line     §41
+   (independent complex-analytic route, §§39-43)
+[to formalize] the minimal-counterexample wrapper from the bottom shell to all zeros
+[OPEN CORE]    nonnegativity of the moment traces
+```
+
+Two independent routes now reach the bottom shell from an explicit analytic hypothesis, one through
+Phragmén--Lindelöf and one through nothing but the real axis.
+
+### Next
+
+The wrapper.  §43 replaced the peeling induction by a minimal counterexample: a copy of least height
+among those with nonzero displacement makes every lower shell real, hence bounded, hence the cut
+divisor inherits the hypothesis, and the cut's own bottom shell is exactly where that copy lives.
+For the moment-trace route the same wrapper applies with the cut moment traces, whose infrastructure
+is §42's -- the cut versions of summability, envelope and analyticity are already proved, and the
+moment versions need only the same one-line promotions used in §46.
+
+---
+
+## §58 Moment positivity does not peel — and what that settles
+
+### The check
+
+§57's closing note proposed running the peeling wrapper on the moment route.  It does not work, and
+the reason is structural, not technical.
+
+Peeling needs the hypothesis to descend to the cut divisor.  For **boundedness** it does: the removed
+shells are finite and, once known real, contribute a bounded term, so
+
+```text
+Theta_{>= g}  =  Theta  -  (finite bounded sum)   is bounded.
+```
+
+For **positivity** it does not.  Subtracting a nonnegative quantity from a nonnegative quantity gives
+nothing:
+
+```text
+Re (cut moment trace)  =  Re (moment trace)  -  Re (removed shells),
+```
+
+and the removed shells contribute a *positive* amount once they are known to lie on the line.  Worse,
+weighting by the cut's own height makes the removed part grow like `exp((g_2 - g_1) t)`, which
+swamps everything above it.
+
+> **[NEGATIVE RESULT]**  The moment-positivity hypothesis is visible only at the bottom shell.  It
+> cannot be propagated upward by removal, because removal destroys the sign.
+
+### What this settles
+
+It is not a defect of the argument; it is a statement about what the criterion sees.  Complete
+monotonicity is a statement about the **whole** measure, and its bottom-shell consequence is the only
+part extractable by a single asymptotic.  To reach every zero one must go through Bernstein:
+
+```text
+complete monotonicity  ->  Theta is a positive-measure Laplace transform  ->  Theta bounded
+                       ->  peel (boundedness descends)  ->  RH
+```
+
+So §44's Bernstein step is not a convenience -- it is the only bridge from the positivity form to a
+form that peels.  §57 remains a genuinely simpler proof of the bottom-shell case, free of complex
+analysis, but the full converse runs through boundedness.
+
+### Formalized this turn
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiPoissonCutBottomShell.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+xiPoissonCutBottomShell g            the cut's own bottom shell
+mem_xiPoissonCutBottomShell
+xiPoissonCutBottomShellSum_eq        the height factors out exactly on it
+mem_xiPoissonCut_lineConj            the cut is stable under line conjugation
+mem_xiPoissonCutBottomShell_lineConj and so is its bottom shell
+```
+
+These are the cut analogues of §34, and the last structural inputs the boundedness wrapper needs.
+
+### Ledger
+
+```text
+[LEAN-PROVED]  RH -> moment traces nonnegative                                  §49
+[LEAN-PROVED]  moment traces nonnegative -> bottom shell on the line            §57
+[LEAN-PROVED]  Theta bounded on a line -> bottom shell on the line              §41
+[LEAN-PROVED]  cut trace: shells, envelope, analyticity, Phragmen-Lindelof      §42, §43
+[LEAN-PROVED]  cut bottom shell and its symmetry                                §58
+[to formalize] cut assembly, then the minimal-counterexample wrapper
+[OPEN CORE]    boundedness of Theta on a vertical line
+```
+
+### Next
+
+The cut assembly: repeat §41 with `xiPoissonCutHeight g` in place of the global bottom height, using
+`xiPoissonCutBottomShellSum_eq` for the factorization and `norm_xiPoissonCutTraceC_le_of_line_bound`
+for the half-plane decay.  Then the wrapper of §43 closes the converse.
+
+---
+
+## §59 The converse closes: `RH <-> Theta bounded on a vertical line`, in Lean
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiPoissonCutOnLine.lean` and
+`XiPoissonLineBoundRH.lean` (lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+xiShellSum_regroup                              a shell sum regrouped by displacement
+xiPoissonCutBottomShell_eq_sdiff                at an actual height, the cut's bottom shell is
+                                                the difference of the two lower sets
+xiPoissonPoint_im_nonpos_of_cut_line_bound      the cut assembly
+xiPoissonPoint_im_eq_zero_of_cut_line_bound     with the conjugation symmetry
+le_xiPoissonCutHeight
+riemannHypothesis_of_xiPoissonTrace_line_bound  **the wrapper: bounded line  ->  RH**
+riemannHypothesis_iff_exists_xiPoissonTrace_line_bound
+  RH  <->  the Poisson zero trace is bounded on some vertical line of Re t > 0
+```
+
+The wrapper is the minimal-counterexample argument of §43, now checked: among the off-line copies
+take one of least height `g`; every copy below `g` is then on the line, so the finite sum it
+contributes to the line value has constant modulus; hence the cut trace above `g` inherits the
+bound; the cut assembly puts the cut's bottom shell -- which contains the chosen copy -- on the
+critical line.  **No induction over shells appears anywhere**; the minimum over a nonempty set of
+copies and the finiteness of shells do all the work.
+
+### What this completes
+
+The programme opened in §26 and corrected twice (§37, §53) is now a theorem of the corpus in both
+directions.  The chain that carries it:
+
+```text
+§28  order-one vertical envelope, unconditional        (why Phragmen-Lindelof applies at all)
+§36  analyticity of the trace on Re t > 0
+§39  Phragmen-Lindelof -> half-plane decay
+§40  vertical split and the weighted tail bound
+§38  phase-robust dominance
+§41  the bottom shell, for the full divisor
+§42-43, §58  the same over a height cut
+§59  the cut assembly and the minimal-counterexample wrapper
+```
+
+Every step is unconditional; the hypothesis enters only as the boundedness assumption, and the
+conclusion is `RiemannHypothesis` itself.
+
+### The open core, unchanged and now isolated
+
+```text
+[OPEN CORE]  ∃ sigma > 0, ∃ C, ∀ x, ‖Theta(sigma + i x)‖ <= C.
+```
+
+This is now the *only* thing between the corpus and RH along this route.  It is RH-strength: §44
+shows it is equivalent to complete monotonicity of `Theta` on `(0, infinity)`, and §33 shows that on
+the prime side it is full square-root cancellation in the Poisson-smoothed explicit formula.  What
+the last twenty sections bought is that the statement is now a single, explicit, zero-free analytic
+inequality with a formally verified path from it to the theorem.
+
+### Next
+
+Attack the open core directly.  Two concrete handles, both from §§32--33:
+the mass-shifted carrier makes the criterion a convergent prime sum with an archimedean side that
+*decays*, so the whole content sits in one oscillatory factor; and the escaped complex saddle
+(`w* = 2 a u / sqrt(4a^2 - 1) > u`) says the sum is endpoint-governed rather than saddle-governed,
+which is where the small primes enter.
+
+---
+
+## §60 What the proof actually consumes — the admissible-family interface
+
+Reading §§28--59 back, the chain never uses the Xi divisor as such.  It uses a family of points
+`beta : XiZeroCopy -> C` with six properties:
+
+```text
+(P1)  Re beta q  >=  c > 0                      heights bounded away from zero
+(P2)  |Im beta q|  <=  B  for a fixed B         displacements uniformly bounded
+(P3)  sum_q exp(-sigma Re beta q) < infinity    for every sigma > 0
+(P4)  {q : Re beta q <= R} is finite            shells are finite
+(P5)  beta (lineConj q) = conj (beta q)         conjugation stability
+(P6)  Im beta q = 0  <->  q lies on the critical line
+```
+
+`(P1)`+`(P2)` give the order-one envelope and hence Phragmén--Lindelöf; `(P3)`+`(P4)` give
+summability, least heights and the spectral gap; `(P5)` upgrades `Im <= 0` to `Im = 0` and doubles
+the aligned amplitude; `(P6)` converts the conclusion into RH.  Nothing else is used.
+
+### Why this matters: the prime bridge
+
+The Poisson family `beta = alpha^` satisfies all six but is **not prime-accessible** (§31: its test
+function has a corner at `r = 0`, so its Fourier transform decays only like `1/x^2` and the explicit
+formula's prime sum diverges).
+
+The **mass-shifted** family `beta_a q = sqrt(alpha^ q ^ 2 + a^2)` with `a > 1/2` satisfies all six as
+well -- §31 checked (P1) with `c = sqrt(a^2 - 1/4)`, (P2) with `B = 1/2` (indeed `|Im beta_a| <
+|delta|`), (P4) and the branch condition; (P5) holds because the principal root commutes with
+conjugation on the right half-plane; and (P6) because `Im beta_a = 0` iff `g delta = 0` -- **and it
+is prime-accessible**, its transform decaying like `exp(-a|x|)`.
+
+> **[CONJECTURE, structural]**  The chain of §§28--59, restated over an admissible family, applies
+> verbatim to `beta_a`.  Consequently
+> ```text
+> RH  <->  sum_n Lambda(n) n^(-1/2) * 2 a t K_1(a sqrt(t^2 + (log n)^2)) / sqrt(t^2 + (log n)^2)
+>          is bounded on a vertical line,
+> ```
+> with a formally verified path from the right-hand side to `RiemannHypothesis`.
+
+That is the shape the open core should be attacked in: the archimedean side decays like `u^(-1/2)`
+(§33), the pole side is bounded exactly when `a > 1/2`, so the entire content is one oscillatory
+prime sum.
+
+### Honest status
+
+The interface above is a reading of the finished proof, not a new theorem; restating the Lean
+development over an abstract admissible family is a refactor, not a discovery, and I have not done
+it.  What is proved is the instance at `beta = alpha^`:
+
+```text
+[LEAN-PROVED]  riemannHypothesis_iff_exists_xiPoissonTrace_line_bound
+[OPEN CORE]    the boundedness itself
+```
+
+The open core is RH.  Nothing in §§26--60 reduces its difficulty; what they change is its *form* --
+from a statement about zeros to a single explicit analytic inequality, with every step from that
+inequality to the theorem machine-checked.
+
+### Next
+
+Two independent lines, both concrete:
+
+1. **Refactor to the admissible interface**, then instantiate at `beta_a`.  This is bounded work with
+   a known endpoint, and it is what makes the open core a statement about primes rather than about
+   an inaccessible trace.
+2. **Attack the oscillatory prime sum** in the form §33 left it: the complex saddle escapes the
+   contour for every `a > 1/2`, so the sum is endpoint-governed; compute the endpoint contribution
+   exactly and compare it with the pole term `2 exp(-t sqrt(a^2 - 1/4))`, which is the only other
+   bounded quantity in the identity.
+
+---
+
+## §61 The admissible-family interface, formalized
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiSpectralFamily.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+structure SpectralFamily
+  pt, base, base_pos, base_le, abs_im_lt, summable_weight, shell_finite, conj_stable
+SpectralFamily.weight / term / traceReal / traceC
+SpectralFamily.norm_term_le              order-one envelope, from abs_im_lt alone
+SpectralFamily.summable_norm_term
+SpectralFamily.norm_traceC_le            ‖trace tau‖ <= exp(|Im tau|/2) * traceReal (Re tau)
+SpectralFamily.norm_traceC_le_of_im_eq_zero
+SpectralFamily.traceReal_antitone
+xiPoissonFamily                          the Poisson coordinate is an instance
+```
+
+§60 read the six properties off the finished proof; this turns that reading into a Lean structure and
+checks that the envelope, summability, antitonicity and the RH-collapse follow from the interface
+alone -- no reference to the Xi divisor beyond the index type.
+
+The point is the **second** instance.  The Poisson family is not prime-accessible (§31); the
+mass-shifted family `sqrt(alpha^^2 + a^2)` with `a > 1/2` is, and §31 verified each of the six
+properties for it.  Once the remaining steps of the chain are stated over `SpectralFamily`, the
+criterion transfers to a carrier whose explicit formula converges, and the open core becomes a
+statement about an explicit prime sum rather than about an inaccessible trace.
+
+### What is instantiated and what is not
+
+`xiPoissonFamily` takes `0 < xiPoissonBottomHeight` as an argument rather than proving it inside,
+because that fact lives downstream (`XiPoissonShellSplit`).  That is a wiring detail, not a gap: the
+hypothesis is `[LEAN-PROVED]` as `xiPoissonBottomHeight_pos`.
+
+### Ledger
+
+```text
+[LEAN-PROVED]  RH <-> Theta bounded on a vertical line              §59
+[LEAN-PROVED]  the admissible-family interface and its envelope     §61
+[to formalize] the rest of the chain over SpectralFamily
+[to formalize] the mass-shifted instance
+[OPEN CORE]    the boundedness itself
+```
+
+### Next
+
+Continue the transfer: state analyticity, Phragmén--Lindelöf, the shell structure and the assembly
+over `SpectralFamily`.  Each is the existing proof with `xiPoissonPoint` replaced by `F.pt` and the
+four structure fields supplying what was previously a named lemma; the abstract ingredients
+(`GeometricAmplitudeDominance`, `TrigPolynomialPhaseSelection`, `RealExponentialSumRigidity`) are
+already family-independent and need no change.
+
+---
+
+## §62 Analyticity and shell structure over the interface
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiSpectralFamilyAnalytic.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.norm_term_le_on_box       box domination, from abs_im_lt and re_nonneg
+SpectralFamily.differentiableOn_traceC_box
+SpectralFamily.analyticOnNhd_traceC      the trace is analytic on Re t > 0
+SpectralFamily.exists_min_re_of_nonempty every nonempty set of copies attains a least height
+SpectralFamily.cut / mem_cut / cut_lineConj / finite_cut_shell
+```
+
+Two of the four blocks of the chain are now interface-level.  Notably `exists_min_re_of_nonempty` --
+the lemma that replaced the shell induction by a minimal counterexample (§43) -- needs only
+`shell_finite`, and `cut_lineConj` needs only `conj_stable`: the peeling structure is a consequence
+of the interface, not of the Poisson coordinate.
+
+### Transfer ledger
+
+```text
+[LEAN-PROVED, interface]  envelope, summability, antitonicity, RH-collapse        §61
+[LEAN-PROVED, interface]  analyticity, least heights, cuts, shells                §62
+[to transfer]             Phragmen-Lindelof and the half-plane decay
+[to transfer]             the bottom-shell assembly and the wrapper
+[to instantiate]          the mass-shifted family
+[OPEN CORE]               the boundedness itself
+```
+
+The two remaining transfers are the Phragmén--Lindelöf step (§39) and the assembly (§41, §59); both
+are the existing proofs with `F.pt` in place of `xiPoissonPoint`, and both consume only interface
+fields plus the three family-independent abstract lemmas.
+
+### Next
+
+Transfer the Phragmén--Lindelöf step.  Its four hypotheses map onto interface facts exactly as they
+did for the Poisson coordinate: `DiffContOnCl` from `analyticOnNhd_traceC`, the `∃ c < 2` growth from
+`norm_traceC_le` (order one, because `abs_im_lt` bounds the displacements), the real-ray bound from
+the hypothesis being contraposed, and the imaginary-ray bound from `base_le` -- every height is at
+least the family's base, which is what makes the twist by the least height bounded there.
+
+---
+
+## §63 Phragmén--Lindelöf over the interface
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiSpectralFamilyDecay.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.bottomCopy / bottomHeight / bottomHeight_le / bottomHeight_pos
+SpectralFamily.exp_bottomHeight_mul_traceReal_le       the imaginary-ray bound
+SpectralFamily.twist                                   the least-height twist
+SpectralFamily.norm_twist_le                           order-one envelope for the twist
+SpectralFamily.norm_twist_imaginary_ray / _real_ray
+SpectralFamily.norm_twist_le_of_line_bound             Phragmen-Lindelof, quadrants III and IV
+SpectralFamily.norm_traceC_le_of_line_bound
+  ‖trace t‖ <= max C (traceReal sigma) * exp(-(bottomHeight (Re t - sigma)))   for Re t >= sigma
+```
+
+Three of the four blocks of the chain are now interface-level.  The `∃ c < 2` hypothesis is
+discharged by `norm_twist_le`, which comes from `abs_im_lt` alone -- so **the reason the argument
+works is a single structure field**: displacements bounded by one half.  A family whose
+displacements were unbounded would have an envelope of order greater than one and the quadrant
+theorem would not apply, which is exactly the Gaussian coordinate's failure recorded in §39.
+
+Note `bottomHeight` is the family's own least height, obtained from `shell_finite` via
+`exists_min_re_of_nonempty`; `base` only has to be *some* positive lower bound, which is what makes
+the interface easy to instantiate.
+
+### Transfer ledger
+
+```text
+[LEAN-PROVED, interface]  envelope, summability, antitonicity, RH-collapse   §61
+[LEAN-PROVED, interface]  analyticity, least heights, cuts, shells           §62
+[LEAN-PROVED, interface]  Phragmen-Lindelof and half-plane decay             §63
+[to transfer]             the bottom-shell assembly and the wrapper
+[to instantiate]          the mass-shifted family
+[OPEN CORE]               the boundedness itself
+```
+
+### Next
+
+The assembly.  Over the interface it needs: the bottom shell as a `Finset` (from `shell_finite`), the
+line factorization on it (heights agree there, so the twist leaves only a phase), the vertical split
+and tail bound (from `summable_weight` and the gap given by `exists_min_re_of_nonempty` on the copies
+strictly above), and then `RealExponentialSumRigidity` -- which is already family-independent.  The
+wrapper then repeats §59 with `F.cut` in place of `xiPoissonCut`.
+
+---
+
+## §64 The shell structure over the interface
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiSpectralFamilyShell.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.bottomShell / mem_bottomShell / mem_bottomShell_lineConj
+SpectralFamily.aboveBottom / mem_aboveBottom / exists_secondHeight
+SpectralFamily.bottomShellSum / aboveBottomSum
+SpectralFamily.bottomShellSum_eq                      the height factors out, leaving a phase
+SpectralFamily.traceC_vertical_split
+SpectralFamily.exp_bottomHeight_mul_norm_aboveBottomSum_le    the weighted tail bound
+```
+
+All four structural blocks of the chain are now stated over the interface.  `bottomShellSum_eq`
+reuses `xiPoisson_line_factor` unchanged -- that lemma was always a statement about four real
+numbers, not about the Xi divisor, which is why it transfers for free.
+
+### Transfer ledger
+
+```text
+[LEAN-PROVED, interface]  envelope, summability, antitonicity, RH-collapse   §61
+[LEAN-PROVED, interface]  analyticity, least heights, cuts, shells           §62
+[LEAN-PROVED, interface]  Phragmen-Lindelof and half-plane decay             §63
+[LEAN-PROVED, interface]  bottom shell, split, tail bound                    §64
+[to transfer]             the assembly and the wrapper
+[to instantiate]          the mass-shifted family
+[OPEN CORE]               the boundedness itself
+```
+
+What remains of the transfer is the assembly (§41 verbatim, with `F.pt`) and the wrapper (§59
+verbatim, with `F.cut`).  Both consume only what is now proved plus the three family-independent
+abstract lemmas.
+
+### Next
+
+The interface assembly: regroup the bottom-shell sum by displacement, bound it uniformly in `u` by
+combining half-plane decay (§63) with the tail bound (§64) at `v = |u| / (2 (g_2 - g_1))`, and apply
+`HTGeometry.le_zero_of_expSum_norm_le`.  Then `conj_stable` upgrades the conclusion from
+`Im <= 0` to `Im = 0`, and the minimal-counterexample wrapper closes it -- both already proved for
+the Poisson instance, and both using only interface fields.
+
+---
+
+## §65 The assembly over the interface
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiSpectralFamilyOnLine.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.bottomShell_regroup       the shell sum grouped by displacement
+SpectralFamily.im_nonpos_of_line_bound   bounded line  ->  every bottom displacement <= 0
+SpectralFamily.im_eq_zero_of_line_bound  and, by conjugation stability, = 0
+```
+
+The transfer of the whole chain is complete except for the wrapper: for **any** admissible family,
+boundedness of its trace on one vertical line forces its least-height shell onto the real axis.
+
+That statement no longer mentions the Riemann zeta function.  It says: a countable family of points
+in the closed right half-plane, with heights bounded below and away from zero, displacements bounded
+by one half, summable weight, finite shells and conjugation symmetry, has a real least-height shell
+as soon as its exponential sum is bounded on one vertical line.
+
+### Transfer ledger
+
+```text
+[LEAN-PROVED, interface]  envelope, summability, antitonicity, RH-collapse   §61
+[LEAN-PROVED, interface]  analyticity, least heights, cuts, shells           §62
+[LEAN-PROVED, interface]  Phragmen-Lindelof and half-plane decay             §63
+[LEAN-PROVED, interface]  bottom shell, split, tail bound                    §64
+[LEAN-PROVED, interface]  the assembly                                       §65
+[to transfer]             the minimal-counterexample wrapper
+[to instantiate]          the mass-shifted family
+[OPEN CORE]               the boundedness itself
+```
+
+### Next
+
+The wrapper.  Over the interface it needs the cut family: given `g`, the sub-family supported on
+`F.cut g` is admissible whenever the cut is nonempty (all six fields restrict), so the wrapper is
+`im_eq_zero_of_line_bound` applied to the cut family, exactly as §59 applied the Poisson version to
+`xiPoissonCut`.  Then instantiating at the mass-shifted family turns the open core into boundedness
+of a convergent prime sum.
+
+---
+
+## §66 The lift: applying the assembly at every height without reindexing
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiSpectralFamilyLift.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.below g          the copies below a height cut
+SpectralFamily.finite_below     finite, from shell_finite
+SpectralFamily.below_lineConj   conjugation-stable, from conj_stable
+SpectralFamily.lift g H hH      the family with each copy below g replaced by the real point H
+```
+
+`lift` is a `SpectralFamily`: all six fields survive the replacement.  Heights stay above the base
+because `H` does; displacements stay bounded because the replacements have displacement zero;
+summability survives because the replaced set is finite (`summable_subtype_and_compl` splits the sum
+into a finite part and an unchanged part); shells stay finite because the replaced set is finite;
+and conjugation stability survives because line conjugation preserves heights, so it preserves the
+branch, and a real point is its own conjugate.
+
+### Why this is the right move
+
+The wrapper of §59 needed the trace *above* a height, which for the Poisson coordinate meant a whole
+parallel development (`XiPoissonCutTrace` through `XiPoissonCutOnLine`, §§42--43, 58--59).  At the
+interface that is unnecessary: raising the low copies to a common real height turns "the trace above
+`g`" into "the trace of another admissible family", and the assembly already proved for **every**
+admissible family applies directly.  The replaced copies contribute a bounded real amount to the line
+value, so the line bound transfers.
+
+### Transfer ledger
+
+```text
+[LEAN-PROVED, interface]  the whole chain through the assembly       §61-§65
+[LEAN-PROVED, interface]  the lift                                   §66
+[to transfer]             the wrapper, now a short argument
+[to instantiate]          the mass-shifted family
+[OPEN CORE]               the boundedness itself
+```
+
+### Next
+
+The interface wrapper: given a line bound for `F` and a copy of least height among those off the
+line, apply the assembly to `F.lift g H` for `g` that copy's height and `H` above the cut's least
+height.  The lifted family's bottom shell is the cut's, its trace differs from `F`'s by two finite
+sums of bounded modulus, and the chosen copy lies in that shell -- a contradiction.
+
+---
+
+## §67 The transfer completes: the criterion holds for every admissible family
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiSpectralFamilyRH.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.lift_pt_of_le / lift_pt_of_lt
+SpectralFamily.im_eq_zero_of_line_bound_all
+  boundedness on one vertical line  ->  every displacement of the family vanishes
+```
+
+The wrapper takes the lift at `H = g`, so the copies below the cut land exactly on the bottom shell
+of the lifted family.  They are real by minimality, the two finite correction sums have bounded
+modulus on the line, the lifted least height is `g`, and the chosen counterexample lies in the lifted
+bottom shell -- which §65 has already made real.  Contradiction.
+
+### The statement, free of zeta
+
+> Let `beta` assign to each copy of the Xi divisor a complex number with: heights bounded below by a
+> positive constant, displacements bounded by `1/2`, summable weight `exp(-sigma Re beta)` for every
+> `sigma > 0`, finite shells, and `beta` conjugation-equivariant for the critical-line involution.
+> If `sum_q exp(-t beta q)` is bounded on one vertical line of the open right half-plane, then every
+> `beta q` is real.
+
+Instantiated at the Poisson coordinate this is RH (§59, and now again through the interface).  The
+point of the interface is the *second* instantiation.
+
+### Ledger
+
+```text
+[LEAN-PROVED]  the criterion for every admissible family        §61-§67
+[LEAN-PROVED]  RH <-> Theta bounded on a vertical line           §59
+[to instantiate]  the mass-shifted family sqrt(alpha^^2 + a^2)
+[OPEN CORE]       the boundedness itself
+```
+
+### Next
+
+Instantiate at `beta_a q = sqrt(alpha^ q ^2 + a^2)` for `a > 1/2`.  What has to be built is the
+principal square root on the right half-plane together with two estimates already computed on paper
+in §31: `Re sqrt(w + a^2) >= sqrt(a^2 - 1/4)` and `|Im sqrt(w + a^2)| < |delta| < 1/2`.  Conjugation
+equivariance is automatic because the principal root commutes with conjugation off the cut, and
+shell finiteness and summability follow by comparison with the Poisson heights.  With that instance,
+`im_eq_zero_of_line_bound_all` turns boundedness of a **convergent prime sum** into RH.
+
+---
+
+## §68 The principal square root, formalized
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/HTGeometry/PrincipalSquareRoot.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+csqrtRe z = sqrt ((‖z‖ + Re z)/2),   csqrtIm z = Im z / (2 csqrtRe z),   csqrt z
+csqrtRe_pos            0 < Re z  ->  0 < csqrtRe z
+sq_csqrtRe             csqrtRe z ^ 2 = (‖z‖ + Re z)/2
+re_le_sq_csqrtRe       Re z <= csqrtRe z ^ 2
+abs_csqrtIm            |csqrtIm z| = |Im z| / (2 csqrtRe z)
+csqrtIm_eq_zero_iff    csqrtIm z = 0  <->  Im z = 0
+csqrt_conj             the root commutes with conjugation
+```
+
+These are exactly the four facts the mass-shifted instantiation consumes, and no branch-cut theory
+is needed: on the right half-plane `‖z‖ + Re z > 0`, so the formulas are unambiguous and positivity
+is immediate.
+
+### How they give the mass-shifted family's five conditions
+
+Write `alpha^ = R + i J` with `R` the height and `|J| < 1/2`, and `z = alpha^^2 + a^2`, so
+
+```text
+Re z = R^2 - J^2 + a^2 >= a^2       (since R > 4 and |J| < 1/2),
+Im z = 2 R J.
+```
+
+Then, using only the lemmas above:
+
+```text
+Re beta_a = csqrtRe z,     csqrtRe z ^ 2 >= Re z >= a^2   =>   Re beta_a >= a          (P1)
+|Im beta_a| = |Im z| / (2 csqrtRe z) = R |J| / csqrtRe z
+            <= R |J| / sqrt(Re z) = R |J| / sqrt(R^2 - J^2 + a^2) < |J| < 1/2          (P2)
+csqrtRe z ^ 2 >= R^2 - J^2 + a^2 >= R^2 - 1/4  =>  Re beta_a >= R - 1                  (P3), (P4)
+csqrt_conj and the conjugation-equivariance of alpha^                                  (P5)
+csqrtIm_eq_zero_iff:  Im beta_a = 0  <->  R J = 0  <->  J = 0                          (P6)
+```
+
+The strict inequality in (P2) is the only one that needs `a > 1/2`: it is `J^2 < a^2`.
+
+### Ledger
+
+```text
+[LEAN-PROVED]  the criterion for every admissible family        §61-§67
+[LEAN-PROVED]  the principal square root and its four facts     §68
+[to instantiate]  assemble the five conditions into a SpectralFamily
+[OPEN CORE]       the boundedness itself
+```
+
+### Next
+
+Assemble the instance.  Each of the five lines above is a short calculation from
+`PrincipalSquareRoot` plus the Poisson facts already in the corpus (`four_lt_norm_xiSpectralPoint`,
+`abs_xiPoissonPoint_im_lt_half`, `finite_xiPoissonShell`, `summable_xiPoissonWeight`,
+`xiPoissonPoint_lineConj`).  With the instance in hand, `im_eq_zero_of_line_bound_all` reads: if the
+mass-shifted trace is bounded on one vertical line then every zero is on the critical line -- and
+that trace is the one whose explicit formula converges.
+
+---
+
+## §69 The mass-shifted instance: the criterion in prime-accessible form
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiMassShiftedFamily.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+xiMassArg a q = alpha^ q ^ 2 + a^2
+xiMassArg_re / xiMassArg_im     Re = R^2 - J^2 + a^2,  Im = 2 R J
+three_lt_xiPoissonPoint_re      3 < R, from ‖alpha‖ > 4 and |J| < 1/2
+xiMassArg_re_pos
+xiPoissonPoint_re_lt_csqrtRe    R < Re beta_a, because a^2 > J^2
+xiMassFamily ha                 **the admissible instance**, for any a > 1/2
+riemannHypothesis_of_xiMassTrace_line_bound
+  boundedness of the mass-shifted trace on one vertical line  ->  RH
+```
+
+Every one of the six admissibility conditions is discharged from the two inequalities computed on
+paper in §31 -- `Re beta_a >= a` and `|Im beta_a| < |J|` -- and the single comparison
+`R < Re beta_a`, which supplies summability and finite shells simultaneously.  The threshold
+`a > 1/2` is used exactly once, as `J^2 < a^2`.
+
+### What the corpus now states
+
+```text
+[LEAN-PROVED]  RH  <->  the Poisson trace is bounded on a vertical line        §59
+[LEAN-PROVED]  the same criterion for every admissible family                  §67
+[LEAN-PROVED]  the mass-shifted family is admissible, so its boundedness       §69
+               on one vertical line implies RH
+```
+
+The last is the criterion on the carrier whose explicit formula **converges** (§31): the test
+function `exp(-t sqrt(r^2+a^2))` is analytic in the strip `|Im r| < a`, so its transform decays like
+`exp(-a|x|)` and the prime side `sum_n Lambda(n) n^(-1/2) h^_t(log n)` is a convergent sum.  On paper
+(§§32--33) that sum's archimedean partner decays like `u^(-1/2)` and its pole term is bounded exactly
+when `a > 1/2`, so the entire content of the open core is one oscillatory prime sum.
+
+### Ledger
+
+```text
+[LEAN-PROVED]  everything from the boundedness hypothesis to RiemannHypothesis
+[OPEN CORE]    the boundedness hypothesis itself, now on a prime-accessible carrier
+[PAPER]        the identification of that trace with the explicit-formula prime sum
+```
+
+### Next
+
+Two things, in order of how much they buy:
+
+1. **Attack the open core** in its prime form: show
+   `sum_n Lambda(n) n^(-1/2) 2 a t K_1(a sqrt(t^2 + log^2 n)) / sqrt(t^2 + log^2 n)` is bounded on a
+   vertical line.  §33 reduced this to the fluctuation of the PNT error against the `K_1` kernel,
+   with the mean part provably bounded and the complex saddle escaping the contour.
+2. **Formalize the explicit formula for this carrier**, which would connect
+   `riemannHypothesis_of_xiMassTrace_line_bound` to the prime sum inside Lean rather than on paper.
+
+---
+
+## §70 The interface cannot be gamed
+
+`[LEAN-PROVED]` (added to `XiSpectralFamilyRH.lean`; lint clean; axioms
+`propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.im_eq_zero_iff_exists_line_bound
+  (∀ q, Im (F.pt q) = 0)  <->  ∃ sigma > 0, ∃ C, ∀ x, ‖F.traceC (sigma + i x)‖ <= C
+```
+
+### Why this is worth stating
+
+The interface was built to let the open core be moved to a prime-accessible carrier (§69).  A natural
+follow-up question is whether it can be moved further -- to some cleverer admissible family whose
+boundedness is *easier* than RH.  It cannot:
+
+> For **every** admissible family, boundedness on a vertical line is equivalent to the reality of its
+> points, and reality of the points of any family satisfying (P6) is RH.
+
+So the whole family of criteria produced in §§26--69 is a single criterion in many coordinates, all
+exactly as hard as each other.  Changing carrier changes the *form* of the open core -- from an
+inaccessible trace to a convergent prime sum -- and nothing else.  That is not a defect: it is the
+precise sense in which the reformulation is faithful, and it is why §31's prime-accessibility was
+worth the work while a search for a "softer" carrier would not be.
+
+### The corpus, in one line each
+
+```text
+riemannHypothesis_iff_exists_xiPoissonTrace_line_bound     RH <-> a bounded vertical line   §59
+SpectralFamily.im_eq_zero_iff_exists_line_bound            the same, for any admissible family §70
+riemannHypothesis_of_xiMassTrace_line_bound                the prime-accessible instance      §69
+re_xiPoissonMomentTraceC_nonneg_of_rh                      RH -> complete monotonicity        §49
+xiPoissonPoint_im_eq_zero_of_forall_moment_nonneg          its converse at the bottom shell   §57
+```
+
+Everything from an explicit analytic hypothesis to `RiemannHypothesis` is machine-checked.  What is
+not proved, and is the only thing not proved, is the hypothesis.
+
+### Next
+
+The open core, in the only form that now matters:
+
+```text
+∃ sigma > 0, ∃ C, ∀ x,  ‖ sum_rho exp(-(sigma + i x) sqrt(alpha^_rho^2 + a^2)) ‖ <= C
+```
+
+for one `a > 1/2`.  §§32--33 put its prime side in closed form -- a `K_1` kernel against the von
+Mangoldt weight, with a decaying archimedean partner and a pole term bounded exactly at the same
+threshold -- and showed the complex saddle escapes the contour, so the sum is endpoint-governed.  The
+next concrete computation is that endpoint contribution.
+
+---
+
+## §71 Promotion: the criterion carded into `3-formalized`
+
+`docs/drafts/pipeline/3-formalized/poisson-vertical-line-rh-criterion.md` now carries the finished
+result with its Lean surface, module list, approach, open core, and -- explicitly -- the four
+corrections made during the work (§37, §38, §53, §58).  Seventy sections of in-progress notes were
+overdue for a card; the Kanban discipline exists so that a reader arrives at the theorem and its
+exact status rather than at a transcript.
+
+Stage gates recorded honestly:
+
+```text
+[x] 1 -> 2  paper proof complete (as corrected)
+[x] 2 -> 3  Lean theorems, lake build green, axioms exactly the three standard ones, lint passes
+[ ] 3 -> 4  publication-ready
+```
+
+The card states the open core as the open core, not as a step.
+
+### What the card claims, precisely
+
+- **Proved:** RH is equivalent to boundedness of the Poisson zero trace on one vertical line; the
+  same criterion holds for every admissible spectral family; the mass-shifted family is admissible,
+  so boundedness of the prime-accessible trace implies RH; RH implies complete monotonicity of the
+  trace, and the converse holds at the bottom shell by a real-variable argument.
+- **Not proved:** the boundedness.  That is RH.
+
+### Next
+
+Two directions remain open, and they are different in kind:
+
+1. **The open core.**  §§32--33 leave it as one oscillatory prime sum with a decaying archimedean
+   partner; the next computation is the endpoint contribution left by the escaped saddle.
+2. **The quantitative channel.**  §44 showed `Theta(sigma + i u) = O(exp(lambda|u|))` implies the
+   zero-free region `|delta| <= lambda`; formalizing that would turn every improvement of an
+   explicit growth exponent into a zero-free region, on a continuous scale, rather than an
+   all-or-nothing criterion.  It is the same Phragmén--Lindelöf chain with `exp(-+ lambda y)` carried
+   through each quadrant, and it is the one part of the development whose value does not depend on
+   settling the open core.
+
+---
+
+## §72 The graded dominance lemma
+
+`[LEAN-PROVED]` (added to `HTGeometry/RealExponentialSumRigidity.lean`; lint clean; axioms
+`propext, Classical.choice, Quot.sound`):
+
+```text
+le_of_expSum_norm_le_exp
+  distinct real exponents, coefficients of fixed positive moduli (phases free),
+  ‖ sum_i B u i exp(u J i) ‖ <= K exp(lam |u|)  for all u
+  ->  J i <= lam  for every i
+```
+
+`lam = 0` is `le_zero_of_expSum_norm_le`; the general case is the abstract core of the quantitative
+channel.  The proof is the same dominance -- divide by the largest exponential and let `u ->
+infinity` -- with the majorant `K exp(u (lam - J i₀))`, which still tends to zero precisely when the
+largest exponent exceeds `lam`.
+
+### Why the graded version matters
+
+The criterion proved in §§59--70 is all-or-nothing: `Theta` bounded, or nothing.  The graded version
+turns the growth exponent into a continuous parameter:
+
+> **[PAPER-PROVED, §44]**  `‖Theta(sigma + i u)‖ << exp(lam |u|)`  implies the zero-free region
+> `|delta_rho| <= lam` for every zero.
+
+`lam = 1/2` is the a priori bound and says nothing; `lam = 0` is RH; every value in between is a
+zero-free region obtained from an explicit, zero-free, prime-computable growth exponent.  This is the
+one part of the development whose value does not wait on the open core: a partial bound on the
+exponent is a partial result about zeros, immediately.
+
+### What remains for the graded chain
+
+```text
+[LEAN-PROVED]  graded dominance                                    §72
+[to formalize] the lam-twisted Phragmen-Lindelof
+               (multiply by exp(-+ lam y) on each quadrant; the boundary bounds become
+                constants again, so the quadrant theorem applies unchanged)
+[to formalize] the graded assembly and wrapper
+```
+
+### Next
+
+The `lam`-twisted Phragmén--Lindelöf.  On the third quadrant, `G(y) exp(lam y)` has modulus
+`|G(y)| exp(lam Re y)`, which on the real ray `x <= 0` is at most `C exp(lam|x|) exp(lam x) = C`, and
+on the imaginary ray is unchanged because `|exp(lam i v)| = 1`.  The fourth quadrant uses
+`exp(-lam y)`.  So the *same* quadrant theorem, with the same `∃ c < 2` supplied by the order-one
+envelope, yields `|G(y)| <= M exp(lam |Re y|)` -- and the rest of the chain carries the extra factor
+through to `le_of_expSum_norm_le_exp`.
+
+---
+
+## §73 Graded Phragmén--Lindelöf
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiSpectralFamilyGraded.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.gtwist / norm_gtwist / differentiableOn_gtwist / norm_gtwist_le
+SpectralFamily.norm_twist_le_of_line_growth
+  ‖trace(sigma + i x)‖ <= C exp(lam |x|)  for all x
+  ->  ‖twist sigma y‖ <= max C (traceReal sigma) * exp(lam |Re y|)  on the lower half plane
+```
+
+The extra factor `exp(+- lam y)` is applied per quadrant, and it does exactly what it should: on the
+real ray it cancels the hypothesis' `exp(lam|x|)` and turns the boundary bound back into a constant;
+on the imaginary ray its modulus is one, so that bound is untouched; and it raises the exponential
+type from `1/2 + g_1` to `1/2 + g_1 + lam`, which is still order one and so still admissible for the
+quadrant theorem.
+
+That last point is the reason the grading is free: the `∃ c < 2` hypothesis has slack.  It would not
+have slack for the Gaussian carrier, whose envelope already sits at the boundary `c = 2` -- so the
+graded channel exists only in the Poisson coordinate, for the same reason the ungraded one does.
+
+### Ledger
+
+```text
+[LEAN-PROVED]  graded dominance                    §72
+[LEAN-PROVED]  graded Phragmen-Lindelof            §73
+[to formalize] the graded assembly and wrapper
+[OPEN CORE]    the boundedness (lam = 0 case)
+```
+
+### Next
+
+The graded assembly: the same chain as §65 with the extra `exp(lam|u|)` carried through the master
+bound, ending in `le_of_expSum_norm_le_exp` instead of `le_zero_of_expSum_norm_le`.  The conclusion
+is `|Im (F.pt q)| <= lam` for every copy of the bottom shell, and the graded wrapper then gives it
+for every copy -- i.e. an explicit growth exponent on one vertical line becomes an explicit zero-free
+region, with no reference to the zeros anywhere in the hypothesis.
+
+---
+
+## §74 The graded assembly: a growth exponent is a zero-free region
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/RHTower/XiSpectralFamilyGradedOnLine.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.im_le_of_line_growth
+  ‖trace(sigma + i x)‖ <= C exp(lam |x|)  ->  Im (F.pt q) <= lam  on the bottom shell
+SpectralFamily.abs_im_le_of_line_growth
+  and, by conjugation stability, |Im (F.pt q)| <= lam
+```
+
+The factor `exp(lam |u|)` rides through the whole chain without interacting with anything: the
+half-plane decay carries it (§73), the tail bound never sees it -- it is controlled by the spectral
+gap alone -- and the shell sum inherits it, so the chain ends at
+`HTGeometry.le_of_expSum_norm_le_exp` instead of its `lam = 0` case.  The only new ingredient is that
+`exp(lam|u|) >= 1`, which lets `M exp(lam|u|) + K` be absorbed into `(M + K) exp(lam|u|)`.
+
+### What this gives that the ungraded statement does not
+
+```text
+lam = 1/2   the a priori envelope; says nothing
+lam = 0     RH
+0 < lam < 1/2   an explicit zero-free region |delta| <= lam
+```
+
+The hypothesis mentions no zeros: it is a growth exponent for an explicit trace on one vertical line.
+So any unconditional bound of the form `‖Theta(sigma + i x)‖ << exp(lam|x|)` with `lam < 1/2` is an
+unconditional zero-free region -- and, by §69, the same holds with the prime-accessible
+mass-shifted trace in place of `Theta`.
+
+This is the part of the development that pays before the open core is settled: progress on the
+exponent is progress on the zeros, continuously, rather than all at once.
+
+### Ledger
+
+```text
+[LEAN-PROVED]  graded dominance, graded Phragmen-Lindelof, graded assembly   §72-§74
+[to formalize] the graded wrapper (from the bottom shell to all copies)
+[OPEN CORE]    the lam = 0 case, i.e. RH
+```
+
+### Next
+
+The graded wrapper.  It is §67's argument verbatim -- minimal counterexample, lift the low copies to
+a common real height, transfer the growth hypothesis through two finite sums -- with `exp(lam|x|)`
+carried along; the finite corrections are bounded, hence absorbed into the constant, so the lifted
+family satisfies the same graded hypothesis.
+
+---
+
+## §75 The graded chain closes
+
+`[LEAN-PROVED]` (added to `XiSpectralFamilyGradedOnLine.lean`; lint clean; axioms
+`propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.abs_im_le_of_line_growth_all
+  ‖trace(sigma + i x)‖ <= C exp(lam |x|)  for all x
+  ->  |Im (F.pt q)| <= lam  for **every** copy
+```
+
+The wrapper is §67's with the growth factor carried through.  One point deserves note: in the
+ungraded case the copies below the cut were *real*, so their finite contribution had constant
+modulus; here they are only known to satisfy `|Im| <= lam`, and their contribution has modulus at
+most `weight sigma q * exp(lam |x|)` -- which is exactly the shape of the hypothesis, so the lifted
+family inherits it unchanged.  The grading is self-propagating.
+
+### The graded criterion, complete
+
+> For any admissible family: an explicit growth exponent `lam >= 0` for its trace on one vertical
+> line of the open right half-plane bounds every displacement by `lam`.
+
+```text
+lam = 1/2        the unconditional envelope; vacuous
+0 < lam < 1/2    an explicit zero-free region
+lam = 0          RH  (and then §70 makes it an equivalence)
+```
+
+Instantiated at the Poisson family this reads: any unconditional bound
+`‖Theta(sigma + i x)‖ << exp(lam |x|)` with `lam < 1/2` is an unconditional zero-free region
+`|delta_rho| <= lam`.  Instantiated at the mass-shifted family (§69) the same holds for the carrier
+whose explicit formula converges.
+
+### What the corpus contains at the end of this line of work
+
+```text
+riemannHypothesis_iff_exists_xiPoissonTrace_line_bound      RH <-> bounded line            §59
+SpectralFamily.im_eq_zero_iff_exists_line_bound             the same, any family           §70
+SpectralFamily.abs_im_le_of_line_growth_all                 the graded version             §75
+riemannHypothesis_of_xiMassTrace_line_bound                 prime-accessible instance      §69
+re_xiPoissonMomentTraceC_nonneg_of_rh                       RH -> complete monotonicity    §49
+xiPoissonPoint_im_eq_zero_of_forall_moment_nonneg           converse at the bottom shell   §57
+```
+
+All unconditional; all machine-checked; all reducing RH, or a zero-free region, to an explicit
+analytic bound on a zero-free object.
+
+### The open core, restated once more
+
+```text
+∃ sigma > 0, ∃ C, lam,  ∀ x,  ‖Theta(sigma + i x)‖ <= C exp(lam |x|)   with lam < 1/2.
+```
+
+Any such `lam` is a zero-free region; `lam = 0` is RH.  On the prime side (§§32--33) this is
+cancellation in a `K_1`-weighted von Mangoldt sum whose archimedean partner decays and whose pole
+term is bounded exactly at the threshold `a > 1/2`.
+
+### Next
+
+Attack that cancellation.  The concrete first target is not `lam = 0` but any `lam < 1/2`: by §75
+that is already a theorem about zeros, and unlike RH it is not known to be equivalent to anything
+famous -- the trivial bound gives `lam = 1/2` and the classical zero-free region gives
+`lam < 1/2` only through the zeros, not through the trace.  An unconditional trace bound with
+`lam < 1/2` would be new.
+
+---
+
+## §76 Where the two targets actually sit
+
+The card now carries the graded channel.  Before pushing further it is worth being exact about what
+`lam < 1/2` would cost, because §75 left it as "the concrete first target" and that deserves a check.
+
+### `lam < 1/2` is not a soft target
+
+A uniform `lam < 1/2` says every zero satisfies `|delta| <= lam`, i.e. `zeta` has **no zeros with
+`Re s > 1/2 + lam`** -- a zero-free half-plane strictly inside the critical strip.  That is open.
+
+The classical zero-free region does *not* supply it: de la Vallée Poussin gives
+`delta < 1/2 - c / log(|gamma| + 2)`, whose supremum over all heights is exactly `1/2`.  The bound
+degrades with height, so it yields no uniform `lam` below `1/2`.
+
+> **[CORRECTION to §75's framing]**  `lam < 1/2` is weaker than RH but is *not* a routine or partially
+> known statement; it is open, and by §75 it is equivalent to an unconditional growth bound for the
+> trace.  Calling it "the concrete first target" was right about its logical position and wrong to
+> imply it is close.
+
+### What that settles about the whole line of work
+
+Both ends of the graded scale are open, and §70 showed the criterion is faithful in every admissible
+coordinate, so no reformulation inside this family will make either end easier.  The value delivered
+is therefore exactly:
+
+- a **faithful** reduction of RH, and of every intermediate zero-free region, to an explicit analytic
+  bound on a zero-free, prime-computable object;
+- with **every step from that bound to the conclusion machine-checked**;
+- on a carrier for which the explicit formula converges, so the bound is a statement about a
+  convergent prime sum;
+- together with the negative results that fix the route: the Gaussian carrier fails Phragmén--Lindelöf
+  at order exactly two (§39), the pure Poisson carrier is not prime-accessible (§31), moment
+  positivity does not peel (§58), and the interface cannot be gamed (§70).
+
+### Honest status
+
+```text
+[LEAN-PROVED]  everything from the analytic hypothesis to RiemannHypothesis, in both the
+               all-or-nothing and the graded forms, for the Poisson and mass-shifted carriers
+[OPEN]         the analytic hypothesis, at every value of lam in [0, 1/2)
+```
+
+I have not proved the Riemann Hypothesis, and nothing in §§26--76 reduces the difficulty of the
+remaining step; what they change is its form and its verifiability.
+
+### Next
+
+The remaining mathematical question is unchanged and is the one to keep attacking:
+
+> Bound `sum_n Lambda(n) n^(-1/2) * 2 a t K_1(a sqrt(t^2 + log^2 n)) / sqrt(t^2 + log^2 n)` on a
+> vertical line, by `C exp(lam|Im t|)` for some `lam < 1/2`.
+
+§33 established that its mean part is bounded unconditionally and that the complex saddle escapes the
+contour for every `a > 1/2`, so the sum is endpoint-governed; the endpoint contribution is the next
+thing to compute exactly.
+
+---
+
+## §77 The endpoint computation, done — and what it closes
+
+§§33, 75 and 76 all ended by pointing at the same computation: the endpoint contribution of the
+oscillatory prime sum left by the escaped saddle.  Here it is, and it is a negative result with an
+exact reason.
+
+### The split, once more
+
+```text
+P(t)  =  [ mean part ]  +  [ fluctuation ],
+```
+the mean part being what survives when `psi(x)` is replaced by `x`.  §33 proved the mean part
+bounded, structurally: in the no-zero model the explicit formula reads `0 = A + poles - P`, so the
+mean part *is* `A + poles`, of modulus `O(u^(-1/2)) + 2 exp(-sigma sqrt(a^2-1/4))`.
+
+The fluctuation is `integral h^_t(L) exp(-L/2) dE(e^L)` with `E(x) = psi(x) - x`.
+
+### The endpoint contribution
+
+Integrating by parts and inserting the classical error term `E(x) << x exp(-c sqrt(log x))`, the
+integrand carries `exp(L/2) exp(-c sqrt L)` against `|h^_t|`, which inside the light cone is
+`~ u w^(-3/2) exp(-a sigma u / w)` with `w = sqrt(u^2 - L^2)`.  The saddle of the modulus sits at
+`w* ~ (2 a sigma)^(1/3) u^(2/3)` (§32), giving
+
+```text
+| fluctuation |  <<  exp(u/2) * exp(-c' u^(1/3)) * exp(-c'' sqrt u) * poly(u).
+```
+
+Both corrections are **subexponential**.  The exponential rate is still `1/2`.
+
+> **[NEGATIVE RESULT]**  The classical PNT error term yields `lam = 1/2` and nothing better.  The
+> endpoint contribution does not improve the exponent.
+
+### Why, exactly
+
+The fluctuation's growth rate on a vertical line is not an accident of the kernel.  `E(x)` is,
+through the explicit formula, a sum over the zeros with amplitudes `x^beta`; its exponential rate
+against the `K_1` kernel is therefore
+
+```text
+sup_rho beta - 1/2  =  sup_rho |delta|  =  V,
+```
+
+exactly the quantity the criterion is trying to bound.  Improving `lam` below `1/2` requires an error
+term `E(x) << x^theta` with `theta < 1`, which is a zero-free half-plane -- the same open statement.
+
+> **The reduction is faithful on the arithmetic side too.**  §70 proved this abstractly (no
+> admissible coordinate is softer); §77 confirms it concretely: no classical input about primes
+> breaks the circle, because the prime side's growth rate *is* the zero side's.
+
+### What this closes and what it leaves
+
+Closed: the line of attack that hoped the mass-shifted carrier's convergent explicit formula would
+yield an unconditional exponent.  It does not, and the reason is structural rather than technical.
+
+Left standing, unchanged and machine-checked:
+
+```text
+[LEAN-PROVED]  ‖trace‖ <= C exp(lam|x|) on one vertical line  ->  |delta_rho| <= lam for all rho
+[LEAN-PROVED]  lam = 0 gives RH, and conversely
+[OPEN]         any unconditional bound with lam < 1/2
+```
+
+### Next
+
+Since neither the archimedean side nor the classical prime input moves the exponent, the remaining
+lever is the **interaction** that §15's two counterexample families showed must be used and §32
+relocated into the admissibility threshold `a > 1/2`.  Concretely: the pole term
+`2 exp(-t sqrt(a^2 - 1/4))` and the transform's decay rate `exp(-a|x|)` are both governed by the same
+`a`, and the criterion must hold for *every* `a > 1/2` simultaneously.  A bound that is uniform in
+`a` -- or a contradiction extracted from letting `a -> 1/2+`, where the pole term degenerates while
+the transform's decay is exactly critical -- is the one place in this construction where the two
+inputs are still coupled and unexploited.
+
+---
+
+## §78 The `a`-lever audited: it is not a lever
+
+§77 named the last unexploited coupling -- the parameter `a`, which controls both the pole term
+`2 exp(-t sqrt(a^2 - 1/4))` and the transform's decay rate `exp(-a|x|)` -- and asked whether
+uniformity in `a`, or the degeneration `a -> 1/2+`, yields anything.  Audited:
+
+### The growth exponent does not depend on `a`
+
+```text
+|Im beta_a| = R |delta| / sqrt(R^2 - delta^2 + a^2),
+```
+so for zeros of height `R >> a` this is `|delta| (1 + O(a^2/R^2))`.  The supremum over the divisor is
+therefore approached by the *high* zeros, where the `a`-dependence vanishes:
+
+```text
+V_a := sup_rho |Im beta_a|  =  limsup_{R -> infinity} |delta|  =  V   for every a.
+```
+
+Large `a` shrinks the displacements of the low zeros -- which are on the line anyway -- and does
+nothing to the high ones.  No choice of `a` improves the exponent.
+
+### The threshold is admissible but not accessible
+
+`[LEAN-PROVED]`  `xiMassFamily` now takes `1/2 <= a` rather than `1/2 < a`: the only place the
+threshold entered was `delta^2 < a^2`, and `|delta| < 1/2` makes that true already at `a = 1/2`.
+So `beta_{1/2}` **is** an admissible family and the criterion holds for it.
+
+But `a = 1/2` is exactly where prime-accessibility fails: the transform decays like `exp(-|x|/2)`,
+and the prime sum becomes `sum_n Lambda(n)/n`, logarithmically divergent -- and its divergence is the
+pole.  So at the threshold the pole term and the prime sum's divergence merge, which is precisely why
+`a > 1/2` was needed for the explicit formula and precisely why `a = 1/2` gives no new information:
+the two sides degenerate together.
+
+> **[NEGATIVE RESULT]**  The `a`-family is a one-parameter family of *equivalent* criteria, not a
+> deformation with a soft point.  Its two degenerations -- `a -> infinity` (pole term vanishes,
+> transform decays fast) and `a -> 1/2+` (pole term flattens, transform decay becomes critical) --
+> both leave the growth exponent at `V`.
+
+### Where this leaves the construction
+
+Every degree of freedom in the reduction has now been audited:
+
+```text
+carrier order       Gaussian fails Phragmen-Lindelof at order exactly 2       §39
+carrier corner      pure Poisson is not prime-accessible                      §31
+positivity form     moment positivity does not peel                           §58
+coordinate choice   the interface cannot be gamed                             §70
+prime input         the classical error term leaves the exponent at 1/2       §77
+mass parameter      no value of `a` moves the exponent                        §78
+```
+
+Each is a genuine no-go with an exact mechanism, and together they say the reduction is tight: it is
+faithful in every direction one might hope to deform it.  That is the correct outcome for a
+*reduction* -- and it means the remaining step is not a matter of choosing better coordinates.
+
+### Honest status
+
+```text
+[LEAN-PROVED]  ‖trace‖ <= C exp(lam|x|) on one vertical line  ->  |delta_rho| <= lam
+[LEAN-PROVED]  lam = 0 is RH, and conversely; for the Poisson and mass-shifted carriers;
+               and for every admissible family
+[OPEN]         any unconditional bound with lam < 1/2
+```
+
+RH is not proved.  The remaining step is an unconditional analytic bound, and §§70, 77, 78 show it
+cannot be obtained by re-choosing anything inside this construction.
+
+### Next
+
+The next genuinely new move has to come from outside the reduction: an input that bounds the trace
+without going through the zeros.  The one structural asset not yet used is that the criterion holds
+for the *whole* one-parameter family simultaneously, together with the explicit `a`-dependence of the
+pole term -- i.e. a differential relation in `a` linking `Theta_a` to `Theta_{a'}`.  Whether that
+relation is non-trivial is the next thing to compute: `d/da beta_a = a / beta_a`, so
+`d/da Theta_a(t) = -t sum_rho (a / beta_a) exp(-t beta_a)`, which is a *weighted* trace of the same
+family -- and weighted traces are exactly what the moment machinery of §§46--57 already handles.
+
+---
+
+## §79 The `a`-derivative identity, and the last lever audited
+
+§78 ended by asking what the differential relation in `a` computes.  Here it is.
+
+### The identity
+
+`beta_a = sqrt(alpha^^2 + a^2)` gives `d beta_a / da = a / beta_a`, so
+
+```text
+d/da Theta_a(t)  =  - t a * sum_rho beta_rho^{-1} exp(-t beta_rho)
+                 =  - t a * integral_t^infinity Theta_a(s) ds,
+```
+
+the second equality because `integral_t^infinity exp(-s beta) ds = exp(-t beta) / beta`.
+
+> **[IDENTITY]**  `d/da Theta_a(t) = - t a * integral_t^infinity Theta_a(s) ds`.
+
+A clean integro-differential relation in the two parameters, with no zeros in it.
+
+### Why it is not a lever
+
+Suppose `‖Theta_a(sigma + i x)‖ << exp(lam|x|)`.  The half-plane decay of §63 gives
+`‖Theta_a(t + r)‖ <= M exp(lam|x|) exp(-g_1 r)` for `r >= 0`, so the integral converges and
+
+```text
+‖d/da Theta_a(sigma + i x)‖  <=  a |sigma + i x| M exp(lam |x|) / g_1  ~  C |x| exp(lam|x|).
+```
+
+Integrating in `a` moves `Theta_{a_0}` to `Theta_{a_1}` at the cost of a polynomial factor only: the
+exponential rate is unchanged.  So the identity transports bounds across the family without
+improving them -- exactly what §78 found by direct computation, now with the mechanism visible.
+
+### The threshold, seen through the identity
+
+Differentiating the explicit formula in `a`, the pole term contributes
+
+```text
+d/da [ 2 exp(-t sqrt(a^2 - 1/4)) ]  =  -2 t (a / sqrt(a^2 - 1/4)) exp(-t sqrt(a^2 - 1/4)),
+```
+
+whose coefficient **blows up as `a -> 1/2+`**, while `d/da Theta_a` stays bounded by the estimate
+above.  So the archimedean and prime sides must have matching singular behaviour in `a` at the
+threshold -- which is exactly the merging of the pole with the divergence of `sum Lambda(n)/n`
+recorded in §78.  The identity confirms the weld; it does not pry it open.
+
+> **[NEGATIVE RESULT]**  The `a`-derivative identity is a transport law, not a constraint.  It moves
+> information along the family and cannot create it.
+
+### Closing the audit
+
+With §79 the construction's degrees of freedom are exhausted:
+
+```text
+§31  carrier corner        §39  carrier order         §58  positivity form
+§70  coordinate choice     §77  prime input           §78  mass parameter
+§79  the a-derivative
+```
+
+Seven no-gos, each with an exact mechanism, and each one a reason the reduction is faithful rather
+than a defect in it.  The reduction stands; the analytic input does not follow from anything inside
+it.
+
+### Honest status, unchanged
+
+```text
+[LEAN-PROVED]  ‖trace‖ <= C exp(lam|x|) on one vertical line  ->  |delta_rho| <= lam for all rho,
+               for the Poisson carrier, the mass-shifted carrier (1/2 <= a), and every
+               admissible family; lam = 0 gives RH, and conversely
+[OPEN]         any unconditional bound with lam < 1/2
+```
+
+RH is not proved.
+
+### Next
+
+The identity of this section is the first object in the whole development that couples two
+parameters, and its transport property is exactly the reason it cannot help by itself.  What would
+help is a *second*, independent relation in `a` -- one not derivable from the definition of
+`beta_a` -- since two transport laws with different characteristics can pin a solution that one
+cannot.  The natural candidate is the explicit formula's own `a`-dependence, which enters through the
+transform `h^_t` rather than through the spectral points; computing `d/da h^_t(x)` and comparing it
+with the identity above is the next concrete step, and it is the first place where the two sides of
+the explicit formula are differentiated against each other rather than merely equated.
+
+---
+
+## §80 The transform's `a`-derivative: clean, and not independent
+
+§79 asked for a second relation in `a`, coming from the transform rather than the spectral points.
+Computed.
+
+### The derivative
+
+With `R = sqrt(t^2 + x^2)` and `h^_t(x) = 2 a t K_1(a R) / R`, using `K_1'(z) = -K_0(z) - K_1(z)/z`:
+
+```text
+d/da h^_t(x)  =  2t K_1(aR)/R  +  2at K_1'(aR)
+              =  2t K_1(aR)/R  -  2at K_0(aR)  -  2t K_1(aR)/R
+              =  -2 a t K_0(a sqrt(t^2 + x^2)).
+```
+
+> **[IDENTITY]**  `d/da h^_t(x) = -2 a t K_0(a sqrt(t^2 + x^2))`.
+
+The `K_1` terms cancel exactly and the order drops by one.  Differentiating the explicit formula in
+`a` therefore gives
+
+```text
+integral_t^infinity Theta_a(s) ds
+  =  -(d/da A_a + d/da pole_a)/(t a)  -  (2/pi) sum_n Lambda(n) n^(-1/2) K_0(a sqrt(t^2 + log^2 n)).
+```
+
+### Why it is still not independent
+
+`d/da h^_t(x)` is the Fourier transform of `d/da h_t(r)`, and
+
+```text
+d/da exp(-t sqrt(r^2 + a^2))  =  -(t a / sqrt(r^2 + a^2)) exp(-t sqrt(r^2 + a^2)),
+```
+
+which is again a function of `sqrt(r^2 + a^2)` alone -- analytic in the same strip `|Im r| < a`, with
+transform decaying at the same rate `exp(-a|x|)`.  So the "second relation" is the **explicit formula
+for another admissible carrier**, not a new constraint.
+
+> **[NEGATIVE RESULT]**  The transform's `a`-derivative reproduces the explicit formula for the
+> carrier `(t a / beta) exp(-t beta)`.  By §70 that carrier's criterion is equivalent to the
+> original's, so the pair of relations is one relation.
+
+### What the computation does reveal
+
+Iterating, `d^k/da^k h_t` runs through the whole Bessel tower `K_1, K_0, K_1, ...` with polynomial
+coefficients, and every member is an admissible carrier.  So the reduction sits inside an infinite
+tower of criteria, all equivalent:
+
+```text
+h_t = exp(-t beta),  d/da h_t,  d^2/da^2 h_t, ...      ->  K_1, K_0, K_1, ...
+```
+
+That is the sharpest form of §70's faithfulness on the analytic side: not only is no *coordinate*
+softer, no *derivative* of the carrier in its own parameter is either.  A tower of equivalent
+criteria is what a faithful reduction looks like from the inside.
+
+### Honest status, unchanged
+
+```text
+[LEAN-PROVED]  ‖trace‖ <= C exp(lam|x|) on one vertical line  ->  |delta_rho| <= lam,
+               for every admissible family; lam = 0 is RH, and conversely
+[OPEN]         any unconditional bound with lam < 1/2
+```
+
+RH is not proved.  Eight levers have now been audited (§§31, 39, 58, 70, 77, 78, 79, 80), each with
+an exact mechanism, and none of them supplies the analytic input.
+
+### Next
+
+Every deformation *internal* to the construction is exhausted.  The remaining moves are external, and
+the honest list is short:
+
+1. an unconditional bound on the `K_1`-weighted von Mangoldt sum along a vertical line, obtained by
+   methods outside this development (large sieve, zero-density, Guth--Maynard-type large-values
+   input) -- this is where the reduction hands off to analytic number theory proper;
+2. a positivity or self-adjointness input for the trace that is not a rearrangement of the explicit
+   formula -- the Hilbert--Pólya direction, for which this development now supplies the exact target:
+   an operator whose spectrum is the Poisson points `alpha^`, since reality of that spectrum is
+   `[LEAN-PROVED]`-equivalent to RH.
+
+---
+
+## §81 What the reduction hands to Hilbert--Pólya
+
+§80's second exit was "a positivity or self-adjointness input".  The development sharpens what such
+an input would have to be, and the sharpening is worth stating on its own.
+
+### The operator-theoretic reading
+
+Suppose a candidate operator `T` has spectrum (with multiplicity) the Poisson points
+`alpha^_rho = |gamma| - i sign(gamma) delta`.  Then `Theta(t) = Tr exp(-t T)` and the corpus theorem
+reads:
+
+> **`Tr exp(-t T)` is bounded on one vertical line `Re t = sigma > 0`  <->  `T` has real spectrum.**
+
+The forward direction is the trivial one for a self-adjoint `T` with positive spectrum:
+`|Tr exp(-t T)| <= Tr exp(-sigma T)`.  The converse is §§59--70.
+
+### The point for the programme
+
+Hilbert--Pólya asks for an operator that is **self-adjoint**.  The reduction says that is more than
+needed:
+
+> To conclude RH it suffices to bound `‖Tr exp(-t T)‖` on **one** vertical line.  Self-adjointness is
+> not required, only that one bound.
+
+And by §75 the requirement is graded: a bound `C exp(lam |Im t|)` with `lam < 1/2` gives the
+zero-free region `|delta| <= lam` -- so a candidate operator that is *nearly* self-adjoint, in the
+sense of a quantitative heat-trace bound, already yields a quantitative result.
+
+### The admissibility conditions, read as facts about zeta
+
+The six structure fields are, in this reading, exactly the classical facts a candidate's spectrum
+must reproduce:
+
+```text
+heights bounded below and away from zero   the lowest zero is at height ~14.13
+|displacement| <= 1/2                      the critical strip
+summable weight                            the canonical product (sum 1/|rho|^2 < infinity)
+finite shells                              the Riemann--von Mangoldt counting function
+conjugation equivariance                   the functional equation
+displacement zero <-> critical line        the definition
+```
+
+None of these is a hypothesis about RH; all six are theorems, and all six are `[LEAN-PROVED]` for the
+Poisson and mass-shifted coordinates.  A candidate operator has to reproduce them, and then a single
+heat-trace bound finishes the job.
+
+### Honest status
+
+```text
+[LEAN-PROVED]  the criterion, all-or-nothing and graded, for every admissible family
+[OPEN]         the analytic input, at every lam in [0, 1/2)
+```
+
+RH is not proved.  What §81 adds is not a proof but a specification: the exact, minimal property a
+Hilbert--Pólya candidate must have, weaker than self-adjointness and quantitative rather than
+all-or-nothing.
+
+### Next
+
+Two concrete continuations, both outside the reduction:
+
+1. **Test the specification against an existing candidate.**  The Berry--Keating operator `xp` and
+   its regularisations have spectra conjecturally matching the zeros; the reduction says the thing to
+   check is not self-adjointness of a candidate but the vertical-line heat-trace bound, which is a
+   statement about its resolvent growth.
+2. **Hand off the prime-side bound.**  The `K_1`-weighted von Mangoldt sum on a vertical line is a
+   Dirichlet-polynomial large-values question in disguise (§26); the exchange rate is now explicit,
+   and any unconditional exponent below `1/2` transfers immediately through `[LEAN-PROVED]`
+   machinery to a zero-free region.
+
+---
+
+## §82 Corpus cross-check: what is new here and what parallels existing work
+
+Running `scripts/formal_tools.py research` against the finished statements — the discipline this
+project mandates before claiming anything — turns up two pre-existing criteria of the same *kind*.
+Recording the comparison honestly.
+
+### What was already there
+
+```text
+RHTower.all_xiZeros_re_le_iff_negativeChannelSpectrum
+  (∀ rho, xi rho = 0 → Re rho <= 1/2 + alpha)  ↔  two explicit channel-energy conditions
+  on sequences (a, b) supplied by a `XiRectangularNegativeChannelSplit`
+
+RHTower.xi_central_spectrum_real_of_traceHankel_nonnegative_on_principalIdeal
+  Hankel positivity on a principal polynomial ideal, in the reciprocal-square coordinate,
+  excludes every non-real Xi atom
+```
+
+The first is a **graded zero-free-half-plane criterion** — the same target as §75.  The second is a
+**moment-positivity spectrum-reality criterion** — the same shape as §57.  Both predate this
+session.
+
+> **[NOT NEW]**  "A graded zero-free-half-plane criterion" and "a moment-positivity reality
+> criterion" are not new to this corpus.  Claiming either as novel would have been wrong.
+
+### What this session's chain adds
+
+Three things, stated at their real size:
+
+1. **A single scalar hypothesis.**  The negative-channel criterion is an equivalence conditional on
+   auxiliary data (a split into sequences `a, b` with their own admissibility).  The Poisson
+   criterion's hypothesis is one inequality about one explicit function:
+   `‖Theta(sigma + i x)‖ <= C exp(lam|x|)`.  No auxiliary object is chosen.
+2. **A prime-accessible carrier with a proved transfer.**  §69 gives an instance whose explicit
+   formula converges, with the passage from its trace bound to `RiemannHypothesis` machine-checked.
+3. **The coordinate analysis.**  The seven no-gos (§§31, 39, 58, 70, 77–80) say *why* this
+   coordinate and not another: order one rather than two for Phragmén--Lindelöf, equal-height shells
+   for the rigidity step, and faithfulness under every deformation tried.
+
+### What the coexistence means
+
+Three independent criteria — channel energies, Hankel positivity, vertical-line growth — all
+equivalent to the same open statements.  That is the same faithfulness pattern §70 proved inside the
+Poisson family, now visible across unrelated developments in this corpus: the reductions multiply,
+the difficulty does not move.
+
+The useful reading is not discouraging: each reduction exposes a *different* analytic surface, and
+the surfaces are not equally attacked by existing technique.  The vertical-line surface is the one
+that touches Dirichlet-polynomial large values directly (§26), which is where unconditional progress
+in the literature actually happens.
+
+### Honest status
+
+```text
+[LEAN-PROVED]  the vertical-line criterion, all-or-nothing and graded, for every admissible
+               family, with a prime-accessible instance
+[NOT NEW]      the existence of graded zero-free-region criteria in this corpus
+[OPEN]         every one of them, at every lam in [0, 1/2)
+```
+
+RH is not proved.
+
+### Next
+
+Compare the three surfaces quantitatively rather than structurally: for the same target
+`|delta| <= lam`, what does each criterion require of the primes?  The channel criterion asks for
+energy bounds on a chosen split; the Hankel criterion asks for positivity of an infinite family of
+minors; the vertical-line criterion asks for one exponential bound on a `K_1`-weighted von Mangoldt
+sum.  Writing the three side by side in the same variables is a concrete next step and would say
+which surface is closest to what unconditional technique currently delivers.
+
+---
+
+## §83 The three surfaces, in the same variables
+
+§82 asked what each criterion requires of the primes for the same target `|delta| <= lam`.  Written
+out, the answer is short and it is a closure.
+
+### Surface 1 — vertical-line growth (this development)
+
+`‖Theta(sigma + i x)‖ <= C exp(lam |x|)`.  Through the explicit formula (§§32--33) the content is
+cancellation in a `K_1`-weighted von Mangoldt sum with a light cone at `log n ~ |x|`; setting
+`X = exp|x|`, the trivial size is `2 sqrt X` and the requirement is `O(X^lam)`.  In the standard
+normalisation that is
+
+```text
+psi(x) - x  <<  x^(1/2 + lam + epsilon).
+```
+
+### Surface 2 — Hankel positivity (`xi_central_spectrum_real_of_traceHankel_...`)
+
+An infinite family of polynomial inequalities in the trace moments, each moment a prime sum.  Its
+`lam`-graded form is the same statement about the error term, expressed as positivity rather than as
+a bound.
+
+### Surface 3 — channel energies (`all_xiZeros_re_le_iff_negativeChannelSpectrum`)
+
+Energy bounds on a chosen split `(a, b)`; the criterion is an equivalence with
+`∀ rho, Re rho <= 1/2 + alpha`, hence again the same error-term exponent with `alpha = lam`.
+
+### The comparison
+
+```text
+Surface 1   one exponential bound on one explicit sum      <->  psi(x) - x << x^(1/2+lam+eps)
+Surface 2   an infinite family of positivity conditions    <->  the same
+Surface 3   energy bounds on auxiliary sequences           <->  the same
+```
+
+> **[CLOSURE]**  All three surfaces are the classical error-term exponent in different coordinates.
+> Surface 1 is the one whose hypothesis is a single scalar inequality, but its analytic content is
+> exactly `psi(x) - x << x^(1/2+lam+eps)` — the standard formulation.
+
+So the honest summary of this line of work is: it produces a **new, faithful, machine-checked route**
+from the classical error-term exponent to the zeros, graded at every `lam`, on a carrier whose
+explicit formula converges — and it does not produce a new way to bound the error term.
+
+### Why that is still worth having
+
+The classical equivalence `psi(x) - x << x^(theta+eps)  <->  no zeros with Re rho > theta` is
+textbook, but its proof of the hard direction runs through contour shifts and zero-density
+bookkeeping that is not formalised anywhere in this corpus.  What §§59--75 provide is that direction,
+unconditionally and in Lean, through an argument that uses no contour shifting at all: an order-one
+envelope, one Phragmén--Lindelöf call, shell homogeneity, and a dominance lemma about real
+exponentials.
+
+That is a genuine formalisation contribution even though it is not a new analytic input, and it is
+the first time in this corpus that "an explicit growth bound implies a zero-free region" exists as a
+theorem rather than as a citation.
+
+### Honest status
+
+```text
+[LEAN-PROVED]  an explicit growth exponent for the trace on one vertical line
+               implies the zero-free region |delta| <= lam, for every admissible family;
+               lam = 0 is RH, and conversely
+[EQUIVALENT]   to the classical error-term exponent, hence not a new analytic input
+[OPEN]         the exponent itself, at every lam in [0, 1/2)
+```
+
+RH is not proved, and this development does not bring it closer; it makes the last step exactly
+identifiable and everything after it checkable.
+
+### Next
+
+The remaining work that this development can carry is formalisation, not discovery: the corpus now
+has the hard direction of the error-term/zero-free-region equivalence, and the natural completion is
+the easy direction in the same coordinates (zero-free region implies the growth bound), which is
+`norm_traceC_le_of_im_eq_zero` at `lam = 0` and its graded analogue.  With both, the corpus would
+contain the full classical equivalence, proved rather than cited, in a form that applies to any
+admissible spectral family.
+
+---
+
+## §84 The graded equivalence, both directions
+
+`[LEAN-PROVED]` (added to `XiSpectralFamilyGradedOnLine.lean`; axioms
+`propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.norm_traceC_le_of_abs_im_le
+  |Im (F.pt q)| <= lam for all q  ->  ‖trace tau‖ <= traceReal (Re tau) * exp (lam |Im tau|)
+SpectralFamily.abs_im_le_iff_exists_line_growth
+  (∀ q, |Im (F.pt q)| <= lam)  <->  ∃ sigma > 0, ∃ C, ∀ x,
+      ‖trace (sigma + i x)‖ <= C exp (lam |x|)
+```
+
+The easy direction is one line of termwise arithmetic: `|term| = exp(-sigma Re + x Im)` and
+`x Im <= |x| lam`.  With it the corpus now contains, for every admissible spectral family and every
+`lam >= 0`, the **full** equivalence
+
+> displacements bounded by `lam`  `<->`  trace growth exponent at most `lam` on one vertical line,
+
+whose `lam = 0` case is `RH <-> boundedness` and whose analytic content (§83) is the classical
+error-term exponent `psi(x) - x << x^(1/2 + lam + eps)`.
+
+### What the corpus now holds on this line
+
+```text
+abs_im_le_iff_exists_line_growth        the graded equivalence, any admissible family     §84
+im_eq_zero_iff_exists_line_bound        its lam = 0 case                                  §70
+riemannHypothesis_iff_exists_xiPoissonTrace_line_bound   the same, named for RH           §59
+riemannHypothesis_of_xiMassTrace_line_bound              on the prime-accessible carrier  §69
+```
+
+All unconditional, all machine-checked, all with axioms exactly `propext, Classical.choice,
+Quot.sound`.
+
+### Honest status, unchanged
+
+```text
+[LEAN-PROVED]  the equivalence, at every lam, for every admissible family
+[EQUIVALENT]   to the classical error-term exponent (§83) -- not a new analytic input
+[OPEN]         the exponent itself, at every lam in [0, 1/2)
+```
+
+RH is not proved.
+
+### Note on the shared tree
+
+The formal lint gate currently reports one unreachable module,
+`GaloisForLFunctions.HTGeometry.StanleyReisnerEmptyTriangleRank`, from concurrent work by another
+agent; it is not part of this development.  Every module of this line builds, and each theorem cited
+above passes `#print axioms` with the three standard axioms only.
+
+### Next
+
+With both directions in place the development is closed as a reduction.  The remaining research
+question is unchanged and lies outside it:
+
+> an unconditional bound `psi(x) - x << x^(1/2 + lam + eps)` with `lam < 1/2`,
+
+equivalently an unconditional exponent for the `K_1`-weighted von Mangoldt sum on a vertical line.
+Everything downstream of such a bound — the zero-free region, and at `lam = 0` the Riemann
+Hypothesis — is now a theorem of this corpus rather than a citation.
+
+---
+
+## §85 A correction about large values, and a weaker sufficient hypothesis
+
+### The correction
+
+§§82--83 said the vertical-line surface "touches Dirichlet-polynomial large values directly, which
+is where unconditional progress happens".  That is misleading and should be withdrawn.
+
+Large-values technique -- the large sieve, zero-density estimates, Guth--Maynard -- bounds the
+**number** `N(sigma, T)` of zeros with `Re rho >= sigma`.  It never produces zero.  But Surface 1 at
+any `lam < 1/2` is a **zero-free half-plane** `Re rho <= 1/2 + lam`, which no density bound can
+supply, however strong.
+
+> **[CORRECTION]**  The vertical-line criterion does not hand off to zero-density technique.  Density
+> bounds and zero-free half-planes are different species; the criterion needs the latter.
+
+Nor is a mean-square version any softer: an off-line zero contributes `exp(2 J x)` to `|Theta|^2`, so
+the mean square over `[-T, T]` grows at rate `2V` as well -- the same threshold.
+
+### A weaker sufficient hypothesis
+
+The hypothesis can, however, be weakened in a different direction, and this costs nothing:
+
+`[LEAN-PROVED]` (added to `XiSpectralFamilyGradedOnLine.lean`; axioms
+`propext, Classical.choice, Quot.sound`):
+
+```text
+SpectralFamily.im_eq_zero_of_subexponential
+  (∀ eps > 0, ∃ sigma > 0, ∃ C, ∀ x, ‖trace(sigma + i x)‖ <= C exp(eps |x|))
+  ->  every displacement vanishes
+```
+
+The line is allowed to depend on `eps`.  In particular a **polynomial** bound
+`‖Theta(sigma + i x)‖ << (1 + |x|)^A` suffices, since a polynomial is `O(exp(eps|x|))` for every
+`eps > 0`.
+
+So the criterion's hypothesis is not "bounded" but "subexponential" -- visibly weaker, and obtained
+from the graded chain by taking `lam = eps` and letting `eps -> 0`, with no new analysis.  It is
+still equivalent to RH (RH gives boundedness, which is subexponential), but a *candidate* proof only
+has to reach subexponential growth, not a constant.
+
+### Honest status
+
+```text
+[LEAN-PROVED]  subexponential growth on vertical lines  ->  RH; and the graded equivalence
+               at every lam, for every admissible family
+[CORRECTED]    the criterion does not reduce to a zero-density statement
+[OPEN]         subexponential growth, equivalently psi(x) - x << x^(1/2 + eps) for every eps
+```
+
+RH is not proved.
+
+### Next
+
+The weakened hypothesis changes what a partial result would have to look like.  Under the graded
+equivalence, a bound with `lam` *decreasing to zero along a sequence of lines* -- `sigma_n` varying
+with `eps_n` -- already gives RH; the lines need not be the same.  That is a genuinely different
+target from a single uniform bound, and the natural place to look for it is the `sigma -> infinity`
+regime, where the trace is dominated by the lowest shell and the prime side by the smallest primes
+(§33's endpoint).  Whether the growth exponent on the line `Re t = sigma` can be shown to tend to
+zero as `sigma -> infinity` is a well-posed question that the ungraded criterion could not even
+state.
+
+---
+
+## §86 The `sigma`-freedom is illusory
+
+§85 ended by asking whether the growth exponent could be made to tend to zero along a sequence of
+*different* vertical lines, since the subexponential criterion allows the line to move with `eps`.
+It cannot, and the reason was already in §29.
+
+### The exponent does not depend on the line
+
+Let `lambda(sigma) := limsup_{|x| -> infinity} log ‖Theta(sigma + i x)‖ / |x|`.  Each term
+contributes `exp(-sigma R + x J)`, so
+
+```text
+log ‖Theta(sigma + i x)‖ / x   ~   sup_rho ( J_rho - sigma R_rho / x ).
+```
+
+For any fixed `rho` the correction `sigma R_rho / x` vanishes as `x -> infinity`, so for every
+`eps > 0` a zero with `J_rho > V - eps` forces `lambda(sigma) >= V - eps`; and the unconditional
+envelope gives `lambda(sigma) <= V`.  Hence
+
+> **`lambda(sigma) = V` for every `sigma > 0`.**
+
+The weight `exp(-sigma R)` is a *constant per term*: it cannot compete with the growth in `x`, no
+matter how large `sigma` is.  Moving the line changes the constant, never the exponent.
+
+> **[NEGATIVE RESULT]**  The subexponential criterion is formally weaker than the bounded one but has
+> the same content: since `lambda(sigma)` is independent of `sigma`, the freedom to choose a
+> different line for each `eps` buys nothing.
+
+### What this closes
+
+Every direction named in §§77--85 has now been audited:
+
+```text
+§77  the endpoint contribution              classical PNT error leaves the exponent at 1/2
+§78  the mass parameter                     no value of a moves the exponent
+§79  the a-derivative identity              a transport law, not a constraint
+§80  the transform's a-derivative           another admissible carrier, not a new relation
+§82  corpus cross-check                     graded criteria already existed in other coordinates
+§83  the three surfaces                     all equal the classical error-term exponent
+§85  large values                           density bounds cannot give a zero-free half-plane
+§86  the sigma-freedom                      the exponent is line-independent
+```
+
+Together with §§31, 39, 58, 70 that is eleven audited levers, each closed with an exact mechanism.
+
+### What stands
+
+```text
+[LEAN-PROVED]  for every admissible spectral family and every lam >= 0,
+                 |Im (pt q)| <= lam for all q  <->  ‖trace(sigma + i x)‖ << exp(lam|x|)
+                 on some vertical line of the open right half-plane;
+               subexponential growth therefore implies reality, and lam = 0 is RH;
+               with instances at the Poisson coordinate and at the prime-accessible
+               mass-shifted coordinate, and with the whole chain also available over the
+               abstract interface
+[EQUIVALENT]   to psi(x) - x << x^(1/2 + lam + eps) -- the classical error-term exponent
+[OPEN]         that exponent, at every lam in [0, 1/2)
+```
+
+RH is not proved.  The development is complete as a reduction and closed against every internal
+deformation; the remaining step is an analytic input that none of its own machinery can supply.
+
+### Next
+
+The honest next step is not another reformulation.  It is either
+
+1. an analytic input from outside — a bound on `psi(x) - x` below `x^{1/2 + 1/2}`, i.e. a zero-free
+   half-plane, which is open and not approached by current technique; or
+2. a Hilbert--Pólya construction meeting the specification of §81 — an operator reproducing the six
+   admissibility facts, for which only a subexponential heat-trace bound on one vertical line is then
+   needed, not self-adjointness.
+
+Of these, (2) is the one where this development contributes something a candidate-builder did not
+have before: a weaker, quantitative, and machine-checked sufficient condition.
+
+---
+
+## §87 A second corpus cross-check, and two overlaps I should have found earlier
+
+Searching for operator-theoretic material (§86's direction 2) surfaced two pre-existing results that
+overlap this session's work more directly than §82's did.  Recording them.
+
+### Overlap 1 — Hilbert--Pólya is already in the corpus
+
+```text
+RHTower.riemannHypothesis_of_kapustin_symmetric_pointSpectrum
+  a Hilbert-symmetric operator whose point spectrum contains all Kapustin Xi-divisor
+  eigenvalues implies RH
+RHTower.kapustin_symmetricPointSpectrum_horizontalMultiplicity_eq_order
+  and then the horizontal divisor mass at each zero is its analytic order
+```
+
+So "a symmetric operator with the right eigenvalues gives RH" was already a theorem here.  §81 is
+therefore not the introduction of a Hilbert--Pólya statement to this corpus; what it adds is a
+**weakening of the hypothesis**: not symmetry of the operator, but a subexponential bound on
+`Tr exp(-tT)` along one vertical line -- plus the graded form, which symmetry cannot provide because
+symmetry is all-or-nothing.
+
+### Overlap 2 — a complete-positivity equivalence already exists
+
+```text
+RHTower.primeArchHausdorffMomentDifferencesNonnegative_iff_riemannHypothesis
+  **Complete Hausdorff value law for RH**: all complementary Hausdorff finite differences of the
+  normalized prime--Gamma source are nonnegative  <->  RH
+```
+
+That is the Hausdorff ([0,1] moment problem) counterpart of §44's Bernstein ((0, infinity) Laplace
+transform) criterion, and it is an equivalence, already formalized, on the **prime** source rather
+than the zero trace.
+
+> **[NOT NEW]**  "RH is equivalent to complete positivity of a moment family" was already in this
+> corpus, in the Hausdorff coordinate on the prime side.  §44's complete-monotonicity criterion is
+> its Bernstein counterpart on the zero side, related by the standard Hausdorff/Bernstein
+> correspondence.  I should have found this before writing §44, and the search that would have found
+> it -- on "complete monotonicity" or "Bernstein" rather than on "moment" -- is the one I did not run.
+
+### What survives as this session's own contribution
+
+Stated at its real size, after both cross-checks:
+
+1. **The vertical-line criterion in the Poisson coordinate**, with its graded form at every `lam`,
+   both directions, for an abstract admissible family — and the coordinate analysis (eleven audited
+   levers) explaining why that coordinate and not the Gaussian or the squared one.
+2. **A prime-accessible instance** whose explicit formula converges, with the transfer to
+   `RiemannHypothesis` machine-checked.
+3. **A weakening of the Hilbert--Pólya hypothesis**: subexponential heat-trace growth on one line in
+   place of symmetry, graded so that partial bounds give partial results.
+4. **The negative results**: order-two failure of the Gaussian carrier, non-accessibility of the pure
+   Poisson carrier, non-peelability of moment positivity, faithfulness of the interface, and the
+   line-independence of the growth exponent.
+
+Items 1--3 are additions to what was already here; item 4 is what makes them non-arbitrary.
+
+### Honest status
+
+```text
+[LEAN-PROVED]  the graded vertical-line equivalence, for every admissible family
+[NOT NEW]      RH-from-a-symmetric-operator; RH-from-complete-moment-positivity
+[OPEN]         the analytic exponent, at every lam in [0, 1/2)
+```
+
+RH is not proved.
+
+### Next
+
+Given Overlap 1, the sharpest remaining question this development can pose is a comparison rather
+than a construction:
+
+> the Kapustin criterion needs a **symmetric** operator with a prescribed point spectrum; the
+> vertical-line criterion needs **no symmetry**, only `Tr exp(-tT)` subexponential on one line.  For
+> a concrete candidate operator, which hypothesis is easier to verify?
+
+That is a question about candidates, not about the reduction, and it is where the two corpus results
+should be read together.
+
+---
+
+## §88 Off the zeta index: the abstract spectral family
+
+§87 concluded that the live exit is a candidate operator, and that what such a candidate needs is a
+statement about *its* spectrum, not about the Xi divisor.  The interface was still indexed by
+`XiZeroCopy`.  It no longer has to be.
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/HTGeometry/AbstractSpectralFamily.lean`
+(axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+structure AbstractSpectralFamily (ι : Type*)
+  pt : ι → C,  inv : ι ≃ ι,  base, base_pos, base_le, abs_im_lt,
+  summable_weight, shell_finite, conj_stable
+AbstractSpectralFamily.norm_term_le / norm_traceC_le          the order-one envelope
+AbstractSpectralFamily.norm_traceC_le_of_abs_im_le            the easy direction, graded
+AbstractSpectralFamily.traceReal_antitone
+AbstractSpectralFamily.exists_min_re_of_nonempty              least heights, from shell_finite
+AbstractSpectralFamily.analyticOnNhd_traceC                   analytic on Re t > 0
+```
+
+The index is now an arbitrary type carrying an involution.  Nothing about zeta appears; the
+conjugation symmetry that was the functional equation is now a structure field, and everything proved
+here is a statement about a countable set of points in a horizontal strip of the right half-plane.
+
+### Why this is the right final shape
+
+A Hilbert--Pólya candidate comes with an operator `T` and a spectrum, not with the Xi divisor.  For
+such a candidate the question posed by §81 --
+
+> is `Tr exp(-tT)` subexponential on one vertical line?
+
+-- is now askable in the corpus's own language, because the criterion's hypotheses are conditions on
+an arbitrary spectrum:
+
+```text
+heights bounded below by a positive constant        the operator is bounded below
+displacements bounded by 1/2                        the spectrum lies in a strip
+summable weight                                     exp(-sigma T) is trace class
+finite shells                                       discrete spectrum with finite multiplicity
+an involution conjugating the points                the spectrum is conjugation-symmetric
+```
+
+Every one is a standard operator-theoretic condition.  A candidate satisfying them plus the
+subexponential trace bound has real spectrum -- and if its spectrum is the Xi divisor's Poisson
+image, that is RH.
+
+### Ledger
+
+```text
+[LEAN-PROVED]  the abstract interface and its analytic block                       §88
+[LEAN-PROVED]  the full chain (envelope, Phragmen-Lindelof, shells, assembly,
+               wrapper, graded form) over the XiZeroCopy-indexed interface          §61-§85
+[TO TRANSFER]  the remaining blocks of the chain to the abstract index
+[OPEN]         the analytic exponent
+```
+
+RH is not proved.
+
+### Next
+
+Carry the remaining blocks -- Phragmén--Lindelöf, the shell structure, the assembly, the lift and the
+wrapper -- from the `XiZeroCopy`-indexed interface to `AbstractSpectralFamily`.  Each is a
+substitution of `ι` for `XiZeroCopy` and `F.inv` for `xiZeroCopyLineConjEquiv`; the proofs use no
+other property of the index, which is exactly what §§61--85 established by writing them against the
+interface in the first place.
+
+---
+
+## §89 The decay block, off the zeta index
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/HTGeometry/AbstractSpectralDecay.lean`
+(lint clean; axioms `propext, Classical.choice, Quot.sound`):
+
+```text
+AbstractSpectralFamily.bottomIndex / bottomHeight / bottomHeight_le / bottomHeight_pos
+AbstractSpectralFamily.exp_bottomHeight_mul_traceReal_le    the imaginary-ray bound
+AbstractSpectralFamily.twist / norm_exp_twist / differentiableOn_twist
+AbstractSpectralFamily.norm_twist_le                        the order-one envelope for the twist
+AbstractSpectralFamily.norm_twist_imaginary_ray
+```
+
+All of it over an arbitrary index type with an involution.  The only hypothesis added is
+`[Nonempty ι]`, needed to name a least-height index; when `ι` is empty the trace is `0` and the
+conclusion is vacuous.
+
+At this point the entire analytic apparatus of the criterion -- envelope, summability, analyticity,
+least heights, the twist and both boundary bounds -- exists in a form that mentions no `L`-function
+at all.  What it now says is:
+
+> Let `S` be a countable multiset of complex numbers with real parts bounded below by a positive
+> constant, imaginary parts bounded by `1/2`, `sum exp(-sigma Re s)` finite for every `sigma > 0`,
+> finitely many points below any height, and closed under conjugation.  Then
+> `Theta(t) = sum_{s in S} exp(-t s)` is analytic on `Re t > 0`, has exponential type at most `1/2`
+> on vertical lines, and its least-height twist has bounded boundary values on the two lower
+> quadrants.
+
+### Ledger
+
+```text
+[LEAN-PROVED]  abstract interface: envelope, summability, analyticity, least heights   §88
+[LEAN-PROVED]  abstract decay block: twist, boundary bounds                            §89
+[TO TRANSFER]  Phragmen-Lindelof assembly, shells, wrapper, graded form
+[LEAN-PROVED]  all of the above already, over the XiZeroCopy-indexed interface          §61-§85
+[OPEN]         the analytic exponent
+```
+
+RH is not proved.
+
+### Next
+
+The quadrant application itself: `PhragmenLindelof.quadrant_III` and `quadrant_IV` against
+`differentiableOn_twist`, `norm_twist_le`, `norm_twist_imaginary_ray` and the contraposed hypothesis
+-- the same four inputs as §63, now all available over the abstract index.  After that the shell
+block and the assembly transfer the same way, and the criterion becomes a theorem about spectra
+rather than about the Riemann zeta function, which is the form a Hilbert--Pólya candidate can
+actually be tested against.
+
+## §90 — The criterion leaves zeta: index-free spectral rigidity, and what the coordinate really is
+
+### 90.1 The transfer is complete
+
+Everything from §63 onwards now lives over an arbitrary index type. Four new modules, all built,
+all with axioms exactly `propext, Classical.choice, Quot.sound`:
+
+- `HTGeometry/AbstractSpectralShell.lean` — vertical-line algebra (`re_vertLine`, `im_vertLine`,
+  `vertLine_factor`, `norm_exp_neg_ofReal_mul_I_mul'`), `bottomShell`, `aboveBottom`,
+  `exists_secondHeight`, `bottomShellSum_eq` (shell homogeneity), `traceC_vertical_split`,
+  `exp_bottomHeight_mul_norm_aboveBottomSum_le` (the weighted tail bound).
+- `HTGeometry/AbstractSpectralDecay.lean` — extended with `norm_twist_real_ray`,
+  `norm_twist_le_of_line_bound` (the quadrant Phragmén–Lindelöf application) and
+  `norm_traceC_le_of_line_bound` (half-plane decay).
+- `HTGeometry/AbstractSpectralRigidity.lean` — `bottomShell_regroup`, `im_nonpos_of_line_bound`,
+  `im_eq_zero_of_line_bound`, `below`/`finite_below`/`lift`, and the two capstones
+
+  ```lean
+  theorem im_eq_zero_of_line_bound_all {σ C : ℝ} (hσ : 0 < σ)
+      (hline : ∀ x : ℝ, ‖F.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C) : ∀ i : ι, (F.pt i).im = 0
+  theorem im_eq_zero_iff_exists_line_bound :
+      (∀ i : ι, (F.pt i).im = 0) ↔
+        ∃ σ C : ℝ, 0 < σ ∧ ∀ x : ℝ, ‖F.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C
+  ```
+- `HTGeometry/AbstractSpectralGraded.lean` — `gtwist`, graded Phragmén–Lindelöf, graded half-plane
+  decay, graded assembly, and
+
+  ```lean
+  theorem abs_im_le_iff_exists_line_growth {lam : ℝ} (hlam : 0 ≤ lam) :
+      (∀ i : ι, |(F.pt i).im| ≤ lam) ↔
+        ∃ σ C : ℝ, 0 < σ ∧ ∀ x : ℝ,
+          ‖F.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C * Real.exp (lam * |x|)
+  ```
+
+[LEAN-PROVED] **Exponential type = displacement supremum.** For any admissible family — points in
+the right half-plane, heights bounded below by a positive constant, `|Im| < 1/2`, summable
+`exp (-σ Re)`, finite shells, a conjugating involution — the exponential type of `Tr exp (-tA)`
+along *any* vertical line of the open right half-plane equals `sup_i |Im α_i|`. Reality of the
+spectrum is the case `lam = 0`.
+
+The hypothesis is one scalar bound on one line; there is no self-adjointness, no almost
+periodicity, no frequency separation, no Kronecker. This is the form a Hilbert–Pólya candidate can
+be tested against: exhibit an operator with this spectrum whose semigroup trace is bounded on one
+line, and RH follows.
+
+### 90.2 Faithfulness: the abstraction returns zeta
+
+`RHTower/XiAbstractInstance.lean` (built, same three axioms) closes the loop rather than leaving a
+parallel copy: `SpectralFamily.toAbstract`, `xiPoissonAbstract`, `xiPoissonAbstract_traceC` (`rfl`),
+and
+
+```lean
+theorem riemannHypothesis_of_abstract_line_bound {σ C : ℝ} (hσ : 0 < σ)
+    (hline : ∀ x : ℝ, ‖xiPoissonAbstract.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C) : RiemannHypothesis
+theorem abs_re_sub_half_le_of_abstract_line_growth {σ C lam : ℝ} (hσ : 0 < σ) (hlam : 0 ≤ lam)
+    (hline : ∀ x : ℝ,
+      ‖xiPoissonAbstract.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C * Real.exp (lam * |x|))
+    (q : XiZeroCopy) : |(xiSpectralPoint q).im| ≤ lam
+```
+
+So the ζ criterion is a corollary of the index-free theorem, and the graded corollary reads: a
+growth exponent `lam` on one vertical line is a zero-free strip `|Re ρ - 1/2| ≤ lam`.
+
+### 90.3 What the Poisson coordinate is, in arithmetic terms
+
+Interrogating the open core rather than the machinery. Write `ρ = 1/2 + δ + iγ`. By construction
+`α̂_ρ = -i(ρ - 1/2)·sign γ`, so for `γ > 0`, `exp(-τ α̂) = exp(iτ(ρ - 1/2))`. Put
+
+  `Z = exp(iτ)`,  so for `τ = σ + it`:  `|Z| = e^{-t}`, `arg Z = σ`.
+
+Then `exp(iτ(ρ-1/2)) = Z^{ρ-1/2}`, and using the conjugation symmetry of the zero set for the
+`γ < 0` half,
+
+  **`Θ(σ + it) = X^{-1/2} W(X) + conj( Y^{-1/2} W(Y) )`,  `W(Z) := Σ_{γ>0} Z^ρ`,**
+
+with `X = e^{-t+iσ}`, `Y = e^{t+iσ}`: both on the ray `arg = σ`, with `|X||Y| = 1`. The series
+`W` converges absolutely on that ray — `|Z^ρ| = |Z|^{Re ρ} e^{-σγ}` and `Σ_{γ>0} e^{-σγ} < ∞` —
+because the *rotation angle* `σ` supplies the damping.
+
+[OBSERVATION, exact] `W(Z) = Σ_{γ>0} Z^ρ` is exactly half of the oscillating term of the explicit
+formula, evaluated off the positive real axis and with **no** `1/ρ` weight and **no** smoothing: the
+rotation regularises it. The vertical-line criterion is therefore a *complexified Chebyshev bound*:
+`|W(Z)| ≪ |Z|^{1/2}` on one ray `arg Z = σ ∈ (0,π)` implies RH, and the graded version says the
+exponential type of `W` along the ray measures the zero-free strip width exactly.
+
+[BRIDGE, not new] The object is a twisted Cramér function: under RH, `W(Z) = Z^{1/2} V(σ-coordinate)`
+with `V(z) = Σ_{γ>0} e^{iγz}` (Cramér 1919, Guinand). What §90.1 adds is not the object but the
+*dictionary*: type along the ray ↔ strip width, proved for an arbitrary admissible spectrum.
+
+This also explains, structurally, both earlier no-gos. §31 (carrier corner): the Poisson kernel is
+the Fourier transform of `e^{-τ|γ|}`, decaying only like `u^{-2}`, so the prime side diverges —
+i.e. the rotation regularises the *zero* side but not the *prime* side. §§78–80 (mass shift) bought
+prime-side convergence by moving the branch point to `±ia`, at the cost of a parameter that cannot
+be sent to `0`.
+
+### 90.4 Next generative move
+
+The rotation angle `σ` is a parameter the mass `a` never was: it *can* be sent to `0`. §86 proved
+the growth exponent is line-independent; in the `Z` coordinate that says the type of `W` along the
+ray does not depend on `arg Z = σ`. So the type may be read at the boundary `σ → 0+`, where the
+boundary distribution of `W` is arithmetic — Cramér's function continues past the real axis with
+singularities exactly at `±k log p`.
+
+Concrete next question: **is the `σ → 0+` boundary value of `W(Z)/Z^{1/2}` a tempered distribution
+whose singular support is `{±k log p}`, and does its order at those points control the type?**
+A positive answer converts the open core from "prove a sup bound on a ray" into a statement about
+the *order of the prime-power singularities* of a single boundary distribution — the prime side,
+reached without a mass parameter and without smoothing. That is the object to construct next.
+
+Second move, to be drawn against it: collide the ray picture with two wild-analogy domains
+(`scripts/rng pick`) before choosing the attack, so the boundary-value route is not adopted merely
+because it is the one already in view.
+
+### §90.5 — Entropy draw before choosing the attack
+
+`scripts/rng pick` over the analogy deck returned **bell-ringing-changes** and **auction-theory**.
+Forced collisions with `W(Z) = Σ_{γ>0} Z^ρ` on the ray:
+
+**Auction theory.** The real-time trace `Θ_R(σ) = Σ e^{-σR}` is a cumulant generating function, so
+`log Θ_R` is convex automatically: in mechanism-design terms the "allocation rule" (the Gibbs
+measure on shells) is already monotone and *ironing is vacuous*. The envelope theorem then says the
+whole real-direction data is the integral of the Gibbs mean height. Conclusion of the collision:
+nothing is hidden in the real direction — the entire difficulty is that the complex trace need not
+be the Laplace transform of a positive measure. That is the Bernstein/complete-monotonicity face
+already in the corpus, so this collision **reduces to known** and is recorded as such rather than
+pursued.
+
+**Change ringing.** A method is a closed walk on the Cayley graph of `S_n` with adjacent
+transpositions; a bell may move at most one place per change (a physical constraint, not a chosen
+flow), and an extent is forced to close back to rounds. Two structural matches, both exact rather
+than decorative: the "at most one place" constraint is `|Im α| < 1/2`, and closure to rounds is the
+functional equation's involution `δ ↦ -δ` at a common height. The productive part is the third
+match: **calls.** A plain course does not cover the extent; ringers insert bobs and singles at
+chosen points to restructure the orbit. That is exactly the lift of §90.1 — a local discrete
+intervention at a chosen height that makes a global covering argument (minimal counterexample over
+all heights) go through.
+
+The question this produces, which the boundary-value route does not: change ringing has *parity
+obstructions* — not every method admits an extent, because a conserved parity blocks it. So:
+
+[OPEN QUESTION, §90.5] Is there a **lift-invariant** of an admissible family? The lift alters only
+finitely many points, so any quantity that is (i) insensitive to finitely many points and (ii)
+computable from the trace is preserved along the whole minimal-counterexample tower. If some such
+invariant is forced to differ between a real family and one with `δ ≠ 0`, the contradiction is
+reached without any sup bound on the line — i.e. without the open core. Candidates to test first:
+the mean argument variation of `Θ` along the line, and the shell-summed displacement
+`Σ_{shell} Im α` (zero for a conjugation-stable shell, hence uninformative — so the invariant must
+be of even degree in the displacements, e.g. `Σ_{shell} (Im α)²`).
+
+The even-degree remark is what makes this non-vacuous: conjugation stability kills every odd
+invariant, so any obstruction must be quadratic or higher in `δ`, which is exactly the regime the
+moment route of §§54–58 failed to peel. The difference now is that the lift supplies a *tower* of
+families along which such an invariant would have to be constant — a rigidity the moment route
+never had.
+
+## §91 — The defect: RH as one scalar equation at one point
+
+### 91.1 The lift-invariant question of §90.5, answered
+
+[RETRACTED, §90.5 first candidate] "The mean argument variation of `Θ` along the line" is not a
+usable lift-invariant. The graded theorem already identifies the only line-computable invariant of
+the family — the exponential type — and it equals `sup_i |Im α_i|`, which is *not* insensitive to
+finitely many points: a single point with `J ≠ 0` contributes `e^{xJ}` by itself. So the type is
+both the invariant and the open core; the parity analogy does not bypass it.
+
+[KEPT, and it is the right shape] The other prediction of §90.5 does survive: conjugation stability
+kills every odd functional of the displacements, so an obstruction must be *even*. There is one, it
+is elementary, and it was sitting at real time all along.
+
+### 91.2 The defect
+
+At real `σ > 0` the trace is real by conjugation stability, and termwise
+
+  `Re (traceC σ) = Σ_i e^{-σ R_i} cos(σ J_i)`,  `traceReal σ = Σ_i e^{-σ R_i}`.
+
+Define the **defect**
+
+  `D(σ) := traceReal σ - Re (traceC σ) = Σ_i e^{-σ R_i} (1 - cos(σ J_i)) = Σ_i e^{-σ R_i} 2 sin²(σ J_i/2) ≥ 0`.
+
+[LEAN-PROVED] `HTGeometry/AbstractSpectralDefect.lean`, axioms `propext, Classical.choice,
+Quot.sound`:
+
+```lean
+def defect (σ : ℝ) : ℝ := F.traceReal σ - (F.traceC (σ : ℂ)).re
+theorem defect_eq_tsum {σ : ℝ} (hσ : 0 < σ) :
+    F.defect σ = ∑' i, F.weight σ i * (1 - Real.cos (σ * (F.pt i).im))
+theorem defect_nonneg {σ : ℝ} (hσ : 0 < σ) : 0 ≤ F.defect σ
+theorem im_eq_zero_iff_defect_eq_zero {σ : ℝ} (hσ : 0 < σ) (hle : σ ≤ 4 * Real.pi) :
+    (∀ i : ι, (F.pt i).im = 0) ↔ F.defect σ = 0
+```
+
+The mechanism: `|J| < 1/2` and `σ ≤ 4π` confine `σJ` to `(-2π, 2π)`, the interval on which
+`cos = 1` forces the argument to vanish. Positivity of the weights then makes a vanishing sum a
+vanishing of every term. The `4π` is exactly the reach of the displacement bound — the admissibility
+axiom `|Im α| < 1/2` is what converts a periodic condition into an equality.
+
+And on the Xi divisor (`RHTower/XiAbstractInstance.lean`, same three axioms):
+
+```lean
+theorem riemannHypothesis_iff_xiPoissonDefect_eq_zero {σ : ℝ} (hσ : 0 < σ) (hle : σ ≤ 4 * Real.pi) :
+    RiemannHypothesis ↔ xiPoissonTraceReal σ = (xiPoissonTraceC (σ : ℂ)).re
+```
+
+**RH is equivalent to one equation between two real numbers, at one point of the positive real
+axis:** the Poisson trace of the Xi divisor attains its own majorant at `σ`. No line, no uniformity,
+no limit. Choose `σ = 1`, or `σ = π`, or any point of `(0, 4π]`.
+
+### 91.3 What this changes and what it does not
+
+It does not prove RH. `Re (traceC σ)` and `traceReal σ` are both sums over the zeros, and the
+inequality `D ≥ 0` is one-sided by construction; the content is the reverse inequality
+`traceReal σ ≤ Re (traceC σ)`, which is RH.
+
+What it changes is the *type* of the remaining obstruction, and this is a real shift:
+
+- The vertical-line criterion needed an estimate uniform in a non-compact parameter. The defect needs
+  a single number. An estimate can only be attacked by analytic technique; a number can be attacked
+  by an identity.
+- `D(σ) = Σ e^{-σR}(1 - cos σJ)` is even and quadratic to leading order in the displacements
+  (`D(σ) ≈ (σ²/2) Σ e^{-σR} J²` as `σ → 0+`), which is exactly the degree the moment route of
+  §§54–58 could not peel. Here it is not peeled but *summed*: the whole quadratic form is one
+  convergent series with an explicit generating function in `σ`.
+- Both terms are traces of the same family at the same time. `traceReal σ = Σ e^{-σ|γ|}` is not of
+  Weil type (not analytic in `ρ`), but `Re traceC σ = Re Σ e^{-σ α̂}` is the real part of the
+  quantity §90.3 identified as the twisted Cramér function on the unit circle `|Z| = 1`,
+  `arg Z = σ`. So the equation reads: **`2 Re(e^{-iσ/2} Σ_{γ>0} e^{iσρ}) = Σ_ρ e^{-σ|γ|}`.**
+
+### 91.4 Next
+
+The equation of §91.3 pairs an arithmetically accessible left side against an inaccessible right
+side. Two moves follow, in this order:
+
+1. **Make the right side accessible too.** `traceReal σ = Σ_ρ e^{-σ|Im ρ|}` is the Poisson-kernel
+   pairing whose prime side diverged in §31. But it is *not* needed in full: only the difference
+   `D(σ)` is, and `D` is quadratic in the displacements. Question to settle next: does `D(σ)` admit
+   a representation as a **single** Weil-type pairing — i.e. is there a test function `h_σ`, analytic
+   in the strip, with `Σ_ρ h_σ(γ_ρ) = D(σ)`? If yes, `D ≥ 0` becomes an explicit-formula identity
+   with an arithmetic right-hand side and RH becomes the vanishing of a specific prime-archimedean
+   expression. The obstruction to expect is the same corner as §31; the new leverage is that `D`
+   already contains the difference of the two carriers, so the corners may cancel.
+2. **Differentiate.** `D(0+) = 0` and `D ≥ 0` for all `σ ∈ (0, 4π]`, so `D` has a minimum at the
+   left endpoint. `D''(0+)` is `Σ e^{-σR} J²`-shaped. A lower bound on `D''(0+)` from below by a
+   nonzero arithmetic quantity would contradict `D ≡ 0`; an upper bound going to zero would prove
+   RH. This is where the `1/δ` law of the card's title should be tested against `D`.
+
+The corpus asset to check before either move: `xiGuinandWeilExplicitFormula` and
+`xiGuinandWeilExplicitFormula_single` (resolvent test algebra, `RHTower/XiGuinandWeilExplicitFormula.lean`)
+— the explicit formula there is stated for regularized Cauchy kernels, and `e^{-τα}` is a contour
+integral of those, so move 1 has a corpus route that does not require re-deriving Guinand–Weil.
+
+## §92 — The defect is not a Weil pairing, and why that is the point
+
+### 92.1 Move (1) of §91.4 fails, with an exact mechanism
+
+[NO-GO, exact] `D(σ)` admits **no** representation as a Weil pairing `Σ_ρ h_σ(γ_ρ)` with `h_σ`
+analytic in the strip. In terms of the actual zero data,
+
+  `D(σ) = Σ_ρ e^{-σ|γ_ρ|} (1 - cos(σ δ_ρ))`,  `δ_ρ = Re ρ - 1/2`,  `γ_ρ = Im ρ`.
+
+Both factors are real-analytic in `(ρ, ρ̄)` jointly and neither is holomorphic in `ρ`: `|γ_ρ|` is the
+§31 corner, and `δ_ρ = (ρ + ρ̄)/2 - 1/2` is not a function of `ρ` alone. A Weil pairing evaluates one
+holomorphic `h` at the single complex point `γ_ρ = γ - iδ`; it cannot factor into a modulus in `γ`
+times a function of `δ`. So the corpus route through `xiGuinandWeilExplicitFormula` does not apply to
+`D`, and the hoped-for cancellation of the two carriers' corners does not occur — they are corners in
+different variables.
+
+### 92.2 Why this is the correct obstruction rather than a dead end
+
+The signed first moment of the displacement **vanishes identically**: the functional equation maps
+`ρ ↦ 1 - ρ̄`, which fixes `γ` and sends `δ ↦ -δ`, so `Σ_{0<γ≤T} δ_ρ = 0` for every `T`. (This is why
+Littlewood's lemma applied to `ζ` on the critical strip yields the unconditional
+`∫_0^T log|ζ(1/2+it)| dt = O(log T)` rather than information about the zeros: the zero side is zero.)
+
+Every *odd* functional of the displacements is therefore identically zero and carries no information
+— exactly the prediction of §90.5, now with its mechanism named. The first functional that is not
+forced to vanish is the **even** one, and `D` is the smallest such: quadratic, positive, and
+convergent. So the failure of §92.1 is not an accident of the chosen representation; it says that
+the object which detects RH is precisely the one no classical explicit formula evaluates, because
+every classical formula is linear in a holomorphic test function and therefore odd-blind.
+
+### 92.3 Positive salvage: the defect ladder
+
+[LEAN-PROVED] `HTGeometry/AbstractSpectralDefect.lean`, axioms `propext, Classical.choice,
+Quot.sound`:
+
+```lean
+theorem two_div_pi_sq_mul_sq_le_one_sub_cos {x : ℝ} (hx : |x| ≤ Real.pi) :
+    2 / Real.pi ^ 2 * x ^ 2 ≤ 1 - Real.cos x
+theorem sq_im_mul_weight_le_defect {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi) (i : ι) :
+    2 * σ ^ 2 / Real.pi ^ 2 * ((F.pt i).im ^ 2 * F.weight σ i) ≤ F.defect σ
+theorem sq_im_le_of_defect_le {σ M : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi)
+    (h : F.defect σ ≤ M) (i : ι) :
+    (F.pt i).im ^ 2 ≤ Real.pi ^ 2 / (2 * σ ^ 2) * M * Real.exp (σ * (F.pt i).re)
+```
+
+and on the Xi divisor (`RHTower/XiAbstractInstance.lean`, same axioms), using
+`(xiSpectralPoint q).im = 1/2 - Re ρ`:
+
+```lean
+theorem sq_im_xiSpectralPoint_le_of_defect_le {σ M : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi)
+    (h : xiPoissonTraceReal σ - (xiPoissonTraceC (σ : ℂ)).re ≤ M) (q : XiZeroCopy) :
+    (xiSpectralPoint q).im ^ 2 ≤
+      Real.pi ^ 2 / (2 * σ ^ 2) * M * Real.exp (σ * (xiPoissonPoint q).re)
+```
+
+i.e. `|Re ρ - 1/2| ≤ (π/σ) sqrt(M/2) · exp(σ |Im ρ| / 2)`.
+
+This changes the criterion from all-or-nothing to a ladder. RH no longer requires `D = 0` to be
+proved in one step: **any** unconditional upper bound on the defect at **any** admissible time is a
+theorem about zeros. The weight `e^{-σ|γ|}` makes `D(σ)` a probe localized at height scale `1/σ`, and
+the loss `e^{σ|γ|/2}` in the conclusion says a bound `M` at time `σ` controls exactly the zeros with
+`|γ| ≲ (2/σ) log(1/M)`. Bottom-shell first — the same locality the rigidity argument runs on.
+
+### 92.4 Next
+
+The target is now sharp and, for the first time in this line, *quantitative and partial-credit*:
+
+> Produce an unconditional upper bound for `D(σ) = xiPoissonTraceReal σ - Re (xiPoissonTraceC σ)`
+> at one `σ ∈ (0, 2π]`.
+
+Both terms are explicit sums over the Xi divisor, so the bound must come from a formula for their
+difference, not from estimating each. Two candidate sources, in order:
+
+1. `Re (xiPoissonTraceC σ)` is `2 Re(e^{-iσ/2} Σ_{γ>0} e^{iσρ})` (§90.3), a twisted Cramér value on
+   the unit circle, and Cramér's function is the one classical object in this circle of ideas whose
+   *singularity structure* is known exactly. `xiPoissonTraceReal σ = Σ_ρ e^{-σ|γ_ρ|}` is its
+   `δ`-blind companion. The difference is what must be estimated; the question is whether the two
+   have a common continuation whose difference is boundary data.
+2. §90.4's rotation-angle route, now with a target that no longer needs uniformity: only the value at
+   one `σ`.
+
+Before either, the even-blindness of §92.2 must be respected: any proposed source that is linear in
+a holomorphic test function is odd-blind and will return `0 = 0`. The source has to be quadratic —
+a Gram/Toeplitz object, not a trace. The corpus already carries such objects
+(`XiWeilArithmeticGram`, `ConstrainedProlateWeilToeplitzSchur`); the next check is whether `D(σ)` is
+a diagonal of one of them.
+
+## §93 — Correction to §92.2, the energy, and where the wall sits numerically
+
+### 93.1 Correction
+
+[RETRACTED, §92.2 as stated] "Every functional linear in a holomorphic test function is odd-blind"
+overstates the case and is wrong as a claim about detection. For `h` even, the functional-equation
+quadruple `{ρ, ρ̄, 1-ρ, 1-ρ̄}` contributes `2[h(γ - iδ) + h(γ + iδ)]`, which is *even* in `δ` with
+second-order term `-2 h''(γ) δ²`. So a Weil pairing does detect `δ`, at second order — that is
+precisely Weil's positivity criterion, and nothing here supersedes it.
+
+What survives, and is what §92.1 actually proves:
+
+[CORRECTED STATEMENT] `D(σ)` is not `Σ_ρ h(γ_ρ)` for any analytic `h`, for a sharper reason than
+non-holomorphy: **the summand of `D` vanishes identically when `δ = 0`.** If `Σ_ρ h(γ_ρ)` had that
+property termwise then `h ≡ 0` on `ℝ`, hence `h ≡ 0` by analyticity, hence the pairing is trivial.
+So `D` is a *pure* defect — a Weil pairing minus the same pairing evaluated at the critical-line
+projection of the divisor — and the subtracted term is the one that is not arithmetically accessible.
+Also unchanged and correct: `Σ_{0<γ≤T} δ_ρ = 0` exactly, by `ρ ↦ 1 - ρ̄`, so the signed first moment
+is identically zero.
+
+### 93.2 The energy
+
+[LEAN-PROVED] `HTGeometry/AbstractSpectralDefect.lean` (axioms `propext, Classical.choice,
+Quot.sound`), with `energy σ := ∑' i, weight σ i * (Im α_i)²`:
+
+```lean
+theorem defect_le_energy {σ : ℝ} (hσ : 0 < σ) : F.defect σ ≤ σ ^ 2 / 2 * F.energy σ
+theorem energy_le_defect {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi) :
+    2 * σ ^ 2 / Real.pi ^ 2 * F.energy σ ≤ F.defect σ
+theorem im_eq_zero_iff_energy_eq_zero {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi) :
+    (∀ i : ι, (F.pt i).im = 0) ↔ F.energy σ = 0
+```
+
+so `defect σ ≍ σ² · energy σ` on `(0, 2π]`, with explicit constants `2/π²` and `1/2`.  On the Xi
+divisor (`RHTower/XiAbstractInstance.lean`, same axioms):
+
+```lean
+theorem xiPoissonAbstract_energy (σ : ℝ) :
+    xiPoissonAbstract.energy σ =
+      ∑' q, Real.exp (-(σ * (xiPoissonPoint q).re)) * (xiSpectralPoint q).im ^ 2
+theorem riemannHypothesis_iff_xiPoissonEnergy_eq_zero {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi) :
+    RiemannHypothesis ↔ xiPoissonAbstract.energy σ = 0
+```
+
+Since `(xiSpectralPoint q).im = 1/2 - Re ρ`, this reads: **RH is the vanishing of the weighted second
+moment `Σ_ρ e^{-σ|Im ρ|} (Re ρ - 1/2)²`.** That is the object any arithmetic input must bound, and it
+is the weighted form of the classical `Σ_{0<γ≤T} (β - 1/2)²`.
+
+### 93.3 Where the wall sits, numerically
+
+Both sides of `D(σ) = traceReal σ - Re traceC σ` are unconditionally accessible, and the barrier can
+now be located exactly rather than described.
+
+*Left side.* `traceReal σ = Σ_ρ e^{-σ|γ_ρ|} = 2∫_0^∞ e^{-σT} dN(T)` depends only on the ordinates, so
+Riemann--von Mangoldt applies unconditionally. Writing `N = θ/π + 1 + S`, two integrations by parts
+give the `S`-contribution as `2σ² ∫_0^∞ e^{-σT} S₁(T) dT` with `S₁(T) = ∫_0^T S`. Littlewood's
+unconditional `S₁(T) = O(log T)` yields
+
+  `traceReal σ = (1/πσ) log(1/(2πσ)) + O(1/σ) + O(σ log(1/σ))`.
+
+*Right side.* `Re traceC σ = 2 Re(e^{-iσ/2} Σ_{γ>0} e^{iσρ})`, and the rectangle contour of §90.3 with
+`w = iσ` expresses `Σ_{γ>0} e^{iσρ}` as: an archimedean left-edge integral of size `(1/σ)log(1/σ)`, a
+bounded bottom-edge integral, and a prime sum `Σ_n Λ(n) n^{-2-iε} e^{(2+iε)iσ} / (iσ - log n)` which is
+absolutely convergent and `O(1)` — the primes enter with an `n^{-2}` weight, not `n^{-1/2}`.
+
+*The coincidence.* The trivial bound from `|δ| < 1/2` is
+`D(σ) ≤ (σ²/4)·traceReal σ ≍ σ log(1/σ)`, which is **exactly the order of the unconditional
+uncertainty `O(σ log(1/σ))` in `traceReal σ`** coming from `S₁ = O(log T)`. So comparing the two
+explicit formulas term by term cannot currently prove `D` small: the argument-function uncertainty on
+the left is the same size as the entire quantity being bounded. This is a sharp, checkable statement
+of the barrier in this coordinate, and it names the exact classical quantity that controls it.
+
+### 93.4 Next
+
+The two orders coincide, so the gain must come from *cancellation*, not from estimating the sides
+separately: the same `S`-data must appear on the contour side and cancel in the difference. Concrete
+next target:
+
+> Compute `D(σ)` as a single contour expression in which the `S(T)` contributions from the two sides
+> are subtracted before being estimated, and identify what remains.
+
+The classical shadow of the answer is known and is the right check on any such computation: by
+Littlewood's lemma applied at every abscissa and integrated,
+`Σ_{0<γ≤T} (β - 1/2)² = (1/π) ∫_{1/2}^{∞} ∫_0^T log|ζ(a+it)| dt da + (boundary)`,
+so the energy of §93.2 is the double integral of `log|ζ|` over the right half of the critical strip.
+An unconditional upper bound for that double integral is, via `energy_le_defect` and
+`sq_im_le_of_defect_le`, an explicit zero-free region. That is the arithmetic object to attack, and
+unlike the sup-bound of the earlier open core it admits partial credit.
+
+## §94 — The argument function does not cancel: the defect *is* the excess of smoothed `S`
+
+### 94.1 The contour computation of §93.4, carried out
+
+Both sides of `D` were traced to their contour origins. Write `f(s) = e^{iσ(s-1/2)}`; on the critical
+line `f(1/2+iT) = e^{-σT}`, so with `ρ = 1/2 + δ + iγ`,
+
+  `D(σ)/2 = Σ_{γ>0} [ f(1/2 + iγ_ρ) - Re f(ρ) ]`,
+
+the *same* analytic weight evaluated at the zero and at its projection onto the critical line. This
+makes the "pure defect" structure of §93.1 explicit and gives the two computations:
+
+- **Projection side** `Σ_{γ>0} f(1/2+iγ_ρ) = ∫_0^∞ e^{-σT} dN(T)` depends only on ordinates.
+  With `N = θ/π + 1 + S` it splits into a smooth `θ`-part with main term `(1/2πσ)(log(1/2πσ) - γ_E)`
+  and the Laplace--Stieltjes transform `L(σ) := ∫_0^∞ e^{-σT} dS(T) = σ ∫_0^∞ e^{-σT} S(T) dT`.
+- **Zero side** `Σ_{γ>0} f(ρ)` is the rectangle contour of §90.3 with `w = iσ`: right edge
+  `Re s = 2` gives an absolutely convergent prime sum `Σ_n Λ(n) n^{-2-iε} e^{(2+iε)iσ}/(iσ - log n)`,
+  left edge `Re s = -1` gives the archimedean term via the functional equation, bottom edge
+  `Im s = ε` gives a bounded integral. **No `S` appears anywhere on this side.**
+
+[FINDING, exact] The argument function does **not** cancel in `D`. It occurs on the projection side
+only. Consequently, with `P(σ)` the explicit prime--archimedean--boundary expression and
+`Θ_sm(σ)` the smooth `θ`-part,
+
+  **`D(σ)/2 = Θ_sm(σ) + L(σ) - P(σ)`,**
+
+so `D ≥ 0` says exactly: *the Laplace-smoothed argument function is never below its prime-archimedean
+prediction*, and RH is the assertion of equality. This is a family of unconditional one-sided
+inequalities for `S`, one for each `σ > 0`, obtained from nothing but `cos ≤ 1`.
+
+It also confirms the §93.3 accounting from the other direction: `L(σ) ≪ σ log(1/σ)` from Littlewood's
+`S₁ = O(log T)` is the same order as the trivial bound on `D`, so no term-by-term comparison closes
+the gap. The route reformulates RH as an identity for the smoothed argument function; it does not
+break it. Recorded as a reformulation, not a reduction.
+
+### 94.2 What was added to the corpus instead
+
+[LEAN-PROVED] `HTGeometry/AbstractSpectralDefect.lean` and `RHTower/XiAbstractInstance.lean`, axioms
+`propext, Classical.choice, Quot.sound`:
+
+```lean
+theorem im_eq_zero_iff_traceReal_le {σ : ℝ} (hσ : 0 < σ) (hle : σ ≤ 4 * Real.pi) :
+    (∀ i : ι, (F.pt i).im = 0) ↔ F.traceReal σ ≤ (F.traceC (σ : ℂ)).re
+theorem riemannHypothesis_iff_xiPoissonTraceReal_le {σ : ℝ} (hσ : 0 < σ) (hle : σ ≤ 4 * Real.pi) :
+    RiemannHypothesis ↔ xiPoissonTraceReal σ ≤ (xiPoissonTraceC (σ : ℂ)).re
+theorem energy_le_exp_mul_energy {σ σ' : ℝ} (hσ : 0 < σ) (h : σ ≤ σ') :
+    F.energy σ' ≤ Real.exp (-((σ' - σ) * F.base)) * F.energy σ
+theorem card_le_of_energy_le {σ M T η : ℝ} (hσ : 0 < σ) (hη : 0 < η) (h : F.energy σ ≤ M)
+    (s : Finset ι) (hs : ∀ i ∈ s, (F.pt i).re ≤ T ∧ η ≤ |(F.pt i).im|) :
+    (s.card : ℝ) * (η ^ 2 * Real.exp (-(σ * T))) ≤ M
+theorem card_le_of_xiPoissonEnergy_le {σ M T η : ℝ} (hσ : 0 < σ) (hη : 0 < η)
+    (h : xiPoissonAbstract.energy σ ≤ M) (s : Finset XiZeroCopy)
+    (hs : ∀ q ∈ s, (xiPoissonPoint q).re ≤ T ∧ η ≤ |(xiSpectralPoint q).im|) :
+    (s.card : ℝ) * (η ^ 2 * Real.exp (-(σ * T))) ≤ M
+```
+
+Three usable shapes. **RH as one inequality** whose converse is unconditional — the sharpest form yet:
+no line, no limit, no equation, just `xiPoissonTraceReal σ ≤ Re (xiPoissonTraceC σ)` at one `σ`.
+**Energy decay** at the base-height rate, so a bound at one time propagates to all later times.
+**Zero density from an energy bound**: `M` at time `σ` caps the number of zeros with `|Im ρ| ≤ T` and
+`|Re ρ - 1/2| ≥ η` by `M e^{σT}/η²` — partial credit in the classical currency, from a single scalar
+bound.
+
+### 94.3 Next
+
+`§94.1` shows the obstruction is now a *single* classical quantity: the smoothed argument function
+`L(σ) = σ∫_0^∞ e^{-σT}S(T)dT`, which must equal `P(σ) - Θ_sm(σ)` exactly. Two moves:
+
+1. `S` has its own explicit formula (Landau/Selberg):
+   `S(T) = -(1/π) Σ_n Λ(n) n^{-1/2} sin(T log n)/log n + O(...)`. Substituting it into `L(σ)` turns
+   the identity `D = 0` into a statement purely about prime sums on both sides. The question is
+   whether the two prime expressions are *the same* series in disguise — if they are, `D = 0` is an
+   identity and the argument closes; if they differ, the difference is the exact arithmetic content
+   of RH in this coordinate. This is a finite symbolic computation, not an estimate, and it is the
+   first move that can be *settled* rather than bounded.
+2. Independently: `card_le_of_xiPoissonEnergy_le` converts any energy bound into a density theorem.
+   Running it in reverse — feeding known unconditional density theorems (`N(σ,T) ≪ T^{a(1-σ)}`) into
+   a *lower* bound for the energy — tests whether the known density results are already strong enough
+   to contradict any hypothetical energy bound, i.e. whether this route can possibly work.
+
+## §95 — Both moves of §94.3 resolve negatively; the precision barrier named
+
+### 95.1 Move (1): the identity is not a formal prime identity
+
+Carrying out the contour computation of `Z(σ) := Σ_{γ>0} e^{iσ(ρ-1/2)}` on the rectangle
+`-1 ≤ Re s ≤ 2`, `Im s ≥ ε`:
+
+- **right edge** `s = 2+iy`: `ζ'/ζ = -Σ_n Λ(n) n^{-2-iy}` and `f(s) = e^{3iσ/2} e^{-σy}`, giving
+  `(1/2πi) I_right = -(e^{3iσ/2}/2π) Σ_n Λ(n) n^{-2} e^{-ε(σ + i log n)}/(σ + i log n)`,
+  absolutely convergent and `O(1)` uniformly in `σ`;
+- **left edge** `s = -1+iy`: by the functional equation
+  `ζ'/ζ(-1+iy) = -log y + O(1) + Σ_n Λ(n) n^{-2} n^{iy}`, so it contributes the archimedean main term
+  `(e^{-3iσ/2}/2πσ)(log(1/σ) - γ_E)` plus primes again at weight `n^{-2}`;
+- **bottom edge** `Im s = ε`: a fixed finite integral, `O_ε(1)`.
+
+[FINDING] The two sides of `D(σ) = 0` do **not** carry the same prime series. The zero side carries
+primes at weight `Λ(n) n^{-2}/(σ + i log n)` — absolutely convergent, total size `O(1)`. The
+projection side carries primes only inside `L(σ)`, through `S(T)`, whose Selberg formula has weight
+`Λ(n) n^{-1/2}/log n` — conditionally convergent and oscillating, and only approximate (its error
+involves the zeros themselves). So `D = 0` is not an identity between two presentations of one
+series; the substitution does not close, and it cannot be made to close by rearrangement, since the
+weights differ by `n^{3/2}`.
+
+### 95.2 Move (2): the error floor
+
+The same computation gives the quantitative verdict. The archimedean main terms on both sides are of
+size `σ^{-1} log(1/σ)`, the contour's irreducible error (bottom edge plus the `n^{-2}` prime sums) is
+`O(1)`, and the target is
+
+  `D(σ) ≍ σ² · energy σ ≍ σ log(1/σ)` at worst.
+
+So the route requires **relative precision `σ²`** in an explicit formula whose error floor is
+relative `σ log(1/σ)` — off by a factor `1/(σ log(1/σ))`. Attaining relative precision `σ²` means
+moving the contour to `Re s = 1/2 ± η`, i.e. re-encountering the zeros. This is the exact numerology
+of the obstruction, and it is uniform across every variant tried in §§90–94: the wall is not the
+choice of test function but the required *relative* precision.
+
+### 95.3 Positive salvage: the unconditional window
+
+The barrier statement is itself a theorem, and it is worth having as one.
+
+[LEAN-PROVED] `HTGeometry/AbstractSpectralDefect.lean`, `RHTower/XiAbstractInstance.lean`, axioms
+`propext, Classical.choice, Quot.sound`:
+
+```lean
+theorem energy_le_quarter_traceReal {σ : ℝ} (hσ : 0 < σ) : F.energy σ ≤ 1 / 4 * F.traceReal σ
+theorem defect_le_traceReal {σ : ℝ} (hσ : 0 < σ) : F.defect σ ≤ σ ^ 2 / 8 * F.traceReal σ
+theorem traceReal_mul_le_re_traceC {σ : ℝ} (hσ : 0 < σ) :
+    (1 - σ ^ 2 / 8) * F.traceReal σ ≤ (F.traceC (σ : ℂ)).re
+theorem xiPoissonTraceReal_mul_le_re_xiPoissonTraceC {σ : ℝ} (hσ : 0 < σ) :
+    (1 - σ ^ 2 / 8) * xiPoissonTraceReal σ ≤ (xiPoissonTraceC (σ : ℂ)).re
+```
+
+Unconditionally, with no hypothesis on the zeros beyond admissibility,
+
+  `(1 - σ²/8) · xiPoissonTraceReal σ ≤ Re (xiPoissonTraceC σ) ≤ xiPoissonTraceReal σ`,
+
+and RH is exactly the assertion that the left factor may be taken to be `1`. The window **closes as
+`σ → 0`**: the two quantities are unconditionally equal to relative precision `σ²/8`. Combined with
+§94.2's `riemannHypothesis_iff_xiPoissonTraceReal_le`, this is the sharpest quantitative form the
+criterion has taken:
+
+> RH is a relative-`σ²` statement, and relative `σ²/8` is already unconditional.
+
+Consequence, and the target for any arithmetic method: **any evaluation of both
+`xiPoissonTraceReal σ` and `Re (xiPoissonTraceC σ)` to relative precision `o(σ²)` at a single
+`σ ∈ (0, 4π]` settles RH.** That is a precise, checkable specification — a number and an accuracy —
+rather than an estimate to be improved indefinitely.
+
+### 95.4 Next
+
+The representation must change: every route in §§90–95 computes `D` by comparing two expansions and
+dies at the relative-precision floor. What does not die that way is a route that forces `D ≤ 0`
+*structurally*, without computing either side. In this framework there is exactly one such shape
+available and it has not been tried:
+
+> The window `(1 - σ²/8) traceReal ≤ Re traceC` is a *termwise* consequence of `|Im α| < 1/2`. The
+> displacement bound is itself a theorem (the zeros lie in the critical strip). Iterate: feed the
+> conclusion of `sq_im_le_of_defect_le` back into the displacement bound to get a smaller
+> `|Im α| ≤ η₁ < 1/2`, which sharpens the window to `1 - σ²η₁²/2`, which sharpens the conclusion
+> again. Does the iteration `η_{k+1} = Φ(η_k)` contract to `0`?
+
+This is a fixed-point question about an explicit real map, not an estimate — and if `Φ` is a
+contraction with fixed point `0`, the strip bound alone forces RH, with no arithmetic input at all.
+That is almost certainly too strong to be true (it would prove RH for every admissible family, and
+families with `Im α ≠ 0` exist), so the *interesting* outcome is the exact obstruction: what feature
+of the zeta divisor, absent from a general admissible family, would make `Φ` contract? Computing
+`Φ` explicitly and locating its non-contraction is the next concrete step, and it is finite work.
+
+## §96 — The fixed-point map computed: self-reference forces gain ≥ 1
+
+### 96.1 `Φ` explicitly
+
+Assume `|J_i| ≤ η` for all `i`, with `η ≤ 1/2` and `ση ≤ π`. Then
+
+- upper: `D(σ) = Σ_i e^{-σR_i}(1 - cos σJ_i) ≤ (1 - cos ση) · traceReal σ`;
+- lower at the least-height index `i₀` (height `g`): `D(σ) ≥ e^{-σg}(1 - cos σJ_{i₀})`.
+
+Hence, with `K(σ) := e^{σg} · traceReal σ` (the *normalised* trace),
+
+  **`1 - cos(σ J_{i₀}) ≤ K(σ) · (1 - cos ση)`,   so   `|J_{i₀}| ≲ √K(σ) · η`.**
+
+So `Φ(η) = √K(σ) · η`, and the iteration contracts iff `K(σ) < 1`.
+
+[NO-GO, exact] `K(σ) ≥ card (bottom shell) ≥ 1` for every `σ > 0`, because the point being bounded is
+itself a summand of the majorant that bounds it. The gain is at least `1` by *self-reference*, and
+the conjugating bijection puts a second point of equal `|J|` in the same shell, so `K ≥ 2` for any
+family with a non-real bottom point. The deleted variant (bound `i₀` by `Σ_{j ≠ i₀}`) does not help:
+the mirror term is in that sum and equals the deleted one, so its gain is `≥ 1` as well.
+
+**General lesson.** No bound of the form "each displacement ≤ `f`(all displacements)" with `f`
+monotone can contract, because the displacement appears on both sides. Self-referential bounds cannot
+prove RH; an external input — arithmetic — is required. This is the same wall as §95.2 seen from the
+combinatorial side rather than the analytic one, and it explains why every equivalence in §§90–95 is
+an equivalence.
+
+### 96.2 The parity analogy of §90.5, resolved
+
+Change ringing suggested a parity obstruction. It does not exist here, for a precise reason: the
+interface supplies `inv : ι ≃ ι` with `pt (inv i) = conj (pt i)`, a **sign-reversing bijection**, not
+an involution — `inv ∘ inv` need only preserve `pt`, not be the identity. Sign-reversing bijections
+of a finite set do not force fixed points, so no parity count is available. What does survive is the
+degenerate case:
+
+[LEAN-PROVED] `HTGeometry/AbstractSpectralShell.lean`, axioms `propext, Classical.choice, Quot.sound`:
+
+```lean
+theorem im_eq_zero_of_card_bottomShell_eq_one (h : F.bottomShell.card = 1) :
+    (F.pt F.bottomIndex).im = 0
+```
+
+A one-point bottom shell is fixed by the conjugating bijection, hence real. Conjugation therefore
+forbids a *simple* non-real bottom point: an off-line lowest zero always comes with a partner at the
+same height. That is exactly the `√2` in the loop gain of §96.1.
+
+### 96.3 Positive salvage: multiplicity is recoverable from the trace
+
+The constant that defeats the iteration is itself a computable spectral invariant.
+
+[LEAN-PROVED] same module and axioms:
+
+```lean
+def normalizedTraceReal (σ : ℝ) : ℝ := Real.exp (σ * F.bottomHeight) * F.traceReal σ
+theorem normalizedTraceReal_eq {σ : ℝ} (hσ : 0 < σ) :
+    F.normalizedTraceReal σ =
+      (F.bottomShell.card : ℝ) +
+        ∑' i : F.aboveBottom, Real.exp (-(σ * ((F.pt (i : ι)).re - F.bottomHeight)))
+theorem le_normalizedTraceReal {σ : ℝ} (hσ : 0 < σ) :
+    (F.bottomShell.card : ℝ) ≤ F.normalizedTraceReal σ
+theorem tendsto_normalizedTraceReal :
+    Filter.Tendsto F.normalizedTraceReal Filter.atTop (nhds (F.bottomShell.card : ℝ))
+```
+
+**The least-height multiplicity is read off the real-time trace asymptotics**, unconditionally: the
+spectral gap makes every higher point exponentially negligible, so `e^{σg} traceReal σ → card(shell)`
+and is `≥ card(shell)` throughout. On the Xi divisor this says
+`e^{σ γ₁} Σ_ρ e^{-σ|Im ρ|} → ` (number of Poisson copies at the lowest height), i.e. twice the
+multiplicity of the lowest zero — a spectral recovery statement with no hypothesis on where the zeros
+lie.
+
+### 96.4 Next
+
+§§95–96 close the "compute or iterate" family of routes with a single mechanism: relative precision
+`σ²` is needed and self-reference gives gain `≥ 1`. What has not been tried, and is not of that
+family, is to **change what the family is**. Every result so far applies to *any* admissible family,
+which is why they are equivalences. The next move must use a property of the zeta divisor that a
+general admissible family lacks. Two candidates, both testable against the interface:
+
+1. **Multiplicativity.** The Xi divisor is the zero set of an Euler product; a general admissible
+   family has no such structure. Concretely: `traceReal` and `traceC` of the Poisson family are
+   *not* multiplicative, but the corresponding objects for the Euler factors are. Does the interface
+   admit a "tensor product" of admissible families matching the Euler product, and is the defect
+   subadditive under it? If the defect of a product is bounded by the defects of the factors, and
+   each factor (a single Euler factor has no zeros off `Re s = 0`) has zero defect, the product has
+   zero defect. The place this must fail is where the analytic continuation enters — locating that
+   failure exactly is the next finite task.
+2. **The functional equation as more than conjugation.** The interface uses only
+   `pt (inv i) = conj (pt i)`. The Xi divisor satisfies the *stronger* `ρ ↦ 1 - ρ`, which in Poisson
+   coordinates is `α̂ ↦ -conj(α̂)` composed with the reflection — a second involution the interface
+   never records. Adding it as an axiom and re-running the §96.1 loop changes `K`: the two
+   involutions together may force the bottom shell to have `card ≥ 4` unless real, which changes the
+   gain but not its sign. Worth computing exactly, since it is the only structural axiom available
+   that has not been used.
+
+## §97 — Both §96.4 candidates resolved; the Poisson coordinate *is* the functional-equation quotient
+
+### 97.1 Candidate (2): the second involution acts trivially
+
+On centred spectral points `z = xiSpectralPoint ρ = γ - iδ` the Klein four-group of the divisor acts
+as `z ↦ z`, `-z̄`, `-z`, `z̄`, corresponding to `ρ ↦ ρ, ρ̄, 1-ρ, 1-ρ̄`. The Poisson point is `z` folded
+into `Re ≥ 0`, so `ρ ↦ 1-ρ` (which is `z ↦ -z`) leaves it **unchanged**, and `ρ ↦ 1-ρ̄` (which is
+`z ↦ z̄`) is exactly the `conj_stable` already in the interface.
+
+[LEAN-PROVED] `RHTower/XiAbstractInstance.lean`, axioms `propext, Classical.choice, Quot.sound`:
+
+```lean
+theorem xiPoissonPoint_reflect (q : XiZeroCopy) :
+    xiPoissonPoint (xiZeroCopyReflectEquiv q) = xiPoissonPoint q
+```
+
+(The degenerate case `Re z = 0` is excluded by `xiPoissonBottomHeight_pos`: no zero has `Im ρ = 0`.)
+
+So there is no unused second involution: **the Poisson coordinate is the quotient of the Xi divisor
+by the functional equation**, and `conj_stable` already carries the whole symmetry group. Adding
+`ρ ↦ 1-ρ` as an axiom would add nothing. The one quantitative consequence goes the *wrong* way: each
+Poisson point is carried by at least two copies (a reflection pair), so a non-real bottom point has
+shell cardinality `≥ 4` once conjugation is included, and the §96.1 loop gain `√K` becomes `≥ 2`
+rather than `≥ √2`.
+
+This also explains, structurally, why the whole branch has been constraint-shaped rather than
+flow-shaped: the coordinate in which the criterion is clean is precisely the one that has already
+divided out the functional equation, so nothing is left to propagate.
+
+### 97.2 Candidate (1): the divisor is not a product
+
+The Euler product converges only on `Re s > 1`, where `ζ` has no zeros; each factor `(1-p^{-s})^{-1}`
+has poles and no zeros. The zero divisor is therefore not a union or product over primes, and there
+is no "tensor of admissible families" to form: multiplicativity reaches the zeros only through the
+explicit formula, i.e. only as `Λ(n) ≥ 0`. That is the same channel whose precision floor §95.2
+computed. Candidate (1) is empty as stated.
+
+### 97.3 The loop gain, machine-checked
+
+[LEAN-PROVED] `HTGeometry/AbstractSpectralShell.lean`, same axioms:
+
+```lean
+theorem defect_le_of_abs_im_le {σ η : ℝ} (hσ : 0 < σ)
+    (hall : ∀ i, |(F.pt i).im| ≤ η) (hpi : σ * η ≤ Real.pi) :
+    F.defect σ ≤ (1 - Real.cos (σ * η)) * F.traceReal σ
+theorem one_sub_cos_bottomShell_le {σ η : ℝ} (hσ : 0 < σ)
+    (hall : ∀ i, |(F.pt i).im| ≤ η) (hpi : σ * η ≤ Real.pi)
+    {i : ι} (hi : i ∈ F.bottomShell) :
+    1 - Real.cos (σ * (F.pt i).im) ≤ F.normalizedTraceReal σ * (1 - Real.cos (σ * η))
+```
+
+This is §96.1 as a theorem: the self-referential bound returns itself amplified by the normalised
+trace, and `le_normalizedTraceReal` says that factor is `≥ card(bottom shell) ≥ 1`. The iteration is
+provably non-contracting, for every admissible family.
+
+### 97.4 Next
+
+With both §96.4 candidates closed, the unused ζ-specific inputs are down to a short list, and only
+one of them is a *positivity* rather than a symmetry:
+
+> **Pólya's kernel.** `Ξ(z) = 2∫_0^∞ Φ(u) cos(zu) du` with
+> `Φ(u) = Σ_{n≥1} (2π²n⁴ e^{9u/2} - 3πn² e^{5u/2}) e^{-πn² e^{2u}}`, and `Φ > 0` on `ℝ`
+> (unconditional, from the theta transformation). `Φ > 0` immediately gives `|Ξ(x+iy)| ≤ Ξ(iy)`, and
+> it is the only unconditional *inequality* about `Ξ` that is not a consequence of the symmetries the
+> interface already encodes.
+
+A corpus search for it (`formal_tools.py research "Polya positivity Fourier transform Xi"`) returns
+rectangular-Fourier and Mercer-capacity material but no `Φ`-positivity declaration, so it is absent.
+The concrete next task, in order:
+
+1. Formalize `Φ` and `Φ > 0` (theta transformation route), or locate an equivalent already present
+   under another name.
+2. Express `traceReal σ` and `Re traceC σ` as pairings against `Φ`. The Poisson weight `e^{-σ|γ|}`
+   is the Fourier transform of the Poisson kernel, so both traces become `∫ Φ · (kernel)`, and the
+   defect becomes `∫ Φ(u) · K_σ(u) du` for an explicit `K_σ`. If `K_σ ≥ 0` fails only on a set where
+   `Φ` is controlled, the sign of the defect is decided by a *pointwise* comparison rather than by an
+   estimate — the first mechanism in this branch that is not self-referential and not
+   precision-limited.

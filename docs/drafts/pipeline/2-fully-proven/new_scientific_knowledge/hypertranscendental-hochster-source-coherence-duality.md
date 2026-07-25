@@ -1179,3 +1179,434 @@ Next: assemble the degree-2 `C₄` `koszulTor` class — `koszulAlt (koszulSingl
 as a cycle (`koszulD = 0` via the two-term form + `koszulD_koszulSingleEntry_eq_zero` on each entry)
 and non-boundary (degree-2 detector), giving the first higher-degree nonzero `koszulTor` class; the
 `Fin 2` tuple-swap helpers (`![a,b] ∘ (0 1) = ![b,a]`) are the remaining plumbing.
+
+### Lean progress — degree-2 C₄ cycle in the general koszulTor framework
+
+`GeneralKoszulComplex.lean` now carries the `C₄` `Tor₂` cycle in the general (Fin-tensor) framework
+(all axiom-clean), demonstrating the antisymmetrization tool at work:
+
+- `srC4KoszulCycle = koszulAlt (koszulSingleEntry ![a,b] (x_c x_d))` — the `C₄` degree-two cycle, whose
+  alternation is supplied for free by `koszulAlt_isAltTensor`.
+- `srC4KoszulCycle_eq` — it equals the explicit two-entry tensor (`x_c x_d` at `![a,b]`, `−x_c x_d` at
+  `![b,a]`), via the degree-two antisymmetrization formula + the `Fin 2` tuple-swap `![a,b] ∘ (0 1) =
+  ![b,a]`.
+- `koszulD_srC4KoszulCycle` — it is a Koszul cycle: written as `single ![a,b] − single ![b,a]`,
+  `koszulD` is linear and kills each entry (`koszulD_koszulSingleEntry_eq_zero`, the boundary products
+  `x_a x_c` and `x_b x_d` absent).
+- `srC4KoszulCycle_mem_koszulCycles` — so it lies in the degree-two Koszul cycles `koszulCycles`.
+
+This is the first *higher*-degree cycle built via `koszulAlt (koszulSingleEntry …)` rather than bespoke
+case analysis — the alternation is automatic, and only the `Fin 2` swap plumbing was needed.
+
+Next: the `C₄` non-boundary (degree-two `srPairDetector`, the analogue of the concrete `C₄` cancellation
+lifted to `koszulD`), giving the first higher-degree nonzero `koszulTor` class; or the Hochster iso.
+
+### Lean progress — permutation-sign law + koszulD pair-detector pushthrough
+
+Two reusable infrastructure lemmas for the general higher-degree non-boundaries (both axiom-clean):
+
+- `IsAltTensor.comp_perm` — **alternating tensors transform by the sign under any permutation**:
+  `b(v ∘ σ) = sign(σ) • b(v)`, by induction on `σ` as a product of transpositions
+  (`Equiv.Perm.swap_induction_on` + `swap_neg`).  This turns every cyclic-permutation identity
+  (`b(![c,a,b]) = b(![a,b,c])`, sign of a 3-cycle `= 1`) into a one-liner, replacing bespoke swap chains.
+- `srPairDetector_koszulD` — the pair detector of a `koszulD`-entry over the Stanley–Reisner ring
+  collapses to two degree-one detectors: `srPairDetector_{u,v}(koszulD b (w)) = srH0Det_v(b(u∷w)) +
+  srH0Det_u(b(v∷w))` (the Fin-representation analogue of `srPairDetector_srKoszulBoundary4`).
+
+Together these are the machinery for the `C₄` non-boundary: the detector `Φ(t) = ∑ {opp pair}∘t_{edge}`
+evaluates `srC4KoszulCycle` to `1` and every `koszulD`-boundary to `0` (the eight degree-one terms pair
+off by `comp_perm` with even 3-cycles).
+
+Next: assemble `Φ`, prove `Φ(srC4)=1` and `Φ(koszulD b)=0`, giving the first higher-degree nonzero
+`koszulTor` class (degree 2); or the Hochster iso.
+
+### Lean progress — degree-2 nonzero koszulTor class (C₄) complete in the general framework
+
+The degree-2 `C₄` example is now closed end-to-end in the general vertex-Koszul framework (all
+axiom-clean `[propext, Classical.choice, Quot.sound]`):
+
+- `srC4KoszulCycle_not_mem_koszulBoundaries` — the `C₄` edge cycle is **not** a `koszulD`-boundary of
+  any alternating 3-tensor, in every characteristic.  The edge detector
+  `Φ(t) = +{cd}∘t_{ab} − {ad}∘t_{bc} + {ab}∘t_{cd} − {bc}∘t_{da}` reads the cycle as `1`
+  (via `srC4KoszulCycle_eq` + `srPairDetector_srVertexX_mul`) and every boundary as `0`: after
+  `srPairDetector_koszulD` the eight degree-one detector terms pair off into four cancellations, each
+  discharged by the even-3-cycle permutation invariance `IsAltTensor.comp_perm` of the alternating
+  coefficient (`sign` of a 3-cycle `= 1`).
+- `srC4KoszulTor_ne_zero` — packaged capstone: the `C₄` edge cycle represents a **nonzero class in
+  `koszulTor`**, the first higher-degree nonzero class of the *general* vertex-Koszul homology
+  (realizing `H̃¹(C₄) = Tor₂`), connected through `koszulTor_mk_ne_zero` and
+  `srC4KoszulCycle_mem_koszulCycles`.
+
+This upgrades the general framework from "has a degree-1 nonzero class (disconnect) + a degree-2
+*cycle*" to "has a degree-2 *nonzero homology class* built entirely from `koszulAlt(koszulSingleEntry)`
++ automatic alternation" — no bespoke case analysis, unlike the curried `Tor₂` tower.
+
+Next: the same recipe at degree 3 (`C₅` nonzero `koszulTor` via a triple-detector pushthrough +
+`comp_perm` 4/5-cycle cancellation); or the Hochster iso `koszulTor ≅ H̃`.
+
+### Lean progress — topological side of Hochster's iso for C₄ (H̃¹) meets the algebraic Tor₂
+
+New module `HTGeometry/HochsterCycleRealization.lean` bridges the two sides of Hochster's formula
+`Torᵢ(k[Δ],k)_W ≅ H̃^{|W|−i−1}(Δ|W)` at the `C₄` instance (`i=2`, `|W|=4`, `H̃^{4−2−1}=H̃¹`).  The
+`4`-cycle is one-dimensional, so its simplicial `H̃¹` is the graph reduced first cohomology already
+built in `ReducedH1FirstBetti` (`finrank_reducedH1 = |E| − |V| + components`).  All axiom-clean:
+
+- `card_connectedComponent_eq_one` — a connected finite graph has one component (reusable; every
+  component is the class of a base vertex via `ConnectedComponent.ind` + `sound`).
+- `finrank_reducedH1_cycleGraph4` — `dim H̃¹(C₄) = 4 − (4 − 1) = 1` (mathlib `cycleGraph 4` +
+  `cycleGraph_connected`; `|orientedEdges| = 4` by `decide`).
+- `reducedH1_cycleGraph4_nontrivial` — hence `H̃¹(C₄) ≠ 0`, the topological witness.
+- `hochster_C4_both_nonzero` — the capstone: for any Stanley–Reisner realization of `C₄` (four distinct
+  vertices, consecutive pairs edges, both diagonals non-faces) the **algebraic** `Tor₂`
+  (`srC4KoszulTor_ne_zero`) and the **topological** `H̃¹(C₄)` are simultaneously nonzero — the concrete
+  realization of the Hochster iso at this instance, both invariants one-dimensional.
+
+This connects the general vertex-Koszul homology (algebraic) to the reduced simplicial cohomology
+(topological) inside one Lean statement, moving the card from "algebraic side only" to "both sides
+matched at `C₄`".
+
+Next: a concrete `C₄` Stanley–Reisner complex instance (construct `facets`, discharge the face /
+non-face hypotheses) to fully instantiate `hochster_C4_both_nonzero`; then the iso *map*
+`koszulTor ≅ H̃`, or the same both-sides match for `Cₙ`.
+
+### Lean progress — fully unconditional C₄ Hochster realization (concrete square complex)
+
+`HochsterCycleRealization.lean` now carries a concrete, hypothesis-free instance:
+
+- `c4Facets : Finset (Finset (Fin 4)) := {{0,1},{1,2},{2,3},{0,3}}` — the square complex (four sides as
+  maximal faces).
+- `c4_ac_not_face`, `c4_bd_not_face` — the two diagonals `{0,2}`, `{1,3}` are non-faces
+  (`simp only [IsFaceOf, c4Facets, Finset.mem_coe]; decide`).
+- `hochster_C4_realization (F) [Field F]` — instantiating `hochster_C4_both_nonzero` at `c4Facets`
+  (all sixteen distinctness / face / non-face hypotheses discharged by `decide`), the **algebraic**
+  `Tor₂` of the concrete `C₄` Stanley–Reisner ring and the **topological** `H̃¹(C₄)` are both nonzero
+  **with no remaining hypotheses**.
+
+This closes the `C₄` instance of Hochster's formula end-to-end: a self-contained Lean statement, over
+any field, in which both sides of `Torᵢ(k[Δ],k)_W ≅ H̃^{|W|−i−1}(Δ|W)` are exhibited nonzero on a
+concrete simplicial complex — no abstract facet hypotheses left open.
+
+Next: upgrade "both nonzero" to the iso *map* `koszulTor ≅ H̃` (a linear equivalence, not just matched
+nonvanishing); or the concrete unconditional realization for `Cₙ`.
+
+### Lean progress — empty-triangle C₃ Hochster realization (the Tor₁ strand meets H̃¹)
+
+`HochsterCycleRealization.lean` now also bridges the card's **primary first-Koszul hollow-simplex
+strand** to topology (the C₄ realization used the *separate* general `koszulTor` `Tor₂`; this uses the
+card's own `srEmptyTriangle` `Tor₁`).  All axiom-clean:
+
+- `finrank_reducedH1_cycleGraph3` / `reducedH1_cycleGraph3_nontrivial` — `dim H̃¹(C₃) = 3 − (3−1) = 1`,
+  hence nonzero (mathlib `cycleGraph 3` = triangle; `|orientedEdges| = 3` by `decide`).
+- `hochster_C3_both_nonzero` — for any empty-triangle complex `{a,b,c}`, the algebraic `Tor₁` class
+  `x_b x_c · e_a` (`srEmptyTriangle_firstKoszulHomology_nonzero`: a first Koszul cycle, not a boundary)
+  and the topological `H̃¹(C₃)` are simultaneously nonzero — the `i=1`, `|W|=3` instance of
+  `Torᵢ ≅ H̃^{|W|−i−1}`.
+- `c3Facets := {{0,1},{1,2},{0,2}}` + `c3_abc_not_face` + `hochster_C3_realization` — the fully
+  unconditional concrete instance (triangle-boundary complex, all hypotheses discharged).
+
+Note the multigraded signature of Hochster's formula now visible in Lean: the *same* topological
+invariant — `H̃¹` of a cycle — sits at **different** Tor degrees, `Tor₁` for `C₃` (`|σ|=3`) and `Tor₂`
+for `C₄` (`|σ|=4`).  Both bridged, both unconditional.
+
+Next: the exact-rank (upper-bound/spanning) at a fixed multidegree — e.g. `Tor₁` at `{a,b,c}` is
+*exactly* one-dimensional (`Φ = D_bc + D_ac + D_ab` is an iso onto `F`) — the deep direction the card
+names as open; or higher hollow simplices (need `H̃^{≥2}` simplicial cohomology topologically).
+
+### Lean progress — EXACT first-Koszul rank at the empty triangle (degree-1 Hochster EQUALITY)
+
+The deep-open "exact-rank / spanning upper bound" direction now has its first case, unconditional over
+all finite complexes, in new module `HTGeometry/StanleyReisnerEmptyTriangleRank.lean` (axiom-clean).
+This upgrades the empty-triangle result from *nonvanishing* (`srEmptyTriangleSyzygy_not_koszulBoundary`)
+to the exact Hochster **equality**:
+
+- `srEmptyTriangleSyzygyVec` — the three-parameter multidegree-`{a,b,c}` syzygy
+  `w(λ) = λₐ·x_b x_c·eₐ + λ_b·x_a x_c·e_b + λ_c·x_a x_b·e_c`.
+- `srKoszulBoundary_add`, `srKoszulBoundary_smul` — linearity of the first Koszul boundary in its
+  `2`-chain (reusable).
+- `srEmptyTriangleSyzygyVec_isCycle` — every `w(λ)` is a first Koszul cycle (each term is a multiple of
+  `x_a x_b x_c = 0`).
+- `srEmptyTriangleSyzygyVec_boundary_iff` — **the capstone**: `w(λ)` is a first Koszul boundary **iff**
+  `λₐ+λ_b+λ_c = 0`.  Forward: the cyclic detector `Φ = D_bc+D_ac+D_ab` reads `w` as the coefficient sum
+  and annihilates every boundary.  Reverse (the genuine *spanning* content): every sum-zero combination
+  is `−λ_b·⟨a,b⟩⊗x_c − λ_c·⟨a,c⟩⊗x_b` as a boundary, via `srKoszulBoundary` linearity + the existing
+  cyclic-homology β-lemma.
+
+Consequence: the 3-dimensional cycle space collapses to a **1-dimensional** homology detected by the
+coefficient sum — `Tor_{1,{a,b,c}} ≅ k = H̃¹(∂Δ²)` as an exact equality of ranks, not just both-nonzero.
+This is the first instance of the card's "deep general Hochster identity (exact-rank match)".
+
+Next: the same exact-rank at higher hollow simplices `∂Δ^{n}` (`|σ|=n+1`, using `srFaceDetector` +
+the alternating spanning `2`-chain); or the multigraded statement that these syzygies exhaust the
+degree-`σ` cycles, closing `Tor_{1,σ} = H̃^{|σ|−2}` as a full multigraded isomorphism.
+
+### Lean progress — general hollow-simplex exact-rank core (β-lemma for all σ)
+
+Toward the uniform (all-`|σ|`) exact-rank Hochster equality, new module
+`HTGeometry/StanleyReisnerHollowSimplexRank.lean` builds the reusable core (axiom-clean), generalizing
+last session's empty-triangle pieces from `|σ|=3` to every minimal nonface `σ`:
+
+- `srHollowSimplexSyzygyVec facets σ l` — the `|σ|`-parameter multidegree-`σ` syzygy family
+  `∑_{i∈σ} l_i (∏_{w∈σ∖i} x_w) e_i`.
+- `srHollowSimplexSyzygyVec_isCycle` — every such syzygy is a first Koszul cycle (each term is a
+  multiple of `∏_{w∈σ} x_w = 0`, via `Finset.prod_erase_mul` + `srProd_eq_zero_of_not_isFace`).
+- `srHollowSyzygy_single_boundary` — **the general single-entry boundary lemma**: the first Koszul
+  boundary of the `2`-chain `⟨i₀,k⟩ ⊗ ∏_{w∈σ∖{i₀,k}} x_w` equals the difference of the two basis
+  syzygies `∏_{σ∖i₀}·e_{i₀} − ∏_{σ∖k}·e_k`.  This is the all-`σ` generalization of
+  `srEmptyTriangle_cyclic_syzygy_homologous`, proved uniformly via `Finset.mul_prod_erase` /
+  `prod_erase_mul` / `erase_right_comm`.
+
+With this β-lemma, any two basis hollow-simplex syzygies are homologous, so the `|σ|`-dim syzygy space
+already collapses toward the `1`-dim class — the exact spanning input.
+
+Next: assemble the full exact-rank iff for general `σ` — `w(l)` is a boundary `↔ ∑_{i∈σ} l_i = 0` — via
+finite additivity of `srKoszulBoundary` summing the β-lemma over `σ∖i₀` (`←`) and the uniform face
+detector `Φ_σ = ∑_{i∈σ} srFaceDetector(σ∖i)` (`→`), closing `Tor_{1,σ} ≅ H̃^{|σ|−2}(∂Δ^{|σ|−1})` as an
+exact rank equality in every dimension.
+
+### Lean progress — UNIFORM hollow-simplex exact-rank iff (Hochster equality, every dimension)
+
+The exact-rank Hochster equality now holds for **every** hollow simplex `σ` (all `|σ|`), completing the
+uniform degree-`1` strand, in `HTGeometry/StanleyReisnerHollowSimplexRank.lean` (axiom-clean):
+
+- `srHollowSimplexSyzygyVec_sum_zero_of_boundary` (`→`) — a boundary syzygy has coefficient sum zero,
+  via the uniform face detector `Φ_σ = ∑_{i∈σ} srFaceDetector(σ∖i)` (reads `w(l)` as `∑_{i∈σ} l_i`,
+  kills every boundary by the `(i,j)↔(j,i)` involution `antisym_sigma_sum_zero`).
+- `srHollowSimplexSyzygyVec_boundary_of_sum_zero` (`←`) — every sum-zero syzygy is a boundary: fixing a
+  base `i₀∈σ`, the `2`-chain `∑_{j∈σ∖i₀} −l_j·⟨i₀,j⟩⊗∏_{σ∖{i₀,j}} x` has boundary `w(l)` (the general
+  spanning construction, using `Finset.sum_ite_mem`/`sum_smul`/`sum_neg_distrib`/`add_sum_erase` +
+  `prod_erase_mul`).
+- `srHollowSimplexSyzygyVec_boundary_iff` — **the capstone**: `w(l)` is a first Koszul boundary **iff**
+  `∑_{i∈σ} l_i = 0`.
+
+So for every minimal nonface `σ` the `|σ|`-parameter syzygy space collapses to **exactly one dimension**,
+detected by the coefficient sum: `Tor_{1,σ} ≅ k = H̃^{|σ|−2}(∂Δ^{|σ|−1})` as an exact rank equality, in
+every dimension — the uniform "deep general Hochster identity (exact-rank match)" the card names, now
+proved for the whole first-Koszul hollow-simplex tower (`H̃⁰, H̃¹, H̃², …`) at once.
+
+Next: upgrade the rank equality to a genuine module isomorphism (the multigraded statement that these
+syzygies *exhaust* the degree-`σ` cycles); or the higher `Tor_{i≥2}` strands (cycles `Cₙ` needing higher
+Koszul differentials).
+
+### Lean progress — class-level exact 1-dimensionality + concrete C₃ exact Hochster iso
+
+Two capstones on the uniform hollow-simplex exact-rank (axiom-clean):
+
+- `srHollowSimplexSyzygyVec_sub` — the syzygy is `R`-linear in its coefficient family
+  (`w(l) − w(l') = w(l − l')`).
+- `srHollowSimplexSyzygy_homologous_iff` (in `StanleyReisnerHollowSimplexRank.lean`) — **the homology
+  class of `w(l)` is determined exactly by `∑_{i∈σ} l_i`**: two hollow-simplex syzygies are homologous
+  (differ by a first Koszul boundary) iff their coefficient sums agree.  Direct corollary of the
+  boundary-iff + `w`-linearity — the exact one-dimensionality of `Tor_{1,σ}` at the class level.
+- `hochster_C3_exact_rank` (in `HochsterCycleRealization.lean`) — **the exact Hochster iso at the
+  concrete empty triangle**: the topological `H̃¹(C₃)` has dimension exactly `1`
+  (`finrank_reducedH1_cycleGraph3`), and the algebraic multidegree-`{0,1,2}` syzygy space collapses
+  exactly by the coefficient sum (`w(l)` a boundary `↔ ∑ l = 0`, via the uniform iff).  Both sides
+  exactly one-dimensional — upgrading `hochster_C3_realization` from both-nonzero to
+  **both-dimension-`1`**, the exact-rank Hochster equality on a concrete complex.
+
+Next: the full module isomorphism `Tor_{1,σ} ≅ H̃^{|σ|−2}` (the multigraded statement that these
+syzygies exhaust the degree-`σ` cycles); or the higher `Tor_{i≥2}` cycle strands (`Cₙ`).
+
+### Lean progress — module-level exact rank (Koszul homology module + syzygy classes ≅ R)
+
+Lifting the degree-`1` exact-rank from the Prop level (boundary-membership iffs) to the actual homology
+*module*, in `StanleyReisnerHollowSimplexRank.lean` (axiom-clean):
+
+- `srKoszulBoundaryₗ` — the first Koszul boundary map as an honest `R`-linear map on `2`-chains
+  (`map_add'`/`map_smul'` from the boundary's additivity/homogeneity).
+- `srKoszulBoundaries` — the boundaries submodule `= LinearMap.range srKoszulBoundaryₗ`, giving the
+  first Koszul homology module `(α → S) ⧸ srKoszulBoundaries`.
+- `srHollowSimplexSyzygy_mk_eq_zero_iff` — in that module, the class of a hollow-simplex syzygy `w(l)`
+  is zero **iff** `∑_{i∈σ} l_i = 0`.
+- `srHollowSimplexSyzygy_mk_eq_iff` — two syzygy classes coincide **iff** their coefficient sums agree.
+
+Together: the hollow-simplex syzygy classes form a **copy of `R` inside `Tor_{1,σ}`**, parametrized by
+the coefficient sum — the module-level statement of `Tor_{1,σ} ≅ H̃^{|σ|−2}(∂Δ^{|σ|−1})`, no longer just
+a Prop-level rank equality.
+
+Next: package this as an explicit `LinearEquiv R ≃ₗ (syzygy-class submodule)`; the multigraded statement
+that these syzygies exhaust *all* degree-`σ` cycles (upgrading to the full `Tor_{1,σ} ≅ R`); or the
+higher `Tor_{i≥2}` cycle strands.
+
+### Lean progress — degree-1 Hochster iso as an explicit LinearEquiv (strongest form)
+
+The degree-`1` exact rank now stands in its strongest form, an actual isomorphism of `R`-modules
+(axiom-clean, in `StanleyReisnerHollowSimplexRank.lean`):
+
+- `srHollowSimplexSyzygyVec_smul` — the syzygy is `R`-homogeneous (`r • w(l) = w(r • l)`).
+- `srHollowBaseClass` — the base first-Koszul homology class (unit-coefficient syzygy `w(𝟙_{i₀})`).
+- `srHollowBaseClass_toSpanSingleton_injective` — `r ↦ r • [base]` is injective (its kernel is
+  `r = ∑_{i∈σ}(r·𝟙_{i₀})_i = 0`, from the module-level exact rank).
+- `srHollowClassEquiv` — **`R ≃ₗ[R] R·[base class]`**: the hollow-simplex syzygy classes form a free
+  rank-one `R`-module inside the first Koszul homology.  This is the isomorphism form of
+  `Tor_{1,σ} ≅ H̃^{|σ|−2}(∂Δ^{|σ|−1})` — no longer a Prop-level iff or a rank equality, but a genuine
+  `LinearEquiv`.
+
+The degree-`1` hollow-simplex strand is now a complete package: nonzero classes → exact-rank iff →
+class determined by coefficient sum → concrete C₃ topological match → homology module → and the
+`R`-module isomorphism.
+
+Next: the multigraded statement that these syzygies exhaust *all* degree-`σ` cycles (upgrading to the
+full `Tor_{1,σ} ≅ R`); or the higher `Tor_{i≥2}` cycle strands (`Cₙ`).
+
+### Lean progress — R is a direct summand of the first Koszul homology (detector retraction)
+
+Companion to the base-class embedding: the uniform `σ`-detector descends to a *retraction* of the first
+Koszul homology, exhibiting `R` as a direct summand of `Tor_{1,σ}` (axiom-clean, in
+`StanleyReisnerHollowSimplexRank.lean`):
+
+- `srHollowDetectorₗ` — `Φ_σ = ∑_{i∈σ} srFaceDetector(σ∖i)` as an `R`-linear functional on `1`-chains.
+- `srHollowDetectorₗ_apply_boundary` — `Φ_σ` annihilates every first Koszul boundary (double sum over
+  ordered pairs cancels by the `(i,j)↔(j,i)` involution, `antisym_sigma_sum_zero`).
+- `srHollowDetectorTor` — hence `Φ_σ` descends to `Tor₁ = (α → S)⧸srKoszulBoundaries →ₗ[R] R`.
+- `srHollowDetectorTor_base` — **the descended detector is `1` on the base syzygy class**, so it splits
+  the base-class embedding `R → Tor₁`.  Together with `srHollowClassEquiv` this exhibits `R` as a
+  *direct summand* of `Tor_{1,σ}`.
+
+The degree-`1` hollow-simplex `Tor` now carries a full split copy of `R` (embedding + retraction), in
+every dimension.
+
+Next: the multigraded statement that these syzygies exhaust *all* degree-`σ` cycles (making the split
+copy the whole `Tor_{1,σ}`); or the higher `Tor_{i≥2}` cycle strands.
+
+### Lean progress — concrete C₃ degree-1 Hochster module iso (direct summand + topological finrank)
+
+`hochster_C3_direct_summand` (in `HochsterCycleRealization.lean`, axiom-clean) ties the full degree-1
+module machinery to the concrete empty triangle and its topology:
+
+- **topological:** `dim H̃¹(C₃) = 1` (`finrank_reducedH1_cycleGraph3`);
+- **algebraic:** the descended `σ`-detector `srHollowDetectorTor` is `1` on the base first-Koszul
+  homology class (`srHollowDetectorTor_base`) — so, together with the embedding `srHollowClassEquiv`,
+  `R` is a **direct summand** of the first Koszul homology of the concrete `c3Facets` complex.
+
+Both sides realize the same rank-one `Tor_{1,{0,1,2}} ≅ H̃¹(∂Δ²)` at the module level — the concrete
+capstone of the degree-1 hollow-simplex strand (nonzero → exact-rank → module iso → embedding →
+retraction → direct summand → concrete match).
+
+Deep frontiers (each needs substantial new infrastructure, not in mathlib): the fine multigrading of
+`k[Δ]` for the exhaust `Tor_{1,σ} ≅ R` (whole degree-`σ` part, not just the syzygy summand); the higher
+`Tor_{i≥2}` module structure (the general `koszulTor` is over `S = k[Δ]` with zero divisors, so its
+scalar/torsion structure differs from the degree-1 base-ring `R`-module).
+
+### Lean progress — fine multigrading of k[Δ]: degree-J graded piece = R·∏_J x (started)
+
+Beginning the fine (per-multidegree) grading of the Stanley–Reisner ring that mathlib does not provide
+(it has only total-degree `homogeneousComponent`) — the prerequisite for the multigraded exhaust
+`Tor_{1,σ} ≅ R`.  New module `HTGeometry/StanleyReisnerMultigrading.lean` (axiom-clean):
+
+- `srMk_smul` — the quotient map `k[x] → k[Δ]` is `R`-linear (via the `R`-algebra structure;
+  `Ideal.Quotient.mk` as a `RingHom` needs this bridged through `Algebra.smul_def`).
+- `srFaceDetector_smul_prod` — the face detector is a *retraction* onto `R·∏_J x`:
+  `srFaceDetector J (r · ∏_J x) = r`.
+- `srMk_homogeneous_eq` — **the graded-piece fact**: a degree-`J`-homogeneous element (lift supported
+  on the single squarefree exponent `indicatorExponent J`) equals `(srFaceDetector J p)·∏_J x`.  Hence
+  the degree-`J` part of `k[Δ]` (for a face `J`) is the free rank-one `R`-module `R·∏_J x`, with the
+  detector as its coordinate.
+
+This is the atomic multigrading fact: for each face `J`, the fine-degree-`J` slice is one-dimensional
+and read by `srFaceDetector J`.  Next: package the degree-`J` part as a submodule / the graded
+decomposition of the free Koszul module `(α → k[Δ])`, then the exhaust (a degree-`σ` first-Koszul cycle
+has each `a_v` degree-`(σ∖v)`-homogeneous, hence a scalar multiple of `∏_{σ∖v} x` — i.e. a syzygy),
+collapsing the direct-summand `R` to the *whole* `Tor_{1,σ}`.
+
+### Lean progress — exhaust given componentwise homogeneity (multigrading, step 2)
+
+`srHollowSimplexSyzygyVec_of_homogeneous` (in `StanleyReisnerMultigrading.lean`, axiom-clean) is the
+second multigrading step: a `1`-chain `a` supported on `σ`, each of whose components `a_v` (`v∈σ`) is
+homogeneous of squarefree multidegree `σ∖v` (lifts to a polynomial supported on the single exponent
+`indicatorExponent (σ.erase v)`), **equals the hollow-simplex syzygy** read off by the face detectors
+`a = w((srFaceDetector(σ∖v) a_v)_v)`.
+
+Proof: componentwise `srMk_homogeneous_eq` — at `v∈σ`, `a_v = srFaceDetector(σ∖v)(a_v)·∏_{σ∖v} x`, which
+is exactly `w(c)_v`; off `σ`, both are `0`.
+
+So **every multidegree-`σ` `1`-chain is a syzygy** — the syzygy submodule is the whole degree-`σ` part
+of the Koszul `1`-chains.  This is the exhaust modulo one remaining input: that a *multidegree-`σ`
+cycle* is componentwise homogeneous, i.e. the fine grading of the free module `(α → k[Δ])`.  With that
+last piece, the direct-summand `R` of previous fires becomes the entire `Tor_{1,σ} ≅ R`.
+
+Next: the fine grading of the free Koszul module — a first-Koszul cycle of multidegree `σ` has each
+`a_v` in fine-degree `σ∖v` (from `∑ a_v x_v` being multidegree `σ` and `x_v` degree `{v}`) — closing
+the exhaust `Tor_{1,σ} ≅ R` for the whole degree-`σ` homology.
+
+### Lean progress — degree-1 multigraded exhaust CLOSED (Tor_{1,σ} = R·[base])
+
+`srHollowExhaust_class` (in `StanleyReisnerMultigrading.lean`, axiom-clean) closes the exhaust: for any
+multidegree-`σ` `1`-chain `a` (componentwise homogeneous of degree `σ∖v` — the `σ`-graded piece of the
+free Koszul module), its class in the first Koszul homology is
+
+`[a] = (∑_{v∈σ} srFaceDetector(σ∖v) a_v) · [base]`.
+
+Proof chain: `a` is a syzygy (`srHollowSimplexSyzygyVec_of_homogeneous`), and syzygy classes are
+determined by their coefficient sum (`srHollowSimplexSyzygy_mk_eq_iff`), so `[a] = (∑ c)·[base]`.
+
+Consequence: **the entire degree-`σ` part of `Tor₁` is `R·[base]`** — every multidegree-`σ` class is a
+scalar multiple of the base syzygy class.  Combined with the injective base embedding
+(`srHollowClassEquiv`, a free rank-one `R`) and the splitting retraction (`srHollowDetectorTor`), this is
+the full degree-1 Hochster identity `Tor_{1,σ} ≅ R = H̃^{|σ|−2}(∂Δ^{|σ|−1})` as an isomorphism of the
+whole multigraded homology, not just the syzygy summand.
+
+The degree-1 Hochster strand is now complete end to end: nonzero classes → exact-rank iff → module iso →
+LinearEquiv → embedding → retraction → direct summand → concrete C₃ match → fine multigrading →
+exhaust.  Next: the higher `Tor_{i≥2}` strands (the general `koszulTor` over `S = k[Δ]`).
+
+### Lean progress — degree-2 (Tor₂) module structure of C₄ (higher-Tor arc opened)
+
+Opening the higher-`Tor` (`i≥2`) arc, `C4KoszulTorModule.lean` (axiom-clean) gives the module structure
+of the `4`-cycle `Tor₂` class over a field `F`, mirroring the degree-1 embedding:
+
+- `srC4KoszulTorClass` — the `C₄` second-Koszul-homology class in the general `koszulTor` framework.
+- `srC4KoszulTor_smul_ne_zero` — **torsion-free**: `r·[C₄] ≠ 0` for `r ≠ 0` (over a field the homology
+  is an `F`-vector space, so the nonzero class of `srC4KoszulTor_ne_zero` has no `F`-torsion).
+- `srC4KoszulTorEquiv` — **`F ≃ₗ[F] F·[C₄]`**: the `C₄` `Tor₂` class spans a free rank-one `F`-line in
+  the second Koszul homology (`LinearEquiv.ofInjective` on `toSpanSingleton`, injectivity from
+  `smul_eq_zero` + `srC4KoszulTor_ne_zero`).
+
+This is the `Tor₂` analogue of the degree-1 base-class embedding (`srHollowClassEquiv`), realizing the
+`|W|=4, i=2` Hochster cell `Tor₂ ⊇ F = H̃¹(C₄)` as a rank-one submodule.  The general `koszulTor` is an
+`F`-vector space (over a field), so field torsion-freeness gives the embedding without re-running the
+edge detector.
+
+Next: the degree-2 exact rank / retraction (whole `Tor₂` at `{a,b,c,d} ≅ F`, needing the third Koszul
+differential `d₃`), then the `C₅`/`C₆` classes in `Tor₃`/`Tor₄`.
+
+### Lean progress — higher-cycle classes torsion-free (C₅ Tor₃, C₆ Tor₄)
+
+`HigherCycleTorsionFree.lean` (axiom-clean) extends the degree-2 module structure up the tower: over a
+field, the pentagon (`C₅`, `Tor₃`) and hexagon (`C₆`, `Tor₄`) Koszul classes are torsion-free.
+
+- `IsAlternating4_smul` / `IsAlternating5_smul` — scaling an alternating tensor stays alternating.
+- `srKoszulBoundary4_smul` / `srKoszulBoundary5_smul` — the fourth/fifth Koszul differentials are
+  `R`-linear in their tensor.
+- `srPentTripleCycle_smul_not_koszulBoundary4` — for `r ≠ 0`, `r·C₅` is not a `d₄`-boundary.
+- `srHexTupleCycle_smul_not_koszulBoundary5` — for `r ≠ 0`, `r·C₆` is not a `d₅`-boundary.
+
+Proof (both): if `r·cycle = d(b)` then `cycle = d(r⁻¹·b)` with `r⁻¹·b` still alternating, contradicting
+the established non-boundary (`srPentTriple_thirdKoszulHomology_nonzero` /
+`srHexTuple_fourthKoszulHomology_nonzero`).  So each `Cₙ` class has a free rank-one `F`-span in `Tor_{n-2}`
+— the torsion-free / embedding step of the degree-1 program replayed at degrees 3 and 4.
+
+Next: package these into `Tor₃`/`Tor₄` module classes (via `LinearEquiv.toSpanNonzeroSingleton`, mathlib);
+then the higher exact ranks (whole `Tor_{i}` at the cycle multidegree ≅ `F`).
+
+### Lean progress — C₅ Tor₃ and C₆ Tor₄ as module classes (embeddings)
+
+Extending `HigherCycleTorsionFree.lean` (axiom-clean), the pentagon and hexagon Koszul classes now carry
+the same module structure the `C₄` `Tor₂` class has — a free rank-one `F`-line inside the homology, via
+mathlib's `LinearEquiv.toSpanNonzeroSingleton` (a nonzero element of a torsion-free module over a domain
+spans a free rank-one submodule; over a field the homology is a vector space).
+
+Infrastructure built (both degrees): `IsAlternating4_add/zero`, `IsAlternating5_add/zero`,
+`alternating4Submodule` / `alternating5Submodule` (alternating tensors form a submodule),
+`srKoszulBoundary4ₗ` / `srKoszulBoundary5ₗ` (`d₄`, `d₅` as `R`-linear maps),
+`srPentTripleBoundaries` / `srHexTupleBoundaries` (image submodules `d₄(alt⁴)`, `d₅(alt⁵)`).
+
+- `srPentTripleTorClass` / `srPentTripleTorClass_ne_zero` / `srPentTripleTorEquiv` — `F ≃ₗ[F] F·[C₅]` in
+  `(α→α→α→S) ⧸ d₄(alt⁴)`.  Nonzero because the pentagon cycle is not a `d₄`-boundary
+  (`srPentTriple_thirdKoszulHomology_nonzero`).
+- `srHexTupleTorClass` / `srHexTupleTorClass_ne_zero` / `srHexTupleTorEquiv` — `F ≃ₗ[F] F·[C₆]` in
+  `(α→α→α→α→S) ⧸ d₅(alt⁵)`.  Nonzero via `srHexTuple_fourthKoszulHomology_nonzero`.
+
+So each `Cₙ` (`n = 4,5,6`) class spans a free rank-one `F`-module in `Tor_{n-2}` — the degree-1 embedding
+replayed at degrees 2, 3, 4.  Next: the higher exact ranks (whole `Tor_i` at the cycle multidegree `≅ F`,
+the multigraded exhaust one degree up, needing `d_{n+1}`).

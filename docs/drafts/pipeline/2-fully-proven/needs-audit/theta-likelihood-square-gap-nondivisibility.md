@@ -432,3 +432,19 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
   This closes the **easy** half of the Steutel–van Harn equivalence entirely on the transform side:
   compound Poisson ⟹ explicit cumulant `λ(1−L̂)`.  The hard converse (ID + atom at 0 ⟹ that cumulant
   form, i.e. `−logLaplace` is Bernstein) remains the theta `2 → 3` analytic input.
+- 2026-07-25 — **Atomic convolution infrastructure — foundation for discharging `svh`
+  unconditionally** (appended to `HTGeometry/ConvolutionAtomBounds.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `conv_singleton_eq_lintegral` — `(μ ∗ ν){z} = ∫⁻ x, ν{z − x} ∂μ` (singleton mass = fibre integral).
+  * `countable_atoms` — the atom set `{x | ν{x} ≠ 0}` of a finite measure on `ℝ` is countable.
+  * `conv_self_singleton_eq_zero_of_no_pair` — if `∀ x, ν{x} ≠ 0 → ν{z − x} = 0` (no atom pair sums
+    to `z`) then `(ν ∗ ν){z} = 0`.
+  **Route to unconditional non-divisibility** (no general Steutel–van Harn needed).  `P_B = δ₀ + tilted
+  Σ δ_{n²−1}` is purely atomic on `{0,3,8,15,…} ⊆ [0,∞)`, min positive atom `3`, `6 ∉ supp`.  If
+  `P_B = ν ∗ ν` (from `InfinitelyDivisible`, `n = 2`): (i) `ν` has no negative atoms — for `b < 0`,
+  `ν{b}² ≤ (ν∗ν){2b} = P_B{2b} = 0`; (ii) `ν{0} ≠ 0` from `P_B{0} = ν{0}² ≠ 0`; (iii) `ν{3} = 0` from
+  `ν{3}² ≤ P_B{6} = 0`; (iv) every `ν`-atom is a `P_B`-atom (`P_B{a} ≥ ν{0}·ν{a}`), so `ν`-atoms lie in
+  `{0,3,8,…}`; hence no `ν`-atom pair sums to `3`, and `conv_self_singleton_eq_zero_of_no_pair` gives
+  `P_B{3} = (ν∗ν){3} = 0`, contradicting `P_B{3} ≠ 0`.  Remaining to formalize: the two global support
+  facts for `P_B` (`∀ x<0, P_B{x}=0`; `∀ x, 0<x<3 → P_B{x}=0`) and the assembly — then
+  `thetaCuspLikelihoodSeamTiltedMeasure_not_infinitelyDivisible` becomes **unconditional** (drops `svh`).
