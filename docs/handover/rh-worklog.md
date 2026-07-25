@@ -456,3 +456,52 @@ Theorem B says the two lanes measure one invariant. The unexploited direction: t
 defined for the WHOLE classification family, and Theorem M pins its zero locus to {zeta}. Ask
 whether the invariant admits an intrinsic definition — one not referred to zeta — which would turn
 "vanishes only at zeta" into a statement about zeta alone.
+
+---
+
+## Cycle 11 (2026-07-25) — Theorem B' (conservation) and Theorem N' (quadratic ceiling)
+
+### Conjecture C11 stated, then REFUTED by my own Theorem R
+
+C11: for every Lambda-positive Riemann-FE system with entire order-one completion,
+    ind_-(W_F) <= ord_1 F - 1.
+Applied to F = zeta (ord_1 = 1) this gives ind_-(W_zeta) <= 0, i.e. RH. So C11 is exactly the
+kind of absolute bound that would settle the problem.
+
+FALSE. Theorem R's refunded stray has ord_1 F = 2 (increment 1) but removes a critical pair, so its
+Weil index increment is 2. C11 would force ind_-(W_zeta) + 2 <= 1, i.e. ind_-(W_zeta) <= -1, and an
+index is nonnegative. The refund mechanism is exactly what breaks the absolute bound.
+DO NOT re-attempt any absolute index-vs-pole-order inequality.
+
+### Theorem B' (NEW, exact) — conservation law
+
+Counting FREQUENCY PAIRS, with I_off, I_crit inserted and R_off, R_crit removed:
+
+    (Weil index increment)  =  (pole order increment)  +  R_crit - I_crit,
+    pole increment = (I_off + I_crit) - (R_off + R_crit),   index increment = I_off - R_off.
+
+An identity, not an inequality. Verified on both explicit counterexamples:
+  real stray J'      (I_off,I_crit,R_off,R_crit) = (1,0,0,0):  pole +1, index +1.
+  refunded stray R   (2,0,0,1):                                pole +1, index +2.
+So the two invariants of Theorem B coincide exactly when there is no critical traffic, and the
+discrepancy is precisely the net number of critical pairs removed.
+
+### Theorem N' (NEW) — the quadratic ceiling
+
+Solving B' for zeta: ind_-(W_zeta) = ind_-(W_F) - I_off + R_off >= R_off - I_off. Since
+ind_-(W_F) >= 0 is the only universally available input, every member of the classification family
+yields a LOWER bound on ind_-(W_zeta), never an upper one. Removing off-critical zeros of zeta
+(which would make R_off > 0) presupposes knowing them. Hence NO member of the family can certify
+ind_-(W_zeta) = 0. This is the exact quadratic counterpart of the linear ceiling Theorem N: the
+classification family is blind to RH from above in both lanes.
+
+Machine-verified: `RHTower/WeilIndexConservation.lean` (standard axioms only; two lemmas need only
+propext).
+
+### Cycle 12 target
+
+Both lanes now have proven ceilings, and Theorem B' says they are one invariant. Any route to RH
+must therefore leave the deformation family entirely. The one input never used anywhere in cycles
+5-11 is the INTEGRALITY of the support of dPsi_zeta: the generalized primes of every counterexample
+sit at irrational logs, whereas zeta's sit at log n with the log p rationally independent. Target:
+find a positivity or rigidity statement that is sensitive to Q-linear independence of the support.

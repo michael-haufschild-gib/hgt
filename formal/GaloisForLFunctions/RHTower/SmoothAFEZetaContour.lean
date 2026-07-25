@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaResidueDecomposition
 import GaloisForLFunctions.RHTower.RectangleTwoPoleResidue
+import GaloisForLFunctions.RHTower.HardyCarrier
 
 /-!
 # Finite rectangular contour shift for the smooth zeta Mellin integrand
@@ -57,5 +58,42 @@ theorem rectIntegral_smoothAFEZetaMellinIntegrand_horizontal_box
   · simpa using hρb
   · simpa using hρlow
   · simpa using hρhigh
+
+theorem smoothAFEZetaMellin_finite_contour_shift_line
+    {x τ T : ℝ} (hx : 0 < x) (hT : |τ| < T) :
+    ((∫ u : ℝ in (-1)..1,
+          smoothAFEZetaMellinIntegrand (linePt τ) x
+            ((u : ℂ) - (T : ℂ) * I)) -
+        (∫ u : ℝ in (-1)..1,
+          smoothAFEZetaMellinIntegrand (linePt τ) x
+            ((u : ℂ) + (T : ℂ) * I)) +
+      I • (∫ v : ℝ in (-T)..T,
+        smoothAFEZetaMellinIntegrand (linePt τ) x
+          ((1 : ℂ) + (v : ℂ) * I))) -
+      I • (∫ v : ℝ in (-T)..T,
+        smoothAFEZetaMellinIntegrand (linePt τ) x
+          ((-1 : ℂ) + (v : ℂ) * I)) =
+      2 * Real.pi * I *
+        (riemannZeta (linePt τ) +
+          smoothAFEZetaShiftedPoleResidue (linePt τ) x) := by
+  have hs : linePt τ ≠ 1 := by
+    intro h
+    have hre := congrArg Complex.re h
+    rw [linePt_re, Complex.one_re] at hre
+    norm_num at hre
+  have hTpos : 0 < T := (abs_nonneg τ).trans_lt hT
+  have hρre : (1 - linePt τ).re = 1 / 2 := by
+    rw [Complex.sub_re, Complex.one_re, linePt_re]
+    norm_num
+  have hρim : (1 - linePt τ).im = -τ := by
+    unfold linePt
+    simp
+  have habs := abs_lt.mp hT
+  have hbox := rectIntegral_smoothAFEZetaMellinIntegrand_horizontal_box
+    (s := linePt τ) (x := x) (a := -1) (b := 1) (T := T)
+    hx hs (by norm_num) (by norm_num) hTpos
+    (by rw [hρre]; norm_num) (by rw [hρre]; norm_num)
+    (by rw [hρim]; linarith) (by rw [hρim]; linarith)
+  simpa [rectIntegral] using hbox
 
 end RHTower

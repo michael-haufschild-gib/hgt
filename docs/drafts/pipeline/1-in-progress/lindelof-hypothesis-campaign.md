@@ -974,3 +974,66 @@ sixth *and* eighth moments perfect) and `m(6) <= 3/2`.
 (`SmoothAFEDualFactorization`) does not compile, so the repo-wide gate currently reports orphans not
 attributable to this campaign. `SmoothAFEZetaResidueDecomposition` built and was wired; the broken
 ones were left alone. This campaign's own area builds clean.
+
+---
+
+## 13. Cycle 10 (2026-07-25) — two published theorems, two exact targets, one of them blocked
+
+Located the literature that already treats **exactly** the transfer input, in exactly the shift range
+the sixth moment needs: Baier–Browning–Marasingha–Zhao, *Averages of shifted convolutions of
+`d_3(n)`* (arXiv:1101.5464; Proc. Edinb. Math. Soc. 55 (2012), 551–576). Their `Delta(N,h)` is
+**the same object** as Ivić–Wu's (both follow Conrey–Gonek). They state Ivić's transfer explicitly
+and compute their own contribution to it.
+
+**BBMZ Theorem 1.** `sum_{h<=H} Delta(N,h) << (H^2 + H^{1/2} N^{13/12}) N^eps`, `1 <= H <= N`.
+Exponent pair `(a,b) = (1/2, 13/12)`; they note it gives `I_3(T) << T^{11/8+eps}`, worse than the
+known `5/4`, and remark *"The exponents … can be improved slightly for certain ranges of `H`. We
+shall not pursue this here however."*
+
+**BBMZ Theorem 2.** For `N^{1/3+eps} <= H <= N^{1-eps}` there is `delta > 0` with
+`sum_{h<=H} |Delta(N,h)|^2 << H N^{2-delta}` (via Mikawa's circle-method treatment of twin primes).
+Cauchy–Schwarz over the shifts converts this to `(a,b) = (1, 1 - delta/2)`.
+
+### (C30) The two exact targets  `[PROVED HERE]`, machine-checked
+
+Applying the breaking criterion `k(2a+2b-3) < 4a-2` at `k = 3`:
+
+| input | `(a,b)` | breaks the chord? | exact target |
+|---|---|---|---|
+| BBMZ Thm 1 | `(1/2, 13/12)` | **no** (`input_half_thirteen_twelfths_fails`) | improve `13/12` to `1-delta`: a saving of `N^{1/12}` |
+| BBMZ Thm 2 | `(1, 1-delta/2)` | iff `delta > 1/3` (`input_second_moment_breaks_iff`) | push `delta` past `1/3` |
+
+Numerically at `H = N^{1/3}`: BBMZ Thm 1 gives `N^{5/4}`, the trivial bound is `N^{4/3}`, and the
+target is `N^{7/6}`. So BBMZ is already nontrivial by `N^{1/12}` and is short of the target by
+exactly `N^{1/12}`. Under the conjectural `Delta(N,h) << N^{2/3+eps}` the truth is `N^{5/6}`, so the
+target sits **20% of the way** from BBMZ Thm 1 to the truth, and **50% of the way** from BBMZ Thm 2
+(`delta > 1/3` against the conjectural `delta = 2/3`).
+
+### (C31) D16 — BBMZ Theorem 1 cannot be bootstrapped: the route is circular  `[PROVED HERE]`
+
+Their proof is Perron plus a contour shift, leaving
+`E(N,H) = (1/2pi i) int_{sigma-iT}^{sigma+iT} zeta^3(s) sum_{N<n<=2N} d_3(n)((n+H)^s - n^s) ds/s`,
+bounded by Cauchy–Schwarz between `int |zeta(sigma+it)|^6 dt` and a Dirichlet-polynomial mean value.
+**The second factor is itself a block of `zeta(1/2-it)^3`**, so `E(N,H)` is the sixth moment in
+disguise. Writing the induced self-map on the sixth-moment exponent `mu_6`: with
+`E ≍ H T^{mu_6}` balanced against the Perron error `N^2/T`, one gets
+`(a,b) = (1/(1+mu_6), 2 mu_6/(1+mu_6))`, whence the output exponent
+`max(1, (a+3b-1)/2)`. Starting from `mu_6 = 5/4` the output is `≈ 1.39 > 5/4`: **the map expands.**
+Its fixed point is `mu_6 = 3/2` (solving `2 mu^2 - mu - 3 = 0`), i.e. the loop converges *upward*
+to the trivial value. Iterating BBMZ Theorem 1 therefore cannot improve the sixth moment, and no
+better sixth-moment input improves their `13/12`.
+
+> **Consequence.** Target 1 is blocked at the level of method: `13/12` cannot be improved by feeding
+> in a better `int|zeta|^6`. Any improvement must avoid routing through the sixth moment.
+> **Target 2 is not blocked** — BBMZ Theorem 2 uses the circle method (Mikawa), not `int|zeta|^6`,
+> and its range `H >= N^{1/3+eps}` meets the required range `H ≍ N^{1/3}` exactly at the boundary.
+
+**Live target for cycle 11:** `sum_{h<=H} |Delta_3(N,h)|^2 << H N^{5/3-}` at `H ≍ N^{1/3+eps}`
+(i.e. `delta > 1/3` in BBMZ Theorem 2). This is the only route now identified that is neither
+circular (D16), nor capped by criticality (D8, D14, C22, C25), nor blocked at the self-dual block
+(C15, D9). Its mechanism is the circle method with minor-arc cancellation for `d_3`, which is where
+`GL(3)`/delta-method technology would enter.
+
+**Lean.** `HTGeometry.input_half_thirteen_twelfths_fails`, `input_half_breaks_iff_b_lt_one`,
+`input_second_moment_breaks_iff`, `second_moment_conjectural_delta` in `ShiftAverageTransfer`.
+Axioms `[propext, Classical.choice, Quot.sound]`; module builds green.

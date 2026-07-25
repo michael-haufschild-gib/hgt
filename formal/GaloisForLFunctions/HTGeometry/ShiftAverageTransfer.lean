@@ -83,4 +83,36 @@ theorem transferBound_vinogradov {k : ℝ} (hk : 0 < k) :
     ring
   rw [h]
 
+section KnownInputs
+
+/-- The published shift-average bound `∑_{h≤H} Δ₃(N,h) ≪ (H² + H^{1/2} N^{13/12}) N^ε`
+contributes the exponent pair `(a,b) = (1/2, 13/12)`.  It does **not** break the chord: the
+criterion `k(2a+2b-3) < 4a-2` fails at `k = 3`. -/
+theorem input_half_thirteen_twelfths_fails :
+    ¬ ((3:ℝ) * (2*(1/2 : ℝ) + 2*(13/12) - 3) < 4*(1/2 : ℝ) - 2) := by
+  norm_num
+
+/-- With square-root cancellation in the shift average fixed at `a = 1/2`, the chord is broken at
+`k = 3` exactly when the second exponent drops below `1`.  So `13/12` must be improved to `1 - δ`:
+a saving of `1/12`. -/
+theorem input_half_breaks_iff_b_lt_one {b : ℝ} :
+    (3:ℝ) * (2*(1/2 : ℝ) + 2*b - 3) < 4*(1/2 : ℝ) - 2 ↔ b < 1 := by
+  constructor <;> intro h <;> nlinarith [h]
+
+/-- The published second-moment bound `∑_{h≤H} |Δ₃(N,h)|² ≪ H N^{2-δ}` gives, by Cauchy–Schwarz
+over the shifts, the exponent pair `(a,b) = (1, 1 - δ/2)`.  At `k = 3` this breaks the chord
+**exactly when `δ > 1/3`**. -/
+theorem input_second_moment_breaks_iff {δ : ℝ} :
+    (3:ℝ) * (2*(1:ℝ) + 2*(1 - δ/2) - 3) < 4*(1:ℝ) - 2 ↔ 1/3 < δ := by
+  constructor <;> intro h <;> nlinarith [h]
+
+/-- Under the conjectural pointwise size `Δ₃(N,h) ≪ N^{2/3+ε}` the second moment would satisfy
+`δ = 2/3`; the target `δ > 1/3` is therefore exactly halfway from the published statement to the
+conjectural truth. -/
+theorem second_moment_conjectural_delta :
+    (1:ℝ)/3 < 2/3 ∧ (2:ℝ)/3 - 1/3 = 1/3 := by
+  constructor <;> norm_num
+
+end KnownInputs
+
 end HTGeometry

@@ -239,6 +239,14 @@ estimate needs, (iii) a falsification lab with real external scoreboards.
   This closes the value, first-jet, and first-order phase interfaces only; S4's
   quantitative complex digamma and trigamma remainders, S5, and the height-dependent smooth AFE
   remain open.
+- 2026-07-25 — The first dependency-closed part of the smooth AFE is now
+  formalized in `SmoothAFEGaussianKernel.lean` through
+  `SmoothAFEGaussianResidueCrossing.lean`: absolute vertical convergence,
+  positive-line contour invariance, removal of the regular part at zero,
+  explicit reciprocal limits, and the normalized unit-residue jump. This
+  closes the cutoff contour itself, not Lemma A: zeta-series interchange,
+  functional-equation reflection, and the uniform Gamma-ratio estimate remain
+  open.
 
 ## Lemma A derivation route (session-2 FINAL: smooth AFE, never sharpened)
 

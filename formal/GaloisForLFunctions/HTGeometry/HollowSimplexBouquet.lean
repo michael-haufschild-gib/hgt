@@ -112,9 +112,11 @@ theorem hollow_bouquet_rank_ge (F : Type*) [Field F] (facets : Finset (Finset α
     (hmem : ∀ m, i₀ m ∈ σ m)
     (hdisj : ∀ m n, m ≠ n → Disjoint (σ m) (σ n)) :
     (k : Cardinal) ≤
-      Module.rank F ((α → stanleyReisnerRing F facets) ⧸ srKoszulBoundaries facets) := by
-  have h := (hollow_bouquet_linearIndependent F facets σ i₀ hface hmem hdisj).cardinal_le_rank
-  rwa [Cardinal.mk_fin] at h
+      Module.rank F
+        ((α → stanleyReisnerRing F facets) ⧸ srKoszulBoundaries (R := F) facets) := by
+  have h :=
+    (hollow_bouquet_linearIndependent F facets σ i₀ hface hmem hdisj).cardinal_lift_le_rank
+  simpa [Cardinal.mk_fin] using h
 
 /-! ## A concrete unconditional disjoint-`∂Δⁿ` bouquet realizing `(dimension, rank)` for every `(n, k)` -/
 

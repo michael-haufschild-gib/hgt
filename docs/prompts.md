@@ -377,3 +377,48 @@ stop the entropy shit. you are the latest anthropic model. you have the ability 
   if they are either still formalize if helpful machinery, or go back to create
   new conjectures -> research and prove / disprove -> review the new frontier
   and interpret
+
+
+  
+
+## hgt7
+/goal
+/hgtl7 expand on our existing research body and research and develop new scientific knowledge towards an rh proof. Always let the research speak, do not assume a proof lane or focus on classical proof lanes, but let the already rich novel scientific knowledge in our research corpus guide you on what to research next, what to conjecture, what direction to research towards.
+
+follow the hgtl7 skill to the T. create new scientific knowledge.
+
+do not think about or use context window, effort, time it takes. focus only on the research and creating new scientific knowledge.
+
+lean is an internal tool to make sure that there are no ai hallucinations. novelty and significance is only assessed based on mathematics, never on our lean work. it is new if it is new to the scientific research - literature as of july 2026.
+
+the goal is met when RH is proven or disproven.
+
+lean rules:
+1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
+2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
+3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
+4. No computations.
+   
+**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
+make sure you don't leave stale lean processes running - clean up after yourself
+LEAN PROOFS MUST BE UNCONDTIONAL!!!
+
+
+''''
+/goal 
+use the /hgtl7 skill and conjecturing iteratively to create new frontier-moving knowledge to prove or disprove the Selberg’s orthogonality conjectures (see: docs/Langlands functoriality and the Selberg class conjectures.md)
+
+do not think about or use context window, effort, time it takes. focus only on the research and creating new scientific knowledge. this is a multi-session long running task with multiple automatic context window compactions. keep a working log of important findings and dead ends to not duplicate work.
+
+goal is met if either:
+1. the Selberg’s orthogonality conjectures are proven true
+2. the Selberg’s orthogonality conjectures are proven false
+
+lean rules:
+- do not run computations.
+- always use  lake env lean <file>  and only lake build <module> for the final audit.
+- lean proofs must be unconditional.
+
+follow the hgtl7 skill and heavy conjecturing and validation of novelty and significance against literature and arxiv as of july 2026.
+
+limit your updates. do not give a status update every 2 minutes. only report when you have actually found frontier-moving new math. do not constantly update that conjectures are not proven or disproven and this cannot be done in this session. this task will take years. just fucking do what is necessary and stop looking for excuses to not work.

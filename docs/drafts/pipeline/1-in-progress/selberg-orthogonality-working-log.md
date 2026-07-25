@@ -168,3 +168,76 @@ if `d_F=d_G` and `q_F=q_G` the archimedean phases `X_F conj(X_G)` cancel exactly
 
 - 2026-07-25 — cycle 1. Phase 1 (corpus) + Phase 2 (external SOTA) done; §2 structural analysis
   produced; EB named as the linchpin; §2.3 identity and §2.6 almost-periodic reframing recorded.
+
+---
+
+## 6. Cycle 1 result (2026-07-25): the **Monodromy Integrality** conjecture
+
+Card: `selberg-monodromy-integrality.md`.
+
+> **(MI)** For all `F,G ∈ S`, `R_{F,G}(w) = Σ_n a_F(n) conj(a_G(n)) n^{-w}` is **meromorphic**
+> (single-valued) on a neighbourhood of `{Re w ≥ 1}`, holomorphic and non-vanishing on
+> `{Re w = 1}\{1}`.
+
+**The move:** the received missing ingredient is "`S` is closed under Rankin–Selberg convolution"
+or "`S` is automorphic" — both demand of `R_{F,G}` a functional equation, an Euler product of the
+right degree, entirety, and a spectral model. MI demands **only single-valuedness**. Isolated claim:
+*the whole arithmetic content of Selberg's Conjecture A is the absence of a branch point of
+`R_{F,F}` at `w=1`.* `n_F` becomes an order of a pole (a winding number), not a representation
+multiplicity.
+
+**Proved (paper, dependency-closed as implications):**
+- **Thm 1.** MI(F,F) ⟹ Conjecture A for `F`, with `n_F = −ord_{w=1}R_{F,F} ∈ Z_{≥0}` and error
+  `C_F + o(1)`. (Landau for non-negative coefficients gives the singularity; MI turns it into a
+  pole; `−P'(w) = Σ_p |a_F(p)|²(log p)p^{-w}` has non-negative coefficients and a simple pole of
+  residue `n_F`, so Wiener–Ikehara applies; partial summation.)
+- **Thm 2.** MI(F,G) ⟹ `Σ_p a_F(p)conj(a_G(p))p^{-w} = κ_{F,G} log(1/(w−1)) + O(1)` with
+  `κ_{F,G} ∈ Z`. **This kills the imaginary part**, which Conjecture A alone cannot reach
+  (Conjecture A only gives `Re B ∈ (1/2)Z`, §2.2).
+- **Cor 3.** Under MI the Selberg pairing is an **integral** PSD Hermitian form on the monoid `S`;
+  Conjecture B then needs exactly two further statements: **(P1)** `n_F = 1` for primitive `F`;
+  **(P2)** quantitative strong multiplicity one — `Σ_p|a_F(p)−a_G(p)|²/p = O(1) ⟹ F = G`.
+  (P2) strictly strengthens the Murty–Murty / Soundararajan / Farmer line, which assumes
+  `a_F(p)=a_G(p)` off a thin set.
+- **Thm 4 (axiom-necessity).** `F(s)=exp(Σ_p (log p)^{10}p^{-s})` satisfies Selberg axioms (1),(4),(5)
+  and has `Σ_{p≤x}|a_F(p)|²/p ≍ (log x)^{20}`. Hence Conjecture A / EB is **not** a consequence of
+  the Dirichlet-series + Euler-product + Ramanujan axioms; every proof must use axiom (2) or (3).
+
+**Lean (certified, unconditional).** `formal/GaloisForLFunctions/RHTower/SelbergPairingPrimeSquare.lean`
+- `RHTower.divisorsAntidiagonal_prime_sq`
+- `RHTower.arithmeticFunction_mul_apply_prime_sq`
+- `RHTower.selberg_pairing_prime_sq` : `f p * conj (g p) = (f * conjArith g)(p²) − f(p²) − conj(g(p²))`
+- `RHTower.selberg_pairing_sum_eq`
+`lake build` green; `#print axioms` = `[propext, Classical.choice, Quot.sound]` only.
+(The remaining `formal_tools.py lint` umbrella errors — `SmoothAFE*`, `WeilIndexBudgetBridge` —
+are pre-existing and unrelated.)
+
+## 7. Additional dead ends closed in cycle 1
+
+8.  **APR (archimedean phase rigidity)** — FALSE. `R_{ζ,ζ²}(w)=ζ(w)²` has a double pole although
+    `d_ζ=1 ≠ 2=d_{ζ²}`. Correlation tracks divisibility in the monoid, not `(d,q,θ)`.
+9.  **`σ_a(F) ≥ 1/2` via "no zeros ⟹ `N_F(T)` bounded"** — REDISCOVERED; K–P (Math. Z. 285 (2017)
+    1345–1355, arXiv:1506.07630) prove `σ_a ≥ 1/2 + 1/(2d_F)`.
+10. **`ζ^{1/2}` as an axiom-sharpness witness** — FALSE: it fails axiom (3) (a Selberg `Γ`-factor
+    quotient cannot equal `χ(s)^{1/2}`) and `d=1/2` is already barred by Conrey–Ghosh. Fractional
+    powers cannot produce non-integral `n_F`.
+11. **Weak-\* / a.e. shift orthogonality** (`∫Ψ_x(θ)w(θ)dθ → 0` for `w ∈ L¹`, under EB) —
+    TRUE but TRIVIAL: it only expresses that the prime measure `m_x` escapes to `u=∞` vaguely.
+    Not a step toward `θ=0`.
+12. **Equivalence chain** (recorded, probably folklore): EB ⟺ `Σ_{n≤x}|a_F(n)|² ≪ x log^{O(1)}x`
+    ⟺ `∫_0^T|F(1/2+it)|²dt ≪ T log^{O(1)}T` (mean-Lindelöf). For `d=2` this is "Good's theorem
+    without modularity". Do not expect EB to fall to soft arguments.
+13. **Named in the literature:** the "prime mean-square condition (S.6)" and Selberg's
+    "prime coefficient condition (S.6*)" already exist as *hypotheses* in the conditional-estimates
+    literature for `S`. So EB is a known-open assumption, not a new problem — MI is the new item.
+
+## 8. Next cycle (cycle 2) target
+
+Attack MI itself, on the two fronts the analysis identified:
+- (a) **(P1)/(P2)** are now the only gap between MI and Conjecture B. (P2) — "ℓ²-close coefficients
+  force equality" — looks the most attackable with existing technology (Farmer/Soundararajan
+  explicit-formula method + K–P density theorem). **Make (P2) the concrete theorem target.**
+- (b) For MI itself: the almost-periodic reframing §2.6 says MI ⟺ the `y→0` mass law for
+  `M_α|𝔣_F(α+iy)|²`. Single-valuedness in `w` should correspond to an *integrality of the
+  exponent in the `y→0` expansion*. Look for a mechanism producing meromorphy without an
+  integral representation (holonomicity / Nilsson class / finite-dimensional monodromy).

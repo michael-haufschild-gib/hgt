@@ -491,3 +491,78 @@ umbrella; `lake build` green (8475 jobs), all three declarations axiom-clean
 Corpus search before writing (`formal_tools.py research`): the only adjacent items are
 `RHTower.LargeValues.large_values_count` and `RHTower.LargeValuesDpoly.large_values_dpoly`
 (second-moment/derivative form of the large-value inequality). No overlap; nothing to reuse.
+
+---
+
+# CYCLE 2 (2026-07-25) — the semidefinite form of Montgomery's conjecture
+
+## The observation that changes the category
+`A_{t,t'} := Z(t−t') = ∑_{n∈[N,2N]} e^{i(t−t')\log n} = ∑_n v_n v_n^*` with `v_n(t) := e^{it\log n}`.
+So **`A ⪰ 0`**, `A = VV^*` where `V` is the `R×N` matrix with columns `v_n`, `A_{tt} = N`,
+`tr A = NR`, and `c^*Ac = ∑_n |Ψ(n)|²`.
+
+Consequently `UZLS` is the complex **MAX-QP** `max_{|c_t|=1} c^*Ac ≪ N^{1+ε}R` for a **positive
+semidefinite** matrix — and for PSD matrices the natural semidefinite relaxation is tight up to an
+absolute constant (Nesterov's `2/π` theorem, complex/unimodular version `π/4`, So–Zhang–Ye 2007).
+
+### Theorem 3 (semidefinite form of Montgomery's conjecture) `[PROVED HERE]`
+Let `SDP(A) := max{ tr(AX) : X ⪰ 0, X_{tt} = 1 }`. Then
+`max_{|c_t|=1} c^*Ac ≤ SDP(A) ≤ (4/π)·max_{|c_t|=1} c^*Ac`, so, up to the absolute constant `4/π`:
+```
+   Montgomery's Conjecture 3.3  ⟺  UZLS  ⟺  SDP(A) ≪ N^{1+ε}·R .
+```
+By SDP duality (Slater holds: `X = I` is strictly primal feasible) `SDP(A) = min{∑_t λ_t :
+diag(λ) ⪰ A}`, hence:
+
+> ### Corollary 3.1 — **MC is a weight-construction problem** `[PROVED HERE]`
+> Montgomery's conjecture (hence the Density Hypothesis) is **equivalent** to:
+> for every `N`, every 1-separated `W ⊂ [0,N^{3/2}]` with `|W| = R ≤ N`, there exist weights
+> `λ_t > 0` (`t ∈ W`) with
+> ```
+>        diag(λ) ⪰ ( Z(t−t') )_{t,t'∈W}          and          ∑_{t∈W} λ_t ≪_ε N^{1+ε} R .
+> ```
+> Equivalently, writing `μ_t = 1/λ_t`: `∑_t μ_t^{-1} ≪ N^{1+ε}R` and the `N×N` **weighted double
+> zeta matrix** `G_{n,m} := ∑_{t∈W} μ_t (n/m)^{it}` satisfies `G ⪯ I`.
+
+**Why this is a real change of category.** The large-value problem is an *estimation* problem with a
+quantifier over all `ℓ^∞` coefficient vectors; Corollary 3.1 is a *construction* problem: exhibit one
+weight vector. It has no combinatorics, no zeros, no `ε`-management, and it is finite-dimensional
+linear algebra.
+
+**Where the difficulty now lives, exactly.**
+- Uniform weights `λ_t ≡ cN` give `∑λ = cNR` ✓ but require `λ_max(A) ≤ cN`; since
+  `λ_max(A) = ‖V‖² ≍ N + R·max_{u≠0}|Z(u)| ≍ N + RN^{1/2}`, uniform weights work **iff `R ≪ N^{1/2}`**
+  — i.e. they reproduce Halász–Montgomery / `σ ≥ 3/4` and nothing more.
+- Therefore **the entire content of MC for `σ < 3/4` is: for `R ≫ N^{1/2}`, use non-uniform weights.**
+  Feasibility of a non-uniform `λ` with small trace is exactly the statement that the top eigenvectors
+  of `A` are **localised** (a few coordinates `t` carry the large eigenvalues), which is the
+  "no flat top eigenvector" form of UZLS recorded in Cycle 1. Now it is a positivity constraint one
+  can try to *build*.
+
+### Corollary 3.2 — bearing on Guth's SOS barrier `[PROVED HERE, with caveat]`
+`SDP(A) ≤ B` is precisely the assertion that a **degree-2 sum-of-squares certificate**
+`B − c^*Ac = σ_0(c) + ∑_t λ_t(|c_t|² − 1)` (`σ_0` SOS) exists. Since `A ⪰ 0` forces
+`SDP(A) ≤ (4/π)·max`, **if Montgomery's conjecture is true then a degree-2 SOS certificate for it
+exists** in this dual formulation. *Caveat:* Guth's Conjecture 8.4 is stated for an SOS system in the
+primal variables `(b, W)`; existence of a certificate is not the same as a human derivation, and one
+still has to *prove* the dual weights exist. But the natural MAX-QP formulation of MC is **not**
+obstructed at degree 2 — the obstruction is entirely the construction of `λ`.
+
+### Attack log for the chirp route `[OPEN CORE 1]` — closed off, with the exact loss identified
+Stationary phase gives the clean reflection identity, valid for `N ≤ |u| ≤ N²`:
+```
+   Z(u) = ω(u)·(u/2π)^{1/2}·∑_{k ∼ u/2πN} k^{-1-iu} + error ,
+   ω(u) = e^{-iπ/4} e^{i(u\log u − u)} (2π)^{-iu}   (unimodular, function of u alone).
+```
+- `(2π)^{-iu}` and each `k^{-iu}` are **separable** in `(t,t')` and absorbable into the unimodular
+  weights (twist `c_t ↦ c_t (2πk)^{-it}`); `∑_{k∼M}k^{-1} = O(1)`. **Only `θ(u)=e^{i(u\log u−u)}` is
+  non-separable.**
+- On `u`-windows of length `U^{2/3}` (cubic term `≤ 1`) the chirp is quadratic and factors
+  metaplectically: `e^{i(t−t'−U)²/2U} = (\text{fn of }t)(\text{fn of }t')e^{-itt'/U}`, leaving the
+  Fourier kernel `e^{-itt'/U}`; the Montgomery–Vaughan large sieve bounds that block by
+  `(H+U)^{1/2}(R_iR_j)^{1/2}`.
+- **Dead end (recorded):** summing absolute values over the `≍U^{1/3}` block-pairs per block gives
+  `|E_U| ≲ U(bU^{1/3})^{1/2}R`, worse than trivial. The global operator-norm route gives
+  `‖(Z(u)1_{|u|≍U})‖_{op} ≍ U` (since `\hat Z(ξ) ≍ T` on the `1/T`-neighbourhoods of `{\log n}`),
+  hence `|E| ≲ TR`, off by exactly the large-sieve factor `T/N`. **Chirp-by-windows cannot close the
+  gap; it re-derives the same `T/N` loss.** The SDP route above supersedes it.
