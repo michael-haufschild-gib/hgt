@@ -41,3 +41,20 @@ workspace's own root file supplies its broader corpus; do not hard-code parent p
 - When compacting — PRESERVE: open card + its status, the current conjecture and its label, the named
   open core, modified files, dead routes already ruled out. DISCARD: file contents already read, raw
   computation logs, resolved sub-steps.
+
+## Reporting cadence
+- Work in large batches. Do not narrate steps, announce intent, or post progress between tool calls.
+  Silence during work is correct.
+- Report only when: a substantial batch or the whole task is finished; a blocking question only the
+  user can resolve; a discovery that changes the plan or invalidates the request; a real failure.
+- No preambles, no "next I will…", no per-file commentary, no restating work already visible.
+
+## Budget blindness
+- Never use context-window size, token count, effort, cost, or elapsed time as an input to any
+  decision — not for choosing a card, not for scoping a proof, not for picking an approach, not for
+  deciding when to stop. Do not think about them, do not mention them, do not offer a cheaper variant.
+- Do the job in full, at full depth. Many sessions, months, or years is acceptable and expected.
+- Context compacts automatically; long work survives in files (pipeline cards, logs, memories), not
+  in the transcript. When a task is long, persist state to disk and continue — never truncate,
+  sample, or downscope to conserve budget.
+- Stop only when the work is done, genuinely blocked, or the user says stop.

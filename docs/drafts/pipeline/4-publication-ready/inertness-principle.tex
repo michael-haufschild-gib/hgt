@@ -1,0 +1,593 @@
+\documentclass[11pt,a4paper]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage[margin=3.1cm]{geometry}
+\usepackage{xcolor}
+\definecolor{linkcol}{rgb}{0.10,0.20,0.50}
+\usepackage[colorlinks=true,linkcolor=linkcol,citecolor=linkcol,urlcolor=linkcol]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\sig}{\sigma}
+\newcommand{\dd}{\delta}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\lead}{\operatorname{lead}}
+\newcommand{\dres}{\operatorname{dres}}
+\newcommand{\Frac}{\operatorname{Frac}}
+\newcommand{\GG}{\mathcal{G}}
+
+\begin{document}
+
+\title[An inertness principle for summability]{An inertness principle for summability,\\ and
+hypertranscendence over all generalized Dirichlet series}
+
+\author{M.~Haufschild}
+\address{Independent researcher}
+\email{haufschildmichael@gmail.com}
+
+\date{\today}
+
+\subjclass[2020]{Primary 12H10; Secondary 11M35, 11M41, 39A06, 33B15}
+\keywords{summability, discrete residues, difference algebra, hypertranscendence, generalized
+Dirichlet series, Gamma function, Hurwitz zeta function, Beurling zeta function}
+
+\begin{abstract}
+Deciding whether a rational function $b$ is \emph{summable} --- whether $b=\sig u-u$ for the shift
+$\sig$ --- is classical: Abramov's algorithm decides it, and the discrete residues of Chen and Singer
+are a complete obstruction. We ask instead how the summability obstruction behaves when the ambient
+field is enlarged, and prove that for a large and natural class of enlargements it does not move at
+all.
+
+Call a difference ring $D$ over $\CC[s]$ \emph{graded} if it carries a multiplicative least-frequency
+map into a linearly ordered abelian group and a multiplicative leading coefficient in $\CC[X]$, with
+$\sig$ acting on leading coefficients through a character $\chi$ of the frequency group.
+
+\smallskip
+\noindent\textbf{Inertness principle.} \emph{If $\chi$ is injective --- equivalently, if no
+nonconstant monomial of $D$ is $\sig$-invariant --- then}
+\[
+  (\sig-1)\Frac D\ \cap\ \CC(s)\;=\;(\sig-1)\CC(s).
+\]
+\emph{However large $D$ is, a rational function summable in $\Frac D$ was already summable in
+$\CC(s)$.}
+\smallskip
+
+The proof is a retraction through the associated graded ring; the character cancels and no estimate
+is used. Combined with the torsion freeness of $\CC(s)/(\sig-1)\CC(s)$ over $\CC[\dd]$, inertness
+collapses the Hardouin--Singer hypertranscendence criterion to a condition on $b$ alone.
+
+We then exhibit a graded structure, via asymptotic leading terms, on the ring of absolutely
+convergent generalized Dirichlet series $\sum_nP_n(s)e^{-\lambda_ns}$ with real frequencies. The
+resulting field $\GG$ contains simultaneously $\zeta$, all Dirichlet $L$-functions, all Hurwitz zeta
+functions $\zeta(s,a)$, all Lerch transcendents, all Epstein zeta functions and all Beurling zeta
+functions, together with their derivatives. We obtain: for $b\in\CC(s)$, every solution of
+$y(s+1)-y(s)=b$ is hypertranscendental over $\GG$ exactly when $b$ is not summable in $\CC(s)$; and,
+taking $b=1/(s-a)$, that $\Gamma(s-a)$ satisfies no algebraic differential equation whose
+coefficients are differential-rational in $s$ and in any finite family drawn from that list.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+\subsection{Summability and its obstruction}
+Let $\sig$ be the shift $s\mapsto s+1$. A rational function $b\in\CC(s)$ is \emph{summable} if
+$b=\sig u-u$ for some $u\in\CC(s)$. Abramov \cite{Abramov1971} gave an algorithm deciding this, and
+Chen and Singer \cite{ChenSinger2012} gave the intrinsic obstruction: writing $c_{\alpha,j}(b)$ for
+the coefficient of $(s-\alpha)^{-j}$ in the partial-fraction expansion of $b$, the \emph{discrete
+residue} of order $j$ at a $\ZZ$-orbit $O$ is
+\[
+  \dres(b,O,j)\;=\;\sum_{\alpha\in O}c_{\alpha,j}(b),
+\]
+and $b$ is summable if and only if all its discrete residues vanish. The theory has since been built
+for the $q$-difference, Mahler and elliptic operators
+\cite{ChenSinger2012,Arreche2022Mahler,ArrecheBabbitt2025,Arreche2025}.
+
+All of this concerns $\CC(s)$ --- or an elliptic function field --- as the ambient field. The
+question we address is different:
+
+\begin{quote}
+\emph{If we enlarge the ambient field, does the summability obstruction shrink?}
+\end{quote}
+
+It can. Adjoining the digamma $\psi$ makes $1/s$ summable, because $\psi(s+1)-\psi(s)=1/s$. Adjoining
+the $1$-periodic function $e^{2\pi is}$ enlarges the constants and changes the problem entirely. The
+content of this paper is that a large class of enlargements --- including every field generated by
+zeta and $L$-functions --- does \emph{not} shrink the obstruction.
+
+\subsection{The inertness principle}
+Write $\tau$ for $p\mapsto p(X+1)$ on $\CC[X]$.
+
+\begin{definition}\label{def:graded}
+Let $\Lambda$ be a linearly ordered abelian group. A \emph{$\Lambda$-graded shift ring} is a
+commutative ring $D$ with a ring automorphism $\sig$, maps $\ord\colon D\setminus\{0\}\to\Lambda$ and
+$\lead\colon D\setminus\{0\}\to\CC[X]\setminus\{0\}$, a ring map $\iota\colon\CC[X]\to D$, and a
+character $\chi\colon\Lambda\to\CC^{\times}$, such that for all nonzero $f,g$:
+\begin{enumerate}
+\item $\ord(fg)=\ord f+\ord g$ and $\lead(fg)=\lead f\cdot\lead g$;
+\item $\sig f\neq0$, $\ord(\sig f)=\ord f$ and $\chi(\ord f)\,\lead(\sig f)=\tau(\lead f)$;
+\item if $\ord f=\ord g$ and $f\neq g$ then $\ord f\le\ord(f-g)$, with $\lead(f-g)=\lead f-\lead g$
+  in case of equality and $\lead f=\lead g$ in case of strict inequality;
+\item $\sig(\iota p)=\iota(\tau p)$, and for $p\neq0$: $\iota p\neq0$, $\ord(\iota p)=0$,
+  $\lead(\iota p)=p$.
+\end{enumerate}
+It is \emph{nondegenerate} if $\chi$ is injective.
+\end{definition}
+
+Axiom (2) says $\sig$ scales the monomial of frequency $\lambda$ by $\chi(\lambda)^{-1}$; so $\chi$
+is injective precisely when no nonconstant monomial is $\sig$-invariant. That is the only hypothesis
+in the main algebraic result.
+
+\begin{theorem}[Inertness principle; Theorem~\ref{thm:inert}]\label{thm:A}
+Let $D$ be a nondegenerate $\Lambda$-graded shift ring embedded in a difference field $K$ over $\CC$
+by an injective, $\sig$-equivariant ring map carrying $\iota$ to $p\mapsto p(x)$, where $x\in K$ is
+transcendental with $\sig x=x+1$. Then
+\[
+  (\sig-1)\Frac D\ \cap\ \CC(x)\;=\;(\sig-1)\CC(x).
+\]
+Equivalently, the discrete residues remain a complete obstruction to summability inside $\Frac D$.
+\end{theorem}
+
+The proof is a retraction: $(\ord,\lead)$ transports a summability relation from $D$ down to
+$\CC[X]$, and the character cancels between numerator and denominator. No growth estimate and no
+property of $D$ beyond Definition~\ref{def:graded} is used, so the transcendence degree of $\Frac D$
+is irrelevant --- it may be $2^{\aleph_0}$.
+
+\subsection{The exact hypertranscendence criterion}
+Parametrised difference Galois theory \cite{HardouinSinger2008,ADH2021} says that if the
+$\sig$-invariants of a difference--differential field $k$ are the constants and $\sig y-y=b\in k$,
+then $y$ is differentially algebraic over $k$ exactly when
+\begin{equation}\label{eq:HS}
+  L(b)=\sig u-u\quad\text{for some }0\neq L\in\CC[\dd],\ u\in k .
+\end{equation}
+Inertness removes the quantifier over $u$; the following removes the quantifier over $L$.
+
+\begin{lemma}[Torsion freeness; Lemma~\ref{lem:torsion}]\label{lem:C}
+$\CC(s)/(\sig-1)\CC(s)$ is torsion-free as a $\CC[\dd]$-module: if $L(b)$ is summable for some
+nonzero $L\in\CC[\dd]$, then $b$ is summable.
+\end{lemma}
+
+This is proved by observing that $\dd$ raises the order of a discrete residue by one and multiplies
+it by a nonzero scalar, so the top residue of $b$ survives every operator. The mechanism is the
+computation that underlies the classical applications of \eqref{eq:HS}; we record it in module form
+because that is what the following needs.
+
+\begin{theorem}[Exact criterion; Theorem~\ref{thm:main}]\label{thm:B}
+Let $K$ be a difference--differential field over $\CC$ with $\dd\sig=\sig\dd$, let $x\in K$ be
+transcendental with $\sig x=x+1$ and $\dd x$ a nonzero constant, and let $F\subseteq K$ be a
+$\sig$-stable intermediate field containing $\CC(x)$ whose $\sig$-invariants are the constants and
+which is inert in the sense of Theorem~\ref{thm:A}. For $b\in\CC(x)$:
+\[
+  \text{every solution of }\sig y-y=b\text{ is hypertranscendental over }F
+  \iff b\text{ is not summable in }\CC(x).
+\]
+\end{theorem}
+
+Both directions are sharp: if $b$ is summable the rational solution lies in $F$; if it is not, no
+solution in any difference--differential extension is differentially algebraic over $F$. The
+criterion is decidable by Abramov's algorithm.
+
+\subsection{The analytic model}
+Section~\ref{sec:model} constructs a nondegenerate $\RR$-graded structure, with
+$\chi(\lambda)=e^{\lambda}$, on the ring $\GG_0$ of absolutely convergent generalized Dirichlet
+series $\sum_nP_n(s)e^{-\lambda_ns}$ with real frequencies $\lambda_n\uparrow\infty$ and polynomial
+coefficients of bounded degree. Here $\ord$ and $\lead$ are defined \emph{asymptotically} --- $\ord
+f$ is the unique $\lambda$ for which $f(s)e^{\lambda s}$ is within $O(e^{-\varepsilon s})$ of a
+nonzero polynomial along the real axis --- which makes multiplicativity automatic and dispenses with
+any uniqueness theorem for expansions. Put $\GG=\Frac\GG_0$.
+
+\begin{corollary}\label{cor:main}
+For every $a\in\CC$, $\psi(s-a)$ and $\Gamma(s-a)$ are hypertranscendental over $\GG$. In particular
+$\Gamma$ satisfies no nontrivial algebraic differential equation whose coefficients are
+differential-rational in $s$ and in any finite family drawn from: Dirichlet series of finite
+abscissa (so $\zeta$ and all Dirichlet $L$-functions), Hurwitz zeta functions $\zeta(s,a)$, Lerch
+transcendents $\Phi(z,s,a)$, Epstein zeta functions, and Beurling zeta functions.
+\end{corollary}
+
+Real frequencies are exactly the nondegenerate case: for complex frequencies the character is again
+$e^{\lambda}$, whose kernel is $2\pi i\ZZ$, and the monomial $e^{-2\pi is}$ is genuinely
+$\sig$-invariant. Periodicity is the whole obstruction.
+
+\subsection{Relation to the literature}
+The summability criterion by discrete residues is Abramov \cite{Abramov1971} and Chen--Singer
+\cite{ChenSinger2012}; we use it and claim nothing about it. Criterion \eqref{eq:HS} is
+Hardouin--Singer \cite{HardouinSinger2008}. H\"older's and Ostrowski's theorems
+\cite{Holder1887,Ostrowski1920} are classical, and Markus's conjecture --- the case ``coefficients
+polynomial in $\Gamma$'' of Corollary~\ref{cor:main} --- was proved by L\"u \cite{Lu2025} in greater
+generality for $y(z+1)=\alpha(z)y(z)$. Adamczewski--Dreyfus--Hardouin \cite{ADHexp2026} prove, in the
+converse direction, that a differentially algebraic solution of a linear shift equation over $\CC(x)$
+lies in a ring built from periodic functions and exponentials. Chen--Wang \cite{ChenWang2020} allow
+arbitrary meromorphic coefficients of order $<1$ against a \emph{single} Dirichlet series; their
+result and Corollary~\ref{cor:main} are incomparable. Functional independence of Beurling
+zeta-functions in the Voronin sense is treated in \cite{BeurlingIndep2026}; that is hypertranscendence
+of $\zeta_P$ over $\CC(s)$, not independence from $\Gamma$.
+
+What we believe to be new is (i) Definition~\ref{def:graded} and Theorem~\ref{thm:A} --- the
+behaviour of the summability obstruction under enlargement of the ambient field, with periodicity
+identified as the sole obstruction; (ii) the analytic model of Section~\ref{sec:model}; and
+(iii) Corollary~\ref{cor:main}, which is joint over all the listed families at once, where the
+existing literature treats one or two functions at a time. Lemma~\ref{lem:C} is presumably known to
+specialists in the residue calculus; we give a proof because we could not locate the module
+statement. All novelty claims are provisional pending expert audit.
+
+\section{Inertness}\label{sec:inert}
+
+\begin{lemma}[Leading-term transport]\label{lem:transport}
+Let $D$ be a nondegenerate $\Lambda$-graded shift ring, $P,Q\in D$ nonzero, $r_n,r_d\in\CC[X]$ with
+$r_d\neq0$. If
+\begin{equation}\label{eq:rel}
+  \iota(r_d)\bigl(\sig P\cdot Q-P\cdot\sig Q\bigr)=\iota(r_n)\bigl(\sig Q\cdot Q\bigr),
+\end{equation}
+then $\ord P=\ord Q$ and, with $A=\lead P$ and $B=\lead Q$,
+\[
+  \bigl(\tau(A)B-A\,\tau(B)\bigr)r_d=r_n\,\tau(B)B .
+\]
+\end{lemma}
+
+\begin{proof}
+Put $m_0=\ord P$, $m_1=\ord Q$. By (1) and $\ord\circ\sig=\ord$ we have
+$\ord(\sig P\cdot Q)=\ord(P\cdot\sig Q)=m_0+m_1$, and by (2),
+\begin{equation}\label{eq:leads}
+  \chi(m_0)\lead(\sig P\cdot Q)=\tau(A)B,\qquad \chi(m_1)\lead(P\cdot\sig Q)=A\,\tau(B).
+\end{equation}
+
+\emph{Step 1: $m_0=m_1$.} Suppose first that the two products have equal leading coefficients.
+Cross-multiplying the identities \eqref{eq:leads} gives
+$\chi(m_1)\tau(A)B=\chi(m_0)A\tau(B)$. Both sides have degree $\deg A+\deg B$, since $\tau$ preserves
+degree and leading coefficient, and the coefficient there equals
+$\mathrm{lc}(A)\mathrm{lc}(B)\neq0$ on both sides. Hence $\chi(m_0)=\chi(m_1)$, and injectivity of
+$\chi$ gives $m_0=m_1$.
+
+Otherwise $\Delta:=\sig P\cdot Q-P\cdot\sig Q\neq0$. Comparing $\ord$ on the two sides of
+\eqref{eq:rel}, and using $\ord(\iota p)=0$ for $p\neq0$, gives $\ord\Delta=m_1+m_1$; and
+$\ord\Delta\ge m_0+m_1$ by (3). Cancelling $m_1$ in the ordered group yields $m_0\le m_1$. If
+$m_0<m_1$ then $m_0+m_1<m_1+m_1=\ord\Delta$, so by (3) the two leading coefficients agree, and the
+previous paragraph forces $m_0=m_1$, a contradiction. Hence $m_0=m_1=:m$.
+
+\emph{Step 2.} If $\Delta=0$ then $r_n=0$ by \eqref{eq:rel} and $\tau(A)B=A\tau(B)$ follows from
+\eqref{eq:leads}, so the identity is trivial. If $\Delta\neq0$ then $\ord\Delta=m+m=\ord(\sig P\cdot
+Q)$, so $\lead\Delta=\lead(\sig P\cdot Q)-\lead(P\cdot\sig Q)$ by (3). Applying $\lead$ to
+\eqref{eq:rel} and using $\lead(\iota p)=p$ gives $r_d\lead\Delta=r_n\lead(\sig Q\cdot Q)$;
+multiplying by $\chi(m)$ and substituting \eqref{eq:leads} and
+$\chi(m)\lead(\sig Q\cdot Q)=\tau(B)B$ gives the claim.
+\end{proof}
+
+\begin{theorem}\label{thm:inert}
+Let $D$ be a nondegenerate $\Lambda$-graded shift ring, $K$ a field over $\CC$ with a
+$\CC$-automorphism $\sig$, $x\in K$ transcendental with $\sig x=x+1$, and $\varphi\colon D\to K$ an
+injective ring map with $\varphi\circ\sig_D=\sig\circ\varphi$ and $\varphi(\iota p)=p(x)$. If
+$u\in\Frac\varphi(D)$, $v\in\CC(x)$ and $\sig u-u=v$, then $\sig R-R=v$ for some $R\in\CC(x)$.
+\end{theorem}
+
+\begin{proof}
+Write $u=\varphi(P)/\varphi(Q)$, $Q\neq0$; if $P=0$ then $v=0$. Write $v=r_n(x)/r_d(x)$ with
+$r_d\neq0$. Clearing denominators in $\sig u-u=v$, using $\varphi\sig_D=\sig\varphi$ and
+$\varphi(\iota p)=p(x)$, gives the image of \eqref{eq:rel} under $\varphi$; injectivity gives
+\eqref{eq:rel} in $D$. Lemma~\ref{lem:transport} produces $A,B\in\CC[X]$, $B\neq0$, with
+$(\tau(A)B-A\tau(B))r_d=r_n\tau(B)B$. As $x$ is transcendental, $B(x)$ and $\tau(B)(x)$ are nonzero,
+and dividing by $\tau(B)(x)B(x)r_d(x)$ shows $R:=A(x)/B(x)$ satisfies $\sig R-R=v$.
+\end{proof}
+
+\begin{remark}
+Nondegeneracy is used only in Step 1 and cannot simply be dropped: with $\Lambda=2\pi i\ZZ$ and
+$\chi\equiv1$ the ring $\CC[X][e^{\pm2\pi is}]$ has $\sig$-invariant monomials, its
+$\sig$-invariants are not the constants, and the whole framework changes. The natural replacement is
+a relative statement over the field of $1$-periodic coefficients.
+\end{remark}
+
+\section{Discrete residues and torsion freeness}\label{sec:torsion}
+
+Every $v\in\CC(s)$ is uniquely $v=p(s)+\sum_{\alpha,j}c_{\alpha,j}(s-\alpha)^{-j}$ with $p\in\CC[X]$
+and $(c_{\alpha,j})$ finitely supported. The shift and derivation act on polar data by
+\begin{equation}\label{eq:actions}
+  \sig\colon c_{\alpha,j}\longmapsto c_{\alpha+1,j},\qquad
+  \dd\colon c_{\alpha,j}\longmapsto -j\,(\dd s)\,c_{\alpha,j-1},
+\end{equation}
+the second raising the order by one, and on the polynomial part by $p\mapsto\tau p$ and
+$p\mapsto(\dd s)p'$. The discrete residues $\dres(v,O,j)=\sum_{\alpha\in O}c_{\alpha,j}$ are
+$\CC$-linear and $\sig$-invariant.
+
+\begin{proposition}[Abramov \cite{Abramov1971}, Chen--Singer \cite{ChenSinger2012}]\label{prop:decide}
+$v\in(\sig-1)\CC(s)$ if and only if $\dres(v,O,j)=0$ for every orbit $O$ and every $j\ge1$.
+\end{proposition}
+
+\begin{proof}[Proof, for completeness]
+Necessity is $\sig$-invariance. For sufficiency, the polynomial part is handled by surjectivity of
+$q\mapsto\tau q-q$ on $\CC[X]$, which lowers degree by exactly one and multiplies the leading
+coefficient by the degree. For the polar part, induct on the size of the support: pick $(\beta,j)$ in
+it; since the residue at the orbit of $\beta$ vanishes, some $(\beta+k,j)$ with $k\neq0$ also lies in
+the support, and the telescope
+$\delta_{(\beta,j)}-\delta_{(\beta+k,j)}=(\sig-1)\sum_{i=1}^{k}\delta_{(\beta+i,j)}$ (with its mirror
+image for $k\le-1$) removes a defect while preserving all residues.
+\end{proof}
+
+\begin{lemma}\label{lem:torsion}
+Let $L=\sum_{n\le N}a_n\dd^n$ with $a_N\neq0$. If $L(b)\in(\sig-1)\CC(s)$ then $b\in(\sig-1)\CC(s)$.
+\end{lemma}
+
+\begin{proof}
+By \eqref{eq:actions} the polynomial/polar decomposition is preserved componentwise by $\dd$ and
+$\sig$, so uniqueness identifies polar data and all discrete residues of $\sum_{n\le N}a_n\dd^nc(b)$
+vanish. Write $T_i=\dres(b,O,i)$. From \eqref{eq:actions},
+$\dres(\dd c,O,i+1)=-(i+1)(\dd s)\dres(c,O,i)$ and $\dres(\dd c,O,0)=0$, whence
+$\dres(\dd^nc(b),O,M+N)=\kappa_nT_{M+N-n}$ with $\kappa_n\neq0$. Only finitely many $T_i$ are
+nonzero; if some is, let $M$ be the largest index with $T_M\neq0$ for some orbit $O$ and evaluate the
+residue of order $M+N$ at $O$: terms with $n<N$ carry $T_{M+N-n}$ with $M+N-n>M$ and vanish; terms
+with $n>N$ have $a_n=0$; the term $n=N$ contributes $a_N\kappa_NT_M\neq0$ --- a contradiction. So all
+$T_i$ vanish and Proposition~\ref{prop:decide} applies.
+\end{proof}
+
+\section{The criterion}\label{sec:main}
+
+\begin{proposition}[Jet-tower descent]\label{prop:tower}
+Let $K$ be a field over $\CC$ with a $\CC$-automorphism $\sig$, $F\subseteq K$ a $\sig$-stable
+intermediate field, and $y_n,c_n\in K$ with $\sig y_n=y_n+c_n$, $c_n\in F$. Assume
+\textup{(I)} the $\sig$-invariants of $F$ are constants;
+\textup{(D)} $u\in F$, $v\in\operatorname{span}_{\CC}\{c_n\}$, $\sig u-u=v$ imply $v=0$;
+\textup{(N)} $c_n\notin\operatorname{span}_\CC\{c_0,\dots,c_{n-1}\}$.
+Then $(y_n)_{n\ge0}$ is algebraically independent over $F$.
+\end{proposition}
+
+This is the elementary half of \eqref{eq:HS}, proved by propagating (I) and (D) up the tower
+$F_{n+1}=F_n(y_n)$ through the twist $P^{\sig}(X+c_n)$ of a minimal polynomial.
+
+\begin{theorem}\label{thm:main}
+Let $K$ be a difference--differential field over $\CC$ with $\dd\sig=\sig\dd$, $x\in K$
+transcendental with $\sig x=x+1$ and $\dd x$ a nonzero constant, and $F\subseteq K$ a $\sig$-stable
+intermediate field containing $\CC(x)$ whose $\sig$-invariants are the constants and which satisfies
+$(\sig-1)F\cap\CC(x)=(\sig-1)\CC(x)$. Let $b\in\CC(x)$. Then every solution of $\sig y-y=b$ is
+hypertranscendental over $F$ if and only if $b\notin(\sig-1)\CC(x)$.
+\end{theorem}
+
+\begin{proof}
+($\Rightarrow$) If $b=\sig R-R$ with $R\in\CC(x)\subseteq F$ then $R$ is a solution lying in $F$.
+
+($\Leftarrow$) Put $c_n=\dd^nb\in\CC(x)$. For (N): if $c_n=\sum_{k<n}\lambda_kc_k$ then $L(b)=0$ is
+summable for $L=\dd^n-\sum\lambda_k\dd^k$, whose top coefficient is $1$, so Lemma~\ref{lem:torsion}
+would make $b$ summable. For (D): if $0\neq v=L(b)$ lies in the span with $v=\sig u-u$, $u\in F$, then
+$v\in\CC(x)$ and inertness gives $R\in\CC(x)$ with $\sig R-R=L(b)$, so Lemma~\ref{lem:torsion} again
+makes $b$ summable. Proposition~\ref{prop:tower} then makes the jets of $y$ algebraically independent
+over $F$, which is hypertranscendence over $F$.
+\end{proof}
+
+\section{The analytic model}\label{sec:model}
+
+Let $\mathcal K$ be the field of germs, along the filter of right half-planes
+$H_c=\{\operatorname{Re}s>c\}$, of meromorphic functions; $\sig f(s)=f(s+1)$ and $\dd=d/ds$ act on
+$\mathcal K$, with $\sig s=s+1$ and $\dd s=1$.
+
+\begin{definition}\label{def:lead}
+For a germ $f$, $\lambda\in\RR$ and $A\in\CC[X]$ write $\operatorname{Lead}(f,\lambda,A)$ if there
+are $\varepsilon>0$, $C>0$, $s_0$ with
+$\bigl|f(s)e^{\lambda s}-A(s)\bigr|\le Ce^{-\varepsilon s}$ for all real $s\ge s_0$.
+\end{definition}
+
+\begin{lemma}\label{lem:leadprops}
+\textup{(i)} If $\operatorname{Lead}(f,\lambda,A)$ and $\operatorname{Lead}(f,\mu,B)$ with $A,B\neq0$
+then $\lambda=\mu$ and $A=B$.
+\textup{(ii)} $\operatorname{Lead}(f,\lambda,A)$ and $\operatorname{Lead}(g,\mu,B)$ imply
+$\operatorname{Lead}(fg,\lambda+\mu,AB)$.
+\textup{(iii)} $\operatorname{Lead}(f,\lambda,A)$ implies
+$\operatorname{Lead}(\sig f,\lambda,e^{-\lambda}\tau A)$.
+\textup{(iv)} $\operatorname{Lead}(f,\lambda,A)$ and $\operatorname{Lead}(g,\lambda,B)$ imply
+$\operatorname{Lead}(f-g,\lambda,A-B)$.
+\end{lemma}
+
+\begin{proof}
+(i) Say $\lambda\le\mu$; then $e^{(\mu-\lambda)s}(A(s)+O(e^{-\varepsilon s}))=B(s)+O(e^{-\varepsilon's})$.
+If $\mu>\lambda$ the left side grows exponentially and the right side polynomially, so $\lambda=\mu$;
+then $A-B=O(e^{-\varepsilon s})$, and a polynomial with that bound vanishes.
+(ii) Expand: the cross terms are $O((1+s)^{\deg A+\deg B}e^{-\min(\varepsilon,\varepsilon')s})$, and a
+polynomial factor is absorbed by halving the exponent.
+(iii) $\sig f(s)e^{\lambda s}=e^{-\lambda}\bigl[f(s+1)e^{\lambda(s+1)}\bigr]
+=e^{-\lambda}\bigl[A(s+1)+O(e^{-\varepsilon(s+1)})\bigr]$.
+(iv) Immediate.
+\end{proof}
+
+Part (iii) is axiom (2) of Definition~\ref{def:graded} with $\chi(\lambda)=e^{\lambda}$, injective on
+$\RR$. Note that (i)--(iv) make $\ord$ and $\lead$ intrinsic to the germ: no uniqueness theorem for
+generalized Dirichlet expansions is required anywhere.
+
+\begin{definition}\label{def:gds}
+A germ $f$ lies in $\GG_0$ if there are $d\in\NN$, reals $\lambda_0<\lambda_1<\cdots\to\infty$,
+polynomials $P_n$ of degree $\le d$, and $c\in\RR$ with $\sum_n\|P_n\|e^{-\lambda_nc}<\infty$, where
+$\|\sum a_kX^k\|=\sum|a_k|$, such that $f(s)=\sum_nP_n(s)e^{-\lambda_ns}$ on $H_c$.
+\end{definition}
+
+\begin{proposition}\label{prop:gdsring}
+$\GG_0$ is a $\sig$-stable subring of $\mathcal K$ containing $\CC[s]$, every nonzero $f\in\GG_0$ has
+a leading pair with $\lead f\neq0$, and with $\iota(p)=p(s)$, $\chi(\lambda)=e^{\lambda}$ it is a
+nondegenerate $\RR$-graded shift ring.
+\end{proposition}
+
+\begin{proof}
+\emph{Ring.} For sums, merge the frequency sequences: the union is discrete, tends to $\infty$,
+degrees stay bounded and majorants add. For products, the frequencies lie in the sumset
+$\{\lambda_n+\mu_m\}$, which meets each half-line $(-\infty,B]$ in finitely many points because each
+factor does, so it enumerates increasingly to $\infty$; the coefficient at a frequency $\nu$ is the
+finite sum $\sum_{\lambda_n+\mu_m=\nu}P_nQ_m$, of degree $\le d+d'$; the double series converges
+absolutely, so Fubini gives the regrouped expansion with majorant
+$(\sum\|P_n\|e^{-\lambda_nc})(\sum\|Q_m\|e^{-\mu_mc})$. Finally $\CC[s]$ is the single frequency $0$,
+and $\sig$ multiplies the $n$-th coefficient by $e^{-\lambda_n}$ and translates the variable.
+
+\emph{Leading pair.} Let $f\neq0$; some $P_n\neq0$, since otherwise $f=0$. Let $n_0$ be least with
+$P_{n_0}\neq0$ and put $\varepsilon=\tfrac12(\lambda_{n_0+1}-\lambda_{n_0})>0$. For real $s\ge c$,
+using $|P_n(s)|\le\|P_n\|(1+s)^d$ and $\lambda_n\ge\lambda_{n_0+1}$ for $n>n_0$,
+\[
+  \Bigl|\sum_{n>n_0}P_n(s)e^{-\lambda_ns}\Bigr|
+   \le(1+s)^d\sum_{n>n_0}\|P_n\|e^{-\lambda_nc}e^{-\lambda_n(s-c)}
+   \le C_1(1+s)^de^{-\lambda_{n_0+1}(s-c)} ,
+\]
+so $|f(s)e^{\lambda_{n_0}s}-P_{n_0}(s)|\le C_2(1+s)^de^{-2\varepsilon s}\le C_3e^{-\varepsilon s}$,
+i.e.\ $\operatorname{Lead}(f,\lambda_{n_0},P_{n_0})$ with $P_{n_0}\neq0$.
+
+\emph{Axioms.} (1) and (2) are Lemma~\ref{lem:leadprops}(ii),(iii). For (3): if $\ord f=\ord
+g=\lambda$ and $f\neq g$ then $\operatorname{Lead}(f-g,\lambda,\lead f-\lead g)$ by (iv); if the two
+leading coefficients differ this is the leading pair of $f-g$, and if they agree then
+$(f-g)e^{\lambda s}=O(e^{-\varepsilon s})$ while $(f-g)e^{\ord(f-g)s}$ approaches the nonzero
+polynomial $\lead(f-g)$, forcing $\ord(f-g)>\lambda$. (4) is the single-frequency expansion of
+$p(s)$.
+\end{proof}
+
+Applying Lemma~\ref{lem:transport} with $r_n=0$ shows that a $\sig$-invariant element of
+$\GG:=\Frac\GG_0$ has $\tau(A)B=A\tau(B)$ for its leading pair, hence $A=cB$ for a constant $c$, from
+which the $\sig$-invariants of $\GG$ are the constants. Theorems~\ref{thm:inert} and \ref{thm:main}
+therefore apply with $F=\GG$.
+
+\section{Consequences}\label{sec:cor}
+
+\begin{corollary}\label{cor:holder}
+For every $a\in\CC$, $\psi(s-a)$ and $\Gamma(s-a)$ are hypertranscendental over $\GG$.
+\end{corollary}
+\begin{proof}
+Take $b=1/(s-a)$; its only pole is $a$, whose orbit contains no other pole, so
+$\dres(b,a+\ZZ,1)=1\neq0$ and $b$ is not summable. Since $\psi(s-a+1)-\psi(s-a)=1/(s-a)$,
+Theorem~\ref{thm:main} applies. For $\Gamma$: $\Gamma'=\psi\Gamma$ is a first-order affine relation,
+so adjoining $\Gamma$ is a differentially algebraic base change and cannot destroy
+hypertranscendence.
+\end{proof}
+
+\begin{example}\label{ex:members}
+The following lie in $\GG_0$, hence in $\GG$, with all their derivatives and rational combinations:
+\begin{itemize}
+\item every ordinary Dirichlet series $\sum_{n\ge1}a_nn^{-s}$ of finite abscissa ($\lambda_n=\log n$)
+  --- so $\zeta$, all Dirichlet $L$-functions, and every member of the extended Selberg class with an
+  ordinary expansion;
+\item the Hurwitz zeta $\zeta(s,a)=\sum_{n\ge0}(n+a)^{-s}$, $a>0$ ($\lambda_n=\log(n+a)$);
+\item the Lerch transcendent $\Phi(z,s,a)=\sum_{n\ge0}z^n(n+a)^{-s}$, $|z|\le1$, $a>0$;
+\item the Epstein zeta $Z_Q(s)=\sum_{v\neq0}Q(v)^{-s}$ of a positive definite form $Q$, whose value
+  set is discrete and tends to $\infty$, with multiplicities as coefficients;
+\item the Beurling zeta $\zeta_P(s)=\sum_kn_k^{-s}$ of a generalized prime system $P\subseteq(1,\infty)$.
+\end{itemize}
+\end{example}
+
+\begin{corollary}[Markus's conjecture \cite{Markus2007,Lu2025}]\label{cor:markus}
+$\zeta$ satisfies no nontrivial algebraic differential equation whose coefficients are polynomials in
+$\Gamma$ and its derivatives with coefficients rational in $s$.
+\end{corollary}
+\begin{proof}[Proof sketch]
+$\zeta\in\GG$, so Corollary~\ref{cor:holder} makes the $\psi$-jets algebraically independent over
+$\CC(s)\langle\zeta\rangle$. Separately, the von Mangoldt series is supported on prime powers with
+$\Lambda(p)=\log p\neq0$, so a prime-echelon argument makes it hypertranscendental over $\CC(s)$;
+$\Lambda*\mathbf1=\log$ realises it as $-\zeta'/\zeta$, and hypertranscendence survives the
+logarithmic derivative. Combining gives joint independence of the $\psi$- and $\zeta$-jets over
+$\CC(s)$; reading the decomposition the other way makes $\zeta$ hypertranscendental over
+$\CC(s)\langle\psi\rangle$, and $\Gamma'=\psi\Gamma$ replaces $\psi$ by $\Gamma$.
+\end{proof}
+
+\section{Further directions}
+
+Three questions the principle raises. \emph{First}, the degenerate case: when $\ker\chi\neq0$ the
+invariant monomials generate a field of $1$-periodic functions, and the right statement should be a
+relative inertness over that field, with a residue calculus having periodic coefficients ---
+the natural meeting point with \cite{ADHexp2026}. \emph{Second}, the other operators: the graded
+framework is stated for the unit shift on $\CC[X]$, and $q$-difference and Mahler analogues should
+exist with nondegeneracy reading ``$q$ is not a root of unity'', which would extend the Mahler and
+elliptic residue theories \cite{Arreche2022Mahler,ArrecheBabbitt2025} to their transcendental
+enlargements. \emph{Third}, Theorem~\ref{thm:inert} computes the rational part of
+$H^1(\sig,\Frac D)$; computing the whole group would decide hypertranscendence for defects that are
+themselves Dirichlet series, reaching the Barnes $G$-function and the Lerch transcendent as
+\emph{solutions} rather than as coefficients.
+
+\section*{Verification}
+The algebraic content --- Definition~\ref{def:graded}, Lemma~\ref{lem:transport},
+Theorems~\ref{thm:inert} and \ref{thm:main}, Proposition~\ref{prop:decide}, Lemma~\ref{lem:torsion},
+Proposition~\ref{prop:tower}, and Corollaries~\ref{cor:holder} and \ref{cor:markus} for the ordinary
+Dirichlet model --- has been formalised in Lean~4 against \texttt{mathlib} and machine-checked with
+no axioms beyond \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound} and no
+\texttt{sorry}. Formalisation of the analytic model of Section~\ref{sec:model} is in progress. This
+is an error check only and is not offered as a mathematical contribution.
+
+\begin{thebibliography}{99}
+
+\bibitem{Abramov1971}
+S.~A.~Abramov,
+\emph{On the summation of rational functions},
+USSR Comput. Math. Math. Phys. \textbf{11} (1971), 324--330.
+
+\bibitem{ADH2021}
+B.~Adamczewski, T.~Dreyfus, C.~Hardouin,
+\emph{Hypertranscendence and linear difference equations},
+J. Amer. Math. Soc. \textbf{34} (2021), no.~2, 475--503.
+
+\bibitem{ADHexp2026}
+B.~Adamczewski, T.~Dreyfus, C.~Hardouin, M.~Wibmer,
+\emph{Hypertranscendence and linear difference equations, the exponential case},
+J. Algebra \textbf{686} (2026), 775--792; arXiv:2212.00388.
+
+\bibitem{Arreche2022Mahler}
+C.~E.~Arreche, Y.~Zhang,
+\emph{Mahler discrete residues and summability for rational functions},
+arXiv:2202.09805.
+
+\bibitem{ArrecheBabbitt2025}
+C.~E.~Arreche, M.~W.~Babbitt,
+\emph{Panorbital residues and elliptic summability},
+arXiv:2508.18247.
+
+\bibitem{Arreche2025}
+C.~E.~Arreche,
+\emph{Deciding summability via residues in theory and in practice},
+arXiv:2504.20003.
+
+\bibitem{BeurlingIndep2026}
+A.~Laurin\v{c}ikas et al.,
+\emph{On functional independence of Beurling zeta-functions},
+Axioms \textbf{15} (2026), no.~5, 345.
+
+\bibitem{ChenSinger2012}
+S.~Chen, M.~F.~Singer,
+\emph{Residues and telescopers for bivariate rational functions},
+Adv. in Appl. Math. \textbf{49} (2012), 111--133.
+
+\bibitem{ChenWang2020}
+W.~Chen, Q.~Wang,
+\emph{Algebraic differential independence concerning the Euler $\Gamma$-function and Dirichlet
+series},
+Acta Math. Sci. \textbf{40} (2020), 1035--1044.
+
+\bibitem{HardouinSinger2008}
+C.~Hardouin, M.~F.~Singer,
+\emph{Differential Galois theory of linear difference equations},
+Math. Ann. \textbf{342} (2008), 333--377.
+
+\bibitem{Holder1887}
+O.~H\"older,
+\emph{\"Uber die Eigenschaft der Gammafunktion keiner algebraischen Differentialgleichung zu
+gen\"ugen},
+Math. Ann. \textbf{28} (1887), 1--13.
+
+\bibitem{Lu2025}
+F.~L\"u,
+\emph{A further study on Markus's conjecture},
+Bull. Lond. Math. Soc. \textbf{57} (2025), no.~11, 3586--3596.
+
+\bibitem{Markus2007}
+L.~Markus,
+\emph{Differential independence of $\Gamma$ and $\zeta$},
+J. Dynam. Differential Equations \textbf{19} (2007), 133--154.
+
+\bibitem{Ostrowski1920}
+A.~Ostrowski,
+\emph{\"Uber Dirichletsche Reihen und algebraische Differentialgleichungen},
+Math. Z. \textbf{8} (1920), 241--298.
+
+\end{thebibliography}
+
+\end{document}
