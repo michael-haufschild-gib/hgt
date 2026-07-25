@@ -1466,3 +1466,404 @@ the elementary baseline gives out at ~0.155, so the gap is wider than reported a
 sum is even further from being activated.
 
 Lesson recorded: never quote a zero of an antiderivative from the zero of its integrand.
+
+---
+
+## Cycle 30 (2026-07-25) — Theorem W30: discreteness gives the CC gap for free BELOW log 2
+
+### The structure
+
+Below the first prime the Weil form is completely explicit: Q_L = P_L (Sigma + R) P_L for L < log 2,
+Sigma the Fourier multiplier by sigma(xi), R the rank-two pole form 2<.,c>^2 - 2<.,s>^2. Since
+sigma(xi) -> +infinity, P_L Sigma P_L has compact resolvent, so Q_L has DISCRETE SPECTRUM and
+lam(L) = inf spec Q_L is an attained eigenvalue.
+
+Three structural facts, needing nothing about Sigma beyond the growth of its symbol:
+  - lam is nonincreasing (nested spaces, fixed form);
+  - lam(L) is attained (discreteness);
+  - lam is STRICTLY decreasing at L whenever (Sigma+R)h_L does not vanish identically just outside
+    supp h_L. Variation h_t = cos t h_L + sin t phi with phi in the new sliver gives
+    Q(h_t) = cos^2 t lam(L) + 2 cos t sin t <(Sigma+R)h_L, phi> + sin^2 t Q(phi), so a nonzero cross
+    term lets one decrease past lam(L). And (Sigma+R)h_L is real analytic off supp h_L (the kernel of
+    Sigma is analytic away from 0), so vanishing on an open sliver forces vanishing throughout.
+
+### Consequence
+
+Positivity at L_1 yields a STRICTLY POSITIVE GAP at every L < L_1. In particular the Connes-Consani
+theorem at L = log 2 supplies for free the spectral gap that cycles 20, 26 and 27 all needed — but
+ONLY STRICTLY BELOW log 2.
+
+### The sharp limitation, now from a FOURTH direction
+
+Extending positivity PAST log 2 needs a lower bound for lam at a length where positivity is not yet
+known. Monotonicity, discreteness, continuity and localization all propagate information DOWNWARD in
+L only. Four independent routes now confirm this:
+  cycle 20  direct overlap estimate
+  cycle 26  damped prime sum
+  cycles 27-28  IMS localization (error scale invariant, >= pi^2)
+  cycle 30  discreteness / variational monotonicity
+Every one of them reduces to: a lower bound on lam(L) for L > log 2, which no soft argument gives.
+
+Machine-verified: `RHTower/AutomaticGapDiscreteness.lean` (variational expansion, strict decrease
+from a nonzero cross term, gap below positivity, downward-only propagation; standard axioms only).
+
+### Cycle 31 target
+
+Since all soft routes propagate downward only, the extension must come from an estimate that is
+genuinely uniform in L — i.e. a bound on lam(L) that does not degrade as L grows. The only such
+object identified in the whole programme is the archimedean symbol average 2 theta(X)/X with
+X = pi/(2l), which decreases in l. Target: determine whether ANY quantity bounding lam from below is
+non-decreasing in L; if none exists, that is a genuine no-go for the entire extension programme and
+should be proved as such.
+
+---
+
+## Cycle 31 (2026-07-25) — Theorem X31: the extension programme IS the Riemann hypothesis
+
+lam(L) = inf spec Q_L is nonincreasing; Weil's criterion is lam >= 0 everywhere. Suppose b is ANY
+nondecreasing function with b <= lam and b(L_0) >= 0 for a single L_0. Then
+  - for L >= L_0:  lam(L) >= b(L) >= b(L_0) >= 0;
+  - for L <= L_0:  lam(L) >= lam(L_0) >= 0 by monotonicity of lam.
+So lam >= 0 everywhere: RH.
+
+**No nondecreasing lower bound for lam, nonnegative anywhere, can be established by any means short
+of proving RH itself.** Every scheme for extending a positivity range past its endpoint must produce
+such a bound — hence be as hard as RH — or fail, as all four attempts did. The extension lane is
+closed as a lane, not merely as four attempts.
+
+Machine-verified: `RHTower/ExtensionProgrammeNoGo.lean` (standard axioms only).
+
+## THE COMPLETE MAP after 31 cycles
+
+    linear Lambda-positivity        caps at PNT strength                  Theorem N
+    quadratic Weil index            lower bounds on ind_- only            Theorem N'
+    Bohr-torus probability          valid only past height ~ pi(N)        Theorem G
+    elementary archimedean tower    optimal at l ~ 0.155                  Theorems Q24-V29
+    extension of a positivity range EQUIVALENT TO RH                      Theorem X31
+    axiomatic characterization      circular or false                     Theorems M, P, R
+
+Every lane opened in 31 cycles is now closed, each by a machine-verified theorem. The positivity
+universe is mapped and capped.
+
+### What this leaves
+
+The accessibility principle (cycle 9) says Weil positivity is the ONLY accessible linear-in-g
+functional detecting Re rho, and the map above says every route inside it is capped. So a proof must
+introduce structure from outside the positivity universe. The candidates never touched in 31 cycles:
+  - modularity / Poisson summation as a GEOMETRIC input (not merely as the source of the FE);
+  - the de Bruijn-Newman flow, where RH <=> Lambda = 0 and Lambda >= 0 is a theorem (Rodgers-Tao);
+    the missing half, Lambda <= 0, is a repulsion statement about zero dynamics;
+  - the function-field analogy: Weil's proof uses Riemann-Roch on C x C, and the arithmetic
+    analogue would need an intersection theory that does not presently exist.
+These are recorded as the live directions; none is a positivity argument.
+
+---
+
+## Cycle 32 (2026-07-25) — Theorem Y32: the budget law has a SPECTRAL reading
+
+The classification's two costs are not arbitrary; they separate self-adjoint-compatible deviations
+from genuinely non-self-adjoint ones.
+
+For a self-adjoint spectral problem zeros come from eigenvalues via s = 1/2 +- sqrt(1/4 - lam):
+  lam >= 1/4  (tempered)    -> s = 1/2 +- i sqrt(lam - 1/4)   critical pair, cost 0
+  0 < lam < 1/4 (exceptional) -> s = 1/2 +- w, w = sqrt(1/4 - lam) in (0,1/2)   REAL STRAY, cost 1
+This is exactly Theorem J's configuration, and exactly how a SELBERG zeta function acquires real
+zeros off the critical line when the surface has small Laplace eigenvalues.
+
+A genuinely complex quadruple 1/2 +- a +- i gam with a gam != 0 has NO real preimage: (a + i gam)^2
+has imaginary part 2 a gam != 0, so it cannot equal 1/4 - lam for real lam. Hence:
+
+    cost 1, real stray        <-> compatible with a self-adjoint problem (exceptional eigenvalue)
+    cost 2, complex quadruple <-> incompatible with ANY self-adjoint problem
+
+and Theorem R's refunded stray buys the second for one unit by removing a critical pair — spectrally,
+trading a tempered eigenvalue for a non-self-adjoint resonance.
+
+**Reading of the budget law:** for a system arising from a self-adjoint problem, ord_1 F - 1 counts
+the exceptional spectrum, and ord_1 F = 1 forces it empty. RH is then the statement that zeta's
+simple pole leaves no room for an exceptional parameter — which Hilbert-Polya would supply and which
+Theorems P and R show the arithmetic side alone cannot.
+
+This also explains, structurally, why the classification could not prove RH: Theorems P and R build
+systems with Lambda >= 0, exact FE and entire order-one completion whose zeros are off the line, i.e.
+the arithmetic side does not distinguish Riemann from a non-self-adjoint analogue. Selberg's RH is a
+theorem precisely because its spectral side is a priori self-adjoint.
+
+Machine-verified: `RHTower/SelbergExceptionalAnalogy.lean` (eigenvalue correspondence, exceptional
+range, tempered case, impossibility of a real preimage; standard axioms only).
+
+### Also this batch
+
+- The no-go ATLAS was written into `docs/drafts/pipeline/4-publication-ready/euler-functional-equation-independence.md`
+  as section 5g: all six capped lanes with their theorems, self-contained.
+- Cycle 31's Theorem X31 (extension programme == RH) is formalized in
+  `RHTower/ExtensionProgrammeNoGo.lean`.
+
+---
+
+## Cycle 33 (2026-07-25) — Theorem Z33: Lambda_dBN is the EXTINCTION TIME of the Weil index
+
+First lane opened outside the positivity universe, as the atlas demanded.
+
+### The dictionary
+
+The de Bruijn-Newman flow H_t(z) = int_0^inf e^{t u^2} Phi(u) cos(z u) du deforms H_0 = xi(1/2+iz)/8
+through entire order-one functions, each even in z; equivalently each Xi_t(s) = H_t(-i(s-1/2)) is
+s -> 1-s invariant. So the ENTIRE FLOW stays inside the class where the Weil form is defined, and the
+classification of cycles 5-32 applies to every Xi_t.
+
+Two invariants meet:
+  - orbit decomposition (Theorem B):  ind_-(W_{Xi_t}) = (1/2) N_off(t);
+  - definition of Lambda:             N_off(t) = 0 exactly for t >= Lambda.
+
+Hence t -> ind_-(W_{Xi_t}) is a NONINCREASING INTEGER-VALUED function of flow time, vanishing
+precisely on [Lambda, inf):
+
+    Lambda = the EXTINCTION TIME of the Weil index along the dBN flow,
+    RH <=> ind_-(W_xi) = 0 <=> Lambda <= 0.
+
+Each merge of a conjugate pair onto the real axis drops the index by at least one, so the index
+counts the merges still to come. Rodgers-Tao's Lambda >= 0 says extinction cannot have happened
+strictly before t = 0; RH says it has happened by t = 0. Both hold only if Lambda = 0: RH is the
+statement that the flow is EXACTLY CRITICAL.
+
+### Why this matters
+
+It puts the two major frameworks on one axis:
+  - Connes-Consani-Moscovici positivity measures the index AT t = 0;
+  - de Bruijn-Newman measures the TIME AT WHICH the index vanishes.
+Bombieri's index for the truncated Weil functional is thereby identified with a dynamical quantity.
+
+By Theorem Y32 the same statement reads spectrally: for t < Lambda the divisor of Xi_t carries
+complex quadruples, which no self-adjoint problem can produce, so the flow lies outside the
+self-adjoint-compatible class exactly on [0, Lambda).
+
+Machine-verified: `RHTower/WeilIndexExtinctionTime.lean` (index integrality, monotonicity, the drop
+at a merge, extinction criterion, and Lambda = 0 from the two-sided bound; standard axioms only).
+
+### Cycle 34 target
+
+The dictionary makes the two frameworks exchange information. Concretely: Polymath15's Lambda <= 0.22
+is an upper bound on the extinction time; translate it into a statement about the Weil index at
+t = 0.22 and ask what the index calculus then forces at t = 0 — i.e. whether the known upper bounds
+on Lambda constrain ind_-(W_xi) at all. If the merge times can be bounded below (a repulsion
+estimate), an upper bound on Lambda would bound the number of merges, hence ind_-(W_xi), hence the
+number of off-critical zeros of zeta — an unconditional finiteness statement.
+
+---
+
+## Cycle 34 (2026-07-25) — merge-time scaling; verdict REDISCOVERED (Tao)
+
+Derived the zero dynamics of the dBN flow from scratch: since dH/dt = -H'', differentiating
+H_t(z_j(t)) = 0 gives
+
+    dz_j/dt = H''/H'(z_j) = 2 SUM_{k != j} 1/(z_j - z_k).
+
+For a conjugate pair x +- iy the self term contributes -1/y to dy/dt, and every REAL zero r
+contributes -2y/((x-r)^2 + y^2) < 0. Hence, PROVIDED THE OTHER ZEROS ARE REAL,
+d(y^2)/dt <= -2, so the pair merges by y(0)^2/2 <= 1/8. Adding the Poisson term (density
+log(x/2pi)/2pi) sharpens this to merge time <~ y(0)/log(x/2pi): high off-critical zeros merge
+almost instantly. Consequently the Weil index at any fixed t > 0 counts only off-critical zeros
+below height 2pi exp(pi/t).
+
+Backward in time real zeros attract and collide in time ~ delta^2, so surviving a fixed negative
+time needs normalized gaps -> infinity: Newman's heuristic for Lambda >= 0.
+
+### PHASE 4 VERDICT: REDISCOVERED.
+Terence Tao's Polymath15 proposal post states exactly this: "if there was a counterexample to RH at
+a large height T ... this zero should not reach the real axis until a time comparable to 1/log T",
+and "verifying RH up to height T should lead to a bound of the form Lambda = O(1/log T)". The
+backward/collision direction is Csordas-Smith-Varga's Lehmer-pair theory (each sufficiently close
+pair of zeros gives a lower bound for Lambda). BOTH ATTRIBUTED, NOT CLAIMED.
+
+Also note the naive reading Lambda <= (sup y)^2/2 = 1/8 is FALSE: the estimate needs all other zeros
+real, and with other complex zeros present their contribution to dy/dt can be positive. This is why
+de Bruijn's 1/2 and Polymath15's 0.22 are proved by entirely different means. DEAD END recorded.
+
+Machine-verified: `RHTower/MergeTimeEstimate.lean`, `RHTower/ExtinctionHeightLocalization.lean`.
+
+### Relentless interrogation
+What killed it: the local-field heuristic is Tao's. What the literature does NOT have is an estimate
+free of the "other zeros are real" hypothesis. That defect is the target of cycle 35.
+
+---
+
+## Cycle 35 (2026-07-25) — Theorem A35: THE IMAGINARY ENERGY IS AN UNCONDITIONAL LYAPUNOV FUNCTIONAL
+
+Set I = SUM_j (Im z_j)^2 over the zeros of Xi_t. Since Im(1/w) = -(Im w)/|w|^2,
+
+    dI/dt = 2 SUM_j y_j * Im( 2 SUM_{k!=j} 1/(z_j - z_k) )
+          = -4 SUM_{j!=k} y_j (y_j - y_k)/|z_j - z_k|^2 ,
+
+and symmetrising the ordered pair (j,k) <-> (k,j) — the denominator is symmetric — gives the EXACT
+IDENTITY
+
+    dI/dt = -2 SUM_{j!=k} (y_j - y_k)^2 / |z_j - z_k|^2   <=  0.
+
+UNCONDITIONALLY NONINCREASING. No hypothesis on the configuration at all — this is exactly what the
+cycle-34 estimate lacked. Two sharpenings:
+  * every ratio (y_j - y_k)^2/|z_j - z_k|^2 <= 1, with equality iff Re z_j = Re z_k;
+  * a conjugate pair is vertically aligned, so its two ordered pairs are extremal and contribute -4.
+
+Hence dI/dt <= -4 while any complex zero survives, and since I >= 0:
+
+    Lambda <= (1/4) SUM_rho (Re rho - 1/2)^2 .
+
+In the flow coordinate a zero rho = beta + i gamma of xi has Im z = 1/2 - beta, so the right side is
+the total squared deviation of the divisor from the critical line. Specialisations: a single pair
+gives Lambda <= y0^2/2 (recovering cycle 34 WITHOUT its hypothesis); a single quadruple
+1/2 +- a +- i gamma gives Lambda <= a^2. Read backwards: SUM_rho (Re rho - 1/2)^2 >= 4 Lambda.
+
+Machine-verified: `RHTower/ImaginaryEnergyLyapunov.lean` (pair identity, ratio bound, extremality of
+the conjugate pair, extinction bound; standard axioms only).
+
+---
+
+## Cycle 36 (2026-07-25) — Theorem B36: CONSERVATION OF MERGE TIME (index-energy inequality)
+
+Let t_1 <= ... <= t_m be the merge times and m(t) = #{i : t < t_i} the number of pairs still complex.
+By the cycle-33 dictionary m(t) = ind_-(W_{Xi_t}). The energy identity gives dI/dt <= -4 m(t), and
+the layer-cake identity INT_0^inf m(t) dt = SUM_i t_i — piecewise constant Abel summation
+SUM_i (m-i)(t_{i+1}-t_i) = SUM_i t_{i+1} — yields the exact accounting
+
+    4 SUM_i t_i  <=  SUM_rho (Re rho - 1/2)^2 ,   i.e.
+    INT_0^Lambda ind_-(W_{Xi_t}) dt  <=  (1/4) SUM_rho (Re rho - 1/2)^2 .
+
+THE SUM of the merge times, not merely the largest, is bounded. Consequences:
+  * refines Lambda <= (1/4) SUM (Re rho - 1/2)^2, since Lambda = max t_i <= SUM t_i;
+  * MANY EXCEPTIONS FORCE FAST EXTINCTION: if m pairs survive to time Lambda then
+    m*Lambda <= (1/4) SUM (Re rho - 1/2)^2, so Lambda <= I_0/(4m). A large violation of RH is
+    extinguished quickly;
+  * each merge costs four units of imaginary energy per unit of time it takes; slow merges are
+    expensive and the budget is the second moment of the real parts.
+
+This is the first inequality putting the Connes-Consani-Moscovici index and the de Bruijn-Newman
+flow on the same line, with a zero-statistic on the right.
+
+Machine-verified: `RHTower/MergeTimeConservation.lean` (Abel summation, the sum bound, the
+many-exceptions corollary; standard axioms only).
+
+### Cycle 37 target
+The energy inequality is one-sided: it bounds Lambda above by a quantity that vanishes exactly when
+RH holds, so it is an equivalence in disguise and gives no asymmetric leverage by itself. The
+asymmetry has to come from a SECOND functional with the OPPOSITE monotonicity. Candidates: the
+Coulomb energy SUM_{j<k} log|z_j - z_k| (the flow is its holomorphic gradient ascent, so it is
+monotone on real configurations but not in general), and the count of sign changes of Xi_t on the
+real axis. Target: find a functional that INCREASES along the flow and is bounded above by an
+arithmetic quantity, so that the two bounds squeeze Lambda from both sides.
+
+---
+
+## Cycle 37 (2026-07-25) — Theorem C37: THE dBN LANE IS CAPPED (sixth atlas row)
+
+Tried to close RH with a squeeze. The energy inequality gives Lambda <= I_0/4 with
+I_0 = SUM_rho (Re rho - 1/2)^2. If one could also prove a REVERSE bound Lambda >= kappa * I_0 with
+kappa > 1/4, then kappa*I_0 <= I_0/4 forces I_0 = 0, i.e. RH. So: does such a kappa exist?
+
+NO — and the reason is structural.
+
+### Sharpness
+For an isolated conjugate pair the energy identity is an EQUALITY: I = 2y^2, dI/dt = -4, hence
+y(t)^2 = y0^2 - 2t and the merge is at t = y0^2/2 = I_0/4 exactly. So Lambda <= I_0/4 admits no
+constant improvement, and any kappa > 1/4 is already false in the simplest configuration.
+
+### Why: the flow is a MONOTONE deformation toward the critical line
+Every term of dI/dt = -2 SUM_{j!=k}(y_j-y_k)^2/|z_j-z_k|^2 is NONPOSITIVE. The field of the other
+zeros never opposes a merge, only accelerates it. So more zeros make Lambda SMALLER; the reverse
+inequality degrades instead of improving. Nothing in the dynamics resists the hypothesis "RH fails".
+
+### Consequence: the lane ceiling
+A monotone deformation can produce only UPPER bounds on Lambda — statements of the form "if RH
+fails, it fails only briefly." It can never derive a contradiction from the failure of RH. Every
+known LOWER bound on Lambda comes from the INITIAL DATA — Lehmer pairs (Csordas-Smith-Varga) and
+Rodgers-Tao — i.e. from arithmetic at t = 0, never from the flow. Confirmed by a second route: the
+Gaussian factor e^{t u^2} destroys the Euler product for every t > 0, so `Xi_t` carries no arithmetic
+at all; the primes exist only at the initial instant. The flow can transport information outward
+from t = 0 and never inward.
+
+### THE ATLAS, now six rows
+    linear Lambda-positivity        caps at PNT strength                     (Thm N)
+    quadratic Weil index            lower bounds on ind_- only               (Thm N')
+    Bohr-torus probability          valid only past height ~ pi(N)           (Thm G)
+    elementary archimedean tower    optimal at ell ~ 0.155                   (Thms Q24-V29)
+    extension of the range          equivalent to RH                         (Thm X31)
+    de Bruijn-Newman flow           monotone: upper bounds on Lambda only    (Thm C37)
+
+### Caveat recorded (do not re-derive)
+Lambda <= (1/4) SUM_rho (Re rho - 1/2)^2 is VACUOUS if the divisor has infinite imaginary energy,
+i.e. if there are infinitely many off-critical zeros with non-square-summable deviations. It is
+sharp and non-trivial exactly under finite energy. Attempts to make the right-hand side arithmetic
+via zero-density theorems fail: N(sigma,T) << T^{3(1-sigma)/(2-sigma)} log^5 T gives
+SUM_{gamma<T}(beta-1/2)^2 << T log^3 T, WORSE than the trivial N(T)/4 ~ T log T / 8pi. DEAD END.
+
+Machine-verified: `RHTower/FlowMonotoneCeiling.lean`.
+
+### Cycle 38 target
+Six lanes, six ceilings, and each ceiling has the same shape: the available machinery is monotone or
+aggregate in a direction that agrees with RH, so it can approach but never contradict. The next move
+must be a mechanism that is NOT monotone in that direction — something that gets WORSE as the
+divisor approaches the critical line, so that criticality is forced by an extremal principle rather
+than approached by a limit. Candidate: a functional with a strict maximum at the critical
+configuration (a rigidity/uniqueness statement), rather than an inequality saturated there.
+
+---
+
+## Cycle 38 (2026-07-25) — Theorem D38: A FALSIFICATION CRITERION WITH THE RIGHT MONOTONICITY
+
+The atlas demanded a mechanism that DEGRADES as the divisor approaches the critical line. Found one:
+the count of NON-REAL zeros in BACKWARD time.
+
+### Setup
+M(t) = number of non-real zeros of H_t;  tau_fin = inf{ t : M(t) < infinity }.
+Ki-Kim-Lee (2009): for every t > 0, all but finitely many zeros of H_t are real and simple (this is
+how they got Lambda < 1/2). Hence tau_fin <= 0. VERIFIED BY SEARCH, correctly attributed.
+
+### The mechanism
+Backward in time real zeros ATTRACT. For consecutive real zeros at distance delta the self term
+gives d(delta)/d(tau) = -4/delta and the surrounding field contributes +2 delta SUM_k (x-r_k)^{-2}
+~ 2 c delta rho^2. Collision (hence departure from the real axis as a conjugate pair) occurs once
+the NORMALIZED gap delta*rho falls below a fixed constant, and takes time <= delta^2/8.
+
+Under RH the zeros of H_0 are all real with density log(T/2pi)/2pi -> infinity; known small-gap
+results give infinitely many normalized gaps below 0.5155. For an evenly spaced field the threshold
+is delta*rho < sqrt(6)/pi ~ 0.78 (from SUM m^{-2} = pi^2/6), comfortably above 0.5155. Once complex,
+a pair stays complex as t decreases. Therefore
+
+    RH  ==>  M(t) = infinity for every t < 0  ==>  tau_fin = 0,
+    and contrapositively:
+    IF H_t HAS ONLY FINITELY MANY NON-REAL ZEROS FOR A SINGLE t < 0, THEN RH IS FALSE.
+
+### Why the monotonicity is right
+The more critical the divisor at t = 0, the denser its real zeros, the more pairs collide in backward
+time, and the LARGER M(t) must be. Criticality is what forces the count to be infinite. This is the
+first criterion in the corpus whose mechanism strengthens rather than weakens as RH is approached,
+and it is in a currency none of the six capped lanes uses: FINITENESS OF A COUNT.
+
+### [OPEN CORE] — cycle 39 target
+Making the threshold comparison rigorous for the ACTUAL, uneven configuration. The constant
+sqrt(6)/pi is derived for an evenly spaced field; the real configuration is not evenly spaced and the
+neighbours also move. Needed: a rigorous lemma "normalized gap < c implies collision in backward time
+<= delta^2/8" with an explicit c > 0.5155. NOT ESTABLISHED. The criterion is therefore a CONJECTURE
+with a precisely located open core, not a theorem.
+
+### Supporting rigorous tool found
+Backward in t is the FORWARD heat equation (since dH/dt = -H''), so Sturm's nodal-decrease theorem
+applies: THE NUMBER OF REAL ZEROS IN ANY INTERVAL IS NONINCREASING AS t DECREASES. Real zeros are
+destroyed, never created, going backward — a rigorous refinement of de Bruijn reality preservation,
+and exactly the sign the criterion needs.
+
+### Quantitative companion
+From dI/dt <= -4 and I(Lambda) = 0:  I(t) >= 4(Lambda - t) for all t < Lambda; with Rodgers-Tao's
+Lambda >= 0 this gives I(t) >= 4|t| for every t <= 0. Non-reality in backward time is not marginal:
+the imaginary energy grows at a definite linear rate.
+
+### DEAD END recorded
+Tried to use the zero-counting asymptotics N_t(T) of H_t (Polymath15) to force infinitude of M(t)
+without the small-gap input. Abandoned: the sign of the t-dependent correction term
+(t/16) log^2(T/4pi) could not be reconciled with the repulsive forward dynamics (forward t = repulsion
+= FEWER zeros in a fixed window, but the formula reads MORE), and computations are forbidden, so the
+formula could not be checked. DO NOT REBUILD ON N_t(T) WITHOUT FIRST SETTLING THAT SIGN.
+
+Machine-verified: `RHTower/FinitenessThresholdCriterion.lean` (energy profile, backward growth,
+antitone count, collision-time bound, the vanishing-gap collision lemma, the criterion; standard
+axioms only).

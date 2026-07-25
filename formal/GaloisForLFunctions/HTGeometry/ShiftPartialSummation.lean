@@ -14,6 +14,7 @@ tail range contribute the same exponent as the head range in the transfer.
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Analysis.PSeries
 
 open Finset
 
@@ -49,7 +50,7 @@ theorem sum_mul_weight_eq (f w : ℕ → ℝ) (n : ℕ) :
 weight is `w j = 1/(j+1)` (so `w j - w (j+1) = 1/((j+1)(j+2)) ≥ 0`), then the weighted sum is
 controlled by the boundary term plus the increments. -/
 theorem abel_bound_of_partialSum_le
-    {f : ℕ → ℝ} {B a : ℝ} (hB : 0 ≤ B)
+    {f : ℕ → ℝ} {B a : ℝ}
     (hS : ∀ j : ℕ, |partialSum f j| ≤ B * (j : ℝ) ^ a) (n : ℕ) :
     |∑ i ∈ range n, f i * (1 / ((i : ℝ) + 1))|
       ≤ B * (n : ℝ) ^ a * (1 / ((n : ℝ) + 1))
@@ -95,5 +96,42 @@ theorem abel_bound_of_partialSum_le
     _ ≤ B * (n : ℝ) ^ a * (1 / ((n : ℝ) + 1))
           + ∑ j ∈ range n, B * ((j : ℝ) + 1) ^ a * (1 / (((j : ℝ) + 1) * ((j : ℝ) + 2))) :=
         add_le_add le_rfl (Finset.sum_le_sum hbd2)
+
+
+/-- The increment weight is dominated by `(j+1)^{a-2}`. -/
+theorem increment_le_rpow {a : ℝ} (j : ℕ) :
+    ((j : ℝ) + 1) ^ a * (1 / (((j : ℝ) + 1) * ((j : ℝ) + 2)))
+      ≤ ((j : ℝ) + 1) ^ (a - 2) := by
+  have h1 : (0:ℝ) < (j : ℝ) + 1 := by positivity
+  have h2 : ((j : ℝ) + 1) ^ (a - 2) = ((j : ℝ) + 1) ^ a * ((j : ℝ) + 1) ^ (-2 : ℝ) := by
+    rw [← Real.rpow_add h1]; ring_nf
+  rw [h2]
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  have h3 : ((j : ℝ) + 1) ^ (-2 : ℝ) = 1 / (((j : ℝ) + 1) * ((j : ℝ) + 1)) := by
+    rw [Real.rpow_neg h1.le]
+    norm_num
+    rw [sq, mul_inv]
+  rw [h3]
+  apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
+  nlinarith [h1]
+
+/-- **The tail is summable for `a < 1`.**  This is what makes the tail range of the transfer
+contribute the same exponent as the head range: the increment sum is bounded independently of the
+truncation point. -/
+theorem summable_increment {a : ℝ} (ha : a < 1) :
+    Summable (fun j : ℕ => ((j : ℝ) + 1) ^ a * (1 / (((j : ℝ) + 1) * ((j : ℝ) + 2)))) := by
+  refine Summable.of_nonneg_of_le (fun j => by positivity) (fun j => increment_le_rpow j) ?_
+  have h : ∀ j : ℕ, ((j : ℝ) + 1) ^ (a - 2) = (1 : ℝ) / ((j : ℝ) + 1) ^ (2 - a) := by
+    intro j
+    have h1 : (0:ℝ) < (j : ℝ) + 1 := by positivity
+    rw [eq_div_iff (by positivity), ← Real.rpow_add h1]
+    norm_num
+  simp only [h]
+  have hp : (1:ℝ) < 2 - a := by linarith
+  have hsum : Summable (fun n : ℕ => 1 / ((n : ℝ)) ^ (2 - a)) :=
+    Real.summable_one_div_nat_rpow.mpr hp
+  refine Summable.congr ((summable_nat_add_iff 1).mpr hsum) (fun j => ?_)
+  push_cast
+  ring_nf
 
 end HTGeometry

@@ -47,6 +47,64 @@ def HasLogExponentPair (κ ell : ℝ) : Prop :=
         ‖bourgainLogIntervalSum t a b‖ ≤
           C * (t / (M : ℝ)) ^ (κ + ε) * (M : ℝ) ^ (ell + ε)
 
+/-- Every term in the logarithmic phase is unimodular. -/
+theorem norm_bourgainLogPhase
+    {t : ℝ} {n : ℕ} (hn : 0 < n) :
+    ‖bourgainLogPhase t n‖ = 1 := by
+  rw [bourgainLogPhase, ← Complex.ofReal_natCast,
+    Complex.norm_cpow_eq_rpow_re_of_pos (by exact_mod_cast hn)]
+  simp
+
+/-- Triangle inequality bounds every logarithmic interval sum by its right endpoint. -/
+theorem norm_bourgainLogIntervalSum_le
+    (t : ℝ) (a b : ℕ) :
+    ‖bourgainLogIntervalSum t a b‖ ≤ b := by
+  rw [bourgainLogIntervalSum]
+  calc
+    ‖∑ n ∈ Finset.Ioc a b, bourgainLogPhase t n‖ ≤
+        ∑ n ∈ Finset.Ioc a b, ‖bourgainLogPhase t n‖ :=
+      norm_sum_le _ _
+    _ = ∑ _n ∈ Finset.Ioc a b, (1 : ℝ) := by
+      apply Finset.sum_congr rfl
+      intro n hn
+      rw [norm_bourgainLogPhase (by
+        have := (Finset.mem_Ioc.mp hn).1
+        omega)]
+    _ = (Finset.Ioc a b).card := by simp
+    _ ≤ b := by
+      simp only [Nat.card_Ioc]
+      exact_mod_cast Nat.sub_le b a
+
+/-- `[CORPUS]` The trivial exponent pair `(0,1)` satisfies the exact uniform subinterval
+interface.  This supplies an unconditional baseline constructor for `HasLogExponentPair`; the
+published Bourgain pair remains the decoupling/spacing theorem. -/
+theorem hasLogExponentPair_zero_one :
+    HasLogExponentPair 0 1 := by
+  intro ε hε
+  refine ⟨1, by norm_num, ?_⟩
+  intro t M a b ht hM hMt ha hab hb
+  have ht0 : 0 < t := lt_of_lt_of_le (by norm_num) ht
+  have hM0 : (0 : ℝ) < M := by exact_mod_cast hM
+  have htrpow : 1 ≤ t ^ ε :=
+    Real.one_le_rpow (le_trans (by norm_num) ht) hε.le
+  have hidentity :
+      (t / (M : ℝ)) ^ ε * (M : ℝ) ^ (1 + ε) =
+        t ^ ε * M := by
+    rw [Real.div_rpow ht0.le hM0.le, Real.rpow_add hM0,
+      Real.rpow_one]
+    have hpow : (M : ℝ) ^ ε ≠ 0 :=
+      ne_of_gt (Real.rpow_pos_of_pos hM0 ε)
+    field_simp
+  calc
+    ‖bourgainLogIntervalSum t a b‖ ≤ b :=
+      norm_bourgainLogIntervalSum_le t a b
+    _ ≤ (M : ℝ) := by exact_mod_cast hb
+    _ ≤ t ^ ε * M := by
+      simpa only [one_mul] using
+        mul_le_mul_of_nonneg_right htrpow (by positivity : (0 : ℝ) ≤ M)
+    _ = 1 * (t / (M : ℝ)) ^ (0 + ε) * (M : ℝ) ^ (1 + ε) := by
+      rw [zero_add, one_mul, hidentity]
+
 /-- Bourgain's published exponent pair. -/
 noncomputable def bourgainExponentPair : ℝ × ℝ :=
   (13 / 84, 55 / 84)

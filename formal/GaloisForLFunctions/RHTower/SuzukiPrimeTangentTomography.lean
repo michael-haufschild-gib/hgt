@@ -312,6 +312,148 @@ def SuzukiPrimeTangentNonresonant (a : ℝ) (s : Finset ℕ) : Prop :=
     (∀ j ∈ s,
       (suzukiPrimeTangentPhase a j)⁻¹ ≠ suzukiPrimeTangentPhase a m)
 
+/-- If every packet index is at least two and its logarithm is below the aperture, then all
+positive phases lie in the open upper semicircle.  Strict injectivity of cosine separates the
+positive phases, while the sign of the imaginary part separates every reflected phase. -/
+theorem suzukiPrimeTangentNonresonant_of_log_lt_aperture
+    {a : ℝ} {s : Finset ℕ}
+    (hsupport : ∀ m ∈ s, 2 ≤ m)
+    (hlarge : ∀ m ∈ s, Real.log m < a) :
+    SuzukiPrimeTangentNonresonant a s := by
+  have hangle (m : ℕ) (hm : m ∈ s) :
+      Real.pi * Real.log m / a ∈ Set.Icc (0 : ℝ) Real.pi := by
+    have hm2 := hsupport m hm
+    have hm1 : 1 < (m : ℝ) := by
+      exact_mod_cast (lt_of_lt_of_le (by omega : 1 < 2) hm2)
+    have hlog : 0 < Real.log (m : ℝ) := Real.log_pos hm1
+    have ha : 0 < a := hlog.trans (hlarge m hm)
+    constructor
+    · exact (div_pos (mul_pos Real.pi_pos hlog) ha).le
+    · have hratio : Real.log (m : ℝ) / a < 1 :=
+        (div_lt_one ha).2 (hlarge m hm)
+      have hpi : 0 < Real.pi := Real.pi_pos
+      calc
+        Real.pi * Real.log m / a =
+            Real.pi * (Real.log m / a) := by ring
+        _ ≤ Real.pi := by
+          simpa only [mul_one] using
+            (mul_lt_mul_of_pos_left hratio hpi).le
+  have hphaseIm (m : ℕ) (hm : m ∈ s) :
+      0 < (suzukiPrimeTangentPhase a m).im := by
+    have hm2 := hsupport m hm
+    have hm1 : 1 < (m : ℝ) := by
+      exact_mod_cast (lt_of_lt_of_le (by omega : 1 < 2) hm2)
+    have hlog : 0 < Real.log (m : ℝ) := Real.log_pos hm1
+    have ha : 0 < a := hlog.trans (hlarge m hm)
+    have htheta0 : 0 < Real.pi * Real.log m / a :=
+      div_pos (mul_pos Real.pi_pos hlog) ha
+    have hthetap : Real.pi * Real.log m / a < Real.pi := by
+      have hratio : Real.log (m : ℝ) / a < 1 :=
+        (div_lt_one ha).2 (hlarge m hm)
+      calc
+        Real.pi * Real.log m / a =
+            Real.pi * (Real.log m / a) := by ring
+        _ < Real.pi * 1 :=
+          mul_lt_mul_of_pos_left hratio Real.pi_pos
+        _ = Real.pi := mul_one _
+    have hformula : (suzukiPrimeTangentPhase a m).im =
+        Real.sin (Real.pi * Real.log m / a) := by
+      have h := congrArg Complex.im
+        (Complex.exp_ofReal_mul_I (Real.pi * Real.log m / a))
+      simpa only [suzukiPrimeTangentPhase, Complex.add_im, Complex.ofReal_im,
+        Complex.mul_im, Complex.ofReal_re, Complex.I_im, Complex.I_re,
+        zero_add, add_zero, mul_one, zero_mul] using h
+    rw [hformula]
+    exact Real.sin_pos_of_pos_of_lt_pi htheta0 hthetap
+  intro m hm
+  constructor
+  · intro j hj hjne heq
+    have hangleEq :
+        Real.pi * Real.log j / a = Real.pi * Real.log m / a := by
+      apply Real.injOn_cos (hangle j hj) (hangle m hm)
+      have hre := congrArg Complex.re heq
+      simpa only [suzukiPrimeTangentPhase, Complex.exp_ofReal_mul_I,
+        Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+        Complex.ofReal_im, Complex.I_im, mul_zero, zero_mul, sub_zero,
+        add_zero] using hre
+    have hj2 := hsupport j hj
+    have hm2 := hsupport m hm
+    have hjpos : (0 : ℝ) < j := by
+      exact_mod_cast (lt_of_lt_of_le (by omega : 0 < 2) hj2)
+    have hmpos : (0 : ℝ) < m := by
+      exact_mod_cast (lt_of_lt_of_le (by omega : 0 < 2) hm2)
+    have hlogm : 0 < Real.log (m : ℝ) :=
+      Real.log_pos (by
+        exact_mod_cast (lt_of_lt_of_le (by omega : 1 < 2) hm2))
+    have ha : 0 < a := hlogm.trans (hlarge m hm)
+    have hfac : Real.pi / a ≠ 0 := (div_pos Real.pi_pos ha).ne'
+    have hlogEq : Real.log (j : ℝ) = Real.log (m : ℝ) := by
+      apply mul_left_cancel₀ hfac
+      simpa only [div_mul_eq_mul_div] using hangleEq
+    have hcast : (j : ℝ) = (m : ℝ) :=
+      Real.strictMonoOn_log.injOn (Set.mem_Ioi.mpr hjpos)
+        (Set.mem_Ioi.mpr hmpos) hlogEq
+    exact hjne (by exact_mod_cast hcast)
+  · intro j hj heq
+    have hjim := hphaseIm j hj
+    have hmim := hphaseIm m hm
+    have hjne : suzukiPrimeTangentPhase a j ≠ 0 :=
+      norm_ne_zero_iff.mp (by
+        rw [norm_suzukiPrimeTangentPhase]
+        norm_num)
+    have hnormSq : 0 < Complex.normSq (suzukiPrimeTangentPhase a j) :=
+      Complex.normSq_pos.mpr hjne
+    have hinvneg : ((suzukiPrimeTangentPhase a j)⁻¹).im < 0 := by
+      rw [Complex.inv_im]
+      exact div_neg_of_neg_of_pos (neg_neg_of_pos hjim) hnormSq
+    have himEq := congrArg Complex.im heq
+    linarith
+
+/-- Every finite packet supported on integers at least two is phase-nonresonant at all
+sufficiently large apertures. -/
+theorem eventually_suzukiPrimeTangentNonresonant
+    (s : Finset ℕ) (hsupport : ∀ m ∈ s, 2 ≤ m) :
+    ∀ᶠ a : ℝ in atTop, SuzukiPrimeTangentNonresonant a s := by
+  have hlarge : ∀ᶠ a : ℝ in atTop, ∀ m ∈ s, Real.log m < a :=
+    (s.eventually_all).2 fun m _ => eventually_gt_atTop (Real.log m)
+  filter_upwards [hlarge] with a ha
+  exact suzukiPrimeTangentNonresonant_of_log_lt_aperture hsupport ha
+
+/-- Cofinal source-selected apertures discharge the nonresonance interface for every finite
+packet supported on integers at least two. -/
+theorem exists_suzukiPrimeTangentNonresonant_above
+    (s : Finset ℕ) (hsupport : ∀ m ∈ s, 2 ≤ m) (B : ℝ) :
+    ∃ a : ℝ, 0 < a ∧ B < a ∧ SuzukiPrimeTangentNonresonant a s := by
+  let C : ℝ := ∑ m ∈ s, |Real.log m|
+  let a : ℝ := max (max B 0) C + 1
+  have hbaseNonneg : 0 ≤ max (max B 0) C :=
+    le_trans (le_max_right B 0) (le_max_left (max B 0) C)
+  have ha0 : 0 < a := by
+    dsimp only [a]
+    linarith
+  have hBa : B < a := by
+    have hBbase : B ≤ max (max B 0) C :=
+      (le_max_left B 0).trans (le_max_left (max B 0) C)
+    dsimp only [a]
+    linarith
+  have hlarge : ∀ m ∈ s, Real.log m < a := by
+    intro m hm
+    have hsingle : |Real.log m| ≤ C := by
+      dsimp only [C]
+      exact Finset.single_le_sum (s := s)
+        (f := fun i : ℕ => |Real.log i|)
+        (fun (i : ℕ) _ => abs_nonneg (Real.log i)) hm
+    have hCbase : C ≤ max (max B 0) C := le_max_right _ _
+    calc
+      Real.log m ≤ |Real.log m| := le_abs_self _
+      _ ≤ C := hsingle
+      _ ≤ max (max B 0) C := hCbase
+      _ < a := by
+        dsimp only [a]
+        linarith
+  exact ⟨a, ha0, hBa,
+    suzukiPrimeTangentNonresonant_of_log_lt_aperture hsupport hlarge⟩
+
 /-- **Prime-power tangent tomography.** At a phase-nonresonant aperture, the Bohr coefficient of
 Suzuki's finite tangent packet recovers exactly the target von-Mangoldt source weight. -/
 theorem tendsto_suzukiPrimeTangentCarrier_bohrCoefficient
@@ -375,6 +517,25 @@ theorem tendsto_suzukiPrimeTangentCarrier_normalized_bohrCoefficient_of_nonreson
       atTop (𝓝 (ArithmeticFunction.vonMangoldt m : ℂ)) := by
   exact tendsto_suzukiPrimeTangentCarrier_normalized_bohrCoefficient hm hm2
     (hres m hm).1 (hres m hm).2
+
+/-- A source-selected aperture above any prescribed scale recovers every von Mangoldt
+coefficient in the finite tangent packet.  No nonresonance hypothesis remains in the interface. -/
+theorem exists_suzukiPrimeTangentTomography_above
+    (s : Finset ℕ) (hsupport : ∀ m ∈ s, 2 ≤ m) (B : ℝ) :
+    ∃ a : ℝ, 0 < a ∧ B < a ∧
+      ∀ m : ℕ, m ∈ s →
+        Tendsto
+          (fun N => suzukiPrimeTangentNormalize m
+            (suzukiCesaroMean
+              (fun n => suzukiPrimeTangentCarrier a s n *
+                (suzukiPrimeTangentPhase a m)⁻¹ ^ n) N))
+          atTop (𝓝 (ArithmeticFunction.vonMangoldt m : ℂ)) := by
+  obtain ⟨a, ha, hBa, hres⟩ :=
+    exists_suzukiPrimeTangentNonresonant_above s hsupport B
+  refine ⟨a, ha, hBa, ?_⟩
+  intro m hm
+  exact tendsto_suzukiPrimeTangentCarrier_normalized_bohrCoefficient_of_nonresonant
+    hres hm (hsupport m hm)
 
 end
 

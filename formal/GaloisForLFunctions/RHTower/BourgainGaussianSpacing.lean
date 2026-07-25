@@ -61,11 +61,16 @@ theorem bourgainScaledSqDist_le_one_of_nearPair
         _ = 1 / 2 := by
           field_simp [(hX j).ne']
     have habs_nonneg : 0 ≤ |X j * d| := abs_nonneg _
-    have hhalf : (0 : ℝ) ≤ 1 / 2 := by norm_num
     have hsq :
         |X j * d| ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) :=
-      pow_le_pow_left₀ habs_nonneg hhalf 2 habs.le
-    simpa [d, sq_abs] using hsq
+      pow_le_pow_left₀ habs_nonneg habs.le 2
+    calc
+      (X j * (bourgainSixfoldMoment h j -
+          bourgainSixfoldMoment h' j)) ^ (2 : ℕ) =
+        |X j * d| ^ (2 : ℕ) := by
+          rw [sq_abs]
+      _ ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := hsq
+      _ = 1 / 4 := by norm_num
   calc
     bourgainScaledSqDist X
         (bourgainSixfoldMoment h) (bourgainSixfoldMoment h') ≤
@@ -126,8 +131,25 @@ theorem bourgainFirstSpacingCount_le_gaussianEnergy
               (bourgainSixfoldMoment p.2)) :=
       Finset.sum_le_sum hterm
     _ = Real.exp Real.pi * bourgainGaussianSpacingEnergy H X := by
-      simp only [P, U, Finset.sum_product, bourgainGaussianSpacingEnergy,
-        Finset.mul_sum]
+      change
+        (∑ p ∈ U ×ˢ U,
+          Real.exp Real.pi *
+            Real.exp (-Real.pi *
+              bourgainScaledSqDist X
+                (bourgainSixfoldMoment p.1)
+                (bourgainSixfoldMoment p.2))) =
+          Real.exp Real.pi *
+            (∑ h : Fin 6 → Fin H, ∑ h' : Fin 6 → Fin H,
+              Real.exp (-Real.pi *
+                bourgainScaledSqDist X
+                  (bourgainSixfoldMoment h)
+                  (bourgainSixfoldMoment h')))
+      rw [Finset.sum_product]
+      simp only [U]
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro h _
+      rw [Finset.mul_sum]
 
 end
 

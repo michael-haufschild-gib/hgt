@@ -11,9 +11,10 @@ The sign character and the fixed-point-free reflection `q ↦ -q` define
 `(J f)(q) = sign(q) * conj (f (-q))`.
 
 This file proves unconditionally that `J` is complex conjugate-linear, `J² = -1`, and rational
-left scaling by `k` has covariance sign `sign(k)`.  It also proves the complementary no-go:
-the induced Real structure on matrix kernels squares to `+1`, so passage from the Morita module
-to its endomorphism algebra erases the quaternionic central sign.
+left scaling by `k` has covariance sign `sign(k)`.  The induced Real structure on endomorphisms
+squares to `+1`, but its fixed endomorphisms are exactly those commuting with `J`.  Thus ordinary
+complex trace forgets the quaternionic sign, while the Real fixed algebra retains quaternionic
+Brauer type.
 
 Only algebraic function and kernel identities are formalized here.  No summability, cyclic
 comparison, positivity, zero spectrum, or Riemann-hypothesis premise occurs.
@@ -118,6 +119,121 @@ def ccmRationalQuaternionicReflectionₛₗ :
     rw [ccmRationalQuaternionicReflection_smul]
     rfl
 
+@[simp]
+theorem ccmRationalQuaternionicReflection_neg
+    (f : CCMRationalUnit → ℂ) :
+    ccmRationalQuaternionicReflection (-f) =
+      -ccmRationalQuaternionicReflection f := by
+  simpa using ccmRationalQuaternionicReflection_smul (-1 : ℂ) f
+
+/--
+Real structure induced by the quaternionic reflection on complex-linear endomorphisms.
+
+Because `J⁻¹ = -J`, conjugation by `J` is `T ↦ -J T J`.
+-/
+def ccmRationalEndomorphismRealStructure
+    (T : Module.End ℂ (CCMRationalUnit → ℂ)) :
+    Module.End ℂ (CCMRationalUnit → ℂ) where
+  toFun f :=
+    -ccmRationalQuaternionicReflection
+      (T (ccmRationalQuaternionicReflection f))
+  map_add' f g := by
+    rw [ccmRationalQuaternionicReflection_add, map_add,
+      ccmRationalQuaternionicReflection_add]
+    abel
+  map_smul' z f := by
+    rw [ccmRationalQuaternionicReflection_smul, map_smul,
+      ccmRationalQuaternionicReflection_smul]
+    simp
+
+theorem ccmRationalEndomorphismRealStructure_apply
+    (T : Module.End ℂ (CCMRationalUnit → ℂ))
+    (f : CCMRationalUnit → ℂ) :
+    ccmRationalEndomorphismRealStructure T f =
+      -ccmRationalQuaternionicReflection
+        (T (ccmRationalQuaternionicReflection f)) :=
+  rfl
+
+theorem ccmRationalEndomorphismRealStructure_add
+    (T S : Module.End ℂ (CCMRationalUnit → ℂ)) :
+    ccmRationalEndomorphismRealStructure (T + S) =
+      ccmRationalEndomorphismRealStructure T +
+        ccmRationalEndomorphismRealStructure S := by
+  apply LinearMap.ext
+  intro f
+  simp only [ccmRationalEndomorphismRealStructure_apply, LinearMap.add_apply]
+  rw [ccmRationalQuaternionicReflection_add]
+  abel
+
+theorem ccmRationalEndomorphismRealStructure_smul
+    (z : ℂ) (T : Module.End ℂ (CCMRationalUnit → ℂ)) :
+    ccmRationalEndomorphismRealStructure (z • T) =
+      star z • ccmRationalEndomorphismRealStructure T := by
+  apply LinearMap.ext
+  intro f
+  simp [ccmRationalEndomorphismRealStructure_apply,
+    ccmRationalQuaternionicReflection_smul]
+
+/-- Endomorphism Real structure bundled as a complex conjugate-linear map. -/
+def ccmRationalEndomorphismRealStructureₛₗ :
+    Module.End ℂ (CCMRationalUnit → ℂ) →ₗ⋆[ℂ]
+      Module.End ℂ (CCMRationalUnit → ℂ) where
+  toFun := ccmRationalEndomorphismRealStructure
+  map_add' := ccmRationalEndomorphismRealStructure_add
+  map_smul' := ccmRationalEndomorphismRealStructure_smul
+
+/-- Quaternionic conjugation induces an involution on complex-linear endomorphisms. -/
+theorem ccmRationalEndomorphismRealStructure_sq
+    (T : Module.End ℂ (CCMRationalUnit → ℂ)) :
+    ccmRationalEndomorphismRealStructure
+        (ccmRationalEndomorphismRealStructure T) = T := by
+  apply LinearMap.ext
+  intro f
+  simp [ccmRationalEndomorphismRealStructure_apply,
+    ccmRationalQuaternionicReflection_sq]
+
+theorem ccmRationalEndomorphismRealStructure_one :
+    ccmRationalEndomorphismRealStructure LinearMap.id = LinearMap.id := by
+  apply LinearMap.ext
+  intro f
+  simp [ccmRationalEndomorphismRealStructure_apply,
+    ccmRationalQuaternionicReflection_sq]
+
+/-- The induced Real structure preserves composition. -/
+theorem ccmRationalEndomorphismRealStructure_comp
+    (T S : Module.End ℂ (CCMRationalUnit → ℂ)) :
+    ccmRationalEndomorphismRealStructure (T.comp S) =
+      (ccmRationalEndomorphismRealStructure T).comp
+        (ccmRationalEndomorphismRealStructure S) := by
+  apply LinearMap.ext
+  intro f
+  simp [ccmRationalEndomorphismRealStructure_apply,
+    ccmRationalQuaternionicReflection_sq]
+
+/--
+Brauer fixed-point law: fixed endomorphisms are exactly the endomorphisms linear over the
+quaternionic generator `J`.
+-/
+theorem ccmRationalEndomorphismRealStructure_fixed_iff
+    (T : Module.End ℂ (CCMRationalUnit → ℂ)) :
+    ccmRationalEndomorphismRealStructure T = T ↔
+      ∀ f, T (ccmRationalQuaternionicReflection f) =
+        ccmRationalQuaternionicReflection (T f) := by
+  constructor
+  · intro h f
+    have hf := congrArg
+      (fun S : Module.End ℂ (CCMRationalUnit → ℂ) =>
+        ccmRationalQuaternionicReflection (S f)) h
+    simp [ccmRationalEndomorphismRealStructure_apply,
+      ccmRationalQuaternionicReflection_sq] at hf
+    simpa using hf
+  · intro h
+    apply LinearMap.ext
+    intro f
+    rw [ccmRationalEndomorphismRealStructure_apply, h,
+      ccmRationalQuaternionicReflection_sq]
+    simp
+
 /-- Left regular rational scaling on the algebraic Morita fiber. -/
 def ccmRationalLeftScale (k : CCMRationalUnit) (f : CCMRationalUnit → ℂ)
     (q : CCMRationalUnit) : ℂ :=
@@ -180,6 +296,67 @@ def ccmRationalMonomialRealTwist
     (k : CCMRationalUnit) (φ : CCMRationalUnit → ℂ)
     (x : CCMRationalUnit) : ℂ :=
   ccmRationalUnitSign k * star (φ (-x))
+
+/-- The source monomial twist is additive. -/
+theorem ccmRationalMonomialRealTwist_add
+    (k : CCMRationalUnit) (φ ψ : CCMRationalUnit → ℂ) :
+    ccmRationalMonomialRealTwist k (φ + ψ) =
+      ccmRationalMonomialRealTwist k φ +
+        ccmRationalMonomialRealTwist k ψ := by
+  funext x
+  simp [ccmRationalMonomialRealTwist, mul_add]
+
+/-- The source monomial twist is complex conjugate-linear. -/
+theorem ccmRationalMonomialRealTwist_smul
+    (k : CCMRationalUnit) (z : ℂ) (φ : CCMRationalUnit → ℂ) :
+    ccmRationalMonomialRealTwist k (z • φ) =
+      star z • ccmRationalMonomialRealTwist k φ := by
+  funext x
+  simp [ccmRationalMonomialRealTwist]
+  ring
+
+/-- Applying the source monomial twist twice is the identity. -/
+theorem ccmRationalMonomialRealTwist_sq
+    (k : CCMRationalUnit) (φ : CCMRationalUnit → ℂ) :
+    ccmRationalMonomialRealTwist k
+        (ccmRationalMonomialRealTwist k φ) = φ := by
+  funext x
+  simp only [ccmRationalMonomialRealTwist, neg_neg, star_mul,
+    ccmRationalUnitSign_star, star_star]
+  calc
+    ccmRationalUnitSign k * (φ x * ccmRationalUnitSign k) =
+        (ccmRationalUnitSign k * ccmRationalUnitSign k) * φ x := by ring
+    _ = φ x := by rw [ccmRationalUnitSign_sq, one_mul]
+
+/--
+Coefficient product for two rational CCM crossed-product monomials.
+
+If the first monomial has group label `k`, matrix multiplication evaluates the second
+coefficient at `k⁻¹ * x`.
+-/
+def ccmRationalMonomialCoefficientProduct
+    (k : CCMRationalUnit)
+    (φ ψ : CCMRationalUnit → ℂ)
+    (x : CCMRationalUnit) : ℂ :=
+  φ x * ψ (k⁻¹ * x)
+
+/--
+The source monomial Real twist preserves crossed-product multiplication. This is the algebraic
+equivariance law needed before the analytic bornological completion.
+-/
+theorem ccmRationalMonomialRealTwist_product
+    (k l : CCMRationalUnit) (φ ψ : CCMRationalUnit → ℂ) :
+    ccmRationalMonomialRealTwist (k * l)
+        (ccmRationalMonomialCoefficientProduct k φ ψ) =
+      ccmRationalMonomialCoefficientProduct k
+        (ccmRationalMonomialRealTwist k φ)
+        (ccmRationalMonomialRealTwist l ψ) := by
+  funext x
+  simp only [ccmRationalMonomialRealTwist,
+    ccmRationalMonomialCoefficientProduct, ccmRationalUnitSign_mul,
+    star_mul]
+  rw [show k⁻¹ * -x = -(k⁻¹ * x) by simp]
+  ring
 
 /-- Quaternionic kernel conjugation preserves the CCM monomial support and adds its sign grade. -/
 theorem ccmRationalKernelRealStructure_monomial

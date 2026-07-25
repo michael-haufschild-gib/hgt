@@ -69,9 +69,26 @@ Define the conjugate-linear sign-reflection
        =\operatorname{sgn}(k)\overline{f_k(-xb)}.          \tag{5}
    \]
    Thus it preserves the restricted groupoid representation and is independent of \(b\).
-7. Passing to endomorphisms erases the quaternionic central sign:
+7. Passing to endomorphisms turns the central square into a Real involution:
    \[
      \operatorname{Ad}_{\mathcal J}^2(T)=T.               \tag{6}
+   \]
+8. This involution retains the quaternionic Brauer type through its fixed algebra:
+   \[
+     \operatorname{Ad}_{\mathcal J}(T)=T
+       \quad\Longleftrightarrow\quad
+     T\mathcal J=\mathcal JT.                              \tag{7}
+   \]
+9. On rational crossed-product monomial coefficients, the induced twist
+   \[
+     (\alpha_k\phi)(x)
+       =\operatorname{sgn}(k)\overline{\phi(-x)}
+   \]
+   is conjugate-linear, involutive, and multiplicative:
+   \[
+     \alpha_{k\ell}(\phi\star_k\psi)
+       =(\alpha_k\phi)\star_k(\alpha_\ell\psi),\qquad
+     (\phi\star_k\psi)(x)=\phi(x)\psi(k^{-1}x).             \tag{8}
    \]
 
 No copy of \(\ell^2(\mathbb Q^\times)\) is added; the pair \(q,-q\) is already present in the
@@ -129,25 +146,51 @@ Finally,
 \]
 proving (6).
 
+Write the involution as
+\(\sigma_{\mathbb H}(T)=-\mathcal JT\mathcal J\), using
+\(\mathcal J^{-1}=-\mathcal J\). If \(T\mathcal J=\mathcal JT\), then
+\[
+  \sigma_{\mathbb H}(T)
+    =-\mathcal JT\mathcal J
+    =-T\mathcal J^2=T.
+\]
+Conversely, if \(-\mathcal JT\mathcal J=T\), compose with \(\mathcal J\) and use
+\(\mathcal J^2=-1\) to obtain \(\mathcal JT=T\mathcal J\). This proves (7). The same
+calculation proves that \(\sigma_{\mathbb H}\) is conjugate-linear, unital, and multiplicative.
+
+For monomial coefficients, involutivity follows from
+\(\operatorname{sgn}(k)^2=1\) and applying conjugation and negation twice. Moreover,
+\[
+\begin{aligned}
+  \alpha_{k\ell}(\phi\star_k\psi)(x)
+   &=\operatorname{sgn}(k)\operatorname{sgn}(\ell)\,
+     \overline{\phi(-x)\psi(-k^{-1}x)}\\
+   &=(\alpha_k\phi)(x)(\alpha_\ell\psi)(k^{-1}x),
+\end{aligned}
+\]
+which proves (8).
+
 ## Hostile interpretation
 
-`[NO-GO]` The theorem does **not** by itself make the CCM trace-class algebra
-\(K_{\mathbb R}\)-odd.  Ordinary endomorphism algebra and Morita trace pair the quaternionic
-module with its dual, so the central \(-1\) cancels exactly as in (6).  Applying ordinary cyclic
-homology after \(\operatorname{End}(\mathcal H_b)\) can therefore recover at most a Real
-involution.
+`[NO-GO]` The theorem does **not** by itself construct the analytic CCM cyclic cokernel or its
+twisted derived \(\operatorname{Tor}\). Ordinary complex Morita trace forgets the fixed algebra
+in (7), so it still cannot produce Deninger's odd \(K_{\mathbb R}\)-object.
+
+`[CORRECTION]` The earlier reading of (6) as complete erasure was too strong. Moutuou proves
+that for \(J^2=-1\), the Real structure \(T\mapsto-JTJ\) has fixed algebra equal to the compact
+quaternionic-linear operators. It represents the non-split quaternionic Real Brauer type.
 
 ## Strongest positive survivor
 
 `[NEW]` The missing sign is already present, without doubling, on CCM's rational Morita
-**bimodule**, but is destroyed by the ordinary endomorphism/trace passage.  A successful lift must
-enhance the *relative restriction correspondence* before this passage and retain one unpaired
-copy of \(\mathcal H_b\).  Concretely, the next target is Real/quaternionic cyclic homology with
-coefficients in the sign-reflection Morita bimodule, together with a comparison theorem showing
-that forgetting the coefficient structure is the single CCM relative realization.
+**bimodule**, and the induced operator algebra retains it as non-split Real Brauer type. A
+successful lift must enhance the relative restriction correspondence and carry this type through
+closed cyclic cokernel and derived \(\operatorname{Tor}\). Concretely, next target is a
+Real-Brauer-twisted cyclic realization whose forgetful complex is the single CCM realization.
 
-This replaces the earlier unconstrained search for an order-four anti-map on the trace-class
-algebra by a specific source operator and a specific descent problem.
+This replaces both the unconstrained order-four search and the unnecessarily restrictive
+"unpaired coefficient" requirement by a specific source operator, fixed algebra, and descent
+problem.
 
 ## Novelty audit
 
@@ -164,8 +207,11 @@ The elementary operator identities are not individually claimed as novel.  The i
 placement of the quaternionic structure on the pre-trace CCM Morita bimodule is labelled new
 pending expert review.
 
-Lean module:
-`GaloisForLFunctions.RHTower.CCMRationalQuaternionicMoritaFiber`.
+Lean modules:
+
+- `GaloisForLFunctions.RHTower.CCMRationalQuaternionicMoritaFiber`;
+- `GaloisForLFunctions.RHTower.CCMRationalRealCrossedProduct`;
+- `GaloisForLFunctions.RHTower.CCMRationalKRealBrauerBridge`.
 
 Formal capstones:
 
@@ -173,7 +219,17 @@ Formal capstones:
 - `ccmRationalQuaternionicReflection_leftScale`;
 - `ccmRationalKernelRealStructure_sq`;
 - `ccmRationalKernelRealStructure_monomial`;
-- `ccmRationalQuaternionicReflectionₛₗ`.
+- `ccmRationalQuaternionicReflectionₛₗ`;
+- `ccmRationalEndomorphismRealStructure_sq`;
+- `ccmRationalEndomorphismRealStructure_comp`;
+- `ccmRationalEndomorphismRealStructure_fixed_iff`;
+- `ccmRationalEndomorphismRealStructureₛₗ`;
+- `ccmRationalMonomialRealTwist_sq`;
+- `ccmRationalMonomialRealTwist_product`;
+- `ccmRationalMoritaKRealOdd`;
+- `ccmRationalEndomorphismKRealEven`;
+- `ccmRationalEndomorphismKRealEven_fixed_iff`;
+- `ccmRationalLeftScaleKRealMorphism`.
 
 ## Gates
 
@@ -202,3 +258,11 @@ Formal capstones:
   `lake env lean GaloisForLFunctions/RHTower/CCMRationalQuaternionicMoritaFiber.lean` passed;
   final `lake build GaloisForLFunctions.RHTower.CCMRationalQuaternionicMoritaFiber` passed;
   formal lint passed.
+- 2026-07-25 — corrected the endomorphism-erasure interpretation after auditing Real graded
+  Brauer classification. Added and formalized the fixed-algebra law and the full finite-support
+  crossed-product Real involution. Both cached leaf builds passed; axiom audit contains only
+  `propext`, `Classical.choice`, and `Quot.sound`; formal lint passed.
+- 2026-07-25 — connected quaternionic source and Real endomorphism algebra to the generic
+  \(K_{\mathbb R}\) interface in `CCMRationalKRealBrauerBridge.lean`. Minimal Lean check and
+  cached leaf build passed; capstone axiom audit contains only `propext`,
+  `Classical.choice`, and `Quot.sound`.

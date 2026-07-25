@@ -509,6 +509,58 @@ agree exactly on purely off-critical insertions. The classification's grading an
 are one and the same invariant, read once through `Λ`-positivity and once through Weil positivity.
 Theorem M is the statement that the invariant vanishes only at `ζ`.
 
+## 5g. A no-go atlas for positivity approaches
+
+The theorems above and their companions map the positivity universe systematically.  Each entry is a
+theorem, not a heuristic, and each is machine-checked.
+
+**Linear positivity is capped at PNT strength (Theorem N).**  Convolution with any `φ ≥ 0` multiplies
+the coefficient of the frequency `w` by `Φ(w) = ∫φ(t)e^{-wt}dt`, and `Φ(½) > 0`, so no
+positivity-preserving operation cancels the leading exponential `e^{u/2}`.  Every inequality derived
+from `Λ ≥ 0` alone therefore sees the pole and never the `√x` fluctuation.
+
+**The quadratic index yields only lower bounds (Theorem N′).**  Ordering the divisor by frequency
+orbits, a critical orbit contributes a positive semidefinite block, a real orbit the hyperbolic `2XY`
+and a generic orbit `4(Z₁W₁ - Z₂W₂)`; each off-critical orbit costs exactly half its size, which is
+Bombieri's count.  Solving the resulting conservation law for `ζ` gives
+`ind₋(W_ζ) = ind₋(W_F) - I_off + R_off ≥ R_off - I_off`: a lower bound, never an upper one, since
+removing off-critical zeros presupposes knowing them.
+
+**The Bohr-torus model is valid only past an exponential height (Theorem G).**  Partitioning the
+`r`-torus into `Mʳ` boxes, a curve of length `Λ` meets at most `1 + r + rMΛ` of them, so covering
+forces `Λ ≥ M^{r-1}/(2r)`; for the Kronecker line `ξ ↦ (ξ log p)_{p ≤ N}` this reads
+`log T ≳ π(N)·log M`.  The prime symbol is already of full size `√N` at every height, so the model
+becomes applicable only exponentially beyond the heights where the Weil condition is needed.
+
+**The elementary archimedean tower is optimal (Theorems Q24–V29).**  The averaged archimedean symbol
+is exactly `2θ(X)/X` with `θ` the Riemann–Siegel theta function, so the elementary positivity range
+ends at the first zero of `θ`, `ℓ₀ = π/(2t₀)` with `t₀ ≈ 17.85`, improved to `ℓ ≈ 0.155` by the
+mean-zero refinement.  Every remaining elementary lever is closed: the damped prime sum is never
+activated because the archimedean baseline binds first; IMS localization has a scale-invariant error
+`≥ π²` that beats a logarithmic gap; the second spectral moment is satisfied for free by a vanishing
+mass at a diverging frequency; and the sharp band constraint is the prolate eigenvalue, which
+re-enters the machinery the tower was built to avoid.
+
+**Extending a positivity range is equivalent to the Riemann hypothesis (Theorem X31).**  Let
+`λ(L) = inf spec Q_L`, nonincreasing.  If `b ≤ λ` is nondecreasing with `b(L₀) ≥ 0` for one `L₀`, then
+`λ(L) ≥ b(L) ≥ b(L₀) ≥ 0` for `L ≥ L₀` and `λ(L) ≥ λ(L₀) ≥ 0` for `L ≤ L₀`; so `λ ≥ 0` everywhere.
+Every scheme for pushing a positivity range past its endpoint must produce such a bound, hence be as
+hard as RH, or fail — as four independent attempts do: the direct overlap estimate, the damped prime
+sum, IMS localization, and variational monotonicity under discreteness.  The one thing that *is* free
+is the converse direction: since the compression of the multiplier by `σ` has compact resolvent, the
+spectrum of `Q_L` is discrete and `λ` is strictly decreasing wherever the minimizer's image does not
+vanish identically outside its support; so positivity at `L₁` supplies a strictly positive gap at
+every `L < L₁`, and all soft tools propagate information downward in `L` only.
+
+**The axiomatic characterization is circular or false (Theorems M, P, R).**  Within the class
+`dΨ_F ≥ dΨ_ζ`, the four hypotheses force `F = ζ`; so `(H1)–(H4) ⟹ RH` is either equivalent to RH — if
+the Beurling category has a Hamburger-type uniqueness theorem, which Theorem M establishes on that
+class — or false, if a from-scratch counterexample exists.  Either way no proof of RH comes out.
+
+Taken together: the accessibility principle says the Weil form is the unique accessible functional
+detecting `Re ρ`, and the atlas says every route inside it is capped.  A proof must therefore
+introduce structure from outside the positivity universe.
+
 ## 6. The monotone Möbius criterion
 
 **Lemma 6.1.** If `g : [0,∞) → [0,∞)` is nondecreasing then for `u > 0`
@@ -708,3 +760,157 @@ GaloisForLFunctions/RHTower/LambdaPositiveFunctionalEquationOffLine.lean  -- The
 GaloisForLFunctions/RHTower/EntireFunctionalEquationOffLine.lean          -- Theorem J
 GaloisForLFunctions/RHTower/CCMCriticalClockDivisorBlindness.lean
 ```
+
+## §5h. The de Bruijn–Newman lane: the extinction time of the Weil index
+
+The classification of §5b–§5g maps the positivity universe and finds every lane capped. This section
+opens the one concrete lane outside it — the de Bruijn–Newman flow — and shows it is capped too, by
+a mechanism of a different kind.
+
+### 5h.1 The dictionary (Theorem Z33)
+
+The flow `H_t(z) = ∫₀^∞ e^{tu²}Φ(u)cos(zu)du` deforms `H_0 = ξ(½+iz)/8` through entire functions of
+order one, each even in `z`; equivalently each `Ξ_t(s) = H_t(-i(s-½))` is invariant under `s ↦ 1-s`.
+The whole flow therefore stays inside the class where the Weil form is defined, so the orbit
+decomposition of §5f applies at every time. Combining it with the definition of `Λ`:
+
+* `ind₋(W_{Ξ_t}) = ½·N_off(t)` (orbit decomposition);
+* `N_off(t) = 0` exactly for `t ≥ Λ` (definition of `Λ`).
+
+Hence `t ↦ ind₋(W_{Ξ_t})` is a nonincreasing integer-valued function of flow time vanishing precisely
+on `[Λ,∞)`:
+
+> **`Λ` is the extinction time of the Weil index along the de Bruijn–Newman flow**, and
+> `RH ⟺ ind₋(W_ξ) = 0 ⟺ Λ ≤ 0`.
+
+This identifies Bombieri's index — the quantity the Connes–Consani–Moscovici programme measures at
+`t = 0` — with a dynamical quantity: the time at which it vanishes. With Rodgers–Tao's `Λ ≥ 0`, the
+Riemann hypothesis becomes the statement that the flow is exactly critical. By Theorem Y32 the same
+reads spectrally: for `t < Λ` the divisor of `Ξ_t` carries complex quadruples, which no self-adjoint
+problem can produce.
+
+### 5h.2 The imaginary energy is a Lyapunov functional (Theorem A35)
+
+Differentiating `H_t(z_j(t)) = 0` and using `∂_t H = -∂_z²H` gives the zero dynamics
+`ż_j = 2Σ_{k≠j}1/(z_j - z_k)`. Put `I = Σ_j (Im z_j)²`. Since `Im(1/w) = -(Im w)/|w|²`,
+
+```
+İ = -4 Σ_{j≠k} y_j(y_j - y_k)/|z_j - z_k|² ,
+```
+
+and symmetrising the ordered pair `(j,k) ↔ (k,j)` — the denominator being symmetric — yields the
+exact identity
+
+```
+İ  =  -2 Σ_{j≠k} (y_j - y_k)² / |z_j - z_k|²  ≤  0 .
+```
+
+`I` is therefore **unconditionally** nonincreasing: no hypothesis on the configuration is needed.
+Two sharpenings: every ratio is at most `1`, with equality exactly when the two points share a real
+part; and a conjugate pair is vertically aligned, so its two ordered pairs are extremal and
+contribute `-4`. Hence `İ ≤ -4` while any complex zero survives, and since `I ≥ 0`,
+
+> **`Λ ≤ ¼ Σ_ρ (Re ρ - ½)²`.**
+
+In the flow coordinate a zero `ρ = β+iγ` has `Im z = ½-β`, so the right-hand side is the total
+squared deviation of the divisor from the critical line. A single pair gives `Λ ≤ y₀²/2`; a single
+quadruple `½±a±iγ` gives `Λ ≤ a²`. Read backwards, `Σ_ρ (Re ρ - ½)² ≥ 4Λ`.
+
+The estimate obtained from the local field — that a counterexample at height `T` merges in time
+`≍ 1/log T`, so that verification of RH to height `T` should give `Λ = O(1/log T)` — is Tao's, from
+the Polymath15 proposal, and requires the other zeros to be real. The collision estimate in reverse
+time, giving lower bounds for `Λ` from close pairs, is Csordas–Smith–Varga's Lehmer-pair theory. The
+energy identity is independent of both and needs neither a local model nor an assumption on the
+remaining zeros.
+
+### 5h.3 Conservation of merge time (Theorem B36)
+
+Let `t₁ ≤ … ≤ t_m` be the merge times and `m(t) = #{i : t < t_i}` the number of pairs still complex,
+which by §5h.1 *is* `ind₋(W_{Ξ_t})`. From `İ ≤ -4m(t)` and the layer-cake identity
+`∫₀^∞ m(t)dt = Σ_i t_i` — in piecewise constant form the Abel summation
+`Σ_i (m-i)(t_{i+1}-t_i) = Σ_i t_{i+1}` — one gets the exact accounting
+
+> **`∫₀^Λ ind₋(W_{Ξ_t}) dt = Σ_i t_i ≤ ¼ Σ_ρ (Re ρ - ½)²`.**
+
+The *sum* of the merge times, not merely the largest, is bounded. Three readings: it refines
+`Λ ≤ ¼Σ_ρ(Re ρ-½)²`, since `Λ = max t_i ≤ Σ t_i`; many exceptions force fast extinction, since `m`
+pairs surviving to `Λ` give `Λ ≤ I₀/(4m)`; and each merge costs four units of imaginary energy per
+unit of time it takes, the budget being the second moment of the real parts. This is the first
+inequality placing the Connes–Consani–Moscovici index and the de Bruijn–Newman flow on one line with
+a zero-statistic on the right.
+
+### 5h.4 The lane is capped (Theorem C37)
+
+The inequality invites a squeeze: a reverse bound `Λ ≥ κI₀` with `κ > ¼` would give `I₀ = 0`, hence
+RH. No such `κ` exists. For an isolated conjugate pair the energy identity is an **equality** —
+`I = 2y²`, `İ = -4`, merge at `y₀²/2 = I₀/4` — so the bound admits no constant improvement.
+
+The reason is structural: every term of `İ` is nonpositive. The field of the other zeros never
+opposes a merge, only accelerates it, so more zeros make `Λ` smaller and the reverse inequality
+degrades. **The de Bruijn–Newman flow is a monotone deformation toward the critical line.** A
+monotone deformation yields only upper bounds on `Λ` — "if RH fails, it fails briefly" — and can
+never contradict the failure of RH, because nothing in the dynamics resists it. Every known lower
+bound on `Λ` comes from the initial data, not from the flow. A second route confirms the cap: the
+Gaussian factor `e^{tu²}` destroys the Euler product for every `t > 0`, so `Ξ_t` carries no
+arithmetic at all and the primes exist only at the initial instant.
+
+Two caveats are recorded so they are not re-derived. The energy bound is vacuous if the divisor has
+infinite imaginary energy, and attempts to make its right-hand side arithmetic through zero-density
+theorems fail: `N(σ,T) ≪ T^{3(1-σ)/(2-σ)}log⁵T` gives `Σ_{γ<T}(β-½)² ≪ T log³T`, worse than the
+trivial `N(T)/4`.
+
+### 5h.5 The atlas, completed to six rows
+
+```
+linear Λ-positivity           caps at PNT strength                     (Theorem N)
+quadratic Weil index          lower bounds on ind₋ only                (Theorem N′)
+Bohr-torus probability        valid only past height ~ π(N)            (Theorem G)
+elementary archimedean tower  optimal at ℓ ≈ 0.155                     (Theorems Q24–V29)
+extension of the range        equivalent to RH                         (Theorem X31)
+de Bruijn–Newman flow         monotone: upper bounds on Λ only         (Theorem C37)
+```
+
+Each ceiling has the same shape: the available machinery is monotone or aggregate in a direction
+that *agrees* with the Riemann hypothesis, so it can approach the conclusion and never contradict its
+negation. A proof must therefore contain a mechanism that is **not** monotone in that direction —
+one that degrades as the divisor approaches the critical line, so criticality is forced by an
+extremal principle rather than reached as a limit.
+
+## §5i. A falsification criterion with the opposite monotonicity
+
+The six ceilings of §5h.5 share a cause: the machinery is monotone in a direction that *agrees* with
+the Riemann hypothesis. A criterion able to contradict its failure must therefore rest on a quantity
+that **degrades** as the divisor becomes more critical. One such quantity exists: the count of
+non-real zeros in *backward* flow time.
+
+Write `M(t)` for the number of non-real zeros of `H_t`, and `τ_fin = inf{t : M(t) < ∞}`. Ki–Kim–Lee
+proved that for every `t > 0` all but finitely many zeros of `H_t` are real and simple — the route to
+their `Λ < ½` — so `τ_fin ≤ 0`.
+
+Backward in time real zeros attract. For consecutive real zeros at distance `δ` the self-interaction
+gives `dδ/dτ = -4/δ`, while the surrounding field contributes `+2δ Σ_k (x-r_k)^{-2} ≍ 2cδϱ²` with `ϱ`
+the local density. A pair therefore collides — leaving the real axis as a conjugate pair — once its
+**normalized** gap `δϱ` falls below a fixed constant, and does so within time `δ²/8`. Under the
+Riemann hypothesis the zeros of `H_0` are all real with density `log(T/2π)/2π → ∞`, and the known
+small-gap results supply infinitely many normalized gaps below `0.5155`; for an evenly spaced field
+the threshold is `δϱ < √6/π ≈ 0.78`. Once complex, a pair stays complex as `t` decreases. Hence
+
+> `RH ⟹ M(t) = ∞ for every t < 0 ⟹ τ_fin = 0`, and contrapositively: **if `H_t` has only finitely
+> many non-real zeros for a single `t < 0`, the Riemann hypothesis is false.**
+
+The mechanism runs the right way. The more critical the divisor at `t = 0`, the denser its real
+zeros, the more pairs collide in backward time, and the *larger* `M(t)` is forced to be. Criticality
+is what makes the count infinite, so the criterion strengthens as the Riemann hypothesis is
+approached rather than saturating. It is also in a currency none of the capped lanes uses: the
+finiteness of a count, rather than the positivity of a form or the sign of a time.
+
+**Open core.** The threshold constant `√6/π` is computed for an evenly spaced field; the actual
+configuration is uneven and its neighbours also move. A rigorous lemma of the form "normalized gap
+below `c` implies collision within backward time `δ²/8`", with an explicit `c > 0.5155`, is not
+established here. The criterion is therefore a conjecture with a precisely located open core.
+
+Two rigorous companions are available. Since `∂_t H = -∂_z²H`, backward time is the *forward* heat
+equation, so Sturm's nodal-decrease theorem applies: the number of real zeros in any interval is
+nonincreasing as `t` decreases — real zeros are destroyed, never created, going backward. And from
+`İ ≤ -4` with `I(Λ) = 0` one gets `I(t) ≥ 4(Λ - t)` for `t < Λ`, hence with `Λ ≥ 0` the bound
+`I(t) ≥ 4|t|` for every `t ≤ 0`: non-reality in backward time is not marginal but grows linearly.

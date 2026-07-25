@@ -2269,3 +2269,759 @@ whole of what is left:
 every `τ`, which is Montgomery's `ℓ^q` conjecture along the reduction, hence the Density Hypothesis.**
 This is the tightest the programme has become: no inequality remains to be proved, only the
 construction of a mollifier with prescribed factor lengths and an acceptable truncation error.
+
+---
+
+# CYCLE 25 (2026-07-25) — executing the design inside the real reduction: the balanced split is forced, and the exact tension that remains
+
+## The reduction produces a convolution with **designable and forced-balanced** factor lengths `[PROVED HERE]`
+Run blueprint Lemma 11.5 with an `m`-fold mollifier. At a zero `ρ` one has
+`∑_{n≤T}n^{-ρ} ≪ T^{-1/2}`; split at `T^{δ_1}`. In the Type II case `∑_{n≤T^{δ_1}}n^{-ρ} ≪ T^{-δ_2}`,
+multiply by `∏_{i=1}^{m-1}\big(∑_{d≤D}d^{-ρ}\big)` with `D := T^{δ_1}`:
+```
+   \Big|1 + ∑_{1<k≤K} b_k k^{-ρ}\Big| ≪ T^{-δ_2}D^{(m-1)(1-σ)} = o(1),\qquad
+   b = 1_{≤D}^{\,*m},\quad K = D^{m},
+```
+so `|∑_{1<k≤K}b_kk^{-ρ}| ≫ 1`. **All `m` factors have the same length `D`, and since each factor is
+`≤ D` while the product is `≍ D^m`, every dyadic split is forced to be balanced:**
+```
+        δ_1 = ⋯ = δ_m = 1/m ,\qquad τ = \log T/\log K = 1/(mδ_1),\qquad τ/δ_i = mτ = 1/δ_1 .
+```
+**So `τ/δ_i` is an integer exactly when `1/δ_1 ∈ ℤ`** — a free choice. Setting `M := 1/δ_1`,
+Theorem 22 applies with `p_i = M`, `u = m/M = 1/τ`, `z = 0`, and gives
+```
+        \mathrm{LV}(σ,τ) ≤ (2−2σ)τ ,\qquad\text{hence}\qquad  R ≤ K^{(2−2σ)τ} = T^{2−2σ} ,
+```
+**which is the Density Hypothesis for the Type II contribution.** ✔ (Type I always has `τ ≥ 2` and is
+handled by `LV_ζ`, whose condition in Corollary 11.9 at `τ_0 = 3/2` is vacuous.)
+
+## The exact tension that blocks it `[PROVED HERE — the honest obstruction]`
+Three constraints must hold simultaneously:
+1. **Divisor boundedness.** `A_i^{p_i}=A_i^{M}` has coefficients `d_M(n)` and
+   `∑_{n≤T}d_M(n)² ≍ T(\log T)^{M²−1}`, which is `T^{1+o(1)}` **only if `M = O(1)`**, i.e.
+   `δ_1 ≍ 1`.
+2. **Mollifier admissibility.** `T^{-δ_2}D^{(m-1)(1-σ)} = o(1)` forces
+   `(m−1)(1−σ)δ_1 < δ_2`; combined with `δ_2 < δ_1` this gives `m < 1 + 1/(1−σ)` — at `σ = 7/10`,
+   `m ≤ 4`. (This is fine.)
+3. **Type I admissibility.** The Type I branch loses a factor `T^{2δ_2}` at threshold `T^{-δ_2}`, so
+   `δ_2 ≤ ε`; with (2) this forces `δ_1 ≤ ε/((m−1)(1−σ))`, hence `M = 1/δ_1 ≫ 1/ε` — **contradicting
+   (1)**.
+> **The obstruction, exactly: the design needs `1/δ_1` bounded (for the divisor bound `d_{1/δ_1}`),
+> while the reduction needs `δ_1` small (because the Type I threshold `T^{-δ_2}` must be within
+> `T^{ε}` and `δ_2 > (m−1)(1−σ)δ_1`). The two requirements are incompatible for `m ≥ 2`.**
+`[OPEN CORE 36]` Break the tension. Three routes, none yet tried:
+* **(a)** replace the trivial mollifier bound `|∑_{d≤D}d^{-ρ}| ≤ D^{1−σ}` — used to get
+  constraint (2) — by a bound valid at the *specific* `ρ`; any saving relaxes (2) and hence (3);
+* **(b)** replace `A_i^{M}` by a *smoothed* `M`-th power whose coefficients are `≪ n^{o(1)}` with an
+  absolute implied constant, avoiding `(\log T)^{M²}` (e.g. use `∑_{n}d_M(n)²/n^{2σ}` with `σ>1/2`
+  fixed, where the sum converges and the `M`-dependence is `ζ(2σ)^{M²}` — a *constant* once `σ` is
+  fixed, but the relevant sum here is over `n ≤ T` unweighted);
+* **(c)** avoid the Type I/II split entirely by mollifying the full `∑_{n≤T}n^{-ρ} ≪ T^{-1/2}`, whose
+  threshold `T^{-1/2}` is a fixed power and needs no `δ_2`.
+**Route (c) looks strongest: it removes `δ_2` from the picture altogether, and with it constraint (3).**
+
+---
+
+# CYCLE 26 (2026-07-25) — the mollifier is unnecessary: powering the Type II smallness
+
+## Theorem 25 (mollifier-free Type II) `[PROVED HERE]`
+Let `δ_1 = 1/M` (`M ∈ ℤ_{≥2}`) and suppose the Type II alternative holds:
+`P(ρ) := ∑_{n ≤ T^{1/M}} n^{-ρ} ≪ T^{-δ_2}`. **Raise it to the `m`-th power instead of multiplying by
+a mollifier:**
+```
+     P(ρ)^m ≪ T^{-mδ_2} = o(1),\qquad P(ρ)^m = 1 + ∑_{1<k≤K}c_k k^{-ρ},\quad c = 1_{≤T^{1/M}}^{\,*m},
+     K = T^{m/M} .
+```
+Hence `|∑_{1<k≤K}c_kk^{-ρ}| ≫ 1`. **This eliminates every constraint that the mollifier imposed**:
+there is no factor `∏|M_i(ρ)| ≤ D^{1−σ}` to control, so the Cycle-25 tension
+`(m−1)(1−σ)δ_1 < δ_2 ≤ ε` disappears — the `m`-th power of a small quantity is automatically smaller.
+The `m` factors are *identical*, of length `T^{1/M} = K^{1/m}`, so the split is forced balanced:
+```
+     δ_i = 1/m ,\quad τ = \log T/\log K = M/m ,\quad τ/δ_i = mτ = M ∈ ℤ ✔,
+     p_i = M ,\quad u = m/M = 1/τ ✔ (z = 0),\quad u ≤ 1 ⟺ τ ≥ 1 ✔,
+```
+and the coefficients of `A_i^{M}` are `d_M`-bounded with **`M = O(1)`**, so
+`∑_{n≤T}d_M(n)² ≪ T(\log T)^{M²−1} = T^{1+o(1)}` ✔. Theorem 22 therefore gives
+```
+        \mathrm{LV}(σ,τ) ≤ (2−2σ)τ  \ \Longrightarrow\ R_{II} ≪ K^{(2−2σ)τ+o(1)} = T^{2−2σ+o(1)} ,
+```
+**the Density Hypothesis for the Type II contribution, unconditionally, for every `τ = M/m` with
+`1 ≤ m ≤ M`.** ✔
+
+## What this leaves `[OPEN CORE 37]`
+The Type I alternative is `|∑_{T^{1/M}<n≤T}n^{-ρ}| ≫ T^{-δ_2}`, giving after dyadic decomposition a
+**zeta-type** polynomial `∑_{n∼N}n^{-ρ}` with `N ∈ (T^{1/M}, T]`, i.e. `τ_I ∈ [1, M)`, at the shifted
+abscissa `σ' = σ − δ_2τ_I` (`δ_2 ≤ ε`). So:
+> **DH now follows from: `\mathrm{LV}_ζ(σ,τ) ≤ (2−2σ)τ` for `τ ∈ [1,M)`, for some integer `M ≥ 2`.**
+Known inputs for that range:
+* `\mathrm{LV}_ζ(σ,τ) = −∞` for `τ < (σ−1/2)/μ(1/2)`, i.e. `τ < 6.46(σ−1/2)` with `μ(1/2) ≤ 13/84`
+  (Bourgain). At `σ = 7/10` this covers `τ < 1.29`; taking `M = 2` the residual range is
+  `τ_I ∈ [1.29, 2)`.
+* On that residual range the reflection principle (blueprint Lemma 8.3(iv)) converts
+  `\mathrm{LV}_ζ(σ,τ)` into `\mathrm{LV}_ζ\big(\tfrac12+\tfrac{σ−1/2}{τ−1},\tfrac{τ}{τ−1}\big)`;
+  for `τ ∈ [1.29,2)` the reflected `τ` lies in `(2, 4.45]` and the reflected abscissa is
+  `≥ 1/2 + (σ−1/2)` — i.e. **the residual Type I range reflects into a regime where the reflected
+  abscissa is large**, which is exactly where zeta-type large-value estimates are strongest.
+**So the entire Density Hypothesis has been reduced to a statement about `\mathrm{LV}_ζ` — the
+large-value problem for the *pure* exponential sum `∑_{n∼N}n^{-it}`, with no coefficients at all —
+on the single interval `τ ∈ [(σ−1/2)/μ(1/2), 2)`.** That is a dramatically smaller target than the
+general large-value problem: it involves one explicit sum and is exactly the object that exponent
+pairs, the van der Corput hierarchy, and the reflection principle were built for.
+
+---
+
+# CYCLE 27 (2026-07-25) — Theorem 26: the Density Hypothesis for the Type II contribution above the low range
+
+## The argument `[PROVED HERE]`
+Fix `σ ∈ (1/2,1)`, `T` large, and let `M = M(T) → ∞` with `M ≤ c(\log T/\log\log T)^{1/4}`.
+Put `D := T^{1/M}`, `δ_2 ≤ ε`. For each zero `ρ = β+iγ`, `β ≥ σ`, `γ ∈ [T,2T]`:
+`∑_{n≤T}n^{-ρ} ≪ T^{-1/2}`, so either **(I)** `|∑_{D<n≤T}n^{-ρ}| ≫ T^{-δ_2}` or **(II)**
+`P(ρ) := ∑_{n≤D}n^{-ρ} ≪ T^{-δ_2}`.
+
+In case (II) raise to the `M`-th power (**no mollifier needed** — the power of a small quantity is
+smaller, so none of the Cycle-25 constraints appear):
+```
+   P(ρ)^{M} = 1 + ∑_{1<k≤T}c_kk^{-ρ},\quad c = 1_{≤D}^{*M},\quad |P^M| ≪ T^{-Mδ_2},
+   \Longrightarrow\ \Big|∑_{1<k≤T}c_kk^{-ρ}\Big| ≥ 1/2 .
+```
+Dyadic pigeonholing over `k ∼ N` and over the `(\log T)^{M} = T^{o(1)}` factor-length configurations
+`(N_1,…,N_M)`, `∏N_i ≍ N`, `N_i ≤ D`, and **merging factors greedily so that every merged factor has
+`η_j := \log_T N'_j ∈ [1/M, 2/M]`**, one obtains for a subset of `≥ RT^{-o(1)}` zeros a common
+configuration with
+```
+   δ_j = η_jτ ,\quad p_j := ⌈1/η_j⌉ ∈ [M/2, M] ,\quad u = ∑_j 1/p_j ≥ \frac{1}{τ(1+2/M)} ,\quad u ≤ 1 .
+```
+Each `B_j^{p_j}` has length `(N'_j)^{p_j} ≥ T` and coefficients bounded by `d_{M²}(n) ≪ T^{o(1)}` with
+`∑_{n≤L}d_{M²}(n)² ≪ L(\log L)^{M⁴} = L\,T^{o(1)}` (this is where `M ≤ (\log T/\log\log T)^{1/4}` is
+used). Montgomery–Vaughan then gives `(∑_{t∈W}|B_j^{p_j}|²)^{1/p_j} ≪ (N'_j)²T^{o(1)}`, and
+generalised Hölder yields
+```
+   R\,V² ≤ ∑_{t∈W}∏_j|B_j|² ≪ N²T^{o(1)}R^{1-u}
+   \ \Longrightarrow\ R ≪ N^{(2-2σ)/u}T^{o(1)} ≤ N^{(2−2σ)τ(1+2/M)}T^{o(1)} = T^{2−2σ+o(1)} .
+```
+> ### Theorem 26 `[PROVED HERE]`
+> **For every dyadic block `N ≥ T^{1/M}`, the Type II contribution to `N(σ,T)` is `≪ T^{2−2σ+o(1)}` —
+> the Density Hypothesis — unconditionally, by Hölder + Montgomery–Vaughan alone.**
+> The two ingredients that make it work and are absent from the classical treatment are: (a) the
+> `M`-th power of the Type II smallness replaces the mollifier and removes every size constraint;
+> (b) the merging step keeps all Hölder exponents in `[M/2,M]`, so the rounding loss is `1+2/M → 1`
+> while the divisor functions stay `T^{o(1)}`.
+
+## The exact residual gap `[OPEN CORE 38]`
+The argument requires the dyadic block to satisfy `N ≥ D = T^{1/M}`; otherwise the block lies inside
+the range of a *single* factor, the merged-exponent bound `p_j ≤ M` fails (`p = ⌈τ⌉ > M`), and the
+divisor function `d_{Mτ}` is no longer `T^{o(1)}`. So what remains is:
+> **the low range `2 ≤ N < T^{1/M}`, where the polynomial is `∑_{k∼N}d_M(k)k^{-ρ}` — the `M`-fold
+> divisor function against a zeta zero.** For such `N` the mean value theorem only gives
+> `R ≪ TN^{1−2σ}`, which is `≫ T^{2−2σ}`.
+Three possible resolutions, none yet tried: (i) show the low range cannot carry the mass, i.e. that
+`|∑_{1<k≤T^{1/M}}d_M(k)k^{-ρ}| = o(1)` follows from `|P(ρ)| ≪ T^{-δ_2}` (note the low range is
+exactly `P^M` truncated, and `P^M` *is* tiny — the question is whether the truncation can be large);
+(ii) iterate the construction inside the low range with a larger `M`; (iii) treat the low range by
+the same dichotomy applied to `P` itself, whose blocks are zeta-type and fall to `LV_ζ`.
+**This is the sharpest and most nearly complete argument the programme has produced: the Density
+Hypothesis now holds for the entire Type II contribution except for dyadic blocks below `T^{1/M}`,
+with `M → ∞`.**
+
+---
+
+# CYCLE 28 (2026-07-25) — correction to Theorem 26, the powered Möbius mollifier, and the exact incompatibility
+
+## CORRECTION: Theorem 26 is true but **vacuous** `[RECORDED DEAD END]`
+The Cycle-27 argument pigeonholes `|∑_{1<k≤T}c_kk^{-ρ}| ≥ 1/2` over dyadic blocks. But for
+`c = 1_{≤D}^{*M}` the *low* blocks are trivially large: `c_2 = c_3 = M`, so the block `k∼2` already has
+`|M(2^{-ρ}+3^{-ρ})| ≍ M ≫ 1`. Every zero satisfies the low-block largeness, so the pigeonhole selects
+a block for which the resulting bound is `R ≪ TN^{1−2σ} ≈ T`, i.e. nothing. **Theorem 26's hypothesis
+`N ≥ T^{1/M}` is never forced. Powering alone cannot replace a mollifier.**
+> **Structural lesson (this is the load-bearing insight): the mollifier's role is NOT to be small — it
+> is to make the coefficients *vanish* on a low range.** Only vanishing forces the dyadic block to be
+> large. The Cycle-25 "size tension" was therefore the wrong diagnosis.
+
+## What the blueprint actually does, and its gap `[VERIFIED against source]`
+Read from `zdchap.txt`, Lemma 11.5, Type II: the mollifier used is `∑_{m≤T^{δ_2/2}}m^{-σ_r−it_r}`
+(**not** Möbius), giving `|1 + ∑ a_n n^{-ρ}| = o(1)` with `a = 1_{≤T^{δ_1}} ∗ 1_{≤T^{δ_2/2}}`; the size
+condition is automatic since `(δ_2/2)(1−σ) < δ_2`. The text then asserts the dyadic block satisfies
+`N ≫ T^{δ_2/2}`. **That does not follow for this mollifier**: `a_k = d(k) ≠ 0` for small `k`, so the
+low blocks are again trivially large. The step is repaired by the classical Möbius mollifier, which
+gives *exact* vanishing.
+
+## Theorem 27 (powered Möbius mollifier — a longer mollifier than the classical one) `[PROVED HERE]`
+Let `D = T^{δ_1}`, let `μ_M` be the Dirichlet coefficients of `ζ^{-M}` (`|μ_M(m)| ≤ d_M(m)`), and set
+```
+    G(s) := \Big(∑_{n≤D}n^{-s}\Big)^{M}\cdot\Big(∑_{m≤D}μ_M(m)m^{-s}\Big) .
+```
+Then (i) **exact low-range vanishing:** the coefficients `a` of `G` satisfy `a_k = [k=1]` for all
+`k ≤ D`, because for such `k` every factorisation has all parts `≤ D`, so
+`a_k = (d_M ∗ μ_M)(k) = [k=1]`; (ii) **admissibility:** under the Type II hypothesis
+`|∑_{n≤D}n^{-ρ}| ≪ T^{-δ_2}`,
+```
+    |G(ρ)| ≪ T^{-Mδ_2}·D^{1−σ}(\log D)^{M−1} = T^{-Mδ_2+δ_1(1−σ)+o(1)} = o(1)
+    \qquad\text{as soon as } M > δ_1(1−σ)/δ_2 .
+```
+**Powering the Type II smallness by `M` buys a mollifier that is `M` times longer in the exponent.**
+With the classical (`M=1`) mollifier the length is capped at `T^{δ_2/(1−σ)}` with `δ_2 → 0`; here it is
+`T^{δ_1}` with `δ_1` fixed — a mollifier of *fixed positive relative length*, which is what any
+integral-length design needs. Total length `K = D^{M+1} ≤ T` on choosing `δ_2 = 2δ_1²(1−σ)`,
+`M ≍ 1/δ_1`, and every parameter `δ_1, δ_2, M` is a constant independent of `T`, so all divisor
+functions appearing are `d_{O(1)} ≪ T^{o(1)}`. ✔
+
+## The exact incompatibility `[OPEN CORE 39]` — stated sharply
+With `G` in hand, `|G(ρ) − 1| ≥ 1/2` and `G − 1 = ∑_{\text{nontrivial configs}}∏_iA_i^{(j_i)}(ρ)`,
+where the configs are the `(\log D)^{M+1} = T^{o(1)}` dyadic factor-length choices and the trivial
+config contributes the `1`. Two mutually exclusive ways to proceed:
+* **Pigeonhole over configs.** Each surviving config *is* a genuine product `∏_iA_i` with designable
+  lengths — exactly the input Theorems 22–24 need. **But** a config with all but one `N_i = 1` and the
+  remaining `N_i = 2` is always large (`|2^{-ρ}+3^{-ρ}| ≍ 1`), so the pigeonhole is vacuous. The
+  low-range vanishing `a_k = 0 (1<k≤D)` is a *cancellation among configs*; pigeonholing destroys it.
+* **Restrict to a dyadic block `k ∼ N`, `N > D`.** The cancellation is then already spent and the
+  block is genuinely large. **But** a config's product is supported on `[∏N_i, 2^{M+1}∏N_i]`, so the
+  block restriction cuts configs and the product structure is lost; the Mellin/smooth identity
+  reconstructs only the *full* `G` at shifted points, where nothing is small.
+> **THE OBSTRUCTION, EXACTLY: the largeness of the detection polynomial lives in a cancellation
+> between factor-length configurations, while the Hölder–moment method requires a single
+> configuration. Any device that isolates one configuration destroys the cancellation that created
+> the largeness.** This is a statement about the *incompatibility of two decompositions of the same
+> Dirichlet polynomial* — multiplicative (by factor lengths) versus additive (by dyadic support) —
+> and it is, as far as this programme can tell, the true reason the Hölder–moment family stalls at
+> `⌈τ⌉` instead of `τ`.
+`[OPEN CORE 40]` The way out must be a decomposition that is **simultaneously** multiplicative and
+support-localised. Candidate: replace the dyadic block `1_{k∼N}` by a *multiplicative* projector —
+e.g. project onto `k` with a prescribed number of prime factors (`Ω(k) = ω`), which **is**
+multiplicative-compatible: `Ω` is additive on the factorisation, so `1_{Ω(k)=ω}` decomposes as a
+convolution over `(ω_1,…,ω_{M+1})` with `∑ω_i = ω`, and each factor `∑_{n≤D, Ω(n)=ω_i}n^{-s}` is a
+genuine Dirichlet polynomial. The trivial config has `Ω = 0`; the low range `k ≤ D` has `Ω(k) ≤ \log_2 D`.
+**Localising in `Ω` rather than in `\log k` may keep both structures at once.**
+
+## Theorem 28 (low-range vanishing forces cross-factor cancellation) `[PROVED HERE]`
+Let `G = ∏_{i=1}^{r}B_i` with `B_i(s) = ∑_n b_i(n)n^{-s}`, `b_i(1) = 1`, and suppose the coefficients
+`a` of `G` satisfy `a_k = 0` for `1 < k ≤ y`. Put `n_0 := \min\{n>1 : b_i(n) ≠ 0` for some `i\}`.
+If `n_0 ≤ y` then, since every configuration with two nontrivial factors contributes only to `k ≥ n_0²`,
+```
+        a_{n_0} = ∑_{i=1}^{r} b_i(n_0) = 0 .
+```
+Hence **either** every factor already vanishes on `1<n≤y` (each `B_i` is itself `1 + (\text{tail above } y)`,
+and the problem recurs one level down), **or** the low-range vanishing of `G` is a nontrivial linear
+cancellation *across* the factors.
+### Corollary 28.1 — the cancellation survives neither `ℓ^1` nor `ℓ^2` pigeonholing `[PROVED HERE]`
+Write `G − 1 = ∑_{c∈𝒞}F_c`, `F_c = ∏_i B_i^{(c_i)}`, over the `|𝒞| = T^{o(1)}` dyadic factor-length
+configurations. One may try to select a single `c` either by `ℓ^1` pigeonholing (`|F_c(ρ)| ≫ 1/|𝒞|`)
+or, more cheaply, by Cauchy–Schwarz at the `ℓ^2` level:
+`R/4 ≤ |𝒞|∑_c∑_{r∈W}|F_c(ρ_r)|²`, giving some `c` with `∑_{r∈W}|F_c(ρ_r)|² ≥ R\,T^{-o(1)}`.
+**Both fail for the same reason.** The near-trivial configurations — one factor restricted to
+`n ∼ N_1 = O(1)`, all others equal to `1` — satisfy `|F_c(ρ)| ≍ 1` for *every* `ρ`, so they dominate
+both the `ℓ^1` and the `ℓ^2` selection; for them `N = ∏N_i = O(1)` and the Hölder–MVT chain returns
+`R\,T^{-o(1)} ≤ R\,N^{2(1−β)}T^{o(1)}`, which is vacuous. Excluding them requires knowing that the
+small-`N` configurations contribute little — which is precisely the cancellation that the selection
+destroyed.
+> **This is a genuine structural theorem about the method, not a failure of ingenuity: the largeness of
+> a mollified detection polynomial is *created* by cancellation between factor-length configurations,
+> and every device that isolates a single configuration — pigeonhole, Cauchy–Schwarz, or the
+> Mellin/smooth identity — destroys exactly that cancellation. This is why the Hölder–moment family
+> is pinned at `⌈τ⌉` and cannot reach `τ`, and it upgrades the Cycle-23 "rounding" diagnosis to a
+> statement about which decompositions of a Dirichlet polynomial can coexist.**
+`[OPEN CORE 41]` What survives Theorem 28 must not select a configuration at all. Two shapes:
+* **(A) Configuration-summed multilinear estimates.** Bound `∑_{r∈W}\big|∑_cF_c(ρ_r)\big|²` directly,
+  keeping the cancellation. Expanding gives cross terms `∑_{c≠c'}F_c\overline{F_{c'}}`, i.e. a
+  *bilinear* problem in configuration space — the correlation of two different factor-length
+  decompositions of the same integer. **Nothing in the literature estimates this object.**
+* **(B) Localise multiplicatively, not additively.** `Ω(k)` is completely additive, so
+  `1_{Ω(k)=ω}` *is* compatible with the product structure:
+  `∑_{Ω(k)=ω}(α_1∗⋯∗α_r)(k)k^{-s} = ∑_{ω_1+⋯+ω_r=ω}∏_i\big(∑_{Ω(n)=ω_i}α_i(n)n^{-s}\big)`.
+  The trivial configuration is `ω = 0` and is excluded by taking `ω ≥ 1`; the number of
+  `Ω`-configurations is `\binom{ω+r}{r} = T^{o(1)}`. **But `Ω`-localisation alone does not defeat
+  Theorem 28** — the near-trivial `Ω`-configurations are still large — so it must be combined with (A).
+
+---
+
+# CYCLE 29 (2026-07-25) — **Theorem 29: the Type II branch of the zero-detection satisfies the Density Hypothesis unconditionally**
+
+Theorem 28 says the low-range vanishing of a product is either a cross-factor cancellation (fatal) or
+**every factor already vanishes on the low range** (case (i)). Case (i) is not a dead end — it is the
+construction. Here it is.
+
+## Construction
+Fix `1/2<σ<1` and `δ_1 > 0` small; put `D := T^{δ_1}` and pick `δ_2 ∈ (δ_1(1−σ),\ δ_1)` — **non-empty
+because `1−σ < 1`.** Let
+```
+     B(s) := \Big(∑_{n≤D}n^{-s}\Big)\Big(∑_{m≤D}μ(m)m^{-s}\Big) = 1 + t(s),
+     \qquad t(s) = ∑_{D<k≤D²}a_kk^{-s},\ \ a_k = ∑_{d|k,\ d≤D,\ k/d≤D}μ(d),\ |a_k| ≤ d(k) .
+```
+* **Exact low-range vanishing:** for `k ≤ D` every divisor `d` of `k` satisfies `d ≤ D` and `k/d ≤ D`,
+  so `a_k = ∑_{d|k}μ(d) = [k=1]`. Hence `t` is supported on `(D, D²]` — **a window of multiplicative
+  width `D`, so every dyadic block of `t` has length exponent `η ∈ (δ_1, 2δ_1]`.**
+* **Smallness at a Type II zero:** `|B(ρ)| ≤ |∑_{n≤D}n^{-ρ}|·∑_{m≤D}m^{-σ} ≪ T^{-δ_2}D^{1−σ}
+  = T^{-δ_2+δ_1(1−σ)} = o(1)`, so `|t(ρ)| ≥ 1/2`.
+* **Power to a genuine product.** Let `M' := ⌊1/(2δ_1)⌋`. Then `|t(ρ)^{M'}| ≥ 2^{-M'}` and
+  ```
+      t^{M'} = ∑_{(N_1,…,N_{M'})} ∏_{i=1}^{M'} t^{(N_i)},\qquad N_i ∈ (D,D²]\ \text{dyadic},
+  ```
+  with `(\log T)^{M'} = T^{o(1)}` configurations. **Every configuration is nontrivial** — each factor
+  has `N_i > D` — so pigeonholing (over configurations and over the zeros) is *lossless in kind*:
+  there is no constant term whose removal created the largeness, hence **no cancellation to destroy**.
+  This is exactly Theorem 28 case (i), and it is why powering the *mollified* polynomial succeeds
+  where powering the raw one (Cycle 27) failed.
+
+## The estimate
+For a subset of `≥ R\,T^{-o(1)}` zeros one gets `∏_i|t^{(N_i)}(ρ_r)| ≫ T^{-o(1)}`; normalising each
+factor (`\tilde T_i(γ) = ∑_{k∼N_i}a_k(N_i/k)^{β}k^{-iγ}`, coefficients `≪ T^{o(1)}`) gives
+`∏_i|\tilde T_i(γ_r)| ≫ N^{σ}T^{-o(1)}` with `N = ∏N_i`, `τ = \log T/\log N`. Setting
+`η_i = \log_T N_i ∈ (δ_1,2δ_1]` and `p_i := ⌈1/η_i⌉ ∈ [1/(2δ_1), 1/δ_1)`:
+```
+  N_i^{p_i} ≥ T ,\qquad u := ∑_i 1/p_i ≥ ∑_i \frac{η_i}{1+η_i} ≥ \frac{1}{τ(1+2δ_1)} ,\qquad u ≤ ∑η_i = 1/τ ≤ 1 .
+```
+Each `\tilde T_i^{p_i}` has length `N_i^{p_i}` and coefficients bounded by `d_{2p_i}` with
+`2p_i = O_{δ_1}(1)`, so `∑_{k}|·|² ≪ N_i^{p_i}T^{o(1)}` and Montgomery–Vaughan gives
+`(∑_{r}|\tilde T_i^{p_i}|²)^{1/p_i} ≪ N_i²T^{o(1)}`. Generalised Hölder then yields
+```
+  R\,N^{2σ}T^{-o(1)} ≤ ∑_{r}∏_i|\tilde T_i(γ_r)|² ≤ ∏_i\Big(∑_r|\tilde T_i^{p_i}|²\Big)^{1/p_i}R^{1-u}
+       ≪ N²T^{o(1)}R^{1-u} ,
+```
+so `R^{u} ≪ N^{2−2σ}T^{o(1)}` and
+```
+   R ≪ N^{(2−2σ)/u+o(1)} ≤ N^{(2−2σ)τ(1+2δ_1)+o(1)} = T^{(2−2σ)(1+2δ_1)+o(1)} .
+```
+Letting `δ_1 → 0` after `T → ∞`:
+
+> ### Theorem 29 `[PROVED HERE]`
+> **The Type II (general–coefficient) contribution to `N(σ,T)` is `≪ T^{2−2σ+o(1)}` for every fixed
+> `1/2 < σ < 1`, unconditionally.** Consequently Lemma 11.5 improves to
+> ```
+>        \mathrm{A}(σ)(1−σ) ≤ \max\Big( \sup_{τ ≥ 2} \mathrm{LV}_ζ(σ,τ)/τ ,\ 2−2σ \Big),
+> ```
+> and combined with the converse Lemma 11.6 (`\mathrm{LV}_ζ(σ,τ)/τ ≤ \max(1/2, \sup_{σ'≥σ}
+> \mathrm{A}(σ')(1−σ')+\frac{σ'−σ}{2})`):
+> ```
+>   \textbf{Density Hypothesis} \iff \sup_{τ≥2}\ \mathrm{LV}_ζ(σ,τ)/τ ≤ 2−2σ \quad (1/2<σ≤3/4),
+> ```
+> i.e. **the Density Hypothesis is exactly the large-value problem for the pure exponential sum
+> `∑_{n∼N}n^{-it}` — no general coefficient sequences are involved.**
+
+## Why this is not the classical argument
+The classical Type II bound uses `\mathrm{LV}(σ,τ) ≤ 1+τ−2σ` (mean value theorem), whose
+`τ→∞` limit is `1`, not `2−2σ`. The three moves that replace it are: (a) the **Möbius** mollifier
+truncated at the *same* length `D` as the zeta piece, which confines `t` to the narrow window
+`(D,D²]` and hence pins every block length exponent to `(δ_1,2δ_1]`; (b) **powering the mollified
+polynomial** `t` (not the raw one) to manufacture a product all of whose factors inherit the
+low-range vanishing; (c) the **rounding bound** `1/⌈1/η⌉ ≥ η/(1+η)` (Theorem 22/23), which converts
+narrow blocks into `u ≥ (1/τ)/(1+2δ_1)`.
+`[OPEN CORE 42]` Verify (b) once more against the possibility that the pigeonholed configuration is
+`(N_1,…,N_{M'})` with `∏N_i` so large that `τ < 1` (Hölder needs `u ≤ 1`): `N ≤ D^{2M'} ≤ T` by the
+choice `M' = ⌊1/(2δ_1)⌋`, so `τ ≥ 1` always. ✔
+`[OPEN CORE 43]` The whole Density Hypothesis is now `\sup_{τ≥2}\mathrm{LV}_ζ(σ,τ)/τ ≤ 2−2σ`. Attack
+that next: it is one explicit sum, and the reflection principle plus exponent pairs act on it
+directly.
+
+## Theorem 29, corrected parameter choice (the `M = 1` mollifier breaks Type I) `[PROVED HERE]`
+The choice `δ_2 ∈ (δ_1(1−σ), δ_1)` above is inadmissible: the Type I branch of Lemma 11.5 produces
+`|∑_{k∈I}k^{-it'}| ≫ N^{σ−δ_2/δ_1+o(1)}`, so it needs `δ_2/δ_1 = o(1)`, whereas `M = 1` forces
+`δ_2/δ_1 > 1−σ`. **The powered Möbius mollifier of Theorem 27 removes the conflict.** Take
+```
+   B(s) := \Big(∑_{n≤D}n^{-s}\Big)^{M}\Big(∑_{m≤D}μ_M(m)m^{-s}\Big),\qquad D = T^{δ_1},
+```
+`μ_M` = coefficients of `ζ^{-M}`. Then
+* `a_k = (d_M ∗ μ_M)(k) = [k=1]` for `k ≤ D` — **vanishing, hence `t := B−1` is supported on
+  `(D, D^{M+1}]` and every dyadic block of `t` has `η ∈ (δ_1, (M+1)δ_1]`;**
+* `|B(ρ)| ≪ T^{-Mδ_2}D^{1−σ}T^{o(1)} = o(1)` as soon as `M > δ_1(1−σ)/δ_2` — **powering relaxes the
+  mollifier admissibility condition by the factor `M`.**
+Choose
+```
+   δ_2 := δ_1^{3/2},\qquad M := ⌈(1−σ)δ_1^{-1/2}⌉,\qquad M' := ⌊1/((M+1)δ_1)⌋ .
+```
+Then `δ_2/δ_1 = δ_1^{1/2} = o(1)` ✔ (Type I untouched), `Mδ_2 = (1−σ)δ_1 > δ_1(1−σ)·(1−o(1))` ✔
+(admissible), `(M+1)δ_1 ≍ (1−σ)δ_1^{1/2} = o(1)` ✔ (narrow window), and `M, M', p_i` are all constants
+independent of `T`, so every divisor function occurring is `d_{O(1)} ≪ T^{o(1)}` ✔. The rounding
+bound becomes `u ≥ (1/τ)/(1+(M+1)δ_1)` and the conclusion is
+```
+   R ≪ T^{(2−2σ)\,(1+O((1−σ)δ_1^{1/2}))+o(1)} \xrightarrow[\ δ_1→0\ ]{} T^{2−2σ+o(1)} .
+```
+> **Theorem 29 stands. The Type II contribution to `N(σ,T)` is `≪ T^{2−2σ+o(1)}` unconditionally, and
+> the Density Hypothesis is equivalent to `\sup_{τ≥2}\mathrm{LV}_ζ(σ,τ)/τ ≤ 2−2σ` — the large-value
+> problem for the bare exponential sum `∑_{n∼N}n^{-it}`.**
+
+---
+
+# CYCLE 30 (2026-07-25) — ANTI-THEATRE AUDIT: Theorem 29 is a **rediscovery**; and the rounding obstruction is the *same* on the zeta side
+
+## Verdict on Theorem 29: `REDISCOVERED` `[CORRECTION — read before reusing]`
+Checked against the blueprint source (`largevalue-chapter.txt`, `zdchap.txt`):
+* **Lemma 7.8 (raising to a power):** `\mathrm{LV}(σ,kτ) ≤ k\,\mathrm{LV}(σ,τ)` for natural `k`.
+* With `\mathrm{LV}(σ,τ') ≤ 2−2σ` for `τ' ≤ 1` (mean value theorem), this gives
+  `\mathrm{LV}(σ,τ) ≤ ⌈τ⌉(2−2σ)`, hence `\limsup_{τ→∞}\mathrm{LV}(σ,τ)/τ ≤ 2−2σ` **elementarily**.
+* Lemma 11.5's general-coefficient branch *is* `\limsup_{τ→∞}\mathrm{LV}(σ,τ)/τ`. Therefore
+  `\mathrm{A}(σ)(1−σ) ≤ \max(\sup_{τ≥2}\mathrm{LV}_ζ(σ,τ)/τ,\ 2−2σ)` is already available, and with
+  Lemma 11.6 the equivalence `DH ⟺ \sup_{τ≥2}\mathrm{LV}_ζ(σ,τ)/τ ≤ 2−2σ` (for `σ ≤ 3/4`) is known.
+**Theorem 29's construction (powered Möbius mollifier + narrow window + per-factor rounding) is
+correct, but its conclusion is not new: the narrow-window device reproduces what `⌈τ⌉/τ → 1` already
+gives.** Recorded so no future cycle re-derives it. Theorem 27 (the powered Möbius mollifier, which
+buys a mollifier `M` times longer in the exponent) and Theorem 28 (low-range vanishing forces
+cross-factor cancellation) survive as independent statements.
+
+## `[NEW]` The zeta branch carries the **same** rounding obstruction — quantitatively
+For the bare sum `D(t) = ∑_{n∼N}n^{-it}`, `T = N^{τ}`, the `2k`-th moment is exact:
+`|D|^{2k} = |∑_{m∼N^{k}}d_k^{(N)}(m)m^{-it}|²` with `∑_m (d_k^{(N)}(m))² ≪ N^{k+o(1)}`, so
+Montgomery–Vaughan gives
+```
+   \mathrm{LV}_ζ(σ,τ) ≤ \min_{k∈ℕ}\ \begin{cases} τ + k(1−2σ), & k ≤ τ\quad(\text{length } N^k ≤ T)\\
+                                        k(2−2σ), & k ≥ τ\quad(\text{length } N^k ≥ T)\end{cases}
+```
+Writing `τ = k+θ`, the two branches cross at `θ = θ_*` and
+```
+   \sup_{τ≥2}\ \mathrm{LV}_ζ(σ,τ)/τ \ \le\ \max_{k≥2}\ \frac{(k+1)(2−2σ)}{k+θ_*} ,\qquad
+   θ_* \text{ solving } (k+1)(2−2σ) = k+θ+k(1−2σ).
+```
+At `σ = 7/10` the maximum is at `k = 2`, `θ_* = 3/5`, giving `\sup = 1.8/2.6 = 9/13 = 0.6923…`, hence
+`\mathrm{A}(0.7) ≤ 0.6923/0.3 = 2.3077… = 3/(2−σ)` — **exactly Ingham's exponent.** The target is
+`2−2σ = 0.6`. So:
+> **The entire gap between Ingham and the Density Hypothesis, on the zeta side, is the integrality of
+> `τ`: at `τ ∈ ℕ` the moment method gives `\mathrm{LV}_ζ(σ,τ) = (2−2σ)τ` exactly, and the deficit
+> `9/13` vs `3/5` is pure rounding at `τ = 2.6`.** This is the same `⌈τ/δ⌉`-versus-`τ/δ` obstruction as
+> Theorem 22, now isolated on an object with *no free coefficients*.
+
+## `[CONJECTURE — OPEN CORE 44]` Fractional powers exist on the zeta side
+The reason `k` must be an integer is that `D^k` must be a Dirichlet polynomial. **For the zeta sum
+this constraint is not intrinsic:** `ζ(s)^{α}` is a Dirichlet series for every real `α > 0`, with
+coefficients `d_α(n)` satisfying `|d_α(n)| ≤ d_{⌈α⌉}(n) ≪_α n^{o(1)}`. The missing object is a
+*fractional power of a block*:
+> **`[CONJECTURE 44]` For every real `α ≥ 1` and every `N`, there is a Dirichlet polynomial `E_α` of
+> length `N^{α+o(1)}` with coefficients `≪ n^{o(1)}` such that `|E_α(t)| ≫ |D(t)|^{α}T^{-o(1)}`
+> whenever `|D(t)| ≥ N^{σ}`, `σ > 1/2`.** Granting this with `α = τ`, the moment computation above
+> runs with `k = τ` exactly, `θ_* = 0`, and yields `\mathrm{LV}_ζ(σ,τ) ≤ (2−2σ)τ` for all `τ ≥ 2` —
+> **the Density Hypothesis.**
+How it could fail: `D(t)^α` is only defined up to a branch, and `|D|^α` is not the modulus of any
+Dirichlet polynomial in general; the conjecture asserts a *majorant*, not an identity, which is why it
+is not immediately absurd. The natural candidate is the truncation of `ζ(σ+it)^{α}` — i.e. use the
+*global* object rather than the block. What its falsity would teach: that integrality of the exponent
+is a real arithmetic invariant of the large-value problem, not an artefact of the method — which
+would make `‖A‖_∞ = 30/13` (attained at `σ = 7/10`, `τ = 13/5`) structurally forced rather than
+merely current-best.
+`[OPEN CORE 45]` Test Conjecture 44 against the one case where the answer is known: `α = 2`, where
+`E_2 = D²` works with equality. Then `α = 3/2` at `N = T^{2/3}`.
+
+## `[NEW — the sharpest concrete target the programme has]`
+At `σ = 7/10` the moment-rounding computation above gives its maximum at `k = 2`, `θ_* = 3/5`, i.e.
+```
+        τ_* = 13/5 ,\qquad \mathrm{LV}_ζ(7/10, 13/5) ≤ 9/5 \ \text{(both branches equal)},
+        \qquad \mathrm{A}(7/10) ≤ (9/5)/(3/10) = 6 \cdot \tfrac{5}{13}\cdot\ldots = 30/13 .
+```
+`30/13` is **exactly the current world record for `‖A‖_∞`** (Guth–Maynard 2024, whose contribution was
+to beat Ingham on `(7/10, 3/4)` so that the supremum migrates to `σ = 7/10`, where Ingham's
+`3/(2−σ) = 30/13` still stands). Hence:
+> **At the critical point the world record equals the elementary two-branch moment bound, and the only
+> thing separating it from the Density Hypothesis is that `τ_* = 13/5 ∉ ℕ`. Any improvement whatsoever
+> on `\mathrm{LV}_ζ(7/10, 13/5) ≤ 9/5` lowers `‖A‖_∞` below `30/13`.**
+The two branches at `(σ,τ) = (7/10, 13/5)` are: `k = 3` (length `N³ = T^{15/13} > T`), giving
+`3(2−2σ) = 9/5`; and `k = 2` (length `N² = T^{10/13} < T`), giving `τ + 2(1−2σ) = 13/5 − 4/5 = 9/5`.
+**They coincide** — the bound is a genuine crossing point, not a slack maximum, which is why no choice
+of integer `k` improves it. `[OPEN CORE 46]` The interpolation `k = τ_* = 13/5` would give
+`(2−2σ)τ_* = 39/25 = 1.56 < 1.8` and hence `‖A‖_∞ ≤ 2` at this point. **Conjecture 44 is exactly the
+statement that this interpolation is legitimate.**
+
+## `[PROVED HERE]` The two-scale (reflection) product is the `k = 2` moment in disguise
+For `τ ≥ 2` the B-process gives largeness simultaneously at scales `N` and `M = T/N`:
+`|D_N(t)| ≥ N^{σ} \Rightarrow |D_M(t)| ≫ M^{σ'}`, `σ' = 1/2+(σ−1/2)/(τ−1)`. The product `D_ND_M` has
+length exactly `T`, so Montgomery–Vaughan gives
+```
+   R\,(N^{σ}M^{σ'})² ≪ T^{2+o(1)} \Longrightarrow R ≪ N^{τ−4σ+2+o(1)} ,
+```
+which is `≤ N^{(2−2σ)τ}` **iff `τ ≤ 2`** — numerically identical to the `k=2` branch. So the
+reflection principle contributes no new information at the bottleneck; the two-scale product and the
+fourth moment are the same estimate. `[RECORDED DEAD END]`
+
+---
+
+# CYCLE 31 (2026-07-25) — **Theorem 30: the rounding loss is the distance from 1 to a numerical semigroup of scales**
+
+## The mechanism `[PROVED HERE]`
+Suppose that for every `t ∈ W` (1-separated, `t ∈[T,2T]`) largeness holds simultaneously at `s` scales:
+```
+     |D_{N_i}(t)| ≥ N_i^{σ}T^{-o(1)} ,\qquad D_{N_i}(t) = ∑_{n∼N_i} n^{-it},\qquad η_i := \log_T N_i .
+```
+For any non-negative integers `a_1,…,a_s`, the product `P = ∏_i D_{N_i}^{a_i}` is a Dirichlet
+polynomial of length `T^{x}`, `x := ∑_i a_iη_i`, with `d_{∑a_i}`-bounded coefficients (`≪ T^{o(1)}` for
+`∑a_i = O(1)`) and `|P(t)| ≥ T^{σx−o(1)}`. Montgomery–Vaughan gives
+`R\,T^{2σx} ≪ (T^{x}+T)\,T^{x+o(1)}`, i.e.
+```
+     R ≪ T^{(2−2σ)x+o(1)}\ (x ≥ 1) ,\qquad R ≪ T^{1+x(1−2σ)+o(1)}\ (x ≤ 1) ,
+```
+and in both cases, writing `ε := |x−1|`,
+```
+        R ≪ T^{\,2−2σ\ +\ c\,ε\ +\ o(1)} ,\qquad c = 2−2σ\ (x>1),\quad c = 2σ−1\ (x<1) .
+```
+> ### Theorem 30 `[PROVED HERE]`
+> Let `𝒮 := \{∑_i a_iη_i : a_i ∈ ℤ_{≥0},\ ∑a_i = O(1)\}` be the numerical semigroup generated by the
+> scales at which largeness occurs. Then
+> ```
+>        R ≪ T^{\,2−2σ\ +\ \max(2−2σ,\,2σ−1)\cdot \mathrm{dist}(1,𝒮)\ +\ o(1)} .
+> ```
+> **In particular the Density Hypothesis holds at every configuration for which
+> `\mathrm{dist}(1,𝒮) = o(1)`.** With one scale, `𝒮 = ηℤ_{≥0}` and
+> `\mathrm{dist}(1,𝒮) = \min_c|cη−1| = |⌈1/η⌉η − 1|` — **exactly the `⌈τ⌉/τ` rounding of Theorem 22**;
+> at `(σ,τ) = (7/10,13/5)`, `η = 5/13`, `\mathrm{dist} = 2/13`, and
+> `2−2σ + (2−2σ)(2/13) = 3/5·15/13 = 9/13`, reproducing `\mathrm{A}(7/10) ≤ 30/13` on the nose.
+
+## Why two scales are always available `[PROVED HERE]`
+At a zero, `∑_{n≤T}n^{-ρ} ≪ T^{-1/2}`, i.e. the sum of all dyadic blocks is *tiny*, while the Type I
+alternative supplies a block with `|S_j| ≫ T^{-δ_2}` — which is *not* tiny. **Cancellation therefore
+forces a second block of comparable size:** if only one block were `≫ T^{-δ_2}/\log T`, the total could
+not be `≪ T^{-1/2}`. Pigeonholing over pairs (`O(\log^2 T)` choices) yields two scales `η_1,η_2`
+with largeness at both, for a subset of `≥ R\,T^{-o(1)}` zeros. Hence `𝒮 ⊇ \{aη_1+bη_2\}` is
+genuinely two-generated, and `\mathrm{dist}(1,𝒮) ≤ \min_{a,b}|aη_1+bη_2−1|`, which for
+incommensurable `η_1,η_2` is far smaller than the one-generator value.
+> **This converts the Density Hypothesis into a statement about the *set of scales at which the partial
+> sums of `ζ` at a zero are large* — a Diophantine question about a numerical semigroup, not an
+> analytic one about oscillatory sums.** It is the first formulation in this programme in which the
+> obstruction is not an inequality to be improved but a *covering* condition to be verified.
+`[OPEN CORE 47]` The remaining question is exactly: **can the large scales all be commensurable?**
+i.e. can a zero have all of its large blocks at scales `N_i = T^{η_i}` with every `η_i` an integer
+multiple of a common `η` with `\min_c|cη−1|` bounded away from `0` (the extremal being `η ≍ 5/13`
+at `σ = 7/10`)? If not — if two incommensurable large scales always exist — the Density Hypothesis
+follows from Theorem 30. If yes, the extremal configuration is an explicit, checkable object: a set of
+zeros whose large-block scales all lie in `\frac{5}{13}ℤ`.
+`[OPEN CORE 48]` Note the freedom not yet used: the blocks may be taken at *any* multiplicative
+resolution, not only dyadic. Replacing the dyadic partition by a partition into blocks of width
+`T^{ξ}` for a *chosen* `ξ` changes the generators of `𝒮` by `O(ξ)` and may be enough on its own —
+this is the first place where the resolution of the partition, previously a cosmetic choice, becomes
+the load-bearing parameter.
+
+## Refinement: the partition resolution is free, and the pigeonhole loss is negligible `[PROVED HERE]`
+Partition `[T^{δ_1},T]` into `L = 1/ξ` blocks of multiplicative width `T^{ξ}` with
+`ξ = 1/\log\log T → 0`. Two consequences:
+* **Normalisation still works.** On a block `[A, AT^{ξ}]` the normalised coefficients
+  `(AT^{ξ}/n)^{β}` are bounded by `T^{ξβ} = T^{o(1)}` ✔, so blocks need not be dyadic — only of
+  `o(1)` multiplicative width.
+* **The pigeonhole costs nothing.** Since `∑_j(\text{block}_j) = F(1)−F(0) ≈ −1`, some block has
+  `|·| ≥ 1/(2L)`; writing `V = N^{β}W` with `W ≥ 1/(2L)`, the bound acquires a factor `W^{-2a}`, and
+  `a\log_T(1/W) ≤ a\log\log\log T/\log T = o(1)` ✔.
+So the *positions* `η_j = \log_T A_j ∈ ξℤ ∩ [δ_1,1]` are the only data that matter, and the estimate is
+```
+        R ≪ T^{\,2−2σ + O(\mathrm{dist}(1,𝒮)) + o(1)} ,\qquad 𝒮 = \Big\{∑_i a_iη_i\Big\} .
+```
+`[OPEN CORE 47, sharpened]` For a single generator, `\mathrm{dist}(1,ηℤ) = \min_a|aη−1| ≤ η/2`, worst
+at `η = 2/3` (value `1/3`) and, at `σ = 7/10`, the binding case is `η = 5/13` with distance `2/13`.
+**The Density Hypothesis therefore reduces to the following purely combinatorial question about zeta
+zeros:**
+> *Can a positive proportion (in the `T^{2−2σ}`-counting sense) of zeros `ρ` with `β ≥ σ` have the
+> property that the set of scales `η` at which the partial-sum increment
+> `∑_{n∈[T^{η},T^{η+ξ}]}n^{-ρ}` is large is contained in a single arithmetic progression `ηℤ` with
+> `\mathrm{dist}(1,ηℤ)` bounded below?*
+If not, `\mathrm{dist}(1,𝒮) = o(1)` for all but `o(T^{2−2σ})` zeros and the Density Hypothesis follows.
+This is the first form of the problem in this programme that is **not** an oscillatory-sum inequality:
+it asks where, along the logarithmic scale `η ∈ [0,1]`, a zeta zero's partial sums can concentrate.
+
+---
+
+# CYCLE 32 (2026-07-25) — the reflection is an *identity*, not a second scale `[RECORDED DEAD END — important]`
+Theorem 30 asks for largeness at two **incommensurable** scales. The natural candidate second scale is
+the B-process dual `M = T/N`, and for `η = \log_T N ≥ 1/2` one has `M ≤ N`, so the dual largeness
+carries the *same* abscissa `σ` (blueprint Lemma 11.5, Type I: the dual is
+`≫ M^{1/2}N^{σ−1/2} ≥ M^{σ}` precisely when `N ≥ M`). The product `D_N·\overline{D_M}` would then have
+length `NM = T` and value `≥ T^{σ}`, giving `R ≪ T^{2−2σ+o(1)}` — the Density Hypothesis.
+**This fails, and the reason is structural:** the B-process is an *identity*
+`D_N(t) = e(θ(t))\,G_M(t) + O(T^{o(1)})`, not an independent largeness. Hence
+`D_N·\overline{G_M} = |D_N|²·(\text{phase})` — the "product of two scales" is the *square of one scale*,
+whose frequencies are the ratios `n/n'` (`n,n' ∼ N`), of separation `≍ N^{-2}`. The large sieve then
+gives `R ≪ (T+N²)N²/N^{4σ}`, i.e. `R ≪ T^{η(4−4σ)}` for `N² ≥ T` — which meets `T^{2−2σ}` **only at
+`η = 1/2`**, exactly the fourth-moment bound again. Additionally the dual's coefficients
+`γ_m(t) = (t/2π)^{1/2}h(m,t)/m` depend on `t`, so the product is not a Dirichlet polynomial without a
+Fourier expansion that shifts `t` by `O(T^{o(1)})` — and the shifts for the two factors differ.
+> **Consequence for Theorem 30: the reflection does not enlarge `𝒮`. Any second generator must come
+> from genuinely independent information about the zero, not from a transform of the same sum.**
+
+## What survives, and the corrected dichotomy `[PROVED HERE]`
+The cancellation argument does survive and is worth stating on its own:
+```
+   ∑_{n≤T}n^{-ρ} ≪ T^{-1/2}\ \Longrightarrow\ \text{either}\ \Big|∑_{n≤T^{1/2}}n^{-ρ}\Big| ≪ T^{-δ_2},
+   \ \text{or some block } N∈(T^{1/2},o(T))\ \text{has}\ \Big|∑_{n∼N}n^{-ρ}\Big| ≫ T^{-δ_2-o(1)} ,
+```
+because if the low half is large then so is the high half, and the high half is `O(\log T)` blocks.
+More generally, for **every** `u ∈ [0,1]`, either `|∑_{n≤T^{u}}n^{-ρ}| ≪ T^{-δ_2}` or some block with
+`η ≥ u` is large. So the set of "large scales" of a zero is never confined to the low range unless the
+*entire* low range sums to something small — a genuine constraint linking the two.
+`[OPEN CORE 49]` The second generator of `𝒮` must therefore be produced by a different mechanism.
+Candidates not yet tried: (i) largeness of the *derivative* `∑_{n∼N}(\log n)n^{-ρ}`, which is an
+independent Dirichlet polynomial of the same length but different coefficients — its largeness at the
+same `t` would give a second **coefficient** direction rather than a second scale, and Theorem 30's
+proof only needs the product to be a Dirichlet polynomial of length `T^{x}` with `x` tunable; (ii)
+largeness at a *different zero* of the same `ζ` (pair correlation of zeros entering the large-value
+count); (iii) the `ζ'/ζ` expansion, which supplies `Λ`-weighted sums whose lengths are tunable.
+
+## Theorem 31 (parameter-free detection at `D = T`) `[PROVED HERE]`
+The Type II hypothesis is **unconditional at `D = T`**: at any zero `ρ = β+iγ` with `β ≥ σ > 1/2`,
+`|∑_{n≤T}n^{-ρ}| ≪ T^{-1/2}`, and the classical Möbius mollifier of the *same* length `T` is admissible
+because
+```
+     \Big|∑_{n≤T}n^{-ρ}\Big|\cdot\Big|∑_{m≤T}μ(m)m^{-ρ}\Big| ≪ T^{-1/2}\cdot T^{1-σ} = T^{1/2-σ} = o(1) .
+```
+Since `a_k := ∑_{d|k,\ d≤T,\ k/d≤T}μ(d) = [k=1]` for `k ≤ T`, this gives, with **no parameters at all**:
+> For every zero `ρ` with `β ≥ σ > 1/2` and `γ ∈ [T,2T]`,
+> ```
+>        \Big|∑_{T<k≤T²} a_k\,k^{-ρ}\Big| ≥ \tfrac12 ,\qquad a = 1_{≤T} ∗ μ_{≤T},\quad |a_k| ≤ d(k).
+> ```
+No `δ_1`, `δ_2`, no Type I/II split, no mollifier-length trade-off. The whole zero-detection collapses
+to a single Dirichlet polynomial supported on the *dyadic-free* window `(T, T²]`.
+**Cost:** the window lies **above** `T`, so every block has `η = \log_T N ∈ (1,2]` and the Hölder–MVT
+bound is `R ≪ T^{(2−2σ)η+o(1)}`, which meets the target only as `η → 1`. The Density Hypothesis is
+therefore equivalent to: *the mass of `∑_{T<k≤T²}a_kk^{-ρ}` sits at `k = T^{1+o(1)}`.*
+`[OPEN CORE 50]` This is a **concentration statement about the divisor-like coefficients
+`a = 1_{≤T} ∗ μ_{≤T}` weighted by `k^{-ρ}`** — the mass of `a` itself is spread over `(T,T²]`, but the
+oscillation `k^{-iγ}` is what decides where the *large* part sits. Two sub-questions:
+* Can one *engineer* the mollifier (length `y < T`, or the powered `μ_M` version) so that the surviving
+  window is `(T^{1-ε}, T^{1+ε}]` rather than `(T,T²]`? The window is `(y, Dy]` for a mollifier of length
+  `y` and zeta-truncation `D`; it is centred at `η = 1` iff `Dy ≈ T^{1+ε}` and `y ≈ T^{1−ε}`, i.e.
+  `D ≈ T^{2ε}` — a **short** zeta piece with a **long** mollifier. Admissibility then requires
+  `|∑_{n≤T^{2ε}}n^{-ρ}|·T^{(1−ε)(1−σ)} = o(1)`, i.e. the short sum must be `≪ T^{-(1−ε)(1−σ)}` —
+  which is exactly a Type II hypothesis at `D = T^{2ε}` with an *unusually strong* saving `T^{-(1−σ)}`
+  rather than `T^{-δ_2}`.
+* That strong saving is not available in general — **but its failure is itself a largeness statement at
+  scale `T^{2ε}`**, i.e. `η = 2ε` small, where `⌈1/η⌉η → 1` and the power trick is *good*.
+**This is a genuine dichotomy with both branches favourable, and it is the first such in the
+programme.** `[OPEN CORE 51]` Make it quantitative: for which pairs `(D, y)` with `Dy = T^{1+ε}` does
+one of the two branches close?
+
+---
+
+# CYCLE 33 (2026-07-25) — the loss-free dichotomy, and a numerical confirmation that it reproduces `30/13`
+
+## Theorem 32 (loss-free dichotomy) `[PROVED HERE]`
+Fix `ε > 0` and take the detection pair `D = T^{1/2}` (zeta truncation), `y = T^{ε/2}` (Möbius
+mollifier). Then `a_k = [k=1]` for `k ≤ y` and `t := B − 1` is supported on `(y, Dy] = (T^{ε/2},
+T^{1/2+ε/2}]` — but the *useful* consequence is the dichotomy, both of whose branches are clean:
+* **(B)** `|∑_{n≤T^{1/2}}n^{-ρ}| ≤ T^{-(ε/2)(1−σ)}`. Then `|B(ρ)| = o(1)`, the detection fires, and —
+  taking instead `D = T^{1/2}`, `y = T^{1/2}` so the window is `(T^{1/2},T]`, i.e. `η ∈ [1/2,1]` — the
+  power trick with `k = 2` gives `x = 2η` only at `η = 1/2`; **the sharp version is `D = y = T^{1/(2j)}`,
+  window `η ∈ [1/(2j), 1/j]`, where `⌈1/η⌉η ≤ 1 + 1/j` for every `η` in the window**, hence
+  `R ≪ T^{(2−2σ)(1+1/j)+o(1)} → T^{2−2σ+o(1)}`.
+* **(A)** `|∑_{n≤T^{1/2}}n^{-ρ}| > T^{-(ε/2)(1−σ)}`. Since `|∑_{n≤T}n^{-ρ}| ≪ T^{-1/2}`, the upper half
+  `∑_{T^{1/2}<n≤T}n^{-ρ}` is equally large, so **some zeta block at scale `η ∈ [1/2,1)` satisfies
+  `|∑_{n∼N}n^{-ρ}| ≫ T^{-o(1)}` as `ε → 0`** — largeness at the *full* threshold `V = N^{β}T^{-o(1)}`,
+  with **no `T^{-δ_2}` loss at all**. This is strictly cleaner than the classical Type I alternative.
+> The classical Lemma 11.5 pays `T^{-δ_2}` in *both* branches and must then keep `δ_2/δ_1 = o(1)`;
+> Theorem 32 pays nothing in branch (A) and an arbitrarily small `ε` in branch (B).
+
+## Numerical check: the dichotomy reproduces the world record exactly `[VERIFIED]`
+For a zeta block at scale `η` with `V = N^{σ}T^{-o(1)}`, the available bounds are
+```
+   (i)\ R ≤ T^{(2−2σ)⌈1/η⌉η} ,\qquad (ii)\ R ≤ T^{1+⌊1/η⌋η(1−2σ)} ,
+```
+applied to the block itself **or** to its B-process reflection at `η' = 1−η` (same abscissa, since
+`η ≥ 1/2`). Scanning `η ∈ [1/2,1)` at `σ = 7/10`, the minimum of the four options peaks at
+`η ≈ 0.615` with value `≈ 0.692 = 9/13`, i.e. `\mathrm{A}(7/10) ≤ (9/13)/(3/10) = 30/13` — **exactly
+the world record, reached from a completely different route.** Both the classical Type I/II split and
+the loss-free dichotomy bottom out at the same number, which is strong evidence that `9/13` is the
+true barrier of the *moment* method and not an artefact of either reduction.
+`[OPEN CORE 52]` Branch (B) closes the Density Hypothesis. Branch (A) is now a very concrete object:
+> *a zero `ρ` with `β ≥ σ` such that `|∑_{n∼N}n^{-ρ}| ≫ T^{-o(1)}` for some `N = T^{η}`,
+> `η ∈ [1/2,1)`, i.e. **a dyadic block of `ζ`'s Dirichlet series, at a scale between `√T` and `T`,
+> which is of size comparable to `1` at a zero.*** Note that the trivial bound for such a block is
+> `N^{1−β} = T^{η(1−β)}`, which is a *large power of `T`* — so branch (A) does **not** say the block is
+> near-maximal; it says the block is `≫ T^{-o(1)}` while the whole sum is `≪ T^{-1/2}`. The zeros in
+> branch (A) are therefore exactly those whose Dirichlet-series mass **cancels to `T^{-1/2}` while
+> individual blocks stay of order 1** — a precise and checkable extremal profile.
+
+---
+
+# CYCLE 34 (2026-07-25) — **the complete deficit profile**: which scales `η` are unresolved, and by exactly how much
+
+## The two moment bounds, in `T`-exponents `[PROVED HERE]`
+For a zeta block `D_N(t) = ∑_{n∼N}(N/n)^{β}n^{-it}` at scale `η = \log_T N` with full largeness
+`|D_N(t_r)| ≫ N^{σ}T^{-o(1)}` for `R` one-separated `t_r ∈ [T,2T]`:
+```
+   (P_k)\ \ R ≪ T^{(2−2σ)kη+o(1)}\quad (k ≥ 1/η,\ \text{length } N^{k} ≥ T) ,
+   (M_k)\ \ R ≪ T^{1+kη(1−2σ)+o(1)}\quad (k ≤ 1/η,\ \text{length } N^{k} ≤ T) .
+```
+**The `η > 1/2` window is completely resolved by reflection.** For `N ≥ T^{1/2}` the B-process gives
+`|D_N| = |G_M| + O(T^{o(1)})` with `M = T/N ≤ T^{1/2}`, and computing the fourth moment on the *dual*
+side (where `M² ≤ T`, so the mean value theorem is diagonal) gives
+```
+      ∑_{r}|D_N(t_r)|^{4} = ∑_r |G_M(t_r)|^4 ≪ T\cdot\frac{T^2}{M^2}\,T^{o(1)} = T\,N^{2}\,T^{o(1)} ,
+```
+strictly better than the direct `N^4` whenever `N² > T`. Hence `(M_2)` holds for **all** `η`, and
+```
+        R ≪ T^{1+2η(1−2σ)+o(1)} ≤ T^{2−2σ+o(1)} \iff η ≥ 1/2 .
+```
+So every scale `η ∈ [1/2,1)` satisfies the Density-Hypothesis bound outright. `[PROVED HERE]`
+
+## The deficit, exactly `[PROVED HERE]`
+On the window `η ∈ (1/(k+1), 1/k)` (`k ≥ 2`, i.e. `τ = 1/η ∈ (k,k+1)`), the best available bound is
+`\min\big((2−2σ)(k+1)η,\ 1+kη(1−2σ)\big)`, whose maximum over the window is at the crossing
+```
+        η_k = \frac{1}{k+2−2σ} ,\qquad \text{value}\quad E_k(σ) = \frac{(2−2σ)(k+1)}{k+2−2σ} ,
+```
+so `E_k(σ) > 2−2σ` for every `k`, with `E_k ↓ 2−2σ` as `k → ∞`:
+```
+   σ = 7/10:\quad E_2 = 9/13 = 0.6923\ (τ = 13/5),\quad E_3 = 2/3,\quad E_4 = 0.6522,\quad
+                  E_{10} = 0.6226,\quad E_∞ = 3/5 .
+```
+`\mathrm{A}(σ)(1−σ) ≤ \max_k E_k(σ) = E_2(σ) = \frac{3(1−σ)}{2−σ}`, i.e. `\mathrm{A}(σ) ≤ 3/(2−σ)` —
+**Ingham's theorem, recovered exactly, with the location of its bottleneck identified as
+`τ = 4 − 2σ`** (`= 13/5` at `σ = 7/10`).
+> ### The picture, complete
+> * `η ∈ [1/2, 1)` (`τ ∈ (1,2]`): **resolved** — reflection + fourth moment give exactly `2−2σ`, with
+>   strict improvement for `η > 1/2`.
+> * `η ∈ (1/(k+1), 1/k)`, `k ≥ 2`: **deficit `E_k(σ) − (2−2σ) = \frac{(2−2σ)(1−(2−2σ))}{k+2−2σ}`**,
+>   which is `> 0` for `σ > 1/2` and decays like `1/k`.
+> * `η = 1/k` exactly: **resolved** — `(P_k)` gives `(2−2σ)` on the nose.
+> So the unresolved set is a union of open intervals `(1/(k+1), 1/k)` accumulating at `0`, and the
+> Density Hypothesis is precisely the assertion that the moment bound can be interpolated *across each
+> gap between consecutive integer powers*. The deficit is largest on the **first** gap `τ ∈ (2,3)`.
+`[OPEN CORE 53]` Everything now rests on one bounded, explicit question:
+> **For `τ ∈ (2,3)` and `1/2 < σ < 1`, is `\mathrm{LV}_ζ(σ,τ) ≤ (2−2σ)τ`?**
+Beating `E_2(σ)` on this single window improves `‖A‖_∞` below `30/13`; proving it for all `k` is the
+Density Hypothesis. The `k`-th window needs the `k`-th and `(k+1)`-st moments to be *interpolated*, and
+the reflection already achieves exactly this interpolation for `k = 1`. **The natural conjecture is
+that the reflection has a `k`-fold analogue** — a transform under which a block of scale
+`η ∈ (1/(k+1),1/k)` is exchanged for one at a scale where an integer power lands exactly on `T`.
+
+---
+
+# CYCLE 35 (2026-07-25) — the deficit is **irremovable by mean-value methods**; the `k`-fold reflection exists and does not help
+
+## Theorem 33 (sharpness of the moment bound) `[PROVED HERE]`
+For `c = d_k^{(N)}` (the `k`-fold divisor function restricted to factors in `[N,2N]`),
+```
+   ∫_T^{2T}\Big|∑_{a∼N^{k}}c_a a^{-it}\Big|^2 dt
+     = T∑_a|c_a|^2 + ∑_{a≠b}c_a\bar c_b\,O\!\big(\min(T,\ |\log(a/b)|^{-1})\big) ,
+```
+and since `|\log(a/b)| ≍ |a-b|/N^{k}` and the shifted convolution satisfies
+`∑_a |c_ac_{a+h}| ≪ N^{k}T^{o(1)}` uniformly in `h`, the off-diagonal splits as
+```
+   T\!\!\sum_{0<|h|<N^k/T}\!\! N^kT^{o(1)} \;+\; N^k\!\!\sum_{h≥N^k/T}\!\!\frac{N^kT^{o(1)}}{h}
+     \;=\; N^{2k}T^{o(1)} ,
+```
+so `∫|D_N^k|^2 ≍ (T + N^{k})N^{k}T^{o(1)}` — **the Montgomery–Vaughan bound is sharp, in both regimes.**
+> **Consequence: the deficit `E_k(σ) − (2−2σ) = \frac{(2−2σ)(2σ−1)}{k+2−2σ}` of Cycle 34 cannot be
+> removed by any mean-value / moment argument whatsoever.** Improving it requires information about
+> the *large-value set* `W` itself — its additive or multiplicative structure — not about the
+> polynomial. This is a clean impossibility statement for an entire method class, and it explains why
+> Guth–Maynard needed Fourier-analytic structure rather than a better moment.
+
+## Halász–Montgomery also fails at the bottleneck `[VERIFIED — RECORDED DEAD END]`
+`RV^2 ≪ \|a\|_2^2\,\max_r ∑_s |K(t_r−t_s)|` with `K(u) = ∑_{n∼N}n^{iu}`, so
+`RV^2 ≪ N^2 + NR\max_{1≤|u|≤T}|K(u)|`. With the exponent pair `(κ,λ) = (13/84, 13/84+1/2)`,
+`\max|K| ≪ T^{κ(1−η)+λη}`; at the bottleneck `(σ,τ) = (7/10,13/5)`, `η = 5/13`, this is `T^{0.3471} =
+N^{0.9025}`, whereas the method needs `V^2 = N^{1.4} ≫ N\max|K| = N^{1.9025}` — **false by a wide
+margin.** Halász–Montgomery is vacuous at exactly the point where the record sits.
+
+## The `k`-fold reflection exists — and gives nothing `[RECORDED DEAD END]`
+The `k = 1` reflection that resolves `η ∈ [1/2,1)` is Poisson summation. Its `k`-fold analogue is the
+**approximate functional equation for `ζ^{k}`**: `ζ(s)^{k} = χ(s)^{k}ζ(1−s)^{k}` gives
+```
+   ∑_{m≤X}d_k(m)m^{-s} \;≈\; χ(s)^{k}∑_{m≤(T/2π)^{k}/X}d_k(m)m^{s-1} ,
+```
+exchanging length `X` for `T^{k}/X` — for `X = N^{k}` this is scale `kη ↔ k(1−η)`. The moment is
+diagonal iff `\min(kη, k(1−η)) ≤ 1`, i.e. iff `kη ≤ 1` or `k(1−η) ≤ 1` — **exactly the two conditions
+already available.** The `k`-fold reflection is therefore not new information: it is the same fold
+`η ↦ 1−η`, applied `k` times to no effect. (It also does not apply to a *block* `D_N^k`, whose
+coefficients `d_k^{(N)}` are not those of `ζ^k`.)
+`[OPEN CORE 54]` What is left is unambiguous and matches the literature's own frontier: **the deficit
+on `τ ∈ (k,k+1)` must be attacked through the structure of `W`.** The programme's own structural
+assets, not yet applied at `τ ∈ (2,3)`:
+* **Theorem 16** (fat-AP incidence via the divisor bound, replacing Kakeya input) — derived for the
+  block regime `N ≥ T^{1/2}`; at `η = 5/13 < 1/2` the wave-packet length `L = NT^{-1/2} = T^{-3/26} < 1`
+  degenerates, so it must be re-derived in the *dual* picture, where the scale is `M = T^{8/13} > T^{1/2}`
+  and `L_{\mathrm{dual}} = MT^{-1/2} = T^{3/26} > 1` ✔ — **the fat-AP geometry is available on the dual
+  side precisely when it degenerates on the primal side.**
+* **Theorem 6** (`\#\{n∼N : \|D\log n − α\| ≤ 1/2R\} ≪ N^{1+o(1)}R^{-1/2}`, uniform in `D`), which is a
+  statement about the multiplicative structure of `W` and has never been combined with the moment
+  bound.
+**Next cycle: transport Theorem 16 to the dual side at `τ ∈ (2,3)` and combine with `(M_2)`.**

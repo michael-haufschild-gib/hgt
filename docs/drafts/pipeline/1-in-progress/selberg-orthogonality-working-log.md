@@ -2166,3 +2166,271 @@ degree `∂_p` and `|α_i| ≤ 1`, any `c ≤ ∂_p` is attainable, and Ramanuja
 no local obstruction, and every route to excluding it found so far is either circular or blocked by
 one of the recorded structural obstructions. It stands as the recommended focal point: *a single
 explicit question whose resolution decides Selberg's Conjecture A.*
+
+---
+
+## 39. Cycle 33 (2026-07-25) — the LINEAR case of Conjecture A is a THEOREM, by exactly the
+monodromy mechanism MI postulates  [OWN, PROVED HERE]
+
+### 39.1 Theorem (linear integrality)
+
+> Let `F ∈ S` and suppose there are `m ∈ C` and `δ > 0` with
+> ```
+> a_F(p) = m + O(p^{−δ})     for all primes p.
+> ```
+> Then **`m ∈ Z`**; in fact `m = ord_{s=1}(1/F)`, i.e. `F` has a pole of order `m` at `s = 1`
+> (a zero of order `−m` if `m < 0`).
+
+*Proof.* Put `D(s) := log F(s) − m·log ζ(s)`, defined for `σ > 1` (both are non-vanishing there).
+As a Dirichlet series,
+```
+D(s) = Σ_p ( a_F(p) − m ) p^{−s}  +  Σ_p Σ_{k≥2} ( b_F(p^k) − m/k ) p^{−ks}.
+```
+The first sum converges absolutely for `σ > 1 − δ`. For the second, the Newton relations express
+`b_F(p^k)` as a universal polynomial in `a_F(p),…,a_F(p^k)` with `≍ e^{c√k}` terms of total degree
+`≤ k`, so `|b_F(p^k)| ≪ C_ε^k p^{kε}`; its `k = 2` term is `≪ p^{−2σ+2ε}`, giving convergence for
+`σ > 1/2 + ε`, while for each fixed small `p` the `k`-sum converges for `σ > θ` by the Euler-product
+axiom. Hence `D` is **holomorphic on `σ > max(1−δ, 1/2+ε, θ)`**, a region containing `s = 1`.
+
+Therefore, on that region, `ζ(s)^m := F(s)·e^{−D(s)}` is a **single-valued** function: `F` is
+meromorphic by Selberg's axiom (2), and `e^{−D}` is holomorphic and non-vanishing. Near `s = 1`,
+`ζ(s) = (s−1)^{−1}u(s)` with `u` holomorphic and `u(1) = 1`, so `ζ(s)^m = (s−1)^{−m}u(s)^m`; and
+`(s−1)^{−m}` is single-valued precisely when `m ∈ Z`. Comparing orders at `s = 1` identifies `m`
+with the order of the pole of `F`. ∎
+
+### 39.2 Why this matters
+
+This is **exactly the mechanism MI postulates**, executed in the case where it is available:
+*integrality of a prime-density is forced by single-valuedness of an object that Selberg's axiom (2)
+already provides.* In the linear case that object is `F` itself; in the quadratic case (Conjecture A)
+it would have to be `R_{F,F}`, which axiom (2) does **not** cover — and that gap is precisely MI.
+
+So the programme's central diagnosis is now confirmed by a theorem rather than by heuristics:
+```
+linear prime-density  ⟶ integrality  PROVED  (axiom (2) applies to F)
+quadratic prime-density ⟶ integrality  =  Conjecture A  (axiom (2) does not apply to R_{F,F})
+```
+
+### 39.3 Why it does not extend to the test case
+
+For the test case `|a_F(p)| = c` with varying phases, the same computation gives
+`𝔏_F(w) − c² log ζ(w) = (k ≥ 2 terms)`, holomorphic on `Re w > max(1/2, θ)`, hence
+`ℛ_F(w) = ζ(w)^{c²}·e^{holo}` near `w = 1`. But concluding `c² ∈ Z` needs `ℛ_F` (equivalently
+`R_{F,F}`) to be single-valued there — which is MI. **Circular, as expected.** The two cases are
+separated by exactly one application of axiom (2).
+
+### 39.4 Corollary (a clean unconditional statement about `S`)
+
+> No `F ∈ S` has `a_F(p) = c + O(p^{−δ})` with `c ∉ Z`. In particular there is no element of the
+> Selberg class whose prime coefficients converge to `1/√2`, or to any non-integer.
+
+The test case of §37.3 therefore survives only in its *oscillating* form: any counterexample to
+Conjecture A must have prime coefficients of constant modulus but genuinely varying phase.
+That is a real narrowing of the search space and is recorded as the sharpened target.
+
+---
+
+## 40. Cycle 34 (2026-07-25) — sharp form of linear integrality, and the surviving shape of any
+counterexample
+
+### 40.1 Theorem (sharp linear integrality)  [OWN, PROVED HERE]
+
+> Let `F ∈ S` and suppose `Σ_{p≤x} ( a_F(p) − m )/p = O(1)` for some `m ∈ C`. Then `m = m_F`, the
+> order of the pole of `F` at `s = 1`; in particular **`m ∈ Z_{≥0}`**.
+
+*Proof.* Let `S(x) := Σ_{p≤x}(a_F(p)−m)/p`, bounded by hypothesis. Partial summation gives, for real
+`s > 1`,
+`Σ_p (a_F(p)−m)p^{−s} = (s−1)∫_1^∞ S(x)x^{−s}dx ≪ (s−1)·sup|S|/(s−1) = O(1)`.
+Adding the `k ≥ 2` part of `log F − m log ζ`, holomorphic on `σ > max(1/2,θ)` by the Newton-relation
+bound `|b_F(p^k)| ≪ C_ε^k p^{kε}` (§39.1), we get `log F(σ) − m log ζ(σ) = O(1)` as `σ → 1+`, i.e.
+`F(σ) ≍ (σ−1)^{−m}`. But `F` is meromorphic at `s=1` with pole order `m_F ∈ Z_{≥0}`, so
+`F(σ) ≍ (σ−1)^{−m_F}`. Hence `(σ−1)^{m−m_F} ≍ 1`, forcing `m = m_F`. ∎
+
+So the **linear** Selberg density is unconditionally an integer, and is the pole order — no
+hypothesis beyond the axioms. Combined with §39.1 (the `O(p^{−δ})` version, which additionally
+locates `m` via single-valuedness of `ζ^m`), the linear half of Selberg's conjectures is a theorem,
+by the very mechanism MI postulates for the quadratic half.
+
+### 40.2 The surviving shape of a counterexample to Conjecture A
+
+Collecting the constraints now proved or classified:
+
+| hypothesis on `a_F(p)` | status |
+|---|---|
+| `a_F(p) = c + O(p^{−δ})` | `c ∈ Z` — §39.1 |
+| `Σ_{p≤x}(a_F(p)−m)/p = O(1)` | `m = m_F ∈ Z_{≥0}` — §40.1 |
+| `a_F(p) = c·χ(p)p^{−iθ}`, `χ` principal, `θ ≠ 0` | forces `c = 0` (else `F` has a pole at `1−iθ`) |
+| `d_F = 1` | classified (K–P): `|a_F(p)| = 1` |
+| `d_F = 2`, `q_F = 1` | classified (K–P 2022): modular, `|a_F(p)|` non-constant |
+
+> **Therefore any counterexample to Conjecture A must have `|a_F(p)|` of constant (or
+> non-integrally-averaging) modulus with genuinely oscillating phase, degree `≥ 2` with `q_F > 1`,
+> or degree `≥ 3`** — i.e. it must live exactly in the region where no classification exists. This
+> is a real narrowing, and it explains why every classified region satisfies Selberg's conjectures.
+
+### 40.3 What the two theorems say about MI
+
+`§39.1` and `§40.1` are the linear shadow of Conjecture A and both are proved by **applying axiom (2)
+to `F` itself**. Conjecture A is the same statement one level up, where the object needing axiom (2)
+is `R_{F,F}` — and axiom (2) does not reach it. MI is precisely the assertion that it should.
+The programme's central claim is therefore now supported by a proved instance rather than by
+analogy: *integrality of a Selberg density is a monodromy phenomenon, and it holds exactly where
+single-valuedness is available.*
+
+---
+
+## 41. Cycles 35–37 (2026-07-25) — batch: the Abel form of the linear case is unconditional; the
+narrowed target resists every available tool
+
+### 41.1 Unconditional Abel form (linear case)  [clean statement, worth keeping]
+
+For every `F ∈ S`, since `F` is meromorphic at `s=1` with pole order `m_F`,
+`log F(s) − m_F log(1/(s−1))` is holomorphic near `s=1`; and
+`log F(s) = Σ_p a_F(p)p^{−s} + (holomorphic on σ > max(1/2,θ))` by §39.1. Hence
+```
+Σ_p a_F(p) p^{−s} = m_F · log(1/(s−1)) + (holomorphic near s = 1)      UNCONDITIONALLY.
+```
+This is the linear case of Selberg's Conjecture B (against `ζ`) in **Abel form**, with no hypothesis.
+The Tauberian upgrade to `Σ_{p≤x}a_F(p)/p = m_F log log x + O(1)` needs control on the whole line
+`Re s = 1`, i.e. the generalized PNT — the Abel/Tauber split of §9.2. The quadratic analogue of the
+displayed identity **is** MI, and the only missing ingredient is that axiom (2) does not cover
+`R_{F,F}`.
+
+### 41.2 The shift family, revisited with §40.1
+
+For entire `F` and `θ ≠ 0`, `F_θ(s) = F(s+iθ) ∈ S` has `m_{F_θ} = 0` (its pole sits at `1−iθ`). So
+§40.1 gives: *if* `Σ_{p≤x}a_F(p)p^{−iθ}/p` has an `O(1)`-asymptotic then its density is `0`. Thus
+the whole shift family is pinned **conditionally on the asymptotic existing**; §40.1 is a rigidity
+statement, not an existence statement, and cannot be bootstrapped into one.
+
+### 41.3 Attempts on the narrowed target (`|a_F(p)| = c`, oscillating phase), all failed
+
+- `F·\bar F ∈ S` gives only `2Re a_F(p)` — linear, no access to `c²`.
+- `F_θ·\bar F ∈ S` gives `a_F(p)p^{−iθ} + \overline{a_F(p)}` — again linear.
+- `a_F(p²) = b_F(p²) + c²e^{2iφ_p}/2` with `|a_F(p²)| ≪ p^ε`, `|b_F(p²)| ≪ p^{2θ}`: vacuous.
+- Second and fourth moments on and off the critical line: every computation returns
+  `T(log T)^{c²}`-type answers with no constraint linking `c²` to `d`.
+- The Cusp–Spectrum Radius Law uses only `a_F(1)=1` (and `m_1 = 2` here), so it is blind to `c`.
+- Writing `𝔏_F` as a combination of `log H`, `H ∈ S`, would need `b_H(p^k) = k|b_F(p^k)|²` — the
+  functorial lift.
+
+### 41.4 Net position after 37 cycles
+
+Proved here and standing: Theorems 1, 2, 4 and Corollary 3 (MI ⟹ Conjecture A, integrality of the
+full pairing, axiom-necessity, the two-ingredient reduction); the Cusp–Spectrum Radius Law with its
+`S^♯` form and four exact verifications; the explicit Rankin–Selberg object `ℛ_F` with positivity;
+sharp linear integrality (§39.1, §40.1) and the unconditional Abel form (§41.1); Lemma A′ and the
+Lean certificates.
+
+Obstructions recorded, each with a proof or an explicit witness: degree multiplicativity;
+linear-moment closure; truncated spectral data; frequency non-isolation; the `ζ^{1/2}` witness
+showing positivity cannot give MI; the Carlson and Halász dead ends; the circularity of every exit
+from the test case.
+
+The single open statement carrying the whole programme is **MI**; the single sharpest concrete
+question is whether an `F ∈ S` can have `|a_F(p)|` of constant non-integral mean square with
+oscillating phase, necessarily in degree `≥ 2` with `q_F > 1` or degree `≥ 3`.
+
+---
+
+## 42. Cycle 38 (2026-07-25) — the log-coefficient transfer lemma (analytic core of §39.1/§40.1)
+
+### 42.1 Lemma  [PROVED HERE, explicit constant]
+
+> Let `A, B : N → C` with `A 0 = 1` satisfy the exponential (Newton) recursion
+> ```
+> n · A_n = Σ_{k=1}^{n} k · B_k · A_{n−k}      (n ≥ 1),
+> ```
+> and suppose `‖A_n‖ ≤ C R^n` for all `n`, with `C, R ≥ 1`. Then `‖B_n‖ ≤ (4CR)^n` for all `n ≥ 1`.
+
+*Proof.* Write `M := 4CR ≥ R`. Isolating `k = n` (where `A_0 = 1`),
+`n B_n = n A_n − Σ_{k=1}^{n−1} k B_k A_{n−k}`. By strong induction `‖B_k‖ ≤ M^k` for `k < n`, so
+`n‖B_n‖ ≤ n C R^n + Σ_{k=1}^{n−1} n M^k C R^{n−k} = n C R^n + n C R^n Σ_{k=1}^{n−1}(M/R)^k`.
+Since `M/R = 4C ≥ 2` and `Σ_{k=1}^{n−1}x^k = x(x^{n−1}−1)/(x−1) ≤ 2x^{n−1}` for `x ≥ 2`, this is
+`≤ n C R^n + 2 n C R M^{n−1}`, so `‖B_n‖ ≤ C R^n + 2 C R M^{n−1}`. As `M ≥ R`,
+`C R^n = C R·R^{n−1} ≤ 2 C R M^{n−1}`, whence `‖B_n‖ ≤ 4 C R M^{n−1} = M^n`. ∎
+
+### 42.2 Application
+
+The recursion is the coefficient form of `F_p' = (log F_p)' F_p`, i.e. `A_k = a_F(p^k)`,
+`B_k = k·b_F(p^k)`. With `‖a_F(p^k)‖ ≤ C_ε p^{kε}` (Ramanujan, `R = p^ε`) the lemma gives
+```
+|b_F(p^k)| ≪ (4C_ε)^k p^{kε} ,
+```
+exactly the bound used in §37.1, §39.1 and §40.1 to make `Σ_p Σ_{k≥2}` converge on `Re s > 1/2 + ε`.
+**The analytic core of the linear-integrality theorems is elementary and fully explicit.**
+
+### 42.3 Lean status
+
+Formalisation drafted (`/tmp/logcoeff.lean`): the recursion split, the erase-index rewriting and the
+per-term bound go through; the remaining step is the geometric-sum bound `Σ_{k=1}^{n−1}x^k ≤ 2x^{n−1}`
+(`x ≥ 2`) inside a strong induction. Left for a later pass — a formalisation task, not a mathematical
+gap. Recorded so the next session resumes from the working draft.
+
+---
+
+## 43. Cycles 39–40 (2026-07-25) — MI as the continuation of the `L²`-mean of `log F`
+
+### 43.1 A second explicit avatar of the target
+
+Alongside `𝔏_F(w) = Σ_{p,k} k|b_F(p^k)|²p^{−kw}` (§36) define the unweighted version
+```
+𝔏'_F(w) := Σ_{p,k} |b_F(p^k)|² p^{−kw} .
+```
+Exactly as in §37.1, `𝔏'_F(w) = Σ_p |a_F(p)|² p^{−w} + (holomorphic on Re w > max(1/2,θ))`, so
+`𝔏'_F` and `𝔏_F` have the same singular behaviour at `w = 1`, and **either may replace `R_{F,F}` in
+MI**. But `𝔏'` has an extra interpretation: for `σ > 1`, by the mean-value theorem for Dirichlet
+series,
+```
+𝔏'_F(2σ) = lim_{T→∞} (2T)^{−1} ∫_{−T}^{T} | log F(σ+it) |² dt .
+```
+> **MI (diagonal) ⟺ the `L²`-mean of `log F` on vertical lines, as a function of `σ`, continues
+> meromorphically past `σ = 1/2`** (i.e. past `w = 2σ = 1`).
+
+### 43.2 The functional equation computes the mean exactly on the left
+
+Put `V(σ,T) := (2T)^{−1}∫_{−T}^{T}|log F(σ+it)|²dt`. From `log F(s) = log X(s) + log \bar F(1−s)`
+with `|log X(σ+it)| = (1/2−σ)·log(q|t|^d/(2π)^d) + O(1)`:
+```
+σ > 1 :   V(σ,T) → 𝔏'_F(2σ)          (bounded in T);
+σ < 0 :   V(σ,T) = (1/2−σ)² d² log²T + O(log T)   (explicit).
+```
+So the `T`-behaviour of `V` is completely known on both sides of the critical strip: bounded on the
+right, `≍ log²T` on the left, with the transition at `σ = 1/2` — matching the abscissa `w = 1`.
+
+### 43.3 Why interpolation still fails
+
+Hadamard three-lines would give `V(1/2+δ, T)` from the two sides, hence MI. It fails twice over:
+- `log F` is **multivalued** in the strip (branch points at every zero of `F`, `≍ (d/π)T log T` of
+  them), so no three-lines for `log F`;
+- replacing it by the single-valued `log|F|` does not help: `log|F|` is **subharmonic**
+  (`Δ log|F| = 2π Σ_ρ δ_ρ ≥ 0`), and `σ ↦ ∫ (log|F|)² dt` has no convexity for subharmonic
+  integrands.
+
+This is the same wall as §34.2 (the `log(F/G)` propagation) and as MI itself: **single-valuedness
+across the critical strip.** Three independent formulations of the programme's residual difficulty
+now coincide: continuation of `R_{F,F}` at `w=1`; propagation of a mean square across the strip;
+and monodromy of `log F` around its zeros.
+
+### 43.4 Net
+
+No new mechanism. The value of this batch is the second avatar `𝔏'_F` — an *analytically meaningful*
+form of the target (`MI` = continuation of an `L²`-mean, with both boundary behaviours explicitly
+computed) — and the confirmation that the obstruction is single-valuedness in the strip, not any
+missing estimate.
+
+### 42.4 Lean draft progress (cycle 41)
+
+Saved working draft: `docs/drafts/pipeline/computations/logcoeff-draft.lean` (or
+`docs/drafts/pipeline/logcoeff-draft.lean`). Compiling parts:
+- `geom_le_two` — `Σ_{j<m} r^j ≤ 2` for `0 ≤ r ≤ 1/2`, by induction via `geom_sum_succ`. **Compiles.**
+- the recursion is restated in the reindexed form
+  `n·A n = ∑_{j<n} (n−j)·B(n−j)·A j`, which makes the `j = 0` split clean and avoids all
+  natural-subtraction reindexing in the geometric step;
+- `hsplit` (isolating `j = 0`, `(range n).erase 0 = Ico 1 n`) — **compiles**;
+- `hkey`, `hterm`'s norm bound — **compile**;
+- remaining: the algebraic identity `M^{n−j} R^j = M^{n−1} R (R/M)^{j−1}` (a `field_simp`/`ring`
+  massage), then `Finset.sum_Ico_eq_sum_range` to turn `∑_{j ∈ Ico 1 n}(R/M)^{j−1}` into
+  `∑_{i<n−1}(R/M)^i ≤ 2`, and the final arithmetic
+  `‖B n‖ ≤ C R^n + 2CR M^{n−1} ≤ 3CR M^{n−1} ≤ M^n`.
+Purely mechanical from here; recorded so a later pass does not restart.

@@ -2763,3 +2763,405 @@ his is `sum_n d_3(n)d(n+h)`, and ours evaluates `d_3` along the linear form `am 
 `a = 1`. Making the general-`a` case work is exactly a level-of-distribution statement for `d_3`, so
 C96 and C94 (level `2/3`) are two faces of the same requirement; C96 is the version that starts from
 a theorem rather than from an unproved exponent.
+
+---
+
+## 50. Cycle 49 (2026-07-25) — Phase 5 executed: the transfer is now proved in full
+
+The transfer had been *used* since cycle 8 and only *checked* against Ivić's published `k=3` case.
+It is now proved end to end, in seven steps, as §3bis of the preprint: AFE; expansion; the kernel
+bound `|I(m,h)| ≤ min(T, 4m/h)`; the main-term citation; the head range `h ≤ M/T`; the tail range
+`M/T < h ≤ M` by summation by parts; and the optimisation at `M ≍ T^{k/2}`.
+
+**The analytic core of step (6) is formalised.** New Lean module
+`GaloisForLFunctions.HTGeometry.ShiftPartialSummation`:
+
+- `sum_mul_weight_eq` — summation by parts in the exact form the transfer needs,
+  `∑_{i<n} f i · w i = S n · w n − ∑_{j<n} S(j+1)·(w(j+1) − w j)`, proved by induction;
+- `abel_bound_of_partialSum_le` — from `|S j| ≤ B·j^a` and the weight `1/(j+1)`,
+  `|∑_{i<n} f i/(i+1)| ≤ B·n^a/(n+1) + ∑_{j<n} B·(j+1)^a/((j+1)(j+2))`;
+- `increment_le_rpow` — the increment weight is dominated by `(j+1)^{a−2}`;
+- `summable_increment` — for `a < 1` that dominating series converges, which is precisely why the
+  tail range contributes the same exponent as the head and not more.
+
+Axioms `[propext, Classical.choice, Quot.sound]`; `lake build GaloisForLFunctions.HTGeometry` green
+(10,884 jobs). Six campaign modules now.
+
+**What this closes.** Every ceiling in §3 and §4 of the preprint is read off from the transfer; until
+now the transfer itself rested on a citation plus a numerical check at one index. The only remaining
+citation inside the proof is step (4), the Conrey–Gonek main-term computation, which is standard and
+is the same input Ivić uses.
+
+---
+
+## Cycle 50 — the zero-geometry route, and its exact inertness (C97–C101)
+
+Two Lean modules banked first: `HTGeometry.SpikeSobolev` (the analytic core of `(F2)`,
+`μ ≤ m(k)/(2k)` — `f t₀² − f t² ≤ ∫|2ff'|` by FTC + interval monotonicity, and the integrated
+Sobolev form `(b−a)f t₀² ≤ ∫f² + (b−a)∫|2ff'|`), and `HTGeometry.JensenZeroGeometry` (below).
+Both green, axioms `[propext, Classical.choice, Quot.sound]`.
+
+### C97 — a route the map did not contain
+
+Every ceiling in §3 of the preprint is analytic (moments, large values, exponential sums). The
+folklore route *"a large value of `ζ` pushes the zeros aside, and the zeros cannot be pushed"* had
+never been made exact here. It is a genuinely different mechanism: no Dirichlet polynomial, no
+moment, no exponential sum — only Jensen's formula, the functional equation, and Riemann–von
+Mangoldt.
+
+### C98 — the Jensen balance is an identity, and the duality is exact
+
+`[PROVED HERE]` With `s₀ = ½+it₀`, `L = log(t₀/2π)`, `n_{t₀}(u)` the **two-dimensional** disc count:
+
+    log|ζ(s₀)| = (R/π)L + 𝔈_R(t₀) − ∫_0^R n_{t₀}(u) du/u + O(R²/T),
+
+`𝔈_R` = mean of `log|ζ|` over the *folded* circle (all sample points at `Re ≥ ½`). Proof: Jensen for
+`ξ` on `D(s₀,R)`; `ξ = H·ζ` with `H` zero-free there so `log|H|` is harmonic and drops out; the
+functional equation on the left arc yields the explicit `(R/π)L`.
+
+**The duality.** The expected potential of a Riemann–von Mangoldt-correct on-line zero set is
+`∫_0^R (u/π)L du/u = (R/π)L` — *exactly* the `χ`-factor mean, at every radius. Hence
+
+    log|ζ(½+it₀)| = 𝔈_R(t₀) + D_R(t₀),   D_R := ∫_0^R ((u/π)L − n_{t₀}(u)) du/u,
+
+so **LH ⟺ the zero set has no logarithmic holes around critical-line points**, uniformly. This is a
+reformulation of LH that splits Backlund's criterion into a vertical (count) and a horizontal
+(displacement) part.
+
+### C99 — the route is exactly inert `[PROVED HERE]`
+
+Inputs: (Z-a) `μ(1/2) ≤ θ₀` ⟹ `𝔈_R ≤ 2θ₀J(R)log T`, `J(R) = (1/2π)∫(½−R|cos θ|)_+dθ`;
+(Z-b) `|β−½| ≤ ½` ⟹ `n_{t₀}(u) ≥ (√(u²−¼)/π)L − 2S_max` for `u ≥ ½`, giving potential
+`≥ (I(R)/π)L`, `I(R) = √(R²−¼) − ½arccos(1/(2R))`.
+
+**The cancellation.** With `A := R − √(R²−¼)` and `θ_R := arccos(1/(2R))`:
+
+    R − I(R) = A + θ_R/2,      1 − 2J(R) = (2/π)(θ_R + 2A),
+    ⟹  4(R − I(R)) = 2(θ_R + 2A) = π(1 − 2J(R))  ⟹  (R − I(R))/π = (1 − 2J(R))/4.
+
+Therefore `μ ≤ ¼ + 2J(R)(θ₀ − ¼)` for all `R ≥ ½` (and `θ₀ + (R/π)(1−4θ₀)` for `R ≤ ½`; the two
+agree at `R = ½`). Consequences:
+
+- `θ₀ = ¼` ⟹ output `= ¼` **at every radius** — the convexity bound is a fixed point at all scales;
+- output ∈ `[θ₀, ¼]` always — **the route never improves its input**;
+- `¼` is the *unique* fixed point and the map contracts toward it with ratio `2J(R) < 1`: iterating
+  the route drives a subconvex input back **up** to `¼`;
+- closing the route on itself (`θ₀ = μ`) gives `μ(1−2J) ≤ (1−2J)/4`, i.e. exactly `μ ≤ ¼`.
+
+**The Jensen balance is equivalent to the convexity bound.** Gain exactly zero.
+
+### C100 — where the gain lives, and the circularity `[PROVED HERE]`
+
+With the zeros in the disc *on the line*, the potential attains `(R/π)L`, the `χ`-factor cancels in
+full, and the output is `2J(R)θ₀`. Since `J(R) → 0` as `R → ∞`, iterating gives `θ₀ → 0`: a
+zero-geometry proof of RH ⟹ LH, with contraction ratio `2J(R)` per step, and (with
+`S ≪ log t/loglog t`, `R ≍ loglog t`) the correct shape `exp(C log t·logloglog t/loglog t)`.
+
+So the entire gain is the **horizontal** position of the zeros. The **vertical** input is worthless:
+any `S(t) ≤ c_S log t`, *including the unproved `c_S = 0`*, leaves the output at `¼`. The exact
+intermediate needed is `#{ρ : β > ½+δ, |γ−t₀| ≤ R} = o(log T)` pointwise — Backlund, i.e. LH.
+**Exactly circular; no intermediate.** (Same shape as the map's other dichotomies.)
+
+### C101 — what this kills, and what it opens
+
+Killed (added to dead routes): **D24** — any programme of the form "bound `μ` by showing large values
+force zero gaps / zero-count deficiencies, then bound deficiencies by `S(t)`". Even a *perfect*
+unconditional `S(t) = o(log t)` — itself a well-known open problem, best current
+`|S(t)| ≤ 0.111 log t + …` (Trudgian) — buys nothing. The route is worth `¼` and stops.
+
+Opened: the identity `log|ζ| = 𝔈_R + D_R` is exact and holds for **every** `R` up to `√T`. Inertness
+came from bounding `𝔈_R` by convexity *pointwise on the circle*. The next generative move is to
+stop bounding `𝔈_R` pointwise: `𝔈_R` is a **circle mean**, so what is needed is a bound on
+`log|ζ(σ+it)|` *on average over the folded circle* — a first-moment statement for `log|ζ|` off the
+line, not a sup bound. `∫_T^{2T} log|ζ(½+it)| dt = 2π Σ_{γ}(β−½) + O(log T)` (Littlewood) is exactly
+such a statement and is *not* used above. Question for the next cycle: does the pair
+(Jensen balance, Littlewood's lemma) close into a system with gain, i.e. can the first moment of
+`log|ζ|` on the folded circle beat `2θ₀J(R)`?
+
+Files: `docs/drafts/pipeline/4-publication-ready/lindelof-method-ceilings.md` §6 (twelfth ceiling,
+full proofs); `formal/GaloisForLFunctions/HTGeometry/JensenZeroGeometry.lean`;
+`formal/GaloisForLFunctions/HTGeometry/SpikeSobolev.lean`.
+
+### C102 — the sharp form: the slope-1/2 barrier `[PROVED HERE]`
+
+C99 fed the balance the *chord* `μ(σ) ≤ 2θ₀(1−σ)`. That is not what is known — the known `μ*(σ)`
+lies strictly below the chord in the interior. Redoing the balance with the actual curve gives a
+sharper and much more informative answer.
+
+With `Φ(R) = (1/2π)∫μ*(½+R|cos θ|)dθ` and `Out(R) = (1−2J(R))/4 + Φ(R)`:
+
+**Gain criterion.** `Out(0) = μ*(½)` and `Out'(0⁺) = (1 + 2μ*'(½⁺))/π`.
+So the route gains **iff `|μ*'(½⁺)| > ½`**.
+
+**The barrier.** If the bound at `σ = ½` is attained at the self-dual block (`μ*(½) = b(½) − ¼`),
+then the same block is admissible at every `σ`, so `μ*(σ) ≥ μ*(½) − (σ−½)/2` — slope exactly `−½`,
+never steeper. Feeding that in:
+
+- for `R ≤ 2μ*(½)`: `Out(R) ≥ R/π + ½(2μ*(½) − 2R/π) = μ*(½)` **identically in `R`** — a second
+  exact cancellation, this time of the explicit factor against the folded-mean loss;
+- for `R ≥ 2μ*(½)`: `d/dR G(c,R) = (2/π)(√(R²−c²)/R − 1) ≤ 0`, hence
+  `d/dR Out ≥ (1/π)(√(R²−a²) − √(R²−¼))/R ≥ 0` with `a = 2μ*(½) ≤ ½`.
+
+So `Out(R) ≥ μ*(½)` for **every** radius, with an exact plateau of length `2μ*(½)`. (Structural echo
+of the chord–pivot plateau of C-earlier: another quantity that is constant on an interval and then
+degrades.)
+
+**The lever, stated exactly.** The route gains iff one can prove
+
+    μ(σ) < 13/84 − (σ − ½)/2   for some σ > ½,
+
+i.e. an off-line bound beating the slope-`½` line through the current on-line record. Equivalently:
+**a critical Dirichlet block longer than `√(t/2π)`.** The AFE caps block length at `√(t/2π)`, so this
+is exactly "the self-dual block is not the binding one" — the *same* condition that makes
+Guth–Maynard inert at `β = 1` (§3.3). **The twelfth ceiling and the third are one obstruction seen
+from two sides.** Note the direction: it is a *bootstrap* from off-line to on-line, the reverse of
+Phragmén–Lindelöf.
+
+Lean: `AFEBound`, `AFEBound.half_lipschitz_lower`, `afe_plateau_identity`, `gain_derivative`,
+`no_gain_of_half_lipschitz`, `afe_slope_barrier` — axioms `[propext, Classical.choice, Quot.sound]`.
+Paper: preprint §6.4, Lemma 6.8 / Theorem 6.9 / Corollary 6.10.
+
+**D24 (dead route, recorded).** "Bound `μ` by showing large values force zero-gaps, then bound the
+deficiency via `S(t)`." Dead: gain zero, and even a perfect unconditional `S(t) = o(log t)` buys
+nothing. **D25.** "Feed the known `μ(σ)` curve into the Jensen balance." Dead unless (6.4) holds.
+
+**Next generative move (for the following cycle).** Two concrete, disjoint targets:
+1. **Check (6.4) against the known `μ(σ)` table.** This is now a purely arithmetic question about
+   published exponents: is `μ(σ) ≤ 13/84 − (σ−½)/2` known anywhere on `(½, 0.81)`? If yes, the
+   Jensen balance improves `13/84` immediately. This is the first *bootstrap from off-line to
+   on-line* the campaign has produced and it costs nothing to test.
+2. **Replace the pointwise bound on `𝔈_R` by a mean bound.** `𝔈_R` is a *circle mean*, and
+   `∫_T^{2T} log^+|ζ(σ+it)|dt ≪ T·log(1/(2σ−1))` (Jensen from the second moment) is smaller than the
+   pointwise bound by a full factor of `log T`. That kills only `T/log T` worth of large values by
+   Markov; the question is whether the higher moments of `log^+|ζ(σ+it)|` (Bohr–Jessen /
+   Selberg-type, all finite for fixed `σ > ½`) push it to a power saving. The obstruction identified:
+   the folded circle contains points with `σ → ½`, where the moments blow up; the trade-off between
+   the truncation radius and the moment order is the object to optimise.
+
+### C103 — target 1 settled, by proof rather than table lookup: (6.4) is unsatisfiable `[PROVED HERE]`
+
+The criterion (6.4) — "`μ(σ) < 13/84 − (σ−½)/2` for some `σ > ½`" — does not need a table. It is
+refuted structurally.
+
+Every known bound has the form `μ*(σ) = max_{α} ( b(α) − ασ )`, a **maximum** over dyadic Dirichlet
+blocks of length `t^α`, where `t^{b(α)}` bounds `|Σ_{n∼t^α} n^{−it}|`. Because it is a maximum, for
+*every* `σ`
+
+    μ*(σ) ≥ b(α₀) − α₀σ    for the block `α₀` attaining the bound at `σ = ½`,
+
+and `α₀ = ½` there (the self-dual block: `b(½) − ¼ = μ*(½)`, while short blocks give
+`b(α) − α/2 ≈ α/2 → 0` and the `α ≈ 1` block gives `b(1) − σ = ½ − σ`, smaller at `σ = ½`). Hence
+
+    μ*(σ) ≥ μ*(½) − (σ − ½)/2    on all of [½, 1].
+
+Sanity check on a known instance: Weyl's `(k,l) = (1/6, 2/3)` gives `μ(σ) ≤ (k+l−σ)/2 = (5/6−σ)/2`,
+which is *identically* `1/6 − (σ−½)/2` — **exactly the barrier line at every `σ`**. Bourgain's bound
+extends the same way. For `σ > ½ + 2·13/84 = 0.8095` the line is negative and `μ* ≥ 0` beats it
+vacuously, so (6.3) holds there too.
+
+**Consequence, and the real statement of the obstruction.** Because `μ*` is a *maximum over blocks*,
+it can never fall below the line traced by the single block that binds on the critical line.
+Therefore:
+
+> Improving `μ(σ)` below `μ(½) − (σ−½)/2` requires **cancellation between distinct dyadic blocks** of
+> the Dirichlet approximation — not a better bound for any one block.
+
+No current method produces inter-block cancellation; every one of them bounds blocks separately and
+takes a maximum. This is the same defect that makes the self-dual block `β = 1` always bind in the
+Guth–Maynard analysis (§3.3). **D26 (dead route):** "improve `μ` by feeding a better off-line bound
+into the Jensen balance" — dead for every max-over-blocks bound, i.e. for all of them.
+
+**What survives as the live question.** Not "is `μ(σ)` small off the line" but:
+
+> `[OPEN CORE]` Is there any estimate for `ζ(σ+it)`, `σ > ½`, that exploits cancellation **between**
+> the dyadic blocks `n ∼ t^{α₁}` and `n ∼ t^{α₂}`, `α₁ ≠ α₂`, of its Dirichlet approximation?
+
+This is a new formulation and it is *not* a moment or large-value statement; it is a statement about
+the phase relation between blocks of different length, i.e. about `Σ_{n∼N₁}n^{−it} · conj(Σ_{n∼N₂}n^{−it})`
+having a saving beyond Cauchy–Schwarz. Recorded as the successor question to the additive-divisor
+open core; the two are related — the additive-divisor input `Σ_h Δ_k(x,h)` is precisely an inter-block
+correlation for `ζ^k`.
+
+### C104 — scope correction on C103, and the block-exponent anchor
+
+**Scope of C103.** The proved statement is about the *off-line* curve: a max-over-blocks bound cannot
+dip below `μ*(½) − (σ−½)/2`. It is **not** a claim that inter-block cancellation is needed for LH —
+improving the single self-dual block improves `μ*(½)` and hence the whole line uniformly. The
+[OPEN CORE] posed there is therefore the live question *for the Jensen route*, and its link to the
+additive-divisor core is `[ANALOGY]`, not proof: `Σ_h Δ_k(x,h)` is an inter-block correlation for
+`ζ^k`, which is suggestive but not a reduction.
+
+**The block-exponent anchor.** Writing `b(α)` for the exponent of `|Σ_{n∼t^α} n^{−it}|`, the AFE
+gives `μ(½) = b(½) − ¼` exactly. In the block variable `N = t^{1/2}` this reads
+
+    |Σ_{n∼N} n^{−it}| ≪ N^{1/2 + 2μ},   so   LH  ⟺  b(½) = ¼  ⟺  square-root cancellation
+    for the single self-dual block.
+
+Current record `μ ≤ 13/84` = block exponent `N^{17/21} = N^{0.8095…}`; square-root cancellation is
+`N^{1/2}`. **Shortfall `= 2μ = 13/42`.**
+
+**Identity worth flagging.** The plateau length of Theorem 6.9 is `2μ*(½)` — *exactly* the shortfall
+from square-root cancellation in the self-dual block. So the Jensen balance's inert interval and the
+block's distance from square-root cancellation are the same number, not two numbers that happen to
+agree: both are `2μ`, because the balance measures the folded circle against the slope-`½` line whose
+intercept is set by the block exponent. This is the sharpest form of "the twelfth ceiling and the
+third are one obstruction": all three quantities — the Guth–Maynard self-dual block `β = 1`, the
+Jensen plateau `2μ`, and the square-root-cancellation shortfall — are the same object.
+
+### C105 — target 2 of C102 resolved: REDISCOVERED, and why
+
+Target 2 was: replace the pointwise bound on `𝔈_R` by a *mean* bound, hoping for a large-value
+(`φ(v)`) statement. Carried out:
+
+From the balance, `v log T ≤ 𝔈_R + D_R` and `D_R ≤ (R/π)log T`, so choosing `R = πv/2` forces
+`𝔈_R(t₀) ≥ (v/2)log T`. Then `𝔈_R^+ ≤ (1/2π)∫ log^+|ζ(σ(θ)+it(θ))|dθ` and Jensen give, for `k ≥ 1`,
+
+    ∫_T^{2T}(𝔈_R^+)^k dt₀ ≤ (1/2π)∫_0^{2π}[ ∫_T^{2T}(log^+|ζ(σ(θ)+it)|)^k dt ] dθ.
+
+Feeding Selberg-type moments `≪ T(2k−1)!!·V_σ^{2k}`, `V_σ² ≍ log(1/(σ−½))` capped at `loglog T`, and
+optimising `k` at the top of the admissible range `K ≍ log T/loglog T`, the bracket is `≍ 1/(v²log T)`
+and the output is `meas ≪ T·exp(−K·loglog T) = T^{1−c}` with `c` **absolute, independent of `v`**.
+(The `θ`-integral is dominated by `|cos θ| ≲ 1/(R log T)` where `V² ≍ loglog T`; including its measure
+factor `1/(R log T)` only helps.)
+
+So the route yields `φ(v) ≥ c > 0` uniformly in `v` — which beats the fourth moment's `φ(v) ≥ 4v`
+for `v < c/4`.
+
+**Verdict: REDISCOVERED.** The same conclusion follows from Selberg's moments of `log|ζ(½+it)|`
+*directly*, with no Jensen balance: `meas{log|ζ| > v log T} ≪ T(Ck loglog T)^k/(v log T)^{2k}`, same
+optimisation, same `T^{1−c}`. The balance routes back to the identical input. **D27 (dead route):**
+"use the folded circle mean plus Selberg moments to bound the large-value set". It adds nothing to
+Selberg, and gives no bound on `μ` or on any `M(A)` (a uniform constant lower bound for `φ` is
+useless against `max_v(Av − φ(v))` for large `A`, which needs `φ` **superlinear**).
+
+**The recurring shape.** Every route examined this cycle collapses to the same two inputs — the
+self-dual block bound and Selberg's moment range — no matter which geometric packaging is used. That
+is now four independent packagings (large-value/Halász, Guth–Maynard blocks, Jensen zero geometry,
+folded-circle moments) reducing to the same pair. Recorded as the structural observation of the
+cycle; the map's "no uncapped intermediate" now has a mechanism attached to it, not just a census.
+
+**Live target carried forward:** `φ` **superlinear**. Every known lower bound for `φ` is linear in
+`v` because every one of them is a fixed moment. A superlinear `φ` requires either infinitely many
+moments used simultaneously, or a mechanism in which the *cost* of a large value grows faster than
+linearly in `v`. The Jensen balance supplies exactly such a candidate mechanism — a value `T^v`
+demands a zero-deficiency of `≍ v log T` spread over a window of length `≍ v`, so the "phase-space
+volume" consumed grows like `v²` — but the accounting above (an `L¹`/`L^k` budget) is too lossy to
+convert `v²` into a superlinear exponent. Sharpening that accounting is the next cycle's object.
+
+### C106 — the off-line moment attempt: inert, and the optimum is the fourth moment
+
+The one structurally promising feature of the Jensen balance is **rigidity**: for `v` close to `θ₀`,
+`𝔈_R(t₀) ≥ (v/2)log T` together with the pointwise ceiling `log|ζ(σ+it)| ≤ (θ₀ − (σ−½)/2)log T`
+forces `|ζ|` to be *within `o(log T)` of its maximal allowed size at almost every point of a circle
+of radius `R`* — an extremely rigid configuration, and one that lives partly **off** the critical
+line, where the mean-value theorems are strong.
+
+Exploiting it: if `|ζ(σ+it)| ≍ T^{μ*(σ)}` on a set of measure `≫ meas·R` with `σ = ½+x`, then
+`∫_T^{2T}|ζ(σ+it)|^{2k}dt ≪ T^{1+ε}` (valid exactly for `σ ≥ 1 − 1/k`, §3.1) gives
+
+    meas ≪ T^{1 − 2k(θ₀ − x/2) + ε},    k = 1/(½ − x)  (the smallest admissible).
+
+Maximising the saving: `2k(θ₀ − x/2) = (2θ₀ − x)/(½ − x)`, whose derivative in `x` is
+`(2θ₀ − ½)/(½−x)² < 0` for `θ₀ < ¼`. **The maximum is at `x = 0`, i.e. `k = 2`.** Output
+`φ(v) ≥ 4θ₀` at `v = θ₀` — *identical* to the fourth moment. Inert.
+
+Note the sign: the saving is decreasing in `x` **because `θ₀ < ¼`** — subconvexity itself is what
+makes moving off the line unprofitable. At `θ₀ = ¼` the derivative vanishes and every `x` is
+equally good; below `¼` the critical line strictly dominates. **D28 (dead route).**
+
+**Consolidated observation for the map.** Five independent packagings now collapse onto the pair
+(self-dual block, fourth moment / Selberg range): large-value/Halász (§3.2), Guth–Maynard blocks
+(§3.3), Jensen zero geometry (§6.3), folded-circle moments (C105), off-line moments (C106). The
+collapse is not a coincidence in each case but the same algebraic fact — the self-dual point `x = 0`,
+`α = ½`, `β = 1`, `k = 2` is a stationary point of every one of these optimisations, and it is a
+*maximum* precisely because `μ < ¼`.
+
+**`[CONJECTURE] (self-dual stationarity).** For every optimisation over a block/abscissa/moment
+parameter that is built from (i) the approximate functional equation and (ii) a mean value theorem,
+the self-dual parameter is stationary, and it is the global optimum whenever the input exponent is
+`< ¼`. Falsifiable: exhibit one such optimisation whose optimum is strictly off the self-dual point.
+If true, it explains the entire ceiling map in one line and predicts that **any method that improves
+`μ` must break the approximate functional equation's symmetry, not optimise within it.**
+
+### C107 — self-dual stationarity, promoted from conjecture to theorem (the abscissa case) `[PROVED HERE]`
+
+The `[CONJECTURE]` of C106 is provable in its sharpest instance, and the proof exposes the mechanism.
+
+Fix the abscissa `σ = ½ + x`, `0 ≤ x < ½`, and pair the two facts:
+- self-dual ceiling: `μ*(½+x) = θ₀ − x/2` (C102's (6.3));
+- mean-value criticality: `∫_T^{2T}|ζ(½+x+it)|^{2k}dt ≪ T^{1+ε}` iff `k ≥ k(x) = 1/(½−x)` (§3.1).
+
+    Sav(x) := 2·k(x)·μ*(½+x) = (2θ₀ − x)/(½ − x),     Sav'(x) = 2(θ₀ − ¼)/(½ − x)².
+
+**(i)** At `θ₀ = ¼`: `Sav(x) ≡ 1` for **every** `x` — the numerator *is* the denominator. Perfect
+degeneracy across the whole strip.
+**(ii)** For `θ₀ < ¼`: `Sav` strictly decreasing, unique optimum `x = 0`, `Sav(0) = 4θ₀` — the fourth
+moment.
+**(iii)** For `θ₀ > ¼` the optimum moves off the line.
+
+**The mechanism is a tangency.** The slope-`½` line through `(½, ¼)` reaches `0` exactly at `σ = 1`,
+which is exactly where the mean value theorem becomes available for all `k`. Two unrelated features
+of `ζ` — the *value* `¼` of the convexity bound, and the *criticality* `σ = 1 − 1/k` — touch at one
+point. That tangency is the reason every route in the map returns the same answer:
+
+> **The convexity bound is a degenerate tie across the entire critical strip. Every subconvexity
+> input breaks the tie, and always in the same direction — back to the critical line and the fourth
+> moment.**
+
+Lean: `selfDualCeiling`, `meanValueThreshold`, `largeValueSaving`, `largeValueSaving_convexity`
+(`≡ 1`), `largeValueSaving_strictAnti`, `largeValueSaving_zero` (`= 4θ₀`), capstone
+`self_dual_stationarity`. Axioms `[propext, Classical.choice, Quot.sound]`. Paper: §6.5,
+Theorem 6.11, Conjecture 6.12.
+
+**Conjecture 6.12 (still open, now sharply falsifiable).** Every optimisation over a block, abscissa,
+or moment parameter built from the AFE plus a mean value theorem is stationary at the self-dual
+parameter and attains its optimum there whenever the input exponent is `< ¼`. **Falsifier wanted:**
+one such optimisation whose optimum is strictly off the self-dual point. If none exists, the
+prediction is that **any method improving `μ` must break the AFE's symmetry rather than optimise
+within it** — which reframes the whole campaign: stop optimising inside the AFE.
+
+**Next cycle's object, chosen by this prediction.** Symmetry-breaking substitutes for the AFE:
+(a) an approximate functional equation with **unequal** lengths `N₁·N₂ = t/2π`, `N₁ ≠ N₂` — the
+    smoothed/`ρ`-shifted AFE family, where the self-dual point is not forced;
+(b) the Motohashi spectral decomposition, which replaces the AFE entirely for the fourth moment and
+    is the one known route that is *not* an AFE optimisation — and which is exactly the object the
+    additive-divisor open core asks to generalise to `GL(3)`.
+These two are the same question asked twice, which is the first time the campaign's two open cores
+have met.
+
+### C108 — erratum E8, and the first test of Conjecture 6.12
+
+**E8 (wording, C106/C107).** `k(x) = 1/(½ − x)` is the **largest** admissible moment order for
+`∫_T^{2T}|ζ(½+x+it)|^{2k}dt ≪ T^{1+ε}` (the criticality `σ ≥ 1 − 1/k` reads `k ≤ 1/(1−σ)`), not the
+smallest. At `x = 0` it is `k = 2` — the fourth moment, the largest with a `T^{1+ε}` bound. The
+formula `Sav(x) = 2k(x)μ*(½+x)` and every consequence are unchanged; only the description was
+inverted. Corrected in the Lean docstring and in preprint §6.5.
+
+**First test of Conjecture 6.12: the unequal-length AFE. PASSES (route inert).**
+Hardy–Littlewood's approximate functional equation does **not** force equal lengths:
+
+    ζ(s) = Σ_{n≤x} n^{−s} + χ(s) Σ_{n≤y} n^{−(1−s)} + O(x^{−σ} + |t|^{½−σ} y^{σ−1}),   2πxy = |t|.
+
+So the free parameter `a` with `x = t^a`, `y ≍ t^{1−a}` is exactly a symmetry-breaking knob, and the
+self-dual choice `a = ½` is a *choice*, not a constraint. Writing `β(a) := max_{α ≤ a}(b(α) − α/2)`
+for the best block bound available up to length `t^a`,
+
+    μ(½) ≤ max( β(a), β(1−a) )   for every a ∈ (0,1).
+
+`β` is non-decreasing (a longer range can only raise a maximum), so `max(β(a), β(1−a)) = β(max(a,1−a))
+≥ β(½)`, with equality iff `a = ½`. **The symmetric choice is optimal; unequal lengths give strictly
+nothing.** `[D29]`
+
+The reason is worth recording: at `a = ½` the two sums are complex conjugates of each other (this is
+why the Riemann–Siegel `Z`-function is real), so they are *one* sum, not two. Away from `a = ½` they
+are two independent sums and the longer one dominates. **Symmetry-breaking in the AFE converts one
+sum into two, and two is worse than one** — a second, independent reason the self-dual point is
+optimal, and one that Conjecture 6.12 did not predict but is consistent with.
+
+So option (a) of C107 is closed. Option (b) — Motohashi's spectral decomposition, the one known route
+that is not an AFE optimisation — survives, and is the same object as the additive-divisor open core.
+The campaign's two open cores have merged into one:
+
+> `[OPEN CORE, merged]` A spectral (non-AFE) decomposition for the sixth moment of `ζ` — equivalently
+> a `GL(3)` Motohashi formula, equivalently a power saving for `Σ_{m≤x/a} d(m)d₃(am−h)` uniform in
+> `a ≤ x^{1/3}`. Every AFE-internal route is now proved inert; this is the only surviving direction.

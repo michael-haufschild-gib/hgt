@@ -284,6 +284,37 @@ theorem tendsto_suzukiPrimeClockAtomVelocity_normalized_bohrCoefficient_of_nonre
   exact tendsto_suzukiPrimeClockAtomVelocity_normalized_bohrCoefficient
     ha hm hm2 (hres m hm).1 (hres m hm).2
 
+/-- One cofinal source-selected aperture simultaneously recovers every von Mangoldt coefficient
+from the finite tangent packet and from the corresponding clock-atom velocity packet. -/
+theorem exists_suzukiPrimeTangent_and_clockAtomTomography_above
+    (s : Finset ℕ) (hsupport : ∀ m ∈ s, 2 ≤ m) (B : ℝ) :
+    ∃ a : ℝ, 0 < a ∧ B < a ∧
+      (∀ m : ℕ, m ∈ s →
+        Tendsto
+          (fun N => suzukiPrimeTangentNormalize m
+            (suzukiCesaroMean
+              (fun n => suzukiPrimeTangentCarrier a s n *
+                (suzukiPrimeTangentPhase a m)⁻¹ ^ n) N))
+          atTop (𝓝 (ArithmeticFunction.vonMangoldt m : ℂ))) ∧
+      (∀ m : ℕ, m ∈ s →
+        Tendsto
+          (fun N => suzukiPrimeClockAtomNormalize a m
+            (suzukiCesaroMean
+              (fun k => suzukiPrimeClockAtomVelocity a s k *
+                (suzukiPrimeTangentPhase a m)⁻¹ ^ k) N))
+          atTop (𝓝 (ArithmeticFunction.vonMangoldt m : ℂ))) := by
+  obtain ⟨a, ha, hBa, hres⟩ :=
+    exists_suzukiPrimeTangentNonresonant_above s hsupport B
+  refine ⟨a, ha, hBa, ?_, ?_⟩
+  · intro m hm
+    exact
+      tendsto_suzukiPrimeTangentCarrier_normalized_bohrCoefficient_of_nonresonant
+        hres hm (hsupport m hm)
+  · intro m hm
+    exact
+      tendsto_suzukiPrimeClockAtomVelocity_normalized_bohrCoefficient_of_nonresonant
+        ha.ne' hres hm (hsupport m hm)
+
 end
 
 end GaloisForLFunctions.RHTower

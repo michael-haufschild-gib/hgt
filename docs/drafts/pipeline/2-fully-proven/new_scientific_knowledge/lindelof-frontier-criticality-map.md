@@ -142,3 +142,47 @@ Guth–Maynard at the self-dual block; Heath-Brown's method being at its input's
 separation of the two transfer halves and the fact that together they give LH; and the observation
 that every required ingredient is already a theorem over `F_q[t]`.
 Classification: `NEEDS EXTERNAL AUDIT`.
+
+---
+
+## 7. The twelfth ceiling: zero geometry (added cycle 50)
+
+`[PROVED HERE]` Lean: `HTGeometry.JensenZeroGeometry` — axioms `[propext, Classical.choice,
+Quot.sound]`. Full proofs: preprint §6.
+
+**(7.1) The Jensen balance is an identity.** For `s₀ = 1/2+it₀`, `L = log(t₀/2π)`, `n_{t₀}(u)` the
+two-dimensional zero count in `|s−s₀| < u`, and `0 < R ≤ √T`:
+
+    log|ζ(s₀)| = (R/π)L + 𝔈_R(t₀) − ∫_0^R n_{t₀}(u) du/u + O(R²/T),
+
+where `𝔈_R` is the mean of `log|ζ|` over the circle folded into `Re ≥ 1/2` by the functional
+equation. Proof: Jensen for `ξ` on `D(s₀,R)`; the gamma factor is zero-free there, so its log-modulus
+is harmonic and cancels.
+
+**(7.2) The exact duality.** The expected potential of an on-line, Riemann–von Mangoldt-correct zero
+set is `∫_0^R (u/π)L du/u = (R/π)L` — exactly the `χ`-factor mean, at every radius. Hence
+`log|ζ(1/2+it₀)| = 𝔈_R + D_R` with `D_R := ∫_0^R((u/π)L − n_{t₀}(u))du/u`, so **LH ⟺ the zero set has
+no logarithmic holes around critical-line points.** This splits Backlund's criterion into a vertical
+(count) and a horizontal (displacement) condition.
+
+**(7.3) Inertness.** With `θ_R = arccos(1/(2R))`, `A = R − √(R²−1/4)`,
+`I(R) = √(R²−1/4) − θ_R/2`, `J(R) = (1/2π)∫(1/2 − R|cos θ|)_+dθ`, the cancellation
+
+    4(R − I(R)) = 2(θ_R + 2A) = π(1 − 2J(R))
+
+turns the two available inputs (`μ ≤ θ₀` via Phragmén–Lindelöf on the circle; `|β−1/2| ≤ 1/2` plus
+Riemann–von Mangoldt for the potential) into `μ ≤ 1/4 + 2J(R)(θ₀ − 1/4)`. Hence the output lies in
+`[θ₀, 1/4]` at every radius; `1/4` is the unique fixed point and the map contracts *toward* it, so
+iterating raises a subconvex input back to `1/4`; and closing the route on itself gives exactly
+`μ ≤ 1/4`. **The Jensen balance is equivalent to the convexity bound and has gain zero.**
+
+**(7.4) The dichotomy.** With the zeros on the line the potential is full, the `χ`-factor cancels
+entirely, and the output is `2J(R)θ₀ → 0` — a zero-geometry proof of RH ⟹ LH with contraction ratio
+`2J(R)`. So the whole gain is horizontal. The vertical input is worthless: any `S(t) ≤ c_S log t`,
+including the unproved `c_S = 0`, leaves the output at `1/4`. The exact intermediate needed is
+Backlund's criterion pointwise, i.e. LH. **Exactly circular; no intermediate.**
+
+**Consequence for the completeness list of §6.** Add to "capped, with proof": zero geometry /
+Jensen–Backlund (`1/4`, inert). This is the first ceiling in the map that is *not* an analytic
+route, and it is the only one whose ceiling is proved by an exact cancellation rather than by an
+optimisation.

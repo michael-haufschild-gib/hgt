@@ -2,10 +2,10 @@
 
 - **ID:** `kreal-quaternionic-ccm-cokernel`
 - **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE]` with proved no-go boundary
+- **Type:** `[CONJECTURE]` with proved no-go boundary and Real-Brauer survivor
 - **Target:** construct Deninger's missing coefficient category and arithmetic \(H^1\) without
   inserting, duplicating, or assuming zeta zeros
-- **Active claim:** one claim only - the genuine quaternionic lift below
+- **Active claim:** one claim only - the Brauer-twisted quaternionic lift below
 
 ## Claim ledger
 
@@ -34,6 +34,10 @@
   quaternionic THH accepts a twisted \(C_4\)-action
   \(t:R^{\mathrm{op}}\to R\), \(t^4\simeq 1\), and has a
   \(\operatorname{Pin}(2)\)-action. If \(t^2\simeq 1\), it collapses to inflated Real THH.
+- `[LITERATURE]` A quaternionic antiunitary \(J^2=-1\) induces a conjugate-linear involution
+  \(\sigma_{\mathbb H}(T)=-JTJ\) on compact operators. Its square is \(+1\), but its fixed real
+  algebra is the algebra of compact quaternionic-linear operators. This is a non-split Real
+  Brauer type, not an erasure of the quaternionic structure.
 - `[CONJECTURE]` The CCM restriction morphism has a non-factorizing, conjugate-semilinear
   quaternionic lift whose central \(C_2\) acts by cohomological parity. This lift is the
   coefficient-theoretic arithmetic cohomology missing from the present Deninger program.
@@ -57,15 +61,23 @@ Write
 \]
 and \(z_n=x_n^{n+1}=y_n^2\), the central element of order two.
 
-> **Conjecture \(KQ_{\mathrm{CCM}}\).** There are conjugate-semilinear quaternionic derived
-> cyclic objects \(\widetilde A_K,\widetilde B_K\) and a quaternionic morphism
-> \(\widetilde\rho:\widetilde A_K\to\widetilde B_K\) such that:
+> **Conjecture \(KBr_{\mathrm{CCM}}\).** There is a Real-Brauer-twisted lift of the CCM
+> restriction diagram
+> \[
+>   \widetilde\rho:
+>   (A_K^\natural,\mathfrak a_K)
+>   \longrightarrow
+>   (B_K^\natural,\mathfrak b_K)
+> \]
+> and a twisted Real Morita realization \(\mathfrak M_K\) such that:
 >
-> 1. forgetting quaternionic/Real structure identifies the realized cofiber of
+> 1. forgetting the Real-Brauer structure identifies the realized cofiber of
 >    \(\widetilde\rho\) with the single CCM realization \(H^\bullet_{\mathrm{CCM}}(K)\);
-> 2. the odd generator \(y\) is anti-linear on the realized cohomology;
-> 3. the central square \(z=y^2\) acts on \(H^i_{\mathrm{CCM}}(K)\) as
->    \((-1)^i\);
+> 2. the Brauer type on cohomological degree \(i\) is split for even \(i\) and quaternionic
+>    for odd \(i\);
+> 3. \(\mathfrak M_K\) therefore gives an anti-linear operator
+>    \(\sigma_i\) on \(H^i_{\mathrm{CCM}}(K)\) with
+>    \(\sigma_i^2=(-1)^i\);
 > 4. the lift is \(C_K\)-equivariant, so the infinitesimal scaling generator and its
 >    spectral realization are unchanged;
 > 5. the construction is functorial in finite extensions and compatible with Artin
@@ -73,11 +85,12 @@ and \(z_n=x_n^{n+1}=y_n^2\), the central element of order two.
 
 Consequently the realized cohomology is \(K_{\mathbb R}\)-valued:
 \[
-  y^2=+1\quad\text{on }H^0,H^2,\qquad
-  y^2=-1\quad\text{on }H^1.
+  \sigma^2=+1\quad\text{on }H^0,H^2,\qquad
+  \sigma^2=-1\quad\text{on }H^1.
 \]
 Condition 1 forbids a post-hoc quaternionic double and preserves zero multiplicities and the
-existing trace formula.
+existing trace formula. A direct twisted-\(C_4\) enhancement is one possible model of this
+Brauer-twisted lift, but it is no longer built into the conjecture.
 
 ## Why this is the correct first construction target
 
@@ -200,26 +213,41 @@ anti-linear conjugation on kernels satisfies
   \operatorname{Ad}_{\mathcal J}^2(T)
     =\mathcal J^2T\mathcal J^{-2}=T.
 \]
-Thus the central \(-1\) cancels when the Morita bimodule is paired with its dual to form
-\(\mathcal L^1(\mathcal H_b)\), exactly before CCM applies ordinary cyclic trace.
+Thus the central \(-1\) cancels in the literal square of the induced operator involution.
+However, this does **not** erase all quaternionic information: the fixed real operator algebra
+is quaternionic-linear and represents the non-split Real Brauer type. What erases that type is
+the subsequent *ordinary complex* Morita trace.
 
-**Verdict:** `[PROVED SOURCE CARRIER; ORDINARY MORITA TRACE TOO WEAK]`.
+**Verdict:** `[PROVED SOURCE CARRIER; REAL-BRAUER SURVIVOR]`.
+
+### Attack J - force the quaternionic sign into the ordinary cyclic operators
+
+In the quaternionic crossed simplicial group,
+\[
+  x_n^{n+1}=y_n^2.
+\]
+If a proposed enhancement leaves the ordinary CCM cyclic operator unchanged, then
+\(x_n^{n+1}=1\), hence \(y_n^2=1\) already on chains. Conversely, making \(y_n^2=-1\) forces a
+paracyclic/twisted last face and does not literally recover the CCM cyclic module. Therefore a
+chain-level twisted-\(C_4\) action cannot simultaneously retain the ordinary cyclic operators
+and carry the desired central sign.
+
+**Verdict:** `[PROVED BOUNDARY; USE BRAUER-TWISTED REALIZATION OR PROVE A DERIVED COMPARISON]`.
 
 ## Strongest positive survivor
 
 `[NEW]` The exact coefficient boundary is:
 
-> A viable arithmetic \(H^1\) must be a **non-factorizing twisted-\(C_4\) refinement** of the
-> existing CCM cyclic cokernel. Its central square must be non-inner in the derived category
-> and become the cohomological parity operator. Ordinary Real/dihedral refinements and external
-> quaternionic doubling cannot work.
+> A viable arithmetic \(H^1\) must retain the **non-split quaternionic Real Brauer type** of
+> CCM's operator-valued target through relative cyclic realization. Ordinary complex Morita
+> trace forgets this type, while external quaternionic doubling changes multiplicities.
 
 This survivor is stronger than the negative statement because it identifies the minimal new
-datum: one compatible, non-inner order-four anti-map on the CCM restriction diagram.  The
-operator calculation in Attack H gives an equivalent concrete target for such data: an intrinsic
-even Fredholm-module grading and a no-doubling relative Chern equivalence.  Attack I sharpens the
-rational case further: the quaternionic operator already exists on CCM's Morita bimodule, so the
-open construction is an enhanced relative trace which retains one unpaired bimodule factor.
+datum: a compatible Real Brauer descent on the CCM restriction diagram and a no-doubling twisted
+Morita realization. The operator calculation in Attack H remains an alternative concrete model.
+Attack I sharpens the rational case further: the quaternionic operator already exists on CCM's
+Morita bimodule, and its operator involution has exactly the quaternionic fixed algebra required
+by the non-split Brauer class.
 
 ## Candidate construction lanes
 
@@ -286,6 +314,37 @@ the endomorphism-erasure boundary are proved and formalized in
 `CCMRationalQuaternionicMoritaFiber.lean`.  Existence and the no-doubling comparison in items
 1--3 are the sharpened `[OPEN CORE]`.
 
+### Lane 4 - rational Real-Brauer descent
+
+For \(K=\mathbb Q\), define on the operator-valued CCM target
+\[
+  \sigma_{\mathbb H}(T)=-\mathcal J T\mathcal J .
+\]
+Then \(\sigma_{\mathbb H}\) is a conjugate-linear algebra involution, while
+\[
+  \sigma_{\mathbb H}(T)=T
+  \quad\Longleftrightarrow\quad
+  T\mathcal J=\mathcal JT.
+\]
+Hence its fixed real algebra consists exactly of quaternionic-linear operators. Moutuou's
+classification identifies this with the quaternionic Real Brauer type.
+
+`[CONJECTURE]` The monomial twist already computed for \(\rho\) extends to a Real-Brauer
+structure on the full source and target cyclic bornological objects; the closed relative
+cokernel and derived \(\operatorname{Tor}\) construction admit a twisted Morita realization
+whose underlying complex realization is the single CCM \(H^1\), while its descent object is in
+odd \(K_{\mathbb R}\)-degree.
+
+The fixed-point law and involutivity are algebraic and dependency-closed. Remaining
+`[OPEN CORE]`:
+
+1. bornological continuity and trace-class closure of the source twist;
+2. extension of the proved monomial multiplicativity law to every cyclic operator and the
+   completed morphism \(\rho^\natural\);
+3. construction of twisted cyclic \(\operatorname{Tor}\) over the quaternionic Brauer bundle;
+4. proof that forgetting the twist is the original CCM realization, with unchanged trace and
+   \(C_{\mathbb Q}\)-spectrum.
+
 ## Lean interface audit
 
 Existing reusable unconditional infrastructure:
@@ -303,9 +362,34 @@ Existing reusable unconditional infrastructure:
 - `HilbertMetric/*`: Gram, Fock, and metric infrastructure, but no arithmetic cyclic object or
   anti-linear \(K_{\mathbb R}\) coefficient structure.
 
-No Lean file currently defines the CCM cyclic cokernel, a quaternionic cyclic object, a twisted
-\(C_4\) anti-map, or Deninger's graded \(K_{\mathbb R}\) category. No Lean implementation begins
-until the exact paper construction of \(\widetilde\rho\) is dependency-closed.
+The following source/categorical foundations are now formalized unconditionally:
+
+- `RHTower.KRealGradedAdjoint`: graded-adjoint square and quantized-form parity;
+- `RHTower.CCMRationalQuaternionicMoritaFiber`: rational sign-reflection, scaling covariance,
+  monomial support, and operator involutivity;
+- `RHTower.CCMRationalRealCrossedProduct`: full finite-support crossed-product Real structure,
+  including conjugate-linearity, involutivity, unit, and multiplication;
+- `RHTower.CCMRationalKRealBrauerBridge`: odd \(K_{\mathbb R}\)-structure on the
+  quaternionic Morita fiber, even \(K_{\mathbb R}\)-structure on its endomorphism algebra,
+  fixed-point/quaternionic-linearity equivalence, and positive-scaling equivariance;
+- `RHTower.KRealKernelCokernel`: algebraic kernel/range/cokernel descent;
+- `RHTower.KRealClosedCokernel`: topological closure and closed-cokernel descent.
+- `RHTower.KRealMoritaParityShift`: Real Morita intertwiner descent from an even represented
+  module through an odd quaternionic fiber, with unconditional no-doubling square \(-1\).
+- `RHTower.KRealCyclicWord` and `RHTower.CCMRationalCyclicRealCore`: generic and rational-CCM
+  componentwise Real action in every algebraic cyclic degree, commuting with faces,
+  degeneracies, and cyclic rotation.
+- `RHTower.CCMRationalArchimedeanSchwartzReal`: continuous sign-reflection on
+  \(\mathcal S(\mathbb R,\mathbb C)\), formalized in the actual Schwartz topology.
+- `RHTower.KRealCompactlySupportedLocallyConstant` and
+  `RHTower.CCMRationalFiniteBruhatReal`: compact-support-preserving sign-reflection on the
+  finite local Bruhat factor, instantiated on mathlib's rational finite adele ring.
+- `RHTower.KRealTensorProduct` and `RHTower.CCMRationalAdelicBruhatSimpleTensorReal`:
+  semilinearly balanced even Real structure on the complex tensor product of rational
+  archimedean Schwartz and finite Bruhat factors.
+
+No Lean file yet defines the analytic CCM cyclic cokernel, its bornology, the full Real-Brauer
+source twist, or twisted cyclic \(\operatorname{Tor}\). Those are not represented by axioms.
 
 ## Evidence and novelty audit
 
@@ -319,6 +403,11 @@ until the exact paper construction of \(\widetilde\rho\) is dependency-closed.
   with twisted G-action*, arXiv:2409.18187.
 - Emanuele Dotto, Kristian Moi, Irakli Patchkoria, Sune Precht Reeh,
   *Real topological Hochschild homology*, arXiv:1711.10226.
+- Dmitry Kaledin, *Cyclic homology with coefficients*, arXiv:math/0702068.
+- Emanuele Dotto, *Stable real K-theory and real topological Hochschild homology*,
+  arXiv:1212.4310.
+- El-kaïoum Moutuou, *Graded Brauer groups of a groupoid with involution*,
+  arXiv:1202.2057.
 
 Searches for the exact conjunction
 `Deninger K_R + CCM cyclic cokernel + quaternionic/Real THH` found no construction. This is
@@ -331,9 +420,11 @@ evidence of novelty, not proof of novelty.
 - [x] Conjecture stated with exact source, target, central element, and no-doubling test.
 - [x] Ordinary-involution, external-double, chain-sign, inner-square, metaplectic-circularity,
       and positivity-circularity attacks recorded.
-- [ ] Construct the non-factorizing twisted-\(C_4\) lift on paper.
+- [x] Rational quaternionic source and operator Real structure constructed on paper.
+- [x] Algebraic and closed-cokernel \(K_{\mathbb R}\) descent formalized.
+- [ ] Construct the Real-Brauer lift of the full bornological cyclic restriction diagram.
 - [ ] Prove compatibility with \(\rho^\natural\).
-- [ ] Prove derived parity and no-doubling.
+- [ ] Construct twisted cyclic \(\operatorname{Tor}\) and prove derived parity/no-doubling.
 - [ ] Re-run exact novelty search after proof.
 - [ ] Move to `2-fully-proven`.
 - [ ] Formalize the exact proved theorem in Lean.

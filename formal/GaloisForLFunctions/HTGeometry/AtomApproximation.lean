@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CarriedAtomic
+import Mathlib.LinearAlgebra.Lagrange
 
 /-!
 # The remaining core, isolated
@@ -63,6 +64,46 @@ def AtomApproximable (μ : Measure ℝ) (F : Set ℝ) (ξ : ℝ) : Prop :=
   ∀ ε : ENNReal, 0 < ε → ∃ p : Polynomial ℝ, p.eval ξ = 1 ∧
     ∑' η : ↥F, μ {(η : ℝ)} * ENNReal.ofReal ((p.eval (η : ℝ)) ^ 2) ≤ μ {ξ} + ε
 
+/-- Every atom of a finite carrier is exactly polynomially isolable.  The corresponding Lagrange
+basis polynomial is one at the selected atom and zero at every other carrier point, so the
+approximation error is identically zero for every measure. -/
+theorem atomApproximable_of_finite
+    (μ : Measure ℝ) {F : Set ℝ} (hF : F.Finite) {ξ : ℝ} (hξ : ξ ∈ F) :
+    AtomApproximable μ F ξ := by
+  classical
+  intro ε _hε
+  let p : Polynomial ℝ := Lagrange.basis hF.toFinset id ξ
+  have hξfin : ξ ∈ hF.toFinset := hF.mem_toFinset.mpr hξ
+  have hp : p.eval ξ = 1 := by
+    dsimp only [p]
+    simpa using Lagrange.eval_basis_self (v := (id : ℝ → ℝ))
+      (Set.injOn_id _) hξfin
+  refine ⟨p, hp, ?_⟩
+  let ξF : ↥F := ⟨ξ, hξ⟩
+  have hsum :
+      (∑' η : ↥F, μ {(η : ℝ)} *
+        ENNReal.ofReal ((p.eval (η : ℝ)) ^ 2)) = μ {ξ} := by
+    rw [tsum_eq_single ξF]
+    · change μ {ξ} * ENNReal.ofReal ((p.eval ξ) ^ 2) = μ {ξ}
+      rw [hp]
+      norm_num
+    · intro η hη
+      have hne : ξ ≠ (η : ℝ) := by
+        intro heq
+        apply hη
+        apply Subtype.ext
+        exact heq.symm
+      have hηfin : (η : ℝ) ∈ hF.toFinset :=
+        hF.mem_toFinset.mpr η.property
+      have hoff : p.eval (η : ℝ) = 0 := by
+        dsimp only [p]
+        simpa using Lagrange.eval_basis_of_ne
+          (v := (id : ℝ → ℝ)) hne hηfin
+      rw [hoff]
+      norm_num
+  rw [hsum]
+  exact le_add_right (le_refl _)
+
 /-- **The approximation property gives the reverse atom bound.** -/
 theorem ofReal_christoffelLimit_le_measure_singleton (h : PositiveMomentForm s) {μ : Measure ℝ}
     [IsFiniteMeasure μ] (hmom : GaloisForLFunctions.HTGeometry.HasHamburgerMoments s μ)
@@ -82,5 +123,16 @@ theorem measure_singleton_eq_ofReal_christoffelLimit (h : PositiveMomentForm s) 
     μ {ξ} = ENNReal.ofReal (christoffelLimit s ξ) :=
   le_antisymm (measure_singleton_le_ofReal_christoffelLimit h hmom ξ)
     (ofReal_christoffelLimit_le_measure_singleton h hmom hF hFm hcar happrox)
+
+/-- On a finite carrier the Christoffel limit recovers every atom exactly; the approximation
+premise is discharged by the finite Lagrange basis. -/
+theorem measure_singleton_eq_ofReal_christoffelLimit_of_finite
+    (h : PositiveMomentForm s) {μ : Measure ℝ} [IsFiniteMeasure μ]
+    (hmom : GaloisForLFunctions.HTGeometry.HasHamburgerMoments s μ)
+    {F : Set ℝ} (hF : F.Finite) (hFm : MeasurableSet F) (hcar : μ Fᶜ = 0)
+    {ξ : ℝ} (hξ : ξ ∈ F) :
+    μ {ξ} = ENNReal.ofReal (christoffelLimit s ξ) :=
+  measure_singleton_eq_ofReal_christoffelLimit h hmom hF.countable hFm hcar
+    (atomApproximable_of_finite μ hF hξ)
 
 end HTGeometry

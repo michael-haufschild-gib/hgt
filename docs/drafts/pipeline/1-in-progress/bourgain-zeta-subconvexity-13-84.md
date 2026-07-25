@@ -105,3 +105,13 @@ functional-equation estimate may enter as a hypothesis of the final declaration.
   `1<Re(s)+c`. The open smooth-AFE core is now the residue-bearing zeta
   contour shift, functional-equation reflection, and uniform Gamma-ratio
   estimate.
+- 2026-07-25 — `[CORPUS] [LEAN-PROVED]`
+  `BourgainLogExponentPair.hasLogExponentPair_zero_one` supplies the exact
+  uniform-subinterval interface for the trivial pair `(0,1)`, using
+  unimodularity and the triangle inequality. `[LITERATURE]` Bourgain's JAMS
+  paper proves the `13/84` zeta exponent through its `A₆` first-spacing
+  theorem, Bombieri--Iwaniec/Huxley second spacing, and older exponent-pair
+  bounds; it does not make the current deep gap disappear by a direct
+  elementary specialization. `[OPEN CORE]` The exact declaration
+  `HasLogExponentPair (13/84) (55/84)` still requires formalizing that
+  decoupling/spacing chain. No stronger corpus theorem currently supplies it.
