@@ -1,8 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticCochainComplex
 import Mathlib.Analysis.Complex.LocallyUniformLimit
 import Mathlib.LinearAlgebra.Quotient.Basic
-import Mathlib.Topology.Algebra.IsUniformGroup.Basic
-import Mathlib.Topology.Algebra.IsUniformGroup.Constructions
 import Mathlib.Topology.Baire.CompleteMetrizable
 import Mathlib.Topology.Metrizable.ContinuousMap
 
@@ -57,25 +55,6 @@ instance deningerCompactOpenEntireContinuousAdd :
 instance deningerCompactOpenEntireContinuousSMul :
     ContinuousSMul ℂ DeningerCompactOpenEntire :=
   continuousSMul_induced deningerCompactOpenEntireSubmodule.subtype
-
-/-- Compact convergence makes the entire-function source a uniform additive group. -/
-noncomputable instance deningerCompactOpenEntireIsUniformAddGroup :
-    IsUniformAddGroup DeningerCompactOpenEntire := by
-  letI : IsUniformAddGroup C(ℂ, ℂ) := by
-    let phi :
-        C(ℂ, ℂ) →+
-          UniformOnFun ℂ ℂ
-            {K : Set ℂ | IsCompact K} :=
-      {
-      toFun := ContinuousMap.toUniformOnFunIsCompact
-      map_zero' := rfl
-      map_add' _ _ := rfl }
-    exact
-      ContinuousMap.isUniformEmbedding_toUniformOnFunIsCompact
-        |>.isUniformAddGroup phi
-  exact
-    isUniformEmbedding_subtype_val.isUniformAddGroup
-      deningerCompactOpenEntireSubmodule.subtype.toAddMonoidHom
 
 /-- Entire functions are sequentially closed under compact-open convergence. -/
 theorem isSeqClosed_deningerCompactOpenEntire :
@@ -217,7 +196,7 @@ complex submodule.
 -/
 def DeningerCompactOpenQuotient
     (S : Submodule ℂ DeningerCompactOpenEntire) :=
-  DeningerCompactOpenEntire ⧸ S.toAddSubgroup
+  Quotient (deningerCompactOpenQuotientRel S)
 
 namespace DeningerCompactOpenQuotient
 
@@ -435,34 +414,6 @@ theorem liftL_mk
     (F : DeningerCompactOpenEntire) :
     liftL S f hf (mk S F) = f F :=
   rfl
-
-/-- Canonical right uniformity on the compact-open additive quotient. -/
-@[implicit_reducible]
-noncomputable def uniformSpace :
-    UniformSpace (DeningerCompactOpenQuotient S) :=
-  IsTopologicalAddGroup.rightUniformSpace
-    (DeningerCompactOpenQuotient S)
-
-noncomputable instance instUniformSpace :
-    UniformSpace (DeningerCompactOpenQuotient S) :=
-  uniformSpace S
-
-/-- Compact-open quotients are complete for their canonical additive uniformity. -/
-noncomputable instance instCompleteSpace :
-    CompleteSpace (DeningerCompactOpenQuotient S) := by
-  change
-    @CompleteSpace
-      (DeningerCompactOpenQuotient S)
-      (uniformSpace S)
-  rw [uniformSpace]
-  exact
-    QuotientAddGroup.completeSpace_right
-      DeningerCompactOpenEntire S.toAddSubgroup
-
-/-- The canonical quotient uniformity is translation invariant. -/
-instance instIsUniformAddGroup :
-    IsUniformAddGroup (DeningerCompactOpenQuotient S) :=
-  isUniformAddGroup_of_addCommGroup
 
 end DeningerCompactOpenQuotient
 

@@ -410,15 +410,25 @@ theorem cauchy_schwarz_psd (B : V → V → ℂ)
     rw [hv, hsmul₁, hconj x y]; exact hNsq
   have hvv : B v v = ((N ^ 2 : ℝ) : ℂ) * B y y := by
     rw [hv, hsmul₁, hsm₂, ← mul_assoc, hNsq]
+  clear_value v
+  have hexpand : ∀ t : ℝ, B (x - (t : ℂ) • v) (x - (t : ℂ) • v)
+      = B x x - (t : ℂ) * B v x - (t : ℂ) * B x v + (t : ℂ) ^ 2 * (B v v) := by
+    intro t
+    rw [hsub₁, hsub₂, hsub₂, hsmul₁, hsm₂, hsm₂, hsmul₁, Complex.conj_ofReal]
+    ring
   have hkey : ∀ t : ℝ, 0 ≤ (B x x).re - 2 * t * N ^ 2 + t ^ 2 * (N ^ 2 * (B y y).re) := by
     intro t
     have hp := hpsd (x - (t : ℂ) • v)
-    rw [hsub₁, hsub₂, hsub₂, hsmul₁, hsm₂, hsm₂, hsmul₁, Complex.conj_ofReal,
-      hxv, hvx, hvv] at hp
-    have hre : (B x x - (t : ℂ) * ((N ^ 2 : ℝ) : ℂ)
-        - ((t : ℂ) * ((N ^ 2 : ℝ) : ℂ) - (t : ℂ) * ((t : ℂ) * (((N ^ 2 : ℝ) : ℂ) * B y y)))).re
+    rw [hexpand t, hxv, hvx, hvv] at hp
+    have hre : (B x x - (t : ℂ) * ((N ^ 2 : ℝ) : ℂ) - (t : ℂ) * ((N ^ 2 : ℝ) : ℂ)
+        + (t : ℂ) ^ 2 * (((N ^ 2 : ℝ) : ℂ) * B y y)).re
         = (B x x).re - 2 * t * N ^ 2 + t ^ 2 * (N ^ 2 * (B y y).re) := by
-      simp [Complex.sub_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
+      have hNre : ((N : ℂ) ^ 2).re = N ^ 2 := by rw [← Complex.ofReal_pow, Complex.ofReal_re]
+      have hNim : ((N : ℂ) ^ 2).im = 0 := by rw [← Complex.ofReal_pow, Complex.ofReal_im]
+      have htre : ((t : ℂ) ^ 2).re = t ^ 2 := by rw [← Complex.ofReal_pow, Complex.ofReal_re]
+      have htim : ((t : ℂ) ^ 2).im = 0 := by rw [← Complex.ofReal_pow, Complex.ofReal_im]
+      simp [Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.ofReal_re,
+        Complex.ofReal_im, hNre, hNim, htre, htim]
       ring
     rw [hre] at hp
     exact hp
@@ -426,17 +436,22 @@ theorem cauchy_schwarz_psd (B : V → V → ℂ)
   rcases (norm_nonneg (B x y)).lt_or_eq with hNpos | hN0
   · have hNp : 0 < N := hNpos
     rcases eq_or_lt_of_le hA with hA0 | hApos
-    · have h1 := hkey (((B x x).re + 1) / N ^ 2)
+    · exfalso
+      have hNp2 : (0:ℝ) < N ^ 2 := by positivity
+      have h1 := hkey (((B x x).re + 1) / N ^ 2)
       rw [← hA0] at h1
-      have : (0:ℝ) < N ^ 2 := by positivity
-      field_simp at h1
-      nlinarith [h1, this]
+      have hz : (((B x x).re + 1) / N ^ 2) ^ 2 * (N ^ 2 * 0) = 0 := by ring
+      rw [hz, add_zero] at h1
+      have hz2 : 2 * (((B x x).re + 1) / N ^ 2) * N ^ 2 = 2 * ((B x x).re + 1) := by
+        field_simp
+      rw [hz2] at h1
+      linarith [h1, hpsd x]
     · have h := hkey (1 / (B y y).re)
       have hne : (B y y).re ≠ 0 := ne_of_gt hApos
       field_simp at h
       nlinarith [h, hApos, hNp]
-  · rw [hN] at hN0
-    rw [← hN0]
+  · have hNz : N = 0 := by rw [hN, ← hN0]
+    rw [hNz]
     simpa using mul_nonneg (hpsd x) (hpsd y)
 
 end HTGeometry

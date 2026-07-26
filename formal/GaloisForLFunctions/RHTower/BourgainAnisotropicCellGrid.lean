@@ -16,7 +16,7 @@ noncomputable section
 /-- Half-open one-dimensional grid cover, matching the `Ioc` convention of
 Lebesgue product cells. -/
 theorem exists_bourgainGridCenter1D_Ioc
-    (m : ℕ) {r x : ℝ} (hr : 0 < r)
+    (m : ℕ) {r x : ℝ}
     (hx : x ∈ Set.Ioc
       (-((m + 1 : ℕ) : ℝ) * r)
       (((m + 1 : ℕ) : ℝ) * r)) :
@@ -32,12 +32,12 @@ theorem exists_bourgainGridCenter1D_Ioc
             ((m + 1 : ℕ) : ℝ) * r + r := by
         push_cast
         ring
-      have htotalNeg :
-          -(((m + 1 + 1 : ℕ) : ℝ) * r) =
-            -(((m + 1 : ℕ) : ℝ) * r) - r := by
-        rw [htotal]
-        ring
-      rw [htotal, htotalNeg] at hx
+      have hxlower :
+          -(((m + 1 : ℕ) : ℝ) * r) - r < x := by
+        linarith [hx.1, htotal]
+      have hxupper :
+          x ≤ ((m + 1 : ℕ) : ℝ) * r + r := by
+        linarith [hx.2, htotal]
       by_cases hleft :
           x ≤ -((m + 1 : ℕ) : ℝ) * r + r
       · refine ⟨0, ?_⟩
@@ -68,7 +68,8 @@ theorem exists_bourgainGridCenter1D_Ioc
           norm_num [Fin.val_succ]
           ring
         rw [hcenter]
-        convert hk using 1 <;> ring
+        convert hk using 1
+        all_goals ring
 
 /-- A centered coordinate box with independently specified half-widths. -/
 def bourgainAnisotropicBox
@@ -101,18 +102,12 @@ def bourgainTranslatedParabolaFundamentalCell
 
 /-- Exact product-grid cover of the enlarged anisotropic phase box. -/
 theorem bourgainAnisotropicBox_subset_phaseGridCover
-    {H : ℕ} (hH : 0 < H) (m : Fin 4 → ℕ) :
+    (H : ℕ) (m : Fin 4 → ℕ) :
     bourgainAnisotropicBox (bourgainAnisotropicGridRadius H m) ⊆
       ⋃ k : BourgainAnisotropicGridIndex m,
         bourgainTranslatedParabolaFundamentalCell H
           (bourgainAnisotropicPhaseGridCenter H m k) := by
   intro z hz
-  have hwidth :
-      ∀ j, 0 < bourgainParabolaFundamentalHalfWidth H j := by
-    intro j
-    fin_cases j <;>
-      simp [bourgainParabolaFundamentalHalfWidth, Matrix.cons_val] <;>
-      positivity
   have hzcoord (j : Fin 4) :
       z j ∈ Set.Ioc
         (-(((m j + 1 : ℕ) : ℝ) *
@@ -123,7 +118,8 @@ theorem bourgainAnisotropicBox_subset_phaseGridCover
   choose k hk using fun j =>
     exists_bourgainGridCenter1D_Ioc
       (m j) (r := bourgainParabolaFundamentalHalfWidth H j)
-        (x := z j) (hwidth j) (hzcoord j)
+        (x := z j) (by
+          simpa only [neg_mul] using hzcoord j)
   apply Set.mem_iUnion.2
   refine ⟨k, ?_⟩
   refine ⟨z - bourgainAnisotropicPhaseGridCenter H m k, ?_, by simp⟩
@@ -169,7 +165,7 @@ def bourgainOsculatingGridCenter
 /-- Pulling back the explicit phase grid gives a translated osculating-cell
 cover with the same exact cardinality. -/
 theorem preimage_bourgainAnisotropicBox_subset_osculatingGridCover
-    {H : ℕ} (hH : 0 < H) (m : Fin 4 → ℕ)
+    (H : ℕ) (m : Fin 4 → ℕ)
     {scale a b : ℝ} (hscale : scale ≠ 0)
     (ha : 0 < a) (hab : a < b) :
     bourgainScaledOsculatingPhaseCoordinates scale a b ⁻¹'
@@ -182,7 +178,7 @@ theorem preimage_bourgainAnisotropicBox_subset_osculatingGridCover
               hscale ha hab H m k) := by
   intro x hx
   have hphase :=
-    bourgainAnisotropicBox_subset_phaseGridCover hH m hx
+    bourgainAnisotropicBox_subset_phaseGridCover H m hx
   obtain ⟨k, hk⟩ := Set.mem_iUnion.1 hphase
   apply Set.mem_iUnion.2
   refine ⟨k, ?_⟩
@@ -211,7 +207,41 @@ theorem preimage_bourgainAnisotropicBox_subset_osculatingGridCover
       hscale ha hab]
     rw [hdiff]
     exact hw
-  · simpa [y] using sub_add_cancel x y
+  · exact sub_add_cancel x y
+
+/-- Integrating over an anisotropic phase box costs exactly its explicit
+product-grid cardinality once every translated osculating cell obeys the
+same local bound. -/
+theorem setLIntegral_preimage_bourgainAnisotropicBox_le_gridCard_mul
+    (H : ℕ) (m : Fin 4 → ℕ)
+    {scale a b : ℝ} (hscale : scale ≠ 0)
+    (ha : 0 < a) (hab : a < b)
+    (f : BourgainPhaseSpace → ENNReal) {B : ENNReal}
+    (hlocal :
+      ∀ k : BourgainAnisotropicGridIndex m,
+        (∫⁻ x in bourgainTranslatedOsculatingFundamentalCell
+            H scale a b
+              (bourgainOsculatingGridCenter
+                hscale ha hab H m k),
+          f x) ≤ B) :
+    (∫⁻ x in
+        bourgainScaledOsculatingPhaseCoordinates scale a b ⁻¹'
+          bourgainAnisotropicBox
+            (bourgainAnisotropicGridRadius H m),
+        f x) ≤
+      ((∏ j : Fin 4, (m j + 1) : ℕ) : ENNReal) * B := by
+  have hbound :=
+    setLIntegral_le_card_mul_of_osculatingFundamentalCell_cover
+      (bourgainScaledOsculatingPhaseCoordinates scale a b ⁻¹'
+        bourgainAnisotropicBox
+          (bourgainAnisotropicGridRadius H m))
+      H scale a b
+      (bourgainOsculatingGridCenter hscale ha hab H m)
+      f
+      (preimage_bourgainAnisotropicBox_subset_osculatingGridCover
+        H m hscale ha hab)
+      hlocal
+  simpa [card_bourgainAnisotropicGridIndex] using hbound
 
 end
 

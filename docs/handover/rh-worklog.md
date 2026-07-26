@@ -7792,3 +7792,63 @@ nothing structural changes at nine and the route is uniformly hard; if there IS 
 it is the first genuinely new mathematical feature the atlas has encountered since the closure. AUDIT
 THE GORZ ARGUMENT FOR WHERE d <= 8 IS USED — Phase 2 should retrieve whether the bound is
 computational or structural.
+
+---
+
+## Cycle 128 (2026-07-26) — THE BARRIER IS THE COEFFICIENT EXPANSION, NOT THE DEGREE
+### The single unclosed route depends on ONE analytic quantity. Everything else is algebra.
+
+### PHASE 2 RESULT
+Griffin-Ono-Rolen-Zagier's d <= 8 rests on AN ASYMPTOTIC EXPANSION OF THE CENTRAL DERIVATIVES
+zeta^{(2n)}(1/2) ACCURATE TO ALL ORDERS, together with the modelling of the Jensen polynomials by
+Hermite polynomials. Hyperbolicity at a given degree reduces to finitely many explicit inequalities
+among the Taylor coefficients, verified as far as the expansion's EFFECTIVE ERROR permits. NOTHING
+CHANGES IN KIND AT DEGREE NINE: the range ends where the error estimate stops being small enough.
+
+    ==> THE BARRIER IS THE QUALITY OF THE COEFFICIENT EXPANSION, NOT A STRUCTURAL FEATURE OF THE
+        DEGREE. EVERYTHING ELSE IN THE ROUTE IS ALGEBRA: the reduction to finitely many inequalities,
+        the discriminant criterion, and the stability of hyperbolicity under a perturbation smaller
+        than the model's radius. THE ROUTE HAS EXACTLY ONE ANALYTIC INPUT.
+
+### WHY THAT MATTERS
+After 128 cycles the entire development reduces to this: the unconditional landscape built on log T is
+closed; exactly one route escapes it; and that route's difficulty is ONE ANALYTIC QUANTITY — the
+effective error in the expansion of the central derivatives of zeta at the symmetry point. Every other
+ingredient is algebraic and settled. THE PROGRAMME HAS GONE FROM A LANDSCAPE OF LANES TO A SINGLE
+REAL NUMBER TO BE ESTIMATED.
+
+Machine-verified: `RHTower/BarrierIsTheExpansion.lean` (stability of the conclusion under an error
+below the model's radius, the identification of the threshold as the radius itself, the reduction of
+hyperbolicity to finitely many symmetric-function inequalities, the single-analytic-input statement,
+and the uniformity of the chain across degrees; standard axioms only, wired into RHTower).
+
+### SIXTY-SECOND ATLAS ENTRY
+    expansion barrier   the settled range d <= 8 ends where the effective error in the central-
+                        derivative expansion stops beating the Hermite model's radius; degree nine is
+                        not structurally different. The route's only analytic input is that error, and
+                        the rest — reduction to finitely many inequalities, the discriminant, and
+                        perturbative stability — is algebra.
+
+### STATE AT CYCLE 128 — CLOSING POSITION OF THIS STRETCH
+Sixty-two entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE COMPLETE MAP:
+  (A) The log T landscape is closed; root cause: RH is a codimension-one constraint, every tool there
+      measures area (entry 52).
+  (B) Exactly one route escapes: Jensen polynomials with the discriminant — reality-sensitive,
+      codimension-sensitive, indexed by the degree as a second invariant, intrinsic super-exponential
+      cost, no structural shortcut (entries 56-58, 60).
+  (C) That route's difficulty is ONE analytic quantity: the effective error in the expansion of
+      zeta^{(2n)}(1/2) (entry 62, this cycle).
+  (D) Refutation is finite and concrete in three equivalent forms and has never fired (entries 45, 54,
+      56).
+  (E) All four break-the-closure targets are resolved; no fifth identified (entries 56, 57, 61).
+
+### Cycle 129 target
+Attack (C) directly: the effective error in the expansion of zeta^{(2n)}(1/2). The expansion is
+obtained from the Riemann-Siegel/theta representation of Xi and its Mellin transform; its error is
+controlled by the tail of an explicit integral. THE CORPUS HAS EXTENSIVE THETA-TAIL MACHINERY
+(XiCTaylorThetaTail* files, many of them). PHASE 1 MUST AUDIT WHETHER ANY OF THEM ALREADY BOUNDS THE
+CENTRAL-DERIVATIVE TAIL — if the corpus already carries a sharper tail bound than the one limiting
+d <= 8, the settled degree can be raised by assembly rather than by new analysis, and that would be
+the first time the programme's own machinery advances the external frontier.
