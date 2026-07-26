@@ -10438,3 +10438,68 @@ THRESHOLD IS CHEAPER THAN THE PRIME COST. RE-EXAMINE IT UNDER ENTRY 103: COMPUTE
 A FAMILY OF CONDUCTOR q AND SEE WHETHER THE EXPONENT IS STILL ONE HALF OR WHETHER THE FAMILY BUYS A
 BETTER RATE. IF THE EXPONENT DROPS BELOW ONE HALF FOR SOME FAMILY, THE CIRCULARITY BREAKS AND THAT IS
 A GENUINELY NEW ROUTE.
+
+---
+
+## Cycle 170 — ENLARGING THE FAMILY DOES NOT CHANGE THE EXCHANGE EXPONENT
+
+### The escape suggested by cycle 169, tested and closed
+Phase 1: the corpus already has `CyclotomicScaleReversal` and `SelfLimitingPositivity` — the empty
+prime window and its self-limiting character. NOT A DUPLICATE: this cycle computes the EXCHANGE RATE,
+which those files do not.
+
+FOR THE CYCLOTOMIC FIELD OF CONDUCTOR q the averaged prime sum runs only over n = 1 mod q, a saving of
+a factor phi(q) on the arithmetic side. BUT THE ZEROS MULTIPLY TOO: the low-height zero density is
+log|d_K|/2pi with log|d_K| ~ phi(q) log q, so the Nyquist threshold RISES from (log q)/2 to
+
+    L_q = phi(q) (log q)/2,
+
+and the required prime range becomes e^{L_q} = q^{phi(q)/2} instead of q^{1/2} —
+
+    WORSE BY A FACTOR q^{(phi(q)-1)/2}, AGAINST A SAVING OF ONLY phi(q).
+
+    EXPONENTIAL COST AGAINST A LINEAR SAVING.
+
+### HUNDRED-AND-FOURTH ATLAS ENTRY
+AND THE EXPONENT DOES NOT MOVE. Whatever L is required, the resolved height is e^{2L} and the prime
+range is e^L, so
+
+    log(prime range) / log(resolved height) = 1/2      FOR EVERY L        (formalised),
+
+hence for every family.
+
+    ==> DEGREES OF FREEDOM, ZERO DENSITY AND PRIME COST ALL SCALE BY THE SAME CONDUCTOR FACTOR, SO
+        THE ONE-HALF RATE IS A PROPERTY OF THE FUNCTIONAL EQUATION RATHER THAN OF ANY PARTICULAR
+        L-FUNCTION. THE CIRCULARITY OF THE EXPLICIT-FORMULA LANE CANNOT BE BROKEN BY CHANGING THE
+        L-FUNCTION.
+
+THIS CLOSES THE LAST ESCAPE THE ATLAS ITSELF SUGGESTED. The cyclotomic scale reversal (small L, empty
+prime window) and the self-limiting positivity result are now understood as THE LOW-L END OF THIS ONE
+TRADE; the high-L end, which is where resolution lives, is exponentially more expensive than for a
+single function.
+
+Machine-verified: `RHTower/FamiliesDoNotChangeTheExponent.lean` (invariance of the exponent at every
+width, e^{phi a} = (e^a)^phi, the blow-up factor e^{(phi-1)a}, its monotonicity in the family size, and
+its unboundedness; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 170
+One hundred and four entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 171 target
+FOUR LANES ARE NOW CLOSED BY COUNTING: log-T landscape (52), Jensen/Polya above order two (91),
+zero-margin single estimates (100), explicit formula at full resolution (103, 104). EVERY CLOSURE IS A
+DIMENSION COUNT, AND EVERY COUNT COMPARES A RESOURCE THAT SCALES WITH THE CONDUCTOR OR HEIGHT AGAINST
+A DEMAND THAT SCALES THE SAME WAY. THE PATTERN IS NOW UNMISTAKABLE AND IT IS ITSELF THE OBJECT TO
+STUDY:
+
+  [CONJECTURE — SCALING RIGIDITY] Every unconditional tool in the subject is EQUIVARIANT under the
+  scaling s -> s, t -> lambda t that rescales height, in the sense that its budget and its demand
+  transform with the SAME weight. RH is NOT equivariant: it is a statement about a FIXED line, not a
+  scaling class. Hence no equivariant tool can prove it, and the four closures are instances of one
+  representation-theoretic fact.
+
+THIS IS FALSIFIABLE: EXHIBIT AN UNCONDITIONAL TOOL WHOSE BUDGET AND DEMAND HAVE DIFFERENT WEIGHTS.
+THE CANDIDATE TO TEST FIRST IS THE ONE PLACE THE ATLAS FOUND A NON-TRIVIAL WEIGHT: ENTRY 89's WINDOW
+RATIO, WHOSE WIDTH 1/j IS NOT SCALE-INVARIANT. COMPUTE THE WEIGHT OF THE ORDER-TWO WINDOW UNDER THE
+SCALING AND COMPARE IT WITH THE WEIGHT OF ITS DEMAND. IF THEY DIFFER, THE CONJECTURE IS FALSE AND
+ORDER TWO IS THE COUNTEREXAMPLE THAT SHOWS WHY IT WORKS.

@@ -102,6 +102,82 @@ theorem integral_bourgainExactLocalSum_scaledOsculating_fourCube_subpower
           (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ) := by
       ring
 
+/-- `ENNReal` form of the normalized exact-curve estimate, ready for
+measure-theoretic cell changes. -/
+theorem setLIntegral_bourgainExactLocalSum_scaledOsculating_fourCube_subpower
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (H : ℕ) (hH : 0 < H),
+      ∀ {D a b : ℝ} (hD : 0 < D) (ha : 0 < a) (hab : a < b),
+      let hscale : (H : ℝ) / D ≠ 0 :=
+        div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne'
+      let E :=
+        bourgainScaledOsculatingPhaseContinuousLinearEquiv
+          hscale ha hab
+      let X := bourgainIndependentParabolaNaturalScale H
+      let δ :=
+        bourgainOsculatingFrequencyPerturbationSize X
+          ‖(E.symm :
+            BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖
+          a b ((H : ℝ) / D)
+      δ ≤ 1 / 24 →
+      ∀ (c₁ c₂ : Fin H → ℂ),
+        (∫⁻ x in bourgainFourCube,
+          ENNReal.ofReal
+            (‖bourgainSquareRootExactLocalSum H D a c₁
+                (E.symm (bourgainCoordinateScale X x))‖ ^ (6 : ℕ) *
+              ‖bourgainSquareRootExactLocalSum H D b c₂
+                (E.symm (bourgainCoordinateScale X x))‖ ^ (6 : ℕ))) ≤
+          ENNReal.ofReal
+            (C * (H : ℝ) ^ ε *
+              (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ) *
+              (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ)) := by
+  obtain ⟨C, hC, hreal⟩ :=
+    integral_bourgainExactLocalSum_scaledOsculating_fourCube_subpower hε
+  refine ⟨C, hC, ?_⟩
+  intro H hH D a b hD ha hab
+  dsimp only
+  intro hsmall c₁ c₂
+  let hscale : (H : ℝ) / D ≠ 0 :=
+    div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne'
+  let E :=
+    bourgainScaledOsculatingPhaseContinuousLinearEquiv hscale ha hab
+  let X := bourgainIndependentParabolaNaturalScale H
+  let F : BourgainPhaseSpace → ℝ := fun x =>
+    ‖bourgainSquareRootExactLocalSum H D a c₁
+        (E.symm (bourgainCoordinateScale X x))‖ ^ (6 : ℕ) *
+      ‖bourgainSquareRootExactLocalSum H D b c₂
+        (E.symm (bourgainCoordinateScale X x))‖ ^ (6 : ℕ)
+  have hFcont : Continuous F := by
+    unfold F bourgainSquareRootExactLocalSum
+      bourgainSquareRootCurvePhase bourgainSquareRootCurve
+      bourgainUnitCharacter bourgainDot bourgainCoordinateScale
+    fun_prop
+  have hcube :
+      bourgainFourCube =
+        Metric.closedBall (0 : BourgainPhaseSpace) 1 := by
+    ext x
+    simp [bourgainFourCube, Metric.mem_closedBall, dist_zero_right]
+  have hFint : IntegrableOn F bourgainFourCube := by
+    rw [hcube]
+    exact hFcont.continuousOn.integrableOn_compact
+      (isCompact_closedBall (0 : BourgainPhaseSpace) 1)
+  have hFnonneg :
+      ∀ᵐ x ∂volume.restrict bourgainFourCube, 0 ≤ F x :=
+    Filter.Eventually.of_forall fun x => by
+      unfold F
+      positivity
+  calc
+    (∫⁻ x in bourgainFourCube, ENNReal.ofReal (F x)) =
+        ENNReal.ofReal (∫ x in bourgainFourCube, F x) :=
+      (ofReal_integral_eq_lintegral_ofReal hFint hFnonneg).symm
+    _ ≤ ENNReal.ofReal
+        (C * (H : ℝ) ^ ε *
+          (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ) *
+          (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ)) := by
+      apply ENNReal.ofReal_le_ofReal
+      exact hreal H hH hD ha hab hsmall c₁ c₂
+
 end
 
 end RHTower

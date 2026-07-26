@@ -316,10 +316,14 @@ theorem deningerTimeTestLaplace_mul
   have hv'Cont : Continuous v' := by
     dsimp only [v']
     fun_prop
-  have huCompact : HasCompactSupport u :=
-    φ.hasCompactSupport.comp_left rfl
-  have hu'Compact : HasCompactSupport u' :=
-    (deningerTimeTestDerivative φ).hasCompactSupport.comp_left rfl
+  have huCompact : HasCompactSupport u := by
+    simpa only [u, Function.comp_apply] using
+      (φ.hasCompactSupport.comp_left
+        (g := fun r : ℝ => (r : ℂ)) rfl)
+  have hu'Compact : HasCompactSupport u' := by
+    simpa only [u', Function.comp_apply] using
+      ((deningerTimeTestDerivative φ).hasCompactSupport.comp_left
+        (g := fun r : ℝ => (r : ℂ)) rfl)
   have huv : Integrable (u * v) :=
     (huCont.mul hvCont).integrable_of_hasCompactSupport
       huCompact.mul_right
@@ -340,8 +344,8 @@ theorem deningerTimeTestLaplace_mul
     filter_upwards with t
     dsimp only [v']
     ring
-  rw [deningerTimeTestLaplace, hleft] at hparts ⊢
-  exact hparts
+  rw [hleft] at hparts
+  simpa only [deningerTimeTestLaplace, u, u', v] using hparts
 
 /-- Two integrations by parts expose the reciprocal-square spectral regularization. -/
 theorem deningerTimeTestLaplace_mul_sq
@@ -387,16 +391,150 @@ private theorem deningerTimeTestSecondDerivativeExponentialIntegrable
         ‖(deningerTimeTestDerivative
           (deningerTimeTestDerivative φ) t : ℂ)‖ *
             Real.exp |t|) := by
+  let d2 : ℝ → ℂ :=
+    fun t =>
+      (deningerTimeTestDerivative
+        (deningerTimeTestDerivative φ) t : ℂ)
   have hcont :
       Continuous
         (fun t : ℝ =>
-          ‖(deningerTimeTestDerivative
-            (deningerTimeTestDerivative φ) t : ℂ)‖ *
+          ‖d2 t‖ *
               Real.exp |t|) := by
     fun_prop
-  exact hcont.integrable_of_hasCompactSupport
-    (deningerTimeTestDerivative
-      (deningerTimeTestDerivative φ)).hasCompactSupport.norm.mul_right
+  have hd2Compact : HasCompactSupport d2 := by
+    simpa only [d2, Function.comp_apply] using
+      ((deningerTimeTestDerivative
+        (deningerTimeTestDerivative φ)).hasCompactSupport.comp_left
+          (g := fun r : ℝ => (r : ℂ)) rfl)
+  have hprodCompact :
+      HasCompactSupport
+        (fun t : ℝ => ‖d2 t‖ * Real.exp |t|) := by
+    exact hd2Compact.norm.mul_right
+  simpa only [d2] using
+    hcont.integrable_of_hasCompactSupport hprodCompact
+
+/-- The twice-differentiated Laplace amplitude is bounded uniformly on the closed critical strip. -/
+theorem norm_deningerTimeTestLaplace_secondDerivative_le
+    (φ : DeningerTimeTestFunction) {s : ℂ}
+    (hs0 : 0 ≤ s.re) (hs1 : s.re ≤ 1) :
+    ‖deningerTimeTestLaplace
+        (deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ)) s‖ ≤
+      deningerTimeTestSecondDerivativeExponentialMass φ := by
+  let d2 : ℝ → ℂ :=
+    fun t =>
+      (deningerTimeTestDerivative
+        (deningerTimeTestDerivative φ) t : ℂ)
+  let e : ℝ → ℂ :=
+    fun t => Complex.exp ((t : ℂ) * s)
+  have hd2Cont : Continuous d2 := by
+    exact Complex.continuous_ofReal.comp
+      (deningerTimeTestDerivative
+        (deningerTimeTestDerivative φ)).continuous
+  have heCont : Continuous e := by
+    dsimp only [e]
+    fun_prop
+  have hd2Compact : HasCompactSupport d2 := by
+    simpa only [d2, Function.comp_apply] using
+      ((deningerTimeTestDerivative
+        (deningerTimeTestDerivative φ)).hasCompactSupport.comp_left
+          (g := fun r : ℝ => (r : ℂ)) rfl)
+  have hprodInt : Integrable (d2 * e) :=
+    (hd2Cont.mul heCont).integrable_of_hasCompactSupport
+      hd2Compact.mul_right
+  have hpoint : ∀ t : ℝ,
+      ‖d2 t * e t‖ ≤ ‖d2 t‖ * Real.exp |t| := by
+    intro t
+    have htre : t * s.re ≤ |t| := by
+      by_cases ht : 0 ≤ t
+      · calc
+          t * s.re ≤ t * 1 :=
+            mul_le_mul_of_nonneg_left hs1 ht
+          _ = t := mul_one t
+          _ ≤ |t| := le_abs_self t
+      · have ht' : t ≤ 0 := le_of_not_ge ht
+        exact
+          (mul_nonpos_of_nonpos_of_nonneg ht' hs0).trans
+            (abs_nonneg t)
+    rw [norm_mul]
+    dsimp only [e]
+    rw [Complex.norm_exp]
+    have hre : ((t : ℂ) * s).re = t * s.re := by
+      simp [Complex.mul_re]
+    rw [hre]
+    exact mul_le_mul_of_nonneg_left
+      (Real.exp_le_exp.mpr htre) (norm_nonneg _)
+  calc
+    ‖deningerTimeTestLaplace
+        (deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ)) s‖ =
+        ‖∫ t : ℝ, d2 t * e t‖ := by
+      rfl
+    _ ≤ ∫ t : ℝ, ‖d2 t * e t‖ :=
+      norm_integral_le_integral_norm _
+    _ ≤ ∫ t : ℝ, ‖d2 t‖ * Real.exp |t| :=
+      integral_mono hprodInt.norm
+        (by
+          simpa only [d2] using
+            deningerTimeTestSecondDerivativeExponentialIntegrable φ)
+        hpoint
+    _ = deningerTimeTestSecondDerivativeExponentialMass φ := by
+      rfl
+
+/-- Reciprocal-square bound for arbitrary positive-time test amplitudes at source eigenvalues. -/
+theorem norm_deningerTimeTestLaplace_rawThetaEigen_le
+    (φ : DeningerTimeTestFunction) (q : XiZeroCopy) :
+    ‖deningerTimeTestLaplace φ (deningerRawThetaEigen q)‖ ≤
+      deningerTimeTestSecondDerivativeExponentialMass φ /
+        ‖deningerRawThetaEigen q‖ ^ 2 := by
+  have hrho := deningerRawThetaEigen_re_mem_open_unit q
+  have hsecond :=
+    norm_deningerTimeTestLaplace_secondDerivative_le φ
+      hrho.1.le hrho.2.le
+  have hmul :
+      ‖deningerRawThetaEigen q‖ ^ 2 *
+          ‖deningerTimeTestLaplace φ
+            (deningerRawThetaEigen q)‖ ≤
+        deningerTimeTestSecondDerivativeExponentialMass φ := by
+    calc
+      ‖deningerRawThetaEigen q‖ ^ 2 *
+          ‖deningerTimeTestLaplace φ
+            (deningerRawThetaEigen q)‖ =
+          ‖deningerRawThetaEigen q ^ 2 *
+            deningerTimeTestLaplace φ
+              (deningerRawThetaEigen q)‖ := by
+            rw [norm_mul, norm_pow]
+      _ = ‖deningerTimeTestLaplace
+          (deningerTimeTestDerivative
+            (deningerTimeTestDerivative φ))
+              (deningerRawThetaEigen q)‖ := by
+        rw [deningerTimeTestLaplace_mul_sq]
+      _ ≤ deningerTimeTestSecondDerivativeExponentialMass φ :=
+        hsecond
+  exact (le_div_iff₀
+    (pow_pos (norm_pos_iff.mpr
+      (deningerRawThetaEigen_ne_zero q)) 2)).2
+        (by simpa only [mul_comm] using hmul)
+
+/--
+For every compactly supported smooth positive-time test, the complete multiplicity-exact
+spectral side `Σρ Φ(ρ)` is absolutely convergent.
+-/
+theorem deningerTimeTestLaplace_rawThetaEigen_summable
+    (φ : DeningerTimeTestFunction) :
+    Summable
+      (fun q : XiZeroCopy =>
+        deningerTimeTestLaplace φ
+          (deningerRawThetaEigen q)) := by
+  apply Summable.of_norm
+  exact
+    ((deningerRawThetaEigen_inv_sq_summable.mul_left
+      (deningerTimeTestSecondDerivativeExponentialMass φ)).of_nonneg_of_le
+        (fun _ => norm_nonneg _)
+        (fun q => by
+          have h :=
+            norm_deningerTimeTestLaplace_rawThetaEigen_le φ q
+          simpa only [div_eq_mul_inv, one_mul] using h))
 
 /-- Weight-zero endpoint trace function. -/
 def deningerArithmeticH0TraceFunction (_t : ℝ) : ℂ :=
