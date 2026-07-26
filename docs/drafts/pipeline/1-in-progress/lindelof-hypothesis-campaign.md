@@ -16443,3 +16443,209 @@ routes.
 > and the binding constraint is the decoupling source at the critical scale alone. Every scale except
 > `c = 1/2` is over-covered. The next target is therefore not the architecture but the single object
 > `Σ_(n ∼ √T) n^(-it)`.**
+
+## Cycle 266 — **THEOREMS 295–302: the Section-4 floor is a scale gap, priced and targeted**
+
+### C732 — the covering's exact source map at the record target `[THEOREMS 295–296]`
+
+> | source | covers |
+> |---|---|
+> | exponent pairs | `c ≤ 579/1435` |
+> | middle (Huxley) source | `12/31 ≤ c ≤ **332/819**` |
+> | final (decoupling) source | `17/42 ≤ c ≤ 1/2` |
+>
+> The middle source reaches **`1/1638` past** the final source's threshold, so the union is all of
+> `[0,1/2]` — but on the window `(579/1435, 17/42)`, width `11/8610`, **the middle source is alone.**
+
+### C733 — and the floor is exactly its value there `[THEOREM 297]`
+
+> The middle source's demand is increasing in `c`, so its supremum on that window is its right-endpoint
+> value **`277/1792`**. Nothing else is available there. **Hence the covering cannot prove any bound
+> below `277/1792` — the Section-4 floor (Thm 89) is not a property of the architecture, it is the
+> value of one source at one scale, forced by a gap of width `11/8610`.**
+
+### C734 — the slack profile `[THEOREMS 298–299]`
+
+> The covering is **tight only at `c = 1/2`**. Next-tightest: `c = 17/42`, slack exactly **`1/5376`**.
+> At `c = 12/31` the slack is **`243/68572`**. Every non-critical scale is over-covered.
+
+### C735 — the exact target that removes the floor `[THEOREMS 300–301]`
+
+> **A single exponent pair with demand `≤ 277/1792` at `c = 17/42` deletes the Section-4 floor
+> outright.** Written as a linear functional, the demand at `17/42` is `(25κ + 17λ)/42 − 17/84`, so the
+> target is `25κ + 17λ ≤ 42(277/1792 + 17/84)`. The best available pair `(16/237, 743/948)` misses by
+> exactly **`589/1274112`**.
+
+### C736 — why the improvement must come at the critical scale `[THEOREM 302]`
+
+> A pair on the line of symmetry `λ = κ + 1/2` has **zero displacement**, hence demand **constant `= κ`
+> at every scale**. Weyl's `(1/6, 2/3)` and the record `(13/84, 55/84)` are both such pairs.
+>
+> **So each of them already covers all scales by itself, and the covering architecture adds nothing to
+> them.** Beating `13/84` means beating a flat bound — which by Thm 284 (conjugation is lossless) can
+> only be done at the critical scale itself.
+
+### Lean
+
+`formal/GaloisForLFunctions/HTGeometry/SectionFourGapAndTarget.lean` — `huxleySource_coverage`,
+`huxleySource_overlap`, `middleSource_alone`, `middleSource_increasing`, `sectionFour_floor`,
+`slack_at_decouplingStart`, `slack_at_huxleyStart`, `gap_closing_target`,
+`demand_at_decouplingStart_linear`, `epDisplacement_on_symmetry`, `covDemand_flat_on_symmetry`,
+`record_pair_flat`, `weyl_pair_flat`, `section_four_gap_summary`. Umbrella green at **11004** jobs.
+
+### Standing position after 266 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 302 results, thirty-two corrections, 68 dead
+routes.
+
+> **The architecture is now completely priced and completely dismissed: its floor is one source's value
+> on a gap of width `11/8610`, every other scale carries slack, and the record pair is scale-flat so
+> the architecture is redundant given it. Three independent lines (Thms 284, 294, 302) now say the
+> same thing: the only object left is `Σ_(n ∼ √T) n^(−it)`.**
+
+## Cycle 267 — **corpus audit + THEOREMS 303–310**
+
+### E58 — **CORRECTION: two of the last two cycles' headline numbers are already in the corpus**
+
+A directed read of `formal/GaloisForLFunctions/RHTower/` (105 `Bourgain*` modules — the real-analysis
+side of the campaign, which the exponent-arithmetic work in `HTGeometry/` had not been consulting)
+turned up `BourgainExponentEndgame.lean`, which already proves **with real powers**:
+
+* the pair `(1/9, 13/18)` reaches `M ≤ T^(11/28)`  ⇒ **Thm 290 is a rediscovery**;
+* Huxley's bound reaches `M ≤ T^(332/819)`  ⇒ **Thm 295 is a rediscovery**;
+* the overlaps `12/31 < 11/28` and `17/42 < 332/819` close the range.
+
+What survives from cycles 265–266 as new: the A(Huxley) threshold `579/1435` (strictly better than the
+corpus's `11/28`), the window width `11/8610`, the slack profile (`1/5376`, `243/68572`), the
+gap-closing target `589/1274112`, and the retraction below.
+
+**Practice change, binding from now on: `formal_tools.py research` + a directed `ls`/`grep` of
+`RHTower/` before every cycle, not only `HTGeometry/`.** The analytic corpus is where the Bourgain
+proof actually lives.
+
+### C737 — **the symmetrization retraction** `[THEOREMS 303–306]`
+
+> For any pair `P = (κ,λ)`, the midpoint of `P` and `BP` is
+>
+>     **`((κ+λ−1/2)/2, (κ+λ+1/2)/2) = (μ(P), μ(P)+1/2)`** ,
+>
+> a point of the line of symmetry with first coordinate exactly `μ(P)`. The exponent-pair region is
+> convex and `B`-closed, so that midpoint is again a pair. Hence
+>
+> **`sym : (κ,λ) ↦ (μ(κ,λ), μ(κ,λ)+1/2)` is an idempotent retraction of the region onto its
+> intersection with the line of symmetry, and it preserves `μ` exactly.**
+>
+> Consequences: `inf{μ(P)} = inf{κ : (κ,κ+1/2) a pair}` — **the region matters only through the line of
+> symmetry**; `sym P` is scale-flat; and `P`, `BP` have demands averaging to `μ(P)` at *every* scale.
+>
+> Instances: `(1/9,13/18) ↦ (1/6,2/3)` — **Bourgain's low-range pair retracts exactly to Weyl's pair**;
+> `(0,1)` and `(1/2,1/2)` both `↦ (1/4,3/4)`; the record is its own retract.
+
+### C738 — **the power-scale recurrence floor** `[THEOREMS 307–310]`
+
+Using the corpus's own `bourgain_powerScale_iterate` (`BourgainPowerScaleBootstrap`), whose recurrence
+is `b(N) ≤ C N^δ b(N^α)`:
+
+> `[307]` The `k`-fold accumulation `δ Σ_(i<k) α^i` falls short of
+> **`powerScaleFloor δ α = δ/(1−α)`** by exactly **`δ α^k/(1−α)`** — the floor is attained only in the
+> limit. At `α = 2/3` it is `3δ`, and `13/84 = powerScaleFloor(13/252, 2/3)`: **Bourgain's per-step
+> decoupling loss is exactly `13/252`.**
+>
+> `[308]` **Elasticity.** `∂log floor/∂log δ = 1` but `∂log floor/∂log α = α/(1−α) = 2` at `α = 2/3`.
+> **The floor is twice as elastic in the contraction exponent as in the per-step loss** — proportional
+> effort spent lowering `α` is worth twice what it is worth lowering `δ`.
+>
+> `[309]` For `α < 1`, `floor = 0 ⟺ δ = 0`: **the recurrence yields Lindelöf iff its per-step loss is
+> not a positive power.**
+>
+> `[310]` **Why Bourgain's pair is on the line of symmetry.** The recurrence constrains `b(N)` for
+> *every* `N`, so its solution is an exponent uniform in the scale; a scale-uniform bound `M^(1/2)T^β`
+> is the pair `(β, β+1/2)`, of zero displacement. **The recurrence is the source of the flatness that
+> Thm 302 observed** — the two sides of the campaign, analytic and geometric, meet here.
+
+### Lean
+
+`formal/GaloisForLFunctions/HTGeometry/SymmetrizationRetraction.lean` — `symKappa`, `symLambda`,
+`sym_is_midpoint_of_B`, `sym_displacement_zero`, `sym_preserves_mu`, `sym_idempotent`,
+`sym_fixes_symmetry_line`, `sym_demand_flat`, `demand_average_is_mu`, `demand_at_critical_is_mu`,
+`mu_le_iff_sym_le`, `sym_lowRange`, `sym_vdcWord`, `sym_trivial`, `sym_record`,
+`symmetrization_summary`.
+`formal/GaloisForLFunctions/RHTower/BourgainRecurrenceFloor.lean` — `powerScaleFloor`,
+`powerScale_partial_deficit`, `powerScale_partial_le`, `powerScaleFloor_two_thirds`,
+`powerScaleFloor_bourgain`, `powerScaleFloor_delta_diff`, `powerScaleFloor_alpha_diff`,
+`powerScaleFloor_elasticity`, `powerScaleFloor_eq_zero_iff`, `uniform_exponent_is_symmetric`,
+`bourgain_pair_is_recurrence_flat`.
+
+### Standing position after 267 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 310 results, thirty-three corrections, 68 dead
+routes.
+
+> **New target, from `[308]`: the contraction exponent `α = 2/3` of Bourgain's Section-1 recurrence,
+> not the per-step loss `δ = 13/252`. It is the twice-more-elastic parameter and nobody has priced it.
+> Corpus entry point: `BourgainPowerScaleBootstrap`, `BourgainScaleContraction`.**
+
+## Cycle 268 — corpus-first, per E58: two rediscoveries avoided, one new law
+
+### E59 — **CORRECTION avoided by checking first**
+
+Deriving the Section-3 spacing profile from `RHTower/BourgainSpacingExponentArithmetic` I obtained the
+"V-law" `θ(x) = 11/72 + |x − 5/12|/6`, the coverage interval `[17/42, 3/7]` of width `1/42`, and the
+identity `depth = half-width × slope = (1/84)(1/6) = 1/504`. **A grep for `11 / 72` found all of it
+already in `HTGeometry/SpacingWindowGeometry.lean`** — the campaign's own first module, which states
+the corner `5/12`, threshold `(b+c)/12 = 11/72`, interval `[c − 6θ, 6θ − b] = [17/42, 3/7]`, width
+`12θ − (b+c) = 1/42`, and corner surplus `1/84`. **Not written. This is the second time in two cycles;
+the grep is now unconditional before any derivation.**
+
+### C739 — the real open obligation, located
+
+`RHTower/BourgainFirstSpacingElimination.lean` carries the chain's one explicit hypothesis:
+
+>     `hA6 : ∀ ε > 0, ∃ C > 0, ∀ H,  A₆(H) ≤ C·H^ε·H^6`
+
+and its own docstring records: *"Establishing that estimate without hypotheses remains a separate
+obligation"*, and that the theorem *"leaves the second-spacing count visible"*. **That is the frontier
+of the corpus: the sharp `A₆` sixth-moment estimate, and the second-spacing count.** It is also where
+cycle 267 independently concluded the loss must be — arithmetic, not analytic.
+
+### C740 — **the arithmetic-loss transfer law** `[THEOREMS 311–314]`
+
+The double-large-sieve step bounds a **twelfth** power:
+`(Σ_i‖S(x_i)‖)^12 ≤ K·H^9` when the sixth-moment input is sharp.
+
+> `[311]` `X^12 ≤ K·H^(9+ρ)` ⟹ `X ≤ K^(1/12)·H^(3/4 + ρ/12)`.
+>
+> `[312]` **An arithmetic loss `ρ` in the `A₆` sixth moment costs exactly `ρ/12` downstream.**
+>
+> `[313]` Hence any fixed `ρ > 0` strictly degrades the final exponent: **the sixth-moment input is
+> already extremal and carries zero slack. No improvement of the record can come from the
+> first-spacing side.**
+>
+> `[314]` The budget for a target gain `Δ` is `ρ ≤ 12Δ`. From `13/84` down to the two-regime threshold
+> `11/72` the gain is `1/504`, so the `H`-exponent budget is **`12/504 = 1/42`** — numerically the
+> width of the coverage interval `[17/42, 3/7]`.
+
+### Consequence for the campaign
+
+> **All remaining slack in Bourgain's chain is localized to the second-spacing count.** The
+> first-spacing side is extremal (`[313]`), the covering geometry is over-covered everywhere except
+> `c = 1/2` (Thms 298–299), the middle source is worth at most `11/39816` (Thm 294), and the recurrence
+> floor is `δ/(1−α)` with `δ` already the budget (Thms 307–308). The second-spacing count is the only
+> input the corpus leaves both explicit and unpriced.
+
+### Lean
+
+`formal/GaloisForLFunctions/RHTower/ArithmeticLossTransfer.lean` — `twelfth_root_transfer`,
+`chain_exponent_transfer`, `arithmeticLoss`, `arithmeticLoss_eq`, `arithmeticLoss_zero`,
+`arithmeticLoss_pos`, `arithmeticLoss_budget`, `budget_record_to_threshold`,
+`gap_record_to_threshold`, `arithmetic_loss_summary`.
+
+### Standing position after 268 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 314 results, thirty-four corrections, 68 dead
+routes.
+
+> **Next: price the second-spacing count. Corpus entry points —
+> `BourgainFirstSpacingElimination` (leaves it visible), `BourgainMomentCloudBounds`,
+> `BourgainDoubleLargeSieve`, and on the arithmetic side `HTGeometry/FareyArcAccounting`,
+> `SqrtNonResonance`, `CoherenceDivisibility`, `SimultaneousResonanceCount`.**

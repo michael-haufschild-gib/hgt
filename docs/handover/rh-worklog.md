@@ -11072,3 +11072,55 @@ NOTHING — the bound is an upper bound only. FIND A LOWER BOUND: evaluate the q
 point where A_n is known nonzero. THE FACTOR z - i IN SUZUKI'S FORMULA GIVES A_n(i) = 0 AND NOTHING
 ELSE VANISHES BY CONSTRUCTION, SO A SECOND EVALUATION POINT SHOULD GIVE A UNIFORM POSITIVE LOWER
 BOUND AND HENCE g != 0. THAT IS A CONCRETE, CORPUS-GROUNDED, FINITE TASK.
+
+---
+
+## CORRECTION TO CYCLE 179 — MISATTRIBUTION, AND A STANDING ATTRIBUTION RULE
+
+### The correction
+Cycle 179 was logged as "HUNDRED-AND-THIRTEENTH ATLAS ENTRY" with the headline "STRICT
+HERMITE-BIEHLER FOR THE HEDENMALM PAIR GIVES RH OUTRIGHT". THAT FRAMING WAS WRONG. Every ingredient
+was already in the corpus:
+
+    PRIOR WORK USED (all pre-existing, none mine):
+      RHTower/XiHedenmalmDeBrangesSeam.lean
+        xiHedenmalmDeBrangesE, xiHedenmalmDeBrangesESharp, xiHedenmalm_XiC_conj, deriv_XiC_conj
+      RHTower/SuzukiFiniteApertureHermiteBiehler.lean
+        suzukiEntireSharp, SuzukiHermiteBiehler
+      RHTower/SlabMassSquareCertificate.lean
+        riemannHypothesis_iff_xiC_zero_im_eq_zero
+
+My contribution was a four-line splice of these three. DEMOTED: cycle 179 is NOT an atlas entry. It is
+an assembly note. The atlas count returns to 112 through cycle 178.
+
+Entry 112's own status is also weaker than logged: cycle 179 showed its simplicity hypothesis was
+unnecessary, so 112 was partly wrong as stated.
+
+### The second failure: not reading the lane before planning it
+Cycle 179's "link 2 is missing" plan was written WITHOUT reading `RiemannHypothesisSOTA2026.lean` or
+`SuzukiCharacteristicEntireLimitNoGo.lean`. BOTH ALREADY SAY IT. From the corpus, verbatim:
+
+  - `SuzukiXiCharacteristicLimitWall` docstring: "it is no longer the current research wall: the
+    displayed target has unconditional real poles and therefore cannot satisfy the AnalyticOnNhd ...
+    univ clause. THE POLE-COMPATIBLE FINITE-APERTURE REPLACEMENT IS THE LIVSIC/TWO-ANGLE CARRIER
+    FORMALIZED IN SuzukiFiniteApertureHermiteBiehler."
+  - `not_suzukiXiCharacteristicLimitWall` : the entire-limit reading is UNCONDITIONALLY FALSE
+    (Rolle between two positive real XiC zeros gives a critical point where the target has a pole).
+  - `SuzukiFiniteApertureHermiteBiehler` docstring already names the open sub-parts:
+    "nondegeneration, uniqueness, shift control, and identification with the global Xi/de Branges
+    carrier".
+
+SO THE SUZUKI LANE ALWAYS HAD A TARGET (`suzukiShiftedXiTarget`, `suzukiXiCharacteristicTarget`), the
+entire form was already killed, and the current wall and its four named gaps were already recorded.
+Cycle 179 restated the corpus's own roadmap as a discovery.
+
+### STANDING RULE (binding, all future cycles)
+1. BEFORE conjecturing: `formal_tools.py research` on the OBJECT, plus `rg`, plus READ the hit files
+   in full. Not after. Not sometimes.
+2. EVERY worklog entry and every report must open with a `PRIOR WORK USED:` block naming each corpus
+   declaration relied on, with its file. If that block accounts for the whole result, the entry is an
+   ASSEMBLY NOTE, not an atlas entry, and must be labelled so.
+3. No headline may state as a finding anything a corpus docstring already states.
+4. Entries 100-111 are hereby reclassified as ATLAS BOOKKEEPING, not research results: they classify
+   why previously-closed lanes are closed. Several are near-tautologies. They stay in the log as
+   navigation aids; they are not to be reported as findings.

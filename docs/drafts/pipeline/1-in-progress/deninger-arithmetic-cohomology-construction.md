@@ -710,3 +710,45 @@ metric by transporting a form already known to be positive exactly under RH.
   sum. Formalized the exact equivalence between the remaining scalar Deninger explicit formula
   and equality in \(\mathcal D'((0,\infty),\mathbb C)\). No special CCM test family, RH premise,
   or numerical computation is used.
+- 2026-07-26 — `[CONJECTURE] [DAC_ARCH_LINE]`: for every
+  \(\phi\in C_c^\infty((0,\infty))\), \(\Phi(s)=\int\phi(t)e^{st}\,dt\), and \(c>1\),
+  \[
+    \int_{\mathbb R}\Phi(c-2\pi i\xi)
+      \frac{\operatorname{archFactor}'}
+           {\operatorname{archFactor}}(c-2\pi i\xi)\,d\xi
+    =\Phi(0)+\Phi(1)-
+      \int_0^\infty\frac{\phi(t)}{1-e^{-2t}}\,dt .
+  \]
+  Hostile audit verdict: `REDISCOVERED` as the arbitrary-test archimedean component of the
+  classical Weil explicit formula, but it is the exact missing direct Deninger bridge and does
+  not assume RH. `[PAPER-PROVED]` dependency-closed proof: compact support inside the open
+  positive axis makes the zero extension Schwartz and gives \(\phi(0)=0\). Fourier inversion
+  gives
+  \[
+    \int_{\mathbb R}e^{2\pi i\xi x}\Phi(c-2\pi i\xi)\,d\xi
+      =\phi(x)e^{cx}.
+  \]
+  For \(a>0\), insert
+  \((a-2\pi i\xi)^{-1}=\int_0^\infty e^{-at}e^{2\pi i\xi t}\,dt\);
+  Tonelli/Fubini is justified by the Schwartz \(L^1\) Fourier amplitude and the \(L^1\)
+  exponential. Hence
+  \[
+    \int_{\mathbb R}\frac{\Phi(c-2\pi i\xi)}
+      {a-2\pi i\xi}\,d\xi
+      =\int_0^\infty\phi(t)e^{(c-a)t}\,dt .
+  \]
+  The closed identity
+  \[
+    (\log\operatorname{archFactor})'(s)
+      =s^{-1}+(s-1)^{-1}
+       -\tfrac12\log\pi+\tfrac12\psi(s/2)
+  \]
+  makes the two rational terms equal \(\Phi(0)\) and \(\Phi(1)\). Gauss's absolutely
+  convergent series
+  \(\psi(s/2)=-\gamma+\sum_{n\ge0}((n+1)^{-1}-(n+s/2)^{-1})\)
+  has constant terms integrating to \(\phi(0)=0\); every remaining resolvent contributes
+  \(-\int_0^\infty\phi(t)e^{-2nt}\,dt\). Dominated convergence is valid because the support
+  lies in \([\delta,M]\subset(0,\infty)\), so the geometric series is uniformly dominated there.
+  Summing gives the stated density. `[OPEN CORE]`: formalize this exact arch line, then identify
+  the right Xi logarithmic-derivative line with the multiplicity-exact spectral sum by the
+  relative-resolvent/Bromwich transform.

@@ -65,6 +65,32 @@ resulting aperture phase/occupation conservation law.
 - [x] Whole-corpus theorem-leaf discovery
 - [x] Prior corpus and failed-route audit
 - [x] Dependency-closed paper proof
-- [ ] Lean formalization; direct `lake env lean`
-- [ ] Post-proof literature audit
+- [x] Lean formalization; direct `lake env lean`
+- [x] Post-proof literature audit
 - [ ] Axiom and umbrella audit
+
+## Lean result
+
+`formal/GaloisForLFunctions/RHTower/SoninProjectionWalkProlatePhaseEnergyUniversalityLaw.lean`
+proves:
+
+- `hsNormSq_centralSoninProjectionQuantumWalk_sub_adjoint_eq`;
+- `hsNormSq_centralSoninProjectionQuantumWalk_sub_adjoint_add_prolate_eq`.
+
+Direct exact check passed without warnings:
+
+`lake env lean GaloisForLFunctions/RHTower/SoninProjectionWalkProlatePhaseEnergyUniversalityLaw.lean`
+
+The module is imported by `GaloisForLFunctions/RHTower.lean`.
+
+## Post-proof novelty audit
+
+Performed only after dependency-closed Lean proof passed.  Targeted searches recovered Szegedy's
+spectral formula for products of reflections, abstract quantum-walk generators and spectral
+mapping, phase-gap/qubitization literature, and unrelated Hilbert--Schmidt commutator measures.
+They did not recover an exact Sonin/prolate identity equating anti-Hermitian two-reflection-walk
+phase energy with free-fermion number variance, nor the resulting `128 a²` phase/occupation
+budget.
+
+Verdict: `[NOVELTY PLAUSIBLE — SEARCH NOT EXHAUSTIVE]`.  Novelty is claimed for the exact
+Sonin/prolate scalar laws and constants, not for the standard product-of-reflections spectrum.
