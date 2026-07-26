@@ -48,35 +48,37 @@ theorem meromorphicAt_diffMonomial {f : ℂ → ℂ} {z : ℂ} (h : MeromorphicA
     MeromorphicAt (diffMonomial f i j) z :=
   (h.pow i).mul (h.deriv.pow j)
 
+/-- A finite sum of functions meromorphic at a point is meromorphic there. -/
+theorem meromorphicAt_finset_sum {ι : Type*} (s : Finset ι) (g : ι → ℂ → ℂ) {z : ℂ}
+    (h : ∀ i ∈ s, MeromorphicAt (g i) z) :
+    MeromorphicAt (fun w => ∑ i ∈ s, g i w) z := by
+  classical
+  induction s using Finset.induction with
+  | empty =>
+      have hz : (fun w : ℂ => ∑ i ∈ (∅ : Finset ι), g i w) = fun _ => (0 : ℂ) := by
+        funext w
+        simp
+      rw [hz]
+      exact analyticAt_const.meromorphicAt
+  | insert a t ha ih =>
+      have hA : MeromorphicAt (g a) z := h a (Finset.mem_insert_self a t)
+      have hT : ∀ i ∈ t, MeromorphicAt (g i) z := fun i hi =>
+        h i (Finset.mem_insert_of_mem hi)
+      have hsplit : (fun w : ℂ => ∑ i ∈ insert a t, g i w)
+          = g a + fun w : ℂ => ∑ i ∈ t, g i w := by
+        funext w
+        show ∑ i ∈ insert a t, g i w = g a w + ∑ i ∈ t, g i w
+        rw [Finset.sum_insert ha]
+      rw [hsplit]
+      exact hA.add (ih hT)
+
 /-- Where `f` is meromorphic, so is every finite combination of its differential monomials. -/
 theorem meromorphicAt_monomialCombination {f : ℂ → ℂ} {z : ℂ} (h : MeromorphicAt f z) {N : ℕ}
     (c : (Fin (N + 1) × Fin (N + 1)) → ℂ) :
     MeromorphicAt
-      (fun w => ∑ q : Fin (N + 1) × Fin (N + 1), c q * diffMonomial f (q.1 : ℕ) (q.2 : ℕ) w) z := by
-  classical
-  have hgen : ∀ s : Finset (Fin (N + 1) × Fin (N + 1)),
-      MeromorphicAt (fun w => ∑ q ∈ s, c q * diffMonomial f (q.1 : ℕ) (q.2 : ℕ) w) z := by
-    intro s
-    induction s using Finset.induction with
-    | empty =>
-        have hz : (fun w : ℂ => ∑ q ∈ (∅ : Finset (Fin (N + 1) × Fin (N + 1))),
-            c q * diffMonomial f (q.1 : ℕ) (q.2 : ℕ) w) = fun _ => (0 : ℂ) := by
-          funext w
-          simp
-        rw [hz]
-        exact analyticAt_const.meromorphicAt
-    | insert a t ha ih =>
-        have hsplit : (fun w : ℂ => ∑ q ∈ insert a t, c q * diffMonomial f (q.1 : ℕ) (q.2 : ℕ) w)
-            = (fun w : ℂ => c a * diffMonomial f (a.1 : ℕ) (a.2 : ℕ) w)
-              + fun w : ℂ => ∑ q ∈ t, c q * diffMonomial f (q.1 : ℕ) (q.2 : ℕ) w := by
-          funext w
-          show ∑ q ∈ insert a t, c q * diffMonomial f (q.1 : ℕ) (q.2 : ℕ) w
-            = c a * diffMonomial f (a.1 : ℕ) (a.2 : ℕ) w
-              + ∑ q ∈ t, c q * diffMonomial f (q.1 : ℕ) (q.2 : ℕ) w
-          rw [Finset.sum_insert ha]
-        rw [hsplit]
-        exact (analyticAt_const.meromorphicAt.mul
-          (meromorphicAt_diffMonomial h (a.1 : ℕ) (a.2 : ℕ))).add ih
-  exact hgen Finset.univ
+      (fun w => ∑ q : Fin (N + 1) × Fin (N + 1), c q * diffMonomial f (q.1 : ℕ) (q.2 : ℕ) w) z :=
+  meromorphicAt_finset_sum _ _
+    (fun q _ => analyticAt_const.meromorphicAt.mul
+      (meromorphicAt_diffMonomial h (q.1 : ℕ) (q.2 : ℕ)))
 
 end GaloisForLFunctions.HTGeometry

@@ -1507,3 +1507,25 @@ That module also contains `ellipticReduce`, a reduction to a fundamental paralle
 the basis `(1, tau)`; the `exists_bounded_intCombination` used here is the version for a general
 `R`-independent pair with a coefficient bound, which the exponential-type argument needs.  The two are
 kept separate deliberately.
+
+#### Uniform pole-order bounds, and why no finiteness argument is needed
+
+`GaloisForLFunctions/HTGeometry/EllipticOrderBound.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- `orderBound g S` — the largest pole order of `g` over a finite set `S`, read through
+  `WithTop.untopD`; **`neg_orderBound_le`** — it is a lower bound for the order at every point of `S`;
+  `neg_le_meromorphicOrderAt_of_le` — a larger bound is still a bound, so the two carriers `f` and
+  `f'` can share one exponent;
+- **`nonneg_order_finset_sum`** — a finite sum of functions with nonnegative order at a point has
+  nonnegative order there (`meromorphicOrderAt_add` plus induction), which is the hypothesis
+  `principalJet_finset_sum` needs for the *combination*;
+- `meromorphicAt_finset_sum` — extracted from the monomial-specific induction written earlier, which
+  is now a corollary of it.
+
+**An obstacle that dissolved.**  It looked as though the argument would need `ord(f') != top` at each
+pole representative -- i.e. that `f'` does not vanish identically near a pole -- which needs an
+identity-theorem argument on the complement of a discrete set.  It does not: `top` satisfies *every*
+lower bound, so a point where the order is `top` costs nothing.  And a pole representative has
+negative order, so it is automatically not `top`.  The whole finiteness question disappears from the
+proof.
