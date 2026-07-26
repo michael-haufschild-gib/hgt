@@ -59,6 +59,7 @@ theorem setLIntegral_bourgainOsculatingFundamentalCell_generic_eq
       (fun x : BourgainPhaseSpace => g (Matrix.toLin' M x)) = f := by
     funext x
     dsimp [g]
+    change f (E.symm (Matrix.toLin' M x)) = f x
     rw [hcoord, ContinuousLinearEquiv.symm_apply_apply]
   calc
     (∫⁻ x in bourgainOsculatingFundamentalCell H scale a b, f x) =

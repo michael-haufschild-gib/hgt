@@ -10565,3 +10565,64 @@ EXACTLY exp(2t). COMPUTE THAT RATIO AND COMPARE IT WITH THE ORDER-TWO WINDOW'S R
 (2j+3)(2j+4)/((2j+1)(2j+2)). IF THE TWO MATCH AT SOME t = t(j), THE FLOW TIME AND THE JET ORDER ARE
 THE SAME PARAMETER IN DISGUISE, AND THE ORDER-TWO SUCCESS TRANSFERS TO A FLOW-TIME BOUND THAT VANISHES.
 THAT WOULD BE THE FIRST VANISHING-LOSS FAMILY IN THE FLOW-TIME DIRECTION.
+
+---
+
+## Cycle 172 — THE TWO VERTICAL PARAMETERS ARE TWO TILTS OF ONE MEASURE
+
+### Phase 4 killed cycle 171's plan and replaced it with the right statement
+Cycle 171 proposed comparing the flow's "log-concavity ratio" with the order-two window's. ILL-POSED:
+the heat flow acts on the moment sequence by M_j -> sum_k (t^k/k!) M_{j+k}, a POISSON-WEIGHTED AVERAGE
+OF SHIFTS, NOT a diagonal weight. There is no diagonal multiplier to take a log-concavity ratio of.
+THE CORRECT STATEMENT IS DIFFERENT AND BETTER.
+
+### HUNDRED-AND-SIXTH ATLAS ENTRY
+BOTH VERTICAL PARAMETERS ENTER THE SAME INTEGRAND:
+
+    Phi(u) * u^{2j} * e^{t u^2}  =  Phi(u) * exp( 2j log u + t u^2 ).
+
+THE JET ORDER TILTS BY THE OBSERVABLE log u; THE FLOW TIME TILTS BY u^2 (the first formalised as
+u^{2j} = exp(2j log u)). NOTHING ELSE IN THE VERTICAL DIRECTION HAS APPEARED IN 106 ENTRIES.
+
+HOW THE FLOW MOVES THE SADDLE. With f(u) = log Phi(u) + 2j log u + t u^2, the saddle solves f'(u) = 0
+and d(f')/dt = 2u > 0 while f''(u*) < 0, so
+
+    du*/dt = -(2u*)/f''(u*) > 0        (formalised via the sign of -(cross/curv)).
+
+FORWARD FLOW PUSHES THE SADDLE OUTWARD; BACKWARD FLOW PULLS IT IN (both signs formalised).
+
+WHAT THAT DOES TO THE MARGIN. The order-two margin of entry 97 is 1 + 2u*, MONOTONE IN u* (formalised,
+strictly), and positive exactly when u* > -1/2 (formalised).
+
+    ==> THE MARGIN 1 + 2u* IS THE COMMON QUANTITY BEHIND BOTH THE ORDER-TWO INEQUALITY AND THE FLOW
+        CONSTANT. THE FIRST SAYS IT IS POSITIVE AT FLOW TIME ZERO; THE SECOND (Lambda >= 0) SAYS THE
+        BACKWARD FLOW DRIVES IT TO ZERO AT OR BEFORE TIME ZERO. THE TWO VERTICAL PARAMETERS ARE NOT
+        INDEPENDENT DIRECTIONS BUT THE TWO COORDINATES OF ONE EXPONENTIAL FAMILY.
+
+CONSEQUENCE FOR ENTRY 105. The flow time was listed as the one vertical parameter whose vanishing-loss
+question is open. IT IS NOT AN INDEPENDENT PARAMETER: it is the second coordinate of the same tilt
+family whose first coordinate is the jet order, and the loss along it is governed by the SAME margin
+function 1 + 2u*. SO THE OPEN QUESTION IS NOT "IS THERE A VANISHING LOSS IN t" BUT "HOW DOES
+u*(j, t) BEHAVE AS t -> 0^- WITH j -> infinity", A SINGLE TWO-VARIABLE ASYMPTOTIC.
+
+Machine-verified: `RHTower/TwoTiltsOfOneMeasure.lean` (the jet tilt as an exponential in log u, the
+outward and inward motion of the saddle under forward and backward flow, positivity of the crossed
+derivative, monotonicity and strict monotonicity of the margin in the saddle place, and the exact
+positivity criterion u* > -1/2; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 172
+One hundred and six entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 173 target
+THE PROBLEM IS NOW ONE TWO-VARIABLE ASYMPTOTIC: u*(j, t) FOR THE MEASURE Phi, AS t -> 0^- AND
+j -> infinity. THE SADDLE EQUATION IS EXPLICIT. With log Phi(u) ~ -pi e^{2u} + (9/2) u (the theta
+remainder, entries 74-81):
+
+    f'(u) = 9/2 - 2 pi e^{2u} + 2j/u + 2 t u = 0.
+
+AT t = 0 THIS GAVE u* ~ (1/2) log j AND MARGIN 1 + 2u* ~ log j (entry 163). THE QUESTION IS THE
+SENSITIVITY: compute du*/dt EXACTLY at t = 0 from the formula du*/dt = -2u*/f''(u*) WITH
+f''(u*) = -(2j/u*^2 + 4 pi e^{2u*} + ...) ALREADY COMPUTED IN ENTRY 97, AND SEE HOW LARGE A NEGATIVE t
+THE MARGIN CAN ABSORB BEFORE 1 + 2u* REACHES ZERO. THAT NUMBER IS AN UPPER BOUND FOR THE FLOW CONSTANT
+COMING FROM THE ORDER-TWO INEQUALITY ALONE, AND IF IT TENDS TO ZERO AS j GROWS IT IS EXACTLY THE
+VANISHING-LOSS FAMILY ENTRY 105 ASKED FOR.

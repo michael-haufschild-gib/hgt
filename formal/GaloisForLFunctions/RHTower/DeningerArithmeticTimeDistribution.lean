@@ -1128,6 +1128,107 @@ noncomputable def deningerPrimeArchimedeanLefschetzDistribution :
   deningerPrimeLefschetzDistribution +
     deningerArchimedeanLefschetzDistribution
 
+@[simp]
+theorem deningerTimeTestLaplace_zero
+    (φ : DeningerTimeTestFunction) :
+    deningerTimeTestLaplace φ 0 =
+      ∫ t : ℝ, (φ t : ℂ) := by
+  simp [deningerTimeTestLaplace]
+
+@[simp]
+theorem deningerTimeTestLaplace_one
+    (φ : DeningerTimeTestFunction) :
+    deningerTimeTestLaplace φ 1 =
+      ∫ t : ℝ, (φ t : ℂ) *
+        Complex.exp (t : ℂ) := by
+  apply integral_congr_ae
+  filter_upwards with t
+  simp
+
+/--
+Exact scalar form of the cohomological side: endpoint amplitudes minus the complete `H¹`
+spectrum.  This is the left side of Deninger's Proposition 3.2 for every positive-time test.
+-/
+theorem deningerArithmeticAlternatingTraceDistribution_apply
+    (φ : DeningerTimeTestFunction) :
+    deningerArithmeticAlternatingTraceDistribution φ =
+      deningerTimeTestLaplace φ 0 -
+        (∑' q : XiZeroCopy,
+          deningerTimeTestLaplace φ
+            (deningerRawThetaEigen q)) +
+          deningerTimeTestLaplace φ 1 := by
+  change
+    deningerArithmeticH0TraceDistribution φ -
+        deningerArithmeticH1TraceDistribution φ +
+      deningerArithmeticH2TraceDistribution φ = _
+  rw [deningerArithmeticH0TraceDistribution_apply,
+    deningerArithmeticH1TraceDistribution_apply_eq_spectralSum,
+    deningerArithmeticH2TraceDistribution_apply,
+    deningerTimeTestLaplace_zero,
+    deningerTimeTestLaplace_one]
+
+/--
+Exact scalar form of the independently constructed prime-plus-archimedean source distribution.
+-/
+theorem deningerPrimeArchimedeanLefschetzDistribution_apply
+    (φ : DeningerTimeTestFunction) :
+    deningerPrimeArchimedeanLefschetzDistribution φ =
+      (∑' n : DeningerPrimePowerIndex,
+        (deningerPrimePowerWeight n : ℂ) *
+          (φ (deningerPrimePowerTime n) : ℂ)) +
+        ∫ t : ℝ, (φ t : ℂ) *
+          deningerArchimedeanLefschetzDensity t := by
+  change
+    deningerPrimeLefschetzDistribution φ +
+      deningerArchimedeanLefschetzDistribution φ = _
+  rw [deningerPrimeLefschetzDistribution_apply,
+    deningerArchimedeanLefschetzDistribution_apply]
+
+/--
+Scalar Deninger explicit formula for arbitrary smooth compactly supported positive-time tests.
+
+This proposition is the precise remaining analytic content of the distributional Lefschetz law;
+it contains no cohomology placeholders and no special test-family restriction.
+-/
+def DeningerArithmeticScalarExplicitFormula : Prop :=
+  ∀ φ : DeningerTimeTestFunction,
+    deningerTimeTestLaplace φ 0 -
+        (∑' q : XiZeroCopy,
+          deningerTimeTestLaplace φ
+            (deningerRawThetaEigen q)) +
+      deningerTimeTestLaplace φ 1 =
+        (∑' n : DeningerPrimePowerIndex,
+          (deningerPrimePowerWeight n : ℂ) *
+            (φ (deningerPrimePowerTime n) : ℂ)) +
+          ∫ t : ℝ, (φ t : ℂ) *
+            deningerArchimedeanLefschetzDensity t
+
+/--
+The full distributional Lefschetz equality is equivalent to the single scalar explicit-formula
+proposition above.  Thus no topological or convergence gap remains between a proof of the scalar
+identity and equality in `𝓓'((0,∞),ℂ)`.
+-/
+theorem deningerArithmeticDistributionalLefschetz_iff_scalarExplicitFormula :
+    deningerArithmeticAlternatingTraceDistribution =
+        deningerPrimeArchimedeanLefschetzDistribution ↔
+      DeningerArithmeticScalarExplicitFormula := by
+  constructor
+  · intro h φ
+    have happ :=
+      congrArg
+        (fun T : DeningerTimeDistribution => T φ) h
+    change
+      deningerArithmeticAlternatingTraceDistribution φ =
+        deningerPrimeArchimedeanLefschetzDistribution φ at happ
+    rw [deningerArithmeticAlternatingTraceDistribution_apply,
+      deningerPrimeArchimedeanLefschetzDistribution_apply] at happ
+    exact happ
+  · intro h
+    ext φ
+    rw [deningerArithmeticAlternatingTraceDistribution_apply,
+      deningerPrimeArchimedeanLefschetzDistribution_apply]
+    exact h φ
+
 end
 
 end RHTower
