@@ -12,10 +12,11 @@ holomorphic maps.  The ambient continuous-map space carries the compact-open top
 source is completely metrizable and Baire.  Evaluation is continuous, and multiplication by the
 completed Xi source is a continuous linear differential.
 
-This supplies both the unreduced quotient by the Xi range and the reduced quotient by its closure.
-The statement that the two agree is isolated as `DeningerArithmeticXiRangeClosed`; it is not
-assumed.  Thus this file constructs the required source topology without silently asserting the
-closed-range theorem needed for reduced cohomology.
+This supplies quotient topological spaces for both the Xi range and its closure.  Their later
+topological-vector-space structure is kept separate because the current mathlib quotient-module
+instance is not definitionally compatible with this compact-open continuous-map module.  The
+statement that reduced and unreduced coboundaries agree is isolated as
+`DeningerArithmeticXiRangeClosed`; it is not assumed.
 -/
 
 open Complex Filter Set TopologicalSpace Topology
@@ -29,8 +30,7 @@ def deningerCompactOpenEntireSubmodule :
     Submodule ℂ C(ℂ, ℂ) where
   carrier := {F | Differentiable ℂ F}
   zero_mem' := by
-    simpa using (differentiable_const (c := (0 : ℂ)) :
-      Differentiable ℂ (fun _ : ℂ => 0))
+    simp
   add_mem' := by
     intro F G hF hG
     simpa using hF.add hG
@@ -171,18 +171,42 @@ def deningerCompactOpenXiRange :
     Submodule ℂ DeningerCompactOpenEntire :=
   LinearMap.range deningerCompactOpenXiMul.toLinearMap
 
-/-- Unreduced compact-open middle cohomology. -/
+/-- Additive quotient relation attached to a compact-open coboundary submodule. -/
+def deningerCompactOpenQuotientRel
+    (S : Submodule ℂ DeningerCompactOpenEntire) :
+    Setoid DeningerCompactOpenEntire :=
+  QuotientAddGroup.leftRel S.toAddSubgroup
+
+/-- Unreduced compact-open middle-cohomology quotient topology. -/
 abbrev DeningerArithmeticCompactOpenH1 :=
-  DeningerCompactOpenEntire ⧸ deningerCompactOpenXiRange
+  Quotient
+    (deningerCompactOpenQuotientRel deningerCompactOpenXiRange)
+
+/-- Canonical class in the unreduced compact-open quotient. -/
+def deningerArithmeticCompactOpenH1Class
+    (F : DeningerCompactOpenEntire) :
+    DeningerArithmeticCompactOpenH1 :=
+  Quotient.mk
+    (deningerCompactOpenQuotientRel deningerCompactOpenXiRange) F
 
 /-- Closed coboundary range used in reduced topological cohomology. -/
 def deningerCompactOpenXiClosedRange :
     Submodule ℂ DeningerCompactOpenEntire :=
   deningerCompactOpenXiRange.topologicalClosure
 
-/-- Reduced compact-open middle cohomology. -/
+/-- Reduced compact-open middle-cohomology quotient topology. -/
 abbrev DeningerArithmeticReducedCompactOpenH1 :=
-  DeningerCompactOpenEntire ⧸ deningerCompactOpenXiClosedRange
+  Quotient
+    (deningerCompactOpenQuotientRel
+      deningerCompactOpenXiClosedRange)
+
+/-- Canonical class in the reduced compact-open quotient. -/
+def deningerArithmeticReducedCompactOpenH1Class
+    (F : DeningerCompactOpenEntire) :
+    DeningerArithmeticReducedCompactOpenH1 :=
+  Quotient.mk
+    (deningerCompactOpenQuotientRel
+      deningerCompactOpenXiClosedRange) F
 
 /-- Exact closed-range conjecture separating unreduced from reduced arithmetic cohomology. -/
 def DeningerArithmeticXiRangeClosed : Prop :=

@@ -539,4 +539,60 @@ theorem resonance_triple_barrier {kappa : ℚ} (h0 : 0 < kappa) (h : kappa ≤ 1
    polyaVinogradov_fails_on_resonance h,
    by unfold resonanceGoal resonanceTrivial; linarith⟩
 
+
+/-!
+### A fourth tool: differencing the resonance sum
+
+Applying the Weyl differencing of `WeylDifferencing` to `T(q) = Σ_{a≤q}(a|q)e(g(a))` gives
+correlations
+
+    Σ_a (a(a+h)|q) · e( g(a+h) - g(a) ),      g(a+h) - g(a) ≍ Nh/√(2qa) ≍ N h / q^{3/2} · q^{1/2},
+
+whose phase `φ_h(a) ≍ (Nh/√(2q))·a^{-1/2}` has, on `a ≍ q`,
+
+    φ_h' ≍ N h / q²,     φ_h'' ≍ N h / q³.
+
+With `q = N^κ` and `h ≍ 1`, the differenced second-derivative exponent is `1 - 3κ`, against `1 - 2κ`
+before differencing.  **It vanishes exactly at `κ = 1/3`** — the top of the admissible range, where
+`q ≍ L = N^{1/3}`.  Below that it is still positive, so the differenced phase remains too fast.
+
+The differenced character `(a(a+h)|q)` is a quadratic character of a quadratic polynomial, so Weil's
+bound gives `Σ_{a mod q}(a(a+h)|q) ≪ q^{1/2}`.  Exploiting it by partial summation requires the phase
+to vary slowly, i.e. `φ_h' ≪ 1`, i.e. `h ≪ q²/N = N^{2κ-1} ≤ N^{-1/3} < 1` — **no admissible shift
+qualifies.**
+-/
+
+/-- Second-derivative exponent of the resonance phase after one Weyl differencing at shift `h ≍ 1`. -/
+def differencedSecondDeriv (kappa : ℚ) : ℚ := 1 - 3 * kappa
+
+/-- **Differencing is exactly critical at the top of the range.** -/
+@[simp] theorem differencedSecondDeriv_top : differencedSecondDeriv (1/3) = 0 := by
+  unfold differencedSecondDeriv; norm_num
+
+/-- **And strictly insufficient below it.** -/
+theorem differencedSecondDeriv_pos {kappa : ℚ} (h : kappa < 1/3) :
+    0 < differencedSecondDeriv kappa := by
+  unfold differencedSecondDeriv; linarith
+
+/-- One differencing gains exactly one factor of `κ` in the second-derivative exponent. -/
+theorem differencing_gain (kappa : ℚ) :
+    resonanceSecondDeriv kappa - differencedSecondDeriv kappa = kappa := by
+  unfold resonanceSecondDeriv differencedSecondDeriv; ring
+
+/-- Exponent of the largest shift for which Weil's bound can be exploited by partial summation:
+`h ≪ q²/N`. -/
+def weilUsableShift (kappa : ℚ) : ℚ := 2 * kappa - 1
+
+/-- **No admissible shift qualifies.**  On `κ ≤ 1/3` the usable-shift exponent is at most `-1/3 < 0`,
+so even `h = 1` is too large. -/
+theorem weil_unusable {kappa : ℚ} (h : kappa ≤ 1/3) : weilUsableShift kappa ≤ -1/3 := by
+  unfold weilUsableShift; linarith
+
+/-- **The fourth barrier, assembled.**  Differencing is critical only at `κ = 1/3` and insufficient
+below; Weil's bound on the differenced character cannot be exploited at any admissible shift. -/
+theorem resonance_fourth_barrier {kappa : ℚ} (h0 : 0 < kappa) (h : kappa < 1/3) :
+    0 < differencedSecondDeriv kappa ∧ weilUsableShift kappa < 0 := by
+  refine ⟨differencedSecondDeriv_pos h, ?_⟩
+  unfold weilUsableShift; linarith
+
 end HTGeometry

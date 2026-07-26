@@ -648,7 +648,7 @@ theorem scaledPrimeArchEndpointHausdorffDifference_totalDegree_le_three_nonnegat
 
 /-! ### Uniform asymmetric-sector positivity on a 301-condition weighted wedge -/
 
-private theorem abs_arctan_le_abs_for_scaledHausdorff (x : ℝ) :
+theorem abs_arctan_le_abs_for_scaledHausdorff (x : ℝ) :
     |Real.arctan x| ≤ |x| := by
   have key : ∀ y : ℝ, 0 ≤ y → Real.arctan y ≤ y := by
     intro y hy
@@ -671,7 +671,7 @@ private theorem abs_arctan_le_abs_for_scaledHausdorff (x : ℝ) :
         simpa only [abs_of_nonneg hatan, abs_of_nonneg hx'] using key (-x) hx'
       _ = |x| := abs_neg x
 
-private theorem abs_arg_le_of_re_pos_for_scaledHausdorff {z : ℂ} (hz : 0 < z.re)
+theorem abs_arg_le_of_re_pos_for_scaledHausdorff {z : ℂ} (hz : 0 < z.re)
     {c : ℝ} (hc : |z.im| ≤ c * z.re) :
     |z.arg| ≤ c := by
   rw [arg_eq_arctan_of_re_pos hz]
@@ -679,7 +679,7 @@ private theorem abs_arg_le_of_re_pos_for_scaledHausdorff {z : ℂ} (hz : 0 < z.r
   rw [abs_div, abs_of_pos hz]
   exact (div_le_iff₀ hz).2 (by simpa [mul_comm] using hc)
 
-private theorem pow_mul_pow_re_eq_norm_cos (z w : ℂ) (p r : ℕ) :
+theorem pow_mul_pow_re_eq_norm_cos (z w : ℂ) (p r : ℕ) :
     (z ^ p * w ^ r).re =
       ‖z‖ ^ p * ‖w‖ ^ r * Real.cos (p * z.arg + r * w.arg) := by
   have hcomplex : z ^ p * w ^ r =

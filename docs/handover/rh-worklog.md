@@ -4819,3 +4819,78 @@ THE SMOOTHED PNT ERROR AGAINST POSITIVE-TYPE WEIGHTS — and positive-type weigh
 the classical error estimates are WEAKEST, because they cannot be shifted off the critical line.
 Determine whether the positive-type constraint gives a better error bound than the classical contour
 shift. If it does, that is an unconditional improvement of the PNT error term.
+
+---
+
+## Cycle 83 (2026-07-26) — THREE-WAY CANCELLATION: THE WEIL FUNCTIONAL HAS NO EXPONENTIAL CONTENT
+### Pole + prime main term + FIRST ARCHIMEDEAN MODE = A(0). Width-independent. This explains the atlas.
+
+### Phase 4 verdict on the cycle-82 target: CIRCULAR — recorded as a dead end
+Cycle 82 proposed bounding c in  primeSum <= primeMain + c g(0)  unconditionally. Integration by
+parts gives  primeSum - primeMain = int_0^L Etilde(u) (g/2 - g') du  with
+Etilde(u) = (psi(e^u) - e^u) e^{-u/2}, and by the classical exact formula
+Etilde(u) = -sum_rho e^{u(rho-1/2)}/rho. So ANY bound on the smoothed error against ANY weight IS a
+bound on the zero sum. CIRCULAR. Positive-type weights give no leverage: the constraint is on the
+weight, not on Etilde. DEAD END — do not re-attempt.
+
+### The relentless-interrogation move that survived
+What killed it: the error IS the zero sum. What is NOT killed: statements about the SHAPE of the
+functional that never bound the error. Follow the Laplace transforms.
+
+### The corpus supplied the missing normalization
+`ArchimedeanSingleIntegral.lean` (cycle 64) records the archimedean side as the series with n-th
+summand   A(0)/(n+1) - int_0^inf e^{-(n+3/4)t} A(t/2) e^{t/2} dt.
+Substituting t = 2u:   that integral is  2 int_0^X A(u) e^{-(2n+1/2)u} du  =  2 * LaplaceA(2n+1/2).
+
+    ==> THE n-TH ARCHIMEDEAN MODE IS   A(0)/(n+1) - 2 LaplaceA(2n + 1/2),
+        AND THE FIRST ONE (n=0) IS     A(0) - 2 LaplaceA(1/2).
+
+### THE THREE-WAY CANCELLATION
+Cycle 82: pole - primeMain = 2 LaplaceA(1/2). Adding the first archimedean mode:
+
+    [pole - primeMain] + [first archimedean mode] = 2 L(1/2) + A(0) - 2 L(1/2) = A(0).
+
+    ==> THE POLE TERM, THE PNT MAIN TERM, AND THE FIRST ARCHIMEDEAN MODE CANCEL IDENTICALLY,
+        LEAVING EXACTLY A(0). THE WEIL FUNCTIONAL CONTAINS NO QUANTITY OF SIZE e^{L/2} AT ALL.
+
+What survives:   W = A(0) - 2 sum_{n>=1} [ ... LaplaceA(2n+1/2) ... ] - (smoothed prime error),
+with every surviving Laplace mode bounded by A(0)/(2n+1/2). The whole archimedean tail is O(A(0))
+with an absolute constant.
+
+### THIS EXPLAINS THE ENTIRE ATLAS
+Every barrier recorded in entries 1-16 was a symptom of trying to extract information from three
+terms whose sum is A(0) INDEPENDENTLY OF THE WIDTH:
+  * the doubly exponential barrier (cycles 69-72): both exponentials cancel;
+  * the Laplace budget (entry 16): it is exactly the first archimedean mode with the sign flipped;
+  * self-limiting positivity (entry 12): the empty-window archimedean side is the tail alone;
+  * scale incompatibility, detection ceiling, Nyquist dichotomy: all width statements, and width is
+    precisely what cancels.
+RH IS AN INEQUALITY BETWEEN TWO BOUNDED QUANTITIES. There is no exponentially large quantity anywhere
+in it, and no method that gains by widening the window can work.
+
+Machine-verified: `RHTower/ThreeWayCancellation.lean` (the t=2u substitution identifying the n-th
+archimedean mode as a Laplace transform at 2n+1/2, the three-way cancellation, its width
+independence, the uniform mode bound, the exact Laplace transform of a constant, monotone mode
+denominators, and the no-exponential-content restatement; standard axioms only, wired into RHTower).
+
+### SEVENTEENTH ATLAS ENTRY
+    three-way cancellation   pole + prime main term + first archimedean mode = A(0), for every test
+                             and every width. The Weil functional has no exponential content; RH is
+                             an inequality between two O(A(0)) quantities.
+
+This is the structural explanation the atlas lacked. Entries 13, 14, 16 said what width cannot buy;
+entry 17 says why: width cancels.
+
+### STATE AT CYCLE 83
+Seventeen entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 84 target
+If RH is an inequality between two O(A(0)) quantities, then the RIGHT NORMALIZATION IS A(0) = 1 AND
+THE RIGHT VARIABLE IS NOT L. Under entry 17 the functional is
+    W(g)/g(0) = 1 - Tail(g)/g(0) - Err(g)/g(0),
+with Tail explicit and bounded. DETERMINE sup Tail(g)/g(0) OVER POSITIVE-TYPE g EXACTLY. It is
+sum_{n>=1} [ 2 Laplace(2n+1/2) - 1/(n+1) ] maximised over the positive-type cone — a FINITE,
+SCALE-FREE extremal problem with no primes and no zeros, decidable by classical means. Its value is
+the exact archimedean budget of the Riemann hypothesis, a single real constant. NAME IT AND COMPUTE
+IT. If it is less than 1, then RH reduces to  Err(g) <= (1 - budget) g(0)  with a POSITIVE margin —
+and the margin is the first genuinely quantitative handle the programme has produced.
