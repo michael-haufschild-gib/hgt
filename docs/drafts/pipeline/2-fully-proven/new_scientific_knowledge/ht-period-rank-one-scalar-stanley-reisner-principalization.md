@@ -1004,3 +1004,59 @@ So on the `R`-dependent branch `(24)`--`(26)` is now proved in the same generali
 states it, for entire carriers.  The nonvanishing hypothesis survives only on the lattice branch,
 where it is genuinely needed: there `logDeriv f` would be elliptic rather than entire, which is the
 same `EllipticHypertranscendenceFree` boundary that bounds every other analytic step of this card.
+
+## Lean progress — the FINITE-STATE law `(27)`--`(33)`, without Wronskians
+
+`GaloisForLFunctions/HTGeometry/SmallTranslationDerivInvariance.lean` and
+`GaloisForLFunctions/HTGeometry/MatrixFacetCodimension.lean` (axiom-clean, build green,
+umbrella-registered).  This replaces the paper's route to `(27)`--`(30)` by a shorter one that is
+unconditional.
+
+**The paper route and why it is not the one formalized.**  §"Finite-state quasi-period law" builds
+the monic annihilator `(29)` from a Wronskian, then observes `(30)` that its coefficients are
+periodic, hence elliptic in the lattice case, hence DA, and finally invokes *transitivity* of
+differential algebraicity.  Two of those steps are heavy: the Wronskian nonvanishing criterion, and
+transitivity over a DA coefficient field.  In the lattice case the coefficients are elliptic, so
+that route also needs `EllipticHypertranscendenceFree`.
+
+**The route formalized.**  Let `H` be the `C`-span of the components of the carrier -- finite
+dimensional, and stable under each structural translation because the internal matrix has constant
+entries.  When the integer span of the steps is **not discrete**, `H` is stable under translation by
+arbitrarily small nonzero steps `p_n -> 0`.  The difference quotients `(g(. + p_n) - g)/p_n` then lie
+in `H`, converge *pointwise* to `g'`, and a finite-dimensional subspace is closed in the topology of
+pointwise convergence.  Hence `H` is stable under `d/dz`, and the corpus's finite observable-model
+boundary (`HTGeometry.differentiallyAlgebraic_of_mem_derivInvariantObservableSpace`, from
+`FiniteObservableKoopmanBoundary`) gives every member a nonzero **constant-coefficient** annihilator.
+
+- `derivInvariantObservableSpace_of_small_translations` — the analytic step just described;
+- `translationStable_neg` — a translation mapping a finite-dimensional space into itself is
+  automatically invertible on it (injective endomorphism of a finite-dimensional space), so the
+  internal matrices need **not** be assumed invertible, unlike `(27)`;
+- `translationStable_of_mem_span_range` — the whole step group acts;
+- **`differentiallyAlgebraic_of_translationStable_of_not_discrete`** — the general law, with the two
+  specializations for three `Q`-independent steps and for two `Q`-independent `R`-dependent steps;
+- **`differentiallyAlgebraic_component_of_matrix_monodromy`** — `(27)`--`(30)`: for
+  `G(z+w_k) = M_k G(z)` with constant `M_k` and non-discrete step span, *every component* of `G` is
+  differentially algebraic.  No Wronskian, no transitivity, no elliptic input.
+
+`MatrixFacetCodimension` then repeats the scalar facet chain verbatim for finite internal state:
+
+- `MatrixFacetRealization` — the datum of `(31)`: entire `C^m`-valued facet carriers, each omitted
+  translation reproducing the carrier up to a constant matrix, some component hypertranscendental;
+- `no_matrixFacetRealization_of_three_omitted` and
+  `no_matrixFacetRealization_of_two_omitted_realDependent`;
+- **`matrixFacetComplement_rankOne_or_lattice`** — `(33)` up to the single surviving alternative:
+  every facet omits at most one ambient vertex, or exactly two whose steps are `R`-independent and
+  span a lattice;
+- `matrix_facetComplementRankOne_of_no_lattice`.
+
+So the finite-state section of the card is now formalized to exactly the same frontier as the scalar
+section, and by a strictly weaker hypothesis set.  The surviving gap is the same one everywhere on
+this card: two omitted steps spanning a genuine lattice.
+
+**Deduplication.**  `differentiallyAlgebraic_of_quasiperiods_realDependent` is now the
+one-dimensional case of `differentiallyAlgebraic_of_quasiperiods_of_not_discrete` rather than a
+separate `logDeriv` argument, and in that form it needs neither nonvanishing nor nonzero multipliers.
+The `logDeriv` route is kept only where it yields something the span route does not: the structural
+fact `ne_zero_of_quasiperiods_realDependent` that such a carrier has no zeros at all, and the lattice
+branch of `differentiallyAlgebraic_of_quasiperiods`.

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.EntireFacetRealizationCodimension
 import GaloisForLFunctions.HTGeometry.ExpPolynomialDA
+import GaloisForLFunctions.HTGeometry.SmallTranslationDerivInvariance
 
 /-!
 # Constant multipliers supply no analytic freedom
@@ -17,10 +18,13 @@ constant, whether the two steps are `ℝ`-dependent (non-discrete period group) 
 
 * `periodic_logDeriv_of_quasiperiodic` — a quasi-period of `f` is a period of `logDeriv f`;
 * **`differentiallyAlgebraic_of_quasiperiods`** — the quasi-period rank law;
-* `eq_zero_iff_of_mem_span_range`, `ne_zero_of_quasiperiods_realDependent` and
-  **`differentiallyAlgebraic_of_quasiperiods_realDependent`** — when the two steps are `ℝ`-dependent
-  the nonvanishing hypothesis is automatic: the zero set is invariant under a non-discrete group, so
-  one zero would be an accumulation point of zeros and the identity theorem would kill the function;
+* `eq_zero_iff_of_mem_span_range` and `ne_zero_of_quasiperiods_realDependent` — when the two steps
+  are `ℝ`-dependent such a carrier has no zeros at all: the zero set is invariant under a
+  non-discrete group, so one zero would be an accumulation point of zeros and the identity theorem
+  would kill the function;
+* `differentiallyAlgebraic_of_quasiperiods_realDependent` — on that branch the law needs neither
+  nonvanishing nor nonzero multipliers, being the one-dimensional case of
+  `differentiallyAlgebraic_of_quasiperiods_of_not_discrete`;
 * `QuasiPeriodFacetRealization` and **`facetComplementRankOne_of_quasiPeriodRealization`** — the
   facet-codimension law for constant-multiplier data: every facet still omits at most one ambient
   vertex, so scalar quasiperiodicity is no escape from the principalization theorem.
@@ -168,28 +172,30 @@ theorem ne_zero_of_quasiperiods_realDependent {f : ℂ → ℂ} (hd : Differenti
     (Set.mem_univ z₀) hfreq
   exact hz₁ (hall (Set.mem_univ z₁))
 
-/-- **The quasi-period rank law with `ℝ`-dependent steps needs no nonvanishing hypothesis.**  Either
-the function vanishes identically — and is constant — or it has no zeros at all, and the general
-law applies. -/
+/-- **The quasi-period rank law with `ℝ`-dependent steps needs neither a nonvanishing hypothesis nor
+nonzero multipliers.**  The `ℝ`-dependent step group is not discrete, so the span of `f` is a
+one-dimensional space of entire functions stable under arbitrarily small translations, hence stable
+under differentiation, and the constant-coefficient annihilator is immediate. -/
 theorem differentiallyAlgebraic_of_quasiperiods_realDependent {f : ℂ → ℂ}
     (hd : Differentiable ℂ f) {w₁ w₂ a b : ℂ} (hindep : LinearIndependent ℚ ![w₁, w₂])
-    (hdep : ¬ LinearIndependent ℝ ![w₁, w₂]) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hdep : ¬ LinearIndependent ℝ ![w₁, w₂])
     (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
-    DifferentiallyAlgebraic f := by
-  by_cases hf0 : ∀ z, f z = 0
-  · exact differentiallyAlgebraic_of_const (fun x y => by rw [hf0 x, hf0 y])
-  · obtain ⟨z₁, hz₁⟩ := not_forall.mp hf0
-    exact differentiallyAlgebraic_of_quasiperiods hd
-      (ne_zero_of_quasiperiods_realDependent hd hindep hdep ha hb h₁ h₂ hz₁) hindep ha hb h₁ h₂
+    DifferentiallyAlgebraic f :=
+  differentiallyAlgebraic_of_quasiperiods_of_not_discrete hd ![w₁, w₂] ![a, b]
+    (fun i z => by
+      fin_cases i
+      · simpa using h₁ z
+      · simpa using h₂ z)
+    (not_discrete_intSpan_fin_two_of_not_linearIndependent_real ![w₁, w₂] hindep hdep)
 
 /-- An entire function with two `ℚ`-independent, `ℝ`-dependent constant-multiplier quasi-periods is
-not hypertranscendental — no nonvanishing hypothesis needed. -/
+not hypertranscendental. -/
 theorem not_hypertranscendental_of_quasiperiods_realDependent {f : ℂ → ℂ}
     (hd : Differentiable ℂ f) {w₁ w₂ a b : ℂ} (hindep : LinearIndependent ℚ ![w₁, w₂])
-    (hdep : ¬ LinearIndependent ℝ ![w₁, w₂]) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hdep : ¬ LinearIndependent ℝ ![w₁, w₂])
     (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
     ¬ Hypertranscendental f :=
-  fun hf => hf (differentiallyAlgebraic_of_quasiperiods_realDependent hd hindep hdep ha hb h₁ h₂)
+  fun hf => hf (differentiallyAlgebraic_of_quasiperiods_realDependent hd hindep hdep h₁ h₂)
 
 /-! ### The facet-codimension law for constant-multiplier data -/
 
