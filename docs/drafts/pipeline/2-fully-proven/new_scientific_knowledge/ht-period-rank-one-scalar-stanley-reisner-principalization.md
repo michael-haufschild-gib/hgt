@@ -830,3 +830,26 @@ So `(E)` is now available in Lean in exactly the form the period-rank law needs.
 elliptic branch is the structure statement: every meromorphic function with a lattice of periods lies
 in `C(℘, ℘')` and is therefore differentially algebraic too.  With that, the surviving alternative in
 `facetComplement_rankOne_or_lattice` disappears and `(6)` becomes unconditional.
+
+## Lean progress — `(6)` complete modulo one named analytic input
+
+`GaloisForLFunctions/HTGeometry/EllipticFreeFacetCodimension.lean` (axiom-clean, build green,
+umbrella-registered) closes the facet-codimension theorem down to a single named `Prop`.
+
+`facetComplement_rankOne_or_lattice` leaves exactly one alternative open: a facet omitting two
+vertices whose steps are `R`-independent.  Those two steps are then literally a mathlib `PeriodPair`,
+and the facet carrier is a hypertranscendental meromorphic function invariant under the whole lattice
+they span — a hypertranscendental *elliptic* function.
+
+- `EllipticHypertranscendenceFree` — the named input: no hypertranscendental meromorphic function is
+  invariant under a full lattice (equivalently, every elliptic function is differentially algebraic).
+- **`facetComplementRankOne_of_ellipticFree`** — modulo that input, a one-variable realization forces
+  every facet to omit at most one ambient vertex.  This is `(6)` in full generality: the separator,
+  the transport to periods, the rank-three exclusion and the real-dependent rank-two exclusion are all
+  already unconditional, and the remaining alternative is discharged exactly by the named input.
+
+The half of that input concerning `℘` itself is already proved
+(`differentiallyAlgebraic_weierstrassP`); what the `Prop` still packages is the structure statement,
+that every lattice-periodic meromorphic function lies in `C(℘, ℘')`.  So the card's chain
+`(8) -> (17) -> period rank -> (6)` is now formalized end to end except for that one classical
+statement, which is named, isolated, and consumed at a single point.
