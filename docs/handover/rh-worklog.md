@@ -9362,3 +9362,71 @@ discriminantal identity — that is positive for all d? The Hankel/Hurwitz deter
 Jensen polynomial is the natural object, and its positivity for all d at n = 0 is a statement about
 the Taylor coefficients of Xi with NO ASYMPTOTICS IN IT. THAT IS THE ONE PLACE THE ATLAS HAS NEVER
 LOOKED.
+
+---
+
+## Cycle 154 — THE SHIFT-ZERO COLUMN IS THE WHOLE EQUIVALENCE, AND THE SHIFT THEOREMS NEVER TOUCH IT
+
+### Phase 1 (corpus)
+`formal_tools.py research "Jensen polynomial shift zero Hurwitz limit Laguerre Polya equivalence"`
+plus `rg "jensenValue|LaguerrePolya"`: the corpus has `JensenPascalRecurrence`, `XiLaguerrePolya`,
+`LaguerreInequality`, `CompatibilityIsTuran`. NONE contains the rescaling C(d,j)/d^j or its limit.
+Not a duplicate.
+
+### The rescaling, and what it says
+For fixed j,
+
+    C(d,j)/d^j = d(d-1)...(d-j+1)/(j! d^j)  -->  1/j!   as d --> infinity,
+
+AND THE SAME QUANTITY IS BOUNDED BY 1/j! FOR EVERY d (both formalised). So J^{d,0}(X/d) has
+coefficients DOMINATED BY and CONVERGING TO those of F(X) = sum_j gamma(j) X^j / j!, giving locally
+uniform convergence when F is entire.
+
+By Hurwitz, hyperbolicity of every J^{d,0} forces F to have only real zeros; conversely F in the
+Laguerre-Polya class makes every Jensen polynomial hyperbolic. FOR THE RIEMANN SEQUENCE THIS IS
+JENSEN'S CRITERION: THE SHIFT-ZERO COLUMN ALONE IS EQUIVALENT TO RH. (This equivalence is CLASSICAL
+— Jensen/Polya — and is NOT claimed as new. What is new here is the lattice consequence below.)
+
+### THE LATTICE CONSEQUENCE — EIGHTY-EIGHTH ATLAS ENTRY
+The unconditional theorems live in region A = {n >= N(d)}. Its intersection with the shift-zero
+column is EXACTLY {d : N(d) = 0} (formalised, both directions), i.e. nothing beyond where the
+threshold is already vacuous.
+
+    ==> THE SUBFAMILY EQUIVALENT TO THE HYPOTHESIS IS PRECISELY THE ONE THE SHIFT THEOREMS NEVER
+        REACH. Every large-shift result is, with respect to the equivalence, contained in the
+        direction that was already free.
+
+Sharper than entry 87. Entry 87 said the union of the two regions has a corner. ENTRY 88 SAYS THE
+CORNER IS NOT A REMAINDER: it is a set that by itself carries the full equivalence, and region A
+contributes to it only where its own threshold vanishes. THE LARGE-SHIFT PROGRAMME, HOWEVER FAR IT IS
+PUSHED IN d, ADDS NOTHING TO AN EQUIVALENT SUBFAMILY.
+
+Machine-verified: `RHTower/ZeroShiftColumnCarriesEverything.lean` (the uniform domination
+j! C(d,j) <= d^j via the falling factorial, its real form C(d,j)/d^j <= 1/j!, the limit
+(d-j)/d --> 1, the termwise limit descFactorial(d,j)/d^j --> 1 by induction on j, the rescaled
+coefficient limit C(d,j)/d^j --> 1/j!, and the shift-zero/region-A intersection; standard axioms
+only, wired into RHTower).
+
+### STATE AT CYCLE 154
+Eighty-eight entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+WHAT CYCLES 150-154 DID TO THE PROGRAMME. Cycle 150 believed the cumulant mechanism closed the
+quantitative heart. Cycle 152 corrected its margin. Cycle 153 found the mechanism exponentially
+weaker than the published threshold, and found that the published uniform-in-n range is the numerical
+verification height squared. Cycle 154 shows the equivalent subfamily is the shift-zero column, which
+no shift theorem reaches. THE HONEST NET EFFECT: THE JENSEN ROUTE, WHICH ENTRY 56 NAMED AS THE ONE
+ESCAPE FROM THE CODIMENSION-VERSUS-AREA DICHOTOMY, IS NOW UNDERSTOOD TO CARRY ITS OWN DICHOTOMY —
+UNCONDITIONAL BUT NON-UNIFORM IN d, OR UNIFORM BUT FINITE VERIFICATION — AND ITS UNCONDITIONAL HALF
+IS DISJOINT FROM AN EQUIVALENT SUBFAMILY. THAT IS A NEGATIVE RESULT, AND IT IS THE MOST INFORMATIVE
+THING THE PROGRAMME HAS PRODUCED SINCE ENTRY 52.
+
+### Cycle 155 target
+The shift-zero column is the target and it is a statement with NO ASYMPTOTICS IN IT: are the
+polynomials sum_j C(d,j) gamma(j) X^j hyperbolic for all d, where gamma(j) are the leading Taylor
+coefficients of Xi? Since J^{d,0}(X/d) --> F(X) coefficientwise WITH UNIFORM DOMINATION, the whole
+column is a statement about ONE entire function F and its FINITE SECTIONS. ASK THE SECTION QUESTION
+DIRECTLY: for an entire function of order < 2 with positive coefficients, WHEN DOES HYPERBOLICITY OF
+THE BINOMIAL SECTIONS FOLLOW FROM FINITELY MANY COEFFICIENT INEQUALITIES? The Hurwitz/Hankel
+determinant of J^{d,0} is a polynomial in gamma(0)..gamma(d) whose positivity is necessary; ASK
+WHETHER IT IS SUFFICIENT FOR THIS FAMILY, i.e. whether the sequence gamma has a structural property
+(total positivity of a Toeplitz minor family) that upgrades finitely many inequalities to all d.

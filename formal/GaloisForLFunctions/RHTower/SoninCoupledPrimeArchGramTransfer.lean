@@ -1778,6 +1778,93 @@ theorem soninAllPrimeCoupledNormalizedPolynomialGramValue_nonneg
   exact mul_nonneg (le_of_lt (soninAllPrimeCoupledCanonicalScale_pos a))
     (soninAllPrimeCoupledPolynomialGramValue_nonneg a.1 p)
 
+/-- Polynomial quadratic value of one projectively scaled coupled block. -/
+def soninAllPrimeCoupledProjectivePolynomialGramValue
+    (d : SoninPositiveScale × SoninPositiveAperture) (p : Polynomial ℝ) : ℝ :=
+  d.1.1 * soninAllPrimeCoupledPolynomialGramValue d.2 p
+
+/-- Projective finite-block convergence transfers to every fixed real-polynomial quadratic
+value. -/
+theorem tendsto_soninAllPrimeCoupledProjectivePolynomialGramValue
+    {data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchProjectiveFiniteGramCoupling data)
+    (p : Polynomial ℝ) :
+    Tendsto
+      (fun j : ℕ =>
+        soninAllPrimeCoupledProjectivePolynomialGramValue
+          (data (p.natDegree + 1) j) p)
+      atTop
+      (nhds (primeArchSourceTraceHankel p).re) := by
+  let N : ℕ := p.natDegree + 1
+  let c : Fin N → ℝ := Polynomial.toFn N p
+  have hmatrix :
+      Tendsto
+        (fun j : ℕ =>
+          finiteRealMatrixQuadratic c
+            (soninAllPrimeCoupledProjectiveGramBlock N (data N j)))
+        atTop
+        (nhds (finiteRealMatrixQuadratic c
+          (primeArchNormalizedHankelBlock N))) :=
+    (continuous_finiteRealMatrixQuadratic c).continuousAt.tendsto.comp (h N)
+  have hsource :
+      (fun j : ℕ =>
+        soninAllPrimeCoupledProjectivePolynomialGramValue (data N j) p) =
+      fun j : ℕ =>
+        finiteRealMatrixQuadratic c
+          (soninAllPrimeCoupledProjectiveGramBlock N (data N j)) := by
+    funext j
+    simp only [soninAllPrimeCoupledProjectivePolynomialGramValue,
+      soninAllPrimeCoupledPolynomialGramValue, finiteRealMatrixQuadratic,
+      N, c, soninAllPrimeCoupledProjectiveGramBlock_apply,
+      soninAllPrimeCoupledGramBlock_eq_traceMoment]
+    push_cast
+    let S : ℂ := ∑ i : Fin N, ∑ k : Fin N,
+      ((c i : ℝ) : ℂ) * ((c k : ℝ) : ℂ) *
+        soninAllPrimeCoupledTraceMoment (data N j).2 ((i : ℕ) + (k : ℕ))
+    change (data N j).1.1 * S.re = _
+    have hleft :
+        (data N j).1.1 * S.re = ((((data N j).1.1 : ℝ) : ℂ) * S).re := by
+      simp [Complex.mul_re]
+    rw [hleft]
+    dsimp only [S]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro k _
+    ring
+  have hN : p.natDegree < N := by omega
+  have hp : Polynomial.ofFn N c = p :=
+    Polynomial.ofFn_comp_toFn_eq_id_of_natDegree_lt hN
+  have htarget :
+      finiteRealMatrixQuadratic c (primeArchNormalizedHankelBlock N) =
+        (primeArchSourceTraceHankel p).re := by
+    change (∑ i : Fin N, ∑ j : Fin N,
+        ((c i * c j : ℝ) : ℂ) *
+          ((normalizedPrimeArchMoment ((i : ℕ) + (j : ℕ)) : ℝ) : ℂ)).re = _
+    have hmom : (∑ i : Fin N, ∑ j : Fin N,
+        ((c i * c j : ℝ) : ℂ) *
+          ((normalizedPrimeArchMoment ((i : ℕ) + (j : ℕ)) : ℝ) : ℂ)) =
+        primeArchSourceTraceHankel p := by
+      calc
+        _ = ∑ i : Fin N, ∑ j : Fin N,
+            ((c i * c j : ℝ) : ℂ) *
+              xiCentralReciprocalMoment ((i : ℕ) + (j : ℕ)) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          rw [← primeArchSourceMoment_eq_xiCentralReciprocalMoment]
+          rfl
+        _ = xiCentralTraceHankel (Polynomial.ofFn N c) :=
+          (xiCentralTraceHankel_ofFn N c).symm
+        _ = xiCentralTraceHankel p := congrArg xiCentralTraceHankel hp
+        _ = primeArchSourceTraceHankel p :=
+          xiCentralTraceHankel_eq_primeArchSourceTraceHankel p
+    exact congrArg Complex.re hmom
+  simpa only [N, hsource, htarget] using hmatrix
+
 /-- The actual canonically normalized coupled-source values for one fixed integer polynomial.
 The aperture varies, but its scale is the forced zeroth-moment quotient rather than a free ray
 parameter. -/

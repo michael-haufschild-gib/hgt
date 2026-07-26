@@ -119,7 +119,9 @@ theorem gammaPrimeHybridEigenvalue_ne_zero
         exact hpos.ne' (by simpa using hre)
       exact div_ne_zero (neg_ne_zero.mpr hsigmaC) hnC
   | inr p =>
+      change ((p : ℕ) : ℂ) ^ (-(sigma : ℂ)) ≠ 0
       rw [Complex.cpow_ne_zero_iff]
+      left
       exact_mod_cast p.2.ne_zero
 
 /-- Every diagonal coordinate is nonzero, so the hybrid operator is injective. -/
@@ -202,10 +204,11 @@ theorem hsAdjoint_gammaPrimeHybridKernel_eq
           gammaPrimeHybridEigenvalue]
     | inr p =>
         have hpnonneg : (0 : ℝ) ≤ (p : ℕ) := by positivity
+        simp only [hsAdjoint, gammaPrimeHybridKernel, diagMul,
+          gammaPrimeHybridEigenvalue, if_pos]
         rw [show (-(sigma : ℂ)) = ((-sigma : ℝ) : ℂ) by push_cast; ring,
           ← Complex.ofReal_natCast, ← Complex.ofReal_cpow hpnonneg]
-        simp [hsAdjoint, gammaPrimeHybridKernel, diagMul,
-          gammaPrimeHybridEigenvalue]
+        simp
   · have hji : j ≠ i := Ne.symm hij
     simp [hsAdjoint, gammaPrimeHybridKernel, diagMul, hij, hji]
 
@@ -272,9 +275,10 @@ theorem fredholmDet_gammaPrimeHybridKernel_eq_gamma_mul_zeta_mul_primeTrace
       summable_normSq_gammaPrimeHybrid_prime hsigma
   have hprimeBare :
       HasProd (fun p : Nat.Primes => 1 - primeEigenvalue p)
-        (fredholmDet1 (diagMul primeEigenvalue) 1) :=
-    hasProd_fredholmDet1_diagMul primeEigenvalue hprimeSq
-      hprimeSummable r (by simpa only [primeEigenvalue] using hrPrime) 1 hz1
+        (fredholmDet1 (diagMul primeEigenvalue) 1) := by
+    simpa only [one_mul] using
+      hasProd_fredholmDet1_diagMul primeEigenvalue hprimeSq
+        hprimeSummable r (by simpa only [primeEigenvalue] using hrPrime) 1 hz1
   have hprimeExp :
       HasProd (fun p : Nat.Primes => Complex.exp (primeEigenvalue p))
         (Complex.exp (∑' p : Nat.Primes, primeEigenvalue p)) := by
@@ -285,6 +289,7 @@ theorem fredholmDet_gammaPrimeHybridKernel_eq_gamma_mul_zeta_mul_primeTrace
           Complex.exp (∑' p : Nat.Primes, primeEigenvalue p)) := by
     simpa only [factor, gammaPrimeHybridEigenvalue, primeEigenvalue] using
       hprimeBare.mul hprimeExp
+  simp only [one_mul]
   change (∏' i : ℕ ⊕ Nat.Primes, factor i) = _
   rw [hgammaMult.tprod_sum hprimeHas.multipliable]
   have hgammaProduct :
