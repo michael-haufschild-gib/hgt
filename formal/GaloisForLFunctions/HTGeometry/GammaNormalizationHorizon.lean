@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ReflectionCocycleArchimedean
+import GaloisForLFunctions.HTGeometry.FundamentalParallelogram
 
 /-!
 # Gamma's normalization horizon
@@ -80,14 +81,11 @@ theorem convex_periodic_eq_const
     simpa [Int.fract_add_floor] using h
   exact hreduce.trans hfract
 
-/-- Differentiation preserves a real additive period. -/
+/-- Differentiation preserves a real additive period: the real case of
+`GaloisForLFunctions.HTGeometry.periodic_deriv`. -/
 theorem periodic_deriv {f : ℝ → ℝ} {c : ℝ} (h : Periodic f c) :
-    Periodic (deriv f) c := by
-  intro x
-  rw [← deriv_comp_add_const]
-  congr 1
-  funext y
-  exact h y
+    Periodic (deriv f) c :=
+  GaloisForLFunctions.HTGeometry.periodic_deriv h
 
 /-- Vanishing background curvature plus global positive-ray admissibility makes a twice
 differentiable periodic gauge constant. -/

@@ -123,4 +123,17 @@ theorem exists_bounded_intCombination {w₁ w₂ : ℂ} (hindep : LinearIndepend
     rw [ht]
     exact hC₂ z
 
+
+/-! ### Periodicity and differentiation -/
+
+/-- **Differentiation preserves an additive period.** -/
+theorem periodic_deriv {𝕜 F : Type*} [NontriviallyNormedField 𝕜] [NormedAddCommGroup F]
+    [NormedSpace 𝕜 F] {f : 𝕜 → F} {c : 𝕜} (h : Function.Periodic f c) :
+    Function.Periodic (deriv f) c := by
+  intro x
+  rw [← deriv_comp_add_const]
+  congr 1
+  funext y
+  exact h y
+
 end GaloisForLFunctions.HTGeometry

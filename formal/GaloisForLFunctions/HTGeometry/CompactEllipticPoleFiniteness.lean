@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.JacobiThetaDifferentialOrbitObstruction
 import Mathlib.Analysis.Meromorphic.Divisor
+import GaloisForLFunctions.HTGeometry.EllipticFundamentalPoles
 
 /-!
 # Compact elliptic pole finiteness and the unconditional theta orbit obstruction
@@ -93,26 +94,12 @@ theorem ellipticReduce_injective_on_nontorsion_orbit
     (n - m) (by simpa only [Int.cast_sub] using hnm)
   omega
 
-/-- The poles of a globally meromorphic function in any closed disc form a finite set. -/
+/-- The poles of a globally meromorphic function in any closed disc form a finite set: the
+closed-ball case of `HTGeometry.finite_poles_of_isCompact`. -/
 theorem meromorphic_poles_closedBall_finite
     {g : ℂ → ℂ} (hg : MeromorphicOn g Set.univ) (R : ℝ) :
-    {z ∈ closedBall (0 : ℂ) R | meromorphicOrderAt g z < 0}.Finite := by
-  let D := MeromorphicOn.divisor g Set.univ
-  have hloc : LocallyFiniteSupport D.toFun := fun z =>
-    D.supportLocallyFiniteWithinDomain' z (Set.mem_univ z)
-  have hD : (closedBall (0 : ℂ) R ∩ D.support).Finite :=
-    hloc.finite_inter_support_of_isCompact (isCompact_closedBall 0 R)
-  refine hD.subset ?_
-  intro z hz
-  rw [Set.mem_sep_iff] at hz
-  refine ⟨hz.1, ?_⟩
-  change D z ≠ 0
-  rw [show D z = (meromorphicOrderAt g z).untop₀ by
-    exact MeromorphicOn.divisor_apply hg (Set.mem_univ z)]
-  intro hzero
-  have hnonneg : 0 ≤ meromorphicOrderAt g z :=
-    WithTop.untop₀_nonneg.mp (by simp [hzero])
-  exact (not_lt_of_ge hnonneg) hz.2
+    {z ∈ closedBall (0 : ℂ) R | meromorphicOrderAt g z < 0}.Finite :=
+  HTGeometry.finite_poles_of_isCompact hg (isCompact_closedBall 0 R)
 
 /-- An elliptic meromorphic function has finitely many poles on every nontorsion translation
 orbit. -/

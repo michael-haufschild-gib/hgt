@@ -1485,3 +1485,25 @@ to chain them for a concrete lattice-periodic meromorphic carrier: feed the kern
 `jetValueMap` through `principalJet_finset_sum` into `nonneg_order_of_principalJet_eq_zero`, conclude
 that the combination is entire and lattice-periodic hence constant, use the value at the regular
 point to see the constant is zero, and apply the theorem above.
+
+#### Bookkeeping for the chaining, and two deduplications
+
+`GaloisForLFunctions/HTGeometry/EllipticPeriodicMonomial.lean` (axiom-clean, build green,
+umbrella-registered): the monomials and their finite combinations inherit periodicity from `f`
+(`periodic_diffMonomial`, `periodic_monomialCombination`), and are analytic resp. meromorphic wherever
+`f` is (`analyticAt_monomialCombination`, `meromorphicAt_monomialCombination`).
+
+**Two duplications found by searching the corpus before writing, and removed.**
+
+1. `periodic_deriv` — "differentiation preserves an additive period" — existed only for `R -> R`
+   inside a 120-module Gamma cone.  The generic version (any nontrivially normed field, any target)
+   now lives in the low-level `FundamentalParallelogram`, and the Gamma module's real version is a
+   one-line corollary of it.  One proof in the corpus instead of two.
+2. `meromorphic_poles_closedBall_finite` in `CompactEllipticPoleFiniteness` proved pole finiteness in
+   a closed disc, which is the closed-ball case of the `finite_poles_of_isCompact` proved here for an
+   arbitrary compact set.  It is now a one-line corollary of the general statement.
+
+That module also contains `ellipticReduce`, a reduction to a fundamental parallelogram normalised to
+the basis `(1, tau)`; the `exists_bounded_intCombination` used here is the version for a general
+`R`-independent pair with a coefficient bound, which the exponential-type argument needs.  The two are
+kept separate deliberately.
