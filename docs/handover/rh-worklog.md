@@ -9641,3 +9641,60 @@ changes the Taylor coefficients but NOT the zeros, hence not the hypothesis. THE
 THE LAGUERRE-POLYA MULTIPLIER GROUP. IF SOME MULTIPLIER MAKES THE WEIGHT DEVIATION SMALL ENOUGH, THE
 WINDOW REOPENS AT EVERY ORDER. That is a concrete, checkable, and previously unexamined degree of
 freedom.
+
+---
+
+## Cycle 158 — THE FACTORIAL WEIGHT IS A MULTIPLIER SEQUENCE WITH NO INVERSE
+
+### The freedom of cycle 157's target, evaluated honestly
+Cycle 157 asked whether a different normalisation could shrink the weight deviation. THE ANSWER
+DEPENDS ON WHICH GROUP ACTS, AND THERE ARE TWO.
+
+  (a) LAGUERRE-POLYA MULTIPLIERS exp(alpha w). These act by CONVOLUTION of the coefficient sequence,
+      and the equivalence is exact in both directions (same zeros). CONVOLUTION SMOOTHS; IT DOES NOT
+      REWEIGHT. No member of the family is easier, so this freedom IS REAL BUT INERT.
+
+  (b) POLYA-SCHUR MULTIPLIER SEQUENCES c_j. These DO reweight, termwise. And the passage from the
+      moments to the Taylor coefficients IS ONE OF THESE: A_j = M_j/(2j)!.
+
+### THE ASYMMETRY — NINETY-SECOND ATLAS ENTRY
+The weight 1/j! IS a multiplier sequence: its associated function sum w^j/(j!)^2 is entire
+(termwise below the exponential series, formalised). ITS CANDIDATE INVERSE j! IS NOT: the associated
+function sum w^j has radius of convergence one (formalised: the constant sequence is not summable).
+
+    ==> THE WEIGHT CAN BE APPLIED BUT NOT REMOVED. THE MAP FROM MOMENTS TO TAYLOR COEFFICIENTS IS A
+        ONE-WAY REGULARISATION.
+
+AND IT GENUINELY CREATES HYPERBOLICITY. Concrete machine-verified witness:
+
+    1 + X + X^2         HAS NO REAL ROOT   (it is (X + 1/2)^2 + 3/4),
+    1 + X/2! + X^2/4!   HAS TWO REAL ROOTS (-6 +- 2 sqrt 3, distinct).
+
+    ==> NO FREE PROPERTY OF THE MOMENTS TRANSFERS FORWARD. The Hankel and Toeplitz structures are
+        separated by a NON-INVERTIBLE OPERATION, not by a change of coordinates, and the order-two
+        window (entry 89) measures exactly how much survives ONE STEP of it.
+
+This completes the explanation begun in entry 91. Entry 91 said the comparison degrades from order
+three by an exponent m(m-1)/2 - 1. ENTRY 92 SAYS WHY THERE IS A DEGRADATION AT ALL: the two
+structures are related by a map that destroys information by construction, and the surprise is not
+that the comparison fails at order three but that it SURVIVES AT ORDER TWO.
+
+Machine-verified: `RHTower/FactorialWeightIsOneWay.lean` (positivity of 1 + x + x^2 hence no real
+root; both roots -6 +- 2 sqrt 3 of the reweighted polynomial; their distinctness; the packaged
+witness; non-summability of the constant sequence; and the termwise domination showing the weight's
+own associated series is entire; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 158
+Ninety-two entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 159 target
+ENTRY 92 SAYS THE FORWARD MAP DESTROYS INFORMATION. THE CONSTRUCTIVE READING IS THE INTERESTING ONE:
+IF THE WEIGHT CREATES HYPERBOLICITY, HOW MUCH DOES IT CREATE? For the witness, 1 + X + X^2 has
+discriminant -3 and its reweighting has discriminant 1/12 — A SWING OF MORE THAN THREE. QUANTIFY THE
+SWING IN GENERAL: for a quadratic a + bX + cX^2 the weight 1/(2j)! sends the discriminant
+b^2 - 4ac to b^2/4 - 4ac/24 = b^2/4 - ac/6. THE RATIO OF THE TWO DISCRIMINANTS IS NOT CONSTANT — it
+depends on the ratio b^2/(ac). ASK: WHAT IS THE EXACT SET OF (a,b,c) THAT THE WEIGHT MOVES FROM
+NON-HYPERBOLIC TO HYPERBOLIC? Its boundary is a conic in the ratio b^2/(ac), and the same computation
+at order m gives a hypersurface. THE SEQUENCE M SITS SOMEWHERE RELATIVE TO THAT HYPERSURFACE, AND
+RH IS THE STATEMENT THAT IT SITS INSIDE. THAT IS A GEOMETRIC FORMULATION WITH NO ASYMPTOTICS AND NO
+DETERMINANT COMPARISON, AND THE ATLAS HAS NEVER TRIED IT.

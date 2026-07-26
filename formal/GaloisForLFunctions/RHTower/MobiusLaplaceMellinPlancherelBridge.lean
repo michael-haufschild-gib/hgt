@@ -1323,6 +1323,18 @@ def MobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded : Prop :=
       ∃ᶠ N : ℕ in atTop,
         finiteMobiusGammaHankelOffDiagonalCovariance N (2 * sigma) ≤ C
 
+/-- Aperture-uniform off-diagonal control contains the bounded-return frontier.  This explicit
+connector lets every consumer of the Fatou-subsequence criterion reuse the stronger cofinal
+Gamma--Hankel ceiling directly. -/
+theorem
+    mobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded_of_upperBounded
+    (hoff : MobiusLaplaceCofinalGammaHankelOffDiagonalUpperBounded) :
+    MobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded := by
+  intro ε hε
+  obtain ⟨sigma, hsigmaHalf, hsigmaUpper, C, hC⟩ := hoff ε hε
+  exact ⟨sigma, C, hsigmaHalf, hsigmaUpper,
+    (Filter.Eventually.of_forall hC).frequently⟩
+
 /-- A bounded-return subsequence of one signed off-diagonal covariance line gives actual `L²`
 energy on that line. -/
 theorem mobiusLaplaceLogMellinLineSource_memLp_two_of_frequently_offDiagonalUpperBound

@@ -26,7 +26,7 @@ def bourgainTripleCloud
 /-- A pointwise scaled perturbation of size `δ` induces a scaled perturbation
 of size `3δ` on the corresponding triple clouds. -/
 theorem bourgainTripleCloud_scaledPerturbation
-    {H : ℕ} {δ : ℝ} (hδ : 0 ≤ δ)
+    {H : ℕ} {δ : ℝ}
     {X : BourgainPhaseSpace}
     {p q : Fin H → BourgainPhaseSpace}
     (hperturb :
@@ -67,7 +67,7 @@ theorem bourgainTripleCloud_nearEnergy_perturbation_le
   apply bourgainWeightedScaledNearEnergy_perturbation_le
     (mul_nonneg (by norm_num) hδ) X
     (bourgainTripleCloud p) (bourgainTripleCloud q) a ha
-  exact bourgainTripleCloud_scaledPerturbation hδ hperturb
+  exact bourgainTripleCloud_scaledPerturbation hperturb
 
 /-- Gaussian `L²` localization for an exact triple cloud, transferred
 without additive error to a pointwise quadratic model. -/
