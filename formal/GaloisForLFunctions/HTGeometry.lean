@@ -2247,3 +2247,4 @@ import GaloisForLFunctions.HTGeometry.QuasiPeriodEntireGrowth
 import GaloisForLFunctions.HTGeometry.QuasiPeriodLatticeZeros
 import GaloisForLFunctions.HTGeometry.QuasiPeriodLatticeNoZeros
 import GaloisForLFunctions.HTGeometry.DerivInvariantSuperspace
+import GaloisForLFunctions.HTGeometry.ShiftStableLatticeStructure

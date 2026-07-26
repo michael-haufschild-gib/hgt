@@ -1198,3 +1198,40 @@ and `h_0 A` is a finite-dimensional derivation-invariant space containing `H`.
 
 What remains is the induction itself: the dimension drop `dim D(H') < dim H'` via rank-nullity with
 `1` in the kernel, and the assembly.
+
+## Lean progress — the FINITE-STATE section `(27)`--`(33)` is CLOSED, lattice case included
+
+`GaloisForLFunctions/HTGeometry/ShiftStableLatticeStructure.lean` (axiom-clean, build green,
+umbrella-registered) proves the structure theorem that removes the last hypothesis.
+
+> **Structure theorem.**  A finite-dimensional space `H` of entire functions stable under two
+> translations with `Q`-independent steps is contained in a finite-dimensional **derivation-invariant**
+> space.  No discreteness assumption on the step group.
+
+`exists_derivInvariant_superspace`, by induction on `dim H`.  The step: `exists_common_eigenvector`
+gives a common eigenvector `h_0` of the two shift operators; it is a scalar constant-multiplier
+carrier, hence by `eq_mul_exp_of_quasiperiods_entire` a nowhere-zero exponential with
+`h_0' = nu h_0`.  Divide: `H' = h_0^{-1} H` is shift-stable and contains `1`, so the derivative image
+`K = D(H')` has strictly smaller dimension (rank--nullity, `1` in the kernel).  The inductive
+superspace `W_0 >= K` gives the derivation-invariant `H' + W_0`
+(`derivInvariantObservableSpace_sup`), and `h_0 (H' + W_0)` is derivation-invariant
+(`derivInvariantObservableSpace_map_mulBy`) and contains `H`.
+
+Consequences, all unconditional:
+
+- **`differentiallyAlgebraic_of_translationStable`** — every member of such an `H` is differentially
+  algebraic, with a *constant-coefficient* annihilator (the corpus's finite observable-model
+  boundary).  This subsumes the non-discrete case proved earlier.
+- **`differentiallyAlgebraic_component_of_matrix_monodromy_two`** — `(27)`--`(30)` in full: a
+  `C^m`-valued entire `G` with `G(z+w_1) = A G(z)`, `G(z+w_2) = B G(z)` and `Q`-independent steps has
+  every component differentially algebraic.  No invertibility of `A, B`, no Wronskian, no
+  transitivity of differential algebraicity, no elliptic input.
+- **`no_matrixFacetRealization_of_two_omitted`** and **`matrix_facetComplementRankOne`** — `(31)`--`(33)`
+  in full: a finite-state facet datum has **no** facet omitting two vertices, so every facet omits at
+  most one ambient vertex.  `MatrixFacetCodimension` no longer carries the lattice alternative that
+  the scalar meromorphic chain still has; the three weaker statements it used to export
+  (three-omitted, two-omitted-`R`-dependent, rank-one-or-lattice) are subsumed and were removed.
+
+So the card's *Constant-multiplier and finite-state stability* section is now formalized in full for
+entire carriers, in both the `R`-dependent and the lattice configuration, and for every internal
+dimension `m`.

@@ -1,30 +1,24 @@
-import GaloisForLFunctions.HTGeometry.SmallTranslationDerivInvariance
+import GaloisForLFunctions.HTGeometry.ShiftStableLatticeStructure
 import GaloisForLFunctions.HTGeometry.ScalarRealizationFacetComplementBound
 
 /-!
 # Finite internal state does not enlarge a facet complement
 
 A facet datum whose carrier takes values in `ℂ^m` and which each omitted translation reproduces up
-to a **constant matrix** obeys the same codimension law as the scalar one, with the same two cases
-open and closed:
+to a **constant matrix** obeys the facet-codimension law unconditionally: no facet omits two
+vertices, so every facet omits at most one.
 
-* three omitted vertices are impossible — three `ℚ`-independent steps have a non-discrete integer
-  span;
-* two omitted vertices with `ℝ`-dependent steps are impossible for the same reason.
-
-Both follow from `differentiallyAlgebraic_component_of_matrix_monodromy`: the components of the
-carrier span a finite-dimensional space of entire functions stable under the step group, arbitrarily
-small steps make it stable under differentiation, and every component then has a nonzero
-constant-coefficient annihilator — contradicting the hypertranscendence of some component.
+The reason is `differentiallyAlgebraic_component_of_matrix_monodromy_two`: the components of the
+carrier span a finite-dimensional space of entire functions stable under both omitted translations,
+and such a space sits inside a finite-dimensional derivation-invariant space, so every component has
+a nonzero constant-coefficient annihilator — contradicting the hypertranscendence of some component.
+Neither invertibility of the internal matrices nor any condition on the two steps beyond
+`ℚ`-independence is used; in particular the lattice configuration, which is the last open
+alternative in the scalar meromorphic setting, is closed here.
 
 * `MatrixFacetRealization` — the datum;
-* `no_matrixFacetRealization_of_three_omitted`, `no_matrixFacetRealization_of_two_omitted_realDependent`;
-* **`matrixFacetComplement_rankOne_or_lattice`** — every facet omits at most one ambient vertex, or
-  exactly two whose steps are `ℝ`-independent, i.e. span a lattice;
-* `matrix_facetComplementRankOne_of_no_lattice`.
-
-The internal transition matrices are **not** assumed invertible: on a finite-dimensional space a
-translation that maps the space into itself is automatically invertible on it.
+* **`no_matrixFacetRealization_of_two_omitted`**;
+* **`matrix_facetComplementRankOne`** — every facet omits at most one ambient vertex.
 -/
 
 open Finset
@@ -51,82 +45,30 @@ structure MatrixFacetRealization (m : ℕ) (V : Finset α) (facets : Set (Finset
   /-- Some component of each carrier is hypertranscendental. -/
   carrier_hypertranscendental : ∀ F ∈ facets, ∃ i, Hypertranscendental (fun z => carrier F z i)
 
-/-- Omitted vertices whose steps have a non-discrete integer span kill a finite-state carrier. -/
-theorem no_matrixFacetRealization_of_steps {m : ℕ} {V : Finset α} {facets : Set (Finset α)}
-    (R : MatrixFacetRealization m V facets) {F : Finset α} (hF : F ∈ facets)
-    {n : ℕ} (e : Fin n → α) (hmem : ∀ i, e i ∈ V \ F)
-    (hnd : ¬ DiscreteTopology (Submodule.span ℤ (Set.range (R.ω ∘ e)))) : False := by
+/-- **Two omitted vertices are impossible.**  Their steps are `ℚ`-independent, so every component of
+the carrier is differentially algebraic. -/
+theorem no_matrixFacetRealization_of_two_omitted {m : ℕ} {V : Finset α} {facets : Set (Finset α)}
+    (R : MatrixFacetRealization m V facets) {F : Finset α} (hF : F ∈ facets) {u v : α}
+    (hu : u ∈ V \ F) (hv : v ∈ V \ F) (huv : u ≠ v) : False := by
+  obtain ⟨A, hA⟩ := R.carrier_monodromy F hF u hu
+  obtain ⟨B, hB⟩ := R.carrier_monodromy F hF v hv
   obtain ⟨i, hi⟩ := R.carrier_hypertranscendental F hF
-  exact hi (differentiallyAlgebraic_component_of_matrix_monodromy (R.carrier F)
-    (R.carrier_entire F hF) (R.ω ∘ e)
-    (fun k => (R.carrier_monodromy F hF (e k) (hmem k)).choose)
-    (fun k z => (R.carrier_monodromy F hF (e k) (hmem k)).choose_spec z) hnd i)
+  have hindep : LinearIndependent ℚ ![R.ω u, R.ω v] := by
+    rw [← comp_cons_two]
+    exact R.indep.comp _ (injective_cons_two huv)
+  exact hi (differentiallyAlgebraic_component_of_matrix_monodromy_two (R.carrier F)
+    (R.carrier_entire F hF) hindep A B hA hB i)
 
-/-- **Three omitted vertices are impossible.**  Their steps are three `ℚ`-independent complex
-numbers, whose integer span is not discrete. -/
-theorem no_matrixFacetRealization_of_three_omitted {m : ℕ} {V : Finset α} {facets : Set (Finset α)}
-    (R : MatrixFacetRealization m V facets) {F : Finset α} (hF : F ∈ facets)
-    (hcard : 3 ≤ (V \ F).card) : False := by
-  classical
-  obtain ⟨t, hts, htcard⟩ := Finset.exists_subset_card_eq hcard
-  set q := Finset.equivFinOfCardEq htcard with hq
-  set e : Fin 3 → α := fun i => (q.symm i : α) with he
-  have hinj : Function.Injective e := by
-    intro i j hij
-    have hsub : (q.symm i : { x // x ∈ t }) = q.symm j := Subtype.ext hij
-    simpa using congrArg q hsub
-  have hmem : ∀ i, e i ∈ V \ F := fun i => hts (q.symm i).2
-  exact no_matrixFacetRealization_of_steps R hF e hmem
-    (not_discrete_intSpan_fin_three (R.ω ∘ e) (R.indep.comp e hinj))
-
-/-- **Two omitted vertices with `ℝ`-dependent steps are impossible.** -/
-theorem no_matrixFacetRealization_of_two_omitted_realDependent {m : ℕ} {V : Finset α}
-    {facets : Set (Finset α)} (R : MatrixFacetRealization m V facets) {F : Finset α}
-    (hF : F ∈ facets) {a b : α} (ha : a ∈ V \ F) (hb : b ∈ V \ F) (hab : a ≠ b)
-    (hdep : ¬ LinearIndependent ℝ (R.ω ∘ ![a, b])) : False := by
-  have hmem : ∀ i : Fin 2, ![a, b] i ∈ V \ F := by
-    intro i
-    fin_cases i
-    · simpa using ha
-    · simpa using hb
-  exact no_matrixFacetRealization_of_steps R hF ![a, b] hmem
-    (not_discrete_intSpan_fin_two_of_not_linearIndependent_real (R.ω ∘ ![a, b])
-      (R.indep.comp _ (injective_cons_two hab)) hdep)
-
-/-- **The finite-state codimension alternative.**  Every facet either omits at most one ambient
-vertex or omits exactly two, whose translation steps are `ℝ`-linearly independent and therefore span
-a lattice.  This is the scalar alternative `facetComplement_rankOne_or_lattice` verbatim, now with an
-arbitrary constant internal state. -/
-theorem matrixFacetComplement_rankOne_or_lattice {m : ℕ} {V : Finset α} {facets : Set (Finset α)}
-    (R : MatrixFacetRealization m V facets) {F : Finset α} (hF : F ∈ facets) :
-    (V \ F).card ≤ 1 ∨
-      ∃ a b : α, a ≠ b ∧ V \ F = {a, b} ∧ LinearIndependent ℝ (R.ω ∘ ![a, b]) := by
-  classical
-  rcases Nat.lt_or_ge (V \ F).card 2 with hlt | hge
-  · exact Or.inl (by omega)
-  · have hle : (V \ F).card ≤ 2 := by
-      by_contra h
-      exact no_matrixFacetRealization_of_three_omitted R hF (by omega)
-    have h2 : (V \ F).card = 2 := le_antisymm hle hge
-    obtain ⟨a, b, hab, hs⟩ := Finset.card_eq_two.mp h2
-    refine Or.inr ⟨a, b, hab, hs, ?_⟩
-    by_contra hdep
-    refine no_matrixFacetRealization_of_two_omitted_realDependent R hF ?_ ?_ hab hdep
-    · rw [hs]; simp
-    · rw [hs]; simp
-
-/-- **Finite-state period codimension when no lattice arises.**  If no two distinct translation steps
-are `ℝ`-independent, every facet omits at most one ambient vertex — the conclusion `(6)` of the
-principalization law, now for an arbitrary constant internal channel. -/
-theorem matrix_facetComplementRankOne_of_no_lattice {m : ℕ} {V : Finset α}
-    {facets : Set (Finset α)} (R : MatrixFacetRealization m V facets)
-    (hsub : ∀ F ∈ facets, F ⊆ V)
-    (hno : ∀ a b : α, a ≠ b → ¬ LinearIndependent ℝ (R.ω ∘ ![a, b])) :
+/-- **The finite-state facet-codimension law.**  Every facet omits at most one ambient vertex.
+Unconditional: an arbitrary constant internal channel supplies no extra analytic direction. -/
+theorem matrix_facetComplementRankOne {m : ℕ} {V : Finset α} {facets : Set (Finset α)}
+    (R : MatrixFacetRealization m V facets) (hsub : ∀ F ∈ facets, F ⊆ V) :
     FacetComplementRankOne V facets := by
   intro F hF
   refine ⟨hsub F hF, ?_⟩
-  rcases matrixFacetComplement_rankOne_or_lattice R hF with h | ⟨a, b, hab, _, hindep⟩
-  · exact h
-  · exact absurd hindep (hno a b hab)
+  by_contra hlt
+  have h2 : 2 ≤ (V \ F).card := by omega
+  obtain ⟨u, hu, v, hv, huv⟩ := Finset.one_lt_card.mp h2
+  exact no_matrixFacetRealization_of_two_omitted R hF hu hv huv
 
 end GaloisForLFunctions.HTGeometry

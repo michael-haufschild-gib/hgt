@@ -266,6 +266,20 @@ theorem exists_deriv_eq_const_mul_of_quasiperiods_of_not_discrete {ι : Type*} {
 
 /-! ### Constant internal monodromy -/
 
+/-- **The components of a vector with constant internal monodromy span a shift-stable space.** -/
+theorem translationStable_span_components {m : ℕ} {G : ℂ → (Fin m → ℂ)} {w : ℂ}
+    {M : Matrix (Fin m) (Fin m) ℂ} (hmono : ∀ z, G (z + w) = M.mulVec (G z)) :
+    TranslationStable (Submodule.span ℂ (Set.range fun (j : Fin m) (z : ℂ) => G z j)) w := by
+  set g : Fin m → (ℂ → ℂ) := fun j z => G z j with hg
+  refine translationStable_span_of_generators g (fun j => ?_)
+  have hsum : translate w (g j) = ∑ l : Fin m, M j l • g l := by
+    funext z
+    show G (z + w) j = (∑ l : Fin m, M j l • g l) z
+    rw [hmono z]
+    simp [Matrix.mulVec, dotProduct, Finset.sum_apply, hg]
+  rw [hsum]
+  exact Submodule.sum_mem _ (fun l _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩))
+
 /-- **Constant internal monodromy does not escape the law.**  A `ℂ^m`-valued entire function which
 each translation of a family reproduces up to a *constant* matrix, the integer span of the steps
 being non-discrete, has every component differentially algebraic.  No invertibility of the matrices
@@ -280,16 +294,9 @@ theorem differentiallyAlgebraic_component_of_matrix_monodromy
   set g : Fin m → (ℂ → ℂ) := fun j z => G z j with hg
   haveI : FiniteDimensional ℂ (Submodule.span ℂ (Set.range g)) :=
     FiniteDimensional.span_of_finite ℂ (Set.finite_range g)
-  refine differentiallyAlgebraic_of_translationStable_of_not_discrete
+  exact differentiallyAlgebraic_of_translationStable_of_not_discrete
     (Submodule.span ℂ (Set.range g)) (differentiable_of_mem_span g hdiff) w hnd
-    (fun k => translationStable_span_of_generators g (fun j => ?_))
+    (fun k => translationStable_span_components (hmono k))
     (Submodule.subset_span ⟨i, rfl⟩)
-  have hsum : translate (w k) (g j) = ∑ l : Fin m, (M k) j l • g l := by
-    funext z
-    show G (z + w k) j = (∑ l : Fin m, (M k) j l • g l) z
-    rw [hmono k z]
-    simp [Matrix.mulVec, dotProduct, Finset.sum_apply, hg]
-  rw [hsum]
-  exact Submodule.sum_mem _ (fun l _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩))
 
 end GaloisForLFunctions.HTGeometry
