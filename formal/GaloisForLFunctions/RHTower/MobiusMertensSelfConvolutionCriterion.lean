@@ -533,6 +533,14 @@ theorem mobiusAdditiveTriangleSecondCesaroSubpowerUpperBound_implies_riemannHypo
   mobiusDiscreteLaplaceAllStrictHalfPowerDecay_implies_riemannHypothesis
     (mobiusAdditiveTriangleSecondCesaroSubpowerUpperBound_implies_allStrictHalfPowerDecay hupper)
 
+/-- The classical Mertens source also supplies the complete strict-half-power Laplace family.
+This connector lets every Laplace-energy converse reuse the single Littlewood premise. -/
+theorem mobiusMertensAllStrictHalfPowerBound_implies_allStrictHalfPowerDecay
+    (hMertens : MobiusMertensAllStrictHalfPowerBound) :
+    MobiusDiscreteLaplaceAllStrictHalfPowerDecay :=
+  mobiusAdditiveTriangleSecondCesaroSubpowerUpperBound_implies_allStrictHalfPowerDecay
+    (mobiusMertensAllStrictHalfPowerBound_implies_secondCesaroSubpowerUpperBound hMertens)
+
 /-- The classical all-strict-half-power Mertens estimate reaches RH through the exact
 self-convolution and double-Abel bridge. -/
 theorem mobiusMertensAllStrictHalfPowerBound_implies_riemannHypothesis

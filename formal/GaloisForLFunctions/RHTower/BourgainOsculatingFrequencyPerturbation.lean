@@ -251,7 +251,6 @@ theorem bourgainExactOsculatingFrequencies_scaledPerturbation
                   (bourgainSquareRootThirdDerivativeBound b)) *
               Δ ^ (3 : ℕ) / 2) := by
           gcongr
-          exact hthird
       _ = ‖X‖ * inverseNorm *
             max (bourgainSquareRootThirdDerivativeBound a)
               (bourgainSquareRootThirdDerivativeBound b) *
@@ -312,7 +311,6 @@ theorem bourgainExactOsculatingFrequencies_scaledPerturbation
                   (bourgainSquareRootThirdDerivativeBound b)) *
               Δ ^ (3 : ℕ) / 2) := by
           gcongr
-          exact hthird
       _ = ‖X‖ * inverseNorm *
             max (bourgainSquareRootThirdDerivativeBound a)
               (bourgainSquareRootThirdDerivativeBound b) *

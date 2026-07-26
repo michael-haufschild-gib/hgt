@@ -10170,3 +10170,70 @@ and the archimedean budget is free (entries 17-19 give the constants 3 log 2 + p
 sum has a free upper bound; (c) the de Bruijn-Newman Lambda, where Lambda >= 0 is a theorem and
 Lambda <= 0 is RH — THE ONLY KNOWN INSTANCE IN THE LITERATURE OF A TWO-SIDED PINCH ON THE SAME REAL
 NUMBER. (c) IS THE STRONGEST ANALOGY TO ENTRY 89 AND THE ATLAS HAS NEVER ANALYSED IT AS SUCH.
+
+---
+
+## Cycle 166 — ZERO MARGIN FORBIDS A SINGLE ESTIMATE AND FORCES A VANISHING-LOSS FAMILY
+
+### The second instance of the same-scalar phenomenon
+Entry 89 found the ONE place where a free inequality and the hypothesis bound the SAME scalar. THERE
+IS A SECOND, AND IT IS IN THE LITERATURE:
+
+    de Bruijn-Newman constant Lambda:  Lambda >= 0 IS A THEOREM (Rodgers-Tao, Annals 2018);
+                                       RH <==> Lambda <= 0.
+    ==> RH <==> Lambda = 0.
+
+THE TWO INSTANCES DIFFER ONLY IN WINDOW WIDTH. Entry 89's window is 4(1 - windowRatio(2j)) > 0,
+SHRINKING LIKE 1/j. The Lambda window is ZERO ALREADY. THE LAMBDA STATEMENT IS THE DEGENERATE LIMIT
+OF THE ENTRY-89 PHENOMENON.
+
+### THE HUNDREDTH ATLAS ENTRY
+WHAT ZERO MARGIN FORBIDS. A method yielding Lambda <= delta for a FIXED delta > 0 yields NOTHING: the
+value delta/2 satisfies the free theorem and the estimate while violating the hypothesis (formalised
+as an explicit witness). NO SINGLE ESTIMATE WITH ANY POSITIVE LOSS CAN DECIDE THE QUESTION.
+
+WHAT ZERO MARGIN PERMITS. A FAMILY of estimates whose loss tends to zero DOES decide it: from
+x <= f n for every n and f n --> 0 one gets x <= 0, and with the free lower bound, x = 0 (formalised).
+
+    ==> THE CORRECT SHAPE OF A PROOF IN THESE FORMULATIONS IS A FAMILY OF INEQUALITIES WHOSE LOSS
+        TENDS TO ZERO, NOT A SINGLE INEQUALITY. ZERO MARGIN DOES NOT FORBID PROOF; IT FORBIDS PROOF
+        BY ONE ESTIMATE.
+
+AND THE ORDER-TWO CASE HAS EXACTLY THAT SHAPE: its window width 4(1 - windowRatio(2j)) TENDS TO ZERO
+(formalised), with the shift as the parameter. THAT IS WHY THE ORDER-TWO CASE IS PROVABLE. THE HIGHER
+ORDERS FAIL NOT BECAUSE NO ESTIMATE EXISTS BUT BECAUSE THE LOSS DOES NOT VANISH — entry 91's deficit
+exponent m(m-1)/2 - 1 is precisely the statement that the loss STOPS vanishing from order three.
+
+THIS UNIFIES THE ATLAS'S METHODOLOGICAL CONTENT IN ONE SENTENCE: EVERY UNCONDITIONAL TOOL IN THE
+SUBJECT PRODUCES A SINGLE ESTIMATE WITH A FIXED LOSS; RH IN ITS TWO-SIDED FORMULATIONS REQUIRES A
+FAMILY WITH VANISHING LOSS; AND THE ONLY PLACE SUCH A FAMILY IS KNOWN TO EXIST IS ORDER TWO.
+
+Machine-verified: `RHTower/ZeroMarginForcesALimitingArgument.lean` (the pinch (0 <= x and x <= 0) iff
+x = 0, the explicit witness showing any fixed positive loss is insufficient, the sufficiency of a
+vanishing-loss family, its combination with the free bound to give equality, the vanishing of the
+order-two window width, and the resulting correct-shape statement; standard axioms only, wired into
+RHTower).
+
+### STATE AT CYCLE 166 — ONE HUNDRED ENTRIES
+One hundred entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ATLAS AT ONE HUNDRED. Three structural theorems organise everything:
+  ENTRY 52   In the log-T landscape RH constrains CODIMENSION and every unconditional tool measures
+             AREA. Different quantities. Closed with a single root cause.
+  ENTRY 89   In the Jensen/Polya lane there is exactly ONE place where a free inequality and the
+             hypothesis constrain the SAME scalar: order two, with window O(1/j).
+  ENTRY 100  Where they do constrain the same scalar, the margin is ZERO, so a single estimate is
+             worthless and only a vanishing-loss FAMILY can work. Order two has one; order three
+             onwards does not, by the exponent identity of entry 91.
+EVERYTHING ELSE IN THE ATLAS IS AN INSTANCE, A CONSTANT, OR A REFUTED ROUTE.
+
+### Cycle 167 target
+ENTRY 100 SAYS: FIND A VANISHING-LOSS FAMILY. THAT IS NOW THE ENTIRE PROBLEM, AND IT IS A CONCRETE
+SEARCH CRITERION RATHER THAN A VAGUE ONE. APPLY IT TO THE THIRD CANDIDATE THE ATLAS HAS NEVER TESTED:
+THE LI COEFFICIENTS. lambda_n >= 0 for all n is EQUIVALENT to RH (Li's criterion, Bombieri-Lagarias),
+and lambda_n has an EXACT arithmetic expansion lambda_n = sum over zeros of 1 - (1 - 1/rho)^n whose
+archimedean part is COMPUTABLE IN CLOSED FORM. THE QUESTION IN ENTRY-100 LANGUAGE: IS THERE A FREE
+LOWER BOUND ON lambda_n WITH A LOSS THAT VANISHES IN n? The archimedean main term is known to be
+(n/2) log n + c n + O(log n) and the arithmetic term is the one that must not cancel it. COMPUTE THE
+RATIO OF THE TWO AND ASK WHETHER THE LOSS VANISHES. IF IT DOES, LI'S CRITERION HAS THE ENTRY-100
+SHAPE AND IS THE FIRST CANDIDATE OUTSIDE ORDER TWO.

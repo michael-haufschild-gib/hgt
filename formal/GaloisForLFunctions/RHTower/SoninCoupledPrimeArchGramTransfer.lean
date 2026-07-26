@@ -2309,6 +2309,34 @@ theorem
     tendsto_soninAllPrimeCoupledProjectivePolynomialGramValue hgram p
   convert ht using 1
 
+/-- Restricting a real-polynomial per-test schedule to integer polynomials supplies the original
+scalar coupling interface. -/
+theorem
+    exists_soninCoupledPrimeArchPerTestNormalizedValueCoupling_of_realPerTestCoupling
+    {testAperture : Polynomial ℝ → ℕ → SoninCoupledNondegenerateAperture}
+    (h :
+      SoninCoupledPrimeArchRealPerTestNormalizedValueCoupling testAperture) :
+    ∃ aperture : Polynomial ℤ → ℕ → SoninCoupledNondegenerateAperture,
+      SoninCoupledPrimeArchPerTestNormalizedValueCoupling aperture := by
+  let aperture : Polynomial ℤ → ℕ → SoninCoupledNondegenerateAperture :=
+    fun p => testAperture (p.map (Int.castRingHom ℝ))
+  refine ⟨aperture, ?_⟩
+  intro p
+  exact h (p.map (Int.castRingHom ℝ))
+
+/-- A simultaneous normalized moment-ratio schedule therefore discharges the per-test normalized
+value coupling interface for every integer polynomial. -/
+theorem
+    exists_soninCoupledPrimeArchPerTestNormalizedValueCoupling_of_momentRatioCoupling
+    {aperture : ℕ → ℕ → SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchMomentRatioCoupling aperture) :
+    ∃ testAperture : Polynomial ℤ → ℕ → SoninCoupledNondegenerateAperture,
+      SoninCoupledPrimeArchPerTestNormalizedValueCoupling testAperture := by
+  obtain ⟨realAperture, hreal⟩ :=
+    exists_soninCoupledPrimeArchRealPerTestNormalizedValueCoupling_of_momentRatioCoupling h
+  exact
+    exists_soninCoupledPrimeArchPerTestNormalizedValueCoupling_of_realPerTestCoupling hreal
+
 /-- **Scale-eliminated coupled Sonin chain to RH.**  Strictly positive source energy and
 convergence of the normalized coupled moment ratios are enough; no external scale sequence and no
 degree-zero convergence hypothesis remain. -/
@@ -2316,9 +2344,10 @@ theorem riemannHypothesis_of_soninCoupledPrimeArchMomentRatioCoupling
     {aperture : ℕ → ℕ → SoninPositiveAperture}
     (h : SoninCoupledPrimeArchMomentRatioCoupling aperture) :
     RiemannHypothesis := by
-  obtain ⟨data, hdata⟩ :=
-    exists_soninCoupledPrimeArchProjectiveFiniteMomentCoupling_of_momentRatioCoupling h
-  exact riemannHypothesis_of_soninCoupledPrimeArchProjectiveFiniteMomentCoupling hdata
+  obtain ⟨testAperture, htest⟩ :=
+    exists_soninCoupledPrimeArchPerTestNormalizedValueCoupling_of_momentRatioCoupling h
+  exact
+    riemannHypothesis_of_soninCoupledPrimeArchPerTestNormalizedValueCoupling htest
 
 /-- **Coupled Sonin finite-Gram chain to RH.**  Whole finite-block closure of the fixed
 prime--Gamma Hankel matrix inside the canonical coupled all-prime Sonin Gram family forces RH. -/

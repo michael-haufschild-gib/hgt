@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusLaplaceMellinPlancherelBridge
 import GaloisForLFunctions.RHTower.MobiusLiouvilleSquareDilationWall
+import GaloisForLFunctions.RHTower.MobiusMertensSelfConvolutionCriterion
 
 /-!
 # Möbius energy/analytic-unit wall universality law
@@ -39,6 +40,38 @@ theorem mobiusLaplaceStrictRightEnergyFinite_iff_unitTwistedWall_of_decay
     (((mobiusLaplaceUnitTwistedMellinContinuationWall_iff hU hUne).trans
       mobiusLaplaceMellinContinuationWall_iff_riemannHypothesis).symm)
 
+/-- One classical RH-to-Mertens premise supplies the decay converse and identifies strict-right
+energy with RH. -/
+theorem mobiusLaplaceStrictRightEnergyFinite_iff_riemannHypothesis_of_mertens
+    (hLittlewood : RiemannHypothesis → MobiusMertensAllStrictHalfPowerBound) :
+    MobiusLaplaceStrictRightEnergyFinite ↔ RiemannHypothesis :=
+  mobiusLaplaceStrictRightEnergyFinite_iff_riemannHypothesis_of_decay
+    (fun hRH =>
+      mobiusMertensAllStrictHalfPowerBound_implies_allStrictHalfPowerDecay
+        (hLittlewood hRH))
+
+/-- The same Mertens premise identifies cofinal strict-right energy with RH. -/
+theorem mobiusLaplaceCofinalStrictRightEnergyFinite_iff_riemannHypothesis_of_mertens
+    (hLittlewood : RiemannHypothesis → MobiusMertensAllStrictHalfPowerBound) :
+    MobiusLaplaceCofinalStrictRightEnergyFinite ↔ RiemannHypothesis :=
+  mobiusLaplaceCofinalStrictRightEnergyFinite_iff_riemannHypothesis_of_decay
+    (fun hRH =>
+      mobiusMertensAllStrictHalfPowerBound_implies_allStrictHalfPowerDecay
+        (hLittlewood hRH))
+
+/-- Under the single classical RH-to-Mertens premise, strict-right energy is exactly every
+analytic-unit twisted continuation wall. -/
+theorem mobiusLaplaceStrictRightEnergyFinite_iff_unitTwistedWall_of_mertens
+    {U : ℂ → ℂ} (hU : AnalyticOnNhd ℂ U rightHalf)
+    (hUne : ∀ s ∈ rightHalf, U s ≠ 0)
+    (hLittlewood : RiemannHypothesis → MobiusMertensAllStrictHalfPowerBound) :
+    MobiusLaplaceStrictRightEnergyFinite ↔
+      MobiusLaplaceUnitTwistedMellinContinuationWall U :=
+  (mobiusLaplaceStrictRightEnergyFinite_iff_riemannHypothesis_of_mertens
+      hLittlewood).trans
+    (((mobiusLaplaceUnitTwistedMellinContinuationWall_iff hU hUne).trans
+      mobiusLaplaceMellinContinuationWall_iff_riemannHypothesis).symm)
+
 /-- The Liouville square-dilation wall is constructed directly from strict-right Möbius energy. -/
 theorem mobiusLiouvilleSquareDilationMellinContinuationWall_of_strictRightEnergyFinite
     (henergy : MobiusLaplaceStrictRightEnergyFinite) :
@@ -61,6 +94,16 @@ theorem mobiusLaplaceStrictRightEnergyFinite_iff_liouvilleSquareDilationWall_of_
     MobiusLaplaceStrictRightEnergyFinite ↔
       MobiusLiouvilleSquareDilationMellinContinuationWall :=
   mobiusLaplaceStrictRightEnergyFinite_iff_unitTwistedWall_of_decay
+    mobiusLiouvilleSquareDilationUnit_analyticOnNhd
+    (fun _ hs => mobiusLiouvilleSquareDilationUnit_ne_zero hs) hLittlewood
+
+/-- The single classical RH-to-Mertens premise also identifies Möbius logarithmic energy with the
+Liouville square-dilation wall. -/
+theorem mobiusLaplaceStrictRightEnergyFinite_iff_liouvilleSquareDilationWall_of_mertens
+    (hLittlewood : RiemannHypothesis → MobiusMertensAllStrictHalfPowerBound) :
+    MobiusLaplaceStrictRightEnergyFinite ↔
+      MobiusLiouvilleSquareDilationMellinContinuationWall :=
+  mobiusLaplaceStrictRightEnergyFinite_iff_unitTwistedWall_of_mertens
     mobiusLiouvilleSquareDilationUnit_analyticOnNhd
     (fun _ hs => mobiusLiouvilleSquareDilationUnit_ne_zero hs) hLittlewood
 
