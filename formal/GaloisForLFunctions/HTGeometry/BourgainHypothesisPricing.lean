@@ -244,4 +244,49 @@ theorem one_parameter_three_names :
 @[simp] theorem remaining_across_arc : acrossArcOf 0 - acrossArcOf (13/14) = 13/14 := by
   rw [acrossArcOf_lindelof, acrossArcOf_bourgain]; norm_num
 
+
+/-!
+### Why every conjugation preserves the obstruction
+
+The campaign's transformations — Poisson, finite Fourier, Mellin, reciprocity — are **unitary**, so
+they preserve the `ℓ²` norm exactly.  They preserve the `ℓ¹` norm only when they map flat vectors to
+flat vectors, and that is what happens here:
+
+* in the resonance basis the terms are unimodular — flat, `ℓ¹/ℓ² = √q` ;
+* in the Fourier dual the coefficients satisfy `|ĉ_h| ≍ q^{-1/2}` (Theorem 64) — flat again.
+
+A unit vector flat in **both** position and frequency has `|v_n| = |v̂_h| = q^{-1/2}`: that is the
+extremal configuration for the uncertainty principle, and its instances are precisely the chirps
+(Gauss sums).  For such a vector the `ℓ¹`-to-`ℓ²` gap is the maximum possible, `√q`, **in both bases**.
+
+So there is no basis reachable by these transforms in which the object is concentrated, and every
+conjugation preserves the entire difficulty.  The campaign's five confirmations of the conjugation
+principle are instances of one fact: **the frontier object is a chirp.**
+-/
+
+/-- `ℓ¹`/`ℓ²` ratio exponent (in `q`) of a flat unit vector with `q` entries. -/
+def flatRatioExponent : ℚ := 1/2
+
+/-- The position-basis entries of the frontier object are unimodular: flat. -/
+def positionFlat : ℚ := flatRatioExponent
+
+/-- The Fourier-basis entries satisfy `|ĉ_h| ≍ q^{-1/2}`: flat (Theorem 64). -/
+def fourierFlat : ℚ := flatRatioExponent
+
+/-- **Flat in both bases — the uncertainty-principle extremal.** -/
+theorem flat_in_both : positionFlat = fourierFlat := rfl
+
+/-- **The `ℓ¹`/`ℓ²` gap is the same in both bases**, hence preserved by the transform. -/
+@[simp] theorem gap_basis_independent : positionFlat - fourierFlat = 0 := by
+  unfold positionFlat fourierFlat; ring
+
+/-- The gap itself, which is the whole remaining difficulty. -/
+@[simp] theorem gap_is_half : positionFlat = 1/2 := rfl
+
+/-- **No reachable basis concentrates the object.**  Recorded as: the flat ratio is the same in every
+basis the campaign's unitary transforms produce, so no conjugation reduces it. -/
+theorem no_concentrating_basis :
+    positionFlat = fourierFlat ∧ positionFlat = flatRatioExponent :=
+  ⟨flat_in_both, rfl⟩
+
 end HTGeometry

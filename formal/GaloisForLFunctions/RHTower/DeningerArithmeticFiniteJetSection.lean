@@ -61,39 +61,41 @@ theorem deningerCompactOpenFiniteJets_surjective
   funext idx
   exact hF idx.1 idx.2
 
-/-- Algebraic finite Hermite section obtained from the finite coordinate basis. -/
-def deningerCompactOpenFiniteJetSectionLinear
-    (S : Finset XiDivisorSupport) :
-    DeningerArithmeticFiniteJetValues S →ₗ[ℂ]
-      DeningerCompactOpenEntire :=
-  LinearMap.splittingOfFunOnFintypeSurjective
-    (deningerCompactOpenFiniteJets S).toLinearMap
-    (deningerCompactOpenFiniteJets_surjective S)
+/-- Chosen entire source realizing one standard finite jet coordinate. -/
+def deningerCompactOpenFiniteJetBasisSource
+    (S : Finset XiDivisorSupport)
+    (idx : DeningerArithmeticFiniteJetCoordinate S) :
+    DeningerCompactOpenEntire :=
+  Classical.choose
+    (deningerCompactOpenFiniteJets_surjective S
+      (Pi.single idx 1))
 
-/-- The finite Hermite section is a right inverse to finite jet observation. -/
-theorem deningerCompactOpenFiniteJetSectionLinear_rightInverse
-    (S : Finset XiDivisorSupport) :
-    Function.LeftInverse
-      (deningerCompactOpenFiniteJets S)
-      (deningerCompactOpenFiniteJetSectionLinear S) :=
-  LinearMap.leftInverse_splittingOfFunOnFintypeSurjective
-    (deningerCompactOpenFiniteJets S).toLinearMap
-    (deningerCompactOpenFiniteJets_surjective S)
+@[simp]
+theorem deningerCompactOpenFiniteJets_basisSource
+    (S : Finset XiDivisorSupport)
+    (idx : DeningerArithmeticFiniteJetCoordinate S) :
+    deningerCompactOpenFiniteJets S
+        (deningerCompactOpenFiniteJetBasisSource S idx) =
+      Pi.single idx 1 :=
+  Classical.choose_spec
+    (deningerCompactOpenFiniteJets_surjective S
+      (Pi.single idx 1))
 
-/-- Continuous linear finite Hermite section. -/
+/--
+Continuous linear finite Hermite section.
+
+It is the finite sum of coordinate projections followed by scalar multiplication of the chosen
+standard-coordinate sources, so continuity is explicit and does not rely on an open mapping
+theorem.
+-/
 def deningerCompactOpenFiniteJetSection
     (S : Finset XiDivisorSupport) :
     DeningerArithmeticFiniteJetValues S →L[ℂ]
       DeningerCompactOpenEntire :=
-  { deningerCompactOpenFiniteJetSectionLinear S with
-    cont := by
-      change
-        Continuous
-          (deningerCompactOpenFiniteJetSectionLinear S)
-      exact
-        LinearMap.continuous_of_finiteDimensional
-          (𝕜 := ℂ)
-          (deningerCompactOpenFiniteJetSectionLinear S) }
+  ∑ idx : DeningerArithmeticFiniteJetCoordinate S,
+    (ContinuousLinearMap.toSpanSingleton ℂ
+      (deningerCompactOpenFiniteJetBasisSource S idx)).comp
+        (ContinuousLinearMap.proj idx)
 
 @[simp]
 theorem deningerCompactOpenFiniteJets_section
@@ -101,16 +103,38 @@ theorem deningerCompactOpenFiniteJets_section
     (target : DeningerArithmeticFiniteJetValues S) :
     deningerCompactOpenFiniteJets S
         (deningerCompactOpenFiniteJetSection S target) =
-      target :=
-  by
-    change
-      deningerCompactOpenFiniteJets S
-          (deningerCompactOpenFiniteJetSectionLinear
-            S target) =
-        target
-    exact
-      deningerCompactOpenFiniteJetSectionLinear_rightInverse
-        S target
+      target := by
+  classical
+  calc
+    deningerCompactOpenFiniteJets S
+        (deningerCompactOpenFiniteJetSection S target) =
+        ∑ idx : DeningerArithmeticFiniteJetCoordinate S,
+          target idx •
+            deningerCompactOpenFiniteJets S
+              (deningerCompactOpenFiniteJetBasisSource
+                S idx) := by
+      rw [deningerCompactOpenFiniteJetSection,
+        ContinuousLinearMap.sum_apply, map_sum]
+      apply Finset.sum_congr rfl
+      intro idx hidx
+      rw [ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.proj_apply,
+        ContinuousLinearMap.toSpanSingleton_apply,
+        map_smul]
+    _ = ∑ idx : DeningerArithmeticFiniteJetCoordinate S,
+          target idx • Pi.single idx 1 := by
+      apply Finset.sum_congr rfl
+      intro idx hidx
+      rw [deningerCompactOpenFiniteJets_basisSource]
+    _ = target := by
+      funext idx
+      rw [Finset.sum_apply,
+        Finset.sum_eq_single idx]
+      · simp
+      · intro j hj hne
+        simp [hne]
+      · intro hnot
+        exact (hnot (Finset.mem_univ idx)).elim
 
 /-- Canonical finite-jet representative of an entire source. -/
 def deningerCompactOpenFiniteJetRepresentative

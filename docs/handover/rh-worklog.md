@@ -6961,3 +6961,62 @@ Borel-Caratheodory / three-circles machinery, which the atlas capped. VERIFY THA
 THE OBSTRUCTION TO UNIFORMITY — if the Borel-Caratheodory ceiling and the uniformity gap are the same
 obstruction seen twice, the atlas has ONE remaining open problem rather than two, and it is precisely
 the zero-free-region cap.
+
+---
+
+## Cycle 115 (2026-07-26) — THE ZERO-FREE WIDTH IS AN EXPONENT, AND IT HAS MOVED FROM 0 TO 1/3
+
+### The two obstructions are the same obstruction
+The Borel-Caratheodory cap and the uniformity gap are both measured in the SAME UNIT: the local mean
+spacing 2 pi / log t. The log t in the classical zero-free region IS the local zero density, and the
+growth of every density bound is the same log t. CONFIRMED: the atlas has ONE remaining open problem,
+not two.
+
+### AND A SELF-CORRECTION I ALMOST SHIPPED
+My first formulation was "every unconditional method is stuck at O(1) mean spacings, while RH needs
+unboundedly many". THAT IS FALSE. Measuring the known regions in the natural unit:
+
+    de la Vallee Poussin :  w = c/L                        ->  c/(2 pi)                       units
+    Vinogradov-Korobov   :  w = c/(L^{2/3} M^{1/3})        ->  c L^{1/3} / (2 pi M^{1/3})     units
+    the hypothesis       :  w = 1/2                        ->  L/(4 pi)                       units
+
+(L = log t, M = log log t). SO VINOGRADOV-KOROBOV IS ALREADY UNBOUNDED IN NATURAL UNITS, GROWING LIKE
+(log t / log log t)^{1/3}. The distinction is not bounded-versus-unbounded; it is an EXPONENT.
+
+    ==> THE EXPONENT OF log t IN THE ZERO-FREE WIDTH, MEASURED IN MEAN SPACINGS, HAS MOVED FROM 0 TO
+        1/3 IN A CENTURY. THE HYPOTHESIS IS EXPONENT 1. THE REMAINING GAP IS THE INTERVAL [1/3, 1],
+        A POWER OF THE THEORY'S SINGLE INVARIANT.
+
+This is the first QUANTITATIVE statement of where the frontier stands that the programme has
+produced, and it replaces a qualitative claim that was wrong. It also explains the shape of the
+literature: de la Vallee Poussin moved the exponent from nothing to 0, Vinogradov-Korobov moved it to
+1/3, and nothing since has moved it — the improvements have been in the constant and the log log
+factor.
+
+Machine-verified: `RHTower/ZeroFreeWidthExponent.lean` (the unit conversion w L/(2 pi), the classical
+count c/(2 pi) at exponent zero, the hypothesis count L/(4 pi) at exponent one, the Vinogradov-Korobov
+count c L^{1/3}/(2 pi M^{1/3}) at exponent one third via the rpow splitting L = L^{2/3} L^{1/3}, the
+gap 1 - 1/3 = 2/3, the ordering of the exponents, and the unboundedness at exponent one; standard
+axioms only, wired into RHTower).
+
+### FORTY-NINTH ATLAS ENTRY
+    width exponent   in units of the local mean spacing the zero-free width has exponent 0 (de la
+                     Vallee Poussin), 1/3 (Vinogradov-Korobov), and 1 (the hypothesis). The
+                     Borel-Caratheodory cap and the uniformity gap are the same obstruction, measured
+                     in the same unit. The remaining problem is to raise the exponent from 1/3 to 1.
+
+### STATE AT CYCLE 115
+Forty-nine entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+THE ATLAS HAS ONE REMAINING OPEN PROBLEM, AND IT IS NOW STATED AS A NUMBER: raise the zero-free width
+exponent from 1/3 to 1.
+
+### Cycle 116 target
+Ask what limits the exponent to 1/3. Vinogradov-Korobov's 1/3 comes from the exponential-sum bound
+for zeta near sigma = 1, where the saving is (log t)^{-2/3} from Vinogradov's mean value theorem — and
+the mean value theorem is now KNOWN OPTIMAL (Bourgain-Demeter-Guth decoupling, 2016, resolved the
+main conjecture). SO THE 1/3 IS NOT A DEFECT OF THE MEAN VALUE INPUT; IT IS THE CONVERSION FROM THE
+SUM BOUND TO THE ZERO-FREE REGION. TEST WHETHER THE CONVERSION IS LOSSY: the route is sum bound ->
+bound on |zeta| -> Borel-Caratheodory -> zero-free region, and each step has a known cost. IF THE
+CONVERSION IS LOSSLESS, THE EXPONENT 1/3 IS FINAL FOR THIS FAMILY AND ONLY A DIFFERENT INPUT CAN
+MOVE IT — which by entry 47 must come from inside the strip. IF IT IS LOSSY, THE LOSS IS AN EXPLICIT
+TARGET.

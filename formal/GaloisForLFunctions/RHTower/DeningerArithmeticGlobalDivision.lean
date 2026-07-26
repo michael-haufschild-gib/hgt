@@ -214,6 +214,14 @@ theorem deningerArithmeticXiRangeClosed :
   deningerArithmeticXiRangeClosed_of_globalJetDivision
     deningerArithmeticGlobalJetDivision
 
+/-- The reduced compact-open coboundary range equals the actual Xi-multiplication range, with no
+closed-range premise left for downstream cohomology. -/
+theorem deningerCompactOpenXiClosedRange_eq_range :
+    deningerCompactOpenXiClosedRange =
+      deningerCompactOpenXiRange :=
+  deningerCompactOpenXiClosedRange_eq
+    deningerArithmeticXiRangeClosed
+
 end
 
 end RHTower
