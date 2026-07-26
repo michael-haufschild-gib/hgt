@@ -2166,3 +2166,5 @@ import GaloisForLFunctions.HTGeometry.KoszulTupleSign
 import GaloisForLFunctions.HTGeometry.BooleanEdgeFieldWitnesses
 import GaloisForLFunctions.HTGeometry.FiniteGeometricLayerTowerWitnesses
 import GaloisForLFunctions.HTGeometry.PerronKernelBound
+import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
+import GaloisForLFunctions.HTGeometry.HochsterStrandGeneralDegree

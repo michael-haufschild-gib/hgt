@@ -124,6 +124,7 @@ theorem tupleSign_snoc : ∀ {p : ℕ} (σ : Finset α) (w : Fin p → α) (k : 
         rw [Fin.snoc_castSucc,
           show Fin.succ i.castSucc = Fin.castSucc i.succ from Fin.succ_castSucc i,
           Fin.snoc_castSucc]
+        rfl
     have hset : (σ.erase (w 0)) \ Finset.image (Fin.tail w) Finset.univ
         = σ \ Finset.image w Finset.univ := by
       rw [image_eq_insert_image_tail, Finset.sdiff_insert]
@@ -272,7 +273,6 @@ theorem koszulD_strandTensor (facets : Finset (Finset α)) (σ : Finset α) {p :
     simp only [strandTensor, if_pos hw, ← hτ, smul_smul]
     congr 1
     rw [simplicialCoboundary_apply, Finset.mul_sum, Finset.mul_sum]
-    exact Finset.sum_congr rfl (fun k _ => by ring)
   · have hzero : ∀ k : α, strandTensor F facets σ (p := p + 1) g (Fin.cons k w) = 0 := by
       intro k
       refine if_neg (fun hc => hw ⟨fun t => by simpa using hc.1 t.succ, ?_⟩)
@@ -283,6 +283,46 @@ theorem koszulD_strandTensor (facets : Finset (Finset α)) (σ : Finset α) {p :
     show (∑ k, strandTensor F facets σ (p := p + 1) g (Fin.cons k w) * srVertexX F facets k) = _
     rw [Finset.sum_congr rfl (fun k _ => by rw [hzero k, zero_mul]), Finset.sum_const_zero]
     simp only [strandTensor, if_neg hw, smul_zero]
+
+/-- **Every reduced coboundary of `Δ_σ` becomes a Koszul boundary, in every degree.**  The strand
+chain map carries the reduced simplicial coboundary of the induced subcomplex into the boundaries of
+the alternating Koszul complex, so it descends to a map from the reduced cohomology of `Δ_σ` to the
+multidegree-`σ` Koszul homology at every degree. -/
+theorem strandTensor_coboundary_mem_koszulBoundaries (facets : Finset (Finset α)) (σ : Finset α)
+    {p : ℕ} (g : Finset α → F) :
+    strandTensor F facets σ (p := p + 1) (simplicialCoboundary F g)
+      ∈ koszulBoundaries (p := p) (srVertexX F facets) := by
+  have halt : IsAltTensor (((-1 : F) ^ (p + 1)) • strandTensor F facets σ (p := p + 2) g) := by
+    refine ⟨fun v i j hij => ?_, fun v hv => ?_⟩
+    · show ((-1 : F) ^ (p + 1)) • strandTensor F facets σ (p := p + 2) g (v ∘ ⇑(Equiv.swap i j))
+        = - (((-1 : F) ^ (p + 1)) • strandTensor F facets σ (p := p + 2) g v)
+      rw [(strandTensor_isAltTensor facets σ g).swap_neg v i j hij, smul_neg]
+    · show ((-1 : F) ^ (p + 1)) • strandTensor F facets σ (p := p + 2) g v = 0
+      rw [(strandTensor_isAltTensor facets σ g).zero_of_not_injective v hv, smul_zero]
+  refine ⟨((-1 : F) ^ (p + 1)) • strandTensor F facets σ (p := p + 2) g, ?_, ?_⟩
+  · exact SetLike.mem_coe.mpr halt
+  · have hsq : (-1 : F) ^ (p + 1) * (-1 : F) ^ (p + 1) = 1 := by
+      rw [← pow_add, ← two_mul, pow_mul, neg_one_sq, one_pow]
+    show koszulD (srVertexX F facets) (((-1 : F) ^ (p + 1)) •
+        strandTensor F facets σ (p := p + 2) g) = _
+    have hlin : koszulD (srVertexX F facets) (((-1 : F) ^ (p + 1)) •
+        strandTensor F facets σ (p := p + 2) g)
+        = ((-1 : F) ^ (p + 1)) • koszulD (srVertexX F facets)
+            (strandTensor F facets σ (p := p + 2) g) := by
+      funext u
+      show (∑ k, ((-1 : F) ^ (p + 1) • strandTensor F facets σ (p := p + 2) g) (Fin.cons k u)
+          * srVertexX F facets k)
+          = (-1 : F) ^ (p + 1) • (∑ k, strandTensor F facets σ (p := p + 2) g (Fin.cons k u)
+            * srVertexX F facets k)
+      rw [Finset.smul_sum]
+      exact Finset.sum_congr rfl (fun k _ => by
+        simp only [Pi.smul_apply]
+        rw [smul_mul_assoc])
+    rw [hlin, koszulD_strandTensor facets σ g]
+    funext u
+    show (-1 : F) ^ (p + 1) • ((-1 : F) ^ (p + 1) •
+      strandTensor F facets σ (p := p + 1) (simplicialCoboundary F g) u) = _
+    rw [smul_smul, hsq, one_smul]
 
 end
 

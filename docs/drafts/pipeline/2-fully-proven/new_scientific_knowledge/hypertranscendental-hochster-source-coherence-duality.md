@@ -2078,3 +2078,42 @@ This is the missing degree-uniform ingredient for the general-degree strand equi
 map at Koszul degree `p` is `tupleSign`-weighted, so `tupleSign_swap` is what makes it land in the
 alternating Koszul complex `koszulAltTensors` on which `koszulCycles`, `koszulBoundaries` and
 `koszulTor` are defined (`GeneralKoszulComplex`).
+
+### Lean progress — the strand chain map in EVERY Koszul degree
+
+`HochsterStrandGeneralDegree.lean` (axiom-clean, build green) replaces the degree-by-degree strand
+maps by a single map in every degree, landing in the alternating Koszul complex of
+`GeneralKoszulComplex`:
+
+`strandTensor facets σ g v = tupleSign σ v · g (σ ∖ v[Fin p]) · ∏_{σ ∖ v[Fin p]} x`
+on injective tuples with entries in `σ`, and `0` elsewhere.
+
+- `image_cons`, `image_eq_insert_image_tail`, `cons_injective`, `cons_guard` — the combinatorics of
+  prepending a vertex to a tuple.
+- `tupleSign_cons` — peeling the contracted vertex off the **front**.
+- `tupleSign_snoc` — peeling it off the **back**, where it meets exactly the complement
+  `σ ∖ v[Fin p]` and therefore produces the *simplicial* incidence sign `faceSign (σ ∖ v[Fin p]) k`.
+  This is the identity that makes the algebraic and topological signs match.
+- `snoc_eq_cons_comp_finRotate` and `tupleSign_snoc_eq_cons` — moving the contracted vertex from the
+  front of the tuple to the back is the cyclic rotation `finRotate (p+1)`, whose sign is `(-1)^p`
+  (`sign_finRotate`), so the move costs exactly `(-1)^p`.
+- **`strandTensor_isAltTensor`** — the strand map lands in `koszulAltTensors`: the guard and the
+  complement `σ ∖ v[Fin p]` are permutation-invariant, and `tupleSign` is alternating
+  (`tupleSign_swap`).  This is what makes `koszulCycles`, `koszulBoundaries` and `koszulTor` of
+  `GeneralKoszulComplex` applicable.
+- **`koszulD_strandTensor`** — the **chain-map identity in every degree**:
+  `koszulD x (strandTensor (p+1) g) = (-1)^p · strandTensor p (δg)`.
+  The sign is intrinsic, not a convention: the Koszul differential contracts the *first* slot while
+  the simplicial coboundary deletes a vertex from the *complement*.
+- **`strandTensor_coboundary_mem_koszulBoundaries`** — consequently every reduced simplicial
+  coboundary of `Δ_σ` becomes a genuine Koszul boundary, in every degree; the strand chain map
+  descends to `H̃(Δ_σ) → Tor_{•,σ}` at every degree.
+- `strandTensor_one` — degree one of the uniform map is the previously built `strandOne`, so the
+  uniform construction extends the hand-built low-degree ones rather than replacing them.
+
+The card's Lean target — "construct the squarefree Koszul strands and their chain equivalence with
+reduced cochains of induced subcomplexes" — now has its **chain map at every degree**, with the
+equivalence proved at `Tor₁` and `Tor₂`.  The remaining piece is the backward extraction (every strand
+boundary comes from a coboundary) at general degree, i.e. the degree-`p` analogue of `pairCochain` /
+`tripleCochain`, for which the uniform ingredients (`tupleSign_comp_perm`, the canonical increasing
+enumeration of a finite set) are now in place.
