@@ -5708,3 +5708,68 @@ NONCOMMUTATIVITY — specifically an action of a nonabelian group by isometries 
 rather than a compression. Per entries 26-27 the pairing exists (Q, definiteness 0.34976); per entry
 29 what is needed is a nonabelian isometry group of it. THAT IS NOW A COMPLETELY EXPLICIT TARGET:
 find a nonabelian group acting on L^2 by Q-isometries.
+
+---
+
+## Cycle 96 (2026-07-26) — THE DILATION DIRECTION IS THE NONCOMMUTATIVE ONE. IT SHIFTS THE ABSCISSA.
+
+### Correction to cycle 95's framing (record it)
+I wrote that a NONABELIAN GROUP is needed. That is wrong: the idele class group is ABELIAN, and in
+Connes' picture the noncommutativity comes from the CROSSED PRODUCT of an abelian group acting
+nontrivially, not from a nonabelian group. What is needed is a NONTRIVIAL ACTION, not a nonabelian
+one. Corrected.
+
+### Phase 1 audit result
+The corpus DOES contain adelic machinery: `CCMRationalFiniteBruhatSchwartz`, right translation by
+finite ideles (`ccmRationalFiniteBruhatMulRight`), archimedean Schwartz lattices and Poisson files,
+`CCMRationalAdelicBruhatSimpleTensorTraceClass`, `SoninLogShellCocycle`. THE GROUP ACTION IS PRESENT.
+Do not rebuild it.
+
+### Which direction is noncommutative
+On the u-side BOTH forms are CONVOLUTION operators, so TRANSLATIONS PRESERVE BOTH AND CONSTRAIN
+NOTHING — that is entry 29 restated. THE DILATIONS ARE DIFFERENT. The archimedean symbol has profile
+q(r) = 1 + 2 log|r|, and dilation acts on symbols by q -> q(r/lam). Since log(r/lam) = log r - log lam,
+
+    D_lam^* Q D_lam  =  Q  -  (2 log lam) I  +  (bounded remainder).
+
+    ==> THE DILATION GROUP ACTS ON Q BY AFFINE SHIFTS WHILE TRANSLATIONS ACT TRIVIALLY. TOGETHER THEY
+        GENERATE THE ax+b GROUP, WHICH IS NONABELIAN. THE NONCOMMUTATIVITY ENTRY 29 REQUIRES IS
+        PRESENT, AND IT LIES IN THE DILATION DIRECTION.
+
+### And dilation moves the abscissa — this is the Frobenius analogue
+Dilation by lam replaces the frequencies log n by log n / lam. These are logarithms of integers
+exactly when lam = 1/k: then k log n = log(n^k), and the weight Lambda(n) n^{-1/2} becomes
+Lambda(n) n^{-k/2}.
+
+    ==> THE ax+b ACTION CARRIES THE WEIL FORM AT ABSCISSA 1/2 TO THE WEIL FORM AT ABSCISSA k/2,
+        WHERE POSITIVITY IS TRIVIAL BECAUSE THE PRIME SERIES CONVERGES ABSOLUTELY (k >= 2).
+        WHAT BLOCKS RUNNING THE RELATION BACKWARDS IS PRECISELY THE ARCHIMEDEAN SHIFT 2 log lam,
+        WHICH IS UNBOUNDED.
+
+This is the first time the programme has an obstruction that is a SINGLE EXPLICIT SCALAR rather than
+a structural absence. The map n -> n^k is the arithmetic analogue of Frobenius; the corresponding
+similitude ratio is n^{-(k-1)/2}; and the archimedean side pays 2 log k for it.
+
+Machine-verified: `RHTower/DilationFrobeniusShift.lean` (the symbol shift
+1 + 2 log(r/lam) = (1 + 2 log r) - 2 log lam, unboundedness of the shift, the frequency identity
+k log n = log(n^k), the abscissa change of the weights, absolute convergence for k >= 2, and the
+noncommutativity lam(r+a) != lam r + a; standard axioms only, wired into RHTower).
+
+### THIRTIETH ATLAS ENTRY
+    dilation shift   translations preserve both forms (nothing constrained); dilations shift the
+                     archimedean symbol by -2 log lam and carry the prime form from abscissa 1/2 to
+                     k/2. The ax+b group supplies the missing noncommutativity, and the obstruction
+                     to descending back to 1/2 is the single scalar 2 log lam.
+
+### STATE AT CYCLE 96
+Thirty entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 97 target
+Quantify the descent. At abscissa k/2 the Weil form is positive for free. Descending to 1/2 costs
+2 log k on the archimedean side and gains the factor n^{(k-1)/2} on the prime side. THE QUESTION IS
+WHETHER THE TWO CAN BE BALANCED FOR ANY k, i.e. whether there is a k for which the archimedean surplus
+(entry 18: margin 0.34976 g(0), uniform) exceeds the descent cost 2 log k. Since the margin is a FIXED
+CONSTANT and the cost GROWS LIKE log k, THE ANSWER IS NO FOR LARGE k — but the prime gain also grows.
+COMPUTE THE EXACT BALANCE: the descent is worthwhile iff (prime gain at abscissa k/2 pulled back)
+exceeds 2 log k, and both sides are now explicit. If the balance is favourable for even ONE k >= 2,
+the descent gives an unconditional positivity statement at abscissa 1/2 — that is, RH.

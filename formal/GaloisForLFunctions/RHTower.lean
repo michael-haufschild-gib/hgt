@@ -2932,3 +2932,4 @@ import GaloisForLFunctions.RHTower.SimilitudeSpectralLocus
 import GaloisForLFunctions.RHTower.ArchimedeanPairingDefinite
 import GaloisForLFunctions.RHTower.DensityNotNormSimilitude
 import GaloisForLFunctions.RHTower.WholeLineCollapse
+import GaloisForLFunctions.RHTower.DilationFrobeniusShift

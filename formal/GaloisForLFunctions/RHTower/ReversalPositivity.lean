@@ -177,4 +177,75 @@ theorem posC_of_posTwo {r m : ℝ} (hr : 0 < r) (hrm : r < m)
   rw [show (2:ℝ)*(r/2) = r from by ring, show (2:ℝ)*(m/2) = m from by ring] at hFmono
   exact le_trans hbase hFmono
 
+/-- At the reversal source value `r = log (cosh m)`, the `c = 2` tanh inequality is
+unconditional.  Clearing the positive hyperbolic denominators reduces it exactly to
+`1 ≤ cosh m`. -/
+theorem tanh_half_le_tanh_log_cosh_div_tanh
+    {m : ℝ} (hm : 0 < m) :
+    Real.tanh (m / 2) ≤
+      Real.tanh (Real.log (Real.cosh m)) / Real.tanh m := by
+  let C : ℝ := Real.cosh m
+  let S : ℝ := Real.sinh m
+  have hC : 1 < C := by
+    dsimp [C]
+    exact Real.one_lt_cosh.mpr hm.ne'
+  have hCpos : 0 < C := lt_trans (by norm_num) hC
+  have hSpos : 0 < S := by
+    dsimp [S]
+    exact Real.sinh_pos_iff.mpr hm
+  have hhalfC : 0 < Real.cosh (m / 2) := Real.cosh_pos _
+  have htanhHalf :
+      Real.tanh (m / 2) = S / (C + 1) := by
+    rw [Real.tanh_eq_sinh_div_cosh]
+    have hs := Real.sinh_two_mul (m / 2)
+    have hc := Real.cosh_two_mul (m / 2)
+    have hid := Real.cosh_sq_sub_sinh_sq (m / 2)
+    rw [show 2 * (m / 2) = m by ring] at hs hc
+    dsimp [S, C]
+    rw [hs, hc]
+    field_simp [hhalfC.ne']
+    nlinarith
+  have htanhLog :
+      Real.tanh (Real.log C) = (C ^ 2 - 1) / (C ^ 2 + 1) := by
+    rw [Real.tanh_eq_sinh_div_cosh, Real.sinh_log hCpos,
+      Real.cosh_log hCpos]
+    field_simp [hCpos.ne']
+  have htanhM : Real.tanh m = S / C := by
+    rw [Real.tanh_eq_sinh_div_cosh]
+  have hhyper : C ^ 2 - S ^ 2 = 1 := by
+    dsimp [C, S]
+    exact Real.cosh_sq_sub_sinh_sq m
+  rw [htanhHalf, htanhLog, htanhM]
+  have hden1 : 0 < C + 1 := by linarith
+  have hden2 : 0 < C ^ 2 + 1 := by positivity
+  have hSC : 0 < S / C := div_pos hSpos hCpos
+  rw [div_div]
+  apply (div_le_div_iff₀ hden1 (mul_pos hden2 hSC)).2
+  field_simp [hCpos.ne', hSpos.ne']
+  nlinarith
+
+/-- **Unconditional reversal-positivity lift.**  The source relation
+`r = log (cosh m)` supplies the formerly explicit base inequality, and monotonicity then
+propagates it to every `c ≥ 2`. -/
+theorem posC_log_cosh
+    {m c : ℝ} (hm : 0 < m) (hc : 2 ≤ c) :
+    Real.tanh (m / 2) ≤
+      Real.tanh (c * (Real.log (Real.cosh m) / 2)) /
+        Real.tanh (c * (m / 2)) := by
+  have hcoshOne : 1 < Real.cosh m :=
+    Real.one_lt_cosh.mpr hm.ne'
+  have hcoshPos : 0 < Real.cosh m :=
+    lt_trans (by norm_num) hcoshOne
+  have hr : 0 < Real.log (Real.cosh m) :=
+    Real.log_pos hcoshOne
+  have hcoshExp : Real.cosh m < Real.exp m := by
+    rw [Real.cosh_eq]
+    have hneg : Real.exp (-m) < Real.exp m :=
+      Real.exp_lt_exp.mpr (by linarith)
+    nlinarith
+  have hrm : Real.log (Real.cosh m) < m :=
+    (Real.log_lt_iff_lt_exp hcoshPos).2 hcoshExp
+  exact posC_of_posTwo hr hrm
+    (tanh_half_le_tanh_log_cosh_div_tanh hm) hc
+
 end RHTower

@@ -369,6 +369,52 @@ theorem mapL_mk
     mapL S f hf (mk S F) = mk S (f F) :=
   rfl
 
+/--
+A continuous complex-linear source observation annihilating `S` descends continuously from the
+compact-open quotient.
+-/
+def liftL
+    {M : Type*} [TopologicalSpace M] [AddCommGroup M]
+    [Module ℂ M]
+    (f : DeningerCompactOpenEntire →L[ℂ] M)
+    (hf : ∀ {F}, F ∈ S → f F = 0) :
+    DeningerCompactOpenQuotient S →L[ℂ] M where
+  toFun :=
+    Quotient.lift f fun x y hxy => by
+      have hrel :
+          QuotientAddGroup.leftRel S.toAddSubgroup x y :=
+        hxy
+      have hmem :=
+        QuotientAddGroup.leftRel_apply.mp hrel
+      change -x + y ∈ S at hmem
+      have hzero : f (-x + y) = 0 :=
+        hf hmem
+      have hneg : f (-x) = -f x := by
+        apply eq_neg_of_add_eq_zero_left
+        rw [← f.map_add, neg_add_cancel, f.map_zero]
+      rw [f.map_add, hneg] at hzero
+      exact neg_add_eq_zero.mp hzero
+  map_add' := by
+    rintro ⟨x⟩ ⟨y⟩
+    change f (x + y) = f x + f y
+    exact f.map_add x y
+  map_smul' := by
+    rintro c ⟨x⟩
+    change f (c • x) = c • f x
+    exact f.map_smul c x
+  cont :=
+    continuous_quot_lift _ f.continuous
+
+@[simp]
+theorem liftL_mk
+    {M : Type*} [TopologicalSpace M] [AddCommGroup M]
+    [Module ℂ M]
+    (f : DeningerCompactOpenEntire →L[ℂ] M)
+    (hf : ∀ {F}, F ∈ S → f F = 0)
+    (F : DeningerCompactOpenEntire) :
+    liftL S f hf (mk S F) = f F :=
+  rfl
+
 end DeningerCompactOpenQuotient
 
 /-- Unreduced compact-open middle cohomology as a topological complex quotient module. -/

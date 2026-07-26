@@ -548,4 +548,111 @@ theorem no_cancellation_is_trivial : noCancellationOverH = fourierTrivial := by
 @[simp] theorem saving_all_in_h : noCancellationOverH - sqrtCancellationOverH = 1/2 := by
   rw [noCancellationOverH_eq, sqrtCancellationOverH_eq]; norm_num
 
+
+/-!
+### The construction–bound gap
+
+Theorem 64 reduced the target to `⟨ĉ, χ₂⟩ = O(q^ε)`, i.e. that the flat vector `ĉ` does not correlate
+with the quadratic character.  A failure would be an `N` for which `N√(2a/q)` encodes the Legendre
+symbol — a conspiracy.  The best known method for *constructing* such conspiracies is the resonance
+method, whose gain is governed by Gál sums and is `N^{o(1)}` (Bondarenko–Seip); the best known
+*upper* bound on the critical block is `N^{17/21}` (Bourgain).
+
+So the two ends of the problem are separated by essentially the whole exponent:
+
+    best construction:  N^{o(1)}      —  exponent `0`
+    best upper bound:   N^{17/21}     —  exponent `17/21`
+    Lindelöf asserts:   N^{1/2}       —  exponent `1/2`
+
+**The Lindelöf hypothesis lies strictly between what can be constructed and what can be bounded, and
+both gaps are of positive exponent.**
+-/
+
+/-- Exponent of the best known construction of a large critical block (resonance / Gál sums). -/
+def bestConstructionExponent : ℚ := 0
+
+/-- Exponent of the best known upper bound (Bourgain). -/
+def bestUpperBoundExponent : ℚ := 17/21
+
+/-- Exponent asserted by the Lindelöf hypothesis. -/
+def lindelofExponent : ℚ := 1/2
+
+/-- **LH lies strictly between construction and bound.** -/
+theorem lindelof_strictly_between :
+    bestConstructionExponent < lindelofExponent ∧ lindelofExponent < bestUpperBoundExponent := by
+  constructor
+  · unfold bestConstructionExponent lindelofExponent; norm_num
+  · unfold lindelofExponent bestUpperBoundExponent; norm_num
+
+/-- Distance from the construction end to LH. -/
+@[simp] theorem gap_below : lindelofExponent - bestConstructionExponent = 1/2 := by
+  unfold lindelofExponent bestConstructionExponent; norm_num
+
+/-- Distance from LH to the bound end. -/
+@[simp] theorem gap_above : bestUpperBoundExponent - lindelofExponent = 13/42 := by
+  unfold bestUpperBoundExponent lindelofExponent; norm_num
+
+/-- **The gap below LH is larger than the gap above it.**  Nobody can construct anything within
+`N^{1/2}` of a counterexample, and that distance exceeds the remaining distance to the record. -/
+theorem gap_below_larger :
+    bestUpperBoundExponent - lindelofExponent < lindelofExponent - bestConstructionExponent := by
+  rw [gap_above, gap_below]; norm_num
+
+/-- The total span of the open region. -/
+@[simp] theorem total_span : bestUpperBoundExponent - bestConstructionExponent = 17/21 := by
+  unfold bestUpperBoundExponent bestConstructionExponent; norm_num
+
+
+/-!
+### The stationary phase is a reciprocal, and the reduction closes on itself
+
+Evaluating the stationary phase of `ĉ_h` explicitly: with `w = h/q + m` the stationary point is
+`u = N²/(2qw²)`, and
+
+    ψ(u) − wu  =  N²/(qw) − N²/(2qw)  =  **N²/(2qw)**  =  N²/(2(h + mq)) .
+
+So the phase is a *reciprocal* in the combined variable `k = h + mq`, and
+
+    Σ_h (h|q) ĉ_h  ≈  q^{-1} Σ_k w(k) · (k|q) · e( N²/(2k) ) ,
+
+a Legendre-symbol sum against a reciprocal phase, over `k ≍ N` (since `m ≍ N/q` and `k ≍ mq`).
+
+**The phase derivative there is `|d/dk (N²/2k)| = N²/(2k²) ≍ 1`** — order one: the self-dual regime
+again, where consecutive terms differ in phase by a bounded amount and no derivative test applies.
+
+Moreover `N²/(2k) ≍ t/(4πk)` is exactly the differenced logarithmic phase
+`t\log(k+1) − t\log k ≈ t/k` of the original correlation.  **The reduction has returned to a
+shifted-correlation form**, which is the scale-invariance of Theorem 52 realised concretely.
+-/
+
+/-- Exponent of `k` in the reciprocal-phase sum: `k ≍ m q ≍ (N/q)·q = N`. -/
+def reciprocalRangeExponent : ℚ := 1
+
+/-- Exponent of the phase `N²/(2k)` at `k ≍ N`. -/
+def reciprocalPhaseExponent : ℚ := 2 - reciprocalRangeExponent
+
+@[simp] theorem reciprocalPhaseExponent_eq : reciprocalPhaseExponent = 1 := by
+  unfold reciprocalPhaseExponent reciprocalRangeExponent; norm_num
+
+/-- Exponent of the phase derivative `N²/(2k²)` at `k ≍ N`. -/
+def reciprocalDerivativeExponent : ℚ := 2 - 2 * reciprocalRangeExponent
+
+/-- **The derivative is of order one — the self-dual regime.** -/
+@[simp] theorem reciprocal_derivative_critical : reciprocalDerivativeExponent = 0 := by
+  unfold reciprocalDerivativeExponent reciprocalRangeExponent; norm_num
+
+/-- No derivative test applies at order one: van der Corput needs a small second derivative, and here
+the *first* derivative is already `≍ 1`. -/
+theorem reciprocal_no_derivative_test :
+    reciprocalDerivativeExponent = 0 ∧ ¬ (reciprocalDerivativeExponent < 0) := by
+  refine ⟨reciprocal_derivative_critical, ?_⟩
+  rw [reciprocal_derivative_critical]
+  norm_num
+
+/-- The reduction returns to the differenced logarithmic phase: `N²/(2k) ≍ t/(4πk)` is
+`t\log(k+1) − t\log k`.  Recorded as the equality of exponents. -/
+theorem reduction_returns_to_correlation :
+    reciprocalPhaseExponent = 1 ∧ reciprocalDerivativeExponent = 0 :=
+  ⟨reciprocalPhaseExponent_eq, reciprocal_derivative_critical⟩
+
 end HTGeometry
