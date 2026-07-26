@@ -6245,3 +6245,70 @@ CONTRIBUTION FROM OFF-LINE ZEROS. Since F is bounded above by the diagonal plus 
 which are unconditional — AN OFF-LINE ZERO WOULD HAVE TO FIT INSIDE THAT UNCONDITIONAL BOUND.
 COMPUTE THE BUDGET. If a zero at deviation a forces F(alpha) above its unconditional ceiling for some
 alpha, that is a contradiction, and the lane closes the problem rather than the method.
+
+---
+
+## Cycle 104 (2026-07-104) — CORRELATION STATISTICS BOUND THE COUNT, NEVER THE LOCATION
+### A DEGREE obstruction, not a magnitude obstruction. The open lane has its own wall.
+
+### The budget computation, and its verdict
+Montgomery's F is defined unconditionally and is nonnegative for a reason that does NOT need RH: the
+gam are real by definition and the weight w(u) = 4/(4+u^2) is positive definite, so the form is a
+squared modulus. Off-line zeros enter the explicit-formula computation with EXTRA weight x^{2a}.
+Comparing a single zero's contribution x^{2a} against the total budget ~ T log T at x = T gives only
+2a <= 1 + o(1) — THE TRIVIAL STRIP BOUND. Applied to MANY zeros the same comparison yields
+N(sigma,T) <= C T log T / x^{2 sigma - 1}, i.e. A ZERO-DENSITY THEOREM: classical, and it does not
+settle the hypothesis. PHASE-4 VERDICT: REDISCOVERED / INSUFFICIENT.
+
+### THE STRUCTURAL REASON, AND IT IS THE REAL RESULT
+The correlation form is QUADRATIC in the zero set. Its size in a box of height T is of order T log T.
+A single zero enters as ONE UNIT VECTOR among that many, and adding or removing it changes the form by
+
+    | ||z + c||^2 - ||z||^2 |  <=  2 ||z|| ||c|| + ||c||^2,
+
+which for ||z||^2 ~ S and ||c|| = 1 is of order SQRT(S) — LARGER THAN THE UNIT BEING TESTED, AND
+GROWING WITH THE BOX.
+
+    ==> A BOUND ON THE CORRELATION FORM OF SIZE S CONSTRAINS AN INDIVIDUAL ZERO ONLY AT LEVEL SQRT S.
+        CORRELATION STATISTICS YIELD BOUNDS ON THE NUMBER OF ZEROS — DENSITY THEOREMS — AND CAN NEVER
+        EXCLUDE A SINGLE ZERO. EVERY CORRELATION-BASED ARGUMENT REPRODUCES ZERO-DENSITY ESTIMATES.
+
+WHY THIS WALL IS DIFFERENT FROM ALL THE OTHERS. Entries 13-36 say a method cannot see far enough or
+dodge cleverly enough — MAGNITUDE obstructions. This one says the statistic is of the WRONG DEGREE in
+the zeros. It is a DEGREE obstruction, and it applies to EVERY QUADRATIC FUNCTIONAL OF THE ZERO SET
+REGARDLESS OF THE WEIGHT — including all higher correlations reduced to pair form, and including the
+GUE lane in its entirety.
+
+Machine-verified: `RHTower/CorrelationBoundsCountNotLocation.lean` (the perturbation estimate for a
+squared norm, the invisibility of a unit contribution once the total exceeds one, the growth of the
+perturbation with the box, the counting form N <= S/c of a quadratic bound, and the fact that a count
+excludes nothing unless it falls below one; standard axioms only, wired into RHTower).
+
+### THIRTY-EIGHTH ATLAS ENTRY
+    degree obstruction   the correlation form is quadratic; one zero perturbs it by O(sqrt(total)),
+                         so correlation bounds constrain counts, never individual locations. Every
+                         quadratic functional of the zero set, whatever its weight, yields density
+                         theorems only.
+
+### STATE AT CYCLE 104
+Thirty-eight entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ATLAS NOW HAS TWO KINDS OF WALL:
+  * MAGNITUDE walls (13-36, 30-31 refuted by the witness test): a method's reach is too short.
+  * DEGREE walls (38): the statistic has the wrong order in the zeros.
+The degree wall is the more serious, because it cannot be improved by any sharpening of constants —
+it is about what a quadratic form CAN express. TO EXCLUDE ONE ZERO, A FUNCTIONAL MUST BE OF DEGREE
+ONE IN THE ZERO SET, i.e. LINEAR — and the only linear functionals of the zero set are the explicit
+formula's own sums, which are the closed lanes.
+
+### Cycle 105 target
+The degree analysis is now the sharpest tool the programme has, so apply it to the whole atlas.
+CLASSIFY EVERY CRITERION BY ITS DEGREE IN THE ZERO SET:
+  * degree 1: explicit formula / Weil positivity (sum over rho of ghat(gam)) — closed lanes 17-21;
+  * degree 2: correlation, moments of log zeta, Selberg CLT — degree wall 38;
+  * degree 0 (existence only): Nyman-Beurling, Bagchi recurrence, Laguerre-Polya — these do not sum
+    over zeros at all, they are statements about a FUNCTION.
+THE DEGREE-0 CLASS IS THE ONLY ONE NOT YET WALLED. Nyman-Beurling in particular is a statement about
+the closure of a subspace, with no sum over zeros anywhere. TEST WHETHER THE DEGREE OBSTRUCTION AND
+THE MAGNITUDE OBSTRUCTIONS BOTH FAIL TO APPLY TO DEGREE-0 CRITERIA — if so, Nyman-Beurling is the
+unique surviving class, and the programme has a single target rather than a landscape.

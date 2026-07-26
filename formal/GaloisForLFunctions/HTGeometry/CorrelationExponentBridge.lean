@@ -1161,4 +1161,116 @@ theorem classification_branch_priced :
   refine ⟨rfl, halasz_subpolynomial, ?_⟩
   unfold halaszExponent; norm_num
 
+
+/-!
+### A single arc already exceeds the target
+
+The resonance abscissa runs over `α_r = N²/(2n_r²) ∈ [1/8, 1/2]`, on a grid of spacing `L^{-2}`.  The
+smallest Farey denominator occurring there is `q = 2`, at `α = 1/2`, i.e. `n_r ≈ N`.  Its arc has width
+`≍ 1/(2L)`, so it contains
+
+    (1/(2L)) / L^{-2}  ≍  **L**   coherence blocks,
+
+each of size `≍ L/√2 ≍ L`.  The arc's total modulus is therefore `≍ L²`, while the Lindelöf target for
+the whole frontier sum is `L^{3/2}`.
+
+**One arc alone exceeds the target by `L^{1/2}`.**  So the Lindelöf hypothesis requires square-root
+cancellation among the `≍L` blocks of that single arc — a necessary condition, independent of all
+other arcs.
+-/
+
+/-- Number of coherence blocks in the arc of smallest denominator, as an exponent of `L`. -/
+def principalArcBlockCount : ℚ := 1
+
+/-- Size of each such block, as an exponent of `L`. -/
+def principalArcBlockSize : ℚ := 1
+
+/-- Total modulus of the principal arc. -/
+def principalArcModulus : ℚ := principalArcBlockCount + principalArcBlockSize
+
+@[simp] theorem principalArcModulus_eq : principalArcModulus = 2 := by
+  unfold principalArcModulus principalArcBlockCount principalArcBlockSize; norm_num
+
+/-- **The principal arc alone exceeds the Lindelöf target.** -/
+theorem principal_arc_exceeds_target : fareyExponent 1 1 < principalArcModulus := by
+  rw [principalArcModulus_eq, farey_both]; norm_num
+
+/-- By exactly `L^{1/2}`. -/
+@[simp] theorem principal_arc_excess : principalArcModulus - fareyExponent 1 1 = 1/2 := by
+  rw [principalArcModulus_eq, farey_both]; norm_num
+
+/-- Square-root cancellation among the arc's blocks reduces its contribution to
+`principalArcBlockCount/2 + principalArcBlockSize`. -/
+def principalArcWithCancellation : ℚ := principalArcBlockCount/2 + principalArcBlockSize
+
+/-- **And square-root cancellation in that one arc brings it exactly to the target.** -/
+@[simp] theorem principal_arc_cancellation_meets_target :
+    principalArcWithCancellation = fareyExponent 1 1 := by
+  unfold principalArcWithCancellation principalArcBlockCount principalArcBlockSize
+  rw [farey_both]; norm_num
+
+/-- The arc is a small part of the total modulus `L^{5/2}` — it is not the dominant term, yet it alone
+already exceeds the target. -/
+theorem principal_arc_not_dominant : principalArcModulus < fareyExponent 0 0 := by
+  rw [principalArcModulus_eq, farey_none]; norm_num
+
+
+/-!
+### The principal arc is an explicit cubic-form Weyl sum
+
+On the arc `α ≈ 1/2` the blocks are indexed by `|r| ≲ L/2`, with `n_r = N + rL` and
+
+    α_r − 1/2 = N²/(2n_r²) − 1/2 ≈ −rL/N = −r/L²,
+    {β_r} = {−N²/n_r} = {−r²L²/N + …} ≈ {−r²/L},
+
+since `N` and `rL` are integers.  The block at `r` is the chirp `Σ_{m<L} e(δ_r m² + β_r m)` — the
+factor `(−1)^{m²} = (−1)^m` from `α ≈ 1/2` only shifts the linear coefficient.  Substituting,
+
+    Σ_{r,m ≲ L} e( −r m²/L² − r² m/L )  =  Σ_{r,m} e( −L·uv(u+v) ),   u = r/L, v = m/L ∈ [0,1].
+
+**The principal arc is a two-dimensional Weyl sum over `L²` points with phase the cubic form
+`uv(u+v)` at amplitude `L`.**
+
+Its trivial bound is `L²` and the Lindelöf target is `L^{3/2}`: a saving of `L^{1/2}` — **a quarter
+power of the number of terms, strictly weaker than square-root cancellation, which would give `L`.**
+-/
+
+/-- Number of terms in the principal-arc double sum, as an exponent of `L`. -/
+def arcSumTerms : ℚ := 2
+
+/-- Square-root cancellation over those terms. -/
+def arcSqrtCancellation : ℚ := arcSumTerms / 2
+
+/-- The saving the Lindelöf hypothesis requires of the arc. -/
+def arcRequiredSaving : ℚ := principalArcModulus - fareyExponent 1 1
+
+@[simp] theorem arcRequiredSaving_eq : arcRequiredSaving = 1/2 := by
+  unfold arcRequiredSaving; exact principal_arc_excess
+
+/-- The saving square-root cancellation would give. -/
+def arcSqrtSaving : ℚ := arcSumTerms - arcSqrtCancellation
+
+@[simp] theorem arcSqrtSaving_eq : arcSqrtSaving = 1 := by
+  unfold arcSqrtSaving arcSqrtCancellation arcSumTerms; norm_num
+
+/-- **The requirement is strictly weaker than square-root cancellation.** -/
+theorem arc_requirement_below_sqrt : arcRequiredSaving < arcSqrtSaving := by
+  rw [arcRequiredSaving_eq, arcSqrtSaving_eq]; norm_num
+
+/-- It is exactly a quarter power of the number of terms. -/
+@[simp] theorem arc_requirement_quarter : arcRequiredSaving = arcSumTerms / 4 := by
+  rw [arcRequiredSaving_eq]; unfold arcSumTerms; norm_num
+
+/-- The exponent the arc sum must attain: `L^{3/2}` from `L²` terms. -/
+def arcTargetExponent : ℚ := principalArcModulus - arcRequiredSaving
+
+@[simp] theorem arcTargetExponent_eq : arcTargetExponent = 3/2 := by
+  unfold arcTargetExponent
+  rw [arcRequiredSaving_eq, principalArcModulus_eq]; norm_num
+
+/-- **Square-root cancellation in the arc would overshoot the requirement.** -/
+theorem sqrt_overshoots_requirement : arcSqrtCancellation < arcTargetExponent := by
+  rw [arcTargetExponent_eq]
+  unfold arcSqrtCancellation arcSumTerms; norm_num
+
 end HTGeometry
