@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MomentFunctionalPositivity
+import GaloisForLFunctions.RHTower.PrimeArchThetaWardLaplaceHalfDensity
 import GaloisForLFunctions.RHTower.ThetaSingleGibbsLikelihoodSingleLossClosure
 
 /-!
@@ -116,8 +117,62 @@ theorem thetaCuspFirstRadialQuadraticMorseSingleGibbsUpperValue_pos :
   exact lt_of_lt_of_le thetaCuspFirstRadialQuadraticVirialEnergy_pos
     thetaCuspFirstRadialQuadraticVirialEnergy_le_morseQuadraticEnvelopeUpperEnergy
 
-/-- Five quantitative source bounds actually used by the low-degree Gibbs certificate.  All sign
-conditions have been removed from this interface. -/
+/-- Hellinger fidelity between the two half-density endpoint channels gives a source-only
+upper bound for the zeroth first-atom Ward moment.  The bound is wide enough for the
+low-degree Gibbs certificate, so this quantity need not remain in its hypothesis interface. -/
+theorem thetaCuspFirstAtomWardMoment_zero_le_sevenThousandNineHundredTwentySix_div_oneHundredThousand :
+    thetaCuspFirstAtomWardMoment 0 ≤ (0.07926 : ℝ) := by
+  have hsq :=
+    thetaCuspAtomRawEvenMoment_zero_sq_add_orientation_sq_le_budget_sq
+      (n := 1) (by norm_num)
+  have hraw := thetaCuspAtomRawEvenMoment_one_eq_firstAtomWardMoment 0
+  have hW : 0 ≤ thetaCuspFirstAtomWardMoment 0 :=
+    thetaCuspFirstAtomWardMoment_nonneg 0
+  have he0 : 0 < Real.exp (-Real.pi) := Real.exp_pos _
+  have hcoef0 : 0 < 4 * Real.pi - 1 := by
+    nlinarith [Real.pi_gt_three]
+  have hbudget :
+      ((4 * Real.pi - 1) * Real.exp (-Real.pi)) ^ 2 ≤
+        ((4 * (3.14159265358979323847 : ℝ) - 1) *
+          (0.0432139182638 : ℝ)) ^ 2 := by
+    have hcoef :
+        4 * Real.pi - 1 ≤ 4 * (3.14159265358979323847 : ℝ) - 1 := by
+      nlinarith [Real.pi_lt_d20]
+    have hmul :
+        (4 * Real.pi - 1) * Real.exp (-Real.pi) ≤
+          (4 * (3.14159265358979323847 : ℝ) - 1) *
+            (0.0432139182638 : ℝ) := by
+      exact mul_le_mul hcoef exp_neg_pi_rationalEnclosure_upper he0.le
+        (by norm_num)
+    exact pow_le_pow_left₀ (mul_nonneg hcoef0.le he0.le) hmul 2
+  have horient :
+      (0.0432139182637 : ℝ) ^ 2 ≤ Real.exp (-Real.pi) ^ 2 := by
+    exact pow_le_pow_left₀ (by norm_num)
+      exp_neg_pi_rationalEnclosure_lower 2
+  rw [hraw] at hsq
+  norm_num at hsq
+  by_contra hnot
+  have hWlt : (0.07926 : ℝ) < thetaCuspFirstAtomWardMoment 0 :=
+    lt_of_not_ge hnot
+  have hrawLower :
+      (2 * (3.14159265358979323846 : ℝ) * (0.07926 : ℝ)) ^ 2 <
+        (2 * Real.pi * thetaCuspFirstAtomWardMoment 0) ^ 2 := by
+    have hbase :
+        2 * (3.14159265358979323846 : ℝ) * (0.07926 : ℝ) <
+          2 * Real.pi * thetaCuspFirstAtomWardMoment 0 := by
+      calc
+        2 * (3.14159265358979323846 : ℝ) * (0.07926 : ℝ) <
+            2 * Real.pi * (0.07926 : ℝ) := by
+              gcongr
+              exact Real.pi_gt_d20
+        _ < 2 * Real.pi * thetaCuspFirstAtomWardMoment 0 := by
+          gcongr
+    exact pow_lt_pow_left₀ hbase (by positivity) (by norm_num)
+  nlinarith
+
+/-- Four quantitative source bounds actually used by the low-degree Gibbs certificate after
+the zeroth Ward endpoint is supplied by half-density fidelity.  All sign conditions have been
+removed from this interface. -/
 structure ThetaCuspFirstAtomSingleGibbsEssentialBounds : Prop where
   ward_one_lower :
     (0.0036560148424 : ℝ) ≤ thetaCuspFirstAtomWardMoment 1
@@ -128,8 +183,6 @@ structure ThetaCuspFirstAtomSingleGibbsEssentialBounds : Prop where
   morse_upper_energy_upper :
     thetaCuspFirstRadialQuadraticMorseSingleGibbsUpperValue ≤
       (0.00397751749476338850697725 : ℝ)
-  ward_zero_upper :
-    thetaCuspFirstAtomWardMoment 0 ≤ (0.0790918959010 : ℝ)
 
 /-- Essential Ward--Stein--Morse bounds discharge the complete first-atom low-degree
 certificate. -/
@@ -157,8 +210,9 @@ theorem thetaCuspFirstAtomSingleGibbsLowDegreeCertificate_of_essentialBounds
     simpa [hCeq] using h.stein_coupling_lower
   have hU : U ≤ (0.00397751749476338850697725 : ℝ) := by
     simpa [U] using h.morse_upper_energy_upper
-  have hE0 : E0 ≤ (0.0790918959010 : ℝ) := by
-    simpa [hE0eq] using h.ward_zero_upper
+  have hE0 : E0 ≤ (0.07926 : ℝ) := by
+    simpa [hE0eq] using
+      thetaCuspFirstAtomWardMoment_zero_le_sevenThousandNineHundredTwentySix_div_oneHundredThousand
   have hJ0nonneg : 0 ≤ J0 := by
     rw [hJ0eq]
     exact thetaCuspFirstAtomWardMoment_nonneg 1
@@ -189,16 +243,16 @@ theorem thetaCuspFirstAtomSingleGibbsLowDegreeCertificate_of_essentialBounds
   · change 16 * ((3005 / 2997 : ℝ) * E0) *
       ((3005 / 2997 : ℝ) * J1) ≤ 45 * J0 ^ 2
     calc
-      16 * ((3005 / 2997 : ℝ) * E0) *
+          16 * ((3005 / 2997 : ℝ) * E0) *
           ((3005 / 2997 : ℝ) * J1) ≤
-          16 * ((3005 / 2997 : ℝ) * (0.0790918959010 : ℝ)) *
+          16 * ((3005 / 2997 : ℝ) * (0.07926 : ℝ)) *
             ((3005 / 2997 : ℝ) * (0.00047155079379 : ℝ)) := by
               gcongr
       _ ≤ 45 * (0.0036560148424 : ℝ) ^ 2 := by norm_num
       _ ≤ 45 * J0 ^ 2 := by gcongr
 
-/-- Existing rational moment boxes imply the five essential source-functional bounds.  Six of
-the eighteen moment endpoints are not used. -/
+/-- Existing rational moment boxes imply the four remaining essential source-functional bounds.
+Seven of the eighteen moment endpoints are not used. -/
 theorem thetaCuspFirstAtomSingleGibbsEssentialBounds_of_rationalMomentBounds
     (h : ThetaCuspFirstAtomSingleGibbsRationalMomentBounds) :
     ThetaCuspFirstAtomSingleGibbsEssentialBounds := by
@@ -250,8 +304,6 @@ theorem thetaCuspFirstAtomSingleGibbsEssentialBounds_of_rationalMomentBounds
             dsimp [B, D, A, L]
             ring
       _ ≤ _ := by linarith
-  · simp only [thetaCuspFirstAtomWardMoment]
-    linarith [exp_neg_pi_rationalEnclosure_upper, h.moment_zero_lower]
 
 /-- Compatibility: the old moment-box premise now factors through the essential five-bound
 interface. -/

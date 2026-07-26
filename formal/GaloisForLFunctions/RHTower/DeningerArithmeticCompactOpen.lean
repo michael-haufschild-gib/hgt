@@ -170,6 +170,16 @@ def deningerCompactOpenXiRange :
     Submodule ℂ DeningerCompactOpenEntire :=
   LinearMap.range deningerCompactOpenXiMul.toLinearMap
 
+/-!
+Pin the subtype negation to the one inherited through its additive-group structure.  Mathlib also
+provides a shortcut negation for submodules; the two are propositionally equal but not
+definitionally equal, which otherwise obstructs quotient relation proofs.
+-/
+local instance deningerCompactOpenCompatibleNeg :
+    Neg DeningerCompactOpenEntire :=
+  (inferInstance :
+    SubtractionMonoid DeningerCompactOpenEntire).toSubNegMonoid.toNeg
+
 /-- Quotient relation attached to a compact-open complex submodule. -/
 def deningerCompactOpenQuotientRel
     (S : Submodule ℂ DeningerCompactOpenEntire) :
@@ -216,8 +226,9 @@ instance instSMul :
           QuotientAddGroup.leftRel S.toAddSubgroup x y :=
         hxy
       apply QuotientAddGroup.leftRel_apply.mpr
-      have hmem : -x + y ∈ S :=
+      have hmem :=
         QuotientAddGroup.leftRel_apply.mp hrel
+      change -x + y ∈ S at hmem
       change -(c • x) + c • y ∈ S
       have hneg : c • (-x) = -(c • x) :=
         @smul_neg ℂ DeningerCompactOpenEntire _ _ c x
@@ -287,8 +298,9 @@ def mapL
           QuotientAddGroup.leftRel S.toAddSubgroup x y :=
         hxy
       apply QuotientAddGroup.leftRel_apply.mpr
-      have hmem : -x + y ∈ S :=
+      have hmem :=
         QuotientAddGroup.leftRel_apply.mp hrel
+      change -x + y ∈ S at hmem
       change -f x + f y ∈ S
       have himg : f (-x + y) ∈ S :=
         hf hmem
@@ -301,7 +313,8 @@ def mapL
       exact himg
   map_add' := by
     rintro ⟨x⟩ ⟨y⟩
-    rfl
+    change mk S (f (x + y)) = mk S (f x) + mk S (f y)
+    rw [f.map_add, mk_add]
   map_smul' := by
     rintro c ⟨x⟩
     exact congrArg (mk S) (f.map_smul c x)

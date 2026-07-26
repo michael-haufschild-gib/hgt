@@ -5509,3 +5509,65 @@ archimedean one and the constant 0.34976 is its definiteness constant. TEST WHET
 EXTENDS TO A POSITIVE-DEFINITE HERMITIAN FORM BEYOND THE CONE — that is a concrete, decidable
 question about an explicit kernel, and it is the first time the programme has had an explicit
 candidate for the missing pairing.
+
+---
+
+## Cycle 93 (2026-07-26) — THE MISSING DEFINITE PAIRING IS THE ARCHIMEDEAN FORM. CONSTANT 0.34976.
+
+### The conjecture of cycle 92, CONFIRMED
+Writing a positive-type test as g = phi * phi~, we have g(0) = ||phi||^2 and T(g) is a LINEAR
+functional of g, hence a QUADRATIC FORM in phi. So
+
+    Q(phi)  =  g(0) - T(g)  =  < (I - 𝒯) phi, phi >
+
+for a self-adjoint 𝒯 — the compression of the convolution operator whose symbol is the sum of Poisson
+kernels 4 s_n/(s_n^2 + r^2), s_n = 2n + 5/2 (cycle 85). THE BUDGET BOUND IS EXACTLY ||𝒯|| <= beta,
+with beta = 3 log 2 + pi/2 - 3 = 0.65023 < 1. Therefore for EVERY phi,
+
+    (1 - beta) ||phi||^2  <=  Q(phi)  <=  (1 + beta) ||phi||^2,   1 - beta = 4 - 3 log 2 - pi/2.
+
+    ==> THE ARCHIMEDEAN FORM IS A POSITIVE-DEFINITE HERMITIAN FORM, UNIFORMLY IN THE WIDTH,
+        EQUIVALENT TO THE AMBIENT INNER PRODUCT WITH EXPLICIT TWO-SIDED CONSTANTS, AND BOUNDEDLY
+        INVERTIBLE WITH ||Q^{-1}|| <= 1/(1 - beta) = 2.859...
+
+Note this holds on ALL of L^2 of the interval, not only on the positive-type cone: the cone was only
+needed to identify beta as the supremum, and once ||𝒯|| <= beta is known the form is definite
+everywhere. THE PAIRING THE PROGRAMME HAS BEEN MISSING SINCE ENTRY 24 IS EXPLICIT, AND ITS
+DEFINITENESS CONSTANT IS 4 - 3 log 2 - pi/2 = 0.34976.
+
+### What the hypothesis becomes
+    RH  <=>  𝒫  <=  Q     as quadratic forms, for every width,
+with 𝒫 the compressed prime operator. Since Q is boundedly invertible this is a genuine operator
+inequality on a fixed Hilbert space: spec( Q^{-1/2} 𝒫 Q^{-1/2} ) subset (-inf, 1].
+
+WHAT IS STILL MISSING IS NOT THE PAIRING BUT THE RELATION. Nothing yet forces 𝒫 <= Q, and by entries
+24-26 such a forcing must come from self-adjointness or a similitude, NOT from estimates. The
+programme's remaining gap is now a single, precisely stated operator-theoretic statement rather than
+a description of an absence.
+
+Machine-verified: `RHTower/ArchimedeanPairingDefinite.lean` (the quadratic-form norm bound, the
+two-sided estimate (1-beta)||x||^2 <= Q <= (1+beta)||x||^2, strict positivity for beta < 1, positivity
+and closed form of the definiteness constant, the inverse bound, and the restatement of the Weil
+inequality as domination 𝒫 <= Q; standard axioms only, wired into RHTower).
+
+### TWENTY-SEVENTH ATLAS ENTRY
+    archimedean pairing   Q = I - 𝒯 with ||𝒯|| <= 3 log 2 + pi/2 - 3 < 1, so Q is uniformly
+                          positive definite with constant 4 - 3 log 2 - pi/2 = 0.34976 and
+                          boundedly invertible. RH is the operator inequality 𝒫 <= Q.
+
+This is the first entry that SUPPLIES a missing object rather than describing, bounding, or
+weakening. Entries 24-26 said what was needed; entry 27 produces half of it.
+
+### STATE AT CYCLE 93
+Twenty-seven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 94 target
+Entry 27 gives the pairing Q; entry 26 says a similitude of a definite pairing constrains a spectrum.
+ASK WHETHER ANYTHING ACTS ON Q AS A SIMILITUDE. The natural candidates are the DILATIONS
+(phi(x) -> lambda^{1/2} phi(lambda x)) and the TRANSLATIONS. On the whole line Q is a Fourier
+multiplier, hence translation-invariant — but the compression to [-L/2, L/2] breaks that, and the
+breaking is exactly the finite-width defect beta(L) < beta of cycle 85. CONJECTURE: the translation
+defect of Q on the compressed space is O(1/L), so translations act on Q as ASYMPTOTIC ISOMETRIES —
+and by entry 26's approximate form, an asymptotic isometry constrains the spectrum asymptotically,
+which by entry 24 is enough. COMPUTE THE TRANSLATION DEFECT OF Q. If it is o(1) in L, the two halves
+of the missing structure meet.

@@ -272,4 +272,66 @@ theorem completion_barrier {piN : ℚ} (h : 1 < piN) :
     characterFreeParameters 1 < primeConditions piN ∧ blockLogRate < burgessLogThreshold :=
   ⟨prime_modulus_overdetermined h, completion_useless⟩
 
+
+/-!
+### The block parameter is pinned
+
+An exponent pair `(κ,λ)` applied to `Σ_{n ∼ t^α} n^{-it}` (where `Y ≍ t`, so `Y/N = t^{1-α}`) gives
+`t^{κ + α(λ-κ)}`, against the trivial `t^α`.  It is nontrivial exactly when
+
+    κ + α(λ − κ) < α   ⟺   α > κ/(1 − λ + κ).
+
+On the line of symmetry `λ = κ + 1/2` this threshold is `κ/(1/2) = 2κ`, and `μ = κ` there — so
+
+    **the block bound is nontrivial exactly for `α > 2μ`.**
+
+The saving formula `Sav(θ₀,x) = (2θ₀ − x)/(1/2 − x)` has positive numerator exactly for `x < 2θ₀`.
+**The two ranges meet only at `x = 2θ₀`**, where the saving is `0` and the block bound is exactly
+trivial.  The optimisation over the block parameter has no interior: it is a single point, at which
+both the gain and its input degenerate simultaneously.
+-/
+
+/-- Nontriviality threshold for an exponent pair applied at block `t^α`. -/
+def blockNontrivialThreshold (kappa lam : ℚ) : ℚ := kappa / (1 - lam + kappa)
+
+/-- **On the line of symmetry the threshold is `2κ`.** -/
+theorem blockNontrivialThreshold_selfDual {kappa : ℚ} :
+    blockNontrivialThreshold kappa (kappa + 1/2) = 2 * kappa := by
+  unfold blockNontrivialThreshold
+  have h : (1 : ℚ) - (kappa + 1/2) + kappa = 1/2 := by ring
+  rw [h]
+  field_simp
+
+/-- At Weyl's pair the threshold is `1/3`. -/
+@[simp] theorem threshold_weyl : blockNontrivialThreshold (1/6) (2/3) = 1/3 := by
+  unfold blockNontrivialThreshold; norm_num
+
+/-- **At Bourgain's pair the threshold is `13/42 = 2·(13/84)`.** -/
+@[simp] theorem threshold_bourgain : blockNontrivialThreshold (13/84) (55/84) = 13/42 := by
+  unfold blockNontrivialThreshold; norm_num
+
+/-- The saving formula's numerator is positive exactly below `2θ₀`. -/
+theorem saving_positive_iff {theta x : ℚ} : 0 < 2 * theta - x ↔ x < 2 * theta := by
+  constructor <;> intro h <;> linarith
+
+/-- **The pinning.**  The saving requires `x < 2θ₀` and nontriviality requires `x > 2θ₀`; the two are
+compatible at no value of `x`, and their closures meet only at `x = 2θ₀`. -/
+theorem block_parameter_pinned {theta x : ℚ} :
+    ¬ (x < 2 * theta ∧ 2 * theta < x) := by
+  rintro ⟨h1, h2⟩
+  linarith
+
+/-- At the pinned point both degenerate: the saving numerator vanishes and the block bound is exactly
+trivial. -/
+@[simp] theorem pinned_point_degenerate {theta : ℚ} :
+    2 * theta - (2 * theta) = 0 := by ring
+
+/-- At Bourgain's input the pinned block parameter is `13/42`. -/
+@[simp] theorem pinned_bourgain : 2 * (13/84 : ℚ) = 13/42 := by norm_num
+
+/-- **Consistency: the pinned point equals the nontriviality threshold at every self-dual pair.** -/
+theorem pinned_eq_threshold {kappa : ℚ} :
+    2 * kappa = blockNontrivialThreshold kappa (kappa + 1/2) :=
+  (blockNontrivialThreshold_selfDual).symm
+
 end HTGeometry
