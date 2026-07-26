@@ -115,3 +115,33 @@ definitions, 50 undischarged interfaces.
 | `HTGeometry.IsConstantMvPolynomial` | characterized by total degree (`isConstantMvPolynomial_iff_totalDegree_eq_zero`); the nonconstancy premise removed from block independence and iterated dimension drop for coordinate families |
 | `HTGeometry.PointFiniteFacetFamily` | realized: `pointFiniteFacetFamily_of_finite_vertices`, `pointFiniteFacetFamily_of_pairwise_disjoint`, `consecutivePairFacets_pointFinite`; premise removed from the universal-source constraint law |
 
+
+## Second-order audit: grounding fixpoint
+
+The first pass counted an interface as produced when its name occurred in some conclusion.  That
+over-counts: an `↔`-characterization exhibits no witness, and a producer may itself assume another
+ungrounded interface.  The stronger criterion is a least fixpoint — `P` is **grounded** when some
+theorem concludes `P` and every project-`Prop` hypothesis of that theorem is already grounded.
+
+On the pre-discharge snapshot the fixpoint terminates in 3 rounds with 384 of 1 722 interfaces
+grounded and **66** consumed-but-ungrounded in the three areas.  Fifty of those are the first
+worklist; the remaining **16** were invisible to the first pass, and two of them
+(`RHTower.SuzukiHermiteBiehler`, `HTGeometry.PrimeTailShiftInvariant`) were grounded incidentally by
+the first round of work.
+
+| consumers | interface | resolution |
+|---:|---|---|
+| 15 | `FiniteDimensionalSmoothWaringThreeScaleCertificate` | grounded: `finiteDimensionalSmoothWaring_threeScaleCertificate_of_totalMembranes` discharges the three membrane-locality premises and the three valence bounds on total membranes; the remaining geometric input, projective smoothness, is realized in every degree by the Fermat form |
+| 12 | `IsAffineDifferentialIdeal` | realized by `⊥` (the affine actions are ring equivalences, so they detect the zero ideal) and `⊤` |
+| 6 | `MvPolynomialProjectivelySmooth` (upgrade) | now realized **nontrivially in every degree**: `mvPolynomialProjectivelySmooth_fermat`, hence for the identity Waring form |
+| 5 | `AutonomousAnnihilator` | realized by `0` and by the exponential's own relation `y' - y`, which makes the minimal-degree selection theorem premise-free for `exp` |
+| 5 | `IsMixedPrimeWord` | realized by every two-letter word with distinct letters |
+| 4 | `SignedBaseJetEquivalentFamilies`, 2 `SignedBaseJetEquivalent` | realized by reflexivity (all jets of the zero difference are embedded constants) |
+| 3 | `CompatibleAdditiveCocycle` | realized by the defect data of an arbitrary tuple, through the corpus bridge `CompatiblePrimitiveSystem.toCompatibleAdditiveCocycle` |
+| 2 | `IsUniformlyBoundedAround` | realized by constant transports |
+| 2 | `OrientedGammaAlienChargeZero` | realized by the empty factor family |
+| 2 | `RationallyCommensurablePeriods` | realized by rational multiples of one nonzero direction |
+| 2 | `IsDifferentialPolynomialScaleTwoStable` | realized by `⊥` and `⊤` |
+| 1 | `AnnihilatesDigamma` | realized by `0` |
+| 1 | `HasNonrealPeriodRatio` | realized by the pair `1, i` |
+| 1 | `HasPolynomialFunctionalProjectiveBoundary` | consistent (empty coefficient class); substantive content is the Montel-type statement |

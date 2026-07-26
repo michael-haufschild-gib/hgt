@@ -52,3 +52,5 @@ This umbrella owns metric and Hilbert-space laws that are mathematically indepen
 `HTGeometry` and `RHTower` theorem areas.  Parent infrastructure is imported here before the
 Gaussian feature-determinant layer built on top of it.
 -/
+import GaloisForLFunctions.HilbertMetric.HilbertLineCommutatorCurvature
+import GaloisForLFunctions.HilbertMetric.QuadraticGraphFockConnector

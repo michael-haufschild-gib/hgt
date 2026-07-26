@@ -264,3 +264,66 @@ named external open core.  Two named follow-up constructions remain, each record
 the differential-algebraic closure as an `IntermediateField` (which would upgrade the exponential-gauge
 realization from the unit gauge to the meromorphic gauge `u c = exp (c h)`), and Lindemann–Weierstrass
 (which would settle stage one of the Schanuel interface).
+
+## Verification state (2026-07-26)
+
+- 48 modules touched or added; each verified with `lake env lean <file>` with no errors and no
+  warnings.
+- Every new capstone checked with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`
+  (several need fewer).  No `sorry`, `axiom`, `admit`, `opaque` or `unsafe` anywhere.
+- All new modules are registered in their theorem-area umbrella; `formal_tools.py lint` reports zero
+  unreachable modules among them and no proof debt.  The lint gate as a whole currently fails only on
+  twelve modules added by concurrent work and not yet registered in their umbrellas — none of them
+  from this card.
+
+## Second-order audit (grounding fixpoint), 2026-07-26
+
+Mentioning an interface in a conclusion is not the same as witnessing it.  Recomputing with a least
+fixpoint — `P` grounded iff some theorem concludes `P` with all project-`Prop` hypotheses already
+grounded — gives 384 grounded of 1 722, and **66** consumed-but-ungrounded in the three areas: the
+first fifty plus **16** that the head-occurrence filter had hidden.  All sixteen are now resolved
+(table on the worklist), the two structural ones being:
+
+- `FiniteDimensionalSmoothWaringThreeScaleCertificate` (15 consumers): the corpus already had the
+  builder `finiteDimensionalSmoothWaring_threeScaleHolographicUniversality`, but it consumed three
+  membrane-locality interfaces that were themselves ungrounded.  Total membranes discharge all three
+  and give valence exactly the ambient rank, leaving projective smoothness as the single geometric
+  input (`ThreeScaleCertificateWitnesses.lean`).
+- `MvPolynomialProjectivelySmooth`: previously realized only by linear forms.  The Fermat form
+  `∑ᵢ Xᵢ ^ d` is projectively smooth in every positive degree in characteristic zero — its `j`-th
+  partial derivative is `d · Xⱼ ^ (d-1)`, nonzero wherever the `j`-th coordinate is
+  (`FermatWaringSmoothWitnesses.lean`).  Composed with the previous item, the whole three-scale
+  holographic surface is grounded on the identity Waring form.
+
+## Third layer: joint realization
+
+Grounding each interface separately does not make a multi-premise theorem non-vacuous: the premises
+must be satisfiable *simultaneously*.  Scanning the three areas for theorems with three or more
+project-`Prop` hypotheses gives 20 candidates in six families.  Status:
+
+- `fullCCR_*` (6 theorems; invariance + block commutation + block CCR): jointly realized already by
+  `exists_invariant_commuting_blockCCRTuple` (unconditional) and by
+  `exists_gaussianCoherentInvariantBlockCCRTuple` (nonzero compression).
+- `smoothMvWaring_*` and `finiteDimensionalSmoothWaring_*` (4 theorems; smoothness + membrane locality
+  + valence): jointly realized by the Fermat form with total membranes — see
+  `ThreeScaleCertificateWitnesses.lean` and `FermatWaringSmoothWitnesses.lean`.
+- `exists_two_coface_directions_of_pure_ridgeThick` (purity + ridge thickness + face): jointly
+  realized by the boundary complex of a simplex (`SimplexBoundaryWitnesses.lean`), giving the
+  premise-free `exists_two_coface_directions_simplexBoundary`. **Done.**
+- `matrixPrincipalLowerLaw_*` (4 theorems; differential independence + lower law + flatness):
+  flatness is realized by every direction-independent layer symbol and the lower law by the
+  block-diagonal action with vanishing remainder (`MatrixPrincipalSymbolWitnesses.lean`). **Done.**
+- `DifferentialMatroidGluing` (2 theorems; independence + free translates + cross neutrality):
+  jointly realized in the free (cardinality) rank model over `iota × ℤ` with the fibrewise shift —
+  cross neutrality holds because the off-star is fixed pointwise (`FreeRankGluingWitnesses.lean`).
+  **Done** (`freeRank_graphGluing_hypotheses`).
+  A first reading suggested the triple was self-contradictory; it is not — the interfaces are applied
+  to the star and to its complement, which are different sets.  Recorded because the same argument
+  *does* kill the triple when all three are applied to one nonempty set: independence forces
+  `ρ = card`, free translates give a disjoint translate inside the set, and cross neutrality then
+  forces `card = 2 · card`.
+- `exists_hypertranscendental_atom_of_scalarAwareFiniteDifferentialCircuit`,
+  `exists_mappedCrossRelation_saturation`,
+  `weightedBoundaryCarrierExpandedPatternRelation_coefficients_eq_zero`,
+  `clockOrderEscapes_of_stagewiseDA_not_inverseLimitDA`: joint realization still open, each requiring
+  a concrete analytic source.

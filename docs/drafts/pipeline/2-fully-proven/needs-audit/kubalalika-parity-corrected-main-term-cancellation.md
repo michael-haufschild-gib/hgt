@@ -3,7 +3,8 @@
 - **ID:** `kubalalika-parity-corrected-main-term-cancellation`
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / exact obstruction to a claimed RH disproof
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [SIGNIFICANT ROUTE KILL] [NOT FORMALIZED]`
+- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [SIGNIFICANT ROUTE KILL]`
+  `[SECTION 4 CORE FORMALIZED IN LEAN, AXIOMS CLEAN]`
 - **Source:** Tatenda Kubalalika, *The Riemann Hypothesis is False*, equations (15)--(17),
   (27)--(32), (53)--(57); the prime number theorem; the odd-harmonic Fourier series
 - **Statement:** Restoring the parity condition omitted in the near-diagonal substitution replaces
@@ -124,8 +125,18 @@ the claimed nonzero main term vanishes.
 - [x] Difference evaluated exactly by the alternating harmonic series.
 - [x] Corrected large-`n` term matched against the small-`n` Landau--Gonek term.
 - [ ] Independent novelty/priority audit.
-- [ ] Formalize only if the obstruction becomes a reusable dependency; it cannot produce
-  `not RiemannHypothesis`.
+- [x] Section 4 formalized in Lean, equations (7)--(8) included:
+  `GaloisForLFunctions.HTGeometry.SgnSinIntegral.integral_sign_sin_mul_inv_sq_Ici` proves
+  `int_{[a,infty)} sgn(sin x)/x^2 = 1/a - (2/pi) log 2` for every `1 <= a <= pi`, and
+  `sgnSin_endpoint_difference` proves `J(1) - J(2) = (2/pi) log 2`. Unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- [x] Section 1 formalized in Lean: `GaloisForLFunctions.HTGeometry.NearDiagonalParity`
+  (`range_nearDiagonalSubst`, `range_nearDiagonalSubst_of_odd`,
+  `exists_pow_two_of_even_of_vonMangoldt_ne_zero`).
+- [ ] Section 2 (the odd-harmonic Fourier identity) formalizable but not yet built; see the route
+  note below.
+- [ ] Section 3 remains outside scope: prime number theorem plus the preprint's contour machinery,
+  neither in the corpus.
 
 ## Log
 
@@ -161,3 +172,107 @@ the claimed nonzero main term vanishes.
   second named piece, the decomposition of the improper integral over `[1,infty)` into the countable
   disjoint family `((2k-1)pi, 2k pi)` on which `sin` is negative. Sections 1--3 remain tied to the
   preprint's contour machinery and are not in scope.
+- 2026-07-26 -- Prerequisite for the second missing piece built:
+  `GaloisForLFunctions.HTGeometry.SinSignIntervals` gives the global sign characterisation of the
+  real sine, which mathlib does not carry (it supplies only the first half-period plus the
+  reflection `sin (x + n pi) = (-1)^n sin x`). Axioms clean.
+  * `sin_eq_zpow_mul_sin_sub` -- reduction of `sin x` to its first half-period;
+  * `sin_neg_of_mem_oddInterval`, `sin_pos_of_mem_evenInterval` -- the sign on each half-period;
+  * `exists_int_mem_halfPeriod` -- every real lies in `[m pi, (m+1) pi)` with `m = floor (x/pi)`;
+  * `sin_neg_iff` -- **`sin x < 0` iff `x` lies in some odd half-period `((2k+1)pi, (2k+2)pi)`**;
+  * `pairwise_disjoint_oddInterval` -- the odd half-periods are pairwise disjoint;
+  * `zero_le_of_oddInterval_mem_Ici` -- an odd half-period meeting `[1,infty)` has index `k >= 0`,
+    so the decomposition of `int_1^infty` is indexed by the naturals.
+
+  This is exactly the set-level input the card's Section 4 needs: the square wave `sgn (sin x)` has
+  `{x : sin x < 0}` equal to a countable disjoint union of explicit intervals, all of which lie in
+  `[1,infty)`. What remains is the measure-theoretic assembly: `integral_iUnion` over that family,
+  `int_a^b x^-2 = 1/a - 1/b`, and summing with `tsum_alternatingHarmonicPair` (already built) to
+  reach `int_1^infty sgn(sin x)/x^2 dx = 1 - (2/pi) log 2`.
+- 2026-07-26 -- Second missing piece substantially built
+  (`GaloisForLFunctions.HTGeometry.SgnSinIntegral`), axioms clean:
+  * `oddHalfPeriod` -- the family `((2k+1)pi, (2k+2)pi)` indexed by the naturals, with
+    `measurableSet_oddHalfPeriod`, `oddHalfPeriod_subset_Ici` (each lies in `[1,infty)` since
+    `pi > 1`) and `pairwise_disjoint_oddHalfPeriod`;
+  * `Ici_inter_sin_neg_eq_iUnion` -- **the decomposition the card asked for**:
+    `[1,infty) inter {sin < 0} = union_k oddHalfPeriod k`, the natural indexing coming from
+    `zero_le_of_oddInterval_mem_Ici`;
+  * `integral_inv_sq_oddHalfPeriod` -- `int_{I_k} x^-2 = 1/((2k+1)pi) - 1/((2k+2)pi)`;
+  * `tsum_integral_inv_sq_oddHalfPeriod` -- **`sum_k int_{I_k} x^-2 = (log 2)/pi`**, obtained by
+    factoring `1/pi` out of `tsum_alternatingHarmonicPair`.
+
+  So the mass that the square wave removes from `int_1^infty x^-2 = 1` is exactly `(log 2)/pi`, and
+  the card's Section 4 value `1 - (2/pi) log 2` follows once the final Bochner assembly is written:
+  `integral_iUnion` over the disjoint family (hypotheses now all available), the null-set argument
+  discarding `{sin = 0} = pi * ZZ` (countable), and `int_{Ici 1} x^-2 = 1`.
+- 2026-07-26 -- **Section 4 closed in Lean.**
+  `GaloisForLFunctions.HTGeometry.SgnSinIntegral.integral_sign_sin_mul_inv_sq_Ici_one`:
+  `int_{[1,infty)} Real.sign (sin x) * (x^2)^{-1} = 1 - (2/pi) log 2`, unconditional, axioms clean.
+  Supporting results in the same module: `integrableOn_inv_sq_Ici_one`, `integral_inv_sq_Ici_one`
+  (`int_{[1,infty)} x^-2 = 1`), `sinNegAboveOne` with `measurableSet_sinNegAboveOne` and
+  `sinNegAboveOne_subset_Ici`, `integral_indicator_sinNegAboveOne` (the removed mass is
+  `(log 2)/pi`), and `ae_sin_ne_zero` (the zero set `pi * ZZ` is countable, hence null, so the
+  three-valued `Real.sign` may be replaced almost everywhere by `1 - 2 * indicator`).
+
+  All three pieces the 2026-07-24 assessment named as blocking are now built and none needed the
+  anticipated Abel summation: the grouped alternating harmonic value came from mathlib's
+  Euler--Mascheroni limit (`AlternatingHarmonicPair`), the interval decomposition from a new global
+  sign characterisation of `sin` (`SinSignIntervals`), and the assembly from `integral_iUnion` over
+  the disjoint half-periods.
+
+  The card's own gate wording ("formalize only if the obstruction becomes a reusable dependency") is
+  now satisfied on the reusability side: `SinSignIntervals` and `AlternatingHarmonicPair` are
+  general-purpose and independent of this preprint.
+- 2026-07-26 -- Equations (7)--(8) closed, completing Section 4. The right generalisation removed
+  the need for any interval-integral or sign-positivity argument on `[1,2]`: since every odd
+  half-period starts at or beyond `pi` (`sinNegAboveOne_subset_Ici_of_le_pi`), the square-wave defect
+  is the *same* for every base point `a` in `[1, pi]`, so
+  `integral_sign_sin_mul_inv_sq_Ici : int_{[a,infty)} sgn(sin x)/x^2 = 1/a - (2/pi) log 2`.
+  Specialising to `a = 1` and `a = 2` (legitimate because `2 <= pi`) and forming `I(1) - 2 I(2)`
+  gives `sgnSin_endpoint_difference : J(1) - J(2) = (2/pi) log 2` -- exactly the card's `(8)`, hence
+  the `+log(2)/(2 pi)` coefficient that cancels the small-`n` Landau--Gonek term.
+
+  Also generalised in passing: `integral_inv_sq_Ici` (`int_{[a,infty)} x^-2 = 1/a`) and
+  `integrableOn_inv_sq_Ici`, both for arbitrary `a > 0`.
+
+  Section 4 of the card is now fully formalized. Sections 1--3 stay out of scope: they rest on the
+  preprint's contour machinery and the prime number theorem input, neither of which is in the corpus.
+- 2026-07-26 -- **Section 1 formalized** (`GaloisForLFunctions.HTGeometry.NearDiagonalParity`),
+  axioms clean. This is the actual error the card identifies, now machine-checked:
+  * `nearDiagonalSubst m n = 2n - m` with `two_mul_eq_add_nearDiagonalSubst` and
+    `nearDiagonalSubst_injective`;
+  * `range_nearDiagonalSubst : Set.range (nearDiagonalSubst m) = {r | Even (r + m)}` -- **the lost
+    lattice condition**: the substitution reaches exactly the parity class of `m`, not all `r`;
+  * `not_surjective_nearDiagonalSubst` -- so an unrestricted sum over `r` is provably not the
+    substituted sum;
+  * `range_nearDiagonalSubst_of_odd` -- for odd `m` the reachable `r` are exactly the odd ones,
+    which is the restriction that turns the sawtooth kernel into the square wave;
+  * `exists_pow_two_of_even_of_vonMangoldt_ne_zero` -- an even integer with `Lambda m != 0` is a
+    power of two, with contrapositive `vonMangoldt_eq_zero_of_even_of_not_pow_two`. This is the
+    card's reduction of the even-`m` correction to the powers of two.
+
+  Route note for Section 2, so it is not re-planned from scratch. The identity
+  `sum_{r odd} sin(r theta)/r = (pi/4) sgn(sin theta)` is *conditionally* convergent, so it is not a
+  `tsum` statement: it must be phrased as convergence of the partial sums. The intended route is
+  (i) Dirichlet test for convergence, (ii) mathlib's Abel limit theorem
+  (`Mathlib/Analysis/Complex/AbelLimit.lean`, `tendsto_tsum_powerSeries_nhdsWithin_stolzSet`) to
+  identify the limit with the radial limit, (iii) the radial limit from
+  `Complex.hasSum_taylorSeries_neg_log`, giving `(1/2) arg((1+e^{i theta})/(1-e^{i theta}))` and
+  hence `(pi/4) sgn(sin theta)`. The `sgn(sin)` side is already available from
+  `HTGeometry/SinSignIntervals.lean`.
+- 2026-07-26 -- Section 2 groundwork: the **odd Dirichlet kernel**
+  (`GaloisForLFunctions.HTGeometry.OddDirichletKernel`), axioms clean. Corpus search found
+  `RHTower.sum_cos_closed_form`, the general arithmetic-progression cosine sum in *polar* form under
+  a complex hypothesis on `e^{i beta}/(1 - e^{i theta})`; the closed forms here are the real
+  specialisation (`beta = theta`, common difference `2 theta`) and are proved directly by
+  telescoping, which is shorter than discharging that hypothesis.
+  * `two_mul_sin_mul_cos`, `two_mul_sin_mul_sin` -- the product-to-sum steps;
+  * `sum_cos_odd` -- `sum_{k<N} cos((2k+1)theta) = sin(2 N theta) / (2 sin theta)`;
+  * `sum_sin_odd` -- `sum_{k<N} sin((2k+1)theta) = sin(N theta)^2 / sin theta`;
+  * `abs_sum_cos_odd_le`, `abs_sum_sin_odd_le` -- the partial sums are bounded uniformly in `N` by
+    `1/(2|sin theta|)` and `1/|sin theta|`.
+
+  The uniform bound is exactly the Dirichlet-test input for the conditionally convergent series
+  `sum sin((2k+1)theta)/(2k+1)`, i.e. step (i) of the route recorded above; it is also the source of
+  the "standard Dirichlet-kernel errors" that the card's truncation estimate `(3)` invokes. Steps
+  (ii)-(iii), Abel's limit theorem and the radial limit of `-log(1-z)`, remain.

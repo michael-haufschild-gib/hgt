@@ -1,8 +1,8 @@
 # Gaussian Hilbert transverse-degree phase transition
 
 - **ID:** gaussian-hilbert-transverse-degree-phase-transition
-- **Stage:** 2-fully-proven
-- **Type:** FAILURE-DRIVEN UNIVERSAL LAW / GAUSSIAN COUNTEREXAMPLE
+- **Stage:** 3-formalized
+- **Type:** FAILURE-DRIVEN UNIVERSAL LAW / GAUSSIAN COUNTEREXAMPLE (Lean)
 - **Novelty:** `[NOVELTY UNVERIFIED]`; exact searches have not located an equivalent result
 - **Parent card:** `gaussian-hilbert-fano-curvature`
 
@@ -469,3 +469,9 @@ open core is the low-ambient boundary conjecture on the parent in-progress card.
 - 2026-07-19 -- formalized the unisolvent construction, moment cancellation, full collision
   matrix 2-jet, eventual invertibility and strict curvature, and the diagonal metric gauge.
   The literal distinct-point Gaussian counterexample now compiles unconditionally.
+- 2026-07-26 -- stage audit: all four Lean layers verified present and axiom-clean
+  (`det_transverseDegreeGram`, `transverseChannelFanoMargin_square`,
+  `fullTopLoweringCharge_ratio_eq_density`, `fifthDegree_sixteenDim_superPoisson`,
+  `gradedFockTransverseFanoMargin_universal_bound`, and the endpoint
+  `exists_finiteGaussianDistanceGram_positiveLogDetCurvature`; every one uses only `propext`,
+  `Classical.choice`, `Quot.sound`).  Card moved to `3-formalized`.

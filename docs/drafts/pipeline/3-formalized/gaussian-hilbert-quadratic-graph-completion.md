@@ -1,8 +1,8 @@
 # Gaussian Hilbert quadratic graph completion law
 
 - **ID:** gaussian-hilbert-quadratic-graph-completion
-- **Stage:** 2-fully-proven
-- **Type:** FAILURE-DRIVEN MULTIVARIABLE SURVIVOR
+- **Stage:** 3-formalized
+- **Type:** FAILURE-DRIVEN MULTIVARIABLE SURVIVOR (Lean)
 - **Novelty:** `[NOVELTY CANDIDATE PENDING EQUIVALENCE AUDIT]`; no discovery claim
 - **Parent card:** `gaussian-hilbert-fano-curvature`
 
@@ -149,8 +149,59 @@ Formalise in three layers:
 3. the connector identifying the graph exterior-volume degree law with those two layers.
 
 `[LEAN-PROVED PARENT LAYERS]` Layers 1 and 2 compile unconditionally in
-`GaloisForLFunctions.HilbertMetric.QuadraticGraphCompletion`.  Layer 3 remains open, so the
-card remains Stage 2.
+`GaloisForLFunctions.HilbertMetric.QuadraticGraphCompletion`.
+
+`[LEAN-PROVED]` The exterior-volume half of layer 3 now compiles in
+`GaloisForLFunctions.HilbertMetric.QuadraticGraphFockConnector` (imported by
+`GaloisForLFunctions.HilbertMetric`; no warnings; `#print axioms` = `propext, Classical.choice,
+Quot.sound`).
+
+The module realises the truncated symmetric Fock space of degrees at most two over the mode set
+`E ⊕ W` as `QuadFockIdx e κ = Sym (Fin e ⊕ κ) 0 ⊕ Sym (Fin e ⊕ κ) 1 ⊕ Sym (Fin e ⊕ κ) 2`, with the
+three homogeneous channels `quadDegZero`, `quadDegOne`, `quadDegTwo` and the degree dilation
+`quadFockDilate t` (degree `n` scaled by `t^(n/2)`).  All six mutual channel inner products are
+computed (`quadFockInner_degZero_degOne`, `quadFockInner_degOne_degTwo`, …), with
+`quadFockInner_degOne_degOne` transporting the degree-one sum along `Sym.oneEquiv`.
+
+* `quadFockFamily q L t` — the dilated spanning family of `S_L`: the vacuum, the `e` base modes,
+  and the graph vectors `q r + L (q r)` with `q r` a degree-two vector and `L (q r)` transverse;
+* `quadFockGram_quadFockFamily` — its Gram is exactly
+  `fromBlocks 1 0 0 (fromBlocks (t • 1) 0 0 (quadraticGraphGram L t))`, i.e. the three channels are
+  mutually orthogonal and the graph block is the layer-1 Gram `t² I + t LᵀL`;
+* `quadraticFockVolume_eq` — hence
+  `Z_L(t) = t^(e+m) * det (t • 1 + Lᵀ L)`, which is `(1)` of this card.
+
+The only hypothesis on the degree-two family is orthonormality
+(`∀ r s, ∑ β, q r β * q s β = if r = s then 1 else 0`); no rank, genericity, or graded-splitting
+assumption is used, so this covers the whole annihilation-invariant quadratic stratum in the sense
+of the paper proof.
+
+### Annihilation invariance
+
+The mode annihilators are assembled from the canonical symmetric-Fock lowering matrices of
+`SymmetricFockShadow`:
+
+```lean
+quadFockAnnihilation (i : QuadMode e κ) (v : QuadFockIdx e κ → ℝ) : QuadFockIdx e κ → ℝ
+  | Sum.inl a       => ∑ α, symmetricFockAnnihilationMatrix 0 i a α * v (Sum.inr (Sum.inl α))
+  | Sum.inr (inl α) => ∑ β, symmetricFockAnnihilationMatrix 1 i α β * v (Sum.inr (Sum.inr β))
+  | Sum.inr (inr _) => 0
+```
+
+* `quadFockAnnihilation_add`, `quadFockAnnihilation_smul` — linearity;
+* `quadFockAnnihilation_degZero` — the vacuum is killed;
+* `quadFockAnnihilation_degOne` — `a_i` sends `quadDegOne u` to `quadDegZero (u i)`, i.e. a one-mode
+  vector to the corresponding multiple of the vacuum;
+* `quadFockAnnihilation_degTwo` — `a_i` sends `quadDegTwo w` to `quadDegOne (quadLower i w)`;
+* `quadLower_transverse_eq_zero` — a degree-two vector supported on base multisets lowers into the
+  base modes, which is exactly why the transverse channel is not re-entered;
+* `quadraticGraphSubspace q L` — the subspace `S_L` itself;
+* `quadFockAnnihilation_mem_quadraticGraphSubspace` — **`S_L` is invariant under every mode
+  annihilator**, by span induction over the three generator kinds;
+* `quadraticGraphCompletion_invariant_and_volume` — invariance and the volume law in one statement.
+
+The support hypothesis `∀ r β, (∃ k : κ, Sum.inr k ∈ (β : Multiset _)) → q r β = 0` says exactly
+that `T ⊆ Sym²(E)`; the Gram half does not need it.
 
 ## Log
 
@@ -159,3 +210,10 @@ card remains Stage 2.
   quadratic graph completion law.
 - 2026-07-19 -- compiled the graph Gram/determinant factorisation and the Bernoulli Fano
   identity; the symmetric-Fock exterior connector remains to be formalised.
+- 2026-07-26 -- compiled the exterior-volume half of layer 3: the truncated symmetric Fock model,
+  the channel inner products, the exact block Gram of the dilated graph family, and the volume law
+  `Z_L(t) = t^(e+m) det (t I + Lᵀ L)`.  Annihilation invariance of the span is the only remaining
+  Lean item on this card.
+- 2026-07-26 -- closed layer 3: assembled the canonical mode annihilators on the truncated Fock
+  space, proved `S_L` annihilation invariant, and packaged invariance with the volume law.  Card
+  moved to `3-formalized`.

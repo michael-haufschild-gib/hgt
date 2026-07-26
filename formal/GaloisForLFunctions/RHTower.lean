@@ -3181,3 +3181,4 @@ import GaloisForLFunctions.RHTower.HighExponentShellGiniEnergy
 import GaloisForLFunctions.RHTower.ConsolidatedBridgeWitnesses
 import GaloisForLFunctions.RHTower.LandauAbscissaWitnesses
 import GaloisForLFunctions.RHTower.SchanuelStageWitnesses
+import GaloisForLFunctions.RHTower.MixedPrimeWordWitnesses

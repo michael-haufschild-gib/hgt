@@ -136,18 +136,6 @@ private theorem integrable_step_Ioc (a b y c : ℝ) :
     · rw [if_neg hyh, norm_zero]
       exact norm_nonneg c
 
-private theorem integrableOn_criticalMellinPrimeMass_Ioc (a b : ℝ) :
-    IntegrableOn criticalMellinPrimeMass (Ioc a b) := by
-  let K : Finset ℕ := Finset.Icc 2 ⌊Real.exp b⌋₊
-  let f : ℝ → ℝ := fun h =>
-    ∑ k ∈ K, if Real.log k ≤ h then criticalMellinStieltjesWeight k else 0
-  have hf : Integrable f (volume.restrict (Ioc a b)) := by
-    exact MeasureTheory.integrable_finsetSum K (fun k _ =>
-      integrable_step_Ioc a b (Real.log k) (criticalMellinStieltjesWeight k))
-  apply hf.congr
-  filter_upwards [ae_restrict_mem measurableSet_Ioc] with h hh
-  rw [criticalMellinPrimeMass_eq_common_step hh.2]
-
 private theorem integrableOn_polarSinh_Ioc (a b : ℝ) :
     IntegrableOn (fun h : ℝ => 4 * Real.sinh (h / 2)) (Ioc a b) := by
   exact (continuous_const.mul
@@ -309,10 +297,10 @@ theorem criticalMellinAdjacentBlock_eq_movingTent_polar
       (fun u => 4 * Real.sinh (u / 2) - criticalMellinPrimeMass u) h) = _
   rw [MeasureTheory.integral_sub
       (integrableOn_polarSinh_Ioc (x - L) x)
-      (integrableOn_criticalMellinPrimeMass_Ioc (x - L) x),
+      (integrableOn_criticalMellinPrimeMass_Ioc (a := x - L) (b := x)),
     MeasureTheory.integral_sub
       (integrableOn_polarSinh_Ioc (x - 2 * L) (x - L))
-      (integrableOn_criticalMellinPrimeMass_Ioc (x - 2 * L) (x - L))]
+      (integrableOn_criticalMellinPrimeMass_Ioc (a := x - 2 * L) (b := x - L))]
   have hp := polarSinh_adjacent_eq_alpha_beta x L hL
   have hm := criticalMellinPrimeMass_adjacent_eq_movingTentSum x L hL
   linear_combination hp - hm

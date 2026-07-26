@@ -5,12 +5,18 @@ import GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary
 
 A sampling is metric-bornologically cofinal whenever it is surjective — in particular for the
 identity sampling — and, at the opposite extreme, whenever the transport itself is uniformly bounded,
-in which case any nonempty sampling is cofinal with constant twice the bounding radius.
+in which case any nonempty sampling is cofinal with constant twice the bounding radius.  Constant
+transports realize uniform boundedness.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
 
 variable {ι κ X : Type*} [PseudoMetricSpace X]
+
+/-- A constant transport is uniformly bounded. -/
+theorem isUniformlyBoundedAround_const (c : X) :
+    IsUniformlyBoundedAround (fun _ : ι => c) :=
+  ⟨c, 0, fun _ => by simp⟩
 
 theorem isMetricBornologicallyCofinal_id (p : ι → X) :
     IsMetricBornologicallyCofinal p id :=

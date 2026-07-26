@@ -308,6 +308,19 @@ def deningerArithmeticJetTestToHilbertConj :
     ext idx
     simp [map_smul]
 
+/-- Conjugate finite-test inclusion is coefficientwise complex conjugation. -/
+@[simp]
+theorem deningerArithmeticJetTestToHilbertConj_apply
+    (a : DeningerArithmeticJetTest)
+    (idx : DeningerArithmeticJetCoordinate) :
+    deningerArithmeticJetTestToHilbertConj a idx =
+      (starRingEnd ℂ) (a idx) := by
+  change
+    (starRingEnd ℂ)
+        (deningerArithmeticJetTestToHilbert a idx) =
+      (starRingEnd ℂ) (a idx)
+  rw [deningerArithmeticJetTestToHilbert_apply]
+
 @[simp]
 theorem deningerArithmeticJetTestToHilbertConj_single
     (idx : DeningerArithmeticJetCoordinate) (c : ℂ) :

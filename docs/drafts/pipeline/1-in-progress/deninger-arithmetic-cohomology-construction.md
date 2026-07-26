@@ -1114,12 +1114,13 @@ metric by transporting a form already known to be positive exactly under RH.
   | \(H^0=\mathbf C,\ H^1=\mathcal O/\Xi\mathcal O,\ H^2=\mathbf C(-1)\) | `DeningerArithmeticCochainComplex` | Lean-proved |
   | compact-open topology and \(H^1_c\subset\mathcal H^1\subset H^1\) | `DeningerArithmeticJetProductEquivalence`, `DeningerArithmeticJetHilbertRigging` | Lean-proved |
   | source Frobenius and closed dense Hilbert domain | `DeningerArithmeticTopologicalCohomology`, `DeningerArithmeticJetFrobenius` | Lean-proved |
-  | cup/Poincaré derivation law | `DeningerArithmeticPoincareDuality`, `DeningerPrimeGammaPoincareDuality` | Lean-proved |
+  | cup/Poincaré derivation law | `DeningerArithmeticPoincareDuality` | Lean-proved |
   | regularized determinant \(=\widehat\zeta\) | `DeningerArithmeticJetDeterminant` | Lean-proved |
   | prime-power plus archimedean Lefschetz distribution | `DeningerArithmeticLefschetz` | Lean-proved |
   | odd positive completed Hodge form | `DeningerArithmeticOrientedHilbertHodge` | Lean-proved |
-  | source derivation of semisimple completed \(H^1\) | `DeningerArithmeticAssociatedGraded` | drafted; direct check pending |
-  | Frobenius naturality of source Green/Hodge operator | `[DAC_SOURCE_GREEN_PURITY]` | open mathematical core |
+  | source derivation of semisimple completed \(H^1\) | `DeningerArithmeticAssociatedGraded` | Lean-proved |
+  | source Green operator, dense range, cup representation, graded Frobenius transport | `DeningerArithmeticSourceGreen` | Lean-proved |
+  | Frobenius naturality of source Riesz/Hodge metric factor | `[DAC_SOURCE_GREEN_PURITY]` | open mathematical core |
   | RH extraction from that naturality | `deningerDivisorClosedTheta_orientedHodge_iff_riemannHypothesis` | Lean-proved equivalence |
 
   `[CONJECTURE] [DAC_SOURCE_ASSOCIATED_GRADED]` has now been reduced to a paper proof and a Lean
@@ -1141,6 +1142,102 @@ metric by transporting a form already known to be positive exactly under RH.
   \(\lambda_\rho\).  Taking the Hilbert direct sum of all grades yields the already constructed
   multiplicity-exact \(\ell^2(\rho,k)\) carrier and its maximal diagonal closed generator.
   `DeningerArithmeticAssociatedGraded.lean` formalizes the filtration, preservation, congruence
-  modulo the next step, and comparison on finite source jets.  Its first direct check reached a
-  missing transitive `.olean` cache before elaborating the new file; no unrelated dependency was
-  rebuilt.
+  modulo the next step, and comparison on finite source jets.  It passes its direct Lean check.
+
+- 2026-07-26 — `[LEAN-PROVED] [DAC_SOURCE_GREEN_TRANSPORT]`.
+  `DeningerArithmeticSourceGreen.lean` constructs the continuous linear map
+  \[
+    G:H^1_c\longrightarrow\mathcal H^1,\qquad
+    G\ell=-J\,\mathcal R\ell ,
+  \]
+  where \(\mathcal R\) is the Fréchet--Riesz restriction map and \(J\) is the completed odd Hodge
+  operator.  Lean proves:
+  \[
+    \operatorname{cup}(G\ell,x)=\ell(x),\qquad
+    \overline{\operatorname{ran}G}=\mathcal H^1.
+  \]
+  On finite source jets \(G\) is the explicit oriented functional-equation reflection,
+  \( (Ga)_q=\varepsilon_q a_{Rq}\), and \(G^2=-1\).  It unconditionally intertwines ordinary and
+  compact-support associated-graded Frobenius because their weights add to one under functional
+  equation reflection.
+
+  This separates the open core more sharply.  Linear Green transport is not the RH-bearing step.
+  The remaining factor is the anti-linear Riesz/Hodge metric identification:
+  \[
+    G=-J\mathcal R,\qquad
+    G\Theta_c=\Theta G\ \text{unconditionally},\qquad
+    J\Theta=\Theta J\Longleftrightarrow
+    \mathcal R\text{ has the required flow naturality}.
+  \]
+  The last condition is still equivalent to RH and may not be assumed.
+
+- 2026-07-26 — `[PRIMARY-SOURCE AUDIT] [DAC_WITT_LEAFWISE_PURITY]`.
+  Deninger's 2022 formulation requires complex/\(K_{\mathbb R}\)-valued arithmetic cohomology:
+  a real Weil cohomology is obstructed, while the desired degree-one anti-linear star has
+  \(\star^2=-1\).  The current odd quaternionic package is therefore the correct coefficient
+  category, not an accidental strengthening.
+
+  The proved foliated model identifies the exact missing geometric mechanism.  Reduced leafwise
+  cohomology obtains its positive metric from harmonic representatives, and a flow leafwise
+  homotopic to an isometric flow makes the Hodge star flow-natural; the middle generator is then
+  skew-symmetric.  Deninger's rational-Witt suspension for arithmetic schemes already supplies
+  prime packets with periods \(\log p\), but its finite-dimensional Riemann-surface lamination,
+  Fuller index \(1\), leafwise metric, and cohomological comparison remain open in the primary
+  source.
+
+  `[CONJECTURE] [DAC_WITT_LEAFWISE_PURITY]`: for
+  \(X=\operatorname{Spec}\mathbb Z\), the rational-Witt suspension contains a functorial
+  three-dimensional Riemann-surface lamination \(Y\) meeting every prime packet with Fuller index
+  \(1\), equipped with a leafwise metric whose normalized flow is leafwise isometric, such that
+  reduced leafwise cohomology compares densely and cup-isometrically with
+  `DeningerArithmeticCompletedCohomology`.  The comparison must be constructed before evaluating
+  the Xi divisor.  If proved, leafwise Hodge theory supplies exactly the missing Riesz naturality,
+  while the existing determinant/Lefschetz comparison and closed-polarization theorem derive RH.
+
+  Adversarial boundary: merely postulating this comparison, metric, or faithfulness is
+  RH-equivalent.  A valid construction must reject shifted-Xi, Helson-twist, indefinite
+  functional-equation-pair, and full-Jordan-jet fakes at chain level.  Next work is construction
+  of \(Y\)'s leafwise de Rham complex and metric from rational-Witt source data, not another
+  divisor-side positivity declaration.
+
+- 2026-07-26 — `[PRIMARY-SOURCE AUDIT] [DAC_ABSOLUTE_F1_PRIME_TUBE]`.
+  Connes--Consani's absolute \(\mathbb F_1\)-curve supplies a precise local object at every prime:
+  \[
+    E_p=\mathbb C^\times/p^{\mathbb Z}
+       \simeq C_p\times\widetilde X_\infty,\qquad
+    C_p=\mathbb R_{+}^{\times}/p^{\mathbb Z},
+  \]
+  with rectangular modulus \(i\log(p)/(2\pi)\) and canonical logarithmic form
+  \(d\lambda/\lambda+i\,d\theta\).  Thus it geometrically supplies the prime longitude of length
+  \(\log p\) and a \(p\)-independent phase meridian.
+
+  It does **not** yet supply Deninger's three-dimensional arithmetic flow.  Under the local radial
+  flow \([z]\mapsto[e^t z]\), the time-\(\log p\) map on \(E_p\) is the identity.  Consequently
+  every phase gives a periodic orbit and
+  \[
+    \det\!\left(1-D\phi^{k\log p}\right)=0
+  \]
+  on the local tangent plane.  This violates the simple-closed-orbit hypothesis used by the
+  proved leafwise Lefschetz/determinant theorem.  The rectangular Tate curve is therefore a prime
+  packet or boundary torus, not by itself the required isolated prime orbit.
+
+  The strongest positive survivor is a prime-tube formulation.  A valid global arithmetic
+  dynamical system should fill \(E_p\) by a solid-torus neighborhood
+  \(V_p=C_p\times D^2\), with \(C_p\) as core orbit and nontrivial return holonomy
+  \(A_p:D^2\to D^2\).  To reproduce the unsigned Euler factor for every iterate it is enough that
+  \[
+    \det(1-DA_p^k)>0\qquad(k\geq1);
+  \]
+  an irrational oriented rotation is the local model.  The natural rectangular marking has
+  trivial angular return, so the necessary holonomy must come from global arithmetic gluing or
+  from a leaf plane not identified with the tangent plane of \(E_p\).
+
+  `[CONJECTURE] [DAC_ABSOLUTE_F1_PRIME_TUBE]`: the absolute-\(\mathbb F_1\)/rational-Witt
+  comparison admits a functorial three-dimensional subquotient \(Y\) in which each local
+  \(E_p\) bounds a prime tube \(V_p\), its core is the unique selected orbit of length \(\log p\),
+  all return iterates have positive Lefschetz sign, and the resulting foliation has a
+  flow-natural leafwise Hodge metric.  The chain-level comparison
+  \(\overline H^1_{\mathcal F}(Y)\to H^1_{\mathrm{arith}}\) must then prove cup-isometry and
+  dense range without evaluating the Xi divisor.  Local Tate geometry proves the longitude,
+  meridian, and complex orientation inputs; orbit selection, nondegenerate holonomy, global
+  gluing, archimedean compactification, and cohomological comparison remain conjectural.

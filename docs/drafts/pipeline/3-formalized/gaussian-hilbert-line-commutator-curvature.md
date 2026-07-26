@@ -1,8 +1,8 @@
 # Gaussian Hilbert-line commutator curvature law
 
 - **ID:** gaussian-hilbert-line-commutator-curvature
-- **Stage:** 2-fully-proven
-- **Type:** FAILURE-DRIVEN SURVIVOR / FRONTIER BASE CASE
+- **Stage:** 3-formalized
+- **Type:** FAILURE-DRIVEN SURVIVOR / FRONTIER BASE CASE (Lean)
 - **Novelty:** `[NOVELTY CANDIDATE AFTER EXACT-STATEMENT SEARCH]`; not yet a discovery claim
 - **Parent card:** `gaussian-hilbert-fano-curvature`
 
@@ -175,9 +175,56 @@ Formalize in layers:
 Only layer 1 is parent infrastructure.  The card is not Stage 3 until the full statement
 (HLCC), including its connector and strictness, is compiled unconditionally.
 
-`[LEAN-PROVED PARENT LAYER]` Layer 1 is now compiled in
-`GaloisForLFunctions.HilbertMetric.FanoCommutator`: it proves the exact two-times-defect
-identity, nonnegativity, and the equality/normality criterion.  Layers 2--4 remain open.
+`[LEAN-PROVED]` All four layers are compiled.
+
+Layer 1 is `GaloisForLFunctions.HilbertMetric.FanoCommutator`: the exact two-times-defect
+identity, nonnegativity, and the equality/normality criterion.
+
+Layers 2--4 are `GaloisForLFunctions.HilbertMetric.HilbertLineCommutatorCurvature`
+(imported by `GaloisForLFunctions.HilbertMetric`).  Every theorem builds with no warnings and
+`#print axioms` returns exactly `propext, Classical.choice, Quot.sound`.
+
+| Card item | Lean name |
+|---|---|
+| Gaussian Gram of a line configuration | `hilbertLineGaussianGram`, `hilbertLineGaussianGram_posDef` |
+| coherent Gram `⟪ε u, ε v⟫ = exp ⟪u,v⟫` | `hilbertLineCoherentGram`, `hilbertLineCoherentGram_eq_gaussianCoherentGram`, `hilbertLineCoherentGram_posDef` |
+| compressed annihilator `A_t` | `hilbertLineAnnihilationCompression` |
+| `A_t` is well defined (any square root of the Gram) | `selfCommutator_energy_sqrtSimilarity_eq_of_gram` |
+| gauge invariance of the compression | `selfCommutator_energy_sqrtSimilarity_gauge` |
+| curvature connector `(1)`–`(3)` | `hilbertLineGaussian_logDet_secondDerivative_eq` |
+| **(HLCC)** | `hilbertLineGaussian_logDet_curvature_eq_selfCommutator` |
+| strictness for `N > 1` | `hilbertLineGaussian_logDet_secondDerivative_lt_zero`, `hilbertLineAnnihilationEnergy_pos` |
+| independence of the unit vector | `hilbertLineAnnihilationCompression_neg`, `hilbertLineAnnihilationEnergy_reflection_invariant` |
+| independence of the origin | `hilbertLineCoherentGram_translate`, `hilbertLineAnnihilationEnergy_translation_invariant` |
+| packaged law | `hilbertLineCommutatorCurvatureLaw` |
+
+The formalized statement is
+
+```text
+-t^2 * (log det K_X)''(t) = (1/2) * ‖[A_t, A_tᵀ]‖_HS^2 ,
+A_t = matrixSqrtSimilarity (coherent Gram at t) (diagonal (√(2t) ξ)) .
+```
+
+`A_t` is exactly the matrix, in orthonormal coordinates, of the compression of an operator that
+acts diagonally with eigenvalues `√(2t) ξ_i` on a family whose Gram is the coherent Gram
+`exp (2t ξ_i ξ_j)` — that is, of the annihilation operator on the coherent family.  That this
+depends only on the Gram, and not on the chosen orthonormalization, is
+`selfCommutator_energy_sqrtSimilarity_eq_of_gram`: for **every** `R` with `Rᵀ R = G`, the
+conjugate `R D R⁻¹` has the same self-commutator energy as the canonical positive-square-root
+similarity.
+
+### Reuse
+
+The Fock--Pluecker degree law of the paper proof is not re-derived: the connector goes through the
+already compiled arbitrary-background curvature identity
+`rankOneSchurGaussian_logDet_secondDerivative_eq`
+(`GaloisForLFunctions.HilbertMetric.RankOneSchurGaussianConcavity`), applied after splitting the
+bandwidth `t = t/2 + t/2` so that the background `K_X(t/2)` is positive definite.  The coherent
+Gram is the corpus object `gaussianCoherentGram`, whose positive definiteness criterion
+`gaussianCoherentGram_posDef_iff_injective` is reused verbatim, and the positive-definiteness of
+the line Gram comes from `finiteGaussianDistanceGram_posDef_of_injective_of_pos`.  Strictness is
+`rankOneSchurGaussian_logDet_secondDerivative_lt_zero` with the everywhere-nonzero Gaussian
+background and nonconstant labels.
 
 ## Log
 
@@ -186,3 +233,6 @@ identity, nonnegativity, and the equality/normality criterion.  Layers 2--4 rema
   case of the higher-dimensional frontier.
 - 2026-07-19 -- compiled the unconditional finite real matrix self-commutator parent layer;
   the coherent Fock connector and strict Hilbert-line theorem are not yet Lean-formalized.
+- 2026-07-26 -- compiled layers 2--4: Gram-invariance of the compressed-eigenoperator energy, the
+  exact (HLCC) connector, strictness, and the origin/direction invariances.  Card moved to
+  `3-formalized`.
