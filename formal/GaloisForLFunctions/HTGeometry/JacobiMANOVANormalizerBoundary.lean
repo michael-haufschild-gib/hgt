@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.LaguerreWishartNormalizerBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Jacobi--MANOVA normalization boundary
@@ -26,29 +27,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance jacobiMANOVADomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance jacobiMANOVADifferential : Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance jacobiMANOVARatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance jacobiMANOVARatFuncDifferential : Differential (RatFunc ℂ) :=
-  ratFuncCoordinateDifferential
-
-local instance jacobiMANOVADifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance jacobiMANOVACharZero : CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Three `m`-blocks of scales: the two numerator bands and the denominator band. -/
 def jacobiMANOVAGammaScale (m n₁ n₂ : ℕ) (i : Fin (3 * m)) : ℕ :=

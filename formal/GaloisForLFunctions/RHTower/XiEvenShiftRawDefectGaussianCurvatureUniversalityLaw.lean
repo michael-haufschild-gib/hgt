@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiEvenShiftRawDefectCofiniteHilbertReconstruction
 import GaloisForLFunctions.RHTower.XiMobiusDyadicGaussianCurvatureUniversalityLaw
 import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianIntrinsicDimensionUniversalityLaw
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Raw even-shift Xi defects and Gaussian curvature
@@ -26,40 +27,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance xiRawDefectCurvatureUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiRawDefectCurvatureUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiRawDefectCurvatureUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiRawDefectCurvatureUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiRawDefectCurvatureCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiRawDefectCurvatureCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiRawDefectCurvatureAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiRawDefectCurvatureAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- **Raw-defect/Gaussian-curvature connector.**  Literal cofinite recovery from actual raw Xi
 defects, together with the sharp rank-two condition, is exactly the transverse Gaussian-curvature

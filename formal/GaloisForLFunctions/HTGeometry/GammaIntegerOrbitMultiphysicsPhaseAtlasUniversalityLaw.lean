@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.GammaOppositeShiftBoundary
 import GaloisForLFunctions.HTGeometry.KerrNewmanChargedScalarGammaBoundary
 import GaloisForLFunctions.HTGeometry.SauterBogoliubovGammaBoundary
 import GaloisForLFunctions.HTGeometry.ThermalCFTWignerSmithObservability
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Integer-orbit multiphysics phase-atlas universality
@@ -24,31 +25,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gammaIntegerOrbitAtlasDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gammaIntegerOrbitAtlasDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gammaIntegerOrbitAtlasRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gammaIntegerOrbitAtlasRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance gammaIntegerOrbitAtlasDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gammaIntegerOrbitAtlasCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The Kerr--Newman logarithmic clock has the same exact DA boundary as its Gamma response. -/
 theorem differentialAlgebraicOver_kerrNewmanChargedScalarLogResponseClockMero_iff_integerGap

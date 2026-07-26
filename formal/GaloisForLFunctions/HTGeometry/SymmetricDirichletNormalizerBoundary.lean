@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaNatScale
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Symmetric Dirichlet normalizer boundary
@@ -26,39 +27,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance symmetricDirichletDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance symmetricDirichletComplexAlgebraAnalytic :
-    Algebra ℂ (analyticSubring Set.univ) := (constToAnalytic Set.univ).toAlgebra
-
-local instance symmetricDirichletComplexAlgebraMero :
-    Algebra ℂ (meroField Set.univ) :=
-  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
-    (constToAnalytic Set.univ)).toAlgebra
-
-local instance symmetricDirichletDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance symmetricDirichletRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance symmetricDirichletRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance symmetricDirichletDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance symmetricDirichletCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The concentration-dependent normalizing factor of a symmetric `K`-category Dirichlet
 density. -/

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianCurvatureSignDuality
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Xi transverse valuation Gaussian intrinsic-dimension universality
@@ -23,40 +24,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HilbertMetric
 open scoped Differential Matroid
 
-local instance xiIntrinsicDimensionUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiIntrinsicDimensionUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiIntrinsicDimensionUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiIntrinsicDimensionUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiIntrinsicDimensionCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiIntrinsicDimensionCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiIntrinsicDimensionAllValuationFieldDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiIntrinsicDimensionAllValuationFieldDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- First transverse valuation configuration in mathlib's finite Euclidean Hilbert wrapper. -/
 def xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration

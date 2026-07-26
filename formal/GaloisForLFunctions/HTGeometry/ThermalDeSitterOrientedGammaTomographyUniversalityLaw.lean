@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CoulombDeSitterZeroModeObservabilityUniversalityLaw
 import GaloisForLFunctions.HTGeometry.GammaSameSignProductBoundary
 import GaloisForLFunctions.HTGeometry.ThermalCFTGammaResponseBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Thermal/de Sitter oriented-Gamma tomography universality
@@ -21,31 +22,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance thermalDeSitterDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance thermalDeSitterDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance thermalDeSitterRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance thermalDeSitterRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance thermalDeSitterDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance thermalDeSitterCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The thermal response cancels the negative-slope Gamma factor in the de Sitter zero-mode
 carrier and reconstructs an oriented Gamma square. -/

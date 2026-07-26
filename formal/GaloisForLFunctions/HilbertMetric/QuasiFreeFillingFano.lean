@@ -530,6 +530,29 @@ theorem quasiFreeSpectralFanoMargin_unit_energy
   ring
 
 omit [DecidableEq ι] in
+/-- Full occupation recovers the Slater endpoint-secant defect. -/
+theorem quasiFreeSpectralSecantDefect_one
+    (v : ι → κ → ℝ) (energy : κ → ℝ) (lower upper : ℝ) :
+    quasiFreeSpectralSecantDefect v energy (fun _ => 1) lower upper =
+      slaterSpectralSecantDefect v energy lower upper := by
+  simp [quasiFreeSpectralSecantDefect, slaterSpectralSecantDefect]
+
+omit [DecidableEq ι] in
+/-- Full occupation recovers the Slater spectral-centering defect. -/
+theorem quasiFreeSpectralCenteringDefect_one
+    (v : ι → κ → ℝ) (energy : κ → ℝ) (lower upper : ℝ) :
+    quasiFreeSpectralCenteringDefect v energy (fun _ => 1) lower upper =
+      slaterSpectralCenteringDefect v energy lower upper := by
+  simp [quasiFreeSpectralCenteringDefect, slaterSpectralCenteringDefect]
+
+/-- Full occupation recovers the Slater occupied-coherence defect. -/
+theorem quasiFreeSpectralCoherenceDefect_one
+    (v : ι → κ → ℝ) (energy : κ → ℝ) :
+    quasiFreeSpectralCoherenceDefect v energy (fun _ => 1) =
+      slaterSpectralCoherenceDefect v energy := by
+  simp [quasiFreeSpectralCoherenceDefect, slaterSpectralCoherenceDefect]
+
+omit [DecidableEq ι] in
 /-- Full occupation recovers the existing Slater mean. -/
 theorem quasiFreeSpectralMean_one
     (v : ι → κ → ℝ) (energy : κ → ℝ) :

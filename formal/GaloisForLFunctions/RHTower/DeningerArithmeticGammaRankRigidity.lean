@@ -1,5 +1,6 @@
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
 
 /-!
 # Gamma rank-character rigidity for Deninger's arithmetic cohomology

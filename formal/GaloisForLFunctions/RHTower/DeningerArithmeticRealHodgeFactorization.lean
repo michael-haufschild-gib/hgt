@@ -111,21 +111,16 @@ theorem deningerArithmeticGradedTheta_sourceReal
   ext q
   simp only [deningerArithmeticGradedTheta, deningerDivisorTheta,
     finsuppDiagonal_apply, deningerArithmeticGradedSourceReal_apply,
-    map_mul]
-  change
-    (q.1 : ℂ) *
-        (starRingEnd ℂ) (a (xiZeroCopyConjEquiv q)) =
-      (starRingEnd ℂ)
-        (((starRingEnd ℂ) (q.1 : ℂ)) *
-          a (xiZeroCopyConjEquiv q))
-  simp
+    map_mul, deningerDivisorThetaEigen]
+  rw [show ((xiZeroCopyConjEquiv q).1 : ℂ) =
+    (starRingEnd ℂ) (q.1 : ℂ) from rfl, starRingEnd_self_apply]
 
 /--
 Index transport from Schwarz conjugation to functional-equation reflection.  On supports it is
 `rho ↦ 1 - conj rho`.
 -/
 def deningerArithmeticPurityIndexEquiv : XiZeroCopy ≃ XiZeroCopy :=
-  xiZeroCopyReflectEquiv.trans xiZeroCopyConjEquiv.symm
+  xiZeroCopyConjEquiv.symm.trans xiZeroCopyReflectEquiv
 
 /-- Complex-linear arithmetic Weil transport comparing source reality with Hodge duality. -/
 def deningerArithmeticGradedWeilTransport :
@@ -149,8 +144,7 @@ theorem deningerArithmeticGradedHodgeStar_factor
           (deningerArithmeticPurityIndexEquiv.symm q))) =
       (starRingEnd ℂ)
         (a (xiZeroCopyReflectEquiv.symm q))
-  rw [deningerArithmeticPurityIndexEquiv]
-  simp
+  simp [deningerArithmeticPurityIndexEquiv]
 
 /--
 The arithmetic Weil transport is Frobenius-natural exactly when the Riemann hypothesis holds.
@@ -240,13 +234,23 @@ def deningerArithmeticGradedOrientationEquiv :
   left_inv a := by
     ext q
     simp only [finsuppDiagonal_apply]
-    rw [deningerArithmeticFEOrientation_sq]
-    ring
+    have heps := deningerArithmeticFEOrientation_sq q
+    calc
+      -deningerArithmeticFEOrientation q *
+          (-deningerArithmeticFEOrientation q * a q) =
+        (deningerArithmeticFEOrientation q *
+            deningerArithmeticFEOrientation q) * a q := by ring
+      _ = a q := by rw [heps, one_mul]
   right_inv a := by
     ext q
     simp only [finsuppDiagonal_apply]
-    rw [deningerArithmeticFEOrientation_sq]
-    ring
+    have heps := deningerArithmeticFEOrientation_sq q
+    calc
+      -deningerArithmeticFEOrientation q *
+          (-deningerArithmeticFEOrientation q * a q) =
+        (deningerArithmeticFEOrientation q *
+            deningerArithmeticFEOrientation q) * a q := by ring
+      _ = a q := by rw [heps, one_mul]
   map_add' a b := by
     ext q
     simp only [finsuppDiagonal_apply, Finsupp.add_apply]
@@ -254,6 +258,9 @@ def deningerArithmeticGradedOrientationEquiv :
   map_smul' c a := by
     ext q
     simp only [finsuppDiagonal_apply, Finsupp.smul_apply, smul_eq_mul]
+    change
+      -deningerArithmeticFEOrientation q * (c * a q) =
+        c * (-deningerArithmeticFEOrientation q * a q)
     ring
 
 @[simp]
@@ -261,7 +268,10 @@ theorem deningerArithmeticGradedOrientationEquiv_apply
     (a : DeningerArithmeticGradedH1) (q : XiZeroCopy) :
     deningerArithmeticGradedOrientationEquiv a q =
       -deningerArithmeticFEOrientation q * a q := by
-  rfl
+  change
+    finsuppDiagonal (fun q => -deningerArithmeticFEOrientation q) a q =
+      -deningerArithmeticFEOrientation q * a q
+  rw [finsuppDiagonal_apply]
 
 /--
 Oriented arithmetic Weil transport.  This is the linear comparison from normalized source
@@ -279,7 +289,12 @@ theorem deningerArithmeticGradedOrientedWeilTransport_apply
     deningerArithmeticGradedOrientedWeilTransport a q =
       -deningerArithmeticFEOrientation q *
         deningerArithmeticGradedWeilTransport a q := by
-  rfl
+  change
+    deningerArithmeticGradedOrientationEquiv
+        (deningerArithmeticGradedWeilTransport a) q =
+      -deningerArithmeticFEOrientation q *
+        deningerArithmeticGradedWeilTransport a q
+  rw [deningerArithmeticGradedOrientationEquiv_apply]
 
 /--
 Exact genuine Real/Hodge factorization: odd Hodge star is normalized source Schwarz reality
@@ -291,6 +306,10 @@ theorem deningerArithmeticGradedOrientedHodge_factor
         (deningerArithmeticGradedSourceReal a) =
       deningerArithmeticGradedOrientedHodge.sigma a := by
   ext q
+  change
+    deningerArithmeticGradedOrientedWeilTransport
+        (deningerArithmeticGradedSourceReal a) q =
+      deningerArithmeticGradedOrientedHodgeSigma a q
   rw [deningerArithmeticGradedOrientedWeilTransport_apply,
     deningerArithmeticGradedHodgeStar_factor,
     deningerArithmeticGradedHodgeStar_apply,

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Hypertranscendence
+import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
 /-!
 # Growth of a quasi-periodic entire function
@@ -41,7 +42,8 @@ theorem quasiPeriodic_zsmul {f : ℂ → ℂ} {w c : ℂ} (hc : c ≠ 0)
   | succ n ih =>
       have hs : ((n : ℤ) + 1) • w = (n : ℤ) • w + w := by rw [add_smul, one_smul]
       rw [hs, ← add_assoc, h (z + (n : ℤ) • w), ih, zpow_add₀ hc]
-      ring
+      simp only [zpow_one]
+      ac_rfl
   | pred n ih =>
       have hs : (-(n : ℤ) - 1) • w = (-(n : ℤ)) • w + -w := by rw [sub_smul, one_smul]; ring
       rw [hs, ← add_assoc, hback (z + (-(n : ℤ)) • w), ih, zpow_sub₀ hc]
@@ -58,7 +60,7 @@ theorem quasiPeriodic_lattice {f : ℂ → ℂ} {w₁ w₂ a b : ℂ} (ha : a �
 
 /-- Two `ℝ`-independent complex numbers form an `ℝ`-basis of `ℂ`. -/
 noncomputable def stepBasis {w₁ w₂ : ℂ} (hindep : LinearIndependent ℝ ![w₁, w₂]) :
-    Basis (Fin 2) ℝ ℂ :=
+    Module.Basis (Fin 2) ℝ ℂ :=
   basisOfLinearIndependentOfCardEqFinrank hindep (by simp [Complex.finrank_real_complex])
 
 theorem stepBasis_apply {w₁ w₂ : ℂ} (hindep : LinearIndependent ℝ ![w₁, w₂]) (i : Fin 2) :
@@ -72,7 +74,10 @@ theorem exists_bound_stepBasis_repr {w₁ w₂ : ℂ} (hindep : LinearIndependen
   let L : ℂ →ₗ[ℝ] ℝ :=
     { toFun := fun z => (stepBasis hindep).repr z i
       map_add' := by intro x y; simp
-      map_smul' := by intro c x; simp }
+      map_smul' := by
+        intro c x
+        simp only [map_smul, Finsupp.smul_apply, smul_eq_mul]
+        rfl }
   let Lc : ℂ →L[ℝ] ℝ := ⟨L, LinearMap.continuous_of_finiteDimensional L⟩
   refine ⟨‖Lc‖, norm_nonneg _, fun z => ?_⟩
   have hle := Lc.le_opNorm z
@@ -82,13 +87,15 @@ theorem exists_bound_stepBasis_repr {w₁ w₂ : ℂ} (hindep : LinearIndependen
 
 /-- The absolute value of an integer power is bounded by the corresponding power of
 `max ‖c‖ ‖c‖⁻¹`. -/
-theorem norm_zpow_le_max_pow {c : ℂ} (hc : c ≠ 0) (m : ℤ) :
+theorem norm_zpow_le_max_pow {c : ℂ} (m : ℤ) :
     ‖c ^ m‖ ≤ (max ‖c‖ ‖c‖⁻¹) ^ m.natAbs := by
   rcases m.natAbs_eq with hm | hm
   · rw [hm, zpow_natCast, norm_pow]
     exact pow_le_pow_left₀ (norm_nonneg _) (le_max_left _ _) _
   · rw [hm, zpow_neg, zpow_natCast, norm_inv, norm_pow, ← inv_pow]
-    exact pow_le_pow_left₀ (by positivity) (le_max_right _ _) _
+    rw [Int.natAbs_neg, Int.natAbs_natCast]
+    exact pow_le_pow_left₀ (inv_nonneg.mpr (norm_nonneg c))
+      (le_max_right ‖c‖ ‖c‖⁻¹) m.natAbs
 
 /-- `1 ≤ max ‖c‖ ‖c‖⁻¹` for a nonzero `c`. -/
 theorem one_le_max_norm_inv {c : ℂ} (hc : c ≠ 0) : 1 ≤ max ‖c‖ ‖c‖⁻¹ := by
@@ -140,10 +147,14 @@ theorem exists_exp_growth_bound_of_quasiperiods {f : ℂ → ℂ} (hcont : Conti
   have humem : z - ((⌊s⌋ : ℤ) • w₁ + (⌊t⌋ : ℤ) • w₂) ∈
       (fun p : ℝ × ℝ => p.1 • w₁ + p.2 • w₂) '' (Set.Icc 0 1 ×ˢ Set.Icc 0 1) := by
     refine ⟨(s - (⌊s⌋ : ℝ), t - (⌊t⌋ : ℝ)), ⟨⟨?_, ?_⟩, ?_, ?_⟩, hu.symm⟩
-    · simpa [Int.fract] using Int.fract_nonneg s
-    · simpa [Int.fract] using (Int.fract_lt_one s).le
-    · simpa [Int.fract] using Int.fract_nonneg t
-    · simpa [Int.fract] using (Int.fract_lt_one t).le
+    · change 0 ≤ Int.fract s
+      exact Int.fract_nonneg s
+    · change Int.fract s ≤ 1
+      exact (Int.fract_lt_one s).le
+    · change 0 ≤ Int.fract t
+      exact Int.fract_nonneg t
+    · change Int.fract t ≤ 1
+      exact (Int.fract_lt_one t).le
   have hval : f z = a ^ (⌊s⌋ : ℤ) * b ^ (⌊t⌋ : ℤ) *
       f (z - ((⌊s⌋ : ℤ) • w₁ + (⌊t⌋ : ℤ) • w₂)) := by
     have hlat := quasiPeriodic_lattice ha hb h₁ h₂ (⌊s⌋ : ℤ) (⌊t⌋ : ℤ)
@@ -155,7 +166,7 @@ theorem exists_exp_growth_bound_of_quasiperiods {f : ℂ → ℂ} (hcont : Conti
       (max ‖b‖ ‖b‖⁻¹) ^ (⌊t⌋ : ℤ).natAbs * M := by
     rw [hval, norm_mul, norm_mul]
     exact mul_le_mul
-      (mul_le_mul (norm_zpow_le_max_pow ha _) (norm_zpow_le_max_pow hb _)
+      (mul_le_mul (norm_zpow_le_max_pow _) (norm_zpow_le_max_pow _)
         (norm_nonneg _) (by positivity))
       (hM _ humem) (norm_nonneg _) (by positivity)
   -- the integer coordinates are bounded by the norm
@@ -196,15 +207,20 @@ theorem exists_exp_growth_bound_of_quasiperiods {f : ℂ → ℂ} (hcont : Conti
       = M * ((max ‖a‖ ‖a‖⁻¹) * (max ‖b‖ ‖b‖⁻¹)) *
         Real.exp ((C₁ * Real.log (max ‖a‖ ‖a‖⁻¹) + C₂ * Real.log (max ‖b‖ ‖b‖⁻¹)) * ‖z‖) := by
     rw [Real.rpow_add hA₁pos, Real.rpow_add hA₂pos, Real.rpow_one, Real.rpow_one,
-      Real.rpow_def_of_pos hA₁pos, Real.rpow_def_of_pos hA₂pos, ← Real.exp_add]
-    ring_nf
+      Real.rpow_def_of_pos hA₁pos, Real.rpow_def_of_pos hA₂pos]
+    have harg :
+        (C₁ * Real.log (max ‖a‖ ‖a‖⁻¹) +
+              C₂ * Real.log (max ‖b‖ ‖b‖⁻¹)) * ‖z‖ =
+          Real.log (max ‖a‖ ‖a‖⁻¹) * (C₁ * ‖z‖) +
+            Real.log (max ‖b‖ ‖b‖⁻¹) * (C₂ * ‖z‖) := by
+      ring
+    rw [harg, Real.exp_add]
+    ring
   calc ‖f z‖ ≤ (max ‖a‖ ‖a‖⁻¹) ^ ((⌊s⌋ : ℤ)).natAbs *
         (max ‖b‖ ‖b‖⁻¹) ^ ((⌊t⌋ : ℤ)).natAbs * M := hnorm
     _ ≤ (max ‖a‖ ‖a‖⁻¹) ^ (C₁ * ‖z‖ + 1 : ℝ) * (max ‖b‖ ‖b‖⁻¹) ^ (C₂ * ‖z‖ + 1 : ℝ) * M := by
-        gcongr
-        · positivity
-        · exact hpow1
-        · exact hpow2
+        apply mul_le_mul_of_nonneg_right _ hM0
+        exact mul_le_mul hpow1 hpow2 (by positivity) (by positivity)
     _ = M * ((max ‖a‖ ‖a‖⁻¹) * (max ‖b‖ ‖b‖⁻¹)) *
         Real.exp ((C₁ * Real.log (max ‖a‖ ‖a‖⁻¹) + C₂ * Real.log (max ‖b‖ ‖b‖⁻¹)) * ‖z‖) := hexp
     _ ≤ (M * ((max ‖a‖ ‖a‖⁻¹) * (max ‖b‖ ‖b‖⁻¹)) + 1) *

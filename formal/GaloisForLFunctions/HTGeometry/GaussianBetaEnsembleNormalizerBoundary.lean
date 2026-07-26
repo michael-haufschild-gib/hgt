@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CircularBetaEnsembleNormalizerBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Gaussian beta-ensemble normalization boundary
@@ -28,29 +29,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gaussianBetaDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gaussianBetaDifferential : Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gaussianBetaRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gaussianBetaRatFuncDifferential : Differential (RatFunc ℂ) :=
-  ratFuncCoordinateDifferential
-
-local instance gaussianBetaDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gaussianBetaCharZero : CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The `K` numerator scales followed by one scale-one denominator slot. -/
 def gaussianBetaEnsembleScale (K : ℕ) (i : Fin (K + 1)) : ℕ :=

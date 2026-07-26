@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.VenezianoGammaRatioBoundary
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaReflection
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Opposite-shift Gamma-pair differential boundary
@@ -28,40 +29,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gammaOppositeShiftDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gammaOppositeShiftIntAlgebraAnalytic :
-    Algebra ℤ (analyticSubring Set.univ) := Ring.toIntAlgebra _
-
-local instance gammaOppositeShiftIntAlgebraMero :
-    Algebra ℤ (meroField Set.univ) := Ring.toIntAlgebra _
-
-local instance gammaOppositeShiftIntAlgebraRatFunc :
-    Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
-
-local instance gammaOppositeShiftDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gammaOppositeShiftRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gammaOppositeShiftRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance gammaOppositeShiftDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gammaOppositeShiftCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The general complexified-frequency pair `Gamma(z+a) * Gamma(-z+b)`. -/
 def gammaOppositeShiftProductMero (a b : ℂ) : meroField Set.univ :=

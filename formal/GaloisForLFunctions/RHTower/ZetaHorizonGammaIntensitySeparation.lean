@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.ThermalCFTGammaResponseBoundary
 import GaloisForLFunctions.HTGeometry.FiniteGeneratorDifferentialEscape
 import GaloisForLFunctions.RHTower.ZetaGammaPhaseIntensityObservability
 import GaloisForLFunctions.RHTower.ZetaChiHypertranscendentalClock
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Zeta--horizon Gamma intensity separation
@@ -34,31 +35,7 @@ open GaloisForLFunctions Bottcher Polynomial
 
 noncomputable section
 
-local instance zetaHorizonGammaIntensityDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance zetaHorizonGammaIntensityDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance zetaHorizonGammaIntensityRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance zetaHorizonGammaIntensityRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance zetaHorizonGammaIntensityDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance zetaHorizonGammaIntensityCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Conjugate-frequency Gamma intensity of zeta's centered archimedean completion clock. -/
 def centeredZetaGammaIntensityCoreMero : meroField Set.univ :=

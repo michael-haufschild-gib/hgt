@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.JacobiMANOVANormalizerBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Scaled Euler beta cross-domain boundary
@@ -23,30 +24,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance scaledEulerBetaCrossDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance scaledEulerBetaCrossDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance scaledEulerBetaCrossRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance scaledEulerBetaCrossRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance scaledEulerBetaCrossDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance scaledEulerBetaCrossCharZero : CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- **Scaled-beta/Dirichlet value relation.**  The unit-slope Euler beta amplitude is exactly the
 reciprocal binary symmetric-Dirichlet normalizer. -/

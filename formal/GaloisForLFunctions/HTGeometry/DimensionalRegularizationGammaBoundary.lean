@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaNatScale
 import GaloisForLFunctions.HTGeometry.VenezianoGammaRatioBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Dimensional-regularization Gamma boundaries
@@ -37,39 +38,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance dimensionalRegularizationDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance dimensionalRegularizationComplexAlgebraAnalytic :
-    Algebra ℂ (analyticSubring Set.univ) := (constToAnalytic Set.univ).toAlgebra
-
-local instance dimensionalRegularizationComplexAlgebraMero :
-    Algebra ℂ (meroField Set.univ) :=
-  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
-    (constToAnalytic Set.univ)).toAlgebra
-
-local instance dimensionalRegularizationDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance dimensionalRegularizationRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance dimensionalRegularizationRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance dimensionalRegularizationDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance dimensionalRegularizationCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Gamma-dependent part of the dimensionally regulated massless scalar bubble. -/
 def masslessBubbleGammaMero : meroField Set.univ :=

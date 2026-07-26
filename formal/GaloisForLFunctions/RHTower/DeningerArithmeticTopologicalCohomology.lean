@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticGlobalDivision
+import GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
 import Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap
 
 /-!

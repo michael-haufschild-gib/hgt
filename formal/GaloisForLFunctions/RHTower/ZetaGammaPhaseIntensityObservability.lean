@@ -5,6 +5,7 @@ import GaloisForLFunctions.HTGeometry.DifferentialAdjoinPairClassification
 import GaloisForLFunctions.HTGeometry.SchwarzianHypertranscendence
 import GaloisForLFunctions.RHTower.ProjectiveHorizonWardSeam
 import GaloisForLFunctions.RHTower.ZetaChiHypertranscendentalClock
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Phase--intensity observability of the centered zeta Gamma clock
@@ -32,31 +33,7 @@ open GaloisForLFunctions Bottcher Polynomial
 
 noncomputable section
 
-local instance zetaGammaObservabilityDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance zetaGammaObservabilityDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance zetaGammaObservabilityRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance zetaGammaObservabilityRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance zetaGammaObservabilityDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance zetaGammaObservabilityCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Frequency reflection of the centered zeta Gamma clock. -/
 def centeredZetaGammaReflectedFrequencyMero : meroField Set.univ :=

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiTransverseShiftDefectDifferentialRank
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Transverse Xi shift rank beyond every scalar valuation layer
@@ -36,40 +37,7 @@ noncomputable section
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
-local instance xiTransverseLayerUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiTransverseLayerUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiTransverseLayerUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiTransverseLayerUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiTransverseLayerCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiTransverseLayerCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiTransverseAllValuationFieldDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiTransverseAllValuationFieldDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 theorem xiTransversePrimePowerCoordinateProfile_apply
     (f : ArithmeticFunction ℂ) (p : Nat.Primes) (e : ℕ) :

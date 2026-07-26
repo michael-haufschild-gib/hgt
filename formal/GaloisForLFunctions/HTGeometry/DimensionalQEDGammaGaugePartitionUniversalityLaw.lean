@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ConstantFieldQEDGammaClock
 import GaloisForLFunctions.HTGeometry.DimensionalRegularizationGammaBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Dimensional/QED Gamma gauge-partition universality
@@ -64,31 +65,7 @@ theorem differentialAlgebraicGaugeEquivalent_trans
 
 end HTGeometry
 
-local instance dimensionalQEDGaugePartitionDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance dimensionalQEDGaugePartitionDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance dimensionalQEDGaugePartitionRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance dimensionalQEDGaugePartitionRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance dimensionalQEDGaugePartitionDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance dimensionalQEDGaugePartitionCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Exact four-carrier gauge partition exposed by the shared half-shift Gamma orbit. -/
 structure DimensionalQEDGammaGaugePartitionCertificate : Prop where

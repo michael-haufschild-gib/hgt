@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GammaOrientationQuotientBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Separated-center Gamma reflection clocks
@@ -22,40 +23,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gammaReflectionRatioDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gammaReflectionRatioIntAlgebraAnalytic :
-    Algebra ℤ (analyticSubring Set.univ) := Ring.toIntAlgebra _
-
-local instance gammaReflectionRatioIntAlgebraMero :
-    Algebra ℤ (meroField Set.univ) := Ring.toIntAlgebra _
-
-local instance gammaReflectionRatioIntAlgebraRatFunc :
-    Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
-
-local instance gammaReflectionRatioDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gammaReflectionRatioRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gammaReflectionRatioRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance gammaReflectionRatioDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gammaReflectionRatioCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The reflected Gamma value clock `Gamma(-z+a) / Gamma(z+a)`. -/
 def gammaReflectionRatioMero (a : ℂ) : meroField Set.univ :=

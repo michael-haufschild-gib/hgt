@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ConstantFieldQEDGammaClock
 import GaloisForLFunctions.HTGeometry.CircularBetaEnsembleNormalizerBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Premise-free instances of the scalar-aware circuit law
@@ -17,26 +18,7 @@ open Bottcher
 
 noncomputable section
 
-local instance circuitAtomDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance circuitAtomDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance circuitAtomRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance circuitAtomRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance circuitAtomDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
+open scoped UnivMeroFieldInstances
 
 /-- The constant-magnetic QED spin-statistics ratio is an HT atom of its own one-atom circuit. -/
 theorem exists_hypertranscendental_atom_constantMagneticQEDSpinStatistics_self :

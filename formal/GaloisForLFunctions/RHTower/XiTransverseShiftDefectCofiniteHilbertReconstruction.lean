@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.CofiniteTailHilbertReconstruction
 import GaloisForLFunctions.HTGeometry.UpperEndLiteralTailIndependence
 import GaloisForLFunctions.RHTower.XiTransverseShiftPrimeDefectValueReflection
 import GaloisForLFunctions.RHTower.XiTransverseValuationCanonicalReconstruction
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Cofinite Hilbert reconstruction of actual transverse Xi shift defects
@@ -29,31 +30,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance xiTransverseDefectReconstructionUpperEndDomain :
-    IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiTransverseDefectReconstructionUpperEndComplexAlgebra :
-    Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiTransverseDefectReconstructionUpperEndCharZero :
-    CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiTransverseDefectReconstructionUpperEndDifferential :
-    Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiTransverseDefectReconstructionCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiTransverseDefectReconstructionCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- Literal upper-end rotation of the actual corrected completed-Xi shift defects. -/
 def xiTransverseShiftPrimeDefectRotatedFamily

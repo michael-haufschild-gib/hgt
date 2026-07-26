@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaReflection
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # The Coulomb Gamma phase as a unitary hypertranscendental clock
@@ -28,40 +29,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance coulombGammaPhaseDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance coulombGammaPhaseIntAlgebraAnalytic :
-    Algebra ℤ (analyticSubring Set.univ) := Ring.toIntAlgebra _
-
-local instance coulombGammaPhaseIntAlgebraMero :
-    Algebra ℤ (meroField Set.univ) := Ring.toIntAlgebra _
-
-local instance coulombGammaPhaseIntAlgebraRatFunc :
-    Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
-
-local instance coulombGammaPhaseDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance coulombGammaPhaseRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance coulombGammaPhaseRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance coulombGammaPhaseDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance coulombGammaPhaseCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The complexified Coulomb partial-wave phase in the Sommerfeld coordinate `z`:
 `Gamma(z+ell+1) / Gamma(-z+ell+1)`. -/

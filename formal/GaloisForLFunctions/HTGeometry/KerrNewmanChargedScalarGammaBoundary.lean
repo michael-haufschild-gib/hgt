@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Kerr--Newman charged-scalar Gamma-response boundary
@@ -33,40 +34,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance kerrNewmanGammaDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance kerrNewmanGammaIntAlgebraAnalytic :
-    Algebra ℤ (analyticSubring Set.univ) := Ring.toIntAlgebra _
-
-local instance kerrNewmanGammaIntAlgebraMero :
-    Algebra ℤ (meroField Set.univ) := Ring.toIntAlgebra _
-
-local instance kerrNewmanGammaIntAlgebraRatFunc :
-    Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
-
-local instance kerrNewmanGammaDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance kerrNewmanGammaRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance kerrNewmanGammaRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance kerrNewmanGammaDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance kerrNewmanGammaCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Effective multipole gap in the charged-scalar Kerr--Newman response.  The dimensionless
 coupling `charge` represents `q_e Q`. -/
@@ -202,6 +170,5 @@ theorem hypertranscendentalOver_kerrNewmanChargedScalarLogResponseClockMero_iff_
     hypertranscendentalOver_kerrNewmanChargedScalarGammaResponseMero_iff_nonintegerGap]
 
 end
-
 
 end GaloisForLFunctions

@@ -258,6 +258,16 @@ theorem sum_orbital_diagonalFano_le_slaterSpectralFanoMargin
   rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
   linarith
 
+/-- **The two endpoint-budget normalisations agree.**  The per-orbital budget
+`lower - (upper - lower - 1)^2 / 4` used by the Slater estimates and the product budget
+`lower*upper - (lower + upper - 1)^2 / 4` used by the occupation-weighted estimates are the same
+number: the two squares differ by `(a+b-1)^2 - (b-a-1)^2 = 4a(b-1)`, which is exactly the gap
+`a*b - a` between the two leading terms. -/
+theorem endpointBudget_eq (lower upper : ℝ) :
+    lower - (upper - lower - 1) ^ 2 / 4 =
+      lower * upper - (lower + upper - 1) ^ 2 / 4 := by
+  ring
+
 /-- **Three-defect spectral-bandwidth identity.**  The Slater Fano margin is exactly its universal
 spectral-band floor plus endpoint leakage, spectral-centering energy, and occupied coherence. -/
 theorem slaterSpectralFanoMargin_three_defect

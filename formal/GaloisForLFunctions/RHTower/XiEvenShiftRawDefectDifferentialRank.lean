@@ -5,6 +5,7 @@ import GaloisForLFunctions.HTGeometry.DifferentialPairwiseCommonMode
 import GaloisForLFunctions.RHTower.XiEvenShiftPrimeDefectTelescope
 import GaloisForLFunctions.RHTower.XiShiftAllValuationLayerBarrier
 import GaloisForLFunctions.RHTower.XiTransverseShiftAllValuationLayerRank
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Exact differential rank of raw even completed-Xi shift defects
@@ -30,40 +31,7 @@ noncomputable section
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
-local instance xiEvenRawUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiEvenRawUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiEvenRawUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiEvenRawUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiEvenRawCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiEvenRawCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiEvenRawAllValuationFieldDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiEvenRawAllValuationFieldDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-! ## Rational correction and actual value reflection -/
 

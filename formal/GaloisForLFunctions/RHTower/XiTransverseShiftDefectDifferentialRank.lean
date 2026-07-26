@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.XiShiftPrimeHypertranscendence
 import GaloisForLFunctions.HTGeometry.PrimeExpLogFiberRigidity
 import GaloisForLFunctions.HTGeometry.DifferentialPointedCollisionMatroid
 import GaloisForLFunctions.HTGeometry.UpperEndRationalCoordinateDifferentialAdjoin
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Differential rank of transverse Xi prime-source shift defects
@@ -43,27 +44,7 @@ noncomputable section
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
-local instance xiTransverseUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiTransverseUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiTransverseUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiTransverseUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiTransverseCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiTransverseCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- The unfiltered von Mangoldt coefficient stream. -/
 def vonMangoldtArithmetic : ArithmeticFunction ℂ where

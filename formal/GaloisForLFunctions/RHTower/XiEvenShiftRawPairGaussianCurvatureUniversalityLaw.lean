@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiEvenShiftRawDefectGaussianCurvatureUniversalityLaw
 import GaloisForLFunctions.RHTower.XiTransverseShiftPairDifferenceCofiniteHilbertReconstruction
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Raw Xi edge networks and full-vertex Gaussian curvature
@@ -25,40 +26,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance xiRawPairCurvatureUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiRawPairCurvatureUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiRawPairCurvatureUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiRawPairCurvatureUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiRawPairCurvatureCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiRawPairCurvatureCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiRawPairCurvatureAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiRawPairCurvatureAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- Minimal arbitrary-edge/full-vertex certificate.  The vertex certificate supplies doubled
 Gaussian geometry, while one corrected pair reconstruction supplies every raw reconstruction,

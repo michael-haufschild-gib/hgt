@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ThermalDeSitterOrientedGammaTomographyUniversalityLaw
 import GaloisForLFunctions.RHTower.ZetaHorizonGammaIntensitySeparation
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Thermal/de Sitter--zeta quarter cross-center Gamma separation
@@ -20,31 +21,7 @@ open GaloisForLFunctions Bottcher Polynomial
 
 noncomputable section
 
-local instance thermalDeSitterZetaCrossCenterDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance thermalDeSitterZetaCrossCenterDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance thermalDeSitterZetaCrossCenterRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance thermalDeSitterZetaCrossCenterRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance thermalDeSitterZetaCrossCenterDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance thermalDeSitterZetaCrossCenterCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 private theorem complex_quarter_sub_nat_ne_integer (n : ℕ) (k : ℤ) :
     (1 / 4 : ℂ) - (n : ℂ) ≠ (k : ℂ) := by

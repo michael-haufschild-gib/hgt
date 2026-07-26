@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Wigner--Smith observability of the thermal CFT Gamma response
@@ -23,39 +24,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance thermalCFTWignerSmithDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance thermalCFTWignerSmithComplexAlgebraAnalytic :
-    Algebra ℂ (analyticSubring Set.univ) := (constToAnalytic Set.univ).toAlgebra
-
-local instance thermalCFTWignerSmithComplexAlgebraMero :
-    Algebra ℂ (meroField Set.univ) :=
-  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
-    (constToAnalytic Set.univ)).toAlgebra
-
-local instance thermalCFTWignerSmithDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance thermalCFTWignerSmithRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance thermalCFTWignerSmithRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance thermalCFTWignerSmithDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance thermalCFTWignerSmithCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 theorem gammaReflectionProductMero_ne_zero (h : ℂ) :
     gammaReflectionProductMero h ≠ 0 := by

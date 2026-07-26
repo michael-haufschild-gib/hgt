@@ -1,4 +1,5 @@
-import Mathlib.Algebra.Group.Action.Defs
+import Mathlib.Algebra.GroupWithZero.Action.Defs
+import Mathlib.Tactic
 
 /-!
 # Bar-cochain skeleton for Deninger's arithmetic power transfers
@@ -32,14 +33,13 @@ def deningerPowerBarD2 (ψ : M → M → V) (l m n : M) : V :=
 
 /-- Transfer composition makes the first two bar coboundaries compose to zero. -/
 theorem deningerPowerBarD1_comp_D0 (v : V) :
-    deningerPowerBarD1 (deningerPowerBarD0 v) = 0 := by
+    deningerPowerBarD1 (M := M) (deningerPowerBarD0 (M := M) v) = 0 := by
   funext m n
   simp [deningerPowerBarD0, deningerPowerBarD1, smul_sub, mul_smul]
-  abel
 
 /-- Associativity makes the second and third bar coboundaries compose to zero. -/
 theorem deningerPowerBarD2_comp_D1 (φ : M → V) :
-    deningerPowerBarD2 (deningerPowerBarD1 φ) = 0 := by
+    deningerPowerBarD2 (M := M) (deningerPowerBarD1 (M := M) φ) = 0 := by
   funext l m n
   simp [deningerPowerBarD1, deningerPowerBarD2, smul_sub, smul_add,
     mul_smul, mul_assoc]
@@ -47,14 +47,13 @@ theorem deningerPowerBarD2_comp_D1 (φ : M → V) :
 
 /-- Genuine degree-two cocycles used by the good truncation. -/
 def DeningerPowerBarCocycle2 :=
-  {ψ : M → M → V // deningerPowerBarD2 ψ = 0}
+  {ψ : M → M → V // deningerPowerBarD2 (M := M) ψ = 0}
 
 /-- The degree-one coboundary lands in genuine degree-two cocycles. -/
 def deningerPowerBarD1Cocycle (φ : M → V) :
-    DeningerPowerBarCocycle2 (M := M) (V := V) :=
-  ⟨deningerPowerBarD1 φ, deningerPowerBarD2_comp_D1 φ⟩
+  DeningerPowerBarCocycle2 (M := M) (V := V) :=
+  ⟨deningerPowerBarD1 (M := M) φ, deningerPowerBarD2_comp_D1 φ⟩
 
 end PowerBar
 
 end RHTower
-

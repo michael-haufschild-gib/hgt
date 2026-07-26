@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiRootDeletedGaussianGraphicConnector
 import GaloisForLFunctions.RHTower.XiTransverseValuationCanonicalReconstruction
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Root-deleted canonical reconstruction and Xi graphic universality
@@ -22,40 +23,7 @@ open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 open scoped ComplexOrder Differential
 
-local instance xiRootDeletedCanonicalUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiRootDeletedCanonicalUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiRootDeletedCanonicalUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiRootDeletedCanonicalUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiRootDeletedCanonicalCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiRootDeletedCanonicalCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiRootDeletedCanonicalAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiRootDeletedCanonicalAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- Exact first-valuation dual reconstruction on every vertex except the distinguished root.
 `root.succAbove` gives the canonical enumeration of the `N` nonroot vertices. -/

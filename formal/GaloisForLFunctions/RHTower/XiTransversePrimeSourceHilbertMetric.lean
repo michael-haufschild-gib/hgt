@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.CofiniteTailHilbertReconstruction
 import GaloisForLFunctions.RHTower.ArithmeticSchurRenormalizationLaw
 import GaloisForLFunctions.RHTower.XiTransverseShiftAllValuationLayerRank
 import GaloisForLFunctions.RHTower.XiTransverseValuationSzegoMetric
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # A Hilbert metric for the transverse Xi prime-source aperture
@@ -26,40 +27,7 @@ open GaloisForLFunctions.HTGeometry
 open Matrix
 open scoped ComplexOrder Differential InnerProduct
 
-local instance xiApertureUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiApertureUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiApertureUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiApertureUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiApertureCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiApertureCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiApertureAllValuationFieldDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiApertureAllValuationFieldDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- Prime coefficient of one transverse shift/logarithmic-jet channel. -/
 def xiTransversePrimeJetApertureCoefficient

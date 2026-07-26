@@ -472,13 +472,13 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
   let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
     (fun i => F.quotient (zf i)) nf eta hupperf
   let S := LinearMap.ker frozen.toLinearMap
-  let goodPattern : FiniteDifferentialPattern Γ → Set S := fun p =>
-    {w | ∀ shift : InjectiveShiftConfiguration (CarrierPatternShift p),
-      actualNevanlinnaExpandedFullRankWitness
-        (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
-        (ι := CarrierPatternShift p)
-        F.background F.amplitude F.quotient p.coefficientDegree p.orders
-          (carrierPatternExponent p) eta (linftyOne eta) S w shift}
+  let goodPattern' : Set S := {w | ∀ (p : FiniteDifferentialPattern Γ)
+    (shift : InjectiveShiftConfiguration (CarrierPatternShift p)),
+    actualNevanlinnaExpandedFullRankWitness
+      (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
+      (ι := CarrierPatternShift p)
+      F.background F.amplitude F.quotient p.coefficientDegree p.orders
+        (carrierPatternExponent p) eta (linftyOne eta) S w shift}
   let relationFree : Set S := {w | ∀ (p : FiniteDifferentialPattern Γ)
     (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
     (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
@@ -487,41 +487,17 @@ theorem allFinitePatterns_abstractCarrier_relationFree_dense_residual
         p.coefficientDegree p.orders (carrierPatternExponent p) eta (linftyOne eta)
         S w shift coeff →
       ∀ col, coeff col = 0}
-  have hupperMap' : ∀ z, 0 < z.im →
-      0 < (projectiveNevanlinnaQuotient F.c F.d z).im := by
-    simpa [quotient, projectiveNevanlinnaQuotient] using hupperMap
-  have hqf_inj' : Function.Injective
-      (fun i => projectiveNevanlinnaQuotient F.c F.d (zf i)) := by
-    simpa [quotient, projectiveNevanlinnaQuotient] using hqf_inj
-  have hupperf' : ∀ i,
-      0 < (projectiveNevanlinnaQuotient F.c F.d (zf i)).im := by
-    simpa [quotient, projectiveNevanlinnaQuotient] using hupperf
-  have hgoodPattern : ∀ p : FiniteDifferentialPattern Γ,
-      Dense (goodPattern p) ∧ goodPattern p ∈ residual S := by
-    intro p
-    simpa [goodPattern, frozen, S, amplitude, quotient,
-      projectiveNevanlinnaAmplitude, projectiveNevanlinnaQuotient] using
-      (global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
-        (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
-        (ι := CarrierPatternShift p)
-        hCmin F.differentiable_d
-        hnoCommon hCp hCc hupperMap' F.background
-        F.contDiffOn_iteratedDeriv_background zf hqf_inj' hupperf' nf
-        p.coefficientDegree p.orders (carrierPatternExponent p)
-        (carrierPatternExponent_injective p)
-        (carrierPattern_rows_strictly_dominate_columns p)
-        eta heta (linftyOne eta)
-        (carrierPattern_shift_dimension_below_codimension p))
-  have hfullResidual : (⋂ p, goodPattern p) ∈ residual S :=
-    countable_iInter_mem.mpr fun p => (hgoodPattern p).2
-  have hsubset : (⋂ p, goodPattern p) ⊆ relationFree := by
+  have hfull := F.allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
+    (Γ := Γ) hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta heta
+  dsimp only at hfull
+  obtain ⟨hdense, hres⟩ := hfull
+  have hsubset : goodPattern' ⊆ relationFree := by
     intro w hw p shift coeff hrelation
     exact actualNevanlinnaExpandedPatternRelation_coefficients_eq_zero_of_fullRankWitness
       F.background F.amplitude F.quotient p.coefficientDegree p.orders
       (carrierPatternExponent p) eta (linftyOne eta) S w shift
-      (Set.mem_iInter.mp hw p shift) coeff hrelation
-  exact ⟨(dense_of_mem_residual hfullResidual).mono hsubset,
-    Filter.mem_of_superset hfullResidual hsubset⟩
+      (hw p shift) coeff hrelation
+  exact ⟨hdense.mono hsubset, Filter.mem_of_superset hres hsubset⟩
 
 /-- **All finite shapes, actual positive-carrier form.**  In the normalized positive chart, a
 dense residual family of actual weighted Nevanlinna carrier transforms admits no nonzero relation

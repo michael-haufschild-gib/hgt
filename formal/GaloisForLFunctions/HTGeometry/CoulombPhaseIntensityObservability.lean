@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CoulombGammaPhaseClock
 import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Reflected-frequency observability of the Coulomb phase
@@ -23,31 +24,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance coulombPhaseObservabilityDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance coulombPhaseObservabilityDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance coulombPhaseObservabilityRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance coulombPhaseObservabilityRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance coulombPhaseObservabilityDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance coulombPhaseObservabilityCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Frequency reflection of the Coulomb partial-wave Gamma phase. -/
 def coulombPhaseReflectedFrequencyMero (ell : ℕ) : meroField Set.univ :=

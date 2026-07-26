@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HilbertMetric.PrescribedEvaluationReconstruction
 import GaloisForLFunctions.RHTower.XiTransversePrimeSourceHilbertMetric
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Canonical finite-depth reconstruction of transverse Xi apertures
@@ -22,40 +23,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HilbertMetric
 open scoped BigOperators ComplexOrder Differential
 
-local instance xiValuationReconstructionUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiValuationReconstructionUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiValuationReconstructionUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiValuationReconstructionUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiValuationReconstructionCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiValuationReconstructionCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiValuationReconstructionAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiValuationReconstructionAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- Real feature family formed from the canonical first `N` valuation increments. -/
 def xiTransversePrimeValuationCanonicalFeature

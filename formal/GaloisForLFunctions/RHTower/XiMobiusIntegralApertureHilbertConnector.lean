@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiMobiusContinuousApertureSzegoMetric
 import GaloisForLFunctions.RHTower.XiTransversePrimeSourceHilbertMetric
 import GaloisForLFunctions.RHTower.XiTransverseValuationCanonicalReconstruction
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Integral slice of the continuous Möbius aperture Hilbert metric
@@ -24,40 +25,7 @@ open GaloisForLFunctions.HTGeometry
 open Matrix
 open scoped ComplexOrder Differential
 
-local instance xiMobiusIntegralUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiMobiusIntegralUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiMobiusIntegralUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiMobiusIntegralUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiMobiusIntegralCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiMobiusIntegralCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiMobiusIntegralAllValuationFieldDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiMobiusIntegralAllValuationFieldDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- The continuous disk node restricts exactly to the transverse integral disk node. -/
 theorem xiMobiusContinuousApertureDiskNode_nat_eq_transverse
@@ -295,6 +263,5 @@ theorem
       xiMobiusPrimeIntegralApertureCanonicalReconstruction_iff_transverseValuationCanonicalReconstruction]
 
 end
-
 
 end RHTower

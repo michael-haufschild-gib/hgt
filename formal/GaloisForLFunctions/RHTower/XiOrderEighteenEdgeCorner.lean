@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiOrderSeventeenCornerSourceExclusion
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import GaloisForLFunctions.HTGeometry.SectorPowerPositivity
 
 /-!
 # The compact edge corner for the order-eighteen squared-Xi source
@@ -78,27 +79,15 @@ theorem orderNineteenReciprocalPower_re_pos_of_sectorRatio
     rw [abs_mul]
     norm_num
     nlinarith [Real.pi_gt_d20]
-  have hcos : 0 < Real.cos (19 * Complex.arg mu) := by
-    exact Real.cos_pos_of_mem_Ioo (abs_lt.mp hangle)
   have hmu : mu ≠ 0 := by
     exact inv_ne_zero (by
       intro hz
       have hzre := congrArg Complex.re hz
       simp at hzre
       linarith)
-  have hnorm : 0 < ‖mu‖ ^ 19 := pow_pos (norm_pos_iff.mpr hmu) _
   change 0 < (mu ^ 19).re
-  rw [← Complex.norm_mul_exp_arg_mul_I mu, mul_pow, ← Complex.exp_nat_mul]
-  have hexp :
-      ((19 : ℕ) : ℂ) * ((Complex.arg mu : ℂ) * I) =
-        ((19 * Complex.arg mu : ℝ) : ℂ) * I := by
-    push_cast
-    ring
-  rw [hexp, mul_re, Complex.exp_ofReal_mul_I_re,
-    Complex.exp_ofReal_mul_I_im]
-  rw [← Complex.ofReal_pow]
-  simp only [ofReal_re, ofReal_im, zero_mul, sub_zero]
-  exact mul_pos hnorm hcos
+  exact GaloisForLFunctions.HTGeometry.re_pow_pos_of_abs_arg_lt hmu (by
+    simpa using hangle)
 
 /-- The protected central band satisfies the rational order-nineteen sector certificate. -/
 theorem xiOrderNineteenSectorRatio_of_offLine_inner

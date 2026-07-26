@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SymmetricDirichletNormalizerBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Circular beta-ensemble normalization boundary
@@ -30,39 +31,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance circularBetaDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance circularBetaComplexAlgebraAnalytic :
-    Algebra ℂ (analyticSubring Set.univ) := (constToAnalytic Set.univ).toAlgebra
-
-local instance circularBetaComplexAlgebraMero :
-    Algebra ℂ (meroField Set.univ) :=
-  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
-    (constToAnalytic Set.univ)).toAlgebra
-
-local instance circularBetaDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance circularBetaRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance circularBetaRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance circularBetaDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance circularBetaCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The Gamma part of the circular beta-ensemble Selberg integral, with `z = beta/2` and `K`
 eigenangles. -/

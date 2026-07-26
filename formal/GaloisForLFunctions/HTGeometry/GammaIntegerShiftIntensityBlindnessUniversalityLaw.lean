@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Gamma integer-shift intensity-blindness universality
@@ -19,31 +20,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gammaIntegerShiftBlindnessDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gammaIntegerShiftBlindnessDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gammaIntegerShiftBlindnessRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gammaIntegerShiftBlindnessRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance gammaIntegerShiftBlindnessDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gammaIntegerShiftBlindnessCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Complete phase/intensity/delay certificate at one integer-separated Gamma orbit. -/
 def GammaIntegerShiftIntensityBlindnessCertificate (a : ℂ) (n : ℕ) : Prop :=

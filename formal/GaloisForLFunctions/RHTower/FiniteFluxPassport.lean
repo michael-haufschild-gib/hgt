@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.FiniteHermiteCRT
 import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 /-!
 # Finite completed-flux passport realization

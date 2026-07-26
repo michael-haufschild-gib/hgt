@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.DimensionalQEDGammaGaugePartitionUniversalityLaw
 import GaloisForLFunctions.HTGeometry.ScaledEulerBetaCrossDomainBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Scaled-beta/Dirichlet/Jacobi/QED spin-gauge universality
@@ -20,31 +21,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance scaledBetaQEDSpinGaugeDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance scaledBetaQEDSpinGaugeDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance scaledBetaQEDSpinGaugeRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance scaledBetaQEDSpinGaugeRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance scaledBetaQEDSpinGaugeDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance scaledBetaQEDSpinGaugeCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Explicit unit-shift times binary-Gauss gauge relating scaled beta to the QED spin ratio. -/
 def scaledBetaQEDSpinGaugeMero : meroField Set.univ :=

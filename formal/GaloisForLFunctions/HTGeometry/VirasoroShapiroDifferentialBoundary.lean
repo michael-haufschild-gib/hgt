@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.VenezianoGammaRatioBoundary
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaReflection
 import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
 import GaloisForLFunctions.HTGeometry.ScalarLogCurrentReconstruction
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Virasoro--Shapiro closed-string differential boundary
@@ -31,40 +32,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance virasoroShapiroDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance virasoroShapiroIntAlgebraAnalytic :
-    Algebra ℤ (analyticSubring Set.univ) := Ring.toIntAlgebra _
-
-local instance virasoroShapiroIntAlgebraMero :
-    Algebra ℤ (meroField Set.univ) := Ring.toIntAlgebra _
-
-local instance virasoroShapiroIntAlgebraRatFunc :
-    Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
-
-local instance virasoroShapiroDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance virasoroShapiroRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance virasoroShapiroRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance virasoroShapiroDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance virasoroShapiroCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The variable-channel core of the Virasoro--Shapiro amplitude after the fixed factor
 `Gamma(b) / Gamma(1-b)` is removed.  Its three Gamma arguments obey the mass-shell relation

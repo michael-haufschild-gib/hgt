@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.FiniteFluxPassport
+import GaloisForLFunctions.RHTower.SimultaneousFiniteJetFlatness
 import Mathlib.Analysis.Polynomial.Basic
 import Mathlib.Topology.Order.Compact
 

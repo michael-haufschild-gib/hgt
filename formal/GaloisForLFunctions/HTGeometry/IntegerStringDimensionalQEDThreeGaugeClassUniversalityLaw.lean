@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.DimensionalQEDGammaGaugePartitionUniversalityLaw
 import GaloisForLFunctions.HTGeometry.GammaIntegerOrbitOpenClosedSpinUniversalityLaw
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Integer-string/dimensional-QED three-gauge-class universality
@@ -49,31 +50,7 @@ theorem not_differentialAlgebraicGaugeEquivalent_of_differentialAlgebraic_of_hyp
 
 end HTGeometry
 
-local instance integerStringDimensionalQEDDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance integerStringDimensionalQEDDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance integerStringDimensionalQEDRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance integerStringDimensionalQEDRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance integerStringDimensionalQEDDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance integerStringDimensionalQEDCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Exact three-class certificate for the seven integer-string and dimensional-QED carriers.
 The displayed equivalences generate each class; the three representative separations make the

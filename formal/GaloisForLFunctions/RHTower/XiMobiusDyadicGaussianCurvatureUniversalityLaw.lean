@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiMobiusDyadicTransverseMatroidUniversalityLaw
 import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianCurvatureHilbertPhase
 import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianIntrinsicDimensionUniversalityLaw
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Xi Möbius dyadic Gaussian-curvature universality
@@ -26,40 +27,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HilbertMetric
 open scoped ComplexOrder Differential
 
-local instance xiMobiusDyadicCurvatureUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiMobiusDyadicCurvatureUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiMobiusDyadicCurvatureUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiMobiusDyadicCurvatureUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiMobiusDyadicCurvatureCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiMobiusDyadicCurvatureCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiMobiusDyadicCurvatureAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiMobiusDyadicCurvatureAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- **Dyadic innovation/curvature connector.**  Unit-mesh Möbius innovation positivity, together
 with the sharp rank-two condition, is exactly the transverse cofinite-Hilbert Gaussian-curvature

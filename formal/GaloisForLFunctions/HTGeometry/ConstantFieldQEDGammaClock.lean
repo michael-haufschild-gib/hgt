@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.GammaOrientationQuotientBoundary
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaNatScale
 import GaloisForLFunctions.HTGeometry.VenezianoGammaRatioBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Constant-field QED Gamma clock
@@ -29,30 +30,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance constantFieldQEDGammaDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance constantFieldQEDGammaDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance constantFieldQEDGammaRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance constantFieldQEDGammaRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance constantFieldQEDGammaDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance constantFieldQEDGammaCharZero : CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Gamma carrier of the renormalized exponentiated scalar determinant in the clock
 `x=m^2/(2B)`. -/

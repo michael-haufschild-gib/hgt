@@ -384,6 +384,20 @@ def degreeFiveNormalizedSecondEntry {d : ℕ}
     degreeFiveSecondRemainder lam nodes c q r e /
       e ^ ((q.1 : ℕ) + (r.1 : ℕ))
 
+/-- **Normalised-entry convergence.**  A remainder that is `o(e^10)` at the origin survives division
+by `e^(q+r)` -- the degree sum never exceeds ten -- so the normalised entry converges to its constant
+term.  Nothing about the jet enters: the statement quantifies over an arbitrary constant and an
+arbitrary remainder, which is why the value, first and second jets all instantiate it. -/
+theorem tendsto_degreeFiveNormalizedEntry {d : ℕ}
+    (limitVal : ℝ) (remainder : ℝ → ℝ)
+    (hrem : remainder =o[nhds 0] fun e : ℝ => e ^ 10)
+    (q r : DegreeFiveIndex d) :
+    Tendsto (fun e => limitVal + remainder e / e ^ ((q.1 : ℕ) + (r.1 : ℕ))) (nhds 0)
+      (nhds limitVal) := by
+  have hsmall := hrem.trans_isBigO (degreeFive_pow_ten_isBigO_degreeSum q r)
+  simpa using (tendsto_const_nhds (x := limitVal) (f := nhds (0 : ℝ))).add
+    hsmall.tendsto_div_nhds_zero
+
 theorem tendsto_degreeFiveNormalizedValueEntry {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
     (c : DegreeFiveIndex d → DegreeFiveIndex d → ℝ)
@@ -392,15 +406,11 @@ theorem tendsto_degreeFiveNormalizedValueEntry {d : ℕ}
     (q r : DegreeFiveIndex d) :
     Tendsto (fun e => degreeFiveNormalizedValueEntry lam nodes c e q r) (nhds 0)
       (nhds (if q = r then degreeFiveValueLimit lam q else 0)) := by
-  have hrem :
-      degreeFiveValueRemainder lam nodes c q r =o[nhds 0] (fun e : ℝ => e ^ 10) := by
-    simpa only [degreeFiveValueRemainder] using
-      degreeFive_gaussianValueJet lam nodes c hdelta q r
-  have hsmall := hrem.trans_isBigO (degreeFive_pow_ten_isBigO_degreeSum q r)
-  unfold degreeFiveNormalizedValueEntry
-  have hconst : Tendsto (fun _ : ℝ => if q = r then degreeFiveValueLimit lam q else 0)
-      (nhds 0) (nhds (if q = r then degreeFiveValueLimit lam q else 0)) := tendsto_const_nhds
-  simpa using hconst.add hsmall.tendsto_div_nhds_zero
+  have hrem : degreeFiveValueRemainder lam nodes c q r =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+    simpa only [degreeFiveValueRemainder] using degreeFive_gaussianValueJet lam nodes c hdelta q r
+  simpa only [degreeFiveNormalizedValueEntry] using
+    tendsto_degreeFiveNormalizedEntry (if q = r then degreeFiveValueLimit lam q else 0)
+      (degreeFiveValueRemainder lam nodes c q r) hrem q r
 
 theorem tendsto_degreeFiveNormalizedFirstEntry {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -410,15 +420,11 @@ theorem tendsto_degreeFiveNormalizedFirstEntry {d : ℕ}
     (q r : DegreeFiveIndex d) :
     Tendsto (fun e => degreeFiveNormalizedFirstEntry lam nodes c e q r) (nhds 0)
       (nhds (if q = r then degreeFiveFirstLimit lam q else 0)) := by
-  have hrem :
-      degreeFiveFirstRemainder lam nodes c q r =o[nhds 0] (fun e : ℝ => e ^ 10) := by
-    simpa only [degreeFiveFirstRemainder] using
-      degreeFive_gaussianFirstJet lam nodes c hdelta q r
-  have hsmall := hrem.trans_isBigO (degreeFive_pow_ten_isBigO_degreeSum q r)
-  unfold degreeFiveNormalizedFirstEntry
-  have hconst : Tendsto (fun _ : ℝ => if q = r then degreeFiveFirstLimit lam q else 0)
-      (nhds 0) (nhds (if q = r then degreeFiveFirstLimit lam q else 0)) := tendsto_const_nhds
-  simpa using hconst.add hsmall.tendsto_div_nhds_zero
+  have hrem : degreeFiveFirstRemainder lam nodes c q r =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+    simpa only [degreeFiveFirstRemainder] using degreeFive_gaussianFirstJet lam nodes c hdelta q r
+  simpa only [degreeFiveNormalizedFirstEntry] using
+    tendsto_degreeFiveNormalizedEntry (if q = r then degreeFiveFirstLimit lam q else 0)
+      (degreeFiveFirstRemainder lam nodes c q r) hrem q r
 
 theorem tendsto_degreeFiveNormalizedSecondEntry {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -428,15 +434,11 @@ theorem tendsto_degreeFiveNormalizedSecondEntry {d : ℕ}
     (q r : DegreeFiveIndex d) :
     Tendsto (fun e => degreeFiveNormalizedSecondEntry lam nodes c e q r) (nhds 0)
       (nhds (if q = r then degreeFiveSecondLimit q else 0)) := by
-  have hrem :
-      degreeFiveSecondRemainder lam nodes c q r =o[nhds 0] (fun e : ℝ => e ^ 10) := by
-    simpa only [degreeFiveSecondRemainder] using
-      degreeFive_gaussianSecondJet lam nodes c hdelta q r
-  have hsmall := hrem.trans_isBigO (degreeFive_pow_ten_isBigO_degreeSum q r)
-  unfold degreeFiveNormalizedSecondEntry
-  have hconst : Tendsto (fun _ : ℝ => if q = r then degreeFiveSecondLimit q else 0)
-      (nhds 0) (nhds (if q = r then degreeFiveSecondLimit q else 0)) := tendsto_const_nhds
-  simpa using hconst.add hsmall.tendsto_div_nhds_zero
+  have hrem : degreeFiveSecondRemainder lam nodes c q r =o[nhds 0] (fun e : ℝ => e ^ 10) := by
+    simpa only [degreeFiveSecondRemainder] using degreeFive_gaussianSecondJet lam nodes c hdelta q r
+  simpa only [degreeFiveNormalizedSecondEntry] using
+    tendsto_degreeFiveNormalizedEntry (if q = r then degreeFiveSecondLimit q else 0)
+      (degreeFiveSecondRemainder lam nodes c q r) hrem q r
 
 def degreeFiveNormalizedValueMatrix {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -468,6 +470,17 @@ def degreeFiveSecondLimitMatrix {d : ℕ} :
     Matrix (DegreeFiveIndex d) (DegreeFiveIndex d) ℝ :=
   Matrix.diagonal degreeFiveSecondLimit
 
+/-- **Entrywise convergence to a diagonal matrix.**  A matrix-valued family whose `(q, r)` entry
+tends to `lim q` on the diagonal and to zero off it converges to `Matrix.diagonal lim`, since the
+matrix topology is the product topology in both indices. -/
+theorem tendsto_matrix_of_tendsto_entry {d : ℕ}
+    {M : ℝ → Matrix (DegreeFiveIndex d) (DegreeFiveIndex d) ℝ}
+    {lim : DegreeFiveIndex d → ℝ}
+    (h : ∀ q r, Tendsto (fun e => M e q r) (nhds 0) (nhds (if q = r then lim q else 0))) :
+    Tendsto M (nhds 0) (nhds (Matrix.diagonal lim)) := by
+  refine tendsto_pi_nhds.2 fun q => tendsto_pi_nhds.2 fun r => ?_
+  simpa only [Matrix.diagonal_apply] using h q r
+
 theorem tendsto_degreeFiveNormalizedValueMatrix {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
     (c : DegreeFiveIndex d → DegreeFiveIndex d → ℝ)
@@ -475,12 +488,10 @@ theorem tendsto_degreeFiveNormalizedValueMatrix {d : ℕ}
       if q = r then 1 else 0) :
     Tendsto (degreeFiveNormalizedValueMatrix lam nodes c) (nhds 0)
       (nhds (degreeFiveValueLimitMatrix lam)) := by
-  apply tendsto_pi_nhds.2
-  intro q
-  apply tendsto_pi_nhds.2
-  intro r
-  simpa only [degreeFiveNormalizedValueMatrix, degreeFiveValueLimitMatrix,
-    Matrix.diagonal_apply] using tendsto_degreeFiveNormalizedValueEntry lam nodes c hdelta q r
+  refine tendsto_matrix_of_tendsto_entry (M := degreeFiveNormalizedValueMatrix lam nodes c) ?_
+  intro q r
+  simpa only [degreeFiveNormalizedValueMatrix] using
+    tendsto_degreeFiveNormalizedValueEntry lam nodes c hdelta q r
 
 theorem tendsto_degreeFiveNormalizedFirstMatrix {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -489,12 +500,10 @@ theorem tendsto_degreeFiveNormalizedFirstMatrix {d : ℕ}
       if q = r then 1 else 0) :
     Tendsto (degreeFiveNormalizedFirstMatrix lam nodes c) (nhds 0)
       (nhds (degreeFiveFirstLimitMatrix lam)) := by
-  apply tendsto_pi_nhds.2
-  intro q
-  apply tendsto_pi_nhds.2
-  intro r
-  simpa only [degreeFiveNormalizedFirstMatrix, degreeFiveFirstLimitMatrix,
-    Matrix.diagonal_apply] using tendsto_degreeFiveNormalizedFirstEntry lam nodes c hdelta q r
+  refine tendsto_matrix_of_tendsto_entry (M := degreeFiveNormalizedFirstMatrix lam nodes c) ?_
+  intro q r
+  simpa only [degreeFiveNormalizedFirstMatrix] using
+    tendsto_degreeFiveNormalizedFirstEntry lam nodes c hdelta q r
 
 theorem tendsto_degreeFiveNormalizedSecondMatrix {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -503,12 +512,11 @@ theorem tendsto_degreeFiveNormalizedSecondMatrix {d : ℕ}
       if q = r then 1 else 0) :
     Tendsto (degreeFiveNormalizedSecondMatrix lam nodes c) (nhds 0)
       (nhds degreeFiveSecondLimitMatrix) := by
-  apply tendsto_pi_nhds.2
-  intro q
-  apply tendsto_pi_nhds.2
-  intro r
-  simpa only [degreeFiveNormalizedSecondMatrix, degreeFiveSecondLimitMatrix,
-    Matrix.diagonal_apply] using tendsto_degreeFiveNormalizedSecondEntry lam nodes c hdelta q r
+  refine tendsto_matrix_of_tendsto_entry
+    (M := degreeFiveNormalizedSecondMatrix lam nodes c) ?_
+  intro q r
+  simpa only [degreeFiveNormalizedSecondMatrix] using
+    tendsto_degreeFiveNormalizedSecondEntry lam nodes c hdelta q r
 
 
 def degreeFiveBalancedAmplitude : ℝ := Real.sqrt (5 / 3)
@@ -773,6 +781,19 @@ theorem degreeFiveInverseScaleMatrix_det_isUnit {d : ℕ} {e : ℝ} (he : e ≠ 
   rw [Matrix.det_diagonal]
   exact Finset.prod_ne_zero_iff.mpr fun q hq => inv_ne_zero (pow_ne_zero _ he)
 
+/-- **Entrywise degree normalisation is diagonal conjugation.**  A matrix whose `(q, r)` entry is the
+corresponding entry of `R` divided by `e ^ (deg q + deg r)` is exactly `R` conjugated by the inverse
+scale matrix.  The identity is entrywise and uses nothing about `R`. -/
+theorem matrix_eq_scale_conj_of_entry_div {d : ℕ}
+    {N R : Matrix (DegreeFiveIndex d) (DegreeFiveIndex d) ℝ} {e : ℝ} (he : e ≠ 0)
+    (h : ∀ q r, N q r = R q r / e ^ ((q.1 : ℕ) + (r.1 : ℕ))) :
+    N = degreeFiveInverseScaleMatrix e * R * degreeFiveInverseScaleMatrix e := by
+  ext q r
+  rw [h q r]
+  simp only [degreeFiveInverseScaleMatrix, Matrix.diagonal_mul, Matrix.mul_diagonal]
+  rw [pow_add]
+  field_simp [pow_ne_zero (q.1 : ℕ) he, pow_ne_zero (r.1 : ℕ) he]
+
 theorem degreeFiveNormalizedValueMatrix_eq_scale_recombined {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
     (c : DegreeFiveIndex d → DegreeFiveIndex d → ℝ)
@@ -780,13 +801,9 @@ theorem degreeFiveNormalizedValueMatrix_eq_scale_recombined {d : ℕ}
     degreeFiveNormalizedValueMatrix lam nodes c e =
       degreeFiveInverseScaleMatrix e * degreeFiveRecombinedValueMatrix lam nodes c e *
         degreeFiveInverseScaleMatrix e := by
-  ext q r
-  change degreeFiveNormalizedValueEntry lam nodes c e q r = _
-  rw [degreeFiveNormalizedValueEntry_eq_recombined_div lam nodes c he q r]
-  simp only [degreeFiveInverseScaleMatrix,
-    degreeFiveRecombinedValueMatrix, Matrix.diagonal_mul, Matrix.mul_diagonal]
-  rw [pow_add]
-  field_simp [pow_ne_zero (q.1 : ℕ) he, pow_ne_zero (r.1 : ℕ) he]
+  refine matrix_eq_scale_conj_of_entry_div he ?_
+  intro q r
+  exact degreeFiveNormalizedValueEntry_eq_recombined_div lam nodes c he q r
 
 theorem degreeFiveNormalizedFirstMatrix_eq_scale_recombined {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -795,13 +812,9 @@ theorem degreeFiveNormalizedFirstMatrix_eq_scale_recombined {d : ℕ}
     degreeFiveNormalizedFirstMatrix lam nodes c e =
       degreeFiveInverseScaleMatrix e * degreeFiveRecombinedFirstMatrix lam nodes c e *
         degreeFiveInverseScaleMatrix e := by
-  ext q r
-  change degreeFiveNormalizedFirstEntry lam nodes c e q r = _
-  rw [degreeFiveNormalizedFirstEntry_eq_recombined_div lam nodes c he q r]
-  simp only [degreeFiveInverseScaleMatrix,
-    degreeFiveRecombinedFirstMatrix, Matrix.diagonal_mul, Matrix.mul_diagonal]
-  rw [pow_add]
-  field_simp [pow_ne_zero (q.1 : ℕ) he, pow_ne_zero (r.1 : ℕ) he]
+  refine matrix_eq_scale_conj_of_entry_div he ?_
+  intro q r
+  exact degreeFiveNormalizedFirstEntry_eq_recombined_div lam nodes c he q r
 
 theorem degreeFiveNormalizedSecondMatrix_eq_scale_recombined {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -810,13 +823,9 @@ theorem degreeFiveNormalizedSecondMatrix_eq_scale_recombined {d : ℕ}
     degreeFiveNormalizedSecondMatrix lam nodes c e =
       degreeFiveInverseScaleMatrix e * degreeFiveRecombinedSecondMatrix lam nodes c e *
         degreeFiveInverseScaleMatrix e := by
-  ext q r
-  change degreeFiveNormalizedSecondEntry lam nodes c e q r = _
-  rw [degreeFiveNormalizedSecondEntry_eq_recombined_div lam nodes c he q r]
-  simp only [degreeFiveInverseScaleMatrix,
-    degreeFiveRecombinedSecondMatrix, Matrix.diagonal_mul, Matrix.mul_diagonal]
-  rw [pow_add]
-  field_simp [pow_ne_zero (q.1 : ℕ) he, pow_ne_zero (r.1 : ℕ) he]
+  refine matrix_eq_scale_conj_of_entry_div he ?_
+  intro q r
+  exact degreeFiveNormalizedSecondEntry_eq_recombined_div lam nodes c he q r
 
 theorem degreeFive_normalizedCurvature_eq_recombined {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -880,22 +889,32 @@ theorem degreeFiveCoefficientMatrix_det_isUnit {d : ℕ}
   exact Matrix.isUnit_det_of_right_inverse
     (degreeFiveCoefficientMatrix_mul_evaluationMatrix nodes c hdelta)
 
+/-- **A coefficient-weighted double sum is a matrix congruence.**  If `R q r = ∑ i ∑ j, c q i · c r j ·
+G i j`, then `R = C · G · Cᵀ` for the coefficient matrix `C = c`.  This is the entrywise expansion of
+matrix multiplication and uses nothing about `G`. -/
+theorem matrix_eq_congr_of_double_sum {d : ℕ}
+    {R G : Matrix (DegreeFiveIndex d) (DegreeFiveIndex d) ℝ}
+    {c : DegreeFiveIndex d → DegreeFiveIndex d → ℝ}
+    (h : ∀ q r, R q r = ∑ i, ∑ j, c q i * c r j * G i j) :
+    R = degreeFiveCoefficientMatrix c * G * Matrix.transpose (degreeFiveCoefficientMatrix c) := by
+  ext q r
+  rw [h q r]
+  simp only [degreeFiveCoefficientMatrix, Matrix.mul_apply, Matrix.transpose_apply]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro j _
+  ring
+
 theorem degreeFiveRecombinedValueMatrix_eq_congr {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
     (c : DegreeFiveIndex d → DegreeFiveIndex d → ℝ) (e : ℝ) :
     degreeFiveRecombinedValueMatrix lam nodes c e =
       degreeFiveCoefficientMatrix c * degreeFiveGaussianValueMatrix lam nodes e *
         Matrix.transpose (degreeFiveCoefficientMatrix c) := by
-  ext q r
-  simp only [degreeFiveRecombinedValueMatrix, degreeFiveCoefficientMatrix,
-    degreeFiveGaussianValueMatrix, Matrix.mul_apply, Matrix.transpose_apply]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro i hi
-  rw [Finset.sum_mul]
-  apply Finset.sum_congr rfl
-  intro j hj
-  ring
+  exact matrix_eq_congr_of_double_sum fun q r => rfl
 
 theorem degreeFiveRecombinedFirstMatrix_eq_congr {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -903,16 +922,7 @@ theorem degreeFiveRecombinedFirstMatrix_eq_congr {d : ℕ}
     degreeFiveRecombinedFirstMatrix lam nodes c e =
       degreeFiveCoefficientMatrix c * degreeFiveGaussianFirstMatrix lam nodes e *
         Matrix.transpose (degreeFiveCoefficientMatrix c) := by
-  ext q r
-  simp only [degreeFiveRecombinedFirstMatrix, degreeFiveCoefficientMatrix,
-    degreeFiveGaussianFirstMatrix, Matrix.mul_apply, Matrix.transpose_apply]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro i hi
-  rw [Finset.sum_mul]
-  apply Finset.sum_congr rfl
-  intro j hj
-  ring
+  exact matrix_eq_congr_of_double_sum fun q r => rfl
 
 theorem degreeFiveRecombinedSecondMatrix_eq_congr {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))
@@ -920,16 +930,7 @@ theorem degreeFiveRecombinedSecondMatrix_eq_congr {d : ℕ}
     degreeFiveRecombinedSecondMatrix lam nodes c e =
       degreeFiveCoefficientMatrix c * degreeFiveGaussianSecondMatrix lam nodes e *
         Matrix.transpose (degreeFiveCoefficientMatrix c) := by
-  ext q r
-  simp only [degreeFiveRecombinedSecondMatrix, degreeFiveCoefficientMatrix,
-    degreeFiveGaussianSecondMatrix, Matrix.mul_apply, Matrix.transpose_apply]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro i hi
-  rw [Finset.sum_mul]
-  apply Finset.sum_congr rfl
-  intro j hj
-  ring
+  exact matrix_eq_congr_of_double_sum fun q r => rfl
 
 theorem degreeFive_recombinedCurvature_eq_gaussian {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ))

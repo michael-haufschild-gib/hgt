@@ -16,6 +16,8 @@ occurs.
 
 namespace RHTower
 
+noncomputable section
+
 /-- Coefficient conjugation on the complexified rectangular tangent plane. -/
 def deningerRectangularConjugation (v : ℂ × ℂ) : ℂ × ℂ :=
   ((starRingEnd ℂ) v.1, (starRingEnd ℂ) v.2)
@@ -50,7 +52,9 @@ theorem deningerRectangularComplexJ_sq
     {r : ℝ} (hr : r ≠ 0) (v : ℂ × ℂ) :
     deningerRectangularComplexJ r (deningerRectangularComplexJ r v) = -v := by
   rcases v with ⟨z, w⟩
-  ext <;> simp [deningerRectangularComplexJ, hr]
+  have hrc : (r : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hr
+  ext <;> simp only [deningerRectangularComplexJ, Prod.neg_mk] <;>
+    field_simp [hrc]
 
 /-- The local arithmetic Hodge operator is genuinely quaternionic. -/
 @[simp]
@@ -59,9 +63,18 @@ theorem deningerRectangularQuaternionicHodge_sq
     deningerRectangularQuaternionicHodge r
         (deningerRectangularQuaternionicHodge r v) = -v := by
   rcases v with ⟨z, w⟩
-  ext <;>
-    simp [deningerRectangularQuaternionicHodge, deningerRectangularComplexJ,
-      deningerRectangularConjugation, hr]
+  have hrc : (r : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hr
+  ext
+  · simp only [deningerRectangularQuaternionicHodge, deningerRectangularComplexJ,
+      deningerRectangularConjugation, Prod.neg_mk, map_neg, map_mul,
+      Complex.conj_ofReal, starRingEnd_self_apply]
+    rw [map_div₀]
+    simp only [Complex.conj_ofReal, starRingEnd_self_apply]
+    field_simp [hrc]
+  · simp only [deningerRectangularQuaternionicHodge, deningerRectangularComplexJ,
+      deningerRectangularConjugation, Prod.neg_mk, map_neg, map_mul,
+      Complex.conj_ofReal, starRingEnd_self_apply]
+    field_simp [hrc]
 
 /-- Exact anti-linearity of the local arithmetic Hodge operator. -/
 theorem deningerRectangularQuaternionicHodge_smul
@@ -70,8 +83,9 @@ theorem deningerRectangularQuaternionicHodge_smul
       (starRingEnd ℂ) a • deningerRectangularQuaternionicHodge r v := by
   rcases v with ⟨z, w⟩
   ext <;>
-    simp [deningerRectangularQuaternionicHodge, deningerRectangularComplexJ,
-      deningerRectangularConjugation, mul_assoc]
+    simp only [deningerRectangularQuaternionicHodge, deningerRectangularComplexJ,
+      deningerRectangularConjugation, Prod.smul_mk, smul_eq_mul, map_mul] <;>
+    ring
 
 /-- The rectangular energy is strictly positive away from zero. -/
 theorem deningerRectangularComplexEnergy_pos
@@ -115,10 +129,13 @@ theorem deningerRectangularComplexScale_intertwines_hodge
       deningerRectangularQuaternionicHodge (q * r)
         (deningerRectangularComplexScale q v) := by
   rcases v with ⟨z, w⟩
+  have hqc : (q : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hq
+  have hrc : (r : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hr
   ext <;>
-    simp [deningerRectangularComplexScale, deningerRectangularQuaternionicHodge,
-      deningerRectangularComplexJ, deningerRectangularConjugation, hq, hr]
-  field_simp
+    simp only [deningerRectangularComplexScale, deningerRectangularQuaternionicHodge,
+      deningerRectangularComplexJ, deningerRectangularConjugation, map_mul,
+      Complex.conj_ofReal, Complex.ofReal_mul] <;>
+    field_simp [hqc, hrc]
 
 /-- Exact weight-one law for the complexified rectangular energy. -/
 theorem deningerRectangularComplexEnergy_scale
@@ -130,7 +147,6 @@ theorem deningerRectangularComplexEnergy_scale
   simp only [deningerRectangularComplexEnergy, deningerRectangularComplexScale]
   rw [Complex.normSq_mul, Complex.normSq_ofReal]
   field_simp
-  ring
 
 /-- Real scalar rescaling changes energy by its square. -/
 theorem deningerRectangularComplexEnergy_realRescale
@@ -167,11 +183,14 @@ theorem deningerRectangularCenteredScale_intertwines_hodge
       deningerRectangularQuaternionicHodge (q * r)
         (deningerRectangularCenteredScale a q v) := by
   rcases v with ⟨z, w⟩
+  have hqc : (q : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hq
+  have hrc : (r : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hr
   ext <;>
-    simp [deningerRectangularCenteredScale, deningerRectangularRealRescale,
+    simp only [deningerRectangularCenteredScale, deningerRectangularRealRescale,
       deningerRectangularComplexScale, deningerRectangularQuaternionicHodge,
-      deningerRectangularComplexJ, deningerRectangularConjugation, hq, hr]
-  field_simp
+      deningerRectangularComplexJ, deningerRectangularConjugation, map_mul,
+      Complex.conj_ofReal, Complex.ofReal_mul] <;>
+    field_simp [hqc, hrc]
 
 /-- Centered moving-modulus maps retain the multiplicative semigroup law. -/
 @[simp]
@@ -182,8 +201,10 @@ theorem deningerRectangularCenteredScale_mul
       deningerRectangularCenteredScale (a₁ * a₂) (q₁ * q₂) v := by
   rcases v with ⟨z, w⟩
   ext <;>
-    simp [deningerRectangularCenteredScale, deningerRectangularRealRescale,
-      deningerRectangularComplexScale]
-  ring
+    simp only [deningerRectangularCenteredScale, deningerRectangularRealRescale,
+      deningerRectangularComplexScale, Complex.ofReal_mul] <;>
+    ring
+
+end
 
 end RHTower

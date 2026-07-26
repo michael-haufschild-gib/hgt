@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.FiniteHermiteCRT
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
 
 /-!
 # Finite critical-point interpolation by polynomial gauge

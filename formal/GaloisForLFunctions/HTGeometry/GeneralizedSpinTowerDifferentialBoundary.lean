@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.VenezianoGammaRatioBoundary
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaReflection
 import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Generalized finite-spin-tower differential boundary
@@ -30,40 +31,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance generalizedSpinTowerDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance generalizedSpinTowerIntAlgebraAnalytic :
-    Algebra ℤ (analyticSubring Set.univ) := Ring.toIntAlgebra _
-
-local instance generalizedSpinTowerIntAlgebraMero :
-    Algebra ℤ (meroField Set.univ) := Ring.toIntAlgebra _
-
-local instance generalizedSpinTowerIntAlgebraRatFunc :
-    Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
-
-local instance generalizedSpinTowerDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance generalizedSpinTowerRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance generalizedSpinTowerRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance generalizedSpinTowerDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance generalizedSpinTowerCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The exact variable-channel multiplier in the analytically continued generalized finite-spin
 tower: `Gamma(1-z) Gamma(1+z+N) / (Gamma(1+z) Gamma(1-z+N))`. -/

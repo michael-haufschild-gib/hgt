@@ -1,4 +1,6 @@
 import Mathlib.LinearAlgebra.QuadraticForm.Signature
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
 
 /-!
 # Bare Milnor--Witt transfer is not Hodge-positive
@@ -45,24 +47,31 @@ theorem deningerMilnorWittTransferForm_negativeVector
     deningerMilnorWittTransferForm n
         (Pi.single (deningerMilnorWittNegativeIndex hn) (1 : ℝ)) = -1 := by
   classical
-  simp [deningerMilnorWittTransferForm, weightedSumSquares_apply,
-    deningerMilnorWittTransferWeight, deningerMilnorWittNegativeIndex]
+  rw [deningerMilnorWittTransferForm, weightedSumSquares_apply]
+  simp only [smul_eq_mul]
+  rw [Finset.sum_eq_single (deningerMilnorWittNegativeIndex hn)]
+  · simp
+  · intro j _ hj
+    simp [Pi.single, hj]
+  · simp
 
 /-- The explicit negative unit vector is nonzero. -/
 theorem deningerMilnorWittNegativeVector_ne_zero
     {n : ℕ} (hn : 2 ≤ n) :
-    Pi.single (deningerMilnorWittNegativeIndex hn) (1 : ℝ) ≠ 0 := by
+    (Pi.single (deningerMilnorWittNegativeIndex hn) (1 : ℝ) : Fin n → ℝ) ≠ 0 := by
   classical
   intro h
   have hcoord := congrFun h (deningerMilnorWittNegativeIndex hn)
-  simpa using hcoord
+  exact one_ne_zero (by
+    simpa only [Pi.single_eq_same, Pi.zero_apply] using hcoord)
 
 /-- Every nontrivial Milnor--Witt quadratic multiplicity has a nonzero negative inertia index. -/
 theorem deningerMilnorWittTransferForm_sigNeg_pos
     {n : ℕ} (hn : 2 ≤ n) :
-    0 < QuadraticForm.sigNeg (deningerMilnorWittTransferForm n) := by
+    0 < sigNeg (deningerMilnorWittTransferForm n) := by
   rw [deningerMilnorWittTransferForm, QuadraticForm.sigNeg_weightedSumSquares]
-  exact Set.ncard_pos.mpr
+  exact (Set.ncard_pos
+    (s := {i : Fin n | deningerMilnorWittTransferWeight n i < 0})).2
     ⟨deningerMilnorWittNegativeIndex hn, by
       simp [deningerMilnorWittTransferWeight, deningerMilnorWittNegativeIndex]⟩
 

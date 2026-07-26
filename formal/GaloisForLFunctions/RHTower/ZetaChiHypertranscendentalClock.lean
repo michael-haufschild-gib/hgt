@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.FiniteGeneratorDifferentialEscape
 import GaloisForLFunctions.HTGeometry.MeromorphicExponentialGaugeDA
 import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
 import GaloisForLFunctions.RHTower.ZetaCarrier
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # The centered zeta archimedean factor is a hypertranscendental clock
@@ -31,40 +32,7 @@ open GaloisForLFunctions Bottcher Polynomial
 
 noncomputable section
 
-local instance zetaChiHTClockDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance zetaChiHTClockIntAlgebraAnalytic :
-    Algebra ℤ (analyticSubring Set.univ) := Ring.toIntAlgebra _
-
-local instance zetaChiHTClockIntAlgebraMero :
-    Algebra ℤ (meroField Set.univ) := Ring.toIntAlgebra _
-
-local instance zetaChiHTClockIntAlgebraRatFunc :
-    Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
-
-local instance zetaChiHTClockDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance zetaChiHTClockRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance zetaChiHTClockRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance zetaChiHTClockDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance zetaChiHTClockCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Genuine meromorphic realization of the Gamma quotient in zeta's centered reflection clock. -/
 def centeredZetaGammaReflectionMero : meroField Set.univ :=

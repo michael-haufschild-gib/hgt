@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaNatScale
 import GaloisForLFunctions.HTGeometry.VenezianoGammaRatioBoundary
 import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Sauter Bogoliubov Gamma boundary
@@ -32,39 +33,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance sauterBogoliubovGammaDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance sauterBogoliubovGammaComplexAlgebraAnalytic :
-    Algebra ℂ (analyticSubring Set.univ) := (constToAnalytic Set.univ).toAlgebra
-
-local instance sauterBogoliubovGammaComplexAlgebraMero :
-    Algebra ℂ (meroField Set.univ) :=
-  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
-    (constToAnalytic Set.univ)).toAlgebra
-
-local instance sauterBogoliubovGammaDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance sauterBogoliubovGammaRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance sauterBogoliubovGammaRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance sauterBogoliubovGammaDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance sauterBogoliubovGammaCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The `2:1:1` Gamma carrier of the scalar Sauter in/out connection coefficient, viewed in the
 incoming-frequency spectral parameter. -/

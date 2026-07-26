@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.GammaOppositeShiftBoundary
 import GaloisForLFunctions.HTGeometry.GammaReflectionRatioClock
 import GaloisForLFunctions.HTGeometry.WignerSmithLogClockObservability
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Horizon Bogoliubov Gamma observability
@@ -31,30 +32,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance horizonBogoliubovGammaDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance horizonBogoliubovGammaDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance horizonBogoliubovGammaRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance horizonBogoliubovGammaRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance horizonBogoliubovGammaDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance horizonBogoliubovGammaCharZero : CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Gamma core of a thermal-horizon Bogoliubov amplitude in the complex-frequency coordinate
 `z=i*omega/kappa`. -/

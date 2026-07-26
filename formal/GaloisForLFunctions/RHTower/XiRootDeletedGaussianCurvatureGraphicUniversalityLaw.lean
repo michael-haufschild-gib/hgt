@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiRootDeletedCanonicalReconstructionGraphicConnector
 import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianCurvatureHilbertPhase
 import GaloisForLFunctions.RHTower.XiTransverseValuationGaussianIntrinsicDimensionUniversalityLaw
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Root-deleted Xi Gaussian curvature and graphic universality
@@ -26,40 +27,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HilbertMetric
 open scoped ComplexOrder Differential
 
-local instance xiRootDeletedCurvatureUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiRootDeletedCurvatureUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiRootDeletedCurvatureUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiRootDeletedCurvatureUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiRootDeletedCurvatureCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiRootDeletedCurvatureCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiRootDeletedCurvatureAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiRootDeletedCurvatureAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- Canonically enumerated packet obtained by deleting one distinguished vertex. -/
 def xiTransverseRootDeletedShift

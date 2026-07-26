@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.AffineFirstOrderDifferentialAlgebraicity
 import GaloisForLFunctions.HTGeometry.DifferentialAlgebraicBaseChange
 import GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary
 import Mathlib
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Markus's conjecture
@@ -33,41 +34,8 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance markusDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance markusComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance markusCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance markusDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance markusComplexDifferential : Differential ℂ where
-  deriv := 0
-
-local instance markusComplexDifferentialAlgebra :
-    DifferentialAlgebra ℂ upperEndMeroField :=
-  ⟨fun c ↦ by
-    rw [upperEndMero_deriv_complexConstant c]
-    change (0 : upperEndMeroField) = algebraMap ℂ upperEndMeroField 0
-    rw [_root_.map_zero]⟩
-
-local instance markusCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance markusCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance markusCoordinateScalarTower :
-    IsScalarTower ℂ upperEndRationalCoordinateField upperEndMeroField :=
-  .of_algebraMap_eq fun _ ↦ rfl
+open scoped UpperEndDifferentialInstances
+open scoped UpperEndComplexTowerInstances
 
 /-! ## Narrowing the base of a hypertranscendence statement -/
 

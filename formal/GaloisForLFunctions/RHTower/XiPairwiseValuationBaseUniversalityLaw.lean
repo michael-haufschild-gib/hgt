@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiTransverseShiftPairwiseDifferentialRank
 import GaloisForLFunctions.RHTower.XiTransverseShiftPairwiseAllValuationRank
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Pairwise Xi valuation-base universality
@@ -57,40 +58,7 @@ noncomputable section
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
-local instance xiPairwiseBaseLawUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiPairwiseBaseLawUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiPairwiseBaseLawUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiPairwiseBaseLawUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiPairwiseBaseLawCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiPairwiseBaseLawCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiPairwiseBaseLawAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiPairwiseBaseLawAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- **Pairwise Xi valuation-base universality.** Adjoining every scalar prime-valuation layer
 preserves the complete differential matroid of every finite corrected integral-shift edge
@@ -147,6 +115,5 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialRank_base_eq_
     root shift hroot hinj tail head]
 
 end
-
 
 end RHTower

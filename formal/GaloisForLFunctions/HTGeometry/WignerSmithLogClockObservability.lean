@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaReflectedFrequencyObservability
 import GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Wigner--Smith logarithmic clock observability
@@ -76,31 +77,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance wignerSmithGammaDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance wignerSmithGammaDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance wignerSmithGammaRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance wignerSmithGammaRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance wignerSmithGammaDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance wignerSmithGammaCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Logarithmic derivative of a negative-orientation Gamma factor. -/
 def gammaNegativeLogDerivativeMero (b : ℂ) : meroField Set.univ :=
@@ -150,6 +127,5 @@ theorem no_scalarAwareFiniteDifferentialCircuit_gammaWignerSmith_from_integerShi
     (differentialAlgebraicOver_gammaOppositeShiftIntensityMero_add_nat a n)
 
 end
-
 
 end GaloisForLFunctions

@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.MeromorphicThetaDefect
 import GaloisForLFunctions.HTGeometry.MeromorphicRankThreeSourceBoundary
 import GaloisForLFunctions.HTGeometry.MeromorphicPhysicalCharacteristicIncidence
 import GaloisForLFunctions.HTGeometry.PeriodGaugeComplementarity
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Complete classification of period-gauge attainment
@@ -23,10 +24,7 @@ noncomputable section
 
 set_option maxHeartbeats 600000
 
-local instance periodGaugeScratchDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
+open scoped UnivMeroFieldInstances
 
 def complexScale (a : ℂ) : ℂ → ℂ := fun z ↦ a * z
 

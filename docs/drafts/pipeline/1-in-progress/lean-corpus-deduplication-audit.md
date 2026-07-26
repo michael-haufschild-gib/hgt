@@ -20,6 +20,186 @@ hypothesis strengthening.
 - [ ] 2 → 3  generalisation targets (abstract-vs-concrete duplicated hierarchies) unified
 - [ ] 3 → 4  n/a (internal refactor, no paper)
 
+## LANDED AND VERIFIED (2026-07-26)
+
+Eight general laws, each proved unconditionally and each with every former site re-pointed and
+compiled. Verification was per-module `lake build <module>` / per-file `lake env lean`, never an
+area build.
+
+| law | module | replaces |
+|---|---|---|
+| `norm_inv_mul_add_one_le` (Perron kernel) | `HTGeometry/PerronKernelBound` | 24 clones / 8 modules |
+| `analyticAt_Gamma_off_poles` | `HTGeometry/GammaAnalyticOffPoles` | 9 statements |
+| `SpectralFamily := AbstractSpectralFamily XiZeroCopy` | `RHTower/XiSpectralFamily` | 9-module chain, −1191 lines |
+| `four_mul_le_tsum_of_quartet_invariant` | `RHTower/XiEndpointOffLineQuartetHeightGap` | 8 sites, −259 lines |
+| `lieModulePointStabilizer` | `HTGeometry/LieModulePointStabilizer` | 3 sites (absent from mathlib) |
+| `hasDerivAt_powExpKernel` (Erlang ladder) | `HTGeometry/ErlangWignerSmithPacket` | 3 sites |
+| `re_pow_pos_of_abs_arg_lt` (sector positivity) | `HTGeometry/SectorPowerPositivity` | 5 sites, removes the `n ≤ 7` cap |
+| `xiDivisorSupport_univ_countable` + global instances | `RHTower/XiCanonicalProduct` | 14 sites |
+
+Plus the mechanical layer: 50 exact-clone groups collapsed corpus-wide, 15 lemmas lifted to
+common-ancestor hosts, `Nonempty XiZeroCopy` promoted to a global instance (10 `letI` removed).
+**Net ≈ −2,720 lines. No theorem weakened, no `sorry`, no axiom.**
+
+### Defects found by compilation (4), all fixed
+Every one had a single root cause: the sweep tooling promoted `private` lemmas to public without
+checking whether the name was already taken in the downstream import cone.
+1. 9 declarations left with doubled namespaces — the corpus-wide rename ran before the deletion step
+   on a job's *other* members, so deletion silently missed them.
+2. `integrableOn_criticalMellinPrimeMass_Ioc` — collision; the two were the same lemma up to
+   implicit vs explicit binders.
+3. `natCast_cpow_conj` — collision; identical statement, different proof. (I had earlier called this
+   pair harmless after checking the wrong direction of reachability.)
+4. `ae_nonneg_thetaCuspHigherLikelihoodSpectralMeasure` — collision; identical statement.
+A targeted grep over every promoted name now reports **zero** remaining duplicates.
+
+**Method note:** three attempts at a static collision scanner all failed (2631 → 203 → 64 candidates,
+all false positives from namespace mis-tracking). What worked was a narrow grep for the declaration
+form over a known name list — and ultimately, compiling.
+
+## B18 / B19 instance-bundle results (2026-07-26)
+
+**B18 — `upperEnd` stack: COMPLETE.** `HTGeometry/UpperEndDifferentialInstances.lean` carries the
+8-instance stack plus a companion `UpperEndComplexTowerInstances` scope (3 more: `Differential ℂ`,
+`DifferentialAlgebra ℂ _`, `IsScalarTower ℂ _ _`). 35 files converted to one or two `open scoped`
+lines, **−1,032 lines**, every shape (subset / exact / prefix / superset) verified by compilation.
+13 files still carry small `upperEnd` runs (114 lines total) that use instances outside the bundle
+(`Algebra (RatFunc ℂ) upperEndMeroField`, `Differential digammaBase`, `Differential (RatFunc ℂ)`);
+low yield, left alone.
+
+**B19 — `analyticSubring Set.univ` stack: PARTIAL, and the remainder needs different tooling.**
+Measured extent is far larger than first estimated: **95 files, 1758 significant lines**.
+`HTGeometry/UnivMeroFieldInstances.lean` carries the maximal 8-instance shape and compiles.
+25 files converted and each verified clean (−~500 lines).
+
+**8 files reverted.** The `EllipticGamma*` group carries preambles that *contain* the universal
+instances **and** elliptic-specific ones (`Differential ℂ`,
+`Differential meromorphicRationalCoordinateField`,
+`Differential (meromorphicEllipticCompositum σ τ)`). A "delete the whole block containing meroField"
+heuristic removes those too. My static audit for this caught only 4 of the 8; **compilation caught
+all 8** — the third time this session a regex check under-reported where compiling did not.
+
+**Attempted fix abandoned.** A selective converter (drop only instances whose provided type is in the
+bundle) produced three successive corruptions of one test file — a bad span finder, a Python
+precedence bug (`a + b if m else c` discarding the file body), and duplicated declarations. Each was
+reverted. The remaining ~62 files need a Lean-aware edit, not line-span regex. Do not retry this with
+generated regex scripts.
+
+### B19 stopping point and why the remainder is correctly excluded
+
+**66 files converted and individually compile-verified (−~1,343 lines).** 25 candidates remain,
+totalling only 468 lines, and they are dominated by the `EllipticGamma*` /
+`HomogeneousMultipleEllipticGamma*` / `MeromorphicElliptic*` families.
+
+**These are not simply "harder" — they bind a different instance.** Their preambles set
+
+```lean
+local instance …ComplexAlgebraMero : Algebra ℂ (meroField Set.univ) :=
+  meromorphicEllipticCompositumComplexAlgebraMero
+```
+
+whereas `UnivMeroFieldInstances` binds the same class to
+`((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp (constToAnalytic Set.univ)).toAlgebra`.
+`Algebra` is data-carrying, so these are two *different* ℂ-algebra structures on the same type, and
+the elliptic development depends on its own. Opening the bundle in those files therefore changes the
+structure under their theorems, which is exactly why they fail to elaborate. The compile-check drew
+the correct boundary; the classification-by-instance-type never could have, because the types agree
+and only the terms differ.
+
+**Corpus hazard worth recording:** there are (at least) two competing `Algebra ℂ (meroField Set.univ)`
+instances in HTGeometry. They are never in scope together today, but any future attempt to globalise
+either one will collide. Whether they are propositionally equal is unresolved — I could not locate
+the declaration site of `meromorphicEllipticCompositumComplexAlgebraMero` by grep at all, which is
+itself a reason to leave this family alone until someone establishes the relationship.
+
+The elliptic group needs its own companion scope (adding `Differential ℂ`,
+`Differential meromorphicRationalCoordinateField`,
+`Differential (meromorphicEllipticCompositum σ τ)` and their `DifferentialAlgebra`s) built around
+*their* ℂ-algebra, not the universal one. That is a separate, well-defined task.
+
+### The two `Algebra ℂ (meroField Set.univ)` structures actively conflict (established, not conjectured)
+
+Attempting to give the elliptic family its own scope produced, from Lean:
+
+```
+synthesized type class instance is not definitionally equal to expression inferred by typing rules
+  synthesized  ellipticComplexAlgebraMero
+  inferred     UnivMeroFieldInstances.univComplexAlgebraMero
+```
+
+So the two ℂ-algebra structures on `meroField Set.univ` — `meromorphicEllipticCompositumComplexAlgebraMero`
+and the `constToAnalytic` composite — are **not** definitionally equal, and once both are reachable
+Lean silently prefers whichever it finds first. This is no longer a latent hazard; it fired.
+
+**Consequence, and a mistake corrected.** I had converted 16 `Meromorphic*`/`EllipticGamma*` files to
+the *universal* scope. Each compiled individually, but several sit inside the elliptic development,
+where the elliptic algebra is intended — so those conversions could silently swap the algebra
+structure underneath the elliptic theorems. All 16 were reverted. **Compiling green is not sufficient
+evidence of correctness when data-carrying instances are involved**; that is the operative lesson,
+and it is why B19 is deliberately restricted to files outside the elliptic development.
+
+The subsequent failures after reverting were **stale oleans**, not source damage — `lake build` on the
+cone restored everything. Worth remembering: after a revert, rebuild before judging.
+
+**Remaining task, well-defined:** build `EllipticMeroFieldInstances` (9 instances: the elliptic
+ℂ-algebra, `Differential ℂ`, the mero derivation and char-zero, the elliptic compositum's
+differential and differential-algebra, the rational coordinate field's) and convert the elliptic
+family to it — but only after confirming no file in that cone opens `UnivMeroFieldInstances`. The
+scope module itself compiled cleanly on the first attempt; it was removed only because the universal
+scope was reachable from its cone.
+
+**Tooling note:** `meromorphicEllipticCompositumComplexAlgebraMero` could not be located by grep in
+any form. `#check @name` in a `/tmp` scratch importing a consumer found it immediately. Use Lean, not
+grep, to locate declarations in this corpus.
+
+### B17 — assessed and declined (not a no-go, a poor trade)
+
+Extracting `iInter_goodPattern_mem_residual` from `AnalyticNevanlinnaCarrierRelationFree` requires a
+standalone statement carrying: 13 binders (including `[Countable Γ]`, `[Fintype ιf]`,
+`[DecidableEq ιf]`, `[IsProbabilityMeasure eta]`), the `let frozen := …` / `let S := LinearMap.ker …`
+definitions, the `IsClosed`/`CompleteSpace`/`BaireSpace` derivation for `S`, the `goodPattern`
+family, and the 15-line `hgoodPattern` obtained by `simpa … using
+global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual`.
+
+That is ~45 lines of lemma to replace ~34 duplicated lines across the two independent proofs — a net
+saving of roughly 17 lines. The naming value is real (this Baire-genericity statement is the file's
+actual mathematical content and is currently anonymous), but the statement is long and delicate and
+the payoff is small. Deferred deliberately, with the full binder list recorded above so a future
+attempt starts from the design rather than re-deriving it.
+
+### B17 LANDED — and it needed no new lemma
+`allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual` **is** the Baire-genericity
+statement; `…_relationFree_dense_residual` was rebuilding it from scratch (the `goodPattern` family,
+the 15-line `hgoodPattern`, the `countable_iInter_mem` residual step) before applying its own subset
+step. It now calls the first theorem and keeps only the subset step. `865 → 840` lines, and all four
+theorems in the file derive from one proof of genericity instead of two.
+Note: destructuring the first theorem's `let`-bound conclusion blocks instance resolution —
+`have h := …; dsimp only at h; obtain ⟨…⟩ := h` is required.
+
+Earlier I assessed B17 as "~17 lines, not worth it" and declined. Reconsidering under the rule to
+stop only on impossibility found a cheaper route worth 25 lines and a better structure. The
+assessment was wrong because it assumed a new lemma was needed.
+
+### B11 — connector landed, inversion still open
+`SpectralBandwidthFano.endpointBudget_eq` now states the fact that makes the whole Slater/quasi-free
+identification work:
+
+```lean
+theorem endpointBudget_eq (lower upper : ℝ) :
+    lower - (upper - lower - 1) ^ 2 / 4 = lower * upper - (lower + upper - 1) ^ 2 / 4 := by ring
+```
+
+The per-orbital budget used by every Slater estimate and the product budget used by the
+occupation-weighted ones are the same number. Without it the two `…_lower_bound` theorems and the two
+nonnegativity thresholds look unrelated; with it they are one statement at two normalisations. This
+belongs in the corpus independently of the restructure.
+
+**Remaining:** `SlaterPluckerConnector` (the only external consumer of the Slater names) reaches
+`QuasiFreeFillingFano`, so route (b) is open — delete the ~9 duplicated Slater proofs from
+`SpectralBandwidthFano` and re-state them in `QuasiFreeFillingFano` as `occupation ≡ 1` instances
+using `endpointBudget_eq` and `∑ i, (1:ℝ) = card ι`. Each conversion is a few lines of rewriting;
+estimated ~100 lines over 9 theorems.
+
 ## Execution order for the next session (research is done; build next)
 
 Backlog research is complete and over-supplied — the next session should **land code, not scan**.
@@ -321,9 +501,29 @@ replaces three twelve-line proofs *and* is strictly more general. The three
 `tendsto_degreeFiveNormalized<J>Matrix` proofs then collapse the same way through a single
 "entrywise → diagonal matrix" step.
 
-The `<J>Entry_eq_recombined_div` triple is the one family that is **not** immediately uniform: each
-branches on `topDegreeIndex 5` and unfolds its own `Limit`/`Remainder`, so the skeleton is shared but
-the case bodies differ. That family needs a per-case check before it can be merged.
+**LANDED:** four of the families collapsed and are verified — `tendsto_degreeFiveNormalizedEntry`,
+`tendsto_matrix_of_tendsto_entry`, `matrix_eq_scale_conj_of_entry_div`,
+`matrix_eq_congr_of_double_sum`, each with its three instantiations.
+
+The `<J>Entry_eq_recombined_div` triple is the one family that does **not** collapse. Per-case check
+done (masked diff of the three bodies):
+- Value vs First: only 4 differing lines, two of them the jet name in the statement, one a stray
+  `mul_one` in a `simp only` set. Essentially the same proof.
+- Value vs Second: 26 differing lines out of 25/17. `Second` is structurally different — no
+  `topDegreeIndex` case split at all.
+
+**No-go, and the reason is structural rather than incidental.** Each of these proofs works by
+`unfold`ing its own `Limit`/`Remainder` definitions in order to *establish* the
+entry-equals-recombined-quotient relation. A general lemma over an abstract jet would have to take
+that relation as a hypothesis — its hypothesis would be its conclusion. Merging Value with First
+alone would save ~25 lines at the cost of a lemma parameterised by three jet-specific constants
+whose only role is to be unfolded. Left as three proofs.
+
+**Positive residue.** The four families that *did* collapse never inspect the jet — they consume only
+a stated property of it (`o(e^10)`, entrywise convergence, an entry quotient, a double sum). That is
+the dividing line for this entire class: a jet-indexed family generalises exactly when its proof uses
+a *property* of the jet rather than the jet's definition. That criterion is what should be applied to
+the remaining B15 ThetaCusp families before attempting them.
 
 ### B15 — the dominant remaining pattern: jet-order-indexed families written one order at a time
 Scanning declaration *names* for families that differ only by an order token

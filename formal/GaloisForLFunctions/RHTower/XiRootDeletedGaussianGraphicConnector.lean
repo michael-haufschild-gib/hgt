@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiRootDeletedGaussianMetricConnector
 import GaloisForLFunctions.RHTower.XiRootDeletedMetricGraphicNetworkUniversalityLaw
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # One-Gaussian-certificate Xi graphic-network universality
@@ -19,40 +20,7 @@ open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 open scoped ComplexOrder Differential
 
-local instance xiRootGaussianGraphicUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiRootGaussianGraphicUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiRootGaussianGraphicUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiRootGaussianGraphicUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiRootGaussianGraphicCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiRootGaussianGraphicCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiRootGaussianGraphicAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiRootGaussianGraphicAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- **Gaussian discharge of the root-deleted metric hypothesis.**  One positive full Gaussian
 Gram supplies every cofinite nonroot prime-jet certificate needed by the graphic-network theorem,

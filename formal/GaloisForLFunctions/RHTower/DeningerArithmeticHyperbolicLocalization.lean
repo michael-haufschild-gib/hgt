@@ -1,4 +1,5 @@
 import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Tactic
 
 /-!
 # Hyperbolic localization forces the Gamma rank channel

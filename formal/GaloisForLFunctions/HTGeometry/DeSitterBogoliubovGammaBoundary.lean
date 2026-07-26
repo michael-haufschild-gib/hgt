@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaOrientationQuotientBoundary
 import GaloisForLFunctions.HTGeometry.MeromorphicExponentialGaugeDA
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # De Sitter Bogoliubov Gamma boundary
@@ -28,39 +29,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance deSitterBogoliubovDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance deSitterBogoliubovComplexAlgebraAnalytic :
-    Algebra ℂ (analyticSubring Set.univ) := (constToAnalytic Set.univ).toAlgebra
-
-local instance deSitterBogoliubovComplexAlgebraMero :
-    Algebra ℂ (meroField Set.univ) :=
-  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
-    (constToAnalytic Set.univ)).toAlgebra
-
-local instance deSitterBogoliubovDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance deSitterBogoliubovRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance deSitterBogoliubovRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance deSitterBogoliubovDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance deSitterBogoliubovCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The variable Gamma carrier in Sato--Suzuki equation (3.7).  `branchMass` represents the
 signed mass index `±nu`; `ell` is the angular momentum and `z=-i*omega/2`. -/

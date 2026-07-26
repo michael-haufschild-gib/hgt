@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaNatScale
 import Mathlib.Data.Fintype.Option
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Finite same-sign Gamma products
@@ -24,29 +25,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gammaSameSignDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gammaSameSignDifferential : Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gammaSameSignRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gammaSameSignRatFuncDifferential : Differential (RatFunc ℂ) :=
-  ratFuncCoordinateDifferential
-
-local instance gammaSameSignDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gammaSameSignCharZero : CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 private theorem gammaFintypeOrbitProductMero_option_merge_ofNat
     {ι : Type*} [Fintype ι] [DecidableEq ι]

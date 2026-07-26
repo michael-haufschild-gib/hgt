@@ -22,6 +22,8 @@ the continuous positive scaling law.  No Xi divisor, zero location, or RH premis
 
 namespace RHTower
 
+noncomputable section
+
 /-- Complex structure of the rectangular plane with modulus parameter `r`. -/
 def deningerRectangularJ (r : ℝ) (v : ℝ × ℝ) : ℝ × ℝ :=
   (-r * v.2, v.1 / r)
@@ -43,7 +45,7 @@ def deningerRectangularArea (v w : ℝ × ℝ) : ℝ :=
 theorem deningerRectangularJ_sq {r : ℝ} (hr : r ≠ 0) (v : ℝ × ℝ) :
     deningerRectangularJ r (deningerRectangularJ r v) = -v := by
   rcases v with ⟨x, y⟩
-  ext <;> simp [deningerRectangularJ, hr]
+  ext <;> simp only [deningerRectangularJ, Prod.neg_mk] <;> field_simp [hr]
 
 /-- Moving the modulus makes the dilation complex linear. -/
 theorem deningerRectangularScale_intertwines_J
@@ -51,24 +53,28 @@ theorem deningerRectangularScale_intertwines_J
     deningerRectangularScale q (deningerRectangularJ r v) =
       deningerRectangularJ (q * r) (deningerRectangularScale q v) := by
   rcases v with ⟨x, y⟩
-  ext <;> simp [deningerRectangularScale, deningerRectangularJ, hq, hr]
-  field_simp
+  ext <;> simp only [deningerRectangularScale, deningerRectangularJ] <;>
+    field_simp [hq, hr]
 
 /-- The normalized rectangular form is positive definite for positive modulus. -/
 theorem deningerRectangularMetric_self_pos
     {r : ℝ} (hr : 0 < r) {v : ℝ × ℝ} (hv : v ≠ 0) :
     0 < deningerRectangularMetric r v v := by
   rcases v with ⟨x, y⟩
-  simp only [Prod.mk_eq_zero] at hv
   simp only [deningerRectangularMetric]
   by_cases hx : x = 0
   · subst x
     simp only [zero_mul, zero_div, zero_add]
-    have hy : y ≠ 0 := fun h => hv ⟨rfl, h⟩
+    have hy : y ≠ 0 := by
+      intro h
+      apply hv
+      simp [h]
     rw [mul_assoc]
     exact mul_pos hr (mul_self_pos.mpr hy)
   · have hxpos : 0 < x * x / r := div_pos (mul_self_pos.mpr hx) hr
-    have hy_nonneg : 0 ≤ r * y * y := by positivity
+    have hy_nonneg : 0 ≤ r * y * y := by
+      rw [mul_assoc]
+      exact mul_nonneg hr.le (mul_self_nonneg y)
     linarith
 
 /-- Exact weight-one metric law. -/
@@ -81,7 +87,6 @@ theorem deningerRectangularMetric_scale
   rcases w with ⟨x', y'⟩
   simp only [deningerRectangularMetric, deningerRectangularScale]
   field_simp
-  ring
 
 /-- Exact degree/area law of the moving rectangular dilation. -/
 theorem deningerRectangularArea_scale (q : ℝ) (v w : ℝ × ℝ) :
@@ -115,5 +120,7 @@ theorem deningerRectangularCoefficient_eq_const_div
   simp only [mul_one] at h
   apply (eq_div_iff (ne_of_gt hr)).2
   nlinarith
+
+end
 
 end RHTower

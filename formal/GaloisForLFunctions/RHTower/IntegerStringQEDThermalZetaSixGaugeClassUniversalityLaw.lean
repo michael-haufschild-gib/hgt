@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DimensionalQEDGammaGaugePartitionUniversalityLaw
 import GaloisForLFunctions.HTGeometry.GammaIntegerOrbitOpenClosedSpinUniversalityLaw
 import GaloisForLFunctions.RHTower.ThermalBetaQEDZetaThreeGammaOrbitSuperselectionLaw
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Integer-string/QED/thermal/zeta six-gauge-class universality
@@ -21,31 +22,7 @@ open GaloisForLFunctions Bottcher Polynomial
 
 noncomputable section
 
-local instance integerStringQEDThermalZetaDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance integerStringQEDThermalZetaDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance integerStringQEDThermalZetaRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance integerStringQEDThermalZetaRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance integerStringQEDThermalZetaDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance integerStringQEDThermalZetaCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 private theorem gaugeEquivalent_of_nonzero_of_differentialAlgebraic
     {x y : meroField Set.univ} (hx0 : x ≠ 0) (hy0 : y ≠ 0)

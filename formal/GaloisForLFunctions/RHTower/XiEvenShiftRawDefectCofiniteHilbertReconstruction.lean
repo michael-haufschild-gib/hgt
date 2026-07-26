@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CofiniteTailHilbertReconstruction
 import GaloisForLFunctions.RHTower.XiEvenShiftRawDefectDifferentialRank
 import GaloisForLFunctions.RHTower.XiTransverseShiftDefectCofiniteHilbertReconstruction
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Cofinite Hilbert reconstruction of raw even-shift Xi defects
@@ -31,44 +32,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance xiEvenShiftRawReconstructionUpperEndDomain :
-    IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiEvenShiftRawReconstructionUpperEndComplexAlgebra :
-    Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiEvenShiftRawReconstructionUpperEndCharZero :
-    CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiEvenShiftRawReconstructionUpperEndDifferential :
-    Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiEvenShiftRawReconstructionCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiEvenShiftRawReconstructionCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiEvenShiftRawReconstructionAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiEvenShiftRawReconstructionAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- Literal upper-end rotation of the actual raw even-shift completed-Xi defects. -/
 def xiEvenShiftRawLogDerivDefectRotatedFamily

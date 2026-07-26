@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicExponentialGaugeDA
 import GaloisForLFunctions.Hurwitz.ExpIndependence
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Nodal charge character realization
@@ -36,22 +37,7 @@ noncomputable section
 
 open scoped BigOperators
 
-local instance nodalChargeIncidenceDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance nodalChargeComplexAlgebraAnalytic :
-    Algebra ℂ (analyticSubring Set.univ) := (constToAnalytic Set.univ).toAlgebra
-
-local instance nodalChargeComplexAlgebraMero :
-    Algebra ℂ (meroField Set.univ) :=
-  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
-    (constToAnalytic Set.univ)).toAlgebra
-
-local instance nodalChargeDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
+open scoped UnivMeroFieldInstances
 
 /-- The differential eigenfrequency of charge `m` on the face selected by the period `ω`. -/
 def nodalChargeFrequency (ω : ℂ) (m : ℤ) : ℂ :=

@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.XiTransverseShiftDefectCofiniteHilbertReconst
 import GaloisForLFunctions.RHTower.XiTransverseShiftCollisionIncidenceRank
 import GaloisForLFunctions.RHTower.XiTransverseShiftCollisionIncidenceAllValuationRank
 import GaloisForLFunctions.RHTower.XiEvenShiftRawPairDifferenceCofiniteHilbertReconstruction
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Cofinite Hilbert reconstruction of corrected Xi pair differences
@@ -31,44 +32,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance xiTransverseShiftPairReconstructionUpperEndDomain :
-    IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiTransverseShiftPairReconstructionUpperEndComplexAlgebra :
-    Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiTransverseShiftPairReconstructionUpperEndCharZero :
-    CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiTransverseShiftPairReconstructionUpperEndDifferential :
-    Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiTransverseShiftPairReconstructionCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiTransverseShiftPairReconstructionCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiTransverseShiftPairReconstructionAllValuationDifferential :
-    Differential analyticScalarValuationLayerDifferentialField :=
-  derivationClosedDifferential _
-    (derivationClosed_differentialAdjoin upperEndRationalCoordinateField
-      (Set.range analyticScalarValuationLayerCarrier))
-
-local instance xiTransverseShiftPairReconstructionAllValuationDifferentialAlgebra :
-    DifferentialAlgebra analyticScalarValuationLayerDifferentialField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ =
-      ((c′ : analyticScalarValuationLayerDifferentialField) : upperEndMeroField)
-    rfl
+open scoped UpperEndDifferentialInstances
 
 /-- Literal upper-end rotation of one actual corrected completed-Xi shift defect. -/
 def xiTransverseShiftPrimeDefectRotated (m : ℕ) (z : ℂ) : ℂ :=

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ChamberFamilyGaugeInvariance
 import GaloisForLFunctions.RHTower.XiShiftPrimeCompletedCurvature
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Rational-chamber universality of completed Xi curvature
@@ -18,24 +19,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance xiCurvatureChamberDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiCurvatureChamberComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiCurvatureChamberDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiCurvatureChamberCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiCurvatureChamberDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField :=
-  ⟨fun x ↦ derivationClosedDifferential_apply
-    upperEndRationalCoordinateField
-    upperEndRationalCoordinateField_derivationClosed x⟩
+open scoped UpperEndDifferentialInstances
 
 /-- **Xi completed-curvature rational-chamber universality law.**  Arbitrary rational upper-end
 gauges preserve all three hypertranscendental carriers, while independently gauged defect and

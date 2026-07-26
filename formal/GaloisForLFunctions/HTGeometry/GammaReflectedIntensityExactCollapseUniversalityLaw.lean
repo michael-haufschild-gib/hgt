@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaReflectedFrequencyObservability
 import GaloisForLFunctions.HTGeometry.ScalarLogCurrentReconstruction
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Exact collapse locus of reflected Gamma intensity
@@ -23,31 +24,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gammaReflectedIntensityExactDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gammaReflectedIntensityExactDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gammaReflectedIntensityExactRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gammaReflectedIntensityExactRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance gammaReflectedIntensityExactDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gammaReflectedIntensityExactCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 private theorem gammaReflectionProductMero_ne_zero_exact (h : ℂ) :
     gammaReflectionProductMero h ≠ 0 := by

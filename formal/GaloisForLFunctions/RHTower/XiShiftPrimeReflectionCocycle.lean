@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.AdditiveReflectionCocycleHalving
 import GaloisForLFunctions.RHTower.ReflectionDifferenceFaces
 import GaloisForLFunctions.RHTower.XiUpperEndHypertranscendence
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Reflection centering of the xi shift-two prime defect
@@ -26,41 +27,8 @@ noncomputable section
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
-local instance xiShiftReflectionUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiShiftReflectionUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiShiftReflectionUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiShiftReflectionUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiShiftReflectionComplexDifferential : Differential ℂ where
-  deriv := 0
-
-local instance xiShiftReflectionComplexDifferentialAlgebra :
-    DifferentialAlgebra ℂ upperEndMeroField :=
-  ⟨fun c ↦ by
-    rw [upperEndMero_deriv_complexConstant c]
-    change (0 : upperEndMeroField) = algebraMap ℂ upperEndMeroField 0
-    rw [map_zero]⟩
-
-local instance xiShiftReflectionCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiShiftReflectionCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiShiftReflectionCoordinateScalarTower :
-    IsScalarTower ℂ upperEndRationalCoordinateField upperEndMeroField :=
-  .of_algebraMap_eq fun _ ↦ rfl
+open scoped UpperEndDifferentialInstances
+open scoped UpperEndComplexTowerInstances
 
 /-- The globally defined rationally corrected `+2` defect of `xi'/xi`.  On `re s > 1` this is
 the filtered von Mangoldt L-series. -/

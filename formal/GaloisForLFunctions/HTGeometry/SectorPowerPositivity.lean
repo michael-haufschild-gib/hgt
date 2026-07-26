@@ -118,6 +118,31 @@ theorem re_pow_pos_and_abs_im_le_of_chain {z : ℂ} (hz : 0 < z.re) {c : ℝ} (h
       have := re_mul_pos_and_abs_im_le hz him hpos hbound hc (hdnn n) hlt hle
       rwa [← pow_succ'] at this
 
+/-- **Sector positivity for every exponent.**  A nonzero `z` whose argument satisfies
+`|n · arg z| < π/2` has `Re (z ^ n) > 0`.  Writing `z` in polar form gives
+`Re (z ^ n) = ‖z‖ ^ n · cos (n · arg z)`, and the hypothesis places the rotated angle strictly inside
+the right half-plane.
+
+Unlike the tangent-budget iteration above, this carries no upper bound on `n`: the budget list
+`1/5, 1/2, 4/5, 5/4, 2, 4, 21` and its cutoff at the seventh power are exactly the statement that
+`n · c < π/2` fails first at `n = 8` when `c = 1/5`. -/
+theorem re_pow_pos_of_abs_arg_lt {z : ℂ} (hz : z ≠ 0) {n : ℕ}
+    (h : |(n : ℝ) * Complex.arg z| < Real.pi / 2) : 0 < (z ^ n).re := by
+  have hpolar : z = (‖z‖ : ℂ) * Complex.exp (Complex.arg z * Complex.I) :=
+    (Complex.norm_mul_exp_arg_mul_I z).symm
+  have hzn : z ^ n =
+      ((‖z‖ ^ n : ℝ) : ℂ) * Complex.exp ((((n : ℝ) * Complex.arg z : ℝ) : ℂ) * Complex.I) := by
+    conv_lhs => rw [hpolar]
+    rw [mul_pow, ← Complex.exp_nat_mul]
+    push_cast
+    ring_nf
+  have hre : (z ^ n).re = ‖z‖ ^ n * Real.cos ((n : ℝ) * Complex.arg z) := by
+    rw [hzn, Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re]
+  rw [hre]
+  have hnorm : 0 < ‖z‖ ^ n := pow_pos (norm_pos_iff.mpr hz) n
+  have hcos : 0 < Real.cos ((n : ℝ) * Complex.arg z) :=
+    Real.cos_pos_of_mem_Ioo (abs_lt.mp h)
+  positivity
 
 end GaloisForLFunctions.HTGeometry
 

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiDeckChargeUnitGaugeClassifierUniversalityLaw
 import GaloisForLFunctions.RHTower.XiHypertranscendenceUnconditional
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Explicit hypertranscendental unit for deck-charge blindness
@@ -24,31 +25,8 @@ noncomputable section
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
-local instance xiExponentialUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiExponentialUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiExponentialUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiExponentialUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiExponentialCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiExponentialCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiExponentialCoordinateScalarTower :
-    IsScalarTower ℂ upperEndRationalCoordinateField upperEndMeroField :=
-  .of_algebraMap_eq fun _ ↦ rfl
+open scoped UpperEndDifferentialInstances
+open scoped UpperEndComplexTowerInstances
 
 /-- A concrete entire unit obtained by exponentiating completed Xi. -/
 def xiExponential (z : ℂ) : ℂ :=

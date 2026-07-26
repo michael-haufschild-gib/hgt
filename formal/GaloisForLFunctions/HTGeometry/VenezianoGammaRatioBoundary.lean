@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaSuperselection
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Veneziano Gamma-ratio differential boundary
@@ -21,40 +22,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance venezianoGammaRatioDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance venezianoGammaRatioIntAlgebraAnalytic :
-    Algebra ℤ (analyticSubring Set.univ) := Ring.toIntAlgebra _
-
-local instance venezianoGammaRatioIntAlgebraMero :
-    Algebra ℤ (meroField Set.univ) := Ring.toIntAlgebra _
-
-local instance venezianoGammaRatioIntAlgebraRatFunc :
-    Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebra _
-
-local instance venezianoGammaRatioDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance venezianoGammaRatioRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance venezianoGammaRatioRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance venezianoGammaRatioDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance venezianoGammaRatioCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The variable-channel part of the Euler beta/Veneziano amplitude:
 `Γ(z+a) / Γ(z+a+b)`.  The omitted factor `Γ(b)` is constant in `z`. -/

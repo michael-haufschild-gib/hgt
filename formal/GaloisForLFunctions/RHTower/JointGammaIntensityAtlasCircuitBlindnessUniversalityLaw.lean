@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.DeSitterBogoliubovIntensityObservability
 import GaloisForLFunctions.HTGeometry.HorizonBogoliubovGammaObservability
 import GaloisForLFunctions.HTGeometry.FamilyDifferentialCircuitBlindnessUniversalityLaw
 import GaloisForLFunctions.RHTower.ZetaGammaPhaseIntensityObservability
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Joint Gamma intensity-atlas circuit-blindness universality
@@ -21,31 +22,7 @@ open GaloisForLFunctions Bottcher Polynomial
 
 noncomputable section
 
-local instance jointGammaIntensityAtlasDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance jointGammaIntensityAtlasDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance jointGammaIntensityAtlasRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance jointGammaIntensityAtlasRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance jointGammaIntensityAtlasDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance jointGammaIntensityAtlasCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- Four jointly available differentially algebraic intensity channels. -/
 inductive JointGammaIntensityChannel

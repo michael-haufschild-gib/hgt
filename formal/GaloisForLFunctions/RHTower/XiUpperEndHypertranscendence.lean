@@ -5,6 +5,7 @@ import GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary
 import GaloisForLFunctions.HTGeometry.UpperEndRationalCoordinateDifferentialAdjoin
 import GaloisForLFunctions.RHTower.FarFieldAnchor
 import GaloisForLFunctions.RHTower.XiShiftPrimeHypertranscendence
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 
 /-!
 # Unconditional upper-end hypertranscendence of xi
@@ -30,41 +31,8 @@ noncomputable section
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
-local instance xiUpperEndDomain : IsDomain upperEndAnalyticSubring :=
-  isDomain_upperEndAnalyticSubring
-
-local instance xiUpperEndComplexAlgebra : Algebra ℂ upperEndMeroField :=
-  upperEndComplexToMero.toAlgebra
-
-local instance xiUpperEndCharZero : CharZero upperEndMeroField :=
-  charZero_of_injective_ringHom upperEndComplexToMero.injective
-
-local instance xiUpperEndDifferential : Differential upperEndMeroField :=
-  upperEndMeroFieldDifferential
-
-local instance xiUpperEndComplexDifferential : Differential ℂ where
-  deriv := 0
-
-local instance xiUpperEndComplexDifferentialAlgebra :
-    DifferentialAlgebra ℂ upperEndMeroField :=
-  ⟨fun c ↦ by
-    rw [upperEndMero_deriv_complexConstant c]
-    change (0 : upperEndMeroField) = algebraMap ℂ upperEndMeroField 0
-    rw [map_zero]⟩
-
-local instance xiUpperEndCoordinateDifferential :
-    Differential upperEndRationalCoordinateField :=
-  derivationClosedDifferential _ upperEndRationalCoordinateField_derivationClosed
-
-local instance xiUpperEndCoordinateDifferentialAlgebra :
-    DifferentialAlgebra upperEndRationalCoordinateField upperEndMeroField where
-  deriv_algebraMap c := by
-    change (c.1)′ = ((c′ : upperEndRationalCoordinateField) : upperEndMeroField)
-    rfl
-
-local instance xiUpperEndCoordinateScalarTower :
-    IsScalarTower ℂ upperEndRationalCoordinateField upperEndMeroField :=
-  .of_algebraMap_eq fun _ ↦ rfl
+open scoped UpperEndDifferentialInstances
+open scoped UpperEndComplexTowerInstances
 
 private theorem rotated_re (z : ℂ) : (-I * z).re = z.im := by
   simp [mul_re]

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaReflection
 import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
 import GaloisForLFunctions.HTGeometry.GammaSameSignProductBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Gamma orientation-quotient boundary
@@ -21,31 +22,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gammaOrientationQuotientDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gammaOrientationQuotientDifferential :
-    Differential (meroField Set.univ) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gammaOrientationQuotientRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gammaOrientationQuotientRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance gammaOrientationQuotientDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gammaOrientationQuotientCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- A pair of positive-orientation shifted Gamma clocks. -/
 def gammaPositiveShiftPairMero (a c : ℂ) : meroField Set.univ :=

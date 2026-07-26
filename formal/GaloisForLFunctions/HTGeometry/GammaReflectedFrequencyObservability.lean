@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaOrientationQuotientBoundary
 import GaloisForLFunctions.HTGeometry.ThermalCFTGammaResponseBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Reflected-frequency observability for opposite-orientation Gamma clocks
@@ -28,31 +29,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gammaReflectedFrequencyDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gammaReflectedFrequencyDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gammaReflectedFrequencyRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gammaReflectedFrequencyRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance gammaReflectedFrequencyDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gammaReflectedFrequencyCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- The explicit sine--Pochhammer gauge relating reflection kernels whose weights differ by a
 nonnegative integer. -/

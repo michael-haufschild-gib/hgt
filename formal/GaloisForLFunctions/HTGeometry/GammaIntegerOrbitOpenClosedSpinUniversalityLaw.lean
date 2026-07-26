@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GeneralizedSpinTowerDifferentialBoundary
 import GaloisForLFunctions.HTGeometry.VirasoroShapiroDifferentialBoundary
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # Integer-orbit universality of spin-tower and string Gamma channels
@@ -20,31 +21,7 @@ open Bottcher Polynomial
 
 noncomputable section
 
-local instance gammaIntegerOrbitUniversalityDomain :
-    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
-    isPreconnected_univ Set.univ_nonempty
-
-local instance gammaIntegerOrbitUniversalityDifferential :
-    Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
-
-local instance gammaIntegerOrbitUniversalityRatFuncAlgebra :
-    Algebra (RatFunc ℂ) (meroField Set.univ) :=
-  (ratfuncToMero Set.univ isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ).toAlgebra
-
-local instance gammaIntegerOrbitUniversalityRatFuncDifferential :
-    Differential (RatFunc ℂ) := ratFuncCoordinateDifferential
-
-local instance gammaIntegerOrbitUniversalityDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField Set.univ) :=
-  { deriv_algebraMap := fun r => meroField_deriv_ratfuncToMero r }
-
-local instance gammaIntegerOrbitUniversalityCharZero :
-    CharZero (meroField Set.univ) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField Set.univ)).injective
+open scoped UnivMeroFieldInstances
 
 /-- **Simultaneous collapse law.**  One integer-orbit selector is equivalent to DA collapse of
 the generalized spin-tower multiplier and both reduced string channels. -/

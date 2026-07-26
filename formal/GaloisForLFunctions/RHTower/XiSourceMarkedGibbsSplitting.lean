@@ -27,8 +27,7 @@ theorem xi_sourceMarkedGibbs_phase_radical_freeEnergy_split
       Tendsto
         (fun k : ℕ => Real.log (xiThermalProjectiveColdPartition k) / (k : ℝ))
         atTop (nhds xiProjectiveReflectionRadius) := by
-    (exists_xiZeroCopy_projectiveDisplacement_gt_of_lt_radius
-      (sub_lt_self xiProjectiveReflectionRadius zero_lt_one))⟩
+  letI : Nonempty XiZeroCopy := ⟨xiThermalEnumeration 0⟩
   have hmass : Summable xiThermalNode := by
     simpa using summable_xiThermalNode_pow 0
   have hzeros : XiZeroHalfPlaneBound xiProjectiveReflectionRadius :=
