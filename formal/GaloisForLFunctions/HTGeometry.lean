@@ -2157,3 +2157,4 @@ import GaloisForLFunctions.HTGeometry.NonconstantMvPolynomialWitnesses
 import GaloisForLFunctions.HTGeometry.HochsterStrandDegreeThree
 import GaloisForLFunctions.HTGeometry.ErlangBoundedSource
 import GaloisForLFunctions.HTGeometry.HochsterStrandTorTwo
+import GaloisForLFunctions.HTGeometry.PeriodicFromWitnesses

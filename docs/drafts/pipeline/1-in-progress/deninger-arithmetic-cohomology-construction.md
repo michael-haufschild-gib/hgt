@@ -752,3 +752,107 @@ metric by transporting a form already known to be positive exactly under RH.
   Summing gives the stated density. `[OPEN CORE]`: formalize this exact arch line, then identify
   the right Xi logarithmic-derivative line with the multiplicity-exact spectral sum by the
   relative-resolvent/Bromwich transform.
+- 2026-07-26 — `[LEAN-PROVED] [DAC_ARCH_LINE]` in
+  `DeningerArithmeticArchimedean.lean`. For every smooth compactly supported positive-time test,
+  proved a positive support gap, absolute summability of all negative-even Laplace samples,
+  Tonelli interchange with their geometric series, and the exact identity
+  \[
+    \sum_{n\ge0}\Phi(-2n)
+      =\int_{\mathbb R}\frac{\phi(t)}{1-e^{-2t}}\,dt .
+  \]
+  Independently constructed an integrable Gauss-series majorant on the Euler line, passed its
+  finite resolvent integrals to the digamma limit by dominated convergence, removed the Euler
+  constant using the zero-frequency Fourier integral, and combined the Gamma connection with
+  the two boundary resolvents. Lean now proves unconditionally
+  \[
+    \int_{\mathbb R}\Phi(3/2-2\pi i\xi)
+      (\log\operatorname{archFactor})'(3/2-2\pi i\xi)\,d\xi
+      =\Phi(0)+\Phi(1)
+       -\int_{\mathbb R}\frac{\phi(t)}{1-e^{-2t}}\,dt .
+  \]
+  Cached direct check:
+  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticArchimedean.lean`.
+  No RH premise, special test family, CCM theorem, or numerical computation occurs.
+  `[OPEN CORE]`: identify the right Xi logarithmic-derivative line with
+  \(\sum_\rho\Phi(\rho)\) using the existing multiplicity-exact relative resolvent and a
+  dependency-closed Bromwich/sum-interchange argument.
+- 2026-07-26 — `[CONJECTURE] [DAC_XI_LINE]`: for every
+  \(\phi\in C_c^\infty((0,\infty))\), with
+  \(\Phi(s)=\int\phi(t)e^{st}\,dt\),
+  \[
+    \int_{\mathbb R}\Phi(3/2-2\pi i\xi)
+      \frac{\xi'}{\xi}(3/2-2\pi i\xi)\,d\xi
+      =\sum_\rho\Phi(\rho),
+  \]
+  with analytic multiplicities. Hostile audit verdict: `REDISCOVERED`; this is the
+  multiplicity-exact spectral half of the classical explicit formula, but its arbitrary-test
+  Lean realization is absent from the corpus. `[PAPER-PROVED]` dependency-closed route:
+  put \(s_\xi=3/2-2\pi i\xi\) and
+  \(z_\xi=(s_\xi-1/2)(-i)=-2\pi\xi-i\). The existing centered Hadamard theorem gives
+  \[
+    \frac{\xi'}{\xi}(s_\xi)
+      =-i\sum_a\left(a^{-1}-(a-z_\xi)^{-1}\right),
+    \qquad a=(\rho-1/2)(-i).
+  \]
+  Since \(0<\Re\rho<1\), the horizontal centered line
+  \(\Im z=-1\) has distance at least \(1/2\) from every \(a\). For each term,
+  \[
+    \left|a^{-1}-(a-z)^{-1}\right|
+      =\frac{|z|}{|a||a-z|}
+      \le \frac{|z|+2|z|^2}{|a|^2}.
+  \]
+  The Euler-line amplitude is Schwartz, so its product with the polynomial majorant is
+  integrable; \(\sum_a|a|^{-2}<\infty\) then gives the required Tonelli interchange.
+  Algebraically
+  \[
+    -i\left(a^{-1}-(a-z_\xi)^{-1}\right)
+      =(\rho-1/2)^{-1}+(s_\xi-\rho)^{-1}.
+  \]
+  The constant integrates to zero because the test is supported in positive time. The complex
+  Bromwich identity, valid for \(\Re A>0\),
+  \[
+    \int_{\mathbb R}
+      \frac{\Phi(c-2\pi i\xi)}{A-2\pi i\xi}\,d\xi
+      =\Phi(c-A),
+  \]
+  applied to \(A=3/2-\rho\), returns \(\Phi(\rho)\). Absolute summability closes the
+  multiplicity-exact sum. `[OPEN CORE]`: formalize the complex Bromwich extension and this
+  inverse-square dominated interchange, then combine `[DAC_XI_LINE]`, `[DAC_ARCH_LINE]`, and the
+  already formalized Euler line to close Deninger's full distributional Lefschetz equality.
+- 2026-07-26 — `[LEAN-PROVED] [DAC_XI_LINE]` in
+  `DeningerArithmeticSpectralLine.lean`. Generalized the arbitrary-test Bromwich theorem from
+  positive real resolvents to all complex resolvents with positive real part. On the centered
+  right line \(z_\xi=-2\pi\xi-i\), proved the uniform distance bound
+  \(\|a-z_\xi\|\ge 1/2\) for every multiplicity copy of every Xi zero and the exact estimate
+  \[
+    \left\|a^{-1}-(a-z_\xi)^{-1}\right\|
+      \le (\|z_\xi\|+2\|z_\xi\|^2)\|a\|^{-2}.
+  \]
+  Polynomial multiplication preserves the Schwartz Euler amplitude, so the resulting common
+  majorant is integrable. Reciprocal-square divisor summability then justifies the full
+  integral/tsum interchange. Each term reduces algebraically to one zero-frequency constant,
+  whose integral vanishes, and one complex Bromwich resolvent, whose integral is
+  \(\Phi(\rho)\). Lean proves
+  \[
+    \int_{\mathbb R}\Phi(3/2-2\pi i\xi)
+      (\xi'/\xi)(3/2-2\pi i\xi)\,d\xi
+      =\sum_\rho\Phi(\rho)
+  \]
+  with exact analytic multiplicities and no RH or simplicity premise.
+- 2026-07-26 — `[LEAN-PROVED] [DAC_DISTRIBUTIONAL_LEFSCHETZ]` in
+  `DeningerArithmeticLefschetz.lean`. Combined `[DAC_XI_LINE]`, `[DAC_ARCH_LINE]`, and the
+  independently proved von-Mangoldt Euler line. This closes Deninger's Proposition 3.2 for every
+  \(\phi\in C_c^\infty((0,\infty))\) and then transports the scalar identity through the already
+  proved extensional equivalence to
+  \[
+    \operatorname{Tr}(S_t|H^0)-\operatorname{Tr}(S_t|H^1)
+      +\operatorname{Tr}(S_t|H^2)
+      =\sum_{p,k\ge1}\log p\,\delta_{k\log p}
+        +\frac{1}{1-e^{-2t}}
+  \]
+  in \(\mathcal D'((0,\infty),\mathbb C)\). Direct all-source audit:
+  `lake env lean /tmp/deninger_lefschetz_audit.lean`. No `.olean` generation, early `lake build`,
+  numerical computation, CCM hypothesis, RH premise, or unproved declaration was used.
+  `[OPEN CORE]`: construct Deninger's Hodge star/Green operator on arithmetic cohomology, prove
+  its positive definite polarization and Frobenius adjoint law
+  \(\Theta^\ast=1-\Theta\), then derive RH from spectral purity.

@@ -42,6 +42,7 @@ theorem card_add_card_eq_zero_of_isFullCCRMatrixTuple
   have hzero : Fintype.card (n ⊕ m) = 0 := by exact_mod_cast hcard
   simpa [Fintype.card_sum] using hzero
 
+omit [Fintype I] in
 /-- In the presence of one mode the unrestricted relation empties the whole coordinate space. -/
 theorem isEmpty_of_isFullCCRMatrixTuple [Nonempty I]
     (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ) (hccr : IsFullCCRMatrixTuple T) :
@@ -51,6 +52,7 @@ theorem isEmpty_of_isFullCCRMatrixTuple [Nonempty I]
   have hm : Fintype.card m = 0 := by omega
   exact ⟨Fintype.card_eq_zero_iff.mp hn, Fintype.card_eq_zero_iff.mp hm⟩
 
+omit [Fintype I] in
 /-- **No finite CCR tuple.**  In positive compression dimension the unrestricted interface is
 uninhabited, so every theorem carrying it is vacuous. -/
 theorem not_isFullCCRMatrixTuple [Nonempty I] [Nonempty n]
@@ -58,6 +60,7 @@ theorem not_isFullCCRMatrixTuple [Nonempty I] [Nonempty n]
   intro hccr
   exact (isEmpty_of_isFullCCRMatrixTuple T hccr).1.elim (Classical.arbitrary n)
 
+omit [Fintype I] in
 theorem not_exists_isFullCCRMatrixTuple [Nonempty I] [Nonempty n] :
     ¬ ∃ T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ, IsFullCCRMatrixTuple T := by
   rintro ⟨T, hT⟩
