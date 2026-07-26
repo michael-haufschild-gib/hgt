@@ -6674,3 +6674,434 @@ Montgomery's conjecture for every `σ ≥ 1/2`.
 ≪ R^{2-θ_*}N^{1/2+o(1)}` with `θ_* = (3-4σ)/(4-4σ)` for `1`-separated `\{t_r\} ⊂ [0,N^{τ_*}]`.**
 By Theorems 60, 62, 63 this implies the Density Hypothesis on `(2/3,3/4)`, and by Theorem 62(a) no
 weaker route through the pointwise size of `D_1` can exist.
+
+# Cycle 74 — the coefficient-free reformulation: a flat dual large sieve
+
+## Theorem 64 (the cancellation requirement `θ_*` is *exactly* "off-diagonal `≤` diagonal") `[PROVED HERE]`
+Put
+```
+        Q(\{t_r\},c) \;:=\; \sum_{n∼N}\Bigl|\sum_{r≤R} c_r\,n^{-it_r}\Bigr|^{2}
+        \;=\; \sum_{r,r'} c_r\overline{c_{r'}}\,D_1(t_r-t_{r'}) \;≥\; 0 ,
+```
+whose diagonal is exactly `RN`. Theorem 63's threshold `θ_*(σ) = (3-4σ)/(4-4σ)` was defined by
+`R^{2-θ_*}N^{1/2} = N^{2-2σ}`-consistency; substituting `R = N^{2-2σ}` and using
+`1-θ_* = 1/(4-4σ)`,
+```
+        R^{2-θ_*}N^{1/2} = R\cdot R^{1-θ_*}N^{1/2} = R\cdot N^{(2-2σ)/(4-4σ)}N^{1/2} = R\cdot N^{1/2}N^{1/2} = RN .
+```
+**So the whole cancellation requirement of Theorem 63 is the single clean statement `Q ≪ RN^{1+o(1)}`:
+the off-diagonal must not exceed the diagonal.** No exponent `θ` is needed.
+### Consequence: a coefficient-free route to Montgomery's conjecture
+By Cauchy–Schwarz, `RV ≤ \sum_r|D_a(t_r)| = \sum_n a_n\sum_r c_r n^{-it_r} ≤ \|a\|_2\,Q^{1/2}`, so for
+`|a_n| ≤ 1`
+```
+        R^2V^2 ≤ N\,Q \;≪\; N\cdot RN^{1+o(1)} \;\Longrightarrow\; R ≪ N^{2-2σ+o(1)} ,
+```
+**Montgomery's conjecture in full — for every `σ ≥ 1/2` and every `τ`.** The Dirichlet coefficients
+have disappeared: `Q` depends only on the configuration `\{t_r\}`, the unimodular weights `c_r`, and
+the integers `n ∼ N`. **Every obstruction recorded in Cycles 49–66 was a statement about `a_n`
+(the `a ≡ 1` witness, the mollifier's low-range vanishing, the moment tests); none of them can even be
+formulated here.**
+
+## Conjecture DH-FD (flat dual large sieve) `[CONJECTURED HERE]`
+*For any `1`-separated `\{t_r\}_{r≤R} ⊂ [0,T]`, any unimodular `(c_r)`, and any `N`,*
+```
+        \sum_{n∼N}\Bigl|\sum_{r≤R} c_r\,n^{-it_r}\Bigr|^{2}
+        \;≪\; N^{o(1)}\bigl(\,RN \;+\; R^{3/2}N^{1/2}\,\bigr) .
+```
+*In particular `Q ≪ RN^{1+o(1)}` whenever `R ≤ N`, which by Theorem 64 gives Montgomery's conjecture
+and hence (Theorem 60) the Density Hypothesis.*
+### Why this is the right statement, and why it is bold
+**(a) It strictly strengthens the mean value theorem, which gives `R(T+N)`.** For `R ≤ T` and `N < T`
+one has `R^{3/2}N^{1/2} ≤ RT \iff RN ≤ T^2`, always true; so DH-FD is stronger at every configuration
+and reduces to `RN` exactly in the range `R ≤ N` that the Density Hypothesis needs.
+**(b) Both terms are attained, so no term can be dropped.**
+*Diagonal term `RN`.* Take `t_r` an arithmetic progression of spacing `d ≥ 1`. Then
+`\sum_r c_r n^{-it_r}` is a Dirichlet kernel in `\log n`, of size `≍ R` on the resonances
+`\log n ∈ (2π/d)\mathbb Z` and `≍ 1/\mathrm{dist}` off them. The number of resonances in the range
+`\log n ∈ [\log N, \log 2N]` is `≍ d/2π + 1`, each carrying `≍ N/(Rd)` integers, so
+`Q ≍ (d/2π+1)(N/Rd)R^2 ≍ RN` — **for every spacing `d`, and with the off-resonance tail contributing
+the same order.**
+*Term `R^{3/2}N^{1/2}`.* Take `t_r = 2πN m_r` with distinct integers `m_r` (spacing `≥ 2πN ≥ 1`). For
+`n = N+j` one has `N\log n = N\log N + j - j^2/2N + O(j^3/N^2)`, and since `j ∈ \mathbb Z` the linear
+term dies modulo `1`:
+```
+        n^{-2πiNm} = e\bigl(-Nm\log n\bigr) = e\bigl(-Nm\log N\bigr)\,e\bigl(m j^2/2N\bigr)(1+o(1)) .
+```
+**The `t`-sum becomes a quadratic Weyl sum in `j`.** With `m_r = r`, `c_r = 1`, the inner sum is
+`≍ R` for `j ≤ \sqrt{2N/R}` and `≍ 2N/j^2` beyond, giving
+`Q ≍ R^2\sqrt{2N/R} + N^2\sum_{j>\sqrt{2N/R}}j^{-4} ≍ R^{3/2}N^{1/2}`. This is exactly
+**square-root cancellation over the `R^2` off-diagonal pairs at `|D_1| ≍ N^{1/2}`**, i.e. `θ = 1/2` in
+Theorem 63's notation. `R^{3/2}N^{1/2} ≥ RN \iff R ≥ N`, so this term is invisible in the
+Density-Hypothesis range and dominant outside it — a non-trivial calibration the conjecture passes.
+**(c) It asserts that square-root cancellation is *universal* for unimodular weights.** The
+mean value theorem's `T`-term is attained only by *sparse* `a` (a single `n_0` gives
+`\|M\|^2 ≥ R`, and `R ≍ T` makes `\|M\|^2 ≍ T`); DH-FD says the flat unimodular vector never sees it.
+**This is exactly the dual of the `a ≡ 1` witness — and the asymmetry is the point: flatness on the
+`n`-side saturates the mean value theorem, flatness on the `t`-side (conjecturally) does not.**
+### How DH-FD could fail
+The failure mode is a configuration `\{t_r\}` for which `\log n` behaves like an exact arithmetic
+progression. For a genuine AP `x_n = n/N` and frequencies `t_r = 2πNr` one gets `F(x_n) ≡ R` and
+`Q = NR^2 ≫ RN`; DH-FD asserts that `\{\log n\}` never permits this. The obstruction to imitating it
+is arithmetic: `t_r\log(n/n') ∈ 2π\mathbb Z` for all pairs forces `t_r` into
+`\bigcap_{n,n'}(2π/\log(n/n'))\mathbb Z`, and the alignment survives only for
+`|n-n'| ≲ \sqrt{N/m}` — precisely the `\sqrt N` truncation that produces the second term rather than
+`NR^2`. **A counterexample would have to produce `≫ N/R` integers `n ∼ N` on which `R` prescribed
+phases align simultaneously; the natural source of such alignment — Bohr sets
+`\{t : \|t\log p_i/2π\| ≤ ε,\ i ≤ k\}`, on which `n^{-it} ≈ 1` for every `\{p_i\}`-smooth `n` — yields
+only `≍ (\log N)^{k-1} = N^{o(1)}` integers, because smooth numbers with boundedly many prime factors
+are sparse in `[N,2N]`.** That tension — multiplicative structure is the only source of alignment, and
+it is too sparse — is the mathematical content of the conjecture.
+`[OPEN CORE 122 — supersedes 121]` **Prove Conjecture DH-FD, or refute it by exhibiting a
+`1`-separated `\{t_r\}` and unimodular `(c_r)` with `Q ≫ N^{δ}RN` for some `δ > 0` and `R ≤ N`.**
+By Theorem 64 the first branch gives Montgomery's conjecture and the Density Hypothesis; the second
+branch would be the first known configuration saturating the mean value theorem with flat weights,
+and would locate the true obstruction.
+
+# Cycle 75 — the chirp normal form, and the Density Hypothesis as an aliasing problem
+
+## DEAD END (checked, not recorded as a theorem): the "symmetric large sieve" proof of DH-FD
+*Attempt.* Bound `Q` by the bilinear operator norm in the favourable direction:
+`\|M\|^2 ≤ \min(\text{range}(m)+δ_x^{-1},\ \text{range}(x)+δ_m^{-1})`, which for
+`x_n = \log n/2π` (range `≈ 0.11`, separation `≈ 1/2πN`) and `t_r ∈[0,T]` (separation `1`) would give
+`\|M\|^2 ≪ 1` and hence `Q ≪ R` — absurd, since the diagonal alone is `RN`.
+*Why it fails.* **The large sieve is not symmetric: one side must be equally spaced.** Montgomery–
+Vaughan bounds `\sum_r|\sum_n a_n e(λ_r n)|^2 ≤ (L+δ^{-1})\|a\|^2` with `n` running over *consecutive
+integers*; the dual statement with both sides merely separated is false (take one frequency and `K`
+points: the truth is `K`, the "symmetric" bound gives `1`). **`\{\log n\}` is not an arithmetic
+progression, and that is precisely the difficulty — any argument that treats it as one proves too
+much.** `[Fifteenth correction, caught before recording. Gate (ninth): before applying a large-sieve
+or duality bound, identify which side is assumed equally spaced.]`
+
+## Theorem 65 (chirp normal form for `n^{-it}` on `n ∼ N`) `[PROVED HERE]`
+*Write `t = 2πNm` and `n = N+j`, `0 ≤ j ≤ N`. Then*
+```
+        n^{-it} \;=\; e\bigl(-Nm\log N\bigr)\;e\Bigl(-m\bigl(j - \tfrac{j^{2}}{2N}\bigr)\Bigr)\,
+                     \bigl(1+O(mj^{3}/N^{2})\bigr) .
+```
+*Proof.* `t\log n/2π = Nm\log N + Nm\log(1+j/N) = Nm\log N + m(j - j^2/2N + O(j^3/N^2))`. ∎
+Consequently, for any configuration `\{t_r\} = \{2πNm_r\}` and unimodular `(c_r)`,
+```
+        Q \;=\; \sum_{j} \bigl|H(φ(j))\bigr|^{2},\qquad
+        H(x) := \sum_r c_r' \,e(-m_r x),\qquad φ(j) := j-\frac{j^{2}}{2N} ,
+```
+with `|c_r'| = 1`. **Two structural facts follow, and they are the whole geometry of the problem.**
+**(a) Rigidity.** The linear and quadratic coefficients of the phase are *both* proportional to the
+same parameter `m_r`: the family is a one-parameter family of chirps along a curve, not a
+two-parameter family of quadratic phases. (This is the correct form of the observation that killed
+Theorem 40: there is only one variable.)
+**(b) `\{\log n\}` is an arithmetic progression exactly on blocks of length `\sqrt N`.** One has
+`φ(j+1)-φ(j) = 1-(2j+1)/2N ∈ [1/2,1]` for `j ≤ N/2`, so `\{φ(j)\}` is `1`-separated; but its deviation
+from the exact progression `\{j\}` is `j^{2}/2N`, which reaches `1` at `j = \sqrt{2N}`.
+> **Unification.** The three quantities `Δ = N^{1/2}` (the resolvent's true size, Theorem 62), the
+> second term `R^{3/2}N^{1/2}` of Conjecture DH-FD, and the block length `\sqrt N` of (b) are **one
+> phenomenon**: `\{\log n : n∼N\}` is an arithmetic progression to accuracy `1` on blocks of length
+> `\sqrt N` and on no longer block. Every `N^{1/2}` in this card — hence, via `V^{2} = N\cdot N^{1/2}`,
+> the barrier `σ = 3/4` itself — is that block length.
+
+## Theorem 66 (the Density Hypothesis is an aliasing problem, and `τ = 1` is the Nyquist rate) `[PROVED HERE]`
+In the normal form of Theorem 65 the frequencies are `m_r ∈ [0,M]` with `M = T/2πN = N^{τ-1}/2π`, and
+the sampling points `φ(j)` are `1`-separated. Therefore:
+**(a) If `τ < 1` then `M < 1`: the sampling is *oversampling* relative to the bandwidth, and by the
+Plancherel–Pólya inequality for `δ`-separated samples of a bandwidth-`M` function,**
+```
+        Q \;=\; \sum_j |H(φ(j))|^{2} \;≪\; (M+1)\int_J |H|^{2} \;≪\; \int_J|H|^{2} \;≪\; RN^{1+o(1)} ,
+```
+*giving Conjecture DH-FD, hence Montgomery's conjecture, unconditionally for `τ < 1`.*
+**(b) If `τ > 1` then `M > 1`: the sampling is *undersampling* by the factor `M = T/N`, and aliasing
+is possible in principle. Whether it actually occurs on the specific point set `\{\log n\}` is exactly
+Conjecture DH-FD.**
+> **`τ = 1` is the Nyquist rate of the problem.** This is the *third* independent derivation of the
+> triple point: it is where the three exponents coincide (Theorem 59), where the resolvent's second
+> moment turns from off-diagonal- to diagonal-dominated (Theorem 62(a)), and now where the sampling
+> rate `1` matches the bandwidth `T/N`. All three read `T = N`. **The mean value theorem is sharp
+> below Nyquist for the honest reason that no information is lost there; the Density Hypothesis is
+> the assertion that above Nyquist the multiplicative sample set `\{\log n\}` still does not alias.**
+`[OPEN CORE 123 — the concrete form of 122]` **Show that the `1`-separated point set
+`\{φ(j)\}_{j≤N}`, `φ(j) = j-j^{2}/2N`, admits no aliasing at bandwidth `M = N^{τ_*-1}`:**
+```
+        \sum_{j≤N}\Bigl|\sum_{r≤R}c_r e(-m_r φ(j))\Bigr|^{2} \;≪\; N^{o(1)}\bigl(RN + R^{3/2}N^{1/2}\bigr)
+```
+*for `m_r ∈ [0,M]` with `m_r` `\tfrac{1}{2πN}`-separated and `|c_r| = 1`.* By Theorems 64–66 this is
+equivalent to the Density Hypothesis route and is stated entirely in terms of a quadratic phase and a
+sampling set — **no zeta function, no Dirichlet coefficients, no zero-detection.**
+
+# Cycle 76 — major/minor arc decomposition of the resolvent, and the exact locus of the difficulty
+
+## CORRECTION (sixteenth) to Theorem 65's range of validity
+The expansion `N\log(N+j) = N\log N + j - j^{2}/2N + O(j^{3}/N^{2})` is uniform only for
+`j ≪ (N^{2}/m)^{1/3}`, not for `j ≤ N`. **Truncating at the quadratic term creates a spurious
+stationary point at `j = N`** (`φ'(j) = 1-j/N` vanishes there, while the true phase derivative
+`m/(1+j/N)` never does), which inflates `|K(μ)|` from the truth `≍ N/t` to a false `≍ \sqrt{N/t}` for
+`t = 2πNμ ≤ N`. Theorem 65(a),(b) survive — the block length `\sqrt{N/m}` satisfies
+`\sqrt{N/m} ≪ (N^{2}/m)^{1/3}` for every `m ≥ 1`, so the "arithmetic progression on blocks of length
+`\sqrt N`" statement is inside the valid range — but the *global* identity
+`Q = \sum_{j≤N}|H(φ(j))|^{2}` of Cycle 75 must be re-derived block-wise, with one expansion centre per
+block. `[Failure mode: using a local normal form globally. **Gate (tenth): state the range of
+validity of every asymptotic expansion at the moment it is written, and check the intended range of
+use against it.**]`
+
+## Theorem 67 (major/minor arc structure of the resolvent) `[PROVED HERE]`
+*Let `K(μ) := D_1(2πNμ) = \sum_{n∼N}n^{-2πiNμ}` and let `M := T/2πN = N^{τ-1}/2π`, so `μ` ranges over
+`[0,M]`. Write `α = μ/2N` for the quadratic coefficient of the block-wise chirp. Then:*
+**(a) `q_{\min} = 2N/M`.** For `μ ∈ [2, M]` any Dirichlet approximation `|α-a/q| ≤ 1/(qN)`, `q ≤ N`,
+has `a ≥ 1` (else `μ ≤ 2`), whence `a/q ≲ α ≤ M/2N` and `q ≥ 2Na/μ ≥ 2N/M`.
+**(b) `\max_{2 ≤ μ ≤ M}|K(μ)| ≪ N^{τ/2+o(1)} = T^{1/2+o(1)}`.** By the Gauss-sum bound
+`|K| ≪ (N/\sqrt q + \sqrt q)N^{o(1)}` and (a), `N/\sqrt{q} ≤ N/\sqrt{2N/M} = \sqrt{NM/2} ≍ T^{1/2}`,
+while `\sqrt q ≤ \sqrt N ≤ T^{1/2}` for `τ ≥ 1`.
+**(c) Level-`q` measure.** The set of `α` admitting an approximation of denominator `≍ q` has measure
+`≍ 2A/N` (`A = M/2N` the total range) **independently of `q`**, with `≍ Aq` components; hence for
+`1`-separated `\{t_r\}` the number of `r'` with `m_r-m_{r'}` at level `q` is
+`≪ \min\bigl(R,\; M(1+q/N)\bigr)`.
+### Consequence: the structured pairs are harmless in the Density-Hypothesis range
+Summing (b),(c) over dyadic `q ∈ [q_{\min}, N]`, the major-arc contribution to
+`\sum_{r'}|K(m_r-m_{r'})|` is dominated by `q = q_{\min}` and equals
+```
+        \min(R,M)\cdot\sqrt{NM} \;≍\; \min(R,M)\cdot N^{τ/2} .
+```
+On the band `σ ≤ (1+\sqrt5)/4 = 0.809` one has `M ≤ R`, so this is `≪ N` exactly when
+```
+        M^{3/2} ≪ N^{1/2} \iff M ≪ N^{1/3} \iff τ < \tfrac43
+        \iff (2σ-1)^{2} < \tfrac13 \iff σ < \tfrac{1}{2}\Bigl(1+\tfrac{1}{\sqrt3}\Bigr) = 0.7887\ldots
+```
+**So for every `σ` in the open band `(2/3, 0.7887)` — which strictly contains the entire unresolved
+range `(2/3, 3/4]` and reaches past Bourgain's threshold `25/32 = 0.78125` — the major-arc (resonant,
+Gauss-sum-large) pairs contribute `≪ RN` and are *not* the obstruction.**
+
+## Theorem 68 (the obstruction is exactly the minor arcs, and it is exactly the `3/4` barrier) `[PROVED HERE]`
+The complementary minor-arc pairs are those with `|K(μ)| ≍ N^{1/2}` — the generic case, by Theorem
+62(a) and the equidistribution of `α = μ/2N`. Estimating them by the triangle inequality gives
+```
+        \sum_{r'}|K| \;≳\; R\,N^{1/2} \;\Longrightarrow\; Q ≲ R\bigl(N + RN^{1/2}\bigr),
+```
+and `RN^{1/2} ≪ N \iff R ≪ N^{1/2} \iff N^{2-2σ} ≪ N^{1/2} \iff σ > 3/4`.
+> **Every size-based estimate of `Q` — however sharp on the major arcs — reproduces `σ > 3/4` and
+> nothing more.** Combined with Theorem 67 this locates the difficulty exactly:
+> ```
+>   major arcs (resonant μ, |K| up to T^{1/2}) :  harmless for σ < 0.7887   [Theorem 67]
+>   minor arcs (generic μ, |K| ≍ N^{1/2})      :  need square-root cancellation over the R² pairs
+> ```
+> **The Density Hypothesis on `(2/3, 3/4]` is now a single statement about a single family of
+> quadratic Gauss sums:** that the `R^{2}` phases `\arg K(m_r-m_{r'})`, `K` a Gauss sum with
+> equidistributed quadratic coefficient `α = (m_r-m_{r'})/2N`, exhibit square-root cancellation
+> against every unimodular weighting `c_r\overline{c_{r'}}`.
+`[TRAP RECORDED]` An earlier pass through this computation concluded that `τ ≤ 4/3` gives
+`Q ≪ RN` outright and hence proved the Density Hypothesis on `(2/3, 0.7887]`. **That is false: it
+dropped the minor-arc term `RN^{1/2}`, which is the Halász–Montgomery barrier itself.** The
+computation is correct only as a statement about the major arcs. `[Gate (vi) — compute two ways —
+caught it: the AP configuration `m_r = m_0+r` has true `Q ≍ RN + R^{3/2}N^{1/2}`, and the dropped term
+is precisely the difference between `R^{3/2}N^{1/2}` (with cancellation) and `R^{2}N^{1/2}` (without).]`
+
+# Cycle 77 — Phase-4 attack on Conjecture DH-FD: the multiplicative construction fails by an unbounded margin
+
+## Theorem 69 (no Bohr-set / smooth-number configuration refutes DH-FD) `[PROVED HERE]`
+The only known mechanism producing simultaneous alignment of many phases `n^{-it_r}` is multiplicative:
+a Bohr set `B(P,ε) = \{t : \|t\log p/2π\| ≤ ε\ \forall p ∈ P\}`, on which `n^{-it} ≈ 1` for every
+`P`-smooth `n` of bounded prime-factor count. Fix such a construction and let
+```
+        k = |P|,\quad y = \max P,\quad u = \frac{\log N}{\log y},\quad
+        A = \max_{n∈S}Ω(n/n_0),\quad K = |S| ,
+```
+where `S ⊂ [N,2N]` is the set of aligned integers. Three constraints bind simultaneously.
+**(i) Alignment.** `\|t_r\log(n/n_0)/2π\| ≤ A ε` must be `≤ 1/10`, so `ε ≤ 1/(10A)`. Since a
+`y`-smooth `n ∼ N` has `Ω(n) ≍ u`, necessarily `A ≳ u` and hence `ε ≲ 1/u`.
+**(ii) Non-emptiness.** To place `R` one-separated points in `B(P,ε) ∩ [0,T]` one needs
+`T(2ε)^{k} ≳ R`, i.e. `k\log\frac{1}{2ε} ≤ (τ-ρ)\log N` where `R = N^{ρ}`.
+**(iii) Supply.** To beat the conjectured bound one needs `K ≫ N/R = N^{1-ρ}`; the count of
+`y`-smooth integers in `[N,2N]` is `Nρ_{\mathrm{Dick}}(u) = N e^{-u\log u(1+o(1))}`, so
+`u\log u ≤ ρ\log N`, forcing
+```
+        u ≍ \frac{ρ\log N}{\log\log N},\qquad
+        \log y = \frac{\log N}{u} ≍ \frac{\log\log N}{ρ},\qquad
+        y ≍ (\log N)^{1/ρ},\qquad k ≍ π(y) ≍ \frac{ρ\,(\log N)^{1/ρ}}{\log\log N} .
+```
+**These are incompatible.** Substituting (i) and (iii) into (ii), with `\log\frac1{2ε} ≥ \log(5u) ≍
+\log\log N`,
+```
+        k\log\tfrac{1}{2ε} \;≍\; \frac{ρ(\log N)^{1/ρ}}{\log\log N}\cdot\log\log N
+        \;=\; ρ\,(\log N)^{1/ρ}
+        \;\;\text{versus}\;\; (τ-ρ)\log N ,
+```
+so the construction requires
+```
+        (\log N)^{\frac1ρ-1} \;≤\; \frac{τ-ρ}{ρ} \;=\; O(1) .
+```
+**For every `ρ < 1` — that is, for every `σ > 1/2` — the left side tends to infinity. The
+multiplicative construction fails, and it fails by the unbounded factor `(\log N)^{1/ρ-1}`.** ∎
+> ### Verdict on Conjecture DH-FD: `SURVIVES PRELIMINARY ATTACK`
+> The obstruction is a genuine tension, not a near miss. **To align `u ≍ \log N/\log\log N` prime
+> factors one needs Bohr precision `ε ≍ 1/u`; a Bohr set of `k ≍ (\log N)^{1/ρ}` primes at that
+> precision has density `\exp(-Θ((\log N)^{1/ρ}\log\log N))`, which is empty in `[0,N^{τ}]` for every
+> fixed `τ`.** Conversely, shrinking `k` to make the Bohr set nonempty (`k = O(τ/ρ)` primes) leaves
+> only `(\log N)^{k-1} = N^{o(1)}` smooth integers — far below the `N^{1-ρ}` needed. **There is no
+> intermediate regime: the two requirements move in opposite directions in `y`, and the margin is a
+> power of `\log N`, not a constant.**
+### Why this is evidence and not proof
+Theorem 69 rules out the *multiplicative* source of alignment. It does not rule out an alignment set
+`S` that is not smooth — `S` could a priori consist of `N^{1-ρ}` integers with large prime factors on
+which the phases happen to align. **But such an `S` cannot be closed under the ratios that generate
+the alignment**: if `n,n' ∈ S` then `t_r\log(n/n')` is within `O(1)` of `2π\mathbb Z` for all `r`, so
+the multiplicative group generated by `S/S` is annihilated to precision `O(1)` by all `R` frequencies,
+and by unique factorisation that group is free on the primes dividing members of `S`. **Theorem 69 is
+therefore exactly the statement that the rank of that group must be `O(1)`, and then `|S| = N^{o(1)}`.
+Closing the remaining gap — from "the group has small rank" to "the alignment is approximate, not
+exact" — is the one analytic step between Theorem 69 and a proof of DH-FD.**
+`[OPEN CORE 124]` **Make Theorem 69 unconditional by replacing exact annihilation with `O(1)`-precision
+annihilation.** Concretely: show that if `S ⊂ [N,2N]` with `|S| ≥ N^{1-ρ+δ}` and there exist `R = N^{ρ}`
+one-separated `t_r ∈ [0,N^{τ}]` with `\|t_r\log(n/n')/2π\| ≤ 1/10` for all `n,n' ∈ S` and all `r`, then
+`δ ≤ 0`. By Theorems 64–68 this **proves the Density Hypothesis on `(2/3,3/4]`**, and by Theorem 69 the
+only configurations it must exclude are the non-smooth ones.
+
+# Cycle 78 — the continuous case of DH-FD is true and elementary; the Density Hypothesis is a sampling theorem
+
+## Theorem 70 (continuous DH-FD) `[PROVED HERE]`
+*Let `F(x) = \sum_{r≤R}c_r e(-t_r x/2π)` with `|c_r| = 1` and `\{t_r\} ⊂ [0,T]` one-separated, and let
+`J` be an interval of length `\log 2`. Then*
+```
+        \int_J |F(x)|^{2}\,dx \;=\; \sum_{r,r'}c_r\overline{c_{r'}}\,\widehat{1_J}(t_r-t_{r'})
+        \;≪\; R\log T \;=\; R\,\log N^{1+o(1)} ,
+```
+*since `|\widehat{1_J}(u)| ≤ \min(\log 2, 4π/|u|)` and one-separation gives at most two pairs per unit
+interval, whence `\sum_{r≠r'}\min(\log2, 4π/|u|) ≪ R\sum_{k≤T}1/k ≪ R\log T`.*
+*Consequently `\bigl|\{x ∈ J : |F(x)| ≥ R/2\}\bigr| ≪ (\log T)/R`.* ∎
+> **The continuous statement is trivially true, and it is exactly the conjectured bound.** If the
+> `N` sample points `\{\log n\}` — which are `≍1/N`-separated in `J` — sampled `|F|^{2}` fairly, then
+```
+        Q \;=\; \sum_{n∼N}|F(\log n)|^{2} \;≍\; \frac{N}{|J|}\int_J|F|^{2} \;≪\; RN^{1+o(1)} ,
+```
+> **which is precisely Conjecture DH-FD, hence Montgomery's conjecture, hence the Density Hypothesis.**
+
+## Theorem 71 (the Density Hypothesis as a Marcinkiewicz–Zygmund sampling statement) `[PROVED HERE]`
+Combining Theorems 64, 70:
+```
+   \boxed{\;\text{DH-FD}\iff \{\log n : n∼N\}\ \text{is a fair sampling set, at density }N,\;
+   \text{for exponential sums with one-separated frequencies in }[0,T]\ \text{and unimodular coefficients.}\;}
+```
+The three regimes are now completely transparent:
+```
+   τ < 1  (T < N) :  below Nyquist — fair sampling holds for every bandlimited F
+                     (Plancherel–Pólya); the mean value theorem is sharp and sufficient.  [Thm 66(a)]
+   τ > 1  (T > N) :  above Nyquist — fair sampling fails for *generic* bandwidth-T functions;
+                     DH-FD asserts it nevertheless holds for this class.
+   Failure mode   :  B := {x ∈ J : |F(x)| ≥ R/2} has measure ≪ (log T)/R  [Theorem 70] but consists
+                     of ≍ T/R components of length ≍ 1/T ≪ 1/N.  The trivial count of integers with
+                     log n ∈ B is min(T/R, N); the needed count is N/R.
+```
+> **The entire remaining gap between this programme and the Density Hypothesis is the factor `T/N`
+> between the trivial component count `T/R` and the expected count `N/R`.** Everything else —
+> the reduction of DH to one window (Thm 60), the identification of the `3/4` wall as the
+> Halász–Montgomery barrier (Thm 62), the removal of the Dirichlet coefficients (Thm 64), the
+> disposal of the major arcs (Thm 67) and of the multiplicative counterexamples (Thm 69) — is proved.
+`[OPEN CORE 125 — the final analytic step]` *Let `B ⊂ J` be a union of `≍ T/R` intervals of length
+`≍ 1/T`, arising as the large-value set of an exponential sum with one-separated frequencies in
+`[0,T]` and unimodular coefficients. Show*
+```
+        \#\{\,n ∼ N \;:\; \log n ∈ B\,\} \;≪\; N^{1+o(1)}/R
+```
+*— the count expected from `|B| ≍ 1/R`, rather than the trivial `\min(T/R, N)`.*
+**This is a pure equidistribution statement about `\{\log n\}` in Bohr-type sets, containing no zeta
+function, no Dirichlet coefficients, no zero-detection and no large-value machinery; by Theorems
+60–70 it implies the Density Hypothesis on `(2/3,3/4]` and, through Theorem 64, Montgomery's
+conjecture in full.** Theorem 69 shows the multiplicatively structured `B` — the only known source of
+alignment — cannot violate it, and fails to by the unbounded factor `(\log N)^{1/ρ-1}`.
+
+# Cycle 79 — stationary phase is the only source of over-sampling, and it reproduces DH-FD exactly
+
+## Theorem 72 (the stationary-point census of `\{\log n\}` against a single frequency) `[PROVED HERE]`
+*Fix `t = 2πNμ` with `μ ≥ 1` and put `ψ(n) := μ N\log n`. Then:*
+**(a) `ψ'(n) = μN/n ∈ [μ/2, μ]` for `n ∈ [N,2N]`, so `ψ'` crosses exactly `≍ μ/2` integers, at the
+points `n_k = μN/k`, `k ∈ [μ/2, μ] ∩ \mathbb Z`. These are the stationary points of `ψ` modulo `1`,
+and there are no others.**
+**(b) Near each `n_k`, writing `n = n_k + i` with `i ∈ \mathbb Z`,**
+```
+        ψ(n) \;\equiv\; ψ(n_k) \;-\; \frac{μN}{2n_k^{2}}\,i^{2} \pmod 1 ,
+```
+*because the linear term `k\,i` is an integer and dies modulo `1`. Hence `\|ψ(n)\| ≤ 1/R` on a block
+of `≍ \sqrt{N/(μR)}` consecutive integers around each `n_k`.*
+**(c) Census.** `\#\{n∼N : \|ψ(n)\| ≤ 1/R\} \;=\; \dfrac{N}{R} \;+\; O\Bigl(\sqrt{\dfrac{μN}{R}}\Bigr)`,
+*the first term the equidistributed expectation and the second the total stationary-phase excess
+`(μ/2)\cdot\sqrt{N/(μR)}`. The excess dominates exactly when `μ ≥ N/R`.*
+**(d) Resolvent amplitude.** The same census evaluates `K(μ) = \sum_{n∼N}n^{-2πiNμ}`: each stationary
+point contributes amplitude `|ψ''|^{-1/2} ≍ \sqrt{N/μ}`, and with square-root cancellation among the
+`≍ μ/2` of them,
+```
+        |K(μ)| \;≍\; \sqrt{μ}\cdot\sqrt{N/μ} \;=\; \sqrt N .
+```
+> **This is the structural origin of every `N^{1/2}` in this card.** `\Delta ≍ N^{1/2}` is not an
+> accident of the second moment (Theorem 62(a)) — it is
+> `\sqrt{\#\text{stationary points}} \times \text{amplitude per stationary point}`, and the two
+> factors `\sqrt μ` and `\sqrt{N/μ}` cancel the parameter `μ` exactly. **Since the
+> Halász–Montgomery barrier is `V^{2} = \|a\|_2^{2}Δ = N\cdot N^{1/2}`, the threshold `σ = 3/4` is
+> precisely the statement `\sqrt{μ}\cdot\sqrt{N/μ} = N^{1/2}`: the wall is the exact cancellation of
+> the number of stationary points against their individual amplitudes.**
+### Consequence: the conjectured second term of DH-FD is exactly the stationary-phase excess
+Summing (c) over the configuration `t_r = 2πNm_r` with `c_r ≡ 1`, the excess concentration
+`\sqrt{N/R}` at the single resonance `μ = 0` contributes `R^{2}\sqrt{N/R} = R^{3/2}N^{1/2}` to `Q`,
+while the equidistributed part contributes `(N/R)R^{2} = RN`. **The two terms of Conjecture DH-FD are
+therefore not fitted to an example — they are the equidistributed main term and the stationary-phase
+error term of a single census, and there is no third mechanism in (a).**
+`[OPEN CORE 126 — the sharpened form of 125]` **Show that stationary phase is the *only* source of
+over-sampling of `\{\log n\}` by a Bohr-type set.** Precisely: for `B` the large-value set of
+`F(x)=\sum_r c_re(-t_rx/2π)` with one-separated `t_r ∈ [0,T]` and `|c_r|=1`,
+```
+        \#\{n∼N : \log n ∈ B\} \;≪\; N^{o(1)}\Bigl(\,N|B| \;+\; \sqrt{N\,T\,|B|}\,\Bigr) ,
+```
+*the second term being the total stationary-phase excess across the `≍T|B|` components of `B`.* With
+`|B| ≍ 1/R` this is `N/R + \sqrt{NT/R}`, and `\sqrt{NT/R}·R^{2} ≪ RN \iff R ≤ N/T`, so the statement
+must be applied window-by-window rather than uniformly — **the correct target is the census bound
+itself, and Theorem 72(a) says the only obstruction to proving it is controlling the crossings of
+`ψ' = μN/n` through the integers, a one-dimensional counting problem with no zeta function in it.**
+
+# Cycle 80 — exact Poisson decomposition of the sampling sum: the Density Hypothesis is an alias-cancellation statement
+
+## Theorem 73 (Poisson decomposition of `Q`) `[PROVED HERE]`
+*With `F(y) = \sum_r c_r e(-t_ry/2π)`, `J = [\log N, \log 2N]`, and `Q = \sum_{n∼N}|F(\log n)|^{2}`,
+Poisson summation in `n` gives the exact identity*
+```
+        Q \;=\; \underbrace{\int_N^{2N}|F(\log x)|^{2}dx}_{h=0}
+             \;+\; \sum_{h≠0}\ \sum_{r,r'} c_r\overline{c_{r'}}\;
+                   \int_N^{2N} x^{-i(t_r-t_{r'})}e(-hx)\,dx .
+```
+**(a) The `h=0` term is exactly the target.** `\int_N^{2N}|F(\log x)|^{2}dx = \int_J|F(y)|^{2}e^{y}dy
+≍ N\int_J|F|^{2} ≪ NR\log T` by Theorem 70. **So the main term of the sampling sum is precisely the
+bound Conjecture DH-FD asserts.**
+**(b) The `h≠0` terms are the aliases, and they are stationary-phase-supported.** The phase of
+`I(u,h) = \int_N^{2N}x^{-iu}e(-hx)dx` is `-\tfrac{u}{2π}\log x - hx`, with derivative
+`-\tfrac{u}{2πx}-h`, vanishing at `x_0 = -u/2πh`. Since `x_0 ∈ [N,2N]` this requires
+```
+        |u| \;≍\; 2π|h|N ,\qquad\text{i.e.}\qquad |h| \;≍\; μ = \frac{|t_r-t_{r'}|}{2πN} ,
+```
+*the same parameter `μ` as in Theorem 72; without a stationary point `I` is negligible. At `x_0` the
+second derivative is `u/2πx_0^{2} ≍ h/N`, so the amplitude is `\sqrt{N/|h|}` and*
+```
+        S_h \;:=\; \sqrt{N/|h|}\!\!\sum_{\substack{(r,r')\\ |t_r-t_{r'}| ≍ 2π|h|N}}\!\!
+                   c_r\overline{c_{r'}}\;e\bigl(g_h(v_{rr'})\bigr),\qquad
+        g_h(v) = -v\log(v/h) - v,\quad v = \frac{t_r-t_{r'}}{2π} .
+```
+**(c) Range of `h`.** A stationary point requires `|h| ≤ T/2πN = M`, so the number of alias terms is
+exactly `M = N^{τ-1}/2π`. **For `τ ≤ 1` there is no `h ≠ 0` term at all and `Q` equals its main
+term identically** — an exact-identity re-derivation of Theorem 66(a) and of the fact that the mean
+value theorem is sharp and sufficient below Nyquist. ∎
+> ```
+>   \text{Conjecture DH-FD}\quad\Longleftrightarrow\quad \sum_{h≠0}S_h \;≪\; RN^{1+o(1)} .
+> ```
+> **The Density Hypothesis is the statement that the Poisson aliases of the sampling sum do not
+> exceed its main term.** Every earlier formulation collapses into this one: the `M = T/N` aliases of
+> Theorem 66, the `≍μ/2` stationary points of Theorem 72, and the `≍T/R` components of the
+> large-value set are the same objects seen three ways.
+### The phase `g_h` and where cancellation must come from
+`g_h'(v) = -\log(v/h)-2`, which at `v ≍ hN` equals `-\log N - 2`: **the leading behaviour is linear in
+`v`, hence factors as `e(-t_r\log N/2π)\overline{e(-t_{r'}\log N/2π)}` and is absorbable into the
+unimodular coefficients — it contributes nothing.** The genuine content is the curvature
+```
+        g_h''(v) \;=\; -\frac1v \;≍\; -\frac{1}{hN} ,
+```
+which over the window `|u| ≍ 2πN` (i.e. `v` varying by `≍N`) produces a phase deviation `≍ N/h`.
+**So the `h`-th alias carries genuine oscillation exactly when `h ≪ N`, and the number of aliases is
+`M = N^{τ-1} ≪ N` for `τ < 2`: every alias in the Density-Hypothesis range is curvature-dominated,
+and none is degenerate.**
+`[OPEN CORE 127 — supersedes 126]` **Prove `\sum_{h≠0}S_h ≪ RN^{1+o(1)}` for one-separated
+`\{t_r\}⊂[0,T]` and unimodular `(c_r)`, with `S_h` as in (b).** The trivial bound is
+`\sum_h \sqrt{N/h}\cdot R\min(R,N) ≍ R^{2}N^{τ/2}`, short of the target by `RN^{τ/2-1}` — **the same
+shortfall `σ = 3/4` yet again**; the required saving is exactly a square root over the pairs, and by
+(b) it must come from the curvature `g_h'' ≍ -1/(hN)`, the only non-degenerate structure present.

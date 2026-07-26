@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.PrimeArchValuationSectorCones
 import GaloisForLFunctions.RHTower.XiCenteredOrderFourteenSourcePositivity
 import GaloisForLFunctions.RHTower.XiCenteredOrdersFifteenSixteenSourcePositivity
 import GaloisForLFunctions.RHTower.XiCenteredOrdersSeventeenEighteenSourcePositivity
+import GaloisForLFunctions.RHTower.XiCenteredOrdersNineteenTwentySourceBudgetBoundary
 
 /-!
 # Low-degree coefficient cones for the prime--Gamma source
@@ -16,6 +17,8 @@ fourteen in absolute value. A separate centered order-fifteen corner exclusion p
 fourteen itself strictly positive. Centered order-sixteen and order-seventeen exclusions prove
 positivity of moments fifteen and sixteen, closing the full degree-eight square-coefficient cone.
 Centered order-eighteen and order-nineteen exclusions similarly close the full degree-nine cone.
+For degree ten, the source argument identifies two explicit finite residual annuli whose emptiness
+supplies exactly the remaining moments nineteen and twenty.
 -/
 
 open Polynomial
@@ -133,6 +136,22 @@ theorem normalizedPrimeArchMoment_pos_of_le_eighteen
       subst s
       exact normalizedPrimeArchMoment_eighteen_pos
 
+/-- Emptiness of the two explicit centered residual annuli makes every normalized
+prime--archimedean source moment through index twenty strictly positive. -/
+theorem normalizedPrimeArchMoment_pos_of_le_twenty_of_degreeTenResidualAnnuliEmpty
+    (h : XiCenteredDegreeTenResidualAnnuliEmpty)
+    (s : ℕ) (hs : s ≤ 20) :
+    0 < normalizedPrimeArchMoment s := by
+  by_cases hs18 : s ≤ 18
+  · exact normalizedPrimeArchMoment_pos_of_le_eighteen s hs18
+  · by_cases hs19 : s ≤ 19
+    · have hsEq : s = 19 := by omega
+      subst s
+      exact normalizedPrimeArchMoment_nineteen_pos_of_degreeTenResidualAnnuliEmpty h
+    · have hsEq : s = 20 := by omega
+      subst s
+      exact normalizedPrimeArchMoment_twenty_pos_of_degreeTenResidualAnnuliEmpty h
+
 /-- Degree-at-most-six integer polynomials whose coefficients all have one weak sign. -/
 def PrimeArchDegreeSixCoefficientSignCone (p : Polynomial ℤ) : Prop :=
   p.natDegree ≤ 6 ∧
@@ -163,6 +182,13 @@ def PrimeArchDegreeEightSquareCoeffCone (p : Polynomial ℤ) : Prop :=
 nonnegative. -/
 def PrimeArchDegreeNineSquareCoeffCone (p : Polynomial ℤ) : Prop :=
   p.natDegree ≤ 9 ∧
+    HTGeometry.PolynomialSquareCoeffNonnegative
+      (p.map (Int.castRingHom ℝ))
+
+/-- Degree-at-most-ten integer polynomials whose real self-convolution coefficients are
+nonnegative. -/
+def PrimeArchDegreeTenSquareCoeffCone (p : Polynomial ℤ) : Prop :=
+  p.natDegree ≤ 10 ∧
     HTGeometry.PolynomialSquareCoeffNonnegative
       (p.map (Int.castRingHom ℝ))
 
@@ -290,6 +316,12 @@ theorem primeArchDegreeNineSquareCoeffCone_of_degreeEightSquareCoeffCone
     PrimeArchDegreeNineSquareCoeffCone p :=
   ⟨hp.1.trans (by omega), hp.2⟩
 
+/-- Every degree-nine square-coefficient test belongs to the degree-ten cone. -/
+theorem primeArchDegreeTenSquareCoeffCone_of_degreeNineSquareCoeffCone
+    {p : Polynomial ℤ} (hp : PrimeArchDegreeNineSquareCoeffCone p) :
+    PrimeArchDegreeTenSquareCoeffCone p :=
+  ⟨hp.1.trans (by omega), hp.2⟩
+
 /-- Every polynomial in the degree-seven square-coefficient cone has nonnegative source
 trace--Hankel value. -/
 theorem re_primeArchSourceTraceHankel_nonneg_of_degreeSevenSquareCoeffCone
@@ -380,6 +412,42 @@ theorem re_primeArchSourceTraceHankel_pos_of_degreeNineSquareCoeffCone
   intro k hk
   exact normalizedPrimeArchMoment_pos_of_le_eighteen k hk
 
+/-- If the two explicit centered residual annuli are empty, every polynomial in the degree-ten
+square-coefficient cone has nonnegative source trace--Hankel value. -/
+theorem re_primeArchSourceTraceHankel_nonneg_of_degreeTenSquareCoeffCone
+    (h : XiCenteredDegreeTenResidualAnnuliEmpty)
+    (p : Polynomial ℤ) (hp : PrimeArchDegreeTenSquareCoeffCone p) :
+    0 ≤ (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re := by
+  rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
+  apply
+    HTGeometry.momentFunctional_sq_nonneg_of_squareCoeffNonnegative
+      normalizedPrimeArchMoment
+      ((Polynomial.natDegree_map_le).trans hp.1)
+      hp.2
+  intro k hk
+  exact
+    (normalizedPrimeArchMoment_pos_of_le_twenty_of_degreeTenResidualAnnuliEmpty
+      h k hk).le
+
+/-- If the two explicit centered residual annuli are empty, every nonzero polynomial in the
+degree-ten square-coefficient cone has strictly positive source trace--Hankel value. -/
+theorem re_primeArchSourceTraceHankel_pos_of_degreeTenSquareCoeffCone
+    (h : XiCenteredDegreeTenResidualAnnuliEmpty)
+    (p : Polynomial ℤ) (hp : PrimeArchDegreeTenSquareCoeffCone p)
+    (hpne : p ≠ 0) :
+    0 < (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re := by
+  rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
+  apply
+    HTGeometry.momentFunctional_sq_pos_of_squareCoeffNonnegative
+      normalizedPrimeArchMoment
+      ((Polynomial.natDegree_map_le).trans hp.1)
+      hp.2
+      ((Polynomial.map_ne_zero_iff Int.cast_injective).mpr hpne)
+  intro k hk
+  exact
+    normalizedPrimeArchMoment_pos_of_le_twenty_of_degreeTenResidualAnnuliEmpty
+      h k hk
+
 /-- Every test in the degree-seven endpoint-pair cone has nonnegative source trace--Hankel
 value. -/
 theorem re_primeArchSourceTraceHankel_nonneg_of_degreeSevenEndpointPairCone
@@ -407,6 +475,10 @@ def PrimeArchDegreeEightSquareCoeffResidual (p : Polynomial ℤ) : Prop :=
 /-- Complement of the unconditional degree-nine square-coefficient cone. -/
 def PrimeArchDegreeNineSquareCoeffResidual (p : Polynomial ℤ) : Prop :=
   ¬ PrimeArchDegreeNineSquareCoeffCone p
+
+/-- Complement of the degree-ten square-coefficient cone. -/
+def PrimeArchDegreeTenSquareCoeffResidual (p : Polynomial ℤ) : Prop :=
+  ¬ PrimeArchDegreeTenSquareCoeffCone p
 
 /-- Complement of the unconditional degree-seven endpoint-pair cone. -/
 def PrimeArchDegreeSevenEndpointPairResidual (p : Polynomial ℤ) : Prop :=
@@ -612,6 +684,70 @@ theorem re_primeArchSourceTraceHankel_primeArchDegreeNineSquareCoeffPolynomial_n
   re_primeArchSourceTraceHankel_nonneg_of_degreeNineSquareCoeffCone
     primeArchDegreeNineSquareCoeffPolynomial
     primeArchDegreeNineSquareCoeffPolynomial_mem
+
+/-- A genuine degree-ten square-coefficient test with a large penultimate coefficient. -/
+def primeArchDegreeTenSquareCoeffPolynomial : Polynomial ℤ :=
+  X ^ 10 + C 2 + C 12 * X ^ 9
+
+/-- The degree-ten square-coefficient test has exact degree ten. -/
+theorem primeArchDegreeTenSquareCoeffPolynomial_natDegree :
+    primeArchDegreeTenSquareCoeffPolynomial.natDegree = 10 := by
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 9
+  have hlow : lower.natDegree < 10 := by
+    apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
+    rw [max_lt_iff]
+    constructor
+    · simp
+    · rw [Polynomial.natDegree_C_mul_X_pow 9 12 (by norm_num)]
+      omega
+  have hlow' : lower.natDegree < (X ^ 10 : Polynomial ℤ).natDegree := by
+    simpa only [Polynomial.natDegree_X_pow] using hlow
+  unfold primeArchDegreeTenSquareCoeffPolynomial
+  rw [add_assoc]
+  change (X ^ 10 + lower).natDegree = 10
+  rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt hlow',
+    Polynomial.natDegree_X_pow]
+
+theorem primeArchDegreeTenSquareCoeffPolynomial_coeff_nonneg
+    (k : ℕ) :
+    0 ≤ primeArchDegreeTenSquareCoeffPolynomial.coeff k := by
+  cases k with
+  | zero =>
+      norm_num [primeArchDegreeTenSquareCoeffPolynomial]
+  | succ k =>
+      simp [primeArchDegreeTenSquareCoeffPolynomial, coeff_add, coeff_X_pow]
+      split_ifs <;> norm_num
+
+/-- The degree-ten test belongs to the full square-coefficient cone. -/
+theorem primeArchDegreeTenSquareCoeffPolynomial_mem :
+    PrimeArchDegreeTenSquareCoeffCone
+      primeArchDegreeTenSquareCoeffPolynomial := by
+  constructor
+  · rw [primeArchDegreeTenSquareCoeffPolynomial_natDegree]
+  · apply HTGeometry.polynomialSquareCoeffNonnegative_of_coeffwiseOneSign
+    exact polynomialCoeffwiseOneSign_map_intCast
+      (Or.inl primeArchDegreeTenSquareCoeffPolynomial_coeff_nonneg)
+
+/-- The degree-ten test is not in the preceding degree-nine square-coefficient cone. -/
+theorem primeArchDegreeTenSquareCoeffPolynomial_not_degreeNineSquareCoeff :
+    ¬ PrimeArchDegreeNineSquareCoeffCone
+      primeArchDegreeTenSquareCoeffPolynomial := by
+  intro h
+  exact (not_le_of_gt (by
+    rw [primeArchDegreeTenSquareCoeffPolynomial_natDegree]
+    omega)) h.1
+
+/-- Under the exact source-annulus premise, the genuine degree-ten test has nonnegative
+prime--Gamma source trace--Hankel value. -/
+theorem re_primeArchSourceTraceHankel_primeArchDegreeTenSquareCoeffPolynomial_nonneg
+    (h : XiCenteredDegreeTenResidualAnnuliEmpty) :
+    0 ≤
+      (primeArchSourceTraceHankel
+        (primeArchDegreeTenSquareCoeffPolynomial.map
+          (Int.castRingHom ℝ))).re :=
+  re_primeArchSourceTraceHankel_nonneg_of_degreeTenSquareCoeffCone h
+    primeArchDegreeTenSquareCoeffPolynomial
+    primeArchDegreeTenSquareCoeffPolynomial_mem
 
 /-- Concrete mixed-sign integer test in the square-coefficient cone. -/
 def primeArchMixedSignSquareCoeffPolynomial : Polynomial ℤ :=

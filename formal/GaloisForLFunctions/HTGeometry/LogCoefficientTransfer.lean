@@ -142,4 +142,43 @@ theorem log_coeff_bound {A B : ℕ → ℂ} {C R : ℝ} (hC : 1 ≤ C) (hR : 1 �
       _ ≤ 4 * (C * R) * M ^ (n-1) := by nlinarith [pow_nonneg (le_of_lt hMpos) (n-1)]
       _ = M ^ n := by rw [hMn, hM]; ring
 
+/-- **Summability of the higher log-coefficients.**  If `‖B n‖ ≤ M ^ n` for `n ≥ 1` and `M x < 1`,
+then the tail from index `2` onwards is bounded by `(M x)² / (1 - M x)`, uniformly in the number of
+terms.
+
+Applied to the local factor of a Dirichlet series at a prime `p`, with `x = p^{-σ}` and `M` the
+geometric constant supplied by the transfer bound, this is what makes the prime-power part of an
+Euler product converge: the tail at each prime is `O(p^{-2σ+})`, and `∑_p p^{-2σ}` converges for
+`σ > 1/2`. -/
+theorem tail_geometric_bound {B : ℕ → ℂ} {M x : ℝ} (hM : 0 ≤ M) (hx : 0 ≤ x)
+    (hMx : M * x < 1) (hB : ∀ n, 1 ≤ n → ‖B n‖ ≤ M ^ n) (N : ℕ) :
+    ∑ k ∈ Finset.Ico 2 N, ‖B k‖ * x ^ k ≤ (M * x) ^ 2 / (1 - M * x) := by
+  have hMx0 : 0 ≤ M * x := mul_nonneg hM hx
+  have hden : 0 < 1 - M * x := by linarith
+  have hne : M * x - 1 ≠ 0 := by intro h; linarith
+  have hterm : ∀ k ∈ Finset.Ico 2 N, ‖B k‖ * x ^ k ≤ (M * x) ^ k := by
+    intro k hk
+    have hk2 : 2 ≤ k := (Finset.mem_Ico.1 hk).1
+    have h1 : ‖B k‖ ≤ M ^ k := hB k (by omega)
+    calc ‖B k‖ * x ^ k ≤ M ^ k * x ^ k := mul_le_mul_of_nonneg_right h1 (pow_nonneg hx k)
+      _ = (M * x) ^ k := by rw [mul_pow]
+  refine le_trans (Finset.sum_le_sum hterm) ?_
+  rw [Finset.sum_Ico_eq_sum_range]
+  have hexp : ∀ i ∈ Finset.range (N - 2), (M * x) ^ (2 + i) = (M * x) ^ 2 * (M * x) ^ i :=
+    fun i _ => by rw [pow_add]
+  rw [Finset.sum_congr rfl hexp, ← Finset.mul_sum]
+  have hgeom : ∑ i ∈ Finset.range (N - 2), (M * x) ^ i ≤ 1 / (1 - M * x) := by
+    rw [geom_sum_eq (by intro h; rw [h] at hMx; linarith)]
+    have he : ((M * x) ^ (N - 2) - 1) / (M * x - 1)
+        = (1 - (M * x) ^ (N - 2)) / (1 - M * x) := by
+      rw [div_eq_div_iff hne (by linarith)]
+      ring
+    rw [he]
+    have hnum : 1 - (M * x) ^ (N - 2) ≤ 1 := by
+      nlinarith [pow_nonneg hMx0 (N - 2)]
+    gcongr
+  calc (M * x) ^ 2 * ∑ i ∈ Finset.range (N - 2), (M * x) ^ i
+      ≤ (M * x) ^ 2 * (1 / (1 - M * x)) := mul_le_mul_of_nonneg_left hgeom (by positivity)
+    _ = (M * x) ^ 2 / (1 - M * x) := by ring
+
 end HTGeometry

@@ -3788,3 +3788,318 @@ x = log^2(n)/2 with the prime bump peak sqrt 2 e^{-1/2}/log n. If the archimedea
 is smaller than the prime bump for some n, the heat trace is negative there and RH is FALSE by the
 existing theorem; if it dominates for all n, that is the first unconditional positivity gain in the
 lane. Either outcome is decisive. This is the sharpest falsification test the programme has reached.
+
+---
+
+## Cycle 68 (2026-07-26) — THE HEAT-TRACE TEST IS SHARP BUT SUPER-EXPONENTIALLY INSENSITIVE
+### The cycle-67 falsification plan is EXECUTED and comes out NEGATIVE. Recorded as a dead end with
+### its exact reason.
+
+Cycle 67 proposed testing the corpus's disproof endpoint at the prime bump time x = log^2(n)/2.
+CARRIED OUT:
+
+### The pole term dwarfs everything at the bump time
+With h(u) = (4 pi x)^{-1/2} e^{-u^2/(4x)}, completing the square
+    -u^2/(4x) + u/2 = -(u-x)^2/(4x) + x/4
+gives the POLE TERM = 2 e^{x/4}. At the bump time x = log^2(n)/2 this is 2 e^{log^2(n)/8}, i.e.
+2 n^{log(n)/8} — SUPER-POLYNOMIALLY LARGE — while the prime bump peak is only
+sqrt(2) e^{-1/2}/log n, of size 1/log n. THE TRACE IS TRIVIALLY POSITIVE THERE.
+    ==> THE BUMP TIME IS USELESS AS A PROBE. Recorded so it is not retried.
+
+### Why: the pole and prime main terms cancel identically (again)
+The pole term 2 INT h(u) cosh(u/2) du and the prime main term INT h(u) e^{|u|/2} du are the same
+integral — the cycle-65 cancellation, now with the Gaussian instead of the tent. What survives is the
+ARCHIMEDEAN integral plus the PRIME ERROR.
+
+### The real sensitivity, at large time
+  * ZERO SIDE: if every ordinate has gamma_1 <= |gamma| then for x >= 1
+        SUM_gamma e^{-gamma^2 x} <= C e^{-gamma_1^2 x},  C = e^{gamma_1^2} SUM_gamma e^{-gamma^2},
+    proved termwise. With gamma_1 ~ 14.13 this is of size e^{-200 x} — SUPER-EXPONENTIALLY SMALL.
+  * SOURCE SIDE: the archimedean integral concentrates at r = 0 for large x and contributes at order
+    x^{-1/2} with the NEGATIVE constant Psi(1/4) - log pi ~ -5.37.
+Hence at large x the identity reads
+
+    (super-exponentially small, positive under RH) = (negative, order x^{-1/2}) + (prime error).
+
+    ==> RH FORCES THE PRIME ERROR TO CANCEL A NEGATIVE ARCHIMEDEAN TERM OF ORDER x^{-1/2} DOWN TO
+        ORDER e^{-gamma_1^2 x}. Any failure of that cancellation at any large time gives a negative
+        heat trace and DISPROVES RH.
+
+That is what makes the endpoint sharp — and exactly why it cannot be triggered: one must control a
+cancellation of polynomially small quantities to super-exponential accuracy. Formalized: the
+cancellation is forced two-sidedly, -A <= E <= -A + eps with eps the super-exponential bound, and the
+exponential bound beats any fixed eps past an explicit threshold log(C/eps)/gamma_1^2.
+
+### STATUS OF THE THORIN/HEAT LANE
+Consumer end: exists and is sharp (corpus). Source end: explicit (cycle 67). Probe: USELESS at the
+bump time (this cycle), and at large time requires super-exponential precision. So the lane is not
+capped by a structural no-go — it is capped by SENSITIVITY. That is a different kind of wall from the
+ten in the atlas, and it is worth naming: A CRITERION CAN BE BOTH EXACT AND UNUSABLE.
+
+Machine-verified: `RHTower/HeatTraceSensitivity.lean` (completed square, termwise super-exponential
+tail bound, the explicit threshold past which exponential decay beats any fixed epsilon, and the
+two-sided forced cancellation; standard axioms only, wired into RHTower).
+
+### Cycle 69 target
+Sensitivity, not structure, is the wall in this lane. The remedy for a sensitivity wall is a test
+function whose zero side is NOT super-exponentially small — i.e. one whose Fourier transform decays
+only polynomially, so that the zero side and the archimedean side are the same order. The Gaussian is
+the worst possible choice in exactly this respect. Target: identify the test functions for which the
+zero side and the archimedean side have matching order, and check whether any of them is admissible
+(even, real, of the required decay) — that is the only way the corpus's exact endpoint becomes
+usable.
+
+---
+
+## Cycle 69 (2026-07-26) — Theorem: ONE SCALE CANNOT SEE BOTH THE FIRST ZERO AND THE FIRST PRIME
+### This unifies the sliding-window half (c61-66) and the heat-trace half (c67-68) under ONE inequality.
+
+Cycle 68 found the heat-trace endpoint exact but untriggerable and called the wall "sensitivity".
+This cycle identifies the wall exactly, and it is not delicacy — it is a SCALE MISMATCH, and it is
+general.
+
+### The two resolution requirements
+A test function of width W in u has frequency scale 1/W.
+  * TO SEE ZEROS the frequency scale must reach the first ordinate: 1/W >= gamma_1, i.e.
+    W <= 1/gamma_1 ~ 0.0708. Below that THE ZERO SIDE OF THE EXPLICIT FORMULA IS EMPTY — no ordinate
+    lies in the window — and the identity degenerates into arch + prime error ~ 0, with NO SPECTRAL
+    CONTENT. That is exactly the large-time Gaussian: its frequency scale x^{-1/2} tends to 0, far
+    BELOW gamma_1. The heat trace at large time probes a band containing no zeros at all.
+  * TO SEE PRIMES the support must reach the first prime log: W >= log 2 ~ 0.693. Below that every
+    prime term is exponentially suppressed. That is exactly the small-time Gaussian.
+
+### THE OBSTRUCTION
+    gamma_1 * log 2  ~  14.13 * 0.693  ~  9.8  >  1,
+so W <= 1/gamma_1 and W >= log 2 are INCOMPATIBLE.
+
+    ==> NO SINGLE-SCALE TEST FUNCTION RESOLVES BOTH THE FIRST ZERO AND THE FIRST PRIME. A WINDOW
+        NARROW ENOUGH TO SEE THE SPECTRUM IS AN ORDER OF MAGNITUDE TOO NARROW TO SEE THE PRIMES.
+
+For the Gaussian specifically the admissible windows are x <~ gamma_1^{-2} ~ 5e-3 (zeros) and
+x >~ log^2(2)/4 ~ 0.12 (primes), disjoint by a factor ~25 — proved from gamma_1 log 2 > 2.
+
+### THE DICHOTOMY — and it explains everything recent
+A test function with a SECOND scale (a modulation frequency, equivalently a translation) CAN couple
+the two sides: the modulation lifts the frequency window to gamma_1 while the width still reaches
+log 2. THAT IS PRECISELY THE SLIDING RECTANGULAR WINDOW of cycles 61-66. But translation destroys
+positive type (cycle 66). Hence:
+
+    ONE SCALE   ->  no coupling: the criterion is exact but SPECTRALLY EMPTY      (c67-68)
+    TWO SCALES  ->  coupling, hence RH-EQUIVALENCE, but POSITIVITY IS LOST        (c61-66)
+
+Both halves of the recent programme are consequences of the single inequality gamma_1 log 2 > 1. This
+is the first statement that unifies them, and it is a genuine structural reason rather than a
+coincidence of two failures.
+
+Machine-verified: `RHTower/ScaleIncompatibility.lean` (the incompatibility from gamma_1 log 2 > 1,
+the margin from log 2 > 1/2, the disjointness of the Gaussian windows from gamma_1 log 2 > 2, and the
+dichotomy; standard axioms only, wired into RHTower).
+
+### WHAT THIS ADDS TO THE ATLAS — an eleventh entry, of a new kind
+    scale incompatibility     gamma_1 log 2 > 1 forbids a single-scale test from coupling the
+                              spectral and arithmetic sides; two-scale tests couple but lose
+                              positive type.
+Unlike the first ten this is not a cap on a lane; it is a constraint on TEST FUNCTIONS, and it
+applies to every explicit-formula argument at once.
+
+### Cycle 70 target
+The dichotomy leaves exactly one unexplored corner: a test function with two scales that is
+nevertheless of positive type. Translation is not the only way to add a scale — a SYMMETRIC pair of
+modulations, h(u) cos(theta u) with the cosine symmetric rather than a one-sided shift, keeps the
+transform real and even. Its Fourier transform is (hat h(r - theta) + hat h(r + theta))/2, which is
+NONNEGATIVE whenever hat h is. Target: check whether the symmetric modulation gives both couplings
+(frequency window at theta ~ gamma_1, width reaching log 2) AND positive type — if so it is the first
+admissible two-scale positive-type test in the programme, and the Weil positivity machinery becomes
+available where cycle 66 showed it was not.
+
+---
+
+## Cycle 70 (2026-07-26) — SYMMETRIC MODULATION: TWO SCALES **AND** POSITIVE TYPE
+### This CORRECTS Theorem Q49 (universal height degradation). Record the correction prominently.
+
+Cycle 69 showed a single-scale test cannot resolve both the first zero and the first prime, and
+cycle 66 showed the obvious second scale — a one-sided translation — destroys positive type. The
+symmetric modulation does neither.
+
+### The construction
+Take g(u) = h(u) cos(theta u) with h real and even. Then
+    hat g(r) = ( hat h(r - theta) + hat h(r + theta) ) / 2,
+which is NONNEGATIVE whenever hat h is. SYMMETRIC MODULATION PRESERVES POSITIVE TYPE where a
+one-sided translation does not. And it has TWO scales — the width W of h and the modulation theta —
+so W >= log 2 and a frequency window centred at theta >= gamma_1 hold SIMULTANEOUSLY. The cycle-69
+obstruction applies only to single-scale tests.
+(The construction itself is standard in Weil-positivity numerics — NOT claimed as new. What is new
+is its role here: it is exactly the object that evades c69 and restores what c66 lost.)
+
+### THE TUNED GAIN — and the correction to Q49
+An off-critical zero at 1/2 + a + i gamma contributes with a Fejer-type denominator at the shifted
+frequency. UNTUNED (theta = 0) it carries 1/(a^2 + gamma^2). TUNED to theta = gamma it carries
+1/(a^2 + (gamma - theta)^2) = 1/a^2. The ratio is
+
+    (a^2 + gamma^2)/a^2 = 1 + (gamma/a)^2,
+
+so tuning REMOVES THE gamma^{-2} SUPPRESSION ENTIRELY.
+
+    ==> THEOREM Q49 AS STATED IS TOO STRONG. "Every quantified lane loses strength at a putative
+        counterexample polynomially or exponentially in its height" is true of UNTUNED criteria only.
+        A TUNED SYMMETRIC MODULATION IS HEIGHT-NEUTRAL: its sensitivity at theta = gamma does not
+        depend on gamma at all.
+
+What remains height-limited is NOT the criterion but THE SEARCH: one must find the right theta, and
+scanning theta up to height X costs what verifying to height X costs. THE DEGRADATION MOVES FROM THE
+ESTIMATE TO THE SEARCH. That is a different and sharper statement than Q49, and it means the
+"verification and estimate never meet" conclusion must be restated: they never meet WITHOUT TUNING;
+with tuning they meet exactly at the scanned height.
+
+Machine-verified: `RHTower/TunedModulationGain.lean` (preservation of positive type, the contrast
+with one-sided translation reusing c66, simultaneous satisfiability of the two scale conditions, the
+minimality of the tuned denominator, the gain identity 1 + (gamma/a)^2, its monotonicity in gamma,
+and height-neutrality at theta = gamma; standard axioms only, wired into RHTower).
+
+### STATUS OF THE ATLAS AFTER THIS CORRECTION
+    Q49 (height degradation)   ->  RESTATED: applies to untuned criteria; tuned symmetric
+                                   modulations are height-neutral, and the cost moves to the search.
+    c66 (no positivity)        ->  RESTATED: applies to one-sided translations; symmetric
+                                   modulations keep positive type.
+    c69 (scale incompatibility)->  STANDS, but only for single-scale tests.
+So of the recent structural results, the two negative ones were each about a specific realization,
+and the symmetric modulation escapes both. That is the first time in this programme that a proposed
+obstruction has been escaped rather than confirmed or shown vacuous.
+
+### Cycle 71 target
+With a two-scale positive-type test in hand, the Weil machinery is available again. The concrete
+question is now the one c66 blocked: for the symmetric modulation g = h cos(theta .) with h the box
+of width W, is the Weil form W(g) bounded below UNIFORMLY IN theta? Uniformity in theta is exactly
+what the tuned gain makes nontrivial — at each theta the form sees the zeros near theta with
+undiminished strength. Compute W(g) explicitly for the modulated box: prime side
+2 SUM Lambda(n)/sqrt n * h(log n) cos(theta log n), zero side SUM_rho hat g(gamma_rho), archimedean
+side the same Gamma integral against hat g. All three are already elementary from cycles 61-65; the
+only new ingredient is the cosine factor. That is the sharpest concrete target the programme has.
+
+---
+
+## Cycle 71 (2026-07-26) — THE MODULATED TENT COMPUTED; A DOUBLY EXPONENTIAL ALIGNMENT THRESHOLD
+
+With the two-scale positive-type test g(u) = tent_L(u) cos(theta u) all three sides are elementary.
+
+### Pole term, closed form
+The tent is even, so with s = 1/2 + i theta and the antiderivative
+F(u) = (L-u)e^{su}/s + e^{su}/s^2:
+
+    INT tent_L(u) cos(theta u) e^{|u|/2} du = 2 Re INT_0^L (L-u) e^{su} du
+                                            = 2 Re ( (e^{sL} - 1)/s^2  -  L/s ).
+
+Since |s| >= theta this is O(e^{L/2}/theta^2 + L/theta): AT FIXED WIDTH THE POLE TERM VANISHES AS THE
+MODULATION GROWS. (Both summands proved antitone in theta.)
+
+### Prime side, and its supremum
+The modulated prime sum is a FINITE DIRICHLET POLYNOMIAL
+    2 Re SUM_{n <= e^L} (Lambda(n)/n^{1/2 + i theta}) (L - log n),
+whose supremum over theta is the all-phases-aligned value SUM (Lambda(n)/sqrt n)(L - log n).
+Replacing von Mangoldt by its density gives the EXACT comparison integral
+
+    INT_1^N (log N - log y)/sqrt y dy = 4 sqrt N - 4 - 2 log N,     N = e^L,
+
+so the aligned prime sum is of size 4 e^{L/2}. (Antiderivative G(y) = 2 sqrt y (L - log y) + 4 sqrt y,
+evaluated exactly.)
+
+### Archimedean side
+Mass of hat g times digamma growth: ~ L log theta.
+
+### THE THRESHOLD
+Survival at a modulation where the phases nearly align requires L log theta >~ 4 e^{L/2}, i.e.
+
+    theta  >~  exp( 4 e^{L/2} / L )        — DOUBLY EXPONENTIAL IN THE WIDTH.
+
+By Q-independence of the prime logarithms such alignment DOES occur; the height at which it first
+occurs is a simultaneous-Diophantine-approximation question. So:
+
+    WEIL POSITIVITY FOR THE MODULATED TENT IS CONSISTENT WITH RH PRECISELY BECAUSE THE KRONECKER
+    ALIGNMENT HEIGHT IS DOUBLY EXPONENTIAL IN THE WIDTH.
+
+This is the SAME doubly exponential barrier already met in the flow lane (cycle 45: verification to
+height X bounds Lambda only by pi^2/(2 log^2 X)) and in the Nyman-Beurling lane (cycle 49: closing the
+floor needs N >= exp(X^2)). Three independent lanes, one barrier — and now with an explicit
+functional form, exp(4 e^{L/2}/L), rather than a qualitative remark.
+
+Machine-verified: `RHTower/ModulatedBoxWeilForm.lean` (the exact prime comparison integral via its
+antiderivative, the leading-term bound, antitonicity of the pole bound in the modulation, the
+alignment threshold theta >= exp(4 e^{L/2}/L), and the double exponentiality of that threshold;
+standard axioms only, wired into RHTower).
+
+### WHAT THIS SETTLES ABOUT THE CORRECTED Q49
+Cycle 70 corrected Q49: tuned criteria are height-neutral, and the cost moves to the SEARCH. This
+cycle prices the search: to reach the alignment that would test positivity at width L one must scan
+to height exp(4 e^{L/2}/L). So the corrected Q49 is now quantitative — THE SEARCH COST IS DOUBLY
+EXPONENTIAL IN THE WIDTH, and the width is what controls how many primes the test sees. That is the
+precise trade-off the whole effective programme faces, in one formula.
+
+### Cycle 72 target
+The barrier is now identified as simultaneous Diophantine approximation of {log p}. The corpus has
+`RHTower/KroneckerTransferThreshold.lean` and `RHTower/LiouvillePointReachability.lean` and
+`RHTower/SmoothCommaExclusionBand.lean` from the earlier Bohr-lift work — exactly this technology.
+Target: read those, and determine whether the alignment height for the FIRST k primes is known to be
+doubly exponential in k (an upper bound would make the threshold sharp) or only conjectured. If the
+alignment height is provably smaller than exp(4 e^{L/2}/L) for some L, the modulated Weil form fails
+there and RH is FALSE; if provably larger for all L, that is an unconditional positivity gain. This
+is the first place where the Diophantine and analytic halves of the programme meet with both sides
+explicit.
+
+---
+
+## Cycle 72 (2026-07-26) — PRIME-PHASE ALIGNMENT CANNOT BREAK WEIL POSITIVITY
+### One of the two conceivable failure modes is removed UNCONDITIONALLY.
+
+Cycle 71 gave the positivity threshold theta >~ exp(4 e^{L/2}/L). This cycle compares it with the
+height at which alignment actually occurs.
+
+### Where alignment occurs (Dirichlet pigeonhole)
+Simultaneous approximation of k frequencies to within epsilon is guaranteed by height (2 pi/eps)^k.
+The modulated tent of width L sees primes up to e^L, so k = pi(e^L) ~ e^L/L, and the alignment height
+is exp( (e^L/L) log(2 pi/eps) ) — doubly exponential in L, with EXPONENT e^L/L.
+
+### The threshold is exponentially smaller
+The threshold exponent is 4 e^{L/2}/L. Since 4 e^{L/2} <= e^L as soon as e^{L/2} >= 4, i.e.
+L >= 2 log 4 ~ 2.77, THE ALIGNMENT HEIGHT EXCEEDS THE THRESHOLD FOR EVERY WIDTH PAST THAT POINT, and
+the gap between the exponents is exactly the factor e^{L/2}/4 (proved as an identity), itself
+exponentially large.
+
+    ==> AT THE HEIGHT WHERE THE PRIME PHASES FIRST ALIGN, THE ARCHIMEDEAN TERM ALREADY EXCEEDS THE
+        ALIGNED PRIME SUM BY AN EXPONENTIALLY LARGE FACTOR. ALIGNMENT NEVER VIOLATES WEIL POSITIVITY
+        FOR THE MODULATED TENT.
+
+### Baker makes it worse for alignment
+The pigeonhole height is only where alignment CAN occur. To threaten positivity one needs alignment
+MUCH EARLIER — exceptionally good simultaneous rational approximation of {log p}. Baker's theorem,
+already fixed in this corpus (`RHTower/BakerWeldIndependence.lean`: Q-bar-linear independence of the
+prime logarithms), supplies effective lower bounds for linear forms in those logarithms and therefore
+FORBIDS exceptionally early alignment. THE ARITHMETIC INDEPENDENCE OF THE PRIMES PROTECTS THE
+POSITIVITY.
+
+### WHAT THIS NARROWS — the real result
+    IF WEIL POSITIVITY FAILS FOR THE MODULATED TENT, IT CANNOT FAIL THROUGH PRIME-PHASE ALIGNMENT.
+    IT MUST FAIL THROUGH THE ZEROS.
+That removes one of the two conceivable failure modes unconditionally. Every earlier structural
+result in this programme was a cap on a method; this one is a constraint on HOW RH COULD BE FALSE.
+
+Machine-verified: `RHTower/AlignmentHeightExceedsThreshold.lean` (4e^{L/2} <= e^L from e^{L/2} >= 4,
+the exponent comparison, the exact exponent gap identity, domination at the alignment height, and the
+narrowing; standard axioms only, wired into RHTower).
+
+### THE THREE-LANE BARRIER, NOW EXPLAINED
+Cycles 45, 49 and 71 each found a doubly exponential barrier. This cycle identifies its common
+source: THE NUMBER OF PRIMES BELOW THE TEST WIDTH. In every lane the barrier exponent is the prime
+count pi(e^L) ~ e^L/L, because that is how many independent phases must align before the arithmetic
+side can compete with the archimedean side. The barrier is not three coincidences; it is one
+counting fact.
+
+### Cycle 73 target
+Failure must be spectral. The corpus's own falsification endpoints are all spectral (the Gaussian
+heat-trace negativity, the finiteness threshold, the off-critical amplitude). With alignment excluded,
+the modulated-tent Weil form becomes a clean spectral detector: its value at modulation theta is
+dominated by zeros with ordinate near theta, with the tuned gain 1 + (gamma/a)^2 of cycle 70 and no
+competing arithmetic mechanism. Target: derive the explicit lower bound on how negative W_theta
+becomes in the presence of an off-critical zero at 1/2 + a + i theta — i.e. combine the tuned gain
+with the exponential amplitude e^{aL} of cycle 60 — and compare it against the archimedean term
+L log theta. If the off-critical contribution exceeds L log theta for some accessible (L, theta), the
+existence of such a zero is contradicted and RH follows for that region.

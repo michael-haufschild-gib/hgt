@@ -2060,3 +2060,4 @@ import GaloisForLFunctions.HTGeometry.ConvexSlopeDerivBound
 import GaloisForLFunctions.HTGeometry.AdditiveVersusQuadratic
 import GaloisForLFunctions.HTGeometry.FractionalExponentObstruction
 import GaloisForLFunctions.HTGeometry.CountingPairing
+import GaloisForLFunctions.HTGeometry.ExponentPairSelfDuality

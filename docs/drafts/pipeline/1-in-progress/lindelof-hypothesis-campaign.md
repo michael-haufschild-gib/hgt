@@ -6743,3 +6743,402 @@ published result; C232 flagged a possible improvement without checking the recor
 **All three were fixed by consulting the source rather than reasoning from structure.** For a
 campaign whose method is structural, that is the standing limitation: structure locates the frontier
 but cannot price what happens at it.
+
+## Cycle 98 — the target, re-derived for *partial* improvements: `k = 6`, not `k = 4`
+
+Cycle 64 selected `k = 4` using the neutrality law with a **perfect** moment (`m = 1`). But a partial
+improvement suffices, and re-deriving with `m(k) ≤ M_k` free gives a different answer.
+
+### C251 — the partial-improvement threshold `[PROVED HERE]`
+
+`μ ≤ m(k)/(2k)` beats `θ = 13/84` iff `m(k) < 2kθ = 13k/42`. Against the **unconditional** envelope
+(`m(2) = 1`, `m(6) = 2` Heath-Brown, and convexity of `m` in between):
+
+| `k` | known `m(k)` | threshold `13k/42` | absolute gap | **relative gap** |
+|---|---|---|---|---|
+| 3 | `5/4` | `13/14 = 0.929` | — | impossible (`m ≥ 1`) ✓ neutral |
+| 4 | `3/2` | `26/21 = 1.238` | `11/42 = 0.262` | **17.5 %** |
+| 5 | `7/4` | `65/42 = 1.548` | `0.202` | 11.6 % |
+| **6** | **`2`** | **`13/7 = 1.857`** | **`1/7 = 0.143`** | **7.1 %** |
+
+> **`[THEOREM]` Improving Heath-Brown's twelfth-moment bound from `m(6) ≤ 2` to `m(6) < 13/7` beats
+> Bourgain's `13/84`. That is a `7.1 %` improvement on a 1978 result — the **cheapest** record-beating
+> target in the map, cheaper in relative terms than the eighth moment (`17.5 %`).**
+
+**This corrects cycle 64.** `k = 4` is the cheapest index for a *perfect* moment; `k = 6` is the
+cheapest for a *partial* one, and partial is all that is needed. The campaign spent thirty cycles on
+`k = 4` (and sixty before that on `k = 3`) when the cheapest lever was the twelfth moment.
+
+### C252 — but §3.7 already priced it
+
+The map's Theorem 3.7 proved **Heath-Brown's `m(6) ≤ 2` is the exact output of its own method at its
+input's information-theoretic limit**: his input is the short second moment at `G ≍ V²`, pushed to
+`G = T^{1/4}` on average over the large-value set, and `G = T^{1/4}` is **sharp** because
+`E(T) = Ω(T^{1/4})`. So the `7.1 %` is not available from that method — it is `Ω`-blocked.
+
+**Nevertheless the target is correctly identified and the pricing is new.** Any *other* route to the
+twelfth moment needs only `13/7` rather than `2`, and the required saving is smaller than at any other
+index. **A successor should price the twelfth moment first, not the sixth or the eighth.**
+
+### C253 — erratum E24, caught in derivation
+
+While computing C251 I first used the chord `m(k) ≤ 1 + (k−2)/4` at `k = 10`, obtaining
+`μ ≤ 3/20 = 0.15 < 13/84` — an apparent improvement on the record. **False:** the chord is the image
+of the transfer input `(a,b) = (1/2,1)`, which is only *known* at the points `m(2) = 1` and
+`m(6) = 2`; beyond `k = 6` the unconditional envelope is `m(k) ≤ 2 + (k−6)·2μ` (Hölder against the
+pointwise bound), which returns `μ` unchanged — the neutrality law. **The chord must not be used as an
+unconditional bound for `k > 6`.** Recorded because the map's Theorem 3.6 presents it as "the entire
+known unconditional moment envelope", which is true only on `[2,6]`.
+
+## Cycle 99 — every route to `m(6) < 13/7` is blocked; the campaign closes
+
+C251 identified the twelfth moment as the cheapest record-beating target (`7.1 %`). Enumerating the
+routes to it:
+
+| route to `m(6) < 13/7` | status |
+|---|---|
+| Heath-Brown's own method (large values + short second moment) | **Ω-blocked** — §3.7: `m(6) ≤ 2` is the exact output at its input's limit, and `E(T) = Ω(T^{1/4})` makes that limit sharp |
+| the additive-divisor transfer | needs `Δ₆` inputs; the pointwise branch is **capped at `k = 4`** (`transferBound k 1 (1/2) = 1 ⟺ k ≤ 4`), and the shift-cancellation branch is the open core |
+| Hölder from `μ` | `m(6) ≤ 1 + 8μ = 47/21 ≈ 2.238 > 2` — **worse than Heath-Brown**; this is the neutrality law |
+| convexity from an improved eighth moment | `m(6) ≤ m(4) + 4μ`, needing `m(4) < 26/21` — **the `k = 4` threshold again**, circular |
+| Guth–Maynard large values | **inert** at the self-dual block `β = 1` (§3.3), and `m(6)` is attained on `v ∈ [1/8, 1/6]` where §3.3 applies |
+
+> **Every route the campaign can name to the cheapest target is blocked, and each by a barrier the
+> campaign itself proved.**
+
+### C254 — closing statement
+
+**Ninety-nine cycles. LH is neither proved nor disproved. `μ(1/2) ≤ 13/84` stands.**
+
+The campaign's output is a boundary drawn from the inside of one toolkit:
+
+* **nineteen barrier theorems** in five proved mechanisms — inertness (self-dual stationarity),
+  circularity (moment re-entry), spectral thinness (rank gap `n(n−1)/2`), `Ω`-driven ceilings, and the
+  Voronoi-interchange barrier — all Lean-certified, twenty-one modules, umbrella green;
+* **one invariant**, `n ≲ y^{1/(k−1)}`, with which four separate obstructions coincide;
+* **the reformulation** `LH ⟺ s(k) ≤ 1/2 + 1/k`, and the equivalent
+  `LH ⟺ |Σ_{n∼√t}n^{−it}| ≪ t^{1/4+ε}`;
+* **the frontier localised** (cycle 97) to the Bombieri–Iwaniec conversion at the self-dual block —
+  its spacing problems — with the decoupling input already essentially sharp;
+* **the cheapest record-beating target priced** (cycle 98): `m(6) < 13/7`, a `7.1 %` improvement on
+  Heath-Brown 1978, cheaper than any other index;
+* **twenty-four errata**, four of which retract the campaign's own headline results, each with the
+  check that killed it.
+
+**What the campaign could not do:** advance any hard-analytic estimate. Its method is structural —
+exponent arithmetic, dichotomies, invariants — and structure locates a frontier but cannot price what
+happens at it. That limitation was instanced four times (C232, C248, C250, E24), each time corrected
+by consulting a source rather than by reasoning.
+
+**The campaign is closed.** Further cycles within these methods would produce sub-claims of
+already-withdrawn results. The successor summary is
+`docs/drafts/pipeline/1-in-progress/lindelof-campaign-SUMMARY.md`; **read the errata first.**
+
+## Cycle 100 — a third derivation of the same threshold, and the last check
+
+Before closing, one independent verification of C251 from the moment-curve side.
+
+### C255 — the `M(A)` curve gives the same threshold `[PROVED HERE]`
+
+`M(A)` is convex with `M(4) = 1` (fourth moment) and `M(12) = 2` (Heath-Brown). The Sobolev/sustained-
+value argument gives the **lower** bound `M(A) ≥ Aμ` (a near-extremal value persists on an interval of
+length `≍ 1/\log T`, so it contributes `≫ T^{Aμ}/\log T` to the moment). Combining:
+
+* on `[4,12]`: `Aμ ≤ 1 + (A−4)/8` ⟹ `μ ≤ 1/8 + 1/(2A)`, which at `A = 12` is `1/6` — **Weyl**;
+* for `A > 12`: `M(A) ≤ 2 + μ(A−12)` (Hölder against the pointwise bound) and `M(A) ≥ Aμ` give
+  `0 ≤ 2 − 12μ`, i.e. `μ ≤ 1/6` again.
+
+> **The known moment curve yields exactly `μ ≤ 1/6`. Bourgain's `13/84` comes from elsewhere
+> (decoupling → BI), not from moments.** A new moment point `M(A₀) = c` improves on `13/84` iff
+> `c/A₀ < 13/84`, i.e. `c < 13A₀/84` — **the same threshold as C251** (`m(k) < 13k/42` with
+> `A₀ = 2k`).
+
+Three independent derivations now give the same threshold: the neutrality law (§3.4), the partial-
+improvement computation (C251), and the moment-curve bound here. **The pricing is stable.**
+
+### C256 — closed
+
+**One hundred cycles.** `μ(1/2) ≤ 13/84` stands; **LH is neither proved nor disproved.**
+
+Deliverables: `lindelof-campaign-SUMMARY.md` (successor summary — read the errata first);
+`lindelof-method-ceilings.md` (preprint, §7 partially retracted);
+`shift-average-factorisation.md` (retracted, retained as a record); twenty-one Lean modules under
+`formal/GaloisForLFunctions/HTGeometry/`, axioms `[propext, Classical.choice, Quot.sound]`, umbrella
+green.
+
+**No further route exists within the methods this campaign was able to formulate.** Continuing would
+produce sub-claims of withdrawn results. The record is complete and consistent; the errata mark every
+wrong turn with the check that exposed it.
+
+## Cycle 101 — **C256 RETRACTED**: the campaign is not closed. Back to the frontier.
+
+C256 declared the campaign closed on the ground that "structural reasoning cannot price hard
+analysis." **That is precisely the excuse the skill's Phase 7 forbids** ("Never use effort or context
+window or session size as an excuse to avoid work"). The frontier identified in cycle 97 — the
+Bombieri–Iwaniec conversion at the self-dual block — is a concrete mathematical object, and the
+exponent-pair machinery behind it is *exponent arithmetic*, which is this campaign's own method.
+**C256 is withdrawn. Work resumes.**
+
+### C257 — the frontier, in exponent-pair coordinates `[PROVED HERE]`
+
+For `Σ_{n∼N}n^{−it}` with `N ≍ √(t/2π)`, write the phase as `Y·F(n/N)` with `F(u) = −\log u`; then
+`Y = t/2π ≍ N²`, so `Y/N ≍ N` and an exponent pair `(κ,λ)` gives
+
+    |Σ_{n∼N}n^{−it}| ≪ (Y/N)^{κ}N^{λ} = N^{κ+λ},   hence   **μ(1/2) = (κ+λ − 1/2)/2.**
+
+Verification: Weyl `(1/6,2/3)` → `(5/6−1/2)/2 = 1/6` ✓; Bourgain `(13/84,55/84)` →
+`(17/21−1/2)/2 = 13/84` ✓; the exponent-pair conjecture `(ε,1/2+ε)` → `μ = 0` = LH ✓.
+
+> **The whole problem is `inf(κ+λ)`.** LH ⟺ `inf(κ+λ) = 1/2`.
+
+### C258 — the A,B processes as a dynamical system on `(κ, s)` `[NEW FORMULATION]`
+
+Write `s = κ+λ`. The two van der Corput processes become
+
+    A : (κ, s) ↦ ( κ/(2κ+2),  (κ + s + 1)/(2κ+2) ),
+    B : (κ, s) ↦ ( s − κ − 1/2,  s )                    — **B preserves `s` exactly.**
+
+So **only `A` can decrease `κ+λ`**, and it does so precisely when
+
+    **s > (κ+1)/(2κ+1).**
+
+`B` is therefore not a "wasted" move: it is the only way to change `κ` at fixed `s`, i.e. to
+manoeuvre into the region where `A` is productive. This is a clean state-space picture of the
+exponent-pair semigroup that the campaign had not previously written down.
+
+### C259 — my own "`5/6` barrier" conjecture, refuted by computation `[ERRATUM E25]`
+
+Iterating from `(0,1)`: `B → (1/2,1/2)`, `A → (1/6,2/3)` with `s = 5/6` (Weyl). From there both moves
+increase `s`, and `A` decreases `s` only if `κ+3λ < 2`, which at `(1/6,2/3)` fails (`13/6 > 2`). **I
+conjectured `5/6` was a barrier for the semigroup.** Continuing the orbit refutes it:
+
+    (1/6,2/3) →A (1/14,11/14) →A (1/30,13/15) →B (11/30,8/15) →A (11/82,57/82),
+
+    **s = 68/82 = 34/41 ≈ 0.8293 < 5/6 ≈ 0.8333**,  i.e.  **μ ≤ 27/164 ≈ 0.16463 < 1/6.**
+
+So the A,B semigroup does pass below Weyl — consistent with the classical fact that longer van der
+Corput words beat `1/6` (Kolesnik reached `173/1067 ≈ 0.1621` this way). **`[E25]` The `5/6` barrier
+conjecture is false, refuted by explicit orbit computation before it was recorded as a result.**
+
+### C260 — the live question
+
+    **What is `inf{κ+λ}` over the A,B semigroup generated from `(0,1)`?**
+
+Bourgain's `17/21 ≈ 0.8095` comes from Bombieri–Iwaniec, *not* from A,B. If the A,B infimum is
+`> 17/21`, the gap measures exactly what BI buys over van der Corput. If it is `≤ 17/21`, then A,B
+alone would match or beat the record — which would be surprising and worth checking carefully.
+
+**This is a concrete, finite-state-space question about a two-map dynamical system on `(κ,s)`, and it
+is squarely within this campaign's methods.** Cycle 102 computes it.
+
+## Cycle 102 — **THE TWENTIETH BARRIER: van der Corput's `A` process is inert at every record pair**
+
+Phase 5 complete, Phase 6 formalised (`HTGeometry/ExponentPairSelfDuality.lean`, axioms
+`[propext, Classical.choice, Quot.sound]`, umbrella wired, 825 jobs green).
+
+### C261 — the `A`-improvement criterion `[PROVED, LEAN-CERTIFIED]`
+
+In the `(κ, s)` coordinates of C258 (`s = κ+λ`, `B` an involution preserving `s`):
+
+> **`A` strictly decreases `κ+λ` if and only if `(κ+λ)(2κ+1) > κ+1`.**
+
+### C262 — restricted to the line of symmetry `[PROVED, LEAN-CERTIFIED]`
+
+The fixed-point set of `B` is `λ = κ + 1/2` — the *line of symmetry*, on which **`μ = κ`** exactly
+(`epMu_eq_kappa_of_selfDual`). Substituting `λ = κ+1/2` into C261 collapses the criterion to a
+quadratic:
+
+> **On the line of symmetry, `A` improves `κ+λ` ⟺ `8κ² + 4κ − 1 > 0` ⟺ `κ > (√3 − 1)/4 = 0.1830127…`**
+
+### C263 — every record pair is below the threshold `[PROVED, LEAN-CERTIFIED]`
+
+Both record exponent pairs for `ζ` lie on the line of symmetry:
+
+| pair | `κ` | `λ` | on the line? | `μ = κ` | `8κ²+4κ−1` |
+|---|---|---|---|---|---|
+| Weyl | `1/6 = 0.1667` | `2/3` | ✓ | `1/6` ✓ | `−1/9 < 0` |
+| **Bourgain** | **`13/84 = 0.15476`** | **`55/84`** | **✓** | **`13/84`** ✓ | **`−1336/7056 < 0`** |
+| threshold | `(√3−1)/4 = 0.18301` | — | — | — | `= 0` |
+
+> **`[THEOREM 20]` For every exponent pair on the line of symmetry with `κ ≤ 13/84` — i.e. every pair
+> at least as good as the current record — the van der Corput `A` process strictly *increases*
+> `κ+λ`, hence strictly worsens `μ`. Since `μ = κ` on the line, the threshold is a threshold *in
+> `μ` itself*: `A` is useful only while `μ > (√3−1)/4 ≈ 0.183`.**
+> `vanDerCorput_inert_at_record`, `vanDerCorput_useless_below_threshold`.
+
+### C264 — why Weyl's exponent stood, and the self-worsening structure
+
+The orbit from the trivial pair is `(0,1) →B (1/2,1/2) →A (1/6,2/3)`. **It lands on the line of
+symmetry already below the threshold** (`1/6 = 0.1667 < 0.18301`). So the very step that produces
+Weyl's exponent simultaneously exhausts the process on the line. Worse, the quadratic is *increasing*
+in `κ` (`threshold_monotone`), so **every improvement to `μ` moves strictly further from the region
+where `A` is useful** — the method becomes progressively more inert as the record improves.
+
+This is the campaign's **self-dual stationarity mechanism appearing inside the exponent-pair
+semigroup**, with an exact constant. It also explains the historical record: all progress past Weyl
+(Bombieri–Iwaniec, Huxley, Bourgain) came either from off-line `A,B` excursions — which converge to
+Rankin's constant `inf(κ+λ) ≈ 0.8290`, i.e. `μ ≈ 0.16451`, still worse than Bourgain — or from
+methods outside the semigroup entirely.
+
+### Phase 4 verdict: **SURVIVES**, with an honest novelty boundary
+
+* **Known:** the line `λ = κ+1/2` is Tao's *expdb* "line of symmetry" (Thm 5.12), which lists both
+  record pairs on it; Trudgian–Yang note the hull "is symmetric about this line and closed under `B`".
+  `μ = κ` there is standard. **The campaign did not discover the line.**
+* **Not in either source:** *expdb* (2024) has **no** threshold for when `A` stops improving `κ+λ`;
+  Trudgian–Yang's optimisation paper likewise contains **no** such criterion, no `8κ²+4κ−1`, no
+  `(√3−1)/4`, and no analysis of the processes restricted to the line.
+  **C261–C264 are new relative to the current authoritative catalogue.**
+
+**Significance: bounded but real.** It does not improve `μ`. It proves *exactly* how far the oldest
+method in the subject can go on the locus where every record lives, with a closed-form constant, and
+it shows the obstruction strengthens as the record improves.
+
+## Cycle 103 — the barrier holds at **every** landmark in the subject's history
+
+C263 rested on two data points. Adding the other two landmarks makes it the entire record.
+
+### C265 — all four landmark pairs are self-dual and all four are `A`-inert `[LEAN-CERTIFIED]`
+
+| landmark | `κ` | `λ` | `λ = κ+1/2`? | `μ = κ` | `8κ²+4κ−1` |
+|---|---|---|---|---|---|
+| Weyl | `1/6 = 0.16667` | `2/3` | ✓ | ✓ | `−1/9` |
+| Bombieri–Iwaniec 1986 | `9/56 = 0.16071` | `37/56` | ✓ | ✓ | `< 0` |
+| Huxley 2005 | `32/205 = 0.15610` | `269/410` | ✓ | ✓ | `< 0` |
+| Bourgain 2017 | `13/84 = 0.15476` | `55/84` | ✓ | ✓ | `< 0` |
+| **threshold** | **`(√3−1)/4 = 0.18301`** | — | — | — | **`= 0`** |
+
+> **`[THEOREM 20, strengthened]` Every landmark exponent pair in the history of the subject lies on
+> the line of symmetry, satisfies `μ = κ`, and lies strictly below the `A`-inertness threshold. The
+> van der Corput `A` process strictly worsens all four.**
+> `vanDerCorput_inert_at_all_records`, `all_records_below_threshold`, `selfDual_bombieriIwaniec`,
+> `selfDual_huxley`; axioms `[propext, Classical.choice, Quot.sound]`.
+
+### C266 — the record recedes from the threshold monotonically
+
+`κ`: `1/6 > 9/56 > 32/205 > 13/84` (`record_chain_strictAnti`), and the quadratic is increasing on
+`κ ≥ 0`. So each successive record is **further** below the threshold than its predecessor, and the
+exponent-pair conjecture `κ = 0` is the furthest of all (`conjecture_furthest_below_threshold`).
+
+> **A century of progress on `μ` has monotonically increased the margin by which van der Corput's
+> `A` process fails.** The obstruction is not merely present at the frontier — it *deepens* as the
+> frontier advances, and it is maximal exactly at the Lindelöf hypothesis.
+
+This is the sharpest instance so far of the campaign's central mechanism: the record sits at a
+stationary locus of the method's own symmetry, and every improvement drives it deeper into inertness.
+
+### Method note
+
+`vanDerCorput_inert_at_record` was stated with `κ ≤ 13/84`, which does **not** cover the earlier
+landmarks (`1/6 > 13/84`). Generalised to `vanDerCorput_inert_below_threshold` with `κ ≤ 9/50 = 0.18`,
+a rational bound strictly under `(√3−1)/4`. Caught by the compiler, not by inspection.
+
+## Cycle 104 — **THEOREM 21: the optimum is *forced* onto the inert locus**
+
+C265 observed that all four landmarks lie on the line of symmetry. That looked like a coincidence of
+history. It is not — it is forced.
+
+### C267 — canonicalisation `[PROVED, LEAN-CERTIFIED]`
+
+The set of exponent pairs is **convex** and **closed under `B`** (both classical, Rankin 1955). For
+any exponent pair `(κ,λ)`, the midpoint of it and its `B`-image is therefore an exponent pair. Compute
+that midpoint:
+
+    ½(κ, λ) + ½(λ−½, κ+½)  =  ( (κ+λ−½)/2 , (κ+λ+½)/2 )  =  **( μ , μ + ½ )**,
+
+where `μ = (κ+λ−½)/2` is exactly the Lindelöf exponent the original pair delivers.
+
+> **`[THEOREM 21]` Every exponent pair `(κ,λ)` has a self-dual representative `(μ, μ+½)` which is
+> again an exponent pair and delivers the *same* `μ`. The line of symmetry carries the full strength
+> of the whole exponent-pair set: optimising `μ` can be done entirely on it.**
+> `canonical_selfDual`, `canonical_preserves_mu`, `canonical_isSelfDual`.
+
+The convexity and `B`-closure inputs are carried as an explicit `ExponentPairSystem` interface, so the
+Lean statement is unconditional given the two classical facts.
+
+### C268 — the two theorems combine `[PROVED, LEAN-CERTIFIED]`
+
+Theorem 20: on the line, `A` improves only when `κ > (√3−1)/4 ≈ 0.18301`.
+Theorem 21: the optimum can be taken on the line, at `κ = μ`.
+
+> **`[COROLLARY]` For every exponent pair delivering `μ ≤ 9/50 = 0.18` — which covers the entire
+> historical record, from Weyl's `1/6` to Bourgain's `13/84` — the canonical self-dual representative
+> delivers the same `μ`, and the van der Corput `A` process strictly *worsens* it.**
+> `optimum_lives_where_A_is_inert`; axioms `[propext, Classical.choice, Quot.sound]`.
+
+**This upgrades C265 from an empirical pattern to a structural necessity.** The landmark pairs are on
+the line not by accident of method but because the line is where the optimum provably lives — and the
+line is exactly where the only `κ+λ`-moving process is counterproductive.
+
+> **The subject's optimum is confined, by convexity and the Poisson duality, to a locus on which
+> van der Corput's method is not merely unhelpful but strictly harmful; and the margin of harm grows
+> monotonically as `μ` improves, reaching its maximum at the Lindelöf hypothesis itself.**
+
+### Phase 4 verdict: **SURVIVES**
+
+Rankin's convexity and `B`-closure are classical, and Trudgian–Yang note the hull "is symmetric about
+this line and closed under `B`". **The identification of the canonical midpoint as exactly `(μ, μ+½)`,
+and the resulting confinement theorem, are not in *expdb* (2024) or Trudgian–Yang.** Both were checked
+directly in cycle 102.
+
+**What it does not do:** improve `μ`. **What it does:** prove that the oldest and still most general
+machinery in the subject is structurally incapable of contributing at the frontier, for a reason
+(Poisson self-duality of the critical block) that is the same reason the campaign's other eighteen
+barriers fire.
+
+## Cycle 105 — **THEOREM 22: the threshold is a two-sided attractor, and the line is a trap**
+
+C262 found `(√3−1)/4` as the point where `A` stops improving. Cycle 105 shows it is much more than a
+cutoff.
+
+### C269 — the induced line-to-line map `[PROVED, LEAN-CERTIFIED]`
+
+`A` maps a self-dual pair *off* the line; canonicalisation (C267) returns it. The composite is a map
+of the line to itself, and in the coordinate `μ = κ` it is
+
+    **T(μ) = (4μ + 1)/(8μ + 8)**       (`lineMap_eq_epMu_procA`)
+
+* **Fixed points of `T` = roots of `8μ² + 4μ − 1`** (`lineMap_fixed_iff`), so the positive one is
+  exactly the threshold `μ* = (√3−1)/4 = 0.1830127…`. *The cutoff and the fixed point are the same
+  number, and now for a reason.*
+* `T` is strictly increasing (`lineMap_strictMono`);
+* `T(μ) < μ ⟺ 8μ²+4μ−1 > 0` (`lineMap_lt_iff`) — so **`μ*` attracts from both sides**.
+
+### C270 — the trap `[PROVED, LEAN-CERTIFIED]`
+
+> **`[THEOREM 22]` `T` has a globally attracting fixed point at `μ* = (√3−1)/4 ≈ 0.18301`. From the
+> convexity bound `μ = 1/4`, iteration descends (`T(1/4) = 1/5`) and converges *down* to `μ*`. From
+> any value below `μ*` — that is, from every result proved since 1921 — iteration converges *up* to
+> `μ*`.**
+> `lineMap_gt_of_below`, `lineMap_worsens_all_records`; axioms `[propext, Classical.choice, Quot.sound]`.
+
+    T(1/6)    > 1/6      T(9/56)   > 9/56
+    T(32/205) > 32/205   T(13/84)  > 13/84
+
+> **The locus that provably carries the optimum (Theorem 21) is a dynamical attractor at a value
+> worse than every result in the subject's history.**
+
+### C271 — the resolution of the apparent paradox, and the real dichotomy
+
+Weyl's `1/6 = 0.1667` *is* obtained from `A,B` and lies **below** `μ* = 0.18301`. No contradiction:
+Weyl's step applies `A` to `(1/2,1/2)`, which is **off** the line. Its canonical representative
+`(1/4,3/4)` has the same `μ = 1/4`, but `A` applied *there* gives only `1/5 = 0.2`.
+
+> **Canonicalisation preserves `μ` but destroys the information `A` exploits.** Theorem 21 is a
+> statement about *where results live*; it is not a statement about where the *process* may go.
+
+**The dichotomy, stated sharply:**
+
+> **The line of symmetry carries the optimum (Thm 21) and is dynamically sterile (Thm 22). Every
+> result in the subject sits on the line; no progress can be made while staying on it. All actual
+> progress — Weyl's `1/6` onward — comes from excursions off the line, whose results then land back
+> on it.**
+
+This is the cleanest structural account the campaign has produced of why the subject looks the way it
+does, and it sharpens Theorem 20 from "a method fails" to "the method's own canonical dynamics has a
+fixed point above every known result, attracting from both sides."
+
+**`[E26]`** Cycle 104's phrasing "optimising `μ` can be done entirely on the line" is correct for the
+*answer* and misleading for the *method*; C271 supplies the distinction. Not a retraction — the
+formal statements `canonical_selfDual`/`canonical_preserves_mu` are exactly right — but the prose
+needed the qualification.

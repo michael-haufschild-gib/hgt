@@ -18,6 +18,10 @@ square-coefficient cone, and whose vacuum tails lie in the strict centered resid
 
 The counterexample theorem records the corresponding source fact: if RH fails, every infinite
 degree set contains a negative prime--Gamma Hankel test in this combined residual.
+
+Under emptiness of the two explicit centered source annuli, the square-coefficient family extends
+to degree ten. The corresponding smaller residual criterion and its RH equivalence are recorded
+without replacing the unconditional degree-nine result.
 -/
 
 open Polynomial
@@ -58,6 +62,21 @@ def PrimeArchCombinedCoefficientResidual (p : Polynomial ℤ) : Prop :=
   PrimeArchDegreeNineSquareCoeffResidual p ∧
     PrimeArchCenteredAnalyticTailResidual (HTGeometry.polynomialVacuumTail p) ∧
       PrimeArchValuationAtMostSixCoefficientResidual p
+
+/-- Tests outside all three source-positive families after the explicit centered annuli have
+extended the square-coefficient cone through degree ten. -/
+def PrimeArchDegreeTenCombinedCoefficientResidual (p : Polynomial ℤ) : Prop :=
+  PrimeArchDegreeTenSquareCoeffResidual p ∧
+    PrimeArchCenteredAnalyticTailResidual (HTGeometry.polynomialVacuumTail p) ∧
+      PrimeArchValuationAtMostSixCoefficientResidual p
+
+/-- The degree-ten combined residual is contained in the unconditional degree-nine residual. -/
+theorem primeArchCombinedCoefficientResidual_of_degreeTenCombined
+    {p : Polynomial ℤ} (hp : PrimeArchDegreeTenCombinedCoefficientResidual p) :
+    PrimeArchCombinedCoefficientResidual p := by
+  refine ⟨?_, hp.2⟩
+  intro h9
+  exact hp.1 (primeArchDegreeTenSquareCoeffCone_of_degreeNineSquareCoeffCone h9)
 
 /-- The concrete degree-seven endpoint-pair test is monic. -/
 theorem primeArchDegreeSevenEndpointPolynomial_monic :
@@ -175,6 +194,43 @@ theorem primeArchDegreeNineSquareCoeffPolynomial_not_combinedResidual :
       primeArchDegreeNineSquareCoeffPolynomial := by
   intro h
   exact h.1 primeArchDegreeNineSquareCoeffPolynomial_mem
+
+/-- The concrete degree-ten square-coefficient test is monic. -/
+theorem primeArchDegreeTenSquareCoeffPolynomial_monic :
+    primeArchDegreeTenSquareCoeffPolynomial.Monic := by
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 9
+  have hlow : lower.natDegree < 10 := by
+    apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
+    rw [max_lt_iff]
+    constructor
+    · simp
+    · rw [Polynomial.natDegree_C_mul_X_pow 9 12 (by norm_num)]
+      omega
+  have hlowDegree : lower.degree < (10 : WithBot ℕ) := by
+    by_cases hzero : lower = 0
+    · rw [hzero, Polynomial.degree_zero]
+      exact WithBot.bot_lt_coe 10
+    · exact (Polynomial.natDegree_lt_iff_degree_lt hzero).mp hlow
+  unfold primeArchDegreeTenSquareCoeffPolynomial
+  rw [add_assoc]
+  change (X ^ 10 + lower).Monic
+  exact Polynomial.monic_X_pow_add hlowDegree
+
+/-- The concrete degree-ten square-coefficient test is Eisenstein at two. -/
+theorem primeArchDegreeTenSquareCoeffPolynomial_twoEisenstein :
+    primeArchDegreeTenSquareCoeffPolynomial.IsEisensteinAt
+      primeArchTwoEisensteinIdeal := by
+  simpa only [primeArchDegreeTenSquareCoeffPolynomial,
+    show (4 * (3 : ℤ)) = 12 by norm_num] using
+      primeArch_twoEisenstein_plus (X ^ 9 : Polynomial ℤ) 10 3 (by simp)
+
+/-- The source-annulus result removes a genuine monic two-Eisenstein degree-ten test from the
+degree-ten combined Sonin residual. -/
+theorem primeArchDegreeTenSquareCoeffPolynomial_not_degreeTenCombinedResidual :
+    ¬ PrimeArchDegreeTenCombinedCoefficientResidual
+      primeArchDegreeTenSquareCoeffPolynomial := by
+  intro h
+  exact h.1 primeArchDegreeTenSquareCoeffPolynomial_mem
 
 /-- Prime--Gamma positivity restricted to the combined residual inside one sparse
 monic-`2`-Eisenstein degree family. -/
@@ -316,6 +372,127 @@ theorem riemannHypothesis_of_soninCoupledPrimeArchCombinedResidualVariationalUpp
     RiemannHypothesis :=
   (primeArchCombinedResidualTwoEisensteinDegreeSetNonnegative_iff_riemannHypothesis hD).mp
     (primeArchCombinedResidualTwoEisensteinDegreeSetNonnegative_of_soninCoupledUpper h)
+
+/-- Prime--Gamma positivity restricted to the degree-ten combined residual inside one sparse
+monic-`2`-Eisenstein degree family. -/
+def PrimeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative
+    (D : Set ℕ) : Prop :=
+  ∀ p : Polynomial ℤ, p.Monic →
+    p.IsEisensteinAt primeArchTwoEisensteinIdeal →
+    p.natDegree ∈ D →
+    PrimeArchDegreeTenCombinedCoefficientResidual p →
+      0 ≤ (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re
+
+/-- Under the exact source-annulus premise, positivity on the smaller degree-ten combined
+residual restores positivity on the full selected monic-`2`-Eisenstein family. -/
+theorem primeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative_of_degreeTenCombinedResidual
+    {D : Set ℕ}
+    (hannuli : XiCenteredDegreeTenResidualAnnuliEmpty)
+    (h : PrimeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative D) :
+    PrimeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative D := by
+  intro p hmonic heis hdeg
+  by_cases hsquare : PrimeArchDegreeTenSquareCoeffCone p
+  · exact
+      re_primeArchSourceTraceHankel_nonneg_of_degreeTenSquareCoeffCone
+        hannuli p hsquare
+  · by_cases hvaluation : PrimeArchValuationAtMostSixCoefficientCone p
+    · exact
+        re_primeArchSourceTraceHankel_nonneg_of_valuationAtMostSixCoefficientCone
+          p hvaluation
+    · let q : Polynomial ℤ := HTGeometry.polynomialVacuumTail p
+      by_cases hcentered : PrimeArchCenteredAnalyticTailResidual q
+      · exact h p hmonic heis hdeg ⟨hsquare, hcentered, hvaluation⟩
+      · apply re_primeArchSourceTraceHankel_map_nonneg_of_vacuumTail_variance_nonneg p
+        apply primeArchNormalizedVariance_nonneg_of_centeredTailL1 q
+          (HTGeometry.polynomialVacuumTail_coeff_zero p)
+        exact le_of_not_gt hcentered
+
+/-- Under the exact source-annulus premise, positivity on the degree-ten combined residual in
+every infinite degree set is equivalent to RH. -/
+theorem
+    primeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative_iff_riemannHypothesis
+    {D : Set ℕ} (hannuli : XiCenteredDegreeTenResidualAnnuliEmpty)
+    (hD : D.Infinite) :
+    PrimeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative D ↔
+      RiemannHypothesis := by
+  constructor
+  · intro h
+    exact
+      (primeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative_iff_riemannHypothesis
+        hD).mp
+        (primeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative_of_degreeTenCombinedResidual
+          hannuli h)
+  · intro hRH p _hmonic _heis _hdeg _hresidual
+    exact
+      (primeArchSourceTraceHankelIntNonnegative_iff_riemannHypothesis.mpr hRH) p
+
+/-- Failure of RH produces a negative source-Hankel test in the degree-ten combined residual
+inside every infinite prescribed degree set, assuming the exact source annuli are empty. -/
+theorem exists_degreeTenCombinedResidualTwoEisenstein_negativeTraceHankel_of_not_riemannHypothesis
+    {D : Set ℕ} (hannuli : XiCenteredDegreeTenResidualAnnuliEmpty)
+    (hD : D.Infinite) (hRH : ¬ RiemannHypothesis) :
+    ∃ p : Polynomial ℤ,
+      p.Monic ∧
+        p.IsEisensteinAt primeArchTwoEisensteinIdeal ∧
+          p.natDegree ∈ D ∧
+            PrimeArchDegreeTenCombinedCoefficientResidual p ∧
+              (primeArchSourceTraceHankel
+                (p.map (Int.castRingHom ℝ))).re < 0 := by
+  have hnot :
+      ¬ PrimeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative D := by
+    intro h
+    exact hRH
+      ((primeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative_iff_riemannHypothesis
+        hannuli hD).mp h)
+  simp only [PrimeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative] at hnot
+  push Not at hnot
+  exact hnot
+
+/-- Coupled-Sonin comparison restricted to the degree-ten combined residual inside one selected
+sparse monic-`2`-Eisenstein degree family. -/
+def SoninCoupledPrimeArchDegreeTenCombinedResidualVariationalUpperBound
+    (D : Set ℕ) : Prop :=
+  ∀ p : Polynomial ℤ, p.Monic →
+    p.IsEisensteinAt primeArchTwoEisensteinIdeal →
+    p.natDegree ∈ D →
+    PrimeArchDegreeTenCombinedCoefficientResidual p →
+    ∀ ε : ℝ, 0 < ε →
+      ∃ a : SoninCoupledNondegenerateAperture,
+        soninAllPrimeCoupledNormalizedPolynomialGramValue a
+            (p.map (Int.castRingHom ℝ)) ≤
+          (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re + ε
+
+/-- The unconditional combined-residual Sonin interface supplies the smaller degree-ten
+combined-residual interface. -/
+theorem soninCoupledPrimeArchDegreeTenCombinedResidualVariationalUpperBound_of_combinedResidual
+    {D : Set ℕ}
+    (h : SoninCoupledPrimeArchCombinedResidualVariationalUpperBound D) :
+    SoninCoupledPrimeArchDegreeTenCombinedResidualVariationalUpperBound D := by
+  intro p hmonic heis hdeg hresidual ε hε
+  exact h p hmonic heis hdeg
+    (primeArchCombinedCoefficientResidual_of_degreeTenCombined hresidual) ε hε
+
+/-- Degree-ten combined-residual Sonin comparison supplies positivity on every retained test. -/
+theorem
+    primeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative_of_soninCoupledUpper
+    {D : Set ℕ}
+    (h : SoninCoupledPrimeArchDegreeTenCombinedResidualVariationalUpperBound D) :
+    PrimeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative D := by
+  intro p hmonic heis hdeg hresidual
+  exact re_primeArchSourceTraceHankel_map_nonneg_of_soninCoupledVariationalUpper
+    p (h p hmonic heis hdeg hresidual)
+
+/-- Under the exact source-annulus premise, coupled-Sonin comparison only on the degree-ten
+combined residual in any infinite degree set implies RH. -/
+theorem
+    riemannHypothesis_of_soninCoupledPrimeArchDegreeTenCombinedResidualVariationalUpperBound
+    {D : Set ℕ} (hannuli : XiCenteredDegreeTenResidualAnnuliEmpty)
+    (hD : D.Infinite)
+    (h : SoninCoupledPrimeArchDegreeTenCombinedResidualVariationalUpperBound D) :
+    RiemannHypothesis :=
+  (primeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative_iff_riemannHypothesis
+    hannuli hD).mp
+    (primeArchDegreeTenCombinedResidualTwoEisensteinDegreeSetNonnegative_of_soninCoupledUpper h)
 
 end
 

@@ -95,7 +95,8 @@ private theorem hasDerivAt_xiRelativeResolventTerm
   have hsub : xiSpectralPoint q - u ≠ 0 := sub_ne_zero.mpr hqu
   convert (hasDerivAt_const (x := u) (c := (xiSpectralPoint q)⁻¹)).sub
     (((hasDerivAt_const (x := u) (c := xiSpectralPoint q)).sub
-      (hasDerivAt_id (𝕜 := ℂ) (x := u))).inv hsub) using 1 <;> simp
+      (hasDerivAt_id (𝕜 := ℂ) (x := u))).inv hsub) using 1
+  all_goals simp
 
 private theorem norm_xiRelativeResolventTerm_deriv_le
     (z : DeningerPrimeGammaLowerPoint) (q : XiZeroCopy) {u : ℂ}
@@ -197,6 +198,177 @@ theorem deningerPrimeGammaSourceKernel_eq_xiWeilPolarization_reflectedDiagonal
       simp only [deningerPrimeGammaPointConjEquiv, Equiv.coe_fn_mk,
         starRingEnd_self_apply, xiWeilCauchyTest]
       ring
+
+/-- Every lower/upper source atom has an absolutely summable divisor-side Weil pair. -/
+theorem xiWeilPairSummable_deningerPrimeGammaAtoms
+    (z : DeningerPrimeGammaLowerPoint)
+    (w : DeningerPrimeGammaUpperPoint) :
+    XiWeilPairSummable
+      (xiWeilCauchyTest (z : ℂ))
+      (xiWeilCauchyTest (w : ℂ)) := by
+  by_cases hzw : (z : ℂ) = (starRingEnd ℂ) (w : ℂ)
+  · unfold XiWeilPairSummable
+    apply Summable.of_norm
+    apply (XiWeilSquareSummable_cauchy (z : ℂ)).congr
+    intro q
+    rw [xiWeilSharp_cauchy]
+    simp only [hzw, norm_mul, pow_two]
+  · exact xiWeilPairSummable_cauchy
+      (XiC_ne_zero_of_one_lt_centered_re z.property)
+      (XiC_ne_zero_of_one_lt_centered_re w.property) hzw
+
+/-- Complete atomic source/target comparison, including the reflected diagonal. -/
+theorem deningerPrimeGammaSourceKernel_eq_xiWeilPolarization
+    (z : DeningerPrimeGammaLowerPoint)
+    (w : DeningerPrimeGammaUpperPoint) :
+    deningerPrimeGammaSourceKernel z w =
+      xiWeilPolarization
+        (xiWeilCauchyTest (z : ℂ))
+        (xiWeilCauchyTest (w : ℂ)) := by
+  by_cases hzw : (z : ℂ) = (starRingEnd ℂ) (w : ℂ)
+  · have hw : w = deningerPrimeGammaPointConjEquiv z := by
+      apply Subtype.ext
+      have h := congrArg (starRingEnd ℂ) hzw
+      simpa [deningerPrimeGammaPointConjEquiv] using h.symm
+    subst w
+    exact
+      deningerPrimeGammaSourceKernel_eq_xiWeilPolarization_reflectedDiagonal z
+  · exact deningerPrimeGammaSourceKernel_eq_xiWeilPolarization_of_ne z w hzw
+
+/-- Divisor test represented by a finite lower source packet. -/
+def deningerPrimeGammaLowerCauchyTest
+    (x : DeningerPrimeGammaLowerPacket) (a : ℂ) : ℂ :=
+  x.sum fun z c => c * xiWeilCauchyTest (z : ℂ) a
+
+/--
+The sharp transform of the divisor test represented by an upper source packet.
+Using this as the second Weil argument makes its source coefficients linear.
+-/
+def deningerPrimeGammaUpperSharpCauchyTest
+    (y : DeningerPrimeGammaUpperPacket) (a : ℂ) : ℂ :=
+  y.sum fun w d =>
+    d * xiWeilCauchyTest ((starRingEnd ℂ) (w : ℂ)) a
+
+/-- Anti-linear upper packet realization whose Weil sharp is the linear sharp test above. -/
+def deningerPrimeGammaUpperCauchyTest
+    (y : DeningerPrimeGammaUpperPacket) : ℂ → ℂ :=
+  xiWeilSharp (deningerPrimeGammaUpperSharpCauchyTest y)
+
+@[simp]
+theorem xiWeilSharp_deningerPrimeGammaUpperCauchyTest
+    (y : DeningerPrimeGammaUpperPacket) (a : ℂ) :
+    xiWeilSharp (deningerPrimeGammaUpperCauchyTest y) a =
+      deningerPrimeGammaUpperSharpCauchyTest y a := by
+  simp [deningerPrimeGammaUpperCauchyTest, xiWeilSharp]
+
+/-- The bundled source cup map is exactly the finite double kernel sum. -/
+theorem deningerPrimeGammaSourceCup_eq_sum
+    (x : DeningerPrimeGammaLowerPacket)
+    (y : DeningerPrimeGammaUpperPacket) :
+    deningerPrimeGammaSourceCup x y =
+      x.sum fun z c =>
+        y.sum fun w d => c * d * deningerPrimeGammaSourceKernel z w := by
+  classical
+  simp [deningerPrimeGammaSourceCup, deningerPrimeGammaSourceKernelLinear,
+    Finsupp.lsum, LinearMap.toSpanSingleton, smul_eq_mul]
+  apply Finsupp.sum_congr
+  intro z hz
+  rw [Finsupp.mul_sum]
+  apply Finsupp.sum_congr
+  intro w hw
+  ring
+
+/--
+Every finite source packet pairing equals the multiplicity-exact divisor Weil polarization.
+The source side remains the definition; divisor data enter only in this comparison theorem.
+-/
+theorem deningerPrimeGammaSourceCup_eq_xiWeilPolarization
+    (x : DeningerPrimeGammaLowerPacket)
+    (y : DeningerPrimeGammaUpperPacket) :
+    deningerPrimeGammaSourceCup x y =
+      xiWeilPolarization
+        (deningerPrimeGammaLowerCauchyTest x)
+        (deningerPrimeGammaUpperCauchyTest y) := by
+  classical
+  let term :
+      DeningerPrimeGammaLowerPoint →
+        DeningerPrimeGammaUpperPoint → XiZeroCopy → ℂ :=
+    fun z w q =>
+      x z * y w *
+        (xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) *
+          xiWeilSharp (xiWeilCauchyTest (w : ℂ)) (xiSpectralPoint q))
+  have hterm (z : DeningerPrimeGammaLowerPoint)
+      (w : DeningerPrimeGammaUpperPoint) :
+      Summable (term z w) := by
+    exact (xiWeilPairSummable_deningerPrimeGammaAtoms z w).mul_left
+      (x z * y w)
+  rw [deningerPrimeGammaSourceCup_eq_sum, xiWeilPolarization]
+  calc
+    x.sum (fun z c =>
+        y.sum fun w d => c * d * deningerPrimeGammaSourceKernel z w) =
+        x.sum (fun z c =>
+          y.sum fun w d =>
+            c * d *
+              xiWeilPolarization
+                (xiWeilCauchyTest (z : ℂ))
+                (xiWeilCauchyTest (w : ℂ))) := by
+      apply Finsupp.sum_congr
+      intro z hz
+      apply Finsupp.sum_congr
+      intro w hw
+      rw [deningerPrimeGammaSourceKernel_eq_xiWeilPolarization]
+    _ = ∑' q : XiZeroCopy,
+        deningerPrimeGammaLowerCauchyTest x (xiSpectralPoint q) *
+          xiWeilSharp (deningerPrimeGammaUpperCauchyTest y)
+            (xiSpectralPoint q) := by
+      simp only [deningerPrimeGammaLowerCauchyTest,
+        xiWeilSharp_deningerPrimeGammaUpperCauchyTest,
+        deningerPrimeGammaUpperSharpCauchyTest]
+      simp only [xiWeilPolarization]
+      calc
+        x.sum (fun z c =>
+            y.sum fun w d =>
+              c * d *
+                ∑' q : XiZeroCopy,
+                  xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) *
+                    xiWeilSharp (xiWeilCauchyTest (w : ℂ))
+                      (xiSpectralPoint q)) =
+            x.sum (fun z c =>
+              y.sum fun w d => ∑' q : XiZeroCopy, term z w q) := by
+          apply Finsupp.sum_congr
+          intro z hz
+          apply Finsupp.sum_congr
+          intro w hw
+          rw [tsum_mul_left]
+        _ = ∑' q : XiZeroCopy,
+            x.sum (fun z c =>
+              y.sum fun w d => term z w q) := by
+          change
+            (∑ z ∈ x.support, ∑ w ∈ y.support,
+              ∑' q : XiZeroCopy, term z w q) =
+              ∑' q : XiZeroCopy, ∑ z ∈ x.support, ∑ w ∈ y.support, term z w q
+          rw [Summable.tsum_finsetSum
+            (fun z hz => summable_sum fun w hw => hterm z w)]
+          apply Finset.sum_congr rfl
+          intro z hz
+          rw [Summable.tsum_finsetSum (fun w hw => hterm z w)]
+        _ = ∑' q : XiZeroCopy,
+            (x.sum fun z c =>
+              c * xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q)) *
+              (y.sum fun w d =>
+                d * xiWeilCauchyTest ((starRingEnd ℂ) (w : ℂ))
+                  (xiSpectralPoint q)) := by
+          apply tsum_congr
+          intro q
+          rw [Finsupp.sum_mul]
+          apply Finsupp.sum_congr
+          intro z hz
+          rw [Finsupp.mul_sum]
+          apply Finsupp.sum_congr
+          intro w hw
+          simp only [term]
+          rw [xiWeilSharp_cauchy]
+          ring
 
 end
 

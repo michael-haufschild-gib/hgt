@@ -236,3 +236,21 @@ functional-equation estimate may enter as a hypothesis of the final declaration.
   the arbitrary-`L¹` continuous weighted wave-packet theorem used verbatim in
   (1.5), nor the image-parallelepiped covering and recurrence production in
   (1.23)--(1.26).
+- 2026-07-25 — `[SECTION 1 LITERAL PHASE TRANSFER] [LEAN-PROVED]`
+  `BourgainOsculatingPhaseCoordinates.lean` corrects the earlier jet-matrix
+  orientation: Bourgain's actual map has the derivative jets as rows and
+  multiplies both second-derivative coordinates by `1/2`. Its determinant is
+  therefore exactly `3(b-a)^4/(32a^3b^3)`. The module proves the continuous
+  linear equivalence, operator-norm distortion, exact Lebesgue Jacobian, and
+  localized nonnegative change of variables.
+  `BourgainFinTonelli.lean` identifies a `Fin 4` sup-norm cube with four
+  interval integrals. `BourgainOsculatingPlanarTransfer.lean` then proves the
+  unconditional discrete specialization of (1.23)--(1.24): under the explicit
+  one-box scale condition, the pulled-back bilinear sixth moment is bounded by
+  the exact Jacobian times `H^8`, a subpower loss, and the two coefficient
+  `ℓ²` masses cubed. Target builds pass.
+  `[OPEN CORE]` Taylor-phase comparison must still connect actual short curve
+  sums to this exact planar model, and cube covering/scale summation must
+  produce the recurrence (1.26). The full arbitrary-weight continuous
+  statement (1.5) remains unnecessary only if the discrete application route
+  is completed directly.

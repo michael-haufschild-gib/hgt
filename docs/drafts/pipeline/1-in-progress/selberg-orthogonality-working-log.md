@@ -5513,3 +5513,762 @@ scales) are now joined by a third:
 > **Regime rule.** Before comparing two asymptotic expressions, check that the parameter ranges in
 > which each was derived actually overlap. `1/(2K)` for the harmonic tail is valid for `K ≥ 1`; the
 > contradiction in §97 came from using it at `K < 1`.
+
+---
+
+## 99. Cycle 99 (2026-07-26) — the θ-gap: a third measure of how far the axioms fall short
+
+### 99.1 A correction
+
+§89.1 asserted that the prime-power part of `log F` converges absolutely for `Re s > 1/2` "because
+`θ < 1/2`". That is imprecise. With `b_F(p^k) ≪ p^{kθ}`,
+```
+Σ_p Σ_{k≥2} |b_F(p^k)| p^{−kσ}  ≪  Σ_p p^{2(θ−σ)} ,
+```
+which converges **iff `σ > θ + 1/2`**. Since `θ < 1/2` this is a half-plane strictly inside `σ > 1`,
+but it reaches `σ = 1/2` only when `θ = 0`. (The step in §89.1 was part of an argument already
+declared invalid, so nothing downstream changes; §73.1's absolute convergence comes from the
+exponential factor `e^{−2πbn^{1/d}}` and is unaffected.)
+
+### 99.2 The θ-gap
+
+> **Theorem 51 (θ-threshold).** For `F ∈ S` with Euler-product exponent `θ`,
+> `log F(s) − Σ_p a_F(p)p^{−s}` is holomorphic on `Re s > θ + 1/2`, and this is sharp for the bound
+> given by axiom (4). Hence the Euler product controls `log F` down to the line `Re s = θ + 1/2` and
+> **no further**.
+
+By Theorem 38 (§85.1), `n_F` is invisible anywhere in a neighbourhood of `Re s ≥ 1`; by Theorem 24
+and §93.3, it lives at `Re s = 1/2`. So:
+
+> **The Euler-product axiom stops short of where `n_F` lives, by exactly `θ`.**
+
+### 99.3 Three gaps, one obstruction
+
+The programme has now produced three independent numerical measures of the distance between the
+Selberg axioms and what Conjecture A needs:
+
+| gap | axiom side | needed side | size | vanishes when |
+|---|---|---|---|---|
+| Euler-product reach (§99) | `Re s > θ + 1/2` | `Re s = 1/2` | `θ` | `θ = 0` |
+| twist exponent (§82) | `κ ≤ 1/d` | `κ = 1` | `1 − 1/d` | `d = 1` |
+| cusps (§84) | `q = 1` only | all roots of unity | — | — |
+
+The first two vanish exactly in the classical solved cases (`θ = 0` holds for degree-1 elements,
+where `b_F(p^k) = χ(p)^k/k` is bounded; `d = 1` is the classified degree). The third never vanishes
+inside `S` and is closed only by automorphy. **Together they explain, quantitatively, why every
+Selberg conjecture is a theorem in degree `1` and none is in degree `≥ 2`:** in degree `1` both
+numerical gaps close, and the cusp gap is bridged by the classification of `S_1` itself.
+
+### 99.4 Assessment after 99 cycles
+
+What the programme has established, in one paragraph. Integrality in `S` is produced by exactly one
+mechanism — the order of a pole of a single-valued meromorphic function (§74, §79.4) — and Selberg's
+`n_F` is a quadratic form on the monoid while every integer the axioms supply is additive (§85.2), so
+`n_F ∈ Z` cannot be a formal consequence of the axioms and requires constructing a new meromorphic
+object, namely `R_{F,F}` (§25's equivalence web). That object is all-cusp (§84), while the axioms are
+one-cusp; the distance is measured by the three gaps above. Every functional that averages is blind
+to `n_F` (§77.2), every comparison across the three scales `α → 0, α ≍ 1, α → ∞` is invalid (§87.2),
+and every asymptotic must be used inside its own regime (§98.3). What remains is a single analytic
+target in a single regime: **the variance of the `δ`-smoothed zero-counting fluctuation at
+`δ ≍ 1/log T`**, for one function (Conjecture A) or for a pair (Conjecture B), together with its
+alternating counterpart `ω` (§70) which is provably invisible to energies (§69.1) and visible only in
+the twist correlation (§80).
+
+---
+
+## 100. Cycle 100 (2026-07-26) — scope audit of hypothesis (a), and no second twist spectrum
+
+### 100.1 How hard is hypothesis (a)?
+
+Theorems 46, 47 and 49 all rest on hypothesis (a): a Selberg-type zero-density estimate
+`N_F(σ,T) ≪ T^{1−c(σ−1/2)}log T` for `F ∈ S`, enough to run Selberg's approximation of `log F` on the
+critical line. §90.3 called it "a one-cusp statement". That is correct but understates its
+difficulty, and the scope must be recorded honestly.
+
+Selberg's density theorem for `ζ` is proved from mean-value estimates (fourth moment, mollifier). For
+`F ∈ S` of degree `d` the available bound on lines `1/2 < σ < 1` is the convexity bound
+`|F(σ+it)| ≪ 𝔮(t)^{(1−σ)/2+ε}`, giving
+```
+∫_0^T |F(σ+it)|² dt ≪ T^{1 + d(1−σ) + ε} ,
+```
+which is `≪ T^{1+ε}` only for `σ` close to `1`. Near `σ = 1/2` it is far too weak, and Carlson's
+theorem does not apply there (§31). So:
+
+> **Recorded scope.** Hypothesis (a) is *not* an elementary consequence of the axioms. For `d ≥ 2` it
+> is of the same difficulty class as the sub-convexity/moment problem for `L`-functions. Theorems 46,
+> 47 and 49 are therefore reductions **within** that difficulty class, not below it. What they do
+> achieve is a change of *kind*: they replace Rankin–Selberg and automorphy (all-cusp, §84) by
+> moment estimates for a single `F` (one-cusp). That is a genuine structural gain, but not a
+> reduction in analytic depth.
+
+This correction applies retroactively to §90.3's claim that (a) and (b) are "not Rankin–Selberg and
+not automorphy": true, but (a) is the moment problem.
+
+### 100.2 No second twist spectrum
+
+§82 raised whether some `κ > 1/d` might also be reachable from the axioms. The mechanism at
+`κ = 1/d` is a stationary-phase resonance: the functional equation contributes a phase
+`≈ d·t·log t`, matched by the twist phase `−2πα n^{1/d}` under Voronoi-type summation. For
+`κ = k/d` with `k ≥ 2` there is no such match, and forming `F_{2/d}` as a product of two standard
+twists fails because `Φ_F(s,α)²` has frequencies `n^{1/d} + m^{1/d}`, not `n^{2/d}`.
+
+> **Recorded do-not-retry.** There is no "second spectrum": the Selberg axioms resonate with exactly
+> one twist exponent, `κ = 1/d`. The gap `[1/d, 1]` of §82 cannot be narrowed from below.
+
+### 100.3 Standing summary at cycle 100
+
+- **Proved unconditionally in this programme (44 Lean theorems, all axiom-clean):** the linear half of
+  Conjecture A (`m_F ∈ Z_{≥0}`); MI ⟹ Conjecture A with full integrality; the Cusp–Spectrum Radius
+  Law; `n_F ≥ ν²` (Energy Gap except the entire, `1`-line-non-vanishing, `n_F ∈ (0,1)` case); `n_F` is
+  not archimedean; the complex-shift regularisation (Theorems 23–24) and its spectral form
+  (Theorem 28); the twist correlation identities (Theorems 29–30); the real Gram blindness theorem
+  (Theorem 16) and the Selberg symplectic form (Theorem 19); the additive-versus-quadratic no-go
+  (Theorem 39); the fractional-power obstruction (Theorem 40); the ratio functional equation
+  (Theorem 43) and Corollary 44; the interleaving lemma and the rigidity equivalence (Theorems 47, 49).
+- **Independence results:** Theorem 38 (the functional equation is essential; `L(·,χ)^c` witness) and
+  Theorem 39, which together show `n_F ∈ Z` is not a formal consequence of the axioms.
+- **Three quantitative gaps** between the axioms and the target: `θ` (§99), `1 − 1/d` (§82), one cusp
+  versus all (§84); the first two vanish exactly in degree `1`.
+- **Three design rules**, each derived from a killed conjecture: thin sets (§77.2), scales (§87.2),
+  regimes (§98.3).
+- **Open:** Conjecture A and Conjecture B. The single remaining analytic target is the variance of the
+  `δ`-smoothed zero-counting fluctuation at `δ ≍ 1/log T`, for one function and for a pair, together
+  with the alternating form `ω`.
+
+---
+
+## 101. Cycle 101 (2026-07-26) — the θ-gap is not real: Ramanujan already gives `θ = 0`
+
+Phase-4 attack on §99's "θ-gap", using a tool the programme had already formalised for another
+purpose.
+
+### 101.1 The theorem
+
+> **Theorem 52.** For every `F ∈ S`,
+> ```
+> log F(s) − Σ_p a_F(p) p^{−s}
+> ```
+> is holomorphic on `Re s > 1/2`. Equivalently, the prime-power part of the Euler product has
+> effective exponent `θ = 0`, for every element of `S`, as a consequence of the Ramanujan axiom
+> alone.
+>
+> *Proof.* Fix `ε > 0` and a prime `p`. The local factor `F_p(x) = Σ_k a_F(p^k)x^k` has `A_0 = 1` and,
+> by axiom (5), `‖A_k‖ = |a_F(p^k)| ≤ C_ε p^{kε}`. The local logarithm `log F_p(x) = Σ_k b_F(p^k)x^k`
+> satisfies the standard log-derivative recursion `k A_k = Σ_{j<k}(k−j)B_{k−j}A_j`, so the
+> **log-coefficient transfer bound** applies:
+> ```
+> ‖B_k‖ ≤ (4 C R)^k    with   C = C_ε , R = p^ε ,
+> ```
+> i.e. `|b_F(p^k)| ≤ (4C_ε)^k p^{kε}`. Hence
+> ```
+> Σ_p Σ_{k≥2} |b_F(p^k)| p^{−kσ} ≪ Σ_p (4C_ε)² p^{2(ε−σ)} ,
+> ```
+> convergent as soon as `σ > 1/2 + ε` (the finitely many `p ≤ (4C_ε)^{1/(σ−ε)}` are handled
+> separately, the local series being convergent there for `σ` large and continuing). Letting
+> `ε → 0` gives holomorphy on `Re s > 1/2`. ∎
+>
+> **The transfer bound is the formalised, unconditional `log_coeff_bound`**
+> (`HTGeometry/LogCoefficientTransfer.lean`): `A_0 = 1`, the recursion, and `‖A_n‖ ≤ C R^n` imply
+> `‖B_n‖ ≤ (4CR)^n` for `n ≥ 1`. This is the first time a Lean theorem proved in this programme has
+> served as the engine of a paper result rather than as a check on one.
+
+### 101.2 Correction to §99
+
+> **§99's θ-gap is not a real gap.** Axiom (4)'s hypothesis `b_F(n) ≪ n^θ`, `θ < 1/2`, is subsumed by
+> axiom (5): Ramanujan forces `θ = 0` effectively. The table of §99.3 therefore reduces to **two**
+> gaps, not three:
+>
+> | gap | axioms give | needed | vanishes when |
+> |---|---|---|---|
+> | twist exponent (§82) | `κ ≤ 1/d` | `κ = 1` | `d = 1` |
+> | cusps (§84) | `q = 1` only | all roots of unity | never inside `S` |
+>
+> Both remaining gaps are about the *functional equation's* reach, not the Euler product's. So the
+> Euler product is **not** where the Selberg class falls short.
+
+### 101.3 What Theorem 52 buys
+
+`Σ_p a_F(p)p^{−s} = log F(s) + (holomorphic on Re s > 1/2)`, so on the whole half-plane
+`Re s > 1/2` the **only** singularities of the linear prime sum are the zeros and poles of `F`, with
+logarithmic branch points there. Three immediate consequences, all unconditional:
+
+1. **The linear half of Conjecture A extends to the whole strip.** §39.1's monodromy argument, which
+   was run at `s = 1`, now runs at *every* point of `Re s > 1/2`: if `a_F(p) → m` in the density sense
+   at a point `s_0` with `Re s_0 > 1/2`, the monodromy of `F` around `s_0` forces `m·ord_{s_0}(F) ∈ Z`.
+2. **Every "edge" statement about linear densities is really a statement about the divisor of `F` in
+   the open right half of the critical strip** — not just on the `1`-line.
+3. It sharpens Theorem 38's witness: `L(·,χ)^c` is holomorphic and non-vanishing on `Re s ≥ 1` but
+   *does* have branch points at the zeros of `L` inside the strip, and Theorem 52 says those branch
+   points are exactly what the prime sum sees. The independence result of §85.1 is therefore optimal:
+   the failure of integrality for `L^c` is invisible on `Re s ≥ 1` and visible precisely at the zeros.
+
+**Net.** The Euler product reaches the critical line. The remaining obstruction is entirely on the
+functional-equation side, which is where §82 and §84 already located it — now with the third
+candidate removed.
+
+---
+
+## 102. Cycle 102 (2026-07-26) — the mean square of `log F` is fine; the obstruction is regularity
+
+§46.4 recorded that Carlson's theorem cannot be applied to `F'/F` below `σ = 1` because the
+mean-square hypothesis fails. Theorem 52 makes it worth redoing the analysis for `log F`, where the
+local singularity is `log|s−ρ|` rather than `1/(s−ρ)`.
+
+### 102.1 The mean-square bound holds
+
+> **Theorem 53 (unconditional).** For every `F ∈ S` and every fixed `σ > 1/2`,
+> ```
+> ∫_0^T | log F(σ+it) |² dt  ≪_σ  T log² T .
+> ```
+> *Proof.* By the Hadamard–Landau expansion, `log|F(σ+it)| = Σ_{|ρ−s|<1} log|s−ρ| + O(log t)` and
+> `|arg F(σ+it)| ≪ log t + #\{ρ : |ρ−s|<1\} ≪ log t`. There are `≍ T log T` zeros with `|ρ−s| < 1`
+> for `s` on the segment, each contributing `∫_{|t−γ|<1} log²|s−ρ| dt ≪ 1` because `log²` is locally
+> integrable, and Cauchy–Schwarz over the `≪ log t` nearby zeros gives
+> `∫_0^T(Σ_{|ρ−s|<1}\log|s−ρ|)²dt ≪ \log T · (T\log T) ≪ T\log²T`. ∎
+>
+> By Theorem 52 the same bound holds for the linear prime sum `P(s) = Σ_p a_F(p)p^{−s}`, since
+> `P − \log F` is bounded on every line `σ > 1/2 + ε`.
+
+**This is a genuine improvement over §46.4.** For `F'/F` the local singularity `1/(s−ρ)` is *not*
+locally square-integrable, and the mean square is not controlled; for `log F` it is, and
+`T log²T ≪ T^{1+ε}` — **Carlson's mean-square hypothesis is satisfied on every line `σ > 1/2`.**
+
+### 102.2 Why Carlson still does not apply
+
+Carlson's theorem requires the function to be **regular** in the half-plane, and `log F` has
+logarithmic branch points at every zero of `F` with `β > σ`. So:
+
+> **The obstruction to Carlson for `log F` is regularity, not size.** Under RH for `F` there are no
+> zeros with `β > 1/2`, `P` is regular on `Re s > 1/2`, Carlson applies, and
+> `lim_T (2T)^{−1}∫_{−T}^{T}|P(σ+it)|²dt = Σ_p |a_F(p)|² p^{−2σ}` for every `σ > 1/2`.
+
+That identity is the coefficient identity again, so it gives no new arithmetic; its value is
+diagnostic. It isolates exactly what stands between the axioms and the quadratic prime sum on
+`Re s > 1/2`:
+
+> **the zeros of `F` in the open right half of the critical strip.**
+
+### 102.3 The resulting dichotomy
+
+```
+either  F has zeros with β > 1/2  →  P has branch points there, and the quadratic prime data
+                                      is not extractable by a mean value;
+or      F satisfies RH            →  the quadratic prime data is extractable, but reduces to the
+                                      coefficient identity and yields nothing new.
+```
+
+Both branches are recorded elsewhere in the programme (§47: `RH ⇏ MI`; §31, §46.4: mean-value routes
+blocked). What is new here is that the *reason* differs from what §46.4 recorded: the mean-square
+size is fine for `log F`, and the blockage is purely the branch points. **Recorded so that no later
+cycle re-derives the size obstruction for `log F`; it does not exist.**
+
+### 102.4 Residue
+
+Theorem 53 is an unconditional mean-square bound for `log F` on every line right of the critical
+line, valid for every `F ∈ S`, with no zero-density input. It is the strongest unconditional
+mean-value statement the programme has produced, and it is available as an input elsewhere — in
+particular it is the natural first step towards hypothesis (a) of §90, whose difficulty (§100.1) lies
+in getting from a `T log²T` bound to the `T^{1−c(σ−1/2)}` density estimate.
+
+---
+
+## 103. Cycle 103 (2026-07-26) — removing hypothesis (a), and the displacement–coefficient duality
+
+### 103.1 Hypothesis (a) can be traded for RH
+
+§100.1 recorded that hypothesis (a) — a Selberg-type zero-density estimate — is of moment-problem
+difficulty. It exists only to make Selberg's approximation of `log F` on the critical line valid, and
+its role is to guarantee that most `t` have no zeros with `β > 1/2` nearby. **Under RH for `F` there
+are none at all**, so:
+
+> **Theorem 47′ (unconditional in the density, conditional on RH).** Let `F, G ∈ S` satisfy RH and
+> have identical gamma factors and conductors. If `Σ_{p≤x}|a_F(p) − a_G(p)|²/p = O(1)`, then
+> `Var(S_F − S_G) = O(1)`, `N_F − N_G` is bounded (being integer-valued), and the zeros pair with
+> `|γ_n^F − γ_n^G| ≪ 1/log T`.
+>
+> **Theorem 49′ (under RH).** `n_F = 0` ⟺ `Var(S_F) = O(1)` ⟺ the zeros of `F` are rigid.
+
+So the chain of §§88–96 is available with a single, standard hypothesis instead of an unproven
+density estimate. Recorded as the cleanest form of those results.
+
+### 103.2 The pair explicit formula has no archimedean term
+
+For `F, G ∈ S` with **identical** gamma factors, conductors and root numbers, subtracting the two
+explicit formulae cancels every archimedean and conductor contribution exactly:
+
+> **Theorem 54 (displacement–coefficient duality).** For any admissible even test function `φ` with
+> Fourier transform `φ̂`,
+> ```
+> Σ_{ρ_F} φ(γ_F) − Σ_{ρ_G} φ(γ_G)
+>       = −(1/2π) Σ_{n ≥ 2} ( Λ_F(n) − Λ_G(n) ) n^{−1/2} ( φ̂(log n) + \overline{φ̂(log n)} ) ,
+> ```
+> with **no** `Γ`-factor term, no `log Q` term and no pole term. The zero data of the pair and the
+> coefficient differences are exactly Fourier-dual.
+
+Under the pairing hypothesis `γ_n^F = γ_n^G + ε_n`, expanding the left side gives
+```
+Σ_n φ'(γ_n^G) ε_n + O( ‖φ''‖_∞ Σ_n ε_n² )
+   = −(1/π) Σ_p c_p p^{−1/2} Re φ̂(log p) + (k ≥ 2 terms) ,   c_p = a_F(p) − a_G(p) .
+```
+
+> **This is the exact bridge between (b′) and the prime side, and it is free of archimedean noise.**
+> Choosing `φ` with `φ'` aligned to the signs of the `ε_n` makes the left side `≍ Σ_n |ε_n|`, while
+> Cauchy–Schwarz bounds the right side by `(Σ_p|c_p|²/p)^{1/2}·(Σ_p |φ̂(\log p)|²)^{1/2}`, whose first
+> factor is **bounded** precisely when `n_R = 0`.
+
+### 103.3 Why this is the right tool
+
+Every earlier attempt to link the zeros of `F` and `G` to their coefficients (§87.2, §90.2, §92) was
+blocked either by archimedean main terms that swamped the signal or by a scale mismatch. Theorem 54
+has neither defect: the archimedean parts cancel *identically* because the two functions share their
+gamma factor and conductor, and both sides live at the same scale — `φ` localised at scale `1/log T`
+sees the mean spacing on the left and primes up to `T^{O(1)}` on the right.
+
+**[OPEN CORE], sharpened once more.** Show that
+```
+Σ_n |ε_n| ≫ T      whenever F ≠ G,
+```
+i.e. that non-identical elements of `S` with the same archimedean data cannot have their zeros
+displaced by `o(1/log T)` on average. By Theorem 54 this is equivalent to a lower bound for the
+weighted prime sum `Σ_p c_p p^{−1/2}φ̂(log p)` over the admissible test functions — a **linear**
+statement in the coefficient differences, not a quadratic one.
+
+> That last point is the significant one: (b′), and with it (P2) and (ZS), reduces to a **linear**
+> question about `(a_F(p) − a_G(p))_p`, whereas everything in Conjecture A and Conjecture B has so far
+> been irreducibly quadratic. Linear statements about coefficient differences are exactly where this
+> programme has unconditional results (§39.1, Theorem 2, Theorem 52).
+
+---
+
+## 104. Cycle 104 (2026-07-26) — divisor multiplicity one from Theorem 52
+
+### 104.1 An unconditional consequence
+
+> **Theorem 55 (divisor multiplicity one).** Let `F, G ∈ S` with `a_F(p) = a_G(p)` for **all** primes
+> `p`. Then `F/G` is holomorphic and non-vanishing on `Re s > 1/2`; in particular `F` and `G` have the
+> same zeros and poles, with multiplicity, in the open right half of the critical strip. If moreover
+> their gamma factors and conductors agree, the ratio functional equation (Theorem 43) transfers this
+> to `Re s < 1/2`, so the divisors of `F` and `G` agree **off the critical line**.
+>
+> *Proof.* `log(F/G)(s) = Σ_p Σ_{k≥2}(b_F(p^k) − b_G(p^k))p^{−ks}`, since the `k = 1` terms cancel.
+> By Theorem 52 both prime-power series converge absolutely on `Re s > 1/2`, so `log(F/G)` is
+> holomorphic there and `F/G = exp(log(F/G))` is holomorphic and zero-free. ∎
+
+So **the off-critical-line divisor of an element of `S` is determined by its prime coefficients
+alone** — the prime-power coefficients cannot move a zero off the line. This is a clean unconditional
+statement, and it is exactly the sharpest form of "strong multiplicity one" that the axioms give for
+free.
+
+### 104.2 Why it does not close (b′)
+
+Under RH there are no zeros off the critical line, so Theorem 55 is vacuous in the situation of
+Theorem 47′. And in the general case, `c_p ≡ 0` still leaves `F/G` with possible zeros and poles **on**
+the line. Pushing further:
+
+- If `F/G` were entire, it would be a degree-`0` element of `S^♯`, hence (Kaczorowski–Perelli) a
+  Dirichlet polynomial; with an Euler product and `a(p) = 0` for all `p`, matching powers in the
+  degree-`0` functional equation forces `F/G = 1`.
+- But "entire" means `F` and `G` share **all** their zeros, which is (ZS) again.
+
+> **Recorded.** The linear reduction of §103.3 is genuine, but its base case `c_p ≡ 0` couples back to
+> (ZS). The coupling is:
+> ```
+> c_p ≡ 0  ⟹  divisors agree off the line (Thm 55)  ⟹  need: divisors agree on the line  ⟹  F = G.
+> ```
+> The missing step is again a statement about zeros **on** the critical line, at the mean spacing.
+
+### 104.3 Consolidated picture of the pair problem
+
+```
+prime side                          zero side
+Σ_p |c_p|²/p = O(1)   ⟷ (Thm 47′)   |γ_n^F − γ_n^G| ≪ 1/log T          [pairing]
+c_p ≡ 0               ⟹ (Thm 55)    divisors agree off the line        [unconditional]
+c_p arbitrary         ⟷ (Thm 54)    Σ_n φ'(γ_n)ε_n = −(1/π)Σ_p c_p p^{−1/2}Reφ̂(log p)
+                                                                       [exact, no archimedean term]
+```
+The three rows are, respectively, a quadratic statement, a rigidity statement and an exact linear
+duality. Only the third is an identity; the first two are implications. **The programme's pair
+problem is now completely described by these three rows**, and what is missing in every row is the
+same thing: control of the zeros *on* the critical line at the mean spacing.
+
+---
+
+## 105. Cycle 105 (2026-07-26) — Theorem 52's engine, fully machine-checked
+
+Theorem 52 (`log F − Σ_p a_F(p)p^{−s}` is holomorphic on `Re s > 1/2` for every `F ∈ S`) rests on two
+elementary but load-bearing steps. Both are now formalised unconditionally.
+
+1. **Transfer.** `log_coeff_bound`: for `A_0 = 1` satisfying the Newton recursion
+   `n A_n = Σ_{j<n}(n−j)B_{n−j}A_j` and `‖A_n‖ ≤ C R^n`, one has `‖B_n‖ ≤ (4CR)^n` for `n ≥ 1`.
+   Applied at a prime `p` with `A_k = a_F(p^k)`, `C = C_ε`, `R = p^ε` (Ramanujan), this gives
+   `|b_F(p^k)| ≤ (4C_ε)^k p^{kε}`.
+2. **Summability.** `tail_geometric_bound` (new this cycle): if `‖B_n‖ ≤ M^n` for `n ≥ 1` and
+   `Mx < 1`, then `Σ_{k=2}^{N} ‖B_k‖x^k ≤ (Mx)²/(1−Mx)` **uniformly in `N`**. With `x = p^{−σ}` and
+   `M = 4C_ε p^ε` this gives a per-prime tail of size `O(p^{2ε−2σ})`, and `Σ_p p^{2ε−2σ}` converges
+   for `σ > 1/2 + ε`.
+
+Letting `ε → 0` proves Theorem 52. Both steps are `#print axioms`-clean.
+
+> **Note on method.** This is the second paper result in the programme whose proof is carried by a
+> Lean theorem rather than merely checked by one (the first being the use of `le_shift_of_count_le`
+> in Theorem 47). The formalisation has therefore repaid its cost twice: `log_coeff_bound` was
+> originally written as a hygiene check on an Euler-product manipulation, and turned out to be the
+> exact tool that removes the `θ`-gap of §99.
+
+**Consolidated formal corpus: 46 theorems in 13 modules, all unconditional, all axiom-clean.**
+
+**Verification note (cycle 105).** `tail_geometric_bound` was first written with a `Finset.map`-based
+index shift; `lake env lean` reported it clean while `lake build` rejected it (two `omega` failures
+inside the embedding's injectivity proof, and an unknown lemma name). The proof was rewritten using
+`Finset.sum_Ico_eq_sum_range` and `geom_sum_eq`, and **`lake build` now passes**; both
+`log_coeff_bound` and `tail_geometric_bound` audit to
+`[propext, Classical.choice, Quot.sound]`. Process rule recorded: *`lake build` is authoritative;
+never record a result as formalised on the strength of `lake env lean` alone* — in this tree a
+concurrent editor can leave the two disagreeing.
+
+---
+
+## 106. Cycle 106 (2026-07-26) — displacement energy, and where the linear route stalls
+
+Pushing §103.3's linear reduction with Theorem 54.
+
+### 106.1 The displacement statistics
+
+Take `φ` a bump of width `H` at height `t_0`. Then `φ̂` is concentrated on `|ξ| ≲ 1/H`, so the prime
+side of Theorem 54 sees only primes with `log p ≲ 1/H`:
+
+- **Wide windows (`H ≫ 1`).** The prime side is essentially empty, so
+  `Σ_{γ_n ∈ window} ε_n = o(H)` — the displacements **cancel** over long windows. A real constraint,
+  but not a contradiction.
+- **Narrow windows (`H ≍ 1/log T`).** The prime side reaches `p ≲ T`, and the left side is
+  `≈ (log T)·ε_n` for the single zero in the window. Hence
+  ```
+  ε_n  ≈  −(1/(π log T)) Σ_p c_p p^{−1/2} cos(γ_n log p + arg c_p)  +  (k ≥ 2 terms) .
+  ```
+  **Each individual displacement is a prime sum.**
+
+Averaging the square over `n` (treating the phases `γ_n log p` as equidistributed — this step is
+heuristic, and is flagged as such) gives
+
+> **Relation 56 (displacement energy; derivation partly heuristic).** With
+> `A := (1/2)Σ_p|c_p|²/p + (k ≥ 2 contributions)`,
+> ```
+> Σ_{γ_n ≤ T} ε_n²  ≍  T·A / log T ,        Σ_{γ_n ≤ T} |ε_n|  ≍  T·√A .
+> ```
+> So the pairing `|ε_n| ≪ 1/log T` established in Theorem 47′ is *typical*, not exceptional, and
+> `A = 0` would force the zero sets to coincide exactly.
+
+### 106.2 Where it stalls, precisely
+
+`A = 0` requires **both** `c_p = 0` for all `p` **and** the `k ≥ 2` contributions to vanish. The
+`k ≥ 2` part is not negligible at the `1/2`-line: the `k = 2` term of the prime side is
+`Σ_p Δb(p²)·p^{−1}` with `Δb(p²) = a_F(p²) − a_G(p²)` (using `c_p = 0`), and Theorem 52 gives
+convergence of the prime-power series only for `σ > 1/2`, **not at `σ = 1/2`**. So:
+
+> **`c_p ≡ 0` does not by itself make the prime side of the explicit formula vanish.** What is needed
+> in addition is `Σ_p |a_F(p²) − a_G(p²)|/p < ∞`, i.e. control of the *second* coefficients.
+
+That is exactly **strong multiplicity one in `S`**, which is open unconditionally. Note that the
+`p²`-coefficients are the subject of the programme's first formalised identity,
+`selberg_pairing_prime_sq`:
+```
+f(p)·conj(g(p)) = (f * conj g)(p²) − f(p²) − conj(g(p²)) ,
+```
+so the `k = 2` obstruction is precisely the object that identity was built for, met again from the
+zero side.
+
+> **Recorded.** The linear route of §103.3 reduces (b′) to a linear statement about `c_p`, but its
+> base case `c_p ≡ 0` requires strong multiplicity one at the level of `p²`-coefficients. The
+> programme has an exact algebraic identity for those coefficients but no analytic control of
+> `Σ_p |Δ_2(p)|/p`. **That sum is the smallest open quantity the programme has reached.**
+
+### 106.3 Why that is worth stating
+
+Every previous "smallest open quantity" in this programme was quadratic (`Σ_p|a_F(p)|²/p`,
+`Var(S_F)`, the pair correlation at `α ≍ 1`). `Σ_p |a_F(p²) − a_G(p²)|/p` is **linear** in the
+coefficient differences at prime squares. It is bounded by `2Σ_p (|a_F(p²)| + |a_G(p²)|)/p`, which
+diverges under Ramanujan alone, so it needs cancellation — but cancellation in a *linear* prime sum
+is exactly what the programme's unconditional results (Theorem 2, §39.1, Theorem 52) are about.
+
+**[OPEN CORE], smallest form reached.** For `F ≠ G` in `S` with the same gamma factor, conductor and
+root number and with `a_F(p) = a_G(p)` for all `p`: show `Σ_{p ≤ x}(a_F(p²) − a_G(p²))/p` is
+unbounded, or exhibit the obstruction to doing so.
+
+---
+
+## 107. Cycle 107 (2026-07-26) — integrality **at the critical line**: the prime-square density theorem
+
+§85.1 proved that integrality in `S` cannot come from anywhere in a neighbourhood of `Re s ≥ 1`; it
+must come from the critical strip. This cycle produces the first such statement.
+
+### 107.1 The theorem
+
+> **Theorem 57 (prime-square integrality).** Let `F, G ∈ S` satisfy `a_F(p) = a_G(p)` for **all**
+> primes `p`, and put `Δ(p) := a_F(p²) − a_G(p²)`. If the logarithmic density
+> ```
+> c := lim_{x→∞} (loglog x)^{−1} Σ_{p ≤ x} Δ(p)/p
+> ```
+> exists, then
+> ```
+> c = − ord_{s = 1/2}(F/G) ∈ Z .
+> ```
+>
+> *Proof.* Since the `k = 1` terms cancel and `b(p²) = a(p²) − a(p)²/2`, the difference of logarithms is
+> ```
+> log(F/G)(s) = Σ_p Δ(p) p^{−2s} + H(s) ,   H(s) := Σ_p Σ_{k≥3} (b_F(p^k) − b_G(p^k)) p^{−ks} .
+> ```
+> By the transfer bound (`log_coeff_bound`, formalised) `|b_F(p^k)| ≤ (4C_ε)^k p^{kε}`, so
+> `Σ_pΣ_{k≥3}|Δb(p^k)|p^{−kσ} ≪ Σ_p (4C_ε)³ p^{3(ε−σ)}`, convergent for `σ > 1/3 + ε`; letting
+> `ε → 0`, **`H` is holomorphic on `Re s > 1/3`**, in particular at `s = 1/2`.
+>
+> Write `D(w) := Σ_p Δ(p)p^{−w}`, so `log(F/G)(s) = D(2s) + H(s)`. If the density `c` exists then
+> `D(w) = −c·log(w−1) + o(log(1/|w−1|))` as `w → 1^+`, because `Σ_p p^{−w} = −log(w−1) + O(1)`.
+>
+> On the other side, `F/G` is **meromorphic** at `s = 1/2` (both `F` and `G` are meromorphic on `C`),
+> so with `m := ord_{s=1/2}(F/G) ∈ Z` the function `log(F/G)(s) − m·log(s−1/2)` is holomorphic near
+> `s = 1/2`. Comparing the two expressions at `w = 2s → 1` gives `−c = m`. ∎
+
+### 107.2 The full critical line
+
+The same argument at `w = 1 + 2iτ`:
+
+> **Corollary 58 (divisor detection).** For every `τ ∈ R`, if
+> `c_τ := lim (loglog x)^{−1}Σ_{p≤x} Δ(p)p^{−2iτ}/p` exists, then
+> ```
+> c_τ = − ord_{s = 1/2 + iτ}(F/G) ∈ Z .
+> ```
+> Hence `c_τ = 0` for all but countably many `τ`, and the exceptional set is **exactly the divisor of
+> `F/G` on the critical line**, with the density reading off the multiplicity.
+
+### 107.3 Why this matters
+
+- It is the **first integrality statement in the programme located on the critical line**, and it is
+  unconditional. Every earlier one (Theorem 2, §39.1, Theorem 10) lived at `Re s = 1`, where §85.1's
+  witness `L(·,χ)^c` shows integrality cannot be forced.
+- The mechanism is the same monodromy/pole-order mechanism identified in §74 as the only one that
+  fires — but it is now applied at `s = 1/2`. What made that possible is Theorem 52's transfer bound,
+  which pushes the `k ≥ 3` prime-power tail all the way to `Re s > 1/3`, leaving the `k = 2` term
+  alone at the critical line. **The `k = 2` term is exactly the quadratic-in-`p²` datum that the
+  programme's very first formalised identity, `selberg_pairing_prime_sq`, was built to isolate.**
+- It converts the "smallest open quantity" of §106.3 into a statement with an integral answer: the
+  density `Σ_{p≤x}(a_F(p²) − a_G(p²))/p / loglog x` is not merely bounded or unbounded — **when it
+  exists it is an integer, namely minus the order of `F/G` at `1/2`.**
+
+### 107.4 Consequences for strong multiplicity one
+
+If `a_F(p) = a_G(p)` for all `p` and `F ≠ G`, then by Theorem 55 the divisors of `F` and `G` agree
+off the critical line, so `F/G` has divisor supported **on** the line; Corollary 58 says that divisor
+is read off the prime-square densities `c_τ`. Therefore:
+
+> **Corollary 59.** With `a_F(p) = a_G(p)` for all `p`: `F = G` **iff** `c_τ = 0` for every `τ` and
+> `F/G` has no divisor on the critical line — and by Corollary 58 the second condition is implied by
+> the first. So
+> ```
+> a_F(p) = a_G(p) ∀p   and   Σ_{p≤x}(a_F(p²) − a_G(p²))p^{−2iτ}/p = o(loglog x) ∀τ   ⟹   F/G is entire
+> ```
+> and then, by the degree-zero classification plus the Euler product (§104.2), `F = G`.
+
+**This is an unconditional strong-multiplicity-one theorem in `S`, conditional only on the vanishing
+of the prime-square densities** — a strictly weaker and far more concrete hypothesis than anything
+the programme has previously required.
+
+---
+
+## 108. Cycle 108 (2026-07-26) — MI reduces to integrality of *linear* prime-square densities
+
+Theorem 57 produced integrality on the critical line for a **difference** of two elements. This cycle
+asks what the same mechanism gives for a single `F`, and finds a new sufficient condition for MI.
+
+### 108.1 The exact identity, from the programme's first formalised theorem
+
+`selberg_pairing_prime_sq` (Lean, unconditional): for arithmetic functions with `f(1)=g(1)=1` and
+`p` prime,
+```
+f(p)·conj(g(p)) = (f * conj g)(p²) − f(p²) − conj(g(p²)) .
+```
+Applied with `f = g = a_F` (so `f * conj g` is the coefficient system of `F·\bar F ∈ S`):
+
+> ```
+> |a_F(p)|²  =  a_{F\bar F}(p²)  −  2 Re a_F(p²) .
+> ```
+
+Dividing by `p`, summing over `p ≤ x` and normalising by `loglog x`:
+
+> **Theorem 60 (energy as a combination of prime-square densities).** Define, for `H ∈ S`, the
+> **prime-square density** `δ₂(H) := lim_{x→∞}(loglog x)^{−1} Σ_{p≤x} a_H(p²)/p` when it exists. Then
+> ```
+> n_F  =  δ₂(F\bar F)  −  2 Re δ₂(F) .
+> ```
+> In particular
+> ```
+> ( δ₂(H) ∈ Z for every H ∈ S )   ⟹   n_F ∈ Z for every F ∈ S   ⟹   Selberg's Conjecture A .
+> ```
+
+**This is a new sufficient condition for MI, and it is *linear*.** Every previous formulation of MI in
+this programme was irreducibly quadratic in the prime coefficients (`Σ_p|a_F(p)|²/p`, the
+Rankin–Selberg pole, the variance of `S_F`, the twist correlation). `δ₂(H)` is a plain logarithmic
+density of a single coefficient sequence `(a_H(p²))_p`.
+
+### 108.2 What the monodromy mechanism actually sees, and the residual coupling
+
+Theorem 57's mechanism reads off densities of the **logarithmic** coefficients `b_H(p²)`, not of
+`a_H(p²)`. The two differ by the Newton relation `b(p²) = a(p²) − a(p)²/2`, so
+
+> ```
+> δ₂(H) = ( density of b_H(p²) ) + ½ · ε₂(H) ,     ε₂(H) := density of a_H(p)² ,
+> ```
+> the **unconjugated energy** `ε₂` (note: `a(p)²`, not `|a(p)|²`).
+
+So integrality of `δ₂` splits into the monodromy-visible part (the `b`-density) and `ε₂/2`. Checking
+consistency: for `H = F\bar F` one has `a_H(p) = 2Re a_F(p)`, and the combination of §108.1 makes the
+`b`-densities cancel identically (as they must, since `log(F\bar F) = 2Re log F` on the reals), the
+surviving content being exactly `n_F = (Re a)²+(Im a)²` densities. **The coupling is therefore
+`ε₂ ↔ n_F`, i.e. between the unconjugated and conjugated energies.**
+
+### 108.3 The resulting target
+
+> **(PSD) Prime-square density integrality.** For every `H ∈ S` the density
+> `δ₂(H) = lim (loglog x)^{−1}Σ_{p≤x} a_H(p²)/p` exists and is an integer.
+
+- `PSD ⟹ MI ⟹ Conjecture A` (Theorem 60).
+- `PSD` is a statement about a **single, linear** logarithmic density, of the kind for which this
+  programme already has unconditional theorems (Theorem 2 at `s=1`, Theorem 57 and Corollary 58 at
+  `s=1/2`).
+- In the automorphic case `PSD` holds and is transparent: `a_π(p²) = h_2(α)` and its density counts
+  the multiplicity of the trivial representation in `Sym²ρ ⊕ ∧²ρ`-type decompositions, an integer.
+- Its content beyond `MI` is that the *unconjugated* energy `ε₂(H)` is also integral; `PSD` is
+  therefore formally **stronger** than `MI`, and the honest statement is that it is a new sufficient
+  condition, not an equivalent one.
+
+**[OPEN CORE], new form.** Prove `PSD` for a single `H ∈ S` — equivalently, show that the logarithmic
+density of `(a_H(p²))_p` is the order of a pole of a meromorphic function. Theorem 57 does exactly
+this for differences `F/G` where the linear terms cancel; the single-function case needs the linear
+term `Σ_p a_H(p)p^{−s}` to be separated from the square term at the critical line, which is the one
+step still missing.
+
+---
+
+## 109. Cycle 109 (2026-07-26) — the single-function obstruction is `n_H` itself
+
+§108 left one step: separate the linear term from the square term at the critical line for a single
+`H ∈ S`. This cycle carries it out and finds that the step is **self-referentially** blocked.
+
+### 109.1 The substitution that puts the square term at its density point
+
+Writing the Euler product at `s = w/2`:
+```
+log H(w/2) = Σ_p a_H(p) p^{−w/2}  +  Σ_p b_H(p²) p^{−w}  +  Σ_p Σ_{k≥3} b_H(p^k) p^{−kw/2} .
+```
+Near `w = 1`:
+- the `k = 2` term is `−β·log(w−1) + O(1)` where `β` is the logarithmic density of `b_H(p²)` — the
+  target;
+- the `k ≥ 3` terms converge at `w = 1` (`Σ_p |b_H(p³)|p^{−3/2} < ∞` by the transfer bound), so they
+  are holomorphic there;
+- the left side is `m·log(w−1) + O(1)` with `m = ord_{s=1/2}(H) ∈ Z`, since `H` is meromorphic.
+
+> **Conditional identity.** If `Σ_p a_H(p)p^{−1/2}` converges, then `β = −ord_{s=1/2}(H) ∈ Z`, and
+> more generally `β_τ = −ord_{s=1/2+iτ}(H)` whenever `Σ_p a_H(p)p^{−1/2−iτ}` converges.
+
+### 109.2 The hypothesis is never satisfied — and the reason is `n_H`
+
+Convergence of `Σ_p a_H(p)p^{−1/2−iτ}` requires, by the three-series/variance criterion, that
+```
+Σ_p |a_H(p)|² / p  <  ∞ ,
+```
+i.e. exactly `n_H = 0`. Sanity checks:
+- `H = ζ`: `a(p) = 1`, `Σ_p p^{−1/2}` diverges; and indeed `b_ζ(p²) = 1/2` gives `β = 1/2`, while
+  `ord_{1/2}ζ = 0`, so the conditional identity would be false — the hypothesis correctly fails.
+- `H` self-dual cuspidal of degree `2`: Sato–Tate gives density of `a_H(p)²` equal to `1`, hence
+  `β = −1/2`, while `ord_{1/2}H = 0` generically — again the identity would fail, and again
+  `Σ_p a_H(p)p^{−1/2}` diverges because its variance `Σ_p a_H(p)²/p ~ loglog x` is unbounded.
+
+> **Theorem 61 (self-reference).** For `H ∈ S` the linear prime sum `Σ_p a_H(p)p^{−1/2−iτ}` converges
+> only if `n_H = 0`. Hence the monodromy mechanism of Theorem 57, run for a **single** `H` at the
+> critical line, computes the prime-square density `β_τ` from data whose convergence already requires
+> `n_H = 0`. **The obstruction to obtaining `n_H` by a one-function argument at the critical line is
+> `n_H` itself.**
+
+### 109.3 What this explains, and what it leaves
+
+- It explains uniformly why every one-function critical-line attempt in this programme has failed
+  (§67, §76, §95, §97, §108): they all require separating the linear from the quadratic prime data at
+  `Re s = 1/2`, and the linear data is convergent there exactly when the quadratic answer is `0`.
+- It is consistent with, and sharpens, Theorem 49: when `n_H = 0` the mechanism **does** run and gives
+  `β_τ = −ord_{1/2+iτ}(H) ∈ Z`, matching the rigid-zero picture.
+- **`β` is not an integer in general.** For `ζ^k` it is `k/2`; for self-dual cuspidal `H` it is
+  `−1/2`. So the prime-square *logarithmic* density lies in `½Z`, not `Z` — recorded as a correction
+  to any expectation that `b`-densities are integral. (Theorem 60's `δ₂`, the density of `a_H(p²)`
+  rather than `b_H(p²)`, is the one conjectured integral in (PSD); the two differ by `ε₂/2`, which is
+  exactly the half-integrality just observed.)
+- What survives as a target is unchanged in substance but sharper in form: **(PSD)** for a single
+  `H`, i.e. integrality of `δ₂(H) = (b`-density`) + ½ ε₂(H)`, where the two summands are individually
+  half-integral and their sum is conjecturally an integer.
+
+> **Recorded do-not-retry.** No argument that isolates the `k = 2` term of `log H` at the critical
+> line by discarding or bounding the `k = 1` term can work, for any `H ∈ S` with `n_H > 0`. The two
+> are inseparable there, and the separation constant is `n_H`.
+
+---
+
+## 110. Cycle 110 (2026-07-26) — the linear-cancellation route is exhausted; what Theorem 60 actually buys
+
+### 110.1 Exhaustion
+
+Theorem 57 works because the `k = 1` terms cancel. Which combinations `Σ_i c_i log H_i` have vanishing
+`k = 1` part but non-vanishing `k = 2` part? Since `log` is additive on `S`, the `k = 2` part of any
+such combination is the corresponding combination of the `b_{H_i}(p²)`, and it vanishes whenever the
+product `∏ H_i^{c_i}` is trivial. Concretely, the natural candidate
+`(H_1,H_2,H_3) = (F\bar F, F, \bar F)` with `c = (1,−1,−1)` kills the `k=1` part — but the product is
+`1`, so every `k` vanishes.
+
+> **Recorded.** A combination with vanishing linear part and non-vanishing square part exists **only**
+> when two distinct elements of `S` share all their prime coefficients — precisely the hypothesis of
+> Theorem 57. So Theorem 57 is not a general tool: it is exactly a tool for proving strong
+> multiplicity one, and conjecturally its hypothesis is never satisfiable. That is the normal shape of
+> such a theorem, not a defect, but it closes the search for other linear-cancellation combinations.
+
+### 110.2 What `δ₂` is, in the automorphic world
+
+For `H` automorphic of degree `d` with Satake parameters `α(p)`, the complete homogeneous symmetric
+function of degree `2` gives `a_H(p²) = h_2(α(p)) = χ_{Sym²ρ}(θ_p)`, so
+```
+δ₂(H) = ⟨ χ_{Sym²ρ} , 1 ⟩ = ord_{s=1} L(s, Sym² H) ∈ Z_{≥0} .
+```
+So **(PSD) is the statement that the symmetric-square pole order is an integer** — in the automorphic
+world a triviality, in `S` a functoriality-strength assertion. Recorded so that (PSD) is not mistaken
+for an elementary statement.
+
+### 110.3 What Theorem 60 nevertheless buys
+
+The classical route to MI is: construct the Rankin–Selberg convolution `F × \bar F`, an object of
+**degree `d²`** that does not exist in `S` a priori (§9.1), and read `n_F` off its pole. Theorem 60
+replaces this by
+```
+n_F  =  δ₂(F\bar F)  −  2 Re δ₂(F) ,
+```
+where `F\bar F ∈ S` has degree `2d` and `F ∈ S` has degree `d`. So:
+
+> **The degree-`d²` construction is replaced by two logarithmic densities of prime-square coefficients
+> of objects already in `S`.** No new `L`-function has to be constructed; what has to be proved is the
+> integrality of two ordinary densities.
+
+That is a genuine reduction in the *objects* involved, even though the difficulty migrates rather than
+disappearing. It also explains the classical picture cleanly: in the self-dual case
+`F × F = Sym²F ⊞ ∧²F`, and Theorem 60 is the coefficient-level shadow of that decomposition, obtained
+from `selberg_pairing_prime_sq` with no representation theory at all.
+
+### 110.4 Standing position after 110 cycles
+
+The programme has produced two genuinely new *unconditional* integrality theorems located where §85.1
+proves they must be — on the critical line: Theorem 57 (`c = −ord_{1/2}(F/G) ∈ Z` for pairs with equal
+prime coefficients) and Corollary 58 (the divisor of `F/G` on the critical line is read off the
+prime-square densities). Theorem 61 explains why the single-function analogue cannot be obtained: the
+separation constant between the linear and quadratic prime data at `Re s = 1/2` **is** `n_H`.
+
+Together these give the sharpest available description of Conjecture A:
+
+> `n_F` is the separation constant between the linear and the quadratic prime data of `F` at the
+> critical line. Every mechanism that could certify it as an integer requires that separation to have
+> already been performed. The only cases in which the separation is available are those where the
+> linear data cancels — i.e. between two elements of `S` with identical prime coefficients — and there
+> the mechanism does fire, unconditionally (Theorem 57).
