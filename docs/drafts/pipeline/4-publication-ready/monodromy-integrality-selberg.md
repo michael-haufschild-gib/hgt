@@ -348,3 +348,165 @@ the `ℋ²` theory of Hedenmalm–Lindqvist–Seip). (iii) The collision functio
 density `T` (Bombieri–Perelli regime) and cannot supply a statement at density `T log T`.
 (iv) No `L²` accounting of the sawtooth harmonics of a rigid zero set against the prime frequencies
 yields a contradiction: the sawtooth's total mass is a bounded constant.
+
+## 8. Integrality on the critical line (cycles 101–110)
+
+**Theorem 52.** For every `F ∈ S`, `log F(s) − Σ_p a_F(p)p^{−s}` is holomorphic on `Re s > 1/2`.
+*Proof.* Ramanujan gives `|a_F(p^k)| ≤ C_ε p^{kε}`; the transfer bound
+(`log_coeff_bound`, Lean) yields `|b_F(p^k)| ≤ (4C_ε)^k p^{kε}`; the geometric tail bound
+(`tail_geometric_bound`, Lean) gives a per-prime tail `O(p^{2(ε−σ)})`, and `Σ_p p^{2(ε−σ)}` converges
+for `σ > 1/2 + ε`. ∎ In particular axiom (4)'s exponent `θ` is subsumed by axiom (5): every `F ∈ S`
+has effective `θ = 0`, and the Euler product reaches the critical line.
+
+**Theorem 53.** For every `F ∈ S` and fixed `σ > 1/2`, `∫_0^T|log F(σ+it)|²dt ≪_σ T log²T`
+(unconditional). Carlson's *size* hypothesis therefore holds for `log F` on every line right of the
+critical line — unlike for `F'/F`, whose singularity `1/(s−ρ)` is not locally square-integrable. The
+obstruction to applying Carlson is regularity (the branch points at zeros), not size.
+
+**Theorem 57.** Let `F, G ∈ S` with `a_F(p) = a_G(p)` for all primes `p`, and `Δ(p) := a_F(p²) −
+a_G(p²)`. If `c := lim (loglog x)^{−1}Σ_{p≤x}Δ(p)/p` exists then
+```
+c = − ord_{s=1/2}(F/G) ∈ Z .
+```
+*Proof.* The `k=1` terms cancel and `b(p²) = a(p²) − a(p)²/2`, so
+`log(F/G)(s) = Σ_pΔ(p)p^{−2s} + H(s)` with `H` holomorphic on `Re s > 1/3` by the transfer bound.
+Partial summation gives `Σ_pΔ(p)p^{−w} = −c·log(w−1) + O(1)` as `w → 1^+`; meromorphy of `F/G` at
+`s = 1/2` gives `log(F/G)(s) = m·log(s−1/2)+O(1)` with `m ∈ Z`. Compare at `w = 2s → 1`. ∎
+
+**Corollary 58.** For every `τ`, `c_τ = −ord_{s=1/2+iτ}(F/G) ∈ Z`: the divisor of `F/G` on the
+critical line is read off the prime-square densities, with multiplicity.
+
+**Corollary 59.** With `a_F(p) = a_G(p)` for all `p`: if `c_τ = 0` for every `τ` then `F/G` is entire,
+hence a Dirichlet polynomial with an Euler product and `a(p)=0`, hence `F = G`.
+
+**Theorem 60.** From `selberg_pairing_prime_sq` (Lean), `|a_F(p)|² = a_{F\bar F}(p²) − 2Re a_F(p²)`,
+so with `δ₂(H) := lim (loglog x)^{−1}Σ_{p≤x}a_H(p²)/p`,
+```
+n_F = δ₂(F\bar F) − 2 Re δ₂(F) .
+```
+Hence integrality of the prime-square densities of elements of `S` implies Conjecture A. This
+replaces the degree-`d²` Rankin–Selberg construction by two logarithmic densities of objects already
+in `S` (of degrees `2d` and `d`).
+
+**Theorem 61.** `Σ_p a_H(p)p^{−1/2−iτ}` converges only if `n_H = 0`. Hence the single-function
+analogue of Theorem 57 at the critical line is self-referentially blocked: it would compute `n_H` from
+data whose convergence requires `n_H = 0`. **`n_F` is the separation constant between the linear and
+the quadratic prime data of `F` at the critical line.**
+
+**Theorem 62 (multi-point Energy Gap).** For `F ∈ S`, `Σ_{θ∈R}(ord_{s=1+iθ}F)² ≤ n_F`. The family
+`e_θ(p) = p^{iθ}` is orthonormal for the logarithmic prime form because `Σ_p p^{−1−iθ}` is bounded for
+`θ ≠ 0`; Bessel's inequality for a positive semi-definite form (Lean: `bessel_of_orthonormal`) gives
+the result. Theorem 10 is the single-term case.
+
+**Theorem 63 (critical-line divisor energy).** For `F,G ∈ S` with identical gamma factors and
+conductors and `a_F(p) = a_G(p)` for all `p`, with `Δ(p) = a_F(p²) − a_G(p²)` and
+`E = lim (loglog x)^{−1}Σ_{p≤x}|Δ(p)|²/p`,
+```
+Σ_{τ∈R} ( ord_{s=1/2+iτ}(F/G) )² ≤ E ,
+```
+so the divisor of `F/G` on the critical line has at most `E` points.
+
+**Theorem 64 (strong multiplicity one under Bounded Satake).** If in addition `E < ∞` — in particular
+under Bounded Satake — then `F/G` has finitely many zeros and poles (none off the line, by
+Theorem 55), hence is a rational function times `e^{as+b}`; being a Dirichlet series it is constant,
+so `F = G`. Bounded Satake is strictly weaker than automorphy and than the polynomial Euler product
+conjecture, and no Rankin–Selberg convolution is used.
+
+## 9. Rigid zeros (cycles 121–125)
+
+**Theorem 69 (rigid-zero Poisson identity).** If `F ∈ S` has zeros exactly at `γ_n = M_F^{−1}(n)`,
+`M_F` the Riemann–von Mangoldt main term with `M_F' = ν`, then substituting `u = M_F(t)` and applying
+Poisson summation, `Σ_ρ φ(γ_ρ) = Σ_{k∈Z} ĝ(k)` with `ĝ(k) = ∫φ(t)ν(t)e^{−2πikM_F(t)}dt`, whose
+`k = 0` term is exactly the archimedean term of the explicit formula. Hence
+```
+Σ_{k≠0} ∫φ(t)ν(t)e^{−2πikM_F(t)}dt = −𝒫[φ] ,
+```
+`𝒫[φ]` the prime side. The archimedean parts cancel identically because `ν = M_F'`.
+
+**Theorem 70 (perfect rigidity forces triviality; unconditional).** Let `F ∈ S` be entire with exactly
+rigid zeros. Then `F = 1`.
+*Proof.* Take `φ(t) = ψ((t−t_0)/P)e^{it\log p}`, `P = p^{1+η}`. The `k`-th phase derivative is
+`\log p − k(d\log(t/2π)+2πc)`, so for `p < t_0^d` no `k ≠ 0` is stationary and repeated integration by
+parts gives `Σ_{k≠0}|ĝ(k)| ≪_A P^{1−A}(\log t_0)^{1−A}`. On the prime side `φ̂` concentrates on
+`|n − p| ≲ p/P < 1`, isolating `n = p` with tail `≪_A p^{1/2}p^{−Aη}`, so
+`𝒫[φ] ≍ |a_F(p)|p^{1/2+η}\log p`. Letting `t_0 → ∞` at fixed `p` forces `a_F(p) = 0`; iterating at
+prime powers gives `F = 1`. ∎
+
+This settles the question of whether an entire order-1 function with a Selberg functional equation can
+have a perfect log-lattice of zeros and an Euler product: **it cannot, unless trivial.** Equivalently
+(Theorem 49) it settles the exactly-rigid case of the Energy Gap.
+
+**Sharpness.** The hypothesis cannot be weakened to `S_F` bounded. For a general zero set the
+identities `Σ_γφ(γ) = ∫φν − ∫φ'S_F` and `∫φ'S_F = 𝒫[φ]` show that the displacement correction *is*
+`−𝒫[φ]`, so any "rigid model plus displacement" decomposition cancels identically and yields no
+arithmetic information. Exact rigidity is exactly the hypothesis under which `∫φ'S_F` admits an
+evaluation external to the explicit formula.
+
+## 10. The zero-counting fluctuation (cycles 127–133)
+
+Throughout, `S_F = N_F − M_F` with `M_F` the Riemann–von Mangoldt main term, and
+`𝒫[φ] = ∫φ'(t)S_F(t)dt` is the Weil explicit formula written as a pairing (an identity).
+
+**Theorem 75 (unconditional).** If `F ∈ S` is entire with `|S_F| ≤ K` then `Σ_{p≤x}|a_F(p)|²/p ≤ CK²`
+for all `x`; in particular `n_F = 0`. *Proof:* test `𝒫[φ] = ∫φ'S_F` against the amplifier
+`φ'(t) = Σ_{p≤x}\overline{a_F(p)}p^{−1/2}ψ((t−t_0)/P)e^{it\log p}` with `P ≫ x`; the arithmetic side is
+`(P/2π)E_x`, the analytic side `≤ K‖φ'‖_1 ≤ K√(2P)‖φ'‖_2` with `‖φ'‖_2² ≍ PE_x` by
+Montgomery–Vaughan; the powers of `P` cancel. (Lean: `energy_le_of_amplifier`.)
+
+**Theorem 76 (unconditional).** The same amplifier with Cauchy–Schwarz in `L²` gives
+`(1/P)∫_{t_0}^{t_0+P}|S_F|² ≫ n_F\log\log P`: positive prime energy forces unbounded fluctuation, with
+no zero-density estimate, no Selberg CLT and no RH.
+
+**Theorem 77 (unconditional).** If `n_F = 0` then `Σ_n|Λ_F(n)|²/(n\log²n) < ∞`, so the expansion
+`𝒮 = −(1/π)Σ_nΛ_F(n)n^{−1/2}\sin(t\log n)/\log n` converges in `B²`; since `S_F` and `𝒮` both satisfy
+`∫φ'· = 𝒫[φ]`, they differ by a constant. Hence `S_F` is Besicovitch almost periodic with
+`‖S_F − c‖²_{B²} = (1/2π²)Σ_n|Λ_F(n)|²/(n\log²n)` and bounded mean square uniformly in `t_0`.
+
+**Theorem 78.** With the amplifier built from a second element `G`,
+`Σ_{p≤x}a_F(p)\overline{a_G(p)}/p = (2πi/P)∫φ'_G S_F + o(1)`: the full complex Selberg pairing —
+including the alternating form `ω`, invisible to all prime energies by Theorem 16 — is a pairing of
+the **zeros of `F`** against the **primes of `G`**.
+
+**Theorem 79 (unconditional).** For non-constant `F ∈ S` and any `c`,
+`\liminf (1/T)∫_0^T|S_F − c|² ≥ 1/12`. *Proof:* `N_F` is integer-valued, so
+`|S_F − c| ≥ \mathrm{dist}(M_F+c, Z)`; `d_F ≥ 1` gives `M_F'' ≠ 0`, so `\{M_F+c\}` equidistributes and
+the mean of `\mathrm{dist}²` tends to `1/12`.
+
+**Corollary 80.** `n_F = 0 ⟹ Σ_p|a_F(p)|²/p ≥ π²/6 − O(1) > 1`: the convergent prime energy cannot be
+small.
+
+**Corollary 81.** Equality in Theorem 79 holds iff `N_F = \mathrm{round}(M_F+c)`, i.e. iff the zeros are
+exactly rigid; with Theorem 70 this gives strict inequality for every non-constant `F ∈ S`. The bound
+`1/12` is attained exactly by the rigid configuration, which Theorem 70 shows is trivial.
+
+## 11. The characteristic-function method (cycles 139–142)
+
+Write `M\{g\} = \lim_T (1/T)∫_0^T g`. Integrality of the zero-counting function gives, for `F ∈ S`,
+`e^{2πikS_F(t)} = e^{−2πikM_F(t)}(1+o(1))`, an identity, not an estimate.
+
+**Theorem 84 (unconditional).** No non-constant `F ∈ S` has `Σ_p|a_F(p)|²/p < ∞`; equivalently
+`n_F = 0 ⟹ F = 1`.
+*Proof.* (A) `d_F ≥ 1` gives `M_F' = ν → ∞` monotonically, so van der Corput's first-derivative test
+yields `M\{e^{2πikS_F}\} = 0`. (B) If `n_F = 0` then by Theorem 77 `S_F = c + 𝒮` with `𝒮 ∈ B²`;
+truncating (`|M\{e^{2πik𝒮}\} − M\{e^{2πik𝒮_N}\}| ≤ 2πk‖𝒮−𝒮_N‖_{B²}`) and applying Weyl equidistribution
+to the `Q`-independent frequencies `\log p` gives `M\{e^{2πik𝒮}\} = ∏_p I_p` with
+`I_p = (1/2π)∫_0^{2π}\exp(2πikΣ_j A_{p^j}\sin(jθ+φ_{p^j}))dθ`. Since `1 − |I_p| = O(k²Σ_jA_{p^j}²)` and
+`ΣA_n² < ∞`, the product converges; `A_p → 0` makes all but finitely many `I_p ≈ J_0(2πkA_p) ≠ 0`, and
+the finitely many exceptions are real-analytic in `k` with value `1` at `k = 0`, so some integer
+`k ≠ 0` makes the product non-zero. Contradiction. ∎
+*Sharpness.* For `n_F > 0`, `ΣA_n² = ∞` makes the product vanish, matching (A) — no contradiction. The
+check against `ζ` (where `Σ_p 1/p = ∞`) confirms the method does not overreach.
+
+**Theorem 85 (quantitative strong multiplicity one; unconditional).** If `F, G ∈ S` have identical
+gamma factors and conductors and `Σ_{p≤x}|a_F(p) − a_G(p)|²/p = O(1)`, then `F = G`.
+*Proof.* `M_F = M_G` gives `S_F − S_G = N_F − N_G ∈ Z` pointwise, so `M\{e^{2πik(S_F−S_G)}\} = 1`. The
+hypothesis puts the difference expansion in `B²`, so the same Weyl argument evaluates it as
+`e^{2πikΔc}∏_p I_p`. Then `|∏_p I_p| = 1` with `|I_p| ≤ 1` forces every `|I_p| = 1` (Lean:
+`norm_eq_one_of_prod_norm_eq_one`), which happens only when each local trigonometric polynomial is
+constant, i.e. all coefficient differences vanish. ∎ Pole orders must agree under the hypothesis, so
+entireness is not needed.
+
+**Scope.** The geometric side of the method takes only the values `0` (single `F`, chirp `M_F`) and
+`1` (pair with equal archimedean data, chirp cancels). It therefore decides exactly whether a prime
+energy vanishes, settling `n_F = 0 ⟹ F = 1` and `n_{F/G} = 0 ⟹ F = G`, and cannot produce a general
+integer — so it does not reach `n_F ∈ Z`.

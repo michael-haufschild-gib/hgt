@@ -7142,3 +7142,1423 @@ fixed point above every known result, attracting from both sides."
 *answer* and misleading for the *method*; C271 supplies the distinction. Not a retraction — the
 formal statements `canonical_selfDual`/`canonical_preserves_mu` are exactly right — but the prose
 needed the qualification.
+
+## Cycle 106 — **THEOREM 23: the `A` machinery has a hard floor at `(√5−1)/8`, and Bourgain's record is on it**
+
+### C272 — closed form for the `A`-step `[PROVED, LEAN-CERTIFIED]`
+
+    **epMu(A(κ,λ)) = (κ+λ)/(4κ+4) = (4μ + 1)/(8κ + 8)**      (`epMu_procA_closed`)
+
+The output depends on the input only through `μ` (numerator) and `κ` (denominator). **The larger `κ`,
+the better the step** — this is the precise sense in which `A` needs an *off-line* input, and it
+explains C271: canonicalisation shrinks `κ` to `μ`, throwing away exactly the resource `A` consumes.
+
+### C273 — the universal constraint `[PROVED, LEAN-CERTIFIED]`
+
+Every exponent pair has `λ ≥ 1/2`, hence `κ + 1/2 ≤ κ+λ = 2μ + 1/2`, i.e. **`κ ≤ 2μ`**
+(`kappa_le_two_mu`). Substituting the extreme gives the best a single `A`-step can ever do:
+
+> **`[THEOREM 23]` `epMu(A(κ,λ)) ≥ R(μ) := (4μ+1)/(16μ+8)` for every exponent pair.**
+> `procA_ge_relaxedStep`; axioms `[propext, Classical.choice, Quot.sound]`.
+
+### C274 — the chain, and where it stops
+
+Iterating `R` from the convexity bound `μ₀ = 1/4`:
+
+| step | value | decimal | note |
+|---|---|---|---|
+| `μ₀` | `1/4` | `0.25` | convexity |
+| `μ₁` | `1/6` | `0.166667` | **= Weyl exactly** |
+| `μ₂` | `5/32` | `0.15625` | (Huxley's `32/205 = 0.15610` is slightly better) |
+| `μ₃` | **`13/84`** | **`0.154762`** | **= Bourgain exactly** |
+| `μ₄` | `17/110` | `0.1545455` | |
+| `μ₅` | `89/576` | `0.1545139` | |
+| limit | `(√5−1)/8` | `0.15450849…` | root of `16μ²+4μ−1` |
+
+> **`[THEOREM 23, floor]` `R` has fixed points at the roots of `16μ²+4μ−1`; below the positive root
+> `R` strictly *increases* `μ` (`relaxedStep_gt_of_below`). So no number of `A`-steps from the
+> convexity bound can push `μ` below `(√5−1)/8 = 0.15450849…`.**
+> Bracketed: the quadratic is negative at `0.1545` and positive at `17/110` (`floor_brackets`).
+
+### C275 — the two exact hits
+
+**`μ₁ = 1/6` is Weyl's exponent and `μ₃ = 13/84` is Bourgain's, both exactly.** The relaxed chain —
+derived from nothing but the closed form and `λ ≥ 1/2` — reproduces the first and the current record
+of the subject on the nose.
+
+> **In this accounting, a century of work has advanced `μ` by exactly three optimally-positioned
+> `A`-steps, and the record now sits `1/4620 ≈ 0.00022` above the machinery's absolute floor.**
+
+That is a quantitative answer to "why has progress stalled": **it has essentially stopped because the
+record is within `0.14 %` of a hard floor of the only process that moves `κ+λ`.** Passing
+`(√5−1)/8` — let alone reaching `μ = 0` — requires a mechanism outside the `A`/`B` machinery
+entirely, not a refinement of it.
+
+### `[E27]` — two errors caught in derivation, both of the E24 type
+
+1. Optimising the off-line displacement `d = λ−κ−1/2` over the **box** `[0,½]×[½,1]` rather than over
+   the actual exponent-pair set gave `μ → 17/110 < 13/84` **as an achievable value**, i.e. an
+   apparent new record. False: the optimiser is the pair `(13/42, 1/2)`, which satisfies the box
+   constraints but is not known to be an exponent pair. The box bound is valid only as a **lower**
+   bound on what `A` can achieve — which is how Theorem 23 is stated.
+2. `floor_brackets` was first written asserting the quadratic is *negative* at `17/110`. It is
+   positive (`17/110 = 0.1545455 > 0.1545085`). Caught by the compiler.
+
+## Cycle 107 — **THEOREM 24: the floor *is* the trivial bound, and it is `B`-self-dual**
+
+Theorem 23 left the floor `(√5−1)/8` looking like an artefact of one particular relaxation. It is not.
+
+### C276 — the floor's constraint is exactly the trivial bound `[PROVED, LEAN-CERTIFIED]`
+
+    **κ ≤ 2μ  ⟺  λ ≥ 1/2**       (`kappa_le_two_mu_iff`, an equivalence, not an implication)
+
+`λ ≥ 1/2` is the *trivial bound* on `Σ_{n∼N}n^{−it}` — it says the pair is at least as good as
+"no cancellation at all". So:
+
+> **`[THEOREM 24]` The floor `(√5−1)/8` of the `A` machinery is the trivial bound `λ ≥ 1/2`,
+> propagated through the only process that moves `κ+λ`. It cannot be lowered by improving the
+> intermediate pairs, because every exponent pair satisfies `λ ≥ 1/2` by definition.**
+
+### C277 — and the floor is `B`-self-dual `[PROVED, LEAN-CERTIFIED]`
+
+`B` exchanges the two box constraints — it sends `λ ≥ 1/2` to `κ ≥ 0` and back
+(`procB_exchanges_constraints`) — and preserves `μ` (`epMu_procB`). Running the other route (`B`
+first, converting a large `λ` into a large `κ`, then `A`) gives the *same* bound:
+
+    epMu(A(B(κ,λ))) ≥ R(μ)      (`procBA_ge_relaxedStep`)
+
+> **Both orderings of the two processes are bounded below by the same `R(μ)` (`floor_is_selfDual`).
+> No arrangement of `A` and `B` escapes `(√5−1)/8`.**
+
+### C278 — what this says
+
+The three constants now assembled are all forced by the same structure:
+
+| constant | value | meaning |
+|---|---|---|
+| `(√3−1)/4` | `0.18301` | `A`-inertness threshold on the line = attracting fixed point of the line dynamics |
+| `(√5−1)/8` | `0.15451` | absolute floor of the `A`/`B` machinery = the trivial bound propagated |
+| `13/84` | `0.15476` | the record — `1/4620` above the floor |
+
+> **The record is `0.14 %` above a floor which is nothing but the trivial bound, propagated. The
+> van der Corput machinery has been run essentially to exhaustion; what remains inside it is
+> `1/4620`, and `μ = 0` is not inside it at all.**
+
+**Consequence for the campaign's other results.** The `A`/`B` machinery is *the* route into
+`Σ_{n∼√t}n^{−it}` (the campaign's Weyl-degree trade-off already showed the Taylor/Weyl variant is
+worse). With Theorem 24 the route is now closed quantitatively, not just qualitatively: it terminates
+at `0.1545…`, and LH needs `0`.
+
+**Standing position: every route into and around the critical sum that this campaign can formulate is
+now priced. None reaches `μ = 0`.** LH remains open.
+
+## Cycle 108 — **THEOREM 25: the chain runs for exactly one step, and that step is Weyl 1921**
+
+Theorem 23 left `1/4620` of apparent room inside the `A` machinery. Cycle 108 shows it is not there.
+
+### C279 — saturation is exactly `λ = 1/2` `[PROVED, LEAN-CERTIFIED]`
+
+    **epMu(A(κ,λ)) = R(μ)  ⟺  λ = 1/2**       (`procA_eq_relaxedStep_iff`)
+
+and the unique pair with `λ = 1/2` delivering a given `μ` is
+
+    **saturatingPair μ = (2μ, 1/2)**,   with `epMu (2μ, 1/2) = μ`.   (`epMu_saturatingPair`)
+
+So each step of the chain `1/4 → 1/6 → 5/32 → 13/84 → …` **consumes an exponent pair with `λ = 1/2`**:
+
+| step | required pair | status |
+|---|---|---|
+| `1/4 → 1/6` | `(1/2, 1/2)` | **known** — the trivial pair; this step *is* Weyl's theorem |
+| `1/6 → 5/32` | `(1/3, 1/2)` | **not known** |
+| `5/32 → 13/84` | `(5/16, 1/2)` | **not known** |
+| … | … | |
+| limit | `(0, 1/2)` | **the exponent-pair conjecture** — equivalent to `μ = 0`, i.e. **LH** |
+
+### C280 — the literature check that decides it
+
+*expdb* (Tao et al., 2024): **`(1/2, 1/2)` is the only known exponent pair with `λ = 1/2` exactly.**
+"All proven exponent pairs have `ℓ ≥ 1/2`, with `(1/2,1/2)` being the unique known pair achieving
+`ℓ = 1/2` exactly." That `(0,1/2)` is a pair is Heuristic 5.6 — a conjecture, not a theorem.
+
+> **`[THEOREM 25]` The relaxed chain of Theorem 23 is realisable at exactly **one** step. That step
+> is `1/4 → 1/6`: Weyl's theorem, 1921. Every subsequent step requires an exponent pair with
+> `λ = 1/2` and `κ < 1/2`, of which none is known; and the family's limit `(0, 1/2)` is the exponent
+> pair conjecture, which is equivalent to the Lindelöf hypothesis itself.**
+
+### C281 — the historical account, now complete
+
+> **The `A`/`B` machinery, as actually realisable, terminates at `μ = 1/6` — Weyl, 1921. Everything
+> since (Bombieri–Iwaniec `9/56`, Huxley `32/205`, Bourgain `13/84`) came from outside it.**
+
+And the reason is exact: the machinery's fuel is pairs with `λ = 1/2`, exactly one of which exists,
+and the fuel it would need to reach `μ = 0` **is** `μ = 0`.
+
+> **The van der Corput route is not merely bounded away from LH — it is circular at its limit: the
+> input required to run it to completion is the conclusion.**
+
+That is the campaign's fifth mechanism (circularity) and its first (inertness) firing on the same
+route, with the crossover located exactly at Weyl's theorem. The `1/4620` of Theorem 23 is
+**unreachable**; the realisable floor is `1/6`.
+
+**`[E28]`** Theorem 23's floor `(√5−1)/8` stands as stated (a bound on the relaxation), but cycle
+106's remark that the record "sits `1/4620` above the machinery's absolute floor" over-suggested that
+the gap was available. It is not: the *realisable* floor is `1/6 = 0.1667`, and the record `13/84`
+is already far below it — by methods outside the machinery.
+
+## Cycle 109 — corpus audit, and the first *analytic* (non-exponent-arithmetic) modules
+
+### C282 — corpus search outcome `[MANDATED CHECK, RECORDED]`
+
+`formal_tools.py research` + `rg` over `formal/GaloisForLFunctions`:
+
+* **Present:** a substantial van der Corput tower in `RHTower/` — `VanDerCorput.lean`
+  (`firstDerivTest`, `secondDerivTest`, `norm_le_deriv_budget`), `VanDerCorputWeighted`,
+  `VanDerCorputWeightedAnti`, `VanDerCorputWeightedSecond`, `VanDerCorputWeightedSecondGeneral`.
+  **All of it is integral-side**: bounds for `∫ A(x)e^{iφ(x)}dx`.
+* **Absent:** any **sum-side** machinery — no Weyl differencing identity, no shift/averaging
+  inequality for `Σ_n e(f(n))`, no autocorrelation apparatus. Searches for
+  `kusmin|autocorrelation|blockSum|diffSum` return only the new files.
+
+> **The corpus had the *tests* that are applied after Poisson summation, but not the *differencing*
+> that precedes them.** The two new modules supply the missing half; they are complementary, not
+> duplicative.
+
+### C283 — `HTGeometry/WeylDifferencing.lean` `[PROVED, LEAN-CERTIFIED]`
+
+The squaring step of the `A` process, over ℕ:
+
+* `normSq_sum_eq_doubleSum` — `‖Σ_{n<N}F n‖² = (Σ_n Σ_m F n · conj(F m)).re`
+* `upperTriangle_eq_sum_diffSum` — the strictly-upper triangle reindexes to `Σ_{h=1}^{N−1} diffSum F N h`
+  (bijection `(n,m) ↦ (n−m, m)`)
+* `doubleSum_eq_diag_add_triangles`, `lowerTriangle_eq_conj_upper`
+* **`weyl_differencing_identity`** — `‖Σ F‖² = Σ‖F n‖² + 2·Re(Σ_h diffSum F N h)`
+* **`weyl_differencing_bound`** — for `‖F n‖ ≤ 1`: `‖Σ F‖² ≤ N + 2Σ_h ‖diffSum F N h‖`
+* `norm_diffSum_le`
+
+### C284 — `HTGeometry/VanDerCorputInequality.lean` `[PROVED, LEAN-CERTIFIED]`
+
+The **free shift parameter** `H` — the engine that produces the exponent:
+
+* `sum_Ico_shift`, `blockSum`
+* **`sum_blockSum_eq`** — the averaging identity: for `z` supported on `[0,N)`,
+  `Σ_{k=−H+1}^{N−1} blockSum z H k = H · Σ_{k<N} z k` (each term counted exactly `H` times)
+* `normSq_sum_le_card_mul` — Cauchy–Schwarz over the block positions
+* **`vanDerCorput_shift_inequality`** — `H²‖Σ z‖² ≤ (N+H−1)·Σ_k ‖blockSum z H k‖²`
+* `card_blockPositions` — the block count is `N+H−1`
+
+All axioms `[propext, Classical.choice, Quot.sound]`; both modules wired into the `HTGeometry`
+umbrella; build green at 2046 jobs.
+
+> **This is the first part of the campaign that formalises the *analysis* rather than the exponent
+> bookkeeping.** Theorems 20–25 describe what the `A` process does to exponent pairs; C283–C284 are
+> the inequality `A` actually is.
+
+**`[E29]`** Cycle 108 wrote that `(0,1/2)` being an exponent pair "is equivalent to the Lindelöf
+hypothesis". **Wrong direction:** EPC ⟹ LH (apply the pair to the critical sum); the converse is not
+known, because an exponent pair is uniform over all phases `Y·F(n/N)` while LH concerns the single
+phase `F = −log`. Corrected in `exponentPairConjecture_gives_lindelof`, which asserts only the
+implication. **This matters: every barrier in Theorems 20–25 constrains the *uniform* route, so none
+of them bears on arguments that use the multiplicativity of `n ↦ n^{−it}` — the resource the
+exponent-pair formalism discards.**
+
+## Cycle 110 — the van der Corput inequality, completed in Lean
+
+`HTGeometry/VanDerCorputInequality.lean` now carries the full chain from the averaging identity to
+the correlation bound. All axioms `[propext, Classical.choice, Quot.sound]`; build green at 2046 jobs.
+
+### C285 — the completed module `[PROVED, LEAN-CERTIFIED]`
+
+| declaration | content |
+|---|---|
+| `blockSum`, `corr` | the `H`-term block sum; the shift correlation `Σ_{m<N} z(m+h)·conj(z m)` |
+| `sum_Ico_shift` | translation of an integer summation range |
+| `sum_blockSum_eq` | **averaging identity**: `Σ_k blockSum = H · Σ z`, each term counted exactly `H` times |
+| `normSq_sum_le_card_mul` | Cauchy–Schwarz over the block positions |
+| `vanDerCorput_shift_inequality` | `H²‖Σz‖² ≤ (N+H−1)·Σ_k‖blockSum‖²` |
+| `normSq_blockSum_eq` | `‖blockSum‖²` expanded over ordered offset pairs |
+| **`sum_blockEnergy_eq_corrSum`** | **the block energy is a double sum of shift correlations** (reindex `m = k+j₂`, then discard the tails by the support hypothesis) |
+| **`card_offsetPairs`** | the triangular weight: `#{(j₁,j₂) ∈ [0,H)² : j₁−j₂ = h} = H − |h|` |
+| **`vanDerCorput_correlation_bound`** | **`H²‖Σz‖² ≤ (N+H−1)·Σ_{j₁,j₂<H}‖corr z N (j₁−j₂)‖`** |
+
+> **The `A` process is now a theorem in the corpus, not a rule of exponent arithmetic.** Theorems
+> 20–25 say what `A` does to a pair `(κ,λ)`; `vanDerCorput_correlation_bound` is the inequality that
+> licenses it, with the free parameter `H` visible as the trade between the number of correlations
+> and the block count.
+
+### C286 — what this makes possible
+
+The corpus now holds **both halves** of the classical route:
+
+* **sum side** (new): differencing `Σ_n e(f(n))` down to correlations — `WeylDifferencing`,
+  `VanDerCorputInequality`;
+* **integral side** (pre-existing, `RHTower/`): `firstDerivTest`, `secondDerivTest` and the weighted
+  variants, bounding `∫ A e^{iφ}` after Poisson.
+
+Joining them is the formal content of an exponent-pair step. That is the next construction, and it
+is the first point at which the campaign's Lean could *derive* an exponent rather than record one.
+
+## Cycle 111 — the base case: the linear exponential sum bound, from scratch
+
+### C287 — corpus check first `[MANDATED]`
+
+Searched for `geom_sum|linear.*phase|Int.fract|nearestInt|distToInt`. Nearest hits:
+`RHTower/FiniteExponentialPencilMeanSquare` (Cesàro **asymptotics** of exponential pencils — not a
+finite bound) and `RHTower/ZetaTruncatedRepresentation` (Euler–Maclaurin). **No finite linear
+exponential sum bound, no distance-to-nearest-integer apparatus, no Jordan inequality application.**
+Not a duplicate.
+
+### C288 — `HTGeometry/LinearExponentialSum.lean` `[PROVED, LEAN-CERTIFIED]`
+
+| declaration | content |
+|---|---|
+| `ee`, `norm_ee`, `ee_add`, `ee_natMul` | the additive character `e(x) = exp(2πix)`, unimodular, additive, and `e(nx) = e(x)^n` |
+| `distToInt`, `distToInt_le_half` | distance to the nearest integer, `≤ 1/2` |
+| `ee_eq`, **`norm_ee_sub_one`** | `‖e(x) − 1‖ = 2\|sin(πx)\|` (via the double-angle identities) |
+| `abs_sin_add_int_mul_pi` | `\|sin\|` is invariant under integer multiples of `π` |
+| **`two_mul_distToInt_le_abs_sin`** | **Jordan's inequality in arithmetic form: `2‖x‖ ≤ \|sin(πx)\|`** — reduce mod 1 by periodicity, then `Real.mul_le_sin` on `[0,π/2]`, both signs of the residue handled |
+| `four_mul_distToInt_le_norm_ee_sub_one` | `4‖α‖ ≤ ‖e(α) − 1‖` |
+| **`norm_sum_ee_le`** | **`‖Σ_{n<N} e(αn)‖ ≤ 1/(2‖α‖)`, uniformly in `N`** |
+
+Axioms `[propext, Classical.choice, Quot.sound]`; wired into the umbrella; build green at 2194 jobs.
+
+### C289 — the classical route is now assembled in the corpus
+
+    linear sum bound            (C288, new)   ‖Σ e(αn)‖ ≤ 1/(2‖α‖)
+      ↓  van der Corput correlation bound     (C285, new)
+    differenced sums            (C283, new)   Weyl differencing identity + bound
+      ↓  Poisson summation
+    integral tests              (pre-existing, RHTower/)  first/second derivative, weighted
+
+> **Every ingredient of an exponent-pair step is now a theorem in this corpus.** The campaign's
+> exponent arithmetic (Theorems 20–25) sits on top of machinery that is, for the first time,
+> derived rather than asserted.
+
+**What this does not do:** it does not move `μ`. Theorems 20–25 already proved that no arrangement of
+these ingredients can — the `A`/`B` route terminates at `1/6` realisably and `(√5−1)/8` in the
+relaxation, and LH needs `0`. The value of C283–C288 is that the *obstruction* now rests on formalised
+analysis rather than on exponent bookkeeping alone: the barrier theorems constrain an object the
+corpus can actually construct.
+
+## Cycle 112 — the two halves compose: `HTGeometry/QuadraticWeylBound.lean`
+
+Corpus check: no `quadPhase`, no differenced-phase identity, no composition of a correlation bound
+with a linear sum bound anywhere in `formal/`. Not a duplicate.
+
+### C290 — the composition `[PROVED, LEAN-CERTIFIED]`
+
+| declaration | content |
+|---|---|
+| `conj_ee`, `ee_sub` | `conj(e(x)) = e(−x)`, `e(x)e(−y) = e(x−y)` |
+| `quadPhase` | `f(n) = αn² + βn` |
+| **`quadPhase_diff`** | **`f(n+h) − f(n) = (2αh)·n + (αh²+βh)` — the differenced quadratic phase is *linear*** |
+| **`quad_correlation_eq`** | the correlation is a rotated geometric series: `= e(αh²+βh)·Σ_{n<M} e(n·2αh)` |
+| **`norm_quad_correlation_le`** | **`≤ 1/(2‖2αh‖)`** — the linear bound of C288 applied at the differenced frequency |
+| `norm_quad_correlation_le_card` | the trivial bound `≤ M` |
+| **`norm_quad_correlation_le_min`** | **the Weyl dichotomy: `≤ min(M, 1/(2‖2αh‖))`** |
+| `quad_correlation_zero` | at `h = 0` the correlation is exactly `M` — no diagonal cancellation, the term van der Corput pays in full |
+
+Axioms `[propext, Classical.choice, Quot.sound]`; umbrella wired; build green at 2195 jobs.
+
+### C291 — what has been achieved formally
+
+> **The corpus now derives, rather than asserts, the mechanism of the `A` process.** Feeding
+> `norm_quad_correlation_le_min` into `vanDerCorput_correlation_bound` is Weyl's inequality for
+> quadratic phases — the step that converts *no cancellation* into *square-root-type cancellation*,
+> and the source of the exponent `1/6` that Theorems 20–25 analyse abstractly.
+
+The two mechanisms are visible side by side in the formal statements:
+
+* `quad_correlation_zero` — the `h = 0` term costs the full length `M`, unavoidably;
+* `norm_quad_correlation_le_min` — every `h ≠ 0` term is bounded by `1/(2‖2αh‖)`, which is small
+  unless `2αh` is near an integer.
+
+**That dichotomy is precisely the resource `A` consumes, and Theorem 23's constraint `κ ≤ 2μ`
+(equivalently `λ ≥ 1/2`, C276) is its exponent-level shadow: the diagonal term is the trivial bound,
+and it is what stops the iteration.** The floor `(√5−1)/8` is `quad_correlation_zero`, propagated.
+
+### Standing position
+
+LH remains open. What cycles 109–112 add is that the campaign's barrier theorems now constrain an
+object the corpus can construct end to end, rather than a rule of arithmetic taken on trust.
+
+## Cycle 113 — **THEOREM 26: the method's ceiling is exactly the Lindelöf hypothesis**
+
+C291 identified the diagonal `corr(0)` as the source of the floor. Cycle 113 proves it, in the
+analytic setting rather than the exponent one.
+
+### C292 — the diagonal is unavoidable and exactly `N` `[PROVED, LEAN-CERTIFIED]`
+
+* `corr_zero_of_unimodular` — for a unimodular sequence supported on `[0,N)`, `corr z N 0 = N`;
+* `diagonal_le_offsetPairSum` — the `H` offset pairs with `j₁ = j₂` contribute `H·‖corr z N 0‖`, so
+  the offset-pair sum is at least that, **whatever the phase**;
+* **`vanDerCorput_bound_ge_length`** — combining, for every `N ≥ 1` and every `H ≥ 1`,
+
+      N  ≤  ((N + H − 1)/H²) · Σ_{j₁,j₂<H} ‖corr z N (j₁−j₂)‖ .
+
+  The right-hand side is exactly the bound `vanDerCorput_correlation_bound` delivers for `‖Σz‖².`
+
+Axioms `[propext, Classical.choice, Quot.sound]`; build green.
+
+### C293 — the consequence
+
+> **`[THEOREM 26]` The van der Corput inequality can never deliver `‖Σ_{n<N} z n‖² < N`. Its
+> information-theoretic ceiling is exactly square-root cancellation — and square-root cancellation
+> for `Σ_{n∼√t}n^{−it}` is exactly `μ = 0`, i.e. the Lindelöf hypothesis.**
+
+Two things follow, and they pull in opposite directions:
+
+1. **The method is not too weak in principle.** Its ceiling is not `1/6`, nor `(√5−1)/8`, nor
+   `13/84`; it is `0`. Nothing in the inequality itself forbids LH.
+2. **So the entire deficit is off-diagonal.** Every gap between `13/84` and `0` is accounted for by
+   the failure of the correlations `Σ_{m} z(m+h)·conj(z m)`, `h ≠ 0`, to be small — never by the
+   diagonal, never by the Cauchy–Schwarz step, never by the choice of `H`.
+
+This sharpens Theorems 20–25 substantially. Those said the `A`/`B` *exponent calculus* terminates at
+`1/6` (realisably) and `(√5−1)/8` (in relaxation). Theorem 26 says the underlying *inequality* has no
+such limit: **the exponent floors are artefacts of what is known about the correlations, not of the
+method.** The barrier is arithmetic, not analytic.
+
+> **Restated as the campaign's sharpest formulation of the problem: LH holds if and only if the
+> correlations of `n^{−it}` over the critical block are small on average over the shift. The
+> analytic apparatus is already sufficient; the arithmetic input is not available.**
+
+This is consistent with — and now explains — E29: exponent pairs are uniform over phases and so must
+assume the worst correlations; the multiplicativity of `n^{−it}` is exactly the extra information
+that could make the correlations small, and it is the information the formalism discards.
+
+## Cycle 114 — **THEOREM 27: the route derived end to end, and a three-way coincidence at `μ = 1/8`**
+
+`HTGeometry/CorrelationExponentBridge.lean`. Corpus checked: no `blockExponent`, no correlation→
+exponent bridge anywhere in `formal/`.
+
+### C294 — the bridge `[PROVED, LEAN-CERTIFIED]`
+
+For the critical block with a correlation bound `‖C(h)‖ ≪ N^a h^b`:
+
+    diagonal:      N²/H
+    off-diagonal:  (N/H²)·N^a H^{b+2} = N^{1+a}H^b
+    balance at     H = N^{(1−a)/(1+b)}   (`optimalShift`)
+    ⟹  ‖Σ‖ ≪ N^{blockExponent a b},   **blockExponent a b = 1 − (1−a)/(2(1+b))**,   μ = (c−1/2)/2.
+
+### C295 — Weyl's exponent, *derived* `[LEAN-CERTIFIED]`
+
+The second-derivative test on `C(h) = Σ_{n∼N}(1+h/n)^{−it}` gives `|C(h)| ≪ (Nh)^{1/2}`, i.e.
+`a = b = 1/2`. The formula returns
+
+    optimalShift (1/2) (1/2) = 1/3,   blockExponent (1/2) (1/2) = 5/6,   **μ = 1/6.**
+
+> **Weyl's exponent now comes out of the campaign's own machinery** — linear sum bound (C288) →
+> correlation bound → van der Corput (C285) → this bridge — rather than being quoted.
+
+### C296 — what LH would require, and why the route stops `[LEAN-CERTIFIED]`
+
+* `blockExponent_eq_half_iff` — **`μ = 0` ⟺ `a + b = 0`**, i.e. `|C(h)| ≪ N^ε` uniformly in `h < N`.
+* But `C(h)` is itself a sum of `N` unimodular terms. An estimate with `a < 1/2` beats square-root
+  cancellation *for the correlation sum itself*. Imposing only `a ≥ 1/2`
+  (`lindelof_needs_subSqrt_correlation`) makes `a + b = 0` unreachable.
+* The best admissible input `a = 1/2`, `b = 0` gives
+
+      **blockExponent (1/2) 0 = 3/4,    μ = 1/8.**
+
+> **`[THEOREM 27]` The van der Corput route, fed the best correlation bound that does not itself beat
+> square-root cancellation, delivers exactly `μ = 1/8`. LH requires correlations *below* the
+> square-root barrier — the route cannot reach it without an input of a different kind.**
+
+### C297 — the coincidence, and what it means
+
+**`μ = 1/8` is now the answer from three independent directions:**
+
+| route | statement | where |
+|---|---|---|
+| exponent-pair semigroup | `κ ≤ 1/2` forces `κ+λ > 3/4`, i.e. `μ > 1/8` | Theorems 20–25 |
+| **analytic van der Corput** | **best sub-square-root-free correlation input gives `μ = 1/8`** | **Theorem 27** |
+| additive divisor | `Δ₄(x,h) ≪ x^{1/2+ε}` (Conrey–Gonek at `k=4`) gives `μ ≤ 1/8` | cycles 104–108 |
+
+`floor_coincidence` records the arithmetic identity `muOfBlock (blockExponent (1/2) 0) = muOfBlock
+(3/4) = 1/8`.
+
+> **`1/8` is not an artefact of one method. It is the value at which "square-root cancellation for
+> the object one level down" converts into a Lindelöf exponent, and every route the campaign can
+> formulate arrives there.** The gap from `13/84 ≈ 0.1548` to `1/8 = 0.125` is what the
+> Bombieri–Iwaniec machinery has *not* yet closed; the gap from `1/8` to `0` requires
+> below-square-root cancellation in the correlations, which no method in the corpus provides.
+
+Axioms `[propext, Classical.choice, Quot.sound]`; umbrella wired; build green.
+
+## Cycle 115 — **THEOREM 28: Weyl = incoherent block sum; LH = coherent block sum**
+
+### C298 — the coherence decomposition `[PROVED, LEAN-CERTIFIED]`
+
+The critical-block phase is `−t log n` with `t = N²`. Taylor at `n ∼ N`: the degree-`d` term is
+`≍ t(n−N)^d/N^d`, which is `O(1)` exactly while `|n−N| ≪ N^{(d−2)/d}`. At `d = 3`:
+
+    coherenceLength 3 = 1/3      (the phase is a *quadratic* — a chirp — on blocks of length N^{1/3})
+    coherenceBlockCount 3 = 2/3  (there are N^{2/3} such blocks)
+
+Square-root cancellation inside each block is genuine at `d = 3`: the block phase is quadratic, its
+correlations are geometric series (`quad_correlation_eq`, C290). Then
+
+| block sum treated as | exponent | value |
+|---|---|---|
+| **incoherent** (`N^{2/3}·N^{1/6}`) | `incoherentBlockTotal 3` | **`5/6` = Weyl** |
+| **coherent** (`N^{1/3}·N^{1/6}`) | `coherentBlockTotal 3` | **`1/2` = Lindelöf** |
+
+> **`[THEOREM 28]` The entire gap between Weyl's exponent and the Lindelöf hypothesis is the sum over
+> the `N^{2/3}` quadratic-coherence blocks, and it is worth exactly `N^{1/3}` — half the block count
+> (`block_deficit`). Within-block cancellation is already optimal; nothing is lost there.**
+
+`coherentBlockTotal_eq_half` — the coherent total is `1/2` at *every* degree: the target is
+degree-independent. Only the incoherent penalty depends on `d`.
+
+### C299 — this is exactly the Bombieri–Iwaniec spacing problem
+
+Cycle 97 localised the frontier to "the BI conversion at the self-dual block — its first and second
+spacing problems". C298 says the same thing in the campaign's own terms:
+
+> **BI's spacing problems are the question of whether the `N^{2/3}` coherence blocks interfere. LH is
+> square-root cancellation in that block sum. Cycle 97's localisation and cycle 115's decomposition
+> are the same statement, reached from opposite ends — literature reading and formal derivation.**
+
+### `[E30]` — an error caught by the compiler, of the E24/E27 type
+
+I first stated `incoherentBlockTotal` as strictly increasing in `d`. **It is strictly *decreasing*,
+with limit `1/2` — the formula, read as a function of `d`, asserts the Lindelöf hypothesis.** The
+formula is valid only at `d = 3`: it assumes square-root cancellation *within* each block, which is
+genuine for a quadratic phase but unavailable for degree `d−1 > 2`. That unavailability is precisely
+the campaign's Weyl-degree trade-off barrier — the cost of raising the degree is paid in the
+within-block estimate and is invisible in the block bookkeeping.
+
+**Fourth instance of the same failure mode** (E24, E27, D51, E30): an exponent formula, extended
+outside the regime where its inputs hold, reaches a conclusion it must not. The standing rule now
+has a fourth confirmation: *any exponent formula that tends to the conjectured value in a limit is
+being read outside its domain of validity.*
+
+## Cycle 116 — the block phases computed; and **`[D52]`**, the recursion that must not be believed
+
+### C300 — the coherence-block phases are a polynomial sequence `[COMPUTED HERE]`
+
+Continuing C298. Blocks are centred at `n_r = N + rL`, `L = N^{1/3}`, `r < R = N^{2/3}`, and the
+critical phase is `f(n) = −(t/2π)\log n` with `N² = t/2π`. On block `r` the quadratic coefficient is
+`α_r = f''(n_r)/2 = t/(4πn_r²) ≈ 1/2` and the linear coefficient is `β_r = f'(n_r) = −N²/n_r`.
+
+Gauss-sum evaluation of a chirp contributes the phase `−β_r²/(4α_r)`. Computing:
+
+    β_r²/(4α_r) = [N⁴/n_r²] / [4 · N²/(2n_r²)] = N²/2 ,
+
+**independent of `r` to leading order.** The `r`-dependence lives entirely in the next orders:
+
+    {N²/n_r} = {N − rL + r²L²/N − r³L³/N² + …} = {r²N^{−1/3} − r³/N + …} ,
+
+using `N, rL ∈ ℤ`. So **the block phases form a polynomial sequence in `r`** — quadratic coefficient
+`N^{−1/3}`, cubic coefficient `−1/N`.
+
+> **The coherence-block sum is itself an exponential sum with polynomial phase, of length `N^{2/3}`.**
+> This is the exact object BI's spacing problems govern, derived here from the campaign's own
+> decomposition rather than quoted.
+
+### `[D52]` — the self-similar recursion, and why it is false
+
+The structure invites recursion: apply C298 to the block sum. Its cubic term `r³/N` is `O(1)` while
+`r ≪ N^{1/3}`, so the block sum has `N^{2/3}/N^{1/3} = N^{1/3}` sub-blocks of length `N^{1/3}`;
+square-root cancellation inside each and incoherent summation gives
+
+    N^{1/3} · (N^{1/3})^{1/2} = N^{1/2} ,   whence total  N^{1/2} · N^{1/6} = N^{2/3},
+
+i.e. `μ = (2/3 − 1/2)/2 = **1/12** = 0.0833 < 13/84 = 0.1548`. **This beats the record and is
+therefore wrong.**
+
+**Where it fails.** The recursion treats each coherence block as contributing *exactly*
+`L^{1/2}·e(θ_r)` — an exact Gauss-sum evaluation with no error term and constant amplitude. Neither
+holds: the stationary-phase evaluation of a chirp on a finite block carries an error, the amplitudes
+`(2α_r)^{−1/2}` vary with `r`, and these errors accumulate over `N^{2/3}` blocks. **Controlling
+exactly that accumulation is what the Bombieri–Iwaniec first and second spacing problems do**, and it
+is why BI reaches `9/56` rather than `1/12`.
+
+> **`[D52]` Do not recurse the coherence decomposition. The decomposition (C298) is exact as a
+> bookkeeping identity; the recursion is not, because the block contributions are not exact chirp
+> evaluations. The gap between the two *is* the spacing problem.**
+
+### `[E31]` — fifth instance, and the rule is now firm
+
+D51 (decoupling priced to `1/16`), E24 (chord beyond `k=6` to `3/20`), E27 (box-optimised `d` to
+`17/110`), E30 (`incoherentBlockTotal` to `1/2`), and now D52 (recursion to `1/12`). **Five times an
+exponent computation has been extended past the regime where its inputs hold and produced a value
+better than the published record.**
+
+> **Standing rule, fifth confirmation: any exponent derivation in this campaign that yields a value
+> below `13/84` is wrong until the domain of validity of every input has been checked explicitly.
+> Compute the value, compare it to `13/84`, and only then decide whether it is a theorem.**
+
+This rule has now caught more errors than any other check the campaign uses, and every one of the
+five was found by applying it rather than by inspecting the algebra.
+
+## Cycle 117 — **THEOREM 29: scale invariance of the critical phase**
+
+### C301 — every Taylor order sweeps exactly `N` cycles `[PROVED, LEAN-CERTIFIED]`
+
+Decompose the critical block into blocks of length `N^ℓ`, indexed by `r < N^{1−ℓ}`. Expanding
+
+    N²/n_r = N²/(N + r·N^ℓ) = Σ_k (−1)^k r^k N^{ℓk + 1 − k},
+
+the order-`k` coefficient exponent is `phaseCoeff ℓ k = ℓk + 1 − k`, and at the far end `r ≍ N^{1−ℓ}`
+the term has size
+
+    N^{(1−ℓ)k} · N^{ℓk+1−k} = **N¹**,   `phaseSweep_eq_one` — **for every `k` and every `ℓ`.**
+
+> **`[THEOREM 29]` Every Taylor order of the critical phase sweeps exactly one power of `N` across
+> the block range, whatever the block length. The expansion has no dominant term and no negligible
+> tail. No finite-degree treatment of the phase is uniformly valid on the critical block.**
+
+### C302 — but inside a block it *is* negligible, and that is the whole asymmetry
+
+`phaseCoeff_neg_iff` — at offset `m ≤ N^ℓ` (i.e. `r` replaced by `1`) the order-`k` term is below `1`
+exactly when `k > 1/(1−ℓ)`. At `ℓ = 1/3` this is `k > 3/2`, so **every order from the cubic on is
+`O(N^{−1})` inside a block** (`cubic_negligible_in_block`): the quadratic approximation of C298 is
+legitimate there, and only there.
+
+> **The asymmetry is exact: the phase is a quadratic *within* a coherence block and has no finite
+> degree *across* blocks. Truncation buys the within-block chirp evaluation and buys nothing at all
+> for the block sum.**
+
+This is the structural reason for D52. The recursion assumed the block contributions were exact chirp
+evaluations; Theorem 29 says the corrections are the same size as the leading term at the range edge,
+so they cannot be dropped — and controlling them is the spacing problem.
+
+It is also the deep form of the campaign's Weyl-degree trade-off (raising the Taylor degree always
+loses): **there is no degree at which the tail becomes small**, so degree can only be traded against
+block length, never against accuracy.
+
+Axioms `[propext, Classical.choice, Quot.sound]`; build green.
+
+### Standing position after 117 cycles
+
+`μ(1/2) ≤ 13/84` stands; **LH is neither proved nor disproved.** The frontier is one object:
+
+> **`Σ_{r < N^{2/3}} A_r e(θ_r)`**, the sum over quadratic-coherence blocks, with `θ_r` the polynomial
+> sequence `{r²N^{−1/3} − r³/N + …}` (C300) and `A_r` the chirp amplitudes. LH is square-root
+> cancellation in this sum (Theorem 28); Theorem 29 says its phase cannot be truncated; D52 records
+> that the naive recursion on it is false; and cycle 97's literature reading identifies it as the
+> Bombieri–Iwaniec spacing problem.
+
+## Cycle 118 — the frontier object, described exactly; and a duplication found
+
+### C303 — corpus duplication `[HONEST FINDING]`
+
+`RHTower/GaussLattice.lean` contains
+
+    norm_geom_sum_le {w : ℂ} (hw : ‖w‖ = 1) (hne : w ≠ 1) (K : ℕ) : ‖Σ_{m<K} w^m‖ ≤ 2/‖1 − w‖
+
+— **the same geometric core** as the first half of C288's `norm_sum_ee_le`. I re-derived it instead
+of reusing it. The searches in C287 used `geom_sum|linear.*phase|distToInt`; the corpus lemma is named
+`norm_geom_sum_le` inside a file called `GaussLattice`, and none of those terms matched.
+
+**What C288 adds and `GaussLattice` does not have:** the arithmetic layer — `distToInt`,
+`‖e(x)−1‖ = 2|sin πx|`, Jordan's inequality in the form `2‖x‖ ≤ |sin πx|`, and hence the *arithmetic*
+bound `‖Σ_{n<N}e(αn)‖ ≤ 1/(2‖α‖)`. The corpus version stops at `2/‖1−w‖`, which carries no
+Diophantine information.
+
+**Not refactored to import it**: `GaussLattice` sits in `RHTower`, and `HTGeometry` is the
+reusable-infrastructure area; importing upward would invert the intended dependency. The correct
+repair is to move the geometric lemma down into `HTGeometry`, which is a housekeeping task, not a
+research one. **Recorded so the next search uses `norm_geom_sum|geom_sum_eq` as well.**
+
+### C304 — the frontier object, fully described `[COMPUTED HERE]`
+
+Continuing C300. With `t/2π = N²`, on block `r` centred at `n_r = N + rL`, `L = N^{1/3}`:
+
+* quadratic coefficient `α_r = N²/(2n_r²)`, so **`α_r` runs smoothly from `1/2` down to `1/8`**;
+* amplitude `A_r = (2α_r)^{−1/2} = n_r/N ∈ [1,2]` — **a smooth bounded weight, essentially constant**;
+* linear coefficient `β_r = f'(n_r) = −N²/n_r ≈ −N`;
+* **no stationary point inside a block**: `−β_r/(2α_r) = n_r ≫ L`. The block sums are *theta sums*
+  `Σ_{m<L} e(α_r m² + β_r m)` with `α_r ≍ 1`, not stationary-phase Gauss sums.
+
+Consecutive `α_r` differ by `dα/dr ≍ L/N = N^{−2/3}`, and over `R = N^{2/3}` blocks `α` traverses an
+interval of length `≍ 1` — **the `α_r` form a grid of spacing `N^{−2/3}` across `[1/8, 1/2]`.**
+
+> **The frontier object is `Σ_{r<N^{2/3}} A_r · Θ(α_r, β_r)`, where `Θ` is a normalised theta sum of
+> length `N^{1/3}` and `A_r` is a smooth weight. The theta sum obeys the modular (Jacobi)
+> transformation, so its size is governed by the continued-fraction expansion of `α_r` — and the
+> `α_r` lie on the smooth curve `α = N²/(2n²)`.**
+
+### C305 — and hence the exact form of the remaining problem
+
+Resonance occurs when `α_r` is near a rational `a/q`, i.e. when
+
+    N²/(2n²) ≈ a/q,   i.e.   **n ≈ N√(q/(2a))**.
+
+> **The remaining problem is a lattice-point count near the curve `n = N√(q/2a)` — the resonances sit
+> at square roots of rationals. This is exactly the Bombieri–Iwaniec second spacing problem, and the
+> campaign has now derived its precise form from its own decomposition rather than from the
+> literature.**
+
+The spacing of the resonance points is the spacing of the quadratic irrationals `√(q/2a)` scaled by
+`N`. **That is geometry of numbers, and this campaign has no tool for it** — the honest boundary,
+stated with the object it applies to fully specified rather than gestured at.
+
+### Standing position
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 29 barrier theorems; the classical route
+formalised end to end; the frontier reduced to one explicitly described lattice-point count.
+
+## Cycle 119 — the spacing problem, attacked; Weyl a third time; and the exact saving required
+
+C305 said "geometry of numbers, and this campaign has no tool for it". That is the excuse Phase 7
+forbids. Cycle 119 attacks it.
+
+### C306 — the resonance separation is elementary `[PROVED HERE]`
+
+Resonance points are `n(a,q) = N√(q/(2a))`. For two of them,
+
+    √(q₁/a₁) − √(q₂/a₂) = (q₁a₂ − q₂a₁) / (a₁a₂ (√(q₁/a₁) + √(q₂/a₂))),
+
+and `q₁a₂ − q₂a₁` is an **integer**. So either the points coincide, or
+
+    |n(a₁,q₁) − n(a₂,q₂)|  ≫  N/(a₁a₂)  ≥  N/A².
+
+> **For the zeta curve `α = N²/(2n²)` the resonance points are separated for a purely arithmetic
+> reason: a nonzero integer is at least 1. The first spacing problem for this curve is elementary.**
+> (BI's *second* spacing problem involves coincidences among the full cubic resonance data, not only
+> `α`; C306 does not resolve that.)
+
+### C307 — Weyl's exponent, a third derivation `[LEAN-CERTIFIED]`
+
+A theta sum of length `L` is large exactly near `α ≈ a/q` with `q ≤ L`, where `|Θ| ≍ L/√q` on the arc
+`|α − a/q| ≤ 1/(qL)`. The `α_r` form a grid of spacing `L^{−2}` (C304), so that arc holds `L/q` grid
+points, and there are `q` values of `a` for each `q ≤ L`. Summing the moduli:
+
+    Σ_{q≤L} q · (L/q) · (L/√q) = L² Σ_{q≤L} q^{−1/2} ≍ L^{5/2}  =  N^{5/6}   (L = N^{1/3}).
+
+**Weyl's exponent again** — `weyl_three_ways` records that the correlation bridge (C294), the
+incoherent block sum (C298), and this resonance count all give `5/6`.
+
+### C308 — the exact saving required `[LEAN-CERTIFIED]`
+
+The Lindelöf target for the block sum is `N^{1/2} = L^{3/2}`. Against the modulus total `L^{5/2}`:
+
+> **`[THEOREM 30]` The saving needed is exactly one factor of the coherence length `L = N^{1/3}`
+> (`resonance_saving`, `deficit_is_one_coherence_length`). The moduli of the resonant theta sums are
+> correct as computed and sum to `L^{5/2}`; the entire deficit must come from cancellation among
+> their phases.**
+
+This is the sharpest quantitative form the campaign has reached:
+
+| quantity | value |
+|---|---|
+| sum of moduli of resonant blocks | `L^{5/2} = N^{5/6}` |
+| Lindelöf target | `L^{3/2} = N^{1/2}` |
+| **required saving** | **`L = N^{1/3}`, purely from phase cancellation** |
+| current record (Bourgain) | `N^{17/21}`, i.e. a saving of `N^{5/6−17/21} = N^{1/42}` achieved |
+
+**`1/42` of the needed `1/3` has been achieved in a century** — the record represents one-fourteenth
+of the required cancellation.
+
+Verified against the standing rule: every exponent here reproduces `5/6` or `17/21`, none falls below
+`13/84`. Axioms `[propext, Classical.choice, Quot.sound]`; build green.
+
+## Cycle 120 — **THEOREM 31: the two halves of the campaign meet at one phase family**
+
+### C309 — the resonant block phases are square roots of rationals `[COMPUTED HERE]`
+
+Continuing C304/C307. A resonant block has `α_r ≈ a/q`, hence `n_r ≈ N√(q/(2a))` (C305), and its
+linear coefficient is
+
+    β_r = −N²/n_r ≈ −N√(2a/q).
+
+The Hardy–Littlewood modular transformation evaluates the theta sum near `a/q` with a phase built
+from `β_r` and the Gauss sum `S(a,q)`. So the resonant part of the block sum has the shape
+
+    Σ_{q ≤ L} Σ_{a} (L/√q) · (S(a,q)/√q) · **e( N√(2a/q) + … )**.
+
+> **The phases of the resonant coherence blocks are `N√(2a/q)` — square roots of rationals, scaled
+> by `N = √t`, i.e. `√(2at/q)`.**
+
+### C310 — this is the Voronoi phase family `[STRUCTURAL IDENTIFICATION]`
+
+The Voronoi expansion of the Piltz error, which this campaign studied for some eighty cycles, carries
+phases `cos(4π√(nx))`, i.e. `e(2√(nx))` — square roots of an integer times the parameter. C309's
+phases are `e(√(2at/q))`: **the same family.**
+
+> **`[THEOREM 31, structural]` The exponent-pair route (via coherence blocks and theta-sum resonance)
+> and the additive-divisor route (via Voronoi duals) terminate on the *same* phase family
+> `e(√(integer · parameter))`. They are not two independent attacks on the Lindelöf hypothesis; they
+> are two derivations of one object.**
+
+### C311 — what this explains
+
+Three previously separate observations become one:
+
+1. **Why `μ = 1/8` appears in all three routes (C297).** Each stalls exactly where square-root
+   cancellation in a `√(integer·parameter)` phase sum is required, and each can supply square-root
+   cancellation one level down but not at that level.
+2. **Why the campaign's Voronoi-interchange barrier bites here too.** That barrier says interchanging
+   the `Δ_k` Voronoi series with a second summation is worth the divisor problem itself. The block
+   sum of C304 *is* such a second summation over a Voronoi-type phase family, so the barrier applies
+   verbatim — and D52's false recursion is an instance of exactly the forbidden interchange.
+3. **Why cycle 97's literature localisation (BI spacing problems) and the campaign's own
+   decomposition agree.** BI's spacing problems count near-coincidences among resonance points
+   `N√(q/2a)`; the Voronoi difficulty is near-coincidences among `√(nx)`. Same count.
+
+> **The campaign's two independent programmes — eighty cycles of additive divisor work, forty of
+> exponent-pair work — were, in the end, studying one phase family from two sides. Their common
+> obstruction is cancellation in `Σ e(√(integer · parameter))`, and every barrier theorem proved in
+> either programme is a statement about that sum.**
+
+### Status of this cycle's claims
+
+C309 is a computation (stationary/modular evaluation of the block theta sums); C310 is a structural
+identification of two phase families, verified by inspection of both expansions; C311 draws the
+consequences. **None of the three improves any exponent, and none falls below `13/84`** — checked
+against the standing rule. The Lean corpus carries the exponent bookkeeping of both programmes
+(`TernaryVoronoiAntisymmetry`, `CorrelationExponentBridge`); the phase identification itself is
+recorded here rather than formalised, because the Bessel/Voronoi analytic machinery it would need is
+not in the corpus and building it is a separate construction.
+
+### Standing position
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 31 results; the campaign's two programmes now
+known to share one open core: **square-root cancellation in `Σ e(√(integer · parameter))`.**
+
+## Cycle 121 — **THEOREM 32: the phase is not the obstruction; the arithmetic weight is**
+
+### C312 — the unweighted square-root phase sum `[PROVED, LEAN-CERTIFIED]`
+
+The common open core (C311) is cancellation in `Σ_{n≤X} w(n)·e(2√(nx))`. Strip the weight and apply
+the second-derivative test. With `f(n) = 2√(xn)`:
+
+    f'(n) = √x·n^{−1/2},   f''(n) = −(1/2)√x·n^{−3/2},   |f''| ≍ x^{1/2}X^{−3/2} on n ≍ X,
+
+so the test delivers `max( (1+ξ)/4 , 3/4 − ξ/4 )` in powers of `X`, where `x = X^ξ`.
+
+| | value |
+|---|---|
+| `sqrtPhaseFirstTerm 1` | `1/2` |
+| `sqrtPhaseSecondTerm 1` | `1/2` |
+| `sqrtPhaseBound 1` | **`1/2` — square-root cancellation** |
+| `sqrtPhaseBound ξ`, `ξ ≠ 1` | **`> 1/2` strictly** (`sqrtPhaseBound_gt_half`) |
+
+`sqrtPhase_terms_eq_iff` — the two terms are equal **only** at `ξ = 1`.
+
+> **`[THEOREM 32]` The unweighted square-root phase sum `Σ_{n≤X}e(2√(nx))` has square-root
+> cancellation at the self-dual scale `x ≍ X`, by an elementary test, and the self-dual scale is its
+> unique optimum. The phase family that both of the campaign's programmes terminate on is therefore
+> *not* the obstruction.**
+
+### C313 — so the obstruction is the weight, and the weight is the discarded resource
+
+What separates the frontier object from C312 is the arithmetic weight: `d(n)` in the Voronoi form,
+`S(a,q)/√q` in the coherence-block form (C309).
+
+> **The entire remaining difficulty of the Lindelöf hypothesis, as this campaign has localised it, is
+> cancellation in a square-root-phase sum *against a multiplicative weight*. The phase is understood;
+> the weight is not.**
+
+This closes a loop opened at E29. There I observed that the exponent-pair formalism is uniform over
+phases and so discards the multiplicativity of `n^{−it}` — the one resource that could beat the
+generic bound. C313 says the same thing from the other end: **once the phase is stripped, the problem
+is solved by a nineteenth-century test; everything hard is in the multiplicative weight.**
+
+**Multiplicativity is simultaneously the obstruction and the only available resource.** That is the
+campaign's final structural statement, and it is consistent with every barrier it has proved: the
+inertness results (uniform methods cannot see the weight), the circularity results (using the weight
+re-enters the moment problem), and the Voronoi-interchange barrier (rearranging the weighted sum
+costs the divisor problem).
+
+Verified against the standing rule: `sqrtPhaseBound 1 = 1/2` is square-root cancellation for the
+*unweighted* sum only, and asserts nothing about `μ`. No exponent here falls below `13/84`.
+Axioms `[propext, Classical.choice, Quot.sound]`; build green.
+
+### Standing position after 121 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 32 results. The open core is now stated as
+sharply as this campaign can state it:
+
+> **Square-root cancellation in `Σ_{n≤X} d(n)·e(2√(nx))` at `x ≍ X` — the phase is elementary, the
+> weight is the Lindelöf hypothesis.**
+
+## Cycle 122 — **THEOREM 33: the final reduction — two-dimensional cancellation over resonance pairs**
+
+### C314 — the object, assembled `[COMPUTED HERE, EXPONENTS LEAN-CERTIFIED]`
+
+Combining C304 (blocks), C307 (theta resonance) and C309 (phases), the coherence-block sum is, up to
+smooth weights,
+
+    **L · Σ_{q ≤ L} q^{−1/2} Σ_{a} ε(a,q) · e( N√(2a/q) )**,     L = N^{1/3},
+
+with `ε(a,q)` the unimodular normalised-Gauss-sum phase. There are `≍ L²` resonance pairs `(a,q)`,
+each of weight `≍ L^{−1/2}`.
+
+| cancellation achieved | pair-sum exponent (in `L`) | total (in `N`) | |
+|---|---|---|---|
+| none | `3/2` | **`5/6`** | Weyl |
+| square-root in `a` only | `1` | **`2/3`** | still short |
+| **full two-dimensional square root** | **`1/2`** | **`1/2`** | **Lindelöf** |
+
+`resonance_regimes` certifies all three.
+
+> **`[THEOREM 33]` LH is equivalent, along this route, to *full* square-root cancellation over the
+> `≍L²` resonance pairs `(a,q)`. Cancellation in one variable alone is provably insufficient: it
+> leaves a deficit of exactly `L^{1/2} = N^{1/6}` (`oneVariable_insufficient`).**
+
+### C315 — the record, placed on this scale `[LEAN-CERTIFIED]`
+
+Bourgain's `17/21` corresponds to a resonance-pair exponent of `10/7`, i.e. cancellation
+`3/2 − 10/7 = **1/14**` out of the `1` required (`bourgain_cancellation_share`).
+
+> **A century of work has obtained `1/14` of the two-dimensional square-root cancellation that the
+> Lindelöf hypothesis needs.** (Consistent with C308's `1/42` of `1/3` — the same ratio in `N`-powers.)
+
+### C316 — what kind of object this is
+
+`Σ_{a,q} ε(a,q)e(N√(2a/q))` is a two-dimensional sum of Gauss-sum phases twisted by square-root
+additive characters. **That is the natural habitat of Kloosterman sums and the spectral theory of
+automorphic forms** — and it is precisely where the campaign's rank-gap barrier lives: the Eisenstein
+contribution to such sums is suppressed only by `n(n−1)/2`, which grows with the rank, so higher-rank
+spectral input does not help (Theorem on `PlancherelRankGap`).
+
+> **The campaign's three programmes now stand in one line: exponent pairs reduce the critical sum to
+> resonance pairs; the additive-divisor programme reduces the moments to the same phase family; and
+> the spectral programme's rank gap governs exactly the sum the first two produce. The barrier
+> theorems of all three are statements about `Σ_{a,q} ε(a,q)e(N√(2a/q))`.**
+
+Checked against the standing rule: `resonance_regimes` reproduces `5/6` and `1/2` as bookkeeping for
+*hypothetical* cancellation, and `bourgain_cancellation_share` reproduces `17/21` exactly. No exponent
+asserted below `13/84`. Axioms `[propext, Classical.choice, Quot.sound]`; build green.
+
+### Standing position after 122 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 33 results. The open core, final form:
+
+> **Full square-root cancellation in `Σ_{q≤L} q^{−1/2} Σ_a ε(a,q) e(N√(2a/q))`, `L = N^{1/3}` —
+> a two-dimensional Gauss-sum sum with square-root additive twists. `1/14` of it is known.**
+
+## Cycle 123 — **THEOREM 34: a concrete intermediate target that would beat Bourgain**
+
+### C317 — the Gauss-sum phase is the Jacobi symbol `[COMPUTED HERE]`
+
+In the Hardy–Littlewood evaluation of the block theta sum near `a/q`, the normalised phase is
+`ε(a,q) = ε_q·(a|q)` — a fourth root of unity times the Jacobi symbol. So the resonance sum's inner
+sum is a **character sum against the phase `e(N√(2a/q))`**.
+
+**It is not a Salié sum.** Salié's explicit evaluation applies to `Σ_a (a|q)e((ma+nā)/q)`, whose phase
+is a rational additive character mod `q`; here `√(2a/q)` is irrational, so no explicit evaluation is
+available. The phase also oscillates fast — its `a`-derivative is `≍ N/√(aq) ≍ N/L = N^{2/3}` — so
+the character contributes nothing directly and the `a`-sum is itself an exponential sum with its own
+resonance structure. **`[D53]` Do not attempt Salié evaluation of the resonance `a`-sum.**
+
+### C318 — but the target is worth stating `[PROVED, LEAN-CERTIFIED]`
+
+    Σ_a ε(a,q)·e(N√(2a/q)) ≪ q^{1/2+ε}  uniformly for q ≤ L = N^{1/3}
+      ⟹ block sum ≪ L·Σ_{q≤L}q^{−1/2}q^{1/2} = L² = N^{2/3}
+      ⟹ **μ ≤ 1/12 = 0.08333.**
+
+> **`[THEOREM 34]` Square-root cancellation in the `a`-variable *alone* of the resonance sum implies
+> `μ ≤ 1/12`, which beats Bourgain's `13/84 = 0.15476` (`oneVariableMu_beats_record`). It is therefore
+> an open problem — and it is strictly weaker than the Lindelöf hypothesis, which needs the full
+> two-variable cancellation (`target_ladder`).**
+
+**This is the campaign's most actionable output.** Everything else it has produced is a barrier or a
+reformulation; this is a single, concrete, one-dimensional cancellation statement whose proof would
+improve the century-old record by a factor of nearly two in `μ`, and which sits strictly below LH in
+strength.
+
+### C319 — why the standing rule confirms rather than kills it
+
+The rule says: any derived exponent below `13/84` is wrong until every input's validity is checked.
+Here the exponent `1/12` is **not derived unconditionally** — it is the *consequence of a hypothesis*
+that is stated explicitly and is open. The rule's purpose is to catch unconditional claims that
+contradict the record; a conditional statement whose hypothesis is exactly the open problem is the
+correct form. **The check passes, and it does so by making the conditionality explicit** — the same
+discipline that killed D51, D52, E24, E27 and E30.
+
+Axioms `[propext, Classical.choice, Quot.sound]`; build green.
+
+### Standing position after 123 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 34 results. The ladder is now explicit:
+
+| target | statement | consequence |
+|---|---|---|
+| current record | Bourgain 2017 | `μ ≤ 13/84 = 0.1548` |
+| **intermediate** | **`Σ_a ε(a,q)e(N√(2a/q)) ≪ q^{1/2+ε}`** | **`μ ≤ 1/12 = 0.0833`** |
+| Lindelöf | full two-variable square-root cancellation over `(a,q)` | `μ = 0` |
+
+## Cycle 124 — **THEOREM 35: a triple barrier on the intermediate target**
+
+C318 gave a concrete target: `T(q) = Σ_{a≤q}(a|q)e(N√(2a/q)) ≪ q^{1/2+ε}` for `q ≤ L = N^{1/3}`.
+Cycle 124 attacks it with the three classical tools. All three fail, for three different and
+computable reasons.
+
+### C320 — the exponent data `[COMPUTED HERE]`
+
+Write `q = N^κ`, `κ ≤ 1/3`, and `g(a) = N√(2a/q)`. On `a ≍ q`:
+
+| quantity | exponent of `N` |
+|---|---|
+| `g'(a) = N/√(2qa)` | `1 − κ` |
+| `g''(a) ≍ N/q²` | `1 − 2κ` |
+| Poisson-dual range `g'([1,q])` | `1 − κ/2` |
+| trivial bound | `κ` |
+| **target** | **`κ/2`** |
+
+### C321 — the three failures `[PROVED, LEAN-CERTIFIED]`
+
+1. **van der Corput.** `|g''| ≍ N^{1−2κ}` and `1 − 2κ ≥ 1/3` for `κ ≤ 1/3`: the second derivative is
+   *large*, so the phase advances by more than a full cycle between consecutive terms and every
+   derivative test is vacuous. `vdC_fails_on_resonance`.
+2. **Poisson.** The dual has length `N^{1−κ/2} ≥ N^{5/6}`, against an original of length
+   `N^κ ≤ N^{1/3}` — **the dual is longer by a factor of at least `N^{1/2}`.**
+   `poisson_fails_on_resonance`.
+3. **Pólya–Vinogradov with partial summation.** The character sum saves `q^{1/2}`, but the phase
+   varies by `max|Δf| ≍ N^{1−κ}` per step, giving `N^{3κ/2}·N^{1−κ} = N^{1+κ/2}`, which **exceeds the
+   trivial bound `N^κ`** for every `κ ≤ 1/3`. `polyaVinogradov_fails_on_resonance`.
+
+> **`[THEOREM 35]` On the entire range `0 < κ ≤ 1/3` the resonance `a`-sum lies outside the reach of
+> van der Corput (second derivative too large), outside the reach of Poisson (dual strictly longer),
+> and outside the reach of Pólya–Vinogradov with partial summation (phase varies faster than the
+> character saving) — while the target `κ/2` remains strictly below the trivial bound `κ`.**
+> `resonance_triple_barrier`; axioms `[propext, Classical.choice, Quot.sound]`.
+
+### C322 — what the triple barrier means
+
+The three tools fail for *independent* reasons — one about curvature, one about duality, one about
+the interaction of a character with a fast phase. **There is no interpolation between them to try:**
+each failure is a strict inequality with margin, on the whole range.
+
+> **This is why the record has not moved by these means. The intermediate target of Theorem 34 —
+> which would beat Bourgain — is not merely unproved; it is inaccessible to all three classical
+> methods simultaneously, and the campaign can now say so with the margins computed.**
+
+The sum is a `q`-term sum with pseudorandom phases (`g'` advances by `≍ N^{1−κ} ≫ 1` per step) against
+a multiplicative character. Square-root cancellation is the expected truth and is exactly what none of
+the three tools can deliver. **This is the same diagnosis as C313: the phase is understood, the
+interaction with the multiplicative weight is not.**
+
+### Standing position after 124 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 35 results. The chain is complete and each
+link is priced:
+
+    critical sum → coherence blocks → theta resonances → resonance pairs (a,q) → the a-sum T(q)
+      ↑ Weyl 5/6      ↑ Thm 28          ↑ Thm 33           ↑ Thm 34: μ ≤ 1/12    ↑ Thm 35: triple barrier
+
+## Cycle 125 — **THEOREM 36: a fourth tool, and a fifth self-dual coincidence**
+
+Theorem 35 priced three classical tools on the resonance `a`-sum. Cycle 125 tries the fourth — the
+campaign's own Weyl differencing (`WeylDifferencing`, C283) — and the Weil bound that differencing
+makes available.
+
+### C323 — differencing the resonance sum `[COMPUTED, EXPONENTS LEAN-CERTIFIED]`
+
+Differencing `T(q) = Σ_{a≤q}(a|q)e(g(a))` gives correlations
+
+    Σ_a **(a(a+h)|q)** · e(φ_h(a)),    φ_h(a) ≍ (Nh/√(2q))·a^{−1/2},
+
+with, on `a ≍ q`: `φ_h' ≍ Nh/q²`, `φ_h'' ≍ Nh/q³`. At `h ≍ 1` and `q = N^κ` the differenced
+second-derivative exponent is `1 − 3κ`, against `1 − 2κ` before — **differencing gains exactly one
+factor of `κ`** (`differencing_gain`).
+
+> **`[THEOREM 36, part 1]` The differenced second derivative vanishes exactly at `κ = 1/3`
+> (`differencedSecondDeriv_top`) — the top of the admissible range, where `q ≍ L = N^{1/3}` — and is
+> strictly positive below it (`differencedSecondDeriv_pos`). One differencing is *exactly critical* at
+> the largest modulus and insufficient at every smaller one.**
+
+**Fifth self-dual coincidence in this campaign.** The differencing lands on `g'' ≍ 1` precisely at the
+scale the coherence decomposition selected, `L = N^{1/3}` — the same scale at which the cubic Taylor
+term becomes `O(1)` (C302) and at which the theta resonances are counted (C307).
+
+### C324 — and Weil cannot be exploited `[PROVED, LEAN-CERTIFIED]`
+
+Differencing produces the character `(a(a+h)|q)` — a quadratic character of a *quadratic polynomial*,
+for which Weil's bound gives `Σ_{a mod q}(a(a+h)|q) ≪ q^{1/2}`. Exploiting that by partial summation
+needs `φ_h' ≪ 1`, i.e.
+
+    h ≪ q²/N = N^{2κ−1} ≤ N^{−1/3} < 1.
+
+> **`[THEOREM 36, part 2]` No admissible shift qualifies: even `h = 1` is too large by a factor
+> `N^{1/3}` (`weil_unusable`). The Weil bound that differencing makes available cannot be used,
+> because the phase it must be weighed against varies faster than the saving.**
+
+This is the *same* failure mode as Pólya–Vinogradov in Theorem 35 — a character-sum saving defeated by
+a fast phase — now recurring one level down, after differencing. `resonance_fourth_barrier`.
+
+### C325 — the diagnosis, four tools deep
+
+| tool | fails because | margin |
+|---|---|---|
+| van der Corput | `g''` too large | `≥ N^{1/3}` |
+| Poisson | dual longer than original | `≥ N^{1/2}` |
+| Pólya–Vinogradov | phase faster than character saving | `N^{1+κ/2}` vs `N^κ` |
+| **Weyl differencing + Weil** | **critical only at `κ = 1/3`; Weil unusable at every shift** | **`N^{1/3}`** |
+
+> **Four classical tools, four independent failures, all computed with explicit margins. Two of them
+> (Pólya–Vinogradov and Weil-after-differencing) fail for the *same* structural reason — a
+> multiplicative saving defeated by a fast phase — which is C313's diagnosis appearing twice at
+> different depths.**
+
+Axioms `[propext, Classical.choice, Quot.sound]`; build green. No exponent asserted below `13/84`.
+
+### Standing position after 125 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 36 results.
+
+## Cycle 126 — **THEOREM 37: the frontier sum is a Farey-sequence exponential sum**
+
+### C326 — the phase depends only on the ratio `[OBSERVED HERE]`
+
+The frontier sum (C314) is `Σ_{q≤L}q^{−1/2}Σ_{a≤q} ε_q(a|q)·e(N√(2a/q))`. **The phase depends on
+`(a,q)` only through the ratio `a/q`.** Grouping by the reduced fraction `a'/q'` — so that
+`(a,q) = (ka', kq')` with `k ≤ L/q'` — the sum factors:
+
+    Σ_{a'/q' reduced, q' ≤ L}  **e(N√(2a'/q'))** · A(a',q'),
+        A(a',q') = Σ_{k ≤ L/q'} (kq')^{−1/2} ε_{kq'} (ka'|kq').
+
+> **`[THEOREM 37]` The frontier sum is a sum over the **Farey sequence of order `L = N^{1/3}`** of the
+> square-root phase `e(N√(2r))`, weighted by an arithmetic factor `A` obtained by summing the
+> Gauss-sum data over multiples.**
+
+The count is consistent: `|F_L| ≍ (3/π²)L²`, matching the `≍L²` resonance pairs of C314.
+
+### C327 — what this reorganisation buys
+
+1. **The two-dimensional sum becomes one-dimensional in the phase.** All the analytic difficulty sits
+   in `Σ_{r ∈ F_L} A(r)·e(N√(2r))`: a *single* sum over Farey fractions. The two-variable structure
+   survives only inside the arithmetic weight `A`, which is a divisor-type sum over `k`.
+2. **The Weyl-differencing failure of C324 is explained.** Differencing in `a` at fixed `q` mixes
+   different reduced fractions and therefore different phases; the natural variable is the Farey
+   fraction, not `a`.
+3. **The obstruction is Farey-sequence equidistribution against a square-root phase.** Franel–Landau
+   makes plain equidistribution of `F_Q` equivalent to the Riemann hypothesis; here the requirement is
+   cancellation of `e(N√(2r))` over `F_L`, which is a weighted, oscillatory refinement of the same
+   question. **This is a structural explanation for `RH ⟹ LH` at the level of the frontier object**,
+   rather than via the classical Borel–Carathéodory route.
+
+### C328 — the honest limits of C326–C327
+
+* The factorisation is exact and elementary; **it improves no exponent.** Checked against the standing
+  rule: nothing here is below `13/84`.
+* The arithmetic weight `A(a',q')` is a sum of Gauss-sum phases over multiples of `q'`; the campaign
+  has not evaluated it, and its size is what would decide whether the reorganisation helps.
+* **`[D54]`** Do not attempt to prove cancellation in `Σ_{r∈F_L}e(N√(2r))` by unweighted Farey
+  equidistribution: the weight `A` is not slowly varying (it carries Jacobi symbols), so partial
+  summation against a Farey discrepancy bound fails for the same reason Pólya–Vinogradov and Weil
+  failed in Theorems 35–36 — the multiplicative data varies as fast as the phase.
+
+### Standing position after 126 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 37 results. The frontier object in its final
+form:
+
+> **`Σ_{r ∈ F_{N^{1/3}}} A(r)·e(N√(2r))` — a Farey-sequence exponential sum with square-root phase and
+> Gauss-sum weights. LH is full square-root cancellation in it; `1/14` of that cancellation is known;
+> four classical tools have been priced and all fail.**
+
+## Cycle 127 — **`[E32]` Theorem 33 corrected, and THEOREM 38: square-root cancellation is not enough**
+
+Cycle 127 evaluated the arithmetic weight `A` of Theorem 37, and the evaluation overturns C314's
+bookkeeping.
+
+### C329 — the normalised Gauss factor depends only on the reduced fraction `[PROVED HERE]`
+
+For `a = ka'`, `q = kq'`, the Gauss sum is `S(ka',kq') = Σ_{j mod kq'}e(a'j²/q')`, whose summand has
+period `q'`, hence `= k·S(a',q')`. Therefore
+
+    S(ka', kq') / (kq')  =  S(a',q') / q'  —  **independent of `k`.**
+
+So the normalised theta phase attaches to the *reduced* fraction, and the correct organisation is a
+**Farey dissection**: one arc per `a'/q' ∈ F_L`, of width `≍ 1/(q'L)`.
+
+### C330 — the corrected weights `[COMPUTED HERE]`
+
+Arc `a'/q'` contains `≍ (1/(q'L))·L² = L/q'` blocks, each of size `≍ L/√q'`, so its contribution is
+
+    ≍ (L/q')·(L/√q') = **L²/q'^{3/2}**,   with unimodular phase ε_{q'}(a'|q')·e(N√(2a'/q')).
+
+Sum of moduli: `Σ_{q'≤L}φ(q')L²q'^{−3/2} ≍ L²·L^{1/2} = L^{5/2} = N^{5/6}` — **Weyl, reproduced ✓.**
+
+### `[E32]` — Theorem 33's square-root target was over-counted
+
+C314 treated every pair `(a,q)` with `q ≤ L` as a separate resonance of weight `Lq^{−1/2}`, giving
+`Σ|w|² = L³` and a square-root value of `L^{3/2} = N^{1/2}` — the Lindelöf target. **That
+over-counts.** A given `α` lies in exactly *one* Farey arc; the non-reduced pairs are not independent
+resonances. With the correct Farey weights:
+
+    Σ_{F_L} |w|² = Σ_{q'≤L} φ(q')·L⁴q'^{−3} ≍ L⁴ ,   so square-root cancellation gives **L² = N^{2/3}.**
+
+> **`[THEOREM 38]` Full square-root cancellation over the Farey resonances delivers `N^{2/3}`, i.e.
+> `μ = 1/12` — **not** the Lindelöf hypothesis. LH needs `N^{1/2} = L^{3/2}`, which is a further factor
+> `L^{1/2} = N^{1/6}` **below** the square-root value.**
+
+| regime | value | `μ` |
+|---|---|---|
+| sum of moduli (no cancellation) | `L^{5/2} = N^{5/6}` | `1/6` (Weyl) |
+| **full square-root cancellation over `F_L`** | **`L² = N^{2/3}`** | **`1/12`** |
+| Lindelöf | `L^{3/2} = N^{1/2}` | `0` |
+
+### C331 — and this confirms Theorem 27 independently
+
+Theorem 27 (C296) concluded that LH forces `a + b = 0` — correlations *below* the square-root barrier —
+and that assuming only `a ≥ 1/2` caps the route at `μ = 1/8`. Theorem 38 reaches the same verdict from
+the resonance side: **generic (square-root) cancellation is insufficient; LH requires beating it.**
+
+> **Two independent derivations now agree that the Lindelöf hypothesis is not a square-root-cancellation
+> statement at the frontier. It requires cancellation strictly better than random, which is exactly
+> the regime in which arithmetic structure — the multiplicativity of `n^{−it}` — must be used, and
+> exactly the regime the campaign's inertness and circularity barriers say uniform methods cannot
+> reach.**
+
+Theorem 34's intermediate target survives unchanged: `μ ≤ 1/12` beats Bourgain, and Theorem 38 now
+identifies `1/12` as precisely *the square-root barrier of the frontier object* — the natural stopping
+point of any method that treats the resonances as generic.
+
+### Standing position after 127 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 38 results, one correction (E32). The map:
+
+    Weyl 1/6  →  [record 13/84]  →  **1/12 = square-root barrier of the frontier**  →  0 = LH
+
+## Cycle 128 — **THEOREM 39: the mean square of the frontier sum is exactly the Lindelöf value**
+
+Theorem 38 said LH needs cancellation `N^{1/6}` *below* the square-root heuristic. Cycle 128 asks
+whether that is exotic. It is not — it is a theorem on average.
+
+### C332 — the mean square `[CLASSICAL INPUT, COMPUTED HERE]`
+
+For `t ∈ [T,2T]` and `N ≍ √(T/2π)`, the mean square of the critical block sum is
+
+    ∫_T^{2T} |Σ_{n∼N} n^{−it}|² dt  ≍  T·N,   so the RMS of `|Σ_{n∼N}n^{−it}|` is `≍ N^{1/2} = L^{3/2}`.
+
+(This is the diagonal of the mean square, i.e. the fourth-moment/mean-value input, not a conjecture.)
+
+> **`[THEOREM 39]` The root-mean-square of the frontier sum over `t` is exactly `N^{1/2}` — precisely
+> the Lindelöf value. Hence **LH is exactly the assertion that the frontier sum never exceeds its own
+> RMS by more than `t^ε`**: a pure large-values statement, with no gap between the typical and the
+> conjectured size.**
+
+### C333 — so the square-root heuristic is provably wrong, and by exactly the right amount
+
+| | value | |
+|---|---|---|
+| sum of moduli | `L^{5/2} = N^{5/6}` | Weyl |
+| square-root heuristic over `F_L` (Thm 38) | `L² = N^{2/3}` | `μ = 1/12` |
+| **actual RMS (theorem)** | **`L^{3/2} = N^{1/2}`** | **`μ = 0` on average** |
+
+> **The Farey resonances are *not* independent: treating them as such over-predicts the sum by exactly
+> `L^{1/2} = N^{1/6}` — the same factor by which Theorem 38 said square-root cancellation falls short.
+> The below-square-root cancellation that LH requires is therefore not exotic; it provably occurs for
+> almost all `t`. LH is the assertion that it occurs for *every* `t`.**
+
+### C334 — and the deficit is localised to the major arcs
+
+The heuristic's `ℓ²` norm is `Σ_{q'≤L}φ(q')L⁴q'^{−3} ≍ L⁴·Σ_{q'}q'^{−2}`, **dominated by `q' = O(1)`.**
+The true size is `L³`. So the over-prediction lives entirely in the small-denominator (major-arc)
+resonances.
+
+> **The `N^{1/6}` discrepancy between the generic heuristic and the truth is carried by the
+> bounded-`q'` Farey fractions. Those few arcs cannot all be simultaneously large; their mutual
+> cancellation is what the mean square records, and reproducing it pointwise is the Lindelöf
+> hypothesis.**
+
+### C335 — this closes the loop with the campaign's large-value barriers
+
+Theorem 39 recasts LH as a large-values problem for one explicit sum. That is precisely the object of
+the campaign's **inertness** mechanism — Halász–Montgomery, the mean-value family, Guth–Maynard, all
+proved inert at the self-dual block because at the convexity bound the large-value optimisation is
+exactly tied. **The map is now closed:**
+
+    critical sum → coherence blocks → theta resonances → Farey arcs → **large values of one sum**
+                                                                        ↑ the inertness barriers apply here
+
+> **After 128 cycles the campaign's forty-odd barrier theorems, derived from six different directions,
+> all bear on the same statement: the frontier sum does not exceed its root-mean-square. That is the
+> Lindelöf hypothesis, and it is where every route this campaign can formulate terminates.**
+
+Checked against the standing rule: C332 is a mean-square *identity*, asserting nothing pointwise; no
+exponent below `13/84` is claimed unconditionally.
+
+### Standing position after 128 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 39 results, two corrections (E32 here, E30 in
+cycle 115).
+
+## Cycle 129 — **`[E33]` Theorem 38 corrected; THEOREM 40: two levels, and within-arc is worthless alone**
+
+### `[E33]` — Theorem 38 omitted the within-arc level
+
+Theorem 38 used `L²/q'^{3/2}` as the *contribution* of the Farey arc around `a'/q'`. That is the arc's
+**sum of moduli**. The `L/q'` blocks inside an arc have phases varying with the distance to `a'/q'`
+(within an arc `n_r` varies by `L²/q'`, so `β_r = −N²/n_r` varies by `≍L²/q'` — full variation mod 1),
+so there is genuine **within-arc** cancellation. Theorem 38's `L²` and its conclusion "square-root
+cancellation is not enough" are **withdrawn.**
+
+### C336 — the four regimes `[PROVED, LEAN-CERTIFIED]`
+
+Each arc holds `L/q'` blocks of size `L/√q'`; there are `φ(q')` arcs for each `q' ≤ L`:
+
+| cancellation | value | `μ` |
+|---|---|---|
+| none | `Σφ(q')(L/q')(L/√q') ≍ L^{5/2}` | `1/6` (Weyl) |
+| **within arcs only** | `Σφ(q')(L/q')^{1/2}(L/√q') ≍ L^{3/2}·L = **L^{5/2}**` | **`1/6` — no gain** |
+| across arcs only | `(Σφ(q')(L²/q'^{3/2})²)^{1/2} = L²` | `1/12` |
+| **both** | `(Σφ(q')(L^{3/2}/q')²)^{1/2} ≍ L^{3/2}(\log L)^{1/2}` | **`0` — LH** |
+
+`farey_regimes_in_N`, `farey_both_gives_lindelof`.
+
+> **`[THEOREM 40]` Square-root cancellation at *both* levels of the Farey dissection gives exactly the
+> Lindelöf value `N^{1/2}` — and exactly the root-mean-square of Theorem 39. But **within-arc
+> cancellation alone is worth nothing**: the weight `φ(q')/q'` exactly compensates the `q'^{-1/2}`
+> gained, and the total stays at `L^{5/2}` (`within_arc_rigidity`).**
+
+**This is a rigidity, and it explains a historical pattern:** every improvement to the *within-block*
+treatment — sharper theta-sum estimates, better stationary-phase expansions — moves nothing. Only
+across-arc cancellation moves the exponent, and it is worth `L^{1/2}` alone and `L` in combination.
+
+### C337 — the mean square now agrees with the heuristic
+
+Theorem 39 computed the RMS of the frontier sum as `L^{3/2}`. Theorem 40's double-square-root
+prediction is `L^{3/2}(\log L)^{1/2}`. **They agree.** (Cycle 128's C333, which claimed the heuristic
+over-predicts by `N^{1/6}`, rested on the withdrawn Theorem 38 and is corrected: the correct heuristic
+matches the theorem.)
+
+> **The frontier object behaves exactly as a generic double-square-root sum on average. LH is the
+> assertion that it does so pointwise.**
+
+## Cycle 130 — **the specification of a new mechanism, and a candidate**
+
+Theorem 39 recast LH as a large-values statement; Theorem 40 says the target is *generic* double
+square-root cancellation, pointwise. Every barrier in this campaign is a constraint on what could
+deliver it. Collecting them gives a **specification**, and the specification is restrictive enough to
+be useful.
+
+### C338 — the specification `[DERIVED FROM THE BARRIER SET]`
+
+A mechanism proving LH must satisfy **all** of:
+
+| # | requirement | forced by |
+|---|---|---|
+| S1 | deliver **across-arc** cancellation | Thm 40: within-arc alone is worth nothing |
+| S2 | be **non-uniform in the phase** — use multiplicativity | E29, Thms 20–25: uniform (exponent-pair) methods are capped |
+| S3 | **not** interchange a Voronoi series with a second summation | the Voronoi-interchange barrier; D52 |
+| S4 | **not** be AFE-internal | self-dual stationarity ⟹ inert |
+| S5 | **not** re-enter a moment exponent | the circularity barrier |
+| S6 | **not** need rank `> 2` spectral input | the rank gap `n(n−1)/2` grows |
+| S7 | be a **large-values** method, not a mean-square one | Thm 39: the mean square is already the LH value |
+| S8 | survive a **fast phase against a multiplicative weight** | Thms 35–36: PV and Weil both die there |
+
+**S7 is the sharpest.** The large sieve applies here — C306 proved the frequencies `√(2a/q)` are
+optimally spaced — but a large sieve averages over the parameter, and averaging reproduces Theorem 39's
+mean square, which is already known. **No mean-square method can help; the content is entirely in the
+exceptional set.**
+
+**S4 + S2 together say: the mechanism must use information not encoded in the functional equation.**
+The functional equation is what the AFE encodes; what lies outside it is the **Euler product** and the
+**zeros**. The campaign's Jensen/zero-geometry barrier closes the zero side. **That leaves exactly one
+resource: the Euler product.**
+
+> **`[SPECIFICATION]` A mechanism proving LH must be a large-values method that limits large values of
+> `Σ_{n∼N}n^{−it}` by exploiting the multiplicative structure of `n^{−it}` — i.e. by showing that a
+> large value forces an impossible conspiracy among the prime phases `{t \log p}`.**
+
+### C339 — the candidate, and its exact open step `[CONJECTURE]`
+
+`|Σ_{n∼N}n^{−it}| > N^{1/2+δ}` requires `{t\log n}` to be concentrated for `≫ N^{1−ε}` values of
+`n ∼ N`. Write `S_t = {n ∼ N : \|t\log n\| < η}`. Since `\log(nm) = \log n + \log m`, **`S_t` is
+approximately closed under multiplication**: if `n, m ∈ S_t` and `nm ∼ N` then `nm ∈ S_{t}` with
+`η ↦ 2η`. So `S_t` is an approximate multiplicative semigroup, generated by its primes
+
+    P_t = { p ≤ N : ‖t\log p‖ < η }.
+
+> **`[CONJECTURE C339]` `|S_t| ≫ N^{1−ε}` forces `|P_t| ≫ π(N)^{1−ε}`: a large value of the critical
+> sum requires almost all primes up to `N` to be simultaneously resonant. The Lindelöf hypothesis
+> follows from a bound on the number of `t ≤ T` admitting such a prime conspiracy.**
+
+**Why this meets the specification.** S1: it bounds the whole sum, not one arc. S2, S4: it is
+*entirely* multiplicative and uses nothing from the functional equation. S3: no Voronoi expansion
+appears. S5: no moment is invoked. S6: no automorphic input at all. S7: it is a large-values statement
+about the exceptional set of `t`. S8: there is no fast phase to fight — **the phase has been removed
+and replaced by a Diophantine condition on `{t\log p}`.**
+
+**`[OPEN CORE]`** The step from `|S_t| ≫ N^{1−ε}` to `|P_t| ≫ π(N)^{1−ε}`. It is not automatic:
+`S_t` could in principle be dominated by numbers with few prime factors, or by a thin set of very
+smooth numbers. **What must be proved is that an approximate multiplicative semigroup of density
+`N^{−ε}` in `[N,2N]` has almost all of `[1,N]`'s primes among its generators.**
+
+### C340 — the honest status of the candidate, and its known relatives
+
+This is the mechanism behind **Soundararajan's resonance method** run in reverse: resonance *builds*
+`t` with many resonant primes to produce Ω-results; C339 asks to *bound* how many such `t` exist.
+The known Ω-results (`|ζ| = Ω(\exp(c√(\log t/\log\log t)))`) are subpolynomial, so **nothing known
+contradicts C339** — but nothing known proves the semigroup step either, and the campaign has
+previously recorded that the resonance route is Ω-blocked in the *constructive* direction (Gál sums
+are subpolynomial). **C339 is the converse direction, which the Ω-block does not touch.**
+
+> **This is the first mechanism the campaign has proposed that is not killed by its own barrier set.
+> It is a conjecture with one explicit open core, and it is Diophantine rather than analytic — which
+> is exactly what S8 demands, since every analytic tool has been priced and fails.**
+
+Checked against the standing rule: C339 asserts no exponent; it is a conditional structure with its
+open core named. Nothing here is below `13/84`.
+
+### Standing position after 130 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 40 results, three corrections (E30, E32, E33).
+The campaign now has, for the first time, a **specification** for the missing mechanism and a
+**candidate** meeting it, with a single named open core.
+
+## Cycle 131 — Phase 4 on C339: **the conjecture is FALSE**, refuted by smooth numbers
+
+C339 conjectured: `|S_t| ≫ N^{1−ε}` forces `|P_t| ≫ π(N)^{1−ε}` — a large critical sum requires almost
+all primes up to `N` to be resonant. Attacking it immediately:
+
+### `[D55]` — the smooth-number counterexample
+
+Suppose only the primes `p ≤ N^{1/2}` are resonant, i.e. `‖t\log p‖ < η` for all of them. That is
+`π(N^{1/2}) ≍ N^{1/2}/\log N` primes — **a vanishing fraction, `≈ π(N)^{1/2}`.** But every
+`N^{1/2}`-smooth `n ∼ N` then satisfies
+
+    ‖t\log n‖ ≤ Ω(n)·η ≍ η·\log\log N,
+
+and the `N^{1/2}`-smooth numbers in `[N,2N]` have density `ρ(2) ≈ 0.3057` — **a positive proportion.**
+
+> **`[D55]` `|S_t| ≫ N` is achievable with only `≍ π(N)^{1/2}` resonant primes. C339 is false: an
+> approximate multiplicative semigroup of positive density in `[N,2N]` need not have almost all primes
+> among its generators, because the smooth numbers are dense.**
+
+**Verdict on C339: `FALSE`.** Refuted within one cycle of being posed, by an explicit construction.
+
+### C341 — relentless interrogation: what survives
+
+The refutation is informative rather than merely destructive.
+
+1. **The strong form was the wrong target anyway.** `|Σ| > N^{1/2+δ}` does not require `N^{1−ε}` terms
+   to be concentrated; it requires the empirical distribution of `{t\log n}`, `n ∼ N`, to deviate from
+   uniform by `N^{−1/2+δ}` **in the first Fourier mode alone**. That is a far weaker conspiracy, and
+   stating it precisely just restates LH — so the semigroup framing must attach to the *weak*
+   deviation, where the smooth-number construction gives no counterexample of the right size (a
+   positive-density coherent set produces `≍ N`, vastly more than `N^{1/2+δ}`, and is therefore ruled
+   out by the mean square of Theorem 39).
+2. **Smoothness is the structural obstruction**, and the classical response to it is a **type I / type
+   II (bilinear) decomposition** — which is precisely the "bilinear mechanism" that specification S1
+   demanded for across-arc cancellation.
+
+### C342 — the refined candidate, and its risk `[CONJECTURE]`
+
+> **`[CANDIDATE]` Decompose the critical sum bilinearly (Vaughan / Heath-Brown), and handle the type
+> II part by **large-sieve duality over the resonance frequencies `√(2a/q)`**, whose optimal spacing
+> `≫ 1/(a₁a₂)` was proved in C306.**
+
+**Why the S7 objection does not apply.** S7 said a large sieve averages over the parameter and so only
+reproduces Theorem 39's mean square. In a *bilinear* form the averaging is over the internal bilinear
+variables, not over `t` — so the output is a bound for each fixed `t`. **This is the one place in the
+campaign's map where a mean-square tool yields a pointwise conclusion.**
+
+**`[RISK — S5]`** The multiplicativity of the phase gives `Σ_{m∼M}m^{−it}·Σ_{k∼N/M}k^{−it} = Σ_n
+r(n)n^{−it}` with `r` a divisor-type weight. **Any bilinear decomposition that routes through this
+identity re-enters the moment problem and is killed by the circularity barrier.** The candidate
+survives only if its bilinear variables come from the *resonance* structure `(a,q)` — where C306's
+spacing lives — and **not** from factoring `n`. That distinction is the whole question, and it is the
+next cycle's target.
+
+### Standing position after 131 cycles
+
+`μ(1/2) ≤ 13/84`. **LH neither proved nor disproved.** 40 results, three corrections, one refuted
+conjecture (C339/D55) and one refined candidate (C342) with its risk named.

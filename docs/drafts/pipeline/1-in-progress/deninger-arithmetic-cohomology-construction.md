@@ -64,12 +64,12 @@ proves off the reflected diagonal that this form agrees with the multiplicity-ex
 form, but that theorem is a comparison, not the definition. The diagonal comparison requires a
 separate termwise-derivative/local-holomorphy proof.
 
-Conjecture: the exact left/right radical quotients of this two-sector pairing, completed in the
-source-conormal graph topology, admit a closed differential and a closed generator. Their
-reflection gluing is the middle term of `[DAC_SOURCE_COMPLEX]`. Functional-equation reflection
-defines cup duality; Hodge star and positivity are not built into this algebraic quotient. The
-Gamma contact line fixes normalization. This is falsified if the radical or graph closure can be
-defined only after enumerating Xi zeros.
+The exact left/right radical quotients give arithmetic trace/cup **test spaces**, not middle
+cohomology itself. This distinction is forced: finite Cauchy packets are not stable under
+coordinate multiplication, and treating their parameter labels as eigenvalues would create a
+continuum of spurious spectrum. Their correct role is to supply source-defined matrix
+coefficients for the ordinary/compact-support pairing. Hodge star and positivity are not built
+into the packet quotient.
 
 `[DAC_REFLECTED_DIAGONAL]`
 
@@ -79,9 +79,50 @@ termwise after the canonical genus-one subtraction. Consequently the reflected-d
 local analytic lemma needed to extend the existing off-diagonal source/target comparison to all
 finite packets. It is a construction/comparison statement, not positivity.
 
+`[DAC_ENTIRE_QUOTIENT]`
+
+The intrinsic algebraic middle cohomology is
+\[
+  H^1_{\mathrm{ent}}=\mathcal O(\mathbb C)/\Xi_C\mathcal O(\mathbb C),
+  \qquad
+  \Theta[F]=[(\tfrac12+iz)F].
+\]
+This is source-defined by the completed Euler--Gamma function and is automatically stable under
+\(\Theta\). It has no divisor index in its definition. Removable divided chains give its
+multiplicity-exact local Jordan chains. An explicit entire divided-difference Bézout inverse
+shows that coordinate multiplication has no eigenvector away from the Xi divisor. Conversely,
+the first nonzero class of every divided chain is a genuine eigenvector. Therefore
+\[
+ \Xi_C(\alpha)=0
+ \iff
+ \exists\,0\ne x\in H^1_{\mathrm{ent}},\quad
+ \Theta x=(\tfrac12+i\alpha)x .
+\]
+This exact point-spectrum theorem is proved in Lean without a zero-defined carrier.
+
+The quotient is naturally nonreduced at a multiple zero. Hence a positive Hodge realization
+which makes the centered generator skew forces not only RH but semisimplicity of these local
+blocks. This is an honest strengthening, not an assumption.
+
 `[DAC_SOURCE_COMPLEX]`
 
-There is a closed \(\mathbb Z/2\)-graded rigged complex
+The algebraic source complex is
+\[
+ C^0=\mathbb C\oplus\mathcal O(\mathbb C)
+ \xrightarrow{\,d^0(c,F)=\Xi_CF\,}
+ C^1=\mathcal O(\mathbb C)
+ \xrightarrow{\,d^1=0\,}
+ C^2=\mathbb C .
+\]
+The analytic identity theorem proves multiplication by \(\Xi_C\) injective, so its cohomology is
+\[
+ H^0\simeq\mathbb C,\qquad
+ H^1=H^1_{\mathrm{ent}},\qquad
+ H^2\simeq\mathbb C .
+\]
+Multiplication by \(\tfrac12+iz\) is a cochain map and induces endpoint weights \(0,1\).
+
+The remaining topological enhancement is a closed \(\mathbb Z/2\)-graded rigged realization
 \[
   (C_{\mathrm{EG}},d,\Gamma,J,\Theta)
 \]
@@ -93,7 +134,8 @@ with:
 3. odd residual cohomology \(H^1\) carrying the induced \(K_{\mathbb R}\) structure;
 4. finite-window residue comparison equal to
    `completedSEMContourIndexZ_eq_xiOrder`, with multiplicity and compatible exhaustion;
-5. a source-defined cup product and trace whose degree-one pairing is perfect;
+5. a source-defined ordinary/compact-support cup product and trace whose degree-one pairing is
+   perfect;
 6. a renormalized graded trace whose distribution is the complete prime--Gamma explicit formula;
 7. a zeta-regularized determinant
    \[
@@ -102,12 +144,28 @@ with:
        \det_\infty\!\left((s-\Theta)/(2\pi)\mid H^i\right)^{(-1)^{i+1}} .
    \]
 
-This conjecture constructs the arithmetic cohomology and its spectral/trace realization, but does
-not assert positivity or RH.
+Algebraic Poincaré duality is already canonical:
+\[
+ H^1_c=(H^1_{\mathrm{ent}})^\vee,\qquad B(x,\ell)=\ell(x),\qquad
+ \Theta_c\ell=\ell-\ell\circ\Theta.
+\]
+The pairing separates both variables, and
+\[
+ B(\Theta x,\ell)+B(x,\Theta_c\ell)=B(x,\ell)
+\]
+holds identically. The unresolved part is identifying the arithmetic packet/continuous dual
+inside this algebraic dual and constructing the closed topology, trace, and determinant.
 
 `[DAC_HODGE_GREEN]`
 
-The source colligation supplies a closable Hodge operator and Green operator
+The source colligation must supply a conjugate-linear bijection
+\[
+  *:H^1_{\mathrm{ent}}\longrightarrow H^1_c
+\]
+which intertwines \(\Theta\) and \(\Theta_c\) and satisfies
+\(\operatorname{Re}((*x)(x))>0\) for every \(x\ne0\). This exact datum and its implication to RH
+are formalized. At the closed-complex level it must arise from a closable Hodge operator and
+Green operator
 \[
   d^*=*^{-1}d*,\qquad
   \Delta=dd^*+d^*d,\qquad
@@ -152,8 +210,37 @@ metric by transporting a form already known to be positive exactly under RH.
   von-Mangoldt half-plane and determinant/log-derivative compatibility.
 - `DeningerPrimeGammaPacketCohomology`: source-only lower/upper Euler packet sectors, the completed
   prime--Gamma divided-difference kernel (including its derivative diagonal), bilinear finite
-  packet polarization, exact left/right radical quotients, and atomic off-diagonal comparison
-  with the divisor Weil polarization.
+  packet polarization, exact left/right radical quotients, and atomic comparison with the divisor
+  Weil polarization.
+- `DeningerPrimeGammaReflectedDiagonal`: local uniform derivative domination, termwise
+  differentiation, the reflected-diagonal squared-Cauchy identity, and full finite-packet
+  source/Weil comparison.
+- `DeningerPrimeGammaPoincareDuality`: universal left/right radical descent and nondegenerate
+  alternating source cup form on the arithmetic packet test space.
+- `DeningerEntireQuotientCohomology`: source-defined entire quotient, multiplicity-exact Jordan
+  chains, explicit off-divisor Bézout resolvent, and exact Xi-zero/Frobenius-point-spectrum
+  equivalence.
+- `DeningerArithmeticCochainComplex`: explicit three-term source complex, analytic injectivity of
+  the Xi differential, computed \(H^0,H^1,H^2\), and cochain Frobenius action.
+- `DeningerArithmeticPoincareDuality`: canonical perfect ordinary/compact-support pairing, forced
+  weight-one dual Frobenius, exact Hodge-star obligation, and its unconditional implication to RH.
+- `DeningerArithmeticResidueDuality` and `DeningerArithmeticJetDuality`: source evaluations and
+  multiplicity-bounded jets descend to compact-support cohomology, with complementary Frobenius
+  weight for the residue class.
+- `DeningerArithmeticFlow`: source quotient flow and endpoint flows, including the one-parameter
+  group laws.
+- `DeningerArithmeticCharacteristic`: exact cyclic characteristic ideal, centered and uncentered
+  characteristic sections \(\Xi_C\) and \(\xi\), endpoint quotient formula, and source-only
+  prime--Gamma logarithmic-derivative Lefschetz identity.
+- `DeningerArithmeticRealStructure`: functional-equation Schwarz reflection descends to an even
+  \(K_{\mathbb R}\) structure on source \(H^1\), fixes \(\Xi_C\), and commutes with \(\Theta\).
+  Its square is \(+1\), so it does not pretend to be the missing odd positive Hodge star.
+- `DeningerArithmeticCompactOpen`: compact-open entire source is closed, completely metrizable,
+  and Baire; point evaluations and Xi multiplication are continuous; unreduced and reduced
+  quotient topologies are constructed without assuming closed Xi range.
+- `DeningerArithmeticProductDual`: every continuous linear functional on a product of complex
+  jet coordinates depends on finitely many coordinates, proving the abstract compact-support
+  mechanism needed after source jet interpolation.
 - `KRealGradedAdjoint`, `KRealKernelCokernel`, `KRealClosedCokernel`, and
   `KRealMoritaParityShift`: even/odd \(K_{\mathbb R}\) algebra and quotient descent.
 - `SeamSuspensionTrace`: completed prime--Gamma logarithmic derivative and finite graded Hodge
@@ -187,13 +274,19 @@ metric by transporting a form already known to be positive exactly under RH.
   strip.
 - The source radical quotient alone does not make Hodge star descend: the needed Hermitian
   compatibility/positivity is precisely part of the unresolved purity gate.
+- The finite Cauchy-packet quotient is a trace test space, not \(H^1\): it is not intrinsically
+  stable under coordinate multiplication and its parameter labels are not zeta spectrum.
+- The full algebraic dual is larger than desired continuous compact-support cohomology. A source
+  topology and comparison with prime--Gamma packet functionals must be proved, not declared.
+- A positive Hodge identification on the nonreduced entire quotient also excludes nontrivial
+  Jordan chains, hence would imply simplicity as well as RH.
 
 ## Stepwise attack
 
 1. Formalize Deninger 2.1--2.7 and the exact skew-shift/eigenvalue consequence.
-2. Define a source-first finite-window seam cochain complex and its \(K_{\mathbb R}\) parity.
-3. Prove its cohomology carries the integral source contour multiplicity.
-4. Construct cup product, endpoint trace, and Poincaré pairing at finite window.
+2. Define the source entire quotient and prove its exact point spectrum.
+3. Construct the three-term source cochain complex and compute \(H^0,H^1,H^2\).
+4. Construct ordinary/compact-support Poincaré pairing and identify the packet continuous dual.
 5. Prove the graded Lefschetz identity and finite determinant identity.
 6. Build compatible transition maps; prove closability and reduced-cohomology exactness.
 7. Establish the distributional prime--Gamma trace and regularized determinant on the limit.
@@ -211,9 +304,21 @@ metric by transporting a form already known to be positive exactly under RH.
       diagonal generator formalized
 - [x] Resolvent Lefschetz comparison with the independent prime--Gamma source formalized
 - [x] Source prime--Gamma packet sectors and exact algebraic radical quotients formalized
-- [ ] Reflected-diagonal source/target derivative comparison proved
-- [ ] Finite source cochain complex constructed
-- [ ] Finite cup/trace/Lefschetz/determinant package proved
+- [x] Reflected-diagonal source/target derivative comparison proved
+- [x] Intrinsic source \(H^1=\mathcal O(\mathbb C)/(\Xi_C)\) constructed
+- [x] Exact Xi-zero/Theta point-spectrum equivalence proved
+- [x] Algebraic source cochain complex constructed and \(H^0,H^1,H^2\) computed
+- [x] Perfect ordinary/compact-support Poincaré pairing and dual Theta law proved
+- [x] Evaluation and multiplicity-bounded jet classes descended to compact-support cohomology
+- [x] Source cohomological flow and endpoint flow laws proved
+- [x] Source cyclic characteristic ideal and prime--Gamma logarithmic-derivative identity proved
+- [x] Functional-equation even \(K_{\mathbb R}\) structure descended to source \(H^1\)
+- [x] Compact-open source topology and reduced/unreduced quotient topologies constructed
+- [x] Continuous dual of product jet carrier proved finite-support
+- [ ] `[DAC_CLOSED_XI_RANGE]`: compact-open Xi multiplication has closed range
+- [ ] Prime--Gamma packets identified with continuous compact-support dual
+- [ ] Source topology, scalar cup trace, distributional Lefschetz formula, and regularized
+      topological determinant proved
 - [ ] Closed cofinal arithmetic cohomology constructed
 - [ ] Source Hodge--Green positivity proved
 - [ ] RH derived
@@ -233,3 +338,31 @@ metric by transporting a form already known to be positive exactly under RH.
   pairing, and exact left/right radical quotients. Lean proves the off-diagonal atomic comparison.
   Audit exposed `[DAC_REFLECTED_DIAGONAL]` and showed why Hodge-star descent cannot be declared at
   this stage without resolving the Hermitian/positivity gate.
+- 2026-07-25 — Closed `[DAC_REFLECTED_DIAGONAL]`: proved local derivative domination, termwise
+  differentiation, diagonal squared-Cauchy comparison, and full finite-packet equality. Radical
+  descent gives a nondegenerate alternating packet cup form.
+- 2026-07-25 — Corrected packet-space overreach and constructed `[DAC_ENTIRE_QUOTIENT]`.
+  Formalized `O(C)/(XiC)`, divided-chain Jordan recurrences, terminal-class nonvanishing, an
+  explicit off-divisor Bézout inverse, and the exact source point-spectrum theorem.
+- 2026-07-25 — Constructed the three-term arithmetic source complex and computed its cohomology.
+  Formalized canonical Poincaré duality with compact-support algebraic dual, forced dual
+  Frobenius `Theta_c=1-Theta^vee`, and the precise positive conjugate-linear Hodge identification
+  whose construction would imply RH.
+- 2026-07-25 — Added compact-support residue and multiplicity-bounded jet classes, source
+  cohomological flow, and the exact cyclic characteristic ideal. The evaluated characteristic
+  section is \(\Xi_C\) (equivalently \(\xi\)); its logarithmic derivative equals the independently
+  defined prime--Gamma source trace. This does not yet claim a topological zeta-regularized
+  determinant.
+- 2026-07-25 — Descended the functional-equation Schwarz involution
+  \(F(z)\mapsto\overline{F(-\bar z)}\) through the Xi ideal. It is multiplicative, fixes the source
+  differential, commutes with Frobenius, and gives the unconditional even \(K_{\mathbb R}\)
+  structure. Its \(+1\) square isolates the required odd Morita/Hodge lift as genuinely additional.
+- 2026-07-25 — Constructed the compact-open source topology. Entire functions form a closed,
+  completely metrizable Baire subspace of \(C(\mathbb C,\mathbb C)\); evaluation and the Xi
+  differential are continuous and injective. Defined unreduced quotient topology by the Xi range
+  and reduced quotient topology by its closure. Named `[DAC_CLOSED_XI_RANGE]` rather than assuming
+  equality.
+- 2026-07-25 — Proved the abstract product-dual theorem: any continuous complex-linear functional
+  on an arbitrary product \(\prod_i\mathbb C\) is supported on finitely many coordinates. This
+  supplies the compact-support conclusion once the Xi quotient is topologically identified with
+  its multiplicity-jet product.

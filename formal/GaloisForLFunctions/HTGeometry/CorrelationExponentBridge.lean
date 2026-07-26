@@ -595,4 +595,61 @@ theorem resonance_fourth_barrier {kappa : ℚ} (h0 : 0 < kappa) (h : kappa < 1/3
   refine ⟨differencedSecondDeriv_pos h, ?_⟩
   unfold weilUsableShift; linarith
 
+
+/-!
+### The two levels of cancellation in the Farey dissection
+
+Each Farey arc around `a'/q'` contains `L/q'` coherence blocks, each of size `L/√q'`.  There are two
+independent places where cancellation can occur: **within** an arc (the blocks there have phases
+varying with the distance to `a'/q'`) and **across** arcs.
+
+    no cancellation:        Σ_{q'≤L} φ(q')·(L/q')(L/√q')      ≍ L²·L^{1/2}   = L^{5/2}
+    within arcs only:       Σ_{q'≤L} φ(q')·(L/q')^{1/2}(L/√q') ≍ L^{3/2}·L    = L^{5/2}
+    across arcs only:       ( Σ_{q'≤L} φ(q')·(L²/q'^{3/2})² )^{1/2}           = L²
+    **both**:               ( Σ_{q'≤L} φ(q')·(L^{3/2}/q')² )^{1/2}            = L^{3/2}·(log L)^{1/2}
+
+The last is `N^{1/2}` — the Lindelöf value, and exactly the root-mean-square of the frontier sum.
+
+**Within-arc cancellation alone gains nothing**: the weight distribution `φ(q')q'^{-1}` exactly
+compensates the `q'^{-1/2}` gained, and the total stays at `L^{5/2}`.  Only the across-arc level moves
+the exponent, and both levels together are needed to reach `L^{3/2}`.
+-/
+
+/-- Exponent in `L` of the Farey-dissected frontier sum, given square-root cancellation within arcs
+(`w = 1`) and/or across arcs (`x = 1`). -/
+def fareyExponent (w x : ℚ) : ℚ := 5/2 - x/2 - w * x / 2
+
+/-- No cancellation reproduces Weyl. -/
+@[simp] theorem farey_none : fareyExponent 0 0 = 5/2 := by unfold fareyExponent; norm_num
+
+/-- **Within-arc cancellation alone gains nothing.** -/
+@[simp] theorem farey_withinOnly : fareyExponent 1 0 = 5/2 := by unfold fareyExponent; norm_num
+
+/-- Across-arc cancellation alone gives `L²`, i.e. `μ = 1/12`. -/
+@[simp] theorem farey_acrossOnly : fareyExponent 0 1 = 2 := by unfold fareyExponent; norm_num
+
+/-- **Both levels give `L^{3/2}` — the Lindelöf value.** -/
+@[simp] theorem farey_both : fareyExponent 1 1 = 3/2 := by unfold fareyExponent; norm_num
+
+/-- The four regimes converted to exponents of `N` at `L = N^{1/3}`. -/
+theorem farey_regimes_in_N :
+    ofCoherenceScale (fareyExponent 0 0) = 5/6 ∧
+    ofCoherenceScale (fareyExponent 1 0) = 5/6 ∧
+    ofCoherenceScale (fareyExponent 0 1) = 2/3 ∧
+    ofCoherenceScale (fareyExponent 1 1) = 1/2 := by
+  refine ⟨?_, ?_, ?_, ?_⟩ <;>
+    (unfold ofCoherenceScale fareyExponent; norm_num)
+
+/-- **The rigidity.**  Within-arc cancellation is worth exactly nothing on its own, and exactly
+`L^{1/2}` in the presence of across-arc cancellation. -/
+theorem within_arc_rigidity :
+    fareyExponent 1 0 - fareyExponent 0 0 = 0 ∧
+    fareyExponent 0 1 - fareyExponent 1 1 = 1/2 := by
+  constructor <;> (unfold fareyExponent; norm_num)
+
+/-- Both levels of square-root cancellation give exactly `μ = 0`. -/
+@[simp] theorem farey_both_gives_lindelof :
+    muOfBlock (ofCoherenceScale (fareyExponent 1 1)) = 0 := by
+  unfold ofCoherenceScale fareyExponent muOfBlock; norm_num
+
 end HTGeometry

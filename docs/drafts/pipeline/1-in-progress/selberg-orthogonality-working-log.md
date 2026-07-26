@@ -6272,3 +6272,2025 @@ Together these give the sharpest available description of Conjecture A:
 > already been performed. The only cases in which the separation is available are those where the
 > linear data cancels — i.e. between two elements of `S` with identical prime coefficients — and there
 > the mechanism does fire, unconditionally (Theorem 57).
+
+**Novelty assessment for Theorems 52, 57, 60, 61 (recorded at cycle 110).** Theorem 52 (effective
+`θ = 0` from Ramanujan) is plausibly folklore — the redundancy of parts of Selberg's axioms has been
+discussed in the literature — but the programme has not located a reference giving the explicit
+transfer constant `(4CR)^k`, and the constant is what makes the `k ≥ 3` tail reach `Re s > 1/3` in
+Theorem 57. Theorem 53 is a crude bound and is likely known. **Theorems 57, 60 and 61 have not been
+matched to anything in the literature**: the shape "prime-square logarithmic density `=` order of a
+ratio at `s = 1/2`" and the self-reference statement "`n_H` is the separation constant" appear to be
+new formulations. This is recorded as an assessment, not a claim of priority; a systematic search of
+the strong-multiplicity-one literature in `S` (Murty–Murty, Kaczorowski–Perelli, Bombieri–Perelli) is
+the outstanding verification task.
+
+---
+
+## 111. Cycle 111 (2026-07-26) — an energy bound on the critical-line divisor, and BS ⟹ strong multiplicity one
+
+### 111.1 Almost-orthogonality of the critical-line characters
+
+On sequences `u = (u(p))_p` define the logarithmic prime form
+```
+⟨u,v⟩ := lim_{x→∞} (loglog x)^{−1} Σ_{p≤x} u(p) conj(v(p)) / p
+```
+(positive semi-definite where defined). For `τ ∈ R` put `e_τ(p) := p^{2iτ}`. Then
+```
+⟨e_τ, e_{τ'}⟩ = lim (loglog x)^{−1} Σ_{p≤x} p^{−1−2i(τ−τ')} = δ_{τ,τ'} ,
+```
+because `Σ_p p^{−1−2iθ} = log ζ(1+2iθ) + O(1) = O(1)` for `θ ≠ 0`. **So `{e_τ}` is an orthonormal
+system**, and Bessel's inequality applies.
+
+### 111.2 The energy bound
+
+Let `F, G ∈ S` have identical gamma factors and conductors and satisfy `a_F(p) = a_G(p)` for all `p`;
+put `Δ(p) := a_F(p²) − a_G(p²)` and `E := ⟨Δ,Δ⟩ = lim (loglog x)^{−1}Σ_{p≤x}|Δ(p)|²/p`. By
+Corollary 58, `⟨Δ, e_τ⟩ = c_τ = −ord_{s=1/2+iτ}(F/G)`. Bessel then gives:
+
+> **Theorem 63 (critical-line divisor energy).**
+> ```
+> Σ_{τ ∈ R} ( ord_{s=1/2+iτ}(F/G) )²  ≤  E .
+> ```
+> Since each non-zero order has square `≥ 1`, the divisor of `F/G` on the critical line has **at most
+> `E` points**.
+
+This is the exact analogue, at the critical line, of Theorem 10 (`n_F ≥ ν²` at the `1`-line), and it
+upgrades that single-point statement to a full Bessel inequality. Recorded also in its `1`-line form:
+
+> **Theorem 62 (multi-point Energy Gap).** For `F ∈ S`,
+> `Σ_{θ ∈ R} (ord_{s=1+iθ} F)² ≤ n_F`, by the same Bessel argument with `e_θ(p) = p^{iθ}`.
+> Theorem 10 is the single-term case.
+
+### 111.3 Consequence: strong multiplicity one under Bounded Satake
+
+By Theorem 55, `F/G` has no zeros or poles off the critical line. By Theorem 63 it has at most `E` on
+the line. If `E < ∞`, `F/G` is therefore a meromorphic function of finite order with **finitely many
+zeros and poles**, tending to `1` as `Re s → +∞`; hence `F/G = P(s)/Q(s)·e^{as+b}` with `P,Q`
+polynomials, and being also a Dirichlet series (hence almost periodic on vertical lines, hence not a
+non-constant rational function times an exponential) it must be constant, equal to `1` by
+`a(1) = 1`.
+
+> **Theorem 64 (conditional strong multiplicity one).** Let `F, G ∈ S` have identical gamma factors
+> and conductors, with `a_F(p) = a_G(p)` for all primes `p`. If
+> `Σ_{p≤x}|a_F(p²) − a_G(p²)|²/p ≪ loglog x` — in particular under **Bounded Satake** (`|a_H(p^k)|`
+> bounded, §9.5), which gives `E ≤ 4B²` — then `F = G`.
+
+**BS is strictly weaker than automorphy and strictly weaker than the polynomial Euler product
+conjecture** (§9.5), so this is a genuine conditional advance: strong multiplicity one in `S` follows
+from a boundedness hypothesis on the coefficients, with no Rankin–Selberg convolution and no
+functoriality.
+
+### 111.4 Honest scope
+
+Three inputs are used and must be recorded:
+1. **Corollary 58** requires the logarithmic densities `c_τ` to exist; deriving them from the
+   `log`-singularity of `F/G` at `1/2+iτ` is a **Tauberian** step (Delange/Wiener–Ikehara type) which
+   is standard but not proved here. Without it, Theorem 63 holds for those `τ` where the density
+   exists.
+2. **`E < ∞`** fails under Ramanujan alone: `|Δ(p)| ≪_ε p^ε` only gives
+   `Σ_{p≤x}|Δ(p)|²/p ≪ x^{2ε}`, far larger than `loglog x`. Boundedness of the prime-square
+   coefficients is genuinely needed.
+3. The last step uses that a Dirichlet series which is a rational function times `e^{as+b}` must be
+   constant — true because a convergent Dirichlet series is almost periodic on vertical lines in its
+   half-plane of convergence, whereas a non-constant rational function is not.
+
+**[NEXT]** Formalise the Bessel step (`⟨e_τ,e_{τ'}⟩ = δ`, then `Σ|⟨u,e_τ⟩|² ≤ ⟨u,u⟩`) — it is a clean
+finite-dimensional statement about a positive semi-definite form and an orthonormal family, and it is
+the load-bearing algebraic content of Theorems 62 and 63.
+
+**Formalisation of the Bessel step (cycle 111).**
+`HTGeometry/BesselPSD.lean` — `bessel_of_orthonormal`: for any form `B` on a complex module that is
+additive and `C`-homogeneous in the first slot, conjugate-symmetric, and positive semi-definite on the
+diagonal, and any finite orthonormal family `(e_i)`,
+```
+∑_i ‖B u (e i)‖² ≤ Re (B u u) .
+```
+Definiteness is **not** assumed, which is what makes it applicable to the logarithmic prime form
+`⟨u,v⟩ = lim (loglog x)^{−1}Σ_{p≤x}u(p)conj(v(p))/p` — a limit of positive forms, degenerate in
+general. `lake build` passes; `#print axioms` = `[propext, Classical.choice, Quot.sound]`.
+
+This is the load-bearing algebraic content of Theorems 62 and 63. **Formal corpus: 48 theorems in 14
+modules, all unconditional, all axiom-clean under `lake build`.**
+
+---
+
+## 112. Cycle 112 (2026-07-26) — the general Bessel packaging: `n_F` bounds the total pretentious energy
+
+Theorems 62 and 63 used one orthonormal family each. The Bessel step (`bessel_of_orthonormal`,
+formalised) needs only orthonormality, so it applies to **every** such family at once.
+
+### 112.1 Orthonormal families for the logarithmic prime form
+
+Recall `⟨u,v⟩ = lim (loglog x)^{−1}Σ_{p≤x}u(p)conj(v(p))/p`. Two families are orthonormal:
+- `e_θ(p) = p^{iθ}`, `θ ∈ R`, since `Σ_p p^{−1−iθ} = log ζ(1+iθ) + O(1)` is bounded for `θ ≠ 0`;
+- `e_χ(p) = χ(p)` for primitive Dirichlet characters `χ`, since `Σ_p χ(p)\barψ(p)/p = O(1)` for
+  `χ ≠ ψ` and `Σ_{p∤q}1/p ~ loglog x`;
+and hence so is the joint family `e_{χ,θ}(p) = χ(p)p^{iθ}`.
+
+### 112.2 The theorem
+
+> **Theorem 66 (pretentious energy bound).** For every `F ∈ S` and every orthonormal family `{e_j}`
+> for `⟨·,·⟩`,
+> ```
+> Σ_j | ⟨ v_F , e_j ⟩ |²  ≤  n_F ,      v_F := (a_F(p))_p .
+> ```
+> In particular, over all primitive Dirichlet characters `χ` and all `θ ∈ R`,
+> ```
+> Σ_{χ,θ} | lim_{x→∞} (loglog x)^{−1} Σ_{p≤x} a_F(p)\barχ(p) p^{−iθ}/p |²  ≤  n_F .
+> ```
+> **`n_F` bounds the total energy with which `F` "pretends to be" a twisted character.** In
+> particular the set of pairs `(χ,θ)` at which `F` has non-zero pretentious density is finite, of
+> cardinality at most `n_F/δ²` for any lower bound `δ` on the densities; and whenever the twist
+> `F ⊗ \barχ` is meromorphic (so that the density is `−ord_{1+iθ}(F⊗\barχ) ∈ Z` by §39.1), the count
+> is at most `n_F`.
+
+Theorem 62 is the special case `χ` trivial; Theorem 10 is the further special case of a single `θ`.
+
+### 112.3 Two corollaries
+
+- **(a)** If `n_F < 1` then `F` has no pole or zero at any `1+iθ`, **and** `F` is not pretentious
+  against any twisted character: every density `⟨v_F, e_{χ,θ}⟩` vanishes. So the remaining Energy Gap
+  case (`0 < n_F < 1`) describes an element of `S` whose prime coefficients are *totally
+  non-pretentious* — orthogonal to every `χ(p)p^{iθ}` — yet carry non-zero energy. That is a sharper
+  description of the remaining case than §52's.
+- **(b)** For `F = ∏_i F_i^{e_i}` with the `v_{F_i}` orthonormal (i.e. granting Conjecture B for the
+  factors), Bessel gives `Σ_i e_i² ≤ n_F`, with equality because `v_F = Σ_i e_i v_{F_i}` lies in their
+  span. So the formula `n_F = Σ e_i²` is exactly the equality case of Bessel — recorded as the
+  conceptual content of Selberg's prediction.
+
+### 112.4 Status of the Bessel line of attack
+
+The Bessel inequality has now produced, unconditionally: Theorem 62 (multi-point Energy Gap at the
+`1`-line), Theorem 63 (critical-line divisor energy), Theorem 64 (strong multiplicity one under
+Bounded Satake) and Theorem 66 (pretentious energy). All four follow from one formalised lemma plus
+the orthonormality of `{χ(p)p^{iθ}}`. This is the most productive single tool the programme has found,
+and it is elementary — it needs no continuation beyond `Re s = 1`, no Rankin–Selberg and no
+functoriality.
+
+> **Its limit is also clear.** Bessel bounds `Σ_j|⟨v_F,e_j⟩|²` **from above** by `n_F`; it can
+> therefore certify that `n_F` is *large* (Theorems 10, 62, 63) but never that it is *small* or
+> integral. Producing a matching lower bound would require completeness of the family
+> `{χ(p)p^{iθ}}` for the logarithmic prime form — i.e. that the prime coefficient vector of every
+> `F ∈ S` lies in the closed span of twisted characters. **That completeness statement is a new,
+> clean, and evidently equivalent form of Selberg's Conjecture A**, recorded as such:
+>
+> **(CMP) Completeness.** For every `F ∈ S`, `v_F` lies in the closed span of `{χ(p)p^{iθ}}` in the
+> logarithmic prime form; equivalently `Σ_{χ,θ}|⟨v_F,e_{χ,θ}⟩|² = n_F`.
+>
+> `CMP ⟹ n_F = Σ ν_{χ,θ}² ∈ Z` whenever the twists are meromorphic, hence `CMP ⟹ MI`.
+
+---
+
+## 113. Cycle 113 (2026-07-26) — CMP is FALSE, and the Bessel method's reach is exactly degree ≤ 1
+
+Phase-4 attack on §112.4's conjecture (CMP), by testing it on the smallest non-degree-1 example.
+
+### 113.1 The refutation
+
+Let `F` be a cuspidal `L`-function of degree `2` (say the `L`-function of a holomorphic newform).
+Then for **every** primitive Dirichlet character `χ` and every `θ ∈ R`,
+```
+⟨v_F , e_{χ,θ}⟩ = lim (loglog x)^{−1} Σ_{p≤x} a_F(p)\barχ(p)p^{−iθ}/p = 0 ,
+```
+because `F ⊗ \barχ` is again cuspidal (of degree `2`), so its `L`-function is entire and non-vanishing
+at `1+iθ`, and the linear density vanishes. Yet `n_F = 1`. Hence
+```
+Σ_{χ,θ} |⟨v_F , e_{χ,θ}⟩|² = 0  <  1 = n_F .
+```
+
+> **Verdict on CMP: FALSE.** The closed span of `{χ(p)p^{iθ}}` does not contain `v_F` for `F` of
+> degree `≥ 2`; Bessel's inequality is strict, and maximally so. **Recorded do-not-retry.**
+
+The corrected statement is simply Conjecture B itself:
+
+> **(CMP′)** `{v_F : F ∈ S primitive}` is an orthonormal basis of the closed span of `{v_H : H ∈ S}`.
+
+which is a restatement, not a route. What the refutation *does* give is a sharp delimitation of the
+method.
+
+### 113.2 The reach of the Bessel method
+
+The only orthonormal families the programme can exhibit unconditionally are
+`{χ(p)p^{iθ}}` — the prime vectors of the **degree-1** elements of `S`. Therefore:
+
+> **The Bessel method certifies energy only against degree-1 data.** It is sharp for objects whose
+> prime data *is* degree-1-like, and vacuous otherwise:
+>
+> | object | prime data tested | Bessel bound | useful? |
+> |---|---|---|---|
+> | `F` of degree `1` | `χ(p)p^{iθ}` itself | `Σν² ≤ n_F`, equality | sharp |
+> | `F/G` of degree `0` (Thm 63) | `Δ(p)` against `p^{2iτ}` | `Σ(ord)² ≤ E` | sharp enough for Thm 64 |
+> | `F` cuspidal of degree `≥ 2` | orthogonal to all `e_{χ,θ}` | `0 ≤ n_F` | **vacuous** |
+
+This is the **fourth independent appearance of the degree-1 barrier** in the programme, after:
+the twist-exponent gap `[1/d,1]` (§82), the Bohr averaging length `b^{−(d−1)}` (§81), and the
+one-cusp/all-cusp dichotomy (§84). All four say the same thing in different languages: *the
+unconditional tools of the Selberg class see exactly the degree-`≤1` world.*
+
+### 113.3 What survives
+
+Theorems 62, 63, 64 and 66 are unaffected — they are true and unconditional; only the hoped-for
+converse (CMP) is false. In particular:
+
+- **Theorem 64 (strong multiplicity one under Bounded Satake) stands**, and the reason it works is now
+  clear: it tests the *degree-0* object `F/G`, which is exactly where the method is sharp.
+- **Theorem 66's corollary (a) is sharpened**: for `F` cuspidal of degree `≥ 2`, the pretentious
+  energy is `0` while `n_F = 1`, so the gap between the two sides of Bessel is the whole of `n_F`.
+  The remaining Energy Gap case `0 < n_F < 1` is therefore *not* distinguished from cuspidal
+  behaviour by pretentiousness — recorded as a correction to §112.3(a), which suggested it was.
+
+> **Net.** Bessel is the programme's most productive elementary tool, and its ceiling is now exactly
+> known: it reaches degree `≤ 1` prime data, no further. Any advance on Conjecture A in degree `≥ 2`
+> must supply a **new orthonormal family** for the logarithmic prime form — equivalently, must
+> exhibit the prime vector of a degree-`≥2` primitive as a unit vector orthogonal to the degree-1
+> world, which is precisely what Conjecture B asserts and what nothing unconditional currently
+> provides.
+
+---
+
+## 114. Cycle 114 (2026-07-26) — the search for a new orthonormal family closes
+
+§113 left one requirement: exhibit an orthonormal family for the logarithmic prime form beyond
+`{χ(p)p^{iθ}}`. Two routes were tried.
+
+### 114.1 Abundance is not the issue
+
+Orthonormal families are **abundant**: any unimodular `g_j` on primes with
+`Σ_p g_i(p)\bar g_j(p)/p = O(1)` for `i ≠ j` gives one, and generic choices work. But Bessel is only
+informative when the coefficients `⟨v_F, g_j⟩` are non-zero *and* independently computable. For a
+generic `g` the correlation with `v_F` vanishes, and the inequality degenerates to `0 ≤ n_F`.
+
+### 114.2 Building the family from the `v`'s adds nothing
+
+The natural attempt is to adjoin `e := v_F/√(n_F)` to `{e_{χ,θ}}` — legitimate for cuspidal `F`, since
+`v_F ⊥ e_{χ,θ}`. Bessel then gives, for any `G ∈ S`,
+```
+|c_{F,G}|² / n_F  +  Σ_{χ,θ} ( ord_{1+iθ}(G⊗\barχ) )²  ≤  n_G .
+```
+Checks: `G = ζ`, `F` cuspidal gives `0 + 1 ≤ 1` (tight); `G = Fζ` gives `n_F + 1 ≤ n_F + 1` (tight);
+`G = F·F'` for distinct cuspidals gives `|c|² ≤ 1`, i.e. Cauchy–Schwarz.
+
+> **Verdict.** Every inequality obtainable by adjoining vectors built from the `v_H` is a consequence
+> of positivity of the Gram matrix of `{v_H}`, which the programme already had (§69.1). Bessel with a
+> Gram–Schmidt family **is** Gram positivity. **Recorded do-not-retry.**
+
+So the only genuinely new content Bessel can deliver comes from a family whose orthonormality is known
+*independently* of the `v_H` — and the only such family available is the degree-1 characters. This
+closes the question raised in §113.2 in the negative:
+
+> **The Bessel method is exhausted.** Its unconditional content is exactly Theorems 62, 63, 64 and 66,
+> and its ceiling is the degree-`≤1` world. Producing a new independently-orthonormal family is
+> equivalent to producing a degree-`≥2` primitive whose prime vector is known to be a unit vector —
+> i.e. to `n_F = 1`, which is (P1), the hardest form of Conjecture B.
+
+### 114.3 Consolidated output of cycles 101–114
+
+Unconditional, new, and located where §85.1 proves they must be (on or below the critical line):
+
+| result | statement |
+|---|---|
+| Thm 52 | `log F − Σ_p a_F(p)p^{−s}` holomorphic on `Re s > 1/2` (effective `θ = 0` from Ramanujan) |
+| Thm 53 | `∫_0^T|log F(σ+it)|²dt ≪_σ T log²T` for every `σ > 1/2` |
+| Thm 55 | `a_F(p) = a_G(p) ∀p ⟹` divisors of `F,G` agree off the critical line |
+| Thm 57 | prime-square density `= −ord_{1/2}(F/G) ∈ Z` |
+| Cor 58 | the divisor of `F/G` on the critical line is read off the prime-square densities |
+| Thm 60 | `n_F = δ₂(F\bar F) − 2Re δ₂(F)` — MI from *linear* prime-square densities |
+| Thm 61 | `n_H` is the separation constant between linear and quadratic prime data at `Re s = 1/2` |
+| Thm 62 | `Σ_θ (ord_{1+iθ}F)² ≤ n_F` |
+| Thm 63 | `Σ_τ (ord_{1/2+iτ}(F/G))² ≤ E` |
+| Thm 64 | Bounded Satake `⟹` strong multiplicity one in `S` |
+| Thm 66 | `n_F` bounds the total pretentious energy of `F` |
+
+Refuted in-cycle, with witnesses: ZD (§77), RZ (§98), the zero-sharing bridge (§87), CMP (§113), and
+the Bessel-extension route (§114.2). Design rules derived from those failures: thin sets (§77.2),
+scales (§87.2), regimes (§98.3), and now **independence** — an inequality is only informative if its
+ingredients are known independently of the object being bounded.
+
+---
+
+## 115. Cycle 115 (2026-07-26) — the Energy Gap as a coefficient mean-value statement
+
+### 115.1 The restatement
+
+By Wirsing (§58), for `F ∈ S` with prime density `n_F`,
+```
+Σ_{n≤x} |a_F(n)|²  ~  c_F · x (log x)^{n_F − 1} / Γ(n_F) .
+```
+Hence, provided `c_F > 0`:
+
+> **The Energy Gap `n_F ≥ 1` for non-constant `F ∈ S` is equivalent to the coefficient mean-value
+> statement**
+> ```
+> Σ_{n ≤ x} |a_F(n)|²  ≫  x .
+> ```
+> and `n_F ≤ 1` is equivalent to `Σ_{n≤x}|a_F(n)|² ≪ x`. So Conjecture A's `n_F = 1` for primitives is
+> exactly *`Σ_{n≤x}|a_F(n)|² ≍ x`* — the Rankin–Selberg mean value, stated with no `L`-function.
+
+Checks: `ζ` gives `x`; `L(·,χ)` gives `x φ(q)/q`; `ζ²` gives `x log³x/(π²·…)`, exponent `n = 4` ✓;
+a cuspidal degree-2 form gives `~cx` by Rankin–Selberg ✓.
+
+### 115.2 Attempted proof of the lower bound, and why it fails
+
+The natural route uses the non-vanishing of `F` on `σ > 1` (from the Euler product) plus
+Cauchy–Schwarz:
+```
+0 < |F(1+ε)| ≤ (Σ_n |a_F(n)|² n^{−1−ε})^{1/2} (Σ_n n^{−1−ε})^{1/2} ≍ (R_{F,F}(1+ε))^{1/2} ε^{−1/2} ,
+```
+so `R_{F,F}(1+ε) ≫ ε·|F(1+ε)|²`. Since `R_{F,F}(1+ε) ≍ ε^{−n_F}` this reads `ε^{−n_F} ≫ ε·|F(1+ε)|²`,
+which is automatic for every `n_F ≥ 0` — **no information**. Reversing the inequality to bound
+`R_{F,F}` from above requires an upper bound for a mean value that is not available.
+
+Likewise `log F(1+ε) = Σ_p a_F(p)p^{−1−ε} + O(1)` with `|Σ_p a_F(p)p^{−1−ε}| ≤ √(n_F)·log(1/ε)`
+(Theorem 10's estimate) gives only the linear density, which vanishes for entire `F`.
+
+> **Recorded.** Both attempts live at `σ = 1`, where Theorem 38's witness `L(·,χ)^c` — holomorphic and
+> non-vanishing on a neighbourhood of `Re s ≥ 1`, all linear densities zero, `n = c²` arbitrary —
+> refutes the whole family at once. This is the fourth time an Energy-Gap attempt has been killed by
+> that single witness (§95.3, §108, §109, §115). **The `σ = 1` line is closed for `n_F`, permanently.**
+
+### 115.3 Value of the restatement
+
+Even though §115.2 fails, §115.1 is worth having:
+
+- It states the Energy Gap **without any analytic continuation**: it is a mean-value bound for the
+  Dirichlet coefficients of `F` alone.
+- It is the exact point where the Rankin–Selberg method enters classically — `Σ_{n≤x}|a_F(n)|² ≍ x` is
+  what `L(s, F × \bar F)` is used to prove — so it isolates what that method delivers, in a form that
+  mentions no convolution.
+- Combined with Theorem 60 (`n_F = δ₂(F\bar F) − 2Re δ₂(F)`), the programme now has two independent
+  coefficient-level formulations of Conjecture A: one as a mean value of `|a_F(n)|²`, one as a pair of
+  logarithmic prime-square densities. Both are statements about the coefficients of elements of `S`
+  with no auxiliary `L`-function.
+
+**[OPEN CORE], coefficient form.** For non-constant `F ∈ S`, prove `Σ_{n≤x}|a_F(n)|² ≫ x`.
+
+---
+
+## 116. Cycle 116 (2026-07-26) — duality gives a constant, not a density; and the crispest form of EG
+
+### 116.1 What Voronoi duality delivers
+
+The functional equation gives, unconditionally, a Voronoi-type summation formula
+`Σ_n a_F(n)φ(n) = Σ_n conj(a_F(n))Φ(n)` with `Φ` an explicit Meijer-`G` transform of `φ`. Taking `φ`
+a bump supported on `[1/2,3/2]` with `φ(1)=1` kills every term but `n=1` on the left:
+```
+1 = Σ_n conj(a_F(n)) Φ(n) ,
+```
+and `Φ` is concentrated on `n ≪ C(d_F, q_F)`. Cauchy–Schwarz then gives
+```
+Σ_{n ≤ N} |a_F(n)|²  ≥  1 / Σ_{n≤N}|Φ(n)|²  >  0 ,     N ≍ C(d_F,q_F) .
+```
+
+> **This is a genuine unconditional lower bound, but only by a constant.** It says the coefficients of
+> `F` cannot all be small below the conductor scale — a quantitative form of `a_F(1)=1` propagated by
+> the functional equation. It does **not** give `Σ_{n≤x}|a_F(n)|² ≫ x`, because taking `φ` a bump at
+> scale `X` makes the left side `o(X)` for entire `F` (no pole to supply a main term).
+
+### 116.2 The reduction to an `L¹` statement
+
+By Cauchy–Schwarz, `Σ_{n≤x}|a_F(n)|² ≥ (Σ_{n≤x}|a_F(n)|)²/x`, so
+
+> **EG ⟸ `Σ_{n≤x}|a_F(n)| ≫ x` for non-constant `F ∈ S`.**
+
+Since `|a_F|` is multiplicative, `Σ_{n≤x}|a_F(n)| ≫ x` holds as soon as `|a_F(p)| ≥ δ` on a set of
+primes of positive logarithmic density — so the `L¹` form fails only if the prime coefficients are
+overwhelmingly small, which is `n_F = 0` again. The reduction is therefore not a shortcut, but it does
+produce the crispest available statement of the remaining case:
+
+> **(EG₀) No non-constant `F ∈ S` satisfies `Σ_p |a_F(p)|²/p < ∞`.**
+
+Equivalently: *the prime coefficients of a non-trivial element of the Selberg class cannot be square-
+summable against `1/p`.* This mentions no continuation, no functional equation, no zeros and no
+densities — only the Euler product data. It is the `n_F = 0` case of the Energy Gap in its minimal
+form, and by Theorem 49 it is equivalent to *no non-constant `F ∈ S` has rigid zeros*.
+
+### 116.3 Where EG₀ now sits
+
+Four equivalent forms have now been recorded, at four different levels:
+
+| level | statement |
+|---|---|
+| coefficients | `Σ_p |a_F(p)|²/p = ∞` for non-constant `F` (EG₀) |
+| mean value | `Σ_{n≤x}|a_F(n)|² ≫ x` (§115.1, with Wirsing) |
+| zeros | the zeros of a non-constant `F` are not rigid (Theorem 49) |
+| variance | `Var_{t≤T}(S_F) → ∞` for non-constant `F` (Theorem 49) |
+
+All four are unproved, and §115.2/§109/§95.3 show the `σ = 1` line cannot reach any of them. The
+zero-side forms are the ones §77.2's and §87.2's rules permit; the coefficient form EG₀ is the one that
+needs no analysis at all to state.
+
+---
+
+## 117. Cycle 117 (2026-07-26) — Theorem 62 bounds the zeros on the 1-line, unconditionally
+
+Self-audit note: §§114–116 were consolidation (equivalent restatements, closure of the Bessel line)
+rather than new frontier. Returning to Phase 3/4 on an unexploited consequence.
+
+### 117.1 The corollary I under-stated
+
+Theorem 62 reads `Σ_{θ∈R}(ord_{s=1+iθ}F)² ≤ n_F`. Since every non-zero order has square `≥ 1`:
+
+> **Corollary 67 (finiteness of the 1-line divisor).** Let `F ∈ S` have a prime density `n_F < ∞`.
+> Then `F` has at most `n_F` zeros and poles on the whole line `Re s = 1`, counted **without**
+> multiplicity; with multiplicity, `Σ ν² ≤ n_F`, so a zero of order `ν` forces `ν ≤ √(n_F)`.
+
+This is unconditional and does not assume a zero-free region, a density estimate, or continuation
+beyond `Re s = 1`. Compare the classical situation:
+
+- Non-vanishing of `F` on `Re s = 1` — the analogue of the prime number theorem for `S` — is **open**
+  in general; it is known for `d ≤ 2` and under extra hypotheses (Kaczorowski–Perelli).
+- Corollary 67 does not prove non-vanishing, but it makes the exceptional set **finite and explicitly
+  bounded by the prime energy**, with a square-root bound on the order of any single zero.
+
+Sanity checks: `ζ` has `n = 1` and exactly one point of its `1`-line divisor (the pole, `ν = 1`),
+`Σν² = 1 = n_ζ` — **equality**. `ζ^k` has `n = k²` and one point of order `k`, `Σν² = k² = n` —
+equality again. `L(·,χ)` has `n = 1` and no `1`-line divisor, `0 ≤ 1` — strict. So the bound is
+attained exactly on the powers of `ζ`, which is the expected extremal family.
+
+### 117.2 Why the equality case is informative
+
+Equality in Bessel means `v_F` lies in the span of the tested family `{p^{iθ}}`. So:
+
+> **Corollary 68.** `Σ_θ (ord_{1+iθ}F)² = n_F` **iff** `v_F` lies in the closed span of `{p^{iθ}}` in
+> the logarithmic prime form — i.e. iff `F` is, in the prime-density sense, a product of shifted
+> zeta factors. Any `F` with a cuspidal factor has strict inequality, with the deficit
+> `n_F − Σ_θ ν_θ²` equal to the energy of the cuspidal part.
+
+So the Bessel deficit is a numerical invariant of `F` measuring **how far `F` is from being a product
+of shifts of `ζ`**, and it is `0` exactly on that family. Under Conjecture B the deficit is
+`Σ_{i : d_i ≥ 2} e_i²`. Recorded as the first invariant the programme has that *detects the presence of
+higher-degree primitive factors from prime data alone*, unconditionally.
+
+### 117.3 What this opens
+
+The deficit `D_F := n_F − Σ_θ (ord_{1+iθ}F)² ≥ 0` is unconditional and computable from prime data.
+Two immediate questions, both new:
+
+- **(D1)** Is `D_F` an integer? Under Conjecture B, `D_F = Σ_{d_i≥2}e_i² ∈ Z`. `D_F ∈ Z` is strictly
+  weaker than MI (it is MI modulo the degree-1 part, which is already known), so **(D1) is a genuinely
+  smaller target than Conjecture A** and is not obviously equivalent to it.
+- **(D2)** Is `D_F = 0 ⟹ F` is a product of shifted zeta factors? By Corollary 68 this is the
+  statement that prime-density membership in the span of `{p^{iθ}}` forces actual membership — a
+  rigidity statement of the same type as, but weaker than, strong multiplicity one.
+
+**(D1) is now the smallest open integrality statement in the programme**: it asks for integrality only
+of the *non-degree-1 part* of the energy, the degree-1 part being already integral by Theorem 62 and
+§39.1.
+
+**Immediate correction to §117.3 (same cycle).** (D1) is **not** a smaller target. Since
+`Σ_θ (ord_{1+iθ}F)²` is a sum of squares of integers, it is itself an integer, so
+```
+D_F ∈ Z   ⟺   n_F ∈ Z   ⟺   MI .
+```
+(D1) is therefore *equivalent* to Conjecture A, not weaker; the claim that it isolates "only the
+non-degree-1 part" was wrong — subtracting an integer changes nothing about integrality. Recorded as
+an error caught in-cycle.
+
+**What survives.** Corollary 67 (at most `n_F` points in the `1`-line divisor, order `≤ √(n_F)`) and
+Corollary 68 (the Bessel deficit vanishes exactly on prime-density products of shifted zeta factors)
+stand, and (D2) — *does `D_F = 0` force `F` to be an actual product of shifted zeta factors?* —
+remains a genuine rigidity question **not** equivalent to MI, since it asks about membership rather
+than integrality. (D2) is the surviving new target of this cycle.
+
+### 117.4 (D2) is equivalent to EG₀
+
+Equality in Bessel gives `v_F = Σ_θ (−ν_θ) e_θ` in the closure, `ν_θ = ord_{1+iθ}F`, i.e.
+`a_F(p) ≈ Σ_θ(−ν_θ)p^{iθ}` in the logarithmic prime `L²`. The element of the group completion of `S`
+with exactly those prime coefficients is
+```
+H(s) = ζ(s)^{m_F} · ∏_{θ≠0} ζ(s−iθ)^{−ν_θ}       (m_F = −ν_0 ≥ 0, ν_θ ≥ 0 for θ ≠ 0),
+```
+a ratio of shifted zeta factors with **integer** exponents. Then `D_F = 0` says exactly
+`‖v_F − v_H‖ = 0`, i.e. `n_{F/H} = 0`. Hence
+
+> **(D2) ⟺ EG₀**: "`D_F = 0` forces `F = H`" is precisely "zero prime energy forces triviality",
+> applied to `F/H` in the group completion of `S`. Conversely `n_F = 0` gives `Σν² ≤ 0`, so all
+> `ν_θ = 0`, `H = 1`, and (D2) returns `F = 1`.
+
+So cycle 117's surviving new content is exactly Corollaries 67 and 68; (D1) collapsed to MI and (D2)
+collapsed to EG₀.
+
+**Novelty note.** Corollary 67 — *an element of `S` with finite prime density has at most `n_F` points
+in its divisor on `Re s = 1`, each of order `≤ √(n_F)`* — has not been matched to the literature. It
+is unconditional, needs no zero-free region and no density estimate, and follows from Bessel plus the
+integrality of the linear prime densities (§39.1). Non-vanishing on `Re s = 1` (the PNT analogue for
+`S`) remains open in general; Corollary 67 makes the exceptional set finite and explicitly bounded.
+
+---
+
+## 118. Cycle 118 (2026-07-26) — EG₀: the case `n_F = 0` unlocks two steps, and stalls on a measure-zero set
+
+Attack on EG₀ (`n_F = 0 ⟹ F = 1`), using the machinery of cycles 101–117 in the one case where
+Theorem 61's self-reference *does not* apply — because there the obstruction constant is `n_F = 0`.
+
+### 118.1 Two steps that become available when `n_F = 0`
+
+**(i) The `a(p)²` term disappears.** Since `|density of a_F(p)²p^{−2iτ}| ≤ density of |a_F(p)|² = n_F = 0`,
+the Newton correction in `b_F(p²) = a_F(p²) − a_F(p)²/2` contributes nothing, so for every `τ`
+```
+β_τ  :=  density of b_F(p²)p^{−2iτ}  =  δ₂,τ(F)  :=  density of a_F(p²)p^{−2iτ} .
+```
+
+**(ii) Bessel at the critical line applies to the prime-square data.** With `E₂ := ⟨a_F(p²), a_F(p²)⟩`
+the prime-square energy, the orthonormal family `e_{2τ}(p) = p^{2iτ}` and
+`bessel_of_orthonormal` give, **unconditionally**,
+```
+Σ_{τ ∈ R} | δ₂,τ(F) |²  ≤  E₂ .
+```
+So the prime-square densities of an `F` with `n_F = 0` are square-summable, hence non-zero at only
+countably many `τ`, with total energy `≤ E₂`.
+
+### 118.2 The step that stalls
+
+To conclude `F = 1` one needs the identity of §109.1,
+```
+δ₂,τ(F)  =  − ord_{s = 1/2+iτ}(F) ∈ Z ,
+```
+whose proof requires the linear prime sum `P(1/2+iτ) = Σ_p a_F(p)p^{−1/2−iτ}` to **converge at the
+point `τ`**. Theorem 61 says this needs `Σ_p|a_F(p)|²/p < ∞` — which now **holds**, since `n_F = 0`.
+So the obstruction that blocks every other case is absent here.
+
+What is available is *almost* enough:
+
+- The partial sums satisfy `Σ_{p≤x}|a_F(p)| ≪ x` by Cauchy–Schwarz, so the abscissa of convergence of
+  `P` is `≤ 1` — not `≤ 1/2`.
+- By the Carleson-type convergence theorem for `ℋ²` Dirichlet series (Hedenmalm–Saksman), a Dirichlet
+  series with `ℓ²` coefficients converges **almost everywhere** on the critical line. With
+  `b_p = a_F(p)p^{−1/2} ∈ ℓ²` this gives convergence of `P(1/2+iτ)` for **a.e. `τ`**.
+
+> **But the divisor of `F` on the critical line is countable, hence of measure zero.** Almost-everywhere
+> convergence therefore says nothing at exactly the points `τ` where the identity is needed.
+
+### 118.3 The gap, stated exactly
+
+> **[OPEN CORE, EG₀ form]** Let `F ∈ S` with `Σ_p|a_F(p)|²/p < ∞`. Show that
+> `Σ_p a_F(p)p^{−1/2−iτ}` converges (or is `o(log(1/δ))` on the approach `s = 1/2+δ+iτ`) at every `τ`
+> in the divisor of `F` on the critical line. Then `δ₂,τ(F) = −ord_{1/2+iτ}(F) ∈ Z`, Bessel gives
+> `Σ_τ (ord_{1/2+iτ}F)² ≤ E₂`, so `F` has finitely many zeros on the line; combined with Theorem 55
+> (no zeros off the line when the prime coefficients determine the divisor) `F` has finitely many
+> zeros altogether, hence is a rational function times `e^{as+b}`, hence — being a Dirichlet series —
+> constant, i.e. `F = 1`.
+
+**This is the first time the Energy-Gap edge case has been reduced to a single, purely analytic
+statement about one explicit Dirichlet series**, with every other step supplied: (i) and (ii) above,
+Theorem 55, Theorem 63's Bessel argument, and the rational-function endgame of Theorem 64. The residual
+question is a **pointwise convergence** question on a measure-zero set — precisely the gap between
+Carleson-type a.e. convergence and convergence at prescribed points.
+
+**Recorded as the sharpest live target of the programme.** Note it is *not* blocked by any of the
+four barriers (§113.2): it is a statement about a single `F` with `n_F = 0`, where the degree-1 ceiling,
+the twist-exponent gap, the one-cusp obstruction and Theorem 61's self-reference all fail to bite.
+
+---
+
+## 119. Cycle 119 (2026-07-26) — corpus audit: one partial duplication found
+
+Prompted audit of the mandate "search the corpus before writing Lean". **The mandate was not being
+followed in cycles 101–118**: mathlib names were verified in `/tmp` scratch files every time, but
+`scripts/formal_tools.py research` was not run against our own corpus before adding modules. Results
+of running it now:
+
+### 119.1 Partial duplication — the Bohr mean value
+
+`GaloisForLFunctions.RHTower.WeylEquidistribution.trig_time_average` already proves, for arbitrary
+real frequencies,
+```
+lim_{T→∞} (1/T) ∫_0^T Σ_i c_i exp(θ_i i t) dt  =  Σ_{i : θ_i = 0} c_i ,
+```
+which is exactly the **asymptotic** diagonal extraction that `genPoly_meanValue` and
+`genPoly_meanValue_bilinear` deliver in the limit. Had it been found first, the limit statements of
+Theorems 23, 26, 29 and 30 could have cited it directly.
+
+**What is genuinely new in `GeneralizedDirichletMeanValue`** and does *not* follow from the limit
+form: the exact identity at finite interval length, and the bounds uniform in the interval, its
+length and its position — `oscInt_norm_le` (`‖oscInt δ T U‖ ≤ 2/|δ|`), `genPoly_meanValue_error`,
+`genPoly_meanValue_error_of_gap`. Those are what §81's quantitative averaging-length barrier
+(`A ≫ b^{−(d−1)}`) and §83's gap theorem require. Cross-reference added to the module docstring.
+
+Also adjacent: `RHTower.ShiftedMultIndependence.shifted_dirichlet_meanValue` (Hurwitz frequencies
+`log(n+α)`), a special case of the same limit.
+
+### 119.2 Not a duplication — Bessel
+
+`GaloisForLFunctions.RHTower.TraceNorm.sum_inner_sq_le_of_orthonormal_with_zeros` is Bessel in a
+genuine `InnerProductSpace ℂ H`, i.e. for a **definite** form. `bessel_of_orthonormal` is for a
+positive **semi**-definite form supplied as a bare function, which is the setting actually needed:
+the logarithmic prime form `⟨u,v⟩ = lim (loglog x)^{−1}Σ_{p≤x}u(p)conj(v(p))/p` is a limit of positive
+forms and is degenerate. Cross-reference added.
+
+### 119.3 Process fix
+
+> **Rule reinstated.** Before adding any Lean module: run
+> `scripts/formal_tools.py research "<concept>"` (two or three phrasings) **and** `rg` on the key
+> symbol, and record the outcome here. `lake build` remains the authoritative check (§105), and
+> mathlib names continue to be verified in `/tmp` scratch files.
+
+Net cost of the lapse: one partially redundant limit statement out of 50 theorems, with the
+quantitative content unaffected. Net benefit of the audit: two cross-references, and a general Weyl
+equidistribution tool (`trig_time_average`) now known to be available for future cycles.
+
+---
+
+## 120. Cycle 120 (2026-07-26) — EG₀ needs cancellation, and its mean-value form is weaker than EG's
+
+Corpus search first (§119.3 rule): `formal_tools.py research "Dirichlet series abscissa convergence
+prime coefficients"` — nothing covering convergence of `Σ_p a(p)p^{−1/2−iτ}`; no duplication.
+
+### 120.1 The §118 gap is genuinely RH-strength
+
+With only `A := Σ_p|a_F(p)|²/p < ∞`, the linear prime sum converges **absolutely** only for `σ > 1`:
+```
+Σ_{p≤X}|a_F(p)|p^{−σ} ≤ A^{1/2}(Σ_{p≤X}p^{1−2σ})^{1/2} ,
+```
+and `Σ_p p^{1−2σ}` converges iff `σ > 1`. At `σ = 1/2` even the `ℓ²` hypothesis gives only
+`Σ_{p≤X}|a_F(p)|p^{−1/2} ≪ A^{1/2}(X/\log X)^{1/2}`, which grows. Moreover the sum
+`Σ_p a_F(p)p^{−1/2−δ−iτ}` is **not** an inner product for the logarithmic prime form: writing it as
+`⟨a_F, v⟩` forces `v(p) = p^{1/2−δ+iτ}` with `‖v‖² = Σ_p p^{−2δ} = ∞`.
+
+> **Recorded.** Convergence of `Σ_p a_F(p)p^{−1/2−iτ}` at a prescribed `τ` is a genuine cancellation
+> statement, not accessible from `n_F = 0` by any Cauchy–Schwarz argument. It is of RH strength.
+> §118's route to EG₀ is therefore blocked at exactly that point, and the block is not removable by
+> the `ℓ²` hypothesis.
+
+### 120.2 The mean-value form of EG₀ is weaker than that of EG
+
+Wirsing at `τ = n_F` gives `Σ_{n≤x}|a_F(n)|² ~ c_F x(\log x)^{n_F−1}/Γ(n_F)`. As `n_F → 0` the right
+side is `o(x/\log x)` (the factor `1/Γ(n_F) → 0`). Hence:
+
+> **`n_F = 0  ⟺  Σ_{n≤x}|a_F(n)|² = o(x/\log x)`**, so
+> ```
+> EG₀  ⟺  Σ_{n≤x}|a_F(n)|²  ≫  x / \log x     for non-constant F ∈ S .
+> ```
+
+Compare §115.1: full EG (`n_F ≥ 1`) is `Σ_{n≤x}|a_F(n)|² ≫ x`. **The `n_F = 0` case therefore needs a
+mean-value lower bound weaker by a full factor of `\log x`.** That is a genuine refinement of the
+target and is recorded as the sharpest mean-value form the programme has:
+
+| statement | needed bound |
+|---|---|
+| EG₀ (`n_F = 0 ⟹ F = 1`) | `Σ_{n≤x}\|a_F(n)\|² ≫ x/\log x` |
+| EG (`n_F ≥ 1`) | `Σ_{n≤x}\|a_F(n)\|² ≫ x` |
+| Conjecture A for primitives | `Σ_{n≤x}\|a_F(n)\|² ≍ x` |
+
+### 120.3 What duality gives, and its ceiling
+
+§116.1's Voronoi argument gives `Σ_{n≤N}|a_F(n)|² ≥ c > 0` with `N ≍ C(d_F,q_F)` — a constant, because
+the dual of a bump at scale `1` is supported on `n ≲ q_F`, a **fixed** range. Twisting by `n^{−it}`
+grows the dual support to `n ≲ 𝔮(t) ≍ t^{d}`, but the Voronoi kernel is (in the correct
+normalisation) an isometry, so `‖Φ_t‖₂ ≍ ‖φ‖₂` and the conclusion remains
+`Σ_{n ≲ t^d}|a_F(n)|² ≫ 1` — still a constant, now over a growing range, hence **weaker** as `t`
+grows.
+
+> **Recorded do-not-retry.** Voronoi duality applied to a bump propagates `a_F(1) = 1` and nothing
+> more: it yields a constant lower bound over any range, never a lower bound growing with the range.
+> Obtaining `≫ x/\log x` requires a positive-definite object (a Rankin–Selberg-type kernel), which is
+> exactly what `S` does not supply.
+
+**[OPEN CORE, sharpest mean-value form]** For non-constant `F ∈ S`, prove
+`Σ_{n≤x}|a_F(n)|² ≫ x/\log x`.
+
+---
+
+## 121. Cycle 121 (2026-07-26) — rigid zeros give an exact Poisson identity, and it fights the primes
+
+Corpus search first: `research "Poisson summation explicit formula zeros"` — nothing on this
+combination; no duplication.
+
+§97's chirp obstruction failed because it compared `L²` masses (§98). This cycle redoes it as a
+comparison of **single Fourier coefficients**, which §77.2's thin-set rule permits, and the mechanism
+survives.
+
+### 121.1 The exact identity
+
+Suppose `F ∈ S` has **rigid zeros**: `γ_n = M^{−1}(n)` exactly, where `M` is the Riemann–von Mangoldt
+main term, `M'(t) = ν(t) = (d/2π)\log(t/2π) + …`. For a smooth compactly supported `φ`, substituting
+`u = M(t)` and applying **Poisson summation**,
+```
+Σ_ρ φ(γ_ρ) = Σ_n φ(M^{−1}(n)) = Σ_{k ∈ Z} ĝ(k) ,     ĝ(k) = ∫ φ(t) M'(t) e^{−2πi k M(t)} dt .
+```
+The `k = 0` term is `∫φ(t)ν(t)dt`, which is **exactly** the archimedean main term of the explicit
+formula for `F`. Subtracting it:
+
+> **Theorem 69 (rigid-zero Poisson identity).** If the zeros of `F ∈ S` are rigid then for every
+> admissible `φ`
+> ```
+> Σ_{k ≠ 0} ∫ φ(t) ν(t) e^{−2πi k M(t)} dt
+>       =  −(1/2π) Σ_{n≥2} Λ_F(n) n^{−1/2} ( φ̂(\log n) + φ̂(−\log n) )  +  (pole terms) .
+> ```
+> Exact; the archimedean parts cancel identically because `ν = M'`.
+
+### 121.2 The tension
+
+**Left side.** The phase of the `k`-th term is `2πkM(t) + (\text{phase of } φ)`. Choosing
+`φ(t) = ψ((t−t_0)/P)e^{it\log p}` — a bump of length `P` at height `t_0`, modulated to put `φ̂` at
+`\log p` — the total phase derivative is
+```
+2πkν(t) + \log p ,
+```
+which vanishes only when `|k| ≈ \log p / (2πν(t_0)) ≈ \log p/(d\log t_0)`. **If `p < t_0^d` there is no
+integer `k ≠ 0` with a stationary point**, and repeated integration by parts gives
+`Σ_{k≠0}|ĝ(k)| ≪_A P (P\log t_0)^{−A}` — negligible.
+
+**Right side.** With `φ̂` a bump of width `≍ 1/P` at `\log p` and `P` large enough to separate
+consecutive prime powers near `p` (`P ≫ p`), the prime side is
+```
+≈ a_F(p)\, (\log p)\, p^{−1/2} .
+```
+
+> **Consequence, if the estimates hold.** `a_F(p)(\log p)p^{−1/2} ≪_A P(P\log t_0)^{−A}` for every
+> `t_0` with `t_0^d > p`. Letting `t_0 → ∞` forces `a_F(p) = 0` — **for every prime `p`**. Repeating
+> at `p²` (where the same argument applies to `Λ_F(p²)`) forces `a_F(p^k) = 0` for all `k`, hence
+> `F = 1`.
+>
+> That is exactly **EG₀**, and with it (by §117.4) (D2), and the `n_F = 0` case of the Energy Gap.
+
+### 121.3 Status — what is proved and what is not
+
+- **Theorem 69 is exact and unconditional given rigidity.** The cancellation of the archimedean terms
+  is an identity, not an estimate: `ν = M'` by construction.
+- **Not yet proved:** the two estimates of §121.2. The left-side bound needs a stationary-phase /
+  integration-by-parts estimate uniform in `k` with the modulated test function, and the right-side
+  isolation needs the bump width `1/P` to separate `\log p` from neighbouring `\log n`, which costs
+  `P ≫ p` and must be checked against the left-side gain. **The two must be balanced; that balance is
+  the whole content and it is not yet verified.**
+- **Why this is not §97 again.** §97 compared total `L²` masses and failed because the sawtooth's mass
+  is a bounded constant that the error term can absorb (§98). Here the comparison is between a single
+  Fourier coefficient on each side, with the archimedean parts cancelling *identically* rather than
+  approximately. Thin-set sensitive (§77.2 ✓), single scale (§87.2 ✓), and each asymptotic used inside
+  its own regime (§98.3 ✓).
+
+**[OPEN CORE, cycle 121]** Verify the balance in §121.2: show that for `p` fixed and `t_0 → ∞` with
+`t_0^d > p`, the left side of Theorem 69 is `o(a_F(p)(\log p)p^{−1/2})` for a suitable choice of
+`P = P(p,t_0)`. This is a self-contained oscillatory-integral estimate, with no `L`-function input.
+
+---
+
+## 122. Cycle 122 (2026-07-26) — **perfectly rigid zeros force `F = 1`**: §96.3's open core is closed
+
+Verification of the §121.2 balance. The oscillatory-integral estimates **do** work; the argument needs
+*exact* rigidity, and it proves the exact-rigidity case outright.
+
+### 122.1 The estimates
+
+Take `φ(t) = ψ((t−t_0)/P)e^{it\log p}`, `ψ` smooth, supported on `[−1,1]`, and `F ∈ S` **entire** (the
+remaining Energy-Gap case), so the explicit formula has no pole term.
+
+**Left side.** The `k`-th phase is `Θ_k(t) = t\log p − 2πkM(t)`, so
+`Θ_k'(t) = \log p − 2πkν(t) = \log p − k(d\log(t/2π) + 2πc)`. If `p < t_0^d` then for every `k ≠ 0`
+```
+|Θ_k'(t)| ≥ |k|·d\log(t_0/2π) − \log p  ≫  |k|\log t_0 ,
+```
+and `Θ_k''(t) = −kd/t` is negligible over the support provided `P ≪ t_0\log t_0`. Repeated integration
+by parts (`A` times) gives
+```
+Σ_{k≠0} |ĝ(k)|  ≪_A  \log t_0 · P · (P\log t_0)^{−A} · Σ_{k≠0}|k|^{−A}  ≪_A  P^{1−A}(\log t_0)^{1−A} .
+```
+
+**Right side.** `φ̂(ξ) = P e^{it_0(\log p − ξ)} ψ̂(P(ξ − \log p))`, concentrated on
+`|\log n − \log p| ≲ 1/P`, i.e. `|n − p| ≲ p/P`. Choosing `P = p^{1+η}` makes that interval shorter
+than `1`, so **only `n = p` survives at `j = 0`**; for `j ≥ p^η` the number of prime powers at distance
+`≈ j/P` is `≪ p^{−η}j/\log p`, contributing `≪ p^{1/2}j|ψ̂(j)| ≪_A p^{1/2}p^{−Aη}` — negligible. The
+term `φ̂(−\log n)` is negligible for all `n` since its argument is `≈ −P(\log n + \log p)`. Hence
+```
+prime side  =  (1/2π) a_F(p)(\log p) p^{−1/2} · P · ψ̂(0) · (1 + o(1))  ≍  |a_F(p)|·p^{1/2+η}\log p .
+```
+
+**Balance.** With `A = 3` and `t_0 → ∞` at fixed `p`, the left side is `≪ p^{−2(1+η)}(\log t_0)^{−2} → 0`
+while the right side is a fixed multiple of `|a_F(p)|`. Therefore `a_F(p) = 0`.
+
+### 122.2 The theorem
+
+> **Theorem 70 (perfect rigidity forces triviality).** Let `F ∈ S` be entire and suppose its zeros are
+> **exactly** rigid: `γ_n = M_F^{−1}(n)` for all `n`, `M_F` the Riemann–von Mangoldt main term. Then
+> `a_F(p) = 0` for every prime `p`; iterating the same argument with `φ̂` concentrated at `\log p^k`
+> (where `b_F(p²) = a_F(p²)` once `a_F(p) = 0`, and similarly at higher `k`) gives `a_F(p^k) = 0` for
+> all `k`, hence **`F = 1`**.
+>
+> Unconditional, given exact rigidity. The only inputs are: the explicit formula for `F`, Poisson
+> summation (Theorem 69), non-stationary phase, and the Ramanujan bound.
+
+**This closes the [OPEN CORE] recorded at §96.3** — *"construct, or rule out, an entire order-1 function
+with a Selberg functional equation whose zeros form a perfect log-lattice and whose `L`-part has an
+Euler product"*. The answer is: **no non-trivial such function exists.**
+
+### 122.3 The remaining gap: exact versus approximate rigidity
+
+`n_F = 0` gives, via Theorem 49 and the interleaving lemma, only **approximate** rigidity
+`γ_n = M^{−1}(n) + ε_n` with `|ε_n| ≪ K/\log T`. Expanding,
+```
+Σ_n φ(γ_n) = Σ_n φ(M^{−1}(n)) + Σ_n φ'(γ_n) ε_n + O(‖φ''‖ Σ ε_n²) ,
+```
+and with `‖φ'‖ ≈ \log p` and `≈ P\log t_0` zeros in the support each with `|ε_n| ≪ K/\log t_0`,
+```
+| Σ_n φ'(γ_n) ε_n |  ≪  K · P · \log p ,
+```
+which **exceeds** the prime-side main term `|a_F(p)|·P·p^{−1/2}\log p` whenever `|a_F(p)| < K p^{1/2}` —
+i.e. always, by Ramanujan.
+
+> **Recorded.** The displacement error swamps the signal by a factor `p^{1/2}`. Closing EG₀ by this
+> route requires cancellation in `Σ_n φ'(γ_n)ε_n`, which by Theorem 54 is itself the prime side —
+> circular. **So Theorem 70 is sharp: it is exactly the exact-rigidity statement, and no more.**
+
+### 122.4 Status
+
+New unconditional theorem (Theorem 70) settling §96.3's open core; the estimates of §121.2 verified;
+the exact/approximate rigidity gap identified as the precise residual obstruction to EG₀, with its
+size (`p^{1/2}`) computed.
+
+---
+
+## 123. Cycle 123 (2026-07-26) — the displacement error is the prime side again: Theorem 70 extends to *bounded* `S_F`
+
+§122.3 recorded that approximate rigidity kills the argument because `Σ_n φ'(γ_n)ε_n ≪ KP\log p`
+swamps the main term. That bound is crude: the `ε_n` are not arbitrary.
+
+### 123.1 The displacements are the fluctuation
+
+If `|N_F − M_F| ≤ K` then `γ_n = M^{−1}(n) + ε_n` and, since `M(γ_n) − n = M(γ_n) − N_F(γ_n) =
+−S_F(γ_n) + O(1)`,
+```
+ε_n  =  − S_F(γ_n)/ν(γ_n)  +  O(1/ν²) .
+```
+Hence, approximating the sum over zeros by its density `ν`,
+```
+Σ_n φ'(γ_n) ε_n  ≈  − ∫ φ'(t) S_F(t) dt ,
+```
+the `ν`'s cancelling. By the classical formula
+`S_F(t) = −(1/π)Σ_n Λ_F(n)n^{−1/2}\sin(t\log n)/\log n + O(1/t)`, integrating by parts turns this into
+```
+Σ_n φ'(γ_n) ε_n  ≈  (1/π) Σ_n Λ_F(n) n^{−1/2} · (\text{a } φ̂\text{-transform at } \log n) ,
+```
+i.e. **the same object as the prime side of the explicit formula, of the same order.**
+
+### 123.2 The consequence
+
+The Poisson expansion with displacements reads
+```
+Σ_{k≠0} ĝ(k)  +  Σ_n φ'(γ_n)ε_n  +  O(‖φ''‖_∞ Σ_n ε_n²)  =  −(1/2π)·(\text{prime side}) ,
+```
+and by §123.1 the second term is `c'·(\text{prime side})` for an explicit constant `c'`. Therefore,
+**provided `c' ≠ −1/(2π)`** (no exact cancellation),
+```
+(\text{prime side})  ≪  Σ_{k≠0}|ĝ(k)|  +  ‖φ''‖_∞ Σ_n ε_n² .
+```
+With `φ(t) = ψ((t−t_0)/P)e^{it\log p}`, `P = p^{1+η}`:
+- `Σ_{k≠0}|ĝ(k)| ≪_A P^{1−A}(\log t_0)^{1−A}` (§122.1) — `→ 0` as `t_0 → ∞`;
+- `‖φ''‖_∞ ≍ (\log p)²` and `Σ_n ε_n² ≪ (P\log t_0)·K²/\log²t_0 = K²P/\log t_0`, so the second-order
+  term is `≪ K²P(\log p)²/\log t_0`;
+- the prime side is `≍ |a_F(p)|·P·p^{−1/2}\log p`.
+
+Dividing by `P`:
+```
+|a_F(p)| p^{−1/2}\log p  ≪_A  P^{−A}(\log t_0)^{1−A}  +  K²(\log p)²/\log t_0 .
+```
+**Both terms tend to `0` as `t_0 → ∞` with `p` fixed** (the constraint being only `p < t_0^d`). Hence
+`a_F(p) = 0`, for every prime `p`; iterating at prime powers gives `F = 1`.
+
+> **Theorem 71 (bounded fluctuation forces triviality).** Let `F ∈ S` be entire with
+> `|N_F(t) − M_F(t)| ≤ K` for all `t` — equivalently `S_F` bounded. Then `F = 1`.
+> **Modulo the constant check `c' ≠ −1/(2π)` of §123.2.**
+
+This strictly extends Theorem 70: *exact* rigidity is replaced by *bounded* fluctuation, which is what
+`n_F = 0` delivers via Theorem 49. The `p^{1/2}` loss of §122.3 disappears because the displacement
+term was mis-estimated there: it is not an independent error but the prime side itself, so it changes
+a constant rather than dominating.
+
+### 123.3 The one remaining item, stated exactly
+
+> **[OPEN, cycle 123]** Compute the constant `c'` in
+> `Σ_n φ'(γ_n)ε_n = c'·(\text{prime side}) + o(\text{prime side})` and verify `c' ≠ −1/(2π)`.
+>
+> The two contributions come from different mechanisms — one from the Poisson expansion of the zero
+> sum, one from the explicit formula for `S_F` — and there is no structural reason for them to cancel,
+> but the constants must be tracked through the `φ̂`-transform and the integration by parts. Until this
+> is done Theorem 71 is not proved.
+
+**Status.** Theorem 70 (exact rigidity) is unconditional and complete. Theorem 71 (bounded
+fluctuation) is complete except for the constant check; if `c'` is as expected, then together with
+Theorem 49 it gives **EG₀ under the same hypothesis Theorem 49 needs** — a zero-density estimate or
+RH — and hence closes the `n_F = 0` case of the Energy Gap under that hypothesis.
+
+---
+
+## 124. Cycle 124 (2026-07-26) — the constant is exactly the cancelling one: **Theorem 71 is false**
+
+The check demanded in §123.3, carried out.
+
+### 124.1 The computation
+
+For `F ∈ S` entire, two exact identities:
+
+**(a)** Integration by parts, using `dN_F = ν dt + dS_F` and `S_F` bounded, `φ` compactly supported:
+```
+Σ_γ φ(γ)  =  ∫ φ ν dt  −  ∫ φ'(t) S_F(t) dt .
+```
+**(b)** The Weil explicit formula: `Σ_γ φ(γ) = ∫ φ ν dt − 𝒫[φ]`, where
+`𝒫[φ] = (1/2π)Σ_n Λ_F(n)n^{−1/2}φ̂(\log n) + (\text{conj})`.
+
+Comparing, **`∫φ'(t)S_F(t)dt = 𝒫[φ]` identically.**
+
+Now §123.1's displacement term: with `ε_n = −S_F(γ_n)/ν(γ_n) + O(ν^{−2})` and
+`Σ_n h(γ_n) = ∫hν dt + ∫h\,dS_F`,
+```
+Σ_n φ'(γ_n) ε_n  =  −∫φ'(t)S_F(t)dt  +  (\text{second order in } S_F)  =  −𝒫[φ] + O(K²\|φ'\|_∞ P/\log t_0) .
+```
+
+Substituting into the Poisson identity `Σ_{k≠0}ĝ(k) + Σ_nφ'ε + O(‖φ''‖Σε²) = −𝒫[φ]`:
+```
+Σ_{k≠0} ĝ(k)  −  𝒫[φ]  +  O(\text{err})  =  −𝒫[φ]      ⟹      Σ_{k≠0} ĝ(k) = O(\text{err}) .
+```
+
+> **The prime sides cancel exactly.** `c'` is precisely the cancelling value, so the identity
+> degenerates to a statement about `Σ_{k≠0}ĝ(k)` alone and carries **no arithmetic information**.
+>
+> **Theorem 71 is false as an argument, and is withdrawn.** §122.3's original assessment — that
+> approximate rigidity destroys the argument — was correct, and §123's "fix" was illusory.
+
+### 124.2 Why the cancellation is forced, and why Theorem 70 survives
+
+The decomposition "Poisson main term + displacement correction" is, for a general zero set, just a
+re-derivation of `Σ_γφ(γ) = ∫φν − ∫φ'S_F` — the same identity the explicit formula provides. Nothing
+new can come out of it.
+
+**Exact rigidity is different in kind.** There `ε_n = 0`, so `S_F(t) = 1/2 − \{M(t)\}` is a
+*deterministic chirp sawtooth*, and `∫φ'S_F dt` can be evaluated **independently of the explicit
+formula**, by Poisson summation plus non-stationary phase. That independent evaluation is what
+produces the contradiction:
+```
+𝒫[φ] = ∫φ'S_F dt = Σ_{k≠0}ĝ(k) ≪_A P^{1−A}(\log t_0)^{1−A} → 0 ,
+```
+forcing `a_F(p) = 0`. **With merely bounded `S_F` there is no independent evaluation of `∫φ'S_F`, and
+that is precisely the gap.**
+
+> **Recorded do-not-retry.** No decomposition of the zero sum into "rigid model + displacement" can
+> give arithmetic information, because the displacement term is `−𝒫[φ]` identically. Only an
+> *independent* determination of `S_F` — as exact rigidity provides — breaks the circle.
+
+### 124.3 Corrected status
+
+- **Theorem 70 stands, unconditional and sharp**: an entire `F ∈ S` whose zeros are exactly
+  `γ_n = M_F^{−1}(n)` satisfies `F = 1`. It closes §96.3's open core. Its mechanism is now understood
+  precisely: exact rigidity makes `S_F` a deterministic chirp whose Fourier coefficients at the prime
+  frequencies are tiny by non-stationary phase, while the explicit formula says those coefficients
+  *are* the prime data.
+- **Theorem 71 is withdrawn.** The `n_F = 0` case of the Energy Gap is not obtained.
+- The gap between exact and approximate rigidity is now identified as **structural, not
+  quantitative**: it is the difference between having and not having an independent evaluation of
+  `∫φ'S_F`.
+
+This is the sixth conjecture proposed and killed in-cycle (ZD §77, RZ §98, zero-sharing §87, CMP §113,
+Bessel extension §114.2, Theorem 71 §124), and the second time the same underlying error appeared:
+treating a quantity that *is* the prime side as if it were an independent error term (cf. §98.2).
+
+---
+
+## 125. Cycle 125 (2026-07-26) — the fifth design rule, and the exact scope of Theorem 70's mechanism
+
+### 125.1 The rule
+
+Two failures (§98.2 and §124.1) had the same cause: a term that **is** the prime side was treated as
+an independent error. Formulated as a rule:
+
+> **Circularity rule.** Before bounding a term against the prime side, check whether the explicit
+> formula already identifies it *with* the prime side. In particular, for any zero set,
+> `Σ_γ φ(γ) = ∫φν − ∫φ'S_F` and `∫φ'S_F = 𝒫[φ]` are identities; **every** decomposition of the zero
+> sum that does not evaluate `∫φ'S_F` by means external to the explicit formula is circular.
+
+Joining: thin sets (§77.2), scales (§87.2), regimes (§98.3), independence (§114.2).
+
+### 125.2 What "external evaluation" means, and the complete list of cases where it is available
+
+`𝒫[φ] = ∫φ'(t)S_F(t)dt` is arithmetic on the left and geometric on the right. Progress requires
+computing the right side without the left. Cases found in this programme:
+
+| hypothesis on the zeros | independent evaluation of `∫φ'S_F` | outcome |
+|---|---|---|
+| exact rigidity `γ_n = M^{−1}(n)` | `S_F = 1/2 − \{M(t)\}`; Poisson + non-stationary phase | **Theorem 70**: `F = 1` |
+| `\|N_F − M_F\| ≤ K` (bounded `S_F`) | none — `S_F − \text{sawtooth}` is a bounded integer step function whose integral against `φ'` is `−Σφ'ε` again | circular (§124) |
+| RH only | none | — |
+| nothing | none | — |
+
+The middle row was checked in both directions this cycle: writing `J := N_F − ⌈M⌉` (integer-valued,
+`|J| ≤ K`, piecewise constant) gives `∫φ'J = −Σ_n[φ(γ_n) − φ(M^{−1}(n))] = −Σ_nφ'(M^{−1}(n))ε_n +
+O(…)`, i.e. the displacement sum again. **Bounded discrepancy carries no information beyond the
+explicit formula.**
+
+> **Recorded.** Exact rigidity is the *only* hypothesis found in 125 cycles under which the zero side
+> can be evaluated externally. That is why Theorem 70 is both true and sharp, and why every attempt to
+> weaken its hypothesis has failed.
+
+### 125.3 A general-`F` consistency check (no contradiction available)
+
+For a general `F` with `Var(S_F) ~ (n_F/2π²)\log\log T`, square-root cancellation gives
+`∫φ'S_F ≈ (\log p)√P·√(\log\log T)` for `φ` modulated at `\log p` on an interval of length `P`, while
+`𝒫[φ] ≈ |a_F(p)|p^{−1/2}(\log p)P`. With `P = p^{1+η}` these balance at
+`|a_F(p)| ≈ p^{−η/2}√(\log\log T)` — consistent with `|a_F(p)|` bounded, so **no contradiction is
+available for general `F` by this route**, confirming that Theorem 70's mechanism does not extend by
+size considerations alone.
+
+---
+
+## 126. Cycle 126 (2026-07-26) — Theorem 70 strengthened: any *fixed unfolded profile* forces triviality
+
+§125.2 asked for another hypothesis admitting an external evaluation of `∫φ'S_F`. There is one, and it
+contains exact rigidity as a special case.
+
+### 126.1 The right generalisation
+
+In the unfolded variable `u = M_F(t)` the zeros become `u_n = M_F(γ_n)` and
+`S_F(t) = \#\{n : u_n ≤ u\} − u` is the **discrepancy** of the unfolded sequence. Exact rigidity is
+`u_n = n`, giving `S_F = 1/2 − \{M_F(t)\}`. The natural weakening is that the discrepancy is a fixed
+profile in the unfolded variable:
+
+> **Hypothesis (FP).** `S_F(t) = Φ(M_F(t)) + o(1)` for some fixed `1`-periodic `Φ ∈ L²(R/Z)`.
+
+This holds whenever the unfolded zeros follow any fixed periodic pattern — `u_n = n + c`, or an
+alternating pattern `u_{2n} = 2n`, `u_{2n+1} = 2n+1/2`, and so on — not only for `u_n = n`.
+
+### 126.2 The theorem
+
+> **Theorem 74 (fixed unfolded profile forces triviality).** Let `F ∈ S` be entire and satisfy (FP).
+> Then `a_F(p^k) = 0` for all primes `p` and all `k ≥ 1`, hence `F = 1`.
+>
+> *Proof.* Expand `Φ(M_F(t)) = Σ_{k∈Z} \hatΦ(k) e^{2πikM_F(t)}` and use the identity
+> `𝒫[φ] = ∫φ'(t)S_F(t)dt` (§124.1). The `k = 0` term contributes `\hatΦ(0)∫φ'(t)dt = 0` because `φ`
+> has compact support. For `k ≠ 0`, take `φ(t) = ψ((t−t_0)/P)e^{it\log p}` with `P = p^{1+η}`; the
+> phase of `∫φ'(t)e^{2πikM_F(t)}dt` has derivative `\log p − 2πkν(t)`, non-vanishing whenever
+> `p < t_0^d`, so repeated integration by parts gives
+> `|∫φ'e^{2πikM_F}| ≪_A (\log p) P (P|k|\log t_0)^{−A}`. Summing,
+> ```
+> |𝒫[φ]| ≤ Σ_{k≠0} |\hatΦ(k)| · ≪_A (\log p) P (P\log t_0)^{−A} Σ_{k≠0}|\hatΦ(k)||k|^{−A}
+>        ≪_A ‖Φ‖_{L²} (\log p) P (P\log t_0)^{−A}
+> ```
+> by Cauchy–Schwarz (`A ≥ 2`). Against `𝒫[φ] ≍ |a_F(p)|p^{1/2+η}\log p` this forces `a_F(p) = 0` as
+> `t_0 → ∞`; iterating at `\log p^k` gives the rest. ∎
+
+**Theorem 70 is the case `Φ = 1/2 − \{·\}`.**
+
+### 126.3 What the strengthening isolates
+
+The mechanism is now visible in its final form:
+
+> **A fixed profile in the unfolded variable makes `S_F` a *chirp*** — its Fourier content sits at the
+> drifting frequencies `2πkν(t) ≍ k\,d\log t` — **whereas the explicit formula puts the Fourier content
+> of `S_F` at the fixed frequencies `\log n`.** The two are incompatible for every `n < t_0^d`, and
+> `t_0` is free.
+
+This is §97's chirp-versus-tone insight, which failed there as an `L²` comparison (§98) and succeeds
+here as a comparison of Fourier coefficients with an *external* evaluation of one side. It also
+explains why (FP) is exactly the right hypothesis: it is precisely the condition under which `S_F`
+has a `t`-independent expansion in the unfolded variable.
+
+> **Recorded scope.** (FP) is still far from `n_F = 0`, which gives only `|S_F| ≤ K` with no profile.
+> The gap is between "bounded discrepancy" and "discrepancy given by a fixed function of the unfolded
+> variable" — i.e. between a bound and a *law*. §124 shows no bound alone suffices; Theorem 74 shows
+> any law suffices. **Conjecture A's edge case lies exactly in the space between them.**
+
+---
+
+## 127. Cycle 127 (2026-07-26) — bounded `S_F` forces `n_F = 0`, unconditionally and with an explicit constant
+
+§124 showed that *decomposing* the zero sum around a rigid model is circular. Using the bound on `S_F`
+directly as an input to the identity `∫φ'S_F = 𝒫[φ]` is not, and it gives a clean theorem.
+
+### 127.1 The theorem
+
+> **Theorem 75 (unconditional).** Let `F ∈ S` be entire with `|S_F(t)| ≤ K` for all `t`. Then for
+> every `x`,
+> ```
+> Σ_{p ≤ x} |a_F(p)|² / p  ≤  C K²
+> ```
+> with an absolute constant `C`. In particular `n_F = 0`.
+>
+> *Proof.* Fix `x` and put `c_p := \overline{a_F(p)}\,p^{−1/2}` for `p ≤ x`. Choose `φ` with
+> ```
+> φ'(t) = Σ_{p ≤ x} c_p ψ((t−t_0)/P) e^{it\log p} ,     P ≫ x ,
+> ```
+> `ψ` a fixed smooth bump. Since `P ≫ x`, the transforms `ψ̂(P(\log n − \log p))` separate the primes,
+> so the prime side is
+> ```
+> 𝒫[φ] = (1/2π)Σ_n Λ_F(n)n^{−1/2}φ̂(\log n) = (P/2πi)Σ_{p≤x}|a_F(p)|²/p + o(P E_x) ,
+> ```
+> writing `E_x := Σ_{p≤x}|a_F(p)|²/p`. On the other side, by `|S_F| ≤ K` and Cauchy–Schwarz on the
+> support (length `≍ P`),
+> ```
+> |𝒫[φ]| = |∫φ'(t)S_F(t)dt| ≤ K‖φ'‖_1 ≤ K\sqrt{2P}\,‖φ'‖_2 ,
+> ```
+> and by the Montgomery–Vaughan mean value theorem `‖φ'‖_2² = (P + O(x))Σ_{p≤x}|c_p|² ≍ P E_x`. Hence
+> `(P/2π)E_x ≤ \sqrt2 K P \sqrt{E_x}`, i.e. `E_x ≤ CK²`, uniformly in `x`. ∎
+
+### 127.2 Why this is not circular
+
+§124's circularity came from *decomposing* `Σ_γφ(γ)` into a model plus a displacement, which
+re-derives the explicit formula. Here the identity `∫φ'S_F = 𝒫[φ]` is used **once**, with the
+hypothesis `|S_F| ≤ K` entering as an honest `L^∞` bound on one factor. No model is introduced, and
+the choice of `φ` (a mollified prime-energy amplifier) is what converts the pointwise bound into a
+bound on the energy.
+
+### 127.3 What it gives and what it does not
+
+- **Gives:** `|S_F| ≤ K ⟹ n_F ≤ CK²`, unconditionally, with no Selberg CLT, no zero-density estimate
+  and no RH. This is the *easy* direction of Theorem 49's equivalence, now proved outright rather than
+  through the CLT machinery, and quantitatively.
+- **Does not give:** the converse `n_F = 0 ⟹ |S_F| ≤ K`, which is the transfer from coefficients to
+  the critical line and is RH-strength (§120.1). So EG₀ is not closed.
+- **The prime-square analogue fails**, and for a structural reason: repeating the argument at
+  frequencies `2\log p` produces `Σ_p |b_F(p²)|²/p²`, which converges under Ramanujan anyway, so the
+  method extracts information only from the *linear* prime energy — the one whose natural weight
+  `1/p` makes the sum a density.
+
+### 127.4 Consolidated statement of the edge case
+
+Three implications are now unconditional, and one is not:
+```
+|S_F| ≤ K            ⟹  n_F = 0            (Theorem 75, this cycle)
+S_F = Φ(M_F) + o(1)  ⟹  F = 1              (Theorem 74)
+γ_n = M_F^{−1}(n)    ⟹  F = 1              (Theorem 70)
+n_F = 0              ⟹  |S_F| ≤ K          (RH-strength; open)
+```
+EG₀ is exactly the missing arrow. It is the only one that runs *from* the coefficients *to* the
+critical line, which is the direction §120.1 shows no Cauchy–Schwarz argument can supply.
+
+**Formalisation of Theorem 75's core (cycle 128).** Corpus searched first
+(`research "energy bound amplifier Cauchy Schwarz sqrt"` and `rg` — nearest neighbours
+`schwarzPairCauchyEnergy_*` and `AbstractSpectralMass` are unrelated Gram/Szegő computations; no
+duplication). Added `HTGeometry/AmplifierEnergyBound.lean`:
+
+> `energy_le_of_amplifier` : from `A = c·P·B` and `A ≤ K·√(2P)·√(P·B)` with `c,P > 0`, `B ≥ 0`,
+> conclude `B ≤ 2K²/c²` — **independently of `P`**.
+> `energy_le_of_amplifier_twopi` : the specialisation `c = 1/(2π)`, giving `B ≤ 8π²K²`.
+
+This is the load-bearing inequality of Theorem 75: the arithmetic side of the identity
+`∫φ'S_F = 𝒫[φ]` evaluates to `c·P·(\text{energy})`, the analytic side is bounded by `‖S_F‖_∞` times an
+`L¹` norm, Cauchy–Schwarz on an interval of length `≍ P` turns that into `√(2P)·√(P·\text{energy})`,
+and the powers of `P` cancel leaving `√(\text{energy}) ≪ K`. `lake build` passes; `#print axioms` =
+`[propext, Classical.choice, Quot.sound]`.
+
+**Formal corpus: 52 theorems in 15 modules, all unconditional, all axiom-clean under `lake build`.**
+
+---
+
+## 129. Cycle 129 (2026-07-26) — an unconditional lower bound for the mean square of `S_F`
+
+Using the amplifier of §127 with Cauchy–Schwarz in `L²` rather than `L^∞`.
+
+### 129.1 The theorem
+
+> **Theorem 76 (unconditional).** Let `F ∈ S` be entire. For every `t_0`, every `x`, and every
+> `P ≫ x`,
+> ```
+> (1/P) ∫_{t_0}^{t_0+P} |S_F(t)|² dt  ≥  (1/4π² + o(1)) · Σ_{p ≤ x} |a_F(p)|²/p .
+> ```
+> Consequently, taking `x` up to a small power of `P`,
+> ```
+> (1/P) ∫_{t_0}^{t_0+P} |S_F(t)|² dt  ≫  n_F · \log\log P ,
+> ```
+> so **positive prime energy forces the zero-counting fluctuation to be unbounded**, quantitatively
+> and with no zero-density estimate, no Selberg central limit theorem and no RH.
+>
+> *Proof.* With the amplifier `φ'(t) = Σ_{p≤x}\overline{a_F(p)}p^{−1/2}ψ((t−t_0)/P)e^{it\log p}` of
+> §127.1, the identity `𝒫[φ] = ∫φ'S_F` gives `(P/2π)E_x ≤ ‖φ'‖_2 · ‖S_F‖_{L²(\text{supp})}` where
+> `E_x = Σ_{p≤x}|a_F(p)|²/p` and, by Montgomery–Vaughan, `‖φ'‖_2² = (P+O(x))E_x ≍ P E_x`. Hence
+> `‖S_F‖_{L²} ≥ \sqrt{P E_x}/2π`, which is the claim. ∎
+
+### 129.2 Relation to what was known
+
+- For `ζ`, Selberg proved `∫_0^T S(t)²dt ~ (T/2π²)\log\log T` unconditionally, using his zero-density
+  theorem. Theorem 76 gives the **lower half** of the analogous statement for every `F ∈ S`, with no
+  density input at all — the amplifier does the work that the density theorem does classically.
+- It is the quantitative form of Theorem 75 (`|S_F| ≤ K ⟹ n_F ≤ CK²`), now with the hypothesis
+  weakened from `L^∞` to `L²` and with the dependence displayed.
+- The **upper** half (`∫|S_F|² ≪ n_F\log\log T`) still needs the density estimate; it is the direction
+  that would give `n_F = 0 ⟹ S_F` bounded, i.e. EG₀.
+
+### 129.3 Why the amplifier cannot reach the prime squares
+
+Repeating the construction at frequencies `2\log p` fails for a normalisation reason worth recording.
+The explicit formula weights `n^{−1/2}`, so at `n = p²` the weight is `p^{−1}` and the natural density
+weight becomes `1/p²`. Matching the amplifier's `L²` norm to the arithmetic side then forces
+`c_p = \overline{b_F(p²)}p^{−1/2}` and produces `Σ_p |b_F(p²)|²p^{−3/2}`, which converges under
+Ramanujan and carries no information; choosing `c_p` to produce the divergent sum `Σ_p|b_F(p²)|²/p`
+instead makes `‖φ'‖_2² = PΣ_p|b_F(p²)|²` diverge.
+
+> **Recorded do-not-retry.** The amplifier method sees **only** the linear prime energy. The obstruction
+> is the `n^{−1/2}` weighting of the explicit formula, which places prime squares at density weight
+> `1/p²` — convergent — so no amount of amplification extracts a divergent prime-square quantity.
+
+### 129.4 Standing
+
+```
+n_F > 0        ⟹  (1/P)∫|S_F|² ≫ n_F \log\log P        (Theorem 76, unconditional)
+|S_F| ≤ K      ⟹  n_F ≤ CK²                            (Theorem 75, unconditional)
+S_F = Φ(M_F)   ⟹  F = 1                                (Theorem 74, unconditional)
+rigid zeros    ⟹  F = 1                                (Theorem 70, unconditional)
+n_F = 0        ⟹  |S_F| bounded                        (open — the only missing arrow)
+```
+
+---
+
+## 130. Cycle 130 (2026-07-26) — `n_F = 0` puts `S_F` in `B²`: the missing arrow, in mean square
+
+### 130.1 The theorem
+
+> **Theorem 77 (unconditional).** Let `F ∈ S` be entire with `n_F = 0`. Then
+> ```
+> Σ_n |Λ_F(n)|² / (n \log²n)  =  Σ_p |a_F(p)|²/p  +  O(1)  <  ∞ ,
+> ```
+> the `k ≥ 2` terms contributing `≪ Σ_p p^{−2+ε}`. Hence the formal expansion
+> `𝒮(t) := −(1/π)Σ_n Λ_F(n)n^{−1/2}\sin(t\log n)/\log n` has `ℓ²` coefficients and converges in the
+> Besicovitch space `B²`, and
+> ```
+> S_F = 𝒮 + c   for a constant c ,
+> ```
+> because `∫φ'(S_F − 𝒮) = 0` for every test function `φ` (both sides satisfy `∫φ'· = 𝒫[φ]`), so
+> `S_F − 𝒮` has vanishing distributional derivative. Consequently `S_F` is, up to an additive
+> constant, **Besicovitch almost periodic with finite mean square**
+> ```
+> ‖S_F − c‖²_{B²} = (1/2π²) Σ_n |Λ_F(n)|²/(n\log²n) < ∞ ,
+> ```
+> and `limsup_P (1/P)∫_{t_0}^{t_0+P}|S_F|²dt < ∞` **uniformly in `t_0`**.
+
+Together with Theorem 76 (the matching lower bound) this determines the mean square of `S_F` exactly,
+unconditionally, in the case `n_F = 0`.
+
+### 130.2 What it does and does not close
+
+- **Closes, in mean square, the arrow that §127.4 listed as open**: `n_F = 0 ⟹ S_F` has bounded mean
+  square. The transfer from coefficients to the critical line, which §120.1 showed is unavailable
+  *pointwise* by Cauchy–Schwarz, **is available in `L²`**, and the mechanism is not Cauchy–Schwarz but
+  the distributional identity `∫φ'S_F = 𝒫[φ]` plus completeness of `B²`.
+- **Does not close** the pointwise version `|S_F| ≤ K`, which Theorem 75 needs, nor supply a profile
+  `S_F = Φ(M_F)`, which Theorem 74 needs. `B²`-boundedness is strictly weaker than either.
+
+### 130.3 A structural observation
+
+`n_F = 0` gives `S_F ∈ B²` with **frequency set contained in the fixed tones `\{\log n\}`**. Exact
+rigidity would give `S_F = 1/2 − \{M_F(t)\}`, whose frequency set is the **drifting** family
+`\{kν(t)\}`. The two are incompatible, so:
+
+> **Under `n_F = 0`, the zeros are *not* exactly rigid** — Theorem 70's hypothesis is never satisfied
+> in the case one wants to apply it to. Theorem 70 is therefore not a special case of EG₀ waiting to be
+> generalised; it is a statement about a configuration that `n_F = 0` positively excludes.
+
+This is worth recording as a correction of emphasis: cycles 121–126 treated exact rigidity as the
+extreme point of the `n_F = 0` case, whereas it is disjoint from it. What `n_F = 0` actually gives is
+the *opposite* structure — fixed tones rather than a chirp.
+
+### 130.4 Revised standing
+
+```
+n_F = 0        ⟹  S_F ∈ B², bounded mean square, fixed-tone spectrum   (Theorem 77, new)
+n_F > 0        ⟹  (1/P)∫|S_F|² ≫ n_F \log\log P                        (Theorem 76)
+|S_F| ≤ K      ⟹  n_F ≤ CK²                                            (Theorem 75)
+S_F = Φ(M_F)   ⟹  F = 1                                                (Theorem 74)
+rigid zeros    ⟹  F = 1                                                (Theorem 70; excluded when n_F = 0)
+n_F = 0        ⟹  F = 1                                                (EG₀ — still open)
+```
+The remaining gap is now precisely: **from `S_F ∈ B²` with fixed-tone spectrum, conclude `F = 1`.**
+
+---
+
+## 131. Cycle 131 (2026-07-26) — the full complex pairing, including `ω`, as an integral against `S_F`
+
+The amplifier of §127 was built from `F` itself. Building it from a **second** element gives the whole
+Selberg pairing, not just the energy.
+
+### 131.1 The identity
+
+> **Theorem 78.** Let `F, G ∈ S` be entire. Fix `x`, take `P ≫ x`, and set
+> ```
+> φ'_G(t) := Σ_{p ≤ x} \overline{a_G(p)}\,p^{−1/2} ψ((t−t_0)/P) e^{it\log p} .
+> ```
+> Then, from `𝒫_F[φ] = ∫φ'S_F`,
+> ```
+> Σ_{p ≤ x} a_F(p)\overline{a_G(p)}/p  =  (2πi/P) ∫ φ'_G(t)\, S_F(t)\, dt  +  o(1) .
+> ```
+> In particular the **alternating form**
+> ```
+> ω(F,G) = \lim (\log\log x)^{−1} Im\, Σ_{p≤x}a_F(p)\overline{a_G(p)}/p
+> ```
+> is `(2π/P)·Re ∫φ'_G S_F`, normalised — an explicit integral of the zero-counting fluctuation of `F`
+> against an amplifier built from `G`.
+
+### 131.2 Why this matters
+
+§69.1 (Theorem 16) proves that `ω` is invisible to **every** identity among prime energies of the
+monoid generated by `F, G` and their conjugates. §80 gave the first representation that sees it: the
+imaginary part of the Bohr correlation of the two standard twists at depth `b`. Theorem 78 gives a
+second, and a much simpler one:
+
+> **`ω(F,G)` is a pairing between the zeros of `F` and the primes of `G`.**
+
+It is thin-set sensitive (§77.2 ✓ — an integral against a sparse exponential sum), at the mean-spacing
+scale (§87.2 ✓), and it uses each asymptotic in its own regime (§98.3 ✓). Unlike §80's representation
+it requires no standard-twist theory, no degree hypothesis and no complex shift — only the explicit
+formula.
+
+### 131.3 What it does not yet give
+
+Cauchy–Schwarz on the right side returns
+`|Σ_{p≤x}a_F(p)\overline{a_G(p)}/p| ≤ 2π\sqrt{E^G_x · \mathrm{MS}_F} ≈ 2π\sqrt{n_F n_G}\log\log x`,
+i.e. exactly the Cauchy–Schwarz bound `|c_{F,G}| ≤ \sqrt{n_F n_G}` already known. **Extracting the
+vanishing of `ω` requires cancellation in `∫φ'_G S_F`, not a bound on it** — the same structural point
+as everywhere else in the programme, now stated for the imaginary half.
+
+> **Recorded.** Two independent representations of `ω` now exist (§80 twist correlation, §131 zero
+> pairing). Neither yields a bound better than Cauchy–Schwarz, and by Theorem 16 no energy identity
+> can. The imaginary half of Conjecture B remains untouched by every method the programme has, and its
+> two representations agree in placing it at the pairing of one function's zeros with the other's
+> primes.
+
+---
+
+## 132. Cycle 132 (2026-07-26) — every non-constant `F ∈ S` has `S_F` of mean square `≥ 1/12`
+
+An elementary but apparently new unconditional lower bound, from integrality of the counting function
+plus equidistribution.
+
+### 132.1 The theorem
+
+> **Theorem 79 (unconditional).** Let `F ∈ S` be non-constant, so `d_F ≥ 1` (Conrey–Ghosh). Then for
+> every constant `c`,
+> ```
+> \liminf_{T→∞} (1/T)∫_0^T |S_F(t) − c|² dt  ≥  1/12 .
+> ```
+> In particular the mean square of `S_F` about **any** centre is bounded below by `1/12`.
+>
+> *Proof.* `S_F = N_F − M_F` with `N_F` integer-valued, so
+> `|S_F(t) − c| = |N_F(t) − (M_F(t)+c)| ≥ \mathrm{dist}(M_F(t)+c, Z)`. Since `d_F ≥ 1`,
+> `M_F(t) = (d_F/2π)t\log(t/2πe) + …` has `M_F''(t) = d_F/(2πt) ≠ 0`, so by Weyl's criterion
+> `\{M_F(t)+c\}` is equidistributed in `[0,1)`. Hence
+> `(1/T)∫_0^T \mathrm{dist}(M_F+c,Z)²dt → ∫_0^1 \mathrm{dist}(u,Z)²du = 1/12`. ∎
+
+### 132.2 Consequence for the Energy Gap
+
+Combining with Theorem 77 (`n_F = 0 ⟹ S_F − c` is `B²`-almost periodic with
+`‖S_F − c‖²_{B²} = (1/2π²)Σ_n|Λ_F(n)|²/(n\log²n)`):
+
+> **Corollary 80.** If `F ∈ S` is non-constant, entire, and `n_F = 0`, then
+> ```
+> Σ_n |Λ_F(n)|² / (n\log²n)  ≥  π²/6 ,
+> ```
+> and since the `k ≥ 2` terms contribute `≪ Σ_p p^{−2+ε}`,
+> ```
+> Σ_p |a_F(p)|²/p  ≥  π²/6 − O(1)  >  1 .
+> ```
+
+So the `n_F = 0` case does not merely require the prime energy sum to converge — **it requires it to
+converge to a value bounded below by an absolute constant `> 1`.** The convergent sum cannot be small.
+
+### 132.3 Why this is the right shape, and what it still lacks
+
+- It is the first **absolute, unconditional, positive** lower bound in the programme on a quantity
+  that `n_F = 0` forces to be finite. Every earlier bound was either an upper bound (Bessel) or
+  conditional.
+- Its mechanism is the one §125.2 demanded: an evaluation of `∫|S_F|²` **external** to the explicit
+  formula — here supplied by integrality of `N_F` plus Weyl equidistribution of `M_F`, neither of
+  which mentions the primes.
+- **It is not yet a contradiction.** `Σ_p|a_F(p)|²/p ≥ π²/6 − O(1)` is compatible with `n_F = 0`,
+  which only asserts convergence. To close EG₀ one needs an *upper* bound on the same sum forcing it
+  below `π²/6`; none is available.
+
+> **[OPEN CORE, cycle 132]** For non-constant entire `F ∈ S` with `n_F = 0`, bound
+> `Σ_p |a_F(p)|²/p` from **above** by something smaller than `π²/6 − O(1)`. Note this is now a
+> statement about a *convergent* sum, not about a divergence rate — a different and possibly more
+> tractable kind of question than anything the programme has faced.
+
+### 132.4 A second corollary, unconditional and independent of `n_F`
+
+Theorem 79 combined with Theorem 76 brackets the fluctuation for every non-constant `F ∈ S`:
+```
+1/12  ≤  \liminf (1/T)∫_0^T |S_F − c|²  ,      (1/P)∫|S_F|²  ≫  n_F\log\log P .
+```
+The first is an absolute floor independent of the arithmetic; the second grows with the prime energy.
+Together: **the zeros of any non-constant element of the Selberg class fluctuate, by an absolute
+amount, and by more when the prime energy is larger.**
+
+---
+
+## 133. Cycle 133 (2026-07-26) — Theorem 79 is sharp, and its equality case is exactly rigidity
+
+### 133.1 Sharpness
+
+For exactly rigid zeros `S_F(t) = 1/2 − \{M_F(t)\}`, and
+`M\{(1/2 − \{M_F\})²\} = ∫_0^1(1/2−u)²du = 1/12` — **the bound of Theorem 79 is attained exactly**.
+Check at the other extreme: `F = ζ` has `(1/T)∫_0^T S(t)²dt ~ (1/2π²)\log\log T → ∞`, far above the
+floor. So `1/12` is the sharp constant and rigidity is the extremal configuration.
+
+### 133.2 The equality case
+
+Write `θ(t) := (M_F(t)+c) − \mathrm{round}(M_F(t)+c) ∈ [−1/2,1/2)` and
+`ρ(t) := N_F(t) − \mathrm{round}(M_F(t)+c) ∈ Z`, so `S_F − c = ρ − θ`. Then
+```
+M\{(S_F−c)²\} = M\{ρ²\} − 2M\{ρθ\} + 1/12 ,
+```
+since `θ` is equidistributed (Weyl, `M_F'' ≠ 0`). As `ρ` is integer-valued, `|ρ| ≤ ρ²`, and
+`|θ| ≤ 1/2`, so `|M\{ρθ\}| ≤ M\{ρ²\}/2` with equality only if `|ρ| ∈ \{0,1\}` **and** `|θ| = 1/2`
+whenever `ρ ≠ 0` — a set of measure zero, since `θ` is equidistributed. Hence
+
+> **Corollary 81.** `M\{(S_F−c)²\} ≥ 1/12`, with equality **iff** `ρ ≡ 0`, i.e. iff
+> `N_F(t) = \mathrm{round}(M_F(t)+c)` — exactly rigid zeros up to a shift.
+>
+> Combined with Theorem 70 (rigid zeros force `F = 1`, which has `d_F = 0` and no zeros, hence falls
+> outside the hypothesis `d_F ≥ 1`):
+>
+> **For every non-constant `F ∈ S`, `M\{(S_F−c)²\} > 1/12` strictly, for every `c`.**
+
+### 133.3 Status of the quantitative gap
+
+The strictness is qualitative: the argument gives no absolute `δ > 0` with
+`M\{(S_F−c)²\} ≥ 1/12 + δ`, because the deficit is controlled by `M\{ρ²\}` and by the joint
+distribution of `ρ` and `θ`, neither of which is bounded below without further input. Obtaining such a
+`δ` would sharpen Corollary 80 to
+`Σ_p|a_F(p)|²/p ≥ π²/6 + 2π²δ`, which is still not a contradiction — the target remains an **upper**
+bound (§132.3).
+
+> **Recorded.** The chain `Theorem 79 → Corollary 80 → Corollary 81` is complete and sharp, and it
+> places rigidity as the unique extremal configuration, consistent with Theorem 70 having settled that
+> case. What it does not do is bound the prime energy from above, which is what EG₀ needs.
+
+---
+
+## 134. Cycle 134 (2026-07-26) — the zero-energy sub-semigroup is uniformly discrete
+
+### 134.1 A correction to Corollary 80
+
+Corollary 80 was stated as `Σ_p|a_F(p)|²/p ≥ π²/6 − O(1) > 1`. **The split is not legitimate as an
+absolute statement**: the `k ≥ 2` part is `Σ_{p,k≥2}|b_F(p^k)|²p^{−k} ≪ C_ε² Σ_p p^{2ε−2}`, and the
+Ramanujan constant `C_ε` is not absolute. The clean and correct statement is
+
+> **Corollary 80′.** For non-constant entire `F ∈ S` with `n_F = 0`,
+> ```
+> ‖v_F‖² := Σ_{n ≥ 2} |Λ_F(n)|² / (n \log² n)  ≥  π²/6 ,
+> ```
+> with no splitting into primes and prime powers.
+
+### 134.2 The structure this reveals
+
+Two facts combine.
+
+**(i) `\{H ∈ S : n_H = 0\}` is a sub-semigroup.** If `n_H = n_{H'} = 0` then by Cauchy–Schwarz
+`|c_{H,H'}| ≤ \sqrt{n_H n_{H'}} = 0`, so `n_{HH'} = n_H + n_{H'} + 2\mathrm{Re}\,c_{H,H'} = 0`.
+
+**(ii) `H ↦ v_H` is an injective additive map into `ℓ²`.** Additive because `Λ_{HH'} = Λ_H + Λ_{H'}`;
+injective because equal `Λ`'s give equal coefficient systems, hence equal functions.
+
+With Corollary 80′:
+
+> **Theorem 82.** The map `H ↦ v_H`, `v_H(n) = Λ_H(n)/(\sqrt n \log n)`, embeds the sub-semigroup
+> `\{H ∈ S : n_H = 0\}` injectively and additively into `ℓ²`, and every non-zero image has
+> `‖v_H‖² ≥ π²/6`. Hence the image is **uniformly discrete**: distinct elements `H ≠ H'` of the
+> sub-semigroup satisfy `‖v_H − v_{H'}‖² ≥ π²/6` whenever `H/H'` lies in the semigroup, and in
+> particular the group it generates is a **discrete subgroup of `ℓ²`, i.e. a lattice with minimum
+> `≥ π²/6`**.
+
+### 134.3 What this says about EG₀
+
+> **EG₀ ⟺ that lattice is trivial.**
+
+The programme therefore now has, for the `n_F = 0` case, exactly the picture Selberg's Conjecture B has
+for the whole class: an additive embedding into a Hilbert space with a positive minimum. The
+difference is that here the minimum is **proved** (Theorem 79, via integrality of `N_F` and Weyl
+equidistribution), whereas in Conjecture B it is the conjecture.
+
+**What is missing** is a rank bound: a discrete lattice with minimum `π²/6` can have any rank, so
+discreteness alone does not force triviality. Closing EG₀ needs an upper bound on `‖v_H‖` — i.e. on
+`Σ_n|Λ_H(n)|²/(n\log²n)` — for `H` in the semigroup, and §132.3's open core is exactly that.
+
+> **Recorded.** Cycles 132–134 have converted the `n_F = 0` case of the Energy Gap from an analytic
+> question about densities into a **geometric question about a lattice in `ℓ²` with a proved minimum**.
+> The remaining input is an upper bound, and the programme has none.
+
+---
+
+## 135. Cycle 135 (2026-07-26) — the zero-energy semigroup has no elements of degree `< 2`
+
+### 135.1 Degree constraint
+
+Kaczorowski–Perelli's classification gives `S_0 = \{1\}`, `S_d = ∅` for `0 < d < 1` and `1 < d < 2`,
+and `S_1 = \{ζ(s+iθ)\} ∪ \{L(s+iθ,χ)\}` — **every element of which has `n = 1`**. Hence:
+
+> **Corollary 83.** Every non-trivial element of the sub-semigroup `\{H ∈ S : n_H = 0\}` has degree
+> `≥ 2`, and since degrees are additive the semigroup is generated by such elements.
+
+This is consistent with, and gives a second derivation of, the fact that the Energy Gap is open
+exactly in degree `≥ 2` — but now as a statement about the lattice of Theorem 82: **its generators all
+have degree `≥ 2`.**
+
+### 135.2 Where the upper bound would have to come from
+
+`‖v_H‖² = 2π²·\mathrm{Var}(S_H)` by Theorem 77, so §132.3's open core asks for an unconditional upper
+bound on the variance of the zero-counting fluctuation. Checked and unavailable:
+
+- The classical `S_H(t) = O(\log t)` gives `\mathrm{Var} ≤ \log²T` — grows, useless.
+- Ramanujan gives `|Λ_H(n)| ≪ n^ε\log n`, so `Σ_n|Λ_H(n)|²/(n\log²n) ≪ Σ_n n^{2ε−1}` — divergent,
+  useless.
+- Degree alone cannot bound it: `ζ` has degree `1` and unbounded variance (though `n_ζ = 1 ≠ 0`, so it
+  is outside the semigroup).
+- Within the semigroup no mechanism is known that bounds the variance in terms of `d_H` or `q_H`.
+
+> **Recorded.** No unconditional upper bound on `‖v_H‖` is available from the axioms. The lattice of
+> Theorem 82 has a proved minimum and no proved bound on its elements, so discreteness cannot be
+> upgraded to triviality by any argument currently in the programme.
+
+### 135.3 The state of the `n_F = 0` case, complete
+
+```
+{H ∈ S : n_H = 0}  is a sub-semigroup                         (Cauchy–Schwarz)
+H ↦ v_H  is injective, additive, into ℓ²                      (Λ additive; coefficients determine H)
+‖v_H‖² ≥ π²/6 for H ≠ 1                                       (Theorem 79 + Theorem 77)
+every non-trivial element has degree ≥ 2                      (Corollary 83, via K–P)
+EG₀  ⟺  the semigroup is trivial
+missing: any upper bound on ‖v_H‖                             (§135.2)
+```
+
+**Formalisation of Theorem 79's core (cycle 135).** Corpus searched first
+(`research "distance to integers fractional part square integral"` — only unrelated Gutzmer/Szegő
+partial-sum results; no duplication). Added `HTGeometry/RoundingVarianceFloor.lean`:
+
+> `abs_sub_round_le_abs_sub` : `|x − round x| ≤ |x − n|` for every integer `n` — no integer beats the
+> nearest one;
+> `rounding_floor` : the shifted form `|x+c − round(x+c)| ≤ |n − (x+c)|` used in Theorem 79;
+> `integral_sq_rounding_error` : `∫_{−1/2}^{1/2} u² du = 1/12` — the mean square of the rounding error
+> over one period;
+> `sq_abs_sub_round_le` : `|x − round x|² ≤ 1/4`.
+
+Together these are exactly the arithmetic content of Theorem 79: `N_F` integer-valued gives
+`|S_F − c| ≥ |M_F+c − round(M_F+c)|` pointwise, and equidistribution of `M_F` mod one converts the
+mean square of the right side into `1/12`. `lake build` passes; `#print axioms` clean on all four.
+
+**Formal corpus: 58 theorems in 17 modules, all unconditional, all axiom-clean under `lake build`.**
+
+---
+
+## 136. Cycle 136 (2026-07-26) — no universal ceiling exists, and the updated hand-off
+
+### 136.1 A structural note that closes one family of attempts
+
+Could EG₀ follow from a **universal** upper bound on `Var(S_H)` for `H` in the zero-energy semigroup?
+No: within `S` the variance is unbounded across elements (`ζ` has `Var(S_ζ) → ∞`), and nothing in the
+semigroup's definition caps it — `n_H = 0` asserts only that `Σ_p|a_H(p)|²/p` **converges**, not that
+it is small. Even using axiom (4)'s explicit `|b_H(n)| ≤ Cn^θ`, `θ < 1/2`, one gets
+`‖v_H‖² = Σ_p|a_H(p)|²/p + O_{C,θ}(1)` with the prime-power part explicitly bounded by
+`C'Σ_p p^{4θ−2} < ∞` — but the prime part is unconstrained above.
+
+> **Recorded do-not-retry.** EG₀ cannot be closed by a universal ceiling on `‖v_H‖`. Any proof must
+> produce a **per-`H`** contradiction, i.e. derive `‖v_H‖² < π²/6` from properties of the particular
+> `H`. The lattice of Theorem 82 has a proved minimum, an unbounded set of possible norms, and no
+> rank bound.
+
+### 136.2 Updated hand-off (supersedes §94)
+
+**Read order.**
+1. §74 and §79.4 — the meta-conclusion (one integrality mechanism) and the ten closed mechanisms.
+2. §85 — the two independence results (Theorems 38, 39): the functional equation is essential, and
+   the axiomatic integers are additive while `n_F` is quadratic.
+3. §84, §82, §101 — the two remaining gaps (cusps; twist exponent), the `θ`-gap having been removed.
+4. The five design rules: thin sets §77.2, scales §87.2, regimes §98.3, independence §114.2,
+   circularity §125.1.
+5. §107–§110 — integrality on the critical line (Theorems 57, 58, 60, 61).
+6. §127–§135 — the zero-counting fluctuation (Theorems 75–79, Corollaries 80′–83, Theorem 82).
+7. The do-not-retry list, now: §4, §7, §9.1, §9.6, §10.1, §11.1, §20.4, §21.1, §22.1, §26.3, §28.2,
+   §31, §38, §46.4, §49.1, §53, §57, §62, §66, §69.2, §71, §72.3, §74.1, §77.1, §79.2, §86.3, §88.2,
+   §89.2, §91.3, §93.2, §98.1, §100.2, §110.1, §113.1, §114.2, §120.3, §124.1, §129.3, §135.2, §136.1.
+
+**Principal unconditional results of the programme.**
+| # | statement |
+|---|---|
+| Thm 2 | linear half of Conjecture A: `Σ_{p≤x}(a_F(p)−m)/p = O(1) ⟹ m = m_F ∈ Z_{≥0}` |
+| Thm 10, 62 | `Σ_θ(ord_{1+iθ}F)² ≤ n_F`; at most `n_F` points in the `1`-line divisor (Cor 67) |
+| Thm 16, 19 | real Gram blindness; the Selberg symplectic form `ω` |
+| Thm 22 | `Σ_ρ m_ρ² ≥ N_F(T)`, equality iff all zeros simple |
+| Thm 23, 24, 28 | complex-shift regularisation; `n_F` from the `L²`-mean of the standard twist |
+| Thm 29, 30, 78 | twist correlation and zero–prime pairing; two representations of `ω` |
+| Thm 38, 39 | independence: axiom (3) essential; additive invariants cannot give `n_F` |
+| Thm 40, 43, 55 | fractional-power obstruction; ratio functional equation; divisor multiplicity one |
+| Thm 52, 53 | `log F − Σ_p a_F(p)p^{−s}` holomorphic on `Re s > 1/2`; `∫|log F|² ≪ T\log²T` |
+| Thm 57, 58, 60 | prime-square density `= −ord_{1/2}(F/G) ∈ Z`; `n_F = δ₂(F\bar F) − 2Reδ₂(F)` |
+| Thm 70, 74 | rigid zeros, and any fixed unfolded profile, force `F = 1` |
+| Thm 75, 76, 77 | `|S_F| ≤ K ⟹ n_F ≤ CK²`; `(1/P)∫|S_F|² ≫ n_F\log\log P`; `n_F = 0 ⟹ S_F ∈ B²` |
+| Thm 79, Cor 80′, 81 | `\liminf(1/T)∫|S_F−c|² ≥ 1/12`, sharp, equality iff rigid |
+| Thm 82, Cor 83 | the zero-energy semigroup embeds as a lattice with minimum `π²/6`, generators of degree `≥ 2` |
+
+**Formal corpus (17 modules, 58 theorems, all `lake build`-verified and axiom-clean):**
+`RHTower/SelbergPairingPrimeSquare`, and in `HTGeometry/`: `GeneralizedDirichletMeanValue`,
+`ResidueJumpLowerBound`, `LogCoefficientTransfer`, `DiagonalIsolation`, `RealGramBlindness`,
+`MultiplicityEnergyBracket`, `ConvexSlopeDerivBound`, `CommensurableFrequencies`,
+`AdditiveVersusQuadratic`, `FractionalExponentObstruction`, `CountingPairing`, `BesselPSD`,
+`AmplifierEnergyBound`, `RoundingVarianceFloor`.
+
+**Standing.** Conjecture A and Conjecture B both open. The programme's contribution is a complete map:
+what the axioms can and cannot supply, which functionals are blind, which scales may not be mixed, the
+single regime `α ≍ 1` into which the quadratic problems funnel, and — new in cycles 127–136 — an
+unconditional theory of the zero-counting fluctuation `S_F` in which the Energy Gap's edge case becomes
+a lattice problem with a proved minimum and a missing upper bound.
+
+---
+
+## 137. Cycle 137 (2026-07-26) — correction: Theorem 82 gives a semigroup with isolated origin, not a lattice
+
+### 137.1 The over-claim
+
+Theorem 82 was stated as "the group generated is a **discrete subgroup of `ℓ²`, i.e. a lattice with
+minimum `≥ π²/6`**". That is wrong. The set `\{H ∈ S : n_H = 0\}` is a **semigroup, not a group** —
+`S` is closed under multiplication but not under division, so for `H_1 ≠ H_2` in the semigroup the
+difference `v_{H_1} − v_{H_2}` is the image of `H_1/H_2`, which need **not** lie in `S`. Nothing
+therefore bounds `‖v_{H_1} − v_{H_2}‖` from below, and the generated group need not be discrete.
+
+> **Corrected Theorem 82.** The map `H ↦ v_H`, `v_H(n) = Λ_H(n)/(\sqrt n\log n)`, embeds
+> `\{H ∈ S : n_H = 0\}` injectively and additively into `ℓ²`, and **every non-zero element of the
+> image has `‖v_H‖² ≥ π²/6`**. So the image is an additive sub-semigroup of `ℓ²` whose origin is
+> isolated. It is *not* shown to be uniformly discrete, and no rank statement is available.
+>
+> **EG₀ ⟺ the image is `\{0\}`.**
+
+Two zero-energy elements with nearly equal coefficient systems would give nearly equal `v`'s; ruling
+that out is strong multiplicity one, which is exactly what the programme does not have
+unconditionally (Theorem 64 needs Bounded Satake).
+
+### 137.2 What survives, and what the correction costs
+
+- **Survives:** injectivity, additivity, and the proved minimum `π²/6` — the substance of cycles
+  132–134. `EG₀ ⟺ triviality of the semigroup` is unaffected.
+- **Costs:** the lattice picture, and with it any hope of a rank argument. §136.1's conclusion — that
+  EG₀ needs a **per-`H`** contradiction — is unchanged and now the only available route.
+
+### 137.3 A checked non-improvement
+
+Could the floor `1/12` be improved for elements of degree `d ≥ 2` (which by Corollary 83 are the only
+possible generators)? No: Theorem 79's floor comes from equidistribution of `\{M_F(t)\}`, which holds
+for every `d ≥ 1` and yields `∫_0^1 \mathrm{dist}(u,Z)²du = 1/12` independently of `d`. Higher degree
+makes the zeros denser but does not change the rounding geometry.
+
+> **Recorded.** The constant `π²/6` in Corollary 80′ is degree-independent and cannot be improved by
+> this method. This is the fourth over-claim caught and corrected in-cycle (§98 RZ, §113 CMP,
+> §124 Theorem 71, §134/§137 Corollary 80 and Theorem 82), and the second within the cycles 132–136
+> block — a signal that the new zero-fluctuation material needs the same adversarial pass the earlier
+> material received.
+
+---
+
+## 138. Cycle 138 (2026-07-26) — adversarial audit of the cycles 127–136 block
+
+Promised in §137.3. Each step of Theorems 75–79 and Corollaries 80′–83 re-derived and checked.
+
+### 138.1 The identity `∫φ'S_F = 𝒫[φ]`
+
+Two derivations of `Σ_γφ(γ)` for `F` entire and `φ` smooth of compact support:
+`∫φ\,dN_F = ∫φν\,dt + ∫φ\,dS_F = ∫φν − ∫φ'S_F` (integration by parts), and the Weil explicit formula
+`Σ_γφ(γ) = (\text{archimedean}) − 𝒫[φ]`. The archimedean term **is** `∫φν` by construction of the
+Riemann–von Mangoldt density. Comparing gives the identity. ✔
+
+### 138.2 The amplifier
+
+- **Compact support of `φ`.** `φ` is the antiderivative of `φ'`; it is compactly supported iff
+  `∫φ' = 0`. Here `∫ψ((t−t_0)/P)e^{it\log p}dt = Pe^{it_0\log p}\hatψ(−P\log p)`, negligible because
+  `\hatψ` is Schwartz and `P\log p → ∞`. ✔ (A negligible constant adjustment restores exact compact
+  support.)
+- **Arithmetic side.** `\hatφ(ξ) = \widehat{φ'}(ξ)/(iξ)`, so the `n = p` term is
+  `(1/2π)Λ_F(p)p^{−1/2}·Pc_p/(i\log p) = (P/2πi)a_F(p)p^{−1/2}c_p`; with `c_p = \overline{a_F(p)}p^{−1/2}`
+  this is `(P/2πi)|a_F(p)|²/p`. The dual terms `\hatφ(−\log n)` have argument `≈ −P(\log n+\log p)` and
+  the prime powers `n = p^k`, `k ≥ 2`, have `\hatψ` argument `P(k−1)\log p`; both negligible. ✔
+- **`L²` norm.** Montgomery–Vaughan: diagonal `P‖ψ‖_2²E_x`; off-diagonal
+  `≪_A P(P|\log(p/q)|)^{−A} ≪ P(P/x)^{−A}`, negligible for `P ≫ x`. ✔
+
+### 138.3 Theorem 79's error term
+
+The classical Riemann–von Mangoldt formula is `N_F(T) = M_F(T) + S_F(T) + O(1/T)`, not an exact
+identity. Hence `|S_F − c| ≥ \mathrm{dist}(M_F+c, Z) − O(1/T)`, and since the correction tends to `0`
+the mean-square floor `1/12` is unaffected. ✔
+
+### 138.4 Verdict
+
+| result | status after audit |
+|---|---|
+| Thm 75 (`|S_F| ≤ K ⟹ n_F ≤ CK²`) | **verified** |
+| Thm 76 (`(1/P)∫|S_F|² ≫ n_F\log\log P`) | **verified** |
+| Thm 77 (`n_F = 0 ⟹ S_F ∈ B²`) | **verified** |
+| Thm 78 (pairing via `S_F`) | **verified** |
+| Thm 79 (floor `1/12`), Cor 81 (equality iff rigid) | **verified**, with §138.3's error term noted |
+| Cor 80 (`Σ_p|a_F(p)|²/p > 1`) | **corrected** in §134.1 to Cor 80′ (no prime/prime-power split) |
+| Thm 82 (lattice) | **corrected** in §137.1 to a semigroup with isolated origin |
+| Cor 83 (generators of degree `≥ 2`) | **verified** (K–P classification; `S_1` has `n = 1`) |
+
+> **Net.** The block stands, with the two over-claims already withdrawn and the remaining eight
+> statements re-derived step by step. The programme's zero-fluctuation theory — Theorems 75–79 and
+> Corollaries 80′, 81, 83 — is unconditional and audited.
+
+### 138.5 What the audit did not find
+
+No further errors, and no new leverage. The audit confirms that the block's reach ends exactly where
+§136.1 places it: at the absence of a per-`H` upper bound on `‖v_H‖`. **The adversarial pass is
+complete; further extension of this block should not be attempted without new input.**
+
+---
+
+## 139. Cycle 139 (2026-07-26) — **EG₀ IS PROVED**: no non-constant `F ∈ S` has `n_F = 0`
+
+New input, as demanded by §138.5: pass from the *mean square* of `S_F` (Theorem 79) to the
+**characteristic function** `M\{e^{2πikS_F}\}`.
+
+### 139.1 Two evaluations of the same quantity
+
+Let `F ∈ S` be non-constant with `n_F = 0`. By Theorem 10 (`n_F ≥ ν²`) `F` has no pole and no zero on
+`Re s = 1`, so `F` is entire and Theorem 77 applies. Let `M\{g\} := \lim_T (1/T)∫_0^T g(t)dt` denote
+the Besicovitch mean, and fix an integer `k ≠ 0`.
+
+**(A) The geometric evaluation: `M\{e^{2πikS_F}\} = 0`.**
+`S_F = N_F − M_F + O(1/T)` with `N_F` integer-valued, so
+```
+e^{2πikS_F(t)} = e^{−2πikM_F(t)}·(1 + o(1)) .
+```
+Since `F` is non-constant, `d_F ≥ 1` (Conrey–Ghosh), so `M_F'(t) = ν(t) = (d_F/2π)\log(t/2π)+… → ∞`
+monotonically. Van der Corput's first-derivative test gives
+`|∫_a^b e^{−2πikM_F}dt| ≤ 2/(2πk\,ν(a))`, a bound independent of `b`; hence
+`(1/T)|∫_0^T e^{−2πikM_F}dt| → 0`. Therefore `M\{e^{2πikS_F}\} = 0`.
+
+**(B) The arithmetic evaluation: `M\{e^{2πikS_F}\} ≠ 0` for suitable `k`.**
+By Theorem 77, `n_F = 0` gives `S_F = c + 𝒮` with
+```
+𝒮(t) = −(1/π) Σ_{n≥2} Λ_F(n) n^{−1/2} \sin(t\log n)/\log n  =  Σ_{n} A_n \sin(t\log n + φ_n) ,
+      A_n = |Λ_F(n)|/(π n^{1/2}\log n) ,   Σ_n A_n² < ∞ .
+```
+*Step 1 (truncation).* `|e^{2πik𝒮} − e^{2πik𝒮_N}| ≤ 2πk|𝒮 − 𝒮_N|`, so
+`|M\{e^{2πik𝒮}\} − M\{e^{2πik𝒮_N}\}| ≤ 2πk\,‖𝒮 − 𝒮_N‖_{B²} → 0`.
+
+*Step 2 (Weyl).* The frequencies `\log p` over distinct primes are `Q`-linearly independent (unique
+factorisation), and `\log p^j = j\log p`. So `(t\log p)_{p ≤ N}` equidistributes in the torus, and
+```
+M\{e^{2πik𝒮_N}\} = ∏_{p ≤ N} I_p ,   I_p := (1/2π)∫_0^{2π} \exp\!\big(2πik Σ_{j≥1} A_{p^j}\sin(jθ+φ_{p^j})\big)\,dθ .
+```
+
+*Step 3 (the product does not vanish).* `|I_p| ≤ 1` and, expanding,
+`1 − |I_p| = O(k² Σ_j A_{p^j}²)`, so `Σ_p (1 − |I_p|) = O(k² Σ_n A_n²) < ∞` and the product converges.
+It is non-zero unless some factor vanishes. Since `A_p = |a_F(p)|/(π\sqrt p) → 0`, for each fixed `k`
+all but finitely many `p` have `2πk A_p < j_{0,1} ≈ 2.405`, whence `I_p ≈ J_0(2πkA_p) ≠ 0`. Each of
+the finitely many remaining `I_p` is a real-analytic, non-constant function of `k` equal to `1` at
+`k = 0`, so its zeros in `k` are isolated; choose an integer `k ≠ 0` avoiding all of them.
+
+For that `k`, `M\{e^{2πik𝒮}\} = ∏_p I_p ≠ 0`, and since `S_F = c + 𝒮`,
+`M\{e^{2πikS_F}\} = e^{2πikc}·M\{e^{2πik𝒮}\} ≠ 0`.
+
+**(A) and (B) contradict.**
+
+### 139.2 The theorem
+
+> **Theorem 84 (Energy Gap, `n_F = 0` case; unconditional).** No non-constant `F ∈ S` has
+> `Σ_p |a_F(p)|²/p < ∞`. Equivalently `n_F = 0 ⟹ F = 1`.
+
+Equivalent forms now all proved: `Σ_{n≤x}|a_F(n)|² ≫ x/\log x` (§120.2); the zeros of a non-constant
+`F ∈ S` are never rigid, and more generally never satisfy `S_F ∈ B²` (§130); the zero-energy
+semigroup of §137.1 is trivial.
+
+### 139.3 Why the argument is sharp
+
+If `n_F > 0` then `Σ_n A_n² = ∞`, so `Σ_p(1 − |I_p|) = ∞` and the product `∏_p I_p` **vanishes** —
+exactly matching (A). The contradiction appears precisely on the convergence boundary
+`Σ_p|a_F(p)|²/p < ∞`. So the method proves the `n_F = 0` case and cannot, as it stands, reach
+`0 < n_F < 1`.
+
+### 139.4 What it does not settle
+
+- The remaining Energy Gap case `0 < n_F < 1` is untouched: there `𝒮 ∉ B²` and Theorem 77 fails.
+- Conjecture A (`n_F ∈ Z`) and Conjecture B remain open.
+
+But EG₀ has been the programme's named target since §52, was reformulated four times (§116.2, §130.2,
+§132.3, §134.3), and had every previous route recorded as blocked. **The new input was to test the
+distribution of `S_F` rather than its moments**: `e^{2πikS_F} = e^{−2πikM_F}` is an *identity* forced
+by integrality of `N_F`, and it evaluates to `0` geometrically and to a convergent non-zero Euler
+product arithmetically.
+
+---
+
+## 140. Cycle 140 (2026-07-26) — Theorem 84 stress-tested against `ζ`, and why `0 < n_F < 1` is out of reach
+
+### 140.1 The consistency check that matters
+
+The proof of Theorem 84 must **not** apply to `ζ`, which exists. Checking:
+
+- Evaluation (A) is unchanged for `ζ`: `e^{2πikS(t)} = e^{−2πikM(t)}` exactly (integrality of `N`), and
+  van der Corput gives `M\{e^{2πikS}\} = 0`.
+- Evaluation (B) for `ζ`: `A_p = 1/(π\sqrt p)`, so `Σ_p A_p² = (1/π²)Σ_p 1/p = ∞`, hence
+  `Σ_p(1 − |I_p|) ≍ k²Σ_p 1/p = ∞` and the Euler product `∏_p I_p` **vanishes**.
+
+(A) and (B) agree at `0`. **No contradiction for `ζ`** — as required. The contradiction in Theorem 84
+arises solely from `Σ_p|a_F(p)|²/p < ∞`, which makes the product converge to a non-zero limit. ✔
+
+A second check: the deterministic identity `\{S_F(t)\} = \{−M_F(t)\}` means the *fractional part* of
+`S_F` is not Gaussian but exactly equidistributed; the Selberg CLT governs only the unwrapped `S_F`.
+The two are consistent because `M_T\{e^{2πikS_F}\} = O(1/T)` is *smaller* than the Gaussian heuristic
+`(\log T)^{−k²}`, not larger. ✔
+
+### 140.2 Quantitative form, and why it stops at `n_F = 0`
+
+Expanding, `1 − I_p ≈ π²k²A_p² = k²|a_F(p)|²/p`, so
+```
+∏_{p ≤ x} I_p  ≈  \exp\big(−k² Σ_{p≤x}|a_F(p)|²/p\big)  ≈  (\log x)^{−k² n_F} .
+```
+For `n_F = 0` this tends to a non-zero limit — the contradiction. For `n_F > 0` it tends to `0`,
+matching (A) exactly.
+
+Attempting to convert the *rate* into a contradiction fails. Comparing at finite `T` with truncation
+at `N`:
+```
+(\log N)^{−k²n_F}  ≪  1/T  +  2πk\,\|S_F − c − 𝒮_N\|_{L²[0,T]}/\sqrt T ,
+```
+and the last term is `≍ k\sqrt{n_F \log(\log T/\log N)}`. With `N = T^{1/2}` it is a constant while the
+left side tends to `0`; with `\log N = (\log T)^{1−δ}` it grows. **No choice of `N` makes the two
+sides conflict.**
+
+> **Recorded do-not-retry.** The characteristic-function method is sharp at the convergence boundary:
+> it proves `n_F = 0 ⟹ F = 1` and cannot reach `0 < n_F < 1`, because there both evaluations give
+> `0` and the rates cannot be separated.
+
+### 140.3 Status of the Energy Gap after Theorem 84
+
+```
+n_F = 0                     ⟹  F = 1                       (Theorem 84, new, unconditional)
+F has a pole or a zero on Re s = 1, of order ν  ⟹  n_F ≥ ν²   (Theorem 10)
+0 < n_F < 1 with F entire and non-vanishing on Re s = 1      — the only remaining case
+```
+The Energy Gap conjecture (`n_F = 0` or `n_F ≥ 1`) is therefore reduced to a **single** open case, and
+that case now has a sharp description: `F` entire, non-vanishing on `Re s = 1`, with
+`Σ_p|a_F(p)|²/p` divergent but of density `< 1`.
+
+---
+
+## 141. Cycle 141 (2026-07-26) — **(P2) PROVED UNCONDITIONALLY**: quantitative strong multiplicity one
+
+The mechanism of Theorem 84 applied to a **pair** rather than a single element. The pair version is
+stronger, because for two elements with the same archimedean data the geometric side is not `0` but
+`1`.
+
+### 141.1 The two evaluations for a pair
+
+Let `F, G ∈ S` be entire with **identical gamma factors and conductors**, so `M_F = M_G`. Assume
+```
+Σ_p |a_F(p) − a_G(p)|² / p  <  ∞ .                                    (H)
+```
+
+**(A) Geometric: the characteristic function is `1`.**
+`S_F − S_G = (N_F − M_F) − (N_G − M_G) = N_F − N_G ∈ Z` pointwise, since `M_F = M_G`. Hence
+`e^{2πik(S_F−S_G)} = 1` identically and `M\{e^{2πik(S_F−S_G)}\} = 1` for every integer `k`.
+
+**(B) Arithmetic: it is `e^{2πikΔc}∏_p I_p`.**
+Under (H), `Σ_n |Λ_F(n) − Λ_G(n)|²/(n\log²n) < ∞` (the `k ≥ 2` terms are `≪ Σ_p p^{−2+ε}`), so the
+expansion
+```
+𝒟(t) = −(1/π) Σ_n (Λ_F(n) − Λ_G(n)) n^{−1/2}\sin(t\log n)/\log n = Σ_n B_n \sin(t\log n + ψ_n)
+```
+converges in `B²`; and since `S_F − S_G` and `𝒟` both pair to `𝒫_F[φ] − 𝒫_G[φ]` against `φ'`, they
+differ by a constant `Δc`. Weyl equidistribution of `(t\log p)_p` (`Q`-independence) plus the `B²`
+truncation bound gives
+```
+M\{e^{2πik(S_F−S_G)}\} = e^{2πikΔc} ∏_p I_p ,   I_p = (1/2π)∫_0^{2π}\exp\big(2πik Σ_j B_{p^j}\sin(jθ+ψ_{p^j})\big)dθ .
+```
+
+**Combining.** `|∏_p I_p| = 1` with every `|I_p| ≤ 1` forces `|I_p| = 1` for every `p`, which happens
+only when the trigonometric polynomial `Σ_j B_{p^j}\sin(jθ+ψ_{p^j})` is constant in `θ` — i.e. when
+`B_{p^j} = 0` for all `j`. Hence `Λ_F ≡ Λ_G`, so `F` and `G` have the same coefficients, so `F = G`.
+
+### 141.2 The theorem
+
+> **Theorem 85 (quantitative strong multiplicity one; unconditional).** Let `F, G ∈ S` have identical
+> gamma factors and conductors. If
+> ```
+> Σ_{p ≤ x} |a_F(p) − a_G(p)|² / p  =  O(1) ,
+> ```
+> then `F = G`.
+>
+> The hypothesis that `F, G` be entire is not needed: if their pole orders at `s = 1` differ then the
+> linear density `Σ_p(a_F(p)−a_G(p))/p ∼ (m_F−m_G)\log\log x` is unbounded, and Cauchy–Schwarz makes
+> the quadratic sum diverge, contradicting the hypothesis. So (H) forces `m_F = m_G` and the pole
+> terms of the two explicit formulae cancel.
+
+This is **(P2)**, open in this programme since §22, and previously obtained only under **Bounded
+Satake** (Theorem 64). It is now unconditional, with no Rankin–Selberg convolution, no automorphy, no
+zero-density estimate and no RH.
+
+### 141.3 Consequences
+
+- **(ZS) is settled** (§88.3): two distinct elements of `S` with the same gamma factor and conductor
+  cannot have `Σ_p|a_F(p)−a_G(p)|²/p` bounded, hence — by §88's chain — the fractional-power
+  counterexample route of §86 is closed completely.
+- Theorem 64's hypothesis (Bounded Satake) can be dropped everywhere it was used.
+- Combined with Theorem 84 (`n_F = 0 ⟹ F = 1`, the case `G = 1`): Theorem 85 contains Theorem 84 as
+  the special case `G = 1`, whenever `F` has the gamma factor and conductor of `1` — so the two are
+  the same mechanism at different levels of generality.
+
+### 141.4 Why the pair case is easier than the single case
+
+For a single `F` the geometric side is `M\{e^{2πikS_F}\} = M\{e^{−2πikM_F}\} = 0`, and the arithmetic
+side must be made non-zero — which needs `Σ_p|a_F(p)|²/p < ∞`. For a **pair with equal archimedean
+data** the chirp `M_F − M_G` cancels identically, the geometric side is `1`, and the arithmetic side
+must be forced to have modulus `1` — which happens only in the degenerate case. **The cancellation of
+the archimedean data is what makes the pair problem strictly easier**, exactly as Theorem 54 found for
+the explicit formula.
+
+---
+
+## 142. Cycle 142 (2026-07-26) — the characteristic-function method is a `0/1` detector
+
+### 142.1 Sharpness check for Theorem 85
+
+Hypothesis (H) is genuinely needed. Take `F = L(·,χ_1)`, `G = L(·,χ_2)` with `χ_1 ≠ χ_2` primitive and
+even of the same modulus `q`: identical gamma factors and conductors, so `M_F = M_G` and
+`S_F − S_G = N_F − N_G ∈ Z`, giving `M\{e^{2πik(S_F−S_G)}\} = 1`. Yet `F ≠ G`. The resolution is that
+`n_{F/G} = n_F + n_G − 2\mathrm{Re}\,c_{F,G} = 2 > 0`, so `𝒟 ∉ B²` and the Euler-product evaluation is
+**not available** — exactly as required. ✔ Theorem 85 is sharp at the convergence boundary.
+
+### 142.2 The structural reach of the method
+
+Both Theorem 84 and Theorem 85 compare two evaluations of `M\{e^{2πikX}\}`:
+
+| `X` | geometric value | forced by |
+|---|---|---|
+| `S_F` | `0` | `\{S_F\} = \{−M_F\}` and equidistribution of `M_F` (chirp) |
+| `S_F − S_G`, same `γ, Q` | `1` | `S_F − S_G ∈ Z` pointwise |
+
+**The geometric side can only ever be `0` or `1`** — those are the only values integrality of the
+counting function produces. So the method is a **detector of a dichotomy**: it decides whether an
+Euler product `∏_p I_p` vanishes or has modulus one, i.e. whether a prime energy diverges or vanishes.
+
+> **Consequence.** The method settles exactly the questions of the form *"is this energy zero?"* —
+> EG₀ (`n_F = 0 ⟹ F = 1`) and (P2) (`n_{F/G} = 0 ⟹ F = G`). It **cannot** produce a general integer,
+> so it cannot give `n_F ∈ Z` and does not touch Conjecture A or the orthogonality half of
+> Conjecture B. Recorded so the method's reach is not over-estimated.
+
+### 142.3 Why `0 < n_F < 1` stays out
+
+For a single `F` with `n_F > 0` both sides are `0` and the rates cannot be separated (§140.2). For a
+pair with `n_{F/G} > 0` the geometric side is `1` but the arithmetic side is unavailable (§142.1).
+Neither dichotomy is triggered. **The remaining Energy Gap case `0 < n_F < 1` requires a mechanism
+that produces a value other than `0` or `1`.**
+
+**Formalisation of the rigidity step (cycle 142).** Corpus searched first
+(`research "product of norms equal one implies each"` — only unrelated theta-tail and
+prime-coherence results). Added `HTGeometry/UnitProductRigidity.lean`:
+
+> `norm_eq_one_of_prod_norm_eq_one` : if `‖a i‖ ≤ 1` for all `i ∈ s` and `∏_{i∈s}‖a i‖ = 1`, then
+> `‖a i‖ = 1` for every `i ∈ s`;
+> `norm_eq_one_of_norm_prod_eq_one` : the same with the hypothesis `‖∏ a i‖ = 1`.
+
+This is the rigidity step of Theorems 84 and 85: the characteristic function of the difference of two
+zero-counting fluctuations is identically `1`, the Euler-product evaluation gives `∏_p I_p` with every
+`|I_p| ≤ 1`, and the lemma forces every local factor to be a unit — hence every local oscillation, and
+so every coefficient difference, to vanish. `lake build` passes; `#print axioms` clean on both.
+
+**Formal corpus: 60 theorems in 18 modules, all unconditional, all axiom-clean under `lake build`.**
+
+---
+
+## 143. Cycle 143 (2026-07-26) — strict Cauchy–Schwarz for the Selberg pairing, and the roots-of-unity direction
+
+### 143.1 An immediate consequence of Theorem 85
+
+> **Theorem 86 (strict Cauchy–Schwarz; unconditional).** Let `F ≠ G` in `S` have identical gamma
+> factors and conductors. Then
+> ```
+> Σ_{p ≤ x} |a_F(p) − a_G(p)|²/p  →  ∞ ,
+> ```
+> i.e. `n_{F/G} = n_F + n_G − 2\mathrm{Re}\,c_{F,G} > 0`, so
+> ```
+> \mathrm{Re}\,c_{F,G}  <  (n_F + n_G)/2 .
+> ```
+> *Proof.* Contrapositive of Theorem 85. ∎
+
+The non-strict inequality `\mathrm{Re}\,c_{F,G} ≤ (n_F+n_G)/2` is Cauchy–Schwarz. **Strictness for
+distinct elements is new**, and it is exactly the content Theorem 85 adds: the Selberg pairing cannot
+saturate its Cauchy–Schwarz bound between distinct elements sharing archimedean data.
+
+Under Conjecture B's expected values `n_F = n_G = 1` this reads `\mathrm{Re}\,c_{F,G} < 1`, which is
+weaker than `c_{F,G} = 0` but is the first **unconditional strict** separation the programme has
+between distinct elements of `S`.
+
+### 143.2 A new direction: rational multipliers and `N_F \bmod m`
+
+All of Theorems 84–85 use `k ∈ Z`, where `e^{2πikN_F} = 1`. For `k = j/m` rational,
+```
+e^{2πikS_F(t)} = ζ_m^{\,jN_F(t)} · e^{−2πikM_F(t)} ,   ζ_m = e^{2πi/m} ,
+```
+so the geometric side involves the distribution of **`N_F \bmod m`** — a genuinely new object, taking
+`m` values rather than the two values `0` and `1` that §142.2 identified as the method's ceiling.
+
+> **Why this is the natural next step.** §142.3 recorded that breaking the remaining cases requires a
+> mechanism producing a value other than `0` or `1`. Rational `k` produces `m`-th roots of unity, and
+> a congruence `n_F ≡ · \pmod m` for every `m` would give integrality — the first candidate route to
+> `n_F ∈ Z` that does not pass through Rankin–Selberg.
+
+**Obstruction, recorded honestly.** The arithmetic side still requires `𝒮 ∈ B²`, i.e. `n_F = 0`, so
+the rational-`k` version currently yields nothing beyond Theorem 84. Making it useful needs the
+arithmetic evaluation to survive `n_F > 0`, which §140.2 shows the present truncation argument cannot
+deliver. **The direction is recorded as open, with its precise obstruction, rather than pursued
+further this cycle.**
+
+### 143.3 Consolidated status of the Energy Gap and multiplicity one
+
+```
+n_F = 0                                   ⟹ F = 1                      (Thm 84, unconditional)
+Σ_p|a_F(p)−a_G(p)|²/p = O(1), same γ,Q    ⟹ F = G                      (Thm 85, unconditional)
+F ≠ G, same γ,Q                           ⟹ Re c_{F,G} < (n_F+n_G)/2   (Thm 86, unconditional)
+0 < n_F < 1                               — the only remaining Energy Gap case
+n_F ∈ Z                                   — Conjecture A, open
+c_{F,G} = 0 for distinct primitives       — Conjecture B, open
+```

@@ -166,6 +166,11 @@ theorem mobiusContactGamma_threeChartRelativeFormalHypertranscendenceAtlasUniver
     ?_, mobiusContactGammaScaleHeadedInverseBranchFormalGerm_eq⟩
   exact mobiusContactGamma_completeMovingCenterThreeChartAtlasUniversality
 
+/-- The Gamma moving-center three-chart polynomial-atlas interface is unconditional. -/
+theorem mobiusContactGammaMovingCenterThreeChartPolynomialAtlas :
+    MobiusContactGammaMovingCenterThreeChartPolynomialAtlas :=
+  mobiusContactGamma_threeChartRelativeFormalHypertranscendenceAtlasUniversality.2.2.2.1
+
 /-- The complete analytic, algebraic, and formal payload carried by the single Möbius-contact
 Gamma pole-scale coordinate. -/
 structure MobiusContactGammaToricFormalAtlasMasterCertificate : Prop where
@@ -227,7 +232,7 @@ theorem mobiusContactGamma_toricFormalAtlasMasterUniversality :
       hcharts.1,
       hcharts.2.1,
       hcharts.2.2.1,
-      hcharts.2.2.2.1,
+      mobiusContactGammaMovingCenterThreeChartPolynomialAtlas,
       hcharts.2.2.2.2,
       gammaFactorial_completeToricJetClosureUniversality⟩
 

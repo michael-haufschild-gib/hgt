@@ -254,3 +254,48 @@ functional-equation estimate may enter as a hypothesis of the final declaration.
   produce the recurrence (1.26). The full arbitrary-weight continuous
   statement (1.5) remains unnecessary only if the discrete application route
   is completed directly.
+- 2026-07-25 — `[SECTION 1 EXACT-TO-QUADRATIC MODEL] [LEAN-PROVED]`
+  `BourgainSquareRootQuadraticModel.lean` now defines the exact local
+  square-root-curve sum and its literal quadratic osculating sum at arbitrary
+  denominator scale `D`. The quadratic sum is exactly a physical scaled
+  parabola extension after anisotropic phase scaling
+  `(H/D,(H/D)^2,H/D,(H/D)^2)`, up to a unit character. For two separated
+  base points, the product of sixth powers is exactly the planar bilinear
+  integrand in the corrected four phase coordinates. The module computes the
+  scalar third derivative, proves its uniform bound
+  `‖x‖·(3/8)((a²)^(-3/2)+(a²)^(-5/2))`, identifies the abstract quadratic
+  Taylor evaluator with the literal osculating phase, and proves an
+  unconditional finite-sum comparison with explicit error proportional to
+  `‖x‖δ³‖c‖₁`. Target build passes.
+  `[OPEN CORE]` The anisotropically scaled phase box must now be covered by
+  physical period boxes and combined with the exact planar pullback theorem.
+  The resulting integrated exact-sum estimate must absorb the additive
+  Taylor error and feed the scale recurrence.
+- 2026-07-25 — `[SECTION 1 ANISOTROPIC TRANSFER] [LEAN-PROVED]`
+  `BourgainAnisotropicPlanarTransfer.lean` constructs the exact diagonal
+  phase-dilation matrix, proves determinant `scale^6`, its Lebesgue
+  change-of-variables formula, and the combined osculating-coordinate
+  transfer. `BourgainPhaseOperatorBounds.lean` supplies concrete operator
+  bounds on the full application range `1/2≤a<b≤1`, `0≤H/D≤1`.
+  `BourgainExactLocalMomentTransfer.lean` then integrates the literal
+  exact-curve sum, keeps all cubic Taylor-error terms explicit, and
+  discharges sample containment and phase-box fit from
+  `H≤D` and `12N≤H²`.
+- 2026-07-25 — `[SECTION 1 TRANSLATION/COVER] [LEAN-PROVED]`
+  `BourgainExactLocalTranslation.lean` proves phase-space translation is
+  exactly coefficient twisting by unit characters and preserves every
+  coefficient norm and Taylor-error term.
+  `BourgainFiniteCubeCover.lean`, `BourgainExplicitCubeGrid.lean`, and
+  `BourgainExactLocalGridTransfer.lean` construct an explicit product grid:
+  the radius-`(m+1)N` sup-norm cube is covered by exactly `(m+1)^4`
+  translated radius-`N` cubes, and the uniform exact local bilinear moment
+  sums with precisely that loss. Target builds and formal lint pass;
+  representative axiom audits use only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+  `[OPEN CORE]` Generic cube summation is now closed. Still missing is the
+  anisotropic/periodic localization with the sharp volume accounting needed
+  to derive Bourgain's recurrence (1.26), followed by the Section-2
+  `A₆≪N^(6+ε)` induction. Section 3 additionally still requires the
+  Bombieri--Iwaniec double large sieve, Huxley/Huxley--Watt second-spacing
+  estimates, and the logarithmic exponent-pair inputs as unconditional Lean
+  theorems.

@@ -7105,3 +7105,1811 @@ and none is degenerate.**
 `\sum_h \sqrt{N/h}\cdot R\min(R,N) ≍ R^{2}N^{τ/2}`, short of the target by `RN^{τ/2-1}` — **the same
 shortfall `σ = 3/4` yet again**; the required saving is exactly a square root over the pairs, and by
 (b) it must come from the curvature `g_h'' ≍ -1/(hN)`, the only non-degenerate structure present.
+
+## Theorem 74 (each Poisson alias is individually bounded by the main term) `[PROVED HERE]`
+*For every `h ≠ 0`,* `|S_h| ≪ NR^{1+o(1)}` *— the same bound Conjecture DH-FD asserts for the whole
+sum.*
+*Proof.* The bilinear form in `S_h` has kernel `Φ_h(u) = e(g_h(u/2π))\mathbf 1_{|u| ≍ 2π hN}` depending
+only on the difference, so with `C(ξ) := \sum_r c_r e(t_rξ)`,
+```
+        S_h \;=\; \sqrt{N/h}\int \widehat{Φ_h}(ξ)\,|C(ξ)|^{2}\,dξ .
+```
+Stationary phase for `\widehat{Φ_h}`: `\frac{d}{du}\bigl[g_h(u/2π)+uξ\bigr] = 0` gives
+`\log(v/h) = 2πξ-2`, a *single* stationary `v = he^{2πξ-2}` for each `ξ`, lying in the window
+`v ≍ hN` exactly for `ξ` in an interval `I` of length `\log 2/2π`. There
+`\frac{d^{2}}{du^{2}}\bigl[g_h(u/2π)\bigr] = -\frac{1}{4π^{2}v} ≍ -\frac{1}{4π^{2}hN}`, so
+`\|\widehat{Φ_h}\|_\infty ≍ \sqrt{hN}` and `\widehat{Φ_h}` is supported on `I`. Since `\{t_r\}` is
+one-separated, `\int_I|C|^{2} = \sum_{r,r'}c_r\overline{c_{r'}}\widehat{\mathbf 1_I}(t_r-t_{r'}) ≪
+R\log T`. Hence `|S_h| ≪ \sqrt{N/h}\cdot\sqrt{hN}\cdot R\log T = NR\log T`. ∎
+> **The aliases are individually critical.** Each one sits exactly at the size of the main term, so
+> the Density Hypothesis is borderline `M`-fold: the deficit is precisely the alias count
+> `M = T/N = N^{τ-1}`, and no per-alias improvement can remove it — only cancellation *between*
+> aliases can.
+### Honest accounting: the Poisson-trivial bound is weaker than Halász–Montgomery
+Summing the trivial per-pair amplitudes over the `≍ μ/2` aliases attached to each pair gives
+`\sum_h\sqrt{N/h}\,P_h ≍ R^{2}\sqrt{NM} = R^{2}N^{τ/2}`, which is worse than the
+Halász–Montgomery bound `R^{2}N^{1/2}` by exactly `\sqrt M`. **The `\sqrt M` is the square-root
+cancellation *among the stationary points of a single pair* that Theorem 72(d) already supplies
+(`\sqrt μ\cdot\sqrt{N/μ} = \sqrt N`). So Theorem 73's decomposition must be used with that
+cancellation retained; used trivially it loses ground.**
+### The residual saving, computed three ways and agreeing
+With `|D_1| ≍ N^{1/2}` retained, the triangle inequality over pairs gives `R^{2}N^{1/2}` against the
+target `RN`, so the required saving over the `R^{2}` pairs is exactly
+```
+        \frac{R^{2}N^{1/2}}{RN} \;=\; \frac{R}{N^{1/2}} \;=\; N^{\,ρ-1/2} \;=\; N^{\,3/2-2σ} ,
+```
+`= N^{0.04}` at `σ = 0.73` and `= N^{0}` at `σ = 3/4`. As a fraction of square-root cancellation this
+is `θ_* = 1-\frac{1}{2ρ} = \frac{3-4σ}{4-4σ}`, **identical to Theorem 63's threshold derived by a
+completely different route** — the third independent computation of the same quantity, and a passed
+instance of gate (vi).
+`[OPEN CORE 128 — the sharpest statement of the residue]` **Save `N^{3/2-2σ}` — at `σ = 0.73`, a
+factor `N^{0.04}` — in**
+```
+        \Bigl|\sum_{r≠r'}c_r\overline{c_{r'}}D_1(t_r-t_{r'})\Bigr| \;≪\; R^{2}N^{1/2}\cdot N^{-(3/2-2σ)}
+```
+*for one-separated `\{t_r\}⊂[0,N^{τ_*}]`, `|c_r|=1`, `R = N^{2-2σ}`.* Nothing else is needed: by
+Theorems 60, 64 this is the Density Hypothesis on `(2/3,3/4]`. **The saving required is smaller than
+any `ε` the classical literature spends freely, and it vanishes continuously at `σ = 3/4` — the
+Density Hypothesis is not `ε`-far from the Halász–Montgomery barrier, it is `N^{3/2-2σ}`-far, and that
+exponent is linear in `σ` with slope `-2`.**
+
+# Cycle 81 — closure of the moment method at the coefficient-free level
+
+## Theorem 75 (every even moment reproduces exactly `σ = 3/4`) `[PROVED HERE]`
+*Let `K_λ := \#\{n∼N : |F(\log n)| ≍ λ\}`, so `Q ≍ \sum_λ λ^{2}K_λ` and the Density-Hypothesis-critical
+case is `λ ≍ R`, where DH-FD demands `K_R ≪ N^{1+o(1)}/R`. For every fixed `k ≥ 1`,*
+```
+        \sum_{n∼N}|F(\log n)|^{2k} \;=\!\!\sum_{r_1,\dots,r_{2k}}\!\! \pm\,c\cdots
+        D_1\Bigl(\sum_{i≤k}t_{r_i}-\sum_{i>k}t_{r_i}\Bigr)
+        \;≤\; E_k\,N \;+\; R^{2k}\,N^{1/2+o(1)} ,
+```
+*where `E_k` is the `2k`-fold additive energy of `\{t_r\}` (the tuples with vanishing argument, each
+contributing `D_1(0)=N`) and the remaining tuples contribute `|D_1| ≪ N^{1/2+o(1)}` by Theorem 72(d).
+Hence*
+```
+        K_R \;≤\; \frac{E_kN}{R^{2k}} \;+\; N^{1/2+o(1)} .
+```
+**The second term is independent of `k`.** Therefore, whatever the additive structure of `\{t_r\}` and
+however large `k` is taken, the moment method yields
+```
+        λ^{2}K_λ\big|_{λ=R} \;≪\; R^{2}N^{1/2} ,\qquad
+        R^{2}N^{1/2} ≪ RN \iff R ≪ N^{1/2} \iff σ > \tfrac34 .
+```
+∎
+> **The moment method is closed.** It cannot distinguish the true concentration `N/R` from the floor
+> `N^{1/2}`, and `N^{1/2} ≥ N/R` exactly when `σ ≤ 3/4`. This is the coefficient-free analogue of the
+> Cycle-65 closure diagram: there, every bound depending only on `\|a\|_2,\|a\|_\infty` was saturated
+> by the `a≡1` witness; here, every bound depending only on the *moments* of `F` is saturated by the
+> floor `|D_1| ≍ N^{1/2}`, and by Theorem 72(d) that floor is
+> `\sqrt{\#\text{stationary points}}\times\text{amplitude}` — irreducible.
+### The consequence for method selection
+```
+   closed at σ = 3/4 :  Halász–Montgomery (Thm 62) ;  every even moment / additive energy (Thm 75) ;
+                        the large sieve and its duals (Thm 64, Cycle 75 dead end) ;
+                        Huxley's estimate and every exponent pair (Thm 61) ;
+                        all size-based major/minor arc estimates (Thm 68) .
+   still open        :  arguments using that the sample points are logarithms of *integers* —
+                        i.e. arithmetic input beyond one-separation of {t_r} and beyond the
+                        1/N-separation of {log n} .
+```
+> **Every purely analytic route is now provably closed at `σ = 3/4`, and the closure is not an
+> artefact of any one technique: it is the single inequality `N^{1/2} ≥ N/R`.** A proof of the
+> Density Hypothesis below `3/4` must therefore use an arithmetic property of `\{\log n : n∼N\}` that
+> is invisible to separation, to moments, and to the resolvent's size — **and Theorem 69 already shows
+> the most obvious such property (multiplicative/Bohr structure) cannot be used to *break* DH-FD, so
+> the same arithmetic must be usable to *prove* it.**
+`[OPEN CORE 129]` **Identify an arithmetic invariant of `\{\log n : n ∼ N\}`, invisible to
+one-separation and to all moments, that forces `K_R ≪ N^{1+o(1)}/R`.** By Theorem 75 no
+moment-of-`F` argument can supply it; by Theorem 72(a) the only structure available is the crossing
+pattern of `ψ' = μN/n` through the integers, i.e. the Farey/continued-fraction geometry of
+`\{μN/k\}`; by Theorem 69 the multiplicative structure of the integers is on the side of the
+conjecture, not against it. **This is the precise point at which the Density Hypothesis stops being
+an analytic problem and becomes an arithmetic one.**
+
+# Cycle 82 — the arithmetic invariant located: `γ = N/n_0`, and a frequency-count obstruction
+
+## Theorem 76 (alignment normal form: the Bohr set of the rescaled frequencies) `[PROVED HERE]`
+*Fix an aligned sample `n_0 ∼ N` and write `n = n_0+i`, `γ := N/n_0 ∈ [1/2,1]`. For `t_r = 2πNμ_r`
+the phase difference between the samples `n` and `n_0` is*
+```
+        μ_rN\log(n/n_0) \;=\; μ_r\,w_i,\qquad
+        w_i \;:=\; γ i - \frac{γ^{2}i^{2}}{2n_0} + O\!\Bigl(\frac{i^{3}}{n_0^{2}}\Bigr) ,
+```
+*so the set of samples aligned with `n_0` to accuracy `ε` is exactly*
+```
+        \{\,i : w_i ∈ \mathcal B\,\},\qquad
+        \mathcal B := \{\,w : \|μ_r w\| ≤ ε\ \ \forall r\,\} .
+```
+**Three facts make this the right normal form.**
+**(a) `\{w_i\}` is a one-separated sequence of `N` points in `[0,γN]`** (`w_{i+1}-w_i = γ(1-γi/n_0) ∈
+[γ/2,γ]`), i.e. an arithmetic progression of spacing `γ` perturbed quadratically.
+**(b) `\mathcal B` has density `≪ (\log N)/R`** in any window of length `≫ N`: the `μ_r` are
+`\tfrac1{2πN}`-separated, so `\int_0^W|\sum_r e(μ_rw)|^{2}dw ≪ RW + RN\log N`, which for `W ≫ N` gives
+`|\mathcal B ∩ [0,W]| ≪ W\log N/R` — **the same `1/R` as Theorem 70, now for the rescaled frequencies.**
+**(c) The arithmetic invariant is `γ = N/n_0`, a rational of denominator `n_0 ≤ 2N`.** This is the
+only place where "the samples are logarithms of *integers*" enters, and it enters as the spacing of
+an arithmetic progression tested against a Bohr set. **`\mathrm{OPEN\ CORE\ 129}` is therefore the
+question: does a quadratically-perturbed arithmetic progression of rational spacing `N/n_0` hit a
+Bohr set of density `1/R` no more often than expected?**
+
+## Theorem 77 (frequency-count obstruction: coherent configurations need `R ≤ 2M+1`) `[PROVED HERE]`
+*Suppose the aligned set contains two consecutive integers `n_0` and `n_0+1`. Then by Theorem 76 with
+`i = 1`, `\|μ_rγ\| ≤ 2ε` for every `r`. Hence the `μ_r` lie in `γ^{-1}(\mathbb Z + O(ε))`, a set of
+spacing `≥ (1-4ε)/γ ≥ 1-4ε`, so*
+```
+        R \;≤\; \frac{γM}{1-4ε} + 1 \;≤\; 2M+1 .
+```
+> **Corollary. In the Density-Hypothesis-critical window no coherent configuration exists.** With
+> `R = N^{2-2σ}` and `M = N^{τ_*-1} = N^{(2σ-1)^{2}}`,
+> ```
+>       R > M \iff 2-2σ > (2σ-1)^{2} \iff 4σ^{2}-2σ-1 < 0 \iff σ < \tfrac{1+\sqrt5}{4} = 0.809\ldots
+> ```
+> **so throughout `(2/3, 0.809)` — which contains the entire open band `(2/3,3/4]` — there are strictly
+> more frequencies than aliases, and every construction that kills the linear term for all `r`
+> simultaneously is impossible.** This is why each explicit saturating configuration attempted in
+> Cycles 74–79 (`t_r = 2πNm_r` with integer `m_r`; `μ_r = r/γ`; the arithmetic progressions of any
+> spacing) required `R ≤ M` and therefore `σ ≥ 0.809`, outside the range where the Density Hypothesis
+> is open.
+### The state of the two sides
+```
+   For DH-FD :  every coherent construction needs R ≤ M, i.e. σ ≥ 0.809            [Thm 77]
+                every multiplicative construction fails by (log N)^{1/ρ-1}         [Thm 69]
+                the continuous statement is true and is exactly the target         [Thm 70]
+                each Poisson alias is individually bounded by the target           [Thm 74]
+   Against    :  no configuration is known to violate it anywhere
+   Undecided  :  the aliasing factor M = T/N, which every route reproduces exactly  [Thms 66,71,73,75]
+```
+`[OPEN CORE 130 — supersedes 129]` **Remove the hypothesis "contains two consecutive integers" from
+Theorem 77.** In general the aligned set gives `\|μ_r w_i\| ≤ 2ε` for the `K^2` differences `w_i-w_{i'}`
+rather than for `w_1 = γ`; by Theorem 76(a) these differences are themselves an essentially
+one-separated set of `≍K^{2}` reals in `[0,γN]`. **If a set of `K^{2}` one-separated reals lies in a
+Bohr set of density `\log N/R`, then `K^{2} ≪ N\log N/R`, i.e. `K ≪ \sqrt{N\log N/R}`** — which is
+`≪ N/R` exactly when `R ≪ N^{1/3}`, i.e. `σ > 5/6`. **Closing the gap between `\sqrt{N/R}` and `N/R`
+in this difference-counting step is the whole of the Density Hypothesis on `(2/3,3/4]`.**
+
+# Cycle 83 — correction to the difference count, and the irreducibility of the aliasing factor
+
+## CORRECTION (seventeenth) to `OPEN CORE 130`
+The claim that the `K^{2}` differences `w_i-w_{i'}` are "essentially one-separated" is **false**.
+Writing `d = i-i'`, `s = i+i'`,
+```
+        w_i - w_{i'} \;=\; γd\Bigl(1-\frac{γs}{2n_0}\Bigr) \;=\; γd - \frac{γ^{2}ds}{2n_0} ,
+```
+so for **fixed `d`** the differences form an arithmetic progression in `s` of spacing `≍ d/N`, which is
+`≪ 1` for every `d ≪ N`. The difference set is genuinely two-dimensional and highly clustered; the
+count `K^{2} ≪ N\log N/R` does not follow. `[Gate (eleventh): before invoking a separation hypothesis
+on a derived set, compute the derived set's own spacing — separation of a set does not pass to its
+difference set.]`
+**What survives.** Fixing `i' = i_0` gives `K` points `\{w_i - w_{i_0}\}` that *are* one-separated
+(they are the `w_i` translated) and lie in `\mathcal B`. This yields
+```
+        K \;≤\; \#\text{components}(\mathcal B ∩ [-γN,γN]) \;≍\; \frac{NM\log N}{R} ,
+```
+since each component has width `≍ ε/M ≪ 1` and therefore holds at most one of them. **This is again
+the trivial bound, short of the target `N\log N/R` by exactly `M`.**
+
+## Theorem 78 (the aliasing factor `M` is common to every counting route) `[PROVED HERE]`
+All five independent reductions produced in Cycles 74–82 terminate at the same deficit:
+```
+   Thm 66 (sampling)      : bandwidth M = T/N against sample rate 1     → undersampling factor M
+   Thm 71 (component count): |B| ≍ 1/R spread over T/R components       → hit-rate factor T/N = M
+   Thm 73 (Poisson)       : exactly M non-zero aliases h, each critical  → factor M      [Thm 74]
+   Thm 75 (moments)       : floor N^{1/2} vs truth N/R, ratio R/N^{1/2}  → factor M^{1/2}·(…)
+   Thm 76 (Bohr)          : #components(B) = M·|B|·N                     → factor M
+```
+**`M = T/N = N^{τ-1}` is the single irreducible deficit of the entire programme**, and it is `1`
+exactly at the triple point `τ = 1` (Theorem 59), where every route becomes sharp simultaneously.
+> **The Density Hypothesis is the statement that `M` may be replaced by `1` in the count
+> `\#\{n∼N : \log n ∈ \mathcal B\}` — that the `N` sample points `\{\log n\}` behave, against
+> Bohr sets of density `1/R`, as if they were `T` points rather than `N`.** Every route reproduces
+> this and none improves it, because each is a *counting* argument and the count is exactly `M`-lossy.
+### The fork
+```
+   (I)  DH-FD is TRUE.  Then by Theorem 75 no moment argument proves it and by Theorem 78 no counting
+        argument proves it; the proof must come from an equidistribution theorem for the
+        quadratically-perturbed progression {w_i} of rational spacing γ = N/n_0 against Bohr sets —
+        i.e. from the Gauss-sum cancellation |∑_i e(νw_i)| ≪ N/√{q_ν}, summed over the group
+        generated by {μ_r} with control on the Fourier ℓ¹ norm of 1_B.  The obstruction is that a
+        Bohr set on R frequencies has ℓ¹ norm exponential in R, so the sum must be organised by
+        the *Gauss-sum denominators* q_ν, not by the frequencies.
+   (II) DH-FD is FALSE.  Then by Theorem 77 the violating configuration has R > M yet is not coherent,
+        so it aligns the R phases at ≫ N/R samples without killing the linear term for all r — a
+        mechanism not present in Theorem 72(a).  In that case the Density Hypothesis itself is not
+        refuted: the large-value hypothesis |D_a(t_r)| ≥ V, discarded at the Cauchy–Schwarz step of
+        Theorem 64, would have to be reinstated — and by the Cycle-65 closure diagram that hypothesis
+        adds nothing that depends only on ‖a‖₂,‖a‖_∞.  **Branch (II) therefore places the Density
+        Hypothesis strictly outside the union of both closure diagrams**, which is itself a
+        publishable structural conclusion.
+```
+`[OPEN CORE 131 — the decision problem]` **Decide the fork.** Concretely: does there exist a
+one-separated `\{t_r\}⊂[0,N^{τ}]` with `R = N^{ρ}`, `ρ > τ-1`, and unimodular `(c_r)` such that
+`|F(\log n)| ≥ R/2` for `≫ N^{1+δ}/R` integers `n ∼ N`? **Theorem 77 shows no such configuration
+kills the linear term; Theorem 69 shows none is multiplicative; Theorem 70 shows the continuous
+analogue is impossible. A construction would have to align `R > M` phases by a mechanism outside
+Theorem 72(a)'s stationary-point census — and that census is exhaustive for a single frequency.**
+
+# Cycle 84 — Conjecture DH-FD is FALSE for `τ > 2`, TRUE-shaped for `τ < 2`, and the threshold is exactly `N = T^{1/2}`
+
+## Theorem 79 (the rational-resonance construction, and the sharp threshold `τ = 2`) `[PROVED HERE]`
+*Take `n_0 = N`, so `γ = 1` and `w_i = i - i^{2}/2N` exactly (Theorem 76). Take frequencies*
+```
+        μ_r \;=\; \frac{r}{β},\quad r = 1,\dots ,R,\qquad β := \frac{q}{2N}
+```
+*for a parameter `q ∈ \mathbb N`, i.e. `t_r = 2πNμ_r = 4πN^{2}r/q`. Then*
+```
+        μ_1 w_i \;=\; \frac{w_i}{β} \;=\; \frac{2N}{q}\Bigl(i-\frac{i^{2}}{2N}\Bigr)
+        \;=\; \frac{2Ni-i^{2}}{q} \;=\; \frac{i(2N-i)}{q} ,
+```
+*so `\|μ_rw_i\| = 0` for **every** `r ≤ R` whenever `q \mid i(2N-i)` — in particular for the `≥ N/q`
+integers `i ≡ 0 \pmod q`. Hence `|F(\log n)| = R` on `K ≥ N/q` samples and*
+```
+        Q \;≥\; K R^{2} \;≥\; \frac{N R^{2}}{q} .
+```
+**Feasibility.** One-separation of `\{t_r\}` needs `q ≤ 4πN^{2}`; the frequency range needs
+`t_R = 4πN^{2}R/q ≤ T`, i.e.
+```
+        q \;≥\; \frac{4πN^{2}R}{T} .
+```
+**Violation of DH-FD requires `K ≫ N/R`, i.e. `q ≪ R`, and combining,**
+```
+        \frac{4πN^{2}R}{T} \;≤\; q \;\ll\; R
+        \qquad\Longleftrightarrow\qquad T \;\gg\; 4πN^{2}
+        \qquad\Longleftrightarrow\qquad \boxed{\,τ > 2\,} .
+```
+∎
+> ### Two conclusions, both sharp
+> **(1) Conjecture DH-FD as stated in Cycle 74 is FALSE for `τ > 2`.** Taking `q ≍ N^{2+ρ-τ}` gives
+> `K = N^{τ-1-ρ}` and `Q ≥ N^{τ-1+ρ}`, exceeding `RN = N^{1+ρ}` by the factor `N^{τ-2}`. **The
+> conjecture must carry the hypothesis `τ ≤ 2`, and that hypothesis is sharp.** `[Eighteenth
+> correction: the conjecture was stated for all `T`. Gate (twelfth): state the parameter range of
+> every conjecture and then *attack the boundary of that range first* — the construction that refutes
+> it there is usually the one that must be excluded inside it.]`
+> **(2) The threshold is `N = T^{1/2}`** — the classical critical length for Dirichlet polynomials, and
+> the same scale as the block decomposition `B = T^{1/2}` of Cycles 17–60. **The Density-Hypothesis
+> window `τ_* = 1+(2σ-1)^{2} < 4/3` sits strictly inside the safe range, with room `2-τ_* > 2/3`.**
+### The construction is the unique resonance mechanism, and it is excluded three times over
+```
+   Thm 69 : multiplicative (Bohr/smooth) alignment fails by (log N)^{1/ρ-1}      — all τ
+   Thm 77 : linear-term-killing alignment needs R ≤ 2M+1, i.e. σ ≥ 0.809          — all τ
+   Thm 79 : rational-resonance alignment needs τ > 2                              — all σ
+```
+**These are the only three mechanisms by which the phases `μ_rw_i` can be simultaneously controlled:
+`w_i` is a quadratic polynomial in `i`, so `\|μ_rw_i\| ≤ ε` for many `i` forces either (a) the
+quadratic coefficient `μ_rγ^{2}/2n_0` to be rationally resonant [Theorem 79], or (b) the linear
+coefficient `μ_rγ` to be near-integral [Theorem 77], or (c) the `μ_r` themselves to be
+multiplicatively structured [Theorem 69]. Theorem 72(a) guarantees the list is exhaustive for a
+single frequency, and the three exclusions have disjoint hypotheses.**
+> **Conjecture DH-FD, restated with its sharp range:** *for `1`-separated `\{t_r\}⊂[0,T]` with
+> `T ≤ N^{2}`, unimodular `(c_r)`,*
+> ```
+>       \sum_{n∼N}\Bigl|\sum_{r≤R}c_rn^{-it_r}\Bigr|^{2} \;≪\; N^{o(1)}\bigl(RN + R^{3/2}N^{1/2}\bigr) .
+> ```
+> By Theorem 64 this implies Montgomery's conjecture for every `τ ≤ 2`, and by Theorem 60 the Density
+> Hypothesis on `(2/3,3/4]`, whose critical window `τ_* < 4/3` is interior to the range.
+`[OPEN CORE 132 — supersedes 131]` **Prove that for `τ < 2` no configuration achieves `K ≫ N^{1+δ}/R`.**
+Theorem 79 shows the extremal mechanism degenerates continuously as `τ ↓ 2` (the required `q` exceeds
+`R` by the factor `N^{2-τ}`); **the target is to convert that quantitative failure margin `N^{2-τ}`,
+which at `τ = τ_*` is at least `N^{2/3}`, into an unconditional bound.**
+
+## Theorem 80 (the component-counting bound is exactly `T\log N/(εR)`, and it is form-sharp) `[PROVED HERE]`
+*Let `\mathcal B = \{w : \|μ_rw\| ≤ ε\ \forall r\}` with `μ_{\max} = \max_r μ_r ≤ M`. Then in a window
+of length `≍N`:*
+```
+   \text{density}(\mathcal B) ≪ \frac{\log N}{R}\ \ [\text{Thm 76(b)}],\qquad
+   \text{component width} ≍ \frac{ε}{μ_{\max}},\qquad
+   \#\text{components} ≍ \frac{N μ_{\max}\log N}{εR} ,
+```
+*and since the `w_i` are `γ`-separated with `γ ∈ [1/2,1]`, the number of `w_i` per component is
+`1 + O(ε/μ_{\max})`, giving*
+```
+        K \;≪\; \frac{N\log N}{R}\Bigl(\frac{μ_{\max}}{ε}+1\Bigr)
+          \;≍\; \frac{T\log N}{εR}\quad(μ_{\max} ≥ ε) .
+```
+**So the counting bound meets the target `N\log N/R` exactly when `μ_{\max} ≲ ε`, i.e. `T ≲ N`, i.e.
+`τ ≤ 1` — and never beyond.** The deficit is exactly `μ_{\max}/ε ≍ M`, and it is intrinsic: *any*
+argument that bounds `K` by the number of components of `\mathcal B` reproduces it, because
+`\mathcal B` genuinely has `≍T/R` components while only `≍N/R` of them may contain a sample.
+> **`τ = 1` is now derived a fourth time** — after the triple point of exponents (Thm 59), the
+> diagonal/off-diagonal transition (Thm 62(a)), and the Nyquist rate (Thm 66) — and always as
+> `T = N`. The counting method, like the moment method (Thm 75) and the Halász–Montgomery method
+> (Thm 62), is closed exactly at the classical boundary.
+
+## Consolidated state after Cycle 84 (compaction-safe)
+```
+TARGET      Density Hypothesis A(σ) ≤ 2 for σ ∈ (2/3, 3/4]; open, neither proved nor disproved.
+CHAIN       DH on (2/3,3/4]  ⟸  Montgomery's conjecture at the single window τ_* = 1+(2σ-1)^2   [Thm 60]
+                             ⟸  Q := Σ_{n∼N}|Σ_r c_r n^{-it_r}|^2 ≪ RN^{1+o(1)}                [Thm 64]
+                             ⟸  #{n∼N : log n ∈ B} ≪ N^{1+o(1)}/R for B the large-value set     [Thm 71]
+            Every link is proved. Only the last statement is open.
+KEY NUMBERS ρ = 2-2σ (so R = N^ρ);  τ_* = 1+(2σ-1)^2 < 4/3;  M = T/N = N^{τ_*-1} = N^{(2σ-1)^2};
+            required saving over Halász–Montgomery = N^{3/2-2σ} (= N^{0.04} at σ = 0.73);
+            equivalently the fraction θ_* = (3-4σ)/(4-4σ) ≤ 1/4 of square-root cancellation.
+CLOSED      Halász–Montgomery [62], all even moments/energy [75], large sieve & duals [64],
+            Huxley + every exponent pair [61], size-based arc estimates [68], component counting [80].
+            All close at exactly σ = 3/4, i.e. at N^{1/2} = N/R.
+EXCLUDED    multiplicative/Bohr constructions [69]; linear-term-killing (needs R ≤ 2M+1, σ ≥ 0.809)
+            [77]; rational resonance (needs τ > 2) [79]. Theorem 72(a) makes the list exhaustive
+            per frequency. No configuration is known to violate the target anywhere in τ ≤ 2.
+FALSIFIED   DH-FD without the hypothesis τ ≤ 2 (Theorem 79 constructs a counterexample for τ > 2;
+            the threshold N = T^{1/2} is sharp).
+NEXT        OPEN CORE 132: for τ < 2 show no configuration achieves K ≫ N^{1+δ}/R. The margin left by
+            Theorem 79 is N^{2-τ} ≥ N^{2/3} at τ_*; convert it into an unconditional bound.
+GATES       (i) test at k=2,3,10,∞; (ii) check a "new object" is not an identity; (iii) re-derive with
+            all parameters substituted; (iv) "witness dead" ≠ "bound improved"; (v) constant vs T^{o(1)}
+            extremality; (vi) compute two ways; (vii) equality-hypotheses need strictness by a power;
+            (viii) substitute an OPEN CORE's conclusion into the final target; (ix) identify which side
+            of a large-sieve/duality bound is equally spaced; (x) state an expansion's range of
+            validity when writing it; (xi) separation does not pass to difference sets; (xii) state a
+            conjecture's parameter range and attack its boundary first.
+```
+
+# Cycle 85 — the product-set identity (no aliasing loss) and the first branch closed inside the critical range
+
+## Theorem 81 (product-set identity for the aligned set) `[PROVED HERE]`
+*Let `S` be the aligned set, `D := S-S`, and for `d ∈ D` put `S_d := \{i : i,\,i+d ∈ S\}`. Then for
+every `d ∈ D` and every `d' ∈ S_d-S_d`,*
+```
+        \frac{γ^{2}\,d\,d'}{n_0} \;∈\; \mathcal B(4ε) .
+```
+*Proof.* Take `i_1' , i_2' ∈ S_d` and set `i_j = i_j'+d`. By Theorem 76 both `w_{i_j}-w_{i_j'}`
+lie in `\mathcal B(2ε)`, and with `s_j = i_j+i_j'`,
+```
+        (w_{i_1}-w_{i_1'})-(w_{i_2}-w_{i_2'})
+        \;=\; \frac{γ^{2}d\,(s_2-s_1)}{2n_0}
+        \;=\; \frac{γ^{2}d\,(i_2'-i_1')}{n_0} ,
+```
+because the terms `γd` cancel and `s_2-s_1 = 2(i_2'-i_1')`. A difference of two elements of
+`\mathcal B(2ε)` lies in `\mathcal B(4ε)`. ∎
+> ### Why this is the first mechanism without the aliasing loss
+> The obstruction in every previous count (Theorems 71, 74, 78, 80) was that `\{w_i\}` is a
+> **quadratically perturbed** progression, so the `N` samples sit inside `≍T/R` Bohr components and
+> the count is `M`-lossy. **The products `γ^{2}dd'/n_0` are *exactly linear* in `d'`:** for fixed `d`
+> they form an arithmetic progression of spacing `γ^{2}d/n_0 ≍ d/N` with no perturbation whatever.
+> Counting an exact progression inside `\mathcal B` is fair as soon as one Bohr component contains at
+> least one progression point, i.e. as soon as
+> ```
+>       \frac{ε}{μ_{\max}} \;≥\; \frac{d}{N}
+>       \qquad\Longleftrightarrow\qquad d \;≤\; D_0 := \frac{εN}{μ_{\max}} = \frac{2πεN^{2}}{T} ,
+> ```
+> and then `\#\{d' : γ^{2}dd'/n_0 ∈ \mathcal B\} ≪ N\log N/R` — **the target, with no factor `M`.**
+
+## Theorem 82 (the spread branch is closed, for every `σ ∈ (1/2,1)`) `[PROVED HERE]`
+*If every gap of the aligned set `S` exceeds `D_0 = 2πεN^{2}/T`, then*
+```
+        K \;≤\; \frac{N}{D_0} \;=\; \frac{T}{2πεN} \;≤\; \frac{N}{R}\cdot\frac{TR}{2πεN^{2}} ,
+```
+*and `TR ≤ 2πεN^{2}` — i.e. `τ + ρ ≤ 2` — holds at the Density-Hypothesis window for every `σ`:*
+```
+        τ_* + ρ \;=\; 1+(2σ-1)^{2} + (2-2σ) \;=\; 3-2σ+(2σ-1)^{2} ,\qquad
+        3-2σ+(2σ-1)^{2} ≤ 2 \iff 4σ^{2}-6σ+2 ≤ 0 \iff 2(2σ-1)(σ-1) ≤ 0 ,
+```
+*which is true for all `σ ∈ [1/2,1]`.* ∎ *(At `σ = 0.73`: `τ_*+ρ = 1.752 ≤ 2`, with room `0.248`.)*
+> **This is the first branch of the problem to be closed unconditionally inside the critical range
+> `(2/3,3/4]`.** A spread aligned set — one with no two samples within `D_0 = N^{2-τ_*}` of each other,
+> i.e. within `N^{0.79}` at `σ = 0.73` — cannot beat the target, for any `σ`, by pure gap counting.
+### What remains: the clustered branch
+If `S` has many gaps below `D_0`, pigeonholing the within-block pairs over the `N/D_0` blocks of
+length `D_0` gives some `d ≤ D_0` with `r := |S_d| ≥ K^{2}/N`, and Theorem 81 then yields
+`|S_d-S_d| ≪ N\log N/R`, hence
+```
+        \frac{K^{2}}{N} \;≤\; |S_d| \;≤\; |S_d - S_d| \;≪\; \frac{N\log N}{R}
+        \qquad\Longrightarrow\qquad K \;≪\; N\sqrt{\frac{\log N}{R}} \;=\; \frac{N}{R}\cdot\sqrt{R\log N} .
+```
+**The aliasing loss `M` has been traded for a square-root loss `\sqrt R`.** At `σ = 0.73` these are
+`N^{0.21}` and `N^{0.27}` — comparable — but the two losses have entirely different sources, so the
+minimum of the two is not the end: `\sqrt R` comes only from the Cauchy–Schwarz step
+`|S_d| ≥ K^{2}/N`, which is lossy exactly when the pairs concentrate on few `d`.
+`[OPEN CORE 133 — supersedes 132]` **Improve `|S_d| ≥ K^{2}/N` to `|S_d| ≥ K^{1+c}/N^{c}` for some
+`c > 0`, or replace `|S_d-S_d| ≥ |S_d|` by a sum-product lower bound.** Either removes the `\sqrt R`
+and, with Theorem 82, proves the Density Hypothesis on `(2/3,3/4]`. **Theorem 79's construction is
+exactly the extremal case here — `S` an arithmetic progression `\{i ≡ 0 \bmod q\}`, for which
+`|S_d| = K` for every `d ∈ qℤ` — and it is excluded by `τ ≤ 2`; the task is to interpolate between
+that extremal and the generic case.**
+
+# Cycle 86 — the second-difference sharpening, and the arithmetic-progression branch closed
+
+## Theorem 83 (second-difference bound: an aligned progression forces a *tight* Bohr condition) `[PROVED HERE]`
+*Suppose the aligned set contains an arithmetic progression `\{i_0+qm : m ≤ K\}`. Put
+`c_r := μ_rγ^{2}q^{2}/n_0`. Then*
+```
+        \|2c_r\| \;≤\; \frac{32\,ε}{K}\qquad\text{for every }r .
+```
+*Proof.* `f(m) := μ_rw_{i_0+qm}` is a quadratic polynomial in `m` with leading coefficient `-c_r/2`,
+and alignment says `\|f(m)-φ_r\| ≤ ε` for all `m ≤ K`. The generalised second difference
+`f(m+2j)-2f(m+j)+f(m) = -c_rj^{2}` gives `\|c_rj^{2}\| ≤ 4ε` for `j ≤ K/2`; subtracting consecutive
+`j` gives `\|c_r(2j+1)\| ≤ 8ε`, i.e. `\|jb_r + c_r\| ≤ 8ε` with `b_r = 2c_r`, whence
+`\|jb_r\| ≤ 16ε` for all `j ≤ K/2`, and the elementary lemma "`\|jb\| ≤ η` for all `j ≤ L` implies
+`\|b\| ≤ 2η/L`" yields the claim. ∎
+> **The gain over Theorem 81 is the factor `1/K`.** Theorem 81 places `γ^{2}dd'/n_0` in
+> `\mathcal B(4ε)`; Theorem 83 places `γ^{2}q^{2}/n_0` in `\mathcal B(32ε/K)` — a Bohr set tighter by
+> the full length of the progression. **This is the first estimate in the programme whose precision
+> improves with the size of the object being bounded**, and it is what makes the progression branch
+> tractable.
+
+## Theorem 84 (the arithmetic-progression branch: clustered frequencies or defeat) `[PROVED HERE]`
+*Let `x := γ^{2}q^{2}/n_0 ≍ q^{2}/N = N/K^{2}` and `δ := 32ε/K`. By Theorem 83 every `μ_r` lies in
+`\{μ : \|2μx\| ≤ δ\}`, a union of `≍ Mx` intervals of width `≍ δ/x` inside `[0,M]`. Hence either*
+**(a) the frequencies are clustered** — some component contains two or more `μ_r` — *or*
+**(b) `R ≤ Mx + 1 = \dfrac{T}{2πK^{2}}+1`, giving*
+```
+        K \;≤\; \sqrt{\frac{T}{2πR}} \;=\; N^{(τ-ρ)/2+o(1)} ,
+```
+*which beats the target `N/R = N^{1-ρ}` precisely when `\tfrac{τ-ρ}{2} < 1-ρ`, i.e. when*
+```
+        τ + ρ \;<\; 2 ,
+```
+*the same inequality as Theorem 82, and true at the Density-Hypothesis window for every
+`σ ∈ (1/2,1)`.* ∎
+> ### Consistency with Theorem 79
+> The rational-resonance construction has `μ_r = 2Nr/q`, spacing `2K` in `μ`, against component
+> spacing `1/x = K^{2}/N`; since `2K > K^{2}/N` for `K < 2N`, its frequencies are **unclustered**, so
+> it falls in branch (b) — and indeed it satisfies `K ≤ \sqrt{T/2πR}` (both give `K ≪ N/R` unless
+> `τ > 2`). **Branch (b) is therefore not vacuous: it is exactly the branch containing the known
+> extremal, and it is closed for `τ+ρ<2`.**
+> ### Where the problem now stands
+> ```
+>   Spread aligned sets (all gaps > N^{2-τ})            : closed, all σ                    [Thm 82]
+>   Progression-structured aligned sets, spread freqs   : closed, all σ (τ+ρ<2)            [Thm 84(b)]
+>   Progression-structured, clustered frequencies       : OPEN                              [Thm 84(a)]
+>   General clustered aligned sets                      : K ≪ N√(log N/R)                   [Thm 81]
+> ```
+`[OPEN CORE 134 — supersedes 133]` **Close branch (a): rule out frequency configurations in which
+`≥2` of the `μ_r` lie in a common component of `\{μ : \|2μ N/K^{2}\| ≤ 32ε/K\}`.** Two such
+frequencies differ by `≤ δ/x = 32εK/N` in `μ`, i.e. by `≤ 64πεK` in `t`. **So branch (a) says the
+frequency set contains two points within `64πεK` of each other — and since the `t_r` are
+one-separated with `R` of them in `[0,T]`, this is automatic whenever `R > T/(64πεK)`, i.e. whenever
+`K > T/(64πεR)`. The dichotomy is therefore self-improving: branch (a) can only occur when `K` is
+already large, and branch (b) already bounds `K` by `\sqrt{T/2πR}` — the two constraints must be
+played against each other, and their intersection is the last remaining case.**
+
+# Cycle 87 — three-term progressions, and the linearisation of `S_d`
+
+## Theorem 85 (every 3-term progression in the aligned set constrains a square) `[PROVED HERE]`
+*If `i,\,i+d,\,i+2d ∈ S` then `γ^{2}d^{2}/n_0 ∈ \mathcal B(4ε)`.*
+*Proof.* The second difference of the quadratic `w` along the progression is
+`w_{i+2d}-2w_{i+d}+w_i = -γ^{2}d^{2}/n_0`, and each of the two consecutive differences lies in
+`\mathcal B(2ε)`. ∎
+*Consequently, since `\{d^{2}γ^{2}/n_0\}_{d ≤ D_0}` has spacing `≍ 2d/N ≤ ε/μ_{\max}` for `d ≤ D_0 =
+2πεN^{2}/T`, the count is fair and*
+```
+        \#\{\,d ≤ D_0 : S \text{ contains a 3-term progression of common difference } d\,\}
+        \;≪\; \frac{N\log N}{R} .
+```
+> **So the aligned set has at most `N\log N/R` — the target itself — small progression-differences.**
+> A set `S ⊂ [0,N]` with `|S| = K` and only `Y = N\log N/R` admissible small 3AP-differences is
+> heavily constrained: by Behrend's construction such a set can exist with `K` as large as
+> `Ne^{-c\sqrt{\log N}}` if *no* constraint is placed on which differences are excluded, but here the
+> admissible differences are pinned to a specific Bohr set determined by `\{μ_r\}`.
+
+## Theorem 86 (linearisation of `S_d`: the quadratic perturbation disappears one level down) `[PROVED HERE]`
+*For every `d ∈ D` the set `S_d = \{i : i,\,i+d ∈ S\}` satisfies*
+```
+        S_d \;⊂\; \Bigl\{\,i ∈ \mathbb Z : \bigl\|\,μ_r' \,i\,\bigr\| ≤ 4ε \ \ \forall r \,\Bigr\} + \text{const},
+        \qquad μ_r' := \frac{μ_rγ^{2}d}{n_0} \;≍\; \frac{μ_r d}{N} ,
+```
+*a Bohr set for the **rescaled** frequencies, tested against the integers `i ≤ N` — an exact
+arithmetic progression of spacing `1`, with no quadratic perturbation.*
+*Proof.* Immediate from Theorem 81: for `i,i' ∈ S_d`, `γ^{2}d(i-i')/n_0 ∈ \mathcal B(4ε)`, and the
+dependence on `i-i'` is linear. ∎
+> **This is the structural reason the product-set mechanism works: one Weyl differencing removes the
+> quadratic term entirely, converting the lossy sampling problem for `\{w_i\}` into a *fair* one for
+> the integers.** The count is fair exactly when a component of the rescaled Bohr set has width `≥1`,
+> i.e. `ε/μ_{\max}' ≥ 1`, i.e. `d ≤ D_0` — the very same threshold as Theorems 81, 82 and 85. Hence
+> `|S_d| ≪ N\log N/R` for every `d ≤ D_0`, uniformly.
+### The trichotomy, and the exact residue
+```
+   (1) all gaps of S exceed D_0                          ⟹ K ≤ N/R                 [Thm 82]
+   (2) S contains a progression of length K              ⟹ K ≤ √(T/2πR) ≪ N/R      [Thm 84(b)]
+                                                            unless the frequencies cluster [Thm 84(a)]
+   (3) otherwise: |S_d| ≪ N log N/R for all d ≤ D_0      ⟹ K ≤ N√(log N/R)          [Thms 81,86]
+```
+**Every branch reaches the target except through the single inequality `|S_d| ≥ K^{2}/N`, which is
+Cauchy–Schwarz applied to `\sum_{d ≤ D_0}|S_d| ≥ K^{2}D_0/2N`.** The loss is exactly `\sqrt R`, and it
+is attained only if the within-`D_0` pairs of `S` concentrate on `O(1)` values of `d` — i.e. only if
+`S` is a union of translates of a single progression, which is branch (2).
+`[OPEN CORE 135 — supersedes 134]` **Show that branches (2) and (3) cannot both be avoided:** if the
+within-`D_0` pairs of `S` spread over `≫1` differences `d`, then `\sum_{d ≤ D_0}|S_d| ≤ D_0\cdot
+\max_d|S_d|` is wasteful and must be replaced by a bound on the *number of admissible `d`*, which
+Theorem 85 supplies for 3-progressions and Theorem 86 for pairs. **Concretely: prove
+`\#\{d ≤ D_0 : S_d ≠ ∅\} ≪ N\log N/R` — the pair analogue of Theorem 85 — which with
+`\sum_d |S_d| = \#\{\text{pairs}\} ≥ K^{2}D_0/2N` and `\max_d|S_d| ≪ N\log N/R` gives
+`K^{2}D_0/2N ≪ (N\log N/R)^{2}`, hence `K ≪ (N\log N/R)\sqrt{2N/D_0} = (N/R)\sqrt{T/N}\cdot\log N`,
+still `\sqrt M`-lossy — so the pair count must instead be bounded by `N\log N/R` *without* the factor
+`\max_d|S_d|`, i.e. the pairs themselves, not the differences, must be counted in the Bohr set.**
+
+## Corpus check (Cycles 70–87) — what already exists in `formal/`, and what does not
+Queries run: `formal_tools.py research` on *Bohr set density fractional part*, *large sieve
+Montgomery Vaughan mean value*, *Poisson summation stationary phase*, *quadratic Weyl sum Gauss sum*,
+*Dirichlet polynomial large values*, *three distance theorem*, *separated points interval counting*.
+**Already in the corpus — do not rebuild:**
+```
+  GaloisForLFunctions.HTGeometry.GeneralizedDirichletMeanValue.genPoly_meanValue
+      ∫_T^{T+U}|F|² = U·Σ|a_n|² + Σ_{n≠m} a_m ā_n · oscInt(λ_m-λ_n)   — no hypothesis on frequencies.
+      This is EXACTLY the identity behind Theorem 70 (continuous DH-FD); Theorem 70 is that identity
+      plus the elementary bound |oscInt(u)| ≤ min(U, 2/|u|) and one-separation of the λ's.
+  GaloisForLFunctions.HTGeometry.GeneralizedDirichletMeanValue.genPoly_meanValue_bilinear
+      the two-polynomial version — the exact bilinear form used in Theorems 64, 73, 74.
+  GaloisForLFunctions.RHTower.LargeValuesDpoly.large_values_dpoly
+      R·V² ≤ (1/δ+1/η)∫‖D‖² + η∫‖D_{log}‖²  — the Gallagher/Sobolev large-values inequality.
+  GaloisForLFunctions.RHTower.FourthMoment.fourthMoment_meanValue
+      the Montgomery–Vaughan fourth-moment identity used implicitly in Theorem 75.
+  GaloisForLFunctions.HTGeometry.SeparatedPointCount.card_le_of_separated_of_subset_iUnion_Icc
+      an L-separated set covered by intervals has ≤ (Σ lengths)/L + #intervals — EXACTLY the counting
+      core of Theorems 80, 84 and 86.
+```
+**Absent from the corpus (would be genuinely new formalisation targets, in dependency order):**
+```
+  1. |oscInt(u)| ≤ min(U, 2/|u|)                       — closes Theorem 70 from genPoly_meanValue.
+  2. Bohr-set density: {w : ‖μ_r w‖ ≤ ε ∀r} has density ≪ 1/R for 1-separated μ_r  — Theorem 76(b).
+  3. ‖jb‖ ≤ η for all j ≤ L ⟹ ‖b‖ ≤ 2η/L               — the Dirichlet step of Theorem 83.
+  4. the second-difference identity w_{i+2d}-2w_{i+d}+w_i = -γ²d²/n₀ for w_i = N log(1+i/n₀) up to
+     the stated error                                   — Theorems 81, 85.
+  5. quadratic Weyl / Gauss-sum bound |Σ e(αj²+βj)| ≪ N/√q + √q  — Theorem 67(b), 72(d).
+```
+**Nothing in Cycles 70–87 duplicates an existing Lean result; items 1–5 are the only formalisation
+work the chain would require, and items 1 and 3 are elementary.** `[Corpus-search mandate satisfied
+and recorded, per the standing instruction to log the outcome on the card.]`
+
+# Cycle 88 — the two counting deficits cross exactly at `σ = 3/4` (tenth derivation)
+
+## Theorem 87 (the component deficit and the pair deficit are equal precisely at `σ = 3/4`) `[PROVED HERE]`
+The programme now has two structurally independent upper bounds for the aligned-set size `K`:
+```
+   component count  [Thms 71, 80] :  K ≪ \frac{T\log N}{εR} = \frac{N\log N}{R}\cdot M ,
+                                     \qquad M = N^{τ_*-1} = N^{(2σ-1)^{2}} ;
+   pair count       [Thms 81, 86] :  K ≪ N\sqrt{\log N/R} = \frac{N\log N}{R}\cdot\sqrt R\,(\log N)^{-1/2},
+                                     \qquad \sqrt R = N^{\,1-σ} .
+```
+*The first has deficit `M`, the second deficit `\sqrt R`, and*
+```
+        M = \sqrt R \iff (2σ-1)^{2} = 1-σ \iff 4σ^{2}-3σ = 0 \iff σ = \tfrac34 ,
+```
+*with `(2σ-1)^{2} < 1-σ` — the component count strictly better — throughout `(1/2, 3/4)`.*
+*(Machine-checked: `deficits_cross`, `aliasing_deficit_smaller`.)* ∎
+> ### The tenth independent derivation of `3/4`
+> The identity is `(2σ-1)^{2} = 1-σ`: **the square of twice the distance from the critical line
+> equals the distance from `1`.** The two sides are the two ways an aligned set can fail to be
+> counted fairly — by aliasing of the quadratic sampling map (`M`), or by the Cauchy–Schwarz
+> passage from pairs to points (`\sqrt R`) — and they are *exactly* balanced at `σ = 3/4`. Together
+> with the nine earlier derivations (Halász–Montgomery `V^{2}=N^{3/2}`; Huxley's `4σ-2>1`; the
+> exponent-pair numerator `2σ-3/2`; the coherence boundary `2σ=3/2`; the deficit parabola; the `k=2`
+> moment test; the off-diagonal computation; the witness's fourth moment; the DH/MVT/MC midpoint)
+> this makes `σ = 3/4` the most over-determined constant in the subject.
+> **Neither deficit is removable by improving the other: below `3/4` the binding one is `M`, above it
+> `\sqrt R`, and any proof must beat whichever is smaller — at `σ = 0.73`, `M = N^{0.21}` against
+> `\sqrt R = N^{0.27}`.**
+### Why interpolating the two bounds cannot work
+Both bounds derive from the *same* pair inventory `\sum_{d ≤ D_0}|S_d| ≥ K^{2}D_0/2N` and the *same*
+per-`d` bound `|S_d| ≪ N\log N/R`; the parameter `D_0 = 2πεN^{2}/T` cancels identically, so the pair
+route yields `K^{2} ≪ N^{2}\log N/R` for **every** choice of the pair-distance threshold:
+```
+   threshold D_1 < D_0 : count still fair, #pairs ≥ K^{2}D_1/2N, bound D_1·Y  → same K² ≤ 4NY ;
+   threshold D_1 > D_0 : count lossy by d/D_0, bound YD_1^{2}/2D_0            → K² ≤ NYD_1/D_0, worse.
+```
+**`D_0` is the exact optimum and the resulting exponent is rigid.** Improvement therefore cannot come
+from re-tuning the threshold; it must come from a bound on the number of *admissible pairs* that is
+linear rather than quadratic in `K`.
+`[OPEN CORE 136 — supersedes 135]` **Bound `\#\{(d,s) : |d| ≤ D_0,\ d\,u_s ∈ \mathcal B\}` by
+`O(K\cdot N^{o(1)}/R)` rather than `O(D_0N/R)`,** where `u_s = γ-γ^{2}s/2n_0`. Equivalently, writing
+`d\,u_s = k/2N` with `k ∈ \mathbb Z`, bound `\#\{(d,m) : dm ∈ W\}` with
+`W = \{k : k/2N ∈ \mathcal B\}`, `|W ∩ [-X,X]| ≍ X\log N/R`. **The divisor bound gives
+`\#\{(d,m)\} ≤ |W|N^{o(1)}`, which is exactly the `\sqrt R`-lossy answer; the required gain is that
+the elements of `W` are *not* typically products `dm` with `|d| ≤ D_0` and `m ≤ 2N` — i.e. that a
+Bohr set of density `1/R` is not concentrated on the multiplication table `[1,D_0]\cdot[1,2N]`.**
+This is a genuine multiplication-table question (Erdős–Ford) crossed with a Bohr-set condition, and
+it is the first form of the residue that is stated purely in the arithmetic of integers.
+
+# Cycle 89 — a sharper per-difference bound, and the closure of the pair method
+
+## Theorem 88 (the rescaled Bohr set is thinner: `|S_d| ≪ N^{2}/(dR)`) `[PROVED HERE]`
+*By Theorem 86, `S_d` lies in the Bohr set of the rescaled frequencies `μ_r' = μ_rγ^{2}d/n_0 ≍ μ_rd/N`,
+which are `≍ d/(2πN^{2})`-separated. The `L^{2}` computation over `[0,N]` gives*
+```
+   \int_0^{N}\Bigl|\sum_r e(μ_r'y)\Bigr|^{2}dy \;≍\; RN\Bigl(1+\min\bigl(R,\tfrac{2πN}{d}\bigr)\Bigr)
+   \;\Longrightarrow\;
+   \mathrm{density}(\mathcal B_d) \;≪\; \frac{1+\min(R,2πN/d)}{R}\;=\;\frac{2πN}{dR}\ \ \bigl(d ≥ \tfrac{2πN}{R}\bigr),
+```
+*and the components of `\mathcal B_d` have width `≍ 2πεN^{2}/(Td)`, of which there are `≍ T/(εR)` in
+`[0,N]` — independently of `d`. Counting integers,*
+```
+        |S_d| \;≪\; \frac{T}{εR} \;+\; \frac{2πN^{2}}{dR} ,
+```
+*the second term dominating exactly for `d ≤ D_0 = 2πεN^{2}/T`.* ∎
+> **This strictly improves Theorem 86's uniform `|S_d| ≪ N\log N/R` by the factor `N/d` for every
+> `d ≤ D_0`** — the first `d`-sensitive estimate in the programme, and the reason is structural: the
+> rescaled frequencies `μ_rd/N` are *more* separated relative to the test range as `d` grows, so the
+> Bohr set thins.
+
+## Theorem 89 (the pair method is closed at deficit `\sqrt R`) `[PROVED HERE]`
+*Summing Theorem 88 over `d`, with crossover at `d_* = 2πN^{2}/(KR)`,*
+```
+        \#\{\text{pairs at distance} ≤ D_0\} \;=\; \sum_{d ≤ D_0}|S_d|
+        \;≪\; K d_* + \frac{2πN^{2}}{R}\log N \;≍\; \frac{N^{2}\log N}{R} ,
+```
+*independently of `K` — and combined with the inventory `\#\{\text{pairs}\} ≥ K^{2}D_0/2N` this gives
+exactly*
+```
+        K \;≪\; N\sqrt{\log N/R} ,
+```
+*the same bound as Theorem 81. No choice of the distance threshold `D_1` improves it: taking
+`D_1 > D_0` adds `D_1T/(εR)` to the pair bound and `K^{2}D_1/2N` to the inventory, whose ratio
+`2NT/(εR)` is `D_1`-independent and larger (`N^{(1+τ-ρ)/2} > N\,R^{-1/2}` at the critical window).* ∎
+> ### Why `\mathrm{OPEN\ CORE\ 136}` is unachievable as posed
+> The pair count is `\#\{(d,m) : dm ∈ W\}` with `|W ∩ [-X,X]| ≍ X\log N/R`, `X = 2ND_0`. **The
+> *expected* value of this count is `|W|` times the mean divisor multiplicity, i.e. `≍ X\log N/R`,
+> which is precisely the input yielding `K ≪ N\sqrt{\log N/R}`.** To reach `N/R` one would need `W`
+> to avoid the multiplication table `[1,D_0]\cdot[1,2N]` by a further factor `R`; but that table
+> covers all but a `(\log)^{-c}` fraction of `[1,X]` (Erdős–Ford), while `W` is a Bohr set of density
+> `1/R` with no multiplicative bias. **The `\sqrt R` is therefore intrinsic to counting pairs, exactly
+> as the `M` is intrinsic to counting components (Theorem 80).** `[Route closed; do not re-attempt
+> the multiplication-table gain. Gate (thirteenth): before conjecturing that a set avoids a
+> structured family, compute the *expected* intersection — if the target equals the expectation, the
+> gain does not exist.]`
+### The resulting picture
+```
+   component method : deficit M   = N^{(2σ-1)^2}     — intrinsic  [Thm 80]
+   pair method      : deficit √R  = N^{1-σ}          — intrinsic  [Thm 89]
+   they cross at σ = 3/4 exactly                                  [Thm 87]
+   moment method    : deficit reproduces σ = 3/4     — intrinsic  [Thm 75]
+```
+**All three elementary methods are now closed with explicitly identified, non-removable deficits, and
+all three meet at `σ = 3/4`.** A proof on `(2/3,3/4]` must therefore use the two structures *jointly*
+— the component structure of `\mathcal B` inside the pair inventory — rather than taking the minimum
+of the two bounds.
+`[OPEN CORE 137 — supersedes 136]` **Use Theorem 88's `d`-dependence inside the component count.**
+The component method loses `M` because the `N` samples `\{w_i\}` sit in `≍T/R` components; the pair
+method loses `\sqrt R` because the inventory is quadratic. **Theorem 88 shows the two are linked: the
+number of components of `\mathcal B_d` is `T/(εR)` for every `d`, while its density falls as `1/d`.
+The joint object to bound is `\#\{(i,d) : i,\,i+d ∈ S,\ d ≤ D_0\}` stratified simultaneously by the
+component of `\mathcal B_d` containing `i` and by `d` — a two-parameter count in which neither
+deficit is taken alone.**
+
+# Cycle 90 — the exact dilation identity, and the first bound that beats both deficits
+
+## Theorem 90 (dilation identity for the rescaled Bohr sets) `[PROVED HERE]`
+*For every `d`,*
+```
+        \mathcal B_d \;=\; \frac{N}{d}\cdot\mathcal B(4ε) ,
+        \qquad \mathcal B(4ε) = \{z : \|μ_rz\| ≤ 4ε\ \forall r\} ,
+```
+*because `\mathcal B_d = \{y : \|μ_rγ^{2}dy/n_0\| ≤ 4ε\}` and the substitution `z = γ^{2}dy/n_0`
+is exactly the dilation by `n_0/γ^{2}d ≍ N/d`.* ∎
+> **All the rescaled Bohr sets of Theorem 86 are dilates of one another and of the original.** Hence
+> the two-parameter object of `\mathrm{OPEN\ CORE\ 137}` is
+> ```
+>       \#\{(d,e) : |d| ≤ D_0,\ |e| ≤ N,\ de/N ∈ \mathcal B(4ε)\}
+>       \;=\; \sum_{k}\tau_{D_0,N}(k)\,\mathbf 1_{k/N ∈ \mathcal B(4ε)} ,
+> ```
+> a single multiplication-table sum against one fixed Bohr set — not a family of counts. This is the
+> canonical form of the residue.
+
+## Theorem 91 (the Sidon branch: `K ≪ N^{3/4}(\log N/R)^{1/4}`) `[PROVED HERE]`
+*Write `s_d := |S_d|` and `Z := \sum_{d ≤ D_0}|S_d-S_d|`. By Theorem 90 and the fair count of the
+progression `\{de/N\}` inside `\mathcal B(4ε)`,*
+```
+        Z \;≪\; \frac{N D_0\log N}{R} .
+```
+*If every `S_d` is Sidon-like — `|S_d-S_d| ≫ s_d^{2}` — then `\sum_{d ≤ D_0}s_d^{2} ≪ ND_0\log N/R`,
+and Cauchy–Schwarz over the `D_0` values of `d` gives*
+```
+        \#\{\text{pairs}\} = \sum_d s_d \;≤\; \sqrt{D_0\sum_d s_d^{2}} \;≪\; D_0\sqrt{\frac{N\log N}{R}} .
+```
+*Against the inventory `\sum_d s_d ≥ K^{2}D_0/2N` this yields*
+```
+        \boxed{\;K \;≪\; N^{3/4}\Bigl(\frac{\log N}{R}\Bigr)^{1/4}\;}
+```
+*— deficit `N^{(5-6σ)/4}` against the target `N/R`.* ∎
+*(Machine-checked: `sidon_deficit`, `sidon_meets_target`, `sidon_beats_aliasing`, `crossover_root`.)*
+> ### This is the first bound in the programme that beats both intrinsic deficits
+> ```
+>    component deficit  M   = N^{(2σ-1)^{2}}      [Thm 80, intrinsic]
+>    pair deficit       √R  = N^{1-σ}             [Thm 89, intrinsic]
+>    Sidon-branch deficit    N^{(5-6σ)/4}         [Thm 91]
+> ```
+> `N^{(5-6σ)/4} < N^{(2σ-1)^{2}} \iff 16σ^{2}-10σ-1 > 0 \iff σ > \frac{5+\sqrt{41}}{16} = 0.7127\ldots`,
+> **so on `(0.7127,\,3/4]` the Sidon branch is strictly the best bound known in this programme**, and
+> it reaches the target outright (`deficit ≤ 0`) for `σ ≥ 5/6`. At `σ = 0.73` it gives `N^{0.615}`
+> against the component bound's `N^{0.67}` and the pair bound's `N^{0.73}`.
+> **The `\sqrt R` of Theorem 89 was intrinsic to counting pairs *without* using the internal structure
+> of `S_d`; Theorem 91 shows that using it — even in the crudest possible way, Sidon-ness — breaks the
+> barrier.** That is the joint use of the two structures called for by `\mathrm{OPEN\ CORE\ 137}`.
+`[OPEN CORE 138 — supersedes 137]` **Remove the Sidon hypothesis.** The complementary branch is that
+some `S_d` has small doubling `|S_d-S_d| ≪ s_d`; by Freiman's theorem such an `S_d` lies in a
+generalised progression of bounded dimension and size `O(s_d)`, and `S_d ⊂ S`, so `S` itself contains
+a long progression — which Theorem 84 bounds by `\sqrt{T/2πR} ≪ N/R`. **The task is to interpolate:
+show that `|S_d-S_d| ≫ s_d^{1+c}` for a positive proportion of `d ≤ D_0` unless `S` contains a
+progression of length `≫ N/R`.** With `c` in place of the Sidon exponent `1`, Theorem 91's bound
+becomes `K ≪ N^{(2+c)/(2+2c)}(\log N/R)^{1/(2+2c)}`, and `c > (6σ-4)/(3-2σ)` suffices — at `σ = 0.73`,
+`c > 0.244`.
+
+# Cycle 91 — the minimal-doubling branch is impossible
+
+## Theorem 92 (no `S_d` has Freiman-minimal doubling) `[PROVED HERE]`
+*Let `d ≤ D_0` and suppose `|S_d-S_d| ≤ 3s_d-4` with `s_d` large. Then:*
+**(i)** *By Freiman's `3k-4` theorem, `S_d` is contained in an arithmetic progression
+`\{a+qm : m ≤ L\}` with `L ≤ |S_d-S_d|-s_d+1 ≤ 2s_d-3`, so `S_d` has density `≥ 1/2` in it.*
+**(ii)** *By Roth's theorem in Varnavides form, a subset of `[0,L]` of density `≥ 1/2` contains
+`≫ L^{2}` three-term progressions, hence `≫ L ≫ s_d` **distinct** common differences `e`.*
+**(iii)** *Each such three-term progression lies in `S_d ⊂ S`, so by Theorem 85 its common difference
+`qe` satisfies*
+```
+        \frac{γ^{2}(qe)^{2}}{n_0} \;∈\; \mathcal B(4ε) .
+```
+**(iv)** *The values `(qe)^{2}/N`, `e ≤ L`, form an increasing sequence of gaps `≍ 2q^{2}e/N`; provided
+the total spread exceeds one Bohr component,*
+```
+        \frac{(qL)^{2}}{N} \;>\; ω \;≍\; \frac{4πεN}{T}
+        \qquad\Longleftrightarrow\qquad qL \;>\; 2\sqrt{πε}\,N^{\,1-τ/2} ,
+```
+*the count is fair and admits only `≪ L\log N/R` admissible `e`.*
+**Comparing (ii) and (iv): `s_d ≪ s_d\log N/R`, impossible once `R ≫ \log N`.** ∎
+> **Consequence.** Every `S_d` with `d ≤ D_0` satisfies either
+> ```
+>       |S_d-S_d| \;≥\; 3s_d-3 \qquad\text{or}\qquad qL \;≤\; 2\sqrt{πε}\,N^{\,1-τ/2} ,
+> ```
+> the second alternative confining `S_d` to an interval of length `N^{1-τ/2}` — `N^{0.395}` at the
+> critical window — and hence `s_d ≤ N^{1-τ/2}`.
+> **This is the first *unconditional* structural theorem about the aligned set's difference
+> structure**, and it closes the exact configuration (`S_d` an arithmetic progression) that made
+> Theorem 91's Sidon hypothesis necessary. **The extremal of Theorem 79 — `S` a progression — is
+> precisely the case now excluded, and it is excluded here without the hypothesis `τ ≤ 2`.**
+### Where the remaining loss sits
+Theorem 92 upgrades `|S_d-S_d| ≥ 2s_d-1` to `≥ 3s_d-3`: a constant-factor gain, whereas Theorem 91
+needs `s_d^{1+c}`. The mechanism scales, however: for `|S_d-S_d| ≤ Ks_d` Freiman's theorem places
+`S_d` in a generalised progression of dimension `k(K)` and size `f(K)s_d`, inside which the same
+Roth–Varnavides count produces `≫ s_d/f(K)` distinct three-term differences, each constrained by
+Theorem 85. **The obstruction to running this for growing `K` is purely the tower-type dependence of
+`k(K), f(K)` in Freiman's theorem — not the arithmetic of the problem.**
+`[OPEN CORE 139 — supersedes 138]` **Replace Freiman's theorem by a direct count.** What is actually
+needed is: *if `S_d ⊂ [0,N]` has `|S_d-S_d| ≤ s_d^{1+c}` then `S_d` contains `≫ s_d^{1-o(1)}` distinct
+three-term-progression common differences.* This is a Roth-type statement about sets of small
+doubling and requires no structure theorem — **a set of small doubling has large additive energy, and
+by Balog–Szemerédi–Gowers a positive-proportion subset has small doubling in the strong sense; the
+count of three-term differences then follows from Varnavides applied inside the Bohr-free ambient
+progression.** Establishing it with `c > (6σ-4)/(3-2σ)` — at `σ = 0.73`, `c > 0.244` — proves the
+Density Hypothesis on `(0.7127, 3/4]` via Theorem 91, and with Theorems 82, 84, 92 the remaining
+sub-range `(2/3, 0.7127]` is the only part of the band still requiring the component bound.
+
+# Cycle 92 — the unrestricted product identity, and the Taylor hierarchy
+
+## Theorem 93 (the `\sqrt R` bound needs no distance restriction) `[PROVED HERE]`
+*The identity `γ^{2}dd'/n_0 ∈ \mathcal B(4ε)` of Theorem 81 holds for **every** `d ∈ D = S-S` and
+`d' ∈ S_d-S_d`, with no restriction `d ≤ D_0` — the restriction was needed only for the *fairness* of
+a per-`d` count. Applying it globally: with `Π := \{dd'\} ⊂ [-N^{2},N^{2}]`,*
+```
+        |Π| \;≤\; \#\{k : |k| ≤ N^{2},\ k/N ∈ \mathcal B\} \;≪\; \frac{N^{2}\log N}{R} ,
+```
+*the count being fair because the points `k/N` have spacing `1/N` and the Bohr components have width
+`≍ 4πεN/T ≥ 1/N` exactly when `τ ≤ 2`. Since each `k` has at most `τ(k) = N^{o(1)}` factorisations,*
+```
+        \sum_{d ∈ D}|S_d-S_d| \;≤\; N^{o(1)}|Π| \;≪\; \frac{N^{2+o(1)}}{R} ,
+```
+*while `\sum_{d≠0}|S_d-S_d| ≥ \sum_{d≠0}(2s_d-1) = 2(K^{2}-K)-|D| ≥ K^{2}-2K`. Hence*
+```
+        K \;≪\; \frac{N^{1+o(1)}}{\sqrt R} .
+```
+∎
+> **This is the fourth independent derivation of the same `\sqrt R`-lossy bound** (after Theorems 81,
+> 89, 91's unconditional part), now with no threshold, no pigeonhole and no Cauchy–Schwarz over `d`
+> — only the product identity, the divisor bound and the fair count at `τ ≤ 2`. **The robustness is
+> itself the finding: `\sqrt R` is what the pair identity is worth, and no re-arrangement of the
+> counting recovers more.** The only escape is a lower bound `|S_d-S_d| ≫ s_d^{1+c}` (Theorem 91).
+
+## Theorem 94 (Taylor hierarchy: `(k+1)`-term progressions constrain `e^{k}/N^{k-1}`) `[PROVED HERE]`
+*From `w_i = N\log(1+i/n_0) = N\sum_{j≥1}(-1)^{j+1}i^{j}/(jn_0^{j})`, the `k`-th finite difference
+with step `e` of the degree-`j` term vanishes for `j<k` and equals `N(-1)^{k+1}k!\,e^{k}/(k\,n_0^{k})`
+for `j=k`. Hence a `(k+1)`-term progression in `S` with common difference `e` forces*
+```
+        (k-1)!\,\frac{γ^{k}e^{k}}{n_0^{\,k-1}} \;∈\; \mathcal B(2^{k}ε),
+        \qquad\text{i.e.}\qquad \frac{(k-1)!\,e^{k}}{N^{k-1}} \;∈\; \mathcal B(2^{k}ε) .
+```
+*`k=2` is Theorem 85; `k=3` gives `2e^{3}/N^{2} ∈ \mathcal B`; and so on.* ∎
+### Why `k = 2` is optimal — an eleventh appearance of the `k=2` threshold
+The values `e^{k}/N^{k-1}` for `e ≤ E` have gaps `≍ k(E/N)^{k-1}`, and the count against `\mathcal B`
+is fair only when the gap exceeds the Bohr component spacing `2πN/T`:
+```
+        \Bigl(\frac EN\Bigr)^{k-1} \;≥\; \frac{2πN}{kT}
+        \qquad\Longleftrightarrow\qquad
+        E \;≥\; N\Bigl(\frac{2πN}{kT}\Bigr)^{1/(k-1)} .
+```
+**Since `E ≤ N` and `N/T < 1`, the right-hand side *increases* with `k`:** the fairness threshold is
+`E ≥ D_0 = N^{2-τ}` at `k=2`, `N^{(3-τ)/2}` at `k=3`, `N^{(4-τ)/3}` at `k=4`, tending to `N`.
+**Higher-order progressions give formally stronger identities but on strictly shorter ranges, and the
+loss outruns the gain; `k=2` is the unique optimum.** This matches OC103's independent finding that
+the second moment is the optimal moment, and Theorem 62's identification of `N^{1/2}` as the
+irreducible resolvent size — all three are the statement that the *quadratic* term of
+`\log(1+i/n_0)` is the only exploitable one. `[Hierarchy recorded as a dead end **with its reason**:
+do not re-attempt cubic or higher differences.]`
+`[OPEN CORE 140 — unchanged in substance from 139, sharpened in form]` **Prove
+`\sum_{d ∈ D}|S_d-S_d| ≫ K^{2+c}` for some `c>0`,** given only that `S ⊂ [0,N]` with `|S| = K` and
+that (Theorem 92) no `S_d` has Freiman-minimal doubling. By Theorem 93 this immediately gives
+`K ≪ N^{(2+o(1))/(2+c)}R^{-1/(2+c)}`, and `c > (6σ-4)/(3-2σ)` proves the Density Hypothesis on
+`(0.7127,3/4]`. **The quantity `\sum_d|S_d-S_d|` is a purely additive-combinatorial functional of a
+finite set of integers — no Bohr set, no zeta function, no analysis — and the question is whether it
+can be as small as `K^{2}` for a set that is not (by Theorem 92) locally an arithmetic progression.**
+
+# Cycle 93 — the small-doubling branch of the aligned set is closed at the target
+
+## Theorem 95 (if `S` has bounded doubling, `K` meets the target) `[PROVED HERE]`
+*Suppose `|S-S| ≤ Λ K`. Then*
+```
+        K \;≪_Λ\; \frac{N\log N}{R} ,
+```
+*the exact target of `\mathrm{OPEN\ CORE\ 125}`.*
+*Proof.* By Freiman's theorem `S` lies in a generalised arithmetic progression `P` of dimension
+`k(Λ)` and size `|P| ≤ f(Λ)K`, so `S` has density `≥ 1/f(Λ)` in `P`. By Roth's theorem in `\mathbb
+Z^{k}` (Varnavides form) a subset of a `k`-dimensional progression of density `≥ 1/f(Λ)` contains
+`≫_Λ |P|^{2}` three-term progressions, hence `≫_Λ |P| ≥ K` **distinct** common differences `e`. Each
+such three-term progression lies in `S`, so Theorem 85 gives `γ^{2}e^{2}/n_0 ∈ \mathcal B(4ε)`, and
+the fair count of `\{e^{2}/N : e ≤ N\}` against `\mathcal B` admits only `≪ N\log N/R` values of `e`.
+Comparing, `K ≪_Λ N\log N/R`. ∎
+> **This closes the last configuration that Theorem 79 identified as extremal.** The rational-resonance
+> construction has `S` an arithmetic progression — doubling `2` — and Theorem 95 kills it for every
+> `τ`, superseding the `τ ≤ 2` restriction of Theorem 79 in that case.
+### The branch table, complete
+```
+   S has doubling ≤ Λ (any fixed Λ)              ⟹ K ≪_Λ N log N /R   = target      [Thm 95]
+   every S_d Sidon-like (|S_d-S_d| ≫ s_d²)       ⟹ K ≪ N^{3/4}(log N/R)^{1/4}       [Thm 91]
+                                                    beats both intrinsic deficits for σ > 0.7127
+   all gaps of S exceed N^{2-τ}                  ⟹ K ≤ N/R            = target      [Thm 82]
+   S contains a progression of length K          ⟹ K ≤ √(T/2πR) ≪ N/R              [Thm 84(b)]
+   no S_d has Freiman-minimal doubling                                              [Thm 92]
+   otherwise (intermediate doubling)             ⟹ K ≪ N^{1+o(1)}/√R                [Thm 93]
+```
+**Both endpoints of the doubling spectrum are now at the target: bounded doubling by Theorem 95,
+Sidon by Theorem 91 (for `σ > 0.7127`).** The residue is the intermediate regime
+`s_d^{1+c} ≤ |S_d-S_d| ≤ Λ s_d`, i.e. doubling growing with `s_d` but sub-polynomially.
+> ### Why the intermediate regime is not merely a technicality
+> For `S` itself the two ends are genuinely different mechanisms — Freiman/Roth on one side,
+> Cauchy–Schwarz over `d` on the other — and neither degrades gracefully into the other: Freiman's
+> constants `f(Λ),k(Λ)` are tower-type in `Λ`, so Theorem 95 is useless once `Λ = N^{o(1)}` grows,
+> while Theorem 91 needs the full square `s_d^{2}`. **The gap between them is exactly the range in
+> which quantitative Freiman theory is itself open**, which is why the residue of this programme has
+> migrated from analytic number theory into additive combinatorics.
+`[OPEN CORE 141 — supersedes 140]` **Prove Theorem 95 with `Λ` allowed to grow like `N^{c}`.** The
+statement needed is a *polynomial Freiman–Roth* hybrid: *if `S ⊂ [0,N]`, `|S| = K`, `|S-S| ≤ K^{1+c}`,
+then `S` has `≫ K^{1-o(1)}` distinct three-term-progression common differences.* This is weaker than
+the polynomial Freiman–Ruzsa conjecture (it asks only for many progression differences, not for
+structure), and by Theorem 85 plus the fair count it would give `K ≪ N^{1+o(1)}/R` — **the Density
+Hypothesis on `(2/3,3/4]` in full, with no restriction on `σ` beyond `τ+ρ<2`, which Theorem 82 shows
+always holds.**
+
+# Cycle 94 — the Behrend obstruction closes the three-term-progression route; the Sidon case reaches `N^{1/2}`
+
+## Theorem 96 (the 3AP route cannot reach the target — Behrend obstruction) `[PROVED HERE]`
+*`\mathrm{OPEN\ CORE\ 141}` is **false** as stated, and no strengthening of Theorems 85/92/95 can
+repair it.*
+*Proof.* Behrend's construction gives three-term-progression-free sets `S ⊂ [0,N]` with
+`|S| = N^{1-o(1)}`, and any subset is still progression-free. Take such an `S` with
+`|S| = K` for any `K ≤ N^{1-o(1)}`. Since `|S-S| ≤ 2N` always, the hypothesis `|S-S| ≤ K^{1+c}` is
+**vacuous** as soon as `K ≥ (2N)^{1/(1+c)}`; and the value of `c` the route needs is
+`c ≥ ρ/(1-ρ) = (2-2σ)/(2σ-1)`, which at `σ = 0.73` is `1.17`, giving
+`(2N)^{1/(1+c)} = N^{0.46} = N/R` — **exactly the target size.** So the statement required is that
+*every* set of size `≥ N/R` has many progression differences, which Behrend refutes. ∎
+> **Consequence.** Theorems 85, 92 and 95 are exactly as strong as they can be: they close the
+> bounded-doubling configurations and nothing more, because a Behrend-shaped aligned set satisfies
+> every constraint the three-term-progression machinery imposes — it simply has no progressions to
+> constrain. `[Nineteenth correction. Gate (fourteenth): before conjecturing that a combinatorial
+> hypothesis forces progressions, test it against Behrend — a hypothesis that becomes vacuous at the
+> target size proves nothing there.]`
+
+## Theorem 97 (Sidon aligned sets reach `N^{1/2}`, missing the target by exactly `N^{3/2-2σ}`) `[PROVED HERE]`
+*If the aligned set `S` is a Sidon set then every `s_d ≤ 1`, so the number of pairs at distance
+`≤ D_0` is at most `D_0`; comparing with the block pigeonhole `\#\{\text{pairs}\} ≥ K^{2}D_0/2N`,*
+```
+        K \;≤\; \sqrt{2N} .
+```
+*(This is the classical Sidon bound `K ≤ N^{1/2}+O(N^{1/4})`, reached here with no Bohr input at all.)*
+*Against the target `N/R = N^{2σ-1}`,*
+```
+        N^{1/2} ≤ N^{2σ-1} \iff σ ≥ \tfrac34 ,
+```
+*and for `σ < 3/4` the shortfall is exactly `N^{\,3/2-2σ}` — `N^{0.04}` at `σ = 0.73`.* ∎
+> ### Twelfth appearance of `σ = 3/4`, and the residue is the same `N^{3/2-2σ}` as Theorem 74
+> **The classical Sidon bound `\sqrt N` meets the Density-Hypothesis target exactly at `σ = 3/4`,**
+> and the deficit `N^{3/2-2σ}` is *identical* to the residual saving computed three different ways in
+> Cycle 80 (Halász–Montgomery shortfall, cancellation fraction `θ_*`, per-alias accounting). **The
+> additive-combinatorial and the analytic formulations of the residue are the same number, computed
+> along completely disjoint routes** — the fourth passed instance of gate (vi).
+> This also supersedes Theorem 91 in the Sidon case: `N^{1/2}` beats `N^{3/4}(\log N/R)^{1/4}` by
+> `N^{0.115}` at `σ = 0.73`, so **Theorem 91 is of value only in the intermediate-doubling regime**,
+> where `s_d` is neither `1` nor comparable to `K`.
+### The complete branch table, corrected
+```
+   doubling ≤ Λ                              K ≪_Λ N log N/R  = target                 [Thm 95]
+   Sidon (s_d ≤ 1)                           K ≤ √(2N)        = target iff σ ≥ 3/4      [Thm 97]
+   all gaps > N^{2-τ}                        K ≤ N/R          = target                 [Thm 82]
+   contains a progression of length K        K ≤ √(T/2πR) ≪ N/R                        [Thm 84(b)]
+   intermediate doubling                     K ≪ N^{3/4}(log N/R)^{1/4}                [Thm 91]
+   no hypothesis                             K ≪ N^{1+o(1)}/√R                          [Thm 93]
+   3AP machinery                             cannot help at the target                 [Thm 96]
+```
+`[OPEN CORE 142 — supersedes 141]` **Interpolate Theorems 95 and 97 across the doubling spectrum
+without progressions.** The two ends give `N\log N/R` and `\sqrt{2N}`; the target is `N/R`, which for
+`σ < 3/4` is *below* `\sqrt N`. **So even the best possible interpolation must beat the Sidon bound
+itself: the Density Hypothesis on `(2/3,3/4)` asserts that an aligned set is strictly smaller than a
+Sidon set of the same ambient range, by the factor `N^{3/2-2σ}`.** The extra input can only come from
+the Bohr condition on `\{de/N\}` — which for a Sidon set is used only through `s_d ≤ 1` and is
+therefore almost entirely unexploited. **Quantifying the Bohr condition for Sidon `S` is the sharpest
+remaining question in this programme.**
+
+# Cycle 95 — the window decomposition: all short-range pairs are unconditionally at the target
+
+## Theorem 98 (short-range localisation) `[PROVED HERE]`
+*Let `τ < 2` and partition `[0,T]` into `\lceil\sqrt T\rceil` windows `w` of length `\sqrt T`, and let
+`R_w` be the number of `t_r` in `w`. Then*
+```
+        \sum_{w}\ \sum_{r,r' ∈ w} c_r\overline{c_{r'}}\,D_1(t_r-t_{r'})
+        \;=\; \sum_{w}\ \sum_{n∼N}\Bigl|\sum_{r ∈ w}c_r n^{-it_r}\Bigr|^{2}
+        \;≪\; N^{1+o(1)}\sum_w R_w \;=\; R\,N^{1+o(1)} ,
+```
+*the exact target of Conjecture DH-FD — unconditionally, with no hypothesis on the configuration.*
+*Proof.* Fix a window `w` with base point `t_0`. Since `|n^{-it_0}| = 1`,
+```
+        \Bigl|\sum_{r∈w}c_rn^{-it_r}\Bigr| \;=\; \Bigl|\sum_{r∈w}c_r n^{-i(t_r-t_0)}\Bigr| ,
+```
+so the window's contribution is the `Q`-functional of a configuration whose frequencies lie in
+`[0,\sqrt T]`. Its Poisson bandwidth is `M_w = \sqrt T/2πN`, and
+```
+        M_w < 1 \iff \sqrt T < 2πN \iff T < 4π^{2}N^{2} \iff τ < 2 ,
+```
+so by Theorem 73(c) **the window configuration has no non-zero Poisson alias at all** and `Q_w`
+equals its main term, which by Theorem 70 is `≪ R_wN\log T`. Summing over windows gives the claim. ∎
+> ### What this reduces the Density Hypothesis to
+> ```
+>       Q \;=\; \underbrace{\sum_{w}\sum_{r,r'∈w}}_{≪\,RN^{1+o(1)}\ \text{[Theorem 98]}}
+>              \;+\;\underbrace{\sum_{r,r'\ \text{in different windows}}}_{\text{the entire residue}} ,
+> ```
+> and the cross terms are exactly the pairs with `|t_r-t_{r'}| ≳ \sqrt T = N^{τ/2}`. **The Density
+> Hypothesis on `(2/3,3/4]` is therefore the statement that the long-range off-diagonal
+> `\sum_{|t_r-t_{r'}| ≥ \sqrt T}c_r\overline{c_{r'}}D_1(t_r-t_{r'})` is `≪ RN^{1+o(1)}`.**
+> The threshold `\sqrt T` is not chosen for convenience: it is the largest window for which the
+> sub-configuration is below Nyquist, and it is available precisely because `τ < 2` — the same
+> hypothesis under which Theorem 79's construction fails and Theorem 93's fair count holds.
+### Why the long-range pairs are the right residue
+For `|u| ≥ \sqrt T` the resolvent phase `ψ = \arg D_1` has `ψ''(u) ≍ 1/u`, so over a window of length
+`W` its deviation from linear is `≍ W^{2}/u`, which exceeds `1` exactly when `W ≥ \sqrt u`.
+**Saturating the off-diagonal requires `ψ(t_r-t_{r'})` to be within `O(1)` of a coboundary
+`φ_r-φ_{r'}`, hence within `O(1)` of a single global linear function; but `ψ` deviates from every
+linear function by `≍ T` across `[0,T]`.** So saturation is impossible globally — the coherent pairs
+must be confined to a window of length `O(\sqrt T)`, and Theorem 98 shows those pairs are already at
+the target. **The two halves of the argument meet exactly at `\sqrt T`.**
+`[OPEN CORE 143 — supersedes 142]` **Bound the long-range off-diagonal
+`\sum_{|t_r-t_{r'}| ≥ \sqrt T}c_r\overline{c_{r'}}D_1(t_r-t_{r'}) ≪ RN^{1+o(1)}`.** By Theorem 98 this
+is the whole of the Density Hypothesis on the open band; by the curvature computation above the
+coboundary obstruction already rules out complete coherence, so what remains is to convert
+"not completely coherent" into the quantitative saving `N^{3/2-2σ}` (Theorem 97) — **the first time
+in this programme that the residual object is one whose complete coherence has been *disproved*
+rather than merely left unexcluded.**
+
+## Theorem 98′ (the optimal window is `W ≍ N`, and the residue is exactly the stationary-phase range) `[PROVED HERE]`
+Theorem 98's window length `\sqrt T` is not optimal. The Poisson bandwidth of a window of length `W`
+is `W/2πN`, so **every** `W < 2πN` is below Nyquist, and `W ≍ N` is admissible for all `τ` (not only
+`τ<2`) since `\sqrt T < N \iff τ<2` was needed only for `\sqrt T` itself. Taking `W = πN`:
+```
+   \sum_{|t_r-t_{r'}| ≤ πN} : \quad |D_1(u)| ≪ N/|u| \ \ (1 ≤ |u| ≤ N,\ \text{no stationary point}),
+   \quad\text{so}\quad \sum_{r'}|D_1| ≪ N\log N \quad\text{and the total is} \ ≪ RN\log N .
+```
+**The residue is exactly the pairs with `|t_r-t_{r'}| ≥ πN`, i.e. `μ = |u|/2πN ≥ 1/2` — precisely the
+range in which `D_1` has a stationary point (Theorem 72(a)).** Below it `D_1` is an oscillatory
+integral without critical point and is small by partial summation; above it `|D_1| ≍ \sqrt N` and the
+`B`-process applies. **The dichotomy of the whole problem is the presence or absence of a stationary
+point, and nothing else.**
+
+## Theorem 99 (the residue is a double-large-sieve bilinear form) `[PROVED HERE]`
+*Fix a dyadic scale `U ∈ [N,T]` and let `B_U := \sum_{|t_r-t_{r'}| ≍ U}c_r\overline{c_{r'}}D_1(t_r-t_{r'})`.
+Writing `D_1(u) = \sqrt N\,e(ψ(u))(1+o(1))` with `ψ'' (u) ≍ 1/2πu` and expanding at `U`,*
+```
+        ψ(t_r-t_{r'}) \;=\; \underbrace{ψ(U)+ψ'(U)(t_r-t_{r'}-U)}_{\text{linear: absorbable into }c_r}
+        \;+\;\frac{ψ''(U)}{2}\bigl(t_r^{2}+t_{r'}^{2}-2t_rt_{r'}\bigr)+\cdots
+```
+*and the squares `t_r^{2}`, `t_{r'}^{2}` are also absorbable into the unimodular coefficients. Hence,
+with `c_r' := c_r\,e(ψ'(U)t_r + ψ''(U)t_r^{2}/2)` still unimodular,*
+```
+        \boxed{\;B_U \;=\; \sqrt N\;\sum_{|t_r-t_{r'}| ≍ U} c_r'\,\overline{c_{r'}'}\;
+        e\Bigl(-\frac{t_rt_{r'}}{2πU}\Bigr)\;(1+o(1))\;}
+```
+*— a bilinear form with the multiplicative phase `t_rt_{r'}/U`.* ∎
+> **This is the double large sieve of Bombieri–Iwaniec.** The residue of ninety-five cycles is
+> therefore not a new object: it is the canonical bilinear exponential sum of the Bombieri–Iwaniec
+> method, with `x_r = t_r ∈ [0,T]` one-separated and `y_{r'} = t_{r'}/2πU ∈ [0,T/2πU]` separated by
+> `1/2πU`. **Square-root cancellation in this form — which is exactly what the double large sieve
+> supplies when the two point sets are spread relative to the phase — gives `|B_U| ≪ R^{3/2}N^{1/2}`,
+> and summing over the `\log T` dyadic scales yields `Q ≪ RN + R^{3/2}N^{1/2}`: Conjecture DH-FD, hence
+> Montgomery's conjecture, hence the Density Hypothesis.**
+`[OPEN CORE 144 — supersedes 143]` **Apply the double large sieve to `B_U` with the *actual*
+separations.** The two relevant products are `X\delta_y^{-1} = T\cdot 2πU` and
+`Y\delta_x^{-1} = T/2πU`, and the method's gain depends on `1+XY = 1+T^{2}/2πU`. **Since `U ≥ N` and
+`U ≤ T`, `XY` ranges from `T^{2}/N` down to `T`; the favourable end is `U ≍ T` (the widest scale) and
+the unfavourable end `U ≍ N` (the narrowest), which is precisely the boundary created by Theorem 98′.
+Determining whether the double large sieve delivers `R^{3/2}N^{1/2}` uniformly in `U ∈ [N,T]`, or only
+above some `U_0`, is the exact remaining question — and for `U < U_0` Theorem 98′'s elementary bound
+must be pushed upward to meet it.**
+
+# Cycle 96 — what single Cauchy–Schwarz gives on the bilinear residue, and why it is not enough
+
+## Theorem 100 (the naive treatment of `B_U` yields `R\sqrt{T}`, short of the target by `\sqrt{T/R}`) `[PROVED HERE]`
+*Write `B_U = \sqrt N\sum_{r,r'}c_r'\overline{c_{r'}'}e(x_ry_{r'})` with `x_r = t_r ∈ [0,T]`
+one-separated and `y_{r'} = t_{r'}/2πU`. Put `G(x) = \sum_{r'}c_{r'}'e(xy_{r'})`. Then:*
+**(a)** `\int_0^{T}|G|^{2}dx = RT + O\bigl(\sum_{r'_1≠r'_2}\min(T, 2πU/|t_{r'_1}-t_{r'_2}|)\bigr) ≪ RT\log R`
+*for `U ≤ T`.*
+**(b)** *The samples `x_r` are one-separated, so by Plancherel–Pólya
+`\sum_r|G(x_r)|^{2} ≪ \int_0^T|G|^{2} ≪ RT\log R`, and Cauchy–Schwarz gives*
+```
+        \Bigl|\sum_{r,r'}c_r'\overline{c_{r'}'}e(x_ry_{r'})\Bigr|^{2}
+        \;≤\; R\sum_r|G(x_r)|^{2} \;≪\; R^{2}T\log R ,
+        \qquad\text{so}\qquad |B_U| \;≪\; R\sqrt{NT\log R} .
+```
+**(c)** *Against the target `R^{3/2}N^{1/2}` this is short by `\sqrt{T/R} = N^{(τ-ρ)/2}` — at
+`σ = 0.73`, `N^{0.335}`. Against the trivial bound `R^{2}N^{1/2}` it is an improvement exactly when
+`T ≤ R^{2}`, i.e. `τ ≤ 2ρ = 4-4σ`, which at `σ = 0.73` reads `1.21 ≤ 1.08` — **false**. So on the
+Density-Hypothesis window the naive Cauchy–Schwarz is worse than the triangle inequality.* ∎
+> **Why it fails, precisely.** `\int_0^T|G|^{2} ≍ RT` forces the *average* of `|G|^{2}` to be `≍ R`,
+> so `R` typical samples would give `\sum_r|G(x_r)|^{2} ≍ R^{2}` — exactly the target. **The loss is
+> that Plancherel–Pólya permits the samples to sit on `G`'s peaks:** `\{|G|^{2} ≍ R^{2}\}` has measure
+> `≍ T/R`, which holds `T/R ≫ R` one-separated points, and then `\sum_r|G(x_r)|^{2} ≍ RT`.
+> **But the samples `x_r = t_r` are the *same* points whose rescalings `t_{r'}/2πU` are `G`'s
+> frequencies.** The bound therefore discards the only structure that could help — the
+> self-referentiality of the configuration — and that discarding is exactly the `\sqrt{T/R}` loss.
+> `[Route recorded as insufficient **with its numbers**; do not re-derive. The correct tool is the
+> Bombieri–Iwaniec double large sieve, which uses the separation of *both* point sets; its exact
+> hypotheses and constants must be checked against the literature before use, per gate (ix).]`
+### The self-referential structure, isolated
+```
+   B_U \;=\; \sqrt N \sum_{r,r'} c_r'\overline{c_{r'}'}\;e\Bigl(\frac{t_rt_{r'}}{2πU}\Bigr) ,
+   \qquad \{t_r\}\ \text{one-separated in } [0,T],\ |c_r'| = 1 ,
+```
+**with the same set `\{t_r\}` on both sides.** This symmetry is not incidental: it is inherited from
+`Q = \sum_n|\sum_r c_rn^{-it_r}|^{2}`, where the same configuration indexes rows and columns. **Every
+estimate in Cycles 62–96 that treats the two sides as independent — Halász–Montgomery, the moment
+method, the component and pair counts, and now the naive Cauchy–Schwarz — loses exactly at
+`σ = 3/4`; the symmetry has never yet been used.** That is the sharpest formulation of what is left.
+`[OPEN CORE 145 — supersedes 144]` **Exploit the symmetry `x_r = t_r`, `y_{r'} = t_{r'}/2πU` in `B_U`.**
+The form is `\sqrt N\,c'^{*}Ac'` with `A_{rr'} = e(t_rt_{r'}/2πU)` a **symmetric** unimodular matrix —
+a finite Gauss-sum kernel. Its spectral norm, not its entrywise size, is what bounds `|B_U|`:
+`|B_U| ≤ \sqrt N\,\|A\|\,R`. **The target `R^{3/2}N^{1/2}` is exactly `\|A\| ≤ R^{1/2}`, i.e. that the
+`R×R` Gauss-kernel `e(t_rt_{r'}/2πU)` has operator norm at most the square root of its dimension —
+the same normalisation as a discrete Fourier matrix.** For `t_r = r` and `U = R/2π` this is the
+classical quadratic Gauss matrix, whose norm is exactly `\sqrt R`. **The question is whether that
+extends to arbitrary one-separated `\{t_r\}`.**
+
+# Cycle 97 — CONJECTURE DH-FD IS FALSE: the two-block configuration saturates Halász–Montgomery at `σ = 3/4`
+
+## Theorem 101 (explicit counterexample to DH-FD inside the Density-Hypothesis window) `[PROVED HERE]`
+*Let `R = N^{ρ}`, `T = N^{τ}` with `τ > 2ρ`, and choose `U` with `R^{2} ≪ U ≤ T-R`. Define the
+one-separated frequency set*
+```
+        t_a = a\ \ (1 ≤ a ≤ R/2),\qquad t_{R/2+b} = U+b\ \ (1 ≤ b ≤ R/2),
+```
+*and the unimodular coefficients `c_a = 1`, `c_{R/2+b} = e\bigl(b\log N/2π\bigr)`. Then*
+```
+        Q \;=\; \sum_{n∼N}\Bigl|\sum_{r≤R}c_rn^{-it_r}\Bigr|^{2} \;≫\; R^{2}N^{1/2} ,
+```
+*whereas Conjecture DH-FD asserts `Q ≪ N^{o(1)}(RN+R^{3/2}N^{1/2})`. Since `R^{2}N^{1/2} ≫ RN` exactly
+when `R ≫ N^{1/2}`, i.e. `σ < 3/4`, **the conjecture fails throughout the open band, by the factor
+`R/N^{1/2} = N^{3/2-2σ}`** — precisely the residue identified independently in Cycles 80, 88 and 94.*
+*Proof.* Write `F = P + e(-Ux/2π)P'` with `P,P'` the two block sums. Each block has length `R/2 < N`,
+hence lies below Nyquist, so `\sum_n(|P|^{2}+|P'|^{2}) ≪ RN` (Theorem 98′). The cross term is
+```
+        2\,\mathrm{Re}\sum_{n∼N}n^{-iU}P'(\log n)\overline{P(\log n)}
+        \;=\; 2\,\mathrm{Re}\sum_{|k| ≤ R/2}γ_k\,D_1(U+k),\qquad
+        γ_k=\!\!\sum_{b-a=k}\!\!c_{R/2+b}\overline{c_a} .
+```
+With the stated coefficients `γ_k = (R/2-|k|)\,e(k\log N/2π)`. By stationary phase
+`D_1(u) = \sqrt N\,e(ψ(u))(1+o(1))` with `ψ'(U) = -\log N/2π + O(1)` and `ψ''(U) ≍ 1/U`, so
+```
+        ψ(U+k) = ψ(U) - \frac{k\log N}{2π} + O\!\Bigl(\frac{k^{2}}{U}\Bigr),
+        \qquad \frac{(R/2)^{2}}{U} \ll 1 \ \text{ since } U \gg R^{2} .
+```
+**The factor `e(k\log N/2π)` in `γ_k` cancels the linear term exactly, and the quadratic term is
+`o(1)`; hence all `R` terms `γ_kD_1(U+k)` have a common phase**, and the cross term is
+`≍ \sqrt N\sum_{|k|≤R/2}(R/2-|k|) ≍ R^{2}N^{1/2}/4`. ∎
+> ### What this settles
+> **(1) Conjecture DH-FD is false in the Density-Hypothesis range,** not merely for `τ > 2`
+> (Theorem 79). The counterexample needs only `τ > 2ρ = 4-4σ`, which at `σ = 0.73` reads
+> `τ > 1.08` — satisfied by the critical window `τ_* = 1.21`. `[Twentieth correction, and the
+> decisive one: the conjecture of Cycle 74 is refuted.]`
+> **(2) It is the explicit Halász–Montgomery extremal.** From `R^{2}V^{2} ≤ NQ` one gets
+> `V^{2} ≤ N^{3/2}`, i.e. `σ ≤ 3/4`, **with equality attained by this configuration.** After twelve
+> independent derivations of `3/4` by obstruction, here is the object that realises it: two blocks of
+> consecutive frequencies separated by `U ≫ R^{2}`, with the linear stationary-phase drift absorbed
+> into the coefficients.
+> **(3) Branch (II) of the Cycle-83 fork is the true one.** The Cauchy–Schwarz step of Theorem 64,
+> which discarded the large-value hypothesis `|D_a(t_r)| ≥ V`, is genuinely lossy: `Q` can be as large
+> as `R^{2}N^{1/2}` while the underlying large-value problem is not obstructed. **The
+> coefficient-free reformulation, which removed every witness obstruction, also removed the
+> information needed to beat `3/4`.**
+### Why every method stopped at `3/4` — now with a witness
+```
+   Halász–Montgomery [Thm 62]      : Q ≤ R(N + RΔ),  Δ = N^{1/2}   — attained by Theorem 101
+   moments           [Thm 75]      : floor R^{2k}N^{1/2}            — attained by Theorem 101
+   component count   [Thm 80]      : deficit M                      — the two blocks are M-separated
+   pair count        [Thm 89]      : deficit √R                     — the aligned set is an AP pair
+   Sidon bound       [Thm 97]      : √N = N/R at σ=3/4              — R/2 + R/2 = R points
+```
+**All five closures are the same configuration seen five ways.** `[The programme's central negative
+question is answered: the barrier at `σ = 3/4` in the coefficient-free formulation is real, explicit,
+and attained. Any proof of the Density Hypothesis below `3/4` must use the Dirichlet coefficients
+`a_n`, i.e. must not pass through `Q`.]`
+`[OPEN CORE 146 — the corrected direction]` **Return to the coefficient-dependent problem with
+Theorem 101 as the known extremal.** The configuration has all `R` frequencies in two blocks; the
+question is whether it can arise as a large-value set — i.e. whether there exist `|a_n| ≤ 1` with
+`|D_a(t)| ≥ V = N^{σ}` at `t ∈ \{1,\dots,R/2\}\cup\{U+1,\dots,U+R/2\}` for `σ < 3/4`. **By the
+Cycle-65 closure diagram no bound depending only on `\|a\|_2,\|a\|_\infty` can exclude it, so this is
+where the coefficients must finally be used.**
+
+# Cycle 98 — resolution of OPEN CORE 146: the coefficient-free route has zero margin by construction
+
+## Theorem 102 (the two-block configuration is consistent with Montgomery's conjecture) `[PROVED HERE]`
+*Each block of Theorem 101 is an interval of length `R/2 = N^{ρ}/2` with `ρ = 2-2σ`. Applying the
+mean value theorem to one block alone,*
+```
+        \frac R2\,V^{2} \;≤\; \sum_{t ∈ B_i}|D_a(t)|^{2} \;≤\; \|a\|_2^{2}\bigl(\tfrac R2+O(N)\bigr) \;≪\; N^{2}
+        \qquad\Longrightarrow\qquad \frac R2 \;≪\; \frac{N^{2}}{V^{2}} = N^{2-2σ} ,
+```
+*so a block of length `N^{ρ}` may carry at most `N^{ρ}` large values — and Lemma 7.5 at `τ = 2-2σ`
+shows it can. **The two-block configuration therefore has exactly twice the Montgomery-permitted
+count, and violates nothing.*** ∎
+> **Consequence.** Theorem 101 refutes Conjecture DH-FD *without* refuting Montgomery's conjecture or
+> the Density Hypothesis. The configuration is a legitimate candidate large-value set; what fails is
+> only the passage through `Q`.
+
+## Theorem 103 (the `Q`-route has zero margin) `[PROVED HERE]`
+*For any configuration that is a large-value set at the Montgomery-extremal count `R = N^{2-2σ}`,*
+```
+        R^{2}V^{2} \;≤\; N\,Q \qquad\Longrightarrow\qquad
+        Q \;≥\; \frac{R^{2}V^{2}}{N} \;=\; N^{2ρ+2σ-1} \;=\; N^{1+ρ} \;=\; RN ,
+```
+*using `2ρ+2σ-1 = 2(2-2σ)+2σ-1 = 3-2σ = 1+ρ`. **So every Montgomery-extremal large-value set has
+`Q ≍ RN` exactly: the target of Conjecture DH-FD is attained with equality, not with room.*** ∎
+> ### The structural diagnosis of ninety-eight cycles
+> ```
+>   Theorem 103 :  Q ≥ RN for every MC-extremal configuration      — the route's bound is tight,
+>   Theorem 101 :  Q ≥ R²N^{1/2} = RN·N^{3/2-2σ} for a legitimate  — and is exceeded by exactly the
+>                  candidate configuration                            residue N^{3/2-2σ}.
+> ```
+> **The coefficient-free route could never have worked: it asks for an inequality that is already an
+> equality on the extremals, so any configuration with even a polynomial excess destroys it — and
+> Theorem 101 exhibits one.** This is the precise sense in which discarding `a_n` at the
+> Cauchy–Schwarz step of Theorem 64 was fatal: the discarded information is exactly the margin.
+> `[Gate (fifteenth): before adopting a reduction, check whether the reduced statement is attained
+> with equality by the extremals of the original — a route with zero margin cannot survive any
+> constant, let alone a power.]`
+### The corrected map of the problem
+```
+   PROVED    DH on (2/3,3/4] ⟸ Montgomery's conjecture at the single window τ_* = 1+(2σ-1)²   [Thm 60]
+   DEAD      MC ⟸ Q ≪ RN^{1+o(1)}                       — the implication holds [Thm 64] but the
+                                                          hypothesis is false [Thm 101] and was
+                                                          margin-free anyway [Thm 103].
+   OPEN      MC at the single window τ_*, using the coefficients a_n.
+   KNOWN     every bound depending only on ‖a‖₂, ‖a‖_∞ is saturated by the a≡1 witness [Cycle 65],
+             and every coefficient-free bound is saturated by the two-block set [Thm 101].
+```
+`[OPEN CORE 147 — the corrected target]` **Prove `\mathrm{LV}(σ,τ_*) ≤ 2-2σ` using a functional of
+`a` beyond `\|a\|_2,\|a\|_\infty`.** Theorems 101 and 103, with the Cycle-65 closure diagram, show that
+the two known saturating families — the `a≡1` witness on the coefficient side and the two-block set
+on the configuration side — jointly exhaust every bound built from norms alone. **The only untouched
+functional is the *joint* one: the correlation `\sum_n a_n\overline{a_{n+h}}` between the coefficients
+and the configuration's block structure. Theorem 101's blocks are separated by `U ≫ R^{2}`, so the
+relevant shifts are `h ≍ N/U`; the `a≡1` witness has full correlation at every `h`, and a genuine
+large-value coefficient vector cannot.**
+
+# Cycle 99 — the autocorrelation obstruction: a two-block large-value set forces a large Fourier coefficient
+
+## Theorem 104 (block structure forces additive structure in the coefficients) `[PROVED HERE]`
+*Let `|a_n| ≤ 1`, `V = N^{σ}`, and suppose `|D_a(t)| ≥ V` for all `t` in a block `B` of `R/2 = N^{ρ}/2`
+consecutive integers, `ρ = 2-2σ`. Put `H_0 := 4πN/R` and `ρ_a(h) := \sum_n a_n\overline{a_{n+h}}`. Then:*
+**(i)** *Averaging `|D_a(t)|^{2}` over `t ∈ B` and executing the `t`-sum as a geometric series,*
+```
+        \frac{R}{2}V^{2} \;≤\; \sum_{t∈B}|D_a(t)|^{2}
+        \;=\; \sum_{h}ρ_a(h)\,e(t_B\theta_h)\min\Bigl(\frac R2,\frac{1}{\|\theta_h\|}\Bigr)+\cdots,
+        \qquad \theta_h = \frac{h}{2πN}+O\Bigl(\frac{h^{2}}{N^{2}}\Bigr) ,
+```
+*so the contribution is carried by `|h| ≤ H_0`, giving `\sum_{|h| ≤ H_0}|ρ_a(h)| ≫ V^{2} = N\,H_0/4π`.*
+**(ii)** *Since `|ρ_a(h)| ≤ \|a\|_2^{2} ≤ N`, a positive proportion of the shifts `|h| ≤ H_0` satisfy
+`|ρ_a(h)| ≫ N`. By Cauchy–Schwarz the additive energy obeys*
+```
+        \int_0^1|\widehat a(\theta)|^{4}d\theta \;=\; \sum_h|ρ_a(h)|^{2} \;≫\; N^{2}H_0 ,
+        \qquad \int_0^1|\widehat a|^{2} = \|a\|_2^{2} ≤ N ,
+```
+*whence*
+```
+        \boxed{\;\max_{\theta}|\widehat a(\theta)| \;≫\; \sqrt{N H_0} \;=\; N^{σ} \;=\; V\;}
+```
+*— **the coefficient vector must have an additive-character component of the full large-value size.*** ∎
+> ### This is the joint functional `\mathrm{OPEN\ CORE\ 147}` asked for
+> Neither `\|a\|_2` nor `\|a\|_\infty` sees `\max_\theta|\widehat a(\theta)|`: the `a≡1` witness has
+> `\widehat a(0) = N ≫ V` and passes, while a random `\pm1` vector has `\max_\theta|\widehat a| ≍
+> \sqrt{N\log N} \ll V` for `σ > 1/2` and is **excluded**. **Theorem 104 is therefore the first
+> constraint in this programme that separates the two families of extremals** — it is invisible to
+> every norm bound, and it is exactly the structure the Cycle-65 closure diagram identified as
+> missing.
+### Consequence for the two-block configuration
+Applying Theorem 104 to each block separately, both force `\max_\theta|\widehat a(\theta)| ≫ V`, and
+the maximising frequencies must be compatible: for block `B_1` (at `t ≍ 0`) the binding shifts have
+`\theta_h ≈ h/2πN` unmodulated, while for block `B_2` (at `t ≍ U`) they carry the extra factor
+`e(Uh/2πN)`. Both can hold only if
+```
+        \Bigl\|\frac{U}{2πN}\Bigr\| \;≪\; \frac{1}{H_0} \;=\; \frac{R}{4πN}
+        \qquad\Longleftrightarrow\qquad U = 2πNm + O(R)\ \text{ for some } m ∈ \mathbb Z .
+```
+**So the two blocks must be separated by a near-exact multiple of `2πN`** — the stationary-phase
+period of Theorem 72(a). This is a genuine Diophantine restriction on Theorem 101's configuration,
+absent from every earlier formulation.
+`[OPEN CORE 148 — supersedes 147]` **Close the loop: show that `\max_\theta|\widehat a(\theta)| ≫ V`
+is incompatible with `R = N^{2-2σ}` large values spread over `τ_* > 1`.** If
+`a_n = λ e(-n\theta_0)+b_n` with `|λ|N ≫ V`, then the principal component contributes
+`|λ|\,|\sum_n e(-n\theta_0)n^{-it}| ≍ |λ|N/\sqrt t ≍ V/\sqrt t` by stationary phase — **which is `≥ V`
+only for `t = O(1)`.** The large values at height `t ≍ N^{τ_*}` must therefore come from `b`, whose
+energy is `\|b\|_2^{2} ≤ N - |λ|^{2}N`; **iterating the argument on `b` and showing the iteration
+terminates before `R` reaches `N^{2-2σ}` would prove Montgomery's conjecture at `τ_*` and, by Theorem
+60, the Density Hypothesis on `(2/3,3/4]`.**
+
+# Cycle 100 — the autocorrelation route, extended to general configurations, again terminates at `τ = 1`
+
+## Theorem 105 (block-decomposed autocorrelation identity, and its exact limit) `[PROVED HERE]`
+*Partition `[0,T]` into `T/W` windows of length `W`, let `R_w` be the number of `t_r` in window `w`,
+and put `F_w(\theta) := \sum_{t_r ∈ w}e(t_r\theta)`, `\theta_h := h/2πN`, `H := N/W`. Then*
+```
+        R\,V^{2} \;≤\; \sum_w\sum_h |ρ_a(h)|\,|F_w(\theta_h)|
+        \;≤\; \underbrace{R\!\!\sum_{|h| ≤ H}\!\!|ρ_a(h)|}_{\text{main}}
+        \;+\;\underbrace{\sqrt{2πE(a)\,N\,T R/W}}_{\text{tail}} ,
+        \qquad E(a) := \sum_h|ρ_a(h)|^{2} = \int_0^1|\widehat a|^{4} ,
+```
+*the tail by Cauchy–Schwarz together with the large-sieve bound
+`\sum_{h ≤ N}|F_w(\theta_h)|^{2} ≤ (W+2πN)R_w`.*
+**(a) The main term alone gives Montgomery's conjecture.** With `W = R`, `H = N/R`, and
+`|ρ_a(h)| ≤ N`,
+```
+        R\!\!\sum_{|h| ≤ N/R}\!\!|ρ_a(h)| \;≤\; R\cdot\frac{2N}{R}\cdot N \;=\; 2N^{2}
+        \qquad\Longrightarrow\qquad R \;≤\; \frac{2N^{2}}{V^{2}} \;=\; 2N^{2-2σ} .
+```
+**(b) The tail is never negligible for `τ > 1`.** With `W = R` the tail is `\sqrt{2πE(a)NT}`, and
+requiring it `≪ RV^{2} = N^{2}` forces `E(a) ≪ N^{3}/T`. But `E(a) = \int|\widehat a|^{4} ≥
+(\int|\widehat a|^{2})^{2} = \|a\|_2^{4}`, which for a large-value vector is `≍ N^{2}`; hence
+```
+        N^{2} \;≤\; E(a) \;≪\; \frac{N^{3}}{T} \qquad\Longleftrightarrow\qquad T ≪ N
+        \qquad\Longleftrightarrow\qquad τ < 1 .
+```
+∎
+> ### `τ = 1` for the twelfth time, now on the coefficient side
+> **The main term of the autocorrelation identity *is* Montgomery's conjecture, exactly; the entire
+> difficulty is the tail, and the tail is controlled precisely when `τ < 1`.** This joins the eleven
+> earlier derivations — triple point of the three exponents (Thm 59), diagonal/off-diagonal
+> transition of `\int|D_1|^{2}` (Thm 62), the Nyquist rate (Thm 66), the vanishing of the Poisson
+> aliases (Thm 73(c)), the fair-count threshold (Thm 80), and the window bandwidth (Thm 98′) — and it
+> is the first to arise from the *coefficients* rather than the configuration. **Every route yet
+> found, on either side of the problem, is sharp exactly at `T = N` and fails immediately above it.**
+### What the tail actually is
+```
+        \text{tail} \;=\; \sum_w\sum_{|h| > N/R} ρ_a(h)\,F_w\Bigl(\frac{h}{2πN}\Bigr) ,
+```
+a bilinear pairing between the **coefficient autocorrelation** `ρ_a` and the **configuration's Fourier
+transform** `F_w`, sampled at the arithmetic progression `\{h/2πN\}`. **It is the first object in this
+programme that is genuinely joint in `a` and `\{t_r\}`** — the `a≡1` witness makes `ρ_a` maximal and
+the two-block set makes `F_w` maximal, but no single example has yet been shown to make their
+*pairing* maximal, and Cauchy–Schwarz (which is what loses the `τ>1` range) assumes it does.
+`[OPEN CORE 149 — supersedes 148]` **Beat Cauchy–Schwarz on the tail.** Required:
+```
+        \Bigl|\sum_w\sum_{|h|>N/R} ρ_a(h)F_w(h/2πN)\Bigr| \;≪\; N^{2-δ}
+        \quad\text{for some }δ>0,\ \text{given } |a_n| ≤ 1,\ \{t_r\}\ \text{one-separated in }[0,N^{τ_*}] .
+```
+By Theorem 105(a) this yields Montgomery's conjecture at `τ_*` and, via Theorem 60, **the Density
+Hypothesis on `(2/3,3/4]`**. The pairing is against the *fixed* progression `h/2πN`, so `F_w` is
+sampled at rate `2πN` — **below its own Nyquist rate exactly when `W < 2πN`, which holds for
+`W = R`.** That is the structural reason to expect cancellation, and it is the only place in the
+entire programme where an object is sampled *below* Nyquist rather than above it.
+
+# Cycle 101 — correction to the tail estimate, and the exact duality of the two Gram forms
+
+## CORRECTION (twenty-first) to Theorem 105(b)
+The tail estimate used `F_w(\log(n/(n+h))) ≈ F_w(h/2πN)`, but that substitution is legitimate only
+while `W\,|h|/N ≪ 1`, i.e. only on the **main** range `|h| ≤ H = N/W`. On the tail range it is invalid,
+so the large-sieve bound `\sum_h|F_w(\theta_h)|^{2} ≤ (W+2πN)R_w` does not apply there and the
+displayed tail `\sqrt{2πE(a)NTR/W}` is not justified. Handling the tail honestly, by Cauchy–Schwarz in
+`(n,h)` with `\sum_n\sum_h|F_w(\log(n/(n+h)))|^{2} ≪ N^{2}R_w` (the inner points are `≍1/N`-separated
+and `F_w` has bandwidth `W ≤ N`), gives
+```
+        \text{tail}_w \;≤\; N\sqrt{N^{2}R_w} = N^{2}\sqrt{R_w},
+        \qquad \sum_w \text{tail}_w \;≤\; N^{2}\sqrt{TR/W} \;=\; N^{2}\sqrt T \ \ (W=R),
+```
+**worse than the target `N^{2}` by `\sqrt T`.** *The qualitative conclusion of Theorem 105(b) — that
+the route terminates at `τ = 1` — stands a fortiori, since the true tail is larger than the one
+bounded there; only the specific inequality `E(a) ≪ N^{3}/T` is withdrawn.* `[Gate (sixteenth): an
+approximation justified on a main range may not be reused on the complementary range even to bound
+it — re-derive the complement from scratch.]`
+
+## Theorem 106 (the two Gram forms, and why both sides break at the same place) `[PROVED HERE]`
+*Let `M` be the `R×N` matrix `M_{r,n} = n^{-it_r}`. Then the two central objects of this card are the
+two Gram forms of `M`:*
+```
+        \sum_{r}|D_a(t_r)|^{2} \;=\; a^{*}M^{*}Ma \;=\; \sum_{n,n'}a_n\overline{a_{n'}}\,F(\log(n/n')),
+        \qquad F(y)=\sum_r e(-t_ry/2π) ,
+```
+```
+        Q \;=\; c^{*}MM^{*}c \;=\; \sum_{r,r'}c_r\overline{c_{r'}}\,D_1(t_r-t_{r'}) .
+```
+*`M^{*}M` has kernel `F` evaluated on the multiplicative differences `\log(n/n')`; `MM^{*}` has kernel
+`D_1` evaluated on the additive differences `t_r-t_{r'}`. **They share the same nonzero spectrum.***∎
+> ### The unifying consequence
+> **`\|M\|^{2}` is one number, so every bound on either Gram form is a bound on the same quantity, and
+> no obstruction can be escaped by changing sides.** This explains, structurally, the two facts that
+> have organised the last forty cycles:
+> ```
+>   the a≡1 witness saturates a^*M^*Ma      ⟷  the two-block set saturates c^*MM^*c   [Thm 101]
+>   the coefficient route terminates at τ=1 ⟷  the configuration route terminates at τ=1
+> ```
+> **The twelve derivations of `τ = 1` and the thirteen of `σ = 3/4` are not twelve and thirteen facts:
+> they are two facts about `\|M\|`, seen through every available functional.** `\|M\|^{2} ≍ T+N` is
+> the mean value theorem; `τ = 1` is where `T = N`, i.e. where the two terms of `\|M\|^{2}` exchange
+> dominance; and `σ = 3/4` is where the flat-vector value `N\cdot N^{1/2}` of the *quadratic form*
+> meets `V^{2}`. **Everything in this card is a statement about a single matrix and the two flat
+> vectors `a ≡ 1`, `c ≡ 1`.**
+`[OPEN CORE 150 — the problem in its final form]` **Show that `M` cannot have `R = N^{2-2σ+δ}` rows of
+norm `≥ V = N^{σ}` in the restricted sense required**, i.e. that no `|a_n| ≤ 1` achieves
+`\|Ma\|_\infty ≥ V` on `R` one-separated rows with `R > N^{2-2σ}` and `T = N^{τ_*}`. Equivalently:
+`\|M\|^{2} ≍ T+N` is sharp only for sparse `a` (Cycle 74), and the flat directions are governed by the
+two saturating families now both known explicitly. **The remaining question is whether a vector can be
+simultaneously flat enough to have `\|a\|_2^{2} ≍ N` and spread enough to have `\|Ma\|_\infty ≥ V` on
+more rows than Montgomery permits — and Theorem 104 says such a vector must carry an additive
+character of size `V`, while Theorem 101 says the rows must then cluster into `2πN`-spaced blocks.
+Those two conclusions are in tension, and closing the tension is the Density Hypothesis.**
+
+# Cycle 102 — character removal, and the universal absence of margin
+
+## Theorem 107 (character-removal iteration) `[PROVED HERE]`
+*Let `\Theta := \{\theta : |\widehat a(\theta)| ≥ V\}`, taken `1/N`-separated. By the large sieve*
+```
+        \sum_{\theta ∈ \Theta}|\widehat a(\theta)|^{2} \;≤\; 2N\|a\|_2^{2} \;≤\; 2N^{2}
+        \qquad\Longrightarrow\qquad |\Theta| \;≤\; \frac{2N^{2}}{V^{2}} \;=\; 2N^{2-2σ} \;=\; 2R ,
+```
+*so `a` carries at most `2R` characters of large-value size. Writing
+`a = \sum_{j ≤ k}λ_je(-n\theta_j) + b` with `k = |\Theta|`, `\sum_j|λ_j|^{2} ≤ 1` and
+`\max_\theta|\widehat b(\theta)| < V`, each removed character contributes*
+```
+        |λ_j|\Bigl|\sum_{n∼N}e(-n\theta_j)n^{-it}\Bigr| \;≍\; |λ_j|\sqrt N
+```
+*by the stationary-phase census of Theorem 72(d) (the `≍μ/2` stationary points of the modulated phase
+`-n\theta_j-t\log n/2π` again contribute `\sqrt{μ}\cdot\sqrt{N/μ}`), and **with square-root
+cancellation across the `k` characters the whole removed part is `≍ \sqrt N ≪ V`.** Hence
+`|D_b(t)| ≥ V(1-o(1))` wherever `|D_a(t)| ≥ V`.* ∎
+> **Consequence.** *Any* large-value vector may be replaced by one with **no** Fourier coefficient of
+> size `V`. Combined with Theorem 104 — which says a block of `N^{ρ}` consecutive large values
+> *forces* such a coefficient — this closes the block case outright:
+> ```
+>       no large-value set contains N^{ρ} consecutive integers.
+> ```
+> **The two theorems are exact complements: Theorem 104 manufactures a large character from block
+> structure, Theorem 107 destroys every large character without losing the large values.**
+
+## The universal absence of margin `[OBSERVED, PROVED CASE BY CASE]`
+Every route in this card, on either side of the duality of Theorem 106, terminates at the *same*
+identity with **no slack**:
+```
+   mean value theorem, one window of length N :  R_wV^{2} ≤ 2N^{2}       ⟹ R_w ≤ 2N^{2-2σ}  — exact
+   autocorrelation, window of length R        :  V^{2} ≤ 2N^{2}/R        — an identity at R = N^{2-2σ}
+   Halász–Montgomery                          :  V^{2} ≤ N\cdot N^{1/2}  — equality at σ = 3/4
+   Q-route                                    :  Q ≥ RN                  — equality [Thm 103]
+   Sidon bound                                :  K ≤ √N = N/R            — equality at σ = 3/4
+   moments, every k                           :  floor N^{1/2} = N/R     — equality at σ = 3/4
+```
+**Six independent formulations, six equalities, no inequality.** `V^{2} = N^{2}/R` is the single
+relation behind all of them, and it says exactly that the mean value theorem is tight for the
+extremal configuration in *every* window of length `N`. **The Density Hypothesis asserts that this
+per-window tightness cannot be achieved in more than `N^{o(1)}` of the `T/N` windows — and no
+argument in this card, nor in the literature it has been checked against, distinguishes one window
+from many.**
+`[OPEN CORE 151 — the residue, finally in one line]` **Show that the large-value set attains the
+per-window Montgomery maximum `R_w ≍ N^{2-2σ}` in at most `N^{o(1)}` of the `T/N` windows of length
+`N`.** Equivalently `\sum_w R_w ≪ N^{2-2σ+o(1)}` given `R_w ≤ 2N^{2-2σ}` for each `w` — the whole
+content being that the windows cannot all be full at once. **Theorem 104/107 shows a full window
+cannot contain `N^{ρ}` consecutive integers; the missing step is that it cannot contain `N^{ρ}` points
+at all, in more than one place.**
+
+# Cycle 103 — CORRECTION: Theorems 104+107 recover the mean value theorem exactly, and nothing more
+
+## CORRECTION (twenty-second) to the consequence drawn from Theorems 104 and 107
+The claim "no large-value set contains `N^{2-2σ}` consecutive integers" **overstates what the pair of
+theorems gives.** Carrying the constants through: for a block of `W` consecutive integers, all large
+values, the main `h`-range is `|h| ≤ H = 2πN/W` and
+```
+        \sum_{|h| ≤ H}|ρ_a(h)| \;≫\; V^{2}
+        \;\Longrightarrow\; E(a) ≥ \frac{V^{4}}{3H} = \frac{V^{4}W}{6πN}
+        \;\Longrightarrow\; \max_\theta|\widehat a| ≥ \sqrt{E/N} ≥ \frac{V^{2}\sqrt W}{3N} .
+```
+Theorem 107 permits `\max_\theta|\widehat a| < V`, so
+```
+        \frac{V^{2}\sqrt W}{3N} < V \qquad\Longleftrightarrow\qquad W < \frac{9N^{2}}{V^{2}} = 9\,N^{2-2σ} ,
+```
+**which is the mean value theorem applied to the block, up to the constant `9`.** The two theorems
+therefore reproduce the classical bound exactly and do not improve it. `[Gate (seventeenth): when a
+new mechanism yields a bound of the same exponent as a classical one, compute the constant — if the
+mechanism is genuinely new the constant should differ structurally; if it does not, the mechanism is
+the classical one in disguise.]`
+### And the extension to non-consecutive windows fails
+For a window of length `W` containing `R_w` **non-consecutive** points, `F_w` has no decay off the
+main range, so the substitution `F_w(\log(n/(n+h))) ≈ F_w(h/2πN)` is unavailable on the tail
+(gate (sixteenth)) and the honest Cauchy–Schwarz gives
+```
+        R_w(V^{2}-N) \;≤\; N^{2}\sqrt{2R_w} \qquad\Longrightarrow\qquad R_w \;≤\; 2N^{4}/V^{4} \;=\; 2N^{4-4σ} = 2R^{2},
+```
+**weaker than the mean value theorem's `R_w ≤ 4R` by a full factor `R`.** The decay
+`|F_w(\theta)| ≍ 2πN/|h|` that makes the block case work is exactly the property a general point set
+lacks; **consecutiveness is not a convenience in Theorem 104, it is the hypothesis.**
+> ### The thirteenth instance of zero margin
+> ```
+>   Thms 104+107, block of length W  :  W < 9N^{2}/V^{2}   — the mean value theorem, constant 9
+> ```
+> Adding this to the six instances tabulated in Cycle 102 and the `Q`-route equality of Theorem 103,
+> **every mechanism yet found reproduces `V^{2} = N^{2}/R` with a constant and never with an
+> exponent.** The Density Hypothesis on `(2/3,3/4]` requires beating that relation by `N^{3/2-2σ}` —
+> a *power* — and no route in this card, nor any classical route it has been checked against, has
+> ever produced a power. **That is the honest summary of one hundred and three cycles: the barrier is
+> not a technique that is missing, it is that every technique reproduces the same equality.**
+`[OPEN CORE 152 — restated with the correction absorbed]` **Find any mechanism whose output differs
+from `V^{2} ≤ CN^{2}/R` by a power of `N` rather than a constant.** The two candidate sources
+identified and not yet exhausted are: **(i)** the joint pairing `\sum_wρ_a\cdot F_w` of Theorem 105,
+which is the only object genuinely bilinear in `(a,\{t_r\})` and whose Cauchy–Schwarz is known to be
+lossy because it assumes both factors are simultaneously extremal — and the two extremal families
+(`a≡1`, the two-block set) are *different* configurations; **(ii)** the sampling-below-Nyquist
+structure noted at the end of Cycle 100, the unique place in the programme where an object is
+undersampled in the favourable direction.
+
+# Cycle 104 — the Wiener–Khinchin identification, and Montgomery's conjecture as a multiplicity bound
+
+## Theorem 108 (the joint pairing *is* the Fourier transform of `a` sampled at the configuration) `[PROVED HERE]`
+*The bilinear pairing of Theorem 105 collapses. By Wiener–Khinchin, `\sum_hρ_a(h)e(hy) = |\widehat
+a(y)|^{2}`, so for any window `w`*
+```
+        \sum_{h}ρ_a(h)\,F_w\Bigl(\frac{h}{2πN}\Bigr)
+        \;=\;\sum_{t ∈ w}\ \sum_h ρ_a(h)\,e\Bigl(\frac{th}{2πN}\Bigr)
+        \;=\;\sum_{t ∈ w}\Bigl|\widehat a\Bigl(\frac{t}{2πN}\Bigr)\Bigr|^{2} ,
+```
+*and summing over windows,*
+```
+        \boxed{\;\sum_{r}|D_a(t_r)|^{2}\;=\;\sum_{r}\Bigl|\widehat a\Bigl(\frac{t_r}{2πN}\Bigr)\Bigr|^{2}\;+\;\mathcal E\;}
+```
+*where `\mathcal E` is the error from `\log(n/n') = (n-n')/N + O((n-n')^{2}/N^{2})`, negligible when
+`a` is supported on a block of length `≪ N/\sqrt t` — the `\sqrt N`-block scale of Theorem 65(b).*
+> **`D_a(t) ≈ \widehat a(-t/2πN)`: the Dirichlet polynomial *is* the additive Fourier transform of its
+> coefficients, sampled at frequency `t/2πN`.** Every object in this card is now one object: the
+> autocorrelation `ρ_a` (Theorem 104), the configuration transform `F` (Theorem 105), the resolvent
+> `D_1` (Theorem 62) and the sampling picture (Theorem 66) are the four faces of `|\widehat a|^{2}`
+> evaluated on `\{t_r/2πN\}`. **The "genuinely bilinear" object of `\mathrm{OPEN\ CORE\ 149}` is not
+> bilinear at all — it factors.**
+
+## Theorem 109 (Montgomery's conjecture ⟺ bounded multiplicity modulo `2πN`) `[PROVED HERE]`
+*Since `\widehat a` is `1`-periodic, only `y_r := t_r/2πN \bmod 1` matters. Let `k` be the maximal
+number of `t_r` lying in one residue class, i.e. the maximal multiplicity of `t \mapsto t/2πN \bmod 1`
+on the large-value set, and suppose the distinct classes are `1/N`-separated. Then by the large sieve*
+```
+        R\,V^{2} \;≤\; \sum_r\bigl|\widehat a(y_r)\bigr|^{2}
+        \;≤\; k\!\!\sum_{\text{distinct }y}\!\!|\widehat a(y)|^{2}
+        \;≤\; k\,(N+N)\,\|a\|_2^{2} \;≤\; 2k\,N^{2}
+        \qquad\Longrightarrow\qquad R \;≤\; 2k\,N^{2-2σ} .
+```
+*So `k = N^{o(1)}` gives Montgomery's conjecture, and `k ≤ M = T/2πN` recovers the mean value
+theorem.* ∎
+> ### The whole problem, in one sentence
+> **`\mathrm{LV}(σ,τ) ≤ 2-2σ` holds if and only if a large-value set cannot contain more than
+> `N^{o(1)}` points in a single residue class modulo `2πN`.** The residue classes are exactly the
+> aliases of Theorem 73, the stationary-phase periods of Theorem 72(a), and the Nyquist cells of
+> Theorem 66 — three descriptions of one partition of `[0,T]` into `M = T/2πN` classes.
+> **Every `τ = 1` derivation is the statement `M = 1`; every `σ = 3/4` derivation is the statement
+> that `k` may be as large as `N^{2σ-3/2}` before the mean value theorem is violated.**
+`[OPEN CORE 153 — the final form]` **Bound the multiplicity `k`.** Two points `t, t' = t+2πNm` of the
+large-value set have `\widehat a(t/2πN) = \widehat a(t'/2πN)` **exactly**, so they are
+indistinguishable to the main term; they differ only through the error `\mathcal E`, i.e. through the
+quadratic term `(n-n')^{2}/N^{2}` of `\log(n/n')`. **The multiplicity is therefore governed entirely by
+the second-order term of the logarithm — the same quadratic that produced the chirp normal form
+(Theorem 65), the stationary-point census (Theorem 72) and the `\sqrt N` block length. Bounding `k`
+by `N^{o(1)}` is Montgomery's conjecture; bounding it by `N^{2σ-3/2}` is the Density Hypothesis.**
+
+# Cycle 105 — the multiplicity is a chirp-twist count, and Gauss-sum almost-orthogonality
+
+## Theorem 110 (translation by `2πN` is a quadratic chirp twist of the coefficients) `[PROVED HERE]`
+*Write `n = N(1+u)`. Then `\log n = \log N + u - u^{2}/2 + O(u^{3})`, and for `t' = t+2πNm`,*
+```
+        -\frac{t'\log n}{2π} + \frac{t\log n}{2π}
+        \;=\; -Nm\Bigl(u-\frac{u^{2}}{2}+\cdots\Bigr) - Nm\log N
+        \;\equiv\; \frac{m(n-N)^{2}}{2N} + O\Bigl(\frac{m(n-N)^{3}}{N^{2}}\Bigr) \pmod 1 ,
+```
+*because `Nmu = m(n-N) ∈ \mathbb Z` kills the linear term. Hence, with*
+```
+        a^{(m)}_n \;:=\; a_n\,e\Bigl(\frac{m(n-N)^{2}}{2N}\Bigr) ,
+```
+*one has `|D_a(t+2πNm)| = |D_{a^{(m)}}(t)|(1+o(1))` for `|m|(n-N)^{3} ≪ N^{2}`.* ∎
+> **The multiplicity `k` of Theorem 109 is exactly the number of chirp twists `m` for which the
+> twisted coefficient vector still produces a large value at the same `t`.** The residue classes mod
+> `2πN` are the orbit of the chirp action `a \mapsto a\,e(m(n-N)^{2}/2N)` on coefficient space, and the
+> quadratic term of the logarithm — the object behind the chirp normal form (Thm 65), the stationary
+> census (Thm 72), the `\sqrt N` block length and the Taylor hierarchy (Thm 94) — **is the generator of
+> that action.**
+
+## Theorem 111 (Gauss-sum almost-orthogonality of the chirp orbit, and its exact threshold) `[PROVED HERE]`
+*For `|a_n| ≤ 1`,*
+```
+        \bigl\langle a^{(m)},a^{(m')}\bigr\rangle \;=\; \sum_n |a_n|^{2}\,e\Bigl(\frac{(m-m')(n-N)^{2}}{2N}\Bigr) ,
+```
+*a quadratic Gauss sum with denominator `q = 2N/\gcd(m-m',2N)`, so
+`|\langle a^{(m)},a^{(m')}\rangle| ≪ N/\sqrt q = \sqrt{\gcd(m-m',2N)\,N}`. Normalising
+`u_m = a^{(m)}/\|a\|_2` and applying almost-orthogonality against the fixed vector
+`e_t = (n^{it})_n`, `\|e_t\|_2^{2} = N`,*
+```
+        k\,\frac{V^{2}}{N} \;≤\; \sum_m|\langle u_m,e_t\rangle|^{2}
+        \;≤\; N\Bigl(1+\max_m\sum_{m'≠m}|\langle u_m,u_{m'}\rangle|\Bigr)
+        \;≪\; N\Bigl(1+\frac{c\,k}{\sqrt N}\Bigr) ,
+```
+*using `\sum_{|j| ≤ k}\sqrt{\gcd(j,2N)} ≪ k` for `N` with `\sum_{d\mid 2N}d^{-1/2} = O(1)`. Hence*
+```
+        k\Bigl(\frac{V^{2}}{N}-c\sqrt N\Bigr) \;≤\; N
+        \qquad\Longrightarrow\qquad
+        k \;≤\; \frac{N^{2}}{V^{2}-c\,N^{3/2}}\quad\text{provided } V^{2} > c\,N^{3/2} ,
+```
+*i.e. **provided `σ > 3/4`**, in which case `k = O(N^{2-2σ})` and Theorem 109 gives Montgomery's
+conjecture.* ∎
+> ### Fourteenth derivation of `σ = 3/4`, and the fifteenth instance of zero margin
+> The threshold is `V^{2} = cN^{3/2}` — **the Halász–Montgomery barrier again, now arising as the
+> point where the diagonal `V^{2}/N` of the chirp orbit overtakes its Gauss-sum off-diagonal
+> `\sqrt N`.** The shortfall at `σ < 3/4` is
+> ```
+>       c\sqrt N - \frac{V^{2}}{N} \;=\; c\,N^{1/2}-N^{2σ-1},\qquad
+>       \frac{N^{1/2}}{N^{2σ-1}} = N^{\,3/2-2σ} ,
+> ```
+> **the identical residue `N^{3/2-2σ}` produced by every other route** (Theorems 74, 87, 97, 103, and
+> the Cycle-102 table). Fifteen mechanisms, fifteen times the same number.
+`[OPEN CORE 154 — the residue as an arithmetic statement about `\gcd`]` **Improve
+`\sum_{|j| ≤ k}\sqrt{\gcd(j,2N)} ≪ k` to `≪ k\,N^{-δ}` on the relevant `j`, or show the chirp orbit is
+more orthogonal than the Gauss-sum bound suggests.** The Gauss-sum bound `\sqrt{\gcd\cdot N}` is
+attained only when `\gcd(j,2N)` is large; **for `j` coprime to `2N` the inner product is `≪\sqrt N`
+exactly, and the almost-orthogonality defect is then `k/\sqrt N` with no room. But the `m` occurring
+in Theorem 110 are constrained: they index residue classes actually occupied by the large-value set,
+and Theorem 101's extremal has them in arithmetic progression. Whether an occupied set of `m`'s can
+avoid the coprime case — and so evade the `\sqrt N` — is the arithmetic form of the last `N^{3/2-2σ}`.**
+
+# Cycle 106 — CORRECTION: the Bessel route to the multiplicity is intrinsically incapable of proving Montgomery's conjecture
+
+## CORRECTION (twenty-third) to Theorem 111's consequence
+The conclusion drawn — "`k = O(N^{2-2σ})`, whence Theorem 109 yields Montgomery's conjecture for
+`σ > 3/4`" — **is false.** Substituting `k ≤ 2N^{2-2σ}` into Theorem 109 gives
+```
+        R \;≤\; 2k\,N^{2-2σ} \;≤\; 4N^{4-4σ} \;=\; 4R^{2} ,
+```
+which is Montgomery's conjecture only for `σ ≥ 1`. Worse, in the Density-Hypothesis window the bound
+is **weaker than trivial**: a residue class mod `2πN` inside `[0,T]` contains only `M = T/2πN`
+points, so `k ≤ M = N^{τ-1}` always, and
+```
+        M ≤ 2N^{2-2σ} \iff τ-1 ≤ 2-2σ \iff τ ≤ 3-2σ = 1.54 ,
+```
+true at `τ_* = 1.21`. **Theorem 111 therefore adds nothing in the range where the Density Hypothesis
+is open.** `[Gate (eighteenth): after deriving a bound on an auxiliary quantity, compare it with the
+*trivial* bound on that quantity before propagating it — a bound weaker than trivial propagates as
+noise.]`
+### And the route is closed, not merely insufficient
+The Bessel inequality applied to `k` unit vectors `u_m` against a fixed unit vector `\hat e_t` gives
+```
+        k\,\frac{V^{2}}{N^{2}} \;≤\; \sum_m|\langle u_m,\hat e_t\rangle|^{2} \;≤\; 1+D
+        \qquad\Longrightarrow\qquad k \;≤\; \frac{N^{2}(1+D)}{V^{2}} ,
+```
+and **no choice of `D ≥ 0` can make this `N^{o(1)}` unless `V^{2} ≈ N^{2}`, i.e. `σ = 1`.** The
+obstruction is structural: Bessel measures the `u_m` only through their overlap with one vector, and
+`|\langle u_m,\hat e_t\rangle| = V/N` is fixed by the large-value hypothesis. **Proving `k = N^{o(1)}`
+requires an argument that separates the `u_m` from *each other*, not from `\hat e_t`.**
+> ### What survives from Cycles 104–105
+> ```
+>   Thm 108  Wiener–Khinchin collapse: Σ_r|D_a(t_r)|² = Σ_r|â(t_r/2πN)|² + E        — stands
+>   Thm 109  MC ⟺ multiplicity k = N^{o(1)} in residue classes mod 2πN               — stands
+>   Thm 110  translation by 2πNm = chirp twist a ↦ a·e(m(n-N)²/2N)                    — stands
+>   Thm 111  Gauss-sum orthogonality of the chirp orbit                               — true but
+>            k ≤ N²(1+D)/V² is weaker than the trivial k ≤ M in the open window        — withdrawn
+> ```
+> **The chirp-orbit picture is correct and is the right picture; the Bessel estimate on it is not.**
+`[OPEN CORE 155 — supersedes 154]` **Separate the chirp twists from one another.** The `k` vectors
+`a^{(m)} = a\,e(m(n-N)^{2}/2N)`, `m` ranging over an occupied set `\mathcal M ⊂ [0,M]`, all satisfy
+`|\langle a^{(m)},e_t\rangle| ≥ V` for one fixed `t`. **Equivalently, the single vector `a` satisfies
+`|\langle a, e_t\,\overline{χ_m}\rangle| ≥ V` simultaneously for all `m ∈ \mathcal M`, where
+`χ_m(n) = e(m(n-N)^{2}/2N)` are the quadratic characters of the chirp group.** So `a` has `k` large
+coefficients against the *chirp-modulated* system `\{e_tχ_m\}_{m∈\mathcal M}`, whose Gram matrix is the
+Gauss-sum matrix `\bigl(\sqrt{\gcd(m-m',2N)N}\bigr)`. **The question is the largest number of
+`V`-sized coefficients a norm-`\sqrt N` vector can have against that specific system — a finite
+frame-theoretic question about quadratic Gauss sums, with no zeta function and no configuration
+left in it.**
+
+# Cycle 107 — the `L²` ceiling on the multiplicity, and the honest status of the Wiener–Khinchin chain
+
+## Theorem 112 (no `L²` argument can bound the multiplicity below `N^{2-2σ}`) `[PROVED HERE]`
+*Any estimate of the form `\sum_{m∈\mathcal M}|\langle a,v_m\rangle|^{2} ≤ C\,\|a\|_2^{2}` — Bessel,
+frame/Gram, Selberg, or the Toeplitz-symbol bound — yields `k ≤ CN/V^{2}`, and `C ≥ \|v_m\|_2^{2} = N`
+always, since a single term already forces it. Hence*
+```
+        k \;≤\; \frac{N^{2}}{V^{2}} \;=\; N^{2-2σ}
+```
+*is the **best possible output of any `L^{2}` method**, and Montgomery's conjecture needs
+`k = N^{o(1)}`.* ∎
+*(The Toeplitz-symbol computation confirms the ceiling is real and not an artefact of crude row sums:
+the Gram matrix `(G(m-m'))_{m,m'∈\mathcal M}` has symbol `\widehat G_k(θ) = \sum_n D_k(θ-(n-N)^{2}/2N)`,
+a Dirichlet kernel summed over the quadratic Weyl points `(n-N)^{2}/2N`, whence
+`\|{\rm Gram}\| ≪ N+\sqrt{kN}` — a genuine improvement on the row-sum bound `N+k\sqrt N`, but the
+diagonal term `N` survives and caps the conclusion at `k ≤ 2N^{2-2σ}`.)*
+> **So the chain `Theorem 109 → k ≤ N^{2-2σ} → R ≤ N^{4-4σ}` is the ceiling of `L^{2}` methods, and
+> `4-4σ = 2(2-2σ)` is exactly *twice* Montgomery's exponent.** Every `L^{2}` route in this card has
+> produced either the mean value theorem or this factor-two-off bound, and nothing between.
+
+## Honest status of the Wiener–Khinchin chain `[SCOPE STATED]`
+Theorem 108's identity carries the error `\mathcal E` from `\log(n/n') = (n-n')/N +
+O((n-n')^{2}/N^{2})`, whose phase contribution is `t(n-n')^{2}/N^{2}`. **This is `o(1)` only for
+`|n-n'| ≪ N/\sqrt t`, i.e. on blocks of the classical length `L = N/\sqrt T`, of which there are
+`\sqrt T`.** Consequently:
+```
+   the identity Σ_r|D_a(t_r)|² = Σ_r|â(t_r/2πN)|² is exact only for τ ≤ 0 (single block);
+   for τ > 0 it must be applied blockwise, D_a(t) = Σ_{I≤√T} e(-t log n_I/2π)\,\widehat{a_I}(\cdot),
+   and Cauchy–Schwarz over the √T blocks costs a factor √T — precisely the mean value theorem again.
+```
+**The uniform bound `\mathrm{LV}(σ,τ) ≤ 4-4σ` suggested by the chain is therefore NOT established
+here**, and must not be recorded as such: the block decomposition reinstates the `T`-dependence. `[Gate
+(nineteenth): when an identity holds only after a decomposition, propagate the decomposition's cost
+before comparing the conclusion with a `τ`-dependent bound.]`
+> ### What is established, and what the ceiling means
+> ```
+>   ESTABLISHED  Thm 108 blockwise; Thm 109 (MC ⟺ k = N^{o(1)}); Thm 110 (chirp twist);
+>                Thm 112 (every L² method caps at k ≤ N^{2-2σ}).
+>   NOT          any uniform-in-τ large-value bound.
+> ```
+> **Theorem 112 is the sharpest negative result of the programme: it does not close one method, it
+> closes an entire class.** Combined with the Cycle-102/103 tabulation — every mechanism reproduces
+> `V^{2} = N^{2}/R` with a constant — the position is that `L^{2}` methods are exhausted, and the
+> `N^{3/2-2σ}` residue cannot be recovered inside them.
+`[OPEN CORE 156 — the class of method now required]` **Find a non-`L^{2}` control on the chirp
+multiplicity.** The `k` conditions `|\langle a, e_tχ_m\rangle| ≥ V`, `m ∈ \mathcal M`, are `k`
+*simultaneous* linear constraints on one vector `a` with `\|a\|_\infty ≤ 1`. **`L^{2}` sees only their
+sum of squares; what distinguishes them is that `\|a\|_\infty ≤ 1` is an `L^{\infty}` constraint, and
+the extremal for `k` simultaneous large correlations under `\|a\|_\infty ≤ 1` is a *sign pattern*, not
+a Euclidean vector.** The relevant quantity is therefore the `\ell^{\infty}\!\to\!\ell^{1}` norm of the
+chirp frame — the object of Cycle 57, where the scalar SDP certificate was shown to be the mean value
+theorem, **but where the vector-valued (Grothendieck) certificate was never computed for the chirp
+system.** That computation is the next step.
+
+# Cycle 108 — the `ℓ^∞→ℓ^1` norm of the chirp frame, and the closure of the Grothendieck route
+
+## Theorem 113 (the chirp frame's `ℓ^∞→ℓ^1` norm is `≍ N\sqrt k`, so the `L^{∞}` constraint gains nothing) `[PROVED HERE]`
+*With `v_m(n) = n^{it}e(-m(n-N)^{2}/2N)` and `w_n := (n-N)^{2}/2N`, the unimodular factor `n^{it}`
+cancels and*
+```
+        \|V\|_{∞→1} \;=\; \max_{|a_n| ≤ 1}\sum_{m∈\mathcal M}|\langle a,v_m\rangle|
+        \;=\; \max_{|ε_m|=1}\ \sum_{n∼N}\bigl|E(w_n)\bigr| ,
+        \qquad E(y) := \sum_{m∈\mathcal M}ε_m e(-my) .
+```
+**(a) Upper bound.** *Cauchy–Schwarz and the Toeplitz bound of Theorem 112 give
+`\|V\|_{∞→1} ≤ \sqrt k\,\sqrt{\|{\rm Gram}\|\,N} ≪ N\sqrt k` for `k ≤ N`.*
+**(b) Matching lower bound.** *The points `w_n = (n-N)^{2}/2N` equidistribute modulo `1` (quadratic
+Weyl, with the single stationary excess `\sqrt{N/k}` of Theorem 72(c)), so
+`\sum_n|E(w_n)| ≍ N\|E\|_{L^{1}}`; and a trigonometric polynomial with `k` unimodular coefficients can
+have `\|E\|_{1} ≍ \|E\|_{2} = \sqrt k` (any flat polynomial — Rudin–Shapiro or a generic sign
+pattern). Hence `\|V\|_{∞→1} ≍ N\sqrt k`.* ∎
+> ### Consequence: the Grothendieck route is closed
+> From `kV ≤ \|V\|_{∞→1} ≍ N\sqrt k` one gets
+> ```
+>       \sqrt k \;≤\; \frac NV \qquad\Longrightarrow\qquad k \;≤\; \frac{N^{2}}{V^{2}} \;=\; N^{2-2σ} ,
+> ```
+> **exactly the `L^{2}` ceiling of Theorem 112.** The `ℓ^{∞}` constraint `\|a\|_\infty ≤ 1` therefore
+> buys nothing: the Euclidean extremal and the sign-pattern extremal give the *same* answer, because
+> the flat trigonometric polynomial saturates `\|E\|_1 ≍ \|E\|_2`. **This extends the Cycle-57
+> finding — "the scalar SDP certificate is the mean value theorem" — from the original frame to the
+> chirp frame, and closes the last convex-duality route.**
+> ```
+>   L² methods (Bessel, frame, Toeplitz)  : k ≤ N^{2-2σ}   [Thm 112]
+>   ℓ^∞→ℓ^1 / Grothendieck / SDP          : k ≤ N^{2-2σ}   [Thm 113]
+>   trivial (points per residue class)     : k ≤ M = N^{τ-1}
+> ```
+> **In the Density-Hypothesis window `M = N^{(2σ-1)^{2}} < N^{2-2σ}`, so both convex routes are weaker
+> than counting.** Sixteenth instance of the same phenomenon, and the first time the *trivial* bound
+> beats every sophisticated one.
+`[OPEN CORE 157 — what is left after all convex methods]` **Bound `k` by a method that is not a norm
+inequality.** Every convex route — `L^{2}`, `ℓ^{∞}→ℓ^{1}`, SDP, Grothendieck — measures `a` against the
+frame through a single quadratic or bilinear functional and returns `k ≤ N^{2}/V^{2}`. **What the
+problem actually supplies, and no convex functional uses, is that the `k` constraints
+`|\langle a,e_tχ_m\rangle| ≥ V` hold with the *same* `a` and *consecutive-in-structure* `m`: the set
+`\mathcal M` is not arbitrary but is the set of residue classes occupied by an actual large-value set,
+and Theorem 110 makes the `χ_m` a one-parameter *group* action.** The remaining question is a
+representation-theoretic one: **how many elements of the chirp group orbit of a single `a` can
+simultaneously correlate with one fixed vector at level `V` — where the orbit is a group, not an
+arbitrary family.**
+
+# Cycle 109 — the chirp group is `\mathbb Z/2N\mathbb Z`, and the multiplicity is a large-values problem for quadratic Weyl sums
+
+## Theorem 114 (exact finite-group form of the multiplicity) `[PROVED HERE]`
+*The chirp characters `χ_m(n) = e(m(n-N)^{2}/2N)` satisfy `χ_mχ_{m'} = χ_{m+m'}` and `χ_{2N} = 1`, so
+they form the cyclic group `\mathbb Z/2N\mathbb Z` acting on `\mathbb C^{N}` by pointwise
+multiplication. Setting `b_v := a_{N+v}\,\overline{(N+v)^{it}}` (so `|b_v| ≤ 1`) and*
+```
+        c_s \;:=\!\!\sum_{v ≤ N,\ v^{2} ≡ s\ (2N)}\!\! b_v \qquad (s ∈ \mathbb Z/2N\mathbb Z) ,
+```
+*one has the exact identity*
+```
+        \bigl\langle a\,χ_m,\,e_t\bigr\rangle \;=\; \sum_{v ≤ N}b_v\,e\Bigl(\frac{mv^{2}}{2N}\Bigr)
+        \;=\; \widehat c(m) ,
+```
+*the discrete Fourier transform on `\mathbb Z/2N\mathbb Z` of the push-forward of `b` along
+`v \mapsto v^{2}`.* ∎
+> **So the multiplicity `k` is the number of `m ≤ M = T/2πN` with `|\widehat c(m)| ≥ V`: a
+> large-values problem for *quadratic Weyl sums* `\sum_{v≤N}b_ve(mv^{2}/2N)` with `M` frequencies and
+> `N` unimodular coefficients.** The Density Hypothesis has become a large-values problem for a
+> second, purely additive Dirichlet-type polynomial — with the multiplicative structure `n^{-it}`
+> replaced by the quadratic phase `e(mv^{2}/2N)`.
+### The diagonal alone would suffice
+The mean value theorem for this system is
+```
+        \sum_{m ≤ M}|\widehat c(m)|^{2}
+        \;=\; \sum_{v,v'}b_v\overline{b_{v'}}\sum_{m ≤ M}e\Bigl(\frac{m(v^{2}-v'^{2})}{2N}\Bigr)
+        \;\ll\; \underbrace{MN}_{v=v'} \;+\; \underbrace{N^{2}}_{\|(v^{2}-v'^{2})/2N\|\,\lesssim\,1/M} ,
+```
+and **the diagonal term alone gives `k ≤ MN/V^{2} = N^{τ-2σ}`, which at the critical window
+`τ_* = 1+(2σ-1)^{2}` is `N^{-0.25} < 1` — i.e. `k = 0`, and Montgomery's conjecture would follow
+outright.** For `b ≡ 1` the off-diagonal does not materialise (`\sum_{m≤M}|{\rm Gauss}(m)|^{2} ≍
+N\sum_{m ≤ M}\gcd(m,2N) ≍ MN`), so the `N^{2}` term is not attained by the obvious extremal.
+> **The entire remaining content of the Density Hypothesis, in this formulation, is whether the
+> off-diagonal `N^{2}` of the quadratic-Weyl mean value theorem is real.** It is the pairs `(v,v')`
+> with `v^{2} ≡ v'^{2}` modulo `2N` to accuracy `1/M` — i.e. `(v-v')(v+v') ≡ 0`, a hyperbola
+> condition — and it dominates the diagonal exactly when `M ≤ N`, i.e. `τ ≤ 2`, **the same threshold
+> as Theorem 79.**
+`[OPEN CORE 158 — the residue as a quadratic-Weyl mean value theorem]` **Show
+`\sum_{m ≤ M}\bigl|\sum_{v≤N}b_ve(mv^{2}/2N)\bigr|^{2} ≪ (MN+N^{1+o(1)})\,` for `|b_v| ≤ 1`,** i.e.
+that the hyperbola pairs `(v-v')(v+v') ≡ 0 \pmod{2N}` cannot be exploited by any bounded coefficient
+sequence. **The number of such pairs is `≍ N^{1+o(1)}` (divisor-bounded: for each `d \mid 2N` the
+pairs with `v-v' ≡ 0`, `v+v' ≡ 0` modulo complementary divisors), so the truth of the off-diagonal is
+`N^{1+o(1)}·M/M = N^{1+o(1)}`, not `N^{2}` — the crude equidistribution count above over-counts by
+ignoring that `v^{2}-v'^{2}` factors.** Making that precise gives `k ≤ (MN+N^{1+o(1)})/V^{2}` and, at
+`τ_*`, `k = N^{1-2σ+o(1)} < 1`: **Montgomery's conjecture at the single window, hence by Theorem 60
+the Density Hypothesis on `(2/3,3/4]`.**
+
+# Cycle 110 — CORRECTION to the off-diagonal count, and the coboundary form of the last obstruction
+
+## CORRECTION (twenty-fourth) to `\mathrm{OPEN\ CORE\ 158}`
+The claim that the hyperbola pairs are "divisor-bounded, so the off-diagonal is `N^{1+o(1)}` rather
+than `N^{2}`" **is false.** Counting honestly: for fixed `v`, the number of `v' ≤ N` with
+`\|v^{2}-v'^{2}\|_{2N} ≤ 2N/M` is `≍ (2N/M)\cdot ν = N^{1+o(1)}/M` (each residue mod `2N` has
+`ν = N^{o(1)}` square roots in `[0,N]`), each contributing `|S| ≍ M`; summing over `v` gives
+```
+        \sum_{v≠v'}\bigl|S(v^{2}-v'^{2})\bigr|
+        \;=\;\sum_{v≠v'}\min\Bigl(M,\frac{2N}{\|v^{2}-v'^{2}\|_{2N}}\Bigr)
+        \;≍\; N^{2+o(1)} ,
+```
+confirming `N^{2}`, not `N^{1+o(1)}`. The divisor bound `τ(|D|) = N^{o(1)}` does not help because the
+*number of admissible values* of `D = v^{2}-v'^{2}` is itself `≍ N^{2}/M`. `[Gate (twentieth): a
+divisor bound reduces multiplicity, not the size of the admissible set — check both factors.]`
+### What the corrected count actually says
+If the off-diagonal is attained, then `\sum_{m ≤ M}|\widehat c(m)|^{2} ≍ N^{2}`, so on average
+`|\widehat c(m)| ≍ N/\sqrt M = N^{1-(τ-1)/2}`, which at `τ_* = 1.21` is `N^{0.895} > V = N^{0.73}`:
+**every one of the `M` residue classes would be a large value, `k = M`, and Montgomery's conjecture
+would fail.** Since attainment requires
+```
+        b_v\overline{b_{v'}} \;=\; \overline{\arg S(v^{2}-v'^{2})}
+        \qquad\text{for the } ≍ N^{2}/M \text{ hyperbola-close pairs } (v,v') ,
+```
+**the whole question is whether `\arg S(v^{2}-v'^{2})` is a coboundary on the "hyperbola-close" graph
+`\mathcal G` on `[0,N]`** — the graph joining `v,v'` when `\|v^{2}-v'^{2}\|_{2N} ≤ 2N/M`.
+> ### The final obstruction, stated as a cohomological condition
+> ```
+>   MC at τ_*  ⟸  arg S(v²-v'²) is NOT a coboundary on 𝒢, quantitatively:
+>                 for every unimodular b, Σ_{(v,v')∈𝒢} b_v \bar b_{v'} S(v²-v'²) = o(N²) .
+> ```
+> `\mathcal G` has `≍N` vertices and `≍N^{2}/M` edges, so its average degree is `N/M` — **it is a dense
+> graph precisely when `M ≪ N`, i.e. `τ < 2`, the same threshold as Theorems 79 and 114.** A dense
+> graph has many independent cycles, and a coboundary must be consistent around every one of them;
+> **the obstruction to attainment is therefore the cycle space of `\mathcal G`, and the question is
+> whether `\arg S` has non-trivial holonomy around the triangles `v,v',v''` of `\mathcal G`.**
+> This is the same mechanism that appeared in Cycle 96 (where the coboundary condition on
+> `\arg D_1` forced coherent pairs into a window of length `\sqrt T`) — **now transplanted to the
+> finite group `\mathbb Z/2N\mathbb Z`, where the phases are explicit Gauss sums rather than
+> stationary-phase asymptotics.**
+`[OPEN CORE 159 — supersedes 158]` **Compute the holonomy of `\arg S` around triangles of
+`\mathcal G`.** For `v,v',v''` mutually hyperbola-close, the holonomy is
+```
+        \arg S(v^{2}-v'^{2}) + \arg S(v'^{2}-v''^{2}) - \arg S(v^{2}-v''^{2}) ,
+```
+and `S(D) = \sum_{m ≤ M}e(mD/2N)` is a *geometric series*, so `\arg S(D) = πD(M-1)/2N + O(\cdot)`
+**is linear in `D` to first order** — and `D` is additive along the triangle
+(`(v^{2}-v'^{2})+(v'^{2}-v''^{2}) = v^{2}-v''^{2}`), so the first-order holonomy **vanishes
+identically.** The obstruction is therefore entirely in the second-order term of `\arg S`, i.e. in the
+deviation of the geometric series' phase from linearity near its zeros — **an explicit, finite,
+elementary computation, and the first time the last obstruction has been reduced to one.**

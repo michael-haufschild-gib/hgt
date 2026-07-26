@@ -2069,3 +2069,4 @@ import GaloisForLFunctions.HTGeometry.QuadraticWeylBound
 import GaloisForLFunctions.HTGeometry.CorrelationExponentBridge
 import GaloisForLFunctions.HTGeometry.AmplifierEnergyBound
 import GaloisForLFunctions.HTGeometry.RoundingVarianceFloor
+import GaloisForLFunctions.HTGeometry.UnitProductRigidity
