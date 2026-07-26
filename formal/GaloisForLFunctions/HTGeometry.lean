@@ -2255,3 +2255,4 @@ import GaloisForLFunctions.HTGeometry.FundamentalParallelogram
 import GaloisForLFunctions.HTGeometry.EllipticFundamentalPoles
 import GaloisForLFunctions.HTGeometry.EllipticCountingTools
 import GaloisForLFunctions.HTGeometry.EllipticJetValueMap
+import GaloisForLFunctions.HTGeometry.EllipticJetVanishing

@@ -1441,3 +1441,23 @@ principal parts of the combination itself (`principalJet_finset_sum`, using
 `order_monomial_ge_of_le` and `nonneg_order_poleFactor` to supply the cleared-order hypotheses),
 conclude via `exists_const_sub_of_lattice_periodic` that the combination vanishes off the poles, and
 multiply by the value slot `y_0`.
+
+#### Assembly step (d), first half: vanishing jets mean no pole
+
+`GaloisForLFunctions/HTGeometry/EllipticJetVanishing.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- **`nonneg_order_of_principalJet_eq_zero`** — if the principal-part coefficients of `g` at `p`
+  relative to the clearing exponent `d` all vanish, then `g` has nonnegative order at `p`, i.e. no
+  pole.
+
+The bridge is mathlib's `natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero`, the Taylor-coefficient
+characterisation of the order of a zero: vanishing jets give `d <= analyticOrderAt (poleClear g p d) p`,
+and `meromorphicOrderAt_poleFactor_mul` says that order is `d + ord(g)`, so `ord(g) >= 0`.
+
+**A Lean trap worth recording.**  `analyticOrderAt` lives in `ENat` and `meromorphicOrderAt` in
+`WithTop Z`, and the bridge `AnalyticAt.meromorphicOrderAt_eq` is stated with `ENat.map`.  Splitting
+on `WithTop.ne_top_iff_exists` introduces the `WithTop.some` coercion, which does not match the
+`Nat.cast` coercion in the order statement, so neither `simp` nor `exact_mod_cast` can close the gap.
+Pushing the inequality through `ENat.monotone_map_iff` instead avoids the case split and the mismatch
+entirely.
