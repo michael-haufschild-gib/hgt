@@ -4671,3 +4671,82 @@ one making ghat most concentrated in |r| < 2 pi subject to type L — by cycle 7
 reproducing-kernel extremiser, i.e. ghat = |K_{i/2}(r) + K_{-i/2}(r)|^2 normalised. COMPUTE THE RUNG
 AT THAT EXTREMISER: it turns the inequality into a closed-form digamma integral against an explicit
 Fejer-type kernel, and its sign is decidable by classical estimates on Re psi.
+
+---
+
+## Cycle 81 (2026-07-26) — PHASE-1 CAUGHT A DUPLICATE. THE SALVAGE IS A CROSS-VALIDATION.
+
+### THE SEARCH SAVE (record this — it is the second time the object-level rule paid)
+Planned target: prove the pole form has Krein signature (1,1) with directions cosh(u/2), sinh(u/2).
+`rg "pole form|poleForm"` found `RHTower/PoleFormDiagonalization.lean`, which ALREADY HAS:
+  * pole_diagonalize : 2(P+Q)(P-Q) = 2P^2 - 2Q^2 — the signature (1,1) splitting,
+  * sinh_half_sq, the closed form ||s||^2 = sinh l - l (in prose), its cubic smallness,
+  * a baseline dichotomy on whether <h,c>^2 is small.
+MY INTENDED CYCLE WAS A DUPLICATE. Do not re-derive it. The rule that caught it is the cycle-74 rule:
+SEARCH FOR THE OBJECT ("pole form"), NOT THE TOOL ("Krein signature").
+
+### What was genuinely absent, and is now proved
+The existing file computes only the NEGATIVE direction. The positive one was never computed:
+
+    ||cosh(./2)||^2_{L^2[-l,l]} = sinh l + l         (new)
+    ||sinh(./2)||^2_{L^2[-l,l]} = sinh l - l         (formalised here for the first time)
+
+so the pole form's two eigenvalues on the unit sphere are  mu+ = 2(sinh l + l),
+mu- = -2(sinh l - l).
+
+### CROSS-VALIDATION OF CYCLE 78 BY AN INDEPENDENT ROUTE
+With l = L/2,   mu+ = 2 sinh(L/2) + L  =  2 * detectionCeiling(1/2, L).
+The cycle-78 constant was derived from the PALEY-WIENER REPRODUCING KERNEL and a polarization
+argument. Here it falls out of  int cosh^2  — NO REPRODUCING KERNEL ANYWHERE. Two independent
+derivations of the same sharp constant.
+
+    ==> THE KREIN-POSITIVE DIRECTION OF THE POLE FORM IS THE PALEY-WIENER EXTREMISER AT
+        DEVIATION 1/2:   cosh(u/2)  =  the even part of e^{u/2}  =  K_{i/2} + K_{-i/2}.
+
+This also identifies the extremiser of cycle 78 concretely, which the polarization argument gave only
+abstractly as (u+v)/||u+v||.
+
+### THE TRACE IS THE LENGTH OF THE INTERVAL
+    mu+ + mu-  =  2(sinh l + l) - 2(sinh l - l)  =  4 l  =  2 L,
+because cosh^2 - sinh^2 = 1: THE TRANSCENDENTAL PARTS CANCEL IDENTICALLY and what survives is
+2 * int_I 1 du. Since the Nyquist density of PW_{L/2} is L/2pi (cycle 79),
+
+    mu+ + mu-  =  4 pi * (NYQUIST DENSITY OF THE TEST SPACE).
+
+    ==> THE NET WEIGHT OF THE POLE IS THE LENGTH OF THE SUPPORT INTERVAL — ONE NYQUIST CELL.
+        THE POLE OF ZETA ENTERS THE WEIL FORM AS EXACTLY ONE ZERO AT DEVIATION 1/2, AND
+        cosh^2 - sinh^2 = 1 IS WHAT MAKES THE COUNT EXACT.
+
+That links cycle 79 (Nyquist) to the pole term, and explains the +1 in the zero-counting function
+N(T) as the pole's Nyquist cell.
+
+Machine-verified: `RHTower/PoleKreinNyquistTrace.lean` (cosh half-angle identity, the interval
+primitive of cosh proved from deriv sinh, BOTH L^2 norms, the trace identity, the pythagorean source
+of the cancellation, the match with the detection ceiling, the Nyquist-cell restatement, and
+indefiniteness; standard axioms only, wired into RHTower).
+
+### CORRECTED EXPECTATION FOR THE LADDER
+Cycle 80 said the most informative rungs are just below each prime-power threshold. Now quantified:
+the pole ceiling grows like e^{L/2} (from mu+ = 2 sinh(L/2)+L) and the crude prime bound
+sum_{n<=e^L} Lambda(n)/sqrt n ~ 2 e^{L/2} gives a prime side up to ~4 e^{L/2} g(0) — THE SAME
+EXPONENTIAL RATE, with the primes ahead by a factor 4. The rung is therefore NOT asymptotically
+slack: both sides are e^{L/2} and only the constant decides. The archimedean term is merely
+logarithmic and cannot bridge a constant-factor gap at large L. SO THE LADDER IS TIGHT AT EVERY
+HEIGHT, and the crude prime bound |g| <= g(0) must be far from achievable — quantifying that gap is
+the real content.
+
+### STATE AT CYCLE 81
+Fifteen entries (no new entry this cycle — a duplicate was avoided and a cross-validation banked).
+RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 82 target
+Quantify the gap just identified. DEFINE Pi(L) = max { 2 sum_{n<=e^L} Lambda(n) n^{-1/2} g(log n) }
+over positive-type g of width L with g(0)=1 — the TOP EIGENVALUE OF THE COMPRESSED PRIME OPERATOR.
+The crude bound is Pi(L) <= 4 e^{L/2}; the pole supplies only 2 sinh(L/2)+L ~ e^{L/2}. RH REQUIRES
+Pi(L) <= mu+ + A_inf(L), so RH REQUIRES Pi(L) <= (1+o(1)) e^{L/2} — A FACTOR 4 BELOW THE CRUDE
+BOUND. Conjecture: the true Pi(L) is exactly 2 e^{L/2}(1+o(1)), i.e. HALF the crude bound, because
+|g(u)| <= g(0) is attainable only at u=0 and the positive-type constraint forces an averaging loss of
+exactly 1/2 over the prime-log lattice. IF Pi(L) > mu+ + A_inf(L) FOR SOME L, RH IS FALSE. This is
+the sharpest falsification target the programme has produced: it needs no zeros, no archimedean
+subtlety, only the extremal value of a compressed prime operator against an explicit elementary
+ceiling.

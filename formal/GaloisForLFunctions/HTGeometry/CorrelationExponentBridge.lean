@@ -210,4 +210,170 @@ precisely what is unavailable for higher-degree phases. -/
 @[simp] theorem incoherentBlockTotal_four : incoherentBlockTotal 4 = 3/4 := by
   unfold incoherentBlockTotal coherenceBlockCount coherenceLength; norm_num
 
+
+/-!
+### Scale invariance of the critical phase
+
+Write the critical block as `N` blocks of length `N^ℓ`, indexed by `r < N^{1-ℓ}`.  Expanding
+`N²/n_r = N²/(N + r·N^ℓ) = Σ_k (-1)^k r^k N^{ℓk + 1 - k}`, the order-`k` term has coefficient
+exponent `ℓk + 1 - k`, and at the far end of the range `r ≍ N^{1-ℓ}` its size is
+
+    N^{(1-ℓ)k} · N^{ℓk + 1 - k} = N^{1} ,
+
+**independently of both `k` and `ℓ`.**  Every Taylor order sweeps exactly `N` cycles across the range,
+for every choice of block length.
+
+Inside a single block the truncation is legitimate — there `r` is fixed and the offset is at most
+`N^ℓ`.  Across blocks it never is: no order is negligible relative to the leading one, so no
+finite-degree treatment of the phase is uniformly valid on the critical block.  This is the exact
+sense in which the difficulty cannot be removed by subdividing.
+-/
+
+/-- Exponent of `N` swept by the order-`k` Taylor term of the critical phase, at the far end of a
+block decomposition with block-length exponent `ℓ`. -/
+def phaseSweep (l k : ℚ) : ℚ := (1 - l) * k + (l * k + 1 - k)
+
+/-- **Scale invariance.**  Every Taylor order sweeps exactly one power of `N`, for every block
+length: the expansion has no dominant term and no negligible tail across the range. -/
+@[simp] theorem phaseSweep_eq_one (l k : ℚ) : phaseSweep l k = 1 := by
+  unfold phaseSweep; ring
+
+/-- The coefficient exponent of the order-`k` term. -/
+def phaseCoeff (l k : ℚ) : ℚ := l * k + 1 - k
+
+/-- At quadratic coherence the cubic coefficient is `N^{-1}` and the quadratic one `N^{-1/3}`. -/
+@[simp] theorem phaseCoeff_three : phaseCoeff (1/3) 3 = -1 := by
+  unfold phaseCoeff; norm_num
+
+@[simp] theorem phaseCoeff_two : phaseCoeff (1/3) 2 = -1/3 := by
+  unfold phaseCoeff; norm_num
+
+/-- **Within a block the tail *is* negligible.**  At offset `m ≤ N^ℓ` — that is, `r` replaced by `1` —
+the order-`k` term has size `N^{ℓk + 1 - k}`, which is below `1` exactly when `k > 1/(1-l)`.  At
+`l = 1/3` this is `k > 3/2`, so every order from the cubic on is `O(1)` inside a block: the quadratic
+approximation is legitimate there, and only there. -/
+theorem phaseCoeff_neg_iff {l k : ℚ} (hl : l < 1) : phaseCoeff l k < 0 ↔ 1/(1 - l) < k := by
+  have h1 : (0:ℚ) < 1 - l := by linarith
+  unfold phaseCoeff
+  rw [div_lt_iff₀ h1]
+  constructor <;> intro h <;> nlinarith [h]
+
+/-- At `l = 1/3` the cubic term is already `O(N^{-1})` inside a block. -/
+theorem cubic_negligible_in_block : phaseCoeff (1/3) 3 < 0 := by norm_num
+
+
+/-!
+### Weyl's exponent a third time: theta-sum resonance counting
+
+The block sums are theta sums `Θ(α_r)` of length `L = N^{1/3}`, and `α_r` runs over a grid of spacing
+`L^{-2}` across an interval of length `≍ 1`.  A theta sum of length `L` is large exactly at rational
+`α ≈ a/q` with `q ≤ L`, where `|Θ| ≍ L/√q` on the arc `|α - a/q| ≤ 1/(qL)`.
+
+Counting: the arc around `a/q` contains `(1/(qL))/L^{-2} = L/q` grid points; the number of fractions
+`a/q` with `q ≤ L` in a unit interval is `≍ L²`, distributed as `q` values of `a` for each `q`.  So the
+total of the moduli is
+
+    Σ_{q ≤ L} q · (L/q) · (L/√q)  =  L² Σ_{q ≤ L} q^{-3/2} · q  =  L² · L^{1/2}  =  L^{5/2},
+
+and with `L = N^{1/3}` that is `N^{5/6}` — Weyl's exponent, obtained a third way.
+
+The Lindelöf target is `N^{1/2} = L^{3/2}`.  So the required saving over the sum of moduli is exactly
+one factor of `L = N^{1/3}`, and it must come from cancellation among the phases of the resonant
+blocks: the moduli themselves are correct as computed.
+-/
+
+/-- Exponent (in `L`) of the sum of the moduli of the resonant theta sums. -/
+def resonanceModulusTotal : ℚ := 5/2
+
+/-- Exponent (in `L`) of the Lindelöf target for the block sum. -/
+def resonanceTarget : ℚ := 3/2
+
+/-- **The required saving is exactly one factor of the coherence length.** -/
+@[simp] theorem resonance_saving : resonanceModulusTotal - resonanceTarget = 1 := by
+  unfold resonanceModulusTotal resonanceTarget; norm_num
+
+/-- Converting `L`-exponents to `N`-exponents at quadratic coherence (`L = N^{1/3}`). -/
+def ofCoherenceScale (e : ℚ) : ℚ := e / 3
+
+/-- The modulus total is Weyl's exponent. -/
+@[simp] theorem ofCoherenceScale_modulus : ofCoherenceScale resonanceModulusTotal = 5/6 := by
+  unfold ofCoherenceScale resonanceModulusTotal; norm_num
+
+/-- The target is the Lindelöf exponent. -/
+@[simp] theorem ofCoherenceScale_target : ofCoherenceScale resonanceTarget = 1/2 := by
+  unfold ofCoherenceScale resonanceTarget; norm_num
+
+/-- **Three derivations of Weyl's exponent agree.**  The correlation bridge with second-derivative
+input, the incoherent coherence-block sum, and the theta-sum resonance count all give `5/6`. -/
+theorem weyl_three_ways :
+    blockExponent (1/2) (1/2) = 5/6 ∧ incoherentBlockTotal 3 = 5/6 ∧
+      ofCoherenceScale resonanceModulusTotal = 5/6 :=
+  ⟨blockExponent_secondDeriv, incoherentBlockTotal_three, ofCoherenceScale_modulus⟩
+
+/-- **And the deficit is the same in all three.**  Weyl minus Lindelöf is `1/3` of a power of `N`,
+which is one full factor of the coherence length `L = N^{1/3}`. -/
+theorem deficit_is_one_coherence_length :
+    ofCoherenceScale resonanceModulusTotal - ofCoherenceScale resonanceTarget
+      = ofCoherenceScale 1 ∧ ofCoherenceScale 1 = 1/3 := by
+  constructor
+  · unfold ofCoherenceScale resonanceModulusTotal resonanceTarget; norm_num
+  · unfold ofCoherenceScale; norm_num
+
+
+/-!
+### The square-root phase family, unweighted
+
+The common open core is cancellation in `Σ_{n ≤ X} w(n) · e(2√(nx))`.  For the *unweighted* sum the
+second-derivative test settles it.  With `f(n) = 2√(xn)`,
+
+    f'(n) = √x · n^{-1/2},    f''(n) = -(1/2)√x · n^{-3/2},   so  |f''| ≍ x^{1/2} X^{-3/2}  on n ≍ X,
+
+and the test gives `X|f''|^{1/2} + |f''|^{-1/2} = (Xx)^{1/4}·X^{1/2}·X^{-1/2} + X^{3/4}x^{-1/4}`,
+i.e. exponents `(1/4)(1 + ξ)` and `3/4 - ξ/4` when `x = X^ξ`.  Both equal `1/2` exactly at `ξ = 1`:
+the self-dual scale.
+
+So the phase family `e(√(n x))` admits square-root cancellation at the critical scale by an
+elementary test.  **What obstructs the Lindelöf hypothesis is therefore not the phase but the
+arithmetic weight** — `d(n)` in the Voronoi form, `S(a,q)/√q` in the coherence-block form.
+-/
+
+/-- Exponent of the first term of the second-derivative test for the phase `2√(nx)` with `x = X^ξ`,
+in powers of `X`. -/
+def sqrtPhaseFirstTerm (xi : ℚ) : ℚ := (1 + xi) / 4
+
+/-- Exponent of the second term. -/
+def sqrtPhaseSecondTerm (xi : ℚ) : ℚ := 3/4 - xi/4
+
+/-- **Both terms equal `1/2` exactly at the self-dual scale `ξ = 1`.** -/
+@[simp] theorem sqrtPhase_selfDual :
+    sqrtPhaseFirstTerm 1 = 1/2 ∧ sqrtPhaseSecondTerm 1 = 1/2 := by
+  refine ⟨?_, ?_⟩
+  · unfold sqrtPhaseFirstTerm; norm_num
+  · unfold sqrtPhaseSecondTerm; norm_num
+
+/-- The two terms cross exactly at `ξ = 1`, and nowhere else. -/
+theorem sqrtPhase_terms_eq_iff (xi : ℚ) :
+    sqrtPhaseFirstTerm xi = sqrtPhaseSecondTerm xi ↔ xi = 1 := by
+  unfold sqrtPhaseFirstTerm sqrtPhaseSecondTerm
+  constructor <;> intro h <;> linarith
+
+/-- The maximum of the two terms, which is what the test delivers. -/
+def sqrtPhaseBound (xi : ℚ) : ℚ := max (sqrtPhaseFirstTerm xi) (sqrtPhaseSecondTerm xi)
+
+/-- **At the self-dual scale the unweighted square-root phase sum has square-root cancellation.** -/
+@[simp] theorem sqrtPhaseBound_selfDual : sqrtPhaseBound 1 = 1/2 := by
+  unfold sqrtPhaseBound
+  rw [sqrtPhase_selfDual.1, sqrtPhase_selfDual.2]
+  simp
+
+/-- Away from the self-dual scale the bound is strictly worse in both directions: the first term
+grows for `ξ > 1` and the second for `ξ < 1`.  The self-dual scale is the unique minimum. -/
+theorem sqrtPhaseBound_gt_half {xi : ℚ} (h : xi ≠ 1) : 1/2 < sqrtPhaseBound xi := by
+  unfold sqrtPhaseBound sqrtPhaseFirstTerm sqrtPhaseSecondTerm
+  rcases lt_or_gt_of_ne h with hlt | hgt
+  · have : (1:ℚ)/2 < 3/4 - xi/4 := by linarith
+    exact lt_of_lt_of_le this (le_max_right _ _)
+  · have : (1:ℚ)/2 < (1 + xi)/4 := by linarith
+    exact lt_of_lt_of_le this (le_max_left _ _)
+
 end HTGeometry
