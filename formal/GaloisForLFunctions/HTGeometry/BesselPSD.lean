@@ -377,4 +377,66 @@ theorem integral_bessel_of_orthonormal (B : V → V → ℂ)
     rw [← Complex.ofReal_intCast, Complex.norm_real, Real.norm_eq_abs]]
   rw [sq_abs]
 
+
+/-- **Cauchy–Schwarz for a positive semi-definite sesquilinear form.**  No definiteness is used, so
+this applies to limits of positive forms such as the logarithmic prime form. -/
+theorem cauchy_schwarz_psd (B : V → V → ℂ)
+    (hadd₁ : ∀ x y z, B (x + y) z = B x z + B y z)
+    (hsmul₁ : ∀ (c : ℂ) (x y : V), B (c • x) y = c * B x y)
+    (hconj : ∀ x y, B y x = (starRingEnd ℂ) (B x y))
+    (hpsd : ∀ x, 0 ≤ (B x x).re) (x y : V) :
+    ‖B x y‖ ^ 2 ≤ (B x x).re * (B y y).re := by
+  classical
+  have hsub₁ : ∀ p q r : V, B (p - q) r = B p r - B q r := by
+    intro p q r
+    have h := hadd₁ (p - q) q r
+    simp only [sub_add_cancel] at h
+    linear_combination -h
+  have hsub₂ : ∀ p q r : V, B p (q - r) = B p q - B p r := by
+    intro p q r
+    have h1 : B p (q - r) = (starRingEnd ℂ) (B (q - r) p) := hconj (q - r) p
+    rw [h1, hsub₁, map_sub, ← hconj, ← hconj]
+  have hsm₂ : ∀ (c : ℂ) (p q : V), B p (c • q) = (starRingEnd ℂ) c * B p q := by
+    intro c p q
+    have h1 : B p (c • q) = (starRingEnd ℂ) (B (c • q) p) := hconj (c • q) p
+    rw [h1, hsmul₁, map_mul, ← hconj]
+  set N : ℝ := ‖B x y‖ with hN
+  set v : V := (B x y) • y with hv
+  have hNsq : B x y * (starRingEnd ℂ) (B x y) = ((N ^ 2 : ℝ) : ℂ) := by
+    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hN]
+  have hxv : B x v = ((N ^ 2 : ℝ) : ℂ) := by
+    rw [hv, hsm₂, ← hNsq]; ring
+  have hvx : B v x = ((N ^ 2 : ℝ) : ℂ) := by
+    rw [hv, hsmul₁, hconj x y]; exact hNsq
+  have hvv : B v v = ((N ^ 2 : ℝ) : ℂ) * B y y := by
+    rw [hv, hsmul₁, hsm₂, ← mul_assoc, hNsq]
+  have hkey : ∀ t : ℝ, 0 ≤ (B x x).re - 2 * t * N ^ 2 + t ^ 2 * (N ^ 2 * (B y y).re) := by
+    intro t
+    have hp := hpsd (x - (t : ℂ) • v)
+    rw [hsub₁, hsub₂, hsub₂, hsmul₁, hsm₂, hsm₂, hsmul₁, Complex.conj_ofReal,
+      hxv, hvx, hvv] at hp
+    have hre : (B x x - (t : ℂ) * ((N ^ 2 : ℝ) : ℂ)
+        - ((t : ℂ) * ((N ^ 2 : ℝ) : ℂ) - (t : ℂ) * ((t : ℂ) * (((N ^ 2 : ℝ) : ℂ) * B y y)))).re
+        = (B x x).re - 2 * t * N ^ 2 + t ^ 2 * (N ^ 2 * (B y y).re) := by
+      simp [Complex.sub_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
+      ring
+    rw [hre] at hp
+    exact hp
+  have hA : 0 ≤ (B y y).re := hpsd y
+  rcases (norm_nonneg (B x y)).lt_or_eq with hNpos | hN0
+  · have hNp : 0 < N := hNpos
+    rcases eq_or_lt_of_le hA with hA0 | hApos
+    · have h1 := hkey (((B x x).re + 1) / N ^ 2)
+      rw [← hA0] at h1
+      have : (0:ℝ) < N ^ 2 := by positivity
+      field_simp at h1
+      nlinarith [h1, this]
+    · have h := hkey (1 / (B y y).re)
+      have hne : (B y y).re ≠ 0 := ne_of_gt hApos
+      field_simp at h
+      nlinarith [h, hApos, hNp]
+  · rw [hN] at hN0
+    rw [← hN0]
+    simpa using mul_nonneg (hpsd x) (hpsd y)
+
 end HTGeometry

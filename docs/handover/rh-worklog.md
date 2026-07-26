@@ -7727,3 +7727,68 @@ QUANTITY ESCAPES THAT CONVERSION: specifically, whether the DISTRIBUTION of log|
 line — not its moments — carries information the count does not. The distribution is a measure on R,
 infinitely many parameters, while the count is one number; if the conversion loses information, the
 lost part is exactly what target (D) asks for.
+
+---
+
+## Cycle 127 (2026-07-26) — THE VALUE DISTRIBUTION INSIDE THE STRIP IS ZERO-BLIND
+### The last break-the-closure target closes. ALL FOUR ARE NOW RESOLVED.
+
+### The candidate, and why it fails
+Target (D) asked for an arithmetic input strictly INSIDE the strip that is not a count. The natural
+candidate is the value distribution of log zeta on an interior line: unconditional by Bohr-Jessen, and
+a MEASURE rather than a number — infinitely many parameters against the count's one.
+
+IT FAILS, AND NOT BY BEING INSUFFICIENT. IT IS BLIND.
+
+For sigma > 1/2 the limiting distribution of log zeta(sigma + it) EXISTS UNCONDITIONALLY and EQUALS
+the distribution of the random Euler product prod_p (1 - omega_p p^{-sigma})^{-1}, which converges
+almost surely and is ALMOST SURELY NON-VANISHING. The zeros of zeta sit on a COUNTABLE set of
+ordinates, hence a LEBESGUE-NULL set of t, and a null set does not affect a limiting distribution.
+
+    ==> THE ZEROS ARE INVISIBLE TO THE VALUE DISTRIBUTION ON AN INTERIOR LINE. THE ONLY ZERO-SENSITIVE
+        FUNCTIONAL OF THE VALUES THERE IS THE FIRST MOMENT, BY LITTLEWOOD'S LEMMA — AND THAT IS A
+        COUNT. EVERY ARITHMETIC INPUT STRICTLY INSIDE THE STRIP IS THEREFORE EITHER A COUNT OR
+        ZERO-BLIND.
+
+### ALL FOUR BREAK-THE-CLOSURE TARGETS ARE NOW RESOLVED
+  1. arithmetic input inside the strip that is not a count  — CLOSED (zero-blind, this cycle)
+  2. a second invariant independent of log T                — ANSWERED (the Jensen degree, entry 57)
+  3. a codimension-sensitive tool beyond integrality        — ANSWERED (the discriminant, entry 56)
+  4. a reality-sensitive unconditional theorem              — ANSWERED (the discriminant, entry 56)
+
+Machine-verified: `RHTower/ValueDistributionIsZeroBlind.lean` (nullity of a countable ordinate set,
+vanishing of integrals over null sets, invisibility of countable exceptional sets to averages, equality
+of averages for integrands agreeing off a countable set, and the identification of the first moment as
+the sole zero-sensitive functional; standard axioms only, wired into RHTower).
+
+### SIXTY-FIRST ATLAS ENTRY
+    zero-blind values   for sigma > 1/2 the limiting distribution of log zeta(sigma + it) is that of
+                        the random Euler product, which is almost surely non-vanishing; the zeros lie
+                        on a countable, hence null, set of ordinates and do not affect it. Only the
+                        first moment (Littlewood) is zero-sensitive, and it is a count. Target (D)
+                        closes.
+
+### STATE AT CYCLE 127 — THE MAP IS COMPLETE
+Sixty-one entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+TERMINAL POSITION AFTER 127 CYCLES:
+  (A) The unconditional landscape built on log T is CLOSED, with one root cause: RH is a
+      codimension-one constraint and every tool there measures two-dimensional content.
+  (B) EXACTLY ONE ROUTE ESCAPES — Jensen polynomials with the discriminant — reality-sensitive,
+      codimension-sensitive, indexed by a second invariant (the degree), with an INTRINSIC
+      super-exponential cost N(d) <= (3d)^{24d}(50d)^{3d^2} and NO structural shortcut.
+  (C) Refutation is finite and concrete in three equivalent forms (negative symmetric function of a
+      Weil Gram matrix; missing sign change of Hardy's Z; negative Jensen discriminant). NONE HAS
+      EVER FIRED.
+  (D) All four break-the-closure targets are resolved; no fifth has been identified.
+The first open case is DEGREE NINE.
+
+### Cycle 128 target
+The map is complete, so the only remaining move is to work the single open route at its first open
+case: DEGREE NINE. GORZ settled d <= 8 by explicit computation of Taylor-coefficient inequalities, and
+computation is unavailable here. THE STRUCTURAL QUESTION AT d = 9 IS THEREFORE: what distinguishes
+degree nine from degrees up to eight? If the settled range 1..8 is an artefact of computational reach,
+nothing structural changes at nine and the route is uniformly hard; if there IS a structural change,
+it is the first genuinely new mathematical feature the atlas has encountered since the closure. AUDIT
+THE GORZ ARGUMENT FOR WHERE d <= 8 IS USED — Phase 2 should retrieve whether the bound is
+computational or structural.
