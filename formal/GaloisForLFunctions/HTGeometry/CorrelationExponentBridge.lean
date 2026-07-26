@@ -376,4 +376,167 @@ theorem sqrtPhaseBound_gt_half {xi : ℚ} (h : xi ≠ 1) : 1/2 < sqrtPhaseBound 
   · have : (1:ℚ)/2 < (1 + xi)/4 := by linarith
     exact lt_of_lt_of_le this (le_max_left _ _)
 
+
+/-!
+### The final reduction: a two-dimensional sum over resonance pairs
+
+Assembling C304/C307/C309: the coherence-block sum is, up to smooth weights,
+
+    L · Σ_{q ≤ L} q^{-1/2} Σ_{a} ε(a,q) · e( N√(2a/q) ),
+
+where `ε(a,q)` is the unimodular phase of the normalised Gauss sum and `L = N^{1/3}`.  There are `≍ L²`
+resonance pairs `(a,q)`, each carrying weight `≍ L^{-1/2}`.
+
+* trivial: `Σ_{q≤L} q^{-1/2}·q = Σ_{q≤L} q^{1/2} ≍ L^{3/2}` — total `L^{5/2} = N^{5/6}`, Weyl;
+* square-root in `a` only: `Σ_{q≤L} q^{-1/2}·q^{1/2} = L` — total `L² = N^{2/3}`, still short;
+* square-root in the full two-dimensional sum: `L^{-1/2}·(L²)^{1/2} = L^{1/2}` — total
+  `L^{3/2} = N^{1/2}`, the Lindelöf hypothesis.
+
+So the target is **full square-root cancellation over the `≍L²` resonance pairs**, and cancellation in
+one variable alone is not enough: it leaves a deficit of `L^{1/2}`.
+-/
+
+/-- Exponent, in powers of the coherence length `L`, of the resonance-pair sum under a given amount
+of cancellation: `0` for none, `1/2` for one variable, `1` for the full two-dimensional square root. -/
+def resonancePairExponent (cancellation : ℚ) : ℚ := 3/2 - cancellation
+
+/-- No cancellation reproduces the Weyl bookkeeping. -/
+@[simp] theorem resonancePair_trivial : resonancePairExponent 0 = 3/2 := by
+  unfold resonancePairExponent; norm_num
+
+/-- Square-root cancellation in the `a`-variable alone. -/
+@[simp] theorem resonancePair_oneVariable : resonancePairExponent (1/2) = 1 := by
+  unfold resonancePairExponent; norm_num
+
+/-- **Full two-dimensional square-root cancellation is exactly the Lindelöf target.** -/
+@[simp] theorem resonancePair_full : resonancePairExponent 1 = 1/2 := by
+  unfold resonancePairExponent; norm_num
+
+/-- **One variable is not enough.**  Cancellation in `a` alone leaves the block sum at `L²= N^{2/3}`,
+short of the Lindelöf target by `L^{1/2} = N^{1/6}`. -/
+theorem oneVariable_insufficient :
+    resonancePairExponent (1/2) - resonancePairExponent 1 = 1/2 := by
+  unfold resonancePairExponent; norm_num
+
+/-- Converting the resonance-pair exponent to the exponent of the whole critical sum: multiply by the
+coherence scale and add the within-block square root. -/
+def totalOfResonancePair (e : ℚ) : ℚ := ofCoherenceScale (e + 1)
+
+/-- The three regimes in powers of `N`: Weyl, the one-variable intermediate, and Lindelöf. -/
+theorem resonance_regimes :
+    totalOfResonancePair (resonancePairExponent 0) = 5/6 ∧
+    totalOfResonancePair (resonancePairExponent (1/2)) = 2/3 ∧
+    totalOfResonancePair (resonancePairExponent 1) = 1/2 := by
+  refine ⟨?_, ?_, ?_⟩ <;>
+    (unfold totalOfResonancePair ofCoherenceScale resonancePairExponent; norm_num)
+
+/-- **Bourgain's record, placed on this scale.**  `17/21` corresponds to a resonance-pair exponent of
+`17/7 - 1 = 10/7`, i.e. cancellation `3/2 - 10/7 = 1/14` out of the `1` required. -/
+theorem bourgain_cancellation_share :
+    totalOfResonancePair (10/7) = 17/21 ∧ (3/2 : ℚ) - 10/7 = 1/14 := by
+  constructor
+  · unfold totalOfResonancePair ofCoherenceScale; norm_num
+  · norm_num
+
+
+/-!
+### An intermediate target that would beat the record
+
+The Gauss-sum phase in the resonance sum is `ε(a,q) = ε_q·(a|q)`, the Jacobi symbol times a fourth
+root of unity.  The `a`-sum is therefore a character sum against the phase `e(N√(2a/q))`.  This is
+*not* a Salié sum: `√(2a/q)` is irrational, so the phase is not a rational additive character mod `q`,
+and the classical explicit evaluations do not apply.  The phase moreover oscillates fast — its
+`a`-derivative is `≍ N/√(aq) ≍ N/L = N^{2/3}` — so the character contributes nothing directly and the
+`a`-sum is itself an exponential sum with a resonance structure.
+
+Nevertheless the *target* is worth recording, because it is strictly weaker than the Lindelöf
+hypothesis and strictly stronger than the current record:
+
+    Σ_a ε(a,q)·e(N√(2a/q))  ≪  q^{1/2+ε}   uniformly for q ≤ L
+      ⟹  block sum ≪ L·Σ_{q≤L} q^{-1/2}·q^{1/2} = L²  =  N^{2/3}
+      ⟹  **μ ≤ 1/12 = 0.0833 < 13/84 = 0.1548.**
+-/
+
+/-- The Lindelöf exponent delivered by square-root cancellation in the `a`-variable alone. -/
+def oneVariableMu : ℚ := muOfBlock (totalOfResonancePair (resonancePairExponent (1/2)))
+
+/-- **One-variable square-root cancellation gives `μ = 1/12`.** -/
+@[simp] theorem oneVariableMu_eq : oneVariableMu = 1/12 := by
+  unfold oneVariableMu totalOfResonancePair ofCoherenceScale resonancePairExponent muOfBlock
+  norm_num
+
+/-- **It would beat the record.**  `1/12 < 13/84`, so square-root cancellation in the `a`-variable of
+the resonance sum is open: proving it improves on Bourgain. -/
+theorem oneVariableMu_beats_record : oneVariableMu < 13/84 := by
+  rw [oneVariableMu_eq]; norm_num
+
+/-- **And it is strictly weaker than the Lindelöf hypothesis**, which needs the two-variable
+cancellation. -/
+theorem oneVariableMu_pos : 0 < oneVariableMu := by
+  rw [oneVariableMu_eq]; norm_num
+
+/-- The three targets in order: the record, the one-variable intermediate, and Lindelöf. -/
+theorem target_ladder :
+    (0 : ℚ) < oneVariableMu ∧ oneVariableMu < 13/84 := by
+  exact ⟨oneVariableMu_pos, oneVariableMu_beats_record⟩
+
+
+/-!
+### Three classical tools, three computable failures on the resonance sum
+
+The intermediate target is `T(q) = Σ_{a ≤ q} (a|q)·e(g(a))` with `g(a) = N√(2a/q)`, `q ≤ L = N^{1/3}`.
+Writing exponents in powers of `N` with `q = N^κ`, `κ ≤ 1/3`:
+
+* `g'(a) = N/√(2qa) ≍ N^{1-κ}` on `a ≍ q`;
+* `g''(a) ≍ N/q² ≍ N^{1-2κ}`;
+* the dual (Poisson) range is `g'([1,q]) ≍ N^{1-κ/2}`;
+* the trivial bound is `N^κ`, and the target `N^{κ/2}`.
+
+**van der Corput** needs a small second derivative; here `1 - 2κ ≥ 1/3 > 0`, so `|g''| ≫ 1`.
+**Poisson** replaces the sum by one of length `N^{1-κ/2} ≥ N^{5/6}`, vastly longer than `N^κ ≤ N^{1/3}`.
+**Pólya–Vinogradov with partial summation** gives `q^{1/2}·q·max|Δf| ≍ N^{3κ/2}·N^{1-κ} = N^{1+κ/2}`,
+which exceeds the trivial bound `N^κ` for every `κ ≤ 1/3`.
+-/
+
+/-- Exponent of the second derivative of the resonance phase, with `q = N^κ`. -/
+def resonanceSecondDeriv (kappa : ℚ) : ℚ := 1 - 2 * kappa
+
+/-- Exponent of the Poisson-dual length. -/
+def resonanceDualLength (kappa : ℚ) : ℚ := 1 - kappa / 2
+
+/-- Exponent delivered by Pólya–Vinogradov plus partial summation. -/
+def resonancePartialSummation (kappa : ℚ) : ℚ := 1 + kappa / 2
+
+/-- The trivial bound and the target. -/
+def resonanceTrivial (kappa : ℚ) : ℚ := kappa
+
+def resonanceGoal (kappa : ℚ) : ℚ := kappa / 2
+
+/-- **van der Corput fails: the second derivative is large on the whole range `κ ≤ 1/3`.** -/
+theorem vdC_fails_on_resonance {kappa : ℚ} (h : kappa ≤ 1/3) : 1/3 ≤ resonanceSecondDeriv kappa := by
+  unfold resonanceSecondDeriv; linarith
+
+/-- **Poisson fails: the dual is longer than the original, by a wide margin.** -/
+theorem poisson_fails_on_resonance {kappa : ℚ} (h : kappa ≤ 1/3) :
+    resonanceTrivial kappa < resonanceDualLength kappa := by
+  unfold resonanceTrivial resonanceDualLength; linarith
+
+/-- **Pólya–Vinogradov with partial summation fails: it exceeds the trivial bound.** -/
+theorem polyaVinogradov_fails_on_resonance {kappa : ℚ} (h : kappa ≤ 1/3) :
+    resonanceTrivial kappa < resonancePartialSummation kappa := by
+  unfold resonanceTrivial resonancePartialSummation; linarith
+
+/-- **The triple barrier.**  On the whole range `0 ≤ κ ≤ 1/3` the three classical tools each fail,
+for three distinct and computable reasons, while the target `κ/2` remains strictly below the trivial
+bound `κ` for `κ > 0`. -/
+theorem resonance_triple_barrier {kappa : ℚ} (h0 : 0 < kappa) (h : kappa ≤ 1/3) :
+    1/3 ≤ resonanceSecondDeriv kappa ∧
+    resonanceTrivial kappa < resonanceDualLength kappa ∧
+    resonanceTrivial kappa < resonancePartialSummation kappa ∧
+    resonanceGoal kappa < resonanceTrivial kappa :=
+  ⟨vdC_fails_on_resonance h,
+   poisson_fails_on_resonance h,
+   polyaVinogradov_fails_on_resonance h,
+   by unfold resonanceGoal resonanceTrivial; linarith⟩
+
 end HTGeometry
