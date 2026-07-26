@@ -2,7 +2,9 @@ import GaloisForLFunctions.RHTower.DeningerArithmeticJetFrobenius
 import GaloisForLFunctions.RHTower.XiConvergenceExponent
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
 import Mathlib.Analysis.Distribution.Distribution
+import Mathlib.Analysis.Calculus.Deriv.Support
 import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
+import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
 /-!
 # Deninger's arithmetic trace distributions on positive time
@@ -251,6 +253,150 @@ theorem deningerArithmeticH1TraceDistribution_apply
     Distribution.lineDerivCLM_apply,
     Distribution.lineDerivCLM_apply]
   simp [deningerTimeTestDerivative]
+
+/-! ## Arbitrary compact-test Laplace amplitudes -/
+
+/-- The positive-time Laplace amplitude used in Deninger's distributional explicit formula. -/
+def deningerTimeTestLaplace
+    (φ : DeningerTimeTestFunction) (s : ℂ) : ℂ :=
+  ∫ t : ℝ, (φ t : ℂ) * Complex.exp ((t : ℂ) * s)
+
+/-- On the one-dimensional time axis, the bundled test derivative is the ordinary derivative. -/
+theorem deningerTimeTestDerivative_apply_eq_deriv
+    (φ : DeningerTimeTestFunction) (t : ℝ) :
+    deningerTimeTestDerivative φ t =
+      deriv (fun x : ℝ => φ x) t := by
+  rw [deningerTimeTestDerivative, TestFunction.lineDerivCLM_apply]
+  rw [if_pos (by simp)]
+  rw [(φ.contDiff.differentiable (by simp)).differentiableAt.lineDeriv_eq_fderiv,
+    fderiv_apply_one_eq_deriv]
+
+set_option maxHeartbeats 800000 in
+/--
+Whole-line integration by parts for a positive-time test Laplace amplitude.
+
+Compact support removes both endpoint terms; this is why the formula is intrinsic to
+`𝓓((0,∞))`, with no value imposed at time zero.
+-/
+theorem deningerTimeTestLaplace_mul
+    (φ : DeningerTimeTestFunction) (s : ℂ) :
+    s * deningerTimeTestLaplace φ s =
+      -deningerTimeTestLaplace
+        (deningerTimeTestDerivative φ) s := by
+  let u : ℝ → ℂ := fun t => (φ t : ℂ)
+  let u' : ℝ → ℂ :=
+    fun t => (deningerTimeTestDerivative φ t : ℂ)
+  let v : ℝ → ℂ :=
+    fun t => Complex.exp ((t : ℂ) * s)
+  let v' : ℝ → ℂ :=
+    fun t => s * Complex.exp ((t : ℂ) * s)
+  have hu : ∀ t, HasDerivAt u (u' t) t := by
+    intro t
+    have hφ :
+        HasDerivAt (fun x : ℝ => φ x)
+          (deriv (fun x : ℝ => φ x) t) t :=
+      (φ.contDiff.differentiable (by simp)).differentiableAt.hasDerivAt
+    simpa only [u, u', deningerTimeTestDerivative_apply_eq_deriv] using
+      hφ.ofReal_comp
+  have hv : ∀ t, HasDerivAt v (v' t) t := by
+    intro t
+    have hlin :
+        HasDerivAt (fun x : ℝ => (x : ℂ) * s) s t := by
+      convert ((hasDerivAt_id t).ofReal_comp.mul_const s) using 1
+      all_goals simp
+    simpa only [v, v', mul_comm] using hlin.cexp
+  have huCont : Continuous u := by
+    exact Complex.continuous_ofReal.comp φ.continuous
+  have hu'Cont : Continuous u' := by
+    exact Complex.continuous_ofReal.comp
+      (deningerTimeTestDerivative φ).continuous
+  have hvCont : Continuous v := by
+    dsimp only [v]
+    fun_prop
+  have hv'Cont : Continuous v' := by
+    dsimp only [v']
+    fun_prop
+  have huCompact : HasCompactSupport u :=
+    φ.hasCompactSupport.comp_left rfl
+  have hu'Compact : HasCompactSupport u' :=
+    (deningerTimeTestDerivative φ).hasCompactSupport.comp_left rfl
+  have huv : Integrable (u * v) :=
+    (huCont.mul hvCont).integrable_of_hasCompactSupport
+      huCompact.mul_right
+  have huv' : Integrable (u * v') :=
+    (huCont.mul hv'Cont).integrable_of_hasCompactSupport
+      huCompact.mul_right
+  have hu'v : Integrable (u' * v) :=
+    (hu'Cont.mul hvCont).integrable_of_hasCompactSupport
+      hu'Compact.mul_right
+  have hparts := integral_mul_deriv_eq_deriv_mul_of_integrable
+    (u := u) (v := v) (u' := u') (v' := v')
+    (fun t _ => hu t) (fun t _ => hv t) huv' hu'v huv
+  have hleft :
+      ∫ t : ℝ, u t * v' t =
+        s * ∫ t : ℝ, u t * v t := by
+    rw [← integral_const_mul]
+    apply integral_congr_ae
+    filter_upwards with t
+    dsimp only [v']
+    ring
+  rw [deningerTimeTestLaplace, hleft] at hparts ⊢
+  exact hparts
+
+/-- Two integrations by parts expose the reciprocal-square spectral regularization. -/
+theorem deningerTimeTestLaplace_mul_sq
+    (φ : DeningerTimeTestFunction) (s : ℂ) :
+    s ^ 2 * deningerTimeTestLaplace φ s =
+      deningerTimeTestLaplace
+        (deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ)) s := by
+  calc
+    s ^ 2 * deningerTimeTestLaplace φ s =
+        s * (s * deningerTimeTestLaplace φ s) := by ring
+    _ = s * (-deningerTimeTestLaplace
+        (deningerTimeTestDerivative φ) s) := by
+      rw [deningerTimeTestLaplace_mul]
+    _ = -(s * deningerTimeTestLaplace
+        (deningerTimeTestDerivative φ) s) := by ring
+    _ = -(-deningerTimeTestLaplace
+        (deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ)) s) := by
+      rw [deningerTimeTestLaplace_mul]
+    _ = deningerTimeTestLaplace
+        (deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ)) s := by ring
+
+/-- `L¹` mass controlling every critical-strip Laplace amplitude after two derivatives. -/
+def deningerTimeTestSecondDerivativeExponentialMass
+    (φ : DeningerTimeTestFunction) : ℝ :=
+  ∫ t : ℝ,
+    ‖(deningerTimeTestDerivative
+      (deningerTimeTestDerivative φ) t : ℂ)‖ *
+        Real.exp |t|
+
+theorem deningerTimeTestSecondDerivativeExponentialMass_nonneg
+    (φ : DeningerTimeTestFunction) :
+    0 ≤ deningerTimeTestSecondDerivativeExponentialMass φ := by
+  exact integral_nonneg fun _ => mul_nonneg (norm_nonneg _) (Real.exp_pos _).le
+
+set_option maxHeartbeats 400000 in
+private theorem deningerTimeTestSecondDerivativeExponentialIntegrable
+    (φ : DeningerTimeTestFunction) :
+    Integrable
+      (fun t : ℝ =>
+        ‖(deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ) t : ℂ)‖ *
+            Real.exp |t|) := by
+  have hcont :
+      Continuous
+        (fun t : ℝ =>
+          ‖(deningerTimeTestDerivative
+            (deningerTimeTestDerivative φ) t : ℂ)‖ *
+              Real.exp |t|) := by
+    fun_prop
+  exact hcont.integrable_of_hasCompactSupport
+    (deningerTimeTestDerivative
+      (deningerTimeTestDerivative φ)).hasCompactSupport.norm.mul_right
 
 /-- Weight-zero endpoint trace function. -/
 def deningerArithmeticH0TraceFunction (_t : ℝ) : ℂ :=

@@ -10367,3 +10367,74 @@ IS BOUNDED BELOW. THE FIRST TEST OF THE CONJECTURE IS WHETHER THE TENT PRODUCT 0
 A CONSTANT AS L VARIES — IT DOES NOT, SINCE L -> 0 SENDS IT TO ZERO, SO THE CONJECTURE MUST BE STATED
 WITH THE CORRECT NORMALISATION OF R. FIND THAT NORMALISATION FIRST: R SHOULD BE THE FRACTION OF THE
 ZERO MEASURE RESOLVED, NOT THE RAW WIDTH.
+
+---
+
+## Cycle 169 — THE EXPLICIT FORMULA'S UNCERTAINTY PRINCIPLE, AND THE EXPONENT IS ONE HALF
+
+### Phase 4 first: cycle 168's conjecture needed the right normalisation, and finding it changed the statement
+The proposed product B(g) R(g) >= c_0 fails trivially (L -> 0 sends it to zero). THE CORRECT INVARIANT
+IS NOT A PRODUCT BUT AN EXCHANGE RATE, AND IT COMES FROM COUNTING DEGREES OF FREEDOM.
+
+### THE COUNTING — HUNDRED-AND-THIRD ATLAS ENTRY
+A test supported in [-L, L] has transform of exponential type L, so by BEURLING-LANDAU its degrees of
+freedom per unit ordinate are L/pi. The zeros up to height T have density log T / 2pi per unit
+ordinate. RESOLVING THEM INDIVIDUALLY REQUIRES
+
+    L/pi >= log T / (2 pi)     <==>     L >= (log T)/2      (formalised).
+
+THE PRICE. The prime side of a test of width L runs over n <= e^L, so resolving the zeros up to
+height T requires a prime sum extending to
+
+    e^L >= e^{(log T)/2} = sqrt(T).
+
+THE EXCHANGE LAW. Writing the resolved height as e^{2L} and the required prime range as e^L:
+
+    PRIME RANGE = SQRT( RESOLVED HEIGHT )        (formalised, both as a sqrt and as a square).
+
+    ==> RESOLVING THE ZEROS TO HEIGHT T BY A COMPACTLY SUPPORTED TEST COSTS CONTROL OF THE PRIMES UP
+        TO SQRT(T). SINCE CONTROLLING THE PRIMES TO SQRT(T) WITH SQUARE-ROOT ACCURACY IS EXACTLY THE
+        STRENGTH OF THE HYPOTHESIS, THE EXPLICIT-FORMULA LANE AT FULL RESOLUTION REQUIRES PRECISELY AS
+        MUCH ARITHMETIC INPUT AS IT PRODUCES. THE CIRCULARITY IS EXACT AND ITS EXPONENT IS ONE HALF ON
+        BOTH SIDES.
+
+THIS IS THE QUANTITATIVE FORM OF THE SQUARE-ROOT BARRIER. IT IS NOT AN ARTEFACT OF ANY ESTIMATE: IT IS
+A CONSEQUENCE OF COUNTING DEGREES OF FREEDOM AGAINST ZERO DENSITY. And doubling the width squares both
+sides (formalised), so the ratio of exponents never moves — THERE IS NO WIDTH AT WHICH RESOLUTION IS
+CHEAP.
+
+Machine-verified: `RHTower/ExplicitFormulaUncertainty.lean` (the Nyquist threshold as an iff, the
+resolved height and prime range, the exchange law primeRange = sqrt(resolvedHeight) and its squared
+form, monotonicity of both, and the doubling law; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 169
+One hundred and three entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ATLAS'S FOUR ORGANISING THEOREMS, IN ORDER OF DEPTH:
+  52   In the log-T landscape RH constrains CODIMENSION and the tools measure AREA. Different
+       quantities; lane closed.
+  89   In the Jensen/Polya lane there is exactly ONE place where a free inequality and the hypothesis
+       constrain the SAME scalar: order two, window O(1/j).
+  100  Where they constrain the same scalar the margin is ZERO, so only a vanishing-loss FAMILY can
+       work; order two has one, order three onwards does not (entry 91).
+  103  In the explicit-formula lane, resolution and arithmetic input are exchanged at exponent ONE
+       HALF, so full resolution is exactly circular.
+TOGETHER: THE THREE MAJOR UNCONDITIONAL LANES ARE CLOSED, EACH WITH A NAMED AND MACHINE-VERIFIED ROOT
+CAUSE, AND THE ONE SURVIVING MECHANISM (order two, vanishing loss) IS PROVED NOT TO EXTEND.
+
+### Cycle 170 target
+ALL THREE LANES ARE CLOSED BY COUNTING ARGUMENTS: DEGREES OF FREEDOM VERSUS ZERO DENSITY (103),
+VANDERMONDE EXPONENT VERSUS WEIGHT DEVIATION (91), AREA VERSUS CODIMENSION (52). EVERY ONE IS A
+DIMENSION COUNT. THAT IS ITSELF A PATTERN AND IT SUGGESTS THE NEXT QUESTION:
+
+  IS THERE A SETTING WHERE THE ZERO DENSITY IS LOWER, SO THE NYQUIST THRESHOLD IS CHEAPER?
+
+The zero density log T / 2pi is the ARCHIMEDEAN density of ONE L-function. FOR A FAMILY OF L-FUNCTIONS
+THE ZEROS ARE SPREAD ACROSS THE FAMILY AND THE DENSITY PER FUNCTION IS UNCHANGED — BUT THE
+LOW-LYING ZEROS OF A FAMILY HAVE DENSITY GOVERNED BY THE CONDUCTOR, NOT THE HEIGHT. THE ATLAS ALREADY
+HAS THIS: entry from the cyclotomic work (`CyclotomicScaleReversal`) SHOWS THE SCALE PRODUCT REVERSES
+FOR LARGE CONDUCTOR — gamma_1(K) log q ~ 2 pi / phi(q) < 1. THAT IS EXACTLY A CASE WHERE THE NYQUIST
+THRESHOLD IS CHEAPER THAN THE PRIME COST. RE-EXAMINE IT UNDER ENTRY 103: COMPUTE THE EXCHANGE RATE FOR
+A FAMILY OF CONDUCTOR q AND SEE WHETHER THE EXPONENT IS STILL ONE HALF OR WHETHER THE FAMILY BUYS A
+BETTER RATE. IF THE EXPONENT DROPS BELOW ONE HALF FOR SOME FAMILY, THE CIRCULARITY BREAKS AND THAT IS
+A GENUINELY NEW ROUTE.

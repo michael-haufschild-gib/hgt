@@ -283,14 +283,6 @@ def BoundedVerticalClockDichotomy (B : ℝ) (f : ℂ → ℂ) : Prop :=
   ∀ z : ℂ, f z = 0 → z.im = 0 ∨
     ∃ T : ℝ, 0 < T ∧ T ≤ B ∧ ∀ k : ℤ, f (z + (k * T) * Complex.I) = 0
 
-/-- Under RH, the constant Xi approximant satisfies every bounded-clock dichotomy through its
-real-zero branch; the numerical clock bound is irrelevant. -/
-theorem boundedVerticalClockDichotomy_XiC_of_riemannHypothesis
-    (B : ℝ) (hRH : RiemannHypothesis) :
-    BoundedVerticalClockDichotomy B XiC := by
-  intro z hzero
-  exact Or.inl (xiC_zero_im_eq_zero_of_riemannHypothesis hRH hzero)
-
 /-- Locally uniform eventually-entire approximants with an eventually uniform bounded vertical
 clock dichotomy force RH. Hurwitz zero selection is internal. -/
 theorem riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
@@ -391,6 +383,14 @@ theorem xiC_zero_im_eq_zero_of_riemannHypothesis
       linarith
     have hzneg : XiC (-z) = 0 := by rw [XiC_even, hz]
     exact hright s hs (by simpa only [s, XiC] using hzneg)
+
+/-- Under RH, the constant Xi approximant satisfies every bounded-clock dichotomy through its
+real-zero branch; the numerical clock bound is irrelevant. -/
+theorem boundedVerticalClockDichotomy_XiC_of_riemannHypothesis
+    (B : ℝ) (hRH : RiemannHypothesis) :
+    BoundedVerticalClockDichotomy B XiC := by
+  intro z hzero
+  exact Or.inl (xiC_zero_im_eq_zero_of_riemannHypothesis hRH hzero)
 
 /-- **Positive transverse-clock unboundedness law.**  For any locally uniform approximation of
 `XiC`, if the approximants have full two-sided vertical zero lattices whose centres converge, then
