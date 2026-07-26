@@ -5238,3 +5238,68 @@ travelling. BOUND THE SPEED. If the imaginary part of every zero satisfies |d(Im
 uniformly on t in [0, 0.22], then no zero can reach height h from height 0 in time 0.22 provided
 h > 0.22 C, giving an UNCONDITIONAL ZERO-FREE REGION ABOVE HEIGHT 0.22 C — and, by the localization,
 RH for all zeros of imaginary part above that. THE ENTIRE QUESTION IS THE SPEED BOUND.
+
+---
+
+## Cycle 89 (2026-07-26) — THE GUARDRAIL ON THE LOCALIZATION, AND THE SPEED-BOUND KILL
+
+### Phase 4 verdict on the cycle-88 speed-bound target: FALSE — no uniform speed bound exists
+The de Bruijn-Newman zeros obey  ydot_j = -2 sum_k (y_j - y_k)/|z_j - z_k|^2. I proposed bounding
+|ydot_j| uniformly to keep zeros out of a fixed ball for time 0.22. REFUTED: when two zeros share a
+real part, |z_j - z_k|^2 = (y_j - y_k)^2 and the term is EXACTLY 1/|y_j - y_k|, which exceeds any
+prescribed bound as the pair approaches. Lehmer pairs realise exactly this configuration. There is no
+uniform speed, and the backward flow is ill-posed regardless. DEAD END; do not re-attempt.
+
+### THE GUARDRAIL — the most important output of this cycle
+The localization (entry 22) lets the approximating family vary with the point. That invites an
+obvious cheat: take any family that converges FAST. It does not work, and the reason must be recorded
+so no future cycle wastes itself on it.
+
+If  |XiC| >= m > 0  on the ball and  |F_n - XiC| < m  there, then F_n is zero-free on the ball —
+TRUE, and formalised. But the hypothesis |XiC| >= m > 0 ON THE BALL ALREADY ASSERTS THAT XiC DOES NOT
+VANISH THERE, WHICH IS THE CONCLUSION. Both directions are formalised.
+
+    ==> ZERO-FREENESS DERIVED FROM APPROXIMATION QUALITY IS CIRCULAR. ONLY ZERO-FREENESS FORCED BY
+        STRUCTURE — REAL-ROOTEDNESS, SELF-ADJOINTNESS, A POSITIVITY CONSTRAINT — CAN BE USED.
+
+This is the exact analogue, in the operator/approximation lane, of cycle 83's circularity verdict in
+the explicit-formula lane. Any candidate family must be zero-free FOR A REASON THAT DOES NOT MENTION
+HOW CLOSE IT IS TO XiC.
+
+### SCOPE RESTRICTION (a genuine, if modest, gain)
+Every zero of XiC has |Im z| < 1/2 (corpus: `SlabFullWidthAdmissibility.XiC_ne_zero_of_half_le_abs_im`).
+So per-point families are needed ONLY for 0 < |Im z| <= 1/2; for |Im z| > 1/2 the CONSTANT family
+F_n = XiC works on the ball of radius |Im z| - 1/2. The localized criterion therefore has bounded
+scope, formalised as `riemannHypothesis_of_strip_zeroFree_approximants`.
+
+Machine-verified: `RHTower/LocalizationScopeAndGuardrail.lean` (constant sequence converges locally
+uniformly; the imaginary-part lower bound on a ball; the scope-restricted RH criterion; both
+directions of the proximity guardrail; and the unboundedness and closed form of the drift term;
+standard axioms only, wired into RHTower).
+
+### TWENTY-THIRD ATLAS ENTRY
+    proximity guardrail   zero-freeness obtained from closeness to XiC is circular; only structurally
+                          forced zero-freeness is usable. Scope of the localized criterion is the
+                          strip 0 < |Im z| <= 1/2.
+
+### STATE AT CYCLE 89
+Twenty-three entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+TWO LANES ARE NOW CHARACTERISED, AND BOTH BY THE SAME KIND OF STATEMENT:
+  * explicit formula (entries 17-21): every non-arithmetic term cancels or decays; the residue is the
+    zero sum, and every handle on it is circular or capped.
+  * approximation/operator (entries 22-23): the criterion localizes, but only structurally forced
+    zero-freeness counts, and proximity-based constructions are circular.
+WHAT BOTH LANES REQUIRE IS THE SAME MISSING OBJECT: A SOURCE OF ZERO-FREENESS THAT IS NOT DERIVED
+FROM ZETA ITSELF.
+
+### Cycle 90 target
+Name the missing object precisely and search for it. A structurally forced zero-free family means:
+entire F_n -> XiC locally uniformly, with F_n = det(I - K_n) for K_n in a class whose spectrum is
+constrained a priori (self-adjoint, positive, contraction). The corpus already has compression and
+Calkin-rigidity machinery (`SemilocalCompressedEulerOrientation`, `XiPrimeSeamHigherGradeCalkinRigidity`,
+`HardyTitchmarshEulerConcrete`, `CCMRadicalQuotientHermitian`) and one no-go
+(`PrimeIsingTreeBalancedVarianceRankNoGo`). AUDIT WHICH DETERMINANT FAMILIES THE CORPUS HAS ALREADY
+BUILT, WHICH ARE SELF-ADJOINT, AND WHETHER ANY CONVERGES TO XiC. That audit — not a new construction —
+is the correct next step, because the guardrail says a construction is worthless unless its
+zero-freeness is a priori, and a priori zero-freeness in this lane means self-adjointness.

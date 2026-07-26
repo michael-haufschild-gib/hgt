@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.DeningerArithmeticCochainComplex
 import Mathlib.Analysis.Complex.LocallyUniformLimit
 import Mathlib.LinearAlgebra.Quotient.Basic
 import Mathlib.Topology.Baire.CompleteMetrizable
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
 import Mathlib.Topology.Metrizable.ContinuousMap
 
 /-!
@@ -12,10 +13,9 @@ holomorphic maps.  The ambient continuous-map space carries the compact-open top
 source is completely metrizable and Baire.  Evaluation is continuous, and multiplication by the
 completed Xi source is a continuous linear differential.
 
-This supplies quotient topological spaces for both the Xi range and its closure.  Their later
-topological-vector-space structure is kept separate because the current mathlib quotient-module
-instance is not definitionally compatible with this compact-open continuous-map module.  The
-statement that reduced and unreduced coboundaries agree is isolated as
+This supplies topological complex quotient modules for both the Xi range and its closure, with
+continuous linear quotient maps.  The statement that reduced and unreduced coboundaries agree is
+isolated as
 `DeningerArithmeticXiRangeClosed`; it is not assumed.
 -/
 
@@ -171,42 +171,43 @@ def deningerCompactOpenXiRange :
     Submodule ℂ DeningerCompactOpenEntire :=
   LinearMap.range deningerCompactOpenXiMul.toLinearMap
 
-/-- Additive quotient relation attached to a compact-open coboundary submodule. -/
-def deningerCompactOpenQuotientRel
-    (S : Submodule ℂ DeningerCompactOpenEntire) :
-    Setoid DeningerCompactOpenEntire :=
-  QuotientAddGroup.leftRel S.toAddSubgroup
-
-/-- Unreduced compact-open middle-cohomology quotient topology. -/
+/-- Unreduced compact-open middle cohomology as a topological complex quotient module. -/
 abbrev DeningerArithmeticCompactOpenH1 :=
-  Quotient
-    (deningerCompactOpenQuotientRel deningerCompactOpenXiRange)
+  DeningerCompactOpenEntire ⧸ deningerCompactOpenXiRange
 
-/-- Canonical class in the unreduced compact-open quotient. -/
-def deningerArithmeticCompactOpenH1Class
+/-- Continuous linear class map into unreduced compact-open middle cohomology. -/
+def deningerArithmeticCompactOpenH1Class :
+    DeningerCompactOpenEntire →L[ℂ] DeningerArithmeticCompactOpenH1 :=
+  deningerCompactOpenXiRange.mkQL
+
+@[simp]
+theorem deningerArithmeticCompactOpenH1Class_apply
     (F : DeningerCompactOpenEntire) :
-    DeningerArithmeticCompactOpenH1 :=
-  Quotient.mk
-    (deningerCompactOpenQuotientRel deningerCompactOpenXiRange) F
+    deningerArithmeticCompactOpenH1Class F =
+      deningerCompactOpenXiRange.mkQ F :=
+  rfl
 
 /-- Closed coboundary range used in reduced topological cohomology. -/
 def deningerCompactOpenXiClosedRange :
     Submodule ℂ DeningerCompactOpenEntire :=
   deningerCompactOpenXiRange.topologicalClosure
 
-/-- Reduced compact-open middle-cohomology quotient topology. -/
+/-- Reduced compact-open middle cohomology as a Hausdorff topological complex quotient module. -/
 abbrev DeningerArithmeticReducedCompactOpenH1 :=
-  Quotient
-    (deningerCompactOpenQuotientRel
-      deningerCompactOpenXiClosedRange)
+  DeningerCompactOpenEntire ⧸ deningerCompactOpenXiClosedRange
 
-/-- Canonical class in the reduced compact-open quotient. -/
-def deningerArithmeticReducedCompactOpenH1Class
+/-- Continuous linear class map into reduced compact-open middle cohomology. -/
+def deningerArithmeticReducedCompactOpenH1Class :
+    DeningerCompactOpenEntire →L[ℂ]
+      DeningerArithmeticReducedCompactOpenH1 :=
+  deningerCompactOpenXiClosedRange.mkQL
+
+@[simp]
+theorem deningerArithmeticReducedCompactOpenH1Class_apply
     (F : DeningerCompactOpenEntire) :
-    DeningerArithmeticReducedCompactOpenH1 :=
-  Quotient.mk
-    (deningerCompactOpenQuotientRel
-      deningerCompactOpenXiClosedRange) F
+    deningerArithmeticReducedCompactOpenH1Class F =
+      deningerCompactOpenXiClosedRange.mkQ F :=
+  rfl
 
 /-- Exact closed-range conjecture separating unreduced from reduced arithmetic cohomology. -/
 def DeningerArithmeticXiRangeClosed : Prop :=

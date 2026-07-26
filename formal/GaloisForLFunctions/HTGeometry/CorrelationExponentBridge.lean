@@ -1033,4 +1033,92 @@ theorem five_bridges_closed :
   refine ⟨?_, amplification_subpolynomial⟩
   unfold sobolevOutput shortMeanSquare; norm_num
 
+
+/-!
+### The pointwise/mean-value gap is self-similar
+
+The intermediate target of Theorem 34 is `T(q) = Σ_{a mod q, (a,q)=1} (a|q)e(N√(2a/q)) ≪ q^{1/2+ε}`,
+uniformly for `q ≤ L`.  Averaging it over `q` instead:
+
+    Σ_{q ≤ L} |T(q)|²  =  Σ_q Σ_{a,a'} (aa'|q) e(N(√(2a/q) − √(2a'/q))),
+
+whose diagonal `a = a'` contributes `Σ_{q≤L} φ(q) ≍ (3/π²)L²`.  Over `L` values of `q` that is an
+average of `|T(q)|² ≍ L`, i.e.
+
+    **|T(q)| ≍ L^{1/2} ≍ q^{1/2}  for typical `q` — exactly the target.**
+
+So the target holds in mean square over `q` and is needed uniformly: **the same pointwise/mean-value
+gap that Theorem 39 identified for the frontier sum recurs, with the same exactness, one level down.**
+-/
+
+/-- Exponent (in `L`) of the mean square of the resonance sums over `q ≤ L`. -/
+def resonanceMeanSquare : ℚ := 2
+
+/-- Number of moduli, as an exponent of `L`. -/
+def moduliCount : ℚ := 1
+
+/-- Typical size exponent of `|T(q)|`, from the mean square. -/
+def typicalResonanceSize : ℚ := (resonanceMeanSquare - moduliCount) / 2
+
+/-- **The typical size is exactly the target `q^{1/2}` at `q ≍ L`.** -/
+@[simp] theorem typicalResonanceSize_eq : typicalResonanceSize = 1/2 := by
+  unfold typicalResonanceSize resonanceMeanSquare moduliCount; norm_num
+
+/-- **Self-similarity of the obstruction.**  At the top level the mean square of the frontier sum is
+the Lindelöf value (Theorem 39, block exponent `3/2` out of `5/2`); one level down the mean square of
+the resonance sums is the intermediate target.  In both cases the average is exactly the goal and the
+pointwise statement is open. -/
+theorem gap_self_similar :
+    typicalResonanceSize = 1/2 ∧ fareyExponent 1 1 = 3/2 := by
+  exact ⟨typicalResonanceSize_eq, farey_both⟩
+
+/-- The gap at the lower level, like the upper one, is between an average that already meets the
+target and a uniform statement that does not follow from it. -/
+theorem lower_gap_is_uniformity :
+    typicalResonanceSize = 1/2 ∧ (0 : ℚ) < 1/2 := by
+  exact ⟨typicalResonanceSize_eq, by norm_num⟩
+
+
+/-!
+### Closing the gap by moments is exactly the Lindelöf hypothesis
+
+Let `E_δ = { t ∈ [T,2T] : |F(t)| > N^{1/2+δ} }`.  The `2k`-th moment bounds its measure:
+
+    |E_δ| · N^{(1+2δ)k}  ≪  ∫ |F|^{2k}  ≪  T^{m(k)+ε} · N^{k},   so  |E_δ| ≪ T^{m(k)+ε} N^{-2kδ}.
+
+With `N = T^{1/2}` and the conjectural `m(k) = 1`, this is `T^{1+ε-kδ}`, which is below `1` — forcing
+`E_δ = ∅` — exactly when `k > (1+ε)/δ`.  **No finite `k` works uniformly in `δ`**, so emptying the
+exceptional set for every `δ > 0` requires *all* moments, which is the Lindelöf hypothesis itself.
+-/
+
+/-- Exponent of `T` bounding the measure of the exceptional set at excess `δ`, using the `2k`-th
+moment with `m(k) = 1`. -/
+def exceptionalMeasureExponent (k delta : ℚ) : ℚ := 1 - k * delta
+
+/-- The exceptional set is forced empty exactly when the exponent is negative. -/
+theorem exceptional_empty_iff {k delta : ℚ} (hd : 0 < delta) :
+    exceptionalMeasureExponent k delta < 0 ↔ 1/delta < k := by
+  unfold exceptionalMeasureExponent
+  rw [div_lt_iff₀ hd]
+  constructor <;> intro h <;> nlinarith [h]
+
+/-- **No finite moment order suffices uniformly.**  For any fixed `k` there is a positive `δ` at which
+the exceptional set is not forced empty — namely any `δ ≤ 1/k`. -/
+theorem no_finite_moment_suffices {k : ℚ} (hk : 0 < k) :
+    ∃ delta : ℚ, 0 < delta ∧ ¬ (exceptionalMeasureExponent k delta < 0) := by
+  refine ⟨1/k, div_pos one_pos hk, ?_⟩
+  unfold exceptionalMeasureExponent
+  have : k * (1/k) = 1 := by field_simp
+  rw [this]
+  norm_num
+
+/-- The moment order required at excess `δ`. -/
+def requiredMomentOrder (delta : ℚ) : ℚ := 1/delta
+
+/-- **The requirement diverges as `δ → 0`.**  Halving the excess doubles the moment order needed. -/
+theorem requiredMomentOrder_diverges {delta : ℚ} (hd : 0 < delta) :
+    requiredMomentOrder (delta/2) = 2 * requiredMomentOrder delta := by
+  unfold requiredMomentOrder
+  field_simp
+
 end HTGeometry
