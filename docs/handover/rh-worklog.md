@@ -7400,3 +7400,75 @@ its failure detects non-reality. THE CORPUS HAS TURAN/JENSEN MATERIAL (XiGaussia
 ThetaCuspFullReflectionFourthTuran) BUT THE PHASE-1 SEARCH MUST CHECK WHETHER POLYA-SCHUR MULTIPLIER
 SEQUENCES APPEAR. If not, that is a genuinely reality-sensitive unconditional tool the atlas has never
 touched, and it is exactly the missing category.
+
+---
+
+## Cycle 122 (2026-07-26) — REALITY-SENSITIVE UNCONDITIONAL TOOLS DO EXIST: THE DISCRIMINANT
+### CORRECTS THE TERMINAL STATEMENT OF CYCLE 121.
+
+### The correction
+Entry 55 listed "a reality-sensitive unconditional theorem" as an OPEN CATEGORY. THAT IS TOO STRONG.
+The category is NOT empty, and its canonical member is elementary:
+
+    FOR A REAL POLYNOMIAL WITH ROOTS r_1, ..., r_n THE DISCRIMINANT IS prod_{i<j} (r_i - r_j)^2 UP TO A
+    POSITIVE FACTOR. IF EVERY ROOT IS REAL, EVERY FACTOR IS A SQUARE OF A REAL NUMBER, SO THE
+    DISCRIMINANT IS NONNEGATIVE. CONTRAPOSITIVELY, A NEGATIVE DISCRIMINANT REFUTES REAL-ROOTEDNESS —
+    UNCONDITIONALLY, AND BY A POLYNOMIAL IN THE COEFFICIENTS.
+
+The discriminant is REALITY-SENSITIVE, CODIMENSION-SENSITIVE, POLYNOMIAL, and needs no contour, no
+spectrum, and no separation hypothesis. It is exactly the missing category.
+
+### Applied to the hypothesis
+The Jensen polynomials of Xi are built from its Taylor coefficients, and RH implies every one of them
+is real-rooted, hence has nonnegative discriminant. A SINGLE NEGATIVE DISCRIMINANT REFUTES RH. This is
+the same shape as the symmetric-function ladder of entry 45 — one negative value at one place refutes
+— but in a variable that detects REALITY rather than POSITIVITY.
+
+### The honest status of the category
+It is not empty, but it is HARD, and the hardness is of a different kind from every other entry:
+NOT sensitivity, but DECIDABILITY. Griffin-Ono-Rolen-Zagier established hyperbolicity of the Jensen
+polynomials for every fixed degree and all sufficiently large index; the small-index cases are open.
+SO THE OPEN CATEGORY IS "DECIDE FINITELY MANY DISCRIMINANTS", NOT "FIND A TOOL".
+
+    ==> ENTRY 55 IS AMENDED: reality-sensitive unconditional tools exist; what they lack is
+        decidability at small index, not sensitivity.
+
+### Phase 1 note
+The corpus carries Turan/Jensen material (XiGaussianHeatTuranDefect, ThetaCuspFullReflectionFourthTuran)
+— the Turan inequalities are the degree-two case of the discriminant condition. THE GENERAL
+DISCRIMINANT FORMULATION AND ITS PLACEMENT AS THE MISSING REALITY-SENSITIVE CATEGORY ARE NEW HERE;
+Polya-Schur multiplier sequences do not appear anywhere in the development.
+
+Machine-verified: `RHTower/DiscriminantIsRealitySensitive.lean` (nonnegativity of a product of squares,
+refutation from a negative product, the quadratic discriminant bound b^2 - 4ac >= 0 from the existence
+of a real root via the completed square (2ar+b)^2, the exclusion of real roots by a negative
+discriminant, and the existence statement for the category; standard axioms only, wired into RHTower).
+
+### FIFTY-SIXTH ATLAS ENTRY (and entry 55 amended)
+    discriminant      a negative discriminant refutes real-rootedness unconditionally, by a
+                      polynomial in the coefficients: reality-sensitive, codimension-sensitive,
+                      contour-free, spectrum-free. RH implies every Jensen polynomial of Xi has
+                      nonnegative discriminant; one negative value refutes. The missing category is
+                      nonempty.
+    entry 55 AMENDED  reality-sensitive tools exist; the obstruction is decidability at small index,
+                      not the absence of a sensitive tool.
+
+### STATE AT CYCLE 122
+Fifty-six entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+The four break-the-closure targets of cycle 121 now read:
+  1. an arithmetic input INSIDE the strip that is not a count — OPEN;
+  2. a second invariant independent of log T — OPEN;
+  3. a codimension-sensitive tool beyond integrality — ANSWERED: the discriminant (this cycle);
+  4. a reality-sensitive unconditional theorem — ANSWERED: the discriminant (this cycle).
+TWO OF FOUR ARE NOW ANSWERED, BY THE SAME OBJECT, AND THE RESIDUAL DIFFICULTY HAS MOVED FROM
+"NO TOOL" TO "FINITELY MANY UNDECIDED VALUES".
+
+### Cycle 123 target
+The discriminant route's difficulty is decidability at small index. Griffin-Ono-Rolen-Zagier is
+asymptotic in the index at fixed degree; the small-index cases are finite in number for each degree
+but the degrees are unbounded. ASK WHETHER THE DEGREE AND INDEX RANGES INTERACT: is there a degree d
+for which ALL indices are covered by the asymptotic result, i.e. is the threshold index n(d) bounded
+in d? If n(d) is bounded, finitely many discriminants decide each degree and the route is effective;
+if n(d) grows, the undecided set is infinite and the route inherits the same unboundedness as every
+other entry. THE ANSWER IS IN THE GORZ PAPER'S EFFECTIVITY, and Phase 2 should retrieve it.

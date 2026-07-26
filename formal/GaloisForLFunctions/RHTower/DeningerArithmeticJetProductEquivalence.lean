@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticLocalQuotientOpenness
 import Mathlib.Topology.Algebra.IsUniformGroup.Basic
+import Mathlib.Topology.Algebra.IsUniformGroup.Constructions
 import Mathlib.Topology.Homeomorph.Lemmas
 
 /-!
@@ -21,22 +22,46 @@ namespace RHTower
 noncomputable section
 
 /-- The descended all-jets observation is onto the full multiplicity-bounded Xi-jet product. -/
+set_option maxHeartbeats 600000 in
 theorem deningerCompactOpenH1AllJets_surjective :
     Function.Surjective deningerCompactOpenH1AllJets := by
+  letI : IsUniformAddGroup C(ℂ, ℂ) := by
+    let phi :
+        C(ℂ, ℂ) →+
+          UniformOnFun ℂ ℂ
+            {K : Set ℂ | IsCompact K} :=
+      {
+      toFun := ContinuousMap.toUniformOnFunIsCompact
+      map_zero' := rfl
+      map_add' _ _ := rfl }
+    exact
+      ContinuousMap.isUniformEmbedding_toUniformOnFunIsCompact
+        |>.isUniformAddGroup phi
+  letI :
+      IsUniformAddGroup DeningerCompactOpenEntire := by
+    exact
+      isUniformEmbedding_subtype_val.isUniformAddGroup
+        deningerCompactOpenEntireSubmodule.subtype.toAddMonoidHom
   letI :
       FirstCountableTopology DeningerCompactOpenEntire :=
     inferInstance
   letI :
-      IsUniformAddGroup DeningerCompactOpenEntire :=
-    isUniformAddGroup_of_addCommGroup
+      UniformSpace
+        (DeningerCompactOpenEntire ⧸
+          deningerCompactOpenXiRange.toAddSubgroup) :=
+    IsTopologicalAddGroup.rightUniformSpace
+      (DeningerCompactOpenEntire ⧸
+        deningerCompactOpenXiRange.toAddSubgroup)
   letI :
-      UniformSpace DeningerArithmeticCompactOpenH1 :=
-    IsTopologicalAddGroup.leftUniformSpace
-      DeningerArithmeticCompactOpenH1
-  letI : CompleteSpace DeningerArithmeticCompactOpenH1 :=
-    QuotientAddGroup.completeSpace_left
+      CompleteSpace
+        (DeningerCompactOpenEntire ⧸
+          deningerCompactOpenXiRange.toAddSubgroup) :=
+    QuotientAddGroup.completeSpace_right
       DeningerCompactOpenEntire
       deningerCompactOpenXiRange.toAddSubgroup
+  letI :
+      IsUniformAddGroup DeningerArithmeticCompactOpenH1 :=
+    isUniformAddGroup_of_addCommGroup
   have huniform :
       IsUniformEmbedding
         (deningerCompactOpenH1AllJets :

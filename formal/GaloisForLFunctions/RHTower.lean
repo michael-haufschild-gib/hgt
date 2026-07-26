@@ -2993,3 +2993,4 @@ import GaloisForLFunctions.RHTower.CodimensionNotCounting
 import GaloisForLFunctions.RHTower.MonotoneIntegerFormulation
 import GaloisForLFunctions.RHTower.MissingSignChangeWitness
 import GaloisForLFunctions.RHTower.SeparationVersusReality
+import GaloisForLFunctions.RHTower.DiscriminantIsRealitySensitive

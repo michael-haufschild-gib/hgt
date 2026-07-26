@@ -85,6 +85,67 @@ def XiUnitHorizontalWindingBosonicFingerprint : Prop :=
           (nhdsWithin 0 {0}ᶜ)
           (nhds ((1 : ℕ).descFactorial k : ℂ))
 
+/-- The unit local-factor, winding, and bosonic-residue fingerprint contains exactly the
+simplicity information of the Xi divisor.  No spectral realization is needed. -/
+theorem xiUnitHorizontalWindingBosonicFingerprint_iff_xiZerosSimple :
+    XiUnitHorizontalWindingBosonicFingerprint ↔ XiZerosSimple := by
+  rw [← xiOrderOne_iff_xiZerosSimple]
+  constructor
+  · intro hfingerprint ρ hzero
+    obtain ⟨R, hR, _U, _hU, _hU0, _hfactor, hwinding, _hbosonic⟩ :=
+      hfingerprint ρ hzero
+    obtain ⟨Rw, hRw, hwindOrder⟩ := windingNumber_xi_zero ρ
+    let r := min R Rw / 2
+    have hr : 0 < r := half_pos (lt_min hR hRw)
+    have hrR : r < R := by
+      exact (div_lt_self (lt_min hR hRw) (by norm_num : (1 : ℝ) < 2)).trans_le
+        (min_le_left R Rw)
+    have hrRw : r < Rw := by
+      exact (div_lt_self (lt_min hR hRw) (by norm_num : (1 : ℝ) < 2)).trans_le
+        (min_le_right R Rw)
+    have hunit := hwinding r hr hrR
+    have horder := hwindOrder r hr hrRw
+    have hcast : ((analyticOrderAt xi ρ).toNat : ℤ) = 1 := horder.symm.trans hunit
+    exact_mod_cast hcast
+  · intro horder ρ hzero
+    obtain ⟨Rp, hRp, h, hhan, hh0, hfact⟩ := xi_peel_ball ρ
+    obtain ⟨Rw, hRw, hwind⟩ := windingNumber_xi_zero ρ
+    let R := min Rp Rw
+    let U : ℂ → ℂ := fun z => h (ρ + z)
+    have hR : 0 < R := lt_min hRp hRw
+    have hρp : ρ ∈ Metric.ball ρ Rp := Metric.mem_ball_self hRp
+    have hU : AnalyticAt ℂ U 0 := by
+      have hcomp := AnalyticAt.comp_of_eq (hhan ρ hρp)
+        (by fun_prop : AnalyticAt ℂ (fun z : ℂ => ρ + z) 0) (by ring)
+      simpa [U, Function.comp_def] using hcomp
+    have hU0 : U 0 ≠ 0 := by
+      simpa [U] using hh0 ρ hρp
+    have hm : (analyticOrderAt xi ρ).toNat = 1 := horder ρ hzero
+    refine ⟨R, hR, U, hU, hU0, ?_, ?_, ?_⟩
+    · intro z hz
+      have hzR : ρ + z ∈ Metric.ball ρ R := by
+        simpa [Metric.mem_ball, dist_eq_norm] using hz
+      have hzRp : ρ + z ∈ Metric.ball ρ Rp :=
+        Metric.ball_subset_ball (min_le_left Rp Rw) hzR
+      have hf := hfact (ρ + z) hzRp
+      rw [hm] at hf
+      simpa [GaloisForLFunctions.multipleZeroSection, U] using hf
+    · intro r hr hrR
+      have hrRw : r < Rw := hrR.trans_le (min_le_right Rp Rw)
+      simpa [hm] using hwind r hr hrRw
+    · intro k hk
+      exact GaloisForLFunctions.tendsto_scaled_multipleZeroCorrelator_descFactorial
+        1 k hk hU hU0
+
+/-- The complete local winding/bosonic fingerprint is the existing Hedenmalm simplicity
+certificate, expressed without its auxiliary universal quantifiers. -/
+theorem
+    xiUnitHorizontalWindingBosonicFingerprint_iff_hendenmalmSimplicityUniversalCertificate :
+    XiUnitHorizontalWindingBosonicFingerprint ↔
+      XiHedenmalmSimplicityUniversalCertificate := by
+  exact xiUnitHorizontalWindingBosonicFingerprint_iff_xiZerosSimple.trans
+    xiZerosSimple_iff_hendenmalmSimplicityUniversalCertificate
+
 /-- Horizontal multiplicity one is the complete RH-and-simplicity Hedenmalm certificate. -/
 theorem
     xiHorizontalFibersMultiplicityOne_iff_hendenmalmRHSimplicityUniversalCertificate :

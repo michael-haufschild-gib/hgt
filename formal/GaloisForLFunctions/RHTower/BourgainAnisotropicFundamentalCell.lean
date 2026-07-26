@@ -275,15 +275,18 @@ theorem volume_bourgainOsculatingFundamentalCell
         bourgainScaledOsculatingPhaseCoordinates scale a b x := by
     rw [Matrix.toLin'_apply]
     exact bourgainScaledOsculatingPhaseMatrix_mulVec scale a b x
+  have hset :
+      bourgainOsculatingFundamentalCell H scale a b =
+        (Matrix.toLin' M) ⁻¹'
+          bourgainParabolaFundamentalCell H := by
+    ext x
+    simp only [bourgainOsculatingFundamentalCell, Set.mem_preimage]
+    rw [hcoord]
   calc
     volume (bourgainOsculatingFundamentalCell H scale a b) =
         volume ((Matrix.toLin' M) ⁻¹'
           bourgainParabolaFundamentalCell H) := by
-      congr 1
-      ext x
-      simp only [bourgainOsculatingFundamentalCell,
-        Set.mem_preimage]
-      rw [hcoord]
+      rw [hset]
     _ = (Measure.map (Matrix.toLin' M) volume)
           (bourgainParabolaFundamentalCell H) := by
       exact (Measure.map_apply hM hcell).symm
@@ -300,6 +303,225 @@ theorem volume_bourgainOsculatingFundamentalCell
       rw [Measure.smul_apply,
         volume_bourgainParabolaFundamentalCell]
       rfl
+
+/-- Exact change of variables for the bilinear integrand on one pulled-back
+anisotropic period cell. -/
+theorem setLIntegral_bourgainOsculatingFundamentalCell_eq
+    (H : ℕ) (hH : 0 < H) {scale a b : ℝ}
+    (hscale : scale ≠ 0) (ha : 0 < a) (hab : a < b)
+    (c₁ c₂ : Fin H → ℂ) :
+    (∫⁻ x in bourgainOsculatingFundamentalCell H scale a b,
+      ENNReal.ofReal
+        (bourgainScaledIndependentPlanarBilinearIntegrand H c₁ c₂
+          (bourgainScaledOsculatingPhaseCoordinates scale a b x))) =
+      ENNReal.ofReal
+          |(scale ^ (6 : ℕ) *
+            (3 * (b - a) ^ (4 : ℕ) /
+              (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹| *
+        ENNReal.ofReal
+          (bourgainScaledParabolaBilinearFundamentalMoment H c₁ c₂) := by
+  let M := bourgainScaledOsculatingPhaseMatrix scale a b
+  let g : BourgainPhaseSpace → ENNReal := fun y =>
+    ENNReal.ofReal
+      (bourgainScaledIndependentPlanarBilinearIntegrand H c₁ c₂ y)
+  have hM : Measurable (Matrix.toLin' M) :=
+    (Matrix.toLin' M).continuous_of_finiteDimensional.measurable
+  have hg : Measurable g :=
+    measurable_ofReal_bourgainScaledIndependentPlanarBilinearIntegrand
+      H c₁ c₂
+  have hcell := measurableSet_bourgainParabolaFundamentalCell H
+  have hcoord (x : BourgainPhaseSpace) :
+      Matrix.toLin' M x =
+        bourgainScaledOsculatingPhaseCoordinates scale a b x := by
+    rw [Matrix.toLin'_apply]
+    exact bourgainScaledOsculatingPhaseMatrix_mulVec scale a b x
+  have hset :
+      bourgainOsculatingFundamentalCell H scale a b =
+        (Matrix.toLin' M) ⁻¹'
+          bourgainParabolaFundamentalCell H := by
+    ext x
+    simp only [bourgainOsculatingFundamentalCell, Set.mem_preimage]
+    rw [hcoord]
+  calc
+    (∫⁻ x in bourgainOsculatingFundamentalCell H scale a b,
+      ENNReal.ofReal
+        (bourgainScaledIndependentPlanarBilinearIntegrand H c₁ c₂
+          (bourgainScaledOsculatingPhaseCoordinates scale a b x))) =
+        ∫⁻ x in (Matrix.toLin' M) ⁻¹'
+            bourgainParabolaFundamentalCell H,
+          g (Matrix.toLin' M x) := by
+      rw [hset]
+      apply setLIntegral_congr_fun (hcell.preimage hM)
+      intro x hx
+      simp only [g]
+      rw [hcoord]
+    _ =
+        ∫⁻ y in bourgainParabolaFundamentalCell H, g y ∂
+          Measure.map (Matrix.toLin' M) volume := by
+      symm
+      exact setLIntegral_map hcell hg hM
+    _ =
+        ∫⁻ y in bourgainParabolaFundamentalCell H, g y ∂
+          (ENNReal.ofReal
+              |(scale ^ (6 : ℕ) *
+                (3 * (b - a) ^ (4 : ℕ) /
+                  (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹| •
+            volume) := by
+      rw [show M =
+          bourgainScaledOsculatingPhaseMatrix scale a b by rfl,
+        map_bourgainScaledOsculatingPhaseMatrix_volume hscale ha hab]
+    _ =
+        ENNReal.ofReal
+            |(scale ^ (6 : ℕ) *
+              (3 * (b - a) ^ (4 : ℕ) /
+                (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹| *
+          ∫⁻ y in bourgainParabolaFundamentalCell H, g y := by
+      rw [setLIntegral_smul_measure]
+      rfl
+    _ = _ := by
+      rw [show
+          (∫⁻ y in bourgainParabolaFundamentalCell H, g y) =
+            ENNReal.ofReal
+              (bourgainScaledParabolaBilinearFundamentalMoment H c₁ c₂) by
+        exact setLIntegral_bourgainParabolaFundamentalCell_eq
+          H hH c₁ c₂]
+
+/-- Unconditional sharp-cell bilinear estimate after both exact
+Jacobians.  Its physical-cell factor is `H⁶`, not `H⁸`. -/
+theorem setLIntegral_bourgainOsculatingFundamentalCell_subpower
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (H : ℕ), 0 < H →
+      ∀ {scale a b : ℝ}, scale ≠ 0 → 0 < a → a < b →
+      ∀ (c₁ c₂ : Fin H → ℂ),
+        (∫⁻ x in bourgainOsculatingFundamentalCell H scale a b,
+          ENNReal.ofReal
+            (bourgainScaledIndependentPlanarBilinearIntegrand H c₁ c₂
+              (bourgainScaledOsculatingPhaseCoordinates scale a b x))) ≤
+          ENNReal.ofReal
+              |(scale ^ (6 : ℕ) *
+                (3 * (b - a) ^ (4 : ℕ) /
+                  (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹| *
+            ENNReal.ofReal
+              (((H : ℝ) ^ (3 : ℕ) *
+                (C * (H : ℝ) ^ (ε / 2) *
+                  (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ))) *
+              ((H : ℝ) ^ (3 : ℕ) *
+                (C * (H : ℝ) ^ (ε / 2) *
+                  (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ)))) := by
+  obtain ⟨C, hC, hfund⟩ :=
+    bourgainScaledParabolaBilinearFundamentalMoment_subpower hε
+  refine ⟨C, hC, ?_⟩
+  intro H hH scale a b hscale ha hab c₁ c₂
+  rw [setLIntegral_bourgainOsculatingFundamentalCell_eq
+    H hH hscale ha hab c₁ c₂]
+  exact mul_le_mul_right
+    (ENNReal.ofReal_le_ofReal (hfund H hH c₁ c₂)) _
+
+/-- Exact sharp-cell identity for the literal quadratic osculating sums. -/
+theorem setLIntegral_bourgainSquareRootQuadraticLocalSum_fundamentalCell_eq
+    (H : ℕ) (hH : 0 < H) {D a b : ℝ}
+    (hD : D ≠ 0) (ha : 0 < a) (hab : a < b)
+    (c₁ c₂ : Fin H → ℂ) :
+    (∫⁻ x in bourgainOsculatingFundamentalCell
+        H ((H : ℝ) / D) a b,
+      ENNReal.ofReal
+        (‖bourgainSquareRootQuadraticLocalSum H D a c₁ x‖ ^
+              (6 : ℕ) *
+          ‖bourgainSquareRootQuadraticLocalSum H D b c₂ x‖ ^
+              (6 : ℕ))) =
+      ENNReal.ofReal
+          |((((H : ℝ) / D) ^ (6 : ℕ)) *
+            (3 * (b - a) ^ (4 : ℕ) /
+              (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹| *
+        ENNReal.ofReal
+          (bourgainScaledParabolaBilinearFundamentalMoment H c₁ c₂) := by
+  have hscale : (H : ℝ) / D ≠ 0 :=
+    div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD
+  have hbase :=
+    setLIntegral_bourgainOsculatingFundamentalCell_eq
+      H hH hscale ha hab c₁ c₂
+  have hcellMeas :
+      MeasurableSet
+        (bourgainOsculatingFundamentalCell H ((H : ℝ) / D) a b) := by
+    unfold bourgainOsculatingFundamentalCell
+    apply
+      (measurableSet_bourgainParabolaFundamentalCell H).preimage
+    unfold bourgainScaledOsculatingPhaseCoordinates
+      bourgainParabolaPhaseScale
+      bourgainSquareRootPhaseCoordinates
+      bourgainSquareRootPhaseCoordinateMatrix
+    fun_prop
+  calc
+    (∫⁻ x in bourgainOsculatingFundamentalCell
+        H ((H : ℝ) / D) a b,
+      ENNReal.ofReal
+        (‖bourgainSquareRootQuadraticLocalSum H D a c₁ x‖ ^
+              (6 : ℕ) *
+          ‖bourgainSquareRootQuadraticLocalSum H D b c₂ x‖ ^
+              (6 : ℕ))) =
+        ∫⁻ x in bourgainOsculatingFundamentalCell
+            H ((H : ℝ) / D) a b,
+          ENNReal.ofReal
+            (bourgainScaledIndependentPlanarBilinearIntegrand H c₁ c₂
+              (bourgainScaledOsculatingPhaseCoordinates
+                ((H : ℝ) / D) a b x)) := by
+      apply setLIntegral_congr_fun hcellMeas
+      intro x hx
+      change
+        ENNReal.ofReal
+            (‖bourgainSquareRootQuadraticLocalSum H D a c₁ x‖ ^
+                (6 : ℕ) *
+              ‖bourgainSquareRootQuadraticLocalSum H D b c₂ x‖ ^
+                (6 : ℕ)) =
+          ENNReal.ofReal
+            (bourgainScaledIndependentPlanarBilinearIntegrand H c₁ c₂
+              (bourgainScaledOsculatingPhaseCoordinates
+                ((H : ℝ) / D) a b x))
+      rw [quadraticLocalSum_bilinearIntegrand_eq H hH hD]
+      rfl
+    _ = _ := hbase
+
+/-- Unconditional sharp anisotropic-cell estimate for the quadratic local
+square-root model. -/
+theorem setLIntegral_bourgainSquareRootQuadraticLocalSum_fundamentalCell_subpower
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (H : ℕ), 0 < H →
+      ∀ {D a b : ℝ}, D ≠ 0 → 0 < a → a < b →
+      ∀ (c₁ c₂ : Fin H → ℂ),
+        (∫⁻ x in bourgainOsculatingFundamentalCell
+            H ((H : ℝ) / D) a b,
+          ENNReal.ofReal
+            (‖bourgainSquareRootQuadraticLocalSum H D a c₁ x‖ ^
+                  (6 : ℕ) *
+              ‖bourgainSquareRootQuadraticLocalSum H D b c₂ x‖ ^
+                  (6 : ℕ))) ≤
+          ENNReal.ofReal
+              |((((H : ℝ) / D) ^ (6 : ℕ)) *
+                (3 * (b - a) ^ (4 : ℕ) /
+                  (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹| *
+            ENNReal.ofReal
+              (((H : ℝ) ^ (3 : ℕ) *
+                (C * (H : ℝ) ^ (ε / 2) *
+                  (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ))) *
+              ((H : ℝ) ^ (3 : ℕ) *
+                (C * (H : ℝ) ^ (ε / 2) *
+                  (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ)))) := by
+  obtain ⟨C, hC, hbound⟩ :=
+    setLIntegral_bourgainOsculatingFundamentalCell_subpower hε
+  refine ⟨C, hC, ?_⟩
+  intro H hH D a b hD ha hab c₁ c₂
+  rw [setLIntegral_bourgainSquareRootQuadraticLocalSum_fundamentalCell_eq
+    H hH hD ha hab c₁ c₂]
+  have hb := hbound H hH
+    (div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD)
+    ha hab c₁ c₂
+  rw [setLIntegral_bourgainOsculatingFundamentalCell_eq
+    H hH
+      (div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD)
+      ha hab c₁ c₂] at hb
+  exact hb
 
 end
 
