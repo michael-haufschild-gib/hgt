@@ -1601,3 +1601,40 @@ that normal form, because the two agree off the point and are both continuous at
 This is step 6 of the assembly.  With the regular point `z_0` at which the combination vanishes, it
 gives that the combination vanishes on its entire regular locus, which is exactly the hypothesis of
 `differentiallyAlgebraic_of_monomial_relation` once the poles are handled by the `y_0` factor.
+
+## THE LAST ANALYTIC GAP IS CLOSED
+
+`GaloisForLFunctions/HTGeometry/EllipticHypertranscendenceFreeProof.lean` (axiom-clean, build green,
+umbrella-registered) assembles the counting argument and discharges the card's one remaining named
+input.
+
+- **`differentiallyAlgebraic_of_lattice_periodic_meromorphicNF`** — a meromorphic normal-form
+  function invariant under a full lattice is differentially algebraic.
+- **`ellipticHypertranscendenceFree`** — hence `EllipticHypertranscendenceFree` holds.  It is no
+  longer a hypothesis anywhere.
+- **`facetComplementRankOne_of_scalarSRRealization`** — therefore the facet-codimension theorem
+  `(6)` holds for a one-variable **meromorphic** realization, unconditionally: every facet omits at
+  most one ambient vertex.
+- **`principalization_of_scalarSRRealization`** and
+  **`stanleyReisnerIdeal_principal_of_scalarSRRealization`** — and the structural conclusion
+  `(18)`--`(20)` follows: the complex is the full simplex or a deletion family, and its
+  Stanley--Reisner ideal is the principal squarefree `(prod_(u in U) X u)`.
+
+The assembly, for the record: if `f'` vanishes identically then `f` satisfies `y_1 = 0`; otherwise the
+poles of `f` in the fundamental parallelogram form a finite set `S` with a single order bound `m` for
+`f` and `f'`; at the degree `N = 2|S|m + 1` the coefficient space outgrows the principal-part space,
+giving a nonzero `c` whose data all vanish; linearity of the principal jets makes the combination
+`G = sum c_q f^i (f')^j` free of principal parts on `S`, hence pole-free there, hence pole-free
+everywhere by lattice invariance of the order; a pole-free lattice-periodic function is constant on
+its regular locus and `G` vanishes at the regular point, so `G` vanishes wherever it is analytic; and
+at a pole the normal form gives `f = 0`, so `G * f` vanishes identically -- an algebraic differential
+equation of order one.
+
+Nothing in the proof uses contour integration, the argument principle, Riemann--Roch, theta
+functions, or the Weierstrass structure theorem for elliptic functions.
+
+### Gates
+
+- [x] complete unconditional Lean formalization of the analytic chain `(8)`--`(20)`, for meromorphic
+      carriers
+- [ ] independent specialist proof and novelty audit
