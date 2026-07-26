@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.EntireFacetRealizationCodimension
+import GaloisForLFunctions.HTGeometry.ExpPolynomialDA
 
 /-!
 # Constant multipliers supply no analytic freedom
@@ -14,8 +15,6 @@ constant, whether the two steps are `ℝ`-dependent (non-discrete period group) 
 (Liouville on the lattice).  A constant logarithmic derivative is the order-one relation
 `y₁ − c·y₀ = 0`, so `f` itself is differentially algebraic.
 
-* `differentiallyAlgebraic_of_deriv_eq_const_mul` — a constant logarithmic derivative is an
-  algebraic differential equation;
 * `periodic_logDeriv_of_quasiperiodic` — a quasi-period of `f` is a period of `logDeriv f`;
 * **`differentiallyAlgebraic_of_quasiperiods`** — the quasi-period rank law;
 * `QuasiPeriodFacetRealization` and **`facetComplementRankOne_of_quasiPeriodRealization`** — the
@@ -28,24 +27,6 @@ open Finset
 namespace GaloisForLFunctions.HTGeometry
 
 variable {α : Type*} [DecidableEq α]
-
-/-! ### A constant logarithmic derivative is an algebraic differential equation -/
-
-/-- A function whose derivative is a fixed constant multiple of itself satisfies the order-one
-relation `y₁ − c·y₀ = 0`. -/
-theorem differentiallyAlgebraic_of_deriv_eq_const_mul {f : ℂ → ℂ} {c : ℂ}
-    (h : ∀ z, deriv f z = c * f z) : DifferentiallyAlgebraic f := by
-  refine ⟨1, MvPolynomial.X 2 - MvPolynomial.C c * MvPolynomial.X 1, ?_, ?_⟩
-  · intro hzero
-    have hco := congrArg (MvPolynomial.coeff (Finsupp.single 2 1)) hzero
-    simp [MvPolynomial.coeff_sub, MvPolynomial.coeff_X', MvPolynomial.coeff_C_mul,
-      Finsupp.single_eq_single_iff] at hco
-  · intro z
-    simp only [map_sub, map_mul, MvPolynomial.eval_X, MvPolynomial.eval_C]
-    rw [show (2 : Fin 3) = Fin.succ 1 from rfl, show (1 : Fin 3) = Fin.succ 0 from rfl,
-      Fin.cons_succ, Fin.cons_succ]
-    simp only [Fin.val_one, Fin.val_zero, iteratedDeriv_one, iteratedDeriv_zero, h z]
-    ring
 
 /-! ### Quasi-periods are periods of the logarithmic derivative -/
 
@@ -93,11 +74,12 @@ theorem differentiallyAlgebraic_of_quasiperiods {f : ℂ → ℂ} (hd : Differen
       exact hp
     · exact meromorphicNF_constant_of_rankTwo_realDependent_periods (logDeriv f)
         (fun z _ => (hL.analyticAt z).meromorphicNFAt) ![w₁, w₂] hindep hdep hspan
-  refine differentiallyAlgebraic_of_deriv_eq_const_mul (c := logDeriv f 0) (fun z => ?_)
+  refine differentiallyAlgebraic_of_firstOrder_poly_ode
+    (Polynomial.C (logDeriv f 0)) 1 one_ne_zero (fun z => ?_)
   have hz : deriv f z / f z = logDeriv f 0 := by
     rw [← logDeriv_apply]
     exact hconst z 0
-  exact (div_eq_iff (hne z)).mp hz
+  simpa using (div_eq_iff (hne z)).mp hz
 
 /-- An entire nowhere-vanishing function with two `ℚ`-independent constant-multiplier quasi-periods
 is not hypertranscendental. -/

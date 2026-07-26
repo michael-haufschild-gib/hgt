@@ -938,8 +938,10 @@ has both steps as *genuine* periods, so the period-rank rigidity already formali
 - `periodic_logDeriv_of_quasiperiodic` — `(25)`: `f(z+w) = a f(z)` with `a ≠ 0` makes
   `logDeriv f = f'/f` genuinely `w`-periodic.  (`deriv f (z+w) = a * deriv f z` by differentiating
   the quasi-period identity, then `mul_div_mul_left`.)
-- `differentiallyAlgebraic_of_deriv_eq_const_mul` — `(26)`: a constant logarithmic derivative *is*
-  an algebraic differential equation, namely the order-one relation `y_1 - c y_0 = 0`.
+- `(26)` needs nothing new: the corpus already proves that a first-order ODE with polynomial
+  coefficients is an algebraic differential equation
+  (`ExpPolynomialDA.differentiallyAlgebraic_of_firstOrder_poly_ode`, order-one differential
+  polynomial `Q(X_0) X_2 - P(X_0) X_1`), and `(26)` is its case `Q = 1`, `P = c`.
 - **`differentiallyAlgebraic_of_quasiperiods`** — the **HT quasi-period-rank law** for an entire
   nowhere-vanishing `f`: for `Q`-independent steps, `logDeriv f` is entire and doubly periodic,
   hence constant — by non-discreteness of the period group when the steps are `R`-dependent
