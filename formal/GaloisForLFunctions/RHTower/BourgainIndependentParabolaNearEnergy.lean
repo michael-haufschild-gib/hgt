@@ -52,7 +52,6 @@ theorem bourgainPairedTripleCloud_leftRight_one
     bourgainLeftParabolaSample, bourgainRightParabolaSample,
     bourgainParabolaTripleMoment, Fin.sum_univ_three]
   field_simp
-  ring
 
 theorem bourgainPairedTripleCloud_leftRight_two
     {H : ℕ} (D : ℝ)
@@ -78,7 +77,6 @@ theorem bourgainPairedTripleCloud_leftRight_three
     bourgainLeftParabolaSample, bourgainRightParabolaSample,
     bourgainParabolaTripleMoment, Fin.sum_univ_three]
   field_simp
-  ring
 
 /-- A natural-scale near pair in the independent model agrees in both
 parabola moment pairs. -/
@@ -190,25 +188,28 @@ theorem bourgainIndependentParabola_nearEnergy_le
               bourgainIndependentParabolaMoments_eq_of_near
                 hD hY0 hY1 hY2 hY3 hnear
             simp [hnear, A, B, hleft, hright]
-            ring
+            ring_nf
+            exact le_rfl
           · simp only [hnear, if_false]
             dsimp [A, B]
-            split_ifs <;> positivity
+            split_ifs
+            · exact mul_nonneg
+                (mul_nonneg (hw₁ _) (hw₁ _))
+                (mul_nonneg (hw₂ _) (hw₂ _))
+            · simp
+            · simp
+            · simp
     _ = (∑ h : Fin 3 → Fin H, ∑ h' : Fin 3 → Fin H, A h h') *
           (∑ k : Fin 3 → Fin H, ∑ k' : Fin 3 → Fin H, B k k') := by
       simp_rw [Fintype.sum_prod_type]
       rw [Fintype.sum_mul_sum]
       apply Finset.sum_congr rfl
       intro h hh
-      rw [Fintype.sum_mul_sum]
-      apply Finset.sum_congr rfl
-      intro h' hh'
-      rw [Finset.sum_comm]
       apply Finset.sum_congr rfl
       intro k hk
-      apply Finset.sum_congr rfl
-      intro k' hk'
-      ring
+      exact
+        (Fintype.sum_mul_sum
+          (fun h' => A h h') (fun k' => B k k')).symm
     _ = _ := by rfl
 
 /-- Sharp subpower near-energy bound for two independent parabola triples. -/
@@ -250,10 +251,22 @@ theorem bourgainIndependentParabola_nearEnergy_subpower
       then w₂ k * w₂ k' else 0
   have hE₁0 : 0 ≤ E₁ := by
     dsimp [E₁]
-    positivity
+    apply Finset.sum_nonneg
+    intro h hh
+    apply Finset.sum_nonneg
+    intro h' hh'
+    split_ifs
+    · exact mul_nonneg (hw₁ h) (hw₁ h')
+    · exact le_rfl
   have hE₂0 : 0 ≤ E₂ := by
     dsimp [E₂]
-    positivity
+    apply Finset.sum_nonneg
+    intro k hk
+    apply Finset.sum_nonneg
+    intro k' hk'
+    split_ifs
+    · exact mul_nonneg (hw₂ k) (hw₂ k')
+    · exact le_rfl
   have h₁ :
       E₁ ≤ C₀ * (H : ℝ) ^ (ε / 2) *
         ∑ h : Fin 3 → Fin H, w₁ h ^ (2 : ℕ) :=

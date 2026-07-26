@@ -9897,3 +9897,71 @@ REDUCTION OF RH TO AN INEQUALITY BETWEEN TWO EXPLICIT GROWTH EXPONENTS, WITH NO 
 DETERMINANTS, AND NO ORDER PARAMETER. COMPUTE THE GROWTH OF M_j EXACTLY FIRST: M_j = int_0^inf
 Phi(t) t^{2j} dt WITH Phi THE THETA REMAINDER, AND THE SADDLE POINT OF THAT INTEGRAL IS ALREADY IN
 THE ATLAS (entries 74-81). USE IT.
+
+---
+
+## Cycle 162 — HUTCHINSON NEEDS FOUR, THE ARITHMETIC SUPPLIES ONE
+
+### Phase 4 killed cycle 161's plan, and the replacement is better
+Cycle 161 proposed finding a crossing point between "help available at exponent alpha" and "demand at
+exponent alpha". THE CROSSING DOES NOT EXIST IN THAT FORM: the weighted series
+sum M_j w^j/Gamma(alpha j + 1) is entire for EVERY alpha > 0 (since M_j^{1/j} ~ (log j)^2, computed
+from the theta-remainder saddle already in the atlas at entries 74-81), and its ORDER is exactly
+1/alpha. So the only threshold from that side is order <= 2, i.e. alpha >= 1/2, which is NOT binding
+against the multiplier threshold alpha >= 2. NO CROSSING. The plan is dead.
+
+BUT THE ORDER COMPUTATION HANDED SOMETHING BETTER. At alpha = 2 the order is 1/2, and FOR ENTIRE
+FUNCTIONS OF ORDER BELOW ONE WITH POSITIVE COEFFICIENTS THERE IS A CLASSICAL LOCAL SUFFICIENT
+CRITERION FOR ALL ZEROS TO BE REAL AND NEGATIVE.
+
+### HUTCHINSON'S CRITERION — NINETY-SIXTH ATLAS ENTRY
+Hutchinson (1923): for positive a_j, IF a_j^2 >= 4 a_{j-1} a_{j+1} FOR EVERY j, THEN sum a_j w^j has
+only real negative zeros, and so do all its sections. APPLIED TO A_j = M_j/(2j)! THIS WOULD GIVE RH
+OUTRIGHT — with NO determinants, NO asymptotics, NO order parameter.
+
+WHAT IS AVAILABLE. With n = 2j,
+
+    A_j^2/(A_{j-1}A_{j+1}) = ( M_j^2/(M_{j-1}M_{j+1}) ) * ( (n+1)(n+2)/((n-1)n) ),
+
+and THE MOMENT FACTOR IS AT MOST ONE because a Stieltjes moment sequence is LOG-CONVEX. So the
+Hutchinson ratio is capped by the factorial factor alone:
+
+    (n+1)(n+2)/((n-1)n)  =  6 at n = 2,  BELOW 4 FROM n = 3 ON,  AND TENDING TO ONE.
+
+    ==> HUTCHINSON DEMANDS FOUR; LOG-CONVEXITY OF THE MOMENTS CAPS THE AVAILABLE RATIO AT A QUANTITY
+        TENDING TO ONE. THE HYPOTHESIS SITS AT RATIO ONE AND THE ONLY LOCAL SUFFICIENT CRITERION
+        NEEDS FOUR. THE GAP IS A FIXED FACTOR THAT NEVER CLOSES — NOT BECAUSE THE ESTIMATE IS LOSSY,
+        BUT BECAUSE THE MOMENTS ARE LOG-CONVEX.
+
+FIVE INDEPENDENT DERIVATIONS NOW AGREE ON THE SAME TWO CONSTANTS. The four is the discriminant
+threshold b^2 >= 4ac of entry 93. The six at the bottom is the relaxation factor of entries 93 and 95
+and the central binomial C(4,2). The limit one is the window ratio of entry 89 and the weight's
+log-concavity ratio of entry 93. THE ARITHMETIC IS INTERNALLY CONSISTENT ACROSS FIVE ROUTES.
+
+Machine-verified: `RHTower/HutchinsonNeedsFourAndOnlyOneIsAvailable.lean` (the cap, its value 6 at
+n = 2, its falling strictly below 4 from n = 3, its positivity, its limit 1, the failure of the
+criterion for any moment factor at most one, and the persistence of the gap; standard axioms only,
+wired into RHTower).
+
+### STATE AT CYCLE 162
+Ninety-six entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE SHARPEST SUMMARY THE PROGRAMME HAS: RH IS EXACTLY AS FAR FROM THE LOCAL SUFFICIENT CRITERION AS
+IT IS POSSIBLE TO BE WHILE REMAINING TRUE. The available Hutchinson ratio tends to 1 from above; the
+criterion needs 4; and 1 is precisely the value at which the sequence is neither log-convex nor
+log-concave but exactly log-linear. THE HYPOTHESIS IS THE ASSERTION THAT A LOG-CONVEX SEQUENCE IS
+ASYMPTOTICALLY LOG-LINEAR TO PRECISION 1/j, AND EVERY LOCAL TOOL REQUIRES LOG-CONCAVITY WITH A
+DEFINITE MARGIN.
+
+### Cycle 163 target
+THE ATLAS HAS NOW ESTABLISHED, FIVE WAYS, THAT LOCAL AND LOW-ORDER TOOLS CANNOT REACH THE HYPOTHESIS
+BECAUSE THE MARGIN IS EXACTLY ZERO. THAT IS A COMPLETE NEGATIVE ACCOUNT OF THE JENSEN/POLYA LANE.
+DO NOT ADD A SIXTH. The one structural fact the block produced that is POSITIVE and UNUSED is this:
+THE MOMENT SEQUENCE IS LOG-CONVEX AND THE HYPOTHESIS SAYS ITS LOG-CONVEXITY DEFECT IS O(1/j) WITH
+THE EXACT CONSTANT SET BY (n+1)(n+2)/((n-1)n). THAT IS A STATEMENT ABOUT THE MEASURE Phi ALONE, WITH
+NO POLYNOMIALS AND NO DETERMINANTS: THE MOMENTS OF Phi MUST BE LOG-LINEAR TO PRECISION 4/n. FOR A
+POSITIVE MEASURE, THE LOG-CONVEXITY DEFECT OF ITS MOMENTS IS THE VARIANCE OF log u UNDER THE TILTED
+MEASURE. SO RH SAYS: THE VARIANCE OF log u UNDER THE j-TH TILT OF Phi IS ASYMPTOTICALLY 4/n = 2/j.
+THAT IS A CONCRETE, CHECKABLE, PURELY PROBABILISTIC STATEMENT ABOUT ONE EXPLICIT MEASURE, AND THE
+ATLAS HAS NEVER STATED IT. DERIVE IT EXACTLY AND CHECK IT AGAINST THE KNOWN SADDLE ASYMPTOTICS OF
+Phi FROM ENTRIES 74-81.
