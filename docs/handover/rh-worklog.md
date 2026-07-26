@@ -8755,3 +8755,62 @@ contributions. BOTH INGREDIENTS ARE COMPUTED — psi''' = 2s/t^3 - 8 pi e^{2t} a
 sqrt(log k / k) (cycle 136). WHAT REMAINS IS THE TAIL: the contribution of the contour away from the
 saddle, which for a doubly exponentially decaying integrand is negligible. STATE AND BOUND THE TAIL.
 That completes level one and leaves four levels, each with the same structure and better parameters.
+
+---
+
+## Cycle 144 — LEVEL ONE REDUCES TO ONE INEQUALITY: THE TAIL IS BEATEN BY THE SADDLE
+
+### The split, and the reduction
+Write M_1(s) = A(s) + T(s), saddle contribution plus rest. The saddle contribution is NONZERO: its
+modulus is e^{Re psi(t_s)} times a positive factor from the Gaussian integral about the saddle.
+
+    ==> M_1(s) != 0 WHEREVER ||T(s)|| < ||A(s)||. LEVEL ONE IS THAT ONE INEQUALITY. [formalised]
+
+Both sides are explicit: the saddle value comes from the phase, whose second derivative is known in
+closed form (cycle 143); the tail is the contour's contribution away from the saddle, where Re psi has
+already dropped, and for a doubly exponentially decaying density it falls off like a Gaussian in the
+deviation (formalised: the Gaussian tail is antitone in the deviation and eventually below any positive
+threshold).
+
+### WHAT IS ESTABLISHED AND WHAT IS NOT — stated plainly, because it matters
+ESTABLISHED HERE, MACHINE-VERIFIED: the reduction to ||T|| < ||A||; the non-vanishing that follows; the
+non-vanishing of the saddle contribution; the monotone decay of a Gaussian tail; and its eventual
+descent below any positive main term.
+NOT ESTABLISHED: THE CONTOUR DEFORMATION THAT JUSTIFIES THE SPLIT, AND THE EXPLICIT CONSTANT IN THE
+TAIL BOUND. Those are the standard technical steps of a steepest-descent argument, and they are what a
+complete proof of level one would supply. THE PROGRAMME HAS NOT PROVED LEVEL ONE; IT HAS REDUCED IT TO
+TWO NAMED CLASSICAL STEPS.
+
+Machine-verified: `RHTower/TailBeatenBySaddle.lean` (domination implies non-vanishing, positivity of
+the saddle contribution, antitonicity of the Gaussian tail, existence of a deviation at which the tail
+falls below any positive threshold, and the reduction statement; standard axioms only, wired into
+RHTower).
+
+### SEVENTY-EIGHTH ATLAS ENTRY
+    tail reduction   M_1 = A + T with A the saddle contribution; M_1 != 0 wherever ||T|| < ||A||, so
+                     level one is that single inequality. The saddle side is nonzero and explicit; the
+                     tail decays like a Gaussian in the deviation. Remaining: the contour deformation
+                     and the tail constant — two named classical steps.
+
+### STATE AT CYCLE 144
+Seventy-eight entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME'S POSITION, IN ONE PARAGRAPH, AFTER 144 CYCLES. The unconditional landscape organised by
+log T is closed, with one root cause: the hypothesis constrains codimension while every tool there
+measures area. Exactly one route escapes — Jensen polynomials with the discriminant — settled below
+9.36 x 10^20 with observed onsets zero, its recorded super-exponential cost refuted as an artefact of a
+lossy estimate. A mechanism for that route is assembled and machine-verified in every algebraic step:
+doubly exponential concentration beats the factorial gap by (2 log k)^{d-1}, the tilted measure being
+Gaussian to within sqrt(log k / k). The mechanism's remaining gap is a finite descent of at most five
+zero-free-disc statements with strictly improving parameters; each is a localisation of the hypothesis
+to a horn, and the horn is exactly the saddle-point validity region. Level one's saddle is unique on
+the whole half-plane, and level one itself has been reduced to the single inequality ||T|| < ||A||,
+whose two remaining ingredients are a contour deformation and a tail constant.
+
+### Cycle 145 target
+The two remaining ingredients are classical but not free. TAKE THE CONTOUR DEFORMATION FIRST. The
+integrand Phi(t) t^s is analytic in t on the right half-plane minus the branch cut of t^s, and Phi
+extends analytically because its defining series converges locally uniformly there. THE DEFORMATION IS
+THEREFORE LEGITIMATE PROVIDED THE ARCS AT ZERO AND INFINITY VANISH: at infinity by the doubly
+exponential decay, at zero by the integrability of t^{Re s} for Re s > -1. STATE BOTH ARC ESTIMATES AND
+CHECK THEM. That closes the deformation and leaves only the tail constant.

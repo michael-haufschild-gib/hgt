@@ -164,6 +164,26 @@ theorem primeArchEndpointBernsteinAbelSharpSelectionMaster :
   · intro S hS
     exact primeArchEndpointBernsteinAbelCriticalRadius_unique hS.2.2.1 hR.2.2.1
 
+/-- Failure of RH uniquely determines the critical radius carrying the complete
+source-attained Bernstein--Abel false-phase certificate. Thus the false-phase
+interface is produced by the source selection theorem rather than assumed
+independently. -/
+theorem existsUnique_primeArchEndpointBernsteinAbelSharpFalsePhase_of_not_riemannHypothesis
+    (hRH : ¬ RiemannHypothesis) :
+    ∃! R : ℝ,
+      250000 / 251001 < R ∧ R < 1 ∧
+      PrimeArchEndpointBernsteinAbelCriticalRadius R ∧
+      PrimeArchEndpointBernsteinAbelSharpFalsePhase R := by
+  obtain ⟨R, hR, hRunique⟩ :=
+    primeArchEndpointBernsteinAbelSharpSelectionMaster.2.2.2.1
+  rcases hR.2.2.2 with htrue | hfalse
+  · exact False.elim (hRH htrue.1)
+  · refine ⟨R, ⟨hR.1, hfalse.2.1, hR.2.2.1, hfalse.2.2⟩, ?_⟩
+    intro S hS
+    apply hRunique S
+    exact ⟨hS.1, hS.2.1.le, hS.2.2.1,
+      Or.inr ⟨hRH, hS.2.1, hS.2.2.2⟩⟩
+
 end
 
 end RHTower

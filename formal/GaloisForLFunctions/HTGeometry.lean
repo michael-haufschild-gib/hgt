@@ -2100,5 +2100,7 @@ import GaloisForLFunctions.HTGeometry.OffLineExponentPairProfile
 import GaloisForLFunctions.HTGeometry.TransferBand
 import GaloisForLFunctions.HTGeometry.DisproofRoute
 import GaloisForLFunctions.HTGeometry.RefutationDeficitAndBandRatio
+import GaloisForLFunctions.HTGeometry.VanishingAbscissa
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
+import GaloisForLFunctions.HTGeometry.SatakeEnergyBound

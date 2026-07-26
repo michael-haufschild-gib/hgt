@@ -55,9 +55,12 @@ theorem vanishing_upward_closed {s σ : ℚ} (hs : G.mu s = 0) (hs1 : s < 1)
   have ht1 : (1 - σ) / (1 - s) ≤ 1 := by
     rw [div_le_one hd]; linarith
   have hcv := G.convex s 1 ((1 - σ) / (1 - s)) ht0 ht1
+  have hne : (1 : ℚ) - s ≠ 0 := ne_of_gt hd
+  have hcancel : (1 - σ) / (1 - s) * (1 - s) = 1 - σ := div_mul_cancel₀ _ hne
   have hpt : (1 - σ) / (1 - s) * s + (1 - (1 - σ) / (1 - s)) * 1 = σ := by
-    field_simp
-    ring
+    have hrw : (1 - σ) / (1 - s) * s + (1 - (1 - σ) / (1 - s)) * 1
+        = 1 - (1 - σ) / (1 - s) * (1 - s) := by ring
+    rw [hrw, hcancel]; ring
   rw [hpt, hs, G.atOne] at hcv
   have := G.nonneg σ
   linarith
@@ -94,9 +97,12 @@ theorem mu_le_chord_to_vanishing {s σ : ℚ} (hs : G.mu s = 0) (h1 : 1 / 2 ≤ 
   have ht1 : (s - σ) / (s - 1 / 2) ≤ 1 := by
     rw [div_le_one hd]; linarith
   have hcv := G.convex (1 / 2) s ((s - σ) / (s - 1 / 2)) ht0 ht1
+  have hne : s - 1 / 2 ≠ 0 := ne_of_gt hd
+  have hcancel : (s - σ) / (s - 1 / 2) * (s - 1 / 2) = s - σ := div_mul_cancel₀ _ hne
   have hpt : (s - σ) / (s - 1 / 2) * (1 / 2 : ℚ) + (1 - (s - σ) / (s - 1 / 2)) * s = σ := by
-    field_simp
-    ring
+    have hrw : (s - σ) / (s - 1 / 2) * (1 / 2 : ℚ) + (1 - (s - σ) / (s - 1 / 2)) * s
+        = s - (s - σ) / (s - 1 / 2) * (s - 1 / 2) := by ring
+    rw [hrw, hcancel]; ring
   rw [hpt, hs] at hcv
   linarith
 
@@ -106,18 +112,20 @@ theorem mu_half_ge_sharpened {s σ : ℚ} (hs : G.mu s = 0) (h1 : 1 / 2 ≤ σ) 
     G.mu σ * ((s - 1 / 2) / (s - σ)) ≤ G.mu (1 / 2) := by
   have hsσ : 0 < s - σ := by linarith
   have hd : 0 < s - 1 / 2 := by linarith
+  have hne : s - 1 / 2 ≠ 0 := ne_of_gt hd
   have hchord := G.mu_le_chord_to_vanishing hs h1 h2
   have hkey : G.mu σ * (s - 1 / 2) ≤ G.mu (1 / 2) * (s - σ) := by
     have hmul := mul_le_mul_of_nonneg_right hchord (le_of_lt hd)
+    have hdc : (s - σ) / (s - 1 / 2) * (s - 1 / 2) = s - σ := div_mul_cancel₀ _ hne
     have hcancel : (s - σ) / (s - 1 / 2) * G.mu (1 / 2) * (s - 1 / 2)
         = G.mu (1 / 2) * (s - σ) := by
-      field_simp
-      ring
+      have hrw : (s - σ) / (s - 1 / 2) * G.mu (1 / 2) * (s - 1 / 2)
+          = G.mu (1 / 2) * ((s - σ) / (s - 1 / 2) * (s - 1 / 2)) := by ring
+      rw [hrw, hdc]
     rw [hcancel] at hmul
     exact hmul
-  rw [mul_div_assoc'] at *
-  rw [div_le_iff₀ hsσ]
-  linarith
+  rw [← mul_div_assoc, div_le_iff₀ hsσ]
+  exact hkey
 
 end ConvexGrowthExponent
 
@@ -129,14 +137,10 @@ def sharpAmplifier (s σ : ℚ) : ℚ := (s - 1 / 2) / (s - σ)
 /-- **At `s = 1` it is the previously recorded amplifier.** -/
 theorem sharpAmplifier_at_one (σ : ℚ) : sharpAmplifier 1 σ = refutationAmplifier σ := by
   unfold sharpAmplifier refutationAmplifier
-  rw [show (1 : ℚ) - 1 / 2 = 1 / 2 by norm_num]
-  rw [div_eq_div_iff_of_ne] <;> ring_nf
-  · ring
-  · intro h; exact absurd h (by norm_num)
-  · intro h; exact absurd h (by norm_num)
+  rw [show (1 : ℚ) - 1 / 2 = 1 / 2 by norm_num, ← div_div]
 
 /-- **A better vanishing point gives a stronger amplifier.** -/
-theorem sharpAmplifier_antitone {s s' σ : ℚ} (h1 : 1 / 2 ≤ σ) (h2 : σ < s') (h3 : s' < s) :
+theorem sharpAmplifier_antitone {s s' σ : ℚ} (h1 : 1 / 2 < σ) (h2 : σ < s') (h3 : s' < s) :
     sharpAmplifier s σ < sharpAmplifier s' σ := by
   unfold sharpAmplifier
   have hd : 0 < s - σ := by linarith
