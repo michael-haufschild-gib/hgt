@@ -2251,3 +2251,5 @@ import GaloisForLFunctions.HTGeometry.ShiftStableLatticeStructure
 import GaloisForLFunctions.HTGeometry.MatrixRealizationPrincipalization
 import GaloisForLFunctions.HTGeometry.EllipticPoleSpace
 import GaloisForLFunctions.HTGeometry.EllipticPrincipalJet
+import GaloisForLFunctions.HTGeometry.FundamentalParallelogram
+import GaloisForLFunctions.HTGeometry.EllipticFundamentalPoles

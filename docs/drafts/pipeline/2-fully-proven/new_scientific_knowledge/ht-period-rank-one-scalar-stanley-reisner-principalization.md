@@ -1347,3 +1347,34 @@ large `N` it has a nonzero kernel.  A kernel vector gives a combination with no 
 value zero at a regular point, hence — by `exists_const_sub_of_lattice_periodic` — identically zero
 off the poles.  Multiplying the resulting differential polynomial by the value slot `y_0` absorbs the
 poles, exactly as `weierstrassPRelation` does, giving a relation valid at *every* point.
+
+#### Step 1 machinery: finitely many poles modulo the lattice
+
+The principal-jet map can only have a finite-dimensional target if the poles are finite modulo the
+lattice.  Two new modules supply that, and remove a duplication in the process.
+
+`GaloisForLFunctions/HTGeometry/FundamentalParallelogram.lean` (axiom-clean, build green,
+umbrella-registered) extracts what the exponential-type proof had built inline:
+
+- `stepBasis` and `exists_bound_stepBasis_repr` — two `R`-independent complex numbers are an
+  `R`-basis of `C` with coordinate functionals bounded by a multiple of the norm;
+- `fundamentalParallelogram`, `isCompact_fundamentalParallelogram`;
+- **`exists_bounded_intCombination`** — every point differs from a point of the parallelogram by an
+  integer combination of the steps, with coefficients bounded by `C ||z|| + 1`.
+
+`QuasiPeriodEntireGrowth` now *consumes* that lemma instead of re-deriving the covering inside
+`exists_exp_growth_bound_of_quasiperiods`, which also collapses its two coordinate constants into
+one.  (The whole downstream chain -- lattice zeros, no-zeros, the structure theorem, both
+principalization capstones -- rebuilds green after the refactor.)
+
+`GaloisForLFunctions/HTGeometry/EllipticFundamentalPoles.lean` (axiom-clean, build green,
+umbrella-registered):
+
+- **`finite_poles_of_isCompact`** — a meromorphic function has finitely many poles in a compact set,
+  because the analytic divisor has finite support there
+  (`MeromorphicOn.divisor ... |>.finiteSupport`);
+- **`finite_poles_fundamentalParallelogram`** — in particular in the fundamental parallelogram;
+- `exists_pole_representative` — for a function whose order is lattice-invariant, every pole is an
+  integer translate of one in the parallelogram.
+
+So the pole representatives are a finite set, as the counting argument requires.
