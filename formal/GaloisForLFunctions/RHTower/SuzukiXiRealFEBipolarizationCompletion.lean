@@ -183,28 +183,28 @@ def suzukiNegativeNodeWeldRate (alpha beta t : ℝ) : ℝ :=
 /-- Source-relevant negative coordinate gives a strictly positive weld completion rate. -/
 theorem suzukiNegativeNodeWeldRate_pos
     {alpha beta t : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
-    (hbt : beta < t) (ht : t ≠ 0) (htneg : t < 0) :
+    (hbt : beta < t) (htneg : t < 0) :
     0 < suzukiNegativeNodeWeldRate alpha beta t := by
-  exact suzukiNegativeSpectralNode_compensationDeficit_pos hab hb0 hbt ht htneg
+  exact suzukiNegativeSpectralNode_compensationDeficit_pos hab hb0 hbt htneg
 
 /-- At a negative Suzuki spectral node, every-direction completion is equivalent to paying at
 least the exact affine-resolvent debt. -/
 theorem suzukiNegativeNodeWeldCompletion_iff
     {alpha beta t kappa : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
-    (hbt : beta < t) (ht : t ≠ 0) (htneg : t < 0) :
+    (hbt : beta < t) (htneg : t < 0) :
     SuzukiWeldCompletedNonnegative (suzukiNegativeNodeWeldRate alpha beta t) kappa ↔
       suzukiNegativeNodeWeldRate alpha beta t ≤ kappa := by
   rw [suzukiWeldCompletedNonnegative_iff]
-  simp [le_of_lt (suzukiNegativeNodeWeldRate_pos hab hb0 hbt ht htneg)]
+  simp [le_of_lt (suzukiNegativeNodeWeldRate_pos hab hb0 hbt htneg)]
 
 /-- The exact affine-resolvent debt is sufficient; the preceding iff proves it is also minimal. -/
 theorem suzukiNegativeNodeWeldCompletion_minimal
     {alpha beta t : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
-    (hbt : beta < t) (ht : t ≠ 0) (htneg : t < 0) :
+    (hbt : beta < t) (htneg : t < 0) :
     SuzukiWeldCompletedNonnegative
       (suzukiNegativeNodeWeldRate alpha beta t)
       (suzukiNegativeNodeWeldRate alpha beta t) := by
-  rw [suzukiNegativeNodeWeldCompletion_iff hab hb0 hbt ht htneg]
+  rw [suzukiNegativeNodeWeldCompletion_iff hab hb0 hbt htneg]
 
 end
 

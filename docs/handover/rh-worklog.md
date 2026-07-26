@@ -10922,3 +10922,80 @@ POSITIVITY STATEMENT ABOUT log|E| — SPECIFICALLY THAT log|E(z)| - log|E*(z)| I
 FUNCTION THERE. POSITIVE HARMONIC FUNCTIONS ON A HALF-PLANE HAVE A HERGLOTZ REPRESENTATION. WRITE THAT
 REPRESENTATION AND IDENTIFY ITS MEASURE IN TERMS OF THE PRIME SUM. IF THE MEASURE IS POSITIVE, THE
 HERMITE-BIEHLER CONDITION HOLDS AND RH FOLLOWS; THE MEASURE IS THE ONLY THING TO COMPUTE.
+
+---
+
+## Cycle 178 — DE BRANGES POSITIVITY FORCES EVERY OFF-LINE ZERO TO BE MULTIPLE
+
+### PROCESS CORRECTION (user directive): MINE THE CORPUS, DO NOT RE-DERIVE
+Cycles 155-177 built almost everything from scratch. A PROPER CORPUS SWEEP THIS CYCLE FOUND THE
+MATERIAL ALREADY PRESENT AND THE RESULT FELL OUT OF CONNECTING TWO EXISTING MODULES. Standing rule
+reaffirmed: `formal_tools.py research` on the OBJECT (not the technique) BEFORE conjecturing, every
+cycle, and READ the hits.
+
+### Phase 1 (corpus) — WHAT WAS ALREADY THERE
+  `RHTower/XiHedenmalmDeBrangesSeam.lean`
+     xiHedenmalmDeBrangesE z = XiC z + I * deriv XiC z      -- the Hermite-Biehler candidate
+     xiHedenmalmBezoutian_self z = (deriv XiC z)^2 - XiC z * deriv (deriv XiC) z
+     xiHedenmalmBezoutian_eq_zero_of_distinct_zeros         -- distinct Xi zeros are orthogonal
+     xiHedenmalmBezoutian_self_ne_zero_iff_simple           -- diagonal nonzero iff multiplicity one
+     docstring: "positivity of the Bezoutian ... is the RH-bearing de Branges condition"
+  `RHTower/LaguerreInequality.lean`
+     laguerreL1 p = (p')^2 - p * p''       laguerreL1_eval_nonneg  (UNCONDITIONAL, split polynomials)
+     laguerre_inequality_lp                (limit passage to the Laguerre-Polya class)
+  `HTGeometry/CayleySchur.lean`  deBrangesRovnyak_diag_nonneg, cayley_upperHalfPlane_to_disk
+  `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`  SuzukiHermiteBiehler, Livsic/Schur machinery
+
+FIRST OBSERVATION, NEVER RECORDED: xiHedenmalmBezoutian_self IS laguerreL1 OF XiC. THE DE BRANGES
+DIAGONAL AND THE FIRST LAGUERRE FORM ARE THE SAME OBJECT, AND THE TWO MODULES HAD NEVER BEEN LINKED.
+
+### Phase 3/4 — the naive conjecture, and it is FALSE
+CONJECTURE (Diagonal Suffices): positivity of the kernel on the real diagonal implies the full
+de Branges condition. FALSE. The Laguerre inequality is necessary, not sufficient: e^{z^2} has
+L1 = -2 e^{2z^2} < 0 with no zeros at all, and non-LP functions with L1 >= 0 exist. VERDICT: FALSE.
+
+### Relentless interrogation ==> THE HUNDRED-AND-TWELFTH ATLAS ENTRY
+What killed it: one scalar condition per point cannot encode a kernel's positive semidefiniteness.
+SO USE THE KERNEL DIRECTLY, AT THE ZEROS, WHERE THE CORPUS ALREADY KNOWS IT DEGENERATES.
+
+With A = XiC and B = -XiC', the de Branges numerator is N(w,z) = B z * conj(A w) - A z * conj(B w).
+
+  (i)   AT A ZERO THE DIAGONAL VANISHES: A rho = 0 gives N(rho, rho) = 0        (formalised).
+  (ii)  A PSD BLOCK WITH A VANISHING DIAGONAL ENTRY HAS VANISHING OFF-DIAGONAL: testing the form at
+        (1, -s conj b) gives 2 s ||b||^2 <= a.re for EVERY s >= 0, impossible unless b = 0
+        (formalised).
+  (iii) THE SURVIVING TERM IS B rho * conj(A w), so vanishing at any w with A w != 0 forces
+        B rho = 0, i.e. deriv XiC rho = 0                                        (formalised).
+
+    ==> IF THE HEDENMALM-DE BRANGES KERNEL IS POSITIVE SEMIDEFINITE, EVERY ZERO AT WHICH ITS DIAGONAL
+        VANISHES IS A MULTIPLE ZERO OF XiC.
+
+    ==> DE BRANGES POSITIVITY TOGETHER WITH SIMPLICITY OF THE ZEROS GIVES THE HYPOTHESIS.
+
+THE TWO OBSTRUCTIONS THE SEAM ISOLATED ARE COMPLEMENTARY, NOT INDEPENDENT: positivity disposes of the
+LOCATION question outright and leaves only the DEGENERATE case. And the seam's own criterion
+(diagonal nonzero iff multiplicity one) is exactly the complement: at a multiple zero the diagonal
+vanishes (formalised here as bezoutian_diag_zero_of_multiple).
+
+Machine-verified: `RHTower/PositivityForcesMultipleZeros.lean` (the de Branges numerator, its
+vanishing at a zero, the two-by-two PSD step, the splitting of the numerator, the derivative vanishing,
+its instantiation at the Hedenmalm pair XiC / -XiC', and the degeneration of the seam's Bezoutian
+diagonal; standard axioms only, wired into RHTower, built on the existing seam module).
+
+### STATE AT CYCLE 178
+One hundred and twelve entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 179 target
+THE REDUCTION IS NOW: POSITIVITY + SIMPLICITY ==> RH. TWO CONCRETE NEXT STEPS, BOTH CORPUS-GROUNDED.
+  (a) SIMPLICITY. The corpus has `xiHedenmalmBezoutian_self_ne_zero_iff_simple` and the divisor
+      machinery `XiDivisorSupport`, `xiSupportMultiplicity`. ASK WHETHER POSITIVITY ITSELF EXCLUDES
+      MULTIPLE ZEROS — i.e. whether a PSD kernel can have a vanishing diagonal at all for this pair.
+      If a PSD de Branges kernel forces the whole row to vanish and the row determines the function,
+      MULTIPLE ZEROS MAY BE SELF-EXCLUDING AND THE SIMPLICITY HYPOTHESIS WOULD BE REMOVABLE.
+  (b) POSITIVITY. `SuzukiFiniteApertureHermiteBiehler` PROVES the strict Hermite-Biehler inequality
+      for the finite-aperture pencils and supplies Montel compactness for the Livsic quotients. THE
+      MISSING STEP THERE IS NAMED IN ITS OWN DOCSTRING: "nondegeneration, uniqueness, shift control,
+      and identification with the global Xi/de Branges carrier". IDENTIFICATION IS THE ONE THAT
+      MATTERS: SHOW THE MONTEL LIMIT OF THE SUZUKI LIVSIC QUOTIENTS IS THE HEDENMALM QUOTIENT
+      XiC / (XiC + i XiC'). THAT WOULD TRANSPORT SUZUKI'S PROVED HERMITE-BIEHLER PROPERTY TO THE
+      GLOBAL PAIR AND, WITH ENTRY 112, TO RH MODULO SIMPLICITY.

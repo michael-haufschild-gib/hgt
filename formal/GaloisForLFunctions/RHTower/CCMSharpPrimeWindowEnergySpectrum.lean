@@ -80,7 +80,7 @@ theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundar
       dyadicSharpNegativePartLandauContinuation
       (Metric.closedBall (((sigmaFar + 1 : ℝ) : ℂ)) (Rfar : ℝ)) := by
     apply (differentiableOn_dyadicSharpNegativePartLandauContinuation_rightOf
-      beta delta hdelta.le hdelta
+      beta delta hdelta
         (by simpa only [delta] using hbetaDelta) hupper hcorrBase).mono
     intro s hs
     rw [Metric.mem_closedBall, dist_eq_norm] at hs
@@ -127,7 +127,7 @@ theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundar
     dsimp only [sigmaNear]
     linarith
   have heqNear := dyadicSharpNegativePartLandauContinuation_eq_LSeries_rightOf
-    beta delta hdelta.le hdelta (by simpa only [delta] using hbetaDelta)
+    beta delta hdelta (by simpa only [delta] using hbetaDelta)
       hupper hcorrBase hsigmaNear hsumNear
   have hcont :=
     differentiableOn_dyadicSharpNegativePartLandauContinuation_landauBall

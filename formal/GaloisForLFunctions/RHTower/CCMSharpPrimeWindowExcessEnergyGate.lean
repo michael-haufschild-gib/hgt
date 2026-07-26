@@ -277,7 +277,7 @@ theorem LSeries_dyadicSharpNegativePartLandauCoefficient_eq_continuation
 /-- The corrected continuation is holomorphic to the right of an upper bound for all
 positive-transverse Xi zeros. -/
 theorem differentiableOn_dyadicSharpNegativePartLandauContinuation_rightOf
-    (beta delta : ℝ) (hdelta0 : 0 ≤ delta) (hdelta : 0 < delta)
+    (beta delta : ℝ) (hdelta : 0 < delta)
     (hbetaDelta : beta < delta)
     (hupper : ∀ q : XiRightZeroCopy,
       (xiRightCenteredZero q).re ≤ delta)
@@ -288,7 +288,7 @@ theorem differentiableOn_dyadicSharpNegativePartLandauContinuation_rightOf
       {s : ℂ | 1 + delta < s.re} := by
   have hsourcePower :=
     differentiableOn_dyadicSharpPowerLandauContinuation_rightOf
-      0 0 delta hdelta0 hdelta hupper
+      0 0 delta hdelta.le hdelta hupper
   have hsourceEq : dyadicSharpPowerLandauContinuation 0 0 =
       dyadicSharpPrimeContinuedSource := by
     funext z
@@ -371,7 +371,7 @@ theorem differentiableOn_dyadicSharpNegativePartLandauContinuation_landauBall
 /-- Analytic continuation propagates the far-right corrected Dirichlet identity throughout any
 right half-plane on which the corrected series is known to converge. -/
 theorem dyadicSharpNegativePartLandauContinuation_eq_LSeries_rightOf
-    (beta delta : ℝ) (hdelta0 : 0 ≤ delta) (hdelta : 0 < delta)
+    (beta delta : ℝ) (hdelta : 0 < delta)
     (hbetaDelta : beta < delta)
     (hupper : ∀ q : XiRightZeroCopy,
       (xiRightCenteredZero q).re ≤ delta)
@@ -392,7 +392,7 @@ theorem dyadicSharpNegativePartLandauContinuation_eq_LSeries_rightOf
   have hGdiff : DifferentiableOn ℂ
       dyadicSharpNegativePartLandauContinuation U :=
     (differentiableOn_dyadicSharpNegativePartLandauContinuation_rightOf
-      beta delta hdelta0 hdelta hbetaDelta hupper hcorr).mono (by
+      beta delta hdelta hbetaDelta hupper hcorr).mono (by
         intro s hs
         change sigma < s.re at hs
         change 1 + delta < s.re
@@ -507,7 +507,7 @@ theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundar
       dyadicSharpNegativePartLandauContinuation
       (Metric.closedBall (((sigmaFar + 1 : ℝ) : ℂ)) (Rfar : ℝ)) := by
     apply (differentiableOn_dyadicSharpNegativePartLandauContinuation_rightOf
-      beta delta hdelta.le hdelta hbetaDelta hupper hcorrBase).mono
+      beta delta hdelta hbetaDelta hupper hcorrBase).mono
     intro s hs
     rw [Metric.mem_closedBall, dist_eq_norm] at hs
     change 1 + delta < s.re
@@ -553,7 +553,7 @@ theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundar
     dsimp only [sigmaNear]
     linarith
   have heqNear := dyadicSharpNegativePartLandauContinuation_eq_LSeries_rightOf
-    beta delta hdelta.le hdelta hbetaDelta hupper hcorrBase
+    beta delta hdelta hbetaDelta hupper hcorrBase
       hsigmaNear hsumNear
   have hcont :=
     differentiableOn_dyadicSharpNegativePartLandauContinuation_landauBall

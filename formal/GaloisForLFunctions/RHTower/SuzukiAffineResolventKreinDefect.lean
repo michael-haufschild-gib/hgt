@@ -174,21 +174,22 @@ theorem suzukiAffineAntiResolventTargetGap_nonneg_iff
 /-- A negative spectral coordinate creates a strictly positive compensation debt. -/
 theorem suzukiNegativeSpectralNode_compensationDeficit_pos
     {alpha beta t : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
-    (hbt : beta < t) (ht : t ≠ 0) (htneg : t < 0) :
+    (hbt : beta < t) (htneg : t < 0) :
     0 < -suzukiAffineResolventKreinDefect alpha beta t := by
   have hdefneg :=
-    (suzukiAffineResolventKreinDefect_neg_iff hab hb0 hbt ht).2 htneg
+    (suzukiAffineResolventKreinDefect_neg_iff hab hb0 hbt
+      (ne_of_lt htneg)).2 htneg
   linarith
 
 /-- On a negative spectral coordinate, nonnegativity of the global target gap forces a strictly
 positive global/local correction. -/
 theorem suzukiNegativeSpectralNode_forces_weldCorrection_pos
     {alpha beta t target : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
-    (hbt : beta < t) (ht : t ≠ 0) (htneg : t < 0)
+    (hbt : beta < t) (htneg : t < 0)
     (hgap : 0 ≤ suzukiAffineAntiResolventTargetGap alpha beta t target) :
     0 < suzukiGlobalLocalWeldCorrection target t := by
   have hdebt :=
-    suzukiNegativeSpectralNode_compensationDeficit_pos hab hb0 hbt ht htneg
+    suzukiNegativeSpectralNode_compensationDeficit_pos hab hb0 hbt htneg
   have hdominates :=
     (suzukiAffineAntiResolventTargetGap_nonneg_iff alpha beta t target).1 hgap
   linarith
@@ -196,11 +197,12 @@ theorem suzukiNegativeSpectralNode_forces_weldCorrection_pos
 /-- Bare anti-resolvent sewing cannot be a nonnegative square on a negative spectral node. -/
 theorem suzukiNegativeSpectralNode_bareAntiResolventGap_not_nonneg
     {alpha beta t : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
-    (hbt : beta < t) (ht : t ≠ 0) (htneg : t < 0) :
+    (hbt : beta < t) (htneg : t < 0) :
     ¬ 0 ≤ suzukiAffineAntiResolventGap alpha beta t := by
   rw [suzukiAffineAntiResolventGap_eq_kreinDefect]
   have hdefneg :=
-    (suzukiAffineResolventKreinDefect_neg_iff hab hb0 hbt ht).2 htneg
+    (suzukiAffineResolventKreinDefect_neg_iff hab hb0 hbt
+      (ne_of_lt htneg)).2 htneg
   linarith
 
 /-! ## Schur-complement cost of projective holonomy -/
@@ -271,7 +273,7 @@ completion threshold is its sum with the Schur holonomy tax. -/
 theorem suzukiNegativeSpectralNode_twoChannelCompletionLaw
     {alpha beta t positiveBlock coupling directCompletion : ℝ}
     (hab : alpha < beta) (hb0 : beta < 0) (hbt : beta < t)
-    (ht : t ≠ 0) (htneg : t < 0) (hpositiveBlock : 0 < positiveBlock) :
+    (htneg : t < 0) (hpositiveBlock : 0 < positiveBlock) :
     0 < -suzukiAffineResolventKreinDefect alpha beta t ∧
       ((∀ x y : ℝ, 0 ≤ suzukiTwoChannelKreinCompletionForm
           positiveBlock coupling directCompletion
@@ -280,7 +282,7 @@ theorem suzukiNegativeSpectralNode_twoChannelCompletionLaw
             coupling ^ 2 / positiveBlock ≤ directCompletion) := by
   constructor
   · exact suzukiNegativeSpectralNode_compensationDeficit_pos
-      hab hb0 hbt ht htneg
+      hab hb0 hbt htneg
   · exact suzukiTwoChannelKreinCompletionForm_nonneg_iff_schurDebt
       hpositiveBlock
 

@@ -113,7 +113,7 @@ theorem suzukiFiniteMorseKreinInterpolant_exact_negativeDebt
   have hdebt : ∀ j, 0 ≤ suzukiFiniteMorseKreinDebt alpha beta (t j) := by
     intro j
     exact le_of_lt (suzukiNegativeSpectralNode_compensationDeficit_pos
-      hab hb0 (hbt j) (ne_of_lt (htneg j)) (htneg j))
+      hab hb0 (hbt j) (htneg j))
   exact suzukiFiniteMorseInterpolant_eval_sq
     (fun j => suzukiFiniteMorseResolventNode rho (t j))
     (fun j => suzukiFiniteMorseKreinDebt alpha beta (t j))

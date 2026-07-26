@@ -36,8 +36,7 @@ theorem hasDerivAt_bandFlux {f : ℝ → ℝ} {t : ℝ} (hf2 : DifferentiableAt 
 differentiable weight loses its boundary terms, since the flux `(1−y²)·f'` vanishes at `±1`. -/
 theorem band_flux_integral_by_parts {f g : ℝ → ℝ}
     (hf2 : Differentiable ℝ (deriv f)) (hf2c : Continuous (deriv (deriv f)))
-    (hg1 : Differentiable ℝ g) (hg'c : Continuous (deriv g))
-    (hf'c : Continuous (deriv f)) :
+    (hg1 : Differentiable ℝ g) (hg'c : Continuous (deriv g)) :
     ∫ y in (-1 : ℝ)..1, g y * (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y)
       = -∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ 2) * deriv f y) := by
   have hu : ∀ y ∈ Set.uIcc (-1 : ℝ) 1, HasDerivAt g (deriv g y) y :=
@@ -48,6 +47,7 @@ theorem band_flux_integral_by_parts {f g : ℝ → ℝ}
   have hu' : IntervalIntegrable (deriv g) volume (-1) 1 := hg'c.intervalIntegrable _ _
   have hv' : IntervalIntegrable
       (fun y => -(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y) volume (-1) 1 := by
+    have hf'c : Continuous (deriv f) := hf2.continuous
     apply Continuous.intervalIntegrable
     fun_prop
   have h := intervalIntegral.integral_mul_deriv_eq_deriv_mul hu hv hu' hv'
@@ -97,8 +97,8 @@ theorem prolateSLAction_band_symmetric {f g : ℝ → ℝ}
     rw [← intervalIntegral.integral_sub hAg hBg]
     exact intervalIntegral.integral_congr fun y _ => by
       simp only [prolateSLAction]; ring
-  have hibpf := band_flux_integral_by_parts hf2 hf2c hg1 hg'c hf'c
-  have hibpg := band_flux_integral_by_parts hg2 hg2c hf1 hf'c hg'c
+  have hibpf := band_flux_integral_by_parts hf2 hf2c hg1 hg'c
+  have hibpg := band_flux_integral_by_parts hg2 hg2c hf1 hf'c
   have hcross : ∫ y in (-1 : ℝ)..1, deriv g y * ((1 - y ^ 2) * deriv f y)
       = ∫ y in (-1 : ℝ)..1, deriv f y * ((1 - y ^ 2) * deriv g y) :=
     intervalIntegral.integral_congr fun y _ => by ring

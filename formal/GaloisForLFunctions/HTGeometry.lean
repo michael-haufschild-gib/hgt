@@ -2142,6 +2142,7 @@ import GaloisForLFunctions.HTGeometry.ArchitectureSensitivity
 import GaloisForLFunctions.HTGeometry.ScaleAbscissaDuality
 import GaloisForLFunctions.HTGeometry.MiddleSourceWindow
 import GaloisForLFunctions.HTGeometry.SectionFourGapAndTarget
+import GaloisForLFunctions.HTGeometry.SymmetrizationRetraction
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
 import GaloisForLFunctions.HTGeometry.SatakeEnergyBound
