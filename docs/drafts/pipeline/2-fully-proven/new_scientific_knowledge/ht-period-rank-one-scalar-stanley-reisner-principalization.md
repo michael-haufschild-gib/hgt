@@ -1529,3 +1529,22 @@ identity-theorem argument on the complement of a discrete set.  It does not: `to
 lower bound, so a point where the order is `top` costs nothing.  And a pole representative has
 negative order, so it is automatically not `top`.  The whole finiteness question disappears from the
 proof.
+
+#### A regular point, and the degenerate derivative
+
+`GaloisForLFunctions/HTGeometry/EllipticRegularPoint.lean` (axiom-clean, build green,
+umbrella-registered) supplies the last two inputs of the assembly.
+
+- **`differentiallyAlgebraic_of_deriv_eq_zero`** — a function with identically vanishing derivative
+  satisfies `y_1 = 0`, so the degenerate case where the derivative carries no information is disposed
+  of before the counting argument starts;
+- **`exists_nonneg_meromorphicOrderAt`** — a meromorphic function on `C` has a point of nonnegative
+  order.  Poles are finite on every compact set, while the unit segment of the real axis is an
+  *infinite* compact subset of `C`, so not every point can be a pole.  This is the regular point at
+  which the counting argument reads the value of a combination, and it is what pins the constant to
+  zero;
+- `analyticAt_of_nonneg_meromorphicOrderAt` — for a normal-form function, nonnegative order means
+  analyticity.
+
+Using the unit segment rather than a disc avoids needing an infinitude lemma for balls: the segment is
+the continuous injective image of `Icc 0 1`, hence compact and infinite by construction.

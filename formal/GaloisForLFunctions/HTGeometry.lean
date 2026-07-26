@@ -2276,3 +2276,4 @@ import GaloisForLFunctions.HTGeometry.EllipticJetVanishing
 import GaloisForLFunctions.HTGeometry.EllipticMonomialRelation
 import GaloisForLFunctions.HTGeometry.EllipticPeriodicMonomial
 import GaloisForLFunctions.HTGeometry.EllipticOrderBound
+import GaloisForLFunctions.HTGeometry.EllipticRegularPoint
