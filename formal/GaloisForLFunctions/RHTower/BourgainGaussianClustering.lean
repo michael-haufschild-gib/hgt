@@ -418,6 +418,249 @@ theorem bourgainGaussian_le_halfGeometric
         rw [div_pow]
         norm_num
 
+/-- Half-unit floor cell of a four-dimensional point after applying the
+spacing scales. -/
+def bourgainScaledCell
+    (X u : BourgainPhaseSpace) : Fin 4 → ℤ :=
+  fun j => ⌊2 * (X j * u j)⌋
+
+/-- Coordinatewise nearness in normalized coordinates. -/
+def BourgainScaledNear
+    (X u v : BourgainPhaseSpace) : Prop :=
+  ∀ j : Fin 4, |X j * (u j - v j)| < 1 / 2
+
+theorem bourgainScaledNear_of_cell_eq
+    {X u v : BourgainPhaseSpace}
+    (hcell : bourgainScaledCell X u = bourgainScaledCell X v) :
+    BourgainScaledNear X u v := by
+  intro j
+  have hfloor :
+      ⌊2 * (X j * u j)⌋ = ⌊2 * (X j * v j)⌋ :=
+    congrFun hcell j
+  have h :=
+    Int.abs_sub_lt_one_of_floor_eq_floor hfloor
+  have hscaled :
+      |2 * (X j * (u j - v j))| < (1 : ℝ) := by
+    convert h using 1 <;> ring_nf
+  rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)] at hscaled
+  linarith
+
+/-- Pointwise four-dimensional Gaussian domination by the product cell
+kernel.  The explicit factor is `8^4 = 4096`. -/
+theorem bourgainGaussianPairWeight_le_cellKernel
+    (X u v : BourgainPhaseSpace) :
+    Real.exp (-Real.pi * bourgainScaledSqDist X u v) ≤
+      4096 *
+        bourgainFourCellKernel
+          (bourgainScaledCell X u) (bourgainScaledCell X v) := by
+  have hcoord (j : Fin 4) :
+      Real.exp (-Real.pi * (X j * (u j - v j)) ^ (2 : ℕ)) ≤
+        8 * bourgainHalfGeometric
+          (bourgainScaledCell X u j - bourgainScaledCell X v j) := by
+    apply bourgainGaussian_le_halfGeometric
+    have hsep :=
+      bourgainFloorCellSeparation (X j * u j) (X j * v j)
+    simpa [bourgainScaledCell, bourgainHalfGeometric,
+      show X j * u j - X j * v j = X j * (u j - v j) by ring]
+      using hsep
+  calc
+    Real.exp (-Real.pi * bourgainScaledSqDist X u v) =
+        ∏ j : Fin 4,
+          Real.exp (-Real.pi * (X j * (u j - v j)) ^ (2 : ℕ)) := by
+      unfold bourgainScaledSqDist
+      rw [Finset.mul_sum, Real.exp_sum]
+    _ ≤ ∏ j : Fin 4,
+        (8 * bourgainHalfGeometric
+          (bourgainScaledCell X u j - bourgainScaledCell X v j)) := by
+      apply Finset.prod_le_prod
+      · intro j hj
+        positivity
+      · intro j hj
+        exact hcoord j
+    _ = 4096 *
+        bourgainFourCellKernel
+          (bourgainScaledCell X u) (bourgainScaledCell X v) := by
+      rw [Finset.prod_mul_distrib]
+      norm_num [bourgainFourCellKernel, Fin.prod_univ_four]
+
+/-- Gaussian pair energy of a finite weighted point family. -/
+def bourgainWeightedGaussianEnergy
+    {ι : Type*} [Fintype ι]
+    (X : BourgainPhaseSpace) (p : ι → BourgainPhaseSpace)
+    (a : ι → ℝ) : ℝ :=
+  ∑ i : ι, ∑ j : ι,
+    Real.exp (-Real.pi * bourgainScaledSqDist X (p i) (p j)) *
+      a i * a j
+
+/-- Sharp normalized near-pair energy of a finite weighted point family. -/
+def bourgainWeightedScaledNearEnergy
+    {ι : Type*} [Fintype ι]
+    (X : BourgainPhaseSpace) (p : ι → BourgainPhaseSpace)
+    (a : ι → ℝ) : ℝ := by
+  classical
+  exact
+    ∑ i : ι, ∑ j : ι,
+      if BourgainScaledNear X (p i) (p j) then a i * a j else 0
+
+/-- Unconditional Gaussian clustering estimate in four dimensions.
+
+The constant is `8^4 * 3^4 = 24^4 = 331776`. -/
+theorem bourgainWeightedGaussianEnergy_le_scaledNearEnergy
+    {ι : Type*} [Fintype ι]
+    (X : BourgainPhaseSpace) (p : ι → BourgainPhaseSpace)
+    (a : ι → ℝ) (ha : ∀ i, 0 ≤ a i) :
+    bourgainWeightedGaussianEnergy X p a ≤
+      331776 * bourgainWeightedScaledNearEnergy X p a := by
+  classical
+  let c : ι → Fin 4 → ℤ := fun i => bourgainScaledCell X (p i)
+  have hgauss :
+      bourgainWeightedGaussianEnergy X p a ≤
+        4096 * ∑ i : ι, ∑ j : ι,
+          bourgainFourCellKernel (c i) (c j) * a i * a j := by
+    unfold bourgainWeightedGaussianEnergy
+    calc
+      (∑ i : ι, ∑ j : ι,
+          Real.exp (-Real.pi * bourgainScaledSqDist X (p i) (p j)) *
+            a i * a j)
+          ≤ ∑ i : ι, ∑ j : ι,
+              4096 *
+                (bourgainFourCellKernel (c i) (c j) * a i * a j) := by
+            apply Finset.sum_le_sum
+            intro i hi
+            apply Finset.sum_le_sum
+            intro j hj
+            have hpw :=
+              bourgainGaussianPairWeight_le_cellKernel X (p i) (p j)
+            have haij : 0 ≤ a i * a j := mul_nonneg (ha i) (ha j)
+            calc
+              Real.exp
+                    (-Real.pi * bourgainScaledSqDist X (p i) (p j)) *
+                  a i * a j
+                  ≤ (4096 * bourgainFourCellKernel (c i) (c j)) *
+                      a i * a j := by
+                    exact mul_le_mul_of_nonneg_right
+                      (mul_le_mul_of_nonneg_right hpw (ha i)) (ha j)
+              _ = 4096 *
+                    (bourgainFourCellKernel (c i) (c j) * a i * a j) := by
+                    ring
+      _ = 4096 * ∑ i : ι, ∑ j : ι,
+          bourgainFourCellKernel (c i) (c j) * a i * a j := by
+        simp_rw [Finset.mul_sum]
+  have hcell :
+      (∑ i : ι, ∑ j : ι,
+          bourgainFourCellKernel (c i) (c j) * a i * a j) ≤
+        81 * ∑ k ∈ Finset.univ.image c,
+          (∑ i : ι with c i = k, a i) ^ (2 : ℕ) :=
+    sum_bourgainFourCellKernel_le_cellMass a c
+  have hsame :
+      (∑ k ∈ Finset.univ.image c,
+          (∑ i : ι with c i = k, a i) ^ (2 : ℕ)) ≤
+        bourgainWeightedScaledNearEnergy X p a := by
+    rw [sum_cellMass_sq_eq_sameCell]
+    unfold bourgainWeightedScaledNearEnergy
+    apply Finset.sum_le_sum
+    intro i hi
+    apply Finset.sum_le_sum
+    intro j hj
+    by_cases hc : c i = c j
+    · have hnear :
+          BourgainScaledNear X (p i) (p j) := by
+        exact bourgainScaledNear_of_cell_eq hc
+      simp [hc, hnear]
+    · simp only [hc, ↓reduceIte]
+      split_ifs
+      · exact mul_nonneg (ha i) (ha j)
+      · exact le_rfl
+  calc
+    bourgainWeightedGaussianEnergy X p a
+        ≤ 4096 * ∑ i : ι, ∑ j : ι,
+            bourgainFourCellKernel (c i) (c j) * a i * a j := hgauss
+    _ ≤ 4096 * (81 * ∑ k ∈ Finset.univ.image c,
+          (∑ i : ι with c i = k, a i) ^ (2 : ℕ)) := by
+        gcongr
+    _ ≤ 4096 * (81 * bourgainWeightedScaledNearEnergy X p a) := by
+        gcongr
+    _ = 331776 * bourgainWeightedScaledNearEnergy X p a := by ring
+
+theorem bourgainScaledNear_sixfold_iff
+    {H : ℕ} {X : BourgainPhaseSpace}
+    (hX : ∀ j, 0 < X j) (h h' : Fin 6 → Fin H) :
+    BourgainScaledNear X
+        (bourgainSixfoldMoment h) (bourgainSixfoldMoment h') ↔
+      BourgainNearPair X h h' := by
+  constructor
+  · intro hnear j
+    have hj := hnear j
+    rw [abs_mul, abs_of_pos (hX j)] at hj
+    apply (lt_div_iff₀ (mul_pos (by norm_num) (hX j))).2
+    calc
+      |bourgainSixfoldMoment h j - bourgainSixfoldMoment h' j| *
+          (2 * X j)
+          = 2 *
+              (X j *
+                |bourgainSixfoldMoment h j -
+                  bourgainSixfoldMoment h' j|) := by ring
+      _ < 2 * (1 / 2 : ℝ) := by gcongr
+      _ = 1 := by norm_num
+  · intro hnear j
+    rw [abs_mul, abs_of_pos (hX j)]
+    calc
+      X j *
+          |bourgainSixfoldMoment h j -
+            bourgainSixfoldMoment h' j|
+          < X j * (1 / (2 * X j)) :=
+        mul_lt_mul_of_pos_left (hnear j) (hX j)
+      _ = 1 / 2 := by field_simp [(hX j).ne']
+
+/-- Gaussian spacing energy is bounded by the sharp first-spacing count.
+This is the unconditional smooth-to-sharp clustering direction needed in
+the double-large-sieve step. -/
+theorem bourgainGaussianSpacingEnergy_le_firstSpacingCount
+    {H : ℕ} {X : BourgainPhaseSpace}
+    (hX : ∀ j, 0 < X j) :
+    bourgainGaussianSpacingEnergy H X ≤
+      331776 * (bourgainFirstSpacingCount H X : ℝ) := by
+  let p : (Fin 6 → Fin H) → BourgainPhaseSpace :=
+    bourgainSixfoldMoment
+  let a : (Fin 6 → Fin H) → ℝ := fun _ => 1
+  have hcluster :=
+    bourgainWeightedGaussianEnergy_le_scaledNearEnergy X p a
+      (fun _ => by norm_num)
+  have hgauss :
+      bourgainWeightedGaussianEnergy X p a =
+        bourgainGaussianSpacingEnergy H X := by
+    simp [bourgainWeightedGaussianEnergy, bourgainGaussianSpacingEnergy,
+      p, a]
+  have hnear :
+      bourgainWeightedScaledNearEnergy X p a =
+        (bourgainFirstSpacingCount H X : ℝ) := by
+    classical
+    calc
+      bourgainWeightedScaledNearEnergy X p a =
+          ∑ h : Fin 6 → Fin H, ∑ h' : Fin 6 → Fin H,
+            if BourgainNearPair X h h' then (1 : ℝ) else 0 := by
+        unfold bourgainWeightedScaledNearEnergy
+        apply Finset.sum_congr rfl
+        intro h hh
+        apply Finset.sum_congr rfl
+        intro h' hh'
+        rw [bourgainScaledNear_sixfold_iff hX]
+        simp [p, a]
+      _ = ∑ q ∈
+          ((Finset.univ : Finset (Fin 6 → Fin H)).product
+            (Finset.univ : Finset (Fin 6 → Fin H))),
+          if BourgainNearPair X q.1 q.2 then (1 : ℝ) else 0 := by
+        simpa using
+          (Finset.sum_product
+            (Finset.univ : Finset (Fin 6 → Fin H))
+            (Finset.univ : Finset (Fin 6 → Fin H))
+            (fun q =>
+              if BourgainNearPair X q.1 q.2 then (1 : ℝ) else 0)).symm
+      _ = (bourgainFirstSpacingCount H X : ℝ) := by
+        simp [bourgainFirstSpacingCount, Finset.sum_boole]
+  rw [hgauss, hnear] at hcluster
+  exact hcluster
+
 end
 
 end RHTower

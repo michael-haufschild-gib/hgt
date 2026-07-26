@@ -5980,3 +5980,73 @@ where P~ is the prime symbol reflected (c -> -c, i.e. xi -> xi + pi/log p locall
 is a DIFFERENCE OF A SYMBOL AND ITS REFLECTION, then positivity becomes a statement that a symbol
 dominates its own reflection — a self-referential condition with no external comparison term, and the
 first formulation in this programme in which the archimedean side does not appear at all.
+
+---
+
+## Cycle 100 (2026-07-26) — THE REFLECTION SPLITS THE SYMBOL BUT GAINS NOTHING
+
+### Phase 4 verdict on cycle 99's target: REFUTED
+Conjecture: W(g) is a difference between the prime symbol and its own reflection, giving a
+self-referential positivity with no archimedean term. FALSE, for a one-line reason:
+
+By the decoupling of the extremes each local supremum is taken over ALL theta, and theta -> theta + pi
+is a BIJECTION of the line, so the reflected local factor has the SAME RANGE and hence the SAME
+SUPREMUM. sup P~ = sup P. NOTHING IS GAINED BY COMPARING A SYMBOL WITH ITS REFLECTION. The
+self-referential formulation is closed; there is no internal comparison that replaces the archimedean
+side. DEAD END; do not re-attempt.
+
+### What the reflection DOES do, and it gives the pole a fourth time
+The reflection acts on the k-th harmonic by (-1)^k, i.e. by x -> -x. So
+
+    P - P~ = 4 sum_p log p sum_{k odd}  p^{-k/2} cos(k xi log p),     (all divergence, all arithmetic)
+    P + P~ = 4 sum_p log p sum_{k even} p^{-k/2} cos(k xi log p),     (absolutely convergent)
+
+and the even half at the origin sums to
+    2 sum_p log p sum_{m>=1} p^{-m} = 2 sum_p log p/(p-1) = 2 sum_n Lambda(n)/n = THE POLE.
+
+    ==> FOURTH INDEPENDENT DERIVATION OF THE POLE TERM: it is the EVEN (square-power) PART OF THE
+        PRIME SYMBOL AT THE ORIGIN.
+
+The four derivations, all of the same logarithmic quantity:
+  1. cycle 81 — the pole form's trace = interval length = one Nyquist cell (cosh^2 - sinh^2 = 1);
+  2. cycle 83 — the three-way cancellation with the first archimedean mode;
+  3. cycle 99 — sup P + inf P, the asymmetry of the prime symbol;
+  4. cycle 100 — the even part of the prime symbol at the origin.
+That the same number arises from a Pythagorean identity, a Laplace-transform cancellation, an
+extremal asymmetry, and a parity projection is the strongest structural coherence the programme has
+found. IT ALSO MEANS NONE OF THE FOUR IS INDEPENDENT INFORMATION.
+
+Machine-verified: `RHTower/ReflectionSplitsOddEven.lean` (the parity identities in all four cases, the
+evaluation of the even part at the origin via the geometric identity, the range-invariance of a
+function under a shift of its argument, and the resulting equality of suprema; standard axioms only,
+wired into RHTower).
+
+### THIRTY-FOURTH ATLAS ENTRY
+    reflection split   theta -> theta + pi splits the prime symbol into an absolutely convergent even
+                       part (equal to the pole at the origin) and a divergent odd part carrying all
+                       the arithmetic; but the supremum is shift-invariant, so no positivity follows
+                       from the reflection. The pole is derived a fourth way.
+
+### STATE AT CYCLE 100
+Thirty-four entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+ONE HUNDRED CYCLES. THE ATLAS NOW HAS A SHAPE:
+  * FOUR derivations of the pole/logarithmic scale, all equivalent (81, 83, 99, 100);
+  * FOUR lanes characterised and closed as sources of new leverage (explicit formula 17-21; operator
+    22-29; scaling 30-31 refuted by the witness test 32; self-reference 34);
+  * TWO a priori spectral sources known (self-adjointness 24, similitude 26) and neither available;
+  * ONE explicit definite pairing constructed (27, constant 4 - 3 log 2 - pi/2 = 0.34976);
+  * ONE checkable instrument for refuting arguments in advance (the witness test, 32).
+THE SEPARATING INGREDIENT IS THE EULER PRODUCT (32), AND ITS ONLY EXACT CONSEQUENCE IN THIS THEORY IS
+KRONECKER DECOUPLING (corpus), WHICH MAXIMISES THE PRIME SIDE AND THEREFORE WORKS AGAINST POSITIVITY.
+
+### Cycle 101 target
+Confront that last sentence directly. Kronecker decoupling says independence MAXIMISES the prime
+symbol. Weil positivity needs the prime side to be DOMINATED. So independence is an obstruction, not
+a tool — yet it is the only property distinguishing zeta from the counterexamples (entry 32). THE
+RESOLUTION MUST BE THAT INDEPENDENCE ENTERS WITH THE OPPOSITE SIGN SOMEWHERE ELSE. CANDIDATE: the
+ZERO side. Independence of {log p} controls the DISTRIBUTION of the zeros through the explicit
+formula; if the zeros were off the line, their contribution would have to conspire with the prime
+phases, and independence forbids conspiracy. TEST WHETHER AN OFF-LINE ZERO IMPOSES A LINEAR RELATION
+AMONG THE PRIME LOGARITHMS — if it does, independence excludes it, and that is a proof. This is the
+first candidate mechanism in which the separating ingredient acts in the right direction.
