@@ -2243,3 +2243,4 @@ import GaloisForLFunctions.HTGeometry.MatrixFacetCodimension
 import GaloisForLFunctions.HTGeometry.QuasiPeriodEntireGrowth
 import GaloisForLFunctions.HTGeometry.LieModulePointStabilizer
 import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
+import GaloisForLFunctions.HTGeometry.QuasiPeriodEntireGrowth

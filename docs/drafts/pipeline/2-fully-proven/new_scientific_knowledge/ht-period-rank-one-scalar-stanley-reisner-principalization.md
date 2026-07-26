@@ -1060,3 +1060,33 @@ separate `logDeriv` argument, and in that form it needs neither nonvanishing nor
 The `logDeriv` route is kept only where it yields something the span route does not: the structural
 fact `ne_zero_of_quasiperiods_realDependent` that such a carrier has no zeros at all, and the lattice
 branch of `differentiallyAlgebraic_of_quasiperiods`.
+
+## Lean progress — attacking the lattice branch: exponential type
+
+The one alternative still open everywhere on this card is a facet omitting two vertices whose steps
+are `R`-independent, i.e. span a genuine lattice.  For an **entire** carrier that case is not
+elliptic-function theory at all: it is a growth-versus-zero-counting statement.
+
+If `f` is entire with `f(z+w_1) = a f(z)`, `f(z+w_2) = b f(z)` for a lattice, and `f` has a zero
+`z_0`, then the zero set contains the whole coset `z_0 + Lambda`, whose counting function grows like
+`r^2`.  But the multiplier relations bound `f` by an exponential of `|z|`, and Jensen's inequality
+bounds the zero count of such a function linearly in `r`.  Contradiction: an entire carrier with
+constant multipliers over a lattice has **no zeros**, and then the already-formalized
+`differentiallyAlgebraic_of_quasiperiods` applies.  Mathlib now carries the required inequality
+(`AnalyticOnNhd.sum_divisor_le` in `Mathlib/Analysis/Complex/JensenFormula.lean`).
+
+`GaloisForLFunctions/HTGeometry/QuasiPeriodEntireGrowth.lean` (axiom-clean, build green,
+umbrella-registered) supplies the growth half:
+
+- `quasiPeriodic_zsmul` — a constant-multiplier quasi-period iterates over `Z` (`Int.induction_on`,
+  the backward step using `a != 0`);
+- `quasiPeriodic_lattice` — `f(z + m w_1 + n w_2) = a^m b^n f(z)`;
+- `stepBasis` and `exists_bound_stepBasis_repr` — two `R`-independent complex numbers are an
+  `R`-basis of `C`, and its coordinate functionals are bounded by a multiple of the norm (they are
+  linear maps on a finite-dimensional space, hence continuous);
+- **`exists_exp_growth_bound_of_quasiperiods`** — `||f z|| <= K exp(c ||z||)`: subtract the integer
+  parts of the two coordinates to land in the compact fundamental parallelogram, bound `f` there by
+  compactness, and pay `max(|a|,|a|^-1)` and `max(|b|,|b|^-1)` per lattice step.
+
+Remaining for this branch: the lattice-point count `#{(m,n) : ||z_0 + m w_1 + n w_2 - c|| <= r} >>
+r^2`, and the Jensen comparison that contradicts it.
