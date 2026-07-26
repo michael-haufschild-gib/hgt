@@ -2193,3 +2193,26 @@ from scratch: mathlib has neither a Koszul complex nor a simplicial cochain comp
 open gates on this card are not Lean gates — independent audit of the localization/grading
 conventions, specialist novelty review, an active polarized analytic sheaf realization, and full
 faithfulness in a nontrivial HT class.
+
+### Lean progress — the two Koszul conventions are the same object (connector)
+
+Two presentations of the first Koszul boundary coexist in this development: the concrete one indexes
+`2`-chains by matrices and antisymmetrizes inside the differential
+(`srKoszulBoundary facets c i = ∑_j (c i j − c j i) x_j`, used by all the concrete Hochster results),
+while the degree-uniform one contracts the first slot of an *alternating* tensor
+(`koszulD x b w = ∑_k b (k ∷ w) x_k`, used by the strand equivalence).
+`HochsterStrandConventionBridge.lean` (axiom-clean, build green) proves they define the **same
+submodule**, so the two families of results are about one object:
+
+- `tensorOfMatrix` / `matrixOfTensor` with `matrixOfTensor_tensorOfMatrix` — the translation;
+- `swap_two_eq`, `eq_of_not_injective_two` — on `Fin 2` there is only one transposition and
+  non-injectivity means the two entries coincide;
+- `isAltTensor_tensorOfMatrix` — an antisymmetric matrix with vanishing diagonal becomes an
+  alternating tensor; `matrixOfTensor_antisymm`, `matrixOfTensor_diag` — and conversely;
+- `koszulD_tensorOfMatrix` — the general differential reads the *transposed* matrix (the sign flip is
+  intrinsic: `koszulD` contracts the first slot);
+- **`srKoszulBoundary_exists_iff_mem_koszulBoundaries`** — `z` is `srKoszulBoundary facets c` for some
+  matrix `c` **iff** its degree-`0` avatar lies in the Koszul boundary submodule of the alternating
+  complex.  The forward direction antisymmetrizes `c`; the backward direction takes the
+  upper-triangular representative of the tensor's matrix, which is exactly where
+  `srKoszulBoundary_koszulUpperTri` is characteristic-free.
