@@ -6758,3 +6758,73 @@ THAT IS A SINGLE UNIFORM SMALLNESS CONDITION REPLACING INFINITELY MANY INEQUALIT
 the polynomial dependence is monotone enough for one bound on the error to control every e_k — if it
 is, the infinite ladder reduces to one inequality, and that inequality is the sharpened form of the
 0.17488 g(0) bound of entry 18.
+
+---
+
+## Cycle 112 (2026-07-26) — THE VERIFICATION LADDER COLLAPSES TO ONE ROW-SUM INEQUALITY
+
+### The collapse
+The Weil Gram matrix is A = M - E: archimedean part M, uniformly positive definite with constant
+1 - beta = 4 - 3 log 2 - pi/2 = 0.34976 (entry 27), minus an error part E carrying the smoothed
+prime-counting discrepancy. If |<E x, x>| <= e ||x||^2 then
+
+    <A x, x> = <M x, x> - <E x, x> >= ( (1 - beta) - e ) ||x||^2,
+
+so e < 1 - beta forces A >= 0 and therefore ALL SYMMETRIC FUNCTIONS NONNEGATIVE AT ONCE.
+
+    ==> THE INFINITE LADDER OF POLYNOMIAL INEQUALITIES (entries 43, 44, 45) REDUCES TO A SINGLE
+        SCALAR INEQUALITY.
+
+### And the bound needs no spectrum
+For a symmetric matrix, |sum_{j,k} E_{jk} x_j x_k| <= ( max_j sum_k |E_{jk}| ) sum_j x_j^2, from
+|x_j x_k| <= (x_j^2 + x_k^2)/2 and symmetry. The entries E_{jk} are EXPLICIT PRIME DATA. Hence
+
+    ==> RH FOLLOWS FROM A SINGLE CONDITION ON EXPLICIT ARITHMETIC: FOR EVERY FINITE FAMILY OF TEST
+        FUNCTIONS, THE MAXIMAL ABSOLUTE ROW SUM OF THE ERROR GRAM MATRIX IS BELOW
+        4 - 3 log 2 - pi/2 = 0.34976.
+
+The row-sum route is the right one: the Frobenius bound loses a factor growing with the dimension,
+while the row-sum bound is DIMENSION-FREE whenever the entries decay — which is exactly what
+separation of the test functions provides.
+
+### Honest assessment of what this is and is not
+This is the sharpest FORM the programme has reached: no contour, no spectrum, no test-function
+continuum, no width regime, no asymptotics — one explicit scalar condition on prime data. IT IS NOT A
+PROOF: the row sums of E are the smoothed error paired against the test family, and bounding them is
+bounding the zero sum, which cycle 83 established is circular. THE FORM HAS IMPROVED ENORMOUSLY; THE
+CONTENT IS ENTRY 18'S BOUND, UNCHANGED. Record that plainly so no future cycle mistakes the
+reformulation for progress on the content.
+
+Machine-verified: `RHTower/OneInequalitySuffices.lean` (the perturbation bound (m-e)n <= q-p, strict
+positivity under it, the elementary |ab| <= (a^2+b^2)/2, the per-term row-sum estimate, the collapse
+of the ladder at the archimedean threshold, the closed form and positivity of that threshold, and the
+lossiness of the Frobenius route; standard axioms only, wired into RHTower).
+
+### FORTY-SIXTH ATLAS ENTRY
+    ladder collapse   a single bound |<E x,x>| <= e ||x||^2 with e < 4 - 3 log 2 - pi/2 certifies
+                      every symmetric function at every width; the bound is implied by the maximal
+                      absolute row sum of the explicit error Gram matrix, needs no spectrum, and is
+                      dimension-free when the entries decay. Form maximally sharpened; content
+                      unchanged from entry 18.
+
+### STATE AT CYCLE 112
+Forty-six entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME HAS REACHED A FIXED POINT IN FORM. Both directions are now single explicit conditions:
+  * REFUTATION: one negative elementary symmetric function of one Weil Gram matrix (entry 45).
+  * VERIFICATION: one row-sum bound below 0.34976 on every error Gram matrix (entry 46).
+Neither is decidable from within the theory, for the reason established in cycle 83 and never since
+overturned: the error IS the zero sum.
+
+### Cycle 113 target
+The fixed point in form means further reformulation is worthless. The only remaining move is to change
+the INPUT. Every entry has used the same input: the Euler product through the coefficients Lambda(n)
+n^{-1/2}. The witness test (entry 32) says that is the only separating ingredient AVAILABLE, but it
+does not say it is the only one that EXISTS. TEST WHETHER ANY UNCONDITIONAL ARITHMETIC INPUT BEYOND
+THE EULER PRODUCT CONSTRAINS THE ERROR GRAM ENTRIES: candidates are (a) the functional equation's
+action on the entries (already used, entry 32 says insufficient alone), (b) the SUBCONVEXITY bounds
+for zeta on the critical line, which are unconditional and NOT derivable from the Euler product alone,
+and (c) the fourth-moment asymptotics, also unconditional. CHECK WHETHER SUBCONVEXITY BOUNDS THE ROW
+SUMS. If a subconvexity exponent below 1/4 would give row sums under 0.34976, then RH follows from a
+subconvexity improvement — a known-hard but ACTIVE and UNCONDITIONAL frontier, unlike everything else
+in this atlas.

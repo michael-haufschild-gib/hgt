@@ -32,7 +32,7 @@ theorem sqrt_one_add_sq_le {a : ℝ} (ha : 0 ≤ a) : Real.sqrt (1 + a ^ 2) ≤ 
 
 /-- **Profile mismatch.**  For positive energy `E`, the Gaussian profile `exp (k²E)` exceeds the
 reciprocal of the logarithmic-phase profile as soon as `k E > 2π|C|`. -/
-theorem sqrt_lt_exp_of_energy_pos {E C k : ℝ} (hE : 0 < E) (hk : 0 < k)
+theorem sqrt_lt_exp_of_energy_pos {E C k : ℝ} (hk : 0 < k)
     (hkgt : 2 * Real.pi * |C| < k * E) :
     Real.sqrt (1 + 4 * Real.pi ^ 2 * k ^ 2 * C ^ 2) < Real.exp (k ^ 2 * E) := by
   have hA : (0 : ℝ) ≤ 2 * Real.pi * |C| * k := by positivity
@@ -52,15 +52,15 @@ theorem sqrt_lt_exp_of_energy_pos {E C k : ℝ} (hE : 0 < E) (hk : 0 < k)
 
 /-- The same statement in the form the two evaluations are compared in: the Euler-product modulus
 `exp (-k²E)` is strictly smaller than the logarithmic-phase modulus `(1 + 4π²k²C²)^(-1/2)`. -/
-theorem exp_neg_lt_inv_sqrt {E C k : ℝ} (hE : 0 < E) (hk : 0 < k)
+theorem exp_neg_lt_inv_sqrt {E C k : ℝ} (hk : 0 < k)
     (hkgt : 2 * Real.pi * |C| < k * E) :
     Real.exp (-(k ^ 2 * E)) < (Real.sqrt (1 + 4 * Real.pi ^ 2 * k ^ 2 * C ^ 2))⁻¹ := by
   have hpos : (0 : ℝ) < Real.sqrt (1 + 4 * Real.pi ^ 2 * k ^ 2 * C ^ 2) := by
     apply Real.sqrt_pos.mpr
     positivity
-  have hmain := sqrt_lt_exp_of_energy_pos hE hk hkgt
+  have hmain := sqrt_lt_exp_of_energy_pos hk hkgt
   have hexp : (0 : ℝ) < Real.exp (k ^ 2 * E) := Real.exp_pos _
-  rw [Real.exp_neg, inv_lt_inv₀ hpos hexp]
+  rw [Real.exp_neg, inv_lt_inv₀ hexp hpos]
   exact hmain
 
 /-- At zero energy the Euler product has modulus `1`, which already exceeds the logarithmic-phase

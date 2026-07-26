@@ -25,7 +25,8 @@ def DeningerDivisorUpperAntiHerglotz : Prop :=
     riemannZeta (1 / 2 + z * I) ≠ 0 →
       (deningerDivisorRelativeResolventTrace z).im ≤ 0
 
-private theorem xiExplicitAdmissible_of_mem_centeredUpperHalfStrip
+/-- Every regular point of the centered upper half-strip is Xi-explicit-admissible. -/
+theorem xiExplicitAdmissible_of_mem_centeredUpperHalfStrip
     {z : ℂ} (hzpos : 0 < z.im) (hzhalf : z.im < 1 / 2)
     (hzeta : riemannZeta (1 / 2 + z * I) ≠ 0) :
     XiExplicitAdmissible z := by

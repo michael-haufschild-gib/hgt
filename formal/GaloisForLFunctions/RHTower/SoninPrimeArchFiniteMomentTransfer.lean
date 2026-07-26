@@ -111,6 +111,20 @@ def SoninPrimeArchPerTestValueClosure : Prop :=
     (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re ∈
       closure (soninPrimeArchPerTestValueLocus p)
 
+/-- Every explicit positive-aperture per-test coupling realizes the corresponding static
+source-value closure constraint. -/
+theorem soninPrimeArchPerTestValueClosure_of_coupling
+    {aperture : Polynomial ℤ → ℕ → ℝ}
+    (h : SoninPrimeArchPerTestTraceHankelCoupling aperture) :
+    SoninPrimeArchPerTestValueClosure := by
+  intro p
+  apply mem_closure_iff_seq_limit.mpr
+  refine ⟨fun j : ℕ =>
+    (soninAllPrimeTraceHankel (aperture p j)
+      (p.map (Int.castRingHom ℝ))).re, ?_, h.2 p⟩
+  intro j
+  exact ⟨aperture p j, h.1 p j, rfl⟩
+
 /-- Scalar value-locus closure transfers unconditional Sonin positivity to the fixed prime--Gamma
 trace-Hankel functional. -/
 theorem primeArchSourceTraceHankelIntNonnegative_of_soninPerTestValueClosure
@@ -279,6 +293,15 @@ theorem soninPrimeArchPerTestCoupling_of_finiteMomentCoupling
     have hre := Complex.continuous_re.continuousAt.tendsto.comp hfinal
     simpa only [soninPrimeArchPerTestApertureOfFiniteMoment, q, n, N,
       Function.comp_apply] using hre
+
+/-- Finite moment-block closure subsumes the per-test scalar source-value closure interface. -/
+theorem soninPrimeArchPerTestValueClosure_of_finiteMomentClosure
+    (h : SoninPrimeArchFiniteMomentClosure) :
+    SoninPrimeArchPerTestValueClosure := by
+  obtain ⟨aperture, hcoupling⟩ :=
+    exists_soninPrimeArchFiniteMomentCoupling_of_closure h
+  exact soninPrimeArchPerTestValueClosure_of_coupling
+    (soninPrimeArchPerTestCoupling_of_finiteMomentCoupling hcoupling)
 
 /-- **Finite source-moment chain to RH.**  Simultaneous convergence of every finite initial Sonin
 moment block to the corresponding prime--Gamma block forces the Riemann hypothesis. -/

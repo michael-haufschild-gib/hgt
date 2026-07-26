@@ -2076,3 +2076,5 @@ import GaloisForLFunctions.HTGeometry.SmoothMultiplicativeDichotomy
 import GaloisForLFunctions.HTGeometry.TrudgianYangMomentPricing
 import GaloisForLFunctions.HTGeometry.LogFrequencySeparation
 import GaloisForLFunctions.HTGeometry.CountPositivityConductorBound
+import GaloisForLFunctions.HTGeometry.KProfileMismatch
+import GaloisForLFunctions.HTGeometry.BourgainHypothesisPricing
