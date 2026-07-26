@@ -178,8 +178,9 @@ theorem setLIntegral_bourgainA6PhysicalBlockSum_translatedCell_gaussian_power
           (M : ℝ) ^ (6 : ℕ) *
           (C₀ * (M : ℝ) ^ ε * (M : ℝ) ^ (3 : ℕ) *
             (M : ℝ) ^ (3 : ℕ))) := by
-      rw [ENNReal.ofReal_mul (abs_nonneg _),
-        ENNReal.ofReal_mul (by positivity)]
+      rw [← ENNReal.ofReal_mul (abs_nonneg _),
+        ← ENNReal.ofReal_mul
+          (mul_nonneg (abs_nonneg _) (by positivity))]
     _ ≤ ENNReal.ofReal
         (((512 / 3 : ℝ) * C₀) *
           (N : ℝ) ^ (10 : ℕ) * (M : ℝ) ^ (2 + ε)) := by

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticJetFrobenius
 import GaloisForLFunctions.RHTower.XiConvergenceExponent
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
+import GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle
 import Mathlib.Analysis.Distribution.Distribution
 import Mathlib.Analysis.Calculus.Deriv.Support
 import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
@@ -506,6 +507,45 @@ theorem analyticOnNhd_deningerTimeTestLaplace
   simpa only [deningerTimeTestLaplace, F] using
     hderivAt.differentiableAt
 
+/-- Deninger's test amplitude in the centered Xi contour coordinate. -/
+def deningerCenteredTimeTestTransform
+    (φ : DeningerTimeTestFunction) (z : ℂ) : ℂ :=
+  deningerTimeTestLaplace φ
+    (1 / 2 + z * Complex.I)
+
+/-- The centered transform is entire, as required by the Xi source contour theorem. -/
+theorem analyticOnNhd_deningerCenteredTimeTestTransform
+    (φ : DeningerTimeTestFunction) :
+    AnalyticOnNhd ℂ
+      (deningerCenteredTimeTestTransform φ)
+      Set.univ := by
+  rw [Complex.analyticOnNhd_univ_iff_differentiable]
+  have hlap :
+      Differentiable ℂ (deningerTimeTestLaplace φ) :=
+    Complex.analyticOnNhd_univ_iff_differentiable.mp
+      (analyticOnNhd_deningerTimeTestLaplace φ)
+  exact hlap.comp
+    (by
+      fun_prop)
+
+/-- Centering sends each Xi spectral copy back to its raw Frobenius eigenvalue. -/
+theorem deningerCenteredTimeTestTransform_xiSpectralPoint
+    (φ : DeningerTimeTestFunction) (q : XiZeroCopy) :
+    deningerCenteredTimeTestTransform φ
+        (xiSpectralPoint q) =
+      deningerTimeTestLaplace φ
+        (deningerRawThetaEigen q) := by
+  rw [deningerCenteredTimeTestTransform,
+    deningerRawThetaEigen]
+  apply congrArg (deningerTimeTestLaplace φ)
+  simp only [xiSpectralPoint]
+  have hI :
+      (-Complex.I) * Complex.I = (1 : ℂ) := by
+    rw [neg_mul, Complex.I_mul_I]
+    ring
+  rw [mul_assoc, hI, mul_one]
+  ring
+
 /-- `L¹` mass controlling every critical-strip Laplace amplitude after two derivatives. -/
 def deningerTimeTestSecondDerivativeExponentialMass
     (φ : DeningerTimeTestFunction) : ℝ :=
@@ -671,6 +711,95 @@ theorem deningerTimeTestLaplace_rawThetaEigen_summable
           have h :=
             norm_deningerTimeTestLaplace_rawThetaEigen_le φ q
           simpa only [div_eq_mul_inv, one_mul] using h))
+
+/--
+Every prescribed finite packet of source eigenvalues lies in an admissible Xi rectangle whose
+continued prime--archimedean contour is exactly Deninger's finite test-amplitude sum.
+-/
+theorem exists_admissible_deningerTimeTestContour_eq_spectralSum_containing
+    (φ : DeningerTimeTestFunction)
+    (t : Finset XiZeroCopy) :
+    ∃ z₁ z₂ : ℂ,
+      z₁.re < z₂.re ∧ z₁.im < z₂.im ∧
+      (∀ q ∈ t,
+        q ∈ xiZeroCopyClosedRectangle z₁ z₂) ∧
+      rectIntegral
+          (fun z =>
+            deningerCenteredTimeTestTransform φ z *
+              continuedPrimeArchSourceRelativeTrace z)
+          z₁ z₂ =
+        2 * Real.pi * Complex.I *
+          ∑ q ∈ xiZeroCopyClosedRectangle z₁ z₂,
+            deningerTimeTestLaplace φ
+              (deningerRawThetaEigen q) := by
+  obtain ⟨z₁, z₂, hre, him, hcontains, hcontour⟩ :=
+    exists_admissible_rectIntegral_source_eq_xiZeroCopy_sum_containing
+      t (analyticOnNhd_deningerCenteredTimeTestTransform φ)
+  refine ⟨z₁, z₂, hre, him, hcontains, ?_⟩
+  rw [hcontour]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro q hq
+  exact deningerCenteredTimeTestTransform_xiSpectralPoint φ q
+
+/--
+The full `H¹` spectral trace is a cofinal normalized contour limit of the independently defined
+continued prime--archimedean source, for every positive-time test.
+-/
+theorem exists_admissible_deningerTimeTest_normalizedContour_approximates_spectralSum
+    (φ : DeningerTimeTestFunction)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ z₁ z₂ : ℂ,
+      z₁.re < z₂.re ∧ z₁.im < z₂.im ∧
+      dist
+        ((2 * Real.pi * Complex.I)⁻¹ *
+          rectIntegral
+            (fun z =>
+              deningerCenteredTimeTestTransform φ z *
+                continuedPrimeArchSourceRelativeTrace z)
+            z₁ z₂)
+        (∑' q : XiZeroCopy,
+          deningerTimeTestLaplace φ
+            (deningerRawThetaEigen q)) <
+        epsilon := by
+  let f : XiZeroCopy → ℂ :=
+    fun q =>
+      deningerTimeTestLaplace φ
+        (deningerRawThetaEigen q)
+  have hsum : Summable f :=
+    deningerTimeTestLaplace_rawThetaEigen_summable φ
+  have hball :
+      Metric.ball (∑' q, f q) epsilon ∈
+        nhds (∑' q, f q) :=
+    Metric.ball_mem_nhds _ hepsilon
+  have hevent :
+      ∀ᶠ s : Finset XiZeroCopy in atTop,
+        ∑ q ∈ s, f q ∈
+          Metric.ball (∑' q, f q) epsilon :=
+    hsum.hasSum.eventually hball
+  rw [eventually_atTop] at hevent
+  obtain ⟨t, ht⟩ := hevent
+  obtain ⟨z₁, z₂, hre, him, hcontains, hcontour⟩ :=
+    exists_admissible_deningerTimeTestContour_eq_spectralSum_containing
+      φ t
+  refine ⟨z₁, z₂, hre, him, ?_⟩
+  have hpacket :
+      t ≤ xiZeroCopyClosedRectangle z₁ z₂ := by
+    intro q hq
+    exact hcontains q hq
+  have hnear :=
+    ht (xiZeroCopyClosedRectangle z₁ z₂) hpacket
+  rw [Metric.mem_ball] at hnear
+  have hc :
+      (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by
+    apply mul_ne_zero
+    · apply mul_ne_zero
+      · norm_num
+      · exact_mod_cast Real.pi_ne_zero
+    · exact Complex.I_ne_zero
+  rw [hcontour, ← mul_assoc,
+    inv_mul_cancel₀ hc, one_mul]
+  simpa only [f] using hnear
 
 private theorem deningerCriticalStrip_time_mul_re_le_abs
     {s : ℂ} (hs0 : 0 ≤ s.re) (hs1 : s.re ≤ 1)

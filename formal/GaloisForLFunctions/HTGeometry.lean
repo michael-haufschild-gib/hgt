@@ -2138,6 +2138,7 @@ import GaloisForLFunctions.HTGeometry.ClassDecompositionNotAReduction
 import GaloisForLFunctions.HTGeometry.DerivativeTestOptimality
 import GaloisForLFunctions.HTGeometry.TFreeRequiresCorner
 import GaloisForLFunctions.HTGeometry.ArchitectureSensitivity
+import GaloisForLFunctions.HTGeometry.ScaleAbscissaDuality
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
 import GaloisForLFunctions.HTGeometry.SatakeEnergyBound
@@ -2145,3 +2146,4 @@ import GaloisForLFunctions.HTGeometry.TwistConductorDescent
 import GaloisForLFunctions.HTGeometry.DualityLoopWeights
 import GaloisForLFunctions.HTGeometry.SquareIndexSymmetricSquare
 import GaloisForLFunctions.HTGeometry.CompatibleSystemInvolution
+import GaloisForLFunctions.HTGeometry.DualExponentReturn

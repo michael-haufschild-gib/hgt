@@ -54,6 +54,14 @@ theorem XiC_probeAt (c : ℝ) :
   show xi ((1 / 2 : ℂ) + xiBudgetProbeAt c * Complex.I) = _
   rw [half_add_probeAt_mul_I]
 
+/-- Every budget probe at or beyond the strip edge is a regular Xi point. -/
+theorem XiC_probeAt_ne_zero_of_half_le {c : ℝ} (hc : 1 / 2 ≤ c) :
+    XiC (xiBudgetProbeAt c) ≠ 0 := by
+  rw [XiC_probeAt]
+  apply xi_ne_zero_of_one_le_re
+  norm_num [Complex.div_re]
+  linarith
+
 theorem logDeriv_XiC_probeAt (c : ℝ) :
     logDeriv XiC (xiBudgetProbeAt c) =
       logDeriv xi ((1 / 2 : ℂ) + (c : ℂ)) * Complex.I := by
@@ -702,11 +710,7 @@ theorem norm_completedRiemannZeta₀_one_le :
   linarith [norm_mellin_f_modif_half_le]
 
 theorem xi_probe_half_ne_zero : XiC (xiBudgetProbeAt (1 / 2)) ≠ 0 := by
-  rw [XiC_probeAt]
-  have harg : ((1 : ℂ) / 2 + (((1 / 2 : ℝ)) : ℂ)) = 1 := by
-    norm_num
-  rw [harg, xi_one]
-  norm_num
+  exact XiC_probeAt_ne_zero_of_half_le (by norm_num)
 
 /-- **The certified critical budget**: the complete divisor carries total
 strip-edge spectral mass at most `3/50`. -/
@@ -978,6 +982,64 @@ theorem card_le_of_height_le_certified {T : ℝ} (S : Finset XiZeroCopy)
   have hT1 : (0 : ℝ) < T ^ 2 + 1 := by positivity
   rw [mul_one_div, div_le_iff₀ hT1] at h
   linarith
+
+/-! ## §9 Hypothesis-free budget laws on the exterior probe ray -/
+
+/-- The difference-trace sum rule at every budget probe at or beyond the strip edge. -/
+theorem two_logDeriv_XiC_probeAt_eq_tsum_of_half_le {c : ℝ} (hc : 1 / 2 ≤ c) :
+    2 * logDeriv XiC (xiBudgetProbeAt c) =
+      ∑' q : XiZeroCopy,
+        ((xiSpectralPoint q + xiBudgetProbeAt c)⁻¹ -
+          (xiSpectralPoint q - xiBudgetProbeAt c)⁻¹) :=
+  two_logDeriv_XiC_probeAt_eq_tsum (XiC_probeAt_ne_zero_of_half_le hc)
+
+/-- Spectral budget mass is summable at every probe at or beyond the strip edge. -/
+theorem summable_xiBudgetMassAt_of_half_le {c : ℝ} (hc : 1 / 2 ≤ c) :
+    Summable (xiBudgetMassAt c) :=
+  summable_xiBudgetMassAt (XiC_probeAt_ne_zero_of_half_le hc)
+
+/-- Exact total spectral-budget identity on the complete exterior probe ray. -/
+theorem tsum_xiBudgetMassAt_eq_of_half_le {c : ℝ} (hc : 1 / 2 ≤ c) :
+    ∑' q : XiZeroCopy, xiBudgetMassAt c q =
+      2 * (logDeriv xi ((1 / 2 : ℂ) + (c : ℂ))).re :=
+  tsum_xiBudgetMassAt_eq (XiC_probeAt_ne_zero_of_half_le hc)
+
+/-- Fourfold off-line orbit mass fits in the total budget without a caller-supplied regularity
+premise. -/
+theorem tsum_pairs_four_mul_massAt_le_of_half_le {c : ℝ} (hc : 1 / 2 ≤ c) :
+    ∑' q : XiRightUpperZeroCopy, 4 * xiBudgetMassAt c q.1.1 ≤
+      ∑' d : XiZeroCopy, xiBudgetMassAt c d :=
+  tsum_pairs_four_mul_massAt_le hc (XiC_probeAt_ne_zero_of_half_le hc)
+
+/-- Certified budget control gives the off-line height floor on every exterior probe. -/
+theorem height_sq_ge_of_budget_le_of_half_le {c B : ℝ}
+    (hc : 1 / 2 ≤ c) (hB : 0 < B)
+    (hbud : ∑' d : XiZeroCopy, xiBudgetMassAt c d ≤ B)
+    (q : XiRightUpperZeroCopy) :
+    8 * c / B - (c + 1 / 2) ^ 2 ≤ ((xiRightCenteredZero q.1).im) ^ 2 :=
+  height_sq_ge_of_budget_le hc hB (XiC_probeAt_ne_zero_of_half_le hc) hbud q
+
+/-- Reflection-paired mass fits in the total budget on every exterior probe. -/
+theorem two_mul_massAt_le_tsum_of_half_le {c : ℝ} (hc : 1 / 2 ≤ c)
+    (q : XiZeroCopy) :
+    2 * xiBudgetMassAt c q ≤ ∑' d : XiZeroCopy, xiBudgetMassAt c d :=
+  two_mul_massAt_le_tsum hc (XiC_probeAt_ne_zero_of_half_le hc) q
+
+/-- Certified budget control gives the universal divisor height floor on every exterior probe. -/
+theorem xiSpectral_re_sq_ge_of_budget_of_half_le {c B : ℝ}
+    (hc : 1 / 2 ≤ c) (hB : 0 < B)
+    (hbud : ∑' d : XiZeroCopy, xiBudgetMassAt c d ≤ B) (q : XiZeroCopy) :
+    4 * c / B - (c + 1 / 2) ^ 2 ≤ (xiSpectralPoint q).re ^ 2 :=
+  xiSpectral_re_sq_ge_of_budget hc hB (XiC_probeAt_ne_zero_of_half_le hc) hbud q
+
+/-- Finite-window divisor capacity bound on every exterior probe, with regularity discharged. -/
+theorem card_mul_mass_le_of_height_le_of_half_le {c B T : ℝ}
+    (hc : 1 / 2 ≤ c)
+    (hbud : ∑' d : XiZeroCopy, xiBudgetMassAt c d ≤ B)
+    (S : Finset XiZeroCopy)
+    (hS : ∀ q ∈ S, (xiSpectralPoint q).re ^ 2 ≤ T ^ 2) :
+    (S.card : ℝ) * (2 * c / (T ^ 2 + (c + 1 / 2) ^ 2)) ≤ B :=
+  card_mul_mass_le_of_height_le hc (XiC_probeAt_ne_zero_of_half_le hc) hbud S hS
 
 end
 

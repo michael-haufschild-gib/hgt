@@ -10687,3 +10687,70 @@ QUESTION ENTRY 92 DID NOT: WHAT IS THE ORBIT'S BOUNDARY? Concretely, IS THERE A 
 NOT A MULTIPLIER IMAGE OF Phi, WHOSE COSINE TRANSFORM HAS EXACTLY THE ZEROS OF XI? IF YES, ITS
 MOMENTS OBEY DIFFERENT INEQUALITIES AND THE ORDER-TWO WINDOW IS COMPUTED WITH A DIFFERENT CAP. THAT
 IS A GENUINELY NEW DEGREE OF FREEDOM AND IT IS THE LAST ONE VISIBLE.
+
+---
+
+## Cycle 174 — THE MEASURES WITH THE SAME ZEROS FORM EXACTLY THE FLOW ORBIT
+
+### The last visible degree of freedom, and it is not new
+Cycle 173 asked: is there a positive measure nu, NOT a multiplier image of Phi, whose cosine transform
+has exactly the zeros of Xi? HADAMARD ANSWERS IT.
+
+If two even entire functions of order one have the same zeros with the same multiplicities, their
+ratio is entire, NONVANISHING, and of order at most two, hence e^h with h a polynomial of degree at
+most two. EVENNESS FORCES THE LINEAR TERM TO VANISH (formalised), so
+
+    F = e^{a + b z^2} G,
+
+AND MULTIPLYING THE TRANSFORM BY e^{b z^2} IS EXACTLY MULTIPLYING THE MEASURE BY e^{b u^2} — THE HEAT
+FLOW.
+
+### HUNDRED-AND-EIGHTH ATLAS ENTRY
+    ==> THE CHOICE OF MEASURE IS NOT A NEW DEGREE OF FREEDOM. BY HADAMARD IT IS THE FLOW TIME, AND THE
+        FLOW TIME WAS ALREADY THE SECOND COORDINATE OF THE TILT FAMILY (entry 106). THE ATLAS'S
+        PARAMETER SPACE — JET ORDER AND FLOW TIME — IS COMPLETE FOR THIS FORMULATION.
+
+AND THE ORBIT IS THE WHOLE LINE. The weight e^{t u^2} is positive for every real t, so positivity is
+preserved forward AND backward (formalised); and Phi decays DOUBLY EXPONENTIALLY, with e^{2u}/u^2 -->
+infinity (formalised), so the exponent t u^2 - pi e^{2u} is eventually below -u^2 whatever the tilt
+(formalised). EVERY MEMBER OF THE ORBIT IS A POSITIVE INTEGRABLE MEASURE. The flow is a one-parameter
+group with parameter addition (formalised), so the orbit is genuinely one-dimensional.
+
+THIS IS A COMPLETENESS RESULT, NOT MERELY AN EXHAUSTION. Entry 107 said the parameters the atlas had
+considered were used up. ENTRY 108 PROVES THERE ARE NO OTHERS: any reparametrisation of the measure
+preserving the zeros is a flow time.
+
+Machine-verified: `RHTower/TheOrbitIsTheFlow.lean` (vanishing of the linear term for an even
+quadratic, the one-parameter group law of the flow weight and its identity, preservation of positivity
+along the whole orbit, the doubly-exponential domination e^x/x^2 --> infinity, the resulting negativity
+of the exponent for any tilt, and the one-dimensionality of the orbit; standard axioms only, wired into
+RHTower).
+
+### STATE AT CYCLE 174
+One hundred and eight entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+WHAT ENTRIES 100-108 ESTABLISH AS A BLOCK — A COMPLETE ACCOUNT OF THE PARAMETER SPACE:
+  100  Zero margin forbids a single estimate; only a vanishing-loss FAMILY can decide.
+  101  Three types of approach, each with a root cause; exhaustive over the atlas.
+  102  Types A and B are two ends of ONE trade inside the explicit formula.
+  103  That trade's exchange exponent is exactly ONE HALF (Nyquist against zero density).
+  104  The exponent is invariant under enlarging the L-function family.
+  105  Height-indexed tools have CONSTANT loss; only VERTICAL parameters can have vanishing loss.
+  106  The vertical parameters are two tilts of ONE measure: jet order (log u) and flow time (u^2).
+  107  The order-two condition is quantitatively BLIND to the flow, by a factor j/log j.
+  108  By Hadamard the measure itself supplies no further freedom: its orbit IS the flow.
+THE PARAMETER SPACE IS TWO-DIMENSIONAL AND COMPLETE, AND EVERY DIRECTION IN IT IS ACCOUNTED FOR.
+
+### Cycle 175 target
+THE PARAMETER SPACE IS COMPLETE, SO A NEW ROUTE MUST CHANGE THE FORMULATION, NOT THE PARAMETERS. THE
+FORMULATION FIXED SINCE ENTRY 89 IS: RH AS A STATEMENT ABOUT THE MOMENTS OF ONE POSITIVE MEASURE. THE
+ONE FORMULATION THE ATLAS HAS NEVER USED IS THE ONE WHERE THE MEASURE IS REPLACED BY AN OPERATOR:
+Xi AS A FREDHOLM DETERMINANT. The corpus HAS material here (`HermitianDeterminantRH`,
+`CCMRadicalQuotientHermitian`, `SoninTimeBandHilbertSchmidt`) AND ENTRIES 41-44 RECORD WHY THE NAIVE
+OPERATOR ROUTE FAILS (asymptotic self-adjointness cannot be manufactured by compression). BUT THE
+ENTRY-100 CRITERION HAS NEVER BEEN APPLIED TO IT. ASK: FOR THE OPERATOR FORMULATION, IS THE MARGIN
+ZERO OR GROWING, AND IS THERE A PARAMETER WITH VANISHING LOSS? The natural parameter is the TRUNCATION
+DIMENSION n of the operator, and the natural margin is the DISTANCE FROM THE SPECTRUM TO THE REAL
+AXIS. COMPUTE HOW THAT DISTANCE SCALES IN n FOR THE KNOWN TRUNCATIONS AND COMPARE WITH THE DEFECT NORM
+FROM ENTRY 42. IF THE DISTANCE SHRINKS SLOWER THAN THE DEFECT, THAT IS A VANISHING-LOSS FAMILY IN A
+FORMULATION THE PARAMETER-SPACE COMPLETENESS RESULT DOES NOT COVER.
