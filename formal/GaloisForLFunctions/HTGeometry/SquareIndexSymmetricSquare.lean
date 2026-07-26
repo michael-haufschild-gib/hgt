@@ -74,6 +74,33 @@ theorem hSym_two_mul (a b : R) : ∀ k : ℕ,
     rw [show 2 * (k + 1) + 2 = 2 * (k + 1) + 2 from rfl, hL, ih, hS, hS', hp1, hp2, hp3]
     ring
 
+/-- **Deligne bound at a prime power.**  A degree-two local factor with Satake parameters of modulus
+at most one has `‖a(p^n)‖ ≤ n+1`, the number of divisors of `p^n`. -/
+theorem norm_hSym_le {x y : ℂ} (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) (n : ℕ) :
+    ‖hSym x y n‖ ≤ (n : ℝ) + 1 := by
+  unfold hSym
+  calc ‖∑ i ∈ Finset.range (n + 1), x ^ i * y ^ (n - i)‖
+      ≤ ∑ i ∈ Finset.range (n + 1), ‖x ^ i * y ^ (n - i)‖ := norm_sum_le _ _
+    _ ≤ ∑ _i ∈ Finset.range (n + 1), (1 : ℝ) := by
+        refine Finset.sum_le_sum fun i _ => ?_
+        rw [norm_mul, norm_pow, norm_pow]
+        have h1 : ‖x‖ ^ i ≤ 1 := pow_le_one₀ (norm_nonneg x) hx
+        have h2 : ‖y‖ ^ (n - i) ≤ 1 := pow_le_one₀ (norm_nonneg y) hy
+        nlinarith [pow_nonneg (norm_nonneg x) i, pow_nonneg (norm_nonneg y) (n - i)]
+    _ = (n : ℝ) + 1 := by simp
+
+/-- **Transfer of a prime-power bound to all integers.**  A multiplicative arithmetic function bounded
+at prime powers by the divisor count is bounded everywhere by the divisor count: `‖f n‖ ≤ d(n)`. -/
+theorem norm_le_card_divisors {f : ArithmeticFunction ℂ} (hf : f.IsMultiplicative)
+    (hbd : ∀ (p k : ℕ), p.Prime → ‖f (p ^ k)‖ ≤ (k : ℝ) + 1) {n : ℕ} (hn : n ≠ 0) :
+    ‖f n‖ ≤ (n.divisors.card : ℝ) := by
+  classical
+  rw [hf.multiplicative_factorization f hn, Nat.card_divisors hn]
+  rw [Finsupp.prod, norm_prod]
+  push_cast
+  refine Finset.prod_le_prod (fun p _ => norm_nonneg _) (fun p hp => ?_)
+  exact hbd p _ (Nat.prime_of_mem_primeFactors hp)
+
 /-- **Generating-function form.**  Averaging the local factor at `X` and at `-X` selects the even
 part, and the numerator of the result is `1 + a b X²`. -/
 theorem evenPart_numerator (a b X : R) :

@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.WindingXi
 import GaloisForLFunctions.RHTower.WeldZeroGenerator
 import GaloisForLFunctions.RHTower.RHLadderTheory
 import GaloisForLFunctions.RHTower.CompletedLogDerivStrip
+import GaloisForLFunctions.RHTower.BornTemperatureFactorType
 
 /-!
 # Normalized prime-flux residue and canonical Fitting seam scalar
@@ -218,13 +219,15 @@ theorem riemannZeta_normalizedLogDeriv_tendsto_xi_order_of_mem_strip (ρ : ℂ)
   filter_upwards [nhdsWithin_le_nhds hball, self_mem_nhdsWithin] with z hz hzne
   exact (hlocal z hz hzne).symm
 
-/-- The continued infinite-prime flux has normalized residue `-1` at every strip `xi` zero. -/
-theorem riemannZeta_negative_normalizedLogDeriv_tendsto_neg_one_of_mem_strip
-    {ρ : ℂ} (hstrip : 0 < ρ.re ∧ ρ.re < 1) (hzero : xi ρ = 0) :
+/-- The continued infinite-prime flux has normalized residue `-1` at every `xi` zero.  Open-strip
+membership is supplied by the completed functional equation and no longer remains an input. -/
+theorem riemannZeta_negative_normalizedLogDeriv_tendsto_neg_one_of_xi_zero
+    {ρ : ℂ} (hzero : xi ρ = 0) :
     Tendsto
       (fun z : ℂ => -((z - ρ) * logDeriv riemannZeta z) /
         ((analyticOrderAt xi ρ).toNat : ℂ))
       (nhdsWithin ρ ({ρ}ᶜ)) (nhds (-1 : ℂ)) := by
+  have hstrip : 0 < ρ.re ∧ ρ.re < 1 := xi_zero_re_mem_open_unit hzero
   have hm : ((analyticOrderAt xi ρ).toNat : ℂ) ≠ 0 :=
     Nat.cast_ne_zero.mpr (xi_order_toNat_ne_zero hzero)
   have h := (riemannZeta_normalizedLogDeriv_tendsto_xi_order_of_mem_strip ρ hstrip).neg.div_const
@@ -292,10 +295,11 @@ theorem infinitePrimeFlux_frequency_mem_primeLogLattice {n : ℕ}
     Real.log n ∈ GaloisForLFunctions.RHTower.primeLogLattice :=
   GaloisForLFunctions.RHTower.vonMangoldt_freq_mem_primeLogLattice hn
 
-/-- The normalized infinite prime-flux residue and the separately defined canonical non-split
-Fitting boundary have the same scalar value `-1`.  No morphism between the two objects is asserted. -/
-theorem infinitePrimeFlux_fitting_scalar_coincidence_of_mem_strip
-    {ρ : ℂ} (hstrip : 0 < ρ.re ∧ ρ.re < 1) (hzero : xi ρ = 0) :
+/-- At every `xi` zero, the normalized infinite prime-flux residue and the separately defined
+canonical non-split Fitting boundary have the same scalar value `-1`.  No morphism between the two
+objects is asserted. -/
+theorem infinitePrimeFlux_fitting_scalar_coincidence_of_xi_zero
+    {ρ : ℂ} (hzero : xi ρ = 0) :
     Tendsto
         (fun z : ℂ => (z - ρ) * infinitePrimeFlux z /
           ((analyticOrderAt xi ρ).toNat : ℂ))
@@ -304,7 +308,7 @@ theorem infinitePrimeFlux_fitting_scalar_coincidence_of_mem_strip
         jetClass ℚ (analyticOrderAt xi ρ).toNat (-1) := by
   constructor
   · simpa [infinitePrimeFlux] using
-      riemannZeta_negative_normalizedLogDeriv_tendsto_neg_one_of_mem_strip hstrip hzero
+      riemannZeta_negative_normalizedLogDeriv_tendsto_neg_one_of_xi_zero hzero
   · exact canonicalCutoffTorsionSeam_boundaryClass (analyticOrderAt xi ρ).toNat
 
 end

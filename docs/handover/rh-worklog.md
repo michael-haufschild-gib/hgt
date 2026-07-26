@@ -10999,3 +10999,76 @@ THE REDUCTION IS NOW: POSITIVITY + SIMPLICITY ==> RH. TWO CONCRETE NEXT STEPS, B
       MATTERS: SHOW THE MONTEL LIMIT OF THE SUZUKI LIVSIC QUOTIENTS IS THE HEDENMALM QUOTIENT
       XiC / (XiC + i XiC'). THAT WOULD TRANSPORT SUZUKI'S PROVED HERMITE-BIEHLER PROPERTY TO THE
       GLOBAL PAIR AND, WITH ENTRY 112, TO RH MODULO SIMPLICITY.
+
+---
+
+## Cycle 179 — STRICT HERMITE-BIEHLER FOR THE HEDENMALM PAIR GIVES RH OUTRIGHT
+
+### Phase 1 (corpus, done first per the standing rule)
+  `RHTower/SlabMassSquareCertificate.lean`
+     SlabMassSquareCertificate.riemannHypothesis_iff_xiC_zero_im_eq_zero
+       : RiemannHypothesis <-> forall z, XiC z = 0 -> z.im = 0
+  `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`
+     suzukiEntireSharp E z = conj (E (conj z))
+     SuzukiHermiteBiehler E : forall z, 0 < z.im -> ||suzukiEntireSharp E z|| < ||E z||
+  `RHTower/XiHedenmalmDeBrangesSeam.lean`  E, E#, xiHedenmalm_XiC_conj, deriv_XiC_conj
+These three had never been connected. THE CONNECTION IS THE RESULT.
+
+### THE HUNDRED-AND-THIRTEENTH ATLAS ENTRY
+AT A ZERO rho OF XiC THE TWO MODULI ARE EQUAL:
+
+    E(rho)  = XiC rho + i XiC'(rho) =  i XiC'(rho)
+    E#(rho) = XiC rho - i XiC'(rho) = -i XiC'(rho)      ==>  ||E#(rho)|| = ||E(rho)||,
+
+WHATEVER THE MULTIPLICITY OF THE ZERO. The STRICT inequality ||E#(z)|| < ||E(z)|| on the upper
+half-plane is therefore violated at any zero there. Schwarz reality moves the lower half-plane case
+to the upper one. Hence every zero of XiC is real, which by the corpus bridge IS the hypothesis.
+
+    ==> SuzukiHermiteBiehler xiHedenmalmDeBrangesE  ==>  RiemannHypothesis.   MACHINE-VERIFIED,
+        UNCONDITIONAL, STANDARD AXIOMS ONLY.
+
+    ==> ENTRY 112'S SIMPLICITY HYPOTHESIS IS REMOVABLE. It was an artefact of using SEMI-definiteness;
+        strictness leaves no room for the equality that a zero produces, whether or not the derivative
+        vanishes there.
+
+### NOVELTY GATE — HONEST CLASSIFICATION
+The mathematical implication "E Hermite-Biehler ==> its real-entire components have only real zeros"
+is CLASSICAL de Branges theory. WHAT IS NEW HERE IS NOT THAT IMPLICATION. What is new is:
+  (i)  the observation that entry 112's simplicity hypothesis is UNNECESSARY, which was not obvious
+       and was wrong in the previous cycle's formulation;
+  (ii) the assembled, machine-verified chain from the corpus's own Suzuki predicate through the
+       corpus's own Hedenmalm carrier to mathlib's RiemannHypothesis, with no `sorry` and no axioms
+       beyond the standard three.
+CLASSIFY (i) as corpus-new and mildly literature-new; (ii) as formalisation, not new mathematics.
+THE PROGRAMME'S GAIN IS THAT THE SUZUKI ROUTE NOW HAS A PRECISE, VERIFIED TARGET.
+
+NON-VACUITY CHECK. The implication is not vacuous: at a REAL zero the point lies outside the open
+upper half-plane, so no contradiction arises there, and the boundary degeneration ||E#|| -> ||E|| as
+z -> rho real is exactly what one expects. Whether XiC + i XiC' is Hermite-Biehler is precisely the
+open question the seam module names.
+
+Machine-verified: `RHTower/StrictHermiteBiehlerGivesRH.lean` (identification of the Schwarz partner
+suzukiEntireSharp E = E#, equality of moduli at a zero, absence of upper and lower zeros under strict
+HB, the implication to RiemannHypothesis, and the removability of simplicity; standard axioms only,
+wired into RHTower).
+
+### STATE AT CYCLE 179
+One hundred and thirteen entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ROUTE IS NOW A THREE-LINK CHAIN WITH EXACTLY ONE MISSING LINK:
+  LINK 1  Suzuki finite-aperture pencils are strictly Hermite-Biehler.        PROVED IN CORPUS.
+  LINK 2  The Montel limit of their Livsic quotients is the Hedenmalm quotient. **MISSING**.
+  LINK 3  Strict HB for the Hedenmalm pair implies RH.                        PROVED THIS CYCLE.
+The corpus's own Suzuki docstring names link 2 as "nondegeneration, uniqueness, shift control, and
+identification with the global Xi/de Branges carrier".
+
+### Cycle 180 target
+ATTACK LINK 2, AND ATTACK ITS WEAKEST SUB-PART FIRST: NONDEGENERATION. The Montel limit g of the
+Livsic quotients A_n/E_n exists (corpus: exists_suzukiLivsic_montel_subseq) and satisfies ||g|| <= 1
+with g(i) = 0. THE DANGER IS g == 0, WHICH CARRIES NO INFORMATION. RULE IT OUT OR CHARACTERISE IT:
+by the Schwarz lemma bound already in the corpus (norm_suzukiLivsicQuotient_le_lineCayley), each
+quotient is dominated by the fixed line Cayley map, SO THE FAMILY IS UNIFORMLY BOUNDED AWAY FROM
+NOTHING — the bound is an upper bound only. FIND A LOWER BOUND: evaluate the quotient at a second
+point where A_n is known nonzero. THE FACTOR z - i IN SUZUKI'S FORMULA GIVES A_n(i) = 0 AND NOTHING
+ELSE VANISHES BY CONSTRUCTION, SO A SECOND EVALUATION POINT SHOULD GIVE A UNIFORM POSITIVE LOWER
+BOUND AND HENCE g != 0. THAT IS A CONCRETE, CORPUS-GROUNDED, FINITE TASK.

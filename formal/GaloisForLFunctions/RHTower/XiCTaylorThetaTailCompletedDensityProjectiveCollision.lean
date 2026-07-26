@@ -244,7 +244,7 @@ theorem thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_sub_fullConnectio
 
 /-- At every noncentral simple collision the two proposed connections are provably different. -/
 theorem thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_ne_fullConnection
-    {z : ℂ} (hzstrip : |z.im| < 1) (hz0 : z ≠ 0)
+    {z : ℂ} (hzstrip : |z.im| < 1)
     (hz : XiC z = 0) (hsimple : deriv XiC z ≠ 0) :
     thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z ≠
       (z ^ 2 + 1 / 4) * xiFullDensityReflectedConnection z := by
@@ -256,6 +256,10 @@ theorem thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_ne_fullConnection
   rw [thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_sub_fullConnection
     hzstrip hz] at hzero
   have hprod : z ^ 2 * deriv XiC z = 0 := neg_eq_zero.mp hzero
+  have hz0 : z ≠ 0 := by
+    intro h
+    subst z
+    exact XiC_zero_ne hz
   exact (mul_ne_zero (pow_ne_zero 2 hz0) hsimple) hprod
 
 /-- Complex tangent derivative of the projective ratio at a positive real collision. -/

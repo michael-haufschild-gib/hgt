@@ -146,7 +146,7 @@ theorem xiZero_suzukiPoleZeroNormalFormUniversalCertificate
       hz hWAlpha hWBeta hP0 hRAlpha hRBeta
   have heulerOrder :=
     meromorphicOrderAt_suzukiEulerDefect_affineSewnExteriorWeylQuotient_eq_neg_two
-      hz hz0 hWAlpha hWBeta hP0 hRAlpha hRBeta
+      hz hWAlpha hWBeta hP0 hRAlpha hRBeta
   have htargetCoeff :=
     meromorphicTrailingCoeffAt_suzukiShiftedXiTarget_of_XiC_zero
       (eta := eta) hz

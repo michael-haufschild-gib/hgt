@@ -108,9 +108,9 @@ theorem logDeriv_XiC_eq_pole_add {pt₀ : ℂ} {R : ℝ} {g : ℂ → ℂ}
 /-- Schwarz reality of the logarithmic derivative in the centered coordinate.
 The divisor is invariant under conjugation of the centered coordinate, so
 reindexing the relative resolvent trace along that involution conjugates it. -/
-theorem logDeriv_XiC_conj {z : ℂ} (hz : XiC z ≠ 0)
-    (hzc : XiC ((starRingEnd ℂ) z) ≠ 0) :
+theorem logDeriv_XiC_conj {z : ℂ} (hz : XiC z ≠ 0) :
     logDeriv XiC ((starRingEnd ℂ) z) = (starRingEnd ℂ) (logDeriv XiC z) := by
+  have hzc : XiC ((starRingEnd ℂ) z) ≠ 0 := XiC_ne_zero_conj hz
   rw [logDeriv_XiC_eq_relativeResolventTrace hz,
     logDeriv_XiC_eq_relativeResolventTrace hzc, xiRelativeResolventTrace,
     xiRelativeResolventTrace, Complex.conj_tsum]
@@ -136,18 +136,18 @@ theorem xiWeilDiagonalCoeff_conj (z : ℂ) :
 /-- **The diagonal Weil value is real and explicit**: the second inverse moment
 minus twice the real part of one coefficient-weighted resolvent value. -/
 theorem xiWeilPolarization_diagonal_eq_sub_two_re {z : ℂ} (hz : XiC z ≠ 0)
-    (hzc : XiC ((starRingEnd ℂ) z) ≠ 0) (hz0 : z ≠ 0) (him : z.im ≠ 0) :
+    (hz0 : z ≠ 0) (him : z.im ≠ 0) :
     xiWeilPolarization (xiCauchyRegularizedKernel z)
         (xiCauchyRegularizedKernel z) =
       xiSecondInverseMoment -
         2 * (((xiWeilDiagonalCoeff z * logDeriv XiC z).re : ℝ) : ℂ) := by
-  have hbase := xiWeilPolarization_cauchyKernel_diagonal hz hzc hz0 him
+  have hbase := xiWeilPolarization_cauchyKernel_diagonal hz hz0 him
   have hA : (starRingEnd ℂ) z / (z * (z - (starRingEnd ℂ) z)) =
       xiWeilDiagonalCoeff z := rfl
   have hcoeff : (z / ((starRingEnd ℂ) z * (z - (starRingEnd ℂ) z))) =
       -((starRingEnd ℂ) (xiWeilDiagonalCoeff z)) := by
     rw [xiWeilDiagonalCoeff_conj, neg_neg]
-  rw [hbase, hA, hcoeff, logDeriv_XiC_conj hz hzc]
+  rw [hbase, hA, hcoeff, logDeriv_XiC_conj hz]
   set A := xiWeilDiagonalCoeff z with hAdef
   set L := logDeriv XiC z with hLdef
   have hsum : A * L + (starRingEnd ℂ) A * (starRingEnd ℂ) L =
@@ -297,7 +297,7 @@ theorem exists_neg_weilDiagonal_of_offAxis_zero {pt₀ : ℂ}
         xiSecondInverseMoment.re - 2 * ((1 / t) * u t + v t) := by
     filter_upwards [hpos, hball, hne_pt, hXne, hXcne, hz0, himray] with
       t ht htb htne htX htXc htz0 htim
-    rw [xiWeilPolarization_diagonal_eq_sub_two_re htX htXc htz0 htim,
+    rw [xiWeilPolarization_diagonal_eq_sub_two_re htX htz0 htim,
       Complex.sub_re]
     have hcast : ((2 : ℂ) *
         (((xiWeilDiagonalCoeff (ray t) * logDeriv XiC (ray t)).re : ℝ) : ℂ)).re =

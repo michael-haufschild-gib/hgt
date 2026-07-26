@@ -258,7 +258,7 @@ theorem odd_strip_zero_activates_mirror_em_certificates {ρ : ℂ}
 odd ξ-zero in the strip, every finite Euler atlas is a unit at the point while
 the Euler-Maclaurin carrier certificate is activated. -/
 theorem odd_strip_zero_certificate_and_prime_invisibility {ρ : ℂ}
-    (h0 : 0 < ρ.re) (h1 : ρ.re < 1) (hz : xi ρ = 0)
+    (h0 : 0 < ρ.re) (hz : xi ρ = 0)
     {m : ℕ} (hm : analyticOrderAt xi ρ = m) (hodd : Odd m)
     {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) :
     analyticOrderAt (eulerPartial P) ρ = 0 ∧
@@ -281,7 +281,8 @@ theorem odd_strip_zero_certificate_and_prime_invisibility {ρ : ℂ}
               p (θ + 2 * Real.pi) = p θ) →
             ∫ θ in (-(Real.pi / 2))..(3 * Real.pi / 2 + 2 * Real.pi),
               doubledTrace (-1) V θ * p θ = 0 :=
-  ⟨eulerPartial_orderAt_zero hP h0,
+  have h1 : ρ.re < 1 := xi_zero_re_lt_one h0 hz
+  exact ⟨eulerPartial_orderAt_zero hP h0,
     xi_zero_order_ne_zero hz,
     carrier_mass_zero_at_odd_xi_order h0 h1 hm hodd⟩
 

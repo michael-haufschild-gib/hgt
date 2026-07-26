@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.DeningerArithmeticJetFrobenius
 import GaloisForLFunctions.RHTower.XiConvergenceExponent
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
 import GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle
+import GaloisForLFunctions.RHTower.DigammaGaussSeries
 import Mathlib.Analysis.Distribution.Distribution
 import Mathlib.Analysis.Calculus.Deriv.Support
 import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
@@ -678,6 +679,591 @@ theorem integral_fourierKernel_mul_deningerTimeTestLaplace
     ofReal_mul, Complex.real_smul, smul_eq_mul,
     fourier_deningerExponentiallyTiltedTimeTest,
     mul_comm, mul_left_comm, mul_assoc] using hinv
+
+/-- A test supported in the open positive-time axis vanishes at every nonpositive time. -/
+theorem deningerTimeTest_eq_zero_of_nonpos
+    (φ : DeningerTimeTestFunction) {t : ℝ}
+    (ht : t ≤ 0) :
+    φ t = 0 := by
+  by_contra hφ
+  have hs :
+      t ∈ Function.support (fun x : ℝ => φ x) := by
+    simpa [Function.mem_support] using hφ
+  have hts :
+      t ∈ tsupport (fun x : ℝ => φ x) :=
+    subset_tsupport _ hs
+  have hpos : t ∈ Ioi (0 : ℝ) :=
+    φ.tsupport_subset hts
+  exact (not_lt_of_ge ht) hpos
+
+/-- The unweighted vertical Fourier integral of a positive-time test amplitude is zero. -/
+theorem integral_deningerTimeTestLaplace_fourierLine_eq_zero
+    (φ : DeningerTimeTestFunction) (c : ℝ) :
+    (∫ ξ : ℝ,
+        deningerTimeTestLaplace φ
+          ((c : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I)) = 0 := by
+  have hinv :=
+    integral_fourierKernel_mul_deningerTimeTestLaplace
+      φ c 0
+  have hφ0 : φ 0 = 0 :=
+    deningerTimeTest_eq_zero_of_nonpos φ (le_refl 0)
+  simpa only [mul_zero, ofReal_zero, zero_mul,
+    Complex.exp_zero, one_mul,
+    deningerExponentiallyTiltedTimeTest, hφ0,
+    zero_mul] using hinv
+
+/--
+The positive vertical resolvent is a bounded Fourier multiplier, so it preserves absolute
+integrability of Deninger's vertical test amplitude.
+-/
+theorem integrable_deningerTimeTestLaplace_mul_verticalResolvent
+    (φ : DeningerTimeTestFunction) (c : ℝ)
+    {a : ℝ} (ha : 0 < a) :
+    Integrable
+      (fun ξ : ℝ =>
+        deningerTimeTestLaplace φ
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          (((a : ℝ) : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I)⁻¹) := by
+  let F : ℝ → ℂ :=
+    fun ξ =>
+      deningerTimeTestLaplace φ
+        ((c : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I)
+  let d : ℝ → ℂ :=
+    fun ξ =>
+      ((a : ℂ) -
+        ((2 * Real.pi * ξ : ℝ) : ℂ) *
+          Complex.I)⁻¹
+  have hF : Integrable F := by
+    rw [show F =
+        𝓕 (deningerExponentiallyTiltedTimeTest φ c) by
+      funext ξ
+      exact
+        (fourier_deningerExponentiallyTiltedTimeTest
+          φ c ξ).symm]
+    exact
+      integrable_fourier_deningerExponentiallyTiltedTimeTest
+        φ c
+  have hdenne : ∀ ξ : ℝ,
+      (a : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I ≠ 0 := by
+    intro ξ h
+    have hre := congrArg Complex.re h
+    simp [Complex.mul_re] at hre
+    linarith
+  have hdcont : Continuous d := by
+    dsimp only [d]
+    exact
+      (by fun_prop :
+        Continuous
+          (fun ξ : ℝ =>
+            (a : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I)).inv₀ hdenne
+  have hdbound : ∀ ξ : ℝ, ‖d ξ‖ ≤ 1 / a := by
+    intro ξ
+    have hre :
+        a ≤
+          ‖(a : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I‖ := by
+      have h :=
+        Complex.re_le_norm
+          ((a : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I)
+      simpa [Complex.mul_re] using h
+    dsimp only [d]
+    rw [norm_inv]
+    simpa only [one_div] using
+      one_div_le_one_div_of_le ha hre
+  simpa only [F, d] using
+    hF.mul_bdd hdcont.aestronglyMeasurable
+      (Filter.Eventually.of_forall hdbound)
+
+/--
+Arbitrary-test Bromwich resolvent identity:
+
+`∫ Φ(c-2πiξ)/(a-2πiξ) dξ = Φ(c-a)` for `a>0`.
+-/
+theorem integral_deningerTimeTestLaplace_mul_verticalResolvent
+    (φ : DeningerTimeTestFunction) (c : ℝ)
+    {a : ℝ} (ha : 0 < a) :
+    (∫ ξ : ℝ,
+        deningerTimeTestLaplace φ
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          (((a : ℝ) : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I)⁻¹) =
+      deningerTimeTestLaplace φ ((c - a : ℝ) : ℂ) := by
+  let F : ℝ → ℂ :=
+    fun ξ =>
+      deningerTimeTestLaplace φ
+        ((c : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I)
+  let e : ℝ → ℂ :=
+    (Ioi (0 : ℝ)).indicator
+      (fun t : ℝ =>
+        Complex.exp (-(a : ℂ) * (t : ℂ)))
+  let K : ℝ × ℝ → ℂ :=
+    fun p =>
+      Complex.exp
+          (((2 * Real.pi * p.2 * p.1 : ℝ) : ℂ) *
+            Complex.I) *
+        (e p.1 * F p.2)
+  have he : Integrable e := by
+    dsimp only [e]
+    rw [integrable_indicator_iff measurableSet_Ioi]
+    exact integrableOn_exp_mul_complex_Ioi
+      (a := -(a : ℂ))
+      (by
+        simp only [Complex.neg_re, Complex.ofReal_re]
+        linarith)
+      0
+  have hF : Integrable F := by
+    rw [show F =
+        𝓕 (deningerExponentiallyTiltedTimeTest φ c) by
+      funext ξ
+      exact
+        (fourier_deningerExponentiallyTiltedTimeTest
+          φ c ξ).symm]
+    exact
+      integrable_fourier_deningerExponentiallyTiltedTimeTest
+        φ c
+  have hbase :
+      Integrable
+        (fun p : ℝ × ℝ => e p.1 * F p.2) :=
+    he.mul_prod hF
+  have hK : Integrable K := by
+    dsimp only [K]
+    refine hbase.norm.mono' ?_ ?_
+    · exact
+        (Complex.continuous_exp.comp
+          (by fun_prop)).aestronglyMeasurable.mul
+            hbase.aestronglyMeasurable
+    · filter_upwards with p
+      rw [norm_mul, Complex.norm_exp]
+      have hre :
+          ((((2 * Real.pi * p.2 * p.1 : ℝ) : ℂ) *
+            Complex.I)).re = 0 := by
+        simp [Complex.mul_re]
+      rw [hre, Real.exp_zero, one_mul]
+  have hresolvent : ∀ ξ : ℝ,
+      (((a : ℝ) : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I)⁻¹ =
+        ∫ t : ℝ in Ioi 0,
+          Complex.exp (-(a : ℂ) * (t : ℂ)) *
+            Complex.exp
+              (((2 * Real.pi * ξ * t : ℝ) : ℂ) *
+                Complex.I) := by
+    intro ξ
+    let q : ℂ :=
+      -(((a : ℝ) : ℂ) -
+        ((2 * Real.pi * ξ : ℝ) : ℂ) *
+          Complex.I)
+    have hq : q.re < 0 := by
+      dsimp only [q]
+      simp [Complex.mul_re]
+      exact ha
+    have hfun :
+        (fun t : ℝ =>
+          Complex.exp (-(a : ℂ) * (t : ℂ)) *
+            Complex.exp
+              (((2 * Real.pi * ξ * t : ℝ) : ℂ) *
+                Complex.I)) =
+          fun t : ℝ =>
+            Complex.exp (q * (t : ℂ)) := by
+      funext t
+      rw [← Complex.exp_add]
+      congr 1
+      dsimp only [q]
+      push_cast
+      ring
+    rw [hfun, integral_exp_mul_complex_Ioi hq 0]
+    simp only [ofReal_zero, mul_zero, Complex.exp_zero]
+    dsimp only [q]
+    rw [show
+        -(((a : ℝ) : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I) =
+          -1 *
+            (((a : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) by
+      ring]
+    field_simp
+  rw [show
+      (fun ξ : ℝ =>
+        deningerTimeTestLaplace φ
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          (((a : ℝ) : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I)⁻¹) =
+        fun ξ : ℝ =>
+          F ξ *
+            ∫ t : ℝ in Ioi 0,
+              Complex.exp (-(a : ℂ) * (t : ℂ)) *
+                Complex.exp
+                  (((2 * Real.pi * ξ * t : ℝ) : ℂ) *
+                    Complex.I) by
+    funext ξ
+    rw [hresolvent ξ]]
+  calc
+    (∫ ξ : ℝ,
+        F ξ *
+          ∫ t : ℝ in Ioi 0,
+            Complex.exp (-(a : ℂ) * (t : ℂ)) *
+              Complex.exp
+                (((2 * Real.pi * ξ * t : ℝ) : ℂ) *
+                  Complex.I)) =
+        ∫ ξ : ℝ, ∫ t : ℝ, K (t, ξ) := by
+      congr with ξ
+      rw [← integral_indicator measurableSet_Ioi]
+      rw [← integral_const_mul]
+      apply integral_congr_ae
+      filter_upwards with t
+      by_cases ht : t ∈ Ioi (0 : ℝ)
+      · simp only [K, e, Set.indicator_of_mem ht]
+        ring
+      · simp [K, e, ht]
+    _ = ∫ t : ℝ, ∫ ξ : ℝ, K (t, ξ) := by
+      apply integral_integral_swap
+      simpa only [Function.comp_apply] using hK.swap
+    _ = ∫ t : ℝ,
+        Complex.exp (-(a : ℂ) * (t : ℂ)) *
+          deningerExponentiallyTiltedTimeTest φ c t := by
+      apply integral_congr_ae
+      filter_upwards with t
+      by_cases ht : t ∈ Ioi (0 : ℝ)
+      · rw [show
+          (fun ξ : ℝ => K (t, ξ)) =
+            fun ξ : ℝ =>
+              Complex.exp (-(a : ℂ) * (t : ℂ)) *
+                (Complex.exp
+                    (((2 * Real.pi * ξ * t : ℝ) : ℂ) *
+                      Complex.I) *
+                  F ξ) by
+          funext ξ
+          dsimp only [K]
+          rw [show
+              e t =
+                Complex.exp
+                  (-(a : ℂ) * (t : ℂ)) by
+            simp [e, ht]]
+          ring]
+        rw [integral_const_mul,
+          integral_fourierKernel_mul_deningerTimeTestLaplace]
+      · have ht0 : t ≤ 0 := le_of_not_gt ht
+        have hφ :
+            φ t = 0 :=
+          deningerTimeTest_eq_zero_of_nonpos φ ht0
+        have he0 : e t = 0 :=
+          Set.indicator_of_notMem ht _
+        simp [K, he0,
+          deningerExponentiallyTiltedTimeTest, hφ]
+    _ = deningerTimeTestLaplace φ
+        ((c - a : ℝ) : ℂ) := by
+      rw [deningerTimeTestLaplace]
+      apply integral_congr_ae
+      filter_upwards with t
+      rw [deningerExponentiallyTiltedTimeTest]
+      calc
+        Complex.exp (-(a : ℂ) * (t : ℂ)) *
+            ((φ t : ℂ) *
+              Complex.exp ((c * t : ℝ) : ℂ)) =
+          (φ t : ℂ) *
+            (Complex.exp (-(a : ℂ) * (t : ℂ)) *
+              Complex.exp ((c * t : ℝ) : ℂ)) := by
+          ring
+        _ = (φ t : ℂ) *
+            Complex.exp
+              (-(a : ℂ) * (t : ℂ) +
+                ((c * t : ℝ) : ℂ)) := by
+          rw [Complex.exp_add]
+        _ = (φ t : ℂ) *
+            Complex.exp
+              ((t : ℂ) * ((c - a : ℝ) : ℂ)) := by
+          congr 1
+          push_cast
+          ring_nf
+
+/-- Gauss's reciprocal-difference term on Deninger's fixed Euler line. -/
+theorem gaussDigammaSeriesTerm_deningerEulerLine_eq
+    (n : ℕ) (ξ : ℝ) :
+    gaussDigammaSeriesTerm
+        ((((3 / 2 : ℝ) : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I) / 2) n =
+      1 / ((n : ℂ) + 1) -
+        2 *
+          ((((3 / 2 + 2 * n : ℝ) : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I)⁻¹) := by
+  unfold gaussDigammaSeriesTerm
+  have hden :
+      (((3 / 2 + 2 * n : ℝ) : ℂ) -
+        ((2 * Real.pi * ξ : ℝ) : ℂ) *
+          Complex.I) ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp [Complex.mul_re] at hre
+    nlinarith [Nat.cast_nonneg (α := ℝ) n]
+  field_simp [hden]
+  push_cast
+  ring
+
+theorem integrable_deningerTimeTestLaplace_mul_gaussDigammaSeriesTerm
+    (φ : DeningerTimeTestFunction) (n : ℕ) :
+    Integrable
+      (fun ξ : ℝ =>
+        deningerTimeTestLaplace φ
+            (((3 / 2 : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          gaussDigammaSeriesTerm
+            ((((3 / 2 : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) / 2) n) := by
+  let F : ℝ → ℂ :=
+    fun ξ =>
+      deningerTimeTestLaplace φ
+        (((3 / 2 : ℝ) : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I)
+  let a : ℝ := 3 / 2 + 2 * n
+  have ha : 0 < a := by
+    dsimp only [a]
+    positivity
+  have hF : Integrable F := by
+    rw [show F =
+        𝓕
+          (deningerExponentiallyTiltedTimeTest
+            φ (3 / 2)) by
+      funext ξ
+      exact
+        (fourier_deningerExponentiallyTiltedTimeTest
+          φ (3 / 2) ξ).symm]
+    exact
+      integrable_fourier_deningerExponentiallyTiltedTimeTest
+        φ (3 / 2)
+  have hconst :
+      Integrable
+        (fun ξ : ℝ =>
+          F ξ * (1 / ((n : ℂ) + 1))) :=
+    hF.mul_const _
+  have hres :
+      Integrable
+        (fun ξ : ℝ =>
+          F ξ *
+            (((a : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I)⁻¹) := by
+    simpa only [F] using
+      integrable_deningerTimeTestLaplace_mul_verticalResolvent
+        φ (3 / 2) ha
+  apply (hconst.sub (hres.const_mul 2)).congr
+  filter_upwards with ξ
+  rw [gaussDigammaSeriesTerm_deningerEulerLine_eq]
+  dsimp only [F, a]
+  simp only [Pi.sub_apply]
+  ring
+
+/--
+Each Gauss digamma term on the Euler line is the negative even-time Laplace sample.
+-/
+theorem integral_deningerTimeTestLaplace_mul_gaussDigammaSeriesTerm
+    (φ : DeningerTimeTestFunction) (n : ℕ) :
+    (∫ ξ : ℝ,
+        deningerTimeTestLaplace φ
+            (((3 / 2 : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          gaussDigammaSeriesTerm
+            ((((3 / 2 : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) / 2) n) =
+      -2 *
+        deningerTimeTestLaplace φ
+          (-(2 * (n : ℝ)) : ℂ) := by
+  let F : ℝ → ℂ :=
+    fun ξ =>
+      deningerTimeTestLaplace φ
+        (((3 / 2 : ℝ) : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I)
+  let a : ℝ := 3 / 2 + 2 * n
+  have ha : 0 < a := by
+    dsimp only [a]
+    positivity
+  have hF : Integrable F := by
+    rw [show F =
+        𝓕
+          (deningerExponentiallyTiltedTimeTest
+            φ (3 / 2)) by
+      funext ξ
+      exact
+        (fourier_deningerExponentiallyTiltedTimeTest
+          φ (3 / 2) ξ).symm]
+    exact
+      integrable_fourier_deningerExponentiallyTiltedTimeTest
+        φ (3 / 2)
+  have hconst :
+      Integrable
+        (fun ξ : ℝ =>
+          F ξ * (1 / ((n : ℂ) + 1))) :=
+    hF.mul_const _
+  have hres :
+      Integrable
+        (fun ξ : ℝ =>
+          F ξ *
+            (((a : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I)⁻¹) := by
+    simpa only [F] using
+      integrable_deningerTimeTestLaplace_mul_verticalResolvent
+        φ (3 / 2) ha
+  rw [show
+      (fun ξ : ℝ =>
+        deningerTimeTestLaplace φ
+            (((3 / 2 : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          gaussDigammaSeriesTerm
+            ((((3 / 2 : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) / 2) n) =
+        fun ξ : ℝ =>
+          F ξ * (1 / ((n : ℂ) + 1)) -
+            2 *
+              (F ξ *
+                (((a : ℝ) : ℂ) -
+                  ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                    Complex.I)⁻¹) by
+    funext ξ
+    rw [gaussDigammaSeriesTerm_deningerEulerLine_eq]
+    dsimp only [F, a]
+    ring]
+  rw [integral_sub hconst (hres.const_mul 2),
+    integral_const_mul,
+    integral_mul_const,
+    integral_deningerTimeTestLaplace_fourierLine_eq_zero,
+    zero_mul, zero_sub,
+    integral_deningerTimeTestLaplace_mul_verticalResolvent
+      φ (3 / 2) ha]
+  have harg :
+      (((3 / 2 : ℝ) - a : ℝ) : ℂ) =
+        (-(2 * (n : ℝ)) : ℂ) := by
+    dsimp only [a]
+    push_cast
+    ring
+  rw [harg]
+  ring
+
+/--
+The two rational factors in `archFactor` give exactly Deninger's `H⁰` and `H²` amplitudes.
+-/
+theorem integral_deningerTimeTestLaplace_mul_archRationalTerms
+    (φ : DeningerTimeTestFunction) :
+    (∫ ξ : ℝ,
+        deningerTimeTestLaplace φ
+            (((3 / 2 : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          (1 /
+              (((3 / 2 : ℝ) : ℂ) -
+                ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                  Complex.I) +
+            1 /
+              ((((3 / 2 : ℝ) : ℂ) -
+                ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                  Complex.I) - 1))) =
+      deningerTimeTestLaplace φ 0 +
+        deningerTimeTestLaplace φ 1 := by
+  let F : ℝ → ℂ :=
+    fun ξ =>
+      deningerTimeTestLaplace φ
+        (((3 / 2 : ℝ) : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I)
+  have hfirst :
+      Integrable
+        (fun ξ : ℝ =>
+          F ξ *
+            ((((3 / 2 : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I)⁻¹)) := by
+    simpa only [F] using
+      integrable_deningerTimeTestLaplace_mul_verticalResolvent
+        φ (3 / 2) (by norm_num : (0 : ℝ) < 3 / 2)
+  have hsecond :
+      Integrable
+        (fun ξ : ℝ =>
+          F ξ *
+            ((((1 / 2 : ℝ) : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I)⁻¹)) := by
+    simpa only [F] using
+      integrable_deningerTimeTestLaplace_mul_verticalResolvent
+        φ (3 / 2) (by norm_num : (0 : ℝ) < 1 / 2)
+  have hfun :
+      (fun ξ : ℝ =>
+          deningerTimeTestLaplace φ
+              (((3 / 2 : ℝ) : ℂ) -
+                ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                  Complex.I) *
+            (1 /
+                (((3 / 2 : ℝ) : ℂ) -
+                  ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                    Complex.I) +
+              1 /
+                ((((3 / 2 : ℝ) : ℂ) -
+                  ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                    Complex.I) - 1))) =
+        (fun ξ : ℝ =>
+          F ξ *
+              ((((3 / 2 : ℝ) : ℂ) -
+                ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                  Complex.I)⁻¹) +
+            F ξ *
+              ((((1 / 2 : ℝ) : ℂ) -
+                ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                  Complex.I)⁻¹)) := by
+    funext ξ
+    dsimp only [F]
+    have hden :
+        (((3 / 2 : ℝ) : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I - 1) =
+          (((1 / 2 : ℝ) : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I) := by
+      push_cast
+      ring
+    rw [hden]
+    simp only [one_div]
+    ring
+  rw [hfun, integral_add hfirst hsecond,
+    integral_deningerTimeTestLaplace_mul_verticalResolvent
+      φ (3 / 2) (by norm_num : (0 : ℝ) < 3 / 2),
+    integral_deningerTimeTestLaplace_mul_verticalResolvent
+      φ (3 / 2) (by norm_num : (0 : ℝ) < 1 / 2)]
+  congr 2 <;>
+    push_cast <;>
+    ring
 
 /-- Fourier-line decomposition of a positive natural-number Dirichlet monomial. -/
 theorem deningerNatCast_cpow_neg_fourierLine

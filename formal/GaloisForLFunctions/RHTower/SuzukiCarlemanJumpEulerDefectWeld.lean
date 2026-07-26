@@ -184,7 +184,7 @@ pole.  The Euler transform removes linear endpoint escape but cannot remove the 
 theorem meromorphicOrderAt_suzukiEulerDefect_affineSewnExteriorWeylQuotient_eq_neg_two
     {alpha beta : ℂ}
     {WAlpha WBeta rightAlpha rightBeta : ℂ → ℂ} {z : ℂ}
-    (hz : XiC z = 0) (hz0 : z ≠ 0)
+    (hz : XiC z = 0)
     (hWAlpha : ∀ w, AnalyticAt ℂ WAlpha w)
     (hWBeta : ∀ w, AnalyticAt ℂ WBeta w)
     (hP0 : suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta z ≠ 0)
@@ -208,6 +208,11 @@ theorem meromorphicOrderAt_suzukiEulerDefect_affineSewnExteriorWeylQuotient_eq_n
   simpa using
     (GaloisForLFunctions.RHTower.meromorphicOrderAt_suzukiEulerDefect_eq_sub_one
       hm hz0 (show (-1 : ℤ) < 0 by omega) hmOrder)
+  where
+    hz0 : z ≠ 0 := by
+      intro h
+      subst z
+      exact XiC_zero_ne hz
 
 /-! ## The source-side Euler weld is sufficient for RH -/
 
@@ -238,13 +243,9 @@ theorem riemannHypothesis_of_suzukiAffineSewnExteriorWeylEulerDefect_analytic_of
   have hWBeta0 : WBeta z ≠ 0 := fun h => him (hrealBeta z h)
   have hP0 : suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta z ≠ 0 :=
     mul_ne_zero (mul_ne_zero (sub_ne_zero.mpr hab.symm) hWAlpha0) hWBeta0
-  have hz0 : z ≠ 0 := by
-    intro h
-    subst z
-    exact him (by simp)
   have hEOrder :=
     meromorphicOrderAt_suzukiEulerDefect_affineSewnExteriorWeylQuotient_eq_neg_two
-      hzXi hz0 hWAlpha hWBeta hP0 hRAlpha hRBeta
+      hzXi hWAlpha hWBeta hP0 hRAlpha hRBeta
   have hnonneg : (0 : WithTop ℤ) ≤
       meromorphicOrderAt
         (GaloisForLFunctions.RHTower.suzukiEulerDefect
@@ -319,13 +320,9 @@ theorem riemannHypothesis_of_suzukiAffineSewnExteriorWeylEulerDefect_source_germ
     have hWBeta0 : WBeta z ≠ 0 := fun h => (ne_of_gt hzIm) (hrealBeta z h)
     have hP0 : suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta z ≠ 0 :=
       mul_ne_zero (mul_ne_zero (sub_ne_zero.mpr hab.symm) hWAlpha0) hWBeta0
-    have hz0 : z ≠ 0 := by
-      intro h
-      subst z
-      simp at hzIm
     have hEOrder :=
       meromorphicOrderAt_suzukiEulerDefect_affineSewnExteriorWeylQuotient_eq_neg_two
-        hzXi hz0 hWAlpha hWBeta hP0 hRAlpha hRBeta
+        hzXi hWAlpha hWBeta hP0 hRAlpha hRBeta
     have hpos : z ∈ UpperHalfPlane.upperHalfPlaneSet := by
       simpa [UpperHalfPlane.upperHalfPlaneSet] using hzIm
     have hn := hnonneg z hpos

@@ -29,6 +29,7 @@ Two consequences.
   Lindelöf exponent if and only if its per-step loss is not a positive power.
 -/
 import GaloisForLFunctions.RHTower.BourgainPowerScaleBootstrap
+import GaloisForLFunctions.RHTower.BourgainExponentEndgame
 import GaloisForLFunctions.HTGeometry.SymmetrizationRetraction
 
 open scoped BigOperators
@@ -43,13 +44,12 @@ noncomputable def powerScaleFloor (δ α : ℝ) : ℝ := δ / (1 - α)
 /-- **The partial accumulation falls short of the floor by exactly `δ α^k/(1-α)`.** -/
 theorem powerScale_partial_deficit {α : ℝ} (hα : α < 1) (δ : ℝ) (k : ℕ) :
     powerScaleFloor δ α - δ * ∑ i ∈ Finset.range k, α ^ i = δ * α ^ k / (1 - α) := by
-  have hne : α - 1 ≠ 0 := by intro h; apply absurd hα; simp; linarith [sub_eq_zero.mp h]
-  have hgeom : ∑ i ∈ Finset.range k, α ^ i = (α ^ k - 1) / (α - 1) := geom_sum_eq (by
-    intro h; exact hne (by rw [h]; ring)) k
+  have h1a : (1 : ℝ) - α ≠ 0 := sub_ne_zero.mpr (ne_of_gt hα)
+  have hs : (1 - α) * ∑ i ∈ Finset.range k, α ^ i = 1 - α ^ k := by
+    linear_combination -geom_sum_mul α k
   unfold powerScaleFloor
-  rw [hgeom]
   field_simp
-  ring
+  linear_combination (-δ) * hs
 
 /-- **So the accumulated exponent never exceeds the floor.** -/
 theorem powerScale_partial_le {α δ : ℝ} (hα0 : 0 ≤ α) (hα : α < 1) (hδ : 0 ≤ δ) (k : ℕ) :

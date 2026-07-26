@@ -29,6 +29,21 @@ namespace RHTower
 
 noncomputable section
 
+/-! ## Conjugation-stable regularity -/
+
+/-- Nonvanishing of `XiC` is preserved by centered conjugation.  Every diagonal Weil entry needs
+both conjugate evaluation points, but one regularity premise determines the other. -/
+theorem XiC_ne_zero_conj {z : ℂ} (hz : XiC z ≠ 0) :
+    XiC ((starRingEnd ℂ) z) ≠ 0 := by
+  intro hcz
+  obtain ⟨q, hq⟩ :=
+    (XiC_eq_zero_iff_exists_xiZeroCopy ((starRingEnd ℂ) z)).mp hcz
+  apply hz
+  apply (XiC_eq_zero_iff_exists_xiZeroCopy z).mpr
+  refine ⟨xiZeroCopyLineConjEquiv q, ?_⟩
+  rw [xiSpectralPoint_lineConj, hq]
+  simp
+
 /-! ## §1 The product closure of the kernel algebra -/
 
 /-- **Closure identity.**  The pointwise product of two regularized Cauchy
@@ -153,14 +168,14 @@ axis the diagonal entry is governed by the two resolvent traces at `z` and its
 conjugate: as `z` approaches an off-critical zero these develop opposite poles,
 which is the mechanism by which a displaced zero makes the form indefinite. -/
 theorem xiWeilPolarization_cauchyKernel_diagonal {z : ℂ} (hz : XiC z ≠ 0)
-    (hzc : XiC ((starRingEnd ℂ) z) ≠ 0) (hz0 : z ≠ 0)
-    (hzim : z.im ≠ 0) :
+    (hz0 : z ≠ 0) (hzim : z.im ≠ 0) :
     xiWeilPolarization (xiCauchyRegularizedKernel z)
         (xiCauchyRegularizedKernel z) =
       xiSecondInverseMoment -
         ((starRingEnd ℂ) z / (z * (z - (starRingEnd ℂ) z))) * logDeriv XiC z +
         (z / ((starRingEnd ℂ) z * (z - (starRingEnd ℂ) z))) *
           logDeriv XiC ((starRingEnd ℂ) z) := by
+  have hzc : XiC ((starRingEnd ℂ) z) ≠ 0 := XiC_ne_zero_conj hz
   have hz0' : (starRingEnd ℂ) z ≠ 0 := by
     simpa using hz0
   have hne : z ≠ (starRingEnd ℂ) z := by

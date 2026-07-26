@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchAntiHerglotzGate
 import GaloisForLFunctions.RHTower.XiWeilCauchyPoleExhaustion
+import GaloisForLFunctions.RHTower.XiWeilResolventGram
 
 /-!
 # One-Cauchy source gate to RH
@@ -43,18 +44,6 @@ theorem xiRelativeResolventTrace_conj (z : ℂ) :
     _ = (starRingEnd ℂ)
         (∑' q : XiZeroCopy, xiRelativeResolventTerm z q) := by
       exact (Complex.conj_tsum _).symm
-
-/-- Nonvanishing of `XiC` is preserved by centered conjugation. -/
-theorem XiC_ne_zero_conj {z : ℂ} (hz : XiC z ≠ 0) :
-    XiC ((starRingEnd ℂ) z) ≠ 0 := by
-  intro hcz
-  obtain ⟨q, hq⟩ :=
-    (XiC_eq_zero_iff_exists_xiZeroCopy ((starRingEnd ℂ) z)).mp hcz
-  apply hz
-  apply (XiC_eq_zero_iff_exists_xiZeroCopy z).mpr
-  refine ⟨xiZeroCopyLineConjEquiv q, ?_⟩
-  rw [xiSpectralPoint_lineConj, hq]
-  simp
 
 /-- Conjugation law for the continued source whenever both centered points lie in its natural
 pole-free domain. -/

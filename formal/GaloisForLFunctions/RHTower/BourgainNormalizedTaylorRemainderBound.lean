@@ -192,7 +192,7 @@ theorem norm_bourgainNormalizedTaylorCurve_sub_quadratic_le
   · simp [bourgainGenericFourCurve,
       bourgainGenericFourCurveQuadraticModel]
     ring_nf
-    simpa only [abs_zero] using hbound0
+    simpa only [abs_zero, mul_comm] using hbound0
   · simpa [bourgainGenericFourCurve,
       bourgainGenericFourCurveQuadraticModel, Real.norm_eq_abs] using
       abs_bourgainNormalizedCubicRemainder_sub_quadratic_le
