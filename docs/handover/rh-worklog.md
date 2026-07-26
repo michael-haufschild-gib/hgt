@@ -6501,3 +6501,70 @@ archimedean pairing Q (entry 27) are exactly such finite-dimensional shadows, an
 non-analytic functional of them that IS computable from the matrix entries — which are prime data.
 COMPUTE WHAT tr|Q - 𝒫| SEES. If it separates beta, entry 41 is circumvented by finite-dimensionality,
 because a matrix trace needs no contour.
+
+---
+
+## Cycle 108 (2026-07-26) — THE ABSOLUTE-TRACE CRITERION, AND THE PRIME OPERATOR IS TRACELESS
+
+### Entry 41 circumvented in the one way it can be
+Entry 41 says a weight detecting the critical line cannot be evaluated by CONTOUR SHIFTING. It does
+NOT say every non-analytic functional is uncomputable. A MATRIX TRACE NEEDS NO CONTOUR, and tr|A| is
+non-analytic in A yet determined by A. For self-adjoint A with eigenvalues lam_j,
+
+    tr|A| - tr A  =  sum_j ( |lam_j| - lam_j )  =  2 sum_{lam_j < 0} |lam_j|,
+
+so A >= 0 EXACTLY WHEN tr|A| = tr A. Applied to the Weil operator A = Q - 𝒫 (entry 27), RH is the
+equality of its SCHATTEN-1 NORM with its TRACE.
+
+### AND THE TRACE IS PURELY ARCHIMEDEAN
+The compressed prime operator is convolution by a measure supported on {+- log n : n >= 2}, which HAS
+NO ATOM AT THE ORIGIN. Its diagonal therefore vanishes identically and it is TRACELESS. Hence
+
+    tr (Q - 𝒫)  =  tr Q,          a quantity with NO PRIME CONTENT AT ALL,
+
+pinned by the definiteness bounds between (1 - beta) d and (1 + beta) d with
+beta = 3 log 2 + pi/2 - 3 = 0.65023 and d the dimension: between 0.34976 d and 1.65024 d.
+
+    ==> RH IS THE STATEMENT THAT THE SCHATTEN-1 NORM OF THE WEIL OPERATOR EQUALS ITS TRACE, AND THAT
+        TRACE IS PURELY ARCHIMEDEAN AND EXPLICITLY PINNED.
+
+The criterion is NON-ANALYTIC, EXACT, AND EVALUABLE IN PRINCIPLE — the three properties entry 41
+showed cannot coexist for CONTOUR-evaluated functionals. What it costs: the Schatten norm requires the
+SPECTRUM, which prime data does not directly supply. So entry 41 is circumvented in form but its
+content survives as a change of currency — from "cannot be evaluated" to "requires the spectrum".
+
+### Phase 1 note
+`XiTraceHankelCountableCriterion.xiCentralTraceHankelIntNonnegative_iff_riemannHypothesis` and
+`XiHurwitzOrientationEnergyConsumers` already give trace-Hankel RH equivalences in the corpus. THE
+NEW CONTENT HERE IS NOT "a trace criterion" but (a) the ABSOLUTE trace versus trace identity as the
+exact positivity test, and (b) TRACELESSNESS OF THE PRIME OPERATOR, which makes the comparison
+quantity purely archimedean and explicitly bounded. Those two are absent from the corpus.
+
+Machine-verified: `RHTower/AbsoluteTraceCriterion.lean` (the identity
+sum|lam| - sum lam = 2 sum max(0,-lam), its equality case characterising nonnegativity, tracelessness
+from a vanishing diagonal, the reduction tr(Q - 𝒫) = tr Q, the two-sided pinning, and strict
+positivity of the lower pin at the archimedean budget; standard axioms only, wired into RHTower).
+
+### FORTY-SECOND ATLAS ENTRY
+    absolute trace   RH <=> tr|Q - 𝒫| = tr(Q - 𝒫); the prime operator is traceless (no atom at the
+                     origin), so the right side is purely archimedean and pinned to
+                     [0.34976 d, 1.65024 d]. Non-analytic, exact, and contour-free — entry 41's
+                     exclusion applies to contour evaluation only, and the cost reappears as the need
+                     for the spectrum.
+
+### STATE AT CYCLE 108
+Forty-two entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 109 target
+The cost is now precisely located: tr|A| needs the spectrum, tr A does not. BUT THE SCHATTEN-1 NORM
+HAS A VARIATIONAL FORM THAT NEEDS NO SPECTRUM:
+    tr|A| = sup { tr(A U) : U contraction },
+a supremum of quantities LINEAR in A's entries, hence computable from prime data for each fixed U.
+SO THE CRITERION BECOMES: for every contraction U, tr(A U) <= tr A. TEST WHETHER THE SUPREMUM IS
+ATTAINED AT A COMPUTABLE U. For self-adjoint A the maximiser is U = sign(A), which needs the spectrum
+— but the criterion only requires the INEQUALITY for all U, and each instance is an unconditional
+prime-side statement. DETERMINE WHETHER FINITELY MANY WELL-CHOSEN U ALREADY FORCE POSITIVITY: if the
+cone of self-adjoint operators satisfying tr(AU) <= tr A for U in an explicit finite family is exactly
+the positive cone, the criterion becomes a FINITE list of unconditional inequalities — which is
+exactly the falsification ladder of entry 15, now in operator form and with the archimedean side
+computed.

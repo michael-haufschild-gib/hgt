@@ -1645,4 +1645,59 @@ theorem missing_input_is_mod_one_spacing :
     dualSieveOutputAssumed = fareyWeightL2 ∧ fareyWeightL1 - dualSieveOutputAssumed = 1 :=
   ⟨dual_sieve_meets_target_if_spaced, assumption_closes_everything⟩
 
+
+/-!
+### Correcting the dual-sieve computation
+
+The dual large sieve gives `Σ_a|Σ_qβ_qe(x'_au_q)|² ≪ (U + δ^{-1})Σ_q|β_q|²` where `δ` is the spacing of
+the `x'_a` **mod 1**.  With `β_q ≍ L^{-1}` so `Σ|β_q|² ≍ L^{-1}`, and `L` values of `a`:
+
+    |Σ_{a,q}|  ≤  ( L · (U + δ^{-1})·L^{-1} )^{1/2}  =  (U + δ^{-1})^{1/2} .
+
+Reaching `O(1)` would need `δ ≫ 1` — impossible for more than one point.  The **best possible** spacing
+for `L` points in `[0,1)` is `δ ≍ 1/L`, which gives
+
+    |Σ_{a,q}| ≪ L^{1/2} ,
+
+against a trivial bound of `L`.  Restoring the within-arc factor `L^{3/2}` turns this into
+`L^{3/2}·L^{1/2} = L² = N^{2/3}`, i.e. **`μ ≤ 1/12`** — the intermediate target of Theorem 34, not the
+Lindelöf hypothesis.
+
+Generic spacing `δ ≍ L^{-2}` gives `|Σ| ≪ L`, exactly the trivial bound.
+-/
+
+/-- Output exponent (in `L`) of the dual large sieve at mod-1 spacing `δ = L^{-s}`. -/
+def dualSieveAt (s : ℚ) : ℚ := s / 2
+
+/-- Optimal spacing for `L` points: `s = 1`. -/
+@[simp] theorem dualSieve_optimal : dualSieveAt 1 = 1/2 := by
+  unfold dualSieveAt; norm_num
+
+/-- Generic (birthday) spacing: `s = 2`, giving the trivial bound. -/
+@[simp] theorem dualSieve_generic : dualSieveAt 2 = 1 := by
+  unfold dualSieveAt; norm_num
+
+/-- **Optimal spacing restores to `L²`, i.e. `μ = 1/12`.** -/
+@[simp] theorem dualSieve_optimal_restored : (3/2 : ℚ) + dualSieveAt 1 = 2 := by
+  rw [dualSieve_optimal]; norm_num
+
+/-- **Generic spacing restores to Weyl.** -/
+@[simp] theorem dualSieve_generic_restored : (3/2 : ℚ) + dualSieveAt 2 = 5/2 := by
+  rw [dualSieve_generic]; norm_num
+
+/-- **Even optimal spacing falls short of the Lindelöf target by `L^{1/2}`.** -/
+theorem dualSieve_optimal_misses_lindelof :
+    fareyExponent 1 1 < (3/2 : ℚ) + dualSieveAt 1 := by
+  rw [dualSieve_optimal_restored, farey_both]; norm_num
+
+@[simp] theorem dualSieve_optimal_shortfall :
+    ((3/2 : ℚ) + dualSieveAt 1) - fareyExponent 1 1 = 1/2 := by
+  rw [dualSieve_optimal_restored, farey_both]; norm_num
+
+/-- **Consistency with Theorem 34.**  Optimal one-variable spacing gives exactly the `μ = 1/12` level,
+which is the `across-arc-only` regime of Theorem 40. -/
+theorem dualSieve_optimal_is_intermediate :
+    (3/2 : ℚ) + dualSieveAt 1 = fareyExponent 0 1 := by
+  rw [dualSieve_optimal_restored, farey_acrossOnly]
+
 end HTGeometry
