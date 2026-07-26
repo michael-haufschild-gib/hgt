@@ -279,4 +279,39 @@ theorem genPoly_meanValue_error_of_gap (a : ℕ → ℂ) (lam : ℕ → ℝ) (s 
 
 end
 
+
+/-- **Almost-orthonormality of an exponential family on a long interval.**  With the normalised
+form `B(u,v) = U⁻¹∫_T^{T+U} u \bar v`, the family `t ↦ exp(i λᵢ t)` has Gram entries within
+`2/(g·U)` of the identity matrix, where `g` is the minimal gap between the frequencies.
+
+Combined with `HTGeometry.bessel_of_almost_orthogonal` this is the finite-interval form of Bessel's
+inequality for Fourier–Bohr coefficients: the sum of squared correlations of any function with the
+tones `λᵢ` is at most `(1 + card·2/(g·U))` times its own mean square.  Letting `U → ∞` with the
+frequencies fixed recovers exact orthonormality. -/
+theorem oscInt_gram_bound {ι : Type*} [DecidableEq ι] (lam : ι → ℝ) (T U g : ℝ)
+    (hU : 0 < U) (hg : 0 < g) (hgap : ∀ i j : ι, i ≠ j → g ≤ |lam i - lam j|) (i j : ι) :
+    ‖((U : ℂ))⁻¹ * oscInt (lam i - lam j) T U - (if i = j then (1 : ℂ) else 0)‖ ≤ 2 / (g * U) := by
+  by_cases h : i = j
+  · subst h
+    have hUne : ((U : ℂ)) ≠ 0 := by
+      simpa using ne_of_gt hU
+    simp [oscInt_zero, inv_mul_cancel₀ hUne]
+    positivity
+  · have hδ : lam i - lam j ≠ 0 := by
+      intro hzero
+      have := hgap i j h
+      rw [hzero, abs_zero] at this
+      linarith
+    have hb := oscInt_norm_le (lam i - lam j) T U hδ
+    have hgle : g ≤ |lam i - lam j| := hgap i j h
+    have hUne : ((U : ℂ)) ≠ 0 := by simpa using ne_of_gt hU
+    rw [if_neg h, sub_zero, norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos hU]
+    have h1 : ‖oscInt (lam i - lam j) T U‖ ≤ 2 / g := by
+      refine le_trans hb ?_
+      exact div_le_div_of_nonneg_left (by norm_num) hg hgle
+    calc U⁻¹ * ‖oscInt (lam i - lam j) T U‖ ≤ U⁻¹ * (2 / g) :=
+          mul_le_mul_of_nonneg_left h1 (le_of_lt (inv_pos.mpr hU))
+      _ = 2 / (g * U) := by field_simp
+
 end HTGeometry

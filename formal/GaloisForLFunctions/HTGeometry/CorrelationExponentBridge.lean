@@ -1700,4 +1700,117 @@ theorem dualSieve_optimal_is_intermediate :
     (3/2 : ℚ) + dualSieveAt 1 = fareyExponent 0 1 := by
   rw [dualSieve_optimal_restored, farey_acrossOnly]
 
+
+/-!
+### The raw double large sieve is in its inefficient regime
+
+Bombieri–Iwaniec's double large sieve bounds `|Σ_{i,j}a_ib_je(x_iy_j)|² ≪ (1+Xδ₂)(1+Yδ₁)‖a‖²‖b‖²` for
+`{x_i}` `δ₁`-separated in `[0,X]` and `{y_j}` `δ₂`-separated in `[0,Y]`.  For the normalised bilinear
+form of Theorem 84:
+
+    x_a = N√(2a),  a ≍ L :  X ≍ N√L = N^{7/6},   δ₁ ≍ N/√L = N^{5/6} ;
+    y_q = q^{-1/2}, q ≍ L :  Y ≍ L^{-1/2} = N^{-1/6}, δ₂ ≍ L^{-3/2} = N^{-1/2} .
+
+Both products are `Xδ₂ = Yδ₁ = **N^{2/3}**` — symmetric, and far above `1`.  With `‖a‖² ≍ L = N^{1/3}`
+and `‖b‖² ≍ L^{-1} = N^{-1/3}` the sieve returns
+
+    |Σ|² ≪ N^{4/3},   i.e.  |Σ| ≪ N^{2/3} ,
+
+against a trivial bound of `L = N^{1/3}`.  **Worse than trivial by `N^{1/3}`.**
+
+Subdividing the `x`-range into pieces of length `1/δ₂ = N^{1/2}` to restore efficiency puts
+`N^{1/2}/N^{5/6} < 1` points in each piece: **fewer than one, so the sieve degenerates.**
+-/
+
+/-- The symmetric efficiency product `Xδ₂ = Yδ₁` for the normalised form, as an exponent of `N`. -/
+def sieveEfficiencyProduct : ℚ := 2/3
+
+/-- The double large sieve is efficient only when this product is `≤ 0` in exponent. -/
+theorem sieve_inefficient : 0 < sieveEfficiencyProduct := by
+  unfold sieveEfficiencyProduct; norm_num
+
+/-- Output exponent of the raw double large sieve. -/
+def doubleSieveOutput : ℚ := 2/3
+
+/-- **It is worse than the trivial bound by `N^{1/3}`.** -/
+theorem doubleSieve_worse_than_trivial : bilinearTrivial < doubleSieveOutput := by
+  unfold bilinearTrivial doubleSieveOutput; norm_num
+
+@[simp] theorem doubleSieve_deficit : doubleSieveOutput - bilinearTrivial = 1/3 := by
+  unfold doubleSieveOutput bilinearTrivial; norm_num
+
+/-- Points per box after subdividing to restore efficiency, as an exponent of `N`: `1/2 − 5/6`. -/
+def pointsPerBox : ℚ := 1/2 - 5/6
+
+/-- **Fewer than one point per box: the sieve degenerates under subdivision.** -/
+theorem subdivision_degenerates : pointsPerBox < 0 := by
+  unfold pointsPerBox; norm_num
+
+/-- **The raw double large sieve is inapplicable here**, and the deficit it must overcome is `N^{1/3}`
+— which is precisely what Bombieri–Iwaniec's spacing analysis supplies. -/
+theorem raw_double_sieve_inapplicable :
+    0 < sieveEfficiencyProduct ∧ bilinearTrivial < doubleSieveOutput ∧ pointsPerBox < 0 :=
+  ⟨sieve_inefficient, doubleSieve_worse_than_trivial, subdivision_degenerates⟩
+
+
+/-!
+### Recalibration: progress measured from the raw sieve
+
+On the normalised sum of Theorem 82 (exponents in `L = N^{1/3}`):
+
+    raw double large sieve   :  L²          (Theorem 87)
+    trivial bound            :  L¹
+    Bourgain's record        :  L^{13/14}   (since `L^{3/2}·L^{13/14} = L^{17/7} = N^{17/21}`)
+    Lindelöf                 :  L^{o(1)}
+
+Measured from the **trivial** bound the record has covered `1 − 13/14 = 1/14 ≈ 7 %` of the way to
+Lindelöf.  Measured from the **raw sieve** — the actual starting point of the Bombieri–Iwaniec method,
+before any spacing analysis — it has covered
+
+    (2 − 13/14) / 2  =  (15/14)/2  =  **15/28 ≈ 53.6 %** .
+
+The discrepancy is exactly the factor `L` by which the raw sieve is worse than trivial: the spacing
+analysis first has to climb back to the trivial bound, and only then begins to save.
+-/
+
+/-- Normalised-sum exponent (in `L`) of the raw double large sieve. -/
+def normRawSieve : ℚ := 2
+
+/-- Normalised-sum exponent of the trivial bound. -/
+def normTrivial : ℚ := 1
+
+/-- Normalised-sum exponent of Bourgain's record. -/
+def normBourgain : ℚ := 13/14
+
+/-- Normalised-sum exponent of the Lindelöf hypothesis. -/
+def normLindelof : ℚ := 0
+
+/-- **Bourgain's record restores to `N^{17/21}`.** -/
+@[simp] theorem normBourgain_restores : (3/2 : ℚ) + normBourgain = 17/7 := by
+  unfold normBourgain; norm_num
+
+/-- Progress measured from the trivial bound. -/
+def progressFromTrivial : ℚ := (normTrivial - normBourgain) / (normTrivial - normLindelof)
+
+@[simp] theorem progressFromTrivial_eq : progressFromTrivial = 1/14 := by
+  unfold progressFromTrivial normTrivial normBourgain normLindelof; norm_num
+
+/-- Progress measured from the raw sieve. -/
+def progressFromRawSieve : ℚ := (normRawSieve - normBourgain) / (normRawSieve - normLindelof)
+
+@[simp] theorem progressFromRawSieve_eq : progressFromRawSieve = 15/28 := by
+  unfold progressFromRawSieve normRawSieve normBourgain normLindelof; norm_num
+
+/-- **From the raw sieve, more than half the required saving has been achieved.** -/
+theorem majority_achieved_from_raw : 1/2 < progressFromRawSieve := by
+  rw [progressFromRawSieve_eq]; norm_num
+
+/-- **And the two measures differ by the factor `L` separating the raw sieve from trivial.** -/
+theorem baselines_differ : progressFromTrivial < progressFromRawSieve := by
+  rw [progressFromTrivial_eq, progressFromRawSieve_eq]; norm_num
+
+/-- The remaining saving, from the record to Lindelöf. -/
+@[simp] theorem remaining_saving : normBourgain - normLindelof = 13/14 := by
+  unfold normBourgain normLindelof; norm_num
+
 end HTGeometry

@@ -6568,3 +6568,65 @@ cone of self-adjoint operators satisfying tr(AU) <= tr A for U in an explicit fi
 the positive cone, the criterion becomes a FINITE list of unconditional inequalities — which is
 exactly the falsification ladder of entry 15, now in operator form and with the archimedean side
 computed.
+
+---
+
+## Cycle 109 (2026-07-26) — POSITIVITY IS FINITELY MANY POLYNOMIAL CONDITIONS, NOT LINEAR ONES
+### Cycle 108's linear hope REFUTED by convexity; the polynomial replacement REMOVES THE SPECTRUM COST.
+
+### The refutation
+tr(A U) <= tr A cuts out a HALF-SPACE for each contraction U, so a finite family would make the
+positive cone POLYHEDRAL. IT IS NOT. Its extreme rays are the rank-one projections, one per direction
+— a continuum already in dimension two, where the cone {(a,b,c) : a>=0, c>=0, ac >= b^2} has a
+strictly convex boundary carrying infinitely many distinct extreme rays (the family (t^2, t, 1)).
+
+    ==> "POSITIVITY FOR ALL TESTS" CANNOT BE REDUCED TO FINITELY MANY TESTS AT ANY FIXED DIMENSION.
+        THIS IS A CONVEXITY FACT, NOT AN ANALYTIC ONE, AND IT IS WHY THE FALSIFICATION LADDER
+        (entry 15) HAS INFINITELY MANY RUNGS AT EACH WIDTH.
+
+### THE POLYNOMIAL REPLACEMENT, AND IT IS THE POINT OF THE CYCLE
+For a self-adjoint operator the characteristic polynomial is REAL-ROOTED, and a real-rooted monic
+polynomial has all roots nonnegative EXACTLY WHEN ALL ITS ELEMENTARY SYMMETRIC FUNCTIONS ARE
+NONNEGATIVE. Those are d polynomials in the matrix entries, REQUIRING NO SPECTRUM AT ALL:
+
+    Q - 𝒫 >= 0   <=>   e_k(Q - 𝒫) >= 0  for k = 1, ..., d.
+
+    ==> AT EACH WIDTH THE HYPOTHESIS IS THE NONNEGATIVITY OF FINITELY MANY EXPLICIT POLYNOMIALS IN
+        PRIME AND ARCHIMEDEAN DATA — NO SPECTRUM, NO CONTOUR, NO TEST FUNCTIONS.
+
+THIS REMOVES THE COST IDENTIFIED IN ENTRY 42. Entry 42 said the absolute trace is exact and
+contour-free but needs the spectrum. The symmetric functions are exact, contour-free, AND
+spectrum-free. Together with entry 41 (analyticity excludes beta-sensitivity for CONTOUR-evaluated
+functionals) this completes the escape: the polynomial criterion is non-analytic in the operator
+(the eigenvalue ordering is), yet polynomial in the DATA.
+
+Machine-verified: `RHTower/PolynomialPositivityCriterion.lean` (nonnegativity of every symmetric
+function of nonnegative numbers, the product-expansion positivity that gives the converse,
+the boundary curve of the two-dimensional cone with distinct parameters giving distinct extreme
+points, the impossibility of a finite set equalling an infinite one, and the finite polynomial
+criterion; standard axioms only, wired into RHTower).
+
+### FORTY-THIRD ATLAS ENTRY
+    polynomial criterion   the positive cone is not polyhedral (continuum of extreme rays), so no
+                           finite LINEAR reduction exists; but positivity is exactly the
+                           nonnegativity of the d elementary symmetric functions, which are
+                           polynomials in the entries. At each width RH is finitely many explicit
+                           polynomial inequalities in prime and archimedean data.
+
+### STATE AT CYCLE 109
+Forty-three entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME HAS NOW CONVERTED THE HYPOTHESIS INTO: for every L, the d(L) elementary symmetric
+functions of the compressed Weil operator are nonnegative, where the operator's entries are explicit
+(archimedean kernel minus prime kernel, entries 27 and 82) and its trace is purely archimedean and
+pinned to [0.34976 d, 1.65024 d] (entry 42).
+
+### Cycle 110 target
+Compute the symmetric functions. e_1 = tr(Q - 𝒫) = tr Q — ALREADY DONE, purely archimedean and
+positive (entry 42). SO THE FIRST RUNG OF THE POLYNOMIAL LADDER IS UNCONDITIONALLY SATISFIED. The
+second is e_2 = ((tr A)^2 - tr(A^2))/2, and tr(A^2) = tr(Q^2) - 2 tr(Q 𝒫) + tr(𝒫^2). NOW: tr(𝒫^2) IS
+NOT ZERO — the square of a convolution by a measure supported off the origin DOES have an atom at the
+origin, namely the self-pairings, so tr(𝒫^2) = sum over n of (Lambda(n)/sqrt n)^2 times the overlap.
+COMPUTE e_2 EXPLICITLY. Its sign is the second unconditional rung, and unlike e_1 it contains prime
+data. If e_2 >= 0 is provable unconditionally, two rungs stand; if e_2 can be negative, RH IS FALSE.
+EITHER OUTCOME IS DECISIVE AND THE COMPUTATION IS ELEMENTARY.
