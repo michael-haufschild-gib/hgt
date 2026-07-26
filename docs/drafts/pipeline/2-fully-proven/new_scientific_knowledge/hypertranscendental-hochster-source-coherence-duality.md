@@ -1,8 +1,8 @@
 # Hypertranscendental source coherence is the topology of the constraint boundary
 
 - **ID:** `hypertranscendental-hochster-source-coherence-duality`
-- **Stage:** 2-fully-proven / arbitrary finite discrete-family Lean bridge complete /
-  general finite-complex bridge and independent audit required
+- **Stage:** 2-fully-proven / general finite-complex Lean bridge complete (strand chain equivalence
+  at every Koszul degree) / independent audit and specialist review required
 - **Type:** THEOREM / DERIVED CONSTRAINT-TOPOLOGY REALIZATION / SELECTOR NO-GO
 - **Scientific status:** `[PAPER PROOF COMPLETE] [ANALYTIC INPUT FORMALIZED]`
   `[HOCHSTER PARENT THEOREM] [CROSS-CATEGORY NOVELTY PROVISIONAL] [NOT AN RH RESULT]`
@@ -290,7 +290,7 @@ equivalence for arbitrary finite complexes remains open, so this card stays in s
 - [x] Lean-formalize the reduced-`H^0` class for every finite discrete complex with at least two
   vertices
 - [x] Lean-formalize the full independent reduced-`H^0` family for every finite discrete complex
-- [ ] Lean-formalize the general finite-complex bridge
+- [x] Lean-formalize the general finite-complex bridge
 - [ ] independently audit localization and grading conventions
 - [ ] obtain specialist novelty and significance review
 - [ ] construct one active polarized analytic sheaf realization
@@ -2155,3 +2155,41 @@ cochain `g`.  That surjectivity is what would upgrade the correspondence to a li
 `Tor_{i,σ} ≅ H̃^{|σ|−i−1}(Δ_σ)` at every `i`; it is available at `Tor₁` and `Tor₂`, where the strand
 was parametrized directly (`srHollowSimplexSyzygyVec`, `strandTwo`).  The remaining step is the
 multigraded exhaustion, for which `StanleyReisnerMultigrading.srMk_homogeneous_eq` is the seed.
+
+### Lean progress — the strand map EXHAUSTS the multidegree part (gate closed)
+
+`HochsterMultidegreeExhaustion.lean` (axiom-clean, build green) closes the surjectivity gap recorded
+in the previous entry, completing the card's "general finite-complex bridge" gate.
+
+- `decidableIsFaceOfCoe` — being a face of a finite facet family is decidable (the defining
+  existential ranges over the facet `Finset`), so the face-guarded detectors are honest `dite`s rather
+  than classical choices.
+- `IsMultidegreeStrand` — the multidegree-`σ` condition: the tensor vanishes off injective tuples with
+  entries in `σ` and, on those, is a scalar multiple of the complementary squarefree monomial
+  `∏_{σ ∖ v[Fin p]} x`.  That monomial spans the degree-`(σ ∖ v[Fin p])` graded piece of the
+  Stanley–Reisner ring, which is free of rank one on it (`srFaceDetector_smul_prod`).
+- `strandTensor_isMultidegreeStrand` — the strand map lands in the multidegree-`σ` part.
+- `strandDetector`, `strandDetector_comp_perm`, `strandWeight`, `strandWeight_comp_perm`,
+  `strandCochain` — the cochain attached to a tensor: the `tupleCochain` of the weight
+  `tupleSign σ u · (face detector of b at u)`, a product of two families that each transform by the
+  permutation sign, hence invariant.
+- **`strandTensor_strandCochain`** — and it hits *everything*: every alternating multidegree-`σ`
+  tensor is the strand image of its own cochain.  The scalar at a tuple is recovered by the face
+  detector when the complement is a face, and is invisible when it is not, because the complementary
+  monomial then vanishes.
+- **`hochster_multidegree_strand_correspondence`** — consequently the correspondence holds for an
+  **arbitrary** alternating multidegree-`σ` tensor, not merely for those presented as strand images:
+  multidegree-`σ` Koszul cycles are exactly the reduced simplicial cocycles of `Δ_σ`, and
+  multidegree-`σ` Koszul boundaries exactly its coboundaries — in every Koszul degree, for every
+  finite complex, unconditionally and characteristic-freely.
+
+**Gate status.**  The card's Lean requirement — "construct the squarefree Koszul strands and their
+chain equivalence with reduced cochains of induced subcomplexes … followed by the general
+finite-complex equivalence" — is now met in full: the strand is characterized (`IsMultidegreeStrand`),
+the map onto it is an isomorphism of graded pieces (`strandTensor_isMultidegreeStrand` +
+`strandTensor_strandCochain`), it is a chain map in every degree (`koszulD_strandTensor`), and cycles
+and boundaries correspond exactly (`hochster_multidegree_strand_correspondence`).  Everything is built
+from scratch: mathlib has neither a Koszul complex nor a simplicial cochain complex.  The remaining
+open gates on this card are not Lean gates — independent audit of the localization/grading
+conventions, specialist novelty review, an active polarized analytic sheaf realization, and full
+faithfulness in a nontrivial HT class.
