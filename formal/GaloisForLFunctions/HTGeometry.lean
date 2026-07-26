@@ -2283,3 +2283,4 @@ import GaloisForLFunctions.HTGeometry.EllipticNormalFormConstant
 import GaloisForLFunctions.HTGeometry.EllipticHypertranscendenceFreeProof
 import GaloisForLFunctions.HTGeometry.MeromorphicFacetCodimension
 import GaloisForLFunctions.HTGeometry.AnalyticJetFieldBridge
+import GaloisForLFunctions.HTGeometry.MeromorphicFieldRealization

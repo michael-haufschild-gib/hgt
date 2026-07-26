@@ -1697,3 +1697,37 @@ The immediate consequence, and the piece `(C4)` consumes:
 All axiom-clean, `HTGeometry` umbrella registered.  What remains for `(C4)` is the meromorphic
 carrier: division by a differentially algebraic gauge, and the constant-multiplier two-shift law for
 a meromorphic (rather than entire) `g`.
+
+## Lean progress — realizing a translation-fixed meromorphic germ as a periodic function
+
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicFieldRealization.lean`.  Toward `(C4)` the plan is
+to prove, in the genuine global meromorphic differential field, that **every element of the elliptic
+field `ellipticMeroField tau` (the germs fixed by the translations `1` and `tau`) is differentially
+algebraic over `C(z)`**, and then to reach `(C4)` by the logarithmic-derivative route: a
+constant-multiplier `g` has translation-invariant `g'/g`, so `g'/g` is elliptic hence DA, and `g` is
+DA over `C(z)<g'/g>` by the order-one relation `y_1 - (g'/g) y_0 = 0`, hence DA over `C(z)` by
+differential transitivity; `f = g b` is then DA by `differentialAlgebraicOver_mul`.
+
+This module supplies the passage from the algebra to the analysis:
+
+- **`fraction_eventually_periodic_of_addTranslationMeroEquiv_fixed`** — if `sigma_q x = x` for
+  `x = a/b` in the meromorphic field, then for chosen entire representatives `A, B` the honest
+  function `A/B` satisfies `A(w+q)/B(w+q) = A(w)/B(w)` on a punctured neighbourhood of every point.
+  The algebraic identity cross-multiplies to an identity of entire germs — a genuine pointwise
+  identity — and the corpus's `analyticSubring_fraction_eventuallyEq_of_field_eq` divides back off
+  the isolated zeros of the denominator.  Uses `addTranslationAnalyticEquiv_rep`: the translated
+  germ is represented by the translated function.
+- **`periodic_toMeromorphicNFOn_of_eventually_punctured_meromorphic`** — punctured-local
+  periodicity makes the *canonical normal form* genuinely periodic, with **no analyticity
+  hypothesis**.  Where the normal form is regular the two sides agree by continuity plus the
+  punctured agreement; at a pole both sides are the normal-form value `0`, because meromorphic order
+  ignores the value at the centre (`meromorphicOrderAt_add_eq_of_eventually_periodic`) and so
+  transports along the period.  This strictly generalizes the corpus's entire-carrier version
+  `periodic_toMeromorphicNFOn_of_eventually_punctured` (`EllipticThetaLogComparisonRigidity`), which
+  can be collapsed into it later.
+
+Both axiom-clean, umbrella registered.  Still to build for the elliptic-field theorem: a disc on
+which the denominator does not vanish, the identification of the restricted germ with the analytic
+`A/B` there, and the descent of differential algebraicity along the injective restriction embedding
+(`hypertranscendentalOver_restrictMeroAlgHomRatFunc`, already an iff), combined with the new
+`AnalyticJetFieldBridge`.
