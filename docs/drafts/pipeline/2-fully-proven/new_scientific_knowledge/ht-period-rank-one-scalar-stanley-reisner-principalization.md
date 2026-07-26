@@ -924,3 +924,55 @@ Componentwise-channel stability `(21)`--`(23)` is formalized as a reduction rath
   verbatim;
 - **`channel_facetComplementRankOne_of_entire`** — for entire channels every facet omits at most one
   ambient vertex.  Vectorization supplies no extra analytic direction, exactly as the card asserts.
+
+## Lean progress — constant multipliers: `(24)`--`(26)` and their facet consequence
+
+`GaloisForLFunctions/HTGeometry/QuasiPeriodDifferentialAlgebraicity.lean` and
+`GaloisForLFunctions/HTGeometry/QuasiPeriodRealizationPrincipalization.lean` (axiom-clean, build
+green, umbrella-registered) formalize the scalar half of *Constant-multiplier and finite-state
+stability*, unconditionally for entire nowhere-vanishing carriers.
+
+The paper argument is `(25)`: the multipliers cancel in the logarithmic derivative, which therefore
+has both steps as *genuine* periods, so the period-rank rigidity already formalized applies to it.
+
+- `periodic_logDeriv_of_quasiperiodic` — `(25)`: `f(z+w) = a f(z)` with `a ≠ 0` makes
+  `logDeriv f = f'/f` genuinely `w`-periodic.  (`deriv f (z+w) = a * deriv f z` by differentiating
+  the quasi-period identity, then `mul_div_mul_left`.)
+- `differentiallyAlgebraic_of_deriv_eq_const_mul` — `(26)`: a constant logarithmic derivative *is*
+  an algebraic differential equation, namely the order-one relation `y_1 - c y_0 = 0`.
+- **`differentiallyAlgebraic_of_quasiperiods`** — the **HT quasi-period-rank law** for an entire
+  nowhere-vanishing `f`: for `Q`-independent steps, `logDeriv f` is entire and doubly periodic,
+  hence constant — by non-discreteness of the period group when the steps are `R`-dependent
+  (`meromorphicNF_constant_of_rankTwo_realDependent_periods`) and by Liouville on the lattice when
+  they are `R`-independent (`const_of_lattice_periodic_differentiable`) — so `f' = c f` and `f` is
+  DA.  Note this route needs **no** transitivity of differential algebraicity: the first-order
+  equation `(26)` is produced with a *constant* coefficient, not a merely DA one, so `f` satisfies
+  an algebraic differential equation outright.
+- `QuasiPeriodFacetRealization` — the constant-multiplier facet datum, with
+  `ScalarFacetRealization.toQuasiPeriod` exhibiting the invariant datum as the special case
+  "all multipliers `1`";
+- **`facetComplementRankOne_of_quasiPeriodRealization`** — `(33)` for `m = 1`: every facet still
+  omits at most one ambient vertex;
+- **`stanleyReisnerIdeal_principal_of_quasiPeriodRealization`** — and the capstone is unchanged: the
+  ideal is the principal squarefree `(prod_(u in U) X u)`.
+
+So a scalar constant internal multiplier, the simplest internal state a channel can carry, provably
+buys no new relation geometry.
+
+**What the entire-and-nowhere-vanishing hypothesis costs.**  It is exactly the same boundary as
+everywhere else on this card.  For a carrier with zeros or poles `logDeriv f` is meromorphic rather
+than entire, and the lattice branch then needs the elliptic structure theorem
+(`EllipticHypertranscendenceFree`) instead of Liouville.  The `R`-dependent branch is already
+unconditional for meromorphic normal forms.
+
+**Remaining on this card.**  The matrix case `(27)`--`(30)` (`GL_m` internal monodromy, Wronskian
+and monic-annihilator construction) and everything downstream of it — `(31)`--`(33)` for `m > 1`,
+the DA-gauge curvature law `(35)`--`(40)`, and `(C4)`.  Unlike the scalar case those genuinely need
+transitivity of differential algebraicity over a DA coefficient field.  The corpus already has that
+machinery in abstract differential-field form —
+`GaloisForLFunctions/HTGeometry/DifferentialAlgebraicFiniteTransitivity.lean`
+(`differentialAlgebraicOver_trans_fin_succ_narrow`, `differentialAlgebraicOver_mono`) over
+`DifferentialIndependent` / `DifferentialAlgebraicOver` from
+`HTGeometry/DifferentialIndependence.lean` — so the missing piece is a bridge from the function-level
+predicate `DifferentiallyAlgebraic (f : C -> C)` into that framework, not the transitivity theorem
+itself.
