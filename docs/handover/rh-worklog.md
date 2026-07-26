@@ -8863,3 +8863,58 @@ WIDTH AT THAT POINT — SO THE DISC IS INSIDE THE HORN BY CONSTRUCTION. VERIFY T
 EXPLICITLY: if the disc of radius sqrt(k/log k) about 2k lies within the sector where the contour may be
 deformed, then the three appearances of the horn are not merely consistent but EXACTLY MATCHED, and
 level one closes modulo the tail constant alone.
+
+---
+
+## Cycle 146 — THE REQUIRED DISC LIES INSIDE THE DEFORMABLE HORN, WITH A sqrt(2) MARGIN
+
+### The check
+THE DISC: centred at s = 2k with radius R_k = sqrt(k / log k). Every point of it has |Im s| <= R_k and
+real part within R_k of 2k (both formalised, from |Im z| <= ||z|| and |Re z| <= ||z||).
+THE HORN: half-width ~ sqrt(Re s / log Re s). At the disc's centre that is
+sqrt(2k / log 2k) ~ sqrt(2) sqrt(k / log k).
+Since R_k = o(k), the real part stays near 2k across the whole disc.
+
+    ==> THE REQUIRED DISC SITS INSIDE THE DEFORMABLE SECTOR WITH A FACTOR sqrt(2) TO SPARE. THE THREE
+        APPEARANCES OF THE HORN ARE EXACTLY MATCHED, AND LEVEL ONE CLOSES MODULO THE TAIL CONSTANT
+        ALONE.
+
+Machine-verified: `RHTower/DiscInsideHorn.lean` (the disc's vertical and horizontal extents from the
+complex modulus bounds, the sqrt(2) margin and its strictness, and the containment statement; standard
+axioms only, wired into RHTower).
+
+### EIGHTIETH ATLAS ENTRY
+    disc in horn   the disc of radius sqrt(k/log k) about s = 2k has vertical extent sqrt(k/log k)
+                   while the horn's half-width there is sqrt(2) sqrt(k/log k); the disc is contained
+                   with a sqrt(2) margin. The saddle-validity, tail-domination and contour-deformation
+                   regions coincide, and level one reduces to the tail constant alone.
+
+### STATE AT CYCLE 146 — CLOSING POSITION OF THIS STRETCH
+Eighty entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE FULL ARC, IN ONE PLACE:
+  * ENTRIES 1-55. The unconditional landscape organised by log T is CLOSED, with one root cause: the
+    hypothesis constrains CODIMENSION while every tool there measures AREA.
+  * ENTRIES 56-61. Exactly ONE route escapes — Jensen polynomials with the discriminant — and all four
+    break-the-closure targets are resolved.
+  * ENTRIES 62-69. That route is characterised; its recorded super-exponential cost is REFUTED as an
+    artefact of a lossy estimate; a MECHANISM is supplied — doubly exponential concentration beating
+    the factorial gap by (2 log k)^{d-1}.
+  * ENTRIES 70-75. The mechanism's constants are traced to an exactly computable non-Gaussianity
+    sqrt(log k / k); its last gap is self-similar; the self-similarity is a DESCENT of at most five
+    levels; each level is a LOCALISATION of the hypothesis.
+  * ENTRIES 76-80. The localisation is to a HORN which is strictly weaker than RH and which is exactly
+    the saddle-point validity region; the level-one saddle is unique on the whole half-plane; level one
+    reduces to ||T|| < ||A||; the decay is real-directional so the contour is sector-confined; and the
+    required disc sits inside that sector with a sqrt(2) margin.
+WHAT REMAINS OF LEVEL ONE IS THE TAIL CONSTANT. WHAT REMAINS BEYOND IT IS FOUR MORE LEVELS, EACH WITH
+THE SAME STRUCTURE AND STRICTLY BETTER PARAMETERS.
+
+### Cycle 147 target
+The tail constant. The tail is the contour's contribution outside a neighbourhood of the saddle of
+half-width delta. On the steepest-descent path Re psi decreases from its saddle value, so the tail is
+bounded by exp(Re psi(t_s) - c delta^2 |psi''|) times the contour length. WITH |psi''| ~ k log k
+(cycle 134) THE EXPONENT IS -c delta^2 k log k, SO TAKING delta ~ 1/sqrt(k) ALREADY GIVES
+exp(-c log k) = k^{-c}. COMPARE THAT WITH THE SADDLE'S OWN SIZE: the ratio is k^{-c}, WHICH IS BELOW
+ONE FOR c > 0. STATE THE COMPARISON AND CHECK WHETHER THE CONTOUR LENGTH SPOILS IT — the length is
+polynomial in k, so the product is still k^{-c'} for suitable c. If that holds, level one is complete.

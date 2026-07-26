@@ -27,19 +27,19 @@ def gammaDigammaZetaXiFiniteGibbsDressedSource
     GammaDigammaZetaXiSourceIndex → ℂ → ℂ
   | (false, false) =>
       Complex.Gamma +
-        GaloisForLFunctions.HTGeometry.finiteComplexGibbsPartition
+        HTGeometry.finiteComplexGibbsPartition
           (energy (false, false))
   | (false, true) =>
       Complex.digamma +
-        GaloisForLFunctions.HTGeometry.finiteComplexGibbsPartition
+        HTGeometry.finiteComplexGibbsPartition
           (energy (false, true))
   | (true, false) =>
       riemannZeta +
-        GaloisForLFunctions.HTGeometry.finiteComplexGibbsPartition
+        HTGeometry.finiteComplexGibbsPartition
           (energy (true, false))
   | (true, true) =>
       xi +
-        GaloisForLFunctions.HTGeometry.finiteComplexGibbsPartition
+        HTGeometry.finiteComplexGibbsPartition
           (energy (true, true))
 
 /-- Every member of the four-source finite-Gibbs family retains infinite
@@ -48,7 +48,7 @@ theorem gammaDigammaZetaXiFiniteGibbsDressedSource_differentiallyTranscendental
     {A : Type*} [Fintype A]
     (energy : GammaDigammaZetaXiSourceIndex → A → ℝ) :
     ∀ i,
-      GaloisForLFunctions.HTGeometry.ConstantCoefficientDifferentiallyTranscendental
+      HTGeometry.ConstantCoefficientDifferentiallyTranscendental
         (gammaDigammaZetaXiFiniteGibbsDressedSource energy i) := by
   rintro ⟨a, b⟩
   cases a <;> cases b
@@ -75,12 +75,12 @@ theorem gammaDigammaZetaXi_synchronizedReporterBlindnessUniversality
         (Module.finrank ℂ (GammaDigammaZetaXiSourceIndex → Y) + 1) → ℂ,
       (∃ j, c j ≠ 0) ∧
       ∀ i,
-        GaloisForLFunctions.HTGeometry.finiteDerivativeReporterPacket c
+        HTGeometry.finiteDerivativeReporterPacket c
             (gammaDigammaZetaXiFiniteGibbsDressedSource energy i) ≠ 0 ∧
           report i
-            (GaloisForLFunctions.HTGeometry.finiteDerivativeReporterPacket c
+            (HTGeometry.finiteDerivativeReporterPacket c
               (gammaDigammaZetaXiFiniteGibbsDressedSource energy i)) = 0 :=
-  GaloisForLFunctions.HTGeometry.exists_common_nonzero_finiteDerivativeReporterPacket_ker
+  HTGeometry.exists_common_nonzero_finiteDerivativeReporterPacket_ker
     (gammaDigammaZetaXiFiniteGibbsDressedSource energy)
     (gammaDigammaZetaXiFiniteGibbsDressedSource_differentiallyTranscendental energy)
     report
