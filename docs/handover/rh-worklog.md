@@ -8345,3 +8345,64 @@ tilt, and its modulus is bounded by the real-tilt variance at the real part time
 by the imaginary part times the third derivative. THAT PRODUCT IS EXACTLY sqrt(log k/k) TIMES R —
 so R ~ sqrt(k/log k) IS ADMISSIBLE, GIVING C_d ~ (d-2)! (log k/k)^{(d-2)/2}. COMPARE THAT WITH THE
 FACTORIAL GAP AND THE COMPARISON BECOMES EXACT.
+
+---
+
+## Cycle 137 (2026-07-26) — THE MECHANISM'S LAST GAP IS A SMALLER COPY OF THE ORIGINAL PROBLEM
+
+### The Cauchy-radius question: CIRCULAR
+K = log M with M(t) = int e^{tw} dmu, so bounding K'' on a complex disc requires a LOWER bound for |M|
+there — that is, A ZERO-FREE DISC FOR M.
+
+WHAT M IS: the Laplace transform of a positive measure. On the real axis it is strictly positive, so
+it has NO REAL ZEROS (formalised). Off the axis it is entire, of order one and minimal type for our
+doubly exponentially decaying mu, and BY HADAMARD SUCH A FUNCTION HAS ZEROS UNLESS IT IS A PURE
+EXPONENTIAL.
+
+    ==> THE LAST GAP ASKS FOR THE LOCATION OF THE ZEROS OF AN ENTIRE FUNCTION OF ORDER ONE — A
+        LAGUERRE-POLYA QUESTION OF EXACTLY THE SPECIES BEING SOLVED. THE MECHANISM'S REMAINING STEP IS
+        A SMALLER COPY OF THE ORIGINAL PROBLEM.
+
+That is why the mechanism, though CORRECT IN SHAPE and EXACT IN EVERY ALGEBRAIC STEP, does not close.
+It also fits the development's root cause (entry 52): locating zeros of an entire function is a
+CODIMENSION question, and no estimate of SIZE supplies it. THE SELF-SIMILARITY IS NOT A COINCIDENCE —
+it is entry 52 reappearing one level down.
+
+Machine-verified: `RHTower/LastGapIsSelfSimilar.lean` (strict positivity of a Laplace transform of
+positive weights at every real argument, hence no real zeros; the zero-free-or-locate dichotomy; and
+the identification of a modulus lower bound with a zero-free statement; standard axioms only, wired
+into RHTower).
+
+### SEVENTY-FIRST ATLAS ENTRY
+    self-similar gap   the Cauchy estimate needs |M| bounded below on a disc, i.e. M zero-free there;
+                       M is a Laplace transform of a positive measure, positive on the real axis,
+                       entire of order one, hence has zeros unless exponential. The remaining step is
+                       to locate zeros of an entire function — the same species as the original
+                       problem, and entry 52 one level down.
+
+### STATE AT CYCLE 137
+Seventy-one entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME'S HONEST TERMINAL POSITION, AFTER 137 CYCLES:
+  * The unconditional landscape organised by log T is closed, with one root cause: RH constrains
+    CODIMENSION while every available tool measures AREA (entry 52).
+  * Exactly one route escapes: Jensen polynomials with the discriminant. It is settled for all
+    d <= 9.36 x 10^20 with observed onsets zero, and its recorded super-exponential cost was REFUTED
+    as an artefact of a lossy estimate (entries 56-58 amended, 67).
+  * A MECHANISM for that route was found and every algebraic step machine-verified: doubly exponential
+    concentration beats the factorial gap by (2 log k)^{d-1}, with the tilted measure asymptotically
+    Gaussian to within sqrt(log k / k) (entries 66, 68-70).
+  * THE MECHANISM'S FINAL ESTIMATE REPRODUCES THE ORIGINAL PROBLEM AT A SMALLER SCALE (entry 71).
+  * Refutation remains finite and concrete in three equivalent forms and has never fired.
+
+### Cycle 138 target
+Entry 71 says the gap is self-similar. SELF-SIMILARITY IS ITSELF A STRUCTURE, and the standard way to
+exploit it is a FIXED-POINT or DESCENT argument: if solving the problem at scale s requires solving it
+at scale s' < s, either the descent terminates (and the base case is decidable) or it does not (and
+the self-similarity is an obstruction of a new kind). DETERMINE WHICH. Concretely: the smaller copy is
+"locate the zeros of the Laplace transform M of the tilted measure". IS THAT PROBLEM EASIER THAN THE
+ORIGINAL? M's measure is EXPLICIT, LOG-CONCAVE, AND COMPACTLY CONTROLLED, whereas zeta's is not — so
+the descent may strictly simplify. IF EACH DESCENT STEP STRICTLY SIMPLIFIES THE MEASURE, THE DESCENT
+TERMINATES AND THE ROUTE CLOSES. Test whether the tilted measure of a log-concave measure is again
+log-concave with a better parameter — Prekopa-Leindler says log-concavity is preserved, and the
+convexity parameter IMPROVES under tilting toward the mode.

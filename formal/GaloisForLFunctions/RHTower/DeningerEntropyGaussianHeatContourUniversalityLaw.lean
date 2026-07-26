@@ -86,7 +86,8 @@ theorem deningerEntropy_gaussianHeatContourUniversality
       oneCauchyGate := hcauchy
       riemannHypothesis := hRH
       wholeCorpusPositivePhase :=
-        fun hLrect hN heta hwindow P hP hD hdegreeSet prime hq =>
+        fun {Lrect} hLrect {N} hN {eta Lsmooth} heta hwindow P hP
+            {D} hD {degreeSet} hdegreeSet prime {q} hq =>
           (riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
             hLrect hN heta hwindow P hP hD hdegreeSet prime hq).mp hRH
       gaussianHeatContours := fun hτ hepsilon =>

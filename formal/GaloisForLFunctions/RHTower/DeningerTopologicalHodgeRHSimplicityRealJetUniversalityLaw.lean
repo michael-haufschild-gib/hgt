@@ -82,7 +82,8 @@ theorem deningerTopologicalHodge_rhSimplicityRealJetUniversality
         riemannHypothesis_and_xiZerosSimple_iff_hendenmalmUniversalCertificate.mp
           ⟨hRH, hsimple⟩
       wholeCorpusPositivePhase :=
-        fun hLrect hN heta hwindow P hP hD hdegreeSet prime hq =>
+        fun {Lrect} hLrect {N} hN {eta Lsmooth} heta hwindow P hP
+            {D} hD {degreeSet} hdegreeSet prime {q} hq =>
           (riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
             hLrect hN heta hwindow P hP hD hdegreeSet prime hq).mp hRH
       compactOpenRealInvolutive := hgraded.2.2.1
