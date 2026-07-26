@@ -2073,3 +2073,4 @@ import GaloisForLFunctions.HTGeometry.UnitProductRigidity
 import GaloisForLFunctions.HTGeometry.MultiplicationTableThinness
 import GaloisForLFunctions.HTGeometry.SmoothMultiplicativeDichotomy
 import GaloisForLFunctions.HTGeometry.TrudgianYangMomentPricing
+import GaloisForLFunctions.HTGeometry.LogFrequencySeparation

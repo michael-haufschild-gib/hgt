@@ -136,4 +136,56 @@ theorem decrements_shrink :
 theorem gapAt15_bracket : (6:ℚ)/1000 < gapAt15 ∧ gapAt15 < 7/1000 := by
   constructor <;> (unfold gapAt15 tyM15; norm_num)
 
+
+/-!
+### What decay rate would be needed, and what is observed
+
+For a geometric tail with ratio `r`, the remaining decrease after a decrement `d` is `d·r/(1-r)`.  The
+gap at `A = 15` is `g`, so the trend reaches the record exactly when
+
+    d·r/(1-r) ≥ g   ⟺   r ≥ g/(g+d) .
+
+With `g = 0.0061515` and `d = 0.0013723` this is `r ≥ 0.81766…`.  The observed ratios are
+`0.7434` and `0.7345` — **below the requirement, and decreasing.**
+
+The same computation on the *absolute* gaps `M(A) - 13A/84` gives `g = 0.092271`, `d = 0.013062`,
+requiring `r ≥ 0.87603…` against observed `0.8074` and `0.7793` — again below, again decreasing.
+
+**Both formulations agree: the published trend is not merely short of the record, it is moving away
+from the decay rate that would reach it.**
+-/
+
+/-- The decay ratio a geometric tail needs to close a gap `g` given a last decrement `d`. -/
+def requiredRatio (g d : ℚ) : ℚ := g / (g + d)
+
+/-- The requirement for the ratio sequence, from the recorded values. -/
+def requiredRatioRatios : ℚ := requiredRatio (61515/10000000) (13723/10000000)
+
+/-- **The required ratio exceeds `0.81`.** -/
+theorem requiredRatioRatios_gt : (81:ℚ)/100 < requiredRatioRatios := by
+  unfold requiredRatioRatios requiredRatio; norm_num
+
+/-- **And is below `0.82`.** -/
+theorem requiredRatioRatios_lt : requiredRatioRatios < 82/100 := by
+  unfold requiredRatioRatios requiredRatio; norm_num
+
+/-- The two observed ratios, as rationals. -/
+def observedRatio1 : ℚ := 7434/10000
+def observedRatio2 : ℚ := 7345/10000
+
+/-- **Both observed ratios fall short of the requirement.** -/
+theorem observed_below_required :
+    observedRatio1 < requiredRatioRatios ∧ observedRatio2 < requiredRatioRatios := by
+  constructor
+  · unfold observedRatio1 requiredRatioRatios requiredRatio; norm_num
+  · unfold observedRatio2 requiredRatioRatios requiredRatio; norm_num
+
+/-- **And the observed ratios are decreasing — moving away from the requirement.** -/
+theorem observed_decreasing : observedRatio2 < observedRatio1 := by
+  unfold observedRatio1 observedRatio2; norm_num
+
+/-- The shortfall in the decay rate. -/
+theorem ratio_shortfall : (7:ℚ)/100 < requiredRatioRatios - observedRatio2 := by
+  unfold requiredRatioRatios requiredRatio observedRatio2; norm_num
+
 end HTGeometry

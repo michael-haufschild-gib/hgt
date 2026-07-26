@@ -6050,3 +6050,71 @@ formula; if the zeros were off the line, their contribution would have to conspi
 phases, and independence forbids conspiracy. TEST WHETHER AN OFF-LINE ZERO IMPOSES A LINEAR RELATION
 AMONG THE PRIME LOGARITHMS — if it does, independence excludes it, and that is a proof. This is the
 first candidate mechanism in which the separating ingredient acts in the right direction.
+
+---
+
+## Cycle 101 (2026-07-26) — WHERE INDEPENDENCE ACTS IN THE FAVOURABLE DIRECTION: SELF-RECURRENCE
+
+### Phase 4 verdict on cycle 100's conjecture: FALSE
+Conjecture: an off-line zero imposes a Q-linear relation among the prime logarithms, so independence
+would exclude it. FALSE. A zero is a location in the plane; nothing transports it into an ADDITIVE
+relation among log p, and the growth it forces on psi(x) - x is an OMEGA-RESULT, not a contradiction
+(Landau). Independence cannot exclude off-line zeros directly. DEAD END; do not re-attempt.
+
+### Phase 1: the lane is genuinely new to the corpus
+`rg` for Bagchi / Voronin / universality / strong recurrence: the corpus's "...UniversalityLaw" files
+use "universality" in an unrelated internal sense. NO Voronin universality, NO Bagchi criterion, NO
+strong recurrence anywhere in the development. This is the first genuinely untouched lane since
+cycle 88.
+
+### THE FAVOURABLE DIRECTION
+Independence gives equidistribution of the phases (t log p)_p, hence approximation of prescribed
+values by translates zeta(s + i tau) — universality. Universality approximates every NON-VANISHING
+analytic function on a compact set in the strip 1/2 < sigma < 1. WHETHER ZETA ITSELF IS AMONG THEM IS
+EXACTLY WHETHER ZETA IS NON-VANISHING THERE.
+
+    ==> INDEPENDENCE SUPPLIES THE APPROXIMATION; THE HYPOTHESIS IS THE STATEMENT THAT ZETA MAY
+        APPROXIMATE ITSELF. THIS IS THE ONE PLACE WHERE THE SEPARATING INGREDIENT ENTERS WITH THE
+        SIGN THAT HELPS.
+
+### The mechanism is a counting contradiction
+Suppose zeta had a zero inside a disc K in the strip, and translates zeta(. + i tau) approximated
+zeta on K to within min_{boundary K} |zeta| for a set of tau of POSITIVE DENSITY. Each such translate
+then has a zero in K by sphere domination (corpus: `exists_zero_of_sphere_domination`), so the zeros
+of zeta in that vertical strip have POSITIVE DENSITY IN T — while the zero count in any strip
+sigma > 1/2 + delta is SUBLINEAR. The two are incompatible.
+
+    ==> SELF-RECURRENCE OF ZETA ON A COMPACT SET OF THE STRIP IS INCOMPATIBLE WITH A ZERO THERE.
+
+This is the classical Bagchi mechanism, absent from this corpus, and it is the FIRST criterion in the
+atlas that PASSES THE WITNESS TEST (entry 32) AND uses the separating ingredient FAVOURABLY. The
+counterexample witnesses have no Euler product, hence no equidistribution, hence no universality, so
+they do not satisfy the recurrence hypothesis — the test is passed for the right reason.
+
+Machine-verified: `RHTower/RecurrenceZeroDensity.lean` (the counting contradiction between a positive
+density of zeros and a sublinear count, its universally quantified form, the transfer of a zero to a
+nearby function via the corpus's sphere-domination principle, and the implication chain; standard
+axioms only, wired into RHTower).
+
+### THIRTY-FIFTH ATLAS ENTRY
+    recurrence lane   independence => equidistribution => universality => approximation of
+                      non-vanishing functions; RH is the statement that zeta is among them. A zero in
+                      the strip plus positive-density self-recurrence gives positive density of zeros,
+                      contradicting the sublinear count. FIRST lane using the separating ingredient
+                      with the favourable sign, and the first to pass the witness test for the right
+                      reason.
+
+### STATE AT CYCLE 101
+Thirty-five entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 102 target
+The recurrence lane's content is now: prove that zeta is strongly recurrent, i.e. that the set of tau
+with max_K |zeta(s + i tau) - zeta(s)| < eps has positive lower density. Voronin gives this for every
+non-vanishing target; the obstruction is that zeta itself is the target and its non-vanishing is the
+conclusion. SO THE LANE IS CIRCULAR AS STATED — like every other. BUT: Voronin's proof gives more than
+the statement. It shows the LIMIT MEASURE of the random Dirichlet series zeta(s, omega) over the
+torus, and the support of that measure is the set of non-vanishing analytic functions. THE SHARP
+QUESTION IS WHETHER ZETA LIES IN THE SUPPORT OF ITS OWN LIMIT MEASURE — a measure-theoretic statement
+about a concrete random object, not about zeta's zeros. TEST WHETHER THE SUPPORT CONDITION CAN BE
+DECIDED FROM THE MOMENTS OF THE LIMIT MEASURE, which are computable Euler products. If the moments
+determine membership in the support, the circularity is broken, because moments are unconditional.
