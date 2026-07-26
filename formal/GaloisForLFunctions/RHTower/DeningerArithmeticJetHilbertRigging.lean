@@ -62,11 +62,24 @@ theorem deningerArithmeticJetTestToCompact_apply
       a.sum fun idx c =>
         c * deningerCompactOpenH1Jet idx.1 idx.2 x := by
   classical
-  rw [deningerArithmeticJetTestToCompact,
-    Finsupp.lsum_apply]
-  rw [Finsupp.sum_apply]
-  simp only [LinearMap.toSpanSingleton_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul]
+  induction a using Finsupp.induction with
+  | zero =>
+      simp
+  | single_add idx c a hidx _hc ih =>
+      have hadd :
+          ((Finsupp.single idx c + a).sum fun j d =>
+              d * deningerCompactOpenH1Jet j.1 j.2 x) =
+            (Finsupp.single idx c).sum (fun j d =>
+              d * deningerCompactOpenH1Jet j.1 j.2 x) +
+            a.sum (fun j d =>
+              d * deningerCompactOpenH1Jet j.1 j.2 x) :=
+        Finsupp.sum_add_index'
+          (fun _ => by simp)
+          (fun _ _ _ => by ring)
+      rw [map_add, deningerArithmeticJetTestToCompact_single,
+        ContinuousLinearMap.add_apply,
+        ContinuousLinearMap.smul_apply, ih, hadd]
+      simp
 
 /-- One product basis vector, written using the flattened jet-coordinate index. -/
 def deningerArithmeticJetCoordinateBasis
@@ -99,7 +112,7 @@ theorem deningerCompactOpenH1Jet_jetCoordinateBasis
       have hkl : k ≠ l := by
         intro h
         apply hij
-        exact Sigma.ext rfl (by simpa [h])
+        exact Sigma.ext rfl (by simp [h])
       simp [deningerArithmeticJetCoordinateBasis,
         deningerArithmeticJetBasisVector, piBasisVector,
         hij, hkl]
@@ -124,10 +137,11 @@ theorem deningerArithmeticJetTestToCompact_basis
       (fun (_ : DeningerArithmeticJetCoordinate) (c : ℂ) => c)
   simp only [mul_ite, mul_one, mul_zero] at *
   by_cases hidx : idx ∈ a.support
-  · simpa [hidx] using hsum
-  · have ha : a idx = 0 :=
-      by simpa [Finsupp.mem_support_iff] using hidx
-    simpa [hidx, ha] using hsum
+  · rw [hsum, if_pos hidx]
+  · have ha : a idx = 0 := by
+      by_contra hne
+      exact hidx (Finsupp.mem_support_iff.mpr hne)
+    rw [hsum, if_neg hidx, ha]
 
 /-- Distinct finite jet families define distinct continuous compact-support classes. -/
 theorem deningerArithmeticJetTestToCompact_injective :

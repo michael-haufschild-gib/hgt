@@ -192,7 +192,7 @@ theorem integral_bourgainA6PhysicalBlockProduct_first_centered
     (periodic_bourgainA6PhysicalBlockProduct_first
       N M q₁ q₂ hN c₁ c₂ x₂ x₃ x₄).intervalIntegral_add_eq
         (-(N : ℝ) / 2) 0
-  convert hp using 1 <;> ring
+  convert hp using 1 <;> ring_nf
 
 /-- A full physical quadratic period may be centered without changing the
 bilinear moment. -/
@@ -214,7 +214,7 @@ theorem integral_bourgainA6PhysicalBlockProduct_second_centered
     (periodic_bourgainA6PhysicalBlockProduct_second
       N M q₁ q₂ hN c₁ c₂ x₁ x₃ x₄).intervalIntegral_add_eq
         (-((N : ℝ) ^ (2 : ℕ)) / 2) 0
-  convert hp using 1 <;> ring
+  convert hp using 1 <;> ring_nf
 
 /-- Exact simultaneous centering of the two periodic physical coordinates. -/
 theorem integral_bourgainA6PhysicalBlockProduct_two_periods_centered
@@ -249,8 +249,11 @@ theorem integral_bourgainA6PhysicalBlockProduct_two_periods_centered
       N M q₁ q₂ hN c₁ c₂ x₁ x₃ x₄ x₂
   have hp := hperiod.intervalIntegral_add_eq
     (-((N : ℝ) ^ (2 : ℕ)) / 2) 0
-  simpa only [F] using (by
-    convert hp using 1 <;> ring)
+  change
+    (∫ x₂ in (-((N : ℝ) ^ (2 : ℕ)) / 2)..
+        (((N : ℝ) ^ (2 : ℕ)) / 2), F x₂) =
+      ∫ x₂ in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)), F x₂
+  convert hp using 1 <;> ring_nf
 
 end
 

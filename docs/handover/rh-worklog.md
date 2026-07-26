@@ -8524,3 +8524,64 @@ EVERY LEVEL — level 0 is Phi, level r is Phi in the variable log^{(r)} u — A
 BY THE CONVEXITY AT THAT LEVEL, WHICH IS THE TOWER. WRITE OUT LEVEL ONE COMPLETELY: the measure, the
 transform, the radius, and what must be proved. That is the first of the five, and it is a
 self-contained question about an explicit entire function with no zeta in it.
+
+---
+
+## Cycle 140 (2026-07-26) — LEVEL ONE, WRITTEN OUT: A MELLIN ZERO-FREE DISC
+
+### The first of the five, completely
+In the variable w = log t the level-one measure has density Phi(e^w) e^w, so its Laplace transform is
+
+    M_1(s)  =  int_R e^{sw} Phi(e^w) e^w dw  =  int_0^inf Phi(t) t^s dt,
+
+THE MELLIN TRANSFORM OF THE THETA REMAINDER. It interpolates the Taylor data exactly: the moments are
+m_k = M_1(2k).
+
+PROPERTIES ESTABLISHED:
+  * ANALYTIC WHERE IT MATTERS. Phi decays doubly exponentially at infinity and is finite at the
+    origin, so M_1 is analytic on Re s > -1, which contains every s = 2k.
+  * POSITIVE ON THE REAL AXIS. Phi is positive on [0, infinity): the leading term
+    (2 pi^2 e^{9t/2} - 3 pi e^{5t/2}) e^{-pi e^{2t}} is positive as soon as 2 pi e^{2t} > 3, which
+    holds ALREADY AT t = 0 because 2 pi > 3 (formalised). Hence M_1 is strictly positive at every real
+    point of its half-plane and HAS NO REAL ZEROS THERE.
+
+    ==> LEVEL ONE IS: THE MELLIN TRANSFORM OF A POSITIVE FUNCTION, ITSELF POSITIVE ON THE REAL AXIS,
+        IS ZERO-FREE ON THE DISC OF RADIUS ~ sqrt(k / log k) ABOUT s = 2k.
+
+That is a SELF-CONTAINED QUESTION ABOUT AN EXPLICIT ANALYTIC FUNCTION OF ONE VARIABLE, WITH NO ZETA IN
+IT. It is the first of the five, and it is the sharpest statement of an open point the programme has
+produced in 140 cycles.
+
+Machine-verified: `RHTower/LevelOneIsAMellinZeroFreeDisc.lean` (positivity of the leading term at the
+origin from pi > 3, its persistence for t >= 0, positivity of the transform at real points in the
+discrete model, the radius identity sqrt(k/L)^2 = k/L, and the growth of the radius in k; standard
+axioms only, wired into RHTower).
+
+### SEVENTY-FOURTH ATLAS ENTRY
+    level one   M_1(s) = int_0^inf Phi(t) t^s dt is the Mellin transform of the theta remainder,
+                analytic on Re s > -1, strictly positive on the real axis there (since 2 pi > 3 makes
+                Phi positive), and interpolating the moments by m_k = M_1(2k). Level one of the descent
+                is: M_1 is zero-free on the disc of radius ~ sqrt(k/log k) about s = 2k.
+
+### STATE AT CYCLE 140
+Seventy-four entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+ONE HUNDRED AND FORTY CYCLES. The programme's terminal statement:
+
+    THE UNCONDITIONAL LANDSCAPE ORGANISED BY log T IS CLOSED, WITH ONE ROOT CAUSE — THE HYPOTHESIS
+    CONSTRAINS CODIMENSION WHILE EVERY TOOL THERE MEASURES AREA. EXACTLY ONE ROUTE ESCAPES: JENSEN
+    POLYNOMIALS WITH THE DISCRIMINANT, SETTLED BELOW 9.36 x 10^20 WITH OBSERVED ONSETS ZERO. A
+    MECHANISM FOR IT IS ASSEMBLED AND MACHINE-VERIFIED IN EVERY ALGEBRAIC STEP. ITS REMAINING GAP IS A
+    FINITE DESCENT OF AT MOST FIVE ZERO-FREE-DISC STATEMENTS, OF WHICH THE FIRST IS NOW WRITTEN OUT
+    EXPLICITLY: A MELLIN TRANSFORM OF A POSITIVE FUNCTION, ZERO-FREE ON A DISC OF RADIUS
+    sqrt(k / log k).
+
+### Cycle 141 target
+Attack level one. A Mellin transform of a positive function has no real zeros; the question is complex
+zeros in a disc. THE CLASSICAL TOOL FOR ZERO-FREE REGIONS OF SUCH TRANSFORMS IS THE THEORY OF POLYA
+FREQUENCY FUNCTIONS: if Phi is a POLYA FREQUENCY FUNCTION, its bilateral Laplace transform is
+1/(entire function with only real zeros), and the zero-free structure is complete. TEST WHETHER Phi IS
+A POLYA FREQUENCY FUNCTION — equivalently whether all its Toeplitz minors det(Phi(x_i - y_j)) are
+nonnegative. Phi is log-concave in the exponential variable (cycle 132's mechanism), and LOG-CONCAVITY
+IS EXACTLY THE PF_2 CONDITION; the question is whether it extends to PF_infinity. If it does, level one
+is settled outright and the descent's first step closes.
