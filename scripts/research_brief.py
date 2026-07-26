@@ -62,12 +62,24 @@ class Reduction:
 
 
 @dataclasses.dataclass(frozen=True)
+class InterfaceSolverMetadata:
+    interfaces_checked: int
+    interfaces_proven: int
+    max_depth: int
+    max_candidates_per_goal: int
+    max_attempts_per_interface: int
+    max_heartbeats_per_attempt: int
+    producer_count: int
+
+
+@dataclasses.dataclass(frozen=True)
 class LeanFrontierExport:
     schema_version: int
     area: str
     target: PropositionRef
     reductions: tuple[Reduction, ...]
     commit: str = ""
+    interface_solver: InterfaceSolverMetadata | None = None
 
 
 @dataclasses.dataclass(frozen=True)
@@ -183,6 +195,12 @@ def _parse_props(value: object, field: str) -> tuple[PropositionRef, ...]:
     return tuple(_parse_prop(item, f"{field}[{index}]") for index, item in enumerate(value))
 
 
+def _nonnegative_int(value: object, field: str) -> int:
+    if not isinstance(value, int) or value < 0:
+        raise ValueError(f"{field} must be a nonnegative integer")
+    return value
+
+
 def parse_lean_frontier_export(payload: str | Mapping[str, object]) -> LeanFrontierExport:
     try:
         raw = json.loads(payload) if isinstance(payload, str) else payload
@@ -199,6 +217,36 @@ def parse_lean_frontier_export(payload: str | Mapping[str, object]) -> LeanFront
     raw_reductions = data.get("reductions")
     if not isinstance(raw_reductions, list):
         raise ValueError("reductions must be an array")
+    raw_solver = data.get("interface_solver")
+    solver = None
+    if raw_solver is not None:
+        solver_data = _require_mapping(raw_solver, "interface_solver")
+        solver = InterfaceSolverMetadata(
+            interfaces_checked=_nonnegative_int(
+                solver_data.get("interfaces_checked"), "interface_solver.interfaces_checked"
+            ),
+            interfaces_proven=_nonnegative_int(
+                solver_data.get("interfaces_proven"), "interface_solver.interfaces_proven"
+            ),
+            max_depth=_nonnegative_int(
+                solver_data.get("max_depth"), "interface_solver.max_depth"
+            ),
+            max_candidates_per_goal=_nonnegative_int(
+                solver_data.get("max_candidates_per_goal"),
+                "interface_solver.max_candidates_per_goal",
+            ),
+            max_attempts_per_interface=_nonnegative_int(
+                solver_data.get("max_attempts_per_interface"),
+                "interface_solver.max_attempts_per_interface",
+            ),
+            max_heartbeats_per_attempt=_nonnegative_int(
+                solver_data.get("max_heartbeats_per_attempt", 0),
+                "interface_solver.max_heartbeats_per_attempt",
+            ),
+            producer_count=_nonnegative_int(
+                solver_data.get("producer_count"), "interface_solver.producer_count"
+            ),
+        )
 
     reductions: list[Reduction] = []
     seen: set[str] = set()
@@ -269,6 +317,7 @@ def parse_lean_frontier_export(payload: str | Mapping[str, object]) -> LeanFront
         target=target,
         reductions=tuple(reductions),
         commit=_require_string(data.get("commit", ""), "commit", allow_empty=True),
+        interface_solver=solver,
     )
 
 
@@ -307,6 +356,8 @@ def render_lean_frontier_export_json(export: LeanFrontierExport) -> str:
             for reduction in export.reductions
         ],
     }
+    if export.interface_solver is not None:
+        payload["interface_solver"] = dataclasses.asdict(export.interface_solver)
     return json.dumps(payload, separators=(",", ":"), sort_keys=True) + "\n"
 
 
@@ -325,6 +376,16 @@ def _compiled_module_declarations(ilean_path: str) -> tuple[str, ...]:
     if not isinstance(declarations, Mapping):
         return ()
     return tuple(sorted(name for name in declarations if isinstance(name, str)))
+
+
+@functools.lru_cache(maxsize=None)
+def _compiled_module_declarations_by_suffix(
+    ilean_path: str,
+) -> Mapping[str, tuple[str, ...]]:
+    buckets: dict[str, list[str]] = {}
+    for name in _compiled_module_declarations(ilean_path):
+        buckets.setdefault(name.rsplit(".", 1)[-1], []).append(name)
+    return {suffix: tuple(names) for suffix, names in buckets.items()}
 
 
 def _compiled_names_for_declaration(
@@ -348,19 +409,23 @@ def _compiled_names_for_declaration(
     suffix = "." + raw_name
     return tuple(
         name
-        for name in _compiled_module_declarations(str(ilean))
+        for name in _compiled_module_declarations_by_suffix(str(ilean)).get(
+            raw_name.rsplit(".", 1)[-1], ()
+        )
         if name == raw_name or name.endswith(suffix)
     )
 
 
-def frontier_export_candidates(
+def frontier_export_inputs(
     root: Path, declarations: Sequence[object]
-) -> tuple[str, ...]:
-    """Cheap source prefilter; compiled Lean types remain authoritative.
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """Bound candidate and producer names before invoking Lean.
 
-    Only theorem signatures mentioning a corpus-declared `Prop` interface can
-    form the graph used here.  False positives are harmless because exporter
-    validates and structurally classifies every candidate in Lean.
+    Candidates are the named-`Prop` component containing
+    `RiemannHypothesis`. Producers include every theorem mentioning any
+    corpus-declared named `Prop`, so definitionally equal aliases outside that
+    lexical component remain available. False positives are harmless because
+    the exporter validates every name and type in Lean.
     """
 
     grouped: dict[str, list[object]] = {}
@@ -428,11 +493,25 @@ def frontier_export_candidates(
             seen_theorems.add(index)
             pending.extend(theorem_refs[index][1] - seen_props)
 
-    qualified: set[str] = set()
-    for index in seen_theorems:
-        declaration = theorem_refs[index][0]
-        qualified.update(_compiled_names_for_declaration(root, declaration))
-    return tuple(sorted(qualified))
+    def compiled_names(indices: Iterable[int]) -> tuple[str, ...]:
+        qualified: set[str] = set()
+        for index in indices:
+            declaration = theorem_refs[index][0]
+            qualified.update(_compiled_names_for_declaration(root, declaration))
+        return tuple(sorted(qualified))
+
+    candidates = compiled_names(seen_theorems)
+    producers = compiled_names(range(len(theorem_refs)))
+    return candidates, producers
+
+
+def frontier_export_candidates(
+    root: Path, declarations: Sequence[object]
+) -> tuple[str, ...]:
+    """Return the RH-connected declaration candidates from source signatures."""
+
+    candidates, _ = frontier_export_inputs(root, declarations)
+    return candidates
 
 
 def corpus_theorem_candidates(
@@ -452,6 +531,23 @@ def corpus_theorem_candidates(
             continue
         qualified.update(_compiled_names_for_declaration(root, declaration))
     return tuple(sorted(qualified))
+
+
+def write_frontier_export_request(
+    directory: Path,
+    theorem_names: Sequence[str],
+    producer_names: Sequence[str],
+) -> str:
+    """Write large name sets out-of-band and return constant-size Lean syntax."""
+
+    candidate_path = directory / "candidate-names.txt"
+    producer_path = directory / "producer-names.txt"
+    candidate_path.write_text("\n".join(theorem_names) + "\n", encoding="utf-8")
+    producer_path.write_text("\n".join(producer_names) + "\n", encoding="utf-8")
+    return (
+        "\n#export_research_frontier_from_files "
+        f"{json.dumps(str(candidate_path))} {json.dumps(str(producer_path))}\n"
+    )
 
 
 def _edges(export: LeanFrontierExport) -> tuple[tuple[_Edge, ...], tuple[str, ...], tuple[str, ...]]:
@@ -1041,28 +1137,24 @@ def run_lean_frontier_export(
     )
     if not refresh and cache.exists() and cache.stat().st_mtime >= newest_input:
         return load_lean_frontier_export(cache)
-    theorem_names = frontier_export_candidates(root, declarations)
+    theorem_names, producer_names = frontier_export_inputs(root, declarations)
     if not theorem_names:
         raise ValueError("Lean frontier export received no corpus theorem declarations")
-    producer_names = corpus_theorem_candidates(declarations, root=root)
     if not producer_names:
         raise ValueError("Lean frontier export received no compiled producer declarations")
-    command = (
-        "\n#export_research_frontier_with_producers [\n"
-        + ",\n".join(f"  {json.dumps(name)}" for name in theorem_names)
-        + "\n] using [\n"
-        + ",\n".join(f"  {json.dumps(name)}" for name in producer_names)
-        + "\n]\n"
-    )
     template = exporter.read_text(encoding="utf-8")
     project_import = "import GaloisForLFunctions\n"
     if project_import not in template:
         raise ValueError("Lean frontier exporter is missing project import marker")
-    generated_source = template + command
     with tempfile.TemporaryDirectory(prefix="hgt-frontier-") as temporary:
-        generated = Path(temporary) / "ExportResearchFrontier.lean"
+        temporary_path = Path(temporary)
+        command = write_frontier_export_request(
+            temporary_path, theorem_names, producer_names
+        )
+        generated_source = template + command
+        generated = temporary_path / "ExportResearchFrontier.lean"
         generated.write_text(generated_source, encoding="utf-8")
-        timeout_seconds = int(os.environ.get("HGT_FRONTIER_TIMEOUT_SECONDS", "600"))
+        timeout_seconds = int(os.environ.get("HGT_FRONTIER_TIMEOUT_SECONDS", "120"))
         try:
             process = subprocess.run(
                 ["lake", "env", "lean", str(generated)],
@@ -1096,6 +1188,26 @@ def run_lean_frontier_export(
     if payload is None:
         raise ValueError("Lean frontier exporter produced no graph payload")
     export = parse_lean_frontier_export(payload)
+    refuted_interfaces = {
+        conclusion.key
+        for reduction in export.reductions
+        if reduction.relation == "refutation"
+        for conclusion in reduction.conclusions
+    }
+    if refuted_interfaces:
+        export = dataclasses.replace(
+            export,
+            reductions=tuple(
+                dataclasses.replace(reduction, status="retired")
+                if reduction.relation != "refutation"
+                and any(
+                    premise.key in refuted_interfaces
+                    for premise in reduction.premises
+                )
+                else reduction
+                for reduction in export.reductions
+            ),
+        )
     source_index = {
         (str(getattr(declaration, "module", "")), str(getattr(declaration, "name", ""))): declaration
         for declaration in declarations

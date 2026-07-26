@@ -14,6 +14,7 @@ from research_brief import (  # noqa: E402
     Reduction,
     compute_frontier,
     parse_lean_frontier_export,
+    render_lean_frontier_export_json,
     render_research_brief,
 )
 
@@ -164,6 +165,35 @@ class LeanResearchFrontierTests(unittest.TestCase):
     def test_json_parser_rejects_unknown_schema(self) -> None:
         with self.assertRaisesRegex(ValueError, "schema_version"):
             parse_lean_frontier_export(json.dumps({"schema_version": 99}))
+
+    def test_export_cache_round_trips_interface_solver_metadata(self) -> None:
+        metadata = {
+            "interfaces_checked": 12,
+            "interfaces_proven": 3,
+            "max_depth": 3,
+            "max_candidates_per_goal": 512,
+            "max_attempts_per_interface": 20,
+            "max_heartbeats_per_attempt": 500,
+            "producer_count": 97,
+        }
+        payload = {
+            "schema_version": 1,
+            "area": "rh",
+            "commit": "",
+            "target": {
+                "key": RH.key,
+                "expression": RH.expression,
+                "declaration": RH.declaration,
+            },
+            "reductions": [],
+            "interface_solver": metadata,
+        }
+
+        rendered = json.loads(
+            render_lean_frontier_export_json(parse_lean_frontier_export(payload))
+        )
+
+        self.assertEqual(rendered.get("interface_solver"), metadata)
 
     def test_rendered_brief_cites_only_lean_declarations(self) -> None:
         wall = prop("RHTower.TypedWall")

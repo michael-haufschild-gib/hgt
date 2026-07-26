@@ -51,8 +51,19 @@ class LeanFrontierExporterIntegrationTests(unittest.TestCase):
 
         brief = compute_frontier(export, limit=256)
         frontier = {node.key for node in brief.frontier}
-        self.assertIn("RHTower.ConnesXiGroundStateLimitWall", frontier)
-        self.assertIn("RHTower.MobiusDiscreteLaplaceHalfDecay", frontier)
+        equivalent = set(brief.equivalent_criteria)
+        self.assertIn("RHTower.ConnesXiGroundStateLimitWall", equivalent)
+        self.assertNotIn("RHTower.ConnesXiGroundStateLimitWall", frontier)
+        self.assertTrue(
+            any(
+                key.startswith(
+                    "RHTower.MobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound"
+                )
+                for key in frontier
+            )
+        )
+        self.assertNotIn("RHTower.MobiusDiscreteLaplaceHalfDecay", frontier)
+        self.assertIn("RHTower.HedenmalmXiPositiveFormWall", equivalent)
         self.assertNotIn("RHTower.HedenmalmXiPositiveFormWall", frontier)
         self.assertNotIn("RHTower.SuzukiXiCharacteristicLimitWall", frontier)
 

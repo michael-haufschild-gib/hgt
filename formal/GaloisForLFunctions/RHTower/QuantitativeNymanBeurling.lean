@@ -67,7 +67,7 @@ namespace RHTower
 
 /-- The diagonal reproducing kernel of `H²` of a half-plane in the Plancherel normalization
 `‖F‖² = (1/2π)∫|F|²`. -/
-def hardyKernel (sigma : ℝ) : ℝ := 1 / (2 * sigma)
+def nymanBeurlingHardyKernel (sigma : ℝ) : ℝ := 1 / (2 * sigma)
 
 /-- **The explicit floor.**  The cost of vanishing at a point at distance `σ` from the boundary, for
 a target of modulus `m` there, is `m·√(2σ)`. -/
@@ -75,8 +75,8 @@ def nbFloor (m sigma : ℝ) : ℝ := m * Real.sqrt (2 * sigma)
 
 /-- The floor is the target modulus divided by the square root of the diagonal kernel. -/
 theorem nbFloor_eq {m sigma : ℝ} (hs : 0 < sigma) :
-    nbFloor m sigma = m / Real.sqrt (hardyKernel sigma) := by
-  unfold nbFloor hardyKernel
+    nbFloor m sigma = m / Real.sqrt (nymanBeurlingHardyKernel sigma) := by
+  unfold nbFloor nymanBeurlingHardyKernel
   have hpos : (0 : ℝ) < 2 * sigma := by positivity
   rw [one_div, Real.sqrt_inv, div_inv_eq_mul]
 

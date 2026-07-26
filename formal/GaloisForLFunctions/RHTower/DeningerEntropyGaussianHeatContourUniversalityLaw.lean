@@ -26,7 +26,7 @@ structure DeningerEntropyGaussianHeatContourCertificate
   sourceLimit :
     ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 →
       riemannZeta (1 / 2 + z * I) ≠ 0 →
-        Tendsto (fun N ↦ finiteTransitionPassiveResponse
+        Tendsto (fun N ↦ HTGeometry.finiteTransitionPassiveResponse
           (finiteKMSEntropyProductionTransitionIntensity
             (β N) (energy N) (amplitude N)) (energy N) z)
           atTop (nhds (continuedPrimeArchSourceRelativeTrace z))
@@ -70,7 +70,7 @@ theorem deningerEntropy_gaussianHeatContourUniversality
     (hHermitian : ∀ N a b, amplitude N b a = star (amplitude N a b))
     (hconvDeninger : ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 →
       riemannZeta (1 / 2 + z * I) ≠ 0 →
-        Tendsto (fun N ↦ finiteTransitionPassiveResponse
+        Tendsto (fun N ↦ HTGeometry.finiteTransitionPassiveResponse
           (finiteKMSEntropyProductionTransitionIntensity
             (β N) (energy N) (amplitude N)) (energy N) z)
           atTop (nhds (deningerDivisorRelativeResolventTrace z))) :
@@ -90,7 +90,7 @@ theorem deningerEntropy_gaussianHeatContourUniversality
             {D} hD {degreeSet} hdegreeSet prime {q} hq =>
           (riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
             hLrect hN heta hwindow P hP hD hdegreeSet prime hq).mp hRH
-      gaussianHeatContours := fun hτ hepsilon =>
+      gaussianHeatContours := fun {τ} hτ {epsilon} hepsilon =>
         deninger_gaussianLefschetz_heatContourUniversality
           hRH hτ hepsilon }
 

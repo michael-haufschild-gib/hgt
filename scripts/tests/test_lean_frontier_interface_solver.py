@@ -59,6 +59,14 @@ theorem paramWall_holds (n : Nat) : ParamWall n := rfl
 theorem paramWall_seven_reaches_rh
     (_h : ParamWall 7) (hRH : RiemannHypothesis) : RiemannHypothesis := hRH
 
+def FamilyWall (n : Nat) : Prop := n = n
+
+theorem familyWall_zero_holds : FamilyWall 0 := rfl
+
+theorem familyWall_reaches_rh
+    {n : Nat} (_h : FamilyWall n) (hRH : RiemannHypothesis) :
+    RiemannHypothesis := hRH
+
 def ChainBase (n : Nat) : Prop := n = n
 
 def ChainWall : Prop := True
@@ -99,15 +107,22 @@ FIXTURE_THEOREMS = (
     f"{FIXTURE_NAMESPACE}.exactWall_holds",
     f"{FIXTURE_NAMESPACE}.rh_of_circularWall",
     f"{FIXTURE_NAMESPACE}.paramWall_seven_reaches_rh",
+    f"{FIXTURE_NAMESPACE}.familyWall_zero_holds",
+    f"{FIXTURE_NAMESPACE}.familyWall_reaches_rh",
     f"{FIXTURE_NAMESPACE}.a_defeqAlias_holds",
     f"{FIXTURE_NAMESPACE}.chainWall_of_base_seven",
     f"{FIXTURE_NAMESPACE}.genericWall_one_reaches_rh",
+)
+
+FIXTURE_CANDIDATES = tuple(
+    name for name in FIXTURE_THEOREMS if not name.endswith("_defeqAlias_holds")
 )
 
 
 class LeanFrontierInterfaceSolverTests(unittest.TestCase):
     _temporary: tempfile.TemporaryDirectory[str]
     export: LeanFrontierExport
+    solver_metadata: dict[str, object]
     reversed_export: LeanFrontierExport
 
     @classmethod
@@ -119,9 +134,13 @@ class LeanFrontierInterfaceSolverTests(unittest.TestCase):
         cls._prepare_project_overlay()
         cls._env = cls._lean_environment(cls._temporary_root)
         cls._compile_fixture()
-        cls.export = cls._run_export(FIXTURE_THEOREMS, "forward")
-        cls.reversed_export = cls._run_export(
-            tuple(reversed(FIXTURE_THEOREMS)), "reversed"
+        cls.export, cls.solver_metadata = cls._run_export(
+            FIXTURE_CANDIDATES, FIXTURE_THEOREMS, "forward"
+        )
+        cls.reversed_export, _ = cls._run_export(
+            tuple(reversed(FIXTURE_CANDIDATES)),
+            tuple(reversed(FIXTURE_THEOREMS)),
+            "reversed",
         )
 
     @classmethod
@@ -213,20 +232,29 @@ class LeanFrontierInterfaceSolverTests(unittest.TestCase):
 
     @classmethod
     def _run_export(
-        cls, theorem_names: tuple[str, ...], label: str
-    ) -> LeanFrontierExport:
+        cls,
+        theorem_names: tuple[str, ...],
+        producer_names: tuple[str, ...],
+        label: str,
+    ) -> tuple[LeanFrontierExport, dict[str, object]]:
         exporter = (ROOT / "scripts" / "lean" / "export_research_frontier.lean").read_text(
             encoding="utf-8"
         )
         project_import = "import GaloisForLFunctions\n"
         if project_import not in exporter:
             raise AssertionError("Lean frontier exporter has no project import marker")
-        requested = ",\n".join(f"  {json.dumps(name)}" for name in theorem_names)
+        candidate_path = cls._temporary_root / f"candidate-names-{label}.txt"
+        producer_path = cls._temporary_root / f"producer-names-{label}.txt"
+        candidate_path.write_text("\n".join(theorem_names) + "\n", encoding="utf-8")
+        producer_path.write_text("\n".join(producer_names) + "\n", encoding="utf-8")
         generated_source = exporter.replace(
             project_import,
             f"import {FIXTURE_MODULE}\n",
             1,
-        ) + f"\n#export_research_frontier [\n{requested}\n]\n"
+        ) + (
+            "\n#export_research_frontier_from_files "
+            f"{json.dumps(str(candidate_path))} {json.dumps(str(producer_path))}\n"
+        )
         generated = cls._temporary_root / f"ExportFrontierInterfaces_{label}.lean"
         generated.write_text(generated_source, encoding="utf-8")
         result = cls._run_lean("-R", str(cls._temporary_root), str(generated))
@@ -247,7 +275,8 @@ class LeanFrontierInterfaceSolverTests(unittest.TestCase):
             raise AssertionError(
                 "temporary Lean frontier export produced no JSON:\n" + result.stdout
             )
-        return parse_lean_frontier_export(payload)
+        decoded = json.loads(payload)
+        return parse_lean_frontier_export(payload), decoded.get("interface_solver", {})
 
     def _declared(self, short_name: str) -> Reduction:
         full_name = f"{FIXTURE_NAMESPACE}.{short_name}"
@@ -337,6 +366,13 @@ class LeanFrontierInterfaceSolverTests(unittest.TestCase):
         self.assertTrue(brief.target_proven)
         self.assertEqual(brief.frontier, ())
 
+    def test_ground_witness_does_not_close_parameterized_interface(self) -> None:
+        connector = self._declared("familyWall_reaches_rh")
+        target = self._premise(connector, ".FamilyWall")
+
+        self.assertEqual(self._solver_witnesses(target), ())
+        self.assertFalse(self._brief_for(self.export, target, ()).target_proven)
+
     def test_rh_cycle_cannot_be_used_as_interface_witness(self) -> None:
         circular_of_rh = self._declared("circularWall_of_rh")
         rh_of_circular = self._declared("rh_of_circularWall")
@@ -382,6 +418,12 @@ class LeanFrontierInterfaceSolverTests(unittest.TestCase):
 
         self.assertFalse(brief.target_proven)
         self.assertEqual(brief.cuts, ())
+
+    def test_solver_reports_strict_per_attempt_heartbeat_budget(self) -> None:
+        self.assertEqual(
+            self.solver_metadata.get("max_heartbeats_per_attempt"),
+            500,
+        )
 
 
 if __name__ == "__main__":

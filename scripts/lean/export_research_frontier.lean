@@ -19,6 +19,7 @@ set_option maxHeartbeats 8000000
 private def interfaceSolverMaxDepth : Nat := 3
 private def interfaceSolverMaxCandidatesPerGoal : Nat := 512
 private def interfaceSolverMaxAttemptsPerInterface : Nat := 20
+private def interfaceSolverMaxHeartbeatsPerAttempt : Nat := 500
 
 private def projectPrefix : String := "GaloisForLFunctions."
 
@@ -85,8 +86,9 @@ private def namesJson (names : Array Name) : Json :=
 private def sourcePath (moduleName : String) : String :=
   "formal/" ++ String.intercalate "/" (moduleName.splitOn ".") ++ ".lean"
 
-private def telescopeDomains : Expr → Array Expr → Array Expr × Expr
-  | .forallE _ domain body _, domains => telescopeDomains body (domains.push domain)
+private def telescopeDomains : Expr → Array (BinderInfo × Expr) → Array (BinderInfo × Expr) × Expr
+  | .forallE _ domain body binderInfo, domains =>
+      telescopeDomains body (domains.push (binderInfo, domain))
   | result, domains => (domains, result)
 
 private def isPropositionFormerType : Expr → Bool
@@ -111,8 +113,9 @@ private def inspectTheorem? (declName : Name) : MetaM (Option InspectedTheorem) 
   let mut propositionBinders : Array Expr := #[]
   let mut interfaces : Array InterfaceSpec := #[]
   let mut hasUnnamedPropositionBinder := false
+  let mut hasExplicitDataBinder := false
   let mut domainIndex := 0
-  for domain in domains do
+  for (binderInfo, domain) in domains do
     if isPropositionExpression env domain then
       propositionBinders := propositionBinders.push domain
       if isNamedResearchProposition env domain then
@@ -125,6 +128,8 @@ private def inspectTheorem? (declName : Name) : MetaM (Option InspectedTheorem) 
         }
       else
         hasUnnamedPropositionBinder := true
+    else if binderInfo.isExplicit then
+      hasExplicitDataBinder := true
     domainIndex := domainIndex + 1
 
   let mut relation := "implication"
@@ -164,7 +169,7 @@ private def inspectTheorem? (declName : Name) : MetaM (Option InspectedTheorem) 
     unless isPropositionExpression env result do return none
     conclusions := #[result]
 
-  if hasUnnamedPropositionBinder then return none
+  if hasUnnamedPropositionBinder || hasExplicitDataBinder then return none
 
   let typeText := info.type.dbgToString
   let doc := (docStringExt.find? (level := .server) env declName).getD ""
@@ -305,6 +310,18 @@ private def pushNameUnique (items : Array Name) (item : Name) : Array Name :=
 private def appendNamesUnique (items more : Array Name) : Array Name :=
   more.foldl (init := items) pushNameUnique
 
+private def withInterfaceSolverHeartbeats {α : Type} (action : MetaM α) : MetaM α :=
+  tryCatchRuntimeEx
+    (withTheReader Core.Context
+        (fun context =>
+          { context with maxHeartbeats := interfaceSolverMaxHeartbeatsPerAttempt * 1000 }) do
+      withCurrHeartbeats action)
+    fun exception =>
+      if Exception.isMaxHeartbeat exception then
+        throwError "interface solver candidate exceeded heartbeat budget"
+      else
+        throw exception
+
 private partial def solveInterfaceGoal
     (producerIndex : ProducerIndex)
     (goal : MVarId)
@@ -338,38 +355,40 @@ private partial def solveInterfaceGoal
       attempts.set (attempted + 1)
       let saved ← saveState
       try
-        let subgoals ← candidateApplication goal producer.name mode
-        let mut used := #[producer.name]
-        let mut proofDepth := 1
-        let mut solved := true
-        for subgoal in subgoals do
-          if ← subgoal.isAssigned then continue
-          let subgoalType ← instantiateMVars (← subgoal.getType)
-          if ← isProp subgoalType then
-            let childDepth :=
-              if isNamedResearchProposition (← getEnv) subgoalType then depth - 1 else 1
-            let result? ← solveInterfaceGoal producerIndex subgoal childDepth
-              (ancestors.push goalType) (usedOnPath.insert producer.name) attempts
-            match result? with
-            | some (childUsed, childDepth) =>
-                used := appendNamesUnique used childUsed
-                proofDepth := max proofDepth (childDepth + 1)
-            | none => solved := false
-          else
-            try
-              let instanceExpr ← synthInstance subgoalType
-              subgoal.assign instanceExpr
-            catch _ => solved := false
-          if !solved then break
-        unless solved do throwError "candidate left an unsolved premise"
-        let proof ← instantiateMVars (.mvar goal)
-        if proof.hasMVar || proof.hasLevelMVar || proof.hasSyntheticSorry then
-          throwError "candidate witness contains unresolved or synthetic metavariables"
-        check proof
-        let proofType ← inferType proof
-        unless ← withReducible <| isDefEq proofType (← instantiateMVars goalType) do
-          throwError "candidate witness type does not match interface"
-        return some (used, proofDepth)
+        let result ← withInterfaceSolverHeartbeats do
+          let subgoals ← candidateApplication goal producer.name mode
+          let mut used := #[producer.name]
+          let mut proofDepth := 1
+          let mut solved := true
+          for subgoal in subgoals do
+            if ← subgoal.isAssigned then continue
+            let subgoalType ← instantiateMVars (← subgoal.getType)
+            if ← isProp subgoalType then
+              let childDepth :=
+                if isNamedResearchProposition (← getEnv) subgoalType then depth - 1 else 1
+              let result? ← solveInterfaceGoal producerIndex subgoal childDepth
+                (ancestors.push goalType) (usedOnPath.insert producer.name) attempts
+              match result? with
+              | some (childUsed, childDepth) =>
+                  used := appendNamesUnique used childUsed
+                  proofDepth := max proofDepth (childDepth + 1)
+              | none => solved := false
+            else
+              try
+                let instanceExpr ← synthInstance subgoalType
+                subgoal.assign instanceExpr
+              catch _ => solved := false
+            if !solved then break
+          unless solved do throwError "candidate left an unsolved premise"
+          let proof ← instantiateMVars (.mvar goal)
+          if proof.hasMVar || proof.hasLevelMVar || proof.hasSyntheticSorry then
+            throwError "candidate witness contains unresolved or synthetic metavariables"
+          check proof
+          let proofType ← inferType proof
+          unless ← withReducible <| isDefEq proofType (← instantiateMVars goalType) do
+            throwError "candidate witness type does not match interface"
+          return (used, proofDepth)
+        return some result
       catch _ =>
         restoreState saved
   return none
@@ -379,6 +398,9 @@ private def solveInterface
   let saved ← saveState
   try
     let target ← instantiateInterface spec
+    if target.hasMVar then
+      restoreState saved
+      return none
     if ← definitionallyEqualWithoutAssignment target (mkConst ``RiemannHypothesis) then
       restoreState saved
       return none
@@ -492,6 +514,7 @@ private def exportResearchFrontier
       ("max_depth", toJson interfaceSolverMaxDepth),
       ("max_candidates_per_goal", toJson interfaceSolverMaxCandidatesPerGoal),
       ("max_attempts_per_interface", toJson interfaceSolverMaxAttemptsPerInterface),
+      ("max_heartbeats_per_attempt", toJson interfaceSolverMaxHeartbeatsPerAttempt),
       ("producer_count", toJson producers.size)
     ])
   ]
@@ -514,6 +537,24 @@ elab_rules : command
         [$[$names:str],*] using [$[$producerNames:str],*]) => do
       let declNames := names.map (·.getString.toName)
       let producerDeclNames := producerNames.map (·.getString.toName)
+      let payload ← liftCoreM <| MetaM.run' <|
+        exportResearchFrontier declNames producerDeclNames
+      liftIO <| IO.println s!"HGT_FRONTIER_JSON:{payload.compress}"
+
+private def readDeclarationNames (path : System.FilePath) : IO (Array Name) := do
+  let content ← IO.FS.readFile path
+  let names := content.splitOn "\n" |>.filterMap fun line =>
+    let name := line.trimAscii.toString
+    if name.isEmpty then none else some name.toName
+  return names.toArray
+
+syntax (name := exportResearchFrontierFromFilesCmd)
+  "#export_research_frontier_from_files" str str : command
+
+elab_rules : command
+  | `(#export_research_frontier_from_files $candidatePath:str $producerPath:str) => do
+      let declNames ← liftIO <| readDeclarationNames candidatePath.getString
+      let producerDeclNames ← liftIO <| readDeclarationNames producerPath.getString
       let payload ← liftCoreM <| MetaM.run' <|
         exportResearchFrontier declNames producerDeclNames
       liftIO <| IO.println s!"HGT_FRONTIER_JSON:{payload.compress}"

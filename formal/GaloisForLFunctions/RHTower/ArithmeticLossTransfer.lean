@@ -52,7 +52,7 @@ theorem chain_exponent_transfer {X K H ρ : ℝ} (hX : 0 ≤ X) (hK : 0 ≤ K) (
       = K ^ (1 / 12 : ℝ) * H ^ (3 / 4 + ρ / 12) := by
     rw [Real.mul_rpow hK (Real.rpow_nonneg hH.le _), ← Real.rpow_mul hH.le]
     congr 1
-    ring
+    ring_nf
   rwa [hsplit] at hstep
 
 /-! ### The loss law -/
