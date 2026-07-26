@@ -10754,3 +10754,60 @@ DIMENSION n of the operator, and the natural margin is the DISTANCE FROM THE SPE
 AXIS. COMPUTE HOW THAT DISTANCE SCALES IN n FOR THE KNOWN TRUNCATIONS AND COMPARE WITH THE DEFECT NORM
 FROM ENTRY 42. IF THE DISTANCE SHRINKS SLOWER THAN THE DEFECT, THAT IS A VANISHING-LOSS FAMILY IN A
 FORMULATION THE PARAMETER-SPACE COMPLETENESS RESULT DOES NOT COVER.
+
+---
+
+## Cycle 175 — THE OPERATOR CRITERION NEEDS REAL SPECTRUM, NOT NEAR-SELF-ADJOINTNESS
+
+### Phase 1 (corpus)
+`HermitianDeterminantRH`, `CCMRadicalQuotientHermitian`, `SoninTimeBandHilbertSchmidt` and atlas
+entries 41-44 (`AsymptoticSelfAdjointness`, `CompressionCannotSelfAdjointify`, `SimilitudeSpectralLocus`,
+`DensityNotNormSimilitude`) all exist. NOT A DUPLICATE: none applies the entry-100 criterion.
+
+### THE OPERATOR FORMULATION ALREADY HAS THE RIGHT SHAPE
+It is THE ONLY formulation in the atlas whose hypothesis is LITERALLY a vanishing-loss family: the
+criterion asks for approximants whose zeros satisfy |Im w| <= eps_n WITH eps_n --> 0. By entry 100
+that is exactly the shape a proof must have.
+
+### AND ENTRIES 41-44 CLOSE ONLY HALF OF IT — HUNDRED-AND-NINTH ATLAS ENTRY
+NEAR-SELF-ADJOINTNESS SUFFICES. For a unit eigenvector,
+
+    <A x, x> - <x, A x> = <(A - A*) x, x>        (formalised),
+
+and the left side is 2i times the imaginary part (formalised), so |Im lambda| <= ||A - A*||/2 and a
+vanishing anti-Hermitian part forces real spectrum (formalised in the self-adjoint case).
+
+BUT IT IS NOT NECESSARY. The nilpotent Jordan block !![0,1;0,0] SQUARES TO ZERO — so its spectrum is
+{0}, ENTIRELY REAL — WHILE ITS CONJUGATE TRANSPOSE DIFFERS FROM IT, so its anti-Hermitian part is
+NONZERO (both formalised).
+
+    ==> ENTRIES 41-44 SHOWED COMPRESSION CANNOT MANUFACTURE A VANISHING ANTI-HERMITIAN PART. THAT
+        CLOSES THE NEAR-SELF-ADJOINT SUB-ROUTE AND NO MORE. THE CRITERION ASKS ONLY FOR THE IMAGINARY
+        PARTS OF THE SPECTRUM TO VANISH, AND AN OPERATOR CAN HAVE REAL SPECTRUM WITH AN
+        ANTI-HERMITIAN PART OF ORDER ONE. THE OPEN SUB-ROUTE IS REAL SPECTRUM WITHOUT
+        NEAR-SELF-ADJOINTNESS.
+
+THIS IS A CORRECTION OF MY OWN ATLAS. Entries 41-44 have been read since cycle 90 as closing the
+operator lane. THEY DO NOT. They close the sub-route in which reality is obtained from smallness of
+the defect. The sub-route in which reality is obtained from NILPOTENCE-LIKE STRUCTURE — Volterra
+perturbations, triangular models, quasi-nilpotent parts — IS UNTOUCHED, AND IT IS THE ONLY PLACE IN
+THE ATLAS WHERE A FORMULATION WITH THE CORRECT VANISHING-LOSS SHAPE REMAINS OPEN.
+
+Machine-verified: `RHTower/RealSpectrumWithoutSelfAdjointness.lean` (the inner-product identity
+<Ax,x> - <x,Ax> = <(A - A*)x, x>, the conjugate-difference identity z - conj z = 2 Im(z) i, vanishing
+in the self-adjoint case, the nilpotency of the Jordan block, its failure to be self-adjoint, and their
+conjunction; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 175
+One hundred and nine entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 176 target
+THE OPEN SUB-ROUTE IS: CONSTRUCT A FAMILY A_n WITH REAL SPECTRUM CONVERGING TO THE XI ZEROS, WITHOUT
+DEMANDING SMALL DEFECT. THE STRUCTURE THAT GIVES REAL SPECTRUM WITHOUT SELF-ADJOINTNESS IS
+SIMILARITY TO A SELF-ADJOINT OPERATOR — i.e. A = S B S^{-1} WITH B SELF-ADJOINT AND S NOT UNITARY.
+ENTRY 44 (`DensityNotNormSimilitude`) ALREADY RECORDS THAT SIMILARITY IS THE RIGHT NOTION AND THAT
+THE OBSTRUCTION IS THE CONDITION NUMBER ||S|| ||S^{-1}||. APPLY THE ENTRY-100 CRITERION TO THAT:
+IS THERE A FAMILY WHOSE CONDITION NUMBER IS UNBOUNDED BUT WHOSE SPECTRAL ERROR STILL VANISHES? For a
+diagonalisable family, the Bauer-Fike bound gives spectral error <= kappa(S) * ||perturbation||, SO
+THE VANISHING-LOSS QUESTION IS WHETHER ||perturbation|| CAN BEAT kappa(S). COMPUTE BOTH FOR THE
+CORPUS'S EXISTING HERMITIAN DETERMINANT CONSTRUCTIONS AND SEE WHICH WINS.

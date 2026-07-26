@@ -4,6 +4,8 @@ import GaloisForLFunctions.RHTower.BornTemperatureFactorType
 import GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle
 import Mathlib.Analysis.Distribution.Distribution
 import Mathlib.Analysis.Calculus.Deriv.Support
+import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
+import Mathlib.Analysis.Fourier.Inversion
 import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
@@ -28,7 +30,7 @@ cohomological objects.
 -/
 
 open Complex Filter Function MeasureTheory Set TopologicalSpace
-open scoped Distributions
+open scoped Distributions FourierTransform
 
 namespace RHTower
 
@@ -545,6 +547,155 @@ theorem deningerCenteredTimeTestTransform_xiSpectralPoint
     ring
   rw [mul_assoc, hI, mul_one]
   ring
+
+/-! ## Fourier inversion of Deninger's arbitrary test amplitude -/
+
+/-- Exponential tilt of a positive-time test on a vertical Laplace line. -/
+def deningerExponentiallyTiltedTimeTest
+    (φ : DeningerTimeTestFunction) (c t : ℝ) : ℂ :=
+  (φ t : ℂ) * Complex.exp ((c * t : ℝ) : ℂ)
+
+theorem continuous_deningerExponentiallyTiltedTimeTest
+    (φ : DeningerTimeTestFunction) (c : ℝ) :
+    Continuous
+      (deningerExponentiallyTiltedTimeTest φ c) := by
+  unfold deningerExponentiallyTiltedTimeTest
+  fun_prop
+
+theorem contDiff_deningerExponentiallyTiltedTimeTest
+    (φ : DeningerTimeTestFunction) (c : ℝ) :
+    ContDiff ℝ (↑(⊤ : ℕ∞))
+      (deningerExponentiallyTiltedTimeTest φ c) := by
+  have hφC :
+      ContDiff ℝ (↑(⊤ : ℕ∞))
+        (fun t : ℝ => (φ t : ℂ)) :=
+    Complex.ofRealCLM.contDiff.comp φ.contDiff
+  have hexpR :
+      ContDiff ℝ (↑(⊤ : ℕ∞))
+        (fun t : ℝ => Real.exp (c * t)) := by
+    fun_prop
+  have hexpC :
+      ContDiff ℝ (↑(⊤ : ℕ∞))
+        (fun t : ℝ => (Real.exp (c * t) : ℂ)) :=
+    Complex.ofRealCLM.contDiff.comp hexpR
+  simpa only [deningerExponentiallyTiltedTimeTest,
+    Complex.ofReal_exp] using hφC.mul hexpC
+
+theorem hasCompactSupport_deningerExponentiallyTiltedTimeTest
+    (φ : DeningerTimeTestFunction) (c : ℝ) :
+    HasCompactSupport
+      (deningerExponentiallyTiltedTimeTest φ c) := by
+  have hφCompact :
+      HasCompactSupport (fun t : ℝ => (φ t : ℂ)) := by
+    simpa only [Function.comp_apply] using
+      (φ.hasCompactSupport.comp_left
+        (g := fun r : ℝ => (r : ℂ)) rfl)
+  exact hφCompact.mul_right
+
+/-- The exponentially tilted test bundled as a Schwartz function. -/
+noncomputable def deningerExponentiallyTiltedTimeSchwartz
+    (φ : DeningerTimeTestFunction) (c : ℝ) :
+    SchwartzMap ℝ ℂ :=
+  (hasCompactSupport_deningerExponentiallyTiltedTimeTest φ c).toSchwartzMap
+    (contDiff_deningerExponentiallyTiltedTimeTest φ c)
+
+@[simp]
+theorem deningerExponentiallyTiltedTimeSchwartz_apply
+    (φ : DeningerTimeTestFunction) (c t : ℝ) :
+    deningerExponentiallyTiltedTimeSchwartz φ c t =
+      deningerExponentiallyTiltedTimeTest φ c t := by
+  rfl
+
+/--
+The vertical Laplace amplitude is exactly the Fourier transform of the exponentially tilted
+time test, with mathlib's `2π` Fourier normalization.
+-/
+theorem fourier_deningerExponentiallyTiltedTimeTest
+    (φ : DeningerTimeTestFunction) (c ξ : ℝ) :
+    𝓕 (deningerExponentiallyTiltedTimeTest φ c) ξ =
+      deningerTimeTestLaplace φ
+        ((c : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) * Complex.I) := by
+  rw [Real.fourier_eq', deningerTimeTestLaplace]
+  apply integral_congr_ae
+  filter_upwards with t
+  simp only [RCLike.inner_apply, conj_trivial,
+    ofReal_mul, smul_eq_mul,
+    deningerExponentiallyTiltedTimeTest]
+  calc
+    Complex.exp
+          ((-2 : ℂ) * Real.pi * (ξ * t) *
+            Complex.I) *
+        ((φ t : ℂ) *
+          Complex.exp ((c : ℂ) * t)) =
+      (φ t : ℂ) *
+        (Complex.exp
+            ((-2 : ℂ) * Real.pi * (ξ * t) *
+              Complex.I) *
+          Complex.exp ((c : ℂ) * t)) := by ring
+    _ = (φ t : ℂ) *
+        Complex.exp
+          (((-2 : ℂ) * Real.pi * (ξ * t) *
+              Complex.I) +
+            (c : ℂ) * t) := by
+      rw [Complex.exp_add]
+    _ = (φ t : ℂ) *
+        Complex.exp
+          ((t : ℂ) *
+            ((c : ℂ) -
+              (2 * Real.pi * ξ : ℝ) *
+                Complex.I)) := by
+      congr 1
+      push_cast
+      ring
+
+theorem integrable_deningerExponentiallyTiltedTimeTest
+    (φ : DeningerTimeTestFunction) (c : ℝ) :
+    Integrable
+      (deningerExponentiallyTiltedTimeTest φ c) :=
+  (deningerExponentiallyTiltedTimeSchwartz φ c).integrable
+
+theorem integrable_fourier_deningerExponentiallyTiltedTimeTest
+    (φ : DeningerTimeTestFunction) (c : ℝ) :
+    Integrable
+      (𝓕 (deningerExponentiallyTiltedTimeTest φ c)) := by
+  have hSchwartz :
+      Integrable
+        (fun ξ : ℝ =>
+          (𝓕 (deningerExponentiallyTiltedTimeSchwartz φ c) :
+            SchwartzMap ℝ ℂ) ξ) :=
+    (𝓕 (deningerExponentiallyTiltedTimeSchwartz φ c) :
+      SchwartzMap ℝ ℂ).integrable
+  simpa only [SchwartzMap.fourier_coe] using hSchwartz
+
+/--
+Vertical Fourier inversion for Deninger's Laplace amplitude:
+
+`∫ exp(2π i ξ x) Φ(c - 2π i ξ) dξ = φ(x) exp(c x)`.
+-/
+theorem integral_fourierKernel_mul_deningerTimeTestLaplace
+    (φ : DeningerTimeTestFunction) (c x : ℝ) :
+    (∫ ξ : ℝ,
+        Complex.exp
+            (((2 * Real.pi * ξ * x : ℝ) : ℂ) *
+              Complex.I) *
+          deningerTimeTestLaplace φ
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I)) =
+      deningerExponentiallyTiltedTimeTest φ c x := by
+  have hinv :
+      𝓕⁻ (𝓕
+          (deningerExponentiallyTiltedTimeTest φ c)) x =
+        deningerExponentiallyTiltedTimeTest φ c x :=
+    (integrable_deningerExponentiallyTiltedTimeTest φ c).fourierInv_fourier_eq
+      (integrable_fourier_deningerExponentiallyTiltedTimeTest φ c)
+      (continuous_deningerExponentiallyTiltedTimeTest φ c).continuousAt
+  rw [Real.fourierInv_eq'] at hinv
+  simpa only [RCLike.inner_apply, conj_trivial,
+    ofReal_mul, Complex.real_smul, smul_eq_mul,
+    fourier_deningerExponentiallyTiltedTimeTest,
+    mul_comm] using hinv
 
 /-- `L¹` mass controlling every critical-strip Laplace amplitude after two derivatives. -/
 def deningerTimeTestSecondDerivativeExponentialMass
