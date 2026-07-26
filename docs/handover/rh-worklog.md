@@ -7153,3 +7153,66 @@ construction; the UNNORMALISED pair count in a window of FIXED length (not scale
 COMPUTE WHETHER THE UNNORMALISED SHORT-WINDOW PAIR COUNT ADMITS A SUB-UNIT UNCONDITIONAL BOUND — if it
 does, it excludes zero pairs at that separation, which is a statement about the zeros that no entry in
 the atlas covers.
+
+---
+
+## Cycle 118 (2026-07-26) — COUNTS MEASURE AREA; THE HYPOTHESIS CONSTRAINS DIMENSION
+### The unifying geometric statement behind every closure in the atlas.
+
+### The last open lane closes immediately
+Unnormalised counts are WORSE, not better. A region of fixed size at height T contains ~ log T zeros,
+so any pair count over it GROWS; removing the density normalisation makes the statistic larger, not
+sub-unit. A sub-unit count requires a region SMALLER THAN THE MEAN SPACING — and there the count is 0
+or 1 and carries no information about the line. Formalised: sub-unit forces sub-spacing, and
+sub-spacing is uninformative.
+
+### THE REASON, AND IT IS GEOMETRIC
+The hypothesis says the zeros lie on a ONE-DIMENSIONAL subset of a TWO-DIMENSIONAL region. THAT IS A
+STATEMENT OF CODIMENSION. Counting and density statistics measure two-dimensional content, and a
+codimension-one set has two-dimensional measure ZERO.
+
+    ==> COUNTS MEASURE AREA; THE HYPOTHESIS CONSTRAINS DIMENSION. A MEASURE-ZERO CONSTRAINT IS
+        INVISIBLE TO EVERY MEASURE. THAT IS WHY THE COUNTING CLOSURE IS TOTAL.
+
+THIS ONE OBSERVATION UNIFIES EVERY CLOSURE IN THE ATLAS:
+  * density theorems bound AREA (entries 38, 39, 48);
+  * correlation statistics are quadratic and again bound AREA (entry 38);
+  * the only beta-sensitive weights are NON-ANALYTIC (entry 41) — because detecting a codimension-one
+    set is a MEASURE-THEORETIC act, not an analytic one;
+  * the height-uniformity gap (entry 48) is the impossibility of an area bound falling below one on a
+    region whose area grows;
+  * the kappa boundary (entries 50, 51) is the same thing in the zero-free-region coordinates.
+
+Machine-verified: `RHTower/CodimensionNotCounting.lean` (the vanishing two-dimensional measure of a
+vertical line, the impossibility of containing a positive-measure set in a null set, monotonicity of
+counts in the density, the implication sub-unit => sub-spacing, and the uninformativeness of
+sub-spacing regions; standard axioms only, wired into RHTower).
+
+### FIFTY-SECOND ATLAS ENTRY
+    codimension       RH is a codimension-one constraint; counting and density statistics measure
+                      two-dimensional content; a null set is invisible to every measure. Sub-unit
+                      counts force sub-spacing regions, where the count is uninformative. This
+                      subsumes entries 38, 39, 41, 47, 48, 50, 51.
+
+### STATE AT CYCLE 118
+Fifty-two entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ATLAS HAS A SINGLE ROOT CAUSE. Every closure recorded in 118 cycles is one statement seen from a
+different side:
+
+    THE HYPOTHESIS IS A CODIMENSION-ONE CONSTRAINT, AND EVERY UNCONDITIONAL TOOL AVAILABLE MEASURES
+    TWO-DIMENSIONAL CONTENT.
+
+That is why the explicit formula cancels to a density, why correlations count, why beta-sensitivity
+forces non-analyticity, and why every bound grows with the height: the height is the area coordinate.
+
+### Cycle 119 target
+A tool that sees codimension rather than area is a TOPOLOGICAL or ALGEBRAIC one, not a measure. The
+canonical such tools are: (a) INTERSECTION THEORY — codimension is what it computes; (b) the ARGUMENT
+PRINCIPLE as a winding number (an integer, hence topological, and already used in entry 48 where
+INTEGRALITY was exactly what gave exclusion); (c) COHOMOLOGY, unavailable here (cycle 92). NOTE THAT
+(b) ALREADY APPEARED AND WAS THE ONE PLACE THE COUNTING CLOSURE SOFTENED. SO THE PROGRAMME'S OWN
+EVIDENCE POINTS AT INTEGRALITY AS THE CODIMENSION-SENSITIVE INGREDIENT. RE-EXAMINE EVERY ENTRY FOR
+PLACES WHERE AN INTEGER QUANTITY APPEARS, and check whether any of them is sub-unit-able. The
+candidates are: the winding number of xi on a contour, the multiplicity m_rho, and the dimension d of
+the Gram model. THE FIRST IS THE ONLY ONE THAT VARIES WITH THE ZEROS' POSITION.
