@@ -199,10 +199,11 @@ theorem bourgainA6BlockPhaseDeterminant_ge
   have hq₁q₂ : q₁ < q₂ := by omega
   have hab : a < b := by
     exact sqrt_natCast_div_lt hN hq₁q₂
+  have hb : 0 < b := lt_trans ha hab
   have hd : s / 2 ≤ d := by
     dsimp [s, d, a, b]
-    simpa [mul_comm] using
-      (sqrt_natCast_div_sub_ge hN hq hq₂N)
+    convert sqrt_natCast_div_sub_ge hN hq hq₂N using 1
+    all_goals ring
   have ha1 : a ≤ 1 := by
     apply Real.sqrt_le_one.mpr
     exact (div_le_one hNr).2
@@ -213,7 +214,7 @@ theorem bourgainA6BlockPhaseDeterminant_ge
   have ha3 : a ^ (3 : ℕ) ≤ 1 := by
     simpa using pow_le_pow_left₀ ha.le ha1 3
   have hb3 : b ^ (3 : ℕ) ≤ 1 := by
-    simpa using pow_le_pow_left₀ (Real.sqrt_nonneg _) hb1 3
+    simpa using pow_le_pow_left₀ hb.le hb1 3
   have hP : P ≤ 1 := by
     dsimp [P]
     calc
@@ -245,18 +246,47 @@ theorem bourgainA6BlockPhaseDeterminant_ge
         3 * d ^ (4 : ℕ) * P ≤ 3 * d ^ (4 : ℕ) := by
       exact mul_le_of_le_one_right (by positivity) hP
     nlinarith
-  unfold bourgainA6BlockPhaseDeterminant
-  dsimp only
-  change
-    (3 / 512 : ℝ) * s ^ (10 : ℕ) ≤
-      s ^ (6 : ℕ) * (3 * d ^ (4 : ℕ) / (32 * P))
+  have hresult :
+      (3 / 512 : ℝ) * s ^ (10 : ℕ) ≤
+        s ^ (6 : ℕ) * (3 * d ^ (4 : ℕ) / (32 * P)) := by
+    calc
+      (3 / 512 : ℝ) * s ^ (10 : ℕ) =
+          s ^ (6 : ℕ) * ((3 / 512 : ℝ) * s ^ (4 : ℕ)) := by ring
+      _ ≤ s ^ (6 : ℕ) * (3 * d ^ (4 : ℕ) / 32) :=
+        mul_le_mul_of_nonneg_left hsmall (by positivity)
+      _ ≤ s ^ (6 : ℕ) * (3 * d ^ (4 : ℕ) / (32 * P)) :=
+        mul_le_mul_of_nonneg_left hden (by positivity)
+  convert hresult using 1
+  all_goals
+    simp only [bourgainA6BlockPhaseDeterminant, s, a, b, d, P]
+    ring
+
+/-- Sharp reciprocal-Jacobian form of the block determinant estimate. -/
+theorem abs_inv_bourgainA6BlockPhaseDeterminant_le
+    {N M q₁ q₂ : ℕ} (hN : 0 < N) (hM : 0 < M)
+    (hq₁ : 0 < q₁) (hq : q₁ + M ≤ q₂) (hq₂N : q₂ ≤ N) :
+    |(bourgainA6BlockPhaseDeterminant N M q₁ q₂)⁻¹| ≤
+      (512 / 3 : ℝ) * ((N : ℝ) / (M : ℝ)) ^ (10 : ℕ) := by
+  let L : ℝ :=
+    (3 / 512 : ℝ) * ((M : ℝ) / (N : ℝ)) ^ (10 : ℕ)
+  let D : ℝ := bourgainA6BlockPhaseDeterminant N M q₁ q₂
+  have hNr : (0 : ℝ) < N := by exact_mod_cast hN
+  have hMr : (0 : ℝ) < M := by exact_mod_cast hM
+  have hL : 0 < L := by
+    dsimp [L]
+    positivity
+  have hLD : L ≤ D := by
+    exact bourgainA6BlockPhaseDeterminant_ge hN hM hq₁ hq hq₂N
+  have hD : 0 < D := lt_of_lt_of_le hL hLD
+  have hinv : D⁻¹ ≤ L⁻¹ :=
+    (inv_le_inv₀ hD hL).2 hLD
+  rw [abs_of_pos (inv_pos.mpr hD)]
   calc
-    (3 / 512 : ℝ) * s ^ (10 : ℕ) =
-        s ^ (6 : ℕ) * ((3 / 512 : ℝ) * s ^ (4 : ℕ)) := by ring
-    _ ≤ s ^ (6 : ℕ) * (3 * d ^ (4 : ℕ) / 32) :=
-      mul_le_mul_of_nonneg_left hsmall (by positivity)
-    _ ≤ s ^ (6 : ℕ) * (3 * d ^ (4 : ℕ) / (32 * P)) :=
-      mul_le_mul_of_nonneg_left hden (by positivity)
+    D⁻¹ ≤ L⁻¹ := hinv
+    _ = (512 / 3 : ℝ) *
+        ((N : ℝ) / (M : ℝ)) ^ (10 : ℕ) := by
+      dsimp [L]
+      field_simp
 
 /-- Exact osculating-cell integral estimate specialized to two normalized
 `A₆` blocks.  This is the local analytic input before physical-domain

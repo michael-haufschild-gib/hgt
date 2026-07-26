@@ -15,6 +15,14 @@ namespace RHTower
 
 noncomputable section
 
+/-- Standard vector supported at one coordinate of a dependent product. -/
+noncomputable def piBasisVector
+    {ι : Type*} {κ : ι → Type*}
+    (i : ι) (k : κ i) :
+    (j : ι) → κ j → ℂ := by
+  classical
+  exact Pi.single i (Pi.single k 1)
+
 /--
 A continuous complex-linear functional on a dependent product of complex lines has finite
 coordinate support.
@@ -29,7 +37,7 @@ theorem ContinuousLinearMap.exists_finite_pi_support
             ∑ i : ↥S,
               ∑ k ∈ T i.1,
                 a i.1 k *
-                  L (Pi.single i.1 (Pi.single k 1)) := by
+                  L (piBasisVector i.1 k) := by
   classical
   have hball :
       Metric.ball (0 : ℂ) 1 ∈ 𝓝 0 :=
@@ -102,16 +110,13 @@ theorem ContinuousLinearMap.exists_finite_pi_support
       L ((L b)⁻¹ • b) ∈
         Metric.ball (0 : ℂ) 1 at hcontra
     rw [hvalue] at hcontra
-    simpa [Metric.mem_ball] using hcontra
+    simp [Metric.mem_ball] at hcontra
   refine ⟨S, T, ?_⟩
   intro a
-  let basisVector (i : ι) (k : κ i) :
-      (j : ι) → κ j → ℂ :=
-    Pi.single i (Pi.single k 1)
   let p : (i : ι) → κ i → ℂ :=
     ∑ i : ↥S,
       ∑ k ∈ T i.1,
-        a i.1 k • basisVector i.1 k
+        a i.1 k • piBasisVector i.1 k
   have hp :
       ∀ (i : ι), i ∈ S →
         ∀ k, k ∈ T i →
@@ -121,26 +126,26 @@ theorem ContinuousLinearMap.exists_finite_pi_support
     change
       (∑ j : ↥S,
         ∑ l ∈ T j.1,
-          a j.1 l • basisVector j.1 l) i k =
+          a j.1 l • piBasisVector j.1 l) i k =
         a i k
-    rw [Finset.sum_apply,
-      Finset.sum_eq_single iS]
-    · rw [Finset.sum_apply,
-        Finset.sum_eq_single k]
-      · simp [basisVector]
+    simp_rw [Finset.sum_apply]
+    rw [Finset.sum_eq_single iS]
+    · rw [Finset.sum_eq_single k]
+      · dsimp only [iS]
+        simp [piBasisVector]
       · intro l hl hli
-        simp [basisVector, hli]
+        dsimp only [iS]
+        simp [piBasisVector, hli.symm]
       · intro hnot
         exact (hnot hk).elim
     · intro j hj hji
-      rw [Finset.sum_apply]
       apply Finset.sum_eq_zero
       intro l hl
       have hcoe : j.1 ≠ i := by
         intro heq
         apply hji
         exact Subtype.ext heq
-      simp [basisVector, hcoe]
+      simp [piBasisVector, hcoe]
     · intro hnot
       exact (hnot (Finset.mem_univ iS)).elim
   have hzero :
@@ -154,7 +159,7 @@ theorem ContinuousLinearMap.exists_finite_pi_support
     rw [hzero] at hsub
     exact sub_eq_zero.mp hsub.symm
   rw [hLp]
-  simp only [p, basisVector, map_sum, L.map_smul,
+  simp only [p, map_sum, L.map_smul,
     smul_eq_mul]
 
 /-- Continuous-linear inverse of the all-jets reconstruction homeomorphism. -/
@@ -164,24 +169,16 @@ def deningerCompactOpenJetProductToH1 :
   toFun := deningerCompactOpenH1JetHomeomorph.symm
   map_add' a b := by
     apply deningerCompactOpenH1AllJets_injective
-    change
-      deningerCompactOpenH1JetHomeomorph
-          (deningerCompactOpenH1JetHomeomorph.symm
-            (a + b)) =
-        deningerCompactOpenH1JetHomeomorph
-            (deningerCompactOpenH1JetHomeomorph.symm a) +
-          deningerCompactOpenH1JetHomeomorph
-            (deningerCompactOpenH1JetHomeomorph.symm b)
+    rw [deningerCompactOpenH1AllJets.map_add]
+    rw [← deningerCompactOpenH1JetHomeomorph_apply,
+      ← deningerCompactOpenH1JetHomeomorph_apply,
+      ← deningerCompactOpenH1JetHomeomorph_apply]
     simp
   map_smul' c a := by
     apply deningerCompactOpenH1AllJets_injective
-    change
-      deningerCompactOpenH1JetHomeomorph
-          (deningerCompactOpenH1JetHomeomorph.symm
-            (c • a)) =
-        c •
-          deningerCompactOpenH1JetHomeomorph
-            (deningerCompactOpenH1JetHomeomorph.symm a)
+    rw [deningerCompactOpenH1AllJets.map_smul]
+    rw [← deningerCompactOpenH1JetHomeomorph_apply,
+      ← deningerCompactOpenH1JetHomeomorph_apply]
     simp
   cont :=
     deningerCompactOpenH1JetHomeomorph.symm.continuous
@@ -200,6 +197,13 @@ theorem deningerCompactOpenJetProductToH1_allJets
         (deningerCompactOpenH1AllJets x) = x :=
   deningerCompactOpenH1JetHomeomorph.symm_apply_apply x
 
+/-- Standard full Xi-jet vector supported at one local jet coordinate. -/
+noncomputable def deningerArithmeticJetBasisVector
+    (rho : XiDivisorSupport)
+    (k : DeningerArithmeticJetIndex rho) :
+    DeningerArithmeticJetProduct :=
+  piBasisVector rho k
+
 /--
 Every continuous compact-support class is a finite linear combination of local Xi-jet
 functionals.
@@ -217,8 +221,8 @@ theorem deningerArithmeticTopologicalH1Compact_finiteJetSupport
                 deningerCompactOpenH1Jet rho.1 k x *
                   ell
                     (deningerCompactOpenJetProductToH1
-                      (Pi.single rho.1
-                        (Pi.single k 1))) := by
+                      (deningerArithmeticJetBasisVector
+                        rho.1 k)) := by
   let L :
       DeningerArithmeticJetProduct →L[ℂ] ℂ :=
     ell.comp deningerCompactOpenJetProductToH1
@@ -234,8 +238,8 @@ theorem deningerArithmeticTopologicalH1Compact_finiteJetSupport
           deningerCompactOpenH1Jet rho.1 k x *
             ell
               (deningerCompactOpenJetProductToH1
-                (Pi.single rho.1
-                  (Pi.single k 1)))
+                (deningerArithmeticJetBasisVector
+                  rho.1 k))
   simpa only [L, ContinuousLinearMap.comp_apply,
     deningerCompactOpenJetProductToH1_allJets,
     deningerCompactOpenH1AllJets_apply] using hformula

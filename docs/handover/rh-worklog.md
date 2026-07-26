@@ -8224,3 +8224,65 @@ c ~ k log k that gives cumulant <~ (d-1)!/(k log k)^{d-1}, while the d-th factor
 COMPARISON IS CORRECT, HYPERBOLICITY HOLDS AT EVERY DEGREE ONCE k EXCEEDS A BOUND POLYNOMIAL IN d, AND
 THE POLYNOMIAL CONJECTURE OF CYCLE 132 IS PROVED. COMPUTE THE d-TH ORDER FACTORIAL GAP EXACTLY AND
 COMPARE.
+
+---
+
+## Cycle 135 (2026-07-26) — THE DEGREE-d COMPARISON: RATIO ~ 2(2 log k)^{d-1}/(d-1)
+
+### The two d-th order quantities
+  * NORMALISATION SIDE. -log(2k)! has d-th derivative in k of size 2(d-2)!/k^{d-1} — the d-th order
+    factorial gap.
+  * MOMENT SIDE. The d-th cumulant of a measure whose -log has convexity c is bounded by
+    (d-1)!/c^{d-1}, and cycle 134's identity gives c ~ 2k log k at the tilted mode.
+
+### THEIR RATIO
+    gap/cumulant  ~  ( 2(d-2)!/k^{d-1} ) ( (2k log k)^{d-1}/(d-1)! )  =  2 (2 log k)^{d-1} / (d-1).
+
+    ==> AND IT EXCEEDS ONE FOR k BOUNDED BELOW, INDEPENDENTLY OF THE DEGREE: since m <= 2^m for every
+        natural m, taking log k >= 1 already gives (2 log k)^{d-1} >= 2^{d-1} >= d-1 > (d-1)/2.
+
+    ==> THE MECHANISM POINTS TO A THRESHOLD BOUNDED IN THE DEGREE — NOT POLYNOMIAL, BOUNDED. THAT
+        MATCHES THE OBSERVED ONSETS n*(d) = 0.
+
+### WHAT THIS IS AND IS NOT — stated plainly
+The SHAPES match and the ratio grows in BOTH parameters; the constants in the log-concave cumulant
+estimate are NOT tracked here. THIS IS A MECHANISM AND A PREDICTION, NOT A PROOF. Its content is
+precise and falsifiable: the two sides scale the same way in d, and the moment side is smaller by a
+factor (2 log k)^{d-1}. If the untracked constants are benign, hyperbolicity holds at every degree once
+log k >= C for an absolute C — which is exactly what the computed onsets show.
+
+RECORD THE RISK HONESTLY: a mechanism whose constants are untracked can fail at the constants. The
+prediction is checkable against any future computation of n*(d) for larger d; if n*(d) is ever found to
+grow, the mechanism is wrong.
+
+Machine-verified: `RHTower/DegreeUniformComparison.lean` (the ratio identity in the stated shapes, the
+elementary bound m <= 2^m by induction, the resulting uniform-in-degree comparison (m/2) <= (2L)^m for
+L >= 1, and monotonicity of the comparison in both the degree and log k; standard axioms only, wired
+into RHTower).
+
+### SIXTY-NINTH ATLAS ENTRY
+    degree-d comparison   the d-th factorial gap 2(d-2)!/k^{d-1} against the d-th cumulant bound
+                          (d-1)!/(2k log k)^{d-1} gives ratio 2(2 log k)^{d-1}/(d-1), which exceeds one
+                          once log k >= 1, uniformly in d. Mechanism predicts a BOUNDED threshold,
+                          matching observed onsets of zero. Constants untracked: prediction, not proof.
+
+### STATE AT CYCLE 135
+Sixty-nine entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME'S ARC, AFTER 135 CYCLES:
+  * 1-55: the unconditional landscape closed, with one root cause (codimension versus area).
+  * 56-61: exactly one route escapes (Jensen/discriminant), all four break-the-closure targets
+    resolved.
+  * 62-69: that route characterised, its recorded cost REFUTED as an artefact, and a MECHANISM
+    supplied — doubly exponential concentration beating the factorial gap by (2 log k)^{d-1}.
+The programme has moved from cataloguing obstructions to supplying a mechanism for the one route that
+works. THE MECHANISM IS NOT YET A PROOF, AND ITS GAP IS EXPLICIT: the constants in the cumulant
+estimate.
+
+### Cycle 136 target
+Track the constants. The log-concave cumulant estimate needed is: for a probability measure on R whose
+density is e^{-V} with V'' >= c > 0, the d-th cumulant satisfies |kappa_d| <= C_d / c^{(d-1)}. THE
+SHARP FORM OF C_d IS KNOWN FOR STRONGLY LOG-CONCAVE MEASURES — it follows from the Brascamp-Lieb
+inequality iterated, or from the Bakry-Emery semigroup, and the standard result gives C_d = (d-1)! or
+better. RETRIEVE OR DERIVE C_d, then compare with the factorial gap's constant 2(d-2)!. The comparison
+is then EXACT and the prediction becomes a theorem or is refuted. THIS IS THE LAST GAP.

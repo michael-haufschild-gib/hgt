@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum
 import GaloisForLFunctions.RHTower.CCMRectangularFullObservableDivisorTomography
 import GaloisForLFunctions.RHTower.PrimeArchEndpointHausdorffTemperatureMaster
 import GaloisForLFunctions.RHTower.PrimeArchThermalSoninDeterminantEndpointUniversalityLaw
+import GaloisForLFunctions.RHTower.SoninBernsteinTerminalCofinalPhaseUniversalityLaw
 
 /-!
 # Cofinal cutoff elimination for prime--Gamma source criteria
@@ -153,6 +154,27 @@ theorem exists_primeArchUnitWidthCofinalCutoffUniversalCertificate :
   obtain ⟨N₀, hN₀⟩ :=
     eventually_atTop.1 eventually_primeArchUnitWidthCofinalCutoffUniversalCertificate
   exact ⟨N₀, hN₀ N₀ le_rfl⟩
+
+/-- A cofinal coupled-Sonin Bernstein control needs no auxiliary source choices: one separated
+rectangular source and one odd theta-tail schedule work at every sufficiently late unit-width
+cutoff, with the full degree set and identity thermal schedules. -/
+theorem
+    soninCoupledBernsteinControl_eventually_exists_terminalCofinalPhaseUniversalCertificate
+    {d : ℕ → ℕ} {a : ℕ → SoninPositiveAperture}
+    (hd : Tendsto d atTop atTop)
+    (hcontrol : SoninCoupledBernsteinCofinalControl d a) :
+    ∀ᶠ N : ℕ in atTop,
+      ∃ (P : ℕ → XiSeparatedContinuedCauchyPacket) (D : ℕ → ℕ),
+        SoninBernsteinTerminalCofinalPhaseUniversalCertificate
+          1 N 1 3 P D Set.univ (fun n : ℕ => n) (fun n : ℕ => n) := by
+  obtain ⟨P, hP⟩ := exists_rectangularSeparatedSourceSection 1
+  obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+  filter_upwards [eventually_xiRectangularAdmissibleCutoff 1] with N hN
+  exact ⟨P, D,
+    soninCoupledBernsteinControl_forces_terminalCofinalPhaseUniversality
+      (eta := 1) (Lsmooth := 3) hd hcontrol (by norm_num) hN
+      (by norm_num) (by norm_num) P hP hD Set.infinite_univ
+      (fun n : ℕ => n) (fun n : ℕ => n) tendsto_id tendsto_id⟩
 
 end
 

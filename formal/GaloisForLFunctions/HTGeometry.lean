@@ -2091,5 +2091,6 @@ import GaloisForLFunctions.HTGeometry.EfficiencyThresholdLaw
 import GaloisForLFunctions.HTGeometry.SelfDefeatingProductivity
 import GaloisForLFunctions.HTGeometry.DisplacementCostAndFaces
 import GaloisForLFunctions.HTGeometry.NewPairsDisplacementTest
+import GaloisForLFunctions.HTGeometry.EligibilityCriterion
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
