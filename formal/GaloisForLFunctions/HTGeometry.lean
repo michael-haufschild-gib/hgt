@@ -2246,3 +2246,4 @@ import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 import GaloisForLFunctions.HTGeometry.QuasiPeriodEntireGrowth
 import GaloisForLFunctions.HTGeometry.QuasiPeriodLatticeZeros
 import GaloisForLFunctions.HTGeometry.QuasiPeriodLatticeNoZeros
+import GaloisForLFunctions.HTGeometry.DerivInvariantSuperspace

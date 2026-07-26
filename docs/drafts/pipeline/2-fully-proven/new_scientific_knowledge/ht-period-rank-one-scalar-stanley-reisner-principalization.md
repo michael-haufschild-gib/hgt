@@ -1166,3 +1166,35 @@ This is the sharpest possible form of `(24)`--`(26)` for entire data and it is t
 matrix lattice problem `m > 1`, where the plan is: a common eigenvector of the two commuting shift
 operators on the finite-dimensional span of the components is a scalar carrier of exactly this kind,
 hence a nowhere-zero exponential, and dividing by it drops the dimension.
+
+### Toward the matrix lattice case: closure operations
+
+The lattice case for `m > 1` cannot use the difference-quotient argument, because a lattice is
+discrete.  The plan is an induction on dimension, and `GaloisForLFunctions/HTGeometry/
+DerivInvariantSuperspace.lean` (axiom-clean, build green, umbrella-registered) supplies the closure
+operations it needs.
+
+Induction invariant: *a finite-dimensional shift-stable space `H` of entire functions is contained in
+a finite-dimensional derivation-invariant space* — which by the corpus's finite observable-model
+boundary makes every member differentially algebraic with a constant-coefficient annihilator.
+
+The step: take a common eigenvector `h_0` of the two shift operators on `H`; it is a scalar
+constant-multiplier carrier, hence by `eq_mul_exp_of_quasiperiods_entire` a nowhere-zero exponential
+with `h_0' = nu h_0`.  Divide: `H' = h_0^{-1} H` is shift-stable and contains `1`, so the derivative
+image `K = D(H')` has strictly smaller dimension and the induction applies to it, giving `K <= W_0`
+with `W_0` finite-dimensional and derivation-invariant.  Then `A = H' + W_0` is derivation-invariant,
+and `h_0 A` is a finite-dimensional derivation-invariant space containing `H`.
+
+- `mulByL` — pointwise multiplication by a fixed function, as a linear map, so that `h_0 A` and
+  `h_0^{-1} H` are `Submodule.map`s;
+- **`derivInvariantObservableSpace_sup`** — `V + W` is derivation-invariant when `D(V) <= W` and `W`
+  is derivation-invariant;
+- **`derivInvariantObservableSpace_map_mulBy`** — `h_0 A` is derivation-invariant when `A` is and
+  `h_0' = nu h_0`, since `(h_0 u)' = h_0 (nu u + u')`;
+- `translationStable_map_mulBy_inv` and `map_mulBy_map_mulBy_inv` — dividing by a nowhere-zero
+  quasi-periodic factor preserves shift stability, and multiplying back recovers the space;
+- **`exists_common_eigenvector`** — two commuting endomorphisms of a nonzero finite-dimensional
+  complex space have a common eigenvector (an eigenspace of the first is invariant under the second).
+
+What remains is the induction itself: the dimension drop `dim D(H') < dim H'` via rank-nullity with
+`1` in the kernel, and the assembly.
