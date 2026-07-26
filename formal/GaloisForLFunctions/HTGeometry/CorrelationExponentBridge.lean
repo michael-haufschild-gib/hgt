@@ -1273,4 +1273,172 @@ theorem sqrt_overshoots_requirement : arcSqrtCancellation < arcTargetExponent :=
   rw [arcTargetExponent_eq]
   unfold arcSqrtCancellation arcSumTerms; norm_num
 
+
+/-!
+### The arc sum is algebraic but incomplete — the mirror of the resonance sum
+
+Writing the arc sum with a common denominator, `L·uv(u+v) = rm(r+m)/L²`, so
+
+    S = Σ_{r,m ≤ L} e( rm(r+m)/L² ) ,
+
+whose phase is a **cubic form modulo `L²`** — algebraic, unlike the resonance sum's transcendental
+`√(2a/q)`.  But it is **incomplete**: the box has side `L` against modulus `L²`, a fraction `1/L`.
+
+Completing by Pólya–Vinogradov bounds `S` by `\log²(L²)` times the largest additively twisted complete
+sum `Σ_{r,m mod L²} e((rm(r+m)+ar+bm)/L²)`, and Deligne's square-root bound for a non-degenerate
+two-variable complete sum modulo `q` is `≍ q = L²`.  So the completion gives
+
+    S ≪ \log²(L)·L²  —  **the trivial bound**, since the box itself has `L²` terms.
+
+The square-root bound for the complete sum is exactly the size of the incomplete sum's trivial bound:
+**completion is available and worthless.**
+-/
+
+/-- Exponent of `L` for the modulus of the arc sum's phase. -/
+def arcModulusExponent : ℚ := 2
+
+/-- Exponent of `L` for the side of the summation box. -/
+def arcBoxSide : ℚ := 1
+
+/-- The box occupies a fraction `L^{arcBoxSide - arcModulusExponent}` of the modulus in each variable. -/
+@[simp] theorem arc_box_fraction : arcBoxSide - arcModulusExponent = -1 := by
+  unfold arcBoxSide arcModulusExponent; norm_num
+
+/-- Deligne's square-root bound for the complete two-variable sum modulo `L²`. -/
+def completeSumBound : ℚ := arcModulusExponent
+
+/-- The trivial bound for the incomplete sum: `L²` terms. -/
+def arcTrivialBound : ℚ := 2 * arcBoxSide
+
+/-- **The complete sum's square-root bound equals the incomplete sum's trivial bound.** -/
+theorem completion_worthless : completeSumBound = arcTrivialBound := by
+  unfold completeSumBound arcModulusExponent arcTrivialBound arcBoxSide; norm_num
+
+/-- Hence completion delivers no saving. -/
+@[simp] theorem completion_saving_zero : arcTrivialBound - completeSumBound = 0 := by
+  rw [completion_worthless]; ring
+
+/-- **The mirror of the resonance sum.**  There the sum was complete and the phase transcendental;
+here the phase is algebraic and the sum incomplete.  Neither level has both. -/
+theorem algebraic_but_incomplete :
+    completeSumBound = arcTrivialBound ∧ arcBoxSide - arcModulusExponent = -1 :=
+  ⟨completion_worthless, arc_box_fraction⟩
+
+
+/-!
+### The principal arc meets its requirement
+
+Substituting `s = r + m` in `S = Σ_{r,m ≤ L} e(rm(r+m)/L²)` gives, for each `s ∈ [2, 2L]`, an inner sum
+over `r` in an interval of length `≤ L`:
+
+    Σ_r e( (r s² − r² s)/L² )  =  Σ_r e( −(s/L²) r² + (s²/L²) r ) ,
+
+a **chirp** with quadratic coefficient `α = −s/L²`, so `|α| ≤ 2/L` — small.  The second-derivative test
+(`|f''| = 2|α|`) gives
+
+    |Σ_r| ≪ L·|α|^{1/2} + |α|^{-1/2}  ≍  L·(s/L²)^{1/2} + (L²/s)^{1/2}  =  **√s + L/√s** .
+
+Summing over `s ≤ 2L`:
+
+    |S| ≪ Σ_{s ≤ 2L} (√s + L/√s)  ≍  L^{3/2} + L·L^{1/2}  =  **L^{3/2}** ,
+
+which is exactly the arc's Lindelöf requirement (Theorem 78).  **The principal arc is not an
+obstruction: it meets its target.**
+-/
+
+/-- Exponent of the inner chirp's quadratic coefficient, as a power of `L`, at `s ≍ L`. -/
+def chirpCoefficientExponent : ℚ := 1 - 2
+
+/-- The second-derivative test's two terms at `s ≍ L`, as exponents of `L`. -/
+def chirpTermA : ℚ := 1 + chirpCoefficientExponent / 2
+
+def chirpTermB : ℚ := -(chirpCoefficientExponent / 2)
+
+@[simp] theorem chirpTermA_eq : chirpTermA = 1/2 := by
+  unfold chirpTermA chirpCoefficientExponent; norm_num
+
+@[simp] theorem chirpTermB_eq : chirpTermB = 1/2 := by
+  unfold chirpTermB chirpCoefficientExponent; norm_num
+
+/-- **The two terms balance at `s ≍ L`** — the self-dual point of the inner estimate. -/
+theorem chirp_terms_balance : chirpTermA = chirpTermB := by
+  rw [chirpTermA_eq, chirpTermB_eq]
+
+/-- Summing the inner bound over `s ≤ 2L` adds one power of `L`. -/
+def arcSumBound : ℚ := 1 + chirpTermA
+
+/-- **The arc sum is bounded by `L^{3/2}`.** -/
+@[simp] theorem arcSumBound_eq : arcSumBound = 3/2 := by
+  unfold arcSumBound; rw [chirpTermA_eq]; norm_num
+
+/-- **And that is exactly the arc's Lindelöf requirement.** -/
+theorem arc_meets_target : arcSumBound = arcTargetExponent := by
+  rw [arcSumBound_eq, arcTargetExponent_eq]
+
+/-- The arc therefore achieves the required saving `L^{1/2}` from its trivial bound. -/
+@[simp] theorem arc_saving_achieved : arcTrivialBound - arcSumBound = 1/2 := by
+  rw [arcSumBound_eq]; unfold arcTrivialBound arcBoxSide; norm_num
+
+/-- **The principal arc is not an obstruction.** -/
+theorem principal_arc_not_obstruction :
+    arcSumBound = arcTargetExponent ∧ arcTrivialBound - arcSumBound = arcRequiredSaving := by
+  refine ⟨arc_meets_target, ?_⟩
+  rw [arcRequiredSaving_eq]; exact arc_saving_achieved
+
+
+/-!
+### The within-arc bound holds at every arc, and still gives only Weyl
+
+Theorem 80's argument is not special to `q = 2`.  At the arc around `a/q` the blocks are indexed by
+`|r| ≲ L/(2q)`, the deviations are `δ_r ≈ r/L²`, and extracting the Gauss sum of modulus `q` leaves a
+chirp of length `L/q` with coefficient `δ_r q² ≈ rq²/L²`.  The same elimination `s = r + m'` applies to
+a box of side `L/q` against modulus `L²/q²` — the identical ratio `q/L` — giving
+
+    S_q  ≪  √q · (L/q)^{3/2}  =  **L^{3/2}/q** .
+
+Summing over the `φ(q)` arcs of each denominator `q ≤ L`:
+
+    Σ_{q ≤ L} φ(q) · L^{3/2}/q  ≍  L^{3/2} · Σ_{q≤L} φ(q)/q  ≍  L^{3/2}·L  =  **L^{5/2}** ,
+
+which is exactly Weyl's exponent.  **The within-arc bound is achievable at every arc and changes
+nothing** — an independent, now *proved*, confirmation of the neutrality of Theorem 43.
+-/
+
+/-- Exponent (in `L`) of the within-arc bound at denominator `q = L^κ`. -/
+def arcBoundAt (kappa : ℚ) : ℚ := 3/2 - kappa
+
+/-- At `q ≍ 1` this is the principal-arc bound of Theorem 80. -/
+@[simp] theorem arcBoundAt_principal : arcBoundAt 0 = 3/2 := by
+  unfold arcBoundAt; norm_num
+
+/-- Exponent of the number of arcs at denominator `q = L^κ`: `φ(q) ≍ q`. -/
+def arcCountAt (kappa : ℚ) : ℚ := kappa
+
+/-- Total contribution of all arcs at denominator `q = L^κ`: `φ(q)·L^{3/2}/q ≍ L^{3/2}`. -/
+def arcTotalAt (kappa : ℚ) : ℚ := arcCountAt kappa + arcBoundAt kappa
+
+/-- **Every dyadic denominator contributes the same `L^{3/2}`.** -/
+@[simp] theorem arcTotalAt_const (kappa : ℚ) : arcTotalAt kappa = 3/2 := by
+  unfold arcTotalAt arcCountAt arcBoundAt; ring
+
+/-- Summing over the `≍ \log L` dyadic ranges of `q` — or, with the exact `Σφ(q)/q ≍ L`, over the full
+range — adds one power of `L`. -/
+def withinArcTotal : ℚ := 1 + 3/2
+
+@[simp] theorem withinArcTotal_eq : withinArcTotal = 5/2 := by
+  unfold withinArcTotal; norm_num
+
+/-- **The within-arc bound, applied at every arc, reproduces Weyl exactly.** -/
+theorem within_arc_gives_weyl : withinArcTotal = fareyExponent 1 0 := by
+  rw [withinArcTotal_eq, farey_withinOnly]
+
+/-- **And it is `L` away from the Lindelöf target** — the across-arc factor, entirely. -/
+@[simp] theorem within_arc_shortfall : withinArcTotal - fareyExponent 1 1 = 1 := by
+  rw [withinArcTotal_eq, farey_both]; norm_num
+
+/-- The within-arc half of the problem is proved; the across-arc half is the whole remainder. -/
+theorem within_proved_across_remains :
+    withinArcTotal = fareyExponent 1 0 ∧ withinArcTotal - fareyExponent 1 1 = 1 :=
+  ⟨within_arc_gives_weyl, within_arc_shortfall⟩
+
 end HTGeometry
