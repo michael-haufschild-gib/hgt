@@ -56,6 +56,37 @@ theorem norm_bourgainLocalCoefficientSum_le_mass
       intro i hi
       split_ifs <;> simp
 
+theorem integrable_norm_bourgainLocalCoefficientSum_sq
+    {ι : Type*} [Fintype ι]
+    (Y L : BourgainPhaseSpace) (p : ι → BourgainPhaseSpace)
+    (a : ι → ℂ) :
+    Integrable (fun z =>
+      ‖bourgainLocalCoefficientSum Y L p a z‖ ^ (2 : ℕ)) := by
+  let m : BourgainPhaseSpace → ℝ :=
+    bourgainLocalBoxMass Y L p (fun i => ‖a i‖)
+  let f : BourgainPhaseSpace → ℝ :=
+    fun z => ‖bourgainLocalCoefficientSum Y L p a z‖ ^ (2 : ℕ)
+  have hf0 (z : BourgainPhaseSpace) : 0 ≤ f z := by
+    unfold f
+    positivity
+  have hpoint (z : BourgainPhaseSpace) :
+      f z ≤ m z ^ (2 : ℕ) := by
+    unfold f
+    exact pow_le_pow_left₀ (norm_nonneg _)
+      (norm_bourgainLocalCoefficientSum_le_mass Y L p a z) 2
+  have hmsq :
+      Integrable (fun z => m z ^ (2 : ℕ)) :=
+    integrable_bourgainLocalBoxMass_sq
+      Y L p (fun i => ‖a i‖)
+  have hfmeas : AEStronglyMeasurable f := by
+    unfold f
+    exact Measurable.aestronglyMeasurable
+      ((measurable_bourgainLocalCoefficientSum Y L p a).norm.pow_const 2)
+  apply hmsq.mono' hfmeas
+  filter_upwards [] with z
+  rw [Real.norm_eq_abs, abs_of_nonneg (hf0 z)]
+  exact hpoint z
+
 /-- Complex localized-coefficient `L²` norm is bounded by the first
 sharp weighted spacing energy. -/
 theorem integral_norm_bourgainLocalCoefficientSum_sq_le
@@ -88,15 +119,8 @@ theorem integral_norm_bourgainLocalCoefficientSum_sq_le
       Integrable (fun z => m z ^ (2 : ℕ)) :=
     integrable_bourgainLocalBoxMass_sq
       Y L p (fun i => ‖a i‖)
-  have hfmeas : AEStronglyMeasurable f := by
-    unfold f
-    exact Measurable.aestronglyMeasurable
-      ((measurable_bourgainLocalCoefficientSum Y L p a).norm.pow_const 2)
-  have hfint : Integrable f := by
-    apply hmsq.mono' hfmeas
-    filter_upwards [] with z
-    rw [Real.norm_eq_abs, abs_of_nonneg (hf0 z)]
-    exact hpoint z
+  have hfint : Integrable f :=
+    integrable_norm_bourgainLocalCoefficientSum_sq Y L p a
   calc
     (∫ z : BourgainPhaseSpace,
         ‖bourgainLocalCoefficientSum Y L p a z‖ ^ (2 : ℕ)) =

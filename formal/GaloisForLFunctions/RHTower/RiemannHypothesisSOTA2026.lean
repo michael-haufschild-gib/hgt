@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.ConstrainedProlateFullDistanceCCM
 import GaloisForLFunctions.RHTower.LiFiniteCriterionFrontier
 import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
 import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
-import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
+import GaloisForLFunctions.RHTower.SalemFermiModeIntegral
 import GaloisForLFunctions.RHTower.SuzukiFiniteApertureHermiteBiehler
 import GaloisForLFunctions.RHTower.SuzukiProjectiveDefectBoundary
 import GaloisForLFunctions.RHTower.SuzukiGroundEdgeCayleyUniversality
@@ -638,9 +638,9 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   established RH conclusion.
 
 * The 2026 Salem specialization (`arXiv:2604.15396`) is formalized in
-  `SalemFermiModeCriterion`: the evaluated Fermi--Dirac transform of a pure Mellin mode vanishes
-  at every positive scale exactly at a zeta zero, and `SalemFermiModeExclusion` is proved
-  equivalent to RH.  The separate improper-integral evaluation remains an analytic-library wall.
+  `SalemFermiModeIntegral`: the literal Fermi--Dirac improper integral is evaluated throughout
+  `0 < Re s`, `s ≠ 1`; its pure Mellin mode vanishes at every positive scale exactly at a zeta
+  zero, and the resulting integral-defined exclusion is proved equivalent to RH.
 
 * The 2026 discrete Mobius--Laplace route (`arXiv:2607.09797`) is represented by the absolutely
   convergent and positive-axis continuous `mobiusDiscreteLaplaceTransform`, its exponential tail,

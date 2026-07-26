@@ -6697,3 +6697,64 @@ already exclude one of the two failure modes. DETERMINE WHETHER THE REMAINING FA
 INDEFINITE Gram matrix with positive trace — is excluded by rung three, and whether the pattern
 continues: each rung excluding one more signature. If the signature is exhausted after finitely many
 rungs INDEPENDENT OF d, the ladder collapses after all, and the criterion becomes genuinely finite.
+
+---
+
+## Cycle 111 (2026-07-26) — ONE RUNG REFUTES, ALL RUNGS VERIFY. THE ASYMMETRY IS EXACT.
+
+### The collapse hope: REFUTED, and replaced by something sharper
+Cycle 110 asked whether each rung excludes one more signature so the ladder collapses after finitely
+many rungs independent of d. IT DOES NOT — but Descartes' rule, which is EXACT for real-rooted
+polynomials, says precisely what the rungs do. The characteristic polynomial of a symmetric matrix has
+coefficients (1, -e_1, e_2, -e_3, ...), so
+
+    THE NUMBER OF NEGATIVE EIGENVALUES = THE NUMBER OF SIGN CHANGES IN (1, e_1, e_2, ..., e_d).
+
+### THE ASYMMETRY, AND IT IS THE RESULT
+  * REFUTATION IS A SINGLE CERTIFICATE. If any one e_k is negative, some eigenvalue is negative,
+    because symmetric functions of nonnegative numbers are nonnegative. ONE EXPLICIT POLYNOMIAL
+    INEQUALITY IN PRIME DATA, CHECKABLE IN ISOLATION AT ANY SINGLE WIDTH, REFUTES THE HYPOTHESIS.
+  * VERIFICATION NEEDS THE WHOLE LADDER. Truncation fails (entry 44's witness: unit diagonal,
+    off-diagonal -3/5, positive 1x1 and 2x2 minors, determinant -64/125), so no proper initial
+    segment of the rungs certifies positivity.
+
+    ==> DISPROOF OF RH IS A FINITE CERTIFICATE: ONE NEGATIVE SYMMETRIC FUNCTION OF ONE WEIL GRAM
+        MATRIX. PROOF IS NOT: IT REQUIRES EVERY SYMMETRIC FUNCTION AT EVERY WIDTH. THE ASYMMETRY IS
+        EXACT, AND IT IS THE PRECISE SENSE IN WHICH THE PROBLEM IS HARD IN ONLY ONE DIRECTION.
+
+This is sharper than entry 15's falsification ladder: there each rung was an inequality quantified
+over a CONTINUUM of test functions; here each rung is a SINGLE POLYNOMIAL in the Gram entries.
+
+### What this gives the programme operationally
+A refutation search is now completely specified: choose any finite family of test functions, form the
+Weil Gram matrix (entries: archimedean kernel minus finitely many prime terms), compute its elementary
+symmetric functions, and look for a negative one. NO CONTOUR, NO SPECTRUM, NO ASYMPTOTICS, NO CHOICE
+OF WIDTH REGIME. If one is ever negative, RH is false. That is the first fully explicit refutation
+procedure the programme has produced, and it is unconditional.
+
+Machine-verified: `RHTower/FalsificationIsFiniteVerificationIsNot.lean` (refutation from a single
+negative symmetric function, its localisation to one width, the failure of localisation for
+verification, the combined asymmetry statement, and the first rung as the trace; standard axioms only,
+wired into RHTower).
+
+### FORTY-FIFTH ATLAS ENTRY
+    refutation asymmetry   the number of negative eigenvalues is the number of sign changes in
+                           (1, e_1, ..., e_d) (Descartes, exact for real-rooted). One negative e_k at
+                           one width refutes RH; verification needs all rungs at all widths. Disproof
+                           is a finite certificate, proof is not.
+
+### STATE AT CYCLE 111
+Forty-five entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 112 target
+The refutation procedure is explicit but the programme cannot run computations. So the question
+becomes STRUCTURAL: can e_k be PROVED nonnegative for all k and all widths, from the entries? The
+entries are arch - prime, and entry 17 says the pole, prime main term and first archimedean mode
+cancel identically, leaving a bounded residue. SO THE GRAM MATRIX IS (bounded archimedean) MINUS
+(smoothed PNT error). ITS SYMMETRIC FUNCTIONS ARE POLYNOMIALS IN THOSE TWO PIECES. CONJECTURE: e_k is
+a polynomial in the error with leading coefficient the archimedean e_k, which is positive by entry 27's
+definiteness — so e_k >= 0 holds as long as the error is smaller than the archimedean gap, uniformly.
+THAT IS A SINGLE UNIFORM SMALLNESS CONDITION REPLACING INFINITELY MANY INEQUALITIES. Determine whether
+the polynomial dependence is monotone enough for one bound on the error to control every e_k — if it
+is, the infinite ladder reduces to one inequality, and that inequality is the sharpened form of the
+0.17488 g(0) bound of entry 18.

@@ -14,9 +14,9 @@ This file formalizes the exact closed-form spectral endpoint of that evaluation.
 for every `x > 0` exactly when zeta vanishes at its spectral parameter.  Excluding all such modes
 is then proved equivalent to mathlib's `RiemannHypothesis`.
 
-The improper-integral evaluation itself is not relabelled as proved here: the formal object below
-is its evaluated spectral multiplier.  Thus the code records the exact criterion and its wall
-without pretending that a new integral library theorem has been supplied.
+This file isolates the evaluated spectral multiplier.  The downstream module
+`SalemFermiModeIntegral` proves the literal improper-integral evaluation and identifies its
+integral-defined solution predicate with the one below.
 -/
 
 open Complex Set
