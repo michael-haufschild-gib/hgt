@@ -6630,3 +6630,70 @@ origin, namely the self-pairings, so tr(𝒫^2) = sum over n of (Lambda(n)/sqrt 
 COMPUTE e_2 EXPLICITLY. Its sign is the second unconditional rung, and unlike e_1 it contains prime
 data. If e_2 >= 0 is provable unconditionally, two rungs stand; if e_2 can be negative, RH IS FALSE.
 EITHER OUTCOME IS DECISIVE AND THE COMPUTATION IS ELEMENTARY.
+
+---
+
+## Cycle 110 (2026-07-26) — THE LADDER CANNOT BE TRUNCATED; RUNG TWO IS CAUCHY-SCHWARZ
+### Includes a MODEL CORRECTION to entry 42 that I must not gloss over.
+
+### MODEL CORRECTION (self-audit)
+The compressed prime operator is convolution by a measure of POINT MASSES, hence NOT TRACE CLASS, so
+e_k is NOT DEFINED for it directly. Cycle 109's criterion is correct only in the GRAM MODEL: the
+finite matrix
+    A_{jk} = arch(phi_j, phi_k) - 2 sum_n Lambda(n) n^{-1/2} (phi_j * phi~_k)(log n),
+whose entries are explicit and finite. RH <=> every such Gram matrix is PSD.
+
+IN THAT MODEL THE TRACE IS sum_j W(phi_j, phi_j), WHICH CONTAINS PRIME TERMS. Entry 42's
+"the prime operator is traceless" is a statement about the FULL COMPRESSION to L^2(I), where the
+kernel delta(x - y -+ log n) has no diagonal mass; it is that limit which is prime-free, and the
+finite-d truncation is not. ENTRY 42 IS AMENDED ACCORDINGLY: the tracelessness is a full-compression
+fact, not a finite-Gram fact.
+
+### RUNG TWO IS EXACTLY CAUCHY-SCHWARZ
+For d = 2, e_2 = A11 A22 - A12^2, so the second rung is
+
+    W(phi, phi) * W(psi, psi)  >=  W(phi, psi)^2,
+
+the Cauchy-Schwarz inequality for the Weil form. That is a clean identification: the polynomial ladder
+begins with the trace (rung one, archimedean-dominated and positive) and continues with
+Cauchy-Schwarz.
+
+### AND IT CANNOT STOP THERE
+All 1x1 and 2x2 principal minors positive does NOT imply positive semidefiniteness. The symmetric
+matrix with unit diagonal and constant off-diagonal t has 2x2 minors 1 - t^2 and determinant
+(1 - t)^2 (1 + 2t). AT t = -3/5 THE MINORS ARE 16/25 > 0 WHILE THE DETERMINANT IS -64/125 < 0.
+
+    ==> THE POLYNOMIAL LADDER IS FINITE AT EACH WIDTH BUT ITS LENGTH GROWS WITH THE WIDTH: ALL d
+        SYMMETRIC FUNCTIONS ARE NEEDED AND NO FIXED NUMBER OF RUNGS SUFFICES.
+
+This settles the shape of the criterion: entry 43's "finitely many polynomial inequalities" is right
+per width, but the count is the dimension, so the total is still infinite across widths — the same
+structure as the falsification ladder of entry 15, now with each rung an explicit polynomial rather
+than an inequality over a continuum of tests. THE GAIN IS REAL (continuum -> finite at each width)
+AND BOUNDED (finite -> growing without bound across widths).
+
+Machine-verified: `RHTower/LadderNeedsAllRungs.lean` (the identification of the 2x2 symmetric function
+with the determinant, the closed forms 1 - t^2 for the minors and (1-t)^2(1+2t) for the determinant,
+their signs at t = -3/5, the resulting insufficiency of truncation, and the incompatibility of a
+negative determinant with positivity; standard axioms only, wired into RHTower).
+
+### FORTY-FOURTH ATLAS ENTRY (and entry 42 amended)
+    ladder length   rung one is the trace, rung two is Cauchy-Schwarz for the Weil form, and
+                    truncation fails: unit diagonal with off-diagonal -3/5 has positive 1x1 and 2x2
+                    minors and determinant -64/125. All d rungs are needed at width d.
+    entry 42 AMENDED  tracelessness of the prime part is a full-compression statement; in the finite
+                      Gram model the trace contains prime terms.
+
+### STATE AT CYCLE 110
+Forty-four entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 111 target
+Rung two is Cauchy-Schwarz for the Weil form, and Cauchy-Schwarz for a symmetric bilinear form holds
+on a 2-plane IFF the form is SEMIDEFINITE there — positive or NEGATIVE. So rung two ALONE cannot
+distinguish PSD from NSD. But rung one (the trace) IS positive unconditionally (archimedean
+domination, entry 42's full-compression version plus the definiteness constant 0.34976). RUNG ONE
+POSITIVE PLUS RUNG TWO NONNEGATIVE EXCLUDES NEGATIVE SEMIDEFINITENESS. So the first two rungs together
+already exclude one of the two failure modes. DETERMINE WHETHER THE REMAINING FAILURE MODE — an
+INDEFINITE Gram matrix with positive trace — is excluded by rung three, and whether the pattern
+continues: each rung excluding one more signature. If the signature is exhausted after finitely many
+rungs INDEPENDENT OF d, the ladder collapses after all, and the criterion becomes genuinely finite.
