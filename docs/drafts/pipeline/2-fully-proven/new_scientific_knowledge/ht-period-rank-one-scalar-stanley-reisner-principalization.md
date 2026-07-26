@@ -806,3 +806,27 @@ This isolates the outstanding analytic input precisely: the surviving alternativ
 elliptic configuration, and supplying `(E)` — the Weierstrass differential equation, i.e. that an
 elliptic function is differentially algebraic — removes it and proves `(6)` unconditionally.  Nothing
 else in the chain from `(8)` to `(6)` is now missing.
+
+## Lean progress — the Weierstrass function is differentially algebraic
+
+`GaloisForLFunctions/HTGeometry/WeierstrassPDifferentiallyAlgebraic.lean` (axiom-clean, build green,
+umbrella-registered) formalizes the first half of the elliptic input `(E)`.
+
+Mathlib now carries the Weierstrass function and its differential equation
+(`Mathlib/Analysis/SpecialFunctions/Elliptic/Weierstrass.lean`): `PeriodPair.derivWeierstrassP_sq`
+gives `℘'(z)^2 = 4 ℘(z)^3 - g_2 ℘(z) - g_3` off the lattice, and `PeriodPair.deriv_weierstrassP`
+gives `deriv ℘ = ℘'` globally.  Turning that into a statement of `DifferentiallyAlgebraic` requires
+one repair: at lattice points `℘` carries junk values and `(E)` itself fails there.  Multiplying the
+relation by the value slot fixes it, since `℘` takes the junk value `0` exactly at the lattice:
+
+- `weierstrassPRelation` — the order-one differential polynomial
+  `(y_1^2 - 4 y_0^3 + g_2 y_0 + g_3) * y_0`;
+- `weierstrassPRelation_ne_zero` — it is a nonzero polynomial (two evaluations differing by `1`);
+- **`differentiallyAlgebraic_weierstrassP`** — it vanishes on the whole plane: off the lattice by
+  `(E)`, at a lattice point because the value slot is `0`;
+- `not_hypertranscendental_weierstrassP` — hence `℘` is not hypertranscendental.
+
+So `(E)` is now available in Lean in exactly the form the period-rank law needs.  What remains of the
+elliptic branch is the structure statement: every meromorphic function with a lattice of periods lies
+in `C(℘, ℘')` and is therefore differentially algebraic too.  With that, the surviving alternative in
+`facetComplement_rankOne_or_lattice` disappears and `(6)` becomes unconditional.
