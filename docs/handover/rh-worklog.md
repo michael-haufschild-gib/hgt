@@ -5109,3 +5109,67 @@ value, and its mean equals the archimedean constant computed in cycle 84. If the
 finite, no exponent can have positive real part, and RH follows. TEST WHETHER THE BOHR MEAN OF THE
 SCREW DEFECT IS COMPUTABLE UNCONDITIONALLY FROM THE PRIME SIDE — the prime side is a Dirichlet
 polynomial in x with real frequencies log n, whose Bohr mean is elementary.
+
+---
+
+## Cycle 87 (2026-07-26) — THE MEAN DICHOTOMY, AND THE BOHR ROUTE'S CIRCULARITY MADE PRECISE
+
+### Phase 4 verdict on the Bohr-mean target: CIRCULAR — recorded, with the exact reason
+Cycle 86 asked whether the Bohr mean of the screw defect is computable unconditionally from the prime
+side. It is not. The mean of the smoothed error is a Mellin transform,
+    int_1^inf (psi(t) - t) t^{-s-1} dt  =  -zeta'(s)/(s zeta(s)) - 1/(s-1),
+and its CONVERGENCE AT s = 1/2 IS ITSELF EQUIVALENT TO RH. So the mean is available in closed form —
+as 2 - 2 zeta'(1/2)/zeta(1/2) up to normalisation — EXACTLY WHEN RH HOLDS. The Bohr route is a
+reformulation, not an independent handle. DEAD END for computing the mean; do not re-attempt.
+
+Also checked: `HTGeometry/BohrAlmostPeriodic.lean` already defines IsBohrAlmostPeriodic and proves a
+vanishing lemma. Almost-periodicity infrastructure EXISTS in the corpus — do not rebuild it.
+
+### What survives, and it is sharp
+The dichotomy that decides semiboundedness is elementary and quantitative:
+
+  REAL FREQUENCY:  (1/X) int_0^X cos(gam x) dx = sin(gam X)/(gam X),  modulus <= 1/(|gam| X).
+                   Every nonzero real frequency averages to zero AT RATE 1/X.
+
+  POSITIVE RATE:   (1/X) int_0^X e^{a x} dx = (e^{aX} - 1)/(aX)  >=  1 + aX/4,
+                   using e^t >= (1 + t/2)^2. A single exponent with positive real part makes the mean
+                   DIVERGE LINEARLY IN X.
+
+    ==> THE MEAN EXISTS PRECISELY WHEN NO EXPONENT HAS POSITIVE REAL PART, AND WHEN IT FAILS IT
+        FAILS BY A LINEAR DIVERGENCE — NOT MARGINALLY.
+
+Quantitatively: if the mean stays below M on every range [0,X], then a X <= 4(M-1) for every X, so
+a = 0. The failure of RH is not a delicate near-miss in this formulation; it is a linear blow-up with
+an explicit constant.
+
+Machine-verified: `RHTower/BohrMeanDichotomy.lean` (both interval integrals from HasDerivAt, the
+1/(|gam|X) decay of a real frequency's mean, the quadratic lower bound e^t - 1 >= t + t^2/4 via
+e^t >= (1+t/2)^2, the linear divergence 1 + aX/4, and the two forms of the rate-forcing conclusion;
+standard axioms only, wired into RHTower).
+
+### TWENTY-FIRST ATLAS ENTRY
+    mean dichotomy   a real frequency's mean decays like 1/X; a positive rate's mean grows like
+                     1 + aX/4. Semiboundedness of the screw defect fails by LINEAR divergence, with
+                     an explicit constant, as soon as one zero leaves the line.
+
+### STATE AT CYCLE 87
+Twenty-one entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE EXPLICIT-FORMULA LANE IS NOW CLOSED AS A RESEARCH DIRECTION. Entries 17-21 establish that for
+both window families every non-arithmetic term cancels identically or decays exponentially, that the
+archimedean margin is a fixed positive constant that never degrades, and that the surviving question
+is exactly semiboundedness/mean-existence of the pure zero sum — which every attempted handle
+(error bound, Bohr mean, extremal test, character average) has been shown to be circular or capped.
+DO NOT OPEN ANOTHER EXPLICIT-FORMULA SUB-LANE WITHOUT A GENUINELY NEW INPUT.
+
+### Cycle 88 target — PIVOT AWAY FROM THE EXPLICIT FORMULA
+The corpus SOTA file names a second frontier that is NOT explicit-formula based: the Connes
+ground-state limit wall. As stated (`ConnesXiGroundStateLimitWall`) it is a zero-transfer consumer —
+equivalent to RH, since under RH the constant sequence witnesses it — and the file says the real
+frontier must "name the source-defined CCM operator/ground-state family". THAT IS THE TARGET:
+supply a CONCRETE sequence F_n -> XiC, locally uniformly, with F_n entire and real-rooted, built from
+a source that does not presuppose RH. The Laguerre-Polya characterisation says such a sequence exists
+iff XiC is in LP iff RH, so the content is entirely in CONSTRUCTING one. The corpus already has
+Gaussian heat-trace, theta, and Jensen/Turan machinery (XiGaussianHeatTuranDefect,
+ThetaCuspFullReflectionFourthTuran). START BY AUDITING WHAT REAL-ROOTED APPROXIMANT FAMILIES THE
+CORPUS ALREADY CONTAINS and whether any is unconditional.

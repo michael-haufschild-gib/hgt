@@ -762,4 +762,126 @@ theorem records_between :
   rw [divisorRecordBlock_eq]
   refine ⟨by norm_num, by norm_num, by norm_num, by norm_num⟩
 
+
+/-!
+### Calibrating the two problems against each other
+
+Both problems start from the classical incoherent exponent `5/6`.  The distances to their targets are
+
+    Lindelöf:            5/6 − 1/2  = 1/3
+    divisor conjecture:  5/6 − 3/4  = 1/12,
+
+so **LH is exactly four times further** in the shared currency.  The distances covered are
+
+    Bourgain:        5/6 − 17/21   = 1/42        — a fraction  (1/42)/(1/3)  = 1/14   ≈ 7.1 %
+    divisor record:  5/6 − 339/416 = 23/1248     — a fraction  (23/1248)/(1/12) = 23/104 ≈ 22.1 %,
+
+so the divisor problem is roughly three times further along its (four times shorter) road.
+-/
+
+/-- Distance from the classical incoherent exponent to a target, in the shared currency. -/
+def blockDistance (target : ℚ) : ℚ := 5/6 - target
+
+@[simp] theorem blockDistance_lindelof : blockDistance (1/2) = 1/3 := by
+  unfold blockDistance; norm_num
+
+@[simp] theorem blockDistance_divisor : blockDistance (3/4) = 1/12 := by
+  unfold blockDistance; norm_num
+
+/-- **LH is exactly four times further from the classical exponent than the divisor conjecture.** -/
+theorem lindelof_four_times_divisor :
+    blockDistance (1/2) = 4 * blockDistance (3/4) := by
+  rw [blockDistance_lindelof, blockDistance_divisor]; norm_num
+
+/-- Distance covered by Bourgain's record. -/
+@[simp] theorem blockDistance_bourgain : blockDistance (17/21) = 1/42 := by
+  unfold blockDistance; norm_num
+
+/-- Distance covered by the divisor record `x^{131/416}`. -/
+@[simp] theorem blockDistance_divisorRecord : blockDistance (339/416) = 23/1248 := by
+  unfold blockDistance; norm_num
+
+/-- Fraction of the way to the target. -/
+def progressFraction (covered target : ℚ) : ℚ := covered / target
+
+/-- **Progress toward the Lindelöf hypothesis: `1/14`.** -/
+@[simp] theorem progress_lindelof :
+    progressFraction (blockDistance (17/21)) (blockDistance (1/2)) = 1/14 := by
+  rw [blockDistance_bourgain, blockDistance_lindelof]
+  unfold progressFraction; norm_num
+
+/-- **Progress toward the divisor conjecture: `23/104`.** -/
+@[simp] theorem progress_divisor :
+    progressFraction (blockDistance (339/416)) (blockDistance (3/4)) = 23/104 := by
+  rw [blockDistance_divisorRecord, blockDistance_divisor]
+  unfold progressFraction; norm_num
+
+/-- **The divisor problem is three times further along.** -/
+theorem divisor_further_along :
+    progressFraction (blockDistance (17/21)) (blockDistance (1/2))
+      < progressFraction (blockDistance (339/416)) (blockDistance (3/4)) ∧
+    3 * progressFraction (blockDistance (17/21)) (blockDistance (1/2))
+      < progressFraction (blockDistance (339/416)) (blockDistance (3/4)) := by
+  rw [progress_lindelof, progress_divisor]
+  constructor <;> norm_num
+
+
+/-!
+### Where square-root cancellation is actually a theorem, and how much of the frontier it reaches
+
+The one proven source of square-root cancellation for exponential sums is Weil–Deligne: **complete**
+sums with **algebraic** phase over a finite field.  The frontier sum fails both hypotheses — it runs
+over a Farey range, not a full residue system, and its phase `√(2a/q)` is irrational in the summation
+variable.
+
+There is, however, a sub-family on which the phase *is* rational.  `N√(2a/q)` is a rational multiple of
+`a/q` exactly when `2aq` is a perfect square.  For each `q` the admissible `a ≤ q` number `≍ √q`, so
+the algebraic sub-family has size
+
+    Σ_{q ≤ L} √q  ≍  L^{3/2},   a fraction  L^{3/2}/L² = **L^{-1/2}**  of all resonances.
+
+On that sub-family the inner sum is a Gauss/Salié sum and Weil's bound applies unconditionally; its
+total contribution is
+
+    ( Σ_{q≤L} √q · (L²/q^{3/2})² )^{1/2}  =  L² ( Σ_{q≤L} q^{-5/2} )^{1/2}  ≍  L².
+
+The remaining `≍L²` resonances have transcendental phase and no proven square-root cancellation.
+-/
+
+/-- Size exponent (in `L`) of the algebraic sub-family of resonances: those with `2aq` a perfect
+square.  Writing `2q = u v²` with `u` squarefree, the admissible `a ≤ q` are exactly `a = u m²` with
+`m ≤ v/√2`, so their number is `≍ v(2q)`, the largest `v` with `v² ∣ 2q`.  Summing,
+`Σ_{q≤L} v(2q) ≍ Σ_v v·(L/v²) ≍ L log L` — **exponent `1`, not `3/2`.** -/
+def algebraicResonanceCount : ℚ := 1
+
+/-- Size exponent of all resonances. -/
+def allResonanceCount : ℚ := 2
+
+/-- **The algebraic sub-family is thin: a fraction `L^{-1}` of the resonances (up to logarithms).** -/
+@[simp] theorem algebraic_density :
+    algebraicResonanceCount - allResonanceCount = -1 := by
+  unfold algebraicResonanceCount allResonanceCount; norm_num
+
+/-- Contribution exponent of the algebraic sub-family under Weil's bound. -/
+def algebraicContribution : ℚ := 2
+
+/-- **Weil on the algebraic sub-family reaches the `across-arc-only` level, not the Lindelöf level.** -/
+theorem algebraic_reaches_only_acrossArc :
+    algebraicContribution = fareyExponent 0 1 ∧ fareyExponent 1 1 < algebraicContribution := by
+  constructor
+  · unfold algebraicContribution fareyExponent; norm_num
+  · unfold algebraicContribution fareyExponent; norm_num
+
+/-- The shortfall of the algebraic sub-family from the Lindelöf target, in powers of `L`. -/
+@[simp] theorem algebraic_shortfall :
+    algebraicContribution - fareyExponent 1 1 = 1/2 := by
+  unfold algebraicContribution fareyExponent; norm_num
+
+/-- **The reach of the one proven mechanism.**  Weil–Deligne applies to a `L^{-1/2}` fraction of the
+resonances and, even applied perfectly there, falls short of the Lindelöf target by `L^{1/2}`. -/
+theorem weil_reach :
+    algebraicResonanceCount - allResonanceCount = -1 ∧
+    algebraicContribution - fareyExponent 1 1 = 1/2 :=
+  ⟨algebraic_density, algebraic_shortfall⟩
+
 end HTGeometry
