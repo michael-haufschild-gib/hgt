@@ -27,73 +27,13 @@ admits only conductor-type functional equations (finite support), and any diviso
 -/
 import Mathlib
 import GaloisForLFunctions.RHTower.QuietCrossingRigidity
+import GaloisForLFunctions.HTGeometry.PerronKernelBound
 
 open Complex MeasureTheory Filter Topology Asymptotics intervalIntegral Set
 
 noncomputable section
 
 namespace RHTower
-
-/-- The reciprocal quadratic `t ↦ (c²+t²)⁻¹` is Lebesgue integrable for `c > 0`. -/
-private theorem qtp_inv_quad_integrable {c : ℝ} (hc : 0 < c) :
-    Integrable (fun t : ℝ => (c ^ 2 + t ^ 2)⁻¹) := by
-  have hc0 : c⁻¹ ≠ 0 := inv_ne_zero (ne_of_gt hc)
-  have h1 : Integrable (fun t : ℝ => (1 + (c⁻¹ * t) ^ 2)⁻¹) :=
-    (integrable_inv_one_add_sq).comp_mul_left' hc0
-  have heq : (fun t : ℝ => (c ^ 2 + t ^ 2)⁻¹) = fun t => (c ^ 2)⁻¹ * (1 + (c⁻¹ * t) ^ 2)⁻¹ := by
-    funext t; rw [← mul_inv]; congr 1; field_simp
-  rw [heq]; exact h1.const_mul _
-
-/-- The Perron kernel is dominated by the reciprocal quadratic on the line `Re s = c`. -/
-private theorem qtp_kernel_norm_le {c : ℝ} (hc : 0 < c) (t : ℝ) :
-    ‖((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹‖ ≤ (c ^ 2 + t ^ 2)⁻¹ := by
-  set A : ℂ := (↑c + ↑t * I) with hA
-  set B : ℂ := (↑c + ↑t * I + 1) with hB
-  have hAnorm : ‖A‖ = Real.sqrt (c ^ 2 + t ^ 2) := by rw [hA, Complex.norm_add_mul_I]
-  have hApos : 0 < ‖A‖ := by rw [hAnorm]; apply Real.sqrt_pos.mpr; positivity
-  have hBge : ‖A‖ ≤ ‖B‖ := by
-    have hBnorm : ‖B‖ = Real.sqrt ((c + 1) ^ 2 + t ^ 2) := by
-      rw [hB]
-      have h : (↑c + ↑t * I + 1 : ℂ) = ↑(c + 1) + ↑t * I := by push_cast; ring
-      rw [h, Complex.norm_add_mul_I]
-    rw [hAnorm, hBnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hBpos : 0 < ‖B‖ := lt_of_lt_of_le hApos hBge
-  rw [norm_inv, norm_mul, inv_le_inv₀ (mul_pos hApos hBpos) (by positivity)]
-  calc c ^ 2 + t ^ 2 = ‖A‖ * ‖A‖ := by rw [hAnorm, Real.mul_self_sqrt (by positivity)]
-    _ ≤ ‖A‖ * ‖B‖ := mul_le_mul_of_nonneg_left hBge (le_of_lt hApos)
-
-/-- Kernel decay on a horizontal segment at height `|t| ≥ T`. -/
-private theorem qtp_kernel_line_bound {t T : ℝ} (hT : 0 < T) (ht : T ≤ |t|) (x : ℝ) :
-    ‖((↑x + ↑t * I) * (↑x + ↑t * I + 1))⁻¹‖ ≤ (T ^ 2)⁻¹ := by
-  set s : ℂ := (↑x + ↑t * I : ℂ) with hs
-  have him : s.im = t := by rw [hs]; simp
-  have him1 : (s + 1).im = t := by rw [Complex.add_im, him, Complex.one_im, add_zero]
-  have hA : T ≤ ‖s‖ := le_trans ht (by rw [← him]; exact Complex.abs_im_le_norm s)
-  have hB : T ≤ ‖s + 1‖ := le_trans ht (by rw [← him1]; exact Complex.abs_im_le_norm (s + 1))
-  have hge : T ^ 2 ≤ ‖s * (s + 1)‖ := by
-    rw [norm_mul, sq]; exact mul_le_mul hA hB (le_of_lt hT) (le_trans hT.le hA)
-  rw [norm_inv]; exact inv_anti₀ (by positivity) hge
-
-/-- Kernel decay on the vertical line `Re s = −M` for `M > 1`. -/
-private theorem qtp_kernel_left_bound {M y : ℝ} (hM : 1 < M) :
-    ‖((↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1))⁻¹‖ ≤ ((M - 1) ^ 2 + y ^ 2)⁻¹ := by
-  have hAnorm : ‖(↑(-M) + ↑y * I : ℂ)‖ = Real.sqrt ((-M) ^ 2 + y ^ 2) := Complex.norm_add_mul_I _ _
-  have hBeq : (↑(-M) + ↑y * I + 1 : ℂ) = ↑(1 - M) + ↑y * I := by push_cast; ring
-  have hBnorm : ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ = Real.sqrt ((1 - M) ^ 2 + y ^ 2) := by
-    rw [hBeq, Complex.norm_add_mul_I]
-  have hden : (0 : ℝ) < (M - 1) ^ 2 + y ^ 2 := by nlinarith [sq_nonneg y, sq_nonneg (M - 1)]
-  have hAge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ := by
-    rw [hAnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hBge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ := by
-    rw [hBnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hge : (M - 1) ^ 2 + y ^ 2 ≤ ‖(↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1)‖ := by
-    rw [norm_mul]
-    calc (M - 1) ^ 2 + y ^ 2
-        = Real.sqrt ((M - 1) ^ 2 + y ^ 2) * Real.sqrt ((M - 1) ^ 2 + y ^ 2) := by
-          rw [Real.mul_self_sqrt hden.le]
-      _ ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ * ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ :=
-          mul_le_mul hAge hBge (Real.sqrt_nonneg _) (le_trans (Real.sqrt_nonneg _) hAge)
-  rw [norm_inv]; exact inv_anti₀ hden hge
 
 /-- The height-growth kernel constant: `J(m) = ∫ (1+y²)^{(m−2)/2} dy`, finite for `m < 1`. -/
 def tpolyConst (m : ℝ) : ℝ := ∫ y : ℝ, (1 + y ^ 2) ^ ((m - 2) / 2)
@@ -253,13 +193,13 @@ theorem quiet_crossing_cocycle_bound_tpoly {F h : ℂ → ℂ} {a : ℕ → ℂ}
       have hE' : ‖perronE n (↑c + ↑t * I)‖
           ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹ := by
         rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
-        exact mul_le_mul (hKink_c _ (le_of_eq hre)) (qtp_kernel_norm_le hc0 t) (norm_nonneg _)
+        exact mul_le_mul (hKink_c _ (le_of_eq hre)) (HTGeometry.norm_inv_mul_add_one_le_of_re_pos hc0 t) (norm_nonneg _)
           (by positivity)
       calc ‖F (↑c + ↑t * I)‖ * ‖perronE n (↑c + ↑t * I)‖
           ≤ B * ((4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹) :=
             mul_le_mul hF' hE' (norm_nonneg _) hB0
         _ = (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * B) * (c ^ 2 + t ^ 2)⁻¹ := by ring
-    exact ((qtp_inv_quad_integrable hc0).const_mul _).mono' hcont.aestronglyMeasurable
+    exact ((HTGeometry.integrable_inv_sq_add_sq hc0).const_mul _).mono' hcont.aestronglyMeasurable
       (Eventually.of_forall hbd)
   -- left edge: the height factor is absorbed by the dominating kernel
   have hleftbd : ∀ y : ℝ, ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖
@@ -279,7 +219,7 @@ theorem quiet_crossing_cocycle_bound_tpoly {F h : ℂ → ℂ} {a : ℕ → ℂ}
         ≤ (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by
       rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
       exact mul_le_mul (hKink_M _ hre)
-        (qtp_kernel_left_bound (M := (M : ℝ)) (y := y) hM1) (norm_nonneg _)
+        (HTGeometry.norm_inv_mul_add_one_le_of_re_neg (M := (M : ℝ)) (y := y) hM1) (norm_nonneg _)
         (mul_nonneg (by norm_num) (Real.rpow_nonneg hxmpos.le _))
     calc ‖F (↑(-(M : ℝ)) + ↑y * I)‖ * ‖perronE n (↑(-(M : ℝ)) + ↑y * I)‖
         ≤ (H M * (2 + |y|) ^ m * B) *
@@ -390,7 +330,7 @@ theorem quiet_crossing_cocycle_bound_tpoly {F h : ℂ → ℂ} {a : ℕ → ℂ}
         ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * ((T k) ^ 2)⁻¹ := by
       rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
       exact mul_le_mul (hKink_c _ ((le_of_eq hre).trans hx2))
-        (qtp_kernel_line_bound (t := t) (T := T k) hTk (le_of_eq habs.symm) x) (norm_nonneg _)
+        (HTGeometry.norm_inv_mul_add_one_le_of_line (t := t) (T := T k) hTk (le_of_eq habs.symm) x) (norm_nonneg _)
         (by positivity)
     calc ‖F (↑x + ↑t * I)‖ * ‖perronE n (↑x + ↑t * I)‖
         ≤ (H M * (2 + T k) ^ m * B + q k)

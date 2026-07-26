@@ -6,23 +6,6 @@ namespace RHTower
 
 noncomputable section
 
-private theorem xiDivisorSupport_countable_for_firstClockReflection :
-    (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
-      z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro rho
-  exact ⟨(rho : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp
-    xiDivisorSupport_countable_for_firstClockReflection
-
-noncomputable local instance : Countable XiZeroCopy := inferInstance
-
 /-- Fixed dilation kernel of the first physical CCM clock. -/
 def ccmFirstClockDilationKernel (x : ℝ) : ℂ :=
   ((2 * Real.pi : ℝ) : ℂ) *

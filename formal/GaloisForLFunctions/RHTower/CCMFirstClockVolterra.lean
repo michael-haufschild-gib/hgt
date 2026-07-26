@@ -22,22 +22,6 @@ namespace RHTower
 
 noncomputable section
 
-private theorem xiDivisorSupport_countable_for_firstClock :
-    (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
-      z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro rho
-  exact ⟨(rho : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp xiDivisorSupport_countable_for_firstClock
-
-noncomputable local instance : Countable XiZeroCopy := inferInstance
-
 /-- Closed integral of a complex sine with nonzero linear rate. -/
 theorem integral_complex_sin_linear
     {k : ℂ} (hk : k ≠ 0) (L : ℝ) :

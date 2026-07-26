@@ -31,6 +31,7 @@ hypothesis carries a single sequence `T_k, q_k` with `q_k·exp(−T_k²/λ) → 
 -/
 import Mathlib
 import GaloisForLFunctions.RHTower.QuietCrossingRigidity
+import GaloisForLFunctions.HTGeometry.PerronKernelBound
 
 open Complex MeasureTheory Filter Topology Asymptotics intervalIntegral Set
 
@@ -68,16 +69,6 @@ theorem gaussWeight_norm_le_sq {lam : ℝ} (hlam : 0 < lam) (s : ℂ) :
 The corresponding lemmas of `QuietCrossingRigidity` are file-private, so the pieces of kernel
 bookkeeping are re-derived here. -/
 
-/-- `t ↦ (c²+t²)⁻¹` is integrable for `c > 0` (a scaled Cauchy profile). -/
-private theorem gwInvQuadIntegrable {c : ℝ} (hc : 0 < c) :
-    Integrable (fun t : ℝ => (c ^ 2 + t ^ 2)⁻¹) := by
-  have hc0 : c⁻¹ ≠ 0 := inv_ne_zero (ne_of_gt hc)
-  have h1 : Integrable (fun t : ℝ => (1 + (c⁻¹ * t) ^ 2)⁻¹) :=
-    (integrable_inv_one_add_sq).comp_mul_left' hc0
-  have heq : (fun t : ℝ => (c ^ 2 + t ^ 2)⁻¹) = fun t => (c ^ 2)⁻¹ * (1 + (c⁻¹ * t) ^ 2)⁻¹ := by
-    funext t; rw [← mul_inv]; congr 1; field_simp
-  rw [heq]; exact h1.const_mul _
-
 /-- The denominator `(c+it)(c+it+1)` is nonzero for `c > 0`. -/
 private theorem gwKernelDenNe {c : ℝ} (hc : 0 < c) (t : ℝ) :
     (↑c + ↑t * I) * (↑c + ↑t * I + 1) ≠ 0 := by
@@ -89,58 +80,6 @@ private theorem gwKernelDenNe {c : ℝ} (hc : 0 < c) (t : ℝ) :
 private theorem gwKernelContinuous {c : ℝ} (hc : 0 < c) :
     Continuous (fun t : ℝ => ((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹) :=
   Continuous.inv₀ (by fun_prop) (gwKernelDenNe hc)
-
-/-- `‖1/((c+it)(c+it+1))‖ ≤ (c²+t²)⁻¹` on the line `Re s = c > 0`. -/
-private theorem gwKernelNormLe {c : ℝ} (hc : 0 < c) (t : ℝ) :
-    ‖((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹‖ ≤ (c ^ 2 + t ^ 2)⁻¹ := by
-  set A : ℂ := (↑c + ↑t * I) with hA
-  set B : ℂ := (↑c + ↑t * I + 1) with hB
-  have hAnorm : ‖A‖ = Real.sqrt (c ^ 2 + t ^ 2) := by rw [hA, Complex.norm_add_mul_I]
-  have hApos : 0 < ‖A‖ := by rw [hAnorm]; apply Real.sqrt_pos.mpr; positivity
-  have hBge : ‖A‖ ≤ ‖B‖ := by
-    have hBnorm : ‖B‖ = Real.sqrt ((c + 1) ^ 2 + t ^ 2) := by
-      rw [hB]
-      have h : (↑c + ↑t * I + 1 : ℂ) = ↑(c + 1) + ↑t * I := by push_cast; ring
-      rw [h, Complex.norm_add_mul_I]
-    rw [hAnorm, hBnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hBpos : 0 < ‖B‖ := lt_of_lt_of_le hApos hBge
-  rw [norm_inv, norm_mul, inv_le_inv₀ (mul_pos hApos hBpos) (by positivity)]
-  calc c ^ 2 + t ^ 2 = ‖A‖ * ‖A‖ := by rw [hAnorm, Real.mul_self_sqrt (by positivity)]
-    _ ≤ ‖A‖ * ‖B‖ := mul_le_mul_of_nonneg_left hBge (le_of_lt hApos)
-
-/-- Kernel decay on a horizontal segment: at `x + t·I` with `|t| ≥ T > 0`,
-`‖1/(s(s+1))‖ ≤ T^{-2}`. -/
-private theorem gwKernelLineBound {t T : ℝ} (hT : 0 < T) (ht : T ≤ |t|) (x : ℝ) :
-    ‖((↑x + ↑t * I) * (↑x + ↑t * I + 1))⁻¹‖ ≤ (T ^ 2)⁻¹ := by
-  set s : ℂ := (↑x + ↑t * I : ℂ) with hs
-  have him : s.im = t := by rw [hs]; simp
-  have him1 : (s + 1).im = t := by rw [Complex.add_im, him, Complex.one_im, add_zero]
-  have hA : T ≤ ‖s‖ := le_trans ht (by rw [← him]; exact Complex.abs_im_le_norm s)
-  have hB : T ≤ ‖s + 1‖ := le_trans ht (by rw [← him1]; exact Complex.abs_im_le_norm (s + 1))
-  have hge : T ^ 2 ≤ ‖s * (s + 1)‖ := by
-    rw [norm_mul, sq]; exact mul_le_mul hA hB (le_of_lt hT) (le_trans hT.le hA)
-  rw [norm_inv]; exact inv_anti₀ (by positivity) hge
-
-/-- Kernel decay on the vertical line `Re s = −M` (`M > 1`): `‖1/(s(s+1))‖ ≤ ((M−1)²+y²)⁻¹`. -/
-private theorem gwKernelLeftBound {M y : ℝ} (hM : 1 < M) :
-    ‖((↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1))⁻¹‖ ≤ ((M - 1) ^ 2 + y ^ 2)⁻¹ := by
-  have hAnorm : ‖(↑(-M) + ↑y * I : ℂ)‖ = Real.sqrt ((-M) ^ 2 + y ^ 2) := Complex.norm_add_mul_I _ _
-  have hBeq : (↑(-M) + ↑y * I + 1 : ℂ) = ↑(1 - M) + ↑y * I := by push_cast; ring
-  have hBnorm : ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ = Real.sqrt ((1 - M) ^ 2 + y ^ 2) := by
-    rw [hBeq, Complex.norm_add_mul_I]
-  have hden : (0 : ℝ) < (M - 1) ^ 2 + y ^ 2 := by nlinarith [sq_nonneg y, sq_nonneg (M - 1)]
-  have hAge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ := by
-    rw [hAnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hBge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ := by
-    rw [hBnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hge : (M - 1) ^ 2 + y ^ 2 ≤ ‖(↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1)‖ := by
-    rw [norm_mul]
-    calc (M - 1) ^ 2 + y ^ 2
-        = Real.sqrt ((M - 1) ^ 2 + y ^ 2) * Real.sqrt ((M - 1) ^ 2 + y ^ 2) := by
-          rw [Real.mul_self_sqrt hden.le]
-      _ ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ * ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ :=
-          mul_le_mul hAge hBge (Real.sqrt_nonneg _) (le_trans (Real.sqrt_nonneg _) hAge)
-  rw [norm_inv]; exact inv_anti₀ hden hge
 
 /-- Numerator bound on the line `Re s ≤ c` (needs `n ≥ 2` so all three bases exceed `1`):
 `‖N(s)‖ ≤ 4·(n+½)^{c+1}`. -/
@@ -236,7 +175,7 @@ theorem gaussian_weighted_contour_bound
         intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
       have hE' : ‖perronE n (↑c + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹ := by
         rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
-        exact mul_le_mul (gwKink_c hn hc0 _ (le_of_eq hre)) (gwKernelNormLe hc0 t) (norm_nonneg _)
+        exact mul_le_mul (gwKink_c hn hc0 _ (le_of_eq hre)) (HTGeometry.norm_inv_mul_add_one_le_of_re_pos hc0 t) (norm_nonneg _)
           (by positivity)
       have hW' : ‖gaussWeight lam (↑c + ↑t * I)‖ ≤ Real.exp (c ^ 2 / lam) := by
         have := gaussWeight_norm_le_sq hlam (↑c + ↑t * I); rwa [hre] at this
@@ -246,7 +185,7 @@ theorem gaussian_weighted_contour_bound
               (mul_nonneg hB0 (by positivity))
         _ = (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * B * Real.exp (c ^ 2 / lam)) * (c ^ 2 + t ^ 2)⁻¹ := by
             ring
-    exact ((gwInvQuadIntegrable hc0).const_mul _).mono' hcont.aestronglyMeasurable
+    exact ((HTGeometry.integrable_inv_sq_add_sq hc0).const_mul _).mono' hcont.aestronglyMeasurable
       (Eventually.of_forall hbd)
   -- Left-line domination and its integral bound.
   have hleftbd : ∀ y : ℝ, ‖Hf (↑(-M) + ↑y * I)‖
@@ -262,7 +201,7 @@ theorem gaussian_weighted_contour_bound
     have hE' : ‖perronE n (↑(-M) + ↑y * I)‖
         ≤ (4 * ((n : ℝ) - 1 / 2) ^ (1 - M)) * (((M - 1) ^ 2 + y ^ 2)⁻¹) := by
       rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
-      exact mul_le_mul (gwKink_M hn1 M _ hM1.le hre) (gwKernelLeftBound hM1) (norm_nonneg _)
+      exact mul_le_mul (gwKink_M hn1 M _ hM1.le hre) (HTGeometry.norm_inv_mul_add_one_le_of_re_neg hM1) (norm_nonneg _)
         (by positivity)
     have hW' : ‖gaussWeight lam (↑(-M) + ↑y * I)‖ ≤ Real.exp (M ^ 2 / lam) := by
       have := gaussWeight_norm_le_sq hlam (↑(-M) + ↑y * I); rw [hre] at this; rwa [neg_sq] at this
@@ -274,12 +213,12 @@ theorem gaussian_weighted_contour_bound
           ring
   have hleftint : Integrable (fun y : ℝ => Hf (↑(-M) + ↑y * I)) := by
     have hcont : Continuous (fun y : ℝ => Hf (↑(-M) + ↑y * I)) := hHfcont.comp (by fun_prop)
-    exact ((gwInvQuadIntegrable (show (0 : ℝ) < M - 1 from by linarith)).const_mul
+    exact ((HTGeometry.integrable_inv_sq_add_sq (show (0 : ℝ) < M - 1 from by linarith)).const_mul
       (4 * ((n : ℝ) - 1 / 2) ^ (1 - M) * B * Real.exp (M ^ 2 / lam))).mono'
       hcont.aestronglyMeasurable (Eventually.of_forall hleftbd)
   have hqle : ∫ y : ℝ, ((M - 1) ^ 2 + y ^ 2)⁻¹ ≤ Real.pi := by
     rw [← integral_univ_inv_one_add_sq]
-    refine integral_mono (gwInvQuadIntegrable (show (0 : ℝ) < M - 1 from by linarith))
+    refine integral_mono (HTGeometry.integrable_inv_sq_add_sq (show (0 : ℝ) < M - 1 from by linarith))
       integrable_inv_one_add_sq (fun y => ?_)
     refine inv_anti₀ (by positivity) ?_
     nlinarith [sq_nonneg y]
@@ -287,7 +226,7 @@ theorem gaussian_weighted_contour_bound
       ≤ 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - M) * Real.exp (M ^ 2 / lam) := by
     have hdomint : Integrable (fun y : ℝ =>
         (4 * ((n : ℝ) - 1 / 2) ^ (1 - M) * B * Real.exp (M ^ 2 / lam)) * (((M - 1) ^ 2 + y ^ 2)⁻¹)) :=
-      (gwInvQuadIntegrable (show (0 : ℝ) < M - 1 from by linarith)).const_mul _
+      (HTGeometry.integrable_inv_sq_add_sq (show (0 : ℝ) < M - 1 from by linarith)).const_mul _
     have hCnn : (0 : ℝ) ≤ 4 * ((n : ℝ) - 1 / 2) ^ (1 - M) * B * Real.exp (M ^ 2 / lam) := by positivity
     calc ∫ y : ℝ, ‖Hf (↑(-M) + ↑y * I)‖
         ≤ ∫ y : ℝ, (4 * ((n : ℝ) - 1 / 2) ^ (1 - M) * B * Real.exp (M ^ 2 / lam)) *
@@ -351,7 +290,7 @@ theorem gaussian_weighted_contour_bound
     have hE' : ‖perronE n (↑x + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * ((T k) ^ 2)⁻¹ := by
       rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
       exact mul_le_mul (gwKink_c hn hc0 _ ((le_of_eq hre).trans hx2))
-        (gwKernelLineBound hTk (le_of_eq habs.symm) x) (norm_nonneg _) (by positivity)
+        (HTGeometry.norm_inv_mul_add_one_le_of_line hTk (le_of_eq habs.symm) x) (norm_nonneg _) (by positivity)
     have hW' : ‖gaussWeight lam (↑x + ↑t * I)‖ ≤ Real.exp (M ^ 2 / lam) * Real.exp (-(T k) ^ 2 / lam) := by
       rw [gaussWeight_norm, hre, hsim, ← Real.exp_add]
       apply Real.exp_le_exp.mpr
@@ -502,13 +441,13 @@ theorem quiet_crossing_rigidity_gaussian {F : ℂ → ℂ} {a : ℕ → ℂ} {c 
         intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
       have hE' : ‖perronE n (↑c + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹ := by
         rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
-        exact mul_le_mul (gwKink_c hn2 hc0 _ (le_of_eq hre)) (gwKernelNormLe hc0 t) (norm_nonneg _)
+        exact mul_le_mul (gwKink_c hn2 hc0 _ (le_of_eq hre)) (HTGeometry.norm_inv_mul_add_one_le_of_re_pos hc0 t) (norm_nonneg _)
           (by positivity)
       calc ‖F (↑c + ↑t * I)‖ * ‖perronE n (↑c + ↑t * I)‖
           ≤ B * ((4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹) :=
             mul_le_mul hF' hE' (norm_nonneg _) hB0
         _ = (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * B) * (c ^ 2 + t ^ 2)⁻¹ := by ring
-    exact ((gwInvQuadIntegrable hc0).const_mul _).mono' hcont.aestronglyMeasurable
+    exact ((HTGeometry.integrable_inv_sq_add_sq hc0).const_mul _).mono' hcont.aestronglyMeasurable
       (Eventually.of_forall hbd)
   set I0 : ℂ := ∫ t : ℝ, F (↑c + ↑t * I) * perronE n (↑c + ↑t * I) with hI0
   -- Uniform (over all `j`) domination of the weight on `Re s = c`.

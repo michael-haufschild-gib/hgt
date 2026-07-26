@@ -98,22 +98,6 @@ theorem integral_Ioi_log_div_cube {a : ℝ} (ha : 0 < a) :
 open Complex
 open scoped ENNReal
 
-private theorem xiDivisorSupport_countable_for_radialJensen :
-    (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
-      z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro rho
-  exact ⟨(rho : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp xiDivisorSupport_countable_for_radialJensen
-
-noncomputable local instance : Countable XiZeroCopy := inferInstance
-
 def xiRadialJensenKernel (q : XiZeroCopy) (r : ℝ) : ℝ≥0∞ :=
   if ‖xiSpectralPoint q‖ ≤ r then
     ENNReal.ofReal (Real.log (r / ‖xiSpectralPoint q‖) / r ^ 3)

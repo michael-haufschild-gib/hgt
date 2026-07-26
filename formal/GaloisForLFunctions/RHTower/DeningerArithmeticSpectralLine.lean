@@ -8,24 +8,6 @@ noncomputable section
 
 namespace RHTower
 
-private theorem deningerXiDivisorSupport_univ_countableSpectral :
-    (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
-      z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro rho
-  exact ⟨(rho : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp
-    deningerXiDivisorSupport_univ_countableSpectral
-
-noncomputable local instance : Countable XiZeroCopy :=
-  inferInstance
-
 /-- A complex positive-real-part resolvent is a bounded multiplier on Deninger's Euler line. -/
 theorem integrable_deningerTimeTestLaplace_mul_complexVerticalResolvent
     (φ : DeningerTimeTestFunction) (c : ℝ)

@@ -26,6 +26,23 @@ abbrev XiZeroCopy :=
   Σ ρ : XiDivisorSupport,
     Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)))
 
+/-- The support of the global Xi divisor is countable.  This is extracted from the locally finite
+divisor supplied by mathlib together with sigma-compactness of the complex plane; it uses no
+information about `xi` beyond meromorphy on `Set.univ`. -/
+theorem xiDivisorSupport_univ_countable : (Set.univ : Set XiDivisorSupport).Countable := by
+  have hlocal : LocallyFiniteSupport
+      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
+    intro z
+    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain' z (Set.mem_univ z)
+  apply hlocal.locallyFinite_support.countable_univ
+  intro ρ
+  exact ⟨(ρ : ℂ), rfl⟩
+
+instance : Countable XiDivisorSupport :=
+  Set.countable_univ_iff.mp xiDivisorSupport_univ_countable
+
+instance : Countable XiZeroCopy := inferInstance
+
 /-- The zero of `XiC` corresponding to a Xi-divisor point: if
 `rho = 1/2 + z I`, then `z = (rho - 1/2)(-I)`. -/
 def xiSpectralPoint (q : XiZeroCopy) : ℂ :=

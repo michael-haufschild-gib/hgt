@@ -433,3 +433,26 @@ functional-equation estimate may enter as a hypothesis of the final declaration.
   `[OPEN CORE]` Formalize perturbation-stable weighted
   decoupling/localization for the exact nondegenerate curve, producing
   Bourgain (2.10)--(2.23) without additive `ℓ¹` error.
+- 2026-07-26 — `[SECTION 2 NORMALIZED EXACT-CURVE CELL] [LEAN-PROVED]`
+  `BourgainNormalizedScaledDistortion.lean`,
+  `BourgainNormalizedGaussianDecoupling.lean`,
+  `BourgainGenericPairedTripleFourierIdentity.lean`,
+  `BourgainNormalizedCubeDecoupling.lean`,
+  `BourgainGenericScaledPhaseJacobian.lean`, and
+  `BourgainNormalizedCellDecoupling.lean` prove the perturbation-stable
+  weighted decoupling estimate for the exact normalized four-curve and
+  transport it to one natural anisotropic period cell. The estimate has
+  the sharp `H⁶` cell factor and exact two-base jet determinant; no
+  additive Taylor error or analytic hypothesis remains.
+  `BourgainA6NormalizedTaylorCurve.lean` proves that the literal affine
+  `A₆` phase is exactly the normalized curve after a lower-triangular
+  coordinate map, including its determinant and coefficient-independent
+  phase. `BourgainA6NormalizedCellTransfer.lean` applies the second exact
+  Jacobian and proves the unconditional sharp block-pair estimate on the
+  pulled-back physical fundamental cell. All targeted builds pass.
+  `[OPEN CORE]` Prove translation-uniformity and the sharp finite
+  period-cell aggregation over Bourgain's Section-2 physical domain.
+  That global aggregation must yield the normalized
+  `N^(4+ε)M²` separated-pair estimate and recurrence (2.26); sharp
+  `A₆`, first-spacing elimination, Huxley--Watt second spacing, and final
+  exponent optimization remain downstream.

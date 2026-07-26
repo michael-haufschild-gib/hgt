@@ -200,22 +200,6 @@ theorem lintegral_re_xiAntiCausalWardSchwarzPairResponse_eulerEdge
 
 /-! ## Edge mass quantization -/
 
-private theorem xiDivisorSupport_countable_for_edgeMass :
-    (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
-      z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro rho
-  exact ⟨(rho : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp xiDivisorSupport_countable_for_edgeMass
-
-noncomputable local instance : Countable XiZeroCopy := inferInstance
-
 noncomputable local instance : Countable XiRightZeroCopy := inferInstance
 
 noncomputable local instance : Countable XiRightUpperZeroCopy := inferInstance

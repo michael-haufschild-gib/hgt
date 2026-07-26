@@ -49,24 +49,6 @@ abbrev DeningerTimeTestFunction :=
 abbrev DeningerTimeDistribution :=
   𝓓'(deningerTimeDomain, ℂ)
 
-private theorem deningerXiDivisorSupport_univ_countable :
-    (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
-      z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro rho
-  exact ⟨(rho : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp
-    deningerXiDivisorSupport_univ_countable
-
-noncomputable local instance : Countable XiZeroCopy :=
-  inferInstance
-
 /-- Real scalar multiplication on a complex value, bundled as a continuous real-bilinear map. -/
 noncomputable def deningerRealComplexMul :
     ℝ →L[ℝ] ℂ →L[ℝ] ℂ :=

@@ -23,22 +23,6 @@ namespace RHTower
 
 noncomputable section
 
-private theorem xiDivisorSupport_countable_for_firstClockLandau :
-    (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
-      z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro rho
-  exact ⟨(rho : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp xiDivisorSupport_countable_for_firstClockLandau
-
-noncomputable local instance : Countable XiZeroCopy := inferInstance
-
 /-- The strong endpoint-source height gap is a gap in the real coordinate of every centered
 Xi point.  Its strict margin over `9 / 2` is what makes the first-clock cone separation
 quantitative rather than merely nonvanishing. -/

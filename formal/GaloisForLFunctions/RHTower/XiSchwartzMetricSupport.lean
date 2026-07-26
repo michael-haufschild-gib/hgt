@@ -53,22 +53,6 @@ theorem measureSupport_subset_xiRealZeroSet_of_integral_normSq_eq_zero
   filter_upwards [hae] with t ht
   exact xiRealNormSq_eq_zero_iff t |>.mp ht
 
-/-- The support of the global Xi divisor is countable.  This is extracted from the locally finite
-divisor supplied by mathlib and sigma-compactness of the complex plane. -/
-theorem xiDivisorSupport_univ_countable : (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain' z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro ρ
-  exact ⟨(ρ : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp xiDivisorSupport_univ_countable
-
-noncomputable local instance : Countable XiZeroCopy := inferInstance
-
 /-- The real centered Xi divisor is countable, without assuming RH. -/
 theorem xiRealZeroSet_countable : xiRealZeroSet.Countable := by
   apply (Set.countable_range (fun q : XiZeroCopy => (xiSpectralPoint q).re)).mono

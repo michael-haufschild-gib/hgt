@@ -168,6 +168,35 @@ exp(i Sigma_>=N(theta)) -> 1.                              (17)
 Thus the tail becomes weak in absolute size while its **projective shape** converges to the
 topological-gravity direction.
 
+## Universal form -- the zero-shell attractor does not see the geometric law `[PROVED]`
+
+Theorems A--C use nothing about `q` and `C`.  Call `(w_j, y_j)_{j >= 0}` a **positive Hausdorff
+shell family** when
+
+```text
+w_j>0,  sum_j w_j<infinity,
+0<=y_j<=1,  y antitone,  y_j -> 0.                          (U1)
+```
+
+Then, with `M_N=sum_{j>=N} w_j`, `nu_>=N=sum_{j>=N} w_j delta_{y_j}` and
+`hat(nu)_N=M_N^{-1} nu_>=N`:
+
+```text
+hat(nu)_N -> delta_0 weak-star,
+b_0^{(N)}=1,  0<=b_m^{(N)}<=y_N^m -> 0   (m>=1),
+|hat(Sigma)_N(theta)-8 sinh(theta)| <= (8/3) y_N cosh(3 theta),
+Sigma_>=N(theta) -> 0.                                      (U2)
+```
+
+The geometric family is the instance `w_j=r_j`, `y_j=r_j^2`; `(5)` and the strict decrease of
+`r_j` are exactly the verification of `(U1)`.  The estimate in `(U2)` is *sharper* than the
+qualitative statement in Theorem C: it exhibits an explicit modulus, linear in the deepest
+surviving source point and exponential in the rapidity window.
+
+Thus the zero-shell projective attractor is a property of nested shrinking positive shell supports,
+not of the `q`-ladder.  Any positive Hausdorff CDD divisor whose shells accumulate only at `y=0`
+has the same flat-JT tangent ray.
+
 ## Exact relation to the q-boundary product
 
 The tail interaction factor is also
@@ -240,9 +269,27 @@ this one-sided completion.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/HTGeometry/GeometricCDDTailProjectiveLimit.lean` formalizes
-Theorems A, B and C, together with `(17)` and `(18)`, **unconditionally** for every `0 < q < 1` and
-`C > 1`.  `#print axioms` gives `[propext, Classical.choice, Quot.sound]` on every theorem below.
+Three modules, all with `#print axioms` equal to `[propext, Classical.choice, Quot.sound]`:
+
+| Module | Content |
+|---|---|
+| `HTGeometry/HausdorffCDDPhaseKernel.lean` | cubic arctangent control and the phase kernel `(13)` |
+| `HTGeometry/HausdorffShellTailProjectiveAttractor.lean` | the **universal** law `(U1)`–`(U2)` |
+| `HTGeometry/GeometricCDDTailProjectiveLimit.lean` | the geometric shell geometry and the instance |
+
+The universal module carries Theorems A, B, C and `(17)` for an arbitrary `PositiveShellFamily`:
+`tendsto_shellTailProbability_diracProba`, `tendsto_integral_shellNormalizedTailMeasure`,
+`shellTailMoment_zero`/`_nonneg`/`_le`, `tendsto_shellTailMoment`,
+`shellNormalizedSpinCoupling_zero`, `tendsto_shellNormalizedSpinCoupling`,
+`abs_shellNormalizedTailPhase_sub_flat_le`, `tendsto_shellNormalizedTailPhase`,
+`tendstoUniformlyOn_shellNormalizedTailPhase`, `tendsto_exp_shellNormalizedTailPhase`,
+`abs_shellTailPhase_le`, `tendsto_shellTailPhase`, `tendsto_exp_shellTailPhase`, together with the
+measure-level bridges `shellNormalizedTailMeasure_eq_smul`, `integral_pow_...`,
+`integral_cddPhaseKernel_...`.
+
+`positiveShellFamily_cddShellRadius` is the single verification `(U1)` for the geometric divisor;
+every geometric statement below is its instance.  Everything is unconditional for
+`0 < q < 1`, `C > 1`.
 
 Shell geometry `(1)`–`(5)`:
 
@@ -350,9 +397,11 @@ open gates below.
   `tendstoUniformlyOn_cddNormalizedTailPhase`, `tendsto_exp_cddNormalizedTailPhase`)
 - [x] unnormalized triviality `(17)` and decimation identity `(18)` formalized in Lean
 - [x] axiom audit (`[propext, Classical.choice, Quot.sound]`)
+- [x] universality theorem for the zero-shell projective attractor beyond the geometric family
+  (`PositiveShellFamily` + the whole `shell*` law; the geometric case is
+  `positiveShellFamily_cddShellRadius`)
 - [ ] formula-level specialist novelty audit
 - [ ] positive action or operator-flow integration of the full geometric measure
-- [ ] universality theorem for the zero-shell projective attractor beyond the geometric family
 
 ## Log
 
@@ -367,3 +416,12 @@ open gates below.
   `tendsto_diracProba_of_eventually_measure_nhds_eq_one`, the shell phase inside
   `geometricCDDTruncationPhase`, the factor `geometricCDDStep`, and the Hausdorff positivity cone.
   Axioms clean; module builds and is wired into the `HTGeometry` umbrella.
+- 2026-07-26 -- Open gate "universality beyond the geometric family" closed. The three theorems were
+  re-proved for an arbitrary positive Hausdorff shell family `(U1)` in
+  `GaloisForLFunctions.HTGeometry.HausdorffShellTailProjectiveAttractor`, and the geometric case is
+  now literally the instance `positiveShellFamily_cddShellRadius`, so no statement is proved twice.
+  The phase kernel and the cubic arctangent control were split into
+  `GaloisForLFunctions.HTGeometry.HausdorffCDDPhaseKernel`, which both modules import. The
+  universal estimate `|Sigma_N - 8 sinh| <= (8/3) y_N cosh(3 theta)` is strictly sharper than the
+  original Theorem C, since it names the modulus. Axioms clean on all three modules; the
+  `HTGeometry` umbrella builds green.

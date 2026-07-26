@@ -249,7 +249,7 @@ theorem cddTailMass_le (hq0 : 0 < q) (hq1 : q < 1) (hC : 1 < C) (N : ℕ) :
   refine hle.trans (le_of_eq ?_)
   field_simp
 
-theorem tendsto_cddTailMass (hq0 : 0 < q) (hq1 : q < 1) (hC : 1 < C) :
+theorem tendsto_cddTailMass (q C : ℝ) :
     Tendsto (fun N => cddTailMass q C N) atTop (𝓝 0) :=
   tendsto_shellTailMass (cddShellRadius q C)
 
@@ -526,7 +526,6 @@ theorem abs_cddTailPhase_le (hq0 : 0 < q) (hq1 : q < 1) (hC : 1 < C) (N : ℕ) (
         ≤ 4 * (q ^ N * q ^ j * |Real.sinh θ| / C) := by linarith
     refine hchain.trans (le_of_eq ?_)
     field_simp
-    ring
   rw [cddTailPhase_eq_shellSum hq0 hq1 hC N θ]
   have hgeom : Summable fun j : ℕ => 4 * |Real.sinh θ| * q ^ N / C * q ^ j :=
     (summable_geometric_of_lt_one hq0.le hq1).mul_left _

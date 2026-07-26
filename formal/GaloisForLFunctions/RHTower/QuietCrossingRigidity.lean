@@ -41,6 +41,7 @@ the left flank `∝ x₋^{1−M}`, which tends to `0` as `M → ∞`.  Hence `a�
 -/
 import Mathlib
 import GaloisForLFunctions.RHTower.GammalessStripRigidity
+import GaloisForLFunctions.HTGeometry.PerronKernelBound
 
 open Complex MeasureTheory Filter Topology Asymptotics intervalIntegral Set
 
@@ -135,17 +136,6 @@ theorem perronKernel_mellinConvergent {c : ℝ} (hc : 0 < c) :
     exact ((continuous_perronKernelG.tendsto 0).mono_left nhdsWithin_le_nhds).isBigO_one ℝ
   · simp only [Complex.ofReal_re]; exact hc
 
-/-- The reciprocal quadratic `t ↦ (c²+t²)⁻¹` is Lebesgue integrable for `c > 0`; it is the
-`c`-scaled Cauchy profile `c⁻²·(1+(t/c)²)⁻¹`. -/
-private theorem inv_quad_integrable {c : ℝ} (hc : 0 < c) :
-    Integrable (fun t:ℝ => (c^2 + t^2)⁻¹) := by
-  have hc0 : c⁻¹ ≠ 0 := inv_ne_zero (ne_of_gt hc)
-  have h1 : Integrable (fun t:ℝ => (1 + (c⁻¹ * t)^2)⁻¹) :=
-    (integrable_inv_one_add_sq).comp_mul_left' hc0
-  have heq : (fun t:ℝ => (c^2 + t^2)⁻¹) = fun t => (c^2)⁻¹ * (1 + (c⁻¹ * t)^2)⁻¹ := by
-    funext t; rw [← mul_inv]; congr 1; field_simp
-  rw [heq]; exact h1.const_mul _
-
 /-- The denominator `(c+it)(c+it+1)` never vanishes when `c > 0`: both factors have positive real
 part. -/
 private theorem kernel_den_ne {c : ℝ} (hc : 0 < c) (t : ℝ) :
@@ -158,25 +148,6 @@ private theorem kernel_den_ne {c : ℝ} (hc : 0 < c) (t : ℝ) :
 private theorem kernel_continuous {c : ℝ} (hc : 0 < c) :
     Continuous (fun t:ℝ => ((↑c + ↑t*I) * (↑c + ↑t*I + 1))⁻¹) :=
   Continuous.inv₀ (by fun_prop) (kernel_den_ne hc)
-
-/-- The Perron kernel is dominated by the reciprocal quadratic: `‖1/((c+it)(c+it+1))‖ ≤ (c²+t²)⁻¹`,
-because `‖c+it‖ = √(c²+t²)` and `‖c+it+1‖ ≥ ‖c+it‖` (larger real part). -/
-private theorem kernel_norm_le {c : ℝ} (hc : 0 < c) (t : ℝ) :
-    ‖((↑c + ↑t*I) * (↑c + ↑t*I + 1))⁻¹‖ ≤ (c^2 + t^2)⁻¹ := by
-  set A : ℂ := (↑c + ↑t*I) with hA
-  set B : ℂ := (↑c + ↑t*I + 1) with hB
-  have hAnorm : ‖A‖ = Real.sqrt (c^2 + t^2) := by rw [hA, Complex.norm_add_mul_I]
-  have hApos : 0 < ‖A‖ := by rw [hAnorm]; apply Real.sqrt_pos.mpr; positivity
-  have hBge : ‖A‖ ≤ ‖B‖ := by
-    have hBnorm : ‖B‖ = Real.sqrt ((c+1)^2 + t^2) := by
-      rw [hB]
-      have h : (↑c + ↑t*I + 1 : ℂ) = ↑(c+1) + ↑t*I := by push_cast; ring
-      rw [h, Complex.norm_add_mul_I]
-    rw [hAnorm, hBnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hBpos : 0 < ‖B‖ := lt_of_lt_of_le hApos hBge
-  rw [norm_inv, norm_mul, inv_le_inv₀ (mul_pos hApos hBpos) (by positivity)]
-  calc c^2 + t^2 = ‖A‖ * ‖A‖ := by rw [hAnorm, Real.mul_self_sqrt (by positivity)]
-    _ ≤ ‖A‖ * ‖B‖ := mul_le_mul_of_nonneg_left hBge (le_of_lt hApos)
 
 /-- **Absolute convergence of the inverse-Mellin vertical integral.**  On the line `Re s = c > 0`
 the Perron kernel `t ↦ 1/((c+it)(c+it+1))` is integrable: its modulus is dominated by
@@ -191,8 +162,8 @@ theorem perronKernel_verticalIntegrable {c : ℝ} (hc : 0 < c) :
     rw [perronKernel_mellin (by simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re,
       Complex.I_re, Complex.ofReal_im, Complex.I_im]; simp; linarith), one_div]
   rw [hval]
-  refine (inv_quad_integrable hc).mono' (kernel_continuous hc).aestronglyMeasurable ?_
-  exact Filter.Eventually.of_forall (fun t => kernel_norm_le hc t)
+  refine (HTGeometry.integrable_inv_sq_add_sq hc).mono' (kernel_continuous hc).aestronglyMeasurable ?_
+  exact Filter.Eventually.of_forall (fun t => HTGeometry.norm_inv_mul_add_one_le_of_re_pos hc t)
 
 /-- **The smoothed Perron formula (Mellin inversion of the kernel).**  For `c > 0` and `y > 0`,
 
@@ -283,14 +254,14 @@ theorem smoothed_perron_sum {a : ℕ → ℂ} {c : ℝ} (hc : 0 < c) (hsum : LSe
     rw [h1, h2]; ring
   have hFbound : ∀ n t, ‖F n t‖ ≤ Cn n * (c ^ 2 + t ^ 2)⁻¹ := by
     intro n t; rw [hFnorm n t]
-    exact mul_le_mul_of_nonneg_left (kernel_norm_le hc t) (hCn_nonneg n)
+    exact mul_le_mul_of_nonneg_left (HTGeometry.norm_inv_mul_add_one_le_of_re_pos hc t) (hCn_nonneg n)
   have hFcont : ∀ n, Continuous (F n) := by
     intro n
     simp only [hF]
     refine (term_line_continuous a c n).mul (Continuous.mul ?_ (kernel_continuous hc))
     exact Continuous.const_cpow (by fun_prop) (Or.inl hxc)
   have hFint : ∀ n, Integrable (F n) := fun n =>
-    ((inv_quad_integrable hc).const_mul (Cn n)).mono'
+    ((HTGeometry.integrable_inv_sq_add_sq hc).const_mul (Cn n)).mono'
       (hFcont n).aestronglyMeasurable (Filter.Eventually.of_forall (hFbound n))
   -- Absolute summability of the term integral norms.
   set M : ℝ := ∫ t : ℝ, ‖((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹‖ with hM
@@ -521,41 +492,6 @@ theorem perronKink_second_difference (a : ℕ → ℂ) {n : ℕ} (hn : 1 ≤ n) 
   · intro h
     exact absurd (Finset.mem_range.mpr (Nat.lt_succ_self n)) h
 
-/-- Kernel decay on a horizontal segment: at any point `x + t·I` with `|t| ≥ T > 0`, the modulus of
-`1/(s(s+1))` is at most `T^{-2}`, since `‖s‖ ≥ |Im s| = |t| ≥ T` and likewise `‖s+1‖ ≥ T`. -/
-private theorem kernel_line_bound {t T : ℝ} (hT : 0 < T) (ht : T ≤ |t|) (x : ℝ) :
-    ‖((↑x + ↑t * I) * (↑x + ↑t * I + 1))⁻¹‖ ≤ (T ^ 2)⁻¹ := by
-  set s : ℂ := (↑x + ↑t * I : ℂ) with hs
-  have him : s.im = t := by rw [hs]; simp
-  have him1 : (s + 1).im = t := by rw [Complex.add_im, him, Complex.one_im, add_zero]
-  have hA : T ≤ ‖s‖ := le_trans ht (by rw [← him]; exact Complex.abs_im_le_norm s)
-  have hB : T ≤ ‖s + 1‖ := le_trans ht (by rw [← him1]; exact Complex.abs_im_le_norm (s + 1))
-  have hge : T ^ 2 ≤ ‖s * (s + 1)‖ := by
-    rw [norm_mul, sq]; exact mul_le_mul hA hB (le_of_lt hT) (le_trans hT.le hA)
-  rw [norm_inv]; exact inv_anti₀ (by positivity) hge
-
-/-- Kernel decay on the vertical line `Re s = −M` (with `M > 1`): `‖1/(s(s+1))‖ ≤ ((M−1)²+y²)⁻¹`,
-since `‖s‖ = √(M²+y²) ≥ √((M−1)²+y²)` and `‖s+1‖ = √((M−1)²+y²)`. -/
-private theorem kernel_left_bound {M y : ℝ} (hM : 1 < M) :
-    ‖((↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1))⁻¹‖ ≤ ((M - 1) ^ 2 + y ^ 2)⁻¹ := by
-  have hAnorm : ‖(↑(-M) + ↑y * I : ℂ)‖ = Real.sqrt ((-M) ^ 2 + y ^ 2) := Complex.norm_add_mul_I _ _
-  have hBeq : (↑(-M) + ↑y * I + 1 : ℂ) = ↑(1 - M) + ↑y * I := by push_cast; ring
-  have hBnorm : ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ = Real.sqrt ((1 - M) ^ 2 + y ^ 2) := by
-    rw [hBeq, Complex.norm_add_mul_I]
-  have hden : (0 : ℝ) < (M - 1) ^ 2 + y ^ 2 := by nlinarith [sq_nonneg y, sq_nonneg (M - 1)]
-  have hAge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ := by
-    rw [hAnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hBge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ := by
-    rw [hBnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hge : (M - 1) ^ 2 + y ^ 2 ≤ ‖(↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1)‖ := by
-    rw [norm_mul]
-    calc (M - 1) ^ 2 + y ^ 2
-        = Real.sqrt ((M - 1) ^ 2 + y ^ 2) * Real.sqrt ((M - 1) ^ 2 + y ^ 2) := by
-          rw [Real.mul_self_sqrt hden.le]
-      _ ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ * ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ :=
-          mul_le_mul hAge hBge (Real.sqrt_nonneg _) (le_trans (Real.sqrt_nonneg _) hAge)
-  rw [norm_inv]; exact inv_anti₀ hden hge
-
 /-- **Mellin representation of the kink.**  For a reflection-carrier `F` agreeing with the absolutely
 convergent Dirichlet series `L(s) = Σ aₘ m^{−s}` on `Re s ≥ c > 0`,
 
@@ -614,7 +550,7 @@ theorem perronSecondDiff_integral {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ} 
       have h2 : ‖(↑x : ℂ) ^ (((c : ℂ) + ↑t * I) + 1)‖ = x ^ (c + 1) := by
         rw [Complex.norm_cpow_eq_rpow_re_of_pos hx, Complex.add_re, Complex.one_re, hrec]
       have h3 : ‖(((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))‖⁻¹ ≤ (c ^ 2 + t ^ 2)⁻¹ := by
-        rw [← norm_inv]; exact kernel_norm_le hc0 t
+        rw [← norm_inv]; exact HTGeometry.norm_inv_mul_add_one_le_of_re_pos hc0 t
       calc ‖LSeries a ((c : ℂ) + ↑t * I)‖ *
               (‖(↑x : ℂ) ^ (((c : ℂ) + ↑t * I) + 1)‖ /
                 ‖(((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))‖)
@@ -625,7 +561,7 @@ theorem perronSecondDiff_integral {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ} 
             mul_le_mul h1 (mul_le_mul_of_nonneg_left h3 (Real.rpow_nonneg hx.le _))
               (by positivity) hB0
         _ = (B * x ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹ := by ring
-    exact ((inv_quad_integrable hc0).const_mul (B * x ^ (c + 1))).mono'
+    exact ((HTGeometry.integrable_inv_sq_add_sq hc0).const_mul (B * x ^ (c + 1))).mono'
       hcont.aestronglyMeasurable (Eventually.of_forall hbound)
   -- Pointwise: `F·E = integrand₊ + integrand₋ − 2·integrand₀` on the line.
   have hpt : ∀ t : ℝ, F ((c : ℂ) + ↑t * I) * perronE n ((c : ℂ) + ↑t * I)
@@ -776,13 +712,13 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
         intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
       have hE' : ‖perronE n (↑c + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹ := by
         rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
-        exact mul_le_mul (hKink_c _ (le_of_eq hre)) (kernel_norm_le hc0 t) (norm_nonneg _)
+        exact mul_le_mul (hKink_c _ (le_of_eq hre)) (HTGeometry.norm_inv_mul_add_one_le_of_re_pos hc0 t) (norm_nonneg _)
           (by positivity)
       calc ‖F (↑c + ↑t * I)‖ * ‖perronE n (↑c + ↑t * I)‖
           ≤ B * ((4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹) :=
             mul_le_mul hF' hE' (norm_nonneg _) hB0
         _ = (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * B) * (c ^ 2 + t ^ 2)⁻¹ := by ring
-    exact ((inv_quad_integrable hc0).const_mul _).mono' hcont.aestronglyMeasurable
+    exact ((HTGeometry.integrable_inv_sq_add_sq hc0).const_mul _).mono' hcont.aestronglyMeasurable
       (Eventually.of_forall hbd)
   -- The bound at a fixed contour depth `M`.
   have keyM : ∀ M : ℕ, 2 ≤ M → (c : ℝ) ≤ (M : ℝ) →
@@ -808,7 +744,7 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
           ≤ (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by
         rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
         exact mul_le_mul (hKink_M (M : ℝ) _ hM1.le hre)
-          (kernel_left_bound (M := (M : ℝ)) (y := y) hM1) (norm_nonneg _)
+          (HTGeometry.norm_inv_mul_add_one_le_of_re_neg (M := (M : ℝ)) (y := y) hM1) (norm_nonneg _)
           (mul_nonneg (by norm_num) (Real.rpow_nonneg hxmpos.le _))
       calc ‖F (↑(-(M : ℝ)) + ↑y * I)‖ * ‖perronE n (↑(-(M : ℝ)) + ↑y * I)‖
           ≤ B * ((4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹) :=
@@ -816,12 +752,12 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
         _ = (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by ring
     have hleftint : Integrable (fun y : ℝ => Hf (↑(-(M : ℝ)) + ↑y * I)) := by
       have hcont : Continuous (fun y : ℝ => Hf (↑(-(M : ℝ)) + ↑y * I)) := hHfcont.comp (by fun_prop)
-      exact ((inv_quad_integrable (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul
+      exact ((HTGeometry.integrable_inv_sq_add_sq (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul
         (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B)).mono' hcont.aestronglyMeasurable
         (Eventually.of_forall hleftbd)
     have hqle : ∫ y : ℝ, (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ ≤ Real.pi := by
       rw [← integral_univ_inv_one_add_sq]
-      refine integral_mono (inv_quad_integrable (show (0 : ℝ) < (M : ℝ) - 1 from by linarith))
+      refine integral_mono (HTGeometry.integrable_inv_sq_add_sq (show (0 : ℝ) < (M : ℝ) - 1 from by linarith))
         integrable_inv_one_add_sq (fun y => ?_)
       refine inv_anti₀ (by positivity) ?_
       nlinarith [mul_nonneg (show (0 : ℝ) ≤ (M : ℝ) from hMnn) (show (0 : ℝ) ≤ (M : ℝ) - 2 from by linarith), sq_nonneg y]
@@ -829,7 +765,7 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
         ≤ 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := by
       have hdomint : Integrable (fun y : ℝ =>
           (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹) :=
-        (inv_quad_integrable (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul _
+        (HTGeometry.integrable_inv_sq_add_sq (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul _
       have hCnn : (0 : ℝ) ≤ 4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B :=
         mul_nonneg (mul_nonneg (by norm_num) (Real.rpow_nonneg hxmpos.le _)) hB0
       calc ∫ y : ℝ, ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖
@@ -882,7 +818,7 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
       have hE' : ‖perronE n (↑x + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * ((T k) ^ 2)⁻¹ := by
         rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
         exact mul_le_mul (hKink_c _ ((le_of_eq hre).trans hx2))
-          (kernel_line_bound (t := t) (T := T k) hTk (le_of_eq habs.symm) x) (norm_nonneg _)
+          (HTGeometry.norm_inv_mul_add_one_le_of_line (t := t) (T := T k) hTk (le_of_eq habs.symm) x) (norm_nonneg _)
           (by positivity)
       exact mul_le_mul hFbd hE' (norm_nonneg _) (by linarith [hB0, hqk0 k])
     have htop : ∀ k, ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I)‖ ≤ d k := by

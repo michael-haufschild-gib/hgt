@@ -17,22 +17,6 @@ namespace RHTower
 
 noncomputable section
 
-private theorem xiDivisorSupport_countable_for_vertical :
-    (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
-      z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro rho
-  exact ⟨(rho : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp xiDivisorSupport_countable_for_vertical
-
-noncomputable local instance : Countable XiZeroCopy := inferInstance
-
 /-- One raw relative-resolvent summand, already multiplied by the squared rectangular test, on the
 right vertical edge. -/
 def xiRectangularVerticalRawTerm (L a R : ℝ) (q : XiZeroCopy) (y : ℝ) : ℂ :=

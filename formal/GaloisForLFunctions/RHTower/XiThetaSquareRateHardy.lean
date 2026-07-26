@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.XiThetaSquareRateBoundary
 import Mathlib.Analysis.Complex.RemovableSingularity
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.EulerSineProd
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import GaloisForLFunctions.HTGeometry.PerronKernelBound
 
 /-!
 # Holomorphy of the explicit theta square-rate reader
@@ -307,15 +308,6 @@ lemma sq_norm_thetaSquareBlaschkeReaderSymbol_add_mul_I_le_cauchy
   rw [div_eq_mul_inv] at hsq
   exact hsq
 
-private lemma integrable_inv_sq_add_sq {a : ℝ} (ha : 0 < a) :
-    Integrable (fun t : ℝ => (a ^ 2 + t ^ 2)⁻¹) := by
-  have hbase := integrable_inv_one_add_sq.comp_div ha.ne'
-  have hscaled := hbase.const_mul (a⁻¹ ^ 2)
-  apply hscaled.congr
-  exact Filter.Eventually.of_forall fun t => by
-    dsimp
-    field_simp
-
 /-- The squared dimensionless reader is integrable on every interior vertical line, with its exact
 Cauchy majorant integrated explicitly. -/
 theorem integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_le_cauchy
@@ -330,7 +322,7 @@ theorem integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_le_cauchy
       ((((n : ℝ) ^ 2 + x) ^ 2 + t ^ 2)⁻¹)
   have ha : 0 < (n : ℝ) ^ 2 + x := by positivity
   have hgInt : Integrable g := by
-    exact (integrable_inv_sq_add_sq ha).const_mul _
+    exact (HTGeometry.integrable_inv_sq_add_sq ha).const_mul _
   have hfCont : Continuous f := by
     apply continuous_iff_continuousAt.2
     intro t
@@ -437,7 +429,7 @@ private lemma integrable_reader_boundary_majorant {n : ℕ} (hn : 1 ≤ n) :
       ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
         ((((n : ℝ) ^ 2) ^ 2 + t ^ 2)⁻¹)) := by
   have hnR : (0 : ℝ) < n := by positivity
-  exact (integrable_inv_sq_add_sq (sq_pos_of_pos hnR)).const_mul _
+  exact (HTGeometry.integrable_inv_sq_add_sq (sq_pos_of_pos hnR)).const_mul _
 
 /-- The interior line energies along `x = 1/(k+1)` converge to the already-computed exact boundary
 energy. This is the lower half of the Hardy-supremum identity. -/

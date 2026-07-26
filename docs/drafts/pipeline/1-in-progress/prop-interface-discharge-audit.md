@@ -124,3 +124,30 @@ Non-vacuity is then inherited from the already-proved Gaussian coherent completi
   periodicity premise is removed from `exists_periodicGeometric_leastLevelPolynomial_eq_zero` and
   `exists_periodicGeometric_targetLevelPolynomial_eq_zero`, whose conclusions now hold for the phase
   family of every sequence read modulo the period.
+- 2026-07-26 — three more interfaces discharged.
+  - `HTGeometry.DerivationInvariantSubmodule`
+    (`GaloisForLFunctions/HTGeometry/DerivationInvariantSubmoduleWitnesses.lean`): realized by `⊥`
+    and `⊤` and closed under `⊓`, `⊔` and `⨅`, so the interface is a complete sublattice.  Taking
+    `⊤` gives the unconditional statements `differentialAlgebraicOver_of_finiteDimensional` and
+    `not_hypertranscendentalOver_of_finiteDimensional`: a finite-dimensional differential extension
+    contains no hypertranscendental element.
+  - `commutingActions` and `commutingAdditiveActions`
+    (`GaloisForLFunctions/HTGeometry/CommutingActionWitnesses.lean`): realized by the identity and
+    constant families and by the integer power family `x ↦ x ^ n p` (resp. scaling family
+    `x ↦ n p • x`), which commute because integer multiplication does.  The commutation premise is
+    removed from `rankOneCoboundary_cocycle` and `koszulCoboundary_cocycle`.
+- 2026-07-26 — two more interfaces discharged.
+  - `RHTower.IsActionStable` (`GaloisForLFunctions/RHTower/ActionStableWitnesses.lean`): realized by
+    `⊥` and `⊤`, closed under `⊓`, `⊔`, `⨅`, and reduced to generators by
+    `isActionStable_closure`.  For the prime-log lattice the premise becomes the checkable condition
+    that each prime logarithm is moved into the lattice, which removes it from
+    `gaugeUpdate_isPrimeLogIntegral_iff`, `resection_isPrimeLogIntegral_iff` and
+    `resection_isLatticeClass_of_primeLogFormula`.
+  - `HTGeometry.BooleanEdgeFieldSymmetric`
+    (`GaloisForLFunctions/HTGeometry/BooleanEdgeFieldWitnesses.lean`): realized by constants, vertex
+    coboundaries, pointwise conjunctions and disjunctions, and — for an arbitrary field — by its
+    symmetric part `c u v ⊕ c v u`.  The Boolean flatness criterion therefore holds on a connected
+    graph with no symmetry premise, for coboundaries, constants, and every symmetrization.
+- 2026-07-26 — detector caveat recorded: an `inductive` `Prop` is realized by its own constructors,
+  which the theorem-level scan does not see.  `FiniteGeometricLayerTower` and the `.below` recursor
+  artifacts are such rows and are not undischarged premises.

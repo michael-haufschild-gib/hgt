@@ -24,20 +24,20 @@ definitions, 50 undischarged interfaces.
 | 13 | `GaloisForLFunctions.RHTower.SuzukiAllAngleRealZeros` | `GaloisForLFunctions.RHTower.SuzukiFiniteApertureHermiteBiehler` | RHTower | **discharged** — `RHTower.SuzukiAllAngleWitnesses` |
 | 12 | `GaloisForLFunctions.HTGeometry.IsConstantMvPolynomial` | `GaloisForLFunctions.HTGeometry.DisjointBlockPolynomialIndependence` | HTGeometry | **discharged** — `HTGeometry.NonconstantMvPolynomialWitnesses` |
 | 10 | `GaloisForLFunctions.HTGeometry.MembraneLocalPrincipalBrackets` | `GaloisForLFunctions.HTGeometry.HolographicLocalityBound` | HTGeometry | open |
-| 8 | `GaloisForLFunctions.FiniteGeometricLayerTower` | `GaloisForLFunctions.HTGeometry.FiniteGeometricLayerDAResonance` | HTGeometry | open |
+| 8 | `GaloisForLFunctions.FiniteGeometricLayerTower` | `GaloisForLFunctions.HTGeometry.FiniteGeometricLayerDAResonance` | HTGeometry | **inductive — realized by its own `nil`/`cons` constructors**; explicit towers in `HTGeometry.FiniteGeometricLayerTowerWitnesses` |
 | 8 | `GaloisForLFunctions.PeriodicFrom` | `GaloisForLFunctions.HTGeometry.GeometricPeriodicPhase` | HTGeometry | **discharged** — `HTGeometry.PeriodicFromWitnesses` |
 | 7 | `GaloisForLFunctions.CompatiblePrimitiveExtensionSystem` | `GaloisForLFunctions.HTGeometry.ParameterizedPrimitiveAction` | HTGeometry | open |
-| 7 | `GaloisForLFunctions.HTGeometry.BooleanEdgeFieldSymmetric` | `GaloisForLFunctions.HTGeometry.CoherenceFlatness` | HTGeometry | open |
-| 7 | `GaloisForLFunctions.RHTower.IsActionStable` | `GaloisForLFunctions.RHTower.OmegaObstruction` | RHTower | open |
+| 7 | `GaloisForLFunctions.HTGeometry.BooleanEdgeFieldSymmetric` | `GaloisForLFunctions.HTGeometry.CoherenceFlatness` | HTGeometry | **discharged** — `HTGeometry.BooleanEdgeFieldWitnesses` |
+| 7 | `GaloisForLFunctions.RHTower.IsActionStable` | `GaloisForLFunctions.RHTower.OmegaObstruction` | RHTower | **discharged** — `RHTower.ActionStableWitnesses` |
 | 6 | `GaloisForLFunctions.HTGeometry.MultipleSineDifferentialRegimeInput` | `GaloisForLFunctions.HTGeometry.ClockPeriodCommensurabilityBoundary` | HTGeometry | open |
 | 6 | `GaloisForLFunctions.HTGeometry.MvPolynomialProjectivelySmooth` | `GaloisForLFunctions.HTGeometry.MvPolynomialWaringSmoothHorizon` | HTGeometry | open |
 | 6 | `GaloisForLFunctions.HTGeometry.TateClockFiniteObservableSurjective` | `GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary` | HTGeometry | open |
 | 6 | `GaloisForLFunctions.LinearReflectionAntiInvariant` | `GaloisForLFunctions.HTGeometry.ReflectionTateAnomaly` | HTGeometry | open |
 | 6 | `GaloisForLFunctions.MultipleEllipticGammaHasRankThreeMinor` | `GaloisForLFunctions.HTGeometry.MultipleEllipticGammaHypertranscendence` | HTGeometry | open |
-| 6 | `GaloisForLFunctions.commutingActions` | `GaloisForLFunctions.HTGeometry.RankOneCohomology` | HTGeometry | open |
-| 6 | `GaloisForLFunctions.commutingAdditiveActions` | `GaloisForLFunctions.HTGeometry.KoszulCohomology` | HTGeometry | open |
+| 6 | `GaloisForLFunctions.commutingActions` | `GaloisForLFunctions.HTGeometry.RankOneCohomology` | HTGeometry | **discharged** — `HTGeometry.CommutingActionWitnesses` |
+| 6 | `GaloisForLFunctions.commutingAdditiveActions` | `GaloisForLFunctions.HTGeometry.KoszulCohomology` | HTGeometry | **discharged** — `HTGeometry.CommutingActionWitnesses` |
 | 4 | `GaloisForLFunctions.ClosedUnderLogarithmicPrimitives` | `GaloisForLFunctions.HTGeometry.ExponentialGaugeSelection` | HTGeometry | open |
-| 4 | `GaloisForLFunctions.HTGeometry.DerivationInvariantSubmodule` | `GaloisForLFunctions.HTGeometry.FiniteLinearStateDifferentialEscape` | HTGeometry | open |
+| 4 | `GaloisForLFunctions.HTGeometry.DerivationInvariantSubmodule` | `GaloisForLFunctions.HTGeometry.FiniteLinearStateDifferentialEscape` | HTGeometry | **discharged** — `HTGeometry.DerivationInvariantSubmoduleWitnesses` |
 | 4 | `GaloisForLFunctions.IsAdditiveDifferentialHopfIdeal` | `GaloisForLFunctions.HTGeometry.DifferentialHopfIdeal` | HTGeometry | open |
 | 4 | `GaloisForLFunctions.IsBohrAP` | `GaloisForLFunctions.HTGeometry.AlmostPeriodicHull` | HTGeometry | open |
 | 4 | `GaloisForLFunctions.IsDifferentialExponentialGauge` | `GaloisForLFunctions.HTGeometry.ExponentialGaugeSelection` | HTGeometry | open |
@@ -78,6 +78,10 @@ definitions, 50 undischarged interfaces.
 | `HilbertMetric.IsFullCCRMatrixTuple` | **unsatisfiable in positive dimension** (`not_exists_isFullCCRMatrixTuple`); every consumer restated with the satisfiable `IsBlockCCRMatrixTuple` |
 | `HilbertMetric.IsInvariantFullCompression` | realized: `blockCCRTuple_isInvariantFullCompression`, `exists_invariant_commuting_blockCCRTuple` |
 | `HilbertMetric.IsCommutingFullTuple` | realized: `blockCCRTuple_zero_isCommutingFullTuple` |
+| `RHTower.IsActionStable` | realized by `⊥`, `⊤`, closed under `⊓`, `⊔`, `⨅`; reduced to generators (`isActionStable_closure`) and, for the prime-log lattice, to the prime logarithms, which removes the premise from the gauge and resection integrality gates |
+| `HTGeometry.BooleanEdgeFieldSymmetric` | realized by constants, vertex coboundaries, conjunctions/disjunctions, and the symmetric part of an arbitrary field, so the Boolean flatness criterion applies with no symmetry premise |
+| `HTGeometry.DerivationInvariantSubmodule` | realized by `⊥`, `⊤`, and closed under `⊓`, `⊔`, `⨅`; taking `⊤` yields `differentialAlgebraicOver_of_finiteDimensional` and `not_hypertranscendentalOver_of_finiteDimensional` |
+| `commutingActions`, `commutingAdditiveActions` | realized by the identity, constant, and integer power/scaling families (`commutingActions_zpow`, `commutingAdditiveActions_zsmul`); the commutation premise is removed from the rank-one and Koszul coboundary cocycle laws |
 | `HTGeometry.PeriodicFrom` | realized by the residue extension `n ↦ v (n % p)` (`periodicFrom_mod`), which removes the periodicity premise from the least- and target-level geometric exactness theorems |
 | `RHTower.SuzukiAllAngleRealZeros` | characterized as the pointwise modulus separation `‖A z‖ ≠ ‖E z‖` off the real axis (`suzukiAllAngleRealZeros_iff_norm_ne`); realized by every Cayley power pair `((z-i)^n,(z+i)^n)`, which makes the Hermite--Biehler, Livšic-disk, Schwarz--Pick and Herglotz consequences premise-free |
 | `HTGeometry.ErlangRecoveryAdmissible` | proved for every globally bounded first-order source (`erlangRecoveryAdmissible_of_boundedSource`), with the sine instance making third-order recovery premise-free |

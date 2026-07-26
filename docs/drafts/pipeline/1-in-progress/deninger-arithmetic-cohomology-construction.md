@@ -856,3 +856,194 @@ metric by transporting a form already known to be positive exactly under RH.
   `[OPEN CORE]`: construct Deninger's Hodge star/Green operator on arithmetic cohomology, prove
   its positive definite polarization and Frobenius adjoint law
   \(\Theta^\ast=1-\Theta\), then derive RH from spectral purity.
+- 2026-07-26 — `[LEAN-PROVED] [DAC_SEMISIMPLE_HODGE_GATE]` in
+  `DeningerArithmeticSemisimpleHodge.lean`. Distinguished the nonreduced cyclic source quotient
+  from its multiplicity-exact semisimplification. The associated-graded algebraic carrier uses
+  the same source local-jet copy index
+  \[
+    \coprod_{\rho\in\operatorname{Supp}\operatorname{div}\xi}
+      \{0,\ldots,m_\rho-1\},
+  \]
+  but lets Frobenius act by the support eigenvalue on every graded copy; definitionally this is
+  the already constructed multiplicity-copy divisor target. Functional-equation reflection
+  followed by coefficient conjugation gives a bijective Hodge identification. Lean proves
+  unconditionally
+  \[
+    \langle a,a\rangle_{\mathrm H}
+      =\sum_{\rho,k}|a_{\rho,k}|^2>0\qquad(a\ne0),
+  \]
+  its involutivity, and the weight-one Poincaré derivation law. This removes the false
+  “positive metric itself is missing” diagnosis on the semisimplification and avoids the
+  nonreduced model's extra zero-simplicity conclusion.
+
+  The exact remaining defect is now computed coordinatewise:
+  \[
+    \bigl(\Theta\star-\star\Theta\bigr)(a)_q
+      =\left(\lambda_q-\overline{\lambda_{Rq}}\right)
+        \overline{a_{Rq}},
+    \qquad \lambda_{Rq}=1-\lambda_q.
+  \]
+  Consequently Lean proves, with both directions and exact multiplicities,
+  \[
+    \Theta\star=\star\Theta
+      \quad\Longleftrightarrow\quad
+    \operatorname{Re}\lambda_q=\tfrac12\ \forall q
+      \quad\Longleftrightarrow\quad \mathrm{RH}.
+  \]
+  Direct cached check:
+  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticSemisimpleHodge.lean`.
+  No CCM object, numerical computation, RH premise in the forward implication, simplicity
+  premise, `sorry`, or new axiom occurs.
+
+  `[CONJECTURE] [DAC_SOURCE_GREEN_PURITY]`: construct, from the prime--Gamma source complex and
+  its archimedean boundary operator, a Green/Hodge comparison whose chain-level naturality
+  descends to the above semisimple star and proves
+  \(\Theta\star=\star\Theta\). Hostile audit: the bare commutation statement is exactly RH by the
+  theorem just proved and therefore is not an admissible provider. A valid proof must establish
+  an independent source identity before divisor evaluation; it may not use Xi zero locations,
+  Weil positivity, self-adjointness, or a measure whose support is assumed real. The next attack
+  is to formulate the required chain homotopy/Green identity on the prime--Gamma source domain
+  and test whether its boundary term is a genuinely positive square or the already known Weil
+  sign in disguise.
+
+- 2026-07-26 — `[PAPER-PROVED] [BRIDGE] [DAC_REAL_HODGE_FACTORIZATION]`.
+  Deninger's original formalism distinguishes two structures that must not be conflated:
+  a flow-invariant real structure and an antilinear Hodge star.  In the original notation the
+  required middle-degree law for \(d=\nu=1\) is
+  \[
+    \Theta\circ\star=\star\circ\Theta
+  \]
+  and the Hodge metric is \(\operatorname{tr}(a\cup\star b)\); see Deninger,
+  *The Hilbert--Polya strategy and height pairings*, pp. 3--4,
+  <https://www.uni-muenster.de/SFB878/publications/files/php7aMxKR3029.pdf>.
+
+  The source jet model makes the distinction exact.  Write \(C(\rho)=\bar\rho\),
+  \(R(\rho)=1-\rho\), and \(L(\rho)=1-\bar\rho=R C(\rho)\), with the same derivative-copy
+  index \(k\).  The compact-open source theorem already proves that Schwarz reflection acts on
+  raw jets by
+  \[
+    (\sigma_{\rm raw}a)_{\rho,k}
+      =(-1)^k\overline{a_{C\rho,k}}.
+  \]
+  Rephase degree \(k\) by \(U_k=i^k\).  Since
+  \(i^k(-1)^k=(-i)^k=\overline{i^k}\), the conjugated source Real structure is
+  \[
+    S=U\sigma_{\rm raw}U^{-1},\qquad
+    (Sa)_{\rho,k}=\overline{a_{C\rho,k}}.                 \tag{15}
+  \]
+  It is an antilinear involution and commutes with the semisimple Frobenius
+  \((\Theta a)_{\rho,k}=\rho a_{\rho,k}\), because
+  \(\rho=\overline{C\rho}\).
+
+  Define the complex-linear arithmetic Weil transport
+  \[
+    (Wa)_{\rho,k}=a_{L\rho,k}.                            \tag{16}
+  \]
+  It is an involutive unitary permutation.  Direct substitution gives the exact factorization
+  \[
+    (WSa)_{\rho,k}
+      =\overline{a_{C L\rho,k}}
+      =\overline{a_{R\rho,k}}
+      =(\star a)_{\rho,k}.                               \tag{17}
+  \]
+  Thus the positive Hodge star already constructed on semisimplified arithmetic cohomology is
+  not the source Real structure: it is the source Real structure followed by \(W\).
+
+  Because \(S\Theta=\Theta S\) and \(S^2=1\), equation `(17)` gives
+  \[
+    \Theta\star=\star\Theta
+      \Longleftrightarrow
+    \Theta W=W\Theta.
+  \]
+  On the coordinate vector \(e_{\rho,k}\), the latter is
+  \[
+    \rho\,e_{L\rho,k}=(L\rho)\,e_{L\rho,k},
+  \]
+  hence \(\rho=L\rho=1-\bar\rho\).  Conversely this equality makes the two diagonal actions
+  agree.  Therefore
+  \[
+    \Theta W=W\Theta
+      \Longleftrightarrow
+    \operatorname{Re}\rho=\tfrac12\quad\text{for every Xi zero}
+      \Longleftrightarrow \mathrm{RH}.                   \tag{18}
+  \]
+
+  Hostile audit verdict: `REDISCOVERED/BRIDGE`.  This is the standard Hodge-theoretic
+  factorization of an antilinear star into a Real structure and a complex-linear Weil operator,
+  made multiplicity-exact on the actual Xi divisor.  It proves no source positivity theorem.
+  Its value is to sharpen `[DAC_SOURCE_GREEN_PURITY]`: a Green construction must produce the
+  specific source realization of \(W\), not another Real involution, and must prove its
+  Frobenius naturality before divisor evaluation.  Assuming that naturality is exactly RH by
+  `(18)`.
+
+- 2026-07-26 — `[CORRECTION] [PAPER-PROVED] [DAC_ORIENTED_HODGE]`.
+  The positive identification in `[DAC_SEMISIMPLE_HODGE_GATE]` is mathematically valid as an
+  ordinary/compact-support comparison, but it is not yet Deninger's genuine degree-one Hodge
+  structure: its reflected cup form is symmetric and its antilinear map squares to \(+1\).
+  Degree-one graded commutativity requires an alternating cup form, and the corresponding Hodge
+  operator must square to \(-1\), exactly as required by `DeningerWeightOnePolarization.lean`.
+
+  This defect has a canonical repair.  Functional-equation reflection
+  \(R(\rho,k)=(1-\rho,k)\) is fixed-point free because the centered spectral coordinate
+  \(a_\rho=(\rho-\tfrac12)(-i)\) is nonzero and \(a_{R\rho}=-a_\rho\).  Orient every \(R\)-orbit
+  by the lexicographic positive half-plane:
+  \[
+    \epsilon_q=
+    \begin{cases}
+      +1,&\Re a_q>0\text{ or }(\Re a_q=0\text{ and }\Im a_q>0),\\
+      -1,&\text{otherwise}.
+    \end{cases}
+  \]
+  Then \(\epsilon_q\in\{\pm1\}\) and
+  \[
+    \epsilon_{Rq}=-\epsilon_q.                            \tag{19}
+  \]
+
+  On the multiplicity-exact finite-support carrier define
+  \[
+    \omega(a,b)=\sum_q\epsilon_q\,a_q b_{Rq},\qquad
+    (\star_\epsilon a)_q=-\epsilon_q\,\overline{a_{Rq}}. \tag{20}
+  \]
+  Reindexing the finite sum by \(R\), using `(19)`, gives
+  \(\omega(a,a)=-\omega(a,a)\), hence \(\omega(a,a)=0\).  If \(a_q\ne0\), pairing with
+  \(e_{Rq}\) gives \(\epsilon_q a_q\ne0\), so \(\omega\) is nondegenerate.  Moreover
+  \[
+    \star_\epsilon^2a=-a,\qquad
+    \omega(b,\star_\epsilon a)
+      =\sum_q b_q\overline{a_q}
+      =\langle a,b\rangle_{\ell^2}.                       \tag{21}
+  \]
+  Thus `(20)` is an odd positive Hodge structure, not merely a positive Real identification.
+
+  For \((\Theta a)_q=\lambda_q a_q\) and
+  \(\lambda_{Rq}=1-\lambda_q\), finite reindexing proves the weight-one derivation law
+  \[
+    \omega(\Theta a,b)+\omega(a,\Theta b)=\omega(a,b).    \tag{22}
+  \]
+  The exact Hodge defect is
+  \[
+    ((\Theta\star_\epsilon-\star_\epsilon\Theta)a)_q
+      =-\epsilon_q
+        \bigl(\lambda_q-\overline{\lambda_{Rq}}\bigr)
+        \overline{a_{Rq}}.                                \tag{23}
+  \]
+  Testing `(23)` on coordinate vectors shows
+  \[
+    \Theta\star_\epsilon=\star_\epsilon\Theta
+      \Longleftrightarrow
+    \lambda_q=\overline{1-\lambda_q}\ \forall q
+      \Longleftrightarrow \mathrm{RH}.                    \tag{24}
+  \]
+
+  The same formulas extend to the canonical \(\ell^2\) completion.  The cup series is absolutely
+  convergent by Cauchy--Schwarz, \(\star_\epsilon\) is antiunitary, and it preserves the maximal
+  closed Frobenius domain unconditionally because
+  \(|\lambda_{Rq}|=|1-\lambda_q|\le1+|\lambda_q|\).
+
+  Hostile audit verdict: `REDISCOVERED/BRIDGE`; this is the standard symplectic orientation of a
+  fixed-point-free involutive spectral divisor, specialized to Deninger's exact multiplicity
+  carrier.  The positive survivor is substantial: it upgrades the constructed carrier to the
+  correct alternating/odd Hodge category without assuming RH.  The remaining source theorem is
+  still `(24)`, and may not be assumed.  `[OPEN CORE]`: formalize `(19)`--`(24)`, then construct
+  the oriented Weil transport from the prime--Gamma/positive-time source Green operator and prove
+  its Frobenius naturality before divisor evaluation.

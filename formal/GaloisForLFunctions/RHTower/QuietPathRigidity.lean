@@ -26,76 +26,13 @@ integrals `∫_{Re=c} H` and `∫_{Re=−M} H`.  Hence `∫_{Re=c} H = ∫_{Re=�
 * `quiet_path_rigidity` — the theorem above.
 -/
 import GaloisForLFunctions.RHTower.QuietCrossingRigidity
+import GaloisForLFunctions.HTGeometry.PerronKernelBound
 
 open Complex MeasureTheory Filter Topology intervalIntegral Set
 
 noncomputable section
 
 namespace RHTower
-
-/-- The reciprocal quadratic `t ↦ (c²+t²)⁻¹` is Lebesgue integrable for `c > 0`; it is the
-`c`-scaled Cauchy profile `c⁻²·(1+(t/c)²)⁻¹`. -/
-private theorem inv_quad_int {c : ℝ} (hc : 0 < c) :
-    Integrable (fun t : ℝ => (c ^ 2 + t ^ 2)⁻¹) := by
-  have hc0 : c⁻¹ ≠ 0 := inv_ne_zero (ne_of_gt hc)
-  have h1 : Integrable (fun t : ℝ => (1 + (c⁻¹ * t) ^ 2)⁻¹) :=
-    (integrable_inv_one_add_sq).comp_mul_left' hc0
-  have heq : (fun t : ℝ => (c ^ 2 + t ^ 2)⁻¹) = fun t => (c ^ 2)⁻¹ * (1 + (c⁻¹ * t) ^ 2)⁻¹ := by
-    funext t; rw [← mul_inv]; congr 1; field_simp
-  rw [heq]; exact h1.const_mul _
-
-/-- Kernel decay from the imaginary part alone: if `T ≤ |Im s|` with `T > 0`, then
-`‖1/(s(s+1))‖ ≤ T^{-2}`, because `‖s‖ ≥ |Im s| ≥ T` and `‖s+1‖ ≥ |Im(s+1)| = |Im s| ≥ T`. -/
-private theorem kernel_im_bound {s : ℂ} {T : ℝ} (hT : 0 < T) (hs : T ≤ |s.im|) :
-    ‖(s * (s + 1))⁻¹‖ ≤ (T ^ 2)⁻¹ := by
-  have hA : T ≤ ‖s‖ := le_trans hs (Complex.abs_im_le_norm s)
-  have him1 : (s + 1).im = s.im := by rw [Complex.add_im, Complex.one_im, add_zero]
-  have hB : T ≤ ‖s + 1‖ := by
-    have h := Complex.abs_im_le_norm (s + 1); rw [him1] at h; exact le_trans hs h
-  have hge : T ^ 2 ≤ ‖s * (s + 1)‖ := by
-    rw [norm_mul, sq]; exact mul_le_mul hA hB hT.le (le_trans hT.le hA)
-  rw [norm_inv]; exact inv_anti₀ (by positivity) hge
-
-/-- Kernel decay on the vertical line `Re s = c > 0`: `‖1/(s(s+1))‖ ≤ (c²+t²)⁻¹`, since
-`‖c+it‖ = √(c²+t²)` and `‖c+it+1‖ ≥ ‖c+it‖`. -/
-private theorem kernel_c_bound {c : ℝ} (hc : 0 < c) (t : ℝ) :
-    ‖((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹‖ ≤ (c ^ 2 + t ^ 2)⁻¹ := by
-  set A : ℂ := (↑c + ↑t * I) with hA
-  set B : ℂ := (↑c + ↑t * I + 1) with hB
-  have hAnorm : ‖A‖ = Real.sqrt (c ^ 2 + t ^ 2) := by rw [hA, Complex.norm_add_mul_I]
-  have hApos : 0 < ‖A‖ := by rw [hAnorm]; apply Real.sqrt_pos.mpr; positivity
-  have hBge : ‖A‖ ≤ ‖B‖ := by
-    have hBnorm : ‖B‖ = Real.sqrt ((c + 1) ^ 2 + t ^ 2) := by
-      rw [hB]
-      have h : (↑c + ↑t * I + 1 : ℂ) = ↑(c + 1) + ↑t * I := by push_cast; ring
-      rw [h, Complex.norm_add_mul_I]
-    rw [hAnorm, hBnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hBpos : 0 < ‖B‖ := lt_of_lt_of_le hApos hBge
-  rw [norm_inv, norm_mul, inv_le_inv₀ (mul_pos hApos hBpos) (by positivity)]
-  calc c ^ 2 + t ^ 2 = ‖A‖ * ‖A‖ := by rw [hAnorm, Real.mul_self_sqrt (by positivity)]
-    _ ≤ ‖A‖ * ‖B‖ := mul_le_mul_of_nonneg_left hBge (le_of_lt hApos)
-
-/-- Kernel decay on the vertical line `Re s = −M` (with `M > 1`): `‖1/(s(s+1))‖ ≤ ((M−1)²+y²)⁻¹`,
-since `‖s‖ = √(M²+y²) ≥ √((M−1)²+y²)` and `‖s+1‖ = √((M−1)²+y²)`. -/
-private theorem kernel_negM_bound {M y : ℝ} (hM : 1 < M) :
-    ‖((↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1))⁻¹‖ ≤ ((M - 1) ^ 2 + y ^ 2)⁻¹ := by
-  have hAnorm : ‖(↑(-M) + ↑y * I : ℂ)‖ = Real.sqrt ((-M) ^ 2 + y ^ 2) := Complex.norm_add_mul_I _ _
-  have hBeq : (↑(-M) + ↑y * I + 1 : ℂ) = ↑(1 - M) + ↑y * I := by push_cast; ring
-  have hBnorm : ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ = Real.sqrt ((1 - M) ^ 2 + y ^ 2) := by
-    rw [hBeq, Complex.norm_add_mul_I]
-  have hden : (0 : ℝ) < (M - 1) ^ 2 + y ^ 2 := by nlinarith [sq_nonneg y, sq_nonneg (M - 1)]
-  have hAge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ := by
-    rw [hAnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hBge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ := by
-    rw [hBnorm]; apply Real.sqrt_le_sqrt; nlinarith
-  have hge : (M - 1) ^ 2 + y ^ 2 ≤ ‖(↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1)‖ := by
-    rw [norm_mul]
-    calc (M - 1) ^ 2 + y ^ 2
-        = Real.sqrt ((M - 1) ^ 2 + y ^ 2) * Real.sqrt ((M - 1) ^ 2 + y ^ 2) := by
-          rw [Real.mul_self_sqrt hden.le]
-      _ ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ * ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ :=
-          mul_le_mul hAge hBge (Real.sqrt_nonneg _) (le_trans (Real.sqrt_nonneg _) hAge)
-  rw [norm_inv]; exact inv_anti₀ hden hge
 
 /-- Derivative of the straight vertical parametrization `y ↦ σ + i·y`: constant `I`. -/
 private theorem hasDerivAt_vert (σ y : ℝ) :
@@ -243,7 +180,7 @@ theorem quiet_path_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
     have h0 : s ≠ 0 := fun hh => hsim0 (by rw [hh]; simp)
     have h1 : s ≠ -1 := fun hh => hsim0 (by rw [hh]; simp)
     rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
-    exact mul_le_mul (hKink_c s hsre) (kernel_im_bound hτ hsim) (norm_nonneg _) hCn0
+    exact mul_le_mul (hKink_c s hsre) (HTGeometry.norm_inv_mul_add_one_le_of_abs_im hτ hsim) (norm_nonneg _) hCn0
   -- The contour-depth bound (proved below by the hexagonal loop).
   have keyM : ∀ M : ℕ, 2 ≤ M → (c : ℝ) ≤ (M : ℝ) →
       ‖∫ t : ℝ, Hf (↑c + ↑t * I)‖ ≤ 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := by
@@ -268,11 +205,11 @@ theorem quiet_path_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
           intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
         have hE' : ‖perronE n (↑c + ↑t * I)‖ ≤ Cn * (c ^ 2 + t ^ 2)⁻¹ := by
           rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
-          exact mul_le_mul (hKink_c _ (le_of_eq hre)) (kernel_c_bound hc0 t) (norm_nonneg _) hCn0
+          exact mul_le_mul (hKink_c _ (le_of_eq hre)) (HTGeometry.norm_inv_mul_add_one_le_of_re_pos hc0 t) (norm_nonneg _) hCn0
         calc ‖F (↑c + ↑t * I)‖ * ‖perronE n (↑c + ↑t * I)‖
             ≤ B * (Cn * (c ^ 2 + t ^ 2)⁻¹) := mul_le_mul hF' hE' (norm_nonneg _) hB0
           _ = (Cn * B) * (c ^ 2 + t ^ 2)⁻¹ := by ring
-      exact ((inv_quad_int hc0).const_mul _).mono' hcont.aestronglyMeasurable
+      exact ((HTGeometry.integrable_inv_sq_add_sq hc0).const_mul _).mono' hcont.aestronglyMeasurable
         (Eventually.of_forall hbd)
     have hleftint : Integrable (fun y : ℝ => Hf (↑(-(M : ℝ)) + ↑y * I)) := by
       have hcont : Continuous (fun y : ℝ => Hf (↑(-(M : ℝ)) + ↑y * I)) :=
@@ -291,13 +228,13 @@ theorem quiet_path_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
             ≤ (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by
           rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
           exact mul_le_mul (hKink_M (M : ℝ) _ hM1.le hre)
-            (kernel_negM_bound (M := (M : ℝ)) (y := y) hM1) (norm_nonneg _) (by positivity)
+            (HTGeometry.norm_inv_mul_add_one_le_of_re_neg (M := (M : ℝ)) (y := y) hM1) (norm_nonneg _) (by positivity)
         calc ‖F (↑(-(M : ℝ)) + ↑y * I)‖ * ‖perronE n (↑(-(M : ℝ)) + ↑y * I)‖
             ≤ B * ((4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹) :=
               mul_le_mul hF' hE' (norm_nonneg _) hB0
           _ = (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by
               ring
-      exact ((inv_quad_int (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul _).mono'
+      exact ((HTGeometry.integrable_inv_sq_add_sq (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul _).mono'
         hcont.aestronglyMeasurable (Eventually.of_forall hbd)
     -- The contour shift Jc = JM (hexagonal loop).
     have hshift : Jc = JM := by
@@ -566,7 +503,7 @@ theorem quiet_path_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
             ≤ (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by
           rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
           exact mul_le_mul (hKink_M (M : ℝ) _ hM1.le hre)
-            (kernel_negM_bound (M := (M : ℝ)) (y := y) hM1) (norm_nonneg _) (by positivity)
+            (HTGeometry.norm_inv_mul_add_one_le_of_re_neg (M := (M : ℝ)) (y := y) hM1) (norm_nonneg _) (by positivity)
         calc ‖F (↑(-(M : ℝ)) + ↑y * I)‖ * ‖perronE n (↑(-(M : ℝ)) + ↑y * I)‖
             ≤ B * ((4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹) :=
               mul_le_mul hF' hE' (norm_nonneg _) hB0
@@ -574,14 +511,14 @@ theorem quiet_path_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
               ring
       have hqle : ∫ y : ℝ, (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ ≤ Real.pi := by
         rw [← integral_univ_inv_one_add_sq]
-        refine integral_mono (inv_quad_int (show (0 : ℝ) < (M : ℝ) - 1 from by linarith))
+        refine integral_mono (HTGeometry.integrable_inv_sq_add_sq (show (0 : ℝ) < (M : ℝ) - 1 from by linarith))
           integrable_inv_one_add_sq (fun y => ?_)
         refine inv_anti₀ (by positivity) ?_
         nlinarith [mul_nonneg (show (0 : ℝ) ≤ (M : ℝ) from hMnn)
           (show (0 : ℝ) ≤ (M : ℝ) - 2 from by linarith), sq_nonneg y]
       have hdomint : Integrable (fun y : ℝ =>
           (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹) :=
-        (inv_quad_int (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul _
+        (HTGeometry.integrable_inv_sq_add_sq (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul _
       have hCnn : (0 : ℝ) ≤ 4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B :=
         mul_nonneg (mul_nonneg (by norm_num) (Real.rpow_nonneg hxmpos.le _)) hB0
       have hleftfull : ∫ y : ℝ, ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖

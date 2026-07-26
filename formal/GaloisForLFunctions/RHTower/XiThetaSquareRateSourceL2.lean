@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiThetaSquareRateHardy
 import Mathlib.Analysis.Fourier.LpSpace
+import GaloisForLFunctions.HTGeometry.PerronKernelBound
 
 open Complex Real Set Filter Topology MeasureTheory FourierTransform
 open scoped ENNReal
@@ -34,15 +35,6 @@ theorem thetaHeatRateReaderFourierProfile_aestronglyMeasurable
   exact continuousOn_of_forall_continuousAt fun ξ hξ =>
     thetaHeatRateReaderFourierProfile_continuousAt hn hξ
 
-private lemma integrable_inv_sq_add_sq_source {a : ℝ} (ha : 0 < a) :
-    Integrable (fun t : ℝ => (a ^ 2 + t ^ 2)⁻¹) := by
-  have hbase := integrable_inv_one_add_sq.comp_div ha.ne'
-  have hscaled := hbase.const_mul (a⁻¹ ^ 2)
-  apply hscaled.congr
-  exact Filter.Eventually.of_forall fun t => by
-    dsimp
-    field_simp
-
 private lemma integrable_sq_norm_thetaSquareBlaschkeReaderSymbol_boundary
     {n : ℕ} (hn : 1 ≤ n) :
     Integrable (fun t : ℝ => ‖thetaSquareBlaschkeReaderSymbol n ((t : ℂ) * I)‖ ^ 2) := by
@@ -50,7 +42,7 @@ private lemma integrable_sq_norm_thetaSquareBlaschkeReaderSymbol_boundary
   let g : ℝ → ℝ := fun t => C * ((((n : ℝ) ^ 2) ^ 2 + t ^ 2)⁻¹)
   have hnR : (0 : ℝ) < n := by positivity
   have hgInt : Integrable g :=
-    (integrable_inv_sq_add_sq_source (sq_pos_of_pos hnR)).const_mul C
+    (HTGeometry.integrable_inv_sq_add_sq (sq_pos_of_pos hnR)).const_mul C
   have hmeas : AEStronglyMeasurable
       (fun t : ℝ => ‖thetaSquareBlaschkeReaderSymbol n ((t : ℂ) * I)‖ ^ 2) := by
     refine (measurable_of_continuousOn_compl_singleton (0 : ℝ) ?_).aestronglyMeasurable

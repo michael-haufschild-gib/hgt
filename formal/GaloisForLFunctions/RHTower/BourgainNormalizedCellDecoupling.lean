@@ -43,6 +43,13 @@ theorem
         · exact hb0
         · have : 0 ≤ (H : ℝ) / D := by positivity
           linarith
+      let _hunit :=
+        isUnit_bourgainGenericPhaseCoordinateMatrix_normalized
+          hq hq1 haIcc hbIcc hab
+      let _hscale : (H : ℝ) / D ≠ 0 :=
+        div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne'
+      let _hHDWitness := hHD
+      let _hsmallWitness := hsmall
       ∀ (c₁ c₂ : Fin H → ℂ),
         (∫⁻ x in bourgainGenericOsculatingFundamentalCell
             H φ₃ φ₄ ((H : ℝ) / D) a b,

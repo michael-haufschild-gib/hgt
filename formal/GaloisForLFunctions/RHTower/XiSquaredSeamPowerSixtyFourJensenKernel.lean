@@ -113,22 +113,6 @@ theorem integral_Ioi_log_div_pow_sixtyFive {a : ℝ} (ha : 0 < a) :
   simp only [sub_self, mul_zero, zero_div, zero_sub]
   field_simp
 
-private theorem xiDivisorSupport_countable_for_powerSixtyFourJensen :
-    (Set.univ : Set XiDivisorSupport).Countable := by
-  have hlocal : LocallyFiniteSupport
-      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
-    intro z
-    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
-      z (Set.mem_univ z)
-  apply hlocal.locallyFinite_support.countable_univ
-  intro rho
-  exact ⟨(rho : ℂ), rfl⟩
-
-noncomputable local instance : Countable XiDivisorSupport :=
-  Set.countable_univ_iff.mp xiDivisorSupport_countable_for_powerSixtyFourJensen
-
-noncomputable local instance : Countable XiZeroCopy := inferInstance
-
 /-- Radius of the zero of the translated squared-seam entire source corresponding to one seam
 atom, before functional-equation pairs are identified. -/
 def xiSquaredSeamInverseRadius (q : XiZeroCopy) : ℝ :=
