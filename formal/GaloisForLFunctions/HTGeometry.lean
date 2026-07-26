@@ -2144,3 +2144,4 @@ import GaloisForLFunctions.HTGeometry.SatakeEnergyBound
 import GaloisForLFunctions.HTGeometry.TwistConductorDescent
 import GaloisForLFunctions.HTGeometry.DualityLoopWeights
 import GaloisForLFunctions.HTGeometry.SquareIndexSymmetricSquare
+import GaloisForLFunctions.HTGeometry.CompatibleSystemInvolution

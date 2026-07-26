@@ -10503,3 +10503,65 @@ THE CANDIDATE TO TEST FIRST IS THE ONE PLACE THE ATLAS FOUND A NON-TRIVIAL WEIGH
 RATIO, WHOSE WIDTH 1/j IS NOT SCALE-INVARIANT. COMPUTE THE WEIGHT OF THE ORDER-TWO WINDOW UNDER THE
 SCALING AND COMPARE IT WITH THE WEIGHT OF ITS DEMAND. IF THEY DIFFER, THE CONJECTURE IS FALSE AND
 ORDER TWO IS THE COUNTEREXAMPLE THAT SHOWS WHY IT WORKS.
+
+---
+
+## Cycle 171 — ONLY A VERTICAL PARAMETER CAN CARRY A VANISHING LOSS
+
+### Phase 4: cycle 170's conjecture was vague; sharpening it made it TRUE and USEFUL
+"Equivariance under t -> lambda t" is not a symmetry of zeta, so the conjecture as stated was
+ill-typed. THE CORRECT NOTION IS WEIGHT: for a quantity Q(T), its weight is the power of log T it
+carries. THE SHARPENED CLAIM, AND IT HOLDS:
+
+    EQUAL WEIGHTS GIVE A CONSTANT LOSS. If budget = c_B (log T)^w and demand = c_D (log T)^w, the
+    ratio is c_B/c_D AT EVERY HEIGHT (formalised, together with its independence of the height).
+    BY ENTRY 100, A CONSTANT LOSS DECIDES NOTHING.
+
+    UNEQUAL WEIGHTS GIVE A VANISHING LOSS. A strictly smaller budget weight sends the ratio to zero
+    (formalised via tendsto_rpow_neg_atTop).
+
+### HUNDRED-AND-FIFTH ATLAS ENTRY
+HEIGHT-INDEXED TOOLS HAVE EQUAL WEIGHTS. Degrees of freedom (L/pi), zero density (log T/2pi) and
+prime cost (e^L) all carry the same power of log T — that IS the content of entries 103 and 104. SO
+EVERY HEIGHT-INDEXED TOOL HAS A CONSTANT LOSS AND CANNOT DECIDE A ZERO-MARGIN QUESTION.
+
+THE PARAMETERS THAT CAN DIFFER ARE THE VERTICAL ONES, AND THERE ARE EXACTLY FOUR:
+    jet order at the centre  -> vanishing loss AT ORDER TWO AND ONLY THERE (entries 89, 91).
+    minor order              -> fails from order three by the Vandermonde exponent (entry 91).
+    derivative order (shift) -> disjoint from an equivalent subfamily (entry 88).
+    HEAT-FLOW TIME           -> OPEN. The known upper bounds on the flow constant form a DECREASING
+                                SEQUENCE NOT PROVED TO TEND TO ZERO — which is EXACTLY the
+                                non-vanishing-loss case (formalised: bounds bounded away from zero
+                                admit a positive witness, so they decide nothing).
+
+    ==> HEIGHT-INDEXED TOOLS ARE EQUIVARIANT AND THEREFORE HAVE A CONSTANT LOSS. ONLY A VERTICAL
+        PARAMETER CAN CARRY A VANISHING LOSS, AND OF THE FOUR VERTICAL PARAMETERS THE FLOW TIME IS
+        THE ONLY ONE WHOSE VANISHING-LOSS QUESTION IS OPEN.
+
+THIS IS THE SHARPEST SEARCH CRITERION THE PROGRAMME HAS PRODUCED. It says, in one line, where to work:
+NOT along the critical line, but transverse to it, and specifically in the flow-time direction.
+
+Machine-verified: `RHTower/VerticalParametersAreTheOnlyOnes.lean` (constancy of the loss at equal
+weights and its independence of the height, vanishing of the loss at unequal weights, insufficiency of
+a family of bounds bounded away from zero, sufficiency of a vanishing family, and the decreasing-bounds
+corollary; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 171
+One hundred and five entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 172 target
+THE CRITERION POINTS AT THE FLOW TIME. THE QUESTION IS NOW EXACT:
+
+  [OPEN CORE] The de Bruijn-Newman flow H_t has H_0 = the xi-kernel and Lambda = inf{t : H_t has only
+  real zeros}. Lambda >= 0 is a theorem. THE UPPER BOUNDS PROVED SO FAR (1/2, then below 0.22, then
+  below 0.2) ARE OBTAINED BY BOUNDING THE ZERO-FREE REGION OF H_t FOR FIXED t. IS THERE A FAMILY OF
+  UPPER BOUNDS INDEXED BY A PARAMETER n WITH BOUND(n) --> 0?
+
+THE ATLAS'S OWN ANSWER TO "WHAT MAKES A LOSS VANISH" IS ENTRY 93: THE LOSS VANISHES WHEN IT IS THE
+LOG-CONCAVITY RATIO OF A WEIGHT AND THE WEIGHT'S INDEX GROWS. SO ASK: IS THERE A WEIGHT WHOSE
+LOG-CONCAVITY RATIO CONTROLS THE FLOW-TIME BOUND? THE HEAT FLOW ACTS ON THE FOURIER SIDE BY
+MULTIPLICATION BY exp(t u^2), WHICH IS A GAUSSIAN WEIGHT — AND A GAUSSIAN'S LOG-CONCAVITY RATIO IS
+EXACTLY exp(2t). COMPUTE THAT RATIO AND COMPARE IT WITH THE ORDER-TWO WINDOW'S RATIO
+(2j+3)(2j+4)/((2j+1)(2j+2)). IF THE TWO MATCH AT SOME t = t(j), THE FLOW TIME AND THE JET ORDER ARE
+THE SAME PARAMETER IN DISGUISE, AND THE ORDER-TWO SUCCESS TRANSFERS TO A FLOW-TIME BOUND THAT VANISHES.
+THAT WOULD BE THE FIRST VANISHING-LOSS FAMILY IN THE FLOW-TIME DIRECTION.

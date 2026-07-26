@@ -156,6 +156,64 @@ theorem xiCTaylorThetaTailCoreInterferenceSublinearUpper_iff_riemannHypothesis
   ⟨riemannHypothesis_of_xiCTaylorThetaTailCoreInterferenceSublinearUpper hD.1,
     xiCTaylorThetaTailCoreInterferenceSublinearUpper_of_riemannHypothesis hD⟩
 
+/-- Existence of one source-selected schedule satisfying the core-current condition is exactly RH.
+The schedule premise is internalized by the unconditional source construction. -/
+theorem exists_xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis :
+    (∃ D : ℕ → ℕ, XiCTaylorOddThetaTailSuperaccurateSchedule D ∧
+      XiCTaylorThetaTailCoreCurrentSublinearUpper D) ↔ RiemannHypothesis := by
+  constructor
+  · rintro ⟨D, hD, hcurrent⟩
+    exact
+      (xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis hD).1
+        hcurrent
+  · intro hRH
+    obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+    exact ⟨D, hD,
+      (xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis hD).2 hRH⟩
+
+/-- Requiring the core-current condition on every source-selected schedule is also exactly RH. -/
+theorem forall_xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis :
+    (∀ D : ℕ → ℕ, XiCTaylorOddThetaTailSuperaccurateSchedule D →
+      XiCTaylorThetaTailCoreCurrentSublinearUpper D) ↔ RiemannHypothesis := by
+  constructor
+  · intro hall
+    obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+    exact
+      (xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis hD).1
+        (hall D hD)
+  · intro hRH D hD
+    exact
+      (xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis hD).2 hRH
+
+/-- Existence of one source-selected schedule satisfying the full interference bound is exactly
+RH. -/
+theorem exists_xiCTaylorThetaTailCoreInterferenceSublinearUpper_iff_riemannHypothesis :
+    (∃ D : ℕ → ℕ, XiCTaylorOddThetaTailSuperaccurateSchedule D ∧
+      XiCTaylorThetaTailCoreInterferenceSublinearUpper D) ↔ RiemannHypothesis := by
+  constructor
+  · rintro ⟨D, hD, hinterference⟩
+    exact
+      (xiCTaylorThetaTailCoreInterferenceSublinearUpper_iff_riemannHypothesis hD).1
+        hinterference
+  · intro hRH
+    obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+    exact ⟨D, hD,
+      (xiCTaylorThetaTailCoreInterferenceSublinearUpper_iff_riemannHypothesis hD).2 hRH⟩
+
+/-- Requiring the full interference bound on every source-selected schedule is exactly RH. -/
+theorem forall_xiCTaylorThetaTailCoreInterferenceSublinearUpper_iff_riemannHypothesis :
+    (∀ D : ℕ → ℕ, XiCTaylorOddThetaTailSuperaccurateSchedule D →
+      XiCTaylorThetaTailCoreInterferenceSublinearUpper D) ↔ RiemannHypothesis := by
+  constructor
+  · intro hall
+    obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+    exact
+      (xiCTaylorThetaTailCoreInterferenceSublinearUpper_iff_riemannHypothesis hD).1
+        (hall D hD)
+  · intro hRH D hD
+    exact
+      (xiCTaylorThetaTailCoreInterferenceSublinearUpper_iff_riemannHypothesis hD).2 hRH
+
 end
 
 end RHTower

@@ -875,6 +875,35 @@ theorem xiCTaylorFullDensityTransferCurrentSublinearUpper_iff_riemannHypothesis
   · exact riemannHypothesis_of_xiCTaylorFullDensityTransferCurrentSublinearUpper hD
   · exact xiCTaylorFullDensityTransferCurrentSublinearUpper_of_riemannHypothesis hD
 
+/-- Existence of an admissible odd schedule with sublinear full-density transfer current is exactly
+RH; no schedule is supplied by the caller. -/
+theorem exists_xiCTaylorFullDensityTransferCurrentSublinearUpper_iff_riemannHypothesis :
+    (∃ D : ℕ → ℕ, XiCTaylorOddThetaTailSuperaccurateSchedule D ∧
+      XiCTaylorFullDensityTransferCurrentSublinearUpper D) ↔ RiemannHypothesis := by
+  constructor
+  · rintro ⟨D, hD, htransfer⟩
+    exact
+      (xiCTaylorFullDensityTransferCurrentSublinearUpper_iff_riemannHypothesis hD).1
+        htransfer
+  · intro hRH
+    obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+    exact ⟨D, hD,
+      (xiCTaylorFullDensityTransferCurrentSublinearUpper_iff_riemannHypothesis hD).2 hRH⟩
+
+/-- Uniform sublinearity over every admissible odd schedule is exactly RH. -/
+theorem forall_xiCTaylorFullDensityTransferCurrentSublinearUpper_iff_riemannHypothesis :
+    (∀ D : ℕ → ℕ, XiCTaylorOddThetaTailSuperaccurateSchedule D →
+      XiCTaylorFullDensityTransferCurrentSublinearUpper D) ↔ RiemannHypothesis := by
+  constructor
+  · intro hall
+    obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+    exact
+      (xiCTaylorFullDensityTransferCurrentSublinearUpper_iff_riemannHypothesis hD).1
+        (hall D hD)
+  · intro hRH D hD
+    exact
+      (xiCTaylorFullDensityTransferCurrentSublinearUpper_iff_riemannHypothesis hD).2 hRH
+
 end
 
 end RHTower

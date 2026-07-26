@@ -45,6 +45,24 @@ abbrev DeningerTimeTestFunction :=
 abbrev DeningerTimeDistribution :=
   𝓓'(deningerTimeDomain, ℂ)
 
+private theorem deningerXiDivisorSupport_univ_countable :
+    (Set.univ : Set XiDivisorSupport).Countable := by
+  have hlocal : LocallyFiniteSupport
+      (fun z : ℂ => MeromorphicOn.divisor xi Set.univ z) := by
+    intro z
+    exact (MeromorphicOn.divisor xi Set.univ).supportLocallyFiniteWithinDomain'
+      z (Set.mem_univ z)
+  apply hlocal.locallyFinite_support.countable_univ
+  intro rho
+  exact ⟨(rho : ℂ), rfl⟩
+
+noncomputable local instance : Countable XiDivisorSupport :=
+  Set.countable_univ_iff.mp
+    deningerXiDivisorSupport_univ_countable
+
+noncomputable local instance : Countable XiZeroCopy :=
+  inferInstance
+
 /-- Real scalar multiplication on a complex value, bundled as a continuous real-bilinear map. -/
 noncomputable def deningerRealComplexMul :
     ℝ →L[ℝ] ℂ →L[ℝ] ℂ :=
@@ -535,6 +553,231 @@ theorem deningerTimeTestLaplace_rawThetaEigen_summable
           have h :=
             norm_deningerTimeTestLaplace_rawThetaEigen_le φ q
           simpa only [div_eq_mul_inv, one_mul] using h))
+
+private theorem deningerCriticalStrip_time_mul_re_le_abs
+    {s : ℂ} (hs0 : 0 ≤ s.re) (hs1 : s.re ≤ 1)
+    (t : ℝ) :
+    t * s.re ≤ |t| := by
+  by_cases ht : 0 ≤ t
+  · calc
+      t * s.re ≤ t * 1 :=
+        mul_le_mul_of_nonneg_left hs1 ht
+      _ = t := mul_one t
+      _ ≤ |t| := le_abs_self t
+  · have ht' : t ≤ 0 := le_of_not_ge ht
+    exact
+      (mul_nonpos_of_nonpos_of_nonneg ht' hs0).trans
+        (abs_nonneg t)
+
+private theorem deningerH1RegularizedTraceTerm_integrable
+    (φ : DeningerTimeTestFunction) (q : XiZeroCopy) :
+    Integrable
+      (fun t : ℝ =>
+        (deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ) t : ℂ) *
+            deningerRegularizedSpectralFlowTerm q t) := by
+  have hd2Cont :
+      Continuous
+        (fun t : ℝ =>
+          (deningerTimeTestDerivative
+            (deningerTimeTestDerivative φ) t : ℂ)) :=
+    Complex.continuous_ofReal.comp
+      (deningerTimeTestDerivative
+        (deningerTimeTestDerivative φ)).continuous
+  have htermCont :
+      Continuous
+        (deningerRegularizedSpectralFlowTerm q) := by
+    unfold deningerRegularizedSpectralFlowTerm
+    fun_prop
+  have hd2Compact :
+      HasCompactSupport
+        (fun t : ℝ =>
+          (deningerTimeTestDerivative
+            (deningerTimeTestDerivative φ) t : ℂ)) := by
+    simpa only [Function.comp_apply] using
+      ((deningerTimeTestDerivative
+        (deningerTimeTestDerivative φ)).hasCompactSupport.comp_left
+          (g := fun r : ℝ => (r : ℂ)) rfl)
+  exact
+    (hd2Cont.mul htermCont).integrable_of_hasCompactSupport
+      hd2Compact.mul_right
+
+private theorem integral_norm_deningerH1RegularizedTraceTerm_le
+    (φ : DeningerTimeTestFunction) (q : XiZeroCopy) :
+    (∫ t : ℝ,
+        ‖(deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ) t : ℂ) *
+            deningerRegularizedSpectralFlowTerm q t‖) ≤
+      deningerTimeTestSecondDerivativeExponentialMass φ *
+        (1 / ‖deningerRawThetaEigen q‖ ^ 2) := by
+  let d2 : ℝ → ℂ :=
+    fun t =>
+      (deningerTimeTestDerivative
+        (deningerTimeTestDerivative φ) t : ℂ)
+  have hrho := deningerRawThetaEigen_re_mem_open_unit q
+  have hpoint : ∀ t : ℝ,
+      ‖d2 t * deningerRegularizedSpectralFlowTerm q t‖ ≤
+        (‖d2 t‖ * Real.exp |t|) *
+          (1 / ‖deningerRawThetaEigen q‖ ^ 2) := by
+    intro t
+    have htre :=
+      deningerCriticalStrip_time_mul_re_le_abs
+        hrho.1.le hrho.2.le t
+    rw [norm_mul,
+      norm_deningerRegularizedSpectralFlowTerm]
+    have hexp :
+        Real.exp (t * (deningerRawThetaEigen q).re) ≤
+          Real.exp |t| :=
+      Real.exp_le_exp.mpr htre
+    have hinv :
+        0 ≤ 1 / ‖deningerRawThetaEigen q‖ ^ 2 := by
+      positivity
+    calc
+      ‖d2 t‖ *
+          (Real.exp (t * (deningerRawThetaEigen q).re) *
+            (1 / ‖deningerRawThetaEigen q‖ ^ 2)) =
+          (‖d2 t‖ *
+            Real.exp (t * (deningerRawThetaEigen q).re)) *
+              (1 / ‖deningerRawThetaEigen q‖ ^ 2) := by ring
+      _ ≤ (‖d2 t‖ * Real.exp |t|) *
+          (1 / ‖deningerRawThetaEigen q‖ ^ 2) := by
+        exact mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left hexp (norm_nonneg _))
+          hinv
+  have hmajorInt :
+      Integrable
+        (fun t : ℝ =>
+          (‖d2 t‖ * Real.exp |t|) *
+            (1 / ‖deningerRawThetaEigen q‖ ^ 2)) := by
+    have hbase :
+        Integrable
+          (fun t : ℝ => ‖d2 t‖ * Real.exp |t|) := by
+      simpa only [d2] using
+        deningerTimeTestSecondDerivativeExponentialIntegrable φ
+    exact hbase.mul_const _
+  calc
+    (∫ t : ℝ,
+        ‖(deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ) t : ℂ) *
+            deningerRegularizedSpectralFlowTerm q t‖) =
+        ∫ t : ℝ,
+          ‖d2 t * deningerRegularizedSpectralFlowTerm q t‖ := by
+      rfl
+    _ ≤ ∫ t : ℝ,
+        (‖d2 t‖ * Real.exp |t|) *
+          (1 / ‖deningerRawThetaEigen q‖ ^ 2) :=
+      integral_mono
+        (deningerH1RegularizedTraceTerm_integrable φ q).norm
+        hmajorInt hpoint
+    _ = deningerTimeTestSecondDerivativeExponentialMass φ *
+        (1 / ‖deningerRawThetaEigen q‖ ^ 2) := by
+      rw [integral_mul_const]
+      rfl
+
+private theorem deningerH1RegularizedTraceTerm_integral_norm_summable
+    (φ : DeningerTimeTestFunction) :
+    Summable
+      (fun q : XiZeroCopy =>
+        ∫ t : ℝ,
+          ‖(deningerTimeTestDerivative
+            (deningerTimeTestDerivative φ) t : ℂ) *
+              deningerRegularizedSpectralFlowTerm q t‖) := by
+  exact
+    ((deningerRawThetaEigen_inv_sq_summable.mul_left
+      (deningerTimeTestSecondDerivativeExponentialMass φ)).of_nonneg_of_le
+        (fun _ => integral_nonneg fun _ => norm_nonneg _)
+        (fun q => by
+          simpa only [one_mul] using
+            integral_norm_deningerH1RegularizedTraceTerm_le φ q))
+
+private theorem integral_deningerH1RegularizedTraceTerm_eq_laplace
+    (φ : DeningerTimeTestFunction) (q : XiZeroCopy) :
+    (∫ t : ℝ,
+        (deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ) t : ℂ) *
+            deningerRegularizedSpectralFlowTerm q t) =
+      deningerTimeTestLaplace φ
+        (deningerRawThetaEigen q) := by
+  let d2φ :=
+    deningerTimeTestDerivative
+      (deningerTimeTestDerivative φ)
+  let rho := deningerRawThetaEigen q
+  have hrho : rho ≠ 0 :=
+    deningerRawThetaEigen_ne_zero q
+  calc
+    (∫ t : ℝ,
+        (d2φ t : ℂ) *
+          deningerRegularizedSpectralFlowTerm q t) =
+        (rho ^ 2)⁻¹ *
+          deningerTimeTestLaplace d2φ rho := by
+      rw [deningerTimeTestLaplace]
+      rw [← integral_const_mul]
+      apply integral_congr_ae
+      filter_upwards with t
+      simp only [deningerRegularizedSpectralFlowTerm,
+        rho, d2φ, div_eq_mul_inv]
+      ring
+    _ = (rho ^ 2)⁻¹ *
+        (rho ^ 2 * deningerTimeTestLaplace φ rho) := by
+      rw [deningerTimeTestLaplace_mul_sq]
+    _ = deningerTimeTestLaplace φ rho := by
+      field_simp
+
+/--
+The distributional `H¹` trace acts on an arbitrary test by the complete multiplicity-exact
+spectral sum `Σρ Φ(ρ)`.  No pointwise convergence of `Σρ exp(tρ)` is assumed.
+-/
+theorem deningerArithmeticH1TraceDistribution_apply_eq_spectralSum
+    (φ : DeningerTimeTestFunction) :
+    deningerArithmeticH1TraceDistribution φ =
+      ∑' q : XiZeroCopy,
+        deningerTimeTestLaplace φ
+          (deningerRawThetaEigen q) := by
+  let d2φ :=
+    deningerTimeTestDerivative
+      (deningerTimeTestDerivative φ)
+  let F : XiZeroCopy → ℝ → ℂ :=
+    fun q t =>
+      (d2φ t : ℂ) *
+        deningerRegularizedSpectralFlowTerm q t
+  have hswap :
+      (∑' q : XiZeroCopy, ∫ t : ℝ, F q t) =
+        ∫ t : ℝ, ∑' q : XiZeroCopy, F q t := by
+    exact integral_tsum_of_summable_integral_norm
+      (fun q => by
+        simpa only [F, d2φ] using
+          deningerH1RegularizedTraceTerm_integrable φ q)
+      (by
+        simpa only [F, d2φ] using
+          deningerH1RegularizedTraceTerm_integral_norm_summable φ)
+  rw [deningerArithmeticH1TraceDistribution_apply]
+  rw [deningerRegularizedH1FlowDistribution,
+    deningerRegularTimeDistribution_apply
+      deningerRegularizedSpectralFlow_locallyIntegrableOn]
+  calc
+    (∫ t : ℝ, (d2φ t : ℂ) *
+        deningerRegularizedSpectralFlow t) =
+        ∫ t : ℝ, ∑' q : XiZeroCopy, F q t := by
+      apply integral_congr_ae
+      filter_upwards with t
+      rw [deningerRegularizedSpectralFlow]
+      change
+        (d2φ t : ℂ) *
+            (∑' q : XiZeroCopy,
+              deningerRegularizedSpectralFlowTerm q t) =
+          ∑' q : XiZeroCopy,
+            (d2φ t : ℂ) *
+              deningerRegularizedSpectralFlowTerm q t
+      rw [← tsum_mul_left]
+    _ = ∑' q : XiZeroCopy, ∫ t : ℝ, F q t :=
+      hswap.symm
+    _ = ∑' q : XiZeroCopy,
+        deningerTimeTestLaplace φ
+          (deningerRawThetaEigen q) := by
+      apply tsum_congr
+      intro q
+      simpa only [F, d2φ] using
+        integral_deningerH1RegularizedTraceTerm_eq_laplace φ q
 
 /-- Weight-zero endpoint trace function. -/
 def deningerArithmeticH0TraceFunction (_t : ℝ) : ℂ :=

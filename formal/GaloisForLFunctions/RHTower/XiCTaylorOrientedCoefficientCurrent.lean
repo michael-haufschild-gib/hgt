@@ -337,6 +337,35 @@ theorem xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_iff_riemannHypothe
   ⟨riemannHypothesis_of_xiCTaylorAnisotropicOrientedCoefficientSublinearUpper hN,
     xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_of_riemannHypothesis hN⟩
 
+/-- Existence of one superaccurate schedule with sublinear oriented coefficient current is exactly
+RH. -/
+theorem exists_xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_iff_riemannHypothesis :
+    (∃ N : ℕ → ℕ, XiCTaylorSuperaccurateSchedule N ∧
+      XiCTaylorAnisotropicOrientedCoefficientSublinearUpper N) ↔ RiemannHypothesis := by
+  constructor
+  · rintro ⟨N, hN, hcoeff⟩
+    exact
+      (xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_iff_riemannHypothesis hN).1
+        hcoeff
+  · intro hRH
+    obtain ⟨N, hN⟩ := exists_xiCTaylorSuperaccurateSchedule
+    exact ⟨N, hN,
+      (xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_iff_riemannHypothesis hN).2 hRH⟩
+
+/-- Sublinear oriented coefficient current for every superaccurate schedule is exactly RH. -/
+theorem forall_xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_iff_riemannHypothesis :
+    (∀ N : ℕ → ℕ, XiCTaylorSuperaccurateSchedule N →
+      XiCTaylorAnisotropicOrientedCoefficientSublinearUpper N) ↔ RiemannHypothesis := by
+  constructor
+  · intro hall
+    obtain ⟨N, hN⟩ := exists_xiCTaylorSuperaccurateSchedule
+    exact
+      (xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_iff_riemannHypothesis hN).1
+        (hall N hN)
+  · intro hRH N hN
+    exact
+      (xiCTaylorAnisotropicOrientedCoefficientSublinearUpper_iff_riemannHypothesis hN).2 hRH
+
 end
 
 end RHTower
