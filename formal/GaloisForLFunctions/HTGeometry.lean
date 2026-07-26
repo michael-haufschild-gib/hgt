@@ -2107,6 +2107,7 @@ import GaloisForLFunctions.HTGeometry.VanishingNeedsCorner
 import GaloisForLFunctions.HTGeometry.BindingBlockOffLine
 import GaloisForLFunctions.HTGeometry.TunedPairPrinciple
 import GaloisForLFunctions.HTGeometry.CorrectedOffLineLedger
+import GaloisForLFunctions.HTGeometry.ResonanceCeiling
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
 import GaloisForLFunctions.HTGeometry.SatakeEnergyBound

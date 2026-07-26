@@ -3061,3 +3061,4 @@ import GaloisForLFunctions.RHTower.DiscInsideHorn
 import GaloisForLFunctions.RHTower.TailIsNegligible
 import GaloisForLFunctions.RHTower.LevelTwoTransfersVerbatim
 import GaloisForLFunctions.RHTower.RealVariableRouteIsInsufficient
+import GaloisForLFunctions.RHTower.DiagrammaticPowerCounting

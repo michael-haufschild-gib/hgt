@@ -190,6 +190,179 @@ theorem bourgainSquareRootBilinearTaylorError_unit_le_mul
       exact add_le_add_right htail _
     _ = _ := by ring
 
+/-- The scalar third-derivative bound is decreasing in the positive base
+parameter. -/
+theorem bourgainSquareRootThirdDerivativeBound_le_of_lower
+    {A a : ℝ} (hA : 0 < A) (hAa : A ≤ a) :
+    bourgainSquareRootThirdDerivativeBound a ≤
+      bourgainSquareRootThirdDerivativeBound A := by
+  have hsq : A ^ (2 : ℕ) ≤ a ^ (2 : ℕ) :=
+    pow_le_pow_left₀ hA.le hAa 2
+  have h3 :=
+    bourgain_rpow_neg_le_of_le
+      (A := A ^ (2 : ℕ)) (y := a ^ (2 : ℕ))
+      (r := (3 / 2 : ℝ)) (by positivity) hsq (by norm_num)
+  have h5 :=
+    bourgain_rpow_neg_le_of_le
+      (A := A ^ (2 : ℕ)) (y := a ^ (2 : ℕ))
+      (r := (5 / 2 : ℝ)) (by positivity) hsq (by norm_num)
+  unfold bourgainSquareRootThirdDerivativeBound
+  nlinarith
+
+/-- Uniform unit-block Taylor constant for bases at least `A`. -/
+def bourgainA6UnitLocalTaylorErrorConstant (A : ℝ) : ℝ :=
+  Real.pi * bourgainSquareRootThirdDerivativeBound A / 12
+
+theorem bourgainA6UnitLocalTaylorErrorConstant_nonneg
+    {A : ℝ} (hA : 0 < A) :
+    0 ≤ bourgainA6UnitLocalTaylorErrorConstant A := by
+  unfold bourgainA6UnitLocalTaylorErrorConstant
+    bourgainSquareRootThirdDerivativeBound
+  positivity
+
+/-- Local Taylor absorption with an arbitrary fixed positive lower base. -/
+theorem bourgainSquareRootLocalTaylorError_unit_le_of_lower
+    {N M : ℕ} (hN : 0 < N) (hM : 0 < M)
+    (hMN : M ^ (2 : ℕ) ≤ N)
+    {A a : ℝ} (hA : 0 < A) (hAa : A ≤ a) :
+    bourgainSquareRootLocalTaylorError
+        ((M : ℝ) ^ (2 : ℕ) / 12) a
+        ((M : ℝ) / (N : ℝ)) (fun _ : Fin M => (1 : ℂ)) ≤
+      bourgainA6UnitLocalTaylorErrorConstant A := by
+  have hNr : (0 : ℝ) < N := by exact_mod_cast hN
+  have hMN' : (M : ℝ) ^ (2 : ℕ) ≤ (N : ℝ) := by
+    exact_mod_cast hMN
+  have hthird :=
+    bourgainSquareRootThirdDerivativeBound_le_of_lower hA hAa
+  have hratio0 :
+      0 ≤ (M : ℝ) ^ (2 : ℕ) / (N : ℝ) := by positivity
+  have hratio1 :
+      (M : ℝ) ^ (2 : ℕ) / (N : ℝ) ≤ 1 :=
+    (div_le_one₀ hNr).2 hMN'
+  have hcub :
+      ((M : ℝ) ^ (2 : ℕ) / (N : ℝ)) ^ (3 : ℕ) ≤ 1 :=
+    pow_le_one₀ hratio0 hratio1
+  have hsum :
+      (∑ _n : Fin M, ‖(1 : ℂ)‖) = (M : ℝ) := by simp
+  have hK :
+      0 ≤ bourgainA6UnitLocalTaylorErrorConstant A :=
+    bourgainA6UnitLocalTaylorErrorConstant_nonneg hA
+  unfold bourgainSquareRootLocalTaylorError
+  rw [hsum]
+  calc
+    (2 * Real.pi *
+        ((((M : ℝ) ^ (2 : ℕ) / 12) *
+              bourgainSquareRootThirdDerivativeBound a) *
+            ((M : ℝ) / (N : ℝ)) ^ (3 : ℕ) / 2)) *
+          (M : ℝ) ≤
+        (2 * Real.pi *
+          ((((M : ℝ) ^ (2 : ℕ) / 12) *
+              bourgainSquareRootThirdDerivativeBound A) *
+            ((M : ℝ) / (N : ℝ)) ^ (3 : ℕ) / 2)) *
+          (M : ℝ) := by
+      gcongr
+    _ = bourgainA6UnitLocalTaylorErrorConstant A *
+        (((M : ℝ) ^ (2 : ℕ) / (N : ℝ)) ^ (3 : ℕ)) := by
+      unfold bourgainA6UnitLocalTaylorErrorConstant
+      field_simp
+    _ ≤ bourgainA6UnitLocalTaylorErrorConstant A :=
+      mul_le_of_le_one_right hK hcub
+
+/-- Bilinear Taylor constant for two unit blocks with bases at least `A`. -/
+def bourgainA6UnitBilinearTaylorErrorConstant (A : ℝ) : ℝ :=
+  2 * bourgainA6UnitLocalTaylorErrorConstant A ^ (6 : ℕ) +
+    bourgainA6UnitLocalTaylorErrorConstant A ^ (12 : ℕ)
+
+theorem bourgainA6UnitBilinearTaylorErrorConstant_nonneg
+    {A : ℝ} (hA : 0 < A) :
+    0 ≤ bourgainA6UnitBilinearTaylorErrorConstant A := by
+  unfold bourgainA6UnitBilinearTaylorErrorConstant
+  have hK :=
+    bourgainA6UnitLocalTaylorErrorConstant_nonneg hA
+  positivity
+
+/-- Full bilinear Taylor error with arbitrary fixed positive lower base. -/
+theorem bourgainSquareRootBilinearTaylorError_unit_le_mul_of_lower
+    {N M : ℕ} (hN : 0 < N) (hM : 0 < M)
+    (hMN : M ^ (2 : ℕ) ≤ N)
+    {A a b : ℝ} (hA : 0 < A) (hAa : A ≤ a) (hAb : A ≤ b) :
+    bourgainSquareRootBilinearTaylorError
+        ((M : ℝ) ^ (2 : ℕ) / 12) a b
+        ((M : ℝ) / (N : ℝ))
+        (fun _ : Fin M => (1 : ℂ)) (fun _ : Fin M => (1 : ℂ)) ≤
+      bourgainA6UnitBilinearTaylorErrorConstant A *
+        (M : ℝ) ^ (6 : ℕ) := by
+  let E₁ :=
+    bourgainSquareRootLocalTaylorError
+      ((M : ℝ) ^ (2 : ℕ) / 12) a
+      ((M : ℝ) / (N : ℝ)) (fun _ : Fin M => (1 : ℂ))
+  let E₂ :=
+    bourgainSquareRootLocalTaylorError
+      ((M : ℝ) ^ (2 : ℕ) / 12) b
+      ((M : ℝ) / (N : ℝ)) (fun _ : Fin M => (1 : ℂ))
+  let K : ℝ := bourgainA6UnitLocalTaylorErrorConstant A
+  have ha0 : (0 : ℝ) < a := hA.trans_le hAa
+  have hb0 : (0 : ℝ) < b := hA.trans_le hAb
+  have hδ : 0 ≤ (M : ℝ) / (N : ℝ) := by positivity
+  have hR : 0 ≤ (M : ℝ) ^ (2 : ℕ) / 12 := by positivity
+  have hE₁0 : 0 ≤ E₁ := by
+    exact bourgainSquareRootLocalTaylorError_nonneg hR ha0 hδ _
+  have hE₂0 : 0 ≤ E₂ := by
+    exact bourgainSquareRootLocalTaylorError_nonneg hR hb0 hδ _
+  have hK : 0 ≤ K := by
+    exact bourgainA6UnitLocalTaylorErrorConstant_nonneg hA
+  have hE₁ : E₁ ≤ K := by
+    simpa only [E₁, K] using
+      bourgainSquareRootLocalTaylorError_unit_le_of_lower
+        hN hM hMN hA hAa
+  have hE₂ : E₂ ≤ K := by
+    simpa only [E₂, K] using
+      bourgainSquareRootLocalTaylorError_unit_le_of_lower
+        hN hM hMN hA hAb
+  have hE₁6 : E₁ ^ (6 : ℕ) ≤ K ^ (6 : ℕ) :=
+    pow_le_pow_left₀ hE₁0 hE₁ 6
+  have hE₂6 : E₂ ^ (6 : ℕ) ≤ K ^ (6 : ℕ) :=
+    pow_le_pow_left₀ hE₂0 hE₂ 6
+  have hEprod :
+      E₁ ^ (6 : ℕ) * E₂ ^ (6 : ℕ) ≤ K ^ (12 : ℕ) := by
+    calc
+      E₁ ^ (6 : ℕ) * E₂ ^ (6 : ℕ) ≤
+          K ^ (6 : ℕ) * K ^ (6 : ℕ) := by
+        gcongr
+      _ = K ^ (12 : ℕ) := by ring
+  have hMone : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hM6 : (1 : ℝ) ≤ (M : ℝ) ^ (6 : ℕ) := by
+    simpa using pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1) hMone 6
+  have htail : K ^ (12 : ℕ) ≤ K ^ (12 : ℕ) * (M : ℝ) ^ (6 : ℕ) := by
+    calc
+      K ^ (12 : ℕ) = K ^ (12 : ℕ) * 1 := by ring
+      _ ≤ K ^ (12 : ℕ) * (M : ℝ) ^ (6 : ℕ) :=
+        mul_le_mul_of_nonneg_left hM6 (by positivity)
+  unfold bourgainSquareRootBilinearTaylorError
+  simp only [norm_one, Finset.sum_const, Finset.card_univ,
+    Fintype.card_fin, nsmul_eq_mul, mul_one]
+  change
+    (M : ℝ) ^ (6 : ℕ) * E₂ ^ (6 : ℕ) +
+        E₁ ^ (6 : ℕ) * (M : ℝ) ^ (6 : ℕ) +
+        E₁ ^ (6 : ℕ) * E₂ ^ (6 : ℕ) ≤ _
+  calc
+    (M : ℝ) ^ (6 : ℕ) * E₂ ^ (6 : ℕ) +
+          E₁ ^ (6 : ℕ) * (M : ℝ) ^ (6 : ℕ) +
+          E₁ ^ (6 : ℕ) * E₂ ^ (6 : ℕ) ≤
+        (M : ℝ) ^ (6 : ℕ) * K ^ (6 : ℕ) +
+          K ^ (6 : ℕ) * (M : ℝ) ^ (6 : ℕ) +
+          K ^ (12 : ℕ) := by
+      gcongr
+    _ ≤ (M : ℝ) ^ (6 : ℕ) * K ^ (6 : ℕ) +
+          K ^ (6 : ℕ) * (M : ℝ) ^ (6 : ℕ) +
+          K ^ (12 : ℕ) * (M : ℝ) ^ (6 : ℕ) := by
+      exact add_le_add_right htail _
+    _ = bourgainA6UnitBilinearTaylorErrorConstant A *
+        (M : ℝ) ^ (6 : ℕ) := by
+      unfold bourgainA6UnitBilinearTaylorErrorConstant
+      dsimp only [K]
+      ring
+
 end
 
 end RHTower
