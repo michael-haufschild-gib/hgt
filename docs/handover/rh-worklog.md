@@ -7977,3 +7977,62 @@ statement, it implies all the Turan-type inequalities at once, AND IT IS A PROPE
 — which is explicit, positive, and analytic. That is the first candidate in 130 cycles for a
 degree-uniform input, and the corpus has Hankel machinery (XiCentralHankelDeterminantCriterion,
 MomentInnerProduct) that Phase 1 must audit first.
+
+---
+
+## Cycle 131 (2026-07-26) — TURAN IS A SHARP COMPETITION BETWEEN A VARIANCE AND A FACTORIAL GAP
+
+### The degree-uniform candidate, examined
+Total positivity of the HANKEL matrices is the canonical degree-uniform statement about a moment
+sequence, and it holds UNCONDITIONALLY here: gamma_k are moments of the positive measure Phi(u)du
+against u^{2k}, so the sequence is a Stieltjes moment sequence and all Hankel minors are nonnegative.
+BUT HANKEL TOTAL POSITIVITY IS THE WRONG KIND. Jensen hyperbolicity corresponds to TOEPLITZ total
+positivity (Polya frequency sequences, Laguerre-Polya); Hankel total positivity gives LOG-CONVEXITY,
+and Turan needs LOG-CONCAVITY. THE RAW MOMENTS GO THE WRONG WAY, BY CAUCHY-SCHWARZ.
+
+### AND THAT IS EXACTLY WHY THE NORMALISATION MATTERS
+The Jensen coefficients are gamma_k = m_k/(2k)! with m_k the raw moments. Two facts pull opposite ways:
+  * raw moments of a positive measure are LOG-CONVEX: m_{k+1}^2 <= m_k m_{k+2} (Cauchy-Schwarz);
+  * the normalisation 1/(2k)! is LOG-CONCAVE, with the explicit gap
+        (2k)!(2k+4)!/((2k+2)!)^2 = (2k+3)(2k+4)/((2k+1)(2k+2)) > 1.
+The Turan ratio FACTORISES as (moment ratio) x (factorial gap), so
+
+    ==> TURAN HOLDS PRECISELY WHEN THE FACTORIAL GAP BEATS THE MOMENT DEFICIT.
+
+### THE TWO SIDES HAVE THE SAME ORDER — this is the finding
+    (2k+3)(2k+4) - (2k+1)(2k+2) = 8k + 10,   so the gap's excess over one is ~ 2/k;
+    the moment deficit is the variance of log u^2 under the tilted measure, ALSO of order 1/k because
+    the tilted measure concentrates (Laplace, width ~ log k/sqrt k at u* ~ (1/2) log k).
+
+    ==> TURAN FOR Xi IS A CONSTANT COMPETITION AT ORDER 1/k, NOT A SOFT INEQUALITY. That is why it
+        required real work (Csordas-Norfolk-Varga), and why higher degrees are harder: DEGREE d
+        COMPARES A d-TH ORDER VARIANCE AGAINST A d-TH ORDER FACTORIAL GAP, BOTH OF THE SAME ORDER.
+
+This is the first time the programme has identified WHY the Jensen route's difficulty is sharp rather
+than technical: the two competing quantities are of matching order at every degree, so no soft
+estimate can ever suffice — only exact constants decide.
+
+Machine-verified: `RHTower/TuranIsAVarianceCompetition.lean` (the factorial identity
+(2k+3)(2k+4) = (2k+1)(2k+2) + (8k+10), the gap's strict excess over one, its order 1/k bound, the
+factorisation of the Turan ratio into moment ratio times factorial gap, and the equivalence of the
+competition with the reciprocal-gap threshold; standard axioms only, wired into RHTower).
+
+### SIXTY-FIFTH ATLAS ENTRY
+    variance competition   gamma_k = m_k/(2k)! with m_k log-convex (Cauchy-Schwarz) and 1/(2k)!
+                           log-concave with gap (2k+3)(2k+4)/((2k+1)(2k+2)). Turan holds iff the gap
+                           beats the moment deficit, and both are of order 1/k. Hankel total positivity
+                           is unconditional but is the WRONG kind (log-convexity); Jensen needs
+                           Toeplitz/PF. The difficulty is sharp, not technical.
+
+### STATE AT CYCLE 131
+Sixty-five entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 132 target
+The competition is between the tilted variance and 2/k. BOTH ARE PROPERTIES OF THE MEASURE Phi. The
+factorial side is exact; the variance side is what must be bounded. THE TILTED MEASURE IS
+Phi(u) u^{2k} du NORMALISED, and its variance in log u^2 is controlled by the CONVEXITY OF
+log Phi(e^v) — a log-concave Phi in the exponential variable gives a variance BELOW the Gaussian
+value, and Phi(u) = sum_n (2 pi^2 n^4 e^{9u/2} - 3 pi n^2 e^{5u/2}) exp(-pi n^2 e^{2u}) is, term by
+term, a Gaussian-type density in e^{2u}. TEST WHETHER log Phi IS CONCAVE IN v = e^{2u}: if it is, the
+tilted variance is bounded by the Gaussian value, which is computable exactly, and the competition is
+decided by comparing two explicit constants — the first fully explicit decision point in 131 cycles.

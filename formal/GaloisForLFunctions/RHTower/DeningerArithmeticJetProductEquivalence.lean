@@ -28,13 +28,9 @@ theorem deningerCompactOpenH1AllJets_surjective :
   letI :
       FirstCountableTopology DeningerCompactOpenEntire :=
     inferInstance
-  letI :
-      UniformSpace
-        (DeningerCompactOpenEntire ⧸
-          deningerCompactOpenXiRange.toAddSubgroup) :=
+  letI : UniformSpace DeningerArithmeticCompactOpenH1 :=
     IsTopologicalAddGroup.rightUniformSpace
-      (DeningerCompactOpenEntire ⧸
-        deningerCompactOpenXiRange.toAddSubgroup)
+      DeningerArithmeticCompactOpenH1
   letI : IsUniformAddGroup C(ℂ, ℂ) := by
     let phi :
         C(ℂ, ℂ) →+
@@ -52,17 +48,11 @@ theorem deningerCompactOpenH1AllJets_surjective :
     exact
       isUniformEmbedding_subtype_val.isUniformAddGroup
         deningerCompactOpenEntireSubmodule.subtype.toAddMonoidHom
-  letI :
-      CompleteSpace
-        (DeningerCompactOpenEntire ⧸
-          deningerCompactOpenXiRange.toAddSubgroup) :=
+  letI : CompleteSpace DeningerArithmeticCompactOpenH1 :=
     QuotientAddGroup.completeSpace_right
       DeningerCompactOpenEntire
       deningerCompactOpenXiRange.toAddSubgroup
-  letI :
-      IsUniformAddGroup
-        (DeningerCompactOpenEntire ⧸
-          deningerCompactOpenXiRange.toAddSubgroup) :=
+  letI : IsUniformAddGroup DeningerArithmeticCompactOpenH1 :=
     isUniformAddGroup_of_addCommGroup
   have huniform :
       IsUniformEmbedding

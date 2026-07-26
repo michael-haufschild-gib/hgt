@@ -6,6 +6,7 @@ Bourgain applies curve decoupling on the physical box with side scales
 `H⁶` times the literal normalized `A₆` moment.
 -/
 import GaloisForLFunctions.RHTower.BourgainA6TorusBaseline
+import GaloisForLFunctions.RHTower.BourgainSquareRootQuadraticModel
 
 namespace RHTower
 
@@ -19,6 +20,118 @@ def bourgainA6PhysicalExponentialSum
     (y₂ / (H : ℝ) ^ (2 : ℕ))
     (y₃ / (H : ℝ) ^ (2 : ℕ))
     (y₄ / (H : ℝ))
+
+/-- Same physical sum written directly as normalized square-root-curve
+samples. -/
+def bourgainA6NormalizedCurveSum
+    (H : ℕ) (x : BourgainPhaseSpace) : ℂ :=
+  ∑ n : Fin H,
+    bourgainUnitCharacter
+      (bourgainSquareRootCurvePhase x
+        ((bourgainIndex n : ℝ) / (H : ℝ)))
+
+/-- Exact equality between physical `A₆` coordinates and normalized curve
+coordinates. -/
+theorem bourgainA6NormalizedCurveSum_eq_physical
+    (H : ℕ) (hH : 0 < H) (x : BourgainPhaseSpace) :
+    bourgainA6NormalizedCurveSum H x =
+      bourgainA6PhysicalExponentialSum H (x 0) (x 1) (x 2) (x 3) := by
+  have hHr : (0 : ℝ) < H := by
+    exact_mod_cast hH
+  have hH0 : (H : ℝ) ≠ 0 := hHr.ne'
+  have hH20 : (H : ℝ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hH0
+  have hHhalf : (0 : ℝ) < (H : ℝ) ^ (1 / 2 : ℝ) :=
+    Real.rpow_pos_of_pos hHr _
+  have hHthreeHalf : (0 : ℝ) < (H : ℝ) ^ (3 / 2 : ℝ) :=
+    Real.rpow_pos_of_pos hHr _
+  have hmulHalf :
+      (H : ℝ) ^ (1 / 2 : ℝ) *
+          (H : ℝ) ^ (1 / 2 : ℝ) =
+        (H : ℝ) := by
+    calc
+      (H : ℝ) ^ (1 / 2 : ℝ) *
+          (H : ℝ) ^ (1 / 2 : ℝ) =
+          (H : ℝ) ^ ((1 / 2 : ℝ) + (1 / 2 : ℝ)) := by
+            rw [Real.rpow_add hHr]
+      _ = (H : ℝ) := by norm_num
+  have hmulThreeHalf :
+      (H : ℝ) ^ (1 / 2 : ℝ) *
+          (H : ℝ) ^ (3 / 2 : ℝ) =
+        (H : ℝ) ^ (2 : ℕ) := by
+    calc
+      (H : ℝ) ^ (1 / 2 : ℝ) *
+          (H : ℝ) ^ (3 / 2 : ℝ) =
+          (H : ℝ) ^ ((1 / 2 : ℝ) + (3 / 2 : ℝ)) := by
+            rw [Real.rpow_add hHr]
+      _ = (H : ℝ) ^ (2 : ℕ) := by
+        norm_num [Real.rpow_two]
+  have hscaleHalf :
+      (H : ℝ) ^ (1 / 2 : ℝ) / (H : ℝ) =
+        1 / (H : ℝ) ^ (1 / 2 : ℝ) := by
+    field_simp
+    simpa [pow_two] using hmulHalf
+  have hscaleThreeHalf :
+      (H : ℝ) ^ (1 / 2 : ℝ) / (H : ℝ) ^ (2 : ℕ) =
+        1 / (H : ℝ) ^ (3 / 2 : ℝ) := by
+    field_simp
+    exact hmulThreeHalf
+  have hphase (n : Fin H) :
+      bourgainSquareRootCurvePhase x
+          ((bourgainIndex n : ℝ) / (H : ℝ)) =
+        (bourgainIndex n : ℝ) * (x 0 / (H : ℝ)) +
+          (bourgainIndex n : ℝ) ^ (2 : ℕ) *
+            (x 1 / (H : ℝ) ^ (2 : ℕ)) +
+          bourgainA6HigherPhase H
+            (x 2 / (H : ℝ) ^ (2 : ℕ))
+            (x 3 / (H : ℝ)) n := by
+    have hn : (0 : ℝ) ≤ bourgainIndex n := by positivity
+    have hcoefHalf :
+        (bourgainIndex n : ℝ) ^ (1 / 2 : ℝ) /
+            (H : ℝ) ^ (1 / 2 : ℝ) =
+          (H : ℝ) ^ (1 / 2 : ℝ) *
+            (bourgainIndex n : ℝ) ^ (1 / 2 : ℝ) / (H : ℝ) := by
+      calc
+        (bourgainIndex n : ℝ) ^ (1 / 2 : ℝ) /
+              (H : ℝ) ^ (1 / 2 : ℝ) =
+            (bourgainIndex n : ℝ) ^ (1 / 2 : ℝ) *
+              (1 / (H : ℝ) ^ (1 / 2 : ℝ)) := by ring
+        _ = (bourgainIndex n : ℝ) ^ (1 / 2 : ℝ) *
+              ((H : ℝ) ^ (1 / 2 : ℝ) / (H : ℝ)) := by
+            rw [hscaleHalf]
+        _ = (H : ℝ) ^ (1 / 2 : ℝ) *
+              (bourgainIndex n : ℝ) ^ (1 / 2 : ℝ) / (H : ℝ) := by
+            ring
+    have hcoefThreeHalf :
+        (bourgainIndex n : ℝ) ^ (3 / 2 : ℝ) /
+            (H : ℝ) ^ (3 / 2 : ℝ) =
+          (H : ℝ) ^ (1 / 2 : ℝ) *
+            (bourgainIndex n : ℝ) ^ (3 / 2 : ℝ) /
+              (H : ℝ) ^ (2 : ℕ) := by
+      calc
+        (bourgainIndex n : ℝ) ^ (3 / 2 : ℝ) /
+              (H : ℝ) ^ (3 / 2 : ℝ) =
+            (bourgainIndex n : ℝ) ^ (3 / 2 : ℝ) *
+              (1 / (H : ℝ) ^ (3 / 2 : ℝ)) := by ring
+        _ = (bourgainIndex n : ℝ) ^ (3 / 2 : ℝ) *
+              ((H : ℝ) ^ (1 / 2 : ℝ) /
+                (H : ℝ) ^ (2 : ℕ)) := by
+            rw [hscaleThreeHalf]
+        _ = (H : ℝ) ^ (1 / 2 : ℝ) *
+              (bourgainIndex n : ℝ) ^ (3 / 2 : ℝ) /
+                (H : ℝ) ^ (2 : ℕ) := by
+            ring
+    simp [bourgainSquareRootCurvePhase, bourgainSquareRootCurve,
+      bourgainDot, Fin.sum_univ_four, Matrix.cons_val,
+      bourgainA6HigherPhase]
+    rw [Real.div_rpow hn hHr.le, Real.div_rpow hn hHr.le,
+      hcoefHalf, hcoefThreeHalf]
+    field_simp
+    ring
+  unfold bourgainA6NormalizedCurveSum
+    bourgainA6PhysicalExponentialSum bourgainA6ExponentialSum
+  apply Fintype.sum_congr
+  intro n
+  rw [hphase]
 
 /-- Twelfth moment on the physical box
 `[0,H]×[0,H²]×[-H²,H²]×[-H,H]`. -/

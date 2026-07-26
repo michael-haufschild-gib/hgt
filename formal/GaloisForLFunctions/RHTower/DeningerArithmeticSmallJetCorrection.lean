@@ -43,6 +43,12 @@ theorem exists_deningerCompactOpen_small_Xi_correction
       deningerCompactOpenFiniteJetRepresentative S F = 0 := by
     rw [deningerCompactOpenFiniteJetRepresentative,
       ContinuousLinearMap.comp_apply, hfinite, map_zero]
+  have hsource :
+      F -
+          deningerCompactOpenFiniteJetRepresentative S F =
+        F := by
+    rw [hrepresentative]
+    exact sub_zero F
   let Q : ℕ → DeningerCompactOpenEntire :=
     fun j =>
       deningerCompactOpenLocalXiQuotientTaylorApprox
@@ -56,7 +62,9 @@ theorem exists_deningerCompactOpen_small_Xi_correction
     have hpeel :=
       deningerCompactOpenFiniteJetRepresentative_peeling
         F r
-    simpa only [S, hrepresentative, sub_zero, G, Q,
+    dsimp only at hpeel
+    rw [hsource] at hpeel
+    simpa only [G, Q,
       deningerCompactOpenXiMul_apply,
       deningerCompactOpenLocalXiQuotientTaylorApprox_apply,
       Pi.sub_apply] using hpeel
@@ -70,7 +78,6 @@ theorem deningerCompactOpenAllJets_sub_XiMul
     deningerCompactOpenAllJets
         (F - deningerCompactOpenXiMul Q) =
       deningerCompactOpenAllJets F := by
-  rw [map_sub]
   have hzero :
       deningerCompactOpenAllJets
           (deningerCompactOpenXiMul Q) = 0 := by
@@ -78,7 +85,16 @@ theorem deningerCompactOpenAllJets_sub_XiMul
     exact
       deningerCompactOpenXiRange_le_allJets_ker
         ⟨Q, rfl⟩
-  rw [hzero, sub_zero]
+  calc
+    deningerCompactOpenAllJets
+        (F - deningerCompactOpenXiMul Q) =
+        deningerCompactOpenAllJets F -
+          deningerCompactOpenAllJets
+            (deningerCompactOpenXiMul Q) :=
+      deningerCompactOpenAllJets.map_sub
+        F (deningerCompactOpenXiMul Q)
+    _ = deningerCompactOpenAllJets F := by
+      rw [hzero, sub_zero]
 
 end
 
