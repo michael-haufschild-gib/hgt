@@ -598,6 +598,7 @@ import GaloisForLFunctions.RHTower.BourgainA6TorusBaseline
 import GaloisForLFunctions.RHTower.BourgainA6PhysicalBox
 import GaloisForLFunctions.RHTower.BourgainA6BlockLocalization
 import GaloisForLFunctions.RHTower.BourgainA6PointwiseBilinear
+import GaloisForLFunctions.RHTower.BourgainA6BlockPeriodicity
 import GaloisForLFunctions.RHTower.BourgainA6Rescaling
 import GaloisForLFunctions.RHTower.BourgainFejerSpacing
 import GaloisForLFunctions.RHTower.BourgainFejerMomentTransfer
@@ -3036,3 +3037,4 @@ import GaloisForLFunctions.RHTower.DegreeUniformComparison
 import GaloisForLFunctions.RHTower.AsymptoticGaussianity
 import GaloisForLFunctions.RHTower.LastGapIsSelfSimilar
 import GaloisForLFunctions.RHTower.DescentImprovesAndTerminates
+import GaloisForLFunctions.RHTower.CrossingLevelIsIteratedLog

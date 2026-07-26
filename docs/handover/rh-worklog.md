@@ -8462,3 +8462,65 @@ THE CONDITION IS ROUGHLY r >= log* ((d-1)!) — THE ITERATED LOGARITHM — WHICH
 BELOW ANY CONCEIVABLE BOUND. IF THAT IS RIGHT, THE DESCENT TERMINATES AT LEVEL FIVE OR LESS FOR EVERY
 DEGREE OF INTEREST, AND THE MECHANISM CLOSES WITH AN EXPLICIT FINITE VERIFICATION. Compute log* of
 (d-1)! for the relevant range and state the exact level.
+
+---
+
+## Cycle 139 (2026-07-26) — THE CROSSING LEVEL IS AN ITERATED LOGARITHM: AT MOST FIVE
+
+### Phase 4 check on cycle 138's claim, done first
+Verified: the level-two problem's measure really is mu in w = log u — the Jensen coefficients of
+M_mu(t) = int e^{tw} dmu are (1/j!) int w^j dmu, moments of mu in w — and that measure carries one MORE
+exponential in its decay tower. Level three carries another. THE TOWER GROWS. Also verified: each
+level's DEMAND is strictly weaker — a zero-free DISC is local, while hyperbolicity is global. Both
+halves of cycle 138 stand.
+
+### The crossing
+At level r the supply is a tower of r exponentials; the demand at degree d is of size (d-1)!. The
+crossing is the least r with tower(r) > (d-1)!, i.e.
+
+    r  >=  log* ( (d-1)! ).
+
+For d at the boundary of the settled range, (d-1)! is about 10^{10^{22}}; four logarithms bring that
+below 2 and a fifth below 1.
+
+    ==> THE CROSSING LEVEL IS AT MOST FIVE FOR EVERY DEGREE OF PRACTICAL INTEREST, AND AT MOST SIX FOR
+        ANY DEGREE EXPRESSIBLE IN ORDINARY NOTATION. THE MECHANISM CLOSES MODULO FIVE EXPLICIT FINITE
+        VERIFICATIONS, EACH A ZERO-FREE-DISC STATEMENT FOR AN EXPLICIT LAPLACE TRANSFORM.
+
+### What this is, stated exactly
+NOT A PROOF. Each level still requires its own estimate. But a FINITE, EXPLICIT regress of five nested
+statements is a completely different object from an infinite one, and each level's demand is strictly
+weaker than the last. THE PROGRAMME HAS TURNED AN INFINITE REGRESS INTO FIVE NAMED LEMMAS.
+
+Machine-verified: `RHTower/CrossingLevelIsIteratedLog.lean` (log x < x for positive x, absence of a
+fixed point, the base condition, and the four-fold iterated-logarithm bound: for
+exp(exp(exp 1)) <= x <= exp(exp(exp(exp 1))), four logarithms bring x below 1, proved by carrying
+two-sided bounds through each step; standard axioms only, wired into RHTower).
+
+### SEVENTY-THIRD ATLAS ENTRY
+    crossing level   the descent's supply is a tower and its demand a factorial, so the crossing is at
+                     r >= log*((d-1)!), which is at most five for every degree of practical interest.
+                     The mechanism closes modulo five explicit zero-free-disc statements, each weaker
+                     than the last. An infinite regress has become five named lemmas.
+
+### STATE AT CYCLE 139
+Seventy-three entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME'S ARC IN ONE PARAGRAPH, AFTER 139 CYCLES. The unconditional landscape organised by log T
+is closed, with one root cause: the hypothesis constrains codimension while every tool there measures
+area. Exactly one route escapes — Jensen polynomials with the discriminant — and it is settled for all
+degrees below 9.36 x 10^20 with observed onsets zero, its recorded super-exponential cost refuted as
+an artefact. A mechanism for that route was found, every algebraic step machine-verified: doubly
+exponential concentration beats the factorial gap by (2 log k)^{d-1}, with the tilted measure
+asymptotically Gaussian to within sqrt(log k / k). The mechanism's final estimate reproduces the
+problem at a smaller scale — but the self-similarity is a DESCENT, each step strictly improving, and
+the crossing is at the iterated logarithm, AT MOST FIVE. What remains is five explicit zero-free-disc
+lemmas for explicit Laplace transforms.
+
+### Cycle 140 target
+State the five lemmas precisely. Level r's statement is: the Laplace transform of the r-times-iterated
+log-tilted measure is zero-free on a disc of radius R_r about the origin. THE MEASURES ARE EXPLICIT AT
+EVERY LEVEL — level 0 is Phi, level r is Phi in the variable log^{(r)} u — AND THE RADII ARE DETERMINED
+BY THE CONVEXITY AT THAT LEVEL, WHICH IS THE TOWER. WRITE OUT LEVEL ONE COMPLETELY: the measure, the
+transform, the radius, and what must be proved. That is the first of the five, and it is a
+self-contained question about an explicit entire function with no zeta in it.

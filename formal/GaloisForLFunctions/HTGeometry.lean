@@ -2095,5 +2095,6 @@ import GaloisForLFunctions.HTGeometry.EligibilityCriterion
 import GaloisForLFunctions.HTGeometry.FareyNumeratorSumBarrier
 import GaloisForLFunctions.HTGeometry.ScaleWindowIncompatibility
 import GaloisForLFunctions.HTGeometry.FunctionalEquationScaleContact
+import GaloisForLFunctions.HTGeometry.OffLineTransfer
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
