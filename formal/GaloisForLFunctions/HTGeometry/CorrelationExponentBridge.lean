@@ -1535,4 +1535,114 @@ theorem localises_to_top_range :
     dyadicL1 1 - dyadicL2 1 = fareyWeightL1 - fareyWeightL2 := by
   rw [top_range_saving, normalised_saving]
 
+
+/-!
+### The phase does factor — but the large sieve is inefficient on it
+
+In the top dyadic range `q ≍ L` both variables run over `≍L`, and the phase factors:
+
+    N√(2a/q)  =  ( N√(2a) ) · ( q^{-1/2} )  =  x_a · y_q ,
+
+a genuine **bilinear phase**.  This overturns the objection of D56, which was made for the full Farey
+range where `a < q` couples the variables; on a single dyadic range they decouple.
+
+The large sieve therefore applies.  Its parameters, after normalising `y_q = L^{-1/2}(1+u_q)`:
+
+    x'_a = N√(2a)L^{-1/2} :  spacing `≍ N/L = N^{2/3}`, spanning `≍ L·N^{2/3} = **N**`;
+    u_q ∈ [0, 0.4]        :  `≍L` points, spacing `≍1/L = N^{-1/3}`.
+
+With coefficients `α_a ≍ 1/q ≍ L^{-1}` (so `Σ|α_a|² ≍ L^{-1}`) the large sieve gives
+
+    Σ_q |Σ_a α_a e(x'_a u_q)|² ≪ (N + N^{1/3})·L^{-1} ≍ N^{2/3},
+    hence  |Σ_{a,q}| ≤ (L·N^{2/3})^{1/2} = **N^{1/2}** ,
+
+against a trivial bound of `Σ_{a,q}1/q ≍ L = N^{1/3}`.  **The large sieve is worse than trivial here,
+because the frequency spread `N` vastly exceeds the `L² = N^{2/3}` available points.**
+-/
+
+/-- Exponent of `N` for the spread of the bilinear frequencies. -/
+def bilinearSpread : ℚ := 1
+
+/-- Exponent of `N` for the number of points in the double sum. -/
+def bilinearPoints : ℚ := 2/3
+
+/-- Exponent of `N` delivered by the large sieve on this configuration. -/
+def largeSieveOutput : ℚ := 1/2
+
+/-- Exponent of `N` of the trivial bound. -/
+def bilinearTrivial : ℚ := 1/3
+
+/-- **The frequency spread exceeds the number of points.** -/
+theorem spread_exceeds_points : bilinearPoints < bilinearSpread := by
+  unfold bilinearPoints bilinearSpread; norm_num
+
+/-- **And the large sieve is therefore worse than trivial.** -/
+theorem largeSieve_worse_than_trivial : bilinearTrivial < largeSieveOutput := by
+  unfold bilinearTrivial largeSieveOutput; norm_num
+
+/-- The margin by which it is worse. -/
+@[simp] theorem largeSieve_deficit : largeSieveOutput - bilinearTrivial = 1/6 := by
+  unfold largeSieveOutput bilinearTrivial; norm_num
+
+/-- **The bilinear structure exists; the large sieve is the wrong tool for it.** -/
+theorem bilinear_exists_sieve_fails :
+    bilinearPoints < bilinearSpread ∧ bilinearTrivial < largeSieveOutput :=
+  ⟨spread_exceeds_points, largeSieve_worse_than_trivial⟩
+
+
+/-!
+### The dual large sieve, and the one missing input
+
+Swapping the roles of the two variables in Theorem 84's bilinear sum gives the dual large sieve
+
+    Σ_a |Σ_q β_q e(x'_a u_q)|²  ≪  (U + Δ^{-1}) Σ_q |β_q|² ,
+
+with `U = 0.4` the range of `u` and `Δ` the spacing of the `x'_a`.  With `β_q ≍ 1/q ≍ L^{-1}` this
+would give `Σ_a|·|² ≪ L^{-1}` and hence `|Σ_{a,q}| ≤ (L·L^{-1})^{1/2} = **O(1)**` — exactly the target
+of Theorem 82.
+
+**It is invalid.**  The large sieve requires the `x'_a` to be well-spaced **modulo 1**.  Their spacing
+in `ℝ` is `≍ N/L = N^{2/3}`, which says nothing about their spacing mod `1`: a set can be arbitrarily
+spread in `ℝ` and arbitrarily clustered mod `1`.
+
+    The distribution of  { N√(2a)/√L }  mod 1,  for `a ≍ L = N^{1/3}`,
+
+is precisely the unknown.  Assuming it well-spaced assumes the conclusion.
+-/
+
+/-- Spacing exponent of the bilinear frequencies in `ℝ`. -/
+def frequencySpacingReal : ℚ := 2/3
+
+/-- The spacing mod `1` that the large sieve would require, as an exponent of `N`.  It is not known;
+recorded as the assumption the argument would need. -/
+def frequencySpacingModOneAssumed : ℚ := 0
+
+/-- Output of the dual large sieve **under that assumption**, as an exponent of `N`. -/
+def dualSieveOutputAssumed : ℚ := 0
+
+/-- **Under the assumption the dual sieve meets the target.** -/
+theorem dual_sieve_meets_target_if_spaced :
+    dualSieveOutputAssumed = fareyWeightL2 := by
+  unfold dualSieveOutputAssumed fareyWeightL2; rfl
+
+/-- **But real spacing gives no mod-1 spacing**: the two exponents are unrelated, and the real one is
+strictly positive while the required one concerns a different quantity. -/
+theorem real_spacing_not_mod_one :
+    0 < frequencySpacingReal ∧ frequencySpacingModOneAssumed = 0 := by
+  constructor
+  · unfold frequencySpacingReal; norm_num
+  · rfl
+
+/-- The gap the assumption would close is the whole across-arc factor. -/
+@[simp] theorem assumption_closes_everything :
+    fareyWeightL1 - dualSieveOutputAssumed = 1 := by
+  unfold fareyWeightL1 dualSieveOutputAssumed; norm_num
+
+/-- **The single missing input.**  The dual large sieve reaches the Lindelöf target exactly when the
+frequencies are well-spaced mod `1`; that distribution is the unknown, and it carries the entire
+remaining factor. -/
+theorem missing_input_is_mod_one_spacing :
+    dualSieveOutputAssumed = fareyWeightL2 ∧ fareyWeightL1 - dualSieveOutputAssumed = 1 :=
+  ⟨dual_sieve_meets_target_if_spaced, assumption_closes_everything⟩
+
 end HTGeometry

@@ -260,4 +260,96 @@ theorem bessel_of_almost_orthogonal (B : V → V → ℂ)
       _ ≤ K * (B u u).re := this
   exact hfinal
 
+
+/-- **Approximate orthogonality forces approximate integrality of the energy.**  If the Gram
+matrix of `e` is within `ε` of the identity, then the energy of an integer combination
+`∑ᵢ mᵢ • eᵢ` differs from the integer `∑ᵢ mᵢ²` by at most `ε·(∑ᵢ |mᵢ|)²`.
+
+For the logarithmic prime form and a family of primitive `L`-functions this says: an approximate
+form of Selberg's orthogonality conjecture implies an approximate form of his normality
+conjecture, with the error controlled by the `ℓ¹` norm of the multiplicity vector. -/
+theorem energy_near_int_of_almost_orthonormal (B : V → V → ℂ)
+    (hadd₁ : ∀ x y z, B (x + y) z = B x z + B y z)
+    (hsmul₁ : ∀ (c : ℂ) (x y : V), B (c • x) y = c * B x y)
+    (hconj : ∀ x y, B y x = (starRingEnd ℂ) (B x y))
+    {ι : Type*} [Fintype ι] [DecidableEq ι] (e : ι → V) (m : ι → ℤ) (ε : ℝ)
+    (hgram : ∀ i j, ‖B (e i) (e j) - (if i = j then (1 : ℂ) else 0)‖ ≤ ε) :
+    |(B (∑ i, ((m i : ℂ)) • e i) (∑ i, ((m i : ℂ)) • e i)).re - ∑ i, ((m i : ℝ)) ^ 2|
+      ≤ ε * (∑ i, |(m i : ℝ)|) ^ 2 := by
+  classical
+  have hzero : ∀ z : V, B 0 z = 0 := by
+    intro z; have := hsmul₁ 0 z z; simpa using this
+  have hsum₁ : ∀ (f : ι → ℂ) (g : ι → V) (z : V),
+      B (∑ i, f i • g i) z = ∑ i, f i * B (g i) z := by
+    intro f g z
+    induction (Finset.univ : Finset ι) using Finset.induction with
+    | empty => simp [hzero]
+    | insert i s hi ih =>
+        rw [Finset.sum_insert hi, Finset.sum_insert hi, hadd₁, hsmul₁, ih]
+  have hsum₂ : ∀ (f : ι → ℂ) (g : ι → V) (z : V),
+      B z (∑ i, f i • g i) = ∑ i, (starRingEnd ℂ) (f i) * B z (g i) := by
+    intro f g z
+    have h1 : B z (∑ i, f i • g i) = (starRingEnd ℂ) (B (∑ i, f i • g i) z) :=
+      hconj (∑ i, f i • g i) z
+    rw [h1, hsum₁, map_sum]
+    exact Finset.sum_congr rfl fun i _ => by rw [map_mul, ← hconj]
+  set D : ι → ι → ℂ := fun i j => B (e i) (e j) - (if i = j then (1 : ℂ) else 0) with hD
+  have hGram : ∀ i j, B (e i) (e j) = (if i = j then (1 : ℂ) else 0) + D i j := by
+    intro i j; rw [hD]; ring
+  have hconjm : ∀ i, (starRingEnd ℂ) ((m i : ℂ)) = (m i : ℂ) := by
+    intro i
+    simp
+  have hexp : B (∑ i, ((m i : ℂ)) • e i) (∑ i, ((m i : ℂ)) • e i)
+      = (∑ i, ((m i : ℂ)) ^ 2) + ∑ i, ∑ j, (m i : ℂ) * (m j : ℂ) * D i j := by
+    rw [hsum₁]
+    have step : ∀ i : ι, (m i : ℂ) * B (e i) (∑ j, ((m j : ℂ)) • e j)
+        = (m i : ℂ) ^ 2 + ∑ j, (m i : ℂ) * (m j : ℂ) * D i j := by
+      intro i
+      rw [hsum₂]
+      have : ∀ j : ι, (starRingEnd ℂ) ((m j : ℂ)) * B (e i) (e j)
+          = (if i = j then (m j : ℂ) else 0) + (m j : ℂ) * D i j := by
+        intro j
+        rw [hconjm j, hGram i j]
+        by_cases h : i = j
+        · simp [h]; ring
+        · simp [h]
+      rw [Finset.sum_congr rfl fun j _ => this j, Finset.sum_add_distrib, mul_add]
+      congr 1
+      · simp [sq]
+      · rw [Finset.mul_sum]
+        exact Finset.sum_congr rfl fun j _ => by ring
+    rw [Finset.sum_congr rfl fun i _ => step i, Finset.sum_add_distrib]
+  rw [hexp]
+  have hre : ((∑ i, ((m i : ℂ)) ^ 2) + ∑ i, ∑ j, (m i : ℂ) * (m j : ℂ) * D i j).re
+      = (∑ i, ((m i : ℝ)) ^ 2) + (∑ i, ∑ j, (m i : ℂ) * (m j : ℂ) * D i j).re := by
+    rw [Complex.add_re]
+    congr 1
+    rw [Complex.re_sum]
+    exact Finset.sum_congr rfl fun i _ => by
+      rw [← Complex.ofReal_intCast, ← Complex.ofReal_pow, Complex.ofReal_re]
+  rw [hre]
+  have hbound : ‖∑ i, ∑ j, (m i : ℂ) * (m j : ℂ) * D i j‖ ≤ ε * (∑ i, |(m i : ℝ)|) ^ 2 := by
+    have h1 : ‖∑ i, ∑ j, (m i : ℂ) * (m j : ℂ) * D i j‖
+        ≤ ∑ i, ∑ j, |(m i : ℝ)| * |(m j : ℝ)| * ε := by
+      refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun i _ => ?_)
+      refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun j _ => ?_)
+      rw [norm_mul, norm_mul]
+      have hi : ‖(m i : ℂ)‖ = |(m i : ℝ)| := by
+        rw [← Complex.ofReal_intCast, Complex.norm_real, Real.norm_eq_abs]
+      have hj : ‖(m j : ℂ)‖ = |(m j : ℝ)| := by
+        rw [← Complex.ofReal_intCast, Complex.norm_real, Real.norm_eq_abs]
+      rw [hi, hj]
+      exact mul_le_mul_of_nonneg_left (hgram i j) (by positivity)
+    have h2 : ∑ i, ∑ j, |(m i : ℝ)| * |(m j : ℝ)| * ε = ε * (∑ i, |(m i : ℝ)|) ^ 2 := by
+      rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun j _ => by ring
+    linarith [h1, h2.le, h2.ge]
+  have := Complex.abs_re_le_norm (∑ i, ∑ j, (m i : ℂ) * (m j : ℂ) * D i j)
+  rw [add_sub_cancel_left]
+  calc |(∑ i, ∑ j, (m i : ℂ) * (m j : ℂ) * D i j).re|
+      ≤ ‖∑ i, ∑ j, (m i : ℂ) * (m j : ℂ) * D i j‖ := this
+    _ ≤ ε * (∑ i, |(m i : ℝ)|) ^ 2 := hbound
+
 end HTGeometry

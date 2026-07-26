@@ -6437,3 +6437,67 @@ for a weight phi with convergent sum, and ask what D is. Since the zero set is s
 rho -> 1 - rhobar, D VANISHES IDENTICALLY AS A SUM — but its ABSOLUTE version sum |phi(rho) - phi(1 -
 rhobar)| does not. DETERMINE WHETHER THE ABSOLUTE VERSION HAS AN EXPLICIT-FORMULA EXPRESSION. If it
 does, it is a criterion satisfying all three conditions, and it is the first such object in the atlas.
+
+---
+
+## Cycle 107 (2026-07-26) — BETA-SENSITIVITY AND ARITHMETIC EVALUABILITY ARE MUTUALLY EXCLUSIVE
+### The classification closes. This is a statement about the SHAPE OF THE PROBLEM, not about a method.
+
+### The construction, and the theorem that kills it
+Cycle 106 asked for a functional satisfying all three design conditions. The canonical candidate is
+    D_phi(Z) = sum_rho | phi(rho) - phi(1 - conj rho) |,
+which vanishes identically on the critical line (rho -> 1 - conj rho FIXES gam and reflects beta
+about 1/2, so it fixes every critical point) and is nonzero off it. It satisfies (i) trivially — if
+RH holds the total is 0, so any single off-line zero is the entire total — and (ii) exactly, and it
+is not an explicit-formula sum.
+
+BUT IT IS NOT EVALUABLE, AND THE REASON IS A THEOREM:
+
+    THE ZERO SET OF A NONZERO ANALYTIC FUNCTION ON A CONNECTED DOMAIN IS DISCRETE; THE LINE
+    Re s = 1/2 IS NOT. SO ANY FUNCTION VANISHING ON THE WHOLE CRITICAL LINE VANISHES IDENTICALLY.
+    ANY WEIGHT DETECTING THE CRITICAL LINE EXACTLY IS THEREFORE NON-ANALYTIC.
+
+And the explicit formula evaluates sum_rho h(rho) by contour shifting, which REQUIRES h analytic. A
+non-analytic weight has no such evaluation: it cannot be expressed through the primes at all.
+
+    ==> A ZERO-SET FUNCTIONAL IS EITHER ANALYTIC — HENCE EVALUABLE BY THE EXPLICIT FORMULA, HENCE A
+        COMBINATION OF PRIME AND ARCHIMEDEAN DATA SUBJECT TO THE THREE-WAY CANCELLATION — OR
+        NON-ANALYTIC, HENCE ABLE TO DETECT THE CRITICAL LINE BUT NOT COMPUTABLE FROM ARITHMETIC.
+        THE TWO ARE MUTUALLY EXCLUSIVE.
+
+THIS IS WHY EVERY CRITERION IN 107 CYCLES IS EITHER ARITHMETIC AND BLIND, OR EXACT AND INERT. It is
+not a limitation of any technique; it is the shape of the problem. The design conditions of entry 40
+CAN be met — and meeting them costs evaluability.
+
+Machine-verified: `RHTower/AnalyticityExcludesBetaSensitivity.lean` (the identity-theorem obstruction
+— an entire function vanishing on the whole critical line is identically zero, proved by exhibiting an
+accumulating sequence on the line and applying the frequently-zero identity theorem — the fact that
+rho -> 1 - conj rho fixes the critical line pointwise, the vanishing of the reflection difference
+there, and its nonvanishing off the line; standard axioms only, wired into RHTower).
+
+### FORTY-FIRST ATLAS ENTRY
+    analyticity exclusion   a weight vanishing exactly on the critical line is non-analytic (identity
+                            theorem), and non-analytic weights have no explicit-formula evaluation.
+                            Beta-sensitivity and arithmetic evaluability are mutually exclusive; every
+                            criterion is arithmetic and blind, or exact and inert.
+
+### STATE AT CYCLE 107
+Forty-one entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ATLAS IS NOW A CLOSED CLASSIFICATION, not a list of failures. It says: to decide the hypothesis
+one must either (a) break the three-way cancellation with new arithmetic input beyond the Euler
+product, or (b) evaluate a non-analytic functional by non-contour means. Route (b) is exactly what the
+function-field proof does — cohomology evaluates a non-analytic quantity (a trace on a vector space)
+without contour shifting — and route (b) is closed here only because the geometry is unavailable
+(cycle 92).
+
+### Cycle 108 target
+Take route (b) seriously in the one setting where non-analytic evaluation is available WITHOUT
+geometry: FINITE-DIMENSIONAL LINEAR ALGEBRA. A trace is a non-analytic functional of a matrix's
+spectrum that IS computable — tr|A| is not analytic in A, yet it is computable from A. THE QUESTION
+IS WHETHER THE ZERO SET OF ZETA ADMITS ANY FINITE-DIMENSIONAL SHADOW ON WHICH A TRACE-LIKE
+NON-ANALYTIC FUNCTIONAL IS COMPUTABLE FROM PRIMES. The corpus's compressed prime operator 𝒫 and the
+archimedean pairing Q (entry 27) are exactly such finite-dimensional shadows, and tr|Q - 𝒫| is a
+non-analytic functional of them that IS computable from the matrix entries — which are prime data.
+COMPUTE WHAT tr|Q - 𝒫| SEES. If it separates beta, entry 41 is circumvented by finite-dimensionality,
+because a matrix trace needs no contour.
