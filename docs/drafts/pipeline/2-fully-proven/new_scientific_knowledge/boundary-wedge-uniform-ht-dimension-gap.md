@@ -425,3 +425,17 @@ the `ppDim` level (`boundaryWedge_ppDim_eq_two`).  The only remaining formal ste
 a Lean definition of the intrinsic `htDim` functional itself — i.e. a `d`-variable realization
 structure whose `d = 1` case is `ScalarSRRealization` and whose `d = 2` case is witnessed by the
 pencil — after which `htDim_eq_two_of_realizability` closes `htDim = ppDim = 2` immediately.
+
+## Lean progress — the wedge is past the bound a one-variable realization allows
+
+`GaloisForLFunctions/HTGeometry/ScalarRealizationFacetComplementBound.lean` (axiom-clean, build
+green) proves in general that a one-variable realization forces every facet complement to have at most
+two vertices, and that the two-vertex case survives only in the elliptic (lattice) configuration.
+
+- `boundaryWedge_facetComplement_too_large` — the boundary wedge is excluded outright: its facet
+  complements have `s+1 >= 3` vertices, strictly past that bound, so no elliptic escape is even
+  available here.
+
+This gives a second, independent route to the same conclusion as
+`boundaryWedge_no_scalarSRRealization`, now as a corollary of the general facet-codimension bound
+rather than of the wedge-specific obstruction.

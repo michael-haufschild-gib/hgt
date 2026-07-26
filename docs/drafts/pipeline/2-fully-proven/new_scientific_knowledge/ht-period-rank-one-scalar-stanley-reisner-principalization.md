@@ -785,3 +785,24 @@ So for facets omitting at least three vertices the whole chain `(12)` -> `(17)` 
 realization is unconditional in Lean.  The general statement `(6)` (complements of size at most one)
 still needs the rank-two case with `alpha/beta` nonreal, i.e. the elliptic branch of the period-rank
 law, which remains the single analytic gap.
+
+## Lean progress — the sharp unconditional form of the facet-codimension theorem
+
+`GaloisForLFunctions/HTGeometry/ScalarRealizationFacetComplementBound.lean` (axiom-clean, build
+green, umbrella-registered) states, in full generality, exactly what the formalized period-rank
+analysis yields about `(6)`.
+
+- `facetComplement_card_le_two_of_scalarSRRealization` — under a one-variable realization **no facet
+  omits three vertices**.  (Three omitted vertices give three `Q`-independent periods; the rank-three
+  boundary is unconditional.)
+- **`facetComplement_rankOne_or_lattice`** — every facet either omits at most one ambient vertex — the
+  assertion `(6)` — **or** omits exactly two, whose translation steps are `R`-linearly independent and
+  hence generate a lattice.  The real-dependent two-vertex case is excluded by
+  `meromorphicNF_constant_of_rankTwo_realDependent_periods`.
+- `facetComplementRankOne_of_no_lattice` — consequently `FacetComplementRankOne` holds outright as
+  soon as no two distinct translation steps span a lattice.
+
+This isolates the outstanding analytic input precisely: the surviving alternative is exactly the
+elliptic configuration, and supplying `(E)` — the Weierstrass differential equation, i.e. that an
+elliptic function is differentially algebraic — removes it and proves `(6)` unconditionally.  Nothing
+else in the chain from `(8)` to `(6)` is now missing.
