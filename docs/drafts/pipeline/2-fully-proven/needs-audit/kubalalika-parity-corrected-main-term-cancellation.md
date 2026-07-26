@@ -276,3 +276,109 @@ the claimed nonzero main term vanishes.
   `sum sin((2k+1)theta)/(2k+1)`, i.e. step (i) of the route recorded above; it is also the source of
   the "standard Dirichlet-kernel errors" that the card's truncation estimate `(3)` invokes. Steps
   (ii)-(iii), Abel's limit theorem and the radial limit of `-log(1-z)`, remain.
+- 2026-07-26 -- Section 2, step (i) complete: the odd harmonic sine series **converges** off the
+  zeros of the sine (`GaloisForLFunctions.HTGeometry.OddDirichletKernel`), axioms clean.
+  Corpus search first (nothing pre-existing for any of these): `antitone_oddReciprocal`,
+  `tendsto_oddReciprocal`, `cauchySeq_sum_oddHarmonicSine`, `exists_tendsto_sum_oddHarmonicSine`.
+  mathlib's `Antitone.cauchySeq_series_mul_of_tendsto_zero_of_bounded` is the Dirichlet test, and
+  the uniform kernel bound `abs_sum_sin_odd_le` built above is exactly its bounded-partial-sums
+  hypothesis; completeness of `ℝ` then gives a limit.
+
+  Note the statement is deliberately about partial sums, not `Summable`: the series is only
+  conditionally convergent, so a `tsum` formulation would be false to the mathematics.
+
+  Remaining for Section 2: identify the limit as `(pi/4) sgn(sin theta)`. Two routes, both open:
+  (a) Abel's limit theorem (`Mathlib/Analysis/Complex/AbelLimit.lean`) against
+  `Complex.hasSum_taylorSeries_neg_log`, now that convergence of the boundary series is available --
+  this is the hypothesis Abel's theorem needs; (b) integrate `sum_cos_odd` termwise to get
+  `int_0^theta sin(2Nt)/(2 sin t) dt` and apply Riemann--Lebesgue against the Dirichlet integral
+  `int_0^infty sin u/u = pi/2`. Route (a) is now the shorter one.
+- 2026-07-26 -- Abel's hypothesis secured: the **complex** odd harmonic series converges
+  (`GaloisForLFunctions.RHTower.OddHarmonicExpConvergence`), axioms clean.
+  Corpus search found `RHTower.norm_geom_sum_le` (`‖sum_{m<K} w^m‖ <= 2/‖1-w‖` on the unit circle) in
+  `RHTower/GaussLattice.lean`, so the partial-sum bound is reused rather than rebuilt; the module
+  lives in `RHTower/` because of that dependency (HTGeometry must not import RHTower).
+  * `norm_one_sub_exp_mul_I` -- the chord length `‖1 - e^{i phi}‖ = 2 |sin(phi/2)|`;
+  * `sum_exp_odd_eq` -- the odd exponential harmonics are the rotated geometric progression
+    `e^{i theta} sum_{k<N} (e^{2 i theta})^k`;
+  * `norm_sum_exp_odd_le` -- hence `‖sum_{k<N} e^{i(2k+1) theta}‖ <= 1/|sin theta|`, uniformly in `N`;
+  * `cauchySeq_sum_oddHarmonicExp`, `exists_tendsto_sum_oddHarmonicExp` -- Dirichlet's test plus
+    completeness of `ℂ`.
+
+  With boundary convergence of the complex series in hand, the only remaining step for the
+  odd-harmonic Fourier identity is the evaluation itself: apply mathlib's Abel limit theorem at
+  `z -> 1` to the rotated coefficients, identify the radial limit of `sum z^{2k+1}/(2k+1) = artanh z`
+  with `(1/2) log((1+z)/(1-z))`, and take imaginary parts, where
+  `(1+e^{i theta})/(1-e^{i theta}) = i cot(theta/2)` gives `(pi/4) sgn(sin theta)`. The delicate part
+  is the `Complex.log` branch bookkeeping, not the analysis.
+- 2026-07-26 -- The interior side of the evaluation built:
+  `GaloisForLFunctions.HTGeometry.ComplexArtanhSeries.hasSum_oddPow_div`, axioms clean.
+  For `‖z‖ < 1`,
+
+      sum_k z^(2k+1)/(2k+1) = (log (1+z) - log (1-z)) / 2.
+
+  Corpus search first: mathlib has `Real.artanh` (`Analysis/SpecialFunctions/Artanh.lean`) but no
+  complex power series for it, and nothing in the corpus; `Complex.hasSum_taylorSeries_neg_log`
+  supplies both halves. Subtracting the Mercator series at `z` and at `-z` kills the even powers
+  and doubles the odd ones, and the odd part is extracted by reindexing along `k |-> 2k+1` with
+  `Function.Injective.hasSum_iff`.
+
+  Section 2 status. Both sides of Abel's limit theorem are now in place: the boundary series
+  converges (`RHTower.exists_tendsto_sum_oddHarmonicExp`) and the interior series has the closed
+  form above. What is left is only the gluing: apply mathlib's
+  `tendsto_tsum_powerSeries_nhdsWithin_stolzSet` to the rotated coefficients
+  `c n = e^{i n theta}/n` supported on odd `n`, evaluate the radial limit using continuity of
+  `Complex.log` at `1 +- e^{i theta}` (both nonzero exactly because `sin theta != 0`), and take
+  imaginary parts via `(1+e^{i theta})/(1-e^{i theta}) = i cot(theta/2)`.
+- 2026-07-26 -- **The branch bookkeeping is done**, which was the part flagged as delicate:
+  `GaloisForLFunctions.HTGeometry.OddHarmonicBoundaryValue`, axioms clean.
+
+      im_half_log_ratio : Im ((log (1 + e^{i theta}) - log (1 - e^{i theta})) / 2)
+                            = (pi/4) * sign (sin theta)      for sin theta != 0.
+
+  No `Complex.log` branch analysis was needed after all. The observation that removes it:
+  `Re (1 + e^{i theta}) = 1 + cos theta` and `Re (1 - e^{i theta}) = 1 - cos theta` are **both
+  strictly positive** exactly when `sin theta != 0` (since then `|cos theta| < 1`), so both points
+  sit in the open right half plane where the principal argument is simply an arctangent. Reused the
+  corpus lemma `HTGeometry.complexArg_eq_arctan_of_re_pos` from `SectorPowerMassLower.lean` for that,
+  and mathlib's `Real.arctan_inv_of_pos` / `Real.arctan_inv_of_neg` for the final step. Supporting
+  results: `abs_cos_lt_one`, `re_one_add_exp_pos`, `re_one_sub_exp_pos`, and `slope_reciprocal`
+  (the two half-plane slopes are reciprocal because `1 - cos^2 = sin^2`).
+
+  Section 2 now has all three ingredients proved separately:
+  boundary convergence (`RHTower.exists_tendsto_sum_oddHarmonicExp`),
+  interior closed form (`HTGeometry.hasSum_oddPow_div`),
+  boundary value (`HTGeometry.im_half_log_ratio`).
+  The only remaining task is the Abel gluing itself: feed the rotated coefficients to
+  `tendsto_tsum_powerSeries_nhdsWithin_stolzSet` and match the radial limit, which is bookkeeping
+  over mathlib's Stolz-set interface rather than new mathematics.
+- 2026-07-26 -- **Section 2 is closed.** `GaloisForLFunctions.RHTower.OddHarmonicAbel`, axioms clean.
+
+      tendsto_sum_oddHarmonicSine :
+        sin theta != 0  ->  sum_{k < N} sin((2k+1) theta) / (2k+1)  ->  (pi/4) * sgn (sin theta).
+
+  The Abel gluing went through as planned. Two bridges were needed to put the odd harmonics in the
+  shape mathlib's `Complex.tendsto_tsum_powerSeries_nhdsWithin_lt` wants, namely a sequence indexed
+  by all of `N`:
+
+  * `sum_range_oddExpCoeff` -- the partial sums of `oddExpCoeff theta n = e^{i n theta}/n` (supported
+    on odd `n`) over `range N` collapse to the odd-indexed partial sums over `range (N/2)`, by
+    induction on `N`. Composing with `N |-> N/2 -> atTop` transports convergence from
+    `exists_tendsto_sum_oddHarmonicExp`, which is Abel's hypothesis.
+  * `hasSum_oddExpCoeff_mul_pow` -- for `0 <= x < 1` the generating function at radius `x` is the
+    interior closed form `hasSum_oddPow_div` at `z = x e^{i theta}`, whose norm is `x < 1`.
+
+  Then `continuousAt_oddExpGen` gives continuity of `w |-> (log(1 + w e^{i theta}) -
+  log(1 - w e^{i theta}))/2` at `w = 1`: both `1 +- e^{i theta}` avoid the slit precisely because
+  their real parts `1 +- cos theta` are positive when `sin theta != 0`, which is the same
+  half-plane observation that made `im_half_log_ratio` branch-free. Uniqueness of limits along
+  `nhdsWithin (< 1)` identifies the boundary sum with `oddExpGen theta 1`, and taking imaginary
+  parts finishes.
+
+  The intermediate `tendsto_sum_oddHarmonicExp` records the full complex statement (the cosine
+  series is its real part, available for free). This strengthens the earlier corpus result
+  `exists_tendsto_sum_oddHarmonicSine`, which asserted convergence without naming the limit.
+
+  **Card status: Sections 1 and 2 fully formalized and unconditional.** Section 3 remains out of
+  scope as recorded earlier: it needs the prime number theorem together with the preprint's contour
+  machinery, neither of which the corpus carries.

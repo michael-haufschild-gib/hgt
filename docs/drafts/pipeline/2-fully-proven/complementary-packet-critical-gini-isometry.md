@@ -214,3 +214,186 @@ external specialist audit is required before a novelty claim.
 - [ ] prove graph convergence to `ell_E`
 - [ ] independent specialist literature audit
 - [ ] RH
+
+## Formalization (in progress)
+
+**Working state — a session that picks up this card should continue here, not restart.**
+
+`[LEAN-PROVED]` The arithmetic core, estimate `(5)`, is compiled in
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacketPowerSumEnvelope.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean, no warnings; `#print axioms` = `propext,
+Classical.choice, Quot.sound` on every theorem).
+
+| Card item | Lean name |
+|---|---|
+| `R_ω(Y) = ∑_{m ≤ Y} m^ω − Y^(1+ω)/(1+ω)` | `RHTower.powerSumRemainder` |
+| left/right Riemann sandwich for `x ↦ x^ω` | `RHTower.sum_rpow_range_le`, `RHTower.le_sum_rpow_range` |
+| exact primitive increment `(b+1)^(1+ω) − b^(1+ω) ≤ (1+ω)(b+1)^ω` | `RHTower.rpow_succ_sub_le` |
+| **sharp remainder bound** `\|R_ω(Y)\| ≤ (Y+1)^ω` for `Y ≥ 0` | `RHTower.abs_powerSumRemainder_le` |
+| `k_ω(t) = e^(-(1+ω)t) R_ω(e^t)` | `RHTower.complementaryPacketKernel` |
+| **`(5)`, sharpened**: `\|k_ω(t)\| ≤ 2^ω e^(-t)` for `t ≥ 0` | `RHTower.abs_complementaryPacketKernel_le` |
+
+The Lean envelope is sharper than the card's `(5)`: instead of `C(e^{-t} + e^{-(1+ω)t})` it gives
+the single term `2^ω e^{-t}`, with an explicit constant and no unnamed `C`.  Only monotonicity of
+`x ↦ x^ω` (through mathlib's `MonotoneOn.sum_le_integral` / `MonotoneOn.integral_le_sum`) and the
+exact power integral are used; no Euler–Maclaurin expansion and no asymptotic input enters, so the
+bound is uniform in `0 < ω ≤ ω₀` as the card requires.
+
+`[LEAN-PROVED]` The metric core, items `(3)`, `(4)` and `(7)`, is compiled in
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacketCofinalIsometry.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean, no warnings; axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| half-line translation of an integral | `RHTower.setIntegral_Ioi_comp_add_right` |
+| `(3)` the two-point modulus | `RHTower.packetTranslationModulus` |
+| translated energy is dominated | `RHTower.setIntegral_translate_sq_le` |
+| translation modulus `≤ 4` × energy | `RHTower.setIntegral_translationModulus_le` |
+| **`(4)`** cofinal affine bound | `RHTower.abs_packetTranslationModulus_sub_le` |
+| **`(7)`** cofinal slope `D(a)/a → c²` | `RHTower.tendsto_packetTranslationModulus_div` |
+
+`(4)` is proved in the general form the paper argument actually establishes: for measurable `k`
+integrable and square integrable on `(0,∞)` with `∫₀^∞ |k| ≤ A` and `∫₀^∞ k² ≤ B`,
+
+```text
+|D(a) − c² a| ≤ 5 B + 2 |c| A       for every a ≥ 0,
+```
+
+by the three pieces `∫₀^a k² ≤ B`, `|2c ∫₀^a k| ≤ 2|c| A`, and
+`∫₀^∞ (k(·+a) − k)² ≤ 2∫₀^∞ k(·+a)² + 2∫₀^∞ k² ≤ 4B`, the middle translate being handled by
+`MeasurePreserving.setIntegral_preimage_emb` for `r ↦ r + a`.  The bound depends on `k` only
+through `A` and `B`, which is exactly what makes it uniform in `0 < ω ≤ ω₀`.
+
+`[LEAN-PROVED]` The instantiation at the actual packet is compiled in
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacketKernelIntegrability.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean, no warnings; axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| closed step form `k_ω(t) = e^(-(1+ω)t) ∑_{m ≤ e^t} m^ω − 1/(1+ω)` | `RHTower.complementaryPacketKernel_eq` |
+| measurability | `RHTower.measurable_complementaryPacketKernel` |
+| `L¹`, `L²` integrability on `(0,∞)` | `RHTower.integrableOn_complementaryPacketKernel`, `..._sq` |
+| **uniform `L¹` bound** `∫₀^∞ \|k_ω\| ≤ 2^ω` | `RHTower.setIntegral_abs_complementaryPacketKernel_le` |
+| **uniform `L²` bound** `∫₀^∞ k_ω² ≤ 4^ω` | `RHTower.setIntegral_complementaryPacketKernel_sq_le` |
+| `c_ω = 1/(1+ω)` | `RHTower.complementaryPacketConstant` |
+| **`(4)` at the actual packet** | `RHTower.abs_complementaryPacketModulus_sub_le` |
+| **`(7)` at the actual packet** | `RHTower.tendsto_complementaryPacketModulus_div` |
+
+The closed step form is what makes measurability immediate: the subtracted power integral
+`(e^t)^(1+ω)/(1+ω)` cancels the exponential weight exactly and leaves the constant `1/(1+ω)`, so
+the only non-continuous ingredient left is `Nat.floor`.  The `L²` constant is `4^ω` rather than
+`4^ω/2` because `e^{-2t} ≤ e^{-t}` is used instead of a second exponential integral; the bound is
+what matters and both are uniform on `0 ≤ ω ≤ ω₀`.
+
+So the card's `(4)` now reads, unconditionally, for every `ω ≥ 0` and every `a ≥ 0`:
+
+```text
+|D_ω(a) − c_ω² a| ≤ 5·4^ω + 2 c_ω 2^ω ,
+```
+
+and `(7)` `D_ω(a)/a → c_ω²` as `a → ∞`.
+
+`[LEAN-PROVED]` The four-unit transfer, items `(12)`–`(15)`, is compiled in
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacketFourUnitEnergy.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean, no warnings; axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| `(13)` the exact collapse onto the Gini mean difference | `RHTower.abs_packetEnergy_sub_le` |
+| **`(15)`** the four-unit limit | `RHTower.tendsto_four_mul_packetEnergy` |
+
+`abs_packetEnergy_sub_le`: for a probability measure `μ`, a modulus `D` with
+`|D a − c² a| ≤ C` on `a ≥ 0`, and `ε ≥ 0`,
+
+```text
+|4 ε E_μ[D(|x|)] − 4 c² (ε E_μ|x|)| ≤ 4 ε C ,
+```
+
+which is `(13)` with the `O(ε)` made explicit.  `tendsto_four_mul_packetEnergy` then concludes: for
+a filtered family with `ε_i → 0`, `ε_i E|H−H'| → 1` and `c_i → 1`, the packet energy
+`4 ε_i E[D_i(|H−H'|)] → 4`.  The statement is source independent — nothing about the packet
+survives except its cofinal slope, and the bounded local defect (the `ζ(2)` expansion at
+infinitesimal separation) is annihilated by the escaping clock, which is exactly the card's
+positive statement.
+
+### Remaining
+
+`[LEAN-PROVED]` The integrability hypothesis of the four-unit transfer is discharged in
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacketModulusMeasurable.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean, no warnings; axiom-clean).
+
+| Content | Lean name |
+|---|---|
+| the swept branch is monotone in the separation | `RHTower.monotone_packetSweptBranch` |
+| the translation branch is measurable (Fubini) | `RHTower.measurable_packetTranslationBranch` |
+| **`a ↦ D(a)` is measurable** | `RHTower.measurable_packetTranslationModulus` |
+| **`Integrable (fun x => D |x|) μ`** for any probability `μ` with finite first moment | `RHTower.integrable_packetTranslationModulus_abs` |
+
+The `L²` continuity of translation is **not** needed: measurability suffices, and it comes from two
+elementary observations — the swept branch `a ↦ ∫₀^a (k+c)²` is monotone because its integrand is a
+square, and the translation branch is measurable because `(a,r) ↦ (k(r+a) − k r)²` is jointly
+measurable, so `StronglyMeasurable.integral_prod_right'` applies.  Integrability then follows from
+the cofinal bound alone, since `|D(|x|)| ≤ c²|x| + C`.
+
+`[LEAN-PROVED]` The rescaled transfer and its two source-side hypotheses are compiled in
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacketCriticalEnergy.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean, no warnings; axiom-clean).
+
+| Content | Lean name |
+|---|---|
+| rescaled four-unit transfer (the clock law is already `ε`-rescaled, so the modulus is read at `\|x\|/ε`) | `RHTower.tendsto_four_mul_rescaledPacketEnergy` |
+| **uniform defect** `\|D_ω a − c_ω² a\| ≤ 14` for `0 ≤ ω ≤ 1/2` | `RHTower.complementaryPacketDefect_le` |
+| the clock gap has a finite absolute first moment | `RHTower.integrable_abs_squarefreeMobiusCriticalGap` |
+
+The rescaling matters and is now explicit: `squarefreeMobiusCriticalGapProbabilityMeasure σ` is the
+law of `ε (log d − log e)`, so the source-framed energy is
+`E_σ = 4 ε ∫ D_ω(|x|/ε) dμ_σ`, and the transfer is stated in exactly that form.  The defect bound
+is made uniform near the boundary by `4^ω ≤ 2`, `2^ω ≤ 2`, `c_ω ≤ 1` for `ω ≤ 1/2`, giving the
+single constant `14` that the filtered transfer requires.
+
+`integrable_squarefreeMobiusCriticalGap_sq` in `MobiusIncidenceClockGiniFisherFourUnit.lean` was
+`private`; it is now public (the only edit to that module), and
+`integrable_abs_squarefreeMobiusCriticalGap` derives the absolute moment from it by
+`|x| ≤ (x² + 1)/2`.
+
+`[LEAN-PROVED]` **`(15)` is closed at the actual source.**
+
+| Content | Lean name |
+|---|---|
+| scaled integrability of the modulus | `RHTower.integrable_packetTranslationModulus_abs_div` |
+| the source-framed critical packet energy | `RHTower.complementaryPacketCriticalEnergy` |
+| **`(15)`** `lim_{σ → 1+} E^B_σ = 4` | `RHTower.tendsto_complementaryPacketCriticalEnergy` |
+
+```lean
+theorem RHTower.tendsto_complementaryPacketCriticalEnergy :
+    Tendsto complementaryPacketCriticalEnergy (nhdsWithin 1 (Ioi 1)) (nhds 4)
+```
+
+with
+
+```lean
+complementaryPacketCriticalEnergy σ =
+  4 * (σ - 1) *
+    ∫ x, packetTranslationModulus (complementaryPacketKernel ((σ-1)/2))
+        (complementaryPacketConstant ((σ-1)/2)) (|x| / (σ-1))
+      ∂(squarefreeMobiusCriticalGapProbabilityMeasure σ)
+```
+
+Everything the paper proof uses is present and nothing else: the uniform envelope gives the uniform
+`L¹`/`L²` bounds, those give the cofinal bound `(4)` with a defect uniform for `ω ≤ 1/2`, and the
+rescaled transfer turns the escaping Gini limit `∫|x| dμ_σ → 1` together with `c_ω → 1` into the
+value four.  The locally expansive `ζ(2)` coefficient never enters: it is inside the bounded defect
+that the escaping clock annihilates, which is exactly the card's positive statement.
+
+### Remaining
+
+1. **`(8)`** the local `ζ(2)` expansion `lim_{a→0+} D_ω(a)/a = ζ(2)`.  This is the only item that
+   does not follow from the envelope; it needs the jump structure of `k_ω`, which
+   `RHTower.complementaryPacketKernel_eq` already exhibits (`k_ω` is continuous off `{log m}` and
+   jumps by `1/m` at `log m`), together with the translation-modulus asymptotics of a jump
+   function.  Note that `(8)` is the card's **no-go** half — the falsification of pointwise
+   contractivity — not an input to the four-unit law.
+2. **`(8)`** the local `ζ(2)` expansion, which needs the jump structure of `k_ω` at `log m` with
+   jump `1/m`; this is the only item that does not follow from the envelope alone.  The closed step
+   form `RHTower.complementaryPacketKernel_eq` exhibits those jumps directly: `k_ω` is continuous
+   off `{log m}` and jumps by `e^{-(1+ω)log m} m^ω = 1/m` at `log m`.

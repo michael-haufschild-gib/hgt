@@ -22,7 +22,8 @@ criterion.
 
 - [x] 0 → 1: exact source law already available; independent-increment route identified
 - [x] 1 → 2: complete paper proof below; standard parent theorem cited explicitly
-- [ ] 2 → 3: full infinite-divisibility implication formalized in Lean
+- [x] 2 → 3: full infinite-divisibility implication formalized in Lean (unconditionally; the
+  Steutel--van Harn classification turned out to be unnecessary for this carrier)
 - [ ] 3 → 4: independent novelty review and publication packaging
 
 ## Exact theorem
@@ -155,9 +156,10 @@ Principal declarations:
 - `not_additivelyClosedAtomSupport_smul_thetaCuspLikelihoodSeamTiltedMeasure`
 - `thetaCuspLikelihoodSeamTiltedMeasure_selfConv_singleton_six_ne_zero`
 
-Lean does not yet formalize the general probability-theory parent theorem
-“infinitely divisible plus atom at zero implies compound Poisson,” so the full nondivisibility
-corollary remains paper-only.
+The full nondivisibility corollary is also formalized, and unconditionally: the Steutel--van Harn
+classification is not needed for this carrier, because its atomic support already forbids a
+convolution square root.  See `not_infinitelyDivisible_of_atomic_gap` and
+`thetaCuspLikelihoodSeamTiltedMeasure_not_infinitelyDivisible`.
 
 ## Hostile audit
 
@@ -448,3 +450,37 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
   `P_B{3} = (ν∗ν){3} = 0`, contradicting `P_B{3} ≠ 0`.  Remaining to formalize: the two global support
   facts for `P_B` (`∀ x<0, P_B{x}=0`; `∀ x, 0<x<3 → P_B{x}=0`) and the assembly — then
   `thetaCuspLikelihoodSeamTiltedMeasure_not_infinitelyDivisible` becomes **unconditional** (drops `svh`).
+- 2026-07-26 — **Gate `2 → 3` closed: non-divisibility is now UNCONDITIONAL.**  The Steutel--van Harn
+  classification turned out to be *unnecessary* for this carrier, so the `svh` hypothesis is gone
+  (axioms `[propext, Classical.choice, Quot.sound]` throughout).
+
+  New general criterion in `HTGeometry/ConvolutionAtomBounds.lean`:
+  * `not_infinitelyDivisible_of_atomic_gap` — a measure on `R` that charges no negative point,
+    charges `0` and `a`, charges nothing strictly between `0` and `a`, and charges nothing at `2a`,
+    is not infinitely divisible.  Proof: write `mu = nu * nu`.  No `nu`-atom is negative (its double
+    would be a negative `mu`-atom); `nu` charges the origin (otherwise no atom pair reaches `0`);
+    pairing against that origin atom makes every `nu`-atom a `mu`-atom, so `nu` charges nothing in
+    `(0,a)`; and `nu{a} = 0` because `mu{2a} = 0`.  No pair of `nu`-atoms can then sum to `a`, so
+    `conv_self_singleton_eq_zero_of_no_pair` forces `mu{a} = 0` -- contradiction.  (Positivity of `a`
+    is not assumed; it follows.)
+
+  New in `RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`, giving the exact atomic support:
+  * `three_le_thetaCuspLikelihoodGap_shift`, `thetaCuspHigherLikelihoodSpectralMeasure_singleton_eq_zero`,
+    `thetaCuspLikelihoodSeamTiltedMeasure_singleton_eq_zero` — off the origin and the square gaps
+    nothing is charged (the Lebesgue rays charge no singleton), hence
+    `..._singleton_neg` (`P_B` lives on the half line) and `..._singleton_lt_three` (`3` is the first
+    positive atom).
+  * `not_infinitelyDivisible_smul_thetaCuspLikelihoodSeamTiltedMeasure` — **`c . P_B` is not
+    infinitely divisible for every nonzero `c`**, in particular for the normalized probability law.
+  * `thetaCuspLikelihoodSeamTiltedMeasure_not_infinitelyDivisible` — the same for `P_B` itself; the
+    old `svh` hypothesis is **removed**, this now discharges it.
+
+  Why the classification was avoidable: Steutel--van Harn is needed when one only knows the *atom
+  support* fails to be additively closed.  Here we know more -- `P_B` is supported on `[0,infinity)`
+  with first positive atom `3` -- and that pins any convolution square root tightly enough on its own.
+  The compound-Poisson layer built earlier is not wasted: it still gives the independent statement
+  `P_B` is not a compound Poisson mixture, and the ID/Laplace/cumulant infrastructure remains general.
+
+  The card's paper Theorem items 1--6 are now all Lean-backed except the classical
+  `ID => GGC` direction of item 6, which is a definitional inclusion rather than an analytic gap.
+  Remaining gates are non-Lean: `3 -> 4` independent novelty review and publication packaging.

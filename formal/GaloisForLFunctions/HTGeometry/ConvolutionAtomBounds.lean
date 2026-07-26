@@ -433,4 +433,66 @@ theorem conv_self_singleton_eq_zero_of_no_pair (ν : Measure ℝ) [IsFiniteMeasu
     _ = ⊤ * ν S := by rw [lintegral_indicator_const hSmeas]
     _ = 0 := by rw [hSnull, mul_zero]
 
+/-- **Atomic non-divisibility criterion on `ℝ`.**  Let `μ` charge no negative point, charge `0`
+and `a`, charge nothing strictly between `0` and `a`, and charge nothing at `2a`.  Then `μ` is not
+infinitely divisible.
+
+Writing `μ = ν ∗ ν`, no `ν`-atom is negative (its double would be a negative `μ`-atom), so pairing
+against the origin makes every `ν`-atom a `μ`-atom, whence the `ν`-atoms avoid `(0, a)`; and `ν`
+cannot charge `a` because `μ` does not charge `2a`.  No pair of `ν`-atoms can then sum to `a`, so
+`μ {a} = 0`, contradicting the hypothesis.
+
+Positivity of `a` is not assumed: it follows, since `μ` charges `a` but neither the negatives nor
+`2a = 0`. -/
+theorem not_infinitelyDivisible_of_atomic_gap {μ : Measure ℝ} {a : ℝ}
+    (hneg : ∀ x : ℝ, x < 0 → μ {x} = 0)
+    (hzero : μ {0} ≠ 0)
+    (hatom : μ {a} ≠ 0)
+    (hgap : ∀ x : ℝ, 0 < x → x < a → μ {x} = 0)
+    (htwo : μ {2 * a} = 0) :
+    ¬ InfinitelyDivisible μ := by
+  intro hID
+  obtain ⟨ν, hνprob, hμ⟩ := hID 2 (by norm_num)
+  haveI := hνprob
+  have hconv : convPow ν 2 = ν ∗ ν := by
+    rw [convPow, convPow, convPow, Measure.conv_dirac_zero]
+  rw [hconv] at hμ
+  have hνneg : ∀ b : ℝ, b < 0 → ν {b} = 0 := by
+    intro b hb
+    have hle := measure_singleton_le_conv ν ν b b
+    rw [← hμ] at hle
+    exact mul_self_eq_zero.mp (nonpos_iff_eq_zero.mp (hle.trans_eq (hneg _ (by linarith))))
+  have hνzero : ν {0} ≠ 0 := by
+    intro h0
+    refine hzero ?_
+    rw [hμ]
+    refine conv_self_singleton_eq_zero_of_no_pair ν 0 fun x hx => ?_
+    rcases lt_trichotomy x 0 with h | h | h
+    · exact absurd (hνneg x h) hx
+    · rw [h]; simpa using h0
+    · exact hνneg (0 - x) (by linarith)
+  have hνsub : ∀ y : ℝ, ν {y} ≠ 0 → μ {y} ≠ 0 := by
+    intro y hy
+    have hle := measure_singleton_le_conv ν ν 0 y
+    rw [← hμ, zero_add] at hle
+    exact fun hz => (mul_ne_zero hνzero hy) (nonpos_iff_eq_zero.mp (hle.trans_eq hz))
+  have hνa : ν {a} = 0 := by
+    have hle := measure_singleton_le_conv ν ν a a
+    rw [← hμ] at hle
+    refine mul_self_eq_zero.mp (nonpos_iff_eq_zero.mp (hle.trans_eq ?_))
+    rw [show a + a = 2 * a by ring]
+    exact htwo
+  refine hatom ?_
+  rw [hμ]
+  refine conv_self_singleton_eq_zero_of_no_pair ν a fun x hx => ?_
+  rcases lt_trichotomy x 0 with h | h | h
+  · exact absurd (hνneg x h) hx
+  · rw [h, sub_zero]; exact hνa
+  · have hax : a ≤ x := by
+      by_contra hlt
+      exact hνsub x hx (hgap x h (not_le.mp hlt))
+    rcases eq_or_lt_of_le hax with heq | hlt
+    · exact absurd (heq ▸ hνa : ν {x} = 0) hx
+    · exact hνneg (a - x) (by linarith)
+
 end GaloisForLFunctions.HTGeometry

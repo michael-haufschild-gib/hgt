@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.ProjectiveHorizonBuilding
 import Mathlib.Algebra.Lie.Matrix
 import Mathlib.RingTheory.Polynomial.Basic
 import Mathlib.Tactic
+import GaloisForLFunctions.HTGeometry.LieModulePointStabilizer
 
 /-!
 # The current-algebra engine of the depth-two projective horizon transition
@@ -71,33 +72,14 @@ def depthTwoCurrentLie :
     LieSubalgebra K (Matrix (Fin 2) (Fin 2) (Polynomial K)) :=
   LieSubalgebra.lieSpan K _ (depthTwoCurrentGenerators K)
 
-/-- The current modes annihilating one vector in an arbitrary Lie-module representation form a
-Lie subalgebra.  This packages the passage from generator invariance to current-mode invariance. -/
-def sl2CurrentPointStabilizer
+/-- The current modes annihilating a vector form a Lie subalgebra: the point stabiliser of
+the Lie-module action, with no dependence on the matrix coefficients. -/
+abbrev sl2CurrentPointStabilizer
     {M : Type*} [AddCommGroup M] [Module K M]
     [LieRingModule (Matrix (Fin 2) (Fin 2) (Polynomial K)) M]
     [LieModule K (Matrix (Fin 2) (Fin 2) (Polynomial K)) M]
-    (v : M) : LieSubalgebra K (Matrix (Fin 2) (Fin 2) (Polynomial K)) where
-  carrier := {A | ⁅A, v⁆ = 0}
-  zero_mem' := by simp
-  add_mem' := by
-    intro A B hA hB
-    change ⁅A, v⁆ = 0 at hA
-    change ⁅B, v⁆ = 0 at hB
-    change ⁅A + B, v⁆ = 0
-    simp [hA, hB]
-  smul_mem' := by
-    intro c A hA
-    change ⁅A, v⁆ = 0 at hA
-    change ⁅c • A, v⁆ = 0
-    simp [hA]
-  lie_mem' := by
-    intro A B hA hB
-    change ⁅A, v⁆ = 0 at hA
-    change ⁅B, v⁆ = 0 at hB
-    change ⁅⁅A, B⁆, v⁆ = 0
-    rw [lie_lie, hA, hB]
-    simp
+    (v : M) : LieSubalgebra K (Matrix (Fin 2) (Fin 2) (Polynomial K)) :=
+  _root_.HTGeometry.lieModulePointStabilizer K (Matrix (Fin 2) (Fin 2) (Polynomial K)) v
 
 section Generation
 

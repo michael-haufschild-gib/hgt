@@ -50,5 +50,3 @@ theorem exists_hypertranscendental_atom_constantMagneticQEDSpinStatistics_self :
 end
 
 end GaloisForLFunctions
-
-#print axioms GaloisForLFunctions.exists_hypertranscendental_atom_constantMagneticQEDSpinStatistics_self

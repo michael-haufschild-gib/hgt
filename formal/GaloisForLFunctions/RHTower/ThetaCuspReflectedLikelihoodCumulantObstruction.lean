@@ -15,20 +15,6 @@ namespace RHTower
 
 noncomputable section
 
-/-- The fixed higher-likelihood spectral measure is supported on the nonnegative half-line. -/
-theorem ae_nonneg_thetaCuspHigherLikelihoodSpectralMeasure :
-    ∀ᵐ t ∂thetaCuspHigherLikelihoodSpectralMeasure, 0 ≤ t := by
-  rw [thetaCuspHigherLikelihoodSpectralMeasure, Measure.ae_sum_iff]
-  intro k
-  rw [thetaCuspAtomLikelihoodSpectralMeasure, ae_add_measure_iff]
-  constructor
-  · apply Measure.ae_smul_measure
-    rw [ae_dirac_iff measurableSet_Ici]
-    exact (thetaCuspLikelihoodGap_pos (n := k + 2) (by omega)).le
-  · apply Measure.ae_smul_measure
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
-    exact (thetaCuspLikelihoodGap_pos (n := k + 2) (by omega)).le.trans ht.le
-
 /-- Every tilted likelihood moment differentiates to minus its successor. -/
 theorem hasDerivAt_thetaCuspHigherLikelihoodSpectralMoment
     (m : ℕ) {B : ℝ} (hB : 0 < B) :

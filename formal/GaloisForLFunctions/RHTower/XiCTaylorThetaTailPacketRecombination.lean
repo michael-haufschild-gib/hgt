@@ -359,10 +359,10 @@ end RHTower
 namespace RHTower
 
 open scoped BigOperators
-open strip. -/
 
 noncomputable section
 
+/-- The spectral translation phase has modulus `exp (-t * im z)`. -/
 lemma norm_spectralTranslationPhase_eq_exp_neg_mul_im
     (t : ℝ) (z : ℂ) :
     ‖spectralTranslationPhase t z‖ = Real.exp (-t * z.im) := by

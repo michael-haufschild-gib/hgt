@@ -115,7 +115,8 @@ private theorem integral_squarefreeMobiusCriticalClock_sq
   intro n
   ring
 
-private theorem integrable_squarefreeMobiusCriticalGap_sq
+/-- The oriented squarefree critical clock gap has an integrable square at every `sigma > 1`. -/
+theorem integrable_squarefreeMobiusCriticalGap_sq
     {sigma : ℝ} (hsigma : 1 < sigma) :
     Integrable (fun y : ℝ => y ^ 2)
       (squarefreeMobiusCriticalGapProbabilityMeasure sigma : Measure ℝ) := by

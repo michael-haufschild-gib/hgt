@@ -631,8 +631,8 @@ cofinal coupling.
   theorem, counterexamples, and dependency audit stated
 - [x] 1 -> 2 fully-proven: faithful analytic lifting, exact relation ideal, arbitrary-family
   finite character, lattice intersection, and completion clauses have dependency-closed proofs
-- [ ] 2 -> 3 formalized: complete unconditional theorem surface passes targeted checks and axiom
-  audit
+- [x] 2 -> 3 formalized: complete unconditional theorem surface passes targeted checks and axiom
+  audit (all eight master-theorem items plus the named arithmetic consequence; see `## Lean status`)
 - [ ] 3 -> 4 publication-ready: specialist priority audit, separate journal paper, and rendered
   PDF
 
@@ -663,3 +663,56 @@ cofinal coupling.
   in the intrinsic coefficient field, hence algebraic independence forces linear independence in
   the finite-ray quotient.  The remaining exactness step is the separated packet construction
   from quotient independence, followed by the relative clock-module upgrade.
+
+## Lean status
+
+Audited against the corpus on 2026-07-26.  Most of the master theorem was already formalized under
+other module names; the audit below is what the `2 -> 3` gate actually needs, item by item.
+
+| Master-theorem item | Lean |
+|---|---|
+| 1. Static tail matroid | `PrimeProfileSeparatedPacketExact.differentialIndependent_fractionPrimeProfiles_iff_clockIndependent` |
+| 2. Clock torsion-freeness | `PrimeClockPolynomialSaturation.primePowerClockQuotient_polynomialClock_eq_zero_iff` (and the representative form `primePowerClockPolynomialApply_local_iff`) |
+| 3. Relative differential matroid | `PrimeClockCompletionCorrespondence.differentialIndependent_fractionPrimeProfiles_relative_iff_clockQuotientIndependent_arbitrary` |
+| 4. Exact field order and recovery | `PrimeClockCompletionCorrespondence.primeProfile_differentialAdjoin_le_iff_intrinsicClockSubmodule_le`, `..._eq_iff_...`, and `primeProfileCarrierPullback_differentialAdjoin_eq_clockSubmodule` (the `Psi . Phi = id` half) |
+| 5. Exact lattice law | `PrimeClockLatticeLaw.primeProfile_differentialAdjoin_sup_of_clockSubmodule_eq_sup`, `..._inf_of_clockSubmodule_eq_inf`, `primeProfileCarrierPullback_inf` |
+| 6. Complete relation ideal | `PrimeValuationVeroneseRelationIdeal.PrimeValuationTailPivotPresentation.complete_relationIdeal`, `PrimeValuationProfileRankLaw.primeValuationProfile_complete_relationIdeal` |
+| 7. Rank law | `PrimeValuationProfileRankLaw.primeValuationProfile_differentialIndependent_iff` |
+| 8. Differential-algebraic closure law | `PrimeProfileClockSaturationLaw.differentialAdjoin_grassmannSource_eq_grassmannField_saturation` and its `le`/`eq` corollaries |
+| Named arithmetic consequence (`log zeta` over the valuation layers) | `PrimeClockAnalyticEulerCompletion.analyticEulerLogReplicatedCarrier_differentialIndependent_over_all_valuationLayers` |
+
+- 2026-07-26 — **Item 5, join half + intrinsic meet, formalized** (new module
+  `HTGeometry/PrimeClockLatticeLaw.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  Joining two source families is disjoint union of
+  index sets, so:
+  * `range_primeProfileClockJetFamily_sumElim`, `primeProfileClockSubmodule_sumElim` — the clock
+    submodule of `Sum.elim c d` is `M(c) sup M(d)`.
+  * `primeProfile_differentialAdjoin_sumElim` — the embedded field of `Sum.elim c d` is the
+    compositum `K(c) sup K(d)` (the jet set of a union is the union of the jet sets, then
+    `IntermediateField.adjoin_union`).
+    Together these are `Phi(M sup N) = compositum(Phi M, Phi N)`.
+  * `primeProfileCarrierPullback_inf` — **intrinsic meet law**: the pullback of `K(c) inf K(d)` is
+    exactly `M(c) inf M(d)`.  (`Psi` is a preimage, so it preserves meets; the content is the
+    membership criterion on each side.)
+  * `primeProfile_differentialAdjoin_le_inf_of_clockSubmodule_eq_inf` — any family presenting
+    `M(c) inf M(d)` generates a field inside `K(c) inf K(d)`.
+
+- 2026-07-26 — **Item 5 closed; the whole `2 -> 3` Lean gate is now covered.**  The reverse
+  inclusion `K(c) inf K(d) <= K(e)` did not need new analysis: the corpus already carries the
+  three-block field lemma it reduces to
+  (`DifferentialIndependentObservableFactorization.algebraicIndependent_threeBlock_adjoin_inf`),
+  applied in `PrimeProfileInvariantGrassmannRepresentation` to give the submodule-level lattice law
+  `primeProfileGrassmannField_inf` / `primeProfileGrassmannField_sup`.  What was missing was only
+  the bridge from those to the card's source-family formulation.  Added to
+  `HTGeometry/PrimeClockLatticeLaw.lean` (axioms `[propext, Classical.choice, Quot.sound]`):
+  * `primeProfile_differentialAdjoin_eq_grassmannField_clockSubmodule` — **the connector**:
+    `K(c) = grassmannField(M(c))`.  The complete clock submodule of a source family is
+    clock-invariant (`primeProfileClockSubmodule_invariant`), so its represented basis field is
+    already closed under differentiation (`differentialAdjoin_grassmannSource_eq_grassmannField`),
+    and the intrinsic equality law transports the presentation.
+  * `primeProfile_differentialAdjoin_inf_of_clockSubmodule_eq_inf` — **`Phi(M inf N) = Phi(M) inf Phi(N)`**:
+    any family presenting `M(c) inf M(d)` generates exactly `K(c) inf K(d)`.
+  * `primeProfile_differentialAdjoin_sup_of_clockSubmodule_eq_sup` — the same for joins, in the
+    presentation-free form matching the meet law.
+  Item 5 of the master theorem is therefore fully formalized and unconditional, in both halves and
+  in the card's own language.

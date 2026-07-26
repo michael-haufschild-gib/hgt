@@ -117,10 +117,20 @@ lemma xiZeroCopy_conj_ne_lineConjConj_of_re_ne_half (q : XiZeroCopy)
   exact xiZeroCopy_ne_lineConj_of_re_ne_half (xiZeroCopyConjEquiv q) (by
     simpa using hoff)
 
-/-- The four FE--Schwarz copies of an off-line zero charge at most the full endpoint curvature. -/
-theorem four_mul_xiEndpointCrossCharge_le_curvature_of_offLine
+/-- **Quartet mass bound.**  The functional-equation/Schwarz orbit `{q, Jq, Cq, JCq}` of a zero copy
+off the critical line has four distinct elements, so any nonnegative summable weight invariant under
+both involutions carries at least four times its value at `q`.
+
+This is the source of the factor four in every off-line orbit estimate: the arithmetic input is only
+that the orbit is a four-element set, and the analytic input only that the weight is nonnegative,
+summable and orbit-invariant. -/
+theorem four_mul_le_tsum_of_quartet_invariant
+    {f : XiZeroCopy → ℝ} (hnonneg : ∀ r, 0 ≤ f r) (hsum : Summable f)
+    (hJinv : ∀ r, f (xiZeroCopyLineConjEquiv r) = f r)
+    (hCinv : ∀ r, f (xiZeroCopyConjEquiv r) = f r)
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    4 * xiEndpointCrossCharge q ≤ xiEndpointCompletedCurvature := by
+    4 * f q ≤ ∑' r, f r := by
+  classical
   let qJ := xiZeroCopyLineConjEquiv q
   let qC := xiZeroCopyConjEquiv q
   let qCJ := xiZeroCopyLineConjEquiv qC
@@ -138,23 +148,13 @@ theorem four_mul_xiEndpointCrossCharge_le_curvature_of_offLine
   have hqCqCJ : qC ≠ qCJ := by
     simpa only [qC, qCJ] using
       xiZeroCopy_conj_ne_lineConjConj_of_re_ne_half q hoff
-  have hsum : Summable xiEndpointCrossCharge := by
-    exact Summable.of_norm_bounded summable_xiEndpointCrossTerm.norm (fun j => by
-      rw [Real.norm_eq_abs]
-      exact abs_re_le_norm _)
-  have hle := hsum.sum_le_tsum s (fun j _ => by
-    exact endpoint_cross_term_re_nonneg j)
-  have hJ : xiEndpointCrossCharge qJ = xiEndpointCrossCharge q := by
-    simpa only [qJ] using xiEndpointCrossCharge_lineConj q
-  have hC : xiEndpointCrossCharge qC = xiEndpointCrossCharge q := by
-    simpa only [qC] using xiEndpointCrossCharge_conj q
-  have hCJ : xiEndpointCrossCharge qCJ = xiEndpointCrossCharge q := by
-    calc
-      xiEndpointCrossCharge qCJ = xiEndpointCrossCharge qC := by
-        simpa only [qC, qCJ] using xiEndpointCrossCharge_lineConj qC
-      _ = xiEndpointCrossCharge q := hC
-  have hfinite : ∑ j ∈ s, xiEndpointCrossCharge j =
-      4 * xiEndpointCrossCharge q := by
+  have hle := hsum.sum_le_tsum s (fun j _ => hnonneg j)
+  have hJ : f qJ = f q := by simpa only [qJ] using hJinv q
+  have hC : f qC = f q := by simpa only [qC] using hCinv q
+  have hCJ : f qCJ = f q := by
+    calc f qCJ = f qC := by simpa only [qC, qCJ] using hJinv qC
+      _ = f q := hC
+  have hfinite : ∑ j ∈ s, f j = 4 * f q := by
     simp only [s]
     rw [Finset.sum_insert (by simp [hqJ, hqC, hqCJ]),
       Finset.sum_insert (by simp [hqJqC, hqJqCJ]),
@@ -162,6 +162,19 @@ theorem four_mul_xiEndpointCrossCharge_le_curvature_of_offLine
       hJ, hC, hCJ]
     ring
   rw [hfinite] at hle
+  exact hle
+
+/-- The four FE--Schwarz copies of an off-line zero charge at most the full endpoint curvature. -/
+theorem four_mul_xiEndpointCrossCharge_le_curvature_of_offLine
+    (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
+    4 * xiEndpointCrossCharge q ≤ xiEndpointCompletedCurvature := by
+  have hsum : Summable xiEndpointCrossCharge := by
+    exact Summable.of_norm_bounded summable_xiEndpointCrossTerm.norm (fun j => by
+      rw [Real.norm_eq_abs]
+      exact abs_re_le_norm _)
+  have hle := four_mul_le_tsum_of_quartet_invariant
+    (fun j => endpoint_cross_term_re_nonneg j) hsum
+    xiEndpointCrossCharge_lineConj xiEndpointCrossCharge_conj q hoff
   rw [xiEndpointCompletedCurvature_eq_cross_re,
     Complex.re_tsum summable_xiEndpointCrossTerm]
   simpa only [xiEndpointCrossCharge] using hle

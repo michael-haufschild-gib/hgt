@@ -1,7 +1,7 @@
 # Gaussian metric Legendre--Hadamard fracture law
 
 - **ID:** `gaussian-metric-legendre-hadamard-fracture-law`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** UNIVERSAL HILBERT-METRIC / MATRIX-CONE LAW
 - **Source:** `rank-one-schur-gaussian-curvature-law.md` and the compiled degree-five
   Gaussian-curvature counterexample
@@ -135,11 +135,38 @@ journal.  Stage 4 requires:
 
 - [x] 0 -> 1: invariant metric statement, exact rank-one connector, and higher-rank falsifier
 - [x] 1 -> 2: dependency-closed proof and hostile parent boundary
-- [ ] 2 -> 3: unconditional Lean metric connector, direct checks, axiom audit, and final module build
+- [x] 2 -> 3: unconditional Lean metric connector, direct checks, axiom audit, and final module build
 - [ ] 3 -> 4: independent priority and general-journal significance audit
+
+## Lean certificate
+
+File: `formal/GaloisForLFunctions/HilbertMetric/GaussianMetricRankOneFracture.lean`
+(imported by `GaloisForLFunctions.HilbertMetric`).  Every theorem below builds clean and
+`#print axioms` returns exactly `propext, Classical.choice, Quot.sound`.
+
+| Card item | Lean name |
+|---|---|
+| finite Hilbert-extension Gram `K_t(i,j) = exp(-‖y_i-y_j‖² - t(a_i-a_j)²)` | `gaussianMetricRankOneExtensionGram` |
+| the metric line is Schur multiplication by the one-dimensional Gaussian semigroup | `gaussianMetricRankOneExtensionGram_eq_rankOneSchurGaussianPath` |
+| positive Gram component of the metric cone | `finiteGaussianDistanceGram_posDef_of_injective_of_pos`, `finiteGaussianDistanceGram_posDef_iff_injective_of_pos` |
+| **(LH)** exact self-commutator curvature | `gaussianMetricRankOneExtension_logDet_secondDerivative_eq` |
+| rank-one concavity of `M ↦ log det G_C(M)` | `gaussianMetricRankOneExtension_logDet_concaveOn` |
+| equality exactly when the projection `v^T x_i` is constant | `gaussianMetricRankOneExtension_logDet_secondDerivative_eq_zero_iff_constant` |
+| strict negativity for a nonconstant added feature | `gaussianMetricRankOneExtension_logDet_secondDerivative_lt_zero` |
+| **(FR)** higher-rank fracture, injective degree-five configuration | `exists_finiteGaussianDistanceGram_positiveLogDetCurvature` |
+| **(LH) + (FR)** packaged fracture law | `gaussianMetricRankOneConcavity_and_higherRankFracture` |
+
+The proof route is exactly the dependency-closed proof of this card: the metric identity turns the
+rank-one line into the Schur-Gaussian path, `rankOneSchurGaussian_logDet_secondDerivative_eq` and
+`rankOneSchurGaussian_logDet_concaveOn` supply (LH) and line concavity, the sharp zero-curvature
+theorem gives the equality classification (Gaussian entries never vanish), and the compiled
+degree-five configuration supplies (FR).
 
 ## Log
 
 - 2026-07-20 -- extracted the invariant metric-tensor form of the rank-one Schur law and combined
   it with the compiled positive-curvature Gaussian configuration.  Promoted only to Stage 2;
   novelty priority and general-journal significance remain unverified.
+- 2026-07-26 -- stage audit: the Lean metric connector, equality classification, and higher-rank
+  falsifier are all present and axiom-clean.  Card moved to `3-formalized`; the Stage 3 -> 4
+  priority and significance audit remains open.

@@ -10,11 +10,11 @@ positive exponential tilt it has an atom at the first gap `3`, but no atom at `6
 Consequently its atom support is not additively closed, even after multiplication by an arbitrary
 nonzero normalization scalar.
 
-This is the exact source obstruction behind the paper theorem that the normalized seam likelihood
-law is not infinitely divisible: an infinitely divisible probability law on `ℝ≥0` with an atom at
-zero is compound Poisson, while compound-Poisson atom support is additively closed.  The latter
-probability-theory implication is not asserted in Lean here; this module formalizes its complete
-theta-specific premise.
+That obstruction already rules out the compound-Poisson form, whose atom support is additively
+closed.  It also rules out infinite divisibility outright, with no appeal to the classical
+`ID + atom at zero ⟹ compound Poisson` classification: the carrier is supported on the half line
+and its first positive atom is `3`, so a convolution square root could charge neither the negatives
+nor `3` itself, leaving no pair of its atoms summing to `3`.
 
 All statements are unconditional and exact.
 -/
@@ -223,14 +223,81 @@ theorem thetaCuspLikelihoodSeamTiltedMeasure_not_compoundPoisson (B : ℝ) :
   rintro ⟨c, Q, hc, hQ, heq⟩
   exact thetaCuspLikelihoodSeamTiltedMeasure_not_convPowMixture B hc Q heq
 
-/-- Given the classical Steutel--van Harn classification (`ID + atom at 0 ⟹ compound Poisson`,
-supplied as `svh`), the theta seam-tilted likelihood `P_B` is **not infinitely divisible** — hence
+/-! ### Exact atomic support and unconditional non-divisibility -/
+
+/-- Every higher square gap is at least the first one. -/
+theorem three_le_thetaCuspLikelihoodGap_shift (k : ℕ) : 3 ≤ thetaCuspLikelihoodGap (k + 2) := by
+  have hk : (2 : ℝ) ≤ ((k + 2 : ℕ) : ℝ) := by exact_mod_cast (show 2 ≤ k + 2 by omega)
+  unfold thetaCuspLikelihoodGap
+  nlinarith
+
+/-- Off the square gaps the higher-tail measure charges no singleton: the Dirac components sit at
+the gaps and the Lebesgue rays charge no point. -/
+theorem thetaCuspHigherLikelihoodSpectralMeasure_singleton_eq_zero {x : ℝ}
+    (hgap : ∀ k : ℕ, thetaCuspLikelihoodGap (k + 2) ≠ x) :
+    thetaCuspHigherLikelihoodSpectralMeasure {x} = 0 := by
+  rw [thetaCuspHigherLikelihoodSpectralMeasure,
+    Measure.sum_apply _ (measurableSet_singleton x)]
+  simp_rw [thetaCuspAtomLikelihoodSpectralMeasure_singleton]
+  simp [hgap]
+
+/-- The atoms of the tilted seam carrier are exactly the origin and the square gaps. -/
+theorem thetaCuspLikelihoodSeamTiltedMeasure_singleton_eq_zero (B : ℝ) {x : ℝ} (hx : x ≠ 0)
+    (hgap : ∀ k : ℕ, thetaCuspLikelihoodGap (k + 2) ≠ x) :
+    thetaCuspLikelihoodSeamTiltedMeasure B {x} = 0 := by
+  rw [thetaCuspLikelihoodSeamTiltedMeasure, Measure.add_apply]
+  have hdirac : Measure.dirac (0 : ℝ) {x} = 0 := by simp [Ne.symm hx]
+  rw [hdirac, zero_add, thetaCuspHigherLikelihoodTiltedMeasure,
+    withDensity_apply _ (measurableSet_singleton x)]
+  simp [thetaCuspHigherLikelihoodSpectralMeasure_singleton_eq_zero hgap]
+
+/-- The carrier lives on the half line: no negative point is charged. -/
+theorem thetaCuspLikelihoodSeamTiltedMeasure_singleton_neg (B : ℝ) {x : ℝ} (hx : x < 0) :
+    thetaCuspLikelihoodSeamTiltedMeasure B {x} = 0 := by
+  refine thetaCuspLikelihoodSeamTiltedMeasure_singleton_eq_zero B (by linarith) fun k hk => ?_
+  have := three_le_thetaCuspLikelihoodGap_shift k
+  linarith [hk ▸ this]
+
+/-- `3` is the first positive atom: nothing is charged strictly between the origin and it. -/
+theorem thetaCuspLikelihoodSeamTiltedMeasure_singleton_lt_three (B : ℝ) {x : ℝ}
+    (hx0 : 0 < x) (hx3 : x < 3) :
+    thetaCuspLikelihoodSeamTiltedMeasure B {x} = 0 := by
+  refine thetaCuspLikelihoodSeamTiltedMeasure_singleton_eq_zero B (by linarith) fun k hk => ?_
+  have := three_le_thetaCuspLikelihoodGap_shift k
+  linarith [hk ▸ this]
+
+/-- **The normalized theta seam likelihood is not infinitely divisible** — unconditionally, and for
+every nonzero normalization, in particular for the probability law `P_B`.
+
+No classification theorem is needed.  The carrier is supported on the half line, charges the
+origin, has `3` as its first positive atom, and does not charge `6 = 3 + 3`; by
+`not_infinitelyDivisible_of_atomic_gap` a square root `ν` would have to avoid both the negatives
+and `3`, leaving no pair of `ν`-atoms summing to `3`. -/
+theorem not_infinitelyDivisible_smul_thetaCuspLikelihoodSeamTiltedMeasure
+    (B : ℝ) {c : ℝ≥0∞} (hc : c ≠ 0) :
+    ¬ InfinitelyDivisible (c • thetaCuspLikelihoodSeamTiltedMeasure B) := by
+  refine not_infinitelyDivisible_of_atomic_gap (a := 3) ?_ ?_ ?_ ?_ ?_
+  · intro x hx
+    rw [Measure.smul_apply, smul_eq_mul,
+      thetaCuspLikelihoodSeamTiltedMeasure_singleton_neg B hx, mul_zero]
+  · rw [Measure.smul_apply, smul_eq_mul,
+      thetaCuspLikelihoodSeamTiltedMeasure_singleton_zero, mul_one]
+    exact hc
+  · rw [Measure.smul_apply, smul_eq_mul]
+    exact mul_ne_zero hc (thetaCuspLikelihoodSeamTiltedMeasure_singleton_three_ne_zero B)
+  · intro x hx0 hx3
+    rw [Measure.smul_apply, smul_eq_mul,
+      thetaCuspLikelihoodSeamTiltedMeasure_singleton_lt_three B hx0 hx3, mul_zero]
+  · rw [show (2 : ℝ) * 3 = 6 by norm_num, Measure.smul_apply, smul_eq_mul,
+      thetaCuspLikelihoodSeamTiltedMeasure_singleton_six B, mul_zero]
+
+/-- **The theta seam-tilted likelihood `P_B` is not infinitely divisible**, unconditionally — hence
 neither a generalized gamma convolution nor a Thorin-subordinator marginal. -/
-theorem thetaCuspLikelihoodSeamTiltedMeasure_not_infinitelyDivisible (B : ℝ)
-    (svh : InfinitelyDivisible (thetaCuspLikelihoodSeamTiltedMeasure B) →
-           IsCompoundPoissonMixture (thetaCuspLikelihoodSeamTiltedMeasure B)) :
-    ¬ InfinitelyDivisible (thetaCuspLikelihoodSeamTiltedMeasure B) :=
-  fun hID => thetaCuspLikelihoodSeamTiltedMeasure_not_compoundPoisson B (svh hID)
+theorem thetaCuspLikelihoodSeamTiltedMeasure_not_infinitelyDivisible (B : ℝ) :
+    ¬ InfinitelyDivisible (thetaCuspLikelihoodSeamTiltedMeasure B) := by
+  have h := not_infinitelyDivisible_smul_thetaCuspLikelihoodSeamTiltedMeasure B
+    (c := 1) one_ne_zero
+  rwa [one_smul] at h
 end
 
 end RHTower

@@ -28,50 +28,13 @@ theorem four_mul_xiFourthReciprocalTraceAtom_le_source_of_offLine
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
     4 * (xiZeroCopyReciprocalSquare q ^ 2).re ≤
       normalizedPrimeArchMoment 1 := by
-  let qJ := xiZeroCopyLineConjEquiv q
-  let qC := xiZeroCopyConjEquiv q
-  let qCJ := xiZeroCopyLineConjEquiv qC
-  let s : Finset XiZeroCopy := {q, qJ, qC, qCJ}
-  have hqJ : q ≠ qJ := by
-    simpa only [qJ] using xiZeroCopy_ne_lineConj_of_re_ne_half q hoff
-  have hqC : q ≠ qC := by
-    simpa only [qC] using xiZeroCopy_ne_conj q
-  have hqCJ : q ≠ qCJ := by
-    simpa only [qC, qCJ] using xiZeroCopy_ne_lineConjConj q
-  have hqJqC : qJ ≠ qC := by
-    simpa only [qJ, qC] using xiZeroCopy_lineConj_ne_conj q
-  have hqJqCJ : qJ ≠ qCJ := by
-    simpa only [qJ, qC, qCJ] using xiZeroCopy_lineConj_ne_lineConjConj q
-  have hqCqCJ : qC ≠ qCJ := by
-    simpa only [qC, qCJ] using
-      xiZeroCopy_conj_ne_lineConjConj_of_re_ne_half q hoff
   have hsum : Summable
       (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 2).re) :=
     (summable_xiZeroCopyReciprocalSquare_pow 1).mapL Complex.reCLM
-  have hle := hsum.sum_le_tsum s (fun r _ => xiFourthReciprocalTraceAtom_nonneg r)
-  have hJ : (xiZeroCopyReciprocalSquare qJ ^ 2).re =
-      (xiZeroCopyReciprocalSquare q ^ 2).re := by
-    simpa only [qJ] using xiFourthReciprocalTraceAtom_lineConj q
-  have hCq : (xiZeroCopyReciprocalSquare qC ^ 2).re =
-      (xiZeroCopyReciprocalSquare q ^ 2).re := by
-    simpa only [qC] using xiFourthReciprocalTraceAtom_conj q
-  have hCJ : (xiZeroCopyReciprocalSquare qCJ ^ 2).re =
-      (xiZeroCopyReciprocalSquare q ^ 2).re := by
-    calc
-      (xiZeroCopyReciprocalSquare qCJ ^ 2).re =
-          (xiZeroCopyReciprocalSquare qC ^ 2).re := by
-        simpa only [qC, qCJ] using xiFourthReciprocalTraceAtom_lineConj qC
-      _ = (xiZeroCopyReciprocalSquare q ^ 2).re := hCq
-  have hfinite :
-      ∑ r ∈ s, (xiZeroCopyReciprocalSquare r ^ 2).re =
-        4 * (xiZeroCopyReciprocalSquare q ^ 2).re := by
-    simp only [s]
-    rw [Finset.sum_insert (by simp [hqJ, hqC, hqCJ]),
-      Finset.sum_insert (by simp [hqJqC, hqJqCJ]),
-      Finset.sum_insert (by simp [hqCqCJ]), Finset.sum_singleton,
-      hJ, hCq, hCJ]
-    ring
-  rw [hfinite, tsum_xiFourthReciprocalTraceAtom_eq_source] at hle
+  have hle := four_mul_le_tsum_of_quartet_invariant
+    xiFourthReciprocalTraceAtom_nonneg hsum
+    xiFourthReciprocalTraceAtom_lineConj xiFourthReciprocalTraceAtom_conj q hoff
+  rw [tsum_xiFourthReciprocalTraceAtom_eq_source] at hle
   exact hle
 
 /-- Across the complete centered order-seventeen failure range, every fourth reciprocal-trace

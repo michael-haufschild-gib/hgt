@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ProjectiveHorizonOneSidedCurrentAlgebra
 import Mathlib.Data.Matrix.Basis
+import GaloisForLFunctions.HTGeometry.LieModulePointStabilizer
 
 /-!
 # Arbitrary-rank one-sided projective horizon current generation
@@ -96,33 +97,14 @@ def arOneSidedCurrentLie :
     LieSubalgebra K (Matrix (arCurrentIndex ι) (arCurrentIndex ι) (Polynomial K)) :=
   LieSubalgebra.lieSpan K _ (arOneSidedCurrentGenerators K ι)
 
-/-- Current modes annihilating a vector form a Lie subalgebra. -/
-def arCurrentPointStabilizer
+/-- The current modes annihilating a vector form a Lie subalgebra: the point stabiliser of
+the Lie-module action, with no dependence on the matrix coefficients. -/
+abbrev arCurrentPointStabilizer
     {M : Type*} [AddCommGroup M] [Module K M]
     [LieRingModule (Matrix (arCurrentIndex ι) (arCurrentIndex ι) (Polynomial K)) M]
     [LieModule K (Matrix (arCurrentIndex ι) (arCurrentIndex ι) (Polynomial K)) M]
-    (v : M) :
-    LieSubalgebra K (Matrix (arCurrentIndex ι) (arCurrentIndex ι) (Polynomial K)) where
-  carrier := {A | ⁅A, v⁆ = 0}
-  zero_mem' := by simp
-  add_mem' := by
-    intro A B hA hB
-    change ⁅A, v⁆ = 0 at hA
-    change ⁅B, v⁆ = 0 at hB
-    change ⁅A + B, v⁆ = 0
-    simp [hA, hB]
-  smul_mem' := by
-    intro c A hA
-    change ⁅A, v⁆ = 0 at hA
-    change ⁅c • A, v⁆ = 0
-    simp [hA]
-  lie_mem' := by
-    intro A B hA hB
-    change ⁅A, v⁆ = 0 at hA
-    change ⁅B, v⁆ = 0 at hB
-    change ⁅⁅A, B⁆, v⁆ = 0
-    rw [lie_lie, hA, hB]
-    simp
+    (v : M) : LieSubalgebra K (Matrix (arCurrentIndex ι) (arCurrentIndex ι) (Polynomial K)) :=
+  _root_.HTGeometry.lieModulePointStabilizer K (Matrix (arCurrentIndex ι) (arCurrentIndex ι) (Polynomial K)) v
 
 section Generation
 

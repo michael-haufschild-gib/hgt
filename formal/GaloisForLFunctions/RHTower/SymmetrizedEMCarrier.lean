@@ -454,14 +454,6 @@ theorem riemannHypothesis_of_sem_split_multiplicity
 
 /-! ### §8 Schwarz reality and the line reflection of the symmetric member -/
 
-/-- Conjugation passes through natural-base complex powers. -/
-theorem natCast_cpow_conj (N : ℕ) (w : ℂ) :
-    ((N : ℂ)) ^ ((starRingEnd ℂ) w) = (starRingEnd ℂ) (((N : ℂ)) ^ w) := by
-  have harg : (N : ℂ).arg ≠ Real.pi := by
-    rw [Complex.natCast_arg]
-    exact Ne.symm Real.pi_ne_zero
-  rw [Complex.cpow_conj _ _ harg, Complex.conj_natCast]
-
 /-- Schwarz reality of the Euler–Maclaurin carrier: real Dirichlet coefficients plus a
 real-coefficient pole term. -/
 theorem emCarrier_conj (N : ℕ) (s : ℂ) :

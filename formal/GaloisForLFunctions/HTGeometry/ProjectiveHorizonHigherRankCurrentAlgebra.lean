@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ProjectiveHorizonCurrentAlgebra
+import GaloisForLFunctions.HTGeometry.LieModulePointStabilizer
 
 /-!
 # The first higher-rank projective horizon current algebra
@@ -95,32 +96,14 @@ def p2DepthTwoCurrentLie :
     LieSubalgebra K (Matrix (Fin 3) (Fin 3) (Polynomial K)) :=
   LieSubalgebra.lieSpan K _ (p2DepthTwoCurrentGenerators K)
 
-/-- The current modes annihilating a vector form a Lie subalgebra. -/
-def p2CurrentPointStabilizer
+/-- The current modes annihilating a vector form a Lie subalgebra: the point stabiliser of
+the Lie-module action, with no dependence on the matrix coefficients. -/
+abbrev p2CurrentPointStabilizer
     {M : Type*} [AddCommGroup M] [Module K M]
     [LieRingModule (Matrix (Fin 3) (Fin 3) (Polynomial K)) M]
     [LieModule K (Matrix (Fin 3) (Fin 3) (Polynomial K)) M]
-    (v : M) : LieSubalgebra K (Matrix (Fin 3) (Fin 3) (Polynomial K)) where
-  carrier := {A | ⁅A, v⁆ = 0}
-  zero_mem' := by simp
-  add_mem' := by
-    intro A B hA hB
-    change ⁅A, v⁆ = 0 at hA
-    change ⁅B, v⁆ = 0 at hB
-    change ⁅A + B, v⁆ = 0
-    simp [hA, hB]
-  smul_mem' := by
-    intro c A hA
-    change ⁅A, v⁆ = 0 at hA
-    change ⁅c • A, v⁆ = 0
-    simp [hA]
-  lie_mem' := by
-    intro A B hA hB
-    change ⁅A, v⁆ = 0 at hA
-    change ⁅B, v⁆ = 0 at hB
-    change ⁅⁅A, B⁆, v⁆ = 0
-    rw [lie_lie, hA, hB]
-    simp
+    (v : M) : LieSubalgebra K (Matrix (Fin 3) (Fin 3) (Polynomial K)) :=
+  _root_.HTGeometry.lieModulePointStabilizer K (Matrix (Fin 3) (Fin 3) (Polynomial K)) v
 
 section Generation
 

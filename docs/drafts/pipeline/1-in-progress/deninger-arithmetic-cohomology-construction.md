@@ -19,8 +19,10 @@ For \(\overline{\operatorname{Spec}\mathbb Z}\), it must simultaneously provide:
 6. an odd quaternionic Hodge star and a positive metric;
 7. a source-derived comparison identifying the middle spectrum with the nontrivial Xi divisor.
 
-CCM cyclic cohomology is only a possible realization/comparison for items 2, 4, and 7. It is not
-the arithmetic cohomology theory itself and will not drive this card.
+CCM cyclic cohomology is frozen. It is not the arithmetic cohomology theory, it supplies none of
+the missing source Hodge--Green positivity, and no further CCM work is in scope before every
+Deninger gate on this card is closed. A later comparison theorem may be opened only after the
+arithmetic theory and RH derivation are complete.
 
 ## Literature constraints
 
@@ -495,7 +497,8 @@ metric by transporting a form already known to be positive exactly under RH.
 7. Establish the distributional prime--Gamma trace and regularized determinant on the limit.
 8. Construct the source adjoint/Green operator and prove faithful Hodge positivity.
 9. Derive skew-adjointness after the half shift, spectrum on the critical line, and RH.
-10. Only then prove comparison with CCM/Hardy--Green models.
+10. After the arithmetic theory and RH derivation are complete, open any comparison program as a
+    separate card. It is not part of this construction.
 
 ## Gates
 
@@ -553,7 +556,8 @@ metric by transporting a form already known to be positive exactly under RH.
       absolute-convergence prime--Gamma resolvent Lefschetz traces
 - [ ] Prime--Gamma radical quotients identified with their Hilbert Cauchy subspaces
 - [x] Scalar source cup trace and algebraic Poincaré nondegeneracy proved
-- [ ] Full time-distribution Lefschetz formula proved
+- [x] Full time-distribution Lefschetz formula proved on all smooth compactly supported
+      positive-time tests
 - [ ] Closed-operator realization of the cofinal determinant proved trace class/Fredholm or
       Deninger-zeta-regularized in the exact Hilbert topology
 - [ ] Closed cofinal arithmetic cohomology constructed
@@ -1241,3 +1245,135 @@ metric by transporting a form already known to be positive exactly under RH.
   dense range without evaluating the Xi divisor.  Local Tate geometry proves the longitude,
   meridian, and complex orientation inputs; orbit selection, nondegenerate holonomy, global
   gluing, archimedean compactification, and cohomological comparison remain conjectural.
+
+- 2026-07-26 — `[SCOPE-CORRECTION] [DIRECT-DENINGER-CHAIN]`.
+  CCM is not a dependency of the arithmetic-cohomology construction; it entered only through an
+  unused transitive import.  All CCM research is frozen.  The sole allowed dependency chain is
+  \[
+    H^0/H^1/H^2\to\cup/\operatorname{PD}\to\Theta
+      \to\det/\operatorname{Lefschetz}\to\operatorname{Green}/\star\to RH.
+  \]
+  `DeningerArithmeticSourceGreen` closes the linear source Green transport.  The remaining
+  mathematical theorem is global arithmetic descent of a positive flow-natural Hodge/Riesz
+  factor.
+
+- 2026-07-26 — `[PAPER-PROVED] [DAC_RECTANGULAR_QUATERNIONIC_HODGE]`.
+  The moving rectangular local source has now been upgraded from a weight-one metric atom to the
+  correct local \(K_{\mathbb R}\)-odd Hodge object.  On \(V_r=\mathbb C^2\), define
+  \[
+    J_r(z,w)=(-rw,z/r),\qquad
+    \star_r(z,w)=J_r(\overline z,\overline w),\qquad
+    \|(z,w)\|_r^2=\frac{|z|^2}{r}+r|w|^2.
+  \]
+  Then \(\star_r\) is anti-linear, \(\star_r^2=-1\), and it preserves the positive energy.
+  The moving-modulus map \(A_q(z,w)=(qz,w)\) intertwines
+  \(\star_r\) with \(\star_{qr}\) and scales energy by \(q\).  Hence
+  \(U_q=q^{-1/2}A_q\) is a unitary Hodge intertwiner and the centered exponent
+  \(1/2\) is forced by the source metric law.  No Xi divisor or RH premise occurs.
+
+  Paper proof:
+  `docs/drafts/pipeline/2-fully-proven/deninger-rectangular-quaternionic-hodge.md`.
+  Lean batch:
+  `DeningerArithmeticRectangularHalfDensity.lean` and
+  `DeningerArithmeticRectangularQuaternionicHodge.lean`, pending one direct low-load check.
+
+  This supersedes `[DAC_ABSOLUTE_F1_PRIME_TUBE]` as active local conjecture: local positivity and
+  local centered Hodge naturality are no longer conjectural.  Prime holonomy remains a possible
+  geometric realization, while the active cohomological source is
+  `[DAC_POLARIZED_MILNOR_WITT_FLOW_REALIZATION]`.  Deninger's 2025 sheafification result shows that ordinary
+  finite-flat/\(h\)/\(qfh\) descent recovers \(W_{\mathrm{rat}}\), so it cannot restore the
+  missing Steinberg relation.  Exact open core is stronger additive/Steinberg descent of these
+  local quaternionic atoms plus dense cup-isometric comparison with completed arithmetic
+  cohomology.
+
+- 2026-07-26 — `[DIRECT SOURCE H1] [DAC_PRIME_GAMMA_PACKET_COHOMOLOGY]`.
+  The prime--Gamma source has now been organized into a divisor-free algebraic middle
+  cohomology.  In the strict absolute Euler half-plane, the von-Mangoldt plus archimedean
+  relative trace defines a divided-difference cup kernel.  Finite lower and upper Cauchy packets,
+  quotiented by the exact left and right radicals, give
+  \[
+    H^1_{\mathrm{PG},-}\oplus H^1_{\mathrm{PG},+}.
+  \]
+  The descended cross-pairing is separating on both sides, and its canonical alternating
+  extension is nondegenerate.  These constructions and proofs are in
+  `DeningerPrimeGammaPacketCohomology.lean`,
+  `DeningerPrimeGammaReflectedDiagonal.lean`, and
+  `DeningerPrimeGammaPoincareDuality.lean`.  Xi data occur only in a later comparison theorem,
+  not in the definition of the source packet quotient.
+
+  `[PAPER-PROVED] [DAC_EULER_SECTOR_HODGE_OBSTRUCTION]`: this source core supplies Poincare
+  duality but not the Hodge diagonal.  Its lower and upper parameter sectors satisfy
+  \[
+    \Im z<-\frac12,\qquad \Im w>\frac12.
+  \]
+  Canonical conjugation sends a lower atom \(c/(a-z)\) to the upper atom
+  \(c/(a-\overline z)\); for \(c\ne0\) these are distinct.  Therefore the positive Hodge metric
+  cannot be obtained by merely identifying the two absolute-convergence packet sectors.
+  Full proof:
+  `docs/drafts/pipeline/2-fully-proven/deninger-prime-gamma-euler-sector-hodge-obstruction.md`;
+  Lean batch: `DeningerPrimeGammaEulerSectorObstruction.lean`, pending the shared low-load check.
+
+  This sharpens `[DAC_SOURCE_GREEN_PURITY]`: next object must extend the packet theory across the
+  critical strip by source-controlled arithmetic continuation or by the rational-Witt
+  correspondence geometry.  Positivity after Xi-divisor evaluation is a comparison target, not
+  an allowed construction.
+
+- 2026-07-26 — `[LITERATURE-CORRECTED CONJECTURE]
+  [DAC_POLARIZED_MILNOR_WITT_FLOW_REALIZATION]`.
+  Integral Milnor--Witt motivic cohomology over \(\operatorname{Spec}\mathbb Z\) is no longer an
+  invented source category: Kolderup--Röndigs--Østvær construct its spectrum as
+  \[
+    \widetilde{\mathrm M}\mathbb Z
+      =\mathrm M\mathbb Z\times_{\mathrm M\mathbb Z/2}\mathrm W\mathbb Z
+  \]
+  over arithmetic Dedekind bases.  Very effective hermitian \(K\)-theory
+  \(\mathrm{ko}_{\mathbb Z}\) exists integrally, and Shin proves normed structure over qcqs
+  bases.  Exact new frontier is a Deninger flow realization of these established motivic
+  objects, compatible with ramified power-map framed transfers and prime--Gamma completion.
+
+  Hostile audit also retires the claim that the canonical degree-\(p\) Milnor--Witt transfer is
+  already positive.  Its real quadratic multiplicity \(p_\epsilon\) has rank \(p\) but signature
+  \(0\) for \(p=2\) and \(1\) for odd \(p\), hence is indefinite for every prime.  Strongest
+  survivor separates structures:
+  \[
+    \text{MW/ko transfer}\Rightarrow\text{Steinberg descent + Poincare pairing},
+    \qquad
+    \Gamma_\infty\text{ polarization}\Rightarrow\text{positive Hodge metric}.
+  \]
+  The archimedean boundary must construct \(J_\infty^2=-1\), prove
+  \(\operatorname{tr}(x\cup J_\infty x)>0\), and make centered power transfers unitary before
+  any Xi-divisor comparison.  Active construction card:
+  `deninger-milnor-witt-hodge-realization`; exact failed route and survivor:
+  `deninger-bare-milnor-witt-transfer-positivity`.
+
+- 2026-07-26 — `[PAPER-PROVED SOURCE TRANSFER PACKAGE]`.
+  The direct Deninger chain now has four additional source theorems, none using Xi zeros:
+
+  1. power correspondences act through the inhomogeneous bar coboundaries \(d^0,d^1,d^2\);
+     associativity proves \(d^1d^0=d^2d^1=0\), and the good degree-two truncation
+     \(C^2=\ker d^2\) avoids spurious \(H^2\);
+  2. composable monic power-map cotangent presentations reduce by determinant-one elementary
+     transformations to one contractible block plus the composite derivative, proving
+     determinant-orientation coherence;
+  3. Poincare adjunction, Hodge naturality, and \(F_nV_n=n\,\mathrm{id}\) force
+     \(\|V_nx\|^2=n\|x\|^2\), so \(U_n=n^{-1/2}V_n\) is isometric and the centered
+     \(\tfrac12\)-shift is intrinsic;
+  4. a unital real \(GW\)-character strictly positive on the hyperbolic class is necessarily
+     rank, hence sends the Milnor--Witt degree \(n_\epsilon\) to \(n\).
+  5. more strongly, hyperbolic localization \(GW[h^{-1}]\) constructs the rank channel
+     algebraically: \((1-\epsilon)h=0\) forces \(\epsilon=1\), so
+     \(GW_{\mathbb R}[h^{-1}]\simeq\mathbb Z[1/2]\) and \(n_\epsilon=n\).
+
+  Paper proofs:
+  `deninger-power-bar-cochain`, `deninger-power-map-orientation-coherence`,
+  `deninger-polarized-transfer-half-density`, and
+  `deninger-gamma-rank-character-rigidity`, together with
+  `deninger-hyperbolic-localization-rank-collapse`.  Lean interfaces are drafted for the five
+  algebraic statements and await one batched low-load direct check.
+
+  The remaining transfer-layer theorem is now precise: construct the finite
+  MW/\(\mathrm{ko}\)--Gamma coefficient packet, its coherently framed power action, and a
+  positive odd Hilbert realization of the now-explicit hyperbolically localized rank boundary.
+  The subsequent open purity theorem is compatibility with the incidence differential,
+  moving-Hodge naturality, and cofinal harmonic convergence, not another divisor-side Hodge
+  declaration.

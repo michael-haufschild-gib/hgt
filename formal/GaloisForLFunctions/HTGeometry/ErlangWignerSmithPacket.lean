@@ -265,35 +265,65 @@ theorem scalarWignerSmith_timePairing_integral
   intro E hE
   exact scalarWignerSmith_timePairing_integrand (hunit E hE)
 
+/-- **Ladder derivative of the Erlang power kernel.**  Differentiating `s ↦ s^k e^{-s/ε} / c` moves
+one step down the Erlang ladder and subtracts a copy of itself scaled by `1/ε`.  The statement is
+uniform in `k`: no `1 ≤ k` side condition is needed, because the cast `((0 : ℕ) : ℝ) = 0` annihilates
+the first term and the truncated subtraction `0 - 1 = 0` is therefore harmless. -/
+theorem hasDerivAt_powExpKernel {ε : ℝ} (hε : ε ≠ 0) (k : ℕ) (c : ℝ) (s : ℝ) :
+    HasDerivAt (fun t : ℝ => t ^ k * Real.exp (-t / ε) / c)
+      ((k : ℝ) * (s ^ (k - 1) * Real.exp (-s / ε) / c)
+        - (s ^ k * Real.exp (-s / ε) / c) / ε) s := by
+  have harg : HasDerivAt (fun t : ℝ => -t / ε) (-1 / ε) s := by
+    simpa using (hasDerivAt_id s).neg.div_const ε
+  have hexp : HasDerivAt (fun t : ℝ => Real.exp (-t / ε))
+      (Real.exp (-s / ε) * (-1 / ε)) s := by
+    simpa using (Real.hasDerivAt_exp (-s / ε)).comp s harg
+  have h := ((hasDerivAt_pow k s).mul hexp).div_const c
+  convert h using 1
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · simp
+    field_simp
+  · obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk.ne'
+    have hk1 : s ^ (m + 1) = s * s ^ m := by rw [pow_succ']
+    field_simp
+    rw [hk1]
+    ring
+
 theorem hasDerivAt_erlangOneKernel {ε : ℝ} (hε : 0 < ε) (s : ℝ) :
     HasDerivAt (erlangOneKernel ε)
       (-erlangOneKernel ε s / ε) s := by
-  have harg : HasDerivAt (fun t : ℝ => -t / ε) (-1 / ε) s := by
-    simpa using (hasDerivAt_id s).neg.div_const ε
-  have h := ((Real.hasDerivAt_exp (-s / ε)).comp s harg).div_const ε
-  convert h using 1 <;> simp [erlangOneKernel] <;> field_simp [hε.ne']
+  have h := hasDerivAt_powExpKernel (ε := ε) hε.ne' 0 ε s
+  have hfun : (fun t : ℝ => t ^ 0 * Real.exp (-t / ε) / ε) = erlangOneKernel ε := by
+    funext t; simp [erlangOneKernel]
+  rw [hfun] at h
+  convert h using 1
+  simp [erlangOneKernel]
+  field_simp
 
 theorem hasDerivAt_erlangTwoKernel {ε : ℝ} (hε : 0 < ε) (s : ℝ) :
     HasDerivAt (erlangTwoKernel ε)
       ((erlangOneKernel ε s - erlangTwoKernel ε s) / ε) s := by
-  have harg : HasDerivAt (fun t : ℝ => -t / ε) (-1 / ε) s := by
-    simpa using (hasDerivAt_id s).neg.div_const ε
-  have h := ((hasDerivAt_id s).mul
-    ((Real.hasDerivAt_exp (-s / ε)).comp s harg)).div_const (ε ^ 2)
-  convert h using 1 <;> simp [erlangOneKernel, erlangTwoKernel] <;>
-    field_simp [hε.ne'] <;> ring
+  have h := hasDerivAt_powExpKernel (ε := ε) hε.ne' 1 (ε ^ 2) s
+  have hfun : (fun t : ℝ => t ^ 1 * Real.exp (-t / ε) / ε ^ 2) = erlangTwoKernel ε := by
+    funext t; simp [erlangTwoKernel]
+  rw [hfun] at h
+  convert h using 1
+  simp only [erlangOneKernel, erlangTwoKernel, pow_one, Nat.cast_one, one_mul,
+    Nat.sub_self, pow_zero]
+  field_simp
 
 theorem hasDerivAt_erlangThreeKernel {ε : ℝ} (hε : 0 < ε) (s : ℝ) :
     HasDerivAt (erlangThreeKernel ε)
       ((erlangTwoKernel ε s - erlangThreeKernel ε s) / ε) s := by
-  have harg : HasDerivAt (fun t : ℝ => -t / ε) (-1 / ε) s := by
-    simpa using (hasDerivAt_id s).neg.div_const ε
-  have hpow : HasDerivAt (fun t : ℝ => t ^ 2) (2 * s) s := by
-    simpa using hasDerivAt_pow 2 s
-  have h := (hpow.mul
-    ((Real.hasDerivAt_exp (-s / ε)).comp s harg)).div_const (2 * ε ^ 3)
-  convert h using 1 <;> simp [erlangTwoKernel, erlangThreeKernel] <;>
-    field_simp [hε.ne'] <;> ring
+  have h := hasDerivAt_powExpKernel (ε := ε) hε.ne' 2 (2 * ε ^ 3) s
+  have hfun : (fun t : ℝ => t ^ 2 * Real.exp (-t / ε) / (2 * ε ^ 3)) =
+      erlangThreeKernel ε := by
+    funext t; simp [erlangThreeKernel]
+  rw [hfun] at h
+  convert h using 1
+  simp only [erlangTwoKernel, erlangThreeKernel, Nat.cast_ofNat]
+  field_simp
+  ring
 
 def erlangAverageOne (ε : ℝ) (f : ℝ → ℝ) (x : ℝ) : ℝ :=
   ∫ s : ℝ in Ioi 0, erlangOneKernel ε s * f (x + s)

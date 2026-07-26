@@ -113,4 +113,42 @@ theorem abs_sum_sin_odd_le {θ : ℝ} (hθ : Real.sin θ ≠ 0) (N : ℕ) :
       sq_abs (Real.sin ((N : ℝ) * θ))]
   gcongr
 
+/-! ## Convergence of the odd harmonic sine series -/
+
+theorem antitone_oddReciprocal : Antitone (fun k : ℕ => 1 / (2 * (k : ℝ) + 1)) := by
+  intro a b hab
+  have hab' : (a : ℝ) ≤ (b : ℝ) := Nat.cast_le.mpr hab
+  have ha : (0 : ℝ) < 2 * (a : ℝ) + 1 := by positivity
+  exact one_div_le_one_div_of_le ha (by linarith)
+
+theorem tendsto_oddReciprocal : Filter.Tendsto (fun k : ℕ => 1 / (2 * (k : ℝ) + 1))
+    Filter.atTop (nhds 0) := by
+  have hnat : Filter.Tendsto (fun k : ℕ => (k : ℝ)) Filter.atTop Filter.atTop :=
+    tendsto_natCast_atTop_atTop
+  have hlin : Filter.Tendsto (fun k : ℕ => 2 * (k : ℝ) + 1) Filter.atTop Filter.atTop := by
+    have := (hnat.const_mul_atTop (by norm_num : (0 : ℝ) < 2))
+    simpa using Filter.tendsto_atTop_add_const_right Filter.atTop (1 : ℝ) this
+  simpa [one_div] using hlin.inv_tendsto_atTop
+
+/-- **Dirichlet test.**  The odd harmonic sine series has Cauchy partial sums off the zeros of the
+sine.  It is only conditionally convergent, so this is a statement about partial sums, not a
+`Summable` claim. -/
+theorem cauchySeq_sum_oddHarmonicSine {θ : ℝ} (hθ : Real.sin θ ≠ 0) :
+    CauchySeq fun N => ∑ k ∈ range N,
+      (1 / (2 * (k : ℝ) + 1)) • Real.sin ((2 * (k : ℝ) + 1) * θ) := by
+  refine antitone_oddReciprocal.cauchySeq_series_mul_of_tendsto_zero_of_bounded
+    tendsto_oddReciprocal (b := 1 / |Real.sin θ|) fun n => ?_
+  simpa [Real.norm_eq_abs] using abs_sum_sin_odd_le hθ n
+
+/-- The odd harmonic sine series converges off the zeros of the sine. -/
+theorem exists_tendsto_sum_oddHarmonicSine {θ : ℝ} (hθ : Real.sin θ ≠ 0) :
+    ∃ L : ℝ, Filter.Tendsto
+      (fun N => ∑ k ∈ range N, Real.sin ((2 * (k : ℝ) + 1) * θ) / (2 * (k : ℝ) + 1))
+      Filter.atTop (nhds L) := by
+  obtain ⟨L, hL⟩ := cauchySeq_tendsto_of_complete (cauchySeq_sum_oddHarmonicSine hθ)
+  refine ⟨L, hL.congr fun N => ?_⟩
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [smul_eq_mul]
+  ring
+
 end GaloisForLFunctions.HTGeometry
