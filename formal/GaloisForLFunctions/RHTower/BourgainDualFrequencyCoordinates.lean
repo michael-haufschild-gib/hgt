@@ -36,6 +36,26 @@ def bourgainDualPullbackFrequency
     rw [Pi.single_eq_of_ne hkj]
     simp
 
+@[simp] theorem norm_bourgainPhaseBasis
+    (j : Fin 4) :
+    ‖bourgainPhaseBasis j‖ = 1 := by
+  classical
+  rw [Pi.norm_def]
+  apply le_antisymm
+  · rw [NNReal.coe_le_one]
+    apply Finset.sup_le
+    intro k hk
+    by_cases hkj : j = k
+    · subst k
+      simp [bourgainPhaseBasis]
+    · have hkj' : k ≠ j := Ne.symm hkj
+      simp [bourgainPhaseBasis, Pi.single_eq_of_ne hkj']
+  · have hle :=
+      Finset.le_sup
+        (f := fun k : Fin 4 => ‖bourgainPhaseBasis j k‖₊)
+        (Finset.mem_univ j)
+    simpa [bourgainPhaseBasis] using hle
+
 theorem bourgainDot_sum_left
     {ι : Type*} [Fintype ι]
     (u : ι → BourgainPhaseSpace) (v : BourgainPhaseSpace) :

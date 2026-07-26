@@ -377,6 +377,85 @@ theorem deningerPrimePowerTime_pos (n : DeningerPrimePowerIndex) :
   apply Real.log_pos
   exact_mod_cast lt_of_lt_of_le Nat.one_lt_two n.property
 
+/-- Prime `p` and positive exponent `k+1`, regarded as a positive-integer time atom. -/
+def deningerEulerPrimePowerIndex
+    (pk : Nat.Primes × ℕ) : DeningerPrimePowerIndex :=
+  ⟨pk.1 ^ (pk.2 + 1),
+    by
+      have h :=
+        Nat.one_lt_pow (Nat.succ_ne_zero pk.2)
+          pk.1.2.one_lt
+      have h' : 1 < (pk.1 : ℕ) ^ (pk.2 + 1) := by
+        simpa [Nat.succ_eq_add_one] using h
+      omega⟩
+
+theorem deningerEulerPrimePowerIndex_injective :
+    Function.Injective deningerEulerPrimePowerIndex := by
+  intro x y h
+  apply Nat.Primes.prodNatEquiv.injective
+  apply Subtype.ext
+  have hv :
+      (deningerEulerPrimePowerIndex x : ℕ) =
+        (deningerEulerPrimePowerIndex y : ℕ) :=
+    congrArg (fun z : DeningerPrimePowerIndex => (z : ℕ)) h
+  simpa [deningerEulerPrimePowerIndex,
+    Nat.Primes.prodNatEquiv_apply] using hv
+
+/-- A prime-power atom has Deninger's orbit time `(k+1) log p`. -/
+theorem deningerPrimePowerTime_euler
+    (pk : Nat.Primes × ℕ) :
+    deningerPrimePowerTime
+        (deningerEulerPrimePowerIndex pk) =
+      (pk.2 + 1 : ℝ) * Real.log (pk.1 : ℕ) := by
+  change
+    Real.log ((((pk.1 : ℕ) ^ (pk.2 + 1) : ℕ) : ℝ)) =
+      (pk.2 + 1 : ℝ) * Real.log (pk.1 : ℕ)
+  rw [Nat.cast_pow, Real.log_pow]
+  simp
+
+/-- A prime-power atom has coefficient `log p`, independently of its iterate depth. -/
+theorem deningerPrimePowerWeight_euler
+    (pk : Nat.Primes × ℕ) :
+    deningerPrimePowerWeight
+        (deningerEulerPrimePowerIndex pk) =
+      Real.log (pk.1 : ℕ) := by
+  change
+    ArithmeticFunction.vonMangoldt
+        ((pk.1 : ℕ) ^ (pk.2 + 1)) =
+      Real.log (pk.1 : ℕ)
+  rw [ArithmeticFunction.vonMangoldt_apply_pow
+      (Nat.succ_ne_zero pk.2),
+    ArithmeticFunction.vonMangoldt_apply_prime pk.1.2]
+
+/--
+Every nonzero von-Mangoldt atom is represented by a unique prime and positive exponent.
+
+Thus the natural-number comb below is exactly Deninger's
+`Σ_p log p Σ_{k≥1} δ_{k log p}`, with no extra nonzero atoms.
+-/
+theorem existsUnique_eulerPrimePowerIndex_of_weight_ne_zero
+    (n : DeningerPrimePowerIndex)
+    (hn : deningerPrimePowerWeight n ≠ 0) :
+    ∃! pk : Nat.Primes × ℕ,
+      deningerEulerPrimePowerIndex pk = n := by
+  have hpow : IsPrimePow (n : ℕ) :=
+    ArithmeticFunction.vonMangoldt_ne_zero_iff.mp hn
+  let pk : Nat.Primes × ℕ :=
+    Nat.Primes.prodNatEquiv.symm ⟨(n : ℕ), hpow⟩
+  have hval :
+      ((Nat.Primes.prodNatEquiv pk).val : ℕ) = (n : ℕ) :=
+    congrArg Subtype.val
+      (Nat.Primes.prodNatEquiv.apply_symm_apply
+        ⟨(n : ℕ), hpow⟩)
+  have hpk : deningerEulerPrimePowerIndex pk = n := by
+    apply Subtype.ext
+    simpa [pk, deningerEulerPrimePowerIndex,
+      Nat.Primes.prodNatEquiv_apply] using hval
+  refine ⟨pk, hpk, ?_⟩
+  intro other hother
+  exact deningerEulerPrimePowerIndex_injective
+    (hother.trans hpk.symm)
+
 /-- Prime-power indices whose time lies in a fixed compact set. -/
 def deningerPrimeActiveSet (K : Compacts ℝ) :
     Set DeningerPrimePowerIndex :=

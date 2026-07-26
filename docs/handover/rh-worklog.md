@@ -10102,3 +10102,71 @@ function is a Gaussian times a polynomial. STATE AND PROVE THE UNIFORM GAUSSIAN 
 for V'' >= c, the measure proportional to e^{-V(x)+hx} satisfies
 mu_h([|x - m_h| > r]) <= 2 exp(-c r^2/2), WITH m_h THE MODE, UNIFORMLY IN h. THAT IS A CLEAN,
 SELF-CONTAINED, UNCONDITIONAL LEMMA ABOUT LOG-CONCAVE MEASURES AND IT IS THE LAST NAMED GAP.
+
+---
+
+## Cycle 165 — ONE GAUSSIAN DOMINATES THE WHOLE TILTED FAMILY, UNIFORMLY IN THE TILT
+
+### The last named analytic gap of cycle 164, closed
+Cycle 164 reduced the cumulant induction to ONE analytic input: differentiation under the integral in
+the tilt parameter, which needs a DOMINATING FUNCTION VALID FOR ALL h AT ONCE. THIS CYCLE PRODUCES IT
+FROM STRONG CONVEXITY ALONE.
+
+### NINETY-NINTH ATLAS ENTRY
+If V'' >= c then W = V - c x^2/2 is convex, hence lies above its tangent line, and unwinding gives the
+STRONG-CONVEXITY INEQUALITY
+
+    V(x)  >=  V(m) + V'(m)(x - m) + (c/2)(x - m)^2.
+
+Choosing m to be the MODE of the tilt, i.e. V'(m) = h, this reads
+
+    -V(x) + h x  <=  ( -V(m) + h m )  -  (c/2)(x - m)^2,
+
+so EVERY TILTED DENSITY IS BOUNDED BY A GAUSSIAN OF VARIANCE 1/c CENTRED AT THAT TILT'S MODE, WITH THE
+SAME c FOR EVERY h — because the curvature is tilt-invariant (cycle 164).
+
+    ==> ONE CURVATURE BOUND DOMINATES THE WHOLE TILTED FAMILY BY A FIXED-WIDTH GAUSSIAN.
+        DIFFERENTIATION UNDER THE INTEGRAL IN THE TILT PARAMETER THEREFORE NEEDS NO HYPOTHESIS BEYOND
+        V'' >= c, AND THE CUMULANT INDUCTION HAS NO ANALYTIC GAP LEFT AT THIS STEP.
+
+Machine-verified: `RHTower/UniformGaussianDominationOfTilts.lean` (the tangent-line inequality for a
+differentiable convex function on the line — proved in all three cases from `slope_le_deriv` and
+`deriv_le_slope` — the strong-convexity inequality for V from convexity of V - c x^2/2, the uniform
+Gaussian domination of the tilted exponent, and its exponential form; standard axioms only, wired into
+RHTower).
+
+### STATE AT CYCLE 165
+Ninety-nine entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+WHERE THE MECHANISM STANDS, ITEM BY ITEM. Every component is now proved or reduced to a standard step:
+  base            kappa_2 <= 1/c                             Brascamp-Lieb (classical).
+  tilt invariance V_h'' = V''                                PROVED (cycle 164).
+  propagator      c||phi|| <= ||A phi||                      PROVED (cycle 164).
+  domination      Gaussian of width 1/c, uniform in h        PROVED (cycle 165).
+  step            multiply by b/c^2                          exponent arithmetic PROVED (cycle 164).
+  count           C_{m+1} <= (2m-3) C_m, C_2 = 1             PROVED (cycle 152, 164).
+  solution        C_m = (2m-5)!!                             PROVED (cycle 152).
+  m = 3 constant  -V'''/(V'')^3, sharp                       PROVED (cycle 151).
+  m = 4 constant  three channels                             PROVED (cycle 152).
+  power counting  b^{m-2} c^{-(2m-3)}                        PROVED (cycles 150, 164).
+  margin at m=2   1 + 2t* ~ log j                            PROVED (cycle 163).
+  margin at m     2(m-2)!/(2m-5)!! log j                     PROVED (cycle 152).
+  threshold       log j >~ (3/2)^m                           DERIVED TWICE (cycles 152, 163).
+WHAT IS STILL NOT A THEOREM: the assembly of these into a single quantitative statement about the
+theta-remainder measure with EXPLICIT ranges of validity, and — the honest remaining obstruction from
+cycle 153 — THE RESULTING THRESHOLD IS EXPONENTIALLY WORSE THAN THE PUBLISHED log N(d) ~ d^2 log d.
+THE MECHANISM IS COMPLETE AND SUPERSEDED. THAT IS THE ACCURATE STATEMENT.
+
+### Cycle 166 target
+THE MECHANISM IS DONE AND IT IS NOT COMPETITIVE. STOP DEVELOPING IT. The atlas's ninety-nine entries
+now contain exactly ONE structural fact that has never been exploited and is not part of the Jensen
+lane: ENTRY 89'S OBSERVATION THAT THE FREE TOOL AND THE HYPOTHESIS BOUND THE SAME SCALAR. Every other
+entry says they bound DIFFERENT quantities. RETURN TO THAT AND ASK THE QUESTION THE JENSEN LANE
+PREVENTED: IS THERE ANY OTHER PLACE IN THE SUBJECT — outside Jensen polynomials entirely — WHERE AN
+UNCONDITIONAL INEQUALITY AND RH CONSTRAIN THE SAME SCALAR FROM OPPOSITE SIDES? The candidates to
+check are (a) the Weil explicit formula at a FIXED test function, where positivity is the hypothesis
+and the archimedean budget is free (entries 17-19 give the constants 3 log 2 + pi/2 - 3 and the margin
+0.34976); (b) the Li coefficients lambda_n, where nonnegativity is the hypothesis and the arithmetic
+sum has a free upper bound; (c) the de Bruijn-Newman Lambda, where Lambda >= 0 is a theorem and
+Lambda <= 0 is RH — THE ONLY KNOWN INSTANCE IN THE LITERATURE OF A TWO-SIDED PINCH ON THE SAME REAL
+NUMBER. (c) IS THE STRONGEST ANALOGY TO ENTRY 89 AND THE ATLAS HAS NEVER ANALYSED IT AS SUCH.
