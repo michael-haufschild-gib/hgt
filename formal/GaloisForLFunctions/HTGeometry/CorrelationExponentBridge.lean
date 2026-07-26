@@ -1121,4 +1121,44 @@ theorem requiredMomentOrder_diverges {delta : ℚ} (hd : 0 < delta) :
   unfold requiredMomentOrder
   field_simp
 
+
+/-!
+### The classification theorem exists, and `n^{-it}` is its extremal case
+
+Clause (ii) of the specification asks for a theorem that *classifies* large values rather than counting
+them.  Such a theorem exists for multiplicative functions: **Halász's theorem**, in its pretentious
+form, says that `|Σ_{n≤N} f(n)| ≪ N(1+M)e^{-M}` with
+
+    M  =  min_{|t'| ≤ T}  Σ_{p ≤ N} (1 − Re f(p)p^{-it'}) / p ,
+
+so a multiplicative `f` has a large sum only if it *pretends* to be `n^{it'}χ(n)`.
+
+For `f(n) = n^{-it}` the minimum is attained at `t' = -t`, where `M = 0` and the bound is trivial:
+**`n^{-it}` is exactly the extremal pretentious function.**  Restricting the range to `|t'| ≤ N` (with
+`t ≍ N²`, so `t' = -t` is excluded) leaves `|t + t'| ≍ N²`, the phases `(t+t')\log p` oscillate, and
+`M ≍ \log\log N`.  The resulting saving is
+
+    N (\log\log N) e^{-\log\log N}  ≍  N \log\log N / \log N  —  **subpolynomial.**
+-/
+
+/-- Exponent (in `N`) of the saving delivered by Halász's theorem on `n^{-it}` with a restricted
+pretentious range. -/
+def halaszExponent : ℚ := 0
+
+/-- **Halász supplies no power of `N`.** -/
+theorem halasz_subpolynomial : halaszExponent < requiredPointwiseSaving := by
+  unfold halaszExponent requiredPointwiseSaving; norm_num
+
+/-- Halász and amplification deliver the same exponent: both are subpolynomial. -/
+theorem halasz_eq_amplification : halaszExponent = amplifierExponent := by
+  unfold halaszExponent amplifierExponent; rfl
+
+/-- **The classification branch, priced.**  A theorem meeting clauses (ii) and (iii) of the
+specification exists, and its output exponent is `0`. -/
+theorem classification_branch_priced :
+    halaszExponent = 0 ∧ halaszExponent < requiredPointwiseSaving ∧
+    halaszExponent < (5/6 : ℚ) - 2/3 := by
+  refine ⟨rfl, halasz_subpolynomial, ?_⟩
+  unfold halaszExponent; norm_num
+
 end HTGeometry

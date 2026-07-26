@@ -5303,3 +5303,71 @@ Calkin-rigidity machinery (`SemilocalCompressedEulerOrientation`, `XiPrimeSeamHi
 BUILT, WHICH ARE SELF-ADJOINT, AND WHETHER ANY CONVERGES TO XiC. That audit — not a new construction —
 is the correct next step, because the guardrail says a construction is worthless unless its
 zero-freeness is a priori, and a priori zero-freeness in this lane means self-adjointness.
+
+---
+
+## Cycle 90 (2026-07-26) — EXACT SELF-ADJOINTNESS IS UNNECESSARY. ASYMPTOTIC SUFFICES.
+
+### Phase 1 audit of the determinant lane (record; do not rebuild)
+Connectors already present in the corpus:
+  * `HermitianDeterminantRH.riemannHypothesis_of_normalizedHermitianCharpoly_tendstoLocallyUniformly`
+    — the base connector (Hermitian => real eigenvalues => real-rooted charpoly => RH);
+  * `CCMRadicalQuotientHermitian` (semimetric-quotient and real-semimetric-quotient versions);
+  * `CCMSourceResponseDeterminantDichotomy`, `PrimeIsingTreeCavity`,
+    `PrimeIsingTreeBalancedCentering`, `IsingCavityRapidityAudioCascade` — source families;
+  * `PrimeIsingTreeBalancedVarianceRankNoGo` — the unconditional kill of the balanced tree family.
+ALL CONNECTORS EXIST. The gap is a concrete family, and by cycle 89's guardrail its zero-freeness
+must be A PRIORI, which in this lane means SELF-ADJOINTNESS.
+
+### THE WEAKENING
+Exact hermiticity is a rigid demand on every stage of a construction. It can be relaxed to a limit.
+
+NUMERICAL RANGE. Every eigenvalue of A is a value of the quadratic form <Ax,x> at a unit vector, so
+its imaginary part is a value of the quadratic form of the ANTI-HERMITIAN PART H = (A - A*)/(2i), and
+Cauchy-Schwarz gives Bendixson's bound
+        |Im lambda|  <=  ||H||.
+An eigenvalue can only be as far from the real axis as the anti-Hermitian part is large.
+
+COMBINED WITH THE LOCALIZATION (entry 22): fix z off the real axis; if every zero of the approximant
+has |Im| <= eps and R + eps < |Im z|, the approximant is zero-free on the ball B(z,R). The localized
+criterion needs only one ball per point, so R may shrink with z and eps with n.
+
+    ==> RH FOLLOWS FROM ENTIRE APPROXIMANTS CONVERGING LOCALLY UNIFORMLY TO XiC WHOSE ZEROS HAVE
+        IMAGINARY PARTS TENDING UNIFORMLY TO ZERO. EXACT REALITY OF THE ZEROS — EXACT
+        SELF-ADJOINTNESS OF THE SOURCE — IS NOT NEEDED.
+
+This is the operator-lane counterpart of the localization. A construction now has to be only
+ASYMPTOTICALLY self-adjoint — a condition STABLE UNDER PERTURBATION AND TRUNCATION — rather than
+exactly self-adjoint at every stage. That is a materially easier object to build: truncations,
+compressions, and regularisations of a self-adjoint source generically lose hermiticity by a small
+amount, and previously that loss was fatal to the connector. IT NO LONGER IS.
+
+Machine-verified: `RHTower/AsymptoticSelfAdjointness.lean` (the numerical-range bound
+||<Hx,x>|| <= ||H|| at unit vectors, Bendixson's bound |Im lambda| <= ||H||, ball exclusion for
+points of small imaginary part, zero-freeness of an approximant whose zeros have small imaginary
+parts, the asymptotic RH criterion with eps_n -> 0, and the fact that it generalises the exact
+criterion as eps = 0; standard axioms only, wired into RHTower).
+
+### TWENTY-FOURTH ATLAS ENTRY
+    asymptotic self-adjointness   approximants need only have zeros whose imaginary parts tend
+                                  uniformly to zero; via Bendixson this is implied by the
+                                  anti-Hermitian part tending to zero in norm. Exact hermiticity is
+                                  not required, and the exact criterion is the eps = 0 case.
+
+Entries 22 and 24 together have weakened the operator-lane entry condition twice: from one global
+real-rooted family to per-point local families, and from exact to asymptotic self-adjointness.
+
+### STATE AT CYCLE 90
+Twenty-four entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 91 target
+The relaxed condition is: A_n with ||anti-Hermitian part|| -> 0 and normalized charpoly -> XiC. The
+corpus's CCM/Connes families are built from compressions of a source operator. AUDIT WHETHER ANY
+EXISTING CCM FAMILY HAS ANTI-HERMITIAN PART TENDING TO ZERO — previously nobody would have checked,
+because only exact hermiticity counted. Specifically examine `CCMSourceResponseDeterminantDichotomy`
+and `SemilocalCompressedEulerOrientation`: the latter proves the orientation Gram is compact exactly
+for a constant coefficient packet, and COMPACTNESS OF THE COMMUTATOR IS EXACTLY THE STATEMENT THAT
+THE ANTI-HERMITIAN DEFECT IS NEGLIGIBLE IN THE CALKIN ALGEBRA. If a compressed family's
+anti-Hermitian part is compact and the compressions exhaust, the norms of the finite anti-Hermitian
+parts may tend to zero — which is now sufficient. THAT IS THE FIRST TIME THE CORPUS'S CALKIN
+RIGIDITY RESULTS BECOME USABLE AS A POSITIVE INPUT RATHER THAN AN OBSTRUCTION.

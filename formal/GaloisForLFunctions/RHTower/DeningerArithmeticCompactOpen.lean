@@ -171,9 +171,18 @@ def deningerCompactOpenXiRange :
     Submodule ℂ DeningerCompactOpenEntire :=
   LinearMap.range deningerCompactOpenXiMul.toLinearMap
 
+/-!
+`Submodule` remembers the chosen `Semiring ℂ` instance, while module quotients ask for the
+semiring inherited from a `Ring ℂ` instance.  Pin the latter to mathlib's canonical semiring so
+the quotient structure is definitionally compatible with the already constructed submodule.
+-/
+local instance deningerCompactOpenCompatibleComplexRing : Ring ℂ :=
+  { Complex.commRing.toRing with
+    toSemiring := inferInstanceAs (Semiring ℂ) }
+
 /-- Unreduced compact-open middle cohomology as a topological complex quotient module. -/
 abbrev DeningerArithmeticCompactOpenH1 :=
-  DeningerCompactOpenEntire ⧸ deningerCompactOpenXiRange
+  Quotient deningerCompactOpenXiRange.quotientRel
 
 /-- Continuous linear class map into unreduced compact-open middle cohomology. -/
 def deningerArithmeticCompactOpenH1Class :
@@ -194,7 +203,7 @@ def deningerCompactOpenXiClosedRange :
 
 /-- Reduced compact-open middle cohomology as a Hausdorff topological complex quotient module. -/
 abbrev DeningerArithmeticReducedCompactOpenH1 :=
-  DeningerCompactOpenEntire ⧸ deningerCompactOpenXiClosedRange
+  Quotient deningerCompactOpenXiClosedRange.quotientRel
 
 /-- Continuous linear class map into reduced compact-open middle cohomology. -/
 def deningerArithmeticReducedCompactOpenH1Class :
