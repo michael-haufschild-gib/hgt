@@ -325,6 +325,31 @@ theorem hochster_multidegree_torOne_correspondence (facets : Finset (Finset α))
     rw [← hs]
     exact (Finset.sum_congr rfl (fun i _ => by rw [← mul_assoc, faceSign_mul_self, one_mul])).symm
 
+/-- **The hollow-simplex exact rank is a consequence of the general correspondence.**  Specializing
+the multidegree correspondence to a hollow simplex and feeding it the exact reduced cohomology of the
+boundary complex re-proves `srHollowSimplexSyzygyVec_boundary_iff` — so the general strand
+equivalence genuinely subsumes the corpus's one-dimensional case. -/
+theorem srHollowSimplexSyzygyVec_boundary_iff_via_cohomology (facets : Finset (Finset α))
+    (σ : Finset α) (hσ : σ.Nonempty)
+    (hface : ∀ i ∈ σ, IsFaceOf (↑facets : Set (Finset α)) (σ.erase i)) (l : α → F) :
+    (∃ cc : α → α → stanleyReisnerRing F facets,
+        srKoszulBoundary facets cc = srHollowSimplexSyzygyVec F facets σ l)
+      ↔ ∑ i ∈ σ, l i = 0 := by
+  have hcorr : ∀ i ∈ σ, faceSign F σ i * (faceSign F σ i * l i) = l i := fun i _ => by
+    rw [← mul_assoc, faceSign_mul_self, one_mul]
+  rw [hochster_multidegree_boundary_iff facets σ l]
+  constructor
+  · rintro ⟨h, hh⟩
+    have hz : ∑ i ∈ σ, faceSign F σ i * (faceSign F σ i * l i) = 0 :=
+      (hollowSimplex_coboundary_iff hσ (fun i => faceSign F σ i * l i)).mp
+        ⟨h, fun i hi => hh i hi (hface i hi)⟩
+    rw [← hz]
+    exact (Finset.sum_congr rfl hcorr).symm
+  · intro hs
+    obtain ⟨h, hh⟩ := (hollowSimplex_coboundary_iff hσ (fun i => faceSign F σ i * l i)).mpr
+      (by rw [← hs]; exact Finset.sum_congr rfl hcorr)
+    exact ⟨h, fun i hi _ => hh i hi⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry
