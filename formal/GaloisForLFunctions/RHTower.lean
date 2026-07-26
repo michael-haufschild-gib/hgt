@@ -3090,3 +3090,4 @@ import GaloisForLFunctions.RHTower.HankelIsToeplitzReversed
 import GaloisForLFunctions.RHTower.OrderTwoIsACoincidenceOfExponents
 import GaloisForLFunctions.RHTower.FactorialWeightIsOneWay
 import GaloisForLFunctions.RHTower.WeightHelpIsItsLogConcavity
+import GaloisForLFunctions.RHTower.WeightsOwnMinorsDecayLikeTheVandermonde

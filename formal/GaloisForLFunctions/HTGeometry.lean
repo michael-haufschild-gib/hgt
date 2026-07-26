@@ -2124,6 +2124,7 @@ import GaloisForLFunctions.HTGeometry.FourAccountings
 import GaloisForLFunctions.HTGeometry.FrontierLargeSieve
 import GaloisForLFunctions.HTGeometry.SquarefreeClassLevels
 import GaloisForLFunctions.HTGeometry.SqrtNonResonance
+import GaloisForLFunctions.HTGeometry.SimultaneousResonanceCount
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
 import GaloisForLFunctions.HTGeometry.SatakeEnergyBound

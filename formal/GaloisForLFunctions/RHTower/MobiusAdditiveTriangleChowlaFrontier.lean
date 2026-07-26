@@ -231,6 +231,98 @@ def MobiusAdditiveStrictOffDiagonalSubpowerUpperBound : Prop :=
     (mobiusAdditiveStrictOffDiagonalTriangle N).re ≤
       C * ((N : ℝ) + 1) ^ (1 + ε)
 
+/-- Every fixed logarithmic loss is subpower, so a fixed-degree strict off-diagonal
+linear-polylog bound supplies the all-exponent strict off-diagonal source. -/
+theorem
+    mobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound_implies_subpowerUpperBound
+    {q : ℕ} (hoff : MobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound q) :
+    MobiusAdditiveStrictOffDiagonalSubpowerUpperBound := by
+  intro ε hε
+  obtain ⟨C, hC, hOff⟩ := hoff
+  by_cases hq : q = 0
+  · subst q
+    refine ⟨C, hC, ?_⟩
+    intro N
+    let y : ℝ := (N : ℝ) + 1
+    have hy : 1 ≤ y := by
+      dsimp [y]
+      have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
+      linarith
+    have hyPos : 0 < y := lt_of_lt_of_le (by norm_num) hy
+    have hyPow : y ≤ y ^ (1 + ε) := by
+      rw [Real.rpow_add hyPos, Real.rpow_one]
+      exact le_mul_of_one_le_right hyPos.le (Real.one_le_rpow hy hε.le)
+    have hN := hOff N
+    simp only [Nat.mul_zero, pow_zero, mul_one] at hN
+    exact hN.trans (mul_le_mul_of_nonneg_left hyPow hC)
+  · let p : ℕ := 2 * q
+    let δ : ℝ := ε / p
+    let K : ℝ := C * δ⁻¹ ^ p * 2 ^ ε
+    have hpNat : 0 < p := by
+      dsimp [p]
+      omega
+    have hpReal : (0 : ℝ) < p := by exact_mod_cast hpNat
+    have hδ : 0 < δ := by
+      dsimp [δ]
+      positivity
+    have hK : 0 ≤ K := by
+      dsimp [K]
+      positivity
+    refine ⟨K, hK, ?_⟩
+    intro N
+    let y : ℝ := (N : ℝ) + 1
+    let x : ℝ := (N : ℝ) + 2
+    have hy : 1 ≤ y := by
+      dsimp [y]
+      have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
+      linarith
+    have hyPos : 0 < y := lt_of_lt_of_le (by norm_num) hy
+    have hx : 1 ≤ x := by
+      dsimp [x]
+      have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
+      linarith
+    have hxPos : 0 < x := lt_of_lt_of_le (by norm_num) hx
+    have hxy : x ≤ 2 * y := by
+      dsimp [x, y]
+      have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
+      linarith
+    have hlog : Real.log x ≤ x ^ δ / δ :=
+      Real.log_le_rpow_div hxPos.le hδ
+    have hlogNonneg : 0 ≤ Real.log x := Real.log_nonneg hx
+    have hpowLog : Real.log x ^ p ≤ (x ^ δ / δ) ^ p :=
+      pow_le_pow_left₀ hlogNonneg hlog p
+    have hδpow :
+        (x ^ δ / δ) ^ p = δ⁻¹ ^ p * x ^ ε := by
+      rw [div_pow, div_eq_mul_inv]
+      rw [← Real.rpow_natCast (x ^ δ) p, ← Real.rpow_mul hxPos.le]
+      have hδp : δ * (p : ℝ) = ε := by
+        dsimp [δ]
+        field_simp
+      rw [hδp]
+      ring
+    have hxPow : x ^ ε ≤ 2 ^ ε * y ^ ε := by
+      calc
+        x ^ ε ≤ (2 * y) ^ ε := Real.rpow_le_rpow hxPos.le hxy hε.le
+        _ = 2 ^ ε * y ^ ε := Real.mul_rpow (by norm_num) hyPos.le
+    have hlogBound : Real.log x ^ p ≤ δ⁻¹ ^ p * (2 ^ ε * y ^ ε) := by
+      rw [hδpow] at hpowLog
+      exact hpowLog.trans
+        (mul_le_mul_of_nonneg_left hxPow (by positivity))
+    have hOffN : (mobiusAdditiveStrictOffDiagonalTriangle N).re ≤
+        C * y * Real.log x ^ p := by
+      simpa only [y, x, p] using hOff N
+    calc
+      (mobiusAdditiveStrictOffDiagonalTriangle N).re ≤
+          C * y * Real.log x ^ p := hOffN
+      _ ≤ C * y * (δ⁻¹ ^ p * (2 ^ ε * y ^ ε)) := by
+        exact mul_le_mul_of_nonneg_left hlogBound
+          (mul_nonneg hC hyPos.le)
+      _ = K * y ^ (1 + ε) := by
+        dsimp [K]
+        rw [Real.rpow_add hyPos, Real.rpow_one]
+        ring
+      _ = K * ((N : ℝ) + 1) ^ (1 + ε) := by rfl
+
 /-- Off-diagonal subpower control is exactly sufficient after paying the harmless linear diagonal. -/
 theorem mobiusAdditiveStrictOffDiagonalSubpowerUpperBound_implies_triangleSubpowerUpperBound
     (hoff : MobiusAdditiveStrictOffDiagonalSubpowerUpperBound) :

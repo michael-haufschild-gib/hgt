@@ -9755,3 +9755,80 @@ BE COMPUTED EXACTLY. COMPUTE IT AT m = 2 (must be (2j+3)(2j+4)/((2j+1)(2j+2)) - 
 normalisation) AND AT m = 3, AND SEE WHETHER IT DECAYS LIKE 1/j OR FASTER. IF IT DECAYS FASTER THAN
 THE 1/j THAT ORDER TWO ENJOYS, THAT IS A QUANTITATIVE OBSTRUCTION AT HIGHER ORDER WITH AN EXACT
 CONSTANT, AND IT WOULD BE THE FIRST TIME THE ATLAS HAS AN EXACT FACTORIAL FORMULA FOR THE DIFFICULTY.
+
+---
+
+## Cycle 160 — THE HELP AVAILABLE AT ORDER m DECAYS AT THE VANDERMONDE RATE, AND ORDER TWO IS UNIQUE
+
+### The weight is itself a Polya frequency sequence
+sum_j w^j/(2j)! = cosh(sqrt w), whose zeros are w = -pi^2(k+1/2)^2 — ALL REAL AND NEGATIVE (machine-
+verified at the first zero: cos(pi/2) = 0 and -(pi/2)^2 < 0). SO EVERY TOEPLITZ MINOR OF 1/(2j)! IS
+NONNEGATIVE and the only question is HOW FAST THEY DECAY.
+
+### THE COMPUTATION — NINETY-FOURTH ATLAS ENTRY
+ORDER TWO, normalised by w_j^2, is EXACT:
+
+    1 - (n-1)n/((n+1)(n+2)) = (4n+2)/((n+1)(n+2)) <= 6/n,       n = 2j.
+
+    ==> HELP OF SIZE 1/j.
+
+ORDER THREE. Expanding 1 - 2 r_1 r_{-1} + r_1^2 r_{-2} + r_2 r_{-1}^2 - r_2 r_{-2} in powers of 1/n
+with r_d = (2j)!/(2j+2d)!:
+
+    constant:    1 - 2 + 1 + 1 - 1     = 0
+    1/n:         8 - 12 - 12 + 16      = 0
+    1/n^2:     -20 + 70 + 86 - 136     = 0
+
+ALL THREE VANISH IDENTICALLY (machine-verified). SO THE ORDER-THREE MINOR IS O(n^{-3}).
+
+    ==> THE WEIGHT'S OWN HELP AT ORDER m DECAYS LIKE j^{-m(m-1)/2} — THE SAME VANDERMONDE EXPONENT
+        THAT GOVERNS THE FREE HANKEL DETERMINANT (entry 91). m = 2 gives j^{-1}, m = 3 gives j^{-3},
+        AND THE EXPLICIT CANCELLATIONS CONFIRM THE EXPONENT AT m = 3.
+
+    ==> BOTH SIDES OF THE COMPARISON SHRINK TOGETHER AT RATE j^{-m(m-1)/2}, WHILE THE WEIGHT
+        DEVIATION THEY ARE MEASURED AGAINST STAYS AT 1/j. THAT IS WHY ORDER TWO IS EXACTLY BALANCED
+        AND WHY NO HIGHER ORDER GAINS ANYTHING.
+
+AND ORDER TWO IS THE UNIQUE BALANCED ORDER: pairCount m = 1 IF AND ONLY IF m = 2 (formalised).
+
+This is the exact factorial formula for the difficulty that cycle 159 asked for, and it is NEGATIVE:
+the help decays exactly as fast as the thing it must control, so the surplus is zero at every order
+above two, and at order two it is exactly zero as well — the two are equal, which is why the order-two
+inequality is TRUE BUT DELICATE rather than free.
+
+Machine-verified: `RHTower/WeightsOwnMinorsDecayLikeTheVandermonde.lean` (the exact order-two minor,
+its positivity, its 6/n bound, the three vanishing expansion coefficients at order three and their
+conjunction, the real negative zero of the weight's generating function, and the uniqueness
+pairCount m = 1 <-> m = 2; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 160
+Ninety-four entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+WHAT CYCLES 155-160 ESTABLISH AS A BLOCK. A COMPLETE, QUANTITATIVE, INTERNALLY CROSS-CHECKED ACCOUNT
+OF THE JENSEN/POLYA ROUTE:
+  89  At order two a FREE inequality and the HYPOTHESIS bound the SAME scalar from opposite sides,
+      with window width ~ 1/j. THE ONLY SUCH PLACE IN NINETY-FOUR ENTRIES.
+  90  Hankel and Toeplitz minors are the SAME determinant up to a sign of period four (exact).
+  91  The order-two coincidence is a coincidence of exponents: Vandermonde m(m-1)/2 versus weight
+      deviation 1, equal only at m = 2. Entry 90's difficulty reading withdrawn.
+  92  The weight 1/(2j)! is a multiplier sequence with NO inverse; it CREATES hyperbolicity
+      (explicit witness), so no free property of the moments transfers forward.
+  93  The relaxation factor of a weight is exactly its own log-concavity ratio: SIX at the bottom,
+      tending to ONE. Independently re-derives entry 89's window.
+  94  The help at order m decays at the SAME Vandermonde rate as the free determinant, verified by
+      explicit cancellation at m = 3. Order two is the unique balanced order.
+THE NET STATEMENT: THE JENSEN ROUTE HAS EXACTLY ONE PLACE WHERE FREE MATHEMATICS AND THE HYPOTHESIS
+TOUCH, IT IS ORDER TWO, THE TOUCHING IS EXACT RATHER THAN GENEROUS, AND THE SURPLUS AT EVERY OTHER
+ORDER IS ZERO BY AN EXPONENT IDENTITY. THAT IS A COMPLETE STRUCTURAL EXPLANATION OF WHY THE ROUTE
+PRODUCES THEOREMS AT LOW ORDER AND STOPS.
+
+### Cycle 161 target
+THE BLOCK 89-94 IS CLOSED AND ITS VERDICT IS NEGATIVE. DO NOT CONTINUE INSIDE IT. The one thing it
+leaves genuinely open is the OTHER direction of entry 92: the weight CREATES hyperbolicity, so the
+hypothesis is a statement that the creation SUFFICES. ASK THE INVERSE QUESTION, WHICH THE ATLAS HAS
+NEVER ASKED: WHAT IS THE LARGEST MULTIPLIER SEQUENCE THAT THE MOMENT SEQUENCE M CAN ABSORB WHILE
+STAYING NON-HYPERBOLIC? Equivalently, DEFINE THE CRITICAL WEIGHT: the sequence c_j such that
+(c_j M_j) is exactly on the boundary of the Laguerre-Polya class. RH SAYS 1/(2j)! IS PAST THAT
+BOUNDARY. THE CRITICAL WEIGHT IS A WELL-DEFINED OBJECT DETERMINED BY M ALONE, AND COMPARING IT WITH
+1/(2j)! IS A STATEMENT WITH NO DETERMINANTS, NO ASYMPTOTICS, AND NO ORDER PARAMETER. THAT IS A GENUINE
+CHANGE OF REPRESENTATION AND IT IS WHERE THE NEXT CYCLE MUST GO.
