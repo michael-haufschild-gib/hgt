@@ -1090,3 +1090,23 @@ umbrella-registered) supplies the growth half:
 
 Remaining for this branch: the lattice-point count `#{(m,n) : ||z_0 + m w_1 + n w_2 - c|| <= r} >>
 r^2`, and the Jensen comparison that contradicts it.
+
+### The counting half
+
+`GaloisForLFunctions/HTGeometry/QuasiPeriodLatticeZeros.lean` (axiom-clean, build green,
+umbrella-registered) supplies the other estimate.
+
+- `latticeBox z_0 w_1 w_2 N` — the coordinate box `{z_0 + m w_1 + n w_2 : |m|,|n| <= N}` as a
+  `Finset C`;
+- `latticeBox_injOn` and **`card_latticeBox`** — it has exactly `(2N+1)^2` elements, because
+  `R`-independent steps are `Z`-independent (`LinearIndependent.restrict_scalars'`);
+- `norm_sub_le_of_mem_latticeBox` — it lies in the ball of radius
+  `||z_0 - c|| + N(||w_1|| + ||w_2||)` about any centre, so a ball of radius `r` contains a box with
+  `N` proportional to `r`, hence `~ r^2` points;
+- **`eq_zero_of_mem_latticeBox`** — a quasi-periodic function vanishing at `z_0` vanishes on the
+  whole box.
+
+What is left for the lattice branch is only the comparison itself: feed a bound `M` on the sphere of
+radius `2r` from `exists_exp_growth_bound_of_quasiperiods` into `AnalyticOnNhd.sum_divisor_le`, which
+gives `#zeros in the ball of radius r <= log(M/||f c||)/log 2 = O(r)`, and contradict it with the
+`(2N+1)^2` zeros just produced.
