@@ -1662,3 +1662,38 @@ analytic datum:
 This is the last place where the entirety hypothesis survived: the analytic chain `(8)`--`(20)` and
 its `(6)` consequence now hold for meromorphic carriers at every level of the tower — datum, scalar
 Stanley--Reisner realization, and channel family.
+
+## Lean progress — the function/field jet bridge, and DA closure for entire functions
+
+`formal/GaloisForLFunctions/HTGeometry/AnalyticJetFieldBridge.lean`.  The relative two-shift gauge
+characterization `(C4)` needs one structural fact the corpus did not have at the level of
+*functions*: that differential algebraicity is closed under the field operations.  The corpus proves
+this at the level of an abstract differential field (`differentialAlgebraicOver_{add,mul,sub,pow,
+inv,div}`), so what was missing is the faithful passage between the function predicate
+`DifferentiallyAlgebraic` and the genuine meromorphic differential field `meroField U` of the
+domain.  This module supplies it, in both directions and with no analytic side condition:
+
+- `analyticJetElement`, `analyticMeroElement` — an analytic function and its ordinary iterated
+  derivatives, as elements of the analytic germ domain over `U`;
+- `differentialJet_analyticMeroElement` — the *algebraic* jets of the realization are exactly the
+  germs of the ordinary derivatives, so the two differentiations agree;
+- `analyticJetRelation_coe` and `eval₂_analyticJetElement_eq_zero_iff` — a polynomial-coefficient
+  jet relation vanishes in the germ domain **iff** it vanishes pointwise on `U`.  Germs along the
+  principal filter of `U` are functions modulo equality on `U` itself, so this needs neither the
+  identity theorem nor any limiting argument, unlike the upper-end germ bridge;
+- **`differentialAlgebraicOver_analyticMeroElement_iff`** — an analytic function satisfies an
+  algebraic differential equation on `U` exactly when its meromorphic realization is differentially
+  algebraic over the embedded `C(z)`.  The backward direction goes through
+  `exists_jet_relation_of_differentialAlgebraicOver` (base-field-general form of the corpus's
+  rational jet extraction) and `clearRatFuncCoefficients`, then inverts the jet reshaping.
+
+The immediate consequence, and the piece `(C4)` consumes:
+
+- **`differentiallyAlgebraic_mul`**, **`differentiallyAlgebraic_add`**,
+  **`differentiallyAlgebraic_sub`**, **`differentiallyAlgebraic_pow`** — the differentially
+  algebraic entire functions form a ring.  Previously the corpus could only add or multiply a
+  *polynomial* (`differentiallyAlgebraic_add_polynomial`, `differentiallyAlgebraic_of_mul_polynomial`).
+
+All axiom-clean, `HTGeometry` umbrella registered.  What remains for `(C4)` is the meromorphic
+carrier: division by a differentially algebraic gauge, and the constant-multiplier two-shift law for
+a meromorphic (rather than entire) `g`.
