@@ -40,10 +40,155 @@ theorem volume_bourgainParabolaFundamentalCell
   unfold bourgainParabolaFundamentalCell bourgainFullBox
     bourgainParabolaFundamentalHalfWidth
   rw [Real.volume_pi_Ioc, Fin.prod_univ_four]
-  norm_num
-  rw [← ENNReal.ofReal_pow]
-  congr 1
+  simp [Matrix.cons_val]
   ring
+
+/-- Real integral over the centered anisotropic bilinear period cell, in
+the coordinate order produced by the finite-product measure. -/
+def bourgainScaledParabolaBilinearCenteredMoment
+    (H : ℕ) (a₁ a₂ : Fin H → ℂ) : ℝ :=
+  ∫ z₀ in (-(H : ℝ) / 2)..((H : ℝ) / 2),
+    ∫ z₁ in (-((H : ℝ) ^ (2 : ℕ)) / 2)..
+        ((H : ℝ) ^ (2 : ℕ) / 2),
+      ∫ z₂ in (-(H : ℝ) / 2)..((H : ℝ) / 2),
+        ∫ z₃ in (-((H : ℝ) ^ (2 : ℕ)) / 2)..
+            ((H : ℝ) ^ (2 : ℕ) / 2),
+          bourgainScaledIndependentPlanarBilinearIntegrand
+            H a₁ a₂ ![z₀, z₁, z₂, z₃]
+
+/-- The centered four-coordinate cell is exactly the product fundamental
+moment from `BourgainParabolaFundamentalCell`. -/
+theorem bourgainScaledParabolaBilinearCenteredMoment_eq_fundamental
+    (H : ℕ) (hH : 0 < H) (a₁ a₂ : Fin H → ℂ) :
+    bourgainScaledParabolaBilinearCenteredMoment H a₁ a₂ =
+      bourgainScaledParabolaBilinearFundamentalMoment H a₁ a₂ := by
+  let R₀ : ℝ := (H : ℝ) / 2
+  let R₁ : ℝ := (H : ℝ) ^ (2 : ℕ) / 2
+  let f : BourgainPhaseSpace → ℝ := fun z =>
+    bourgainScaledIndependentPlanarBilinearIntegrand H a₁ a₂ z
+  have hR₀ : 0 ≤ R₀ := by positivity
+  have hR₁ : 0 ≤ R₁ := by positivity
+  have hf : Continuous f := by
+    unfold f bourgainScaledIndependentPlanarBilinearIntegrand
+      bourgainScaledPlanarSixthMass
+      bourgainScaledParabolaExtension
+      bourgainDiscreteParabolaExtension bourgainUnitCharacter
+    fun_prop
+  have hreorder :=
+    intervalIntegral_four_reorder_two_three_one_zero
+      hR₀ hR₁ hR₀ hR₁ f hf
+  let I₁ : ℝ :=
+    ∫ y in (-R₁)..R₁,
+      ∫ x in (-R₀)..R₀,
+        bourgainScaledPlanarSixthMass H a₁ x y
+  let J₂ : ℝ :=
+    ∫ x in (-R₀)..R₀,
+      ∫ y in (-R₁)..R₁,
+        bourgainScaledPlanarSixthMass H a₂ x y
+  have hfactor :
+      (∫ z₂ in (-R₀)..R₀,
+        ∫ z₃ in (-R₁)..R₁,
+          ∫ z₁ in (-R₁)..R₁,
+            ∫ z₀ in (-R₀)..R₀,
+              f ![z₀, z₁, z₂, z₃]) =
+        I₁ * J₂ := by
+    simp [f, I₁, J₂,
+      bourgainScaledIndependentPlanarBilinearIntegrand,
+      Matrix.cons_val]
+  have hswap₂ :
+      J₂ =
+        ∫ y in (-R₁)..R₁,
+          ∫ x in (-R₀)..R₀,
+            bourgainScaledPlanarSixthMass H a₂ x y := by
+    unfold J₂
+    exact intervalIntegral_intervalIntegral_swap
+      (neg_le_self hR₀) (neg_le_self hR₁)
+      (bourgainScaledPlanarSixthMass H a₂)
+      (continuous_uncurry_bourgainScaledPlanarSixthMass H a₂)
+  have hcenter₁ :
+      I₁ =
+        ∫ y in (0 : ℝ)..(H : ℝ) ^ (2 : ℕ),
+          ∫ x in (0 : ℝ)..(H : ℝ),
+            bourgainScaledPlanarSixthMass H a₁ x y := by
+    simpa [I₁, R₀, R₁, bourgainScaledPlanarSixthMass,
+      neg_div] using
+      (integral_scaledParabola_centeredFundamentalCell_eq H hH a₁)
+  have hcenter₂ :
+      J₂ =
+        ∫ y in (0 : ℝ)..(H : ℝ) ^ (2 : ℕ),
+          ∫ x in (0 : ℝ)..(H : ℝ),
+            bourgainScaledPlanarSixthMass H a₂ x y := by
+    rw [hswap₂]
+    simpa [R₀, R₁, bourgainScaledPlanarSixthMass,
+      neg_div] using
+      (integral_scaledParabola_centeredFundamentalCell_eq H hH a₂)
+  calc
+    bourgainScaledParabolaBilinearCenteredMoment H a₁ a₂ =
+        ∫ z₂ in (-R₀)..R₀,
+          ∫ z₃ in (-R₁)..R₁,
+            ∫ z₁ in (-R₁)..R₁,
+              ∫ z₀ in (-R₀)..R₀,
+                f ![z₀, z₁, z₂, z₃] := by
+      simpa [bourgainScaledParabolaBilinearCenteredMoment,
+        R₀, R₁, f, neg_div] using hreorder
+    _ = I₁ * J₂ := hfactor
+    _ =
+        (∫ y in (0 : ℝ)..(H : ℝ) ^ (2 : ℕ),
+          ∫ x in (0 : ℝ)..(H : ℝ),
+            bourgainScaledPlanarSixthMass H a₁ x y) *
+        (∫ y in (0 : ℝ)..(H : ℝ) ^ (2 : ℕ),
+          ∫ x in (0 : ℝ)..(H : ℝ),
+            bourgainScaledPlanarSixthMass H a₂ x y) := by
+      rw [hcenter₁, hcenter₂]
+    _ = bourgainScaledParabolaBilinearFundamentalMoment H a₁ a₂ := by
+      rw [bourgainScaledParabolaBilinearFundamentalMoment_eq_mul]
+      rfl
+
+/-- The nonnegative Lebesgue integral over the centered anisotropic cell is
+the `ENNReal` lift of the exact real fundamental moment. -/
+theorem setLIntegral_bourgainParabolaFundamentalCell_eq
+    (H : ℕ) (hH : 0 < H) (a₁ a₂ : Fin H → ℂ) :
+    (∫⁻ z in bourgainParabolaFundamentalCell H,
+      ENNReal.ofReal
+        (bourgainScaledIndependentPlanarBilinearIntegrand H a₁ a₂ z)) =
+      ENNReal.ofReal
+        (bourgainScaledParabolaBilinearFundamentalMoment H a₁ a₂) := by
+  let X := bourgainParabolaFundamentalHalfWidth H
+  let f : BourgainPhaseSpace → ℝ := fun z =>
+    bourgainScaledIndependentPlanarBilinearIntegrand H a₁ a₂ z
+  have hf : Continuous f := by
+    unfold f bourgainScaledIndependentPlanarBilinearIntegrand
+      bourgainScaledPlanarSixthMass
+      bourgainScaledParabolaExtension
+      bourgainDiscreteParabolaExtension bourgainUnitCharacter
+    fun_prop
+  have hn : ∀ z, 0 ≤ f z := by
+    intro z
+    unfold f bourgainScaledIndependentPlanarBilinearIntegrand
+      bourgainScaledPlanarSixthMass
+    positivity
+  rw [show bourgainParabolaFundamentalCell H =
+      bourgainFullBox X by rfl]
+  rw [setLIntegral_bourgainFullBox_eq_iterated X
+    (fun z => ENNReal.ofReal (f z)) hf.measurable.ennreal_ofReal]
+  have hconvert :=
+    lintegral_Ioc_four_ofReal_eq_ofReal_intervalIntegral
+      (by simp [X, bourgainParabolaFundamentalHalfWidth]; positivity :
+        0 ≤ X 0)
+      (by simp [X, bourgainParabolaFundamentalHalfWidth]; positivity :
+        0 ≤ X 1)
+      (by simp [X, bourgainParabolaFundamentalHalfWidth]; positivity :
+        0 ≤ X 2)
+      (by simp [X, bourgainParabolaFundamentalHalfWidth]; positivity :
+        0 ≤ X 3)
+      f hf hn
+  rw [hconvert]
+  congr 1
+  simpa [X, f, bourgainParabolaFundamentalHalfWidth,
+    bourgainScaledParabolaBilinearCenteredMoment,
+    Matrix.cons_val, neg_div] using
+    (bourgainScaledParabolaBilinearCenteredMoment_eq_fundamental
+      H hH a₁ a₂)
 
 /-- Matrix of the combined osculating-coordinate and physical parabola
 dilation map. -/

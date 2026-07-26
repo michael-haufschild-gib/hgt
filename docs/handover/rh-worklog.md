@@ -7339,3 +7339,64 @@ missing sign change is FORCED? If Rodgers-Tao's Lambda >= 0 can be upgraded to a
 statement about how tight the tightest pair must be, and if that tightness exceeds what a real-rooted
 configuration permits, THE WITNESS FIRES. This is the one place where an unconditional theorem
 (Lambda >= 0) speaks directly to the witness (sign-change deficit).
+
+---
+
+## Cycle 121 (2026-07-26) — TIGHTNESS IS NOT A REALITY FAILURE. THE LAST LANE AT THE WITNESS CLOSES.
+
+### The verdict on Lambda >= 0
+Lambda = 0 is EXACTLY the critical case and is entirely consistent with every zero being real — it is
+what the hypothesis, holding "only just", would give. So Rodgers-Tao's nonnegativity constrains THE
+FLOW'S PAST, not the present configuration's REALITY. It cannot force a sign-change deficit.
+
+AND THE DEEPER REASON, WHICH IS ELEMENTARY AND DECISIVE:
+
+    TWO REAL NUMBERS MAY BE ARBITRARILY CLOSE AND REMAIN REAL. A configuration with arbitrarily tight
+    pairs is compatible with every point lying on the line, SO NO SEPARATION STATISTIC — HOWEVER
+    SHARP — CAN PRODUCE A SIGN-CHANGE DEFICIT.
+
+    ==> THE DE BRUIJN-NEWMAN CONSTRAINT BOUNDS A SEPARATION STATISTIC; THE WITNESS REQUIRES A REALITY
+        FAILURE. THE TWO ARE INDEPENDENT. THE LAST LANE POINTING AT THE WITNESS CLOSES.
+
+This also retroactively explains why cycles 33-40's de Bruijn-Newman work produced structure
+(extinction time, imaginary energy, merge time, monotone ceilings) but never a criterion: EVERY
+QUANTITY IN THAT LANE IS A SEPARATION QUANTITY.
+
+Machine-verified: `RHTower/SeparationVersusReality.lean` (existence of arbitrarily tight real pairs,
+their persistence in reality, the resulting independence of separation bounds from reality failures,
+the consistency of the critical flow value with a fully real configuration, and the fact that equal
+counts leave no certificate however small the gaps; standard axioms only, wired into RHTower).
+
+### FIFTY-FIFTH ATLAS ENTRY
+    separation vs reality   Lambda = 0 is consistent with all zeros real, and arbitrarily tight real
+                            pairs exist, so no separation statistic implies a sign-change deficit. The
+                            de Bruijn-Newman lane bounds separation only; the witness needs reality.
+                            Independent.
+
+### STATE AT CYCLE 121 — TERMINAL POSITION OF THE PROGRAMME
+Fifty-five entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+The atlas is closed on both sides:
+  * VERIFICATION: closed in every lane examined. Root cause (entry 52): RH is a codimension-one
+    constraint and every unconditional tool measures two-dimensional content. Terminal statement
+    (entry 47 + 48 + 50 + 51): every route reduces to a height-uniform sub-unit bound on a count, and
+    the theory's single invariant grows with the height.
+  * REFUTATION: fully explicit, local, finite (entries 45, 53, 54) — a missing sign change of Hardy's
+    Z in one interval — and NO UNCONDITIONAL THEOREM FORCES IT (entry 55, this cycle).
+
+WHAT WOULD BREAK THE CLOSURE, stated so a future session can test it directly:
+  1. an arithmetic input INSIDE the strip that is not a count (entry 47's gap);
+  2. a second invariant independent of log T (entry 36's meta-observation);
+  3. a codimension-sensitive tool beyond integrality (entry 52 + 53);
+  4. a reality-sensitive — not separation-sensitive — unconditional theorem (entry 55).
+These are four precisely stated targets, and every lane examined in 121 cycles has failed one of them.
+
+### Cycle 122 target
+Target (4) is the newest and the least explored: a REALITY-SENSITIVE unconditional theorem. Reality of
+a root is preserved by real-rootedness-preserving operations, and the canonical family of such
+operations is the LAGUERRE-POLYA class acting by multiplier sequences — the Polya-Schur theory.
+A multiplier sequence maps real-rooted polynomials to real-rooted polynomials, UNCONDITIONALLY, and
+its failure detects non-reality. THE CORPUS HAS TURAN/JENSEN MATERIAL (XiGaussianHeatTuranDefect,
+ThetaCuspFullReflectionFourthTuran) BUT THE PHASE-1 SEARCH MUST CHECK WHETHER POLYA-SCHUR MULTIPLIER
+SEQUENCES APPEAR. If not, that is a genuinely reality-sensitive unconditional tool the atlas has never
+touched, and it is exactly the missing category.

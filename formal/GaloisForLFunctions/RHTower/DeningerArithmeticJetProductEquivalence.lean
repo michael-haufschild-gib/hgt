@@ -24,6 +24,12 @@ noncomputable section
 theorem deningerCompactOpenH1AllJets_surjective :
     Function.Surjective deningerCompactOpenH1AllJets := by
   letI :
+      FirstCountableTopology DeningerCompactOpenEntire :=
+    inferInstance
+  letI :
+      IsUniformAddGroup DeningerCompactOpenEntire :=
+    isUniformAddGroup_of_addCommGroup
+  letI :
       UniformSpace DeningerArithmeticCompactOpenH1 :=
     IsTopologicalAddGroup.leftUniformSpace
       DeningerArithmeticCompactOpenH1
