@@ -1827,6 +1827,7 @@ theorem tendsto_soninAllPrimeCoupledProjectivePolynomialGramValue
       simp [Complex.mul_re]
     rw [hleft]
     dsimp only [S]
+    apply congrArg Complex.re
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i _
@@ -2187,14 +2188,12 @@ private def soninCoupledPrimeArchRatioData
     div_pos normalizedPrimeArchMoment_zero_pos (hpos N j)⟩,
     aperture N j)
 
-/-- Canonical zeroth-moment normalization turns a moment-ratio coupling into an explicit
-projectively scaled finite-moment coupling. -/
-theorem exists_soninCoupledPrimeArchProjectiveFiniteMomentCoupling_of_momentRatioCoupling
+private theorem
+    soninCoupledPrimeArchProjectiveFiniteMomentCoupling_ratioData
     {aperture : ℕ → ℕ → SoninPositiveAperture}
     (h : SoninCoupledPrimeArchMomentRatioCoupling aperture) :
-    ∃ data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture,
-      SoninCoupledPrimeArchProjectiveFiniteMomentCoupling data := by
-  refine ⟨soninCoupledPrimeArchRatioData aperture h.1, ?_⟩
+    SoninCoupledPrimeArchProjectiveFiniteMomentCoupling
+      (soninCoupledPrimeArchRatioData aperture h.1) := by
   intro N k hk
   by_cases hk0 : k = 0
   · subst k
@@ -2265,6 +2264,50 @@ theorem exists_soninCoupledPrimeArchProjectiveFiniteMomentCoupling_of_momentRati
       rw [hscale]
       field_simp [hs0ne]
     · field_simp [ne_of_gt normalizedPrimeArchMoment_zero_pos]
+
+/-- Canonical zeroth-moment normalization turns a moment-ratio coupling into an explicit
+projectively scaled finite-moment coupling. -/
+theorem exists_soninCoupledPrimeArchProjectiveFiniteMomentCoupling_of_momentRatioCoupling
+    {aperture : ℕ → ℕ → SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchMomentRatioCoupling aperture) :
+    ∃ data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture,
+      SoninCoupledPrimeArchProjectiveFiniteMomentCoupling data :=
+  ⟨soninCoupledPrimeArchRatioData aperture h.1,
+    soninCoupledPrimeArchProjectiveFiniteMomentCoupling_ratioData h⟩
+
+/-- Simultaneous finite moment-ratio convergence supplies canonically normalized scalar
+convergence for every fixed real polynomial, not only integer tests. -/
+def SoninCoupledPrimeArchRealPerTestNormalizedValueCoupling
+    (testAperture : Polynomial ℝ → ℕ → SoninCoupledNondegenerateAperture) : Prop :=
+  ∀ p : Polynomial ℝ,
+    Tendsto
+      (fun j : ℕ =>
+        soninAllPrimeCoupledNormalizedPolynomialGramValue (testAperture p j) p)
+      atTop
+      (nhds (primeArchSourceTraceHankel p).re)
+
+/-- A coupled moment-ratio schedule canonically generates per-test convergence for every real
+polynomial observable. -/
+theorem
+    exists_soninCoupledPrimeArchRealPerTestNormalizedValueCoupling_of_momentRatioCoupling
+    {aperture : ℕ → ℕ → SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchMomentRatioCoupling aperture) :
+    ∃ testAperture : Polynomial ℝ → ℕ → SoninCoupledNondegenerateAperture,
+      SoninCoupledPrimeArchRealPerTestNormalizedValueCoupling testAperture := by
+  let testAperture :
+      Polynomial ℝ → ℕ → SoninCoupledNondegenerateAperture :=
+    fun p j =>
+      soninCoupledNondegenerateAperture (aperture (p.natDegree + 1) j)
+  refine ⟨testAperture, ?_⟩
+  intro p
+  have hgram :
+      SoninCoupledPrimeArchProjectiveFiniteGramCoupling
+        (soninCoupledPrimeArchRatioData aperture h.1) :=
+    soninCoupledPrimeArchProjectiveFiniteGramCoupling_of_momentCoupling
+      (soninCoupledPrimeArchProjectiveFiniteMomentCoupling_ratioData h)
+  have ht :=
+    tendsto_soninAllPrimeCoupledProjectivePolynomialGramValue hgram p
+  convert ht using 1
 
 /-- **Scale-eliminated coupled Sonin chain to RH.**  Strictly positive source energy and
 convergence of the normalized coupled moment ratios are enough; no external scale sequence and no

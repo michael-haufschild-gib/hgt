@@ -17,7 +17,7 @@ positive error, after cross multiplication by the strictly positive zeroth coupl
 Nonnegativity of the source norm then forces every target Feshbach remainder to be nonnegative.
 -/
 
-open Polynomial
+open Filter Topology Polynomial
 
 namespace RHTower
 
@@ -173,6 +173,63 @@ def SoninCoupledPrimeArchVacuumFeshbachRayleighUpperBound : Prop :=
           (HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + ε) *
             (soninAllPrimeCoupledTraceMoment a.1 0).re
+
+/-- Real-polynomial normalized-value convergence supplies the target-centered vacuum Rayleigh
+comparison by testing the canonical Feshbach representative itself. -/
+theorem soninCoupledPrimeArchVacuumFeshbachRayleighUpperBound_of_realPerTestCoupling
+    {testAperture : Polynomial ℝ → ℕ → SoninCoupledNondegenerateAperture}
+    (h : SoninCoupledPrimeArchRealPerTestNormalizedValueCoupling testAperture) :
+    SoninCoupledPrimeArchVacuumFeshbachRayleighUpperBound := by
+  intro q _ ε hε
+  let p : Polynomial ℝ := primeArchVacuumCenteredPolynomial q
+  let target : ℝ :=
+    HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
+      (q.map (Int.castRingHom ℝ))
+  have ht :
+      Tendsto
+        (fun j : ℕ =>
+          soninAllPrimeCoupledNormalizedPolynomialGramValue
+            (testAperture p j) p)
+        atTop (nhds target) := by
+    simpa only [p, target,
+      re_primeArchSourceTraceHankel_vacuumCentered_eq_feshbach] using h p
+  have hevent : ∀ᶠ j : ℕ in atTop,
+      soninAllPrimeCoupledNormalizedPolynomialGramValue
+          (testAperture p j) p < target + ε :=
+    (tendsto_order.1 ht).2 (target + ε) (lt_add_of_pos_right target hε)
+  obtain ⟨j, hj⟩ := hevent.exists
+  let a : SoninCoupledNondegenerateAperture := testAperture p j
+  refine ⟨a, ?_⟩
+  have hden : 0 < (soninAllPrimeCoupledTraceMoment a.1 0).re :=
+    (soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero a.1).2 a.2
+  have hjle :
+      soninAllPrimeCoupledNormalizedPolynomialGramValue a p ≤ target + ε := by
+    exact le_of_lt (by simpa only [a] using hj)
+  rw [soninAllPrimeCoupledNormalizedPolynomialGramValue,
+    soninAllPrimeCoupledCanonicalScale,
+    soninAllPrimeCoupledPolynomialGramValue_eq_norm_sq] at hjle
+  have heq :
+      normalizedPrimeArchMoment 0 /
+            (soninAllPrimeCoupledTraceMoment a.1 0).re *
+          ‖soninAllPrimeCoupledPolynomialPowerVector a.1 p‖ ^ 2 =
+        (normalizedPrimeArchMoment 0 *
+          ‖soninAllPrimeCoupledPolynomialPowerVector a.1 p‖ ^ 2) /
+            (soninAllPrimeCoupledTraceMoment a.1 0).re := by
+    field_simp [hden.ne']
+  rw [heq] at hjle
+  simpa only [p, target] using (div_le_iff₀ hden).1 hjle
+
+/-- Normalized moment-ratio coupling supplies the vacuum-Feshbach comparison.  Thus the
+target-centered vacuum interface is not an independent Sonin hypothesis once finite
+moment-shape convergence is available. -/
+theorem soninCoupledPrimeArchVacuumFeshbachRayleighUpperBound_of_momentRatioCoupling
+    {aperture : ℕ → ℕ → SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchMomentRatioCoupling aperture) :
+    SoninCoupledPrimeArchVacuumFeshbachRayleighUpperBound := by
+  obtain ⟨testAperture, htest⟩ :=
+    exists_soninCoupledPrimeArchRealPerTestNormalizedValueCoupling_of_momentRatioCoupling h
+  exact
+    soninCoupledPrimeArchVacuumFeshbachRayleighUpperBound_of_realPerTestCoupling htest
 
 /-- The centered coupled-source comparison forces every prime--Gamma vacuum Schur complement to
 be nonnegative.  This uses only a squared source norm and concrete source nondegeneracy. -/

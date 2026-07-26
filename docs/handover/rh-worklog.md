@@ -9430,3 +9430,74 @@ THE BINOMIAL SECTIONS FOLLOW FROM FINITELY MANY COEFFICIENT INEQUALITIES? The Hu
 determinant of J^{d,0} is a polynomial in gamma(0)..gamma(d) whose positivity is necessary; ASK
 WHETHER IT IS SUFFICIENT FOR THIS FAMILY, i.e. whether the sequence gamma has a structural property
 (total positivity of a Toeplitz minor family) that upgrades finitely many inequalities to all d.
+
+---
+
+## Cycle 155 — HANKEL IS FREE, TOEPLITZ IS THE HYPOTHESIS, AND THEY BOUND THE SAME SCALAR
+
+### Phase 1 (corpus)
+`formal_tools.py research "Toeplitz minor Polya frequency Hankel moment log convex Turan window"`:
+the corpus ALREADY HAS the free half in several forms — `quantumMasterEffectMoment_logConvex`,
+`re_soninAllPrimeCoupledTraceMoment_logConvex`, `exists_positive_logConvex_not_hankelPosSemidef`.
+IT DOES NOT HAVE the Toeplitz comparison or the window. The new content is the COLLISION, not the
+free inequality. (Phase-1 SAVE: I did not re-prove moment log-convexity as a new result; it is
+included only because the collision statement needs both ends in one file.)
+
+### THE TWO DETERMINANTAL FAMILIES
+Write M_j = int_0^inf Phi(t) t^{2j} dt for the even moments of the POSITIVE theta remainder, and
+A_j = M_j/(2j)! for the Taylor coefficients of the completed function in the squared variable.
+
+    M IS A STIELTJES MOMENT SEQUENCE  ==>  ALL HANKEL MINORS >= 0, UNCONDITIONALLY.
+                                            At order two: M_{j+1}^2 <= M_j M_{j+2} (Cauchy-Schwarz).
+
+    RH  <==>  A IS A POLYA FREQUENCY SEQUENCE  <==>  ALL TOEPLITZ MINORS OF A >= 0.
+                                            At order two: A_{j+1}^2 >= A_j A_{j+2}.
+
+### THEY COLLIDE — EIGHTY-NINTH ATLAS ENTRY
+Unwinding the factorials, A_{j+1}^2 >= A_j A_{j+2} reads
+
+    M_{j+1}^2 >= ((2j+2)!)^2/((2j)!(2j+4)!) M_j M_{j+2} = (2j+1)(2j+2)/((2j+3)(2j+4)) M_j M_{j+2}.
+
+So with n = 2j the admissible band for the ratio M_{j+1}^2/(M_j M_{j+2}) is
+
+    [ (n+1)(n+2)/((n+3)(n+4)) , 1 ],     RELATIVE WIDTH (4n+10)/((n+1)(n+2)) --> 0.
+
+    ==> THE UNCONDITIONAL MOMENT STRUCTURE BOUNDS THIS SCALAR FROM ABOVE BY ONE; THE HYPOTHESIS
+        BOUNDS THE SAME SCALAR FROM BELOW BY A QUANTITY TENDING TO ONE. THE TWO SIDES PINCH.
+
+WHY THIS MATTERS FOR THE ATLAS. Entry 52 closed the log-T landscape with a single root cause: RH
+constrains CODIMENSION, every unconditional tool there measures AREA — DIFFERENT QUANTITIES. Entries
+38, 39, 48 are instances. ENTRY 89 IS THE FIRST PLACE IN THE ATLAS WHERE A FREE INEQUALITY AND THE
+HYPOTHESIS CONSTRAIN THE SAME SCALAR. The hypothesis here is not measuring an invisible direction: IT
+IS MEASURING THE DEFECT IN AN INEQUALITY THAT IS ALREADY KNOWN TO HOLD, and the admissible defect is
+O(1/n). THE STANDING DICHOTOMY DOES NOT APPLY TO THIS PAIR.
+
+This also explains, structurally, why the order-2 (Turan) and order-3 (higher Turan) inequalities for
+this sequence were provable unconditionally while the general case is not: AT EACH ORDER THE
+HYPOTHESIS IS AN O(1/n) PERTURBATION OF A FREE FACT, and the perturbation's size grows with the
+order.
+
+Machine-verified: `RHTower/HankelToeplitzWindow.lean` (the factorial identity
+(n+3)(n+4)((n+2)!)^2 = (n+1)(n+2) n! (n+4)!, the window ratio and its positivity, windowRatio < 1,
+the exact relative width (4n+10)/((n+1)(n+2)), the pinch windowRatio --> 1, the free half by
+Cauchy-Schwarz for a positive discrete measure, and the gap identity; standard axioms only, wired
+into RHTower).
+
+### STATE AT CYCLE 155
+Eighty-nine entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 156 target — THE OPEN CORE, STATED EXACTLY
+[OPEN CORE] AT ORDER m THE FREE FACT IS NONNEGATIVITY OF THE m-BY-m HANKEL MINOR OF M, AND THE
+HYPOTHESIS IS NONNEGATIVITY OF THE m-BY-m TOEPLITZ MINOR OF A = M/(2j)!. COMPUTE THE ORDER-3 WINDOW
+EXPLICITLY: the 3x3 Toeplitz minor of A in terms of the M's, against the 3x3 Hankel minor of M.
+QUESTION: IS THE ORDER-m WINDOW ALSO A 1 + O(m^2/n) PERTURBATION? If yes, the conjecture to state is
+
+    CONJECTURE (WINDOW RIGIDITY). For each m there is C(m) = O(m^2) such that the order-m Toeplitz
+    minor of A is nonnegative whenever n >= C(m) and the order-m Hankel minor of M is nonnegative.
+
+which would give hyperbolicity of J^{d,n} for n >~ d^2 — POLYNOMIAL, hence far stronger than the
+published log N(d) ~ d^2 log d. THAT IS THE FALSIFIABLE, BOLD, INDEPENDENTLY MEANINGFUL STATEMENT.
+IT MUST BE ATTACKED IN PHASE 4 BEFORE ANY PROOF WORK: the obvious way it fails is that the Hankel and
+Toeplitz minors of order >= 3 are NOT functions of the same scalars (the 3x3 minors involve M_j
+through M_{j+4} in different combinations), so the "same scalar" property of order 2 may be an
+accident of order 2. CHECK THAT FIRST.

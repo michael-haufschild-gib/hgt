@@ -144,6 +144,34 @@ theorem dualDenom_two_lt_four_of_odd (q A A₁ : ℕ) (hodd : ¬ 2 ∣ q)
   have hstrict : 2 * A < q := lt_of_le_of_ne hrep (fun h => hodd ⟨A, h.symm⟩)
   omega
 
+/-- **No self-referential class at `Q = 2`.**  A class fixed by `α ↦ -1/(Qα)` modulo one satisfies
+`Qα² - Qnα + 1 = 0`, so its rationality forces `Q(Qn² - 4)` to be a square.  At `Q = 2` this is
+`4n² - 8 = m²`, which has no integral solution: modulo `16` the left side is `8` or `12`, and neither
+is a square. -/
+theorem no_fixed_class_two (n m : ℤ) : 4 * n ^ 2 - 8 ≠ m ^ 2 := by
+  intro h
+  have h16 : ((4 * n ^ 2 - 8 : ℤ) : ZMod 16) = ((m ^ 2 : ℤ) : ZMod 16) := by
+    rw [h]
+  push_cast at h16
+  revert h16
+  generalize ((n : ℤ) : ZMod 16) = a
+  generalize ((m : ℤ) : ZMod 16) = b
+  revert a b
+  decide
+
+/-- **No self-referential class at `Q = 3`.**  Here the equation is `9n² - 12 = m²`, excluded modulo
+`9`: the left side is `6`, which is not a square. -/
+theorem no_fixed_class_three (n m : ℤ) : 9 * n ^ 2 - 12 ≠ m ^ 2 := by
+  intro h
+  have h9 : ((9 * n ^ 2 - 12 : ℤ) : ZMod 9) = ((m ^ 2 : ℤ) : ZMod 9) := by
+    rw [h]
+  push_cast at h9
+  revert h9
+  generalize ((n : ℤ) : ZMod 9) = a
+  generalize ((m : ℤ) : ZMod 9) = b
+  revert a b
+  decide
+
 /-- At the threshold `Q = 4` the contraction is no longer strict: the class of `1/2` is fixed by the
 involution, since `dualDenom 4 2 1 = 2`. -/
 theorem dualDenom_four_two_one : dualDenom 4 2 1 = 2 := by
