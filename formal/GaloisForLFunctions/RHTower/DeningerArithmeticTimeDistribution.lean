@@ -65,9 +65,19 @@ theorem deningerRegularTimeDistribution_apply
     (φ : DeningerTimeTestFunction) :
     deningerRegularTimeDistribution f φ =
       ∫ t : ℝ, (φ t : ℂ) * f t := by
-  rw [deningerRegularTimeDistribution,
-    TestFunction.integralAgainstBilinCLM_eq_integral hf]
-  rfl
+  have hf' :
+      LocallyIntegrableOn f
+        (↑deningerTimeDomain : Set ℝ) volume := by
+    simpa [deningerTimeDomain] using hf
+  have h :=
+    TestFunction.integralAgainstBilinCLM_eq_integral
+      (B := deningerRealComplexMul) (μ := volume)
+      (φ := f) hf' (f := φ)
+  change
+    (TestFunction.integralAgainstBilinCLM
+      deningerRealComplexMul volume f) φ =
+        ∫ t : ℝ, (φ t : ℂ) * f t
+  simpa [deningerRealComplexMul] using h
 
 /-- Raw eigenvalue of source Frobenius on one multiplicity copy. -/
 def deningerRawThetaEigen (q : XiZeroCopy) : ℂ :=
@@ -84,9 +94,10 @@ theorem deningerRawThetaEigen_re_mem_open_unit (q : XiZeroCopy) :
 theorem deningerRawThetaEigen_ne_zero (q : XiZeroCopy) :
     deningerRawThetaEigen q ≠ 0 := by
   intro h
-  have hre := congrArg Complex.re h
-  simpa [deningerRawThetaEigen] using
-    (deningerRawThetaEigen_re_mem_open_unit q).1.ne'
+  have hre : (deningerRawThetaEigen q).re = 0 := by
+    rw [h]
+    rfl
+  exact (deningerRawThetaEigen_re_mem_open_unit q).1.ne' hre
 
 /--
 Multiplicity-exact reciprocal-square convergence for raw source Frobenius eigenvalues.
@@ -137,7 +148,8 @@ theorem norm_deningerRegularizedSpectralFlowTerm
   rw [deningerRegularizedSpectralFlowTerm, norm_div,
     norm_pow, Complex.norm_exp, div_eq_mul_inv]
   congr 1
-  simp [Complex.mul_re]
+  · simp [Complex.mul_re]
+  · simp [one_div]
 
 theorem norm_deningerRegularizedSpectralFlowTerm_le
     (q : XiZeroCopy) (t₀ t : ℝ)
@@ -149,7 +161,8 @@ theorem norm_deningerRegularizedSpectralFlowTerm_le
   have htre : t < t₀ + 1 := by
     have habs : |t - t₀| < 1 := by
       simpa [Real.dist_eq] using ht.1
-    exact (abs_sub_lt_iff.mp habs).2
+    have := (abs_lt.mp habs).2
+    linarith
   have hrho := deningerRawThetaEigen_re_mem_open_unit q
   have hmul :
       t * (deningerRawThetaEigen q).re ≤ t := by
@@ -205,6 +218,16 @@ noncomputable def deningerRegularizedH1FlowDistribution :
     DeningerTimeDistribution :=
   deningerRegularTimeDistribution deningerRegularizedSpectralFlow
 
+/-- One positive-time distributional derivative. -/
+noncomputable def deningerTimeDistributionDeriv :
+    DeningerTimeDistribution →L[ℝ] DeningerTimeDistribution :=
+  Distribution.lineDerivCLM (n := ⊤) (k := ⊤) (1 : ℝ)
+
+/-- One positive-time test-function derivative. -/
+noncomputable def deningerTimeTestDerivative :
+    DeningerTimeTestFunction →L[ℝ] DeningerTimeTestFunction :=
+  TestFunction.lineDerivCLM (n := ⊤) (k := ⊤) ℝ (1 : ℝ)
+
 /--
 Canonical distributional trace of the source `H¹` flow.
 
@@ -213,20 +236,21 @@ valid without pointwise convergence of `Σρ exp (t ρ)`.
 -/
 noncomputable def deningerArithmeticH1TraceDistribution :
     DeningerTimeDistribution :=
-  Distribution.lineDerivCLM (1 : ℝ)
-    (Distribution.lineDerivCLM (1 : ℝ)
+  deningerTimeDistributionDeriv
+    (deningerTimeDistributionDeriv
       deningerRegularizedH1FlowDistribution)
 
 theorem deningerArithmeticH1TraceDistribution_apply
     (φ : DeningerTimeTestFunction) :
     deningerArithmeticH1TraceDistribution φ =
       deningerRegularizedH1FlowDistribution
-        (TestFunction.lineDerivCLM ℝ (1 : ℝ)
-          (TestFunction.lineDerivCLM ℝ (1 : ℝ) φ)) := by
+        (deningerTimeTestDerivative
+          (deningerTimeTestDerivative φ)) := by
   rw [deningerArithmeticH1TraceDistribution,
+    deningerTimeDistributionDeriv,
     Distribution.lineDerivCLM_apply,
     Distribution.lineDerivCLM_apply]
-  simp
+  simp [deningerTimeTestDerivative]
 
 /-- Weight-zero endpoint trace function. -/
 def deningerArithmeticH0TraceFunction (_t : ℝ) : ℂ :=
@@ -240,14 +264,17 @@ theorem deningerArithmeticH0TraceFunction_locallyIntegrableOn :
     LocallyIntegrableOn
       deningerArithmeticH0TraceFunction (Ioi 0) volume := by
   apply ContinuousOn.locallyIntegrableOn
-  · fun_prop
+  · simpa [deningerArithmeticH0TraceFunction] using
+      (continuous_const : Continuous
+        (fun _ : ℝ => (1 : ℂ))).continuousOn
   · exact isOpen_Ioi.measurableSet
 
 theorem deningerArithmeticH2TraceFunction_locallyIntegrableOn :
     LocallyIntegrableOn
       deningerArithmeticH2TraceFunction (Ioi 0) volume := by
   apply ContinuousOn.locallyIntegrableOn
-  · fun_prop
+  · unfold deningerArithmeticH2TraceFunction
+    fun_prop
   · exact isOpen_Ioi.measurableSet
 
 /-- Distributional trace of the source endpoint flow on `H⁰`. -/
@@ -297,6 +324,7 @@ theorem deningerArchimedeanLefschetzDenominator_ne_zero
     (sub_eq_zero.mp h).symm
   have : -2 * t = 0 :=
     (Real.exp_eq_one_iff _).mp hexp
+  change 0 < t at ht
   linarith
 
 theorem continuousOn_deningerArchimedeanLefschetzDensity :

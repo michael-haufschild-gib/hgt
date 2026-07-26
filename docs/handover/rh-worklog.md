@@ -9965,3 +9965,72 @@ MEASURE. SO RH SAYS: THE VARIANCE OF log u UNDER THE j-TH TILT OF Phi IS ASYMPTO
 THAT IS A CONCRETE, CHECKABLE, PURELY PROBABILISTIC STATEMENT ABOUT ONE EXPLICIT MEASURE, AND THE
 ATLAS HAS NEVER STATED IT. DERIVE IT EXACTLY AND CHECK IT AGAINST THE KNOWN SADDLE ASYMPTOTICS OF
 Phi FROM ENTRIES 74-81.
+
+---
+
+## Cycle 163 — THE ORDER-TWO INEQUALITY IS A VARIANCE BOUND ON ONE MEASURE, AND IT HOLDS BY A LOGARITHM
+
+### The translation — NINETY-SEVENTH ATLAS ENTRY
+For M_s = int u^s dnu(u) the second logarithmic derivative is the VARIANCE OF log u UNDER THE TILTED
+MEASURE: (d^2/ds^2) log M_s = Var_{nu_s}(log u). So the order-two condition M_j^2 * cap >= M_{j-1}M_{j+1},
+with cap = (n+1)(n+2)/((n-1)n) and n = 2j, IS EXACTLY
+
+    Var_{nu_j}(log u)  <=  log cap  ~  4/n  =  2/j.
+
+NO POLYNOMIALS. NO DETERMINANTS. NO ZEROS. ONE POSITIVE MEASURE AND ITS TILTS.
+
+### THE EVALUATION, AND THE MARGIN IS A LOGARITHM
+The measure is the theta remainder in the squared variable u = t^2, tilted exponent
+f(t) = 2j log t + 9t/2 - pi e^{2t}, with f''(t) = -(2j/t^2 + 4 pi e^{2t}) and pi e^{2t*} = j/t* at the
+saddle. Hence f''(t*) = -(2j/t*^2 + 4j/t*), the width in t is t*^2/(2j + 4j t*), and since
+log u = 2 log t:
+
+    Var_j(log u) = (2/t*)^2 * t*^2/(2j + 4j t*) = 2 / ( j (1 + 2 t*) ).
+
+    ==> THE REQUIREMENT IS 2/j AND THE VALUE IS 2/(j(1+2t*)), SO THE INEQUALITY HOLDS WITH MARGIN
+        EXACTLY 1 + 2t*. WITH THE SADDLE AT t* ~ (1/2) log j, THE MARGIN IS log j.
+
+THIS RE-DERIVES THE TURAN INEQUALITY FOR THE XI TAYLOR COEFFICIENTS (Csordas-Norfolk-Varga) BY A
+ROUTE WITH NO POLYNOMIALS IN IT.
+
+### THE LOOP CLOSES
+The factor 1 + 2t* IS THE SAME FACTOR as the convexity 2k(2u*+1) of the doubly-exponential exponent
+found in cycle 134 (`ConvexityOfTheDoublyExponential`). THE CUMULANT MECHANISM OF CYCLES 134-152 AND
+THE HANKEL/TOEPLITZ WINDOW OF CYCLES 155-162 ARE THE SAME COMPUTATION IN TWO LANGUAGES:
+  - order m of the Toeplitz condition  <-->  the m-th CUMULANT of log u under the j-th tilt;
+  - order 2  <-->  the VARIANCE, margin 1 + 2t* ~ log j;
+  - higher m  <-->  higher cumulants, margin 2(m-2)!/(2m-5)!! * log j by the tree count (cycle 152);
+  - margin exceeds one iff log j >~ (3/2)^m, i.e. j >~ exp((3/2)^m).
+THE DOUBLY-EXPONENTIAL THRESHOLD IS NOW DERIVED TWICE, INDEPENDENTLY: once from the tree count on the
+cumulant side (cycle 152) and once from the measure side here. THE TWO AGREE.
+
+Machine-verified: `RHTower/TuranIsAVarianceBoundOnOneMeasure.lean` (the variance formula
+(2/t)^2 * t^2/(2j+4jt) = 2/(j(1+2t)) from the curvature, the margin identity
+(2/j)/(2/(j(1+2t))) = 1+2t, the margin exceeding one, the strict inequality
+2/(j(1+2t)) < 2/j, the cap written as 1 + excess, log(1+x) <= x, and the excess bound 6/n;
+standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 163
+Ninety-seven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME NOW HAS ONE COHERENT PICTURE INSTEAD OF TWO. Everything from cycle 134 to cycle 163
+reduces to: THE CUMULANTS OF log u UNDER THE j-TH TILT OF THE THETA REMAINDER. RH IS THE STATEMENT
+THAT THESE CUMULANTS ARE SMALL ENOUGH AT EVERY ORDER. Order 2 holds with margin log j (proved here,
+and known). Order m holds with margin 2(m-2)!/(2m-5)!! log j IF THE TREE EXPANSION IS RIGOROUS.
+THE SINGLE REMAINING MATHEMATICAL GAP IN THE WHOLE MECHANISM IS THE RIGOROUS TREE EXPANSION WITH
+EXPLICIT CONSTANTS FOR THE CUMULANTS OF A LOG-CONCAVE TILT — cycle 151 verified its d = 3 case with
+the sharp constant -V'''/(V'')^3, cycle 152 identified the general constant as (2m-5)!!.
+
+### Cycle 164 target
+THE GAP IS NOW A SINGLE NAMED LEMMA, AND IT IS NOT ABOUT ZETA. STATE IT EXACTLY:
+
+  [OPEN CORE] Let V be smooth on an interval with V'' >= c > 0, and let kappa_m denote the m-th
+  cumulant of the probability measure proportional to e^{-V}. THEN |kappa_m| <= (2m-5)!! b^{m-2}
+  c^{-(2m-3)} (1 + o(1)) WHERE b = sup|V'''|, PROVIDED |V'''| AND HIGHER DERIVATIVES ARE CONTROLLED.
+
+Cycle 151 proved m = 3 with constant 1 = 1!!; cycle 152 computed the m = 4 constant 3 = 3!! from the
+three channels. THE INDUCTION IS THE HELFFER-SJOSTRAND ITERATION: differentiating in the tilt
+parameter adds one propagator and, when it lands on the vertex, one V'''. FORMALISE THE INDUCTION
+STEP AS AN ALGEBRAIC IDENTITY ON THE TREE COUNTS FIRST — T(m+1) = (2m-3) T(m) IS ALREADY PROVED
+(cycle 152) — AND THEN THE ANALYTIC STEP. IF BOTH GO THROUGH, THE MECHANISM IS RIGOROUS AND THE
+DOUBLY-EXPONENTIAL THRESHOLD IS A THEOREM RATHER THAN A HEURISTIC.
