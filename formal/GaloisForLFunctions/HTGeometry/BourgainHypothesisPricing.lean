@@ -134,4 +134,65 @@ def hDirectProgress : ℚ := (hDirectTrivialExponent - 13/14) / hDirectTrivialEx
 @[simp] theorem hDirectProgress_eq : hDirectProgress = 8/21 := by
   unfold hDirectProgress hDirectTrivialExponent criticalBlockOfT; norm_num
 
+
+/-!
+### The campaign's within-arc bound on the `hDirect` axis, and how progress divides
+
+The campaign's Theorem 81 (within-arc cancellation at every Farey arc, proved) gives `L^{5/2}` at the
+critical block, i.e. `S ≤ T^{5/12}` — Weyl's exponent.  On the `hDirect` axis that is `S⁶ ≤ T^{5/2}`
+against `M³ = T^{3/2}`, hence `e = 1`.  So
+
+    trivial                       e = 3/2
+    Weyl  (= Thm 81, re-proved)   e = 1
+    Bourgain                      e = 13/14
+    Lindelöf                      e = 0
+
+Of the total distance `3/2`, Bourgain has covered `3/2 − 13/14 = 4/7`, i.e. `8/21`.  Within that:
+
+    Weyl's share            :  (3/2 − 1)/(4/7)   = (1/2)/(4/7)   = **7/8**
+    the spacing analysis    :  (1 − 13/14)/(4/7) = (1/14)/(4/7)  = **1/8**
+
+**Weyl's 1921 step accounts for seven-eighths of all progress on this axis; everything from
+Bombieri–Iwaniec through Bourgain accounts for one-eighth.**
+-/
+
+/-- `hDirect` exponent corresponding to the campaign's within-arc bound (Theorem 81) = Weyl. -/
+def hDirectWeyl : ℚ := 1
+
+/-- Distance covered by Bourgain on the `hDirect` axis. -/
+def bourgainCovered : ℚ := hDirectTrivialExponent - 13/14
+
+@[simp] theorem bourgainCovered_eq : bourgainCovered = 4/7 := by
+  unfold bourgainCovered hDirectTrivialExponent criticalBlockOfT; norm_num
+
+/-- Weyl's share of that distance. -/
+def weylShare : ℚ := (hDirectTrivialExponent - hDirectWeyl) / bourgainCovered
+
+/-- The spacing analysis's share. -/
+def spacingShare : ℚ := (hDirectWeyl - 13/14) / bourgainCovered
+
+/-- **Weyl accounts for seven-eighths.** -/
+@[simp] theorem weylShare_eq : weylShare = 7/8 := by
+  unfold weylShare hDirectTrivialExponent hDirectWeyl criticalBlockOfT
+  rw [bourgainCovered_eq]; norm_num
+
+/-- **The spacing analysis accounts for one-eighth.** -/
+@[simp] theorem spacingShare_eq : spacingShare = 1/8 := by
+  unfold spacingShare hDirectWeyl
+  rw [bourgainCovered_eq]; norm_num
+
+/-- The two shares exhaust the progress. -/
+theorem shares_sum : weylShare + spacingShare = 1 := by
+  rw [weylShare_eq, spacingShare_eq]; norm_num
+
+/-- **Weyl's step is seven times the whole spacing analysis.** -/
+theorem weyl_seven_times_spacing : weylShare = 7 * spacingShare := by
+  rw [weylShare_eq, spacingShare_eq]; norm_num
+
+/-- The within-arc bound sits at `e = 1`, strictly between trivial and Bourgain. -/
+theorem weyl_strictly_between :
+    13/14 < hDirectWeyl ∧ hDirectWeyl < hDirectTrivialExponent := by
+  unfold hDirectWeyl hDirectTrivialExponent criticalBlockOfT
+  constructor <;> norm_num
+
 end HTGeometry

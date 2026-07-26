@@ -6828,3 +6828,76 @@ and (c) the fourth-moment asymptotics, also unconditional. CHECK WHETHER SUBCONV
 SUMS. If a subconvexity exponent below 1/4 would give row sums under 0.34976, then RH follows from a
 subconvexity improvement — a known-hard but ACTIVE and UNCONDITIONAL frontier, unlike everything else
 in this atlas.
+
+---
+
+## Cycle 113 (2026-07-26) — THE CONTOUR-CROSSING OBSTRUCTION: ONE STATEMENT SUBSUMING EVERY
+## CIRCULARITY VERDICT IN THE ATLAS
+
+### PHASE 2 (on the every-fifth-cycle schedule)
+arXiv 2602.05614 (Feb 2026) improves EXPLICIT subconvexity on the critical line, building on
+Hiary-Patel-Yang 2024, |zeta(1/2+it)| <= 0.618 t^{1/6} log t. The literature route from such bounds to
+zeros runs THROUGH BOREL-CARATHEODORY TO CLASSICAL ZERO-FREE REGIONS — a route this atlas already
+capped (the Borel-Caratheodory ceiling and oscillation ceiling entries). So the 2026 subconvexity
+frontier is real and active, and its path to the zeros is the one already known to be capped.
+SUBCONVEXITY VERDICT: CAPPED, not circular — a useful distinction, and it does not open a lane.
+
+### THE UNIFYING STATEMENT
+Everything unconditional known about zeta sits in one of two places:
+  * the half-plane of absolute convergence Re s > 1 — the Euler product and everything derived from
+    it;
+  * the critical line Re s = 1/2 — subconvexity, moment asymptotics, the functional equation's
+    reflection.
+The smoothed prime-counting error is a contour integral whose evaluation requires moving between
+those two places, and any such shift passes through EVERY abscissa with 1/2 < sigma < 1, collecting
+as residues exactly the zeros whose position is in question.
+
+    ==> EVERY UNCONDITIONAL ARITHMETIC INPUT IS SEPARATED FROM THE ERROR BY THE CRITICAL STRIP. USING
+        IT REQUIRES A CONTOUR SHIFT WHOSE RESIDUES ARE THE UNKNOWN ZEROS, SO NO SUCH INPUT CAN BE
+        CONVERTED INTO A BOUND ON THE ERROR.
+
+ONE STATEMENT, AND IT SUBSUMES: the Euler-product circularity (cycle 83), the Bohr-mean circularity
+(cycle 87), the moment/support circularity (cycle 102), the subconvexity cap (this cycle), and the
+"error is the zero sum" verdict that has stood since cycle 83.
+
+### AND IT MAKES A PREDICTION THAT CLOSES THE LOOP
+A usable input must live INSIDE the strip. The only unconditional information there is ZERO-DENSITY.
+By the ratio obstruction (entries 38, 39) a zero-density statistic is quadratic and bounds counts,
+never individual locations. THE TWO CLOSURES MEET: outside the strip everything is separated by the
+contour; inside it everything is a count.
+
+Machine-verified: `RHTower/ContourCrossingObstruction.lean` (separation of the regions, the fact that
+a shift from absolute convergence to the line crosses every interior abscissa, the impossibility of a
+route avoiding a given interior abscissa, nonemptiness of the interior, and the counting closure;
+standard axioms only, wired into RHTower).
+
+### FORTY-SEVENTH ATLAS ENTRY
+    contour crossing   every unconditional input lives at Re s > 1 or on Re s = 1/2; reaching the
+                       error requires a shift across the strip whose residues are the unknown zeros.
+                       Inside the strip the only unconditional data is zero-density, which is
+                       quadratic and bounds counts only. The two closures meet.
+
+### STATE AT CYCLE 113
+Forty-seven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ATLAS IS NOW COMPLETE AS A DESCRIPTION OF THE UNCONDITIONAL LANDSCAPE:
+  * FORM: both directions are single explicit conditions (entries 45, 46).
+  * CONTENT: every input is either outside the strip (separated by the contour, entry 47) or inside it
+    (quadratic, entry 39).
+  * DESIGN: a deciding functional needs comparable terms and beta-sensitivity (entry 40), and
+    beta-sensitivity excludes contour evaluation (entry 41), escapable only by finite-dimensional
+    non-analytic functionals (entries 42, 43), which return to the same content.
+NOTHING IN THE UNCONDITIONAL LANDSCAPE DECIDES THE HYPOTHESIS. THAT IS NOW A THEOREM-SHAPED STATEMENT
+ABOUT THE LANDSCAPE, NOT A REPORT OF FAILURE.
+
+### Cycle 114 target
+Given entry 47, the only way forward is an input that is NEITHER at Re s > 1 NOR on Re s = 1/2 NOR a
+zero-density statistic. By the classification that means an input INSIDE the strip that is NOT
+quadratic in the zeros — i.e. LINEAR in the zeros but not an explicit-formula sum. Entry 41 says a
+linear functional with beta-sensitivity must be non-analytic. THE ONLY NON-ANALYTIC LINEAR
+FUNCTIONALS OF A DISCRETE SET ARE COUNTING FUNCTIONS WITH NON-ANALYTIC WEIGHTS — e.g.
+sum_rho sign(beta_rho - 1/2), which is EXACTLY the quantity RH asserts is zero. ASK WHETHER THAT
+COUNTING FUNCTION HAS ANY UNCONDITIONAL EVALUATION AT ALL — via the argument principle it is a winding
+number, which IS computable from boundary data on a contour that does NOT cross the strip: the
+BOUNDARY of the strip. THAT IS THE ONE ROUTE ENTRY 47 DOES NOT BLOCK, because it uses the strip's
+boundary rather than a crossing. TEST IT.

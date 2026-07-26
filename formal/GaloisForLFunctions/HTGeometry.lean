@@ -2078,3 +2078,4 @@ import GaloisForLFunctions.HTGeometry.LogFrequencySeparation
 import GaloisForLFunctions.HTGeometry.CountPositivityConductorBound
 import GaloisForLFunctions.HTGeometry.KProfileMismatch
 import GaloisForLFunctions.HTGeometry.BourgainHypothesisPricing
+import GaloisForLFunctions.HTGeometry.LogPhaseDensity

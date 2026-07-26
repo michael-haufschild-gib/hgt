@@ -20,14 +20,14 @@ noncomputable section
 
 /-- Cauchy--Taylor partial sum of the locally normalized Xi quotient at the origin. -/
 def deningerLocalXiQuotientTaylorApprox
-    (F : DeningerCompactOpenEntire) (R : ℝ≥0)
+    (F : DeningerCompactOpenEntire) (R : NNReal)
     (n : ℕ) (z : ℂ) : ℂ :=
   (cauchyPowerSeries
     (deningerNormalizedXiQuotient F) 0 R).partialSum n z
 
 /-- Every local quotient Taylor partial sum is an entire function. -/
 theorem deningerLocalXiQuotientTaylorApprox_differentiable
-    (F : DeningerCompactOpenEntire) (R : ℝ≥0) (n : ℕ) :
+    (F : DeningerCompactOpenEntire) (R : NNReal) (n : ℕ) :
     Differentiable ℂ
       (deningerLocalXiQuotientTaylorApprox F R n) := by
   unfold deningerLocalXiQuotientTaylorApprox
@@ -42,7 +42,7 @@ theorem deningerLocalXiQuotientTaylorApprox_differentiable
 
 /-- Taylor partial sum as a compact-open entire source. -/
 def deningerCompactOpenLocalXiQuotientTaylorApprox
-    (F : DeningerCompactOpenEntire) (R : ℝ≥0)
+    (F : DeningerCompactOpenEntire) (R : NNReal)
     (n : ℕ) : DeningerCompactOpenEntire :=
   let hdiff :=
     deningerLocalXiQuotientTaylorApprox_differentiable
@@ -53,7 +53,7 @@ def deningerCompactOpenLocalXiQuotientTaylorApprox
 
 @[simp]
 theorem deningerCompactOpenLocalXiQuotientTaylorApprox_apply
-    (F : DeningerCompactOpenEntire) (R : ℝ≥0)
+    (F : DeningerCompactOpenEntire) (R : NNReal)
     (n : ℕ) (z : ℂ) :
     deningerCompactOpenLocalXiQuotientTaylorApprox
         F R n z =
@@ -66,7 +66,7 @@ smaller disk.
 -/
 theorem deningerLocalXiQuotientTaylorApprox_tendstoUniformlyOn
     (F : DeningerCompactOpenEntire)
-    {r R S : ℝ≥0} (hrR : r < R) (hRS : R < S)
+    {r R S : NNReal} (hrR : r < R) (hRS : R < S)
     (hjets :
       ∀ (rho : XiDivisorSupport),
         ‖xiSpectralPointSupport rho‖ < S →
@@ -99,7 +99,7 @@ theorem deningerLocalXiQuotientTaylorApprox_tendstoUniformlyOn
         (Metric.closedBall_subset_ball hRSreal hz))
         |>.differentiableAt.differentiableWithinAt
   have hR0 : 0 < R :=
-    lt_of_le_of_lt (zero_le r) hrR
+    lt_of_le_of_lt bot_le hrR
   have hpow :=
     hQdiff.hasFPowerSeriesOnBall hR0
   have hconv :=
@@ -114,7 +114,7 @@ Multiplying the Taylor approximants back by Xi gives locally uniform zero repres
 -/
 theorem deningerLocalXiTaylorCoboundaryError_tendstoLocallyUniformlyOn
     (F : DeningerCompactOpenEntire)
-    {r R S : ℝ≥0} (hrR : r < R) (hRS : R < S)
+    {r R S : NNReal} (hrR : r < R) (hRS : R < S)
     (hjets :
       ∀ (rho : XiDivisorSupport),
         ‖xiSpectralPointSupport rho‖ < S →
@@ -179,7 +179,7 @@ theorem deningerLocalXiTaylorCoboundaryError_tendstoLocallyUniformlyOn
       F
       (show 0 < (S : ℝ) by
         exact_mod_cast
-          (lt_of_le_of_lt (zero_le r)
+          (lt_of_le_of_lt bot_le
             (hrR.trans hRS)))
       hjets
   apply hsub.congr_right
@@ -191,9 +191,11 @@ theorem deningerLocalXiTaylorCoboundaryError_tendstoLocallyUniformlyOn
         exact_mod_cast (hrR.le.trans hRS.le))
       hz
   have hpoint := hdiv hzS
-  simp only [Pi.sub_apply, Pi.mul_apply,
-    Pi.zero_apply]
-  rw [mul_comm, hpoint, sub_self]
+  simp only [Pi.sub_apply, Pi.mul_apply]
+  change
+    deningerNormalizedXiQuotient F z * XiC z =
+      F z at hpoint
+  rw [mul_comm (XiC z), hpoint, sub_self]
 
 end
 
