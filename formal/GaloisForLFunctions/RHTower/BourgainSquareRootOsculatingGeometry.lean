@@ -207,7 +207,9 @@ theorem bourgainSquareRootOsculatingMatrix_mulVec_surjective
   exact Matrix.mulVec_surjective_iff_isUnit.mpr
     (isUnit_bourgainSquareRootOsculatingMatrix ha hab)
 
-/-- Linear equivalence implementing the coordinate change in (1.24). -/
+/-- Linear equivalence for the unscaled first/second-jet matrix.
+`BourgainOsculatingPhaseCoordinates` inserts the two `1/2` factors from the
+literal phase coordinates in (1.23)--(1.24). -/
 noncomputable def bourgainSquareRootOsculatingLinearEquiv
     {a b : ℝ} (ha : 0 < a) (hab : a < b) :
     (Fin 4 → ℝ) ≃ₗ[ℝ] (Fin 4 → ℝ) :=
@@ -223,7 +225,9 @@ noncomputable def bourgainSquareRootOsculatingContinuousLinearEquiv
     (Fin 4 → ℝ) ≃L[ℝ] (Fin 4 → ℝ) :=
   (bourgainSquareRootOsculatingLinearEquiv ha hab).toContinuousLinearEquiv
 
-/-- Exact Lebesgue-measure Jacobian for the coordinate change in (1.24). -/
+/-- Exact Lebesgue-measure Jacobian for the unscaled jet matrix.  The literal
+phase-coordinate Jacobian, including both second-derivative half factors, is
+proved in `BourgainOsculatingPhaseCoordinates`. -/
 theorem map_bourgainSquareRootOsculatingMatrix_volume
     {a b : ℝ} (ha : 0 < a) (hab : a < b) :
     MeasureTheory.Measure.map

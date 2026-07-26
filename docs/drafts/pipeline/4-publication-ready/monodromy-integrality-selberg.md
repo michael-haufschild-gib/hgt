@@ -246,3 +246,105 @@ n_F = lim_{b→0+} log[ lim_{A→∞}(1/2A)∫_{−A}^{A}|Φ_F(1/2,a−ib)|² da
 lacks (the real-`α` integral diverges exactly on `Spec(F)`). Formalised in finite form:
 `genPoly_meanValue`, `oscInt_norm_le` (`‖oscInt δ T U‖ ≤ 2/|δ|`, uniform in the interval length),
 `genPoly_meanValue_error`.
+
+**Theorem 27 (zero density of the standard twist).** For `b > 0`, `a ↦ Φ_F(1/2, a−ib)` is analytic
+almost periodic on the strip, so Jessen's function
+`φ(b) = lim_A (1/2A)∫_{−A}^{A}log|Φ_F(1/2,a−ib)|da` exists and is convex, and by Jessen–Tornehave the
+zero density per unit horizontal length between depths is `(φ'(b₂)−φ'(b₁))/2π`. With
+`φ(b) ≤ (1/2)log M_F(b) = (n_F/2)loglog(1/b)+O(1)` (Jensen + Theorem 24) and `φ(b) ≥ −2πb`
+(convexity plus `φ(b)+2πb → 0`), convexity yields
+`𝒩_F(b) ≤ (n_F·loglog(2/b) + O(1))/(2πb)`. Unconditional, every degree `d ≥ 1`. (Lean:
+`neg_deriv_le_of_convexOn`, `jessen_zero_density_le`.)
+
+**The sharpening is false.** The conjecture `φ(b) = (n_F/2)loglog(1/b)+O(1)` fails already for
+`F = ζ`: there `Φ_ζ(1/2,α) = Li_{1/2}(e(−α))` blows up only near `z = 1`, so `φ(b) = O(1)` while
+`(1/2)log M(b) ~ (1/2)loglog(1/b)`. Hence **`n_F` is a concentration exponent, not a size exponent**:
+every functional insensitive to sets of density zero — geometric means, Jessen functions, Nevanlinna
+characteristics — is blind to it. The same phenomenon explains uniformly why prime energies are blind
+to `Im c_{F,G}` and why fine-scale pair correlation is blind to the factorisation.
+
+**Theorem 28 (exact regularised spectral form).** With `α_n = dq^{−1/d}n^{1/d}`, `β = 4πq^{1/d}/d`
+and `ρ_0^F` the leading K–P residue,
+```
+M_F(b) = (Cd/q^{1/d}) Σ_{n≥1} |ρ_0^F(α_n)|² α_n^{−1} e^{−βbα_n} ,
+n_F = lim_{b→0+} log[ Σ_{α∈Spec(F)} |ρ_0^F(α)|² α^{−1} e^{−βbα} ] / log log(1/b).
+```
+This is the regularisation of the `α`-pairing across the spectrum lattice that a domination argument
+cannot supply: the damping `e^{−βbα}` is produced canonically by the complex shift, the weight
+`α^{−1}` is forced, the sum runs over a discrete set, and every ingredient is a residue.
+
+**Theorem 29–30 (dilation correlation of standard twists).** For `F,G ∈ S` of degree `d`, coprime
+`r,s`, `λ = (r/s)^{1/d}` and depths `b`, `λb`,
+```
+lim_{A→∞}(1/2A)∫_{−A}^{A}Φ_F(1/2,a−ib)\overline{Φ_G(1/2,λa−iλb)} da
+      = (rs)^{−1/2} Σ_{t≥1} a_F(rt)\overline{a_G(st)} e^{−4πb(rt)^{1/d}} t^{−1} ,
+```
+and the correlation vanishes identically unless `λ^d ∈ Q`. At `r=s=1` this gives
+`ω(F,G) = lim_{b→0} Im[correlation]/loglog(1/b)`: the alternating form `ω`, provably invisible to
+every prime-energy identity (Theorem 16), **is** visible as the imaginary part of the Bohr
+correlation of the two standard twists. (Lean: `genPoly_mul_conj_bilinear`,
+`genPoly_meanValue_bilinear`, `oscInt_norm_le`.)
+
+**Theorem 31 (the degree barrier, quantified).** The Bohr spectrum of `|Φ_F(1/2,·−ib)|²` is
+`{2π(n^{1/d}−m^{1/d})}`, which accumulates at `0` iff `d ≥ 2`. Isolating the diagonal requires
+averaging length
+```
+A  ≫_F  b^{−(d−1)} (log(1/b))^{2−n_F+δ} .
+```
+For `d = 1` any `A → ∞` suffices uniformly. So the degree barrier of the Selberg class is, on the
+twist side, exactly the growth of the required Bohr averaging length.
+
+**Theorem 32 (twist-exponent trade-off).** In the family `F_κ(s,α)=Σ a_F(n)e(−αn^κ)n^{−s}` the
+frequency gaps are `≍ κn^{κ−1}`, so the Bohr diagonal is isolated iff `κ ≥ 1`; the Selberg axioms
+supply analytic continuation only for `κ ≤ 1/d` (Kaczorowski–Perelli). The two ranges meet **iff
+`d = 1`**. Automorphy supplies continuation at `κ = 1` (modularity of the additive twist), so the gap
+between the Selberg class and automorphy is exactly the twist-exponent interval `[1/d, 1]`, of length
+`1 − 1/d` — matching the exponent `d − 1` of Theorem 31 by an independent computation.
+
+**Theorem 38 (independence of the functional equation; unconditional).** For non-principal `χ` and
+real `c > 0`, `F_c = L(s,χ)^c` satisfies Selberg's axioms (1), (4), (5), is holomorphic and
+non-vanishing on a neighbourhood of `Re s ≥ 1`, has every linear density zero, and has `n_{F_c} = c²`.
+Hence integrality comes neither from the Euler product, nor from Ramanujan, nor from edge behaviour;
+it must come from axiom (3) together with continuation across the critical strip.
+
+**Theorem 39 (additive versus quadratic).** Every integer the axioms attach to `F` (`r_F`, `m_F`,
+`d_F`) is additive under multiplication, hence a linear form in the primitive exponents, while
+`n_F = Σe_i²` is quadratic; `L(·,χ₁)L(·,χ₂)` and `L(·,χ₁)²` share `r, d, q, γ, m` but have `n = 2, 4`.
+So `n_F ∈ Z` is not a formal consequence of the axiomatic integers: a proof must manufacture a new
+integer. (Lean: `additive_not_determine_energy`, `energy_ne_of_same_total`.)
+
+**Theorem 40 (fractional-power obstruction).** If `F = ∏G_i^{c_i}` is single-valued and meromorphic
+then `Σ_i c_i·ord_ρ(G_i) ∈ Z` for all `ρ`; with disjoint zero sets, one simple zero or two zeros of
+coprime orders forces `c_i ∈ Z`. (Lean: `exponent_int_of_coprime_orders`.)
+
+**Theorem 43 / Corollary 44 (ratio functional equation).** For `F,G ∈ S` with identical gamma
+factors, `W = Λ_F/Λ_G` satisfies `W(s) = (ω_F/ω_G)\overline{W(1−\bar s)}`, has divisor
+`div F − div G`, and `F/G` has an Euler product, hence no zeros or poles outside the critical strip.
+If `F` and `G` share all zeros then `F = G`.
+
+**Theorem 46 (reduction of quantitative strong multiplicity one).** For `F,G ∈ S` with identical
+gamma factors, assume (a) a Selberg-type zero-density estimate and (b) that distinct elements of `S`
+cannot have zeros paired at distance `o(1/log T)`. Then
+`Σ_{p≤x}|a_F(p)−a_G(p)|²/p = O(1) ⟹ F = G`. Both hypotheses are one-cusp, zero-side statements —
+neither is Rankin–Selberg nor automorphy.
+
+**Theorem 47 (pairing from bounded counting difference).** For `F,G ∈ S` with identical gamma
+factors and conductors, assume a Selberg-type zero-density estimate. If
+`Σ_{p≤x}|a_F(p)−a_G(p)|²/p = O(1)` then `Var(S_F − S_G) = O(1)`, hence `N_F − N_G` — an
+**integer-valued** step function — is bounded, hence the zeros interleave and
+`|γ_n^F − γ_n^G| ≪ 1/log T`. (Lean: `le_shift_of_count_le`, `abs_shift_of_count_le`.) This is the
+only place in the programme where integrality is *used* rather than sought.
+
+**Theorem 49 / Corollary 50 (zero energy = zero rigidity).** For `F ∈ S`, `n_F = 0` is equivalent to
+`Var(S_F) = O(1)`, to `N_F − M_F` being bounded, and to the zeros of `F` forming a perfect
+log-lattice. Hence the `n_F = 0` case of the Energy Gap conjecture is **equivalent** to: a
+non-trivial element of `S` cannot have perfectly rigid zeros — a statement containing no prime sums.
+
+**Recorded negative results (with witnesses).** (i) No argument confined to a neighbourhood of
+`Re s ≥ 1` can establish any part of Conjecture A: `L(·,χ)^c` satisfies axioms (1),(4),(5), is
+holomorphic and non-vanishing there, has all linear densities zero, and has `n = c²`. (ii) The
+`ℓ²`-to-zero-free-half-plane step fails by two independent routes (Cauchy–Schwarz on the abscissa;
+the `ℋ²` theory of Hedenmalm–Lindqvist–Seip). (iii) The collision function `Λ_F − Λ_G` operates at
+density `T` (Bombieri–Perelli regime) and cannot supply a statement at density `T log T`.
+(iv) No `L²` accounting of the sawtooth harmonics of a rigid zero set against the prime frequencies
+yields a contradiction: the sawtooth's total mass is a bounded constant.

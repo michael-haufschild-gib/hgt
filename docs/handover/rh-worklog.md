@@ -3226,3 +3226,565 @@ by C59, i.e. does a quotient by a discrete subgroup of the scaling group necessa
 absorption rather than point spectrum? If YES, that is the final cap and the programme's complete
 answer for why Hilbert-Polya has resisted. If NO, the gap between absorption and point spectrum is a
 concrete, isolated technical target — the first such target on the construction side.
+
+---
+
+## CORRECTION (2026-07-26) — DUPLICATION AUDIT. PROCESS FAILURE IN CYCLES 52-59.
+
+The mandated Phase 1 corpus search was run in cycle 48 (found `HTGeometry/HardyClosureZeroFree.lean`
+and built on it correctly) and then SKIPPED for cycles 52-59. Those cycles were written from recent
+transcript context instead of from the corpus. Audit result:
+
+### DUPLICATIVE — cycle 59 `RHTower/ScaleInvarianceDichotomy.lean`
+`HTGeometry/OrbitQuotientLiftNoGo.lean` already proves: NO EQUIVARIANT HILBERT LIFT OF AN INFINITE
+ORBIT QUOTIENT — an infinite subgroup has no nonzero invariant vector in the finite-support regular
+module, hence orbit pushforward has no translation-equivariant linear section, and the same holds for
+square-summable regular vectors. Its own docstring states that in the prime specialization the
+regular action is "the algebraic or Hilbert precursor of the nontrivial Mellin-dilation action."
+That is the same territory as cycle 59's "carrier must be scale-invariant modulo a discrete
+subgroup", and IT IS STRONGER: a genuine equivariance no-go versus my elementary lam = x/s ray
+argument. CYCLE 59 IS A WEAKER RESTATEMENT. Demoted; do not cite as new.
+
+### MIS-FRAMED — cycles 57-58 `ScaleCouplingObstruction.lean`, `FamilyIncoherence.lean`
+`RHTower/BerryKeating.lean` already formalizes the Hilbert-Polya/Berry-Keating lane: the FE-invariant
+coordinate u = s(1-s), the Kapustin eigenvalue 1/u, and the reality criterion Im(1/u) = 0 <=>
+critical line. I opened that lane claiming it had "never been examined". The phase-space count
+XP = E^2/(2 pi e^2) and the incoherence argument ARE new; the framing was false. Modules keep their
+content, lose their claim of opening the lane.
+
+### NOT DUPLICATED (verified by search)
+The zero-free-region width and degradation-exponent material (cycles 51-55) returns only my own new
+modules. That work stands.
+
+### THE SUB-CORPUS I NEVER READ — and it is the actual frontier
+    RHTower/XiHedenmalmReciprocalOperator   compact operator on the Xi divisor; regularized
+                                            determinant = the exact Xi canonical product;
+                                            SELF-ADJOINT EXACTLY WHEN RH HOLDS. Explicitly labelled a
+                                            TERMINAL Hilbert-Polya model, not a source-side proof.
+    RHTower/XiHedenmalmDeBrangesSeam        SOURCE-SIDE Hermite-Biehler candidate E = XiC + i XiC',
+                                            defined from the theta transform WITHOUT enumerating the
+                                            divisor; removable Bezoutian; the RH-bearing item is
+                                            POSITIVITY OF THE BEZOUTIAN (de Branges condition).
+    RHTower/HedenmalmHankelKreinChamber     rank-four Hankel kernel, ambient Hermitian form of
+                                            SIGNATURE (2,2); the theta source orbit's Krein value is
+                                            exactly the horizontal derivative of |Xi|^2; the missing
+                                            sign is CHAMBER AVOIDANCE by that one orbit.
+    HTGeometry/PlancherelRankGap            rank gap n(n-1)/2 suppressing every spectral route to the
+                                            moments; higher rank makes it WORSE.
+CONCLUSION: the corpus stands far ahead of where cycles 33-59 were working. The dBN excursion and the
+zero-free-region classification were ORTHOGONAL to the corpus's actual open core.
+
+### NEW RESULT FROM READING IT — the chamber IS Lagarias' criterion (Phase 4 verdict: CIRCULAR)
+`XiC z = xi(1/2 + i z)`, so the orbit point `XiC (b - a i) = xi(1/2 + a + i b)`: a IS THE HORIZONTAL
+COORDINATE sigma - 1/2 and b the ordinate. Hence the Krein value on the orbit is
+d/d(sigma) |xi(sigma + i b)|^2, and where xi does not vanish
+
+    d/d(sigma) |xi|^2 = 2 Re( conj(xi) xi' ) = 2 |xi|^2 Re(xi'/xi).
+
+So chamber avoidance is EXACTLY   Re (xi'/xi)(s) > 0 for Re s > 1/2  — LAGARIAS' CRITERION (1999), a
+KNOWN EQUIVALENT OF RH. THE KREIN GEOMETRY IS A REFORMULATION, NOT A REDUCTION: the missing sign is
+the hypothesis itself, dressed as a chamber. Recorded so the chamber is not treated as an independent
+open problem. (My own earlier cycle already flagged Lagarias as a REDISCOVERED verdict; the corpus's
+chamber and that flag are the same statement, which nothing in the corpus had connected.)
+
+### AND WHAT THE GEOMETRY CANNOT ADD
+Signature (2,2) makes the negative chamber a genuine cone, inviting a degree or winding argument.
+THAT ROUTE IS CLOSED by Theorem H42: the critical and off-critical loci lie in one connected
+component of the symmetric class, joined through a double zero, so no continuous invariant valued in
+a totally disconnected space separates them. A CHAMBER-AVOIDANCE CERTIFICATE MUST BE METRIC — A
+POINTWISE INEQUALITY — AND CANNOT BE TOPOLOGICAL. The split geometry organises the sign; it cannot
+supply it. This is the first cross-connection between the classification work and the corpus's
+operator side.
+
+### PROCESS FIX (binding)
+Run `scripts/formal_tools.py research "<query>"` AND `rg` over `formal/` BEFORE writing any module,
+every cycle, and record the outcome in the cycle entry. This is already the standing mandate in
+MEMORY.md ("corpus-search-before-writing-lean"); it lapsed for eight cycles.
+
+### NEXT TARGET (replaces the cycle-60 plan)
+The corpus's real open core: POSITIVITY OF THE HEDENMALM-DE BRANGES BEZOUTIAN, source-side, with the
+multiplicity obstruction already isolated (kernel diagonal at a divisor point is nonzero iff analytic
+multiplicity is one). Work there, not on the classification.
+
+---
+
+## Cycle 60 (2026-07-26) — REORIENTATION ONTO THE CORPUS'S OWN NAMED OPEN CORE
+### Phase 1 corpus search run FIRST (process fix in force).
+
+Reading `RHTower/RiemannHypothesisSOTA2026.lean` (786 lines, the project's own frontier document)
+shows the corpus is far ahead of cycles 33-59 and carries a NAMED, SHARPENED OPEN CORE:
+
+    SUZUKI-RECTANGULAR-WARD-DEFECT-SEMIBOUNDED
+    (`SuzukiRectangularWardDefectBoundedness.lean`)
+
+    riemannHypothesis_of_suzukiRectangularWardDefect_eventually_bddBelow :
+      0 < L -> (forall n, 0 <= sourceEnergy n) ->
+      (exists B N0, forall n >= N0, L <= log n / 2 -> B <= suzukiRectangularWardDefect L sourceEnergy n)
+      -> RiemannHypothesis
+
+with `suzukiRectangularWardDefect L E n = Re(xiScrewWindowCurvature L (log n)) - E n`. EXACT SOURCE
+ISOMETRY IS UNNECESSARY: any nonnegative source energy leaving an eventually lower-bounded defect
+already forces RH. Conversely false RH drives that defect below every level cofinally.
+
+### What the object actually is (worked out this cycle)
+`xiScrewWindowCurvature L x = 2[D(x) - 2 D(x-L) + D(x-2L)] + 4 D(L)`, i.e. a DISCRETE SECOND
+DIFFERENCE at step L of `D = xiScrewDivisor`, plus a constant. And
+`xiScrewDivisor t = SUM_q (cosh(t i w_q) - 1)/(i w_q)^2` over the Xi divisor copies. Setting
+`z = i w`:
+  * CRITICAL zero (w = gamma real): z = i gamma is purely imaginary, term = (1 - cos(t gamma))/gamma^2,
+    which lies in [0, 2/gamma^2] — BOUNDED, and the whole critical sum converges;
+  * OFF-CRITICAL zero: Re z = a != 0 and the term is dominated by e^{tz}/(2 z^2), which GROWS
+    EXPONENTIALLY and oscillates in sign.
+So RH <=> second differences eventually bounded below is exactly the statement that no exponentially
+growing oscillatory term is present.
+
+### NEW CONTRIBUTION — the exact amplitude (corpus search confirmed absent)
+The corpus proves the converse QUALITATIVELY (cofinally unbounded below). It does not name the RATE.
+Supplied this cycle:
+
+    || e^{tz} / (2 z^2) ||  =  e^{t Re z} / (2 normSq z)     EXACTLY,
+
+so an off-critical zero at 1/2 +- a + i gamma contributes an oscillation of exact exponential
+amplitude e^{ta}/(2(a^2+gamma^2)) and phase t*Im z - arg(z^2), with envelope attained. Sampled at
+x = log n this is an amplitude ~ n^a/(a^2+gamma^2). The critical terms are simultaneously pinned to
+[0, 2/gamma^2]. That upgrades the corpus's cofinal-unboundedness converse from qualitative to
+quantitative, with the exact rate and period 2*pi/Im z.
+
+Machine-verified: `RHTower/ScrewOffCriticalAmplitude.lean` (the exact amplitude identity, the
+envelope bound via |Re w| <= ||w||, the two-sided bound on critical terms, and strict monotonicity of
+the amplitude in the aperture; standard axioms only, wired into the RHTower umbrella).
+
+### Cycle 61 target — inside the corpus's own core, not beside it
+The criterion allows subtracting ANY nonnegative source energy. The corpus already has
+`two_mul_xiScrewDivisor_re_eq_central_prime_add_arch` (CCMFirstClockVolterra:2022) splitting
+Re(screw divisor) into a central prime term plus an archimedean term. So the second difference splits
+the same way, and the open core becomes: IS THE SECOND DIFFERENCE OF THE ARCHIMEDEAN PART, MINUS A
+NONNEGATIVE PRIME-SIDE ENERGY, EVENTUALLY BOUNDED BELOW ON THE LOG MESH? Read that theorem, compute
+both second differences explicitly, and identify which of the two carries the unbounded part. That is
+the first genuinely load-bearing question this programme has reached.
+
+---
+
+## Cycle 61 (2026-07-26) — TWO EXACT FACTS ABOUT THE CORPUS'S NAMED OPEN CORE
+### Phase 1 corpus search run first. Both results concern SUZUKI-RECTANGULAR-WARD-DEFECT-SEMIBOUNDED.
+
+### (1) THE SOURCE-ENERGY FREEDOM IS VACUOUS
+The criterion asks for SOME nonnegative source energy E leaving C(n) - E(n) eventually bounded below,
+where C(n) = Re(xiScrewWindowCurvature L (log n)). Since E >= 0, we have C - E <= C. Therefore
+
+    (exists E >= 0 with C - E eventually bounded below)  <=>  (C eventually bounded below),
+
+with E = 0 OPTIMAL. Forward: C(n) >= B + E(n) >= B. Converse: take E = 0.
+
+So the weakening is genuine against EXACT SOURCE ISOMETRY, but it is NOT a weakening of the plain
+curvature criterion `riemannHypothesis_iff_xiScrewWindowCurvature_logSample_eventually_bddBelow` —
+IT IS LITERALLY THE SAME STATEMENT. The "sharpened open core" is not sharper. Effort belongs on
+bounding the curvature itself, and the source-energy device cannot be the lever.
+
+This is a correction to the project's own frontier description in RiemannHypothesisSOTA2026.lean
+("a source Gram may carry an error; the true frontier is semiboundedness of that error"): true as a
+sufficiency statement, but the apparent extra freedom is nil.
+
+### (2) THE PRIME SECOND DIFFERENCE IS EXACTLY A TENT-WEIGHTED CHEBYSHEV WINDOW
+`two_mul_xiScrewDivisor_re_eq_central_prime_add_arch` gives
+2 Re D(t) = -2 P(t) + A(t) with P(t) = SUM_k (Lambda(k)/sqrt k) max(0, t - log k) — A SUM OF RAMPS.
+The window curvature is the step-L second difference, and the second difference of a ramp is a TENT:
+
+    max(0,u) - 2 max(0,u-L) + max(0,u-2L) = max(0, L - |u - L|),
+
+nonnegative, supported EXACTLY on [0,2L], height L at u = L. (Proved by the four-case split.)
+Hence the prime contribution to the window curvature is
+
+    -2 SUM_{log k in [x-2L, x]} (Lambda(k)/sqrt k) * tent_L(x - log k)   <=  0,
+
+a LOCALLY FINITE, SIGN-DEFINITE, TENT-WEIGHTED CHEBYSHEV WINDOW: only e^{x-2L} <= k <= e^x
+contribute. The tent is the autocorrelation of the indicator of [0,L], confirming this is the Weil
+form of a rectangular test function.
+
+Size check (no computation performed, scaling only): Lambda(k)/sqrt k ~ log k / sqrt k at k ~ e^x and
+the window holds ~ e^x/x integers, so the prime term is of order -L e^{x/2}, i.e. -L sqrt(n) at the
+log sample x = log n. The archimedean second difference must therefore supply +L e^{x/2} and cancel
+it to O(1); that cancellation IS the criterion.
+
+    => A LOWER BOUND FOR THE CURVATURE IS EXACTLY: the archimedean second difference dominates the
+       tent-weighted Chebyshev window up to a constant.
+
+Machine-verified: `RHTower/WardDefectFreedomVacuous.lean` (the two directions of the vacuity, the
+ramp-to-tent identity by four-case split, nonnegativity, the two vanishing statements off [0,2L], the
+peak value L, and the sign of the prime term; standard axioms only, wired into RHTower).
+
+### Cycle 62 target
+Compute the ARCHIMEDEAN second difference explicitly. `normalizedRectangularBottomArchContribution`
+is the other half of the central prime-arch identity; its step-L second difference is an explicit
+Gamma-side integral, not a sum over zeros. Both halves are then elementary objects and the criterion
+becomes one concrete inequality between a Gamma integral and a tent-weighted Chebyshev window —
+the first fully explicit form of the open core. Read
+`normalizedRectangularBottomArchContribution`, take its second difference, and state that inequality.
+
+---
+
+## Cycle 62 (2026-07-26) — THE OPEN CORE IN FULLY EXPLICIT FORM: FEJER SERIES vs TENT WINDOW
+### Phase 1 corpus search run first; the Fejer amplitude identity is absent from the corpus.
+
+Cycle 61 computed the PRIME side of the window curvature (tent-weighted Chebyshev window). This cycle
+computes the ZERO side, and the two turn out to be the same rectangular test function seen through
+its Fourier transform.
+
+### The zero side
+A critical zero contributes the screw term (1 - cos(t*gamma))/gamma^2. The step-L second difference
+is governed by the identity
+
+    cos A - 2 cos(A - theta) + cos(A - 2 theta) = -4 sin^2(theta/2) cos(A - theta),
+
+so with A = x*gamma, theta = L*gamma the contribution to the window curvature is EXACTLY
+
+    ( 4 sin^2(L gamma/2) / gamma^2 ) * cos((x - L) gamma).
+
+### The amplitude IS the Fejer weight
+    4 sin^2(L gamma/2) / gamma^2  =  (2 - 2 cos(L gamma))/gamma^2  =  | INT_0^L e^{-i gamma u} du |^2,
+the squared modulus of the Fourier transform of the indicator of [0,L]. So:
+
+    THE WINDOW CURVATURE IS THE WEIL FORM OF THE RECTANGULAR TEST FUNCTION, WITH THE PRIME SIDE
+    CARRYING THE AUTOCORRELATION (TENT) AND THE ZERO SIDE CARRYING ITS FOURIER SQUARE (FEJER).
+Tent and Fejer are a Fourier pair — the two halves computed in cycles 61 and 62 match exactly, which
+is a strong internal consistency check on both.
+
+### CONSEQUENCE 1 — the critical part is uniformly bounded, with an explicit constant
+The Fejer weight is nonnegative and at most 4/gamma^2, so each critical term is bounded in absolute
+value by 4/gamma^2 UNIFORMLY IN L AND x. Since SUM_gamma gamma^{-2} converges, the critical part of
+the window curvature is an ABSOLUTELY CONVERGENT cosine series, hence uniformly bounded. Therefore
+
+    UNDER RH THE SEMIBOUNDEDNESS CRITERION HOLDS AUTOMATICALLY WITH THE EXPLICIT CONSTANT
+    B = -4 SUM_gamma gamma^{-2}.
+
+### CONSEQUENCE 2 — everything unbounded is off-critical, with the amplitude of cycle 60
+Off-critical zeros contribute the exponentially growing oscillation of exact amplitude
+e^{t a}/(2(a^2 + gamma^2)) computed in cycle 60. So the fully explicit form of the open core is
+
+    [bounded Fejer cosine series over critical zeros]  +  [exponential off-critical terms]  >=  B,
+
+equivalently: the tent-weighted Chebyshev window over primes is dominated, up to O(1), by the
+archimedean second difference — and the ONLY possible source of failure is an off-critical zero.
+
+Machine-verified: `RHTower/ScrewWindowFejerAmplitude.lean` (the second-difference cosine identity via
+cos_sub/cos_two_mul/sin_two_mul and the half-angle law; the critical screw second difference; the
+Fejer amplitude identity; nonnegativity; the bound 4/gamma^2; and the uniform bound on each critical
+term; standard axioms only, wired into RHTower).
+
+### Cycle 63 target
+Both halves are now explicit and matched. The remaining quantity is the ARCHIMEDEAN second
+difference. `normalizedRectangularBottomArchContribution L a` is
+(1/pi) INT_R (rectangular transform at x - i)^2 * logDeriv archFactor (3/2 + i x) dx — a Gamma-side
+integral against the SQUARE of the rectangular transform, i.e. already the Fejer weight in disguise.
+Target: show that its step-L second difference equals the Gamma-side integral of the Fejer weight
+against Re Psi(1/4 + i x/2) - log pi, i.e. the archimedean term of the classical Weil form. If that
+identification closes, the open core is literally the classical rectangular Weil inequality with
+every constant explicit, and the corpus's screw-curvature route and the classical explicit formula
+are proved to be the same object rather than two parallel developments.
+
+---
+
+## Cycle 63 (2026-07-26) — THE ARCHIMEDEAN SIDE COLLAPSES TO ONE INTEGRAL IN THE SAME TENT
+### Phase 1 corpus search run first, and it CHANGED THE PLAN.
+
+The cycle-62 plan was to compute the archimedean second difference. SEARCH FIRST FOUND that the
+corpus already does the hard part: `XiGuinandWeilRectangularResolventFourier`'s
+`integral_rectangularEulerFourierKernel_mul_gaussDigammaSeriesTerm` pairs one Gauss/digamma summand
+against the rectangular Fourier square and gets
+
+    A(0)/(n+1)  -  INT_0^infinity e^{-(n+3/4)t} A(t/2) e^{t/2} dt,
+
+with A = rectangularTwoEdgeAutocorrelation — THE SAME TENT that carries the prime side. So the planned
+computation was already done; the remaining content is what happens when the series is SUMMED.
+
+### THE COLLAPSE (new)
+Using 1/(n+1) = INT_0^infinity e^{-(n+1)t} dt and SUM_{n>=0} e^{-nt} = (1-e^{-t})^{-1} for t > 0,
+
+    SUM_n [ A(0)/(n+1) - INT_0^inf e^{-(n+3/4)t} A(t/2) e^{t/2} dt ]
+        =  INT_0^inf  ( A(0) e^{-t}  -  A(t/2) e^{-t/4} ) / (1 - e^{-t})  dt .
+
+BOTH SERIES DIVERGE SEPARATELY; THE COMBINATION CONVERGES. The mechanism, proved this cycle:
+  * the numerator vanishes LINEARLY at the origin —
+        | A(0) e^{-t} - A(t/2) e^{-t/4} |  <=  (A(0) + Lip/2) * t,
+    by splitting A(0)e^{-t} - A(t/2)e^{-t/4} = A(0)(e^{-t} - e^{-t/4}) + e^{-t/4}(A(0) - A(t/2));
+  * the denominator vanishes linearly with slope one —
+        1 - e^{-t}  >=  t/2   for 0 <= t <= 1,  via e^{-t} <= 1/(1+t);
+  * hence the integrand is BOUNDED BY 2 A(0) + Lip on (0,1]: the two divergences cancel exactly.
+The tent is 1-Lipschitz, so this applies to it directly.
+
+### THE OPEN CORE, NOW COMPLETELY EXPLICIT
+Combining cycles 61-63, the rectangular window criterion is ONE elementary inequality:
+
+    INT_0^inf ( A(0) e^{-t} - A(t/2) e^{-t/4} ) / (1 - e^{-t}) dt
+        -  2 SUM_{k>=2} ( Lambda(k)/sqrt k ) * A(log k)      >=   B ,
+
+with A the TENT of half-width L (support [0,2L], height L at L). Prime side: tent-weighted Chebyshev
+window (cycle 61). Zero side: Fejer cosine series with weights 4 sin^2(L gamma/2)/gamma^2, absolutely
+convergent hence bounded (cycle 62). Archimedean side: the single integral above (this cycle). Tent
+and Fejer are a Fourier pair, so the three computations are mutually consistent.
+
+EVERY INGREDIENT IS NOW ELEMENTARY. The entire difficulty is the competition between the archimedean
+integral and the tent-weighted prime window; no special function, no series over zeros, and no
+regularization remains.
+
+Machine-verified: `RHTower/ArchimedeanSingleIntegral.lean` (the denominator bound via
+e^{-t} <= 1/(1+t), the exponential gap bound, the linear numerator bound by the split, and the
+boundedness of the collapsed integrand at the origin; standard axioms only, wired into RHTower).
+
+### Cycle 64 target
+Both sides are now elementary functions of the same tent A. The next question is the first one that
+is genuinely quantitative rather than structural: FOR WHICH L IS THE INEQUALITY PROVABLE OUTRIGHT?
+The archimedean integral is a fixed functional of A; the prime window is a Chebyshev sum over
+[e^{x-2L}, e^x]. For small L the prime window contains few terms and the archimedean integral should
+dominate. Compute the exact L-dependence of both — the archimedean integral scales like A(0) = L
+times a universal constant, the prime window like L e^{x/2} — and determine the threshold L below
+which the inequality is unconditional. That threshold is the honest measure of how far the corpus's
+route currently reaches.
+
+---
+
+## Cycle 64 (2026-07-26) — THE SQUARED MAIN TERM; AND A SECOND PHASE-1 SAVE
+### Phase 1 corpus search run first and CHANGED THE PLAN AGAIN. Record both outcomes.
+
+### PHASE-1 SAVE (do not redo)
+The cycle-63 plan was to identify the criterion with the PNT error term. THE CORPUS ALREADY HAS IT,
+and sharper: `CCMSharpPrimeWindow.lean` proves
+
+    dyadicWeightedPrimeWindow_eq_main_add_completedErrorDifference :
+      SUM_{n/2 < k <= n} k^{-1/2} Lambda(k)
+        = 2(1 - 1/sqrt 2) sqrt n
+          + ( criticalMellinCompletedError(log n - log 2) - criticalMellinCompletedError(log n) )
+          + 2(sqrt 2 - 1)/sqrt n,
+
+i.e. the sharp moving prime window is EXACTLY its square-root main term plus a backward difference of
+the completed critical-Mellin error, with an explicit endpoint term. So the identification
+"criterion = PNT error term" is the corpus's own, already exact. NOT RE-DERIVED.
+
+Consequence for the route's status: the rectangular/screw chain is RH-EQUIVALENT AT EVERY STAGE. The
+corpus's named core reduces (cycle 61) to plain semiboundedness of the curvature, which reduces (this
+identity) to boundedness of differences of the completed critical-Mellin error, which is RH. THE
+"OPEN CORE" IS A RESTATEMENT, NOT A REDUCTION. Recorded so it is not treated as a lever.
+
+### WHAT IS GENUINELY NEW — THE SQUARE
+The corpus's main term is for the SHARP (box) window: constant 4(1 - e^{-L/2}). The window that
+actually appears in the screw criterion is the SECOND DIFFERENCE of the ramp, i.e. the TENT, and the
+tent is the AUTOCORRELATION of the box. Its main term is therefore the SQUARE:
+
+    INT_0^{2L} tent_L(v) e^{-v/2} dv  =  4 (1 - e^{-L/2})^2 ,
+
+proved this cycle by exhibiting antiderivatives on the two halves:
+    INT_0^L v e^{-v/2} dv          = -2L e^{-L/2} + 4(1 - e^{-L/2}),
+    INT_L^{2L} (2L - v) e^{-v/2} dv =  2L e^{-L/2} - 4 e^{-L/2} + 4 e^{-L},
+whose sum is 4 - 8 e^{-L/2} + 4 e^{-L} = 4(1 - e^{-L/2})^2.
+
+The square is not incidental: the tent is 1_[0,L] * 1_[0,L], so its Laplace transform at 1/2 is the
+square of INT_0^L e^{-v/2} dv = 2(1 - e^{-L/2}). THE POSITIVITY STRUCTURE OF THE WEIL FORM APPEARS
+HERE AS AN ARITHMETIC SQUARE, matching exactly the Fejer weight 4 sin^2(L gamma/2)/gamma^2 on the
+zero side (cycle 62), which is the squared modulus of the SAME box transform.
+
+    prime side        main term  4(1 - e^{-L/2})^2 * e^{x/2}
+    zero side         weights    |INT_0^L e^{-i gamma u} du|^2 = 4 sin^2(L gamma/2)/gamma^2
+    archimedean side  kernel     the collapsed single integral in the same tent (cycle 63)
+
+All three sides carry the same square, from the same box. That is the internal coherence of the
+rectangular route, now explicit.
+
+Machine-verified: `RHTower/TentWindowMainTerm.lean` (both antiderivatives with HasDerivAt, both
+interval integrals, the sum identity, and the square factorization; standard axioms only, wired).
+
+### CORRECTION to cycle 63's summary
+Cycle 63 said "the open core is one elementary inequality" with A a fixed tent. That is imprecise: in
+the central prime-arch identity the aperture and half-width are LOCKED (L = a = t/2), so A depends on
+the sample point as well. The collapsed archimedean integral is correct as an identity for each
+(L,a); the criterion is the second difference in t of that family. Both sides then grow like e^{x/2}
+and the criterion is the cancellation of those leading terms — which is exactly the PNT error
+statement above. Recorded so the earlier phrasing is not read as a stronger claim.
+
+### Cycle 65 target
+The three sides are now explicit and their leading constants match. The one quantity not yet computed
+anywhere is the ARCHIMEDEAN leading constant: the collapsed integral's e^{x/2} coefficient, which must
+equal 4(1 - e^{-L/2})^2 exactly if the main terms cancel. Compute it from the collapsed integrand and
+check the match. If it matches, the cancellation is proved unconditionally and the criterion reduces
+in full rigour to the error term alone — the cleanest possible statement of where the route ends.
+
+---
+
+## Cycle 65 (2026-07-26) — THE LEADING TERM IS THE POLE TERM, AND THE CANCELLATION IS EXACT
+
+### The leading e^{x/2} is NOT archimedean — it is the POLE of zeta
+The e^{x/2} on the "archimedean" side of the rectangular criterion is the POLE TERM of the explicit
+formula, from the simple pole of zeta at s = 1. In the u-variable the pole term of a test function h
+is INT h(u) e^{u/2} du. And the main term of the prime side is
+
+    SUM_k (Lambda(k)/sqrt k) h(log k) = INT_1^inf h(log y) y^{-1/2} d(psi(y)),   psi(y) = y + E(y),
+
+whose main part INT_1^inf h(log y) y^{-1/2} dy = INT_0^inf h(u) e^{u/2} du IS THE SAME INTEGRAL.
+
+    ==> THE POLE TERM AND THE PRIME MAIN TERM ARE THE SAME INTEGRAL. THEY CANCEL IDENTICALLY, FOR
+        EVERY TEST FUNCTION, NOT MERELY TO LEADING ORDER.
+
+This settles the cycle-64 question: the archimedean e^{x/2} coefficient does match 4(1-e^{-L/2})^2 —
+because it is literally the same integral, not a separate computation that happens to agree.
+
+### The translation identity (proved)
+    INT_{x-2L}^{x} tent_L(x-u) e^{u/2} du = e^{x/2} INT_0^{2L} tent_L(v) e^{-v/2} dv
+                                          = e^{x/2} * 4 (1 - e^{-L/2})^2,
+the second step by cycle 64. So both sides carry e^{x/2} * 4(1-e^{-L/2})^2 and the cancellation is
+exact and unconditional.
+
+### WHERE THE ROUTE ENDS — stated precisely
+After the cancellation NOTHING OF SIZE e^{x/2} REMAINS, and the rectangular criterion is exactly
+
+    boundedness of  INT h(log y) y^{-1/2} dE(y)   in the tent-weighted window,
+
+with E the completed critical-Mellin error. That is the classical RH-equivalent statement about the
+Chebyshev error, now with every constant explicit and every step machine-verified. Cycles 61-65
+together give the full explicit anatomy of the corpus's rectangular route:
+
+    c61  source-energy freedom is VACUOUS; prime second difference = tent-weighted Chebyshev window
+    c62  zero side = Fejer cosine series, weights 4 sin^2(L gamma/2)/gamma^2, absolutely convergent
+    c63  archimedean side collapses to ONE integral in the same tent; divergences cancel linearly
+    c64  tent main term = 4(1 - e^{-L/2})^2, the SQUARE of the sharp-window constant
+    c65  the e^{x/2} term is the POLE term; pole and prime main term cancel IDENTICALLY
+
+Machine-verified: `RHTower/PoleTermCancellation.lean` (translation identity via
+intervalIntegral.integral_comp_sub_left, the common leading coefficient, the exact cancellation, and
+the reduction of the criterion to the error term alone; standard axioms only, wired).
+
+### HONEST STATUS OF THE ROUTE
+Every stage is RH-equivalent. The rectangular/screw programme is a complete, exact, and now fully
+explicit REFORMULATION of the Chebyshev error bound. It does not reduce RH to anything weaker. Its
+value is that it makes every constant explicit and every cancellation unconditional; its limit is
+that the residue is the classical statement.
+
+### Cycle 66 target
+Since the route bottoms out at the Chebyshev error, the only way forward inside it is a mechanism
+that bounds E(y) in a TENT-WEIGHTED window using something other than RH. The tent weight is the one
+piece of freedom: it is nonnegative, compactly supported, and its Fourier transform is the Fejer
+kernel, hence NONNEGATIVE. Ask whether the nonnegativity of the Fejer weight buys anything for the
+error term that a sharp window does not — i.e. whether a positive-definite window admits an
+unconditional one-sided bound where a box does not. That is the one structural asymmetry left
+unexploited in this route.
+
+---
+
+## Cycle 66 (2026-07-26) — SLIDING DESTROYS POSITIVE TYPE. THE LAST ASYMMETRY IS ABSENT, NOT UNUSED.
+
+Cycle 65 identified the one remaining freedom: the tent weight is nonnegative, compactly supported,
+and its Fourier transform is the Fejer kernel, hence nonnegative — apparently Weil positivity waiting
+to be used. IT IS NOT AVAILABLE.
+
+### The reason, exactly
+The criterion does not use the tent. It uses the tent TRANSLATED TO THE SAMPLE POINT. Translation
+multiplies the Fourier transform by a phase:
+
+    hat( h(. - c) )(gamma) = e^{-i c gamma} hat h(gamma),
+    Re hat( h(. - c) )(gamma) = cos(c gamma) * hat h(gamma),
+
+and for c != 0 the factor cos(c gamma) CHANGES SIGN. Taking gamma = pi/c gives cos(c gamma) = -1, so
+the real part is strictly negative wherever the Fejer weight is strictly positive there (which holds
+off the lattice gamma in (2 pi/L) Z).
+
+    ==> FOR EVERY NONZERO SHIFT THE TRANSLATED TENT IS NOT OF POSITIVE TYPE. WEIL POSITIVITY IS
+        UNAVAILABLE IN THE SLIDING CRITERION, WHICH IS THEREFORE GENUINELY A BOUNDEDNESS STATEMENT
+        AND NOT A NONNEGATIVITY STATEMENT.
+
+### The trade-off is sharp
+Positive type holds EXACTLY at the centred window c = 0, where the criterion is a single inequality
+at one point and cannot detect the zeros. The sliding family that is equivalent to RH NECESSARILY
+LEAVES THE POSITIVE-TYPE CLASS. So the last structural asymmetry of this route is not merely
+unexploited — IT IS ABSENT.
+
+Machine-verified: `RHTower/SlidingBreaksPositiveType.lean` (the phase factor and its real part, the
+sign flip cos(c * (pi/c)) = -1, strict negativity of the translated transform, positivity of the
+Fejer weight off the lattice, and the centred case; standard axioms only, wired).
+
+### THE ANATOMY OF THE RECTANGULAR ROUTE — COMPLETE (cycles 61-66)
+    c61  source-energy freedom is VACUOUS; prime 2nd difference = tent-weighted Chebyshev window
+    c62  zero side = Fejer cosine series, weights 4 sin^2(L gamma/2)/gamma^2, absolutely convergent
+    c63  archimedean side collapses to ONE integral in the same tent; divergences cancel linearly
+    c64  tent main term = 4(1 - e^{-L/2})^2, the SQUARE of the sharp-window constant
+    c65  the e^{x/2} term is the POLE term; pole and prime main term cancel IDENTICALLY
+    c66  sliding destroys positive type; no positivity is available anywhere in the family
+CONCLUSION: the rectangular/screw route is an exact, fully explicit, machine-verified REFORMULATION
+of the Chebyshev error bound, with every constant computed and every cancellation unconditional, and
+with NO positivity structure that could yield a one-sided unconditional estimate. Its residue is the
+classical RH-equivalent statement and nothing weaker.
+
+### Cycle 67 target
+The route is closed. The corpus's SOTA file lists other live walls that the classification has not
+touched, in particular the source-pure construction problem recorded in
+`completed-seam-thorin-subordinator-rh.md` (Thorin/GGC: unconditional infinite divisibility and
+Thorin density positivity for the reciprocal completed-zeta ratio hold only in Re s > 1; at the
+critical seam the chain is RH-equivalent). Before opening it, run the Phase 1 search on
+"Thorin", "GGC", "complete monotonicity", "Stieltjes-Pick" and read that pipeline card — the last two
+cycles have shown that reading the corpus first is worth more than any amount of independent
+derivation.
+
+---
+
+## Cycle 67 (2026-07-26) — THE THORIN LANE: k_src IS THE GAUSSIAN HEAT TRACE, AND EACH PRIME PEAKS
+## AT TIME log^2(n)/2
+
+### Phase 1 (binding) — read the corpus's own in-progress card first
+`docs/drafts/pipeline/1-in-progress/completed-seam-thorin-subordinator-rh.md` states the lane
+precisely. With Xi(w)=xi(1/2+w), Phi(s)=Xi(sqrt s), F_src(s)=Phi(0)/Phi(s):
+GGC membership of F_src is an RH EQUIVALENCE (parent theory), and the card is explicit that
+"the only proof-bearing novelty can be a divisor-free construction of U from the completed source",
+with the first source-side target being an explicit theta-prime formula for the Levy density
+k_src(x) = INT e^{-tx} dU(t) followed by its complete monotonicity.
+
+Also found (do not duplicate): `RHTower/XiGaussianHeatTraceDisproof.lean` already proves
+`not_riemannHypothesis_of_xiGaussianHeatTraceReal_neg` — A SINGLE STRICTLY NEGATIVE GAUSSIAN
+HEAT-TRACE VALUE AT POSITIVE TIME CONTRADICTS RH. That is a live falsification handle.
+
+### THE IDENTIFICATION (new)
+Under the Hadamard product U = SUM_gamma m_gamma delta_{gamma^2}, so
+
+    k_src(x) = SUM_gamma m_gamma e^{-gamma^2 x}   =   THE GAUSSIAN HEAT TRACE OVER THE ZEROS.
+
+So the Thorin card's Levy density and the corpus's Gaussian heat trace are THE SAME OBJECT, and the
+existing disproof theorem is the consumer end of the Thorin lane. Nothing in the corpus connected
+them.
+
+### THE SOURCE SIDE, EXPLICITLY
+The Gaussian hat h(gamma) = e^{-gamma^2 x} comes from the u-side test function
+h(u) = (4 pi x)^{-1/2} e^{-u^2/(4x)}. So the PRIME contribution to the heat trace is
+
+    (4 pi x)^{-1/2} SUM_n (Lambda(n)/sqrt n) e^{-log^2 n/(4x)},
+
+a positive sum entering with a minus sign — the explicit theta-prime formula the card asks for.
+
+### THE BUMP LOCATION (new, machine-verified)
+With a = log n the profile g_a(x) = x^{-1/2} e^{-a^2/(4x)} has
+    (log g_a)'(x) = (a^2/4 - x/2)/x^2 = (a^2/2 - x)/(2 x^2),
+so it INCREASES on (0, a^2/2), PEAKS EXACTLY AT x = a^2/2, and DECREASES after, with peak value
+(a^2/2)^{-1/2} e^{-1/2} = sqrt 2 e^{-1/2}/|a|.
+
+    ==> THE PRIME POWER n IS MAXIMALLY VISIBLE IN THE GAUSSIAN HEAT TRACE AT TIME x = log^2(n)/2.
+
+This is directly actionable for the corpus's own falsification theorem: it says WHICH TIME SCALE
+PROBES WHICH PRIME. The probe time is strictly increasing in log n, so the small primes live at small
+times and the trace at time x is dominated by primes with log n ~ sqrt(2x).
+
+### WHY TERMWISE COMPLETE MONOTONICITY FAILS (new, machine-verified)
+A completely monotone function is nonincreasing. The profile g_a is NOT, for any a != 0 — it strictly
+increases before its peak. So the prime side of k_src is not completely monotone summand by summand;
+complete monotonicity can only hold AFTER the archimedean and polar completion. This confirms the
+card's recorded residue ("termwise prime positivity fails after seam division") with an explicit
+turning point rather than a qualitative remark.
+
+Machine-verified: `RHTower/PrimeHeatBumpLocation.lean` (the log-derivative in sign form, strict
+increase before and decrease after the peak, the peak characterization, the peak value, the failure
+of monotonicity, and strict monotonicity of the probe time; standard axioms only, wired into RHTower).
+
+### Cycle 68 target
+The Thorin lane now has both ends explicit: consumer = the existing Gaussian heat-trace disproof
+theorem; source = the theta-prime formula with bump structure. The card's OPEN CORE A is "positive
+packet measure" for the incomplete-Gamma half-stable packets. The natural next step, and the first
+one that is quantitative rather than structural, is the ARCHIMEDEAN half of the heat trace: compute
+the Gamma-side contribution against the same Gaussian test function and compare its size at time
+x = log^2(n)/2 with the prime bump peak sqrt 2 e^{-1/2}/log n. If the archimedean term at that time
+is smaller than the prime bump for some n, the heat trace is negative there and RH is FALSE by the
+existing theorem; if it dominates for all n, that is the first unconditional positivity gain in the
+lane. Either outcome is decisive. This is the sharpest falsification test the programme has reached.

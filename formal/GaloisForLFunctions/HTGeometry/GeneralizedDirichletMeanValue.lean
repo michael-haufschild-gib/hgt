@@ -108,6 +108,64 @@ theorem genPoly_meanValue (a : ℕ → ℂ) (lam : ℕ → ℝ) (s : Finset ℕ)
   congr 1
   exact Finset.sum_congr rfl fun n _ => by ring
 
+/-- Pointwise expansion of a product of two generalized Dirichlet polynomials with *different*
+frequency families. -/
+theorem genPoly_mul_conj_bilinear (a c : ℕ → ℂ) (lam mu : ℕ → ℝ) (s u : Finset ℕ) (t : ℝ) :
+    genPoly a lam s t * (starRingEnd ℂ) (genPoly c mu u t)
+      = ∑ n ∈ s, ∑ m ∈ u,
+          a n * (starRingEnd ℂ) (c m)
+            * Complex.exp (Complex.I * (((lam n - mu m : ℝ) : ℂ) * t)) := by
+  have hc : ∀ r : ℝ, (starRingEnd ℂ) (Complex.I * ((r : ℂ) * (t : ℂ)))
+      = -(Complex.I * ((r : ℂ) * (t : ℂ))) := by intro r; simp
+  simp only [genPoly, map_sum]
+  rw [Finset.sum_mul]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  rw [map_mul, ← Complex.exp_conj, hc]
+  rw [show a n * Complex.exp (Complex.I * ((lam n : ℂ) * (t : ℂ)))
+        * ((starRingEnd ℂ) (c m) * Complex.exp (-(Complex.I * ((mu m : ℂ) * (t : ℂ)))))
+      = a n * (starRingEnd ℂ) (c m)
+        * (Complex.exp (Complex.I * ((lam n : ℂ) * (t : ℂ)))
+            * Complex.exp (-(Complex.I * ((mu m : ℂ) * (t : ℂ))))) from by ring,
+    ← Complex.exp_add]
+  congr 2
+  push_cast
+  ring
+
+/-- **Bilinear mean value.**  The correlation of two generalized Dirichlet polynomials over
+`[T, T+U]` is the exact double sum of oscillatory integrals indexed by the frequency differences
+`λ_n − μ_m`.  Dividing by `U` and letting `U → ∞` keeps exactly the *matched* pairs `λ_n = μ_m`:
+this is the mechanism that turns a correlation of two exponential twists into a shifted convolution
+of their coefficients. -/
+theorem genPoly_meanValue_bilinear (a c : ℕ → ℂ) (lam mu : ℕ → ℝ) (s u : Finset ℕ) (T U : ℝ) :
+    (∫ t in T..(T + U), genPoly a lam s t * (starRingEnd ℂ) (genPoly c mu u t))
+      = ∑ n ∈ s, ∑ m ∈ u,
+          a n * (starRingEnd ℂ) (c m) * oscInt (lam n - mu m) T U := by
+  have hcont : ∀ n m : ℕ, IntervalIntegrable
+      (fun t : ℝ => a n * (starRingEnd ℂ) (c m)
+        * Complex.exp (Complex.I * (((lam n - mu m : ℝ) : ℂ) * t)))
+      MeasureTheory.volume T (T + U) := by
+    intro n m; apply Continuous.intervalIntegrable; fun_prop
+  have hcont2 : ∀ n : ℕ, IntervalIntegrable
+      (fun t : ℝ => ∑ m ∈ u, a n * (starRingEnd ℂ) (c m)
+        * Complex.exp (Complex.I * (((lam n - mu m : ℝ) : ℂ) * t)))
+      MeasureTheory.volume T (T + U) := by
+    intro n
+    apply Continuous.intervalIntegrable
+    exact continuous_finsetSum _ (fun m _ => by fun_prop)
+  rw [intervalIntegral.integral_congr (fun t _ => genPoly_mul_conj_bilinear a c lam mu s u t)]
+  rw [intervalIntegral.integral_finsetSum (f := fun n t =>
+        ∑ m ∈ u, a n * (starRingEnd ℂ) (c m)
+          * Complex.exp (Complex.I * (((lam n - mu m : ℝ) : ℂ) * t)))
+      (fun n _ => hcont2 n)]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [intervalIntegral.integral_finsetSum (f := fun m t =>
+        a n * (starRingEnd ℂ) (c m)
+          * Complex.exp (Complex.I * (((lam n - mu m : ℝ) : ℂ) * t)))
+      (fun m _ => hcont n m)]
+  exact Finset.sum_congr rfl fun m _ => by rw [oscInt]; exact intervalIntegral.integral_const_mul _ _
+
 /-- Closed form of the oscillatory integral at a non-zero frequency. -/
 theorem oscInt_eq (δ T U : ℝ) (hδ : δ ≠ 0) :
     oscInt δ T U
@@ -162,6 +220,54 @@ theorem genPoly_meanValue_error (a : ℕ → ℂ) (lam : ℕ → ℝ) (s : Finse
     hlam n hn m (Finset.mem_of_mem_erase hm) (Finset.ne_of_mem_erase hm)
   rw [norm_mul, norm_mul, RCLike.norm_conj]
   exact mul_le_mul_of_nonneg_left (oscInt_norm_le _ T U hne) (by positivity)
+
+/-- **Diagonal extraction under a uniform frequency gap.**  If the frequencies of a generalized
+Dirichlet polynomial are separated by at least `g > 0`, then its mean square over any interval equals
+the interval length times the diagonal energy, up to an error bounded by `(2/g)(∑‖a n‖)²`
+**independently of the interval, its length and its position**.  Dividing by the length `U` and
+letting `U → ∞` therefore isolates the diagonal, at averaging length `U ≫ (∑‖a n‖)²/(g·diagonal)`.
+
+This is the rigorous core of the Bohr method: a uniform frequency gap converts a mean square into a
+diagonal sum with an error that does not grow.  Frequencies `λ_n = n` (an additive twist) have gap
+`1`; frequencies `λ_n = n^{1/d}` with `d ≥ 2` have gaps tending to `0`, and no such uniform statement
+is available — which is exactly where the degree barrier lives. -/
+theorem genPoly_meanValue_error_of_gap (a : ℕ → ℂ) (lam : ℕ → ℝ) (s : Finset ℕ) (T U g : ℝ)
+    (hg : 0 < g) (hgap : ∀ n ∈ s, ∀ m ∈ s, m ≠ n → g ≤ |lam m - lam n|) :
+    ‖(∫ t in T..(T + U), genPoly a lam s t * (starRingEnd ℂ) (genPoly a lam s t))
+        - (U : ℂ) * (∑ n ∈ s, a n * (starRingEnd ℂ) (a n))‖
+      ≤ (2 / g) * (∑ n ∈ s, ‖a n‖) ^ 2 := by
+  have hne : ∀ n ∈ s, ∀ m ∈ s, m ≠ n → lam m - lam n ≠ 0 := by
+    intro n hn m hm hmn h0
+    have := hgap n hn m hm hmn
+    rw [h0] at this
+    simp at this
+    linarith
+  refine le_trans (genPoly_meanValue_error a lam s T U hne) ?_
+  have hbound : ∀ n ∈ s, ∑ m ∈ s.erase n, ‖a m‖ * ‖a n‖ * (2 / |lam m - lam n|)
+      ≤ ∑ m ∈ s, ‖a m‖ * ‖a n‖ * (2 / g) := by
+    intro n hn
+    refine le_trans (Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset _ _)
+      (fun m _ _ => by positivity)) (Finset.sum_le_sum fun m hm => ?_)
+    rcases eq_or_ne m n with rfl | hmn
+    · simp
+      positivity
+    · have hgn := hgap n hn m hm hmn
+      have habs : (0 : ℝ) < |lam m - lam n| := lt_of_lt_of_le hg hgn
+      have : (2 : ℝ) / |lam m - lam n| ≤ 2 / g := by
+        apply div_le_div_of_nonneg_left (by norm_num) hg hgn
+      exact mul_le_mul_of_nonneg_left this (by positivity)
+  refine le_trans (Finset.sum_le_sum hbound) ?_
+  have h1 : ∀ n : ℕ, ∑ m ∈ s, ‖a m‖ * ‖a n‖ * (2 / g)
+      = (‖a n‖ * (2 / g)) * ∑ m ∈ s, ‖a m‖ := by
+    intro n
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun m _ => by ring
+  have h2 : ∑ n ∈ s, ∑ m ∈ s, ‖a m‖ * ‖a n‖ * (2 / g)
+      = (2 / g) * (∑ n ∈ s, ‖a n‖) ^ 2 := by
+    simp only [h1, ← Finset.sum_mul]
+    rw [sq]
+    ring
+  exact le_of_eq h2
 
 end
 

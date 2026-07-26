@@ -1,3 +1,28 @@
+# ⚠ RETRACTED — see the retraction notice below
+
+> **RETRACTION (campaign cycle 82, erratum E19).** **Theorem 1, Theorem 2, and the `(⟹)` direction of
+> Theorem 3 in this note are WITHDRAWN.** Their proofs rest on Step 3 of §3, which applies Voronoi
+> summation to the `n`-sum *inside* the `m`-sum — i.e. it interchanges the `Δ_k` Voronoi series with a
+> second summation. That interchange is illegitimate: a legitimate version of it proves the sharp
+> Dirichlet divisor conjecture at `k = 2` and `Δ₃ ≪ x^{1/3+ε}` at `k = 3`, both open. The error was
+> found by deriving `G₃` two ways and obtaining incompatible answers.
+>
+> **Also withdrawn:** §5.2 Theorem 3's forward direction; the general-`k` equivalence (erratum E17 —
+> the two directions coincide only at `k = 3`); and the `Ω`-result `G₃ = Ω(y^{5/6−ε})`, which used the
+> withdrawn direction.
+>
+> **What survives:** the kernel facts of §2.1 as pure analysis (the elementary integral
+> `∫_1^X sin(cu)du = (cos c − cos cX)/c`, its oddness, the product-to-sum split, and the Laplace
+> factorisation of §2.2) — all Lean-certified in `HTGeometry.TernaryVoronoiAntisymmetry`; the
+> phase-speed invariant of Corollary 4.1; and the Mellin direction, which is elementary. **Note
+> further (erratum E21) that the Mellin direction is Perron's method in disguise, so its outputs are
+> classical, not new.**
+>
+> The note is retained unedited below as a record of what was attempted and why it failed. **Do not
+> cite Theorems 1–3.**
+
+---
+
 # The shift-average of a divisor correlation is the square of a one-variable exponential sum
 
 - **ID:** `shift-average-factorisation`
@@ -220,6 +245,33 @@ cancellation only in `c` and none in `a, b`, and it evaluates at the single wors
 of — cancellation in a second variable, a pair tailored to the phase `u^{1/3}`, or exploiting that
 `a ≤ b ≤ c` forces `a ≤ y^{1/3}` — could close it. **This is the campaign's narrowest surviving gap
 and the only one measured against a published exponent rather than against an unproved conjecture.**
+
+---
+
+## 5.2 The equivalence
+
+The chain is tight in both directions.
+
+**Theorem 3 (equivalence).** *For `k ≥ 3` and `H = x^{(k-2)/k}` (the exact reach),*
+
+    G_k(y) := Σ_{m≤y} d_k(m) e(k x^{1/k} m^{1/k})  ≪  y^{1-η}      ⟺      m(k) ≤ k - 3/2 - kη.
+
+*In particular `m(k) = 1 ⟺ G_k(y) ≪ y^{5/(2k)}`, and at `k = 3`: `m(3) ≤ 3/2 - 3η`, so the known
+`m(3) ≤ 5/4` is exactly `G₃ ≪ y^{11/12}`.*
+
+*Proof.* `(⟸)` Mellin gives `G_k(y) = (1/2πi)∫ζ(s)^k M(s)ds` with `M(s) = k∫_1^V v^{ks-1}e(kXv)dv`,
+`V = y^{1/k}`; stationary phase concentrates `M` at `|t| ≍ XV = x^{2/k}·…`, which is the height `T`
+with `x = T^{k/2}`. Cauchy–Schwarz against `∫|M(1/2+it)|²dt ≍ y` gives `|G_k| ≪ T^{m(k)/2}y^{1/2}`.
+`(⟹)` Theorem 2's chain gives the transfer input `(a,b) = (1/2, (5k-8)/(2k) - 2η)`, whose transfer
+output is `k - 3/2 - kη`. ∎
+
+> **Consequence.** The `2k`-th moment exponent of `ζ` is *determined* by the size of one one-variable
+> divisor exponential sum with a `k`-th-root phase. The statement contains no correlation, no shifted
+> convolution and no automorphic input.
+
+This is why every analytic treatment of `G_k` attempted so far returns its input exactly: exponent
+pairs (`κ+λ < 3/4 ⟺ μ < 1/8`), the Voronoi interchange (worth the divisor problem), Riesz means
+(cost `x^{(k-1)/2k}`, the size of `Δ_k`), and Mellin (equality). **They are four views of Theorem 3.**
 
 ---
 

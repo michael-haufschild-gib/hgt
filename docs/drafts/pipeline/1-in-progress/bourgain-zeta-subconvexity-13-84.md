@@ -213,7 +213,26 @@ functional-equation estimate may enter as a hypothesis of the final declaration.
   `BourgainPowerScaleBootstrap.lean` formalizes the actual multiplicative
   power-scale recurrence `b(N)≲N^δb(N^(2/3))`, proves its exact finite
   iteration, and bounds the accumulated geometric exponent by `3δ`.
-  `[OPEN CORE]` Sharp planar `L⁶` decoupling (1.5), weighted cube
-  localization, and the analytic inequality producing the recurrence remain
-  missing; `BourgainScaleContraction.lean` concerns a different additive
-  dyadic recurrence and cannot discharge this step.
+  `[OPEN CORE]` Continuous weighted planar `L⁶` decoupling (1.5), weighted
+  cube localization, and the analytic inequality producing the recurrence
+  remain missing; `BourgainScaleContraction.lean` concerns a different
+  additive dyadic recurrence and cannot discharge this step.
+- 2026-07-25 — `[SECTION 1 PLANAR INPUT] [LEAN-PROVED]`
+  `BourgainPlanarDiscreteDecoupling.lean` states the exact finite extension
+  `Σaₙe(nu+n²v)` and proves its weighted unit-square sixth-moment estimate
+  from the arithmetic torus theorem.
+  `BourgainScaledParabolaDecoupling.lean` then performs the literal physical
+  change of variables `u=x/H`, `v=y/H²`: the `[0,H²]²` Jacobian is `H³`,
+  the linear coordinate contributes exactly `H` periods, and the normalized
+  physical moment equals the unit-torus moment with no extra power loss.
+  It also proves periods `H,H²` and exact invariance under arbitrary
+  translations of the physical square.
+  `BourgainScaledPlanarBilinearL6.lean` proves exact Fubini factorization on
+  `[0,H²]⁴`, identifies the normalized physical two-factor moment with the
+  independent four-torus moment, and transfers the subpower estimate.
+  All target builds and formal lint pass; representative `#print axioms`
+  checks report only `propext`, `Classical.choice`, and `Quot.sound`.
+  `[OPEN CORE]` This closes the finite physical-scale planar input, but not
+  the arbitrary-`L¹` continuous weighted wave-packet theorem used verbatim in
+  (1.5), nor the image-parallelepiped covering and recurrence production in
+  (1.23)--(1.26).

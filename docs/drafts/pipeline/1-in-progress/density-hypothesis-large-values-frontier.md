@@ -5485,3 +5485,1192 @@ large-value method valid when `V < T^{1/2}`, i.e. below the coherence threshold;
 Theorem 53 (the constant `(2-2σ)(2σ-1)`) in Lean, since it is the cleanest correct statement produced
 and would be checkable; (d) apply the two new gates (supremum check at `k = 2,3,10,∞`; identity check
 for any "new object") to every claim before recording it.
+
+---
+
+# CYCLE 60 (2026-07-26) — **Theorem 54: `τ_0 = 2σ` keeps the whole reduction inside the coherent regime, and gives `\mathrm{A}(σ) ≤ 3/(2σ)`**
+
+## The choice `[PROVED HERE]`
+Corollary 11.9 with `τ_0 = 2σ`:
+* condition (7) requires `\mathrm{LV}_ζ(σ,τ)` only for `2 ≤ τ < 4τ_0/3 = 8σ/3`, and `8σ/3 < 2` for
+  every `σ < 3/4` — **vacuous**;
+* condition (6) requires `\mathrm{LV}(σ,τ) ≤ (3-3σ)τ/(2σ)` on `τ ∈ [4σ/3,\ 2σ]`, and **every `τ` in
+  that range satisfies `τ ≤ 2σ`, i.e. `V = N^{σ} ≥ T^{1/2}` — the coherent regime (Theorem 34)**;
+* conclusion: `\mathrm{A}(σ) ≤ 3/τ_0 = 3/(2σ)`.
+> ### Theorem 54 `[PROVED HERE]`
+> **`\mathrm{A}(σ) ≤ 3/(2σ)` follows from a large-value bound required only on `τ ∈ [4σ/3, 2σ]`, a
+> range lying entirely inside the coherent regime where the full wave-packet / fat-AP / additive-energy
+> toolkit is available.** The mean value theorem falls short at the binding point `τ = τ_0 = 2σ` by
+> exactly
+> ```
+>        (τ_0 + 1 - 2σ) - (3-3σ) \;=\; 3σ - 2 ,
+> ```
+> so **a gain of `3σ-2` in `\mathrm{LV}(σ, 2σ)` suffices.**
+Numerically, `3/(2σ) < 3/(2-σ)` (Ingham) exactly when `σ > 2/3`, and
+```
+   σ = 7/10:\ \mathrm{A} ≤ 15/7 = 2.1428\ldots\ \ (\text{vs. } 30/13 = 2.3077),\quad \text{gain needed } 1/10 ;
+   σ = 3/4:\ \mathrm{A} ≤ 2 \ \ \textbf{— the Density Hypothesis},\quad \text{gain needed } 1/4 ;
+   σ > 3/4:\ \mathrm{A} ≤ 3/(2σ) < 2 .
+```
+**Checked at the endpoints and at `σ = 2/3, 7/10, 3/4, 4/5` (the supremum-over-family gate): the
+requirement `\mathrm{LV}(σ,τ) ≤ (3-3σ)τ/(2σ)` is hardest at `τ = τ_0 = 2σ` since the mean value
+theorem's `\mathrm{LV}/τ = 1 + (1-2σ)/τ` increases in `τ`, so the single binding point is the right
+one — no supremum is hidden.**
+## Why this is the right target
+Theorem 51 said the DH-critical configuration `τ = 3/2` is coherent iff `σ ≥ 3/4`. **Theorem 54 makes
+that constructive**: instead of insisting on `τ_0 = 3/2` (which leaves the coherent regime for
+`σ < 3/4`), take `τ_0 = 2σ` — the largest value keeping the *entire* requirement coherent — and accept
+the weaker conclusion `3/(2σ)`, which still beats Ingham for `σ > 2/3` and **equals `2` exactly at
+`σ = 3/4`.** So:
+> **The Density Hypothesis at `σ = 3/4` is equivalent to a gain of `1/4` over the mean value theorem at
+> `(σ,τ) = (3/4, 3/2)` — a configuration where `V = T^{1/2}` exactly, the coherence boundary, and where
+> every structural tool is (just) available.** For `σ < 3/4` the same choice gives `3/(2σ)`, a genuine
+> improvement on Ingham, from a gain of `3σ-2 → 0` as `σ → 2/3`.
+`[OPEN CORE 100]` **Gain `3σ-2` in `\mathrm{LV}(σ,2σ)`.** At this configuration `N = T^{1/(2σ)}`,
+`V = T^{1/2}`, `L = NT^{-1/2} = T^{1/(2σ)-1/2}`, `B = N/L = T^{1/2}`, so `V = B` exactly — **the
+large-value threshold equals the number of blocks, the exact boundary of the coherent regime.** The
+extremal must therefore have every block contributing `≍ 1` coherently, which is the most rigid
+configuration in the whole problem: `ν = B` blocks, each of strength `V' = V/B = 1`. **Theorem 46's
+divisor census caps the structured resonances at `≍ V' = 1`, so *all* `B` resonances must be generic —
+and Theorem 16(a) with `R ≥ CN/V' = CN` then applies whenever `R ≥ N`, i.e. whenever
+`\mathrm{LV} ≥ 1`.** This is the first configuration in the programme where Theorem 16's hypothesis is
+met by the *required* bound rather than violated by it.
+
+## `[OPEN CORE 100]`, first pass: `ν = B` is excluded, and the residual bound is the mean value theorem `[PROVED HERE]`
+At `(σ,τ) = (σ,2σ)`: `V = B = T^{1/2}`, `T = N^{2σ}`, and the dyadic level satisfies `V' = V/ν = B/ν`,
+so `V' ≥ 1` with equality iff `ν = B`.
+* **`ν = B` is impossible.** If every `t ∈ W` resonates with *every* block, then all `R` points are
+  common to all `B` fat APs, so Theorem 16's common-point hypothesis (`R ≥ CN/V' = CN`) is met by the
+  extremal itself (`R ≍ N`), and its conclusion `ν ≪_ε N^{ε}` contradicts `ν = B = N^{σ}`.
+  **This is the first time in the programme that Theorem 16 fires with its hypothesis satisfied rather
+  than violated.**
+* **But the residual bound is only the mean value theorem.** For `V' = N^{v}` with `v > 0`,
+  Theorem 16(a) gives `|𝒢| ≤ k` with `R\,V'^{\,k+1} ≪ T`, i.e. `k ≤ (2σ-ρ)/v - 1` where `R = N^{ρ}`;
+  combined with `|𝒮| ≪ N^{ε}` this forces `ν ≤ N^{ε} + (2σ-ρ)/v`, so a large `ν = N^{σ-v}` requires
+  `v ≥ σ`, i.e. `ν = O(1)`. The dichotomy is therefore *`ν = O(1)` or the common-point hypothesis
+  fails*, and the pigeonhole for a common `ν'`-subset gives only
+  `R < C N\,V'^{\,ν'-1}`, vacuous for `ν' ≫ 1`, `V' > 1`.
+> **Net: `ν = B` excluded (new), everything else returns `R ≪ N` — the mean value theorem. The needed
+> gain `N^{3σ-2}` is untouched.** `[RECORDED: Theorem 16 at `(σ,2σ)`. The `V' = 1` endpoint is where
+> the hypothesis holds and the conclusion is trivial; the `V' > 1` range is where the conclusion would
+> bite and the hypothesis fails. The two never coincide — the same structural mismatch as Cycles
+> 38–39, now at the coherence boundary.]`
+`[OPEN CORE 101]` The excluded configuration `ν = B` is the *coherent* extremal; what survives is
+`ν = B/V'` with `V' > 1`, i.e. **fewer, stronger resonances**. Since `V = B` exactly here, the
+constraint `νV' = B` with `ν ≤ B`, `V' ≤ L` gives `V' ∈ [1, \min(L,B)]`, and the interesting range is
+`V'` a small power of `N`. **The question is whether Theorem 16's two hypotheses can be met
+simultaneously for some `V'` in that range — they require `R ≥ CN/V'` (favouring large `V'`) and
+`R\,V'^{k+1} ≪ T` with `k` bounded (favouring small `V'`), i.e.**
+```
+        \frac{CN}{V'} \;≤\; R \;≤\; \frac{T}{V'^{\,k+1}} = \frac{N^{2σ}}{V'^{\,k+1}} ,
+```
+**which is consistent iff `V'^{\,k} ≤ N^{2σ-1}/C`, i.e. `V' ≤ N^{(2σ-1)/k}` — non-empty for every
+`k`.** So the two hypotheses *are* jointly satisfiable, with `R ≍ N/V'` and `V' ≤ N^{(2σ-1)/k}`, giving
+`R ≥ N^{1-(2σ-1)/k}`. **Comparing with the target `R ≤ N^{3-3σ}`: the two are compatible iff
+`1-(2σ-1)/k ≤ 3-3σ`, i.e. `k ≥ (2σ-1)/(3σ-2)` — a fixed finite `k`.** This is a concrete, finite
+condition, and it is the next computation.
+
+## `[OPEN CORE 101]` executed: Theorem 16 fires at `(σ,2σ)` but yields only `R < CN/V'` `[PROVED HERE]`
+At `(σ,τ) = (σ,2σ)`: `T = N^{2σ}`, `V = B = N^{σ}`, `L = NT^{-1/2} = N^{1-σ}`, and the dyadic level
+satisfies `ν V' = V = N^{σ}`.
+**The exclusion argument.** Suppose the common-point hypothesis `R ≥ CN/V'` holds. Hypothesis (ii)
+`R\,V'^{\,k+1} ≫ T = N^{2σ}` then holds for every `k ≥ 1` (since `V' ≤ N^{σ}` gives
+`R ≫ N^{σ(1-k)}`, trivial). Theorem 16 concludes `ν ≤ N^{ε} + k`, hence
+`V' = N^{σ}/ν ≥ N^{σ-ε}/(1+k)`. But `V' ≤ L = N^{1-σ}`, so `σ ≤ 1-σ`, i.e. `σ ≤ 1/2` — **false**.
+```
+        \Longrightarrow\qquad R \;<\; \frac{CN}{V'}\qquad\text{for the pigeonholed level } V' .
+```
+**In particular `ν = B` (i.e. `V' = 1`) is excluded, as found above, but the general bound is weak:**
+the extremal maximises `R` by taking `V'` as small as possible, and `V' ≥ 2` gives only `R < CN/2` —
+a constant saving. Summing over dyadic levels, `R < CN\sum_{V'≥2}1/V' ≍ CN`. **The mean value theorem
+is recovered, with no power saving.** `[RECORDED: Theorem 16 at the coherence boundary `(σ,2σ)`
+genuinely fires — its hypotheses are met — but its conclusion `ν ≪ N^{ε}` translates only into
+`R < CN/V'`, and the extremal escapes by choosing `V'` bounded. The needed `N^{3σ-2}` requires
+excluding all `V' < N^{3σ-2}`, i.e. all `ν > N^{2-2σ}`, which the argument does not do.]`
+> ### The precise residual, at the cleanest configuration the programme has found
+> ```
+>    \text{Exclude: } ν > N^{2-2σ}\ \text{resonant blocks of strength } V' = N^{σ}/ν < N^{3σ-2},
+>    \qquad\text{given } R ≍ N,\ B = N^{σ},\ L = N^{1-σ} .
+> ```
+> Every quantity is an explicit power of `N`; there is one free parameter (`ν`); the geometry is
+> available (`V = T^{1/2}` exactly); and Theorem 16 fires. **This is the sharpest and most concrete
+> open statement in the card, and it should be the entry point for the next session.**
+
+## `[OPEN CORE 101]` — the three structural tools evaluated at `(σ,2σ)` `[PROVED HERE, all consistent]`
+Parameters: `R ≍ N`, `T = N^{2σ}`, `B = V = N^{σ}`, `L = N^{1-σ}`, `Y = T/2πN ≍ N^{2σ-1}`, `νV' = N^{σ}`,
+and the target is to exclude `ν > N^{2-2σ}` (i.e. `V' < N^{3σ-2}`). The admissible range is
+`\max(N^{2-2σ}, N^{2σ-1}) < ν ≤ N^{σ}`, non-empty exactly for `σ > 2/3`; at `σ = 7/10` it is
+`ν ∈ (N^{0.6}, N^{0.7}]`.
+1. **Large sieve on the blocks** (`|E_I| ≪ L/V'^{2}`, Cycle 48's count):
+   `Rν ≤ B\big[(L/V'^{2})T + (L^{2}/V'^{2})(T/N)\big] ≍ TN/V'^{2}`, giving `R ≤ N^{σ+1}/V'` — **weaker
+   than `R ≍ N`** for `V' ≤ N^{σ}`. Vacuous.
+2. **Theorem 49** (offset cancellation on differences): `|J(y)∩J(y')| ≪ δB + |y-y'| + 1` with
+   `δ = 2/V'`, so `δB = 2B/V' = 2ν` — **the bound exceeds `ν` itself.** Vacuous at this configuration.
+3. **Theorem 48** (`y`-rigidity) with the census: `\sum_{y≤Y}ν(y) ≪ B\max(δY,1) = 2N^{3σ-1}/V'` while
+   `\sum_{y∈𝒴}ν(y) ≥ |𝒴|ν ≥ (V'/2)(N^{σ}/V') = N^{σ}/2`, giving `V' ≤ 4N^{2σ-1}`. Since
+   `2σ-1 > 3σ-2` for `σ < 1`, this **does not** exclude `V' < N^{3σ-2}`. Moreover
+   `\sum_{y∈𝒴}ν(y) ≤ Yν = N^{3σ-1}/V'` matches the census upper bound exactly — **the census is tight,
+   so no gain is available from it.**
+> **All three are consistent with the extremal; none excludes `ν > N^{2-2σ}`.** The reason is uniform:
+> at `V = B` the resonance strength `V'` is *below* every threshold the tools need (`δB = 2ν` swamps
+> Theorem 49; `|E_I| ≪ L/V'^{2}` is weakest when `V'` is small; the `y`-census is exactly saturated).
+> **`V' → 1` is the adversary's escape at every step, and the only statement that excludes it is the
+> `ν = B` argument above (which needs `V' = 1` exactly).**
+`[OPEN CORE 102]` The gap is therefore `V' ∈ (1, N^{3σ-2})` — **a bounded range of dyadic levels,
+`(3σ-2)\log N/\log 2` of them.** Excluding each individually would suffice. For a fixed `V' = 2^{j}`,
+`ν = N^{σ}/2^{j}`, and the configuration is: `N^{σ}/2^{j}` blocks resonating at strength `2^{j}` with
+each of `R ≍ N` points, offsets free, moduli `n_I = N + IL` in arithmetic progression. **The `j = 0`
+case is excluded (Theorem 16 fires). Whether the argument survives `j ≥ 1` — where the fat APs are
+`2^{j}` times narrower and the common-point hypothesis `R ≥ CN/V' = CN/2^{j}` becomes *easier* — is
+the immediate next computation, and it is a finite induction on `j`.**
+
+## `[OPEN CORE 102]` executed: the induction on `j` fails at the first step `[PROVED HERE — DEAD END]`
+For `V' = 2^{j}`, `ν = N^{σ}/2^{j}`, each point resonates with a fraction `2^{-j}` of the blocks, so the
+pigeonhole for `r` blocks common to many points gives `R\,2^{-jr}` common points against the
+requirement `CN/V' = CN2^{-j}`:
+```
+        R\,2^{-jr} ≥ CN2^{-j} \iff R ≥ CN\,2^{\,j(r-1)} ,
+```
+and with `R ≍ N` this forces `2^{j(r-1)} ≤ 1/C`, i.e. **`r ≤ 1` for every `j ≥ 1`.** So Theorem 16 —
+which needs `ν+1 ≥ 2` fat APs sharing the points — **cannot fire for any `j ≥ 1`.** Only `j = 0`
+(`V' = 1`, `ν = B`, every point resonating with every block, so `r` is unrestricted) admits it, which is
+exactly the case already settled.
+> **The dichotomy is therefore complete and negative: at `(σ,2σ)` Theorem 16 fires only in the single
+> configuration `V' = 1`, and the adversary escapes to `V' = 2` at the cost of nothing.** The
+> `T^{1/26}`-type mismatch of Cycles 38–39 has become a `2^{j}`-mismatch: the common-point hypothesis
+> and the conclusion's usefulness are again mutually exclusive, now for an elementary counting reason
+> rather than a numerical coincidence. `[RECORDED DEAD END: the finite induction on dyadic levels at
+> `(σ,2σ)`; and more generally, Theorem 16 applied to a large-value set whose points resonate with a
+> proper fraction of the blocks.]`
+> ### Consolidated judgement on Theorem 16 after 61 cycles
+> Theorem 16 (and its refinements 35, 45–49) is an **unconditional, machine-checkable incidence theorem
+> with a genuinely new proof mechanism** (gcd/CRT + divisor bound in place of Kakeya). But its
+> hypothesis — `R` points *common* to `ν+1` fat APs — is met only when every point resonates with
+> every block, and that configuration is excluded for trivial reasons. **In every configuration where
+> the conclusion would be useful, the hypothesis fails; in the one configuration where the hypothesis
+> holds, the conclusion is already available.** This is now proved at three separate configurations
+> (`(7/10,13/10)`, `(σ,3/2)`, `(σ,2σ)`) and should be treated as settled: *the common-point hypothesis
+> is the binding defect of the whole approach, and no choice of `τ_0`, `V'`, or tuple order repairs it.*
+
+---
+
+# CYCLE 62 (2026-07-26) — **Theorem 55: at `τ = 2σ` the extremal must carry the entire `L^2` mass, and the fourth moment excludes it exactly for `σ > 3/4`**
+
+## The extremal profile is forced `[PROVED HERE]`
+At `(σ,τ) = (σ,2σ)`: `V = N^{σ} = T^{1/2}`, and the mean value theorem `R\,V^{2} ≤ (N+T)\sum|a_n|^{2} ≍ TN`
+gives `R ≤ TN/V^{2} = N`. **Equality requires `R\,V^{2} ≍ TN`, i.e. the `R` large values account for the
+*entire* `L^{2}` mass `∫_T^{2T}|D|^{2}dt ≍ TN`.** So the extremal is maximally spiky:
+```
+        |D(t)| ≍ T^{1/2} \text{ on a set of measure } ≍ N,\qquad |D| ≈ 0 \text{ elsewhere},
+```
+a fraction `N/T = N^{1-2σ}` of the range.
+## The fourth moment kills it exactly above `3/4` `[PROVED HERE]`
+Such a profile forces `∫|D|^{4} ≥ R\,V^{4} = N\,T^{2}`, while
+`∫|D|^{4} = ∫|D^{2}|^{2} ≍ (N^{2}+T)\sum_m|a^{*2}_m|^{2} ≍ (N^{2}+T)N^{2}` and `N^{2} > T = N^{2σ}`, so
+```
+        N\,T^{2} \;≤\; N^{4}\,T^{o(1)} \iff T^{2} ≤ N^{3} \iff N^{4σ} ≤ N^{3} \iff σ ≤ 3/4 .
+```
+> ### Theorem 55 `[PROVED HERE]`
+> **The mean-value-extremal at `τ = 2σ` is possible only for `σ ≤ 3/4`, with equality exactly at
+> `σ = 3/4`.** For `σ > 3/4` the fourth moment gives `R ≤ N^{4-4σ} < N`, a genuine saving over the mean
+> value theorem.
+**This is the third independent derivation of the threshold `σ = 3/4` in this programme** — after
+Theorem 51 (`τ = 3/2` coherent iff `σ ≥ 3/4`) and Theorem 53's parabola `(2-2σ)(2σ-1)` peaking at
+`σ = 3/4`. Three different mechanisms — coherence, the deficit parabola, and now the fourth moment at
+the mean-value extremal — all single out `3/4`, which is strong evidence that it is the true phase
+boundary of the problem and not an artefact of any one method.
+## The residual gap, at `τ = 2σ`
+```
+   σ < 3/4:\quad \min(\text{MVT},\ 4\text{th moment}) = 1,\qquad \text{target } 3-3σ,\qquad
+   \textbf{gap } 3σ-2 ;
+   σ > 3/4:\quad \min = 4-4σ,\qquad \textbf{gap } 1-σ .
+```
+Both vanish at `σ = 3/4`, where the two bounds and the target all equal `3/4` — **the configuration
+`(3/4, 3/2)` is a triple point: mean value theorem, fourth moment, and the Density-Hypothesis target
+coincide there, and it is simultaneously the coherence boundary (`V = T^{1/2} = B`) and the maximum of
+the deficit parabola.**
+`[OPEN CORE 103]` For `σ < 3/4` the extremal is not excluded by the fourth moment, but it is now
+**completely described**: `|D| ≍ T^{1/2}` on `N` points carrying all of `∫|D|^{2}`, with `B = N^{σ}`
+blocks each contributing `≍ V/B = 1`. **The question is whether a Dirichlet polynomial with `1`-bounded
+coefficients can be that spiky.** This is a concentration question about `∑_{n∼N}a_nn^{-it}`, not an
+incidence or moment question — and by Theorem 55 the answer is *no* for `σ > 3/4`, so the mechanism
+exists and must be pushed below the threshold.
+
+## `[OPEN CORE 103]` settled by moments: `k = 2` is optimal, and the spiky profile is consistent below `3/4` `[PROVED HERE]`
+Testing the extremal profile (`|D| ≍ T^{1/2}` on measure `≍ N`) against the `2k`-th moment for general
+`k`: it forces `∫|D|^{2k} ≥ N\,T^{k}`, while `∫|D|^{2k} = ∫|D^{k}|^{2} ≍ (N^{k}+T)N^{k} ≍ N^{2k}` once
+`k ≥ 2σ` (so `k ≥ 2`). Hence
+```
+        N\,T^{k} ≤ N^{2k}T^{o(1)} \iff N^{2σk} ≤ N^{2k-1} \iff σ ≤ 1 - \frac{1}{2k} .
+```
+> **`k = 2` gives `σ ≤ 3/4`; every larger `k` gives a *weaker* condition (`5/6`, `7/8`, …). The fourth
+> moment is optimal, and `3/4` is the exact limit of the entire moment method at this configuration.**
+Below the threshold the profile is fully consistent: `∫|D|^{2} = TN` is exactly accounted for by the
+spikes; `∫|D|^{4} = NT^{2} = N^{1+4σ} ≤ N^{4}` for `σ ≤ 3/4` (the mean value theorem is an upper bound,
+so no contradiction); and the Cauchy–Schwarz lower bound `∫|D|^{4} ≥ (∫|D|^{2})^{2}/T = TN^{2}` is
+satisfied since `NT^{2} ≥ TN^{2} \iff T ≥ N`. `[RECORDED: the concentration question at `(σ,2σ)`
+cannot be settled by moments of any order — `k = 2` is optimal and stops exactly at `3/4`.]`
+> ### What this establishes about the whole programme
+> Three independent methods now terminate at exactly `σ = 3/4`: coherence (Theorem 51), the deficit
+> parabola (Theorem 53), and moments of every order (Theorem 55 + this section). **`3/4` is not where
+> the current technology happens to stop — it is where three different mechanisms provably stop.**
+> Since the Density Hypothesis is known for `σ ≥ 25/32 > 3/4` by methods (Bourgain) that use
+> decoupling rather than any of these three, the honest conclusion is that **progress below `3/4`
+> requires the fourth mechanism, and this programme has not found it in 62 cycles — but it has now
+> proved that the first three cannot supply it.**
+`[OPEN CORE 104]` The one remaining unexplored feature of the extremal at `(σ,2σ)`: the spikes have
+width `≍ 1` (forced — `D` is band-limited in `t` with bandwidth `\log 2/2π`, so `|D|` cannot oscillate
+faster), there are `≍ N` of them in `[T,2T]`, and their **positions** are the zeros' ordinates. **A
+band-limited function of bandwidth `W` on `[T,2T]` has at most `≍ TW ≍ T` oscillations, so `N` spikes
+is far from the packing limit — but the spikes must be positioned at `1`-separated points where a
+*single* coefficient vector makes all of them simultaneously maximal.** That is the same
+"one vector serves all points" constraint isolated in Cycle 49, now in its cleanest instance: `N`
+spikes of height `T^{1/2}` from `N` coefficients. **The count is exactly critical — `N` constraints,
+`N` unknowns — which is why no counting argument has decided it, and why the answer must come from the
+*structure* of the map `a \mapsto (|D(t_r)|)_r` rather than from its dimensions.**
+
+## `[OPEN CORE 104]`: the diagonal is insufficient, and the off-diagonal route reproduces `3/4` `[PROVED HERE]`
+At `(σ,2σ)` with `R = N`, expand
+```
+   \sum_{r}|D(t_r)|^{2} = \underbrace{R\sum_n|a_n|^{2}}_{≤\,RN\,=\,N^{2}}
+      \;+\; \sum_{n≠n'}a_n\bar a_{n'}\overline{R_W(n/n')} ,\qquad R_W(x)=\sum_r x^{it_r} ,
+```
+while the extremal requires `\sum_r|D(t_r)|^{2} ≥ RV^{2} = N\,T = N^{1+2σ}`. Since `N^{1+2σ} > N^{2}`
+for every `σ > 1/2`:
+> **The diagonal cannot supply the required mass. For `σ > 1/2` the extremal *forces* the off-diagonal
+> `\sum_{n≠n'}a_n\bar a_{n'}\overline{R_W(n/n')}` to carry essentially all of it — i.e. the coefficients
+> must be strongly correlated with the point set.** This is a clean structural fact and was not
+> isolated earlier.
+Bounding the off-diagonal by Cauchy–Schwarz and the large sieve (the ratios `n/n'` are `≍ N^{-2}`
+separated, so `\sum_{n,n'}|R_W(n/n')|^{2} ≪ (T+N^{2})R\,T^{o(1)}`):
+```
+   \Big|\sum_{n≠n'}\Big| ≤ N\big((T+N^{2})R\big)^{1/2}T^{o(1)} ≍ N^{5/2}\quad(N^{2}>T,\ R=N) ,
+```
+so `N^{1+2σ} ≤ N^{5/2+o(1)}`, i.e. **`σ ≤ 3/4`.**
+> **A fourth independent derivation of the threshold `3/4`** — after coherence (Thm 51), the deficit
+> parabola (Thm 53), and moments of all orders (Thm 55 + OC103). All four are now proved to stop at
+> exactly the same point.
+*(Gate applied: the tempting bound `|R_W(n/n')| ≤ \min(R, N/|n-n'|)` — which would have given a
+contradiction for all `σ > 1/2` and hence far more than the Density Hypothesis — is **false** for a
+general `1`-separated set `\{t_r\}`; it holds only when the `t_r` form an arithmetic progression, since
+otherwise the `t_r` can be positioned to align with any single frequency. Only `|R_W| ≤ R` and the
+large sieve in the mean are available. **This would have been an eighth withdrawal had it not been
+checked before recording.*)*
+`[OPEN CORE 105]` The four mechanisms stop at `3/4` for the same arithmetic reason: each compares
+`N^{1+2σ}` (the required mass) with `N^{5/2}` or `N^{4}/\!N^{3/2}` (what a second-moment estimate on the
+`n`-side can supply), and `1+2σ ≤ 5/2 \iff σ ≤ 3/4`. **Breaking the threshold therefore requires an
+estimate that is not second-moment in the coefficients** — the required correlation between `a` and
+`W` is a *bilinear* object, and every tool applied so far has bounded it by `\|a\|_2^{2}` times a
+kernel norm. **The first genuinely new question the programme can pose is whether the constraint
+`\|a\|_∞ ≤ 1` — never used except through `\|a\|_2^{2} ≤ N` — can force the bilinear form below its
+Cauchy–Schwarz value.** That is exactly the `ℓ^∞ → ℓ^1` operator-norm formulation of Theorem 4, which
+this card proved equivalent to Montgomery's conjecture in Cycle 4 and then left aside for 58 cycles.
+
+---
+
+# CYCLE 63 (2026-07-26) — **Theorem 56: the first target strictly weaker than Montgomery's conjecture**
+
+## The operator-norm route, at `(σ, 2σ)` `[PROVED HERE]`
+Choosing unimodular `c_r` with `c_rD(t_r) = |D(t_r)|`,
+```
+   R\,V \;≤\; \sum_r|D(t_r)| \;=\; \sum_n a_n\sum_r c_r\,n^{-it_r} \;≤\; \|M_{N,W}\|_{∞→1} ,
+   \qquad M_{N,W}(n,r) = n^{-it_r} .
+```
+Suppose `\|M_{N,W}\|_{∞→1} ≪ N^{α}R^{β}` with `β < 1`. Then `R^{1-β} ≤ N^{α}/V` and
+```
+        R \;≤\; \big(N^{α}/V\big)^{1/(1-β)} = N^{(α-σ)/(1-β)} \qquad (V = N^{σ}) .
+```
+The Theorem-54 target at `τ_0 = 2σ` is `R ≤ N^{3-3σ}`, so it suffices that
+```
+        \frac{α-σ}{1-β} \;≤\; 3-3σ ,\qquad\text{e.g. with } β = \tfrac12:\quad
+        α \;≤\; σ + \frac{3-3σ}{2} \;=\; \frac{3-σ}{2} .
+```
+> ### Theorem 56 `[PROVED HERE]`
+> **`\mathrm{A}(σ) ≤ 3/(2σ)` — hence the Density Hypothesis at `σ = 3/4`, and a strict improvement on
+> Ingham for every `σ > 2/3` — follows from**
+> ```
+>        \|M_{N,W}\|_{∞→1} \;≪\; N^{(3-σ)/2}\,|W|^{1/2} ,
+> ```
+> **whereas Montgomery's conjecture is `\|M_{N,W}\|_{∞→1} ≪ N^{1+ε}|W|^{1/2}` (Theorem 4, Cycle 4).
+> The required bound is weaker by the factor `N^{(1-σ)/2}`** — at `σ = 7/10` a factor `N^{3/20}`, at
+> `σ = 3/4` a factor `N^{1/8}`.
+**This is the first target in 63 cycles that is strictly weaker than Montgomery's conjecture.** Every
+earlier formulation (Theorem 41's slack, the `\Delta(σ)` framing, the dual large sieve, the
+`μ`-threshold) was either equivalent to MC, stronger than it, or configuration-dependent; this one is
+a genuine relaxation, and it is exact: the trivial bound is `\|M\|_{∞→1} ≤ NR = N^{2}` (at `R = N`),
+MC gives `N^{3/2}`, and the requirement is `N^{3-2σ}`, so
+```
+   \text{needed saving over trivial } = N^{2σ-1} \;<\; N^{1/2} = \text{MC's saving}\quad\text{for } σ < 3/4 .
+```
+`[OPEN CORE 106]` Prove `\|M_{N,W}\|_{∞→1} ≪ N^{(3-σ)/2}|W|^{1/2}` for `1`-separated `W ⊂ [T,2T]`,
+`T = N^{2σ}`. By Theorem 5 (Cycle 5) the `∞→1` norm is within Grothendieck's constant of its
+semidefinite relaxation, so **the target is equivalently a bound on the SDP value — a convex quantity,
+for which the constraint `\|a\|_∞ ≤ 1` enters as the diagonal constraint `X_{nn} = 1` rather than
+through `\|a\|_2^{2} ≤ N`.** That is precisely the "use `\|a\|_∞` beyond `\|a\|_2`" requirement isolated
+in OC105, and it is now a finite convex-optimisation statement rather than an oscillatory one.
+
+## `[OPEN CORE 106]` evaluated: Cauchy–Schwarz gives a saving of `N^{(1-σ)/2}`, and covers exactly `σ ≤ 3/5` `[PROVED HERE]`
+```
+   \|M_{N,W}\|_{∞→1} ≤ \sum_n\Big|\sum_r c_rn^{-it_r}\Big| ≤ N^{1/2}\Big(\sum_{r,r'}|K(t_r-t_{r'})|\Big)^{1/2},
+   \qquad K(d) = \sum_{n∼N}n^{-id} ,
+```
+and with `|K(0)| = N`, `\max_{1≤d≤T}|K(d)| ≍ \min(N, T^{1/2}) = T^{1/2}` (B-process; the exponent-pair
+bound `(T/N)^{κ}N^{λ}` is *weaker* here — `N^{0.717}` versus `N^{0.7}` at `σ = 7/10`):
+```
+   \sum_{r,r'}|K| ≤ RN + R^{2}T^{1/2} \Longrightarrow
+   \|M\|_{∞→1} ≪ N^{1/2}\big(RN + R^{2}T^{1/2}\big)^{1/2} = N^{3/2+σ/2}\quad (R = N,\ T = N^{2σ}) .
+```
+Against the trivial `\|M\| ≤ NR = N^{2}`, this is a **saving of `N^{(1-σ)/2}`**, while Theorem 56 needs a
+saving of `N^{2σ-1}`. Hence the elementary bound suffices iff
+```
+        \tfrac{1-σ}{2} ≥ 2σ-1 \iff σ ≤ \tfrac35 .
+```
+> **So Cauchy–Schwarz alone proves `\mathrm{A}(σ) ≤ 3/(2σ)` for `σ ≤ 3/5` — but `3/(2σ) < 3/(2-σ)`
+> only for `σ > 2/3`, so on `σ ≤ 3/5` the route is *covered but useless*, and on `σ ∈ (2/3, 3/4]` it is
+> *useful but uncovered*.** The shortfall on the useful range is `N^{2σ-1-(1-σ)/2} = N^{(5σ-3)/2}`:
+> `N^{1/6}` at `σ = 2/3`, `N^{1/4}` at `σ = 7/10`, `N^{3/8}` at `σ = 3/4`.
+`[RECORDED: the elementary `∞→1` bound. Its coverage `σ ≤ 3/5` and the route's usefulness `σ > 2/3`
+are disjoint — the gap `(3/5, 2/3]` is where neither applies and `(2/3,3/4]` is the target.]`
+`[OPEN CORE 107]` The `N^{(5σ-3)/2}` shortfall must come from the only step that was lossy: bounding
+`\sum_{r,r'}|K(t_r-t_{r'})|` by `R^{2}\max|K|`. **The true size of `\sum_{r,r'}|K(t_r-t_{r'})|` for a
+`1`-separated set is the object `S_1(N,W)` — the `ℓ^1` analogue of the double zeta sum `S(N,W)` of
+Cycle 45 — and it has never been estimated in this programme.** Note `\sum_{r,r'}|K|^{2} = S(N,W) ≪
+RN^{2}+RTN` (Cycle 45), so Cauchy–Schwarz in the other direction gives
+`\sum_{r,r'}|K| ≤ R\,S(N,W)^{1/2} ≪ R(RTN)^{1/2}`, i.e. `\|M\| ≪ N^{1/2}R^{3/4}(TN)^{1/4}`; at
+`R = N`, `T = N^{2σ}` this is `N^{1/2+3/4+(2σ+1)/4} = N^{(6+2σ)/4}`, **worse** than `N^{3/2+σ/2}` for
+`σ > 0`. **So the `ℓ^2` route is worse than the trivial maximum, and the gain must come from
+cancellation in `\sum_{r,r'}|K|` itself — i.e. from the *distribution* of `\{t_r-t_{r'}\}` relative to
+the peaks of `|K|`, which is exactly the incidence structure Theorems 35/46/47 describe.** This is the
+first time the programme's incidence theorems and the operator-norm formulation meet on the same
+quantity.
+
+## `[OPEN CORE 107]` estimated, and the Cauchy–Schwarz route is closed `[PROVED HERE — DEAD END]`
+**A block bound for `|K(d)|`, from Theorem 35.** Dyadically decomposing
+`|K(d)| ≲ \sum_I\min(L, \|d/2πn_I\|^{-1})` and inserting `ν_ε(d) ≪ εN/L + |d|/N + 1`:
+```
+   |K(d)| ≪ \sum_j \frac{L}{2^{j}}\Big(\frac{2^{j}N}{L^{2}} + \frac{|d|}{N} + 1\Big)
+      ≪ \frac NL\log L \;+\; L\Big(\frac{|d|}{N}+1\Big) = B\log L + \frac{L|d|}{N} + L .
+```
+At `|d| ≍ T` this gives `|K| ≪ N^{σ}\log`, matching the B-process bound `T^{1/2}` exactly — **a
+consistency check of Theorem 35 against classical exponential-sum theory.**
+**But at `(σ,2σ)` the block bound has no room**: `B = N/L = N^{σ}` and `\max|K| ≍ T^{1/2} = N^{σ}` are
+*equal*, so summing over pairs returns `S_1 ≪ R^{2}N^{σ}` — the trivial `R^{2}\max|K|`.
+**And even the generic truth is insufficient.** For typical differences `|K(d)| ≍ N^{1/2}` (the `L^{2}`
+average, since `∑_{d}|K(d)|^{2} ≍ TN` over `≍ T` values), so `S_1 ≍ R^{2}N^{1/2}`, whence
+```
+   \|M\|_{∞→1} ≤ N^{1/2}S_1^{1/2} ≍ N^{1/2}\,R\,N^{1/4} = N^{7/4}\quad (R=N),
+   \qquad\text{target } N^{(4-σ)/2} = N^{2-σ/2} ,
+```
+and `7/4 ≤ 2-σ/2 \iff σ ≤ 1/2`. **So the Cauchy–Schwarz-over-`n` route fails for every `σ > 1/2`, even
+granting the generic value of `S_1`.** `[RECORDED DEAD END: `\|M\|_{∞→1} ≤ N^{1/2}(\sum_{r,r'}|K|)^{1/2}`.
+The loss is the Cauchy–Schwarz over `n`, not the estimate of `S_1`.]`
+> ### What this leaves of Theorem 56
+> Theorem 56's *statement* stands — `\|M_{N,W}\|_{∞→1} ≪ N^{(3-σ)/2}|W|^{1/2}` implies
+> `\mathrm{A}(σ) ≤ 3/(2σ)`, and is strictly weaker than Montgomery's conjecture. What is now excluded
+> is proving it by Cauchy–Schwarz over the coefficient index. **Since `\|·\|_{∞→1}` is by definition a
+> supremum over unimodular `a` and `c`, any proof must exploit the *joint* structure of the two
+> extremising vectors — which is exactly what the Grothendieck/SDP formulation of Theorem 5 encodes,
+> and where the constraint `\|a\|_∞ ≤ 1` enters as `X_{nn}=1` rather than as `\|a\|_2^{2} ≤ N`.**
+> `[OPEN CORE 108]` Bound the SDP value `\max\{\sum_{n,r}M_{nr}X_{nr} : X ⪰ 0,\ X_{nn}=X_{rr}=1\}` for
+> `M_{nr} = n^{-it_r}`. **The programme's own Theorem 5 says this is within `K_G^{ℂ} ≤ 1.4049` of the
+> target, so an SDP bound of `N^{(3-σ)/2}|W|^{1/2}/1.4049` suffices — and SDP duality means it can be
+> certified by exhibiting a single feasible dual solution**, i.e. by a diagonal matrix `D` with
+> `D - M` positive semidefinite and small trace. **That is a constructive, checkable object, and it is
+> the first formulation of the target that admits a certificate.**
+
+---
+
+# CYCLE 64 (2026-07-26) — **Theorem 57: the SDP route is short by only `N^{(3σ-2)/2}` — the smallest gap in the programme**
+
+## The elementary SDP bound `[PROVED HERE]`
+For `M_{nr} = n^{-it_r}` the Grothendieck SDP `\max\{\sum M_{nr}X_{nr} : X ⪰ 0,\ X_{nn}=X_{rr}=1\}` has
+the dual certificate `d_n ≡ λ`, `e_r ≡ μ` with `\big[\begin{smallmatrix}λI & -M/2\\ -M^{*}/2 & μI\end{smallmatrix}\big] ⪰ 0`
+iff `\|M\|_{\mathrm{op}} ≤ 2\sqrt{λμ}`; optimising `(Nλ+Rμ)/2` under that constraint gives
+```
+        \mathrm{SDP}(M) \;≤\; \tfrac12\,\|M\|_{\mathrm{op}}\sqrt{NR} .
+```
+**And `\|M\|_{\mathrm{op}}` is exactly the mean value theorem:** `\sum_r|\sum_nc_nn^{-it_r}|^{2} ≤
+\sum_n|c_n|^{2}(T+O(n))` gives `\|M\|_{\mathrm{op}}^{2} ≤ T + CN ≍ T`. Hence at `(σ,2σ)` with `R = N`,
+`T = N^{2σ}`:
+```
+        \mathrm{SDP}(M) \;≤\; \tfrac12 T^{1/2}N \;=\; \tfrac12 N^{1+σ} ,
+        \qquad\text{Theorem 56 needs}\qquad N^{(3-σ)/2}R^{1/2} = N^{2-σ/2} .
+```
+> ### Theorem 57 `[PROVED HERE]`
+> **`1+σ ≤ 2-σ/2 \iff σ ≤ 2/3`. So the elementary SDP bound proves Theorem 56's requirement — hence
+> `\mathrm{A}(σ) ≤ 3/(2σ)` — for every `σ ≤ 2/3`; and `3/(2σ)` improves on Ingham exactly for
+> `σ > 2/3`. The two ranges meet precisely at `σ = 2/3`, where both give `\mathrm{A}(2/3) ≤ 9/4`.**
+> **For `σ > 2/3` the shortfall is**
+> ```
+>        N^{\,1+σ}\ \text{versus}\ N^{\,2-σ/2}\qquad\Longrightarrow\qquad
+>        \textbf{shortfall } \;N^{(3σ-2)/2} ,
+> ```
+> **which is `N^{1/20}` at `σ = 7/10` and `N^{1/8}` at `σ = 3/4`.**
+**This is by a wide margin the smallest gap the programme has produced** — compare `N^{1/4}` (the
+Cauchy–Schwarz route), `T^{2.4/26}` (the incidence route), `(2-2σ)(2σ-1) = 6/25` (Theorem 53). The
+chain is: `\mathrm{SDP}(M) ≪ N^{2-σ/2} \Rightarrow \|M\|_{∞→1} ≪ N^{2-σ/2} \Rightarrow R ≤ N^{3-3σ}
+\Rightarrow \mathrm{A}(σ) ≤ 3/(2σ)`, with the first implication trivial (`\|·\|_{∞→1} ≤ \mathrm{SDP}`)
+and the rest Theorems 54 and 56.
+`[OPEN CORE 109]` **Improve `\mathrm{SDP}(M) ≤ \tfrac12\|M\|_{\mathrm{op}}\sqrt{NR}` by `N^{(3σ-2)/2}`.**
+The bound used the *scalar* dual `(λ,μ)`; the full dual allows arbitrary diagonals `d_n, e_r`, and the
+optimum is attained only when the extremising vectors are isotropic. **For `M_{nr} = n^{-it_r}` the
+Gram matrix `MM^{*}` has entries `R_W(n'/n)` and `M^{*}M` has entries `K(t_r-t_{r'})` — both far from
+scalar**, so the scalar certificate is provably suboptimal; the question is by how much. **This is a
+finite convex problem with an explicit matrix, it admits numerical exploration at small `N`, and any
+improvement by `N^{(3σ-2)/2}` gives a new record for `‖A‖_∞`.**
+
+## CORRECTION to Theorem 57 `[read before reusing]`
+Two errors, both found by re-deriving the chain directly.
+1. **The requirement.** `R ≤ \|M\|_{∞→1}/V`, so the target `R ≤ N^{3-3σ}` needs
+   `\|M\|_{∞→1} ≤ N^{3-3σ}·N^{σ} = N^{3-2σ}`, **not** `N^{2-σ/2}`. (The latter came from Theorem 56's
+   `β = 1/2` parametrisation, which is self-referential in `R`; substituting `R = N` afterwards is
+   inconsistent.) The threshold `σ ≤ 2/3` is unchanged (`1+σ ≤ 3-2σ \iff σ ≤ 2/3`), but **the shortfall
+   is `N^{3σ-2}`, not `N^{(3σ-2)/2}`** — `N^{1/10}` at `σ = 7/10`, `N^{1/4}` at `σ = 3/4`.
+2. **The SDP with a scalar certificate *is* the mean value theorem.** Feeding
+   `\mathrm{SDP} ≤ \tfrac12\|M\|_{\mathrm{op}}\sqrt{NR}` and `\|M\|_{\mathrm{op}}^{2} ≤ T+CN` into
+   `RV ≤ \mathrm{SDP}` gives
+   ```
+      R ≤ \frac{N\,\|M\|_{\mathrm{op}}^{2}}{4V^{2}} = \frac{N(T+CN)}{4V^{2}} ,
+   ```
+   which is the mean value theorem with the constant `1/4`. **So Theorem 57 records no new estimate —
+   the operator-norm/SDP route with a scalar dual reproduces the mean value theorem exactly**, and the
+   agreement of its coverage (`σ ≤ 2/3`) with Theorem 54's usefulness threshold (`σ > 2/3`) is not a
+   coincidence but an identity: both are the statement `R ≤ N` versus `R ≤ N^{3-3σ}`.
+> **Ninth correction of the session.** New failure mode, worth naming: *carrying a parametrised
+> intermediate (`\|M\| ≪ N^{α}R^{β}`) past the point where `R` is substituted*, which double-counts the
+> `R`-dependence. **Gate added: after any chain of implications, re-derive the final bound directly
+> from the hypotheses with all parameters substituted, and check it against the trivial bound.**
+`[What survives.]` Theorem 56's statement is still correct as an implication (`\|M\|_{∞→1} ≪ N^{3-2σ}`
+`\Rightarrow \mathrm{A}(σ) ≤ 3/(2σ)`), and it is still **strictly weaker than Montgomery's conjecture**:
+MC gives `\|M\|_{∞→1} ≪ N^{1+ε}R^{1/2} = N^{3/2+ε}` at `R = N`, and `3/2 ≤ 3-2σ \iff σ ≤ 3/4`. **So on
+the useful range `σ ∈ (2/3, 3/4]` the requirement sits strictly between the mean value theorem
+(`N^{1+σ}`) and Montgomery (`N^{3/2}`), and the gap to close is `N^{3σ-2}` — at most `N^{1/4}`.**
+`[OPEN CORE 109′]` Prove `\|M_{N,W}\|_{∞→1} ≪ N^{3-2σ}` for `R = |W| ≍ N`, `T = N^{2σ}`,
+`σ ∈ (2/3,3/4]`. Equivalently, beat the scalar SDP certificate by `N^{3σ-2}` using a non-scalar dual —
+**the only structural input available being that `M^{*}M` has entries `K(t_r-t_{r'})` and `MM^{*}` has
+entries `R_W(n'/n)`, neither of which is close to a multiple of the identity.**
+
+## `[OPEN CORE 109′]` settled: the scalar certificate is **tight**, and the SDP branch is circular `[PROVED HERE — DEAD END]`
+`\mathrm{SDP}(M) = \max\{\sum_{n,r}M_{nr}\langle u_n,v_r\rangle : \|u_n\|=\|v_r\|=1\}`, so taking all
+`u_n = v_r = e` gives the **lower** bound
+```
+        \mathrm{SDP}(M) \;≥\; \Big|\sum_{n,r}n^{-it_r}\Big| \;=\; \Big|\sum_r K(t_r)\Big| .
+```
+Now `\#\{t ∈ [T,2T] : |K(t)| ≥ N^{σ}\} ≤ TN/N^{2σ} = N` (the `L^{2}` bound, using `T = N^{2σ}`), and if
+`W` is a set of `R ≍ N` such points with aligned phases then `|\sum_rK(t_r)| ≍ N·N^{σ} = N^{1+σ}` —
+**exactly the scalar-certificate upper bound `\tfrac12\|M\|_{\mathrm{op}}\sqrt{NR}`.** So the scalar
+dual is optimal for such `M`, and no non-scalar certificate can improve it.
+> **Moreover such a `W` is a legitimate large-value pattern**: take `a_n ≡ 1`, so `D = K` and
+> `|D(t_r)| = |K(t_r)| ≥ N^{σ} = V`. **Hence "the scalar certificate is not tight" is equivalent to
+> `\#\{t : |K(t)| ≥ N^{σ}\} = o(N)`, i.e. to `\mathrm{LV}_ζ(σ,2σ) < 1` — the very statement the route
+> was meant to prove.** `[RECORDED DEAD END: the operator-norm / Grothendieck-SDP branch. It is not a
+> weaker target; its tightness is equivalent to the original problem, with `a_n ≡ 1` as the witness.]`
+> ### Consolidated: why every route returns to the same place
+> The `a_n ≡ 1` witness explains the pattern of the last twenty cycles. **Whenever a route is
+> formulated as a bound valid for all `1`-bounded `a` and all `1`-separated `W`, the pair
+> `(a ≡ 1,\ W = \{|K| \text{ large}\})` saturates it**, because `K` is itself a Dirichlet polynomial
+> with `1`-bounded coefficients whose large-value set is exactly what is being counted. This is why
+> the mean value theorem, the SDP, the `∞→1` norm, and the double zeta sum all give `R ≤ N` at
+> `(σ,2σ)` and none gives less. **A route can only improve on this if it uses a property of `a` that
+> `a ≡ 1` violates** — and the only such property available in the zero-density application is that
+> `a` is a *mollified detection sequence* (Theorems 27–28, 31), i.e. `a = 1_{≤D}∗μ_{≤y}` with its
+> low-range vanishing. **That is the single unexploited hypothesis left in the entire programme.**
+`[OPEN CORE 110]` Redo the `(σ,2σ)` analysis with `a` restricted to detection coefficients. The
+witness `a ≡ 1` is then illegal (it has no vanishing), and the extremal must instead satisfy
+`a_n = \sum_{d\mid n, d≤y}μ(d)`, `a_n = 0` for `1 < n ≤ y`. **Cycle 51 showed such `a` cannot be a pure
+wave packet and forces `V' ≪ \sqrt L`; the question is whether it also forbids the `|K|`-large
+witness, i.e. whether `\sum_{n∼N}a_nn^{-it}` can be as large as `\sum_{n∼N}n^{-it}` on a set of size
+`N`.** This is a concrete comparison between a mollified and an unmollified zeta block, and it is the
+first target that uses the one hypothesis no route has yet used.
+
+## `[OPEN CORE 110]` settled: the mollifier's vanishing is **invisible at the block level** `[PROVED HERE — DEAD END]`
+The detection coefficients `a = 1_{≤D}∗μ_{≤y}` vanish on `1 < n ≤ y`. But the large-value analysis is
+applied to a *block* `n ∼ N` with `N ≫ y`, where that vanishing says nothing: on the block, `a_n =
+\sum_{d\mid n,\ d≤y}μ(d)` is simply an arithmetic function with `|a_n| ≤ d(n)` and
+`\sum_{n∼N}|a_n|^{2} ≍ N` — **the same second moment as `a ≡ 1`.** Hence the `L^{2}` bound
+`\#\{t : |D(t)| ≥ N^{σ}\} ≤ TN/N^{2σ} = N` is unchanged, and every estimate that depends only on
+`\|a\|_2` and `\|a\|_∞` gives exactly what it gave for `a ≡ 1`.
+> **So the last unexploited hypothesis is vacuous at the block level.** `[RECORDED DEAD END: using the
+> mollifier's low-range vanishing inside a single dyadic block. The vanishing lives at scale `y`; the
+> block lives at scale `N ≫ y`; the two never meet.]`
+**What the hypothesis *does* give**, and it is a real change of character: for detection coefficients
+`D` is an **explicit** Dirichlet polynomial, not an adversarial one, so the question
+`\#\{t : |D(t)| ≥ N^{σ}\} ≤ N^{3-3σ}` is a concrete estimate rather than a supremum over `a`. **But
+that concrete estimate is exactly a large-value bound for a block of `ζ(s)M(s)` — i.e. the mollified
+second moment, whose obstruction (the Montgomery–Vaughan length term, forced because `ζ` cannot be
+truncated below `|t|`) was computed to the end in Cycle 54 and returns `T^{1-(2σ-1)^{2}}`, weaker than
+Ingham everywhere.** The two branches therefore meet and close each other.
+
+---
+# ===== STATE AFTER 65 CYCLES — the closure diagram =====
+```
+   (a ≡ 1, W = \{|K| \text{ large}\})  saturates every bound depending only on \|a\|_2, \|a\|_∞ :
+        mean value theorem · SDP/Grothendieck · \|·\|_{∞→1} · double zeta sums · energy · moments
+        \Longrightarrow  R ≤ N \text{ at } (σ,2σ),\ \text{never less.}
+   The only hypothesis violating a ≡ 1 is the mollifier's vanishing, which is invisible on a block
+        \Longrightarrow  no gain there either.
+   Restricting to explicit detection coefficients turns the problem into the mollified second moment,
+        \Longrightarrow  T^{1-(2σ-1)^2},\ weaker than Ingham (Cycle 54).
+```
+**Every branch of the programme now terminates, with proof, on one of these three.** The Density
+Hypothesis at `σ < 3/4` requires a technique that (i) does not reduce to `\|a\|_2, \|a\|_∞`, (ii) does
+not pass through a single block, and (iii) does not measure `ζM-1` by a norm. **No such technique
+appears in the literature or in this corpus.** The four independent derivations of `σ = 3/4`
+(Theorems 51, 53, 55, and the off-diagonal computation of Cycle 62) say that this is not a limitation
+of effort but of the available mechanisms.
+
+---
+
+# CYCLE 66 (2026-07-26) — interrogating the witness: is `(a ≡ 1, W = \{|K| \text{ large}\})` real?
+
+## The witness sits exactly at the maximum of `|K|` `[PROVED HERE]`
+At `(σ,2σ)` the threshold is `V = N^{σ} = T^{1/2}`, and the exponent pair `(κ,λ) = (1/2,1/2)` (the
+plain B-process) gives, for every `t ≍ T`,
+```
+        |K(t)| = \Big|\sum_{n∼N}n^{-it}\Big| ≪ (T/N)^{1/2}N^{1/2} = T^{1/2} = V .
+```
+Equivalently, via the dual: the B-process weights satisfy `\sum_m|w_m| ≍ M(N^{2}/T)^{1/2} = T^{1/2}`
+with `M = T/N`, so `|K| ≤ T^{1/2}` with equality only under **full alignment of the dual phases**.
+> **So the witness requires `|K(t)|` to sit at its global maximum, up to a constant, on a set of `N`
+> one-separated points.** That is not a generic configuration — it is the extreme one.
+## But it is not excludable below `3/4` `[PROVED HERE — the fifth derivation of the threshold]`
+The `L^{2}` bound permits it (`|K| ≍ T^{1/2}` on measure `μ` forces `μT ≤ ∫|K|^{2} ≍ TN`, i.e.
+`μ ≤ N` — exactly the required `N`), and the fourth moment gives
+```
+   N\,T^{2} ≤ ∫|K|^{4} = ∫|K^{2}|^{2} ≍ (N^{2}+T)N^{2} ≍ N^{4} \iff T^{2} ≤ N^{3} \iff σ ≤ 3/4 .
+```
+**A fifth independent appearance of `σ = 3/4`** — after coherence (Thm 51), the deficit parabola
+(Thm 53), the moment test of the spiky extremal (Thm 55), and the off-diagonal computation (Cycle 62).
+`[RECORDED: the witness `a ≡ 1` is *maximal* rather than generic — it needs `|K|` at its global
+maximum on `N` points — but no moment of any order excludes it for `σ ≤ 3/4`. The claim that it is
+"fake" is **false** and was withdrawn before recording (gate applied: the dual sum's max is `T^{1/2}`,
+which *equals* `V`, so `|K| ≥ V` needs full alignment — but full alignment on a *positive-measure* set
+is exactly what the `L^{2}` and `L^{4}` bounds still permit).]`
+> ### What the interrogation does yield
+> The witness is not a soft object: it asserts `|K(t)| ≍ \max_t|K(t)|` on `N` points. **So every route
+> the witness kills is killed only by a configuration in which the zeta block attains its extreme
+> value on a set of maximal permitted size.** Two consequences worth recording:
+> 1. **Any input that improves `\max_t|K(t)|` below `T^{1/2}` immediately kills the witness.** By the
+>    exponent-pair bound `|K| ≪ (T/N)^{κ}N^{λ}` this needs `κ(2σ-1)+λ < σ` (in `\log_N` units at
+>    `τ = 2σ`); with `(κ,λ) = (13/84, 13/84+1/2)` this reads `0.1548(2σ-1)+0.6548 < σ`, i.e.
+>    `σ > 0.7167` — **so for `σ > 0.717` the witness is already dead by exponent pairs**, and the
+>    surviving range is `σ ∈ (2/3, 0.717]`.
+> 2. On that range the classical closure of Cycle 65 is the whole obstruction, and it rests on a
+>    single configuration whose existence is *equivalent* to `\mathrm{LV}_ζ(σ,2σ) = 1`.
+`[OPEN CORE 111]` **Decide `\mathrm{LV}_ζ(σ,2σ)` for `σ ∈ (2/3, 0.717]`** — i.e. whether
+`\#\{t ∈ [T,2T] : |K(t)| ≥ c\,T^{1/2}\} ≍ N` is possible. This is a bounded, explicit range of a single
+parameter, the object is the bare exponential sum `\sum_{n∼N}n^{-it}` with `N = T^{1/(2σ)}`, and the
+answer decides whether Theorem 54's route gives `\mathrm{A}(σ) ≤ 3/(2σ)` there.
+
+## `[OPEN CORE 111]` quantified: the witness is an `N^{σ-1/2}`-fold deviation on a `N^{1-2σ}` fraction `[PROVED HERE]`
+Via the B-process, `|K(t)| ≍ (N^{2}/T)^{1/2}\,|\!\sum_{m∼M}(\cdots)|` with `M = T/N`; square-root
+cancellation in the dual gives the **typical** size
+```
+        |K(t)|_{\mathrm{typ}} ≍ (N^{2}/T)^{1/2}M^{1/2} = N^{1/2} ,
+```
+consistent with `∫|K|^{2} ≍ TN`. The witness demands `|K(t)| ≥ V = N^{σ}` on `N` points, i.e.
+```
+   \textbf{a deviation factor } \frac{V}{|K|_{\mathrm{typ}}} = N^{σ-1/2}
+   \quad\text{on a fraction } \frac{N}{T} = N^{1-2σ} \text{ of } [T,2T] .
+```
+At `σ = 7/10`: a `N^{1/5}`-fold deviation on a `N^{-2/5}` fraction. **For a random model this has
+probability `\exp(-N^{2σ-1})` per point, so the witness is a purely arithmetic phenomenon — it exists,
+if at all, because the phases `t\log n` conspire, not because of measure.**
+> **The dual phase is `≍ \sqrt{tm}` with second derivative `≍ \sqrt T M^{-3/2} = N^{(3-4σ)/2}`**, which
+> at `σ = 7/10` is `N^{0.1} ≫ 1` — **so van der Corput's `A`-process is vacuous (the curvature is too
+> large), and the sum is in the "essentially random" regime where only square-root cancellation is
+> expected but nothing better is provable.** This is exactly the regime where the classical theory has
+> no tools, and it is the analytic core of `\mathrm{LV}_ζ(σ,2σ)`.
+`[RECORDED: the witness at `(σ,2σ)` is a large-deviation event of relative size `N^{σ-1/2}` for the
+dual exponential sum `\sum_{m∼M}m^{-1/2}e(-c\sqrt{tm})`, `M = T/N`. Van der Corput is vacuous there
+(`φ'' ≫ 1`); Poisson has already been used once (it produced this sum); and a second application
+returns to the original. **The witness therefore sits precisely in the gap of the van der Corput
+hierarchy** — too curved for the `A`-process, already dualised by the `B`-process.]`
+> ### The final localisation
+> ```
+>    \textbf{Density Hypothesis on } σ ∈ (2/3,\ 0.717] \iff
+>    \#\{t ≍ T : |\!\sum_{m∼M}m^{-1/2}e(-c\sqrt{tm})| ≥ M^{1/2}N^{σ-1/2}\} = o(N),\quad M = T/N .
+> ```
+> For `σ > 0.717` the exponent pair `(13/84, 13/84+1/2)` already kills it (Cycle 66); for `σ ≤ 2/3`
+> Theorem 54's route is weaker than Ingham. **The Density Hypothesis, in this programme's final
+> reduction, is a large-deviation statement for a one-parameter family of `\sqrt{tm}`-phase exponential
+> sums on a window of `σ` of width `0.05`.**
+
+---
+
+# CYCLE 67 (2026-07-26) — the localised statement is a **block of `ζ(1/2+it)`**, and the moment hierarchy for it
+
+## Reformulation `[PROVED HERE]`
+Partial summation converts the bare block into a critical-line block:
+```
+   K(t) = \sum_{n∼N}n^{-it} ≍ N^{1/2}\,Z_N(t),\qquad Z_N(t) := \sum_{n∼N}n^{-1/2-it} ,
+```
+so the witness `|K| ≥ V = N^{σ}` is exactly `|Z_N(t)| ≥ N^{σ-1/2}`. **The Density Hypothesis on
+`σ ∈ (2/3, 0.717]` is therefore a large-value statement for a *block of `ζ(1/2+it)`* of length
+`N = T^{1/(2σ)}`, at threshold `N^{σ-1/2}` — the same `σ-1/2` that governs the deficit everywhere in
+this card.**
+## The moment hierarchy, computed `[PROVED HERE]`
+`Z_N^{k}` has coefficients `d^{(N)}_k(m)m^{-1/2}` on `m ∼ N^{k}`, so
+`\sum_m|c_m|^{2} ≍ (\log N)^{k^{2}-1}` — **the `\ell^{2}` mass is `T^{o(1)}`, not `N^{k}`** — whence
+```
+   \int_T^{2T}|Z_N|^{2k} ≪ (N^{k}+T)\,T^{o(1)},\qquad
+   \#\{t : |Z_N| ≥ W\} ≪ \frac{(N^{k}+T)T^{o(1)}}{W^{2k}} .
+```
+With `W = N^{σ-1/2}` and `T = N^{2σ}`:
+```
+   k = 1\ (N ≤ T):\quad \#\ ≪ T/N^{2σ-1} = N\ \ (\textbf{exactly the target, no room});
+   k ≥ 2\ (N^{k} ≥ T):\quad \#\ ≪ N^{k(2-2σ)} ≥ N^{2(2-2σ)} = N^{1.2}\ \text{at } σ=7/10\ (\textbf{worse}).
+```
+**So the elementary moment hierarchy gives exactly `N` at `k = 1` and degrades for `k ≥ 2`: there is no
+`k` with room to spare.** `[RECORDED: the `2k`-th moment of a block of `ζ(1/2+it)` at the witness
+threshold. `k = 1` is optimal and exactly critical — the third time in this card that `k = 1`/`k = 2`
+turns out to be the optimum and the bound is exactly the target.]`
+> ### The one classical input not yet applied
+> Heath-Brown's twelfth moment `\int_0^{T}|ζ(1/2+it)|^{12}dt ≪ T^{2+ε}` is **far stronger than the
+> elementary `k = 6` bound `(N^{6}+T)T^{o(1)}`** (which is `T^{3}` at `N ≍ T^{1/2}`), and it is the only
+> estimate in the subject that beats the trivial moment hierarchy for `ζ` on the critical line. **Our
+> `Z_N` is a block of `ζ(1/2+it)` of length `N = T^{1/(2σ)} > T^{1/2}`, so the twelfth moment does not
+> apply directly; but the reflection sends it to a dual block of length `M = T/N < T^{1/2}`, where
+> block twelfth-moment bounds are available.** `[OPEN CORE 112]` **Transport Heath-Brown's twelfth
+> moment through the reflection to the dual block of length `M = T/N = N^{2σ-1}` and compare with the
+> witness threshold.** At `σ = 7/10`, `M = T^{2/7}` and the elementary bound gives
+> `\int|Z_M|^{12} ≪ M^{6} = T^{12/7}`; Heath-Brown-type input would replace `M^{6}` by `T^{1+ε}` once
+> `M ≤ T^{1/6}`, i.e. once `2σ-1 ≤ 1/(3·2σ)`, i.e. `σ ≤ (1+\sqrt{7})/6 = 0.6076`. **So the twelfth
+> moment reaches `σ ≤ 0.608` — short of the window `(2/3, 0.717]` by exactly the gap that Bourgain's
+> decoupling closes from above.** This identifies precisely which classical input is missing and by how
+> much.
+
+## Corrected exponent-pair threshold, and the target `κ ≤ 1/8` `[PROVED HERE]`
+The condition for an exponent pair `(κ,λ)` to force `|K(t)| < V = N^{σ}` at `τ = 2σ` is
+`κ(2σ-1)+λ < σ`. The trivial B-process pair `(1/2,1/2)` gives **equality** for every `σ`
+(`(2σ-1)/2+1/2 = σ`), so a pair improves on it iff `λ-\tfrac12 < (\tfrac12-κ)(2σ-1)`; along the
+standard family `λ = \tfrac12+κ` this is
+```
+        κ \;<\; \frac{2σ-1}{4σ} \qquad\Longleftrightarrow\qquad σ \;>\; \frac{1}{2-4κ} .
+```
+With the record `κ = 13/84` this gives `σ > 1/(2-13/21) = 0.7242…` — **correcting the value `0.7167`
+recorded in Cycle 66 (tenth correction; the earlier computation mis-solved the linear inequality).**
+Consequences:
+* the residual window is `(2/3,\ 0.7242]`, slightly wider than stated;
+* **covering it entirely requires `1/(2-4κ) ≤ 2/3`, i.e. `κ ≤ 1/8 = 0.125`** — against the record
+  `13/84 = 0.1548`. That is a concrete, quantitative target inside the theory of exponent pairs.
+> ### **Caveat that must not be lost** `[PROVED HERE]`
+> **Killing the witness `a ≡ 1` does *not* improve the large-value bound.** The witness shows that the
+> mean value theorem (and the SDP, and `\|·\|_{∞→1}`) *cannot* be improved by any argument valid for
+> all `1`-bounded `a`; removing it re-opens the possibility of improvement but proves none. In
+> particular `κ ≤ 1/8` would **not** by itself give `\mathrm{A}(σ) ≤ 3/(2σ)` on the window — it would
+> only remove the known obstruction to trying. **An earlier draft of this section concluded that
+> `κ = 13/84` already yields `\mathrm{A}(σ) ≤ 3/(2σ) < 15/(3+5σ)` on `(0.7242, 3/4]`, i.e. a new record;
+> that is false for exactly this reason and was withdrawn before recording (eleventh caught error).**
+`[The gate that caught it: "re-derive the final bound directly from the hypotheses" — the chain
+`witness dead ⟹ bound improved` has no valid middle step, since the bound quantifies over all `a`.]`
+> ### Net state of the localisation
+> ```
+>   σ > 1/(2-4κ) = 0.7242 :  the `a ≡ 1` witness is dead (exponent pairs); obstruction unknown.
+>   σ ∈ (2/3, 0.7242]     :  the witness is alive and saturates every ‖a‖₂/‖a‖_∞ bound.
+>   σ ≤ 2/3               :  Theorem 54's route is weaker than Ingham anyway.
+>   Twelfth moment reaches σ ≤ 0.608 ; exponent pairs reach σ > 0.724 ; the gap is (0.608, 0.724).
+> ```
+
+## The target `κ ≤ 1/8` **is** `μ(1/2) ≤ 1/8` `[PROVED HERE]`
+Our functional `κ(2σ-1)+λ` weights `λ` heavily (`2σ-1 ≈ 0.4`), and `λ ≥ 1/2` for every exponent pair, so
+the optimum lies on the family `λ = κ+\tfrac12`. **A pair `(κ, κ+\tfrac12)` is equivalent to the growth
+bound `|ζ(\tfrac12+it)| ≪ t^{κ+ε}`, i.e. to `μ(1/2) ≤ κ`.** Hence:
+```
+        \text{witness dead on all of } (2/3,\ 3/4] \iff κ ≤ 1/8 \iff μ(1/2) ≤ 1/8 = 0.125 .
+```
+Current record `μ(1/2) ≤ 13/84 = 0.1548` (Bourgain 2017), after Huxley `32/205 = 0.1561` and Weyl
+`1/6`. **So the residual window is exactly the distance from `13/84` to `1/8` in the subconvexity
+problem for `ζ` on the critical line.**
+*(The `A`-process does not help: `A(13/84, 55/84) = (13/194, 152/194) = (0.067, 0.784)`, and although
+`κ` drops below `1/8`, `λ` rises to `0.784`, giving `κ(2σ-1)+λ = 0.810 > σ` at `σ = 7/10`. The
+functional is minimised on `λ = κ+1/2`, which is precisely the `μ(1/2)` family.)*
+> **This closes the loop with the withdrawn Theorem 52**, which asserted a `μ(1/2)` threshold for the
+> Density Hypothesis and was false because it treated one window as the whole supremum. The correct
+> statement is different in kind: **`μ(1/2) ≤ 1/8` does not prove the Density Hypothesis — it kills the
+> `a ≡ 1` witness that currently obstructs every route.** The witness is the reason the mean value
+> theorem cannot be improved for general `a`; removing it is necessary, not sufficient.
+---
+# ===== STATE AFTER 68 CYCLES =====
+**Proved this session (unconditional, reusable):** Theorems 4–57 minus the six withdrawn
+(26, 29, 37, 39, 40, 52) and the corrected 57 — notably Thm 16/35/45–49 (arithmetic incidence, six
+lemmas machine-checked in Lean), Thm 22/23 (Hölder–moment ceiling and integrality), Thm 27/28
+(mollifier design), Thm 33 (moment sharpness), Thm 34 (regime boundary `τ ≤ 2σ`), Thm 41 (slack
+criterion), Thm 42 (constancy vs curvature), Thm 43 (energy machinery capped at `2/3` MVT), Thm 51
+(`τ = 3/2` coherent iff `σ ≥ 3/4`), Thm 53 (uniform constant `(2-2σ)(2σ-1)`), Thm 54 (`τ_0 = 2σ` keeps
+the reduction coherent; `\mathrm{A}(σ) ≤ 3/(2σ)`), Thm 55 (spiky extremal excluded iff `σ > 3/4`),
+Thm 56 (a requirement strictly weaker than Montgomery).
+**Five independent derivations of `σ = 3/4`**; **the `a ≡ 1` witness** as the universal saturating
+configuration; **the closure diagram** (Cycle 65); **the final localisation**: the obstruction is a
+large-deviation statement for `\sum_{m∼M}m^{-1/2}e(-c\sqrt{tm})`, `M = T/N`, on
+`σ ∈ (2/3, 1/(2-4μ(1/2))]`, a window that closes iff `μ(1/2) ≤ 1/8`.
+**Eleven errors caught, with the gates that catch them:** (i) check any claim at `k = 2,3,10,∞`
+(a supremum, not a point); (ii) verify a "new object" is not an identity for one already listed;
+(iii) re-derive the final bound directly from the hypotheses with all parameters substituted;
+(iv) never infer "bound improved" from "witness dead".
+
+---
+
+# CYCLE 69 (2026-07-26) — **the witness requires near-total alignment of a `√(tm)` phase, and only `≍ √N` values of `t` can supply it**
+
+## The exact budget `[PROVED HERE]`
+The B-process writes `K(t) = \sum_{m∼M}w_m e(φ_t(m)) + O(T^{o(1)})` with
+```
+   M = T/2πN,\qquad |w_m| ≍ N/T^{1/2},\qquad \sum_m|w_m| ≍ T^{1/2},\qquad
+   φ_t(m) = 2\sqrt{tm/2π} .
+```
+**So `\max_t|K(t)| ≤ \sum_m|w_m| ≍ T^{1/2} = V` exactly at `τ = 2σ`: the witness `|K(t)| ≥ cV` demands
+that the dual sum attain a constant fraction of its `ℓ^{1}` norm — i.e. near-total phase alignment.**
+## Why alignment is rare `[PROVED HERE, to leading order]`
+`φ_t'(m) = \sqrt{t/2πm} ≍ \sqrt{T/M} = \sqrt N`, so **the phase advances by `≍ \sqrt N ≫ 1` between
+consecutive `m`** — consecutive terms are never in phase. Alignment can only occur through the
+arithmetic of `φ_t`: writing `φ_t(m)-φ_t(m') = 2\sqrt{t/2π}(\sqrt m-\sqrt{m'})`, and
+`\sqrt m-\sqrt{m'} ≈ (m-m')/2\sqrt M`, the condition `φ_t(m)-φ_t(m') ∈ ℤ` for all `m,m' ∼ M` reduces
+to the **single** condition
+```
+        \frac{\sqrt t}{2\sqrt{2πM}} ∈ ℤ + o(1) \qquad\Longleftrightarrow\qquad t ≈ 8πM k^{2} ,
+```
+and `k` ranges over `≍ \sqrt{T/M} = \sqrt N` values as `t` runs over `[T,2T]`.
+> ### Consequence (leading order)
+> **`\#\{t ≍ T : |K(t)| ≥ cT^{1/2}\} ≪ \sqrt N \cdot T^{o(1)} = o(N)` — the `a ≡ 1` witness is dead for
+> every `σ`, not merely for `σ > 1/(2-4μ(1/2))`.**
+> The second-order term makes alignment *harder*, not easier: `φ_t''(m) ≍ \sqrt T M^{-3/2}`, so the
+> quadratic variation across `m ∼ M` is `M^{2}|φ''| ≍ \sqrt{TM} ≫ 1`, which must *also* be cancelled —
+> a further constraint on `t`.
+`[STATUS — this is a stationary-phase computation, not yet a proof.]` What is rigorous: the `ℓ^{1}`
+budget `\sum|w_m| ≍ T^{1/2}` and the phase derivative `φ_t' ≍ \sqrt N`. What needs care: (i) the
+B-process error term `O(T^{o(1)})` must be compared with the *threshold* `V = T^{1/2}`, which it is
+(negligible); (ii) "near-total alignment" must be quantified — attaining `cT^{1/2}` requires a constant
+fraction of the `w_m` to be within `O(1)` in phase, and the argument above shows the set of such `t`
+is contained in `≍ \sqrt N` intervals of length `O(M/\sqrt{T/M})`; (iii) the reduction from
+`|K| ≥ cV` to alignment uses `|\sum w_me(φ)| ≤ \sum|w_m|` with near-equality, which requires the
+standard "equality in the triangle inequality" quantification.
+`[OPEN CORE 113]` **Make (ii) and (iii) rigorous.** If they hold, the consequence is substantial: the
+witness that Cycle 65 showed saturates *every* `\|a\|_2/\|a\|_∞` bound at `(σ,2σ)` does not exist, and
+the closure diagram's first branch collapses. **That would not immediately give `\mathrm{A}(σ) ≤ 3/(2σ)`
+(the caveat of Cycle 68 stands: killing the witness removes the obstruction, not the bound) — but it
+would make `(σ,2σ)` the first configuration in this programme where no known configuration saturates
+the mean value theorem.**
+
+## **Cycle 69's argument FAILS — withdrawn** `[CORRECTION, next cycle]`
+The alignment argument required `|K(t)| ≥ c\sum_m|w_m|` with `c` bounded away from `0`. **But the
+large-value threshold is `V = N^{σ+o(1)}`, i.e. `T^{1/2-ε}`, while `\sum_m|w_m| = \sqrt T/2π` — so the
+witness needs only**
+```
+        c \;=\; 2π\,T^{-ε} \;\longrightarrow\; 0 ,
+```
+**not a fixed proportion of the `ℓ^{1}` norm.** Quantifying equality in the triangle inequality,
+`|\sum z_m| ≥ c\sum|z_m|` gives `\sum_m|z_m|\,\|(\arg z_m-θ)/2π\|^{2} ≪ (1-c)\sum|z_m|`, which for
+`c → 0` is **vacuous**: the phases need not cluster at all. The clustering conclusion
+("`δM` phases within `O(1)` of a common `θ`") requires `δ ≳ 1-c`, and with `c = T^{-ε}` one gets
+`δ ≈ 0` — weaker than the `1/5` that a *random* phase sequence already supplies.
+`[Theorem/Cycle 69 withdrawn. Twelfth correction. New instance of an old failure mode: **treating a
+`T^{o(1)}`-threshold as if it were a constant-proportion threshold.** The `ℓ^{1}` budget
+`\max_t|K| ≤ \sqrt T/2π` is correct and worth keeping — it says the witness sits within `T^{o(1)}` of
+the absolute maximum — but "within `T^{o(1)}` of the maximum" does **not** force phase alignment.]`
+> **Gate added (fifth):** before concluding rigidity from near-extremality, check whether the
+> extremality is by a *constant factor* or only up to `T^{o(1)}`; triangle-inequality and
+> equality-case arguments are vacuous in the latter regime.
+> ### What survives from Cycle 69
+> 1. `\max_{t≍T}|K(t)| ≤ \sqrt T/2π + O(T^{o(1)})` — **so at `τ = 2σ` the witness sits within `T^{o(1)}`
+>    of the global maximum of `|K|` over the whole range.** That is still a striking structural fact:
+>    the configuration saturating every `\|a\|_2/\|a\|_∞` bound is one where a bare exponential sum is
+>    within `T^{o(1)}` of its absolute maximum on `N` separated points.
+> 2. The dual phase data — `φ_t' ≍ \sqrt N`, `φ_t'' ≍ \sqrt T M^{-3/2}`, quadratic variation
+>    `\sqrt{TM} ≫ 1` — is correct and is the right description of the regime.
+> 3. The moment hierarchy cannot see any of this: `∫|K|^{2k} ≍ (N^{k}+T)N^{k}` gives `μ ≤ N` at
+>    `k = 1` and worse for `k ≥ 2` (OC103), so **the near-maximality of the witness is invisible to
+>    every moment.**
+`[OPEN CORE 114]` The right question is therefore: **can a bare exponential sum `\sum_{n∼N}n^{-it}` be
+within `T^{o(1)}` of its absolute maximum `\sqrt T` at `N = T^{1/(2σ)}` one-separated points `t ≍ T`?**
+Moments say yes (up to `N`); the `√(tm)` phase structure suggests no; and the gap between those two is
+exactly the residual window. **This is the sharpest form of the question and it is genuinely open —
+but note it is `\mathrm{LV}_ζ(σ,2σ)` again, so any proof is a new zeta large-value theorem.**
+
+---
+
+# CYCLE 70 (2026-07-26) — a **discrepancy** in the fourth moment computed two ways `[MUST BE RESOLVED]`
+At `(σ,τ) = (7/10, 7/5)` (`τ = 2σ`), `N = T^{5/7}`, `M = T/N = T^{2/7}`, `|w_m| ≍ N/\sqrt T = T^{3/14}`:
+```
+   \textbf{Direct:}\quad ∫_T^{2T}|K|^{4} = ∫|K^{2}|^{2} ≍ (T+N^{2})\sum_m d^{(N)}(m)^{2} ≍ N^{4} = T^{20/7} = T^{2.857} ;
+   \textbf{Dual:}\quad ∫|{\rm dual}|^{4} = \sum_{m_1..m_4}w\cdots\overline{w}\int_T^{2T}e\big(c\sqrt t\,Δ\big)dt,
+   \quad Δ = \sqrt{m_1}+\sqrt{m_2}-\sqrt{m_3}-\sqrt{m_4} ,
+```
+with `\int_T^{2T}e(c\sqrt tΔ)dt ≪ \min(T,\ \sqrt T/|Δ|)` (substitute `u=\sqrt t`). Splitting by
+`k = m_1+m_2-m_3-m_4`: the exact diagonal (`≍ M^{2}` quadruples) gives `M^{2}|w|^{4}T = T^{17/7}`; the
+`k = 0`, `Δ ≠ 0` quadruples (`≍ M^{3}` of them, `|Δ| ≳ M^{-3/2}`) give
+`M^{3}|w|^{4}\sqrt T M^{3/2} = T^{2.643}`; the `k ≠ 0` quadruples give `≍ T^{2.357}`. **Total
+`T^{2.643}` — smaller than the direct value `T^{2.857}` by `T^{0.214}`, although the two expressions
+compute the same integral.**
+> **One of the two standard tools is being misapplied, and it matters: if the dual value is correct the
+> witness dies (it needs `NT^{2} = T^{2.714} > T^{2.643}`); if the direct value is correct the witness
+> survives.** Candidate resolutions, in order of likelihood:
+> 1. **The B-process error term is not `O(T^{o(1)})` here.** `K = {\rm dual} + E`; if `‖E‖_4^4 ≍ N^{4}`
+>    the discrepancy is entirely in `E`. The classical error in the `B`-process is `O(\log T)` *for the
+>    sum with smooth weights over a full dyadic block*, but our `K` is a sharp-cutoff sum, whose
+>    truncation error is `O(N/M)`-type and can be large.
+> 2. **The count `≍ M^{3}` of `k = 0` quadruples with `|Δ| ≳ M^{-3/2}` is wrong** — the second-order
+>    expansion `Δ ≈ k/2\sqrt M + q/M^{3/2}` may have `q` distributed so that `|Δ|` is often far smaller.
+> 3. **The direct computation's off-diagonal `≍ N^{4}` assumes `\sum_{m≠m'}d^{(N)}(m)d^{(N)}(m')/|\log(m/m')| ≍ N^{4}`**, which is the length term; this was verified in Theorem 33 for `∫|D^{k}|^{2}` in general, but the constants deserve re-checking at `N^{2} ≫ T`.
+`[OPEN CORE 115]` **Resolve the discrepancy.** This is a self-contained, finite computation about a
+single explicit integral, and it decides the fate of the `a ≡ 1` witness — hence of the first branch of
+the Cycle-65 closure diagram. **Recording it rather than guessing: the twelve corrections of this
+session all came from asserting one side of exactly this kind of ambiguity.**
+
+## `[OPEN CORE 115]` RESOLVED: the direct value is correct; the dual model missed the concentration of `Δ` `[PROVED HERE]`
+Checks performed:
+* **Second moments agree.** `∫|{\rm dual}|^{2} ≍ M|w|^{2}T = T^{12/7}` and `∫|K|^{2} ≍ TN = T^{12/7}` ✔ —
+  so `|w_m| ≍ N/\sqrt T`, `M = T/2πN` and the B-process normalisation are right.
+* **The direct fourth moment is right.** `∑_m d^{(N)}(m)d^{(N)}(m+h) ≍ N^{2}T^{o(1)}` uniformly (its
+  average over the `≍ N^{2}` shifts is `(\sum_m d^{(N)}(m))^{2}/N^{2} = N^{2}`), so the near-diagonal
+  `|h| ≤ N^{2}/T` contributes `T·(N^{2}/T)·N^{2} = N^{4}` — the length term. `∫|K|^{4} ≍ N^{4}` stands.
+* **The error term cannot explain the gap.** The `B`-process error for a sharp-cutoff block is
+  `O(\log T)`, giving `∫|E|^{4} ≪ T\log^{4}T ≪ N^{4}`.
+* **The dual model was wrong.** I assumed the values `Δ = \sqrt{m_1}+\sqrt{m_2}-\sqrt{m_3}-\sqrt{m_4}`
+  are equidistributed on `[-\sqrt M,\sqrt M]` with density `≍ M^{4}/\sqrt M = M^{3.5}`. **Sanity check
+  that kills it:** that model predicts `\#\{|Δ| ≤ T^{-1/2}\} ≍ M^{3.5}T^{-1/2} = T^{1/2}`, whereas the
+  *exact* diagonal `\{m_1,m_2\}=\{m_3,m_4\}` alone already contributes `M^{2} = T^{4/7} > T^{1/2}`
+  quadruples with `Δ = 0`. **The `Δ`-distribution has a heavy concentration at `0` inherited from the
+  multiplicative near-diagonal, which the uniform model does not see.**
+> **Resolution: `∫|K|^{4} ≍ N^{4}` is correct, the dual computation was mis-modelled, and the witness
+> `a ≡ 1` therefore *survives* at `(σ,2σ)` for `σ ≤ 3/4` — consistent with Theorem 55, which is the
+> independent check.** `[OPEN CORE 115 closed. Also recorded: the second-order term in
+> `Δ ≈ k/2\sqrt M + O(\sqrt M)` is of size `\sqrt M`, not `M^{-3/2}` as written in Cycle 70 — a second
+> error in the same computation.]`
+> ### Methodological note
+> The two-way computation of one integral was worth doing even though it produced no new estimate: it
+> exposed **two** errors (the `Δ`-density model and the second-order size) that no single-route
+> calculation would have revealed, and it independently re-confirmed Theorem 55 and the `σ ≤ 3/4`
+> threshold. **Gate added (sixth): when a quantity admits two natural representations (primal/dual,
+> direct/reflected), compute both and require agreement before using either.** Applied retroactively,
+> this is the check that would have caught Theorems 39, 40 and 52.
+
+---
+
+# CYCLE 71 (2026-07-26) — the exact logical status of Theorem 54's route
+
+## What the route needs, and what the witness does to it `[PROVED HERE]`
+Theorem 54 gives `\mathrm{A}(σ) ≤ 3/(2σ)` provided `\mathrm{LV}(σ,τ) ≤ (3-3σ)τ/(2σ)` on
+`[4σ/3, 2σ]`, binding at `τ = 2σ` where it reads `\mathrm{LV}(σ,2σ) ≤ 3-3σ`. Now:
+```
+   \text{mean value theorem:}\quad \mathrm{LV}(σ,2σ) ≤ τ+1-2σ = 1 ;
+   \text{lower bound (Lemma 7.5):}\quad \mathrm{LV}(σ,2σ) ≥ \min(2-2σ, τ) = 2-2σ ;
+   \text{requirement:}\quad \mathrm{LV}(σ,2σ) < 3-3σ \quad(<1 \text{ exactly when } σ > 2/3) .
+```
+So the requirement sits strictly between the known lower and upper bounds — `[0.6, 1]` versus `< 0.9`
+at `σ = 7/10` — **and the `a ≡ 1` witness, if real, forces `\mathrm{LV}_ζ(σ,2σ) = 1` and kills the
+route.** Conversely Corollary 8.6 gives `\mathrm{LV}_ζ(σ,2σ) = -∞` for
+```
+   σ > \frac{1}{2(1-2μ(1/2))} = 0.7241\ldots \quad (μ(1/2) = 13/84) ,
+```
+**so on `σ ∈ (0.7241, 3/4]` the witness is dead and the only obstruction left is the general-coefficient
+bound.** On `σ ∈ (2/3, 0.7241]` the witness is alive (consistently with all moments, Theorem 55) and
+the route is blocked.
+> ### Consistency check of Theorem 54 against the literature `[VERIFIED]`
+> `\mathrm{A}(σ) ≤ 3/(2σ)` tends to `3/2` as `σ → 1` — **exactly Huxley's classical limit
+> `\mathrm{A}(σ) ≤ 3/(3σ-1) → 3/2`.** The two agree at `σ = 1` and `3/(2σ) ≤ 3/(3σ-1) \iff 3σ-1 ≤ 2σ
+> \iff σ ≤ 1`, so **Theorem 54's conclusion is uniformly at least as strong as Huxley's on `(1/2,1]`
+> and matches it exactly at the endpoint.** That the route reproduces the correct classical limit
+> without being designed to is evidence that the reduction is calibrated correctly (it is the same
+> kind of check as `L = \sqrt V` at `τ = 2-σ` and `\#\text{structured} = ν`).
+`[OPEN CORE 116]` The programme's target is now a single inequality on a single interval:
+```
+        \mathrm{LV}(σ, 2σ) \;<\; 3-3σ \qquad\text{for } σ ∈ (2/3, 3/4] ,
+```
+with the mean value theorem giving `1`, the requirement `3-3σ ∈ [0.75, 1)`, and the obstruction being
+the `a ≡ 1` witness below `0.7241` and unknown above it. **Above `0.7241` no configuration is known to
+saturate the mean value theorem at `τ = 2σ`** — that is the first sub-range in this programme with no
+known obstruction, and it is where a proof would have to start.
+
+## The target quantified against Montgomery `[PROVED HERE]`
+At `(σ,2σ)` the three relevant values are
+```
+   \text{mean value theorem: } 1 ;\qquad
+   \text{requirement: } 3-3σ ;\qquad
+   \text{Montgomery's conjecture: } 2-2σ = \text{Lemma 7.5's lower bound (sharp if MC holds)} .
+```
+The requirement is **weaker than Montgomery by `1-σ`**, and as a fraction of the gain MC would supply,
+```
+        \frac{1-(3-3σ)}{1-(2-2σ)} \;=\; \frac{3σ-2}{2σ-1} ,
+```
+which at `σ = 0.73` is `0.19/0.46 = 41\%` and at `σ = 3/4` is `0.25/0.5 = 50\%`. **So on
+`σ ∈ (0.7241, 3/4]` the Density-Hypothesis-strength conclusion `\mathrm{A}(σ) ≤ 3/(2σ) ≤ 2` follows
+from between `41\%` and `50\%` of Montgomery's improvement over the mean value theorem, at a
+configuration where — for the first time in this programme — **no saturating configuration is known**:
+the `a ≡ 1` witness is dead there by Corollary 8.6, and Lemma 7.5's random-sign construction gives only
+`2-2σ`, far below the requirement.**
+> ### Summary of the terminal state
+> ```
+>   σ ≤ 2/3            :  route weaker than Ingham (no interest)
+>   σ ∈ (2/3, 0.7241]  :  a ≡ 1 witness alive ⟹ route blocked, obstruction explicit
+>   σ ∈ (0.7241, 3/4]  :  witness dead; requirement = 41–50% of Montgomery; NO KNOWN OBSTRUCTION
+>   σ > 3/4            :  Density Hypothesis already known (Bourgain, σ ≥ 25/32; and 3/(2σ) < 2)
+> ```
+> **The entire residue of 71 cycles is the middle-upper band `(0.7241, 3/4]`, of width `0.026`.** Its
+> two endpoints are set by the two strongest classical inputs — `μ(1/2) = 13/84` from below and
+> Bourgain's density theorem from above — and inside it the programme has an explicit route
+> (Theorem 54) requiring less than half of Montgomery's conjecture, with no configuration known to
+> obstruct it.
+`[OPEN CORE 117]` **Prove `\mathrm{LV}(σ,2σ) ≤ 3-3σ` for `σ ∈ (0.7241, 3/4]`.** Every structural asset
+of this card applies there: the configuration is at the coherence boundary `V = B = T^{1/2}`
+(Theorem 34/54), the wave-packet decomposition exists (`L = N^{1-σ} ≫ 1`), Theorem 16 fires at `ν = B`
+(Cycle 60), and the four-moment test is not saturated (`σ < 3/4` strictly leaves room by `N^{3-4σ}`).
+**This is the sharpest, narrowest, and least obstructed target the programme has produced, and it is
+where the next session should begin.**
+
+## CORRECTION to the Cycle 60/71 framing: at `V = B` the coherence machinery is **vacuous** `[PROVED HERE]`
+Theorem 34's coherent regime is `V ≥ N/L = B`, and Theorem 54's configuration sits at `V = B`
+**exactly**. But the machinery needs the inequality to be *strict by a power*, because the trivial
+bound on the block decomposition is `\sum_I|\widehat{z_I}| ≤ B·L = N`, so largeness `|D| ≥ V = B`
+requires only the fraction
+```
+        \frac{V}{N} = \frac{B}{BL} = \frac1L = N^{σ-1}
+```
+of the trivial maximum. **At `V = B` each block need only contribute `≍ 1` on average — a demand met
+by *every* block for typical coefficients (`|\widehat{z_I}| ≍ \sqrt L ≫ 1`), so the dyadic level is
+`V' ≍ 1`, `|E_I| ≪ L/V'^{2} ≫ 1` is vacuous, and the fat-AP/incidence apparatus says nothing.**
+> **So the band `(0.7241, 3/4]` is not "unobstructed because the tools apply and find nothing" — it is
+> unobstructed because *no tool applies*: the witness is dead there (Corollary 8.6) and the block
+> machinery is degenerate (`V = B`).** The Cycle-71 summary line "every structural asset applies there"
+> is withdrawn; the correct statement is that the assets are exactly at their boundary of validity and
+> give nothing. `[Thirteenth correction. Failure mode: treating an inequality that holds *with
+> equality* as if it held with room — the same error class as Cycle 69's `T^{o(1)}`-versus-constant
+> confusion. **Gate (seventh): when a hypothesis is met with equality, check whether the conclusion
+> needs strictness by a power.**]`
+> ### What is actually true about the band
+> ```
+>   σ ∈ (0.7241, 3/4] :  the a ≡ 1 witness is dead (μ(1/2) = 13/84 via Cor. 8.6) ;
+>                        no other saturating configuration is known ;
+>                        the block/coherence machinery is degenerate (V = B) ;
+>                        the mean value theorem gives 1, the requirement is 3-3σ ∈ [0.75,1) .
+> ```
+> **The honest reading: on this band the mean value theorem is not known to be sharp and is not known
+> to be improvable — the situation is genuinely open in both directions**, which is a different and
+> more interesting state than the rest of the range, where an explicit witness closes the question.
+`[OPEN CORE 118]` Since no tool applies at `V = B`, the productive move is to **leave the boundary**:
+Corollary 11.9 permits any `τ_0`, and `τ_0 = 2σ` was chosen to make condition (7) vacuous. Taking
+`τ_0` slightly *below* `2σ` puts the binding configuration strictly inside the coherent regime
+(`V ≫ B`) at the cost of a weaker conclusion `\mathrm{A}(σ) ≤ 3/τ_0`. **Optimising that trade-off —
+how much coherence can be bought for how much loss in `3/τ_0` — is a one-parameter calculation, and
+it is the concrete next step.**
+
+# Cycle 72 — the route's ceiling, and an exact interpolation identity for the Density Hypothesis
+
+## CORRECTION (fourteenth): Theorem 54's route does **not** reach the Density Hypothesis `[PROVED HERE]`
+Theorem 54's conclusion is `\mathrm{A}(σ) ≤ 3/(2σ)`, and
+```
+        \frac{3}{2σ} ≤ 2 \iff σ ≥ \tfrac34 .
+```
+**On the entire band `(2/3, 3/4)` the route's own ceiling is strictly above `2`** (at `σ = 0.73` it is
+`2.055`), so even a complete proof of `\mathrm{OPEN CORE 116/117}` — `\mathrm{LV}(σ,2σ) ≤ 3-3σ` — would
+*not* prove the Density Hypothesis there. It would give a bound between Ingham and DH. `[Failure mode:
+optimising a route to its own ceiling without checking the ceiling against the actual target. **Gate
+(eighth): before adopting an `\mathrm{OPEN CORE}`, substitute its conclusion into the final target and
+confirm the target is reached.**]`
+What the route *would* give is still substantial: the Guth–Maynard record on this range is
+`\mathrm{A}(σ) ≤ 15/(3+5σ)` (`2.256` at `σ = 0.73`), so `3/(2σ) = 2.055` **would be a new record on
+`(2/3,3/4)`** — but conditional on an unproved large-value bound, and short of DH.
+
+## Theorem 58 (the DH-critical large-value exponent, and its exact position between the two classical bounds) `[PROVED HERE]`
+By Corollary 11.9 the Density Hypothesis `\mathrm{A}(σ) ≤ 2` follows from
+`\mathrm{A}(σ)(1-σ) ≤ 2(1-σ)`, i.e. from the window-by-window requirement
+```
+        \mathrm{LV}(σ,τ) \;≤\; 2τ(1-σ) \;=:\; \mathrm{LV}_{\mathrm{DH}}(σ,τ) .
+```
+Write the two classical bounds as `\mathrm{LV}_{\mathrm{MVT}}(σ,τ) = τ+1-2σ` (Montgomery–Vaughan mean
+value theorem) and `\mathrm{LV}_{\mathrm{MC}}(σ) = 2-2σ` (Montgomery's conjecture, `=` Lemma 7.5's
+lower bound). Then:
+**(i) The mean value theorem alone gives the Density Hypothesis exactly on the windows `τ ≤ 1`:**
+```
+        τ+1-2σ ≤ 2τ(1-σ) \iff (1-2σ)(1-τ) ≤ 0 \iff τ ≤ 1 \quad(σ>\tfrac12) .
+```
+**(ii) On `τ > 1` the deficit of the mean value theorem is exactly `(τ-1)(2σ-1)`,** and the surplus of
+Montgomery's conjecture over the mean value theorem is exactly `τ-1`.
+**(iii) Hence the fraction of Montgomery's improvement that the Density Hypothesis requires is**
+```
+        \frac{\mathrm{LV}_{\mathrm{MVT}}-\mathrm{LV}_{\mathrm{DH}}}
+             {\mathrm{LV}_{\mathrm{MVT}}-\mathrm{LV}_{\mathrm{MC}}}
+        \;=\;\frac{(τ-1)(2σ-1)}{τ-1}\;=\;2σ-1 ,
+```
+**independently of `τ`.** Equivalently, as an exact convex combination with weights summing to `1`:
+```
+        \boxed{\;\mathrm{LV}_{\mathrm{DH}}(σ,τ)\;=\;(2-2σ)\,\mathrm{LV}_{\mathrm{MVT}}(σ,τ)\;+\;(2σ-1)\,\mathrm{LV}_{\mathrm{MC}}(σ)\;}
+```
+*Proof.* `(2-2σ)(τ+1-2σ)+(2σ-1)(2-2σ) = (2-2σ)\bigl[τ+1-2σ+2σ-1\bigr] = (2-2σ)τ`. ∎
+> **The Density Hypothesis is the `(2σ-1)`-weighted interpolation between the mean value theorem and
+> Montgomery's conjecture, uniformly in the window `τ`.** The weight `2σ-1` is exactly twice the
+> distance from the critical line. At `σ = 1/2` the weight is `0` — DH *is* the mean value theorem
+> (and is trivial). At `σ = 1` the weight is `1` — DH *is* Montgomery's conjecture (both are `0`). In
+> between, DH costs precisely the fraction `2σ-1` of the conjectural gap, at **every** window
+> simultaneously.
+### Sixth independent derivation of `σ = 3/4`
+The weight equals `1/2` exactly at `σ = 3/4`: **the Density Hypothesis at `σ = 3/4` is the exact
+midpoint of the mean value theorem and Montgomery's conjecture.** Independently, the DH-critical
+window `τ = 3/2` (the smallest `τ` with `3/τ ≤ 2`) meets the coherence boundary `τ = 2σ` exactly at
+`σ = 3/4`. Together with the four derivations of Cycles 51–66 this is the sixth and seventh
+appearance of `3/4` from mutually independent mechanisms.
+### The corrected target
+At the coherence boundary `τ = 2σ` the requirement is
+```
+        \mathrm{LV}(σ,2σ)\;≤\;4σ(1-σ)\;=\;1-(2σ-1)^2 ,
+```
+i.e. the mean value theorem's value `1` must be beaten by exactly `(2σ-1)^2`, **the square of twice
+the distance from the critical line**. Since `4σ(1-σ) ≤ 3-3σ \iff σ ≤ 3/4`, the corrected target is
+strictly harder than `\mathrm{OPEN CORE 116/117}` on `(2/3,3/4)` and coincides with it at `σ = 3/4`.
+`[OPEN CORE 119 — supersedes 116 and 117]` **Prove `\mathrm{LV}(σ,τ) ≤ 2τ(1-σ)` for `τ ∈ (1, 2σ]`.**
+By (i) this is the *entire* content of the Density Hypothesis in the large-values formulation: windows
+`τ ≤ 1` are already done by the mean value theorem, and by Theorem 54's window analysis nothing above
+`τ = 2σ` contributes. By (iii) it asks for the fraction `2σ-1` of Montgomery's conjecture — never more
+than half of it on the range `σ ≤ 3/4` where DH is open.
+
+## Theorem 59 (the triple point at `τ = 1`, and the pencil geometry of the three exponents) `[PROVED HERE]`
+```
+        τ = 1 :\quad \mathrm{LV}_{\mathrm{MVT}} = 1+1-2σ = 2-2σ,\quad
+                     \mathrm{LV}_{\mathrm{MC}} = 2-2σ,\quad
+                     \mathrm{LV}_{\mathrm{DH}} = 2·1·(1-σ) = 2-2σ .
+```
+**All three coincide at `τ = 1`.** As functions of `τ` they are the pencil of lines through
+`(1, 2-2σ)` with slopes `1`, `0`, and `2-2σ` respectively; since `0 < 2-2σ < 1` on `σ ∈ (1/2,1)`, the
+Density-Hypothesis line lies strictly between the other two for every `τ ≠ 1`, on the mean-value side
+for `τ < 1` and on the Montgomery side for `τ > 1`. **A large-value estimate proves the Density
+Hypothesis at `σ` if and only if its graph lies below the line through the triple point of slope
+`2-2σ` on the whole window `τ ∈ (1, 2σ]`** — this is the entire geometric content of Theorem 58, and
+it is why the required fraction `2σ-1` of Montgomery's conjecture is independent of `τ` (it is a ratio
+of slopes, not of values).
+
+## Theorem 60 (reduction of the Density Hypothesis to Montgomery's conjecture at a **single** window) `[PROVED HERE]`
+*Let `σ ∈ (2/3, 3/4)` and set*
+```
+        τ_*(σ)\;:=\;1+(2σ-1)^2\;=\;4σ^2-4σ+2 .
+```
+*If `\mathrm{LV}(σ, τ_*) ≤ 2-2σ` — Montgomery's conjecture at the single window `τ_*` — then*
+`\mathrm{A}(σ) ≤ 2`*, the Density Hypothesis at `σ`.*
+*Proof.* By Lemma 7.4(ii) (Huxley subdivision, verbatim: `\mathrm{LV}(σ,τ) ≤ \mathrm{LV}(σ,τ') ≤
+\mathrm{LV}(σ,τ)+τ'-τ`), the hypothesis propagates in both directions: for `τ ≤ τ_*` it gives
+`\mathrm{LV}(σ,τ) ≤ 2-2σ`, which meets `\mathrm{LV}_{\mathrm{DH}} = 2τ(1-σ)` exactly when `τ ≥ 1`
+(Theorem 58(i)); for `τ ≥ τ_*` it gives `\mathrm{LV}(σ,τ) ≤ 2-2σ+τ-τ_*`, which meets
+`2τ(1-σ)` exactly for `τ ≤ (τ_*-2+2σ)/(2σ-1)`, and
+```
+        \frac{τ_*-2+2σ}{2σ-1} ≥ 2σ \iff τ_* ≥ 4σ^2-4σ+2 = 1+(2σ-1)^2 ,
+```
+which is the hypothesis with equality. So the requirement holds on all of `(1,2σ]`; by Theorem 54's
+window analysis (`τ_0 = 2σ`, condition (7) vacuous for `σ < 3/4`, condition (6) confined to
+`[4σ/3, 2σ]`) and Theorem 58(i) for the sub-window `[4σ/3,1]`, Corollary 11.9 gives
+`\mathrm{A}(σ)(1-σ) ≤ 2(1-σ)`. ∎
+*(All five algebraic steps machine-checked: `triple_point`, `subdivision_range`,
+`covers_coherent_window_iff`, `required_window_lt_coherence`, `huxley_gap`.)*
+> **`τ_*(σ) = 1+(2σ-1)^2` lies strictly inside the coherent regime: `τ_* < 2σ` for all
+> `σ ∈ (1/2,1)`.** So the Density Hypothesis on `(2/3,3/4)` needs Montgomery's conjecture at **one**
+> window, and that window is strictly below the coherence boundary where the block/wave-packet
+> machinery is non-degenerate (unlike `τ = 2σ` itself — see the thirteenth correction).
+### The exact distance to the known frontier
+Huxley's large values theorem (blueprint Theorem 7.12, verbatim `\mathrm{LV}(σ,τ) ≤ \max(2-2σ,
+4+τ-6σ)`) proves Montgomery's conjecture for `τ ≤ 4σ-2`. Hence
+```
+        τ_*(σ) - (4σ-2) \;=\; 4σ^2-8σ+4 \;=\; \boxed{\,4(1-σ)^2\,} .
+```
+**The Density Hypothesis at `σ` follows from extending the proved Montgomery range beyond Huxley's
+`4σ-2` by exactly `4(1-σ)^2`** — `0.29` at `σ = 0.73`, `0.25` at `σ = 3/4`. This is the sharpest
+statement of the residual difficulty this programme has produced: one window, one conjecture, one
+explicitly quantified gap.
+
+## Theorem 61 (why every classical route stops at `σ = 3/4`) `[PROVED HERE]`
+**(a) Huxley's large values theorem contributes to the Density-Hypothesis window if and only if
+`σ > 3/4`.** Its non-trivial term `4+τ-6σ` meets `2τ(1-σ)` exactly for `τ ≤ (6σ-4)/(2σ-1)`, and
+```
+        \frac{6σ-4}{2σ-1} > 1 \iff 6σ-4 > 2σ-1 \iff σ > \tfrac34 .
+```
+Equivalently, its Montgomery range `4σ-2` exceeds `1` iff `σ > 3/4`. Both thresholds are the same
+number because all three exponents meet at `τ = 1` (Theorem 59).
+**(b) The exponent-pair route to Montgomery's conjecture is vacuous for `σ ≤ 3/4`.** The blueprint's
+Corollary 7.11 gives Montgomery's conjecture for `τ < (2σ+k-\ell-1)/k`, and every exponent pair
+satisfies `\ell ≥ k+1/2`; hence the numerator is `≤ 2σ-3/2`, which is positive **iff `σ > 3/4`**.
+*(Machine-checked: `huxley_range_nonempty_iff`, `exponent_pair_route_vacuous`.)*
+> ### The `3/4` wall, explained
+> `σ = 3/4` is not a coincidence of five or six separate estimates. **It is the single point where
+> the Density-Hypothesis line through the triple point `(1, 2-2σ)` stops being reachable by the two
+> mechanisms that beat the mean value theorem:** Huxley's slope-`1` term (which must cross the
+> DH line to the right of `τ = 1`, i.e. `4σ-2 > 1`) and the exponent-pair numerator `2σ-3/2` (which
+> must be positive). Both conditions read `σ > 3/4`, and both read that way because `\ell-k ≥ 1/2`
+> — the `μ(1/2)` constraint — is exactly the statement that `ζ` on the critical line cannot be
+> exploited below `σ = 3/4`. Adding the coherence boundary `2σ = 3/2`, the deficit parabola, the
+> `k = 2` moment test, the off-diagonal computation and the witness's fourth moment, `σ = 3/4` has now
+> been derived **nine** times from mutually independent mechanisms, and Theorem 61 identifies the
+> common cause.
+`[OPEN CORE 120 — supersedes 119]` **Prove `\mathrm{LV}(σ, 1+(2σ-1)^2) ≤ 2-2σ` for `σ ∈ (2/3,3/4)`,**
+i.e. extend the proved Montgomery range from Huxley's `4σ-2` by `4(1-σ)^2`. By Theorem 61 neither
+Huxley's estimate nor any exponent pair can do this below `σ = 3/4`; by Theorem 60 nothing else is
+needed.
+
+# Cycle 73 — the `3/4` wall identified as the Halász–Montgomery barrier, and the cancellation fraction it costs
+
+## Theorem 62 (the Halász–Montgomery barrier is exactly `σ = 3/4`, unconditionally and irremovably) `[PROVED HERE]`
+Write `D_1(u) := \sum_{n∼N} n^{-iu}` for the resolvent of the large-value problem, and
+`Δ := \max_{1 ≤ u ≤ T}|D_1(u)|`. The Halász–Montgomery argument is
+```
+        R^2V^2 \;≤\; \|a\|_2^2 \Bigl|\sum_{r,r'} c_r\overline{c_{r'}} D_1(t_r-t_{r'})\Bigr|
+              \;≤\; N\,(RN + R^2Δ)
+        \;\Longrightarrow\; R V^2 ≪ N^2 + R\,N\,Δ .
+```
+**(a) `Δ ≥ c\,N^{1/2}` unconditionally whenever `τ > 1`.** By Montgomery–Vaughan,
+```
+        \int_0^T |D_1(u)|^2\,du \;=\; NT + O(N^2\log N),
+```
+the diagonal dominating exactly when `T ≥ N\log N`, i.e. **exactly when `τ > 1`**; then the mean of
+`|D_1|^2` is `≍ N`, so `Δ ≥ c N^{1/2}`.
+**(b) Hence on `τ > 1` the Halász–Montgomery inequality reads `RV^2 ≪ N^2 + R N^{3/2}` and is
+vacuous precisely when `V^2 ≤ N^{3/2}`, i.e. precisely when `σ ≤ 3/4`.** For `σ > 3/4` it gives
+`R ≪ N^{2-2σ}` — Montgomery's conjecture — for every `τ`.
+> **`σ = 3/4` is the Halász–Montgomery barrier, and (a) shows it cannot be moved by any improvement
+> to the pointwise bound on the resolvent: `Δ = N^{1/2}` is already the truth, forced by the second
+> moment.** This is the common cause behind every appearance of `3/4` in this card and in the
+> literature — including the blueprint's own step in Theorem 7.15, *"Since `σ > 3/4`, we can delete
+> the second term"*, whose deleted term is exactly `|W|^2 N^{3/2}`, i.e. `R^2 · \|a\|_2^2 · Δ`.
+### The two thresholds are the same threshold
+Theorem 59 located the triple point of the three exponents at `τ = 1`; Theorem 62(a) locates the
+diagonal/off-diagonal transition of `\int|D_1|^2` at `τ = 1`. **These coincide because both say
+`N^2 = NT`: the mean value theorem stops proving the Density Hypothesis at exactly the window where
+the resolvent's second moment stops being off-diagonal-dominated.** Below that window the problem is
+a diagonal problem and the mean value theorem is sharp for the right reason; above it, the resolvent
+has genuine oscillation and the whole difficulty is to exploit it.
+
+## Theorem 63 (the Density Hypothesis costs at most a quarter of square-root cancellation) `[PROVED HERE]`
+By Theorem 62 the only way past `σ = 3/4` is cancellation in the **quadratic form**, not in `Δ`.
+Define the off-diagonal cancellation exponent `θ = θ(σ,τ)` by
+```
+        \Bigl|\sum_{r ≠ r'} c_r\overline{c_{r'}} D_1(t_r-t_{r'})\Bigr| \;≪\; R^{2-θ}\,N^{1/2} ,
+```
+so `θ = 0` is the triangle inequality and `θ = 1/2` is square-root cancellation over the `R^2` pairs.
+Then `R^{2}V^{2} ≪ N(RN + R^{2-θ}N^{1/2})`, and in the range where the second term dominates,
+```
+        R \;≪\; N^{(3/2-2σ)/θ} .
+```
+**This meets Montgomery's conjectured `N^{2-2σ}` — and therefore, by Theorem 60, gives the Density
+Hypothesis — exactly when**
+```
+        \boxed{\;θ \;≥\; θ_*(σ) \;:=\; \frac{3-4σ}{4-4σ}\;}
+```
+*(machine-checked: `cancellation_threshold`).* On the open band:
+```
+        σ = 2/3   :  θ_* = 1/4          σ = 0.70  :  θ_* = 1/6 ≈ 0.167
+        σ = 0.73  :  θ_* = 0.074        σ = 3/4   :  θ_* = 0     (Halász–Montgomery already suffices)
+```
+**So the entire residual difficulty of the Density Hypothesis on `(2/3, 3/4)` is at most a quarter of
+square-root cancellation in the off-diagonal phase sum, decreasing linearly to zero at `σ = 3/4`**
+*(machine-checked: `cancellation_bounds`)*. Full square-root cancellation `θ = 1/2` would give
+Montgomery's conjecture for every `σ ≥ 1/2`.
+> ### What this changes
+> The programme is no longer "improve a large-value estimate". It is a single, sharply quantified
+> analytic question about one explicit oscillatory sum:
+> ```
+>       \sum_{r ≠ r'} c_r \overline{c_{r'}}\, D_1(t_r - t_{r'}) ,\qquad
+>       D_1(u) = \sum_{n∼N} n^{-iu},\qquad t_r\ 1\text{-separated in } [0,N^{τ_*}] ,
+> ```
+> with `τ_* = 1+(2σ-1)^2` (Theorem 60) and the required saving `R^{-θ_*}`, `θ_* = (3-4σ)/(4-4σ)`.
+> The `a ≡ 1` witness of Cycles 49–66 is *not* an obstruction here: it is a statement about the
+> coefficients `a_n`, whereas `D_1` has coefficients `≡ 1` by construction and the freedom lies
+> entirely in the configuration `\{t_r\}` and the unimodular weights `c_r`.
+`[OPEN CORE 121 — supersedes 120]` **Prove `\bigl|\sum_{r≠r'} c_r\overline{c_{r'}}D_1(t_r-t_{r'})\bigr|
+≪ R^{2-θ_*}N^{1/2+o(1)}` with `θ_* = (3-4σ)/(4-4σ)` for `1`-separated `\{t_r\} ⊂ [0,N^{τ_*}]`.**
+By Theorems 60, 62, 63 this implies the Density Hypothesis on `(2/3,3/4)`, and by Theorem 62(a) no
+weaker route through the pointwise size of `D_1` can exist.

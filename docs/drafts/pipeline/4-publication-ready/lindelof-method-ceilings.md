@@ -546,6 +546,16 @@ Axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## 7. The thirteenth ceiling: divisor-correlation routes re-import their own conclusion
 
+> **⚠ PARTIAL RETRACTION (campaign erratum E19).** **Propositions 7.1 and 7.2 and the reduction
+> (7.1)–(7.2) of this section are WITHDRAWN.** They rest on interchanging the `Δ_k` Voronoi series
+> with a second summation, which §7.3's own Theorem 7.4 does not license and which the campaign later
+> proved illegitimate: a legitimate version proves the sharp Dirichlet divisor conjecture. **Theorem
+> 7.4 (chain circularity) and the failure-mode classification of §7.4 are unaffected** — they concern
+> Ivić's published estimate and the structure of the transfer, not the withdrawn expansion. The
+> section is retained for the record; do not cite 7.1–7.2.
+
+
+
 §4 left the additive-divisor route as the one direction the map did not cap. This section caps a
 concrete and natural family inside it, and isolates the mechanism.
 

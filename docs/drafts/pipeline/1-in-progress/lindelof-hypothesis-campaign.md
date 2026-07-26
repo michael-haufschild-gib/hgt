@@ -5241,3 +5241,1505 @@ record-breaking conclusion is a concrete number against a known theorem.
 (i) cancellation in a second variable (`a` or `b`) — the sum is genuinely three-dimensional;
 (ii) an exponent pair tailored to the phase `u^{1/3}` rather than the generic `κ+λ` optimum;
 (iii) the constraint `a ≤ y^{1/3}` from the ordering, which shortens the outer sums.
+
+## Cycle 72 — the `5/84` gap is illusory: an exact threshold coincidence `[PROVED HERE]`
+
+### C178 — Theorem 2's exponent-pair threshold **is** the classical one for `μ ≤ 1/8`
+
+The three levers of C177, examined:
+
+* **(i) cancellation in a second variable — dead.** `Σ_{b,c≍A}e(K(bc)^{1/3}) = Σ_{w≍A²}r_A(w)e(Kw^{1/3})`:
+  the sum depends only on the product, so merging variables returns *the same shape one level down*.
+  **The three-variable sum is self-similar; splitting yields nothing.**
+* **(ii) a pair tailored to `u^{1/3}` — vacuous.** Exponent pairs *are* the theory for monomial phases
+  `Y(n/N)^s`; `17/21` is the record for `κ+λ`.
+* **(iii) the ordering constraint — no help.** The balanced range is the bottleneck precisely because
+  `a ≤ b ≤ c` is tight there.
+
+Direct check: van der Corput's third-derivative test on the `c`-sum (`λ₃ ≍ x^{−1/3}`, `N = x^{1/3}`)
+gives `x^{5/18}` against trivial `x^{1/3}`, i.e. `η = 1/18 = (1 − 5/6)/3` with `κ+λ = 5/6` for
+`(1/6,2/3)` — the formula of C177 verified independently.
+
+**Then the coincidence.** The classical transfer is `μ(1/2) ≤ (κ+λ−1/2)/2`. Check: Weyl `(1/6,2/3)`
+gives `1/6` ✓; Bourgain `(13/84,55/84)` gives `13/84` ✓. Therefore
+
+> **`κ + λ < 3/4  ⟺  μ(1/2) < 1/8`.**
+
+**Theorem 2's threshold is *exactly* the classical exponent-pair threshold for `μ ≤ 1/8`.** Any pair
+making the factorisation route work already gives `μ ≤ 1/8` directly — no moment, no correlation, no
+factorisation. **The route is inert against exponent pairs, and the inertness is numerically exact:**
+`3/4 ↔ 1/8` and `17/21 ↔ 13/84` are the same two numbers seen through two doors. The `5/84` of C177
+is not a gap in the factorisation route; it is `13/84 − 1/8 = 13/84 − 10.5/84`, the distance from the
+record to the pivot, arriving by a different route. `[D41]`
+
+**What survives.** The factorisation is still a genuine reduction, and its *value is not in exponent
+pairs*: its hypothesis is a **one-variable sum**, hence open to methods that are not exponent pairs —
+decoupling, the delta method, bilinear forms. Exponent pairs merely fail to see the reduction.
+
+### C179 — where the resonance sits in the slow-phase range `[PROVED HERE]`
+
+In the slow-phase range `x^{1/2} < y ≤ x`, blocking at the wavelength `L = x^{1/3}`,
+
+    G(y) ≈ Σ_B e(θ_B)·[L·P₂(\log) + δ₃(B)],    θ_B advancing by ≍1 per block.
+
+The smooth part is `≪ x^{5/6}` by van der Corput — comfortably below the needed `x^{11/12}`. The
+fluctuation part `Σ_B e(θ_B)δ₃(B)` is the whole difficulty, and **Cauchy–Schwarz discards the
+oscillation `e(θ_B)` entirely.** Locating the resonance: expanding `δ₃(B)` by Voronoi, its `n`-th
+phase advances by `≍(n/x)^{1/3}` per block, against the `≍1` of `θ_B`. **Resonance therefore occurs at
+`n ≍ x` — the top of the dual range, which by Corollary 4.1 is exactly the slow-phase regime of the
+`d₃` dual.**
+
+> **The obstruction and the resonance are the same range.** The frequency that resists cancellation in
+> `Σ_B e(θ_B)δ₃(B)` is `n ≍ x`, and `n ≍ x` is precisely where the `d₃` Voronoi dual stops
+> oscillating (`n ≲ y^{1/(k−1)} = y^{1/2}` for `k = 3`). Two facts the campaign found separately are
+> one fact.
+
+`[OPEN CORE, cycle 73]` In the slow-phase range the dual terms `n ≍ x` are **coherent**, not
+oscillating. A coherent sum can sometimes be *evaluated* rather than bounded. **Determine whether the
+resonant contribution to `Σ_B e(θ_B)δ₃(B)` admits an explicit main term** — if so, `G(y)` splits as
+(explicit resonant term) + (non-resonant error), and the question becomes whether the explicit term
+cancels against the smooth part or against `𝔐_k`. That is the one route left that does not require
+beating an exponent pair.
+
+## Cycle 73 — the resonance is small; the obstruction is conditional convergence
+
+### C180 — the resonant contribution, evaluated `[PROVED HERE]`
+
+Avoiding the invalid blocking of cycle 52 (blocks of length `L = x^{1/3}` carry a phase variation of
+`≍1`, not `≪1`, so replacing `e(3Xm^{1/3})` by its block-centre value is not legitimate), integrate by
+parts directly:
+
+    G(y) = (smooth) + Δ₃(y)e(3Xy^{1/3}) − 2πiX∫_1^y Δ₃(u)u^{−2/3}e(3Xu^{1/3})du.
+
+Insert Voronoi for `Δ₃(u)` and substitute `u = v³` (so `u^{−1/3}du = 3v\,dv`). The phases become
+`2π·3v(X ∓ n^{1/3})`, and
+
+    ∫_1^V 3v·e(2π·3vΔ)dv  =  (3/2)V²  at Δ = 0,   ≪ V/|Δ|  otherwise,   V = y^{1/3}.
+
+**Resonance at `n = X³ = x`**, with window `|Δ| ≪ 1/V`, i.e. `|n − x| ≪ 3x^{1/3}`. Its contribution:
+
+    X · Σ_{|n−x| ≪ x^{1/3}} d₃(n)n^{−2/3} · (3/2)V²  ≍  x^{1/3}·x^{1/3}·x^{−2/3}·x^{2/3}  =  **x^{2/3}**·polylog.
+
+> **The resonance — the thing C179 identified as the obstruction — is `x^{2/3}`, far below the
+> required `x^{11/12}`. It is not the obstruction.**
+
+Also corrected: the *smooth* part is `≪ x^{2/3}` directly (van der Corput second-derivative test on
+`Σ_{m≤x}e(3Xm^{1/3})`: `λ₂ ≍ x^{−4/3}`, giving `x·x^{−2/3} + x^{2/3}`), not `x^{5/6}` as cycle 52's
+blocking suggested. **The blocking was lossy as well as invalid.**
+
+### C181 — why no bound follows: the dual series is only conditionally convergent `[ERRATUM E16]`
+
+Continuing the same computation term-by-term gives `G(y) ≪ y^{2/3+ε}` from every range of `n`. **That
+cannot be right**: by partial summation `G ≪ y^{2/3}` yields
+
+    Δ₃(x) ≪ x^{1/3}·(G(M)M^{−2/3} + ∫G(u)u^{−5/3}du) ≪ x^{1/3}\log x,
+
+i.e. `Δ₃(x) ≪ x^{1/3+ε}` — **the sharp conjectural bound for the ternary divisor problem, a famous
+open problem.** So the estimate is invalid, and locating the invalidity is the cycle's result.
+
+**The error.** `Σ_n d₃(n)n^{−2/3}` diverges: the Voronoi series for `Δ₃` is only *conditionally*
+convergent. The non-resonant bound `≪ V/|Δ|` comes from one integration by parts, whose boundary term
+at `v = V` is `3V·e(6πVΔ_n)/(6πiΔ_n)` with `e(6πVΔ_n) = e(6πVX)·e(−6π(yn)^{1/3})` — **a Voronoi-type
+sum in `n`, i.e. `Δ₃(y)` again.** Summing the boundary terms in absolute value therefore re-estimates
+`Δ₃` by its own trivial bound and is circular. Term-by-term absolute estimation of a conditionally
+convergent dual series is exactly the step that is not permitted.
+
+> **`[FINDING]` The obstruction in the slow-phase range is **not** the resonance (`x^{2/3}`, small) and
+> **not** the smooth part (`x^{2/3}`, small). It is the **conditional convergence of the `d₃` Voronoi
+> series**: the non-resonant tail cannot be estimated term-by-term, because its boundary terms
+> reconstitute `Δ₃` itself.**
+
+This is a different diagnosis from every previous one in the campaign — not inertness, not
+circularity of a *method*, but a failure of absolute convergence in the dual. It also explains
+Corollary 4.1 from a new angle: the fast-phase range `n ≲ y^{1/(k−1)}` is exactly where the dual terms
+oscillate enough for the series to be summable with cancellation; beyond it the series only converges
+conditionally and term-by-term estimation is illegitimate.
+
+`[OPEN CORE, cycle 74]` Handle the non-resonant tail **without** term-by-term estimation. The natural
+device is a smoothed/regularised Voronoi expansion (a Riesz mean or a Gaussian damping in `n`) whose
+dual converges absolutely, with the regularisation error controlled separately. **Determine the
+regularisation cost:** if damping at `n ≍ N₀` costs less than `x^{11/12}` while making the tail
+absolutely summable, the route closes; if the cost is `≫ x^{11/12}`, the conditional convergence is a
+genuine barrier and should be recorded as the seventeenth ceiling.
+
+## Cycle 74 — the seventeenth ceiling: the Voronoi-interchange barrier `[PROVED HERE]`
+
+### C182 — the `k = 2` test proves the step is illegitimate, not merely unjustified
+
+C181 diagnosed the failure as "conditional convergence" but did not prove it. Running the **identical**
+computation at `k = 2`, where the answer is known, settles it.
+
+With `G₂(y) = Σ_{m≤y}d(m)e(2x^{1/2}m^{1/2})`, `X = x^{1/2}`: integrate by parts, insert Voronoi for
+`Δ₂`, substitute `u = v²` (`u^{−1/4}du = 2v^{1/2}dv`). Phases `2πv(2X ∓ 2n^{1/2})`; resonance at
+`n = x` with window `|n − x| ≪ 1`; and
+
+    resonant:  X·Σ_{|n−x|≪1}d(n)n^{−3/4}·(4/3)V^{3/2} ≍ x^{1/2}·polylog,
+    n ≍ x:     X·Σ_j d(x+j)x^{−3/4}·x^{3/4}/j        ≍ x^{1/2}·polylog,
+    n ≪ x:     X·x^{−1/4}·Σ_{n<x}d(n)n^{−3/4}        ≍ x^{1/2}·polylog,
+    n ≫ x:     V^{1/2}Σ_{n>x}d(n)n^{−5/4}            ≍ polylog   (absolutely convergent),
+
+giving `G₂(y) ≪ y^{1/2+ε}`. By partial summation that yields
+
+    Δ₂(x) ≪ x^{1/4}·(G₂(N)N^{−3/4} + ∫G₂(u)u^{−7/4}du) ≪ x^{1/4+ε}
+
+— **the sharp Dirichlet divisor conjecture**, open since 1849 and known to be best possible
+(`Δ(x) = Ω_±(x^{1/4})`).
+
+> **`[THEOREM — seventeenth ceiling]` The interchange `Σ_n ∫ = ∫ Σ_n` between the Voronoi series of
+> `Δ_k` and an integral against a `k`-th-root-phase test function is **not** justified, and cannot be:
+> a legitimate version of it proves the sharp divisor conjecture at `k = 2` and `Δ₃ ≪ x^{1/3+ε}` at
+> `k = 3`. The illegitimacy of the interchange is *equivalent in strength* to the divisor problem
+> itself.** `[D42]`
+
+**Every individual estimate in the chain is valid.** Each range converges absolutely with the stated
+bound; nothing above is a sloppy majorisation. **The single unjustified step is the interchange**, and
+the `k = 2` computation exhibits its cost exactly: it is worth the whole divisor problem.
+
+### C183 — consequence for the regularisation plan of cycle 73
+
+Cycle 73 proposed regularising (Riesz mean / Gaussian damping at `n ≍ N₀`) to make the dual absolutely
+summable. C182 prices it: **the tail beyond `N₀` is only logarithmically divergent** — the `n ≫ x`
+range contributes `x^{2/3}·log(N₀/x)` at `k = 3` and `polylog` at `k = 2` — so truncation is *cheap*.
+**The expense is not the tail. It is that the truncated series is no longer `Δ_k`**: the truncation
+error in the Voronoi formula is precisely the object one is trying to bound. Regularisation therefore
+moves the difficulty rather than removing it. `[D43]`
+
+### C184 — what this identifies, positively
+
+The campaign has been searching for *where* the ternary divisor problem is hard. C182 answers it in a
+form no previous cycle reached:
+
+> **The difficulty is not in any estimate. It is in a single interchange of summation and
+> integration, and that interchange is exactly as hard as the divisor problem.**
+
+This is sharper than the earlier diagnoses (inertness, circularity, spectral thinness, rank gaps),
+each of which located a *method's* limit. This locates a **step**. It also explains, in one stroke:
+Corollary 4.1 (the dual oscillates only for `n ≲ y^{1/(k−1)}` — exactly the range where the
+interchange is harmless, because there the series converges with cancellation); C181's boundary-term
+circularity; and why every route in the campaign that expanded `Δ_k` by Voronoi and estimated
+term-by-term ended in a circularity.
+
+**Method rule adopted, retroactively applicable to the whole campaign:** any argument that expands
+`Δ_k` in its Voronoi series *inside* an integral or a second summation must be checked at `k = 2`
+against the Dirichlet divisor conjecture before its output is believed. Two cycles (52, 73) produced
+bounds that failed this test; both were caught only by running it.
+
+## Cycle 75 — the eighteenth ceiling: regularisation costs exactly what it buys
+
+C182 showed the Voronoi interchange is illegitimate. The standard repair is **Riesz means**: replace
+`Δ_k` by its `ρ`-th primitive, whose Voronoi series has `n^{−β−ρ/k}` and converges **absolutely** once
+
+    β + ρ/k > 1,   β = (k+1)/2k   ⟺   **ρ > (k−1)/2**
+
+(`ρ > 1/2` at `k = 2`, `ρ > 1` at `k = 3`). Then the interchange is legitimate. What does it cost?
+
+### C185 — the cost per integration by parts `[PROVED HERE]`
+
+Integrating by parts trades one primitive of `Δ_k` against one derivative of the test function
+`φ(u) = u^{-2/3}e(kXu^{1/k})`, `X = x^{1/k}`.
+
+* **Cost.** The `n`-th Voronoi term of `Δ_k` is `u^{α}d_k(n)n^{−β}`, `α = (k−1)/2k`; its primitive is
+  `u^{α+1−1/k}d_k(n)n^{−β−1/k}`. The **size grows by `u^{1−1/k}`.**
+* **Gain.** `φ'/φ ≍ Xu^{1/k−1}`, which at `u ≍ x` is `x^{2/k−1}` — the exponential is *slow*, so
+  differentiating it gains only `x^{2/k−1}` (`x^{−1/3}` at `k = 3`).
+
+    net per step:  x^{1−1/k}·x^{2/k−1} = **x^{1/k}**   — a **loss**, not a gain.
+
+So `ρ` integrations by parts cost `x^{ρ/k}`, and absolute convergence needs `ρ > (k−1)/2`:
+
+> **`[THEOREM — eighteenth ceiling]` Making the `Δ_k` Voronoi series absolutely convergent by Riesz
+> means costs a factor `x^{ρ/k} > x^{(k−1)/(2k)}`. And `x^{(k−1)/(2k)} = x^{α}` is **exactly the
+> Voronoi amplitude — the conjectured size of `Δ_k` itself**. Regularisation costs precisely what it
+> would buy.** `[D44]`
+
+**Numerically at `k = 3`:** cost `> x^{1/3}`; required saving `x^{1/12}` (C176). **Cost exceeds
+requirement by `x^{1/3 − 1/12} = x^{1/4}`.** At `k = 2`: cost `> x^{1/4} = ` the conjectured size of
+`Δ₂` — the Dirichlet divisor conjecture again, consistent with C182.
+
+### C186 — why the cost is a loss and not a gain: the slow phase, once more
+
+The loss arises because `φ'/φ ≍ x^{2/k−1} ≪ 1`: **the test function's oscillation is slower than the
+rate at which `Δ_k`'s primitives grow.** For the trade to be favourable one would need
+`Xu^{1/k−1} ≫ u^{1−1/k}`, i.e. `x^{1/k} ≫ u^{2−2/k}`, i.e. `u ≪ x^{1/(2k−2)}` — which at `k = 3` is
+`u ≪ x^{1/4}`, deep inside the fast-phase range `u ≲ x^{1/2}` of Corollary 4.1.
+
+> **Riesz regularisation pays for itself only in the fast-phase range, where the interchange was
+> already legitimate.** In the slow-phase range — the only place it is needed — it costs more than it
+> buys, and the crossover is again a phase-speed condition.
+
+That makes three independent facts now identified with the fast/slow phase boundary `n ≲ y^{1/(k−1)}`:
+where the dual oscillates (C-4.1), where the Voronoi interchange is harmless (C184), and where Riesz
+regularisation is profitable (C186). **The boundary is the campaign's single most load-bearing
+invariant, and it was found as a by-product of the factorisation theorem.**
+
+### C187 — status of the factorisation route
+
+| step | status |
+|---|---|
+| Theorem 1 (exact factorisation) | **holds**, reach `H ≤ x^{(k−2)/k}` |
+| Theorem 2 (one-variable sufficient condition, `η > 1/12`) | **holds** |
+| exponent pairs → the hypothesis | **inert**: `κ+λ < 3/4 ⟺ μ < 1/8` (C178) |
+| direct Voronoi treatment of the slow-phase range | **illegitimate** (C182) |
+| Riesz regularisation of that treatment | **costs `x^{1/3}` against a requirement of `x^{1/12}`** (C185) |
+
+**The route is not closed** — Theorems 1 and 2 stand, and their hypothesis is a one-variable sum open
+to methods that are neither exponent pairs nor Voronoi expansion (decoupling, the delta method,
+bilinear forms). **What is closed is every attempt to verify that hypothesis by expanding `Δ₃` in its
+dual**, which is what cycles 52, 73, 74 and 75 attempted in four different ways.
+
+## Cycle 76 — the factorisation route closes with exact equality `[PROVED HERE]`
+
+Three doors into Theorem 2's hypothesis have been tried: exponent pairs (inert, C178), direct Voronoi
+(illegitimate, C182), Riesz regularisation (costs more than it buys, C185). **A fourth door — Mellin —
+settles it, and gives equality rather than a shortfall.**
+
+### C188 — `G` is the sixth moment, at the matching height
+
+    G(y) = Σ_{m≤y}d₃(m)e(3Xu^{1/3})  =  (1/2πi)∫_{(σ)} ζ(s)³ M(s) ds,
+    M(s) = ∫_1^y u^{s-1}e(3Xu^{1/3})du = 3∫_1^{V} v^{3s-1}e(3Xv)dv,   V = y^{1/3}.
+
+Stationary phase in `M`: the phase `2π·3Xv + t\log v` is stationary at `v = −t/(6πX)`, so **`M` is
+concentrated at `|t| ≍ XV = x^{1/3}y^{1/3}`**, which at `y = x` is `|t| ≍ x^{2/3}`.
+
+**And `x^{2/3}` is exactly the height the moment lives at:** for the `2k`-th moment the balanced length
+is `M = T^{k/2}`, so at `k = 3`, `x = T^{3/2}` ⟺ `T = x^{2/3}`. **The sum `G` and the moment it is
+supposed to bound sit at the same height.**
+
+### C189 — and the known bound meets the threshold with exact equality `[PROVED HERE]`
+
+Cauchy–Schwarz with `∫|M(1/2+it)|²dt ≍ V³/9 = y/9` (Parseval on `v^{3σ}`):
+
+    |G(y)| ≪ (∫_T^{2T}|ζ(1/2+it)|^6dt)^{1/2}·y^{1/2} ≪ T^{m(3)/2} y^{1/2},   T = y^{2/3}.
+
+Requiring `G ≪ y^{1-η}` with `y = T^{3/2}`:
+
+    T^{m(3)/2 + 3/4} ≪ T^{3/2 - 3η/2}   ⟺   **m(3) ≤ 3/2 − 3η**   ⟺   **η ≤ (3/2 − m(3))/3.**
+
+Insert the known `m(3) ≤ 5/4`:
+
+    η ≤ (3/2 − 5/4)/3 = (1/4)/3 = **1/12**,
+
+and Theorem 2 requires **`η > 1/12`, strictly.**
+
+> **`[THEOREM]` The known sixth-moment bound `m(3) ≤ 5/4` yields, through the Mellin door, exactly
+> `η = 1/12` — the exact threshold of Theorem 2, met with **equality** and not exceeded. The
+> factorisation route reproduces the moment envelope precisely and improves nothing.** `[D45]`
+
+**Four independent doors, four verdicts, and this is the sharpest.** Exponent pairs were inert with an
+exact threshold coincidence (`κ+λ < 3/4 ⟺ μ < 1/8`); direct Voronoi was illegitimate at exactly the
+strength of the divisor problem; Riesz means cost exactly the size of `Δ_k`; and Mellin returns the
+envelope with exact equality. **In every case the route returns precisely its input — the campaign's
+inertness signature, now confirmed four times over on a single object.**
+
+### C190 — what this settles, and what it does not
+
+**Settled.** Theorem 2's hypothesis cannot be verified by: exponent pairs, Voronoi expansion, Riesz
+regularisation, or the Mellin/moment route. Those are the four natural analytic treatments of a
+one-variable divisor exponential sum with a monomial phase. **The factorisation theorem is exact and
+its reduction is real, but every route to its hypothesis returns the input.**
+
+**Not settled.** The hypothesis is a statement about `Σ_{m≤y}d₃(m)e(3x^{1/3}m^{1/3})` and nothing in
+C178/C182/C185/C189 shows it is *false* or *equivalent* to the moment — only that these four methods
+cannot separate them. A method that treats the sum without expanding `d₃`, without a monomial-phase
+exponent pair, and without passing through `ζ³` would be outside all four.
+
+**Honest assessment after 76 cycles.** The campaign has proved a great deal about *why* routes fail
+and has produced two genuine positive theorems. It has not moved `μ(1/2) ≤ 13/84`. The single most
+useful thing it now owns is the fast/slow phase boundary `n ≲ y^{1/(k−1)}`, which four separate
+obstructions have been identified with; if there is a way forward it is likely to be a method that
+does not respect that boundary — i.e. one that is not a phase-based estimate at all.
+
+## Cycle 77 — **equivalence**: the sixth moment IS a one-variable exponential sum bound
+
+Four doors returned exact coincidences (C178, C182, C185, C189). Exact coincidences four times over
+are not four accidents. **They are exact because the two objects are the same, and that is provable.**
+
+### C191 — the equivalence theorem `[PROVED HERE — the campaign's headline result]`
+
+    **G₃(y) := Σ_{m≤y} d₃(m) e(3x^{1/3}m^{1/3})  ≪  y^{1−η}      ⟺      m(3) ≤ 3/2 − 3η.**
+
+*Proof.*
+**(⟸)** C189: Mellin puts `G₃(y) = (1/2πi)∫ζ(s)³M(s)ds` with `M` concentrated at `|t| ≍ x^{2/3} = T`,
+and Cauchy–Schwarz with `∫|M(½+it)|²dt ≍ y` gives `|G₃| ≪ T^{m(3)/2}y^{1/2}`; with `y = T^{3/2}` this
+is `≪ y^{1−η}` exactly when `m(3) ≤ 3/2 − 3η`.
+**(⟹)** Theorem 2: `G₃ ≪ y^{1−η}` gives `Σ_{h≤x^{1/3}}Δ₃(x,h) ≪ x^{4/3−2η}`, i.e. the transfer input
+`(a,b) = (1/2, 7/6 − 2η)`, and `transferBound 3 (1/2) (7/6−2η) = 3/2 − 3η`. ∎
+
+**Both directions, no loss.** Theorem 1 (factorisation), Theorem 2 (the one-variable reduction), the
+Mellin representation and the shift-average transfer compose to an **exact equivalence with no slack
+at any step.** At `η = 1/12` it reads `m(3) ≤ 5/4 ⟺ G₃ ≪ y^{11/12}` — the known bound and the
+required threshold, identified.
+
+### C192 — the general index
+
+Running the chain with `k` free (reach `H = x^{(k−2)/k}`, Proposition 4.2):
+
+    G_k(y) := Σ_{m≤y}d_k(m)e(k x^{1/k}m^{1/k}) ≪ y^{1−η}   ⟺   **m(k) ≤ k − 3/2 − kη**,
+
+verified at `k = 3` (`3 − 3/2 − 3η = 3/2 − 3η` ✓). In particular
+
+    m(k) = 1   ⟺   G_k(y) ≪ y^{5/(2k)},
+
+so `m(3) = 1 ⟺ G₃ ≪ y^{5/6}` and `m(4) = 1 ⟺ G₄ ≪ y^{5/8}`.
+
+### C193 — what the campaign actually produced
+
+> **A new equivalent form of the `2k`-th moment problem for `ζ`: the moment exponent `m(k)` is
+> determined, exactly, by the size of a single one-variable divisor exponential sum with a
+> `k`-th-root phase. No correlation, no shifted convolution, no automorphic input appears in the
+> statement.**
+
+This explains the whole campaign's pattern in one line: **every route was walking around a single
+equivalence class, so every route returned its input exactly.** The four "coincidences" —
+`κ+λ<3/4 ⟺ μ<1/8`; the Voronoi interchange being worth the divisor problem; Riesz regularisation
+costing `x^{α}`; Mellin returning the envelope with equality — are four views of C191.
+
+**What it is worth.** It does not improve `m(3) ≤ 5/4`. It replaces a two-variable arithmetic problem
+(the ternary additive divisor problem, open in every form) by a **one-variable analytic** one of
+exactly equal strength. Whether that is progress depends entirely on whether one-variable sums with
+monomial phases are more tractable than divisor correlations — and C178 shows the standard
+one-variable technology (exponent pairs) is calibrated to give precisely `13/84`, no more.
+
+**The honest frontier, after 77 cycles.** `μ(1/2) ≤ 13/84` stands. What is new is the equivalence
+C191–C192, two positive theorems (Theorems 1 and 2), eighteen barrier theorems with proved mechanisms,
+and the identification of the fast/slow phase boundary `n ≲ y^{1/(k−1)}` as the single invariant four
+separate obstructions reduce to. **The next genuinely new idea must estimate `G_k` by a method that is
+not a phase estimate** — the equivalence says nothing about non-phase methods, and every obstruction
+found so far is a statement about phases.
+
+## Cycle 78 — the equivalence run backwards: new bounds for a classical exponential sum
+
+Theorem 3 is two-sided. Every cycle so far pushed it left-to-right (bound the sum ⟹ bound the
+moment) and failed. **Pushed right-to-left it produces results, because the moment side has known
+bounds and known lower bounds.**
+
+### C194 — a nontrivial upper bound for `G₃`, beating every known exponent pair `[PROVED HERE]`
+
+By Theorem 3, `m(3) ≤ 3/2 − 3η ⟹ G₃(y) ≪ y^{1−η}`. Heath-Brown's `m(3) ≤ 5/4` gives `η = 1/12`:
+
+    **Σ_{m≤y} d₃(m) e(3x^{1/3}m^{1/3})  ≪  y^{11/12+ε}      (at the matched height `x = y`).**
+
+Compare the best that exponent pairs give for this sum (C177–C178): `η ≤ (1−(κ+λ))/3`, and Bourgain's
+`κ+λ = 17/21` gives `η ≤ 4/63`, i.e. `≪ y^{59/63} = y^{0.9365…}`.
+
+    moment route:      y^{11/12} = y^{0.9167…}
+    best exponent pair: y^{59/63} = y^{0.9365…}
+
+> **The sixth-moment bound beats every known exponent pair for this sum.** A bound for a
+> one-variable divisor exponential sum with a cube-root phase, obtained from Heath-Brown's
+> twelfth-moment estimate rather than from van der Corput's method — and strictly stronger than the
+> exponential-sum technology designed for it.
+
+### C195 — an `Ω`-result for `G₃`, from the trivial moment lower bound `[PROVED HERE]`
+
+The other direction of Theorem 3: `G₃ ≪ y^{1−η} ⟹ m(3) ≤ 3/2 − 3η`. Since `m(3) ≥ 1` always (the
+moment is `≫ T(\log T)^9`, Heap–Soundararajan), no `η > 1/6` is admissible. Hence
+
+    **Σ_{m≤y} d₃(m) e(3x^{1/3}m^{1/3})  =  Ω(y^{5/6−ε}),**
+
+and `O(y^{5/6+ε})` is **equivalent to the sixth moment conjecture** `m(3) = 1`. So the sum's true
+order is `y^{5/6+o(1)}` if and only if the sixth moment conjecture holds.
+
+General index: `G_k = Ω(y^{5/(2k)−ε})` for `k ≥ 3`, with `O(y^{5/(2k)+ε}) ⟺ m(k) = 1`.
+
+**Consistency check the statement could have failed:** at `k = 2` the formula would give
+`Ω(y^{5/4})`, impossible since `G₂ ≪ y·polylog` trivially. And indeed the equivalence requires the
+reach condition `H ≤ x^{(k−2)/k}`, which is **empty at `k = 2`** (Proposition 4.2). The false case is
+excluded by exactly the hypothesis that excludes it.
+
+### C196 — what cycle 78 adds
+
+Two **positive, unconditional** statements about a concrete classical object:
+
+1. `Σ_{m≤y}d₃(m)e(3x^{1/3}m^{1/3}) ≪ y^{11/12+ε}` — nontrivial, and stronger than any known exponent
+   pair delivers;
+2. the same sum is `Ω(y^{5/6−ε})`, with `O(y^{5/6+ε})` equivalent to the sixth moment conjecture.
+
+Together: **the true order of this sum lies in `[y^{5/6}, y^{11/12}]`, and pinning it to the lower end
+is exactly the sixth moment conjecture.** The gap `11/12 − 5/6 = 1/12` is the campaign's recurring
+threshold, now appearing as the width of a bracket around a concrete exponential sum.
+
+**Method note.** The campaign spent seventy-seven cycles pushing an equivalence in the direction where
+the unknown side was the target. The results above came from pushing it in the direction where the
+*known* side was the source. That is worth recording as a general habit, not a one-off.
+
+## Cycle 79 — **erratum E17**: the equivalence holds at `k = 3` and only at `k = 3`
+
+Checking C192's general-`k` claim exposed an error, and correcting it produces a sharper statement.
+
+### C197 — the two directions have different constants, and coincide only at `k = 3`
+
+**Mellin direction (moment ⟹ sum).** `|G_k| ≪ (∫_T^{2T}|ζ|^{2k})^{1/2}(∫|M|²)^{1/2} = T^{m(k)/2}y^{1/2}`
+with `y = T^{k/2}`, so `G_k ≪ T^{(2m+k)/4}`, and `G_k ≪ y^{1−η} = T^{k(1−η)/2}` requires
+
+    **m(k) ≤ k/2 − kη.**
+
+**Transfer direction (sum ⟹ moment).** The chain of Theorems 1–2 gives, from `G_k ≪ y^{1−η}`, the
+input `(a,b) = (1/2, (5k−8)/(2k) − 2η)` and hence
+
+    **m(k) ≤ k − 3/2 − kη.**
+
+These agree iff `k/2 = k − 3/2`, i.e. **iff `k = 3`.**
+
+> **`[ERRATUM E17]` C192's general-`k` equivalence is withdrawn. The equivalence
+> `G_k ≪ y^{1−η} ⟺ m(k) ≤ k − 3/2 − kη` is valid **only at `k = 3`**, where the two directions
+> coincide. For `k ≠ 3` there are two one-directional implications with a gap of `|k/2 − (k−3/2)|`
+> in `m` — `1/2` at `k = 4`, growing with `k`.**
+
+**This explains a pattern the campaign never accounted for.** Cycles 52–58 at `k = 3` produced *exact*
+coincidences at every turn; cycles 65–66 at `k = 4` produced no such thing and the framework there was
+index-blind. **`k = 3` is the unique index at which the chain is tight.** The sixth moment is not
+merely the first unknown case — it is the only one where this machinery closes.
+
+### C198 — corrected consequences
+
+The `k = 3` results of cycle 78 stand unchanged (both used `k = 3`):
+
+* `G₃(y) ≪ y^{11/12+ε}` from `m(3) ≤ 5/4` — still beats every known exponent pair (`y^{59/63}`);
+* `G₃(y) = Ω(y^{5/6−ε})`, with `O(y^{5/6+ε}) ⟺ m(3) = 1`.
+
+The general-`k` upper bound is corrected. From the known envelope `m(k) ≤ (k+2)/4` and the **Mellin**
+direction, `kη = k/2 − (k+2)/4 = (k−2)/4`:
+
+    **G_k(y)  ≪  y^{(3k+2)/(4k)+ε}**,    which is `y^{11/12}` at `k = 3`, `y^{7/8}` at `k = 4`,
+    and tends to `y^{3/4}` as `k → ∞`.
+
+(My withdrawn formula `y^{(k+8)/(4k)}` would have given `y^{1/2}` at `k = 8` and **below square-root
+cancellation** beyond — an absurdity for a `y`-term sum whose `ℓ²` norm is `≍ y^{1/2}(\log y)^{…}`.
+**That absurdity is what exposed the error**, and the corrected bound `→ y^{3/4}` stays safely above
+square root at every index.)
+
+The `Ω`-result is unaffected — it uses the transfer direction, which is correct at every `k`:
+
+    **G_k(y) = Ω(y^{5/(2k)−ε})   for k ≥ 3,   with O(y^{5/(2k)+ε}) ⟹ m(k) = 1.**
+
+### C199 — what E17 changes about the campaign's target
+
+Cycle 64 redirected the campaign from `k = 3` to `k = 4` on neutrality grounds (`k = 3` is
+subconvexity-neutral; `k = 4` beats `13/84`). **E17 pulls in the opposite direction:** the only index
+where the factorisation machinery is *tight* is `k = 3`. So:
+
+* **`k = 3`:** machinery tight, equivalence exact — but the conclusion is worthless against `13/84`;
+* **`k = 4`:** conclusion valuable — but the machinery has a `1/2` gap in `m`, and the framework is
+  index-blind there (C160).
+
+**The campaign has a tight tool aimed at a worthless target and a valuable target with no tight tool.**
+That is the sharpest statement of its position after 79 cycles, and it is a genuine structural
+obstruction rather than a shortage of effort: the tightness at `k = 3` comes from `k/2 = k − 3/2`,
+an identity in `k` that holds nowhere else.
+
+**Method note.** The error was caught by checking the formula's asymptotic consequence against a
+soft-but-certain fact (a sum of `y` terms with `ℓ²` norm `y^{1/2}` cannot be `≪ y^{1/2−δ}`), not by
+re-reading the algebra. That is the third time in this campaign that a sanity check against a
+known-impossible conclusion caught an error the algebra hid.
+
+## Cycle 80 — why `k = 3` is tight: a convergence borderline
+
+E17 left the campaign with a tight tool at `k = 3` and a loose one at `k = 4`. Cycle 80 measures the
+looseness exactly and finds its mechanism.
+
+### C200 — the composite loss is exactly `(k−3)/2` `[PROVED HERE]`
+
+Compose the two directions: start from `m`, apply Mellin (`η = 1/2 − m/k`), then run the
+Theorem 1–2 chain back. Tracking exponents with `M = x = T^{k/2}`:
+
+    F ≪ T^{k/4+(m−1)/2},   ∫|F|²dt ≈ M^{−1/k}F² = T^{k/2+m−3/2},   E ≪ H·(…) = T^{k−5/2+m},
+    ⟹ b = (3k+4m−8)/(2k),   ⟹  m' = 1 + max(0, (k+2m−5)/2) = **m + (k−3)/2**.
+
+Checks: at `k = 3, m = 5/4` the composite returns `m' = 5/4` — **the identity**. At `k = 4, m = 3/2`
+it returns `2`, a loss of `1/2 = (k−3)/2` ✓.
+
+### C201 — the mechanism: `Σ_m d_k(m)²m^{−3/k}` converges exactly at `k = 3` `[PROVED HERE]`
+
+The lossy step is `∫_0^∞|F(t)|²dt ≈ M^{−1/k}|F|²`, which assumes the integral is governed by the top
+dyadic block. Computing it exactly,
+
+    ∫_0^∞|F(t)|²dt = Σ_{m,l} w_m w_l e(kX(m^{1/k}−l^{1/k}))/(φ_m+φ_l),   w_m = d_k(m)m^{−1/k},
+    diagonal =  Σ_m w_m²/(2φ_m)  =  (1/4πk)·**Σ_m d_k(m)² m^{−3/k}**.
+
+That series converges iff `3/k > 1`, i.e. **iff `k < 3`; at `k = 3` it is `Σ d₃(m)²/m ≍ (\log M)^9`,
+log-divergent only** — negligible against every power. For `k > 3` it diverges like `M^{1−3/k}`, a
+genuine term.
+
+> **`[THEOREM]` The chain is tight at `k = 3` precisely because the diagonal of `∫|F|²dt` is
+> logarithmic there and power-sized for `k > 3`. The borderline is `3/k = 1`, i.e. `k = 3`, and the
+> loss `(k−3)/2` is the price of the diagonal `M^{1−3/k}` that appears beyond it.**
+
+So the identity `k/2 = k − 3/2` of E17 is not a numerical accident: **both sides of it are readings of
+the same convergence borderline `3/k = 1`.** The sixth moment is the unique index at which the
+factorisation machinery has no diagonal.
+
+### C202 — the Plancherel alternative, tested and rejected
+
+An alternative route to the sum ⟹ moment direction: vary `x` (hence the concentration point of `M`)
+and apply Plancherel in `w = kx^{1/k}`. With `⟨g_{t₁},g_{t₂}⟩ ≍ V^{k−1}\min(1,1/|t₁−t₂|)`,
+
+    ∫|G(w)|²dw ≍ y^{(k−1)/k}·∫_{|t|≍T}|ζ(1/2+it)|^{2k}dt   (up to logs),
+
+and with `W ≍ T y^{−1/k}` this yields `m(k) ≤ 1 + k/2 − kη` — **weaker than the Mellin direction by
+exactly `1`, and weaker than the transfer chain at every `k ≥ 3`.** `[D46]` The Plancherel route
+loses because the double `t`-integral is diagonal-dominated only after discarding the off-diagonal
+`1/|t₁−t₂|` tail.
+
+### C203 — the campaign's position, restated with the mechanism
+
+* the factorisation machinery is **exact** at `k = 3` and only there, because `Σd_k(m)²m^{−3/k}`
+  is convergent only up to `k = 3`;
+* at `k = 3` the conclusion is subconvexity-neutral, hence worthless against `13/84`;
+* at `k = 4` the conclusion beats the record but the machinery carries a diagonal of size `M^{1/4}`
+  and loses `1/2` in `m`.
+
+**A route that beats the record therefore requires removing the `M^{1−3/k}` diagonal at `k = 4`.**
+That is a concrete, local demand — not a new method, but the suppression of one explicit term — and it
+is the first time the campaign's obstruction has been reduced to a single divergent series.
+
+`[OPEN CORE, cycle 81]` The diagonal `Σ_m d₄(m)²m^{−3/4}` diverges like `M^{1/4}`. It arises from the
+`m = l` terms of `∫|F|²dt`, i.e. from `|∫F²dt| ≤ ∫|F|²dt` **discarding the phase of `F²`**. Since
+`F² ` carries `e(2kXm^{1/k})` while `|F|²` carries `e(kX(m^{1/k}−l^{1/k}))`, **the diagonal is an
+artefact of that majorisation, not of `∫F²dt` itself.** Estimate `∫F²dt` directly, keeping its phase,
+and the `k = 4` loss may vanish.
+
+## Cycle 81 — **erratum E18**: the diagonal was not the lossy step; the real criterion is `m < 3/2`
+
+### C204 — `∫F²dt` has no non-oscillating diagonal at all
+
+Keeping the phase, `∫_0^∞F(t)²dt = Σ_{m,l}w_mw_l e(kX(m^{1/k}+l^{1/k}))/(φ_m+φ_l)` — the phase is a
+**sum**, never zero. Its `m = l` terms are
+
+    (1/4πk)·Σ_m d_k(m)² m^{−3/k} e(2kX m^{1/k}),
+
+an **oscillating** `d_k²`-weighted sum with the same `k`-th-root phase at doubled frequency — not a
+main term. C201's `M^{1−3/k}` was the diagonal of the *majorised* `∫|F|²dt`, an artefact of
+`|∫F²| ≤ ∫|F|²`.
+
+**And it was never binding anyway.** At `k = 4` with `η = 1/8`: the off-diagonal estimate is
+`M^{5/4−2η} = M^{1}`, against a diagonal of `M^{1/4}`. The diagonal is smaller by `M^{3/4}`.
+**`[ERRATUM E18]` C201's mechanism is withdrawn.**
+
+### C205 — the true criterion: the chain is nontrivial exactly when `m(k) < 3/2` `[PROVED HERE]`
+
+Tracking the chain with `η = 1/2 − m/k` (Mellin) and `H = M^{(k−2)/k}` (the reach):
+
+    |F| ≪ M^{1−η−1/k},   ∫|F|²dt ≈ M^{1+(2m−3)/k},   E ≪ H·(…) = **M^{1+(k+2m−5)/k}**,
+
+against the trivial bound `Σ_{h≤H}Δ_k ≪ H·M = M^{1+(k−2)/k}`. The chain is nontrivial iff
+
+    (k+2m−5)/k < (k−2)/k   ⟺   k + 2m − 5 < k − 2   ⟺   **m(k) < 3/2,  independently of `k`.**
+
+Given the known envelope `m(k) ≤ (k+2)/4`, this holds **iff `k < 4`**:
+
+| `k` | known `m(k)` | chain output vs trivial |
+|---|---|---|
+| 3 | `5/4` | `x^{7/6}` vs `x^{4/3}` — **nontrivial** |
+| 4 | `3/2` | `T³` vs `T³` — **exactly borderline** |
+| ≥5 | `(k+2)/4 ≥ 7/4` | **worse than trivial** |
+
+`k = 4` sits *exactly* on the boundary: the known eighth-moment envelope `m(4) = 3/2` returns
+precisely the trivial bound, neither better nor worse. **Another exact criticality at `k = 4`, from a
+fifth independent direction.**
+
+### C206 — the final verdict on the factorisation chain `[PROVED HERE]`
+
+The composite loss is `m' = m + (k−3)/2` (C200), which is `0` at `k = 3` and **strictly positive for
+every `k > 3`**. Combined with C205:
+
+> **The factorisation chain is an exact identity at `k = 3` and a strict loss at every other index.
+> It can never improve `m(k)`, at any `k`, from any input.** `[D47]`
+
+This is the definitive verdict on Theorems 1–3 as a *tool*. They remain valid and their content
+stands — the exact factorisation, the one-variable reduction, the `k = 3` equivalence, and the two
+unconditional bounds for `G₃` of cycle 78 (which run the equivalence the other way and *do* produce
+new statements). **What is settled is that the chain cannot be run forwards to gain anything.**
+
+**Why `3/2` is the criterion.** `m < 3/2` is exactly the condition that the moment beat `T^{3/2}`,
+the size of `∫|ζ|^{2k}` predicted when the correlation error has the *trivial* size `x^{1}`. So the
+chain is nontrivial precisely when its input already beats the trivial correlation size — which is
+the campaign's circularity signature appearing for the seventh time, now as a clean inequality
+`m < 3/2` rather than as an exponent coincidence.
+
+**Cycle 82.** The one thing in this circle that produced new unconditional statements is the backward
+direction (C194–C195). Push it further: what other known moment bounds, run backwards through
+Theorem 3 at `k = 3`, give new estimates for classical objects? Candidates: the conditional
+`m(3) = 1` under LH (gives `G₃ ≪ y^{5/6}`, sharp); Ivić's `m(3) ≤ 5/4` refinements with log-powers;
+and the *fourth*-moment analogue at `k = 2`, where the reach condition fails but the Mellin direction
+alone still applies.
+
+## Cycle 82 — **ERRATUM E19 (major): Theorems 1–2 are invalid; they use the interchange C182 forbids**
+
+### C207 — the contradiction that exposed it
+
+Bounding `G₃` by **Hölder with the fourth moment** instead of Cauchy–Schwarz with the sixth:
+
+    |G₃| ≤ ∫|ζ(1/2+it)|³|M(1/2+it)|dt.
+
+Stationary phase gives `|M| ≈ √3·v₀/√X` at `v₀ = |t|/(2πX)`, supported on `|t| ≤ 2πXV`, so `|M| ≍ y^{1/6}`
+at the top and `T = XV = y^{2/3}` (at `x = y`). Since `∫_{|t|≍T}|ζ|³dt ≍ T·polylog` (sharp, from the
+fourth moment):
+
+    **|G₃(y)|  ≪  y^{1/6}·y^{2/3}·polylog  =  y^{5/6+ε}.**
+
+But C195 asserted `G₃ ≪ y^{5/6} ⟹ m(3) = 1` — the sixth moment conjecture. **So an elementary Hölder
+argument would prove a famous open conjecture. One of the two chains is wrong.**
+
+### C208 — it is the factorisation chain, and the flaw is one the campaign already proved
+
+The Mellin/Hölder computation is elementary and was verified twice (Parseval and stationary phase
+agree on `∫|M|²dt ≍ y`; the Cauchy–Schwarz lower bound for `∫|M|⁴dt` matches the stationary-phase
+value in order). **The error is in Theorem 1.**
+
+Theorem 1's Step 3 applies Voronoi to the `n`-sum *inside* the `m`-sum — that is, it **interchanges the
+`Δ_k` Voronoi series with a second summation.** C182 proved that interchange is illegitimate, and that
+a legitimate version of it proves the sharp divisor conjecture. **Theorem 1's proof uses precisely the
+step the campaign itself proved forbidden, two cycles after stating the theorem.**
+
+> **`[ERRATUM E19]` Theorem 1 (shift-average factorisation), Theorem 2 (the one-variable sufficient
+> condition), and the `(⟹)` direction of Theorem 3 are **withdrawn**. Their proofs rest on the
+> Voronoi interchange that C182 shows is worth the divisor problem.**
+
+**Consequences, stated in full.**
+
+* **Withdrawn:** Theorem 1; Theorem 2; Theorem 3's `(⟹)` direction; the `k = 3` equivalence (C191);
+  the general-`k` implication (C192, already partly retracted as E17); the `Ω`-result `G₃ = Ω(y^{5/6−ε})`
+  (C195, which used `(⟹)`); the "cheapest record-beating input" pricing that fed through Theorem 2;
+  and the mechanism analyses of cycles 80–81 (C200, C205, C206), which analysed a chain that does not
+  exist.
+* **Survives:** everything not routed through Theorem 1. In particular the **Mellin direction**, which
+  is elementary: `G_k(y) = (1/2πi)∫ζ(s)^k M(s)ds` with `M` explicit, and every bound obtained from it
+  by Hölder against a *known* moment. Also all eighteen barrier theorems, which concern other routes,
+  and C182 itself.
+
+### C209 — what is actually true, and it is better than what was withdrawn
+
+The surviving Mellin route gives, **unconditionally and by elementary means**:
+
+    **Σ_{m≤y} d₃(m)·e(3y^{1/3}m^{1/3})  ≪  y^{5/6+ε}.**
+
+Compare:
+
+| route | bound |
+|---|---|
+| trivial | `y·polylog` |
+| best known exponent pair (C177) | `y^{59/63} = y^{0.9365…}` |
+| Cauchy–Schwarz + sixth moment (C194) | `y^{11/12} = y^{0.9167…}` |
+| **Hölder + fourth moment (here)** | **`y^{5/6} = y^{0.8333…}`** |
+
+So C194 is superseded: **using the *fourth* moment via Hölder beats using the sixth via
+Cauchy–Schwarz**, and both beat every exponent pair. The bound `y^{5/6}` is the campaign's one
+surviving unconditional estimate for a classical object, and it rests on nothing but the fourth
+moment of `ζ` and stationary phase.
+
+### C210 — assessment
+
+**This is the campaign's most serious error and it stood for eleven cycles.** It was not caught by
+re-reading proofs; it was caught by deriving the same quantity two ways and finding the answers
+incompatible. The campaign's own C182 contained the refutation from cycle 74 onward, and cycles 75–81
+elaborated a structure built on the invalid step without noticing.
+
+**Rule adopted, and this time applied retroactively:** every theorem in the campaign that expands
+`Δ_k` in its Voronoi series inside a second summation or integral is suspect and must be re-derived or
+withdrawn. A pass over the log for that pattern is cycle 83's first task.
+
+## Cycle 83 — the sweep, and what `y^{5/6}` actually means
+
+### C211 — sweep for the forbidden pattern
+
+Every result in the log that expands `Δ_k` in its Voronoi series **inside a second summation or
+integral**, checked:
+
+| result | uses the pattern? | verdict |
+|---|---|---|
+| Theorems 1–2, Theorem 3 `(⟹)` | **yes** — Step 3 | **withdrawn (E19)** |
+| C113 resonant antisymmetry | yes, as a step of Thm 1 | withdrawn as a step; the *kernel* facts (oddness of `(cos c − cos cX)/c`, the elementary integral, the Laplace factorisation) stand as pure analysis and are Lean-certified |
+| C115 phase-speed invariant `y^{1/(k−1)}` | no — a derivative computation | **survives** |
+| C129/C159 short-interval mean-square diagonal | yes, but in the **mean-square** form | **survives** — the mean-square interchange is the one that *is* justified (it is how Jutila's `k=2` asymptotic is proved); flagged as depending on that |
+| C156–C157 divisor-splitting / level of distribution | no | **survives** |
+| all eighteen barrier theorems (§3, §6, §7) | no — exponent arithmetic, Plancherel densities, Weyl law | **survive** |
+| C182 (the interchange barrier itself) | it *is* the statement | **survives** |
+| C185 Riesz cost, C200–C206 | analyse the withdrawn chain | **vacuous** — retained only as a record |
+
+**The map of barriers is intact. What collapsed is the single positive tower built on Theorem 1.**
+
+### C212 — what `G₃ ≪ y^{5/6+ε}` is, seen from the other side `[PROVED HERE]`
+
+Split `G₃(y) = Σ_{m≤y}d₃(m)e(3y^{1/3}m^{1/3})` at the phase wavelength `L = y^{1/3}`
+(`N_B = y^{2/3}` blocks). Then `Σ_{m∈B}d₃(m) = L·P₂(\log) + δ₃(B)`, and
+
+* **smooth part:** `L·Σ_B e(θ_B) ≪ y^{1/3}·y^{1/3} = y^{2/3}` (van der Corput on the block phases —
+  square-root cancellation in the block count);
+* **fluctuation part:** Cauchy–Schwarz gives `≤ N_B^{1/2}(Σ_B|δ₃(B)|²)^{1/2}`, and with the
+  **conjectured** short-interval mean square `∫(Δ₃(u+L)−Δ₃(u))²du ≪ y L^{1+ε}` this is
+  `y^{1/3}·y^{1/2} = y^{5/6}`.
+
+> **`[FINDING]` The Mellin/fourth-moment route attains `y^{5/6}` **unconditionally** — exactly the
+> value that Cauchy–Schwarz would give *from the conjectured short-interval mean square for `Δ₃`*,
+> which is open (Ivić's Theorem 1 gives it only under the Lindelöf hypothesis, C117).**
+>
+> **The fourth moment of `ζ` substitutes, unconditionally, for a conjectural mean-square estimate for
+> `Δ₃`.**
+
+That is a genuine transfer of information from `ζ` to the divisor problem, in the direction the
+campaign spent eighty cycles trying to run the other way — and it is the only such transfer that has
+survived scrutiny.
+
+### C213 — how far `y^{5/6}` is from the truth
+
+The "random block phases" heuristic predicts `|G₃| ≍ y^{2/3}`: `y^{2/3}` blocks each contributing
+`≍ y^{1/3}`, with square-root cancellation between them. The smooth part attains exactly that. So
+
+    truth (expected): y^{2/3};    proved: y^{5/6};    gap: y^{1/6}.
+
+and the gap sits entirely in the fluctuation term `Σ_B e(θ_B)δ₃(B)`, where **Cauchy–Schwarz discards
+the block phases `e(θ_B)` completely.** Beating `y^{5/6}` therefore requires cancellation between the
+smooth phase sequence `θ_B` and the arithmetic fluctuations `δ₃(B)` — the same correlation identified
+in C179, and the campaign's recurring `1/6`.
+
+**Status.** One unconditional theorem survives (`G₃ ≪ y^{5/6+ε}`), it beats every exponent pair, it
+equals what a conjectural input would give, and the remaining gap to the expected truth is exactly the
+campaign's signature `y^{1/6}`.
+
+`[OPEN CORE, cycle 84]` Bound `Σ_B e(θ_B)δ₃(B)` **without Cauchy–Schwarz**, where `θ_B = 3y^{1/3}m_B^{1/3}`
+is a smooth sequence with `≍1` increments and `δ₃(B)` are `Δ₃`-increments over blocks of length
+`y^{1/3}`. Any saving `y^{−ρ}` over the Cauchy–Schwarz value improves `G₃ ≪ y^{5/6−ρ}`. Note this is a
+**one-variable** correlation between a smooth phase and an arithmetic fluctuation, and — crucially —
+it does **not** require expanding `δ₃(B)` in Voronoi, so it is outside the E19 pattern.
+
+## Cycle 84 — Weyl differencing reduces the gap to an autocorrelation of `Δ₃`-increments
+
+### C214 — the reduction `[PROVED HERE]`
+
+Apply van der Corput's `A`-process to `a_B = e(θ_B)δ₃(B)` (`N_B = y^{2/3}` blocks, `L = y^{1/3}`):
+
+    |Σ_B a_B|²  ≤  (N_B/H) Σ_{|h|<H}(1−|h|/H)·|Σ_B e(θ_{B+h}−θ_B) δ₃(B+h)δ₃(B)|.
+
+The `h = 0` term is `Σ_B|δ₃(B)|² ≍ y`. If the `h ≠ 0` terms admit a power saving,
+
+    |Σ_B e(θ_{B+h}−θ_B)δ₃(B+h)δ₃(B)| ≪ y^{1−c}   ⟹   |Σ_B a_B|² ≪ y^{5/3}/H + y^{5/3−c},
+
+optimised at `H = y^{c}` to give `|Σ_B a_B| ≪ y^{5/6−c/2}`, hence
+
+> **any power saving `c` in the autocorrelation of `Δ₃`-increments gives `G₃(y) ≪ y^{5/6−c/2+ε}`.**
+
+**And the autocorrelation is a *quadratic* average** — `Σ_B δ₃(B+h)δ₃(B) ≈ (1/L)∫[Δ₃(u+hL+L)−Δ₃(u+hL)][Δ₃(u+L)−Δ₃(u)]du`
+— for which the Voronoi interchange **is** justified (C211: the mean-square interchange is the one
+Jutila's method validates). **So this route is outside the E19 pattern.**
+
+### C215 — what the autocorrelation should be, and what is proved
+
+Expanding both increments by Voronoi (legitimate here), the `n`-th weight is
+`d₃(n)n^{−2/3}\min(1,ψ_n)` with `ψ_n ≍ n^{1/3}y^{−1/3}`, and the lag-`h` cross term carries
+`\cos(hψ_n)`. The `h = 0` case reproduces `Σ_B|δ₃|² ≍ y·polylog` — **a check the computation could
+have failed, and passes.** For `h ≠ 0` the phase `hn^{1/3}y^{−1/3}` advances by `≍ h/y` per unit `n`,
+so the `n`-sum splits into `≍ h` coherent blocks; **square-root cancellation between them would give**
+
+    Σ_B e(…)δ₃(B+h)δ₃(B)  ≈  y·polylog / √h,   i.e. `c` effectively `1/2` after summing over `h < H`,
+
+which through C214 yields `|Σ_B a_B| ≪ y^{2/3}` — **exactly the random-block prediction, and exactly
+the campaign's `y^{1/6}` gap closed.**
+
+**But that is heuristic and is not claimed.** The rigorous position: bounding the `h ≠ 0` terms
+trivially (`≤ Σ_B|δ₃|² ≍ y`, discarding the phase `e(θ_{B+h}−θ_B)`) returns `|Σ_B a_B| ≪ y^{5/6}`,
+the value already proved. **The entire gain sits in the phase `e(θ_{B+h}−θ_B)`, which the trivial
+bound discards** — the same discard that Cauchy–Schwarz made in C212, now isolated one level down and
+in an object where Voronoi is permitted.
+
+### C216 — the target, sharpened
+
+> `[OPEN CORE, live]` For `1 ≤ h < H` and blocks of length `L = y^{1/3}` in `[1,y]`, bound
+>
+>     Σ_B e(θ_{B+h} − θ_B)·δ₃(B+h)·δ₃(B),    θ_B = 3y^{4/9}B^{1/3},   δ₃(B) = Δ₃(m_B+L) − Δ₃(m_B),
+>
+> non-trivially — i.e. by `y^{1−c}` with `c > 0`. Consequence: `G₃(y) ≪ y^{5/6−c/2+ε}`, improving the
+> campaign's one surviving unconditional theorem.
+
+Three features distinguish this from every dead route: it is a **quadratic** average, so the Voronoi
+interchange is legitimate (E19 does not apply); the phase `θ_{B+h}−θ_B ≈ h·θ'(B)` is **smooth and
+explicit**; and the target is a *saving over trivial*, not a sharp asymptotic — any `c > 0` suffices.
+
+**Honest status.** `G₃ ≪ y^{5/6+ε}` remains the proved bound. C214 is a genuine reduction of the
+remaining `y^{1/6}` to a single named object; C215's evaluation of that object is heuristic and is
+recorded as such.
+
+## Cycle 85 — the autocorrelation decays like `y/h`, and `G₃ ≪ y^{2/3+ε}`
+
+### C217 — evaluating `A(h)` `[DERIVED HERE — quadratic average, E19 does not apply]`
+
+    A(h) := Σ_B e(θ_{B+h}−θ_B)·δ₃(B+h)·δ₃(B) ≈ (1/L)∫_0^y e(ψ(u))[Δ₃(u+hL+L)−Δ₃(u+hL)][Δ₃(u+L)−Δ₃(u)]du.
+
+Writing `B ≈ u/L`, the phase is `ψ(u) = y^{2/3}h u^{−2/3}`, and the shifted increment carries
+`hψ_n = 2πhn^{1/3}y^{1/3}u^{−2/3}`. Expanding both increments by Voronoi (legitimate: quadratic
+average) the `n = n'` terms carry the `u`-phase
+
+    2π h u^{−2/3} y^{1/3}[ y^{1/3} − n^{1/3} ],
+
+**resonant exactly at `n = y`** (the top of the dual range — the same resonance as C180), with window
+`|n − y| ≪ y/h`.
+
+* **resonant range** (`|n−y| ≪ y/h`, where `min(1,ψ_n) = 1`):
+  `(1/L)·y^{2/3}·y·Σ_{|n−y|≪y/h}d₃(n)²n^{−4/3} ≍ y^{4/3}·(y/h)y^{−4/3} = **y/h**·polylog`;
+* **non-resonant range** (`n ≪ y`, where `min(1,ψ_n²) = n^{2/3}y^{−2/3}`): the `u`-phase sweeps `≍ h`
+  cycles over `u ≍ y`, so the first-derivative test gives a factor `1/h`, and the range contributes
+  `y^{−1/3}·h^{−1}` inside the same prefactor — again **`y/h`**.
+
+**Check at `h = 0`:** the `min(1,ψ_n²)` factor gives `Σ_n d₃(n)²n^{−4/3}min(1,ψ_n²) ≍ y^{−1/3}`, hence
+`A(0) ≍ y^{−1/3}·y^{5/3}·y^{−1/3} = y·polylog` — **which is `Σ_B|δ₃(B)|² ≍ y`, as it must be.** The
+computation reproduces the one value that is independently known.
+
+    **A(h)  ≪  (y/h)·polylog.**
+
+### C218 — consequence: the fluctuation term, and `G₃`
+
+Weyl (C214) with `Σ_{0<|h|<H}|A(h)| ≪ y\log H`:
+
+    |Σ_B e(θ_B)δ₃(B)|²  ≪  (N_B/H)[y + y\log H]  =  y^{5/3}\log H/H,
+
+optimised at `H = N_B = y^{2/3}`:  **`|Σ_B e(θ_B)δ₃(B)| ≪ y^{1/2+ε}`.**
+
+**Calibration:** `Σ_B|δ₃|² ≍ y` over `N_B = y^{2/3}` blocks gives typical `|δ₃| ≍ y^{1/6}`, so the
+random-phase prediction for this sum is `√(y^{2/3})·y^{1/6} = y^{1/2}` — **the bound attains it.**
+(C213 mis-stated the random prediction as `y^{2/3}`; that is the size of the *smooth* part, not the
+fluctuation. Corrected.)
+
+Combining with the smooth part `≪ y^{2/3}` (van der Corput on the block phases):
+
+> **`Σ_{m≤y} d₃(m)·e(3y^{1/3}m^{1/3})  ≪  y^{2/3+ε}`**,
+
+improving the campaign's `y^{5/6}` by exactly the recurring `y^{1/6}`, and matching the expected
+truth (the sum is now dominated by its smooth part, which is `y^{2/3}` and cannot be improved).
+
+### C219 — the E19 check, run before claiming
+
+Does `G₃ ≪ y^{2/3}` prove something known-open? By partial summation it would give
+`Δ₃(x) ≪ x^{1/3}\log x` — the sharp ternary divisor conjecture — **but only if the bound held for
+`Σ_{n≤u}d₃(n)e(3x^{1/3}n^{1/3})` with `x` **fixed** and `u` ranging over `[1,M]`.** The bound proved
+here is on the **diagonal** `x = y` only. The two are different statements and the implication does
+not go through. **No contradiction.** (This check is exactly what E19 mandated, and it is the reason
+the claim is stated for the diagonal only.)
+
+### C220 — status and caveats
+
+**Proved-modulo-bookkeeping:** `G₃(y) ≪ y^{2/3+ε}` on the diagonal `x = y`.
+
+| route | bound |
+|---|---|
+| trivial | `y·polylog` |
+| best exponent pair | `y^{0.9365…}` |
+| Cauchy–Schwarz + sixth moment | `y^{11/12}` |
+| Hölder + fourth moment (C209) | `y^{5/6}` |
+| **Weyl + autocorrelation (here)** | **`y^{2/3}`** |
+
+**Caveats, stated plainly.** C217 expands `Δ₃` by Voronoi inside a quadratic average — permitted by
+C211 — but does so at the level of the leading asymptotic, with the truncation error and the
+non-diagonal `n ≠ n'` terms handled by the first-derivative test rather than exhibited. The `h = 0`
+consistency check passes, and the E19 check passes. **An external audit should verify the `n ≠ n'`
+terms and the Voronoi truncation error.**
+
+## Cycle 86 — **ERRATUM E20**: `G₃ ≪ y^{2/3}` is conditional, not proved
+
+### C221 — what `A(0) ≍ y` actually is
+
+C217 computed `A(0) = Σ_B|δ₃(B)|² ≍ y` from the **diagonal** of the Voronoi expansion, and called the
+agreement a consistency check. It is a consistency check against the **conjectured** value: since
+`A(0) = (1/L)∫_0^y(Δ₃(v+L)−Δ₃(v))²dv` with `L = y^{1/3}`, the value `y` is exactly
+`(1/L)·y·L^{1}` — **the short-interval mean square with `β = 1`**, which C117 established is available
+only under the Lindelöf hypothesis (Ivić's Theorem 1 requires `σ(3) = 1/2`).
+
+**Unconditionally**, Ivić gives only `∫(Δ₃(v+L)−Δ₃(v))²dv ≪ y^{1−ε₁}L²`, i.e.
+
+    A(0) ≪ y^{1−ε₁}L = y^{4/3−ε₁},   not   y.
+
+So C217's diagonal computation reproduced the conjectural value, not the known one — **and the
+off-diagonal `n ≠ n'` terms of that quadratic average, which C220 listed as "bookkeeping for an
+external audit", are exactly the unproven part.** They are the difference between `y` and
+`y^{4/3−ε₁}`.
+
+> **`[ERRATUM E20]` C217's `A(h) ≪ y/h` and C218's `G₃ ≪ y^{2/3+ε}` are **conditional**, not proved.
+> They require the conjectural short-interval mean square for `Δ₃` (`β = 1`), which is open and is
+> implied by LH. C220's "proved-modulo-bookkeeping" overstated it: the bookkeeping *was* the content.**
+
+### C222 — what survives, and it is still the record
+
+    **Σ_{m≤y} d₃(m)·e(3y^{1/3}m^{1/3})  ≪  y^{5/6+ε}   — unconditional.**
+
+This is C209's bound, from Hölder against the **fourth** moment of `ζ` plus stationary phase. It uses
+no Voronoi expansion at all, hence is untouched by E19 and E20. It beats every known exponent pair
+(`y^{0.9365}`) and the sixth-moment route (`y^{11/12}`).
+
+**And the conditional chain is still informative**, in the form:
+
+| input | output for `G₃` |
+|---|---|
+| nothing (Hölder + 4th moment) | `y^{5/6}` — **unconditional** |
+| short-interval mean square `β = 1` (open, implied by LH) | `y^{5/6}` via Cauchy–Schwarz (C212) — *the same value* |
+| `β = 1` **plus** autocorrelation decay `A(h) ≪ y/h` | `y^{2/3}` (C218) |
+
+> **The unconditional fourth-moment route already matches what the conjectural mean square delivers.**
+> That observation (C212) survives E20 intact and is the one genuinely surprising thing in this line.
+
+### C223 — the corrected position
+
+* **Unconditional and standing:** `G₃ ≪ y^{5/6+ε}`; the eighteen barrier theorems; C182 (the
+  Voronoi-interchange barrier); C211 (the sweep); the phase-speed invariant `y^{1/(k−1)}`.
+* **Withdrawn:** Theorems 1–2 and Theorem 3 `(⟹)` (E19); `A(h) ≪ y/h` and `G₃ ≪ y^{2/3}` as
+  unconditional claims (E20).
+* **Conditional, and correctly labelled:** `G₃ ≪ y^{2/3}` given the `Δ₃` short-interval mean square.
+
+**Method note — the third failure of the same kind.** Cycles 52, 73 and now 85 each produced a bound
+by expanding `Δ_k` in Voronoi and keeping only the diagonal. Each time the diagonal reproduced the
+*conjectured* answer, and each time I read that agreement as confirmation rather than as the warning
+it is. **The rule is now: when a Voronoi diagonal reproduces a conjectured value, that is evidence the
+off-diagonal carries the entire difficulty — never evidence the computation is complete.**
+
+## Cycle 87 — the surviving theorem generalises to a family
+
+### C224 — a bound for `d_k` against a `k`-th-root phase, from the fourth moment `[PROVED HERE]`
+
+Redoing the C209 computation with `k` free. Stationary phase on
+`M(s) = k∫_1^V v^{ks−1}e(kXv)dv` gives `|M| ≍ √k·v₀^{(k−1)/2}/√X` at `v₀ = |t|/(2πX)`, supported on
+`|t| ≤ 2πXV`, so `T = XV = y^{2/k}` at the diagonal `x = y`. Hölder with exponents `4/k` and
+`q = 4/(4−k)`:
+
+    ∫|M|^q dt ≍ X^{1−q/2}V^{q(k−1)/2+1},   (∫|M|^q)^{1/q} = y^{[2/q+(k−2)/2]/k} = y^{1/k},
+    (∫_{|t|≍T}|ζ|^4 dt)^{k/4} = (T·polylog)^{k/4} = y^{1/2}·polylog,
+
+and the exponents combine — `2/q = (4−k)/2`, so `[(4−k)/2 + (k−2)/2]/k = 1/k` exactly. Hence
+
+> **`G_k(y) := Σ_{m≤y} d_k(m)·e(k y^{1/k} m^{1/k})  ≪  y^{1/2 + 1/k + ε}`**, unconditionally, for
+> `2 < k ≤ 4`.
+
+`k = 3`: `y^{5/6}` ✓ (recovers C209 — a check the generalisation could have failed).
+`k = 4`: `y^{3/4}`.
+`k = 2`: `y^{1}` — **exactly trivial**, as it must be: at `k = 2` the stationary-phase mass and the
+trivial bound coincide, which is the same degeneracy the reach condition showed (E17, C219).
+
+Beyond `k = 4`, Hölder against the **sixth** moment (`m(3) ≤ 5/4`) gives
+`G_k ≪ y^{5/12+(k+6)/(6k)+ε}` for `4 < k < 6`; at `k = 5` this is `y^{47/60}`. At `k = 4` the
+fourth-moment route is strictly better (`3/4 < 5/6`), so the crossover lies above `4`.
+
+### C225 — comparison with exponent pairs
+
+The best exponent pair gives `η ≤ (1−(κ+λ))/k = 4/(21k)` for this sum (C177 generalised), i.e.
+`y^{1−4/(21k)}`. Comparing:
+
+    fourth-moment route beats it   ⟺   1/2 + 1/k < 1 − 4/(21k)   ⟺   **k > 50/21 = 2.380…**
+
+so at every integer `k ≥ 3`:
+
+| `k` | fourth moment | best exponent pair |
+|---|---|---|
+| 3 | **`y^{5/6} = y^{0.8333}`** | `y^{59/63} = y^{0.9365}` |
+| 4 | **`y^{3/4} = y^{0.75}`** | `y^{20/21} = y^{0.9524}` |
+
+**The gap widens with `k`:** the fourth-moment exponent *decreases* in `k` (`1/2+1/k`), while the
+exponent-pair one *increases* toward `1`. Higher divisor functions are handled **better** by the
+moment route and **worse** by exponential-sum technology — the reverse of the usual expectation.
+
+Lean: `HTGeometry.DivisorPhaseSumBound` — `fourthMomentPhaseExponent`, values at `2,3,4`,
+`fourthMomentPhaseExponent_lt_one (⟺ k > 2)`, `fourthMomentPhaseExponent_strictAnti`,
+`sixthMomentPhaseExponent`, `fourth_beats_sixth_at_four`, `exponentPairPhaseExponent`,
+`fourthMoment_beats_exponentPair (⟺ k > 50/21)`. Axioms `[propext, Classical.choice, Quot.sound]`.
+
+### C226 — why this survives when everything else did not
+
+It uses **no Voronoi expansion** — only the Mellin representation of `G_k`, stationary phase on an
+explicit elementary integral, and Hölder against a *known* moment of `ζ`. E19 (the interchange
+barrier) and E20 (the diagonal trap) both concern Voronoi expansions of `Δ_k`; neither touches this.
+
+**This is the campaign's one line of positive results, and its distinguishing feature is that it never
+expands a divisor error term.** Every route that did — cycles 52, 73, 85 — produced a bound that had
+to be withdrawn.
+
+## Cycle 88 — the off-diagonal bound, and a new proof of a classical theorem
+
+### C227 — `G` off the diagonal `[PROVED HERE]`
+
+Redoing C224 with `x` and `y` independent (`X = x^{1/k}`, `V = y^{1/k}`, so `T = XV = (xy)^{1/k}`):
+
+    (∫|M|^q)^{1/q} = X^{1/q−1/2}V^{(k−1)/2+1/q},   q = 4/(4−k),  1/q = (4−k)/4,
+    ⟹ X-exponent (2−k)/4,  V-exponent (k+2)/4,
+    (∫_{|t|≍T}|ζ|^4)^{k/4} = (xy)^{1/4}·polylog,
+
+which combine to
+
+> **`G(x,y) := Σ_{m≤y}d_k(m)e(k x^{1/k}m^{1/k})  ≪  x^{1/(2k)} y^{(k+1)/(2k)+ε}`**,  `2 < k < 4`.
+
+At `x = y` this is `y^{(k+2)/(2k)} = y^{1/2+1/k}` ✓ — recovers C224, a check the two-variable
+computation could have failed.
+
+### C228 — feeding it back: a proof of `Δ_k(x) ≪ x^{1/2+ε}` from the fourth moment of `ζ` `[PROVED HERE]`
+
+The Voronoi expansion needs `Σ_{n≤M}d_k(n)n^{−β}e(kx^{1/k}n^{1/k})`, `β = (k+1)/(2k)`. **The exponent of
+`y` in C227 is exactly `β`.** So partial summation gives
+
+    G(x,M)M^{−β} + β∫_1^M G(x,u)u^{−β−1}du  ≪  x^{1/(2k)} + x^{1/(2k)}∫_1^M u^{−1}du  =  x^{1/(2k)}\log M,
+
+**with the integral only logarithmically divergent — the `y`-exponent matching `β` exactly is what
+makes this work.** Hence
+
+    Δ_k(x) ≪ x^{(k−1)/(2k)}·x^{1/(2k)}\log x = **x^{1/2}\log x**,   for 2 < k < 4.
+
+At `k = 3` this is `Δ₃(x) ≪ x^{1/2+ε}` — **the classical bound**, obtained here from the fourth moment
+of `ζ` plus stationary phase, with **no exponential-sum estimate, no Voronoi expansion inside another
+sum, and no van der Corput**.
+
+> **This is the first time the campaign's machinery has reproduced a known theorem from scratch.**
+> It is the strongest available validation of the Mellin/Hölder line: the same computation that gives
+> `G₃ ≪ y^{5/6}` also re-proves `Δ₃ ≪ x^{1/2}`, a theorem of the subject.
+
+(It does not reach the record `Δ₃ ≪ x^{43/96}`, which uses multi-dimensional exponential sums —
+exactly the technology this route avoids.)
+
+### C229 — beyond `k = 4`, flagged not claimed
+
+For `4 < k < 6` the same computation with the **sixth** moment (`m(3) ≤ 5/4`) gives
+`G(x,y) ≪ x^{5/24+(3−k)/(6k)}y^{(13k+12)/(24k)}`, whose `y`-exponent exceeds `β` by exactly `1/24`, so
+the partial-summation integral contributes `M^{1/24}` and
+
+    Δ_k(x) ≪ x^{(k−1)/(2k) + 5/24 + (3−k)/(6k) + 1/24}   (at k = 5: x^{0.583…}).
+
+The classical exponent at `k = 5` is `(k−1)/(k+1) = 2/3 = 0.667`. **Whether `0.583` improves on the
+current record for `Δ₅` is a literature question I have not checked, and I am not claiming it.**
+Given E19 and E20, an unverified claim of improving a known exponent is exactly what this campaign
+should not make. **Cycle 89's first task: check the current records for `Δ_k`, `k ≥ 4`, against the
+exponents above.**
+
+### C230 — why the `y`-exponent matching `β` is the crux
+
+The chain closes only because C227's `y`-exponent `(k+1)/(2k)` equals `β` **identically in `k`**. Had
+it exceeded `β`, the partial-summation integral would diverge as a power and the bound for `Δ_k`
+would degrade; had it been smaller, the boundary term would dominate. **The exact match is what makes
+the fourth-moment route reproduce the classical bound rather than something weaker** — and it is the
+same phenomenon as the `α + β = 1` identity that governs the Voronoi weights (§2 of the
+factorisation card). The campaign's exact coincidences continue, but here one of them *works in
+favour* for the first time.
+
+## Cycle 89 — the `k = 4` case, derived and flagged
+
+### C231 — `k = 4` handled directly (the `q → ∞` endpoint) `[DERIVED HERE]`
+
+At `k = 4` the Hölder exponent `q = 4/(4−k)` degenerates; use the sup-norm endpoint instead:
+
+    |G(x,y)| ≤ \sup|M| · ∫_{|t|≍T}|ζ(1/2+it)|^4 dt ≪ (V^{3/2}/√X)·T·polylog,
+    V = y^{1/4}, X = x^{1/4}, T = (xy)^{1/4}
+    ⟹ **|G(x,y)| ≪ x^{1/8} y^{5/8+ε}.**
+
+And `β = (k+1)/(2k) = 5/8` at `k = 4` — **the `y`-exponent matches `β` exactly, a third time** (C227
+at `2<k<4`, C224 at the diagonal, and now the endpoint). Partial summation therefore gives only a
+logarithm, and
+
+    Δ₄(x) ≪ x^{(k−1)/(2k)}·x^{1/8}\log x = x^{3/8+1/8}\log x = **x^{1/2}\log x.**
+
+So the derivation gives `Δ_k(x) ≪ x^{1/2+ε}` on the whole range `2 < k ≤ 4`.
+
+### C232 — status: derived, **not claimed**
+
+* **At `k = 3`** this is `Δ₃ ≪ x^{1/2+ε}` — **the classical bound**, re-proved from the fourth moment
+  of `ζ` with no exponential-sum input (C228). This is the validation.
+* **At `k = 4`** it is `Δ₄ ≪ x^{1/2+ε}`, against the classical `x^{(k−1)/(k+1)} = x^{3/5}` and against
+  `x^{σ(4)} = x^{5/8}` from the standard moment-abscissa route. **Both are weaker than `x^{1/2}`.**
+
+**I have not been able to confirm from the literature whether `Δ₄ ≪ x^{1/2+ε}` is known.** A targeted
+search returned mean-square results (`∫_1^X Δ₄² ≪ X^{7/4+ε}`, consistent with the conjectured
+`Δ₄ ≍ x^{3/8}`) and sign-change results, but no table of current pointwise records for `k ≥ 4`.
+
+> **Recorded as derived and unverified.** After E19 and E20, the campaign does not claim an
+> improvement on a known exponent without confirming the record. The derivation is sound modulo the
+> stationary-phase error terms, it recovers the classical bound at `k = 3`, and the `y`-exponent
+> matches `β` identically — three checks it could have failed and did not.
+
+### C233 — what the whole Mellin/Hölder line has produced
+
+Unconditional, and untouched by E19/E20 because none of it expands `Δ_k` inside another sum:
+
+1. `G_k(y) = Σ_{m≤y}d_k(m)e(k y^{1/k}m^{1/k}) ≪ y^{1/2+1/k+ε}` for `2 < k ≤ 4` — beating every known
+   exponent pair for `k > 50/21`, with the gap **widening** in `k`;
+2. `G(x,y) ≪ x^{1/(2k)}y^{(k+1)/(2k)+ε}` off the diagonal, the `y`-exponent equal to `β` identically;
+3. `Δ_k(x) ≪ x^{1/2+ε}` for `2 < k ≤ 4` — **a new proof of the classical bound at `k = 3`**, and at
+   `k = 4` an exponent better than both standard routes, pending a literature check.
+
+**Common feature:** the Mellin representation, stationary phase on an explicit elementary integral,
+and Hölder against a *known moment of `ζ`*. **No Voronoi expansion of a divisor error term anywhere.**
+Every result in the campaign that used one has been withdrawn; every result that avoided one has
+survived.
+
+`[Cycle 90]` Verify or refute `Δ₄ ≪ x^{1/2+ε}` against the literature. If new, it is the campaign's
+first improvement on a published exponent — for the Piltz divisor problem rather than for `μ(1/2)`,
+but obtained by the machinery built to attack `μ(1/2)`.
+
+## Cycle 90 — **ERRATUM E21**: the Mellin/Hölder line is Perron's method, and its outputs are classical
+
+### C234 — `Δ_k ≪ x^{1/2+ε}` for `k ≤ 4` is immediate from Perron
+
+No literature search is needed; the two-line argument settles it. By Perron,
+
+    Δ_k(x) = (1/2πi)∫_{(c)}ζ(s)^k x^s s^{−1}ds − (main),
+
+and moving the contour to `σ = 1/2`,
+
+    Δ_k(x) ≪ x^{1/2}∫_{−T}^{T}|ζ(1/2+it)|^k \frac{dt}{|t|+1} + x^{1+ε}T^{−1}.
+
+For `k ≤ 4`, `∫_{|t|≍U}|ζ(1/2+it)|^k dt ≪ U·polylog` (Hölder from the fourth moment), so the integral
+is `≪ polylog`, and `T = x` gives
+
+    **Δ_k(x) ≪ x^{1/2+ε}   for k ≤ 4 — classical.**
+
+> **`[ERRATUM E21]` C228 and C231 do not produce new theorems. They reproduce, by a longer route, the
+> standard Perron-plus-fourth-moment bound. `Δ₃ ≪ x^{1/2+ε}` and `Δ₄ ≪ x^{1/2+ε}` are both classical,
+> and C232's flagged "possible improvement at `k = 4`" is withdrawn.**
+
+**The deeper point:** the Mellin representation `G_k(y) = (1/2πi)∫ζ(s)^k M(s)ds` **is Perron's
+formula** with an oscillating test function in place of the sharp cut-off. Hölder against a moment of
+`ζ` is exactly what Perron's method does. **So the entire "surviving positive line" of cycles 87–89 is
+Perron's method applied to a twisted sum** — the outputs are what that method gives, and there is no
+reason to expect them to be new.
+
+### C235 — what this leaves, stated without inflation
+
+The `G_k` bounds themselves (`y^{1/2+1/k+ε}`, and `x^{1/(2k)}y^{(k+1)/(2k)+ε}` off-diagonal) are
+obtained by a standard method applied to a specific sum. **They may well be known or routine; the
+campaign has not verified otherwise, and after E21 should not present them as new.** What can be said
+with confidence:
+
+* the bounds are **correct** (three internal consistency checks: the diagonal specialisation, the
+  `β`-match, and the recovery of `Δ_k ≪ x^{1/2}`);
+* they **beat exponent pairs** for this sum, with the gap widening in `k` — an observation that is
+  independent of whether the bounds are new, and which is a genuine comparison between two methods;
+* the comparison itself is the content: **for divisor sums against a `k`-th-root phase, moments of `ζ`
+  outperform exponential-sum technology, increasingly so as `k` grows.**
+
+### C236 — honest accounting at cycle 90
+
+**What this campaign has produced that is, to the best of its checking, new:**
+
+* **eighteen barrier theorems** with proved mechanisms (inertness / self-dual stationarity;
+  circularity / moment re-entry; spectral thinness / the rank gap `n(n−1)/2`; `Ω`-driven ceilings;
+  the Voronoi-interchange barrier), all Lean-certified as exponent arithmetic;
+* the identification of **one invariant** — the fast/slow phase boundary `n ≲ y^{1/(k−1)}` — with
+  which four separate obstructions coincide;
+* the observation that **`k = 4` is a fivefold criticality** (first non-neutral index; last reachable
+  by the pointwise branch; where the two conjectured correlation sizes first differ; where the model's
+  error crosses the main term; where the chain is exactly borderline);
+* the reformulation `m(k) = 1 ⟺ s(k) ≤ 1/2 + 1/k`, i.e. **LH ⟺ the additive-divisor error is of
+  square-root size asymptotically in `k`**;
+* **twenty-one errata**, each a route or claim retracted after a check it failed.
+
+**What it has not produced:** any improvement on `μ(1/2) ≤ 13/84`, and any new theorem in the
+divisor-problem literature. **LH is neither proved nor disproved.**
+
+**The most valuable single output is methodological and it is negative:** every route that expanded a
+divisor error term inside another sum was withdrawn; every route that avoided it survived but proved
+to be Perron's method, whose limits are known. **The campaign has mapped the boundary of what the
+standard toolkit can reach, from the inside, and found no gap in it.**
+
+## Cycle 91 — **ERRATUM E22**: the "moments beat exponent pairs" comparison was against the wrong opponent
+
+### C237 — the comparison, corrected
+
+C225 compared the Mellin/Hölder bound for `G_k` against **one-dimensional** exponent pairs applied to
+the `c`-sum after splitting `d_k`, treating the remaining `k−1` variables trivially. That is not the
+technology the subject actually uses on such sums.
+
+**The evidence is in the campaign's own material.** For `Δ₃(x)` the Perron/fourth-moment route gives
+`x^{1/2}` (C234), while the record is `x^{43/96} = x^{0.448}` — obtained by **multi-dimensional**
+exponential sums (Kolesnik). **Exponential-sum technology beats the moment route there, decisively.**
+
+> **`[ERRATUM E22]` C225's claim that "moments beat exponent pairs, increasingly in `k`" is withdrawn
+> as stated. The correct statement is narrower: *moments beat the one-dimensional exponent-pair
+> treatment of the `c`-sum alone*. Against multi-dimensional exponential-sum methods — the actual
+> technology — the moment route is weaker, as the `Δ₃` record shows.**
+
+**What remains defensible:** the moment route requires no exponential-sum input at all, so it is
+robust and uniform in `k`, whereas multi-dimensional methods must be redone for each `k` and degrade.
+That is a statement about *shape*, not strength, and it is the only version of C225 that survives.
+
+### C238 — where cycles 87–91 leave the positive line
+
+After E19 (Voronoi interchange), E20 (the diagonal trap), E21 (Perron in disguise) and E22 (the wrong
+comparison), the positive line reduces to:
+
+* correct bounds, obtained by a standard method, for sums that standard methods already handle;
+* **no new theorem.**
+
+This is the honest terminus of the Mellin/Hölder line. Recording it as such, rather than continuing to
+extract sub-claims from it, is the right disposition. `[D48]`
+
+### C239 — what the campaign has left untried, and why each is hard
+
+Of the routes not yet attempted, only one is neither (a) a Voronoi expansion inside another sum nor
+(b) Perron's method:
+
+1. **Combinatorial/bilinear decomposition** (Vaughan, Heath-Brown identities) applied to `d_k` or to
+   the large-value set. Not tried. **Obstruction:** `d_k` is *already* a `k`-fold convolution, so its
+   bilinear decomposition is intrinsic and produces Type I/II sums whose treatment reduces to
+   exponential sums (route b') or to large values (capped at `1/4`, §3.2).
+2. **Additive-combinatorial structure of the large-value set.** Not tried. **Obstruction:** the
+   Halász–Montgomery cap (§3.2) and Guth–Maynard inertness (§3.3) both concern precisely this set, and
+   both are proved inert at the self-dual block.
+3. **Function-field transfer.** No mechanism exists (C109, E12).
+
+> **The campaign's terminal position: every route it can name is either proved capped, proved
+> circular, proved inert, proved spectrally thin, or is Perron's method. The three untried routes each
+> reduce, at their first step, to one of those five.**
+
+**This is not a proof that LH is unreachable** — it is a map of the reachable region of one toolkit,
+built from the inside over 91 cycles, with 22 errata marking every place the map was drawn wrong and
+corrected. **LH is neither proved nor disproved, and this campaign has no further route to offer
+within the methods it has been able to formulate.**
+
+## Cycle 92 — consolidation: what 92 cycles established, and the one true bottom line
+
+### C240 — the untried routes, attempted rather than dismissed
+
+C239 dismissed three routes in a line each. Attempting them properly:
+
+**Route 1 — bilinear / Bombieri–Iwaniec.** `d_k` factors, so the AFE polynomial `Σ_{n∼N}d_k(n)n^{−it}`
+is intrinsically bilinear, and the double large sieve applies. **This is the Bombieri–Iwaniec method,
+which is what produced `9/56 → 32/205 → 13/84`.** It is not covered by §3.2 (Halász–Montgomery) — but
+it *is* covered by §6.5: BI and decoupling are **AFE-internal**, bounding the length-`√t` polynomial,
+and self-dual stationarity says such optimisations are stationary at the self-dual block. **Which is
+exactly what the record is: `13/84` is the bound at the self-dual block.** So route 1 is not a new
+direction — it is the direction the record already sits in.
+
+**Route 2 — additive structure of the large-value set.** Halász–Montgomery caps it (§3.2) and
+Guth–Maynard is proved inert at `β = 1` (§3.3). Both concern precisely that set.
+
+**Route 3 — function-field transfer.** No mechanism (C109, E12).
+
+### C241 — the bottom line, and it is a theorem the campaign proved early and never foregrounded
+
+From the approximate functional equation, `μ(1/2) = b(1/2) − 1/4` where `t^{b(α)}` bounds
+`|Σ_{n∼t^{α}}n^{−it}|`. Therefore, exactly:
+
+> **`LH  ⟺  |Σ_{n ∼ √t} n^{−it}|  ≪  t^{1/4+ε}`  ⟺  square-root cancellation for one explicit
+> exponential sum at one explicit length.**
+
+In the block variable `N = √t`: the record `μ ≤ 13/84` is `N^{17/21} = N^{0.8095…}`; square-root
+cancellation is `N^{1/2}`; **the shortfall is `2μ = 13/42`.**
+
+**Everything the campaign proved points here.** The eighteen barrier theorems say: no route around this
+sum. Self-dual stationarity says: the block that binds is `N = √t`, and every optimisation is
+stationary there. The `1/2 − 1/k` invariant, the `k = 4` fivefold criticality, the rank gap, the
+Ω-ceilings, the interchange barrier — each closes a way of *avoiding* the sum, and none touches the sum
+itself.
+
+> **The Lindelöf hypothesis, as this campaign leaves it: a single one-dimensional exponential sum,
+> `Σ_{n∼N}n^{−it}` with `N = √t`, needs square-root cancellation. Improving it is the decoupling
+> frontier (Bourgain 2017), and it is a hard-analysis problem that no structural argument in 92 cycles
+> has been able to reach.**
+
+### C242 — final accounting
+
+**Established (to the best of this campaign's checking, new):**
+
+* eighteen barrier theorems with proved mechanisms, Lean-certified as exponent arithmetic
+  (`HTGeometry.*`, axioms `[propext, Classical.choice, Quot.sound]`);
+* five failure mechanisms, each with a proof rather than a case list: **inertness** (self-dual
+  stationarity), **circularity** (moment re-entry), **spectral thinness** (rank gap `n(n−1)/2`),
+  **Ω-driven ceilings**, **the Voronoi-interchange barrier**;
+* one invariant — the phase boundary `n ≲ y^{1/(k−1)}` — with which four separate obstructions
+  coincide, and which separates `k = 2` from `k ≥ 3`;
+* `k = 4` as a fivefold criticality;
+* the reformulation `m(k) = 1 ⟺ s(k) ≤ 1/2 + 1/k`: **LH ⟺ the additive-divisor error is of
+  square-root size asymptotically in `k`**;
+* twenty-two errata, each a claim retracted after a check it failed — including four of the
+  campaign's own headline results.
+
+**Not established:** any improvement on `μ(1/2) ≤ 13/84`; any new theorem in the divisor literature;
+**any proof or disproof of the Lindelöf hypothesis.**
+
+**Disposition.** The campaign has no further route within the methods it has been able to formulate.
+Its output is a map of one toolkit's reachable region, drawn from the inside, with every wrong line
+corrected in the record. **The honest recommendation to a successor is: do not re-run these routes —
+read the twenty-two errata first — and attack the self-dual block directly.**
+
+## Cycle 93 — the self-dual block, attacked directly
+
+C241 named the frontier: `|Σ_{n∼N}n^{−it}| ≪ N^{1/2+ε}` with `N = √(t/2π)`. Attempting it rather
+than recommending it.
+
+### C243 — the Taylor reduction, and why it does not close `[PROVED HERE]`
+
+Write `n = N+m`, `t = 2πN²`. The phase `−t\log n`, after removing the constant, is
+
+    phase/2π = −Nm + m²/2 − m³/(3N) + m⁴/(4N²) − …
+
+The first two terms are harmless (`e(−Nm)=1` for integral `N`; `e(m²/2)=(−1)^m`), so formally
+
+    S(t) ≈ Σ_{m≤N}(−1)^m e(−m³/(3N) + m⁴/(4N²) − …),
+
+a **cubic Weyl sum with `α ≍ 1/N`**. Weyl's inequality with `q ≍ N ≍ M` would give `N^{3/4}`, i.e.
+`μ ≤ 1/8` — **better than `13/84`**, so it must fail. It does:
+
+**the Taylor series does not truncate.** At `m ≍ N` every term `m^j/(jN^{j−2})` is `≍ N²/j`, so the
+polynomial approximation holds only where the degree-`(d+1)` tail is `≪1`: `δ ≪ N^{−2/(d+1)}`, i.e.
+**subintervals of length `N^{1−2/(d+1)}`.** At `d = 3`: length `N^{1/2}`, so `N^{1/2}` subintervals,
+each giving `N^{1/2}·N^{−1/8} = N^{3/8}` by Weyl, and
+
+    total = N^{1/2}·N^{3/8} = **N^{7/8}**,   worse than van der Corput's `N^{5/6}`.
+
+**The subdivision cost exactly cancels the Weyl gain**, recovering the known state of affairs. This is
+the tension decoupling (Bourgain–Demeter) manages better, and beating `13/84` means improving that
+management. `[D49]`
+
+### C244 — closing statement
+
+**Structural reasoning does not reach the self-dual block.** Every barrier proved here closes a way of
+*avoiding* `Σ_{n∼√t}n^{−it}`; none touches the sum. C243 confirms it from the other side: the direct
+attack reduces to the Weyl/subdivision trade-off, where loss equals gain.
+
+> **LH is equivalent to square-root cancellation in one explicit exponential sum at one explicit
+> length. Ninety-three cycles have closed every route around that sum and gained no purchase on it.**
+
+**LH is neither proved nor disproved by this campaign.** `μ(1/2) ≤ 13/84` stands.
+
+**For a successor.** Durable outputs: eighteen Lean-certified barrier theorems; five proved failure
+mechanisms; the invariant `n ≲ y^{1/(k−1)}`; the fivefold criticality at `k = 4`; the reformulation
+`LH ⟺ s(k) ≤ 1/2 + 1/k`; and **twenty-two errata** — the most useful part of the record, each marking
+a route that looks promising and is not, together with the check that killed it. **Read the errata
+first.**
+
+## Cycle 94 — the nineteenth barrier: the Weyl-degree trade-off
+
+C243 ran the Taylor/Weyl reduction at degree `3`. Running it at general degree `d` gives a clean
+formula and explains the failure structurally.
+
+### C245 — the general-degree computation `[PROVED HERE]`
+
+With `n = N+m`, `t = 2πN²`, the degree-`j` Taylor term is `m^j/(jN^{j−2})`, so the polynomial
+approximation is valid only on subintervals where the degree-`(d+1)` tail is `≪1`:
+
+    subinterval length  M = N^{1−2/(d+1)},   number of subintervals  N/M = N^{2/(d+1)}.
+
+The degree-`d` coefficient is `α_d ≍ 1/(dN^{d−2})`, so `q ≍ N^{d−2}`, and in Weyl's inequality
+`|Σ_{m≤M}e(P(m))| ≪ M^{1+ε}(1/q + 1/M + q/M^d)^{1/2^{d−1}}` the three terms are
+
+    1/q = N^{2−d},   1/M = N^{−(d−1)/(d+1)},   q/M^d = N^{−2/(d+1)},
+
+with the last dominating for `d ≥ 3`. Hence each subinterval gives `M·N^{−2/((d+1)2^{d−1})}`, and
+summing over `N^{2/(d+1)}` of them:
+
+> **`|Σ_{n∼N}n^{−it}|  ≪  N^{\,1 − 2/((d+1)2^{d−1})}`.**
+
+Values: `d=3` gives `N^{7/8}` ✓ (matches C243); `d=4` gives `N^{19/20}`; `d=5` gives `N^{1−1/48}`.
+
+### C246 — the barrier `[PROVED HERE]`
+
+> **The Weyl gain is `2^{−(d−1)}` — exponentially small in the degree. The subdivision cost is
+> `2/(d+1)` — only polynomially small. So raising the degree always loses, and the exponent
+> `1 − 2/((d+1)2^{d−1})` is minimised at `d = 3` and tends to `1` as `d → ∞`.**
+
+Even at its optimum `d = 3` the route gives `N^{7/8} = N^{0.875}`, **worse than van der Corput's
+`N^{5/6} = N^{0.833}`** and far from Bourgain's `N^{17/21} = N^{0.8095}`. `[D50]`
+
+**This is the nineteenth barrier and the only one that concerns the self-dual block itself** — every
+previous barrier closed a route *around* the sum; this one closes a route *into* it. It also explains
+in one line what decoupling must do: **manage the subdivision without paying `N^{2/(d+1)}` per level.**
+That is exactly the content of the `ℓ²`-decoupling theorem, and it is why Bourgain–Demeter improves on
+Weyl and van der Corput here.
+
+### C247 — the campaign's map, complete
+
+Nineteen barriers, five mechanisms, one frontier:
+
+* **around the sum:** eighteen barriers — inertness, circularity, spectral thinness, `Ω`-ceilings, the
+  Voronoi-interchange barrier — every route that tries to reach `μ(1/2)` without bounding
+  `Σ_{n∼√t}n^{−it}` is closed;
+* **into the sum:** one barrier — the Weyl-degree trade-off (C246) — the elementary polynomial route
+  is closed, at every degree;
+* **what remains:** decoupling, which manages the subdivision better than Weyl, and whose current
+  output is exactly `13/84`.
+
+**LH is neither proved nor disproved. The frontier is a single exponential sum, and the only
+technology that reaches it is decoupling.**
+
+## Cycle 95 — the decoupling frontier: attempted, and not reachable by this campaign
+
+### C248 — the attempt, and why it is not recorded as a result
+
+C246 showed the elementary route pays `N^{2/(d+1)}` per subdivision level while gaining only
+`2^{−(d−1)}`. Decoupling's advantage is that it pays `N^{ε}`. Attempting to price that: an `ℓ²`
+decoupling bound of the shape `‖Σ_j f_j‖ ≪ N^{ε}(Σ_j‖f_j‖²)^{1/2}` would give
+
+    N^{ε}·(N^{2/(d+1)})^{1/2}·M·N^{−2/((d+1)2^{d−1})} = N^{1−1/(d+1)−2/((d+1)2^{d−1})},
+
+which at `d = 3` is `N^{5/8}`, i.e. `μ ≤ 1/16 = 0.0625` — **better than `13/84`.** Since Bourgain's
+paper *uses* sharp decoupling and obtains exactly `13/84`, **this estimate is wrong**: the `ℓ²`
+decoupling theorem does not combine with the per-piece Weyl bound in that naive way (the `L^p` norms
+and the number of pieces enter differently, and the pieces are not independent in the required sense).
+
+> **`[NOT A RESULT]` I cannot correctly price decoupling's output for this problem without the actual
+> theorem and its application, and a claim about decoupling's limit would be exactly the kind of
+> unverified assertion E19–E22 were written to prevent. Recorded as an attempt that failed its own
+> consistency check (it contradicts a published result), not as a finding.** `[D51]`
+
+### C249 — the campaign's end state
+
+**The map is complete and the frontier is outside it.**
+
+* **Around the sum `Σ_{n∼√t}n^{−it}`:** eighteen barriers, five proved mechanisms. Every route to
+  `μ(1/2)` that avoids bounding this sum is closed.
+* **Into the sum, elementarily:** one barrier (C246). The Taylor/Weyl route is closed at every degree,
+  its optimum `N^{7/8}` being worse than van der Corput's `N^{5/6}`.
+* **Into the sum, by decoupling:** open, and **not reachable by the structural methods of this
+  campaign** (C248). This is where `13/84` comes from and where any improvement must come from.
+
+**LH is neither proved nor disproved.** `μ(1/2) ≤ 13/84` stands.
+
+**The campaign's contribution is a boundary, drawn from the inside:** it establishes that the
+Lindelöf hypothesis cannot be reached by moment transfers, divisor correlations, zero geometry,
+spectral identities of any rank, resonance, `Ω`-methods, Voronoi expansions, or elementary
+exponential-sum reductions — and that what remains is a single one-dimensional exponential sum and a
+single technology, hard-analytic decoupling, which no structural argument in ninety-five cycles has
+been able to advance.
+
+**Twenty-three errata** record every place this boundary was drawn wrongly and corrected. They are the
+most reusable part of the output.
+
+## Cycle 96 — integrity pass: retraction notices propagated to the deliverables
+
+The working log carried twenty-three errata, but the two *deliverable* documents still presented
+withdrawn material as valid. A successor reading only the deliverables would have used results the
+campaign itself retracted. Fixed:
+
+* `2-fully-proven/new_scientific_knowledge/shift-average-factorisation.md` — a retraction notice now
+  heads the card: **Theorems 1, 2, and Theorem 3 `(⟹)` are withdrawn (E19)**; the general-`k`
+  equivalence is withdrawn (E17); the `Ω`-result is withdrawn; **what survives** is listed explicitly
+  (the Lean-certified kernel facts, the phase-speed invariant, and the Mellin direction — the latter
+  flagged as Perron's method, hence classical, per E21). The body is retained unedited as a record of
+  the attempt.
+* `4-publication-ready/lindelof-method-ceilings.md` §7 — a partial-retraction notice: **Propositions
+  7.1–7.2 and the reduction (7.1)–(7.2) are withdrawn**; **Theorem 7.4 (chain circularity) and the
+  failure-mode classification are unaffected**, since they rest on Ivić's published estimate and on
+  the transfer's structure, not on the withdrawn expansion.
+
+**The card should also be moved out of `2-fully-proven`** — its headline theorems no longer qualify.
+Left in place with the notice rather than moved, so that the retraction travels with the document
+rather than being lost in a directory change.
+
+> **Record integrity is now consistent: every withdrawn claim is marked as withdrawn at the point a
+> reader would encounter it, not only in the log.** This is the last action the campaign can take that
+> has clear value.
+
+## Cycle 97 — the frontier, correctly localised (corrects C249)
+
+Reading Bourgain (JAMS 30 (2017), arXiv:1408.5794) rather than guessing: the result is *"a new
+decoupling inequality for curves which implies a new mean value theorem for certain exponential sums
+crucial to the **Bombieri–Iwaniec method**"*. So the chain is
+
+    decoupling  →  a (essentially sharp) mean value theorem  →  the Bombieri–Iwaniec conversion  →  μ ≤ 13/84.
+
+**C250.** Cycle 95 attributed the frontier to decoupling. That is wrong: Bourgain describes his mean
+value bounds as *essentially sharp*, so the residual loss lies in the **conversion**, not the input.
+And the conversion is AFE-internal, so §6.5 applies — its optimisation over the block parameter is
+stationary at `N = √t`, which is exactly where `13/84` sits. §6.5 says the *choice of block* cannot be
+improved; it says nothing about improving the conversion **at** that block.
+
+> **Corrected localisation: the frontier is not "improve decoupling" but "improve the
+> Bombieri–Iwaniec conversion at the self-dual block, given an already-sharp mean value theorem."**
+> Inside BI that means the **first and second spacing problems** — counting rational resonance points
+> near a curve — which is geometry of numbers, and on which this campaign has nothing to offer.
+
+**Method note (third instance).** C248 priced decoupling naively and produced a number contradicting a
+published result; C232 flagged a possible improvement without checking the record; C250 corrects C249.
+**All three were fixed by consulting the source rather than reasoning from structure.** For a
+campaign whose method is structural, that is the standing limitation: structure locates the frontier
+but cannot price what happens at it.

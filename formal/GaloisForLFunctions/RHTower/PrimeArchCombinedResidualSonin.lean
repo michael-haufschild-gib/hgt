@@ -8,13 +8,13 @@ import GaloisForLFunctions.RHTower.PrimeArchValuationSectorCones
 Three source-positive families are available unconditionally:
 
 * the valuation-zero-through-six sector coefficient cones;
-* degree-at-most-seven endpoint-pair polynomials;
+* degree-at-most-nine polynomials with nonnegative self-convolution coefficients;
 * tests whose vacuum tail lies in the centered analytic `l1` cone.
 
 The sparse-degree Eisenstein reduction can be applied after removing all three families. Thus the
 coupled-Sonin comparison is needed only for monic `2`-Eisenstein tests in an arbitrary infinite
-degree set which simultaneously avoid every valuation cone and the degree-seven endpoint-pair
-cone, and whose vacuum tails lie in the strict centered residual.
+degree set which simultaneously avoid every valuation cone and the degree-nine
+square-coefficient cone, and whose vacuum tails lie in the strict centered residual.
 
 The counterexample theorem records the corresponding source fact: if RH fails, every infinite
 degree set contains a negative prime--Gamma Hankel test in this combined residual.
@@ -55,7 +55,7 @@ theorem re_primeArchSourceTraceHankel_map_nonneg_of_soninCoupledVariationalUpper
 
 /-- Tests outside all three unconditional source-positive coefficient families. -/
 def PrimeArchCombinedCoefficientResidual (p : Polynomial ℤ) : Prop :=
-  PrimeArchDegreeSevenEndpointPairResidual p ∧
+  PrimeArchDegreeNineSquareCoeffResidual p ∧
     PrimeArchCenteredAnalyticTailResidual (HTGeometry.polynomialVacuumTail p) ∧
       PrimeArchValuationAtMostSixCoefficientResidual p
 
@@ -94,7 +94,87 @@ theorem primeArchDegreeSevenEndpointPolynomial_not_combinedResidual :
     ¬ PrimeArchCombinedCoefficientResidual
       primeArchDegreeSevenEndpointPolynomial := by
   intro h
-  exact h.1 primeArchDegreeSevenEndpointPolynomial_mem
+  exact h.1
+    (primeArchDegreeNineSquareCoeffCone_of_degreeEightSquareCoeffCone
+      (primeArchDegreeEightSquareCoeffCone_of_degreeSevenSquareCoeffCone
+        (primeArchDegreeSevenSquareCoeffCone_of_endpointPair
+          primeArchDegreeSevenEndpointPolynomial_mem)))
+
+/-- The concrete degree-eight square-coefficient test is monic. -/
+theorem primeArchDegreeEightSquareCoeffPolynomial_monic :
+    primeArchDegreeEightSquareCoeffPolynomial.Monic := by
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 7
+  have hlow : lower.natDegree < 8 := by
+    apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
+    rw [max_lt_iff]
+    constructor
+    · simp
+    · rw [Polynomial.natDegree_C_mul_X_pow 7 12 (by norm_num)]
+      omega
+  have hlowDegree : lower.degree < (8 : WithBot ℕ) := by
+    by_cases hzero : lower = 0
+    · rw [hzero, Polynomial.degree_zero]
+      exact WithBot.bot_lt_coe 8
+    · exact (Polynomial.natDegree_lt_iff_degree_lt hzero).mp hlow
+  unfold primeArchDegreeEightSquareCoeffPolynomial
+  rw [add_assoc]
+  change (X ^ 8 + lower).Monic
+  exact Polynomial.monic_X_pow_add hlowDegree
+
+/-- The concrete degree-eight square-coefficient test is Eisenstein at two. -/
+theorem primeArchDegreeEightSquareCoeffPolynomial_twoEisenstein :
+    primeArchDegreeEightSquareCoeffPolynomial.IsEisensteinAt
+      primeArchTwoEisensteinIdeal := by
+  simpa only [primeArchDegreeEightSquareCoeffPolynomial,
+    show (4 * (3 : ℤ)) = 12 by norm_num] using
+      primeArch_twoEisenstein_plus (X ^ 7 : Polynomial ℤ) 8 3 (by simp)
+
+/-- The source theorem removes a genuine monic two-Eisenstein degree-eight test from the
+combined Sonin residual. -/
+theorem primeArchDegreeEightSquareCoeffPolynomial_not_combinedResidual :
+    ¬ PrimeArchCombinedCoefficientResidual
+      primeArchDegreeEightSquareCoeffPolynomial := by
+  intro h
+  exact h.1
+    (primeArchDegreeNineSquareCoeffCone_of_degreeEightSquareCoeffCone
+      primeArchDegreeEightSquareCoeffPolynomial_mem)
+
+/-- The concrete degree-nine square-coefficient test is monic. -/
+theorem primeArchDegreeNineSquareCoeffPolynomial_monic :
+    primeArchDegreeNineSquareCoeffPolynomial.Monic := by
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 8
+  have hlow : lower.natDegree < 9 := by
+    apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
+    rw [max_lt_iff]
+    constructor
+    · simp
+    · rw [Polynomial.natDegree_C_mul_X_pow 8 12 (by norm_num)]
+      omega
+  have hlowDegree : lower.degree < (9 : WithBot ℕ) := by
+    by_cases hzero : lower = 0
+    · rw [hzero, Polynomial.degree_zero]
+      exact WithBot.bot_lt_coe 9
+    · exact (Polynomial.natDegree_lt_iff_degree_lt hzero).mp hlow
+  unfold primeArchDegreeNineSquareCoeffPolynomial
+  rw [add_assoc]
+  change (X ^ 9 + lower).Monic
+  exact Polynomial.monic_X_pow_add hlowDegree
+
+/-- The concrete degree-nine square-coefficient test is Eisenstein at two. -/
+theorem primeArchDegreeNineSquareCoeffPolynomial_twoEisenstein :
+    primeArchDegreeNineSquareCoeffPolynomial.IsEisensteinAt
+      primeArchTwoEisensteinIdeal := by
+  simpa only [primeArchDegreeNineSquareCoeffPolynomial,
+    show (4 * (3 : ℤ)) = 12 by norm_num] using
+      primeArch_twoEisenstein_plus (X ^ 8 : Polynomial ℤ) 9 3 (by simp)
+
+/-- The source theorem removes a genuine monic two-Eisenstein degree-nine test from the
+combined Sonin residual. -/
+theorem primeArchDegreeNineSquareCoeffPolynomial_not_combinedResidual :
+    ¬ PrimeArchCombinedCoefficientResidual
+      primeArchDegreeNineSquareCoeffPolynomial := by
+  intro h
+  exact h.1 primeArchDegreeNineSquareCoeffPolynomial_mem
 
 /-- Prime--Gamma positivity restricted to the combined residual inside one sparse
 monic-`2`-Eisenstein degree family. -/
@@ -113,8 +193,8 @@ theorem primeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative_of_combin
     (h : PrimeArchCombinedResidualTwoEisensteinDegreeSetNonnegative D) :
     PrimeArchSourceTraceHankelIntTwoEisensteinDegreeSetNonnegative D := by
   intro p hmonic heis hdeg
-  by_cases hsquare : PrimeArchDegreeSevenEndpointPairCone p
-  · exact re_primeArchSourceTraceHankel_nonneg_of_degreeSevenEndpointPairCone p hsquare
+  by_cases hsquare : PrimeArchDegreeNineSquareCoeffCone p
+  · exact re_primeArchSourceTraceHankel_nonneg_of_degreeNineSquareCoeffCone p hsquare
   · by_cases hvaluation : PrimeArchValuationAtMostSixCoefficientCone p
     · exact
         re_primeArchSourceTraceHankel_nonneg_of_valuationAtMostSixCoefficientCone

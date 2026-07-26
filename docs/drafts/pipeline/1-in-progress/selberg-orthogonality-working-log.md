@@ -3980,3 +3980,1536 @@ case `d_F/d_G ∈ Q`. In the incommensurable case the matching set `{(n,m) : log
 is, by Baker's theorem on linear forms in logarithms, contained in the powers of a single pair
 `(n_0,m_0)` (two multiplicatively independent solutions would force a vanishing linear form in three
 logarithms). So the pairing is then supported on a single geometric progression — thinner still.
+
+---
+
+## 76. Cycle 76 (2026-07-26) — Jessen–Tornehave: `n_F` bounds the zero density of the standard twist
+
+§75.1 said the only real gain from the Hardy-space framing is access to machinery unavailable on the
+partial-sum side. This cycle cashes that in.
+
+### 76.1 The right machinery
+
+For `b > 0` fixed, `a ↦ Φ_F(σ, a−ib) = Σ_n c_n(b) e^{−2πi a n^{1/d}}`, `c_n(b) = a_F(n)e^{−2πbn^{1/d}}n^{−σ}`,
+has `Σ|c_n| < ∞`, so it is a **uniformly almost periodic** function of `a`, and `Φ_F(σ,·)` is
+analytic almost periodic on the strip `Im α < 0`. It is not identically zero (`a_F(1)=1`, distinct
+frequencies). **Jessen–Tornehave theory** therefore applies:
+```
+φ(b) := lim_{A→∞} (1/2A) ∫_{−A}^{A} log|Φ_F(σ, a−ib)| da        (Jessen's function)
+```
+exists, is **convex** in `b`, and the density of zeros of `Φ_F(σ,·)` in the strip `b₁ < −Im α < b₂`,
+counted with multiplicity per unit length in `Re α`, equals `(φ'(b₂) − φ'(b₁))/2π`.
+
+*(Applying Jessen–Tornehave to standard twists of Selberg-class elements appears to be new; K–P study
+`F(s,α)` in `s` for fixed `α`, never the zero distribution in `α`.)*
+
+### 76.2 Two bounds on Jessen's function
+
+**Upper.** By Jensen's inequality for the mean and Theorems 23–24, at `σ = 1/2`,
+```
+φ(b) ≤ (1/2) log[ mean of |Φ_F(1/2,·−ib)|² ] = (1/2) log M_F(b) = (n_F/2)·loglog(1/b) + O(1).
+```
+**Lower.** As `b → ∞` the `n = 1` term dominates: `Φ_F(1/2,a−ib) = e^{−2πb}e^{−2πia}(1+o(1))`, so
+`φ(b) + 2πb → 0`. A convex function tending to `0` at `+∞` is non-increasing and non-negative, hence
+```
+φ(b) ≥ −2πb   for all b > 0.
+```
+
+### 76.3 The theorem
+
+Convexity gives the supporting-line inequality `φ(b/2) ≥ φ(b) + φ'(b)(b/2 − b)`, i.e.
+`−φ'(b)·b/2 ≤ φ(b/2) − φ(b)`. Feeding in the two bounds:
+
+> **Theorem 27 (zero density of the standard twist on the critical line).** Let `F ∈ S` have degree
+> `d ≥ 1` and prime density `n_F`. Let `𝒩_F(b)` be the Jessen density of zeros of
+> `α ↦ Φ_F(1/2, α)` in `{Im α < −b}` — zeros per unit length in `Re α`, with multiplicity. Then
+> ```
+> 𝒩_F(b) = (−2π − φ'(b))/2π  ≤  ( n_F · loglog(2/b) + O(1) ) / (2π b)      (b → 0+).
+> ```
+> Unconditional, every degree `d ≥ 1`.
+
+So the prime energy `n_F` **controls the proliferation of the zeros of the standard twist as the
+depth shrinks**. This is the first statement in the programme that bounds an *integer-valued counting
+function* by `n_F`; every previous avatar bounded or computed a continuous density.
+
+### 76.4 The conjecture this opens
+
+The only loss in §76.2 is Jensen's inequality — the gap between the geometric and the quadratic mean
+of `|Φ_F(1/2,·−ib)|`.
+
+> **(ZD) Zero-density form of MI.** `φ(b) = (n_F/2)·loglog(1/b) + O(1)`; equivalently the geometric
+> and quadratic means of the standard twist on the critical line have the same logarithmic order.
+> Then `n_F = 2·lim_{b→0} φ(b)/loglog(1/b)`, and by Jessen's formula `n_F` is `2π` times the
+> second-order zero-counting density of `Φ_F(1/2,·)`.
+
+ZD is bold, falsifiable, and structurally new: it converts Selberg's Conjecture A into a statement
+about the **zeros of the standard twist in the twist parameter**. Its falsity would mean the twist
+has a genuine log-normal defect on the critical line — itself a striking phenomenon. Its truth would
+put `n_F` on the same footing as a zero count, the one place in complex analysis where integers are
+produced for free.
+
+**[OPEN CORE]** ZD, and the passage from "`n_F` is a zero-counting *density*" to "`n_F ∈ Z`". A
+density of integers need not be an integer; what is needed is a rigidity forcing the zero-counting
+function of `Φ_F(1/2,·)` to have an exact asymptotic with integer coefficient. That is the next
+target.
+
+### 76.5 Degree-1 sanity model
+
+For `d = 1` the substitution `z = e(−α)` maps `ℍ⁻` onto the punctured unit disc and
+`Φ_F(σ,α) = Σ_n a_F(n)n^{−σ}z^n` is an honest power series. Then `M_F(b) = Σ|a_F(n)|²r^{2n}n^{−2σ}`
+with `r = e^{−2πb}`, and Theorem 24 reads: *the `H²`-growth exponent of `Σ a_F(n)n^{−1/2}z^n` at the
+boundary is `n_F`*. Checks: `F = ζ` gives `Σ r^{2n}/n ~ log(1/(1−r))`, exponent `1 = n_ζ`;
+`F = ζ²` gives `Σ d(n)²r^{2n}/n ≍ (log(1/(1−r)))⁴`, exponent `4 = n_{ζ²}`. For `d ≥ 2` the exponents
+`n^{1/d}` are not integers, so `Φ_F` is not single-valued in `z` — the disc model is available only
+in degree 1, and the strip/Jessen model is the correct general setting. Recorded so no later cycle
+tries to force the disc model on `d ≥ 2`.
+
+---
+
+## 77. Cycle 77 (2026-07-26) — ZD is FALSE, and what kills it
+
+Phase-4 attack on §76.4's conjecture (ZD), by exact computation in the simplest case.
+
+### 77.1 The refutation
+
+Take `F = ζ`, `d = 1`. Then `z = e(−α)` maps the strip to the punctured disc, `r = |z| = e^{−2πb}`,
+and `Φ_ζ(1/2, α) = Σ_n n^{−1/2} z^n = Li_{1/2}(z)`.
+
+- **Quadratic mean.** `M(b) = Σ_n r^{2n}/n = log(1/(1−r²)) + O(1) ~ log(1/b)`, so
+  `(1/2)log M(b) = (1/2)loglog(1/b) + O(1)` — matching Theorem 24 with `n_ζ = 1`. ✓
+- **Geometric mean (Jessen's function).** Near `z = 1`,
+  `Li_{1/2}(z) = Γ(1/2)(−log z)^{−1/2} + Σ_{k≥0} ζ(1/2−k)(log z)^k/k!`, so `|Li_{1/2}|` blows up
+  **only** in a shrinking neighbourhood of `θ = 0`, like `|1−z|^{−1/2}`, and is bounded elsewhere.
+  Hence
+  `φ(b) = (1/2π)∫ log|Li_{1/2}(re^{iθ})| dθ ≈ (1/2π)∫ (−½)log|1−re^{iθ}| dθ + O(1) = O(1)`,
+  since `∫_0 log(1/|θ|)dθ` converges. **`φ(b) = O(1)`, not `~ (1/2)loglog(1/b)`.**
+
+> **ZD is FALSE.** The Jensen gap between the geometric and the quadratic mean of the standard twist
+> is *not* `O(1)`; for `F = ζ` the geometric mean stays bounded while the quadratic mean diverges.
+
+**Verdict: FALSE.** Recorded do-not-retry: no conjecture equating Jessen's function `φ(b)` with
+`(n_F/2)loglog(1/b)` can hold. Theorem 27 (the upper bound `𝒩_F(b) ≤ (n_F loglog(2/b)+O(1))/2πb`)
+survives — it is a true but far-from-sharp inequality; for `ζ` the true zero density is `O(1)`.
+
+### 77.2 What killed it — the structural lesson
+
+The `L²` mass of `Φ_F(1/2,·−ib)` is **concentrated on a shrinking set** of `a`, near the points where
+the standard twist becomes large — precisely `Spec(F) = {d(m/q)^{1/d}}`, where the K–P residue is
+proportional to `conj(a_F(m))` (§9.4). The typical (geometric-mean) size is `O(1)`; the divergence of
+`M_F(b)` comes entirely from the spikes.
+
+> **`n_F` is a concentration exponent, not a size exponent.** It measures how much `L²`-mass the
+> standard twist piles up on `Spec(F)` as the depth shrinks, weighted by `|a_F(m)|²`. Any functional
+> of `Φ_F` that is insensitive to thin sets — geometric means, Jessen's function, Nevanlinna
+> characteristics, essential suprema — is **blind to `n_F`**.
+
+This is a second instance of the same phenomenon as §69.1 (energies are blind to `ω`) and §72.3
+(fine-scale pair correlation is blind to the factorisation): the programme keeps finding natural
+functionals that *cannot* see the target. Collecting them:
+
+| functional | blind to |
+|---|---|
+| prime energies over the monoid | `Im c_{F,G}` (§69.1) |
+| fine-scale zero pair correlation | the primitive factorisation (§72.3) |
+| geometric mean / Jessen's function of the twist | `n_F` (§77.1) |
+
+**Common cause.** All three are *averaging* functionals, and the arithmetic in `S` lives on thin,
+spiky sets: on the diagonal of the prime sum, on the multiplicity set of the zeros, on `Spec(F)`.
+This is now recorded as a design rule for the programme:
+
+> **Rule.** Any proposed route to MI must be sensitive to sets of density zero. Averaging
+> functionals — means, densities, characteristics — will not see `n_F`.
+
+That rule immediately re-explains, uniformly, several earlier kills: Halász (§38.1), Carlson
+(§31, §46.4), the pretentious method (§22.1), and the `α → ∞` pair correlation (§72.3) are all
+averaging arguments.
+
+---
+
+## 78. Cycle 78 (2026-07-26) — the regularised spectral sum in its correct (thin-set) form
+
+Applying §77.2's rule — only thin-set-sensitive functionals can see `n_F` — to Theorem 23.
+
+### 78.1 Translating the `L²`-mean into a spectral sum
+
+By §9.4 the K–P residue formula gives, for `F` of degree `d`, conductor `q`, with
+`α_n := d q^{−1/d} n^{1/d}` the `n`-th spectral point,
+```
+|a_F(n)|² = C · n^{1−1/d} · |ρ_0^F(α_n)|² ,        C = C(d,q,ξ_F,ω_F) > 0 ,
+```
+`C` independent of `n`. Substituting into Theorem 23 at `σ = 1/2` and using
+`n^{1/d} = q^{1/d}α_n/d`:
+
+> **Theorem 28 (exact regularised spectral form).** For `F ∈ S` of degree `d ≥ 1`, put
+> `β := 4π q^{1/d}/d`. Then for every `b > 0`
+> ```
+> M_F(b) := lim_{A→∞}(1/2A)∫_{−A}^{A}|Φ_F(1/2,a−ib)|² da
+>         = (C d / q^{1/d}) · Σ_{n≥1} |ρ_0^F(α_n)|² · α_n^{−1} · e^{−β b α_n} ,
+> ```
+> a sum over the **spectrum** `Spec(F) ⊂ {α_n}` (the terms with `a_F(n)=0` vanish, since `ρ_0^F(α_n)`
+> vanishes exactly there). Consequently
+> ```
+> n_F = lim_{b→0+} log[ Σ_{α ∈ Spec(F)} |ρ_0^F(α)|² α^{−1} e^{−βbα} ] / log log(1/b) .
+> ```
+
+Equivalently, in integral form with `n ≍ (q^{1/d}α/d)^d`,
+```
+M_F(b) ≍ ∫_0^∞ |ρ_0^F(α)|² α^{d−2} e^{−βbα} dα .
+```
+
+### 78.2 Why this is the right shape at last
+
+§11.2 demanded a **regularisation of the `α`-pairing of standard twists across the common spectrum
+lattice**, and recorded that a domination/Fubini argument cannot supply one. Theorem 28 supplies it
+explicitly:
+
+- the pairing is over `Spec(F)` — a **discrete, density-zero set**, so §77.2's rule is satisfied;
+- the regulariser is `e^{−βbα}`, produced canonically by the complex shift `α ↦ α − ib` (Theorem 23),
+  not imposed by hand;
+- the weight `α^{−1}` (equivalently `α^{d−2}dα`) is forced, not chosen;
+- every ingredient is a **residue** of a meromorphic function, i.e. exactly the class of quantities
+  that can produce integers.
+
+Combining with §71: Theorem 28 is still, term by term, an *exact restatement* of the coefficient sum
+(the K–P prefactor is coefficient-independent). Its value is not new information but the correct
+**shape**: `n_F` is now the divergence exponent of a residue-weighted, exponentially damped counting
+sum over a discrete spectrum — the only shape §77.2 permits.
+
+### 78.3 The resulting target
+
+> **(RC) Residue counting.** For `F ∈ S`, the counting function
+> `R_F(X) := Σ_{α ∈ Spec(F), α ≤ X} |ρ_0^F(α)|² α^{−1}` satisfies `R_F(X) ~ c_F (log X)^{n_F}/Γ(n_F+1)`
+> with `n_F ∈ Z_{≥0}`.
+
+RC is equivalent to MI (Theorem 25 plus Abelian/Tauberian passage between `R_F(X)` and `M_F(b)` at
+`X ≍ 1/b`), but it is the first equivalent form in which the quantity being counted is a sum of
+**squared residues over a discrete set**. That is where the next cycles should push: a rigidity for
+`R_F`, not for a mean value.
+
+**Recorded scope note.** Theorem 28 needs `d ≥ 1` (K–P twist theory) and `F` with at least one
+non-zero coefficient beyond `n=1` — both automatic in `S` for non-constant `F` by Conrey–Ghosh.
+
+---
+
+## 79. Cycle 79 (2026-07-26) — the Estermann–Kurokawa dichotomy, and why it is not an independent mechanism
+
+§73 recorded a trichotomy for `R_{F,F}` at `w = 1`: pole (⟹ MI), branch point with non-integer
+exponent (⟹ MI false), natural boundary (⟹ MI vacuous). This cycle asks whether the **Euler-product
+structure collapses the trichotomy to a dichotomy** — which would be a genuine reduction, since MI
+would then follow from *any* analytic continuation, not from meromorphy.
+
+### 79.1 The setup
+
+Unconditionally, Ramanujan gives `a_F(p^k) ≪_ε p^{kε}` for every `k`, so the local factor
+`F_p(x) = Σ_k a_F(p^k)x^k` and the Rankin–Selberg local factor
+```
+G_p(x) := Σ_k |a_F(p^k)|² x^k
+```
+are **holomorphic on `|x| < 1`** with `G_p(0)=1`, and `R_{F,F}(w) = ∏_p G_p(p^{−w})`. No polynomial
+Euler product is assumed.
+
+Estermann's theorem (1928), and Kurokawa's extensions, concern
+`Z(w) = ∏_p h(p^{−w})` for a *fixed* `h ∈ Z[x]` with `h(0)=1`: `Z` continues past its abscissa iff
+`h` is a product of cyclotomic polynomials, in which case `Z(w) = ∏_{j≥1} ζ(jw)^{m_j}·(analytic)`
+with `m_j ∈ Z`; otherwise `Re w = 0` is a natural boundary. **There is no intermediate branch-point
+behaviour.** If this dichotomy transferred to `R_{F,F}`, then:
+```
+R_{F,F} continues at all past Re w = 1   ⟹   its exponent at w = 1 is an integer   ⟹   MI.
+```
+
+### 79.2 Why it does not transfer — the integrality is in the coefficients
+
+The exponents `m_j` in Estermann's factorisation are produced by the formal identity
+`h(x) = ∏_{j≥1}(1 − x^j)^{−m_j}`, whose solution is the **Witt/necklace transform** of the
+coefficients of `h`. Those `m_j` are integers **precisely because `h ∈ Z[x]`**; for a power series
+with arbitrary complex coefficients the transform returns complex exponents, and the dichotomy —
+"cyclotomic or natural boundary" — becomes "the exponents happen to be integers, or not".
+
+For `F ∈ S` the coefficients `|a_F(p^k)|²` are non-negative reals with no integrality whatsoever
+(and `G_p` varies with `p`, so Kurokawa's two-variable version does not apply either: `G_p(x)` is not
+of the form `H(x, 1/p)` for a holomorphic `H`).
+
+> **Verdict: REDISCOVERED / CIRCULAR.** The Estermann–Kurokawa mechanism is not an independent source
+> of integrality for `S`. In the automorphic case it *does* fire, because the local factor is
+> `∏_{i,j}(1 − α_i\overline{α_j}x)^{−1}` and the exponent at `w=1` is the **count**
+> `#{(i,j) : α_i\overline{α_j} = 1}` — Schur's lemma again (§33.2, §69.3). Recorded do-not-retry.
+
+### 79.3 What survives
+
+Two things.
+
+1. **The trichotomy does not collapse.** For `F ∈ S` the possibility "`R_{F,F}` has a branch point of
+   non-integer exponent at `w = 1`" is *not* excluded by the Euler-product structure. So MI genuinely
+   requires meromorphy, not merely continuation. This closes the hoped-for weakening and is recorded
+   as a hard constraint on all future routes.
+2. **The natural-boundary option is compatible with everything known.** Wirsing's theorem (§58) gives
+   `Σ_{n≤x}|a_F(n)|² ~ c x(log x)^{n_F−1}/Γ(n_F)` **without any continuation**, so a natural boundary
+   at `Re w = 1` contradicts nothing currently proved. Recorded so no later cycle attempts to derive
+   a contradiction from a natural boundary alone.
+
+### 79.4 Consolidated table of closed integrality mechanisms
+
+| mechanism | fires? | reason |
+|---|---|---|
+| pole order of a meromorphic function | **yes** | the only live mechanism (§39.1, §74) |
+| positivity / Cauchy–Schwarz / Gram | no | blind to `Im`, and `ζ^{1/2}` witness (§69.1) |
+| Schur / representation dimension | no | needs the Sato–Tate group (§33.2, §69.3) |
+| Galois orbits | no | no Galois action in `S` (§35) |
+| lattice-point counts | no | no lattice object in `S` (§35) |
+| zero multiplicities | no | computes `E_F = Σe_i²d_i` (§72.3) |
+| reflection `w ↦ 2−w` phase | no | dual term is a divergent partial sum (§69.2) |
+| Beurling–Lax / operator multiplicity | no | needs finite-dimensionality = the group (§74.1) |
+| geometric mean / Jessen function | no | blind to `n_F`; `ζ` witness (§77.1) |
+| Estermann–Kurokawa cyclotomic rigidity | no | integrality lives in `Z[x]`, absent in `S` (§79.2) |
+
+Ten mechanisms examined; exactly one fires, and it is the one MI is a restatement of.
+
+---
+
+## 80. Cycle 80 (2026-07-26) — the dilation correlation of standard twists sees `ω`
+
+§69.1 proved that no identity among prime energies over the monoid generated by `F, G` and their
+conjugates can determine `ω(F,G) = Im c_{F,G}`. §77.2 then narrowed the admissible tools to
+functionals sensitive to density-zero sets. This cycle exhibits one, and it computes `ω`.
+
+### 80.1 Correlation of a twist with a dilated twist
+
+For `F, G ∈ S` of the same degree `d ≥ 1` put `c_n = a_F(n)e^{−2πbn^{1/d}}n^{−1/2}` and
+`d_m = a_G(m)e^{−2πb'm^{1/d}}m^{−1/2}`, so that
+`Φ_F(1/2,a−ib) = Σ_n c_n e^{−2πian^{1/d}}` and `Φ_G(1/2, λa − ib') = Σ_m d_m e^{−2πiλam^{1/d}}`.
+The Bohr mean of the product keeps exactly the pairs with `n^{1/d} = λ m^{1/d}`, i.e. `n = λ^d m`.
+
+> **Theorem 29 (dilation correlation = shifted convolution).** Let `r,s ≥ 1` be coprime,
+> `λ := (r/s)^{1/d}`, and take the depths `b` and `b' = λ b`. Then for `F,G ∈ S` of degree `d`,
+> ```
+> lim_{A→∞}(1/2A)∫_{−A}^{A} Φ_F(1/2, a−ib) · conj(Φ_G(1/2, λa − iλb)) da
+>     = (rs)^{−1/2} · Σ_{t≥1} a_F(rt) conj(a_G(st)) · e^{−4πb (rt)^{1/d}} · t^{−1} .
+> ```
+> If `λ^d ∉ Q` the matching set is empty and the correlation is **exactly `0`**.
+>
+> *Proof.* `n^{1/d} = λm^{1/d} ⟺ sn = rm ⟺ (n,m) = (rt, st)` by coprimality; the exponentials
+> combine because `b' = λb` gives `e^{−2πb(rt)^{1/d}}e^{−2πλb(st)^{1/d}} = e^{−4πb(rt)^{1/d}}`, and
+> `(rt)^{−1/2}(st)^{−1/2} = (rs)^{−1/2}t^{−1}`. Absolute convergence justifies the term-by-term
+> Bohr mean. ∎ At `r = s = 1` this is Theorem 23.
+
+So the **dilation autocorrelation function** `λ ↦ K_{F,G}(λ,b)` of the standard twists is supported
+exactly on `{(r/s)^{1/d} : r,s ≥ 1}` and there computes the **shifted convolution sums**
+`Σ_t a_F(rt)\overline{a_G(st)}/t` — with their full complex value.
+
+### 80.2 The consequence for the imaginary half of Conjecture B
+
+> **Theorem 30 (`ω` is a twist correlation).** For `F,G ∈ S` of equal degree `d ≥ 1`,
+> ```
+> ω(F,G) = lim_{b→0+}  Im[ lim_{A→∞}(1/2A)∫_{−A}^{A} Φ_F(1/2,a−ib) conj(Φ_G(1/2,a−ib)) da ]
+>                       /  log log(1/b) .
+> ```
+
+This answers the question left open by §69–§71: **the alternating form `ω`, provably invisible to
+every prime-energy identity, is visible as the imaginary part of the Bohr correlation of the two
+standard twists at depth `b`.** It is a thin-set functional (a sum over the matched pairs of a
+discrete frequency set), so it is admissible under §77.2's rule, and unlike Theorem 20 it is *not* a
+trivial restatement of the coefficients: the correlation is an analytic quantity attached to two
+entire functions of `s`, computed by an averaging in `a` that is exact rather than asymptotic.
+
+**Both halves of Conjecture B now have a representation of the correct type:**
+```
+real part      n_F        : Theorem 28 — residue-weighted damped spectral sum over Spec(F)
+imaginary part ω(F,G)     : Theorem 30 — imaginary part of the twist correlation at depth b
+```
+and both are governed by the same `b → 0` limit of Bohr correlations of standard twists. The
+programme's two halves, split apart in §70.2, are reunited on one object: the correlation matrix
+`K_{F,G}(λ,b)` of standard twists.
+
+### 80.3 The new target
+
+> **(TC) Twist correlation rigidity.** For `F,G ∈ S` of equal degree, the correlation
+> `K_{F,G}(1,b)` has, as `b → 0`, an asymptotic `c_{F,G}·(log 1/b)^{?}` whose leading coefficient is
+> a **non-negative integer** and whose imaginary part is `o(loglog(1/b))`.
+
+TC is exactly Conjecture B for the pair `(F,G)` transported onto the twist correlation. Its value is
+that it is a statement about one explicit analytic object — the correlation of two entire functions
+along a horizontal line at depth `b` — with no Rankin–Selberg convolution, no automorphy, and no
+Euler product used in its formulation.
+
+**Formalised (finite form, unconditional):** `genPoly_mul_conj_bilinear` and
+`genPoly_meanValue_bilinear` give the exact expansion
+`∫_T^{T+U} P·conj(Q) = Σ_{n,m} a_n conj(c_m) · oscInt(λ_n − μ_m, T, U)` for two arbitrary frequency
+families, together with `oscInt_norm_le` (`‖oscInt δ T U‖ ≤ 2/|δ|`, uniform in the interval length),
+which isolates the matched pairs in the limit.
+
+---
+
+## 81. Cycle 81 (2026-07-26) — the degree barrier, quantified: the Bohr averaging length
+
+Phase-4 interrogation of Theorem 29/30: where exactly does the twist-correlation route inherit the
+old difficulty?
+
+### 81.1 The Bohr spectrum of `|Φ_F|²` accumulates at `0` iff `d ≥ 2`
+
+The Fourier–Bohr spectrum of `a ↦ |Φ_F(1/2,a−ib)|²` is the difference set
+`{2π(n^{1/d} − m^{1/d})}`, with coefficient at frequency `ξ` equal to `Σ_{n^{1/d}−m^{1/d}=ξ}c_n\bar c_m`,
+`c_n = a_F(n)e^{−2πbn^{1/d}}n^{−1/2}`. The value at `ξ = 0` is exactly `M_F(b)` (Theorem 23), because
+`n^{1/d} = m^{1/d} ⟺ n = m`.
+
+But for `n − m = h` fixed and `n → ∞`,
+```
+n^{1/d} − m^{1/d} ≍ h / (d · n^{1−1/d})  →  0     (d ≥ 2),
+```
+so for `d ≥ 2` **the Bohr spectrum accumulates at `0`**: the diagonal frequency is not isolated. For
+`d = 1` the spectrum is `2πZ` and the diagonal is isolated by a gap `2π`.
+
+### 81.2 The quantitative interchange threshold
+
+By the mean value theorem, for `n > m`, `n^{1/d} − m^{1/d} ≥ (n−m)n^{1/d−1}/d`, so
+`|oscInt| ≤ 2/|λ_n − λ_m| ≤ (d/π)·n^{1−1/d}/(n−m)`. With `|c_n| ≪_ε n^{ε−1/2}e^{−2πbn^{1/d}}` the
+effective range is `n ≤ N := b^{−d}`, and
+```
+Σ_{n≠m} |c_n c_m| · max(n,m)^{1−1/d}/|n−m|  ≪  N^{1−1/d} (log N)² ,
+```
+while `M_F(b) ≍ (log N)^{n_F}`.
+
+> **Theorem 31 (Bohr averaging length / degree barrier).** For `F ∈ S` of degree `d ≥ 1` and any
+> `δ > 0`,
+> ```
+> (1/2A)∫_{−A}^{A}|Φ_F(1/2,a−ib)|² da = M_F(b)·(1 + o(1))
+> ```
+> as `b → 0`, provided
+> ```
+> A  ≫_F  b^{−(d−1)} · (log(1/b))^{2−n_F+δ} .
+> ```
+> For `d = 1` any `A → ∞` suffices, uniformly in `b`; for `d ≥ 2` the required averaging length
+> **grows like `b^{−(d−1)}`**, so the limits `A → ∞` and `b → 0` do not commute uniformly.
+
+### 81.3 What this says
+
+> **The "degree barrier" of the Selberg class — everything is known in degree `1` and nothing in
+> degree `≥ 2` — is, on the twist side, exactly the statement that the Bohr averaging length needed
+> to isolate the diagonal grows like `b^{−(d−1)}`.**
+
+This is a new and completely explicit form of the barrier. It also explains, in one line, why the
+programme's degree-1 results (Kaczorowski–Perelli's classification, the linear half of Conjecture A,
+orthogonality against Dirichlet `L`-functions) all go through while their degree-`≥2` analogues do
+not: in degree `1` the diagonal is separated by a **fixed gap** `2π`, and every diagonal-extraction
+argument is uniform; in degree `≥ 2` the gap closes at rate `n^{1/d−1}` and no uniform extraction
+exists.
+
+**Relation to earlier records.** This is the quantitative form of the remark already in the header of
+`GeneralizedDirichletMeanValue.lean` (“the diagonal is isolated only for `d = 1`”) and of §9.3/§21.1.
+It is also the same phenomenon as §11.1's divergence of the `α`-integral on `Spec(F)`: there the
+failure was qualitative, here it is a rate.
+
+**Consequence for TC (§80.3).** Any proof of TC must supply an off-diagonal estimate valid for
+`A ≪ b^{−(d−1)}`, i.e. must handle the near-diagonal pairs `n − m = h ≠ 0` with `h ≪ N^{1−1/d}/A`.
+Those are precisely the pairs whose contribution the Rankin–Selberg method handles by *automorphy*.
+So TC does not evade the open core — but it names the missing estimate exactly, as a bound on
+```
+Σ_{h ≠ 0} Σ_n a_F(n) conj(a_G(n−h)) e^{−4πb n^{1/d}} n^{−1} · (something ≪ n^{1−1/d}/(A|h|)) ,
+```
+i.e. as a **shifted-convolution estimate for the coefficients of `F` and `G`** — the classical object
+where the analytic input to Rankin–Selberg actually lives. Recorded as the precise missing ingredient.
+
+---
+
+## 82. Cycle 82 (2026-07-26) — the twist-exponent spectrum: where `S` sits relative to automorphy
+
+Phase-4 interrogation of Theorem 31. If the standard twist's diagonal is not isolated for `d ≥ 2`,
+can a *different* twist exponent do better? Consider the whole family
+```
+F_κ(s,α) := Σ_n a_F(n) e(−α n^κ) n^{−s} ,   κ > 0 .
+```
+
+### 82.1 Two monotone properties, in opposite directions
+
+**Bohr diagonal isolation.** The frequencies are `2π n^κ`, with consecutive gaps `≍ κ n^{κ−1}`. The
+diagonal of the Bohr mean is isolated by a *fixed* gap iff `κ ≥ 1`; for `κ < 1` the gaps close like
+`n^{κ−1}` and Theorem 31's averaging length `A ≫ b^{−(1/κ−1)·...}` blows up.
+
+**Analytic continuation.** The Selberg axioms deliver continuation exactly at the *low* end:
+Kaczorowski–Perelli's nonlinear-twist theory gives `F_κ` entire for `0 < κ < 1/d`, and for `κ = 1/d`
+the standard twist with poles at `s*_ℓ` and residues proportional to `conj(a_F(n_α))`. **No
+continuation is delivered by the axioms for `κ > 1/d`.**
+
+Since `1/d ≤ 1` with equality iff `d = 1`:
+
+> **Theorem 32 (twist-exponent trade-off).** Within the family `{F_κ}`, the Selberg axioms supply
+> analytic structure only for `κ ≤ 1/d`, while the Bohr diagonal is isolated only for `κ ≥ 1`. The
+> two ranges intersect **iff `d = 1`**. In degree `1` the standard twist is the linear twist and both
+> hold simultaneously; in degree `≥ 2` no member of the family has both.
+
+This is a sharp, one-line explanation of the degree barrier for the entire twist method.
+
+### 82.2 The correction that the false version taught
+
+An earlier form of this cycle claimed continuation *fails* for `κ > 1/d`. **That is wrong**: for a
+holomorphic cusp form of weight `k` (degree `2`), the additive twist `Σ a(n)e(nα)n^{−s}` at `κ = 1`
+is the Mellin transform of `f(α+iy)` and continues meromorphically by **modularity**. So the correct
+statement is not "continuation fails above `1/d`" but:
+
+> `κ ≤ 1/d` is what the **Selberg axioms** give; `κ = 1` is what **automorphy** gives.
+
+### 82.3 The consequence — a new measure of the gap between `S` and automorphy
+
+> **The gap between the Selberg class and automorphy is exactly the gap between `κ = 1/d` and
+> `κ = 1` in the twist-exponent spectrum.**
+
+At `κ = 1` the whole machinery of cycles 73–80 becomes elementary and unconditional: for any `F ∈ S`
+and `α = a + ib ∈ H`, `Ψ_F(σ,α) := Σ a_F(n)e(nα)n^{−σ}` converges absolutely, and the Bohr mean is
+```
+mean_a [ Ψ_F(σ, a+ib) conj(Ψ_G(σ, a+ib)) ] = Σ_n a_F(n)conj(a_G(n)) e^{−4πbn} n^{−2σ} ,
+```
+with the diagonal isolated by the fixed gap `2π`, so Theorem 31's threshold improves from
+`A ≫ b^{−(d−1)}` to `A ≫ (log(1/b))^{2−n_F+δ}`.
+
+**But this is Parseval on the disc and nothing more.** `Ψ_F` carries no continuation and no functional
+equation from the axioms, so the identity is a tautology about the coefficients — exactly the
+"restatement" trap. The content of the standard twist (`κ = 1/d`) is that K–P give it *genuine*
+analytic structure; the price is the lost diagonal isolation. Recorded as a matched pair:
+
+| `κ` | diagonal isolated | analytic structure from the axioms | net |
+|---|---|---|---|
+| `< 1/d` | no | entire (K–P) | no arithmetic at all |
+| `= 1/d` | only if `d = 1` | poles on `Spec(F)`, residues `∝ conj(a_F(n))` (K–P) | the programme's object |
+| `1/d < κ < 1` | no | none | useless |
+| `= 1` | **yes** | none from the axioms; **modularity** if `F` is automorphic | tautology in `S`, powerful under automorphy |
+
+### 82.4 Why this is not a route to a proof, and what it *is*
+
+By **Weil's converse theorem**, continuation plus the right functional equations for the additive
+twists at all rationals is equivalent to automorphy. So "prove `κ = 1` continuation for `F ∈ S`" is
+not a weakening of the automorphy conjecture — it *is* the automorphy conjecture. Recorded
+do-not-retry.
+
+What the cycle gives is a **new invariant of the difficulty**: the twist-exponent gap `[1/d, 1]`.
+Its length `1 − 1/d` is `0` exactly in degree `1`, which is exactly the range where every Selberg
+conjecture is a theorem, and it grows to `1` as `d → ∞`. That matches, quantitatively, the exponent
+`d − 1` in Theorem 31's averaging length. Two independent computations of the same barrier.
+
+---
+
+## 83. Cycle 83 (2026-07-26) — the two energies are linked: multiple zeros force extra prime energy
+
+§72 introduced the zero energy `E_F = Σ_i e_i² d_i` alongside the prime energy `n_F = Σ_i e_i²` and
+showed they are different invariants. This cycle links them.
+
+### 83.1 The inequality
+
+Write the primitive factorisation `F = ∏_i F_i^{e_i}`, so `d_F = Σ_i e_i d_i`, `n_F = Σ_i e_i²`,
+`E_F = Σ_i e_i² d_i` (the last as in §72.1, using that distinct primitive factors have disjoint zero
+sets and each `N_{F_i}(T) ~ (d_i/2π)T log T`).
+
+Since `max_i e_i ≤ √(n_F)`,
+```
+E_F = Σ_i e_i² d_i ≤ (max_i e_i) · Σ_i e_i d_i = (max_i e_i) · d_F ≤ √(n_F) · d_F .
+```
+
+> **Theorem 33 (energy inequality).** `n_F ≥ (E_F/d_F)²`, i.e.
+> ```
+> prime energy  ≥  (mean squared multiplicity of the zeros of F)² .
+> ```
+> Combined with the unconditional bracket `E_F ≥ d_F` (Theorem 22, Lean-verified), this gives
+> `n_F ≥ 1` for every non-constant `F ∈ S`, and more precisely
+> ```
+> n_F ≥ ( mean squared zero multiplicity )² ,   with equality iff a single primitive factor carries
+> all the multiplicity.
+> ```
+
+> **Corollary 34.** If the zeros of `F` have mean squared multiplicity `> 1` — equivalently
+> (Theorem 22) if `F` has multiple zeros of positive density — then `n_F > 1`. Under MI this forces
+> `n_F ≥ 2`, hence **`F` is not primitive**. Contrapositive: *a primitive element of `S` has almost
+> all zeros simple.*
+
+This is the first inequality in the programme relating the prime side and the zero side of `S`, and
+it derives the expected "primitive `⟹` simple zeros" phenomenon from the two energies rather than
+assuming it.
+
+**Honest scope.** Theorem 33 and Corollary 34 use the primitive factorisation and the disjointness of
+the zero sets of distinct primitive factors; the latter is itself a consequence of Conjecture B, so
+these are statements *within the standard picture*, not unconditional theorems. What **is**
+unconditional is the bracket they rest on: `Σ_ρ m_ρ² ≥ N_F(T)`, with equality iff all zeros are
+simple (Theorem 22, Lean: `sum_le_sum_sq`, `sum_sq_eq_sum_iff`, `sum_sq_div_sum_ge_one`).
+
+### 83.2 The Bohr gap theorem, formalised
+
+The rigorous core of every diagonal-extraction argument in cycles 73–82 is now formalised
+unconditionally:
+
+> **Theorem 35 (uniform-gap diagonal extraction).** If the frequencies of a generalized Dirichlet
+> polynomial `P(t) = Σ_{n∈s} a_n e^{iλ_n t}` satisfy `|λ_m − λ_n| ≥ g > 0` for `m ≠ n`, then for
+> every `T` and `U`
+> ```
+> ‖ ∫_T^{T+U} |P|² − U·Σ_n |a_n|² ‖  ≤  (2/g)·(Σ_n ‖a_n‖)² ,
+> ```
+> an error bounded **independently of the interval, its length and its position**.
+>
+> Lean: `genPoly_meanValue_error_of_gap`.
+
+Applied with `λ_n = n` (additive twist, gap `1`) this makes the `κ = 1` column of §82.3's table an
+unconditional theorem; applied with `λ_n = n^{1/d}`, `d ≥ 2`, the hypothesis fails for every `g > 0`,
+which is exactly Theorem 31's barrier in its cleanest form. **The degree barrier is now visible as
+the failure of a single hypothesis in one formalised lemma.**
+
+---
+
+## 84. Cycle 84 (2026-07-26) — one cusp versus all cusps
+
+§82 located the gap between `S` and automorphy at the twist exponent `κ = 1`. This cycle identifies
+what that gap *is*, in classical language.
+
+### 84.1 The additive twist is a power series in `q = e(α)`
+
+For `F ∈ S` put
+```
+𝔉_s(q) := Σ_{n≥1} a_F(n) n^{−s} q^n ,      |q| < 1 ,
+```
+holomorphic in `q` on the unit disc (Ramanujan gives `a_F(n) ≪ n^ε`), and `1`-periodic in `α` when
+`q = e(α)` — so the `κ = 1` twist `Ψ_F(s,α)` of §82 is exactly `𝔉_s(e(α))`.
+
+The Dirichlet series `F(s) = Σ a_F(n)n^{−s}` is the **Abel limit of `𝔉_s` at the single boundary
+point `q = 1`**. Selberg's axiom (2) — meromorphic continuation in `s` with a controlled pole —
+is a statement about that one boundary point and nothing else.
+
+### 84.2 The decomposition at a general root of unity
+
+> **Theorem 36 (additive-twist decomposition).** For `α = h/k` in lowest terms, grouping `n` by
+> `g = gcd(n,k)` and expanding `e(mh/(k/g))` over the characters mod `k/g`,
+> ```
+> Ψ_F(s, h/k) = Σ_{g | k} g^{−s} Σ_{χ mod (k/g)} c_χ(g,h,k) · D_{g,χ}(s) ,
+> D_{g,χ}(s) := Σ_{(m, k/g)=1} a_F(gm) χ(m) m^{−s} ,
+> c_χ(g,h,k) = (1/φ(k/g)) Σ_{u mod (k/g)}^{*} e(uh/(k/g)) \barχ(u) .
+> ```
+> So `𝔉_s` is controlled at the root of unity `e(h/k)` **iff** every *Hecke-shifted character twist*
+> `D_{g,χ}` (`g | k`, `χ mod k/g`) continues meromorphically in `s`.
+
+At `k = 1` the sum has the single term `D_{1,triv} = F`, and the statement is axiom (2). For `k > 1`
+it requires the character twists `F_χ` (`g = 1`) and the Hecke translates `Σ_m a_F(gm)m^{−s}`
+(`χ` trivial) — neither of which the Selberg axioms provide, and both of which automorphy provides
+(they are the `L`-functions of `π⊗χ` and of `T_g π`).
+
+### 84.3 The principle
+
+> **`S` is control at one cusp; automorphy is control at all cusps.**
+>
+> Precisely: the Selberg axioms assert meromorphic continuation of the `s`-Mellin data of `𝔉_s` at
+> the boundary point `q = 1` only. Automorphy asserts it at **every** root of unity — equivalently,
+> by Weil's converse theorem, at every rational `α`, with the correct functional equations. Between
+> the two there is nothing: by Weil, "all roots of unity with functional equations" *is* automorphy.
+
+This is the same gap as §82's twist-exponent interval `[1/d, 1]` and as §81's averaging length
+`b^{−(d−1)}`, now in its classical form. Three independent formulations of one obstruction:
+
+| formulation | the gap |
+|---|---|
+| Bohr averaging length (§81) | `A ≫ b^{−(d−1)}` versus `A ≫ polylog` |
+| twist exponent (§82) | `κ ≤ 1/d` (axioms) versus `κ = 1` (automorphy) |
+| cusps (§84) | `q = 1` only versus all roots of unity |
+
+**Consequence, recorded as a hard constraint.** Any proof of MI from the Selberg axioms alone must
+extract integrality from data at a *single* cusp. Every mechanism that fires in the automorphic
+world — Rankin–Selberg, Schur, Sato–Tate, the spectral decomposition — uses all cusps. That is the
+structural reason the ten mechanisms of §79.4 all failed: nine of them are all-cusp mechanisms in
+disguise, and the tenth (pole order) is the one-cusp mechanism, which is why MI is a restatement of
+it.
+
+**[OPEN CORE], sharpened.** Is there a one-cusp integrality mechanism at all? Equivalently: can the
+order of the singularity at `w = 1` of `R_{F,F}` be forced to be an integer using only the
+`q = 1` boundary data of `𝔉_s`? If the answer is no — if one could *prove* that no such mechanism
+exists — that would be a genuine independence-type result for the Selberg class, and would make MI
+strictly equivalent to an all-cusp statement. That dichotomy is now the sharpest available target.
+
+---
+
+## 85. Cycle 85 (2026-07-26) — where the integrality *cannot* come from: two independence results
+
+§84 asked whether a one-cusp integrality mechanism exists. This cycle answers two sharper questions:
+**which axioms are doing the work**, and **which integers the axioms actually supply**.
+
+### 85.1 The functional equation is essential — an unconditional witness
+
+Take a non-principal Dirichlet character `χ` and a real `c > 0`, and set
+```
+F_c(s) := L(s,χ)^c    (principal branch on the standard zero-free region of L).
+```
+Then:
+- (1) `F_c` is a Dirichlet series with `a_{F_c}(1)=1`, absolutely convergent for `Re s > 1`;
+- (4) it has an Euler product: `log F_c = c·log L(·,χ) = Σ_n c·b_L(n)n^{−s}`, `b_L(n) ≪ n^{1/2}` and in
+  fact supported on prime powers with `b_L(p^k) = χ(p)^k/k`, so `b(n) ≪ n^θ` for every `θ > 0`;
+- (5) Ramanujan holds: the local coefficients are `binom(c+k−1,k)χ(p)^k ≪ k^{c−1}`, so
+  `a_{F_c}(n) ≪_ε n^ε`;
+- `F_c` is **holomorphic and non-vanishing on a neighbourhood of the closed half-plane `Re s ≥ 1`**
+  (the classical zero-free region of `L`), so it has no pole and no zero there;
+- all **linear** densities vanish: `Σ_p a_{F_c}(p)p^{−1−iθ} = c Σ_p χ(p)p^{−1−iθ} = O(1)` for every
+  real `θ`;
+- but `Σ_{p≤x}|a_{F_c}(p)|²/p = c² loglog x + O(1)`, so `n_{F_c} = c²`, **non-integral** for suitable
+  `c`.
+
+> **Theorem 38 (independence of the functional equation).** Axioms (1), (4), (5) of the Selberg
+> class, together with holomorphy and non-vanishing on a neighbourhood of `Re s ≥ 1` and the
+> vanishing of every linear density, do **not** imply `n_F ∈ Z`. Unconditional.
+
+So the integrality of `n_F` comes neither from the Euler product, nor from Ramanujan, nor from any
+edge behaviour near `Re s = 1`. It must come from **axiom (3) together with continuation across the
+critical strip** — i.e. from the reflection `s ↦ 1 − \bar s` and the zeros it constrains. This
+explains, in one witness, why every "edge" argument in the programme (Landau, Wiener–Ikehara,
+Halász, the pretentious method, the Energy Gap machinery) stops short: they all live where the
+witness lives.
+
+*(What kills `F_c` inside `S` is monodromy around the **zeros of `L` in the critical strip**:
+`L^c` is not single-valued there for `c ∉ Z`. That is a one-cusp mechanism — but it is available only
+because the coefficients are *proportional* to those of a known element. It is §39.1's mechanism, and
+it does not generalise to the quadratic case.)*
+
+### 85.2 The axioms supply only additive integers
+
+> **Theorem 39 (additive versus quadratic).** Every integer-valued invariant that the Selberg axioms
+> attach to `F` — the number of gamma factors `r_F`, the pole order `m_F` at `s = 1`, and `d_F` when
+> integral — is **additive** under multiplication in `S`:
+> ```
+> r_{FG} = r_F + r_G ,  m_{FG} = m_F + m_G ,  d_{FG} = d_F + d_G ,
+> ```
+> (and `q_{FG} = q_F q_G`, `ω_{FG} = ω_F ω_G` are multiplicative). Hence each is a **linear form in
+> the exponents `e_i` of the primitive factorisation**. Selberg's `n_F = Σ_i e_i²` is a **quadratic
+> form** in those exponents (§69.1: `n_{FG} = n_F + n_G + 2Re⟪v_F,v_G⟫`).
+>
+> A quadratic form is not a function of linear forms with generator-independent weights. Explicit
+> witness inside `S`: for distinct primitive even `χ₁ ≠ χ₂` mod `q`,
+> ```
+> F = L(·,χ₁)L(·,χ₂)  and  G = L(·,χ₁)²
+> ```
+> share degree `2`, conductor `q²`, gamma factor, number of gamma factors `2`, and pole order `0`,
+> yet `n_F = 2` and `n_G = 4`.
+>
+> **Consequence.** `n_F ∈ Z` is not a formal consequence of the integrality of the axiomatic
+> invariants. Any proof of MI must *manufacture a new integer*, which by §79.4 means exhibiting a
+> meromorphic function whose pole order is `n_F`.
+>
+> **Formalised, unconditional:** `additive_not_determine_energy`,
+> `additive_family_not_determine_energy`, `energy_ne_of_same_total` — the exponent vectors `(1,1)` and
+> `(2,0)` have equal weighted totals for every constant weight and energies `2 ≠ 4`.
+
+### 85.3 The two results together
+
+```
+§85.1 : the integrality is not in axioms (1),(4),(5) or in the edge  →  it is in the reflection
+§85.2 : the reflection supplies only additive integers               →  it cannot supply n_F directly
+```
+So MI requires a **new meromorphic object**, constructed from the reflection, whose pole order is a
+quadratic function of the factorisation. That object is the Rankin–Selberg convolution, and §84 says
+it is an all-cusp object. The programme's conclusion is now a closed logical loop with every step
+identified:
+
+> `n_F ∈ Z` ⟸ pole order of `R_{F,F}` ⟸ meromorphy of `R_{F,F}` ⟸ all-cusp control of `𝔉_s`
+> ⟸ automorphy; and no proper sub-step of this chain is supplied by the Selberg axioms, each failure
+> being witnessed explicitly (§85.1 for the axioms, §85.2 for the invariants, §79.4 for the ten
+> mechanisms, §84 for the cusps).
+
+**This is the sharpest statement the programme can make about *why* Conjecture A is hard**, and each
+link is now either a theorem or an explicit witness rather than an impression.
+
+---
+
+## 86. Cycle 86 (2026-07-26) — the fractional-power route to a counterexample, closed by divisors
+
+§56 squeezed a counterexample to Conjecture A between "structured phases" and "generic phases". The
+most natural structured attempt is a **fractional power product**
+```
+F = ∏_i G_i^{c_i} ,     G_i ∈ S ,   c_i ∈ R ∖ Z ,
+```
+which has `n_F = Σ_{i,j} c_i c_j Re⟪v_{G_i},v_{G_j}⟫` and can easily be arranged non-integral. This
+cycle closes that route with divisor data rather than phases.
+
+### 86.1 The obstruction
+
+`F` must be meromorphic on `C` (axiom (2)), so it is single-valued; the monodromy of `∏G_i^{c_i}`
+around a point `ρ` is `exp(2πi Σ_i c_i ord_ρ(G_i))`.
+
+> **Theorem 40 (fractional-power obstruction).** If `F = ∏_i G_i^{c_i}` is single-valued and
+> meromorphic on `C` with `G_i` meromorphic, then
+> ```
+> Σ_i c_i · ord_ρ(G_i) ∈ Z    for every ρ ∈ C .
+> ```
+> Consequently, if the `G_i` have pairwise **disjoint** zero sets, then `c_i·ord_ρ(G_i) ∈ Z` at every
+> zero `ρ` of `G_i`. Hence:
+> - one **simple** zero of `G_i` forces `c_i ∈ Z`;
+> - two zeros of `G_i` of **coprime** orders force `c_i ∈ Z`.
+>
+> **Formalised, unconditional:** `exponent_int_of_coprime_orders`, `exponent_int_of_simple_zero`.
+
+### 86.2 The squeeze it produces
+
+> **Corollary 41.** A fractional-power counterexample with disjoint zero sets requires **every**
+> factor `G_i` with `c_i ∉ Z` to have *all* its zeros of multiplicity `≥ 2`, and in fact of
+> multiplicities with a common factor `≥ 2` (the denominator of `c_i`). By Theorem 22 that forces
+> `E_{G_i} ≥ 2 d_{G_i}`, and by Theorem 33 `n_{G_i} ≥ (E_{G_i}/d_{G_i})² ≥ 4`.
+
+So the building blocks of a fractional counterexample must themselves carry prime energy `≥ 4`: they
+cannot be primitive-like. This is a strong self-consistency squeeze, complementary to §56's phase
+squeeze and obtained from an entirely different invariant (zero multiplicities rather than
+coefficient phases).
+
+### 86.3 The "cancel the monodromy" variant, also closed
+
+One might hope to cancel the branch points of `G_1^{c}` against those of `G_2^{−c}`. This requires
+`G_1` and `G_2` to have the **same divisor**. But two elements of `S` with the same divisor differ by
+`e^{as+b}`, and `e^{as} = t^{−s}` with `t = e^{−a}`; for the quotient to be a Dirichlet series with
+first coefficient `1` one needs `t = 1` and `e^b = 1`, i.e. `G_1 = G_2` and `F = 1`.
+
+> **Recorded do-not-retry.** Neither a fractional power product with disjoint zeros (§86.1) nor a
+> monodromy-cancelling pair (§86.3) can produce a counterexample. Combined with §56.1 (structured
+> phases) and §56.2 (generic phases), the four most natural constructions are all closed.
+
+### 86.4 Where the remaining freedom is
+
+What survives §86 is exactly: **primitive factors sharing zeros**, with the shared multiplicities
+conspiring so that `Σ_i c_i ord_ρ(G_i) ∈ Z` at every `ρ` while no individual `c_i` is an integer.
+Distinct primitives sharing all their zeros is precisely what Selberg's Conjecture B forbids (it
+would make them "the same" spectrally), so the surviving window is:
+
+> **The only remaining fractional-power window is: distinct primitive elements of `S` with
+> substantially overlapping zero sets.** Ruling that out is a *zero-side* form of Conjecture B, and
+> by §72 it is governed by the zero energy `E_F`, not by the prime energy `n_F`.
+
+That is a new, concrete, and independently meaningful target: **can two distinct primitive elements
+of `S` share a positive proportion of their zeros?** Under the standard picture the answer is no, and
+a proof would close §86.4 and with it the whole fractional-power route.
+
+---
+
+## 87. Cycle 87 (2026-07-26) — a scope correction, and a failed bridge worth recording
+
+### 87.1 Scope correction to §83
+
+Theorem 33 (`n_F ≥ (E_F/d_F)²`) and Corollary 34 were derived from `E_F = Σ_i e_i² d_i`, which §72.1
+obtained **assuming the primitive factors have disjoint zero sets**. If distinct primitive factors
+share zeros, the zero energy computed from the divisor is strictly larger than `Σ_i e_i² d_i`, and
+the chain `E_F ≤ (max_i e_i)·d_F ≤ √(n_F)·d_F` breaks.
+
+> **Corrected statement.** `n_F ≥ (E_F/d_F)²` holds **when the primitive factors of `F` have pairwise
+> disjoint zero sets**. Unconditionally what survives is the Lean-verified bracket `E_F ≥ d_F` with
+> equality iff all zeros of `F` are simple (Theorem 22).
+
+### 87.2 The attempted bridge, and why it fails
+
+The natural next step was: *if two distinct primitives `F,G` share a proportion `δ` of their zeros,
+then `H = FG` has mean squared multiplicity `1+δ`, hence by Theorem 33 `n_H ≥ (1+δ)²`, hence*
+`Re c_{F,G} ≥ (δ²+2δ−1)/2`, *so a large overlap would force non-orthogonality.*
+
+**This is invalid**, for exactly the reason recorded in §72.3. The quantity `1+δ` is the **fine-scale
+(`α → ∞`) limit** of the pair correlation of the zeros of `H`, while `n_H` lives at **bounded `α`**.
+Theorem 33's inequality is not available in the shared-zero case (§87.1), and the two sides of the
+attempted bridge sit at different scales of the same statistic. Numerically the attempted conclusion
+would have given "`δ > √2 − 1 ≈ 0.414` contradicts orthogonality"; there is no such theorem.
+
+> **Recorded do-not-retry.** No inequality between `n_F` (bounded-`α`) and the zero-multiplicity data
+> `E_F` (`α → ∞`) is available without the disjointness hypothesis. This is the third time the same
+> scale confusion has been caught (§67 → §72.3, §76 → §77.1, §83 → §87.2); the design rule of §77.2
+> now has a companion:
+>
+> **Scale rule.** Never compare a bounded-`α` (prime-energy) quantity with an `α → ∞`
+> (multiplicity) quantity without an explicit hypothesis linking the scales. The three natural
+> statistics of `F` — degree (`α → 0`), prime energy (`α ≍ 1`), zero multiplicity (`α → ∞`) — are
+> mutually independent.
+
+### 87.3 What the failure leaves standing
+
+The fractional-power route (§86) is closed by divisors, and its surviving window is
+```
+distinct primitive elements of S sharing a positive proportion of their zeros,
+```
+which §87.2 shows cannot be excluded by energy comparisons. It must instead be attacked with the
+**divisor itself**. The concrete open question is unchanged and is worth stating on its own:
+
+> **(ZS) Zero sharing.** Can two distinct primitive elements of `S` share a positive proportion of
+> their non-trivial zeros?
+
+`ZS` is implied false by the standard picture, is not implied by anything currently proved, and — by
+§86 — a positive answer is the only remaining route to a fractional-power counterexample to
+Conjecture A. It is a *zero-side* question, so §77.2's rule (thin sets) and §87.2's scale rule both
+permit it, and it does not obviously funnel into Rankin–Selberg. **Recorded as the most promising
+untouched target.**
+
+---
+
+## 88. Cycle 88 (2026-07-26) — attacking (ZS): the ratio functional equation
+
+Target: **(ZS)** can two distinct primitive `F, G ∈ S` share a positive proportion of their zeros?
+
+### 88.1 The ratio carries a degree-zero functional equation
+
+Assume first that `F` and `G` have **identical gamma factors** `γ_0` (same `r`, `λ_j`, `μ_j`; hence
+equal degree). Write `Λ_F = Q_F^s γ_0 F`, `Λ_G = Q_G^s γ_0 G` and `W := Λ_F/Λ_G`. Dividing the two
+functional equations:
+
+> **Theorem 43 (ratio functional equation).** `W` is meromorphic on `C` with divisor
+> `div(F) − div(G)` — the shared zeros cancel, the gamma poles cancel — and
+> ```
+> W(s) = (ω_F/ω_G) · conj( W(1 − \bar s) ) .
+> ```
+> Hence `e^{−iθ_0}W` is **real on the critical line**, `θ_0 = ½ arg(ω_F/ω_G)`, and `R := F/G` is a
+> Dirichlet series with `a_R(1)=1`, an Euler product `∏_p F_p/G_p`, and therefore **no zeros and no
+> poles in `Re s > 1`**; by the functional equation, none in `Re s < 0` either. All zeros and poles of
+> `R` lie in the closed critical strip.
+
+> **Corollary 44.** Two elements of `S` with identical gamma factors that share **all** their zeros
+> are equal. *Proof.* `W` is then entire, zero-free and of finite order, so `W = e^{as+b}`; then
+> `F/G = e^{as+b}(Q_G/Q_F)^s = c·t^{−s}`, and `a_F(1) = a_G(1) = 1` forces `t = 1`, `c = 1`. ∎
+> If moreover `F/G` is entire but only `G`'s zeros are all shared, then `R ∈ S^♯_0`, so by
+> Kaczorowski–Perelli's degree-zero classification `R` is a Dirichlet polynomial; combined with its
+> Euler product, `R` is supported on finitely many primes.
+
+### 88.2 The natural attack, and exactly why it fails
+
+`R = F/G` has **degree `0`**. For an element of `S^♯` of degree `δ_{deg}` the Riemann–von Mangoldt
+formula gives `≍ (δ_deg/2π)T log T` zeros up to height `T`; degree `0` would give `O(T)`. Since
+`R` has `≈ (1−δ)N_F(T)` zeros and `≈ (1−δ)N_G(T)` poles, "degree `0` ⟹ few zeros" would force
+`δ = 1` and hence, by Corollary 44, `F = G` — a complete answer to (ZS).
+
+**This fails, and the reason is exact.** The argument principle applied to `W` on the box computes
+```
+#zeros − #poles  =  (1/2π) Δ arg W ,
+```
+i.e. only the **difference**, which is `(1−δ)(N_F − N_G) = 0` when `d_F = d_G` — automatically
+consistent with degree `0` and carrying no information about the **sum**. Nevanlinna theory gives
+only `T(r,R) ≤ T(r,F) + T(r,G) + O(1)`, which permits `(1−δ) ≤ 1` and nothing more.
+
+> **Recorded do-not-retry.** The degree of `F/G` constrains only `#zeros − #poles`, never the total.
+> No counting-function argument alone can bound the shared proportion `δ`.
+
+### 88.3 What (ZS) actually needs
+
+To bound `δ` one must control the **sum** of zeros and poles of a meromorphic function of degree `0`,
+which is a genuine value-distribution problem, not a counting one. Two features are available and
+unused:
+
+1. `e^{−iθ_0}W` is **real on the critical line** (Theorem 43), so its zeros and poles are symmetric
+   about that line and its restriction to the line is a real meromorphic function whose sign changes
+   are governed by the odd-order zeros and poles *on* the line.
+2. `R = F/G` has an **Euler product**, so `log R(s) = Σ_p (a_F(p) − a_G(p))p^{−s} + …`, and the prime
+   energy of `R` is `n_F + n_G − 2Re c_{F,G}` — which is `2` for orthogonal primitives and `0` when
+   `F = G`.
+
+Feature 2 is the first place where (ZS) touches the prime side **at the right scale**: `n_R` is a
+bounded-`α` quantity (no violation of §87.2's scale rule), and it is small exactly when `F` and `G`
+are prime-correlated. So:
+
+> **Conjecture (ZS′).** For `F ≠ G` in `S` with identical gamma factors, the shared-zero proportion
+> `δ` and the ratio energy `n_R = n_F + n_G − 2Re c_{F,G}` satisfy `δ → 1 ⟺ n_R → 0`, and
+> `n_R = 0 ⟺ F = G`.
+
+`ZS′` is the zero-side/prime-side bridge that §87.2 forbade at the wrong scale and permits at this
+one. Its `n_R = 0 ⟹ F = G` half is a clean, self-contained target: **an element of `S^♯` with an
+Euler product and vanishing prime energy is trivial** — the Energy Gap conjecture (§52) for the
+ratio. Note `n_R ≥ 0` always, `n_R = 0` says `a_F(p) = a_G(p)` in density, and EG would then give
+`F = G` by §39.1's monodromy applied to `R`. **So ZS′ reduces (ZS) to the Energy Gap conjecture for
+degree-zero ratios**, which is a strictly smaller statement than EG for `S` and is the natural next
+target.
+
+---
+
+## 89. Cycle 89 (2026-07-26) — the ratio Energy-Gap attack, and its exact point of failure
+
+Target from §88.3: **`n_R = 0 ⟹ F = G`** for `R = F/G` with `F,G ∈ S` of identical gamma factors,
+where `n_R = lim (loglog x)^{−1}Σ_{p≤x}|c_p|²/p`, `c_p := a_F(p) − a_G(p)`.
+
+### 89.1 The intended mechanism
+
+1. `n_R = 0` means `Σ_p |c_p|²/p < ∞` (up to `O(1)`), i.e. `(c_p p^{−1/2})_p ∈ ℓ²`.
+2. If that forced `P(s) := Σ_p c_p p^{−s}` to be **holomorphic on `Re s > 1/2`**, then
+   `log R = P + (k ≥ 2 terms)` would be holomorphic there (the prime-power terms converge absolutely
+   for `Re s > 1/2` because `θ < 1/2`), hence `R = exp(log R)` would be holomorphic **and
+   non-vanishing** on `Re s > 1/2`, so `F` and `G` would have identical divisors there; by the ratio
+   functional equation (Theorem 43) the same would follow on `Re s < 1/2`.
+3. The remaining zeros of `R` would lie on the critical line. If `R` had `≍ κ T log T` of them up to
+   height `T`, then `log|R|` would have mean square `≍ log T → ∞` on lines approaching `Re s = 1/2`,
+   contradicting the boundedness of `Σ_p|c_p|²p^{−2σ}` as `σ → 1/2+`.
+4. Hence `R` would have `o(T log T)` zeros, i.e. `δ = 1`, and Corollary 44 would give `F = G`.
+
+Steps 3 and 4 are sound. **Step 2 is not.**
+
+### 89.2 The failure, precisely
+
+`Σ_p |c_p|²/p < ∞` gives `Σ_p |c_p| p^{−σ} < ∞` only for `σ > 1`, by Cauchy–Schwarz
+(`Σ_{p≤x}|c_p| ≪ x`), so the series `P(s)` is not known to converge — still less to be holomorphic —
+anywhere in `1/2 < Re s ≤ 1`. Concluding "`R` is zero-free on `Re s > 1/2`" from an `ℓ²` condition on
+the coefficients is a **zero-free half-plane from coefficient data**, i.e. an RH-strength statement.
+
+> **Recorded do-not-retry.** This is the same wall as §9.6 and §22.1 ("`ℓ²` does not propagate across
+> the strip"), now met in the ratio setting. No `ℓ²` or density hypothesis on `(a_F(p) − a_G(p))`
+> yields a zero-free region for `F/G` without new input.
+
+### 89.3 What survives, and the corrected reduction
+
+Steps 1, 3, 4 remain valid and give an unconditional implication in the useful direction:
+
+> **Theorem 45.** Let `F, G ∈ S` have identical gamma factors and let `R = F/G`. If `R` is
+> holomorphic and non-vanishing on `Re s > 1/2`, then (by Theorem 43) the same holds on `Re s < 1/2`,
+> and if in addition `log|R|` has bounded mean square on lines `Re s = σ → 1/2+`, then `R` has
+> `o(T log T)` zeros, hence `F` and `G` share all but `o(1)` of their zeros, hence `F = G` by
+> Corollary 44.
+
+So the chain `(ZS) ⟸ ZS′ ⟸ EG-for-ratios` of §88.3 must be replaced by
+
+```
+(ZS)  ⟸  "F/G zero-free off the critical line"  +  "bounded mean square of log|F/G| at the line"
+```
+
+and the first of these — a zero-free region for a degree-zero ratio — is now identified as the exact
+missing ingredient. It is *weaker than RH for F and G* (it only asks that their zeros **coincide**
+off the line, not that there are none), which makes it a genuinely new and possibly more tractable
+statement:
+
+> **(ZFR) Zero-free ratio.** For distinct `F, G ∈ S` with identical gamma factors, `F/G` has a zero
+> or a pole off the critical line.
+
+`ZFR` is the negation of "F and G have identical divisors off the line". It is implied by RH for
+either function together with `F ≠ G`… no: under RH both have all zeros on the line, so `F/G` is
+automatically zero-free off it, and `ZFR` is **false** under RH. Hence the chain in Theorem 45 is
+*vacuous under RH* — the mean-square condition must do all the work.
+
+> **Net.** Under RH the whole route collapses to step 3: `F = G` would follow from
+> **bounded mean square of `log|F/G|` on lines approaching the critical line**, which is precisely a
+> statement that `S_F(t) − S_G(t)` has bounded variance — i.e. a *cross* version of the Selberg
+> central limit theorem. Recorded as the concrete surviving target, and noted as living at the same
+> `δ ≍ 1/log T` scale identified in §67 — the third independent appearance of that scale.
+
+---
+
+## 90. Cycle 90 (2026-07-26) — (P2) reduces to a zero-density estimate plus a pairing rigidity
+
+§89 left "bounded mean square of `log|F/G|` on the critical line" as the surviving target. This cycle
+identifies what supplies it and what it yields.
+
+### 90.1 The variance is the prime energy
+
+Selberg's central limit theorem machinery computes the variance of `log F(1/2+it)` from the **prime
+sum**, not from the zeros: for `F ∈ S` with prime energy `n_F`,
+```
+Var_{t≤T} ( log|F(1/2+it)| )  ~  (n_F/2)·loglog T ,
+```
+the input being an approximation of `log F` on the critical line by `Σ_{p≤x}a_F(p)p^{−1/2−it}`, valid
+for all but a sparse set of `t` **given a zero-density estimate** of Selberg's type
+`N_F(σ,T) ≪ T^{1−c(σ−1/2)}log T`.
+
+Applying this to `R = F/G` (identical gamma factors, `c_p = a_F(p)−a_G(p)`):
+```
+Var( log|R(1/2+it)| )  ~  (n_R/2)·loglog T ,     n_R = n_F + n_G − 2 Re c_{F,G} .
+```
+
+> So **`n_R = 0` gives bounded variance of `log|F/G|` on the critical line** — the hypothesis §89.3
+> needed — *provided a Selberg-type zero-density estimate holds for `F` and `G` in `S`*.
+
+### 90.2 What bounded variance says about the zeros
+
+`R` has zeros at the unshared zeros of `F` and poles at the unshared zeros of `G`, both of density
+`(1−δ)(d/2π)T log T`. Near the line, `log|R(1/2+it)| = Σ_{zeros}log|t−γ| − Σ_{poles}log|t−γ'| + O(1)`.
+If the two point sets were uncorrelated at the mean-spacing scale `1/log T`, each of density
+`ν ≍ log T` per unit `t`, the variance of the difference would be `≍ ν ≍ log T`, contradicting
+`O(1)`. Hence:
+
+> **Rigidity consequence.** Bounded variance forces the unshared zeros of `F` and of `G` to **pair
+> up**, each pair at distance `o(1/log T)` — the mean zero spacing. Either the zeros are genuinely
+> shared (`δ = 1`, and then `F = G` by Corollary 44), or `F` and `G` are distinct with zeros paired
+> at strictly sub-spacing distance.
+
+### 90.3 The reduction
+
+> **Theorem 46 (reduction of quantitative strong multiplicity one).** Let `F, G ∈ S` have identical
+> gamma factors. Assume
+> (a) a Selberg-type zero-density estimate for `F` and `G`, and
+> (b) that two distinct elements of `S` cannot have their zeros paired at distance `o(1/log T)`.
+> Then `n_R = 0 ⟹ F = G`; that is, **(P2) quantitative strong multiplicity one holds**:
+> if `Σ_{p≤x}|a_F(p) − a_G(p)|²/p = O(1)` then `F = G`.
+
+This is the first time (P2) — open since §22 — has been reduced to two statements that are *not*
+Rankin–Selberg and *not* automorphy:
+
+- (a) is a **one-cusp** statement (zero density from the functional equation and the Euler product;
+  Selberg proved the analogue for `ζ` unconditionally, and the method is axiom-driven);
+- (b) is a **zero-repulsion** statement between two different `L`-functions, of the same nature as
+  simple-zero and pair-correlation results, and again zero-side.
+
+Both live on the side that §77.2's thin-set rule and §87.2's scale rule permit, and neither is an
+all-cusp statement in the sense of §84. **This is the first crack in the "everything funnels into
+Rankin–Selberg" pattern of the whole programme.**
+
+### 90.4 Honest status of each ingredient
+
+- The variance asymptotic of §90.1 is Selberg's, and its transfer to `S` needs (a). Recorded as the
+  precise analytic input, not assumed proved.
+- §90.2 is a heuristic-strength argument (an uncorrelated-point-process comparison). Making it a
+  theorem requires an explicit-formula computation of `Var(log|R|)` in terms of the pair correlation
+  of the two zero sets — available in principle, and at the **bounded-`α` scale**, so §87.2's rule is
+  respected.
+- Corollary 44 and Theorem 43 are unconditional.
+
+**Next target, in order:** (i) make §90.2 a theorem via the explicit formula; (ii) establish (a) in
+`S` from the axioms; (iii) attack (b).
+
+---
+
+## 91. Cycle 91 (2026-07-26) — §90.2 made rigorous: integrality of the counting difference
+
+§90.2 was an uncorrelated-point-process heuristic. It can be replaced by an exact argument that uses
+**integrality of a counting function** — a genuine thin-set, bounded-`α` mechanism.
+
+### 91.1 The chain, with the heuristic removed
+
+Let `F, G ∈ S` have identical gamma factors and conductors, `R = F/G`, `c_p = a_F(p) − a_G(p)`,
+`n_R = n_F + n_G − 2Re c_{F,G}`.
+
+1. **Variance.** Selberg's machinery (given a zero-density estimate, hypothesis (a) of Theorem 46)
+   gives `Var_{t≤T}(log|R(1/2+it)|) ~ (n_R/2)loglog T` and
+   `Var_{t≤T}(S_F(t) − S_G(t)) ~ (n_R/2π²)loglog T`. So `n_R = 0 ⟹` both variances are `O(1)`.
+2. **Counting.** With identical gamma factors and conductors the archimedean main terms of the
+   Riemann–von Mangoldt formulas coincide, so
+   ```
+   N_F(t) − N_G(t) = S_F(t) − S_G(t) + O(1) ,
+   ```
+   which by step 1 has bounded `L²` norm. But `N_F − N_G` is **integer-valued**, so bounded `L²`
+   norm forces it to be bounded by some `K` outside a set of density `0`.
+3. **Interleaving.** A bound `|N_F − N_G| ≤ K` on the counting difference of two monotone sequences
+   forces `γ_n^G ≤ γ_{n+K}^F` and `γ_n^F ≤ γ_{n+K}^G` for every `n`.
+   **Formalised, unconditional:** `le_shift_of_count_le`, `abs_shift_of_count_le`.
+4. **Spacing.** Since the mean gap at height `T` is `2π/(d log T)`, step 3 gives
+   `|γ_n^F − γ_n^G| ≪ K/log T`: **the zeros of `F` and `G` pair within `O(1/log T)`, the mean
+   spacing.**
+
+> **Theorem 47.** For `F, G ∈ S` with identical gamma factors and conductors, assume the zero-density
+> estimate (a). If `Σ_{p≤x}|a_F(p) − a_G(p)|²/p = O(1)` then the zeros of `F` and of `G` pair up with
+> `|γ_n^F − γ_n^G| ≪ 1/log T`.
+
+Step 3 is now a theorem, not a heuristic, and it is where the *integer* enters: the difference of two
+counting functions is `Z`-valued, so an `L²` bound upgrades to a pointwise bound. This is the only
+place in ninety cycles where integrality has been *used* rather than sought.
+
+### 91.2 The remaining gap, stated exactly
+
+> **(b′) Zero-pairing rigidity.** If `F, G ∈ S` have identical gamma factors and conductors and their
+> zeros satisfy `|γ_n^F − γ_n^G| ≪ 1/log T` for all `n`, then `F = G`.
+
+(b′) is the sharpened form of Theorem 46's hypothesis (b), at the correct scale. Together with (a) it
+gives (P2), quantitative strong multiplicity one, and with §88 it settles (ZS).
+
+### 91.3 A second confirmation that the `ℓ²` wall is real
+
+One might hope to bypass all of this: `n_R = 0` gives `Σ_p|a_R(p)|²/p < ∞`, hence by multiplicativity
+`Σ_n |a_R(n)|²/n < ∞`; does that make `R` holomorphic on `Re s > 1/2`? **No.** By Hedenmalm–
+Lindqvist–Seip, `Σ_n |b_n|² < ∞` gives holomorphy of `Σ b_n n^{−w}` on `Re w > 1/2`; with
+`b_n = a_R(n)n^{−1/2}` this is `Re s > 1`, which was already known from absolute convergence.
+
+> **Recorded.** The `ℓ²`-to-zero-free-half-plane step fails by two independent routes (§89.2 via
+> Cauchy–Schwarz on the abscissa, §91.3 via the `ℋ²` theory). The wall of §9.6/§22.1 is confirmed and
+> should not be tested again.
+
+### 91.4 Why (b′) is a good target
+
+- It is a statement about **two zero sets**, with no primes, no Euler product and no Rankin–Selberg.
+- It is at the mean-spacing scale `1/log T`, i.e. bounded `α` — permitted by §87.2's scale rule.
+- Its natural proof is a **repulsion** statement: distinct `L`-functions with the same gamma factor
+  and conductor should not have systematically colliding zeros. For the analogous question inside one
+  `L`-function (simple zeros) this is open, but the *cross* version is genuinely different: it
+  compares two functions with the *same* archimedean data, so the difference `Λ_F − Λ_G` is a
+  meromorphic function whose zeros are exactly the collisions, and Theorem 43 shows `Λ_F/Λ_G` is real
+  on the critical line — a strong structural handle unavailable in the one-function case.
+
+---
+
+## 92. Cycle 92 (2026-07-26) — the collision function `Λ_F − Λ_G` and its surplus zeros
+
+Attack on (b′) (§91.2). Let `F, G ∈ S` have identical gamma factors, conductors and root numbers,
+`F ≠ G`, and set
+```
+D(s) := Λ_F(s) − Λ_G(s) = Q^s γ(s) · H(s) ,      H := F − G = Σ_{n ≥ n_0} c'_n n^{−s} ,
+```
+where `n_0 := min{n : a_F(n) ≠ a_G(n)} ≥ 2` (as `a_F(1)=a_G(1)=1`).
+
+### 92.1 `D` inherits the functional equation, and has a larger conductor
+
+Since `ω_F = ω_G = ω`, subtracting the two functional equations gives
+```
+D(s) = ω · conj( D(1 − \bar s) ) ,
+```
+so `D` is an entire function of order `1` with a Selberg-type reflection. Its zero counting function
+is computed by the argument principle exactly as for `Λ_F`, the only change being the extra winding
+of `H(s) ~ c'_{n_0} n_0^{−s}` as `Re s → +∞`, which contributes `−t log n_0` to `arg H` on each
+vertical side:
+
+> **Theorem 48 (surplus of collision zeros).** `N_D(T) = N_{Λ_F}(T) + (T/π)·log n_0 + O(log T)`.
+> So `D` has a **positive-density surplus** of `(log n_0)/π` zeros per unit height beyond the zero
+> count of `Λ_F` itself.
+
+### 92.2 What the surplus means under the pairing hypothesis
+
+If the zeros of `F` and `G` pair with `|γ_n^F − γ_n^G| = ε_n`, then near each pair
+`Λ_F ≈ A(s−ρ_n^F)`, `Λ_G ≈ B(s−ρ_n^G)`, and `D` has one zero at `(Aρ_n^F − Bρ_n^G)/(A−B)`. That
+accounts for `≈ N_{Λ_F}(T)` zeros of `D`. Theorem 48 says there are `(T/π)log n_0` **more**, of
+positive density but zero density relative to `T log T`.
+
+> **The surplus zeros of `D` are not attached to any zero collision.** They are a genuine new zero
+> set, of density `(log n_0)/π` per unit height, canonically attached to the pair `(F,G)` and to the
+> first index `n_0` at which the coefficients differ.
+
+This is a new object in the programme: a **finite-density** zero set (linear in `T`, not `T log T`)
+attached to a *pair* of Selberg-class elements, whose density computes `log n_0` — i.e. **the first
+disagreement index of the coefficients is read off a zero density.** Two consequences:
+
+- `n_0` is recoverable analytically from the zeros of `Λ_F − Λ_G`; in particular, if `F ≠ G` then
+  `D` has *strictly more* zeros than `Λ_F`, which is a clean quantitative separation of `F` from `G`
+  in terms of zeros alone.
+- Any hypothesis forcing `N_D(T) = N_{Λ_F}(T) + o(T)` forces `n_0 = 1`, i.e. `F = G`. **So (b′)
+  reduces to an upper bound for the zero count of the collision function.**
+
+> **(b″) Collision-count bound.** If the zeros of `F` and `G` pair within `O(1/log T)`, then
+> `N_{Λ_F − Λ_G}(T) = N_{Λ_F}(T) + o(T)`.
+
+(b″) ⟹ (b′) ⟹ (with (a)) (P2) and (ZS). It is a purely zero-side, finite-density statement about one
+explicit entire function with a functional equation, and it does not mention primes.
+
+### 92.3 Status
+
+Theorem 48 is a Riemann–von Mangoldt computation for `D` and is as solid as the standard one; it
+needs `ω_F = ω_G` (otherwise `D` satisfies no clean reflection — the general case can be handled by
+replacing `G` with `ω_F\overline{ω_G}^{-1}G`, which does not change its divisor). Recorded scope:
+identical `γ`, `Q`, and root numbers matched by that normalisation.
+
+**The chain now reads**
+```
+(a) zero-density estimate in S   +   (b″) collision-count bound
+        ⟹ (b′) pairing rigidity ⟹ (P2) quantitative strong multiplicity one ⟹ (ZS)
+```
+with every link either proved here or reduced to a statement about zeros only.
+
+---
+
+## 93. Cycle 93 (2026-07-26) — novelty check on the collision function, and the corrected target
+
+### 93.1 What the surplus zeros are
+
+By Theorem 48 the zeros of `D = Λ_F − Λ_G` are exactly the zeros of `H = F − G`, and
+`N_H(T) = N_{Λ_F}(T) + (T/π)log n_0 + O(log T)`. Under a zero-pairing hypothesis, `≈ N_{Λ_F}(T)` of
+them sit next to the paired zeros; the remaining `(T/π)log n_0` sit where **`F` and `G` take equal
+non-zero values**. So:
+
+> The coincidence set `{s : F(s) = G(s) ≠ 0}` of two distinct elements of `S` with equal `γ, Q, ω`
+> has density `(log n_0)/π` per unit height, where `n_0` is the first index at which their
+> coefficients differ.
+
+### 93.2 Novelty check — adjacent literature
+
+This is the same order of magnitude, and the same object, as **Bombieri–Perelli, "Distinct zeros of
+`L`-functions" (Acta Arith. 83 (1998))**, which shows that distinct `F, G ∈ S` with equal degree and
+conductor have `≫ T` zeros that are not common. The computation of the *exact constant* `(log n_0)/π`
+and its identification with the first coefficient disagreement index may be a refinement, but the
+regime — a linear-in-`T` count of non-common zeros — is classical.
+
+> **Verdict on Theorem 48: REDISCOVERED (regime), possibly refined (constant).** Recorded so that the
+> collision-function route is not pursued as if it were new territory. Its value to the programme is
+> not novelty but **placement**: it shows that (b′) is a statement about the `T log T` scale
+> (pairing), while the classical results live at the `T` scale (non-common zeros). *These are again
+> two different scales*, and by §87.2's rule they must not be conflated.
+
+### 93.3 The corrected target
+
+Bombieri–Perelli gives `≫ T` non-common zeros; (b′) needs that **no pairing at distance
+`O(1/log T)`** occurs among `≍ T log T` zeros. A count of non-common zeros at density `T` says
+nothing about the geometry of the remaining `T log T`. Hence:
+
+> **Recorded do-not-retry.** The collision function `Λ_F − Λ_G` and the Bombieri–Perelli circle of
+> ideas operate at density `T` and cannot supply (b′), which is a statement at density `T log T`.
+
+What (b′) needs is a **repulsion estimate at the mean-spacing scale between two `L`-functions** —
+i.e. a cross pair-correlation lower bound, the two-function analogue of Montgomery's conjecture. That
+is once more the bounded-`α` regime identified in §67, §72.2 and §90. **Four independent routes have
+now converged on the same regime**: the smoothed zero-counting variance (§67), Montgomery's `α ≍ 1`
+window (§72.2), the Selberg-CLT variance of `S_F − S_G` (§90), and the pairing rigidity (§91–93).
+
+> **Consolidated open core of the programme (as of cycle 93).**
+> ```
+> Everything reduces to the pair-correlation regime α ≍ 1 (equivalently δ ≍ 1/log T):
+>   Conjecture A / MI :  variance of the δ-smoothed zero-counting fluctuation of F
+>   Conjecture B, real part :  the same for the pair (F,G)
+>   Conjecture B, imaginary part (ω) :  Im of the twist correlation at depth b ≍ 1/log T
+>   (P2) / (ZS) :  cross repulsion of the zeros of F and G at the mean spacing
+> ```
+> All four are statements about zeros at the mean spacing, and none is reachable by an averaging
+> functional (§77.2) or by mixing scales (§87.2).
+
+---
+
+## 94. Hand-off (updated at cycle 93)
+
+**Read order for a future session.**
+1. §22.2 and §74 — the equivalence web and the meta-conclusion (one integrality mechanism).
+2. §79.4 — the ten candidate mechanisms and why each fails.
+3. §84 — one cusp versus all cusps; §85 — the two independence results (Theorems 38, 39).
+4. §77.2 (thin-set rule) and §87.2 (scale rule) — the two design rules; violating either has
+   produced three wrong derivations, all recorded.
+5. §93.3 — the consolidated open core: everything is at `α ≍ 1`.
+6. The do-not-retry list: §4, §7, §9.1, §9.6, §10.1, §11.1, §20.4, §21.1, §22.1, §26.3, §28.2, §31,
+   §38, §46.4, §49.1, §53, §57, §62, §66, §69.2, §71, §72.3, §74.1, §77.1, §79.2, §86.3, §88.2,
+   §89.2, §91.3, §93.2.
+7. The preprint `docs/drafts/pipeline/4-publication-ready/monodromy-integrality-selberg.md`.
+
+**Formal corpus (all unconditional, `#print axioms` = `[propext, Classical.choice, Quot.sound]`).**
+- `RHTower/SelbergPairingPrimeSquare.lean` — Selberg pairing at `p²`, polarization, Cauchy–Schwarz.
+- `HTGeometry/GeneralizedDirichletMeanValue.lean` — Bohr mean values: exact split, bilinear version,
+  `oscInt` bound, uniform-gap diagonal extraction.
+- `HTGeometry/ResidueJumpLowerBound.lean` — residue forces a uniform jump.
+- `HTGeometry/LogCoefficientTransfer.lean` — log-coefficient transfer bound.
+- `HTGeometry/DiagonalIsolation.lean` — gap from injectivity.
+- `HTGeometry/RealGramBlindness.lean` — real Gram expansion; the alternating form `wOmega`.
+- `HTGeometry/MultiplicityEnergyBracket.lean` — `Σm² ≥ Σm`, equality iff simple.
+- `HTGeometry/ConvexSlopeDerivBound.lean` — convexity to derivative bound (Jessen).
+- `HTGeometry/CommensurableFrequencies.lean` — commensurable frequency matching.
+- `HTGeometry/AdditiveVersusQuadratic.lean` — additive invariants cannot determine the energy.
+- `HTGeometry/FractionalExponentObstruction.lean` — coprime orders force integral exponents.
+- `HTGeometry/CountingPairing.lean` — bounded counting difference forces interleaving.
+
+**Standing status.** Conjecture A and Conjecture B both open. The programme's contribution is a
+complete map of the obstruction: what the axioms can and cannot supply (§85), which functionals are
+blind (§69, §72, §77), which scales may not be mixed (§87), and the single regime `α ≍ 1` into which
+all four sub-problems funnel (§93.3).
+
+---
+
+## 95. Cycle 95 (2026-07-26) — the Energy Gap remaining case: a natural attack and why it fails
+
+Remaining case of EG (§52): `F ∈ S` entire, non-vanishing on `Re s = 1`, with `0 < n_F < 1`.
+
+### 95.1 The attempted mechanism
+
+If `F` has zeros `ρ_n = β_n + iγ_n` with `η_n := 1 − β_n → 0`, then at `s = 1 + iγ_n` the zero at
+distance `η_n` should force `log|F(1+iγ_n)| ≤ −log(1/η_n) + …`, while Cauchy–Schwarz on the prime sum
+gives
+```
+|log F(1+η+it)| ≤ (Σ_p |a_F(p)|² p^{−1−2η})^{1/2}(Σ_p p^{−1−2η})^{1/2} ≈ √(n_F)·log(1/η) ,
+```
+so comparing would give `√(n_F) ≥ 1`, i.e. `n_F ≥ 1` — the Energy Gap.
+
+### 95.2 Why it fails, exactly
+
+The Hadamard–Landau expansion gives
+```
+log|F(s)| = Σ_{|ρ−s|<1} log|s−ρ| + O(log t) ,
+```
+and the `O(log t)` is genuine: there are `≍ (d/2π)log t` zeros within distance `1` of `s`. So a
+single zero at distance `η` yields only
+```
+log|F(1+iγ)| ≤ −log(1/η) + O(log γ) ,
+```
+which is informative only if `log(1/η) ≫ log γ`, i.e. `η ≪ γ^{−C}`. But the classical zero-free
+region available in `S` (Euler product plus non-vanishing on `Re s = 1`) gives `η ≫ 1/log γ`, hence
+`log(1/η) ≍ loglog γ ≪ log γ`. **The error term swamps the signal by a full logarithm.**
+
+### 95.3 The structural reason, and why no repair exists
+
+The attempt tries to read `n_F` off the line `Re s = 1`. By Theorem 38 (§85.1) that is impossible in
+principle: `F_c = L(·,χ)^c` is holomorphic and non-vanishing on a neighbourhood of `Re s ≥ 1`, has
+every linear density zero, and has `n_{F_c} = c²` arbitrary. **Any argument confined to a
+neighbourhood of `Re s ≥ 1` is compatible with every value of `n_F`.**
+
+> **Recorded do-not-retry.** No argument using only the behaviour of `F` on or to the right of
+> `Re s = 1` — zero-free regions, Hadamard–Landau at `σ = 1`, mean values on the `1`-line, Cauchy–
+> Schwarz against `Σp^{−1}` — can establish the Energy Gap or any part of Conjecture A. The witness of
+> §85.1 refutes the whole family at once.
+
+### 95.4 What this leaves for EG
+
+The remaining case must be attacked at `σ = 1/2`, where by §93.3 the relevant object is the variance
+of the `δ`-smoothed zero-counting fluctuation at `δ ≍ 1/log T`. Concretely:
+
+> **EG at the critical scale.** For `F ∈ S` entire and non-vanishing on `Re s = 1`,
+> `Var_{t≤T}(log|F(1/2+it)|) ~ (n_F/2)loglog T`; the Energy Gap asserts this variance is either `0`
+> (then `F = 1`) or at least `(1/2)loglog T`. So EG is: **the fluctuation of `log|F|` on the critical
+> line cannot be non-trivially small.**
+
+That is a clean statement of the remaining case, and it is again at `α ≍ 1`. The programme's four
+sub-problems (§93.3) are now five, all in the same regime.
+
+---
+
+## 96. Cycle 96 (2026-07-26) — zero energy equals zero rigidity
+
+Reformulating the Energy Gap at the critical scale identified in §95.4.
+
+### 96.1 The equivalence
+
+Write `N_F(t)` for the zero-counting function of `F ∈ S` and `M_F(t)` for its Riemann–von Mangoldt
+main term, so `S_F(t) = (1/π)arg F(1/2+it) = N_F(t) − M_F(t) + O(1)`. Selberg's variance asymptotic
+(given the zero-density input (a) of §90) is `Var_{t≤T}(S_F) ~ (n_F/2π²)loglog T`.
+
+> **Theorem 49 (rigidity at zero energy).** For `F ∈ S`, the following are equivalent:
+> 1. `n_F = 0`;
+> 2. `Var_{t≤T}(S_F) = O(1)`;
+> 3. `N_F(t) − M_F(t)` is bounded in `L²`, hence — being the difference of an integer-valued step
+>    function and a smooth increasing function — bounded pointwise off a density-zero set by some `K`;
+> 4. the zeros of `F` are **rigid**: `|γ_n − M_F^{−1}(n)| ≪ K/log γ_n`, i.e. the ordinates form a
+>    perfect log-lattice up to `K` mean spacings.
+>
+> `3 ⟹ 4` is the interleaving lemma, formalised unconditionally as `le_shift_of_count_le` /
+> `abs_shift_of_count_le`: a bounded counting difference forces the two monotone sequences to
+> interleave with shift `K`, hence to agree within `K` mean spacings.
+
+> **Corollary 50.** The `n_F = 0` case of the Energy Gap conjecture is *equivalent* to:
+> **a non-trivial element of `S` cannot have perfectly rigid zeros.**
+> The remaining case `0 < n_F < 1` is the corresponding statement with "perfectly" weakened to
+> "almost": the zero-counting fluctuation cannot have variance `o(loglog T)` without vanishing.
+
+### 96.2 Why this is the right shape
+
+- It replaces a statement about **primes** (`Σ_p|a_F(p)|²/p`) by a statement about the **geometry of
+  the zeros**, with an explicit and formalised bridge (`le_shift_of_count_le`) that uses integrality
+  of the counting function — the mechanism identified in §91.1 as the only one in the programme that
+  *uses* an integer rather than seeking one.
+- It respects both design rules: the zero statement is at the mean spacing (`α ≍ 1`, §87.2) and is
+  sensitive to the individual zeros rather than to an average (§77.2).
+- It is falsifiable and independent of Rankin–Selberg, automorphy, and the all-cusp obstruction of
+  §84.
+
+### 96.3 What a proof would need
+
+Rigid zeros determine `Λ_F` up to normalisation by the Hadamard product, so Corollary 50 asks: *is
+there an entire function of order `1` with a Selberg functional equation, whose zeros form a perfect
+log-lattice, and whose quotient by `Q^sγ(s)` is a Dirichlet series with an Euler product and
+`a(1) = 1`?* The Hadamard product of a perfect log-lattice is an explicit function; the content is
+whether it can carry an Euler product. **That is a concrete, self-contained question about one
+explicit function**, and it is the first form of the Energy Gap that does not mention prime sums at
+all.
+
+**[OPEN CORE]** Construct, or rule out, an entire order-`1` function with a Selberg-type functional
+equation whose zeros form a perfect log-lattice and whose "`L`-function part" has an Euler product.
+
+---
+
+## 97. Cycle 97 (2026-07-26) — rigid zeros demand spectral mass the primes cannot supply
+
+Attack on §96.3's [OPEN CORE]: can a non-trivial `F ∈ S` have perfectly rigid zeros?
+
+### 97.1 Rigid zeros force a sawtooth argument
+
+If the zeros are a perfect log-lattice, `N_F(t) = ⌈M_F(t)⌉`, so
+```
+S_F(t) = N_F(t) − M_F(t) = 1/2 − {M_F(t)} + O(1/log t) ,
+```
+and the Fourier expansion of the sawtooth gives
+```
+arg F(1/2+it) = π S_F(t) = Σ_{k ≥ 1} sin(2πk M_F(t)) / k  +  const .
+```
+
+### 97.2 The frequencies of the harmonics
+
+`M_F(t) = (d/2π)t log(t/2πe) + (log q/2π)t + O(1)`, so `M_F'(t) = ν(t) = (d/2π)log(t/2π) + …`. The
+`k`-th harmonic `sin(2πkM_F(t))` therefore has **instantaneous frequency**
+```
+2πk·ν(t) = k·d·log(t/2π) + …  ,
+```
+i.e. in the language of the prime side (where the frequency of the term `a_F(p)p^{−1/2−it}` is
+`log p`) it corresponds to
+```
+log p ≈ k·d·log t   ⟺   p ≈ t^{kd} .
+```
+
+### 97.3 The obstruction
+
+On the prime side, `arg F(1/2+it) = −Im Σ_p a_F(p)p^{−1/2−it} + (error)`, and every Selberg-type
+approximation of `log F` on the critical line uses primes `p ≤ x` with `x` **at most a fixed power of
+`T`**. So the prime sum can supply harmonics only up to `k ≤ k_0` with `k_0 = O(1)` (indeed
+`k_0 ≈ (log x)/(d log T)`).
+
+But the sawtooth's tail carries a **fixed positive** amount of variance:
+```
+Var( Σ_{k > k_0} sin(2πkM_F)/k )  =  (1/2π²) Σ_{k>k_0} k^{−2}  ≈  1/(2π² k_0)  >  0 .
+```
+
+> **Obstruction (RZ).** A perfectly rigid zero set requires `arg F(1/2+it)` to carry variance
+> `≍ 1/k_0 > 0` at frequencies corresponding to primes of size `t^{k_0 d}` — beyond the reach of any
+> admissible approximation length. The prime side cannot supply it unless the approximation error
+> itself carries that much `L²` mass.
+
+**Status: mechanism established, theorem not.** Turning RZ into a proof requires an `L²` bound for
+the error in Selberg's approximation of `log F` on the critical line that is `o(1)` uniformly — a
+quantitative strengthening of Selberg's theorem which is available in measure but not, as far as this
+programme has established, in `L²`. Recorded as the precise analytic gap.
+
+### 97.4 Why this is a new kind of argument
+
+Every previous route in the programme compared **magnitudes** (energies, variances, densities,
+counting functions). This one compares **frequency content**: rigid zeros are a chirp with harmonics
+at `k·d·log t`, while the primes supply tones at `log p` with `p` bounded by a power of `t`. The two
+spectra are incompatible in the tail. It is:
+
+- thin-set sensitive (§77.2 rule: it is about individual harmonics, not an average);
+- at the correct scale (§87.2 rule: the fundamental `k = 1` sits exactly at the mean spacing);
+- independent of Rankin–Selberg, of automorphy and of the all-cusp obstruction (§84) — it uses only
+  the functional equation (through `M_F`) and the Euler product (through the prime frequencies).
+
+> **Consequence if completed.** RZ ⟹ no non-trivial `F ∈ S` has rigid zeros ⟹ (Corollary 50)
+> `n_F = 0 ⟹ F = 1`, i.e. the `n_F = 0` case of the Energy Gap. Combined with Theorem 10
+> (`n_F ≥ ν²`), the only remaining case of EG would be `0 < n_F < 1`, for which the same frequency
+> argument applies with "perfect" replaced by "almost" rigidity: the sawtooth is then replaced by a
+> perturbed sawtooth whose harmonic tail is still bounded below as long as the perturbation has
+> variance `o(loglog T)`.
+
+**Recorded as the most promising open mechanism of the programme.** It is the first argument found in
+97 cycles that attacks the prime side and the zero side simultaneously **through their spectra**
+rather than through their sizes.
+
+---
+
+## 98. Cycle 98 (2026-07-26) — RZ does not close: the correction
+
+Phase-4 attack on §97's obstruction (RZ), carried out by doing the `L²` accounting properly.
+
+### 98.1 The accounting
+
+Fix `x = T^ε` and write `log F(1/2+it) = P_x(t) + E_x(t)`, `P_x = Σ_{p≤x}a_F(p)p^{−1/2−it} + (k≥2)`.
+Suppose `F` has rigid zeros, so `arg F(1/2+it) = Σ_{k≥1} sin(2πk M_F(t))/k + const`. Then:
+
+- **Total variance of the sawtooth:** `Var(arg F) = Σ_{k≥1} 1/(2k²) = π²/12`. **Bounded.**
+- **High-pass part above the prime cutoff `log x`:** the `k`-th harmonic has frequency `≈ kν(t)`
+  with `ν = (d/2π)log(t/2π)`, so the harmonics unreachable by `P_x` are those with `k > K`,
+  `K ≈ 2πε/d`, carrying variance `(1/2)Σ_{k>K}k^{−2}`.
+- **Available error variance:** `Var(E_x) ≤ 2Var(arg F) + 2Var(Im P_x) = π²/6 + 2A`, where
+  `A = (1/2)Σ_p |a_F(p)|²/p < ∞` when `n_F = 0`.
+
+§97 asserted that shrinking `ε` drives the required tail variance `≈ 1/(2K) = d/(4πε)` to infinity,
+producing a contradiction. **That is wrong.** The tail variance is
+`(1/2)Σ_{k>K}k^{−2} ≤ (1/2)Σ_{k≥1}k^{−2} = π²/12` for every `K`, and in particular for `K < 1` the
+"tail" is simply the whole sawtooth. The expression `1/(2K)` is the asymptotic for `K ≥ 1` only and
+is an *upper* bound artefact below that; it never exceeds `π²/12`.
+
+> **Verdict on RZ: FALSE as an obstruction.** The sawtooth's total `L²` mass is a bounded constant,
+> so its high-frequency part is bounded, and the error term `E_x` has variance of the same order.
+> There is no mismatch to exploit. **Recorded do-not-retry: no `L²` accounting of the sawtooth's
+> harmonics against the prime frequencies can rule out rigid zeros.**
+
+### 98.2 What actually survives
+
+The structural observation of §97.2 stands and is worth keeping:
+
+> Rigid zeros make `arg F(1/2+it)` a **chirp** — a sawtooth in `M_F(t)`, whose harmonics have
+> *drifting* instantaneous frequencies `k·ν(t)`, `ν(t) ≍ log t`. The prime side supplies only **pure
+> tones** `log p`, whose frequencies do not drift.
+
+The failure of §98.1 is that the *error term* is unconstrained in shape, so it can in principle be a
+chirp. Closing the argument therefore requires not an `L²` bound but a **structural** statement:
+
+> **(RZ′) Chirp obstruction, corrected form.** The error `E_x(t)` in the approximation of
+> `log F(1/2+it)` by its prime sum is, for `F ∈ S`, expressible in terms of the zeros within `O(1/log t)`
+> of `t`; a *drifting-frequency* component of fixed amplitude in `E_x` is therefore itself a statement
+> about zero rigidity. So RZ′ is circular unless the error is controlled independently of the zeros.
+
+**Recorded.** The chirp-versus-tone distinction is real but cannot be converted into an obstruction
+by size arguments; it would need a genuinely new representation of `log F` on the critical line whose
+error is prime-side controlled. That is exactly the missing analytic input identified in §90 as
+hypothesis (a), so the route rejoins the known open core rather than bypassing it.
+
+### 98.3 Methodological note
+
+This is the fourth conjecture proposed and killed in-cycle by exact accounting (APR §Phase-4, ZD §77,
+the zero-sharing bridge §87.2, RZ §98). In each case the error was the same in kind: an asymptotic
+formula valid in one regime was applied outside it. The two design rules (§77.2 thin sets, §87.2
+scales) are now joined by a third:
+
+> **Regime rule.** Before comparing two asymptotic expressions, check that the parameter ranges in
+> which each was derived actually overlap. `1/(2K)` for the harmonic tail is valid for `K ≥ 1`; the
+> contradiction in §97 came from using it at `K < 1`.
