@@ -1145,3 +1145,24 @@ are now unconditional for entire carriers.  The section *Constant-multiplier and
 stability* is complete in its scalar half.  What remains of the lattice branch is only the matrix
 case `m > 1`, where the finite-dimensional-span argument does not apply because a lattice is
 discrete.
+
+### The scalar normal form
+
+Both branches of the entire quasi-period law in fact produce a *constant-coefficient* first-order
+equation, so the classical normal form is available and not just differential algebraicity.
+
+- **`exists_deriv_eq_const_mul_of_quasiperiods_entire`** — `f' = c f` with `c` constant.  The
+  `R`-dependent branch gets it from the one-dimensional derivation-invariant span
+  (`exists_deriv_eq_const_mul_of_quasiperiods_of_not_discrete`); the lattice branch from the
+  constant logarithmic derivative of a zero-free carrier
+  (`exists_deriv_eq_const_mul_of_quasiperiods`).  `differentiallyAlgebraic_of_quasiperiods_entire` is
+  now a one-line corollary rather than a second case analysis.
+- **`eq_mul_exp_of_quasiperiods_entire`** — hence `f(z) = f(0) exp(c z)`: an entire carrier with two
+  `Q`-independent constant multipliers is a pure exponential.  In particular its multipliers are
+  forced to be `exp(c w_1)` and `exp(c w_2)`, which is the classical compatibility condition: for
+  incompatible `(a,b)` no nonzero entire carrier exists at all.
+
+This is the sharpest possible form of `(24)`--`(26)` for entire data and it is the base case for the
+matrix lattice problem `m > 1`, where the plan is: a common eigenvector of the two commuting shift
+operators on the finite-dimensional span of the components is a scalar carrier of exactly this kind,
+hence a nowhere-zero exponential, and dividing by it drops the dimension.

@@ -55,16 +55,16 @@ theorem periodic_logDeriv_of_quasiperiodic {f : ℂ → ℂ} {w a : ℂ} (ha : a
 
 /-! ### The quasi-period rank law -/
 
-/-- **The quasi-period rank law.**  An entire nowhere-vanishing function with two `ℚ`-independent
-constant-multiplier quasi-periods is differentially algebraic.  The logarithmic derivative is
-entire and doubly periodic, hence constant — by non-discreteness of the period group when the two
-steps are `ℝ`-dependent, and by Liouville on the lattice when they are `ℝ`-independent — so `f`
-satisfies `f' = c·f`. -/
-theorem differentiallyAlgebraic_of_quasiperiods {f : ℂ → ℂ} (hd : Differentiable ℂ f)
+/-- **The quasi-period rank law in its sharp form.**  An entire nowhere-vanishing function with two
+`ℚ`-independent constant-multiplier quasi-periods satisfies a first-order equation `f' = c·f` with a
+*constant* coefficient.  The logarithmic derivative is entire and doubly periodic, hence constant —
+by non-discreteness of the period group when the two steps are `ℝ`-dependent, and by Liouville on
+the lattice when they are `ℝ`-independent. -/
+theorem exists_deriv_eq_const_mul_of_quasiperiods {f : ℂ → ℂ} (hd : Differentiable ℂ f)
     (hne : ∀ z, f z ≠ 0) {w₁ w₂ a b : ℂ} (hindep : LinearIndependent ℚ ![w₁, w₂])
     (ha : a ≠ 0) (hb : b ≠ 0)
     (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
-    DifferentiallyAlgebraic f := by
+    ∃ c : ℂ, ∀ z, deriv f z = c * f z := by
   have hd' : Differentiable ℂ (deriv f) := fun z =>
     ((hd.analyticAt z).deriv).differentiableAt
   have hL : Differentiable ℂ (logDeriv f) := by
@@ -83,12 +83,23 @@ theorem differentiallyAlgebraic_of_quasiperiods {f : ℂ → ℂ} (hd : Differen
       exact hp
     · exact meromorphicNF_constant_of_rankTwo_realDependent_periods (logDeriv f)
         (fun z _ => (hL.analyticAt z).meromorphicNFAt) ![w₁, w₂] hindep hdep hspan
-  refine differentiallyAlgebraic_of_firstOrder_poly_ode
-    (Polynomial.C (logDeriv f 0)) 1 one_ne_zero (fun z => ?_)
+  refine ⟨logDeriv f 0, fun z => ?_⟩
   have hz : deriv f z / f z = logDeriv f 0 := by
     rw [← logDeriv_apply]
     exact hconst z 0
-  simpa using (div_eq_iff (hne z)).mp hz
+  exact (div_eq_iff (hne z)).mp hz
+
+/-- **The quasi-period rank law.**  An entire nowhere-vanishing function with two `ℚ`-independent
+constant-multiplier quasi-periods is differentially algebraic: it satisfies the first-order equation
+`f' = c·f` with a constant coefficient. -/
+theorem differentiallyAlgebraic_of_quasiperiods {f : ℂ → ℂ} (hd : Differentiable ℂ f)
+    (hne : ∀ z, f z ≠ 0) {w₁ w₂ a b : ℂ} (hindep : LinearIndependent ℚ ![w₁, w₂])
+    (ha : a ≠ 0) (hb : b ≠ 0)
+    (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
+    DifferentiallyAlgebraic f := by
+  obtain ⟨c, hc⟩ := exists_deriv_eq_const_mul_of_quasiperiods hd hne hindep ha hb h₁ h₂
+  refine differentiallyAlgebraic_of_firstOrder_poly_ode (Polynomial.C c) 1 one_ne_zero (fun z => ?_)
+  simpa using hc z
 
 /-- An entire nowhere-vanishing function with two `ℚ`-independent constant-multiplier quasi-periods
 is not hypertranscendental. -/

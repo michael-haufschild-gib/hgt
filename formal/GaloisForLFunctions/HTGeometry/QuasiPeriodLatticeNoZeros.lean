@@ -76,34 +76,80 @@ theorem ne_zero_of_quasiperiods_lattice {f : ℂ → ℂ} (hd : Differentiable �
     mul_le_mul_of_nonneg_right hKS.le (by linarith)
   nlinarith
 
+/-- **Sharp form of the entire quasi-period law.**  The function satisfies `f' = c·f` with a
+*constant* coefficient, on both branches: `ℝ`-dependent steps give a one-dimensional
+derivation-invariant span, `ℝ`-independent steps give a zero-free `f` with constant logarithmic
+derivative. -/
+theorem exists_deriv_eq_const_mul_of_quasiperiods_entire {f : ℂ → ℂ} (hd : Differentiable ℂ f)
+    {w₁ w₂ a b : ℂ} (hindepQ : LinearIndependent ℚ ![w₁, w₂])
+    (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
+    ∃ c : ℂ, ∀ z, deriv f z = c * f z := by
+  by_cases hdep : LinearIndependent ℝ ![w₁, w₂]
+  · by_cases hf0 : ∀ z, f z = 0
+    · refine ⟨0, fun z => ?_⟩
+      have hfe : f = fun _ => (0 : ℂ) := funext hf0
+      subst hfe
+      simp
+    obtain ⟨c₀, hc₀⟩ := not_forall.mp hf0
+    have ha : a ≠ 0 := by
+      intro h
+      apply hc₀
+      have hval := h₁ (c₀ - w₁)
+      rw [show c₀ - w₁ + w₁ = c₀ by ring, h, zero_mul] at hval
+      exact hval
+    have hb : b ≠ 0 := by
+      intro h
+      apply hc₀
+      have hval := h₂ (c₀ - w₂)
+      rw [show c₀ - w₂ + w₂ = c₀ by ring, h, zero_mul] at hval
+      exact hval
+    exact exists_deriv_eq_const_mul_of_quasiperiods hd
+      (ne_zero_of_quasiperiods_lattice hd hdep ha hb h₁ h₂ hc₀) hindepQ ha hb h₁ h₂
+  · refine exists_deriv_eq_const_mul_of_quasiperiods_of_not_discrete hd ![w₁, w₂] ![a, b]
+      (fun i z => ?_)
+      (not_discrete_intSpan_fin_two_of_not_linearIndependent_real ![w₁, w₂] hindepQ hdep)
+    fin_cases i
+    · simpa using h₁ z
+    · simpa using h₂ z
+
 /-- **The scalar quasi-period rank law for entire functions, unconditionally.**  An entire function
 reproduced by two `ℚ`-independent translations up to constant multipliers is differentially
-algebraic: on `ℝ`-dependent steps the step group is not discrete, and on `ℝ`-independent steps the
-function has no zeros and its logarithmic derivative is a lattice-periodic entire function, hence
-constant by Liouville. -/
+algebraic — it satisfies a first-order equation with constant coefficient. -/
 theorem differentiallyAlgebraic_of_quasiperiods_entire {f : ℂ → ℂ} (hd : Differentiable ℂ f)
     {w₁ w₂ a b : ℂ} (hindepQ : LinearIndependent ℚ ![w₁, w₂])
     (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
     DifferentiallyAlgebraic f := by
-  by_cases hdep : LinearIndependent ℝ ![w₁, w₂]
-  · by_cases hf0 : ∀ z, f z = 0
-    · exact differentiallyAlgebraic_of_const (fun x y => by rw [hf0 x, hf0 y])
-    obtain ⟨c, hc⟩ := not_forall.mp hf0
-    have ha : a ≠ 0 := by
-      intro h
-      apply hc
-      have hval := h₁ (c - w₁)
-      rw [show c - w₁ + w₁ = c by ring, h, zero_mul] at hval
-      exact hval
-    have hb : b ≠ 0 := by
-      intro h
-      apply hc
-      have hval := h₂ (c - w₂)
-      rw [show c - w₂ + w₂ = c by ring, h, zero_mul] at hval
-      exact hval
-    exact differentiallyAlgebraic_of_quasiperiods hd
-      (ne_zero_of_quasiperiods_lattice hd hdep ha hb h₁ h₂ hc) hindepQ ha hb h₁ h₂
-  · exact differentiallyAlgebraic_of_quasiperiods_realDependent hd hindepQ hdep h₁ h₂
+  obtain ⟨c, hc⟩ := exists_deriv_eq_const_mul_of_quasiperiods_entire hd hindepQ h₁ h₂
+  refine differentiallyAlgebraic_of_firstOrder_poly_ode (Polynomial.C c) 1 one_ne_zero (fun z => ?_)
+  simpa using hc z
+
+/-- **The normal form.**  Such a function is `f 0 · exp (c·z)`: in particular it is nowhere zero
+unless it vanishes identically, and its multipliers are `exp (c·w₁)` and `exp (c·w₂)`. -/
+theorem eq_mul_exp_of_quasiperiods_entire {f : ℂ → ℂ} (hd : Differentiable ℂ f)
+    {w₁ w₂ a b : ℂ} (hindepQ : LinearIndependent ℚ ![w₁, w₂])
+    (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
+    ∃ c : ℂ, ∀ z, f z = f 0 * Complex.exp (c * z) := by
+  obtain ⟨c, hc⟩ := exists_deriv_eq_const_mul_of_quasiperiods_entire hd hindepQ h₁ h₂
+  refine ⟨c, fun z => ?_⟩
+  have hgd : ∀ u : ℂ, HasDerivAt (fun v : ℂ => f v * Complex.exp (-(c * v)))
+      (deriv f u * Complex.exp (-(c * u)) + f u * (Complex.exp (-(c * u)) * (-c))) u := by
+    intro u
+    have hfu : HasDerivAt f (deriv f u) u := (hd u).hasDerivAt
+    have hev : HasDerivAt (fun v : ℂ => Complex.exp (-(c * v)))
+        (Complex.exp (-(c * u)) * (-c)) u := by
+      have hbase := (((hasDerivAt_id u).const_mul c).neg).cexp
+      simpa using hbase
+    exact hfu.mul hev
+  have hdiff : Differentiable ℂ fun v : ℂ => f v * Complex.exp (-(c * v)) :=
+    fun u => (hgd u).differentiableAt
+  have hzero : ∀ u : ℂ, deriv (fun v : ℂ => f v * Complex.exp (-(c * v))) u = 0 := by
+    intro u
+    rw [(hgd u).deriv, hc u]
+    ring
+  have hconst := is_const_of_deriv_eq_zero hdiff hzero z 0
+  simp only [mul_zero, neg_zero, Complex.exp_zero, mul_one] at hconst
+  rw [Complex.exp_neg, ← div_eq_mul_inv, div_eq_iff (Complex.exp_ne_zero (c * z))] at hconst
+  exact hconst
 
 /-- An entire function with two `ℚ`-independent constant-multiplier quasi-periods is never
 hypertranscendental. -/

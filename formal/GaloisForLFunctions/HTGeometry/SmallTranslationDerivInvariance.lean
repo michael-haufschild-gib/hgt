@@ -231,6 +231,39 @@ theorem differentiallyAlgebraic_of_quasiperiods_of_not_discrete {ι : Type*} {f 
   exact differentiallyAlgebraic_of_translationStable_of_not_discrete
     (Submodule.span ℂ (Set.range g)) (differentiable_of_mem_span g (fun _ => hd)) w hnd hstab hgen
 
+/-- **Sharp form for a scalar carrier.**  With a non-discrete step group the span of `f` is a
+one-dimensional derivation-invariant space, so `f' = k·f` with a *constant* `k`. -/
+theorem exists_deriv_eq_const_mul_of_quasiperiods_of_not_discrete {ι : Type*} {f : ℂ → ℂ}
+    (hd : Differentiable ℂ f) (w : ι → ℂ) (c : ι → ℂ)
+    (hqp : ∀ (i : ι) (z : ℂ), f (z + w i) = c i * f z)
+    (hnd : ¬ DiscreteTopology (Submodule.span ℤ (Set.range w))) :
+    ∃ k : ℂ, ∀ z, deriv f z = k * f z := by
+  set g : Unit → (ℂ → ℂ) := fun _ => f with hgdef
+  haveI : FiniteDimensional ℂ (Submodule.span ℂ (Set.range g)) :=
+    FiniteDimensional.span_of_finite ℂ (Set.finite_range g)
+  have hgen : f ∈ Submodule.span ℂ (Set.range g) := Submodule.subset_span ⟨(), rfl⟩
+  have hstab : ∀ i, TranslationStable (Submodule.span ℂ (Set.range g)) (w i) := by
+    intro i
+    refine translationStable_span_of_generators g (fun _ => ?_)
+    have hfun : translate (w i) f = c i • f := by
+      funext z
+      show f (z + w i) = c i * f z
+      exact hqp i z
+    show translate (w i) f ∈ _
+    rw [hfun]
+    exact Submodule.smul_mem _ _ hgen
+  obtain ⟨p, hp_mem, hp_ne, hp_zero⟩ := exists_small_nonzero_of_not_discrete_intSubmodule _ hnd
+  have hDinv := derivInvariantObservableSpace_of_small_translations
+    (Submodule.span ℂ (Set.range g)) (differentiable_of_mem_span g (fun _ => hd)) p hp_zero hp_ne
+    (fun n => translationStable_of_mem_span_range _ w hstab (p n) (hp_mem n))
+  have hmem : deriv f ∈ Submodule.span ℂ (Set.range g) := hDinv f hgen
+  have hrange : Set.range g = {f} := Set.range_const
+  rw [hrange, Submodule.mem_span_singleton] at hmem
+  obtain ⟨k, hk⟩ := hmem
+  refine ⟨k, fun z => ?_⟩
+  have hz := congrFun hk z
+  simpa using hz.symm
+
 /-! ### Constant internal monodromy -/
 
 /-- **Constant internal monodromy does not escape the law.**  A `ℂ^m`-valued entire function which
