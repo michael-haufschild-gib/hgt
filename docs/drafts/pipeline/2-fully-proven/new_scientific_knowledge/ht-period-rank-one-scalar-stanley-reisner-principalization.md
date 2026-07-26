@@ -677,8 +677,10 @@ ideal equality itself:
   coefficient ring, that its Stanley--Reisner ideal is exactly the principal ideal
   `(prod_(u in U) X_u)`.
 
-The rank-two meromorphic-to-DA theorem, the rational gauge reduction, and the transfer from the
-analytic carrier to `FacetComplementRankOne` remain paper-level, so the card stays in stage 2.
+(Superseded by the progress log below: the transfer from the analytic carrier to
+`FacetComplementRankOne` is formalized, and for entire carriers it is unconditional, in the scalar,
+channel and finite-state settings alike.  What is still paper-level is the rank-two meromorphic
+lattice boundary -- i.e. carriers with poles -- and the Schaefke--Singer rational gauge reduction.)
 
 ## Gates
 
@@ -1235,3 +1237,34 @@ Consequences, all unconditional:
 So the card's *Constant-multiplier and finite-state stability* section is now formalized in full for
 entire carriers, in both the `R`-dependent and the lattice configuration, and for every internal
 dimension `m`.
+
+### The finite-state capstone
+
+`GaloisForLFunctions/HTGeometry/MatrixRealizationPrincipalization.lean` (axiom-clean, build green,
+umbrella-registered) carries the unconditional finite-state codimension law through the
+combinatorial classification, exactly as the scalar and constant-multiplier versions do:
+
+- **`principalization_of_matrixRealization`** — a finite facet antichain carrying entire `C^m`-valued
+  carriers with constant internal monodromy and a hypertranscendental component is the full simplex
+  or a single-vertex deletion family;
+- **`stanleyReisnerIdeal_principal_of_matrixRealization`** — and in the non-simplex case its
+  Stanley--Reisner ideal is the principal squarefree `(prod_(u in U) X u)`.
+
+This is the prime-route normal form `(41)` for every finite constant internal representation, now
+proved rather than assumed: *no finite number of constant matrix channels supplies the missing
+analytic direction*, in any internal dimension, under either configuration of the two steps.
+
+### Status of the card's Lean formalization
+
+Formalized and unconditional (entire carriers): the facet separator `(12)`/`(14)`, the transport of
+annihilation to periods `(17)`, the period-rank exclusions, the facet-codimension law `(6)`, the
+structural classification and the principal ideal `(18)`--`(20)`, componentwise-channel stability
+`(21)`--`(23)`, the constant-multiplier law `(24)`--`(26)` together with its normal form
+`f = f(0) exp(c z)`, and the finite-state law `(27)`--`(33)` in every internal dimension with the
+capstone above.
+
+Not yet formalized: the scalar **meromorphic** lattice boundary -- a hypertranscendental carrier with
+poles invariant under a full lattice, i.e. `EllipticHypertranscendenceFree`, which needs the
+Weierstrass structure theorem that every elliptic function lies in `C(P, P')`; and the
+Schaefke--Singer rational gauge reduction feeding the *Cocycle transcendence requirement*, which the
+card itself labels `[SEARCH]`/`[BRIDGE]` rather than new knowledge.
