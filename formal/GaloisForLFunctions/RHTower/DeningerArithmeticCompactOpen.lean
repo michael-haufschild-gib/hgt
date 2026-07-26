@@ -2,7 +2,6 @@ import GaloisForLFunctions.RHTower.DeningerArithmeticCochainComplex
 import Mathlib.Analysis.Complex.LocallyUniformLimit
 import Mathlib.LinearAlgebra.Quotient.Basic
 import Mathlib.Topology.Baire.CompleteMetrizable
-import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
 import Mathlib.Topology.Metrizable.ContinuousMap
 
 /-!
@@ -171,29 +170,121 @@ def deningerCompactOpenXiRange :
     Submodule ℂ DeningerCompactOpenEntire :=
   LinearMap.range deningerCompactOpenXiMul.toLinearMap
 
-/-!
-`Submodule` remembers the chosen `Semiring ℂ` instance, while module quotients ask for the
-semiring inherited from a `Ring ℂ` instance.  Pin the latter to mathlib's canonical semiring so
-the quotient structure is definitionally compatible with the already constructed submodule.
+/-- Quotient relation attached to a compact-open complex submodule. -/
+def deningerCompactOpenQuotientRel
+    (S : Submodule ℂ DeningerCompactOpenEntire) :
+    Setoid DeningerCompactOpenEntire :=
+  QuotientAddGroup.leftRel S.toAddSubgroup
+
+/--
+Topological complex quotient by a compact-open submodule.
+
+This local quotient wrapper avoids a definitional diamond between mathlib's shortcut
+`Semiring ℂ` instance and the semiring inherited through `Ring ℂ`.  The quotient relation is the
+ordinary additive-group quotient relation; scalar multiplication descends because `S` is a
+complex submodule.
 -/
-local instance deningerCompactOpenCompatibleComplexRing : Ring ℂ :=
-  { Complex.commRing.toRing with
-    toSemiring := inferInstanceAs (Semiring ℂ) }
+def DeningerCompactOpenQuotient
+    (S : Submodule ℂ DeningerCompactOpenEntire) :=
+  Quotient (deningerCompactOpenQuotientRel S)
+
+namespace DeningerCompactOpenQuotient
+
+variable (S : Submodule ℂ DeningerCompactOpenEntire)
+
+instance instTopologicalSpace :
+    TopologicalSpace (DeningerCompactOpenQuotient S) :=
+  instTopologicalSpaceQuotient
+
+instance instAddCommGroup :
+    AddCommGroup (DeningerCompactOpenQuotient S) :=
+  inferInstanceAs
+    (AddCommGroup
+      (DeningerCompactOpenEntire ⧸ S.toAddSubgroup))
+
+instance instIsTopologicalAddGroup :
+    IsTopologicalAddGroup (DeningerCompactOpenQuotient S) :=
+  inferInstanceAs
+    (IsTopologicalAddGroup
+      (DeningerCompactOpenEntire ⧸ S.toAddSubgroup))
+
+instance instSMul :
+    SMul ℂ (DeningerCompactOpenQuotient S) where
+  smul c :=
+    Quotient.map' (c • ·) fun x y hxy => by
+      have hrel :
+          QuotientAddGroup.leftRel S.toAddSubgroup x y :=
+        hxy
+      apply QuotientAddGroup.leftRel_apply.mpr
+      have hmem : -x + y ∈ S :=
+        QuotientAddGroup.leftRel_apply.mp hrel
+      change -(c • x) + c • y ∈ S
+      rw [← smul_neg, ← smul_add]
+      exact S.smul_mem c hmem
+
+/-- Canonical quotient map. -/
+def mk (F : DeningerCompactOpenEntire) :
+    DeningerCompactOpenQuotient S :=
+  Quotient.mk (deningerCompactOpenQuotientRel S) F
+
+/-- The canonical class map is an open quotient map. -/
+theorem isOpenQuotientMap_mk :
+    IsOpenQuotientMap (mk S) :=
+  QuotientAddGroup.isOpenQuotientMap_mk
+
+@[simp]
+theorem mk_add (F G : DeningerCompactOpenEntire) :
+    mk S (F + G) = mk S F + mk S G :=
+  rfl
+
+@[simp]
+theorem mk_smul (c : ℂ) (F : DeningerCompactOpenEntire) :
+    mk S (c • F) = c • mk S F :=
+  rfl
+
+instance instModule :
+    Module ℂ (DeningerCompactOpenQuotient S) :=
+  Function.Surjective.module ℂ
+    { toFun := mk S
+      map_zero' := rfl
+      map_add' := fun _ _ => rfl }
+    Quotient.mk_surjective
+    (fun _ _ => rfl)
+
+instance instContinuousSMul :
+    ContinuousSMul ℂ (DeningerCompactOpenQuotient S) where
+  continuous_smul := by
+    rw [←
+      (IsOpenQuotientMap.id.prodMap
+        (isOpenQuotientMap_mk S)).continuous_comp_iff]
+    exact continuous_quot_mk.comp continuous_smul
+
+/-- Canonical quotient map as a continuous complex-linear map. -/
+def mkL :
+    DeningerCompactOpenEntire →L[ℂ]
+      DeningerCompactOpenQuotient S where
+  toFun := mk S
+  map_add' := mk_add S
+  map_smul' := mk_smul S
+  cont := continuous_quot_mk
+
+end DeningerCompactOpenQuotient
 
 /-- Unreduced compact-open middle cohomology as a topological complex quotient module. -/
 abbrev DeningerArithmeticCompactOpenH1 :=
-  Quotient deningerCompactOpenXiRange.quotientRel
+  DeningerCompactOpenQuotient deningerCompactOpenXiRange
 
 /-- Continuous linear class map into unreduced compact-open middle cohomology. -/
 def deningerArithmeticCompactOpenH1Class :
     DeningerCompactOpenEntire →L[ℂ] DeningerArithmeticCompactOpenH1 :=
-  deningerCompactOpenXiRange.mkQL
+  DeningerCompactOpenQuotient.mkL deningerCompactOpenXiRange
 
 @[simp]
 theorem deningerArithmeticCompactOpenH1Class_apply
     (F : DeningerCompactOpenEntire) :
     deningerArithmeticCompactOpenH1Class F =
-      deningerCompactOpenXiRange.mkQ F :=
+      DeningerCompactOpenQuotient.mk
+        deningerCompactOpenXiRange F :=
   rfl
 
 /-- Closed coboundary range used in reduced topological cohomology. -/
@@ -203,19 +294,21 @@ def deningerCompactOpenXiClosedRange :
 
 /-- Reduced compact-open middle cohomology as a Hausdorff topological complex quotient module. -/
 abbrev DeningerArithmeticReducedCompactOpenH1 :=
-  Quotient deningerCompactOpenXiClosedRange.quotientRel
+  DeningerCompactOpenQuotient deningerCompactOpenXiClosedRange
 
 /-- Continuous linear class map into reduced compact-open middle cohomology. -/
 def deningerArithmeticReducedCompactOpenH1Class :
     DeningerCompactOpenEntire →L[ℂ]
       DeningerArithmeticReducedCompactOpenH1 :=
-  deningerCompactOpenXiClosedRange.mkQL
+  DeningerCompactOpenQuotient.mkL
+    deningerCompactOpenXiClosedRange
 
 @[simp]
 theorem deningerArithmeticReducedCompactOpenH1Class_apply
     (F : DeningerCompactOpenEntire) :
     deningerArithmeticReducedCompactOpenH1Class F =
-      deningerCompactOpenXiClosedRange.mkQ F :=
+      DeningerCompactOpenQuotient.mk
+        deningerCompactOpenXiClosedRange F :=
   rfl
 
 /-- Exact closed-range conjecture separating unreduced from reduced arithmetic cohomology. -/

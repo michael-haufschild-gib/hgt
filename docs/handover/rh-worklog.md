@@ -5371,3 +5371,71 @@ THE ANTI-HERMITIAN DEFECT IS NEGLIGIBLE IN THE CALKIN ALGEBRA. If a compressed f
 anti-Hermitian part is compact and the compressions exhaust, the norms of the finite anti-Hermitian
 parts may tend to zero — which is now sufficient. THAT IS THE FIRST TIME THE CORPUS'S CALKIN
 RIGIDITY RESULTS BECOME USABLE AS A POSITIVE INPUT RATHER THAN AN OBSTRUCTION.
+
+---
+
+## Cycle 91 (2026-07-26) — COMPRESSION CANNOT MANUFACTURE ASYMPTOTIC SELF-ADJOINTNESS
+### Cycle 90's proposed exploitation is REFUTED. Record it so no future cycle repeats it.
+
+### The idea and its death
+Cycle 90 relaxed the operator-lane entry condition to ||Im A_n|| -> 0 and proposed exploiting the
+corpus's Calkin-rigidity results: if the commutator/defect is COMPACT, maybe the compressed finite
+stages have vanishing defect. THEY DO NOT.
+
+1. THE DEFECT COMMUTES WITH COMPRESSION. For a self-adjoint projection P, (P A P)* = P A* P, so
+       Im (P A P)  =  P (Im A) P.
+   Compression NEVER reduces the defect below what compressing Im A gives. It cannot create
+   self-adjointness the source lacks.
+
+2. COMPACTNESS IS THE WRONG HYPOTHESIS. If P_n increases to I, then for any x fixed by every P_n
+   whose image H x is also fixed,
+       ||P_n H P_n||  >=  ||H x|| / ||x||  >  0,
+   a positive constant INDEPENDENT OF n. So ||P_n H P_n|| does NOT tend to zero — it tends UP to
+   ||H||. Compactness of H says the TAIL (I - P_n) H is small: a statement about what is DISCARDED,
+   not about what is KEPT.
+
+    ==> A CONSTRUCTION CANNOT BECOME ASYMPTOTICALLY SELF-ADJOINT BY TRUNCATION. THE DEFECT MUST
+        VANISH BY CONSTRUCTION:  A_n = S_n + K_n  WITH S_n SELF-ADJOINT AND ||K_n|| -> 0.
+
+This closes the natural reading of the Calkin-rigidity results as a positive input: the commutator
+being compact places the defect in the kernel of the Calkin quotient, but THE FINITE STAGES RETAIN
+ITS FULL NORM.
+
+### Also noted (and it is the same guardrail again)
+If the normalized charpoly of A_n converges to XiC, the eigenvalues of A_n converge to the zeros of
+XiC, so ||Im A_n|| -> 0 IS equivalent to the conclusion unless it is forced a priori. Entry 24 is a
+genuine weakening of the ENTRY CONDITION, but it does not weaken the requirement that the vanishing
+be STRUCTURAL. Cycle 89's guardrail applies verbatim in the relaxed setting.
+
+Machine-verified: `RHTower/CompressionCannotSelfAdjointify.lean` (the adjoint-compression identity,
+self-adjointness preserved under compression, the fixed-vector lower bound on the compression norm,
+its positivity, the resulting non-vanishing of compression norms, and the restatement of what does
+suffice; standard axioms only, wired into RHTower).
+
+### TWENTY-FIFTH ATLAS ENTRY
+    compression no-go   Im(PAP) = P(Im A)P, and compression norms of a fixed nonzero defect are
+                        bounded below by ||Hx||/||x|| along any exhausting family. Asymptotic
+                        self-adjointness must be built in, never truncated in. Compactness of the
+                        defect is irrelevant to the finite stages.
+
+### STATE AT CYCLE 91
+Twenty-five entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+BOTH LANES ARE NOW CHARACTERISED BY THE SAME MISSING INGREDIENT:
+  * explicit formula (17-21): every non-arithmetic term cancels or decays; the residue is the zero
+    sum; every handle on it is circular or capped.
+  * operator/approximation (22-25): the criterion localizes and relaxes to asymptotic
+    self-adjointness, but the vanishing must be structural, and no compression scheme supplies it.
+IN BOTH LANES THE MISSING OBJECT IS THE SAME: A SOURCE OF ZERO-FREENESS (equivalently, of
+self-adjointness) THAT IS NOT DERIVED FROM ZETA ITSELF.
+
+### Cycle 92 target
+Stop looking for the source inside analysis. The only known unconditional sources of a priori
+self-adjointness attached to L-functions are GEOMETRIC: the Frobenius action on etale cohomology of a
+variety over a finite field, where Weil's theorem is a THEOREM because Poincare duality plus the
+hard Lefschetz theorem supply a positive-definite pairing. The corpus's theorem-area name is
+`GaloisForLFunctions`. AUDIT WHAT THE CORPUS HAS BUILT ON THE FUNCTION-FIELD SIDE and whether any of
+it produces a pairing that survives the passage to the number-field setting — specifically whether
+the corpus contains any construction of a Frobenius-like operator whose self-adjointness comes from a
+duality rather than from an assumption. That is the only lane in which self-adjointness has ever been
+obtained a priori, and per entries 24-25 that is precisely what is required.

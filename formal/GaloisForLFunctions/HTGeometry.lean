@@ -2071,3 +2071,4 @@ import GaloisForLFunctions.HTGeometry.AmplifierEnergyBound
 import GaloisForLFunctions.HTGeometry.RoundingVarianceFloor
 import GaloisForLFunctions.HTGeometry.UnitProductRigidity
 import GaloisForLFunctions.HTGeometry.MultiplicationTableThinness
+import GaloisForLFunctions.HTGeometry.SmoothMultiplicativeDichotomy

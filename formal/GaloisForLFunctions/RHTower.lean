@@ -560,6 +560,7 @@ import GaloisForLFunctions.RHTower.BourgainA6TorusBaseline
 import GaloisForLFunctions.RHTower.BourgainA6Rescaling
 import GaloisForLFunctions.RHTower.BourgainFejerSpacing
 import GaloisForLFunctions.RHTower.BourgainFejerMomentTransfer
+import GaloisForLFunctions.RHTower.BourgainA6FirstSpacingBridge
 import GaloisForLFunctions.RHTower.BourgainPlanarBilinearL6
 import GaloisForLFunctions.RHTower.BourgainLinearBilinearDecomposition
 import GaloisForLFunctions.RHTower.BourgainSeparatedBilinearDecomposition
@@ -2921,3 +2922,4 @@ import GaloisForLFunctions.RHTower.BohrMeanDichotomy
 import GaloisForLFunctions.RHTower.LocalizedZeroFreeTransfer
 import GaloisForLFunctions.RHTower.LocalizationScopeAndGuardrail
 import GaloisForLFunctions.RHTower.AsymptoticSelfAdjointness
+import GaloisForLFunctions.RHTower.CompressionCannotSelfAdjointify
