@@ -9570,3 +9570,74 @@ in the order. TWO OUTCOMES, BOTH INFORMATIVE:
       and its SIZE, not just its sign, is what matters.
 SEARCH THE LITERATURE FOR HIGHER-ORDER TURAN INEQUALITIES OF THE RIEMANN XI TAYLOR COEFFICIENTS AT
 ORDERS 4 AND ABOVE.
+
+---
+
+## Cycle 157 — PHASE 2 + SELF-CORRECTION. THE ORDER-TWO PINCH IS A COINCIDENCE OF EXPONENTS
+
+### Phase 2 findings
+Searched higher-order Turan inequalities for the Riemann xi Taylor coefficients. THE FRONTIER FOR
+THIS SEQUENCE IS:
+    order 2 (Turan):        Csordas-Norfolk-Varga, unconditional.
+    order 3 (higher Turan): DIMITROV-LUCAS, unconditional, and much later/harder.
+    order >= 4:             OPEN. No unconditional result found.
+So cycle 156's prediction (orders 4,5 leading-order FREE, hence easier than 2,3) is a prediction about
+an OPEN case — neither confirmed nor refuted by the literature. IT MUST THEREFORE BE TESTED
+INTERNALLY, WHICH IS WHAT THIS CYCLE DOES.
+
+### THE TEST, AND THE PREDICTION FAILS — NINETY-FIRST ATLAS ENTRY
+The period-four sign law is an EXACT IDENTITY (cycle 156, unaffected). Its passage to a DIFFICULTY
+statement needs the Hankel determinant to dominate the deviations of the factorial weights. IT DOES
+NOT, EXCEPT AT ONE ORDER.
+
+    DETERMINANT SIZE. By Heine/Gram the m-by-m Hankel determinant of a moment sequence is an integral
+    of the SQUARED VANDERMONDE, so for a measure of width sigma = c^{-1/2} it has relative size
+    sigma^{m(m-1)} = c^{-m(m-1)/2}. THE EXPONENT IS THE NUMBER OF PAIRS.
+
+    WEIGHT DEVIATION. The weight of M_{j+d} relative to M_j is (2j)!/(2j+2d)! = (2j)^{-2d}(1+O(d^2/j)).
+    On an ISOBARIC monomial the powers cancel exactly and ONLY THE DEVIATION SURVIVES, of relative
+    size m^2/j.
+
+    COMPARISON (c ~ j up to logarithms). The determinant beats the deviation iff m(m-1)/2 <= 1, i.e.
+    ONLY FOR m <= 2. The deficit is m(m-1)/2 - 1: ZERO AT m = 2, and 2, 5, 9, ... from m = 3 on.
+
+    ==> AT ORDER TWO BOTH SIDES ARE OF SIZE 1/j: THAT COINCIDENCE IS EXACTLY THE CYCLE-155 WINDOW.
+        FROM ORDER THREE THE DETERMINANT IS SMALLER BY j^{m(m-1)/2 - 1}, SO THE SIGN OF THE LEADING
+        TERM CARRIES NO INFORMATION AND THE PERIOD-FOUR LAW, THOUGH AN EXACT IDENTITY, PREDICTS
+        NOTHING ABOUT DIFFICULTY.
+
+CORRECTION LOG: entry 90's difficulty reading is WITHDRAWN. The identity and the sign survive
+untouched; only the inference "m = 0,1 mod 4 is leading-order free" is withdrawn. Entry 89's window
+SURVIVES AND IS NOW EXPLAINED: it is the m = 2 case, and m = 2 is the ONLY case where the two
+exponents agree.
+
+WHAT THIS BUYS. It explains the observed history exactly: order 2 settled first; order 3 harder by a
+factor j and settled much later by Dimitrov-Lucas; orders >= 4 open with deficits 5, 9, 14, ...
+GROWING QUADRATICALLY. THE ATLAS NOW HAS A QUANTITATIVE PREDICTOR OF DIFFICULTY FOR THIS FAMILY:
+THE DEFICIT EXPONENT m(m-1)/2 - 1.
+
+Machine-verified: `RHTower/OrderTwoIsACoincidenceOfExponents.lean` (the pair count and its values at
+m = 0..5, the coincidence pairCount 2 = 1, the deficits at m = 3,4,5, monotonicity of the pair count,
+the real crossover j^{-p} < j^{-1} for p > 1, and the deficit exponent; standard axioms only, wired
+into RHTower).
+
+### STATE AT CYCLE 157
+Ninety-one entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+WHERE CYCLES 155-157 LEAVE THE PROGRAMME. Entry 89 stands: at order two a FREE inequality and the
+HYPOTHESIS bound the same scalar from opposite sides, with a window of width ~ 1/j. That remains the
+only place in ninety-one entries where the free tools and the hypothesis measure the same quantity.
+Entry 91 shows WHY it is unique — the Vandermonde exponent m(m-1)/2 crosses the weight exponent 1
+exactly at m = 2 — and therefore that the same-quantity phenomenon CANNOT be propagated to higher
+orders by this route.
+
+### Cycle 158 target
+The deficit exponent m(m-1)/2 - 1 came from TWO independent scales: the Vandermonde m(m-1)/2 and the
+weight deviation 1. THE SECOND IS NOT SACRED. The weight deviation is 1 because a_j = M_j/(2j)! and
+consecutive factorial ratios differ by O(1/j). ASK: IS THERE A DIFFERENT NORMALISATION OF THE
+SEQUENCE — a different entire function with the same zeros — WHOSE WEIGHT DEVIATION IS OF ORDER
+j^{-m(m-1)/2} INSTEAD? Multiplying Xi by an entire function with no zeros (exp of a polynomial)
+changes the Taylor coefficients but NOT the zeros, hence not the hypothesis. THE FREEDOM IS EXACTLY
+THE LAGUERRE-POLYA MULTIPLIER GROUP. IF SOME MULTIPLIER MAKES THE WEIGHT DEVIATION SMALL ENOUGH, THE
+WINDOW REOPENS AT EVERY ORDER. That is a concrete, checkable, and previously unexamined degree of
+freedom.

@@ -472,6 +472,17 @@ theorem mobiusAdditiveTriangleLinearUpperBound_implies_halfDecay
     nlinarith
   simpa [mobiusLaplaceHalfPolylogKernel] using this
 
+/-- The degree-zero polylog presentation is the original exact half-power interface.  Thus the
+one-sided additive-triangle source discharges `MobiusDiscreteLaplaceHalfDecay` itself, rather than
+only a parametrized surrogate. -/
+theorem mobiusAdditiveTriangleLinearUpperBound_implies_discreteLaplaceHalfDecay
+    (hupper : MobiusAdditiveTriangleLinearUpperBound) :
+    MobiusDiscreteLaplaceHalfDecay := by
+  obtain ⟨C, delta, hC, hdelta, hbound⟩ :=
+    mobiusAdditiveTriangleLinearUpperBound_implies_halfDecay hupper
+  exact ⟨C, delta, hC, hdelta, fun x hx hxd => by
+    simpa [mobiusLaplaceHalfPolylogKernel] using hbound x hx hxd⟩
+
 /-- A one-sided linear additive-triangle bound implies RH. -/
 theorem mobiusAdditiveTriangleLinearUpperBound_implies_riemannHypothesis
     (hupper : MobiusAdditiveTriangleLinearUpperBound) : RiemannHypothesis :=

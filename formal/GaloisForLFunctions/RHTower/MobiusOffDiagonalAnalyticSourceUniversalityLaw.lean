@@ -42,6 +42,24 @@ theorem mobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound_implies_analyticS
     mobiusAdditiveTriangleLinearPolylogUpperBound_implies_subpowerMultiplicityCertificate
       htriangle⟩
 
+/-- Degree-zero strict off-diagonal control pays the exact linear diagonal and supplies the
+unparametrized additive-triangle source interface. -/
+theorem mobiusAdditiveStrictOffDiagonalLinearUpperBound_implies_triangleLinearUpperBound
+    (hoff : MobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound 0) :
+    MobiusAdditiveTriangleLinearUpperBound := by
+  obtain ⟨C, hC, hbound⟩ :=
+    mobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound_implies_triangleLinearPolylogUpperBound
+      hoff
+  exact ⟨C, hC, fun N => by simpa using hbound N⟩
+
+/-- The same degree-zero off-diagonal source discharges the concrete critical half-power
+Möbius--Laplace interface. -/
+theorem mobiusAdditiveStrictOffDiagonalLinearUpperBound_implies_discreteLaplaceHalfDecay
+    (hoff : MobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound 0) :
+    MobiusDiscreteLaplaceHalfDecay :=
+  mobiusAdditiveTriangleLinearUpperBound_implies_discreteLaplaceHalfDecay
+    (mobiusAdditiveStrictOffDiagonalLinearUpperBound_implies_triangleLinearUpperBound hoff)
+
 /-- At degree zero the same strict off-diagonal input also forces the complete Hedenmalm
 RH--simplicity phase and the sharp simple-zero local coefficient law. -/
 theorem mobiusAdditiveStrictOffDiagonalLinearUpperBound_implies_simplicityAnalyticSource
@@ -49,14 +67,8 @@ theorem mobiusAdditiveStrictOffDiagonalLinearUpperBound_implies_simplicityAnalyt
     (∃ C delta : ℝ, MobiusAdditiveTriangleSourceUniversalCertificate C delta) ∧
       (∃ C delta : ℝ,
         MobiusOffDiagonalPolylogAnalyticSourceUniversalCertificate 0 C delta) := by
-  have htrianglePolylog : MobiusAdditiveTriangleLinearPolylogUpperBound 0 :=
-    mobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound_implies_triangleLinearPolylogUpperBound
-      hoff
-  have htriangle : MobiusAdditiveTriangleLinearUpperBound := by
-    obtain ⟨C, hC, hbound⟩ := htrianglePolylog
-    refine ⟨C, hC, ?_⟩
-    intro N
-    simpa using hbound N
+  have htriangle : MobiusAdditiveTriangleLinearUpperBound :=
+    mobiusAdditiveStrictOffDiagonalLinearUpperBound_implies_triangleLinearUpperBound hoff
   exact ⟨
     mobiusAdditiveTriangleLinearUpperBound_implies_sourceUniversalCertificate htriangle,
     mobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound_implies_analyticSourceCertificate

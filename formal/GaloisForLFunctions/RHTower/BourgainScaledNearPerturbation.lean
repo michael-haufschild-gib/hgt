@@ -26,7 +26,8 @@ theorem bourgainPerturbedSpacingScale_pos
     ∀ j, 0 < bourgainPerturbedSpacingScale δ X j := by
   intro j
   unfold bourgainPerturbedSpacingScale
-  positivity
+  apply div_pos (hX j)
+  linarith
 
 /-- A scaled near pair remains near after perturbing both endpoints and
 shrinking the spacing scale by `1+4δ`. -/
@@ -61,8 +62,9 @@ theorem bourgainScaledNear_of_perturbed
                 (X j * (p j - p' j))
                 (X j * (p' j - q' j))
       _ < δ + 1 / 2 + δ := by
-        gcongr
-        exact hnear j
+        exact add_lt_add_of_lt_of_le
+          (add_lt_add_of_le_of_lt (hp j) (hnear j))
+          (hp' j)
       _ = 1 / 2 + 2 * δ := by ring
   unfold bourgainPerturbedSpacingScale
   have hrewrite :

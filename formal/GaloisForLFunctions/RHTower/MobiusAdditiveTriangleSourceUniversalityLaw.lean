@@ -46,10 +46,8 @@ theorem mobiusAdditiveTriangleLinearUpperBound_implies_sourceUniversalCertificat
   have hpolylog : MobiusDiscreteLaplaceHalfPolylogDecay 0 :=
     mobiusAdditiveTriangleLinearUpperBound_implies_halfDecay hupper
   rcases hpolylog with ⟨C, delta, hC, hdelta, hsource⟩
-  have hdecay : MobiusDiscreteLaplaceHalfDecay := by
-    refine ⟨C, delta, hC, hdelta, ?_⟩
-    intro x hx hxd
-    simpa [mobiusLaplaceHalfPolylogKernel] using hsource x hx hxd
+  have hdecay : MobiusDiscreteLaplaceHalfDecay :=
+    mobiusAdditiveTriangleLinearUpperBound_implies_discreteLaplaceHalfDecay hupper
   have hRH : RiemannHypothesis :=
     mobiusDiscreteLaplaceHalfDecay_implies_riemannHypothesis hdecay
   have hreciprocal : XiReciprocalSquareSourceUniversalCertificate :=
