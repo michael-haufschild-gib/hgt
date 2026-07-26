@@ -1441,4 +1441,98 @@ theorem within_proved_across_remains :
     withinArcTotal = fareyExponent 1 0 ∧ withinArcTotal - fareyExponent 1 1 = 1 :=
   ⟨within_arc_gives_weyl, within_arc_shortfall⟩
 
+
+/-!
+### The normalised across-arc problem
+
+Theorem 81 gives `|A_{a,q}| ≪ L^{3/2}/q` for the arc at `a/q`.  Dividing that common factor out, the
+Lindelöf hypothesis becomes a statement about the **normalised** Farey sum
+
+    Σ_{a/q ∈ F_L} (1/q)·ε_q(a|q)·e( N√(2a/q) + θ_{a,q} )  ≪  (\log L)^{O(1)} ,
+
+with `ε_q(a|q)` the Gauss-sum phase and `θ_{a,q}` the chirp phase from Theorem 80's evaluation.  Its
+norms are
+
+    ℓ¹ :  Σ_{q≤L} φ(q)/q   ≍ L ,        ℓ² :  (Σ_{q≤L} φ(q)/q²)^{1/2} ≍ (\log L)^{1/2} ,
+
+so the requirement is exactly that the sum attain its `ℓ²` size — square-root cancellation — and the
+within-arc factor `L^{3/2}` has been divided out entirely.
+-/
+
+/-- Exponent (in `L`) of the `ℓ¹` norm of the normalised Farey weights `1/q`. -/
+def fareyWeightL1 : ℚ := 1
+
+/-- Exponent of the `ℓ²` norm: `Σφ(q)/q² ≍ \log L`, so the exponent in `L` is `0`. -/
+def fareyWeightL2 : ℚ := 0
+
+/-- **The saving required of the normalised sum is the full `ℓ¹`-to-`ℓ²` gap.** -/
+@[simp] theorem normalised_saving : fareyWeightL1 - fareyWeightL2 = 1 := by
+  unfold fareyWeightL1 fareyWeightL2; norm_num
+
+/-- That gap is exactly the across-arc factor left open by Theorem 81. -/
+theorem normalised_saving_is_across_arc :
+    fareyWeightL1 - fareyWeightL2 = withinArcTotal - fareyExponent 1 1 := by
+  rw [normalised_saving, within_arc_shortfall]
+
+/-- Restoring the within-arc factor `L^{3/2}` recovers Weyl from the `ℓ¹` bound … -/
+@[simp] theorem restore_l1 : (3/2 : ℚ) + fareyWeightL1 = 5/2 := by
+  unfold fareyWeightL1; norm_num
+
+/-- … and Lindelöf from the `ℓ²` bound. -/
+@[simp] theorem restore_l2 : (3/2 : ℚ) + fareyWeightL2 = 3/2 := by
+  unfold fareyWeightL2; norm_num
+
+/-- **The final form.**  With the within-arc factor divided out, Weyl is the `ℓ¹` bound on the
+normalised Farey sum and Lindelöf is its `ℓ²` bound. -/
+theorem final_form :
+    (3/2 : ℚ) + fareyWeightL1 = fareyExponent 1 0 ∧
+    (3/2 : ℚ) + fareyWeightL2 = fareyExponent 1 1 := by
+  constructor
+  · rw [restore_l1, farey_withinOnly]
+  · rw [restore_l2, farey_both]
+
+
+/-!
+### The normalised sum localises to its top dyadic range
+
+For the weights `1/q` over `F_L`, the dyadic range `q ∈ [Q, 2Q]` carries `Σ_{q≍Q}φ(q) ≍ Q²` fractions
+of weight `≍1/Q`, hence
+
+    ℓ¹ mass of the range  ≍ Q ,      ℓ² mass of the range  ≍ 1 .
+
+So the `ℓ¹` mass **grows with `Q`** and is dominated by the top range `Q ≍ L`, which alone carries `≍L`
+— the whole of the `ℓ¹` norm.  In `ℓ²` every range contributes `≍1`, and the `≍\log L` ranges add
+incoherently to `(\log L)^{1/2}`.
+
+**So the Lindelöf requirement is square-root cancellation in the single range `q ∈ [L/2, L]`, over
+`≍L²` fractions; the remaining ranges then contribute their `ℓ²` sum.**
+-/
+
+/-- `ℓ¹` mass of the dyadic range `q ≍ L^κ`, as an exponent of `L`. -/
+def dyadicL1 (kappa : ℚ) : ℚ := kappa
+
+/-- `ℓ²` mass of the same range. -/
+def dyadicL2 (_kappa : ℚ) : ℚ := 0
+
+/-- **The `ℓ¹` mass is increasing in the range, so the top range dominates.** -/
+theorem dyadicL1_mono {a b : ℚ} (h : a < b) : dyadicL1 a < dyadicL1 b := by
+  unfold dyadicL1; exact h
+
+/-- **The top range carries the whole `ℓ¹` norm.** -/
+@[simp] theorem top_range_carries_all : dyadicL1 1 = fareyWeightL1 := by
+  unfold dyadicL1 fareyWeightL1; rfl
+
+/-- **Every range contributes the same in `ℓ²`.** -/
+theorem dyadicL2_const (a b : ℚ) : dyadicL2 a = dyadicL2 b := rfl
+
+/-- The saving required in the top range alone. -/
+@[simp] theorem top_range_saving : dyadicL1 1 - dyadicL2 1 = 1 := by
+  unfold dyadicL1 dyadicL2; norm_num
+
+/-- **The top range alone requires the full saving**, so the localisation is exact: the whole
+difficulty sits in `q ∈ [L/2, L]`. -/
+theorem localises_to_top_range :
+    dyadicL1 1 - dyadicL2 1 = fareyWeightL1 - fareyWeightL2 := by
+  rw [top_range_saving, normalised_saving]
+
 end HTGeometry

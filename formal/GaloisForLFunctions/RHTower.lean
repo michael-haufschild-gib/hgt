@@ -552,6 +552,7 @@ import GaloisForLFunctions.RHTower.BourgainGaussianFourier
 import GaloisForLFunctions.RHTower.BourgainGaussianClustering
 import GaloisForLFunctions.RHTower.BourgainGaussianLargeSieve
 import GaloisForLFunctions.RHTower.BourgainIntervalLocalization
+import GaloisForLFunctions.RHTower.BourgainBoxLocalization
 import GaloisForLFunctions.RHTower.BourgainFiniteFiberL2
 import GaloisForLFunctions.RHTower.BourgainParabolaFiberArithmetic
 import GaloisForLFunctions.RHTower.BourgainParabolaQuadraticReduction
@@ -2954,3 +2955,4 @@ import GaloisForLFunctions.RHTower.CriticalScaleMatching
 import GaloisForLFunctions.RHTower.AtlasBlindToUnfolded
 import GaloisForLFunctions.RHTower.CorrelationBoundsCountNotLocation
 import GaloisForLFunctions.RHTower.DegreeClassificationClosure
+import GaloisForLFunctions.RHTower.BetaBlindnessAndDesignConditions

@@ -6373,3 +6373,67 @@ over all zeros with weight m^2/|rho|^2, which does not see beta at all. IF THE W
 BETA-BLIND, THE CRITERION CANNOT DISTINGUISH, AND THE CLASS IS WALLED TOO. CHECK THE BETA-DEPENDENCE
 OF THE BURNOL WEIGHT FIRST — it is a single, decidable question, and it decides whether the last
 standing class stands.
+
+---
+
+## Cycle 106 (2026-07-26) — TWO DESIGN CONDITIONS, AND NO CRITERION SATISFIES BOTH UNWALLED
+
+### The question of cycle 105, answered: THE BURNOL WEIGHT IS ASYMPTOTICALLY BETA-BLIND
+The unconditional lower bound weights a zero rho = beta + i gam by m_rho^2/|rho|^2, and
+|rho|^2 = beta^2 + gam^2. Moving a zero from beta = 1/2 to beta = 1/2 + a with 0 < a <= 1/2 changes
+the weight by the factor
+
+    (gam^2 + 1/4)/(gam^2 + (1/2+a)^2),      which differs from 1 by at most 1/gam^2.
+
+    ==> THE NYMAN-BEURLING UNCONDITIONAL HANDLE IS SENSITIVE TO WHICH ZEROS ARE PRESENT BUT NOT TO
+        WHERE THEY ARE. THE SEPARATION VANISHES QUADRATICALLY IN THE HEIGHT.
+
+### THE COMPLETED CLASSIFICATION — the sharpest statement the programme has produced
+A functional of the zero set can decide the hypothesis only if BOTH hold:
+    (i)  RATIO: each individual term is a bounded fraction of the total (entry 39);
+    (ii) BETA-SENSITIVITY: the term separates beta = 1/2 from beta = 1/2 + a, i.e. the weight sees
+         beta separately from gam and not merely through |rho|.
+
+    CRITERION                        (i) RATIO      (ii) BETA-SENSITIVE     STATUS
+    explicit formula / Weil          YES            YES (cosh(aL), e.13)    WALLED BY MAGNITUDE
+                                                                            (entries 17-21: pole,
+                                                                            prime main term and first
+                                                                            archimedean mode cancel)
+    correlation / GUE                NO (sqrt S/S)  YES (x^{2a})            COUNTS ONLY (e.38/39)
+    Nyman-Beurling / Burnol          YES            NO (1/gam^2 blindness)  BLIND (this cycle)
+
+    ==> NO CRITERION EXAMINED IN 106 CYCLES SATISFIES BOTH DESIGN CONDITIONS WITHOUT BEING WALLED BY
+        MAGNITUDE. THE EXPLICIT FORMULA IS THE ONLY ONE THAT SATISFIES BOTH, AND ITS WALL IS THE
+        THREE-WAY CANCELLATION.
+
+This is a genuine classification: it says WHAT A NEW CRITERION MUST LOOK LIKE. It must be additive
+over zeros with terms comparable to the total, must see beta separately from gam, and must not reduce
+to the explicit formula's sums — because those three terms cancel identically.
+
+Machine-verified: `RHTower/BetaBlindnessAndDesignConditions.lean` (the blindness estimate
+|(g^2+1/4)/(g^2+(1/2+a)^2) - 1| <= 1/g^2 for 1 <= g and 0 < a <= 1/2, the vanishing of the blindness
+bound at large height, the conjunction of the two design conditions, and the impossibility of
+separating weights below the resolution; standard axioms only, wired into RHTower).
+
+### FORTIETH ATLAS ENTRY
+    design conditions   a zero-set functional decides RH only if (i) individual terms are a bounded
+                        fraction of the total AND (ii) the weight separates beta from gam. Burnol's
+                        weight fails (ii) by 1/gam^2; correlation fails (i); the explicit formula
+                        satisfies both and is walled by the three-way cancellation. No criterion in
+                        106 cycles satisfies both unwalled.
+
+### STATE AT CYCLE 106
+Forty entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 107 target
+The classification says a new criterion must (i) be additive with comparable terms, (ii) see beta
+separately from gam, and (iii) not be an explicit-formula sum. Condition (ii) is the sharp one: the
+weight must be a function of beta and gam that is NOT a function of |rho| alone. THE CANONICAL SUCH
+FUNCTION IS THE ONE THE FUNCTIONAL EQUATION ACTS ON: rho -> 1 - rhobar reflects beta about 1/2 and
+FIXES gam. So a weight of the form phi(rho) - phi(1 - rhobar) is IDENTICALLY ZERO on the critical line
+and NONZERO off it — CONDITION (ii) IN ITS SHARPEST FORM. CONSTRUCT THE FUNCTIONAL
+    D(Z) = sum_rho ( phi(rho) - phi(1 - rhobar) )
+for a weight phi with convergent sum, and ask what D is. Since the zero set is symmetric under
+rho -> 1 - rhobar, D VANISHES IDENTICALLY AS A SUM — but its ABSOLUTE version sum |phi(rho) - phi(1 -
+rhobar)| does not. DETERMINE WHETHER THE ABSOLUTE VERSION HAS AN EXPLICIT-FORMULA EXPRESSION. If it
+does, it is a criterion satisfying all three conditions, and it is the first such object in the atlas.
