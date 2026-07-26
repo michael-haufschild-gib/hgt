@@ -2250,3 +2250,4 @@ import GaloisForLFunctions.HTGeometry.DerivInvariantSuperspace
 import GaloisForLFunctions.HTGeometry.ShiftStableLatticeStructure
 import GaloisForLFunctions.HTGeometry.MatrixRealizationPrincipalization
 import GaloisForLFunctions.HTGeometry.EllipticPoleSpace
+import GaloisForLFunctions.HTGeometry.EllipticPrincipalJet

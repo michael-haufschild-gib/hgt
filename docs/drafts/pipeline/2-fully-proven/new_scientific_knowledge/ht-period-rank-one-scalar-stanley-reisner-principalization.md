@@ -1301,3 +1301,26 @@ umbrella-registered) records step 2's Liouville kernel:
 What remains to build: the pole-bounded subspace as a `Submodule`, the principal-part linear map
 (from `meromorphicOrderAt` and the analytic extension of `(z-s)^n f`), the resulting dimension bound,
 and the monomial count.
+
+#### Step 2 machinery: the principal-jet linear map
+
+`GaloisForLFunctions/HTGeometry/EllipticPrincipalJet.lean` (axiom-clean, build green,
+umbrella-registered) supplies the *linear* handle on the principal part.
+
+- `poleClear g p d` — the canonical analytic representative of `(. - p)^d g` near `p`, taken as
+  mathlib's normal form `toMeromorphicNFOn`, which agrees with the raw product off the poles
+  (`poleClear_eventuallyEq_nhdsNE`);
+- **`analyticAt_poleClear`** — it is analytic at `p` as soon as the cleared order is nonnegative, via
+  `MeromorphicNFAt.meromorphicOrderAt_nonneg_iff_analyticAt` and
+  `meromorphicOrderAt_toMeromorphicNFOn`;
+- `principalJet g p d k` — its Taylor coefficients at `p`, i.e. the data of the principal part;
+- **`principalJet_add`** and **`principalJet_smul`** — the jets depend linearly on `g`.  The
+  mechanism is `eventuallyEq_nhds_of_nhdsNE_of_continuousAt`: the two canonical representatives agree
+  off `p`, both are continuous there, so they agree near `p` and have the same jets.
+
+The order hypotheses are taken in the already-cleared form `0 <= meromorphicOrderAt ((. - p)^d g) p`,
+so this module carries no order arithmetic; that is done where the concrete carrier is known.
+
+What remains for the last gap: the pole-bounded space as a `Submodule` with the jet map as a
+`LinearMap` into a finite-dimensional target, the dimension bound `dim <= 1 + total pole order` from
+`exists_const_sub_of_lattice_periodic`, and the monomial count.
