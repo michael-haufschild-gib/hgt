@@ -1565,3 +1565,21 @@ umbrella-registered).
 This is what makes the finite pole set `S` sufficient: the argument controls the combination at the
 points of `S`, and the lattice invariance of the order carries that control to *every* pole, without
 any further analysis.
+
+#### Discharging the cleared-order hypotheses
+
+`GaloisForLFunctions/HTGeometry/EllipticClearedOrders.lean` (axiom-clean, build green,
+umbrella-registered) turns a single order bound into the hypotheses the principal-jet machinery
+consumes.
+
+- **`nonneg_order_poleFactor_monomial`** — from one bound `-m` shared by `f` and `f'` at `p`, the
+  uniform exponent `d = 2mN` clears every monomial of bidegree at most `(N, N)`, since
+  `i + j <= 2N`;
+- **`nonneg_order_poleFactor_combination`** — and it clears every finite combination of them, by
+  distributing `(. - p)^d` across the sum and applying `nonneg_order_finset_sum`;
+- `nonneg_order_const_mul` — multiplying by a constant cannot lower an order below zero;
+- **`eq_zero_of_meromorphicOrderAt_neg`** — a normal-form function takes the value `0` at a pole.
+  This is the fact that makes the final `y_0` multiplication work: at a pole the normal form gives
+  `f = 0`, so the relation holds there for free.  It is read off from mathlib's
+  `MeromorphicNFAt.meromorphicOrderAt_eq_zero_iff` (order `0` iff nonzero value), whose contrapositive
+  is exactly the normal-form convention.
