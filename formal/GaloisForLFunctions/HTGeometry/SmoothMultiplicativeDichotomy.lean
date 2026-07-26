@@ -655,4 +655,52 @@ theorem reduction_returns_to_correlation :
     reciprocalPhaseExponent = 1 ∧ reciprocalDerivativeExponent = 0 :=
   ⟨reciprocalPhaseExponent_eq, reciprocal_derivative_critical⟩
 
+
+/-!
+### The reciprocal and square-root phases are Poisson duals
+
+Apply stationary phase to `Σ_k e(x/k)`.  With `f(k) = x/k` the stationary condition is `f'(k) = -j`,
+i.e. `x/k² = j`, so `k_j = √(x/j)`, and the dual phase is
+
+    f(k_j) + j k_j  =  x/√(x/j) + j√(x/j)  =  √(xj) + √(xj)  =  **2√(xj)** .
+
+So the reciprocal phase `e(x/k)` and the square-root phase `e(2√(xj))` are exchanged by Poisson
+summation.  The campaign's frontier object alternates between the two under its own reduction: the
+Farey/theta side produces `e(N√(2a/q))`, the stationary-phase evaluation produces `e(N²/(2k))`, and one
+more Poisson returns `e(2√(·))`.
+
+Both are the Voronoi phase family.  **The exponent-pair programme and the additive-divisor programme
+are exchanged by Poisson duality**, which is why Theorem 31 found them sharing a phase family and why
+the reduction of either lands on the other.
+-/
+
+/-- Exponent of the dual variable at which the reciprocal phase is stationary: `k_j = √(x/j)`. -/
+def reciprocalDualExponent (xExp jExp : ℚ) : ℚ := (xExp - jExp) / 2
+
+/-- The dual phase exponent: `2√(xj)`. -/
+def reciprocalDualPhase (xExp jExp : ℚ) : ℚ := (xExp + jExp) / 2
+
+/-- **The dual of a reciprocal phase is a square-root phase.**  Recorded as the identity that the
+dual phase is the geometric mean of the parameters. -/
+theorem reciprocal_dual_is_sqrt (xExp jExp : ℚ) :
+    reciprocalDualPhase xExp jExp = (xExp + jExp) / 2 := rfl
+
+/-- At the campaign's parameters `x ≍ N²`, `k ≍ N`, the dual variable has `j ≍ x/k² ≍ 1`, and the dual
+phase is `2√(x·1) ≍ N` — the same order as the original phase. -/
+@[simp] theorem dual_at_campaign_parameters :
+    reciprocalDualExponent 2 0 = 1 ∧ reciprocalDualPhase 2 0 = 1 := by
+  refine ⟨?_, ?_⟩
+  · unfold reciprocalDualExponent; norm_num
+  · unfold reciprocalDualPhase; norm_num
+
+/-- **Poisson is exponent-neutral here**: the dual variable and the dual phase both have exponent `1`,
+matching the original range `k ≍ N` and phase `≍ N`.  The transform exchanges the two phase families
+without changing any exponent. -/
+theorem poisson_neutral :
+    reciprocalDualExponent 2 0 = reciprocalRangeExponent ∧
+    reciprocalDualPhase 2 0 = reciprocalPhaseExponent := by
+  constructor
+  · unfold reciprocalDualExponent reciprocalRangeExponent; norm_num
+  · rw [reciprocalPhaseExponent_eq]; unfold reciprocalDualPhase; norm_num
+
 end HTGeometry

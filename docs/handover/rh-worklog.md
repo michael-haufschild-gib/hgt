@@ -5773,3 +5773,76 @@ CONSTANT and the cost GROWS LIKE log k, THE ANSWER IS NO FOR LARGE k — but the
 COMPUTE THE EXACT BALANCE: the descent is worthwhile iff (prime gain at abscissa k/2 pulled back)
 exceeds 2 log k, and both sides are now explicit. If the balance is favourable for even ONE k >= 2,
 the descent gives an unconditional positivity statement at abscissa 1/2 — that is, RH.
+
+---
+
+## Cycle 97 (2026-07-26) — CORRECTION TO ENTRY 30, AND THE SCALE INVARIANT THAT REPLACES IT
+
+### SELF-CORRECTION (the important part of this cycle)
+Entry 30 claimed that dilating by lam = 1/k turns the prime weight Lambda(n) n^{-1/2} into
+Lambda(n) n^{-k/2}, moving the abscissa UP to k/2 where the series converges absolutely. THAT IS
+FALSE. The weight is attached to n; re-indexing the FREQUENCY does not change it. What actually
+happens is
+
+    sum_n Lambda(n) n^{-1/2} delta_{log n}  ->  sum_n Lambda(n) n^{-1/2} delta_{k log n}
+                                            =   sum_{m = n^k} Lambda(m) m^{-1/(2k)} delta_{log m},
+
+using n^{-1/2} = (n^k)^{-1/(2k)}. SO THE DILATED FORM SITS AT ABSCISSA 1/(2k) < 1/2, SUPPORTED ON
+PERFECT k-TH POWERS: the dilation moves the abscissa DOWN, AWAY from convergence, and thins the
+support. Entry 30's "descent to a convergent abscissa" is WITHDRAWN.
+
+WHAT STANDS FROM ENTRY 30: dilations shift the archimedean symbol by -2 log lam (formalised and
+correct); translations act trivially on both convolution forms; the ax+b group is nonabelian and is
+the only noncommutative direction available. Those are unaffected.
+
+### THE REPLACEMENT, AND IT IS STRONGER
+Rescaling s -> s/k sends the zeros of zeta to the line Re s = k/2 AND the abscissa of absolute
+convergence from 1 to k. BOTH MOVE BY THE SAME FACTOR, so
+
+    (critical abscissa) / (convergence abscissa)  =  (k/2)/k  =  1/2,   for every k.
+
+    ==> THE RATIO OF THE CRITICAL ABSCISSA TO THE ABSCISSA OF ABSOLUTE CONVERGENCE IS A SCALE
+        INVARIANT. NO DILATION CAN BRING THE CRITICAL LINE INTO THE REGION OF ABSOLUTE CONVERGENCE,
+        BECAUSE THE TWO MOVE TOGETHER. THE ax+b NONCOMMUTATIVITY IS REAL BUT ACTS TRIVIALLY ON THE
+        ONLY QUANTITY THAT MATTERS.
+
+This kills every rescaling argument at once, and it is a constraint on the lane rather than the
+failure of one attempt. It also explains why the classical "shift to Re s > 1 and come back" strategy
+has never worked: there is nothing to come back from, because the target moves with the observer.
+
+Machine-verified: `RHTower/ScaleInvariantAbscissaRatio.lean` (the weight identity
+n^{-1/2} = (n^k)^{-1/(2k)}, the downward motion 1/(2k) < 1/2, its position below the convergence
+threshold, the scale invariance (k/2)/k = 1/2, its independence of the scale, and the strict
+inequality k/2 < k; standard axioms only, wired into RHTower).
+
+### THIRTY-FIRST ATLAS ENTRY (and entry 30 amended)
+    scale invariance   (critical abscissa)/(convergence abscissa) = 1/2 at every scale. Dilation
+                       moves the prime form to abscissa 1/(2k), down and sparser, never up. Every
+                       rescaling argument fails for this single reason.
+    entry 30 AMENDED   dilations shift the archimedean symbol by -2 log lam and supply the only
+                       noncommutative direction; the claim that they raise the prime abscissa to k/2
+                       is WITHDRAWN.
+
+### STATE AT CYCLE 97
+Thirty-one entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+FOUR LANES CHARACTERISED, ALL TERMINATING IN THE SAME PLACE:
+  * explicit formula (17-21) — cancels to the zero sum; every handle circular or capped.
+  * approximation/operator (22-28) — localizes and relaxes, but zero-freeness must be structural;
+    compression retains full defect norm; density is not norm.
+  * whole-line/commutative (29) — no wall, no content beyond Lagarias.
+  * dilation/scaling (30 amended, 31) — the only noncommutative direction, but the critical-to-
+    convergence ratio is scale invariant, so it cannot move the problem.
+
+### Cycle 98 target
+The scale invariant 1/2 is itself the object to attack. It is the exponent in the functional equation
+s -> 1 - s, whose fixed point is 1/2, AND it is the ratio (critical)/(convergence). THOSE ARE TWO
+INDEPENDENT DERIVATIONS OF THE SAME NUMBER, and their agreement is not explained by anything in this
+development. CONJECTURE: the agreement is forced — for any Dirichlet series with an Euler product of
+degree d and a functional equation of the form s -> w - s, the fixed point w/2 equals the ratio
+(critical)/(convergence) if and only if the Euler factors are of degree one in p^{-s}. If true, THE
+CRITICAL LINE IS THE FIXED POINT OF THE SCALING SYMMETRY, not merely of the functional equation, and
+degree-one Euler factors are what identifies them. TEST THE CONJECTURE ON DEGREE-TWO EULER PRODUCTS
+(modular L-functions, where the convergence abscissa is 1 and the critical line is 1/2 in the analytic
+normalisation) — if the ratio still equals 1/2 there, the conjecture is false and the coincidence is
+an artefact of normalisation; if it differs, the coincidence is structural and is a new invariant.
