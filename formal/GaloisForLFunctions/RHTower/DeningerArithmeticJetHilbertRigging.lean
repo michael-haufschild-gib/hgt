@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticCompactDualLocalization
+import GaloisForLFunctions.RHTower.DeningerArithmeticGelfandTriple
+import Mathlib.Analysis.InnerProductSpace.Dual
 import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.LinearAlgebra.Finsupp.LSum
 
@@ -333,6 +335,111 @@ theorem deningerArithmeticJetHilbert_pairing
         lp.inner_single_left, ih]
       simp [RCLike.inner_apply]
       ring
+
+/-- Conjugate finite jet families are also dense in the canonical Hilbert carrier. -/
+theorem deningerArithmeticJetTestToHilbertConj_dense :
+    DenseRange deningerArithmeticJetTestToHilbertConj := by
+  rw [denseRange_iff_closure_range]
+  apply Set.Subset.antisymm
+  · exact closure_minimal (Set.subset_univ _) isClosed_univ
+  · intro x _hx
+    have hsum :
+        HasSum
+          (fun idx : DeningerArithmeticJetCoordinate =>
+            lp.single 2 idx (x idx))
+          x :=
+      lp.hasSum_single ENNReal.ofNat_ne_top x
+    apply isClosed_closure.mem_of_tendsto hsum
+    filter_upwards [] with S
+    apply subset_closure
+    let a : DeningerArithmeticJetTest :=
+      ∑ idx ∈ S,
+        Finsupp.single idx ((starRingEnd ℂ) (x idx))
+    refine ⟨a, ?_⟩
+    simp [a, deningerArithmeticJetTestToHilbertConj_single]
+
+/--
+Restriction of a compact-support distribution to the canonical square-summable jet carrier.
+
+Continuity uses the strong topology on the source dual: precomposition by the fixed continuous
+map from `ell^2` into compact-open cohomology is continuous for bounded convergence.
+-/
+def deningerArithmeticJetCompactRestrict :
+    DeningerArithmeticTopologicalH1Compact →L[ℂ]
+      StrongDual ℂ DeningerArithmeticJetHilbert :=
+  ContinuousLinearMap.precomp ℂ
+    deningerArithmeticJetHilbertToH1
+
+/--
+Canonical conjugate-linear embedding of compact-support arithmetic cohomology into the jet
+Hilbert carrier, obtained by Fréchet--Riesz representation after restriction.
+-/
+def deningerArithmeticJetCompactToHilbert :
+    DeningerArithmeticTopologicalH1Compact →L⋆[ℂ]
+      DeningerArithmeticJetHilbert :=
+  ((InnerProductSpace.toDual ℂ
+      DeningerArithmeticJetHilbert).symm :
+      StrongDual ℂ DeningerArithmeticJetHilbert →L⋆[ℂ]
+        DeningerArithmeticJetHilbert).comp
+    deningerArithmeticJetCompactRestrict
+
+/-- Fréchet--Riesz realizes the original compact-support/distribution pairing exactly. -/
+@[simp]
+theorem deningerArithmeticJetCompactToHilbert_pairing
+    (ell : DeningerArithmeticTopologicalH1Compact)
+    (x : DeningerArithmeticJetHilbert) :
+    @inner ℂ DeningerArithmeticJetHilbert _
+        (deningerArithmeticJetCompactToHilbert ell) x =
+      ell (deningerArithmeticJetHilbertToH1 x) := by
+  simp [deningerArithmeticJetCompactToHilbert,
+    deningerArithmeticJetCompactRestrict,
+    InnerProductSpace.toDual_symm_apply]
+
+/-- On finite source tests, the Fréchet--Riesz embedding is coefficientwise conjugation. -/
+@[simp]
+theorem deningerArithmeticJetCompactToHilbert_test
+    (a : DeningerArithmeticJetTest) :
+    deningerArithmeticJetCompactToHilbert
+        (deningerArithmeticJetTestToCompact a) =
+      deningerArithmeticJetTestToHilbertConj a := by
+  apply (InnerProductSpace.toDualMap ℂ
+    DeningerArithmeticJetHilbert).injective
+  apply ContinuousLinearMap.ext
+  intro x
+  simp only [InnerProductSpace.toDualMap_apply_apply]
+  rw [deningerArithmeticJetCompactToHilbert_pairing,
+    deningerArithmeticJetHilbert_pairing]
+
+/-- Compact-support arithmetic cohomology has dense image in the canonical jet Hilbert carrier. -/
+theorem deningerArithmeticJetCompactToHilbert_dense :
+    DenseRange deningerArithmeticJetCompactToHilbert := by
+  apply DenseRange.of_comp
+    (f := deningerArithmeticJetCompactToHilbert)
+    (g := deningerArithmeticJetTestToCompact)
+  have hfun :
+      deningerArithmeticJetCompactToHilbert ∘
+          deningerArithmeticJetTestToCompact =
+        deningerArithmeticJetTestToHilbertConj := by
+    funext a
+    exact deningerArithmeticJetCompactToHilbert_test a
+  rw [hfun]
+  exact deningerArithmeticJetTestToHilbertConj_dense
+
+/--
+Unconditional source-defined Gelfand triple
+
+`H^1_c = direct sum of jets  ⊂  ell^2(jets)  ⊂  product of jets = H^1`.
+-/
+def deningerArithmeticJetGelfandTriple :
+    DeningerArithmeticGelfandTriple
+      DeningerArithmeticJetHilbert where
+  testToHilbert := deningerArithmeticJetCompactToHilbert
+  hilbertToDistribution := deningerArithmeticJetHilbertToH1
+  test_dense := deningerArithmeticJetCompactToHilbert_dense
+  hilbertToDistribution_injective :=
+    deningerArithmeticJetHilbertToH1_injective
+  pairing_compatibility ell x :=
+    (deningerArithmeticJetCompactToHilbert_pairing ell x).symm
 
 end
 

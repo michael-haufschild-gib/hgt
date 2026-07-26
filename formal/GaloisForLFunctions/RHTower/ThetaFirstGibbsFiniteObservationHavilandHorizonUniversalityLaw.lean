@@ -31,7 +31,7 @@ structure ThetaFirstGibbsFiniteObservationHavilandHorizonCertificate : Prop wher
   finiteObservationHorizon :
     ∀ (N n : ℕ), N < n →
       ∃ b : ℕ → ℝ,
-        (∀ k (hk : k ≤ N),
+        (∀ k (_hk : k ≤ N),
           b k = thetaCuspLiouvilleGibbsMoment k 1) ∧
         HTGeometry.momentFunctional b
             (((1 : Polynomial ℝ) - (2 : ℝ) • X ^ n) ^ 2) < 0 ∧

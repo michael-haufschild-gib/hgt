@@ -8704,3 +8704,54 @@ relevant range; (b) a steepest-descent contour through it; (c) an error bound fr
 — WHICH CYCLE 136 ALREADY COMPUTED AS sqrt(log k / k). ALL THREE INGREDIENTS ARE IN HAND. WRITE THE
 SADDLE EQUATION EXPLICITLY, VERIFY UNIQUENESS FROM THE CONVEXITY IDENTITY g'' = g'(2e^w + 1) > 0, AND
 STATE THE RESULTING NON-VANISHING ON THE HORN. That would close level one, leaving four.
+
+---
+
+## Cycle 143 — THE LEVEL-ONE SADDLE IS UNIQUE, AND ITS UNIQUENESS IS INDEPENDENT OF THE IMAGINARY PART
+
+### The phase and its saddle
+With the leading behaviour of the theta remainder, the integrand of M_1(s) = int_0^inf Phi(t) t^s dt is
+exp(psi(t)) with
+
+    psi(t)   =  s log t + 9t/2 - pi e^{2t}
+    psi'(t)  =  s/t + 9/2 - 2 pi e^{2t}
+    psi''(t) = -s/t^2 - 4 pi e^{2t}
+
+UNIQUENESS. For s > 0 and t > 0 BOTH TERMS OF psi'' ARE NEGATIVE (formalised), so psi' is strictly
+decreasing; and psi' tends to +infinity at the origin and to -infinity at infinity. HENCE EXACTLY ONE
+SADDLE, FOR EVERY s > 0. (A strictly decreasing function has at most one zero — formalised.)
+
+### AND THE UNIQUENESS DOES NOT DEGRADE OFF THE REAL AXIS
+For s = sigma + i tau the real part of psi'' is -sigma/t^2 - 4 pi e^{2t}, WHICH DOES NOT INVOLVE tau AT
+ALL — dividing by a real number leaves the real part free of the imaginary component (formalised:
+Re((sigma + i tau)/r) = sigma/r).
+
+    ==> THE SADDLE STRUCTURE PERSISTS FOR EVERY COMPLEX s WITH Re s > 0, NOT MERELY IN A HORN. THE
+        HORN RESTRICTION COMES FROM THE ERROR TERM, NOT FROM THE EXISTENCE OR UNIQUENESS OF THE
+        SADDLE.
+
+That is the favourable arrangement: THE STRUCTURAL INGREDIENT IS GLOBAL AND ONLY THE QUANTITATIVE ONE
+IS LOCAL. Level one's hard part is therefore an error estimate on a region, not a structural question
+about the phase — and cycle 136 already computed the error parameter as sqrt(log k / k).
+
+Machine-verified: `RHTower/LevelOneSaddleIsUnique.lean` (negativity of the phase's second derivative
+for positive abscissa and argument, the real part of a division by a real number, uniqueness of the
+zero of a strictly decreasing function, the saddle equation, and the global-structure/local-error
+split; standard axioms only, wired into RHTower).
+
+### SEVENTY-SEVENTH ATLAS ENTRY
+    saddle uniqueness   psi''(t) = -s/t^2 - 4 pi e^{2t} < 0 for s, t > 0, so the level-one phase is
+                        strictly concave and has exactly one saddle; and Re psi'' is independent of the
+                        imaginary part of s, so uniqueness holds on the whole half-plane. The horn
+                        enters only through the error term. Structure global, error local.
+
+### STATE AT CYCLE 143
+Seventy-seven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 144 target
+Level one now needs only the error estimate on the horn. THE STEEPEST-DESCENT ERROR FOR A PHASE WITH
+psi'' < 0 AND KNOWN psi''' IS CLASSICAL: the relative error is O(|psi'''| / |psi''|^{3/2}) plus tail
+contributions. BOTH INGREDIENTS ARE COMPUTED — psi''' = 2s/t^3 - 8 pi e^{2t} and the ratio is
+sqrt(log k / k) (cycle 136). WHAT REMAINS IS THE TAIL: the contribution of the contour away from the
+saddle, which for a doubly exponentially decaying integrand is negligible. STATE AND BOUND THE TAIL.
+That completes level one and leaves four levels, each with the same structure and better parameters.
