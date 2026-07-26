@@ -375,3 +375,21 @@ two-parameter family.
 This is the uniform generalization of `wedge_twoThick`, `wedge_facetAntichain` and `wedge_not_pure`,
 and it supplies in Lean the geometric hypothesis ("nonpure two-thick full Stanley--Reisner system") of
 the parent constraint-dimension law for every `r, s >= 2`.
+
+## Lean progress — the facet separator for this family
+
+`GaloisForLFunctions/HTGeometry/StanleyReisnerFacetSeparator.lean` (axiom-clean, build green) proves
+the general Stanley--Reisner facet separator — every facet of a finite facet antichain carries a
+nonzero ring class annihilated by exactly the vertex coordinates it omits — and instantiates it here:
+
+- `boundaryWedgeFacetFinset` packages the facet family of `(2)` as a *finite* family, with
+  `mem_boundaryWedgeFacetFinset` and `coe_boundaryWedgeFacetFinset` identifying it with the set-valued
+  `boundaryWedgeFacets` used by the combinatorial layer;
+- **`boundaryWedge_facetSeparator`** — for every `r, s >= 2` and every facet, the separator exists,
+  using the uniform antichain property `facetAntichain`.
+
+So for this family the algebraic side of the isolated-facet-carrier step is now formalized as well:
+a facet gives a nonzero class killed by all `s+1 >= 3` omitted vertex coordinates, and the analytic
+side (`no_scalarFacetRealization_of_three_omitted`) turns exactly that pattern into a contradiction.
+The single remaining gap is the transport between the two: that a realization sends a nonzero class to
+a differentially transcendental function and annihilation to periodicity.

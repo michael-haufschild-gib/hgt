@@ -738,3 +738,32 @@ complete **except for the genuine elliptic case** `alpha/beta` nonreal, where th
 lattice and the conclusion needs the Weierstrass differential equation `(E)`.  That is the only
 remaining analytic gap in §3; the rational gauge reduction and the transfer from the analytic carrier
 to `FacetComplementRankOne` remain paper-level as before.
+
+## Lean progress — the facet separator (§1) and the algebraic input of §2
+
+`GaloisForLFunctions/HTGeometry/StanleyReisnerFacetSeparator.lean` (axiom-clean, build green,
+umbrella-registered) formalizes the separator step in the corpus's Stanley--Reisner ring language.
+
+- `isFaceOf_of_mem_facets` and `not_isFaceOf_insert_of_mem_facets` — a facet is a face, and facet
+  maximality: in a facet antichain, adjoining a vertex outside a facet leaves the complex.  This is
+  where `FacetAntichain` enters, and it is the combinatorial content of `(13)`.
+- `srProd_facet_ne_zero` — `(12)`: the facet monomial `prod_(w in A) x_w` has nonzero class, because
+  the face detector is `1` on it (`srFaceDetector_prod`).
+- `srVertexX_mul_srProd_facet_eq_zero` — `(14)`: for every `v` outside `A`, `x_v * prod_(w in A) x_w`
+  vanishes, because `insert v A` is a nonface (`srProd_eq_zero_of_not_isFace`).
+- **`exists_facetSeparator`** — the two together: every facet of a finite facet antichain carries a
+  nonzero Stanley--Reisner class annihilated by exactly the vertex coordinates it omits.
+
+**Simplification of the paper argument.**  §1 builds `q_A` as a product over the *other* facets of one
+chosen vertex `a_B in A \ B` per facet, and derives `q_A notin I_Delta` from the intersection formula
+`(9)`.  With the corpus's characterization of the Stanley--Reisner ideal by monomial supports
+(`mem_stanleyReisnerIdeal_iff`), the facet monomial of `A` itself already satisfies `(12)` and `(14)`,
+so the choice of the `a_B` and the appeal to `(9)` are not needed.  The Lean statement is therefore
+strictly simpler than the paper route while proving the same two facts.
+
+What remains between this and `(16)`--`(17)` is the transport through a realization: that a nonzero
+class of `R/I_Delta` becomes a differentially transcendental function, and that annihilation by `x_v`
+becomes the period identity `G_A(z + omega_v) = G_A(z)`.  That is the realization-modelling step
+shared with `boundary-wedge-uniform-ht-dimension-gap`, and it is now the only gap between the
+formalized algebra and the formalized analysis (`RankThreePeriods`,
+`RankTwoRealDependentPeriods`, `BoundaryWedgePeriodRankObstruction`).
