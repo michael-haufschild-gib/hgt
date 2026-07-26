@@ -1268,3 +1268,36 @@ poles invariant under a full lattice, i.e. `EllipticHypertranscendenceFree`, whi
 Weierstrass structure theorem that every elliptic function lies in `C(P, P')`; and the
 Schaefke--Singer rational gauge reduction feeding the *Cocycle transcendence requirement*, which the
 card itself labels `[SEARCH]`/`[BRIDGE]` rather than new knowledge.
+
+### The last gap, and a contour-integration-free plan for it
+
+The only analytic statement of this card still unformalized is
+`EllipticHypertranscendenceFree`: a hypertranscendental **meromorphic** function is not invariant
+under a full lattice.  (Entire carriers are done; this is only about carriers with poles.)  Mathlib
+supplies the Weierstrass function, its periodicity and its differential equation, but not the
+structure theorem `M(C/Lambda) = C(P, P')`, and building that classically needs the argument
+principle on a fundamental parallelogram.
+
+There is an elementary route that needs no contour integration at all:
+
+1. Fix a finite set of pole representatives and an order bound.  The lattice-periodic meromorphic
+   functions with poles confined to that data form a `C`-subspace.
+2. The map sending such a function to its finitely many principal parts has **kernel exactly the
+   constants**: a difference with no principal part extends analytically and is then constant by
+   Liouville.  Hence that subspace has dimension at most `1 + (total pole order)`.
+3. Apply this to the monomials `f^i (f')^j` with `i + j <= N`.  Their number grows like `N^2/2`,
+   while their total pole order grows like `N`.  For large `N` they are linearly dependent over `C`,
+   which is a nonzero polynomial relation `Q(f, f') = 0` — a first-order algebraic differential
+   equation.  So `f` is DA, i.e. not hypertranscendental.
+
+`GaloisForLFunctions/HTGeometry/EllipticPoleSpace.lean` (axiom-clean, build green,
+umbrella-registered) records step 2's Liouville kernel:
+
+- `const_of_lattice_periodic_analytic` — an everywhere-analytic lattice-periodic function is
+  constant;
+- **`exists_const_sub_of_lattice_periodic`** — two lattice-periodic functions whose difference is
+  everywhere analytic differ by a constant.
+
+What remains to build: the pole-bounded subspace as a `Submodule`, the principal-part linear map
+(from `meromorphicOrderAt` and the analytic extension of `(z-s)^n f`), the resulting dimension bound,
+and the monomial count.
