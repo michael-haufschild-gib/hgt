@@ -2016,3 +2016,36 @@ needs the codimension-three cochain built from the face detectors of the `3`-ten
 analogue of `pairCochain`, whose evaluation requires `σ ∖ {i,j,k}` injectivity plus the permutation
 invariance of the weight `S₃(i,j,k) · n i j k` (a product of two alternating families, hence
 symmetric).
+
+### Lean progress — Hochster's correspondence at `Tor₂` for arbitrary complexes and multidegrees
+
+`HochsterStrandTorTwo.lean` (axiom-clean, build green) closes the second level: for **every** finite
+complex and **every** multidegree `σ`, the multidegree-`σ` strand boundaries at Koszul degree two are
+*exactly* the reduced simplicial coboundaries of the induced subcomplex `Δ_σ`.
+
+- `erase3_eq_sdiff`, `sdiff_inj_of_subset` — deleting three vertices is deleting the triple, and the
+  complement inside `σ` determines the deleted set.
+- `sorted_triple_eq` — a three-element set has exactly one increasing enumeration (min/max argument),
+  which is what makes the guarded triple sum pick out a single term.
+- `faceSign3`, `tripleWeight`, `tripleWeight_swap12`, `tripleWeight_swap23` — the weight
+  `faceSign₃ σ i j k · n i j k` is a product of **two** alternating families, hence symmetric under
+  every permutation of the triple; this is what lets the sorted surviving term be identified with the
+  weight at an arbitrary ordering.
+- `tripleCochain` (triple analogue of `pairCochain`, with the `p < q < r` guard that keeps everything
+  characteristic-free — an unguarded symmetrization would produce a factor `6`),
+  `tripleCochain_sdiff_sorted` and **`tripleCochain_sdiff`** (evaluation at an arbitrary distinct
+  triple, all six orderings reduced to the sorted one by the two adjacent transpositions).
+- `simplicialCoboundary_tripleCochain` — the coboundary of the reconstructed primitive at a
+  codimension-two set is the pair incidence sign times the row sum of the coefficient family.
+- `srFaceDetector_srKoszulBoundary3` — the degree-three analogue of the corpus detector identity.
+- **`exists_coboundary_of_strandTwo_isKoszulBoundary3`** — forward half: an (upper-triangular) third
+  Koszul boundary yields a codimension-three cochain whose coboundary agrees with the strand cochain
+  on all codimension-two faces of `σ`.
+- **`hochster_multidegree_torTwo_boundary_iff`** — the packaged equivalence, combining the forward
+  half with `strandTwo_isKoszulBoundary3_of_coboundary`.
+
+Together with `hochster_multidegree_boundary_iff` (level one) and the chain-map identities
+`srKoszulRelation_strandOne`, `srKoszulBoundary_strandTwo`,
+`koszulUpperTri_srKoszulBoundary3_strandThree`, the squarefree Koszul strand and the reduced cochain
+complex of the induced subcomplex now agree at levels one and two — the card's "general finite-complex
+bridge" gate, built from scratch (mathlib has no Koszul complex and no simplicial cochain complex).
