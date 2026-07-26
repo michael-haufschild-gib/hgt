@@ -144,6 +144,15 @@ theorem dualDenom_two_lt_four_of_odd (q A A₁ : ℕ) (hodd : ¬ 2 ∣ q)
   have hstrict : 2 * A < q := lt_of_le_of_ne hrep (fun h => hodd ⟨A, h.symm⟩)
   omega
 
+/-- **No short cycles below the threshold.**  A denominator that fails to drop after two applications
+of the involution forces `4 ≤ Q`; equivalently, the reduction has no periodic orbit when `Q ≤ 3`. -/
+theorem four_le_of_dualDenom_two_ge (Q q A A₁ : ℕ) (hQ : 0 < Q) (hq : 0 < q)
+    (hcop : Nat.Coprime A q) (hrep : 2 * A ≤ q) (hrep₁ : 2 * A₁ ≤ dualDenom Q q A)
+    (hcyc : q ≤ dualDenom Q (dualDenom Q q A) A₁) : 4 ≤ Q := by
+  by_contra hcon
+  have hQ3 : Q ≤ 3 := by omega
+  exact absurd hcyc (not_le.mpr (dualDenom_two_lt Q q A A₁ hQ hQ3 hq hcop hrep hrep₁))
+
 /-- **No self-referential class at `Q = 2`.**  A class fixed by `α ↦ -1/(Qα)` modulo one satisfies
 `Qα² - Qnα + 1 = 0`, so its rationality forces `Q(Qn² - 4)` to be a square.  At `Q = 2` this is
 `4n² - 8 = m²`, which has no integral solution: modulo `16` the left side is `8` or `12`, and neither

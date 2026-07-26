@@ -92,8 +92,16 @@ theorem bourgainA6BlockFamilyLocalMoment_eq_setLIntegral_physicalBlock
           (‖bourgainA6PhysicalBlockSum N (K * M) q₀
               (fun _ => 1) (x + y)‖ ^ (12 : ℕ)) := by
   unfold bourgainA6BlockFamilyLocalMoment
-  apply setLIntegral_congr_fun measurableSet_le
+  have hset :
+      {x : BourgainPhaseSpace |
+        ‖x‖ ≤ bourgainA6LocalRadius (1 / Real.sqrt (Λ : ℝ)) M} =
+        Metric.closedBall 0
+          (bourgainA6LocalRadius (1 / Real.sqrt (Λ : ℝ)) M) := by
+    ext x
+    simp [Metric.mem_closedBall, dist_zero_right]
+  apply setLIntegral_congr_fun (hset ▸ measurableSet_closedBall)
   intro x hx
+  dsimp only
   rw [bourgainA6PhysicalBlockSum_mul_eq_blockFamilySum]
 
 /-- Literal scale-recursion interface after removing all color

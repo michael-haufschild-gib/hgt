@@ -9501,3 +9501,72 @@ IT MUST BE ATTACKED IN PHASE 4 BEFORE ANY PROOF WORK: the obvious way it fails i
 Toeplitz minors of order >= 3 are NOT functions of the same scalars (the 3x3 minors involve M_j
 through M_{j+4} in different combinations), so the "same scalar" property of order 2 may be an
 accident of order 2. CHECK THAT FIRST.
+
+---
+
+## Cycle 156 — THE HANKEL AND TOEPLITZ MINORS ARE THE SAME DETERMINANT UP TO A SIGN OF PERIOD FOUR
+
+### Phase 4 attack on cycle 155's worry, and it survives
+Cycle 155 warned: the "same scalar" property might be an accident of order 2, since the order-3 minors
+involve different combinations. IT IS NOT AN ACCIDENT, AND THE REASON IS EXACT.
+
+BOTH MINORS ARE ISOBARIC ON THE SAME MONOMIALS. The m-by-m Hankel minor at j uses M_j..M_{j+2m-2};
+the m-by-m Toeplitz minor uses a_{j-m+1}..a_{j+m-1} — 2m-1 consecutive terms in both cases. Every
+Toeplitz monomial has index-sum m*j; every Hankel monomial has index-sum m*j + m(m-1), so after the
+shift j -> j - (m-1) THEY ARE COMBINATIONS OF THE SAME MONOMIALS.
+
+### THE IDENTITY — NINETIETH ATLAS ENTRY
+Centre the Hankel matrix so entries are a(r + c - (m-1)); the Toeplitz matrix is a(c - r). REVERSING
+THE ROWS OF THE TOEPLITZ MATRIX sends r to m-1-r and turns a(c - r) into a(c + r - (m-1)):
+
+    H  =  T.submatrix Fin.rev id          (formalised, all m)
+    det H  =  sign(rev) * det T           (formalised, all m)
+
+and the sign of the reversal has PERIOD FOUR in m (machine-checked by `decide` at m = 1..8):
+
+    m:      1    2    3    4    5    6    7    8
+    sign:   +    -    -    +    +    -    -    +
+
+### THE CONSEQUENCE
+The factorial weights a_j = M_j/(2j)! are ASYMPTOTICALLY CONSTANT ON EACH ISOBARIC MONOMIAL: the
+weight of M_{j+d} relative to M_j is (2j)!/(2j+2d)! ~ (2j)^{-2d}, and a monomial with offsets summing
+to zero picks up (2j)^0 = 1. SO AT LEADING ORDER IN 1/j THE HYPOTHESIS AT ORDER m READS det T >= 0 IN
+THE MOMENTS THEMSELVES, WHILE THE FREE MOMENT STRUCTURE GIVES det H >= 0. With the sign:
+
+    m = 0, 1 (mod 4):  THE HYPOTHESIS AGREES WITH THE FREE INEQUALITY AT LEADING ORDER.
+    m = 2, 3 (mod 4):  THE HYPOTHESIS IS ITS EXACT NEGATION, SO BOTH ARE FORCED TO VANISH AT LEADING
+                       ORDER AND THE ENTIRE CONTENT SITS IN THE O(1/j) CORRECTION.
+
+    ==> THE DIFFICULTY OF THE HYPOTHESIS AT ORDER m IS PERIODIC IN m WITH PERIOD FOUR.
+
+ORDER TWO LIES IN THE OPPOSING CLASS. That is why the order-two (Turan) inequality for this sequence
+is a DELICATE THEOREM (Csordas-Norfolk-Varga) rather than a free consequence of positivity: the
+leading term is forced to vanish and the whole inequality lives in the correction. ORDER THREE IS
+ALSO OPPOSING (higher Turan — also a theorem, also delicate). ORDERS FOUR AND FIVE ARE PREDICTED
+LEADING-ORDER FREE, WHICH IS A FALSIFIABLE PREDICTION.
+
+This EXPLAINS cycle 155's pinch rather than merely recording it: the pinch at order two is the m = 2
+case of a general sign law.
+
+Machine-verified: `RHTower/HankelIsToeplitzReversed.lean` (the Toeplitz and centred Hankel matrices,
+the reversal identity H = T.submatrix Fin.rev id for all m, det H = sign(rev) det T for all m via
+Matrix.det_permute, the reversal sign at m = 1..8 by decide, the agreeing cases m = 4, 5, the opposing
+cases m = 2, 3, and the pinch lemma; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 156
+Ninety entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 157 target
+THE PREDICTION IS FALSIFIABLE AND MUST BE TESTED FIRST. If orders 4 and 5 are leading-order free,
+THEN THE ORDER-4 AND ORDER-5 TOEPLITZ INEQUALITIES FOR THIS SEQUENCE SHOULD BE PROVABLE BY A SOFTER
+ARGUMENT THAN ORDERS 2 AND 3 — which would be very surprising, since difficulty is normally monotone
+in the order. TWO OUTCOMES, BOTH INFORMATIVE:
+  (i) The literature already has orders 4,5 by a softer argument -> ENTRY 90 IS CONFIRMED and the
+      period-four law is a real structural discovery with predictive content.
+  (ii) The literature finds orders 4,5 HARDER than 2,3 -> the leading-order analysis is missing
+      something, most likely that det H itself is O(1/j)-small so the "free" leading term carries no
+      information. IN THAT CASE COMPUTE THE ORDER OF VANISHING OF det H FOR A MOMENT SEQUENCE:
+      for an m-by-m Hankel determinant of a log-convex sequence the determinant is a Gram determinant
+      and its SIZE, not just its sign, is what matters.
+SEARCH THE LITERATURE FOR HIGHER-ORDER TURAN INEQUALITIES OF THE RIEMANN XI TAYLOR COEFFICIENTS AT
+ORDERS 4 AND ABOVE.
