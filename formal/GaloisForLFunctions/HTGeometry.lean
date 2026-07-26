@@ -2090,3 +2090,4 @@ import GaloisForLFunctions.HTGeometry.SupportFunctionMaximalAtCritical
 import GaloisForLFunctions.HTGeometry.EfficiencyThresholdLaw
 import GaloisForLFunctions.HTGeometry.SelfDefeatingProductivity
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
+import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative

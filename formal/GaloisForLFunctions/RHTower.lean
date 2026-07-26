@@ -3013,3 +3013,4 @@ import GaloisForLFunctions.RHTower.BarrierIsTheExpansion
 import GaloisForLFunctions.RHTower.UniformityIsTheWrongShape
 import GaloisForLFunctions.RHTower.ExpansionParameterIsTheShift
 import GaloisForLFunctions.RHTower.TuranIsAVarianceCompetition
+import GaloisForLFunctions.RHTower.DoublyExponentialMargin

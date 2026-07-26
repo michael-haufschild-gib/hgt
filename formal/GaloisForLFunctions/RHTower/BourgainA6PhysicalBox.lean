@@ -120,11 +120,17 @@ theorem bourgainA6NormalizedCurveSum_eq_physical
               (bourgainIndex n : ℝ) ^ (3 / 2 : ℝ) /
                 (H : ℝ) ^ (2 : ℕ) := by
             ring
+    have hcoefHalf' :
+        (bourgainIndex n : ℝ) ^ (2 : ℝ)⁻¹ /
+            (H : ℝ) ^ (2 : ℝ)⁻¹ =
+          (H : ℝ) ^ (2 : ℝ)⁻¹ *
+            (bourgainIndex n : ℝ) ^ (2 : ℝ)⁻¹ / (H : ℝ) := by
+      simpa [one_div] using hcoefHalf
     simp [bourgainSquareRootCurvePhase, bourgainSquareRootCurve,
       bourgainDot, Fin.sum_univ_four, Matrix.cons_val,
       bourgainA6HigherPhase]
     rw [Real.div_rpow hn hHr.le, Real.div_rpow hn hHr.le,
-      hcoefHalf, hcoefThreeHalf]
+      hcoefHalf', hcoefThreeHalf]
     field_simp
     ring
   unfold bourgainA6NormalizedCurveSum
@@ -132,6 +138,7 @@ theorem bourgainA6NormalizedCurveSum_eq_physical
   apply Fintype.sum_congr
   intro n
   rw [hphase]
+  rfl
 
 /-- Twelfth moment on the physical box
 `[0,H]×[0,H²]×[-H²,H²]×[-H,H]`. -/

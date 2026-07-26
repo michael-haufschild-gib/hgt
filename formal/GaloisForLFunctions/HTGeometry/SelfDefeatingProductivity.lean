@@ -110,16 +110,16 @@ theorem threshold_reaches_critical_iff (κ : ℚ) :
 
 /-! ### The record sequence -/
 
-@[simp] theorem threshold_weyl : aProductivityThreshold weylKappa = 4 / 9 := by
+@[simp] theorem aThreshold_weyl : aProductivityThreshold weylKappa = 4 / 9 := by
   unfold aProductivityThreshold weylKappa; norm_num
 
-@[simp] theorem threshold_bi : aProductivityThreshold biKappa = 333 / 784 := by
+@[simp] theorem aThreshold_bi : aProductivityThreshold biKappa = 333 / 784 := by
   unfold aProductivityThreshold biKappa; norm_num
 
-@[simp] theorem threshold_huxley : aProductivityThreshold huxleyPairKappa = 17216 / 42025 := by
+@[simp] theorem aThreshold_huxley : aProductivityThreshold huxleyPairKappa = 17216 / 42025 := by
   unfold aProductivityThreshold huxleyPairKappa; norm_num
 
-@[simp] theorem threshold_bourgain : aProductivityThreshold bourgainKappa = 715 / 1764 := by
+@[simp] theorem aThreshold_bourgain : aProductivityThreshold bourgainKappa = 715 / 1764 := by
   unfold aProductivityThreshold bourgainKappa; norm_num
 
 /-- **The productive range shrinks monotonically along the record sequence.** -/
@@ -127,7 +127,7 @@ theorem thresholds_decreasing :
     aProductivityThreshold bourgainKappa < aProductivityThreshold huxleyPairKappa ∧
       aProductivityThreshold huxleyPairKappa < aProductivityThreshold biKappa ∧
       aProductivityThreshold biKappa < aProductivityThreshold weylKappa := by
-  rw [threshold_bourgain, threshold_huxley, threshold_bi, threshold_weyl]
+  rw [aThreshold_bourgain, aThreshold_huxley, aThreshold_bi, aThreshold_weyl]
   refine ⟨by norm_num, by norm_num, by norm_num⟩
 
 /-- **The self-defeating law.**  Each unit of progress in the pointwise exponent costs at least two
@@ -168,7 +168,7 @@ theorem productivity_vs_handoff :
     decouplingStart < aProductivityThreshold bourgainKappa ∧
       aProductivityThreshold bourgainKappa - decouplingStart = 1 / 1764 ∧
       aProductivityThreshold (277 / 1792) < decouplingStart := by
-  rw [threshold_bourgain]
+  rw [aThreshold_bourgain]
   refine ⟨by unfold decouplingStart; norm_num, by unfold decouplingStart; norm_num, ?_⟩
   unfold aProductivityThreshold decouplingStart; norm_num
 

@@ -42,6 +42,44 @@ theorem bourgainA6PhysicalBlockSum_eq_exactLocalSum
   push_cast
   ring
 
+/-- Exact partition of a normalized `A₆` curve sum at scale `K*M` into
+`K` consecutive blocks of length `M`. -/
+theorem bourgainA6NormalizedCurveSum_mul_eq_sum_blocks
+    (K M : ℕ) (x : BourgainPhaseSpace) :
+    bourgainA6NormalizedCurveSum (K * M) x =
+      ∑ i : Fin K,
+        bourgainA6PhysicalBlockSum (K * M) M (M * i.1)
+          (fun _ => 1) x := by
+  unfold bourgainA6NormalizedCurveSum
+  rw [← (finProdFinEquiv : Fin K × Fin M ≃ Fin (K * M)).sum_comp]
+  rw [Fintype.sum_prod_type]
+  apply Fintype.sum_congr
+  intro i
+  unfold bourgainA6PhysicalBlockSum
+  apply Fintype.sum_congr
+  intro m
+  rw [one_mul]
+  congr 2
+  congr 1
+  simp only [finProdFinEquiv, bourgainIndex]
+  push_cast
+  ring
+
+/-- Block partition with every block rewritten as the exact local sum used by
+the osculating-cell theorem. -/
+theorem bourgainA6NormalizedCurveSum_mul_eq_sum_exactLocal
+    (K M : ℕ) (x : BourgainPhaseSpace) :
+    bourgainA6NormalizedCurveSum (K * M) x =
+      ∑ i : Fin K,
+        bourgainSquareRootExactLocalSum M (K * M : ℕ)
+          (Real.sqrt (((M * i.1 : ℕ) : ℝ) / ((K * M : ℕ) : ℝ)))
+          (fun _ => 1) x := by
+  rw [bourgainA6NormalizedCurveSum_mul_eq_sum_blocks]
+  apply Fintype.sum_congr
+  intro i
+  exact bourgainA6PhysicalBlockSum_eq_exactLocalSum
+    (K * M) M (M * i.1) (fun _ => 1) x
+
 /-- The base parameter of a nonempty block is positive. -/
 theorem sqrt_natCast_div_pos
     {N q : ℕ} (hN : 0 < N) (hq : 0 < q) :
