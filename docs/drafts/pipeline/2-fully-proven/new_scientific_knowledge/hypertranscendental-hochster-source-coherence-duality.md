@@ -1910,3 +1910,45 @@ This upgrades the concrete degree-`1` cycle-graph instances `hochster_C3/C4/C5/C
 `HochsterCycleRealization` (which relied on graph-specific Betti formulas) to a single theorem valid
 in every dimension, and it replaces the previously recorded "mathlib-scale, gated" status of the
 general chain-equivalence half with an actual unconditional construction.
+
+### Lean progress — Hochster's formula at `Tor₁` for ARBITRARY complexes and ARBITRARY multidegrees
+
+This closes the card's long-standing "general finite-complex bridge" gate at the first Koszul level.
+`HochsterMultidegreeTorOne.lean` (axiom-clean, build green) proves the strand equivalence
+`Tor_{1,σ} ≅ H̃^{|σ|−2}(Δ_σ)` for **every** finite complex and **every** multidegree `σ` — not only for
+hollow simplices, and not only in reduced degree `1`.
+
+The multidegree-`σ` strand of the Koszul `1`-chains is exactly the family
+`srHollowSimplexSyzygyVec F facets σ l`; its `i`-th slot vanishes automatically when `σ ∖ i` is a
+nonface, matching the fact that a cochain of `Δ_σ` lives only on faces.  The dictionary is the
+incidence sign, `l i ↦ faceSign σ i · l i`.
+
+- `erase_erase_eq_erase_erase_iff` — two double deletions from `σ` agree exactly when the deleted
+  pairs agree (the combinatorial identification of codimension-two faces with unordered pairs).
+- `signedPair_symm`, `signedPair_symm'` — the sign-corrected pair weight is invariant under the swap,
+  on antisymmetric and on symmetric coefficient families respectively.
+- `pairCochain F σ b` and `pairCochain_erase_erase` — the codimension-two cochain attached to a
+  coefficient family, with the ordered-pair guard `p < q` that keeps the construction
+  **characteristic-free** (an unguarded symmetrization would produce a factor `2`).
+- `srKoszulRelation_srHollowSimplexSyzygyVec` — the strand's Koszul differential is
+  `(∑_{i∈σ} l i) · ∏_σ x`; hence `srHollowSimplexSyzygyVec_isCycle_iff`: for a face `σ` a strand
+  element is a cycle iff `∑_{i∈σ} l i = 0`, which is exactly the topological cocycle condition
+  `(δa)(σ) = ∑_{i∈σ} faceSign σ i · a i = 0` in the slot that exists only when `σ ∈ Δ`.
+- **`hochster_multidegree_boundary_iff`** — the boundary halves agree:
+  `(∃ cc, ∂ cc = w(l)) ↔ (∃ h, ∀ i ∈ σ with σ ∖ i a face, (δh)(σ ∖ i) = faceSign σ i · l i)`.
+  Forward: the face detectors `srFaceDetector (σ ∖ i)` applied to the boundary equation produce an
+  antisymmetric scalar family `b` with `∑_{j ∈ σ∖i} b i j = l i`, and `pairCochain σ b` is the
+  primitive.  Backward: the sign-corrected `pairCochain` of the given cochain, placed on the
+  codimension-two monomials of `σ`, is the `2`-chain; slots where `σ ∖ i` is a nonface impose no
+  condition because the corresponding monomial vanishes.
+- **`hochster_multidegree_torOne_correspondence`** — the two halves packaged: cycles ↔ cocycles and
+  boundaries ↔ coboundaries under the incidence-sign dictionary.  This is Hochster's formula at
+  `i = 1`, unconditional, over any commutative ring, for arbitrary finite complexes and arbitrary
+  multidegrees.
+
+Status of the card's two previously "mathlib-scale, gated" targets: the general finite-complex chain
+equivalence is now **done at `Tor₁`** (the strand the card's whole realization programme lives in),
+with the general reduced simplicial cochain complex supplied from scratch.  What remains open is the
+higher-`i` layer `Tor_{i,σ} ≅ H̃^{|σ|−i−1}(Δ_σ)` for `i ≥ 2` (the corpus has the Koszul complex in all
+degrees, `koszulD` with `d² = 0`, and the cochain complex in all degrees, so the remaining work is the
+multidegree-strand identification one level up), and the exact ranks for non-hollow `σ`.
