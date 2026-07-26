@@ -153,6 +153,26 @@ theorem four_le_of_dualDenom_two_ge (Q q A A₁ : ℕ) (hQ : 0 < Q) (hq : 0 < q)
   have hQ3 : Q ≤ 3 := by omega
   exact absurd hcyc (not_le.mpr (dualDenom_two_lt Q q A A₁ hQ hQ3 hq hcop hrep hrep₁))
 
+/-- **The second cusp at conductor four is closed under the involution.**  If the denominator is
+`2 * u` with `u` odd and the numerator is odd, one step produces the denominator `2 * A`, again twice
+an odd number.  So the classes with denominator `≡ 2 (mod 4)` form an orbit of their own, disjoint from
+the orbit of `0`; it is the orbit containing the fixed class `1/2`. -/
+theorem dualDenom_four_second_cusp (u A : ℕ) (hu : u % 2 = 1) :
+    dualDenom 4 (2 * u) A = 2 * A := by
+  have hgu : Nat.gcd u 2 = 1 := by
+    rw [Nat.gcd_comm, Nat.gcd_rec, hu]
+    rfl
+  have hg : Nat.gcd (2 * u) 4 = 2 := by
+    have h4 : (4 : ℕ) = 2 * 2 := by norm_num
+    rw [h4, Nat.gcd_mul_left, hgu]
+  rw [dualDenom, hg]
+
+/-- Consequently the residue of the denominator modulo four is an invariant of the orbit. -/
+theorem dualDenom_four_second_cusp_mod (u A : ℕ) (hu : u % 2 = 1) (hA : A % 2 = 1) :
+    dualDenom 4 (2 * u) A % 4 = 2 := by
+  rw [dualDenom_four_second_cusp u A hu]
+  omega
+
 /-- **No self-referential class at `Q = 2`.**  A class fixed by `α ↦ -1/(Qα)` modulo one satisfies
 `Qα² - Qnα + 1 = 0`, so its rationality forces `Q(Qn² - 4)` to be a square.  At `Q = 2` this is
 `4n² - 8 = m²`, which has no integral solution: modulo `16` the left side is `8` or `12`, and neither

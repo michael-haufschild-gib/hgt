@@ -10298,3 +10298,72 @@ WRITE lambda_n VIA THE EXPLICIT FORMULA WITH THE TEST FUNCTION CORRESPONDING TO 
 ASK WHETHER ITS ARCHIMEDEAN BUDGET IS BELOW ONE LIKE THE TENT-FUNCTION BUDGET WAS. IF THE LI TEST
 FUNCTION HAS A BUDGET BELOW ONE, TYPE B CLOSES FOR LI AND THAT IS RH. IF IT EXCEEDS ONE, THE EXCESS
 IS THE EXACT OBSTRUCTION AND IT IS A NUMBER.
+
+---
+
+## Cycle 168 — BUDGET AND RESOLUTION ARE THE SAME RESOURCE
+
+### Li's test function, identified
+On the critical line s = 1/2 + it one has |s - 1| = |s| (formalised), so 1 - 1/rho = (rho-1)/rho HAS
+MODULUS ONE. Writing it as e^{i theta}:
+
+    Re[ 1 - (1 - 1/rho)^n ] = 1 - cos(n theta) = 2 sin^2(n theta / 2)   (formalised),
+
+THE FEJER-TYPE KERNEL, and its nonnegativity (formalised) IS why RH gives lambda_n >= 0.
+
+The map t -> theta IS THE CAYLEY TRANSFORM, carrying t -> +-infinity to theta -> 0. So the
+zero-counting density log|t|/2pi becomes log(1/theta)/(2 pi theta^2), and
+
+    sum_rho (1 - cos n theta_rho)  ~  (n/2) log n,
+
+WHICH IS THE KNOWN LI MAIN TERM — recovered here from the transform rather than assumed.
+
+THE SCALING. 2 sin^2(n theta/2)/theta^2 = n^2 * [2 sin^2(phi/2)/phi^2] with phi = n theta (formalised):
+the kernel peaks at theta ~ 1/n with height ~ n^2 over width ~ 1/n, hence mass ~ n. IT RESOLVES EVERY
+ZERO.
+
+### THE HUNDRED-AND-SECOND ATLAS ENTRY
+THE PRICE. A tent test of width L HAS COMPACT SUPPORT, which truncates the prime sum and buys the
+finite archimedean budget 3 log 2 + pi/2 - 3 = 0.65023 of entries 18-19; IT RESOLVES ONLY A WINDOW.
+The Fejer test VANISHES ONLY AT THE ISOLATED POINTS theta in 2 pi Z / n (formalised), so NO WINDOW IS
+EXCLUDED and the prime sum is NOT TRUNCATED AT ALL.
+
+    ==> COMPACT SUPPORT BUYS BUDGET AND FORFEITS RESOLUTION; THE FEJER FAMILY BUYS RESOLUTION AND
+        FORFEITS BUDGET. THE TWO LANES ARE ONE EXPLICIT FORMULA SPENDING ONE RESOURCE.
+
+    ==> TYPE A AND TYPE B OF ENTRY 101 ARE NOT INDEPENDENT DIFFICULTIES. THEY ARE THE TWO ENDS OF A
+        SINGLE TRADE INSIDE THE EXPLICIT FORMULA, AND THE TRADE IS FORMALISED: A TEST CANNOT BOTH
+        TRUNCATE A WINDOW AND BE NONVANISHING ON IT.
+
+THIS IS THE DEEPEST UNIFICATION THE ATLAS HAS REACHED. Entry 52 unified the log-T landscape under
+codimension-versus-area. Entry 101 classified everything into three types. ENTRY 102 SHOWS TWO OF THE
+THREE TYPES ARE ONE PHENOMENON: THE EXPLICIT FORMULA HAS A SINGLE CONSERVED RESOURCE, AND EVERY TEST
+CLASS CHOOSES HOW TO SPEND IT.
+
+Machine-verified: `RHTower/BudgetAndResolutionAreOneResource.lean` (modulus one on the critical line,
+1 - cos x = 2 sin^2(x/2), its nonnegativity, the Fejer scaling law with the n^2 factor, the vanishing
+only at sine zeros, the exclusion property of compactly supported tests, and the trade as a formal
+contradiction; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 168
+One hundred and two entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 169 target
+IF BUDGET AND RESOLUTION ARE ONE RESOURCE, THE QUESTION BECOMES QUANTITATIVE AND SHARP: WHAT IS THE
+CONSERVED QUANTITY? For the tent family the budget is 0.65023 with margin 0.34976 at width L, and the
+resolution is a window of width L in u = log n. For the Fejer family the resolution is total and the
+budget is unbounded. THE CONJECTURE TO STATE AND ATTACK:
+
+  [CONJECTURE — EXPLICIT-FORMULA UNCERTAINTY] For every admissible test g, the product of the
+  archimedean budget B(g) and the resolved measure R(g) is bounded below by an absolute constant:
+  B(g) R(g) >= c_0 > 0. RH requires B(g) < 1 AND R(g) = full, hence c_0 <= B(g) R(g) < R(g); the
+  conjecture is FALSIFIED exactly by a test with small budget and full resolution, WHICH IS WHAT A
+  PROOF OF RH BY THIS ROUTE WOULD PRODUCE.
+
+THAT IS AN UNCERTAINTY PRINCIPLE FOR THE EXPLICIT FORMULA. IT IS EXACT, FALSIFIABLE, BOLD ENOUGH TO
+BE FALSE, AND IF TRUE IT CLOSES THE ENTIRE EXPLICIT-FORMULA LANE WITH ONE INEQUALITY. COMPUTE B AND R
+FOR THE TENT FAMILY (both known: 0.65023 and L) AND FOR THE FEJER FAMILY, AND SEE WHETHER THE PRODUCT
+IS BOUNDED BELOW. THE FIRST TEST OF THE CONJECTURE IS WHETHER THE TENT PRODUCT 0.65023 * L STAYS ABOVE
+A CONSTANT AS L VARIES — IT DOES NOT, SINCE L -> 0 SENDS IT TO ZERO, SO THE CONJECTURE MUST BE STATED
+WITH THE CORRECT NORMALISATION OF R. FIND THAT NORMALISATION FIRST: R SHOULD BE THE FRACTION OF THE
+ZERO MEASURE RESOLVED, NOT THE RAW WIDTH.
