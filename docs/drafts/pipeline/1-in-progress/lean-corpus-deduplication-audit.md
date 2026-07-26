@@ -1206,3 +1206,263 @@ Named general results introduced:
 - `PrimeArchExactOffLineQuartetKMSMaster`'s pair is a **false positive** of the first scanner: the
   specialised theorem was already a three-line instantiation, and the "overlap" was its long
   *statement*. This is why the second scanner compares only lines after `:= by`.
+
+## B28 executed — the mirrored `With` API is gone
+
+`HolderShiftElimination.lean` 831 -> 904; `RationalIncrementHolderElimination.lean` 560 -> deleted.
+**Net -487 lines**, and one fewer module.
+
+The decisive observation is that `jetTranslate` and `jetTranslateWith polePart` are not merely
+equal but **definitionally identical** — both are
+`((mvPolynomialBaseTranslation (fun j => ‹increment› (j : ℕ))).toAlgHom.toRingHom).comp (MvPolynomial.map ratShift)` —
+so every specialisation is a term-mode application with no rewriting, and `Hshift` transports
+across `jetTranslate m` vs `jetTranslateWith polePart m` by `rfl`.
+
+What was done, against the plan recorded in B28:
+
+- The whole arbitrary-increment development (21 declarations) moved verbatim into
+  `HolderShiftElimination.lean`, keeping `namespace RationalIncrementHolder`, so the one external
+  reference (`RationalShiftHypertranscendence`) needed no rename — only its import changed.
+- The specific development shrank from 20 declarations to the **8** that are actually referenced
+  outside the module (`jetTranslate`, `jetTranslate_C`, `jetTranslate_X`, `transMonomial`,
+  `jetTranslate_monomial`, `totalDegree_jetTranslate_le`, `coeff_jetTranslate_of_le_degSum`,
+  `no_shift_stable_annihilator`), each now a one-line `polePart` specialisation. The other 12 were
+  internal scaffolding for the deleted proofs and are gone.
+- `no_shift_stable_annihilator` is `no_shift_stable_annihilatorWith polePart …` with the residue
+  hypothesis discharged by `ratShift_sub_polePart_combination` — exactly the nine-line difference
+  the earlier analysis predicted.
+- The deleted module's docstring (what the increment parameter buys) folded into the
+  `## The arbitrary-increment jet substitution` section comment.
+- Umbrella import dropped; `scripts/formal_tools.py index` regenerated (`LEAN_API.md`,
+  `LEAN_GAPS.md`, `LEAN_OVERVIEW.md`) so no index entry points at the removed file.
+
+Trap: `section Jet` had to be re-closed. Splicing a block that *starts* with `end Jet` and then
+opens a fresh `section Jet` leaves the new section unterminated, and Lean reports it only at the
+file's final `end GaloisForLFunctions` — read that error as "an inner scope is still open", not as
+a problem with the last line.
+
+Audit: `lake build` of `HolderShiftElimination` (8477 jobs) and of all five consumers
+(`RationalShiftHypertranscendence`, `DigammaHypertranscendental`, `GammaShiftEigenrelation`,
+`GammaFactorialHarmonicSequenceFreeness`, `GammaHypertranscendental`, 8487 jobs) — successful.
+
+## B32 — the ThetaTail signed/unsigned mirror (3 modules removed)
+
+Five `XiCTaylorThetaTail*` modules carried an `abs` mirror of an `0 ≤ a` development: every
+statement identical except that `a` is replaced by `|a|` and the hypothesis `ha : 0 ≤ a` is
+dropped.  The `abs` form is therefore the *general* one, and each unsigned theorem is
+`rwa [abs_of_nonneg ha]` away from it — nine such pairs in total.
+
+| module | before | after |
+|---|---|---|
+| `XiCTaylorThetaTailFiniteTranslationBounds` | 1495 | 1586 |
+| `XiCTaylorThetaTailSignedFiniteTranslationEdge` | 265 | **deleted** |
+| `XiCTaylorThetaTailSignedFiniteTranslationIntegrated` | 203 | **deleted** |
+| `XiCTaylorThetaTailUniformFiniteTranslationDefectCurrent` | 416 | 470 |
+| `XiCTaylorThetaTailSignedFiniteTranslationDefectCurrent` | 305 | **deleted** |
+
+Net **-628 lines** and three fewer modules.  Import repairs: two lines out of `RHTower.lean`,
+`…SignedFiniteTranslationPacket` re-pointed at `…FiniteTranslationBounds`,
+`…SignedFiniteTranslationDefectSup` at `…UniformFiniteTranslationDefectCurrent`, and
+`…UniformFiniteTranslationDefectCurrent` gained an import of `…SignedFiniteTranslationPacket`
+(checked acyclic first: neither module reached the other).
+
+**Shape 5, and the most mechanical one yet: `|·|` versus a sign hypothesis.**  Whenever a module
+name carries `Signed`/`Abs` and a sibling does not, expect the whole development to be mirrored.
+The general form is always the `abs` one; the specialised proofs are one `rwa [abs_of_nonneg h]`
+each, and the mirror module usually disappears entirely.  Grep for module-name pairs differing by
+`Signed`/`Abs`/`Uniform` before reading any proofs.
+
+Audit: `lake build` of `…FiniteTranslationBounds` (8779), `…SignedFiniteTranslationPacket` (8791),
+`…UniformFiniteTranslationDefectCurrent` (8792) and `…SignedFiniteTranslationDefectSup` (8793) —
+all successful.  `scripts/formal_tools.py index` regenerated after the deletions.
+
+## B33 — module-name mirrors as a search key, and `ShiftJetTower`
+
+B32's shape suggested a cheap corpus-wide index: **module names that differ by a qualifier**.
+Stripping `Signed`, `Abs`, `Uniform`, `Exact`, `Relative`, `Rel` from every module basename and
+looking for the stripped name yields 14 pairs. Not all are real (the base
+`XiCTaylorThetaTailFiniteTranslationDefectCurrent` genuinely holds different content from its
+`Uniform` sibling; `Bottcher/RelativeMinimalRelation` has nothing to do with
+`RHTower/BakerProof/MinimalRelation`), but the true ones are found in seconds instead of by
+reading proofs.
+
+**`ShiftJetTower` 206 -> 120.**  All thirteen declarations — `jetTower`, `jetTower_zero`,
+`mem_jetTower_succ_iff`, `le_jetTower_succ`, `jet_mem_jetTower_succ`, `base_le_jetTower`,
+`adjoin_stable_of_gen`, `defectSpan`, `defectSpan_zero`, `defectSpan_succ`, `defectSpanAll`,
+`mem_defectSpanAll`, `defectSpanAll_le_of_mem`, `jetTower_induction`, `jetTower_transcendental` —
+are `HTGeometry.Rel`'s at `C := ℂ`, character for character. The modules were independent siblings
+(neither imported the other), so `ShiftJetTower` now imports `RelativeShiftJetTower` and every
+declaration delegates.
+
+Two details that made it safe:
+
+- `jetTower` stayed a plain `noncomputable def` rather than an `abbrev`. `jetTower_zero` and
+  `mem_jetTower_succ_iff` are still `rfl`/`Iff.rfl` through the delegation because
+  `Rel.jetTower F y 0 = F` is definitional. An `abbrev` would have been reducible and changed how
+  consumers' `simp` sets behave.
+- Checked first that no consumer unfolds the definitions: the only `simp [defectSpan]` in the
+  corpus was inside the module being rewritten. Seven consumers
+  (`DirichletDefectInertness`, `JetTowerFreeness`, `OrbitIsolatedPoleLaw`, `UpperEndDigammaShift`,
+  `DigammaOverDirichletBase`, `ShiftRationalBase`, `UpperEndDirichletCoordinate`) all compile
+  untouched.
+
+Audit: `lake build GaloisForLFunctions.HTGeometry.ShiftJetTower` — 8480 jobs, successful; the seven
+consumers verified individually with `lake env lean`.
+
+**Remaining name-mirror candidates for the next pass** (unexamined):
+`SignedReflectionParity` (445) vs `ReflectionParity` (165); `IndexWiringRelative` (321) vs
+`IndexWiring` (262); `RouteBFourPhaseUniform` (332) vs `RouteBFourPhase` (97);
+`JacobiThetaExactDivisor` (330) vs `JacobiThetaDivisor` (180);
+`PrimeArchExactOffLineQuartetAccretivity` (365) vs `PrimeArchOffLineQuartetAccretivity` (442);
+`UniformPrimePowerTailPacket` (184) vs `PrimePowerTailPacket` (187);
+`RelativeNaturalBoundary` (147) vs `NaturalBoundary` (57);
+`SignedGammaHypertranscendental` (57) vs `GammaHypertranscendental` (441);
+`ContinuumAnalyticEulerTailExactFaithfulnessUniversalityLaw` (55) vs its non-`Exact` sibling (183).
+
+## B34 — two more name-mirror collapses
+
+**`ReflectionParity` 165 -> 188, `SignedReflectionParity` 445 -> 347 (net -75).**
+`neg_one_pow_orderAt_of_signed_reflection` (`f(2c − s) = ε·f(s)` with `ε = ±1`, concluding
+`(−1)^{ord} = ε`) is the general law; `analyticOrderAt_even_of_reflection` is its `ε = 1` case and
+`analyticOrderAt_odd_of_antireflection` — which the signed module *already* derived in five lines —
+its `ε = −1` case. The even case had simply been proved out separately upstream. Both signed laws
+(plain and germ form) moved into `ReflectionParity`; the two even-parity theorems are now the same
+five-line `rcases Nat.even_or_odd … / Odd.neg_one_pow` idiom the odd ones already used.
+
+**`PrimeArchExactOffLineQuartetAccretivity` 365 -> 172 (-193).**  The two band predicates are
+**character-for-character the same definition**:
+
+```
+XiEndpointOffLineQuartetAccretiveBand R  :=  0 ≤ R ∧ xiEndpointCompletedCurvature * ((R + 1/2)^2 + 1) < 4
+XiOffLineQuartetAccretiveBand         R  :=  0 ≤ R ∧ xiEndpointCompletedCurvature * ((R + 1/2)^2 + 1) < 4
+```
+
+so the whole "exact" development — `XiC_ne_zero_of_upperHalf_*`, `xiRelativeResolventTrace_im_nonpos_*`, `continuedPrimeArchSourceRelativeTrace_im_nonpos_*`,
+`continuedPrimeArchUpperAntiHerglotz_of_positiveFrequencyAbove_*`,
+`continuedPrimeArchPositiveFrequencyAbove_iff_*` — states the same five theorems as the
+`offLineOrbit` development, reached only by a different internal route to the height bound. The
+exact module reaches the other, so its band is now an `abbrev` and its five theorems are one-line
+delegations; the private helper lemma they used (78 lines) became dead and was deleted.
+
+**Worth checking before reading any proof: are two `def`s with different names the same term?**
+A `def`-body comparison across the corpus is cheap and would have found this instantly. Two names
+for one predicate make every theorem about them duplicate.
+
+Audit: `lake build` of `ReflectionParity` (8562), `PrimeArchExactOffLineQuartetAccretivity` (8989)
+and `PrimeArchExactOffLineQuartetKMSMaster` (9134) — all successful; the six other consumers of the
+band verified with `lake env lean`.
+
+**Next target found in passing.**  `xiRelativeResolventTerm_lineConj_pair_im_nonpos` appears in
+*five* modules with five suffixes — `PrimeArchHighFrequencyAccretivity` (bare),
+`…EndpointFrequencyAccretivity` (`_of_endpointBand`), `…OffLineQuartetAccretivity` (`_offLineOrbit`),
+`…ExactOffLineQuartetAccretivity` (`_exactOffLineQuartetBand`, now deleted),
+`…VerifiedHeightAccretivity` (`_of_verifiedHeight`) — each about 50-80 lines and differing only in
+which hypothesis supplies the height bound on off-line atoms. One lemma taking that bound as a
+hypothesis should replace all of them.
+
+## B35 — the accretive-band tower reduced to one inequality
+
+Four modules each carried a ~55-80 line lemma
+`xiRelativeResolventTerm_lineConj_pair_im_nonpos*` with the *same* conclusion — the
+line-conjugate resolvent pair has nonpositive imaginary part — under four different hypotheses
+(a rational radius bound, an endpoint accretive band, an off-line quartet band, a verified
+height). All four proofs converge on one intermediate fact and then run an identical 30-line tail.
+
+New general law in `PrimeArchHighFrequencyAccretivity`:
+
+```
+lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core
+    (z : ℂ) (hzIm : 0 < z.im) (q : XiZeroCopy)
+    (hcore : 0 < (z.re - (xiSpectralPoint q).re) ^ 2 + z.im ^ 2 - (xiSpectralPoint q).im ^ 2) :
+    (xiRelativeResolventTerm z q + xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im ≤ 0
+```
+
+The pair's imaginary part is `−2·z.im·core` over a positive denominator, so the core plus
+`0 < z.im` is the whole content. **The core is also enough to separate `z` from `a` and from its
+line conjugate** — both make it vanish identically — so the four call sites no longer need their
+`hdistAbs`-based `z ≠ a` / `z ≠ conj a` arguments. The two positive denominators come from
+`Complex.normSq_pos` rather than `nlinarith`, which makes the derivation deterministic.
+
+Each of the four lemmas is now its own `hcore` derivation followed by one `exact`.
+`PrimeArchHighFrequencyAccretivity` 444 -> 459 (it hosts the law),
+`…EndpointFrequencyAccretivity` 237 -> 210, `…OffLineQuartetAccretivity` 442 -> 413,
+`…VerifiedHeightAccretivity` 468 -> 433. Net **-76 lines**, and every accretive-band hypothesis in
+the tower now enters through a single named inequality.
+
+### Verification-method correction
+
+Three of these files were briefly reported clean by
+`lake env lean … | grep -c "error:"`. That pattern is **wrong for this toolchain**: Lean 4.30 emits
+`error(lean.unknownIdentifier):`, `error(lean.synthInstanceFailed):` and friends, none of which
+contain the substring `error:`. The three files were in fact failing with unknown-identifier errors
+against a stale olean. **Grep for `error`, never `error:`** — or rely on `lake build`'s exit status,
+which is unaffected. The six band consumers of B34 were checked with the same faulty pattern and
+have now been re-verified inside the audit build below.
+
+Audit: `lake build` of `PrimeArchHighFrequencyAccretivity` (8980 jobs) and of
+`PrimeArchVerifiedHeightAccretivity`, `PrimeArchExactOffLineQuartetKMSMaster` and all six B34 band
+consumers together (9182 jobs) — both successful, zero error lines.
+
+### Identical-`def` scan (the B34 lesson, executed)
+
+`defdup.py` compares every `def`/`abbrev` in the three areas by (signature-with-name-erased, body).
+19 groups of identically-defined declarations under different names, e.g.
+`thetaCuspLiouvilleGibbsAtom` = `thetaCuspWardGibbsAtom`,
+`vonMangoldtComplexCoefficient` = `vonMangoldtComplexCoeff`,
+`primeWeight` = `primeLogWeight`, `mertensBound` = `primeMertensBound`,
+`finiteGramLowerConstraint` = `finiteScaleShellConstraint`, and a four-way
+`mobiusContact*Scale` group. Most are 2-5 lines, so the defs themselves are cheap; the value is
+where a *development* sits on top of one — which is exactly how the `XiOffLineQuartetAccretiveBand`
+duplication was found. Worth walking the list next and checking, per pair, whether the theorems
+about the two names are parallel.
+
+## B36 — three pivot presentations, one development
+
+The corpus carried **three** parallel pivot-elimination developments, ~14 declarations each,
+identical except for the jet that replaces a dependent variable:
+
+| module | jet `J r n` |
+|---|---|
+| `DifferentialPivotRelationIdeal` | `C (h r n) + ∑_b C (A r b) · X (b, n)`, needs `[Fintype B]` |
+| `DifferentialFinsuppPivotRelationIdeal` | `C (h r n) + (A r).sum fun b c ↦ C c · X (b, n)`, arbitrary `B` |
+| `DifferentialShiftPivotRelationIdeal` | `C (c r n) · X (base r, n + offset r)` |
+
+New module `DifferentialJetPivotCore` proves the whole development once for an arbitrary
+`J : R → ℕ → DifferentialPolynomial B F`: elimination, inclusion, the four rewriting lemmas,
+surjectivity, the displayed relation and its ideal, the normal-form membership, the kernel
+description, the PBW quotient equivalence, the evaluation factorisation and the complete relation
+theorem. Nothing in any of them depends on the shape of `J`; the only jet-specific step is
+converting each module's `hrel` into
+`differentialJet n (y r) = aeval (fun bn ↦ differentialJet bn.2 (x bn.1)) (J r n)`,
+which is a two-to-nine line `rw`/`simp` at each of the three call sites.
+
+`DifferentialPivotRelationIdeal` 251 -> 174, `…Finsupp…` 251 -> 176, `…Shift…` 212 -> 135, core
++196. Net **-33 lines** — modest, because the three keep their (long) signatures — but three
+parallel developments became one, and a fourth jet now costs a page instead of a module.
+`differentialAdjoin_sumElim_eq_left_of_affineJets` is genuinely jet-specific and stayed put.
+
+Audit: `lake build` of the three modules (2954 jobs) and of six consumers across all three
+developments — `PrimeValuationVeroneseMaster`, `CompactTailDensePrimeValuationMaster`,
+`AnalyticDirichletCompleteRelationPresentation`,
+`DifferentialShiftPivotLinearCovarianceUniversalityLaw`,
+`Hurwitz.IntegerTranslationCompleteRelationIdeal`, `CofinalRecurrentPrimeValuationMaster`
+(8802 jobs) — both successful, zero error lines. Core registered in the `HTGeometry` umbrella;
+indexes regenerated.
+
+### Incident: a tracked module was overwritten and restored
+
+Building this, I created the core as `DifferentialPivotRelationIdeal.lean` with a shell `cat >`
+redirect — **a path that already held a tracked, umbrella-registered module** (the `[Fintype B]`
+development above). The redirect destroyed it. It was caught one step later, when the dependent
+module failed against declarations (`differentialPivotAffineJet`) that my file did not contain,
+and restored with `git checkout --`; `git status` confirms both affected files are byte-identical
+to `HEAD` apart from the intended rewrites. No lasting damage, but the near-miss is the lesson:
+
+- **Never create a file with `cat > path`.** Use the guarded write tool, which refuses to
+  overwrite a file that has not been read. `cat >>` for appending stays fine.
+- **Check the name is free before choosing it** — both the source path *and* `.lake/build` for a
+  stale olean of that module name. A leftover olean is what first made the collision look like a
+  pre-existing declaration rather than my own overwrite.
+- The corpus is large enough that a "new" descriptive module name is quite likely to be taken.
+  `DifferentialJetPivotCore` and its `differentialJetPivot*` declaration names were checked
+  against the whole tree before use.

@@ -71,6 +71,48 @@ lemma relativeResolvent_conj_pair_im_formula
   field_simp [hna, hnaz, hncaz, hdnaz, hdncaz]
   ring
 
+/-- **The anti-Herglotz sign of a line-conjugate resolvent pair, from the separation core.**
+Writing `a` for the spectral point of `q`, the pair's imaginary part is
+`−2·z.im·((z.re − a.re)² + z.im² − a.im²)` over a positive denominator, so in the upper half-plane
+a positive core `0 < (z.re − a.re)² + z.im² − a.im²` already forces the sign.  The core also
+separates `z` from `a` and from its line conjugate — both would make it vanish — which is what
+keeps the two resolvent terms finite.  Every accretive-band hypothesis in the tower enters only
+through this one inequality. -/
+lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core
+    (z : ℂ) (hzIm : 0 < z.im) (q : XiZeroCopy)
+    (hcore : 0 < (z.re - (xiSpectralPoint q).re) ^ 2 + z.im ^ 2
+      - (xiSpectralPoint q).im ^ 2) :
+    (xiRelativeResolventTerm z q +
+      xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im ≤ 0 := by
+  set a : ℂ := xiSpectralPoint q with ha_def
+  have hza : z ≠ a := by
+    intro h
+    rw [h] at hcore
+    nlinarith [hcore]
+  have hzac : z ≠ (starRingEnd ℂ) a := by
+    intro h
+    rw [h] at hcore
+    simp only [Complex.conj_re, Complex.conj_im] at hcore
+    nlinarith [hcore]
+  have hdenOne : 0 < (z.re - a.re) ^ 2 + (z.im - a.im) ^ 2 := by
+    have hne : z - a ≠ 0 := sub_ne_zero.mpr hza
+    have hnorm : 0 < Complex.normSq (z - a) := Complex.normSq_pos.mpr hne
+    simpa [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, sq] using hnorm
+  have hdenTwo : 0 < (z.re - a.re) ^ 2 + (z.im + a.im) ^ 2 := by
+    have hne : z - (starRingEnd ℂ) a ≠ 0 := sub_ne_zero.mpr hzac
+    have hnorm : 0 < Complex.normSq (z - (starRingEnd ℂ) a) := Complex.normSq_pos.mpr hne
+    simpa [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.conj_re,
+      Complex.conj_im, sq, sub_neg_eq_add] using hnorm
+  rw [xiRelativeResolventTerm, xiRelativeResolventTerm,
+    xiSpectralPoint_lineConj]
+  change ((a⁻¹ - (a - z)⁻¹) +
+      (((starRingEnd ℂ) a)⁻¹ - ((starRingEnd ℂ) a - z)⁻¹)).im ≤ 0
+  rw [relativeResolvent_conj_pair_im_formula z a
+    (xiSpectralPoint_ne_zero q) hza (by simpa using hzac)]
+  exact div_nonpos_of_nonpos_of_nonneg
+    (mul_nonpos_of_nonpos_of_nonneg (by nlinarith [hzIm]) hcore.le)
+    (mul_nonneg hdenOne.le hdenTwo.le)
+
 /-- The endpoint height gap makes every conjugate-paired Xi resolvent atom nonpositive throughout
 a central frequency band. -/
 lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos
@@ -99,34 +141,7 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos
       abs_nonneg a.im, abs_nonneg (z.re - a.re)]
   have hcore : 0 < (z.re - a.re) ^ 2 + z.im ^ 2 - a.im ^ 2 := by
     nlinarith [sq_nonneg z.im]
-  have hza : z ≠ a := by
-    intro h
-    have hre := congrArg Complex.re h
-    have : z.re - a.re = 0 := by linarith
-    rw [this, abs_zero] at hdistAbs
-    linarith
-  have hzac : z ≠ (starRingEnd ℂ) a := by
-    intro h
-    have hre := congrArg Complex.re h
-    rw [Complex.conj_re] at hre
-    have : z.re - a.re = 0 := by linarith
-    rw [this, abs_zero] at hdistAbs
-    linarith
-  have hdenOne :
-      0 < (z.re - a.re) ^ 2 + (z.im - a.im) ^ 2 := by
-    nlinarith [sq_nonneg (z.im - a.im)]
-  have hdenTwo :
-      0 < (z.re - a.re) ^ 2 + (z.im + a.im) ^ 2 := by
-    nlinarith [sq_nonneg (z.im + a.im)]
-  rw [xiRelativeResolventTerm, xiRelativeResolventTerm,
-    xiSpectralPoint_lineConj]
-  change ((a⁻¹ - (a - z)⁻¹) +
-      (((starRingEnd ℂ) a)⁻¹ - ((starRingEnd ℂ) a - z)⁻¹)).im ≤ 0
-  rw [relativeResolvent_conj_pair_im_formula z a
-    (xiSpectralPoint_ne_zero q) hza (by simpa using hzac)]
-  exact div_nonpos_of_nonpos_of_nonneg
-    (mul_nonpos_of_nonpos_of_nonneg (by nlinarith [hzIm]) hcore.le)
-    (mul_nonneg hdenOne.le hdenTwo.le)
+  exact xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core z hzIm q hcore
 
 /-- Unconditional anti-Herglotz sign for the full Xi relative-resolvent trace on every central band
 of radius at most four. -/

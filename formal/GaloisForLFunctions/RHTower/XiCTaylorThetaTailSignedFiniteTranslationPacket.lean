@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSignedFiniteTranslationIntegrated
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailFiniteTranslationBounds
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailFiniteTranslationDefectCurrent
 
 /-!

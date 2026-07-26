@@ -290,3 +290,50 @@ lim_(u->0+) E_W(u)/(1-exp(-u)) = 8.
 
 Hence no uniform bound `E_W(u)<=C(1-exp(-u))` can use `C<8`; the native two-orientation
 normalization is forced at the source boundary rather than being an artifact of the proof.
+
+## Conditional-implication Lean certificate
+
+The last `[PROVED HERE]` item without a Lean witness was the conditional completed-source theorem
+`(14)`--`(17)`: the card asserted the implication is complete while its two inputs stay open.  That
+implication is now formalized in
+
+`formal/GaloisForLFunctions/RHTower/MobiusFisherContactWardBudget.lean`
+
+with the two open inputs appearing exactly as explicit hypotheses and nothing else assumed.
+
+| Card item | Lean name |
+|---|---|
+| weak (entrywise) Hilbert--Schmidt lower semicontinuity | `RHTower.hsNormSq_le_of_tendsto_entries` |
+| **`(14)`–`(16)`** the completed-source budget | `RHTower.completedSourceWardBudget` |
+| the eight-unit budget has boundary density four | `RHTower.tendsto_eightMulCDF_div_two_mul` |
+| **`(17)`** the four-unit boundary density of any profile inside it | `RHTower.eventually_div_two_mul_lt_of_le_eightMulCDF` |
+
+`hsNormSq_le_of_tendsto_entries` is the analytic ingredient the card names ("weak Hilbert--Schmidt
+lower semicontinuity") and is proved unconditionally: if the matrix entries of Hilbert--Schmidt
+kernels converge and the energies are eventually `≤ B`, then every finite entry block of the limit
+is a limit of finite blocks bounded by `B`, so the limiting energy is `≤ B`.  Weak operator
+convergence on a total set supplies exactly this entrywise hypothesis, which is the content of
+`(14)`.
+
+`completedSourceWardBudget` then reads: for `u ≥ 0`, a completed family `A_N` of Hilbert--Schmidt
+kernels with
+
+* `(14)` entries converging to the kernel `K` of `[P_u, D_Xi]`, and
+* `(15)` `hsNormSq (A_N) ≤ E_W(u)` eventually,
+
+satisfies `hsNormSq K ≤ 8(1 − e^(−u))`, which is `(16)`; it composes the lower semicontinuity with
+the already formalized global window bound
+`RHTower.squarefreeMobiusCriticalFisherCutoffWardLimit_le_eight_mul_CDF`.  Finally
+`eventually_div_two_mul_lt_of_le_eightMulCDF` gives `(17)`: any window profile inside the eight-unit
+budget has `E(u)/(2u) < 4 + ε` near the boundary for every `ε > 0`, because
+`8(1 − e^(−u))/(2u) → 4`.
+
+### Remaining
+
+Nothing in the formalisation of this card's own theorems: `(3)`, `(4)`, `(7)` (complex and
+phase-blind forms with the exact real-overlap classification), `(10)`, `(11)`, `(12)`, `(13)` and
+now the conditional implication `(14)`–`(17)` all compile with `#print axioms` equal to
+`propext, Classical.choice, Quot.sound`.  The unchecked gates — the finite prime-power/Gamma/Sonin
+image of `(3)`, the graph-core convergence `(14)`, the completed source comparison `(15)`, and RH —
+are open **research**, and they are precisely the hypotheses of
+`RHTower.completedSourceWardBudget`.

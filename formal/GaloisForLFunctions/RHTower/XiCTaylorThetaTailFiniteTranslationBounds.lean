@@ -562,43 +562,65 @@ theorem norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le
           norm_exp_derivative_sub_eval_derivative_finitePositivePhasePolynomial_le d (x + a) z
     _ = _ := by rfl
 
-/-- On a nonnegative source half-line and a bounded spectral fibre, the value edge is bounded by
-three copies of one shifted factorial envelope. -/
-theorem norm_eval_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvelope
+/-- The value edge at an arbitrary signed displacement is controlled by the shifted envelope at
+the absolute displacement. -/
+theorem norm_eval_finitePositivePhaseTranslationTopEdge_le_absShiftedFactorialEnvelope
     (d R : ℕ) (x a : ℝ) (z : ℂ)
-    (hx : 0 ≤ x) (ha : 0 ≤ a) (hz : ‖z‖ ≤ R) :
+    (hx : 0 ≤ x) (hz : ‖z‖ ≤ R) :
     ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤
-      3 * (((R : ℝ) * (x + a)) ^ (2 * d + 1) / (2 * d + 1).factorial *
-        Real.exp ((R : ℝ) * (x + a))) := by
+      3 * (((R : ℝ) * (x + |a|)) ^ (2 * d + 1) / (2 * d + 1).factorial *
+        Real.exp ((R : ℝ) * (x + |a|))) := by
   let N : ℕ := 2 * d + 1
   let rx : ℝ := ‖(x : ℂ) * I * z‖
   let ra : ℝ := ‖(a : ℂ) * I * z‖
   let rs : ℝ := ‖((x + a : ℝ) : ℂ) * I * z‖
-  let B : ℝ := (R : ℝ) * (x + a)
-  have hxa : 0 ≤ x + a := add_nonneg hx ha
-  have hR : 0 ≤ (R : ℝ) := Nat.cast_nonneg _
-  have hB : 0 ≤ B := mul_nonneg hR hxa
+  let B : ℝ := (R : ℝ) * (x + |a|)
+  have habs : 0 ≤ |a| := abs_nonneg a
+  have hxa : 0 ≤ x + |a| := add_nonneg hx habs
+  have hB : 0 ≤ B := mul_nonneg (Nat.cast_nonneg _) hxa
+  have hsumabs : |x + a| ≤ x + |a| := by
+    calc
+      |x + a| ≤ |x| + |a| := abs_add_le x a
+      _ = x + |a| := by rw [abs_of_nonneg hx]
   have hrx : rx = x * ‖z‖ := by simp [rx, abs_of_nonneg hx]
-  have hra : ra = a * ‖z‖ := by simp [ra, abs_of_nonneg ha]
-  have hrs : rs = (x + a) * ‖z‖ := by
+  have hra : ra = |a| * ‖z‖ := by simp [ra]
+  have hrs : rs = |x + a| * ‖z‖ := by
     simp only [rs, norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_I,
-      mul_one, abs_of_nonneg hxa]
+      mul_one]
   have hrsle : rs ≤ B := by
     rw [hrs]
-    dsimp [B]
-    nlinarith [mul_le_mul_of_nonneg_left hz hxa]
+    dsimp only [B]
+    calc
+      |x + a| * ‖z‖ ≤ (x + |a|) * ‖z‖ :=
+        mul_le_mul_of_nonneg_right hsumabs (norm_nonneg z)
+      _ ≤ (x + |a|) * (R : ℝ) :=
+        mul_le_mul_of_nonneg_left hz hxa
+      _ = (R : ℝ) * (x + |a|) := by ring
   have hrxle : rx ≤ B := by
     rw [hrx]
-    dsimp [B]
-    nlinarith [mul_le_mul_of_nonneg_left hz hx]
+    dsimp only [B]
+    calc
+      x * ‖z‖ ≤ x * (R : ℝ) := mul_le_mul_of_nonneg_left hz hx
+      _ ≤ (R : ℝ) * (x + |a|) := by
+        have hR0 : 0 ≤ (R : ℝ) := Nat.cast_nonneg _
+        nlinarith
   have hrale : ra ≤ B := by
     rw [hra]
-    dsimp [B]
-    nlinarith [mul_le_mul_of_nonneg_left hz ha]
+    dsimp only [B]
+    calc
+      |a| * ‖z‖ ≤ |a| * (R : ℝ) :=
+        mul_le_mul_of_nonneg_left hz habs
+      _ ≤ (R : ℝ) * (x + |a|) := by
+        have hR0 : 0 ≤ (R : ℝ) := Nat.cast_nonneg _
+        nlinarith
   have hsumle : rx + ra ≤ B := by
     rw [hrx, hra]
-    dsimp [B]
-    nlinarith [mul_le_mul_of_nonneg_left hz hxa]
+    dsimp only [B]
+    calc
+      x * ‖z‖ + |a| * ‖z‖ = (x + |a|) * ‖z‖ := by ring
+      _ ≤ (x + |a|) * (R : ℝ) :=
+        mul_le_mul_of_nonneg_left hz hxa
+      _ = (R : ℝ) * (x + |a|) := by ring
   have htermX :
       (rx ^ N / N.factorial) * Real.exp rx * Real.exp ra ≤
         (B ^ N / N.factorial) * Real.exp B := by
@@ -624,6 +646,17 @@ theorem norm_eval_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvel
       3 * (B ^ N / N.factorial * Real.exp B)
   nlinarith
 
+/-- On a nonnegative source half-line and a bounded spectral fibre, the value edge is bounded by
+three copies of one shifted factorial envelope. -/
+theorem norm_eval_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvelope
+    (d R : ℕ) (x a : ℝ) (z : ℂ)
+    (hx : 0 ≤ x) (ha : 0 ≤ a) (hz : ‖z‖ ≤ R) :
+    ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤
+      3 * (((R : ℝ) * (x + a)) ^ (2 * d + 1) / (2 * d + 1).factorial *
+        Real.exp ((R : ℝ) * (x + a))) := by
+  have h := norm_eval_finitePositivePhaseTranslationTopEdge_le_absShiftedFactorialEnvelope
+    d R x a z hx hz
+  rwa [abs_of_nonneg ha] at h
 /-- Multiplication by one source coordinate advances a factorial envelope by one order. -/
 theorem mul_factorialEnvelope_eq_succ (N : ℕ) (B : ℝ) :
     B * (B ^ N / N.factorial) =
@@ -690,18 +723,18 @@ theorem continuous_eval_derivative_finitePositivePhaseTranslationTopEdge
   funext x
   exact eval_derivative_finitePositivePhaseTranslationTopEdge d x a z
 
-/-- The derivative edge is bounded by three order-`2d+1` and two order-`2d+2` shifted factorial
-envelopes.  The only losses are the displayed linear cutoff factors. -/
-theorem norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvelope
+/-- The derivative edge obeys the same signed envelope, with only the existing linear cutoff
+losses. -/
+theorem norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le_absShiftedFactorialEnvelope
     (d R : ℕ) (x a : ℝ) (z : ℂ)
-    (hRone : 1 ≤ R) (hx : 0 ≤ x) (ha : 0 ≤ a) (hz : ‖z‖ ≤ R) :
+    (hRone : 1 ≤ R) (hx : 0 ≤ x) (hz : ‖z‖ ≤ R) :
     ‖(finitePositivePhaseTranslationTopEdge d x a).derivative.eval z‖ ≤
       3 * (2 * d + 1 : ℕ) *
-          ((((R : ℝ) * (x + a)) ^ (2 * d + 1) / (2 * d + 1).factorial) *
-            Real.exp ((R : ℝ) * (x + a))) +
+          ((((R : ℝ) * (x + |a|)) ^ (2 * d + 1) / (2 * d + 1).factorial) *
+            Real.exp ((R : ℝ) * (x + |a|))) +
         2 * (2 * d + 2 : ℕ) *
-          ((((R : ℝ) * (x + a)) ^ (2 * d + 2) / (2 * d + 2).factorial) *
-            Real.exp ((R : ℝ) * (x + a))) := by
+          ((((R : ℝ) * (x + |a|)) ^ (2 * d + 2) / (2 * d + 2).factorial) *
+            Real.exp ((R : ℝ) * (x + |a|))) := by
   let M : ℕ := 2 * d
   let N : ℕ := M + 1
   let rx : ℝ := ‖(x : ℂ) * I * z‖
@@ -710,50 +743,68 @@ theorem norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le_shiftedFac
   let cx : ℝ := ‖(x : ℂ) * I‖
   let ca : ℝ := ‖(a : ℂ) * I‖
   let cs : ℝ := ‖((x + a : ℝ) : ℂ) * I‖
-  let B : ℝ := (R : ℝ) * (x + a)
+  let B : ℝ := (R : ℝ) * (x + |a|)
   let EN : ℝ := (B ^ N / N.factorial) * Real.exp B
   let EN1 : ℝ := (B ^ (N + 1) / (N + 1).factorial) * Real.exp B
-  have hxa : 0 ≤ x + a := add_nonneg hx ha
+  have habs : 0 ≤ |a| := abs_nonneg a
+  have hxa : 0 ≤ x + |a| := add_nonneg hx habs
   have hR : (1 : ℝ) ≤ R := by exact_mod_cast hRone
   have hB : 0 ≤ B := mul_nonneg (by positivity) hxa
+  have hsumabs : |x + a| ≤ x + |a| := by
+    calc
+      |x + a| ≤ |x| + |a| := abs_add_le x a
+      _ = x + |a| := by rw [abs_of_nonneg hx]
   have hrx : rx = x * ‖z‖ := by simp [rx, abs_of_nonneg hx]
-  have hra : ra = a * ‖z‖ := by simp [ra, abs_of_nonneg ha]
-  have hrs : rs = (x + a) * ‖z‖ := by
+  have hra : ra = |a| * ‖z‖ := by simp [ra]
+  have hrs : rs = |x + a| * ‖z‖ := by
     simp only [rs, norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_I,
-      mul_one, abs_of_nonneg hxa]
+      mul_one]
   have hcx : cx = x := by simp [cx, abs_of_nonneg hx]
-  have hca : ca = a := by simp [ca, abs_of_nonneg ha]
-  have hcs : cs = x + a := by
+  have hca : ca = |a| := by simp [ca]
+  have hcs : cs = |x + a| := by
     simp only [cs, norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_I,
-      mul_one, abs_of_nonneg hxa]
+      mul_one]
   have hrsle : rs ≤ B := by
     rw [hrs]
-    dsimp [B]
-    nlinarith [mul_le_mul_of_nonneg_left hz hxa]
+    dsimp only [B]
+    calc
+      |x + a| * ‖z‖ ≤ (x + |a|) * ‖z‖ :=
+        mul_le_mul_of_nonneg_right hsumabs (norm_nonneg z)
+      _ ≤ (x + |a|) * (R : ℝ) :=
+        mul_le_mul_of_nonneg_left hz hxa
+      _ = (R : ℝ) * (x + |a|) := by ring
   have hrxle : rx ≤ B := by
     rw [hrx]
-    dsimp [B]
+    dsimp only [B]
     nlinarith [mul_le_mul_of_nonneg_left hz hx]
   have hrale : ra ≤ B := by
     rw [hra]
-    dsimp [B]
-    nlinarith [mul_le_mul_of_nonneg_left hz ha]
+    dsimp only [B]
+    nlinarith [mul_le_mul_of_nonneg_left hz habs]
   have hsumle : rx + ra ≤ B := by
     rw [hrx, hra]
-    dsimp [B]
+    dsimp only [B]
     nlinarith [mul_le_mul_of_nonneg_left hz hxa]
   have hcxle : cx ≤ B := by
     rw [hcx]
-    dsimp [B]
-    nlinarith [mul_le_mul_of_nonneg_right hR hxa]
+    dsimp only [B]
+    have hsmall : x ≤ x + |a| := by linarith
+    have hscale : x + |a| ≤ (R : ℝ) * (x + |a|) := by
+      simpa only [one_mul] using mul_le_mul_of_nonneg_right hR hxa
+    exact hsmall.trans hscale
   have hcale : ca ≤ B := by
     rw [hca]
-    dsimp [B]
-    nlinarith [mul_le_mul_of_nonneg_right hR hxa]
+    dsimp only [B]
+    have hsmall : |a| ≤ x + |a| := by linarith
+    have hscale : x + |a| ≤ (R : ℝ) * (x + |a|) := by
+      simpa only [one_mul] using mul_le_mul_of_nonneg_right hR hxa
+    exact hsmall.trans hscale
   have hcsle : cs ≤ B := by
     rw [hcs]
-    dsimp [B]
-    simpa only [one_mul] using mul_le_mul_of_nonneg_right hR hxa
+    dsimp only [B]
+    have hscale : x + |a| ≤ (R : ℝ) * (x + |a|) := by
+      simpa only [one_mul] using mul_le_mul_of_nonneg_right hR hxa
+    exact hsumabs.trans hscale
   have hMN : N = 2 * d + 1 := by dsimp [N, M]
   have hderX :
       (cx * ((rx ^ M / M.factorial) * Real.exp rx)) * Real.exp ra ≤
@@ -833,6 +884,21 @@ theorem norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le_shiftedFac
       push_cast
       ring
 
+/-- The derivative edge is bounded by three order-`2d+1` and two order-`2d+2` shifted factorial
+envelopes.  The only losses are the displayed linear cutoff factors. -/
+theorem norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvelope
+    (d R : ℕ) (x a : ℝ) (z : ℂ)
+    (hRone : 1 ≤ R) (hx : 0 ≤ x) (ha : 0 ≤ a) (hz : ‖z‖ ≤ R) :
+    ‖(finitePositivePhaseTranslationTopEdge d x a).derivative.eval z‖ ≤
+      3 * (2 * d + 1 : ℕ) *
+          ((((R : ℝ) * (x + a)) ^ (2 * d + 1) / (2 * d + 1).factorial) *
+            Real.exp ((R : ℝ) * (x + a))) +
+        2 * (2 * d + 2 : ℕ) *
+          ((((R : ℝ) * (x + a)) ^ (2 * d + 2) / (2 * d + 2).factorial) *
+            Real.exp ((R : ℝ) * (x + a))) := by
+  have h := norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le_absShiftedFactorialEnvelope
+    d R x a z hRone hx hz
+  rwa [abs_of_nonneg ha] at h
 /-- Every finite cosine section is dominated by the full exponential series, uniformly in its
 degree.  This is the degree-free envelope used for the dyadic top row. -/
 theorem norm_truncatedCosineSection_le_exp
@@ -1260,21 +1326,21 @@ theorem integrableOn_abs_thetaCuspTailDerivative_mul_shiftedFactorialEnvelope
   rw [Real.norm_eq_abs, abs_of_nonneg hminor0]
   exact hpoint
 
-/-- After integration against the exact density `rho = 4 T''`, the finite translation edge at
-bounded spectral radius has geometric degree decay. -/
-theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdge_norm_le
-    (d R p : ℕ) (hp : 0 < p) {a : ℝ} (ha : 0 ≤ a)
+/-- The signed value edge remains geometrically small after integration against `rho = 4 T''`. -/
+theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdge_norm_le_abs
+    (d R p : ℕ) (hp : 0 < p) (a : ℝ)
     (z : ℂ) (hz : ‖z‖ ≤ R) :
     (∫ x : ℝ in Ioi 0,
       |thetaCuspTailSecondDensity x| *
         ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖) ≤
       12 * thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
         ((R : ℝ) ^ (2 * d + 1) / (p : ℝ) ^ (2 * d + 2)) *
-          Real.exp (((p + R : ℕ) : ℝ) * a) := by
+          Real.exp (((p + R : ℕ) : ℝ) * |a|) := by
   let N : ℕ := 2 * d + 1
   let E : ℝ → ℝ := fun x =>
-    (((R : ℝ) * (x + a)) ^ N / N.factorial) *
-      Real.exp ((R : ℝ) * (x + a))
+    (((R : ℝ) * (x + |a|)) ^ N / N.factorial) *
+      Real.exp ((R : ℝ) * (x + |a|))
+  have ha : 0 ≤ |a| := abs_nonneg a
   have hEnvInt : IntegrableOn (fun x : ℝ =>
       |thetaCuspTailDerivative 2 x| * E x) (Ioi 0) := by
     simpa only [E, N] using
@@ -1290,26 +1356,31 @@ theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdge_norm
       (volume.restrict (Ioi 0)) := by
     exact ((((differentiable_thetaCuspTailDerivative 2).continuous.const_mul 4).abs).mul
       hedgeCont.norm).aestronglyMeasurable.restrict
-  have hminorInt : IntegrableOn (fun x : ℝ =>
+  have hpoint (x : ℝ) (hx0 : 0 ≤ x) :
       |thetaCuspTailSecondDensity x| *
-        ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖) (Ioi 0) := by
-    apply hmajorInt.mono' hminorMeas
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-    have hx0 : 0 ≤ x := hx.le
+          ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤
+        12 * (|thetaCuspTailDerivative 2 x| * E x) := by
     have hedge :=
-      norm_eval_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvelope
-        d R x a z hx0 ha hz
+      norm_eval_finitePositivePhaseTranslationTopEdge_le_absShiftedFactorialEnvelope
+        d R x a z hx0 hz
     have hrho : |thetaCuspTailSecondDensity x| =
         4 * |thetaCuspTailDerivative 2 x| := by
       simp [thetaCuspTailSecondDensity, abs_mul]
-    have hnon : 0 ≤ |thetaCuspTailSecondDensity x| *
-        ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ := by positivity
-    rw [Real.norm_eq_abs, abs_of_nonneg hnon, hrho]
+    rw [hrho]
     change 4 * |thetaCuspTailDerivative 2 x| *
         ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤
       12 * (|thetaCuspTailDerivative 2 x| * E x)
     change ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤ 3 * E x at hedge
     nlinarith [abs_nonneg (thetaCuspTailDerivative 2 x)]
+  have hminorInt : IntegrableOn (fun x : ℝ =>
+      |thetaCuspTailSecondDensity x| *
+        ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖) (Ioi 0) := by
+    apply hmajorInt.mono' hminorMeas
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    have hnon : 0 ≤ |thetaCuspTailSecondDensity x| *
+        ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ := by positivity
+    rw [Real.norm_eq_abs, abs_of_nonneg hnon]
+    exact hpoint x hx.le
   calc
     (∫ x : ℝ in Ioi 0,
       |thetaCuspTailSecondDensity x| *
@@ -1318,34 +1389,35 @@ theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdge_norm
         12 * (|thetaCuspTailDerivative 2 x| * E x) := by
       apply MeasureTheory.integral_mono_ae hminorInt hmajorInt
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-      have hx0 : 0 ≤ x := hx.le
-      have hedge :=
-        norm_eval_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvelope
-          d R x a z hx0 ha hz
-      have hrho : |thetaCuspTailSecondDensity x| =
-          4 * |thetaCuspTailDerivative 2 x| := by
-        simp [thetaCuspTailSecondDensity, abs_mul]
-      rw [hrho]
-      change 4 * |thetaCuspTailDerivative 2 x| *
-          ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤
-        12 * (|thetaCuspTailDerivative 2 x| * E x)
-      change ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖ ≤ 3 * E x at hedge
-      nlinarith [abs_nonneg (thetaCuspTailDerivative 2 x)]
+      exact hpoint x hx.le
     _ = 12 * (∫ x : ℝ in Ioi 0,
         |thetaCuspTailDerivative 2 x| * E x) := by rw [integral_const_mul]
     _ ≤ 12 * (thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
         ((R : ℝ) ^ N / (p : ℝ) ^ (N + 1)) *
-          Real.exp (((p + R : ℕ) : ℝ) * a)) := by
+          Real.exp (((p + R : ℕ) : ℝ) * |a|)) := by
       gcongr
       simpa only [E] using
         integral_abs_thetaCuspTailDerivative_mul_shiftedFactorialEnvelope_le
           2 N p R hp ha
     _ = _ := by dsimp [N]; ring
 
-/-- The source-integrated derivative of the finite translation edge has the same geometric decay,
-with only the displayed linear losses in the Taylor cutoff. -/
-theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdgeDerivative_norm_le
-    (d R p : ℕ) (hRone : 1 ≤ R) (hp : 0 < p) {a : ℝ} (ha : 0 ≤ a)
+/-- After integration against the exact density `rho = 4 T''`, the finite translation edge at
+bounded spectral radius has geometric degree decay. -/
+theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdge_norm_le
+    (d R p : ℕ) (hp : 0 < p) {a : ℝ} (ha : 0 ≤ a)
+    (z : ℂ) (hz : ‖z‖ ≤ R) :
+    (∫ x : ℝ in Ioi 0,
+      |thetaCuspTailSecondDensity x| *
+        ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖) ≤
+      12 * thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
+        ((R : ℝ) ^ (2 * d + 1) / (p : ℝ) ^ (2 * d + 2)) *
+          Real.exp (((p + R : ℕ) : ℝ) * a) := by
+  have h := integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdge_norm_le_abs
+    d R p hp a z hz
+  rwa [abs_of_nonneg ha] at h
+/-- The derivative of the signed edge has the same integrated geometric decay. -/
+theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdgeDerivative_norm_le_abs
+    (d R p : ℕ) (hRone : 1 ≤ R) (hp : 0 < p) (a : ℝ)
     (z : ℂ) (hz : ‖z‖ ≤ R) :
     (∫ x : ℝ in Ioi 0,
       |thetaCuspTailSecondDensity x| *
@@ -1353,21 +1425,22 @@ theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdgeDeriv
       12 * (2 * d + 1 : ℕ) *
           (thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
             ((R : ℝ) ^ (2 * d + 1) / (p : ℝ) ^ (2 * d + 2)) *
-              Real.exp (((p + R : ℕ) : ℝ) * a)) +
+              Real.exp (((p + R : ℕ) : ℝ) * |a|)) +
         8 * (2 * d + 2 : ℕ) *
           (thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
             ((R : ℝ) ^ (2 * d + 2) / (p : ℝ) ^ (2 * d + 3)) *
-              Real.exp (((p + R : ℕ) : ℝ) * a)) := by
+              Real.exp (((p + R : ℕ) : ℝ) * |a|)) := by
   let N : ℕ := 2 * d + 1
   let N1 : ℕ := 2 * d + 2
   let E : ℕ → ℝ → ℝ := fun m x =>
-    (((R : ℝ) * (x + a)) ^ m / m.factorial) *
-      Real.exp ((R : ℝ) * (x + a))
+    (((R : ℝ) * (x + |a|)) ^ m / m.factorial) *
+      Real.exp ((R : ℝ) * (x + |a|))
   let A : ℝ := 12 * N
   let B : ℝ := 8 * N1
   let fN : ℝ → ℝ := fun x => |thetaCuspTailDerivative 2 x| * E N x
   let fN1 : ℝ → ℝ := fun x => |thetaCuspTailDerivative 2 x| * E N1 x
   let major : ℝ → ℝ := fun x => A * fN x + B * fN1 x
+  have ha : 0 ≤ |a| := abs_nonneg a
   have hNInt : IntegrableOn fN (Ioi 0) := by
     simpa only [fN, E] using
       integrableOn_abs_thetaCuspTailDerivative_mul_shiftedFactorialEnvelope
@@ -1391,8 +1464,8 @@ theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdgeDeriv
           ‖(finitePositivePhaseTranslationTopEdge d x a).derivative.eval z‖ ≤
         major x := by
     have hedge :=
-      norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le_shiftedFactorialEnvelope
-        d R x a z hRone hx0 ha hz
+      norm_eval_derivative_finitePositivePhaseTranslationTopEdge_le_absShiftedFactorialEnvelope
+        d R x a z hRone hx0 hz
     have hrho : |thetaCuspTailSecondDensity x| =
         4 * |thetaCuspTailDerivative 2 x| := by
       simp [thetaCuspTailSecondDensity, abs_mul]
@@ -1417,14 +1490,14 @@ theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdgeDeriv
   have hNBound : (∫ x : ℝ in Ioi 0, fN x) ≤
       thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
         ((R : ℝ) ^ N / (p : ℝ) ^ (N + 1)) *
-          Real.exp (((p + R : ℕ) : ℝ) * a) := by
+          Real.exp (((p + R : ℕ) : ℝ) * |a|) := by
     simpa only [fN, E] using
       integral_abs_thetaCuspTailDerivative_mul_shiftedFactorialEnvelope_le
         2 N p R hp ha
   have hN1Bound : (∫ x : ℝ in Ioi 0, fN1 x) ≤
       thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
         ((R : ℝ) ^ N1 / (p : ℝ) ^ (N1 + 1)) *
-          Real.exp (((p + R : ℕ) : ℝ) * a) := by
+          Real.exp (((p + R : ℕ) : ℝ) * |a|) := by
     simpa only [fN1, E] using
       integral_abs_thetaCuspTailDerivative_mul_shiftedFactorialEnvelope_le
         2 N1 p R hp ha
@@ -1443,14 +1516,33 @@ theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdgeDeriv
         integral_const_mul, integral_const_mul]
     _ ≤ A * (thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
           ((R : ℝ) ^ N / (p : ℝ) ^ (N + 1)) *
-            Real.exp (((p + R : ℕ) : ℝ) * a)) +
+            Real.exp (((p + R : ℕ) : ℝ) * |a|)) +
         B * (thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
           ((R : ℝ) ^ N1 / (p : ℝ) ^ (N1 + 1)) *
-            Real.exp (((p + R : ℕ) : ℝ) * a)) := by
+            Real.exp (((p + R : ℕ) : ℝ) * |a|)) := by
       gcongr
     _ = _ := by
       dsimp only [A, B]
 
+/-- The source-integrated derivative of the finite translation edge has the same geometric decay,
+with only the displayed linear losses in the Taylor cutoff. -/
+theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdgeDerivative_norm_le
+    (d R p : ℕ) (hRone : 1 ≤ R) (hp : 0 < p) {a : ℝ} (ha : 0 ≤ a)
+    (z : ℂ) (hz : ‖z‖ ≤ R) :
+    (∫ x : ℝ in Ioi 0,
+      |thetaCuspTailSecondDensity x| *
+        ‖(finitePositivePhaseTranslationTopEdge d x a).derivative.eval z‖) ≤
+      12 * (2 * d + 1 : ℕ) *
+          (thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
+            ((R : ℝ) ^ (2 * d + 1) / (p : ℝ) ^ (2 * d + 2)) *
+              Real.exp (((p + R : ℕ) : ℝ) * a)) +
+        8 * (2 * d + 2 : ℕ) *
+          (thetaCuspTailDerivativeNatExpConstant 2 (p + R) *
+            ((R : ℝ) ^ (2 * d + 2) / (p : ℝ) ^ (2 * d + 3)) *
+              Real.exp (((p + R : ℕ) : ℝ) * a)) := by
+  have h := integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdgeDerivative_norm_le_abs
+    d R p hRone hp a z hz
+  rwa [abs_of_nonneg ha] at h
 /-- Double integration by parts on a positive half-line, with all four endpoint values retained.
 This abstract form is used for translated theta potentials: it prevents a seam term from being
 silently lost when a reflected Haar packet is moved back to the positive source half-line. -/
@@ -1490,6 +1582,5 @@ theorem integral_Ioi_secondDerivative_mul_eq_boundary_add
   ring
 
 end
-
 
 end RHTower

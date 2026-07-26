@@ -17,9 +17,11 @@ The mathematically stable answer is a **loss-aware doctrine atlas**:
    enhancements;
 4. a named point functor whenever points are counted.
 
-This document develops that answer. It does not use `F₁` as a route to the
-Riemann hypothesis and does not assume conjectural cohomology, positivity, or
-an absolute Frobenius.
+Sections 1--13 develop that answer unconditionally. Sections 14--19 then audit
+every major `F₁`-to-RH route against one common gate system and isolate exact
+remaining construction. They do not assume conjectural cohomology, positivity,
+an absolute Frobenius, or RH. As of 26 July 2026, field-one construction is
+formalized; RH route is not complete.
 
 Claim labels:
 
@@ -28,6 +30,11 @@ Claim labels:
 - `[LITERATURE]`: theorem or construction from cited source;
 - `[INTERPRETATION]`: synthesis, not theorem;
 - `[NO-GO]`: stronger reading proved false;
+- `[FALSIFIED]`: a conjectured implication has been killed;
+- `[CONJECTURE]`: precise claim under active hostile audit;
+- `[OPEN CORE]`: exact missing theorem;
+- `[BRIDGE]`: proved implication or equivalence, not proof of its premise;
+- `[LEAN-PROVED]`: unconditional theorem checked in Lean;
 - `[OPEN]`: not established.
 
 ## 1. Why a literal one-element field is impossible
@@ -749,7 +756,549 @@ frontier and can add certified atlas edges without changing the construction:
   node.
 
 These are doctrine-realization and comparison problems, not missing axioms of
-the field-one construction and not a request for an RH proof.
+the field-one construction.
+
+## 14. Absolute arithmetic geometry and RH-facing constructions
+
+The phrase `F₁` has two different roles which must not be conflated:
+
+1. the algebraic doctrine atlas constructed in Sections 1--13;
+2. an absolute arithmetic geometry intended to place
+   \(\overline{\operatorname{Spec}\mathbb Z}\) in a curve-like theory.
+
+The first is complete at its stated interface. The second is where an RH route
+could live. Base, spectrum, or point-count constructions alone cannot supply
+the faithful global positivity required by RH.
+
+### 14.1 The 2026 absolute arithmetic curve
+
+`[LITERATURE]` Connes--Consani construct
+\[
+  X_{\mathrm{abs}}
+  =
+  (\operatorname{Spec}\mathbb Z)_{\mathbb F_1}
+\]
+by pulling the arithmetic-site \(\mathbb F_1\)-structure sheaf back to
+\(\operatorname{Spec}\mathbb Z\). At a prime \(p\), the stalk is partially
+perfected:
+\[
+  \mathbb F_1[T^{\mathbb Z[1/p]_+}],
+\]
+and \(p\)-power Frobenius becomes invertible. This is the spherical/`Γ` node
+of doctrine atlas, not bare `F₁^mult`; comparison must preserve that
+enhancement. Perfectoid-valued points recover untilt geometry;
+complex-valued points give local Weil torsors.
+The archimedean quotient at \(p\) is a complex Tate curve
+\[
+  E_p\simeq C_p\times\widetilde X_\infty,\qquad
+  C_p=\mathbb R_+^\times/p^\mathbb Z.
+\]
+Thus one factor has arithmetic length \(\log p\), while the phase circle is
+\(p\)-independent.
+
+`[NO-GO]` This is a geometric carrier, not an RH proof. The paper constructs no
+middle arithmetic cohomology, positive Hodge form, Hodge-index theorem, or
+purity theorem. Moreover, radial time \(\log p\) is the identity on the whole
+local Tate curve, so the local tangent return is degenerate. A Tate curve is a
+prime boundary packet; it is not automatically Deninger's isolated closed
+orbit.
+
+### 14.2 Arithmetic Picard/Jacobian monoids
+
+`[LITERATURE]` Connes--Consani also construct arithmetic Picard and Jacobian
+monoids, their extended Abel--Jacobi map, and adelic covers. The Riemann sector
+becomes a monoidal moduli space of torsion-free rank-one groups with metric
+data. Its closed fibers carry prime orbits; its generic fiber carries the
+regular representation.
+
+Their semilocal trace formula has form
+\[
+  \operatorname{Tr}(\theta(h)R_\lambda)
+  =
+  2h(1)\log\lambda
+  +
+  \sum_{v\in S}
+    \int_{\mathbb Q_v^\times}^{\prime}
+      \frac{h(u^{-1})}{|1-u|}\,d^\ast u
+  +o(1).
+\]
+The divergent first term is interpreted as generic-point “white light.” This
+suggests the relative pair
+\[
+  \left(
+    \widetilde{\operatorname{Pic}}
+      (\overline{\operatorname{Spec}\mathbb Z}),
+    \widetilde\eta
+  \right).
+\]
+
+`[INTERPRETATION]` This changes the frontier materially. Absolute carrier and
+geometric support of local explicit-formula terms are concrete. Missing object
+is a faithful relative cohomology with positive, flow-natural Hodge form.
+
+`[NO-GO]` Removing a divergent generic summand does not make the remainder
+positive. Mapping cones encode relative information; they do not have an
+automatic Hodge-index theorem. The Picard/Jacobian paper states neither
+positivity nor RH.
+
+### 14.3 Cuntz--Krieger `F₁` geometry
+
+`[LITERATURE]` Nikolaev's 2026 Cuntz--Krieger construction assigns matrices and
+\(C^\ast\)-algebras to projective `F₁` varieties. It obtains a trace point-count,
+rational zeta function, functional equation, and degree formula.
+
+`[NO-GO]` The paper explicitly excludes the RH analogue from its proved Weil
+properties. Rationality and functional equation constrain reciprocal symmetry,
+not eigenvalue modulus. Its final Conjecture 4.3 asserts an equivalence between
+classical RH and an `F₁` elliptic-curve RH statement, but supplies no comparison
+from the finite rational zeta function to the infinite Xi divisor. Its
+construction is therefore an independent atlas lane, not a missing proof of
+purity.
+
+### 14.4 What the latest affine work adds
+
+`[LITERATURE]` Xu's 2026 `Γ`-algebra theory supplies localization, prime
+spectrum, structure sheaf, global-section recovery, and affine
+anti-equivalence. It strengthens the absolute affine node in the doctrine
+atlas. It contains no arithmetic middle cohomology or RH theorem.
+
+## 15. Method-neutral RH gate atlas
+
+Every route is judged by the same gates. No route receives credit for a gate
+proved only in another doctrine unless a comparison theorem transports the
+relevant structure without loss.
+
+| Gate | Required content |
+|---|---|
+| G0: source purity | objects defined from primes, Gamma factor, `F₁` geometry, or arithmetic correspondences before reading Xi zeros |
+| G1: arithmetic carrier | global object over \(\overline{\operatorname{Spec}\mathbb Z}\), not only a finite-field analogy or local factor |
+| G2: local-to-global trace | exact prime-power and archimedean terms with controlled generic contribution |
+| G3: middle cohomology | infinite-dimensional degree one, with closed Frobenius/flow generator |
+| G4: duality | cup product, trace, Poincaré duality, and correct odd/quaternionic parity |
+| G5: faithful positivity | positive Hodge/intersection form detecting finite and density-zero defects |
+| G6: comparison | source trace/determinant equals completed zeta/Xi data without assuming zero location |
+| G7: purity extraction | flow-natural Hodge form, Hodge index, or equivalent source passivity forcing critical-line spectrum |
+
+Current lane audit:
+
+| Lane | Established input | Exact missing gate |
+|---|---|---|
+| monoid, blueprint, band, tropical, `Γ` geometry | bases, spectra, modules, scalar extensions, point functors | G1--G7 for arithmetic Xi |
+| Borger `Λ`/Witt descent | commuting Frobenius lifts and descent philosophy | archimedean completion, G3--G7 |
+| sphere-spectrum/spectral algebra | coherent absolute operations and stable-homotopy carrier | zeta-level completion rather than only logarithmic/additive invariants; G3--G7 |
+| arithmetic/scaling site | prime orbits, Frobenius correspondences, Riemann--Roch strategy | intersection/Hodge-index theorem on square; G5 and G7 |
+| absolute curve and Picard pair | G1, geometric local support, generic-point interpretation | relative cohomology, faithful Hodge norm, G5--G7 |
+| rational-Witt/Milnor--Witt Deninger program | source complexes, finite transfers, duality algebra, local quaternionic half-density, determinant and RH consumers | global dynamical lift plus positive flow-natural Hodge realization |
+| adelic/Sonin/passivity | semilocal trace operators, source resolvents, exact RH-equivalent source criteria | faithful global continued passivity |
+| Cuntz--Krieger | rationality, functional equation, cohomological degree data for projective `F₁` zeta | RH/purity analogue explicitly open |
+| \(q\to1\) Weil-II analogy | Deligne purity for each actual finite field | a genuine arithmetic family through \(q=1\), compatible cohomology, and positivity at its limit |
+
+The lanes are complementary but not interchangeable. Algebraic `F₁` doctrines
+organize carriers and descent; arithmetic-site and adelic geometry organize
+orbits and traces; Deninger and Weil criteria identify the required sign. Any
+lane may close RH only by supplying all missing gates or an exact structure-
+preserving comparison to a lane which does.
+
+## 16. Exact formal RH endpoints already available
+
+The repository has formalized consumers. It has not formalized their missing
+geometric premises.
+
+### 16.1 Continued two-pole source passivity
+
+Let
+\[
+  T(z)=\text{continued prime--archimedean relative trace}
+\]
+be built from the meromorphically continued prime carrier and Gamma/boundary
+factor. Define
+\[
+  K(z,w)=
+  \frac{T(\overline w)-T(z)}{z-\overline w}
+\]
+and, for two admissible separated poles,
+\[
+  \mathcal E(z,w;a,b)
+  =
+  |a|^2K(z,z)+a\overline bK(z,w)
+  +b\overline aK(w,z)+|b|^2K(w,w).
+\]
+
+`[BRIDGE] [LEAN-PROVED]`
+`riemannHypothesis_iff_ccmContinuedTwoPoleSourcePassivity` proves
+\[
+  \mathrm{RH}
+  \quad\Longleftrightarrow\quad
+  \operatorname{Re}\mathcal E(z,w;a,b)\ge0
+\]
+for every admissible \(z,w,a,b\). The reverse direction uses an unequal-speed
+two-pole approximation to the negative sign direction of any off-line zero.
+Consequently the rank-two family is already faithful; enlarging the test space
+does not remove the open core.
+
+This is not an RH proof because source passivity is not proved.
+
+### 16.2 Deninger Hodge naturality
+
+The Deninger stack already constructs a source-defined entire quotient,
+arithmetic trace and Poincaré interfaces, local positive quaternionic Hodge
+atoms, finite transfer laws, and several exact RH consumers.
+
+`[BRIDGE] [LEAN-PROVED]`
+`deningerDivisorClosedTheta_orientedHodge_iff_riemannHypothesis` identifies the
+remaining purity condition: the positive odd Hodge/Riesz factor must commute
+with centered Frobenius after source-to-divisor comparison.
+
+This is not an RH proof because global source construction and flow naturality
+remain open. It is a second exact endpoint, not a preferred method.
+
+### 16.3 Positive source atoms are not the missing theorem
+
+`[LEAN-PROVED]`
+`DeningerArithmeticRectangularQuaternionicHodge.lean` constructs local
+moving-rectangle Hodge atoms \(J_r\), proves \(J_r^2=-1\), strict positive
+energy, energy preservation, and centered half-density covariance without Xi
+data.
+
+`[LEAN-PROVED]` `DeningerArithmeticGammaRankRegular.lean` constructs
+\[
+  J_0(a,b)=(-\overline b,\overline a)
+\]
+on \(\ell^2(G\sqcup G)\), with \(J_0^2=-1\), antiunitarity, and norm
+preservation from a dense source core.
+
+These results close local positivity and coefficient-level quaternionic
+parity. They do not prove that relative arithmetic relations form a closed
+\(J_0\)-stable subspace, that induced quotient is faithful, or that its norm is
+continued prime--archimedean energy. Global descent and exact comparison remain
+RH-bearing gates.
+
+## 17. RH iterative conjecture ledger
+
+### C6. One absolute Frobenius collapses arithmetic complexity and forces RH
+
+- Initial status: `[CONJECTURE]`
+- Attack: compare single-Frobenius corank with prime-log and Stieltjes carriers.
+- Result: `[FALSIFIED]`
+- Killing mechanism: one Frobenius can collapse algebraic/transcendence
+  bookkeeping while leaving zero location untouched.
+- Positive survivor: distinguish linear `F₁` collapse from algebraic `F₁`
+  collapse and from analytic purity.
+
+### C7. RH is the formal derivative at \(q=1\) of finite-field purity
+
+- Initial status: `[CONJECTURE]`
+- Attack: require a differentiable arithmetic family of fields, cohomologies,
+  Frobenii, pairings, and comparison maps through \(q=1\).
+- Result: `[FALSIFIED AS A PRESENT PROOF]`
+- Killing mechanism: prime powers are discrete, and no such family with
+  compatible purity is constructed. Declaring its tangent is the missing
+  `F₁` geometry in different words.
+- Positive survivor: any valid \(q\to1\) route must first construct the family
+  and prove specialization preserves faithful positivity.
+
+### C8. Positive local traces glue to RH
+
+- Initial status: `[CONJECTURE]`
+- Attack: compare normalized/measured traces with finite and density-zero
+  off-line defects.
+- Result: `[FALSIFIED]`
+- Killing mechanism: measured index and normalized trace can assign zero to
+  sparse defects. Local positivity also does not control a signed global
+  renormalization.
+- Positive survivor: transition maps must be isometric and global completion
+  faithful, not only trace-preserving.
+
+### C9. Relative generic-point excision is automatically positive
+
+- Initial status: `[CONJECTURE]`
+- Attack: model relative cohomology as a mapping cone.
+- Result: `[FALSIFIED AS A FORMAL IMPLICATION]`
+- Killing mechanism: a cone subtracts generic contribution but can retain an
+  indefinite finite part.
+- Positive survivor: the relative Picard pair is canonical support for a
+  Hodge construction whose positivity must be proved separately.
+
+### C10. A Gram realization of the continued kernel is the missing geometry
+
+- Initial status: `[CONJECTURE]`
+- Attack: apply positive-kernel reconstruction in reverse.
+- Result: `[FALSIFIED AS CIRCULAR]`
+- Killing mechanism: existence of Hilbert vectors
+  \(b_z\) with \(K(z,w)=\langle b_z,b_w\rangle\) is positive definiteness of
+  \(K\), already equivalent to RH.
+- Positive survivor: vectors and norm must be explicitly constructed from
+  local `F₁`/Picard source data before kernel equality is proved.
+
+### C11. Put the semilocal source sheaf on finite Picard truncations
+
+- Initial status: `[CONJECTURE]`
+- Attack: type every space, sheaf, restriction, and derived section functor.
+- Result: `[FALSIFIED AS ILL-TYPED]`
+- Killing mechanism: crossed-product sheaf is constructed on
+  \(\operatorname{Spec}\mathbb Z\), while proposed
+  \(\widetilde{\operatorname{Pic}}_S\) and its coefficient sheaf were not
+  defined.
+- Positive survivor: extend source sheaf across archimedean place and
+  derive-push it along Abel--Jacobi before forming relative Picard cohomology.
+
+### C12. Push directly from compactified curve and excise one Picard point
+
+- Initial status: `[CONJECTURE]`
+- Attack: compare proposed map and generic object with primary-source
+  universal-cover diagram.
+- Result: `[FALSIFIED AS WRONG SOURCE MAP]`
+- Killing mechanism: trace support uses universal Abel--Jacobi embedding
+  \(\widetilde{\operatorname{Spec}\mathbb Z}\hookrightarrow
+  \widetilde{\operatorname{Pic}}\). Generic regular representation is a
+  stratum/fiber, not justified as one point.
+- Positive survivor: pull coefficients to universal adelic cover, push along
+  universal embedding, and excise full generic stratum.
+
+### C13. A single Cuntz--Krieger `F₁` elliptic RH is equivalent to RH
+
+- Initial status: `[LITERATURE] [CONJECTURE]`
+- Attack: require an exact comparison between two RH statements.
+- Result: `[OPEN; NOT A PROOF]`
+- Obstruction: constructed `F₁` zeta is finite-degree rational, while completed
+  Riemann zeta has an infinite nontrivial divisor. No cofinal limit,
+  determinant identity, or faithful spectral comparison is supplied.
+- Positive survivor: Cuntz--Krieger lane gives concrete Frobenius matrices and
+  order structure. A viable successor must build an infinite arithmetic
+  system whose regularized determinant is completed zeta and whose positive
+  cone controls every spectral direction.
+
+### C14. Universal-cover relative Picard Hodge passivity
+
+- Status: `[CONJECTURE] [OPEN CORE]`
+- Active card:
+  `docs/drafts/pipeline/1-in-progress/field-one-relative-picard-hodge-passivity.md`.
+- Claim: compare spherical, compactified, and analytic coefficient sheaves;
+  extend source sheaf to compactified curve; pull it to universal adelic
+  cover; derive-push along universal Abel--Jacobi embedding; excise complete
+  generic stratum; and construct source two-pole classes with a faithful odd
+  Hodge norm equal to
+  \(\operatorname{Re}\mathcal E\).
+- Current verdict: survives second type audit; construction and proof remain
+  open.
+
+This conjecture does not replace parallel Deninger, scaling-site, Sonin, or
+operator-algebra lanes. It gives the newest absolute/Picard lane a typed target
+and a shared formal endpoint.
+
+### C15. Ordinary scalar extension supplies the spherical-to-arithmetic bridge
+
+- Initial status: `[CONJECTURE]`
+- Attack: at a prime \(p\), compare ordinary integral base change of
+  \(\mathbb F_1[T^M]\), namely \(\mathbb Z[M]\), with
+  \(\mathbb Z[1/p]\).
+- Result: `[FALSIFIED] [PAPER-PROVED] [LEAN-PROVED]`
+- Killing mechanism: augmentation
+  \(\mathbb Z[M]\to\mathbb Z\) proves scalar \(p\ge2\) remains a nonunit in
+  every \(\mathbb Z[M]\), while localization makes \(p\) a unit. Hence no
+  \(\mathbb Z\)-algebra equivalence exists, for any additive monoid \(M\).
+- Exact positive survivor: augmentation followed by localization gives a
+  canonical comparison
+  \[
+    \mathbb Z[M]\longrightarrow\mathbb Z[1/p],
+  \]
+  but sends every monomial \(T^m\) to \(1\), and is noninjective whenever
+  \(M\) has two distinct elements. Thus its complete loss ledger is formal:
+  it discards exponent and Frobenius-monomial data.
+- Lean certificate:
+  `GaloisForLFunctions.HTGeometry.FieldOneSphericalLocalizationNoGo`.
+
+C14 survives this audit only as a zigzag of typed, doctrine-specific
+comparisons. Any branch needing prime Frobenius or exponent data may not factor
+solely through the augmentation--localization edge.
+
+### C16. Spherical monomials are semilocal analytic coefficients
+
+- Initial status: `[CONJECTURE]`
+- Attack: send \(T^h\) to the additive character
+  \(x\mapsto\alpha_S(hx)\) in
+  \(\mathcal S(\mathbb A_S)\).
+- Result: `[FALSIFIED AS ILL-TYPED]`
+- Killing mechanism: a nonzero additive character has unit modulus and full
+  support, so it is not Bruhat--Schwartz on noncompact \(\mathbb A_S\).
+- Positive survivor: it is a continuous unitary **multiplier** of
+  \(\mathcal S(\mathbb A_S)\).
+
+`[PAPER-PROVED]` For every finite \(S\ni\{\infty,p\}\), multiplication by
+\[
+  \chi_h(x)=\alpha_S(hx),\qquad h\in\mathbb Z[1/p],
+\]
+gives a faithful representation \(h\mapsto W_h\) on semilocal
+Bruhat--Schwartz space. It satisfies
+\[
+  W_{h+k}=W_hW_k,\qquad
+  W_{h/p}^{\,p}=W_h,\qquad
+  \theta(u)W_h\theta(u)^{-1}=W_{u^{-1}h},
+\]
+and is unitary on \(L^2(\mathbb A_S)\). Thus it retains spherical exponent,
+\(p\)-perfection, and scaling data without ordinary scalar extension.
+
+This closes RP0 at each fixed semilocal stage. Compatibility with all sheaf
+restriction maps, compactified extension, and derived Picard transport remain
+open. Paper card:
+`docs/drafts/pipeline/2-fully-proven/field-one-spherical-weyl-multiplier-bridge.md`.
+
+`[LEAN-PROVED]` Algebraic character/root/faithfulness laws are in
+`FieldOneWeylCharacterBridge.lean`. Archimedean temperate growth, continuous
+Schwartz multiplication, inverse law, root law, and faithfulness are in
+`FieldOneArchimedeanWeylMultiplier.lean`. Existing
+`L2MellinUnitary.lean` independently supplies unitary Fourier-phase
+multiplication on \(L^2(\mathbb R)\).
+`FieldOneLocallyConstantWeylMultiplier.lean` proves finite-place
+compact-support/local-constancy preservation, inverse and root laws, and
+scaling covariance for every locally constant additive character.
+`FieldOnePadicWeylCharacter.lean` constructs, for every prime \(p\), a
+nontrivial locally constant character of \(\mathbb Q_p\) trivial on
+\(\mathbb Z_p\), normalized nontrivially on \(p^{-1}\), and instantiates the
+finite-place multiplier. Its extension beyond the depth-one cyclic subgroup
+is noncanonical. `FieldOnePadicStandardWeylCharacter.lean` replaces that
+existence proof with the canonical compatible system on
+\(p^{-n}\mathbb Z_p\): it proves exact normalization at every \(p^{-n}\),
+kernel exactly \(\mathbb Z_p\), local constancy, nontriviality, and the Weyl
+composition law. `FieldOneFiniteAdeleWeylCharacter.lean` then assembles these
+local characters by finite support over the restricted product, proving a
+canonical nontrivial locally constant character of \(\mathbb A_f\) and its
+Weyl composition law. `FieldOneFiniteAdeleDiagonalReciprocity.lean` proves
+directly that on every fixed-prime exponent lattice
+\(\mathbb Z[1/p]\), the finite character equals \(q\bmod\mathbb Z\) on
+diagonal \(q\), and therefore cancels the negative archimedean character.
+`FieldOneRationalPrimaryReciprocity.lean` factors an arbitrary reduced
+denominator into pairwise-coprime prime powers, constructs Bézout
+coefficients, and upgrades this to
+\(\psi_f(\Delta_f q)=q\bmod\mathbb Z\) for every \(q\in\mathbb Q\).
+Finite-place \(L^2\) and semilocal tensor assembly remain open.
+
+## 18. Step-by-step non-circular construction target
+
+Let
+\[
+  \mathscr A_{\mathrm{src}}(S^c)
+  =
+  \mathcal S(\mathbb A_S)\rtimes\mathbb Z_S^\times
+\]
+be the source sheaf already constructed on
+\(\operatorname{Spec}\mathbb Z\), with \(S\ni\infty\) recording the semilocal
+archimedean factor. Let \(X=\overline{\operatorname{Spec}\mathbb Z}\), let
+\[
+  \pi:\widetilde X\longrightarrow X,\qquad
+  \widetilde\Theta:
+  \widetilde X\hookrightarrow
+  \widetilde{\operatorname{Pic}}
+    (\overline{\operatorname{Spec}\mathbb Z})
+\]
+be universal adelic cover and universal Abel--Jacobi embedding. Following
+steps are required. All derived operations must be
+\(C_{\mathbb Q}\)-equivariant so scaling flow and its generator survive.
+
+1. **Doctrine comparison.** Construct explicit comparison zigzags among
+   spherical absolute sheaf
+   \(\mathcal F=\Theta^{-1}\mathbb F_1[T]\), completed
+   Eilenberg--MacLane/unit-ball sheaf \(\mathcal O_X\), and analytic
+   \(\mathscr A_{\mathrm{src}}\). Prove preservation and loss ledger for prime
+   Frobenius, products, archimedean boundary, and \(C_{\mathbb Q}\)-action.
+   Ordinary integral scalar extension is already ruled out as an equivalence:
+   the canonical augmentation--localization edge collapses every monomial.
+   Therefore any Frobenius-faithful branch must retain exponent data in a
+   separate object and prove its comparison independently. At each fixed
+   semilocal stage, the faithful Weyl-multiplier representation of C16 supplies
+   such a branch. Prove its compatibility with sheaf restrictions and its
+   extension to the compactified coefficient diagram.
+2. **Coefficient transport.** Construct an archimedean derived extension
+   \(\mathscr A_{\mathrm{ar}}\) of \(\mathscr A_{\mathrm{src}}\), with local
+   boundary equal to the Gamma term. Then construct
+   \[
+     \mathscr B
+     =
+     R\widetilde\Theta_\ast L\pi^\ast\mathscr A_{\mathrm{ar}}
+   \]
+   on \(\widetilde{\operatorname{Pic}}\).
+3. **Relative object.** Let
+   \(\widetilde X_\eta\simeq C_{\mathbb Q}\) be full generic stratum,
+   put \(Z_\eta=\widetilde\Theta(\widetilde X_\eta)\), and let
+   \(i_\eta:Z_\eta\hookrightarrow\widetilde{\operatorname{Pic}}\). Construct
+   \[
+     C_{\mathrm{rel}}
+     =
+     \operatorname{Fib}\!\left(
+       R\Gamma(\widetilde{\operatorname{Pic}},\mathscr B)
+       \to
+       R\Gamma(Z_\eta,Li_\eta^\ast\mathscr B)
+     \right).
+   \]
+   Prove that generic-point subtraction matches the
+   \(2h(1)\log\lambda\) counterterm.
+4. **Euler-sector comparison.** Construct a cup-compatible equivariant map
+   from existing divisor-free prime--Gamma packet cohomology into
+   \(H^1(C_{\mathrm{rel}})\).
+5. **Source continuation.** Extend its packet/resolvent classes to
+   \(\beta_z\) on full continued source domain. Xi zeros may not index a basis,
+   quotient, or topology.
+6. **Hodge descent.** Embed existing rectangular/Gamma-rank source Hodge core
+   cup-isometrically. Prove relative relation subspace is closed and
+   \(J_0\)-stable, so \(J_0\) descends to antiunitary \(J^2=-1\) and
+   \(\operatorname{tr}(x\smile Jx)\) is faithful.
+7. **Faithful globalization.** Prove source-open restriction maps are
+   unnormalized, isometric, and injective on every negative-detecting
+   direction. Measured convergence is insufficient.
+8. **Exact comparison.** Prove, without divisor-side positivity,
+   \[
+     \left\|
+       a\beta_z+b\beta_w
+     \right\|^2
+     =
+     \operatorname{Re}\mathcal E(z,w;a,b)
+   \]
+   on the full continued two-pole domain.
+9. **RH extraction.** Apply the existing unconditional Lean theorem
+   `riemannHypothesis_iff_ccmContinuedTwoPoleSourcePassivity`.
+10. **Formalization.** Only after Steps 1--8 have a dependency-closed paper
+   proof, formalize exact definitions and implications in Lean, then run
+   direct leaf checks and one final module audit.
+
+Hostile acceptance tests are mandatory. Construction must reject shifted-Xi
+completions, Helson prime-phase twists, indefinite functional-equation
+pairings, density-normalized traces, escaping negative strata, and
+divisor-defined Hilbert spaces before inspecting their zeros.
+
+## 19. Honest completion status
+
+`[FORMALIZED]` Field-one doctrine atlas is complete at stated method-neutral
+interface.
+
+`[LEAN-PROVED]` Ordinary integral scalar extension of a spherical monoid stalk
+cannot equal arithmetic localization. A canonical augmentation--localization
+comparison exists, but formally identifies every monomial; this closes one
+RP0 subroute and records its exact positive survivor.
+
+`[PAPER-PROVED]` At every fixed semilocal stage containing \(p\), spherical
+exponents act faithfully by unitary additive-character multipliers, preserving
+\(p\)-perfection and scaling covariance. Abstract, archimedean, generic
+finite-place, and the canonical normalized all-depth conductor-\(\mathbb
+Z_p\) character at every prime are Lean-proved. Canonical restricted
+finite-adele character assembly, local constancy, nontriviality, and the
+finite-adele Weyl composition law are also Lean-proved. Diagonal-product
+compatibility is Lean-proved on every fixed-prime lattice
+\(\mathbb Z[1/p]\), which is the exponent group required by each perfection
+stage, and a formal primary-decomposition theorem upgrades it to every
+rational denominator. Semilocal tensor assembly and full sheaf compatibility
+remain open.
+
+`[LEAN-PROVED]` Multiple exact implications and equivalences from faithful
+positivity/Hodge naturality to RH are present in repository.
+
+`[OPEN CORE]` No audited source construction currently proves either global
+continued two-pole passivity or a positive flow-natural arithmetic Hodge
+operator. Therefore RH has not been proved by this route. Claiming completion
+now would rename RH-equivalent positivity as an axiom.
+
+Goal closes only when one lane constructs its missing global object without
+Xi-divisor input, proves faithful positivity and exact comparison on paper,
+formalizes those proofs unconditionally, and invokes an existing RH consumer.
 
 ## Primary sources
 
@@ -785,5 +1334,13 @@ the field-one construction and not a request for an RH proof.
   [*The Arithmetic Site*](https://arxiv.org/abs/1405.4527).
 - Alain Connes and Caterina Consani,
   [*Geometry of the Scaling Site*](https://arxiv.org/abs/1603.03191).
+- Alain Connes and Caterina Consani,
+  [*On the Jacobian of \(\overline{\operatorname{Spec}\mathbb Z}\)*](https://arxiv.org/abs/2602.15941).
+- Alain Connes and Caterina Consani,
+  [*On the Absolute Geometry of \(\operatorname{Spec}\mathbb Z\)*](https://arxiv.org/abs/2606.06604).
+- Alain Connes and Caterina Consani,
+  [*Weil positivity and Trace formula, the archimedean place*](https://arxiv.org/abs/2006.13771).
+- Igor V. Nikolaev,
+  [*Geometry of \(\mathbf F_1\) and Cuntz--Krieger algebras*](https://arxiv.org/abs/2606.22010).
 - Luqiao Xu,
   [*Localization and Affine Schemes over F₁*](https://arxiv.org/abs/2607.04843).

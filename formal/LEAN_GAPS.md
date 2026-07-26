@@ -21,7 +21,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
-| 3219 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 3238 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2627 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean` |
@@ -33,7 +33,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2304 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
 | 2297 | `formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean` |
-| 2276 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 2293 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
 | 2202 | `formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean` |
 

@@ -4,7 +4,8 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURAL CONSTRUCTION / RH PROGRAM
 - **Primary target:** `docs/Deninger program.md`
-- **Rule:** construct from the completed Euler--Gamma source before extracting the Xi divisor.
+- **Rule:** construct from Deninger's rational-Witt dynamical space with the derived
+  Milnor--Witt coefficient complex.  Euler--Gamma/Xi objects are comparison targets only.
 
 ## Scope correction
 
@@ -39,7 +40,11 @@ Deninger's properties 2.1--2.7 require:
 The 2022 no-real-coefficients theorem rules out an ordinary functorial real-valued Weil theory.
 Odd degree must instead carry quaternionic parity in \(K_{\mathbb R}\); degrees \(0,2\) are even.
 
-## Source-first candidate
+## Frozen analytic comparison target
+
+Everything in this section is retained as already proved comparison infrastructure.  None of it
+is the arithmetic coefficient theory, and no extension of these Xi/Euler--Gamma models counts
+toward the active construction gates below.
 
 Let \(C_{\mathrm{EG}}\) denote the completed Euler--Gamma seam complex. It must be constructed from
 the prime Dirichlet source, Gamma factor, functional-equation reflection, and their boundary
@@ -333,12 +338,13 @@ not be assumed inside construction of the source quotient or its spectrum.
 
 `[DAC_REALIZATION_COMPARISON]`
 
-After both sides exist, the source complex is compared with the single CCM cyclic closed cokernel
-and with the Hardy--Green residual model. The comparison must preserve \(K_{\mathbb R}\) parity,
-\(\Theta\), cup-trace, local Lefschetz terms, and the Hodge metric. A comparison may not define the
-metric by transporting a form already known to be positive exactly under RH.
+After arithmetic cohomology exists, compare it directly with the analytic Xi characteristic
+target and Hardy--Green residual model.  The comparison must preserve
+\(K_{\mathbb R}\) parity, \(\Theta\), cup-trace, local Lefschetz terms, and the Hodge metric.
+A comparison may not define the metric by transporting a form already known to be positive
+exactly under RH.  CCM is not part of this comparison.
 
-## Existing unconditional bricks
+## Existing unconditional comparison and source-independent bricks
 
 - `DeningerWeightOnePolarization`: exact cup derivation, Hodge-star transport,
   \(\Theta-\frac12\) skew-symmetry, critical-line eigenvalue theorem, and exclusion of
@@ -488,19 +494,128 @@ metric by transporting a form already known to be positive exactly under RH.
 
 ## Stepwise attack
 
-1. Formalize Deninger 2.1--2.7 and the exact skew-shift/eigenvalue consequence.
-2. Define the source entire quotient and prove its exact point spectrum.
-3. Construct the three-term source cochain complex and compute \(H^0,H^1,H^2\).
-4. Construct ordinary/compact-support Poincaré pairing and identify the packet continuous dual.
-5. Prove the graded Lefschetz identity and finite determinant identity.
-6. Build compatible transition maps; prove closability and reduced-cohomology exactness.
-7. Establish the distributional prime--Gamma trace and regularized determinant on the limit.
-8. Construct the source adjoint/Green operator and prove faithful Hodge positivity.
-9. Derive skew-adjointness after the half shift, spectrum on the critical line, and RH.
-10. After the arithmetic theory and RH derivation are complete, open any comparison program as a
-    separate card. It is not part of this construction.
+1. Keep \(W_{\mathrm{rat}}\) as the geometry constructing Deninger's
+   character space.  On each cyclotomic component use the paper-proved
+   leafwise unit-amalgamated derived sheaf as primary coefficient and prove
+   its derived sections have ordinary cohomology
+   \(K_*^M(F)_{\mathrm{tf}}\).  Use
+   `DAC_GEOMETRIC_MW_RANK_COLLAPSE` to identify the
+   nonnegative MW and ordinary geometric stalks, then place the genuinely quadratic data in
+   twisted Rost--Schmid residues and the archimedean rank/signature pullback.  Prove local
+   \(H^0=\mathbb Z\), \(H^1=F^\times_{\mathrm{tf}}\), and power/residue
+   descent.  Treat coherent Baumslag construction of
+   \(\alpha_F:X_F^M\to X_F\) and
+   \(R\alpha_{F,*}\mathbb R\simeq\mathscr A^M_{F,\mathrm{geom}}\) as an
+   optional geometrization.
+2. Construct coherent Frobenius/Verschiebung operations and form
+   Deninger's degreewise invariant sheaf
+   \((\pi_*\widetilde{\mathscr A})^{\mathbb Q_{>0}}\) on the coarse
+   suspension.  Prove its generic and prime-packet derived sections have
+   internal amplitude \([0,1]\), without commuting cohomology with
+   invariants.  Construct the separate Rost--Schmid differential and
+   unital real Betti--Deligne boundary gluing.  Apply
+   `DAC_TWO_COLUMN_HYPERCOHOMOLOGY_AMPLITUDE` to obtain amplitude
+   \([0,2]\), choose a closed three-term representative, and construct the
+   commuting transverse generator \(\Theta\).
+3. Prove preservation of Deninger's constant \(H^0\); define \(H^1,H^2\) as cohomology of
+   that complex.
+4. Descend MW cup/residue/trace to cohomology and prove exact radical identities, hence
+   Poincaré duality.  Derive \(H^2\simeq\mathbb R(-1)\) and \(\Theta_2=1\) from \(H^0\).
+5. Prove the Flach--Morin Weil--Arakelov mapping-fiber equivalence and complementary-weight
+   duality.
+6. Construct the realified regulator Hilbert complex; prove closability, reduced Hodge
+   decomposition, and
+   `DAC_KAHLER_RIEMANN_ARITHMETIC_LEAF_REALIZATION`.  Then
+   `DAC_KAHLER_RIEMANN_FLOW_PURITY` gives
+   \(\Theta_1=\frac12+S\) with \(S\) skew-adjoint.
+7. Prove centered power maps are unitary, extend to a strongly continuous flow, and obtain
+   \(\Theta_1=\frac12+S\) with \(S\) skew-adjoint.
+8. Prove source trace-class fixed-orbit localization and identify it with the already
+   formalized prime--archimedean explicit-formula distribution.  Use a
+   pro-nuclear limit of finite Kähler--Riemann/Leichtnam stages; a single
+   finite-harmonic lamination is ruled out by
+   `DAC_SINGLE_FINITE_TRANSVERSE_LAMINATION_NO_GO`.
+9. Construct the regularized determinant, prove determinant uniqueness and faithful spectral
+   divisor comparison with \(\xi\).
+10. Derive RH from Hodge positivity plus spectral comparison.  Only afterward may any unrelated
+    comparison program be opened.
 
 ## Gates
+
+### Active arithmetic-construction gates
+
+- [x] Rational-Witt finite-correspondence representable identified
+- [x] Raw MW degree-zero comparison falsified; multiplicative derived rank quotient isolated
+- [x] Full \(\mathbb A^1\)-localized coefficient falsified by target-scaling contraction
+- [x] Identification of coefficient \(H^0\) with \(W_{\mathrm{rat}}\) falsified;
+      rational-Witt geometry separated from coefficient cohomology
+- [x] Generic derived rank-quotient universal property and \(H^0\) theorem proved on paper
+- [x] Positive Steinberg cells proved to preserve \(H^0\); monic rational-Witt generators
+      proved to admit surjective MW rank lifts
+- [x] Real shape-cochain formality of geometric character components and real ordinary
+      Milnor unit-amalgamation comparison proved on paper
+- [x] Geometric nonnegative MW-to-Milnor rank collapse proved on paper; local rank quotient
+      and degree-one rank-Tor gate eliminated
+- [x] Real geometric coefficient amplitude \([0,1]\) over Deninger's algebraic character
+      fields proved on paper
+- [x] False inference from local amplitude to global amplitude retired; exact two-column
+      hypercohomology theorem proved on paper
+- [x] Sheaf/global-section type error isolated; Deninger's actual leafwise
+      coefficient \(\mathcal R_X\) reinstated
+- [x] Formal sheaf-level Kummer \(E_\infty\) amalgamation construction proved on paper
+- [x] Stalkwise two-term shortcut falsified by explicit
+      \(\operatorname{Tor}_1\cong\Lambda^2V\) obstruction
+- [x] Relative Sullivan algebra resolving the real Milnor quotient proved on paper
+- [x] Divisible-kernel plus exact \(\pi_1\) sequence proved to preserve every finite cover
+- [x] One-shot infinite Sullivan realization falsified by infinite \(H^1\)
+- [x] Finite-unit Sullivan realization also falsified at rank two by
+      nonzero \(H_2\) of free-group \(\mathbb Q\)-completion
+- [x] Basis-chosen Baumslag free-rational finite packet proved to have
+      square-zero rational cohomology and divisible kernel
+- [x] Any connected CDGA with only \(H^0,H^1\) proved formal; isolated
+      Baumslag packet cochains match the Milnor square-zero model
+- [x] Finite-unit derived base changes proved to have filtered colimit
+      \(\mathbb Q\oplus V_{F,\mathbb Q}\)
+- [x] Exact \(\pi_1\)-preserving correction falsified by Hopf exact sequence;
+      nontrivial divisible kernel proved necessary
+- [x] Pure scalar suspension cohomology proved incapable of carrying the
+      zeta-zero spectrum
+- [x] Prime-indexed diagonal descent retired: its factor-order relations
+      have higher Koszul syzygies and it is not Deninger's source
+      invariant-sheaf construction
+- [ ] Optional: construct basis-independent coherent Baumslag pro-realization
+      \(\alpha_F:X_F^M\to X_F\), twisted Eilenberg--Moore comparison,
+      effective pro-cover descent, then integral/profinite enhancement
+- [ ] Prove sheafified unit-amalgamation global-section and integral comparisons, plus
+      coherent power/Rost--Schmid/Galois/archimedean-signature descent
+- [ ] Construct `DAC_COARSE_INVARIANT_SHEAF_ROST_SCHMID_DESCENT`: form the
+      degreewise invariant coarse sheaf, prove internal amplitude
+      \([0,1]\), and prove its sheaf-level generic/prime localization
+      triangle
+- [ ] Construct multiplicative arithmetic-curve signature window: one real orientation in
+      degree two and no higher MW signature tower
+- [ ] Construct two-level Rost--Schmid derived-section localization equivalence on the
+      rational-Witt flow site
+- [x] Generic three-term \(H^0,H^1,H^2\) and commuting-\(\Theta\) algebra written
+- [ ] Concrete three-term complex from the derived coefficient
+- [x] Generic cup/Poincaré descent and exact radical criterion proved on paper
+- [ ] Concrete MW residue pairing and exact radical identity
+- [x] Weil--Arakelov four-term fiber algebra and complementary duality written
+- [ ] Flach--Morin comparison for the concrete complex
+- [x] Abstract bounded Hilbert-complex Hodge decomposition written
+- [x] Dense-leaf Kähler--Riemann Hodge decomposition, Poincaré duality,
+      polarization, and conformal-flow purity extracted from the primary
+      source
+- [ ] Construct `DAC_KAHLER_RIEMANN_ARITHMETIC_LEAF_REALIZATION`,
+      including coefficient pushforward, bundle-like conformal metric,
+      closed reduced differential, and harmonic-limit comparison
+- [ ] Source Lefschetz trace-class localization
+- [x] Single compact finite-harmonic lamination ruled out; exact
+      pro-nuclear Kähler trace-tower survivor isolated
+- [ ] Regularized determinant and faithful spectral-divisor comparison
+- [ ] RH derivation from the constructed source
+
+### Frozen historical comparison checklist
 
 - [x] Exact Deninger requirements and coefficient obstruction extracted
 - [x] Prior failed Hodge/modular/completed-cohomology routes audited
@@ -1481,3 +1596,312 @@ metric by transporting a form already known to be positive exactly under RH.
   `deninger-weil-arakelov-dynamical-lift`: build the Milnor--Witt regulator fiber on the
   rational-Witt flow space and prove the Flach--Morin equivalence, before Hodge or determinant
   comparison.
+
+- 2026-07-26 — `[SUPERSEDED LOCAL-RANK COEFFICIENT CORRECTION]`
+  `[DAC_DERIVED_MW_RATIONAL_WITT_COEFFICIENT]`.
+  Raw MW correspondences fail degree zero: a rank-zero, nonzero-signature coefficient on
+  \(\Gamma_1\) survives the reduced correspondence quotient.  The earlier module cofiber is
+  also insufficient because it has no automatic \(E_\infty\) multiplication.  The corrected
+  rank step is the commutative-algebra homotopy pushout
+  \[
+    M_{\mathrm{St}}
+      \mathop{\otimes}^{\mathbb L}_{
+        \operatorname{Free}_{E_\infty}^{+}
+        (\tau_{\le0}\operatorname{Fib}(r))}
+    \mathbbm1 .
+  \]
+  Here \(M_{\mathrm{St}}\) is obtained from the non-\(\mathbb A^1\)-localized
+  bar--residue envelope by attaching only the specified degree-two Steinberg cells.  Full
+  Suslin/\(\mathbb A^1\)-localization is forbidden because target scaling contracts the
+  reduced rational-Witt coordinate to the killed zero section.  The two-stage construction
+  uses no multiplicative section of rank, kills the low rank kernel derivatively, and retains
+  higher symmetric-power/Tor correction.  Positive fiber
+  \(=\tau_{\ge1}\operatorname{Fib}(r)\) is no longer assumed without a flatness theorem.
+  Deninger's concrete cohomology is now fixed as derived global sections of its
+  \(\mathbb Q_{>0}\)-localized descent after unital real Betti--Deligne boundary gluing; the
+  required amplitude \([0,2]\) is an explicit source theorem, not a claim that the current
+  rational-Witt partition is already a smooth two-dimensional foliation.
+
+- 2026-07-26 — `[SUPERSEDED THIRD COEFFICIENT CORRECTION]`
+  `[DAC_UNIT_AMALGAMATED_MW_COCHAIN_COEFFICIENT]`.
+  Deninger's primary text separates the rational-Witt structure sheaf constructing the
+  approximation from the relevant complex \(R\alpha_*\mathscr G\) on that approximation.
+  Kucharczyk--Scholze require corrected local cohomology
+  \(H^q=K_q^M(F)_{\mathrm{tf}}\), hence \(H^0=\mathbb Z\), while Deninger's global
+  \(H^0\) is one-dimensional.  The earlier target
+  \(\pi_0R\alpha_*\mathscr G=W_{\mathrm{rat}}\) was therefore a geometry/coefficient
+  conflation and is retired.
+
+  Current coefficient on a character component is
+  \[
+    \mathcal C_F^M
+      =C^*(X_F,\mathbb Z)
+        \otimes_{\operatorname{Free}_{E_\infty}
+          (\Sigma_{\mathrm{ar}}H(F^\times/\mu_\infty))}^{\mathbb L}
+        \mathcal K_F^M,
+    \qquad
+    \mathcal C_F^{MW}
+      =C^*(X_F,\mathbb Z)
+        \otimes_{\operatorname{Free}_{E_\infty}
+          (\Sigma_{\mathrm{ar}}H(F^\times/\mu_\infty))}^{\mathbb L}
+        \mathcal K_F^{MW}.
+  \]
+  The full motivic symbol algebra supplies Steinberg plus all higher syzygies without
+  \(\mathbb A^1\)-localizing the rational-Witt coordinate.  At this stage a
+  relative multiplicative rank quotient and degree-one Tor gate were still
+  proposed.  Both are eliminated by the fourth correction below.
+
+- 2026-07-26 — `[FOURTH COEFFICIENT CORRECTION]`
+  `[DAC_GEOMETRIC_MW_RANK_COLLAPSE]`.
+  Déglise's Milnor--Witt fundamental square gives
+  \(K_q^{MW}(F)\cong K_q^M(F)\) for every \(q\geq0\) when \(F\) is algebraically closed:
+  every unit is a square, \(GW(F)\cong\mathbb Z\), and the positive fundamental-ideal
+  terms vanish.  Hence the local geometric map
+  \(\mathcal C_F^{MW}\to\mathcal C_F^M\) is an equivalence and its derived rank quotient is
+  trivial.  More generally cyclotomic fields are nonreal, so the same comparison holds
+  after realification.
+
+  Quadratic information is therefore not an extra nonnegative geometric-stalk summand.
+  It belongs to twisted Rost--Schmid residue/Gysin maps before realification and to the
+  real-signature term in the archimedean comparison.  Active construction is now the
+  homotopy pullback
+  \[
+    \mathscr A_{\mathrm{ar},\mathbb R}
+    =
+    \mathscr A_{\mathrm{cyc},\mathbb R}
+    \mathop{\times}^{h}_{\mathscr A_{\mathbb C,\mathbb R}}
+    \mathscr A_{\infty,\mathbb R}^{\mathrm{sig}},
+  \]
+  followed by coherent power localization and Deninger's suspension.  Exact open gate is
+  construction and low-degree computation of this Rost--Schmid/Galois/signature pullback,
+  not local rank-Tor control.
+
+- 2026-07-26 — `[SUPERSEDED FIFTH-CORRECTION AMPLITUDE MECHANISM]`
+  `[DAC_ARITHMETIC_ROST_SCHMID_SIGNATURE_RESOLUTION]`.
+  The signature-window constraint survives.  The claim that its two columns
+  are resolutions of two-term homotopy sheaves is superseded by the seventh
+  correction and its explicit stalk-Tor obstruction.
+  The real geometric character coefficient is now proved to have amplitude
+  \([0,1]\): for every algebraic \(F/\mathbb Q\),
+  \(K_q^M(F)\otimes\mathbb R=0\) for \(q\ge2\).  This does not by itself bound
+  derived global sections on Deninger's infinite-dimensional space.  The
+  failed implication is recorded in
+  `deninger-local-amplitude-implies-global-amplitude`.
+
+  Déglise--Feld--Jin's Theorem 4.4.20 also shows that full arithmetic
+  Milnor--Witt theory has a real-place \(\mathbb Z^r\) survivor in every
+  weight \(q>1\).  Therefore the untruncated signature pullback written in
+  the fourth correction is too large.  Replace it by its multiplicative
+  arithmetic-curve Postnikov window:
+  \[
+    \mathscr A_{\mathrm{ar},\mathbb R}
+    =
+    \tau_{\le2}^{\mathrm{arith}}\!\left(
+      \mathscr A_{\mathrm{cyc},\mathbb R}
+      \mathop{\times}^{h}_{\mathscr A_{\mathbb C,\mathbb R}}
+      \mathscr A_{\infty,\mathbb R}^{\mathrm{sig}}
+    \right).
+  \]
+  This retains the connected rank unit, geometric degree-one character
+  classes, and exactly one real orientation
+  \(i_{\infty,*}\mathbb R(-1)[-2]\), while excluding higher signature
+  weights from Deninger's weight-one theory.
+
+  `[PAPER-PROVED] [DAC_TWO_COLUMN_HYPERCOHOMOLOGY_AMPLITUDE]`.
+  If the degree-zero and degree-one coefficient sheaves admit exact
+  global-section-acyclic Rost--Schmid resolutions of length one and the real
+  orientation sheaf is acyclic, derived global sections are represented by
+  \[
+    \Gamma\mathscr G^{0,0}
+    \longrightarrow
+    \Gamma\mathscr G^{1,0}\oplus\Gamma\mathscr G^{0,1}
+    \longrightarrow
+    \Gamma\mathscr G^{1,1}\oplus\mathbb R(-1)
+  \]
+  and have amplitude \([0,2]\).  Exact open core is now concrete:
+  construct those sheaves and prove their acyclicity on the actual
+  rational-Witt flow site; construct the multiplicative signature window;
+  then prove residue/signature reciprocity and self-duality.  No CCM object
+  occurs in this dependency chain.
+
+- 2026-07-26 — `[SIXTH COEFFICIENT CORRECTION]`
+  `[DAC_LEAFWISE_KUMMER_SHEAF_AMALGAMATION_EXISTENCE]`.
+  Deninger already defines the leafwise coefficient sheaf
+  \[
+    \mathcal R_X=(\pi_*\mathcal R_{\widetilde X})^{\mathbb Q_{>0}}
+  \]
+  and his cohomology as
+  \(H^\bullet_{\mathcal F}(X)=H^\bullet(X,\mathcal R_X)\).
+  The previously written character algebra
+  \(C^*_{\mathrm{sh}}(X_F;\mathbb R)
+  \otimes_{\mathcal P_F}^{\mathbb L}\mathcal K_F^M\)
+  is a derived-global-section comparison object, not a sheaf or stalk.
+  Using it directly under \(Rj_*^G\) was a type error, now retired in
+  `deninger-chart-cochains-as-coefficient-sheaf`.
+
+  The corrected construction takes place in commutative algebra objects in
+  the derived category of sheaves over \(\mathcal R_X\).  The Kummer map
+  adjoints to
+  \(H\mathscr V_F[-1]\to\mathcal R_{X_F}\), hence gives
+  \[
+    \mathscr A^M_{F,\mathrm{geom}}
+    =
+    \mathcal R_{X_F}
+      \mathop{\otimes}^{\mathbb L}_{\mathscr P_F}
+    \underline{\mathcal K}^M_{F,\mathbb R}.
+  \]
+  Existence and functorial universal property are paper-proved.  Exact new
+  comparison gate is
+  `[DAC_SHEAFIFIED_UNIT_AMALGAMATION_COMPARISON]`: prove that derived global
+  sections of this sheaf equal the chartwise algebra already handled by
+  shape formality.  This requires a projection formula, acyclic relative
+  cells, or monoidal hypercover descent; it cannot be inferred from the
+  global cochain calculation alone.
+
+- 2026-07-26 — `[SEVENTH COEFFICIENT CORRECTION]`
+  `[DAC_KUMMER_SHEAF_STALK_TOR_OBSTRUCTION]`.
+  The sheafified Kummer pushout exists, but chartwise two-term amplitude
+  cannot be transferred to its stalks.  A Kummer class is null after taking
+  a stalk.  With \(E=\Lambda(V)\) and
+  \(K=E/\Lambda^{\ge2}V=\mathbb R\oplus V\), the stalk is controlled by
+  augmentation base change and
+  \[
+    \operatorname{Tor}_1^E(\mathbb R,K)
+    \cong
+    \Lambda^2V.
+  \]
+  The proof is the long exact Tor sequence for
+  \(0\to\Lambda^{\ge2}V\to E\to K\to0\).  Thus the prior fifth-correction
+  language about two-term homotopy sheaves is retired.
+
+  The positive survivor is a two-level **derived-section** localization
+  theorem:
+  \[
+    R\Gamma(X_W,\mathscr A_{\mathrm{arith}})
+    \simeq
+    \operatorname{Tot}\!\left(
+      G^{0,\bullet}\xrightarrow{\partial}G^{1,\bullet};
+      \mathbb R(-1)[-2]
+    \right),
+  \]
+  where the generic and prime-packet derived-section columns have amplitude
+  \([0,1]\).  The already paper-proved
+  `DAC_TWO_COLUMN_HYPERCOHOMOLOGY_AMPLITUDE` then yields a three-term complex
+  even though \(R\alpha_*\mathscr G\) may have complicated stalks.  Exact
+  open gate is the arithmetic localization/hypercover equivalence, not a
+  fictitious stalkwise Gersten resolution.
+
+- 2026-07-26 — `[EIGHTH COEFFICIENT CORRECTION]`
+  `[DAC_RELATIVE_SULLIVAN_MILNOR_RESOLUTION]`,
+  `[DAC_RELATIVE_MILNOR_CHARACTER_REALIZATION]`.
+  The sheafified unit-amalgamated algebra cannot by itself construct the
+  missing map \(\alpha_F:X_F^M\to X_F\).  The primary local coefficient is
+  now restored to Deninger's form
+  \[
+    \mathscr A_{F,\mathbb R}^{\mathrm{geom}}
+      =R\alpha_{F,*}\mathbb R.
+  \]
+  The real algebraic model for \(\alpha_F\) is paper-proved: the quotient
+  \(\Lambda(V_F)\twoheadrightarrow
+  K_*^M(F)\otimes\mathbb R=\mathbb R\oplus V_F\) has a functorial relative
+  Sullivan resolution.  Its degree-one relative generators kill the
+  degree-two cup products and its later generators kill every syzygy.
+
+  Ordinary Sullivan realization is falsified, including at finite rank
+  two.  `DAC_BAUMSLAG_FREE_RATIONAL_MILNOR_PACKET` replaces it: a
+  basis-chosen finite packet has square-zero rational cohomology, formal
+  connected CDGA cochains, and a genuinely divisible fiber, so its
+  finite-cover category is unchanged.  Exact open geometric core is
+  basis-independent homotopy-coherent assembly of these packets, twisted
+  Eilenberg--Moore comparison, and effective pro-cover descent, followed by
+  an integral/profinite, residue-, Galois-, and power-compatible enhancement.
+  The leafwise unit-amalgamated sheaf is retained only as a comparison
+  candidate for \(R\alpha_{F,*}\mathbb R\).  Proving this pushforward
+  comparison is now the first bridge from local Milnor geometry to global
+  arithmetic descent.
+
+- 2026-07-26 — `[NINTH COEFFICIENT CORRECTION]`
+  `[DAC_BAUMSLAG_FREE_RATIONAL_MILNOR_PACKET]`,
+  `[DAC_BAUMSLAG_MILNOR_PRO_REALIZATION]`.
+  Ordinary Sullivan realization does not construct the Milnor character
+  space.  Zhou's theorem rules out the one-shot infinite model, and the
+  obstruction persists at rank two: Sullivan/Bousfield--Kan
+  \(\mathbb Q\)-completion of a free group has nonzero \(H_2\).
+
+  Baumslag rationalization is the positive survivor.  For every
+  basis-chosen finite unit space \(U\), the free rational group packet
+  \[
+    B\operatorname{Bau}(F_{\dim U})\longrightarrow B(U^\vee)
+  \]
+  has rational cohomology
+  \(\mathbb Q\oplus U[-1]\), formal connected CDGA cochains, and connected
+  uniquely divisible kernel.  Its fiberwise pullback over \(X_F\)
+  therefore preserves all finite covers at that stage.  Hopf's exact
+  sequence separately proves that this nontrivial divisible kernel is
+  necessary: exact \(\pi_1\) preservation would force nonzero \(H^2\).
+
+  Exact open local core is no longer existence of an isolated finite
+  packet.  It is basis-independent homotopy-coherent assembly under field,
+  Galois, and power maps; twisted Eilenberg--Moore comparison for the
+  fiberwise pullbacks; continuous pro-cochain and effective finite-cover
+  descent; then integral/profinite and MW enhancement.  Only after these
+  gates can \(R\alpha_{F,*}\mathbb R\) enter arithmetic
+  Rost--Schmid/signature descent.
+
+- 2026-07-26 — `[TENTH COEFFICIENT CORRECTION]`
+  `[DAC_LEAFWISE_KUMMER_SHEAF_AMALGAMATION_EXISTENCE]`.
+  The eighth and ninth corrections overconstrained the construction by
+  making a true Milnor character space and
+  \(R\alpha_{F,*}\mathbb R\) prerequisites.  Deninger's primary text,
+  introduction pp. 4--5, says that if a true space maps to the
+  rational-Witt approximation then its cohomology is computed by a derived
+  pushforward, but that working on the approximation instead amounts
+  directly to finding the relevant complexes of sheaves on it.
+
+  Therefore the primary local coefficient is the genuine derived leafwise
+  sheaf
+  \[
+    \mathscr A^M_{F,\mathrm{geom}}
+    =
+    \mathcal R_{X_F}
+    \mathop{\otimes}^{\mathbb L}_{\mathscr P_F}
+    \underline{\mathcal K}^M_{F,\mathbb R}.
+  \]
+  Its existence and universal property are paper-proved.  Its
+  derived-global-section, Galois, power, and Rost--Schmid comparisons
+  remain open.  The Baumslag packet program remains a valid optional
+  geometrization theorem
+  \(R\alpha_{F,*}\mathbb R\simeq\mathscr A^M_{F,\mathrm{geom}}\), but it
+  no longer blocks global arithmetic descent, cup/trace, Hodge theory, or
+  the zeta comparison.  Stalk Tor remains real and is handled by the
+  two-column derived-section localization theorem, not by asserting
+  two-term homotopy sheaves.
+
+- 2026-07-26 — `[ELEVENTH SOURCE CORRECTION]`
+  `[DAC_COARSE_INVARIANT_SHEAF_ROST_SCHMID_DESCENT]`.
+  The prime-indexed diagonal descent proposal is retired.  Deninger's
+  Definition 10.1 forms
+  \[
+    \mathscr A_X^\bullet
+    =
+    (\pi_*\widetilde{\mathscr A}^{\bullet})^{\mathbb Q_{>0}}
+  \]
+  degreewise on the coarse quotient and only then takes derived global
+  sections.  Section 12 uses
+  \(H^1(\widetilde X,Q_0(1))^{\widetilde G}\) as a replacement regulator
+  target precisely because the action is not properly discontinuous; it
+  does not identify this group with the sought spectral \(H^1\).
+
+  The universal identity
+  \[
+    \Delta_{mn}=T_m\Delta_n+\Delta_mF_n
+  \]
+  is paper-proved, and its two factor orders expose the standard
+  prime--prime Koszul syzygy.  Therefore a two-term prime relation module
+  is not a source-defined resolution of the quotient.  The positive
+  survivor keeps nonproper descent inside the hypercohomology of
+  Deninger's invariant sheaf and uses prime Rost--Schmid localization as
+  the sole horizontal codimension-one differential.  The first global
+  gate is now exact: prove generic and prime-packet internal amplitude
+  \([0,1]\), their localization triangle, closed reduced differentials,
+  and the local \(\log p\) trace.

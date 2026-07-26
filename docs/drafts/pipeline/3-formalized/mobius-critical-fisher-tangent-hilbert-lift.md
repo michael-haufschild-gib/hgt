@@ -305,3 +305,89 @@ route, not because Fisher language by itself is new.
 - [ ] source-rigged tangent-to-Xi lift constructed
 - [ ] four-unit Xi boundary estimate
 - [ ] RH
+
+## Formalization
+
+Every `[PROVED HERE]` item of this card is compiled unconditionally in Lean.  All modules build
+clean and `#print axioms` gives exactly `propext, Classical.choice, Quot.sound`.
+
+### The source state and its Fisher tangent
+
+`formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherTangentHilbertLift.lean`
+
+| Card item | Lean name |
+|---|---|
+| `(4)` the completed critical tangent, coordinatewise | `RHTower.infiniteMobiusCriticalFisherTangentWeight` |
+| its coordinate energy | `RHTower.norm_infiniteMobiusCriticalFisherTangentWeight_sq` |
+| the tangent as an actual `ℓ²` vector | `RHTower.infiniteMobiusCriticalFisherTangentLp` |
+| **`(6)`** `‖χ_σ‖² = 4ε² Var_σ(log d)` | `RHTower.norm_infiniteMobiusCriticalFisherTangentLp_sq` |
+| **`(7)`** `lim_{σ→1+} ‖χ_σ‖² = 4` | `RHTower.tendsto_norm_infiniteMobiusCriticalFisherTangentLp_sq` |
+| **`(5)`** `⟨ψ_σ, χ_σ⟩ = 0` | `RHTower.inner_infiniteMobiusSignedWeightLp_fisherTangent_eq_zero` |
+
+`(6)` is stated against `RHTower.squarefreeMobiusCriticalProjectiveFisherEnergy`, which is
+`4 · squarefreeMobiusCriticalClockVariance`, i.e. `4ε²(M₂ − M₁²)`; `(7)` is its critical limit.
+
+### Positive and signed matrix coefficients
+
+`formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherTangentCoefficients.lean`
+
+| Card item | Lean name |
+|---|---|
+| `(12)` the damped source copy | `RHTower.infiniteMobiusCriticalDampedSignedWeightLp` |
+| `(13)` the parity-damped copy | `RHTower.infiniteMobiusCriticalParityDampedWeightLp` |
+| **`(14)`** `⟨ψ_σ, T_{σ,u} ψ_σ⟩ = B_σ(u)` | `RHTower.inner_infiniteMobiusSignedWeight_damped_eq_boundaryLayerLaplace` |
+| **`(15)`** `⟨ψ_σ, J T_{σ,u} ψ_σ⟩ = τ_σ` | `RHTower.inner_infiniteMobiusSignedWeight_parityDamped_eq_multiplier` |
+| **`(16)`** the tangent coefficient | `RHTower.inner_fisherTangent_damped_eq_boundaryLayer_momentDifference`, `RHTower.inner_fisherTangent_damped_eq_coefficient` |
+| **`(17)`** `⟨χ_σ, T_{σ,u} ψ_σ⟩ → 2u/(1+u)²` | `RHTower.tendsto_infiniteMobiusCriticalFisherTangentDampedCoefficient` |
+
+`(18)`, the Laplace transform of the completed contact score `2(1−y)e^(−y)1_{y>0}`, is the parent
+Fisher–Stein card and lives in
+`formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherSteinContact.lean`.
+
+### The doubled Möbius-parity clock
+
+`formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherDoubledParityClock.lean`, over the abstract
+API of `formal/GaloisForLFunctions/HTGeometry/DoubledParityClock.lean`.
+
+| Card item | Lean name |
+|---|---|
+| `(13)` the parity involution `J_D` | `RHTower.finiteMobiusParity`, `RHTower.finiteMobiusParity_sq`, `..._isSelfAdjoint` |
+| `(21)` the centered clock observable `εA_{σ,D}` | `RHTower.finiteMobiusCriticalCenteredLogObservable` |
+| `J_D` commutes with the clock | `RHTower.finiteMobiusParity_comm_centeredLog` |
+| `(22)` doubled clock, observable and source | `RHTower.finiteMobiusDoubledClock`, `..._Observable`, `..._Source` |
+| **`(23)`** `S_D² = 1`, `S_D Ψ = Ψ`, `S_D XΨ = −XΨ` | `RHTower.finiteMobiusDoubledClock_sq`, `..._fixed_source`, `..._odd_observable_source` |
+| `‖Ψ_{σ,D}‖ = 1` | `RHTower.norm_finiteMobiusDoubledSource` |
+| **`(26)`** `[X, S]Ψ = 2XΨ` | `RHTower.finiteMobiusDoubledClock_commutator_source` |
+| **`(25)`** `QFI_D = 4ε² Var_{σ,D}` | `RHTower.finiteMobiusDoubledErasedQFI_eq_variance` |
+| **`(25)`** `= ‖[X,S]Ψ‖²` | `RHTower.norm_finiteMobiusDoubledClock_commutator_source_sq` |
+| **`(25)`** `= ‖χ_{σ,D}‖²` | `RHTower.finiteMobiusDoubledErasedQFI_eq_norm_finiteMobiusFisherTangent_sq`, `RHTower.norm_finiteMobiusDoubledClock_commutator_source_sq_eq_norm_fisherTangent_sq` |
+| **`(27)`** the block anticommutator shape | `HTGeometry.doubledOddObservable_commutator_fst`, `..._snd` |
+| the cofinal limit of `(25)` is `(6)` | `RHTower.tendsto_norm_finiteMobiusFisherTangent_sq` |
+| the cofinal limit of the QFI | `RHTower.tendsto_finiteMobiusDoubledErasedQFI` |
+
+The finite tangent vector closing the last equality of `(25)` was the one missing link and is now
+in place: `RHTower.finiteMobiusFisherTangent` with
+
+```lean
+finiteMobiusFisherTangent σ N = (-2 : ℂ) • finiteMobiusCriticalCenteredLogObservable σ N
+    (finiteMobiusSource σ N)
+```
+
+(`RHTower.finiteMobiusFisherTangent_eq_smul`), whence
+`‖χ_{σ,D}‖² = 4ε² Var_{σ,D}` (`RHTower.norm_finiteMobiusFisherTangent_sq`) and therefore the full
+four-term chain of `(25)`.  `RHTower.tendsto_norm_finiteMobiusFisherTangent_sq` states the cofinal
+statement of the card in its sharpest form:
+
+```lean
+Tendsto (fun N => ‖finiteMobiusFisherTangent σ N‖ ^ 2) atTop
+  (nhds (‖infiniteMobiusCriticalFisherTangentLp σ hσ‖ ^ 2))
+```
+
+`(27)` is proved at the abstract level with no commutation hypothesis, exactly as the card states
+it: the doubled clock commutator has upper block `AJ + JA` and lower block `−(AJ + JA)`.
+
+### Remaining
+
+Nothing in the formalisation.  The unchecked gates (literature novelty audit, the source-rigged
+tangent-to-Xi lift, the four-unit Xi boundary estimate, RH) are open **research**, and the card
+already says so: "the source vector and its energy are proved here; the lift is not".

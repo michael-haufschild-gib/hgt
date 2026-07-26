@@ -349,3 +349,116 @@ still excludes the orbit-only RH lift and selects the incidence-relative success
 - [ ] formalize the finite clock/intertwiner algebra in Lean
 - [ ] construct the incidence-before-Gamma relative lift
 - [ ] RH
+
+## Formalization (in progress)
+
+**Working state — a session picking up this card should continue here, not restart.**
+
+`[LEAN-PROVED]` The **forced sign-erasure theorem** `(6)`–`(10)` and the abstract core of the
+**undamped orbit-domain no-go** are compiled in
+`formal/GaloisForLFunctions/HTGeometry/OrbitDiagonalReflectionIntertwiner.lean` (imported by
+`GaloisForLFunctions.HTGeometry`; builds clean, no warnings; axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| **`(7)`** the intertwining relation forces `a_d = μ(d) b_d` | `HTGeometry.orbitDiagonal_intertwines_iff` |
+| **`(9)`, `(10)`** the character cancels from both descended coefficient families | `HTGeometry.orbitDiagonal_descended_coefficients` |
+| the block covariance bound behind the no-go | `HTGeometry.mul_sq_sum_le_norm_sq_sum` |
+| the cofinal-block divergence criterion | `HTGeometry.not_summable_of_cofinal_blocks` |
+
+`orbitDiagonal_intertwines_iff` is stated with the weakest hypotheses the card's own computation
+uses — a linear reflection `J` with `J (U h ξ) = U (-h) ξ` and `U t ξ ≠ 0`, a character `m` with
+`m² = 1` — and proves the equivalence on **both** sectors at once:
+
+```lean
+(J (a • U t ξ) = (m * b) • U (-t) ξ ∧ J (b • U (-t) ξ) = (m * a) • U t ξ) ↔ a = m * b
+```
+
+No unitarity, positivity or continuity of `U` enters, so the statement is exactly the card's "this
+is not a choice of gauge".  `orbitDiagonal_descended_coefficients` is the companion cancellation
+`(m·c)(m·b) = c·b` and `(m·(m·c))·b = c·b`: the even and odd descended weights coincide and are
+character-free, which is what `(9)`–`(10)` assert.
+
+For the no-go, the two abstract ingredients are in place: a nonnegatively weighted block with all
+pairwise covariances at least `γ` has energy at least `γ (∑ w)²`, and a family with arbitrarily late
+blocks of energy bounded below is not summable (via `Summable.vanishing`).
+
+`[LEAN-PROVED]` The **arithmetic input of the no-go** is now in place:
+`formal/GaloisForLFunctions/RHTower/SquarefreeDensityLowerBound.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean, no warnings; axiom-clean).
+
+| Content | Lean name |
+|---|---|
+| telescoping tail `∑_{k ≥ K} k^(-2) ≤ 1/(K-1)` | `RHTower.sum_Ico_one_div_sq_le` |
+| **`∑_p p^(-2) ≤ 49/100`**, uniformly in the cutoff | `RHTower.sum_primesBelow_one_div_sq_le` |
+| prime-square union bound for the non-squarefree integers | `RHTower.card_filter_not_squarefree_le` |
+| **positive density** `#sf(0,M] ≥ (51/100)·M` | `RHTower.card_filter_squarefree_ge` |
+| **dyadic block count** `#sf(N,2N] ≥ N/50` | `RHTower.card_filter_squarefree_Ioc_ge` |
+
+Neither mathlib nor the corpus had any squarefree counting bound.  The proof is the elementary
+sieve with an explicit constant: every non-squarefree `d` is a multiple of some `p²`, so
+`#{d ≤ M : ¬Squarefree d} ≤ ∑_p ⌊M/p²⌋ ≤ M ∑_p p^(-2)`, and the prime inverse-square sum is split
+at `29` — the nine primes below `29` contribute at most `45/100` and the telescoping tail
+`∑_{k ≥ 29} k^(-2) ≤ 1/28` the rest, giving `∑_p p^(-2) ≤ 49/100`.  Since `51/100 > 1/2`, the count
+on `(0, 2N]` minus the trivial bound `N` on `(0, N]` leaves `#sf(N, 2N] ≥ N/50`: **every dyadic
+block carries a positive proportion of squarefree integers**, which is exactly the block-mass input
+of the no-go.
+
+`[LEAN-PROVED]` The **undamped orbit-domain no-go** is closed, in
+`formal/GaloisForLFunctions/RHTower/GammaOrbitDomainNoGo.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean, no warnings; axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| the Gamma cyclic covariance `φ(h) = (cosh h)^(-1/2)` | `RHTower.gammaCyclicCovariance` |
+| `φ > 0`, even, decreasing in `|h|` | `RHTower.gammaCyclicCovariance_pos`, `..._neg`, `..._le` |
+| **`(11)`** dyadic logarithmic separation `≤ log 2` | `RHTower.abs_log_sub_log_le_log_two` |
+| symmetric orbit covariance `≥ 2 φ(log d − log e)` | `RHTower.two_mul_gammaCyclicCovariance_le_inner_re` |
+| **the no-go**: the undamped synthesis is not summable | `RHTower.not_summable_gammaOrbit` |
+
+The carrier enters **only** through its Gram relation
+`⟨U_h ξ, U_k ξ⟩.re = φ(h − k)`, which is the abstract content of `(5)`; nothing is assumed about how
+the pointed cyclic representation is realized, so the statement is unconditional relative to the
+parent scattering carrier.
+
+The Lean statement is also **stronger than the card**: the divergence is proved for every `σ ≤ 2`,
+with no lower restriction `1 < σ` — the restriction plays no role in the block estimate.  The proof
+is exactly the card's: given any finite set `s`, the dyadic block `B = (N, 2N] ∩ squarefree` with
+`N = max s + 1` is disjoint from `s`; on it every pairwise covariance is at least `2φ(log 2) > 0`
+by `(11)`, and its weight satisfies `∑_{d ∈ B} d^(-σ/2) ≥ #B/(2N) ≥ (N/50)/(2N) = 1/100` using
+`d^(-σ/2) ≥ d^(-1)` for `σ ≤ 2` and the density bound `RHTower.card_filter_squarefree_Ioc_ge`.
+Hence every such block has energy at least `2φ(log 2)/10⁴`, and
+`HTGeometry.not_summable_of_cofinal_blocks` gives non-summability.
+
+`[LEAN-PROVED]` The **Fourier-inversion constant `(24)`** is reduced to its closed Gamma form in
+`formal/GaloisForLFunctions/HTGeometry/TanhSubstitution.lean` (imported by
+`GaloisForLFunctions.HTGeometry`; builds clean, no warnings; axiom-clean).
+
+| Content | Lean name |
+|---|---|
+| `tanh' = 1/cosh²`, strict monotonicity, `1 - tanh² = 1/cosh²` | `HTGeometry.hasDerivAt_tanh`, `HTGeometry.tanh_strictMono`, `HTGeometry.one_sub_tanh_sq` |
+| the exact image `tanh '' (0,∞) = (0,1)` | `HTGeometry.tanh_image_Ioi_zero` |
+| **the tanh substitution** `∫_0^∞ cosh^(-s) = ∫_0^1 (1-x²)^(s/2-1)` | `HTGeometry.integral_cosh_rpow_neg_Ioi` |
+| the square substitution `u = x²` | `HTGeometry.two_mul_integral_one_sub_sq_rpow` |
+| **the real Euler Beta integral** `∫_0^1 u^(a-1)(1-u)^(b-1) = Γ(a)Γ(b)/Γ(a+b)` | `HTGeometry.integral_rpow_mul_one_sub_rpow` |
+| **the closed value** `∫_0^∞ (cosh t)^(-s) dt = √π Γ(s/2)/(2Γ((s+1)/2))` | `HTGeometry.integral_cosh_rpow_neg_Ioi_eq` |
+| the exponential envelope `cosh t ≥ e^{\|t\|}/2` and `(cosh t)^(-s) ≤ 2^s e^(-s\|t\|)` | `HTGeometry.exp_abs_div_two_le_cosh`, `HTGeometry.cosh_rpow_neg_le` |
+| integrability of `(cosh t)^(-s)` on `ℝ` | `HTGeometry.integrable_cosh_rpow_neg` |
+| **`(24)`** `∫_ℝ (cosh t)^(-s) dt = √π Γ(s/2)/Γ((s+1)/2)` | `HTGeometry.integral_cosh_rpow_neg` |
+
+Mathlib has **no** derivative, monotonicity or image API for `Real.tanh` and no real Beta integral,
+so all of it is built here.  At `s = 1/2` the closed value gives
+`∫_0^∞ (cosh t)^(-1/2) dt = √π Γ(1/4)/(2 Γ(3/4))`, i.e. exactly the card's `(24)`
+`ρ_Γ(0) = Γ(1/4)/(2√π Γ(3/4))` after doubling to the full line and dividing by `2π`.
+
+`(24)` is therefore complete: at `s = 1/2`,
+`∫_ℝ (cosh t)^(-1/2) dt = √π Γ(1/4)/Γ(3/4)`, so `ρ_Γ(0) = Γ(1/4)/(2√π Γ(3/4))` exactly as the card
+states.
+
+### Remaining
+
+1. **The exact super-four critical limit `(17)`–`(23)`.**  This needs the Dirichlet reduction
+   `(18)`–`(21)`, the pole scaling `(22)`–`(23)` with vertical-line bounds for `ζ(z)/ζ(2z)`,
+   dominated convergence after `x = ε y`, and the Fourier inversion value
+   `ρ_Γ(0)` — now available.  The zeta-analytic inputs are the substantial remaining project of the
+   card.

@@ -54,20 +54,19 @@ theorem tendstoUniformlyOn_partialSum_analytic_circleMap {f : ℂ → ℂ}
   intro θ _
   simp [Function.comp, zero_add]
 
-/-- Dominated convergence of the partial-sum circle integrals to the integral of `‖f‖²`. -/
-theorem tendsto_integral_normSq_partialSum_analytic {f : ℂ → ℂ}
-    (hf : AnalyticOnNhd ℂ f (Metric.ball 0 1))
-    {R : NNReal} (hR0 : 0 < R) (hR1 : (R : ℝ) < 1)
-    {r : ℝ} (hr0 : 0 ≤ r) (hrR : r < (R : ℝ)) :
+/-- **Dominated passage to the limit for circle `L²` norms of partial sums.**  Only two facts
+about the series are used: that `r` lies inside its radius of convergence — which bounds every
+partial sum on the circle by the tail-summable constant `∑ ‖p n‖ r ⁿ` — and that the partial sums
+converge uniformly to `f` on the circle.  Every concrete source of those two facts gives the same
+conclusion. -/
+theorem tendsto_integral_normSq_partialSum_of_radius_of_uniform
+    {f : ℂ → ℂ} {p : FormalMultilinearSeries ℂ ℂ ℂ} {r : ℝ} (hr0 : 0 ≤ r)
+    (hlt : (↑(r.toNNReal) : ℝ≥0∞) < p.radius)
+    (huniform : TendstoUniformlyOn (fun N θ => p.partialSum N (circleMap 0 r θ))
+      (fun θ => f (circleMap 0 r θ)) atTop Set.univ) :
     Tendsto (fun N => ∫ θ in (0:ℝ)..(2 * π),
-        ‖(cauchyPowerSeries f 0 R).partialSum N (circleMap 0 r θ)‖ ^ 2)
+        ‖p.partialSum N (circleMap 0 r θ)‖ ^ 2)
       atTop (𝓝 (∫ θ in (0:ℝ)..(2 * π), ‖f (circleMap 0 r θ)‖ ^ 2)) := by
-  set p := cauchyPowerSeries f 0 R with hp_def
-  have hp := hasFPowerSeriesOnBall_of_analyticOnNhd_ball hf hR0 hR1
-  have hlt : (↑(r.toNNReal) : ℝ≥0∞) < p.radius := by
-    refine lt_of_lt_of_le ?_ hp.r_le
-    rw [ENNReal.coe_lt_coe]
-    exact NNReal.coe_lt_coe.mp (by rw [Real.coe_toNNReal r hr0]; exact hrR)
   have hs_pn : Summable (fun n => ‖p n‖ * r ^ n) := by
     have h := p.summable_norm_mul_pow hlt
     rwa [Real.coe_toNNReal r hr0] at h
@@ -99,11 +98,6 @@ theorem tendsto_integral_normSq_partialSum_analytic {f : ℂ → ℂ}
     rw [heq]
     exact (continuous_finsetSum _ (fun k _ =>
       continuous_const.mul ((continuous_circleMap 0 r).pow k))).norm.pow 2
-  obtain ⟨x, hrx, hxR⟩ := exists_between hrR
-  have hxpos : 0 ≤ x := le_of_lt (lt_of_le_of_lt hr0 hrx)
-  have huniform := tendstoUniformlyOn_partialSum_analytic_circleMap hf hR0 hR1 hr0
-    (r' := x.toNNReal) (by rw [Real.coe_toNNReal x hxpos]; exact hrx)
-    (NNReal.coe_lt_coe.mp (by rw [Real.coe_toNNReal x hxpos]; exact hxR))
   have hgc : Continuous (fun z : ℂ => ‖z‖ ^ 2) := continuous_norm.pow 2
   have key := tendsto_integral_of_dominated_convergence
     (μ := volume.restrict (Set.Ioc (0:ℝ) (2 * π)))
@@ -128,6 +122,26 @@ theorem tendsto_integral_normSq_partialSum_analytic {f : ℂ → ℂ}
     intervalIntegral.integral_of_le hab
   rw [hconv2]
   simp only [hconv]
+
+/-- Dominated convergence of the partial-sum circle integrals to the integral of `‖f‖²`. -/
+theorem tendsto_integral_normSq_partialSum_analytic {f : ℂ → ℂ}
+    (hf : AnalyticOnNhd ℂ f (Metric.ball 0 1))
+    {R : NNReal} (hR0 : 0 < R) (hR1 : (R : ℝ) < 1)
+    {r : ℝ} (hr0 : 0 ≤ r) (hrR : r < (R : ℝ)) :
+    Tendsto (fun N => ∫ θ in (0:ℝ)..(2 * π),
+        ‖(cauchyPowerSeries f 0 R).partialSum N (circleMap 0 r θ)‖ ^ 2)
+      atTop (𝓝 (∫ θ in (0:ℝ)..(2 * π), ‖f (circleMap 0 r θ)‖ ^ 2)) := by
+  have hp := hasFPowerSeriesOnBall_of_analyticOnNhd_ball hf hR0 hR1
+  have hlt : (↑(r.toNNReal) : ℝ≥0∞) < (cauchyPowerSeries f 0 R).radius := by
+    refine lt_of_lt_of_le ?_ hp.r_le
+    rw [ENNReal.coe_lt_coe]
+    exact NNReal.coe_lt_coe.mp (by rw [Real.coe_toNNReal r hr0]; exact hrR)
+  obtain ⟨x, hrx, hxR⟩ := exists_between hrR
+  have hxpos : 0 ≤ x := le_of_lt (lt_of_le_of_lt hr0 hrx)
+  exact tendsto_integral_normSq_partialSum_of_radius_of_uniform hr0 hlt
+    (tendstoUniformlyOn_partialSum_analytic_circleMap hf hR0 hR1 hr0
+      (r' := x.toNNReal) (by rw [Real.coe_toNNReal x hxpos]; exact hrx)
+      (NNReal.coe_lt_coe.mp (by rw [Real.coe_toNNReal x hxpos]; exact hxR)))
   exact key
 
 /-- **Gutzmer's identity (limit form).**  For `f` analytic on the disk and `r < R < 1`, the partial

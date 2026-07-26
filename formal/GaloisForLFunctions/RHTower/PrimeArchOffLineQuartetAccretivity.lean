@@ -117,36 +117,7 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_offLineOrbit
         nlinarith [sq_abs a.im, sq_abs (z.re - a.re),
           abs_nonneg a.im, abs_nonneg (z.re - a.re)]
       nlinarith [sq_nonneg z.im]
-  have hza : z ≠ a := by
-    intro h
-    have hre := congrArg Complex.re h
-    have him := congrArg Complex.im h
-    nlinarith
-  have hzac : z ≠ (starRingEnd ℂ) a := by
-    intro h
-    have hre := congrArg Complex.re h
-    have him := congrArg Complex.im h
-    simp only [conj_re, conj_im] at hre him
-    nlinarith
-  have hdenOne :
-      0 < (z.re - a.re) ^ 2 + (z.im - a.im) ^ 2 := by
-    have h : z - a ≠ 0 := sub_ne_zero.mpr hza
-    simpa only [Complex.normSq_apply, sub_re, sub_im, pow_two] using
-      Complex.normSq_pos.mpr h
-  have hdenTwo :
-      0 < (z.re - a.re) ^ 2 + (z.im + a.im) ^ 2 := by
-    have h : z - (starRingEnd ℂ) a ≠ 0 := sub_ne_zero.mpr hzac
-    simpa only [Complex.normSq_apply, conj_re, conj_im, sub_re, sub_im,
-      sub_neg_eq_add, pow_two] using Complex.normSq_pos.mpr h
-  rw [xiRelativeResolventTerm, xiRelativeResolventTerm,
-    xiSpectralPoint_lineConj]
-  change ((a⁻¹ - (a - z)⁻¹) +
-      (((starRingEnd ℂ) a)⁻¹ - ((starRingEnd ℂ) a - z)⁻¹)).im ≤ 0
-  rw [relativeResolvent_conj_pair_im_formula z a
-    (xiSpectralPoint_ne_zero q) hza (by simpa using hzac)]
-  exact div_nonpos_of_nonpos_of_nonneg
-    (mul_nonpos_of_nonpos_of_nonneg (by nlinarith [hzIm]) hcore.le)
-    (mul_nonneg hdenOne.le hdenTwo.le)
+  exact xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core z hzIm q hcore
 
 /-- Full relative-resolvent trace sign on the orbit-controlled central band. -/
 theorem xiRelativeResolventTrace_im_nonpos_offLineOrbitBand

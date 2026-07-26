@@ -14,8 +14,11 @@ arithmetic space.  If
 \[
   \alpha:X_{\mathrm{arith}}\longrightarrow X_W
 \]
-is the missing comparison, he states that the cohomological problem on the approximation is to
-construct the relevant derived coefficient complex \(R\alpha_*\mathscr G\).
+is the missing comparison, its cohomology would be computed by
+\(R\alpha_*\mathscr G\).  He immediately adds that one may instead work
+directly on the approximation by constructing the relevant complexes of
+sheaves there.  The latter is the active route; \(\alpha\) is optional
+geometrization.
 
 `[LITERATURE]` Deninger's 2025 finite-correspondence theorem identifies rational Witt vectors on
 normal domains with universally integral finite relative correspondences.  Frobenius and
@@ -41,48 +44,109 @@ coefficient complex: completed Hodge--Frobenius naturality remains equivalent to
 
 Let
 \[
-  U:\widetilde{\operatorname{Corr}}_{\mathbb Z}
-      \longrightarrow \operatorname{Corr}_{\mathbb Z}
+  X_W=\check X_0(\mathbb C)_E\times_{\mathbb Q_{>0}}\mathbb R_{>0}
 \]
-forget the quadratic orientation of a finite Milnor--Witt correspondence.  On the
-finite-correspondence site presenting Deninger's rational-Witt object, let
+be Deninger's rational-Witt dynamical approximation for
+\(X_0=\operatorname{Spec}\mathbb Z\).  On each cyclotomic character
+component of the suspension cover, use the source-defined analytic
+Tate-graded coefficient
 \[
-  \mathscr A_{\mathrm{MW}} :=
-    R U_*\widetilde{\mathrm M}\mathbb Z_{\mathbb Z}.
+ \widetilde{\mathscr A}_{F,\mathbb R}^{\mathrm{an}}
+ =
+ \left(
+   \Omega^\bullet_{\mathrm{cyl},F}
+   \widehat\otimes\bigoplus_{n\ge0}\mathbb R(n)
+ \right)
+ \mathop{\otimes}^{\mathbb L}_{\mathscr P_F}
+ \underline{\mathcal K}^{M}_{F,\mathbb R}.                          \tag{A0}
 \]
-There is an archimedean boundary extension
-\(\mathscr A_{\mathrm{arith}}\) of \(\mathscr A_{\mathrm{MW}}\), constructed from the real
-place and not from the Xi divisor, with the following properties.
+`DAC_PRO_STEIN_CYLINDER_ANALYTIC_LEAF` constructs the analytic factor,
+`DAC_DENINGER_EQUIVARIANT_TATE_REGULATOR_KUMMER` constructs the
+weight-one Kummer map, and the relative motivic cells impose Steinberg
+and all higher syzygies.  Rational-Witt data defines the base space and
+its power maps.  On
+geometric sheaves the nonnegative MW and ordinary channels agree by
+`DAC_GEOMETRIC_MW_RANK_COLLAPSE`; retain MW only in twisted residue/Gysin
+descent.  Apply compact Galois descent, invert coherent power maps, and
+form Deninger's degreewise invariant coefficient sheaf on the coarse
+suspension:
+\[
+ \mathscr A_{\mathrm{flow}}
+ :=
+ \left(
+   \pi_*\operatorname*{hocolim}_{F_n}
+   \operatorname{Desc}^{0}_{G}
+   \{\widetilde{\mathscr A}_{F,\mathbb R}^{\mathrm{an}}\}_F
+ \right)^{\mathbb Q_{>0}}.                                         \tag{A}
+\]
+Prime packets then enter through the separate Rost--Schmid localization
+map of `DAC_COARSE_INVARIANT_SHEAF_ROST_SCHMID_DESCENT`.
+Let \(i_\infty:X_\infty\hookrightarrow\overline X_W\) denote the real boundary.  There are
+unital real Betti and Deligne coefficient algebras on \(X_\infty\), a common Betti boundary
+algebra \(\mathscr B_\infty\), and regulator maps forming the homotopy-pullback gluing
+\[
+ \mathscr A_{\mathrm{arith}}
+ :=
+ (\mathscr A_{\mathrm{flow}}\otimes\mathbb R)
+ \mathop{\times}^{h}_{i_{\infty,*}\mathscr B_\infty}
+ i_{\infty,*}\mathscr D_\infty .                                     \tag{B}
+\]
+Its reduced regulator fiber agrees with the standard Arakelov-motivic homotopy fiber.  Formula
+`(B)`, rather than the nonunital fiber alone, retains the unit and cup product needed by
+Deninger's cohomology.  Define
+\[
+ C^\bullet_{\mathrm{arith}}
+ :=R\Gamma(\overline X_W,\mathscr A_{\mathrm{arith}})_{\mathrm{red}}.   \tag{C}
+\]
+The construction is from rational-Witt correspondences, MW residues, and the real regulator;
+it contains no Xi divisor data.  It has the following properties.
 
-1. Its coefficient resolution uses the arithmetic Rost--Schmid complex and its
-   Deligne-regulator mapping fiber.  This resolution repairs the Steinberg defect and retains
-   the Witt duality channel.
-2. Its reduced leafwise complex on Deninger's flow space is genuinely three-term,
+1. `DAC_RELATIVE_SULLIVAN_MILNOR_RESOLUTION` gives the algebraic relative
+   cells in `(A0)`, while
+   `DAC_PRO_STEIN_RELATIVE_CELL_GLOBAL_SECTIONS` proves their chartwise
+   analytic global-section comparison.  No character-space realization
+   map is required.  `DAC_RELATIVE_MILNOR_CHARACTER_REALIZATION` remains
+   an optional theorem identifying `(A0)` with a geometric derived
+   pushforward.  No local geometric rank quotient occurs.
+   The gluing `(B)` reconciles rank with the real MW-signature boundary and retains the
+   Witt duality channel; it is not responsible for imposing the Steinberg relation.
+2. The hypercohomology `(C)` has cohomological amplitude \([0,2]\) and admits a closed
+   three-term representative
    \[
      L^0\xrightarrow{d^0_F}L^1\xrightarrow{d^1_F}L^2,
      \qquad d^1_Fd^0_F=0.
    \]
-   The three cohomological degrees come from two-dimensional leafwise cohomology, not by using
-   transverse flow as a differential.
-3. Framed power correspondences induce a transverse flow generator
+   These degrees are the derived sheaf/leafwise degrees of \(\mathscr A_{\mathrm{arith}}\).
+   Deninger's current rational-Witt partition is not assumed to be a smooth
+   two-dimensional foliation, and transverse flow is not used as a cohomological
+   differential.  Concretely,
+   `DAC_ARITHMETIC_ROST_SCHMID_SIGNATURE_RESOLUTION` supplies two
+   Rost--Schmid derived-section columns of amplitude \([0,1]\) and one real
+   orientation in degree \(2\).  No two-term stalkwise amplitude is assumed;
+   `DAC_TWO_COLUMN_HYPERCOHOMOLOGY_AMPLITUDE` then proves this bound.
+3. The suspension action gives a strongly continuous flow
+   \(\phi^t\) on `(C)`.  On its smooth vectors its infinitesimal generator
+   \(\Theta=\left.\frac d{dt}\right|_{t=0}\phi^t\) is a closed cochain endomorphism
    \(\Theta^q:L^q\to L^q\) satisfying
    \[
      \Theta^1d^0_F=d^0_F\Theta^0,\qquad
      \Theta^2d^1_F=d^1_F\Theta^1.
    \]
    Thus \(\Theta\) descends to dynamical cohomology.
-4. Compact-support leafwise hypercohomology of \(L^\bullet\) has
+4. The unit in `(B)` and Deninger's connectedness theorem induce
    \[
-     H^0_{\mathrm{arith}}\simeq\mathbb C,\qquad
-     H^2_{\mathrm{arith}}\simeq\mathbb C(-1),
+     H^0_{\mathrm{arith}}\simeq\mathbb R(0),\qquad \Theta_0=0.
    \]
-   and its reduced middle cohomology is infinite-dimensional.
+   Perfect weight-one endpoint duality then forces
+   \(H^2_{\mathrm{arith}}\simeq\mathbb R(-1)\) and \(\Theta_2=1\) by
+   `DAC_ENDPOINT_PURITY`.  Reduced \(H^1_{\mathrm{arith}}\) is infinite-dimensional.
 5. For every integer \(n\), the four-term mapping fiber of
    \(\Theta-n\) on \(L^\bullet\) is canonically quasi-isomorphic to the
    Milnor--Witt-refined Weil--Arakelov complex, compatibly with cup-\(\theta\), products, and
    duality.
-6. The Milnor--Witt product and arithmetic duality induce cup product and Poincaré duality on
-   \(L^\bullet\).
+6. The \(E_\infty\) product in `(B)`, Rost--Schmid residue adjunction, and the arithmetic trace
+   satisfy `DAC_THREE_TERM_CUP_DESCENT`; their exact middle radical is the boundary subspace,
+   so they induce perfect weight-one Poincaré duality on cohomology.
 7. The real-place boundary supplies a positive odd Hodge operator on reduced \(H^1\), and the
    centered flow is Hodge-natural before comparison with Xi.
 8. The flow trace is the full prime-power plus Gamma Lefschetz distribution, and its
@@ -96,15 +160,19 @@ specializations.  Properties 6--9 make it the arithmetic cohomology requested by
 
 ## Why this representation
 
-The arithmetic coefficient system is resolved by Rost--Schmid residues, while Deninger's
-two-dimensional leaves supply the cohomological degrees and his transverse flow supplies a
-commuting endomorphism.  This separates three structures that cannot be conflated:
+The arithmetic coefficient system is resolved by Rost--Schmid residues and real-regulator
+gluing.  Derived sheaf cohomology supplies the cohomological degrees; Deninger's suspension flow
+supplies a commuting endomorphism.  This separates structures that cannot be conflated:
 
 \[
-  \text{quadratic finite correspondences}
-    \xrightarrow{R U_*}
-  \text{Rost--Schmid/Deligne coefficients}
-    \xrightarrow{\Omega_F^\bullet}
+  (\check X_F(\mathbb C),\Omega^\bullet_{\mathrm{cyl},F})
+    \longrightarrow
+  \text{analytic Tate--Milnor leafwise coefficient}
+    \xrightarrow{\text{twisted residues/Gysin}}
+  \text{Rost--Schmid descent coefficient}
+    \xrightarrow{\text{real/Deligne gluing}}
+  \mathscr A_{\mathrm{arith}}
+    \xrightarrow{R\Gamma}
   (L^\bullet,\Theta)
     \xrightarrow{\operatorname{Fib}(\Theta-n)}
   \text{Weil--Arakelov specialization}.
@@ -115,8 +183,35 @@ commuting endomorphism.  This separates three structures that cannot be conflate
 - Raw Milnor--Witt cohomology of \(\operatorname{Spec}\mathbb Z\) is finitely generated in the
   relevant one-dimensional range.  It cannot itself be the infinite spectral \(H^1\).
   Noncompact leafwise flow completion is essential.
+- Raw arithmetic MW degree zero is too large: rank-zero signature classes survive.  They
+  are absent on algebraically closed geometric stalks, so a stalkwise rank quotient is
+  redundant.  Rank and signature must instead be matched by the archimedean pullback `(B)`;
+  its connected unit must be proved to give exactly one copy of \(\mathbb R\).
+- Full realified arithmetic MW theory is also too large in positive degree:
+  Déglise--Feld--Jin compute a real-place \(\mathbb Z^r\) in every MW weight
+  \(q>1\).  The boundary gluing must therefore use the multiplicative
+  arithmetic-curve signature window, retaining only the degree-two
+  orientation in this cohomology theory.
 - Ordinary rational-Witt correspondences retain the Kucharczyk--Scholze Steinberg defect.
-  Forgetting to derive along \(U\) returns the known wrong cohomology.
+  Full \(\mathbb A^1\)-localization is not a repair: scaling contracts the entire reduced
+  rational-Witt coordinate.  Derived base change to the full motivic symbol algebra repairs
+  Steinberg and its higher syzygies without localizing that coordinate.
+- A bare chartwise cochain algebra is not a sheaf.
+  `DAC_PRO_STEIN_CYLINDER_ANALYTIC_LEAF` supplies the missing analytic
+  pro-sheaf, but comparison with the coarse suspension remains required.
+- A relative Sullivan resolution is not a space over \(X_F\), and ordinary
+  realization is literature-falsified.  This blocks only optional
+  geometrization of `(A0)`, not the direct analytic sheaf construction.
+- A pure Milnor symbol coefficient is spectrally insufficient.
+  `DAC_PURE_SUSPENSION_SCALAR_SPECTRUM_NO_GO` proves that scalar
+  rational-power action extends to a scalar continuous flow.  The
+  cylinder-analytic chain factor in `(A0)` is mandatory and must survive
+  coarse descent and completion.
+- Chartwise amplitude is not stalkwise amplitude.
+  `DAC_KUMMER_SHEAF_STALK_TOR_OBSTRUCTION` computes an unavoidable
+  \(\Lambda^2V_F\) Tor class in the naïve pushout stalk.  Property 2 must
+  therefore come from the arithmetic derived-section localization theorem,
+  not a two-term homotopy-sheaf assertion.
 - Milnor--Witt transfer forms are indefinite over \(\mathbb R\).  They supply orientation and
   Poincaré duality, not positive Hodge theory.  Positivity must come from the archimedean
   boundary realization.
@@ -126,9 +221,10 @@ commuting endomorphism.  This separates three structures that cannot be conflate
 - A positive Hodge form on a target indexed by Xi zeros is not source construction.  Flow
   naturality on the source total complex must be proved first.
 
-**Verdict:** `SURVIVES PRELIMINARY ATTACK`.  It is compatible with the strongest available
-arithmetic correspondence and Milnor--Witt theories, and it targets Deninger's stated
-\(R\alpha_*\mathscr G\) gap.  No source realization theorem presently proves properties 1--8.
+**Verdict:** `SURVIVES THIRD HOSTILE AUDIT`.  The local analytic
+Tate--Milnor sheaf and its pro-Stein global-section comparison are
+paper-proved.  Diagonal coarse suspension/prime localization, arithmetic
+localization, duality, trace, and positivity remain open.
 
 ## First naturality audit
 
@@ -180,13 +276,20 @@ for duality while descending the ordinary channel to Deninger's rational-Witt si
 
 ## Open core
 
-`[OPEN CORE]` Construct a monoidal comparison from the ordinary projection of the
-homotopy-coherent Rost--Schmid MW coefficient system to Deninger's
-finite-correspondence/rational-Witt site, while retaining its Witt fiber as the duality channel.
-Descend the resulting \(\mathbb Q_{>0}\)-localization to the leafwise connection \(\nabla\),
-then construct the archimedean extension and its positive Hodge operator.  Frobenius,
-coherent Verschiebung, and \(n_\epsilon\mapsto n\) are literature inputs, not open
-constructions.
+`[OPEN CORE]` Construct and compare the remaining arrows in `(A)`--`(C)`:
+comparison of the pro-Stein analytic sheaf with Deninger's coarse
+suspension as a degreewise invariant sheaf, integral/profinite and
+arithmetic-operation enhancement, coarse-sheaf/Rost--Schmid descent,
+power-map localization, unital rank/signature
+Betti--Deligne boundary gluing, the multiplicative arithmetic-curve signature
+window, the two-level derived localization theorem, and the closed real regulator
+realization.  Then prove exact cup radicals, Hodge positivity, and the source
+Lefschetz/determinant theorem.  The resulting \([0,2]\) bound is already a
+formal consequence of `DAC_TWO_COLUMN_HYPERCOHOMOLOGY_AMPLITUDE`.
+Frobenius, coherent Verschiebung, \(n_\epsilon\mapsto n\), and abstract
+three-term/duality descent are closed inputs, not open constructions.
+Coherent Baumslag/Milnor character realization is optional geometrization,
+not part of this open core.
 
 The algebraic residue--flow totalization theorem is separated into
 `deninger-residue-flow-totalization`; it does not solve this open core.
@@ -206,6 +309,8 @@ The algebraic residue--flow totalization theorem is separated into
 - Håkon Kolderup, Oliver Röndigs, Paul Arne Østvær,
   *Hermitian K-theory and Milnor-Witt motivic cohomology over Z*:
   https://arxiv.org/abs/2509.16404
+- Andreas Holmström, Jakob Scholbach, *Arakelov motivic cohomology I*:
+  https://arxiv.org/abs/1012.2523
 
 ## Log
 
@@ -223,3 +328,13 @@ The algebraic residue--flow totalization theorem is separated into
   projection is rank on quadratic degree, so \(n_\epsilon\mapsto n\) is already algebraic.
   Remaining problem is simultaneous descent of the ordinary channel and preservation of the
   Witt/duality channel, followed by leafwise and archimedean constructions.
+- 2026-07-26 — made the relative Milnor character map
+  \(\alpha_F:X_F^M\to X_F\) primary.  Its relative Sullivan algebra is
+  paper-proved; pro-space realization, finite-cover invariance, integral
+  enhancement, and comparison of \(R\alpha_{F,*}\mathbb R\) with the
+  unit-amalgamated leafwise sheaf remain exact local gates.
+- 2026-07-26 — ordinary Sullivan realization was retired after the
+  rank-two free \(\mathbb Q\)-completion \(H_2\) obstruction.  Baumslag
+  free-rational packets now give the paper-closed finite topological
+  model; basis-independent coherence, twisted Eilenberg--Moore,
+  pro-descent, and integral enhancement remain open.

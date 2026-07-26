@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSignedFiniteTranslationDefectCurrent
+import GaloisForLFunctions.RHTower.XiCTaylorThetaTailUniformFiniteTranslationDefectCurrent
 
 /-!
 # Continuum-uniform signed finite translation defect

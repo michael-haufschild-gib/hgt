@@ -177,3 +177,101 @@ claim.
 - [ ] identify the framed output with `ell_E`
 - [ ] independent specialist literature audit
 - [ ] RH
+
+## Formalization
+
+Every `[PROVED HERE]` item of this card is compiled unconditionally in Lean, and `(4)` is proved in
+a **sharper, exact** form than the card's Stirling argument gives.  All modules build clean and
+`#print axioms` gives exactly `propext, Classical.choice, Quot.sound`.
+
+### The multiplier norm is exact, not asymptotic
+
+`formal/GaloisForLFunctions/HTGeometry/GammaVerticalRatioBound.lean`
+
+| Content | Lean name |
+|---|---|
+| modulus in real/imaginary coordinates | `HTGeometry.norm_ofReal_add_mul_I` |
+| **the Gamma modulus ratio on a vertical line is maximal on the real axis** | `HTGeometry.norm_Gamma_mul_Gamma_le` |
+| its quotient form | `HTGeometry.norm_Gamma_div_le` |
+
+For `0 < a ≤ b` and every height `τ`,
+
+```text
+‖Γ(a + iτ)‖ · Γ(b) ≤ Γ(a) · ‖Γ(b + iτ)‖ .
+```
+
+No Stirling asymptotics are used.  In the Gauss product `Γ_n(s) = n^s n!/∏_{j ≤ n}(s+j)` the entire
+`τ`-dependence is the family of factors `‖x + j + iτ‖ = √((x+j)² + τ²)`, and the termwise
+comparison `u √(v²+τ²) ≤ √(u²+τ²) v` for `0 < u ≤ v` squares to `u²τ² ≤ τ²v²`.  Taking `n → ∞` with
+`Complex.GammaSeq_tendsto_Gamma` gives the statement for `Γ`.
+
+`formal/GaloisForLFunctions/RHTower/SuzukiGammaMultiplierPassivity.lean`
+
+| Card item | Lean name |
+|---|---|
+| `(1)` the pole-cleared archimedean factor | `RHTower.suzukiArchimedeanFactor` |
+| `(2)` the multiplier on the critical line | `RHTower.suzukiGammaMultiplier` |
+| closed modulus of `γ` on a vertical line | `RHTower.norm_suzukiArchimedeanFactor` |
+| `(3)` the exact multiplier norm | `RHTower.suzukiGammaMultiplierNorm` |
+| **`(4)`** `M_ω < ∞`: the uniform bound | `RHTower.norm_suzukiGammaMultiplier_le` |
+| **`(3)`** the bound is attained, so `M_ω` **is** the supremum | `RHTower.norm_suzukiGammaMultiplier_zero` |
+| **`(4)`** `M_ω → 1` as `ω → 0+` | `RHTower.tendsto_suzukiGammaMultiplierNorm` |
+
+The card proves `(4)` by a compact/tail split with uniform Stirling asymptotics `(6)`.  The Lean
+proof replaces that entirely with an exact evaluation:
+
+```text
+M_ω = sup_t |m_ω(t)| = π^ω Γ(1/4 - ω/2) / Γ(1/4 + ω/2) ,        attained at t = 0.
+```
+
+Two exact cancellations do it.  First the polynomial prefactor is **unimodular** on the critical
+line, since
+
+```text
+|1/2 - ω + it| · |-1/2 - ω + it| = |1/2 + ω + it| · |-1/2 + ω + it|
+```
+
+(the two moduli swap).  Second, `π^(-s/2)` contributes the constant `π^ω`, and the remaining Gamma
+quotient is `‖Γ(1/4 - ω/2 + i t/2)‖ / ‖Γ(1/4 + ω/2 + i t/2)‖`, maximal at `t = 0` by
+`HTGeometry.norm_Gamma_mul_Gamma_le`.  Finiteness for each fixed `ω` and the limit `M_ω → 1` are
+then immediate from continuity and positivity of `Γ` at `1/4` — the card's `(5)`–`(7)` are not
+needed.  This is strictly stronger than the card's statement: the supremum is a closed expression
+and is attained, not merely finite.
+
+### Transport to the curvature and the four-unit budget
+
+| Card item | Lean name |
+|---|---|
+| **`(8)`** Plancherel multiplier bound | `RHTower.eLpNorm_mul_le_of_norm_le` |
+| **`(11)`** entrywise energy transfer | `RHTower.sum_sq_le_of_norm_le` |
+| **`(13)`** contractive Sonin insertion | `RHTower.sum_sq_le_of_contraction` |
+| the completed energy bound | `RHTower.suzukiGammaCompletedEnergyBound` |
+| **`(12)`** the completed budget tends to four | `RHTower.tendsto_suzukiGammaCompletedEnergyBound` |
+
+`(8)` is the multiplication bound `‖m · f‖_p ≤ M ‖f‖_p` for a symbol with `‖m‖ ≤ M` — by Mellin
+Plancherel this **is** the multiplier bound, the Mellin isometry being a change of variable.  `(11)`
+is the entrywise statement that scaling each entry norm by at most `M` scales the relative energy by
+at most `M²`, and `(13)` is the observation that an entrywise contraction (in particular an exact
+Sonin orthogonal projection) can only decrease the entries, so the same bound survives.
+
+`(12)` is stated at the actual source: with `σ = 1 + 2ω`,
+
+```lean
+suzukiGammaCompletedEnergyBound ω
+  = suzukiGammaMultiplierNorm ω ^ 2 * squarefreeMobiusCriticalRelativeClockEnergy (1 + 2 * ω)
+```
+
+and `RHTower.tendsto_suzukiGammaCompletedEnergyBound` proves it tends to **exactly four** as
+`ω → 0+`, combining `M_ω → 1` with the parent four-unit law
+`RHTower.tendsto_squarefreeMobiusCriticalRelativeClockEnergy`.  So the Gamma/Sonin completion of the
+divisor incidence curvature cannot exceed the critical four-unit budget.
+
+### Remaining
+
+Nothing in the formalisation.  The unchecked gates (weld the complementary floor/tail packet, weld
+the calibrated semilocal Euler connection, prove the weld preserves the relative energy, identify
+the framed output with `ell_E`, specialist audit, RH) are open **research**.  Two of them now have
+their own formalised inputs: the packet weld inputs are
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacket*.lean` and the Euler connection weld is
+`formal/GaloisForLFunctions/RHTower/DampedComplementaryPacketConnection.lean` together with
+`ShiftedEulerMobiusSynthesis.lean`.

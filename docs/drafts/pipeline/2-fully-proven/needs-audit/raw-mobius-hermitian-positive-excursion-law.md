@@ -297,3 +297,270 @@ paper-level.  No duplicate Lean wrapper is warranted.
   The lower bound `2kΘ_χ - 1 ≤ Ψ` and the positivity `(R4)` remain the analytic `L`-zero direction
   (the abstract `(9)`/`(R4)` route is formalized in `even-index-hermitian-additive-pole-law` via
   `frequently_re_pos_of_dirichletPole`; the concrete claim needs a pole of `1/L(s,χ)` in `Re s > 0`).
+
+## Lean progress
+
+- 2026-07-26 — **The Mertens integration law `(R13)`/`(R14)` formalized**, new module
+  `RHTower/HermitianMertensIntegrationLaw.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).
+
+  Audit first.  Of the pieces this card needs beyond `## Formal certificate`, the order upper bound
+  of `(R3)` turned out to be **already** in the corpus
+  (`EvenIndexHermitianOrderUpperBound.norm_mixedAdditiveConvolutionPower_le_pow` and
+  `limsup_log_mixedAdditiveConvolutionPower_re_le`), so no work was needed there.  The integration
+  law was absent everywhere.
+
+  * `partialSumSeq`, `mk_partialSumSeq` — passing to partial sums multiplies the generating series
+    by `1 + X + X^2 + ...`.
+  * `conj_additiveConvolutionPower`, `conj_partialSumSeq` — conjugation commutes with both
+    operations.
+  * `mixedAdditiveConvolutionPower_eq_coeff` — the Hermitian mixed power is a coefficient of
+    `(mk a)^k * (mk (conj a))^k`.
+  * `mixedAdditiveConvolutionPower_partialSumSeq` — **the integration law**: the mixed
+    `2(k+1)`-convolution of the partial sums is the mixed convolution of the coefficients against
+    the binomial kernel of `(1-X)^(-(2k+2))`,
+    `C_k(N) = sum_(i+j=N) R_k(i) * binom(2k+1+j, 2k+1)`, via mathlib's
+    `PowerSeries.mk_one_pow_eq_mk_choose_add`.  `..._range` gives the card's explicit
+    `sum_(j<=N)` form `(R14)`.
+  * `partialSumSeq_im_eq_zero`, `additiveConvolutionPower_partialSumSeq_of_real` — on a real
+    coefficient sequence the same binomial kernel relates the plain even convolution powers, routed
+    through the corpus bridge
+    `mixedAdditiveConvolutionPower_eq_additiveConvolutionPower_two_mul_of_real`.  This connects the
+    new law to the even-order framework of `MobiusMertensEvenConvolutionOrderLaw`.
+
+  The remaining content of the gate `full analytic Lean formalization` is the analytic layer the
+  `## Formal certificate` section already identifies as paper-level: the Dirichlet character, the
+  existence of nontrivial `L`-zeros, the Mellin identity `(R9)` and its holomorphic continuation,
+  and the limsup lower bound.  Gate stays unchecked.
+- 2026-07-26 — **The functional-equation input `Theta >= 1/2` formalized**, new module
+  `RHTower/XiZeroHalfPlaneWitness.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  The card uses "functional-equation symmetry gives
+  `Theta_chi >= 1/2`" to turn `(R3)` into the effective bound `(R5)`; in the conductor-one case this
+  is now a Lean theorem rather than a paper remark.
+  * `xiZeroSet_one_sub` — reflection symmetry of the Xi zero set (`xi_one_sub`), previously only
+    inline inside one Hedenmalm proof, now a named reusable lemma.
+  * `exists_xiZeroSet_half_le_re` — **`Theta >= 1/2`**: some Xi zero has real part at least `1/2`.
+    Only two facts are used: the zero set is nonempty (`xiZeroSet_infinite`) and it is
+    reflection-symmetric.  Nothing about where the zeros lie.
+  * `exists_xiZeroSet_lt_re` — the form the card's contradiction step consumes: every abscissa
+    `b < 1/2` is exceeded by some zero, so no half-plane `Re s > b` with `b < 1/2` can be a domain of
+    holomorphy for `1/zeta`.
+  * `exists_xiZeroSet_re_le_half` — the reflected witness, bracketing the zero set about the
+    critical line.
+
+  Corpus audit for this step: the corpus already had `xiZeroSet`, `xiZeroSet_infinite`, and
+  `xi_one_sub`; and, for the neighbouring conditional direction,
+  `MobiusMertensEvenConvolutionOrderLaw.mobiusMertensEvenConvolutionSubpowerUpperBound_iff_riemannHypothesis_of_mertens`
+  and `LandauSummabilityTransfer.landau_summability_transfer`.  What remains of the gate is the
+  Mellin layer proper: the identity `(R9)`, holomorphy of `H` on `Re s > b` from the radial bound
+  `(R11)`, and `H . L = 1` by the identity theorem.  Gate stays unchecked.
+- 2026-07-26 — **`(R11)` formalized for an arbitrary coefficient sequence**, new module
+  `RHTower/MixedConvolutionSubpowerAbelBound.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).
+  * `mixedSubpowerAbelConstant α = 1 + e · 2^α · Γ(α+1)`, with nonnegativity.
+  * `norm_sq_pow_le_of_mixedAdditiveConvolutionPower_subpower` — **the radial bound**: if
+    `Re R_k(N) <= C (N+1)^α` then at radius `e^{-x}` with `0 < x <= 1`,
+    `‖(sum a(N) e^{-Nx})^k‖^2 <= C · A(α) · x^{-(α+1)}`.
+
+  This is the general-sequence form of the estimate the corpus previously carried only for the
+  Möbius/Mertens coefficients
+  (`norm_pow_even_mobiusDiscreteLaplaceTransform_le_of_evenConvolutionSubpowerUpperBound`).  It is
+  assembled from two existing corpus assets rather than proved from scratch: the Hermitian
+  positivity bound `(R8)`
+  (`norm_sq_pow_le_tsum_of_mixedAdditiveConvolutionPower_upper`) and the moment estimate
+  `summable_natSucc_rpow_exp_neg_and_tsum_le` for `sum (N+1)^α e^{-Nx}`.  The `1` in the moment
+  estimate is absorbed using `1 <= (1/x)^(α+1)`, valid because `x <= 1`.
+
+  With this the card's chain `(R10) -> (R11)` is Lean-complete for arbitrary `a`, and combined with
+  the previous entry (`Theta >= 1/2`) the only remaining analytic step of the lower bound is the
+  Mellin layer: the identity `(R9)`, holomorphy of `H` on `Re s > b`, and `H · L = 1` by the
+  identity theorem.  Gate stays unchecked.
+- 2026-07-27 — **`(R11)` completed: the bound on the series itself.**  Appended to
+  `RHTower/MixedConvolutionSubpowerAbelBound.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).
+  * `norm_tsum_le_of_mixedAdditiveConvolutionPower_subpower` — taking the `2k`-th root of the
+    previous estimate,
+    `‖A(e^{-x})‖ <= (C · A(α))^(1/(2k)) · x^(-(α+1)/(2k))`,
+    which is `(R11)` with the card's exponent `b = (lambda+1)/(2k)`.
+
+  **Audit note on the Mellin layer.**  Tracing how the corpus proves `(R9)` for the Möbius case
+  (`mellin_mobiusDiscreteLaplaceTransform_eq_gamma_mul_LSeries`) shows it is a direct application of
+  **mathlib's `hasSum_mellin`**, which is already fully general: for any coefficients `a` and
+  frequencies `p` with absolute convergence,
+  `mellin (fun t => sum a n e^{-p n t}) s = Gamma s * sum a n / (p n)^s`.  mathlib also supplies
+  `mellin_differentiableAt_of_isBigO_rpow_exp` for holomorphy of a Mellin transform from growth
+  bounds at `0` and `infinity`.  So `(R9)` and the holomorphy criterion are *available* rather than
+  missing; what they need as input is exactly the `O(x^{-b})` bound just proved, plus exponential
+  decay at infinity.
+
+  Remaining for the gate, and now precisely delimited: assemble those three mathlib/corpus pieces
+  into `H` holomorphic on `Re s > b`, then `H · L = 1` by the identity theorem and the contradiction
+  against `exists_xiZeroSet_lt_re`.  The character-twisted `L`-series and its zeros (as opposed to
+  the conductor-one case now covered) remain outside what the corpus carries.  Gate stays unchecked.
+- 2026-07-27 — **The packaged decay hypothesis is discharged from a coefficient bound**, new module
+  `RHTower/MobiusHalfDecayFromSubpower.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).
+
+  The corpus states the source decay as a *packaged proposition*
+  `MobiusDiscreteLaplaceHalfDecay` (`exists C delta, ‖A(x)‖ <= C x^(-1/2)` near `0`) and derives from
+  it `analyticOnNhd_mellin_mobiusDiscreteLaplaceTransform`.  Packaging a conclusion as a hypothesis
+  is not a formalization of it, so the useful step is to *produce* it:
+  * `mobiusCoeff`, `mobiusDiscreteLaplaceTerm_eq_coeff_mul_pow`,
+    `mobiusDiscreteLaplaceTransform_eq_tsum` — the corpus source is the radial series of the Möbius
+    coefficients at radius `e^{-x}`, matching the general `(R11)` shape.
+  * `summable_norm_mobiusCoeff_mul_pow` — absolute convergence by geometric comparison
+    (`|mu| <= 1`, `e^{-x} < 1`).
+  * `mobiusDiscreteLaplaceHalfDecay_of_subpower` — **the discharge**: if
+    `Re R_k(N) <= C (N+1)^alpha` with `alpha + 1 <= k`, then `MobiusDiscreteLaplaceHalfDecay` holds.
+    The exponent condition is exactly what makes the radial exponent `(alpha+1)/(2k)` at most `1/2`;
+    since `1/x >= 1` on `(0,1)` the smaller exponent gives the weaker bound.
+
+  Consequence: `analyticOnNhd_mellin_mobiusDiscreteLaplaceTransform` and everything downstream of it
+  in `MobiusLaplaceBoundaryMultiplicity` now follow from an explicit coefficient hypothesis rather
+  than from a packaged analytic assumption.  Combined with
+  `mellin_mobiusDiscreteLaplaceTransform_eq_gamma_div_zeta` this is the conductor-one form of the
+  card's `(R11) -> (R12)` step.
+
+  Remaining for the gate: the identity-theorem contradiction itself (continuing `1/zeta` past a zero,
+  against `exists_xiZeroSet_lt_re`), and the character-twisted case.  Gate stays unchecked.
+- 2026-07-27 — **Coefficient criterion assembled**, new module
+  `RHTower/MobiusSubpowerRiemannCriterion.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  Composing the discharge with the corpus criterion
+  removes every analytic hypothesis:
+  * `riemannHypothesis_and_xiZerosSimple_of_mixedSubpower` — if
+    `Re R_k(N) <= C (N+1)^alpha` with `alpha + 1 <= k`, then `RiemannHypothesis` **and**
+    `XiZerosSimple`.  The chain is: coefficient bound -> radial bound `(R11)` ->
+    `MobiusDiscreteLaplaceHalfDecay` -> corpus criterion.
+  * `not_mixedSubpower_of_not_riemannHypothesis` and
+    `exists_lt_mixedAdditiveConvolutionPower_re_of_not_riemannHypothesis` — the no-go form: a failure
+    of RH forbids every such bound, so some index beats every admissible constant.
+
+  **Exactly what this is and is not.**  The card's `(R3)` lower bound `Psi >= 2k Theta - 1` is
+  unconditional and uses the actual value of `Theta`, obtained by contradicting a single zero beyond
+  the abscissa `b`.  What is proved here is the neighbouring implication with a *stronger*
+  conclusion: the same coefficient bound yields full RH, not merely a contradiction with one zero.
+  The two coincide in content only when RH fails.  So this does **not** by itself formalize
+  `Psi >= k - 1` unconditionally, and the card's `(R5)` is not yet closed; what is closed is the
+  criterion direction and its contrapositive no-go.
+
+  For the unconditional `(R3)` one still needs the weaker, `Theta`-sensitive contradiction:
+  holomorphy of the Mellin transform on `Re s > b` with `b = (alpha+1)/(2k)`, the identity
+  `H . zeta = 1` there, and a zero with real part exceeding `b` from `exists_xiZeroSet_lt_re`.
+  Gate stays unchecked.
+- 2026-07-27 — **The decay/analyticity layer generalized to an arbitrary exponent**, new module
+  `RHTower/MobiusDecayExponent.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  The corpus fixes the exponent at `1/2`; the
+  `Theta`-sensitive form of `(R3)` needs it at `b = (alpha+1)/(2k)`, which is what a subpower bound
+  actually produces.
+  * `MobiusDiscreteLaplaceDecay b` — the decay predicate with the exponent carried as a parameter,
+    and `MobiusDiscreteLaplaceDecay.isBigO` its asymptotic form.
+  * `mobiusDiscreteLaplaceHalfDecay_iff_decay_half` — the corpus predicate is *definitionally* the
+    case `b = 1/2` (`Iff.rfl`), so the generalization is conservative: nothing downstream changes.
+  * `mobiusDiscreteLaplaceDecay_of_subpower` — a subpower coefficient bound gives decay at exactly
+    `(alpha+1)/(2k)`, with no constraint relating `alpha` and `k` (unlike the `1/2` version, which
+    needed `alpha + 1 <= k` to weaken the exponent).
+  * `analyticOnNhd_mellin_of_mobiusDiscreteLaplaceDecay` — **the Mellin transform is analytic on
+    `Re s > b`**, via mathlib's `mellin_differentiableAt_of_isBigO_rpow_exp` together with the
+    corpus's local integrability and exponential decay at infinity.
+
+  Route for the remaining step, now fully scouted.  With `G s = mellin A s * zetaResidueUnit s` and
+  `H s = Gamma s * (s-1)`, both analytic on the convex (hence connected) open half-plane
+  `Re s > b >= 0`, and `G = H` on `Re s > 1` by
+  `mellin_mobiusDiscreteLaplaceTransform_eq_gamma_div_zeta`, the identity theorem forces `G = H`
+  throughout.  At a zeta zero `rho != 1` with `Re rho > b` the left side vanishes while
+  `Gamma rho * (rho - 1) != 0` (`Complex.Gamma_ne_zero`), the contradiction that yields `(R3)`.
+  The corpus supplies `zetaResidueUnit = Function.update (fun s => (s-1) * zeta s) 1 1`
+  (`ZetaLogDerivResidue`), which is the entire representative needed to avoid the pole at `1`.
+  Gate stays unchecked.
+- 2026-07-27 — **`(R3)` proved in no-go form: a zeta zero obstructs the subpower bound.**  New module
+  `RHTower/MobiusDecayZeroObstruction.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  This is the Mellin contradiction the card describes,
+  and it closes the analytic chain.
+  * `analyticOnNhd_Gamma_halfPlane` — `Gamma` is analytic on `Re s > b` whenever `b >= 0`, since the
+    poles sit at the nonpositive integers.
+  * `not_mobiusDiscreteLaplaceDecay_of_riemannZeta_eq_zero` — **the obstruction**: if `zeta` vanishes
+    at some `rho != 1` with `Re rho > b >= 0`, the source cannot decay at exponent `b`.  Proof as
+    scouted: `mellin A . zetaResidueUnit` and `Gamma(s)(s-1)` are analytic on the convex — hence
+    preconnected — half-plane, agree on `Re s > 1` by
+    `mellin_mobiusDiscreteLaplaceTransform_eq_gamma_div_zeta`, so the identity theorem
+    (`AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq`) propagates the identity; at `rho` the left
+    side vanishes and `Gamma rho (rho - 1)` does not (`Complex.Gamma_ne_zero`).
+  * `not_mixedSubpower_of_riemannZeta_eq_zero` — **`(R3)`**: a zeta zero beyond the abscissa
+    `(alpha+1)/(2k)` forbids `Re R_k(N) <= C (N+1)^alpha`.  The coefficient order cannot drop below
+    what the zero permits.
+
+  Note the base point of the identity theorem is `b + 2`, not `2`: the two half-planes
+  `Re s > b` and `Re s > 1` must both contain it and `b` is unconstrained above.
+
+  With this the card's analytic chain is complete for the conductor-one case:
+  `(R8) -> (R11) -> decay at (alpha+1)/(2k) -> Mellin analyticity -> identity theorem -> zero
+  contradiction`.  What remains for the gate is the passage from a Xi zero to a zeta zero (to feed
+  `exists_xiZeroSet_lt_re` into the last theorem and obtain the unconditional `Psi >= k - 1`), and
+  the character-twisted case.  Gate stays unchecked.
+- 2026-07-27 — **`(R5)` proved unconditionally for conductor one.**  New module
+  `RHTower/MobiusOrderLowerBound.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).
+  * `exists_riemannZeta_eq_zero_lt_re` — every abscissa `b < 1/2` is exceeded by a zeta zero
+    different from `1`.  The Xi witness `exists_xiZeroSet_lt_re` is transported by
+    `xi_eq_zero_iff` (valid on `0 < Re s`, `s != 1`) using `xiZeroSet_mem_openUnitStrip`.
+  * `not_mixedSubpower_of_lt_sub_one` — **the order lower bound**: if `alpha + 1 < k` then no bound
+    `Re R_k(N) <= C (N+1)^alpha` holds.  Equivalently the Hermitian mixed `2k`-fold convolution of
+    the Möbius coefficients has order at least `k - 1`, which is `(R5)` at `Theta = 1/2`.
+  * `exists_lt_mixedAdditiveConvolutionPower_re_of_lt_sub_one` — the same as an exceeded bound.
+
+  Unconditional in the strict sense: nothing is assumed about where the zeros lie, only that one
+  exists and that the zero set is reflection-symmetric.
+
+  **Scope, stated exactly.**  What is now complete is the *conductor-one* case of the card:
+  `(R1)`, reality, `(R7)`, `(R8)` (pre-existing); the `(R3)` upper bound (pre-existing); `(R11)`,
+  `(R13)`/`(R14)`, `Theta >= 1/2`, the Mellin obstruction `(R3)` lower bound, and now `(R5)`.
+  Two things are *not* covered.  First, the card states everything for an arbitrary primitive
+  Dirichlet character, and the corpus has no `L(s,chi)` zero infrastructure.  Second, `(R4)`/`(R6)`
+  — positivity infinitely often, in particular `sum_(a+b=N) mu(a)mu(b) >= 1` — is the `k = 1`
+  endpoint, where `alpha + 1 < k` is unsatisfiable for `alpha >= 0`; the card proves it by a
+  separate boundedness argument, not by the exponent bound.  Gate stays unchecked.
+- 2026-07-27 — **`(R4)` proved: positive excursions recur, at every order.**  New module
+  `RHTower/MobiusPositiveExcursion.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  This is the card's endpoint argument, and unlike
+  `(R5)` it applies at `k = 1`.
+  * `mobiusDiscreteLaplaceDecay_zero_of_nonpos_outside` — if every coefficient outside a finite set
+    is nonpositive, the positive part of the radial series is a finite sum, so
+    `‖A(r)^k‖^2 <= sum_(N in S) max(Re R_k(N), 0)` uniformly in `r`; taking the `2k`-th root this is
+    **decay at exponent `0`**.
+  * `exists_notMem_pos_mixedAdditiveConvolutionPower` — **`(R4)`**: for every order `k` and every
+    finite set of indices, some index outside it carries a positive coefficient.  The Mellin
+    obstruction at `b = 0` supplies the contradiction, because a zeta zero has real part strictly
+    greater than `0`.
+  * `infinite_pos_mixedAdditiveConvolutionPower` — the set of such indices is infinite.
+
+  Why this reaches the endpoint the exponent bound cannot: `(R5)` needs `alpha + 1 < k`, vacuous at
+  `k = 1` for `alpha >= 0`.  Here no exponent is involved at all — finitely many positive
+  coefficients give a *bounded* source, which is already decay at `b = 0`, and `0 < Re rho` for every
+  nontrivial zero.
+
+  The conductor-one case of the card is now complete: `(R1)`, reality, `(R7)`, `(R8)`, the `(R3)`
+  upper bound (all pre-existing), plus `Theta >= 1/2`, `(R11)`, `(R13)`/`(R14)`, the Mellin
+  obstruction, `(R5)`, and `(R4)`.  Remaining: the arbitrary primitive character (no `L(s,chi)` zero
+  infrastructure in the corpus), and the arithmetic restatement of `(R6)` as
+  `sum_(a+b=N) mu(a) mu(b) >= 1` via `mixedAdditiveConvolutionPower_one` and integrality.
+  Gate stays unchecked.
+- 2026-07-27 — **`(R6)` proved: `sum_(a+b=N) mu(a) mu(b) >= 1` for infinitely many `N`.**  New module
+  `RHTower/MobiusBinaryExcursion.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  This is the card's headline arithmetic statement.
+  * `mobiusIntConvolution N` — the binary additive self-convolution as an **integer**.
+  * `mixedAdditiveConvolutionPower_one_mobius` — at order one the Hermitian mixed convolution is the
+    corpus's `mobiusAdditiveConvolution` (conjugation is trivial on integer casts).
+  * `mixedAdditiveConvolutionPower_one_mobius_re` — its real part is that integer.
+  * `exists_notMem_one_le_mobiusIntConvolution` and `infinite_one_le_mobiusIntConvolution` —
+    **`(R6)`**: beyond every finite set of indices the convolution attains a value `>= 1`, and the
+    set of such indices is infinite.  Positivity upgrades to `>= 1` purely by integrality.
+
+  Duplication note, corrected: this development introduced `mobiusCoeff`, which is definitionally
+  the corpus's `mobiusComplexCoefficient`.  `mobiusCoeff_eq_mobiusComplexCoefficient` records the
+  identification (`rfl`) so the two notions cannot drift apart.
+
+  **Conductor one is now complete**, `(R1)` through `(R14)` including both `(R4)`/`(R6)` and `(R5)`.
+  The gate `full analytic Lean formalization` nonetheless stays unchecked, for one reason only: the
+  card states its theorem for an arbitrary primitive Dirichlet character `chi`, and the corpus has no
+  `L(s,chi)` zero infrastructure to instantiate the Mellin obstruction with.  Everything else the
+  card asserts is formalized and unconditional.
