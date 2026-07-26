@@ -2279,3 +2279,4 @@ import GaloisForLFunctions.HTGeometry.EllipticOrderBound
 import GaloisForLFunctions.HTGeometry.EllipticRegularPoint
 import GaloisForLFunctions.HTGeometry.EllipticLatticeOrder
 import GaloisForLFunctions.HTGeometry.EllipticClearedOrders
+import GaloisForLFunctions.HTGeometry.EllipticNormalFormConstant

@@ -1583,3 +1583,21 @@ consumes.
   `f = 0`, so the relation holds there for free.  It is read off from mathlib's
   `MeromorphicNFAt.meromorphicOrderAt_eq_zero_iff` (order `0` iff nonzero value), whose contrapositive
   is exactly the normal-form convention.
+
+#### Liouville for the combination
+
+`GaloisForLFunctions/HTGeometry/EllipticNormalFormConstant.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- **`eq_of_nonneg_order_of_lattice_periodic`** — a lattice-periodic meromorphic function with
+  nonnegative order everywhere takes a single value on its whole regular locus.
+
+The mechanism: its canonical normal form is entire (normal form plus nonnegative order gives
+analyticity at every point), inherits both periods -- for which the corpus already had exactly the
+right transfer lemma, `periodic_toMeromorphicNFOn_of_eventually_punctured` -- hence is constant by
+`const_of_lattice_periodic_analytic`; and wherever the function itself is analytic it agrees with
+that normal form, because the two agree off the point and are both continuous at it.
+
+This is step 6 of the assembly.  With the regular point `z_0` at which the combination vanishes, it
+gives that the combination vanishes on its entire regular locus, which is exactly the hypothesis of
+`differentiallyAlgebraic_of_monomial_relation` once the poles are handled by the `y_0` factor.
