@@ -128,7 +128,8 @@ theorem integral_scaledParabola_centeredFundamentalCell_eq
   have htranslate :=
     integral_scaledParabola_translatedFundamentalCell_eq
       H hH a (-(H : ℝ) / 2) (-((H : ℝ) ^ (2 : ℕ)) / 2)
-  convert htranslate using 1 <;> ring_nf
+  convert htranslate using 1
+  all_goals ring_nf
 
 /-- Unconditional discrete planar `L⁶` estimate on the sharp physical
 fundamental cell of volume `H³`. -/

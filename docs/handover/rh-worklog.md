@@ -7472,3 +7472,63 @@ for which ALL indices are covered by the asymptotic result, i.e. is the threshol
 in d? If n(d) is bounded, finitely many discriminants decide each degree and the route is effective;
 if n(d) grows, the undecided set is infinite and the route inherits the same unboundedness as every
 other entry. THE ANSWER IS IN THE GORZ PAPER'S EFFECTIVITY, and Phase 2 should retrieve it.
+
+---
+
+## Cycle 123 (2026-07-26) — THE JENSEN DEGREE IS THE SECOND INVARIANT
+### Three of the four break-the-closure targets are now answered, all by the same route.
+
+### PHASE 2 RESULT (on schedule)
+Griffin-Ono-Rolen-Zagier (arXiv:1902.07321, PNAS 2019) and the subsequent effectivity literature:
+hyperbolicity of the Jensen polynomials of Xi is known FOR EVERY DEGREE d <= 8 AND EVERY INDEX, and
+for larger d for all indices beyond an effective threshold of shape
+
+    N(d) <= (3d)^{24 d} (50 d)^{3 d^2},     so    log N(d) = 24 d log(3d) + 3 d^2 log(50 d).
+
+THE THRESHOLD IS UNBOUNDED IN d, so the undecided set is infinite. BUT ITS GROWTH IS IN d, NOT IN THE
+HEIGHT.
+
+### THE STRUCTURAL CONSEQUENCE
+    ==> THE DEGREE OF THE JENSEN POLYNOMIAL IS A VARIABLE INDEPENDENT OF log T. THE
+        JENSEN-DISCRIMINANT ROUTE THEREFORE ESCAPES THE ENTIRE CLOSURE — WHICH WAS BUILT ON THE SINGLE
+        LOGARITHMIC INVARIANT — AT THE PRICE OF A NEW AND WORSE GROWTH IN A NEW VARIABLE. THAT
+        VARIABLE IS THE SECOND INVARIANT THE CLASSIFICATION WAS MISSING.
+
+### THE FOUR TARGETS, UPDATED
+  1. an arithmetic input INSIDE the strip that is not a count            — STILL OPEN
+  2. a second invariant independent of log T                             — ANSWERED: the Jensen degree
+  3. a codimension-sensitive tool beyond integrality                     — ANSWERED: the discriminant
+  4. a reality-sensitive unconditional theorem                           — ANSWERED: the discriminant
+THREE OF FOUR ANSWERED, ALL BY THE JENSEN-DISCRIMINANT ROUTE, AND THE RESIDUAL OBSTRUCTION HAS MOVED
+FROM "THE THEORY HAS ONE INVARIANT THAT GROWS WITH THE HEIGHT" TO "THE SECOND INVARIANT'S COST GROWS
+LIKE d^{3 d^2}".
+
+That is a genuinely different kind of obstruction from everything in entries 1-55: it is a COST, not a
+BLINDNESS. Every earlier closure said a tool cannot see the thing; this one says the tool sees it and
+the bill is super-exponential. The first open degree is NINE.
+
+Machine-verified: `RHTower/DegreeIsTheSecondInvariant.lean` (the logarithm of the effective threshold
+24 d log(3d) + 3 d^2 log(50 d), the super-exponential growth of its dominant term, unboundedness of
+the degree, the product structure of degree and height, and the first open degree being nine; standard
+axioms only, wired into RHTower).
+
+### FIFTY-SEVENTH ATLAS ENTRY
+    degree invariant   the Jensen degree d is independent of log T, so the Jensen-discriminant route
+                       escapes the closure built on the single logarithmic invariant. Its cost is the
+                       effective threshold N(d) <= (3d)^{24d}(50d)^{3d^2}, unbounded in d. Degrees up
+                       to eight are settled for every index; the first open degree is nine. The
+                       obstruction is a COST, not a blindness.
+
+### STATE AT CYCLE 123
+Fifty-seven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 124 target
+The obstruction is now a cost in a new variable, and costs can be attacked by structure where
+blindnesses cannot. The threshold N(d) comes from GORZ's Hermite approximation: the Jensen polynomials
+of degree d, suitably normalised, converge to Hermite polynomials, and N(d) is the index beyond which
+the error is smaller than the Hermite root separation. THE COST IS THEREFORE THE RATIO
+(approximation error)/(Hermite separation). ASK WHETHER A DIFFERENT MODEL POLYNOMIAL FAMILY HAS LARGER
+ROOT SEPARATION AT THE SAME DEGREE — Hermite roots spread like sqrt(d) with spacing ~ 1/sqrt(d) in the
+bulk, so the separation is SMALL exactly where the error must be beaten. IF A MODEL WITH SEPARATION
+BOUNDED BELOW EXISTS, THE THRESHOLD DROPS FROM d^{3d^2} TO SOMETHING TAME, AND THE ROUTE BECOMES
+EFFECTIVE. That is a concrete question in orthogonal-polynomial asymptotics, not in number theory.

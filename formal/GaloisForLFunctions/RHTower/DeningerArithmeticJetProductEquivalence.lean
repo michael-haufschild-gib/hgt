@@ -21,7 +21,13 @@ namespace RHTower
 
 noncomputable section
 
-/-- The descended all-jets observation is onto the full multiplicity-bounded Xi-jet product. -/
+/-! Match the quotient relation's pinned subtype negation from `DeningerArithmeticCompactOpen`. -/
+local instance deningerCompactOpenCompatibleNegForJetCompleteness :
+    Neg DeningerCompactOpenEntire :=
+  (inferInstance :
+    SubtractionMonoid DeningerCompactOpenEntire).toSubNegMonoid.toNeg
+
+/- The descended all-jets observation is onto the full multiplicity-bounded Xi-jet product. -/
 set_option maxHeartbeats 600000 in
 theorem deningerCompactOpenH1AllJets_surjective :
     Function.Surjective deningerCompactOpenH1AllJets := by
@@ -46,16 +52,10 @@ theorem deningerCompactOpenH1AllJets_surjective :
       FirstCountableTopology DeningerCompactOpenEntire :=
     inferInstance
   letI :
-      UniformSpace
-        (DeningerCompactOpenEntire ⧸
-          deningerCompactOpenXiRange.toAddSubgroup) :=
+      UniformSpace DeningerArithmeticCompactOpenH1 :=
     IsTopologicalAddGroup.rightUniformSpace
-      (DeningerCompactOpenEntire ⧸
-        deningerCompactOpenXiRange.toAddSubgroup)
-  letI :
-      CompleteSpace
-        (DeningerCompactOpenEntire ⧸
-          deningerCompactOpenXiRange.toAddSubgroup) :=
+      DeningerArithmeticCompactOpenH1
+  letI : CompleteSpace DeningerArithmeticCompactOpenH1 :=
     QuotientAddGroup.completeSpace_right
       DeningerCompactOpenEntire
       deningerCompactOpenXiRange.toAddSubgroup

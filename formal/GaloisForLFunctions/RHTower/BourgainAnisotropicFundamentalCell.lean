@@ -43,6 +43,59 @@ theorem volume_bourgainParabolaFundamentalCell
   simp [Matrix.cons_val]
   ring
 
+/-- Every point of the period cell has sup norm at most `H²/2`. -/
+theorem norm_le_sq_half_of_mem_bourgainParabolaFundamentalCell
+    {H : ℕ} (hH : 0 < H) {y : BourgainPhaseSpace}
+    (hy : y ∈ bourgainParabolaFundamentalCell H) :
+    ‖y‖ ≤ (H : ℝ) ^ (2 : ℕ) / 2 := by
+  let R : NNReal :=
+    ⟨(H : ℝ) ^ (2 : ℕ) / 2, by positivity⟩
+  rw [Pi.norm_def]
+  change
+    (↑((Finset.univ : Finset (Fin 4)).sup fun j => ‖y j‖₊) : ℝ) ≤
+      (R : ℝ)
+  rw [NNReal.coe_le_coe]
+  apply Finset.sup_le
+  intro j hj
+  rw [← NNReal.coe_le_coe]
+  change ‖y j‖ ≤ (H : ℝ) ^ (2 : ℕ) / 2
+  have hyj :
+      y j ∈ Set.Ioc
+      (-(bourgainParabolaFundamentalHalfWidth H j))
+        (bourgainParabolaFundamentalHalfWidth H j) := by
+    exact hy (Set.mem_univ j)
+  have habs :
+      |y j| ≤ bourgainParabolaFundamentalHalfWidth H j :=
+    abs_le.2 ⟨hyj.1.le, hyj.2⟩
+  rw [Real.norm_eq_abs]
+  refine habs.trans ?_
+  have hHr : (1 : ℝ) ≤ H := by exact_mod_cast hH
+  fin_cases j <;>
+    simp [bourgainParabolaFundamentalHalfWidth, Matrix.cons_val] <;>
+    nlinarith [sq_nonneg ((H : ℝ) - 1)]
+
+/-- Inverse distortion estimate for the diagonal parabola phase scale. -/
+theorem norm_le_inverseNorm_mul_norm_bourgainParabolaPhaseScale
+    {scale : ℝ} (hscale : scale ≠ 0) (y : BourgainPhaseSpace) :
+    ‖y‖ ≤
+      ‖((bourgainParabolaPhaseScaleContinuousLinearEquiv hscale).symm :
+          BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+        ‖bourgainParabolaPhaseScale scale y‖ := by
+  have h :=
+    ((bourgainParabolaPhaseScaleContinuousLinearEquiv hscale).symm :
+      BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace).le_opNorm
+        (bourgainParabolaPhaseScale scale y)
+  calc
+    ‖y‖ =
+        ‖(bourgainParabolaPhaseScaleContinuousLinearEquiv hscale).symm
+          (bourgainParabolaPhaseScaleContinuousLinearEquiv hscale y)‖ := by
+      rw [ContinuousLinearEquiv.symm_apply_apply]
+    _ =
+        ‖(bourgainParabolaPhaseScaleContinuousLinearEquiv hscale).symm
+          (bourgainParabolaPhaseScale scale y)‖ := by
+      rw [bourgainParabolaPhaseScaleContinuousLinearEquiv_apply]
+    _ ≤ _ := h
+
 /-- Real integral over the centered anisotropic bilinear period cell, in
 the coordinate order produced by the finite-product measure. -/
 def bourgainScaledParabolaBilinearCenteredMoment
@@ -229,6 +282,41 @@ def bourgainOsculatingFundamentalCell
     (H : ℕ) (scale a b : ℝ) : Set BourgainPhaseSpace :=
   bourgainScaledOsculatingPhaseCoordinates scale a b ⁻¹'
     bourgainParabolaFundamentalCell H
+
+/-- Uniform norm radius of a pulled-back period cell, expressed through the
+two exact inverse operator norms. -/
+theorem norm_le_of_mem_bourgainOsculatingFundamentalCell
+    {H : ℕ} (hH : 0 < H) {scale a b : ℝ}
+    (hscale : scale ≠ 0) (ha : 0 < a) (hab : a < b)
+    {x : BourgainPhaseSpace}
+    (hx : x ∈ bourgainOsculatingFundamentalCell H scale a b) :
+    ‖x‖ ≤
+      ‖((bourgainSquareRootPhaseCoordinateContinuousLinearEquiv
+          ha hab).symm : BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+        (‖((bourgainParabolaPhaseScaleContinuousLinearEquiv
+            hscale).symm : BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+          ((H : ℝ) ^ (2 : ℕ) / 2)) := by
+  have hcell :
+      bourgainScaledOsculatingPhaseCoordinates scale a b x ∈
+        bourgainParabolaFundamentalCell H :=
+    hx
+  have hscaled :
+      ‖bourgainScaledOsculatingPhaseCoordinates scale a b x‖ ≤
+        (H : ℝ) ^ (2 : ℕ) / 2 :=
+    norm_le_sq_half_of_mem_bourgainParabolaFundamentalCell hH hcell
+  have hphase :
+      ‖bourgainSquareRootPhaseCoordinates a b x‖ ≤
+        ‖((bourgainParabolaPhaseScaleContinuousLinearEquiv
+            hscale).symm : BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+          ((H : ℝ) ^ (2 : ℕ) / 2) := by
+    refine
+      (norm_le_inverseNorm_mul_norm_bourgainParabolaPhaseScale
+        hscale (bourgainSquareRootPhaseCoordinates a b x)).trans ?_
+    exact mul_le_mul_of_nonneg_left hscaled (norm_nonneg _)
+  refine
+    (norm_le_inverseNorm_mul_norm_bourgainSquareRootPhaseCoordinates
+      ha hab x).trans ?_
+  exact mul_le_mul_of_nonneg_left hphase (norm_nonneg _)
 
 /-- Exact Lebesgue pushforward under the combined phase map. -/
 theorem map_bourgainScaledOsculatingPhaseMatrix_volume
