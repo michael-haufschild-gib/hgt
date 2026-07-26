@@ -2987,3 +2987,4 @@ import GaloisForLFunctions.RHTower.ZeroFreeWidthExponent
 import GaloisForLFunctions.RHTower.ExponentChainKappa
 import GaloisForLFunctions.RHTower.BoundaryCaseStillInsufficient
 import GaloisForLFunctions.RHTower.CodimensionNotCounting
+import GaloisForLFunctions.RHTower.MonotoneIntegerFormulation
