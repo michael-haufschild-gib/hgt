@@ -58,6 +58,49 @@ theorem deningerCompactOpenJet_polynomial
   rw [deningerCompactOpenJet_apply]
   exact iteratedDeriv_deningerPolynomial_eval P n z
 
+/-- Centered Taylor polynomial realizing one arbitrary finite derivative packet. -/
+def deningerLocalJetPolynomial
+    (w : ℂ) {m : ℕ} (jet : Fin m → ℂ) :
+    Polynomial ℂ :=
+  ∑ k : Fin m,
+    Polynomial.C (jet k / (k.val.factorial : ℂ)) *
+      (Polynomial.X - Polynomial.C w) ^ k.val
+
+/-- The centered local polynomial has exactly the prescribed derivative jets. -/
+theorem deningerLocalJetPolynomial_iterateDerivative_eval
+    (w : ℂ) {m : ℕ} (jet : Fin m → ℂ)
+    {n : ℕ} (hn : n < m) :
+    (Polynomial.derivative^[n]
+      (deningerLocalJetPolynomial w jet)).eval w =
+        jet ⟨n, hn⟩ := by
+  rw [deningerLocalJetPolynomial,
+    Polynomial.iterate_derivative_sum,
+    Polynomial.eval_finsetSum,
+    Fintype.sum_eq_single (⟨n, hn⟩ : Fin m)]
+  · rw [Polynomial.iterate_derivative_C_mul,
+      Polynomial.iterate_derivative_X_sub_pow_self,
+      Polynomial.eval_mul, Polynomial.eval_C,
+      Polynomial.eval_natCast]
+    have hfac : (n.factorial : ℂ) ≠ 0 :=
+      Nat.cast_ne_zero.mpr n.factorial_ne_zero
+    exact div_mul_cancel₀ _ hfac
+  · intro k hkn
+    rw [Polynomial.iterate_derivative_C_mul,
+      Polynomial.iterate_derivative_X_sub_pow,
+      Polynomial.eval_mul, Polynomial.eval_C,
+      Polynomial.eval_smul, Polynomial.eval_pow,
+      Polynomial.eval_sub, Polynomial.eval_X,
+      Polynomial.eval_C, sub_self]
+    by_cases hlt : k.val < n
+    · simp [Nat.descFactorial_eq_zero_iff_lt.mpr hlt]
+    · have hne : k.val ≠ n := by
+        intro h
+        apply hkn
+        exact Fin.ext h
+      have hgt : n < k.val := lt_of_le_of_ne
+        (Nat.le_of_not_gt hlt) (Ne.symm hne)
+      simp [Nat.sub_ne_zero_of_lt hgt]
+
 /--
 Finite-stage compact-open Hermite interpolation: one polynomial entire source realizes arbitrary
 local polynomial residue classes at finitely many distinct points.
@@ -96,6 +139,31 @@ theorem exists_deningerCompactOpenPolynomial_finiteXiJets
   intro rho tau h
   apply Subtype.ext
   exact xiSpectralPointSupport_injective h
+
+/--
+Scalar form of Xi finite interpolation: every arbitrary finite packet of multiplicity-bounded
+complex jet values is realized by one compact-open polynomial source.
+-/
+theorem exists_deningerCompactOpenPolynomial_finiteXiScalarJets
+    (S : Finset XiDivisorSupport)
+    (target :
+      (rho : ↥S) → DeningerArithmeticJetIndex rho.1 → ℂ) :
+    ∃ F : DeningerCompactOpenEntire,
+      ∀ rho : ↥S, ∀ k : DeningerArithmeticJetIndex rho.1,
+        deningerCompactOpenJet
+            (xiSpectralPointSupport rho.1) k F =
+          target rho k := by
+  let localTarget : ↥S → Polynomial ℂ := fun rho =>
+    deningerLocalJetPolynomial
+      (xiSpectralPointSupport rho.1) (target rho)
+  obtain ⟨F, hF⟩ :=
+    exists_deningerCompactOpenPolynomial_finiteXiJets
+      S localTarget
+  refine ⟨F, ?_⟩
+  intro rho k
+  rw [hF rho k k.isLt]
+  exact deningerLocalJetPolynomial_iterateDerivative_eval
+    (xiSpectralPointSupport rho.1) (target rho) k.isLt
 
 end
 

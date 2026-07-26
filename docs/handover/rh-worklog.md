@@ -5173,3 +5173,68 @@ iff XiC is in LP iff RH, so the content is entirely in CONSTRUCTING one. The cor
 Gaussian heat-trace, theta, and Jensen/Turan machinery (XiGaussianHeatTuranDefect,
 ThetaCuspFullReflectionFourthTuran). START BY AUDITING WHAT REAL-ROOTED APPROXIMANT FAMILIES THE
 CORPUS ALREADY CONTAINS and whether any is unconditional.
+
+---
+
+## Cycle 88 (2026-07-26) — PIVOT OFF THE EXPLICIT FORMULA. THE ZERO-TRANSFER CRITERION LOCALIZES.
+
+### Phase 1 audit of the second frontier (record what exists — do not rebuild)
+* `LocallyUniformZeroTransfer.lean` — the connector: entire approximants with ALL zeros real,
+  converging locally uniformly to XiC, prove RH. Contains the Hurwitz existence step
+  `eventually_exists_zero_closedBall_of_tendstoLocallyUniformly` and the closed-locus transfer.
+* `CCMRadicalQuotientHermitian.lean` — a Hermitian characteristic-polynomial version of the same.
+* `PrimeIsingTreeBalancedVarianceRankNoGo.lean` — UNCONDITIONAL NO-GO for balanced finite prime Ising
+  trees: every Fortuin-Kasteleyn configuration carries at least (log 2)^2 of cluster-square mass per
+  vertex. DO NOT RE-ATTEMPT THAT FAMILY.
+* `BohrAlmostPeriodic.lean` (HTGeometry) — almost-periodicity infrastructure already present.
+So the CONNECTORS ARE DONE and the content is entirely in CONSTRUCTING an unconditional family.
+By Laguerre-Polya, a global real-rooted family exists iff RH, so the global criterion is a
+zero-transfer consumer — as the SOTA file itself says.
+
+### THE WEAKENING
+Hurwitz's mechanism is a statement about ONE BALL: if the limit vanishes at z, the approximants must
+eventually vanish near z. CONTRAPOSITIVELY, a family that is zero-free on a SINGLE CLOSED BALL forces
+the limit to be nonzero at its centre — and NOTHING is required of its zeros anywhere else.
+
+    ==> TO PROVE RH IT SUFFICES TO PRODUCE, FOR EACH OFF-CRITICAL POINT SEPARATELY, A SEQUENCE OF
+        ENTIRE FUNCTIONS CONVERGING LOCALLY UNIFORMLY TO XiC AND ZERO-FREE ON SOME BALL AROUND THAT
+        POINT. THE SEQUENCES MAY DIFFER FROM POINT TO POINT AND NEED NOT BE REAL-ROOTED ANYWHERE.
+
+Strictly weaker than the global criterion: a real-rooted family is zero-free on every ball centred
+off the real axis (formalised as `pointwise_from_real_rooted`, radius |Im z|/2), but a family
+zero-free near ONE point need not be real-rooted at all. This converts ONE GLOBAL CONSTRUCTION into
+A FAMILY OF INDEPENDENT LOCAL ONES, each free to use whatever structure is available near its own
+point — Euler product near Re s = 1, Hadamard/Jensen data at moderate height, heat-flow at large
+height, etc. Those tools are individually available; what was never available was one tool that works
+everywhere at once. THE LOCALIZATION REMOVES THAT REQUIREMENT.
+
+Machine-verified: `RHTower/LocalizedZeroFreeTransfer.lean`
+  * `ne_zero_of_eventually_zeroFree_closedBall` — the local transfer, from the corpus Hurwitz step;
+  * `riemannHypothesis_of_pointwise_zeroFree_approximants` — the localized RH criterion;
+  * `pointwise_from_real_rooted` — the global criterion implies the local one, so nothing is lost.
+Standard axioms only, wired into RHTower.
+
+### TWENTY-SECOND ATLAS ENTRY
+    localized zero transfer   RH follows from per-point approximating families that are zero-free on
+                              one ball each; global real-rootedness is unnecessary. Strictly weaker
+                              than the corpus connector, and it implies it.
+
+This is the first entry that WEAKENS A HYPOTHESIS rather than recording an obstruction. It does not
+prove RH, but it changes what has to be built.
+
+### STATE AT CYCLE 88
+Twenty-two entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 89 target
+Use the localization. Fix an off-critical point z with |Im z| = h. The required object is a sequence
+of entire functions -> XiC, locally uniformly, zero-free on a ball of radius R about z. NATURAL
+CANDIDATE: the de Bruijn-Newman flow H_t, which is real-rooted for t >= Lambda and tends to XiC as
+t -> 0. Globally this needs Lambda <= 0. BUT LOCALLY IT MAY NOT: H_t is real-rooted for t >= Lambda,
+and Lambda <= 0.22 unconditionally (Polymath15), so H_t is zero-free on EVERY ball centred at height
+|Im z| > 0 for t >= 0.22 — the question is whether zero-freeness on a FIXED ball persists as t
+decreases to 0, which is a LOCAL statement about the zero flow, not about the extinction time.
+CONCRETELY: the zeros move under z' = 2 sum 1/(z_j - z_k); a zero can only enter the ball B(z,R) by
+travelling. BOUND THE SPEED. If the imaginary part of every zero satisfies |d(Im z_j)/dt| <= C
+uniformly on t in [0, 0.22], then no zero can reach height h from height 0 in time 0.22 provided
+h > 0.22 C, giving an UNCONDITIONAL ZERO-FREE REGION ABOVE HEIGHT 0.22 C — and, by the localization,
+RH for all zeros of imaginary part above that. THE ENTIRE QUESTION IS THE SPEED BOUND.

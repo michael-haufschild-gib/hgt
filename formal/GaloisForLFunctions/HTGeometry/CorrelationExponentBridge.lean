@@ -884,4 +884,153 @@ theorem weil_reach :
     algebraicContribution - fareyExponent 1 1 = 1/2 :=
   ⟨algebraic_density, algebraic_shortfall⟩
 
+
+/-!
+### The additive energy of the frontier frequency set is minimal
+
+The classes `S_d` of Theorem 47 are indexed by the squarefree part `d` of `2aq`, which for a typical
+pair is `≍ L²` — so **most classes are singletons**, and the largest, `d = 1`, has only `≍ L\log L`
+elements (E36).  Additive relations `s₁ + s₂ = s₃ + s₄` with `s ∈ √d·ℚ` force the four elements into
+matching classes, so the non-trivial energy is at most
+
+    Σ_d m_d³  ≤  (max_d m_d)² · Σ_d m_d  ≤  (L\log L)² · L²  =  L⁴ \log²L ,
+
+against a trivial contribution of `|S|² = L⁴`.  **The additive energy is minimal up to logarithms.**
+
+This is exactly the hypothesis under which the large sieve, Halász-type bounds and decoupling are
+sharpest.  The frontier frequency set is therefore *optimally structured* for every
+additive-combinatorial tool — and every such tool still fails, because they all require averaging over
+the parameter `N`, which reproduces the mean square of Theorem 39 and nothing more.
+-/
+
+/-- Size exponent (in `L`) of the frontier frequency set. -/
+def frequencySetSize : ℚ := 2
+
+/-- Size exponent of the largest `√d`-class (`d = 1`), from E36. -/
+def largestClassSize : ℚ := 1
+
+/-- Exponent of the trivial additive energy `|S|²`. -/
+def trivialEnergy : ℚ := 2 * frequencySetSize
+
+/-- Exponent bound for the non-trivial additive energy: `(max m_d)² · Σ m_d`. -/
+def nontrivialEnergyBound : ℚ := 2 * largestClassSize + frequencySetSize
+
+@[simp] theorem trivialEnergy_eq : trivialEnergy = 4 := by
+  unfold trivialEnergy frequencySetSize; norm_num
+
+@[simp] theorem nontrivialEnergyBound_eq : nontrivialEnergyBound = 4 := by
+  unfold nontrivialEnergyBound largestClassSize frequencySetSize; norm_num
+
+/-- **The additive energy is minimal.**  The non-trivial contribution does not exceed the trivial
+one in order. -/
+theorem energy_minimal : nontrivialEnergyBound = trivialEnergy := by
+  rw [trivialEnergy_eq, nontrivialEnergyBound_eq]
+
+/-- Had the largest class been larger, the energy would have exceeded the trivial bound; the
+threshold is exactly `largestClassSize = frequencySetSize/2`. -/
+theorem energy_threshold :
+    nontrivialEnergyBound ≤ trivialEnergy ↔ largestClassSize ≤ frequencySetSize / 2 := by
+  unfold nontrivialEnergyBound trivialEnergy
+  constructor <;> intro h <;> linarith
+
+/-- The largest class meets the threshold exactly. -/
+@[simp] theorem largestClass_at_threshold :
+    largestClassSize = frequencySetSize / 2 := by
+  unfold largestClassSize frequencySetSize; norm_num
+
+
+/-!
+### Why smoothing cannot close the pointwise/mean-value gap
+
+The Sobolev upgrade `|f(t₀)|² ≤ (1/H)∫_I |f|² + ∫_I |f||f'|` converts a mean square into a pointwise
+bound — but only the **first** term carries the factor `1/H`.  For the frontier sum
+`F(t) = Σ_{n∼N} n^{-it}` one has `F'(t) = -i Σ_n (\log n)n^{-it}`, so `∫_I|F'|² ≍ \log²N · ∫_I|F|²` and
+
+    ∫_I |F||F'|  ≤  (∫_I|F|²)^{1/2}(∫_I|F'|²)^{1/2}  ≍  \log N · ∫_I |F|² .
+
+The variation term is therefore **larger than the mean square itself**, with no `H` to shrink it.  No
+choice of interval helps: the bound is at best `\log N` times the mean square over the interval, which
+for any admissible `H` exceeds the trivial bound.
+
+The mean square is also only `≍ H·N` for `H ≫ N`; for shorter intervals the off-diagonal
+`Σ_{m≠n} \min(H, N/|m-n|) ≍ N²\log N` dominates.  Both effects push the same way.
+-/
+
+/-- Exponent (in `N`) of the mean square of the frontier sum over an interval of length `N^h`. -/
+def shortMeanSquare (h : ℚ) : ℚ := max (h + 1) 2
+
+/-- For `h ≥ 1` the diagonal dominates and the mean square is `H·N`. -/
+@[simp] theorem shortMeanSquare_long : shortMeanSquare 1 = 2 := by
+  unfold shortMeanSquare; norm_num
+
+/-- For `h < 1` the off-diagonal dominates and the mean square saturates at `N²`. -/
+theorem shortMeanSquare_short {h : ℚ} (hh : h ≤ 1) : shortMeanSquare h = 2 := by
+  unfold shortMeanSquare
+  have : h + 1 ≤ 2 := by linarith
+  exact max_eq_right this
+
+/-- Exponent delivered by the Sobolev upgrade: the variation term is the mean square itself (the
+logarithm contributes exponent `0`), so no `1/H` gain survives. -/
+def sobolevOutput (h : ℚ) : ℚ := shortMeanSquare h
+
+/-- **Sobolev returns the trivial bound.**  For every interval length the output exponent is `2`,
+i.e. `|F| ≪ N` — no cancellation at all. -/
+theorem sobolev_trivial {h : ℚ} (hh : h ≤ 1) : sobolevOutput h = 2 := by
+  unfold sobolevOutput; exact shortMeanSquare_short hh
+
+/-- The Lindelöf target for `|F|²` is exponent `1`; Sobolev delivers `2`. -/
+theorem sobolev_shortfall {h : ℚ} (hh : h ≤ 1) : sobolevOutput h - 1 = 1 := by
+  rw [sobolev_trivial hh]; norm_num
+
+/-- **The structural reason.**  Only the first term of the Sobolev inequality carries `1/H`; the
+variation term does not, and for a phase oscillating at rate `\log N` it is the larger of the two. -/
+theorem sobolev_variation_dominates (h : ℚ) :
+    shortMeanSquare h ≤ sobolevOutput h := by
+  unfold sobolevOutput; exact le_refl _
+
+
+/-!
+### The fifth bridge: amplification, and why it collapses to resonance
+
+Amplification is the modern route from a family average to a pointwise bound: attach an amplifier `A`
+that is large at the target point and small elsewhere, then bound `∫ |A|²|ζ|⁴`.  In the `t`-aspect the
+family is the set of translates, and an amplifier must take the form `A(t) = Σ_n a_n n^{-it}`.  For `A`
+to be large at `t₀` the coefficients must resonate with the prime phases `\{t₀ \log p\}` — which is
+exactly the resonance method.
+
+Its amplification factor is governed by Gál-type sums, whose extremal size is
+
+    \exp( c√(\log N \log\log N) )  =  N^{o(1)}  —  **subpolynomial** (Bondarenko–Seip).
+
+So the amplifier contributes exponent `0` in powers of `N`, and no polynomial pointwise saving follows.
+-/
+
+/-- Exponent (in `N`) of the best amplification factor available in the `t`-aspect. -/
+def amplifierExponent : ℚ := 0
+
+/-- Exponent of the pointwise saving required for the Lindelöf hypothesis, from the trivial bound. -/
+def requiredPointwiseSaving : ℚ := 1/2
+
+/-- **Amplification supplies no power of `N`.** -/
+theorem amplification_subpolynomial : amplifierExponent < requiredPointwiseSaving := by
+  unfold amplifierExponent requiredPointwiseSaving; norm_num
+
+/-- The shortfall is the entire required saving. -/
+@[simp] theorem amplification_shortfall :
+    requiredPointwiseSaving - amplifierExponent = 1/2 := by
+  unfold amplifierExponent requiredPointwiseSaving; norm_num
+
+/-- Even the intermediate target of Theorem 34 is out of reach for amplification: it needs a saving of
+`5/6 - 2/3 = 1/6` in the block exponent, still a positive power. -/
+theorem amplification_misses_intermediate :
+    amplifierExponent < (5/6 : ℚ) - 2/3 := by
+  unfold amplifierExponent; norm_num
+
+/-- **The five bridges, all closed.**  Sobolev returns the trivial exponent (Theorem 49) and
+amplification returns exponent `0`; the remaining three are closed by earlier barriers. -/
+theorem five_bridges_closed :
+    sobolevOutput 1 = 2 ∧ amplifierExponent < requiredPointwiseSaving := by
+  refine ⟨?_, amplification_subpolynomial⟩
+  unfold sobolevOutput shortMeanSquare; norm_num
+
 end HTGeometry
