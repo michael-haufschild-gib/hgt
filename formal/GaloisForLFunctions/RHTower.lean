@@ -2777,6 +2777,7 @@ import GaloisForLFunctions.RHTower.XiThetaExplicitBounds
 import GaloisForLFunctions.RHTower.XiCentralDiscBound
 import GaloisForLFunctions.RHTower.XiWardSpectralBudgetSumRule
 import GaloisForLFunctions.RHTower.XiWardCriticalBudgetProbe
+import GaloisForLFunctions.RHTower.XiWardDiagonalQuantumHeightCapUniversalityLaw
 import GaloisForLFunctions.RHTower.ThetaCuspCofinalWardConvexity
 import GaloisForLFunctions.RHTower.XiWeilResolventGram
 import GaloisForLFunctions.RHTower.XiWeilCriterionConverse
@@ -2923,3 +2924,4 @@ import GaloisForLFunctions.RHTower.LocalizedZeroFreeTransfer
 import GaloisForLFunctions.RHTower.LocalizationScopeAndGuardrail
 import GaloisForLFunctions.RHTower.AsymptoticSelfAdjointness
 import GaloisForLFunctions.RHTower.CompressionCannotSelfAdjointify
+import GaloisForLFunctions.RHTower.SimilitudeSpectralLocus

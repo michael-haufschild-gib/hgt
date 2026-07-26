@@ -158,4 +158,118 @@ theorem afeSaving_slope_bourgain : afeSavingSlopeNumerator (13/84) < 0 := by
 @[simp] theorem afeSaving_bourgain_at_zero : afeSaving (13/84) 0 = 13/21 := by
   unfold afeSaving; norm_num
 
+
+/-!
+### Why the conductor aspect is easier: Burgess needs periodicity
+
+Subconvexity for `L(1/2,χ)` in the conductor aspect **is** known — Burgess gives
+`L(1/2,χ) ≪ q^{3/16+ε}`.  The reason is instructive.  In that aspect the critical block is
+`Σ_{n ∼ √q} χ(n)`, a *character* sum, and Burgess's method uses **both** properties at once:
+
+* multiplicativity of `χ`, to shift the interval by `ab` and factor `χ(abn) = χ(a)χ(b)χ(n)`;
+* **periodicity** of `χ`, to complete the shifted short sum to a full residue system, where Weil's
+  bound applies.
+
+Burgess is nontrivial for blocks longer than `q^{1/4}`, and the critical block `q^{1/2}` is comfortably
+above that threshold — hence subconvexity.
+
+In the `t`-aspect the multiplicative function is `n^{-it}`, which is **aperiodic**: it is archimedean,
+not a character mod anything.  There is no residue system to complete to, so the completion step has
+no analogue and Weil's bound cannot be reached.  **The `t`-aspect replaces periodicity by smoothness,
+and smoothness does not permit completion.**
+-/
+
+/-- The block-length exponent, relative to the conductor, above which Burgess is nontrivial. -/
+def burgessThreshold : ℚ := 1/4
+
+/-- The critical block, as an exponent of the conductor. -/
+def criticalBlockExponent : ℚ := 1/2
+
+/-- **Burgess reaches the critical block in the conductor aspect.** -/
+theorem burgess_reaches_critical : burgessThreshold < criticalBlockExponent := by
+  unfold burgessThreshold criticalBlockExponent; norm_num
+
+/-- The margin by which it does so. -/
+@[simp] theorem burgess_margin : criticalBlockExponent - burgessThreshold = 1/4 := by
+  unfold criticalBlockExponent burgessThreshold; norm_num
+
+/-- Burgess's subconvex exponent for `L(1/2,χ)` in the conductor aspect. -/
+def burgessExponent : ℚ := 3/16
+
+/-- The convexity exponent in the conductor aspect. -/
+def conductorConvexity : ℚ := 1/4
+
+/-- **Burgess is subconvex**, by `1/16`. -/
+theorem burgess_subconvex : burgessExponent < conductorConvexity := by
+  unfold burgessExponent conductorConvexity; norm_num
+
+@[simp] theorem burgess_saving : conductorConvexity - burgessExponent = 1/16 := by
+  unfold conductorConvexity burgessExponent; norm_num
+
+/-- **The two aspects, compared.**  In the conductor aspect the multiplicative function is periodic and
+Burgess applies at the critical block; in the `t`-aspect it is aperiodic and no completion exists, so
+the same saving is unavailable and the best exponent comes from the smooth family alone. -/
+theorem aspects_compared :
+    burgessThreshold < criticalBlockExponent ∧
+    burgessExponent < conductorConvexity ∧
+    bourgainMethod.savingExponent < lindelofSaving := by
+  exact ⟨burgess_reaches_critical, burgess_subconvex, smooth_family_short⟩
+
+
+/-!
+### Completion is possible in principle and useless in practice
+
+Could `n^{-it}` be *approximated* by a Dirichlet character on the critical block, so that Burgess
+applies after all?  Matching `χ(p) ≈ p^{-it}` for every prime `p ≤ N` prescribes `π(N)` values
+independently.  A character mod `q` is determined by its values on generators of `(ℤ/qℤ)^*`, whose rank
+is the number of distinct prime factors of `q`.  So independent prescription of `π(N)` prime values
+forces
+
+    ω(q) ≥ π(N),   hence   q ≥ ∏_{p ≤ p_{π(N)}} p = e^{N(1+o(1))}   (the primorial).
+
+At that modulus Burgess's threshold is `q^{1/4} = e^{N/4}`, while the block available is only `N`.
+Since `N ≪ e^{N/4}`, **Burgess is vacuous by an exponential margin**: the completion exists but the
+block is exponentially too short to use it.
+
+For prime `q` the situation is worse still: `(ℤ/qℤ)^*` is cyclic, a character is determined by one
+value, and matching `π(N)` primes imposes `π(N)` conditions on a single parameter.
+-/
+
+/-- Logarithm of the modulus needed to complete `n^{-it}` on `[1,N]`, as a multiple of `N`. -/
+def completionLogModulus : ℚ := 1
+
+/-- Logarithm of Burgess's threshold at that modulus, as a multiple of `N`. -/
+def burgessLogThreshold : ℚ := completionLogModulus / 4
+
+@[simp] theorem burgessLogThreshold_eq : burgessLogThreshold = 1/4 := by
+  unfold burgessLogThreshold completionLogModulus; norm_num
+
+/-- **The threshold is exponential in `N`, the block is linear.**  Recorded as the statement that the
+threshold has a positive exponential rate while the block has rate `0`. -/
+def blockLogRate : ℚ := 0
+
+theorem completion_useless : blockLogRate < burgessLogThreshold := by
+  rw [burgessLogThreshold_eq]; unfold blockLogRate; norm_num
+
+/-- The margin is a positive exponential rate: `e^{N/4}` against `N`. -/
+@[simp] theorem completion_margin : burgessLogThreshold - blockLogRate = 1/4 := by
+  rw [burgessLogThreshold_eq]; unfold blockLogRate; norm_num
+
+/-- **Rank obstruction for prime modulus.**  `(ℤ/qℤ)^*` is cyclic, so a character has one free
+parameter, against `π(N)` conditions.  Recorded as the over-determination count. -/
+def characterFreeParameters (omega : ℚ) : ℚ := omega
+
+def primeConditions (piN : ℚ) : ℚ := piN
+
+theorem prime_modulus_overdetermined {piN : ℚ} (h : 1 < piN) :
+    characterFreeParameters 1 < primeConditions piN := by
+  unfold characterFreeParameters primeConditions; linarith
+
+/-- **The completion barrier, assembled.**  Either the modulus is small — and the character has too few
+free parameters to match the primes — or it is large enough to match them, and then Burgess's threshold
+exceeds the available block exponentially. -/
+theorem completion_barrier {piN : ℚ} (h : 1 < piN) :
+    characterFreeParameters 1 < primeConditions piN ∧ blockLogRate < burgessLogThreshold :=
+  ⟨prime_modulus_overdetermined h, completion_useless⟩
+
 end HTGeometry

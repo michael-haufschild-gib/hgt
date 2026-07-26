@@ -219,8 +219,11 @@ instance instSMul :
       have hmem : -x + y ∈ S :=
         QuotientAddGroup.leftRel_apply.mp hrel
       change -(c • x) + c • y ∈ S
-      rw [← smul_neg, ← smul_add]
-      exact S.smul_mem c hmem
+      have hneg : c • (-x) = -(c • x) :=
+        @smul_neg ℂ DeningerCompactOpenEntire _ _ c x
+      have hscaled := S.smul_mem c hmem
+      rw [smul_add, hneg] at hscaled
+      exact hscaled
 
 /-- Canonical quotient map. -/
 def mk (F : DeningerCompactOpenEntire) :
@@ -267,6 +270,52 @@ def mkL :
   map_add' := mk_add S
   map_smul' := mk_smul S
   cont := continuous_quot_mk
+
+/--
+A continuous complex-linear source map preserving `S` descends continuously to the compact-open
+quotient.
+-/
+def mapL
+    (f : DeningerCompactOpenEntire →L[ℂ]
+      DeningerCompactOpenEntire)
+    (hf : ∀ {F}, F ∈ S → f F ∈ S) :
+    DeningerCompactOpenQuotient S →L[ℂ]
+      DeningerCompactOpenQuotient S where
+  toFun :=
+    Quotient.map' f fun x y hxy => by
+      have hrel :
+          QuotientAddGroup.leftRel S.toAddSubgroup x y :=
+        hxy
+      apply QuotientAddGroup.leftRel_apply.mpr
+      have hmem : -x + y ∈ S :=
+        QuotientAddGroup.leftRel_apply.mp hrel
+      change -f x + f y ∈ S
+      have himg : f (-x + y) ∈ S :=
+        hf hmem
+      have hneg : f (-x) = -f x := by
+        apply eq_neg_of_add_eq_zero_left
+        rw [← f.map_add, neg_add_cancel, f.map_zero]
+      have heq : f (-x + y) = -f x + f y := by
+        rw [f.map_add, hneg]
+      rw [heq] at himg
+      exact himg
+  map_add' := by
+    rintro ⟨x⟩ ⟨y⟩
+    rfl
+  map_smul' := by
+    rintro c ⟨x⟩
+    exact congrArg (mk S) (f.map_smul c x)
+  cont :=
+    continuous_quot_lift _ (continuous_quot_mk.comp f.continuous)
+
+@[simp]
+theorem mapL_mk
+    (f : DeningerCompactOpenEntire →L[ℂ]
+      DeningerCompactOpenEntire)
+    (hf : ∀ {F}, F ∈ S → f F ∈ S)
+    (F : DeningerCompactOpenEntire) :
+    mapL S f hf (mk S F) = mk S (f F) :=
+  rfl
 
 end DeningerCompactOpenQuotient
 

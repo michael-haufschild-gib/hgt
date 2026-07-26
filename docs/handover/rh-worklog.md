@@ -5439,3 +5439,73 @@ it produces a pairing that survives the passage to the number-field setting — 
 the corpus contains any construction of a Frobenius-like operator whose self-adjointness comes from a
 duality rather than from an assumption. That is the only lane in which self-adjointness has ever been
 obtained a priori, and per entries 24-25 that is precisely what is required.
+
+---
+
+## Cycle 92 (2026-07-26) — THE SECOND A PRIORI SOURCE: SIMILITUDE OF A DEFINITE PAIRING
+
+### Phase 1 audit of the geometric lane — the honest result
+Searched the whole development for etale cohomology, Frobenius actions, Poincare duality, hard
+Lefschetz, function-field L-functions. NONE OF IT IS PRESENT. The theorem-area name
+`GaloisForLFunctions` is aspirational; the hits are Galois-theoretic and Mahler-type material in the
+U0/Bottcher areas, unrelated. Mathlib does not supply etale cohomology either. THE GEOMETRIC LANE IS
+NOT ACCESSIBLE AS A CONSTRUCTION. Record it; do not open it as a build target.
+
+### What IS accessible: the linear-algebra core of Weil's theorem
+Everything geometric in the function-field proof exists to produce ONE configuration: a
+finite-dimensional space with a pairing that is definite on primitive parts, and an operator that
+scales it. Once that configuration is available the conclusion is two lines:
+
+    F x = lam x,   ||F x||^2 = q ||x||^2   ==>   ||lam||^2 ||x||^2 = q ||x||^2   ==>   ||lam|| = sqrt q.
+
+    ==> A SIMILITUDE OF A DEFINITE PAIRING CONFINES ITS WHOLE SPECTRUM TO A CIRCLE, EXACTLY AS A
+        SELF-ADJOINT OPERATOR CONFINES IT TO A LINE. IT IS A SECOND, INDEPENDENT A PRIORI SOURCE.
+
+In logarithmic coordinates the circle |lam| = sqrt q IS a line, so a similitude source feeds the same
+connectors as a self-adjoint one. This answers the question entries 24-25 left open — "what a priori
+source exists besides self-adjointness?" — with the only other structure known to constrain a
+spectrum without reference to the function whose zeros are being located.
+
+### AND IT RELAXES, LIKE SELF-ADJOINTNESS
+If the pairing is scaled only approximately,  | ||F x||^2 - q ||x||^2 | <= delta ||x||^2, then
+| ||lam||^2 - q | <= delta, hence  | ||lam|| - sqrt q | <= delta / sqrt q. The spectrum CONCENTRATES
+on the circle at rate delta/sqrt q. Combined with entry 24, AN APPROXIMATELY SIMILITUDINOUS FAMILY IS
+AS GOOD AS AN EXACT ONE — which matters because approximate scaling survives truncation and
+regularisation, and exact scaling does not.
+
+Machine-verified: `RHTower/SimilitudeSpectralLocus.lean` (the similitude spectral locus
+||lam||^2 = q, its approximate form |‖lam‖^2 - q| <= delta, the concentration estimate
+| ||lam|| - sqrt q | <= delta/sqrt q via the factorisation m^2 - q = (m - sqrt q)(m + sqrt q), the
+identification of the circle as a line in log coordinates, and exact-as-delta-zero; standard axioms
+only, wired into RHTower).
+
+### TWENTY-SIXTH ATLAS ENTRY
+    similitude locus   an operator scaling a definite pairing by q has all eigenvalues of modulus
+                       sqrt q; approximate scaling by delta gives concentration at rate delta/sqrt q.
+                       This is the second a priori spectral source, and the mechanism that makes the
+                       function-field hypothesis a theorem.
+
+### STATE AT CYCLE 92
+Twenty-six entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME NOW HAS A COMPLETE SPECIFICATION OF WHAT IS MISSING:
+  * both analytic lanes reduce to needing an a priori spectral constraint (entries 17-25);
+  * there are exactly two known such constraints — self-adjointness (line) and similitude of a
+    definite pairing (circle) — and both relax to asymptotic versions (entries 24, 26);
+  * neither is available for zeta without the geometric input that does not exist in this
+    development or in Mathlib.
+WHAT IS MISSING IS NOT A TECHNIQUE. IT IS A DEFINITE PAIRING ON WHICH SOMETHING ATTACHED TO ZETA ACTS
+BY A SCALAR MULTIPLE OR SELF-ADJOINTLY.
+
+### Cycle 93 target
+Ask where a definite pairing attached to zeta could come from, given that the archimedean side is now
+completely understood. Entry 18 gives an exact positive constant: the archimedean margin
+4 - 3 log 2 - pi/2 = 0.34976, uniform in the width (entry 19). A POSITIVE CONSTANT IS A DEFINITE
+FORM. CONJECTURE: the archimedean margin is the definiteness of a pairing — specifically, the
+quadratic form g -> g(0) - T(g) on the positive-definite cone is bounded below by 0.34976 g(0), i.e.
+it is a POSITIVE-DEFINITE FORM ON THE CONE with an explicit lower Gram bound. If that form can be
+completed to an inner product on a space carrying a natural zeta-action, the missing pairing is the
+archimedean one and the constant 0.34976 is its definiteness constant. TEST WHETHER g -> g(0) - T(g)
+EXTENDS TO A POSITIVE-DEFINITE HERMITIAN FORM BEYOND THE CONE — that is a concrete, decidable
+question about an explicit kernel, and it is the first time the programme has had an explicit
+candidate for the missing pairing.
