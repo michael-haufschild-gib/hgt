@@ -1461,3 +1461,27 @@ on `WithTop.ne_top_iff_exists` introduces the `WithTop.some` coercion, which doe
 `Nat.cast` coercion in the order statement, so neither `simp` nor `exact_mod_cast` can close the gap.
 Pushing the inequality through `ENat.monotone_map_iff` instead avoids the case split and the mismatch
 entirely.
+
+#### Assembly step (e): the monomial relation is an algebraic differential equation
+
+`GaloisForLFunctions/HTGeometry/EllipticMonomialRelation.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- **`differentiallyAlgebraic_of_monomial_relation`** — if a *nonzero* coefficient vector `c` makes
+  `(sum_q c_q f^i (f')^j) * f` vanish identically, then `f` is differentially algebraic.
+
+Note the shape of the hypothesis: the relation is multiplied by the value slot `f`.  That is exactly
+what makes it hold at the poles too, where the normal form gives `f = 0` and `deriv f = 0` -- the
+same device the corpus already uses in `weierstrassPRelation` to repair the junk values of `P` at the
+lattice.  Off the poles the sum itself vanishes, so the product does; at a pole the second factor
+does.
+
+The differential polynomial is `(sum_q c_q y_0^i y_1^j) * y_0`.  It is nonzero because the exponent
+vectors `jetKey i j` are distinct, so the coefficient of the monomial attached to any index with
+`c_q != 0` is exactly `c_q`, and because `MvPolynomial (Fin 3) C` is a domain.
+
+With this, every step of the elliptic plan is now formalized as a standalone lemma.  What remains is
+to chain them for a concrete lattice-periodic meromorphic carrier: feed the kernel vector of
+`jetValueMap` through `principalJet_finset_sum` into `nonneg_order_of_principalJet_eq_zero`, conclude
+that the combination is entire and lattice-periodic hence constant, use the value at the regular
+point to see the constant is zero, and apply the theorem above.
