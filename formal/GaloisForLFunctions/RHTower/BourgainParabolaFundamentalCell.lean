@@ -115,6 +115,21 @@ theorem integral_scaledParabola_translatedFundamentalCell_eq
     exact congrArg (fun z : ℂ => ‖z‖ ^ (6 : ℕ)) hphase
   simpa using hyperiod.intervalIntegral_add_eq y₀ 0
 
+/-- Centered form of the fundamental-cell identity. -/
+theorem integral_scaledParabola_centeredFundamentalCell_eq
+    (H : ℕ) (hH : 0 < H) (a : Fin H → ℂ) :
+    (∫ y in (-(H : ℝ) ^ (2 : ℕ) / 2)..
+          ((H : ℝ) ^ (2 : ℕ) / 2),
+      ∫ x in (-(H : ℝ) / 2)..((H : ℝ) / 2),
+        ‖bourgainScaledParabolaExtension H a x y‖ ^ (6 : ℕ)) =
+      ∫ y in (0 : ℝ)..(H : ℝ) ^ (2 : ℕ),
+        ∫ x in (0 : ℝ)..(H : ℝ),
+          ‖bourgainScaledParabolaExtension H a x y‖ ^ (6 : ℕ) := by
+  have htranslate :=
+    integral_scaledParabola_translatedFundamentalCell_eq
+      H hH a (-(H : ℝ) / 2) (-((H : ℝ) ^ (2 : ℕ)) / 2)
+  convert htranslate using 1 <;> ring
+
 /-- Unconditional discrete planar `L⁶` estimate on the sharp physical
 fundamental cell of volume `H³`. -/
 theorem integral_scaledParabola_fundamentalCell_subpower

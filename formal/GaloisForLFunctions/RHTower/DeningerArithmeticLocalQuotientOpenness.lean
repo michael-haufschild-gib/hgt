@@ -25,8 +25,11 @@ def deningerArithmeticFiniteJetRestriction
     DeningerArithmeticJetProduct →L[ℂ]
       DeningerArithmeticFiniteJetValues S :=
   ContinuousLinearMap.pi fun idx =>
-    (ContinuousLinearMap.proj idx.2).comp
-      (ContinuousLinearMap.proj idx.1.1)
+    (ContinuousLinearMap.proj idx.2 :
+        (DeningerArithmeticJetIndex idx.1.1 → ℂ) →L[ℂ] ℂ).comp
+      (ContinuousLinearMap.proj idx.1.1 :
+        DeningerArithmeticJetProduct →L[ℂ]
+          (DeningerArithmeticJetIndex idx.1.1 → ℂ))
 
 @[simp]
 theorem deningerArithmeticFiniteJetRestriction_apply
@@ -85,9 +88,14 @@ theorem deningerCompactOpenH1AllJets_local_zero_control
   have hW :
       W ∈
         𝓝 (0 : DeningerArithmeticFiniteJetValues S) := by
+    have htarget :
+        A ∈
+          𝓝 (deningerCompactOpenFiniteJetSection S
+            (0 : DeningerArithmeticFiniteJetValues S)) := by
+      simpa only [map_zero] using hA
     have hpre :=
       (deningerCompactOpenFiniteJetSection S).continuous.continuousAt
-        |>.preimage_mem_nhds hA
+        |>.preimage_mem_nhds htarget
     simpa only [map_zero, W] using hpre
   refine ⟨n, W, hW, ?_⟩
   intro F hFW
@@ -100,7 +108,7 @@ theorem deningerCompactOpenH1AllJets_local_zero_control
     exact hFW
   let Q : ℕ → DeningerCompactOpenEntire :=
     fun j =>
-      deningerLocalXiQuotientTaylorApprox
+      deningerCompactOpenLocalXiQuotientTaylorApprox
         (F - P) (n + 1) j
   let G : ℕ → DeningerCompactOpenEntire :=
     fun j => (F - P) - deningerCompactOpenXiMul (Q j)
@@ -130,9 +138,16 @@ theorem deningerCompactOpenH1AllJets_local_zero_control
   have hGclass :
       deningerArithmeticCompactOpenH1Class (G j) =
         deningerArithmeticCompactOpenH1Class (F - P) := by
-    rw [show G j =
-      (F - P) - deningerCompactOpenXiMul (Q j) by rfl,
-      map_sub, hCoboundary, sub_zero]
+    calc
+      deningerArithmeticCompactOpenH1Class (G j) =
+          deningerArithmeticCompactOpenH1Class (F - P) -
+            deningerArithmeticCompactOpenH1Class
+              (deningerCompactOpenXiMul (Q j)) := by
+        exact
+          deningerArithmeticCompactOpenH1Class.map_sub
+            (F - P) (deningerCompactOpenXiMul (Q j))
+      _ = deningerArithmeticCompactOpenH1Class (F - P) := by
+        rw [hCoboundary, sub_zero]
   apply hVV
   rw [Set.mem_add]
   refine
@@ -152,8 +167,21 @@ theorem isInducing_deningerCompactOpenH1AllJets :
           DeningerArithmeticJetProduct) := by
   rw [IsTopologicalAddGroup.isInducing_iff_nhds_zero]
   apply le_antisymm
-  · exact
-      deningerCompactOpenH1AllJets.continuous.continuousAt.le_comap
+  · have hcont :
+        Tendsto
+          (deningerCompactOpenH1AllJets :
+            DeningerArithmeticCompactOpenH1 →
+              DeningerArithmeticJetProduct)
+          (𝓝 0) (𝓝 0) := by
+      rw [← deningerCompactOpenH1AllJets.map_zero]
+      exact
+        (deningerCompactOpenH1AllJets.continuous.continuousAt :
+          ContinuousAt
+            (deningerCompactOpenH1AllJets :
+              DeningerArithmeticCompactOpenH1 →
+                DeningerArithmeticJetProduct)
+            0)
+    exact hcont.le_comap
   · intro U hU
     rw [Filter.mem_comap]
     obtain ⟨n, W, hW, hcontrol⟩ :=
@@ -162,9 +190,14 @@ theorem isInducing_deningerCompactOpenH1AllJets :
     let B : Set DeningerArithmeticJetProduct :=
       deningerArithmeticFiniteJetRestriction S ⁻¹' W
     have hB : B ∈ 𝓝 (0 : DeningerArithmeticJetProduct) := by
+      have htarget :
+          W ∈
+            𝓝 (deningerArithmeticFiniteJetRestriction S
+              (0 : DeningerArithmeticJetProduct)) := by
+        simpa only [map_zero] using hW
       have hpre :=
         (deningerArithmeticFiniteJetRestriction S).continuous.continuousAt
-          |>.preimage_mem_nhds hW
+          |>.preimage_mem_nhds htarget
       simpa only [map_zero, B] using hpre
     refine ⟨B, hB, ?_⟩
     intro x hx

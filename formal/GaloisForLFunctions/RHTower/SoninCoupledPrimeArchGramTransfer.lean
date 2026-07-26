@@ -2100,15 +2100,14 @@ private def soninCoupledPrimeArchRatioData
     div_pos normalizedPrimeArchMoment_zero_pos (hpos N j)⟩,
     aperture N j)
 
-/-- **Scale-eliminated coupled Sonin chain to RH.**  Strictly positive source energy and
-convergence of the normalized coupled moment ratios are enough; no external scale sequence and no
-degree-zero convergence hypothesis remain. -/
-theorem riemannHypothesis_of_soninCoupledPrimeArchMomentRatioCoupling
+/-- Canonical zeroth-moment normalization turns a moment-ratio coupling into an explicit
+projectively scaled finite-moment coupling. -/
+theorem exists_soninCoupledPrimeArchProjectiveFiniteMomentCoupling_of_momentRatioCoupling
     {aperture : ℕ → ℕ → SoninPositiveAperture}
     (h : SoninCoupledPrimeArchMomentRatioCoupling aperture) :
-    RiemannHypothesis := by
-  apply riemannHypothesis_of_soninCoupledPrimeArchProjectiveFiniteMomentCoupling
-    (data := soninCoupledPrimeArchRatioData aperture h.1)
+    ∃ data : ℕ → ℕ → SoninPositiveScale × SoninPositiveAperture,
+      SoninCoupledPrimeArchProjectiveFiniteMomentCoupling data := by
+  refine ⟨soninCoupledPrimeArchRatioData aperture h.1, ?_⟩
   intro N k hk
   by_cases hk0 : k = 0
   · subst k
@@ -2179,6 +2178,17 @@ theorem riemannHypothesis_of_soninCoupledPrimeArchMomentRatioCoupling
       rw [hscale]
       field_simp [hs0ne]
     · field_simp [ne_of_gt normalizedPrimeArchMoment_zero_pos]
+
+/-- **Scale-eliminated coupled Sonin chain to RH.**  Strictly positive source energy and
+convergence of the normalized coupled moment ratios are enough; no external scale sequence and no
+degree-zero convergence hypothesis remain. -/
+theorem riemannHypothesis_of_soninCoupledPrimeArchMomentRatioCoupling
+    {aperture : ℕ → ℕ → SoninPositiveAperture}
+    (h : SoninCoupledPrimeArchMomentRatioCoupling aperture) :
+    RiemannHypothesis := by
+  obtain ⟨data, hdata⟩ :=
+    exists_soninCoupledPrimeArchProjectiveFiniteMomentCoupling_of_momentRatioCoupling h
+  exact riemannHypothesis_of_soninCoupledPrimeArchProjectiveFiniteMomentCoupling hdata
 
 /-- **Coupled Sonin finite-Gram chain to RH.**  Whole finite-block closure of the fixed
 prime--Gamma Hankel matrix inside the canonical coupled all-prime Sonin Gram family forces RH. -/

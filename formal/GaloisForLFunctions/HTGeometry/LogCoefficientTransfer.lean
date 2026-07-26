@@ -181,4 +181,32 @@ theorem tail_geometric_bound {B : ℕ → ℂ} {M x : ℝ} (hM : 0 ≤ M) (hx : 
       ≤ (M * x) ^ 2 * (1 / (1 - M * x)) := mul_le_mul_of_nonneg_left hgeom (by positivity)
     _ = (M * x) ^ 2 / (1 - M * x) := by ring
 
+/-- **Newton's second identity in exponential form.**  If `A 0 = 1` and the coefficients satisfy the
+logarithmic-derivative recursion `n·Aₙ = ∑_{j<n}(n−j)·B_{n−j}·A_j`, then
+
+```text
+A 1 ^ 2 = 2 * A 2 - 2 * B 2 .
+```
+
+For an Euler factor `F_p(X) = ∑ₖ a_F(p^k) X^k` with `log F_p(X) = ∑ₖ b_F(p^k) X^k` this reads
+`a_F(p)² = 2 a_F(p²) − 2 b_F(p²)`: the **square** of the prime coefficient is a `ℤ`-linear
+combination of coefficients at the prime **square**, one of each kind.  Both are supplied directly by
+the Dirichlet series and its logarithm, so a quadratic expression in the prime coefficients is
+converted into a linear expression in prime-square data.
+
+Checked against `ζ` (`a = 1`, `a(p²) = 1`, `b(p²) = 1/2`: `2 − 1 = 1`) and against a `GL₂` newform of
+trivial nebentypus (`a(p²) = a² − 1`, `b(p²) = (a² − 2)/2`: `2(a²−1) − (a²−2) = a²`). -/
+theorem newton_sq_identity {A B : ℕ → ℂ} (hA0 : A 0 = 1)
+    (hrec : ∀ n : ℕ, 1 ≤ n →
+      (n : ℂ) * A n = ∑ j ∈ Finset.range n, ((n - j : ℕ) : ℂ) * B (n - j) * A j) :
+    A 1 ^ 2 = 2 * A 2 - 2 * B 2 := by
+  have h1 := hrec 1 (le_refl 1)
+  simp [hA0] at h1
+  have h2 := hrec 2 (by norm_num)
+  rw [show Finset.range 2 = {0, 1} from rfl] at h2
+  rw [Finset.sum_insert (by decide), Finset.sum_singleton] at h2
+  norm_num [hA0] at h2
+  rw [h1] at h2 ⊢
+  linear_combination -h2
+
 end HTGeometry

@@ -7279,3 +7279,63 @@ QUANTITY WHOSE SIZE DECIDES THE JUMP. ASK WHETHER THE GAUSSIAN LAW CONSTRAINS TH
 requires S(T) to exceed a threshold, and the Gaussian law gives the measure of the set where that
 happens. IF THAT MEASURE IS SUMMABLE OVER A DYADIC DECOMPOSITION, BOREL-CANTELLI EXCLUDES ALMOST ALL
 HEIGHTS — not all, but a set of full density, which is more than any entry in the atlas achieves.
+
+---
+
+## Cycle 120 (2026-07-26) — THE REFUTATION WITNESS IS A MISSING SIGN CHANGE OF HARDY'S Z
+
+### FALSE PREMISE IN CYCLE 119'S TARGET — recorded before anything else
+I proposed controlling the jump through S(T) using Selberg's unconditional CLT. THE PREMISE IS WRONG:
+S CONTROLS N, THE TOTAL COUNT, NOT N_off. Selberg's law holds equally UNDER the hypothesis, with the
+same variance (1/2) log log T; a large S is entirely compatible with every zero being on the line.
+S IS NOT A WITNESS FOR OFF-LINE ZEROS. Had I not checked, the Borel-Cantelli computation would have
+produced a meaningless bound. DEAD END; do not re-attempt.
+
+### WHAT IS A WITNESS
+N_0 counts SIGN CHANGES of Hardy's Z along the line: each sign change gives a zero there by the
+intermediate value theorem. A jump of N_off is therefore exactly a DEFICIT OF SIGN CHANGES — Z failing
+to change sign as often as the argument principle requires in an interval.
+
+    ==> THE REFUTATION CERTIFICATE IS LOCAL, FINITE AND CONCRETE: AN INTERVAL IN WHICH HARDY'S
+        FUNCTION HAS FEWER SIGN CHANGES THAN THE TOTAL COUNT DEMANDS. LEHMER PAIRS ARE THE OBSERVED
+        NEAR-MISSES OF PRECISELY THIS EVENT — two zeros so close that Z barely returns across the axis
+        between them.
+
+This completes the chain from the abstract classification down to an observed phenomenon:
+    entry 45 — refutation is a finite certificate;
+    entry 53 — it is a first jump of a monotone integer;
+    entry 54 — the jump is a missing sign change of Z, and its near-misses are catalogued (the corpus
+               already carries Lehmer-pair material from the de Bruijn-Newman cycles 33-40).
+
+Machine-verified: `RHTower/MissingSignChangeWitness.lean` (a sign change produces a zero on the line in
+both orientations via the intermediate value theorem, the deficit N_0 < N as the jump, the deficit as
+a refutation of vanishing, the locality of the certificate, and the fact that equality of the counts
+gives no witness — the precise sense in which the total count is not a witness; standard axioms only,
+wired into RHTower).
+
+### FIFTY-FOURTH ATLAS ENTRY
+    sign-change witness   N_0 counts sign changes of Hardy's Z; a jump of N_off = N - N_0 is a deficit
+                          of sign changes in an interval — local, finite, checkable. Lehmer pairs are
+                          the near-misses. Selberg's CLT does NOT bear on this: S controls the total
+                          count, not the off-line count, and holds equally under the hypothesis.
+
+### STATE AT CYCLE 120
+Fifty-four entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+ONE HUNDRED AND TWENTY CYCLES. THE ATLAS IS A CLOSED MAP WITH A SINGLE ROOT CAUSE (entry 52: RH is a
+codimension constraint, every unconditional tool measures area), ONE SURVIVING MECHANISM (entry 53:
+integrality, inherently monotone), AND A CONCRETE REFUTATION WITNESS (entry 54: a missing sign change
+of Z). The verification direction is closed in every lane examined; the refutation direction is fully
+explicit and finite but has never fired.
+
+### Cycle 121 target
+The refutation witness is a missing sign change. Its near-misses — Lehmer pairs — are the ONLY
+observed phenomenon in the whole subject that approaches the witness. THE PROGRAMME'S OWN de
+Bruijn-Newman work (cycles 33-40) established the exact dynamics: under the heat flow H_t, Lehmer
+pairs are pairs about to merge, and Lambda >= 0 (Rodgers-Tao) says such near-collisions MUST occur —
+the zeros are "barely" real. ASK THE SHARP QUESTION: does Lambda >= 0 force the existence of a
+near-miss of ANY prescribed tightness, and if so, is there a tightness threshold beyond which the
+missing sign change is FORCED? If Rodgers-Tao's Lambda >= 0 can be upgraded to a quantitative
+statement about how tight the tightest pair must be, and if that tightness exceeds what a real-rooted
+configuration permits, THE WITNESS FIRES. This is the one place where an unconditional theorem
+(Lambda >= 0) speaks directly to the witness (sign-change deficit).
