@@ -3056,3 +3056,4 @@ import GaloisForLFunctions.RHTower.LevelOneSaddleIsUnique
 import GaloisForLFunctions.RHTower.TailBeatenBySaddle
 import GaloisForLFunctions.RHTower.DecayIsDirectional
 import GaloisForLFunctions.RHTower.DiscInsideHorn
+import GaloisForLFunctions.RHTower.TailIsNegligible

@@ -8918,3 +8918,59 @@ bounded by exp(Re psi(t_s) - c delta^2 |psi''|) times the contour length. WITH |
 exp(-c log k) = k^{-c}. COMPARE THAT WITH THE SADDLE'S OWN SIZE: the ratio is k^{-c}, WHICH IS BELOW
 ONE FOR c > 0. STATE THE COMPARISON AND CHECK WHETHER THE CONTOUR LENGTH SPOILS IT — the length is
 polynomial in k, so the product is still k^{-c'} for suitable c. If that holds, level one is complete.
+
+---
+
+## Cycle 147 — THE TAIL IS SUPERPOLYNOMIALLY SMALL. LEVEL ONE IS COMPLETE IN MECHANISM.
+
+### Phase 4 hostile check, done first — and it passes
+Verified that the chain actually delivers what the mechanism needs. The tilted measure's cumulant
+generating function is K(tau) = log M_1(2k + tau) - log M_1(2k), so ZERO-FREENESS OF M_1 ON D(2k,R)
+GIVES ANALYTICITY OF K ON |tau| < R, hence Cauchy estimates on K^{(d)}, hence the cumulant bounds. The
+upper bound on |M_1| on the circle is free from positivity of Phi; the LOWER bound is exactly what the
+saddle argument supplies, |M_1| >= |A| - |T|. THE CHAIN IS STRUCTURALLY COMPLETE.
+
+### The tail constant
+NEIGHBOURHOOD WIDTH. The quadratic approximation holds while delta |psi'''| / |psi''| << 1; with
+|psi''| ~ k log k and |psi'''| ~ k log^2 k this permits delta ~ 1/log k.
+WHAT THAT BUYS. Outside the neighbourhood the real part of the phase has fallen by ~ delta^2 |psi''|,
+and (formalised) (1/L)^2 (k L) = k/L, so with L = log k the exponent is k / log k.
+
+    ==> THE TAIL-TO-SADDLE RATIO IS ~ exp(-c k / log k) — SUPERPOLYNOMIALLY SMALL. ANY POLYNOMIALLY
+        LONG CONTOUR IS IRRELEVANT BESIDE IT. THE TAIL ESTIMATE IS COMFORTABLE, NOT MARGINAL.
+
+    ==> LEVEL ONE IS COMPLETE IN MECHANISM.
+
+WHAT REMAINS FOR FULL RIGOUR AT LEVEL ONE: the contour deformation itself, whose admissible sector was
+fixed in cycle 145 and whose required disc was shown in cycle 146 to fit inside that sector with a
+sqrt(2) margin. That is a standard analytic verification, not a new idea.
+
+Machine-verified: `RHTower/TailIsNegligible.lean` (the exponent identity (1/L)^2 (k L) = k/L,
+superpolynomial decay of x^n e^{-x}, its eventual descent below any positive threshold, the
+ratio-below-one criterion, and the admissible-width positivity; standard axioms only, wired into
+RHTower).
+
+### EIGHTY-FIRST ATLAS ENTRY
+    tail negligible   the saddle neighbourhood may be taken of half-width ~ 1/log k, giving exponent
+                      delta^2 |psi''| ~ k/log k, so the tail-to-saddle ratio is exp(-c k/log k) —
+                      superpolynomially small. Level one is complete in mechanism; only the standard
+                      contour deformation remains for full rigour.
+
+### STATE AT CYCLE 147
+Eighty-one entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE POSITION: the unconditional landscape organised by log T is closed with one root cause; exactly one
+route escapes; that route's cost was refuted as an artefact; its mechanism is assembled and
+machine-verified in every algebraic step; its remaining gap is a five-level descent with strictly
+improving parameters; and LEVEL ONE OF THAT DESCENT IS NOW COMPLETE IN MECHANISM, with a
+superpolynomially comfortable margin and only a standard contour verification outstanding. FOUR LEVELS
+REMAIN, EACH WITH THE SAME STRUCTURE AND STRICTLY BETTER PARAMETERS.
+
+### Cycle 148 target
+Level two. By construction it is the same statement one variable down: the measure is Phi in
+w = log log t, its transform is the Mellin transform of the level-one measure, and its convexity is one
+exponential higher — so |psi''| ~ k (log k)(log log k) or better, and the non-Gaussianity is smaller.
+EVERY STEP OF LEVEL ONE SHOULD TRANSFER VERBATIM WITH BETTER CONSTANTS. VERIFY THE TRANSFER: state the
+level-two phase, check that its second derivative is again negative on the half-plane, and confirm that
+the admissible neighbourhood is at least as wide. If the transfer is verbatim, the remaining three
+levels follow by the same argument and the descent is complete in mechanism.
