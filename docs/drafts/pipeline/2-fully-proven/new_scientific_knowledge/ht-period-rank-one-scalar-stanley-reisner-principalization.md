@@ -1548,3 +1548,20 @@ umbrella-registered) supplies the last two inputs of the assembly.
 
 Using the unit segment rather than a disc avoids needing an infinitude lemma for balls: the segment is
 the continuous injective image of `Icc 0 1`, hence compact and infinite by construction.
+
+#### Orders are lattice invariants
+
+`GaloisForLFunctions/HTGeometry/EllipticLatticeOrder.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- **`meromorphicOrderAt_sub_latticeCombination`** — for a function periodic under both steps, the
+  meromorphic order is constant along the lattice they generate (via the corpus's
+  `meromorphicOrderAt_add_period` and `Function.Periodic.int_mul`);
+- **`exists_mem_parallelogram_orderEq`** — combined with the covering, every point has a congruent
+  point *inside* the fundamental parallelogram carrying the same order;
+- **`exists_mem_poleFinset_orderEq`** — in particular every pole is congruent to one of the finitely
+  many poles in the parallelogram.
+
+This is what makes the finite pole set `S` sufficient: the argument controls the combination at the
+points of `S`, and the lattice invariance of the order carries that control to *every* pole, without
+any further analysis.
