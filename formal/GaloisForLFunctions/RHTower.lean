@@ -562,6 +562,7 @@ import GaloisForLFunctions.RHTower.BourgainLocalizedCoefficientL2
 import GaloisForLFunctions.RHTower.BourgainBilinearLocalization
 import GaloisForLFunctions.RHTower.BourgainDoubleLargeSieve
 import GaloisForLFunctions.RHTower.BourgainDoubleLargeSieveCloud
+import GaloisForLFunctions.RHTower.BourgainMomentCloudBounds
 import GaloisForLFunctions.RHTower.BourgainFiniteFiberL2
 import GaloisForLFunctions.RHTower.BourgainParabolaFiberArithmetic
 import GaloisForLFunctions.RHTower.BourgainParabolaQuadraticReduction
@@ -2980,3 +2981,4 @@ import GaloisForLFunctions.RHTower.OneInequalitySuffices
 import GaloisForLFunctions.RHTower.ContourCrossingObstruction
 import GaloisForLFunctions.RHTower.IntegralityAndUniformity
 import GaloisForLFunctions.RHTower.ZeroFreeWidthExponent
+import GaloisForLFunctions.RHTower.ExponentChainKappa

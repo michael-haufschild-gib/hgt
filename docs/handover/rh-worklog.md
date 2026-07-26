@@ -7020,3 +7020,68 @@ bound on |zeta| -> Borel-Caratheodory -> zero-free region, and each step has a k
 CONVERSION IS LOSSLESS, THE EXPONENT 1/3 IS FINAL FOR THIS FAMILY AND ONLY A DIFFERENT INPUT CAN
 MOVE IT — which by entry 47 must come from inside the strip. IF IT IS LOSSY, THE LOSS IS AN EXPLICIT
 TARGET.
+
+---
+
+## Cycle 116 (2026-07-26) — THE WIDTH EXPONENT IS 1 - 1/kappa, AND RH SITS AT kappa = INFINITY
+
+### The chain, computed exactly
+Suppose a Vinogradov-Korobov shaped bound |zeta(sigma+it)| << t^{A(1-sigma)^kappa} near the edge of
+the strip. Balancing the saving against the logarithmic detection threshold,
+(1-sigma)^kappa log t ~ log log t, gives 1 - sigma ~ (log log t / log t)^{1/kappa}, so the width in
+MEAN SPACINGS is (1-sigma) log t ~ (log t)^{1 - 1/kappa} (log log t)^{1/kappa}.
+
+    ==> THE UNIT EXPONENT IS EXACTLY  1 - 1/kappa.
+
+CHECKS AGAINST THE LITERATURE, AND BOTH ARE EXACT:
+    kappa = 1     ->  unit exponent 0     — de la Vallee Poussin
+    kappa = 3/2   ->  unit exponent 1/3   — Vinogradov-Korobov (matches cycle 115's count)
+    unit exponent 1 (the hypothesis)      ->  kappa = INFINITY
+
+### THE NO-GO FOR THE WHOLE FAMILY
+Since 1 - 1/kappa < 1 for EVERY finite kappa,
+
+    ==> NO FINITE IMPROVEMENT OF THE SUM-BOUND EXPONENT CAN REACH THE HYPOTHESIS. THE VINOGRADOV
+        FAMILY IS BOUNDED AWAY FROM RH FOR A STRUCTURAL REASON: RH SITS AT THE BOUNDARY kappa =
+        INFINITY, WHICH IS THE STATEMENT THAT |zeta| IS SUBPOLYNOMIAL THROUGHOUT THE STRIP.
+
+The remaining gap at any kappa is exactly 1/kappa, so at Vinogradov-Korobov it is 2/3 — matching
+cycle 115's count from the other direction. A century moved kappa from 1 to 3/2; the target is not a
+larger finite kappa but a different kind of input.
+
+THIS ALSO SETTLES CYCLE 115'S QUESTION about whether the conversion is lossy: THE CONVERSION IS NOT
+THE PROBLEM. Even a lossless conversion at any finite kappa gives unit exponent below one. The
+limitation is in the SHAPE of the input bound, not in its constants or in the machinery that converts
+it.
+
+Machine-verified: `RHTower/ExponentChainKappa.lean` (the unit-exponent function 1 - 1/kappa, its
+values 0 at kappa = 1 and 1/3 at kappa = 3/2, its monotonicity in kappa, its strict bound below one
+for every finite positive kappa, the resulting impossibility of attaining the hypothesis's exponent,
+and the gap formula 1/kappa with its value 2/3 at Vinogradov-Korobov; standard axioms only, wired into
+RHTower).
+
+### FIFTIETH ATLAS ENTRY
+    kappa boundary   the zero-free width in mean spacings has exponent 1 - 1/kappa where kappa is the
+                     exponent in the sum bound t^{A(1-sigma)^kappa}. Classical kappa = 1 gives 0,
+                     Vinogradov-Korobov kappa = 3/2 gives 1/3, and RH is kappa = infinity. No finite
+                     kappa reaches it; the conversion machinery is not the obstruction, the shape of
+                     the input is.
+
+### STATE AT CYCLE 116
+Fifty entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+FIFTY ENTRIES, AND THE ATLAS NOW TERMINATES IN A SINGLE SENTENCE: every unconditional route is
+separated from the zeros either by the critical strip (entry 47) or by the boundary kappa = infinity
+(entry 50), and inside the strip the only data is quadratic (entry 39, refined by entry 48 to: the gap
+is height-uniformity). ALL THREE ARE THE SAME LOGARITHMIC INVARIANT SEEN FROM DIFFERENT SIDES
+(entry 36).
+
+### Cycle 117 target
+kappa = infinity means |zeta| subpolynomial throughout the strip — which is the LINDELOF HYPOTHESIS
+extended off the line. Lindelof is implied by RH and is strictly weaker. SO THE ATLAS'S FINAL
+STATEMENT IS: THE ZERO-FREE-REGION ROUTE REACHES RH ONLY THROUGH LINDELOF-IN-THE-STRIP. TEST WHETHER
+THAT IS CIRCULAR OR A GENUINE REDUCTION: if Lindelof-in-the-strip implies RH, the reduction is real and
+RH becomes a subconvexity problem in the limit; if it merely follows from RH, the route is circular
+like the others. The classical position is that Lindelof does NOT imply RH — but the version needed
+here is uniform IN THE STRIP, not on the line, and that version's status is exactly what must be
+checked.

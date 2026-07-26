@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticLocalTaylorApproximation
+import GaloisForLFunctions.RHTower.DeningerArithmeticFiniteJetSection
 
 /-!
 # Finite jet peeling in compact-open arithmetic cohomology
@@ -101,6 +102,78 @@ theorem exists_deningerCompactOpenFiniteJetPeeling
       _ = 0 := by
         apply sub_eq_zero.mpr
         simpa only [target] using hPk.symm
+
+/--
+Canonical continuous-linear finite jet representative has the same local peeling property.
+
+Unlike the existential version, this representative tends continuously to zero with its finite
+jet packet.
+-/
+theorem deningerCompactOpenFiniteJetRepresentative_peeling
+    (F : DeningerCompactOpenEntire) (n : ℕ) :
+    let S := deningerXiSupportClosedBallFinset (n + 2)
+    let P :=
+      deningerCompactOpenFiniteJetRepresentative S F
+    TendstoLocallyUniformlyOn
+      (fun j z =>
+        (F - P) z -
+          XiC z *
+            deningerLocalXiQuotientTaylorApprox
+              (F - P) (n + 1) j z)
+      (fun _ => 0)
+      atTop (Metric.ball 0 n) := by
+  dsimp only
+  let packet :=
+    deningerXiSupportClosedBallFinset (n + 2)
+  let P :=
+    deningerCompactOpenFiniteJetRepresentative
+      packet F
+  apply
+    deningerLocalXiTaylorCoboundaryError_tendstoLocallyUniformlyOn
+      (F - P)
+      (show (n : NNReal) < n + 1 by
+        exact_mod_cast Nat.lt_succ_self n)
+      (show (n + 1 : NNReal) < n + 2 by
+        exact_mod_cast Nat.lt_succ_self (n + 1))
+  intro rho hrho k
+  have hrhoLe :
+      ‖xiSpectralPointSupport rho‖ ≤ (n + 2 : ℝ) :=
+    le_of_lt (by
+      simpa only [Nat.cast_add, Nat.cast_ofNat,
+        NNReal.coe_natCast] using hrho)
+  have hrhoMem :
+      rho ∈ packet := by
+    change
+      rho ∈
+        deningerXiSupportClosedBallFinset
+          (n + 2)
+    exact
+      (mem_deningerXiSupportClosedBallFinset
+        (n + 2) rho).2 (by simpa using hrhoLe)
+  let idx :
+      DeningerArithmeticFiniteJetCoordinate packet :=
+    ⟨⟨rho, hrhoMem⟩, k⟩
+  have hcoord :=
+    congrFun
+      (deningerCompactOpenFiniteJets_representative
+        packet F) idx
+  change
+    deningerCompactOpenJet
+        (xiSpectralPointSupport rho) k
+        (F - P) = 0
+  calc
+    deningerCompactOpenJet
+        (xiSpectralPointSupport rho) k
+        (F - P) =
+        deningerCompactOpenJet
+            (xiSpectralPointSupport rho) k F -
+          deningerCompactOpenJet
+            (xiSpectralPointSupport rho) k P :=
+      (deningerCompactOpenJet
+        (xiSpectralPointSupport rho) k).map_sub F P
+    _ = 0 := by
+      apply sub_eq_zero.mpr
+      exact hcoord.symm
 
 end
 

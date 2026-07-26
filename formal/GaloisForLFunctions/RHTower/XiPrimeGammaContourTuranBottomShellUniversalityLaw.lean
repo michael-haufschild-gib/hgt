@@ -37,6 +37,7 @@ def xiGaussianMomentPacketTuran (M : Fin 3 → ℂ) : ℝ :=
 
 theorem continuous_xiGaussianMomentPacketTuran :
     Continuous xiGaussianMomentPacketTuran := by
+  unfold xiGaussianMomentPacketTuran
   fun_prop
 
 theorem xiGaussianMomentPacketTuran_heatMomentPacket (t : ℝ) :
@@ -95,7 +96,7 @@ theorem exists_admissible_gaussianSource_contour_approximates_heatMomentPacket
   intro q hq
   rw [mem_xiZeroCopyClosedRectangle]
   apply Complex.mem_reProdIm.mpr
-  rw [uIcc_of_le hre.le, uIcc_of_le him.le]
+  rw [Set.uIcc_of_le hre.le, Set.uIcc_of_le him.le]
   exact ⟨⟨(hpacket q hq).1.le, (hpacket q hq).2.1.le⟩,
     ⟨(hpacket q hq).2.2.1.le, (hpacket q hq).2.2.2.le⟩⟩
 
@@ -124,8 +125,8 @@ theorem exists_primeGammaContourTuran_gt_neg_epsilon_of_rh
       ht hdelta
   refine ⟨z₁, z₂, hre, him, ?_⟩
   apply hball
-  rw [Metric.mem_ball, dist_comm]
-  exact (dist_pi_lt_iff hdelta).2 happrox
+  rw [Metric.mem_ball]
+  exact (dist_pi_lt_iff hdelta).2 (by simpa only [M] using happrox)
 
 /--
 If the bottom squared shell is one off-critical conjugate pair, then all sufficiently late heat
@@ -162,8 +163,8 @@ theorem exists_eventually_negative_primeGammaContourTuran_of_bottom_conjugate_pa
       htpos hdelta
   refine ⟨z₁, z₂, hre, himrect, ?_⟩
   apply hball
-  rw [Metric.mem_ball, dist_comm]
-  exact (dist_pi_lt_iff hdelta).2 happrox
+  rw [Metric.mem_ball]
+  exact (dist_pi_lt_iff hdelta).2 (by simpa only [M] using happrox)
 
 /--
 **Xi prime–Gamma contour Turán bottom-shell universality.**
@@ -172,7 +173,7 @@ One finite arithmetic contour packet is nearly Turán-positive under RH and even
 Turán-negative for a simple off-critical bottom shell.
 -/
 theorem xi_primeGammaContourTuran_bottomShellUniversality :
-    (∀ (hRH : RiemannHypothesis) (t : ℝ), 0 < t →
+    (RiemannHypothesis → ∀ (t : ℝ), 0 < t →
       ∀ epsilon : ℝ, 0 < epsilon →
         ∃ z₁ z₂ : ℂ,
           z₁.re < z₂.re ∧ z₁.im < z₂.im ∧
