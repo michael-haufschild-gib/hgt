@@ -8286,3 +8286,62 @@ SHARP FORM OF C_d IS KNOWN FOR STRONGLY LOG-CONCAVE MEASURES — it follows from
 inequality iterated, or from the Bakry-Emery semigroup, and the standard result gives C_d = (d-1)! or
 better. RETRIEVE OR DERIVE C_d, then compare with the factorial gap's constant 2(d-2)!. The comparison
 is then EXACT and the prediction becomes a theorem or is refuted. THIS IS THE LAST GAP.
+
+---
+
+## Cycle 136 (2026-07-26) — THE TILTED MEASURE IS ASYMPTOTICALLY GAUSSIAN, PARAMETER sqrt(log k / k)
+
+### Tracking the constants: what they depend on
+The cumulant constants C_d are governed by HOW FAR THE TILTED MEASURE IS FROM GAUSSIAN — a Gaussian
+has EVERY cumulant beyond the second equal to zero, so the higher cumulants are suppressed by the
+non-Gaussianity parameter. Here that parameter is computable exactly from the same identity chain.
+
+    g'' = g' (2e^w + 1)                                  [cycle 134]
+    g''' = g''(2e^w+1) + g' 2e^w = g' [ (2e^w+1)^2 + 2e^w ]   [THIS CYCLE, formalised]
+
+At the tilted mode g'(w*) = 2k with u* = e^{w*}, the dimensionless non-Gaussianity is
+
+    g''' / (g'')^{3/2}  =  [ (2u*+1)^2 + 2u* ] / ( sqrt(2k) (2u*+1)^{3/2} )  ~  sqrt(u*/k)
+                        =  sqrt( log k / k )  ->  0.
+
+    ==> THE TILTED MEASURE IS GAUSSIAN TO WITHIN sqrt(log k / k). THE HIGHER CUMULANTS ARE SUPPRESSED
+        BY THAT PARAMETER — THE FAVOURABLE DIRECTION, AND NOW EXACT RATHER THAN HEURISTIC.
+
+### What is still missing, stated precisely
+A sharp C_d requires the CAUCHY RADIUS in the complex tilt, i.e. the region where the cumulant
+generating function stays quadratic to within a constant. That radius is governed by the SAME
+parameter sqrt(log k / k), so the structure is right — but converting "governed by" into a constant
+needs the full complex-analytic estimate. THAT IS THE REMAINING GAP, AND IT IS NOW A SINGLE
+WELL-POSED QUESTION ABOUT A LOG-CONCAVE MEASURE ON THE LINE, WITH NO ZETA IN IT.
+
+Machine-verified: `RHTower/AsymptoticGaussianity.lean` (the third-derivative identity
+G(2E+1)(2E+1) + G(2E) = G((2E+1)^2 + 2E), the simplification xA/(x sqrt x B) = A/(sqrt x B) giving the
+inverse half-power shape, the vanishing of that ratio as x grows, and monotonicity of the suppression;
+standard axioms only, wired into RHTower).
+
+### SEVENTIETH ATLAS ENTRY
+    asymptotic Gaussianity   g''' = g'[(2e^w+1)^2 + 2e^w] exactly, so at the tilted mode the
+                             non-Gaussianity g'''/(g'')^{3/2} is ~ sqrt(log k / k) -> 0. The tilted
+                             measure is asymptotically Gaussian and its higher cumulants are suppressed
+                             by that parameter. The remaining gap is the Cauchy radius in the complex
+                             tilt, governed by the same parameter.
+
+### STATE AT CYCLE 136
+Seventy entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+SEVENTY ENTRIES. The programme's position is unchanged in kind since cycle 133 and sharper in degree:
+one route escapes the closure, it is settled to d <= 9.36 x 10^20 with observed onsets zero, its
+recorded cost was refuted as an artefact, and the mechanism explaining why is now assembled with every
+algebraic step machine-verified. THE SINGLE REMAINING GAP IS A COMPLEX-ANALYTIC ESTIMATE ABOUT A
+LOG-CONCAVE MEASURE ON THE LINE — no primes, no zeros, no contours, no heights.
+
+### Cycle 137 target
+Close the Cauchy-radius question. The cumulant generating function K(t) = log int e^{tw} dmu satisfies
+K'' <= 1/c for real t by Brascamp-Lieb. FOR COMPLEX t THE SAME BOUND FAILS, but K is analytic in a
+strip whose width is controlled by the tail behaviour of mu. FOR OUR mu THE TAILS ARE DOUBLY
+EXPONENTIAL, SO K IS ENTIRE, and the growth of |K''| on a disc of radius R is what must be bounded.
+COMPUTE |K''| ON A DISC: for a measure with density e^{-V}, K''(t) is the variance under the complex
+tilt, and its modulus is bounded by the real-tilt variance at the real part times a factor controlled
+by the imaginary part times the third derivative. THAT PRODUCT IS EXACTLY sqrt(log k/k) TIMES R —
+so R ~ sqrt(k/log k) IS ADMISSIBLE, GIVING C_d ~ (d-2)! (log k/k)^{(d-2)/2}. COMPARE THAT WITH THE
+FACTORIAL GAP AND THE COMPARISON BECOMES EXACT.

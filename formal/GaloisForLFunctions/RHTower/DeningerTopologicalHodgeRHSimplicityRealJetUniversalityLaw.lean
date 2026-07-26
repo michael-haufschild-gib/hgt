@@ -1,13 +1,15 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticJordanObstruction
 import GaloisForLFunctions.RHTower.DeningerCompactOpenGradedRealJetUniversalityLaw
 import GaloisForLFunctions.RHTower.XiHedenmalmSimplicityUniversalityLaw
+import GaloisForLFunctions.RHTower.XiWholeCorpusPositivePhaseUniversalityLaw
 
 /-!
 # Deninger topological-Hodge RH/simplicity Real-jet universality
 
 A direct positive compact-open Hodge star forces both RH and simple Xi zeros.  The resulting
-simplicity phase is simultaneously visible in every Hedenmalm chart, while compact-open
-cohomology carries its exact graded Real involution.
+joint phase is simultaneously visible in every Hedenmalm, prime--Gamma, reciprocal-operator,
+Hermitian-Jordan, conservative-metric, and theta-source chart, while compact-open cohomology
+carries its exact graded Real involution.
 -/
 
 open Complex
@@ -33,8 +35,20 @@ structure DeningerTopologicalHodgeRHSimplicityRealJetCertificate : Prop where
   xiZerosSimple : XiZerosSimple
   allLocalJordanNormal :
     ∀ rho : XiDivisorSupport, XiLocalJordanNormal rho
-  hedenmalmSimplicityCharts :
-    XiHedenmalmSimplicityUniversalCertificate
+  hedenmalmRHSimplicityCharts :
+    XiHedenmalmRHSimplicityUniversalCertificate
+  wholeCorpusPositivePhase :
+    ∀ {Lrect : ℝ}, 0 < Lrect →
+      ∀ {N : ℕ}, (∀ n : ℕ, N ≤ n →
+        1 ≤ n ∧ Lrect ≤ Real.log n / 2) →
+      ∀ {eta Lsmooth : ℝ}, 0 < eta → eta < Lsmooth - eta →
+      ∀ (P : ℕ → XiSeparatedContinuedCauchyPacket),
+        IsRectangularSeparatedSourceSection Lrect P →
+      ∀ {D : ℕ → ℕ}, XiCTaylorOddThetaTailSuperaccurateSchedule D →
+      ∀ {degreeSet : Set ℕ}, degreeSet.Infinite →
+      ∀ (prime : Nat.Primes) {q : ℕ}, q ≠ 0 →
+        XiWholeCorpusPositivePhaseUniversalCertificate
+          Lrect N eta Lsmooth P D degreeSet prime q
   compactOpenRealInvolutive :
     ∀ x : DeningerArithmeticCompactOpenH1,
       deningerArithmeticCompactOpenH1EvenSigma
@@ -64,8 +78,13 @@ theorem deningerTopologicalHodge_rhSimplicityRealJetUniversality
     { riemannHypothesis := hRH
       xiZerosSimple := hsimple
       allLocalJordanNormal := hnormal
-      hedenmalmSimplicityCharts :=
-        xiZerosSimple_iff_hendenmalmSimplicityUniversalCertificate.mp hsimple
+      hedenmalmRHSimplicityCharts :=
+        riemannHypothesis_and_xiZerosSimple_iff_hendenmalmUniversalCertificate.mp
+          ⟨hRH, hsimple⟩
+      wholeCorpusPositivePhase :=
+        fun hLrect hN heta hwindow P hP hD hdegreeSet prime hq =>
+          (riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
+            hLrect hN heta hwindow P hP hD hdegreeSet prime hq).mp hRH
       compactOpenRealInvolutive := hgraded.2.2.1
       xiJetGradedReal := hgraded.2.2.2 }
 

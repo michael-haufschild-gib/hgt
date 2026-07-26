@@ -1,12 +1,14 @@
 import GaloisForLFunctions.RHTower.DeningerEntropyProductionThermodynamicLimitUniversalityLaw
 import GaloisForLFunctions.RHTower.DeningerGaussianLefschetzHeatContourUniversalityLaw
+import GaloisForLFunctions.RHTower.XiWholeCorpusPositivePhaseUniversalityLaw
 
 /-!
 # Deninger entropy/Gaussian heat-contour universality
 
 Finite Hermitian KMS entropy-production convergence to the Deninger divisor resolvent forces RH.
-That forced RH, in turn, supplies arbitrarily accurate Deninger Gaussian contour reconstruction of
-the complete Xi heat trace at every complex heat time in the open right half-plane.
+That forced RH, in turn, supplies the complete eighteen-family Xi phase and arbitrarily accurate
+Deninger Gaussian contour reconstruction of the complete Xi heat trace at every complex heat time
+in the open right half-plane.
 -/
 
 open Complex Filter Topology
@@ -32,6 +34,18 @@ structure DeningerEntropyGaussianHeatContourCertificate
   deningerUpperAntiHerglotz : DeningerDivisorUpperAntiHerglotz
   oneCauchyGate : ContinuedPrimeArchUpperCauchyDiagonalNonnegative
   riemannHypothesis : RiemannHypothesis
+  wholeCorpusPositivePhase :
+    ∀ {Lrect : ℝ}, 0 < Lrect →
+      ∀ {N : ℕ}, (∀ n : ℕ, N ≤ n →
+        1 ≤ n ∧ Lrect ≤ Real.log n / 2) →
+      ∀ {eta Lsmooth : ℝ}, 0 < eta → eta < Lsmooth - eta →
+      ∀ (P : ℕ → XiSeparatedContinuedCauchyPacket),
+        IsRectangularSeparatedSourceSection Lrect P →
+      ∀ {D : ℕ → ℕ}, XiCTaylorOddThetaTailSuperaccurateSchedule D →
+      ∀ {degreeSet : Set ℕ}, degreeSet.Infinite →
+      ∀ (prime : Nat.Primes) {q : ℕ}, q ≠ 0 →
+        XiWholeCorpusPositivePhaseUniversalCertificate
+          Lrect N eta Lsmooth P D degreeSet prime q
   gaussianHeatContours :
     ∀ {τ : ℂ}, 0 < τ.re → ∀ {epsilon : ℝ}, 0 < epsilon →
       ∃ z₁ z₂ : ℂ,
@@ -71,6 +85,10 @@ theorem deningerEntropy_gaussianHeatContourUniversality
       deningerUpperAntiHerglotz := hdeninger
       oneCauchyGate := hcauchy
       riemannHypothesis := hRH
+      wholeCorpusPositivePhase :=
+        fun hLrect hN heta hwindow P hP hD hdegreeSet prime hq =>
+          (riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
+            hLrect hN heta hwindow P hP hD hdegreeSet prime hq).mp hRH
       gaussianHeatContours := fun hτ hepsilon =>
         deninger_gaussianLefschetz_heatContourUniversality
           hRH hτ hepsilon }

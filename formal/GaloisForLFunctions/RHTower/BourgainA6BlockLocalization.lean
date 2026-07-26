@@ -288,6 +288,66 @@ theorem abs_inv_bourgainA6BlockPhaseDeterminant_le
       dsimp [L]
       field_simp
 
+/-- Real main term obtained from one sharp anisotropic cell for two
+unit-coefficient `A₆` blocks. -/
+def bourgainA6BlockSharpCellMainTerm
+    (N M q₁ q₂ : ℕ) (C ε : ℝ) : ℝ :=
+  |(bourgainA6BlockPhaseDeterminant N M q₁ q₂)⁻¹| *
+    (((M : ℝ) ^ (3 : ℕ) *
+        (C * (M : ℝ) ^ (ε / 2) * (M : ℝ) ^ (3 : ℕ))) *
+      ((M : ℝ) ^ (3 : ℕ) *
+        (C * (M : ℝ) ^ (ε / 2) * (M : ℝ) ^ (3 : ℕ))))
+
+/-- The determinant bound gives the sharp one-cell main-term scale
+`N^10 M^(2+ε)`.  After division by physical volume `N^6`, this is exactly
+Bourgain's `N^(4+ε)M²` scale, before Taylor-error absorption. -/
+theorem bourgainA6BlockSharpCellMainTerm_le
+    {N M q₁ q₂ : ℕ} {C ε : ℝ}
+    (hN : 0 < N) (hM : 0 < M) (hC : 0 ≤ C)
+    (hq₁ : 0 < q₁) (hq : q₁ + M ≤ q₂) (hq₂N : q₂ ≤ N) :
+    bourgainA6BlockSharpCellMainTerm N M q₁ q₂ C ε ≤
+      (512 / 3 : ℝ) * C ^ (2 : ℕ) *
+        (N : ℝ) ^ (10 : ℕ) * (M : ℝ) ^ (2 + ε) := by
+  have hMr : (0 : ℝ) < M := by exact_mod_cast hM
+  have hJ :=
+    abs_inv_bourgainA6BlockPhaseDeterminant_le
+      hN hM hq₁ hq hq₂N
+  let B : ℝ :=
+    ((M : ℝ) ^ (3 : ℕ) *
+        (C * (M : ℝ) ^ (ε / 2) * (M : ℝ) ^ (3 : ℕ))) *
+      ((M : ℝ) ^ (3 : ℕ) *
+        (C * (M : ℝ) ^ (ε / 2) * (M : ℝ) ^ (3 : ℕ)))
+  have hB0 : 0 ≤ B := by
+    dsimp [B]
+    positivity
+  have heps :
+      (M : ℝ) ^ (ε / 2) * (M : ℝ) ^ (ε / 2) =
+        (M : ℝ) ^ ε := by
+    rw [← Real.rpow_add hMr]
+    congr 1
+    ring
+  have hB :
+      B = C ^ (2 : ℕ) * (M : ℝ) ^ (12 : ℕ) *
+        (M : ℝ) ^ ε := by
+    dsimp [B]
+    rw [← heps]
+    ring
+  have hpow :
+      (M : ℝ) ^ (2 + ε) =
+        (M : ℝ) ^ (2 : ℕ) * (M : ℝ) ^ ε := by
+    rw [Real.rpow_add hMr, Real.rpow_two]
+  unfold bourgainA6BlockSharpCellMainTerm
+  change
+    |(bourgainA6BlockPhaseDeterminant N M q₁ q₂)⁻¹| * B ≤ _
+  calc
+    |(bourgainA6BlockPhaseDeterminant N M q₁ q₂)⁻¹| * B ≤
+        ((512 / 3 : ℝ) * ((N : ℝ) / (M : ℝ)) ^ (10 : ℕ)) * B :=
+      mul_le_mul_of_nonneg_right hJ hB0
+    _ = (512 / 3 : ℝ) * C ^ (2 : ℕ) *
+        (N : ℝ) ^ (10 : ℕ) * (M : ℝ) ^ (2 + ε) := by
+      rw [hB, hpow]
+      field_simp
+
 /-- Exact osculating-cell integral estimate specialized to two normalized
 `A₆` blocks.  This is the local analytic input before physical-domain
 covering and the Bourgain--Guth scale recurrence. -/

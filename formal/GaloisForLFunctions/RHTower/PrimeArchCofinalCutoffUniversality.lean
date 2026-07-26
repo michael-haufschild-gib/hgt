@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.CCMRectangularFullObservableDivisorTomography
 import GaloisForLFunctions.RHTower.PrimeArchEndpointHausdorffTemperatureMaster
 import GaloisForLFunctions.RHTower.PrimeArchThermalSoninDeterminantEndpointUniversalityLaw
 import GaloisForLFunctions.RHTower.SoninBernsteinTerminalCofinalPhaseUniversalityLaw
+import GaloisForLFunctions.RHTower.XiWholeCorpusPositivePhaseUniversalityLaw
 
 /-!
 # Cofinal cutoff elimination for prime--Gamma source criteria
@@ -18,6 +19,11 @@ open Filter Topology
 namespace RHTower
 
 noncomputable section
+
+/-- Fixed prime mark used to remove the last auxiliary arithmetic choice from whole-corpus
+certificates. -/
+def xiWholeCorpusPrimeTwo : Nat.Primes :=
+  ⟨2, Nat.prime_two⟩
 
 /-- Admissibility is cofinal in the cutoff: every sufficiently large tail index supports the
 fixed rectangular window. -/
@@ -175,6 +181,80 @@ theorem
       (eta := 1) (Lsmooth := 3) hd hcontrol (by norm_num) hN
       (by norm_num) (by norm_num) P hP hD Set.infinite_univ
       (fun n : ℕ => n) (fun n : ℕ => n) tendsto_id tendsto_id⟩
+
+/-- One separated source and one odd theta-tail schedule simultaneously classify RH at every
+sufficiently late unit-width cutoff through the full terminal analytic-source and cofinal thermal
+certificate.  All aperture, cutoff, source, schedule, degree-set, and cofinality premises have
+become theorem-produced witnesses. -/
+theorem exists_unitWidthTerminalCofinalPhaseUniversalFamily :
+    ∃ (P : ℕ → XiSeparatedContinuedCauchyPacket) (D : ℕ → ℕ),
+      IsRectangularSeparatedSourceSection 1 P ∧
+      XiCTaylorOddThetaTailSuperaccurateSchedule D ∧
+      ∀ᶠ N : ℕ in atTop,
+        RiemannHypothesis ↔
+          SoninBernsteinTerminalCofinalPhaseUniversalCertificate
+            1 N 1 3 P D Set.univ (fun n : ℕ => n) (fun n : ℕ => n) := by
+  obtain ⟨P, hP⟩ := exists_rectangularSeparatedSourceSection 1
+  obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+  refine ⟨P, D, hP, hD, ?_⟩
+  filter_upwards [eventually_xiRectangularAdmissibleCutoff 1] with N hN
+  constructor
+  · intro hRH
+    have hterminal :
+        XiTerminalAnalyticSourceUniversalCertificate
+          1 N 1 3 P D Set.univ :=
+      (riemannHypothesis_iff_terminalAnalyticSourceUniversalCertificate
+        (by norm_num) hN (by norm_num) (by norm_num) P hP hD
+        Set.infinite_univ).1 hRH
+    have hzero : xiThermalOrientationEnergy = 0 :=
+      xiThermalOrientationEnergy_eq_zero_iff_rh.2 hRH
+    have hphase :=
+      primeArchCofinalOrientationChargeUniversality
+        (fun n : ℕ => n) (fun n : ℕ => n) tendsto_id tendsto_id
+    exact ⟨hterminal, hzero,
+      hphase.1.2 hzero,
+      hphase.2.1.2 hzero,
+      hphase.2.2.1.1 hzero,
+      hphase.2.2.2.1.1 hzero,
+      hphase.2.2.2.2.1 hzero⟩
+  · intro hcertificate
+    exact
+      (xiRectangularWeilTailHolomorphicContinuation_iff_riemannHypothesis
+        (by norm_num) hN).1 hcertificate.1.1
+
+/-- One theorem-produced separated source and theta-tail schedule synchronize the complete
+positive and negative Xi corpora at every sufficiently late unit-width cutoff.  The whole-corpus
+phase, its failure phase, and their complement law use the full degree set, prime mark two,
+unit local mark, and unit failure aperture, with no external admissibility premise. -/
+theorem exists_unitWidthWholeCorpusCofinalPhaseUniversalFamily :
+    ∃ (P : ℕ → XiSeparatedContinuedCauchyPacket) (D : ℕ → ℕ),
+      IsRectangularSeparatedSourceSection 1 P ∧
+      XiCTaylorOddThetaTailSuperaccurateSchedule D ∧
+      ∀ᶠ N : ℕ in atTop,
+        (RiemannHypothesis ↔
+          XiWholeCorpusPositivePhaseUniversalCertificate
+            1 N 1 3 P D Set.univ xiWholeCorpusPrimeTwo 1) ∧
+        (¬RiemannHypothesis ↔
+          XiWholeCorpusFailurePhaseUniversalCertificate
+            1 N 1 3 P D Set.univ xiWholeCorpusPrimeTwo 1 1) ∧
+        ((¬XiWholeCorpusPositivePhaseUniversalCertificate
+            1 N 1 3 P D Set.univ xiWholeCorpusPrimeTwo 1) ↔
+          XiWholeCorpusFailurePhaseUniversalCertificate
+            1 N 1 3 P D Set.univ xiWholeCorpusPrimeTwo 1 1) := by
+  obtain ⟨P, hP⟩ := exists_rectangularSeparatedSourceSection 1
+  obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+  refine ⟨P, D, hP, hD, ?_⟩
+  filter_upwards [eventually_xiRectangularAdmissibleCutoff 1] with N hN
+  exact ⟨
+    riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate
+      (by norm_num) hN (by norm_num) (by norm_num) P hP hD
+      Set.infinite_univ xiWholeCorpusPrimeTwo one_ne_zero,
+    not_riemannHypothesis_iff_wholeCorpusFailurePhaseUniversalCertificate
+      (by norm_num) hN (by norm_num) (by norm_num) P hP hD
+      Set.infinite_univ xiWholeCorpusPrimeTwo one_ne_zero (by norm_num),
+    not_wholeCorpusPositivePhase_iff_wholeCorpusFailurePhase
+      (by norm_num) hN (by norm_num) (by norm_num) P hP hD
+      Set.infinite_univ xiWholeCorpusPrimeTwo one_ne_zero (by norm_num)⟩
 
 end
 

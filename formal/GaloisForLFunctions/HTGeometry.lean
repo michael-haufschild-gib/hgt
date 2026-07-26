@@ -2092,5 +2092,6 @@ import GaloisForLFunctions.HTGeometry.SelfDefeatingProductivity
 import GaloisForLFunctions.HTGeometry.DisplacementCostAndFaces
 import GaloisForLFunctions.HTGeometry.NewPairsDisplacementTest
 import GaloisForLFunctions.HTGeometry.EligibilityCriterion
+import GaloisForLFunctions.HTGeometry.FareyNumeratorSumBarrier
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative

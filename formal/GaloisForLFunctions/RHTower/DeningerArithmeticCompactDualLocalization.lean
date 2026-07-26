@@ -227,7 +227,7 @@ theorem deningerArithmeticTopologicalH1Compact_finiteJetSupport
       DeningerArithmeticJetProduct →L[ℂ] ℂ :=
     ell.comp deningerCompactOpenJetProductToH1
   obtain ⟨S, T, hL⟩ :=
-    L.exists_finite_pi_support
+    RHTower.ContinuousLinearMap.exists_finite_pi_support L
   refine ⟨S, T, fun x => ?_⟩
   have hformula :=
     hL (deningerCompactOpenH1AllJets x)
