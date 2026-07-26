@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticJetProductEquivalence
+import GaloisForLFunctions.RHTower.DeningerArithmeticTopologicalJetDual
 
 /-!
 # Compact support of the continuous arithmetic dual
@@ -29,14 +30,19 @@ theorem ContinuousLinearMap.exists_finite_pi_support
               ∑ k ∈ T i.1,
                 a i.1 k *
                   L (Pi.single i.1 (Pi.single k 1)) := by
+  classical
   have hball :
       Metric.ball (0 : ℂ) 1 ∈ 𝓝 0 :=
     Metric.ball_mem_nhds 0 (by norm_num)
   have hpre :
       L ⁻¹' Metric.ball (0 : ℂ) 1 ∈
         𝓝 (0 : (i : ι) → κ i → ℂ) := by
+    have htarget :
+        Metric.ball (0 : ℂ) 1 ∈
+          𝓝 (L (0 : (i : ι) → κ i → ℂ)) := by
+      simpa only [map_zero] using hball
     have :=
-      L.continuous.continuousAt.preimage_mem_nhds hball
+      L.continuous.continuousAt.preimage_mem_nhds htarget
     simpa only [map_zero] using this
   rw [nhds_pi, Filter.mem_pi,
     exists_finite_iff_finset] at hpre
@@ -112,8 +118,31 @@ theorem ContinuousLinearMap.exists_finite_pi_support
           p i k = a i k := by
     intro i hi k hk
     let iS : ↥S := ⟨i, hi⟩
-    classical
-    simp [p, basisVector, iS, hk]
+    change
+      (∑ j : ↥S,
+        ∑ l ∈ T j.1,
+          a j.1 l • basisVector j.1 l) i k =
+        a i k
+    rw [Finset.sum_apply,
+      Finset.sum_eq_single iS]
+    · rw [Finset.sum_apply,
+        Finset.sum_eq_single k]
+      · simp [basisVector]
+      · intro l hl hli
+        simp [basisVector, hli]
+      · intro hnot
+        exact (hnot hk).elim
+    · intro j hj hji
+      rw [Finset.sum_apply]
+      apply Finset.sum_eq_zero
+      intro l hl
+      have hcoe : j.1 ≠ i := by
+        intro heq
+        apply hji
+        exact Subtype.ext heq
+      simp [basisVector, hcoe]
+    · intro hnot
+      exact (hnot (Finset.mem_univ iS)).elim
   have hzero :
       L (a - p) = 0 := by
     apply hkernel
@@ -135,9 +164,24 @@ def deningerCompactOpenJetProductToH1 :
   toFun := deningerCompactOpenH1JetHomeomorph.symm
   map_add' a b := by
     apply deningerCompactOpenH1AllJets_injective
+    change
+      deningerCompactOpenH1JetHomeomorph
+          (deningerCompactOpenH1JetHomeomorph.symm
+            (a + b)) =
+        deningerCompactOpenH1JetHomeomorph
+            (deningerCompactOpenH1JetHomeomorph.symm a) +
+          deningerCompactOpenH1JetHomeomorph
+            (deningerCompactOpenH1JetHomeomorph.symm b)
     simp
   map_smul' c a := by
     apply deningerCompactOpenH1AllJets_injective
+    change
+      deningerCompactOpenH1JetHomeomorph
+          (deningerCompactOpenH1JetHomeomorph.symm
+            (c • a)) =
+        c •
+          deningerCompactOpenH1JetHomeomorph
+            (deningerCompactOpenH1JetHomeomorph.symm a)
     simp
   cont :=
     deningerCompactOpenH1JetHomeomorph.symm.continuous

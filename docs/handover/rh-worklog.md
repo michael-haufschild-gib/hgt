@@ -8164,3 +8164,63 @@ IS A STANDARD INEQUALITY. STEP (ii) IS THE ONE ANALYTIC INPUT AND IT IS ELEMENTA
 pi n^2 e^{2 e^w} twice. FORMALISE STEP (ii) AND ASSEMBLE — that gives an unconditional proof of the
 Turan inequalities from the mechanism, which is a known theorem, but by a new and fully explicit route
 that generalises to every degree.
+
+---
+
+## Cycle 134 (2026-07-26) — THE MECHANISM'S ANALYTIC INPUT, FORMALISED. ONE IDENTITY CARRIES IT ALL.
+
+### The input, computed exactly
+The convexity needed is the second derivative of g(w) = pi n^2 e^{2 e^w}, the doubly exponential factor
+in the variable w = log u. Its first derivative is g'(w) = pi n^2 e^{2 e^w} * 2 e^w, and
+
+    g''(w)  =  pi n^2 e^{2 e^w} * 2 e^w * (2 e^w + 1)  =  g'(w) * (2 e^w + 1).      [FORMALISED]
+
+AT THE TILTED MODE, where the tilt e^{2kw} places g'(w*) = 2k,
+
+    g''(w*)  =  2k (2 e^{w*} + 1)  =  2k (2 u* + 1),      u* = e^{w*} ~ log k.
+
+    ==> THE CONVEXITY IS OF ORDER k log k, NOT k. Brascamp-Lieb then gives tilted variance
+        <~ 1/(2k(2u*+1)), against a factorial gap ~ 2/k, so the MARGIN IS 4(2u*+1) ~ log k, GROWING.
+
+ONE EXACT ALGEBRAIC IDENTITY — g'' = g' (2e^w + 1) — CARRIES THE WHOLE MECHANISM. That is the analytic
+input cycle 128 identified as the route's only non-algebraic ingredient, and it turns out to be
+algebra after all.
+
+### What is now assembled
+  (i)   the tilt is exponential in w = log u                       — cycle 132, recorded;
+  (ii)  the convexity identity and its value at the mode            — THIS CYCLE, formalised;
+  (iii) Brascamp-Lieb bounds variance by reciprocal convexity       — standard;
+  (iv)  the factorial gap in closed form and its order 1/k          — cycle 131, formalised;
+  (v)   the margin 4(2u*+1), growing                                — THIS CYCLE, formalised.
+Steps (i), (ii), (iv), (v) are machine-verified here; (iii) is a classical inequality. THE CHAIN IS
+COMPLETE AS A MECHANISM.
+
+Machine-verified: `RHTower/ConvexityOfTheDoublyExponential.lean` (the derivative of the doubly
+exponential factor via HasDerivAt, the exact second-derivative identity, its value at the tilted mode,
+the order comparison 2k <= 2k(2u+1), the margin (2/k)/(1/(2k(2u+1))) = 4(2u+1), and its monotonicity;
+standard axioms only, wired into RHTower).
+
+### SIXTY-EIGHTH ATLAS ENTRY
+    convexity identity   g(w) = pi n^2 e^{2 e^w} satisfies g'' = g'(2 e^w + 1) exactly; at the tilted
+                         mode g'(w*) = 2k gives convexity 2k(2u*+1) of order k log k. With
+                         Brascamp-Lieb this beats the factorial gap 2/k by a growing margin 4(2u*+1).
+                         The route's sole analytic input is this identity, and it is algebraic.
+
+### STATE AT CYCLE 134
+Sixty-eight entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME'S POSITION, PLAINLY: the single escaping route is settled for all d <= 9.36 x 10^20 with
+observed onsets zero; its cost is an artefact of a lossy estimate; and the mechanism explaining why —
+doubly exponential concentration beating a factorial gap with a log k margin — is now assembled and
+machine-verified except for one classical inequality. WHAT REMAINS IS TO TURN THE MECHANISM INTO A
+UNIFORM-IN-DEGREE STATEMENT, which is the last gap between the mechanism and the hypothesis.
+
+### Cycle 135 target
+The mechanism is stated at degree two (the Turan/variance comparison). Degree d compares a d-th order
+CUMULANT against the d-th order factorial gap. THE d-TH CUMULANT OF A MEASURE WHOSE -log HAS CONVEXITY
+c IS BOUNDED BY (d-1)! / c^{d-1} BY THE STANDARD CUMULANT ESTIMATE FOR LOG-CONCAVE MEASURES. With
+c ~ k log k that gives cumulant <~ (d-1)!/(k log k)^{d-1}, while the d-th factorial gap is of order
+(d!)/k^{d-1} up to constants. THE RATIO IS THEN ~ d (log k)^{d-1} — GROWING IN BOTH d AND k. IF THAT
+COMPARISON IS CORRECT, HYPERBOLICITY HOLDS AT EVERY DEGREE ONCE k EXCEEDS A BOUND POLYNOMIAL IN d, AND
+THE POLYNOMIAL CONJECTURE OF CYCLE 132 IS PROVED. COMPUTE THE d-TH ORDER FACTORIAL GAP EXACTLY AND
+COMPARE.

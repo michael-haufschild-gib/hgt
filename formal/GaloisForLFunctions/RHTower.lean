@@ -3016,3 +3016,4 @@ import GaloisForLFunctions.RHTower.ExpansionParameterIsTheShift
 import GaloisForLFunctions.RHTower.TuranIsAVarianceCompetition
 import GaloisForLFunctions.RHTower.DoublyExponentialMargin
 import GaloisForLFunctions.RHTower.SettledRangeCorrection
+import GaloisForLFunctions.RHTower.ConvexityOfTheDoublyExponential

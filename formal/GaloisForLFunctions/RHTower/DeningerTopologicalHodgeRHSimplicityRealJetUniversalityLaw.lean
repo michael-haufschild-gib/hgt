@@ -55,7 +55,7 @@ theorem deningerTopologicalHodge_rhSimplicityRealJetUniversality
     DeningerTopologicalHodgeRHSimplicityRealJetCertificate := by
   have hRH :=
     DeningerArithmeticTopologicalHodgeStar.riemannHypothesis Hodge
-  have hsimple := Hodge.xiZerosSimple
+  have hsimple : XiZerosSimple := Hodge.xiZerosSimple
   have hnormal :
       ∀ rho : XiDivisorSupport, XiLocalJordanNormal rho :=
     all_xiLocalJordanNormal_iff_simple.mpr hsimple
