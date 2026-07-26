@@ -5915,3 +5915,68 @@ INDEPENDENCE OVER Q of the log p. The corpus has `LogIndependence.lean` and `Pri
 TEST WHETHER LINEAR INDEPENDENCE OF THE PRIME LOGARITHMS IS THE PROPERTY THE WITNESSES FAIL — if the
 witnesses necessarily have Q-linearly dependent support, then linear independence is the separating
 ingredient, and it is a property no existing lane has used.
+
+---
+
+## Cycle 99 (2026-07-26) — THE ASYMMETRY OF THE PRIME SYMBOL IS THE POLE
+### Fifth Phase-1 save; the salvage is an exact identity joining two independent corpus results.
+
+### Phase 1 save (FIFTH TIME the object-level rule has paid)
+Planned: prove that Kronecker/linear independence of {log p} makes the prime symbol attain its
+resonant maximum. `PrimeSymbolDecoupling.lean` ALREADY HAS IT, and more: it proves the extremes
+DECOUPLE COMPLETELY ACROSS PRIMES,
+    sup_xi P = 2 sum_p log p * sup_theta f_p,     f_p(theta) = (x c - x^2)/(1 - 2 x c + x^2),
+with x = p^{-1/2}, c = cos theta, and states explicitly that this is the one place where
+multiplicative independence of the primes — "the property no Beurling counterexample shares" —
+enters as an exact statement. MY PLANNED CYCLE WAS A DUPLICATE.
+
+Also corrected: cycle 81 conjectured Pi(L) ~ 2 e^{L/2} (half the crude bound) because of an
+"averaging loss". THE DECOUPLING REFUTES THAT: independence forbids destructive interference, so the
+crude bound is asymptotically sharp. Cycle 82's e^{L/2} was measured AT THE POLE EXTREMISER, a
+different test; both are correct and they do not conflict. Conjecture withdrawn.
+
+### THE SALVAGE, AND IT IS AN EXACT IDENTITY
+The local extremes are attained at c = +-1 and sum in closed form:
+    sup_theta f_p = x/(1-x) = 1/(sqrt p - 1),    inf_theta f_p = -x/(1+x) = -1/(sqrt p + 1).
+Both sum_p log p/(sqrt p -+ 1) DIVERGE like 2 sqrt N, so the symbol is unbounded both ways — which is
+why truncation was ever needed. BUT THEIR SUM IS NOT EXPONENTIAL:
+
+    sup + inf  =  2 sum_p log p ( 1/(sqrt p - 1) - 1/(sqrt p + 1) )  =  4 sum_p log p/(p-1)
+               =  4 sum_p sum_{k>=1} log p * p^{-k}  =  4 sum_n Lambda(n)/n,
+
+using 1/(p-1) = sum_{k>=1} p^{-k}. THE RIGHT-HAND SIDE IS EXACTLY THE POLE TERM OF THE EXPLICIT
+FORMULA. Truncated at N = e^L it is ~ 4L, matching the net weight 2L of the pole form (cycle 81's
+Nyquist-cell identity) per unit normalisation.
+
+    ==> THE PRIME SYMBOL IS SYMMETRIC TO EXPONENTIAL ORDER AND ASYMMETRIC ONLY AT THE LOGARITHMIC
+        SCALE OF THE POLE: ITS TWO EXTREMES DIFFER FROM BEING OPPOSITE BY EXACTLY THE POLE TERM.
+        THE POLE IS NOT AN EXTRA INGREDIENT OF THE EXPLICIT FORMULA — IT IS THE ASYMMETRY OF THE
+        PRIME SIDE.
+
+This is a THIRD independent derivation of the same logarithmic quantity (first: the pole form's trace
+= interval length = one Nyquist cell, cycle 81; second: the three-way cancellation, cycle 83; third:
+this). Three routes, one number.
+
+Machine-verified: `RHTower/SymbolAsymmetryIsPole.lean` (the two local extreme values in closed form,
+their sum 2x^2/(1-x^2), its evaluation 2/(p-1) at x = p^{-1/2}, the geometric identity
+sum_{k>=1} p^{-k} = 1/(p-1) via tsum_geometric, and the separation of the logarithmic and exponential
+scales; standard axioms only, wired into RHTower).
+
+### THIRTY-THIRD ATLAS ENTRY
+    symbol asymmetry   sup P + inf P = 4 sum_n Lambda(n)/n = the pole term. The prime symbol's
+                       extremes are opposite up to exactly the pole; the pole is the asymmetry of the
+                       prime side, not an independent term.
+
+### STATE AT CYCLE 99
+Thirty-three entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 100 target
+Entry 33 says the pole is the prime side's asymmetry; entry 17 says pole + prime main term + first
+archimedean mode cancel identically. TOGETHER: THE ARCHIMEDEAN FIRST MODE IS ALSO PART OF THE PRIME
+SIDE'S OWN STRUCTURE. That suggests the whole functional is a single object with an internal symmetry
+rather than three competing terms. TEST: is the Weil functional expressible as
+    W(g) = (1/2)[ P(g) - P~(g) ] + (tail),
+where P~ is the prime symbol reflected (c -> -c, i.e. xi -> xi + pi/log p locally)? If the functional
+is a DIFFERENCE OF A SYMBOL AND ITS REFLECTION, then positivity becomes a statement that a symbol
+dominates its own reflection — a self-referential condition with no external comparison term, and the
+first formulation in this programme in which the archimedean side does not appear at all.

@@ -42,6 +42,16 @@ theorem deningerCompactOpenH1Jet_class
         (xiSpectralPointSupport rho) k F :=
   rfl
 
+/-- The descended local jet is the corresponding coordinate of the descended all-jets map. -/
+theorem deningerCompactOpenH1AllJets_apply
+    (x : DeningerArithmeticCompactOpenH1)
+    (rho : XiDivisorSupport)
+    (k : DeningerArithmeticJetIndex rho) :
+    deningerCompactOpenH1AllJets x rho k =
+      deningerCompactOpenH1Jet rho k x := by
+  obtain ⟨F, rfl⟩ := Quotient.exists_rep x
+  rfl
+
 /-- Every local compact-support Xi jet is a nonzero continuous functional. -/
 theorem deningerCompactOpenH1Jet_ne_zero
     (rho : XiDivisorSupport)
@@ -62,8 +72,55 @@ theorem deningerCompactOpenH1Jet_ne_zero
           (deningerArithmeticCompactOpenH1Class F) = 1 := by
     rw [deningerCompactOpenH1Jet_class]
     exact hF ⟨rho, Finset.mem_singleton_self rho⟩ k
+  change
+    deningerCompactOpenH1Jet rho k
+        (deningerArithmeticCompactOpenH1Class F) =
+      (0 : DeningerArithmeticTopologicalH1Compact)
+        (deningerArithmeticCompactOpenH1Class F) at heval
   rw [hvalue] at heval
-  simpa using heval
+  simp at heval
+
+/-- Zeroth local jet index at a Xi divisor point. -/
+def deningerArithmeticJetIndexZero
+    (rho : XiDivisorSupport) :
+    DeningerArithmeticJetIndex rho :=
+  ⟨0, xiSupportMultiplicity_pos rho⟩
+
+/--
+Compact-support Frobenius reflects the zeroth source jet from weight `lambda` to weight
+`1 - lambda`.
+-/
+theorem deningerCompactOpenThetaCompact_H1Jet_zero
+    (rho : XiDivisorSupport) :
+    deningerCompactOpenThetaCompact
+        (deningerCompactOpenH1Jet rho
+          (deningerArithmeticJetIndexZero rho)) =
+      (1 -
+        (1 / 2 + Complex.I * xiSpectralPointSupport rho)) •
+        deningerCompactOpenH1Jet rho
+          (deningerArithmeticJetIndexZero rho) := by
+  apply ContinuousLinearMap.ext
+  intro x
+  obtain ⟨F, rfl⟩ := Quotient.exists_rep x
+  change
+    deningerCompactOpenThetaCompact
+        (deningerCompactOpenH1Jet rho
+          (deningerArithmeticJetIndexZero rho))
+        (deningerArithmeticCompactOpenH1Class F) =
+      ((1 -
+        (1 / 2 + Complex.I * xiSpectralPointSupport rho)) •
+        deningerCompactOpenH1Jet rho
+          (deningerArithmeticJetIndexZero rho))
+        (deningerArithmeticCompactOpenH1Class F)
+  rw [deningerCompactOpenThetaCompact_apply,
+    ContinuousLinearMap.smul_apply,
+    deningerCompactOpenH1Jet_class,
+    deningerCompactOpenTheta_class,
+    deningerCompactOpenH1Jet_class]
+  simp only [deningerArithmeticJetIndexZero,
+    deningerCompactOpenJet_apply, iteratedDeriv_zero,
+    deningerCompactOpenThetaMul_apply, smul_eq_mul]
+  ring
 
 /-- The complete family of continuous compact-support jets separates ordinary source classes. -/
 theorem deningerCompactOpenH1Jets_separating
@@ -78,6 +135,7 @@ theorem deningerCompactOpenH1Jets_separating
     deningerCompactOpenH1AllJets 0
   rw [map_zero]
   funext rho k
+  rw [deningerCompactOpenH1AllJets_apply]
   exact hx rho k
 
 end

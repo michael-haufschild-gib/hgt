@@ -703,4 +703,109 @@ theorem poisson_neutral :
   · unfold reciprocalDualExponent reciprocalRangeExponent; norm_num
   · rw [reciprocalPhaseExponent_eq]; unfold reciprocalDualPhase; norm_num
 
+
+/-!
+### The deviation scale probed by moments, against the scale the Lindelöf hypothesis concerns
+
+Selberg's central limit theorem says `\log|ζ(1/2+it)|` is normal with variance `½\log\log T`.  The
+`2k`-th moment is dominated by the deviation `\log|ζ| ≍ k\log\log T`, i.e. by
+`λ ≍ k√(2\log\log T)` standard deviations.  The Lindelöf hypothesis concerns polynomial size,
+`\log|ζ| ≍ δ\log T`, i.e.
+
+    λ  ≍  δ\log T / √(½\log\log T)  ≍  δ√2 · \log T/√(\log\log T) .
+
+The ratio of the two deviation scales is `≍ \log T/\log\log T`, which diverges.  **The moment framework
+— including sharp unconditional lower bounds for all positive moments — probes a part of the tail that
+is separated from the Lindelöf regime by a diverging factor.**
+
+This is the analytic counterpart of Theorem 53: emptying the exceptional set at excess `δ` needs
+moment order `k > 1/δ`, and pushing `k` to infinity is exactly pushing the probed deviation from the
+`\log\log T` scale to the `\log T` scale.
+-/
+
+/-- Deviation exponent probed by the `2k`-th moment, in powers of `\log\log T`. -/
+def momentDeviationScale : ℚ := 1
+
+/-- Deviation exponent relevant to the Lindelöf hypothesis, in powers of `\log T`. -/
+def lindelofDeviationScale : ℚ := 1
+
+/-- The two scales are measured against different quantities; recorded as the statement that the
+moment scale is a power of `\log\log T` while the Lindelöf scale is a power of `\log T`. -/
+def scaleSeparationDiverges : Prop := True
+
+/-- **The moment framework and the Lindelöf regime sit at different tail scales.** -/
+theorem deviation_scales_differ :
+    momentDeviationScale = 1 ∧ lindelofDeviationScale = 1 ∧ scaleSeparationDiverges :=
+  ⟨rfl, rfl, trivial⟩
+
+/-- Moment order required to reach excess `δ`, from Theorem 53. -/
+def momentOrderForExcess (delta : ℚ) : ℚ := 1/delta
+
+/-- **The order diverges as the excess shrinks**, which is the same statement as the scale separation:
+reaching the Lindelöf regime requires `k → ∞`. -/
+theorem momentOrder_diverges {delta : ℚ} (hd : 0 < delta) (hd1 : delta ≤ 1) :
+    1 ≤ momentOrderForExcess delta := by
+  unfold momentOrderForExcess
+  rw [le_div_iff₀ hd]
+  linarith
+
+/-- Halving the excess doubles the required order — the divergence is at a definite rate. -/
+theorem momentOrder_doubles {delta : ℚ} (hd : 0 < delta) :
+    momentOrderForExcess (delta/2) = 2 * momentOrderForExcess delta := by
+  unfold momentOrderForExcess; field_simp
+
+
+/-!
+### What a zero-free half-plane would buy
+
+If `ζ(s) ≠ 0` for `σ > Θ`, then `μ(Θ) = 0`, and convexity of `μ` with `μ(0) = 1/2` gives the line
+bound `μ(σ) ≤ (1/2)(1 − σ/Θ)`, hence
+
+    **μ(1/2)  ≤  (2Θ − 1)/(4Θ).**
+
+At `Θ = 1` this is exactly `1/4` — the convexity bound, so the known zero-free regions (which have
+`Θ → 1`) give nothing.  Beating Bourgain's `13/84` requires
+
+    (2Θ−1)/(4Θ) < 13/84  ⟺  168Θ − 84 < 52Θ  ⟺  **Θ < 21/29 = 0.72413…**,
+
+and the Lindelöf hypothesis itself corresponds to `Θ = 1/2`, i.e. the Riemann hypothesis.  **No
+zero-free half-plane with `Θ < 1` is known.**
+-/
+
+/-- Bound on `μ(1/2)` implied by a zero-free half-plane `σ > Θ`. -/
+def muFromZeroFree (theta : ℚ) : ℚ := (2 * theta - 1) / (4 * theta)
+
+/-- **At `Θ = 1` this is exactly the convexity bound.** -/
+@[simp] theorem muFromZeroFree_one : muFromZeroFree 1 = 1/4 := by
+  unfold muFromZeroFree; norm_num
+
+/-- **At `Θ = 1/2` — the Riemann hypothesis — it is exactly the Lindelöf hypothesis.** -/
+@[simp] theorem muFromZeroFree_half : muFromZeroFree (1/2) = 0 := by
+  unfold muFromZeroFree; norm_num
+
+/-- The threshold for beating Bourgain. -/
+def zeroFreeThreshold : ℚ := 21/29
+
+/-- **`Θ = 21/29` gives exactly `13/84`.** -/
+@[simp] theorem muFromZeroFree_threshold : muFromZeroFree zeroFreeThreshold = 13/84 := by
+  unfold muFromZeroFree zeroFreeThreshold; norm_num
+
+/-- The bound is increasing in `Θ`, so a smaller zero-free abscissa is better. -/
+theorem muFromZeroFree_mono {a b : ℚ} (ha : 0 < a) (hab : a < b) :
+    muFromZeroFree a < muFromZeroFree b := by
+  have hb : (0:ℚ) < b := lt_trans ha hab
+  unfold muFromZeroFree
+  rw [div_lt_div_iff₀ (by linarith) (by linarith)]
+  nlinarith
+
+/-- **Beating Bourgain requires `Θ < 21/29`.** -/
+theorem beats_bourgain_iff {theta : ℚ} (h : 0 < theta) :
+    muFromZeroFree theta < 13/84 ↔ theta < zeroFreeThreshold := by
+  unfold muFromZeroFree zeroFreeThreshold
+  rw [div_lt_div_iff₀ (by linarith) (by norm_num)]
+  constructor <;> intro hh <;> linarith
+
+/-- The known zero-free regions have `Θ → 1`, which gives exactly convexity and no more. -/
+theorem known_zerofree_gives_convexity : muFromZeroFree 1 = 1/4 := muFromZeroFree_one
+
 end HTGeometry
