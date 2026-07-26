@@ -2193,3 +2193,4 @@ import GaloisForLFunctions.HTGeometry.MetricCofinalWitnesses
 import GaloisForLFunctions.HTGeometry.FacetComplementWitnesses
 import GaloisForLFunctions.HTGeometry.ShiftInvariantConstraintWitnesses
 import GaloisForLFunctions.HTGeometry.RankTwoRealDependentPeriods
+import GaloisForLFunctions.HTGeometry.BoundaryWedgeTwoThick

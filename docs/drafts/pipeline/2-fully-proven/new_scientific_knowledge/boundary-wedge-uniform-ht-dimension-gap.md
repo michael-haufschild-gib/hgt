@@ -350,3 +350,28 @@ omitted vertices (which is what the boundary wedge always provides), and at two 
 whenever the omitted steps happen to be real-dependent.  Only the genuinely elliptic configuration —
 two omitted vertices with `R`-independent steps — still needs Weierstrass theory, and the boundary
 wedge never reaches it.
+
+## Lean progress — uniform two-thickness and the geometric certificate
+
+`GaloisForLFunctions/HTGeometry/BoundaryWedgeTwoThick.lean` (axiom-clean, build green,
+umbrella-registered) formalizes the statement's geometric half — "it is two-thick and is nonpure
+exactly when `r != s`" — for the **whole family**.  `WedgeTwoThick.lean` had certified two-thickness
+only for the single six-vertex model `S^1 wedge S^2`, by decision; that route is unavailable for a
+two-parameter family.
+
+- `isFaceOf_boundaryWedgeFacets_iff` — the faces are exactly the **proper** subsets of one of the two
+  blocks.  (Forward: a face sits inside `B.erase u`, which misses `u in B`.  Backward: a proper
+  subset misses some vertex, so it sits inside that deletion facet.)
+- `two_le_card_sdiff_of_face_not_facet` — a proper subset of a block that is not a single-vertex
+  deletion misses at least two of its vertices: missing none would make it the block, missing exactly
+  one would make it a facet.
+- **`boundaryWedge_twoThick`** — hence `TwoThick (boundaryWedgeFacets r s)`: adjoining either missed
+  vertex keeps the face a proper subset of its block, so both are immediate coface directions.  This
+  holds for all block sizes, no lower bound needed.
+- `boundaryWedge_geometry` — the packaged certificate for `r, s >= 2`: a two-thick facet antichain,
+  pure exactly when `r = s`, combining `facetAntichain`, `boundaryWedge_twoThick` and
+  `not_pureOfCard_of_ne`.
+
+This is the uniform generalization of `wedge_twoThick`, `wedge_facetAntichain` and `wedge_not_pure`,
+and it supplies in Lean the geometric hypothesis ("nonpure two-thick full Stanley--Reisner system") of
+the parent constraint-dimension law for every `r, s >= 2`.
