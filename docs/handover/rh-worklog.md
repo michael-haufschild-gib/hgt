@@ -9031,3 +9031,61 @@ estimates whose constants are explicit in b/c^{3/2} — WHICH IS EXACTLY THE NON
 ALREADY COMPUTED AS sqrt(log k / k). STATE THE ITERATED ESTIMATE AND CHECK WHETHER IT CLOSES THE
 CONSTANT WITHOUT THE CAUCHY RADIUS — if it does, the complex-analytic gap of cycle 137 is bypassed
 entirely and the descent may not be needed at all.
+
+---
+
+## Cycle 149 — THE REAL-VARIABLE ROUTE GIVES THE WRONG POWER. THE COMPLEX STEP CANNOT BE BYPASSED.
+
+### Cycle 148's bypass hope: REFUTED
+WHAT THE REAL-VARIABLE ROUTE GIVES. Bakry-Emery for V'' >= c yields a sub-Gaussian bound on the
+cumulant generating function; Borell's lemma for log-concave measures yields
+|kappa_d| <= C^d d! c^{-d/2}. BOTH COME FROM THE VARIANCE ALONE.
+WHAT THE MECHANISM DEMANDS. |kappa_d| <~ (d-1)! c^{-(d-1)}.
+THE COMPARISON. Their ratio is C^d d c^{d/2 - 1}, and for d > 2 THE EXPONENT d/2 - 1 IS POSITIVE
+(formalised), so the ratio DIVERGES as c grows.
+
+    ==> THE LOG-CONCAVE BOUND IS STRICTLY WEAKER THAN WHAT IS NEEDED, AT EVERY DEGREE BEYOND TWO.
+        GAMMA-CALCULUS CANNOT BYPASS THE COMPLEX STEP.
+
+### AND THE DEFICIENCY IS LOCATED EXACTLY
+A GAUSSIAN HAS kappa_d = 0 FOR EVERY d >= 3 — its generating function is exactly quadratic
+(formalised). So the stronger power c^{-(d-1)} is available ONLY THROUGH NEAR-GAUSSIANITY, and that
+parameter was computed exactly in cycle 136 as sqrt(log k / k).
+
+    ==> THE REAL-VARIABLE ROUTE GIVES c^{-d/2}; THE DEMAND IS c^{-(d-1)}; THE DIFFERENCE IS PRECISELY
+        THE NEAR-GAUSSIANITY, AND QUANTIFYING IT IS THE COMPLEX-ANALYTIC STEP OF CYCLE 137.
+
+This is a refutation of the bypass AND the exact localisation of what the bypass would have had to
+supply. IT ALSO CORRECTS AN OPTIMISTIC ASSUMPTION OF CYCLE 135: I took |kappa_d| <~ (d-1)!/c^{d-1} as
+the available bound; IT IS THE DEMANDED BOUND, NOT THE AVAILABLE ONE. The available one is c^{-d/2}.
+RECORD THAT CORRECTION PROMINENTLY — cycle 135's comparison was between the demand and the demand.
+
+Machine-verified: `RHTower/RealVariableRouteIsInsufficient.lean` (the supply-to-demand ratio in closed
+form, positivity of the exponent d/2 - 1 beyond degree two, divergence of a positive power, and the
+exact quadratic form of a Gaussian's cumulant generating function with vanishing third cumulant;
+standard axioms only, wired into RHTower).
+
+### EIGHTY-THIRD ATLAS ENTRY (cycle 135's comparison amended)
+    wrong power   log-concavity gives |kappa_d| <= C^d d! c^{-d/2}; the mechanism demands
+                  (d-1)! c^{-(d-1)}; the ratio C^d d c^{d/2-1} diverges for d > 2. The stronger power
+                  needs near-Gaussianity, whose parameter is sqrt(log k / k), and quantifying that is
+                  the complex Cauchy-radius step. Gamma-calculus cannot bypass it.
+    cycle 135 AMENDED  the cumulant bound used there was the DEMAND, not the available estimate.
+
+### STATE AT CYCLE 149
+Eighty-three entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE MECHANISM'S STATUS, CORRECTED AND HONEST: every structural ingredient is present and
+machine-verified — unique saddles, negative curvatures growing with the level, wide neighbourhoods,
+superpolynomially small tails, discs inside deformable sectors, verbatim transfer between levels. THE
+QUANTITATIVE HEART — the cumulant constant — REMAINS OPEN, and cycle 135's apparent resolution of it
+was circular. What is needed is the near-Gaussianity upgrade from c^{-d/2} to c^{-(d-1)}, which is the
+complex Cauchy radius, which is the self-similar gap of entry 71.
+
+### Cycle 150 target
+The gap is now a single sharply stated question: for a probability density e^{-V} on R with V'' >= c and
+non-Gaussianity |V'''|/c^{3/2} = eta small, bound the d-th cumulant by (d-1)! c^{-(d-1)} times a factor
+polynomial in eta. THIS IS A QUESTION ABOUT ONE-DIMENSIONAL LOG-CONCAVE MEASURES WITH NO ZETA IN IT,
+AND IT IS THE SAME QUESTION AT EVERY LEVEL OF THE DESCENT. Search the literature for cumulant bounds
+for perturbed Gaussians — the Edgeworth expansion literature bounds exactly this, with error terms in
+powers of eta. IF EDGEWORTH GIVES THE d-TH CUMULANT WITH THE RIGHT POWER, THE MECHANISM CLOSES.
