@@ -218,3 +218,25 @@ appears as an open input.
 - [ ] Paper proof of `3r₂r₆ + 15r₂²r₄ - 10r₄² ≥ 0`
 - [ ] Lean proof of the first two-by-two source Hankel minor
 - [ ] Identify a mechanism that plausibly extends beyond the first minor
+
+## 2026-07-25 fidelity discharge
+
+The half-density Hellinger/Cauchy estimate already formalized in
+`PrimeArchThetaWardLaplaceHalfDensity.lean` gives
+
+\[
+  a_0^2+e^{-2\pi}\le ((4\pi-1)e^{-\pi})^2,\qquad
+  a_0=2\pi\,W_0 .
+\]
+
+Using certified rational enclosures for \(\pi\) and \(e^{-\pi}\), this yields unconditionally
+
+\[
+  W_0\le 0.07926.
+\]
+
+This endpoint is sufficient for the relaxed fourth-moment arithmetic. Consequently
+`ThetaCuspFirstAtomSingleGibbsEssentialBounds` now has four fields rather than five:
+the former `ward_zero_upper` premise is discharged from source data. The remaining quantitative
+frontier is `ward_one_lower`, `ward_two_upper`, `stein_coupling_lower`, and
+`morse_upper_energy_upper`.

@@ -622,32 +622,14 @@ theorem fourier_deningerExponentiallyTiltedTimeTest
   simp only [RCLike.inner_apply, conj_trivial,
     ofReal_mul, smul_eq_mul,
     deningerExponentiallyTiltedTimeTest]
-  calc
-    Complex.exp
-          ((-2 : ℂ) * Real.pi * (ξ * t) *
-            Complex.I) *
-        ((φ t : ℂ) *
-          Complex.exp ((c : ℂ) * t)) =
-      (φ t : ℂ) *
-        (Complex.exp
-            ((-2 : ℂ) * Real.pi * (ξ * t) *
-              Complex.I) *
-          Complex.exp ((c : ℂ) * t)) := by ring
-    _ = (φ t : ℂ) *
-        Complex.exp
-          (((-2 : ℂ) * Real.pi * (ξ * t) *
-              Complex.I) +
-            (c : ℂ) * t) := by
-      rw [Complex.exp_add]
-    _ = (φ t : ℂ) *
-        Complex.exp
-          ((t : ℂ) *
-            ((c : ℂ) -
-              (2 * Real.pi * ξ : ℝ) *
-                Complex.I)) := by
-      congr 1
-      push_cast
-      ring
+  rw [show ∀ a b d : ℂ,
+      a * (b * d) = b * (a * d) by
+    intro a b d
+    ring]
+  rw [← Complex.exp_add]
+  congr 2
+  push_cast
+  ring
 
 theorem integrable_deningerExponentiallyTiltedTimeTest
     (φ : DeningerTimeTestFunction) (c : ℝ) :
@@ -695,7 +677,216 @@ theorem integral_fourierKernel_mul_deningerTimeTestLaplace
   simpa only [RCLike.inner_apply, conj_trivial,
     ofReal_mul, Complex.real_smul, smul_eq_mul,
     fourier_deningerExponentiallyTiltedTimeTest,
-    mul_comm] using hinv
+    mul_comm, mul_left_comm, mul_assoc] using hinv
+
+/-- Fourier-line decomposition of a positive natural-number Dirichlet monomial. -/
+theorem deningerNatCast_cpow_neg_fourierLine
+    (n : ℕ) (hn : 1 ≤ n) (c ξ : ℝ) :
+    (n : ℂ) ^
+        (-((c : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I)) =
+      (((n : ℝ) ^ (-c) : ℝ) : ℂ) *
+        Complex.exp
+          ((((2 * Real.pi * ξ * Real.log n : ℝ) : ℂ)) *
+            Complex.I) := by
+  have hnpos : (0 : ℝ) < (n : ℝ) :=
+    Nat.cast_pos.mpr hn
+  have hn0 : (n : ℂ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr (by omega)
+  rw [Complex.cpow_def_of_ne_zero hn0]
+  have hlog :
+      Complex.log (n : ℂ) =
+        ((Real.log n : ℝ) : ℂ) := by
+    rw [← Complex.ofReal_natCast,
+      ← Complex.ofReal_log hnpos.le]
+  rw [hlog]
+  have hexpand :
+      ((Real.log n : ℝ) : ℂ) *
+          (-((c : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I)) =
+        (((Real.log n * (-c) : ℝ) : ℂ)) +
+          (((2 * Real.pi * ξ * Real.log n : ℝ) : ℂ) *
+            Complex.I) := by
+    push_cast
+    ring
+  rw [hexpand, Complex.exp_add]
+  congr 1
+  rw [← Complex.ofReal_exp,
+    ← Real.rpow_def_of_pos hnpos]
+
+/-- One von-Mangoldt term on Deninger's Fourier-normalized Euler line. -/
+theorem deningerEulerFourier_vonMangoldtTerm
+    (n : ℕ) (hn : 1 ≤ n) (c ξ : ℝ) :
+    LSeries.term
+        (fun k =>
+          (ArithmeticFunction.vonMangoldt k : ℂ))
+        ((c : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I) n =
+      (((ArithmeticFunction.vonMangoldt n : ℝ) *
+          (n : ℝ) ^ (-c) : ℝ) : ℂ) *
+        Complex.exp
+          ((((2 * Real.pi * ξ * Real.log n : ℝ) : ℂ)) *
+            Complex.I) := by
+  have hn0 : n ≠ 0 := by omega
+  rw [LSeries.term_of_ne_zero hn0,
+    div_eq_mul_inv, ← Complex.cpow_neg,
+    deningerNatCast_cpow_neg_fourierLine n hn c ξ]
+  push_cast
+  ring
+
+private theorem norm_deningerEulerFourier_vonMangoldtTerm
+    (n : ℕ) (c ξ : ℝ) :
+    ‖LSeries.term
+        (fun k =>
+          (ArithmeticFunction.vonMangoldt k : ℂ))
+        ((c : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I) n‖ =
+      ‖LSeries.term
+        (fun k =>
+          (ArithmeticFunction.vonMangoldt k : ℂ))
+        (c : ℂ) n‖ := by
+  rcases n.eq_zero_or_pos with rfl | hn
+  · simp only [LSeries.term_zero]
+  · have hn0 : n ≠ 0 := Nat.ne_of_gt hn
+    rw [LSeries.term_of_ne_zero hn0,
+      LSeries.term_of_ne_zero hn0,
+      norm_div, norm_div]
+    congr 1
+    rw [Complex.norm_natCast_cpow_of_pos hn,
+      Complex.norm_natCast_cpow_of_pos hn]
+    norm_num
+
+private theorem integrable_deningerTimeTestLaplace_mul_vonMangoldtTerm
+    (φ : DeningerTimeTestFunction) (c : ℝ)
+    (n : ℕ) :
+    Integrable
+      (fun ξ : ℝ =>
+        deningerTimeTestLaplace φ
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          LSeries.term
+            (fun k =>
+              (ArithmeticFunction.vonMangoldt k : ℂ))
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) n) := by
+  let K : ℝ → ℂ :=
+    fun ξ =>
+      deningerTimeTestLaplace φ
+        ((c : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I)
+  let T : ℝ → ℂ :=
+    fun ξ =>
+      LSeries.term
+        (fun k =>
+          (ArithmeticFunction.vonMangoldt k : ℂ))
+        ((c : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I) n
+  have hK : Integrable K := by
+    simpa only [K,
+      fourier_deningerExponentiallyTiltedTimeTest] using
+        integrable_fourier_deningerExponentiallyTiltedTimeTest
+          φ c
+  have hTmeas : AEStronglyMeasurable T := by
+    rcases n.eq_zero_or_pos with rfl | hn
+    · simp only [T, LSeries.term_zero]
+      fun_prop
+    · rw [show T = fun ξ : ℝ =>
+        (((ArithmeticFunction.vonMangoldt n : ℝ) *
+            (n : ℝ) ^ (-c) : ℝ) : ℂ) *
+          Complex.exp
+            ((((2 * Real.pi * ξ * Real.log n : ℝ) : ℂ)) *
+              Complex.I) by
+        funext ξ
+        exact deningerEulerFourier_vonMangoldtTerm
+          n hn c ξ]
+      fun_prop
+  have hTbound :
+      ∀ᵐ ξ : ℝ,
+        ‖T ξ‖ ≤
+          ‖LSeries.term
+            (fun k =>
+              (ArithmeticFunction.vonMangoldt k : ℂ))
+            (c : ℂ) n‖ := by
+    filter_upwards with ξ
+    exact le_of_eq
+      (norm_deningerEulerFourier_vonMangoldtTerm
+        n c ξ)
+  exact hK.mul_bdd hTmeas hTbound
+
+/--
+One Euler-line von-Mangoldt monomial is read by Deninger's arbitrary test amplitude as its exact
+prime-power time sample.
+-/
+theorem integral_deningerTimeTestLaplace_mul_vonMangoldtTerm
+    (φ : DeningerTimeTestFunction) (c : ℝ)
+    (n : ℕ) (hn : 1 ≤ n) :
+    (∫ ξ : ℝ,
+        deningerTimeTestLaplace φ
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          LSeries.term
+            (fun k =>
+              (ArithmeticFunction.vonMangoldt k : ℂ))
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) n) =
+      (ArithmeticFunction.vonMangoldt n : ℂ) *
+        (φ (Real.log n) : ℂ) := by
+  rw [show
+      (fun ξ : ℝ =>
+        deningerTimeTestLaplace φ
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          LSeries.term
+            (fun k =>
+              (ArithmeticFunction.vonMangoldt k : ℂ))
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) n) =
+      fun ξ : ℝ =>
+        (((ArithmeticFunction.vonMangoldt n : ℝ) *
+            (n : ℝ) ^ (-c) : ℝ) : ℂ) *
+          (Complex.exp
+              ((((2 * Real.pi * ξ * Real.log n : ℝ) : ℂ)) *
+                Complex.I) *
+            deningerTimeTestLaplace φ
+              ((c : ℂ) -
+                ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                  Complex.I)) by
+    funext ξ
+    rw [deningerEulerFourier_vonMangoldtTerm
+      n hn c ξ]
+    ring]
+  rw [integral_const_mul,
+    integral_fourierKernel_mul_deningerTimeTestLaplace]
+  have hnpos : (0 : ℝ) < (n : ℝ) :=
+    Nat.cast_pos.mpr hn
+  have hexp :
+      Real.exp (c * Real.log n) =
+        (n : ℝ) ^ c := by
+    rw [Real.rpow_def_of_pos hnpos]
+    congr 1
+    ring
+  have hcancel :
+      (n : ℝ) ^ (-c) *
+        Real.exp (c * Real.log n) = 1 := by
+    rw [hexp, ← Real.rpow_add hnpos]
+    simp
+  rw [deningerExponentiallyTiltedTimeTest]
+  rw [← Complex.ofReal_exp]
+  push_cast
+  rw [hcancel]
+  ring
 
 /-- `L¹` mass controlling every critical-strip Laplace amplitude after two derivatives. -/
 def deningerTimeTestSecondDerivativeExponentialMass

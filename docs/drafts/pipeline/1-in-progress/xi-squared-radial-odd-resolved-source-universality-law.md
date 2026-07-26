@@ -1,6 +1,6 @@
 # Xi squared-radial odd resolved-source universality law
 
-Status: **Stage 2 — dependency-closed paper proof**
+Status: **Stage 3 — formalised in Lean 4**
 
 ## Discovery
 
@@ -48,4 +48,20 @@ No RH assumption, computation, or extra analytic hypothesis is used beyond `x > 
 
 ## Novelty audit
 
-Deferred until exact Lean proof.
+Post-proof arXiv/HAL search found classical explicit-formula decompositions of `xi'/xi`, work on
+derivatives of `log xi` at the center, Voros-type derivative criteria, and unrelated Bessel
+derivatives. No source located states the all-depth reverse-Bessel radial odd-sector identity with
+the exact prime + Gamma − polar resolved moments. Priority conclusion remains
+`[NOVELTY UNVERIFIED]` pending independent expert audit.
+
+## Lean status
+
+`[LEAN-PROVED]` in
+`formal/GaloisForLFunctions/RHTower/XiSquaredRadialOddResolvedSourceUniversalityLaw.lean`.
+Imported by `formal/GaloisForLFunctions/RHTower.lean`.
+
+Exact-file command:
+
+`lake env lean GaloisForLFunctions/RHTower/XiSquaredRadialOddResolvedSourceUniversalityLaw.lean`
+
+passed with no diagnostics.

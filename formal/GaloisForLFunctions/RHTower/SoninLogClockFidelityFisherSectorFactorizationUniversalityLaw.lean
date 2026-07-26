@@ -1,4 +1,3 @@
-import GaloisForLFunctions.HTGeometry.InvolutiveClockFidelityFisherSectorFactorizationUniversalityLaw
 import GaloisForLFunctions.RHTower.SoninLogClockFidelityAsymmetry
 import GaloisForLFunctions.RHTower.SoninLogClockQuantumFisher
 
@@ -31,14 +30,26 @@ theorem soninLogClock_homogeneousFidelityDeficit_eq_invariantWeight_mul_erasedQF
           (‖inner ℂ ψ
             ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
           (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) := by
-  have hfixed : soninLogFourierScattering ψ = ψ := by
-    rw [GaloisForLFunctions.PhysicalState] at hψ
-    apply sub_eq_zero.mp
-    simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] using hψ
-  simpa only [soninLogFourierInvariantAverage] using
-    HTGeometry.finiteInvolutiveClock_homogeneousFidelityDeficit_eq_invariantWeight_mul_erasedQFI
-      soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
-      soninLogFourierScattering_sq_eq_one hψnorm hfixed
+  have hcomm :
+      ((X * soninLogFourierScattering - soninLogFourierScattering * X) :
+          SoninL2 →L[ℂ] SoninL2) ψ =
+        (2 : ℂ) • ((1 - soninLogFourierInvariantAverage) (X ψ)) := by
+    have hfixed : soninLogFourierScattering ψ = ψ := by
+      rw [GaloisForLFunctions.PhysicalState] at hψ
+      apply sub_eq_zero.mp
+      simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] using hψ
+    rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
+      ContinuousLinearMap.mul_apply, hfixed, ContinuousLinearMap.sub_apply,
+      ContinuousLinearMap.one_apply, soninLogFourierInvariantAverage,
+      HTGeometry.finiteInvolutiveGaugeAverage_apply]
+    norm_num
+    module
+  rw [soninLogFourierScattering_homogeneousFidelityDeficit_eq_four_mul_sectorWeights,
+    soninLogClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq
+      X hψnorm hψ,
+    hcomm, norm_smul]
+  norm_num
+  ring
 
 end
 

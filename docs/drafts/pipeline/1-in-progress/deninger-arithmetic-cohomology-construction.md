@@ -144,7 +144,7 @@ with:
        \det_\infty\!\left((s-\Theta)/(2\pi)\mid H^i\right)^{(-1)^{i+1}} .
    \]
 
-Algebraic Poincaré duality is already canonical:
+Algebraic Poincaré duality is a useful provisional separation theorem:
 \[
  H^1_c=(H^1_{\mathrm{ent}})^\vee,\qquad B(x,\ell)=\ell(x),\qquad
  \Theta_c\ell=\ell-\ell\circ\Theta.
@@ -153,19 +153,160 @@ The pairing separates both variables, and
 \[
  B(\Theta x,\ell)+B(x,\Theta_c\ell)=B(x,\ell)
 \]
-holds identically. The unresolved part is identifying the arithmetic packet/continuous dual
-inside this algebraic dual and constructing the closed topology, trace, and determinant.
+holds identically. It is not the final compact-support object: the full algebraic dual is too
+large.
+
+The compact-open source now gives the topological distribution boundary
+\[
+ H^1_{\mathrm{ent,co}}=E/\Xi_CE
+\]
+and its strong continuous dual gives the test boundary \(H^1_c\). Deninger's Hodge star acts on
+middle cohomology itself, and his Hilbert space is the completion in the resulting positive
+metric. Therefore the correct final topology is the Gelfand triple
+\[
+ H^1_c\ \subset\ \mathcal H^1\ \subset\ H^1_{\mathrm{ent,co}},
+\]
+with dense test embedding, injective distribution embedding, and the original dual pairing equal
+to the Hilbert pairing. It is not a bijection between the full product-like compact-open quotient
+and its finite-support continuous dual. This corrected completion interface, the closed
+polarized generator on \(\mathcal H^1\), source-distribution intertwining, and survival of every
+source Xi eigenclass are formalized. Constructing the source Hilbert metric remains the purity
+gate.
+
+`[DAC_COMPACT_OPEN_JETS]`
+
+Let \(E=\mathcal O(\mathbb C)\) carry the compact-open Fréchet topology, and for each zero
+\(\rho\) of \(\Xi_C\) let \(m_\rho=\operatorname{ord}_\rho(\Xi_C)\). The source jet map is
+\[
+ J:E/\Xi_CE\longrightarrow
+   \prod_{\rho\in Z(\Xi_C)}\mathbb C^{m_\rho},\qquad
+ [F]\longmapsto\bigl(F^{(k)}(\rho)\bigr)_{\rho,\ 0\le k<m_\rho}.
+\]
+The target has product topology. The required theorem splits into two named conjectures:
+
+1. `[DAC_CLOSED_XI_RANGE]`: multiplication
+   \(M_{\Xi_C}:E\to E\) has closed range;
+2. `[DAC_JET_INTERPOLATION]`: \(J\) is a topological complex-linear equivalence.
+
+Injectivity reduces to analytic division: vanishing of all multiplicity-bounded jets means that
+\(F/\Xi_C\), initially defined off the discrete divisor, has removable singularities everywhere.
+Surjectivity is the global Hermite interpolation theorem on a discrete divisor. One paper route
+is the exact coherent-sheaf sequence
+\[
+ 0\longrightarrow\mathcal O
+ \xrightarrow{\cdot\Xi_C}\mathcal O
+ \longrightarrow\mathcal O_{Z(\Xi_C)}\longrightarrow0
+\]
+on the Stein line \(\mathbb C\); Cartan theorem B gives exactness on global sections and identifies
+\(\Gamma(Z(\Xi_C),\mathcal O_{Z(\Xi_C)})\) with the displayed product of local jet algebras.
+The constructive alternative is a Mittag--Leffler/Weierstrass exhaustion: finite Hermite CRT
+supplies each correction, while compact-open error bounds make the correction series normally
+convergent. Lean already contains the finite Hermite CRT brick; infinite normal-convergence and
+analytic division are the two missing dependency-closed lemmas.
+
+Continuity of \(J\) is proved because every point jet is compact-open continuous. Once the
+algebraic bijection and closed Xi range are known, the Fréchet open mapping theorem makes
+\(J^{-1}\) continuous. The continuous dual of the product then has finite support, already proved
+abstractly, yielding
+\[
+ H^1_c\cong
+ \bigoplus_{\rho\in Z(\Xi_C)}(\mathbb C^{m_\rho})^\vee .
+\]
+Thus compact support is derived from source topology rather than imposed through a divisor-indexed
+definition.
+
+The global observation map before quotienting is constructed as one continuous linear map
+\[
+ \widetilde J:E\longrightarrow
+   \prod_{\rho\in Z(\Xi_C)}\mathbb C^{m_\rho}.
+\]
+Lean proves the sharper `[DAC_GLOBAL_JET_DIVISION]`
+\[
+ \Xi_CE=\ker\widetilde J.
+\]
+The reverse inclusion is obtained by normalizing the meromorphic quotient \(F/\Xi_C\). At every
+Xi zero, vanishing jets give a numerator factor of the exact Xi multiplicity, while the canonical
+Xi divided chain supplies the nonzero denominator cofactor. Mathlib's meromorphic normal-form
+extension fills every removable value simultaneously, and the identity theorem proves the global
+quotient identity. Since \(\ker\widetilde J\) is closed, `[DAC_CLOSED_XI_RANGE]` follows.
+Full `[DAC_JET_INTERPOLATION]` now consists only of surjectivity of \(\widetilde J\).
+Finite Hermite interpolation already proves that \(\widetilde J\) has dense range. Hence global
+division makes the descended map
+\[
+ E/\Xi_CE\hookrightarrow
+ \prod_{\rho\in Z(\Xi_C)}\mathbb C^{m_\rho}
+\]
+a continuous injective map with dense range, unconditionally. Full surjectivity remains a useful
+coordinate theorem, but it is not allowed to delay construction of the intermediate self-dual
+Hilbert cohomology.
+
+Global jet interpolation now identifies the two topological boundaries exactly:
+\[
+ H^1_c=\bigoplus_{\rho,k}\mathbb C,\qquad
+ H^1_{\mathrm{ent,co}}=\prod_{\rho,k}\mathbb C .
+\]
+Their canonical middle carrier is
+\(\mathcal H^1_{\mathrm{jet}}=\ell^2(\rho,k)\). The Hilbert-to-distribution map is coordinate
+inclusion followed by the inverse jet homeomorphism. On the other side, strong-dual restriction
+along this inclusion is continuous; Fréchet--Riesz turns it into the required conjugate-linear
+test embedding. Finite jets map to their coefficientwise conjugates and are dense. Hence
+\[
+ H^1_c\subset\mathcal H^1_{\mathrm{jet}}\subset H^1_{\mathrm{ent,co}}
+\]
+is an unconditional source-defined Gelfand triple with exact Poincaré evaluation pairing. This
+constructs Hilbert carrier and topology, but not yet a Hodge metric polarizing Frobenius.
+
+`[DAC_LOCAL_QUOTIENT_OPENNESS]`
+
+A constructive route to `[DAC_JET_INTERPOLATION]` avoids postulating arbitrary global
+Mittag--Leffler series. Given a compact-open seminorm on a closed disk, peel the finitely many Xi
+zeros meeting a larger disk by exact finite Hermite interpolation. The remaining function is
+locally divisible by the corresponding finite Xi factor. Taylor polynomials approximate this
+local quotient uniformly on the smaller disk, while the polynomial Hermite correction preserves
+the prescribed finite jets. This should prove inverse continuity of the descended jet embedding.
+Completeness of the compact-open quotient then makes its dense image closed in the complete jet
+product, forcing surjectivity. The dependency-closed core is therefore local quotient control plus
+Taylor approximation, not an unformalized appeal to Cartan theorem B.
+
+`[DAC_TIME_DISTRIBUTION]`
+
+On the open time domain \(\mathbb R_+=(0,\infty)\), the full source jet flow has a canonical
+distributional trace.  For a multiplicity copy \(q\) of a Xi zero \(\rho_q\), put
+\[
+  F_q(t)=\frac{e^{t\rho_q}}{\rho_q^2}.
+\]
+The source reciprocal-square divisor estimate and \(0<\Re\rho_q<1\) make
+\(\sum_q F_q\) locally normally convergent.  Its second distributional derivative is therefore
+the multiplicity-exact \(H^1\) trace; the nilpotent jet terms have zero finite-block trace.
+The \(H^0\) and \(H^2\) traces are the regular distributions defined by \(1\) and \(e^t\).
+Independently, finite places define the locally finite measure
+\[
+  \sum_{n\ge2}\Lambda(n)\delta_{\log n}
+  =\sum_p\log p\sum_{k\ge1}\delta_{k\log p},
+\]
+and the archimedean place defines the regular distribution
+\((1-e^{-2t})^{-1}\) on \(\mathbb R_+\).  The exact conjectured theorem is the equality in
+\(\mathcal D'(\mathbb R_+,\mathbb C)\)
+\[
+  T_{H^0}-T_{H^1}+T_{H^2}
+  =T_{\mathrm{prime}}+T_\infty .
+\]
+The proof must derive equality from the already formalized Xi divisor and the independently
+defined von-Mangoldt/Gamma source, via a full compact-test Guinand--Weil theorem or an injective
+Laplace-transform continuation theorem.  Equality on the finite resolvent algebra alone is not
+accepted as distribution equality.
 
 `[DAC_HODGE_GREEN]`
 
-The source colligation must supply a conjugate-linear bijection
+The source colligation must supply a Hilbert middle cohomology \(\mathcal H^1\) in the displayed
+Gelfand triple, an odd Hodge star
 \[
-  *:H^1_{\mathrm{ent}}\longrightarrow H^1_c
+  *:\mathcal H^1\longrightarrow\mathcal H^1,
 \]
-which intertwines \(\Theta\) and \(\Theta_c\) and satisfies
-\(\operatorname{Re}((*x)(x))>0\) for every \(x\ne0\). This exact datum and its implication to RH
-are formalized. At the closed-complex level it must arise from a closable Hodge operator and
-Green operator
+and a cup trace such that
+\(\langle x,y\rangle=\operatorname{tr}(y\cup *x)\) is positive definite. The Hodge star preserves
+the domain of the closed Frobenius generator and commutes there with \(\Theta\). At the
+closed-complex level it must arise from a closable Hodge operator and Green operator
 \[
   d^*=*^{-1}d*,\qquad
   \Delta=dd^*+d^*d,\qquad
@@ -183,8 +324,10 @@ The derivation law then forces
   \langle\Theta x,y\rangle+\langle x,\Theta y\rangle=\langle x,y\rangle,
 \]
 so \(\Theta-\tfrac12\) is skew-symmetric. Together with `[DAC_SOURCE_COMPLEX]`, this implies RH.
-This conjecture is the genuine purity/Hodge-index core and must not be assumed inside the
-construction of \(H^1\).
+Lean now proves this in the exact unbounded Hilbert/Gelfand category: if the Hilbert completion
+intertwines with the source distribution quotient and lifts every source Xi eigenclass, the
+closed polarization implies RH. This conjecture is the genuine purity/Hodge-index core and must
+not be assumed inside construction of the source quotient or its spectrum.
 
 `[DAC_REALIZATION_COMPARISON]`
 
@@ -236,11 +379,67 @@ metric by transporting a form already known to be positive exactly under RH.
   \(K_{\mathbb R}\) structure on source \(H^1\), fixes \(\Xi_C\), and commutes with \(\Theta\).
   Its square is \(+1\), so it does not pretend to be the missing odd positive Hodge star.
 - `DeningerArithmeticCompactOpen`: compact-open entire source is closed, completely metrizable,
-  and Baire; point evaluations and Xi multiplication are continuous; unreduced and reduced
-  quotient topologies are constructed without assuming closed Xi range.
+  and Baire; point evaluations and Xi multiplication are continuous. The Xi quotient is now an
+  actual topological complex module with a continuous class map and continuous descent/lift of
+  invariant observations; unreduced and reduced quotients are constructed without assuming
+  closed Xi range.
 - `DeningerArithmeticProductDual`: every continuous linear functional on a product of complex
   jet coordinates depends on finitely many coordinates, proving the abstract compact-support
   mechanism needed after source jet interpolation.
+- `DeningerArithmeticContinuousJets`: compact-open convergence controls every iterated
+  derivative; local Xi jets are continuous and annihilate coboundaries below analytic
+  multiplicity.
+- `DeningerArithmeticFiniteJetInterpolation`: polynomial Hermite CRT embeds into the compact-open
+  source. Explicit centered Taylor polynomials convert arbitrary scalar derivative packets into
+  local polynomial classes, so every finite packet of complex Xi jets is realized. This is
+  finite-stage surjectivity, not the missing global interpolation theorem.
+- `DeningerArithmeticJetProduct`: all local jets assemble into one continuous linear product map;
+  the Xi range lies in its closed kernel. Exact global division is named separately and implies
+  closed Xi range without using interpolation.
+- `DeningerArithmeticGlobalDivision`: meromorphic normal-form extension and exact local Xi
+  multiplicities prove that the all-jet kernel equals the Xi range. Hence Xi multiplication has
+  closed range and reduced/unreduced compact-open cohomology use the same coboundaries.
+- `DeningerArithmeticDenseJets`: finite Hermite interpolation makes the all-jets observation
+  dense in the full product. Global division descends it to a continuous injective dense
+  realization of the compact-open Xi quotient.
+- `DeningerArithmeticTopologicalCohomology`: continuous source Frobenius on the compact-open
+  quotient, strong continuous compact-support dual, exact weight-one Poincaré law, compact-open
+  divided-chain eigenvectors for every Xi point, and the continuous-Hodge implication to RH.
+- `DeningerArithmeticGelfandTriple`: corrected test--Hilbert--distribution completion interface,
+  closed polarized unbounded Frobenius, exact source-distribution intertwining, spectral-survival
+  gate, and unconditional theorem that any constructed realization proves RH.
+- `DeningerArithmeticJetHilbertRigging`: exact direct-sum/`ell^2`/product source Gelfand triple,
+  including strong-dual restriction, Fréchet--Riesz test embedding, density, injectivity, and
+  exact Poincaré pairing.
+- `DeningerArithmeticPrimeGammaHilbert`: lower linear and upper conjugate-linear prime--Gamma
+  packet realizations in the canonical jet `ell^2` carrier. Their source cup is exactly the
+  critical-line-reflected Hilbert pairing. Packet vectors are constant across every
+  analytic-multiplicity fiber, and a multiple zero makes their image provably proper.
+- `DeningerArithmeticJetFrobenius`: source Leibniz law on every multiplicity jet, maximal
+  square-summable domain, closed graph, dense finite-jet core, and exact intertwining with
+  compact-open arithmetic Frobenius. Its local predecessor term is the full nilpotent Jordan
+  contribution.
+- `DeningerArithmeticJetDeterminant`: normalized centered source Frobenius on every full local jet
+  fiber, including its nilpotent predecessor terms. Each local block has trace
+  \(m_\rho\rho\), characteristic determinant \((z-\rho)^{m_\rho}\), and genus-one determinant
+  \(E_1(z/\rho)^{m_\rho}\). The finite-window determinant net is multipliable, its global product
+  is the Xi canonical product, Hadamard completion gives \(\Xi_C\), the uncentered determinant is
+  \(\xi\), and its logarithmic derivative is the prime--Gamma resolvent Lefschetz trace.
+- `DeningerArithmeticTopologicalJetDual`: every multiplicity-bounded local jet is a continuous,
+  nonzero compact-support class; the full family separates source cohomology, and zeroth jets obey
+  the reflected weight-one Frobenius law.
+- `DeningerArithmeticLocalHodgeObstruction`: canonical source-local rank-one Hodge forms are
+  positive semidefinite and nonzero. Their exact Frobenius commutator is the local purity defect
+  `1 - lambda - conj(lambda)`; commutation at one Xi point is equivalent to that centered point
+  being real, and global commutation implies RH.
+- `DeningerArithmeticGeometricJetExhaustion`: Xi support in every centered closed ball is finite;
+  the resulting natural finite windows are monotone and exhaust every source spectral point.
+- `DeningerArithmeticFiniteHodgePackets`: positive finite sums of local Hodge forms have an exact
+  weighted purity defect. Finite source Hermite interpolation isolates each summand, proving
+  defects cannot cancel; commuting positive packets on the geometric exhaustion imply RH.
+- `DeningerArithmeticJordanObstruction`: every positive-depth Xi divided chain survives in both
+  algebraic and compact-open source cohomology. A positive weight-one Hodge star kills every
+  length-two Jordan chain, so this cyclic source model would also force all Xi zeros to be simple.
 - `KRealGradedAdjoint`, `KRealKernelCokernel`, `KRealClosedCokernel`, and
   `KRealMoritaParityShift`: even/odd \(K_{\mathbb R}\) algebra and quotient descent.
 - `SeamSuspensionTrace`: completed prime--Gamma logarithmic derivative and finite graded Hodge
@@ -278,6 +477,10 @@ metric by transporting a form already known to be positive exactly under RH.
   stable under coordinate multiplication and its parameter labels are not zeta spectrum.
 - The full algebraic dual is larger than desired continuous compact-support cohomology. A source
   topology and comparison with prime--Gamma packet functionals must be proved, not declared.
+- The full compact-open quotient is product-like while its continuous dual is finite-support.
+  Requiring a Hodge bijection directly between them is overstrong and is not Deninger's Hilbert
+  completion. They are the distribution/test boundaries around a missing self-dual Hilbert
+  middle space.
 - A positive Hodge identification on the nonreduced entire quotient also excludes nontrivial
   Jordan chains, hence would imply simplicity as well as RH.
 
@@ -315,10 +518,44 @@ metric by transporting a form already known to be positive exactly under RH.
 - [x] Functional-equation even \(K_{\mathbb R}\) structure descended to source \(H^1\)
 - [x] Compact-open source topology and reduced/unreduced quotient topologies constructed
 - [x] Continuous dual of product jet carrier proved finite-support
-- [ ] `[DAC_CLOSED_XI_RANGE]`: compact-open Xi multiplication has closed range
-- [ ] Prime--Gamma packets identified with continuous compact-support dual
-- [ ] Source topology, scalar cup trace, distributional Lefschetz formula, and regularized
-      topological determinant proved
+- [x] Multiplicity-bounded Xi jets proved continuous on compact-open source
+- [x] Arbitrary finite scalar Xi-jet packets realized inside compact-open entire source
+- [x] Global continuous jet-product map constructed; its kernel proved closed
+- [x] `[DAC_GLOBAL_JET_DIVISION]`: vanishing of all Xi jets implies global divisibility by Xi
+- [x] `[DAC_CLOSED_XI_RANGE]`: compact-open Xi multiplication has closed range
+- [x] Compact-open quotient upgraded to a topological complex module with continuous operator
+      descent and continuous-dual compact support
+- [x] Descended all-jets realization proved continuous, injective, and dense
+- [x] Source Gelfand-triple/Hilbert-completion interface and spectral-survival RH theorem
+      formalized
+- [x] Continuous local compact-support jets proved nonzero and jointly separating
+- [x] Canonical local positive Hodge forms and exact Frobenius purity obstruction formalized
+- [x] Natural finite geometric Xi exhaustion formalized
+- [x] Positive finite Hodge packets, pointwise no-cancellation, and RH implication formalized
+- [x] Positive-depth Jordan-chain survival and Hodge simplicity obstruction formalized
+- [x] `[DAC_LOCAL_QUOTIENT_OPENNESS]`: compact-open inverse jet control proved
+- [x] `[DAC_JET_INTERPOLATION]`: quotient identified topologically with local jet product
+- [x] Continuous compact-support dual identified exactly with finite-support local Xi jets
+- [x] Canonical source Gelfand triple `direct sum of jets ⊂ ell^2(jets) ⊂ product of jets`
+      constructed with exact Poincaré pairing
+- [x] Prime--Gamma packets embedded in canonical `ell^2` middle cohomology with exact source cup
+- [x] Product-topology obstruction recorded: prime--Gamma Cauchy packets are not compact-support
+      finite jets and cannot recover positive-depth Jordan coordinates at a multiple zero
+- [x] Closed densely defined source Frobenius constructed on canonical jet `ell^2`, including
+      exact local Jordan action and distribution intertwining
+- [x] Every compact-open source eigenclass classified and lifted nontrivially into the maximal
+      closed jet Frobenius domain with exact eigenvalue
+- [x] Full local source jet Frobenius characteristic determinants and traces computed without
+      diagonalizing away nilpotent terms
+- [x] Cofinal genus-one source-jet determinant constructed and identified with the Xi canonical
+      product; Hadamard completion identified with `XiC` and uncentered determinant with `xi`
+- [x] Source-jet determinant logarithmic derivative identified with the continued and
+      absolute-convergence prime--Gamma resolvent Lefschetz traces
+- [ ] Prime--Gamma radical quotients identified with their Hilbert Cauchy subspaces
+- [x] Scalar source cup trace and algebraic Poincaré nondegeneracy proved
+- [ ] Full time-distribution Lefschetz formula proved
+- [ ] Closed-operator realization of the cofinal determinant proved trace class/Fredholm or
+      Deninger-zeta-regularized in the exact Hilbert topology
 - [ ] Closed cofinal arithmetic cohomology constructed
 - [ ] Source Hodge--Green positivity proved
 - [ ] RH derived
@@ -366,3 +603,110 @@ metric by transporting a form already known to be positive exactly under RH.
   on an arbitrary product \(\prod_i\mathbb C\) is supported on finitely many coordinates. This
   supplies the compact-support conclusion once the Xi quotient is topologically identified with
   its multiplicity-jet product.
+- 2026-07-25 — Proved locally uniform convergence of every iterated derivative on the compact-open
+  source. Hence all point jets are continuous linear functionals, and every jet below the Xi
+  multiplicity annihilates the continuous differential range. Remaining topology core is the
+  global Xi jet-interpolation/closed-range theorem.
+- 2026-07-25 — Embedded polynomial Hermite CRT into the compact-open entire source. Every finite
+  packet of local polynomial residue classes on the actual Xi divisor has one polynomial entire
+  representative. Explicit centered Taylor polynomials then realize every arbitrary finite scalar
+  derivative packet. This proves the finite stage of `[DAC_JET_INTERPOLATION]`; infinite normal
+  convergence remains.
+- 2026-07-25 — Assembled all multiplicity-bounded Xi jets into one continuous linear product map.
+  Its kernel is closed and contains the Xi differential range. Consequently
+  `[DAC_CLOSED_XI_RANGE]` follows from the strictly local-to-global analytic division equality
+  `[DAC_GLOBAL_JET_DIVISION]`; global interpolation is not needed for that gate.
+- 2026-07-25 — Proved `[DAC_GLOBAL_JET_DIVISION]` unconditionally. Normalized the meromorphic
+  quotient \(F/\Xi_C\); multiplicity-bounded jet vanishing removes each numerator zero, the
+  canonical Xi divided chain removes the denominator zero with exact multiplicity, and
+  meromorphic normal form fills all removable values. Thus the Xi range is the closed all-jet
+  kernel, proving `[DAC_CLOSED_XI_RANGE]`. Only global jet surjectivity remains.
+- 2026-07-25 — Corrected the compact-open quotient from a bare setoid quotient to an actual
+  topological complex module. Added continuous descent/lift for source operators and
+  observations. Constructed continuous Frobenius, strong continuous compact-support dual,
+  weight-one Poincaré law, and multiplicity-exact source eigenvectors on this quotient.
+- 2026-07-25 — Proved finite interpolation already makes the all-jets map dense. Combined with
+  global Xi division, the source quotient embeds continuously and injectively with dense range in
+  the full local jet product; infinite interpolation is now isolated as surjectivity only.
+- 2026-07-25 — Primary-source audit corrected the Hodge topology: Deninger's star acts on middle
+  cohomology and the positive metric is completed afterward. Formalized the source-defined
+  Gelfand triple \(H^1_c\subset\mathcal H^1\subset H^1_{\mathrm{ent,co}}\), a closed polarized
+  unbounded generator, source-distribution intertwining, survival of all Xi eigenclasses, and the
+  unconditional theorem that construction of this exact Hilbert realization implies RH.
+- 2026-07-25 — Constructed all local compact-support jet classes in the strong continuous dual.
+  Finite source interpolation proves each is nonzero; exact global division proves the family
+  separates compact-open \(H^1\). Constructed the canonical rank-one local Hodge form
+  \(\star_\rho(x)(y)=\overline{j_\rho(x)}j_\rho(y)\), proved unconditional semipositivity, and
+  computed its full Frobenius commutator as
+  \((1-\lambda_\rho-\overline{\lambda_\rho})\star_\rho(x)\). Thus local commutation is exactly
+  realness of the centered Xi point, and simultaneous commutation implies RH.
+- 2026-07-25 — Replaced the possible global-cancellation loophole by an exact no-cancellation
+  theorem. Centered closed balls give a natural finite exhaustion of Xi support. Positive weighted
+  finite sums of the local Hodge forms remain semipositive, and finite Hermite interpolation
+  isolates any selected summand; packet commutation therefore forces every included local purity
+  defect to vanish. Commuting packets over the exhaustion imply RH.
+- 2026-07-25 — Proved every positive-depth divided chain survives in source cohomology. A direct
+  positive weight-one Hodge star excludes a length-two Jordan chain by Poincaré compatibility and
+  strict positivity. Consequently this cyclic entire-quotient realization requires simplicity of
+  all Xi zeros in addition to RH. Isolated `[DAC_LOCAL_QUOTIENT_OPENNESS]` as the constructive
+  compact-open route from finite peeling and Taylor approximation to full jet interpolation.
+- 2026-07-25 — Closed `[DAC_LOCAL_QUOTIENT_OPENNESS]` constructively. Local Xi division, Taylor
+  control, finite jet sections, and finite peeling prove inverse control for the descended all-jets
+  embedding. Small Xi-coboundary corrections plus an antitone Cauchy construction then interpolate
+  arbitrary infinite multiplicity-bounded jet families by one compact-open entire source. Hence
+  compact-open arithmetic \(H^1\) is homeomorphic to the full local Xi-jet product.
+- 2026-07-25 — Transported the elementary finite-coordinate theorem through the jet
+  homeomorphism. Every continuous compact-support class is exactly a finite linear combination of
+  local Xi-jet evaluations. This proves the source Gelfand boundary
+  \(H^1_c=\bigoplus_\rho J_\rho^\vee\) against
+  \(H^1_{\mathrm{ent,co}}=\prod_\rho J_\rho\), without a quotient-completeness assumption.
+- 2026-07-25 — Corrected a variance error in the abstract Gelfand interface: a complex-linear
+  test embedding cannot realize the ordinary dual pairing through mathlib's
+  conjugate-linear-first inner product except trivially. Replaced it by the forced
+  conjugate-linear embedding and proved the obstruction theorem. Constructed the canonical
+  source middle carrier `ell^2(rho,k)`. Strong-dual restriction plus Fréchet--Riesz gives the
+  dense test embedding, while coordinate inclusion gives the injective distribution embedding;
+  their Hilbert pairing is exactly source Poincaré evaluation. No Hodge positivity, Frobenius
+  symmetry, zero-location, or simplicity assumption is used.
+- 2026-07-25 — Corrected the proposed prime--Gamma/compact-dual identification. Cauchy packets
+  have infinitely supported divisor evaluations, whereas the continuous dual of product
+  cohomology is finite-support. Embedded lower packets linearly and upper packets
+  conjugate-linearly into canonical jet `ell^2`; proved source prime--Gamma cup equals the
+  unconditional critical-line-reflected Hilbert pairing. Both images are constant across local
+  multiplicity indices. If any Xi zero has multiplicity at least two, Lean proves the packet map
+  is not surjective onto full jet Hilbert cohomology. Thus the explicit trace sees algebraic
+  multiplicity but not positive-depth Jordan jets.
+- 2026-07-25 — Derived full Frobenius action from source multiplication, rather than a diagonal
+  divisor declaration:
+  \((\Theta a)_{\rho,k}=(1/2+i\rho)a_{\rho,k}+ki\,a_{\rho,k-1}\).
+  Constructed its maximal `ell^2` `LinearPMap`, proved graph closed as an intersection of
+  continuous coordinate kernels, proved finite jets form a dense operator core, and proved exact
+  intertwining with compact-open source Frobenius through the Gelfand distribution embedding.
+- 2026-07-25 — Classified the full compact-open point spectrum by the source jet recurrence.
+  An eigenclass at \(\rho\) vanishes on every other divisor fiber and on every jet below the
+  highest multiplicity index, hence is a scalar top-jet basis vector. Used this theorem to
+  construct a canonical nonzero `ell^2` lift of every chosen source Xi eigenclass, prove it belongs
+  to the maximal closed Frobenius domain, and prove the closed generator acts with the exact source
+  eigenvalue. No RH, Hodge positivity, zero simplicity, or divisor-model premise is used.
+- 2026-07-26 — Proved `[DAC_JET_COFINAL_DETERMINANT]`. Kept the complete normalized source
+  Frobenius jet block
+  \((Ba)_k=\rho a_k+k a_{k-1}\), proved it lower triangular, and computed its trace and
+  characteristic determinant exactly. The nilpotent Jordan terms contribute neither trace nor
+  determinant. Genus-one normalization gives \(E_1(z/\rho)^{m_\rho}\); the finite-support
+  determinant net is multipliable and its product is the multiplicity-exact Xi canonical product.
+  The nowhere-zero Hadamard quotient completes this to `XiC`, the uncentered determinant is `xi`,
+  the alternating endpoint quotient is completed zeta, and the determinant logarithmic derivative
+  is exactly the continued/absolute prime--Gamma resolvent Lefschetz trace. Remaining determinant
+  gate is its realization as the trace-class/Fredholm or zeta-regularized determinant of the
+  closed Hilbert operator itself, rather than only the dependency-closed cofinal block net.
+- 2026-07-26 — Froze the CCM detour and returned to Deninger's Proposition 3.2 on
+  \((0,\infty)\). Constructed the actual test/distribution spaces, endpoint traces, the
+  multiplicity-exact reciprocal-square regularized \(H^1\) flow and its second distributional
+  derivative, the locally finite von-Mangoldt Dirac comb, and the regular archimedean density.
+  For every \(\phi\in C_c^\infty((0,\infty))\), proved its Laplace amplitude is entire, two exact
+  integrations by parts give reciprocal-square Xi-divisor summability, and the constructed
+  \(H^1\) trace acts exactly as \(\sum_\rho\Phi(\rho)\). Centering this arbitrary test gives the
+  finite admissible source-contour identity and cofinal contour approximation to the full spectral
+  sum. Formalized the exact equivalence between the remaining scalar Deninger explicit formula
+  and equality in \(\mathcal D'((0,\infty),\mathbb C)\). No special CCM test family, RH premise,
+  or numerical computation is used.

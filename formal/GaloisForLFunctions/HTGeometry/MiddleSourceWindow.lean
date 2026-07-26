@@ -24,8 +24,9 @@ Its exponent worth is the excess of the best low-range demand at `x₁` over the
     (16/237, 743/948) →  6173/39816 - 13/84 = **11/39816** .
 
 Thus, with Huxley's exponent pair retained but the direct Huxley source removed, the architecture
-still yields `μ(1/2) ≤ 6173/39816`; the direct middle source is worth exactly `11/39816` in the
-exponent, and only on a window of relative width `11/8610`.
+still yields `μ(1/2) ≤ 6173/39816`: relative to the best of these three pairs the direct middle source
+is worth `11/39816` in the exponent, and is responsible for a window of width only `11/8610`.  Any
+further low-range pair can only shrink both figures.
 -/
 import GaloisForLFunctions.HTGeometry.ScaleAbscissaDuality
 
@@ -51,8 +52,7 @@ theorem cover_iff {κ lam β c : ℚ} (hd : 0 < epDisplacement κ lam) :
 theorem coverThreshold_mono {κ lam β β' : ℚ} (hd : 0 < epDisplacement κ lam) (h : β ≤ β') :
     coverThreshold κ lam β ≤ coverThreshold κ lam β' := by
   unfold coverThreshold
-  exact div_le_div_of_nonneg_right (by linarith) hd |>.mp (by linarith) |>.elim
-    (fun _ => le_refl _) (fun _ => le_refl _)
+  gcongr
 
 /-! ### The three low-range pairs -/
 
@@ -116,7 +116,7 @@ theorem middleSource_worth :
   unfold covDemandOfPair covFunctional decouplingStart bourgainTheta
   refine ⟨by norm_num, by norm_num, by norm_num⟩
 
-/-- **Removing the direct middle source costs exactly `11/39816`.**  The architecture without it still
+/-- **Removing the direct middle source costs at most `11/39816`.**  The architecture without it still
 delivers `6173/39816`, against the record `6162/39816`. -/
 theorem without_middle_source :
     covDemandOfPair decouplingStart (16 / 237) (743 / 948) = 6173 / 39816 ∧
@@ -127,7 +127,7 @@ theorem without_middle_source :
 
 /-- **Summary.**  At the record target the low-range input covers every scale up to `3474/8610`, the
 final source covers from `3485/8610`, and the direct middle source is responsible for the intervening
-`11/8610` alone — worth exactly `11/39816` in the exponent. -/
+`11/8610` alone — worth at most `11/39816` in the exponent. -/
 theorem middle_source_window :
     coverThreshold (16 / 237) (743 / 948) bourgainTheta = 579 / 1435 ∧
       decouplingStart - coverThreshold (16 / 237) (743 / 948) bourgainTheta = 11 / 8610 ∧

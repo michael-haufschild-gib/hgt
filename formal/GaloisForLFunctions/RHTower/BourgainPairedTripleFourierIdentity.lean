@@ -70,7 +70,7 @@ theorem bourgainWeightedFourierSum_pairedTripleCloud
       unfold bourgainWeightedFourierSum
         bourgainPairedTripleCloud bourgainPairedTripleWeight
       rw [Fintype.sum_prod_type]
-      simp only [Prod.fst, Prod.snd, bourgainAdditiveCharacter_add]
+      simp only [bourgainAdditiveCharacter_add]
       rw [Finset.sum_mul]
       apply Finset.sum_congr rfl
       intro h hh

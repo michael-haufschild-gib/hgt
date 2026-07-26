@@ -166,10 +166,22 @@ unconjugated.
 
 **Theorem 13 (contour extractor).** For `Re w > 2`, `1 < c < Re w − 1`,
 `𝔐_F(w) = lim_T (π/T)(2πi)^{−1}∫_{c−iT}^{c+iT}(F'/F)(s)(\bar F'/\bar F)(w−s)ds`, and each finite-`T`
-integral is holomorphic in `w` off an explicit union of segments. With a smoothed weight and
-**Baker's theorem on linear forms in two logarithms**, the off-diagonal is *effectively* removable:
-`|k log q − j log p| ≫ (log X)^{−C}` for `d,e ≤ X`, so `𝔐_F(w) = δ·J(w;φ_δ) + O(X^{−(c−1)})` with
-`δ = (log X)^{−C}`. (Lean: `exists_gap_of_injOn`, `diagonal_isolation`.)
+integral is holomorphic in `w` off an explicit union of segments. With a smoothed weight the
+off-diagonal is *effectively* removable, the separation being elementary: for distinct positive
+integers `d,e ≤ X`,
+```
+|log d − log e| ≥ 1/max(d,e) ≥ 1/X ,
+```
+since `log(d/e) ≥ 1 − e/d ≥ 1/d` for `e < d`. Hence `𝔐_F(w) = δ·J(w;φ_δ) + O(X^{−(c−1)})` with
+`δ = 1/X`. (Lean: `inv_max_le_abs_log_sub_log`, `monomial_log_separation`, `exists_gap_of_injOn`,
+`diagonal_isolation`.)
+
+*Sharpness, and a correction.* An earlier draft asserted the stronger separation
+`|k log q − j log p| ≫ (log X)^{−C}` "by Baker's theorem on linear forms in two logarithms". That is
+**false** in the range that matters: for distinct primes `p,q ≤ X` with `q = p+2` one has
+`|log p − log q| ≍ 1/X`. A `(log X)^{−C}` gap does hold for perfect powers with both exponents `≥ 2`
+(Tijdeman), but the dominant terms here have `j = k = 1`. The elementary bound `1/X` is the correct
+and sharp input; no transcendence theory is used anywhere in this paper.
 
 **Theorem 14 (conservation law).** In the extractor the two arguments satisfy
 `Re s + Re(w−s) = Re w`, invariant under contour deformation. So for `Re w < 2` at least one argument
@@ -484,8 +496,9 @@ exactly rigid; with Theorem 70 this gives strict inequality for every non-consta
 Write `M\{g\} = \lim_T (1/T)∫_0^T g`. Integrality of the zero-counting function gives, for `F ∈ S`,
 `e^{2πikS_F(t)} = e^{−2πikM_F(t)}(1+o(1))`, an identity, not an estimate.
 
-**Theorem 84 (unconditional).** No non-constant `F ∈ S` has `Σ_p|a_F(p)|²/p < ∞`; equivalently
-`n_F = 0 ⟹ F = 1`.
+**Theorem 84 (unconditional).** No non-constant `F ∈ S` has `Σ_p|a_F(p)|²/p < ∞`.
+*(The hypothesis is convergence of the prime energy, which is strictly stronger than `n_F = 0`, i.e.
+`Σ_{p≤x}|a_F(p)|²/p = o(\log\log x)`. The density-zero case is **not** covered; see Scope.)*
 *Proof.* (A) `d_F ≥ 1` gives `M_F' = ν → ∞` monotonically, so van der Corput's first-derivative test
 yields `M\{e^{2πikS_F}\} = 0`. (B) If `n_F = 0` then by Theorem 77 `S_F = c + 𝒮` with `𝒮 ∈ B²`;
 truncating (`|M\{e^{2πik𝒮}\} − M\{e^{2πik𝒮_N}\}| ≤ 2πk‖𝒮−𝒮_N‖_{B²}`) and applying Weyl equidistribution
@@ -508,5 +521,411 @@ entireness is not needed.
 
 **Scope.** The geometric side of the method takes only the values `0` (single `F`, chirp `M_F`) and
 `1` (pair with equal archimedean data, chirp cancels). It therefore decides exactly whether a prime
-energy vanishes, settling `n_F = 0 ⟹ F = 1` and `n_{F/G} = 0 ⟹ F = G`, and cannot produce a general
-integer — so it does not reach `n_F ∈ Z`.
+energy **converges**, settling `Σ_p|a_F(p)|²/p < ∞ ⟹ F = 1` and the corresponding statement for
+`F/G`, and cannot produce a general integer — so it does not reach `n_F ∈ Z`. Two regimes are left
+untouched and must not be conflated with the above: divergence with density zero
+(`Σ_{p≤x}|a_F(p)|²/p → ∞` but `= o(\log\log x)`), and `0 < n_F < 1`. Every quantitative statement in
+the divergent regime requires an upper bound for `(1/T)∫_0^T|S_F − 𝒮_N|²dt`, which is a zero-density
+hypothesis and is not proved here.
+
+**Theorem 89 (unconditional; the general form of Theorems 84, 85, 87).** Let `H = ∏_i F_i^{α_i}` be a
+non-trivial element of the group completion of `S` (`F_i ∈ S`, `α_i ∈ Z`), with
+`a_H(p) := Σ_i α_i a_{F_i}(p)`. Then `Σ_{p≤x}|a_H(p)|²/p → ∞`.
+*(Divergence, not density: the case `Σ_{p≤x}|a_H(p)|²/p → ∞` with `= o(\log\log x)` is left open.)*
+
+*Proof.* Put `X = Σ_iα_iS_{F_i} = (Σα_iN_{F_i}) − Φ(t)`, `Φ := Σα_iM_{F_i}`, the first bracket
+integer-valued, so `e^{2πikX} = e^{−2πikΦ}(1+o(1))` for `k ∈ Z`. Stirling on
+`γ(s) = Q^s∏_jΓ(λ_js+μ_j)` gives the **complete** asymptotic
+```
+Φ(t) = A\,t\log t + B\,t + C\log t + D + O(1/t),
+A = \frac{Σα_id_i}{2π},\qquad C = \frac{1}{2π}Σ_iα_iθ_{F_i},\qquad θ_F := \mathrm{Im}\,ξ_F,\ \ ξ_F = 2Σ_j(μ_j−\tfrac12),
+```
+`B` being the conductor coefficient and `θ_F` the Kaczorowski–Perelli shift invariant. There are
+**four** regimes:
+```
+A ≠ 0                 chirp          |M_T\{e^{2πikX}\}| → 0                       (van der Corput)
+A = 0 ≠ B             pure tone      |M_T\{e^{2πikX}\}| → 0
+A = B = 0, C ≠ 0      logarithmic    |M_T\{e^{2πikX}\}| → (1+4π²k²C²)^{−1/2} ∈ (0,1)
+A = B = C = 0         constant       |M_T\{e^{2πikX}\}| → 1
+```
+the third from `T^{−1}∫_0^Te^{−2πik(C\log t+D)}dt = e^{−2πikD}T^{−2πikC}/(1−2πikC)`. It is non-empty:
+`H = L(s+iθ_1,χ)/L(s+iθ_2,χ)` has `A = B = 0` and `C = (θ_1−θ_2)/2π ≠ 0`.
+
+In every regime, boundedness of `Σ_{p≤x}|a_H(p)|²/p` puts the associated expansion in `B²`, and Weyl
+equidistribution of the `Q`-independent frequencies `\log p` evaluates
+`|M\{e^{2πikX}\}| = ∏_p|I_p(k)|` with `Σ_p(1−|I_p|) < ∞`. In regimes 1 and 2 the product is non-zero
+for a suitable integer `k` while the geometric side is `0` — a contradiction. In regime 4,
+`|∏_pI_p| = 1` with `|I_p| ≤ 1` forces every `|I_p| = 1` (`norm_eq_one_of_prod_norm_eq_one`), hence
+every local trigonometric polynomial constant, hence `H = 1`. In regime 3 the identity
+`∏_p|I_p(k)| = (1+4π²k²C²)^{−1/2}` must hold for **every** integer `k ≠ 0`; but
+`√(1+4π²k²C²) ≤ 1+2π|C|k < 1+k²E ≤ \exp(k²E)` once `kE > 2π|C|`, so the polynomial profile on the
+right cannot match the Gaussian profile `≈ e^{−k²E}` on the left unless `E = 0`, and then the left
+side is `1` while the right side is `< 1` unless `C = 0`. Hence `C = 0`, every `a_H(p) = 0`, and
+`H = 1`. (Lean: `HTGeometry.sqrt_lt_exp_of_energy_pos`, `HTGeometry.inv_sqrt_lt_one_of_ne_zero`.) ∎
+
+**Corollary.** The additive map `H ↦ (a_H(p))_p` from the group completion of `S` has trivial kernel in
+the strongest sense: no non-trivial element has prime coefficients square-summable against `1/p`.
+Consequences: the `n = 0` stratum is empty throughout the group completion; quantitative strong
+multiplicity one (Theorem 85) is the case `H = F/G`; and `\mathrm{Re}\,c_{F,G} < (n_F+n_G)/2` strictly
+for distinct `F, G` sharing archimedean data (Theorem 86).
+
+---
+
+## 12. The amplifier: unconditional lower bounds for the zero-counting fluctuation
+
+Throughout this section `F ∈ S` is entire and `E_x := Σ_{p≤x}|a_F(p)|²/p`.
+
+**Admissibility.** In the Selberg class only **band-limited** test functions may be used in the Weil
+explicit formula `∫φ'S_F = 𝒫[φ]`. If `φ ∈ C_c^∞(R)` then `\hatφ` decays only polynomially and the
+prime side `Σ_nΛ_F(n)n^{−1/2}\hatφ(\log n) ≍ Σ_p p^{−1/2+ε}(\log p)^{1−A}` diverges. All amplifiers
+below therefore take `\hatψ` compactly supported.
+
+**Theorem 90 (exact amplifier).** Let `\hatψ` be supported in `[−1,1]`, `x ≥ 2`, `P > 2x`, `t_0 ∈ R`,
+and `φ'(t) = Σ_{p≤x}\overline{a_F(p)}p^{−1/2}ψ((t−t_0)/P)e^{it\log p}`. Then
+
+1. `\hatφ` is supported in `⋃_{p≤x}[\log p−1/P,\log p+1/P]`, a compact set with `0 ∉ \mathrm{supp}`;
+2. the prime side is **exactly** the diagonal `n = p ≤ x`, because distinct positive integers satisfy
+   `|\log n − \log m| ≥ 1/\max(n,m)` and `n > P ≫ x ≥ p` forces `\log n − \log p ≫ 1/P`; prime powers
+   are excluded outright rather than estimated;
+3. the archimedean main term vanishes (it carries `\hatφ(0)`);
+4. `‖φ'‖_2² = P‖ψ‖_2²E_x` **exactly**, since the off-diagonal at `(p,p')` carries
+   `\widehat{ψ²} = \hatψ*\hatψ` supported in `[−2,2]` and `|\log p − \log p'| ≥ 1/x > 2/P`.
+
+(Lean: `HTGeometry.inv_max_le_abs_log_sub_log`, `HTGeometry.monomial_log_separation`.)
+
+**Theorem 91 (unconditional).** `(1/P)∫|S_F(t)|²|ψ((t−t_0)/P)|²dt ≫_ψ E_x` for `P > 2x`; hence
+`(1/T)∫_0^T|S_F|²dt ≫ E(T/2)`.
+
+**Theorem 92 (unconditional).** Adding the rounding floor: `S_F − 𝒮_x = N_F − (M_F+𝒮_x)` with
+`N_F ∈ Z`, so `|S_F−𝒮_x| ≥ \|M_F+𝒮_x\|`, and the chirp `M_F` (with `M_F'' ≠ 0`) makes `M_F+𝒮_x`
+equidistribute mod `1`. Since the resolved band is exactly orthogonal to the residual (Theorem 90),
+```
+\frac1T∫_0^T|S_F(t)|²dt \;≥\; \frac{1}{4π²}Σ_{p≤x}\frac{|a_F(p)|²}{p} \;+\; \frac1{12} \;−\; o(1)
+\qquad (x < T/2).
+```
+For `ζ`, Selberg's `(1/T)∫_0^TS² ∼ (1/2π²)\log\log T` shows the main term is sharp up to a factor `2`:
+**the amplifier recovers half of Selberg's asymptotic for the whole Selberg class with no zero-density
+input.**
+
+**Theorem 93 (unconditional).** For every non-constant `F ∈ S`,
+`\liminf_T (1/T)∫_0^T|S_F(t)|²dt = ∞`; in particular `S_F` is unbounded and `S_F ∉ B²`.
+*Proof.* The Fourier–Bohr coefficients of `S_F` are exactly `\widehat{S_F}(\log n) =
+−Λ_F(n)/(2πn^{1/2}\log n)` (phase suppressed) and vanish off `\{±\log n\}`; Bessel for Fourier–Bohr
+coefficients (`\liminf_T(1/T)∫_0^T|f|² ≥ Σ_j|\hat f(λ_j)|²`, from expanding
+`(1/T)∫|f−Σ\hat f(λ_j)e^{iλ_jt}|² ≥ 0` and `(1/T)∫e^{i(λ_j−λ_l)t} → δ_{jl}`) gives
+`\liminf ≥ (1/4π²)E_N + O(1)` for every `N`; and `E_N → ∞` by Theorem 89. ∎
+(Lean: `HTGeometry.oscInt_norm_le`, `HTGeometry.oscInt_gram_bound`,
+`HTGeometry.bessel_of_almost_orthogonal`.)
+
+For `ζ` the unboundedness of `S(t)` is classical (Selberg, via his zero-density theorem); here the
+amplifier replaces that input, and the argument applies to every element of the class.
+
+## 13. The mod-1 law, and the exact ceiling of the method
+
+**Theorem 94 (complete mod-1 classification; unconditional).** With `A, B, C` as in the proof of
+Theorem 89, the law of `X = Σα_iS_{F_i}` mod `1` for `t` uniform on `[0,T]` converges to: the uniform
+law if `A ≠ 0` or `A = 0 ≠ B`; the rotates of `f_C(v) = e^{v/C}/(C(e^{1/C}−1))` if `A = B = 0 ≠ C`; a
+point mass if `A = B = C = 0`. In particular `S_F` is uniform mod `1` for every non-constant `F ∈ S`,
+while `S_{P_1}−S_{P_2}` for `P_j = L(s+iθ_j,χ)` is **exponentially (Benford-)distributed** mod `1`.
+*Certificate.* `\int_0^1f_C(v)e^{−2πikv}dv = (1−2πikC)^{−1}`, matching the direct evaluation of
+`T^{−1}∫_0^Te^{−2πikC\log t}dt`. (Lean: `HTGeometry.fourierCoeff_expDensity`.)
+
+**Theorem 95 (the ceiling).** The total unconditional content of `e^{2πikS_F} = e^{−2πikM_F}` is:
+*`S_F` is equidistributed mod `1` with discrepancy `O_F(1/T)`.* Every unconditional theorem of §11 and
+Theorem 94 follows from this; and no statement about the *unwrapped* law of `S_F` — in particular no
+value or rate for `n_F` — does. Consequently the method decides exactly whether a prime energy
+converges, and the optimal dual frequency for a rate, `k ≍ E^{−1/2} < 1`, is inadmissible because
+`e^{2πikN_F} = 1` requires `k ∈ Z`.
+
+**Corollary 96.** With the Selberg-CLT variance `σ² = (n_F/2π²)\log\log T`, a Gaussian would give
+`|Ψ_T(1)| = (\log T)^{−n_F}`, whereas in fact `|Ψ_T(1)| = O(1/T)`: the law of `S_F` is uniform mod `1`
+to a precision exceeding the Gaussian prediction by a factor `T(\log T)^{−n_F}`. The excess is purely
+archimedean, so the Gaussian model — accurate for the unwrapped law — is badly wrong at the mod-1
+scale.
+
+## 14. Low degree
+
+**Theorem 97 (unconditional).** If every primitive factor of `F ∈ S` has degree `1`, say
+`F = ∏_iP_i^{m_i}` with the `P_i` distinct, then Selberg's Conjecture B holds for every pair
+`(P_i,P_j)` and `n_F = Σ_im_i² ∈ Z_{≥1}`.
+*Proof.* Degree-`1` elements of `S` are `ζ` and `L(s+iθ,χ)` (Kaczorowski–Perelli), and
+`Σ_pa_{P_1}(p)\overline{a_{P_2}(p)}p^{−w} = \log L(w+i(θ_1−θ_2),χ_1\barχ_2)+O(1)` is bounded at `w=1`
+unless `P_1 = P_2`, by non-vanishing of `L` on the `1`-line. ∎
+
+**Corollary 98.** Since no element of `S^♯` has degree in `(0,1)∪(1,2)` and degree-`0` elements are
+`≡1`, **Conjecture A holds unconditionally for every `F ∈ S` with `d_F ≤ 2` except possibly primitive
+elements of degree exactly `2`, for which it asserts precisely `n_F = 1`.**
+
+**Remark (what is still open below Conjecture A).** No unconditional bound
+`\limsup_x E_x/\log\log x < ∞` is known: even *finiteness* of `n_F` is open. The best available is
+`E_x ≪ \log²x`. A bound `Σ_{n≤x}|a_F(n)|² ≪ x(\log x)^{C}` would give `n_F ≤ C+1` and is equivalent,
+via the approximate functional equation, to `∫_0^T|F(1/2+it)|²dt ≪ T(\log T)^{C}` — the Rankin–Selberg
+problem.
+
+## 15. Corrections to earlier drafts
+
+Recorded for the reader of previous versions.
+
+1. The separation used in Theorem 13 was stated as `|k\log q − j\log p| ≫ (\log X)^{−C}` "by Baker's
+   theorem". That is false where it is used (twin primes `p,q = p+2 ≤ X` give `≍ 1/X`); a
+   `(\log X)^{−C}` gap holds only for perfect powers with both exponents `≥ 2`. The correct and sharp
+   input is elementary, `|\log d − \log e| ≥ 1/\max(d,e)`, so the smoothing parameter is `δ = 1/X`.
+   **No transcendence theory is used anywhere in this paper.**
+2. Theorems 84 and 89 were stated with "equivalently `n_F = 0 ⟹ F = 1`". Convergence of
+   `Σ_p|a_F(p)|²/p` is strictly stronger than `n_F = 0`; the density-zero case is not covered.
+3. The proof of Theorem 89 listed three archimedean regimes. The expansion of the archimedean phase
+   was one term short: the term `C\log t`, with `C` proportional to the shift invariant `θ_F`, gives a
+   **fourth** regime, realised by `L(s+iθ_1,χ)/L(s+iθ_2,χ)`. The corrected proof appears above; the
+   statement is unaffected.
+4. The amplifier of §12 was previously taken compactly supported in `t`, which is inadmissible
+   (divergent prime side). The band-limited form is used here and makes the amplifier exact.
+
+---
+
+## 16. The sharpest reduction: Conjecture A from one linear density
+
+Write `δ_1(g) := \lim_x(\log\log x)^{−1}Σ_{p≤x}g(p)/p`, the logarithmic density at the scale `p^{−1}`.
+One instance is unconditional (Theorem 52 plus a Tauberian step):
+```
+δ_1\big(p ↦ a_G(p)\big) = −\,\mathrm{ord}_{s=1}G ∈ Z        for every G ∈ S^♯ .
+```
+
+**Theorem 99.** For arithmetic functions with `a(1) = 1` and `p` prime,
+`a_{FG}(p²) = a_G(p²) + a_F(p)a_G(p) + a_F(p²)`; hence
+```
+|a_F(p)|² = a_{F\bar F}(p²) − a_F(p²) − \overline{a_F(p²)} .
+```
+(Lean: `RHTower.selberg_pairing_prime_sq`.) A degree-free cross-check from Newton's identities,
+`p_1² = 2h_2 − p_2` with `h_2(α(p)) = a_F(p²)` and `p_2(α(p)) = 2b_F(p²)`, gives
+`a_F(p)² = 2a_F(p²) − 2b_F(p²)` (Lean: `HTGeometry.newton_sq_identity`; checked on `ζ`:
+`2·1 − 2·½ = 1`, and on a `GL_2` newform: `2(a²−1) − (a²−2) = a²`).
+
+**(PSD₂).** *For every `G ∈ S`, `δ_1\big(p↦a_G(p²)\big) ∈ Z`.*
+
+**Theorem 100.** **(PSD₂) ⟹ Selberg's Conjecture A**, via
+`n_F = δ_1(a_{F\bar F}(·²)) − 2\,\mathrm{Re}\,δ_1(a_F(·²))`.
+
+Since `a_G(p²) = h_2(α(p))` is the character of `\mathrm{Sym}²` on the Satake class,
+`Σ_pa_G(p²)p^{−s}` differs from `\log L(s,\mathrm{Sym}²G)` by a function holomorphic on
+`\mathrm{Re}\,s > 1/2`, so
+
+> **(PSD₂) ⟺ `S` is closed under `\mathrm{Sym}²` in the monodromy-only sense of MI.**
+
+This is strictly weaker than MI as stated in §1: MI asks meromorphy of the **bilinear** `R_{F,G}` for
+all pairs (degree `d²`); (PSD₂) asks only for the **unary** operation `\mathrm{Sym}²`
+(degree `d(d+1)/2`) applied to each element separately. The quadratic-versus-additive obstruction of
+Theorem 4 is bypassed: the quadratic datum `a_F(p)\overline{a_F(p)}` is absorbed into the *linear*
+coefficient `a_{F\bar F}(p²)` of the auxiliary element `F\bar F ∈ S`.
+
+**Sanity checks.** `F = ζ`: `a_{ζ²}(p²) = 3`, `a_ζ(p²) = 1`, so `n_ζ = 3 − 2 = 1` ✔. `GL_2` newform
+of trivial nebentypus: `a_F(p²) = a_{\mathrm{sym}²}(p)` with `Σ_pa_{\mathrm{sym}²}(p)p^{−s}` regular
+at `s = 1`, so `δ_1(a_F(·²)) = 0`, and `δ_1(a_{F\bar F}(·²)) = n_F` ✔.
+
+**Low degree.** Combined with §14: **Conjecture A holds unconditionally for every `F ∈ S` with
+`d_F ≤ 2` except possibly primitive elements of degree exactly `2`, where it is the single statement
+`δ_1(a_F(·²)) = 1 − δ_1(\det)`.**
+
+## 17. Sharpness of the standard twist in the `α`-aspect
+
+A by-product of the two-variable analysis of §16's obstruction.
+
+**Corollary 101.** Let `G ∈ S` have degree `2` and `δ_1(a_G(·²)) ≠ 0` (e.g. `G = ζ²`, where the
+density is `3`). Then **no** bound `Φ_G(s,α) ≪_s α^{−1/2−δ}` with `δ > 0` holds uniformly for
+`α ∈ \mathrm{Spec}(G)` and `s` in a punctured neighbourhood of `s^*_0 = 3/4`.
+*Proof sketch.* Such a bound would make `Σ_p p^{−w}Φ_G(s,α_p)` converge at `w = 1/2`, hence make
+`Σ_p\overline{a_G(p²)}p^{−s'}` holomorphic at `s' = 1` and `δ_1(a_G(·²)) = 0`. ∎
+
+So the decay exponent `−1/2 = 2(s^*_0 − 1)` is sharp and is saturated by the residues
+`ρ_0(α_{p²}) ∝ \overline{a_G(p²)}p^{−1/2}` themselves.
+
+## 18. Scope: what the axioms cannot do
+
+The obstruction to (PSD₂), stated at maximum resolution. `\log G` supplies
+`Σ_pΣ_j b_G(p^j)p^{−js}`: the `j`-th character datum at weight `p^{−js}`, singular at `s = 1/j`.
+Conjecture A needs the same data at weight `p^{−s}`, singular at `s = 1`. Only `j = 1` has the two
+scales agreeing — which is exactly why the linear densities are integers and nothing else is. The
+rescaling `G(s) ↦ G(s/j)` is harmless; what fails is the **sieve**, the extraction of one `j`-graded
+piece, and it fails in four independent ways: (i) no fixed combination `Σ_mc_m\log G(ms)` isolates a
+single `j`, since the `p^{−js}`-coefficient is the `G`-independent mixture `Σ_{m|j}c_mb_G(p^{j/m})`;
+(ii) the per-prime even-part extraction does not globalise, an average of products not being a product
+of averages; (iii) squares are not a union of congruence classes, so no character detects them; (iv)
+argument rescaling `G(s/2)` places the wrong coefficients at the wanted frequencies. Sieve and
+rescale together are exactly the operation `F ⊗ \bar F`, and their absence is Langlands functoriality.
+
+---
+
+## 19. The square-index series and the standard twist
+
+Throughout this section `G ∈ S` has degree `2` and conductor `q`; `Φ_G(s,z) = Σ_m a_G(m)e(z\sqrt m)m^{−s}`
+is the Kaczorowski–Perelli twist, holomorphic for `z ∈ H` and with the standard twist as boundary value.
+
+**Theorem 102 (damped twist; unconditional).** For every `y > 0` and every `s ∈ C`,
+`Φ_G(s,−α+iy) = Σ_m a_G(m)e(−α\sqrt m)e^{−2πy\sqrt m}m^{−s}` converges absolutely, and for every
+integer `n ≥ 1`
+```
+\lim_{A→∞}\frac1A∫_0^A Φ_G(s,−α+iy)\,e(αn)\,dα \;=\; a_G(n²)\,e^{−2πyn}\,n^{−2s} .
+```
+*Proof.* The damping beats every polynomial, so the series may be integrated term by term, and
+`\frac1A∫_0^Ae(α(n−\sqrt m))dα → [m = n²]`. ∎
+
+**Theorem 103 (integer sampling; unconditional).** For every `y > 0`,
+```
+Σ_{n≥1} a_G(n²)\,e^{−2πyn}\,n^{−1} \;=\; \lim_{A→∞}\frac1A Σ_{k≤A}Φ_G\big(\tfrac12,−k+iy\big) ,
+```
+by Weyl equidistribution of `(k\sqrt m)_k` for non-square `m`. Moreover the contribution of the spectral
+singularities to the right-hand average is `O\big((Ay)^{−1/2}\big) → 0`: the quantity is carried entirely
+by the regular part of the twist at integer arguments.
+
+**Corollary 104.** `(PSD₂)` for `G` — hence, by §16, Conjecture A for every `F ∈ S` with `d_F ≤ 2` — is
+equivalent to
+```
+Σ_{n≥1} a_G(n²)\,e^{−2πyn}\,n^{−1} \;=\; κ\,\log(1/y) + O(1) \qquad (y → 0^+),\quad κ ∈ Z ,
+```
+the Abel-regularised form of the prime-square density (equivalent to the logarithmic form by
+Hardy–Littlewood, the coefficients being `≪ n^{ε−1}`).
+
+**Remark (why degree 1 is different).** For `d = 1` the twist `Σ_mχ(m)e(αm)m^{−s}` is *periodic* in `α`,
+its Bohr means are ordinary Fourier coefficients `∫_0^1`, and `y → 0` commutes with integration over a
+compact interval by dominated convergence. Directly, `D_G(s) = Σ_nχ(n)²n^{−s} = L(s,χ²)`, so `(PSD₂)`
+holds. For `d ≥ 2` the frequencies `\sqrt m` are irrational, the twist is only almost periodic, the
+averaging interval is infinite, and dominated convergence is unavailable. Equivalently: detecting
+squares requires an additive twist at exponent `1`, while the Selberg axioms resonate only at exponent
+`1/d`; the two coincide exactly when `d = 1`.
+
+**Remark (what is *not* an obstruction).** Three quantities that might be expected to obstruct the
+above are bounded: the spectral singularity exponent is `d(\tfrac12 − s^*_0) = −\tfrac12` for **every**
+degree, hence locally integrable; the absolute Bohr mean of the singular part is `O(A^{ε})`; and the
+off-diagonal in Theorem 102 is `O(A^{ε−1})`. The local expansion C7.1 is *not* uniform over the
+spectrum — its radius of validity is the spectral gap `≍ 1/α` — but Theorem 103 avoids any use of
+uniformity by taking `A → ∞` before `y → 0`.
+
+---
+
+## 20. Bounded Satake parameters and the energy bound `n_F ≤ d_F²`
+
+**Theorem 105.** Let `F ∈ S` have a polynomial Euler product of local degree `∂_p ≤ d` with Satake
+parameters `|α_j(p)| ≤ 1`. Then `|a_F(p)| ≤ d` for every `p`, hence
+```
+\limsup_{x→∞}\ \frac{1}{\log\log x}Σ_{p ≤ x}\frac{|a_F(p)|²}{p} \;≤\; d^{\,2} .
+```
+Equality in the density forces `α_1(p) = \cdots = α_d(p)` of modulus `1` for almost all `p`, i.e.
+`F = P^{d}` with `\deg P = 1`; so for `F` primitive of degree `d ≥ 2` the inequality is strict.
+(Lean: `HTGeometry.norm_sum_le_card`, `HTGeometry.norm_eq_one_of_norm_sum_eq_card`,
+`HTGeometry.weighted_sq_le`.)
+
+**Corollary 106.** For `F ∈ S` of degree `2` and conductor `1`, the hypotheses of Theorem 105 hold
+**unconditionally**: Kaczorowski–Perelli (*Twists, Euler products and a converse theorem for
+`L`-functions of degree 2 in the Selberg class*, arXiv:1207.2312, Theorem 1 and its Corollary) prove
+that the local factors have the form `∏_{j≤∂_p}(1−α_j(p)p^{−s})^{−1}` with `|α_j(p)| ≤ 1` and
+`∂_p ≤ 2`. Hence `n_F ≤ 4`, and `n_F < 4` for `F` primitive. **In particular `n_F` is finite** — a
+question left open in general by §18.
+
+**Remark (scope).** The polynomial-Euler-product and bounded-Satake hypotheses, which are assumptions
+throughout §§1–19, are therefore theorems in `S_2` with conductor `1`. In that subclass one also has,
+from the same paper: the sharp transformation formula for **linear** twists,
+`α ↦ −1/(q_Fα)` (Theorem 2); meromorphy on `C` of every linear twist at a rational, holomorphic for
+`σ < 1` (Theorem 3); and the converse theorem that `ζ(s)²` is the only element with a pole at `s = 1`
+(Theorem 4), so every other element of the subclass is entire.
+
+**Consequence for §16.** With `∂_p ≤ 2` and `|α_j| ≤ 1` available, Theorem 99's hypotheses reduce to
+self-duality together with the assumption that the local determinant `α_1(p)α_2(p)` is the value of a
+Dirichlet character; and in the unitary case
+```
+n_F = 2 + 2\,\mathrm{Re}\,δ_1\big(p ↦ α_1(p)\overline{α_2(p)}\big) ,
+```
+so Conjecture A for such `F` is exactly `δ_1(α_1\barα_2) ∈ \tfrac12Z`, with `(P1)` the assertion
+`\mathrm{Re}\,δ_1(α_1\barα_2) = −\tfrac12`. The outer bounds `0 ≤ n_F ≤ 4` are unconditional.
+
+---
+
+## 21. [WITHDRAWN]
+
+An earlier version of this section derived Wilton's bound for `F ∈ S_2` with `q_F = 1` from
+Kaczorowski–Perelli's transformation formula for linear twists, on the reading that the error term of
+their Theorem 2 satisfies `H_K ≪ (A/K)^{K}` and is therefore negligible for large `K`. The arXiv source
+of that paper gives `H_K(s,α) ≪ (AK)^{K}`, which grows with `K`; the formula transports holomorphy on
+an expanding region (which is how the authors use it), not size. The argument of this section is
+therefore withdrawn. Sections 16–20 are unaffected.
+
+## 23. The duality operator in degree two, and self-referential twist identities at conductor 2 and 3
+
+Kaczorowski–Perelli's transformation formula for nonlinear twists applies to
+`F(s;f) = Σ a_F(n)n^{−s}e(−f(n,α))` whenever the leading exponent `κ_0` of `f` exceeds `1/d`:
+```
+F(s;f) = Σ_{j=0}^{J} W_j(s) F̄(s^* + η_j; f^*) + G(s;f),   G holomorphic for σ > −K,
+s^* = (s + dκ_0/2 − 1 + i d θ_F κ_0)/(dκ_0 − 1),   f^* = T^♭(f),
+T(f)(ξ,α) = (4π²i)^{−1} ∮_C Φ Φ_zz/Φ_z dz,   Φ(z,ξ,α) = z^{1/d} − 2π f(qz/ξ,α),  q = q_F(2πd)^{−d},
+```
+with `T² = id` and `T(f) := −T(−f)` when the leading coefficient of `f` is negative. The shift
+`S(f) = f + P(ξ)`, `P ∈ Z[ξ]`, acts trivially on twists but not on `T`.
+
+### 23.1 Closed form of `T` in degree two
+
+**Lemma 23.1.** Let `d = 2`, `q_F = Q`, and `f(ξ,α) = cξ + γξ^{1/2}` with `c ≠ 0`. Then
+```
+T(f)(ξ,α) = [ ξ − sgn(c)·γ√Q ξ^{1/2} + γ²Q/4 ] / (cQ),   i.e.
+c ↦ 1/(cQ),        γ ↦ −γ/(|c|√Q),
+```
+plus an additive constant `γ²/(4c)` in the phase.
+
+*Proof.* Assume first `c > 0`. With `u = z^{1/2}` one has `Φ = a u − b u²`,
+`a = 1 − 2πγ√q ξ^{−1/2}`, `b = 2πcqξ^{−1}`, hence `Φ_z = (a−2bu)/(2u)` and `Φ_{zz} = −a/(4u³)`, so
+`ΦΦ_{zz}/Φ_z = −a(a−bu)/(2u(a−2bu))`. Since `dz = 2u du`, the contour integral equals
+`∮ −a(a−bu)/(a−2bu) du = 2πi·a²/(4b)`, giving `T(f) = a²/(8πb)`. Substituting and using
+`16π²q = q_F = Q`, `4π√q = √Q` yields the display. For `c < 0` apply this to `−f` and negate. ∎
+
+Two checks. `T² = id`: `c ↦ 1/(cQ) ↦ c` and `γ ↦ −γ/(|c|√Q) ↦ γ`. And at `Q = 1`, `c = 1` the operator
+fixes `c` and sends `γ ↦ −γ`, i.e. the dual of the standard twist is the standard twist at `−α`. **That
+is exactly the coincidence which makes the conductor-one theory work**, exhibited here as the statement
+that `c = 1` is a fixed point of `c ↦ 1/(cQ)` precisely when `Q = 1`.
+
+### 23.2 Loops
+
+Since `F(s; cξ + γξ^{1/2}) = F(s,γ)` exactly when `c ∈ Z ∖ {0}`, define a **loop** to be a chain
+`c_0 = 1 → c_1 → ⋯ → c_r ∈ Z` with `c_{i+1} = 1/(Q(c_i + m_i))`, `m_i ∈ Z`, and call it **proper** when
+`m_i ≠ 0` for `1 ≤ i ≤ r−1` (otherwise two consecutive dualities cancel). Its **weight** is the factor
+by which `γ` returns; writing `γ_i = t_iα/(√Q)^i` the track is `t ↦ −t/|c|` and the weight is
+`t_r/Q^{r/2}` for even `r`.
+
+**Theorem 134.** The chains
+```
+Q = 2:   1 →(0)→ 1/2 →(−1)→ −1,                    t : 1, −1, 2,          weight 2/2 = 1;
+Q = 3:   1 →(0)→ 1/3 →(−1)→ −1/2 →(1)→ 2/3 →(−1)→ −1,  t : 1, −1, 3/2, −3, 9,  weight 9/9 = 1
+```
+are proper loops of even length and weight `1`. At `Q = 4` there is no proper loop of length `2` or `4`:
+length `2` needs `|1+4m_1| = 1` with `m_1 ≠ 0`, and length `4` forces `|B_2| = 1` and then `m_2 = 0`.
+
+### 23.3 The identity
+
+**Theorem 135.** Let `F ∈ S^♯` have degree 2 and conductor `Q ∈ {2,3}`, and let `α ∈ Spec(F)`. Then for
+every integer `M ≥ 0`
+```
+F(s,α) = Σ_{m=0}^{M} W_m^{(Q)}(s,α) F(s + η_m, α) + H_M(s,α),
+```
+where `W_0^{(Q)} ≡ 1`, the shifts `0 = η_0 < η_1 < ⋯` and the coefficients of the polynomials
+`W_m^{(Q)}` depend only on `Q` (and are linear in the structural invariants `d_F(ℓ)`), and `H_M(s,α)` is
+holomorphic for `σ > −(M−1)/2`.
+
+*Proof.* Compose the transformation formula along the loop of Theorem 134. Both endpoints have integer
+linear coefficient, so both ends are the standard twist; the intermediate shifts act trivially on
+twists; the length is even, so the composite maps `F` to `F` and the accumulated shift
+`2iθ_F − 2iθ_F + ⋯` vanishes (conjugation reverses the internal shift); and the weight is `1`, so the
+twist parameter returns to `α`. The `W_j` of the transformation formula are `e^{a_js}P_j(s)` with
+`deg P_j ≪ j`, a shape stable under composition along a fixed finite chain. ∎
+
+**Corollary 136.** Since the `m = 0` term cancels the left-hand side,
+`Σ_{m≥1}W_m^{(Q)}(s,α)F(s+η_m,α)` is holomorphic for `σ > −(M−1)/2`; requiring its residue to vanish at
+each pole `s_M` of the standard twist gives, for every `α ∈ Spec(F)` and hence identically in `α`, a
+universal family of quadratic relations among the structural invariants `d_F(ℓ)`. Consequently all
+`d_F(ℓ)` are determined by `d_F(1) = χ_F − 1/8`, and `χ_F` determines `(ω/ω_F)h_F(s)`.
+
+This is the conductor-2 and conductor-3 analogue of the first step of the conductor-1 classification.
+What remains, for the classification itself, is the non-degeneracy of the leading coefficient of the
+resulting quadratic form, and then the virtual-`γ`-factor and period-function steps for the groups
+`Γ_0(2)^+ ≅ G(√2)` and `Γ_0(3)^+ ≅ G(√3)`.
+
+### 23.4 Formalisation
+
+`formal/GaloisForLFunctions/HTGeometry/DualityLoopWeights.lean`: `cStep`, `tStep`, `cStep_cStep`,
+`tStep_tStep` (both involutions), `dualityLoop_two`, `dualityLoop_three` (the two loops, with their
+weights), `no_proper_length_two_loop_four`, `proper_length_two_loop_two`, `cStep_four_fixed`.

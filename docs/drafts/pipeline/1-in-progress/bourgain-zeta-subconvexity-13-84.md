@@ -299,3 +299,137 @@ functional-equation estimate may enter as a hypothesis of the final declaration.
   Bombieri--Iwaniec double large sieve, Huxley/Huxley--Watt second-spacing
   estimates, and the logarithmic exponent-pair inputs as unconditional Lean
   theorems.
+- 2026-07-25 — `[SECTION 3 DOUBLE LARGE SIEVE] [LEAN-PROVED]`
+  `BourgainGaussianClustering.lean` and
+  `BourgainGaussianLargeSieve.lean` prove the normalized four-cube Gaussian
+  large sieve with explicit constant. `BourgainIntervalLocalization.lean`,
+  `BourgainBoxLocalization.lean`, `BourgainLocalMassL2.lean`,
+  `BourgainLocalizedCoefficientL2.lean`, and
+  `BourgainBilinearLocalization.lean` supply exact interval recovery,
+  tensor-product localization, local-mass `L²`, and the bilinear integral
+  identity. `BourgainDoubleLargeSieve.lean` combines them into the
+  four-dimensional Bombieri--Iwaniec double large sieve with explicit
+  constant
+  `exp(4π)·331776·∏_{j<4}(π²(1+X_jY_j))`.
+  `BourgainSixthPowerPolarization.lean`,
+  `BourgainDoubleLargeSieveCloud.lean`, and
+  `BourgainMomentCloudBounds.lean` specialize this to Bourgain's sixfold
+  moment cloud and prove the checked (3.7)--(3.9) twelfth-moment bound by the
+  literal first- and second-spacing counts.
+  `BourgainFirstSpacingElimination.lean` connects this theorem to the
+  existing sharp-`A₆` first-spacing bridge. All target builds pass.
+  `[OPEN CORE]` First-spacing elimination still depends on proving sharp
+  `A₆` unconditionally. Huxley/Huxley--Watt's resonance-curve
+  second-spacing estimate remains absent.
+- 2026-07-25 — `[SECTION 2 SHARP ANISOTROPIC CELL] [LEAN-PROVED]`
+  `BourgainParabolaFundamentalCell.lean` replaces the coarse isotropic
+  `[0,H²]⁴` cell of volume `H⁸` by the exact period cell with side lengths
+  `H,H²,H,H²` and volume `H⁶`. It proves exact planar and bilinear Fubini
+  factorization and the unconditional subpower `L⁶` estimate on that sharp
+  cell.
+  `BourgainAnisotropicFundamentalCell.lean` pulls the cell back through the
+  combined osculating-coordinate and parabola-dilation matrix, proves its
+  exact determinant and volume, transports the quadratic local bilinear
+  estimate, controls the inverse-distortion radius, and integrates the
+  literal square-root curve with the full cubic Taylor remainder and exact
+  pulled-back cell volume. Target build passes.
+  `[OPEN CORE]` Cover the specific Section-2 physical domain by translated
+  pulled-back period cells with sharp multiplicity, then sum the exact Taylor
+  errors and feed the separated linear-to-bilinear scale recurrence. This is
+  now the remaining local-to-global step for unconditional
+  `A₆≪H^(6+ε)`.
+- 2026-07-25 — `[SECTION 2 EXPLICIT ANISOTROPIC GRID] [LEAN-PROVED]`
+  `BourgainAnisotropicCellGrid.lean` constructs the half-open product grid
+  adapted to phase half-widths `H/2,H²/2,H/2,H²/2`, proves its exact
+  cardinality `∏j(m_j+1)`, pulls the cover back through the combined
+  square-root osculating equivalence, and proves the resulting finite-cover
+  integral bound with exactly that product loss. Target build passes.
+  `[OPEN CORE]` Prove the sharp inclusion/count for Bourgain's specific
+  Section-2 physical integration domain. A naive coordinate bounding box
+  loses the needed `H²`; periodic averaging/scale recurrence must retain the
+  source argument's sharp multiplicity before this grid can close `A₆`.
+- 2026-07-25 — `[SECTION 2 PHYSICAL A₆ NORMALIZATION] [LEAN-PROVED]`
+  `BourgainA6PhysicalBox.lean` defines the literal physical-coordinate sum
+  and proves that its twelfth moment on
+  `[0,H]×[0,H²]×[-H²,H²]×[-H,H]` is exactly `H⁶` times
+  `bourgainA6LiteralMoment H`. It also records the corresponding iff for
+  sharp upper bounds. This closes the exact Jacobian bridge between
+  Bourgain's physical decoupling domain and the existing normalized `A₆`
+  target. Target build passes.
+- 2026-07-25 — `[SECTION 2 EXACT BLOCK LOCALIZATION] [LEAN-PROVED]`
+  `BourgainA6BlockLocalization.lean` proves a consecutive normalized
+  square-root-curve block is definitionally the exact local sum based at
+  `sqrt(q/N)` with denominator `N`. It specializes the translated sharp-cell
+  theorem to two ordered positive `A₆` blocks, retaining exact determinant,
+  coefficient masses, and cubic Taylor remainder. Target build passes.
+  The same module now proves the exact `K×M` block partition, rewrites every
+  block as an exact local sum, establishes the quantitative base separation
+  `sqrt(q₂/N)-sqrt(q₁/N) ≥ M/(2N)`, and derives the sharp combined phase
+  determinant lower bound `(3/512)(M/N)^10` together with reciprocal
+  Jacobian bound `(512/3)(N/M)^10`. It also simplifies the quadratic
+  sharp-cell main term to `≪C²N^10M^(2+ε)`, exactly
+  `N^(4+ε)M²` after physical `N⁶` normalization.
+  `BourgainA6PointwiseBilinear.lean` connects consecutive exact block
+  families to the three-color separated Bourgain--Guth majorant, proves the
+  corresponding physical-ball integrated inequality, and shows every
+  off-diagonal color pair inherits the same reciprocal-Jacobian bound.
+  Target builds pass.
+  `[OPEN CORE]` Sum this uniform translated-cell estimate over Bourgain's
+  periodic-averaged physical domain with sharp multiplicity, then discharge
+  Taylor remainders and the multiscale linear-to-bilinear recurrence.
+- 2026-07-26 — `[SECTION 2 PERIODIC AVERAGING/LOCAL ERROR] [LEAN-PROVED]`
+  `BourgainA6BlockPeriodicity.lean` and
+  `BourgainA6PeriodicAveraging.lean` prove exact physical periods `N,N²`,
+  arbitrary full-period translation invariance, and exact factorization of
+  two independent full-period block averages.
+  `BourgainA6TaylorErrorAbsorption.lean` proves the square-root third-jet
+  coefficient is at most `15` on `[1/2,1]`; on radius `M²/12` with `M²≤N`,
+  each unit block's cubic error is at most `5π/4` and the full bilinear error
+  is `O(M⁶)`.
+  `BourgainA6LocalBallEstimate.lean` specializes the translated exact-curve
+  theorem with no remaining Taylor-error hypothesis.
+  `BourgainA6LocalBallPowerBound.lean` combines the exact determinant
+  factorization, reciprocal-Jacobian bound, local volume, and error
+  absorption into the unconditional uniform estimate
+  `∫⁻_{‖x‖≤M²/12}|S_{q₁}(x+y)|⁶|S_{q₂}(x+y)|⁶
+    ≪ε N¹⁰ M^(4+ε)`.
+  All four targets build cleanly. `[OPEN CORE]` The missing three-power gain
+  is now specifically the Bourgain Section-1/Section-2 multiscale
+  wave-packet summation from these local balls to the anisotropic physical
+  domain. Whole-cell Taylor control is not needed and remains retired.
+- 2026-07-25 — `[SECTION 2 LOCAL RECURRENCE INTERFACE] [LEAN-PROVED]`
+  `BourgainPhaseOperatorBounds.lean`,
+  `BourgainExactLocalMomentTransfer.lean`, and
+  `BourgainExactLocalTranslation.lean` extend exact local transfer from the
+  fixed base interval `[1/2,1]` to every compact lower base `A>0`, with an
+  explicit operator factor depending only on `A`.
+  `BourgainA6LocalBallGeneral.lean` uses that factor to prove the clean
+  translated local pair bound at radius
+  `M²/(2·max(6,opBound(A)))`, including the recurrence start condition
+  `N≤Λq₀`.
+  `BourgainA6PairLocalMoment.lean` orders every off-diagonal color pair and
+  applies that theorem; `BourgainA6LocalMajorant.lean` sums all ordered
+  pairs and proves the explicit multiplicity bound `3K²⁰`.
+  `BourgainA6LocalRecurrence.lean` converts the real pointwise majorant to
+  `ENNReal`, distributes its local integral exactly, and proves the
+  recurrence-ready inequality
+  `familyMoment ≤ 3¹¹·(diagonalMoments +
+  3K²⁰·ofReal(CN¹⁰M^(4+ε)))`.
+  All targeted builds pass. `[OPEN CORE]` Bound/iterate the diagonal local
+  moments across the Section-2 anisotropic physical domain without losing
+  the required three powers; then feed sharp `A₆` into first-spacing
+  elimination and formalize Huxley--Watt second spacing plus final exponent
+  optimization.
+- 2026-07-25 — `[SOURCE AUDIT] [ROUTE RETIRED]`
+  Direct comparison with Bourgain (2.23) shows the required separated-pair
+  bound is `N^(4+ε)M²` in normalized coordinates, hence
+  `N^(10+ε)M²` after physical `N⁶` scaling. The formal local theorem above
+  gives `N¹⁰M^(4+ε)`: the extra `M²` is exactly the additive Taylor-error
+  term, while its quadratic main term already has sharp `N¹⁰M^(2+ε)`
+  size. Nonnegative cube covering cannot remove this local loss.
+  The additive-error route is therefore retired as a proof of sharp `A₆`;
+  its positive local recurrence survives. Full details are recorded in
+  `docs/drafts/pipeline/5-failed/bourgain-additive-taylor-error-sharp-a6.md`.
+  `[OPEN CORE]` Formalize perturbation-stable weighted
+  decoupling/localization for the exact nondegenerate curve, producing
+  Bourgain (2.10)--(2.23) without additive `ℓ¹` error.

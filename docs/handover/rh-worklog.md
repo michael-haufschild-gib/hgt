@@ -10811,3 +10811,57 @@ IS THERE A FAMILY WHOSE CONDITION NUMBER IS UNBOUNDED BUT WHOSE SPECTRAL ERROR S
 diagonalisable family, the Bauer-Fike bound gives spectral error <= kappa(S) * ||perturbation||, SO
 THE VANISHING-LOSS QUESTION IS WHETHER ||perturbation|| CAN BEAT kappa(S). COMPUTE BOTH FOR THE
 CORPUS'S EXISTING HERMITIAN DETERMINANT CONSTRUCTIONS AND SEE WHICH WINS.
+
+---
+
+## Cycle 176 — THE REOPENED SUB-ROUTE IS THE QUASI-HERMITIAN ONE, AND ITS LOSS MUST BEAT THE SPACING
+
+### The characterisation — HUNDRED-AND-TENTH ATLAS ENTRY
+Real spectrum without near-self-adjointness has a classical name. An operator similar to a
+self-adjoint one carries a POSITIVE DEFINITE METRIC intertwining it with its adjoint: P A = A* P.
+Writing P = Q^2 with Q Hermitian and R its inverse, the relation is EXACTLY self-adjointness of the
+conjugated operator:
+
+    Q Q A = Aᴴ Q Q      <==>      (Q A R)ᴴ = Q A R          (BOTH DIRECTIONS FORMALISED).
+
+So QUASI-HERMITIAN and SIMILAR-TO-SELF-ADJOINT are the same condition, and the similarity's condition
+number is kappa(Q).
+
+### WHAT THE VANISHING-LOSS CRITERION DEMANDS
+For a diagonalisable family, Bauer-Fike gives spectral error at most kappa * ||E||. TO RESOLVE
+INDIVIDUAL ZEROS AT HEIGHT T — whose spacing is 2 pi / log T — the family must satisfy
+
+    kappa_n * ||E_n||  <  2 pi / log T_n        (formalised),
+
+WHICH IS STRICTLY STRONGER THAN MERELY TENDING TO ZERO: a loss tending to zero can still exceed a
+spacing that tends to zero faster (formalised with an explicit pair, loss c/(n+1) against spacing
+c/(n+1)^2).
+
+    ==> THE OPEN SUB-ROUTE IS THE QUASI-HERMITIAN ONE: A METRIC P_n WITH P_n A_n = A_n* P_n WHOSE
+        CONDITION NUMBER GROWS MORE SLOWLY THAN THE PERTURBATION SHRINKS, AND SLOWLY ENOUGH TO BEAT
+        THE ZERO SPACING. THIS IS THE OPERATOR LANE'S EXACT ANALOGUE OF THE NYQUIST CONDITION, AND
+        THE SAME 1/log T APPEARS IN BOTH.
+
+THE RECURRENCE OF 1/log T ACROSS INDEPENDENT LANES IS NOW FOURFOLD: the Nyquist threshold (103), the
+zero spacing, the order-two window's 1/j with j ~ the jet order (89), and now the Bauer-Fike
+requirement. THAT IS THE SUBJECT'S CHARACTERISTIC SCALE AND EVERY LANE MEETS IT.
+
+Machine-verified: `RHTower/QuasiHermitianIsTheOpenSubroute.lean` (both directions of the metric /
+conjugated-self-adjointness equivalence for matrices with an explicit inverse, the separation
+requirement, the spacing form of the loss bound, and the explicit witness showing that vanishing is
+not enough; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 176
+One hundred and ten entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 177 target
+THE QUESTION IS NOW ARITHMETIC AND CONCRETE: FOR A QUASI-HERMITIAN FAMILY MODELLING THE ZEROS, HOW
+FAST MUST kappa(Q_n) GROW? THERE IS A LOWER BOUND AVAILABLE AND THE ATLAS HAS NEVER COMPUTED IT.
+The eigenvector condition number of a matrix with real spectrum is bounded below by the ratio of the
+resolvent norm to the reciprocal distance to the spectrum: for any z off the spectrum,
+    ||(A - z)^{-1}||  <=  kappa(Q) / dist(z, spectrum),
+so kappa(Q) >= dist(z, spectrum) * ||(A - z)^{-1}||. FOR THE XI FUNCTION THE NATURAL RESOLVENT IS
+xi'/xi, WHOSE SIZE NEAR THE CRITICAL LINE IS KNOWN: |xi'/xi (s)| ~ log T. COMPUTE THE IMPLIED LOWER
+BOUND ON kappa AND COMPARE IT WITH THE 1/log T THE BAUER-FIKE REQUIREMENT ALLOWS. IF THE LOWER BOUND
+EXCEEDS THE ALLOWANCE, THE QUASI-HERMITIAN SUB-ROUTE CLOSES TOO AND THE OPERATOR LANE IS FINISHED;
+IF NOT, THE GAP IS THE FIRST GENUINELY OPEN QUANTITATIVE TARGET IN THE ATLAS SINCE ENTRY 89.
