@@ -605,6 +605,7 @@ import GaloisForLFunctions.RHTower.BourgainA6BlockPeriodicity
 import GaloisForLFunctions.RHTower.BourgainA6PeriodicAveraging
 import GaloisForLFunctions.RHTower.BourgainA6TaylorErrorAbsorption
 import GaloisForLFunctions.RHTower.BourgainA6LocalBallEstimate
+import GaloisForLFunctions.RHTower.BourgainA6LocalBallPowerBound
 import GaloisForLFunctions.RHTower.BourgainA6Rescaling
 import GaloisForLFunctions.RHTower.BourgainFejerSpacing
 import GaloisForLFunctions.RHTower.BourgainFejerMomentTransfer
@@ -3057,3 +3058,4 @@ import GaloisForLFunctions.RHTower.TailBeatenBySaddle
 import GaloisForLFunctions.RHTower.DecayIsDirectional
 import GaloisForLFunctions.RHTower.DiscInsideHorn
 import GaloisForLFunctions.RHTower.TailIsNegligible
+import GaloisForLFunctions.RHTower.LevelTwoTransfersVerbatim
