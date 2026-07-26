@@ -365,6 +365,23 @@ def SoninCoupledPrimeArchValuationAtMostSixResidualVariationalUpperBound : Prop 
             (p.map (Int.castRingHom ℝ)) ≤
           (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re + ε
 
+/-- The unrestricted coupled-Sonin comparison supplies its restriction to tests outside all
+seven unconditional valuation cones. -/
+theorem
+    soninCoupledPrimeArchValuationAtMostSixResidualVariationalUpperBound_of_perTest
+    (h : SoninCoupledPrimeArchPerTestVariationalUpperBound) :
+    SoninCoupledPrimeArchValuationAtMostSixResidualVariationalUpperBound := by
+  intro p _ ε hε
+  exact h p ε hε
+
+/-- Exact normalized-value closure supplies the at-most-six residual comparison. -/
+theorem
+    soninCoupledPrimeArchValuationAtMostSixResidualVariationalUpperBound_of_valueClosure
+    (h : SoninCoupledPrimeArchPerTestNormalizedValueClosure) :
+    SoninCoupledPrimeArchValuationAtMostSixResidualVariationalUpperBound :=
+  soninCoupledPrimeArchValuationAtMostSixResidualVariationalUpperBound_of_perTest
+    (soninCoupledPrimeArchPerTestVariationalUpperBound_of_valueClosure h)
+
 /-- Residual comparison outside the seven cones restores every integer source-Hankel
 inequality. -/
 theorem primeArchSourceTraceHankelIntNonnegative_of_valuationAtMostSixResidualVariationalUpperBound

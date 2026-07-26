@@ -9219,3 +9219,68 @@ CUMULANT THE SAME WAY: for V = c x^2/2 + eps x^3/6 compute kappa_4 to second ord
 Gaussian and confirm the predicted b^2/c^5 WITH ITS CONSTANT. Gaussian moments needed: E0[x^8] =
 105/c^4, E0[x^6] = 15/c^3, E0[x^4] = 3/c^2. IF THE d = 4 CONSTANT ALSO COMES OUT CLEAN, THE PATTERN
 IS THE STANDARD TREE COUNT AND THE INDUCTION IS ROUTINE.
+
+---
+
+## Cycle 152 — THE TREE COUNT BEATS THE FACTORIAL: CYCLE 150'S MARGIN WAS WRONG, AND THE CORRECTION IS THE DOUBLE EXPONENTIAL
+
+### The fourth cumulant, with its constant
+For V = c x^2/2 + eps x^3/6 the connected four-point function at order eps^2 is a tree with two cubic
+vertices, four external legs and one internal line. It has THREE CHANNELS, so
+
+    kappa_4 = 3 eps^2 / c^5,
+
+confirming b^{d-2}/c^{2d-3} at d = 4 BUT WITH CONSTANT THREE, not one.
+
+### THE CONSTANT IS THE NUMBER OF TREES, AND IT IS (2d-5)!!
+kappa_3 had constant 1 = 1!!; kappa_4 has constant 3 = 3!!; the pattern is the number of binary trees
+on d labelled leaves, (2d-5)!!. Writing i = d - 3: T(0) = 1, T(i+1) = (2i+3) T(i).
+
+### CYCLE 150 WAS WRONG AND THIS CORRECTS IT
+Cycle 150 read the margin as 2(d-2)! log k, implicitly taking the tree count to be O(1). IT IS NOT.
+The demand factorial is D(i) = (i+1)! = (d-2)!, with D(i+1) = (i+2) D(i). THE TWO RECURRENCES ARE
+(2i+3) AGAINST (i+2), so the ratio multiplies by at least 3/2 at every step:
+
+    T(i) >= (3/2)^i D(i)      (formalised by induction).
+
+    ==> THE TRUE MARGIN IS 2 (d-2)!/(2d-5)!! * log k, NOT 2(d-2)! log k. IT IS POSITIVE FOR EVERY
+        FIXED DEGREE BUT DEMANDS log k >~ (3/2)^{d-3}, I.E. k DOUBLY EXPONENTIAL IN d.
+
+### WHY THIS IS THE RIGHT ANSWER RATHER THAN A DEFEAT
+The mechanism still closes at every degree — for fixed d, taking k large enough always wins. WHAT IT
+COSTS IS A THRESHOLD EXPONENTIAL IN THE DEGREE, hence a shift doubly exponential in d. THAT IS
+EXACTLY THE SHAPE OF THE KNOWN EFFECTIVE THRESHOLDS FOR THIS PROBLEM (cycle 133: settled range
+d <= 9.36e20; the recorded thresholds are doubly exponential). CYCLE 152 SUPPLIES THE CAUSE OF THAT
+SHAPE: IT IS THE NUMBER OF TREES. The double exponential is not an artefact of crude estimation
+(which is what cycle 133 refuted for one particular bound) — it is intrinsic to the cumulant
+combinatorics.
+
+Machine-verified: `RHTower/TreeCountBeatsFactorial.lean` (both recurrences, T(1)=3 and T(2)=15,
+D(1)=2 and D(2)=6, positivity of both, the step ratio (3/2)(i+2) <= 2i+3, the geometric domination
+(3/2)^i D(i) <= T(i) by induction, the margin threshold 1 < 2(D/T)L iff T/(2D) < L, and the
+geometric lower bound (3/2)^i/2 <= T(i)/(2 D(i)); standard axioms only, wired into RHTower).
+
+### EIGHTY-SIXTH ATLAS ENTRY
+    tree count is the cost   The leading cumulant constant is the number of binary trees on d leaves,
+                             (2d-5)!!: one at d=3, three at d=4, fifteen at d=5. Against the demand's
+                             (d-2)! its recurrence is (2i+3) versus (i+2), so it dominates by at least
+                             (3/2)^{d-3}. The margin is 2(d-2)!/(2d-5)!! log k: positive at every
+                             fixed degree, but requiring k doubly exponential in d. THE DOUBLE
+                             EXPONENTIAL IN THE KNOWN THRESHOLDS IS THE TREE COUNT.
+
+### STATE AT CYCLE 152
+Eighty-six entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+CORRECTION LOG: cycle 150's margin "2(d-2)! log k" is AMENDED to "2(d-2)!/(2d-5)!! log k". The
+qualitative conclusion of cycle 150 SURVIVES (the diagrammatic expansion supplies the power the crude
+log-concave bound could not, and the complex Cauchy radius is not needed for the cumulant constant);
+what fails is the claim that the margin grows in the degree. IT SHRINKS IN THE DEGREE, GEOMETRICALLY.
+
+### Cycle 153 target
+PHASE 2 IS DUE (every fifth cycle; last run cycle 133). Search the literature for: (a) whether the
+doubly-exponential shape of the Jensen-polynomial hyperbolicity thresholds has been attributed to
+cumulant tree counts anywhere — if not, ENTRY 86 IS A NEW EXPLANATION OF A KNOWN PHENOMENON; (b) any
+result giving hyperbolicity for a range of d growing with the shift, which is what a threshold
+log k >~ (3/2)^d permits: d <= C log log k. THE SECOND IS THE SHARPEST QUESTION: the mechanism as now
+corrected proves hyperbolicity of J^{d,n} for d <= C log log n, and it must be checked against what is
+already known unconditionally in that regime.

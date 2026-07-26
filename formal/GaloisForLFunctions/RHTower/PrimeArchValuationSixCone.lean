@@ -194,6 +194,23 @@ def SoninCoupledPrimeArchValuationSixResidualVariationalUpperBound : Prop :=
             (p.map (Int.castRingHom ℝ)) ≤
           (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re + ε
 
+/-- The unrestricted coupled-Sonin per-test comparison automatically supplies its
+valuation-six residual restriction. -/
+theorem
+    soninCoupledPrimeArchValuationSixResidualVariationalUpperBound_of_perTest
+    (h : SoninCoupledPrimeArchPerTestVariationalUpperBound) :
+    SoninCoupledPrimeArchValuationSixResidualVariationalUpperBound := by
+  intro p _ ε hε
+  exact h p ε hε
+
+/-- Exact normalized-value closure supplies the valuation-six residual comparison. -/
+theorem
+    soninCoupledPrimeArchValuationSixResidualVariationalUpperBound_of_valueClosure
+    (h : SoninCoupledPrimeArchPerTestNormalizedValueClosure) :
+    SoninCoupledPrimeArchValuationSixResidualVariationalUpperBound :=
+  soninCoupledPrimeArchValuationSixResidualVariationalUpperBound_of_perTest
+    (soninCoupledPrimeArchPerTestVariationalUpperBound_of_valueClosure h)
+
 /-- Residual coupled-Sonin comparison plus the unconditional cone restores every integer
 prime--Gamma Hankel inequality. -/
 theorem primeArchSourceTraceHankelIntNonnegative_of_valuationSixResidualVariationalUpperBound

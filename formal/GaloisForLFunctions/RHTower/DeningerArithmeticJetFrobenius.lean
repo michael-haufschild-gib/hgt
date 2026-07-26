@@ -426,6 +426,196 @@ theorem deningerArithmeticJetClosedTheta_distribution
       (a : DeningerArithmeticJetHilbert)]
   rfl
 
+/-- The affine Frobenius eigenvalue attached to a source Xi divisor point. -/
+def deningerArithmeticJetThetaEigen
+    (rho : XiDivisorSupport) : ℂ :=
+  1 / 2 + Complex.I * xiSpectralPointSupport rho
+
+/-- Highest jet index retained by the divisor multiplicity at `rho`. -/
+def deningerArithmeticJetIndexTop
+    (rho : XiDivisorSupport) :
+    DeningerArithmeticJetIndex rho :=
+  ⟨xiSupportMultiplicity rho - 1,
+    Nat.sub_lt (xiSupportMultiplicity_pos rho) Nat.one_pos⟩
+
+@[simp] theorem deningerArithmeticJetIndexTop_val
+    (rho : XiDivisorSupport) :
+    (deningerArithmeticJetIndexTop rho).val =
+      xiSupportMultiplicity rho - 1 :=
+  rfl
+
+/-- Distinct source divisor points have distinct affine Frobenius eigenvalues. -/
+theorem deningerArithmeticJetThetaEigen_injective :
+    Function.Injective deningerArithmeticJetThetaEigen := by
+  intro rho tau h
+  apply xiSpectralPointSupport_injective
+  have hmul :
+      Complex.I * xiSpectralPointSupport rho =
+        Complex.I * xiSpectralPointSupport tau := by
+    have hsub := congrArg (fun z : ℂ => z - 1 / 2) h
+    simpa [deningerArithmeticJetThetaEigen] using hsub
+  exact mul_left_cancel₀ Complex.I_ne_zero hmul
+
+/-- Coordinate recurrence forced by a compact-open Frobenius eigenvector. -/
+theorem deningerCompactOpenH1AllJets_eigen_coordinate
+    {x : DeningerArithmeticCompactOpenH1}
+    {rho : XiDivisorSupport}
+    (hx :
+      deningerCompactOpenTheta x =
+        deningerArithmeticJetThetaEigen rho • x)
+    (tau : XiDivisorSupport)
+    (k : DeningerArithmeticJetIndex tau) :
+    deningerArithmeticJetThetaEigen tau *
+          deningerCompactOpenH1AllJets x tau k +
+        (k.val : ℂ) * Complex.I *
+          deningerCompactOpenH1AllJets x tau
+            (deningerArithmeticJetIndexPred tau k) =
+      deningerArithmeticJetThetaEigen rho *
+        deningerCompactOpenH1AllJets x tau k := by
+  have h :=
+    congrArg
+      (fun y : DeningerArithmeticCompactOpenH1 =>
+        deningerCompactOpenH1AllJets y tau k) hx
+  change
+    deningerCompactOpenH1AllJets
+        (deningerCompactOpenTheta x) tau k =
+      deningerCompactOpenH1AllJets
+        (deningerArithmeticJetThetaEigen rho • x) tau k at h
+  rw [deningerCompactOpenH1AllJets_theta] at h
+  simpa [deningerArithmeticJetThetaEigen] using h
+
+/-- Every source Frobenius eigenvector vanishes on jets over every other divisor point. -/
+theorem deningerCompactOpenH1AllJets_eigen_off_support
+    {x : DeningerArithmeticCompactOpenH1}
+    {rho : XiDivisorSupport}
+    (hx :
+      deningerCompactOpenTheta x =
+        deningerArithmeticJetThetaEigen rho • x)
+    {tau : XiDivisorSupport}
+    (htr : tau ≠ rho)
+    (k : DeningerArithmeticJetIndex tau) :
+    deningerCompactOpenH1AllJets x tau k = 0 := by
+  have hne :
+      deningerArithmeticJetThetaEigen tau ≠
+        deningerArithmeticJetThetaEigen rho :=
+    fun h => htr (deningerArithmeticJetThetaEigen_injective h)
+  let m := xiSupportMultiplicity tau
+  have hall :
+      ∀ n (hn : n < m),
+        deningerCompactOpenH1AllJets x tau
+          (⟨n, hn⟩ : Fin m) = 0 := by
+    intro n
+    induction n with
+    | zero =>
+        intro hn
+        have hc :=
+          deningerCompactOpenH1AllJets_eigen_coordinate hx tau
+            (⟨0, hn⟩ : Fin m)
+        have hmul :
+            (deningerArithmeticJetThetaEigen tau -
+                deningerArithmeticJetThetaEigen rho) *
+              deningerCompactOpenH1AllJets x tau
+                (⟨0, hn⟩ : Fin m) = 0 := by
+          simp only [Nat.cast_zero, zero_mul, zero_add] at hc
+          linear_combination hc
+        exact (mul_eq_zero.mp hmul).resolve_left
+          (sub_ne_zero.mpr hne)
+    | succ n ih =>
+        intro hn
+        have hnprev : n < m := lt_trans (Nat.lt_succ_self n) hn
+        have hprev := ih hnprev
+        have hc :=
+          deningerCompactOpenH1AllJets_eigen_coordinate hx tau
+            (⟨n + 1, hn⟩ : Fin m)
+        have hpred :
+            deningerArithmeticJetIndexPred tau
+                (⟨n + 1, hn⟩ : Fin m) =
+              (⟨n, hnprev⟩ : Fin m) := by
+          apply Fin.ext
+          simp [deningerArithmeticJetIndexPred]
+        rw [hpred, hprev, mul_zero, add_zero] at hc
+        have hmul :
+            (deningerArithmeticJetThetaEigen tau -
+                deningerArithmeticJetThetaEigen rho) *
+              deningerCompactOpenH1AllJets x tau
+                (⟨n + 1, hn⟩ : Fin m) = 0 := by
+          linear_combination hc
+        exact (mul_eq_zero.mp hmul).resolve_left
+          (sub_ne_zero.mpr hne)
+  exact hall k.val k.isLt
+
+/-- At its own divisor point, an eigenvector has no jet below the highest retained order. -/
+theorem deningerCompactOpenH1AllJets_eigen_below_top
+    {x : DeningerArithmeticCompactOpenH1}
+    {rho : XiDivisorSupport}
+    (hx :
+      deningerCompactOpenTheta x =
+        deningerArithmeticJetThetaEigen rho • x)
+    (n : ℕ)
+    (hn : n + 1 < xiSupportMultiplicity rho) :
+    deningerCompactOpenH1AllJets x rho
+        (⟨n, lt_trans (Nat.lt_succ_self n) hn⟩ :
+          DeningerArithmeticJetIndex rho) = 0 := by
+  let k : DeningerArithmeticJetIndex rho :=
+    ⟨n + 1, hn⟩
+  have hc :=
+    deningerCompactOpenH1AllJets_eigen_coordinate hx rho k
+  have hpred :
+      deningerArithmeticJetIndexPred rho k =
+        (⟨n, lt_trans (Nat.lt_succ_self n) hn⟩ :
+          DeningerArithmeticJetIndex rho) := by
+    apply Fin.ext
+    simp [k, deningerArithmeticJetIndexPred]
+  rw [hpred] at hc
+  have hmul :
+      (((n + 1 : ℕ) : ℂ) * Complex.I) *
+          deningerCompactOpenH1AllJets x rho
+            (⟨n, lt_trans (Nat.lt_succ_self n) hn⟩ :
+              DeningerArithmeticJetIndex rho) = 0 := by
+    dsimp [k] at hc
+    linear_combination hc
+  exact (mul_eq_zero.mp hmul).resolve_left
+    (mul_ne_zero
+      (Nat.cast_ne_zero.mpr (Nat.succ_ne_zero n))
+      Complex.I_ne_zero)
+
+/--
+Every compact-open source Frobenius eigenvector is exactly a scalar multiple of the highest
+jet basis vector at its source divisor point.
+-/
+theorem deningerCompactOpenH1AllJets_eigen_eq_top_basis
+    {x : DeningerArithmeticCompactOpenH1}
+    {rho : XiDivisorSupport}
+    (hx :
+      deningerCompactOpenTheta x =
+        deningerArithmeticJetThetaEigen rho • x) :
+    deningerCompactOpenH1AllJets x =
+      (deningerCompactOpenH1AllJets x rho
+          (deningerArithmeticJetIndexTop rho)) •
+        deningerArithmeticJetBasisVector rho
+          (deningerArithmeticJetIndexTop rho) := by
+  funext tau k
+  by_cases htr : tau = rho
+  · subst tau
+    by_cases hk : k = deningerArithmeticJetIndexTop rho
+    · subst k
+      simp [deningerArithmeticJetBasisVector, piBasisVector]
+    · have hklt :
+          k.val + 1 < xiSupportMultiplicity rho := by
+        have hkval :
+            k.val ≠ xiSupportMultiplicity rho - 1 := by
+          intro hval
+          apply hk
+          apply Fin.ext
+          simpa [deningerArithmeticJetIndexTop] using hval
+        omega
+      rw [deningerCompactOpenH1AllJets_eigen_below_top
+        hx k.val hklt]
+      simp [deningerArithmeticJetBasisVector, piBasisVector, hk]
+  · rw [deningerCompactOpenH1AllJets_eigen_off_support
+      hx htr k]
+    simp [deningerArithmeticJetBasisVector, piBasisVector, htr]
+
 end
 
 end RHTower

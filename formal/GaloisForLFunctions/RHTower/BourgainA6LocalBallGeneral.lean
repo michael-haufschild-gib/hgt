@@ -24,7 +24,7 @@ def bourgainA6LocalRadius (A : ℝ) (M : ℕ) : ℝ :=
   (M : ℝ) ^ (2 : ℕ) / (2 * bourgainA6LocalOperatorFactor A)
 
 theorem bourgainA6LocalOperatorFactor_pos
-    {A : ℝ} (hA : 0 < A) :
+    (A : ℝ) :
     0 < bourgainA6LocalOperatorFactor A := by
   unfold bourgainA6LocalOperatorFactor
   exact lt_of_lt_of_le (by norm_num) (le_max_left _ _)
@@ -40,26 +40,27 @@ theorem six_le_bourgainA6LocalOperatorFactor (A : ℝ) :
   exact le_max_left _ _
 
 theorem bourgainA6LocalRadius_nonneg
-    {A : ℝ} (hA : 0 < A) (M : ℕ) :
+    (A : ℝ) (M : ℕ) :
     0 ≤ bourgainA6LocalRadius A M := by
   unfold bourgainA6LocalRadius
-  positivity
+  exact div_nonneg (sq_nonneg _)
+    (mul_nonneg (by norm_num) (bourgainA6LocalOperatorFactor_pos A).le)
 
 theorem bourgainA6LocalRadius_le_taylorRadius
-    {A : ℝ} (hA : 0 < A) (M : ℕ) :
+    (A : ℝ) (M : ℕ) :
     bourgainA6LocalRadius A M ≤ (M : ℝ) ^ (2 : ℕ) / 12 := by
   have hQ : 0 < 2 * bourgainA6LocalOperatorFactor A := by
-    positivity
+    exact mul_pos (by norm_num) (bourgainA6LocalOperatorFactor_pos A)
   rw [bourgainA6LocalRadius, div_le_div_iff₀ hQ (by norm_num)]
   have h6 := six_le_bourgainA6LocalOperatorFactor A
   nlinarith [sq_nonneg (M : ℝ)]
 
 theorem bourgainA6LocalRadius_phase_fit
-    {A : ℝ} (hA : 0 < A) (M : ℕ) :
+    (A : ℝ) (M : ℕ) :
     2 * bourgainSquareRootPhaseOperatorBound A *
         bourgainA6LocalRadius A M ≤
       (M : ℝ) ^ (2 : ℕ) := by
-  have hR := bourgainA6LocalRadius_nonneg hA M
+  have hR := bourgainA6LocalRadius_nonneg A M
   have hL :=
     bourgainSquareRootPhaseOperatorBound_le_localFactor A
   calc
@@ -71,7 +72,7 @@ theorem bourgainA6LocalRadius_phase_fit
         (mul_le_mul_of_nonneg_left hL (by norm_num)) hR
     _ = (M : ℝ) ^ (2 : ℕ) := by
       unfold bourgainA6LocalRadius
-      field_simp [bourgainA6LocalOperatorFactor_pos hA |>.ne']
+      field_simp [bourgainA6LocalOperatorFactor_pos A |>.ne']
 
 /-- The local-radius Taylor error times volume remains below the common
 `N¹⁰ M^(4+ε)` power. -/
@@ -89,8 +90,7 @@ theorem bourgainA6UnitTaylorError_localRadius_ennreal_le
   have hK :
       0 ≤ bourgainA6UnitBilinearTaylorErrorConstant A :=
     bourgainA6UnitBilinearTaylorErrorConstant_nonneg hA
-  have hR0 := bourgainA6LocalRadius_nonneg hA M
-  have hRle := bourgainA6LocalRadius_le_taylorRadius hA M
+  have hRle := bourgainA6LocalRadius_le_taylorRadius A M
   have htwoR :
       2 * bourgainA6LocalRadius A M ≤ (M : ℝ) ^ (2 : ℕ) := by
     calc
@@ -105,7 +105,9 @@ theorem bourgainA6UnitTaylorError_localRadius_ennreal_le
     calc
       (2 * bourgainA6LocalRadius A M) ^ (4 : ℕ) ≤
           ((M : ℝ) ^ (2 : ℕ)) ^ (4 : ℕ) :=
-        pow_le_pow_left₀ (by positivity) htwoR 4
+        pow_le_pow_left₀
+          (mul_nonneg (by norm_num) (bourgainA6LocalRadius_nonneg A M))
+          htwoR 4
       _ = (M : ℝ) ^ (8 : ℕ) := by ring
   have hreal :
       bourgainA6UnitBilinearTaylorErrorConstant A *
@@ -178,10 +180,10 @@ theorem setLIntegral_bourgainA6PhysicalBlockSum_localBall_power_of_lower
     apply Real.sqrt_le_one.mpr
     exact (div_le_one hNr).2 (by exact_mod_cast hq₂N)
   have hraw :=
-    hlocal hA ha hab hb (bourgainA6LocalRadius_nonneg hA M) hNr
+    hlocal hA ha hab hb (bourgainA6LocalRadius_nonneg A M) hNr
       M hM hMN' (fun _ : Fin M => (1 : ℂ))
       (fun _ : Fin M => (1 : ℂ)) y
-      (bourgainA6LocalRadius_phase_fit hA M)
+      (bourgainA6LocalRadius_phase_fit A M)
   have herror :
       bourgainSquareRootBilinearTaylorError
           R a b ((M : ℝ) / (N : ℝ))
@@ -191,8 +193,8 @@ theorem setLIntegral_bourgainA6PhysicalBlockSum_localBall_power_of_lower
     exact
       bourgainSquareRootBilinearTaylorError_unit_le_mul_of_lower_of_radius_le
         hN hM hM2N hA ha hAb
-        (bourgainA6LocalRadius_nonneg hA M)
-        (bourgainA6LocalRadius_le_taylorRadius hA M)
+        (bourgainA6LocalRadius_nonneg A M)
+        (bourgainA6LocalRadius_le_taylorRadius A M)
   have hmain :=
     bourgainA6BlockLocalBallMainTerm_ennreal_le
       (C := C₀) (ε := ε) hN hM hC₀.le hq₁ hq hq₂N
@@ -269,6 +271,60 @@ theorem setLIntegral_bourgainA6PhysicalBlockSum_localBall_power_of_lower
       congr 1
       dsimp [C, A₀, P]
       ring
+
+/-- A block beginning at `q` with `N ≤ Kq` has normalized square-root base
+at least `1/√K`. -/
+theorem one_div_sqrt_natCast_le_sqrt_natCast_div
+    {N K q : ℕ} (hN : 0 < N) (hK : 0 < K)
+    (hq : N ≤ K * q) :
+    1 / Real.sqrt (K : ℝ) ≤
+      Real.sqrt ((q : ℝ) / (N : ℝ)) := by
+  have hNr : (0 : ℝ) < N := by exact_mod_cast hN
+  have hKr : (0 : ℝ) < K := by exact_mod_cast hK
+  have hq' : (N : ℝ) ≤ (K : ℝ) * (q : ℝ) := by
+    exact_mod_cast hq
+  have hfrac :
+      1 / (K : ℝ) ≤ (q : ℝ) / (N : ℝ) := by
+    rw [div_le_div_iff₀ hKr hNr]
+    simpa [mul_comm] using hq'
+  have hsqrt := Real.sqrt_le_sqrt hfrac
+  have hid :
+      Real.sqrt (1 / (K : ℝ)) = 1 / Real.sqrt (K : ℝ) := by
+    rw [Real.sqrt_div (by positivity : 0 ≤ (1 : ℝ))]
+    simp
+  rwa [hid] at hsqrt
+
+/-- Recurrence-ready local estimate: a fixed multiplicative lower bound on
+the block start supplies the positive base required above. -/
+theorem setLIntegral_bourgainA6PhysicalBlockSum_localBall_power_of_start
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ K : ℕ, 0 < K →
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (N M q₁ q₂ : ℕ), (hN : 0 < N) → (hM : 0 < M) →
+        (hMN : M ≤ N) → (hM2N : M ^ (2 : ℕ) ≤ N) →
+        (hq₁ : 0 < q₁) → (hq : q₁ + M ≤ q₂) →
+        (hq₂N : q₂ ≤ N) → (hstart : N ≤ K * q₁) →
+      ∀ y : BourgainPhaseSpace,
+      (∫⁻ x in
+        {x : BourgainPhaseSpace |
+          ‖x‖ ≤ bourgainA6LocalRadius (1 / Real.sqrt (K : ℝ)) M},
+        ENNReal.ofReal
+          (‖bourgainA6PhysicalBlockSum N M q₁ (fun _ => 1) (x + y)‖ ^
+                (6 : ℕ) *
+            ‖bourgainA6PhysicalBlockSum N M q₂ (fun _ => 1) (x + y)‖ ^
+              (6 : ℕ))) ≤
+        ENNReal.ofReal
+          (C * (N : ℝ) ^ (10 : ℕ) * (M : ℝ) ^ (4 + ε)) := by
+  intro K hK
+  have hKr : (0 : ℝ) < K := by exact_mod_cast hK
+  have hA : 0 < 1 / Real.sqrt (K : ℝ) := by positivity
+  obtain ⟨C, hC, hbound⟩ :=
+    setLIntegral_bourgainA6PhysicalBlockSum_localBall_power_of_lower
+      hε (1 / Real.sqrt (K : ℝ)) hA
+  refine ⟨C, hC, ?_⟩
+  intro N M q₁ q₂ hN hM hMN hM2N hq₁ hq hq₂N hstart y
+  exact hbound N M q₁ q₂ hN hM hMN hM2N hq₁ hq hq₂N
+    (one_div_sqrt_natCast_le_sqrt_natCast_div hN hK hstart) y
 
 end
 
